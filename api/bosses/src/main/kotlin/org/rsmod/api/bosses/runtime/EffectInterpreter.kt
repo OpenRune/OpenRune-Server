@@ -340,15 +340,20 @@ class EffectInterpreter(
     }
 
     private fun applyTileAoE(aoe: Effect.TileAoE) {
-        val center = resolveTile(aoe.center)
-        val radius = aoe.radius
-        val targets = deps.playerList.filter {
-            it.coords.chebyshevDistance(center) <= radius
+        val tiles = aoe.tiles(npc, target).toSet()
+        val windup = aoe.telegraph?.windup ?: 0
+        aoe.telegraph?.let { telegraph ->
+            val spot = SpotanimType(telegraph.spotanim.asRSCM(RSCMType.SPOTANIM))
+            for (tile in tiles) deps.worldRepo.spotanimMap(spot, tile)
         }
-        for (t in targets) {
-            val damage = evaluateDamage(aoe.damage, aoe.type, t)
-            t.finishNpcHit(npc, 0, aoe.type.toEngine(), damage, deps.playerHitModifier)
+        val strike = {
+            val targets = deps.playerList.filter { it.coords in tiles }
+            for (t in targets) {
+                val damage = evaluateDamage(aoe.damage, aoe.type, t)
+                t.finishNpcHit(npc, 1, aoe.type.toEngine(), damage, deps.playerHitModifier)
+            }
         }
+        if (windup > 0) deps.worldQueues.add(windup) { strike() } else strike()
     }
 
     private fun applyDebris(effect: Effect.Debris) {

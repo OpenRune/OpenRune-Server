@@ -1,5 +1,8 @@
 package org.rsmod.api.bosses.dsl
 
+import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.bosses.validation.SpecValidator
@@ -340,13 +343,12 @@ class AbilityBuilder {
     }
 
     fun tileAoE(
-        center: TargetExpr,
-        radius: Int,
+        tiles: (Npc, Player) -> Collection<CoordGrid>,
         telegraph: TelegraphSpec? = null,
         damage: DamageExpr,
         type: HitType,
     ) {
-        effects += Effect.TileAoE(center, radius, telegraph, damage, type)
+        effects += Effect.TileAoE(tiles, telegraph, damage, type)
     }
 
     fun summon(

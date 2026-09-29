@@ -16064,3 +16064,9 @@ inherit = "npc.vampyre_snail"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=5
+
+[[npc]]
+id = "npc.duke_sucellus_asleep"
+inherit = "npc.duke_sucellus_asleep"
+moveRestrict = "NoMove"
+wanderRange = 0

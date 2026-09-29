@@ -2,6 +2,9 @@ package org.rsmod.api.bosses.spec
 
 import dev.openrune.types.NpcMode
 import org.rsmod.api.player.output.CamShakeAxis
+import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
 
 public data class StatDrainEntry(
     val stat: String,
@@ -63,8 +66,7 @@ sealed interface Effect {
     ) : Effect
 
     data class TileAoE(
-        val center: TargetExpr,
-        val radius: Int,
+        val tiles: (Npc, Player) -> Collection<CoordGrid>,
         val telegraph: TelegraphSpec? = null,
         val damage: DamageExpr,
         val type: HitType,

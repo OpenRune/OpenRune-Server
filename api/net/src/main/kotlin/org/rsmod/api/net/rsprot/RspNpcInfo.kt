@@ -43,6 +43,10 @@ class RspNpcInfo(val rspAvatar: NpcAvatar) : NpcInfoProtocol {
         rspAvatar.extendedInfo.setBodyCustomisation(listOf(model), emptyList(), emptyList())
     }
 
+    override fun setBodyModels(models: List<Int>) {
+        rspAvatar.extendedInfo.setBodyCustomisation(models, emptyList(), emptyList())
+    }
+
     override fun setBodyRecolours(recolours: List<Int>) {
         rspAvatar.extendedInfo.setBodyCustomisation(emptyList(), recolours, emptyList())
     }

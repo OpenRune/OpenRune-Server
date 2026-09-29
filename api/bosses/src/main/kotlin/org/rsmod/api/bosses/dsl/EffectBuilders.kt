@@ -1,5 +1,8 @@
 package org.rsmod.api.bosses.dsl
 
+import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.combat.commons.types.MeleeAttackType as EngineMeleeAttackType
@@ -75,12 +78,11 @@ fun projectile(
     Effect.Projectile(spotanim, travel, config, target, launch, impact, hit, resolveOnImpact, onImpact)
 
 fun tileAoE(
-    center: TargetExpr,
-    radius: Int,
+    tiles: (Npc, Player) -> Collection<CoordGrid>,
     telegraph: TelegraphSpec? = null,
     damage: DamageExpr,
     type: HitType,
-): Effect = Effect.TileAoE(center, radius, telegraph, damage, type)
+): Effect = Effect.TileAoE(tiles, telegraph, damage, type)
 
 fun debris(
     telegraph: String,

@@ -252,7 +252,7 @@ object InstanceSettingsTable {
             column(TEAM_SIZE, 1)
             column(LOOT_MULTIPLIER, "x1.0")
             column(DESCRIPTION, "The frozen, slumbering duke of the Ghorrock asylum.")
-            columnRSCM(ENTER_OBJECT, "loc.dt2_vault_sucellus_statue_normal")
+            columnRSCM(ENTER_OBJECT, "loc.dt2_ghorrock_gate_boss")
             columnRSCM(EXIT_OBJECT, "loc.duke_sucellus_exit")
         }
 

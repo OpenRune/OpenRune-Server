@@ -3,8 +3,10 @@ package org.rsmod.content.bosses.dukesucellus
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.NpcMode
 import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
+import java.util.IdentityHashMap
 import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
@@ -14,12 +16,21 @@ import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.combat.commons.player.finishNpcHit
-import org.rsmod.api.death.NpcDeath
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.mes
-import org.rsmod.api.script.onNpcQueue
+import org.rsmod.api.player.output.runClientScript
+import org.rsmod.api.player.output.soundSynth
+import org.rsmod.api.player.output.spam
+import org.rsmod.api.player.stat.statSub
+import org.rsmod.api.player.ui.ifCloseOverlay
+import org.rsmod.api.player.ui.ifOpenFullOverlay
+import org.rsmod.api.player.ui.ifSetAnim
+import org.rsmod.api.script.onEvent
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.npc.NpcStateEvents
+import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.hit.HitType as EngineHitType
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
@@ -28,79 +39,164 @@ class DukeSucellus
 @Inject
 constructor(
     deps: BossDeps,
-    private val npcDeath: NpcDeath,
+    private val eventBus: EventBus,
 ) : BossPluginScript(deps) {
 
     override fun ScriptContext.startup() {
         BossCombat.register(this, spec, deps)
-        registerDeath()
 
+        deps.extensionRegistry.register(MELEE_ICICLES) { _, npc, _, _ -> spawnIcicles(npc) }
+        deps.extensionRegistry.register(MELEE_SLAM) { _, npc, _, _ -> slam(npc) }
+        deps.extensionRegistry.register(GAZE_START) { _, npc, target, _ ->
+            npc.vars[AFTER_GAZE_VARN] = 1
+            if (target.isValidTarget()) openGaze(npc, target)
+        }
+        deps.extensionRegistry.register(STANDARD_ATTACK) { _, npc, _, _ ->
+            npc.vars[FLARE_ATTACKS_VARN] = npc.vars[FLARE_ATTACKS_VARN] + 1
+            npc.vars[AFTER_GAZE_VARN] = 0
+        }
+        deps.extensionRegistry.register(GAS_FLARE_CAST) { _, npc, target, _ ->
+            fireGasFlare(npc, target)
+        }
+        deps.extensionRegistry.register(GAS_FLARE_ECHO_CAST) { _, npc, target, _ ->
+            fireGasFlareEcho(npc, target)
+        }
+        onEvent<NpcStateEvents.Respawn> {
+            if (npc.type.id in bossNpcIds) resetFlareState(npc)
+        }
         deps.extensionRegistry.register(GAZE_RESOLVE) { _, npc, target, _ ->
-            if (target.isValidTarget()) resolveGaze(npc, target)
+            if (isFighting(npc) && target.isValidTarget()) resolveGaze(npc, target)
         }
-        deps.extensionRegistry.register(GAS_FLARE) { _, npc, target, _ ->
-            if (target.isValidTarget()) fireGasFlare(npc, target)
-        }
+        deps.extensionRegistry.register(BLACK_ORB_SWEEP) { _, npc, _, _ -> fireBlackOrbSweep(npc) }
     }
 
-    private fun ScriptContext.registerDeath() {
-        val type = ServerCacheManager.getNpc(BOSS_NPC.asRSCM(RSCMType.NPC))!!
-        onNpcQueue(type, "queue.death") { npcDeath.deathWithDrops(this, npc.coords) }
+    private val bossNpcIds: Set<Int> by lazy {
+        listOf(BOSS_NPC, SLEEP_NPC).map { it.asRSCM(RSCMType.NPC) }.toSet()
     }
 
-    private fun awakened(npc: Npc): Boolean = npc.vars["varn.awakened_state"] == 1
+    private fun isFighting(npc: Npc): Boolean = npc.isSlotAssigned && npc.isVisType(BOSS_NPC)
 
-    private fun onPillarColumn(target: Player): Boolean = target.coords.x in SAFE_COLUMNS
+    private fun behindPillar(npc: Npc, target: Player): Boolean {
+        val west = npc.coords.x
+        val east = west + npc.size - 1
+        return target.coords.x in (west - 2)..(west - 1) || target.coords.x in (east + 1)..(east + 2)
+    }
+
+    private fun glowComponent(): Int = GLOW_COMPONENT.asRSCM(RSCMType.COMPONENT)
+
+    private fun seq(name: String) = ServerCacheManager.getAnim(name.asRSCM(RSCMType.SEQ))
+
+    private fun openGaze(npc: Npc, target: Player) {
+        npc.setBodyModels(listOf(DUKE_BODY_MODEL, DUKE_OPEN_EYE_MODEL))
+        target.runClientScript(SCREEN_GLOW_START_SCRIPT, GAZE_GLOW_COLOUR, glowComponent(), 0, 120, 255, 150)
+        target.ifOpenFullOverlay(GAZE_INTERFACE, eventBus)
+        target.ifSetAnim(GAZE_EYE_COMPONENT, seq(GAZE_EYE_APPEAR_SEQ))
+        deps.worldQueues.add(GAZE_RESOLVE_DELAY + GAZE_CLOSE_DELAY) {
+            if (npc.isSlotAssigned) npc.setBodyModels(listOf(DUKE_BODY_MODEL, -1))
+            target.ifCloseOverlay(GAZE_INTERFACE, eventBus)
+        }
+    }
 
     private fun resolveGaze(npc: Npc, target: Player) {
-        if (onPillarColumn(target)) {
-            target.mes(GAZE_AVOID_MESSAGE)
+        target.runClientScript(SCREEN_GLOW_END_SCRIPT, GAZE_GLOW_COLOUR, glowComponent(), 0, 30, 255)
+        target.ifSetAnim(GAZE_EYE_COMPONENT, seq(GAZE_EYE_DISAPPEAR_SEQ))
+        target.soundSynth(GAZE_RESOLVE_SYNTH)
+        if (behindPillar(npc, target)) {
+            target.spam(GAZE_AVOID_MESSAGE)
             return
         }
-        target.spotanim(GAZE_FREEZE_SPOTANIM)
+        target.spam(GAZE_FAIL_MESSAGE)
+        target.spotanim(GAZE_FREEZE_SPOTANIM, slot = GAZE_FREEZE_SPOTANIM_SLOT)
         target.frozen = true
         target.routeDestination.clear()
         target.timer("timer.combat_freeze", GAZE_FREEZE_TICKS)
+        deps.worldQueues.add(1) { if (target.isValidTarget()) target.mes(GAZE_FROZEN_MESSAGE) }
         val damage = GAZE_DAMAGE.first + deps.random.of(GAZE_DAMAGE.last - GAZE_DAMAGE.first + 1)
         target.finishNpcHit(npc, GAZE_HIT_DELAY, EngineHitType.Typeless, damage, deps.playerHitModifier)
     }
 
-    private fun nearestVent(target: Player): CoordGrid =
-        VENT_TILES.minByOrNull { it.chebyshevDistance(target.coords) } ?: VENT_TILES.first()
+    private fun ventCentres(npc: Npc): List<CoordGrid> =
+        VENT_OFFSETS.map { (dx, dy) -> npc.coords.translate(dx, dy) }
 
-    private fun secondNearestVent(target: Player, nearest: CoordGrid): CoordGrid =
-        VENT_TILES.filter { it != nearest }.minByOrNull { it.chebyshevDistance(target.coords) } ?: nearest
+    private fun nearestVents(npc: Npc, target: Player): List<CoordGrid> =
+        ventCentres(npc).sortedBy { it.chebyshevDistance(target.coords) }
 
-    private fun fireGasFlare(npc: Npc, target: Player) {
-        val vent = nearestVent(target)
-        castGasFlare(npc, target, vent, awakened(npc))
-        if (awakened(npc) || npc.hitpoints < npc.baseHitpointsLvl / 2) {
-            val echoVent = secondNearestVent(target, vent)
-            deps.worldQueues.add(GAS_FLARE_ECHO_OFFSET) { castGasFlare(npc, target, echoVent, awakened(npc)) }
-        }
+    private fun flareThreshold(npc: Npc): Int {
+        val stored = npc.vars[FLARE_THRESHOLD_VARN]
+        return if (stored > 0) stored else FIRST_FLARE_ATTACKS
     }
 
-    private fun castGasFlare(npc: Npc, target: Player, vent: CoordGrid, isAwakened: Boolean) {
+    private fun flareDue(npc: Npc): Boolean =
+        npc.vars[AFTER_GAZE_VARN] == 0 && npc.vars[FLARE_ATTACKS_VARN] >= flareThreshold(npc)
+
+    private fun resetFlareState(npc: Npc) {
+        npc.vars[FLARE_ATTACKS_VARN] = 0
+        npc.vars[FLARE_THRESHOLD_VARN] = 0
+        npc.vars[AFTER_GAZE_VARN] = 0
+    }
+
+    private fun hpFraction(npc: Npc): Double = npc.hitpoints.toDouble() / npc.baseHitpointsLvl.coerceAtLeast(1)
+
+    private fun fireGasFlare(npc: Npc, target: Player) {
+        val fraction = hpFraction(npc)
+        npc.vars[FLARE_ATTACKS_VARN] = 0
+        npc.vars[FLARE_THRESHOLD_VARN] =
+            when {
+                fraction > FLARE_SLOW_HP -> FLARE_ATTACKS_HIGH_HP
+                fraction > ENRAGE_HP_FRACTION -> FLARE_ATTACKS_MID_HP
+                else -> FLARE_ATTACKS_LOW_HP
+            }
+
+        castGasFlare(npc, target, nearestVents(npc, target).first())
+    }
+
+    private fun fireGasFlareEcho(npc: Npc, target: Player) {
+        val vents = nearestVents(npc, target)
+        castGasFlare(npc, target, vents.getOrElse(1) { vents.first() })
+    }
+
+    private fun castGasFlare(npc: Npc, target: Player, vent: CoordGrid) {
+        target.soundSynth(GAS_FLARE_SYNTH)
         deps.bossProjectile(
             spotanim = GAS_FLARE_PROJECTILE.asRSCM(RSCMType.SPOTANIM),
-            src = npc.coords.translate(1, 1),
+            src = npc.coords.translate(GAS_SOURCE_DX, GAS_SOURCE_DY),
             target = vent,
             startHeight = GAS_PROJECTILE_START_HEIGHT,
             endHeight = GAS_PROJECTILE_END_HEIGHT,
             delay = GAS_PROJECTILE_DELAY,
             travel = GAS_PROJECTILE_TRAVEL,
             curve = GAS_PROJECTILE_ANGLE,
+            progress = GAS_PROJECTILE_PROGRESS,
         )
-        for ((index, spot) in GAS_RAMP_SPOTANIMS.withIndex()) {
-            deps.worldQueues.add(GAS_PROJECTILE_DELAY + GAS_PROJECTILE_TRAVEL + index) {
-                mapSpot(spot, vent)
+        deps.worldQueues.add(GAS_VENT_SPAWN_TICKS) { if (isFighting(npc)) spawnGasVent(npc, vent) }
+    }
+
+    private fun spawnGasVent(npc: Npc, centre: CoordGrid) {
+        val ventType = ServerCacheManager.getNpc(GAS_VENT_NPC.asRSCM(RSCMType.NPC)) ?: return
+        val vent = Npc(ventType, centre.translate(-1, -1))
+        vent.mode = NpcMode.None
+        deps.npcRepo.add(vent, GAS_VENT_DESPAWN_DURATION)
+        vent.spotanim(GAS_VENT_SPAWN_SPOTANIM, GAS_VENT_SPAWN_SPOTANIM_DELAY)
+
+        for (tick in GAS_VENT_IDLE_TICKS until GAS_VENT_DESPAWN_TICKS step GAS_VENT_IDLE_INTERVAL) {
+            deps.worldQueues.add(tick) {
+                if (vent.isSlotAssigned) vent.spotanim(GAS_VENT_IDLE_SPOTANIM)
             }
         }
-        val damageRange = if (isAwakened) GAS_FLARE_DAMAGE_AWAKENED else GAS_FLARE_DAMAGE_NORMAL
-        deps.worldQueues.add(GAS_PROJECTILE_DELAY + GAS_PROJECTILE_TRAVEL + GAS_RAMP_SPOTANIMS.size) {
-            if (!target.isValidTarget() || vent.chebyshevDistance(target.coords) > GAS_CLOUD_RADIUS) return@add
-            val damage = damageRange.first + deps.random.of(damageRange.last - damageRange.first + 1)
-            target.finishNpcHit(npc, GAS_HIT_DELAY, EngineHitType.Typeless, damage, deps.playerHitModifier)
+        deps.worldQueues.add(GAS_VENT_DESPAWN_TICKS) {
+            if (vent.isSlotAssigned) vent.spotanim(GAS_VENT_DESPAWN_SPOTANIM)
+        }
+        for (tick in GAS_VENT_IDLE_TICKS..GAS_VENT_DESPAWN_TICKS) {
+            deps.worldQueues.add(tick) { if (isFighting(npc)) strikeGas(npc, centre) }
+        }
+    }
+
+    private fun strikeGas(npc: Npc, centre: CoordGrid) {
+        for (player in deps.playerList) {
+            if (!player.isValidTarget() || centre.chebyshevDistance(player.coords) > GAS_CLOUD_RADIUS) continue
+            player.statSub("stat.prayer", GAS_PRAYER_DRAIN, 0)
+            val damage = GAS_DAMAGE.first + deps.random.of(GAS_DAMAGE.last - GAS_DAMAGE.first + 1)
+            player.finishNpcHit(npc, GAS_HIT_DELAY, EngineHitType.Typeless, damage, deps.playerHitModifier)
         }
     }
 
@@ -108,28 +204,88 @@ constructor(
         deps.worldRepo.spotanimMap(SpotanimType(spot.asRSCM(RSCMType.SPOTANIM)), coords)
     }
 
+    private val orbSweepEastward: MutableMap<Npc, Boolean> = IdentityHashMap()
+
+    private fun fireBlackOrbSweep(npc: Npc) {
+        val eastward = orbSweepEastward.getOrDefault(npc, true)
+        orbSweepEastward[npc] = !eastward
+        val startX = if (eastward) BLACK_ORB_WEST_X else BLACK_ORB_EAST_X
+        val endX = if (eastward) BLACK_ORB_EAST_X else BLACK_ORB_WEST_X
+        val step = if (eastward) 1 else -1
+        val level = npc.coords.level
+
+        val orbType = ServerCacheManager.getNpc(BLACK_ORB_NPC.asRSCM(RSCMType.NPC)) ?: return
+        val spawnCoord = CoordGrid(startX, BLACK_ORB_ROW, level)
+        val orb = Npc(orbType, spawnCoord)
+        orb.mode = NpcMode.None
+        val travelTicks = kotlin.math.abs(endX - startX)
+        deps.npcRepo.add(orb, travelTicks + 2)
+
+        strikeOrbTile(npc, spawnCoord)
+
+        var x = startX
+        for (tick in 1..travelTicks) {
+            x += step
+            val dest = CoordGrid(x, BLACK_ORB_ROW, level)
+            deps.worldQueues.add(tick) {
+                if (!orb.isSlotAssigned || !isFighting(npc)) return@add
+                PathingEntityCommon.teleport(orb, deps.collision, dest) // non-jump -> rsprox `[teleport]`
+                strikeOrbTile(npc, dest)
+            }
+        }
+    }
+
+    private fun strikeOrbTile(npc: Npc, tile: CoordGrid) {
+        for (player in deps.playerList) {
+            if (!player.isValidTarget() || player.coords != tile) continue
+            val damage = BLACK_ORB_DAMAGE.first + deps.random.of(BLACK_ORB_DAMAGE.last - BLACK_ORB_DAMAGE.first + 1)
+            player.finishNpcHit(npc, 1, EngineHitType.Typeless, damage, deps.playerHitModifier)
+            for (stat in BLACK_ORB_DRAIN_STATS) player.statSub(stat, BLACK_ORB_STAT_DRAIN, 0)
+        }
+    }
+
+    private fun tilesInFront(npc: Npc): List<CoordGrid> =
+        List(npc.size) { npc.coords.translate(it, -1) }
+
+    private fun spawnIcicles(npc: Npc) {
+        val tiles = tilesInFront(npc)
+        for ((index, tile) in tiles.withIndex()) {
+            val fromEdge = minOf(index, tiles.lastIndex - index)
+            val spot = MELEE_ICICLE_SPOTANIMS[fromEdge.coerceAtMost(MELEE_ICICLE_SPOTANIMS.lastIndex)]
+            mapSpot(spot, tile)
+        }
+    }
+
+    private fun slam(npc: Npc) {
+        if (!isFighting(npc)) return
+        val tiles = tilesInFront(npc).toSet()
+        val range = MELEE_SLAM_DAMAGE
+        for (player in deps.playerList) {
+            if (!player.isValidTarget() || player.coords !in tiles) continue
+            val damage = range.first + deps.random.of(range.last - range.first + 1)
+            val modifier = deps.playerHitModifier
+            player.finishNpcHit(npc, 1, EngineHitType.Melee, damage, modifier, MELEE_SLAM_PENETRATION)
+        }
+    }
+
     private fun melee(): Effect =
         sequence(
+            external(STANDARD_ATTACK),
             anim(MELEE_SEQ),
-            spotanim(MELEE_CAST_SPOTANIM),
-            tileAoE(
-                center = CurrentTarget,
-                radius = MELEE_CHIP_RADIUS,
-                telegraph = telegraph(MELEE_TELEGRAPH_SPOTANIM, windup = 1),
-                damage = (MELEE_CHIP_DAMAGE).roll(),
-                type = Typeless,
-            ),
-            wait(1),
+            spotanim(MELEE_NPC_SPOTANIM),
+            external(MELEE_ICICLES),
             hit {
-                damage(MELEE_SLAM_DAMAGE)
+                damage(MELEE_CHIP_DAMAGE)
                 type(Melee)
-                spotanim(MELEE_IMPACT_SPOTANIM)
-                penetration(MELEE_SLAM_PENETRATION)
+                penetration(MELEE_CHIP_PENETRATION)
             },
+            wait(MELEE_SLAM_DELAY),
+            external(MELEE_SLAM),
         )
 
     private fun rangedMagic(): Effect =
         sequence(
+            external(STANDARD_ATTACK),
             anim(MAGIC_SEQ),
             projectile(
                 spotanim = MAGIC_PROJECTILE_SPOTANIM,
@@ -146,25 +302,31 @@ constructor(
         sequence(
             anim(GAZE_SEQ),
             message(GAZE_WARNING_MESSAGE),
+            external(GAZE_START),
             wait(GAZE_RESOLVE_DELAY),
             external(GAZE_RESOLVE),
-            wait(GAS_FLARE_DELAY_AFTER_GAZE),
-            external(GAS_FLARE),
+            wait(GAZE_CLOSE_DELAY),
         )
 
-    private fun blackOrb(): Effect =
+    private fun gasFlare(): Effect =
         sequence(
-            anim(GAZE_SEQ),
-            message(BLACK_ORB_MESSAGE),
-            debris(
-                telegraph = BLACK_ORB_TELEGRAPH_SPOTANIM,
-                damage = BLACK_ORB_DAMAGE.roll(),
-                windup = BLACK_ORB_WINDUP,
-                targetRadius = 3,
-                count = 1..1,
+            anim(GAS_FLARE_SEQ),
+            external(GAS_FLARE_CAST),
+            whenever(
+                Condition.HpBelow(FLARE_ECHO_HP),
+                sequence(
+                    wait(GAS_FLARE_ECHO_OFFSET),
+                    anim(GAS_FLARE_SEQ),
+                    external(GAS_FLARE_ECHO_CAST),
+                    wait(GAS_FLARE_ECHO_RECOVERY),
+                ),
             ),
-            statDrain("stat.attack", "stat.strength", "stat.defence", "stat.ranged", "stat.magic", amount = BLACK_ORB_STAT_DRAIN),
         )
+
+    private val flareDueCondition: Condition = Condition.Custom { flareDue(it) }
+
+    private fun blackOrb(): Effect =
+        sequence(anim(GAZE_SEQ), message(BLACK_ORB_MESSAGE), external(BLACK_ORB_SWEEP))
 
     private fun bile(): Effect =
         sequence(
@@ -181,7 +343,7 @@ constructor(
     private val awakenedCondition: Condition = Condition.Custom { it.vars["varn.awakened_state"] == 1 }
 
     override val spec: BossSpec by lazy {
-        boss(BOSS_NPC) {
+        boss(BOSS_NPC, SLEEP_NPC) {
             stats(attackRate = ATTACK_RATE, aggressionRadius = AGGRESSION_RADIUS)
 
             val melee = ability("melee", melee())
@@ -189,6 +351,7 @@ constructor(
             val special = ability("gaze_special", gazeSpecial())
             val blackOrb = ability("black_orb", blackOrb())
             val bile = ability("bile", bile())
+            val gasFlare = ability("gas_flare", gasFlare())
 
             phase("main") {
                 weightedSelectorRandom {
@@ -198,6 +361,7 @@ constructor(
                 forceEveryAttacks(SPECIAL_MIN_ATTACKS, SPECIAL_MAX_ATTACKS, special)
                 forceWhen(Condition.HpBelow(BLACK_ORB_HP) and awakenedCondition, blackOrb, once = true)
                 forceWhen(Condition.HpBelow(BILE_HP) and awakenedCondition, bile, once = true)
+                forceWhen(flareDueCondition, gasFlare)
             }
 
             phase("enrage", entryHp = ENRAGE_HP_FRACTION, attackRate = ENRAGE_ATTACK_RATE) {
@@ -206,12 +370,14 @@ constructor(
                     +random(rangedMagic, weight = 1, requires = Condition.Not(WithinMeleeRange))
                 }
                 forceEveryAttacks(SPECIAL_MIN_ATTACKS, SPECIAL_MAX_ATTACKS, special)
+                forceWhen(flareDueCondition, gasFlare)
             }
         }
     }
 
     private companion object {
         private const val BOSS_NPC = "npc.duke_sucellus_awake"
+        private const val SLEEP_NPC = "npc.duke_sucellus_asleep"
 
         private const val ATTACK_RATE = 5
         private const val ENRAGE_ATTACK_RATE = 4
@@ -222,12 +388,20 @@ constructor(
         private const val SPECIAL_MAX_ATTACKS = 6
 
         private const val MELEE_SEQ = "seq.npc_duke_sucellus01_attack_melee_01"
-        private const val MELEE_CAST_SPOTANIM = "spotanim.spotanim_npc_duke_sucellus01_attack_melee_main_01"
-        private const val MELEE_TELEGRAPH_SPOTANIM = "spotanim.vfx_duke_sucellus_attack_melee_spotanim_tile_01"
-        private const val MELEE_IMPACT_SPOTANIM = "spotanim.vfx_duke_sucellus_attack_melee_spotanim_npc_01"
-        private const val MELEE_CHIP_RADIUS = 1
-        private val MELEE_CHIP_DAMAGE = 5..11
-        private val MELEE_SLAM_DAMAGE = (25..56).roll()
+        private const val MELEE_NPC_SPOTANIM = "spotanim.vfx_duke_sucellus_attack_melee_spotanim_npc_01"
+        private val MELEE_ICICLE_SPOTANIMS =
+            listOf(
+                "spotanim.vfx_duke_sucellus_attack_melee_spotanim_tile_01",
+                "spotanim.vfx_duke_sucellus_attack_melee_spotanim_tile_02",
+                "spotanim.vfx_duke_sucellus_attack_melee_spotanim_tile_03",
+                "spotanim.vfx_duke_sucellus_attack_melee_spotanim_tile_04",
+            )
+        private const val MELEE_ICICLES = "duke_sucellus.melee_icicles"
+        private const val MELEE_SLAM = "duke_sucellus.melee_slam"
+        private val MELEE_CHIP_DAMAGE = (0..11).roll()
+        private const val MELEE_CHIP_PENETRATION = 45
+        private const val MELEE_SLAM_DELAY = 2
+        private val MELEE_SLAM_DAMAGE = 25..56
         private const val MELEE_SLAM_PENETRATION = 75
 
         private const val MAGIC_SEQ = "seq.npc_duke_sucellus01_magic_attack_01"
@@ -235,57 +409,97 @@ constructor(
         private const val MAGIC_IMPACT_SPOTANIM = "spotanim.vfx_duke_sucellus_attack_magic_projectile_impact_01"
         private val MAGIC_DAMAGE = (28..48).roll()
 
+        private const val GAZE_START = "duke_sucellus.gaze_start"
         private const val GAZE_RESOLVE = "duke_sucellus.gaze_resolve"
-        private const val GAS_FLARE = "duke_sucellus.gas_flare"
         private const val GAZE_SEQ = "seq.npc_duke_sucellus01_sight_attack_01"
-        private const val GAZE_WARNING_MESSAGE = "<col=ff00ff>Duke Sucellus turns his gaze upon you...</col>"
-        private const val GAZE_AVOID_MESSAGE = "<col=00ff00>You manage to avoid Duke Sucellus' gaze.</col>"
-        private const val GAZE_RESOLVE_DELAY = 5
-        private const val GAS_FLARE_DELAY_AFTER_GAZE = 10
-        private const val GAZE_FREEZE_SPOTANIM = "spotanim.vfx_duke_sucellus_attack_magic_projectile_impact_01"
+        private const val GAZE_WARNING_MESSAGE = "<col=a53fff>Duke Sucellus turns his gaze upon you..."
+        private const val GAZE_AVOID_MESSAGE = "<col=229628>You manage to avoid Duke Sucellus' gaze."
+        private const val GAZE_FAIL_MESSAGE = "<col=ff3045>You failed to avoid Duke Sucellus' gaze."
+        private const val GAZE_FROZEN_MESSAGE = "<col=ef1020>You have been frozen!</col>"
+        private const val GAZE_RESOLVE_DELAY = 4
+        private const val GAZE_CLOSE_DELAY = 2
+        private const val DUKE_BODY_MODEL = 49194
+        private const val DUKE_OPEN_EYE_MODEL = 49193
+        private const val GAZE_INTERFACE = "interface.duke_sight"
+        private const val GAZE_EYE_COMPONENT = "component.duke_sight:duke_eye_model"
+        private const val GAZE_EYE_APPEAR_SEQ = "seq.interface_icon_cthonian01_appear"
+        private const val GAZE_EYE_DISAPPEAR_SEQ = "seq.interface_icon_cthonian01_disappear"
+        private const val SCREEN_GLOW_START_SCRIPT = 3128
+        private const val SCREEN_GLOW_END_SCRIPT = 1896
+        private const val GLOW_COMPONENT = "component.hpbar_hud:container"
+        private const val GAZE_GLOW_COLOUR = 0x4243A1
+        private const val GAZE_RESOLVE_SYNTH = "synth.ice_barrage_impact"
+        private const val GAZE_FREEZE_SPOTANIM = "spotanim.ice_barrage_impact"
+        private const val GAZE_FREEZE_SPOTANIM_SLOT = 2
         private const val GAZE_FREEZE_TICKS = 8
-        private const val GAZE_HIT_DELAY = 1
+        private const val GAZE_HIT_DELAY = 2
         private val GAZE_DAMAGE = 60..101
 
-        private const val GAS_FLARE_PROJECTILE = "spotanim.spotanim_duke_vent_01_spawn_01"
-        private val GAS_RAMP_SPOTANIMS =
-            listOf(
-                "spotanim.spotanim_duke_vent_01_idle_01",
-                "spotanim.spotanim_duke_vent_01_idle_02",
-                "spotanim.spotanim_duke_vent_01_idle_03",
-            )
-        private const val GAS_PROJECTILE_START_HEIGHT = 40
-        private const val GAS_PROJECTILE_END_HEIGHT = 10
-        private const val GAS_PROJECTILE_DELAY = 30
-        private const val GAS_PROJECTILE_TRAVEL = 40
-        private const val GAS_PROJECTILE_ANGLE = 0
-        private const val GAS_CLOUD_RADIUS = 2
-        private const val GAS_HIT_DELAY = 1
+        private const val STANDARD_ATTACK = "duke_sucellus.standard_attack"
+        private const val GAS_FLARE_CAST = "duke_sucellus.gas_flare_cast"
+        private const val GAS_FLARE_ECHO_CAST = "duke_sucellus.gas_flare_echo_cast"
+        private const val GAS_FLARE_SEQ = "seq.npc_duke_sucellus01_magic_attack_faster01"
+        private const val GAS_FLARE_SYNTH = 5002
+        private const val GAS_FLARE_PROJECTILE = "spotanim.projanim_duke_spit_01"
+        private const val GAS_SOURCE_DX = 3
+        private const val GAS_SOURCE_DY = 1
+        private const val GAS_PROJECTILE_START_HEIGHT = 87
+        private const val GAS_PROJECTILE_END_HEIGHT = 0
+        private const val GAS_PROJECTILE_DELAY = 20
+        private const val GAS_PROJECTILE_TRAVEL = 70
+        private const val GAS_PROJECTILE_ANGLE = 5
+        private const val GAS_PROJECTILE_PROGRESS = 32
         private const val GAS_FLARE_ECHO_OFFSET = 3
-        private val GAS_FLARE_DAMAGE_NORMAL = 8..15
-        private val GAS_FLARE_DAMAGE_AWAKENED = 15..27
+        private const val GAS_FLARE_ECHO_RECOVERY = 2
+        private const val FIRST_FLARE_ATTACKS = 8
+        private const val FLARE_ATTACKS_HIGH_HP = 5
+        private const val FLARE_ATTACKS_MID_HP = 4
+        private const val FLARE_ATTACKS_LOW_HP = 3
+        private const val FLARE_SLOW_HP = 0.75
+        private const val FLARE_ECHO_HP = 0.5
+        private const val FLARE_ATTACKS_VARN = "varn.duke_flare_attacks"
+        private const val FLARE_THRESHOLD_VARN = "varn.duke_flare_threshold"
+        private const val AFTER_GAZE_VARN = "varn.duke_after_gaze"
+
+        private const val GAS_VENT_NPC = "npc.duke_vent_spotanim_npc"
+        private const val GAS_VENT_SPAWN_SPOTANIM = "spotanim.spotanim_duke_vent_01_spawn_01"
+        private const val GAS_VENT_IDLE_SPOTANIM = "spotanim.spotanim_duke_vent_01_idle_01"
+        private const val GAS_VENT_DESPAWN_SPOTANIM = "spotanim.spotanim_duke_vent_01_despawn_01"
+        private const val GAS_VENT_SPAWN_SPOTANIM_DELAY = 30
+        private const val GAS_VENT_SPAWN_TICKS = 2
+        private const val GAS_VENT_IDLE_TICKS = 2
+        private const val GAS_VENT_DESPAWN_TICKS = 12
+        private const val GAS_VENT_IDLE_INTERVAL = 2
+        private const val GAS_VENT_LIFESPAN = 16
+        private const val GAS_VENT_DESPAWN_DURATION = GAS_VENT_LIFESPAN + 1
+        private const val GAS_CLOUD_RADIUS = 1
+        private const val GAS_PRAYER_DRAIN = 4
+        private const val GAS_HIT_DELAY = 1
+        private val GAS_DAMAGE = 0..12
 
         private const val BLACK_ORB_HP = 0.7
-        private const val BLACK_ORB_TELEGRAPH_SPOTANIM = "spotanim.spotanim_duke_vent_01_idle_04"
-        private const val BLACK_ORB_WINDUP = 3
+        private const val BLACK_ORB_SWEEP = "duke_sucellus.black_orb_sweep"
+        private const val BLACK_ORB_NPC = "npc.toa_het_orb"
+        private const val BLACK_ORB_ROW = 6451
+        private const val BLACK_ORB_WEST_X = 3034
+        private const val BLACK_ORB_EAST_X = 3044
         private val BLACK_ORB_DAMAGE = 10..27
         private const val BLACK_ORB_STAT_DRAIN = 8
+        private val BLACK_ORB_DRAIN_STATS =
+            listOf("stat.attack", "stat.strength", "stat.defence", "stat.ranged", "stat.magic")
         private const val BLACK_ORB_MESSAGE = "<col=ff00ff>A black orb begins to sweep across the room...</col>"
 
         private const val BILE_HP = 0.4
         private val BILE_DAMAGE = (10..24).roll()
         private const val BILE_POISON_DAMAGE = 4
-        private const val BILE_MESSAGE = "<col=ff00ff>Duke Sucellus coats you in bile!</col>"
+        private const val BILE_MESSAGE =
+            "<col=ff3045>Duke Sucellus covers you in bile. It slowly drips off your body and onto the floor."
 
-        private const val LEFT_PILLAR_X = 3035
-        private const val RIGHT_PILLAR_X = 3043
-        private val SAFE_COLUMNS = setOf(LEFT_PILLAR_X - 1, LEFT_PILLAR_X, RIGHT_PILLAR_X, RIGHT_PILLAR_X + 1)
-
-        private val VENT_TILES: List<CoordGrid> =
+        private val VENT_OFFSETS: List<Pair<Int, Int>> =
             buildList {
                 for (col in 0..2) {
                     for (row in 0..2) {
-                        add(CoordGrid(3036 + col * 3, 6442 + row * 4, 0))
+                        add(col * 3 to -10 + row * 4)
                     }
                 }
             }

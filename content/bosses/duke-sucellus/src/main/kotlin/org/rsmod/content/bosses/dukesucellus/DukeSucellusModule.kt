@@ -17,7 +17,7 @@ public class DukeSucellusModule : PluginModule() {
 public class DukeSucellusAwakenedKillHook @Inject constructor() : NpcDeathKillHook {
     override fun onKill(context: NpcDeathKillContext) {
         if (context.npc.vars["varn.skip_killcount"] != 1) return
-        if (!context.npc.isType("npc.duke_sucellus_awake")) return
+        if (!context.npc.isType("npc.duke_sucellus_asleep")) return
         val varp = context.npc.paramOrNull(BaseParams.killcount_varp_awakened) ?: return
         val count = context.hero.vars[varp] + 1
         VarPlayerIntMapSetter.set(context.hero, varp, count)
