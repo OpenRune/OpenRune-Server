@@ -43,7 +43,7 @@ constructor(
 
         val player = context.hero
         val duration = player.lootDropDuration ?: constants.lootdrop_duration
-        val dropCoords = context.npc.coords
+        val dropCoords = context.dropCoords
 
         val npc = context.npc
         when (

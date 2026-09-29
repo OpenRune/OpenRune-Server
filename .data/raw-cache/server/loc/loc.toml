@@ -2376,3 +2376,8 @@ contentGroup = "content.ladder_down"
 id = "loc.fai_falador_castle_laddertop"
 inherit = "loc.fai_falador_castle_laddertop"
 contentGroup = "content.ladder_down"
+
+[[object]]
+id = "loc.duke_sucellus_salt"
+inherit = "loc.duke_sucellus_salt"
+contentGroup = "content.rock"

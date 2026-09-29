@@ -526,6 +526,10 @@ public class Npc(
         infoProtocol.setBodyModel(model)
     }
 
+    public fun setBodyModels(models: List<Int>) {
+        infoProtocol.setBodyModels(models)
+    }
+
     public fun setBodyRecolours(recolours: List<Int>) {
         infoProtocol.setBodyRecolours(recolours)
     }

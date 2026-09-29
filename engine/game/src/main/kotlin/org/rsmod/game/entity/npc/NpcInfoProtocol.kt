@@ -20,6 +20,8 @@ public interface NpcInfoProtocol {
 
     public fun setBodyModel(model: Int)
 
+    public fun setBodyModels(models: List<Int>) {}
+
     public fun setBodyRecolours(recolours: List<Int>)
 
     public fun resetBodyModel()

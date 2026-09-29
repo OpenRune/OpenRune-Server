@@ -15715,37 +15715,7 @@ inherit = "npc.vampyre_snail"
 "param.elemental_weakness_percent"=5
 
 [[npc]]
-id = "npc.barrows_skeleton_unarmed"
-inherit = "npc.barrows_skeleton_unarmed"
-[npc.params]
-"param.attack_anim"="seq.skeleton_update_attack_weapon"
-"param.defend_anim"="seq.skeleton_update_defend"
-"param.death_anim"="seq.skeleton_update_death"
-"param.npc_attack_type"="category.attacktype_crush"
-
-[[npc]]
-id = "npc.barrows_skeleton_unarmed2"
-inherit = "npc.barrows_skeleton_unarmed2"
-[npc.params]
-"param.attack_anim"="seq.skeleton_update_attack_weapon"
-"param.defend_anim"="seq.skeleton_update_defend"
-"param.death_anim"="seq.skeleton_update_death"
-"param.npc_attack_type"="category.attacktype_crush"
-
-[[npc]]
-id = "npc.barrows_skeleton_armed"
-inherit = "npc.barrows_skeleton_armed"
-[npc.params]
-"param.attack_anim"="seq.skeleton_update_attack_sword"
-"param.defend_anim"="seq.skeleton_update_defend"
-"param.death_anim"="seq.skeleton_update_death"
-"param.npc_attack_type"="category.attacktype_slash"
-
-[[npc]]
-id = "npc.barrows_skeleton_armed2"
-inherit = "npc.barrows_skeleton_armed2"
-[npc.params]
-"param.attack_anim"="seq.skeleton_update_attack_sword"
-"param.defend_anim"="seq.skeleton_update_defend"
-"param.death_anim"="seq.skeleton_update_death"
-"param.npc_attack_type"="category.attacktype_slash"
+id = "npc.duke_sucellus_asleep"
+inherit = "npc.duke_sucellus_asleep"
+moveRestrict = "NoMove"
+wanderRange = 0

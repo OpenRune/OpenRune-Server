@@ -183,7 +183,6 @@ object SpecValidator {
             is Effect.Hit -> listOf(effect.target)
             is Effect.Projectile -> listOf(effect.target)
             is Effect.MapSpotanim -> listOf(effect.at)
-            is Effect.TileAoE -> listOf(effect.center)
             is Effect.Debris -> listOf(effect.center)
             is Effect.Summon -> listOf(effect.centeredOn)
             is Effect.OnEach -> listOf(effect.targets)

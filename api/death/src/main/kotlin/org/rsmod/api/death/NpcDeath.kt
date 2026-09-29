@@ -92,6 +92,7 @@ constructor(
                     hero = hero,
                     npc = this,
                     lootTrackerEventId = lootTrackerEventId,
+                    dropCoords = dropCoords,
                 )
             for (hook in deathKillHooks) {
                 hook.onKill(killCtx)

@@ -62,6 +62,15 @@ id = "varn.skip_killcount"
 id = "varn.muspah_melee_still_ticks"
 
 [[varn]]
+id = "varn.duke_flare_attacks"
+
+[[varn]]
+id = "varn.duke_flare_threshold"
+
+[[varn]]
+id = "varn.duke_after_gaze"
+
+[[varn]]
 id = "varn.callisto_roars"
 
 [[varn]]
