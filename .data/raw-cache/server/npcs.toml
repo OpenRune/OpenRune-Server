@@ -16241,6 +16241,9 @@ id = "npc.duke_sucellus_asleep"
 inherit = "npc.duke_sucellus_asleep"
 moveRestrict = "NoMove"
 wanderRange = 0
+[npc.params]
+"param.boss_hp_bar_mode"=2
+
 
 [[npc]]
 id = "npc.leviathan"
