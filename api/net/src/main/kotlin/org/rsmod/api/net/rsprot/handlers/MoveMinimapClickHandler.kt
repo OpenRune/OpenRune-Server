@@ -23,6 +23,10 @@ constructor(
     private val collision: CollisionFlagMap,
 ) : MessageHandler<MoveMinimapClick> {
     override fun handle(player: Player, message: MoveMinimapClick) {
+        if (player.vars["varbit.cutscene_status"] != 0) {
+            player.clearMapFlag()
+            return
+        }
         if (player.isDelayed) {
             player.clearMapFlag()
             return
