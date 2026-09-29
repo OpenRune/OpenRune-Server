@@ -2,7 +2,8 @@
 # server cache with the rest of .data/raw-cache/server by buildCache (PackServerConfig scans every
 # plugin pack's configs directory the same way).
 #
-# All of Zebak's npcs are driven by ZebakEncounter, so none of them wander, hunt or regenerate:
+# Zebak's npcs are driven by ZebakEncounter, so they don't hunt or regenerate (only the water
+# crocodiles wander):
 #   defaultMode = "None"   no wandering/hunting of its own (was npc.noneMode() in code)
 #   regenRate = 0          NpcRegenProcessor skips regeneration (ToA npcs don't heal over time)
 #   moveRestrict = "NoMove" can never move (was npc.movementLocked in code)
@@ -82,12 +83,16 @@ regenRate = 0
 
 # ---- Room npcs ----
 
-# They hunt players washed into the water by the Tidal Waves; timer = 1 runs
-# ZebakEncounter.crocTick every tick.
+# They hunt players washed into the water by the Tidal Waves (ZebakCrocodile bites, the engine
+# chases); timer = 1 runs ZebakEncounter.onCrocTick every tick to pick the prey. Capture: with
+# nobody in the water they wander, never more than 4 tiles from where they spawned. maxRange
+# keeps the engine from dropping a chase anywhere in the room.
 [[npc]]
 id = "npc.toa_zebak_watercroc"
 inherit = "npc.toa_zebak_watercroc"
-defaultMode = "None"
+defaultMode = "Wander"
+wanderRange = 4
+maxRange = 64
 respawnDir = "South"
 timer = 1
 regenRate = 0
