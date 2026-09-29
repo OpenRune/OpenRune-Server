@@ -52,6 +52,7 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
         nextPhase: String? = null,
         idleAnim: String? = null,
         attackRate: Int? = null,
+        keepFacingLock: Boolean = false,
         block: PhaseBuilder.() -> Unit,
     ): PhaseRef {
         val builder = PhaseBuilder(name).apply(block)
@@ -69,6 +70,7 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
                 selector = builder.selector,
                 forceAbilities = builder.forceAbilities,
                 timers = builder.timers,
+                keepFacingLock = keepFacingLock,
             )
         return PhaseRef(name)
     }
@@ -140,6 +142,7 @@ class HitBuilder internal constructor() {
     private var penetrationWhen: Condition? = null
     private var hazardHit: Boolean = false
     private var resolveOnImpactFlag: Boolean = false
+    private var reactOnLandingFlag: Boolean = false
     private var missSpot: String? = null
     private var missSoundSynth: String? = null
     private var onHitEffect: Effect? = null
@@ -182,6 +185,10 @@ class HitBuilder internal constructor() {
 
     fun resolveOnImpact() {
         resolveOnImpactFlag = true
+    }
+
+    fun reactOnLanding() {
+        reactOnLandingFlag = true
     }
 
     fun missSpotanim(spot: String) {
@@ -228,6 +235,7 @@ class HitBuilder internal constructor() {
             penetrationWhen = penetrationWhen,
             hazard = hazardHit,
             resolveOnImpact = resolveOnImpactFlag,
+            reactOnLanding = reactOnLandingFlag,
         )
 }
 

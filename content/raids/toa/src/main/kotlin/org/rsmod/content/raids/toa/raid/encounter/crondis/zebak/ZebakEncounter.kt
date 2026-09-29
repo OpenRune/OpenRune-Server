@@ -4,8 +4,16 @@ import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.bosses.runtime.encounter
+import org.rsmod.api.bosses.runtime.runAbility
+import org.rsmod.api.bosses.runtime.suppressAttacks
+import org.rsmod.api.combat.commons.player.combatPlayDefendAnim
+import org.rsmod.api.npc.access.StandardNpcAccess
+import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.midiSong
+import org.rsmod.api.player.output.CamShakeAxis
+import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.raid.ToaPath
@@ -17,6 +25,7 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
+import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
@@ -25,17 +34,6 @@ import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.StepValidator
 
-/**
- * Zebak, the Crondis boss. Port of Offline_Scape ZebakEncounter + Zebak, corrected by Jesse's
- * capture (zebak-capture-v2) and the OSRS Wiki.
- *
- * This class owns the fight's lifecycle, tick loop, scaling and special scheduling. Each mechanic
- * lives in its own component: [autos], [poison], [bloodMagic], [boulders], [jugs], [waves],
- * [water], plus the two specials [GreatRoar] and [TidalWaves].
- *
- * Zebak never uses the engine's combat: ZebakScript binds onAiOpPlayer2 to a no-op and his attacks
- * come from [tick]. Npc behaviour (NoMove, no regen, AI timers) is in toa_zebak.toml.
- */
 class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId: Int) :
     ToaBossEncounter(raid, room, region, controllerId) {
 
@@ -52,34 +50,36 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
     internal val jugs = ZebakJugs(this)
     internal val waves = ZebakWaves(this)
     internal val water = ZebakWater(this)
+    internal val landings = ZebakLandings()
 
-    /** Offline_Scape TOANPC.damageFactor. */
     internal var damageFactor = 1.0
         private set
 
     internal var enraged = false
         private set
 
-    internal var attackCountdown = 0
+    internal var greatRoar: GreatRoar? = null
+        private set
 
-    /** Offline_Scape: Osmumten appears with the dead models. */
+    internal var tidalWaves: TidalWaves? = null
+        private set
+
+    internal var nextSpecialIsRoar = false
+        private set
+
     override val osmumtenDelay: Int = DEATH_MODEL_DELAY
 
-    /** Set by [applyScaling]; see [holdDefenceFloor]. */
+    override val roomPointsCap: Int = ZEBAK_POINTS_CAP
+
     private var defenceFloor = 0
-
     private var pathAttackSpeed = BASE_ATTACK_SPEED
-    private var special: ZebakSpecial? = null
-
-    /** An attack slot went to a queued special, which starts the next tick ([tick]). */
-    private var specialDue = false
-
     private var specialsQueued = 0
     private var specialsTriggered = 0
-    private var nextSpecialIsRoar = false
+    private var hazardsDoneCycle = -1
+    private val pendingAfterHazards = ArrayList<() -> Unit>()
 
-    internal val usingSpecial: Boolean
-        get() = special != null
+    internal val specialRunning: Boolean
+        get() = greatRoar != null || tidalWaves != null
 
     internal val attackSpeed: Int
         get() {
@@ -92,8 +92,6 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
     private val steps by lazy { StepValidator(deps.collision) }
 
-    // ---- Lifecycle ----
-
     override fun onBuilt() {
         clearFight()
         spawnZebak()
@@ -103,15 +101,18 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
     override fun onStart() {
         val boss = zebak ?: return
         applyScaling(boss, teamSize)
-        // Capture: size-9 blockers under Zebak and the tail from the challenge start.
         addLoc(ZebakLocs.BLOCKER, ZebakCoords.ZEBAK)
         addLoc(ZebakLocs.BLOCKER, ZebakCoords.TAIL)
         for (player in players) {
             openBar(player)
             player.midiSong(ZebakSynths.MIDI)
         }
-        attackCountdown = FIRST_ATTACK_DELAY
+        boss.ignoreCombatInteractions = false
+        deps.bossDeps.encounterRegistry.remove(boss)
+        deps.bossDeps.encounter(boss).attackRateOverride = attackSpeed
+        deps.bossDeps.suppressAttacks(boss, FIRST_ATTACK_DELAY)
         bloodMagic.start()
+        engage(boss, targets())
         schedule(1) { tick() }
     }
 
@@ -130,13 +131,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         bloodMagic.forget(player)
     }
 
-    /**
-     * Zebak is worth 1.5 room points per damage (OSRS Wiki, Chest (Tombs of Amascut)). Enraging is
-     * a transmog, so the same npc counts throughout.
-     */
     override fun pointMultiplier(npc: Npc): Double = if (npc === zebak) ZEBAK_POINTS else 1.0
-
-    override val roomPointsCap: Int = ZEBAK_POINTS_CAP
 
     override fun onComplete() {
         for (player in players) closeBar(player)
@@ -153,7 +148,11 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
     }
 
     private fun clearFight() {
-        endSpecial()
+        greatRoar = null
+        tidalWaves = null
+        hazardsDoneCycle = -1
+        landings.clear()
+        pendingAfterHazards.clear()
         autos.clear()
         bloodMagic.clear()
         jugs.clear()
@@ -167,23 +166,19 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         zebak?.let(::despawn)
         tail?.let(::despawn)
         val boss = spawn(ZebakNpcs.ZEBAK, coords(ZebakCoords.ZEBAK))
+        boss.ignoreCombatInteractions = true
+        boss.apRangeOverride = AP_RANGE
+        boss.apRequiresLineOfSight = false
         lockFacingEast(boss)
         zebak = boss
         tail = spawn(ZebakNpcs.TAIL, coords(ZebakCoords.TAIL))
         applyScaling(boss, raid.players.size.coerceAtLeast(1))
         enraged = false
-        endSpecial()
         specialsQueued = 0
         specialsTriggered = 0
         nextSpecialIsRoar = deps.random.of(0, 1) == 0
     }
 
-    /**
-     * Offline_Scape Zebak ignores every face request. Here the engine's retaliation would turn him
-     * towards whoever hits him, and a locked npc ignores facePlayer/faceNpc. The lock persists
-     * through the enraged and dead transmogs. lockFacingDirection isn't used: it aims at the tile
-     * east of his south-west corner, which is inside a size-9 npc, so the angle would be skewed.
-     */
     private fun lockFacingEast(npc: Npc) {
         npc.lockFacing(npc.coords.translate(npc.size, 0), targetWidth = 1, targetLength = npc.size)
     }
@@ -192,11 +187,20 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         val boss = zebak ?: return
         if (!boss.isSlotAssigned) return
         owners.remove(boss)
+        boss.ignoreCombatInteractions = true
         boss.noneMode()
         boss.hideAllOps()
         boss.anim(ZebakSeqs.DEATH)
         tail?.anim(ZebakSeqs.TAIL_DEATH)
         val tailNpc = tail
+        schedule(DEATH_SHAKE_DELAY) {
+            for (player in players) {
+                Camera.camShake(player, CamShakeAxis.LEFT_RIGHT, DEATH_SHAKE_LEFT_RIGHT, 0, 0)
+                Camera.camShake(player, CamShakeAxis.UP_DOWN, DEATH_SHAKE_UP_DOWN, 0, 0)
+                Camera.camShake(player, CamShakeAxis.FORWARDS_BACKWARDS, DEATH_SHAKE_FORWARDS, 0, 0)
+            }
+        }
+        schedule(DEATH_SHAKE_DELAY + 1) { for (player in players) Camera.camReset(player) }
         schedule(DEATH_MODEL_DELAY) {
             if (boss.isSlotAssigned) boss.transmog(npcType(ZebakNpcs.ZEBAK_DEAD), Int.MAX_VALUE)
             if (tailNpc != null && tailNpc.isSlotAssigned) {
@@ -205,13 +209,6 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         }
     }
 
-    // ---- Scaling (OSRS Wiki, Tombs of Amascut) ----
-
-    /**
-     * Raid level +0.4% per level; party +90% hp for players 2-3, +60% after (Offline_Scape: +90%
-     * each); path level +8% then +5% per level (Offline_Scape, unverified). Hp rounds to the
-     * nearest 10 (capture: 640 at raid level 25 solo). Accuracy scales via the combat levels.
-     */
     private fun applyScaling(npc: Npc, partySize: Int) {
         val type = npc.type
         val raidFactor = 1.0 + raid.settings.raidLevel * RAID_LEVEL_FACTOR
@@ -244,84 +241,100 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
     private fun roundToTen(value: Double): Int = ((value + 5.0) / 10.0).toInt() * 10
 
-    /**
-     * OSRS Wiki: his defence can be lowered by at most 20, to 50 before scaling (the floor scales
-     * with raid level like the level itself). Nothing restores it (regenRate = 0), matching the
-     * wiki's "does not reset his Defence". Drains come from whatever lowers `defenceLvl` (specs,
-     * spells), so this clamps after the fact: on every hit and once a tick.
-     */
     private fun holdDefenceFloor(boss: Npc) {
         if (boss.defenceLvl < defenceFloor) boss.defenceLvl = defenceFloor
     }
 
     internal fun maxHit(base: Int): Int = floor(base * damageFactor).toInt()
 
-    // ---- Tick loop ----
+    internal fun rollScaled(base: Int): Int = deps.random.of(0, maxHit(base))
 
     private fun tick() {
         if (stage != ToaStage.STARTED) return
         val boss = zebak ?: return
         val targets = targets()
+        val cycle = deps.mapClock.cycle
+        autos.rollBleeds(targets)
         holdDefenceFloor(boss)
-
         poison.tick(targets)
         autos.tickBleeding(targets)
-        val ended = special?.step() == false
-        if (ended) endSpecial()
+        val landed = landings.take(cycle)
+        if (targets.isNotEmpty() && boss.hitpoints > 0) for (action in landed) action()
+        hazardsDoneCycle = cycle
+        runAfterHazards()
         water.dropDeadSwimmers()
-
-        if (targets.isNotEmpty() && boss.hitpoints > 0) {
-            if (!usingSpecial) bloodMagic.tick()
-            // A special starting skips the countdown this tick: its first step sets the countdown
-            // as if it had run in the attack slot.
-            when {
-                specialDue || (ended && canStartSpecial()) -> startDueSpecial(boss, targets)
-                --attackCountdown <= 0 -> {
-                    attackCountdown = attackSpeed
-                    if (canStartSpecial()) specialDue = true else autos.attack(boss, targets)
-                }
-            }
-        }
-
+        engage(boss, targets)
         schedule(1) { tick() }
     }
 
-    /** Players Zebak can hit: alive, not a ghost, inside the challenge area. */
+    internal fun afterHazards(action: () -> Unit) {
+        if (hazardsDoneCycle == deps.mapClock.cycle) action() else pendingAfterHazards += action
+    }
+
+    private fun runAfterHazards() {
+        if (pendingAfterHazards.isEmpty()) return
+        val due = pendingAfterHazards.toList()
+        pendingAfterHazards.clear()
+        for (action in due) action()
+    }
+
+    private fun engage(boss: Npc, targets: List<Player>) {
+        if (boss.hitpoints <= 0) return
+        if (targets.isEmpty()) {
+            if (boss.interaction != null) boss.noneMode()
+            return
+        }
+        val current = (boss.interaction as? InteractionPlayer)?.target
+        if (current != null && current in targets) return
+        boss.apPlayer2(targets[deps.random.of(0, targets.lastIndex)], deps.aiInteractions)
+    }
+
     internal fun targets(): List<Player> =
         players.filter { inChallengeArea(it) && !raid.isGhost(it) && !raid.isDying(it) }
 
-    // ---- Specials ----
+    internal fun bossAlive(npc: Npc): Boolean =
+        stage == ToaStage.STARTED && npc === zebak && npc.hitpoints > 0
 
-    private fun canStartSpecial(): Boolean = !enraged && !usingSpecial && specialsQueued > 0
+    internal fun fighting(npc: Npc): Boolean = bossAlive(npc) && targets().isNotEmpty()
 
-    /**
-     * Capture (zebak_0_invocation): a queued special takes the auto's slot but starts a tick after
-     * it (throws at 200, 259 and 359, each 8 ticks after an auto), or on the tick the previous
-     * special ends if one was queued meanwhile (305). If Zebak enraged in between, the skipped auto
-     * comes now instead.
-     */
-    private fun startDueSpecial(boss: Npc, targets: List<Player>) {
-        specialDue = false
-        if (canStartSpecial()) startSpecial() else autos.attack(boss, targets)
+    private fun combatTick(access: StandardNpcAccess, target: Player) {
+        if (!fighting(access.npc)) return
+        if (bloodMagic.tick(paused = specialRunning)) {
+            deps.bossDeps.runAbility(access, target, ZebakBoss.BLOOD_CAST)
+        }
     }
 
-    /** They alternate, starting at random (Offline_Scape). */
-    private fun startSpecial() {
-        specialsQueued--
-        val next = if (nextSpecialIsRoar) GreatRoar(this) else TidalWaves(this)
-        nextSpecialIsRoar = !nextSpecialIsRoar
-        special = next
-        if (!next.step()) endSpecial()
+    internal fun specialReady(npc: Npc): Boolean =
+        fighting(npc) && !enraged && !specialRunning && specialsQueued > 0
+
+    internal fun enrageDue(npc: Npc): Boolean =
+        bossAlive(npc) && !enraged && npc.hitpoints <= npc.baseHitpointsLvl * ENRAGE_THRESHOLD
+
+    internal fun beginSpecial(roar: Boolean) {
+        specialsQueued = max(0, specialsQueued - 1)
+        nextSpecialIsRoar = !roar
+        if (roar) greatRoar = GreatRoar(this) else tidalWaves = TidalWaves(this)
     }
 
-    private fun endSpecial() {
-        special = null
-        specialDue = false
+    internal fun endSpecial() {
+        greatRoar = null
+        tidalWaves = null
     }
 
-    // ---- Zebak taking damage ----
+    internal fun enrage(boss: Npc) {
+        if (boss !== zebak || enraged) return
+        val speed = attackSpeed
+        enraged = true
+        deps.bossDeps.encounter(boss).attackRateOverride = attackSpeed
+        deps.bossDeps.suppressAttacks(boss, speed)
+        updateBars()
+    }
 
-    /** Capture: area sound 6590 on damage. Wiki: specials at 85/70/55/40%, enrage at ~25%. */
+    internal fun tailAnim(seq: String?) {
+        val npc = tail ?: return
+        if (seq == null) npc.resetAnim() else npc.anim(seq)
+    }
+
     private fun zebakHit(boss: Npc, hit: Hit) {
         if (stage != ToaStage.STARTED || boss !== zebak) return
         holdDefenceFloor(boss)
@@ -331,25 +344,12 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         }
         updateBars()
         if (enraged || boss.hitpoints <= 0) return
-        val max = boss.baseHitpointsLvl
-        // Offline_Scape: at most one special queued per hit.
         val threshold = SPECIAL_THRESHOLDS.getOrNull(specialsTriggered)
-        if (threshold != null && boss.hitpoints <= max * threshold) {
+        if (threshold != null && boss.hitpoints <= boss.baseHitpointsLvl * threshold) {
             specialsTriggered++
             specialsQueued++
         }
-        if (boss.hitpoints <= max * ENRAGE_THRESHOLD) enrage(boss)
     }
-
-    /** Wiki: the enraged npc, faster attacks. Offline_Scape: -3 attack speed, no more specials. */
-    private fun enrage(boss: Npc) {
-        enraged = true
-        attackCountdown = min(attackCountdown, attackSpeed)
-        boss.transmog(npcType(ZebakNpcs.ZEBAK_ENRAGED), Int.MAX_VALUE)
-        for (player in targets()) player.soundSynth(ZebakSynths.FINAL_PHASE)
-    }
-
-    // ---- Boss bar ----
 
     private fun openBar(player: Player) {
         val npc = zebak ?: return
@@ -367,52 +367,44 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         deps.bossHpBar.onClose(player, npc, instant = true)
     }
 
-    // ---- Test cheats (ZebakCheatScript). Each returns why it can't run, or null. ----
-
-    /** Starts the Great Roar ([roar]) or the Tidal Waves on Zebak's next attack. */
     internal fun debugSpecial(roar: Boolean): String? {
+        val boss = zebak ?: return NOT_STARTED
         if (stage != ToaStage.STARTED) return NOT_STARTED
         if (enraged) return "Zebak is enraged: no more specials."
-        if (usingSpecial || specialDue) return "A special is already running."
+        if (specialRunning) return "A special is already running."
+        if (specialsQueued > 0) return "A special is already queued."
         nextSpecialIsRoar = roar
         specialsQueued++
-        attackCountdown = 1
+        deps.bossDeps.encounter(boss).lastAbilityTick = 0
         return null
     }
 
-    /** Casts a blood barrage or blood clouds now, even without Not Just a Head. */
     internal fun debugBloodMagic(barrage: Boolean): String? {
         if (stage != ToaStage.STARTED) return NOT_STARTED
-        bloodMagic.debugCast(barrage)
+        bloodMagic.requestCast(barrage)
         return null
     }
 
-    /** Drops Zebak to the enrage threshold and enrages him. */
     internal fun debugEnrage(): String? {
         val boss = zebak ?: return NOT_STARTED
         if (stage != ToaStage.STARTED) return NOT_STARTED
         if (enraged) return "Zebak is already enraged."
         boss.hitpoints = min(boss.hitpoints, (boss.baseHitpointsLvl * ENRAGE_THRESHOLD).toInt())
         updateBars()
-        enrage(boss)
         return null
     }
 
-    // ---- Shared helpers for the components ----
-
-    /**
-     * A room npc owned by this room (for event routing) that never respawns by itself. Rooms can be
-     * destroyed with npcs still registered (the tail after a kill, everything after a mid-fight
-     * exit), so entries of destroyed rooms are dropped here; otherwise the static map would keep
-     * whole raids alive.
-     */
     internal fun spawn(type: String, tile: CoordGrid): Npc {
-        owners.values.removeIf { it.destroyed }
         val npc = Npc(type, tile)
         deps.npcRepo.add(npc, Int.MAX_VALUE)
+        adopt(npc)
+        return npc
+    }
+
+    internal fun adopt(npc: Npc) {
+        owners.values.removeIf { it.destroyed }
         npc.respawns = false
         owners[npc] = this
-        return npc
     }
 
     internal fun despawn(npc: Npc) {
@@ -425,12 +417,10 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         deps.locRepo.add(coords(static), type, Int.MAX_VALUE, LocAngle.West, shape)
     }
 
-    /** Walkable with no centrepiece loc (Offline_Scape: no type-10 object, floor free). */
     internal fun isOpenFloor(tile: CoordGrid): Boolean =
         !deps.collision.isWalkBlocked(tile) &&
             deps.locRepo.findExact(tile, LocShape.CentrepieceStraight) == null
 
-    /** Open, acid-free tiles in a static rectangle, shuffled, in instance coords. */
     internal fun freeTiles(
         min: CoordGrid,
         max: CoordGrid,
@@ -449,11 +439,9 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         return deps.random.shuffled(tiles)
     }
 
-    /** One step, walls between tiles included (Offline_Scape checkWalkStep). */
     internal fun canStep(from: CoordGrid, dx: Int, dz: Int): Boolean =
         steps.canTravel(from.level, from.x, from.z, dx, dz)
 
-    /** Offline_Scape's knockbacks: move if [dest] differs, face [facing], push anim and [synth]. */
     @OptIn(InternalApi::class)
     internal fun pushPlayer(player: Player, dest: CoordGrid, facing: Direction, synth: String) {
         val moved = dest != player.coords
@@ -461,7 +449,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         deps.launcher.launchLenient(player) {
             if (moved) telejump(dest, TeleportType.Exempt)
             player.faceDirection(facing)
-            anim(ZebakSeqs.PLAYER_PUSHED)
+            player.combatPlayDefendAnim()
         }
         player.soundSynth(synth)
     }
@@ -473,29 +461,28 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val PATH_LEVEL_FIRST = 0.08
         private const val PATH_LEVEL_EACH = 0.05
         private const val MAX_DAMAGE_FACTOR = 2.5
-
         private const val BASE_ATTACK_SPEED = 7
         private const val MIN_ATTACK_SPEED = 2
         private const val ENRAGE_SPEEDUP = 3
-
-        /** Capture: first attack 10 ticks after "Challenge started" (Offline_Scape: 7). */
         private const val FIRST_ATTACK_DELAY = 10
+        private const val AP_RANGE = 32
         private const val ZEBAK_POINTS = 1.5
         private const val ZEBAK_POINTS_CAP = 10_000
-        private const val DEATH_MODEL_DELAY = 3
+        private const val DEATH_SHAKE_DELAY = 2
+        private const val DEATH_SHAKE_LEFT_RIGHT = 5
+        private const val DEATH_SHAKE_UP_DOWN = 5
+        private const val DEATH_SHAKE_FORWARDS = 2
+        private const val DEATH_MODEL_DELAY = 4
         private const val DAMAGED_SOUND_RADIUS = 10
         private const val SCRIPT_SEQ_PREFETCH = 1846
-
         private val SPECIAL_THRESHOLDS = doubleArrayOf(0.85, 0.70, 0.55, 0.40)
         private const val ENRAGE_THRESHOLD = 0.25
         private const val MAX_DEFENCE_DRAIN = 20
         private const val NOT_STARTED = "The fight hasn't started."
 
-        // ---- Event routing (ZebakScript, ZebakSwimAttackHook) ----
-
         private val owners = HashMap<Npc, ZebakEncounter>()
 
-        private fun roomOf(npc: Npc): ZebakEncounter? {
+        internal fun roomOf(npc: Npc): ZebakEncounter? {
             val room = owners[npc] ?: return null
             if (room.destroyed) {
                 owners.remove(npc)
@@ -514,6 +501,10 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         internal fun onZebakDeath(npc: Npc) {
             val room = roomOf(npc) ?: return
             if (npc === room.zebak) room.complete()
+        }
+
+        internal fun onCombatTick(access: StandardNpcAccess, target: Player) {
+            roomOf(access.npc)?.combatTick(access, target)
         }
 
         internal fun onCloudTick(npc: Npc) {

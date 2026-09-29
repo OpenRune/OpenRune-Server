@@ -12,19 +12,17 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
 import org.rsmod.map.CoordGrid
 
-/**
- * Not Just a Head (Offline_Scape sendBloodSpell / BloodCloud): every 6 attack cycles (8 enraged),
- * alternating a blood barrage and blood clouds. Arterial Spray widens the barrage splash; Blood
- * Thinners makes three small clouds.
- */
 internal class ZebakBloodMagic(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
-
-    /** Ticks to the next spell; -1 without the invocation. */
     private var countdown = -1
-    private var nextIsBarrage = false
-    private var cloudsFromSouth = false
+    private var castRequested = false
     private val clouds = HashMap<Npc, CloudState>()
+
+    var nextIsBarrage = false
+        private set
+
+    var cloudsFromSouth = false
+        private set
 
     private class CloudState(
         var switchTicks: Int,
@@ -38,35 +36,32 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         countdown = if (active) room.attackSpeed * EVERY - 1 else -1
     }
 
-    fun tick() {
-        if (countdown == -1 || --countdown != 0) return
-        countdown = room.attackSpeed * (if (room.enraged) EVERY_ENRAGED else EVERY) - 1
-        cast()
-    }
-
-    /** Test cheat: casts now; the regular timer (if any) carries on. */
-    fun debugCast(barrage: Boolean) {
-        nextIsBarrage = barrage
-        cast()
-    }
-
-    private fun cast() {
-        val spot = spotanim(ZebakSpots.BLOOD_BARRAGE)
-        for (tile in ZebakCoords.BLOOD_SPELL) deps.worldRepo.spotanimMap(spot, room.coords(tile))
-        room.schedule(CAST_DELAY) {
-            val targets = room.targets()
-            if (targets.isEmpty()) return@schedule
-            if (nextIsBarrage) barrage(targets) else spawnClouds()
-            nextIsBarrage = !nextIsBarrage
+    fun tick(paused: Boolean): Boolean {
+        if (castRequested) {
+            castRequested = false
+            return true
         }
+        if (paused || countdown == -1 || --countdown != 0) return false
+        countdown = room.attackSpeed * (if (room.enraged) EVERY_ENRAGED else EVERY) - 1
+        return true
     }
 
-    /**
-     * 7-14 magic (scaled) on every target, and again on anyone within 1 of them (2 with Arterial
-     * Spray). Zebak heals two thirds of each hit taken without Protect from Magic.
-     */
-    private fun barrage(targets: List<Player>) {
+    fun requestCast(barrage: Boolean) {
+        nextIsBarrage = barrage
+        castRequested = true
+    }
+
+    fun flipSpell() {
+        nextIsBarrage = !nextIsBarrage
+    }
+
+    fun flipCloudSide() {
+        cloudsFromSouth = !cloudsFromSouth
+    }
+
+    fun barrage() {
         val boss = room.zebak ?: return
+        val targets = room.targets()
         val base = floor(BARRAGE_BASE_DAMAGE * room.raid.damageMultiplier).toInt()
         val radius = if (room.raid.isActive(ZebakInvocations.ARTERIAL_SPRAY)) 2 else 1
         var heal = 0
@@ -86,42 +81,22 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         for (player in targets) player.soundSynth(ZebakSynths.BLOOD_BARRAGE)
     }
 
-    /** Lands this tick (delay 1). Returns what Zebak heals from it. */
     private fun barrageHit(boss: Npc, player: Player, damage: Int): Int {
         player.queueImpactHit(boss, 1, HitType.Magic, damage, deps.playerHitModifier)
         return if (player.vars[PROTECT_FROM_MAGIC] > 0) 0 else (damage * BARRAGE_HEAL_RATIO).toInt()
     }
 
-    private fun spawnClouds() {
-        val base = ZebakCoords.BLOOD_CLOUDS[if (cloudsFromSouth) 1 else 0]
-        if (room.raid.isActive(ZebakInvocations.BLOOD_THINNERS)) {
-            for (i in 0 until 3) {
-                val dz = if (cloudsFromSouth) i / 2 else -(i / 2)
-                spawnCloud(ZebakNpcs.BLOOD_CLOUD_SMALL, base.translate(i, dz))
-            }
-        } else {
-            spawnCloud(ZebakNpcs.BLOOD_CLOUD, base)
-        }
-        cloudsFromSouth = !cloudsFromSouth
-    }
-
-    private fun spawnCloud(type: String, static: CoordGrid) {
-        val cloud = room.spawn(type, room.coords(static))
+    fun registerCloud(cloud: Npc) {
+        room.adopt(cloud)
         clouds[cloud] = CloudState(deps.random.of(10, 20), CLOUD_START_DELAY, cloud.coords)
     }
 
-    /**
-     * Once a tick (config `timer = 1`). Follows the nearest player, re-picked every 10-20 ticks.
-     * OSRS Wiki: it takes 2 damage for every tile it moves (Offline_Scape: 2 a tick with nobody
-     * adjacent). After 4 ticks: 2 damage to each adjacent player, healing 2 for each.
-     */
     fun cloudTick(cloud: Npc) {
         if (room.stage != ToaStage.STARTED) return
         if ((room.zebak?.hitpoints ?: 0) <= 0) return
         val state = clouds[cloud] ?: return
         if (state.startDelay > 0) state.startDelay--
 
-        // Last tick's walk step has been taken by now.
         val moved = chebyshev(state.last, cloud.coords)
         state.last = cloud.coords
         if (moved > 0) cloud.queueNpcHit(1, HitType.Typeless, LEECH * moved, NOOP_NPC_MODIFIER)
@@ -145,7 +120,6 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         }
     }
 
-    /** Offline_Scape: the nearest player other than the current target, random among ties. */
     private fun nearestOther(cloud: Npc, current: Player?, targets: List<Player>): Player? {
         var best = current
         var bestDistance = Int.MAX_VALUE
@@ -176,6 +150,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
     fun clear() {
         for (cloud in clouds.keys.toList()) removeCloud(cloud)
         countdown = -1
+        castRequested = false
         nextIsBarrage = deps.random.of(0, 1) == 0
         cloudsFromSouth = deps.random.of(0, 1) == 0
     }
@@ -183,7 +158,6 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
     private companion object {
         const val EVERY = 6
         const val EVERY_ENRAGED = 8
-        const val CAST_DELAY = 2
         const val BARRAGE_BASE_DAMAGE = 7
         const val BARRAGE_DAMAGE_SPREAD = 7
         const val BARRAGE_HEAL_RATIO = 0.66

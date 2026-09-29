@@ -13,118 +13,56 @@ import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 
-/**
- * Tidal Waves (zebak_0_invocation capture, T = the tick Zebak animates; Offline_Scape
- * Zebak.landWaves had every step one tick earlier and the next auto at 16):
- * - T: the throw animation; the next auto comes at T+15;
- * - T+1: 16 acid pools and 6-8 jugs at random, landing by distance ([lob]);
- * - T+5: the call animation;
- * - T+7: rocks fall on the wave side and the camera shakes (reset at T+9);
- * - T+14, 21, 28: a row of 21 waves with a gap: 3 wide, one narrower every two path levels (wiki).
- *   The second row's gap mirrors the first. After the last row the next auto waits until T+32
- *   (capture: autos at T+15, 22, 32, 39; one sample, the second Tidal Waves was cut by the
- *   enrage);
- * - T+46: over (the capture's next special started then); the next Tidal Waves comes from the
- *   other side.
- */
-internal class TidalWaves(private val room: ZebakEncounter) : ZebakSpecial {
+internal class TidalWaves(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
-    private var ticks = -1
-    private val landings = ZebakLandings()
-    private val fromSouth = room.waves.fromSouth
-
-    /** Offline_Scape `waveSkipX`: the previous row's gap, or -1 for a fresh one. */
     private var lastGap = -1
 
-    override fun step(): Boolean {
-        val boss = room.zebak ?: return false
-        if (boss.hitpoints <= 0) return false
-        ticks++
-        if (room.targets().isNotEmpty()) landings.run(ticks)
-        when (ticks) {
-            0 -> windUp(boss)
-            THROW_TICK -> launch()
-            CALL_TICK -> {
-                boss.anim(ZebakSeqs.CALL_WAVES)
-                room.tail?.anim(ZebakSeqs.TAIL_CALL_WAVES)
-            }
-            ROCKS_TICK -> if (!rocksFall()) return false
-            CAMERA_RESET_TICK -> {
-                val targets = room.targets()
-                if (targets.isEmpty()) return false
-                for (player in targets) Camera.camShakeResetAll(player)
-            }
-            in ROW_TICKS -> {
-                spawnRow()
-                if (ticks == ROW_TICKS.last()) {
-                    room.attackCountdown = maxOf(room.attackCountdown, LAST_ROW_NEXT_ATTACK)
-                }
-            }
-            END_TICK -> {
-                room.waves.fromSouth = !fromSouth
-                return false
-            }
-        }
-        return true
-    }
+    val fromSouth = room.waves.fromSouth
 
-    private fun windUp(boss: Npc) {
-        boss.anim(ZebakSeqs.RANGED)
-        room.tail?.resetAnim()
-        room.attackCountdown = NEXT_ATTACK
-    }
-
-    /** Capture: the throw sound plays here too (Offline_Scape had none for this special). */
-    private fun launch() {
-        val jugs = room.freeTiles(ZebakCoords.GROUND_MIN, ZebakCoords.GROUND_MAX, emptyList())
-            .take(deps.random.of(ZebakJugs.THROWN_MIN, ZebakJugs.THROWN_MAX))
-        val acid = room.freeTiles(ZebakCoords.GROUND_MIN, ZebakCoords.GROUND_MAX, emptyList())
-            .take(ACID_POOLS)
+    fun launch() {
+        val jugs =
+            room.freeTiles(ZebakCoords.GROUND_MIN, ZebakCoords.GROUND_MAX, emptyList())
+                .take(deps.random.of(ZebakJugs.THROWN_MIN, ZebakJugs.THROWN_MAX))
+        val acid =
+            room.freeTiles(ZebakCoords.GROUND_MIN, ZebakCoords.GROUND_MAX, emptyList())
+                .take(ACID_POOLS)
         val source = room.coords(ZebakCoords.THROW_SOUND)
         deps.worldRepo.soundArea(source, ZebakSynths.JUGS_SHOOT, radius = SOUND_RADIUS)
         val mouth = room.coords(ZebakCoords.PROJECTILE_START)
+        val cycle = deps.mapClock.cycle
         for (tile in acid) {
             val flight = deps.worldRepo.lob(ZebakSpots.ACID, mouth, tile)
-            landings.at(ticks + flight) { room.poison.land(listOf(tile)) }
+            room.landings.at(cycle + flight) { room.poison.land(listOf(tile)) }
         }
         for (tile in jugs) {
             val flight = deps.worldRepo.lob(ZebakSpots.JUG, mouth, tile)
-            landings.at(ticks + flight) { room.jugs.land(listOf(tile), room.targets()) }
+            room.landings.at(cycle + flight) { room.jugs.land(listOf(tile), room.targets()) }
         }
     }
 
-    private fun rocksFall(): Boolean {
-        val targets = room.targets()
-        if (targets.isEmpty()) return false
-        for (player in targets) {
-            for ((synth, delay) in ZebakSynths.WAVES_LAND) player.soundSynth(synth, delay = delay)
-        }
-        val base = room.coords(if (fromSouth) ZebakCoords.WAVE_SOUTH else ZebakCoords.WAVE_NORTH)
-        val splash = spotanim(ZebakSpots.WATER_SPLASH)
-        val rocks = spotanim(ZebakSpots.ROCK_FALL)
-        for (i in 0 until ROCK_SPOTS) {
-            val tile = base.translate(i * ROCK_SPACING, 0)
-            deps.worldRepo.spotanimMap(splash, tile, delay = SPLASH_DELAY)
-            deps.worldRepo.spotanimMap(rocks, tile)
-        }
-        for (player in targets) {
-            Camera.camShakeResetAll(player)
-            // Offline_Scape: left-right 7, up-down 6, front-back 7.
-            Camera.camShake(player, CamShakeAxis.LEFT_RIGHT, 7, 0, 0)
-            Camera.camShake(player, CamShakeAxis.UP_DOWN, 6, 0, 0)
-            Camera.camShake(player, CamShakeAxis.FORWARDS_BACKWARDS, 7, 0, 0)
+    fun shakeCameras() {
+        val leftRight = deps.random.of(SHAKE_LEFT_RIGHT)
+        val upDown = deps.random.of(SHAKE_UP_DOWN)
+        val forwards = deps.random.of(SHAKE_FORWARDS)
+        for (player in room.targets()) {
+            Camera.camShake(player, CamShakeAxis.LEFT_RIGHT, leftRight, 0, 0)
+            Camera.camShake(player, CamShakeAxis.UP_DOWN, upDown, 0, 0)
+            Camera.camShake(player, CamShakeAxis.FORWARDS_BACKWARDS, forwards, 0, 0)
             player.soundSynth(ZebakSynths.RUMBLING)
+            Camera.camReset(player)
         }
-        return true
     }
 
-    private fun spawnRow() {
+    fun resetCameras() {
+        for (player in room.targets()) Camera.camReset(player)
+    }
+
+    fun spawnRow() {
         val base = room.coords(if (fromSouth) ZebakCoords.WAVE_SOUTH else ZebakCoords.WAVE_NORTH)
         val gap = if (lastGap == -1) deps.random.of(0, GAP_RANGE) else GAP_RANGE - lastGap
         val gapWidth = GAP_WIDTH - min(2, room.pathLevel / 2)
         val dz = if (fromSouth) 1 else -1
         for (x in 0 until ROW_LENGTH) {
-            // The columns by Zebak never have the gap; it widens away from the middle.
             val column = x - SOLID_COLUMNS
             val towards = if (gap < GAP_RANGE / 2) 1 else -1
             val inGap = column >= 0 && (0 until gapWidth).any { column == gap + it * towards }
@@ -133,52 +71,35 @@ internal class TidalWaves(private val room: ZebakEncounter) : ZebakSpecial {
         lastGap = if (lastGap == -1) gap else -1
     }
 
-    private companion object {
-        const val THROW_TICK = 1
-        const val CALL_TICK = 5
-        const val ROCKS_TICK = 7
-        const val CAMERA_RESET_TICK = 9
-        val ROW_TICKS = intArrayOf(14, 21, 28)
-        const val END_TICK = 46
-        const val NEXT_ATTACK = 15
+    fun end() {
+        room.waves.fromSouth = !fromSouth
+    }
 
-        /** Set in the step, before that tick's countdown: 5 at T+28 gives the auto at T+32. */
-        const val LAST_ROW_NEXT_ATTACK = 5
+    private companion object {
         const val SOUND_RADIUS = 15
         const val ACID_POOLS = 16
         const val ROW_LENGTH = 21
         const val SOLID_COLUMNS = 4
         const val GAP_RANGE = 12
         const val GAP_WIDTH = 3
-        const val ROCK_SPOTS = 7
-        const val ROCK_SPACING = 3
-        const val SPLASH_DELAY = 200
+        val SHAKE_LEFT_RIGHT = 5..7
+        val SHAKE_UP_DOWN = 7..8
+        val SHAKE_FORWARDS = 6..6
     }
 }
 
-/**
- * The waves themselves (Offline_Scape WaveNPC). They outlive the special by a few ticks. Each lives
- * 23 ticks and moves a tile a tick; on its tile it washes players along (maybe into the water),
- * washes acid away 1 in 4, and destroys blood clouds (turning bloody). A jug two tiles ahead is set
- * rolling the same way.
- *
- * Capture: a wave also washes away the ground decoration on its tile, and turns bloody if that was
- * blood (map splats in the arena, or a bleeding player's).
- */
 internal class ZebakWaves(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
     private val waves = HashMap<Npc, Wave>()
 
     private class Wave(val dz: Int, var ticksLeft: Int)
 
-    /** Which edge the next Tidal Waves comes from; alternates, starts random. */
     var fromSouth = false
 
     fun spawn(tile: CoordGrid, dz: Int) {
         waves[room.spawn(ZebakNpcs.WAVE, tile)] = Wave(dz, LIFETIME)
     }
 
-    /** Once a tick (config `timer = 1`). */
     fun tick(npc: Npc) {
         val wave = waves[npc] ?: return
         if (room.stage != ToaStage.STARTED || --wave.ticksLeft <= 0) {
@@ -201,14 +122,12 @@ internal class ZebakWaves(private val room: ZebakEncounter) {
         step(npc, next)
     }
 
-    /** Removes the ground decoration on [tile]; `true` if it was a blood splat. */
     private fun washDecor(tile: CoordGrid): Boolean {
         val decor = deps.locRepo.findExact(tile, LocShape.GroundDecor) ?: return false
         deps.locRepo.del(decor, Int.MAX_VALUE)
         return decor.id in bloodSplatIds
     }
 
-    /** Walks where it can; jumps where the step is blocked (Offline_Scape ignored collision). */
     private fun step(npc: Npc, next: CoordGrid) {
         if (room.canStep(npc.coords, next.x - npc.coords.x, next.z - npc.coords.z)) {
             npc.walk(next)
@@ -217,10 +136,6 @@ internal class ZebakWaves(private val room: ZebakEncounter) {
         }
     }
 
-    /**
-     * Up to 4 tiles along the wave. Stopped by the edge, they're thrown (5 - steps) tiles further,
-     * into the water if that tile is walkable. Wiki: 6-10 scaled (Offline_Scape: 8-18).
-     */
     private fun wash(player: Player, dz: Int) {
         var dest = player.coords
         var intoWater = false

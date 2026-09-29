@@ -51,7 +51,6 @@ internal object ZebakSeqs {
     const val TAIL_CALL_WAVES = "seq.npc_zebak02_attack_tail"
     const val DEATH = "seq.npc_zebak01_death"
     const val TAIL_DEATH = "seq.npc_zebak02_death"
-    const val PLAYER_PUSHED = "seq.warguild_parry_defend"
     const val PLAYER_KNOCKED = "seq.agilityarena_player_spikedback"
     /** Capture: push and pull both. */
     const val PLAYER_MOVE_JUG = "seq.human_pickuptable"

@@ -38,6 +38,7 @@ data class PhaseSpec(
     val selector: Selector = Selector.WeightedRandom(),
     val forceAbilities: List<ForcedAbility> = emptyList(),
     val timers: List<TimerSpec> = emptyList(),
+    val keepFacingLock: Boolean = false,
 )
 
 /**

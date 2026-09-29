@@ -1,6 +1,5 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
-import org.rsmod.api.script.onAiOpPlayer2
 import org.rsmod.api.script.onAiTimer
 import org.rsmod.api.script.onApNpc1
 import org.rsmod.api.script.onApNpc3
@@ -16,7 +15,7 @@ import org.rsmod.plugin.scripts.ScriptContext
  *
  * - Hits, queues and ai timers are keyed by the npc's visible type, so transmogged npcs (enraged
  *   Zebak, the rolling jug, the bloody wave) are bound under both types.
- * - onAiOpPlayer2 for Zebak replaces the default npc combat: his attacks come from the room.
+ * - Zebak's combat is ZebakBoss (Boss DSL); only his hits and death are routed here.
  * - The death queues replace the standard npc death.
  * - Push/Pull are ap handlers so they fire from a diagonal tile (op handlers need a cardinal one).
  *   "Hit" starts a normal attack: ap4 hands off to op2 combat, and `ZebakJugs.registerAttackOp`
@@ -28,7 +27,6 @@ class ZebakScript : PluginScript() {
         ZebakJugs.registerAttackOp()
         for (name in listOf(ZebakNpcs.ZEBAK, ZebakNpcs.ZEBAK_ENRAGED)) {
             val type = npcType(name)
-            onAiOpPlayer2(type) { npc.noneMode() }
             onNpcHit(type) { ZebakEncounter.onZebakHit(npc, hit) }
             onNpcQueue(type, "queue.death") { ZebakEncounter.onZebakDeath(npc) }
         }
