@@ -1,4 +1,6 @@
 [gamevals.synth]
+mizgog_placebeads = 1632
+mizgog_beads = 1633
 bigdoor_close = 45
 bigdoor_open = 46
 bookcase_open_and_close = 42
@@ -51,6 +53,7 @@ misthalin_mirror_blocker = 63701
 misthalin_puzzle_state = 63702
 
 [gamevals.varbit]
+imp_catcher_progress = 63703
 misthalin_reflections = 63700
 misthalin_gem_row_slot = 63701
 
