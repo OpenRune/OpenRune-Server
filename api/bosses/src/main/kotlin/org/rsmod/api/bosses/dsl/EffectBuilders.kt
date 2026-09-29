@@ -113,6 +113,16 @@ fun debris(
 ): Effect =
     Effect.Debris(telegraph, damage, type, impact, windup, targetRadius, scatterRadius, count, center)
 
+fun hazard(
+    loc: String,
+    at: TargetExpr.Single = TargetExpr.CurrentTargetTile,
+    damage: DamageExpr? = null,
+    type: HitType = HitType.Typeless,
+    armDelay: Int = 1,
+    duration: Int = Int.MAX_VALUE,
+    onStand: Effect? = null,
+): Effect = Effect.Hazard(loc, at, damage, type, armDelay, duration, onStand)
+
 fun summon(
     npc: String,
     count: Int = 1,

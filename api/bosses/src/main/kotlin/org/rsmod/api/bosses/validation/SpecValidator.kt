@@ -167,6 +167,9 @@ object SpecValidator {
                     validateEffect(it, abilityNames, phaseNames, errors, context, insideImpact = true)
                 }
             }
+            is Effect.Hazard -> {
+                effect.onStand?.let { validateEffect(it, abilityNames, phaseNames, errors, context) }
+            }
             is Effect.Choose -> {
                 validateSelector(effect.selector, context, effect.branches.keys, errors)
                 effect.branches.values.forEach {
@@ -188,6 +191,7 @@ object SpecValidator {
             is Effect.TileAoE -> listOf(effect.center)
             is Effect.Debris -> listOf(effect.center)
             is Effect.Summon -> listOf(effect.centeredOn)
+            is Effect.Hazard -> listOf(effect.at)
             is Effect.OnEach -> listOf(effect.targets)
             is Effect.Teleport -> listOf(effect.to)
             is Effect.FaceTile -> listOf(effect.at)

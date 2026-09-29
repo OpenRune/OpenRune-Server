@@ -7,6 +7,7 @@ import org.rsmod.api.npc.hit.queueHit as queueNpcHit
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
@@ -70,7 +71,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
             heal += barrageHit(boss, player, damage)
             player.spotanim(ZebakSpots.BLOOD_BARRAGE)
             for (other in targets) {
-                if (other === player || chebyshev(player.coords, other.coords) > radius) continue
+                if (other === player || player.coords.chebyshevDistance(other.coords) > radius) continue
                 heal += barrageHit(boss, other, damage)
             }
         }
@@ -97,7 +98,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         val state = clouds[cloud] ?: return
         if (state.startDelay > 0) state.startDelay--
 
-        val moved = chebyshev(state.last, cloud.coords)
+        val moved = state.last.chebyshevDistance(cloud.coords)
         state.last = cloud.coords
         if (moved > 0) cloud.queueNpcHit(1, HitType.Typeless, LEECH * moved, NOOP_NPC_MODIFIER)
 
@@ -125,7 +126,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         var bestDistance = Int.MAX_VALUE
         for (player in deps.random.shuffled(targets)) {
             if (player === current) continue
-            val distance = chebyshev(player.coords, cloud.coords)
+            val distance = player.coords.chebyshevDistance(cloud.coords)
             if (distance < bestDistance) {
                 bestDistance = distance
                 best = player

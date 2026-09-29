@@ -97,7 +97,7 @@ internal class ZebakWater(private val room: ZebakEncounter) {
         val target =
             room.targets()
                 .filter { it in swimmers }
-                .map { it to chebyshev(it.coords, croc.coords) }
+                .map { it to it.coords.chebyshevDistance(croc.coords) }
                 .filter { it.second < HUNT_RANGE }
                 .minByOrNull { it.second }
                 ?.first

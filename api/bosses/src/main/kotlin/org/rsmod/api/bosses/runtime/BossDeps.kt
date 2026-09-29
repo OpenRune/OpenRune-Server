@@ -27,4 +27,5 @@ class BossDeps @Inject constructor(
     val accuracy: AccuracyFormulae,
     val maxHit: MaxHitFormulae,
     val playerHitModifier: PlayerHitModifier,
+    val hazards: BossHazards,
 )
