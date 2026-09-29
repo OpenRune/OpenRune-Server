@@ -1,8 +1,10 @@
 package org.rsmod.api.bosses.dsl
 
+import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.combat.commons.types.MeleeAttackType as EngineMeleeAttackType
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Npc
@@ -159,6 +161,33 @@ fun hazard(
     duration: Int = Int.MAX_VALUE,
     onStand: Effect? = null,
 ): Effect = Effect.Hazard(loc, at, damage, type, armDelay, duration, onStand)
+
+fun bleed(
+    duration: Int,
+    movingDamage: DamageExpr,
+    applyDamage: DamageExpr? = null,
+    stillDamage: DamageExpr? = null,
+    stillInterval: Int = 0,
+    hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
+    chance: Int = 1,
+    outOf: Int = 1,
+    onApply: Effect? = null,
+    onMovingHit: Effect? = null,
+    otherwise: Effect = Effect.NoOp,
+): Effect =
+    Effect.Bleed(
+        duration,
+        movingDamage,
+        applyDamage,
+        stillDamage,
+        stillInterval,
+        hitmark,
+        chance,
+        outOf,
+        onApply,
+        onMovingHit,
+        otherwise,
+    )
 
 fun summon(
     npc: String,

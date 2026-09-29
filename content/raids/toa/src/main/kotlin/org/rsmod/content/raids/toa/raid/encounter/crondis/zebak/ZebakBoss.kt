@@ -8,10 +8,12 @@ import org.rsmod.api.bosses.dsl.Melee
 import org.rsmod.api.bosses.dsl.MeleeAttackType
 import org.rsmod.api.bosses.dsl.Ranged
 import org.rsmod.api.bosses.dsl.anim
+import org.rsmod.api.bosses.dsl.bleed
 import org.rsmod.api.bosses.dsl.boss
 import org.rsmod.api.bosses.dsl.external
 import org.rsmod.api.bosses.dsl.hit
 import org.rsmod.api.bosses.dsl.mapSpotanim
+import org.rsmod.api.bosses.dsl.message
 import org.rsmod.api.bosses.dsl.onEach
 import org.rsmod.api.bosses.dsl.parallel
 import org.rsmod.api.bosses.dsl.projectile
@@ -90,15 +92,27 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         sequence(
             anim(seq),
             external(TAIL, tailSeq),
-            hit {
-                target = meleeTargets
-                damage(Accuracy(scaled(MELEE_MAX_HIT), meleeAttackType = MeleeAttackType.Slash))
-                type(Melee)
-                delay = MELEE_HIT_DELAY
-                resolveOnImpact()
-                reactOnLanding()
-            },
-            external(BLEED),
+            onEach(
+                meleeTargets,
+                bleed(
+                    duration = BLEED_TICKS,
+                    movingDamage = scaled(BLEED_MOVING_MIN, BLEED_MOVING_MAX),
+                    applyDamage = scaled(BLEED_APPLY_MIN, BLEED_APPLY_MAX),
+                    chance = BLEED_CHANCE,
+                    outOf = BLEED_OUT_OF,
+                    onApply = message(BLEED_MESSAGE),
+                    onMovingHit = external(BLEED_SPLAT),
+                    otherwise =
+                        hit {
+                            damage(Accuracy(scaled(MELEE_MAX_HIT), meleeAttackType = MeleeAttackType.Slash))
+                            type(Melee)
+                            delay = MELEE_HIT_DELAY
+                            penetration(MELEE_PENETRATION)
+                            resolveOnImpact()
+                            reactOnLanding()
+                        },
+                ),
+            ),
         )
 
     private fun split(mage: Boolean): Effect {
@@ -336,7 +350,6 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
     private fun registerHandlers() {
         onZebak(ROLL_STYLE) { room, npc, _ -> room.autos.rollStyle(npc) }
-        onZebak(BLEED) { room, _, _ -> room.autos.queueBleedRolls() }
         onZebak(TAIL) { room, _, params -> room.tailAnim(params as String?) }
         onZebak(BEGIN_SPECIAL) { room, _, params -> room.beginSpecial(params as Boolean) }
         onZebak(END_SPECIAL) { room, _, _ -> room.endSpecial() }
@@ -356,6 +369,9 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             helper.spotanim(params as String, height = SPLIT_HEIGHT)
         }
         onZebak(REGISTER_CLOUD) { room, cloud, _ -> room.bloodMagic.registerCloud(cloud) }
+        deps.extensionRegistry.register(BLEED_SPLAT) { access, _, target, _ ->
+            ZebakEncounter.roomOf(access.npc)?.autos?.splat(target.coords)
+        }
     }
 
     private fun onZebak(name: String, block: (ZebakEncounter, Npc, Any?) -> Unit) {
@@ -384,7 +400,7 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         private const val ENRAGE = "enrage"
 
         private const val ROLL_STYLE = "zebak.roll_style"
-        private const val BLEED = "zebak.bleed"
+        private const val BLEED_SPLAT = "zebak.bleed_splat"
         private const val TAIL = "zebak.tail"
         private const val BEGIN_SPECIAL = "zebak.begin_special"
         private const val END_SPECIAL = "zebak.end_special"
@@ -406,6 +422,16 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         private const val MELEE_MAX_HIT = 38
         private const val RANGED_MAGIC_MAX_HIT = 16
         private const val MELEE_HIT_DELAY = 2
+        private const val MELEE_PENETRATION = 50
+        private const val BLEED_CHANCE = 1
+        private const val BLEED_OUT_OF = 4
+        private const val BLEED_TICKS = 10
+        private const val BLEED_APPLY_MIN = 5
+        private const val BLEED_APPLY_MAX = 10
+        private const val BLEED_MOVING_MIN = 1
+        private const val BLEED_MOVING_MAX = 8
+        private const val BLEED_MESSAGE =
+            "<col=ff3045>Zebak's fangs tear into your flesh, causing you to bleed.</col>"
         private const val SPLIT_DELAY = 4
         private const val SPLIT_HIT_DELAY = 5
         private const val SPLIT_HELPER_TICKS = 3
@@ -442,6 +468,9 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
         private fun scaled(base: Int): DamageExpr =
             DamageExpr.Custom { npc, _ -> ZebakEncounter.roomOf(npc)?.rollScaled(base) ?: 0 }
+
+        private fun scaled(min: Int, base: Int): DamageExpr =
+            DamageExpr.Custom { npc, _ -> ZebakEncounter.roomOf(npc)?.rollScaled(min, base) ?: 0 }
 
         private fun room(test: (ZebakEncounter, Npc) -> Boolean): Condition =
             Condition.Custom { npc -> ZebakEncounter.roomOf(npc)?.let { test(it, npc) } == true }

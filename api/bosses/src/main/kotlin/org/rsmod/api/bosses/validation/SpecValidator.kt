@@ -421,6 +421,11 @@ object SpecValidator {
                 is Effect.Spotanim -> effect.target?.let { target(it, scope, name) }
                 is Effect.CamShake -> effect.target?.let { target(it, scope, name) }
                 is Effect.CamReset -> target(effect.target, scope, name)
+                is Effect.Bleed -> {
+                    effect.onApply?.let { effect(it, scope.copy(deferred = true)) }
+                    effect.onMovingHit?.let { effect(it, scope.copy(deferred = true)) }
+                    effect(effect.otherwise, scope)
+                }
                 is Effect.Hazard -> {
                     target(effect.at, scope, name)
                     effect.onStand?.let { effect(it, scope.copy(deferred = true)) }
