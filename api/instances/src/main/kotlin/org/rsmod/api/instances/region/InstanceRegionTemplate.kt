@@ -5,6 +5,8 @@ import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionStaticTemplate
 import org.rsmod.api.repo.region.RegionTemplate
 
+private const val BRIDGE_FLAG_LEVEL = 1
+
 internal fun buildRegionTemplate(
     regionIds: List<Int>,
     level: Int,
@@ -35,6 +37,15 @@ internal fun buildRegionTemplate(
             this.rotation = rotation.steps
             regionZoneX = 0
             regionZoneZ = 0
+        }
+        if (level != BRIDGE_FLAG_LEVEL) {
+            copy(copyZoneX, copyZoneZ, BRIDGE_FLAG_LEVEL) {
+                this.zoneWidth = zoneWidth
+                this.zoneLength = zoneLength
+                this.rotation = rotation.steps
+                regionZoneX = 0
+                regionZoneZ = 0
+            }
         }
     }
 

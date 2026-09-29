@@ -6,7 +6,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
 fun interface BossExtensionHandler {
-    fun invoke(access: StandardNpcAccess, npc: Npc, target: Player, params: Any?)
+    /** [access] is null when the ability runs outside the npc's AI turn, e.g. from a hit reaction. */
+    fun invoke(access: StandardNpcAccess?, npc: Npc, target: Player, params: Any?)
 }
 
 @Singleton
@@ -17,7 +18,7 @@ class BossExtensionRegistry {
         handlers[name] = handler
     }
 
-    fun invoke(name: String, access: StandardNpcAccess, npc: Npc, target: Player, params: Any?) {
+    fun invoke(name: String, access: StandardNpcAccess?, npc: Npc, target: Player, params: Any?) {
         val handler = handlers[name] ?: error("No boss extension registered: $name")
         handler.invoke(access, npc, target, params)
     }

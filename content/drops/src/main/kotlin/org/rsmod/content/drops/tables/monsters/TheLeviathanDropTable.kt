@@ -20,31 +20,31 @@ public val theLeviathanDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
     npcs = npcs("npc.leviathan", "npc.leviathan_cutscene", "npc.leviathan_quest"),
     mainTable = rsPlayerWeightedTable(total = 100) {
         name("The Leviathan Drops")
-        1 weight "obj.cosmic_soul_catalyst" count 1
-        1 weight "obj.cert_iron_ore" count 1
-        1 weight "obj.cert_silver_ore" count 1
-        8 weight "obj.cert_coal" count 1
-        8 weight "obj.cert_gold_ore" count 1
-        1 weight "obj.cert_adamantite_ore" count 1
-        2 weight "obj.cert_runite_ore" count 1
-        1 weight "obj.cert_sapphire" count 1
-        1 weight "obj.cert_emerald" count 1
-        1 weight "obj.cert_ruby" count 1
-        5 weight "obj.cert_uncut_ruby" count 1
-        5 weight "obj.cert_uncut_diamond" count 1
-        8 weight "obj.dragon_javelin_head" count 1
-        2 weight "obj.dragon_bolts_unfeathered" count 1
-        1 weight "obj.xbows_bolt_tips_onyx" count 1
-        1 weight "obj.cert_raw_mantaray" count 1
-        8 weight "obj.anglerfish" count 1
-        1 weight "obj.bronze_arrow" count 1
-        1 weight "obj.mithril_arrow" count 1
-        1 weight "obj.adamant_arrow" count 1
-        8 weight "obj.rune_arrow" count 1
-        1 weight "obj.bodyrune" count 1
-        1 weight "obj.earthrune" count 1
-        8 weight "obj.smokerune" count 1
-        2 weight "obj.soulrune" count 1
+        1 weight "obj.cosmic_soul_catalyst" count 1500
+        1 weight "obj.cert_iron_ore" count 57
+        1 weight "obj.cert_silver_ore" count 57
+        8 weight "obj.cert_coal" count 195
+        8 weight "obj.cert_gold_ore" count 67
+        1 weight "obj.cert_adamantite_ore" count 57
+        2 weight "obj.cert_runite_ore" count 27
+        1 weight "obj.cert_sapphire" count 25
+        1 weight "obj.cert_emerald" count 25
+        1 weight "obj.cert_ruby" count 25
+        5 weight "obj.cert_uncut_ruby" count 37
+        5 weight "obj.cert_uncut_diamond" count 37
+        8 weight "obj.dragon_javelin_head" count 54
+        2 weight "obj.dragon_bolts_unfeathered" count 150
+        1 weight "obj.xbows_bolt_tips_onyx" count 90
+        1 weight "obj.cert_raw_mantaray" count 180
+        8 weight "obj.anglerfish" count 4
+        1 weight "obj.bronze_arrow" count 63
+        1 weight "obj.mithril_arrow" count 63
+        1 weight "obj.adamant_arrow" count 63
+        8 weight "obj.rune_arrow" count 54
+        1 weight "obj.bodyrune" count 180
+        1 weight "obj.earthrune" count 180
+        8 weight "obj.smokerune" count 300
+        2 weight "obj.soulrune" count 600
         1 outOf 768 separate "obj.soulreaper_axe_lure" count 1
         3 outOf 768 separate vestigeProgressRoll("varp.leviathan_vestige_progress", "obj.venator_vestige")
         3 outOf 768 separate "obj.chromium_ingot" count 1

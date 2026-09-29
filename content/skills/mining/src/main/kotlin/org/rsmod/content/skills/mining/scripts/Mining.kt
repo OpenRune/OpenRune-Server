@@ -190,7 +190,7 @@ constructor(
     }
 
     private fun ProtectedAccess.rollGemPreTable(data: MiningRocksRow): GemPreRoll {
-        if (data.isGemRock || data.oreItem == null) {
+        if (data.isGemRock || data.oreItem == null || data.isInfinite) {
             return GemPreRoll.KeepOre
         }
         val table =
