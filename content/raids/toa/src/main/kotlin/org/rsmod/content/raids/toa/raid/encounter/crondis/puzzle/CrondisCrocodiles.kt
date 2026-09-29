@@ -1,16 +1,12 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle
 
 import dev.openrune.types.NpcMode
-import org.rsmod.api.combat.commons.types.MeleeAttackType
+import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.npc.opPlayer2
-import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
-import org.rsmod.api.player.hit.queueHit
-import org.rsmod.api.player.output.soundSynth
-import org.rsmod.api.player.stat.statSub
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.hit.HitType
+import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.map.CoordGrid
 
@@ -21,23 +17,21 @@ import org.rsmod.map.CoordGrid
  * re-evaluated every tick:
  * 1. a player with a non-empty water container within aggro range;
  * 2. the palm, while it has any growth;
- * 3. a player without a water container who has attacked this crocodile.
+ * 3. while retaliating, it only bites an attacker without a water container.
  * So attacking a crocodile while holding an empty container is safe.
  *
- * Its attack is custom (onAiOpPlayer2 for its type replaces the default npc combat). Killed
- * crocodiles die through the standard npc death, which deletes them.
+ * Killed crocodiles die through the standard npc death, which deletes them.
  */
 internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
     private val deps = room.raid.deps
     private val crocodiles = ArrayList<Npc>()
-    private val attackReady = HashMap<Npc, Int>()
     private val wakeAt = HashMap<Npc, Int>()
     private var countdown = nextCountdown()
 
     /** What each crocodile is going for this tick: a [Player], [PalmTarget], or nothing. */
     private val targets = HashMap<Npc, Any>()
 
-    /** Players who have hit each crocodile (its third-priority targets). */
+    /** Players who have hit each crocodile. */
     private val attackers = HashMap<Npc, LinkedHashSet<Player>>()
 
     /** Map cycles of each player's recent hazard hits, for the attack's damage. */
@@ -90,6 +84,7 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         for (i in 0 until count) {
             val croc = room.spawnRouted(CrondisNpcs.CROCODILE, spawns[i])
             croc.defaultMoveSpeed = MoveSpeed.Crawl
+            croc.noneMode()
             room.palm?.let { croc.faceSquare(it.coords, it.size, it.size) }
             wakeAt[croc] = deps.mapClock.cycle + WAKE_TICKS
             crocodiles += croc
@@ -108,7 +103,6 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
     }
 
     private fun forget(croc: Npc) {
-        attackReady.remove(croc)
         wakeAt.remove(croc)
         targets.remove(croc)
         attackers.remove(croc)
@@ -120,8 +114,7 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
             .firstOrNull { croc.isWithinDistance(it, AGGRO_RANGE) && it.containerWater() > 0 }
             ?.let { return it }
         if (room.water > 0 && room.palm != null) return PalmTarget
-        val attackedBy = attackers[croc] ?: return null
-        return players.firstOrNull { it in attackedBy && it.containerSlot() == null }
+        return null
     }
 
     /** Once a tick per crocodile (onAiTimer). */
@@ -140,33 +133,35 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
             }
             PalmTarget -> {
                 targets[croc] = PalmTarget
-                if (fightingPlayer) croc.noneMode()
+                if (croc.mode != NpcMode.None) croc.noneMode()
                 approachPalm(croc)
             }
             else -> {
                 targets.remove(croc)
-                if (fightingPlayer) croc.noneMode()
+                val opponent = (croc.interaction as? InteractionPlayer)?.target
+                val retaliating = fightingPlayer && opponent != null && mayRetaliate(croc, opponent)
+                if (!retaliating && croc.mode != croc.defaultMode) {
+                    croc.noneMode()
+                    croc.defaultMode()
+                }
             }
         }
     }
 
-    /**
-     * Crawls next to the palm, then bites it: 2-5 growth every 7 ticks (attack speed 7). Capture:
-     * it faces the palm the whole way (entity facing), and each bite plays the attack sound.
-     */
     private fun approachPalm(croc: Npc) {
         val palm = room.palm ?: return
         croc.faceNpc(palm)
-        if (!croc.isWithinDistance(palm, 1)) {
-            croc.walk(besidePalm(croc, palm))
+        if (!isBesidePalm(croc, palm)) {
+            croc.walk(palmApproach(croc, palm))
             return
         }
         val now = deps.mapClock.cycle
-        if ((attackReady[croc] ?: 0) > now) return
-        attackReady[croc] = now + ATTACK_RATE
+        val encounter = deps.bossDeps.encounter(croc)
+        if (now - encounter.lastAbilityTick < CrondisCrocodileCombat.ATTACK_RATE) return
+        encounter.lastAbilityTick = now
         croc.anim(CrondisSeqs.CROC_ATTACK)
         attackSound(croc)
-        room.drainPalm(deps.random.of(MIN_DRAIN, MAX_DRAIN))
+        room.drainPalm(PALM_BITE)
     }
 
     private fun attackSound(croc: Npc) {
@@ -174,56 +169,24 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         deps.worldRepo.soundArea(croc.coords, sound, radius = ATTACK_SOUND_RADIUS)
     }
 
-    /**
-     * The attack on a player (its onAiOpPlayer2), per the wiki:
-     * - a normal crush accuracy roll decides success;
-     * - a success always hits 18, +3 for each hazard (acid or spear) that hit this player in the
-     *   last 30 seconds, at most 36, regardless of raid level;
-     * - through Protect from Melee a success still hits a third of that and drains 12 Prayer;
-     * - a success also spills water ([CrondisPuzzleEncounter.biteWater]).
-     *
-     * Capture: bites of 30 (4 recent hazard hits) and 24 (2), confirming the formula. The sound
-     * goes to the target (area sound only when biting the palm).
-     *
-     * The engine can also get here by itself: players who hit a crocodile make it retaliate. The
-     * attack only goes ahead against the target the priority rules chose; otherwise it's
-     * redirected.
-     */
-    fun attack(croc: Npc, target: Player) {
-        if (room.stage != ToaStage.STARTED) return
+    fun mayBite(croc: Npc, target: Player): Boolean {
+        if (room.stage != ToaStage.STARTED) return false
         val chosen = targets[croc] as? Player
-        if (chosen == null) {
-            croc.noneMode()
-            return
-        }
-        if (chosen !== target) {
+        if (chosen != null) {
+            if (chosen === target) return true
             croc.opPlayer2(chosen, deps.aiInteractions)
-            return
+            return false
         }
+        return mayRetaliate(croc, target)
+    }
 
-        val now = deps.mapClock.cycle
-        if ((attackReady[croc] ?: 0) > now) return
-        attackReady[croc] = now + ATTACK_RATE
+    private fun mayRetaliate(croc: Npc, player: Player): Boolean =
+        attackers[croc]?.contains(player) == true && player.containerSlot() == null
 
-        croc.facePlayer(target)
-        croc.anim(CrondisSeqs.CROC_ATTACK)
-        target.soundSynth(CrondisSynths.CROC_ATTACK)
-        val accuracy = deps.accuracy
-        val success = accuracy.rollMeleeAccuracy(croc, target, MeleeAttackType.Crush, deps.random)
-        if (!success) {
-            target.queueHit(croc, HIT_DELAY, HitType.Melee, 0, NoopPlayerHitModifier)
-            return
-        }
-
-        val bonus = DAMAGE_PER_HAZARD * recentHazardHits(target, now)
-        var damage = (BASE_DAMAGE + bonus).coerceAtMost(MAX_DAMAGE)
-        if (target.vars[CrondisVarbits.PROTECT_FROM_MELEE] > 0) {
-            damage /= 3
-            target.statSub("stat.prayer", constant = PRAYER_DRAIN, percent = 0)
-        }
-        // NoopPlayerHitModifier: prayer is already accounted for above, not by the processor.
-        target.queueHit(croc, HIT_DELAY, HitType.Melee, damage, NoopPlayerHitModifier)
-        room.biteWater(target)
+    fun biteDamage(target: Player): Int {
+        val bonus = DAMAGE_PER_HAZARD * recentHazardHits(target, deps.mapClock.cycle)
+        val damage = (BASE_DAMAGE + bonus).coerceAtMost(MAX_DAMAGE)
+        return if (target.vars[CrondisVarbits.PROTECT_FROM_MELEE] > 0) damage / 3 else damage
     }
 
     fun hitBy(croc: Npc, player: Player) {
@@ -237,15 +200,31 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         return hits.size
     }
 
-    /**
-     * The tile next to the palm nearest the crocodile. The palm's own tiles are blocked (the
-     * invisible 5x5 blocker), so walking to its coords would go nowhere.
-     */
-    private fun besidePalm(croc: Npc, palm: Npc): CoordGrid {
-        val min = palm.coords
-        val x = croc.coords.x.coerceIn(min.x - croc.size, min.x + palm.size)
-        val z = croc.coords.z.coerceIn(min.z - croc.size, min.z + palm.size)
-        return CoordGrid(x, z, min.level)
+    private fun isBesidePalm(croc: Npc, palm: Npc): Boolean {
+        val c = croc.coords
+        val p = palm.coords
+        if (c.level != p.level) return false
+        val xOverlap = c.x < p.x + palm.size && c.x + croc.size > p.x
+        val zOverlap = c.z < p.z + palm.size && c.z + croc.size > p.z
+        val xTouch = c.x + croc.size == p.x || c.x == p.x + palm.size
+        val zTouch = c.z + croc.size == p.z || c.z == p.z + palm.size
+        return (xOverlap && zTouch) || (zOverlap && xTouch)
+    }
+
+    private fun palmApproach(croc: Npc, palm: Npc): CoordGrid {
+        val c = croc.coords
+        val p = palm.coords
+        val gapX = maxOf(p.x - (c.x + croc.size - 1), c.x - (p.x + palm.size - 1))
+        val gapZ = maxOf(p.z - (c.z + croc.size - 1), c.z - (p.z + palm.size - 1))
+        return if (gapX >= gapZ) {
+            val x = c.x.coerceIn(p.x - croc.size, p.x + palm.size)
+            val z = c.z.coerceIn(p.z - croc.size + 1, p.z + palm.size - 1)
+            CoordGrid(x, z, p.level)
+        } else {
+            val x = c.x.coerceIn(p.x - croc.size + 1, p.x + palm.size - 1)
+            val z = c.z.coerceIn(p.z - croc.size, p.z + palm.size)
+            CoordGrid(x, z, p.level)
+        }
     }
 
     private companion object {
@@ -256,14 +235,10 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         const val ATTACK_SOUND_RADIUS = 4
         const val MAX_ALIVE = 8
         const val AGGRO_RANGE = 3
-        const val ATTACK_RATE = 7
-        const val MIN_DRAIN = 2
-        const val MAX_DRAIN = 5
-        const val HIT_DELAY = 1
+        const val PALM_BITE = 5
         const val BASE_DAMAGE = 18
         const val DAMAGE_PER_HAZARD = 3
         const val MAX_DAMAGE = 36
-        const val PRAYER_DRAIN = 12
 
         /** 30 seconds. */
         const val HAZARD_WINDOW = 50
