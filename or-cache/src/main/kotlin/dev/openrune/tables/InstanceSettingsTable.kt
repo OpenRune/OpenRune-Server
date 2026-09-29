@@ -253,7 +253,7 @@ object InstanceSettingsTable {
             column(LOOT_MULTIPLIER, "x1.0")
             column(DESCRIPTION, "The frozen, slumbering duke of the Ghorrock asylum.")
             columnRSCM(ENTER_OBJECT, "loc.dt2_ghorrock_gate_boss")
-            columnRSCM(EXIT_OBJECT, "loc.duke_sucellus_exit")
+            columnRSCM(EXIT_OBJECT, "loc.duke_sucellus_escape")
         }
 
         row("dbrow.instance_amoxliatl") {
