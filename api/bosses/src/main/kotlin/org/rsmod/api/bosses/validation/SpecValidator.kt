@@ -278,7 +278,6 @@ object SpecValidator {
                 is Effect.MapSpotanim -> target(effect.at, scope, name)
                 is Effect.CamShake -> effect.target?.let { target(it, scope, name) }
                 is Effect.CamReset -> target(effect.target, scope, name)
-                is Effect.TileAoE -> target(effect.center, scope, name)
                 is Effect.Debris -> target(effect.center, scope, name)
                 is Effect.Summon -> target(effect.centeredOn, scope, name)
                 is Effect.Teleport -> target(effect.to, scope, name)
