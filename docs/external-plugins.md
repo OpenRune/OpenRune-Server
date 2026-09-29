@@ -69,16 +69,16 @@ Sources present in `plugins/` at boot participate exactly like built-in plugins:
 merged into the same `Guice.createInjector(...)` call, and their scripts are constructed and
 started right alongside the built-in ones.
 
-Right after boot fully finishes (once you see `Server ready in ...`), the server automatically
-closes every currently-loaded plugin's classloader — including ones loaded at boot, not just
-hot-loaded ones. This releases the jar file on disk (on Windows, an open `URLClassLoader` locks its
-jar against being overwritten) so you can rebuild and replace *any* plugin's jar at any time
-without first having to `::plugindisable` it. The plugin keeps running unaffected: its classes are
-already loaded and don't need the file handle anymore. The one edge case this doesn't cover is a
-plugin that lazily reaches a helper class it hadn't touched yet *after* this point — that load
-would fail, since a closed classloader can't read new classes from its jar. In practice this is
-rare (a Kotlin lambda's class loads when the lambda literal is evaluated, not when its body later
-runs, so almost everything a script does in `startup()` is already resident by boot's end).
+Jar plugins are loaded through a private runtime shadow copy under `.data/plugin-runtime/`.
+The source jar under `plugins/` therefore stays replaceable even on Windows while the plugin's
+classloader remains open for the lifetime of the active script. This matters for deferred work:
+event handlers, bridge callbacks, coroutines, and other code are free to resolve helper classes
+after `Server ready in ...` without risking a post-boot `NoClassDefFoundError`.
+
+The runtime shadow is disposable and never authoritative. On the next load/reload OpenRune reads
+the current source from `plugins/`, creates a fresh shadow, and closes/deletes the previous one
+when that plugin is unloaded. Stale shadows from a previous process are cleared when the runtime
+shadow directory is first used.
 
 ---
 
@@ -120,12 +120,10 @@ code change to a plugin without restarting the server — rebuild the source (or
 IDE's output directory, for a directory source) and run `::loadplugin name`/`::pluginreload name`
 again.
 
-The old classloader is explicitly closed as part of unload specifically so this works on
-**Windows**: a `URLClassLoader` opened over a jar keeps that file open (and thus locked against
-being overwritten) until it's closed — without this, rebuilding a jar and copying it over an
-already-loaded plugin would fail with `FileSystemException: ... used by another process`, since
-just dropping the reference and waiting on GC doesn't release the OS file handle in any bounded
-time.
+The old classloader is explicitly closed as part of unload and its private runtime shadow is
+deleted. The authoritative jar under `plugins/` is not held open by the active classloader, so on
+**Windows** you can rebuild/copy the replacement jar first and then run `::pluginreload name`
+without hitting a jar-file lock.
 
 `::plugindisable name` (and the Disable option in the `::plugins` menu) unloads an already-running
 source immediately, the same way, in addition to marking it disabled so it won't load again at the

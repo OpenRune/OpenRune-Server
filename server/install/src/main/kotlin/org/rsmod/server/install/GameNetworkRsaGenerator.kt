@@ -63,7 +63,7 @@ class GameNetworkRsaGenerator : CliktCommand(name = "generate-rsa") {
         val publicModulus = publicKey.modulus.toString(16)
 
         PemWriter(Files.newBufferedWriter(privateKeyFile)).use { writer ->
-            writer.writeObject(PemObject("RSA PRIVATE KEY", privateKey.encoded))
+            writer.writeObject(PemObject("PRIVATE KEY", privateKey.encoded))
         }
 
         Files.newBufferedWriter(pubModFile).use { writer ->

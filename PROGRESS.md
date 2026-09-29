@@ -266,7 +266,8 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `interfaces/spellbook` | 1 | 45 | 0 | 0 | 2026-06-18 |
 | `interfaces/worldmap` | 1 | 104 | 0 | 0 | 2026-07-04 |
 | `interfaces/xp-drops` | 1 | 44 | 0 | 0 | 2026-09-28 |
-| `other/commands` | 4 | 1,418 | 0 | 0 | 2026-09-29 |
+| `other/commands` | 5 | 1,679 | 0 | 0 | 2026-09-29 |
+| `other/commands/pack` | 1 | 6 | 0 | 0 | 2026-09-26 |
 | `other/consumables` | 38 | 8,687 | 0 | 0 | 2026-08-04 |
 | `other/dave/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
 | `other/discord` | 2 | 80 | 0 | 0 | 2026-07-01 |

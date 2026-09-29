@@ -25,7 +25,7 @@ public class CheatHandlerBuilder(public val command: String) {
         val desc = desc ?: error("`desc` must be set.")
         val argsErr = invalidArgs ?: DEFAULT_ARG_ERR
         val action = wrapCheat(argsErr, invalidRights, exception, requiredRights, cheat)
-        return CheatHandler(desc, action, cheat.javaClass.classLoader)
+        return CheatHandler(desc, action, cheat.javaClass.classLoader, requiredRights)
     }
 
     public fun cheat(cheat: Cheat.() -> Unit) {

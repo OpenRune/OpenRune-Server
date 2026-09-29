@@ -1,0 +1,63 @@
+name: Native Commands Full Validation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-commands-full-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  full:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+      - name: OpenRune install/codegen
+        run: ./gradlew install --no-daemon --console=plain
+      - name: Build plugin caches
+        run: ./gradlew :or-cache:buildCache --no-daemon --console=plain
+      - name: Compile full commands content
+        run: ./gradlew :content:other:commands:compileKotlin --no-daemon --console=plain
+      - name: Verify generated commands interface artifacts
+        shell: bash
+        run: |
+          test -f .data/gamevals/interface.rscm
+          test -f .data/gamevals-binary/gamevals_generated.dat
+          grep -q '^commands_menu=' .data/gamevals/interface.rscm
+          echo "Component mappings are validated by the build-time .if3 contract in :or-cache:buildCache."
+      - name: Boot server through script startup
+        shell: bash
+        run: |
+          ./gradlew generateRsa --no-daemon --console=plain
+          [ -f game.yml ] || cp game.example.yml game.yml
+          ./gradlew run -q > boot.log 2>&1 &
+          GRADLE_PID=$!
+          for i in $(seq 1 300); do
+            grep -q "Server ready in" boot.log && break
+            kill -0 $GRADLE_PID 2>/dev/null || break
+            sleep 1
+          done
+          if ! grep -q "Server ready in" boot.log; then
+            echo "Server did not reach ready state"
+            tail -80 boot.log
+            exit 1
+          fi
+          kill $GRADLE_PID 2>/dev/null || true
+      - name: Verify LIVE and SERVER caches
+        shell: bash
+        run: |
+          test -f .data/cache/LIVE/main_file_cache.dat2
+          test -f .data/cache/LIVE/main_file_cache.idx255
+          test -f .data/cache/SERVER/main_file_cache.dat2
+          test -f .data/cache/SERVER/main_file_cache.idx255

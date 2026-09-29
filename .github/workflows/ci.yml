@@ -5,6 +5,11 @@ permissions:
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
   pull_request:
     paths-ignore:
       - "**.md"
@@ -70,7 +75,8 @@ jobs:
       # "Server ready" line within the timeout.
       - name: Boot server to ready
         run: |
-          ./gradlew generateRsa
+          ./gradlew generateRsa :example-plugin:jar
+          cp example-plugin/build/libs/example-plugin.jar plugins/example-plugin.jar
           [ -f game.yml ] || cp game.example.yml game.yml
           ./gradlew run -q > boot.log 2>&1 &
           GRADLE_PID=$!
@@ -86,6 +92,27 @@ jobs:
           else
             echo "Server did not reach ready state"; tail -40 boot.log; exit 1
           fi
+
+          # "Server ready" is not enough for external plugins: deferred callbacks may resolve
+          # helper classes on later game cycles. Keep the process alive briefly and reject
+          # post-ready classloading failures before declaring the boot healthy.
+          sleep 10
+          if ! kill -0 $GRADLE_PID 2>/dev/null; then
+            echo "Server exited during the post-ready stability window"
+            tail -80 boot.log
+            exit 1
+          fi
+          if grep -Eq "NoClassDefFoundError|ClassNotFoundException" boot.log; then
+            echo "Post-ready classloading failure detected"
+            grep -E "NoClassDefFoundError|ClassNotFoundException" boot.log | tail -20
+            exit 1
+          fi
+          if ! grep -q "EXTERNAL_PLUGIN_DEFERRED_CLASS_OK" boot.log; then
+            echo "External plugin deferred-class probe did not execute"
+            tail -100 boot.log
+            exit 1
+          fi
+
           kill $GRADLE_PID 2>/dev/null || true
 
       - name: Upload boot log

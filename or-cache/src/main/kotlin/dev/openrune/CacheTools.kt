@@ -9,13 +9,13 @@ import dev.openrune.cache.tools.cacheTool
 import dev.openrune.cache.tools.cs2.PackCs2
 import dev.openrune.cache.tools.cs2.UnpackDefaultCs2
 import dev.openrune.cache.tools.iftype.PackIfType
-import dev.openrune.cache.tools.tasks.impl.PackModels
-import dev.openrune.cache.tools.tasks.impl.PackSprites
-import dev.openrune.cache.tools.tasks.impl.PackWorldMap
 import dev.openrune.cache.tools.incremental.CacheVerification
 import dev.openrune.cache.tools.incremental.IncrementalSession
 import dev.openrune.cache.tools.tasks.CacheTask
 import dev.openrune.cache.tools.tasks.TaskType
+import dev.openrune.cache.tools.tasks.impl.PackModels
+import dev.openrune.cache.tools.tasks.impl.PackSprites
+import dev.openrune.cache.tools.tasks.impl.PackWorldMap
 import dev.openrune.codegen.startEnumGeneration
 import dev.openrune.codegen.startGeneration
 import dev.openrune.definition.GameValGroupTypes
@@ -146,7 +146,7 @@ fun buildCache(type: TaskType, force: Boolean = false) {
         buildServerCache(packTasks, packs)
     }
 
-    finalizeServerCache(force)
+    finalizeServerCache(force, verifySourceContracts = type == TaskType.BUILD)
 }
 
 private fun buildServerCache(packTasks: List<CacheTask>, packs: PluginPacks) {
@@ -166,10 +166,17 @@ private fun buildServerCache(packTasks: List<CacheTask>, packs: PluginPacks) {
     newCacheTool(TaskType.SERVER_CACHE_BUILD, serverOnly + serverTasks).initialize()
 }
 
-private fun finalizeServerCache(force: Boolean = false) {
+private fun finalizeServerCache(
+    force: Boolean = false,
+    verifySourceContracts: Boolean = false,
+) {
     val cache = Cache.load(File(getServerCacheLocation()).toPath())
     GamevalDumper.dumpCols(cache, revision.first)
-    GamevalDumper.dumpComponents(cache, revision.first)
+    GamevalDumper.dumpComponents(
+        cache,
+        revision.first,
+        verifySourceContracts = verifySourceContracts,
+    )
 
     val tableTypes =
         GameValHandler.readGameVal(GameValGroupTypes.TABLETYPES, cache = cache, revision.first)

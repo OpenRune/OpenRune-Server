@@ -2,6 +2,7 @@ package example
 
 import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
+import org.rsmod.api.game.process.GameLifecycle
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.script.onCommand
 import org.rsmod.plugin.scripts.PluginScript
@@ -24,6 +25,17 @@ class ExamplePlugin @Inject constructor() : PluginScript() {
 
     override fun ScriptContext.startup() {
         logger.info { "Example plugin started (revision $REVISION)." }
+
+        var cycles = 0
+        eventBus.subscribeUnbound(GameLifecycle.StartCycle::class.java) {
+            cycles++
+            if (cycles == 3) {
+                // Intentionally reference this helper only after startup. If the external plugin
+                // classloader was closed at Server ready, resolving this class will fail here.
+                logger.info { DeferredRuntimeProbe.MARKER }
+            }
+        }
+
         onCommand("example") {
             desc = "Example plugin test command."
             cheat { player.mes("Example v$REVISION! (from the external example plugin)") }

@@ -1,0 +1,403 @@
+[[interface]]
+name = "interface.commands_menu"
+# Keep this interface standalone for revision 240. The current FileStore inherit merger
+# resolves an overlay back onto the inherited base id/name, which would make the
+# component.commands_menu:* mappings point at the wrong interface.
+width = 512
+height = 334
+
+[[component]]
+name = "commands_blocker"
+type = "layer"
+x = 18
+y = 56
+width = 476
+height = 254
+no_click_through = true
+
+[[component]]
+name = "commands_panel"
+type = "rectangle"
+x = 18
+y = 56
+width = 476
+height = 254
+color = "#211D17"
+filled = true
+
+[[component]]
+name = "title"
+type = "text"
+x = 145
+y = 10
+width = 222
+height = 20
+text = "Commands"
+font = "bold"
+line_height = 14
+h_align = "center"
+v_align = "center"
+color = "#FF981F"
+
+[[component]]
+name = "close"
+type = "layer"
+x = 470
+y = 4
+width = 38
+height = 32
+options = ["Close"]
+
+[[component]]
+name = "player"
+type = "text"
+x = 398
+y = 12
+width = 66
+height = 16
+text = "Player"
+font = "small"
+line_height = 12
+h_align = "right"
+v_align = "center"
+color = "#D0C4A8"
+
+[[component]]
+name = "search"
+type = "text"
+x = 148
+y = 63
+width = 328
+height = 16
+text = "Search: all"
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#D0C4A8"
+
+[[component]]
+name = "category_all"
+type = "text"
+x = 28
+y = 84
+width = 108
+height = 18
+text = "All commands"
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "category_travel"
+type = "text"
+x = 28
+y = 106
+width = 108
+height = 18
+text = "Travel"
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "category_account"
+type = "text"
+x = 28
+y = 128
+width = 108
+height = 18
+text = "Account"
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "category_social"
+type = "text"
+x = 28
+y = 150
+width = 108
+height = 18
+text = "Social"
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "category_utility"
+type = "text"
+x = 28
+y = 172
+width = 108
+height = 18
+text = "Utility"
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "category_staff"
+type = "text"
+x = 28
+y = 194
+width = 108
+height = 18
+text = "Staff"
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "category_development"
+type = "text"
+x = 28
+y = 216
+width = 108
+height = 18
+text = "Development"
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "row_0"
+type = "text"
+x = 150
+y = 84
+width = 326
+height = 18
+text = ""
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "row_1"
+type = "text"
+x = 150
+y = 103
+width = 326
+height = 18
+text = ""
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "row_2"
+type = "text"
+x = 150
+y = 122
+width = 326
+height = 18
+text = ""
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "row_3"
+type = "text"
+x = 150
+y = 141
+width = 326
+height = 18
+text = ""
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "row_4"
+type = "text"
+x = 150
+y = 160
+width = 326
+height = 18
+text = ""
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "row_5"
+type = "text"
+x = 150
+y = 179
+width = 326
+height = 18
+text = ""
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "row_6"
+type = "text"
+x = 150
+y = 198
+width = 326
+height = 18
+text = ""
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "row_7"
+type = "text"
+x = 150
+y = 217
+width = 326
+height = 18
+text = ""
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+options = ["Select"]
+
+[[component]]
+name = "page"
+type = "text"
+x = 150
+y = 237
+width = 244
+height = 16
+text = "0 results / page 1 of 1"
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#D0C4A8"
+
+[[component]]
+name = "previous"
+type = "text"
+x = 410
+y = 236
+width = 28
+height = 18
+text = "<"
+font = "bold"
+line_height = 12
+h_align = "center"
+v_align = "center"
+color = "#FF981F"
+options = ["Previous"]
+
+[[component]]
+name = "next"
+type = "text"
+x = 448
+y = 236
+width = 28
+height = 18
+text = ">"
+font = "bold"
+line_height = 12
+h_align = "center"
+v_align = "center"
+color = "#FF981F"
+options = ["Next"]
+
+[[component]]
+name = "detail_name"
+type = "text"
+x = 28
+y = 258
+width = 150
+height = 16
+text = "::command"
+font = "bold"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+
+[[component]]
+name = "detail_desc"
+type = "text"
+x = 28
+y = 276
+width = 342
+height = 28
+text = "Select a command."
+font = "small"
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "detail_rights"
+type = "text"
+x = 378
+y = 258
+width = 98
+height = 16
+text = "Player"
+font = "small"
+line_height = 12
+h_align = "right"
+v_align = "center"
+color = "#D0C4A8"
+
+[[component]]
+name = "use"
+type = "text"
+x = 398
+y = 280
+width = 78
+height = 22
+text = "Use"
+font = "bold"
+line_height = 12
+h_align = "center"
+v_align = "center"
+color = "#FF981F"
+options = ["Use"]

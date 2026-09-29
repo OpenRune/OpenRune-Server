@@ -8,6 +8,7 @@ import io.github.classgraph.ClassGraph
 import java.io.File
 import java.net.URLClassLoader
 import java.util.Properties
+import java.util.UUID
 import java.util.jar.JarFile
 import org.rsmod.plugin.module.PluginModule
 import org.rsmod.plugin.scripts.PluginScript
@@ -63,8 +64,10 @@ public data class PluginStatus(
  * on each of its script instances, then every `EventBus` (unbound/keyed/suspend) subscriber, every
  * `CheatCommandMap` command, and every `EngineQueueCache` "has a script" flag whose backing
  * lambda/method-reference class (or, for the queue cache, the classloader recorded at
- * registration) came from that source's classloader is removed. The source is then re-scanned and
- * its scripts' `startup()` is re-run against fresh instances.
+ * registration) came from that source's classloader is removed. Jar sources are loaded through a
+ * private runtime shadow copy, so the authoritative jar in `plugins/` stays replaceable on Windows
+ * while the plugin is active. The source is then re-scanned and its scripts' `startup()` is re-run
+ * against fresh instances.
  *
  * This still doesn't make a reload a full undo of everything the old code did:
  * - [PluginScript.shutdown] is opt-in. The engine has no way to know about or automatically
@@ -83,6 +86,7 @@ public object ExternalPluginLoader {
 
     private val loadedSourcePaths = mutableSetOf<String>()
     private val loadedClassLoaders = mutableMapOf<String, ClassLoader>()
+    private val loadedRuntimeCopies = mutableMapOf<String, File>()
     private val loadedScripts = mutableMapOf<String, List<PluginScript>>()
     private val disabledNames = mutableSetOf<String>()
     private var stateLoaded = false
@@ -91,6 +95,17 @@ public object ExternalPluginLoader {
         DirectoryConstants.PLUGINS_PATH.toFile().apply { mkdirs() }
     }
     private val stateFile: File by lazy { File(pluginsDir, STATE_FILE_NAME) }
+    private val runtimeDir: File by lazy {
+        DirectoryConstants.DATA_PATH
+            .resolve("plugin-runtime")
+            .toFile()
+            .apply {
+                // A previous process may have left shadow jars behind. They are never authoritative;
+                // the source under plugins/ is, so start every process with a clean runtime shadow.
+                deleteRecursively()
+                mkdirs()
+            }
+    }
 
     private fun ensureStateLoaded() {
         if (stateLoaded) return
@@ -209,39 +224,39 @@ public object ExternalPluginLoader {
 
     private fun classLoaderFor(source: File): ClassLoader =
         loadedClassLoaders.getOrPut(sourceName(source)) {
-            URLClassLoader(arrayOf(source.toURI().toURL()), javaClass.classLoader)
+            newPluginClassLoader(source)
         }
 
-    /**
-     * Closes every currently-loaded plugin's [URLClassLoader] (from boot and from [load]) so
-     * their jar files stop being held open on disk — on Windows in particular, an open
-     * `URLClassLoader` locks its jar against being overwritten/deleted (see [unload]). Call this
-     * once, right after boot finishes, so plugin jars can be rebuilt and replaced on disk while
-     * the server keeps running, without having to `::plugindisable` every plugin first.
-     *
-     * The loaders stay tracked in [loadedClassLoaders] after this (just closed, not removed), so
-     * [unload]/[load] on any of these sources later still correctly identifies and removes their
-     * handlers by classloader identity — closing a [ClassLoader] doesn't change its identity, and
-     * repeat `close()` calls are a documented no-op.
-     *
-     * The trade-off: closing a classloader only prevents it from loading classes it *hasn't*
-     * loaded yet. A plugin's script classes and everything referenced from `startup()` are almost
-     * always already loaded by this point (a Kotlin lambda's class loads when the lambda literal
-     * is evaluated, not when its body later runs, so this covers the common case) — but a plugin
-     * that lazily reaches a helper class it hasn't touched yet after this point could fail to
-     * load it. If that's a problem for a given plugin, don't call this, or reload that plugin
-     * (fresh, unclosed classloader) after replacing its jar instead of relying on it staying open.
-     */
-    public fun releaseAllClassLoaders(): Int {
-        var released = 0
-        for (loader in loadedClassLoaders.values) {
-            if (loader is URLClassLoader) {
-                loader.close()
-                released++
+    private fun newPluginClassLoader(source: File): URLClassLoader {
+        val runtimeSource =
+            if (source.isDirectory) {
+                source
+            } else {
+                val id = sourceName(source)
+                val shadow =
+                    File(
+                        runtimeDir,
+                        "$id-${UUID.randomUUID()}.jar",
+                    )
+                source.copyTo(shadow, overwrite = false)
+                loadedRuntimeCopies[id] = shadow
+                shadow
             }
-        }
-        return released
+        return URLClassLoader(arrayOf(runtimeSource.toURI().toURL()), javaClass.classLoader)
     }
+
+    /**
+     * Kept only for source compatibility with callers from older builds.
+     *
+     * Active plugin classloaders must stay open until [unload]. Closing them after boot is unsafe:
+     * event handlers, HTTP bridge callbacks, coroutines and other deferred work may legitimately
+     * resolve plugin helper classes later and would fail with `NoClassDefFoundError`.
+     */
+    @Deprecated(
+        message = "Active plugin classloaders must remain open; unload the plugin instead.",
+        level = DeprecationLevel.WARNING,
+    )
+    public fun releaseAllClassLoaders(): Int = 0
 
     /** Discovers [PluginModule]s in every enabled, manifest-valid source at boot. */
     public fun loadModulesAtBoot(): List<AbstractModule> {
@@ -317,7 +332,7 @@ public object ExternalPluginLoader {
             unload(source, scriptContext)
         }
 
-        val loader = URLClassLoader(arrayOf(source.toURI().toURL()), javaClass.classLoader)
+        val loader = newPluginClassLoader(source)
         val modules = scanSourceModules(source, loader)
         val effectiveInjector =
             if (modules.isEmpty()) injector else injector.createChildInjector(modules)
@@ -356,11 +371,9 @@ public object ExternalPluginLoader {
      * classloader defined, and closes that classloader. See the class docs for what this does and
      * doesn't cover.
      *
-     * Closing the classloader matters on Windows in particular: a [URLClassLoader] over a jar
-     * keeps that jar file open (and thus locked against being overwritten/deleted) until closed —
-     * merely dropping the last reference to it and waiting on GC does not release the file handle
-     * in any bounded time. Without this, rebuilding and replacing an already-loaded plugin's jar
-     * would fail with a `FileSystemException` ("used by another process") on Windows.
+     * Jar plugins run from a private shadow copy, so the authoritative source jar in `plugins/`
+     * stays replaceable while the plugin is active. Unload closes the classloader and deletes that
+     * runtime shadow before a reload creates the next one.
      */
     private fun unload(source: File, scriptContext: ScriptContext) {
         val id = sourceName(source)
@@ -373,6 +386,7 @@ public object ExternalPluginLoader {
         val commands = scriptContext.cheatCommandMap.removeByClassLoader(loader)
         val queues = scriptContext.engineQueueCache.removeByClassLoader(loader)
         (loader as? URLClassLoader)?.close()
+        loadedRuntimeCopies.remove(id)?.delete()
         loadedSourcePaths -= source.canonicalPath
         logger.info {
             "plugins/$id: unloaded - ran ${scripts.size} shutdown hook(s), removed $events " +

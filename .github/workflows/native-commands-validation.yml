@@ -1,0 +1,38 @@
+name: Native Commands Validation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - "engine/game/src/main/kotlin/org/rsmod/game/cheat/CheatHandler.kt"
+      - "api/cheat/src/main/kotlin/org/rsmod/api/cheat/CheatHandlerBuilder.kt"
+      - "content/other/commands/**"
+      - ".github/workflows/native-commands-validation.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-commands-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  direct-modules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+      - name: Compile rights metadata + commands pack
+        run: ./gradlew :engine:game:compileKotlin :api:cheat:compileKotlin :content:other:commands:commands-pack:compileKotlin --no-daemon --console=plain
+      - name: Explain full commands compile precondition
+        run: |
+          echo "The full :content:other:commands compile depends on generated OpenRune tables."
+          echo "Run the normal OpenRune install/codegen flow before full-project compilation."
+
