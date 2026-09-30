@@ -111,15 +111,6 @@ object SpecValidator {
                     for (name in selector.sequence) {
                         if (name !in names) error("${scope.prefix}rotation references '$name' which does not exist.")
                     }
-                is Selector.Conditional -> {
-                    for ((cond, name) in selector.branches) {
-                        if (name !in names) error("${scope.prefix}conditional references '$name' which does not exist.")
-                        condition(cond, scope)
-                    }
-                    if (selector.fallback !in names) {
-                        error("${scope.prefix}conditional fallback '${selector.fallback}' does not exist.")
-                    }
-                }
             }
         }
 

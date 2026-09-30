@@ -10,11 +10,6 @@ sealed interface Selector {
     }
 
     data class Rotation(val sequence: List<String>, val randomStart: Boolean = false) : Selector
-
-    data class Conditional(
-        val branches: List<Pair<Condition, String>>,
-        val fallback: String,
-    ) : Selector
 }
 
 data class WeightedRef(

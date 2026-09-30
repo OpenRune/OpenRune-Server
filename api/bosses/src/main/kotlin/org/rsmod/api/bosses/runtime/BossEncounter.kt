@@ -160,7 +160,6 @@ class BossEncounter(
         when (selector) {
             is Selector.WeightedRandom -> selectWeightedRandom(selector, tick, target)
             is Selector.Rotation -> selectRotation(selector)
-            is Selector.Conditional -> null
         }
 
     fun selectPriorityAbility(tick: Int, target: Player?): String? {
