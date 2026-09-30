@@ -872,10 +872,3 @@ isServerOnly = true
 type = "BOOLEAN"
 defaultInt = 0
 isMembers = true
-
-[[params]]
-id = "param.demonbane"
-isServerOnly = true
-type = "BOOLEAN"
-defaultInt = 0
-isMembers = true

@@ -3581,7 +3581,6 @@ tradeable = false
 id = "obj.br_mithril_scimitar"
 inherit = "obj.br_mithril_scimitar"
 [item.params]
-"param.demonbane"=true
 "param.spell_castxp"=270
 
 
@@ -3654,7 +3653,6 @@ inherit = "obj.br_moonclan_legs"
 id = "obj.br_willow_bow"
 inherit = "obj.br_willow_bow"
 [item.params]
-"param.demonbane"=true
 "param.spell_castxp"=360
 
 
@@ -3755,7 +3753,6 @@ inherit = "obj.placeholder_vetion_pet2"
 id = "obj.br_adamant_scimitar"
 inherit = "obj.br_adamant_scimitar"
 [item.params]
-"param.demonbane"=true
 "param.spell_castxp"=435
 
 
@@ -7575,7 +7572,6 @@ inherit = "obj.silverlight"
 weaponCategory="SlashSword"
 tradeable = false
 [item.params]
-"param.demonbane"=true
 "param.equipment_sound"=2248
 "param.attack_anim_stance1"="seq.human_sword_slash"
 "param.attack_sound_stance1"=2500
@@ -11631,7 +11627,6 @@ inherit = "obj.agrith_silverlight_dyed"
 weaponCategory="SlashSword"
 tradeable = false
 [item.params]
-"param.demonbane"=true
 "param.equipment_sound"=2248
 "param.attack_anim_stance1"="seq.human_sword_slash"
 "param.attack_sound_stance1"=2500
@@ -11651,7 +11646,6 @@ inherit = "obj.darklight"
 weaponCategory="SlashSword"
 tradeable = false
 [item.params]
-"param.demonbane"=true
 "param.equipment_sound"=2248
 "param.attack_anim_stance1"="seq.human_sword_slash"
 "param.attack_sound_stance1"=2500
@@ -17165,7 +17159,6 @@ inherit = "obj.arclight"
 weaponCategory="SlashSword"
 tradeable = false
 [item.params]
-"param.demonbane"=true
 "param.equipment_sound"=2248
 "param.attack_anim_stance1"="seq.human_sword_slash"
 "param.attack_sound_stance1"=2500
@@ -50037,8 +50030,6 @@ weaponCategory="SlashSword"
 id = "obj.bone_claws"
 inherit = "obj.bone_claws"
 weaponCategory="Claw"
-[item.params]
-"param.demonbane"=true
 
 
 [[item]]
@@ -52359,8 +52350,6 @@ id = "obj.emberlight"
 inherit = "obj.emberlight"
 weaponCategory="SlashSword"
 tradeable = false
-[item.params]
-"param.demonbane"=true
 
 
 [[item]]
@@ -52547,7 +52536,6 @@ inherit = "obj.scorching_bow"
 weaponCategory="Bow"
 tradeable = false
 [item.params]
-"param.demonbane"=true
 "param.proj_type"="projanim.arrow"
 "param.attack_range"=10
 "param.attackrate"=5
