@@ -103,6 +103,7 @@ constructor(
         onCommand("tele", "Teleport to coordgrid", ::tele) {
             invalidArgs = "Usage: ::tele mx mz [level](e.g. ::tele 3200 3200 0)"
         }
+        onCommand("zulrah", "Teleport to Zul-Andra, then board the boat", ::zulrah)
         onCommand("telezone", "Teleport to zone key", ::teleZone) {
             invalidArgs = "Use as ::telezone zoneX zoneY level (ex: 400 400 0)"
         }
@@ -408,6 +409,14 @@ constructor(
             }
         }
 
+    private fun zulrah(cheat: Cheat) =
+        with(cheat) {
+            protectedAccess.launch(player) {
+                player.mes("Teleported to Zul-Andra. Board the boat to start Zulrah.")
+                telejump(CoordGrid(2196, 3056, 0), TeleportType.Exempt)
+            }
+        }
+
     private fun teleZone(cheat: Cheat) =
         with(cheat) {
             val args = if (args.size == 1) args[0].split(",") else args
@@ -650,10 +659,15 @@ constructor(
                 )
                 return
             }
-            val typeId = "npc.${args[0]}".asRSCM()
+            val npcName =
+                when (args[0].lowercase()) {
+                    "zulrah" -> "snakeboss_boss_ranged"
+                    else -> args[0]
+                }
+            val typeId = "npc.$npcName".asRSCM()
             val type = ServerCacheManager.getNpc(typeId)
             if (type == null) {
-                player.mes("That npc does not exist: npc.${args[0]}")
+                player.mes("That npc does not exist: npc.$npcName")
                 return
             }
             val count = args.getOrNull(1)?.toIntOrNull() ?: 100
@@ -664,7 +678,7 @@ constructor(
                     hook.onKill(context)
                 }
             }
-            player.mes("Fired death-kill hooks for `npc.${args[0]}` x$count.")
+            player.mes("Fired death-kill hooks for `npc.$npcName` x$count.")
         }
 
     private fun invAdd(cheat: Cheat) =
