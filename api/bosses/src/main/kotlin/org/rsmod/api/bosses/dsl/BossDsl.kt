@@ -608,11 +608,8 @@ class PhaseBuilder(private val name: String) {
         forceWhen(condition, ability.name, once)
     }
 
-    fun weightedSelectorRandom(
-        noRepeatBias: Double = 0.5,
-        block: WeightedRandomBuilder.() -> Unit,
-    ) {
-        selector = weightedRandom(noRepeatBias, block)
+    fun weightedSelectorRandom(block: WeightedRandomBuilder.() -> Unit) {
+        selector = weightedRandom(block)
     }
 
     fun rotationSelector(block: RotationBuilder.() -> Unit) {

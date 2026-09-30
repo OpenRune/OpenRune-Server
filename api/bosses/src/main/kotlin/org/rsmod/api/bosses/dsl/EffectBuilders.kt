@@ -324,18 +324,11 @@ fun faceTile(at: TargetExpr.Single): Effect = Effect.FaceTile(at)
 fun randomWalkableTile(radius: Int, of: TargetExpr.Single = TargetExpr.Self): TargetExpr =
     TargetExpr.RandomWalkableTile(radius, of)
 
-fun weightedRandom(
-    noRepeatBias: Double = 0.5,
-    block: WeightedRandomBuilder.() -> Unit,
-): Selector.WeightedRandom =
-    WeightedRandomBuilder().apply {
-        this.noRepeatBias = noRepeatBias
-        block()
-    }.build()
+fun weightedRandom(block: WeightedRandomBuilder.() -> Unit): Selector.WeightedRandom =
+    WeightedRandomBuilder().apply(block).build()
 
 @BossDsl
 class WeightedRandomBuilder internal constructor() {
-    var noRepeatBias: Double = 0.5
     private val entries = mutableListOf<WeightedRef>()
 
     @BossDsl
@@ -365,7 +358,7 @@ class WeightedRandomBuilder internal constructor() {
         cooldown: Int = 0,
     ): RandomPending = RandomPending(ability, weight, requires, cooldown)
 
-    internal fun build(): Selector.WeightedRandom = Selector.WeightedRandom(entries, noRepeatBias)
+    internal fun build(): Selector.WeightedRandom = Selector.WeightedRandom(entries)
 }
 
 fun rotation(block: RotationBuilder.() -> Unit): Selector.Rotation = RotationBuilder().apply(block).build()

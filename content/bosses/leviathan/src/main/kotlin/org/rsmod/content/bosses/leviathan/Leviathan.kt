@@ -144,7 +144,7 @@ internal constructor(
             }
 
             phase(FIGHT_PHASE) {
-                weightedSelectorRandom(noRepeatBias = 0.0) {
+                weightedSelectorRandom {
                     +random(bite, weight = 1, requires = targetWithin(BITE_RANGE) and !lastAbility(bite))
                     +random(volley, weight = 1)
                 }
@@ -171,7 +171,7 @@ internal constructor(
                 attackRate = LeviathanFights.ENRAGED_INTERVAL,
             ) {
                 entry = enrageEntry.name
-                weightedSelectorRandom(noRepeatBias = 0.0) { +random(enragedOrb, weight = 1) }
+                weightedSelectorRandom { +random(enragedOrb, weight = 1) }
                 forceEvery(LeviathanFights.ENRAGED_ROCKFALL_INTERVAL, enragedRockfall)
             }
         }

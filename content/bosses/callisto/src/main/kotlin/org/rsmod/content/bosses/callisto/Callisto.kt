@@ -184,7 +184,7 @@ abstract class WildernessBear(
                 }
 
             phase(PHASE_FIGHT) {
-                weightedSelectorRandom(noRepeatBias = 0.0) {
+                weightedSelectorRandom {
                     +random(melee, weight = MELEE_WEIGHT, requires = WithinMeleeRange)
                     +random(ranged, weight = RANGED_WEIGHT)
                     +random(magic, weight = MAGIC_WEIGHT)
