@@ -6,6 +6,7 @@ import org.rsmod.game.entity.Player
 sealed interface Condition {
     data class HpBelow(val fraction: Double, val inclusive: Boolean = false) : Condition
     data class HpExact(val hp: Int) : Condition
+
     /**
      * Conditions on the player hit being handled; only valid in an incoming rule's condition or a
      * hit reaction's `requires`.

@@ -9,7 +9,6 @@ import kotlin.math.abs
 import kotlin.math.sign
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.bosses.spec.HitType as BossHitType
-import org.rsmod.game.headbar.Headbar as EngineHeadbar
 import org.rsmod.api.combat.commons.CombatEffects
 import org.rsmod.api.combat.commons.DragonfireProtection
 import org.rsmod.api.combat.commons.player.combatPlayDefendAnim
@@ -35,7 +34,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.EntityExactMove
 import org.rsmod.game.entity.util.PathingEntityCommon
-import org.rsmod.game.hit.HitType
+import org.rsmod.game.headbar.Headbar as EngineHeadbar
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid

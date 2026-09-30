@@ -377,7 +377,6 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
         private const val MELEE_RANGE_TILES = 1
         private const val RETREAT_DISTANCE = 3
 
-
         private const val PRAYER_STALL_TICKS = 6
         private const val DEFENCELESS_DELAY_TICKS = 30
         private const val DEFENCELESS_MODEL_1 = 55475

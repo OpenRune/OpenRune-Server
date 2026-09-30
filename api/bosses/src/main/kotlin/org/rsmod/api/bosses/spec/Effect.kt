@@ -208,8 +208,10 @@ sealed interface Effect {
     }
 
     data class Run(val ability: String) : Effect
+
     /** Scripted phase switch; does not run the phase's [PhaseSpec.entry]. */
     data class TransitionTo(val phase: String) : Effect
+
     /** Runs a Kotlin handler; [at] is resolved here and passed on as the handler's tile. */
     data class External(
         val handler: String,
