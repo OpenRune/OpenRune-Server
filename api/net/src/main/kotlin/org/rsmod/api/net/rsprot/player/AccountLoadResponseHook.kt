@@ -24,6 +24,7 @@ import org.rsmod.api.realm.RealmConfig
 import org.rsmod.api.registry.account.AccountRegistry
 import org.rsmod.api.registry.player.PlayerRegistry
 import org.rsmod.api.registry.player.isSuccess
+import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.events.EventBus
 import org.rsmod.game.GameUpdate
 import org.rsmod.game.GameUpdate.Companion.isCountdown
@@ -300,12 +301,12 @@ class AccountLoadResponseHook(
 
     private fun Player.applyConfigTransforms(config: RealmConfig) {
         if (!newAccount) {
-            // This is very hacky but updating be weird
             val hasExit = attr[LOGIN_EXIT_COORD]
             if (hasExit != null) {
                 coords = CoordGrid(hasExit)
                 attr.remove(LOGIN_EXIT_COORD)
             }
+            recoverAbandonedInstance(config.spawnCoord)
             return
         }
 
@@ -548,5 +549,11 @@ class AccountLoadResponseHook(
 
         @Suppress("konsist.avoid usage of stdlib Random in functions")
         private fun randomInt(): Int = java.util.concurrent.ThreadLocalRandom.current().nextInt()
+    }
+}
+
+internal fun Player.recoverAbandonedInstance(spawn: CoordGrid) {
+    if (coords in RegionRegistry.workingAreaSmall || coords in RegionRegistry.workingAreaLarge) {
+        coords = spawn
     }
 }

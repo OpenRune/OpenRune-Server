@@ -7,6 +7,23 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+internal fun nextUnlockedFormIndex(
+    formCount: Int,
+    currentIndex: Int,
+    isUnlocked: (Int) -> Boolean,
+): Int? {
+    if (formCount < 2 || currentIndex !in 0 until formCount) {
+        return null
+    }
+    for (offset in 1 until formCount) {
+        val index = (currentIndex + offset) % formCount
+        if (isUnlocked(index)) {
+            return index
+        }
+    }
+    return null
+}
+
 class PetMetamorphosisScript
 @Inject
 constructor(private val followers: PetFollowers, private val morphs: PetMorphs) : PluginScript() {
@@ -17,7 +34,7 @@ constructor(private val followers: PetFollowers, private val morphs: PetMorphs) 
             }
             for (form in pet.forms) {
                 val op = OPS.firstOrNull { petOpIndex(form.npc, it) != null } ?: continue
-                onPetOp(form.npc, op) { metamorphose(it, pet, form) }
+                onPetOp(form.npc, op) { metamorphose(it, pet) }
             }
         }
         registerChinchompa()
@@ -38,8 +55,14 @@ constructor(private val followers: PetFollowers, private val morphs: PetMorphs) 
         }
     }
 
-    private suspend fun ProtectedAccess.metamorphose(npc: Npc, pet: Pet, current: PetForm) {
+    private suspend fun ProtectedAccess.metamorphose(npc: Npc, pet: Pet) {
         if (!followers.requireOwned(this, npc)) {
+            return
+        }
+        // Read the current form from the follower item when clicked instead of the form
+        // captured when the NPC operation was registered.
+        val (followingPet, current) = Pets.forObj(player.followerObj) ?: return
+        if (followingPet.key != pet.key) {
             return
         }
         val next = nextForm(pet, current)
@@ -59,14 +82,11 @@ constructor(private val followers: PetFollowers, private val morphs: PetMorphs) 
     }
 
     private fun ProtectedAccess.nextForm(pet: Pet, current: PetForm): PetForm? {
-        val start = pet.forms.indexOf(current)
-        for (offset in 1 until pet.forms.size) {
-            val form = pet.forms[(start + offset) % pet.forms.size]
-            if (morphs.unlocked(player, form)) {
-                return form
-            }
-        }
-        return null
+        val start = pet.forms.indexOfFirst { it.objId == current.objId }
+        val nextIndex =
+            nextUnlockedFormIndex(pet.forms.size, start) { index -> morphs.unlocked(player, pet.forms[index]) }
+                ?: return null
+        return pet.forms[nextIndex]
     }
 
     private suspend fun ProtectedAccess.metamorphoseChinchompa(npc: Npc, pet: Pet, current: PetForm) {
