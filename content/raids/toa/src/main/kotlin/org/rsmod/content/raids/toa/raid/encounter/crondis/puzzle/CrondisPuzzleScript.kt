@@ -4,10 +4,15 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.combat.commons.npc.combatDefaultRetaliate
 import org.rsmod.api.config.Constants
+import org.rsmod.api.npc.access.StandardNpcAccess
+import org.rsmod.api.npc.interact.AiPlayerInteractions
+import org.rsmod.api.npc.vars.typePlayerUidVarn
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onAiTimer
 import org.rsmod.api.script.onNpcHit
+import org.rsmod.api.script.onNpcQueue
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpLoc1
@@ -17,6 +22,7 @@ import org.rsmod.api.script.onOpNpcU
 import org.rsmod.api.script.onOpObj3
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.loc.BoundLocInfo
@@ -29,7 +35,12 @@ import org.rsmod.plugin.scripts.ScriptContext
  * CrondisPuzzleEncounter.handleWaterfall / waterPalm. Every handler first finds the player's
  * room, so nothing here works outside it.
  */
-class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList) : PluginScript() {
+class CrondisPuzzleScript
+@Inject
+constructor(
+    private val playerList: PlayerList,
+    private val interactions: AiPlayerInteractions,
+) : PluginScript() {
 
     override fun ScriptContext.startup() {
         val containerType = ServerCacheManager.getItem(CrondisObjs.CONTAINER.asRSCM(RSCMType.OBJ))!!
@@ -61,6 +72,13 @@ class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList
                 CrondisPuzzleEncounter.onCrocodileHit(npc, player)
             }
         }
+        onNpcQueue(crocodileType, "queue.com_retaliate_player") { crocodileRetaliate() }
+    }
+
+    private fun StandardNpcAccess.crocodileRetaliate() {
+        val attacker = interactions.resolvePlayer(npc.aggressivePlayer) ?: return
+        if (attacker.containerSlot() != null) return
+        npc.combatDefaultRetaliate(interactions)
     }
 
     private val ProtectedAccess.room: CrondisPuzzleEncounter?
@@ -192,3 +210,5 @@ class CrondisPuzzleScript @Inject constructor(private val playerList: PlayerList
         const val DRINK_BELOW_ENERGY = 5_000
     }
 }
+
+private val Npc.aggressivePlayer by typePlayerUidVarn("varn.aggressive_player")
