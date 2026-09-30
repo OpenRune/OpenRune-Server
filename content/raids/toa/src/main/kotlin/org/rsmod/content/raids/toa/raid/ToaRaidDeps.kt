@@ -17,6 +17,8 @@ import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.world.WorldRepository
+import org.rsmod.api.route.RouteFactory
+import org.rsmod.api.route.StepFactory
 import org.rsmod.content.other.consumables.potion.toa.ToaPotionEffect
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -60,6 +62,8 @@ constructor(
     val playerHitModifier: PlayerHitModifier,
     /** Walkable-tile checks for room hazards (Zebak's poison spread). */
     val collision: CollisionFlagMap,
+    val routeFactory: RouteFactory,
+    val stepFactory: StepFactory,
     /** The normal death's keep/lose rules, for the retrieval chest (ToaRetrieval). */
     val deathDrops: PlayerDeathDrops,
     /** Item values for the retrieval chest's fee. */
