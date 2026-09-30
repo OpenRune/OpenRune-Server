@@ -67,6 +67,7 @@ class EffectInterpreter(
             is Effect.IdleAnim -> effect.seq?.let(npc::setIdleAnim) ?: npc.clearIdleAnim()
             is Effect.ResetAnim -> npc.resetAnim()
             is Effect.ForceNext -> encounter.forceNext(effect.ability)
+            is Effect.NextAttackIn -> encounter.nextAttackTick = deps.mapClock.cycle + effect.ticks
             is Effect.Say -> npc.say(effect.text)
             is Effect.Sound -> {
                 val at = effect.at?.let(::resolveTile) ?: npc.coords

@@ -174,6 +174,24 @@ class SpecValidatorTest {
         assertHasError(SpecValidator.validateAll(emptyList()).map { it.message }, "No specs")
     }
 
+    @Test
+    fun `attack delays must be positive and name an ability, nextAttackIn must not be negative`() {
+        val base = spec(mapOf("a" to nextAttackIn(0)))
+        assertEquals(
+            emptyList<String>(),
+            SpecValidator.validate(base.copy(abilityAttackDelays = mapOf("a" to 4))).map { it.message },
+        )
+        assertHasError(
+            SpecValidator.validate(base.copy(abilityAttackDelays = mapOf("a" to 0))).map { it.message },
+            "attack delay '0'",
+        )
+        assertHasError(
+            SpecValidator.validate(base.copy(abilityAttackDelays = mapOf("missing" to 4))).map { it.message },
+            "attack delay 'missing' does not exist",
+        )
+        assertHasError(errorsFor(nextAttackIn(-1)), "NextAttackIn ticks '-1'")
+    }
+
     private fun errorsFor(effect: Effect): List<String> =
         SpecValidator.validate(spec(mapOf("a" to effect))).map { it.message }
 

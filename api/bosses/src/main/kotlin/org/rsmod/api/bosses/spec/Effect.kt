@@ -25,6 +25,13 @@ sealed interface Effect {
 
     /** Queues [ability] as the boss's next attack, once nothing else is holding it up. */
     data class ForceNext(val ability: String) : Effect
+
+    /**
+     * The next attack may start [ticks] from now, replacing the running ability's attack delay or
+     * the attack rate. [BossEncounter.busyUntil][org.rsmod.api.bosses.runtime.BossEncounter.busyUntil]
+     * still holds it back on top.
+     */
+    data class NextAttackIn(val ticks: Int) : Effect
     data class Say(val text: String) : Effect
 
     /** Plays [synth] to everyone within [radius] of [at] (the caster when null). */

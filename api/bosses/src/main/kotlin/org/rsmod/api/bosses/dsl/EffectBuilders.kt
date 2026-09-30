@@ -187,6 +187,8 @@ fun switch(varn: String, cases: List<Effect>, otherwise: Effect = Effect.NoOp): 
 
 fun interrupt(): Effect = Effect.Interrupt
 
+fun nextAttackIn(ticks: Int): Effect = Effect.NextAttackIn(ticks)
+
 fun area(sw: TargetExpr.Single, ne: TargetExpr.Single): Area = Area(sw, ne)
 
 fun randomFreeTiles(area: Area, count: IntRange): TileSet = TileSet.RandomFree(area, count)

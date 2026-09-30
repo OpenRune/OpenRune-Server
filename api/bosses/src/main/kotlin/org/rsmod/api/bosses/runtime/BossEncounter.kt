@@ -80,6 +80,26 @@ class BossEncounter(
      */
     var attackRateOverride: Int? = null
 
+    /**
+     * Tick the next attack may start, set by the running ability's attack delay or
+     * [Effect.NextAttackIn]. While null, the next attack waits the attack rate after
+     * [lastAbilityTick]. Cleared when the next attack starts.
+     */
+    var nextAttackTick: Int? = null
+
+    internal fun attackReady(tick: Int): Boolean {
+        val attackRate = attackRateOverride ?: currentPhase?.attackRate ?: spec.stats.attackRate
+        return tick >= (nextAttackTick ?: (lastAbilityTick + attackRate))
+    }
+
+    /** Records [ability] as started by the attack loop on [tick]; call before running it. */
+    internal fun startAttack(ability: String, tick: Int) {
+        lastAbilityTick = tick
+        lastAbilityName = ability
+        usedAbilities += ability
+        nextAttackTick = spec.abilityAttackDelays[ability]?.let { tick + it }
+    }
+
     internal val firedTriggers = mutableSetOf<Int>()
     internal val firedPhaseEntries = mutableSetOf<String>()
     private val cooldowns = mutableMapOf<String, Int>()

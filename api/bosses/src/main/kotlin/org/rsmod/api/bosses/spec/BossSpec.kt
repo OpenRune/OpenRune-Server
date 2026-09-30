@@ -8,6 +8,7 @@ data class BossSpec(
     val triggers: List<TriggerSpec>,
     val hitReactions: List<HitReaction> = emptyList(),
     val incomingRules: List<IncomingRule> = emptyList(),
+    val abilityAttackDelays: Map<String, Int> = emptyMap(),
 )
 
 data class BossStats(

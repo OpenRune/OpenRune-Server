@@ -21,6 +21,7 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
 
     private var stats = BossStats()
     private val abilities = mutableMapOf<String, Effect>()
+    private val abilityAttackDelays = mutableMapOf<String, Int>()
     private val phases = mutableMapOf<String, PhaseSpec>()
     private val triggers = mutableListOf<TriggerSpec>()
     private val hitReactions = mutableListOf<HitReaction>()
@@ -36,12 +37,13 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
     }
 
     fun ability(name: String, block: AbilityBuilder.() -> Unit): AbilityRef {
-        abilities[name] = AbilityBuilder().apply(block).build()
-        return AbilityRef(name)
+        val builder = AbilityBuilder().apply(block)
+        return ability(name, builder.build(), builder.attackDelay)
     }
 
-    fun ability(name: String, effect: Effect): AbilityRef {
+    fun ability(name: String, effect: Effect, attackDelay: Int? = null): AbilityRef {
         abilities[name] = effect
+        if (attackDelay != null) abilityAttackDelays[name] = attackDelay else abilityAttackDelays -= name
         return AbilityRef(name)
     }
 
@@ -93,7 +95,17 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
     }
 
     fun build(): BossSpec {
-        val spec = BossSpec(npcTypes, stats, abilities, phases, triggers, hitReactions, incomingRules)
+        val spec =
+            BossSpec(
+                npcTypes,
+                stats,
+                abilities,
+                phases,
+                triggers,
+                hitReactions,
+                incomingRules,
+                abilityAttackDelays,
+            )
         val errors = SpecValidator.validate(spec)
         if (errors.isNotEmpty()) {
             throw IllegalStateException(
@@ -217,6 +229,9 @@ internal constructor(private val builder: HitBuilder, private val range: IntRang
 class AbilityBuilder {
     private val effects = mutableListOf<Effect>()
 
+    /** See [BossSpec.abilityAttackDelays]; null keeps the attack rate. */
+    var attackDelay: Int? = null
+
     fun anim(seq: String, delay: Int = 0) {
         effects += Effect.Anim(seq, delay)
     }
@@ -304,6 +319,10 @@ class AbilityBuilder {
 
     fun interrupt() {
         effects += Effect.Interrupt
+    }
+
+    fun nextAttackIn(ticks: Int) {
+        effects += Effect.NextAttackIn(ticks)
     }
 
     fun transitionTo(phase: String) {

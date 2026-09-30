@@ -63,6 +63,12 @@ object SpecValidator {
                 selector(phase.selector, scope, abilityNames)
             }
 
+            for ((ability, delay) in spec.abilityAttackDelays) {
+                val scope = Scope("ability '$ability'")
+                requireAbility(ability, scope, "attack delay")
+                if (delay <= 0) error("${scope.prefix}attack delay '$delay' must be greater than 0.")
+            }
+
             spec.triggers.forEach { effect(it.effect, Scope("trigger")) }
             spec.triggers.forEach { condition(it.condition, Scope("trigger")) }
 
@@ -231,6 +237,10 @@ object SpecValidator {
                     }
                 is Effect.Wait ->
                     if (effect.ticks <= 0) error("${scope.prefix}Wait ticks '${effect.ticks}' must be greater than 0.")
+                is Effect.NextAttackIn ->
+                    if (effect.ticks < 0) {
+                        error("${scope.prefix}NextAttackIn ticks '${effect.ticks}' must not be negative.")
+                    }
                 is Effect.Interrupt ->
                     if (scope.deferred) {
                         error(
