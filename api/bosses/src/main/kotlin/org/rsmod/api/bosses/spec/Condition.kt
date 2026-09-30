@@ -12,6 +12,9 @@ sealed interface Condition {
     data class InPhase(val phase: String) : Condition
     data class AbilityUsed(val ability: String) : Condition
     data class VarnIn(val varn: String, val range: IntRange) : Condition
+
+    /** [varn] holds a deadline tick (see [VarExpr.Now]) that has been reached; 0 means none set. */
+    data class VarnExpired(val varn: String) : Condition
     data class LastAbility(val ability: String) : Condition
     data class TargetWithin(val distance: Int, val of: TargetExpr.Single = TargetExpr.Centre) : Condition
 

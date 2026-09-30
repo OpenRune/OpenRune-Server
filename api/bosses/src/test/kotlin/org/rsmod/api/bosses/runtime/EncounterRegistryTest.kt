@@ -8,6 +8,7 @@ import org.rsmod.api.bosses.dsl.resetAnim
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.BossStats
 import org.rsmod.api.bosses.spec.PhaseSpec
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.map.CoordGrid
 
@@ -18,7 +19,7 @@ class EncounterRegistryTest {
 
     @Test
     fun `a single-spec boss gets its default spec lazily`() {
-        val registry = EncounterRegistry().apply { register(type.id, listOf(easy), default = easy) }
+        val registry = registry(listOf(easy), default = easy)
         val npc = npc(slot = 1)
         assertSame(easy, registry.of(npc).spec)
         assertSame(registry.of(npc), registry.of(npc))
@@ -26,7 +27,7 @@ class EncounterRegistryTest {
 
     @Test
     fun `each npc runs the spec it was started on`() {
-        val registry = EncounterRegistry().apply { register(type.id, listOf(easy, hard), default = null) }
+        val registry = registry(listOf(easy, hard), default = null)
         val first = npc(slot = 1)
         val second = npc(slot = 2)
         registry.start(first, easy)
@@ -37,13 +38,13 @@ class EncounterRegistryTest {
 
     @Test
     fun `a boss without a default must be started first`() {
-        val registry = EncounterRegistry().apply { register(type.id, listOf(easy, hard), default = null) }
+        val registry = registry(listOf(easy, hard), default = null)
         assertThrows<IllegalStateException> { registry.of(npc(slot = 1)) }
     }
 
     @Test
     fun `only registered specs can be started, once per encounter`() {
-        val registry = EncounterRegistry().apply { register(type.id, listOf(easy), default = null) }
+        val registry = registry(listOf(easy), default = null)
         val npc = npc(slot = 1)
         assertThrows<IllegalArgumentException> { registry.start(npc, spec("easy")) }
         registry.start(npc, easy)
@@ -54,8 +55,11 @@ class EncounterRegistryTest {
 
     @Test
     fun `an unregistered npc type has no encounter`() {
-        assertThrows<IllegalStateException> { EncounterRegistry().of(npc(slot = 1)) }
+        assertThrows<IllegalStateException> { EncounterRegistry(MapClock()).of(npc(slot = 1)) }
     }
+
+    private fun registry(specs: List<BossSpec>, default: BossSpec?): EncounterRegistry =
+        EncounterRegistry(MapClock()).apply { register(type.id, specs, default) }
 
     private fun npc(slot: Int): Npc = Npc(type, CoordGrid(0, 1, 1, 0, 0)).apply { slotId = slot }
 

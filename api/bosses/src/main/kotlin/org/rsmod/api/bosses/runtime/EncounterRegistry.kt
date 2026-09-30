@@ -1,11 +1,13 @@
 package org.rsmod.api.bosses.runtime
 
+import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.bosses.spec.BossSpec
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 
 @Singleton
-class EncounterRegistry {
+class EncounterRegistry @Inject constructor(private val mapClock: MapClock) {
     private class Registration(val specs: Collection<BossSpec>, val default: BossSpec?)
 
     private val encounters = mutableMapOf<Int, BossEncounter>()
@@ -24,7 +26,7 @@ class EncounterRegistry {
             val spec =
                 registration(npc).default
                     ?: error("No spec assigned to npc type ${npc.type.id}; call startEncounter at spawn.")
-            BossEncounter(npc, spec)
+            BossEncounter(npc, spec, mapClock)
         }
     }
 
@@ -34,7 +36,7 @@ class EncounterRegistry {
         require(registration(npc).specs.any { it === spec }) {
             "Spec is not one of those registered for npc type ${npc.type.id}."
         }
-        return BossEncounter(npc, spec).also { encounters[npc.slotId] = it }
+        return BossEncounter(npc, spec, mapClock).also { encounters[npc.slotId] = it }
     }
 
     fun remove(npc: Npc): BossEncounter? = encounters.remove(npc.slotId)

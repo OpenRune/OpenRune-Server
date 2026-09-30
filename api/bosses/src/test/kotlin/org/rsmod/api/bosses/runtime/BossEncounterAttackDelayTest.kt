@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.rsmod.api.bosses.dsl.boss
 import org.rsmod.api.bosses.dsl.resetAnim
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.map.CoordGrid
 
@@ -66,6 +67,6 @@ class BossEncounterAttackDelayTest {
 
     private fun encounter(): BossEncounter {
         val type = NpcServerType(id = 1, name = "Boss", size = 1, hitpoints = 100)
-        return BossEncounter(Npc(type, CoordGrid(0, 1, 1, 0, 0)), spec)
+        return BossEncounter(Npc(type, CoordGrid(0, 1, 1, 0, 0)), spec, MapClock())
     }
 }

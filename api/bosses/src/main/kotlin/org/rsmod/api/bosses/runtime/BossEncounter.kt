@@ -8,6 +8,7 @@ import kotlin.math.abs
 import kotlin.random.Random
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.spec.*
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
@@ -15,6 +16,7 @@ import org.rsmod.map.CoordGrid
 class BossEncounter(
     val npc: Npc,
     val spec: BossSpec,
+    private val mapClock: MapClock,
     private val npcType: (String) -> NpcServerType? = ::cacheNpcType,
 ) {
     var currentPhaseName: String = spec.phases.keys.firstOrNull() ?: ""
@@ -259,6 +261,10 @@ class BossEncounter(
             is Condition.InPhase -> currentPhaseName == condition.phase
             is Condition.AbilityUsed -> condition.ability in usedAbilities
             is Condition.VarnIn -> npc.vars[condition.varn] in condition.range
+            is Condition.VarnExpired -> {
+                val deadline = npc.vars[condition.varn]
+                deadline > 0 && deadline <= mapClock.cycle
+            }
             is Condition.LastAbility -> lastAbilityName == condition.ability
             is Condition.TargetWithin -> {
                 if (target == null) return false

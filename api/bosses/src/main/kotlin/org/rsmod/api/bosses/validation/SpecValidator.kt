@@ -148,6 +148,7 @@ object SpecValidator {
                 is Condition.LastAbility -> requireAbility(condition.ability, scope, "lastAbility")
                 is Condition.AbilityUsed -> requireAbility(condition.ability, scope, "AbilityUsed")
                 is Condition.VarnIn -> varn(condition.varn, scope)
+                is Condition.VarnExpired -> varn(condition.varn, scope)
                 is Condition.TargetInArc -> varn(condition.bearingVarn, scope)
                 is Condition.TargetWithin -> target(condition.of, scope, "TargetWithin")
                 is Condition.Not -> condition(condition.c, scope)
@@ -192,7 +193,8 @@ object SpecValidator {
 
         private fun varExpr(expr: VarExpr, scope: Scope) {
             when (expr) {
-                is VarExpr.Const -> {}
+                is VarExpr.Const,
+                is VarExpr.Now -> {}
                 is VarExpr.Varn -> varn(expr.varn, scope)
                 is VarExpr.Plus -> {
                     varExpr(expr.a, scope)

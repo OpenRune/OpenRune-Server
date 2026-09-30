@@ -7,6 +7,7 @@ import org.rsmod.api.bosses.dsl.resetAnim
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.BossStats
 import org.rsmod.api.bosses.spec.PhaseSpec
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.map.CoordGrid
@@ -55,7 +56,7 @@ class BossEncounterTransmogTest {
                     ),
                 triggers = emptyList(),
             )
-        return BossEncounter(npc, spec, types::get)
+        return BossEncounter(npc, spec, MapClock(), types::get)
     }
 
     private companion object {

@@ -230,6 +230,17 @@ class SpecValidatorTest {
         assertHasError(errorsFor(onTiles(nestedUnion, resetAnim())), "OnTiles tile set")
     }
 
+    @Test
+    fun `deadline varns are checked like any varn`() {
+        val restart =
+            sequence(
+                Effect.SetVarn("varn.charge_end", Now + 13),
+                whenever(varnExpired("varn.charge_end"), resetAnim()),
+            )
+        assertEquals(emptyList<String>(), errorsFor(restart))
+        assertHasError(errorsFor(whenever(varnExpired("charge_end"), resetAnim())), "not a varn reference")
+    }
+
     private fun errorsFor(effect: Effect): List<String> =
         SpecValidator.validate(spec(mapOf("a" to effect))).map { it.message }
 

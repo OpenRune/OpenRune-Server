@@ -9,6 +9,7 @@ import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.BossStats
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.PhaseSpec
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.map.CoordGrid
 
@@ -43,6 +44,6 @@ class BossEncounterHpConditionTest {
                 phases = mapOf("main" to PhaseSpec("main")),
                 triggers = emptyList(),
             )
-        return BossEncounter(npc, spec)
+        return BossEncounter(npc, spec, MapClock())
     }
 }

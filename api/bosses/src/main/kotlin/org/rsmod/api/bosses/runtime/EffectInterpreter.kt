@@ -242,6 +242,7 @@ class EffectInterpreter(
     private fun evaluateVar(expr: VarExpr): Int =
         when (expr) {
             is VarExpr.Const -> expr.value
+            is VarExpr.Now -> deps.mapClock.cycle
             is VarExpr.Varn -> npc.vars[expr.varn]
             is VarExpr.Plus -> evaluateVar(expr.a) + evaluateVar(expr.b)
             is VarExpr.Min -> minOf(evaluateVar(expr.a), evaluateVar(expr.b))

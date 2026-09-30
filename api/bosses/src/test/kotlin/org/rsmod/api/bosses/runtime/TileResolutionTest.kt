@@ -12,6 +12,7 @@ import org.rsmod.api.bosses.spec.BossStats
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.PhaseSpec
 import org.rsmod.api.bosses.spec.TargetExpr
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
@@ -84,5 +85,6 @@ class TileResolutionTest {
                 phases = mapOf("main" to PhaseSpec("main")),
                 triggers = emptyList(),
             ),
+            MapClock(),
         )
 }

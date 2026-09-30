@@ -240,6 +240,10 @@ fun varnIs(varn: String, value: Int): Condition = Condition.VarnIn(varn, value..
 
 fun varnAtLeast(varn: String, value: Int): Condition = Condition.VarnIn(varn, value..Int.MAX_VALUE)
 
+fun varnExpired(varn: String): Condition = Condition.VarnExpired(varn)
+
+val Now: VarExpr = VarExpr.Now
+
 fun bearingTo(to: TargetExpr.Single, from: TargetExpr.Single = TargetExpr.Centre): VarExpr =
     VarExpr.BearingTo(to, from)
 
