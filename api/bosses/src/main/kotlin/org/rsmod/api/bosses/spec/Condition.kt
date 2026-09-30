@@ -7,8 +7,6 @@ sealed interface Condition {
     data class HpBelow(val fraction: Double) : Condition
     data class HpExact(val hp: Int) : Condition
     data class IncomingHitDamageAtLeast(val damage: Int) : Condition
-    data class PlayerEnterRange(val tiles: Int) : Condition
-    data class EveryNTicks(val n: Int) : Condition
     data class OnPhaseTick(val n: Int) : Condition
     data class TargetPraying(val type: HitType) : Condition
     data class InPhase(val phase: String) : Condition
@@ -23,8 +21,6 @@ sealed interface Condition {
      */
     data class TargetInArc(val bearingVarn: String, val offset: Int, val halfArc: Int) : Condition
     data class Custom(val test: (npc: Npc, target: Player?) -> Boolean) : Condition
-    data object OnSpawn : Condition
-    data object OnDeath : Condition
     data object Always : Condition
     data object WithinMeleeRange : Condition
     data class Not(val c: Condition) : Condition

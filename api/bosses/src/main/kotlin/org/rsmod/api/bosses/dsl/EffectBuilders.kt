@@ -343,8 +343,6 @@ typealias Fixed = DamageExpr.Fixed
 typealias NpcMaxHit = DamageExpr.NpcMaxHit
 typealias HpBelow = Condition.HpBelow
 typealias IncomingHitDamageAtLeast = Condition.IncomingHitDamageAtLeast
-typealias PlayerEnterRange = Condition.PlayerEnterRange
-typealias EveryNTicks = Condition.EveryNTicks
 typealias TargetPraying = Condition.TargetPraying
 typealias InPhase = Condition.InPhase
 typealias WeightedRandom = Selector.WeightedRandom
@@ -357,8 +355,6 @@ typealias AllInRadius = TargetExpr.AllInRadius
 typealias FacingQuadrant = TargetExpr.FacingQuadrant
 typealias MeleeAttackType = EngineMeleeAttackType
 
-val OnDeath: Condition = Condition.OnDeath
-val OnSpawn: Condition = Condition.OnSpawn
 val Always: Condition = Condition.Always
 val WithinMeleeRange: Condition = Condition.WithinMeleeRange
 val CurrentTarget: TargetExpr.Single = TargetExpr.CurrentTarget

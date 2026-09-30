@@ -222,8 +222,6 @@ class BossEncounter(
     fun evaluate(condition: Condition, target: Player? = null): Boolean {
         return when (condition) {
             is Condition.Always -> true
-            is Condition.OnSpawn -> false
-            is Condition.OnDeath -> false
             is Condition.WithinMeleeRange -> {
                 target != null && npc.isWithinDistance(target, 1)
             }
@@ -248,10 +246,8 @@ class BossEncounter(
             is Condition.Not -> !evaluate(condition.c, target)
             is Condition.And -> evaluate(condition.a, target) && evaluate(condition.b, target)
             is Condition.Or -> evaluate(condition.a, target) || evaluate(condition.b, target)
-            is Condition.EveryNTicks -> false
             is Condition.OnPhaseTick -> false
             is Condition.IncomingHitDamageAtLeast -> false
-            is Condition.PlayerEnterRange -> false
             is Condition.TargetPraying -> target != null && target.isProtectingFrom(condition.type)
         }
     }
