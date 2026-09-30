@@ -161,7 +161,8 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         val palm = room.palm ?: return
         croc.faceNpc(palm)
         if (!isBesidePalm(croc, palm)) {
-            croc.walk(palmApproach(croc, palm))
+            val step = nextStep(croc, palmApproach(croc, palm))
+            if (step != null) croc.walk(step) else croc.abortRoute()
             return
         }
         val now = deps.mapClock.cycle
@@ -170,7 +171,23 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         encounter.lastAbilityTick = now
         croc.anim(CrondisSeqs.CROC_ATTACK)
         attackSound(croc)
-        room.drainPalm(PALM_BITE)
+        room.drainPalm(deps.random.of(MIN_PALM_BITE, MAX_PALM_BITE))
+    }
+
+    private fun nextStep(croc: Npc, spot: CoordGrid): CoordGrid? {
+        val strategy = croc.collisionStrategy ?: return null
+        val from = croc.coords
+        if (from == spot) return null
+        val first = deps.routeFactory.create(croc.avatar, spot, strategy).firstOrNull()
+        if (first != null) {
+            val waypoint = CoordGrid(first.x, first.z, first.level)
+            if (waypoint != from) {
+                val next = deps.stepFactory.unvalidated(from, waypoint)
+                if (deps.stepFactory.validated(croc, from, next, strategy) == next) return next
+            }
+        }
+        val fallback = deps.stepFactory.validated(croc, from, spot, strategy)
+        return fallback.takeIf { it != CoordGrid.NULL }
     }
 
     private fun attackSound(croc: Npc) {
@@ -244,7 +261,8 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         const val ATTACK_SOUND_RADIUS = 4
         const val MAX_ALIVE = 8
         const val AGGRO_RANGE = 3
-        const val PALM_BITE = 5
+        const val MIN_PALM_BITE = 2
+        const val MAX_PALM_BITE = 5
         const val BASE_DAMAGE = 18
         const val DAMAGE_PER_HAZARD = 3
         const val MAX_DAMAGE = 36
