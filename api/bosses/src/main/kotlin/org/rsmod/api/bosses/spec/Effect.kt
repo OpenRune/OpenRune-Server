@@ -176,6 +176,24 @@ sealed interface Effect {
 
     data class Transmog(val to: String, val durationTicks: Int) : Effect
 
+    /**
+     * Shows [headbar] over the caster, filling from [fromPercent] to [toPercent] of the bar over
+     * [cycles] client cycles (30 per tick, at most 1275).
+     */
+    data class Headbar(
+        val headbar: String,
+        val fromPercent: Int,
+        val toPercent: Int,
+        val cycles: Int,
+    ) : Effect
+
+    data class ClearHeadbar(val headbar: String) : Effect
+
+    /** Shows sprite [index] of sprite group [graphic] in head icon [slot] (0..7) over the caster. */
+    data class HeadIcon(val slot: Int, val graphic: Int, val index: Int) : Effect
+
+    data class ClearHeadIcon(val slot: Int) : Effect
+
     data class Teleport(val to: TargetExpr.Single) : Effect
     data object FaceTarget : Effect
     data class FaceTile(val at: TargetExpr.Single) : Effect

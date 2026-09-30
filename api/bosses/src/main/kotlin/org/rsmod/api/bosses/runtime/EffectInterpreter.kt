@@ -9,6 +9,7 @@ import kotlin.math.abs
 import kotlin.math.sign
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.bosses.spec.HitType as BossHitType
+import org.rsmod.game.headbar.Headbar as EngineHeadbar
 import org.rsmod.api.combat.commons.CombatEffects
 import org.rsmod.api.combat.commons.DragonfireProtection
 import org.rsmod.api.combat.commons.player.combatPlayDefendAnim
@@ -123,6 +124,10 @@ class EffectInterpreter(
             is Effect.DisablePrayers -> target.disablePrayers()
             is Effect.StatDrain -> applyStatDrain(effect)
             is Effect.Transmog -> cacheNpcType(effect.to)?.let { npc.bossTransmog(it, effect.durationTicks) }
+            is Effect.Headbar -> showHeadbar(effect)
+            is Effect.ClearHeadbar -> npc.removeHeadbar(effect.headbar.asRSCM(RSCMType.HEADBAR))
+            is Effect.HeadIcon -> npc.setHeadIcon(effect.slot, effect.graphic, effect.index)
+            is Effect.ClearHeadIcon -> npc.clearHeadIcon(effect.slot)
 
             is Effect.Teleport -> {
                 if (npc.isValidTarget()) {
@@ -242,6 +247,16 @@ class EffectInterpreter(
             is VarExpr.Max -> maxOf(evaluateVar(expr.a), evaluateVar(expr.b))
             is VarExpr.BearingTo -> Angles.bearing(resolveTile(expr.from), resolveTile(expr.to))
         }
+
+    private fun showHeadbar(effect: Effect.Headbar) {
+        val bar =
+            checkNotNull(ServerCacheManager.getHealthBar(effect.headbar.asRSCM(RSCMType.HEADBAR))) {
+                "Headbar type not found: ${effect.headbar}"
+            }
+        val from = bar.segments * effect.fromPercent / 100
+        val to = bar.segments * effect.toPercent / 100
+        npc.showHeadbar(EngineHeadbar.fromNoSource(bar.id, bar.id, from, to, 0, effect.cycles))
+    }
 
     private fun scheduleWait(ticks: Int, onComplete: () -> Unit) {
         require(ticks > 0) { "`ticks` must be greater than 0. (ticks=$ticks)" }

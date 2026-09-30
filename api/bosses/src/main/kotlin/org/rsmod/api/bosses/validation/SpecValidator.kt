@@ -5,6 +5,8 @@ import org.rsmod.api.bosses.spec.*
 data class ValidationError(val message: String)
 
 object SpecValidator {
+    /** Largest end time a [org.rsmod.game.headbar.Headbar] can carry: 8 bits in steps of 5. */
+    private const val MAX_HEADBAR_CYCLES = 1275
 
     fun validate(spec: BossSpec): List<ValidationError> = SpecCheck(spec).run()
 
@@ -161,6 +163,27 @@ object SpecValidator {
             }
         }
 
+        private fun headbar(effect: Effect.Headbar, scope: Scope) {
+            headbarRef(effect.headbar, scope)
+            for (fill in listOf(effect.fromPercent, effect.toPercent)) {
+                if (fill !in 0..100) error("${scope.prefix}Headbar fill '$fill' must be within 0..100.")
+            }
+            if (effect.cycles !in 0..MAX_HEADBAR_CYCLES) {
+                val cycles = effect.cycles
+                error("${scope.prefix}Headbar cycles '$cycles' must be within 0..$MAX_HEADBAR_CYCLES.")
+            }
+        }
+
+        private fun headbarRef(name: String, scope: Scope) {
+            if (!name.startsWith("headbar.")) {
+                error("${scope.prefix}'$name' is not a headbar reference (expected headbar.<name>).")
+            }
+        }
+
+        private fun headIconSlot(slot: Int, scope: Scope) {
+            if (slot !in 0..7) error("${scope.prefix}head icon slot '$slot' must be within 0..7.")
+        }
+
         private fun varn(name: String, scope: Scope) {
             if (!name.startsWith("varn.")) {
                 error("${scope.prefix}'$name' is not a varn reference (expected \"varn.<name>\").")
@@ -241,6 +264,10 @@ object SpecValidator {
                     if (effect.ticks < 0) {
                         error("${scope.prefix}NextAttackIn ticks '${effect.ticks}' must not be negative.")
                     }
+                is Effect.Headbar -> headbar(effect, scope)
+                is Effect.ClearHeadbar -> headbarRef(effect.headbar, scope)
+                is Effect.HeadIcon -> headIconSlot(effect.slot, scope)
+                is Effect.ClearHeadIcon -> headIconSlot(effect.slot, scope)
                 is Effect.Interrupt ->
                     if (scope.deferred) {
                         error(

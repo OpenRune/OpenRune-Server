@@ -189,6 +189,15 @@ fun interrupt(): Effect = Effect.Interrupt
 
 fun nextAttackIn(ticks: Int): Effect = Effect.NextAttackIn(ticks)
 
+fun headbar(headbar: String, fromPercent: Int, toPercent: Int, cycles: Int): Effect =
+    Effect.Headbar(headbar, fromPercent, toPercent, cycles)
+
+fun clearHeadbar(headbar: String): Effect = Effect.ClearHeadbar(headbar)
+
+fun headIcon(slot: Int, graphic: Int, index: Int): Effect = Effect.HeadIcon(slot, graphic, index)
+
+fun clearHeadIcon(slot: Int): Effect = Effect.ClearHeadIcon(slot)
+
 fun area(sw: TargetExpr.Single, ne: TargetExpr.Single): Area = Area(sw, ne)
 
 fun randomFreeTiles(area: Area, count: IntRange): TileSet = TileSet.RandomFree(area, count)

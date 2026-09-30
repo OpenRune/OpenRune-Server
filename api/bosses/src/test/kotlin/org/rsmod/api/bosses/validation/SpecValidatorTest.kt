@@ -192,6 +192,22 @@ class SpecValidatorTest {
         assertHasError(errorsFor(nextAttackIn(-1)), "NextAttackIn ticks '-1'")
     }
 
+    @Test
+    fun `headbar and head icon effects are range checked`() {
+        val valid =
+            sequence(
+                headbar("headbar.charge_80", 0, 100, 390),
+                clearHeadbar("headbar.charge_80"),
+                headIcon(6, 440, 1),
+                clearHeadIcon(6),
+            )
+        assertEquals(emptyList<String>(), errorsFor(valid))
+        assertHasError(errorsFor(headbar("charge_80", 0, 100, 390)), "not a headbar reference")
+        assertHasError(errorsFor(headbar("headbar.charge_80", 0, 101, 390)), "fill '101'")
+        assertHasError(errorsFor(headbar("headbar.charge_80", 0, 100, 1280)), "cycles '1280'")
+        assertHasError(errorsFor(headIcon(8, 440, 1)), "slot '8'")
+    }
+
     private fun errorsFor(effect: Effect): List<String> =
         SpecValidator.validate(spec(mapOf("a" to effect))).map { it.message }
 
