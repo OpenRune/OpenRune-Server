@@ -369,8 +369,8 @@ class AbilityBuilder {
         effects += Effect.Freeze(ticks, odds.chance, odds.outOf)
     }
 
-    fun disablePrayers() {
-        effects += Effect.DisablePrayers
+    fun disablePrayers(overheadsOnly: Boolean = false) {
+        effects += Effect.DisablePrayers(overheadsOnly)
     }
 
     fun statDrain(block: StatDrainBuilder.() -> Unit) {

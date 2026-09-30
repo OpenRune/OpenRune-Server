@@ -19,6 +19,7 @@ import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.isValidTarget
+import org.rsmod.api.player.disableOverheadPrayers
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.modify
@@ -121,7 +122,8 @@ class EffectInterpreter(
             is Effect.Summon -> summon(access, effect)
             is Effect.Poison -> applyPoison(effect)
             is Effect.Freeze -> applyFreeze(effect)
-            is Effect.DisablePrayers -> target.disablePrayers()
+            is Effect.DisablePrayers ->
+                if (effect.overheadsOnly) target.disableOverheadPrayers() else target.disablePrayers()
             is Effect.StatDrain -> applyStatDrain(effect)
             is Effect.Transmog -> cacheNpcType(effect.to)?.let { npc.bossTransmog(it, effect.durationTicks) }
             is Effect.Headbar -> showHeadbar(effect)

@@ -271,7 +271,7 @@ fun freeze(ticks: Int, chance: Int = 1, outOf: Int = 1): Effect = Effect.Freeze(
 
 fun freeze(ticks: Int, odds: Odds): Effect = Effect.Freeze(ticks, odds.chance, odds.outOf)
 
-fun disablePrayers(): Effect = Effect.DisablePrayers
+fun disablePrayers(overheadsOnly: Boolean = false): Effect = Effect.DisablePrayers(overheadsOnly)
 fun statDrain(block: StatDrainBuilder.() -> Unit): Effect = StatDrainBuilder().apply(block).build()
 
 fun statDrain(vararg stats: String, amount: Int, chance: Int = 1, outOf: Int = 1): Effect =

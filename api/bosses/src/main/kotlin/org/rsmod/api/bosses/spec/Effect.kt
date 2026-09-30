@@ -200,7 +200,7 @@ sealed interface Effect {
 
     data class Poison(val damage: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
     data class Freeze(val ticks: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
-    data object DisablePrayers : Effect
+    data class DisablePrayers(val overheadsOnly: Boolean = false) : Effect
     data class StatDrain(val entries: List<StatDrainEntry>) : Effect {
         init {
             require(entries.isNotEmpty()) { "StatDrain requires at least one entry." }
