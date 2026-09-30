@@ -138,9 +138,6 @@ internal constructor(
                 rule(stunned and behindStunBearing) {
                     run(weakSpot)
                     floorPercentOfMaxHit(WEAK_SPOT_MIN_PERCENT, Ranged)
-                }
-                rule(stunned and behindStunBearing) {
-                    run(weakSpot)
                     scalePercent(200, Magic)
                 }
                 rule(stunned) { cap(STUNNED_DAMAGE_CAP) }
