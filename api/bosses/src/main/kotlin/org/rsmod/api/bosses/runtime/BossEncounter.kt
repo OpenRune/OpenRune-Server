@@ -219,7 +219,15 @@ class BossEncounter(
         return ability
     }
 
-    fun evaluate(condition: Condition, target: Player? = null): Boolean {
+    /**
+     * [tiles] resolves tile expressions; the interpreter passes its own so conditions see the same
+     * bound `ImpactTile`/`CurrentTile` as the effects around them.
+     */
+    fun evaluate(
+        condition: Condition,
+        target: Player? = null,
+        tiles: ((TargetExpr.Single) -> CoordGrid)? = null,
+    ): Boolean {
         return when (condition) {
             is Condition.Always -> true
             is Condition.WithinMeleeRange -> {
@@ -233,7 +241,9 @@ class BossEncounter(
             is Condition.VarnIn -> npc.vars[condition.varn] in condition.range
             is Condition.LastAbility -> lastAbilityName == condition.ability
             is Condition.TargetWithin -> {
-                target != null && target.coords.chebyshevDistance(tileOf(condition.of, target)) <= condition.distance
+                if (target == null) return false
+                val of = tiles?.invoke(condition.of) ?: npc.resolveTile(condition.of, target)
+                target.coords.chebyshevDistance(of) <= condition.distance
             }
             is Condition.TargetInArc -> {
                 val wanted = Angles.normalise(npc.vars[condition.bearingVarn] + condition.offset)
@@ -241,9 +251,9 @@ class BossEncounter(
                     abs(Angles.delta(Angles.bearing(npc.centreTile, target.coords), wanted)) <= condition.halfArc
             }
             is Condition.Custom -> condition.test(npc, target)
-            is Condition.Not -> !evaluate(condition.c, target)
-            is Condition.And -> evaluate(condition.a, target) && evaluate(condition.b, target)
-            is Condition.Or -> evaluate(condition.a, target) || evaluate(condition.b, target)
+            is Condition.Not -> !evaluate(condition.c, target, tiles)
+            is Condition.And -> evaluate(condition.a, target, tiles) && evaluate(condition.b, target, tiles)
+            is Condition.Or -> evaluate(condition.a, target, tiles) || evaluate(condition.b, target, tiles)
             is Condition.OnPhaseTick -> false
             is Condition.IncomingHitDamageAtLeast -> false
             is Condition.TargetPraying -> target != null && target.isProtectingFrom(condition.type)
@@ -252,16 +262,6 @@ class BossEncounter(
 
     private val hpFraction: Double
         get() = npc.hitpoints.toDouble() / npc.baseHitpointsLvl.coerceAtLeast(1)
-
-    private fun tileOf(expr: TargetExpr.Single, target: Player): CoordGrid =
-        when (expr) {
-            is TargetExpr.CurrentTarget,
-            is TargetExpr.CurrentTargetTile -> target.coords
-            is TargetExpr.Centre -> npc.centreTile
-            is TargetExpr.SpawnTile -> npc.spawnCoords.translate(expr.dx, expr.dz)
-            is TargetExpr.Toward -> resolveToward(expr) { tileOf(it, target) }
-            else -> npc.coords
-        }
 
     private fun Player.isProtectingFrom(type: HitType): Boolean =
         when (type) {

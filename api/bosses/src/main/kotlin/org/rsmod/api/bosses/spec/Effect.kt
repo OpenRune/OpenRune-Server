@@ -43,7 +43,7 @@ sealed interface Effect {
         val delay: Int = 0,
     ) : Effect
     data class Spotanim(val spot: String, val height: Int = 0, val delay: Int = 0) : Effect
-    data class MapSpotanim(val spot: String, val at: TargetExpr, val height: Int = 0, val delay: Int = 0) : Effect
+    data class MapSpotanim(val spot: String, val at: TargetExpr.Single, val height: Int = 0, val delay: Int = 0) : Effect
     data class Broadcast(val text: String, val radius: Int = 15) : Effect
 
     /**
@@ -144,14 +144,14 @@ sealed interface Effect {
         val targetRadius: Int = 15,
         val scatterRadius: Int = 5,
         val count: IntRange = 1..1,
-        val center: TargetExpr = TargetExpr.Self,
+        val center: TargetExpr.Single = TargetExpr.Self,
     ) : Effect
 
     data class Summon(
         val npc: String,
         val count: Int = 1,
         val radius: Int = 3,
-        val centeredOn: TargetExpr = TargetExpr.Self,
+        val centeredOn: TargetExpr.Single = TargetExpr.Self,
         val mode: NpcMode? = null,
         /** Ticks until the spawned npc auto-despawns if still idle; `Int.MAX_VALUE` for permanent. */
         val duration: Int = 100,

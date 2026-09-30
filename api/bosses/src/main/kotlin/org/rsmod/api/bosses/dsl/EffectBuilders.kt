@@ -139,7 +139,7 @@ fun debris(
     targetRadius: Int = 15,
     scatterRadius: Int = 5,
     count: IntRange = 1..1,
-    center: TargetExpr = TargetExpr.Self,
+    center: TargetExpr.Single = TargetExpr.Self,
 ): Effect =
     Effect.Debris(telegraph, damage, type, impact, windup, targetRadius, scatterRadius, count, center)
 
@@ -147,7 +147,7 @@ fun summon(
     npc: String,
     count: Int = 1,
     radius: Int = 3,
-    centeredOn: TargetExpr = TargetExpr.Self,
+    centeredOn: TargetExpr.Single = TargetExpr.Self,
     mode: NpcMode? = null,
     duration: Int = 100,
     onSummon: String? = null,

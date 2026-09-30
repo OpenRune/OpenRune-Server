@@ -172,7 +172,8 @@ class EffectInterpreter(
                 return
             }
             is Effect.Whenever -> {
-                val next = if (encounter.evaluate(effect.condition, target)) effect.then else effect.otherwise
+                val holds = encounter.evaluate(effect.condition, target, ::resolveTile)
+                val next = if (holds) effect.then else effect.otherwise
                 run(access, next, onComplete)
                 return
             }
@@ -438,7 +439,10 @@ class EffectInterpreter(
         val onHit = landingEffect(hit, rolled)
         return PlayerHitModifier { t ->
             val whenever = hit.penetrationWhen
-            if (whenever != null && encounter.evaluate(whenever, t)) penetration = hit.penetration
+            val tiles = { expr: TargetExpr.Single ->
+                npc.resolveTile(expr, t, impactTile, currentTile, ::randomWalkableTile)
+            }
+            if (whenever != null && encounter.evaluate(whenever, t, tiles)) penetration = hit.penetration
             val praying = encounter.evaluate(Condition.TargetPraying(hit.type), t)
             deps.playerHitModifier.modify(this, t)
             t.combatPlayDefendAnim()
@@ -710,25 +714,8 @@ class EffectInterpreter(
         }
     }
 
-    private fun resolveTile(expr: TargetExpr): org.rsmod.map.CoordGrid {
-        return when (expr) {
-            is TargetExpr.CurrentTarget -> target.coords
-            is TargetExpr.CurrentTargetTile -> target.coords
-            is TargetExpr.Self -> npc.coords
-            is TargetExpr.RandomWalkableTile -> {
-                val center = resolveTile(expr.of)
-                randomWalkableTile(center, expr.radius) ?: center
-            }
-            is TargetExpr.ImpactTile ->
-                checkNotNull(impactTile) { "ImpactTile resolved outside a Projectile.onImpact." }
-            is TargetExpr.CurrentTile ->
-                checkNotNull(currentTile) { "CurrentTile resolved outside an OnTiles." }
-            is TargetExpr.SpawnTile -> npc.spawnCoords.translate(expr.dx, expr.dz)
-            is TargetExpr.Centre -> npc.centreTile
-            is TargetExpr.Toward -> resolveToward(expr, ::resolveTile)
-            else -> npc.coords
-        }
-    }
+    private fun resolveTile(expr: TargetExpr.Single): CoordGrid =
+        npc.resolveTile(expr, target, impactTile, currentTile, ::randomWalkableTile)
 
     private fun randomWalkableTile(center: CoordGrid, radius: Int): CoordGrid? {
         val candidates = mutableListOf<CoordGrid>()
