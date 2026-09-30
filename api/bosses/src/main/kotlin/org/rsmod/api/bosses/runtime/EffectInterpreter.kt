@@ -657,9 +657,9 @@ class EffectInterpreter(
         box.contains(tile) && !deps.collision.isWalkBlocked(tile) && !encounter.ownsLocAt(tile)
 
     private fun resolveTiles(set: TileSet): List<CoordGrid> {
-        val box = resolveArea(set.area)
         return when (set) {
             is TileSet.RandomFree -> {
+                val box = resolveArea(set.area)
                 val free = buildList {
                     for (x in box.sw.x..box.ne.x) {
                         for (z in box.sw.z..box.ne.z) {
@@ -670,12 +670,22 @@ class EffectInterpreter(
                 }
                 free.shuffled().take(deps.random.of(set.count))
             }
-            is TileSet.UnderPlayers ->
+            is TileSet.UnderPlayers -> {
+                val box = resolveArea(set.area)
                 deps.playerList
                     .filter { it.isValidTarget() && box.contains(it.coords) }
                     .map { it.coords }
                     .filter { isFree(box, it) }
-            is TileSet.Nearest -> set.tiles.mapNotNull { nearestFree(box, resolveTile(it), set.searchRadius) }
+            }
+            is TileSet.Nearest -> {
+                val box = resolveArea(set.area)
+                set.tiles.mapNotNull { nearestFree(box, resolveTile(it), set.searchRadius) }
+            }
+            is TileSet.Custom -> {
+                val box = resolveArea(set.area)
+                set.tiles(npc, target, deps.random).filter { isFree(box, it) }.distinct()
+            }
+            is TileSet.Plus -> (resolveTiles(set.a) + resolveTiles(set.b)).distinct()
         }
     }
 
@@ -728,6 +738,8 @@ class EffectInterpreter(
             is TargetExpr.SpawnTile -> null
             is TargetExpr.Centre -> null
             is TargetExpr.Toward -> null
+            is TargetExpr.Offset -> null
+            is TargetExpr.Custom -> null
         }
     }
 

@@ -31,6 +31,17 @@ class TileResolutionTest {
     }
 
     @Test
+    fun `offset shifts its anchor and custom tiles run their function`() {
+        val offsetTarget = TargetExpr.Offset(TargetExpr.CurrentTarget, -4, 4)
+        assertEquals(player.coords.translate(-4, 4), npc.resolveTile(offsetTarget, player))
+        val midway = TargetExpr.Custom { n, t -> CoordGrid((n.coords.x + t.coords.x) / 2, n.coords.z) }
+        assertEquals(CoordGrid(3205, 3200), npc.resolveTile(midway, player))
+        val current = CoordGrid(3206, 3206)
+        val offsetCurrent = TargetExpr.Offset(TargetExpr.CurrentTile, 1, 0)
+        assertEquals(current.translate(1, 0), npc.resolveTile(offsetCurrent, player, currentTile = current))
+    }
+
+    @Test
     fun `bound tiles resolve only when bound`() {
         val impact = CoordGrid(3205, 3205)
         val current = CoordGrid(3206, 3206)

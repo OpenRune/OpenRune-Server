@@ -31,6 +31,8 @@ internal fun Npc.resolveTile(
         is TargetExpr.Self -> coords
         is TargetExpr.Centre -> centreTile
         is TargetExpr.SpawnTile -> spawnCoords.translate(expr.dx, expr.dz)
+        is TargetExpr.Offset -> resolve(expr.of).translate(expr.dx, expr.dz)
+        is TargetExpr.Custom -> expr.tile(this, target)
         is TargetExpr.Toward -> {
             val from = resolve(expr.from)
             Angles.step(from, Angles.bearing(from, resolve(expr.to)), expr.distance)

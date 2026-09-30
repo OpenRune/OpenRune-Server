@@ -4,6 +4,7 @@ import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.combat.commons.types.MeleeAttackType as EngineMeleeAttackType
 import org.rsmod.api.player.output.CamShakeAxis
+import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
@@ -207,6 +208,19 @@ fun tilesUnderPlayers(area: Area): TileSet = TileSet.UnderPlayers(area)
 
 fun nearestFreeTiles(tiles: List<TargetExpr.Single>, area: Area, searchRadius: Int): TileSet =
     TileSet.Nearest(tiles, area, searchRadius)
+
+fun customTiles(
+    area: Area,
+    tiles: (npc: Npc, target: Player, random: GameRandom) -> List<CoordGrid>,
+): TileSet = TileSet.Custom(area, tiles)
+
+operator fun TileSet.plus(other: TileSet): TileSet = TileSet.Plus(this, other)
+
+fun offset(of: TargetExpr.Single, dx: Int, dz: Int): TargetExpr.Single =
+    TargetExpr.Offset(of, dx, dz)
+
+fun customTile(tile: (npc: Npc, target: Player) -> CoordGrid): TargetExpr.Single =
+    TargetExpr.Custom(tile)
 
 fun onTiles(tiles: TileSet, effect: Effect): Effect = Effect.OnTiles(tiles, effect)
 

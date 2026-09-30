@@ -1,5 +1,9 @@
 package org.rsmod.api.bosses.spec
 
+import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
+
 sealed interface TargetExpr {
     sealed interface Single : TargetExpr
     sealed interface Multi : TargetExpr
@@ -21,6 +25,10 @@ sealed interface TargetExpr {
     data class SpawnTile(val dx: Int = 0, val dz: Int = 0) : Single
 
     data class RandomWalkableTile(val radius: Int, val of: Single = Self) : Single
+
+    data class Offset(val of: Single, val dx: Int, val dz: Int) : Single
+
+    data class Custom(val tile: (npc: Npc, target: Player) -> CoordGrid) : Single
 
     /**
      * The tile a [Effect.Projectile] just landed on. Only valid inside that same

@@ -234,8 +234,20 @@ object SpecValidator {
         }
 
         private fun tileSet(tiles: TileSet, scope: Scope) {
-            area(tiles.area, scope, "OnTiles tile set")
-            if (tiles is TileSet.Nearest) tiles.tiles.forEach { target(it, scope, "OnTiles tile set") }
+            val what = "OnTiles tile set"
+            when (tiles) {
+                is TileSet.RandomFree -> area(tiles.area, scope, what)
+                is TileSet.UnderPlayers -> area(tiles.area, scope, what)
+                is TileSet.Nearest -> {
+                    area(tiles.area, scope, what)
+                    tiles.tiles.forEach { target(it, scope, what) }
+                }
+                is TileSet.Custom -> area(tiles.area, scope, what)
+                is TileSet.Plus -> {
+                    tileSet(tiles.a, scope)
+                    tileSet(tiles.b, scope)
+                }
+            }
         }
 
         private fun references(expr: TargetExpr, tile: TargetExpr.Single): Boolean =
@@ -244,6 +256,7 @@ object SpecValidator {
                 is TargetExpr.PlayersOn -> references(expr.tile, tile)
                 is TargetExpr.PlayersIn -> references(expr.area.sw, tile) || references(expr.area.ne, tile)
                 is TargetExpr.RandomWalkableTile -> references(expr.of, tile)
+                is TargetExpr.Offset -> references(expr.of, tile)
                 is TargetExpr.AllInRadius -> references(expr.of, tile)
                 is TargetExpr.Toward -> references(expr.from, tile) || references(expr.to, tile)
                 else -> false

@@ -219,6 +219,17 @@ class SpecValidatorTest {
         assertEquals(emptyList<String>(), errorsFor(inTiles))
     }
 
+    @Test
+    fun `offset, custom and union tile sets follow the bound tile scope rules`() {
+        val debris = customTiles(arena) { _, t, _ -> listOf(t.coords) } + tilesUnderPlayers(arena)
+        val spot = mapSpotanim("spotanim.x", CurrentTile)
+        assertEquals(emptyList<String>(), errorsFor(onTiles(debris, spot)))
+        val offsetSpot = mapSpotanim("spotanim.x", offset(CurrentTile, 1, 0))
+        assertHasError(errorsFor(offsetSpot), "CurrentTile outside")
+        val nestedUnion = tilesUnderPlayers(arena) + nearestFreeTiles(listOf(CurrentTile), arena, 0)
+        assertHasError(errorsFor(onTiles(nestedUnion, resetAnim())), "OnTiles tile set")
+    }
+
     private fun errorsFor(effect: Effect): List<String> =
         SpecValidator.validate(spec(mapOf("a" to effect))).map { it.message }
 
