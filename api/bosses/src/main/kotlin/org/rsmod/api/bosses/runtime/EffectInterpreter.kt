@@ -49,9 +49,14 @@ class EffectInterpreter(
     private val encounter: BossEncounter,
     private val deps: BossDeps,
     private val abilityRun: AbilityRun = AbilityRun(encounter.epoch),
-    boundTile: CoordGrid? = null,
+    private val impactTile: CoordGrid? = null,
+    private val currentTile: CoordGrid? = null,
 ) {
-    private var impactTile: CoordGrid? = boundTile
+    private fun child(
+        target: Player = this.target,
+        impactTile: CoordGrid? = this.impactTile,
+        currentTile: CoordGrid? = this.currentTile,
+    ): EffectInterpreter = EffectInterpreter(npc, target, spec, encounter, deps, abilityRun, impactTile, currentTile)
 
     private val interrupted: Boolean
         get() = encounter.epoch != abilityRun.epoch
@@ -179,8 +184,7 @@ class EffectInterpreter(
                 }
                 var remaining = targets.size
                 for (t in targets) {
-                    val subInterpreter = EffectInterpreter(npc, t, spec, encounter, deps, abilityRun, impactTile)
-                    subInterpreter.run(access, effect.effect) {
+                    child(target = t).run(access, effect.effect) {
                         remaining--
                         if (remaining == 0) onComplete()
                     }
@@ -206,8 +210,7 @@ class EffectInterpreter(
                 }
                 var remaining = tiles.size
                 for (tile in tiles) {
-                    val sub = EffectInterpreter(npc, target, spec, encounter, deps, abilityRun, tile)
-                    sub.run(access, effect.effect) {
+                    child(currentTile = tile).run(access, effect.effect) {
                         remaining--
                         if (remaining == 0) onComplete()
                     }
@@ -396,7 +399,7 @@ class EffectInterpreter(
         }
 
         proj.onImpact?.let { onImpact ->
-            deps.worldQueues.add(ticks) { runWithImpactTile(destCoord) { run(access, onImpact) } }
+            deps.worldQueues.add(ticks) { child(impactTile = destCoord).run(access, onImpact) }
         }
 
         val hit = proj.hit ?: return
@@ -445,7 +448,7 @@ class EffectInterpreter(
             if (!npc.isValidTarget()) return@PlayerHitModifier
             val heal = damage * hit.lifesteal / 100
             if (heal > 0) npc.heal(heal)
-            onHit?.let { EffectInterpreter(npc, t, spec, encounter, deps, abilityRun).run(access, it) }
+            onHit?.let { child(target = t).run(access, it) }
         }
     }
 
@@ -480,13 +483,6 @@ class EffectInterpreter(
         if (rolled <= 0) {
             hit.missSpotanim?.let { t.spotanim(it, delay = clientDelay, height = hit.spotanimHeight) }
         }
-    }
-
-    private fun runWithImpactTile(coord: CoordGrid, block: () -> Unit) {
-        val previous = impactTile
-        impactTile = coord
-        block()
-        impactTile = previous
     }
 
     private fun applyTileAoE(aoe: Effect.TileAoE) {
@@ -707,7 +703,7 @@ class EffectInterpreter(
             is TargetExpr.RandomNearby -> target
             is TargetExpr.RandomWalkableTile -> null
             is TargetExpr.ImpactTile -> null
-            is TargetExpr.EachTile -> null
+            is TargetExpr.CurrentTile -> null
             is TargetExpr.SpawnTile -> null
             is TargetExpr.Centre -> null
             is TargetExpr.Toward -> null
@@ -723,8 +719,10 @@ class EffectInterpreter(
                 val center = resolveTile(expr.of)
                 randomWalkableTile(center, expr.radius) ?: center
             }
-            is TargetExpr.ImpactTile,
-            is TargetExpr.EachTile -> impactTile ?: npc.coords
+            is TargetExpr.ImpactTile ->
+                checkNotNull(impactTile) { "ImpactTile resolved outside a Projectile.onImpact." }
+            is TargetExpr.CurrentTile ->
+                checkNotNull(currentTile) { "CurrentTile resolved outside an OnTiles." }
             is TargetExpr.SpawnTile -> npc.spawnCoords.translate(expr.dx, expr.dz)
             is TargetExpr.Centre -> npc.centreTile
             is TargetExpr.Toward -> resolveToward(expr, ::resolveTile)

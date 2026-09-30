@@ -214,7 +214,7 @@ sealed interface Effect {
      */
     data object Interrupt : Effect
 
-    /** Runs [effect] once for every tile in [tiles], with [TargetExpr.EachTile] bound to it. */
+    /** Runs [effect] once for every tile in [tiles], with [TargetExpr.CurrentTile] bound to it. */
     data class OnTiles(val tiles: TileSet, val effect: Effect) : Effect
 
     /**

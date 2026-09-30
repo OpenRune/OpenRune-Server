@@ -9,13 +9,15 @@ object SpecValidator {
     fun validate(spec: BossSpec): List<ValidationError> = SpecCheck(spec).run()
 
     /**
-     * Where an effect sits: [tileBound] inside a [Effect.Projectile.onImpact] or [Effect.OnTiles]
-     * (so `ImpactTile`/`EachTile` resolve), [deferred] when it runs on a later tick outside the
-     * ability's own timeline ([Effect.After], impacts, on-hit effects).
+     * Where an effect sits: [impactTileBound] inside a [Effect.Projectile.onImpact] (so
+     * `ImpactTile` resolves), [currentTileBound] inside an [Effect.OnTiles] (so `CurrentTile`
+     * resolves), [deferred] when it runs on a later tick outside the ability's own timeline
+     * ([Effect.After], impacts, on-hit effects).
      */
     private data class Scope(
         val label: String,
-        val tileBound: Boolean = false,
+        val impactTileBound: Boolean = false,
+        val currentTileBound: Boolean = false,
         val deferred: Boolean = false,
     ) {
         val prefix: String
@@ -175,10 +177,16 @@ object SpecValidator {
         }
 
         private fun target(expr: TargetExpr, scope: Scope, what: String) {
-            if (!scope.tileBound && usesBoundTile(expr)) {
+            if (!scope.impactTileBound && references(expr, TargetExpr.ImpactTile)) {
                 error(
-                    "${scope.prefix}$what references ImpactTile/EachTile outside a Projectile.onImpact or " +
-                        "OnTiles — it silently falls back to the caster's tile there."
+                    "${scope.prefix}$what references ImpactTile outside a Projectile.onImpact, where " +
+                        "there is no impact tile."
+                )
+            }
+            if (!scope.currentTileBound && references(expr, TargetExpr.CurrentTile)) {
+                error(
+                    "${scope.prefix}$what references CurrentTile outside an OnTiles, where there is no " +
+                        "current tile."
                 )
             }
         }
@@ -193,15 +201,14 @@ object SpecValidator {
             if (tiles is TileSet.Nearest) tiles.tiles.forEach { target(it, scope, "OnTiles tile set") }
         }
 
-        private fun usesBoundTile(expr: TargetExpr): Boolean =
+        private fun references(expr: TargetExpr, tile: TargetExpr.Single): Boolean =
             when (expr) {
-                is TargetExpr.ImpactTile,
-                is TargetExpr.EachTile -> true
-                is TargetExpr.PlayersOn -> usesBoundTile(expr.tile)
-                is TargetExpr.PlayersIn -> usesBoundTile(expr.area.sw) || usesBoundTile(expr.area.ne)
-                is TargetExpr.RandomWalkableTile -> usesBoundTile(expr.of)
-                is TargetExpr.AllInRadius -> usesBoundTile(expr.of)
-                is TargetExpr.Toward -> usesBoundTile(expr.from) || usesBoundTile(expr.to)
+                tile -> true
+                is TargetExpr.PlayersOn -> references(expr.tile, tile)
+                is TargetExpr.PlayersIn -> references(expr.area.sw, tile) || references(expr.area.ne, tile)
+                is TargetExpr.RandomWalkableTile -> references(expr.of, tile)
+                is TargetExpr.AllInRadius -> references(expr.of, tile)
+                is TargetExpr.Toward -> references(expr.from, tile) || references(expr.to, tile)
                 else -> false
             }
 
@@ -255,7 +262,7 @@ object SpecValidator {
                 }
                 is Effect.OnTiles -> {
                     tileSet(effect.tiles, scope)
-                    effect(effect.effect, scope.copy(tileBound = true))
+                    effect(effect.effect, scope.copy(currentTileBound = true))
                 }
                 is Effect.After -> {
                     if (effect.ticks <= 0) error("${scope.prefix}After ticks '${effect.ticks}' must be greater than 0.")
@@ -318,7 +325,7 @@ object SpecValidator {
             target(proj.target, scope, "Projectile")
             proj.from?.let { target(it, scope, "Projectile") }
             proj.hit?.let { hit(it, scope, projectile = proj) }
-            proj.onImpact?.let { effect(it, scope.copy(tileBound = true, deferred = true)) }
+            proj.onImpact?.let { effect(it, scope.copy(impactTileBound = true, deferred = true)) }
         }
     }
 }

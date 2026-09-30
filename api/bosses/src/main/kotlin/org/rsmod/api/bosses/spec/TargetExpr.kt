@@ -23,13 +23,16 @@ sealed interface TargetExpr {
     data class RandomWalkableTile(val radius: Int, val of: Single = Self) : Single
 
     /**
-     * The tile a [Effect.Projectile] just landed on — only meaningful inside that same
-     * [Effect.Projectile.onImpact]. Resolves to the caster's tile if used anywhere else.
+     * The tile a [Effect.Projectile] just landed on. Only valid inside that same
+     * [Effect.Projectile.onImpact]; resolving it anywhere else throws.
      */
     data object ImpactTile : Single
 
-    /** The tile an [Effect.OnTiles] is currently running its effect for. */
-    data object EachTile : Single
+    /**
+     * The tile an [Effect.OnTiles] is currently running its effect for. Only valid inside that
+     * [Effect.OnTiles]; resolving it anywhere else throws.
+     */
+    data object CurrentTile : Single
 
     data class PlayersIn(val area: Area) : Multi
 

@@ -21,15 +21,15 @@ class SpecValidatorTest {
     fun `leviathan-style tile hazard composition is valid`() {
         val landing =
             hit {
-                target = playersOn(EachTile)
+                target = playersOn(CurrentTile)
                 damage(10..30).roll()
                 type(Typeless)
                 hazard()
             }
         val boulder =
             sequence(
-                mapSpotanim("spotanim.boulder", EachTile, delay = 30),
-                after(2, sequence(spawnLoc("loc.rubble", EachTile, angle = 3), landing)),
+                mapSpotanim("spotanim.boulder", CurrentTile, delay = 30),
+                after(2, sequence(spawnLoc("loc.rubble", CurrentTile, angle = 3), landing)),
             )
         val effect =
             sequence(
@@ -41,13 +41,35 @@ class SpecValidatorTest {
     }
 
     @Test
-    fun `EachTile outside onTiles is reported`() {
-        assertHasError(errorsFor(mapSpotanim("spotanim.x", EachTile)), "outside a Projectile.onImpact or OnTiles")
+    fun `CurrentTile outside onTiles is reported`() {
+        assertHasError(errorsFor(mapSpotanim("spotanim.x", CurrentTile)), "CurrentTile outside an OnTiles")
+        val inImpact = projectile("spotanim.orb", config = fixed, onImpact = mapSpotanim("spotanim.x", CurrentTile))
+        assertHasError(errorsFor(inImpact), "CurrentTile outside an OnTiles")
+    }
+
+    @Test
+    fun `ImpactTile outside onImpact is reported`() {
+        assertHasError(errorsFor(mapSpotanim("spotanim.x", ImpactTile)), "ImpactTile outside a Projectile.onImpact")
+        assertHasError(
+            errorsFor(onTiles(tilesUnderPlayers(arena), mapSpotanim("spotanim.x", ImpactTile))),
+            "ImpactTile outside a Projectile.onImpact",
+        )
+    }
+
+    @Test
+    fun `ImpactTile and CurrentTile both resolve when onTiles and onImpact nest`() {
+        val landing = sequence(wait(3), spawnLoc("loc.rubble", ImpactTile), mapSpotanim("spotanim.x", CurrentTile))
+        val tilesInImpact =
+            projectile("spotanim.orb", config = fixed, onImpact = onTiles(tilesUnderPlayers(arena), landing))
+        val impactInTiles =
+            onTiles(tilesUnderPlayers(arena), projectile("spotanim.orb", config = fixed, target = CurrentTile, onImpact = landing))
+        assertEquals(emptyList<String>(), errorsFor(tilesInImpact))
+        assertEquals(emptyList<String>(), errorsFor(impactInTiles))
     }
 
     @Test
     fun `an onTiles set is resolved in the enclosing scope`() {
-        val nested = onTiles(nearestFreeTiles(listOf(EachTile), arena, 0), resetAnim())
+        val nested = onTiles(nearestFreeTiles(listOf(CurrentTile), arena, 0), resetAnim())
         assertHasError(errorsFor(nested), "OnTiles tile set")
         assertEquals(emptyList<String>(), errorsFor(onTiles(tilesUnderPlayers(arena), nested)))
     }
