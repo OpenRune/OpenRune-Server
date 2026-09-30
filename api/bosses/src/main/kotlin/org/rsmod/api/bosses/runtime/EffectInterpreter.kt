@@ -156,7 +156,8 @@ class EffectInterpreter(
                 encounter.transitionTo(effect.phase, deps.mapClock.cycle)
             }
             is Effect.External -> {
-                deps.extensionRegistry.invoke(effect.handler, access, npc, target, effect.params)
+                val tile = effect.at?.let(::resolveTile)
+                deps.extensionRegistry.invoke(effect.handler, access, npc, target, effect.params, tile)
             }
 
             is Effect.Sequence -> {

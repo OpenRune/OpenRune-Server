@@ -339,6 +339,8 @@ object SpecValidator {
                 is Effect.Summon -> target(effect.centeredOn, scope, name)
                 is Effect.Teleport -> target(effect.to, scope, name)
                 is Effect.FaceTile -> target(effect.at, scope, name)
+                is Effect.External ->
+                    effect.at?.let { target(it, scope, "External '${effect.handler}'") }
                 else -> {}
             }
         }

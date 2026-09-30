@@ -73,7 +73,8 @@ fun run(ability: AbilityRef): Effect = Effect.Run(ability.name)
 fun transitionTo(phase: String): Effect = Effect.TransitionTo(phase)
 
 fun transitionTo(phase: PhaseRef): Effect = Effect.TransitionTo(phase.name)
-fun external(handler: String, params: Any? = null): Effect = Effect.External(handler, params)
+fun external(handler: String, params: Any? = null, at: TargetExpr.Single? = null): Effect =
+    Effect.External(handler, params, at)
 
 fun hit(
     damage: DamageExpr,

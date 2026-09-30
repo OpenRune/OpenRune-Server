@@ -208,6 +208,17 @@ class SpecValidatorTest {
         assertHasError(errorsFor(headIcon(8, 440, 1)), "slot '8'")
     }
 
+    @Test
+    fun `external tiles follow the bound tile scope rules`() {
+        assertEquals(emptyList<String>(), errorsFor(external("doom.place_rock", at = CurrentTarget)))
+        assertHasError(
+            errorsFor(external("doom.place_rock", at = CurrentTile)),
+            "CurrentTile outside an OnTiles",
+        )
+        val inTiles = onTiles(tilesUnderPlayers(arena), external("doom.clear_acid", at = CurrentTile))
+        assertEquals(emptyList<String>(), errorsFor(inTiles))
+    }
+
     private fun errorsFor(effect: Effect): List<String> =
         SpecValidator.validate(spec(mapOf("a" to effect))).map { it.message }
 
