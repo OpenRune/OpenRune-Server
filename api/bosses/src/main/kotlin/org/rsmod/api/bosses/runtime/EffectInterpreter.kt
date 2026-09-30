@@ -914,14 +914,4 @@ class EffectInterpreter internal constructor(
         private val KNOCKBACK_DIRECTIONS =
             listOf(0 to 1, 1 to 0, 0 to -1, -1 to 0, 1 to 1, 1 to -1, -1 to -1, -1 to 1)
     }
-
-    private fun BossHitType.toEngine(): HitType = when (this) {
-        BossHitType.Melee -> HitType.Melee
-        BossHitType.Ranged -> HitType.Ranged
-        BossHitType.Magic -> HitType.Magic
-        BossHitType.Dragonfire -> HitType.Magic
-        BossHitType.DragonfireMetal -> HitType.Magic
-        BossHitType.WyvernIce -> HitType.Magic
-        BossHitType.Typeless -> HitType.Typeless
-    }
 }

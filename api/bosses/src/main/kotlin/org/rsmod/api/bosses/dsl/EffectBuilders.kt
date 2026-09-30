@@ -238,6 +238,12 @@ fun randomOf(name: String): TargetExpr.Single = TargetExpr.RandomOfBound(name)
 
 fun tilesEmpty(name: String): Condition = Condition.TilesEmpty(name)
 
+fun hitStyle(type: HitType): Condition = Condition.HitStyle(type)
+
+fun hitDemonbane(): Condition = Condition.HitDemonbane
+
+fun hitDamageAtLeast(damage: Int): Condition = Condition.HitDamageAtLeast(damage)
+
 fun after(ticks: Int, effect: Effect, requireAlive: Boolean = true): Effect =
     Effect.After(ticks, effect, requireAlive)
 
@@ -386,7 +392,6 @@ typealias Accuracy = DamageExpr.Accuracy
 typealias Fixed = DamageExpr.Fixed
 typealias NpcMaxHit = DamageExpr.NpcMaxHit
 typealias HpBelow = Condition.HpBelow
-typealias IncomingHitDamageAtLeast = Condition.IncomingHitDamageAtLeast
 typealias TargetPraying = Condition.TargetPraying
 typealias InPhase = Condition.InPhase
 typealias WeightedRandom = Selector.WeightedRandom

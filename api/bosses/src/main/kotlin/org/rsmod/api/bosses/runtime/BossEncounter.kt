@@ -243,9 +243,18 @@ class BossEncounter(
 
     /**
      * [tiles] is the effect this condition runs inside, if any, so conditions see the same bound
-     * tiles and tile sets as the effects around them.
+     * tiles and tile sets as the effects around them. [hit] is the player hit an incoming rule or
+     * hit reaction is being checked for.
      */
-    fun evaluate(condition: Condition, target: Player? = null, tiles: TileScope? = null): Boolean {
+    fun evaluate(
+        condition: Condition,
+        target: Player? = null,
+        tiles: TileScope? = null,
+        hit: HitContext? = null,
+    ): Boolean {
+        fun eval(inner: Condition) = evaluate(inner, target, tiles, hit)
+        fun requireHit(): HitContext =
+            checkNotNull(hit) { "$condition evaluated outside an incoming hit." }
         return when (condition) {
             is Condition.Always -> true
             is Condition.WithinMeleeRange -> {
@@ -278,11 +287,13 @@ class BossEncounter(
                 scope.set(name).isEmpty()
             }
             is Condition.Custom -> condition.test(npc, target)
-            is Condition.Not -> !evaluate(condition.c, target, tiles)
-            is Condition.And -> evaluate(condition.a, target, tiles) && evaluate(condition.b, target, tiles)
-            is Condition.Or -> evaluate(condition.a, target, tiles) || evaluate(condition.b, target, tiles)
+            is Condition.Not -> !eval(condition.c)
+            is Condition.And -> eval(condition.a) && eval(condition.b)
+            is Condition.Or -> eval(condition.a) || eval(condition.b)
             is Condition.OnPhaseTick -> false
-            is Condition.IncomingHitDamageAtLeast -> false
+            is Condition.HitStyle -> requireHit().type == condition.type.toEngine()
+            is Condition.HitDemonbane -> requireHit().demonbane
+            is Condition.HitDamageAtLeast -> requireHit().damage >= condition.damage
             is Condition.TargetPraying -> target != null && target.isProtectingFrom(condition.type)
         }
     }

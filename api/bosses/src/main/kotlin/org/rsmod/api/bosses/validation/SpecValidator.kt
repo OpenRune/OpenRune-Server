@@ -38,6 +38,7 @@ object SpecValidator {
         val tileNames: Set<String> = emptySet(),
         val setNames: Set<String> = emptySet(),
         val deferred: Boolean = false,
+        val hitAware: Boolean = false,
     ) {
         val prefix: String
             get() = if (label.isNotEmpty()) "$label: " else ""
@@ -79,13 +80,13 @@ object SpecValidator {
 
             for (reaction in spec.hitReactions) {
                 val scope = Scope("hit reaction")
-                condition(reaction.requires, scope)
+                condition(reaction.requires, scope.copy(hitAware = true))
                 effect(reaction.effect, scope)
             }
 
             for (rule in spec.incomingRules) {
                 val scope = Scope("incoming rule")
-                condition(rule.condition, scope)
+                condition(rule.condition, scope.copy(hitAware = true))
                 if (rule.actions.isEmpty()) error("${scope.prefix}rule has no actions.")
                 for (action in rule.actions) {
                     when (action) {
@@ -153,6 +154,15 @@ object SpecValidator {
                 is Condition.VarnIn -> varn(condition.varn, scope)
                 is Condition.VarnExpired -> varn(condition.varn, scope)
                 is Condition.TilesEmpty -> boundSet(condition.name, scope, "tilesEmpty")
+                is Condition.HitStyle,
+                is Condition.HitDemonbane,
+                is Condition.HitDamageAtLeast ->
+                    if (!scope.hitAware) {
+                        error(
+                            "${scope.prefix}$condition only works in an incoming rule's condition " +
+                                "or a hit reaction's requires, where there is a hit."
+                        )
+                    }
                 is Condition.TargetInArc -> varn(condition.bearingVarn, scope)
                 is Condition.TargetWithin -> target(condition.of, scope, "TargetWithin")
                 is Condition.Not -> condition(condition.c, scope)

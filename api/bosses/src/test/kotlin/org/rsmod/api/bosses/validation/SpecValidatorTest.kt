@@ -276,6 +276,23 @@ class SpecValidatorTest {
         assertHasError(errorsFor(sibling), "tile(\"a\") outside")
     }
 
+    @Test
+    fun `hit conditions only gate incoming rules and hit reactions`() {
+        val punish = HitReaction(Effect.Run("a"), requires = varnIs("varn.charge", 1) and hitStyle(Melee))
+        val shield = IncomingRule(!hitDemonbane() and hitDamageAtLeast(1), listOf(IncomingAction.Cap(0)))
+        val valid = spec(mapOf("a" to resetAnim()), reactions = listOf(punish), rules = listOf(shield))
+        assertEquals(emptyList<String>(), SpecValidator.validate(valid).map { it.message })
+
+        assertHasError(errorsFor(whenever(hitStyle(Melee), resetAnim())), "only works in an incoming rule")
+        val inReactionEffect =
+            HitReaction(whenever(hitDemonbane(), resetAnim()), requires = hitStyle(Melee))
+        assertHasError(
+            SpecValidator.validate(spec(mapOf("a" to resetAnim()), reactions = listOf(inReactionEffect)))
+                .map { it.message },
+            "only works in an incoming rule",
+        )
+    }
+
     private fun errorsFor(effect: Effect): List<String> =
         SpecValidator.validate(spec(mapOf("a" to effect))).map { it.message }
 
