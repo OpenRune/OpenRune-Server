@@ -283,7 +283,7 @@ constructor(
 
     override val spec: BossSpec by lazy {
         boss(BOSS_NPC, SLEEP_NPC) {
-            stats(attackRate = ATTACK_RATE, aggressionRadius = AGGRESSION_RADIUS)
+            stats(attackRate = ATTACK_RATE)
 
             val melee = ability("melee", melee())
             val rangedMagic = ability("ranged_magic", rangedMagic())
@@ -317,7 +317,6 @@ constructor(
         private const val ATTACK_RATE = 5
         private const val ENRAGE_ATTACK_RATE = 4
         private const val ENRAGE_HP_FRACTION = 0.25
-        private const val AGGRESSION_RADIUS = 15
 
         private const val SPECIAL_MIN_ATTACKS = 5
         private const val SPECIAL_MAX_ATTACKS = 6

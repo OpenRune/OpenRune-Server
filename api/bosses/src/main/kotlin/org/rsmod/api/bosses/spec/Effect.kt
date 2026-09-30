@@ -25,6 +25,13 @@ sealed interface Effect {
 
     /** Queues [ability] as the boss's next attack, once nothing else is holding it up. */
     data class ForceNext(val ability: String) : Effect
+
+    /**
+     * The next attack may start [ticks] from now, replacing the running ability's attack delay or
+     * the attack rate. [BossEncounter.busyUntil][org.rsmod.api.bosses.runtime.BossEncounter.busyUntil]
+     * still holds it back on top.
+     */
+    data class NextAttackIn(val ticks: Int) : Effect
     data class Say(val text: String) : Effect
 
     /** Plays [synth] to everyone within [radius] of [at] (the caster when null). */
@@ -43,7 +50,7 @@ sealed interface Effect {
         val delay: Int = 0,
     ) : Effect
     data class Spotanim(val spot: String, val height: Int = 0, val delay: Int = 0) : Effect
-    data class MapSpotanim(val spot: String, val at: TargetExpr, val height: Int = 0, val delay: Int = 0) : Effect
+    data class MapSpotanim(val spot: String, val at: TargetExpr.Single, val height: Int = 0, val delay: Int = 0) : Effect
     data class Broadcast(val text: String, val radius: Int = 15) : Effect
 
     /**
@@ -144,14 +151,14 @@ sealed interface Effect {
         val targetRadius: Int = 15,
         val scatterRadius: Int = 5,
         val count: IntRange = 1..1,
-        val center: TargetExpr = TargetExpr.Self,
+        val center: TargetExpr.Single = TargetExpr.Self,
     ) : Effect
 
     data class Summon(
         val npc: String,
         val count: Int = 1,
         val radius: Int = 3,
-        val centeredOn: TargetExpr = TargetExpr.Self,
+        val centeredOn: TargetExpr.Single = TargetExpr.Self,
         val mode: NpcMode? = null,
         /** Ticks until the spawned npc auto-despawns if still idle; `Int.MAX_VALUE` for permanent. */
         val duration: Int = 100,
@@ -169,13 +176,31 @@ sealed interface Effect {
 
     data class Transmog(val to: String, val durationTicks: Int) : Effect
 
+    /**
+     * Shows [headbar] over the caster, filling from [fromPercent] to [toPercent] of the bar over
+     * [cycles] client cycles (30 per tick, at most 1275).
+     */
+    data class Headbar(
+        val headbar: String,
+        val fromPercent: Int,
+        val toPercent: Int,
+        val cycles: Int,
+    ) : Effect
+
+    data class ClearHeadbar(val headbar: String) : Effect
+
+    /** Shows sprite [index] of sprite group [graphic] in head icon [slot] (0..7) over the caster. */
+    data class HeadIcon(val slot: Int, val graphic: Int, val index: Int) : Effect
+
+    data class ClearHeadIcon(val slot: Int) : Effect
+
     data class Teleport(val to: TargetExpr.Single) : Effect
     data object FaceTarget : Effect
     data class FaceTile(val at: TargetExpr.Single) : Effect
 
     data class Poison(val damage: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
     data class Freeze(val ticks: Int, val chance: Int = 1, val outOf: Int = 1) : Effect
-    data object DisablePrayers : Effect
+    data class DisablePrayers(val overheadsOnly: Boolean = false) : Effect
     data class StatDrain(val entries: List<StatDrainEntry>) : Effect {
         init {
             require(entries.isNotEmpty()) { "StatDrain requires at least one entry." }
@@ -183,8 +208,16 @@ sealed interface Effect {
     }
 
     data class Run(val ability: String) : Effect
+
+    /** Scripted phase switch; does not run the phase's [PhaseSpec.entry]. */
     data class TransitionTo(val phase: String) : Effect
-    data class External(val handler: String, val params: Any? = null) : Effect
+
+    /** Runs a Kotlin handler; [at] is resolved here and passed on as the handler's tile. */
+    data class External(
+        val handler: String,
+        val params: Any? = null,
+        val at: TargetExpr.Single? = null,
+    ) : Effect
 
     /**
      * A timeline of [effects] run in order, tick by tick. Include [Wait] to advance to a later
@@ -214,8 +247,14 @@ sealed interface Effect {
      */
     data object Interrupt : Effect
 
-    /** Runs [effect] once for every tile in [tiles], with [TargetExpr.EachTile] bound to it. */
+    /** Runs [effect] once for every tile in [tiles], with [TargetExpr.CurrentTile] bound to it. */
     data class OnTiles(val tiles: TileSet, val effect: Effect) : Effect
+
+    /** Resolves [tile] once and binds it as [TargetExpr.Bound] [name] for everything in [effect]. */
+    data class WithTile(val name: String, val tile: TargetExpr.Single, val effect: Effect) : Effect
+
+    /** Resolves [tiles] once and binds them as [TileSet.Bound] [name] for everything in [effect]. */
+    data class WithTiles(val name: String, val tiles: TileSet, val effect: Effect) : Effect
 
     /**
      * Schedules [effect] [ticks] from now without holding up the ability or the boss's next

@@ -10,6 +10,7 @@ import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.HitReaction
 import org.rsmod.api.bosses.spec.HitType as BossHitType
 import org.rsmod.api.bosses.spec.IncomingAction
+import org.rsmod.api.combat.commons.DemonbaneChecks
 import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -31,7 +32,11 @@ internal class HitRules(private val spec: BossSpec, private val deps: BossDeps) 
     fun applyIncoming(event: NpcHitEvents.Modify, encounter: BossEncounter) {
         if (spec.incomingRules.isEmpty() || !event.hit.isFromPlayer) return
         val attacker = event.hit.sourceUid?.let { PlayerUid(it).resolve(deps.playerList) } ?: return
-        val rule = spec.incomingRules.firstOrNull { encounter.evaluate(it.condition, attacker) } ?: return
+        val context = with(event.hit) { HitContext(type, damage, righthandType(), secondaryType()) }
+        val rule =
+            spec.incomingRules.firstOrNull {
+                encounter.evaluate(it.condition, attacker, hit = context)
+            } ?: return
         for (action in rule.actions) {
             val style = action.style
             if (style != null && style.toEngine() != event.hit.type) continue
@@ -49,13 +54,13 @@ internal class HitRules(private val spec: BossSpec, private val deps: BossDeps) 
         }
     }
 
-    fun react(event: NpcHitEvents.Impact) {
+    fun react(event: NpcHitEvents.Impact, encounter: BossEncounter) {
         if (!event.hit.isFromPlayer || event.npc.hitpoints <= 0) return
         val attacker = event.hit.resolvePlayerSource(deps.playerList) ?: return
-        val encounter = deps.encounterRegistry.of(event.npc)
+        val context = with(event.hit) { HitContext(type, damage, righthandType(), secondaryType()) }
         for ((reaction, objs) in reactions) {
             if (objs.isNotEmpty() && objs.none(event.hit::isSecondaryObj)) continue
-            if (!encounter.evaluate(reaction.requires, attacker)) continue
+            if (!encounter.evaluate(reaction.requires, attacker, hit = context)) continue
             EffectInterpreter(event.npc, attacker, spec, encounter, deps).run(null, reaction.effect)
         }
     }
@@ -70,15 +75,29 @@ internal class HitRules(private val spec: BossSpec, private val deps: BossDeps) 
             BossHitType.Melee -> deps.maxHit.getMeleeMaxHit(attacker, npc, null, null, 1.0)
             else -> error("No player max hit for $style")
         }
-
-    private fun BossHitType.toEngine(): HitType =
-        when (this) {
-            BossHitType.Melee -> HitType.Melee
-            BossHitType.Ranged -> HitType.Ranged
-            BossHitType.Typeless -> HitType.Typeless
-            BossHitType.Magic,
-            BossHitType.Dragonfire,
-            BossHitType.DragonfireMetal,
-            BossHitType.WyvernIce -> HitType.Magic
-        }
 }
+
+/**
+ * A player hit on the boss, for hit conditions: before the incoming rules settle it (`Modify`) or
+ * as it landed (`Impact`). The objs are the ones snapshot when the hit was queued.
+ */
+class HitContext(
+    val type: HitType,
+    val damage: Int,
+    val righthand: ItemServerType?,
+    val secondary: ItemServerType?,
+) {
+    val demonbane: Boolean
+        get() = DemonbaneChecks.isDemonbane(type, righthand, secondary)
+}
+
+internal fun BossHitType.toEngine(): HitType =
+    when (this) {
+        BossHitType.Melee -> HitType.Melee
+        BossHitType.Ranged -> HitType.Ranged
+        BossHitType.Typeless -> HitType.Typeless
+        BossHitType.Magic,
+        BossHitType.Dragonfire,
+        BossHitType.DragonfireMetal,
+        BossHitType.WyvernIce -> HitType.Magic
+    }

@@ -55,7 +55,12 @@ public val overheadProtectionPrayerVarbits: List<String> =
 
 public fun Player.lockOverheads(cycles: Int) {
     require(cycles > 0) { "`cycles` must be greater than 0. (cycles=$cycles)" }
+    disableOverheadPrayers()
+    overheadLockExpiration = currentMapClock + cycles
+}
 
+/** Turns off the protection overheads, leaving every other prayer on. */
+public fun Player.disableOverheadPrayers() {
     val hadProtection = protectFromMelee != 0 || protectFromMissiles != 0 || protectFromMagic != 0
     protectFromMelee = 0
     protectFromMissiles = 0
@@ -70,8 +75,6 @@ public fun Player.lockOverheads(cycles: Int) {
             clearSoftTimer("timer.prayer_drain")
         }
     }
-
-    overheadLockExpiration = currentMapClock + cycles
 }
 
 public val Player.overheadsLocked: Boolean

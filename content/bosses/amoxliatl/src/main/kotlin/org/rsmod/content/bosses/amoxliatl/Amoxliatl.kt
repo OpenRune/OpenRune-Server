@@ -219,7 +219,7 @@ class Amoxliatl @Inject constructor(deps: BossDeps, private val locRepo: LocRepo
 
     override val spec =
         boss(AMOXLIATL_NPC) {
-            stats(attackRate = 8, aggressionRadius = 8)
+            stats(attackRate = 8)
 
             val standardAttack =
                 ability("standard_attack") {

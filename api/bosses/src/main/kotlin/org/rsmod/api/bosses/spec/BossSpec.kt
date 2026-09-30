@@ -8,14 +8,11 @@ data class BossSpec(
     val triggers: List<TriggerSpec>,
     val hitReactions: List<HitReaction> = emptyList(),
     val incomingRules: List<IncomingRule> = emptyList(),
+    val abilityAttackDelays: Map<String, Int> = emptyMap(),
+    val timers: List<TimerSpec> = emptyList(),
 )
 
-data class BossStats(
-    val attackRate: Int = 4,
-    val aggressionRadius: Int = 8,
-    val retaliateOnHit: Boolean = true,
-    val hitFloor: Int? = null,
-)
+data class BossStats(val attackRate: Int = 4)
 
 data class PhaseSpec(
     val name: String,
@@ -31,11 +28,31 @@ data class PhaseSpec(
     val exitAfter: Int? = null,
     val nextPhase: String? = null,
     val idleAnim: String? = null,
+    /**
+     * Ability run when this phase is entered by an automatic transition ([entryHp] or another
+     * phase's [exitAfter]). A scripted [Effect.TransitionTo] or
+     * [org.rsmod.api.bosses.runtime.BossEncounter.transitionTo] does not run it; the script doing
+     * the transition orchestrates whatever the new phase needs.
+     */
     val entry: String? = null,
-    val exit: String? = null,
     val selector: Selector = Selector.WeightedRandom(),
     val forceAbilities: List<ForcedAbility> = emptyList(),
+    val timers: List<TimerSpec> = emptyList(),
 )
+
+/**
+ * Runs [effect] every [ticks] ticks (re-rolled after each fire) against the encounter's last
+ * target, alongside whatever ability is running. It never counts as an attack and ignores the
+ * attack rate and attack delays; to respect those, have [effect] `forceNext` an ability instead. A
+ * phase timer counts from the phase's entry and stops when the phase is left; a spec timer counts
+ * from the first combat tick and stops when the encounter is removed. Interrupts don't stop a
+ * timer, but drop the rest of an [effect] still waiting.
+ *
+ * Waits inside [effect] hold attacks, as they do in abilities. With [skipWhileBusy], a fire that
+ * falls while [org.rsmod.api.bosses.runtime.BossEncounter.busyUntil] holds (an effect is mid-wait)
+ * is skipped, and the timer waits its next interval.
+ */
+data class TimerSpec(val ticks: IntRange, val effect: Effect, val skipWhileBusy: Boolean = false)
 
 data class ForcedAbility(
     val period: Int,

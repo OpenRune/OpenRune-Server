@@ -183,7 +183,7 @@ constructor(
         val teleportDuration = teleportWindup + TELEPORT_STEP_TICKS * (TELEPORT_LOOP.size + 1) + 2
 
         boss("npc.muspah", "npc.muspah_melee", "npc.muspah_teleport", "npc.muspah_soulsplit", "npc.muspah_final") {
-            stats(attackRate = ATTACK_RATE, aggressionRadius = AGGRO_RANGE)
+            stats(attackRate = ATTACK_RATE)
 
             val rangedAttack =
                 ability("ranged_attack") {
@@ -222,8 +222,8 @@ constructor(
                     }
                 }
 
-            val toMelee = ability(ABILITY_TO_MELEE, formTransform("npc.muspah_melee", PHASE_MELEE))
-            val toRanged = ability(ABILITY_TO_RANGED, formTransform("npc.muspah", PHASE_RANGED))
+            val toMelee = ability(ABILITY_TO_MELEE, formTransform(PHASE_MELEE))
+            val toRanged = ability(ABILITY_TO_RANGED, formTransform(PHASE_RANGED))
 
             val homingSpike =
                 ability(
@@ -256,7 +256,6 @@ constructor(
                         teleport(spawnTile(TELEPORT_RETURN_OFFSET.first, TELEPORT_RETURN_OFFSET.second)),
                         anim(TELEPORT_APPEAR_SEQ),
                         spotanim(TELEPORT_APPEAR_SPOTANIM),
-                        transmog("npc.muspah_melee", Int.MAX_VALUE),
                         transitionTo(PHASE_MELEE),
                         faceTarget(),
                         wait(2),
@@ -280,9 +279,8 @@ constructor(
                         spotanim(FINAL_WINDUP_SPOTANIM_RELEASE),
                         external("muspah_shockwave_release"),
                         wait(FINAL_SHOCKWAVE_RECOVER_TICKS),
-                        transmog("npc.muspah_soulsplit", Int.MAX_VALUE),
-                        external("muspah_soulsplit_enter"),
                         transitionTo(PHASE_SOULSPLIT),
+                        external("muspah_soulsplit_enter"),
                         faceTarget(),
                     ),
                 )
@@ -291,9 +289,8 @@ constructor(
                 ability(
                     ABILITY_TO_FINAL,
                     sequence(
-                        transmog("npc.muspah_final", Int.MAX_VALUE),
-                        external("muspah_final_enter"),
                         transitionTo(PHASE_FINAL),
+                        external("muspah_final_enter"),
                     ),
                 )
 
@@ -325,7 +322,7 @@ constructor(
             val rangedSwitchReady = switchReady(PHASE_RANGED, RANGED_SWITCH_DAMAGE)
             val meleeSwitchReady = switchReady(PHASE_MELEE, MELEE_SWITCH_DAMAGE)
 
-            phase(PHASE_RANGED) {
+            phase(PHASE_RANGED, transmog = "npc.muspah") {
                 forceWhen(shockwaveReady, finalShockwave, once = true)
                 forceWhen(spikeReady, homingSpike, once = true)
                 forceWhen(cloudReady, cloudTeleport, once = true)
@@ -336,7 +333,7 @@ constructor(
                 }
             }
 
-            phase(PHASE_MELEE) {
+            phase(PHASE_MELEE, transmog = "npc.muspah_melee") {
                 forceWhen(shockwaveReady, finalShockwave, once = true)
                 forceWhen(spikeReady, homingSpike, once = true)
                 forceWhen(cloudReady, cloudTeleport, once = true)
@@ -344,26 +341,25 @@ constructor(
                 weightedSelectorRandom { +random(meleeHit, weight = 1, requires = WithinMeleeRange) }
             }
 
-            phase(PHASE_SOULSPLIT) {
+            phase(PHASE_SOULSPLIT, transmog = "npc.muspah_soulsplit") {
                 forceWhen(shieldBroken, toFinal, once = true)
                 weightedSelectorRandom { +random(magicAttack, weight = 1) }
             }
 
-            phase(PHASE_FINAL) {
+            phase(PHASE_FINAL, transmog = "npc.muspah_final") {
                 weightedSelectorRandom { +random(magicAttack, weight = 1) }
             }
         }
     }
 
-    private fun formTransform(toNpc: String, phase: String) =
+    private fun formTransform(phase: String) =
         sequence(
             external("muspah_switch_begin"),
             anim(TRANSFORM_DISAPPEAR_SEQ),
             wait(TRANSFORM_ANIM_DELAY),
-            transmog(toNpc, Int.MAX_VALUE),
+            transitionTo(phase),
             spotanim(TRANSFORM_APPEAR_SPOTANIM),
             anim(TRANSFORM_APPEAR_SEQ),
-            transitionTo(phase),
             external("muspah_switch_end"),
         )
 
@@ -911,7 +907,6 @@ constructor(
         private const val ABILITY_TO_FINAL = "to_final"
 
         private const val ATTACK_RATE = 6
-        private const val AGGRO_RANGE = 15
 
         private const val TRANSFORM_DISAPPEAR_SEQ = "seq.npc_muspah_transform_disappear_02"
         private const val TRANSFORM_APPEAR_SEQ = "seq.npc_muspah_transform_appear_02"

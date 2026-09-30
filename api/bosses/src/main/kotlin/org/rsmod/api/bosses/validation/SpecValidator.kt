@@ -5,18 +5,40 @@ import org.rsmod.api.bosses.spec.*
 data class ValidationError(val message: String)
 
 object SpecValidator {
+    /** Largest end time a [org.rsmod.game.headbar.Headbar] can carry: 8 bits in steps of 5. */
+    private const val MAX_HEADBAR_CYCLES = 1275
 
     fun validate(spec: BossSpec): List<ValidationError> = SpecCheck(spec).run()
 
+    /** Validates each spec, plus what specs sharing npc types must agree on: those npc types. */
+    fun validateAll(specs: Collection<BossSpec>): List<ValidationError> {
+        val first = specs.firstOrNull() ?: return listOf(ValidationError("No specs given."))
+        val errors = mutableListOf<ValidationError>()
+        for ((index, spec) in specs.withIndex()) {
+            if (spec.npcTypes.toSet() != first.npcTypes.toSet()) {
+                val message = "spec $index: npc types ${spec.npcTypes} differ from ${first.npcTypes}."
+                errors += ValidationError(message)
+            }
+            errors += validate(spec).map { ValidationError("spec $index: ${it.message}") }
+        }
+        return errors
+    }
+
     /**
-     * Where an effect sits: [tileBound] inside a [Effect.Projectile.onImpact] or [Effect.OnTiles]
-     * (so `ImpactTile`/`EachTile` resolve), [deferred] when it runs on a later tick outside the
-     * ability's own timeline ([Effect.After], impacts, on-hit effects).
+     * Where an effect sits: [impactTileBound] inside a [Effect.Projectile.onImpact] (so
+     * `ImpactTile` resolves), [currentTileBound] inside an [Effect.OnTiles] (so `CurrentTile`
+     * resolves), [tileNames]/[setNames] bound by enclosing [Effect.WithTile]/[Effect.WithTiles],
+     * [deferred] when it runs on a later tick outside the ability's own timeline ([Effect.After],
+     * impacts, on-hit effects).
      */
     private data class Scope(
         val label: String,
-        val tileBound: Boolean = false,
+        val impactTileBound: Boolean = false,
+        val currentTileBound: Boolean = false,
+        val tileNames: Set<String> = emptySet(),
+        val setNames: Set<String> = emptySet(),
         val deferred: Boolean = false,
+        val hitAware: Boolean = false,
     ) {
         val prefix: String
             get() = if (label.isNotEmpty()) "$label: " else ""
@@ -35,12 +57,25 @@ object SpecValidator {
             for ((phaseName, phase) in spec.phases) {
                 val scope = Scope("phase '$phaseName'")
                 phase.entry?.let { requireAbility(it, scope, "entry ability") }
-                phase.exit?.let { requireAbility(it, scope, "exit ability") }
+                phase.transmog?.let {
+                    if (it !in spec.npcTypes) {
+                        error("${scope.prefix}transmog '$it' is not one of the boss npc types ${spec.npcTypes}.")
+                    }
+                }
                 for (forced in phase.forceAbilities) {
                     requireAbility(forced.ability, scope, "forced ability")
                     forced.condition?.let { condition(it, scope) }
                 }
                 selector(phase.selector, scope, abilityNames)
+                phase.timers.forEach { timer(it, Scope("phase '$phaseName' timer", deferred = true)) }
+            }
+
+            spec.timers.forEach { timer(it, Scope("timer", deferred = true)) }
+
+            for ((ability, delay) in spec.abilityAttackDelays) {
+                val scope = Scope("ability '$ability'")
+                requireAbility(ability, scope, "attack delay")
+                if (delay <= 0) error("${scope.prefix}attack delay '$delay' must be greater than 0.")
             }
 
             spec.triggers.forEach { effect(it.effect, Scope("trigger")) }
@@ -48,13 +83,13 @@ object SpecValidator {
 
             for (reaction in spec.hitReactions) {
                 val scope = Scope("hit reaction")
-                condition(reaction.requires, scope)
+                condition(reaction.requires, scope.copy(hitAware = true))
                 effect(reaction.effect, scope)
             }
 
             for (rule in spec.incomingRules) {
                 val scope = Scope("incoming rule")
-                condition(rule.condition, scope)
+                condition(rule.condition, scope.copy(hitAware = true))
                 if (rule.actions.isEmpty()) error("${scope.prefix}rule has no actions.")
                 for (action in rule.actions) {
                     when (action) {
@@ -91,6 +126,13 @@ object SpecValidator {
             if (name !in abilityNames) error("${scope.prefix}$what '$name' does not exist.")
         }
 
+        private fun timer(timer: TimerSpec, scope: Scope) {
+            if (timer.ticks.isEmpty() || timer.ticks.first <= 0) {
+                error("${scope.prefix}ticks '${timer.ticks}' must be a non-empty range of positive ticks.")
+            }
+            effect(timer.effect, scope)
+        }
+
         private fun selector(selector: Selector, scope: Scope, names: Set<String>) {
             when (selector) {
                 is Selector.WeightedRandom ->
@@ -104,15 +146,6 @@ object SpecValidator {
                     for (name in selector.sequence) {
                         if (name !in names) error("${scope.prefix}rotation references '$name' which does not exist.")
                     }
-                is Selector.Conditional -> {
-                    for ((cond, name) in selector.branches) {
-                        if (name !in names) error("${scope.prefix}conditional references '$name' which does not exist.")
-                        condition(cond, scope)
-                    }
-                    if (selector.fallback !in names) {
-                        error("${scope.prefix}conditional fallback '${selector.fallback}' does not exist.")
-                    }
-                }
             }
         }
 
@@ -122,9 +155,28 @@ object SpecValidator {
                     if (condition.phase !in phaseNames) {
                         error("${scope.prefix}InPhase references phase '${condition.phase}' which does not exist.")
                     }
+                is Condition.HpBelow ->
+                    if (condition.fraction !in 0.0..1.0) {
+                        error("${scope.prefix}HpBelow fraction '${condition.fraction}' must be within 0.0..1.0.")
+                    }
                 is Condition.LastAbility -> requireAbility(condition.ability, scope, "lastAbility")
                 is Condition.AbilityUsed -> requireAbility(condition.ability, scope, "AbilityUsed")
                 is Condition.VarnIn -> varn(condition.varn, scope)
+                is Condition.VarnExpired -> varn(condition.varn, scope)
+                is Condition.TilesEmpty -> boundSet(condition.name, scope, "tilesEmpty")
+                is Condition.PhaseTicksAtLeast ->
+                    if (condition.ticks < 0) {
+                        error("${scope.prefix}phaseTicksAtLeast ticks '${condition.ticks}' must not be negative.")
+                    }
+                is Condition.HitStyle,
+                is Condition.HitDemonbane,
+                is Condition.HitDamageAtLeast ->
+                    if (!scope.hitAware) {
+                        error(
+                            "${scope.prefix}$condition only works in an incoming rule's condition " +
+                                "or a hit reaction's requires, where there is a hit."
+                        )
+                    }
                 is Condition.TargetInArc -> varn(condition.bearingVarn, scope)
                 is Condition.TargetWithin -> target(condition.of, scope, "TargetWithin")
                 is Condition.Not -> condition(condition.c, scope)
@@ -140,6 +192,27 @@ object SpecValidator {
             }
         }
 
+        private fun headbar(effect: Effect.Headbar, scope: Scope) {
+            headbarRef(effect.headbar, scope)
+            for (fill in listOf(effect.fromPercent, effect.toPercent)) {
+                if (fill !in 0..100) error("${scope.prefix}Headbar fill '$fill' must be within 0..100.")
+            }
+            if (effect.cycles !in 0..MAX_HEADBAR_CYCLES) {
+                val cycles = effect.cycles
+                error("${scope.prefix}Headbar cycles '$cycles' must be within 0..$MAX_HEADBAR_CYCLES.")
+            }
+        }
+
+        private fun headbarRef(name: String, scope: Scope) {
+            if (!name.startsWith("headbar.")) {
+                error("${scope.prefix}'$name' is not a headbar reference (expected headbar.<name>).")
+            }
+        }
+
+        private fun headIconSlot(slot: Int, scope: Scope) {
+            if (slot !in 0..7) error("${scope.prefix}head icon slot '$slot' must be within 0..7.")
+        }
+
         private fun varn(name: String, scope: Scope) {
             if (!name.startsWith("varn.")) {
                 error("${scope.prefix}'$name' is not a varn reference (expected \"varn.<name>\").")
@@ -148,7 +221,8 @@ object SpecValidator {
 
         private fun varExpr(expr: VarExpr, scope: Scope) {
             when (expr) {
-                is VarExpr.Const -> {}
+                is VarExpr.Const,
+                is VarExpr.Now -> {}
                 is VarExpr.Varn -> varn(expr.varn, scope)
                 is VarExpr.Plus -> {
                     varExpr(expr.a, scope)
@@ -170,13 +244,56 @@ object SpecValidator {
         }
 
         private fun target(expr: TargetExpr, scope: Scope, what: String) {
-            if (!scope.tileBound && usesBoundTile(expr)) {
-                error(
-                    "${scope.prefix}$what references ImpactTile/EachTile outside a Projectile.onImpact or " +
-                        "OnTiles — it silently falls back to the caster's tile there."
-                )
+            for (tile in tilesIn(expr)) {
+                when (tile) {
+                    is TargetExpr.ImpactTile ->
+                        if (!scope.impactTileBound) {
+                            error(
+                                "${scope.prefix}$what references ImpactTile outside a " +
+                                    "Projectile.onImpact, where there is no impact tile."
+                            )
+                        }
+                    is TargetExpr.CurrentTile ->
+                        if (!scope.currentTileBound) {
+                            error(
+                                "${scope.prefix}$what references CurrentTile outside an OnTiles, " +
+                                    "where there is no current tile."
+                            )
+                        }
+                    is TargetExpr.Bound -> boundTile(tile.name, scope, what)
+                    is TargetExpr.RandomOfBound -> boundSet(tile.name, scope, "$what randomOf")
+                    else -> {}
+                }
             }
         }
+
+        private fun boundTile(name: String, scope: Scope, what: String) {
+            if (name !in scope.tileNames) {
+                val where = "outside a withTile(\"$name\")"
+                error("${scope.prefix}$what references tile(\"$name\") $where.")
+            }
+        }
+
+        private fun boundSet(name: String, scope: Scope, what: String) {
+            if (name !in scope.setNames) {
+                val where = "outside a withTiles(\"$name\")"
+                error("${scope.prefix}$what references tile set \"$name\" $where.")
+            }
+        }
+
+        /** Every single tile [expr] resolves, including the anchors it is built from. */
+        private fun tilesIn(expr: TargetExpr): List<TargetExpr.Single> =
+            when (expr) {
+                is TargetExpr.PlayersOn -> tilesIn(expr.tile)
+                is TargetExpr.PlayersIn -> tilesIn(expr.area.sw) + tilesIn(expr.area.ne)
+                is TargetExpr.AllInRadius -> tilesIn(expr.of)
+                is TargetExpr.TopN -> tilesIn(expr.by)
+                is TargetExpr.RandomWalkableTile -> listOf(expr) + tilesIn(expr.of)
+                is TargetExpr.Offset -> listOf(expr) + tilesIn(expr.of)
+                is TargetExpr.Toward -> listOf(expr) + tilesIn(expr.from) + tilesIn(expr.to)
+                is TargetExpr.Single -> listOf(expr)
+                is TargetExpr.FacingQuadrant -> emptyList()
+            }
 
         private fun area(area: Area, scope: Scope, what: String) {
             target(area.sw, scope, what)
@@ -184,21 +301,22 @@ object SpecValidator {
         }
 
         private fun tileSet(tiles: TileSet, scope: Scope) {
-            area(tiles.area, scope, "OnTiles tile set")
-            if (tiles is TileSet.Nearest) tiles.tiles.forEach { target(it, scope, "OnTiles tile set") }
-        }
-
-        private fun usesBoundTile(expr: TargetExpr): Boolean =
-            when (expr) {
-                is TargetExpr.ImpactTile,
-                is TargetExpr.EachTile -> true
-                is TargetExpr.PlayersOn -> usesBoundTile(expr.tile)
-                is TargetExpr.PlayersIn -> usesBoundTile(expr.area.sw) || usesBoundTile(expr.area.ne)
-                is TargetExpr.RandomWalkableTile -> usesBoundTile(expr.of)
-                is TargetExpr.AllInRadius -> usesBoundTile(expr.of)
-                is TargetExpr.Toward -> usesBoundTile(expr.from) || usesBoundTile(expr.to)
-                else -> false
+            val what = "OnTiles tile set"
+            when (tiles) {
+                is TileSet.RandomFree -> area(tiles.area, scope, what)
+                is TileSet.UnderPlayers -> area(tiles.area, scope, what)
+                is TileSet.Nearest -> {
+                    area(tiles.area, scope, what)
+                    tiles.tiles.forEach { target(it, scope, what) }
+                }
+                is TileSet.Custom -> area(tiles.area, scope, what)
+                is TileSet.Plus -> {
+                    tileSet(tiles.a, scope)
+                    tileSet(tiles.b, scope)
+                }
+                is TileSet.Bound -> boundSet(tiles.name, scope, what)
             }
+        }
 
         private fun effect(effect: Effect, scope: Scope) {
             val name = effect::class.simpleName ?: "Effect"
@@ -211,6 +329,14 @@ object SpecValidator {
                     }
                 is Effect.Wait ->
                     if (effect.ticks <= 0) error("${scope.prefix}Wait ticks '${effect.ticks}' must be greater than 0.")
+                is Effect.NextAttackIn ->
+                    if (effect.ticks < 0) {
+                        error("${scope.prefix}NextAttackIn ticks '${effect.ticks}' must not be negative.")
+                    }
+                is Effect.Headbar -> headbar(effect, scope)
+                is Effect.ClearHeadbar -> headbarRef(effect.headbar, scope)
+                is Effect.HeadIcon -> headIconSlot(effect.slot, scope)
+                is Effect.ClearHeadIcon -> headIconSlot(effect.slot, scope)
                 is Effect.Interrupt ->
                     if (scope.deferred) {
                         error(
@@ -250,7 +376,15 @@ object SpecValidator {
                 }
                 is Effect.OnTiles -> {
                     tileSet(effect.tiles, scope)
-                    effect(effect.effect, scope.copy(tileBound = true))
+                    effect(effect.effect, scope.copy(currentTileBound = true))
+                }
+                is Effect.WithTile -> {
+                    target(effect.tile, scope, "withTile(\"${effect.name}\")")
+                    effect(effect.effect, scope.copy(tileNames = scope.tileNames + effect.name))
+                }
+                is Effect.WithTiles -> {
+                    tileSet(effect.tiles, scope)
+                    effect(effect.effect, scope.copy(setNames = scope.setNames + effect.name))
                 }
                 is Effect.After -> {
                     if (effect.ticks <= 0) error("${scope.prefix}After ticks '${effect.ticks}' must be greater than 0.")
@@ -282,6 +416,8 @@ object SpecValidator {
                 is Effect.Summon -> target(effect.centeredOn, scope, name)
                 is Effect.Teleport -> target(effect.to, scope, name)
                 is Effect.FaceTile -> target(effect.at, scope, name)
+                is Effect.External ->
+                    effect.at?.let { target(it, scope, "External '${effect.handler}'") }
                 else -> {}
             }
         }
@@ -313,7 +449,7 @@ object SpecValidator {
             target(proj.target, scope, "Projectile")
             proj.from?.let { target(it, scope, "Projectile") }
             proj.hit?.let { hit(it, scope, projectile = proj) }
-            proj.onImpact?.let { effect(it, scope.copy(tileBound = true, deferred = true)) }
+            proj.onImpact?.let { effect(it, scope.copy(impactTileBound = true, deferred = true)) }
         }
     }
 }

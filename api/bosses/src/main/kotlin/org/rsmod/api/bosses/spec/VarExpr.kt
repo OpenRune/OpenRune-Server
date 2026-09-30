@@ -3,6 +3,10 @@ package org.rsmod.api.bosses.spec
 /** An int computed from the boss npc's varns when the owning effect runs. */
 sealed interface VarExpr {
     data class Const(val value: Int) : VarExpr
+
+    /** The current game tick, e.g. `Now + 13` to store a deadline for [Condition.VarnExpired]. */
+    data object Now : VarExpr
+
     data class Varn(val varn: String) : VarExpr
     data class Plus(val a: VarExpr, val b: VarExpr) : VarExpr
     data class Min(val a: VarExpr, val b: VarExpr) : VarExpr

@@ -86,7 +86,6 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
         boss("npc.tormented_demon_1", "npc.tormented_demon_2") {
             stats(
                 attackRate = TormentedDemonMechanics.SOLO_ATTACK_RATE,
-                aggressionRadius = AGGRO_RANGE,
             )
 
             val melee =
@@ -377,8 +376,6 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
         private const val RANGED_MAGIC_AP_RANGE = 7
         private const val MELEE_RANGE_TILES = 1
         private const val RETREAT_DISTANCE = 3
-
-        private const val AGGRO_RANGE = 8
 
         private const val PRAYER_STALL_TICKS = 6
         private const val DEFENCELESS_DELAY_TICKS = 30

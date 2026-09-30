@@ -40,7 +40,7 @@ class KreeArra @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
     override val spec =
         boss(AVATAR) {
-            stats(attackRate = 3, aggressionRadius = 8)
+            stats(attackRate = 3)
 
             val windRanged =
                 ability("wind_ranged") {

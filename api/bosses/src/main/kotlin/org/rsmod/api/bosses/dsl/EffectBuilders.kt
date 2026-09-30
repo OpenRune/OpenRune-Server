@@ -4,6 +4,7 @@ import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.combat.commons.types.MeleeAttackType as EngineMeleeAttackType
 import org.rsmod.api.player.output.CamShakeAxis
+import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
@@ -73,7 +74,8 @@ fun run(ability: AbilityRef): Effect = Effect.Run(ability.name)
 fun transitionTo(phase: String): Effect = Effect.TransitionTo(phase)
 
 fun transitionTo(phase: PhaseRef): Effect = Effect.TransitionTo(phase.name)
-fun external(handler: String, params: Any? = null): Effect = Effect.External(handler, params)
+fun external(handler: String, params: Any? = null, at: TargetExpr.Single? = null): Effect =
+    Effect.External(handler, params, at)
 
 fun hit(
     damage: DamageExpr,
@@ -139,7 +141,7 @@ fun debris(
     targetRadius: Int = 15,
     scatterRadius: Int = 5,
     count: IntRange = 1..1,
-    center: TargetExpr = TargetExpr.Self,
+    center: TargetExpr.Single = TargetExpr.Self,
 ): Effect =
     Effect.Debris(telegraph, damage, type, impact, windup, targetRadius, scatterRadius, count, center)
 
@@ -147,7 +149,7 @@ fun summon(
     npc: String,
     count: Int = 1,
     radius: Int = 3,
-    centeredOn: TargetExpr = TargetExpr.Self,
+    centeredOn: TargetExpr.Single = TargetExpr.Self,
     mode: NpcMode? = null,
     duration: Int = 100,
     onSummon: String? = null,
@@ -187,6 +189,17 @@ fun switch(varn: String, cases: List<Effect>, otherwise: Effect = Effect.NoOp): 
 
 fun interrupt(): Effect = Effect.Interrupt
 
+fun nextAttackIn(ticks: Int): Effect = Effect.NextAttackIn(ticks)
+
+fun headbar(headbar: String, fromPercent: Int, toPercent: Int, cycles: Int): Effect =
+    Effect.Headbar(headbar, fromPercent, toPercent, cycles)
+
+fun clearHeadbar(headbar: String): Effect = Effect.ClearHeadbar(headbar)
+
+fun headIcon(slot: Int, graphic: Int, index: Int): Effect = Effect.HeadIcon(slot, graphic, index)
+
+fun clearHeadIcon(slot: Int): Effect = Effect.ClearHeadIcon(slot)
+
 fun area(sw: TargetExpr.Single, ne: TargetExpr.Single): Area = Area(sw, ne)
 
 fun randomFreeTiles(area: Area, count: IntRange): TileSet = TileSet.RandomFree(area, count)
@@ -196,7 +209,40 @@ fun tilesUnderPlayers(area: Area): TileSet = TileSet.UnderPlayers(area)
 fun nearestFreeTiles(tiles: List<TargetExpr.Single>, area: Area, searchRadius: Int): TileSet =
     TileSet.Nearest(tiles, area, searchRadius)
 
+fun customTiles(
+    area: Area,
+    tiles: (npc: Npc, target: Player, random: GameRandom) -> List<CoordGrid>,
+): TileSet = TileSet.Custom(area, tiles)
+
+operator fun TileSet.plus(other: TileSet): TileSet = TileSet.Plus(this, other)
+
+fun offset(of: TargetExpr.Single, dx: Int, dz: Int): TargetExpr.Single =
+    TargetExpr.Offset(of, dx, dz)
+
+fun customTile(tile: (npc: Npc, target: Player) -> CoordGrid): TargetExpr.Single =
+    TargetExpr.Custom(tile)
+
 fun onTiles(tiles: TileSet, effect: Effect): Effect = Effect.OnTiles(tiles, effect)
+
+fun withTile(name: String, tile: TargetExpr.Single, effect: Effect): Effect =
+    Effect.WithTile(name, tile, effect)
+
+fun withTiles(name: String, tiles: TileSet, effect: Effect): Effect =
+    Effect.WithTiles(name, tiles, effect)
+
+fun tile(name: String): TargetExpr.Single = TargetExpr.Bound(name)
+
+fun bound(name: String): TileSet = TileSet.Bound(name)
+
+fun randomOf(name: String): TargetExpr.Single = TargetExpr.RandomOfBound(name)
+
+fun tilesEmpty(name: String): Condition = Condition.TilesEmpty(name)
+
+fun hitStyle(type: HitType): Condition = Condition.HitStyle(type)
+
+fun hitDemonbane(): Condition = Condition.HitDemonbane
+
+fun hitDamageAtLeast(damage: Int): Condition = Condition.HitDamageAtLeast(damage)
 
 fun after(ticks: Int, effect: Effect, requireAlive: Boolean = true): Effect =
     Effect.After(ticks, effect, requireAlive)
@@ -213,6 +259,12 @@ fun playersOn(tile: TargetExpr.Single): TargetExpr.Multi = TargetExpr.PlayersOn(
 fun varnIs(varn: String, value: Int): Condition = Condition.VarnIn(varn, value..value)
 
 fun varnAtLeast(varn: String, value: Int): Condition = Condition.VarnIn(varn, value..Int.MAX_VALUE)
+
+fun varnExpired(varn: String): Condition = Condition.VarnExpired(varn)
+
+fun phaseTicksAtLeast(ticks: Int): Condition = Condition.PhaseTicksAtLeast(ticks)
+
+val Now: VarExpr = VarExpr.Now
 
 fun bearingTo(to: TargetExpr.Single, from: TargetExpr.Single = TargetExpr.Centre): VarExpr =
     VarExpr.BearingTo(to, from)
@@ -241,7 +293,7 @@ fun freeze(ticks: Int, chance: Int = 1, outOf: Int = 1): Effect = Effect.Freeze(
 
 fun freeze(ticks: Int, odds: Odds): Effect = Effect.Freeze(ticks, odds.chance, odds.outOf)
 
-fun disablePrayers(): Effect = Effect.DisablePrayers
+fun disablePrayers(overheadsOnly: Boolean = false): Effect = Effect.DisablePrayers(overheadsOnly)
 fun statDrain(block: StatDrainBuilder.() -> Unit): Effect = StatDrainBuilder().apply(block).build()
 
 fun statDrain(vararg stats: String, amount: Int, chance: Int = 1, outOf: Int = 1): Effect =
@@ -272,18 +324,11 @@ fun faceTile(at: TargetExpr.Single): Effect = Effect.FaceTile(at)
 fun randomWalkableTile(radius: Int, of: TargetExpr.Single = TargetExpr.Self): TargetExpr =
     TargetExpr.RandomWalkableTile(radius, of)
 
-fun weightedRandom(
-    noRepeatBias: Double = 0.5,
-    block: WeightedRandomBuilder.() -> Unit,
-): Selector.WeightedRandom =
-    WeightedRandomBuilder().apply {
-        this.noRepeatBias = noRepeatBias
-        block()
-    }.build()
+fun weightedRandom(block: WeightedRandomBuilder.() -> Unit): Selector.WeightedRandom =
+    WeightedRandomBuilder().apply(block).build()
 
 @BossDsl
 class WeightedRandomBuilder internal constructor() {
-    var noRepeatBias: Double = 0.5
     private val entries = mutableListOf<WeightedRef>()
 
     @BossDsl
@@ -313,7 +358,7 @@ class WeightedRandomBuilder internal constructor() {
         cooldown: Int = 0,
     ): RandomPending = RandomPending(ability, weight, requires, cooldown)
 
-    internal fun build(): Selector.WeightedRandom = Selector.WeightedRandom(entries, noRepeatBias)
+    internal fun build(): Selector.WeightedRandom = Selector.WeightedRandom(entries)
 }
 
 fun rotation(block: RotationBuilder.() -> Unit): Selector.Rotation = RotationBuilder().apply(block).build()
@@ -342,9 +387,6 @@ typealias Accuracy = DamageExpr.Accuracy
 typealias Fixed = DamageExpr.Fixed
 typealias NpcMaxHit = DamageExpr.NpcMaxHit
 typealias HpBelow = Condition.HpBelow
-typealias IncomingHitDamageAtLeast = Condition.IncomingHitDamageAtLeast
-typealias PlayerEnterRange = Condition.PlayerEnterRange
-typealias EveryNTicks = Condition.EveryNTicks
 typealias TargetPraying = Condition.TargetPraying
 typealias InPhase = Condition.InPhase
 typealias WeightedRandom = Selector.WeightedRandom
@@ -357,8 +399,6 @@ typealias AllInRadius = TargetExpr.AllInRadius
 typealias FacingQuadrant = TargetExpr.FacingQuadrant
 typealias MeleeAttackType = EngineMeleeAttackType
 
-val OnDeath: Condition = Condition.OnDeath
-val OnSpawn: Condition = Condition.OnSpawn
 val Always: Condition = Condition.Always
 val WithinMeleeRange: Condition = Condition.WithinMeleeRange
 val CurrentTarget: TargetExpr.Single = TargetExpr.CurrentTarget
@@ -366,7 +406,7 @@ val CurrentTargetTile: TargetExpr.Single = TargetExpr.CurrentTargetTile
 val Self: TargetExpr.Single = TargetExpr.Self
 val Centre: TargetExpr.Single = TargetExpr.Centre
 val ImpactTile: TargetExpr.Single = TargetExpr.ImpactTile
-val EachTile: TargetExpr.Single = TargetExpr.EachTile
+val CurrentTile: TargetExpr.Single = TargetExpr.CurrentTile
 val Melee: HitType = HitType.Melee
 val Ranged: HitType = HitType.Ranged
 val Magic: HitType = HitType.Magic

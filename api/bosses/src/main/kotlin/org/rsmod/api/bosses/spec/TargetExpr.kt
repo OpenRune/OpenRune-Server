@@ -1,5 +1,9 @@
 package org.rsmod.api.bosses.spec
 
+import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
+
 sealed interface TargetExpr {
     sealed interface Single : TargetExpr
     sealed interface Multi : TargetExpr
@@ -22,14 +26,26 @@ sealed interface TargetExpr {
 
     data class RandomWalkableTile(val radius: Int, val of: Single = Self) : Single
 
+    data class Offset(val of: Single, val dx: Int, val dz: Int) : Single
+
+    data class Custom(val tile: (npc: Npc, target: Player) -> CoordGrid) : Single
+
+    data class Bound(val name: String) : Single
+
+    /** Re-rolled on every resolve; throws on an empty set, so check [Condition.TilesEmpty] first. */
+    data class RandomOfBound(val name: String) : Single
+
     /**
-     * The tile a [Effect.Projectile] just landed on — only meaningful inside that same
-     * [Effect.Projectile.onImpact]. Resolves to the caster's tile if used anywhere else.
+     * The tile a [Effect.Projectile] just landed on. Only valid inside that same
+     * [Effect.Projectile.onImpact]; resolving it anywhere else throws.
      */
     data object ImpactTile : Single
 
-    /** The tile an [Effect.OnTiles] is currently running its effect for. */
-    data object EachTile : Single
+    /**
+     * The tile an [Effect.OnTiles] is currently running its effect for. Only valid inside that
+     * [Effect.OnTiles]; resolving it anywhere else throws.
+     */
+    data object CurrentTile : Single
 
     data class PlayersIn(val area: Area) : Multi
 

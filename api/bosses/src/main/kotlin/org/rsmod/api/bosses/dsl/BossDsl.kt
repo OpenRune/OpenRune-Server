@@ -21,27 +21,25 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
 
     private var stats = BossStats()
     private val abilities = mutableMapOf<String, Effect>()
+    private val abilityAttackDelays = mutableMapOf<String, Int>()
     private val phases = mutableMapOf<String, PhaseSpec>()
     private val triggers = mutableListOf<TriggerSpec>()
     private val hitReactions = mutableListOf<HitReaction>()
     private val incomingRules = mutableListOf<IncomingRule>()
+    private val timers = mutableListOf<TimerSpec>()
 
-    fun stats(
-        attackRate: Int = 4,
-        aggressionRadius: Int = 8,
-        retaliateOnHit: Boolean = true,
-        hitFloor: Int? = null,
-    ) {
-        stats = BossStats(attackRate, aggressionRadius, retaliateOnHit, hitFloor)
+    fun stats(attackRate: Int = 4) {
+        stats = BossStats(attackRate)
     }
 
     fun ability(name: String, block: AbilityBuilder.() -> Unit): AbilityRef {
-        abilities[name] = AbilityBuilder().apply(block).build()
-        return AbilityRef(name)
+        val builder = AbilityBuilder().apply(block)
+        return ability(name, builder.build(), builder.attackDelay)
     }
 
-    fun ability(name: String, effect: Effect): AbilityRef {
+    fun ability(name: String, effect: Effect, attackDelay: Int? = null): AbilityRef {
         abilities[name] = effect
+        if (attackDelay != null) abilityAttackDelays[name] = attackDelay else abilityAttackDelays -= name
         return AbilityRef(name)
     }
 
@@ -68,11 +66,19 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
                 idleAnim = idleAnim,
                 attackRate = attackRate ?: builder.attackRate,
                 entry = builder.entry,
-                exit = builder.exit,
                 selector = builder.selector,
                 forceAbilities = builder.forceAbilities,
+                timers = builder.timers,
             )
         return PhaseRef(name)
+    }
+
+    fun every(ticks: Int, effect: Effect, skipWhileBusy: Boolean = false) {
+        timers += TimerSpec(ticks..ticks, effect, skipWhileBusy)
+    }
+
+    fun every(ticks: IntRange, effect: Effect, skipWhileBusy: Boolean = false) {
+        timers += TimerSpec(ticks, effect, skipWhileBusy)
     }
 
     fun triggers(block: TriggerBuilder.() -> Unit) {
@@ -94,7 +100,18 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
     }
 
     fun build(): BossSpec {
-        val spec = BossSpec(npcTypes, stats, abilities, phases, triggers, hitReactions, incomingRules)
+        val spec =
+            BossSpec(
+                npcTypes,
+                stats,
+                abilities,
+                phases,
+                triggers,
+                hitReactions,
+                incomingRules,
+                abilityAttackDelays,
+                timers,
+            )
         val errors = SpecValidator.validate(spec)
         if (errors.isNotEmpty()) {
             throw IllegalStateException(
@@ -218,6 +235,13 @@ internal constructor(private val builder: HitBuilder, private val range: IntRang
 class AbilityBuilder {
     private val effects = mutableListOf<Effect>()
 
+    /**
+     * Ticks from this ability's start to the next attack, replacing the attack rate for that gap;
+     * null keeps the attack rate. Only applies when the attack loop starts the ability, not when
+     * another ability `run`s it.
+     */
+    var attackDelay: Int? = null
+
     fun anim(seq: String, delay: Int = 0) {
         effects += Effect.Anim(seq, delay)
     }
@@ -307,6 +331,26 @@ class AbilityBuilder {
         effects += Effect.Interrupt
     }
 
+    fun nextAttackIn(ticks: Int) {
+        effects += Effect.NextAttackIn(ticks)
+    }
+
+    fun headbar(headbar: String, fromPercent: Int, toPercent: Int, cycles: Int) {
+        effects += Effect.Headbar(headbar, fromPercent, toPercent, cycles)
+    }
+
+    fun clearHeadbar(headbar: String) {
+        effects += Effect.ClearHeadbar(headbar)
+    }
+
+    fun headIcon(slot: Int, graphic: Int, index: Int) {
+        effects += Effect.HeadIcon(slot, graphic, index)
+    }
+
+    fun clearHeadIcon(slot: Int) {
+        effects += Effect.ClearHeadIcon(slot)
+    }
+
     fun transitionTo(phase: String) {
         effects += Effect.TransitionTo(phase)
     }
@@ -331,8 +375,8 @@ class AbilityBuilder {
         effects += Effect.Freeze(ticks, odds.chance, odds.outOf)
     }
 
-    fun disablePrayers() {
-        effects += Effect.DisablePrayers
+    fun disablePrayers(overheadsOnly: Boolean = false) {
+        effects += Effect.DisablePrayers(overheadsOnly)
     }
 
     fun statDrain(block: StatDrainBuilder.() -> Unit) {
@@ -468,7 +512,7 @@ class AbilityBuilder {
         npc: String,
         count: Int = 1,
         radius: Int = 3,
-        centeredOn: TargetExpr = TargetExpr.Self,
+        centeredOn: TargetExpr.Single = TargetExpr.Self,
         mode: NpcMode? = null,
         duration: Int = 100,
         onSummon: String? = null,
@@ -504,7 +548,7 @@ class AbilityBuilder {
         targetRadius: Int = 15,
         scatterRadius: Int = 5,
         count: IntRange = 1..1,
-        center: TargetExpr = TargetExpr.Self,
+        center: TargetExpr.Single = TargetExpr.Self,
     ) {
         effects +=
             Effect.Debris(
@@ -526,11 +570,19 @@ class AbilityBuilder {
 @BossDsl
 class PhaseBuilder(private val name: String) {
     var entry: String? = null
-    var exit: String? = null
 
     var attackRate: Int? = null
     var selector: Selector = Selector.WeightedRandom()
     internal val forceAbilities = mutableListOf<ForcedAbility>()
+    internal val timers = mutableListOf<TimerSpec>()
+
+    fun every(ticks: Int, effect: Effect, skipWhileBusy: Boolean = false) {
+        timers += TimerSpec(ticks..ticks, effect, skipWhileBusy)
+    }
+
+    fun every(ticks: IntRange, effect: Effect, skipWhileBusy: Boolean = false) {
+        timers += TimerSpec(ticks, effect, skipWhileBusy)
+    }
 
     fun forceEvery(period: Int, ability: String) {
         forceAbilities += ForcedAbility(period, ability)
@@ -556,11 +608,8 @@ class PhaseBuilder(private val name: String) {
         forceWhen(condition, ability.name, once)
     }
 
-    fun weightedSelectorRandom(
-        noRepeatBias: Double = 0.5,
-        block: WeightedRandomBuilder.() -> Unit,
-    ) {
-        selector = weightedRandom(noRepeatBias, block)
+    fun weightedSelectorRandom(block: WeightedRandomBuilder.() -> Unit) {
+        selector = weightedRandom(block)
     }
 
     fun rotationSelector(block: RotationBuilder.() -> Unit) {

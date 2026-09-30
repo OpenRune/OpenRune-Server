@@ -93,24 +93,24 @@ internal object LeviathanRockfall {
 
     private fun boulder(spot: String, delay: Int, landing: Effect): Effect =
         sequence(
-            mapSpotanim(spot, EachTile, delay = delay),
+            mapSpotanim(spot, CurrentTile, delay = delay),
             after(BOULDER_LAND_BASE + (delay - BREAK_DELAYS.first()) / 30, landing),
         )
 
     private fun land(stays: Boolean, angle: Int = 0): Effect =
         Effect.Sequence(
             listOfNotNull(
-                sound(DEBRIS_IMPACT_SYNTH, radius = 5, at = EachTile),
-                sound(RUBBLE_LAND_SYNTH, radius = 5, at = EachTile),
-                if (stays) spawnLoc(RUBBLE_LOC, EachTile, angle, blockPlayersOnly = true) else null,
+                sound(DEBRIS_IMPACT_SYNTH, radius = 5, at = CurrentTile),
+                sound(RUBBLE_LAND_SYNTH, radius = 5, at = CurrentTile),
+                if (stays) spawnLoc(RUBBLE_LOC, CurrentTile, angle, blockPlayersOnly = true) else null,
                 hit {
-                    target = playersOn(EachTile)
+                    target = playersOn(CurrentTile)
                     delay = 1
                     damage(BOULDER_DAMAGE).roll()
                     type(Typeless)
                     hazard()
                 },
-                if (stays) onEach(playersOn(EachTile), knockback(KNOCKBACK_SEQ, ARENA)) else null,
+                if (stays) onEach(playersOn(CurrentTile), knockback(KNOCKBACK_SEQ, ARENA)) else null,
             )
         )
 }

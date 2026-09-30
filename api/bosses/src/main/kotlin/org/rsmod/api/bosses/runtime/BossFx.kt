@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.SpotanimType
+import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -57,6 +58,24 @@ fun BossDeps.forceNext(npc: Npc, ability: String) {
 }
 
 fun BossDeps.encounter(npc: Npc): BossEncounter = encounterRegistry.of(npc)
+
+/**
+ * Starts [npc]'s encounter on [spec], replacing any previous one (its owned locs and npcs are
+ * removed, as on respawn). [spec] must be one of the specs registered for the npc's type.
+ */
+fun BossDeps.startEncounter(npc: Npc, spec: BossSpec): BossEncounter {
+    encounterRegistry.remove(npc)?.let(::disposeOwned)
+    return encounterRegistry.start(npc, spec)
+}
+
+fun BossDeps.runAbility(npc: Npc, target: Player, ability: String) {
+    val encounter = encounterRegistry.of(npc)
+    val effect =
+        requireNotNull(encounter.spec.abilities[ability]) {
+            "Ability '$ability' does not exist in boss spec."
+        }
+    EffectInterpreter(npc, target, encounter.spec, encounter, this).run(null, effect)
+}
 
 fun BossDeps.interrupt(npc: Npc) {
     encounterRegistry.of(npc).interrupt(mapClock.cycle)

@@ -2,15 +2,15 @@ package org.rsmod.content.bosses.kbd
 
 import jakarta.inject.Inject
 import org.rsmod.api.bosses.dsl.*
-import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
+import org.rsmod.api.bosses.spec.Effect
 
 class KingBlackDragon @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
     override val spec = boss("npc.king_dragon") {
 
-        stats(attackRate = 4, aggressionRadius = 8)
+        stats(attackRate = 4)
 
         val melee = ability("melee") {
             anim("seq.dragon_attack")

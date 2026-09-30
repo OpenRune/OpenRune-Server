@@ -125,14 +125,14 @@ internal object LeviathanSpecials {
 
     private val lightningOrb: Effect =
         sequence(
-            projectile(LIGHTNING_ORB_SPOTANIM, target = EachTile, from = Centre, config = LIGHTNING_ORB_CONFIG),
-            mapSpotanim(SHADOW_SPOTANIM, EachTile, delay = LIGHTNING_ORB_CYCLES - SHADOW_LEAD),
-            mapSpotanim(LIGHTNING_STRIKE_SPOTANIM, EachTile, delay = LIGHTNING_ORB_CYCLES),
-            sound(LIGHTNING_STRIKE_SYNTH, radius = 3, at = EachTile, delay = LIGHTNING_ORB_CYCLES),
+            projectile(LIGHTNING_ORB_SPOTANIM, target = CurrentTile, from = Centre, config = LIGHTNING_ORB_CONFIG),
+            mapSpotanim(SHADOW_SPOTANIM, CurrentTile, delay = LIGHTNING_ORB_CYCLES - SHADOW_LEAD),
+            mapSpotanim(LIGHTNING_STRIKE_SPOTANIM, CurrentTile, delay = LIGHTNING_ORB_CYCLES),
+            sound(LIGHTNING_STRIKE_SYNTH, radius = 3, at = CurrentTile, delay = LIGHTNING_ORB_CYCLES),
             after(
                 LIGHTNING_ORB_CYCLES / 30,
                 hit {
-                    target = playersOn(EachTile)
+                    target = playersOn(CurrentTile)
                     delay = 1
                     damage(LIGHTNING_DAMAGE).roll()
                     type(Typeless)
@@ -149,17 +149,17 @@ internal object LeviathanSpecials {
                 sequence(
                     projectile(
                         DEBRIS_PROJECTILE,
-                        target = EachTile,
-                        from = toward(Centre, EachTile, LeviathanOrbs.SOURCE_OFFSET),
+                        target = CurrentTile,
+                        from = toward(Centre, CurrentTile, LeviathanOrbs.SOURCE_OFFSET),
                         config = DEBRIS_CONFIG,
                     ),
-                    mapSpotanim(SHADOW_SPOTANIM, EachTile),
+                    mapSpotanim(SHADOW_SPOTANIM, CurrentTile),
                     soundTo(SPIT_LAUNCH_SYNTH, arenaPlayers),
                     after(
                         DEBRIS_LAND_TICKS,
                         onTiles(
-                            nearestFreeTiles(listOf(EachTile), LeviathanRockfall.ARENA, searchRadius = 0),
-                            sequence(mapSpotanim(DEBRIS_IMPACT_SPOTANIM, EachTile), LeviathanRockfall.rubbleLanding),
+                            nearestFreeTiles(listOf(CurrentTile), LeviathanRockfall.ARENA, searchRadius = 0),
+                            sequence(mapSpotanim(DEBRIS_IMPACT_SPOTANIM, CurrentTile), LeviathanRockfall.rubbleLanding),
                         ),
                     ),
                 ),

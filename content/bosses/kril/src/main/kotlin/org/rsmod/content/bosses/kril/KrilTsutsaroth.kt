@@ -39,7 +39,7 @@ class KrilTsutsaroth @Inject constructor(deps: BossDeps) : BossPluginScript(deps
 
     override val spec =
         boss(AVATAR) {
-            stats(attackRate = 5, aggressionRadius = 8)
+            stats(attackRate = 5)
 
             val melee =
                 ability("melee") {
