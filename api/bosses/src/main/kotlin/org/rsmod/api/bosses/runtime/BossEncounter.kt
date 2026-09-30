@@ -224,10 +224,8 @@ class BossEncounter(
             is Condition.WithinMeleeRange -> {
                 target != null && npc.isWithinDistance(target, 1)
             }
-            is Condition.HpBelow -> {
-                val fraction = npc.hitpoints.toDouble() / npc.baseHitpointsLvl.coerceAtLeast(1)
-                fraction < condition.fraction
-            }
+            is Condition.HpBelow ->
+                if (condition.inclusive) hpFraction <= condition.fraction else hpFraction < condition.fraction
             is Condition.HpExact -> npc.hitpoints == condition.hp
             is Condition.InPhase -> currentPhaseName == condition.phase
             is Condition.AbilityUsed -> condition.ability in usedAbilities
@@ -250,6 +248,9 @@ class BossEncounter(
             is Condition.TargetPraying -> target != null && target.isProtectingFrom(condition.type)
         }
     }
+
+    private val hpFraction: Double
+        get() = npc.hitpoints.toDouble() / npc.baseHitpointsLvl.coerceAtLeast(1)
 
     private fun tileOf(expr: TargetExpr.Single, target: Player): CoordGrid =
         when (expr) {

@@ -155,6 +155,13 @@ class SpecValidatorTest {
         assertHasError(SpecValidator.validate(unregistered).map { it.message }, "transmog 'npc.other'")
     }
 
+    @Test
+    fun `hp condition fractions must be within 0 and 1`() {
+        assertEquals(emptyList<String>(), errorsFor(whenever(HpBelow(0.75, inclusive = true), resetAnim())))
+        assertHasError(errorsFor(whenever(HpBelow(75.0), resetAnim())), "HpBelow fraction '75.0'")
+        assertHasError(errorsFor(whenever(HpBelow(-0.1), resetAnim())), "HpBelow fraction '-0.1'")
+    }
+
     private fun errorsFor(effect: Effect): List<String> =
         SpecValidator.validate(spec(mapOf("a" to effect))).map { it.message }
 

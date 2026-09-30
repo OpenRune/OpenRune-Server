@@ -120,6 +120,10 @@ object SpecValidator {
                     if (condition.phase !in phaseNames) {
                         error("${scope.prefix}InPhase references phase '${condition.phase}' which does not exist.")
                     }
+                is Condition.HpBelow ->
+                    if (condition.fraction !in 0.0..1.0) {
+                        error("${scope.prefix}HpBelow fraction '${condition.fraction}' must be within 0.0..1.0.")
+                    }
                 is Condition.LastAbility -> requireAbility(condition.ability, scope, "lastAbility")
                 is Condition.AbilityUsed -> requireAbility(condition.ability, scope, "AbilityUsed")
                 is Condition.VarnIn -> varn(condition.varn, scope)

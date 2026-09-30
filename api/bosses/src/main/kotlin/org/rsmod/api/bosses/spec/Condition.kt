@@ -4,7 +4,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
 sealed interface Condition {
-    data class HpBelow(val fraction: Double) : Condition
+    data class HpBelow(val fraction: Double, val inclusive: Boolean = false) : Condition
     data class HpExact(val hp: Int) : Condition
     data class IncomingHitDamageAtLeast(val damage: Int) : Condition
     data class OnPhaseTick(val n: Int) : Condition
