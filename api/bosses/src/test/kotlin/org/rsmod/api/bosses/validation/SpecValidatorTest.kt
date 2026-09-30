@@ -12,6 +12,7 @@ import org.rsmod.api.bosses.spec.IncomingAction
 import org.rsmod.api.bosses.spec.IncomingRule
 import org.rsmod.api.bosses.spec.PhaseSpec
 import org.rsmod.api.bosses.spec.ProjectileConfig
+import org.rsmod.api.bosses.spec.TimerSpec
 
 class SpecValidatorTest {
     private val arena = area(spawnTile(-5, -5), spawnTile(5, 5))
@@ -291,6 +292,35 @@ class SpecValidatorTest {
                 .map { it.message },
             "only works in an incoming rule",
         )
+    }
+
+    @Test
+    fun `timers need positive ticks and run their effect as deferred`() {
+        val valid =
+            spec(mapOf("a" to resetAnim())).copy(
+                timers = listOf(TimerSpec(1..1, whenever(varnExpired("varn.charge_end"), run("a")))),
+                phases = mapOf("main" to PhaseSpec("main", timers = listOf(TimerSpec(7..9, run("a"))))),
+            )
+        assertEquals(emptyList<String>(), SpecValidator.validate(valid).map { it.message })
+
+        fun errors(timer: TimerSpec) =
+            SpecValidator.validate(spec(mapOf("a" to resetAnim())).copy(timers = listOf(timer))).map { it.message }
+        assertHasError(errors(TimerSpec(0..0, resetAnim())), "positive ticks")
+        assertHasError(errors(TimerSpec(5..3, resetAnim())), "positive ticks")
+        assertHasError(errors(TimerSpec(1..1, interrupt())), "Interrupt inside")
+        assertHasError(errors(TimerSpec(1..1, whenever(hitStyle(Melee), resetAnim()))), "only works in an incoming rule")
+        val phaseTimer = PhaseSpec("main", timers = listOf(TimerSpec(1..1, run("missing"))))
+        assertHasError(
+            SpecValidator.validate(spec(mapOf("a" to resetAnim())).copy(phases = mapOf("main" to phaseTimer)))
+                .map { it.message },
+            "phase 'main' timer: Run 'missing' does not exist",
+        )
+    }
+
+    @Test
+    fun `phaseTicksAtLeast must not be negative`() {
+        assertEquals(emptyList<String>(), errorsFor(whenever(phaseTicksAtLeast(0), resetAnim())))
+        assertHasError(errorsFor(whenever(phaseTicksAtLeast(-1), resetAnim())), "must not be negative")
     }
 
     private fun errorsFor(effect: Effect): List<String> =

@@ -41,6 +41,8 @@ class EncounterRegistry @Inject constructor(private val mapClock: MapClock) {
 
     fun remove(npc: Npc): BossEncounter? = encounters.remove(npc.slotId)
 
+    fun isActive(encounter: BossEncounter): Boolean = encounters[encounter.npc.slotId] === encounter
+
     private fun registration(npc: Npc): Registration =
         registrations[npc.type.id] ?: error("No boss spec registered for npc type ${npc.type.id}.")
 }

@@ -16,7 +16,7 @@ sealed interface Condition {
 
     data class HitDamageAtLeast(val damage: Int) : Condition
 
-    data class OnPhaseTick(val n: Int) : Condition
+    data class PhaseTicksAtLeast(val ticks: Int) : Condition
     data class TargetPraying(val type: HitType) : Condition
     data class InPhase(val phase: String) : Condition
     data class AbilityUsed(val ability: String) : Condition

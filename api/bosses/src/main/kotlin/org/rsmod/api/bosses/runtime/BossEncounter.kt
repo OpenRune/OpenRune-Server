@@ -31,6 +31,15 @@ class BossEncounter(
     /** Tick until which multi-tick effects are still running; nothing new may start before it. */
     var busyUntil: Int = 0
 
+    /** The player the latest combat tick ran against; timers fire against it. */
+    var lastTarget: Player? = null
+
+    /** Bumped on every [transitionTo], so phase timers can tell the phase was (re-)entered. */
+    internal var phaseEpoch: Int = 0
+        private set
+
+    internal var timersStarted: Boolean = false
+
     private val ownedLocs = mutableMapOf<CoordGrid, OwnedLoc>()
 
     fun ownsLocAt(tile: CoordGrid): Boolean = tile in ownedLocs
@@ -124,6 +133,7 @@ class BossEncounter(
         currentPhaseName = phaseName
         queuedAbility = null
         phaseEnteredTick = tick
+        phaseEpoch++
         rotationCursor = 0
         rotationStarted = false
         cooldowns.clear()
@@ -290,7 +300,8 @@ class BossEncounter(
             is Condition.Not -> !eval(condition.c)
             is Condition.And -> eval(condition.a) && eval(condition.b)
             is Condition.Or -> eval(condition.a) || eval(condition.b)
-            is Condition.OnPhaseTick -> false
+            is Condition.PhaseTicksAtLeast ->
+                phaseEnteredTick >= 0 && mapClock.cycle - phaseEnteredTick >= condition.ticks
             is Condition.HitStyle -> requireHit().type == condition.type.toEngine()
             is Condition.HitDemonbane -> requireHit().demonbane
             is Condition.HitDamageAtLeast -> requireHit().damage >= condition.damage

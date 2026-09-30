@@ -67,7 +67,10 @@ object SpecValidator {
                     forced.condition?.let { condition(it, scope) }
                 }
                 selector(phase.selector, scope, abilityNames)
+                phase.timers.forEach { timer(it, Scope("phase '$phaseName' timer", deferred = true)) }
             }
+
+            spec.timers.forEach { timer(it, Scope("timer", deferred = true)) }
 
             for ((ability, delay) in spec.abilityAttackDelays) {
                 val scope = Scope("ability '$ability'")
@@ -123,6 +126,13 @@ object SpecValidator {
             if (name !in abilityNames) error("${scope.prefix}$what '$name' does not exist.")
         }
 
+        private fun timer(timer: TimerSpec, scope: Scope) {
+            if (timer.ticks.isEmpty() || timer.ticks.first <= 0) {
+                error("${scope.prefix}ticks '${timer.ticks}' must be a non-empty range of positive ticks.")
+            }
+            effect(timer.effect, scope)
+        }
+
         private fun selector(selector: Selector, scope: Scope, names: Set<String>) {
             when (selector) {
                 is Selector.WeightedRandom ->
@@ -154,6 +164,10 @@ object SpecValidator {
                 is Condition.VarnIn -> varn(condition.varn, scope)
                 is Condition.VarnExpired -> varn(condition.varn, scope)
                 is Condition.TilesEmpty -> boundSet(condition.name, scope, "tilesEmpty")
+                is Condition.PhaseTicksAtLeast ->
+                    if (condition.ticks < 0) {
+                        error("${scope.prefix}phaseTicksAtLeast ticks '${condition.ticks}' must not be negative.")
+                    }
                 is Condition.HitStyle,
                 is Condition.HitDemonbane,
                 is Condition.HitDamageAtLeast ->

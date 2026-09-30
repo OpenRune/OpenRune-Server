@@ -9,6 +9,7 @@ data class BossSpec(
     val hitReactions: List<HitReaction> = emptyList(),
     val incomingRules: List<IncomingRule> = emptyList(),
     val abilityAttackDelays: Map<String, Int> = emptyMap(),
+    val timers: List<TimerSpec> = emptyList(),
 )
 
 data class BossStats(
@@ -41,7 +42,22 @@ data class PhaseSpec(
     val entry: String? = null,
     val selector: Selector = Selector.WeightedRandom(),
     val forceAbilities: List<ForcedAbility> = emptyList(),
+    val timers: List<TimerSpec> = emptyList(),
 )
+
+/**
+ * Runs [effect] every [ticks] ticks (re-rolled after each fire) against the encounter's last
+ * target, alongside whatever ability is running. It never counts as an attack and ignores the
+ * attack rate and attack delays; to respect those, have [effect] `forceNext` an ability instead. A
+ * phase timer counts from the phase's entry and stops when the phase is left; a spec timer counts
+ * from the first combat tick and stops when the encounter is removed. Interrupts don't stop a
+ * timer, but drop the rest of an [effect] still waiting.
+ *
+ * Waits inside [effect] hold attacks, as they do in abilities. With [skipWhileBusy], a fire that
+ * falls while [org.rsmod.api.bosses.runtime.BossEncounter.busyUntil] holds (an effect is mid-wait)
+ * is skipped, and the timer waits its next interval.
+ */
+data class TimerSpec(val ticks: IntRange, val effect: Effect, val skipWhileBusy: Boolean = false)
 
 data class ForcedAbility(
     val period: Int,

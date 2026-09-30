@@ -262,6 +262,8 @@ fun varnAtLeast(varn: String, value: Int): Condition = Condition.VarnIn(varn, va
 
 fun varnExpired(varn: String): Condition = Condition.VarnExpired(varn)
 
+fun phaseTicksAtLeast(ticks: Int): Condition = Condition.PhaseTicksAtLeast(ticks)
+
 val Now: VarExpr = VarExpr.Now
 
 fun bearingTo(to: TargetExpr.Single, from: TargetExpr.Single = TargetExpr.Centre): VarExpr =

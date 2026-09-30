@@ -157,6 +157,8 @@ object BossCombat {
         if (encounter.phaseEnteredTick < 0) {
             encounter.phaseEnteredTick = tick
         }
+        encounter.lastTarget = target
+        deps.startTimers(encounter, tick)
 
         checkAutoTransitions(this, target, encounter, tick, spec, deps)
         checkTriggers(this, target, spec, deps, encounter)

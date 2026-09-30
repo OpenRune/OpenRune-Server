@@ -26,6 +26,7 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
     private val triggers = mutableListOf<TriggerSpec>()
     private val hitReactions = mutableListOf<HitReaction>()
     private val incomingRules = mutableListOf<IncomingRule>()
+    private val timers = mutableListOf<TimerSpec>()
 
     fun stats(
         attackRate: Int = 4,
@@ -72,8 +73,17 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
                 entry = builder.entry,
                 selector = builder.selector,
                 forceAbilities = builder.forceAbilities,
+                timers = builder.timers,
             )
         return PhaseRef(name)
+    }
+
+    fun every(ticks: Int, effect: Effect, skipWhileBusy: Boolean = false) {
+        timers += TimerSpec(ticks..ticks, effect, skipWhileBusy)
+    }
+
+    fun every(ticks: IntRange, effect: Effect, skipWhileBusy: Boolean = false) {
+        timers += TimerSpec(ticks, effect, skipWhileBusy)
     }
 
     fun triggers(block: TriggerBuilder.() -> Unit) {
@@ -105,6 +115,7 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
                 hitReactions,
                 incomingRules,
                 abilityAttackDelays,
+                timers,
             )
         val errors = SpecValidator.validate(spec)
         if (errors.isNotEmpty()) {
@@ -568,6 +579,15 @@ class PhaseBuilder(private val name: String) {
     var attackRate: Int? = null
     var selector: Selector = Selector.WeightedRandom()
     internal val forceAbilities = mutableListOf<ForcedAbility>()
+    internal val timers = mutableListOf<TimerSpec>()
+
+    fun every(ticks: Int, effect: Effect, skipWhileBusy: Boolean = false) {
+        timers += TimerSpec(ticks..ticks, effect, skipWhileBusy)
+    }
+
+    fun every(ticks: IntRange, effect: Effect, skipWhileBusy: Boolean = false) {
+        timers += TimerSpec(ticks, effect, skipWhileBusy)
+    }
 
     fun forceEvery(period: Int, ability: String) {
         forceAbilities += ForcedAbility(period, ability)
