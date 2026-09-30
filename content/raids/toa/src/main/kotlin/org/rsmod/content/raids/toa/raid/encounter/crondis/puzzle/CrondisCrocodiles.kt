@@ -4,11 +4,14 @@ import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.npcType
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.InteractionPlayer
+import org.rsmod.game.map.Direction
 import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.map.CoordGrid
+import org.rsmod.map.util.Bounds
 
 /**
  * The crocodiles (OSRS Wiki: Crocodile (Tombs of Amascut)). Capture: the first wave 48 ticks after
@@ -82,13 +85,19 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         val spawns = room.crocSide.spawns
         val count = minOf((room.teamSize + 1) / 2, spawns.size)
         for (i in 0 until count) {
-            val croc = room.spawnRouted(CrondisNpcs.CROCODILE, spawns[i])
+            val croc = room.spawnRouted(CrondisNpcs.CROCODILE, spawns[i], facingPalm(spawns[i]))
             croc.defaultMoveSpeed = MoveSpeed.Crawl
             croc.noneMode()
             room.palm?.let { croc.faceSquare(it.coords, it.size, it.size) }
             wakeAt[croc] = deps.mapClock.cycle + WAKE_TICKS
             crocodiles += croc
         }
+    }
+
+    private fun facingPalm(spawn: CoordGrid): Direction? {
+        val palm = room.palm ?: return null
+        val size = npcType(CrondisNpcs.CROCODILE).size
+        return Direction.between(Bounds(room.coords(spawn), size, size), palm.bounds())
     }
 
     private fun pruneDead() {
