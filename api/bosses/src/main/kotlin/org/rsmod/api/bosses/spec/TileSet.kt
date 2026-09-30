@@ -33,4 +33,6 @@ sealed interface TileSet {
 
     /** Every tile of [a] and [b], each once. */
     data class Plus(val a: TileSet, val b: TileSet) : TileSet
+
+    data class Bound(val name: String) : TileSet
 }

@@ -242,14 +242,10 @@ class BossEncounter(
     }
 
     /**
-     * [tiles] resolves tile expressions; the interpreter passes its own so conditions see the same
-     * bound `ImpactTile`/`CurrentTile` as the effects around them.
+     * [tiles] is the effect this condition runs inside, if any, so conditions see the same bound
+     * tiles and tile sets as the effects around them.
      */
-    fun evaluate(
-        condition: Condition,
-        target: Player? = null,
-        tiles: ((TargetExpr.Single) -> CoordGrid)? = null,
-    ): Boolean {
+    fun evaluate(condition: Condition, target: Player? = null, tiles: TileScope? = null): Boolean {
         return when (condition) {
             is Condition.Always -> true
             is Condition.WithinMeleeRange -> {
@@ -268,13 +264,18 @@ class BossEncounter(
             is Condition.LastAbility -> lastAbilityName == condition.ability
             is Condition.TargetWithin -> {
                 if (target == null) return false
-                val of = tiles?.invoke(condition.of) ?: npc.resolveTile(condition.of, target)
+                val of = tiles?.tile(condition.of) ?: npc.resolveTile(condition.of, target)
                 target.coords.chebyshevDistance(of) <= condition.distance
             }
             is Condition.TargetInArc -> {
                 val wanted = Angles.normalise(npc.vars[condition.bearingVarn] + condition.offset)
                 target != null &&
                     abs(Angles.delta(Angles.bearing(npc.centreTile, target.coords), wanted)) <= condition.halfArc
+            }
+            is Condition.TilesEmpty -> {
+                val name = condition.name
+                val scope = checkNotNull(tiles) { "tilesEmpty(\"$name\") evaluated outside an effect." }
+                scope.set(name).isEmpty()
             }
             is Condition.Custom -> condition.test(npc, target)
             is Condition.Not -> !evaluate(condition.c, target, tiles)

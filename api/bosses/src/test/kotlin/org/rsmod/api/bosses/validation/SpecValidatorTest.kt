@@ -241,6 +241,41 @@ class SpecValidatorTest {
         assertHasError(errorsFor(whenever(varnExpired("charge_end"), resetAnim())), "not a varn reference")
     }
 
+    @Test
+    fun `named tiles and sets are lexically scoped`() {
+        val debris = customTiles(arena) { _, t, _ -> listOf(t.coords) }
+        val rockThrow =
+            withTile(
+                "split_player",
+                CurrentTarget,
+                withTiles(
+                    "debris",
+                    debris,
+                    sequence(
+                        onTiles(bound("debris"), mapSpotanim("spotanim.shadow", CurrentTile)),
+                        wait(2),
+                        external("doom.place_rock", at = tile("split_player")),
+                        whenever(
+                            !tilesEmpty("debris"),
+                            projectile("spotanim.orb", config = fixed, from = randomOf("debris")),
+                        ),
+                    ),
+                ),
+            )
+        assertEquals(emptyList<String>(), errorsFor(rockThrow))
+
+        assertHasError(errorsFor(mapSpotanim("spotanim.x", tile("split"))), "tile(\"split\") outside")
+        assertHasError(errorsFor(onTiles(bound("debris"), resetAnim())), "\"debris\" outside")
+        assertHasError(errorsFor(mapSpotanim("spotanim.x", randomOf("debris"))), "\"debris\" outside")
+        assertHasError(errorsFor(whenever(tilesEmpty("debris"), resetAnim())), "\"debris\" outside")
+        assertHasError(
+            errorsFor(withTiles("debris", debris, mapSpotanim("spotanim.x", tile("debris")))),
+            "tile(\"debris\") outside",
+        )
+        val sibling = sequence(withTile("a", CurrentTarget, resetAnim()), mapSpotanim("spotanim.x", tile("a")))
+        assertHasError(errorsFor(sibling), "tile(\"a\") outside")
+    }
+
     private fun errorsFor(effect: Effect): List<String> =
         SpecValidator.validate(spec(mapOf("a" to effect))).map { it.message }
 

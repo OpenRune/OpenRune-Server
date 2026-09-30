@@ -30,6 +30,11 @@ sealed interface TargetExpr {
 
     data class Custom(val tile: (npc: Npc, target: Player) -> CoordGrid) : Single
 
+    data class Bound(val name: String) : Single
+
+    /** Re-rolled on every resolve; throws on an empty set, so check [Condition.TilesEmpty] first. */
+    data class RandomOfBound(val name: String) : Single
+
     /**
      * The tile a [Effect.Projectile] just landed on. Only valid inside that same
      * [Effect.Projectile.onImpact]; resolving it anywhere else throws.

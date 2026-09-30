@@ -248,6 +248,12 @@ sealed interface Effect {
     /** Runs [effect] once for every tile in [tiles], with [TargetExpr.CurrentTile] bound to it. */
     data class OnTiles(val tiles: TileSet, val effect: Effect) : Effect
 
+    /** Resolves [tile] once and binds it as [TargetExpr.Bound] [name] for everything in [effect]. */
+    data class WithTile(val name: String, val tile: TargetExpr.Single, val effect: Effect) : Effect
+
+    /** Resolves [tiles] once and binds them as [TileSet.Bound] [name] for everything in [effect]. */
+    data class WithTiles(val name: String, val tiles: TileSet, val effect: Effect) : Effect
+
     /**
      * Schedules [effect] [ticks] from now without holding up the ability or the boss's next
      * attack, unlike [Wait]. Not cancelled by [Interrupt]; dropped if the boss has died unless

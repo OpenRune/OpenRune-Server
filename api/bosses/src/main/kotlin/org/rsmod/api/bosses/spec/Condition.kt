@@ -15,6 +15,8 @@ sealed interface Condition {
 
     /** [varn] holds a deadline tick (see [VarExpr.Now]) that has been reached; 0 means none set. */
     data class VarnExpired(val varn: String) : Condition
+
+    data class TilesEmpty(val name: String) : Condition
     data class LastAbility(val ability: String) : Condition
     data class TargetWithin(val distance: Int, val of: TargetExpr.Single = TargetExpr.Centre) : Condition
 

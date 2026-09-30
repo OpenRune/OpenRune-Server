@@ -27,13 +27,16 @@ object SpecValidator {
     /**
      * Where an effect sits: [impactTileBound] inside a [Effect.Projectile.onImpact] (so
      * `ImpactTile` resolves), [currentTileBound] inside an [Effect.OnTiles] (so `CurrentTile`
-     * resolves), [deferred] when it runs on a later tick outside the ability's own timeline
-     * ([Effect.After], impacts, on-hit effects).
+     * resolves), [tileNames]/[setNames] bound by enclosing [Effect.WithTile]/[Effect.WithTiles],
+     * [deferred] when it runs on a later tick outside the ability's own timeline ([Effect.After],
+     * impacts, on-hit effects).
      */
     private data class Scope(
         val label: String,
         val impactTileBound: Boolean = false,
         val currentTileBound: Boolean = false,
+        val tileNames: Set<String> = emptySet(),
+        val setNames: Set<String> = emptySet(),
         val deferred: Boolean = false,
     ) {
         val prefix: String
@@ -149,6 +152,7 @@ object SpecValidator {
                 is Condition.AbilityUsed -> requireAbility(condition.ability, scope, "AbilityUsed")
                 is Condition.VarnIn -> varn(condition.varn, scope)
                 is Condition.VarnExpired -> varn(condition.varn, scope)
+                is Condition.TilesEmpty -> boundSet(condition.name, scope, "tilesEmpty")
                 is Condition.TargetInArc -> varn(condition.bearingVarn, scope)
                 is Condition.TargetWithin -> target(condition.of, scope, "TargetWithin")
                 is Condition.Not -> condition(condition.c, scope)
@@ -216,19 +220,56 @@ object SpecValidator {
         }
 
         private fun target(expr: TargetExpr, scope: Scope, what: String) {
-            if (!scope.impactTileBound && references(expr, TargetExpr.ImpactTile)) {
-                error(
-                    "${scope.prefix}$what references ImpactTile outside a Projectile.onImpact, where " +
-                        "there is no impact tile."
-                )
-            }
-            if (!scope.currentTileBound && references(expr, TargetExpr.CurrentTile)) {
-                error(
-                    "${scope.prefix}$what references CurrentTile outside an OnTiles, where there is no " +
-                        "current tile."
-                )
+            for (tile in tilesIn(expr)) {
+                when (tile) {
+                    is TargetExpr.ImpactTile ->
+                        if (!scope.impactTileBound) {
+                            error(
+                                "${scope.prefix}$what references ImpactTile outside a " +
+                                    "Projectile.onImpact, where there is no impact tile."
+                            )
+                        }
+                    is TargetExpr.CurrentTile ->
+                        if (!scope.currentTileBound) {
+                            error(
+                                "${scope.prefix}$what references CurrentTile outside an OnTiles, " +
+                                    "where there is no current tile."
+                            )
+                        }
+                    is TargetExpr.Bound -> boundTile(tile.name, scope, what)
+                    is TargetExpr.RandomOfBound -> boundSet(tile.name, scope, "$what randomOf")
+                    else -> {}
+                }
             }
         }
+
+        private fun boundTile(name: String, scope: Scope, what: String) {
+            if (name !in scope.tileNames) {
+                val where = "outside a withTile(\"$name\")"
+                error("${scope.prefix}$what references tile(\"$name\") $where.")
+            }
+        }
+
+        private fun boundSet(name: String, scope: Scope, what: String) {
+            if (name !in scope.setNames) {
+                val where = "outside a withTiles(\"$name\")"
+                error("${scope.prefix}$what references tile set \"$name\" $where.")
+            }
+        }
+
+        /** Every single tile [expr] resolves, including the anchors it is built from. */
+        private fun tilesIn(expr: TargetExpr): List<TargetExpr.Single> =
+            when (expr) {
+                is TargetExpr.PlayersOn -> tilesIn(expr.tile)
+                is TargetExpr.PlayersIn -> tilesIn(expr.area.sw) + tilesIn(expr.area.ne)
+                is TargetExpr.AllInRadius -> tilesIn(expr.of)
+                is TargetExpr.TopN -> tilesIn(expr.by)
+                is TargetExpr.RandomWalkableTile -> listOf(expr) + tilesIn(expr.of)
+                is TargetExpr.Offset -> listOf(expr) + tilesIn(expr.of)
+                is TargetExpr.Toward -> listOf(expr) + tilesIn(expr.from) + tilesIn(expr.to)
+                is TargetExpr.Single -> listOf(expr)
+                is TargetExpr.FacingQuadrant -> emptyList()
+            }
 
         private fun area(area: Area, scope: Scope, what: String) {
             target(area.sw, scope, what)
@@ -249,20 +290,9 @@ object SpecValidator {
                     tileSet(tiles.a, scope)
                     tileSet(tiles.b, scope)
                 }
+                is TileSet.Bound -> boundSet(tiles.name, scope, what)
             }
         }
-
-        private fun references(expr: TargetExpr, tile: TargetExpr.Single): Boolean =
-            when (expr) {
-                tile -> true
-                is TargetExpr.PlayersOn -> references(expr.tile, tile)
-                is TargetExpr.PlayersIn -> references(expr.area.sw, tile) || references(expr.area.ne, tile)
-                is TargetExpr.RandomWalkableTile -> references(expr.of, tile)
-                is TargetExpr.Offset -> references(expr.of, tile)
-                is TargetExpr.AllInRadius -> references(expr.of, tile)
-                is TargetExpr.Toward -> references(expr.from, tile) || references(expr.to, tile)
-                else -> false
-            }
 
         private fun effect(effect: Effect, scope: Scope) {
             val name = effect::class.simpleName ?: "Effect"
@@ -323,6 +353,14 @@ object SpecValidator {
                 is Effect.OnTiles -> {
                     tileSet(effect.tiles, scope)
                     effect(effect.effect, scope.copy(currentTileBound = true))
+                }
+                is Effect.WithTile -> {
+                    target(effect.tile, scope, "withTile(\"${effect.name}\")")
+                    effect(effect.effect, scope.copy(tileNames = scope.tileNames + effect.name))
+                }
+                is Effect.WithTiles -> {
+                    tileSet(effect.tiles, scope)
+                    effect(effect.effect, scope.copy(setNames = scope.setNames + effect.name))
                 }
                 is Effect.After -> {
                     if (effect.ticks <= 0) error("${scope.prefix}After ticks '${effect.ticks}' must be greater than 0.")

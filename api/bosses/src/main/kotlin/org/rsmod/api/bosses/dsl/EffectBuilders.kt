@@ -224,6 +224,20 @@ fun customTile(tile: (npc: Npc, target: Player) -> CoordGrid): TargetExpr.Single
 
 fun onTiles(tiles: TileSet, effect: Effect): Effect = Effect.OnTiles(tiles, effect)
 
+fun withTile(name: String, tile: TargetExpr.Single, effect: Effect): Effect =
+    Effect.WithTile(name, tile, effect)
+
+fun withTiles(name: String, tiles: TileSet, effect: Effect): Effect =
+    Effect.WithTiles(name, tiles, effect)
+
+fun tile(name: String): TargetExpr.Single = TargetExpr.Bound(name)
+
+fun bound(name: String): TileSet = TileSet.Bound(name)
+
+fun randomOf(name: String): TargetExpr.Single = TargetExpr.RandomOfBound(name)
+
+fun tilesEmpty(name: String): Condition = Condition.TilesEmpty(name)
+
 fun after(ticks: Int, effect: Effect, requireAlive: Boolean = true): Effect =
     Effect.After(ticks, effect, requireAlive)
 

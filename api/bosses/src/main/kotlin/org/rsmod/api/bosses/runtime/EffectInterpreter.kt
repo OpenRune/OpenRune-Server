@@ -44,21 +44,35 @@ import org.rsmod.map.util.Bounds
 /** The [BossEncounter.epoch] one ability run belongs to, shared with the interpreters it spawns. */
 class AbilityRun internal constructor(internal var epoch: Int)
 
-class EffectInterpreter(
+class EffectInterpreter internal constructor(
     private val npc: Npc,
     private val target: Player,
     private val spec: BossSpec,
     private val encounter: BossEncounter,
     private val deps: BossDeps,
-    private val abilityRun: AbilityRun = AbilityRun(encounter.epoch),
-    private val impactTile: CoordGrid? = null,
-    private val currentTile: CoordGrid? = null,
+    private val abilityRun: AbilityRun,
+    private val bindings: TileBindings,
 ) {
+    constructor(
+        npc: Npc,
+        target: Player,
+        spec: BossSpec,
+        encounter: BossEncounter,
+        deps: BossDeps,
+    ) : this(npc, target, spec, encounter, deps, AbilityRun(encounter.epoch), TileBindings.NONE)
+
     private fun child(
         target: Player = this.target,
-        impactTile: CoordGrid? = this.impactTile,
-        currentTile: CoordGrid? = this.currentTile,
-    ): EffectInterpreter = EffectInterpreter(npc, target, spec, encounter, deps, abilityRun, impactTile, currentTile)
+        bindings: TileBindings = this.bindings,
+    ): EffectInterpreter = EffectInterpreter(npc, target, spec, encounter, deps, abilityRun, bindings)
+
+    private fun tileScope(target: Player): TileScope =
+        object : TileScope {
+            override fun tile(expr: TargetExpr.Single): CoordGrid =
+                npc.resolveTile(expr, target, bindings, deps.random, ::randomWalkableTile)
+
+            override fun set(name: String): List<CoordGrid> = bindings.set(name)
+        }
 
     private val interrupted: Boolean
         get() = encounter.epoch != abilityRun.epoch
@@ -181,7 +195,7 @@ class EffectInterpreter(
                 return
             }
             is Effect.Whenever -> {
-                val holds = encounter.evaluate(effect.condition, target, ::resolveTile)
+                val holds = encounter.evaluate(effect.condition, target, tileScope(target))
                 val next = if (holds) effect.then else effect.otherwise
                 run(access, next, onComplete)
                 return
@@ -220,11 +234,21 @@ class EffectInterpreter(
                 }
                 var remaining = tiles.size
                 for (tile in tiles) {
-                    child(currentTile = tile).run(access, effect.effect) {
+                    child(bindings = bindings.copy(currentTile = tile)).run(access, effect.effect) {
                         remaining--
                         if (remaining == 0) onComplete()
                     }
                 }
+                return
+            }
+            is Effect.WithTile -> {
+                val tiles = bindings.tiles + (effect.name to resolveTile(effect.tile))
+                child(bindings = bindings.copy(tiles = tiles)).run(access, effect.effect, onComplete)
+                return
+            }
+            is Effect.WithTiles -> {
+                val sets = bindings.sets + (effect.name to resolveTiles(effect.tiles))
+                child(bindings = bindings.copy(sets = sets)).run(access, effect.effect, onComplete)
                 return
             }
             is Effect.After -> {
@@ -420,7 +444,9 @@ class EffectInterpreter(
         }
 
         proj.onImpact?.let { onImpact ->
-            deps.worldQueues.add(ticks) { child(impactTile = destCoord).run(access, onImpact) }
+            deps.worldQueues.add(ticks) {
+                child(bindings = bindings.copy(impactTile = destCoord)).run(access, onImpact)
+            }
         }
 
         val hit = proj.hit ?: return
@@ -459,10 +485,9 @@ class EffectInterpreter(
         val onHit = landingEffect(hit, rolled)
         return PlayerHitModifier { t ->
             val whenever = hit.penetrationWhen
-            val tiles = { expr: TargetExpr.Single ->
-                npc.resolveTile(expr, t, impactTile, currentTile, ::randomWalkableTile)
+            if (whenever != null && encounter.evaluate(whenever, t, tileScope(t))) {
+                penetration = hit.penetration
             }
-            if (whenever != null && encounter.evaluate(whenever, t, tiles)) penetration = hit.penetration
             val praying = encounter.evaluate(Condition.TargetPraying(hit.type), t)
             deps.playerHitModifier.modify(this, t)
             t.combatPlayDefendAnim()
@@ -689,6 +714,7 @@ class EffectInterpreter(
                 set.tiles(npc, target, deps.random).filter { isFree(box, it) }.distinct()
             }
             is TileSet.Plus -> (resolveTiles(set.a) + resolveTiles(set.b)).distinct()
+            is TileSet.Bound -> bindings.set(set.name)
         }
     }
 
@@ -743,11 +769,13 @@ class EffectInterpreter(
             is TargetExpr.Toward -> null
             is TargetExpr.Offset -> null
             is TargetExpr.Custom -> null
+            is TargetExpr.Bound -> null
+            is TargetExpr.RandomOfBound -> null
         }
     }
 
     private fun resolveTile(expr: TargetExpr.Single): CoordGrid =
-        npc.resolveTile(expr, target, impactTile, currentTile, ::randomWalkableTile)
+        npc.resolveTile(expr, target, bindings, deps.random, ::randomWalkableTile)
 
     private fun randomWalkableTile(center: CoordGrid, radius: Int): CoordGrid? {
         val candidates = mutableListOf<CoordGrid>()
