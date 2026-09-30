@@ -3,12 +3,10 @@ package org.rsmod.api.bosses.runtime
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.NpcServerType
 import dev.openrune.types.ProjAnimType
 import dev.openrune.types.aconverted.SpotanimType
 import kotlin.math.abs
 import kotlin.math.sign
-import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.bosses.spec.HitType as BossHitType
 import org.rsmod.api.combat.commons.CombatEffects
@@ -118,12 +116,7 @@ class EffectInterpreter(
             is Effect.Freeze -> applyFreeze(effect)
             is Effect.DisablePrayers -> target.disablePrayers()
             is Effect.StatDrain -> applyStatDrain(effect)
-            is Effect.Transmog -> {
-                val npcType = ServerCacheManager.getNpc(effect.to.asRSCM(RSCMType.NPC))
-                if (npcType != null) {
-                    transmog(npcType, effect.durationTicks)
-                }
-            }
+            is Effect.Transmog -> cacheNpcType(effect.to)?.let { npc.bossTransmog(it, effect.durationTicks) }
 
             is Effect.Teleport -> {
                 if (npc.isValidTarget()) {
@@ -233,12 +226,6 @@ class EffectInterpreter(
             is Effect.Knockback -> knockback(effect)
         }
         onComplete()
-    }
-
-    @OptIn(InternalApi::class)
-    private fun transmog(type: NpcServerType, duration: Int) {
-        npc.transmog(type, duration)
-        npc.assignUid()
     }
 
     private fun evaluateVar(expr: VarExpr): Int =

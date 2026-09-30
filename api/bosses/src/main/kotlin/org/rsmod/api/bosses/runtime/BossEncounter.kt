@@ -1,7 +1,12 @@
 package org.rsmod.api.bosses.runtime
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.NpcServerType
 import kotlin.math.abs
 import kotlin.random.Random
+import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -10,6 +15,7 @@ import org.rsmod.map.CoordGrid
 class BossEncounter(
     val npc: Npc,
     val spec: BossSpec,
+    private val npcType: (String) -> NpcServerType? = ::cacheNpcType,
 ) {
     var currentPhaseName: String = spec.phases.keys.firstOrNull() ?: ""
 
@@ -103,6 +109,8 @@ class BossEncounter(
         forceAttackThreshold = -1
 
         val phase = spec.phases[phaseName]
+
+        phase?.transmog?.let(npcType)?.let { npc.bossTransmog(it, Int.MAX_VALUE) }
 
         val idle = phase?.idleAnim
         if (idle != null) npc.setIdleAnim(idle) else npc.clearIdleAnim()
@@ -274,4 +282,12 @@ class BossEncounter(
         private const val PROTECT_FROM_MISSILES = "varbit.prayer_protectfrommissiles"
         private const val PROTECT_FROM_MAGIC = "varbit.prayer_protectfrommagic"
     }
+}
+
+internal fun cacheNpcType(name: String): NpcServerType? = ServerCacheManager.getNpc(name.asRSCM(RSCMType.NPC))
+
+@OptIn(InternalApi::class)
+internal fun Npc.bossTransmog(type: NpcServerType, duration: Int) {
+    transmog(type, duration)
+    assignUid()
 }

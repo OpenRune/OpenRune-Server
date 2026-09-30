@@ -124,6 +124,15 @@ class SpecValidatorTest {
         assertHasError(errors, "Run 'missing' does not exist")
     }
 
+    @Test
+    fun `phase transmog must be a registered boss npc type`() {
+        val base = spec(mapOf("a" to resetAnim()))
+        val registered = base.copy(phases = mapOf("main" to PhaseSpec("main", transmog = "npc.test")))
+        val unregistered = base.copy(phases = mapOf("main" to PhaseSpec("main", transmog = "npc.other")))
+        assertEquals(emptyList<String>(), SpecValidator.validate(registered).map { it.message })
+        assertHasError(SpecValidator.validate(unregistered).map { it.message }, "transmog 'npc.other'")
+    }
+
     private fun errorsFor(effect: Effect): List<String> =
         SpecValidator.validate(spec(mapOf("a" to effect))).map { it.message }
 
