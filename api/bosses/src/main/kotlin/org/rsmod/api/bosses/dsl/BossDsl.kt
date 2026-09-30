@@ -68,7 +68,6 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
                 idleAnim = idleAnim,
                 attackRate = attackRate ?: builder.attackRate,
                 entry = builder.entry,
-                exit = builder.exit,
                 selector = builder.selector,
                 forceAbilities = builder.forceAbilities,
             )
@@ -526,7 +525,6 @@ class AbilityBuilder {
 @BossDsl
 class PhaseBuilder(private val name: String) {
     var entry: String? = null
-    var exit: String? = null
 
     var attackRate: Int? = null
     var selector: Selector = Selector.WeightedRandom()

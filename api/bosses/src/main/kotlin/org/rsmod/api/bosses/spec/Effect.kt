@@ -183,6 +183,7 @@ sealed interface Effect {
     }
 
     data class Run(val ability: String) : Effect
+    /** Scripted phase switch; does not run the phase's [PhaseSpec.entry]. */
     data class TransitionTo(val phase: String) : Effect
     data class External(val handler: String, val params: Any? = null) : Effect
 

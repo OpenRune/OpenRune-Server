@@ -96,6 +96,7 @@ class BossEncounter(
     val currentPhase: PhaseSpec?
         get() = spec.phases[currentPhaseName]
 
+    /** Switches phase state only; does not run the phase's [PhaseSpec.entry]. */
     fun transitionTo(phaseName: String, tick: Int) {
         val from = currentPhaseName
         currentPhaseName = phaseName

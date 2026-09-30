@@ -31,8 +31,13 @@ data class PhaseSpec(
     val exitAfter: Int? = null,
     val nextPhase: String? = null,
     val idleAnim: String? = null,
+    /**
+     * Ability run when this phase is entered by an automatic transition ([entryHp] or another
+     * phase's [exitAfter]). A scripted [Effect.TransitionTo] or
+     * [org.rsmod.api.bosses.runtime.BossEncounter.transitionTo] does not run it; the script doing
+     * the transition orchestrates whatever the new phase needs.
+     */
     val entry: String? = null,
-    val exit: String? = null,
     val selector: Selector = Selector.WeightedRandom(),
     val forceAbilities: List<ForcedAbility> = emptyList(),
 )

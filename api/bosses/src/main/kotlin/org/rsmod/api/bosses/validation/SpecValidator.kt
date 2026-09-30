@@ -37,7 +37,6 @@ object SpecValidator {
             for ((phaseName, phase) in spec.phases) {
                 val scope = Scope("phase '$phaseName'")
                 phase.entry?.let { requireAbility(it, scope, "entry ability") }
-                phase.exit?.let { requireAbility(it, scope, "exit ability") }
                 phase.transmog?.let {
                     if (it !in spec.npcTypes) {
                         error("${scope.prefix}transmog '$it' is not one of the boss npc types ${spec.npcTypes}.")
