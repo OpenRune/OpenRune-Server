@@ -162,6 +162,18 @@ class SpecValidatorTest {
         assertHasError(errorsFor(whenever(HpBelow(-0.1), resetAnim())), "HpBelow fraction '-0.1'")
     }
 
+    @Test
+    fun `specs registered together are each validated and must share npc types`() {
+        val valid = spec(mapOf("a" to resetAnim()))
+        assertEquals(emptyList<String>(), SpecValidator.validateAll(listOf(valid, valid)).map { it.message })
+        val broken = spec(mapOf("a" to run("missing")))
+        val otherTypes = valid.copy(npcTypes = listOf("npc.other"))
+        val errors = SpecValidator.validateAll(listOf(valid, broken, otherTypes)).map { it.message }
+        assertHasError(errors, "spec 1: ")
+        assertHasError(errors, "spec 2: npc types")
+        assertHasError(SpecValidator.validateAll(emptyList()).map { it.message }, "No specs")
+    }
+
     private fun errorsFor(effect: Effect): List<String> =
         SpecValidator.validate(spec(mapOf("a" to effect))).map { it.message }
 

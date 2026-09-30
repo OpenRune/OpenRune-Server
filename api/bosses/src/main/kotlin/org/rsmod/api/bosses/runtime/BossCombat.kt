@@ -3,8 +3,10 @@ package org.rsmod.api.bosses.runtime
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import java.util.IdentityHashMap
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.validation.SpecValidator
+import org.rsmod.api.bosses.validation.ValidationError
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.api.script.onAiApPlayer2
@@ -28,42 +30,78 @@ object BossCombat {
         onCombatTick: (suspend StandardNpcAccess.(Player) -> Unit)? = null,
         onHit: (NpcHitEvents.Impact.() -> Unit)? = null,
     ) {
-        val errors = SpecValidator.validate(spec)
-        if (errors.isNotEmpty()) {
-            val msg = errors.joinToString("\n") { "  - ${it.message}" }
-            error("Boss spec validation failed for '${spec.npcTypes.joinToString()}':\n$msg")
-        }
+        requireValid(spec.npcTypes, SpecValidator.validate(spec))
+        registerSpecs(ctx, listOf(spec), spec, deps, onLethal, onModifyHit, onCombatTick, onHit)
+    }
 
+    /**
+     * Registers several specs for the same npc types, e.g. one per difficulty level. There is no
+     * default: content picks one per npc with [startEncounter] at spawn, before it can fight or be
+     * hit. Only one script may own a type's hit event, so all specs go through this one call.
+     */
+    fun register(
+        ctx: ScriptContext,
+        specs: Collection<BossSpec>,
+        deps: BossDeps,
+        onLethal: ((Npc) -> Unit)? = null,
+        onModifyHit: (NpcHitEvents.Modify.() -> Unit)? = null,
+        onCombatTick: (suspend StandardNpcAccess.(Player) -> Unit)? = null,
+        onHit: (NpcHitEvents.Impact.() -> Unit)? = null,
+    ) {
+        val npcTypes = specs.firstOrNull()?.npcTypes.orEmpty()
+        requireValid(npcTypes, SpecValidator.validateAll(specs))
+        registerSpecs(ctx, specs, null, deps, onLethal, onModifyHit, onCombatTick, onHit)
+    }
+
+    private fun requireValid(npcTypes: List<String>, errors: List<ValidationError>) {
+        if (errors.isEmpty()) return
+        val msg = errors.joinToString("\n") { "  - ${it.message}" }
+        error("Boss spec validation failed for '${npcTypes.joinToString()}':\n$msg")
+    }
+
+    private fun registerSpecs(
+        ctx: ScriptContext,
+        specs: Collection<BossSpec>,
+        default: BossSpec?,
+        deps: BossDeps,
+        onLethal: ((Npc) -> Unit)?,
+        onModifyHit: (NpcHitEvents.Modify.() -> Unit)?,
+        onCombatTick: (suspend StandardNpcAccess.(Player) -> Unit)?,
+        onHit: (NpcHitEvents.Impact.() -> Unit)?,
+    ) {
         val npcTypes =
-            spec.npcTypes.map { name ->
+            specs.first().npcTypes.map { name ->
                 val npcId = name.asRSCM(RSCMType.NPC)
                 ServerCacheManager.getNpc(npcId) ?: error("Boss NPC type not found: $name")
             }
 
         for (npcType in npcTypes) {
-            deps.encounterRegistry.register(npcType.id, spec)
+            deps.encounterRegistry.register(npcType.id, specs, default)
         }
 
-        val hitRules = HitRules(spec, deps)
+        val hitRules = IdentityHashMap<BossSpec, HitRules>()
+        for (spec in specs) hitRules[spec] = HitRules(spec, deps)
+        val hasReactions = hitRules.values.any { it.hasReactions }
 
         with(ctx) {
             for (npcType in npcTypes) {
                 // Only one script may own a npc type's hit event, so bosses that handle it
                 // themselves must not declare hit reactions or pass onHit.
-                if (hitRules.hasReactions || onHit != null) {
+                if (hasReactions || onHit != null) {
                     onNpcHit(npcType) {
-                        hitRules.react(this)
+                        val encounter = deps.encounterRegistry.of(npc)
+                        hitRules.getValue(encounter.spec).react(this, encounter)
                         onHit?.invoke(this)
                     }
                 }
-                onAiOpPlayer2(npcType) { runCombatTick(it.target, spec, deps, onCombatTick) }
-                onAiApPlayer2(npcType) { runCombatTick(it.target, spec, deps, onCombatTick) }
+                onAiOpPlayer2(npcType) { runCombatTick(it.target, deps, onCombatTick) }
+                onAiApPlayer2(npcType) { runCombatTick(it.target, deps, onCombatTick) }
                 onModifyNpcHit(npcType) {
                     val encounter = deps.encounterRegistry.of(npc)
                     hit.damage =
                         if (encounter.invulnerable) 0
                         else (hit.damage * encounter.damageScale).toInt()
-                    hitRules.applyIncoming(this, encounter)
+                    hitRules.getValue(encounter.spec).applyIncoming(this, encounter)
                     onModifyHit?.invoke(this)
                     if (
                         onLethal != null &&
@@ -107,13 +145,13 @@ object BossCombat {
 
     private suspend fun StandardNpcAccess.runCombatTick(
         target: Player,
-        spec: BossSpec,
         deps: BossDeps,
         onCombatTick: (suspend StandardNpcAccess.(Player) -> Unit)?,
     ) {
         onCombatTick?.invoke(this, target)
 
         val encounter = deps.encounterRegistry.of(npc)
+        val spec = encounter.spec
         if (encounter.currentPhase == null) return
         val tick = deps.mapClock.cycle
         if (encounter.phaseEnteredTick < 0) {

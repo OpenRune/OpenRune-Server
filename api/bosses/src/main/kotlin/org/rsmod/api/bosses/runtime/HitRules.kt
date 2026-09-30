@@ -49,10 +49,9 @@ internal class HitRules(private val spec: BossSpec, private val deps: BossDeps) 
         }
     }
 
-    fun react(event: NpcHitEvents.Impact) {
+    fun react(event: NpcHitEvents.Impact, encounter: BossEncounter) {
         if (!event.hit.isFromPlayer || event.npc.hitpoints <= 0) return
         val attacker = event.hit.resolvePlayerSource(deps.playerList) ?: return
-        val encounter = deps.encounterRegistry.of(event.npc)
         for ((reaction, objs) in reactions) {
             if (objs.isNotEmpty() && objs.none(event.hit::isSecondaryObj)) continue
             if (!encounter.evaluate(reaction.requires, attacker)) continue

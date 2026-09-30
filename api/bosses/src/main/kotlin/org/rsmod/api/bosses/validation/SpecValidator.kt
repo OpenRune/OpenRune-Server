@@ -8,6 +8,20 @@ object SpecValidator {
 
     fun validate(spec: BossSpec): List<ValidationError> = SpecCheck(spec).run()
 
+    /** Validates each spec, plus what specs sharing npc types must agree on: those npc types. */
+    fun validateAll(specs: Collection<BossSpec>): List<ValidationError> {
+        val first = specs.firstOrNull() ?: return listOf(ValidationError("No specs given."))
+        val errors = mutableListOf<ValidationError>()
+        for ((index, spec) in specs.withIndex()) {
+            if (spec.npcTypes.toSet() != first.npcTypes.toSet()) {
+                val message = "spec $index: npc types ${spec.npcTypes} differ from ${first.npcTypes}."
+                errors += ValidationError(message)
+            }
+            errors += validate(spec).map { ValidationError("spec $index: ${it.message}") }
+        }
+        return errors
+    }
+
     /**
      * Where an effect sits: [impactTileBound] inside a [Effect.Projectile.onImpact] (so
      * `ImpactTile` resolves), [currentTileBound] inside an [Effect.OnTiles] (so `CurrentTile`
