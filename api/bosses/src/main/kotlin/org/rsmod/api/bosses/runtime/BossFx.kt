@@ -68,6 +68,15 @@ fun BossDeps.startEncounter(npc: Npc, spec: BossSpec): BossEncounter {
     return encounterRegistry.start(npc, spec)
 }
 
+fun BossDeps.runAbility(npc: Npc, target: Player, ability: String) {
+    val encounter = encounterRegistry.of(npc)
+    val effect =
+        requireNotNull(encounter.spec.abilities[ability]) {
+            "Ability '$ability' does not exist in boss spec."
+        }
+    EffectInterpreter(npc, target, encounter.spec, encounter, this).run(null, effect)
+}
+
 fun BossDeps.interrupt(npc: Npc) {
     encounterRegistry.of(npc).interrupt(mapClock.cycle)
 }
