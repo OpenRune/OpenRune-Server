@@ -20,6 +20,7 @@ import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.DamageExpr
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.plugin.scripts.ScriptContext
 
 class CrondisCrocodileCombat @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
@@ -46,7 +47,7 @@ class CrondisCrocodileCombat @Inject constructor(deps: BossDeps) : BossPluginScr
                     anim(CrondisSeqs.CROC_ATTACK),
                     sound(CrondisSynths.CROC_ATTACK, target = CurrentTarget),
                     hit {
-                        noReaction()
+                        resolveOnImpact()
                         type(Melee)
                         delay = HIT_DELAY
                         damage(Accuracy(biteDamage, meleeAttackType = MeleeAttackType.Crush))
@@ -74,6 +75,8 @@ class CrondisCrocodileCombat @Inject constructor(deps: BossDeps) : BossPluginScr
         private const val PRAYER_DRAIN = 12
 
         private val biteDamage =
-            DamageExpr.Custom { croc, target -> CrondisPuzzleEncounter.crocodileBiteDamage(croc, target) }
+            DamageExpr.Custom { croc, target ->
+                minOf(target.hitpoints, CrondisPuzzleEncounter.crocodileBiteDamage(croc, target))
+            }
     }
 }
