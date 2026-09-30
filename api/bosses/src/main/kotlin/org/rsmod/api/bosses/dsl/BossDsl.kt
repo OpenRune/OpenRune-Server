@@ -229,7 +229,11 @@ internal constructor(private val builder: HitBuilder, private val range: IntRang
 class AbilityBuilder {
     private val effects = mutableListOf<Effect>()
 
-    /** See [BossSpec.abilityAttackDelays]; null keeps the attack rate. */
+    /**
+     * Ticks from this ability's start to the next attack, replacing the attack rate for that gap;
+     * null keeps the attack rate. Only applies when the attack loop starts the ability, not when
+     * another ability `run`s it.
+     */
     var attackDelay: Int? = null
 
     fun anim(seq: String, delay: Int = 0) {
@@ -323,6 +327,22 @@ class AbilityBuilder {
 
     fun nextAttackIn(ticks: Int) {
         effects += Effect.NextAttackIn(ticks)
+    }
+
+    fun headbar(headbar: String, fromPercent: Int, toPercent: Int, cycles: Int) {
+        effects += Effect.Headbar(headbar, fromPercent, toPercent, cycles)
+    }
+
+    fun clearHeadbar(headbar: String) {
+        effects += Effect.ClearHeadbar(headbar)
+    }
+
+    fun headIcon(slot: Int, graphic: Int, index: Int) {
+        effects += Effect.HeadIcon(slot, graphic, index)
+    }
+
+    fun clearHeadIcon(slot: Int) {
+        effects += Effect.ClearHeadIcon(slot)
     }
 
     fun transitionTo(phase: String) {
