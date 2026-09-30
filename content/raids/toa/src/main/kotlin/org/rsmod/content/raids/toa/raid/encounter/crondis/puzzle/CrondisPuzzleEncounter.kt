@@ -24,6 +24,7 @@ import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
+import org.rsmod.game.map.Direction
 import org.rsmod.game.obj.Obj
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
@@ -392,8 +393,9 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
      * A room npc. `add(npc, Int.MAX_VALUE)` also marks it to respawn after a death, which room
      * npcs never do, so that's switched back off.
      */
-    private fun spawnNpc(type: String, static: CoordGrid): Npc {
+    private fun spawnNpc(type: String, static: CoordGrid, facing: Direction? = null): Npc {
         val npc = Npc(type, coords(static))
+        if (facing != null) npc.respawnDir = facing
         deps.npcRepo.add(npc, Int.MAX_VALUE)
         npc.respawns = false
         return npc
@@ -404,9 +406,9 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
      * destroyed without completing or resetting, so their leftover entries are dropped here;
      * otherwise the static map would keep whole raids alive.
      */
-    internal fun spawnRouted(type: String, static: CoordGrid): Npc {
+    internal fun spawnRouted(type: String, static: CoordGrid, facing: Direction? = null): Npc {
         owners.values.removeIf { it.destroyed }
-        val npc = spawnNpc(type, static)
+        val npc = spawnNpc(type, static, facing)
         owners[npc] = this
         return npc
     }
