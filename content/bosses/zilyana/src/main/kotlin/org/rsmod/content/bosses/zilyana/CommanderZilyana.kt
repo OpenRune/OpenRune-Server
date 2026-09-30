@@ -35,7 +35,7 @@ class CommanderZilyana @Inject constructor(deps: BossDeps) : BossPluginScript(de
 
     override val spec =
         boss(AVATAR) {
-            stats(attackRate = 5, aggressionRadius = 8)
+            stats(attackRate = 5)
             val magic =
                 ability("magic") {
                     anim("seq.godwars_saradomin_magic_attack")

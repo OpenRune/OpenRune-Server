@@ -57,8 +57,6 @@ internal constructor(
 
     override val spec: BossSpec =
         boss(LeviathanFights.BOSS_NPC) {
-            stats(retaliateOnHit = false)
-
             val bite =
                 ability("bite") {
                     include(biteAnim)

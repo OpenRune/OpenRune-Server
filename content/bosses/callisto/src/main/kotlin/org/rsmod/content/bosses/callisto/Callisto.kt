@@ -138,7 +138,7 @@ abstract class WildernessBear(
 
     override val spec =
         boss(den.bossNpc) {
-            stats(attackRate = den.attackRate, aggressionRadius = AGGRO_RANGE)
+            stats(attackRate = den.attackRate)
 
             val melee =
                 ability(MELEE) {
@@ -405,7 +405,6 @@ abstract class WildernessBear(
 
         private const val ROARS_VARN = "varn.callisto_roars"
 
-        private const val AGGRO_RANGE = 15
         private const val ARENA_RADIUS = 20
         private const val FROZEN_AP_RANGE = 10
         private const val MELEE_PRAYER_PENETRATION = 50

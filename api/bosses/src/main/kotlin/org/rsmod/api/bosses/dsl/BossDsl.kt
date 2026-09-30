@@ -28,13 +28,8 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
     private val incomingRules = mutableListOf<IncomingRule>()
     private val timers = mutableListOf<TimerSpec>()
 
-    fun stats(
-        attackRate: Int = 4,
-        aggressionRadius: Int = 8,
-        retaliateOnHit: Boolean = true,
-        hitFloor: Int? = null,
-    ) {
-        stats = BossStats(attackRate, aggressionRadius, retaliateOnHit, hitFloor)
+    fun stats(attackRate: Int = 4) {
+        stats = BossStats(attackRate)
     }
 
     fun ability(name: String, block: AbilityBuilder.() -> Unit): AbilityRef {

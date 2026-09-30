@@ -655,7 +655,7 @@ constructor(
 
     override val spec =
         boss("npc.vardorvis") {
-            stats(attackRate = ATTACK_RATE, aggressionRadius = AGGRESSION_RADIUS)
+            stats(attackRate = ATTACK_RATE)
 
             val melee =
                 ability("melee") {
@@ -749,7 +749,6 @@ constructor(
         private const val PROTECT_FROM_MELEE = "varbit.prayer_protectfrommelee"
 
         private const val ATTACK_RATE = 5
-        private const val AGGRESSION_RADIUS = 10
 
         private const val STRANGLE_SLOT_CHANCE = 3
         private const val STRANGLE_MIN_GAP = 25

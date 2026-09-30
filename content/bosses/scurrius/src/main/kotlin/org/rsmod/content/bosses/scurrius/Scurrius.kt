@@ -160,7 +160,7 @@ constructor(
 
     override val spec =
         boss("npc.rat_boss_instance", "npc.rat_boss_normal") {
-            stats(attackRate = 4, aggressionRadius = 8)
+            stats(attackRate = 4)
 
             val eatCheese = ability("eat_cheese") { include(external("scurrius.eat_cheese")) }
 

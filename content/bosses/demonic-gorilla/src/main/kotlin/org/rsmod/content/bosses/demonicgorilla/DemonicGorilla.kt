@@ -52,7 +52,7 @@ class DemonicGorilla @Inject constructor(private val deps: BossDeps, private val
 
     val spec: BossSpec =
         boss(*GORILLA_TYPE_NAMES.toTypedArray()) {
-            stats(attackRate = ATTACK_RATE, aggressionRadius = 8)
+            stats(attackRate = ATTACK_RATE)
 
             val meleeAttack =
                 ability("melee_attack") {

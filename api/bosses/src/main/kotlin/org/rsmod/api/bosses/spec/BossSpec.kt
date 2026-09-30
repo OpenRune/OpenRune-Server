@@ -12,12 +12,7 @@ data class BossSpec(
     val timers: List<TimerSpec> = emptyList(),
 )
 
-data class BossStats(
-    val attackRate: Int = 4,
-    val aggressionRadius: Int = 8,
-    val retaliateOnHit: Boolean = true,
-    val hitFloor: Int? = null,
-)
+data class BossStats(val attackRate: Int = 4)
 
 data class PhaseSpec(
     val name: String,

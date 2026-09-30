@@ -7,7 +7,7 @@ private const val DRAGON_BREATH_ANIM = "seq.dragon_firebreath_all_attack"
 private const val DRAGON_MELEE_ANIM = "seq.dragon_attack"
 
 fun adamantDragon(npcType: String): BossSpec = boss(npcType) {
-    stats(attackRate = 4, aggressionRadius = 8)
+    stats(attackRate = 4)
     val melee = ability("melee") {
         anim(DRAGON_MELEE_ANIM)
         hit { damage(0..29).roll(); type(Melee) }
@@ -63,7 +63,7 @@ fun adamantDragon(npcType: String): BossSpec = boss(npcType) {
 }
 
 fun runeDragon(npcType: String): BossSpec = boss(npcType) {
-    stats(attackRate = 4, aggressionRadius = 8)
+    stats(attackRate = 4)
     val melee = ability("melee") {
         anim(DRAGON_MELEE_ANIM)
         hit { damage(0..29).roll(); type(Melee) }
@@ -118,7 +118,7 @@ fun runeDragon(npcType: String): BossSpec = boss(npcType) {
 }
 
 fun mithrilDragon(npcType: String): BossSpec = boss(npcType) {
-    stats(attackRate = 4, aggressionRadius = 8)
+    stats(attackRate = 4)
     val melee = ability("melee") {
         anim(DRAGON_MELEE_ANIM)
         hit { damage(0..28).roll(); type(Melee) }

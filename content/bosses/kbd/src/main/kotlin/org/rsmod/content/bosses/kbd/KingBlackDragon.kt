@@ -10,7 +10,7 @@ class KingBlackDragon @Inject constructor(deps: BossDeps) : BossPluginScript(dep
 
     override val spec = boss("npc.king_dragon") {
 
-        stats(attackRate = 4, aggressionRadius = 8)
+        stats(attackRate = 4)
 
         val melee = ability("melee") {
             anim("seq.dragon_attack")

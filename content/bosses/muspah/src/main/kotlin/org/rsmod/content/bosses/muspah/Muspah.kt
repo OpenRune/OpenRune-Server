@@ -183,7 +183,7 @@ constructor(
         val teleportDuration = teleportWindup + TELEPORT_STEP_TICKS * (TELEPORT_LOOP.size + 1) + 2
 
         boss("npc.muspah", "npc.muspah_melee", "npc.muspah_teleport", "npc.muspah_soulsplit", "npc.muspah_final") {
-            stats(attackRate = ATTACK_RATE, aggressionRadius = AGGRO_RANGE)
+            stats(attackRate = ATTACK_RATE)
 
             val rangedAttack =
                 ability("ranged_attack") {
@@ -907,7 +907,6 @@ constructor(
         private const val ABILITY_TO_FINAL = "to_final"
 
         private const val ATTACK_RATE = 6
-        private const val AGGRO_RANGE = 15
 
         private const val TRANSFORM_DISAPPEAR_SEQ = "seq.npc_muspah_transform_disappear_02"
         private const val TRANSFORM_APPEAR_SEQ = "seq.npc_muspah_transform_appear_02"
