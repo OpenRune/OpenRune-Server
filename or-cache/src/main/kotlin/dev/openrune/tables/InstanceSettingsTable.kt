@@ -281,7 +281,7 @@ object InstanceSettingsTable {
         row("dbrow.instance_amoxliatl") {
             column(KEY, "amoxliatl")
             columnCoord(EXIT_COORD, CoordGrid(1602, 9631, 0))
-            columnCoord(ENTER_COORD, CoordGrid(1376, 4511, 0))
+            columnCoord(ENTER_COORD, CoordGrid(1371, 4511, 0))
             column(FEE, 0)
             column(MAX_PLAYERS, 1)
             column(TIME_LIMIT_MINUTES, 0)
