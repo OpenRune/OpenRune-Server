@@ -28,16 +28,6 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Every way into, through and out of the raid. Ports Offline_Scape TOARaidEntryAction,
- * TOAPathAction, TOAEncounterEntryAction, TOABarrierAction, TOATeleportCrystalAction,
- * TOAExitAction, OsmumtenAction and RewardCrystalAction, with the timings and messages taken from
- * Jesse's vanilla capture where it covers them.
- *
- * The handlers only decide *whether* and *where* to go; the moving is in ToaTravel.kt.
- *
- * Op1 is the normal op (with a confirmation), op2 the "Quick-" op (no confirmation).
- */
 class ToaRaidScript
 @Inject
 constructor(
@@ -46,13 +36,11 @@ constructor(
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        // Lobby -> nexus, and out again.
         onOpLoc1("loc.toa_lobby_raid_entry") { raidEntrance() }
         for (exit in EXIT_LOCS) {
             onOpLoc1(exit) { abandonRaid() }
         }
 
-        // Nexus doors. The unselected variants have the same ops (they only refuse).
         for (path in ToaPath.entries) {
             onOpLoc1(path.doorOpen) { pathDoor(path, quick = false) }
             onOpLoc2(path.doorOpen) { pathDoor(path, quick = true) }
@@ -62,7 +50,6 @@ constructor(
         onOpLoc1(WARDENS_DOOR_OPEN) { wardensDoor(quick = false) }
         onOpLoc2(WARDENS_DOOR_OPEN) { wardensDoor(quick = true) }
 
-        // Inside rooms.
         onOpLoc1(BARRIER) { barrier(it.loc.coords, quick = false) }
         onOpLoc2(BARRIER) { barrier(it.loc.coords, quick = true) }
         for (crystal in TELEPORT_CRYSTALS) {
@@ -75,25 +62,14 @@ constructor(
         }
         onOpNpc1(ToaBossEncounter.OSMUMTEN) { osmumten() }
         onOpNpc3(ToaBossEncounter.OSMUMTEN) { osmumten() }
-        // An ap (approach) op, not an op: the crystal can't be walked up to, so an op handler
-        // ends in "I can't reach that!". See rewardCrystal().
         onApLoc1(WardensSecondEncounter.CRYSTAL) { rewardCrystal(it.loc) }
 
-        // Leaving the raid's map by anything other than our own exits (a teleport spell or tablet)
-        // leaves the raid. Offline_Scape TOARaidArea.leave did this when the next area wasn't a
-        // raid room. Our own exits call ToaRaidManager.leave before teleporting, so they no-op
-        // here; moving between rooms never leaves the area (all rooms normalise inside it).
         onAreaExit(RAID_AREA) { leftRaidArea() }
 
         onPlayerLogout {
-            // Keep toa_mycontroller set (logout = true): the player is saved at an instance
-            // coordinate, and PrepareLogin below needs to know.
             ToaRaidManager.leave(player, logout = true)
         }
 
-        // PrepareLogin runs before the login rebuild. Moving the player here (not in
-        // onPlayerLogin) is what MisthalinMystery does, for the same reason: by Login the client
-        // has already been sent the old region.
         onEvent<SessionStateEvent.PrepareLogin> {
             if (player.toaController > 0) {
                 player.coords = TOA_OUTSIDE
@@ -101,21 +77,16 @@ constructor(
         }
 
         onPlayerLogin {
-            // Every raid var is saved like any other var; nobody is in a raid at login.
             ToaRaidManager.resetClientVars(player)
+            ToaRaidManager.removeRaidItems(player)
         }
     }
-
-    // ------------------------------------------------------------------
-    // Lobby entrance (46089)
-    // ------------------------------------------------------------------
 
     private suspend fun ProtectedAccess.raidEntrance() {
         arriveDelay()
 
         val party = player.currentParty
         if (party == null) {
-            // Offline_Scape: OptionDialogue with these two options, the first opening the board.
             val form =
                 choice2(
                     "Form or join a party.",
@@ -133,7 +104,6 @@ constructor(
         val running = ToaRaidManager.raidFor(party)
         val raid: ToaRaid
         if (running == null) {
-            // Only the leader can start the raid (Offline_Scape enterRaid).
             if (!party.isLeader(player)) {
                 val leaderName = party.leader?.displayName ?: party.leaderName
                 mesbox("Your leader, $leaderName, must enter first.")
@@ -153,8 +123,6 @@ constructor(
             raid = running
         }
 
-        // Late joiners can only follow while the party is still in the nexus. Never build a new
-        // nexus from the lobby: that would pull the raid's current room away from the party.
         val hall = raid.current?.takeIf { it.room == ToaRoom.MAIN_HALL && !it.destroyed }
         if (hall == null) {
             mesbox("Your leader, ${raid.leaderName}, must enter first.")
@@ -166,16 +134,11 @@ constructor(
         travel(hall, fromLobby = true)
     }
 
-    // ------------------------------------------------------------------
-    // Nexus doors (Offline_Scape MainHallEncounter.handlePathEnter / handleWardensEnter)
-    // ------------------------------------------------------------------
-
     private suspend fun ProtectedAccess.pathDoor(path: ToaPath, quick: Boolean) {
         arriveDelay()
         val raid = player.currentRaid ?: return
         val hall = raid.encounterOf(player) as? MainHallEncounter ?: return
 
-        // A path was already chosen this visit: follow the leader in, or refuse.
         val selected = hall.selectedPath
         if (selected != null) {
             if (selected != path) {
@@ -192,14 +155,13 @@ constructor(
             return
         }
 
-        // Capture: chatmenu "Do you wish to walk the Path of Scabaras?" "Yes.|No."
         val question = "Do you wish to walk the Path of ${path.pathName}"
         if (raid.stragglers().isNotEmpty()) {
             if (!confirmAbandonStragglers(raid, question)) return
         } else if (!quick && !confirmYesNo("$question?")) {
             return
         }
-        // Re-check after the dialogs.
+
         if (hall.destroyed || hall.selectedPath != null) return
 
         val target = raid.advanceTo(path.puzzle)
@@ -221,7 +183,6 @@ constructor(
         val raid = player.currentRaid ?: return
         if (raid.encounterOf(player) !is MainHallEncounter) return
 
-        // Someone already went down: follow.
         val wardens = raid.current?.takeIf { it.room == ToaRoom.WARDENS_FIRST_ROOM && !it.destroyed }
         if (wardens != null) {
             travel(wardens, fromLobby = false)
@@ -248,14 +209,6 @@ constructor(
         travel(target, fromLobby = false)
     }
 
-    // ------------------------------------------------------------------
-    // Inside a room
-    // ------------------------------------------------------------------
-
-    /**
-     * Offline_Scape TOARaidArea.handleBarrier. Walking in through the barrier starts the room;
-     * once it has started you can't walk back out until it's over.
-     */
     private suspend fun ProtectedAccess.barrier(barrier: CoordGrid, quick: Boolean) {
         arriveDelay()
         val raid = player.currentRaid ?: return
@@ -272,7 +225,6 @@ constructor(
                     walkThroughBarrier(barrier)
                 }
             ToaStage.NOT_STARTED -> {
-                // Offline_Scape does nothing from inside a room that hasn't started.
                 if (inside) return
                 if (!confirmBeginChallenge(raid, quick)) return
                 if (room.destroyed) return
@@ -282,19 +234,12 @@ constructor(
         }
     }
 
-    /** Offline_Scape walkBarrier: two tiles along x, through the (1-tile) barrier. */
     private suspend fun ProtectedAccess.walkThroughBarrier(barrier: CoordGrid) {
         val step = if (barrier.x < player.coords.x) -BARRIER_STEP else BARRIER_STEP
         faceSquare(barrier)
         forcedWalk(player.coords.translate(step, 0), crossTiles = BARRIER_STEP)
     }
 
-    /**
-     * Offline_Scape TOARaidArea.handleTeleportCrystal: teleports into the challenge area, starting
-     * the room first (except in the Wardens' room, which starts on its own).
-     *
-     * TODO: gfx 409 and sound 198 (find their gameval names), and run energy to 100%.
-     */
     private suspend fun ProtectedAccess.teleportCrystal(quick: Boolean) {
         arriveDelay()
         val raid = player.currentRaid ?: return
@@ -313,13 +258,6 @@ constructor(
         telejump(dest, TeleportType.Exempt)
     }
 
-    /**
-     * The way from a puzzle into its boss room (Offline_Scape TOAEncounterEntryAction ->
-     * advanceRaid). Anyone can lead the party on.
-     *
-     * The completion check is ours: in the real game the exit can't be reached before the puzzle
-     * is solved, but our puzzle rooms are still empty.
-     */
     private suspend fun ProtectedAccess.puzzleExit(quick: Boolean) {
         arriveDelay()
         val raid = player.currentRaid ?: return
@@ -335,7 +273,6 @@ constructor(
         proceed(raid, next, "has proceeded to the next challenge")
     }
 
-    /** Osmumten, after a boss: back to the nexus (Offline_Scape OsmumtenAction). */
     private suspend fun ProtectedAccess.osmumten() {
         val raid = player.currentRaid ?: return
         val room = raid.encounterOf(player) ?: return
@@ -343,15 +280,6 @@ constructor(
         proceed(raid, ToaRoom.MAIN_HALL, "has returned to the Nexus")
     }
 
-    /**
-     * The crystal after the Wardens (Offline_Scape RewardCrystalAction).
-     *
-     * Offline_Scape overrode the route to walk to the tile 3 north of the crystal, because nothing
-     * next to it can be stood on. OpenRune's equivalent is an ap trigger: the engine runs it from a
-     * distance once the player is within ap range with line of sight. [isWithinApRange] narrows
-     * that range to [CRYSTAL_AP_RANGE]; while the player is further away it returns `false` and
-     * the engine keeps walking them in and re-runs this handler (the signpost pattern).
-     */
     private suspend fun ProtectedAccess.rewardCrystal(crystal: BoundLocInfo) {
         if (!isWithinApRange(crystal, CRYSTAL_AP_RANGE)) return
         val raid = player.currentRaid ?: return
@@ -360,20 +288,13 @@ constructor(
         proceed(raid, ToaRoom.REWARD_ROOM, "has proceeded to Osmumten's Burial Chamber")
     }
 
-    // ------------------------------------------------------------------
-    // Abandoning (the room exits, see EXIT_LOCS)
-    // ------------------------------------------------------------------
-
-    /** Capture: mesbox, then the "Abandon the raid?" choice, then the fade out (see exitRaid). */
     private suspend fun ProtectedAccess.abandonRaid() {
         arriveDelay()
         val raid = player.currentRaid
         if (raid == null) {
-            // Offline_Scape TOAExitAction: not in a raid (shouldn't happen) -> just out.
             telejump(TOA_OUTSIDE, TeleportType.Exempt)
             return
         }
-        // Offline_Scape startLeaveDialogue.
         if (blockedAsGhost(raid)) return
 
         mesbox(
@@ -394,12 +315,6 @@ constructor(
         exitRaid()
     }
 
-    /**
-     * The player left the raid's map while still in the raid (see the onAreaExit binding).
-     * Area exits are also forced on logout, before onPlayerLogout; that case belongs to the
-     * logout handler (it must keep toa_mycontroller set), so it's skipped here, as in
-     * ToaLobbyScript.
-     */
     private fun ProtectedAccess.leftRaidArea() {
         if (player.pendingLogout || player.loggingOut) return
         if (player.currentRaid == null) return
@@ -407,10 +322,6 @@ constructor(
         ToaRaidManager.leave(player, logout = false)
     }
 
-    /**
-     * Offline_Scape: while you're a ghost the barrier, teleport crystals and exits refuse with
-     * this. Returns `true` if [player] is a ghost.
-     */
     private suspend fun ProtectedAccess.blockedAsGhost(raid: ToaRaid): Boolean {
         if (!raid.isGhost(player)) return false
         mesbox("A mysterious force prevents you from doing that.")
@@ -424,10 +335,8 @@ constructor(
         const val BARRIER = "loc.toa_path_barrier"
         const val BARRIER_STEP = 2
 
-        /** Offline_Scape RewardCrystalAction routes to the crystal's tile + (0, 3). */
         const val CRYSTAL_AP_RANGE = 3
 
-        /** Offline_Scape TOATeleportCrystalAction (45506, 45505, 45866, 45754, 45579). */
         val TELEPORT_CRYSTALS =
             listOf(
                 "loc.zebak_teleport",
@@ -437,7 +346,6 @@ constructor(
                 "loc.wardens_teleport",
             )
 
-        /** Offline_Scape TOAEncounterEntryAction (45397, 45337, 45131, 45500). */
         val PUZZLE_EXITS =
             listOf(
                 "loc.toa_path_crondis_continue",
@@ -446,11 +354,6 @@ constructor(
                 "loc.toa_path_apmeken_continue",
             )
 
-        /**
-         * Offline_Scape TOAExitAction's loc list (45128, 45129, 45453, 45543, 45144, 46055,
-         * 45844). Every room's way out leads to the same abandon dialogue. The capture used
-         * toa_door_exit in the Scabaras room.
-         */
         val EXIT_LOCS =
             listOf(
                 "loc.toa_door_exit",

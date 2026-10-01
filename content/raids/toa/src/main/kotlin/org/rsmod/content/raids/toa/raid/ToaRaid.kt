@@ -20,69 +20,41 @@ import org.rsmod.content.raids.toa.raid.supplies.ToaSupplies
 import org.rsmod.game.entity.Player
 import org.rsmod.game.region.Region
 
-/** One room's finished challenge, for the "Total:" time and the scoreboard later. */
 data class ChallengeResult(val room: ToaRoom, val ticks: Int)
 
-/**
- * One running raid. Port of Offline_Scape TOARaidParty.
- *
- * **One current room.** Like Offline_Scape, the raid has a single [current] room: the one the
- * party is heading into. Moving on builds a fresh instance and makes it current. A room that is
- * no longer current is torn down as soon as the last player leaves it. So the nexus is rebuilt
- * every time you return to it (its doors then show which paths are done), every room entry gets a
- * new `toa_mycontroller` id as in the capture, and a raid never holds more than a couple of
- * regions.
- *
- * @property lobbyParty the party that started it. Members stay in it for the whole raid.
- * @property settings the invocations at the moment the leader entered.
- */
 class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val deps: ToaRaidDeps) {
 
-    /**
-     * Everyone who was in the party when the leader entered, minus leavers, in lobby order. The
-     * index is the HUD slot (Offline_Scape `generateHudPlayerList`).
-     */
     val players: MutableList<Player> = lobbyParty.members.toMutableList()
 
-    /** Which room each player inside is in. Players still in the lobby have no entry. */
     private val locations = HashMap<Player, ToaEncounter>()
 
-    /** Every built, not yet destroyed room: [current] plus old ones that still hold stragglers. */
     private val encounters = ArrayList<ToaEncounter>()
 
-    /** Set once the raid is over (everyone left); stops the HUD refresh. */
     var ended = false
         internal set
 
-    /** The room the party is heading into. */
     var current: ToaEncounter? = null
         private set
 
-    /** The last path the leader chose. Decides where you arrive back in the nexus. */
     var lastPath: ToaPath? = null
 
     val pathsCompleted: MutableList<ToaPath> = ArrayList()
 
-    /** Boss level per path (`ToaPath.ordinal`), shown on the HUD. */
     val pathLevels = IntArray(ToaPath.entries.size)
 
-    /** Whether the one-off Pathseeker/finder/master levels have been added. */
     var pathLevelsInitialised = false
 
     val challengeResults: MutableList<ChallengeResult> = ArrayList()
 
-    /** Map cycle the raid timer started at (first path entered), or -1. */
     var startCycle = -1
         private set
 
-    /** Map cycle the raid finished at (second Wardens room beaten), or -1. */
     var endCycle = -1
         private set
 
     var failedTimeLimit = false
         private set
 
-    /** Offline_Scape TOARaidParty: the time-limit invocations. `null` without one. */
     val timeLimitMinutes: Int? =
         when {
             isActive("Walk for It") -> 40
@@ -92,10 +64,6 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
             else -> null
         }
 
-    /**
-     * Offline_Scape TOARaidParty: the attempts invocations, i.e. how many team wipes end the
-     * raid. `null` (none active) means unlimited.
-     */
     val permittedTeamDeaths: Int? =
         when {
             isActive("Try Again") -> 10
@@ -105,30 +73,20 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
             else -> null
         }
 
-    /** Wipes so far: every player in a started room dead at once (Offline_Scape teamDeaths). */
     var teamDeaths = 0
         internal set
 
-    /** Every death and every logout mid-challenge (the "Total deaths" in the messages). */
     var totalDeaths = 0
         internal set
 
-    /** Players who died in a started room and wait as ghosts until it ends or resets. */
     private val ghosts = HashSet<Player>()
 
-    /** Players between their killing hit and their respawn (see ToaDeathScript). */
     private val dying = HashSet<Player>()
 
-    /** Everyone's hidden reward points; members who leave keep theirs. */
     val points = ToaPoints(players)
 
-    /** The Helpful Spirit's offers after 2 and 4 paths. */
     val supplies = ToaSupplies()
 
-    /**
-     * Offline_Scape TOARaidParty.getDamageMultiplier: room hazards hit 0.4% harder per raid level,
-     * capped at 2.5x.
-     */
     val damageMultiplier: Double
         get() = (1.0 + settings.raidLevel * DAMAGE_PER_RAID_LEVEL).coerceAtMost(MAX_DAMAGE_MULTIPLIER)
 
@@ -138,42 +96,26 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     val finished: Boolean
         get() = endCycle >= 0
 
-    /** Whether the invocation called [name] (cache struct param 1160) is on for this raid. */
     fun isActive(name: String): Boolean {
         val invocation = ToaInvocation.ALL.firstOrNull { it.name == name } ?: return false
         return settings.isActive(invocation)
     }
 
-    // ---- Deaths ----
-
     fun isGhost(player: Player): Boolean = player in ghosts
 
     fun isDying(player: Player): Boolean = player in dying
 
-    /** Marks [player] as dying. `false` if they already were: the extra death is ignored. */
     internal fun startDying(player: Player): Boolean = dying.add(player)
 
     internal fun stopDying(player: Player) {
         dying.remove(player)
     }
 
-    /**
-     * Whether the party may retry after [extraWipes] more wipes. With [extraWipes] = 1 this is
-     * "would the next wipe still allow another attempt", which picks the respawn message.
-     */
     fun canRetryAfter(extraWipes: Int = 0): Boolean {
         val permitted = permittedTeamDeaths ?: return true
         return teamDeaths + extraWipes < permitted
     }
 
-    /**
-     * Turns [player] into a ghost (Offline_Scape turnIntoDeadGhost): the toa_player_ghost NPC
-     * model, state 30 on everyone's HUD, and no inventory or equipment tab (capture: both closed
-     * on the respawn tick, reopened when the ghost comes back).
-     *
-     * The overlays are closed and opened directly rather than through `restoreToplevelTabs`,
-     * which is still a stub. Both calls translate the target to the player's gameframe.
-     */
     internal fun makeGhost(player: Player) {
         if (!ghosts.add(player)) return
         player.transmog = ServerCacheManager.getNpc(GHOST_NPC.asRSCM(RSCMType.NPC))
@@ -181,7 +123,6 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
         for ((interf, _) in GHOST_TABS) player.ifCloseOverlay(interf, deps.eventBus)
     }
 
-    /** Undoes [makeGhost]. Safe to call for anyone. */
     internal fun revive(player: Player) {
         if (!ghosts.remove(player)) return
         player.transmog = null
@@ -191,44 +132,26 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
         }
     }
 
-    // ---- Party ----
-
     fun isLeader(player: Player): Boolean = lobbyParty.isLeader(player)
 
     val leaderName: String
         get() = lobbyParty.leader?.displayName ?: lobbyParty.leaderName
 
-    // ---- Where everyone is ----
-
     fun isInside(player: Player): Boolean = player in locations
 
     fun encounterOf(player: Player): ToaEncounter? = locations[player]
 
-    /** Players in [encounter], in HUD order. */
     fun playersIn(encounter: ToaEncounter): List<Player> =
         players.filter { locations[it] === encounter }
 
-    /**
-     * Players who aren't in [current]: still in the lobby or in an older room. Offline_Scape
-     * `needsAbandonRequest` asks the leader about them before moving on.
-     */
     fun stragglers(): List<Player> {
         val current = current ?: return emptyList()
         return players.filter { locations[it] !== current }
     }
 
-    // ---- Rooms ----
-
-    /**
-     * Builds [room] as a new instance and makes it [current]. The previous current room is torn
-     * down right away if nobody is in it.
-     *
-     * @return `null` when the region pool is full; nothing has changed then.
-     */
     fun advanceTo(room: ToaRoom): ToaEncounter? {
         val region = deps.regionRepo.add(room.template) ?: return null
-        // Protected so the repository doesn't reclaim it while it is briefly empty, e.g. before
-        // the first player has arrived. Unprotected again in ToaEncounter.destroy().
+
         deps.regionRepo.protect(region)
 
         val encounter = createEncounter(room, region, ToaRaidManager.nextControllerId())
@@ -248,11 +171,10 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
             room == ToaRoom.CRONDIS_PUZZLE -> CrondisPuzzleEncounter(this, room, region, controllerId)
             room == ToaRoom.CRONDIS_BOSS -> ZebakEncounter(this, room, region, controllerId)
             room.kind == ToaRoom.Kind.BOSS -> ToaBossEncounter(this, room, region, controllerId)
-            // Rooms without content yet: plain rooms until Phase B reaches them.
+
             else -> ToaEncounter(this, room, region, controllerId)
         }
 
-    /** Moves [player] into [encounter]. Use [ToaRaidManager.moveTo], which also sends the vars. */
     internal fun place(player: Player, encounter: ToaEncounter) {
         val previous = locations.put(player, encounter)
         if (previous === encounter) return
@@ -263,7 +185,6 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
         encounter.onEnter(player)
     }
 
-    /** Takes [player] out of whatever room they are in. */
     internal fun remove(player: Player) {
         val previous = locations.remove(player) ?: return
         previous.onLeave(player)
@@ -276,7 +197,6 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
         encounters.remove(encounter)
     }
 
-    /** Tears down every room. Called once when the raid ends. */
     internal fun destroyAll() {
         for (encounter in encounters) {
             encounter.destroy()
@@ -286,13 +206,10 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
         current = null
     }
 
-    // ---- Timer ----
-
     internal fun startTimer(cycle: Int) {
         if (!timerStarted) startCycle = cycle
     }
 
-    /** Offline_Scape `setCompletion`: stops the clock and checks the time limit. */
     internal fun finish(cycle: Int) {
         if (finished) return
         endCycle = cycle
@@ -300,7 +217,6 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
         failedTimeLimit = elapsedTicks(cycle) > limit * TICKS_PER_MINUTE
     }
 
-    /** Raid timer value at [cycle]: 0 before the first path, frozen once finished. */
     fun elapsedTicks(cycle: Int): Int =
         when {
             !timerStarted -> 0
@@ -311,10 +227,8 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     fun totalChallengeTicks(): Int = challengeResults.sumOf { it.ticks }
 
     companion object {
-        /** Offline_Scape GHOST_PLAYER_NPC_ID 11695. */
         private const val GHOST_NPC = "npc.toa_player_ghost"
 
-        /** The tabs a ghost loses: interface to its gameframe slot. */
         private val GHOST_TABS =
             listOf(
                 "interface.inventory" to "component.toplevel_osrs_stretch:side3",
@@ -324,13 +238,8 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
         private const val DAMAGE_PER_RAID_LEVEL = 0.004
         private const val MAX_DAMAGE_MULTIPLIER = 2.5
 
-        /** 100 ticks of 600 ms. */
         const val TICKS_PER_MINUTE = 100
 
-        /**
-         * "m:ss", or "h:mm:ss" past an hour. Offline_Scape's `formatTime` printed "1:" for a whole
-         * minute; this always prints the seconds.
-         */
         fun formatTicks(ticks: Int): String {
             val totalSeconds = ticks.coerceAtLeast(0) * 3 / 5
             val hours = totalSeconds / 3600

@@ -28,24 +28,6 @@ import org.rsmod.objtx.isOk
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The Helpful Spirit ([ToaSupplies]) and the supplies bag it hands out (OSRS Wiki: Supplies
- * (Tombs of Amascut)).
- *
- * - Claim opens interface 777 (`toa_midraid_loot`). Its onload script draws the three bundles
- *   from invs 807-809, so those are sent first.
- * - Choosing a bundle puts its items in the bag's inv (810, `toa_midraidloot_bag`) and a bag in
- *   the inventory, or adds to the bag already held.
- * - The bag: Open (interface 778 over the inventory), Withdraw 1 (the first item), Withdraw All
- *   (until the inventory is full), Resupply (tops up partly used supplies in the inventory from
- *   the bag, taking nothing new out). Destroy is the engine's own.
- * - In 778, each item has Withdraw-1, -5, -All (of that kind, from the clicked slot on), Drop and
- *   Examine, and can be dragged to another slot.
- * - A supply used on the bag goes into its first empty slot.
- * - When the last item leaves, "The bag disintegrates."
- *
- * The messages the wiki doesn't quote are Offline_Scape's.
- */
 class ToaSupplyScript : PluginScript() {
     private val Player.bag: Inventory
         get() = invMap.getOrPut(BAG_INV)
@@ -72,8 +54,6 @@ class ToaSupplyScript : PluginScript() {
         onIfModalDrag(BAG_ITEMS) { rearrange(it) }
     }
 
-    // ---- The spirit ----
-
     private fun ProtectedAccess.claim() {
         val supplies = player.currentRaid?.supplies ?: return
         if (!supplies.canClaim(player)) {
@@ -84,7 +64,6 @@ class ToaSupplyScript : PluginScript() {
             val inv = player.invMap.getOrPut(BUNDLE_INVS[index])
             for (slot in inv.indices) {
                 val stack = bundle.getOrNull(slot)
-                // One slot per kind with its count, as the bundle screen shows it.
                 inv[slot] = stack?.let { InvObj(it.supply.obj(it.supply.maxDoses), it.count) }
             }
             UpdateInventory.updateInvFull(player, inv)
@@ -120,8 +99,6 @@ class ToaSupplyScript : PluginScript() {
         supplies.claimed(player)
     }
 
-    // ---- The bag (item ops) ----
-
     private fun ProtectedAccess.openBag() {
         player.startInvTransmit(player.bag)
         ifOpenSide(BAG_IF)
@@ -150,10 +127,6 @@ class ToaSupplyScript : PluginScript() {
         }
     }
 
-    /**
-     * Tops up each partly used supply in the inventory with doses from the bag, taking the bag's
-     * smallest items of that kind first.
-     */
     private fun ProtectedAccess.resupply() {
         val bag = player.bag
         for (slot in inv.indices) {
@@ -175,8 +148,6 @@ class ToaSupplyScript : PluginScript() {
         disintegrateIfEmpty()
     }
 
-    // ---- The bag (interface 778) ----
-
     private suspend fun ProtectedAccess.bagButton(event: IfModalButton) {
         val bag = player.bag
         val clicked = bag[event.comsub] ?: return
@@ -193,7 +164,6 @@ class ToaSupplyScript : PluginScript() {
         }
     }
 
-    /** Up to [limit] items like the one in [from], starting at that slot. */
     private fun ProtectedAccess.withdrawKind(from: Int, objId: Int, limit: Int) {
         val bag = player.bag
         var taken = 0
@@ -215,12 +185,6 @@ class ToaSupplyScript : PluginScript() {
         bag[to] = moved
     }
 
-    // ---- Shared ----
-
-    /**
-     * Moves one item from the bag into the inventory. With a full inventory it only works for the
-     * bag's last item, which then takes the bag's own slot (wiki).
-     */
     private fun ProtectedAccess.withdraw(slot: Int): Boolean {
         val bag = player.bag
         val obj = bag[slot] ?: return false

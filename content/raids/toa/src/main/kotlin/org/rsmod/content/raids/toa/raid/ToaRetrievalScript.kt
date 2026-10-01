@@ -22,16 +22,6 @@ import org.rsmod.objtx.isOk
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The lobby's retrieval chest (loc 46078, "Claim") and interface 602, gravestone_retrieval. Port
- * of Offline_Scape TOARetrievalChestAction and ItemRetrievalServiceInterface.
- *
- * The interface draws itself from client vars (cache script gravestone_retrieval_unlockstatus):
- * - varp if1 is the service: 39 = ToA locked, 38 = ToA unlocked (enum_1753 gives the title);
- * - a locked ToA chest reads its fee from varc gravestone_transmit_fee (enum_1757 gives -1), which
- *   only client script 3478 (gravestone_transmit_data) sets;
- * - varp if3 = 1 would add Bank-All. Offline_Scape never set it, so neither do we.
- */
 class ToaRetrievalScript @Inject constructor(private val prices: MarketPrices) : PluginScript() {
     private var Player.retrievalType by intVarp("varp.if1")
 
@@ -49,10 +39,10 @@ class ToaRetrievalScript @Inject constructor(private val prices: MarketPrices) :
             mesbox("There is nothing to collect.")
             return
         }
-        // The fee follows today's prices; one that has dropped to 0 unlocks the chest.
+
         val fee = if (player.retrievalLocked == 1) ToaRetrieval.fee(player, prices) else 0
         if (fee == 0) player.retrievalLocked = 0
-        // Before the interface opens: its onload reads them.
+
         player.runClientScript(SCRIPT_TRANSMIT_DATA, fee, COFFER)
         player.retrievalType = if (fee > 0) TYPE_LOCKED else TYPE_UNLOCKED
         invTransmit(chest)
@@ -64,7 +54,6 @@ class ToaRetrievalScript @Inject constructor(private val prices: MarketPrices) :
         if (player.retrievalLocked == 1) unlock() else takeAll()
     }
 
-    /** Coins from the inventory first, then the bank (Offline_Scape). */
     private fun ProtectedAccess.unlock() {
         val fee = ToaRetrieval.fee(player, prices)
         val carried = invTotal(inv, COINS)
@@ -122,7 +111,6 @@ class ToaRetrievalScript @Inject constructor(private val prices: MarketPrices) :
         mes("All the contents of the retrieval service have been discarded.")
     }
 
-    /** Take-All (every stack of that item), Value and Examine. */
     private fun ProtectedAccess.itemOp(event: IfModalButton) {
         val chest = player.retrievalChest
         val obj = chest[event.comsub] ?: return
@@ -172,15 +160,9 @@ class ToaRetrievalScript @Inject constructor(private val prices: MarketPrices) :
         const val BUTTON = "component.gravestone_retrieval:button"
         const val DISCARD = "component.gravestone_retrieval:discard"
         const val COINS = "obj.coins"
-
-        /** enum_1753: the ToA service, locked and unlocked. */
         const val TYPE_LOCKED = 39
         const val TYPE_UNLOCKED = 38
-
-        /** gravestone_transmit_data(fee, coffer). */
         const val SCRIPT_TRANSMIT_DATA = 3478
-
-        /** Death's Coffer isn't used for this service (enum_1756 gives coins, not the coffer). */
         const val COFFER = 0
     }
 }

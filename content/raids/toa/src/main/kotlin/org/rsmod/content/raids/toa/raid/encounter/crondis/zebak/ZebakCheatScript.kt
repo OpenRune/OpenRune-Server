@@ -8,11 +8,6 @@ import org.rsmod.game.cheat.Cheat
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * `::zebak <clouds|barrage|roar|waves|enrage>` triggers one of Zebak's mechanics, so each can be
- * tested without waiting for its timer or hp threshold. Blood magic works without Not Just a Head;
- * a special starts on his next attack.
- */
 class ZebakCheatScript : PluginScript() {
     override fun ScriptContext.startup() {
         onCommand("zebak") {

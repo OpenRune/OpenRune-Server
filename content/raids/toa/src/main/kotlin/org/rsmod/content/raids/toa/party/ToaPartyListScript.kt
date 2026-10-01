@@ -29,30 +29,19 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-// ---- Client scripts ----
 private const val CS_PARTYLIST_ADDLINE = 6601
 private const val CS_ADD_MEMBER = 6722
 private const val CS_ADD_APPLICANT = 6727
 private const val CS_MASTER_UPDATE = 6729
-
-// ---- Varps / Varbits ----
 private const val VARP_CURRENT_PARTY = "varp.toa_mycontroller"
 private const val VARBIT_FRIENDS_FILTER = "varbit.toa_partylist_filter"
 private const val VARBIT_PARTY_STATUS = "varbit.toa_client_partystatus"
 private const val VARBIT_PRESET_SELECTED = "varbit.toa_preset_selected"
-
-// ---- Sounds ----
 private const val SYNTH_INVOCATION_ON = 6589
 private const val SYNTH_INVOCATION_OFF = 6588
 private const val SYNTH_PRESET_SAVE_LOAD = 2655
-
-// ---- Invocation presets ----
-// 5 slots x 3 bitmaps, vanilla varps 3680-3694:
-// varp.toa_invocations_preset_1a, _1b, _1c, _2a ... _5c
 private const val PRESET_SLOTS = 5
 private val PRESET_PARTS = listOf("a", "b", "c")
-
-// ---- Invocation categories where only one invocation may be active ----
 private val SINGLE_SELECT_CATEGORIES = setOf(
     ToaInvocationCategory.ATTEMPTS,
     ToaInvocationCategory.TIME_LIMIT,
@@ -60,11 +49,6 @@ private val SINGLE_SELECT_CATEGORIES = setOf(
     ToaInvocationCategory.PATH_LEVEL,
 )
 
-/**
- * @Singleton because [ToaRaidScript][org.rsmod.content.raids.toa.raid.ToaRaidScript]
- * injects this script to open the board from the raid entrance ("Form or join a
- * party."). Without it Guice would build a second, separate instance.
- */
 @Singleton
 class ToaPartyListScript @Inject constructor(
     private val protectedAccess: ProtectedAccessLauncher,
@@ -82,21 +66,14 @@ class ToaPartyListScript @Inject constructor(
             partyListLoop()
         }
         onPlayerLogout {
-            ToaPartyManager.onLogout(player) // also refreshes the other party members' screens
+            ToaPartyManager.onLogout(player)
         }
         onPlayerLogin {
-            // OpenRune saves every varp by default, so without this a player who
-            // logged out while in a party would log back in still flagged as in one.
             player.currentPartyVar = -1
             player.clientPartyStatusVar = 0
         }
     }
 
-    // ==================================================================
-    // Interface 772 — Party list loop
-    // ==================================================================
-
-    /** Opens the party board (772), as if the grouping board was clicked. */
     internal suspend fun ProtectedAccess.openPartyList() {
         partyListLoop()
     }
@@ -113,7 +90,7 @@ class ToaPartyListScript @Inject constructor(
             when (input.component) {
                 "component.toa_partylist:contents" -> {
                     when (input.subcomponent) {
-                        0 -> continue // Refresh
+                        0 -> continue
                         1 -> {
                             val party = handleMakeParty() ?: continue
                             partyDetailsLoop()
@@ -189,7 +166,7 @@ class ToaPartyListScript @Inject constructor(
         sb.append(settings.activeInvocations).append('|')
         sb.append(settings.raidLevel).append('|')
         sb.append(settings.mode).append('|')
-        sb.append(mapClock - party.creationCycle) // age in ticks, last field: no trailing pipe
+        sb.append(mapClock - party.creationCycle)
 
         return sb.toString()
     }
@@ -211,7 +188,6 @@ class ToaPartyListScript @Inject constructor(
         }
 
         val settings = ToaPartyManager.loadPersonalSettings(player)
-        // createParty also updates the lobby HUD (773) names list.
         val party = ToaPartyManager.createParty(player, settings, mapClock) ?: return null
         player.viewingParty = party
         player.currentTab = 1
@@ -232,21 +208,6 @@ class ToaPartyListScript @Inject constructor(
         return selectedParty
     }
 
-    // ==================================================================
-    // Interface 774 — Party details loop
-    // ==================================================================
-
-    /**
-     * Main loop for the party details interface (774).
-     * Returns when Back is clicked or the party becomes invalid,
-     * sending the player back to the list loop.
-     *
-     * Sub-index mapping (774:1 pausebuttons):
-     *   0=Back, 1=Refresh, 2=Unblock, 3=Set completions,
-     *   4=Action, 5=Clear invocations, 6=Load preset, 7=Save preset,
-     *   8-11=Tabs, 12-19=Member list, 36-51=Applicant list,
-     *   52-97=Invocation toggles
-     */
     private suspend fun ProtectedAccess.partyDetailsLoop() {
         while (true) {
             val party = player.viewingParty
@@ -259,12 +220,12 @@ class ToaPartyListScript @Inject constructor(
 
             if (input.component == "component.toa_partydetails:pausebuttons") {
                 when (input.subcomponent) {
-                    0 -> return // Back
-                    1 -> continue // Refresh
+                    0 -> return
+                    1 -> continue
                     2 -> handleUnblock(party)
                     3 -> handleSetCompletions(party)
                     4 -> {
-                        if (!handleActionButton(party)) return // leave/disband → back to list
+                        if (!handleActionButton(party)) return
                     }
                     5 -> handleClearInvocations(party)
                     6 -> handleLoadPreset(party)
@@ -282,19 +243,15 @@ class ToaPartyListScript @Inject constructor(
                 handlePresetSelect(party, input.subcomponent)
             }
 
-            // Remember the leader's latest settings for their next party.
             if (party.isLeader(player)) {
                 ToaPartyManager.savePersonalSettings(player, party.settings)
             }
 
-            // Show the change to everyone else in the party. Tab switches and
-            // preset slot selection only affect this player's own screen.
             val isPersonalOnly = input.component != "component.toa_partydetails:pausebuttons" ||
                 input.subcomponent in 8..11
             if (!isPersonalOnly) {
                 ToaPartyManager.refreshViewers(party, exclude = player)
             }
-            // Loop back → reopens and repopulates 774
         }
     }
 
@@ -302,8 +259,6 @@ class ToaPartyListScript @Inject constructor(
 
         ifOpenMainModal("interface.toa_partydetails", transparency = -2)
 
-        // First arg is the viewer's view value: the CS2 only makes member rows
-        // hoverable/clickable (kick) when it is VIEW_LEADER.
         val viewValue = ToaPartyManager.resolveViewingValue(player, party)
         for (i in 0 until ToaLobbyParty.MAX_PARTY_MEMBERS) {
             if (i >= party.members.size) {
@@ -331,9 +286,6 @@ class ToaPartyListScript @Inject constructor(
             bitmaps[2],
         )
 
-        // Vanilla enables these for EVERY viewer, not just the leader. Without them the
-        // server silently drops the click (Apply, Leave, Back, Refresh, the client's own
-        // 10-second auto-refresh...). Leader-only actions are checked in their handlers.
         ifSetEvents(
             "component.toa_partydetails:pausebuttons",
             0..97,
@@ -342,17 +294,10 @@ class ToaPartyListScript @Inject constructor(
         ifSetEvents(
             "component.toa_partydetails:presets_button_click",
             0..5,
-            IfEvent.PauseButton, // TODO: vanilla uses Op1+Op2 for select/clear
+            IfEvent.PauseButton,
         )
     }
 
-    // ==================================================================
-    // Action button (context-sensitive)
-    // ==================================================================
-
-    /**
-     * Returns `true` to stay in the details loop, `false` to exit to list.
-     */
     private suspend fun ProtectedAccess.handleActionButton(party: ToaLobbyParty): Boolean {
         return when (ToaPartyManager.resolveViewingValue(player, party)) {
             VIEW_NON_MEMBER -> handleApply(party)
@@ -364,9 +309,6 @@ class ToaPartyListScript @Inject constructor(
         }
     }
 
-    /**
-     * Returns `true` to stay in details, `false` to exit to list.
-     */
     private suspend fun ProtectedAccess.handleApply(party: ToaLobbyParty): Boolean {
         val previouslyApplied = player.appliedParty
         if (previouslyApplied != null) {
@@ -419,7 +361,6 @@ class ToaPartyListScript @Inject constructor(
             applicant.mes("The party to which you were applying has disbanded.")
         }
 
-        // Their loops see the party has no leader and drop back to the list.
         for (other in result.formerMembers + result.formerApplicants + result.formerBlocked) {
             if (other != player) ToaPartyManager.refreshDetailsView(other)
         }
@@ -432,13 +373,6 @@ class ToaPartyListScript @Inject constructor(
         }
     }
 
-    // ==================================================================
-    // Leader-only: Member management
-    // ==================================================================
-
-    /**
-     * Returns `true` to stay in details, `false` to exit to list.
-     */
     private fun ProtectedAccess.handleMemberClick(party: ToaLobbyParty, comsub: Int): Boolean {
         if (!party.isLeader(player)) return true
         if (comsub < 0 || comsub >= party.members.size) return true
@@ -455,14 +389,9 @@ class ToaPartyListScript @Inject constructor(
         return true
     }
 
-    // ==================================================================
-    // Leader-only: Applicant management
-    // ==================================================================
-
     private fun ProtectedAccess.handleApplicantClick(party: ToaLobbyParty, comsub: Int) {
         if (!party.isLeader(player)) return
 
-        // comsub 0..7 = accept, 8..15 = decline
         val isAccept = comsub < 8
         val applicantIndex = if (isAccept) comsub else comsub - 8
 
@@ -489,10 +418,6 @@ class ToaPartyListScript @Inject constructor(
         }
     }
 
-    // ==================================================================
-    // Leader-only: Invocation toggling
-    // ==================================================================
-
     private fun ProtectedAccess.handleInvocationToggle(party: ToaLobbyParty, comsub: Int) {
         if (!party.isLeader(player)) return
 
@@ -510,11 +435,6 @@ class ToaPartyListScript @Inject constructor(
         }
     }
 
-    /**
-     * Disables an invocation and, recursively, every active invocation
-     * that requires it (cache param 1346). Handles chains such as
-     * Overclocked → Overclocked 2 → Insanity.
-     */
     private fun deactivateWithDependents(settings: ToaPartySettings, invocation: ToaInvocation) {
         for (dependent in invocation.dependents) {
             if (settings.isActive(dependent)) {
@@ -524,10 +444,6 @@ class ToaPartyListScript @Inject constructor(
         settings.unflag(invocation)
     }
 
-    /**
-     * Enables an invocation. Returns `false` (and tells the player why)
-     * if its prerequisite isn't active yet.
-     */
     private fun ProtectedAccess.tryActivate(settings: ToaPartySettings, invocation: ToaInvocation): Boolean {
         val prerequisite = invocation.prerequisite
         if (prerequisite != null && !settings.isActive(prerequisite)) {
@@ -543,10 +459,6 @@ class ToaPartyListScript @Inject constructor(
         settings.flag(invocation)
         return true
     }
-
-    // ==================================================================
-    // Leader-only: Invocation clear / presets
-    // ==================================================================
 
     private suspend fun ProtectedAccess.handleClearInvocations(party: ToaLobbyParty) {
         if (!party.isLeader(player)) return
@@ -611,28 +523,20 @@ class ToaPartyListScript @Inject constructor(
         player.mes("Your preset has been saved.")
         soundSynth(SYNTH_PRESET_SAVE_LOAD)
     }
-
-    /** Varp name for one bitmap of a preset, e.g. slot 0, part 2 → varp.toa_invocations_preset_1c */
     private fun presetVarp(slot: Int, part: Int): String =
         "varp.toa_invocations_preset_${slot + 1}${PRESET_PARTS[part]}"
 
-    /** Reads all three bitmaps of a preset slot (0-based). */
     private fun ProtectedAccess.readPreset(slot: Int): IntArray {
         require(slot in 0 until PRESET_SLOTS) { "Invalid preset slot $slot" }
         return IntArray(PRESET_PARTS.size) { part -> vars[presetVarp(slot, part)] }
     }
 
-    /** Writes all three bitmaps of a preset slot (0-based). */
     private fun ProtectedAccess.writePreset(slot: Int, bitmaps: IntArray) {
         require(slot in 0 until PRESET_SLOTS) { "Invalid preset slot $slot" }
         for (part in PRESET_PARTS.indices) {
             vars[presetVarp(slot, part)] = bitmaps[part]
         }
     }
-
-    // ==================================================================
-    // Leader-only: Other
-    // ==================================================================
 
     private fun ProtectedAccess.handleUnblock(party: ToaLobbyParty) {
         if (!party.isLeader(player)) return
@@ -647,15 +551,6 @@ class ToaPartyListScript @Inject constructor(
         party.settings.kcRequirement = value.coerceIn(0, 100)
     }
 
-    // ==================================================================
-    // Shared helpers
-    // ==================================================================
-
-    /**
-     * Vanilla format: name|combat|7 stats|entry / normal / expert KC (no trailing pipe).
-     * No colour tags: the CS2 colours the viewer's own row white itself by comparing
-     * the name to chat_playername, and a tag would break that comparison.
-     */
     private fun buildStatString(target: Player): String {
         val sb = StringBuilder()
         sb.append(target.displayName).append('|')

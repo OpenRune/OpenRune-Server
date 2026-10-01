@@ -11,11 +11,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The damage varbits. Capture: every damaging hit a player takes or deals during a challenge adds
- * to them, in puzzles too. The totals run for the whole raid ([resetAll] when leaving it); the
- * `_current` pair restarts at every challenge start.
- */
 internal object ToaDamage {
     fun addTaken(player: Player, damage: Int) {
         player.taken = (player.taken + damage).coerceAtMost(TOTAL_MAX)
@@ -41,15 +36,10 @@ internal object ToaDamage {
     fun counts(player: Player): Boolean =
         player.currentRaid?.encounterOf(player)?.stage == ToaStage.STARTED
 
-    /** Their bit widths (osrs-dumps config/dump.varbit). */
     private const val TOTAL_MAX = 65_535
     private const val CURRENT_MAX = 32_767
 }
 
-/**
- * Damage dealt: the npc hit processor reports every player hit on any npc, already capped at the
- * npc's remaining hitpoints. It also earns room points ([ToaPoints]) at the room's multiplier.
- */
 class ToaDamageContributor @Inject constructor() : NpcDamageContributor {
     override fun onPlayerDamageNpc(npc: Npc, source: Player, damage: Int) {
         if (!ToaDamage.counts(source)) return
