@@ -93,7 +93,7 @@ class EffectInterpreter internal constructor(
                     t.soundSynth(effect.synth, effect.loops, effect.delay)
                 }
             }
-            is Effect.Spotanim -> npc.spotanim(effect.spot, effect.delay, effect.height)
+            is Effect.Spotanim -> npc.spotanim(effect.spot, effect.delay, effect.height, effect.slot)
             is Effect.MapSpotanim -> {
                 val coord = resolveTile(effect.at)
                 val spot = SpotanimType(effect.spot.asRSCM(RSCMType.SPOTANIM))
@@ -143,6 +143,9 @@ class EffectInterpreter internal constructor(
             is Effect.ClearHeadbar -> npc.removeHeadbar(effect.headbar.asRSCM(RSCMType.HEADBAR))
             is Effect.HeadIcon -> npc.setHeadIcon(effect.slot, effect.graphic, effect.index)
             is Effect.ClearHeadIcon -> npc.clearHeadIcon(effect.slot)
+            is Effect.LockMovement ->
+                npc.movementLocked = effect.locked || encounter.currentPhase?.lockMovement == true
+            is Effect.HealSelf -> npc.heal(effect.amount, showHitsplat = true)
 
             is Effect.Teleport -> {
                 if (npc.isValidTarget()) {

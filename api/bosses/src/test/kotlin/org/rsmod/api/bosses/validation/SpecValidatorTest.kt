@@ -194,6 +194,12 @@ class SpecValidatorTest {
     }
 
     @Test
+    fun `healSelf amount must be positive`() {
+        assertEquals(emptyList<String>(), errorsFor(healSelf(5)))
+        assertHasError(errorsFor(healSelf(0)), "HealSelf amount '0'")
+    }
+
+    @Test
     fun `headbar and head icon effects are range checked`() {
         val valid =
             sequence(

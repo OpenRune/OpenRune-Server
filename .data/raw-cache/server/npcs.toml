@@ -1737,7 +1737,9 @@ inherit = "npc.abyssalsire_sire_wandering"
 id = "npc.amoxliatl"
 inherit = "npc.amoxliatl"
 huntMode = 8
-huntRange = 8
+huntRange = 20
+wanderRange = 5
+maxRange = 20
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=30

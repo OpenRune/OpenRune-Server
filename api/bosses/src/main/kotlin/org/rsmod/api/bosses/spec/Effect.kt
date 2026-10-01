@@ -49,7 +49,7 @@ sealed interface Effect {
         val loops: Int = 1,
         val delay: Int = 0,
     ) : Effect
-    data class Spotanim(val spot: String, val height: Int = 0, val delay: Int = 0) : Effect
+    data class Spotanim(val spot: String, val height: Int = 0, val delay: Int = 0, val slot: Int = 0) : Effect
     data class MapSpotanim(val spot: String, val at: TargetExpr.Single, val height: Int = 0, val delay: Int = 0) : Effect
     data class Broadcast(val text: String, val radius: Int = 15) : Effect
 
@@ -193,6 +193,15 @@ sealed interface Effect {
     data class HeadIcon(val slot: Int, val graphic: Int, val index: Int) : Effect
 
     data class ClearHeadIcon(val slot: Int) : Effect
+
+    /**
+     * Locks the caster in place ([locked]) or hands movement back to the current phase's
+     * [PhaseSpec.lockMovement]. Any phase transition also resets it to the new phase's setting.
+     */
+    data class LockMovement(val locked: Boolean) : Effect
+
+    /** Heals the caster by [amount], capped at its max hp, with a heal hitsplat. */
+    data class HealSelf(val amount: Int) : Effect
 
     data class Teleport(val to: TargetExpr.Single) : Effect
     data object FaceTarget : Effect

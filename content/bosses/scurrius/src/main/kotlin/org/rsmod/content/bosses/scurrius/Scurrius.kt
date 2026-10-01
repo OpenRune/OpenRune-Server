@@ -9,14 +9,12 @@ import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.runtime.encounter
-import org.rsmod.api.bosses.runtime.repeatTick
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.combat.formulas.attributes.CombatMeleeAttributes
 import org.rsmod.api.combat.formulas.attributes.CombatRangedAttributes
 import org.rsmod.api.combat.formulas.attributes.collector.CombatMeleeAttributeCollector
 import org.rsmod.api.combat.formulas.attributes.collector.CombatRangedAttributeCollector
 import org.rsmod.api.npc.apPlayer2
-import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.isInCombat
@@ -66,22 +64,6 @@ constructor(
         npc.apRangeOverride = null
         npc.apRequiresLineOfSight = true
         npc.opPlayer2(target, aiPlayerInteractions)
-    }
-
-    private fun startFeedingHeal(npc: Npc) {
-        deps.repeatTick(
-            ticks = FEEDING_DURATION,
-            onTick = { remaining ->
-                if (npc.hitpoints <= 0 || deps.encounter(npc).currentPhaseName != "feeding") {
-                    return@repeatTick false
-                }
-                val elapsed = FEEDING_DURATION - remaining
-                if (elapsed > 0 && elapsed % HEAL_INTERVAL == 0) {
-                    npc.heal(HEAL_AMOUNT, showHitsplat = true)
-                }
-                true
-            },
-        )
     }
 
     private suspend fun ProtectedAccess.eatFromFoodPile() {
@@ -136,7 +118,6 @@ constructor(
                 engageRanged(npc, target)
                 // Lock facing on cheese pile
                 npc.lockFacing(CoordGrid(npc.coords.level, npc.coords.mx, npc.coords.mz, pile.first, pile.second))
-                startFeedingHeal(npc)
             }
         }
 
@@ -144,7 +125,6 @@ constructor(
             // Force walk to center of arena
             val centreTile = CoordGrid(npc.coords.level, npc.coords.mx, npc.coords.mz, 33, 10)
             npc.resetFaceEntity()
-            npc.movementLocked = false
             npc.ignoreCombatInteractions = true
             npc.walkTo(routeFactory, centreTile) {
                 npc.ignoreCombatInteractions = false
@@ -273,6 +253,7 @@ constructor(
                 exitAfter = FEEDING_DURATION,
                 nextPhase = "combat",
             ) {
+                every(HEAL_INTERVAL, healSelf(HEAL_AMOUNT))
                 weightedSelectorRandom {
                     +random(feedingMagic, weight = 4)
                     +random(feedingRanged, weight = 4)

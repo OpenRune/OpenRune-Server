@@ -20,8 +20,8 @@ fun resetAnim(): Effect = Effect.ResetAnim
 fun forceNext(ability: AbilityRef): Effect = Effect.ForceNext(ability.name)
 
 /** Plays [spot] on the caster (the boss npc itself), not on the target. */
-fun spotanim(spot: String, height: Int = 0, delay: Int = 0): Effect =
-    Effect.Spotanim(spot, height, delay)
+fun spotanim(spot: String, height: Int = 0, delay: Int = 0, slot: Int = 0): Effect =
+    Effect.Spotanim(spot, height, delay, slot)
 fun say(text: String): Effect = Effect.Say(text)
 fun sound(synth: String, radius: Int = 10, at: TargetExpr.Single? = null, delay: Int = 0): Effect =
     Effect.Sound(synth, radius, at, delay)
@@ -199,6 +199,12 @@ fun clearHeadbar(headbar: String): Effect = Effect.ClearHeadbar(headbar)
 fun headIcon(slot: Int, graphic: Int, index: Int): Effect = Effect.HeadIcon(slot, graphic, index)
 
 fun clearHeadIcon(slot: Int): Effect = Effect.ClearHeadIcon(slot)
+
+fun lockMovement(): Effect = Effect.LockMovement(true)
+
+fun unlockMovement(): Effect = Effect.LockMovement(false)
+
+fun healSelf(amount: Int): Effect = Effect.HealSelf(amount)
 
 fun area(sw: TargetExpr.Single, ne: TargetExpr.Single): Area = Area(sw, ne)
 
