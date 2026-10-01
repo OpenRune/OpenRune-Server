@@ -34,17 +34,10 @@ internal fun WorldRepository.projectile(
     projAnim(ProjAnim.fromBoundsToCoord(Bounds(from), to, spot.asRSCM(RSCMType.SPOTANIM), type))
 }
 
-/** Homes onto [to]. */
 internal fun WorldRepository.projectile(spot: String, from: CoordGrid, to: Player, type: String) {
     projAnim(ProjAnim.fromBoundsToPlayer(Bounds(from), to, spot.asRSCM(RSCMType.SPOTANIM), type))
 }
 
-/**
- * A lob from Zebak's mouth (the specials' acid, boulders and jugs). Capture: it lands 30 + 30 per
- * tile of distance client cycles after it's thrown, at most 150, so near throws use
- * [ZebakProjs.LOB] (30 per tile) and the rest [ZebakProjs.LOB_FAR] (a flat 150). Returns the ticks
- * until it lands.
- */
 internal fun WorldRepository.lob(spot: String, from: CoordGrid, to: CoordGrid): Int {
     val tiles = min(from.chebyshevDistance(to), LOB_MAX_TILES)
     projectile(spot, from, to, if (tiles < LOB_MAX_TILES) ZebakProjs.LOB else ZebakProjs.LOB_FAR)
@@ -53,7 +46,6 @@ internal fun WorldRepository.lob(spot: String, from: CoordGrid, to: CoordGrid): 
 
 private const val LOB_MAX_TILES = 4
 
-/** What lands on which map cycle: each lob's object appears when it lands. */
 internal class ZebakLandings {
     private val byCycle = HashMap<Int, MutableList<() -> Unit>>()
 
@@ -68,7 +60,6 @@ internal class ZebakLandings {
     }
 }
 
-/** Cardinally next to this npc's square, same level. */
 internal fun Npc.isBeside(player: Player): Boolean {
     val c = player.coords
     if (c.level != coords.level) return false
@@ -78,12 +69,10 @@ internal fun Npc.isBeside(player: Player): Boolean {
         (c.z in coords.z..maxZ && (c.x == coords.x - 1 || c.x == maxX + 1))
 }
 
-/** Lands next tick, ignores prayer. */
 internal fun Player.hitTypeless(damage: Int) {
     queueHit(delay = 1, type = HitType.Typeless, damage = damage, modifier = NoopPlayerHitModifier)
 }
 
-/** An `em_face_*` angle for facing along (dx, dz). */
 internal fun faceAngle(dx: Int, dz: Int): Int =
     when {
         dx == 0 && dz > 0 -> Constants.em_face_north

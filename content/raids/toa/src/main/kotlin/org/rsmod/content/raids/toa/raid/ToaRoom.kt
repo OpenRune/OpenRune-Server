@@ -5,24 +5,6 @@ import org.rsmod.api.repo.region.RegionStaticTemplate
 import org.rsmod.api.repo.region.RegionTemplate
 import org.rsmod.map.CoordGrid
 
-/**
- * The raid's rooms and their static data. Each room is one map square (8x8 zones) of the static
- * map, copied into its own small instance region (all 4 levels unless [levels] says otherwise).
- *
- * Source: Offline_Scape EncounterType (zone coords, spawns, challenge areas, Osmumten tile).
- * Deviations from it are marked "Capture:".
- *
- * All coordinates here are STATIC. Convert with [ToaEncounter.coords] before using them in an
- * instance.
- *
- * @property spawn where players arrive, randomised by up to [spawnSpreadX] / [spawnSpreadZ].
- * @property challengeSpawn where the teleport crystal puts you (inside the challenge area).
- * @property challengeMin south-west corner of the challenge area (x/z only, inclusive).
- * @property challengeMax north-east corner of the challenge area (x/z only, inclusive).
- * @property osmumtenTile where Osmumten appears when a boss is beaten.
- * @property challengeName used in "Challenge started/complete: ..." messages.
- * @property levels which floors of the map square the instance copies. All four by default.
- */
 enum class ToaRoom(
     val zoneX: Int,
     val zoneZ: Int,
@@ -62,11 +44,9 @@ enum class ToaRoom(
         challengeMin = CoordGrid(3924, 5151, 1),
         challengeMax = CoordGrid(3947, 5166, 1),
         challengeName = "The Wardens",
-        // Offline_Scape SecondWardenEncounter.constructRegion: copyPlanesMap(..., 0, 1).
         levels = 0..1,
     ),
 
-    // Capture: the Scabaras path landed on (3523, 5280). Offline_Scape has x = 3522.
     SCABARAS_PUZZLE(
         440, 656, Kind.PUZZLE,
         spawn = CoordGrid(3523, 5279, 0), spawnSpreadZ = 2,
@@ -142,7 +122,7 @@ enum class ToaRoom(
         osmumtenTile = CoordGrid(3928, 5408, 0),
         challengeName = "Zebak",
     ) {
-        /** Offline_Scape: the entrance corridor inside the bounding box doesn't count. */
+
         override fun inChallengeArea(static: CoordGrid): Boolean {
             if (static.inside(3957, 5404, 3960, 5414)) return false
             if (static.inside(3952, 5406, 3957, 5410)) return false
@@ -158,15 +138,9 @@ enum class ToaRoom(
         REWARD,
     }
 
-    /** The path this room belongs to, for puzzle and boss rooms. */
     val path: ToaPath?
         get() = ToaPath.of(this)
 
-    /**
-     * Where the room's way forward leads: puzzle -> its boss, boss -> back to the nexus,
-     * Wardens -> second Wardens room -> reward room. Offline_Scape used `ordinal + 1`, which
-     * only worked because of its enum order.
-     */
     val next: ToaRoom?
         get() =
             when (this) {
@@ -184,11 +158,6 @@ enum class ToaRoom(
                 REWARD_ROOM -> null
             }
 
-    /**
-     * Value of `toa_client_current_path` while in this room. From the client script
-     * `toa_hud_draw`: 0 = nexus (all four levels shown), 1..4 = one path, 5/6 = no path panel.
-     * Reward room: Offline_Scape leaves it at 5; 6 is unconfirmed.
-     */
     val hudPath: Int
         get() =
             when (kind) {
@@ -199,26 +168,15 @@ enum class ToaRoom(
                 Kind.REWARD -> HUD_PATH_WARDENS
             }
 
-    /** Whether the static coordinate [static] is inside this room's challenge area. */
     open fun inChallengeArea(static: CoordGrid): Boolean {
         val min = challengeMin ?: return false
         val max = challengeMax ?: return false
         return static.inside(min.x, min.z, max.x, max.z)
     }
 
-    /** A random arrival tile (static coords). */
     fun randomSpawn(random: GameRandom): CoordGrid =
         spawn.translate(random.of(0, spawnSpreadX), random.of(0, spawnSpreadZ))
 
-    /**
-     * The room's instance template: its map square on each of [levels], placed at zone (4, 4) of
-     * a small (16x16-zone) region so the room is surrounded by void, like vanilla.
-     *
-     * One `copy` per level because the template DSL's level-range overload is private; only
-     * `copy` (one level) and `copyAllLevels` are public. Each copy keeps its level, so
-     * `region.normal[...]` still maps every copied level. Coordinates on a level that wasn't
-     * copied have no mapping and would throw, so rooms must only use their own levels.
-     */
     val template: RegionStaticTemplate by lazy {
         RegionTemplate.create {
             for (level in levels) {
@@ -233,9 +191,7 @@ enum class ToaRoom(
     }
 
     private companion object {
-        /** One map square = 8 zones = 64 tiles. */
         const val ROOM_ZONE_LENGTH = 8
-
         const val HUD_PATH_WARDENS = 5
 
         fun CoordGrid.inside(minX: Int, minZ: Int, maxX: Int, maxZ: Int): Boolean =

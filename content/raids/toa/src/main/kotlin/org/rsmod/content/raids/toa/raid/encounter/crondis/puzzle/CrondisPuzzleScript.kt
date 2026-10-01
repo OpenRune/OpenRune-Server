@@ -29,12 +29,6 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The Crondis puzzle's ops. Ports Offline_Scape ContainerFloorItem (take), ContainerOnWaterfall
- * (fill), WaterContainerAction (check, empty), PalmTreeAction (water) and
- * CrondisPuzzleEncounter.handleWaterfall / waterPalm. Every handler first finds the player's
- * room, so nothing here works outside it.
- */
 class CrondisPuzzleScript
 @Inject
 constructor(
@@ -46,7 +40,6 @@ constructor(
         val containerType = ServerCacheManager.getItem(CrondisObjs.CONTAINER.asRSCM(RSCMType.OBJ))!!
         onOpObj3(containerType) { takeContainer() }
 
-        // The waterfall's own op ("Fill") and using the container on it do the same.
         onOpLoc1(CrondisLocs.WATER_SOURCE) { fill(it.loc) }
         onOpLocU(CrondisLocs.WATER_SOURCE, CrondisObjs.CONTAINER) { fill(it.loc) }
         onOpLocU(CrondisLocs.WATER_SOURCE_EMPTY, CrondisObjs.CONTAINER) { fillFromEmpty() }
@@ -54,18 +47,15 @@ constructor(
         onOpHeld1(CrondisObjs.CONTAINER) { checkContainer(it.obj) }
         onOpHeld2(CrondisObjs.CONTAINER) { emptyContainer() }
 
-        // Op1 "Water" and using the container on the palm do the same.
         for (palm in CrondisNpcs.WATERABLE_PALMS) {
             val palmType = ServerCacheManager.getNpc(palm.asRSCM(RSCMType.NPC))!!
             onOpNpc1(palm) { waterPalm() }
             onOpNpcU(palmType, containerType) { waterPalm() }
         }
 
-        // Every crocodile runs the room's AI once a tick (timer = 1 in toa_crondis.toml).
         onAiTimer(CrondisNpcs.CROCODILE) { CrondisPuzzleEncounter.onCrocodileTick(npc) }
 
         val crocodileType = ServerCacheManager.getNpc(CrondisNpcs.CROCODILE.asRSCM(RSCMType.NPC))!!
-        // Remember who hits it: players without a container who did are its third priority.
         onNpcHit(crocodileType) {
             if (hit.isFromPlayer) {
                 val player = hit.resolvePlayerSource(playerList) ?: return@onNpcHit
@@ -84,12 +74,6 @@ constructor(
     private val ProtectedAccess.room: CrondisPuzzleEncounter?
         get() = player.currentRaid?.encounterOf(player) as? CrondisPuzzleEncounter
 
-    // ---- Containers ----
-
-    /**
-     * Offline_Scape ContainerFloorItem: the floor container stays where it is (overrideTake); you
-     * get your own, empty, one.
-     */
     private suspend fun ProtectedAccess.takeContainer() {
         val room = room ?: return
         if (room.stage == ToaStage.COMPLETED) {
@@ -104,7 +88,6 @@ constructor(
             mes("You do not have enough space to pick this up.")
             return
         }
-        // The String constructor: InvObj's Int one is @UncheckedType (opt-in only).
         if (invAdd(inv, InvObj(CrondisObjs.CONTAINER, 1, vars = 0)).failure) return
         soundSynth(CrondisSynths.TAKE)
         anim(CrondisSeqs.PICKUP)
@@ -122,16 +105,11 @@ constructor(
         val empty =
             choice2("Yes, empty water container.", true, "No.", false, title = "Empty water container")
         if (!empty) return
-        // Re-find the slot: the inventory may have changed while the dialog was open.
         val slot = player.containerSlot() ?: return
         player.setContainerWater(slot, 0)
-        // Offline_Scape said "Your empty your water container."
         mes("You empty your water container.")
     }
 
-    // ---- Waterfalls ----
-
-    /** Offline_Scape handleWaterfall, for a waterfall that still has water. */
     private suspend fun ProtectedAccess.fill(waterfall: BoundLocInfo) {
         arriveDelay()
         val room = room ?: return
@@ -154,14 +132,9 @@ constructor(
         player.setContainerWater(slot, CONTAINER_FULL)
         room.drainWaterfall(waterfall)
         drink()
-        delay(1) // Offline_Scape lock(1)
+        delay(1)
     }
 
-    /**
-     * Captures: the drink message only came on some fills, and Jesse was under 50% run energy each
-     * time. The +20% restore is Offline_Scape's (every fill, no message); it's tied to the drink
-     * here, since the message is what says you drank. Run energy is 0..10_000.
-     */
     private fun ProtectedAccess.drink() {
         if (player.runEnergy >= DRINK_BELOW_ENERGY) return
         val energy = player.runEnergy + FILL_RUN_ENERGY
@@ -176,9 +149,6 @@ constructor(
         soundSynth(CrondisSynths.DECLINE)
     }
 
-    // ---- The palm ----
-
-    /** Offline_Scape waterPalm: all of the container goes onto the palm. */
     private suspend fun ProtectedAccess.waterPalm() {
         val room = room ?: return
         val slot = player.containerSlot()
@@ -187,7 +157,6 @@ constructor(
             mes("You have nothing to water the palm with.")
             return
         }
-        // Capture: only the largest amount ends in "!".
         val message =
             when {
                 water <= 25 -> "You empty a small amount of water onto the palm."
@@ -199,14 +168,12 @@ constructor(
         soundSynth(CrondisSynths.WATER_PALM)
         player.setContainerWater(slot, 0)
         room.waterPalm(water)
-        delay(1) // Offline_Scape lock(1)
+        delay(1)
     }
 
     private companion object {
-        /** 20% of Constants.run_max_energy. */
         const val FILL_RUN_ENERGY = 2_000
 
-        /** 50% of Constants.run_max_energy. */
         const val DRINK_BELOW_ENERGY = 5_000
     }
 }

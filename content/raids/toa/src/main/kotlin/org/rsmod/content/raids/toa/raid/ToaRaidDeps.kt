@@ -26,13 +26,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
-/**
- * Everything a raid and its rooms need from the engine. [ToaRaid] and the encounters are plain
- * objects created at runtime, so Guice can't inject into them. [ToaRaidScript] injects this
- * holder once and hands it to every raid it starts, which then passes it to its rooms.
- *
- * Stateless, so no @Singleton is needed.
- */
 class ToaRaidDeps
 @Inject
 constructor(
@@ -41,36 +34,22 @@ constructor(
     val locRepo: LocRepository,
     val npcRepo: NpcRepository,
     val objRepo: ObjRepository,
-    /** Loc animations, map spotanims and area sounds (room hazards). */
     val worldRepo: WorldRepository,
-    /** For sending room NPCs into the engine's standard combat against a player (opPlayer2). */
     val aiInteractions: AiPlayerInteractions,
-    /** Standard accuracy rolls for room NPCs with custom attacks (Crondis crocodiles). */
     val accuracy: AccuracyFormulae,
     val worldQueues: WorldQueueList,
     val mapClock: MapClock,
     val random: GameRandom,
     val launcher: ProtectedAccessLauncher,
-    /** @Singleton script (safe to inject); shows boss-style progress bars such as the Crondis palm. */
     val bossHpBar: BossHpBarScript,
-    /** Singleton binding from NetworkModule; used for the raid's extended NPC view (ToaNpcView.kt). */
     val network: NetworkService<Player>,
-    /**
-     * The standard player hit modifier (protection prayers and the like), the same binding BossDeps
-     * injects. Boss attacks pass it to queueImpactHit so prayer is checked on impact.
-     */
     val playerHitModifier: PlayerHitModifier,
-    /** Walkable-tile checks for room hazards (Zebak's poison spread). */
     val collision: CollisionFlagMap,
     val routeFactory: RouteFactory,
     val stepFactory: StepFactory,
-    /** The normal death's keep/lose rules, for the retrieval chest (ToaRetrieval). */
     val deathDrops: PlayerDeathDrops,
-    /** Item values for the retrieval chest's fee. */
     val marketPrices: MarketPrices,
-    /** Opening and closing overlays outside protected access (a ghost's tabs). */
     val eventBus: EventBus,
-    /** The supplies' timed effects, cleared on death and on leaving the raid. */
     val supplyEffects: ToaPotionEffect,
     val bossDeps: BossDeps,
 )

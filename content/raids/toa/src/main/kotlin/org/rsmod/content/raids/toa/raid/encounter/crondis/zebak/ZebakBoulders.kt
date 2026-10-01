@@ -6,10 +6,6 @@ import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
 import org.rsmod.map.CoordGrid
 
-/**
- * The Great Roar's boulders: an npc plus a loc that blocks its tile. 150 hitpoints, so the third
- * roar wave (50 each) destroys them through their death queue (ZebakScript).
- */
 internal class ZebakBoulders(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
     private val boulders = HashMap<Npc, LocInfo>()
@@ -25,7 +21,6 @@ internal class ZebakBoulders(private val room: ZebakEncounter) {
         val shape = LocShape.CentrepieceStraight
         boulders[boulder] = deps.locRepo.add(tile, blocker, Int.MAX_VALUE, LocAngle.West, shape)
         deps.worldRepo.soundArea(tile, ZebakSynths.BOULDER_LAND, radius = LAND_SOUND_RADIUS)
-        // Capture: dust where it lands.
         deps.worldRepo.spotanimMap(spotanim(ZebakSpots.DUST), tile)
     }
 

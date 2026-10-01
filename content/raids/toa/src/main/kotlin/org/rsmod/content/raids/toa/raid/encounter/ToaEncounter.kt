@@ -20,29 +20,14 @@ import org.rsmod.game.map.Direction
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 
-/** Offline_Scape EncounterStage. */
 enum class ToaStage {
     NOT_STARTED,
     STARTED,
     COMPLETED,
 }
 
-/** Where and how a player lands when they travel into a room (instance coords). */
 data class Arrival(val coords: CoordGrid, val facing: Direction?)
 
-/**
- * One built room of a raid. Port of Offline_Scape TOARaidArea, the base of every room.
- *
- * `open` rather than abstract: rooms without content yet (the puzzles and the reward room) use this
- * class as-is. Phase B gives each room its own subclass that overrides the hooks below.
- *
- * Coordinates: room data is in STATIC coords. [coords] converts static -> instance and
- * [staticCoords] converts back. The copy has no rotation and keeps levels, so both are exact.
- *
- * Tasks: [schedule] runs world-queue work that is dropped when the room is destroyed, completed or
- * reset ([stopTasks]). World queues can't be cancelled, so each task checks a generation number
- * instead.
- */
 open class ToaEncounter(
     val raid: ToaRaid,
     val room: ToaRoom,
@@ -55,41 +40,28 @@ open class ToaEncounter(
     var stage: ToaStage = ToaStage.NOT_STARTED
         private set
 
-    /** Set once the room's region has been released. */
     var destroyed: Boolean = false
         private set
 
-    /**
-     * Party size when the challenge started (Offline_Scape `teamSize`). Rooms scale with it,
-     * e.g. how much water the Crondis palm needs.
-     */
     var teamSize: Int = 1
         private set
 
-    /** Map cycle the challenge started at. */
     var startCycle: Int = 0
         private set
 
-    /** Carried over from the first Wardens room to the second (one challenge in two rooms). */
     var challengeName: String = room.challengeName ?: ""
         private set
 
     private var taskGeneration = 0
 
-    /** Players in this room, in HUD order. */
     val players: List<Player>
         get() = raid.playersIn(this)
 
-    /** Players in this room who are inside the challenge area. */
     val challengePlayers: List<Player>
         get() = players.filter(::inChallengeArea)
 
-    // ---- Coordinates ----
-
-    /** Static -> instance. Works on every level. */
     fun coords(static: CoordGrid): CoordGrid = region.normal[static]
 
-    /** Instance -> static. [CoordGrid.NULL] for coords outside any instance. */
     fun staticCoords(coords: CoordGrid): CoordGrid = deps.regions.normalizeCoords(coords)
 
     fun inChallengeArea(player: Player): Boolean {
@@ -98,21 +70,12 @@ open class ToaEncounter(
         return room.inChallengeArea(static)
     }
 
-    /**
-     * Where a player travelling into this room lands. The default is the room's spawn tile
-     * (Offline_Scape `getRandomizedSpawnTile`).
-     */
     open fun arrival(): Arrival = Arrival(coords(room.randomSpawn(deps.random)), facing = null)
 
-    // ---- Hooks (Offline_Scape constructed / enter / leave / onRoomStart / onRoomEnd / onRoomReset) ----
-
-    /** The region exists and the room is [ToaRaid.current]. Spawn locs and NPCs here. */
     open fun onBuilt() {}
 
-    /** [player] has been placed in this room; called just before their teleport lands. */
     open fun onEnter(player: Player) {}
 
-    /** [player] moved to another room or left the raid. */
     open fun onLeave(player: Player) {}
 
     protected open fun onStart() {}
@@ -121,16 +84,8 @@ open class ToaEncounter(
 
     protected open fun onReset() {}
 
-    /**
-     * Honey locusts each player gets after a wipe (OSRS Wiki: it varies by room). Offline_Scape
-     * gave 4-6 everywhere; rooms with a capture override this.
-     */
     open fun honeyLocusts(): Int = deps.random.of(HONEY_LOCUSTS_MIN, HONEY_LOCUSTS_MAX)
 
-    /**
-     * Room points per damage dealt to [npc] (OSRS Wiki, Chest (Tombs of Amascut)): 1 for most
-     * npcs. Rooms with a boss or npc worth more or less override this.
-     */
     open fun pointMultiplier(npc: Npc): Double = 1.0
 
     open val roomPointsCap: Int
@@ -142,12 +97,6 @@ open class ToaEncounter(
     private val completionPoints: Int
         get() = if (room.kind == ToaRoom.Kind.PUZZLE) PUZZLE_POINTS[room.path] ?: 0 else 0
 
-    // ---- Challenge lifecycle ----
-
-    /**
-     * Offline_Scape `startRoom`, plus the "Challenge started" message it sent from the barrier and
-     * teleport crystal. Does nothing if the challenge has already started.
-     */
     fun start() {
         if (stage != ToaStage.NOT_STARTED) return
         stage = ToaStage.STARTED
@@ -160,10 +109,6 @@ open class ToaEncounter(
         }
     }
 
-    /**
-     * Continues a challenge that began in another room (the Wardens fight moving into its second
-     * room): same start time and name, and already started.
-     */
     internal fun continueChallenge(from: ToaEncounter) {
         stage = ToaStage.STARTED
         startCycle = from.startCycle
@@ -171,7 +116,6 @@ open class ToaEncounter(
         teamSize = from.teamSize
     }
 
-    /** Offline_Scape `completeRoom`: records the time, sends the messages, runs [onComplete]. */
     fun complete() {
         if (stage == ToaStage.COMPLETED) return
         stage = ToaStage.COMPLETED
@@ -212,15 +156,6 @@ open class ToaEncounter(
         }
     }
 
-    /**
-     * The end-of-raid messages, as the game words them (RuneLite ChatCommandsPluginTest): the
-     * challenge line and the challenge time in one message, then the raid time, then the kill
-     * count. Only the challenge time and the kill count name the mode, and not for Normal.
-     *
-     * Not reproduced: the personal-best suffixes ("(new personal best)", ". Personal best: m:ss");
-     * nothing records personal bests yet. The reward points aren't shown: they're hidden in the
-     * game (Offline_Scape printed them).
-     */
     private fun sendRaidCompleteMessages(player: Player, duration: String, total: String, now: Int) {
         val mode = raid.settings.mode
         val name = "Tombs of Amascut${ToaKillCount.modeSuffix(mode)}"
@@ -232,7 +167,6 @@ open class ToaEncounter(
         player.mes("Tombs of Amascut total completion time: <col=ef1020>$raidTime</col>")
         ToaKillCount.record(player, mode)
         val limit = raid.timeLimitMinutes ?: return
-        // Offline_Scape's copies of these two lines ended in a broken "</col".
         if (raid.failedTimeLimit) {
             player.mes("<col=FF0000>Your party failed to beat the overall target time of $limit:00</col>")
         } else {
@@ -240,14 +174,7 @@ open class ToaEncounter(
         }
     }
 
-    /**
-     * Offline_Scape completeRoom's per-player part: ghosts come back to life, anyone outside the
-     * challenge area is brought into it, and after a boss (not a puzzle) everyone is fully
-     * restored.
-     *
-     * TODO: check the restore against a capture. Offline_Scape called `reset()` here, which
-     * restores stats; confirm vanilla does that after a boss.
-     */
+    // TODO: check the restore against a capture.  called `reset()` here, which
     @OptIn(InternalApi::class)
     private fun recoverPlayers() {
         val challengeSpawn = room.challengeSpawn
@@ -263,18 +190,10 @@ open class ToaEncounter(
         ToaRaidManager.refreshHudStates(raid)
     }
 
-    /**
-     * Offline_Scape checkRoomReset. Once everyone left in a running room is a ghost (nobody alive,
-     * nobody still inside the challenge area), the party has wiped: it costs an attempt, the room
-     * resets, and each player gets [wipeAftermath]. With no attempts left the raid fails instead.
-     *
-     * Called after each death and whenever someone leaves the raid.
-     */
     @OptIn(InternalApi::class)
     fun checkRoomReset() {
         if (destroyed || stage != ToaStage.STARTED) return
         val inRoom = players
-        // Offline_Scape counted a wipe even for an empty room; nobody is left to see it, so don't.
         if (inRoom.isEmpty()) return
         if (inRoom.any { inChallengeArea(it) || !raid.isGhost(it) }) return
 
@@ -283,31 +202,22 @@ open class ToaEncounter(
         val retry = raid.canRetryAfter()
         val encounter = this
         for (player in inRoom) {
-            // Forced, like a cutscene: must happen even if they have a dialog open.
             deps.launcher.launchLenient(player) { wipeAftermath(encounter, retry) }
         }
         reset()
     }
 
-    /** Offline_Scape `resetRoom`. Honey locusts are handed out in wipeAftermath. */
     fun reset() {
         stage = ToaStage.NOT_STARTED
         stopTasks()
         onReset()
     }
 
-    /**
-     * `::toacomplete`. Starts the challenge if needed and completes it. Rooms whose challenge
-     * doesn't end with [complete] (the first Wardens room) override this.
-     */
     open fun debugComplete() {
         start()
         complete()
     }
 
-    // ---- Tasks ----
-
-    /** Runs [action] after [ticks], unless the room is destroyed, completed or reset first. */
     fun schedule(ticks: Int, action: () -> Unit) {
         val generation = taskGeneration
         deps.worldQueues.add(ticks) {
@@ -317,15 +227,10 @@ open class ToaEncounter(
         }
     }
 
-    /** Drops every task scheduled so far (Offline_Scape `stopRunningTasks`). */
     fun stopTasks() {
         taskGeneration++
     }
 
-    /**
-     * Releases the region. Unprotecting is enough: the repository reclaims empty, unprotected
-     * regions (and clears their NPCs and locs) the next time it allocates one.
-     */
     internal fun destroy() {
         if (destroyed) return
         destroyed = true
