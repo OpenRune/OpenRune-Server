@@ -218,16 +218,15 @@
     "Slayer": {
       "sections": [
         "Introduction",
+        "Slayer Masters",
+        "Slayer equipment",
+        "Slayer tasks",
+        "Bosses",
         "Slayer Partners",
         "Assigning a partner",
         "Receiving a task",
         "Getting kills",
         "Reward points",
-        "Slayer Masters",
-        "Slayer equipment",
-        "Slayer monsters",
-        "Where to slay monsters",
-        "Boss Slayer",
         "Slayer reward points",
         "Collection log",
         "Temporary boosts",
@@ -405,7 +404,7 @@
         "Quests",
         "Quests requiring Cooking",
         "Quests rewarding Cooking experience",
-        "Diaries Requiring Cooking",
+        "Diaries requiring Cooking",
         "Skill choice",
         "Level up messages",
         "Changes",
@@ -518,7 +517,6 @@
         "Werewolf Skullball",
         "Wintertodt Pillars",
         "Shortcuts",
-        "Other",
         "Official worlds",
         "Collection log",
         "Temporary boosts",
@@ -1364,7 +1362,7 @@
       "image": "https://oldschool.runescape.wiki/images/thumb/Wrathmaw-_the_Wilderness_World_Boss_-_Summer_Summit_2024_%281%29.png/48px-Wrathmaw-_the_Wilderness_World_Boss_-_Summer_Summit_2024_%281%29.png?ecf88"
     },
     "The Fractured Archive": {
-      "image": "https://oldschool.runescape.wiki/images/thumb/The_Fractured_Archive_logo.png/48px-The_Fractured_Archive_logo.png?072fb"
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Fractured_Archive_logo.png/48px-The_Fractured_Archive_logo.png?2eb86"
     },
     "Golem crafting": {
       "image": "https://oldschool.runescape.wiki/images/thumb/Golem_crafting.png/48px-Golem_crafting.png?5d9bc"
@@ -1686,5 +1684,5 @@
       "Volcanic Mine"
     ]
   },
-  "fetched": "2026-09-29"
+  "fetched": "2026-10-01"
 }
