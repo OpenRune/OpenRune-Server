@@ -120,16 +120,6 @@ Server side (Kotlin):
   `runClientScript(scriptId, ...args)` (`api/player-output/.../ClientScripts.kt`),
   which also has named wrappers for common scripts (menus, chatbox inits, etc.).
 
-Client side (FluxRSClient repo):
-
-- CS2 lives as `.rs2asm` assembly in `runelite-client/src/main/scripts` (one file
-  per script, `.id` header = script id). The gradle `AssembleTask` compiles them
-  into the client cache overlay at build time.
-- `runelite-api/src/main/interfaces/interfaces.toml` maps interface names to ids and
-  component names to child indices (`[bank] id=12 ... scrollbar=13`); it feeds both
-  the script assembler and generated Java component constants. Add named entries
-  here instead of hardcoding child indices in scripts.
-
 Reference dumps — how Jagex actually built things:
 
 - [Joshua-F/osrs-dumps](https://github.com/Joshua-F/osrs-dumps) holds raw dumps of
@@ -297,7 +287,7 @@ test manually. The plugin self-updates from GitHub releases on client startup.
 Download the latest release jar into each client's sideload folder:
 
 The scripts below download the jar, register the MCP server with Claude Code, and
-allow all `flux` tools so agents aren't stopped by per-call permission prompts. Run
+allow all `openrune` tools so agents aren't stopped by per-call permission prompts. Run
 them from the repo root.
 
 Windows (PowerShell):
@@ -309,10 +299,10 @@ foreach ($dir in ".runelite", ".rsprox") {
   curl.exe -L -o "$target\OpenRune-Developer-Tools.jar" `
     https://github.com/OpenRune/OpenRune-Developer-Tools/releases/latest/download/OpenRune-Developer-Tools.jar
 }
-claude mcp add --transport http flux http://127.0.0.1:7780/mcp
+claude mcp add --transport http openrune http://127.0.0.1:7780/mcp
 New-Item -ItemType Directory -Force .claude | Out-Null
 if (-not (Test-Path .claude\settings.local.json)) {
-  Set-Content -Encoding utf8 .claude\settings.local.json '{ "permissions": { "allow": ["mcp__flux"] } }'
+  Set-Content -Encoding utf8 .claude\settings.local.json '{ "permissions": { "allow": ["mcp__openrune"] } }'
 }
 ```
 
@@ -324,17 +314,17 @@ for dir in .runelite .rsprox; do
   curl -L -o "$HOME/$dir/sideloaded-plugins/OpenRune-Developer-Tools.jar" \
     https://github.com/OpenRune/OpenRune-Developer-Tools/releases/latest/download/OpenRune-Developer-Tools.jar
 done
-claude mcp add --transport http flux http://127.0.0.1:7780/mcp
+claude mcp add --transport http openrune http://127.0.0.1:7780/mcp
 mkdir -p .claude
 [ -f .claude/settings.local.json ] || \
-  echo '{ "permissions": { "allow": ["mcp__flux"] } }' > .claude/settings.local.json
+  echo '{ "permissions": { "allow": ["mcp__openrune"] } }' > .claude/settings.local.json
 ```
 
 Then start the client with `--developer-mode` (sideloaded plugins only load then)
 and enable **OpenRune-DeveloperTools** once in the plugin sidebar (persists).
 
 If `.claude/settings.local.json` already exists, the scripts leave it alone — merge
-`"mcp__flux"` into its `permissions.allow` array manually.
+`"mcp__openrune"` into its `permissions.allow` array manually.
 
 ### Example prompts
 
