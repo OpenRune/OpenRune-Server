@@ -1,0 +1,8 @@
+[clientscript,commands_menu_init](component $frame, component $categories, component $commands, component $details, component $previous, component $next, component $use)
+~steelborder($frame, "Commands", 0);
+~thinbox($categories, 0);
+~thinbox($commands, 0);
+~thinbox($details, 0);
+~stonebutton_draw(false, "Back", p12_full, 1, $previous);
+~stonebutton_draw(false, "Next", p12_full, 1, $next);
+~stonebutton_draw(false, "Use", b12_full, 1, $use);

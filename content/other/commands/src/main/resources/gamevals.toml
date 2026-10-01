@@ -1,2 +1,5 @@
 [gamevals.interface]
 commands_menu = 1101
+
+[gamevals.clientscript]
+commands_menu_init = 45540

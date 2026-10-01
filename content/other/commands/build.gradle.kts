@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 dependencies {
@@ -17,4 +18,6 @@ dependencies {
 
     implementation(projects.api.utils.utilsSystem)
     implementation(projects.engine.utilsBits)
+    testImplementation(libs.rsprot.api)
+    testImplementation("org.mockito:mockito-core:5.14.2")
 }

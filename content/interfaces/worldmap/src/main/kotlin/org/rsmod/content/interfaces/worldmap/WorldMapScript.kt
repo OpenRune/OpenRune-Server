@@ -9,6 +9,7 @@ import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onPlayerCoordsChanged
 import org.rsmod.api.script.onPlayerLogin
@@ -37,6 +38,11 @@ class WorldMapScript @Inject constructor(
     private val fullscreenTopLevel = "interface.toplevel_display"
 
     override fun ScriptContext.startup() {
+        onCommand("teleport") {
+            requiredRights = Rights.ADMINISTRATOR
+            desc = "Open the world map and click a destination to teleport"
+            cheat { player.openMap(IfButtonOp.Op2) }
+        }
         onPlayerLogin {
             player.orbsMinimized = false
         }

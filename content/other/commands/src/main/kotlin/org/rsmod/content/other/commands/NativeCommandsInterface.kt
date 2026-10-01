@@ -14,11 +14,9 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 private const val INTERFACE = "interface.commands_menu"
-private const val COMP_TITLE = "component.commands_menu:title"
 private const val COMP_PLAYER = "component.commands_menu:player"
 private const val COMP_SEARCH = "component.commands_menu:search"
 private const val COMP_PAGE = "component.commands_menu:page"
-private const val COMP_CLOSE = "component.commands_menu:close"
 private const val COMP_PREV = "component.commands_menu:previous"
 private const val COMP_NEXT = "component.commands_menu:next"
 private const val COMP_DETAIL_NAME = "component.commands_menu:detail_name"
@@ -154,10 +152,12 @@ constructor(
         val page = requestedPage.coerceIn(0, pageCount - 1)
         pages[player.username] = page
         val start = page * pageSize
-        val selectedEntry = selectedEntry(player, entries)
+        val pageEntries = entries.drop(start).take(pageSize)
+        val selectedEntry = selectedEntry(player, pageEntries)
 
-        ifOpenMainModal(INTERFACE)
-        ifSetText(COMP_TITLE, "Commands")
+        if (!player.ui.containsModal(INTERFACE)) {
+            ifOpenMainModal(INTERFACE)
+        }
         ifSetText(COMP_PLAYER, player.modLevel.name.lowercase().replaceFirstChar { it.uppercase() })
 
         val search = searches[player.username].orEmpty()
@@ -179,14 +179,13 @@ constructor(
         }
 
         COMMAND_ROWS.forEachIndexed { rowIndex, component ->
-            val entry = entries.getOrNull(start + rowIndex)
+            val entry = pageEntries.getOrNull(rowIndex)
             val text =
                 if (entry == null) {
                     ""
                 } else {
                     val selectedColor = if (entry.name == selectedEntry?.name) "ff981f" else "ffffff"
-                    val desc = entry.description.take(44)
-                    "<col=$selectedColor>::${entry.name}</col>   <col=d0c4a8>$desc</col>"
+                    "<col=$selectedColor>::${entry.name}</col>"
                 }
             ifSetText(component, text)
         }
@@ -231,14 +230,6 @@ constructor(
             searches.remove(player.username)
         }
 
-        onIfModalButton(COMP_CLOSE) {
-            pages.remove(player.username)
-            categories.remove(player.username)
-            selected.remove(player.username)
-            searches.remove(player.username)
-            ifClose()
-        }
-
         for (category in CommandCategory.entries) {
             onIfModalButton(category.component) {
                 categories[player.username] = category
@@ -276,8 +267,12 @@ constructor(
 
         onIfModalButton(COMP_USE) {
             val entries = filteredCommands(player)
-            val entry = selectedEntry(player, entries)
-            if (entry != null) cheatCommandMap.execute(player, entry.name, emptyList())
+            val page = pages[player.username] ?: 0
+            val entry = selectedEntry(player, entries.drop(page * COMMAND_ROWS.size).take(COMMAND_ROWS.size))
+            if (entry != null) {
+                ifClose()
+                cheatCommandMap.execute(player, entry.name, emptyList())
+            }
         }
     }
 }
