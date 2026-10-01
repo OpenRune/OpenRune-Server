@@ -16,6 +16,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.table.InstanceSettingsRow
 import org.rsmod.game.MapClock
+import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -52,6 +53,29 @@ public abstract class InstanceScript(
 
     /** When true the instance is destroyed as soon as the last player leaves (no reclaim/rejoin). */
     protected open fun destroyWhenEmpty(): Boolean = false
+
+    /** Make the owner's rejoin of an empty instance run the enter prelude, as it does on creation. */
+    protected open fun runsPreludeOnFreshRun(): Boolean = false
+
+    /**
+     * True when this result starts the session's npcs from scratch: a new instance, or a join of an
+     * empty one (the manager resets its npcs, deleting any boss spawned by the previous run).
+     */
+    protected fun InstanceManager.Result.isFreshRun(): Boolean =
+        when (this) {
+            is InstanceManager.Result.Created -> true
+            is InstanceManager.Result.Joined -> session.occupants.isEmpty()
+            else -> false
+        }
+
+    private fun runsEnterPrelude(player: Player, result: InstanceManager.Result): Boolean =
+        when (result) {
+            is InstanceManager.Result.Created -> true
+            is InstanceManager.Result.Joined ->
+                player.uuid != result.session.owner ||
+                    (runsPreludeOnFreshRun() && result.isFreshRun())
+            else -> false
+        }
 
     protected fun buildSpec(area: InstanceArea = area()): InstanceSpec {
         val settings = rowData.toInstanceSettings()
@@ -91,13 +115,7 @@ public abstract class InstanceScript(
      */
     protected suspend fun ProtectedAccess.completeInstanceEntry(
         result: InstanceManager.Result,
-        runPreludeWhen: (InstanceManager.Result) -> Boolean = { result ->
-            when (result) {
-                is InstanceManager.Result.Created -> true
-                is InstanceManager.Result.Joined -> player.uuid != result.session.owner
-                else -> false
-            }
-        },
+        runPreludeWhen: (InstanceManager.Result) -> Boolean = { runsEnterPrelude(player, it) },
     ) {
         when (result) {
             is InstanceManager.Result.Failed -> mes(result.reason)

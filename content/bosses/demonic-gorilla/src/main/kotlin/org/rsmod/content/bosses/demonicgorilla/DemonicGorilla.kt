@@ -3,20 +3,18 @@ package org.rsmod.content.bosses.demonicgorilla
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
-import org.rsmod.api.bosses.runtime.bossProjectile
 import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.bosses.spec.BossSpec
+import org.rsmod.api.bosses.spec.DamageExpr
+import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
-import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.api.player.events.PlayerHitEvents
-import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.script.onEvent
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
@@ -52,7 +50,7 @@ class DemonicGorilla @Inject constructor(private val deps: BossDeps, private val
 
     val spec: BossSpec =
         boss(*GORILLA_TYPE_NAMES.toTypedArray()) {
-            stats(attackRate = ATTACK_RATE, aggressionRadius = 8)
+            stats(attackRate = ATTACK_RATE)
 
             val meleeAttack =
                 ability("melee_attack") {
@@ -93,7 +91,7 @@ class DemonicGorilla @Inject constructor(private val deps: BossDeps, private val
             val boulder =
                 ability("boulder") {
                     anim(BOULDER_SEQ)
-                    include(external(BOULDER_HANDLER))
+                    include(boulderDrop())
                 }
 
             phase(PHASE_MELEE) { weightedSelectorRandom { +random(meleeAttack, weight = 1) } }
@@ -113,9 +111,6 @@ class DemonicGorilla @Inject constructor(private val deps: BossDeps, private val
 
     override fun ScriptContext.startup() {
         BossCombat.register(this, spec, deps, onModifyHit = { onModifyProtectionHit(this) })
-        deps.extensionRegistry.register(BOULDER_HANDLER) { _, npc, target, _ ->
-            throwBoulder(npc, target)
-        }
 
         val bossIds = spec.npcTypes.mapNotNullTo(mutableSetOf()) { it.npcTypeId() }
         onEvent<NpcStateEvents.Create> { if (npc.type.id in bossIds) resetGorilla(npc) }
@@ -123,31 +118,49 @@ class DemonicGorilla @Inject constructor(private val deps: BossDeps, private val
         onEvent<PlayerHitEvents.Impact> { onAttackImpact(bossIds, hit) }
     }
 
-    private fun throwBoulder(npc: Npc, target: Player) {
-        val tile = target.coords
-        deps.bossProjectile(
-            spotanim = BOULDER_TELEGRAPH_SPOT.asRSCM(RSCMType.SPOTANIM),
-            src = tile,
-            target = tile,
-            startHeight = BOULDER_PROJ_START_HEIGHT,
-            endHeight = BOULDER_PROJ_END_HEIGHT,
-            delay = BOULDER_PROJ_START_DELAY,
-            travel = BOULDER_PROJ_TRAVEL,
-            curve = BOULDER_PROJ_ANGLE,
+    private fun boulderDrop(): Effect =
+        withTile(
+            "boulder",
+            CurrentTargetTile,
+            sequence(
+                projectile(
+                    spotanim = BOULDER_TELEGRAPH_SPOT,
+                    config =
+                        ProjectileConfig.fixed(
+                            startHeight = BOULDER_PROJ_START_HEIGHT,
+                            endHeight = BOULDER_PROJ_END_HEIGHT,
+                            delay = BOULDER_PROJ_START_DELAY,
+                            travel = BOULDER_PROJ_TRAVEL,
+                            angle = BOULDER_PROJ_ANGLE,
+                        ),
+                    target = tile("boulder"),
+                    from = tile("boulder"),
+                ),
+                after(
+                    BOULDER_WINDUP_TICKS,
+                    sequence(
+                        mapSpotanim(
+                            BOULDER_IMPACT_SPOT,
+                            tile("boulder"),
+                            height = BOULDER_IMPACT_HEIGHT,
+                        ),
+                        sound(
+                            BOULDER_IMPACT_SOUND,
+                            radius = BOULDER_SOUND_RADIUS,
+                            at = tile("boulder"),
+                        ),
+                        whenever(
+                            targetWithin(0, of = tile("boulder")),
+                            hit(
+                                damage = DamageExpr.PercentOfTargetHp(BOULDER_DAMAGE_FRACTION),
+                                type = Typeless,
+                            ),
+                        ),
+                    ),
+                    requireAlive = false,
+                ),
+            ),
         )
-        deps.worldQueues.add(BOULDER_WINDUP_TICKS) {
-            deps.worldRepo.spotanimMap(
-                SpotanimType(BOULDER_IMPACT_SPOT.asRSCM(RSCMType.SPOTANIM)),
-                tile,
-                BOULDER_IMPACT_HEIGHT,
-            )
-            deps.worldRepo.soundArea(tile, BOULDER_IMPACT_SOUND, radius = BOULDER_SOUND_RADIUS)
-            if (target.hitpoints > 0 && target.coords == tile) {
-                val damage = (target.hitpoints * BOULDER_DAMAGE_FRACTION).toInt()
-                target.finishNpcHit(npc, 1, HitType.Typeless, damage, deps.playerHitModifier)
-            }
-        }
-    }
 
     private fun resetGorilla(npc: Npc) {
         val protectStyle = nameByTypeId[npc.type.id]?.substringAfterLast('_') ?: return
@@ -259,7 +272,6 @@ class DemonicGorilla @Inject constructor(private val deps: BossDeps, private val
         private const val BOULDER_DAMAGE_FRACTION = 0.33
 
         private const val BOULDER_SEQ = "seq.demonic_gorilla_smash_chest"
-        private const val BOULDER_HANDLER = "demonicgorilla.boulder"
         private const val BOULDER_TELEGRAPH_SPOT = "spotanim.myarm_rock_roc_travel"
         private const val BOULDER_IMPACT_SPOT = "spotanim.castlewars_catapult_splash"
         private const val BOULDER_IMPACT_SOUND = "synth.mm2_gorilla_boulder_impact"

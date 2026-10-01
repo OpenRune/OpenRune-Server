@@ -1,7 +1,7 @@
 package org.rsmod.api.account.persistence
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 
 /**
@@ -12,15 +12,10 @@ import dev.openrune.rscm.RSCMType
  * + [`inv`][org.rsmod.api.account.character.inv.CharacterInventoryData.Inventory.invDbKey] (no composite `id` string).
  */
 internal object GamePersistenceRscmKeys {
-    fun decodeVarpKey(db: String): Int {
+    fun decodeVarpKey(db: String): Int? {
         val t = db.trim()
-        if (t.isEmpty()) {
-            return -1
-        }
-        if (isPlainIntKey(t)) {
-            return t.toInt()
-        }
-        return t.asRSCM(RSCMType.VARP)
+        val varpId = if (isPlainIntKey(t)) t.toIntOrNull() else RSCM.getRSCMOrNull(t, RSCMType.VARP)
+        return varpId?.takeIf { it >= 0 && ServerCacheManager.getVarp(it) != null }
     }
 
     fun encodeVarpKey(varpId: Int): String = RSCM.getReverseMapping(RSCMType.VARP, varpId)

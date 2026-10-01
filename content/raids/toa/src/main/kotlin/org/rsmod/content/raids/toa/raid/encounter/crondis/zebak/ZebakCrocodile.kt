@@ -31,11 +31,10 @@ class ZebakCrocodile @Inject constructor(deps: BossDeps) : BossPluginScript(deps
             ability(
                 BITE,
                 hit {
-                    noReaction()
+                    hazard()
                     type(Melee)
                     delay = HIT_DELAY
                     damage(Accuracy(npcMaxHit()))
-                    penetration(BITE_PENETRATION)
                 },
             )
             phase(HUNT) { rotationSelector { +then(BITE) } }
@@ -46,6 +45,5 @@ class ZebakCrocodile @Inject constructor(deps: BossDeps) : BossPluginScript(deps
         const val HUNT = "hunt"
         const val BITE_RATE = 2
         const val HIT_DELAY = 1
-        const val BITE_PENETRATION = 0
     }
 }

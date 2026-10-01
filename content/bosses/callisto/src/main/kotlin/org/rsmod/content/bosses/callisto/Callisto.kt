@@ -2,6 +2,7 @@ package org.rsmod.content.bosses.callisto
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.NpcMode
 import dev.openrune.types.ProjAnimType
 import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
@@ -12,11 +13,14 @@ import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.bosses.runtime.repeatTick
-import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
+import org.rsmod.api.combat.commons.CombatEffects
+import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.events.NpcHitEvents
+import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.isValidTarget
+import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.modify
 import org.rsmod.api.player.hit.queueHit
@@ -27,12 +31,14 @@ import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.repo.loc.LocRepository
+import org.rsmod.api.script.onAiTimer
 import org.rsmod.api.script.onEvent
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.hit.HitType
+import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
@@ -110,16 +116,19 @@ val CALLISTO_DEN =
 
 class Artio
 @Inject
-constructor(deps: BossDeps, locRepo: LocRepository) : WildernessBear(ARTIO_DEN, deps, locRepo)
+constructor(deps: BossDeps, locRepo: LocRepository, aiPlayerInteractions: AiPlayerInteractions) :
+    WildernessBear(ARTIO_DEN, deps, locRepo, aiPlayerInteractions)
 
 class Callisto
 @Inject
-constructor(deps: BossDeps, locRepo: LocRepository) : WildernessBear(CALLISTO_DEN, deps, locRepo)
+constructor(deps: BossDeps, locRepo: LocRepository, aiPlayerInteractions: AiPlayerInteractions) :
+    WildernessBear(CALLISTO_DEN, deps, locRepo, aiPlayerInteractions)
 
 abstract class WildernessBear(
     private val den: BearDen,
     deps: BossDeps,
     private val locRepo: LocRepository,
+    private val aiPlayerInteractions: AiPlayerInteractions,
 ) : BossPluginScript(deps) {
 
     private val postAttackHandler = "${den.key}.post_attack"
@@ -129,7 +138,7 @@ abstract class WildernessBear(
 
     override val spec =
         boss(den.bossNpc) {
-            stats(attackRate = den.attackRate, aggressionRadius = AGGRO_RANGE)
+            stats(attackRate = den.attackRate)
 
             val melee =
                 ability(MELEE) {
@@ -175,8 +184,8 @@ abstract class WildernessBear(
                 }
 
             phase(PHASE_FIGHT) {
-                weightedSelectorRandom(noRepeatBias = 0.0) {
-                    +random(melee, weight = MELEE_WEIGHT, requires = Condition.Not(WithinMeleeRange))
+                weightedSelectorRandom {
+                    +random(melee, weight = MELEE_WEIGHT, requires = WithinMeleeRange)
                     +random(ranged, weight = RANGED_WEIGHT)
                     +random(magic, weight = MAGIC_WEIGHT)
                 }
@@ -197,11 +206,30 @@ abstract class WildernessBear(
         onEvent<NpcStateEvents.Spawn>(bossId) { resetFight(npc) }
         onEvent<NpcStateEvents.Respawn> { if (npc.id == bossId) resetFight(npc) }
         onEvent<NpcHitEvents.Impact>(bossId) { checkRoar(npc) }
+        onAiTimer(den.bossNpc) { syncFrozenRange(npc) }
     }
 
     private fun resetFight(npc: Npc) {
         npc.vars[ROARS_VARN] = 0
+        npc.vars["varn.freeze_guaranteed"] = 1
+        npc.aiTimer(1)
     }
+
+    private fun syncFrozenRange(npc: Npc) {
+        if (!CombatEffects.isFrozen(npc)) {
+            if (npc.apRangeOverride == null) return
+            npc.apRangeOverride = null
+            npc.combatTarget()?.let { npc.opPlayer2(it, aiPlayerInteractions) }
+            return
+        }
+        if (npc.mode == NpcMode.ApPlayer2 && npc.apRangeOverride != null) return
+        val target = npc.combatTarget() ?: return
+        npc.apRangeOverride = FROZEN_AP_RANGE
+        npc.apPlayer2(target, aiPlayerInteractions)
+    }
+
+    private fun Npc.combatTarget(): Player? =
+        (interaction as? InteractionPlayer)?.uid?.resolve(deps.playerList)
 
     private fun checkRoar(npc: Npc) {
         if (npc.hitpoints <= 0) return
@@ -377,8 +405,8 @@ abstract class WildernessBear(
 
         private const val ROARS_VARN = "varn.callisto_roars"
 
-        private const val AGGRO_RANGE = 15
         private const val ARENA_RADIUS = 20
+        private const val FROZEN_AP_RANGE = 10
         private const val MELEE_PRAYER_PENETRATION = 50
         private const val MELEE_WEIGHT = 250
         private const val RANGED_WEIGHT = 6

@@ -2,7 +2,6 @@ package org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle
 
 import jakarta.inject.Inject
 import org.rsmod.api.bosses.dsl.Accuracy
-import org.rsmod.api.bosses.dsl.CurrentTarget
 import org.rsmod.api.bosses.dsl.Melee
 import org.rsmod.api.bosses.dsl.MeleeAttackType
 import org.rsmod.api.bosses.dsl.TargetPraying
@@ -11,7 +10,7 @@ import org.rsmod.api.bosses.dsl.boss
 import org.rsmod.api.bosses.dsl.external
 import org.rsmod.api.bosses.dsl.hit
 import org.rsmod.api.bosses.dsl.sequence
-import org.rsmod.api.bosses.dsl.sound
+import org.rsmod.api.bosses.dsl.soundTo
 import org.rsmod.api.bosses.dsl.statDrain
 import org.rsmod.api.bosses.dsl.whenever
 import org.rsmod.api.bosses.runtime.BossCombat
@@ -45,7 +44,7 @@ class CrondisCrocodileCombat @Inject constructor(deps: BossDeps) : BossPluginScr
                 BITE,
                 sequence(
                     anim(CrondisSeqs.CROC_ATTACK),
-                    sound(CrondisSynths.CROC_ATTACK, target = CurrentTarget),
+                    soundTo(CrondisSynths.CROC_ATTACK),
                     hit {
                         resolveOnImpact()
                         type(Melee)

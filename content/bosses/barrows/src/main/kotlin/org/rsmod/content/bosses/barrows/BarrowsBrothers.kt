@@ -47,7 +47,7 @@ private fun meleeBrother(
                 )
             }
         phase("combat") {
-            weightedSelectorRandom(noRepeatBias = 0.0) {
+            weightedSelectorRandom {
                 +random(attack, weight = 3)
                 +random(setEffect, weight = 1)
             }
@@ -140,7 +140,7 @@ class VeracTheDefiled @Inject constructor(deps: BossDeps) : BossPluginScript(dep
                     }
                 }
             phase("combat") {
-                weightedSelectorRandom(noRepeatBias = 0.0) {
+                weightedSelectorRandom {
                     +random(attack, weight = 3)
                     +random(defiler, weight = 1)
                 }
@@ -167,7 +167,7 @@ class KarilTheTainted @Inject constructor(deps: BossDeps) : BossPluginScript(dep
                     }
                 }
             phase("combat") {
-                weightedSelectorRandom(noRepeatBias = 0.0) {
+                weightedSelectorRandom {
                     +random(attack, weight = 3)
                     +random(taintedShot, weight = 1)
                 }
@@ -244,7 +244,7 @@ class AhrimTheBlighted @Inject constructor(deps: BossDeps) : BossPluginScript(de
                     listOf(plain to weight * (AURA_ODDS - 1), blighted to weight)
                 }
             phase("combat") {
-                weightedSelectorRandom(noRepeatBias = 0.0) {
+                weightedSelectorRandom {
                     for ((ability, weight) in casts) +random(ability, weight = weight)
                 }
             }

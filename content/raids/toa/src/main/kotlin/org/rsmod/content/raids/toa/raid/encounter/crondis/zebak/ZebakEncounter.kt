@@ -300,7 +300,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
     private fun combatTick(access: StandardNpcAccess, target: Player) {
         if (!fighting(access.npc)) return
         if (bloodMagic.tick(paused = specialRunning)) {
-            deps.bossDeps.runAbility(access, target, ZebakBoss.BLOOD_CAST)
+            deps.bossDeps.runAbility(access.npc, target, ZebakBoss.BLOOD_CAST)
         }
     }
 
@@ -491,7 +491,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
             return room
         }
 
-        private fun roomOf(player: Player): ZebakEncounter? =
+        internal fun roomOf(player: Player): ZebakEncounter? =
             player.currentRaid?.encounterOf(player) as? ZebakEncounter
 
         internal fun onZebakHit(npc: Npc, hit: Hit) {

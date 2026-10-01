@@ -10,7 +10,6 @@ import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.bosses.runtime.lob
-import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
@@ -25,7 +24,6 @@ import org.rsmod.api.script.onEvent
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
-import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.movement.MoveSpeed
@@ -48,12 +46,10 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
         )
     }
 
-    private val fights = mutableMapOf<NpcUid, TdFight>()
-
-    private fun fightFor(npc: Npc): TdFight = fights.getOrPut(npc.uid) { TdFight() }
-
-    private fun markFightStarted(fight: TdFight) {
-        if (fight.defencelessCycleStart == 0) fight.defencelessCycleStart = deps.mapClock.cycle
+    private fun markFightStarted(npc: Npc) {
+        if (npc.vars["varn.td_defenceless_at"] == 0) {
+            npc.vars["varn.td_defenceless_at"] = deps.mapClock.cycle + DEFENCELESS_DELAY_TICKS
+        }
     }
 
     override fun ScriptContext.startup() {
@@ -67,26 +63,39 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
         }
         onEvent<NpcStateEvents.Respawn> {
             if (npc.id in demonTypeIds) {
-                fights.remove(npc.uid)
                 npc.vars["varn.td_shield_up"] = 1
-                npc.vars["varn.guaranteed_hit"] = 0
-                if (DEFENCELESS_MODEL_SWAP_ENABLED) npc.resetBodyModel()
+                npc.resetBodyModel()
                 initializeOverheadPrayer(npc)
             }
         }
-        onEvent<NpcStateEvents.Delete> {
-            if (npc.id in demonTypeIds) fights.remove(npc.uid)
-        }
 
-        deps.extensionRegistry.register("td.post_attack") { _, npc, _, _ -> postAttack(npc) }
+        deps.extensionRegistry.register("td.defenceless_model") { _, npc, _, _ ->
+            defencelessModelByType[npc.id]?.let(npc::setBodyModel)
+        }
         deps.extensionRegistry.register("td.fire_bomb") { _, npc, target, _ -> fireBomb(npc, target) }
     }
+
+    private val postAttack: Effect =
+        sequence(
+            whenever(
+                varnIs("varn.td_defenceless_at", 0),
+                setVarn("varn.td_defenceless_at", Now + DEFENCELESS_DELAY_TICKS),
+            ),
+            whenever(
+                varnExpired("varn.td_defenceless_at") and varnIs("varn.td_defenceless", 0),
+                sequence(
+                    setVarn("varn.td_defenceless", 1),
+                    setVarn("varn.guaranteed_hit", 1),
+                    spotanim("spotanim.luc2_undead_accuracy_debuff", slot = DEFENCELESS_SPOT_SLOT),
+                    external("td.defenceless_model"),
+                ),
+            ),
+        )
 
     override val spec =
         boss("npc.tormented_demon_1", "npc.tormented_demon_2") {
             stats(
                 attackRate = TormentedDemonMechanics.SOLO_ATTACK_RATE,
-                aggressionRadius = AGGRO_RANGE,
             )
 
             val melee =
@@ -97,7 +106,7 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
                         damage(0..MELEE_MAX_HIT).roll()
                         type(Melee)
                     }
-                    include(external("td.post_attack"))
+                    include(postAttack)
                 }
 
             val ranged =
@@ -114,7 +123,7 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
                             ),
                         hit = Effect.Hit(damage = Roll(0..RANGED_MAX_HIT), type = Ranged),
                     )
-                    include(external("td.post_attack"))
+                    include(postAttack)
                 }
 
             val magic =
@@ -131,7 +140,7 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
                             ),
                         hit = Effect.Hit(damage = Roll(0..MAGIC_MAX_HIT), type = Magic),
                     )
-                    include(external("td.post_attack"))
+                    include(postAttack)
                 }
 
             val fireBomb =
@@ -160,8 +169,6 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
 
     private fun fireBomb(npc: Npc, target: Player) {
         if (!target.isValidTarget()) return
-        val fight = fightFor(npc)
-        markFightStarted(fight)
 
         val primaryTile = target.coords
         val secondaryTile = randomAdjacentWalkableTile(primaryTile) ?: primaryTile
@@ -202,10 +209,10 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
             }
         }
 
-        fight.defenceless = false
-        fight.defencelessCycleStart = deps.mapClock.cycle
-        if (DEFENCELESS_MODEL_SWAP_ENABLED) npc.resetBodyModel()
-        dropShield(npc, fight)
+        npc.vars["varn.td_defenceless"] = 0
+        npc.vars["varn.td_defenceless_at"] = deps.mapClock.cycle + DEFENCELESS_DELAY_TICKS
+        npc.resetBodyModel()
+        dropShield(npc)
 
         val encounter = deps.encounter(npc)
         val otherStyles = STYLE_PHASES.filter { it != encounter.currentPhaseName }
@@ -248,27 +255,20 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
         return flags and (CollisionFlag.BLOCK_WALK or CollisionFlag.LOC) == 0
     }
 
-    private fun postAttack(npc: Npc) {
-        val fight = fightFor(npc)
-        markFightStarted(fight)
-        updateDefenceless(npc, fight)
-    }
-
-    private fun dropShield(npc: Npc, fight: TdFight) {
+    private fun dropShield(npc: Npc) {
         npc.vars["varn.td_shield_up"] = 0
         npc.spotanim("spotanim.luc2_undead_demon_explosion_fire_spot", slot = SHIELD_SPOT_SLOT)
         updateStyleImmunity(npc, null)
-        updateGuaranteedHit(npc, fight)
+        updateGuaranteedHit(npc)
     }
 
-    private fun updateGuaranteedHit(npc: Npc, fight: TdFight) {
-        val guaranteed = fight.defenceless || npc.vars["varn.td_shield_up"] == 0
+    private fun updateGuaranteedHit(npc: Npc) {
+        val guaranteed = npc.vars["varn.td_defenceless"] == 1 || npc.vars["varn.td_shield_up"] == 0
         npc.vars["varn.guaranteed_hit"] = if (guaranteed) 1 else 0
     }
 
     private fun initializeOverheadPrayer(npc: Npc) {
         val style = HitType.Melee
-        fightFor(npc).overheadStyle = style
         npc.vars["varn.td_overhead_style"] = overheadStyleCode(style)
         updateStyleImmunity(npc, style)
         val index = headIconIndex(style)
@@ -294,44 +294,30 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
         }
     }
 
-    private fun updateDefenceless(npc: Npc, fight: TdFight) {
-        if (fight.defenceless || fight.defencelessCycleStart == 0) return
-        if (deps.mapClock.cycle - fight.defencelessCycleStart >= DEFENCELESS_DELAY_TICKS) {
-            fight.defenceless = true
-            updateGuaranteedHit(npc, fight)
-            npc.spotanim("spotanim.luc2_undead_accuracy_debuff", slot = DEFENCELESS_SPOT_SLOT)
-            if (DEFENCELESS_MODEL_SWAP_ENABLED) {
-                defencelessModelByType[npc.id]?.let { npc.setBodyModel(it) }
-            }
-        }
-    }
-
     private fun onDemonHit(npc: Npc, hit: HitBuilder) {
         if (!hit.isFromPlayer) return
-        val fight = fightFor(npc)
-        markFightStarted(fight)
+        markFightStarted(npc)
         val style = hit.type
         val shieldWasUp = npc.vars["varn.td_shield_up"] == 1
+        val overheadStyle = overheadStyleOf(npc.vars["varn.td_overhead_style"])
 
-        if (!fight.firstHitTaken) {
-            fight.firstHitTaken = true
-            dropShield(npc, fight)
+        if (npc.vars["varn.td_first_hit_taken"] == 0) {
+            npc.vars["varn.td_first_hit_taken"] = 1
+            dropShield(npc)
         } else if (!shieldWasUp) {
             npc.vars["varn.td_shield_up"] = 1
             npc.spotanim("spotanim.luc2_undead_demon_shield_restore_spot", slot = SHIELD_SPOT_SLOT)
-            armStyleImmunityNextTick(npc, fight.overheadStyle)
-            updateGuaranteedHit(npc, fight)
+            armStyleImmunityNextTick(npc, overheadStyle)
+            updateGuaranteedHit(npc)
         } else {
             npc.spotanim("spotanim.luc2_undead_demon_shield_spot", slot = SHIELD_SPOT_SLOT)
         }
 
-        val blockedByOverhead = shieldWasUp && fight.overheadStyle == style
-        fight.damageSinceSwap += if (blockedByOverhead) 0 else hit.damage
-        fight.lastStyleHit = style
+        val blockedByOverhead = shieldWasUp && overheadStyle == style
+        if (!blockedByOverhead) npc.vars["varn.td_damage_since_swap"] += hit.damage
 
-        if (TormentedDemonMechanics.shouldSwapPrayer(fight.damageSinceSwap)) {
-            fight.overheadStyle = style
-            fight.damageSinceSwap = 0
+        if (TormentedDemonMechanics.shouldSwapPrayer(npc.vars["varn.td_damage_since_swap"])) {
+            npc.vars["varn.td_damage_since_swap"] = 0
             npc.vars["varn.td_overhead_style"] = overheadStyleCode(style)
             val index = headIconIndex(style)
             if (index != null) {
@@ -340,7 +326,7 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
                 npc.clearHeadIcon(HEADICON_SLOT)
             }
             armStyleImmunityNextTick(npc, style)
-            deps.suppressAttacks(npc, PRAYER_STALL_TICKS)
+            deps.encounter(npc).nextAttackTick = deps.mapClock.cycle + PRAYER_STALL_TICKS
         }
     }
 
@@ -360,14 +346,13 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
             else -> 0
         }
 
-    private class TdFight {
-        var firstHitTaken: Boolean = false
-        var overheadStyle: HitType? = null
-        var lastStyleHit: HitType? = null
-        var damageSinceSwap: Int = 0
-        var defencelessCycleStart: Int = 0
-        var defenceless: Boolean = false
-    }
+    private fun overheadStyleOf(code: Int): HitType? =
+        when (code) {
+            1 -> HitType.Melee
+            2 -> HitType.Ranged
+            3 -> HitType.Magic
+            else -> null
+        }
 
     private companion object {
         private const val PHASE_MELEE = "style_melee"
@@ -378,20 +363,10 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
         private const val MELEE_RANGE_TILES = 1
         private const val RETREAT_DISTANCE = 3
 
-        private const val AGGRO_RANGE = 8
-
         private const val PRAYER_STALL_TICKS = 6
         private const val DEFENCELESS_DELAY_TICKS = 30
         private const val DEFENCELESS_MODEL_1 = 55475
         private const val DEFENCELESS_MODEL_2 = 55474
-
-        /**
-         * [Npc.setBodyModel]/[Npc.resetBodyModel] (RSProt's `setBodyCustomisation` extended info
-         * block) crashes both the real client and rsprox's decoder on revision 240 with an
-         * `IndexOutOfBoundsException` in `decodeBodyCustomisationV3`. Keep the call sites in place
-         * but disabled until this is fixed upstream.
-         */
-        private const val DEFENCELESS_MODEL_SWAP_ENABLED = false
 
         private const val HEADICON_SLOT = 0
         private const val HEADICON_GRAPHIC = 440

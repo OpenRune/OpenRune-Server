@@ -83,7 +83,7 @@ constructor(
 
     override val spec =
         boss(SPINDEL_LAIR.bossNpc, VENENATIS_LAIR.bossNpc) {
-            stats(attackRate = ATTACK_RATE, aggressionRadius = AGGRO_RANGE)
+            stats(attackRate = ATTACK_RATE)
 
             val melee =
                 ability("melee") {
@@ -169,7 +169,7 @@ constructor(
         npc.vars["varn.venenatis_attacks"] = 0
     }
 
-    private fun onStyleAttackResolved(access: StandardNpcAccess, npc: Npc, target: Player) {
+    private fun onStyleAttackResolved(access: StandardNpcAccess?, npc: Npc, target: Player) {
         val encounter = deps.encounter(npc)
         val style = encounter.currentPhaseName
         val attacksBefore = npc.vars["varn.venenatis_attacks"]
@@ -195,7 +195,7 @@ constructor(
         }
     }
 
-    private fun summonSpiderlings(access: StandardNpcAccess, npc: Npc, target: Player) {
+    private fun summonSpiderlings(access: StandardNpcAccess?, npc: Npc, target: Player) {
         val encounter = deps.encounter(npc)
         val interpreter = EffectInterpreter(npc, target, spec, encounter, deps)
         val effect =
@@ -337,7 +337,6 @@ constructor(
         private const val PHASE_MAGIC = "magic_style"
 
         private const val ATTACK_RATE = 4
-        private const val AGGRO_RANGE = 8
         private const val BLOCK_SIZE = 8
         private const val WEB_ATTACK = 4
 
@@ -399,7 +398,7 @@ class VenenatisSpiderling
 constructor(deps: BossDeps) : BossPluginScript(deps) {
     override val spec =
         boss(SPINDEL_LAIR.spiderlingNpc, VENENATIS_LAIR.spiderlingNpc) {
-            stats(attackRate = 4, aggressionRadius = 1)
+            stats(attackRate = 4)
             val bite =
                 ability("bite") {
                     anim("seq.small_spider_update_attack")

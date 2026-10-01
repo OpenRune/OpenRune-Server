@@ -1,0 +1,21 @@
+[[npc]]
+isServerOnly = true
+id = "npc.ghostx"
+inherit = "npc.ghostx"
+moveRestrict = "NoMove"
+wanderRange = 0
+defaultMode = "None"
+
+[[npc]]
+isServerOnly = true
+id = "npc.skull_skeleton"
+inherit = "npc.skull_skeleton"
+huntRange = 5
+[npc.params]
+"param.attack_anim" = "seq.skeleton_update_attack_weapon"
+"param.npc_attack_type" = "category.attacktype_slash"
+"param.attack_sound" = "synth.skeleton_attack"
+"param.defend_anim" = "seq.skeleton_update_defend"
+"param.defend_sound" = "synth.skelly_hit"
+"param.death_anim" = "seq.skeleton_update_death"
+"param.death_sound" = "synth.skeleton_death"

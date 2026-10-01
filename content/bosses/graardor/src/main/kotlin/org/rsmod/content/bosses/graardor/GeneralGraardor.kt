@@ -35,7 +35,7 @@ class GeneralGraardor @Inject constructor(deps: BossDeps) : BossPluginScript(dep
 
     override val spec =
         boss(GENERAL) {
-            stats(attackRate = 5, aggressionRadius = 8)
+            stats(attackRate = 5)
 
             val melee =
                 ability("melee") {

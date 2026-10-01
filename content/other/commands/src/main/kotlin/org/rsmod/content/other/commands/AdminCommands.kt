@@ -13,6 +13,7 @@ import kotlin.math.max
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.death.prepareAdminDieTest
@@ -47,6 +48,7 @@ import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.spells.autocast.MagicSpellbookManager
 import org.rsmod.api.utils.format.formatAmount
 import org.rsmod.api.utils.system.SafeServiceExit
 import org.rsmod.game.GameUpdate
@@ -86,6 +88,7 @@ constructor(
     private val deathKillHooks: Set<NpcDeathKillHook>,
     private val instanceRegistry: BossInstanceRegistry,
     private val injector: Injector,
+    private val spellbooks: MagicSpellbookManager,
 ) : PluginScript() {
     private val logger = InlineLogger()
 
@@ -143,6 +146,10 @@ constructor(
 
         onCommand("npcadd", "Spawn npc", ::npcAdd) {
             invalidArgs = "Use as ::npcadd duration npcDebugNameOrId (ex: 100 prison_pete)"
+        }
+
+        onCommand("npcgrid", "Spawn a 3x3 grid of immobile npcs", ::npcGrid) {
+            invalidArgs = "Use as ::npcgrid npcDebugName [duration] (ex: ::npcgrid goblin 500)"
         }
 
         onCommand("invadd", "Spawn obj into inv", ::invAdd)
@@ -214,6 +221,14 @@ constructor(
             invalidArgs =
                 "Usage: ::die pvm|pvp [true|false]  (second arg = in Wilderness, default false)"
         }
+        onCommand(
+            "spellbook",
+            "Swap spellbook (standard|ancients|lunars|arceuus)",
+            ::spellbook,
+            aliases = listOf("book"),
+        ) {
+            invalidArgs = "Use as ::spellbook standard|ancients|lunars|arceuus"
+        }
         onCommand("god", "Toggle god mode (invincibility)", ::god)
         onCommand(
             "componentdebug",
@@ -275,6 +290,36 @@ constructor(
                 }
             player.setGamemode(mode)
             player.mes("Gamemode set to $mode (varbit.ironman synced; persists on logout).")
+        }
+
+    private fun spellbook(cheat: Cheat) =
+        with(cheat) {
+            val book =
+                when (args.getOrNull(0)?.lowercase()) {
+                    "standard",
+                    "normal",
+                    "modern",
+                    "0" -> Spellbook.Standard
+                    "ancients",
+                    "ancient",
+                    "1" -> Spellbook.Ancients
+                    "lunars",
+                    "lunar",
+                    "2" -> Spellbook.Lunars
+                    "arceuus",
+                    "necro",
+                    "3" -> Spellbook.Arceuus
+                    else -> {
+                        player.mes("Use as ::spellbook standard|ancients|lunars|arceuus")
+                        return
+                    }
+                }
+            when (spellbooks.setSpellbook(player, book)) {
+                is MagicSpellbookManager.ChangeResult.Changed ->
+                    player.mes("Spellbook set to $book.")
+                is MagicSpellbookManager.ChangeResult.Unchanged ->
+                    player.mes("You are already on the $book spellbook.")
+            }
         }
 
     private fun god(cheat: Cheat) =
@@ -576,6 +621,25 @@ constructor(
             npc.mode = NpcMode.None
             npcRepo.add(npc, duration)
             player.mes("Spawned npc `${args[1]}` (duration: $duration cycles)")
+        }
+
+    private fun npcGrid(cheat: Cheat) =
+        with(cheat) {
+            val type = ServerCacheManager.getNpc("npc.${args[0]}".asRSCM())
+            if (type == null) {
+                player.mes("That npc does not exist: npc.${args[0]}")
+                return
+            }
+            val duration = args.getOrNull(1)?.toIntOrNull() ?: 500
+            val step = type.size
+            val origin = player.coords.translate(-step, step * 2)
+            for (dx in 0 until 3) {
+                for (dz in 0 until 3) {
+                    val npc = Npc(type, origin.translate(dx * step, dz * step))
+                    npcRepo.add(npc, duration)
+                }
+            }
+            player.mes("Spawned 3x3 grid of `${args[0]}` (duration: $duration cycles)")
         }
 
     private fun testLoot(cheat: Cheat) =

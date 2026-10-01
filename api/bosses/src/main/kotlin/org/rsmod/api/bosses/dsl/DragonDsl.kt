@@ -12,7 +12,7 @@ fun dragon(
     freezeTicks: Int = 0,
     attackRate: Int = 4,
 ): BossSpec = boss(npcType) {
-    stats(attackRate = attackRate, aggressionRadius = 8)
+    stats(attackRate = attackRate)
     val isRanged = ranged || metal
     val fireType = if (metal) DragonfireMetal else Dragonfire
     val melee = ability("melee") {
@@ -55,7 +55,7 @@ fun wyvern(
     freezeTicks: Int = 11,
     attackRate: Int = 4,
 ): BossSpec = boss(npcType) {
-    stats(attackRate = attackRate, aggressionRadius = 8)
+    stats(attackRate = attackRate)
     val melee = ability("melee") {
         anim("seq.dragon_attack")
         hit { damage(0..meleeMax).roll(); type(Melee) }

@@ -13,6 +13,7 @@ import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.runtime.bossProjectile
 import org.rsmod.api.bosses.runtime.suppressAttacks
+import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.combat.commons.CombatEffects
 import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.npc.heal
@@ -55,14 +56,14 @@ constructor(
     private val strangle: VardorvisStrangle,
 ) : BossPluginScript(deps) {
 
-    private val nextHeadGazeTick = IdentityHashMap<Npc, Int>()
     private val arenaBarrier = IdentityHashMap<Npc, List<LocInfo>>()
-    private val lastStrangleTick = IdentityHashMap<Npc, Int>()
 
     override fun ScriptContext.startup() {
         BossCombat.register(this, spec, deps, onModifyHit = { scaleStatsToHp(npc) })
         registerHeadGaze()
         registerDash()
+        deps.extensionRegistry.register(AXES) { _, npc, _, _ -> spawnAxeSet(npc) }
+        deps.extensionRegistry.register(STRANGLE) { _, npc, target, _ -> beginStrangle(npc, target) }
 
         val bossIds = spec.npcTypes.mapNotNullTo(mutableSetOf()) { it.npcId() }
         val vardorvisType = ServerCacheManager.getNpc("npc.vardorvis".asRSCM(RSCMType.NPC))
@@ -83,20 +84,15 @@ constructor(
             }
         }
         onEvent<NpcStateEvents.Delete> {
-            if (npc.type.id in bossIds) {
-                nextHeadGazeTick.remove(npc)
-                lastStrangleTick.remove(npc)
-                dropArenaBarrier(npc)
-            }
+            if (npc.type.id in bossIds) dropArenaBarrier(npc)
         }
 
         if (vardorvisType != null) {
             onNpcHit(vardorvisType) {
                 if (npc.hitpoints > 0) {
-                    val firstHit = npc !in arenaBarrier
-                    raiseArenaBarrier(npc)
-                    if (firstHit) {
-                        deps.worldQueues.add(AXE_FIRST_DELAY) { runAxeSet(npc, allowStrangle = false) }
+                    if (npc !in arenaBarrier) {
+                        raiseArenaBarrier(npc)
+                        scheduleFirstAxes(npc)
                     }
                 } else {
                     if (isAwakened(npc)) npc.respawns = false
@@ -198,13 +194,13 @@ constructor(
     private fun registerHeadGaze() {
         deps.extensionRegistry.register(MAYBE_HEAD_GAZE) { _, npc, target, _ ->
             val now = deps.mapClock.cycle
-            val ready = now >= (nextHeadGazeTick[npc] ?: 0)
+            val ready = now >= npc.vars["varn.vardorvis_next_head_gaze"]
             val inRange =
                 target.isValidTarget() &&
                     target.coords.chebyshevDistance(npc.coords) <= HEAD_GAZE_RANGE
             val belowHp = npc.hitpoints in 1 until HEAD_GAZE_HP_THRESHOLD
             if (ready && inRange && belowHp) {
-                nextHeadGazeTick[npc] =
+                npc.vars["varn.vardorvis_next_head_gaze"] =
                     now + HEAD_GAZE_MIN_INTERVAL + deps.random.of(HEAD_GAZE_INTERVAL_SPREAD)
                 deps.worldQueues.add(HEAD_GAZE_LAUNCH_DELAY) {
                     if (npc.isSlotAssigned && npc.hitpoints > 0 && target.isValidTarget()) {
@@ -260,10 +256,15 @@ constructor(
         }
     }
 
-    private fun runAxeSet(npc: Npc, allowStrangle: Boolean = true) {
-        if (npc !in arenaBarrier || npc.hitpoints <= 0 || !npc.isSlotAssigned) return
+    private fun scheduleFirstAxes(npc: Npc) {
+        val firstAxes = deps.mapClock.cycle + AXE_FIRST_DELAY
+        npc.vars["varn.vardorvis_next_axes"] = firstAxes
+        // The opening set is always axes, never a strangle.
+        npc.vars["varn.vardorvis_strangle_ready_at"] = firstAxes + 1
+    }
 
-        if (allowStrangle && maybeStrangleInsteadOfAxes(npc)) return
+    private fun spawnAxeSet(npc: Npc) {
+        if (npc !in arenaBarrier || npc.hitpoints <= 0 || !npc.isSlotAssigned) return
 
         val awakened = isAwakened(npc)
         val count =
@@ -283,22 +284,10 @@ constructor(
                 anchors.forEach { handoffAxe(npc, centre, it, awakened) }
             }
         }
-
-        val enrage = awakened || npc.hpFraction() <= ENRAGE_HP_FRACTION
-        val interval = if (enrage) AXE_INTERVAL_ENRAGE else AXE_INTERVAL_NORMAL
-        deps.worldQueues.add(interval) { runAxeSet(npc) }
     }
 
-    private fun maybeStrangleInsteadOfAxes(npc: Npc): Boolean {
-        val now = deps.mapClock.cycle
-        val last = lastStrangleTick[npc]
-        if (last != null && now - last < STRANGLE_MIN_GAP) return false
-        if (!deps.random.randomBoolean(STRANGLE_SLOT_CHANCE)) return false
-
-        val target = arenaTarget(npc) ?: return false
-        lastStrangleTick[npc] = now
+    private fun beginStrangle(npc: Npc, target: Player) {
         deps.suppressAttacks(npc, STRANGLE_SUPPRESS_TICKS)
-
         npc.anim(ENTANGLE_START_SEQ)
         deps.worldQueues.add(STRANGLE_TELEGRAPH) {
             if (npc.isSlotAssigned && npc.hitpoints > 0 && target.isValidTarget()) {
@@ -308,22 +297,7 @@ constructor(
                 }
             }
         }
-        deps.worldQueues.add(
-            STRANGLE_TELEGRAPH + VardorvisStrangle.TOTAL_TICKS + STRANGLE_AXE_RESUME_GAP
-        ) {
-            runAxeSet(npc)
-        }
-        return true
     }
-
-    private fun arenaTarget(npc: Npc): Player? =
-        deps.playerList
-            .filter {
-                it.isValidTarget() &&
-                    it.coords.level == npc.coords.level &&
-                    it.coords.chebyshevDistance(npc.spawnCoords) <= ARENA_EAST_DX
-            }
-            .minByOrNull { it.coords.chebyshevDistance(npc.coords) }
 
     private fun pickAnchors(count: Int): List<VardorvisAxes.Anchor> {
         val pool = VardorvisAxes.ANCHORS.toMutableList()
@@ -468,7 +442,6 @@ constructor(
 
         val plan = VardorvisDash.plan(darts, deps.random::of)
 
-        deps.suppressAttacks(npc, darts)
         npc.ignoreCombatInteractions = true
         npc.clearFacingLock()
 
@@ -586,9 +559,6 @@ constructor(
 
     private fun isAwakened(npc: Npc): Boolean = npc.vars["varn.awakened_state"] == 1
 
-    private fun Npc.hpFraction(): Double =
-        hitpoints.toDouble() / baseHitpointsLvl.coerceAtLeast(1)
-
     private fun CoordGrid.inArenaInterior(centre: CoordGrid): Boolean {
         val dx = x - centre.x
         val dz = z - centre.z
@@ -653,9 +623,34 @@ constructor(
         npc.strengthLvl = VardorvisScaling.strength(hpFraction, npc.type.strength)
     }
 
+    private fun axeSetWhenDue(interval: Int): Effect {
+        val axes =
+            sequence(
+                whenever(
+                    varnIs("varn.awakened_state", 1),
+                    setVarn("varn.vardorvis_next_axes", Now + AXE_INTERVAL_ENRAGE),
+                    setVarn("varn.vardorvis_next_axes", Now + interval),
+                ),
+                external(AXES),
+            )
+        val strangleInstead =
+            sequence(
+                setVarn("varn.vardorvis_strangle_ready_at", Now + STRANGLE_MIN_GAP),
+                setVarn("varn.vardorvis_next_axes", Now + STRANGLE_AXE_DELAY),
+                external(STRANGLE),
+            )
+        val strangleReady =
+            varnIs("varn.vardorvis_strangle_ready_at", 0) or
+                varnExpired("varn.vardorvis_strangle_ready_at")
+        return whenever(
+            varnExpired("varn.vardorvis_next_axes"),
+            whenever(strangleReady, oneOf(strangleInstead, axes, axes), axes),
+        )
+    }
+
     override val spec =
         boss("npc.vardorvis") {
-            stats(attackRate = ATTACK_RATE, aggressionRadius = AGGRESSION_RADIUS)
+            stats(attackRate = ATTACK_RATE)
 
             val melee =
                 ability("melee") {
@@ -667,9 +662,10 @@ constructor(
                     include(external(MAYBE_HEAD_GAZE))
                 }
 
-            val dash = ability("dash") { include(external(DASH)) }
+            val dash = ability("dash", external(DASH), attackDelay = ATTACK_RATE + 2)
 
             phase("main") {
+                every(1, axeSetWhenDue(AXE_INTERVAL_NORMAL))
                 weightedSelectorRandom {
                     +random(melee, weight = 6, requires = WithinMeleeRange)
                     +random(dash, weight = 1, requires = WithinMeleeRange, cooldown = DASH_COOLDOWN)
@@ -677,6 +673,7 @@ constructor(
             }
 
             phase("enrage", entryHp = ENRAGE_HP_FRACTION) {
+                every(1, axeSetWhenDue(AXE_INTERVAL_ENRAGE))
                 weightedSelectorRandom {
                     +random(melee, weight = 5, requires = WithinMeleeRange)
                     +random(dash, weight = 2, requires = WithinMeleeRange, cooldown = DASH_COOLDOWN_ENRAGE)
@@ -688,6 +685,8 @@ constructor(
         private const val MAYBE_HEAD_GAZE = "vardorvis.maybe_head_gaze"
 
         private const val DASH = "vardorvis.dash"
+        private const val AXES = "vardorvis.axes"
+        private const val STRANGLE = "vardorvis.strangle"
 
         private const val AXE_TENDRIL_NPC = "npc.vardorvis_big_tentacle"
         private const val AXE_FLYING_NPC = "npc.vardorvis_axe"
@@ -749,9 +748,7 @@ constructor(
         private const val PROTECT_FROM_MELEE = "varbit.prayer_protectfrommelee"
 
         private const val ATTACK_RATE = 5
-        private const val AGGRESSION_RADIUS = 10
 
-        private const val STRANGLE_SLOT_CHANCE = 3
         private const val STRANGLE_MIN_GAP = 25
         private const val STRANGLE_TELEGRAPH = 2
 
@@ -764,6 +761,8 @@ constructor(
             STRANGLE_TELEGRAPH + VardorvisStrangle.TOTAL_TICKS + STRANGLE_GRACE - ATTACK_RATE
 
         private const val STRANGLE_AXE_RESUME_GAP = 13
+        private const val STRANGLE_AXE_DELAY =
+            STRANGLE_TELEGRAPH + VardorvisStrangle.TOTAL_TICKS + STRANGLE_AXE_RESUME_GAP
 
         private const val SPAWN_SEQ = "seq.npc_vardorvis_01_spawn_01"
         private const val BOSS_SIZE = 2

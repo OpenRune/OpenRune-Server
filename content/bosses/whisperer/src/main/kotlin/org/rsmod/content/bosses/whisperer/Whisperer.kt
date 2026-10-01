@@ -1027,7 +1027,7 @@ constructor(
 
     override val spec: BossSpec by lazy {
         boss(SPAWN_NPC, FORM_NPC, MELEE_NPC) {
-            stats(attackRate = ATTACK_RATE, aggressionRadius = AGGRESSION_RADIUS)
+            stats(attackRate = ATTACK_RATE)
 
             val ranged = ability("ranged_volley", volley(Style.Ranged))
             val magic = ability("magic_volley", volley(Style.Magic))
@@ -1093,7 +1093,6 @@ constructor(
         private const val SPAWN_IDLE_SEQ = "seq.npc_whisperer_01_spawn_02"
 
         private const val ATTACK_RATE = WHISPERER_ATTACK_RATE
-        private const val AGGRESSION_RADIUS = 15
         private const val TENTACLE_SPAWN_WAIT = 2
 
         private const val SHOT_START_DELAY = 30

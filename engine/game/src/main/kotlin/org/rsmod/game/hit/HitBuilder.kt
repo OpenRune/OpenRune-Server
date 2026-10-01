@@ -1,5 +1,6 @@
 package org.rsmod.game.hit
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.types.ItemServerType
 
 public class HitBuilder(
@@ -30,6 +31,12 @@ public class HitBuilder(
     public fun isRighthandObj(type: ItemServerType): Boolean = type.id == righthandType
 
     public fun isSecondaryObj(type: ItemServerType): Boolean = type.id == secondaryType
+
+    public fun righthandType(): ItemServerType? =
+        righthandType?.let { ServerCacheManager.getItem(it) }
+
+    public fun secondaryType(): ItemServerType? =
+        secondaryType?.let { ServerCacheManager.getItem(it) }
 
     public fun build(): Hit {
         val hitmark = buildHitmark()

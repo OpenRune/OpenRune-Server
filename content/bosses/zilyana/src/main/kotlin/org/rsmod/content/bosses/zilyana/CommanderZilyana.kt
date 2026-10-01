@@ -7,7 +7,6 @@ import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
-import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.script.onEvent
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.npc.NpcStateEvents
@@ -35,7 +34,7 @@ class CommanderZilyana @Inject constructor(deps: BossDeps) : BossPluginScript(de
 
     override val spec =
         boss(AVATAR) {
-            stats(attackRate = 5, aggressionRadius = 8)
+            stats(attackRate = 5)
             val magic =
                 ability("magic") {
                     anim("seq.godwars_saradomin_magic_attack")
