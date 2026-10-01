@@ -296,10 +296,10 @@ class RspCycle(
         playerExtendedInfo.setTinting(
             startTime = tint.startCycle,
             endTime = tint.endCycle,
-            hue = tint.hue,
-            saturation = tint.saturation,
-            lightness = tint.lightness,
-            weight = tint.weight,
+            hue = tint.hue and 0xFF,
+            saturation = tint.saturation and 0xFF,
+            lightness = tint.lightness and 0xFF,
+            weight = tint.weight and 0xFF,
         )
     }
 

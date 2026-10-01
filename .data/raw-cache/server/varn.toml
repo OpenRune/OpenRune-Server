@@ -156,3 +156,27 @@ id = "varn.td_defenceless_at"
 
 [[varn]]
 id = "varn.dark_lure_end_clock"
+
+[[varn]]
+id = "varn.dom_charge"
+
+[[varn]]
+id = "varn.dom_fight_ticks"
+
+[[varn]]
+id = "varn.dom_attacks"
+
+[[varn]]
+id = "varn.dom_shield_stashed_hp"
+
+[[varn]]
+id = "varn.dom_charge_end"
+
+[[varn]]
+id = "varn.dom_charge_loop_from"
+
+[[varn]]
+id = "varn.dom_rotation_step"
+
+[[varn]]
+id = "varn.dom_step_attacks"
