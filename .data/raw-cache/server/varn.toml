@@ -129,3 +129,12 @@ id = "varn.muspah_pre_shield_max_hp"
 
 [[varn]]
 id = "varn.muspah_final_attacks"
+
+[[varn]]
+id = "varn.vardorvis_next_head_gaze"
+
+[[varn]]
+id = "varn.vardorvis_strangle_ready_at"
+
+[[varn]]
+id = "varn.vardorvis_next_axes"
