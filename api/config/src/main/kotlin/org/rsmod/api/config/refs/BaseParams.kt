@@ -154,6 +154,7 @@ object BaseParams {
     val headbar: ParamHeadbar = param("headbar")
     val boss_hp_bar_mode: ParamInt = param("boss_hp_bar_mode")
     val hitpoints_locked: ParamBool = param("hitpoints_locked")
+    val attackable_on_cooldown: ParamBool = param("attackable_on_cooldown")
     val boss_hp_bar_colour_back: ParamInt = param("boss_hp_bar_colour_back")
     val boss_hp_bar_colour_sliding: ParamInt = param("boss_hp_bar_colour_sliding")
     val boss_hp_bar_colour_remaining: ParamInt = param("boss_hp_bar_colour_remaining")

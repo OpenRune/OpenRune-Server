@@ -101,6 +101,13 @@ constructor(
     }
 
     /**
+     * [isAttackDelayed] for an attack on [target]. A target with `param.attackable_on_cooldown`
+     * can always be attacked; the attack still sets the player's next attack delay as usual.
+     */
+    public fun isAttackDelayed(player: Player, target: Npc): Boolean =
+        isAttackDelayed(player) && target.visType.paramOrNull(params.attackable_on_cooldown) != true
+
+    /**
      * Maintains combat engagement with the given [target] by calling the appropriate interaction
      * function.
      *

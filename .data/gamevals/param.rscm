@@ -329,3 +329,4 @@ boss_hp_bar_colour_sliding=65554
 boss_hp_bar_colour_remaining=65555
 killcount_varp_awakened=65556
 hitpoints_locked=65557
+attackable_on_cooldown=65559

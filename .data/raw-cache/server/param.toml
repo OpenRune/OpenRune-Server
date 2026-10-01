@@ -872,3 +872,10 @@ isServerOnly = true
 type = "BOOLEAN"
 defaultInt = 0
 isMembers = true
+
+[[params]]
+id = "param.attackable_on_cooldown"
+isServerOnly = true
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
