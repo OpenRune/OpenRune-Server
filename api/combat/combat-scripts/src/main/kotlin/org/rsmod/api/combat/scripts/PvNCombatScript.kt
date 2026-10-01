@@ -1,8 +1,6 @@
 package org.rsmod.api.combat.scripts
 
 import jakarta.inject.Inject
-import org.rsmod.api.death.NpcAttackValidateHook
-import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.combat.ACTIVE_COMBAT_DELAY
 import org.rsmod.api.combat.PvNCombat
 import org.rsmod.api.combat.commons.magic.MagicSpell
@@ -12,15 +10,19 @@ import org.rsmod.api.combat.npc.aggressivePlayer
 import org.rsmod.api.combat.npc.lastCombat
 import org.rsmod.api.combat.player.aggressiveNpc
 import org.rsmod.api.combat.player.attackRange
+import org.rsmod.api.combat.player.hasMagicSpecialSelected
 import org.rsmod.api.combat.player.resolveAutocastSpell
 import org.rsmod.api.combat.player.resolveCombatAttack
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.combat.weapon.types.AttackTypes
+import org.rsmod.api.death.NpcAttackValidateHook
+import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
 import org.rsmod.api.script.advanced.onDefaultApNpc2
 import org.rsmod.api.script.advanced.onDefaultOpNpc2
 import org.rsmod.api.script.onApNpcT
+import org.rsmod.api.specials.SpecialAttackRegistry
 import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.api.spells.autocast.AutocastWeapons
 import org.rsmod.game.entity.Npc
@@ -37,6 +39,7 @@ constructor(
     private val spells: MagicSpellRegistry,
     private val runes: MagicRuneManager,
     private val autocast: AutocastWeapons,
+    private val specials: SpecialAttackRegistry,
     private val attackValidateHooks: Set<NpcAttackValidateHook>,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
@@ -50,7 +53,7 @@ constructor(
     private suspend fun ProtectedAccess.attemptCombatAp(target: Npc) {
         val type = types.get(player)
         val style = styles.get(player)
-        val attackRange = attackRange(style)
+        val attackRange = attackRange(style, specials)
         val canAttack = canAttack(target)
 
         // Weapons such as salamanders have an attack range of `1` but can attack with both ranged
@@ -70,8 +73,8 @@ constructor(
             return
         }
 
-        val spell = resolveAutocastSpell(spells, runes, autocast)
-        val attack = resolveCombatAttack(player.righthand, type, style, spell)
+        val spell = resolveAutocastSpell(spells, runes, autocast, specials)
+        val attack = resolveCombatAttack(player.righthand, type, style, spell, hasMagicSpecialSelected(specials))
         combat.attack(this, target, attack)
     }
 
@@ -82,8 +85,8 @@ constructor(
         val type = types.get(player)
         val style = styles.get(player)
 
-        val spell = resolveAutocastSpell(spells, runes, autocast)
-        val attack = resolveCombatAttack(player.righthand, type, style, spell)
+        val spell = resolveAutocastSpell(spells, runes, autocast, specials)
+        val attack = resolveCombatAttack(player.righthand, type, style, spell, hasMagicSpecialSelected(specials))
         combat.attack(this, target, attack)
     }
 

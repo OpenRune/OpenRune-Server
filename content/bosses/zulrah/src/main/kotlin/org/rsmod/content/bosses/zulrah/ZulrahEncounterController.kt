@@ -18,6 +18,8 @@ import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.npc.queueDeath
+import org.rsmod.api.npc.respawn.BossRespawnPolicy
+import org.rsmod.api.npc.respawn.BossRespawnTimers
 import org.rsmod.api.player.output.clearMapFlag
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.repo.loc.LocRepository
@@ -35,6 +37,7 @@ import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
+import org.rsmod.game.map.Direction
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.collision.CollisionFlagMap
@@ -51,6 +54,7 @@ internal class ZulrahEncounterController @Inject constructor(
     private val rayCast: RayCastValidator,
     private val combat: ZulrahCombat,
     private val deps: BossDeps,
+    private val bossRespawns: BossRespawnTimers,
 ) {
     private enum class State { Fighting, Dying, Finished }
 
@@ -61,6 +65,7 @@ internal class ZulrahEncounterController @Inject constructor(
         val origin: CoordGrid,
     ) {
         var state = State.Fighting
+        var respawnCycle = Int.MAX_VALUE
         var submerged = false
         val clouds = mutableMapOf<CoordGrid, Cloud>()
         val snakes = mutableSetOf<Npc>()
@@ -83,6 +88,44 @@ internal class ZulrahEncounterController @Inject constructor(
     private val fights = mutableMapOf<InstanceId, Fight>()
     private val npcFights = mutableMapOf<Npc, Fight>()
     private val arenaTypes = mutableMapOf<String, NpcServerType>()
+
+    fun spawnZulrah(player: Player, session: InstanceSession) {
+        if (player.loggingOut || player.pendingLogout || players.none { it === player }) return
+        if (instances.sessionForId(session.id) !== session) return
+        if (instances.sessionForPlayer(player) !== session) return
+        if (session.key != ZulrahIsland.KEY || session.owner != player.uuid) return
+        if (player.uuid !in session.occupants || player.hitpoints <= 0) return
+        val arrival = instances.resolveCoord(session, ZulrahIsland.arrival) ?: return
+        if (player.coords.level != arrival.level || player.coords.chebyshevDistance(arrival) > 64) return
+
+        val cached = requireNotNull(
+            ServerCacheManager.getNpc(ZulrahIsland.RANGED_FORM.asRSCM(RSCMType.NPC)),
+        )
+        if (instances.npcsForInstance(session.id).any { it.isSlotAssigned && it.id == cached.id }) return
+        val coords = instances.resolveCoord(session, ZulrahIsland.openingSpawn) ?: return
+
+        // Per-spawn movement settings; do not mutate the shared cache definition.
+        val type = cached.copy(
+            maxRange = 64,
+            wanderRange = 0,
+            defaultMode = NpcMode.None,
+        ).also {
+            it.paramMap = cached.paramMap
+        }
+        val npc = Npc(type, coords).apply {
+            respawnDir = Direction.South
+            faceDirection(Direction.South)
+            movementLocked = true
+            // These settings only drive the NPC's BossDSL tick, not player attack range/LOS.
+            apRangeOverride = 64
+            apRequiresLineOfSight = false
+        }
+        npcs.add(npc, Int.MAX_VALUE)
+        npc.respawns = false
+        check(instances.registerSessionNpc(player, npc))
+        register(player, session, npc)
+        npc.apPlayer2(player, interactions)
+    }
 
     fun register(owner: Player, session: InstanceSession, npc: Npc) {
         check(session.key == ZulrahIsland.KEY && session.owner == owner.uuid)
@@ -130,6 +173,14 @@ internal class ZulrahEncounterController @Inject constructor(
         for (fight in fights.values.toList()) {
             if (!valid(fight)) {
                 end(fight.id)
+                continue
+            }
+            if (fight.state == State.Finished) {
+                if (tick >= fight.respawnCycle) {
+                    val session = instances.sessionForId(fight.id) ?: continue
+                    end(fight.id)
+                    spawnZulrah(fight.owner, session)
+                }
                 continue
             }
             if (fight.state != State.Fighting || fight.npc.hitpoints <= 0) continue
@@ -396,6 +447,9 @@ internal class ZulrahEncounterController @Inject constructor(
         val dropCoords = fight.owner.coords
         val deathCoords = npc.coords
         fight.state = State.Finished
+        fight.respawnCycle = bossRespawns.schedule(
+            npc, BossRespawnPolicy.OTHER_BOSS_TICKS, retainAfterDelete = true,
+        )
         if (npc.isSlotAssigned) npcs.del(npc, Int.MAX_VALUE)
         try {
             if (spawnDrops != null) {
@@ -429,14 +483,17 @@ internal class ZulrahEncounterController @Inject constructor(
 
     fun end(instanceId: InstanceId) {
         val fight = fights.remove(instanceId) ?: return
+        bossRespawns.cancel(fight.npc)
         npcFights.remove(fight.npc)
         clearHazards(fight)
         fight.exit?.let { locs.del(it, Int.MAX_VALUE) }
+        instances.detachNpc(fight.npc)
         if (fight.npc.isSlotAssigned) npcs.del(fight.npc, Int.MAX_VALUE)
     }
 
     fun deleted(npc: Npc) {
         val fight = npcFights.remove(npc) ?: return
+        instances.detachNpc(npc)
         fight.snakes.remove(npc)
         fight.dyingSnakes.remove(npc)
         if (npc === fight.npc && fight.state != State.Finished) {
@@ -450,6 +507,7 @@ internal class ZulrahEncounterController @Inject constructor(
         fight.snakes.remove(snake)
         fight.dyingSnakes.remove(snake)
         npcFights.remove(snake)
+        instances.detachNpc(snake)
         if (snake.isSlotAssigned) npcs.del(snake, Int.MAX_VALUE)
     }
 

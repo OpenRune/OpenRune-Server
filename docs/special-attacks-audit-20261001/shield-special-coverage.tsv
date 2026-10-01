@@ -1,0 +1,7 @@
+id	symbol	name	charged_form	in_energy_enum	registered_kind	handler
+11283	obj.dragonfire_shield	Dragonfire shield	true	true	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1
+11284	obj.dragonfire_shield_uncharged	Dragonfire shield	false	false	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1
+22002	obj.dragonfire_ward	Dragonfire ward	true	true	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1
+22003	obj.dragonfire_ward_uncharged	Dragonfire ward	false	false	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1
+21633	obj.wyvern_shield	Ancient wyvern shield	true	true	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1
+21634	obj.wyvern_shield_uncharged	Ancient wyvern shield	false	false	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1

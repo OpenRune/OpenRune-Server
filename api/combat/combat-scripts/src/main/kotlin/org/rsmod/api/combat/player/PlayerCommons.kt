@@ -14,10 +14,12 @@ import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.commons.types.RangedAttackType
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.player.lefthand
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
 import org.rsmod.api.specials.SpecialAttack
 import org.rsmod.api.specials.SpecialAttackRegistry
+import org.rsmod.api.specials.SpecialAttackType
 import org.rsmod.api.specials.energy.SpecialAttackEnergy
 import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.api.spells.autocast.AutocastWeapons
@@ -26,8 +28,14 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.type.getInvObj
 
-internal fun ProtectedAccess.attackRange(style: AttackStyle?): Int =
-    if (autocastEnabled && autocastSpell > 0) {
+internal fun ProtectedAccess.attackRange(
+    style: AttackStyle?,
+    specials: SpecialAttackRegistry? = null,
+): Int =
+    if (specialAttackType == SpecialAttackType.Shield ||
+        specials != null && hasMagicSpecialSelected(specials) ||
+        autocastEnabled && autocastSpell > 0
+    ) {
         MAGIC_ATTACK_RANGE
     } else {
         weaponAttackRange(style)
@@ -55,8 +63,11 @@ internal fun ProtectedAccess.resolveCombatAttack(
     type: AttackType?,
     style: AttackStyle?,
     spell: MagicSpell?,
+    magicSpecial: Boolean = false,
 ): CombatAttack.PlayerAttack =
     when {
+        magicSpecial -> CombatAttack.Staff(checkNotNull(weapon), MagicAttackStyle.from(style))
+
         spell != null -> {
             CombatAttack.Spell(weapon, spell, defensiveCasting)
         }
@@ -95,7 +106,10 @@ internal fun ProtectedAccess.resolveAutocastSpell(
     spells: MagicSpellRegistry,
     runes: MagicRuneManager,
     autocast: AutocastWeapons,
+    specials: SpecialAttackRegistry? = null,
 ): MagicSpell? {
+    // Weapon and shield specials do not consume runes or require a valid autocast selection.
+    if (specials != null && (hasMagicSpecialSelected(specials) || hasShieldSpecialSelected(specials))) return null
     if (!autocastEnabled) {
         return null
     }
@@ -125,6 +139,16 @@ internal fun ProtectedAccess.resolveAutocastSpell(
     }
 
     return spell
+}
+
+internal fun ProtectedAccess.hasMagicSpecialSelected(specials: SpecialAttackRegistry): Boolean {
+    val weapon = player.righthand ?: return false
+    return specialAttackType == SpecialAttackType.Weapon && specials[weapon] is SpecialAttack.Magic
+}
+
+internal fun ProtectedAccess.hasShieldSpecialSelected(specials: SpecialAttackRegistry): Boolean {
+    val shield = player.lefthand ?: return false
+    return specialAttackType == SpecialAttackType.Shield && specials[shield] is SpecialAttack.Shield
 }
 
 internal suspend fun ProtectedAccess.activateMeleeSpecial(
@@ -225,7 +249,11 @@ internal suspend fun ProtectedAccess.activateShieldSpecial(
     target: PathingEntity,
     shield: InvObj?,
     specials: SpecialAttackRegistry,
-): Boolean = TODO()
+): Boolean {
+    val special = shield?.let { specials[it] } as? SpecialAttack.Shield ?: return false
+    special.attack(this, target)
+    return true
+}
 
 internal fun ProtectedAccess.setPkVars(target: Player) {
     pkPrey2 = pkPrey1

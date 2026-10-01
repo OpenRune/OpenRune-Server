@@ -90,7 +90,7 @@ constructor(
         }
         player.followerNpc = npc.uid.packed
         // The first login post-tick runs before the main tick enables automatic varp transmission.
-        if (player.processedMapClock == 0) {
+        if (player.processedMapClock <= 0) {
             player.resyncVar("varp.follower_npc")
         }
         player.followerObj = form.objId

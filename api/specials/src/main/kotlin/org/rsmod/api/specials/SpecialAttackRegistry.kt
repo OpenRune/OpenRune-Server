@@ -2,11 +2,11 @@ package org.rsmod.api.specials
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.specials.combat.MagicSpecialAttack
 import org.rsmod.api.specials.combat.MeleeSpecialAttack
 import org.rsmod.api.specials.combat.RangedSpecialAttack
+import org.rsmod.api.specials.combat.ShieldSpecialAttack
 import org.rsmod.api.specials.instant.InstantSpecialAttack
 import org.rsmod.api.specials.weapon.SpecialAttackWeapons
 import org.rsmod.game.inv.InvObj
@@ -15,6 +15,13 @@ public class SpecialAttackRegistry @Inject constructor(private val weapons: Spec
     private val specials = hashMapOf<Int, SpecialAttack>()
 
     public operator fun get(obj: InvObj): SpecialAttack? = specials[obj.id]
+
+    public fun add(obj: String, spec: ShieldSpecialAttack): Result.Add {
+        val id = obj.asRSCM(RSCMType.OBJ)
+        if (id in specials) return Result.Add.AlreadyAdded
+        specials[id] = SpecialAttack.Shield(spec)
+        return Result.Add.Success
+    }
 
     public fun add(obj: String, spec: InstantSpecialAttack): Result.Add {
         val id = obj.asRSCM(RSCMType.OBJ)

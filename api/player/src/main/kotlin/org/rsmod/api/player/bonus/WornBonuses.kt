@@ -9,6 +9,7 @@ import org.rsmod.api.player.hat
 import org.rsmod.api.player.legs
 import org.rsmod.api.player.righthand
 import org.rsmod.api.player.torso
+import org.rsmod.api.player.worn.DragonfireShields
 import org.rsmod.api.player.worn.EquipmentChecks
 import org.rsmod.game.entity.Player
 import org.rsmod.game.type.getInvObj
@@ -142,6 +143,11 @@ public class WornBonuses {
             defCrush += type.param(params.defence_crush)
             defRange += type.param(params.defence_ranged)
             defMagic += type.param(params.defence_magic)
+            val shieldCharges = DragonfireShields.charges(obj)
+            defStab += shieldCharges
+            defSlash += shieldCharges
+            defCrush += shieldCharges
+            defRange += shieldCharges
             meleeStr += type.param(params.melee_strength)
             rangedStr += type.param(params.ranged_strength)
             rangedStr += type.param(params.additive_ranged_strength)

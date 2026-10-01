@@ -334,6 +334,7 @@ class EffectInterpreter(
         val dragonfire = dragonfireType(hit.type) ?: return damage
         val max = damageMax(hit.damage, hit.type, t)
         val cap = DragonfireProtection.resolveMaxHit(t, dragonfire, max)
+        DragonfireProtection.absorb(t)
         return if (cap <= 0) 0 else deps.random.of(cap + 1)
     }
 

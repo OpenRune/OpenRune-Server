@@ -1,8 +1,26 @@
 package org.rsmod.api.combat.commons
 
+import dev.openrune.util.Wearpos
+import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.worn.DragonfireShields
 import org.rsmod.game.entity.Player
 
 public object DragonfireProtection {
+
+    public fun absorb(player: Player) {
+        val slot = Wearpos.LeftHand.slot
+        val shield = player.worn[slot] ?: return
+        val kind = DragonfireShields.kind(shield) ?: return
+        if (kind == DragonfireShields.Kind.WYVERN) return
+        val charges = DragonfireShields.charges(shield)
+        if (charges >= DragonfireShields.MAX_CHARGES) return
+        player.worn[slot] = DragonfireShields.withCharges(shield, charges + 1)
+        player.mes("Your shield absorbs the breath and gains a charge.")
+    }
+
+    public fun blocksShieldBlast(player: Player): Boolean =
+        hasAntifireShield(player) || hasAntifire(player) || hasSuperAntifire(player) ||
+            isProtectingFromMagic(player)
 
     public enum class DragonfireType { Chromatic, Metal, WyvernIce }
 

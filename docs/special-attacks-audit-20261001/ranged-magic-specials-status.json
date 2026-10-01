@@ -1,0 +1,81 @@
+{
+  "remaining_family_reasons": {
+    "obj.wild_cave_webweaver_charged": "Missing ether charge/load lifecycle and ordinary charged-bow WeaponMap. Four-hit special and poison also absent. Generic ranged combat deliberately stops unregistered chargebows with The bow refuses to fire.",
+    "obj.acb": "Special not registered. Enchanted-bolt proc selection and Zaryte guaranteed proc/boost mechanics are absent from generic attacks; increased accuracy alone would be incomplete.",
+    "obj.toxic_blowpipe_loaded_ornament": "No normal blowpipe WeaponMap, loading/unloading or venom handler. Three packed varobjs exist, but WornBonuses still has TODO Apply toxic blowpipe dart bonuses. A special alone would have invalid ammo/strength/charge behaviour.",
+    "obj.wild_cave_accursed_charged": "Missing ether charge lifecycle, ordinary powered-staff WeaponMap and special defence/magic reduction. Recoloured (a) variant uses spell/melee category and also requires explicit special dispatch.",
+    "obj.wild_cave_accursed_charged_recol": "Missing ether charge lifecycle, ordinary powered-staff WeaponMap and special defence/magic reduction. Recoloured (a) variant uses spell/melee category and also requires explicit special dispatch.",
+    "obj.br_zaryte_xbow": "Special not registered. Enchanted-bolt proc selection and Zaryte guaranteed proc/boost mechanics are absent from generic attacks; increased accuracy alone would be incomplete.",
+    "obj.br_acb": "Special not registered. Enchanted-bolt proc selection and Zaryte guaranteed proc/boost mechanics are absent from generic attacks; increased accuracy alone would be incomplete.",
+    "obj.br_morrigans_javelin": "Javelin damage-over-time and thrownaxe run-energy effects not implemented; relevant PvP/BH variant mechanics need separate validation.",
+    "obj.br_magic_bow": "MSB family alias is category Unarmed in exact installed cache, so default combat type/style would not reach a ranged handler. Cache metadata and normal attack must be fixed together.",
+    "obj.morrigans_thrownaxe": "Javelin damage-over-time and thrownaxe run-energy effects not implemented; relevant PvP/BH variant mechanics need separate validation.",
+    "obj.morrigans_javelin": "Javelin damage-over-time and thrownaxe run-energy effects not implemented; relevant PvP/BH variant mechanics need separate validation.",
+    "obj.blisterwood_flail": "Vampyre-specific Retainer special and target restrictions absent; these Staff cache categories should not be mislabelled as implemented magic specials.",
+    "obj.toxic_blowpipe_loaded": "No normal blowpipe WeaponMap, loading/unloading or venom handler. Three packed varobjs exist, but WornBonuses still has TODO Apply toxic blowpipe dart bonuses. A special alone would have invalid ammo/strength/charge behaviour.",
+    "obj.br_eclipse_atlatl": "Special depends on shared burn stacks plus strength-based ranged damage rules; complete consuming/restoring of burns is not implemented.",
+    "obj.dttd_bone_crossbow": "Snipe first-attack accuracy and non-stacking defence-drain mechanic not implemented.",
+    "obj.br_xbows_crossbow_dragon": "Annihilate area damage/range targeting and paired special effects absent. BR variant is additionally category Unarmed in this cache.",
+    "obj.br_dragon_thrownaxe": "Momentum Throw needs activation to guarantee the NEXT tick regardless of the previous attack delay, then normal 4/5-tick delay. Generic Combat special dispatch waits for current delay; setting following delay to one tick is not an equivalent implementation. BR variant also category Unarmed.",
+    "obj.tonalztics_of_ralos_uncharged": "Charged/un-charged ordinary attack, charge lifecycle, dual accuracy rolls and target magic-based defence reduction absent.",
+    "obj.tonalztics_of_ralos_charged": "Charged/un-charged ordinary attack, charge lifecycle, dual accuracy rolls and target magic-based defence reduction absent.",
+    "obj.zaryte_xbow": "Special not registered. Enchanted-bolt proc selection and Zaryte guaranteed proc/boost mechanics are absent from generic attacks; increased accuracy alone would be incomplete.",
+    "obj.morrigans_thrownaxe_bh": "Javelin damage-over-time and thrownaxe run-energy effects not implemented; relevant PvP/BH variant mechanics need separate validation.",
+    "obj.morrigans_javelin_bh": "Javelin damage-over-time and thrownaxe run-energy effects not implemented; relevant PvP/BH variant mechanics need separate validation.",
+    "obj.rune_thrownaxe": "Chainhit secondary target selection, per-extra-target energy and projectile chains not implemented.",
+    "obj.eclipse_atlatl": "Special depends on shared burn stacks plus strength-based ranged damage rules; complete consuming/restoring of burns is not implemented.",
+    "obj.rosewood_blowpipe": "Unarmed cache category plus missing dart-loading and ordinary blowpipe attacks; two-shot special alone is insufficient.",
+    "obj.dragon_thrownaxe": "Momentum Throw needs activation to guarantee the NEXT tick regardless of the previous attack delay, then normal 4/5-tick delay. Generic Combat special dispatch waits for current delay; setting following delay to one tick is not an equivalent implementation. BR variant also category Unarmed.",
+    "obj.ivandis_flail": "Vampyre-specific Retainer special and target restrictions absent; these Staff cache categories should not be mislabelled as implemented magic specials.",
+    "obj.xbows_crossbow_dragon": "Annihilate area damage/range targeting and paired special effects absent. BR variant is additionally category Unarmed in this cache.",
+    "obj.bh_xbows_crossbow_dragon_corrupted": "Annihilate area damage/range targeting and paired special effects absent. BR variant is additionally category Unarmed in this cache.",
+    "obj.scorching_bow": "Special burn scheduling and demon-only guaranteed accuracy/root duration absent.",
+    "obj.purging_staff": "Special must select compatible demonbane spell, apply demon-specific damage/accuracy and conditional energy refund; not implemented.",
+    "obj.deadman_blighted_dark_bow": "Dark bow family aliases are not registered by existing special or ordinary double-shot WeaponMap. Variant semantics need qualification before aliasing.",
+    "obj.br_purging_staff": "Special must select compatible demonbane spell, apply demon-specific damage/accuracy and conditional energy refund; not implemented.",
+    "obj.deadman_darkbow": "Dark bow family aliases are not registered by existing special or ordinary double-shot WeaponMap. Variant semantics need qualification before aliasing.",
+    "obj.br_darkbow": "Dark bow family aliases are not registered by existing special or ordinary double-shot WeaponMap. Variant semantics need qualification before aliasing.",
+    "obj.burgh_rod_command_final_10": "Rod of Ivandis Retainer requires target species/HP and vampyre conversion logic plus item charge degradation; not implemented.",
+    "obj.burgh_rod_command_final_9": "Rod of Ivandis Retainer requires target species/HP and vampyre conversion logic plus item charge degradation; not implemented.",
+    "obj.burgh_rod_command_final_8": "Rod of Ivandis Retainer requires target species/HP and vampyre conversion logic plus item charge degradation; not implemented.",
+    "obj.burgh_rod_command_final_7": "Rod of Ivandis Retainer requires target species/HP and vampyre conversion logic plus item charge degradation; not implemented.",
+    "obj.burgh_rod_command_final_6": "Rod of Ivandis Retainer requires target species/HP and vampyre conversion logic plus item charge degradation; not implemented.",
+    "obj.burgh_rod_command_final_5": "Rod of Ivandis Retainer requires target species/HP and vampyre conversion logic plus item charge degradation; not implemented.",
+    "obj.burgh_rod_command_final_4": "Rod of Ivandis Retainer requires target species/HP and vampyre conversion logic plus item charge degradation; not implemented.",
+    "obj.burgh_rod_command_final_3": "Rod of Ivandis Retainer requires target species/HP and vampyre conversion logic plus item charge degradation; not implemented.",
+    "obj.burgh_rod_command_final_2": "Rod of Ivandis Retainer requires target species/HP and vampyre conversion logic plus item charge degradation; not implemented.",
+    "obj.burgh_rod_command_final_1": "Rod of Ivandis Retainer requires target species/HP and vampyre conversion logic plus item charge degradation; not implemented.",
+    "obj.lithic_sceptre_charged": "Unarmed cache category and absent ordinary charged staff/special mechanism; latest-content metadata and charging require dedicated support.",
+    "obj.verzik_special_weapon": "Dawnbringer encounter-specific ordinary/special damage and raid phase gates absent."
+  },
+  "cross_cutting_limits": [
+    "Cache tooltip for MSB states reduced accuracy, while primary Wiki calculator implements 10/7 special accuracy multiplier.",
+    "Ballista tooltip says extra 2.4 seconds, but current Wiki explicitly describes this tooltip as false. No extra delay was introduced.",
+    "New handler unit tests use the actual installed 240 cache; they are not a live PvP/PvN client demonstration."
+  ],
+  "formula_sources": [
+    "https://raw.githubusercontent.com/weirdgloop/osrs-dps-calc/main/src/lib/PlayerVsNPCCalc.ts",
+    "https://oldschool.runescape.wiki/w/Heavy_ballista"
+  ],
+  "evidence_files": [
+    "special-attack-cache.tsv",
+    "special-attack-coverage.tsv",
+    "../../api/player/src/main/kotlin/org/rsmod/api/player/bonus/WornBonuses.kt",
+    "../../content/other/special-weapons/src/main/kotlin/org/rsmod/content/other/special/weapons/RangedWeaponsModule.kt"
+  ],
+  "qualified_in_this_round": {
+    "ranged_family_names": [
+      "Magic shortbow (normal/imbued)",
+      "Magic longbow/comp bow",
+      "Seercull",
+      "Light/heavy/ornament ballista including BR aliases",
+      "Dragon knife including poisons and BR alias"
+    ],
+    "ranged_new_item_ids": 15,
+    "nightmare_staff_item_ids": 5,
+    "tests": "Final postformat real-cache run PASS: ranged/magic9, dispatch5; overall62 tests incl melee/shields/commands/pets/NPC/Zulrah. server:app:shadowJar PASS. No live client relog/PvP/PvN demonstration yet."
+  },
+  "known_partial_implementations": {
+    "DarkBowSpecialAttack": "Inherited six registered variants; no ordinary/special bindings for three BR/Deadman variants. Not newly runtime-qualified."
+  }
+}

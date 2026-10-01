@@ -7,6 +7,7 @@ import org.rsmod.api.combat.commons.styles.AttackStyle
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.player.aggressiveNpc
 import org.rsmod.api.combat.player.attackRange
+import org.rsmod.api.combat.player.hasMagicSpecialSelected
 import org.rsmod.api.combat.player.pkPredator1
 import org.rsmod.api.combat.player.resolveAutocastSpell
 import org.rsmod.api.combat.player.resolveCombatAttack
@@ -22,6 +23,7 @@ import org.rsmod.api.script.advanced.onApPlayer2
 import org.rsmod.api.script.advanced.onOpPlayer1
 import org.rsmod.api.script.advanced.onOpPlayer2
 import org.rsmod.api.script.onApPlayerT
+import org.rsmod.api.specials.SpecialAttackRegistry
 import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.api.spells.autocast.AutocastWeapons
 import org.rsmod.game.entity.Player
@@ -38,6 +40,7 @@ constructor(
     private val spells: MagicSpellRegistry,
     private val runes: MagicRuneManager,
     private val autocast: AutocastWeapons,
+    private val specials: SpecialAttackRegistry,
     private val attackValidateHooks: Set<PvPAttackValidateHook>,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
@@ -53,7 +56,7 @@ constructor(
     private suspend fun ProtectedAccess.attemptCombatAp(target: Player) {
         val type = types.get(player)
         val style = styles.get(player)
-        val attackRange = attackRange(style)
+        val attackRange = attackRange(style, specials)
 
         // Weapons such as salamanders have an attack range of `1` but can attack with both ranged
         // and magic. These attacks should be treated as ap range, not op.
@@ -75,8 +78,8 @@ constructor(
             return
         }
 
-        val spell = resolveAutocastSpell(spells, runes, autocast)
-        val attack = resolveCombatAttack(player.righthand, type, style, spell)
+        val spell = resolveAutocastSpell(spells, runes, autocast, specials)
+        val attack = resolveCombatAttack(player.righthand, type, style, spell, hasMagicSpecialSelected(specials))
         combat.attack(this, target, attack)
     }
 
@@ -87,8 +90,8 @@ constructor(
         val type = types.get(player)
         val style = styles.get(player)
 
-        val spell = resolveAutocastSpell(spells, runes, autocast)
-        val attack = resolveCombatAttack(player.righthand, type, style, spell)
+        val spell = resolveAutocastSpell(spells, runes, autocast, specials)
+        val attack = resolveCombatAttack(player.righthand, type, style, spell, hasMagicSpecialSelected(specials))
         combat.attack(this, target, attack)
     }
 

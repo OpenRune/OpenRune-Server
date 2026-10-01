@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    testImplementation(projects.api.invStorage)
     implementation(libs.fastutil)
     implementation(libs.simmetrics.core)
     implementation(projects.api.areaChecker)

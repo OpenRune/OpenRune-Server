@@ -10,6 +10,8 @@ import dev.openrune.types.enums.EnumTypeNonNullMap
 import dev.openrune.util.WeaponCategory
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
+import java.util.Collections
+import java.util.WeakHashMap
 import org.rsmod.api.combat.commons.CombatStance
 import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.commons.magic.Spellbook
@@ -22,8 +24,8 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.righthand
-import org.rsmod.api.player.ui.PlayerInterfaceUpdates
 import org.rsmod.api.player.ui.IfOverlayButton
+import org.rsmod.api.player.ui.PlayerInterfaceUpdates
 import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.player.ui.ifSetEvents
@@ -34,8 +36,8 @@ import org.rsmod.api.player.vars.enumVarBit
 import org.rsmod.api.player.vars.enumVarp
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
-import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.advanced.onWearposChange
+import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onPlayerQueue
@@ -44,6 +46,7 @@ import org.rsmod.api.specials.SpecialAttack
 import org.rsmod.api.specials.SpecialAttackRegistry
 import org.rsmod.api.specials.SpecialAttackType
 import org.rsmod.api.specials.energy.SpecialAttackEnergy
+import org.rsmod.api.specials.weapon.SpecialAttackWeapons
 import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.api.spells.autocast.AutocastWeapons
 import org.rsmod.events.EventBus
@@ -51,8 +54,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.type.getOrNull
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
-import java.util.Collections
-import java.util.WeakHashMap
 
 /*
  * Note: The logic and execution order in this script are designed for emulation accuracy. While
@@ -69,6 +70,7 @@ constructor(
     private val autocast: AutocastWeapons,
     private val energy: SpecialAttackEnergy,
     private val specialReg: SpecialAttackRegistry,
+    private val specialWeapons: SpecialAttackWeapons,
     private val protectedAccess: ProtectedAccessLauncher,
 ) : PluginScript() {
     private var Player.combatStance by enumVarp<CombatStance>("varp.com_mode")
@@ -490,7 +492,11 @@ constructor(
             is SpecialAttack.Instant -> attemptInstantSpecial()
             null -> {
                 resetSpecialType()
-                mes("This weapon does not have a special attack.")
+                mes(if (specialWeapons.getSpecialEnergy(righthand.id) != null) {
+                    "This weapon's special attack is not implemented yet."
+                } else {
+                    "This weapon does not have a special attack."
+                })
             }
         }
     }
