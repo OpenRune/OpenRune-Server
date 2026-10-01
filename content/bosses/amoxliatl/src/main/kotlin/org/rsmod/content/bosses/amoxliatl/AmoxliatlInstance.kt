@@ -16,8 +16,11 @@ import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.instances.withInstanceEnterTransition
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.interact.AiPlayerInteractions
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.loc.LocAngle
+import org.rsmod.game.loc.LocShape
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -26,21 +29,41 @@ class AmoxliatlInstance @Inject constructor(
     private val deps: BossDeps,
     private val bossHpBar: BossHpBarScript,
     private val aiPlayerInteractions: AiPlayerInteractions,
+    private val locRepo: LocRepository,
 ) : InstanceScript(registry) {
 
     override fun settingsRow(): String = "dbrow.instance_amoxliatl"
 
     override fun area(): InstanceArea = INSTANCE
 
+    override fun runsPreludeOnFreshRun(): Boolean = true
+
     override fun ScriptContext.configure() {
         onEnterPrelude { result, enter ->
+            val session =
+                when (result) {
+                    is InstanceManager.Result.Created -> result.session
+                    is InstanceManager.Result.Joined -> result.session
+                    else -> return@onEnterPrelude
+                }
+            val spawnBoss = result.isFreshRun()
             withInstanceEnterTransition(InstanceEnterTransition(), enter)
-            if (result is InstanceManager.Result.Created) {
-                deps.worldQueues.add(SPAWN_REVEAL_DELAY_TICKS) { spawnAmoxliatl(player, result.session) }
+            if (result is InstanceManager.Result.Created) placeExitBarriers(session)
+            if (spawnBoss) {
+                deps.worldQueues.add(SPAWN_REVEAL_DELAY_TICKS) {
+                    if (manager.sessionForPlayer(player) == session) spawnAmoxliatl(player, session)
+                }
             }
         }
         onEnterObject { defaultInstanceEntry() }
         onExitObject { defaultLeaveFlow() }
+    }
+
+    private fun placeExitBarriers(session: InstanceSession) {
+        for ((template, rotation) in EXIT_BARRIERS) {
+            val coords = manager.resolveCoord(session, template) ?: continue
+            locRepo.add(coords, EXIT_LOC, Int.MAX_VALUE, LocAngle[rotation], LocShape.CentrepieceStraight)
+        }
     }
 
     private fun spawnAmoxliatl(player: Player, session: InstanceSession) {
@@ -65,6 +88,15 @@ class AmoxliatlInstance @Inject constructor(
         private const val SPAWN_REVEAL_DELAY_TICKS = 5
 
         private val SPAWN_TEMPLATE_COORD = CoordGrid(1362, 4510)
+
+        private const val EXIT_LOC = "loc.amoxliatl_exit"
+
+        private val EXIT_BARRIERS =
+            listOf(
+                CoordGrid(1377, 4511) to 1,
+                CoordGrid(1377, 4510) to 3,
+                CoordGrid(1377, 4512) to 3,
+            )
 
         private val INSTANCE = InstanceArea.copyRegions(centerRegionId = 5446)
     }

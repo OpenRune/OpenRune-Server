@@ -33,12 +33,19 @@ constructor(
 
     override fun area(): InstanceArea = INSTANCE
 
+    override fun runsPreludeOnFreshRun(): Boolean = true
+
     override fun ScriptContext.configure() {
         onEnterPrelude { result, enter ->
+            val spawnBoss = result.isFreshRun()
             withInstanceEnterTransition(InstanceEnterTransition(), enter)
-            if (result is InstanceManager.Result.Created) {
-                spawnMuspah(player, result.session)
-            }
+            val session =
+                when (result) {
+                    is InstanceManager.Result.Created -> result.session
+                    is InstanceManager.Result.Joined -> result.session
+                    else -> return@onEnterPrelude
+                }
+            if (spawnBoss) spawnMuspah(player, session)
         }
         onEnterObject { defaultInstanceEntry() }
         onExitObject { defaultLeaveFlow() }
