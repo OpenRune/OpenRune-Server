@@ -1,5 +1,3 @@
-# Custom server-only varps for TOA. The block 64000-64009 is reserved for TOA, the same way
-# other modules claim a round block (windmill 63600, motherlode 65400).
 [gamevals.varp]
 toa_personal_invocations_a = 64000
 toa_personal_invocations_b = 64001
@@ -7,45 +5,30 @@ toa_personal_invocations_c = 64002
 toa_personal_kc_requirement = 64003
 toa_retrieval_locked = 64004
 
-# TOA lobby area (polygon in .data/raw-cache/map/area/toa_lobby.toml).
-# Explicit id, like the other area modules (rune_essence_mine 57, motherlode_mine 59).
 [gamevals.area]
 toa_lobby = 60
-# The raid's rooms (polygon in .data/raw-cache/map/area/toa_raid.toml). Leaving it by any
-# means other than our own exits (a teleport spell, a tablet) leaves the raid.
 toa_raid = 61
 
-# Our own death queue: a TOA death is swapped onto this before queue.death can run (see
-# ToaDeathScript). Explicit id; custom queues elsewhere use 40-60 and 65524-65535.
 [gamevals.queue]
 toa_death = 61
 
-# Names for the raid's synths. The cache leaves them unnamed (synth_5823 etc.); these are the
-# labels from its sound-list dbtables (osrs-dumps config/dump.dbrow), the same way
-# .data/gamevals/synth.rscm and generic-locs name vanilla synths. Use them as "synth.<name>".
 [gamevals.synth]
-# Crondis puzzle (dbtable synth_pathofcrondis).
 toa_crondis_fill_container = 6522
 toa_crondis_water_empty = 6524
 toa_crondis_water_tree_02 = 6534
 toa_crondis_tree_grow_02 = 6516
 toa_crondis_water_lost_02 = 6529
 toa_crondis_croc_spear_trap_spear_expand_04 = 6493
-# Offline_Scape SPILL_SOUND. Label from dbtable synth_cooking.
 liquid = 2401
-# Capture: the acid orbs' and the crocodiles' sounds (labels from their own dbtables).
 mory_vanstrom_orb_spawn = 4424
 crocodile_attack = 386
-# Zebak (dbtable synth_zabakboss).
 toa_zebak_red_projectile_04 = 5823
 toa_zebak_whoosh_projectile_02 = 5819
 toa_zebak_redirected_jug_break_01 = 5878
 toa_zebak_redirected_projectile_02 = 5896
 toa_zebak_projectile_impact_01 = 5884
 toa_zebak_defend_01 = 6590
-# Offline_Scape FINAL_PHASE_SOUND. Label from dbtable (not a Zebak row): FI_trollking_roar.
 fi_trollking_roar = 3405
-# Great Roar.
 toa_zebak_vomit_colours_projectile_10 = 5908
 toa_zebak_vomit_colours_projectile_splat_03 = 5909
 toa_zebak_debris_impact_01 = 5913
@@ -57,19 +40,14 @@ toa_zebak_attack_roar_high_02 = 5904
 toa_zebak_attack_roar_bass_02 = 5838
 toa_zebak_attack_hand_stomp_final_01 = 5851
 toa_zebak_attack_jaw_shut_01 = 5863
-# Tidal Waves.
 toa_zebak_falling_rocks_sweep_01 = 5882
 toa_zebak_fallling_rocks_water_impact_01 = 5843
 toa_zebak_tidal_wave_7600ms_01 = 5852
 toa_zebak_death_second_floor_hit_01 = 5868
-# Capture: a jug breaking (label from dbtable, not a Zebak row) and splashing off the floor.
 watersplash = 2496
 toa_zebak_jug_break_02 = 5869
-# Offline_Scape RUMBLING_SOUND. Label from the cache dbtable (not a Zebak row).
 rumbling = 1678
 
-# Server-only projectile types (timings in pack/.../configs/toa_zebak.toml). Explicit ids from the
-# top of the range, like other modules' custom ids; .data/gamevals/projanim.rscm uses 0-17.
 [gamevals.projanim]
 toa_zebak_initial = 65535
 toa_zebak_split = 65534

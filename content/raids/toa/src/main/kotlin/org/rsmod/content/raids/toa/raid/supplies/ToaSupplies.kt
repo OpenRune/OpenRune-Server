@@ -7,7 +7,6 @@ import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 
-/** The seven raid supplies, by their cache names (`toa_supply_<kind>_<doses>`). */
 internal enum class ToaSupply(private val base: String, val maxDoses: Int) {
     NECTAR("obj.toa_supply_heal", 4),
     SILK_DRESSING("obj.toa_supply_heal_overtime", 2),
@@ -40,27 +39,8 @@ internal enum class ToaSupply(private val base: String, val maxDoses: Int) {
 
 internal data class Dose(val supply: ToaSupply, val doses: Int)
 
-/** One line of a bundle: [count] full [supply] items. */
 internal data class SupplyStack(val supply: ToaSupply, val count: Int)
 
-/**
- * The Helpful Spirit's offers (OSRS Wiki: Helpful Spirit, Tombs of Amascut). It comes to the
- * nexus after 2 and after 4 paths; each raid member may take one of three bundles per offer. A
- * player who leaves the nexus without taking one forfeits it.
- *
- * Bundles (wiki, amounts before any reduction):
- * - Life: 5 nectar, 5 tears, 3 silk dressings, 3 blessed crystal scarabs, 2 ambrosia. On a Diet
- *   swaps the dressings for 2 more scarabs and 1 more ambrosia.
- * - Chaos: a random subset: 1-8 nectar, 0-6 tears, 0-2 smelling salts, and rarely 1 ambrosia or
- *   1 liquid adrenaline.
- * - Power: 2 smelling salts, 1 liquid adrenaline (Offline_Scape gave 2 adrenaline).
- *
- * "Need Some Help?", "Need Less Help?" and "No Help Needed" cut every amount to 66%, 33% and 10%,
- * but a guaranteed item never drops below 1. The wiki's "1-3" for dressings and scarabs and
- * "1-2" for ambrosia are read as those reductions, not a random roll. Rolled once per offer and
- * shared by the party. How rare the Chaos ambrosia and adrenaline are isn't known
- * ([CHAOS_RARE_ONE_IN]).
- */
 class ToaSupplies {
     private var offersMade = 0
     private val unclaimed = HashSet<Player>()
@@ -69,10 +49,6 @@ class ToaSupplies {
     internal var bundles: List<List<SupplyStack>> = emptyList()
         private set
 
-    /**
-     * Called when the nexus is built. Makes the offer that is due, once. Returns `true` if the
-     * spirit belongs in this nexus.
-     */
     fun offerIfDue(raid: ToaRaid): Boolean {
         val offer = OFFER_AFTER_PATHS.indexOf(raid.pathsCompleted.size) + 1
         if (offer == 0) return false
@@ -96,7 +72,6 @@ class ToaSupplies {
         unclaimed -= player
     }
 
-    /** `true` the first time [player] should hear that the spirit has arrived. */
     fun announce(player: Player): Boolean = player in unclaimed && announced.add(player)
 
     private fun roll(raid: ToaRaid): List<List<SupplyStack>> {

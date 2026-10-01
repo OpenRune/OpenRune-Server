@@ -18,14 +18,8 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.supplies.ToaSupply
 import org.rsmod.game.entity.Player
 
-/**
- * Registry and state changes for running raids. Like [ToaPartyManager], it is plain `Player` code
- * with no `ProtectedAccess`, so it can be called from logout hooks and for other players.
- * Everything that suspends (fades, dialogs) lives in ToaTravel.kt and [ToaRaidScript].
- */
 object ToaRaidManager {
 
-    /** Transient (cleared on logout): the raid this player is inside. */
     private val CURRENT_RAID = AttributeKey<ToaRaid>()
 
     var Player.currentRaid: ToaRaid?
@@ -34,58 +28,36 @@ object ToaRaidManager {
             if (value != null) attr[CURRENT_RAID] = value else attr.remove(CURRENT_RAID)
         }
 
-    /** Raids by the lobby party that started them, so followers find the raid. */
     private val raids = HashMap<ToaLobbyParty, ToaRaid>()
 
-    /**
-     * Source of toa_mycontroller values. Vanilla sends a large, unique id per room instance
-     * (17254814, then 17254938 for the next room), and -1 when you leave. Only uniqueness and
-     * "> 0 means in a raid" matter to us.
-     */
     private var nextControllerId = 1
 
     internal fun nextControllerId(): Int = nextControllerId++
 
-    // ---- Client vars ----
-
-    /** Varp, saved by OpenRune (every varp is Perm by default). Doubles as our "logged out
-     * inside the raid" flag at login, see [ToaRaidScript]. */
     var Player.toaController by intVarp("varp.toa_mycontroller")
     private var Player.hudPartySlot by intVarBit("varbit.toa_client_partyslot")
     private var Player.hudRaidLevel by intVarBit("varbit.toa_client_raid_level")
     private var Player.hudCurrentPath by intVarBit("varbit.toa_client_current_path")
 
-    /** Capture: 1 on entering a path room, 0 on leaving the raid. Name aside, it tracks
-     * "in a room other than the nexus". */
     private var Player.kickedFromRaid by intVarBit("varbit.toa_kicked_from_raid")
 
     const val CONTROLLER_NONE = -1
 
-    /** toa_client_p0..p7: 0 empty slot, 1..27 health, 30 dead, 31 not in this room. */
     private const val HUD_STATE_EMPTY = 0
     private const val HUD_STATE_ZERO_HEALTH = 1
     private const val HUD_STATE_FULL_HEALTH = 27
     private const val HUD_STATE_DEAD = 30
     private const val HUD_STATE_ELSEWHERE = 31
 
-    /** Capture: every orb change lands on a 3-tick beat, lagging the hit by up to 2 ticks. */
     private const val HUD_REFRESH_TICKS = 3
 
-    private const val SCRIPT_HUD_STATUS_NAMES = 6585 // toa_hud_statusnames
-    private const val SCRIPT_SPEEDRUN_TIME_UPDATE = 6580 // toa_speedrun_time_update
-
-    // ---- Queries ----
+    private const val SCRIPT_HUD_STATUS_NAMES = 6585
+    private const val SCRIPT_SPEEDRUN_TIME_UPDATE = 6580
 
     fun raidFor(party: ToaLobbyParty): ToaRaid? = raids[party]
 
     fun isInRaid(player: Player): Boolean = player.currentRaid != null
 
-    // ---- Lifecycle ----
-
-    /**
-     * Creates a raid for [party] and builds its nexus. Nothing is registered if the region pool
-     * is full, so the caller can just report the failure.
-     */
     fun start(party: ToaLobbyParty, deps: ToaRaidDeps): ToaRaid? {
         val raid = ToaRaid(party, party.settings.copy(), deps)
         raid.advanceTo(ToaRoom.MAIN_HALL) ?: return null
@@ -94,13 +66,6 @@ object ToaRaidManager {
         return raid
     }
 
-    /**
-     * Refreshes every player's health orbs every [HUD_REFRESH_TICKS] for the raid's lifetime. The
-     * hit events only cover damage (healing publishes nothing), and a varbit is only sent when its
-     * value changes, so a steady refresh costs almost nothing and catches both. A re-armed world
-     * queue; it stops by itself when the raid ends. Deaths, revives and room moves still refresh
-     * at once (capture: 30 on the respawn tick, off the beat).
-     */
     private fun scheduleHudRefresh(raid: ToaRaid) {
         raid.deps.worldQueues.add(HUD_REFRESH_TICKS) {
             if (raid.ended) return@add
@@ -109,13 +74,6 @@ object ToaRaidManager {
         }
     }
 
-    /**
-     * Puts [player] in [encounter] and sends the vars that go with it. Call just before the
-     * teleport (see ToaTravel.travel).
-     *
-     * The first time a path room is entered, the raid timer starts (capture: "The timer has
-     * started!" at the path teleport).
-     */
     fun moveTo(player: Player, encounter: ToaEncounter) {
         val raid = encounter.raid
         val room = encounter.room
@@ -123,7 +81,6 @@ object ToaRaidManager {
 
         player.currentRaid = raid
         raid.place(player, encounter)
-        // Offline_Scape TOARaidArea.enter: every room.
         raid.deps.network.extendNpcView(player)
         player.toaController = encounter.controllerId
         player.kickedFromRaid = if (room.kind == ToaRoom.Kind.MAIN_HALL) 0 else 1
@@ -145,20 +102,10 @@ object ToaRaidManager {
         refreshHudStates(raid)
     }
 
-    /**
-     * Removes [player] from their raid (abandon or logout). Port of Offline_Scape
-     * TOARaidParty.leave: they also leave the lobby party, which vanilla confirms
-     * (toa_client_partystatus goes 1 -> 0 on abandon).
-     *
-     * @param logout when `true`, toa_mycontroller is left set so the login hook knows to put
-     *   them back outside the raid.
-     */
     fun leave(player: Player, logout: Boolean) {
         val raid = player.currentRaid ?: return
         val room = raid.encounterOf(player)
 
-        // Offline_Scape TOARaidArea.onLogout: logging out inside a running challenge counts as a
-        // death. (Offline_Scape also let you rejoin after logging back in; we don't yet.)
         var unsafeLogout = false
         if (logout && room != null && room.stage == ToaStage.STARTED && room.inChallengeArea(player)) {
             unsafeLogout = true
@@ -177,16 +124,12 @@ object ToaRaidManager {
         raid.stopDying(player)
         removeRaidItems(player)
         raid.deps.supplyEffects.clearSessionEffects(player)
-        // OSRS Wiki (Tombs of Amascut/Strategies): the logout is a wipe under the normal death
-        // rules, so with a death invocation on your items go to the retrieval chest. Done here, not
-        // at login as Offline_Scape did: the logout event comes before the save, and without rejoin
-        // there's no party to come back to. Rejoin will move the group case to login.
+
         if (unsafeLogout && raid.permittedTeamDeaths != null) {
             val deps = raid.deps
             val protectItem = player.hasProtectItemPrayer()
             ToaRetrieval.store(player, deps.deathDrops, deps.marketPrices, protectItem)
         }
-        // Logout included: see resetNpcView for why the zone radius must not leak.
         raid.deps.network.resetNpcView(player)
         player.currentRaid = null
         raid.remove(player)
@@ -201,19 +144,11 @@ object ToaRaidManager {
             ToaPartyManager.refreshViewers(party, exclude = player)
         }
 
-        // Everyone else's HUD shifts up a slot, like generateHudPlayerList().
         refreshHud(raid)
-        // Offline_Scape TOARaidParty.leave: if only ghosts are left behind, the room resets.
         room?.checkRoomReset()
         if (raid.players.isEmpty()) end(raid)
     }
 
-    /**
-     * Called by [ToaPartyManager.leaveParty] for every party exit. Handles a member who never
-     * entered (still in the lobby) leaving the party: kicked, walked out of the lobby, or logged
-     * out. They lose their raid slot, and the raid ends if nobody is left. Players inside go
-     * through [leave].
-     */
     fun onLeftParty(player: Player, party: ToaLobbyParty) {
         val raid = raids[party] ?: return
         if (raid.isInside(player)) return
@@ -228,17 +163,12 @@ object ToaRaidManager {
         raid.destroyAll()
     }
 
-    /**
-     * Offline_Scape TOAManager.removeTOAItems: items that only exist inside the raid are taken
-     * away when you leave it, the supplies bag's contents included. The Het mirror and the
-     * neutralising potion join this list with their rooms.
-     */
-    private fun removeRaidItems(player: Player) {
+    fun removeRaidItems(player: Player) {
         for (slot in player.inv.indices) {
             val obj = player.inv[slot] ?: continue
             if (obj.id in RAID_ITEM_IDS) player.inv[slot] = null
         }
-        val bag = player.invMap.getOrPut(SUPPLY_BAG_INV)
+        val bag = player.invMap[SUPPLY_BAG_INV] ?: return
         for (slot in bag.indices) bag[slot] = null
     }
 
@@ -253,9 +183,6 @@ object ToaRaidManager {
 
     private const val SUPPLY_BAG = "obj.toa_midraidloot_bag"
 
-    /**
-     * Clears a player's raid vars. Also used at login, since every var is saved.
-     */
     fun resetClientVars(player: Player) {
         player.toaController = CONTROLLER_NONE
         player.personalContribution = 0
@@ -272,16 +199,6 @@ object ToaRaidManager {
         ToaDamage.resetAll(player)
     }
 
-    // ---- HUD (481) ----
-
-    /**
-     * Sends [viewer] the whole HUD: their slot, the raid level, every slot's orb, path levels,
-     * names and the timer. Offline_Scape sendHud() + refreshHudStates() + refreshHudPlayers() +
-     * refreshPathLevel() + refreshTimer().
-     *
-     * Capture (solo, entry): toa_client_partyslot=1, toa_client_p0=27, toa_client_raid_level=25,
-     * then toa_hud_statusnames("OnlyPans", "", ...).
-     */
     fun sendHud(viewer: Player, raid: ToaRaid) {
         viewer.hudPartySlot = raid.players.indexOf(viewer) + 1
         viewer.hudRaidLevel = raid.settings.raidLevel
@@ -298,21 +215,18 @@ object ToaRaidManager {
         sendTimer(viewer, raid)
     }
 
-    /** Re-sends the whole HUD to everyone inside [raid]. */
     fun refreshHud(raid: ToaRaid) {
         for (player in raid.players) {
             if (raid.isInside(player)) sendHud(player, raid)
         }
     }
 
-    /** Re-sends only the health/location orbs to everyone inside [raid]. */
     fun refreshHudStates(raid: ToaRaid) {
         for (player in raid.players) {
             if (raid.isInside(player)) sendHudStates(player, raid)
         }
     }
 
-    /** Re-sends the timer to everyone inside [raid] (started or finished). */
     fun refreshTimers(raid: ToaRaid) {
         for (player in raid.players) {
             if (raid.isInside(player)) sendTimer(player, raid)
@@ -334,22 +248,12 @@ object ToaRaidManager {
         }
     }
 
-    /**
-     * toa_speedrun_time_update(ticks, frozen). The client shows `ticks` and counts up from it
-     * unless `frozen`. Capture: (0, frozen) on entry, before any path. Offline_Scape sent
-     * (elapsed, running) and (total, frozen) once finished. The boolean is sent as an int.
-     */
     private fun sendTimer(viewer: Player, raid: ToaRaid) {
         val ticks = raid.elapsedTicks(raid.deps.mapClock.cycle)
         val frozen = !raid.timerStarted || raid.finished
         viewer.runClientScript(SCRIPT_SPEEDRUN_TIME_UPDATE, ticks, if (frozen) 1 else 0)
     }
 
-    /**
-     * Health orb value: 1 at 0 hp, else 1 + floor(hp * 26 / max), but at least 2. Fits every
-     * sample in the death capture at 99 max hp (hp to orb: 95 25, 84 23, 78 21, 72 19, 65 18,
-     * 54 15, 43 12, 30 8, 22 6, 2 2, 0 1). Offline_Scape's formula gives 29 at full health.
-     */
     private fun healthState(player: Player): Int {
         if (player.hitpoints <= 0) return HUD_STATE_ZERO_HEALTH
         val max = player.baseHitpointsLvl.coerceAtLeast(1)

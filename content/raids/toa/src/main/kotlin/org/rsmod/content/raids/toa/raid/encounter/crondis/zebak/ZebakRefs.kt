@@ -1,6 +1,5 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
-/** Gameval names used by the Zebak room. Unnamed synths and projanims: gamevals.toml. */
 internal object ZebakNpcs {
     const val ZEBAK = "npc.toa_zebak"
     const val ZEBAK_ENRAGED = "npc.toa_zebak_enraged"
@@ -23,9 +22,8 @@ internal object ZebakLocs {
     const val BOULDER_BLOCKER = "loc.invisible_type8_blocking_active"
     const val CLIMBING_ROCK = "loc.toa_zebak_climbing_rock"
 
-    /** Left by a bleeding player; a wave washing one away turns bloody. */
     val BLOOD_SPLATS = listOf("loc.bloodsplatter1", "loc.bloodsplatter2", "loc.bloodsplatter3")
-    /** Capture: all seven appear (Offline_Scape picked from the first six). */
+
     val POISON =
         listOf(
             "loc.toa_zebak_vomit01",
@@ -52,12 +50,10 @@ internal object ZebakSeqs {
     const val DEATH = "seq.npc_zebak01_death"
     const val TAIL_DEATH = "seq.npc_zebak02_death"
     const val PLAYER_KNOCKED = "seq.agilityarena_player_spikedback"
-    /** Capture: push and pull both. */
     const val PLAYER_MOVE_JUG = "seq.human_pickuptable"
     const val SWIM_READY = "seq.human_swim_ready"
     const val SWIM = "seq.human_swim"
 
-    /** Preloaded on entry with client script 1846 (seq_prefetch), as Offline_Scape did. */
     val PRELOAD: List<Int> = (9618..9646).toList() + listOf(9532, 9533, 9534, 9541)
 }
 
@@ -83,7 +79,6 @@ internal object ZebakSpots {
     const val ROCK_FALL = "spotanim.zebak_rock_fall"
 }
 
-/** Projectile timings are in pack/.../configs/toa_zebak.toml. */
 internal object ZebakProjs {
     const val INITIAL = "projanim.toa_zebak_initial"
     const val SPLIT = "projanim.toa_zebak_split"
@@ -111,7 +106,6 @@ internal object ZebakSynths {
     const val JUG_BREAK = "synth.watersplash"
     const val JUG_OFF_FLOOR = "synth.toa_zebak_jug_break_02"
 
-    /** (synth, delay) pairs, Offline_Scape SCREAM_SOUNDS. */
     val SCREAM =
         listOf(
             "synth.toa_zebak_attack_hand_stomp_first_01" to 16,
@@ -123,7 +117,6 @@ internal object ZebakSynths {
             "synth.toa_zebak_attack_jaw_shut_01" to 260,
         )
 
-    /** (synth, delay) pairs, Offline_Scape WAVES_LAND_SOUNDS. */
     val WAVES_LAND =
         listOf(
             "synth.toa_zebak_falling_rocks_sweep_01" to 0,
@@ -133,11 +126,9 @@ internal object ZebakSynths {
             "synth.toa_zebak_tidal_wave_7600ms_01" to 920,
         )
 
-    /** Capture: music from the challenge start. No gameval name confirmed for midis. */
     const val MIDI = 736
 }
 
-/** Invocation names (cache struct param 1160). */
 internal object ZebakInvocations {
     const val NOT_JUST_A_HEAD = "Not Just a Head"
     const val ARTERIAL_SPRAY = "Arterial Spray"

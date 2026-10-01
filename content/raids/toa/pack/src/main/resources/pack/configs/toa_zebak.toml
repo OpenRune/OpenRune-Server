@@ -1,23 +1,3 @@
-# Zebak (Crondis boss room). Server-side npc behaviour and projectile timings, packed into the
-# server cache with the rest of .data/raw-cache/server by buildCache (PackServerConfig scans every
-# plugin pack's configs directory the same way).
-#
-# Zebak's npcs are driven by ZebakEncounter, so they don't hunt or regenerate (only the water
-# crocodiles wander):
-#   defaultMode = "None"   no wandering/hunting of its own (was npc.noneMode() in code)
-#   regenRate = 0          NpcRegenProcessor skips regeneration (ToA npcs don't heal over time)
-#   moveRestrict = "NoMove" can never move (was npc.movementLocked in code)
-#   respawnDir             the direction it faces when spawned (was npc.respawnDir in code)
-#
-# Zebak's combat (ZebakBoss) needs his ap interaction to reach the whole challenge area:
-#   attackRange = 40       his ap range, from his 9x9 bounds (farthest challenge tile: 36)
-#   maxRange = 10          the engine drops an npc's player interaction beyond maxRange +
-#                          attackRange from its spawn tile (his south-west corner; farthest: 44)
-
-# ---- Zebak (and the npcs he's transmogged into) ----
-# Capture: his bar colours are sent every time it opens: back (25,0,0), sliding (0,18,0),
-# remaining (0,25,0) in the client's 5-bit channels, i.e. 0xC80000, 0x009000, 0x00C800.
-
 [[npc]]
 id = "npc.toa_zebak"
 inherit = "npc.toa_zebak"
@@ -32,7 +12,6 @@ attackRange = 40
 "param.boss_hp_bar_colour_sliding" = 36864
 "param.boss_hp_bar_colour_remaining" = 51200
 
-# At 25% Zebak is transmogged into this one (OSRS Wiki: the enraged form).
 [[npc]]
 id = "npc.toa_zebak_enraged"
 inherit = "npc.toa_zebak_enraged"
@@ -71,7 +50,6 @@ moveRestrict = "NoMove"
 respawnDir = "East"
 regenRate = 0
 
-# The npc that shows the magic/ranged split spotanim (capture: T+4 to T+7 on each attack).
 [[npc]]
 id = "npc.spotanim_zebak_ranged01_npc"
 inherit = "npc.spotanim_zebak_ranged01_npc"
@@ -81,12 +59,6 @@ respawnDir = "South"
 blockWalk = "None"
 regenRate = 0
 
-# ---- Room npcs ----
-
-# They hunt players washed into the water by the Tidal Waves (ZebakCrocodile bites, the engine
-# chases); timer = 1 runs ZebakEncounter.onCrocTick every tick to pick the prey. Capture: with
-# nobody in the water they wander, never more than 4 tiles from where they spawned. maxRange
-# keeps the engine from dropping a chase anywhere in the room.
 [[npc]]
 id = "npc.toa_zebak_watercroc"
 inherit = "npc.toa_zebak_watercroc"
@@ -97,9 +69,6 @@ respawnDir = "South"
 timer = 1
 regenRate = 0
 
-# Blood clouds (Not Just a Head; the small ones with Blood Thinners). timer = 1 fires their
-# onAiTimer every tick from spawn (was npc.aiTimer(1) in code). Offline_Scape BloodCloud:
-# isEntityClipped false, so they don't block movement.
 [[npc]]
 id = "npc.toa_zebak_blood_cloud"
 inherit = "npc.toa_zebak_blood_cloud"
@@ -118,14 +87,6 @@ blockWalk = "None"
 timer = 1
 regenRate = 0
 
-# ---- Projectiles ----
-# Offline_Scape Projectile(gfx, startHeight, endHeight, delay, angle, duration, offset, multiplier)
-# maps onto these as: delay -> delay, duration -> lengthAdjustment, offset -> progress,
-# multiplier -> stepMultiplier; its angle is the client value as-is (zebak_0_invocation capture).
-# End time = delay + lengthAdjustment + stepMultiplier * distance.
-# Ids are declared in src/main/resources/gamevals.toml [gamevals.projanim].
-
-# The pot / rock from Zebak's mouth to the middle of the arena. Capture: 60 -> 120, angle 30.
 [[projectile]]
 isServerOnly = true
 id = "projanim.toa_zebak_initial"
@@ -137,8 +98,6 @@ lengthAdjustment = 60
 progress = 0
 stepMultiplier = 0
 
-# The fragments from the split onto each player. Capture: angle 127, end height 90
-# (Offline_Scape: 1° and 88). Lands 90 client cycles after the split.
 [[projectile]]
 isServerOnly = true
 id = "projanim.toa_zebak_split"
@@ -150,7 +109,6 @@ lengthAdjustment = 90
 progress = 0
 stepMultiplier = 0
 
-# Poison spreading to a neighbouring tile. Capture: 0 -> 30, angle 20, progress 10.
 [[projectile]]
 isServerOnly = true
 id = "projanim.toa_zebak_poison_spread"
@@ -162,14 +120,6 @@ lengthAdjustment = 30
 progress = 10
 stepMultiplier = 0
 
-# ---- Great Roar (v27) ----
-
-# Jugs. They roll once pushed or pulled (the standing jug is transmogged into the rolling one), so
-# they can move: no NoMove. timer = 1 runs ZebakEncounter.jugTick every tick. Offline_Scape
-# CrondisJug: isEntityClipped false, so they don't block anyone and nobody blocks them.
-#   moveRestrict = "PassThru": walks through players and npcs. Without it a pulled jug is stopped
-#   by the player who pulled it (it rolls towards them). An npc's movement rules come from its
-#   base type, so the standing jug's setting also covers it once transmogged into the rolling one.
 [[npc]]
 id = "npc.toa_zebak_jug"
 inherit = "npc.toa_zebak_jug"
@@ -188,7 +138,6 @@ blockWalk = "None"
 timer = 1
 regenRate = 0
 
-# The boulders. The tile is blocked by loc invisible_type8_blocking_active, placed with it.
 [[npc]]
 id = "npc.toa_zebak_safespot"
 inherit = "npc.toa_zebak_safespot"
@@ -196,9 +145,6 @@ defaultMode = "None"
 moveRestrict = "NoMove"
 regenRate = 0
 
-# Every special's throw from Zebak's mouth: acid (1555), acid behind a boulder (2194), boulders
-# (2172) and jugs (2173). Capture: 250 -> 0, angle 35, progress 100, starting at 30 and landing
-# 30 cycles per tile later, at most 150 (4 tiles and up). ZebakSupport.lob picks between these two.
 [[projectile]]
 isServerOnly = true
 id = "projanim.toa_zebak_lob"
@@ -221,7 +167,6 @@ lengthAdjustment = 120
 progress = 100
 stepMultiplier = 0
 
-# Water from a broken jug to each acid tile it clears. Capture: 30 -> 0, 10 -> 20, angle 20.
 [[projectile]]
 isServerOnly = true
 id = "projanim.toa_zebak_jug_splash"
@@ -233,11 +178,6 @@ lengthAdjustment = 10
 progress = 0
 stepMultiplier = 0
 
-# ---- Tidal Waves (v29) ----
-
-# The waves. They cross the arena a tile a tick (ZebakEncounter.waveTick, timer = 1), through
-# players and npcs (PassThru), blocking no one (Offline_Scape WaveNPC: isEntityClipped false).
-# A wave that hits a blood cloud turns into the bloody one; movement comes from the base type.
 [[npc]]
 id = "npc.toa_zebak_wave"
 inherit = "npc.toa_zebak_wave"

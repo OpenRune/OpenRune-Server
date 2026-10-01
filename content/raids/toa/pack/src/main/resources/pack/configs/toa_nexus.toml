@@ -1,15 +1,9 @@
-# The nexus's Helpful Spirit (npc 11694, spawned by MainHallEncounter): stands still, facing south.
-
 [[npc]]
 id = "npc.toa_midraidloot_trader"
 inherit = "npc.toa_midraidloot_trader"
 respawnDir = "South"
 wanderRange = 0
 
-# The spirit's supplies bag (inv 810). protect = false like inv.inv, the bank and the tackle box in
-# .data/raw-cache/server/inv.toml: interface 778 is a modal, and a protected inv refuses every
-# transaction while a modal is open, so nothing could be withdrawn from it. Temp scope (the
-# cache default): the bag only lives for the raid.
 [[inventory]]
 isServerOnly = true
 id = "inv.toa_midraidloot_bag"

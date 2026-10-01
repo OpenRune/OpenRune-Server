@@ -7,23 +7,6 @@ import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.map.CoordGrid
 
-/**
- * The acid pools (Offline_Scape ZebakEncounter.addPoison / process). A pool hurts from the tick
- * after it lands.
- *
- * Capture (standonpool, solo, raid level 45, 14 ticks on pools):
- * - every tick on a pool is a hit with the poison hitsplat (hitmark 65), 7-11 each time;
- * - the tile is the one you stood on at the start of the tick, so moving off still takes that
- *   tick's hit;
- * - the first hit also poisons you: "You have been poisoned!" and poison varp 10 (2 damage),
- *   on the same hitsplat, with no second one.
- *
- * Offline_Scape only hit players who weren't already poisoned, and rolled 5-20, so after the first
- * pool the long poison made every pool harmless. The 7-11 fits a 6-10 roll scaled by raid level
- * (1.18 at 45); one raid level can't show the scaling itself, so it uses Zebak's (`maxHit`).
- * Poison protection only stops the poison: the pool still hits (OSRS Wiki, Strategies: a serpentine
- * helm negates Zebak's poison).
- */
 internal class ZebakPoison(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
     private val hazards = deps.bossDeps.hazards
@@ -33,10 +16,8 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
         return hazards.contains(owner, tile)
     }
 
-    /** Pools thrown by a special: a splat sound and a spreading pool on each tile. */
     fun land(tiles: List<CoordGrid>) {
         for (tile in tiles) {
-            // Capture: delay 1.
             deps.worldRepo.soundArea(
                 tile,
                 ZebakSynths.ACID_LAND,
@@ -47,10 +28,6 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
         }
     }
 
-    /**
-     * With [spread], each neighbour within 1 (2 with Upset Stomach) gets a pool a tick later with a
-     * 1 in 3 chance; [guaranteed] makes the east and west neighbours certain.
-     */
     fun add(tile: CoordGrid, spread: Boolean, guaranteed: Boolean) {
         val owner = room.zebak ?: return
         if (hazards.contains(owner, tile)) return
@@ -92,7 +69,6 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
     private fun hurt(player: Player) {
         if (room.stage != ToaStage.STARTED || player !in room.targets()) return
         val damage = room.maxHit(deps.random.of(MIN_DAMAGE, MAX_DAMAGE))
-        // tryPoison refuses antipoison, immunity gear and venom; the pool hits anyway.
         val poisoned =
             !PlayerPoison.isPoisoned(player) &&
                 PlayerPoison.tryPoison(player, damage, severity = POISON_SEVERITY)
@@ -100,14 +76,8 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
     }
 
     private companion object {
-        /** Before scaling; the capture's 7-11 at raid level 45. */
         const val MIN_DAMAGE = 6
         const val MAX_DAMAGE = 10
-
-        /**
-         * Capture: poison varp 10 after the first hit, i.e. 2 damage (ceil(severity / 5)).
-         * PlayerPoison takes one off for the hit it applies with, hence 11.
-         */
         const val POISON_SEVERITY = 11
         const val LAND_SOUND_RADIUS = 15
         const val LAND_SOUND_DELAY = 1

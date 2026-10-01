@@ -1,8 +1,6 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle
 
-/** Gameval names used by the Crondis puzzle. Unnamed synths: gamevals.toml. */
 internal object CrondisNpcs {
-    /** The palm's growth stages. The last has no ops. */
     val PALMS =
         listOf(
             "npc.toa_crondis_tree_1",
@@ -36,7 +34,6 @@ internal object CrondisSeqs {
     const val TRAP_IDLE = "seq.crondis_spear_trap_idle"
     const val TRAP_ACTIVATE = "seq.crondis_spear_trap_activate"
     const val TRAP_SPEAR = "seq.crondis_spear_trap_spear02"
-    /** Capture: the merge variant, on the palm and on players. */
     const val CROC_ATTACK = "seq.croc_attack_merge"
 }
 
@@ -61,13 +58,9 @@ internal object CrondisComponents {
     const val BAR_REMAINING = "component.hpbar_hud:health_bar_remaining"
 }
 
-/** Unnamed in the cache (osrs-dumps config/dump.headbar, dump.hitmark). */
 internal object CrondisMarks {
-    /** standard_shield_120: the palm's headbar, 120 segments. */
     const val PALM_HEADBAR = 11
     const val PALM_HEADBAR_SEGMENTS = 120
-
-    /** On the palm: water poured, and water a crocodile drank. */
     const val PALM_WATERED = 11
     const val PALM_DRAINED = 15
 }

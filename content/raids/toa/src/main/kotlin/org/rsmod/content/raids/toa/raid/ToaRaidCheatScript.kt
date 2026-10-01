@@ -11,16 +11,6 @@ import org.rsmod.game.cheat.Cheat
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Debug commands for walking the raid end to end while the rooms are still empty.
- *
- * - `::toacomplete` finishes the room you're in, as if its puzzle or boss were beaten. In the
- *   first Wardens room it moves everyone on to the second.
- * - `::toanext` takes the room's way forward without reaching its loc (useful while a puzzle's
- *   end barrier still blocks the exit).
- * - `::toapoints` shows your hidden reward points: total, loot (total minus the starting 5,000)
- *   and the current room's.
- */
 class ToaRaidCheatScript @Inject constructor(private val launcher: ProtectedAccessLauncher) :
     PluginScript() {
 

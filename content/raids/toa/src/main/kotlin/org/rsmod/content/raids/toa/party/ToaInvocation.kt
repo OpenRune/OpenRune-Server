@@ -4,12 +4,6 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.StructType
 import dev.openrune.types.enums.enum
 
-/**
- * The category groupings for TOA invocations.
- *
- * Cache struct param 1161 stores these starting at value 3,
- * so ATTEMPTS = 3, TIME_LIMIT = 4, etc.
- */
 enum class ToaInvocationCategory {
     ATTEMPTS,
     TIME_LIMIT,
@@ -26,15 +20,6 @@ enum class ToaInvocationCategory {
     BLAZING_TOMBS,
 }
 
-/**
- * A single TOA invocation, resolved from a cache struct.
- *
- * Each struct contains:
- *  - param 1159 → index (bit position in the invocation bitmaps)
- *  - param 1161 → category (offset by 3 into [ToaInvocationCategory])
- *  - param 1162 → level modifier (raid level added when active)
- *  - param 1346 → prerequisite invocation struct (optional)
- */
 data class ToaInvocation(
     val structId: Int,
     val name: String,
@@ -43,27 +28,21 @@ data class ToaInvocation(
     val levelModifier: Int,
     val prerequisiteStructId: Int?,
 ) {
-    /** The invocation that must be active before this one can be enabled. */
+
     val prerequisite: ToaInvocation?
         get() = prerequisiteStructId?.let { id -> ALL.firstOrNull { it.structId == id } }
 
-    /** Invocations that list this one as their prerequisite. */
     val dependents: List<ToaInvocation>
         get() = ALL.filter { it.prerequisiteStructId == structId }
     companion object {
-        /** Cache enum that maps int keys → invocation struct IDs. */
         private const val INVOCATION_ENUM_ID = 4664
-
         private const val PARAM_INDEX = 1159
         private const val PARAM_NAME = 1160
         private const val PARAM_CATEGORY = 1161
         private const val PARAM_LEVEL_MODIFIER = 1162
         private const val PARAM_PREREQUISITE = 1346
-
-        /** Cache category param values start at 3, not 0. */
         private const val CATEGORY_OFFSET = 3
 
-        /** All invocations, loaded once from the cache. */
         val ALL: List<ToaInvocation> by lazy { loadAll() }
 
         private fun loadAll(): List<ToaInvocation> {
@@ -95,7 +74,6 @@ data class ToaInvocation(
             val levelModifier = params[PARAM_LEVEL_MODIFIER] as? Int
                 ?: error("Struct ${struct.id} missing param $PARAM_LEVEL_MODIFIER")
 
-            // Only present on invocations that depend on another (e.g. Insanity → Overclocked 2)
             val prerequisiteStructId = params[PARAM_PREREQUISITE] as? Int
 
             return ToaInvocation(
