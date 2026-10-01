@@ -194,6 +194,12 @@ sealed interface Effect {
 
     data class ClearHeadIcon(val slot: Int) : Effect
 
+    /**
+     * Locks the caster in place ([locked]) or hands movement back to the current phase's
+     * [PhaseSpec.lockMovement]. Any phase transition also resets it to the new phase's setting.
+     */
+    data class LockMovement(val locked: Boolean) : Effect
+
     data class Teleport(val to: TargetExpr.Single) : Effect
     data object FaceTarget : Effect
     data class FaceTile(val at: TargetExpr.Single) : Effect

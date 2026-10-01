@@ -351,6 +351,14 @@ class AbilityBuilder {
         effects += Effect.ClearHeadIcon(slot)
     }
 
+    fun lockMovement() {
+        effects += Effect.LockMovement(true)
+    }
+
+    fun unlockMovement() {
+        effects += Effect.LockMovement(false)
+    }
+
     fun transitionTo(phase: String) {
         effects += Effect.TransitionTo(phase)
     }

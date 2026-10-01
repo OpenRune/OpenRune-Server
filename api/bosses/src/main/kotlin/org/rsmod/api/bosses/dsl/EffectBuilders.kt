@@ -200,6 +200,10 @@ fun headIcon(slot: Int, graphic: Int, index: Int): Effect = Effect.HeadIcon(slot
 
 fun clearHeadIcon(slot: Int): Effect = Effect.ClearHeadIcon(slot)
 
+fun lockMovement(): Effect = Effect.LockMovement(true)
+
+fun unlockMovement(): Effect = Effect.LockMovement(false)
+
 fun area(sw: TargetExpr.Single, ne: TargetExpr.Single): Area = Area(sw, ne)
 
 fun randomFreeTiles(area: Area, count: IntRange): TileSet = TileSet.RandomFree(area, count)

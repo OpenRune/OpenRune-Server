@@ -253,6 +253,7 @@ constructor(
                 ability(
                     ABILITY_FINAL_SHOCKWAVE,
                     sequence(
+                        lockMovement(),
                         anim(TELEPORT_DISAPPEAR_SEQ),
                         spotanim(TELEPORT_DISAPPEAR_SPOTANIM),
                         wait(teleportWindup),
@@ -266,6 +267,7 @@ constructor(
                         spotanim(FINAL_WINDUP_SPOTANIM_RELEASE),
                         external("muspah_shockwave_release"),
                         wait(FINAL_SHOCKWAVE_RECOVER_TICKS),
+                        unlockMovement(),
                         transitionTo(PHASE_SOULSPLIT),
                         setVarn("varn.immune_melee", 1),
                         setVarn("varn.immune_ranged", 1),

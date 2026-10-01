@@ -143,6 +143,8 @@ class EffectInterpreter internal constructor(
             is Effect.ClearHeadbar -> npc.removeHeadbar(effect.headbar.asRSCM(RSCMType.HEADBAR))
             is Effect.HeadIcon -> npc.setHeadIcon(effect.slot, effect.graphic, effect.index)
             is Effect.ClearHeadIcon -> npc.clearHeadIcon(effect.slot)
+            is Effect.LockMovement ->
+                npc.movementLocked = effect.locked || encounter.currentPhase?.lockMovement == true
 
             is Effect.Teleport -> {
                 if (npc.isValidTarget()) {
