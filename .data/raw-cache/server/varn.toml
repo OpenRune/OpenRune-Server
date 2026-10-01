@@ -105,3 +105,27 @@ id = "varn.leviathan_next_special"
 
 [[varn]]
 id = "varn.leviathan_stun_bearing"
+
+[[varn]]
+id = "varn.muspah_hits_since_switch"
+
+[[varn]]
+id = "varn.muspah_special_cooldown_end"
+
+[[varn]]
+id = "varn.muspah_final_triggered"
+
+[[varn]]
+id = "varn.muspah_shield_broken"
+
+[[varn]]
+id = "varn.muspah_shield_hp"
+
+[[varn]]
+id = "varn.muspah_pre_shield_hp"
+
+[[varn]]
+id = "varn.muspah_pre_shield_max_hp"
+
+[[varn]]
+id = "varn.muspah_final_attacks"

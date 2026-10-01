@@ -1,0 +1,11 @@
+[gamevals.varn]
+muspah_damage_since_switch = 19
+muspah_melee_still_ticks = 20
+muspah_hits_since_switch = 36
+muspah_special_cooldown_end = 37
+muspah_final_triggered = 38
+muspah_shield_broken = 39
+muspah_shield_hp = 40
+muspah_pre_shield_hp = 41
+muspah_pre_shield_max_hp = 42
+muspah_final_attacks = 43

@@ -14,7 +14,6 @@ import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
-import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.ProjectileConfig
@@ -87,10 +86,7 @@ constructor(
             spec,
             deps,
             onModifyHit = { onMuspahHit(npc, hit) },
-            onCombatTick = { target ->
-                updateMeleeStillness(npc)
-                countFinalPhaseAttacks(npc, target)
-            },
+            onCombatTick = { updateMeleeStillness(npc) },
         )
 
         deps.extensionRegistry.register("muspah_melee_hit") { _, npc, target, _ ->
@@ -149,16 +145,6 @@ constructor(
         deps.worldQueues.add(despawnTicks) {
             spikes.forEach { locRepo.del(it, Int.MAX_VALUE) }
         }
-    }
-
-    private fun countFinalPhaseAttacks(npc: Npc, target: Player) {
-        if (npc.visType.id != finalId) return
-        val fight = fightFor(npc)
-        val lastAttack = deps.encounter(npc).lastAbilityTick
-        if (lastAttack == fight.lastCountedAttackTick) return
-        fight.lastCountedAttackTick = lastAttack
-        if (++fight.finalAttackCount % FINAL_SPIKE_ATTACK_INTERVAL != 0) return
-        if (target.isValidTarget()) beginSpikeSlam(npc, target)
     }
 
     private fun updateMeleeStillness(npc: Npc) {
@@ -235,7 +221,8 @@ constructor(
                 ability(
                     ABILITY_CLOUD_TELEPORT,
                     sequence(
-                        external("muspah_teleport_begin", teleportDuration + SPECIAL_COOLDOWN_BUFFER),
+                        resetSwitchCounters(),
+                        extendSpecialCooldown(teleportDuration + SPECIAL_COOLDOWN_BUFFER),
                         transmog("npc.muspah_teleport", Int.MAX_VALUE),
                         anim(TELEPORT_DISAPPEAR_SEQ),
                         spotanim(TELEPORT_DISAPPEAR_SPOTANIM),
@@ -280,6 +267,9 @@ constructor(
                         external("muspah_shockwave_release"),
                         wait(FINAL_SHOCKWAVE_RECOVER_TICKS),
                         transitionTo(PHASE_SOULSPLIT),
+                        setVarn("varn.immune_melee", 1),
+                        setVarn("varn.immune_ranged", 1),
+                        setVarn("varn.immune_magic", 1),
                         external("muspah_soulsplit_enter"),
                         faceTarget(),
                     ),
@@ -290,25 +280,39 @@ constructor(
                     ABILITY_TO_FINAL,
                     sequence(
                         transitionTo(PHASE_FINAL),
+                        setVarn("varn.muspah_final_attacks", 0),
                         external("muspah_final_enter"),
                     ),
                 )
 
+            val finalMagicAttack =
+                ability(
+                    ABILITY_FINAL_MAGIC,
+                    sequence(
+                        addVarn("varn.muspah_final_attacks", 1),
+                        whenever(
+                            varnAtLeast("varn.muspah_final_attacks", FINAL_SPIKE_ATTACK_INTERVAL),
+                            sequence(
+                                setVarn("varn.muspah_final_attacks", 0),
+                                external("muspah_spike_slam"),
+                            ),
+                        ),
+                        run(magicAttack),
+                    ),
+                )
+
             val inRangedOrMelee = InPhase(PHASE_RANGED) or InPhase(PHASE_MELEE)
-            val shockwaveReady =
-                inRangedOrMelee and Condition.Custom { npc, _ -> fightFor(npc).finalPhaseTriggered }
-            val shieldBroken =
-                InPhase(PHASE_SOULSPLIT) and Condition.Custom { npc, _ -> fightFor(npc).soulsplitBroken }
+            val finalTriggered = varnIs("varn.muspah_final_triggered", 1)
+            val shockwaveReady = inRangedOrMelee and finalTriggered
+            val shieldBroken = InPhase(PHASE_SOULSPLIT) and varnIs("varn.muspah_shield_broken", 1)
 
             val spikeUsed = Condition.AbilityUsed(ABILITY_HOMING_SPIKE)
             val cloudUsed = Condition.AbilityUsed(ABILITY_CLOUD_TELEPORT)
+            val specialOffCooldown =
+                varnIs("varn.muspah_special_cooldown_end", 0) or
+                    varnExpired("varn.muspah_special_cooldown_end")
             val specialReady =
-                inRangedOrMelee and
-                    Condition.Custom { npc, _ ->
-                        val fight = fightFor(npc)
-                        !fight.finalPhaseTriggered &&
-                            deps.mapClock.cycle >= fight.specialCooldownUntilCycle
-                    }
+                inRangedOrMelee and Condition.Not(finalTriggered) and specialOffCooldown
             val meleeAtPrimary = InPhase(PHASE_MELEE) and HpBelow(SPECIAL_HP_PRIMARY)
             val rangedAtPrimary = InPhase(PHASE_RANGED) and HpBelow(SPECIAL_HP_PRIMARY)
             val atFallback = HpBelow(SPECIAL_HP_FALLBACK)
@@ -347,84 +351,67 @@ constructor(
             }
 
             phase(PHASE_FINAL, transmog = "npc.muspah_final") {
-                weightedSelectorRandom { +random(magicAttack, weight = 1) }
+                weightedSelectorRandom { +random(finalMagicAttack, weight = 1) }
             }
         }
     }
 
     private fun formTransform(phase: String) =
         sequence(
-            external("muspah_switch_begin"),
+            resetSwitchCounters(),
+            extendSpecialCooldown(TRANSFORM_ANIM_DELAY + SPECIAL_COOLDOWN_BUFFER),
             anim(TRANSFORM_DISAPPEAR_SEQ),
             wait(TRANSFORM_ANIM_DELAY),
             transitionTo(phase),
             spotanim(TRANSFORM_APPEAR_SPOTANIM),
             anim(TRANSFORM_APPEAR_SEQ),
-            external("muspah_switch_end"),
+            resetSwitchCounters(),
+            external("muspah_spike_slam"),
+        )
+
+    private fun resetSwitchCounters() =
+        sequence(
+            setVarn("varn.muspah_damage_since_switch", 0),
+            setVarn("varn.muspah_hits_since_switch", 0),
+        )
+
+    private fun extendSpecialCooldown(ticks: Int) =
+        setVarn(
+            "varn.muspah_special_cooldown_end",
+            varn("varn.muspah_special_cooldown_end") atLeast (Now + ticks),
         )
 
     private fun switchReady(phase: String, damageThreshold: Int) =
         InPhase(phase) and
-            Condition.Custom { npc, _ ->
-                val fight = fightFor(npc)
-                !fight.finalPhaseTriggered &&
-                    fight.hitsSinceSwitch >= SWITCH_MIN_HITS &&
-                    fight.damageSinceSwitch >= damageThreshold
-            }
+            Condition.Not(varnIs("varn.muspah_final_triggered", 1)) and
+            varnAtLeast("varn.muspah_hits_since_switch", SWITCH_MIN_HITS) and
+            varnAtLeast("varn.muspah_damage_since_switch", damageThreshold)
 
     private fun registerAbilityHandlers() {
         val handlers = deps.extensionRegistry
 
-        handlers.register("muspah_switch_begin") { _, npc, _, _ ->
-            resetSwitchCounters(npc)
-            applySpecialCooldown(npc, TRANSFORM_ANIM_DELAY + SPECIAL_COOLDOWN_BUFFER)
-        }
-        handlers.register("muspah_switch_end") { _, npc, target, _ ->
-            resetSwitchCounters(npc)
+        handlers.register("muspah_spike_slam") { _, npc, target, _ ->
             if (npc.isValidTarget() && target.isValidTarget()) beginSpikeSlam(npc, target)
         }
         handlers.register("muspah_homing_spikes") { _, npc, target, _ ->
             if (npc.isValidTarget() && target.isValidTarget()) beginHomingSpikeAttack(npc, target)
-        }
-        handlers.register("muspah_teleport_begin") { _, npc, _, params ->
-            resetSwitchCounters(npc)
-            applySpecialCooldown(npc, params as Int)
         }
         handlers.register("muspah_hazard_batch") { _, npc, _, _ ->
             if (npc.isValidTarget()) spawnHazardCloudBatch(npc.spawnCoords)
         }
         handlers.register("muspah_shockwave_release") { _, npc, _, _ -> unleashShockwave(npc) }
         handlers.register("muspah_soulsplit_enter") { _, npc, _, _ ->
-            val fight = fightFor(npc)
-            fight.preSoulsplitHp = npc.hitpoints
-            fight.preSoulsplitMaxHp = npc.baseHitpointsLvl
-            fight.soulsplitBroken = false
-            setStyleImmunity(npc, true)
+            npc.vars["varn.muspah_pre_shield_hp"] = npc.hitpoints
+            npc.vars["varn.muspah_pre_shield_max_hp"] = npc.baseHitpointsLvl
+            npc.vars["varn.muspah_shield_broken"] = 0
             npc.baseHitpointsLvl = SOULSPLIT_SHIELD_POINTS
             npc.hitpoints = SOULSPLIT_SHIELD_POINTS
-            fight.shieldHp = SOULSPLIT_SHIELD_POINTS
+            npc.vars["varn.muspah_shield_hp"] = SOULSPLIT_SHIELD_POINTS
             showShieldHeadbar(npc)
             recolourBossBar(npc)
             syncBossBar(npc)
         }
-        handlers.register("muspah_final_enter") { _, npc, _, _ ->
-            val fight = fightFor(npc)
-            fight.finalAttackCount = 0
-            fight.lastCountedAttackTick = deps.encounter(npc).lastAbilityTick
-            recolourBossBar(npc)
-        }
-    }
-
-    private fun resetSwitchCounters(npc: Npc) {
-        val fight = fightFor(npc)
-        fight.damageSinceSwitch = 0
-        fight.hitsSinceSwitch = 0
-    }
-
-    private fun applySpecialCooldown(npc: Npc, ticks: Int) {
-        val fight = fightFor(npc)
-        val until = deps.mapClock.cycle + ticks
-        if (until > fight.specialCooldownUntilCycle) fight.specialCooldownUntilCycle = until
+        handlers.register("muspah_final_enter") { _, npc, _, _ -> recolourBossBar(npc) }
     }
 
     private fun onMuspahHit(npc: Npc, hit: HitBuilder) {
@@ -442,42 +429,41 @@ constructor(
 
         if (visId == finalId) return
 
-        val fight = fightFor(npc)
         val hpAfterHit = npc.hitpoints - hit.damage
-        if (fight.finalPhaseTriggered || hpAfterHit < FINAL_PHASE_HP_THRESHOLD) {
-            if (!fight.finalPhaseTriggered) {
-                fight.finalPhaseTriggered = true
+        if (npc.vars["varn.muspah_final_triggered"] == 1 || hpAfterHit < FINAL_PHASE_HP_THRESHOLD) {
+            if (npc.vars["varn.muspah_final_triggered"] == 0) {
+                npc.vars["varn.muspah_final_triggered"] = 1
                 logger.info { "[muspah] final phase shockwave queued: hp=$hpAfterHit" }
             }
             hit.damage = hit.damage.coerceAtMost((npc.hitpoints - 1).coerceAtLeast(0))
             return
         }
 
-        fight.damageSinceSwitch += hit.damage
-        fight.hitsSinceSwitch++
+        npc.vars["varn.muspah_damage_since_switch"] += hit.damage
+        npc.vars["varn.muspah_hits_since_switch"]++
     }
 
     private fun drainShield(npc: Npc, amount: Int) {
-        val fight = fightFor(npc)
-        val drained = minOf(amount, fight.shieldHp)
-        fight.shieldHp -= drained
-        if (fight.shieldHp <= 0) {
-            fight.soulsplitBroken = true
+        val shieldHp = npc.vars["varn.muspah_shield_hp"]
+        val drained = minOf(amount, shieldHp)
+        npc.vars["varn.muspah_shield_hp"] = shieldHp - drained
+        if (shieldHp - drained <= 0) {
+            npc.vars["varn.muspah_shield_broken"] = 1
             resolveSoulsplitShield(npc)
         } else {
-            npc.hitpoints = fight.shieldHp
+            npc.hitpoints = shieldHp - drained
         }
         if (drained <= 0) return
         showShieldHitmark(npc, hitmark_groups.prayer_drain.tint!!, drained)
     }
 
     private fun soulSplitHeal(npc: Npc, damage: Int) {
-        val fight = fightFor(npc)
-        if (fight.soulsplitBroken) return
-        val healed = minOf(damage / 2, SOULSPLIT_SHIELD_POINTS - fight.shieldHp)
+        if (npc.vars["varn.muspah_shield_broken"] == 1) return
+        val shieldHp = npc.vars["varn.muspah_shield_hp"]
+        val healed = minOf(damage / 2, SOULSPLIT_SHIELD_POINTS - shieldHp)
         if (healed <= 0) return
-        fight.shieldHp += healed
-        npc.hitpoints = fight.shieldHp
+        npc.vars["varn.muspah_shield_hp"] = shieldHp + healed
+        npc.hitpoints = shieldHp + healed
         showShieldHitmark(npc, hitmark_groups.heal.lit, healed)
     }
 
@@ -503,13 +489,12 @@ constructor(
     }
 
     private fun resolveSoulsplitShield(npc: Npc) {
-        val fight = fightFor(npc)
-        if (fight.soulsplitBroken) {
-            setStyleImmunity(npc, false)
-            npc.baseHitpointsLvl = fight.preSoulsplitMaxHp
-            npc.hitpoints = fight.preSoulsplitHp
+        if (npc.vars["varn.muspah_shield_broken"] == 1) {
+            clearStyleImmunity(npc)
+            npc.baseHitpointsLvl = npc.vars["varn.muspah_pre_shield_max_hp"]
+            npc.hitpoints = npc.vars["varn.muspah_pre_shield_hp"]
         } else {
-            npc.hitpoints = fight.shieldHp
+            npc.hitpoints = npc.vars["varn.muspah_shield_hp"]
             showShieldHeadbar(npc)
         }
         syncBossBar(npc)
@@ -523,11 +508,10 @@ constructor(
         }
     }
 
-    private fun setStyleImmunity(npc: Npc, immune: Boolean) {
-        val value = if (immune) 1 else 0
-        npc.vars["varn.immune_melee"] = value
-        npc.vars["varn.immune_ranged"] = value
-        npc.vars["varn.immune_magic"] = value
+    private fun clearStyleImmunity(npc: Npc) {
+        npc.vars["varn.immune_melee"] = 0
+        npc.vars["varn.immune_ranged"] = 0
+        npc.vars["varn.immune_magic"] = 0
     }
 
     private fun showShieldHeadbar(npc: Npc) {
@@ -786,12 +770,12 @@ constructor(
         deps.worldRepo.spotanimMap(warningSpot, coordB)
 
         deps.worldQueues.add(HOMING_SPIKE_TELEGRAPH_DELAY) {
-            if (npc.isValidTarget() && !fightFor(npc).finalPhaseTriggered) {
+            if (npc.isValidTarget() && npc.vars["varn.muspah_final_triggered"] == 0) {
                 spawnHomingSpike(npc, target.uid, coordA)
             }
         }
         deps.worldQueues.add(HOMING_SPIKE_TELEGRAPH_DELAY + HOMING_SPIKE_PAIR_OFFSET) {
-            if (npc.isValidTarget() && !fightFor(npc).finalPhaseTriggered) {
+            if (npc.isValidTarget() && npc.vars["varn.muspah_final_triggered"] == 0) {
                 spawnHomingSpike(npc, target.uid, coordB)
             }
         }
@@ -807,7 +791,7 @@ constructor(
 
     private fun advanceHomingSpike(npc: Npc, targetUid: PlayerUid, loc: LocInfo, expiryTick: Int) {
         deps.worldQueues.add(HOMING_SPIKE_MOVE_INTERVAL) {
-            if (!npc.isValidTarget() || fightFor(npc).finalPhaseTriggered) {
+            if (!npc.isValidTarget() || npc.vars["varn.muspah_final_triggered"] == 1) {
                 locRepo.del(loc, Int.MAX_VALUE)
                 return@add
             }
@@ -879,18 +863,8 @@ constructor(
     }
 
     private class MuspahFight {
-        var damageSinceSwitch: Int = 0
-        var hitsSinceSwitch: Int = 0
         val activeSpikes: MutableList<LocInfo> = mutableListOf()
         var lastCoords: CoordGrid? = null
-        var specialCooldownUntilCycle: Int = 0
-        var finalPhaseTriggered: Boolean = false
-        var preSoulsplitHp: Int = 0
-        var preSoulsplitMaxHp: Int = 0
-        var soulsplitBroken: Boolean = false
-        var shieldHp: Int = 0
-        var finalAttackCount: Int = 0
-        var lastCountedAttackTick: Int = -1
     }
 
     private companion object {
@@ -905,6 +879,7 @@ constructor(
         private const val ABILITY_TO_RANGED = "to_ranged"
         private const val ABILITY_FINAL_SHOCKWAVE = "final_shockwave"
         private const val ABILITY_TO_FINAL = "to_final"
+        private const val ABILITY_FINAL_MAGIC = "final_magic"
 
         private const val ATTACK_RATE = 6
 
