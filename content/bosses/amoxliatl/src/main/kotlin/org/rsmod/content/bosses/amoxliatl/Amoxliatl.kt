@@ -4,7 +4,6 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcServerType
-import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
 import java.util.IdentityHashMap
 import org.rsmod.api.bosses.dsl.*
@@ -63,17 +62,7 @@ class Amoxliatl @Inject constructor(deps: BossDeps, private val locRepo: LocRepo
             explodeIceBlock(npc, npc.coords, heal = false)
         }
 
-        deps.extensionRegistry.register("amoxliatl.standard_attack_fx") { _, npc, target, _ ->
-            val spikeTiles = spawnIceSpikeScatter(target.coords)
-            deps.worldQueues.add(ICE_SPIKE_DAMAGE_DELAY) {
-                for (player in deps.playerList) {
-                    if (player.hitpoints > 0 && player.coords in spikeTiles) {
-                        val damage =
-                            ICE_SPIKE_DAMAGE_MIN + deps.random.of(ICE_SPIKE_DAMAGE_MAX - ICE_SPIKE_DAMAGE_MIN + 1)
-                        player.finishNpcHit(npc, 1, HitType.Typeless, damage, deps.playerHitModifier)
-                    }
-                }
-            }
+        deps.extensionRegistry.register("amoxliatl.standard_attack_pool") { _, npc, target, _ ->
             val poolCoord = target.coords
             deps.worldQueues.add(POOL_SPAWN_DELAY) { spawnIcyPool(npc, poolCoord) }
         }
@@ -92,30 +81,6 @@ class Amoxliatl @Inject constructor(deps: BossDeps, private val locRepo: LocRepo
 
     private fun initAmoxliatl(npc: Npc) {
         npc.vars["varn.flat_armour"] = FLAT_ARMOUR
-    }
-
-    private fun spawnIceSpikeScatter(center: CoordGrid): Set<CoordGrid> {
-        val spot = SpotanimType(ICE_SPIKE_SPOTANIM.asRSCM(RSCMType.SPOTANIM))
-        val count = ICE_SPIKE_MIN_COUNT + deps.random.of(ICE_SPIKE_MAX_COUNT - ICE_SPIKE_MIN_COUNT + 1)
-        val tiles = mutableSetOf<CoordGrid>()
-        repeat(count) {
-            val coord = randomWalkableTile(center, ICE_SPIKE_RADIUS) ?: return@repeat
-            deps.worldRepo.spotanimMap(spot, coord)
-            tiles += coord
-        }
-        return tiles
-    }
-
-    private fun randomWalkableTile(center: CoordGrid, radius: Int): CoordGrid? {
-        val candidates = mutableListOf<CoordGrid>()
-        for (dx in -radius..radius) {
-            for (dz in -radius..radius) {
-                val coord = center.translate(dx, dz)
-                if (!deps.collision.isWalkBlocked(coord)) candidates += coord
-            }
-        }
-        if (candidates.isEmpty()) return null
-        return candidates[deps.random.of(candidates.size)]
     }
 
     private fun spawnIcyPool(npc: Npc, coord: CoordGrid) {
@@ -184,6 +149,32 @@ class Amoxliatl @Inject constructor(deps: BossDeps, private val locRepo: LocRepo
             ),
         )
 
+    private val iceSpikeEffect: Effect =
+        withTiles(
+            "spikes",
+            randomFreeTiles(
+                area(
+                    offset(CurrentTargetTile, -ICE_SPIKE_RADIUS, -ICE_SPIKE_RADIUS),
+                    offset(CurrentTargetTile, ICE_SPIKE_RADIUS, ICE_SPIKE_RADIUS),
+                ),
+                ICE_SPIKE_MIN_COUNT..ICE_SPIKE_MAX_COUNT,
+            ),
+            sequence(
+                onTiles(bound("spikes"), mapSpotanim(ICE_SPIKE_SPOTANIM, CurrentTile)),
+                after(
+                    ICE_SPIKE_DAMAGE_DELAY,
+                    onTiles(
+                        bound("spikes"),
+                        hit(
+                            damage = (ICE_SPIKE_DAMAGE_MIN..ICE_SPIKE_DAMAGE_MAX).roll(),
+                            type = Typeless,
+                            target = playersOn(CurrentTile),
+                        ),
+                    ),
+                ),
+            ),
+        )
+
     private val unstableIceEffect: Effect =
         sequence(
             anim("seq.amoxliatl_summon"),
@@ -225,7 +216,8 @@ class Amoxliatl @Inject constructor(deps: BossDeps, private val locRepo: LocRepo
                 ability("standard_attack") {
                     anim("seq.amoxliatl_attack")
                     hit { damage((0..22).roll()); type(Magic) }
-                    include(external("amoxliatl.standard_attack_fx"))
+                    include(iceSpikeEffect)
+                    include(external("amoxliatl.standard_attack_pool"))
                 }
 
             val special =
