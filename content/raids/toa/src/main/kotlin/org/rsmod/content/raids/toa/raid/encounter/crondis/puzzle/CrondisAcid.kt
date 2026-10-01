@@ -10,18 +10,12 @@ import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.map.CoordGrid
 
-/**
- * The acid trails (Offline_Scape spawnAcidTrails / AcidTrail). From each basin, 2-3 of its 5
- * columns start a trail: an acid orb appears for 3 ticks, then 2 ticks later the trail runs 10
- * tiles across the room.
- */
 internal class CrondisAcid(private val room: CrondisPuzzleEncounter) {
     private val deps = room.raid.deps
     private val splash = SpotanimType(CrondisSpots.ACID.asRSCM(RSCMType.SPOTANIM))
     private val trails = ArrayList<Trail>()
     private var countdown = 0
 
-    /** Map cycle each player can be hit again (Offline_Scape temp attrs). */
     private val hitReady = HashMap<Player, Int>()
 
     fun tick(targets: List<Player>) {
@@ -44,7 +38,6 @@ internal class CrondisAcid(private val room: CrondisPuzzleEncounter) {
 
     private fun spawn(bases: List<CoordGrid>, moveNorth: Boolean) {
         for (base in bases) {
-            // Capture: one sound per basin, from its middle column.
             val middle = room.coords(base.translate(ACID_COLUMNS_MIDDLE, 0))
             deps.worldRepo.soundArea(middle, CrondisSynths.ACID_ORB, radius = ORB_SOUND_RADIUS)
             val columns = deps.random.shuffled((0 until COLUMNS).toList())
@@ -63,7 +56,6 @@ internal class CrondisAcid(private val room: CrondisPuzzleEncounter) {
         trails += trail
         for (step in 1..TRAIL_LENGTH) {
             val tile = trail.base.translate(0, if (trail.moveNorth) step else -step)
-            // Delay in client cycles: the splash travels along the trail.
             deps.worldRepo.spotanimMap(splash, tile, delay = SPLASH_CYCLES * step)
         }
     }
@@ -71,13 +63,8 @@ internal class CrondisAcid(private val room: CrondisPuzzleEncounter) {
     private inner class Trail(val base: CoordGrid, val moveNorth: Boolean) {
         private var ticks = TRAIL_TICKS
 
-        /** Counts down; `true` once the trail is spent. */
         fun expire(): Boolean = --ticks <= 0
 
-        /**
-         * Hits a player in the trail's column while the splash passes their tile: the further
-         * from the basin, the later (Offline_Scape AcidTrail.check).
-         */
         fun check(player: Player) {
             val coords = player.coords
             if (coords.x != base.x) return
@@ -104,7 +91,6 @@ internal class CrondisAcid(private val room: CrondisPuzzleEncounter) {
         const val TRAIL_TICKS = 6
         const val TRAIL_LENGTH = 10
         const val SPLASH_CYCLES = 10
-        /** Captures: hazard hits of 4-12 at raid levels 25 and 45 (Offline_Scape 5). */
         const val BASE_DAMAGE = 4
         const val HIT_COOLDOWN = 2
     }

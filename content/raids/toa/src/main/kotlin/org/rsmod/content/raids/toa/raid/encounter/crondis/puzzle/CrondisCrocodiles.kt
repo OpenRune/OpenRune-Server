@@ -13,31 +13,16 @@ import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.util.Bounds
 
-/**
- * The crocodiles (OSRS Wiki: Crocodile (Tombs of Amascut)). Capture: the first wave 48 ticks after
- * the first hazard tick, then one every 47 (Offline_Scape: 60, then 60); up to 8 alive. They crawl
- * (a tile every 2 ticks) and wait 4 ticks after spawning before going for anything. Targets,
- * re-evaluated every tick:
- * 1. a player with a non-empty water container within aggro range;
- * 2. the palm, while it has any growth;
- * 3. while retaliating, it only bites an attacker without a water container.
- * So attacking a crocodile while holding an empty container is safe.
- *
- * Killed crocodiles die through the standard npc death, which deletes them.
- */
 internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
     private val deps = room.raid.deps
     private val crocodiles = ArrayList<Npc>()
     private val wakeAt = HashMap<Npc, Int>()
     private var countdown = nextCountdown()
 
-    /** What each crocodile is going for this tick: a [Player], [PalmTarget], or nothing. */
     private val targets = HashMap<Npc, Any>()
 
-    /** Players who have hit each crocodile. */
     private val attackers = HashMap<Npc, LinkedHashSet<Player>>()
 
-    /** Map cycles of each player's recent hazard hits, for the attack's damage. */
     private val hazardHits = HashMap<Player, ArrayDeque<Int>>()
 
     private object PalmTarget
@@ -49,11 +34,6 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         }
     }
 
-    /**
-     * Captures: waves 46-50 ticks apart (47, 50, 46, 48, 50 and 47), the first 47 and 49 ticks
-     * after the start. Offline_Scape used a fixed 48 then 46. The tick after the countdown hits 0
-     * spawns, hence the -1.
-     */
     private fun nextCountdown(): Int = deps.random.of(MIN_WAVE_GAP, MAX_WAVE_GAP) - 1
 
     fun onHazardHit(player: Player, cycle: Int) {
@@ -69,16 +49,11 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         hazardHits.clear()
     }
 
-    /**
-     * Offline_Scape onRoomReset: the next attempt's first wave comes 10 ticks sooner than a
-     * normal one (60 then 50 there), here on top of the captured spacing.
-     */
     fun reset() {
         clear()
         countdown = nextCountdown() - RESET_SOONER
     }
 
-    /** Offline_Scape process(): ceil(teamSize / 2) crocodiles (at most 4) per wave, max 8 alive. */
     private fun spawnWave() {
         pruneDead()
         if (crocodiles.size >= MAX_ALIVE) return
@@ -126,7 +101,6 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         return null
     }
 
-    /** Once a tick per crocodile (onAiTimer). */
     fun ai(croc: Npc) {
         if (room.stage != ToaStage.STARTED) return
         if ((wakeAt[croc] ?: 0) > deps.mapClock.cycle) return
@@ -135,7 +109,6 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         when (val target = chooseTarget(croc)) {
             is Player -> {
                 val previous = targets.put(croc, target)
-                // The engine does the chasing; the onAiOpPlayer2 handler does the attack.
                 if (!fightingPlayer || previous !== target) {
                     croc.opPlayer2(target, deps.aiInteractions)
                 }
@@ -219,7 +192,6 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         attackers.getOrPut(croc) { LinkedHashSet() } += player
     }
 
-    /** Hazard hits on [player] within the last 30 seconds (older ones are dropped). */
     private fun recentHazardHits(player: Player, now: Int): Int {
         val hits = hazardHits[player] ?: return 0
         while (hits.isNotEmpty() && hits.first() <= now - HAZARD_WINDOW) hits.removeFirst()
@@ -266,8 +238,6 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         const val BASE_DAMAGE = 18
         const val DAMAGE_PER_HAZARD = 3
         const val MAX_DAMAGE = 36
-
-        /** 30 seconds. */
         const val HAZARD_WINDOW = 50
     }
 }

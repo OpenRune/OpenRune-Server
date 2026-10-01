@@ -14,11 +14,6 @@ import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.map.CoordGrid
 
-/**
- * The water around the arena: players washed in by Tidal Waves swim (swim render anims; no
- * starting combat, see ZebakSwimAttackHook) until they climb the rock steps, while the water
- * crocodiles hunt them (Offline_Scape WaterCrocodile, RockStepsAction).
- */
 internal class ZebakWater(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
     private val swimmers = HashSet<Player>()
@@ -39,7 +34,6 @@ internal class ZebakWater(private val room: ZebakEncounter) {
 
     fun isSwimming(player: Player): Boolean = player in swimmers
 
-    /** Assumes the water tiles are walkable with the edge blocking the way in (Offline_Scape). */
     fun canSwimTo(tile: CoordGrid): Boolean = !deps.collision.isWalkBlocked(tile)
 
     fun startSwimming(player: Player) {
@@ -54,14 +48,12 @@ internal class ZebakWater(private val room: ZebakEncounter) {
         player.rebuildAppearance()
     }
 
-    /** Dead and ghost players leave the water (Offline_Scape reset the render on death). */
     fun dropDeadSwimmers() {
         for (player in swimmers.toList()) {
             if (room.raid.isGhost(player) || room.raid.isDying(player)) stopSwimming(player)
         }
     }
 
-    /** Onto the tile beside the steps: north for angle 0, else south. */
     @OptIn(InternalApi::class)
     fun climbOut(player: Player, rock: CoordGrid, angleId: Int) {
         if (!isSwimming(player)) {

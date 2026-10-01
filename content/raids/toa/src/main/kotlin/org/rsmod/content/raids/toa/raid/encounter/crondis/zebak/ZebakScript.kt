@@ -10,18 +10,6 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Engine events for the Zebak room; each handler routes to the npc's room.
- *
- * - Hits, queues and ai timers are keyed by the npc's visible type, so transmogged npcs (enraged
- *   Zebak, the rolling jug, the bloody wave) are bound under both types.
- * - Zebak's combat is ZebakBoss (Boss DSL); only his hits and death are routed here.
- * - The death queues replace the standard npc death.
- * - Push/Pull are ap handlers so they fire from a diagonal tile (op handlers need a cardinal one).
- *   "Hit" starts a normal attack: ap4 hands off to op2 combat, and `ZebakJugs.registerAttackOp`
- *   gives the standing jug the server-side op2 that PvNCombat requires. Both jugs' attacks then
- *   go through PvNCombat, where ZebakJugAttackHook keeps them from setting the attack delay.
- */
 class ZebakScript : PluginScript() {
     override fun ScriptContext.startup() {
         ZebakJugs.registerAttackOp()
@@ -46,7 +34,6 @@ class ZebakScript : PluginScript() {
         for (name in listOf(ZebakNpcs.JUG, ZebakNpcs.JUG_ROLLING)) {
             val type = npcType(name)
             onAiTimer(name) { ZebakEncounter.onJugTick(npc) }
-            // Any hit breaks a jug: a player's, or the Great Roar's 5 (ZebakJugs.roarHit).
             onNpcHit(type) { ZebakEncounter.onJugBroken(npc) }
             onNpcQueue(type, "queue.death") { ZebakEncounter.onJugBroken(npc) }
         }

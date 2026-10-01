@@ -4,22 +4,6 @@ import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 
-/**
- * The four paths, and their doors in the nexus (main hall).
- *
- * Source: Offline_Scape TOAPathType, corrected where it disagrees with the cache or capture:
- * - [hudPath]: `toa_client_current_path` is 1 Scabaras, 2 Het, 3 Apmeken, 4 Crondis (client
- *   script `toa_hud_draw`; capture: Scabaras sent 1). Offline_Scape used `ordinal + 1`.
- * - [levelVarbit]: the named varbits. Offline_Scape's `14376 + ordinal` wrote Apmeken's level
- *   into Crondis's varbit.
- * - Scabaras starts at its puzzle (capture), not straight at Kephri as in Offline_Scape.
- * - Door positions and angles are the capture's loc adds (angle 0 West, 1 North, 3 South).
- *
- * Each door has three variants: [doorOpen] (can be chosen), [doorUnselected] (the leader picked
- * another path) and [doorClosed] (completed, no ops).
- *
- * @property returnTile where you arrive in the nexus after beating this path's boss.
- */
 enum class ToaPath(
     val pathName: String,
     val hudPath: Int,
@@ -97,7 +81,6 @@ enum class ToaPath(
     );
 
     companion object {
-        /** The path whose puzzle or boss is [room], or `null`. */
         fun of(room: ToaRoom): ToaPath? = entries.firstOrNull { it.puzzle == room || it.boss == room }
     }
 }
