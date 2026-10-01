@@ -204,6 +204,8 @@ fun lockMovement(): Effect = Effect.LockMovement(true)
 
 fun unlockMovement(): Effect = Effect.LockMovement(false)
 
+fun healSelf(amount: Int): Effect = Effect.HealSelf(amount)
+
 fun area(sw: TargetExpr.Single, ne: TargetExpr.Single): Area = Area(sw, ne)
 
 fun randomFreeTiles(area: Area, count: IntRange): TileSet = TileSet.RandomFree(area, count)

@@ -359,6 +359,10 @@ class AbilityBuilder {
         effects += Effect.LockMovement(false)
     }
 
+    fun healSelf(amount: Int) {
+        effects += Effect.HealSelf(amount)
+    }
+
     fun transitionTo(phase: String) {
         effects += Effect.TransitionTo(phase)
     }

@@ -145,6 +145,7 @@ class EffectInterpreter internal constructor(
             is Effect.ClearHeadIcon -> npc.clearHeadIcon(effect.slot)
             is Effect.LockMovement ->
                 npc.movementLocked = effect.locked || encounter.currentPhase?.lockMovement == true
+            is Effect.HealSelf -> npc.heal(effect.amount, showHitsplat = true)
 
             is Effect.Teleport -> {
                 if (npc.isValidTarget()) {

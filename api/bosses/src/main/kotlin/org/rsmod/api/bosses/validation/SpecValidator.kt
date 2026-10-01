@@ -333,6 +333,10 @@ object SpecValidator {
                     if (effect.ticks < 0) {
                         error("${scope.prefix}NextAttackIn ticks '${effect.ticks}' must not be negative.")
                     }
+                is Effect.HealSelf ->
+                    if (effect.amount <= 0) {
+                        error("${scope.prefix}HealSelf amount '${effect.amount}' must be greater than 0.")
+                    }
                 is Effect.Headbar -> headbar(effect, scope)
                 is Effect.ClearHeadbar -> headbarRef(effect.headbar, scope)
                 is Effect.HeadIcon -> headIconSlot(effect.slot, scope)

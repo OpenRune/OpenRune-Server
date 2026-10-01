@@ -200,6 +200,9 @@ sealed interface Effect {
      */
     data class LockMovement(val locked: Boolean) : Effect
 
+    /** Heals the caster by [amount], capped at its max hp, with a heal hitsplat. */
+    data class HealSelf(val amount: Int) : Effect
+
     data class Teleport(val to: TargetExpr.Single) : Effect
     data object FaceTarget : Effect
     data class FaceTile(val at: TargetExpr.Single) : Effect
