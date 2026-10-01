@@ -138,3 +138,15 @@ id = "varn.vardorvis_strangle_ready_at"
 
 [[varn]]
 id = "varn.vardorvis_next_axes"
+
+[[varn]]
+id = "varn.td_damage_since_swap"
+
+[[varn]]
+id = "varn.td_first_hit_taken"
+
+[[varn]]
+id = "varn.td_defenceless"
+
+[[varn]]
+id = "varn.td_defenceless_at"

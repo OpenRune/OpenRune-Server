@@ -1,0 +1,5 @@
+[gamevals.varn]
+td_damage_since_swap = 47
+td_first_hit_taken = 48
+td_defenceless = 49
+td_defenceless_at = 50

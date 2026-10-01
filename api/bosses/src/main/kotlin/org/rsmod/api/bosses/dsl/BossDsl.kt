@@ -263,8 +263,8 @@ class AbilityBuilder {
     }
 
     /** Plays [spot] on the caster (the boss npc itself), not on the target. */
-    fun spotanim(spot: String, height: Int = 0, delay: Int = 0) {
-        effects += Effect.Spotanim(spot, height, delay)
+    fun spotanim(spot: String, height: Int = 0, delay: Int = 0, slot: Int = 0) {
+        effects += Effect.Spotanim(spot, height, delay, slot)
     }
 
     fun say(text: String) {
