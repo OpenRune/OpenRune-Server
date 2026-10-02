@@ -16,6 +16,7 @@ internal class ZebakBoulders(private val room: ZebakEncounter) {
     fun isBoulder(tile: CoordGrid): Boolean = boulders.values.any { it.coords == tile }
 
     fun spawn(tile: CoordGrid) {
+        room.poison.remove(tile)
         val boulder = room.spawn(ZebakNpcs.BOULDER, tile)
         val blocker = ZebakLocs.BOULDER_BLOCKER
         val shape = LocShape.CentrepieceStraight
