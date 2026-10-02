@@ -9,8 +9,8 @@ import org.rsmod.api.bosses.dsl.npcMaxHit
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
-import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.bosses.spec.BossSpec
+import org.rsmod.content.raids.toa.raid.encounter.roomCombatGate
 import org.rsmod.plugin.scripts.ScriptContext
 
 class ZebakCrocodile @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
@@ -19,9 +19,10 @@ class ZebakCrocodile @Inject constructor(deps: BossDeps) : BossPluginScript(deps
             this,
             spec,
             deps,
-            onCombatTick = { target ->
-                if (!ZebakEncounter.onCrocCombatTick(npc, target)) deps.suppressAttacks(npc, 1)
-            },
+            onCombatTick =
+                deps.roomCombatGate<ZebakEncounter> { room, _, target ->
+                    room.water.mayBite(target)
+                },
         )
     }
 

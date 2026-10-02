@@ -89,8 +89,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         return if (player.vars[PROTECT_FROM_MAGIC] > 0) 0 else BARRAGE_HEAL
     }
 
-    fun registerCloud(cloud: Npc) {
-        room.adopt(cloud)
+    fun trackCloud(cloud: Npc) {
         clouds[cloud] = CloudState(deps.random.of(10, 20), CLOUD_START_DELAY, cloud.coords)
     }
 
