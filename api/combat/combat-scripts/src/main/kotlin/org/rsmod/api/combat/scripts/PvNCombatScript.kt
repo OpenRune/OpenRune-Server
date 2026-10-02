@@ -57,6 +57,9 @@ constructor(
         // and magic. These attacks should be treated as ap range, not op.
         val isMeleeAttackType = type == null || type.isMelee
         if (attackRange == 1 && isMeleeAttackType) {
+            if (!canAttack && approachDenied(target)) {
+                return
+            }
             apRange(-1)
             return
         }
@@ -102,6 +105,11 @@ constructor(
         val attack = resolveCombatAttack(player.righthand, null, null, spell)
         combat.attack(this, target, attack)
     }
+
+    private fun ProtectedAccess.approachDenied(npc: Npc): Boolean =
+        attackValidateHooks.any {
+            it.stopsApproach && it.validate(player, npc) is NpcAttackValidateResult.Deny
+        }
 
     private fun ProtectedAccess.canAttack(npc: Npc): Boolean {
         var bypassSingleWayPvn = false

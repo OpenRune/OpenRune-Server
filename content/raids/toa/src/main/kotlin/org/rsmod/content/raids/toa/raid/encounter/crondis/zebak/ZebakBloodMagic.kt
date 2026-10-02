@@ -71,7 +71,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
             val damage = deps.random.of(base, base + BARRAGE_DAMAGE_SPREAD)
             heal += barrageHit(boss, player, damage)
             player.spotanim(ZebakSpots.BLOOD_BARRAGE)
-            player.combatPlayDefendAnim()
+            if (!room.water.isSwimming(player)) player.combatPlayDefendAnim()
             for (other in targets) {
                 if (other === player || player.coords.chebyshevDistance(other.coords) > radius) continue
                 heal += barrageHit(boss, other, damage)
