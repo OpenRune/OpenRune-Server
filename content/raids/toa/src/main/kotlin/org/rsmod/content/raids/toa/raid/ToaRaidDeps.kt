@@ -23,6 +23,7 @@ import org.rsmod.content.other.consumables.potion.toa.ToaPotionEffect
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
@@ -52,4 +53,5 @@ constructor(
     val eventBus: EventBus,
     val supplyEffects: ToaPotionEffect,
     val bossDeps: BossDeps,
+    val playerList: PlayerList,
 )
