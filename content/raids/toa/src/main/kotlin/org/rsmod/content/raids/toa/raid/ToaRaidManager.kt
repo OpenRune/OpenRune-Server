@@ -87,6 +87,7 @@ object ToaRaidManager {
         player.hudCurrentPath = room.hudPath
         if (firstEntry) {
             ToaPartyManager.setPartyStatus(player, ToaPartyManager.PARTY_STATUS_IN_PARTY)
+            ToaStats.recordAttempt(player, raid.settings.mode)
         }
 
         if (room.kind != ToaRoom.Kind.MAIN_HALL && !raid.timerStarted) {
@@ -110,6 +111,7 @@ object ToaRaidManager {
         if (logout && room != null && room.stage == ToaStage.STARTED && room.inChallengeArea(player)) {
             unsafeLogout = true
             raid.totalDeaths++
+            ToaStats.recordDeath(player, raid.settings.mode)
             for (other in room.players) {
                 if (other !== player) {
                     other.mes(
