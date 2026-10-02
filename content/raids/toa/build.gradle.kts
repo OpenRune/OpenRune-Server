@@ -21,6 +21,7 @@ dependencies {
     // dependency content/quest and content/other/login already use.
     implementation(libs.rsprot.api)
     implementation(projects.content.interfaces.bank)
+    implementation(projects.content.interfaces.collectionLog)
     // ConsumableActivityGate / ToaPotionEffect: unlocking the Helpful Spirit's supplies in the
     // raid, and clearing their timed effects on death and on leaving.
     implementation(projects.content.other.consumables)
