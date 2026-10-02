@@ -41,10 +41,17 @@ jobs:
       - name: Prepare game config
         run: cp game.example.yml game.yml
 
-      - name: Build cache and server jar
+      # Cache generation must be its own invocation: nothing in the task graph orders
+      # freshCache before the compile chain, so sharing a build lets
+      # :api:generated:compileKotlin snapshot an empty source dir and fail downstream
+      # modules on unresolved table classes.
+      - name: Generate cache and gameval sources
         run: |
           chmod +x gradlew
-          ./gradlew :or-cache:freshCache :or-cache:mergePluginGamevals :server:app:shadowJar --no-daemon --stacktrace
+          ./gradlew :or-cache:freshCache :or-cache:mergePluginGamevals --no-daemon --stacktrace
+
+      - name: Build server jar
+        run: ./gradlew :server:app:shadowJar --no-daemon --stacktrace
 
       - name: Prepare release bundle
         run: |
