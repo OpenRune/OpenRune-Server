@@ -1,5 +1,6 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
+import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo

@@ -181,15 +181,15 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
         val previous = locations.put(player, encounter)
         if (previous === encounter) return
         previous?.let {
-            it.onLeave(player)
+            it.leave(player)
             releaseIfIdle(it)
         }
-        encounter.onEnter(player)
+        encounter.enter(player)
     }
 
     internal fun remove(player: Player) {
         val previous = locations.remove(player) ?: return
-        previous.onLeave(player)
+        previous.leave(player)
         releaseIfIdle(previous)
     }
 
