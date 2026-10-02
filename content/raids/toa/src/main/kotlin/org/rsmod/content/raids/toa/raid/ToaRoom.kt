@@ -16,6 +16,7 @@ enum class ToaRoom(
     val challengeMin: CoordGrid? = null,
     val challengeMax: CoordGrid? = null,
     val osmumtenTile: CoordGrid? = null,
+    val dropTile: CoordGrid? = null,
     val challengeName: String? = null,
     val levels: IntRange = 0..3,
 ) {
@@ -120,6 +121,7 @@ enum class ToaRoom(
         challengeMin = CoordGrid(3904, 5387, 0),
         challengeMax = CoordGrid(3962, 5429, 0),
         osmumtenTile = CoordGrid(3928, 5408, 0),
+        dropTile = CoordGrid(3927, 5408, 0),
         challengeName = "Zebak",
     ) {
 
