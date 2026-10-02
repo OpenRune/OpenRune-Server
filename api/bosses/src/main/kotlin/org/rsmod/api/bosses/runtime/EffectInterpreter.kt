@@ -147,7 +147,6 @@ class EffectInterpreter internal constructor(
             is Effect.TileAoE -> applyTileAoE(effect)
             is Effect.Debris -> applyDebris(effect)
             is Effect.Summon -> summon(access, effect)
-            is Effect.Hazard -> placeHazard(access, effect)
             is Effect.Bleed -> {
                 if (deps.random.of(effect.outOf) >= effect.chance) {
                     run(access, effect.otherwise, onComplete)
@@ -378,8 +377,12 @@ class EffectInterpreter internal constructor(
             if (damage > 0) {
                 hit.spotanim?.let { t.spotanim(it, delay = hit.spotanimDelay ?: 0, height = hit.spotanimHeight) }
             }
+            if (hit.hazard) {
+                t.queueHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier)
+                continue
+            }
             if (hit.resolveOnImpact) {
-                if (!hit.hazard) t.queueCombatRetaliate(npc, delay)
+                t.queueCombatRetaliate(npc, delay)
                 t.queueImpactHit(
                     npc,
                     delay,
@@ -400,10 +403,6 @@ class EffectInterpreter internal constructor(
                 val type = hit.type.toEngine()
                 val queued = t.queueHit(npc, delay, type, damage, deps.playerHitModifier, penetration = hit.penetration)
                 scheduleLanding(access, hit, t, damage, queued.damage, delay, clientDelay = 0)
-                continue
-            }
-            if (hit.hazard) {
-                t.queueHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier)
                 continue
             }
             val landed =
@@ -568,7 +567,7 @@ class EffectInterpreter internal constructor(
             }
             val praying = encounter.evaluate(Condition.TargetPraying(hit.type), t)
             deps.playerHitModifier.modify(this, t)
-            if (!hit.hazard) t.combatPlayDefendAnim()
+            t.combatPlayDefendAnim()
             if (hit.spotanimUnlessPraying && !praying) {
                 hit.spotanim?.let { t.spotanim(it, height = hit.spotanimHeight) }
             }
@@ -629,19 +628,8 @@ class EffectInterpreter internal constructor(
         if (windup > 0) deps.worldQueues.add(windup) { strike() } else strike()
     }
 
-    private fun placeHazard(access: StandardNpcAccess?, hazard: Effect.Hazard) {
-        val tile = resolveTile(hazard.at)
-        deps.hazards.place(npc, tile, hazard.loc, hazard.armDelay, hazard.duration) { player ->
-            if (!npc.isValidTarget()) return@place
-            hazard.damage?.let {
-                val damage = evaluateDamage(it, hazard.type, player)
-                player.finishNpcHit(npc, 1, hazard.type.toEngine(), damage, deps.playerHitModifier)
-            }
-            hazard.onStand?.let { EffectInterpreter(npc, player, spec, encounter, deps).run(access, it) }
-        }
-    }
 
-    private fun applyBleed(access: StandardNpcAccess?,bleed: Effect.Bleed) {
+    private fun applyBleed(access: StandardNpcAccess?, bleed: Effect.Bleed) {
         deps.bleeds.apply(
             owner = npc,
             player = target,
