@@ -23,6 +23,7 @@ import org.rsmod.api.player.stat.statRestoreAll
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onPlayerHit
 import org.rsmod.api.script.onPlayerQueue
+import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
@@ -157,7 +158,7 @@ internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Bo
     raid.revive(player)
     player.toaRestore()
     if (retry) {
-        if (!raid.isActive(ON_A_DIET)) invAdd(inv, HONEY_LOCUST, room.honeyLocusts())
+        if (!raid.isActive(ToaInvocationKey.OnADiet)) invAdd(inv, HONEY_LOCUST, room.honeyLocusts())
     } else {
         ToaRaidManager.leave(player, logout = false)
         val protectItem = player.attr[ToaRetrieval.PROTECT_ITEM_AT_DEATH] == true
@@ -216,7 +217,6 @@ private val ALL_STATS: List<String> by lazy {
     ServerCacheManager.getStats().values.map { RSCM.getReverseMapping(RSCMType.STAT, it.id) }
 }
 
-private const val ON_A_DIET = "On a Diet"
 private const val HONEY_LOCUST = "obj.toa_honey_locust"
 
 private const val STOP_MUSIC = "midi.stop_music"

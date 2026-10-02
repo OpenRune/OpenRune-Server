@@ -36,6 +36,7 @@ import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.TargetExpr
 import org.rsmod.api.combat.commons.player.queueCombatRetaliate
+import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.challengePlayers
 import org.rsmod.content.raids.toa.raid.encounter.eachTarget
 import org.rsmod.content.raids.toa.raid.encounter.onRoomExternal
@@ -491,7 +492,7 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         private val cloudsFromSouth =
             roomCondition<ZebakEncounter> { room, _ -> room.bloodMagic.cloudsFromSouth }
         private val bloodThinners = roomCondition<ZebakEncounter> { room, _ ->
-            room.raid.isActive(ZebakInvocations.BLOOD_THINNERS)
+            room.raid.isActive(ToaInvocationKey.BloodThinners)
         }
     }
 }

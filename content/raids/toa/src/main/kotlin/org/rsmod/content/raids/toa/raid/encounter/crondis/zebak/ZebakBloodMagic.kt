@@ -7,6 +7,7 @@ import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.hit.queueHit as queueNpcHit
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.output.soundSynth
+import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.shuffled
@@ -35,7 +36,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
     )
 
     fun start() {
-        val active = room.raid.isActive(ZebakInvocations.NOT_JUST_A_HEAD)
+        val active = room.raid.isActive(ToaInvocationKey.NotJustAHead)
         countdown = if (active) room.attackSpeed * EVERY - 1 else -1
     }
 
@@ -66,7 +67,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         val boss = room.zebak ?: return
         val targets = room.targets()
         val base = floor(BARRAGE_BASE_DAMAGE * room.raid.damageMultiplier).toInt()
-        val radius = if (room.raid.isActive(ZebakInvocations.ARTERIAL_SPRAY)) 2 else 1
+        val radius = if (room.raid.isActive(ToaInvocationKey.ArterialSpray)) 2 else 1
         var heal = 0
         for (player in targets) {
             val damage = deps.random.of(base, base + BARRAGE_DAMAGE_SPREAD)

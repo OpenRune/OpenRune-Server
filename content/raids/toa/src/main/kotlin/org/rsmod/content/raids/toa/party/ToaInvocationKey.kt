@@ -1,0 +1,55 @@
+package org.rsmod.content.raids.toa.party
+
+enum class ToaInvocationKey(val cacheName: String) {
+    TryAgain("Try Again"),
+    Persistence("Persistence"),
+    SoftcoreRun("Softcore Run"),
+    HardcoreRun("Hardcore Run"),
+    WalkForIt("Walk for It"),
+    JogForIt("Jog for It"),
+    RunForIt("Run for It"),
+    SprintForIt("Sprint for It"),
+    NeedSomeHelp("Need Some Help?"),
+    NeedLessHelp("Need Less Help?"),
+    NoHelpNeeded("No Help Needed"),
+    WalkThePath("Walk the Path"),
+    Pathseeker("Pathseeker"),
+    Pathfinder("Pathfinder"),
+    Pathmaster("Pathmaster"),
+    QuietPrayers("Quiet Prayers"),
+    DeadlyPrayers("Deadly Prayers"),
+    OnADiet("On a Diet"),
+    Dehydration("Dehydration"),
+    OverlyDraining("Overly Draining"),
+    LivelyLarvae("Lively Larvae"),
+    MoreOverlords("More Overlords"),
+    BlowingMud("Blowing Mud"),
+    Medic("Medic!"),
+    AerialAssault("Aerial Assault"),
+    NotJustAHead("Not Just a Head"),
+    ArterialSpray("Arterial Spray"),
+    BloodThinners("Blood Thinners"),
+    UpsetStomach("Upset Stomach"),
+    DoubleTrouble("Double Trouble"),
+    KeepBack("Keep Back"),
+    StayVigilant("Stay Vigilant"),
+    FeelingSpecial("Feeling Special?"),
+    MindTheGap("Mind the Gap!"),
+    GottaHaveFaith("Gotta Have Faith"),
+    JungleJapes("Jungle Japes"),
+    ShakingThingsUp("Shaking Things Up"),
+    Boulderdash("Boulderdash"),
+    AncientHaste("Ancient Haste"),
+    Acceleration("Acceleration"),
+    Penetration("Penetration"),
+    Overclocked("Overclocked"),
+    Overclocked2("Overclocked 2"),
+    Insanity("Insanity"),
+    BlazingTombsI("Blazing Tombs I"),
+    BlazingTombsII("Blazing Tombs II");
+
+    val invocation: ToaInvocation by lazy {
+        ToaInvocation.ALL.firstOrNull { it.name == cacheName }
+            ?: error("Invocation \"$cacheName\" is not in cache enum 4664.")
+    }
+}
