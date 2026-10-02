@@ -1,8 +1,8 @@
 [[interface]]
-name = "interface.monster_drops"
+name = "interface.pet_menu"
 width = 512
 height = 334
-on_load = ["clientscript.monster_drops_init", "component.monster_drops:frame"]
+on_load = ["clientscript.pet_menu_init", "component.pet_menu:frame"]
 
 [[component]]
 name = "frame"
@@ -12,38 +12,27 @@ height = 334
 no_click_through = true
 
 [[component]]
-name = "list_panel"
+name = "content_panel"
 type = "layer"
 x = 10
 y = 64
-width = 174
+width = 492
 height = 240
 
 [[component]]
-name = "detail_panel"
-type = "layer"
-x = 188
-y = 64
-width = 314
-height = 240
-
-[[component]]
-name = "npc"
-type = "layer"
-x = 10
+name = "query"
+type = "text"
+x = 18
 y = 39
-width = 60
+width = 290
 height = 20
-options = ["Select"]
-
-[[component]]
-name = "item"
-type = "layer"
-x = 74
-y = 39
-width = 60
-height = 20
-options = ["Select"]
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
 
 [[component]]
 name = "search"
@@ -52,7 +41,7 @@ x = 362
 y = 39
 width = 76
 height = 20
-options = ["Select"]
+options = ["Search"]
 
 [[component]]
 name = "clear"
@@ -61,359 +50,7 @@ x = 442
 y = 39
 width = 60
 height = 20
-options = ["Select"]
-
-[[component]]
-name = "query"
-type = "text"
-x = 140
-y = 39
-width = 216
-height = 20
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FFFFFF"
-
-[[component]]
-name = "list_status"
-type = "text"
-x = 18
-y = 65
-width = 156
-height = 14
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
-
-[[component]]
-name = "name"
-type = "text"
-x = 196
-y = 66
-width = 298
-height = 18
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
-
-[[component]]
-name = "result_icon_0"
-type = "graphic"
-sprite_id = 0
-hide = true
-border_type = 1
-shadow_color = "#333333"
-x = 16
-y = 82
-width = 26
-height = 26
-options = ["Select"]
-
-[[component]]
-name = "result_0"
-type = "text"
-x = 46
-y = 82
-width = 130
-height = 26
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
-options = ["Select"]
-
-[[component]]
-name = "result_icon_1"
-type = "graphic"
-sprite_id = 0
-hide = true
-border_type = 1
-shadow_color = "#333333"
-x = 16
-y = 109
-width = 26
-height = 26
-options = ["Select"]
-
-[[component]]
-name = "result_1"
-type = "text"
-x = 46
-y = 109
-width = 130
-height = 26
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
-options = ["Select"]
-
-[[component]]
-name = "result_icon_2"
-type = "graphic"
-sprite_id = 0
-hide = true
-border_type = 1
-shadow_color = "#333333"
-x = 16
-y = 136
-width = 26
-height = 26
-options = ["Select"]
-
-[[component]]
-name = "result_2"
-type = "text"
-x = 46
-y = 136
-width = 130
-height = 26
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
-options = ["Select"]
-
-[[component]]
-name = "result_icon_3"
-type = "graphic"
-sprite_id = 0
-hide = true
-border_type = 1
-shadow_color = "#333333"
-x = 16
-y = 163
-width = 26
-height = 26
-options = ["Select"]
-
-[[component]]
-name = "result_3"
-type = "text"
-x = 46
-y = 163
-width = 130
-height = 26
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
-options = ["Select"]
-
-[[component]]
-name = "result_icon_4"
-type = "graphic"
-sprite_id = 0
-hide = true
-border_type = 1
-shadow_color = "#333333"
-x = 16
-y = 190
-width = 26
-height = 26
-options = ["Select"]
-
-[[component]]
-name = "result_4"
-type = "text"
-x = 46
-y = 190
-width = 130
-height = 26
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
-options = ["Select"]
-
-[[component]]
-name = "result_icon_5"
-type = "graphic"
-sprite_id = 0
-hide = true
-border_type = 1
-shadow_color = "#333333"
-x = 16
-y = 217
-width = 26
-height = 26
-options = ["Select"]
-
-[[component]]
-name = "result_5"
-type = "text"
-x = 46
-y = 217
-width = 130
-height = 26
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
-options = ["Select"]
-
-[[component]]
-name = "result_icon_6"
-type = "graphic"
-sprite_id = 0
-hide = true
-border_type = 1
-shadow_color = "#333333"
-x = 16
-y = 244
-width = 26
-height = 26
-options = ["Select"]
-
-[[component]]
-name = "result_6"
-type = "text"
-x = 46
-y = 244
-width = 130
-height = 26
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
-options = ["Select"]
-
-[[component]]
-name = "result_icon_7"
-type = "graphic"
-sprite_id = 0
-hide = true
-border_type = 1
-shadow_color = "#333333"
-x = 16
-y = 271
-width = 26
-height = 26
-options = ["Select"]
-
-[[component]]
-name = "result_7"
-type = "text"
-x = 46
-y = 271
-width = 130
-height = 26
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
-options = ["Select"]
-
-[[component]]
-name = "drops"
-type = "layer"
-x = 196
-y = 87
-width = 96
-height = 20
-options = ["Select"]
-
-[[component]]
-name = "tab_drops"
-type = "text"
-x = 200
-y = 88
-width = 88
-height = 18
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
-options = ["Select"]
-
-[[component]]
-name = "locations"
-type = "layer"
-x = 296
-y = 87
-width = 96
-height = 20
-options = ["Select"]
-
-[[component]]
-name = "tab_locations"
-type = "text"
-x = 300
-y = 88
-width = 88
-height = 18
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
-options = ["Select"]
-
-[[component]]
-name = "stats"
-type = "layer"
-x = 396
-y = 87
-width = 96
-height = 20
-options = ["Select"]
-
-[[component]]
-name = "tab_stats"
-type = "text"
-x = 400
-y = 88
-width = 88
-height = 18
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
-options = ["Select"]
+options = ["Clear"]
 
 [[component]]
 name = "icon_0"
@@ -422,18 +59,18 @@ sprite_id = 0
 hide = true
 border_type = 1
 shadow_color = "#333333"
-x = 196
-y = 111
+x = 16
+y = 70
 width = 32
 height = 32
-options = ["Find sources"]
+options = ["Choose pet"]
 
 [[component]]
-name = "row_0"
+name = "pet_0"
 type = "text"
-x = 234
-y = 111
-width = 158
+x = 52
+y = 67
+width = 118
 height = 24
 text = ""
 font = "small"
@@ -442,29 +79,15 @@ line_height = 12
 h_align = "left"
 v_align = "center"
 color = "#FF981F"
+options = ["Choose pet"]
 
 [[component]]
-name = "quantity_0"
+name = "category_0"
 type = "text"
-x = 234
-y = 135
-width = 158
+x = 52
+y = 92
+width = 118
 height = 12
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FFFFFF"
-
-[[component]]
-name = "chance_0"
-type = "text"
-x = 394
-y = 111
-width = 102
-height = 32
 text = ""
 font = "small"
 text_shadow = true
@@ -480,18 +103,18 @@ sprite_id = 0
 hide = true
 border_type = 1
 shadow_color = "#333333"
-x = 196
-y = 149
+x = 178
+y = 70
 width = 32
 height = 32
-options = ["Find sources"]
+options = ["Choose pet"]
 
 [[component]]
-name = "row_1"
+name = "pet_1"
 type = "text"
-x = 234
-y = 149
-width = 158
+x = 214
+y = 67
+width = 118
 height = 24
 text = ""
 font = "small"
@@ -500,29 +123,15 @@ line_height = 12
 h_align = "left"
 v_align = "center"
 color = "#FF981F"
+options = ["Choose pet"]
 
 [[component]]
-name = "quantity_1"
+name = "category_1"
 type = "text"
-x = 234
-y = 173
-width = 158
+x = 214
+y = 92
+width = 118
 height = 12
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FFFFFF"
-
-[[component]]
-name = "chance_1"
-type = "text"
-x = 394
-y = 149
-width = 102
-height = 32
 text = ""
 font = "small"
 text_shadow = true
@@ -538,18 +147,18 @@ sprite_id = 0
 hide = true
 border_type = 1
 shadow_color = "#333333"
-x = 196
-y = 187
+x = 340
+y = 70
 width = 32
 height = 32
-options = ["Find sources"]
+options = ["Choose pet"]
 
 [[component]]
-name = "row_2"
+name = "pet_2"
 type = "text"
-x = 234
-y = 187
-width = 158
+x = 376
+y = 67
+width = 118
 height = 24
 text = ""
 font = "small"
@@ -558,29 +167,15 @@ line_height = 12
 h_align = "left"
 v_align = "center"
 color = "#FF981F"
+options = ["Choose pet"]
 
 [[component]]
-name = "quantity_2"
+name = "category_2"
 type = "text"
-x = 234
-y = 211
-width = 158
+x = 376
+y = 92
+width = 118
 height = 12
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FFFFFF"
-
-[[component]]
-name = "chance_2"
-type = "text"
-x = 394
-y = 187
-width = 102
-height = 32
 text = ""
 font = "small"
 text_shadow = true
@@ -596,18 +191,18 @@ sprite_id = 0
 hide = true
 border_type = 1
 shadow_color = "#333333"
-x = 196
-y = 225
+x = 16
+y = 109
 width = 32
 height = 32
-options = ["Find sources"]
+options = ["Choose pet"]
 
 [[component]]
-name = "row_3"
+name = "pet_3"
 type = "text"
-x = 234
-y = 225
-width = 158
+x = 52
+y = 106
+width = 118
 height = 24
 text = ""
 font = "small"
@@ -616,29 +211,15 @@ line_height = 12
 h_align = "left"
 v_align = "center"
 color = "#FF981F"
+options = ["Choose pet"]
 
 [[component]]
-name = "quantity_3"
+name = "category_3"
 type = "text"
-x = 234
-y = 249
-width = 158
+x = 52
+y = 131
+width = 118
 height = 12
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FFFFFF"
-
-[[component]]
-name = "chance_3"
-type = "text"
-x = 394
-y = 225
-width = 102
-height = 32
 text = ""
 font = "small"
 text_shadow = true
@@ -654,18 +235,18 @@ sprite_id = 0
 hide = true
 border_type = 1
 shadow_color = "#333333"
-x = 196
-y = 263
+x = 178
+y = 109
 width = 32
 height = 32
-options = ["Find sources"]
+options = ["Choose pet"]
 
 [[component]]
-name = "row_4"
+name = "pet_4"
 type = "text"
-x = 234
-y = 263
-width = 158
+x = 214
+y = 106
+width = 118
 height = 24
 text = ""
 font = "small"
@@ -674,13 +255,14 @@ line_height = 12
 h_align = "left"
 v_align = "center"
 color = "#FF981F"
+options = ["Choose pet"]
 
 [[component]]
-name = "quantity_4"
+name = "category_4"
 type = "text"
-x = 234
-y = 287
-width = 158
+x = 214
+y = 131
+width = 118
 height = 12
 text = ""
 font = "small"
@@ -691,12 +273,41 @@ v_align = "center"
 color = "#FFFFFF"
 
 [[component]]
-name = "chance_4"
-type = "text"
-x = 394
-y = 263
-width = 102
+name = "icon_5"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 340
+y = 109
+width = 32
 height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_5"
+type = "text"
+x = 376
+y = 106
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_5"
+type = "text"
+x = 376
+y = 131
+width = 118
+height = 12
 text = ""
 font = "small"
 text_shadow = true
@@ -706,77 +317,557 @@ v_align = "center"
 color = "#FFFFFF"
 
 [[component]]
-name = "details"
+name = "icon_6"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 16
+y = 148
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_6"
 type = "text"
-x = 198
-y = 112
-width = 296
-height = 188
+x = 52
+y = 145
+width = 118
+height = 24
 text = ""
 font = "small"
 text_shadow = true
 line_height = 12
 h_align = "left"
-v_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_6"
+type = "text"
+x = 52
+y = 170
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
 color = "#FFFFFF"
 
 [[component]]
-name = "list_previous"
-type = "layer"
-x = 10
-y = 308
-width = 40
-height = 20
-options = ["Select"]
+name = "icon_7"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 178
+y = 148
+width = 32
+height = 32
+options = ["Choose pet"]
 
 [[component]]
-name = "list_next"
-type = "layer"
-x = 140
-y = 308
-width = 40
-height = 20
-options = ["Select"]
+name = "pet_7"
+type = "text"
+x = 214
+y = 145
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_7"
+type = "text"
+x = 214
+y = 170
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_8"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 340
+y = 148
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_8"
+type = "text"
+x = 376
+y = 145
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_8"
+type = "text"
+x = 376
+y = 170
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_9"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 16
+y = 187
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_9"
+type = "text"
+x = 52
+y = 184
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_9"
+type = "text"
+x = 52
+y = 209
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_10"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 178
+y = 187
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_10"
+type = "text"
+x = 214
+y = 184
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_10"
+type = "text"
+x = 214
+y = 209
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_11"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 340
+y = 187
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_11"
+type = "text"
+x = 376
+y = 184
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_11"
+type = "text"
+x = 376
+y = 209
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_12"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 16
+y = 226
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_12"
+type = "text"
+x = 52
+y = 223
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_12"
+type = "text"
+x = 52
+y = 248
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_13"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 178
+y = 226
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_13"
+type = "text"
+x = 214
+y = 223
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_13"
+type = "text"
+x = 214
+y = 248
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_14"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 340
+y = 226
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_14"
+type = "text"
+x = 376
+y = 223
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_14"
+type = "text"
+x = 376
+y = 248
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_15"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 16
+y = 265
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_15"
+type = "text"
+x = 52
+y = 262
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_15"
+type = "text"
+x = 52
+y = 287
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_16"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 178
+y = 265
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_16"
+type = "text"
+x = 214
+y = 262
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_16"
+type = "text"
+x = 214
+y = 287
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_17"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 340
+y = 265
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_17"
+type = "text"
+x = 376
+y = 262
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_17"
+type = "text"
+x = 376
+y = 287
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
 
 [[component]]
 name = "previous"
 type = "layer"
-x = 188
+x = 10
 y = 308
-width = 40
+width = 48
 height = 20
-options = ["Select"]
+options = ["Back"]
 
 [[component]]
 name = "next"
 type = "layer"
-x = 462
+x = 454
 y = 308
-width = 40
+width = 48
 height = 20
-options = ["Select"]
-
-[[component]]
-name = "list_page"
-type = "text"
-x = 56
-y = 310
-width = 78
-height = 16
-text = ""
-font = "small"
-text_shadow = true
-line_height = 12
-h_align = "left"
-v_align = "center"
-color = "#FF981F"
+options = ["Next"]
 
 [[component]]
 name = "page"
 type = "text"
-x = 236
+x = 68
 y = 310
-width = 48
+width = 110
 height = 16
 text = ""
 font = "small"
@@ -787,12 +878,12 @@ v_align = "center"
 color = "#FF981F"
 
 [[component]]
-name = "notice"
+name = "status"
 type = "text"
-x = 288
-y = 306
-width = 168
-height = 24
+x = 188
+y = 308
+width = 256
+height = 20
 text = ""
 font = "small"
 text_shadow = true

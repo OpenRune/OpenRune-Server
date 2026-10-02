@@ -44,16 +44,17 @@ class MonsterStatsTest {
     }
 
     @Test
-    fun `drop interface fits the inventory panel with native buttons and shadowed text`() {
+    fun `drop browser fits the fixed viewport with native buttons icons and shadowed text`() {
         val ui = checkNotNull(ServerCacheManager.getInterface("interface.monster_drops".asRSCM()))
         val components = ui.components.values
         for (component in components) {
             assertTrue(component.x >= 0 && component.y >= 0)
-            assertTrue(component.x + component.width <= 190, component.internalName)
-            assertTrue(component.y + component.height <= 261, component.internalName)
+            assertTrue(component.x + component.width <= 512, component.internalName)
+            assertTrue(component.y + component.height <= 334, component.internalName)
             if (component.type == 4) assertTrue(component.textShadow)
         }
         assertEquals(1, components.count { it.onLoad != null })
+        assertEquals(13, components.count { it.type == 5 })
         for (name in listOf("previous", "next", "stats")) {
             val component = ServerCacheManager.fromComponent("component.monster_drops:$name".asRSCM())
             assertTrue(component.events and 2 != 0)

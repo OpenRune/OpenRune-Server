@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import dtx.rs.RSDropTable
 import dtx.rs.rsGuaranteedTable
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetObject
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetText
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
@@ -17,7 +18,9 @@ import org.rsmod.annotations.InternalApi
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.DropTableRegistry
+import org.rsmod.api.instances.BossInstanceRegistry
 import org.rsmod.api.player.events.NpcExamineEvent
+import org.rsmod.api.player.input.ResumePStringDialogInput
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -25,8 +28,12 @@ import org.rsmod.api.player.ui.IfModalButton
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
+import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.Inventory
 import org.rsmod.game.queue.EngineQueueCache
+import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
 @Execution(ExecutionMode.SAME_THREAD)
@@ -34,14 +41,17 @@ import org.rsmod.plugin.scripts.ScriptContext
 @OptIn(InternalApi::class)
 class MonsterInfoScriptTest {
     @Test
-    fun `examine offers the native chat choices and stats opens in the side modal`() {
+    fun `examine offers native chat choices and stats opens in the full browser`() {
         val f = Fixture()
         f.examine()
         assertTrue(f.player.ui.containsModal("interface.chatmenu"))
         f.choose(2)
         assertFalse(f.player.ui.containsModal("interface.chatmenu"))
-        assertTrue(f.player.ui.containsModal("interface.dream_monster_stat"))
-        assertFalse(f.player.ui.containsModal("interface.monster_drops"))
+        assertTrue(f.player.ui.containsModal("interface.monster_drops"))
+        assertTrue(f.text("details").contains("Hitpoints:"))
+        assertEquals("1/4", f.text("page"))
+        f.click("next")
+        assertTrue(f.text("details").contains("Attack speed:"))
     }
 
     @Test
@@ -50,16 +60,45 @@ class MonsterInfoScriptTest {
         f.examine()
         f.choose(1)
         assertTrue(f.player.ui.containsModal("interface.monster_drops"))
-        assertEquals("1/3", f.text("page"))
+        assertEquals("1/2", f.text("page"))
+        assertTrue(f.client.messages.any { it is IfSetObject })
         f.click("next")
         f.click("next")
         f.click("next")
-        assertEquals("3/3", f.text("page"))
+        assertEquals("2/2", f.text("page"))
         f.click("previous")
-        assertEquals("2/3", f.text("page"))
+        assertEquals("1/2", f.text("page"))
         f.click("stats")
-        assertFalse(f.player.ui.containsModal("interface.monster_drops"))
-        assertTrue(f.player.ui.containsModal("interface.dream_monster_stat"))
+        assertTrue(f.player.ui.containsModal("interface.monster_drops"))
+        assertTrue(f.text("details").contains("Hitpoints:"))
+    }
+
+    @Test
+    fun `item search resolves NPC sources and locations without awarding an item`() {
+        val f = Fixture()
+        f.examine(); f.choose(1)
+        f.click("item")
+        f.click("search")
+        f.player.resumeActiveCoroutine(ResumePStringDialogInput("coins"))
+        assertTrue(f.text("result_0").contains("Coins"))
+        f.click("result_0")
+        assertTrue(f.text("result_0").contains("Waterfiend"))
+        assertEquals("1 NPC tables", f.text("list_status"))
+        f.click("result_0")
+        f.click("locations")
+        assertTrue(f.text("details").contains("3200, 3201 (plane 0)"))
+        assertTrue(f.player.inv.isEmpty())
+    }
+
+    @Test
+    fun `empty search has no stale clickable rows and pagination is bounded`() {
+        val f = Fixture()
+        f.examine(); f.choose(1); f.click("search")
+        f.player.resumeActiveCoroutine(ResumePStringDialogInput("no such monster 987654"))
+        f.click("list_next"); f.click("result_7")
+        assertEquals("No results", f.text("list_status"))
+        assertEquals("1/1", f.text("list_page"))
+        assertEquals("<col=ff981f></col>", f.text("result_7"))
     }
 
     @Test
@@ -75,7 +114,7 @@ class MonsterInfoScriptTest {
     private class Fixture {
         val events = EventBus()
         val client = RecordingClient()
-        val player = Player(client).apply { username = "monster-info-test" }
+        val player = Player(client).apply { username = "monster-info-test"; inv = Inventory.create("inv.inv") }
         val type = ServerCacheManager.getNpcs().values.first { it.name == "Waterfiend" && MonsterInfoScript.isMonster(it) }
         val launcher: ProtectedAccessLauncher
         init {
@@ -88,7 +127,10 @@ class MonsterInfoScriptTest {
                 repeat(8) { add(DropRollItem("obj.coins", it + 1)) }
             })
             `when`(registry.forNpcType(type.internalName, player.coords, areas)).thenReturn(table)
-            with(MonsterInfoScript(launcher, registry, areas)) {
+            `when`(registry.npcTables()).thenReturn(mapOf(type.internalName to listOf(table)))
+            val npcs = NpcList().apply { this[1] = Npc(type, CoordGrid(3200, 3201)) }
+            val catalogue = MonsterCatalogue(registry, npcs, BossInstanceRegistry())
+            with(MonsterInfoScript(launcher, registry, areas, catalogue)) {
                 ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup()
             }
         }

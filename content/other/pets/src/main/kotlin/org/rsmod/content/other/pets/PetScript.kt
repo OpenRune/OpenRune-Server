@@ -22,6 +22,7 @@ constructor(
     private val followers: PetFollowers,
     private val rewards: PetRewards,
     private val protectedAccess: ProtectedAccessLauncher,
+    private val petMenu: PetMenu,
 ) : PluginScript(), PlayerPostTickHook {
     override fun ScriptContext.startup() {
         for (pet in Pets.all) {
@@ -74,7 +75,7 @@ constructor(
 
     private fun Cheat.givePet() {
         if (args.isEmpty()) {
-            protectedAccess.launch(player) { choosePet() }
+            protectedAccess.launch(player) { petMenu.open(this) }
             return
         }
         val obj = "obj.${args[0]}"
@@ -85,16 +86,7 @@ constructor(
         rewards.give(player, obj)
     }
 
-    private suspend fun ProtectedAccess.choosePet() {
-        val pets = Pets.all.sortedBy { it.name }
-        val labels = pets.map { it.name } + CANCEL
-        val pet = pets.getOrNull(menu(PET_MENU, *labels.toTypedArray())) ?: return
-        rewards.give(player, pet.base.obj)
-    }
-
     private companion object {
         const val PICK_UP_OP = "Pick-up"
-        const val PET_MENU = "Select a pet"
-        const val CANCEL = "Cancel"
     }
 }

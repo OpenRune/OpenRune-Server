@@ -82,6 +82,9 @@ constructor(tomlResolver: DropTableTomlResolver) {
 
     public fun forLoc(loc: String): RSDropTable<Player, DropRollItem>? = tablesByLoc[loc]
 
+    public fun npcTables(): Map<String, List<RSDropTable<Player, DropRollItem>>> =
+        tablesByNpc.mapValues { (_, tables) -> tables.toList() }
+
     /**
      * Parsing (file I/O + Jackson decode) runs in parallel since each resource is independent;
      * [register] mutates shared maps, so it's applied back on the calling thread afterward.
