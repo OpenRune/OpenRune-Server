@@ -120,12 +120,15 @@ internal object DoomRockThrow {
     private const val DEBRIS_HIT_TICKS = 3
     private const val SPLIT_HEIGHT = 244
     private const val DEBRIS_RADIUS = 4
-    private const val FOLLOW_UP_TRAVEL = 90
     private const val CYCLES_PER_TICK = 30
+    private const val SECOND_ROCK_DELAY = 3
+    private const val SINGLE_THROW_SLOTS = 2
+    private const val DOUBLE_THROW_SLOTS = 3
 
     private const val AIM = "aim"
     private const val PLAYER = "player"
     private const val DEBRIS = "debris"
+    private const val SECOND_DEBRIS = "second_debris"
     private const val SOURCE = "source"
 
     private const val SPLIT_SYNTH = "synth.dom_rock_split"
@@ -199,46 +202,68 @@ internal object DoomRockThrow {
     private fun splitSpotanim(style: DoomStyle): String =
         if (style == DoomStyle.Magic) "spotanim.vfx_rock_projectile_split_magic" else "spotanim.vfx_rock_projectile_split_range"
 
-    private fun throwStyled(delve: DoomDelve, style: DoomStyle): Effect =
-        withTile(
-            AIM,
-            midway,
-            sequence(
+    fun attackSlots(delve: DoomDelve): Int = if (delve.doubleRockThrow) DOUBLE_THROW_SLOTS else SINGLE_THROW_SLOTS
+
+    private fun throwStyled(delve: DoomDelve, style: DoomStyle): Effect {
+        val travel = if (delve.hasBurrow) 120 else 150
+        val splitTicks = if (delve.hasBurrow) SPLIT_TICKS - 1 else SPLIT_TICKS
+        val launches =
+            List(if (delve.doubleRockThrow) 2 else 1) { index ->
                 projectile(
                     launchSpotanim(style),
                     target = tile(AIM),
-                    config = ProjectileConfig.fixed(340, 500, delay = 60, travel = if (delve.hasBurrow) 120 else 150, angle = 50, progress = 124),
-                ),
-                after(if (delve.hasBurrow) SPLIT_TICKS - 1 else SPLIT_TICKS, split(delve, style)),
+                    config =
+                        ProjectileConfig.fixed(
+                            340,
+                            500,
+                            delay = 60,
+                            travel = travel + index * SECOND_ROCK_DELAY * CYCLES_PER_TICK,
+                            angle = 50,
+                            progress = 124,
+                        ),
+                )
+            }
+        val second = if (delve.doubleRockThrow) split(delve, style, SECOND_DEBRIS, exclude = DEBRIS, next = null) else null
+        return withTile(
+            AIM,
+            midway,
+            sequence(
+                Effect.Sequence(launches),
+                after(splitTicks, split(delve, style, DEBRIS, exclude = null, next = second)),
             ),
         )
+    }
 
-    private fun split(delve: DoomDelve, style: DoomStyle): Effect =
-        withTile(
+    /** The second rock of a double throw splits inside the first's scope so its debris can skip the first's tiles. */
+    private fun split(delve: DoomDelve, style: DoomStyle, debris: String, exclude: String?, next: Effect?): Effect {
+        val tiles = debrisTiles(delve).let { if (exclude != null) it - bound(exclude) else it }
+        return withTile(
             PLAYER,
             CurrentTargetTile,
             withTiles(
-                DEBRIS,
-                debrisTiles(delve),
+                debris,
+                tiles,
                 sequence(
                     mapSpotanim(splitSpotanim(style), tile(AIM), height = SPLIT_HEIGHT),
                     sound(SPLIT_SYNTH, at = tile(AIM)),
                     disablePrayers(overheadsOnly = true),
-                    onTiles(bound(DEBRIS), debrisFall),
-                    after(ROCK_LAND_TICKS, sequence(rockLanding, followUps(delve, style))),
+                    onTiles(bound(debris), debrisFall),
+                    after(ROCK_LAND_TICKS, sequence(rockLanding, followUps(delve, style, debris))),
+                    next?.let { after(SECOND_ROCK_DELAY, it) } ?: Effect.NoOp,
                 ),
             ),
         )
+    }
 
-    private fun followUps(delve: DoomDelve, style: DoomStyle): Effect =
+    private fun followUps(delve: DoomDelve, style: DoomStyle, debris: String): Effect =
         whenever(
-            !tilesEmpty(DEBRIS),
+            !tilesEmpty(debris),
             Effect.Sequence(
                 (0 until delve.secondaryProjCount).map { index ->
                     val shotStyle = if (index % 2 == 0) style else style.alternate
-                    val travel = FOLLOW_UP_TRAVEL + index * CYCLES_PER_TICK
+                    val travel = delve.secondaryProjTravel + index * CYCLES_PER_TICK
                     val config = ProjectileConfig.fixed(100, 100, delay = 0, travel = travel, angle = 0)
-                    withTile(SOURCE, randomOf(DEBRIS), DoomAttacks.styled(shotStyle, delve, config, from = tile(SOURCE)))
+                    withTile(SOURCE, randomOf(debris), DoomAttacks.styled(shotStyle, delve, config, from = tile(SOURCE)))
                 }
             ),
         )

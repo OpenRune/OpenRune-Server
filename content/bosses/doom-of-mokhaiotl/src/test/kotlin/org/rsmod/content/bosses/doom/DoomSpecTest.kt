@@ -13,9 +13,10 @@ class DoomSpecTest {
     }
 
     @Test
-    fun `rock throws take two attack slots`() {
+    fun `rock throws take two attack slots, three for a double throw`() {
         for (delve in DoomDelve.LEVELS) {
-            assertEquals(delve.attackSpeed * 2, doomSpec(delve).abilityAttackDelays["rock_throw"])
+            val slots = if (delve.doubleRockThrow) 3 else 2
+            assertEquals(delve.attackSpeed * slots, doomSpec(delve).abilityAttackDelays["rock_throw"])
         }
     }
 

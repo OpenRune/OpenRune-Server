@@ -51,7 +51,6 @@ class DoomCarTest {
                 for ((from, to) in (listOf(centre) + path).zipWithNext()) {
                     assertEquals(1, from.chebyshevDistance(to))
                 }
-                assertTrue(path.chunked(DoomCar.RUSH_SPEED).all { it.size <= 4 })
             }
         }
     }

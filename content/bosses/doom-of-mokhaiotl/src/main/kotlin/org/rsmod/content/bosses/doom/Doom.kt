@@ -65,14 +65,14 @@ internal fun doomSpec(delve: DoomDelve): BossSpec =
                         ),
                     ),
                 ),
-                attackDelay = delve.attackSpeed * 2,
+                attackDelay = delve.attackSpeed * DoomRockThrow.attackSlots(delve),
             )
 
         val scriptedRockThrow =
             ability(
                 "rock_throw_scripted",
                 sequence(DoomRockThrow.rockThrow(delve), countAttack, larvaRoll),
-                attackDelay = delve.attackSpeed * 2,
+                attackDelay = delve.attackSpeed * DoomRockThrow.attackSlots(delve),
             )
         val volatileEarth =
             ability(

@@ -87,15 +87,24 @@ internal constructor(
         }
     }
 
-    private suspend fun ProtectedAccess.startingLevel(): Int =
-        choice5(
-            "Delve level 1", 1,
-            "Delve level 3", 3,
-            "Delve level 4", 4,
-            "Delve level 5", 5,
+    private suspend fun ProtectedAccess.startingLevel(): Int {
+        val level =
+            choice5(
+                "Delve level 1", 1,
+                "Delve level 3", 3,
+                "Delve level 4", 4,
+                "Delve level 5", 5,
+                "Deeper...", 0,
+                title = "Start on which delve level?",
+            )
+        if (level != 0) return level
+        return choice3(
             "Delve level 6", 6,
+            "Delve level 7", 7,
+            "Delve level 8", 8,
             title = "Start on which delve level?",
         )
+    }
 
     private suspend fun ProtectedAccess.descend() {
         val session = manager.sessionForPlayer(player) ?: return

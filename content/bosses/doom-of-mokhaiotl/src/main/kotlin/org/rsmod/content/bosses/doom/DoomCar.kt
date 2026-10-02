@@ -46,7 +46,6 @@ internal object DoomCar {
     const val POST_EMERGE = 1
     const val POST_SHOCKWAVE = 2
     const val CHARGE_TICKS = 20
-    const val RUSH_SPEED = 4
     const val FIRST_TELEGRAPH_DELAY = 3
     const val TELEGRAPH_TICKS = 3
     const val PLAIN_RUSHES = 2
@@ -212,14 +211,16 @@ constructor(
 
     private fun fallingRocks(boss: Npc, delve: DoomDelve): List<CoordGrid> {
         val centre = boss.coords.translate(boss.size / 2, boss.size / 2)
+        val clearRadius = if (delve.burrowCentreRock) 0 else CENTRE_CLEAR_RADIUS
         val candidates =
             (DoomArena.FLOOR_MIN_X..DoomArena.FLOOR_MAX_X).flatMap { dx ->
                 (DoomArena.FLOOR_MIN_Z..DoomArena.FLOOR_MAX_Z).map { dz -> boss.spawnCoords.translate(dx, dz) }
             }.filter {
-                it != centre && !deps.collision.isWalkBlocked(it) && !deps.locRepo.findLoc(it, ROCK_LOC)
+                it.chebyshevDistance(centre) > clearRadius && !deps.collision.isWalkBlocked(it) &&
+                    !deps.locRepo.findLoc(it, ROCK_LOC)
             }.toMutableList()
-        val rocks = mutableListOf(centre)
-        repeat((deps.random.of(delve.burrowRocks) - 1).coerceAtMost(candidates.size)) {
+        val rocks = if (delve.burrowCentreRock) mutableListOf(centre) else mutableListOf()
+        repeat((deps.random.of(delve.burrowRocks) - rocks.size).coerceAtMost(candidates.size)) {
             val weights = candidates.map { 30 - it.chebyshevDistance(centre).coerceAtMost(29) }
             var roll = deps.random.of(weights.sum())
             val index = weights.indices.first { roll -= weights[it]; roll < 0 }
@@ -244,7 +245,7 @@ constructor(
         boss.faceSquare(destination)
         mapAnim(TELEGRAPH_SPAWN, destination)
         mapAnim(TELEGRAPH_MOVE, destination, delay = 60)
-        val steps = DoomCar.path(boss.coords, destination.translate(-half, -half)).chunked(DoomCar.RUSH_SPEED)
+        val steps = DoomCar.path(boss.coords, destination.translate(-half, -half)).chunked(burrow.delve.rushSpeed)
         val last = number == burrow.rushes
         if (burrow.delve.carSlams == 0 && !last) {
             later(burrow, DoomCar.RUSH_GAP) { rush(burrow, number + 1) }
@@ -420,6 +421,7 @@ constructor(
         private const val BURROW_ROCK_LAND_SYNTH = "synth.dom_burrow_rock_land"
         private const val BURROW_ROCK_LAND_DELAY = 160
         private const val SHAKE_RANDOM = 5
+        private const val CENTRE_CLEAR_RADIUS = 1
         private const val RIPPLE_LEAD = 2
         private val SLAM_DAMAGE = 25..39
         private val SHAKE_AXES = listOf(CamShakeAxis.LEFT_RIGHT, CamShakeAxis.UP_DOWN, CamShakeAxis.FORWARDS_BACKWARDS)
