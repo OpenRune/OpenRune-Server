@@ -483,13 +483,17 @@ constructor(
             deps.worldQueues.add(step * strike.intervalTicks) {
                 if (!npc.isSlotAssigned || npc.visType.id != soulsplitId) return@add
                 if (npc.vars[SHIELD_CORRUPTED_VARN] != 1) return@add
-                drainShield(npc, strike.drainAt(step))
+                drainShield(npc, strike.drainAt(step), hitmark_groups.corruption.lit)
                 if (step == strike.steps) npc.vars[SHIELD_CORRUPTED_VARN] = 0
             }
         }
     }
 
-    private fun drainShield(npc: Npc, amount: Int) {
+    private fun drainShield(
+        npc: Npc,
+        amount: Int,
+        hitmark: String = hitmark_groups.prayer_drain.tint!!,
+    ) {
         val shieldHp = npc.vars["varn.muspah_shield_hp"]
         val drained = minOf(amount, shieldHp)
         npc.vars["varn.muspah_shield_hp"] = shieldHp - drained
@@ -500,7 +504,7 @@ constructor(
             npc.hitpoints = shieldHp - drained
         }
         if (drained <= 0) return
-        showShieldHitmark(npc, hitmark_groups.prayer_drain.tint!!, drained)
+        showShieldHitmark(npc, hitmark, drained)
     }
 
     private fun soulSplitHeal(npc: Npc, damage: Int) {

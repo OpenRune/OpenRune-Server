@@ -6,6 +6,7 @@ import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.death.PvPPlayerHitHook
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -68,7 +69,6 @@ internal enum class CorruptionSpell(
 
 internal object Corruption {
     const val CAST_ANIM = "seq.human_spellcast_demonbane"
-    const val HITMARK = "hitmark.corruption"
     const val BUFF_BAR_START_CLIENTSCRIPT = 5931
     const val COOLDOWN_QUEUE = "queue.corruption_cooldown"
     const val TIMER = "timer.corruption"
@@ -135,7 +135,7 @@ constructor(private val spells: MagicSpellRegistry, private val runes: MagicRune
 
         if (amount > 0) {
             player.statSub("stat.prayer", constant = amount, percent = 0)
-            val hitmark = Corruption.HITMARK.asRSCM(RSCMType.HITMARK)
+            val hitmark = hitmark_groups.corruption.lit.asRSCM(RSCMType.HITMARK)
             player.showHitmark(
                 Hitmark.fromNoSource(
                     self = hitmark,
