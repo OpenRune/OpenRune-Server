@@ -39,6 +39,7 @@ import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.DamageExpr
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.TargetExpr
+import org.rsmod.api.combat.commons.player.queueCombatRetaliate
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -164,15 +165,22 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
                 from = offset(ZebakCoords.PROJECTILE_BASE),
             ),
             spotanim(impact, height = IMPACT_HEIGHT, delay = IMPACT_DELAY, target = CurrentTarget),
-            hit {
-                damage(Accuracy(scaled(RANGED_MAGIC_MAX_HIT)))
-                type(if (mage) Magic else Ranged)
-                delay = SPLIT_HIT_DELAY
-                resolveOnImpact()
-                reactOnLanding()
-            },
+            whenever(
+                isSwimming,
+                sequence(fragmentHit(mage, swimming = true), external(SWIM_RETALIATE)),
+                fragmentHit(mage, swimming = false),
+            ),
         )
     }
+
+    private fun fragmentHit(mage: Boolean, swimming: Boolean): Effect =
+        hit {
+            damage(Accuracy(scaled(RANGED_MAGIC_MAX_HIT)))
+            type(if (mage) Magic else Ranged)
+            delay = SPLIT_HIT_DELAY
+            resolveOnImpact()
+            if (swimming) hazard() else reactOnLanding()
+        }
 
     private fun endSpecial(): Effect =
         sequence(external(END_SPECIAL), whenever(specialReady, run(SPECIAL)))
@@ -361,6 +369,10 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         deps.extensionRegistry.register(BLEED_SPLAT) { _, npc, target, _ ->
             ZebakEncounter.roomOf(npc)?.autos?.splat(target.coords)
         }
+        deps.extensionRegistry.register(SWIM_RETALIATE) { _, npc, target, _ ->
+            target.queueCombatRetaliate(npc, SWIM_REACT_DELAY)
+            target.queueCombatRetaliate(npc, SPLIT_HIT_DELAY)
+        }
     }
 
     private fun onZebak(name: String, block: (ZebakEncounter, Npc, Any?) -> Unit) {
@@ -413,6 +425,7 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         private const val FLIP_CLOUD_SIDE = "zebak.flip_cloud_side"
         private const val ENRAGE_ZEBAK = "zebak.enrage"
         private const val SPLIT_BURST = "zebak.split_burst"
+        private const val SWIM_RETALIATE = "zebak.swim_retaliate"
         private const val REGISTER_CLOUD = "zebak.register_cloud"
 
         private const val MELEE_MAX_HIT = 38
@@ -430,6 +443,7 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             "<col=ff3045>Zebak's fangs tear into your flesh, causing you to bleed.</col>"
         private const val SPLIT_DELAY = 4
         private const val SPLIT_HIT_DELAY = 5
+        private const val SWIM_REACT_DELAY = SPLIT_HIT_DELAY - 1
         private const val SPLIT_HELPER_TICKS = 3
         private const val SPLIT_HEIGHT = 750
         private const val SPLIT_SOUND_DELAY = 120
@@ -493,6 +507,7 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
         private val isTarget = player { room, target -> target in room.targets() }
         private val isMeleeTarget = player { room, target -> target in room.autos.meleeTargets }
+        private val isSwimming = player { room, target -> room.water.isSwimming(target) }
 
         private fun eachTarget(effect: Effect): Effect = onEach(roomPlayers, whenever(isTarget, effect))
 

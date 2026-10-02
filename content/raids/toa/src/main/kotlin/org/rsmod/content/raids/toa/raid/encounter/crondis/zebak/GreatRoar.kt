@@ -73,6 +73,7 @@ internal class GreatRoar(private val room: ZebakEncounter) {
         }
         room.afterHazards {
             for (player in room.targets()) {
+                if (room.water.isSwimming(player)) continue
                 if (!inSafeStrip(player.coords, includeBoulder = true)) push(player)
             }
         }
