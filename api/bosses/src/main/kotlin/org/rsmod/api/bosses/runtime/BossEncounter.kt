@@ -40,9 +40,17 @@ class BossEncounter(
 
     internal var timersStarted: Boolean = false
 
+    internal var standTickRunning: Boolean = false
+
     private val ownedLocs = mutableMapOf<CoordGrid, OwnedLoc>()
 
     fun ownsLocAt(tile: CoordGrid): Boolean = tile in ownedLocs
+
+    internal fun ownedLocAt(tile: CoordGrid): OwnedLoc? = ownedLocs[tile]
+
+    internal fun hasStandLocs(): Boolean = ownedLocs.values.any { it.onStand != null }
+
+    internal fun releaseOwnedLocAt(tile: CoordGrid): OwnedLoc? = ownedLocs.remove(tile)
 
     internal fun addOwnedLoc(tile: CoordGrid, loc: OwnedLoc) {
         ownedLocs[tile] = loc
