@@ -5,6 +5,8 @@ import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.npc.hit.queueHit as queueNpcHit
 import org.rsmod.api.player.hook.TeleportType
+import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
+import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType

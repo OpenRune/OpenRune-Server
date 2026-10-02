@@ -4,7 +4,7 @@ import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
-import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.npcType
+import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.InteractionPlayer

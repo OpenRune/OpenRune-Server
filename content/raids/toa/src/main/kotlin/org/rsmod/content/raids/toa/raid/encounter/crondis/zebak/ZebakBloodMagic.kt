@@ -8,6 +8,7 @@ import org.rsmod.api.npc.hit.queueHit as queueNpcHit
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -79,7 +80,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         }
         if (heal > 0) {
             boss.heal(heal, showHitsplat = true)
-            room.updateBars()
+            room.hpBar.update()
         }
         for (player in targets) player.soundSynth(ZebakSynths.BLOOD_BARRAGE)
     }

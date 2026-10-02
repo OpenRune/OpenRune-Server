@@ -1,8 +1,5 @@
 package org.rsmod.content.raids.toa.raid.encounter
 
-import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onAiTimer
 import org.rsmod.api.script.onApNpc1
@@ -19,7 +16,7 @@ internal inline fun <reified R : ToaEncounter> ScriptContext.onRoomNpcHit(
     type: String,
     noinline action: R.(Npc, Hit) -> Unit,
 ) {
-    onNpcHit(checkNotNull(ServerCacheManager.getNpc(type.asRSCM(RSCMType.NPC)))) {
+    onNpcHit(npcType(type)) {
         val room = ToaRooms.of<R>(npc) ?: return@onNpcHit
         action(room, npc, hit)
     }
@@ -30,7 +27,7 @@ internal inline fun <reified R : ToaEncounter> ScriptContext.onRoomNpcQueue(
     queue: String,
     noinline action: R.(Npc) -> Unit,
 ) {
-    onNpcQueue(checkNotNull(ServerCacheManager.getNpc(type.asRSCM(RSCMType.NPC))), queue) {
+    onNpcQueue(npcType(type), queue) {
         val room = ToaRooms.of<R>(npc) ?: return@onNpcQueue
         action(room, npc)
     }

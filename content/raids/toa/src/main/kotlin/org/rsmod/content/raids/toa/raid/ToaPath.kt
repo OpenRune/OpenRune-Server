@@ -18,6 +18,7 @@ enum class ToaPath(
     val returnTile: CoordGrid,
     val returnSpreadZ: Int,
     val returnFacing: Direction,
+    val preloadSeqs: List<Int> = emptyList(),
 ) {
     SCABARAS(
         pathName = "Scabaras",
@@ -78,6 +79,7 @@ enum class ToaPath(
         returnTile = CoordGrid(3544, 5154, 0),
         returnSpreadZ = 0,
         returnFacing = Direction.SouthEast,
+        preloadSeqs = (9618..9646).toList() + listOf(9532, 9533, 9534, 9541),
     );
 
     companion object {

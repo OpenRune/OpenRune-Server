@@ -14,16 +14,15 @@ import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.output.Camera
-import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
-import org.rsmod.content.raids.toa.raid.ToaPath
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.ToaBook
 import org.rsmod.content.raids.toa.raid.encounter.ToaBossEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaBossLoot
+import org.rsmod.content.raids.toa.raid.encounter.ToaHpBar
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
-import org.rsmod.content.raids.toa.raid.shuffled
+import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
@@ -31,7 +30,6 @@ import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
-import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.StepValidator
@@ -83,6 +81,8 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
     override val roomPointsCap: Int = ZEBAK_POINTS_CAP
 
+    override val hpBar = ToaHpBar(this) { zebak }
+
     private var defenceFloor = 0
     private var pathAttackSpeed = BASE_ATTACK_SPEED
     private var specialsQueued = 0
@@ -99,9 +99,6 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
             return max(MIN_ATTACK_SPEED, speed)
         }
 
-    internal val pathLevel: Int
-        get() = raid.pathLevels[ToaPath.CRONDIS.ordinal]
-
     private val steps by lazy { StepValidator(deps.collision) }
 
     override fun onBuilt() {
@@ -115,29 +112,20 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         applyScaling(boss, teamSize)
         addLoc(ZebakLocs.BLOCKER, ZebakCoords.ZEBAK)
         addLoc(ZebakLocs.BLOCKER, ZebakCoords.TAIL)
-        for (player in players) {
-            openBar(player)
-            player.midiSong(ZebakSynths.MIDI)
-        }
+        for (player in players) player.midiSong(ZebakSynths.MIDI)
         boss.ignoreCombatInteractions = false
         deps.bossDeps.encounterRegistry.remove(boss)
         deps.bossDeps.encounter(boss).attackRateOverride = attackSpeed
         deps.bossDeps.suppressAttacks(boss, FIRST_ATTACK_DELAY)
         bloodMagic.start()
         engage(boss, targets())
-        schedule(1) { tick() }
     }
 
     override fun onEnter(player: Player) {
-        for (seq in ZebakSeqs.PRELOAD) player.runClientScript(SCRIPT_SEQ_PREFETCH, seq)
-        if (stage == ToaStage.STARTED) {
-            openBar(player)
-            player.midiSong(ZebakSynths.MIDI)
-        }
+        if (stage == ToaStage.STARTED) player.midiSong(ZebakSynths.MIDI)
     }
 
     override fun onLeave(player: Player) {
-        closeBar(player)
         water.stopSwimming(player)
         zebak?.let { deps.bossDeps.bleeds.remove(it, player) }
         bloodMagic.forget(player)
@@ -146,7 +134,6 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
     override fun pointMultiplier(npc: Npc): Double = if (npc === zebak) ZEBAK_POINTS else 1.0
 
     override fun onComplete() {
-        for (player in players) closeBar(player)
         clearFight()
         water.removeCrocodiles()
         playDeath()
@@ -154,7 +141,6 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
     }
 
     override fun onReset() {
-        for (player in players) closeBar(player)
         clearFight()
         spawnZebak()
     }
@@ -248,7 +234,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         npc.magicLvl = magic
 
         damageFactor = min(MAX_DAMAGE_FACTOR, raidFactor + levelFactor)
-        pathAttackSpeed = BASE_ATTACK_SPEED - min(2, pathLevel / 2)
+        pathAttackSpeed = BASE_ATTACK_SPEED - pathTier
     }
 
     private fun roundToTen(value: Double): Int = ((value + 5.0) / 10.0).toInt() * 10
@@ -263,10 +249,8 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
 
     internal fun rollScaled(min: Int, base: Int): Int = deps.random.of(min, maxHit(base).coerceAtLeast(min))
 
-    private fun tick() {
-        if (stage != ToaStage.STARTED) return
+    override fun onTick(targets: List<Player>) {
         val boss = zebak ?: return
-        val targets = targets()
         val cycle = deps.mapClock.cycle
         holdDefenceFloor(boss)
         val landed = landings.take(cycle)
@@ -275,7 +259,6 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         runAfterHazards()
         water.dropDeadSwimmers()
         engage(boss, targets)
-        schedule(1) { tick() }
     }
 
     internal fun afterHazards(action: () -> Unit) {
@@ -335,7 +318,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         enraged = true
         deps.bossDeps.encounter(boss).attackRateOverride = attackSpeed
         deps.bossDeps.suppressAttacks(boss, speed)
-        updateBars()
+        hpBar.update()
     }
 
     internal fun tailAnim(seq: String?) {
@@ -350,29 +333,13 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
             val centre = coords(ZebakCoords.CENTRE)
             deps.worldRepo.soundArea(centre, ZebakSynths.DAMAGED, radius = DAMAGED_SOUND_RADIUS)
         }
-        updateBars()
+        hpBar.update()
         if (enraged || boss.hitpoints <= 0) return
         val threshold = SPECIAL_THRESHOLDS.getOrNull(specialsTriggered)
         if (threshold != null && boss.hitpoints <= boss.baseHitpointsLvl * threshold) {
             specialsTriggered++
             specialsQueued++
         }
-    }
-
-    private fun openBar(player: Player) {
-        val npc = zebak ?: return
-        deps.bossHpBar.onOpen(player, npc)
-        deps.bossHpBar.onUpdate(player, npc)
-    }
-
-    internal fun updateBars() {
-        val npc = zebak ?: return
-        for (player in players) deps.bossHpBar.onUpdate(player, npc)
-    }
-
-    private fun closeBar(player: Player) {
-        val npc = zebak ?: return
-        deps.bossHpBar.onClose(player, npc, instant = true)
     }
 
     internal fun debugSpecial(roar: Boolean): String? {
@@ -398,7 +365,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         if (stage != ToaStage.STARTED) return NOT_STARTED
         if (enraged) return "Zebak is already enraged."
         boss.hitpoints = min(boss.hitpoints, (boss.baseHitpointsLvl * ENRAGE_THRESHOLD).toInt())
-        updateBars()
+        hpBar.update()
         return null
     }
 
@@ -407,27 +374,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         deps.locRepo.add(coords(static), type, Int.MAX_VALUE, LocAngle.West, shape)
     }
 
-    internal fun isOpenFloor(tile: CoordGrid): Boolean =
-        !deps.collision.isWalkBlocked(tile) &&
-            deps.locRepo.findExact(tile, LocShape.CentrepieceStraight) == null
-
-    internal fun freeTiles(
-        min: CoordGrid,
-        max: CoordGrid,
-        excludes: Collection<CoordGrid>,
-    ): List<CoordGrid> {
-        val from = coords(min)
-        val to = coords(max)
-        val tiles = ArrayList<CoordGrid>()
-        for (x in from.x..to.x) {
-            for (z in from.z..to.z) {
-                val tile = CoordGrid(x, z, from.level)
-                if (tile in excludes || tile in poison || !isOpenFloor(tile)) continue
-                tiles += tile
-            }
-        }
-        return deps.random.shuffled(tiles)
-    }
+    override fun isTaken(tile: CoordGrid): Boolean = tile in poison
 
     internal fun canStep(from: CoordGrid, dx: Int, dz: Int): Boolean =
         steps.canTravel(from.level, from.x, from.z, dx, dz)
@@ -463,7 +410,6 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val DEATH_SHAKE_FORWARDS = 2
         private const val DEATH_MODEL_DELAY = 3
         private const val DAMAGED_SOUND_RADIUS = 10
-        private const val SCRIPT_SEQ_PREFETCH = 1846
         private val SPECIAL_THRESHOLDS = doubleArrayOf(0.85, 0.70, 0.55, 0.40)
         private const val ENRAGE_THRESHOLD = 0.25
         private const val MAX_DEFENCE_DRAIN = 20
