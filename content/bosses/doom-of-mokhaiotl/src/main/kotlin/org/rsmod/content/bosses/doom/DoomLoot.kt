@@ -183,7 +183,7 @@ constructor(
         private const val CLAIMED_INV = "inv.dom_lootpile"
         private const val INIT_SCRIPT = 7927
         private const val CLAIMED_SCRIPT = 7928
-        private const val BOSS_TABLE = "dom_boss"
+        private const val BOSS_TABLE = "npc.dom_boss"
         private const val TEARS_FROM_LEVEL = 3
         private const val TEARS_BASE = 50
         private const val TEARS_STEP = 10
