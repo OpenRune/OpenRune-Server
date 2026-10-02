@@ -6,9 +6,11 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
 class ZebakSwimAttackHook : NpcAttackValidateHook {
+    override val stopsApproach: Boolean = true
+
     override fun validate(player: Player, npc: Npc): NpcAttackValidateResult =
         if (ZebakEncounter.isSwimming(player)) {
-            NpcAttackValidateResult.Deny("You cannot initiate combat while swimming!")
+            NpcAttackValidateResult.Deny("I can't hit him from here. I'll have to get back onto the island!")
         } else {
             NpcAttackValidateResult.Pass
         }

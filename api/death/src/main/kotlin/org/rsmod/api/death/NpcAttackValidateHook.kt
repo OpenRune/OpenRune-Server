@@ -5,6 +5,9 @@ import org.rsmod.game.entity.Player
 
 public fun interface NpcAttackValidateHook {
     public fun validate(player: Player, npc: Npc): NpcAttackValidateResult
+
+    public val stopsApproach: Boolean
+        get() = false
 }
 
 public sealed class NpcAttackValidateResult {
