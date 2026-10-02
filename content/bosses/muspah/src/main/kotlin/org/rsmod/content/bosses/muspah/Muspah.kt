@@ -105,7 +105,10 @@ constructor(
         for (formId in liveFormIds) {
             val type = ServerCacheManager.getNpc(formId) ?: continue
             onNpcHit(type) {
-                if (formId == soulsplitId) resolveSoulsplitShield(npc)
+                if (formId == soulsplitId) {
+                    applyShieldHit(npc, hit)
+                    resolveSoulsplitShield(npc)
+                }
                 if (npc.hitpoints <= 0) {
                     deps.worldQueues.add(SPIKE_DEATH_CLEANUP_DELAY) {
                         fights.remove(npc.slotId)?.let(::clearSpikes)
@@ -435,10 +438,10 @@ constructor(
         val attacker = hit.sourceUid?.let { PlayerUid(it).resolve(deps.playerList) }
 
         if (visId == soulsplitId) {
-            if (attacker?.vars["varbit.prayer_smite"] == 1) {
-                drainShield(npc, hit.damage * SMITE_SHIELD_DRAIN_PERCENT / 100)
+            val sourceUid = hit.sourceUid
+            if (attacker != null && sourceUid != null && hit.damage > 0) {
+                fightFor(npc).pendingShieldHits += PendingShieldHit(sourceUid, hit.damage)
             }
-            if (attacker != null && hit.damage > 0) corruptShield(npc, attacker)
             hit.damage = 0
             return
         }
@@ -457,6 +460,19 @@ constructor(
 
         npc.vars["varn.muspah_damage_since_switch"] += hit.damage
         npc.vars["varn.muspah_hits_since_switch"]++
+    }
+
+    private fun applyShieldHit(npc: Npc, hit: Hit) {
+        if (!hit.isFromPlayer) return
+        val attacker = hit.resolvePlayerSource(deps.playerList) ?: return
+        val pending = fightFor(npc).pendingShieldHits
+        val index = pending.indexOfFirst { it.sourceUid == attacker.uid.packed }
+        if (index < 0) return
+        val landed = pending.removeAt(index)
+        if (attacker.vars["varbit.prayer_smite"] == 1) {
+            drainShield(npc, landed.damage * SMITE_SHIELD_DRAIN_PERCENT / 100)
+        }
+        corruptShield(npc, attacker)
     }
 
     private fun corruptShield(npc: Npc, attacker: Player) {
@@ -892,7 +908,10 @@ constructor(
         return candidates[deps.random.of(candidates.size)]
     }
 
+    private class PendingShieldHit(val sourceUid: Int, val damage: Int)
+
     private class MuspahFight {
+        val pendingShieldHits: MutableList<PendingShieldHit> = mutableListOf()
         val activeSpikes: MutableList<LocInfo> = mutableListOf()
         var lastCoords: CoordGrid? = null
     }
