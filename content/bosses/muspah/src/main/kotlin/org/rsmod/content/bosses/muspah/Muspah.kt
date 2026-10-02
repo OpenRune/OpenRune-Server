@@ -20,6 +20,8 @@ import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.config.refs.params
+import org.rsmod.content.skills.magic.arceuus.afflictCorruption
+import org.rsmod.content.skills.magic.arceuus.rollCorruption
 import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.events.PlayerHitEvents
@@ -119,7 +121,17 @@ constructor(
             if (npc.visType.id in liveFormIds) fights.remove(npc.slotId)?.let(::clearSpikes)
         }
 
-        onEvent<PlayerHitEvents.Impact> { onSoulsplitHit(hit) }
+        onEvent<PlayerHitEvents.Impact> {
+            onSoulsplitHit(hit)
+            corruptOnMagicHit(player, hit)
+        }
+    }
+
+    private fun corruptOnMagicHit(player: Player, hit: Hit) {
+        if (!hit.isFromNpc || hit.type != HitType.Magic) return
+        val npc = hit.resolveNpcSource(npcList) ?: return
+        if (npc.visType.id !in liveFormIds) return
+        player.afflictCorruption(CORRUPTION_BASE_DRAIN)
     }
 
     private fun onSoulsplitHit(hit: Hit) {
@@ -406,6 +418,7 @@ constructor(
             npc.vars["varn.muspah_pre_shield_hp"] = npc.hitpoints
             npc.vars["varn.muspah_pre_shield_max_hp"] = npc.baseHitpointsLvl
             npc.vars["varn.muspah_shield_broken"] = 0
+            npc.vars[SHIELD_CORRUPTED_VARN] = 0
             npc.baseHitpointsLvl = SOULSPLIT_SHIELD_POINTS
             npc.hitpoints = SOULSPLIT_SHIELD_POINTS
             npc.vars["varn.muspah_shield_hp"] = SOULSPLIT_SHIELD_POINTS
@@ -425,6 +438,7 @@ constructor(
             if (attacker?.vars["varbit.prayer_smite"] == 1) {
                 drainShield(npc, hit.damage * SMITE_SHIELD_DRAIN_PERCENT / 100)
             }
+            if (attacker != null && hit.damage > 0) corruptShield(npc, attacker)
             hit.damage = 0
             return
         }
@@ -443,6 +457,20 @@ constructor(
 
         npc.vars["varn.muspah_damage_since_switch"] += hit.damage
         npc.vars["varn.muspah_hits_since_switch"]++
+    }
+
+    private fun corruptShield(npc: Npc, attacker: Player) {
+        if (npc.vars[SHIELD_CORRUPTED_VARN] == 1 || npc.vars["varn.muspah_shield_broken"] == 1) return
+        val strike = attacker.rollCorruption(deps.random) ?: return
+        npc.vars[SHIELD_CORRUPTED_VARN] = 1
+        for (step in 1..strike.steps) {
+            deps.worldQueues.add(step * strike.intervalTicks) {
+                if (!npc.isSlotAssigned || npc.visType.id != soulsplitId) return@add
+                if (npc.vars[SHIELD_CORRUPTED_VARN] != 1) return@add
+                drainShield(npc, strike.drainAt(step))
+                if (step == strike.steps) npc.vars[SHIELD_CORRUPTED_VARN] = 0
+            }
+        }
     }
 
     private fun drainShield(npc: Npc, amount: Int) {
@@ -903,6 +931,8 @@ constructor(
         private const val RANGED_MAX_HIT = 61
         private const val MELEE_MAX_HIT = 34
         private const val MAGIC_MAX_HIT = 72
+        private const val CORRUPTION_BASE_DRAIN = 3
+        private const val SHIELD_CORRUPTED_VARN = "varn.muspah_shield_corrupted"
 
         private const val MELEE_STILL_TICKS_VARN = "varn.muspah_melee_still_ticks"
         private const val MELEE_STILL_DAMAGE_PER_TICK = 1
