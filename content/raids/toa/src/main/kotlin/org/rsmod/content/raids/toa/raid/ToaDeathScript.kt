@@ -86,6 +86,7 @@ private suspend fun ProtectedAccess.dieInRaid(raid: ToaRaid) {
     }
 
     raid.totalDeaths++
+    ToaStats.recordDeath(player, raid.settings.mode)
     raid.points.onDeath(player)
     mes("You have died. Total deaths: <col=ff0000>${raid.totalDeaths}</col>.")
     val othersFighting =

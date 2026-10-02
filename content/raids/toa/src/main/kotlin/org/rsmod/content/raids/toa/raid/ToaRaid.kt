@@ -26,6 +26,8 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
 
     val players: MutableList<Player> = lobbyParty.members.toMutableList()
 
+    val partySize: Int = players.size
+
     private val locations = HashMap<Player, ToaEncounter>()
 
     private val encounters = ArrayList<ToaEncounter>()

@@ -20,6 +20,13 @@ internal object ToaKillCount {
         player.mes("Your completed $name count is: <col=ff0000>$count</col>.")
     }
 
+    fun completions(player: Player, mode: String): Int =
+        when (mode) {
+            EXPERT -> player.expert
+            NORMAL -> player.normal
+            else -> player.entry
+        }
+
     fun normalAndExpert(player: Player): Int = player.normal + player.expert
 
     fun summary(player: Player): String = "${player.entry} / ${player.normal} / ${player.expert}"
