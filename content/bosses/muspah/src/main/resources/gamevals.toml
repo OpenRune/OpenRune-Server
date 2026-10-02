@@ -9,3 +9,4 @@ muspah_shield_hp = 40
 muspah_pre_shield_hp = 41
 muspah_pre_shield_max_hp = 42
 muspah_final_attacks = 43
+muspah_shield_corrupted = 51

@@ -9,7 +9,7 @@ import org.rsmod.api.npc.events.interact.ApEvent
 import org.rsmod.api.npc.events.interact.OpEvent
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.interact.InteractionObj
+import org.rsmod.game.interact.InteractionObjOp
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.obj.Obj
 import org.rsmod.game.type.getObj
@@ -23,7 +23,7 @@ public class AiObjInteractions @Inject constructor(private val eventBus: EventBu
     ) {
         val opTrigger = hasOpTrigger(obj, op, type)
         val interaction =
-            InteractionObj(target = obj, op = op, hasOpTrigger = opTrigger, hasApTrigger = false)
+            InteractionObjOp(target = obj, op = op, hasOpTrigger = opTrigger, hasApTrigger = false)
         npc.interaction = interaction
         npc.walk(obj.coords)
     }
@@ -31,7 +31,7 @@ public class AiObjInteractions @Inject constructor(private val eventBus: EventBu
     public fun interactAp(npc: Npc, obj: Obj, op: InteractionOp) {
         val apRange = npc.attackRange
         val interaction =
-            InteractionObj(
+            InteractionObjOp(
                 target = obj,
                 op = op,
                 hasOpTrigger = false,

@@ -95,7 +95,8 @@ constructor(
             return
         }
         telejump(CoordGrid(task.destination))
-        task.teleport.style.endAnim?.let { anim(it) }
+        val endAnim = task.teleport.style.endAnim
+        if (endAnim != null) anim(endAnim) else resetAnim()
         statAdvance("stat.magic", spell.castXp)
     }
 
@@ -257,7 +258,58 @@ constructor(
         Dareeyak("obj.78_dareeyak_teleport", style = TeleportStyle.Ancient),
         Carrallanger("obj.84_carrallagar_teleport", style = TeleportStyle.Ancient),
         Annakarl("obj.90_annakarl_teleport", style = TeleportStyle.Ancient),
-        Ghorrock("obj.96_ghorrock_teleport", style = TeleportStyle.Ancient);
+        Ghorrock("obj.96_ghorrock_teleport", style = TeleportStyle.Ancient),
+        ArceuusHome(
+            "obj.deadman_level99_lamp",
+            CoordGrid(1699, 3879, 0),
+            style = TeleportStyle.Arceuus,
+        ),
+        ArceuusLibrary("obj.br_mithril_platebody", style = TeleportStyle.Arceuus),
+        DraynorManor("obj.br_mithril_platelegs", style = TeleportStyle.Arceuus),
+        Battlefront("obj.23_teleport_battlefront", style = TeleportStyle.Arceuus),
+        MindAltar("obj.br_greendhide_body", style = TeleportStyle.Arceuus),
+        Respawn(
+            "obj.poh_guide_guildtrophy",
+            CoordGrid(3221, 3218, 0),
+            style = TeleportStyle.Arceuus,
+        ),
+        SalveGraveyard(
+            "obj.br_greendhide_chaps",
+            requiredQuest = "quest_priestinperil",
+            lockedMessage = "You need to complete Priest in Peril to cast this spell.",
+            style = TeleportStyle.Arceuus,
+        ),
+        FenkenstrainsCastle(
+            "obj.br_moonclan_body",
+            requiredQuest = "quest_priestinperil",
+            lockedMessage = "You need to complete Priest in Peril to cast this spell.",
+            style = TeleportStyle.Arceuus,
+        ),
+        WestArdougne(
+            "obj.br_moonclan_legs",
+            requiredQuest = "quest_biohazard",
+            lockedMessage = "You need to complete Biohazard to cast this spell.",
+            style = TeleportStyle.Arceuus,
+        ),
+        HarmonyIsland(
+            "obj.br_xeric_body",
+            requiredQuest = "quest_greatbrainrobbery",
+            lockedMessage = "You need to complete The Great Brain Robbery to cast this spell.",
+            style = TeleportStyle.Arceuus,
+        ),
+        Cemetery("obj.br_xeric_legs", style = TeleportStyle.Arceuus),
+        Barrows(
+            "obj.br_air_staff",
+            requiredQuest = "quest_priestinperil",
+            lockedMessage = "You need to complete Priest in Peril to cast this spell.",
+            style = TeleportStyle.Arceuus,
+        ),
+        ArceuusApeAtoll(
+            "obj.br_dragon_helm",
+            requiredQuest = "quest_monkeymadness1",
+            lockedMessage = "You need to complete Monkey Madness I to cast this spell.",
+            style = TeleportStyle.Arceuus,
+        );
 
         fun option(op: IfButtonOp): TeleportOption {
             return if (op == IfButtonOp.Op2 && alternate != null) {
@@ -309,6 +361,12 @@ constructor(
             startAnim = "seq.zaros_vertical_casting",
             endAnim = null,
             spotanim = "spotanim.zaros_teleport",
+            spotanimHeight = 0,
+        ),
+        Arceuus(
+            startAnim = "seq.arceuus_necromancy_anim",
+            endAnim = null,
+            spotanim = "spotanim.arceuus_teleport_spotanim",
             spotanimHeight = 0,
         ),
     }

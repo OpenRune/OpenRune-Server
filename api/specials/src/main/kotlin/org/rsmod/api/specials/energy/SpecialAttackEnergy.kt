@@ -37,6 +37,10 @@ public class SpecialAttackEnergy {
         player.specialEnergy -= cost
     }
 
+    public fun addSpecialEnergy(player: Player, energyInHundreds: Int) {
+        player.specialEnergy = (player.specialEnergy + energyInHundreds).coerceAtMost(MAX_ENERGY)
+    }
+
     public fun isSpecializedRequirement(energyInHundreds: Int): Boolean {
         return energyInHundreds < 10
     }

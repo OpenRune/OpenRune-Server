@@ -9,6 +9,7 @@ import org.rsmod.api.player.interact.LocTInteractions
 import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.interact.NpcTInteractions
 import org.rsmod.api.player.interact.ObjInteractions
+import org.rsmod.api.player.interact.ObjTInteractions
 import org.rsmod.api.player.interact.PlayerInteractions
 import org.rsmod.api.player.interact.PlayerTInteractions
 import org.rsmod.api.player.isValidTarget
@@ -31,6 +32,8 @@ import org.rsmod.game.interact.InteractionNpc
 import org.rsmod.game.interact.InteractionNpcOp
 import org.rsmod.game.interact.InteractionNpcT
 import org.rsmod.game.interact.InteractionObj
+import org.rsmod.game.interact.InteractionObjOp
+import org.rsmod.game.interact.InteractionObjT
 import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.interact.InteractionPlayerOp
 import org.rsmod.game.interact.InteractionPlayerT
@@ -54,6 +57,7 @@ constructor(
     private val npcInteractions: NpcInteractions,
     private val npcTInteractions: NpcTInteractions,
     private val objInteractions: ObjInteractions,
+    private val objTInteractions: ObjTInteractions,
     private val playerInteractions: PlayerInteractions,
     private val playerTInteractions: PlayerTInteractions,
     private val protectedAccess: ProtectedAccessLauncher,
@@ -221,7 +225,8 @@ constructor(
             is InteractionLocT -> triggerOp(this, interaction)
             is InteractionNpcOp -> triggerOp(this, interaction)
             is InteractionNpcT -> triggerOp(this, interaction)
-            is InteractionObj -> triggerOp(this, interaction)
+            is InteractionObjOp -> triggerOp(this, interaction)
+            is InteractionObjT -> triggerOp(this, interaction)
             is InteractionPlayerOp -> triggerOp(this, interaction)
             is InteractionPlayerT -> triggerOp(this, interaction)
         }
@@ -232,7 +237,8 @@ constructor(
             is InteractionLocT -> triggerAp(this, interaction)
             is InteractionNpcOp -> triggerAp(this, interaction)
             is InteractionNpcT -> triggerAp(this, interaction)
-            is InteractionObj -> triggerAp(this, interaction)
+            is InteractionObjOp -> triggerAp(this, interaction)
+            is InteractionObjT -> triggerAp(this, interaction)
             is InteractionPlayerOp -> triggerAp(this, interaction)
             is InteractionPlayerT -> triggerAp(this, interaction)
         }
@@ -531,15 +537,43 @@ constructor(
         }
     }
 
-    private fun triggerOp(player: Player, interaction: InteractionObj) {
+    private fun triggerOp(player: Player, interaction: InteractionObjOp) {
         val op = objInteractions.opTrigger(interaction.target, interaction.op)
         if (op != null) {
             protectedAccess.launch(player) { eventBus.publish(this, op) }
         }
     }
 
-    public fun triggerAp(player: Player, interaction: InteractionObj) {
+    public fun triggerAp(player: Player, interaction: InteractionObjOp) {
         val ap = objInteractions.apTrigger(interaction.target, interaction.op)
+        if (ap != null) {
+            protectedAccess.launch(player) { eventBus.publish(this, ap) }
+        }
+    }
+
+    private fun triggerOp(player: Player, interaction: InteractionObjT) {
+        val target = interaction.target
+        val op =
+            objTInteractions.opTrigger(
+                target,
+                interaction.component,
+                interaction.comsub,
+                interaction.objType,
+            )
+        if (op != null) {
+            protectedAccess.launch(player) { eventBus.publish(this, op) }
+        }
+    }
+
+    public fun triggerAp(player: Player, interaction: InteractionObjT) {
+        val target = interaction.target
+        val ap =
+            objTInteractions.apTrigger(
+                target,
+                interaction.component,
+                interaction.comsub,
+                interaction.objType,
+            )
         if (ap != null) {
             protectedAccess.launch(player) { eventBus.publish(this, ap) }
         }

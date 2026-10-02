@@ -155,6 +155,10 @@ constructor(
 
     private suspend fun ProtectedAccess.failPickpocket(npc: Npc, target: Pickpocket, owner: String) {
         mes("You fail to pick $owner's pocket.", ChatType.Spam)
+        if (player.vars[SHADOW_VEIL_ACTIVE] == 1 && random.of(100) < SHADOW_VEIL_CHANCE) {
+            mes("Your attempt to steal goes unnoticed.", ChatType.Spam)
+            return
+        }
         npc.say(target.caughtShout)
         npc.facePlayer(player)
         stun()
@@ -189,6 +193,8 @@ constructor(
     private companion object {
         const val THIEVING = "stat.thieving"
         const val SPOT_RANGE = 5
+        const val SHADOW_VEIL_ACTIVE = "varbit.arceuus_shadow_veil_active"
+        const val SHADOW_VEIL_CHANCE = 15
         const val CAUGHT_SHOUT = "Hey! Get your hands off there!"
         const val STALL_SEQ = "seq.human_pickuptable"
         const val PICKPOCKET_SEQ = "seq.human_pickpocket"

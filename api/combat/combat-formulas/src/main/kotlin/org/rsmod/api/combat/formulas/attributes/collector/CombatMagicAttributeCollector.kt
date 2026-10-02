@@ -74,7 +74,7 @@ public class CombatMagicAttributeCollector {
             attributes += CombatSpellAttributes.BrimstonePassive
         }
 
-        if (player.vars["varbit.buff_mark_of_darkness_disabled"] == 1) {
+        if (player.vars["varbit.mark_of_darkness_active"] == 1) {
             attributes += CombatSpellAttributes.MarkOfDarkness
         }
 

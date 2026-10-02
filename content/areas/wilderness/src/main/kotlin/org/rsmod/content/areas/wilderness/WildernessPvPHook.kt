@@ -1,6 +1,9 @@
 package org.rsmod.content.areas.wilderness
 
+import jakarta.inject.Inject
+import kotlin.math.abs
 import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.area.checker.wildernessLevel
 import org.rsmod.api.death.LAST_PVP_HIT_TICK_ATTR
 import org.rsmod.api.death.PvPAttackValidateHook
 import org.rsmod.api.death.PvPAttackValidateResult
@@ -10,9 +13,6 @@ import org.rsmod.api.player.isInPvpCombat
 import org.rsmod.api.player.subjectPronoun
 import org.rsmod.content.areas.wilderness.WildernessAreaScript.Companion.canPvp
 import org.rsmod.game.entity.Player
-import org.rsmod.api.area.checker.wildernessLevel
-import jakarta.inject.Inject
-import kotlin.math.abs
 
 public class WildernessPvPHook @Inject constructor(private val areaChecker: AreaChecker) :
     PvPAttackValidateHook, PvPSkullHook, PvPPlayerHitHook {
@@ -79,7 +79,7 @@ public class WildernessPvPHook @Inject constructor(private val areaChecker: Area
         }
     }
 
-    override fun onPlayerHit(attacker: Player, target: Player) {
+    override fun onPlayerHit(attacker: Player, target: Player, damage: Int) {
         if (!attacker.canPvp()) {
             return
         }

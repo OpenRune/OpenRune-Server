@@ -13,4 +13,5 @@ dependencies {
     implementation(projects.api.combat.combatCommons)
     implementation(projects.api.instances)
     implementation(projects.api.bossHpBarPlugin)
+    implementation(projects.content.skills.magic.arceuusSpells)
 }

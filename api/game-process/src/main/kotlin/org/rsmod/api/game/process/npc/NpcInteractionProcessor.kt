@@ -29,6 +29,8 @@ import org.rsmod.game.interact.InteractionNpc
 import org.rsmod.game.interact.InteractionNpcOp
 import org.rsmod.game.interact.InteractionNpcT
 import org.rsmod.game.interact.InteractionObj
+import org.rsmod.game.interact.InteractionObjOp
+import org.rsmod.game.interact.InteractionObjT
 import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.interact.InteractionPlayerOp
 import org.rsmod.game.interact.InteractionPlayerT
@@ -168,7 +170,8 @@ constructor(
             is InteractionLocT -> triggerOp(this, interaction)
             is InteractionNpcOp -> triggerOp(this, interaction)
             is InteractionNpcT -> triggerOp(this, interaction)
-            is InteractionObj -> triggerOp(this, interaction)
+            is InteractionObjOp -> triggerOp(this, interaction)
+            is InteractionObjT -> Unit
             is InteractionPlayerOp -> triggerOp(this, interaction)
             is InteractionPlayerT -> triggerOp(this, interaction)
         }
@@ -179,7 +182,8 @@ constructor(
             is InteractionLocT -> triggerAp(this, interaction)
             is InteractionNpcOp -> triggerAp(this, interaction)
             is InteractionNpcT -> triggerAp(this, interaction)
-            is InteractionObj -> triggerAp(this, interaction)
+            is InteractionObjOp -> triggerAp(this, interaction)
+            is InteractionObjT -> Unit
             is InteractionPlayerOp -> triggerAp(this, interaction)
             is InteractionPlayerT -> triggerAp(this, interaction)
         }
@@ -511,14 +515,14 @@ constructor(
         }
     }
 
-    private fun triggerOp(npc: Npc, interaction: InteractionObj) {
+    private fun triggerOp(npc: Npc, interaction: InteractionObjOp) {
         val op = objInteractions.opTrigger(interaction.target, interaction.op)
         if (op != null) {
             accessLauncher.launch(npc) { eventBus.publish(this, op) }
         }
     }
 
-    public fun triggerAp(npc: Npc, interaction: InteractionObj) {
+    public fun triggerAp(npc: Npc, interaction: InteractionObjOp) {
         val ap = objInteractions.apTrigger(interaction.target, interaction.op)
         if (ap != null) {
             accessLauncher.launch(npc) { eventBus.publish(this, ap) }

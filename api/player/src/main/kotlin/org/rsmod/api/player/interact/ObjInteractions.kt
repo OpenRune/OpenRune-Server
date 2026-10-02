@@ -9,7 +9,7 @@ import org.rsmod.api.player.events.interact.ObjEvents
 import org.rsmod.api.player.events.interact.OpEvent
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.interact.InteractionObj
+import org.rsmod.game.interact.InteractionObjOp
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.obj.Obj
 import org.rsmod.game.type.getObj
@@ -24,7 +24,7 @@ public class ObjInteractions @Inject constructor(private val eventBus: EventBus)
         val opTrigger = hasOpTrigger(obj, op, type)
         val apTrigger = hasApTrigger(obj, op, type)
         val interaction =
-            InteractionObj(
+            InteractionObjOp(
                 target = obj,
                 op = op,
                 hasOpTrigger = opTrigger,
