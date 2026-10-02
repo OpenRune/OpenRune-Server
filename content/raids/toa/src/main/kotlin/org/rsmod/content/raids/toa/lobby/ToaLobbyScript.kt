@@ -27,6 +27,7 @@ class ToaLobbyScript : PluginScript() {
         onOpLoc1("loc.toa_entrance_open") { travel(INSIDE_DEST, Direction.South) }
         onOpLoc1("loc.toa_lobby_exit") { travel(OUTSIDE_DEST, Direction.NorthWest) }
         onOpLoc1("loc.toa_bank_camel") { tryOpenBank() }
+        onOpLoc1("loc.toa_invocation_board") { ifOpenMainModal("interface.toa_invocations") }
 
         onPlayerLogin {
             player.entranceOpen = 1
