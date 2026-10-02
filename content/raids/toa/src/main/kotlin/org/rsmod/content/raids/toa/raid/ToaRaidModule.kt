@@ -4,16 +4,13 @@ import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.npc.hit.NpcDamageContributor
 import org.rsmod.api.player.hook.PlayerTeleportValidateHook
 import org.rsmod.content.other.consumables.ConsumableActivityGate
-import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakJugAttackHook
-import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakSwimAttackHook
 import org.rsmod.content.raids.toa.raid.supplies.ToaConsumableGate
 import org.rsmod.plugin.module.PluginModule
 
 class ToaRaidModule : PluginModule() {
     override fun bind() {
         addSetBinding<PlayerTeleportValidateHook>(ToaTeleportHook::class.java)
-        addSetBinding<NpcAttackValidateHook>(ZebakSwimAttackHook::class.java)
-        addSetBinding<NpcAttackValidateHook>(ZebakJugAttackHook::class.java)
+        addSetBinding<NpcAttackValidateHook>(ToaAttackHook::class.java)
         addSetBinding<NpcDamageContributor>(ToaDamageContributor::class.java)
         addSetBinding<ConsumableActivityGate>(ToaConsumableGate::class.java)
     }

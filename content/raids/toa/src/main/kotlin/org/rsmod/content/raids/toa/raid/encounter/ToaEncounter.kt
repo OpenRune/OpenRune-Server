@@ -3,6 +3,7 @@ package org.rsmod.content.raids.toa.raid.encounter
 import kotlin.math.floor
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
@@ -112,6 +113,9 @@ open class ToaEncounter(
     protected open fun onComplete() {}
 
     protected open fun onReset() {}
+
+    internal open fun validateAttack(player: Player, npc: Npc): NpcAttackValidateResult =
+        NpcAttackValidateResult.Pass
 
     open fun honeyLocusts(): Int = deps.random.of(HONEY_LOCUSTS_MIN, HONEY_LOCUSTS_MAX)
 
