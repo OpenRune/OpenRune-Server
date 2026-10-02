@@ -50,10 +50,12 @@ public val doomOfMokhaiotlDropTable: RSDropTable<Player, DropRollItem> = RSDropT
         1 outOf 2500 separate "obj.mokhaiotl_cloth" count 1 condition {
             player -> player.hasReachedDelve(2)
         }
-        10 outOf 312 separate "obj.cert_raw_shark" count 20..35
-        5 outOf 312 separate "obj.shark_lure" count 40..70
+        5 weight rsPlayerWeightedTable(total = 3) {
+            name("Shark drops")
+            2 weight "obj.cert_raw_shark" count 20..35
+            1 weight "obj.shark_lure" count 40..70
+        }
         1 outOf 75 separate "obj.trail_elite_emote_exp1" count 1
         1 outOf 1000 separate "obj.dompet" count 1 condition { player -> player.hasReachedDelve(6) }
-        5 weight nothing()
     },
 )
