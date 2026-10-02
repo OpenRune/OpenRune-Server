@@ -472,7 +472,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val DEATH_SHAKE_LEFT_RIGHT = 5
         private const val DEATH_SHAKE_UP_DOWN = 5
         private const val DEATH_SHAKE_FORWARDS = 2
-        private const val DEATH_MODEL_DELAY = 4
+        private const val DEATH_MODEL_DELAY = 3
         private const val DAMAGED_SOUND_RADIUS = 10
         private const val SCRIPT_SEQ_PREFETCH = 1846
         private val SPECIAL_THRESHOLDS = doubleArrayOf(0.85, 0.70, 0.55, 0.40)
