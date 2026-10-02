@@ -135,10 +135,3 @@ internal object ZebakSynths {
 
     const val MIDI = 736
 }
-
-internal object ZebakInvocations {
-    const val NOT_JUST_A_HEAD = "Not Just a Head"
-    const val ARTERIAL_SPRAY = "Arterial Spray"
-    const val BLOOD_THINNERS = "Blood Thinners"
-    const val UPSET_STOMACH = "Upset Stomach"
-}

@@ -3,6 +3,7 @@ package org.rsmod.content.raids.toa.raid.supplies
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import kotlin.math.floor
+import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
@@ -78,9 +79,9 @@ class ToaSupplies {
         val random = raid.deps.random
         val factor =
             when {
-                raid.isActive(NO_HELP_NEEDED) -> 0.10
-                raid.isActive(NEED_LESS_HELP) -> 0.33
-                raid.isActive(NEED_SOME_HELP) -> 0.66
+                raid.isActive(ToaInvocationKey.NoHelpNeeded) -> 0.10
+                raid.isActive(ToaInvocationKey.NeedLessHelp) -> 0.33
+                raid.isActive(ToaInvocationKey.NeedSomeHelp) -> 0.66
                 else -> 1.0
             }
         fun amount(base: Int, guaranteed: Boolean): Int {
@@ -92,7 +93,7 @@ class ToaSupplies {
             return if (rolled) amount(1, false) else 0
         }
 
-        val diet = raid.isActive(ON_A_DIET)
+        val diet = raid.isActive(ToaInvocationKey.OnADiet)
         val life =
             listOf(
                 SupplyStack(ToaSupply.NECTAR, amount(5, true)),
@@ -120,10 +121,5 @@ class ToaSupplies {
     private companion object {
         val OFFER_AFTER_PATHS = listOf(2, 4)
         const val CHAOS_RARE_ONE_IN = 8
-
-        const val NEED_SOME_HELP = "Need Some Help?"
-        const val NEED_LESS_HELP = "Need Less Help?"
-        const val NO_HELP_NEEDED = "No Help Needed"
-        const val ON_A_DIET = "On a Diet"
     }
 }

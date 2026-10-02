@@ -6,7 +6,7 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfSubType
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.ui.ifOpenSub
-import org.rsmod.content.raids.toa.party.ToaInvocation
+import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.party.ToaLobbyParty
 import org.rsmod.content.raids.toa.party.ToaPartySettings
 import org.rsmod.content.raids.toa.raid.encounter.MainHallEncounter
@@ -59,19 +59,19 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
 
     val timeLimitMinutes: Int? =
         when {
-            isActive("Walk for It") -> 40
-            isActive("Jog for It") -> 35
-            isActive("Run for It") -> 30
-            isActive("Sprint for It") -> 25
+            isActive(ToaInvocationKey.WalkForIt) -> 40
+            isActive(ToaInvocationKey.JogForIt) -> 35
+            isActive(ToaInvocationKey.RunForIt) -> 30
+            isActive(ToaInvocationKey.SprintForIt) -> 25
             else -> null
         }
 
     val permittedTeamDeaths: Int? =
         when {
-            isActive("Try Again") -> 10
-            isActive("Persistence") -> 5
-            isActive("Softcore Run") -> 3
-            isActive("Hardcore Run") -> 1
+            isActive(ToaInvocationKey.TryAgain) -> 10
+            isActive(ToaInvocationKey.Persistence) -> 5
+            isActive(ToaInvocationKey.SoftcoreRun) -> 3
+            isActive(ToaInvocationKey.HardcoreRun) -> 1
             else -> null
         }
 
@@ -98,10 +98,7 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     val finished: Boolean
         get() = endCycle >= 0
 
-    fun isActive(name: String): Boolean {
-        val invocation = ToaInvocation.ALL.firstOrNull { it.name == name } ?: return false
-        return settings.isActive(invocation)
-    }
+    fun isActive(key: ToaInvocationKey): Boolean = settings.isActive(key.invocation)
 
     fun isGhost(player: Player): Boolean = player in ghosts
 

@@ -1,6 +1,7 @@
 package org.rsmod.content.raids.toa.raid.encounter
 
 import org.rsmod.api.player.output.mes
+import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaPath
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
@@ -101,15 +102,15 @@ class MainHallEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controller
             raid.pathLevelsInitialised = true
             val base =
                 when {
-                    raid.isActive("Pathmaster") -> 3
-                    raid.isActive("Pathfinder") -> 2
-                    raid.isActive("Pathseeker") -> 1
+                    raid.isActive(ToaInvocationKey.Pathmaster) -> 3
+                    raid.isActive(ToaInvocationKey.Pathfinder) -> 2
+                    raid.isActive(ToaInvocationKey.Pathseeker) -> 1
                     else -> 0
                 }
             levelIncreases.fill(base)
         }
 
-        if (raid.isActive("Walk the Path")) {
+        if (raid.isActive(ToaInvocationKey.WalkThePath)) {
             val rolls =
                 when (raid.pathsCompleted.size) {
                     1 -> 2
