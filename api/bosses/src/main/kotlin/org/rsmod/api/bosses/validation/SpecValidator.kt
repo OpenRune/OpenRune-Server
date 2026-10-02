@@ -426,10 +426,6 @@ object SpecValidator {
                     effect.onMovingHit?.let { effect(it, scope.copy(deferred = true)) }
                     effect(effect.otherwise, scope)
                 }
-                is Effect.Hazard -> {
-                    target(effect.at, scope, name)
-                    effect.onStand?.let { effect(it, scope.copy(deferred = true)) }
-                }
                 is Effect.Debris -> target(effect.center, scope, name)
                 is Effect.Summon -> target(effect.centeredOn, scope, name)
                 is Effect.Teleport -> target(effect.to, scope, name)

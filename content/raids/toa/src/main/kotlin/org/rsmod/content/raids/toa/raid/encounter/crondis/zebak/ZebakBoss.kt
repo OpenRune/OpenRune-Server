@@ -162,22 +162,16 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
                 source = offset(ZebakCoords.PROJECTILE_BASE),
             ),
             spotanim(impact, height = IMPACT_HEIGHT, delay = IMPACT_DELAY, target = CurrentTarget),
-            whenever(
-                isSwimming,
-                sequence(fragmentHit(mage, swimming = true), external(SWIM_RETALIATE)),
-                fragmentHit(mage, swimming = false),
-            ),
+            hit {
+                damage(Accuracy(scaled(RANGED_MAGIC_MAX_HIT)))
+                type(if (mage) Magic else Ranged)
+                delay = SPLIT_HIT_DELAY
+                resolveOnImpact()
+                reactOnLanding()
+            },
+            whenever(isSwimming, external(SWIM_RETALIATE)),
         )
     }
-
-    private fun fragmentHit(mage: Boolean, swimming: Boolean): Effect =
-        hit {
-            damage(Accuracy(scaled(RANGED_MAGIC_MAX_HIT)))
-            type(if (mage) Magic else Ranged)
-            delay = SPLIT_HIT_DELAY
-            resolveOnImpact()
-            if (swimming) hazard() else reactOnLanding()
-        }
 
     private fun endSpecial(): Effect =
         sequence(external(END_SPECIAL), whenever(specialReady, run(SPECIAL)))
@@ -383,7 +377,6 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         }
         deps.extensionRegistry.register(SWIM_RETALIATE) { _, npc, target, _ ->
             target.queueCombatRetaliate(npc, SWIM_REACT_DELAY)
-            target.queueCombatRetaliate(npc, SPLIT_HIT_DELAY)
         }
     }
 

@@ -548,18 +548,6 @@ class AbilityBuilder {
         effects += Effect.TileAoE(tiles, telegraph, damage, type)
     }
 
-    fun hazard(
-        loc: String,
-        at: TargetExpr.Single = TargetExpr.CurrentTargetTile,
-        damage: DamageExpr? = null,
-        type: HitType = HitType.Typeless,
-        armDelay: Int = 1,
-        duration: Int = Int.MAX_VALUE,
-        onStand: Effect? = null,
-    ) {
-        effects += Effect.Hazard(loc, at, damage, type, armDelay, duration, onStand)
-    }
-
     fun bleed(
         duration: Int,
         movingDamage: DamageExpr,

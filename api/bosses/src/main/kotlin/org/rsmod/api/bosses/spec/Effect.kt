@@ -165,20 +165,6 @@ sealed interface Effect {
         val center: TargetExpr.Single = TargetExpr.Self,
     ) : Effect
 
-    data class Hazard(
-        val loc: String,
-        val at: TargetExpr.Single = TargetExpr.CurrentTargetTile,
-        val damage: DamageExpr? = null,
-        val type: HitType = HitType.Typeless,
-        val armDelay: Int = 1,
-        val duration: Int = Int.MAX_VALUE,
-        val onStand: Effect? = null,
-    ) : Effect {
-        init {
-            require(armDelay > 0) { "Hazard armDelay must be greater than 0." }
-            require(duration > 0) { "Hazard duration must be greater than 0." }
-        }
-    }
 
     data class Bleed(
         val duration: Int,
