@@ -80,7 +80,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         }
         if (heal > 0) {
             boss.heal(heal, showHitsplat = true)
-            room.hpBar.update()
+            room.hpBar?.update()
         }
         for (player in targets) player.soundSynth(ZebakSynths.BLOOD_BARRAGE)
     }
