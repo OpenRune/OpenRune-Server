@@ -7,6 +7,7 @@ import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.bosses.runtime.runAbility
 import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.combat.commons.player.combatPlayDefendAnim
+import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.soundSynth
@@ -140,6 +141,12 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
     override fun onFightComplete() {
         clearFight()
         water.removeCrocodiles()
+    }
+
+    override fun validateAttack(player: Player, npc: Npc): NpcAttackValidateResult {
+        if (water.isSwimming(player)) return NpcAttackValidateResult.Deny(SWIMMING_ATTACK)
+        jugs.attacking(player, npc)
+        return NpcAttackValidateResult.Pass
     }
 
     override fun onReset() {
@@ -320,5 +327,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val ENRAGE_THRESHOLD = 0.25
         private const val MAX_DEFENCE_DRAIN = 20
         private const val NOT_STARTED = "The fight hasn't started."
+        private const val SWIMMING_ATTACK =
+            "I can't hit him from here. I'll have to get back onto the island!"
     }
 }
