@@ -724,6 +724,10 @@ class EffectInterpreter internal constructor(
                 set.tiles(npc, target, deps.random).filter { isFree(box, it) }.distinct()
             }
             is TileSet.Plus -> (resolveTiles(set.a) + resolveTiles(set.b)).distinct()
+            is TileSet.Minus -> {
+                val excluded = resolveTiles(set.b).toSet()
+                resolveTiles(set.a).filter { it !in excluded }
+            }
             is TileSet.Bound -> bindings.set(set.name)
         }
     }
