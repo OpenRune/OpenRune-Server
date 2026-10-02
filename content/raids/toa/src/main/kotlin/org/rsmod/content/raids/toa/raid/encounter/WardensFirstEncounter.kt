@@ -14,8 +14,7 @@ class WardensFirstEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contro
         startFinalPhase()
     }
 
-     // TODO (Phase B): Offline_Scape flashes interface 174 white here instead of the normal fade.
-
+    // TODO: flash interface 174 white here instead of the normal fade.
     @OptIn(InternalApi::class)
     fun startFinalPhase() {
         if (stage != ToaStage.STARTED) return

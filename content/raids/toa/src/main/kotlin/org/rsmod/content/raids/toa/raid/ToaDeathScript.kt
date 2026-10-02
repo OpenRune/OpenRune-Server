@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import net.rsprot.protocol.game.outgoing.sound.MidiJingle
+import org.rsmod.api.config.constants
 import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.death.DEATH_CAUSE_ATTR
 import org.rsmod.api.player.deathResetTimers
@@ -12,8 +13,12 @@ import org.rsmod.api.player.hasProtectItemPrayer
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.musicClocks
+import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.stat
+import org.rsmod.api.player.stat.statBase
+import org.rsmod.api.player.stat.statRestore
 import org.rsmod.api.player.stat.statRestoreAll
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onPlayerHit
@@ -179,8 +184,8 @@ private fun Player.jingle(id: Int, lengthMillis: Int) {
     client.write(MidiJingle(id, lengthMillis))
 }
 
-internal fun Player.toaRestore(prayersOff: Boolean = true) {
-    if (prayersOff) disablePrayers()
+internal fun Player.toaRestore() {
+    disablePrayers()
     cureAllToxins()
     deathResetTimers()
     statRestoreAll(ALL_STATS)
@@ -189,7 +194,20 @@ internal fun Player.toaRestore(prayersOff: Boolean = true) {
     rebuildAppearance()
 }
 
+internal fun Player.toaBossRestore() {
+    cureAllToxins()
+    for (name in ALL_STATS) {
+        if (stat(name) < statBase(name)) statRestore(name)
+    }
+    runEnergy = constants.run_max_energy
+    UpdateRun.energy(this, runEnergy)
+    specialAttackEnergy = constants.sa_max_energy
+    specialAttackType = 0
+}
+
 private var Player.specialAttackType by intVarp("varp.sa_attack")
+
+private var Player.specialAttackEnergy by intVarp("varp.sa_energy")
 
 private var Player.trackingDeaths by intVarp("varp.tracking_deaths")
 

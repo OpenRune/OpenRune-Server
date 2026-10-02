@@ -313,7 +313,6 @@ constructor(
                 postfix = "]",
             )
 
-    // Mixes heal through `heal`; the rest heal through their handler. Silk dressing isn't drunk.
     private fun PotionRow.restoresHitpoints(): Boolean =
         heal > 0 || effect.handler in HITPOINTS_RESTORING_HANDLERS
 

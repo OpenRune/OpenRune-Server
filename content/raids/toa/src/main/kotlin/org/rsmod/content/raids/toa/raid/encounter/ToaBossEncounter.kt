@@ -19,7 +19,7 @@ open class ToaBossEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contro
         if (osmumtenDelay > 0) schedule(osmumtenDelay) { spawnOsmumten() } else spawnOsmumten()
     }
 
-    /** Offline_Scape `spawnTeleportNPC`. TODO: jingle 296. */
+    // TODO: play jingle 296 when Osmumten spawns.
     private fun spawnOsmumten() {
         val tile = room.osmumtenTile ?: return
         val challengeSpawn = room.challengeSpawn ?: return

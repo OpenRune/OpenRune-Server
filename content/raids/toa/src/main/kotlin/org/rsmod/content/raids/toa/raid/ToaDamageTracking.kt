@@ -50,7 +50,6 @@ class ToaDamageContributor @Inject constructor() : NpcDamageContributor {
     }
 }
 
-/** Damage taken. */
 class ToaDamageScript : PluginScript() {
     override fun ScriptContext.startup() {
         onPlayerHit {
