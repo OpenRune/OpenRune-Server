@@ -9,7 +9,6 @@ import org.rsmod.api.bosses.dsl.MeleeAttackType
 import org.rsmod.api.bosses.dsl.Ranged
 import org.rsmod.api.bosses.dsl.after
 import org.rsmod.api.bosses.dsl.anim
-import org.rsmod.api.bosses.dsl.area
 import org.rsmod.api.bosses.dsl.bleed
 import org.rsmod.api.bosses.dsl.boss
 import org.rsmod.api.bosses.dsl.external
@@ -18,7 +17,6 @@ import org.rsmod.api.bosses.dsl.mapSpotanim
 import org.rsmod.api.bosses.dsl.message
 import org.rsmod.api.bosses.dsl.onEach
 import org.rsmod.api.bosses.dsl.parallel
-import org.rsmod.api.bosses.dsl.playersIn
 import org.rsmod.api.bosses.dsl.projectile
 import org.rsmod.api.bosses.dsl.repeat
 import org.rsmod.api.bosses.dsl.run
@@ -26,23 +24,28 @@ import org.rsmod.api.bosses.dsl.sequence
 import org.rsmod.api.bosses.dsl.soundTo
 import org.rsmod.api.bosses.dsl.spawnTile
 import org.rsmod.api.bosses.dsl.spotanim
-import org.rsmod.api.bosses.dsl.summon
 import org.rsmod.api.bosses.dsl.transitionTo
 import org.rsmod.api.bosses.dsl.transmog
 import org.rsmod.api.bosses.dsl.wait
 import org.rsmod.api.bosses.dsl.whenever
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
+import org.rsmod.api.bosses.runtime.BossExtensionContext
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.spec.BossSpec
-import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.DamageExpr
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.TargetExpr
 import org.rsmod.api.combat.commons.player.queueCombatRetaliate
-import org.rsmod.content.raids.toa.raid.ToaRoom
-import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.Player
+import org.rsmod.content.raids.toa.raid.encounter.challengePlayers
+import org.rsmod.content.raids.toa.raid.encounter.eachTarget
+import org.rsmod.content.raids.toa.raid.encounter.onRoomExternal
+import org.rsmod.content.raids.toa.raid.encounter.roomCombatTick
+import org.rsmod.content.raids.toa.raid.encounter.roomCondition
+import org.rsmod.content.raids.toa.raid.encounter.roomDamage
+import org.rsmod.content.raids.toa.raid.encounter.roomSummon
+import org.rsmod.content.raids.toa.raid.encounter.targetCondition
+import org.rsmod.content.raids.toa.raid.encounter.timeline
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -52,7 +55,10 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             this,
             spec,
             deps,
-            onCombatTick = { target -> ZebakEncounter.onCombatTick(this, target) },
+            onCombatTick =
+                roomCombatTick<ZebakEncounter> { room, access, target ->
+                    room.combatTick(access, target)
+                },
         )
         registerHandlers()
     }
@@ -139,7 +145,7 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
                 whenever(
                     fighting,
                     sequence(
-                        summon(
+                        roomSummon(
                             ZebakNpcs.SPLIT_HELPER,
                             radius = 0,
                             centeredOn = offset(ZebakCoords.SPLIT_HELPER),
@@ -322,12 +328,12 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
     }
 
     private fun cloud(type: String, tile: CoordGrid): Effect =
-        summon(
+        roomSummon(
             type,
             radius = 0,
             centeredOn = offset(tile),
             duration = Int.MAX_VALUE,
-            onSummon = REGISTER_CLOUD,
+            onSummon = TRACK_CLOUD,
         )
 
     private fun enrage(): Effect =
@@ -340,46 +346,34 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         )
 
     private fun registerHandlers() {
-        onZebak(ROLL_STYLE) { room, npc, _ -> room.autos.rollStyle(npc) }
-        onZebak(TAIL) { room, _, params -> room.tailAnim(params as String?) }
-        onZebak(BEGIN_SPECIAL) { room, _, params -> room.beginSpecial(params as Boolean) }
-        onZebak(END_SPECIAL) { room, _, _ -> room.endSpecial() }
-        onZebak(ROAR_LAUNCH) { room, _, _ -> room.greatRoar?.launch() }
-        onZebak(ROAR_WAVE) { room, _, params -> room.greatRoar?.roarWave(params as Boolean) }
-        onZebak(ROAR_END) { room, _, _ -> room.greatRoar?.end() }
-        onZebak(WAVES_LAUNCH) { room, _, _ -> room.tidalWaves?.launch() }
-        onZebak(WAVES_SHAKE) { room, _, _ -> room.tidalWaves?.shakeCameras() }
-        onZebak(WAVES_CAMERA) { room, _, _ -> room.tidalWaves?.resetCameras() }
-        onZebak(WAVE_ROW) { room, _, _ -> room.tidalWaves?.spawnRow() }
-        onZebak(WAVES_END) { room, _, _ -> room.tidalWaves?.end() }
-        onZebak(BLOOD_BARRAGE) { room, _, _ -> room.bloodMagic.barrage() }
-        onZebak(FLIP_BLOOD_SPELL) { room, _, _ -> room.bloodMagic.flipSpell() }
-        onZebak(FLIP_CLOUD_SIDE) { room, _, _ -> room.bloodMagic.flipCloudSide() }
-        onZebak(ENRAGE_ZEBAK) { room, npc, _ -> room.enrage(npc) }
-        onZebakSummon(SPLIT_BURST) { _, helper, params ->
-            helper.spotanim(params as String, height = SPLIT_HEIGHT)
+        onZebak(ROLL_STYLE) { room, ext -> room.autos.rollStyle(ext.npc) }
+        onZebak(TAIL) { room, ext -> room.tailAnim(ext.params as String?) }
+        onZebak(BEGIN_SPECIAL) { room, ext -> room.beginSpecial(ext.params as Boolean) }
+        onZebak(END_SPECIAL) { room, _ -> room.endSpecial() }
+        onZebak(ROAR_LAUNCH) { room, _ -> room.greatRoar?.launch() }
+        onZebak(ROAR_WAVE) { room, ext -> room.greatRoar?.roarWave(ext.params as Boolean) }
+        onZebak(ROAR_END) { room, _ -> room.greatRoar?.end() }
+        onZebak(WAVES_LAUNCH) { room, _ -> room.tidalWaves?.launch() }
+        onZebak(WAVES_SHAKE) { room, _ -> room.tidalWaves?.shakeCameras() }
+        onZebak(WAVES_CAMERA) { room, _ -> room.tidalWaves?.resetCameras() }
+        onZebak(WAVE_ROW) { room, _ -> room.tidalWaves?.spawnRow() }
+        onZebak(WAVES_END) { room, _ -> room.tidalWaves?.end() }
+        onZebak(BLOOD_BARRAGE) { room, _ -> room.bloodMagic.barrage() }
+        onZebak(FLIP_BLOOD_SPELL) { room, _ -> room.bloodMagic.flipSpell() }
+        onZebak(FLIP_CLOUD_SIDE) { room, _ -> room.bloodMagic.flipCloudSide() }
+        onZebak(ENRAGE_ZEBAK) { room, ext -> room.enrage(ext.npc) }
+        onZebak(SPLIT_BURST) { _, ext ->
+            ext.npc.spotanim(ext.params as String, height = SPLIT_HEIGHT)
         }
-        onZebakSummon(REGISTER_CLOUD) { room, cloud, _ -> room.bloodMagic.registerCloud(cloud) }
-        deps.extensionRegistry.register(BLEED_SPLAT) { _, npc, target, _ ->
-            ZebakEncounter.roomOf(npc)?.autos?.splat(target.coords)
-        }
+        onZebak(TRACK_CLOUD) { room, ext -> room.bloodMagic.trackCloud(ext.npc) }
+        onZebak(BLEED_SPLAT) { room, ext -> room.autos.splat(ext.target.coords) }
         deps.extensionRegistry.register(SWIM_RETALIATE) { _, npc, target, _ ->
             target.queueCombatRetaliate(npc, SWIM_REACT_DELAY)
         }
     }
 
-    private fun onZebak(name: String, block: (ZebakEncounter, Npc, Any?) -> Unit) {
-        deps.extensionRegistry.register(name) { _, npc, _, params ->
-            val room = ZebakEncounter.roomOf(npc) ?: return@register
-            block(room, npc, params)
-        }
-    }
-
-    private fun onZebakSummon(name: String, block: (ZebakEncounter, Npc, Any?) -> Unit) {
-        deps.extensionRegistry.register(name) { _, spawned, target, params ->
-            val room = ZebakEncounter.roomOf(target) ?: return@register
-            block(room, spawned, params)
-        }
+    private fun onZebak(name: String, handler: (ZebakEncounter, BossExtensionContext) -> Unit) {
+        deps.onRoomExternal<ZebakEncounter>(name, handler)
     }
 
     internal companion object {
@@ -419,7 +413,7 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         private const val ENRAGE_ZEBAK = "zebak.enrage"
         private const val SPLIT_BURST = "zebak.split_burst"
         private const val SWIM_RETALIATE = "zebak.swim_retaliate"
-        private const val REGISTER_CLOUD = "zebak.register_cloud"
+        private const val TRACK_CLOUD = "zebak.track_cloud"
 
         private const val MELEE_MAX_HIT = 38
         private const val RANGED_MAGIC_MAX_HIT = 16
@@ -470,56 +464,40 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             spawnTile(tile.x - ZebakCoords.ZEBAK.x, tile.z - ZebakCoords.ZEBAK.z)
 
         private fun scaled(base: Int): DamageExpr =
-            DamageExpr.Custom { npc, _ -> ZebakEncounter.roomOf(npc)?.rollScaled(base) ?: 0 }
+            roomDamage<ZebakEncounter> { room, _, _ -> room.rollScaled(base) }
 
         private fun scaled(min: Int, base: Int): DamageExpr =
-            DamageExpr.Custom { npc, _ -> ZebakEncounter.roomOf(npc)?.rollScaled(min, base) ?: 0 }
+            roomDamage<ZebakEncounter> { room, _, _ -> room.rollScaled(min, base) }
 
-        private fun timeline(vararg steps: Pair<Int, Effect>): Effect =
-            checkNotNull(
-                steps.reversed().fold(null as Effect?) { rest, (ticks, effect) ->
-                    after(ticks, if (rest == null) effect else sequence(effect, rest))
-                }
-            )
-
-        private fun room(test: (ZebakEncounter, Npc) -> Boolean): Condition =
-            Condition.Custom { npc, _ -> ZebakEncounter.roomOf(npc)?.let { test(it, npc) } == true }
-
-        private fun player(test: (ZebakEncounter, Player) -> Boolean): Condition =
-            Condition.Custom { npc, target ->
-                target != null && ZebakEncounter.roomOf(npc)?.let { test(it, target) } == true
-            }
-
-        private val roomPlayers =
-            playersIn(
-                area(
-                    offset(checkNotNull(ToaRoom.CRONDIS_BOSS.challengeMin)),
-                    offset(checkNotNull(ToaRoom.CRONDIS_BOSS.challengeMax)),
-                )
-            )
-
-        private val isTarget = player { room, target -> target in room.targets() }
-        private val isMeleeTarget = player { room, target -> target in room.autos.meleeTargets }
-        private val isSwimming = player { room, target -> room.water.isSwimming(target) }
-
-        private fun eachTarget(effect: Effect): Effect = onEach(roomPlayers, whenever(isTarget, effect))
+        private val isMeleeTarget =
+            targetCondition<ZebakEncounter> { room, target -> target in room.autos.meleeTargets }
+        private val isSwimming =
+            targetCondition<ZebakEncounter> { room, target -> room.water.isSwimming(target) }
 
         private fun eachMeleeTarget(effect: Effect): Effect =
-            onEach(roomPlayers, whenever(isMeleeTarget, effect))
+            onEach(challengePlayers, whenever(isMeleeTarget, effect))
 
-        private val bossAlive = room { room, npc -> room.bossAlive(npc) }
-        private val fighting = room { room, npc -> room.fighting(npc) }
-        private val hasTargets = room { room, _ -> room.targets().isNotEmpty() }
-        private val enrageDue = room { room, npc -> room.enrageDue(npc) }
-        private val specialReady = room { room, npc -> room.specialReady(npc) }
-        private val nextIsRoar = room { room, _ -> room.nextSpecialIsRoar }
-        private val roarLaunched = room { room, _ -> room.greatRoar?.launched == true }
-        private val wavesFromSouth = room { room, _ -> room.tidalWaves?.fromSouth == true }
-        private val styleMelee = room { room, _ -> room.autos.style == ZebakAutos.Style.MELEE }
-        private val styleMagic = room { room, _ -> room.autos.style == ZebakAutos.Style.MAGIC }
-        private val nextIsBarrage = room { room, _ -> room.bloodMagic.nextIsBarrage }
-        private val cloudsFromSouth = room { room, _ -> room.bloodMagic.cloudsFromSouth }
-        private val bloodThinners = room { room, _ ->
+        private val bossAlive = roomCondition<ZebakEncounter> { room, npc -> room.bossAlive(npc) }
+        private val fighting = roomCondition<ZebakEncounter> { room, npc -> room.fighting(npc) }
+        private val hasTargets =
+            roomCondition<ZebakEncounter> { room, _ -> room.targets().isNotEmpty() }
+        private val enrageDue = roomCondition<ZebakEncounter> { room, npc -> room.enrageDue(npc) }
+        private val specialReady =
+            roomCondition<ZebakEncounter> { room, npc -> room.specialReady(npc) }
+        private val nextIsRoar = roomCondition<ZebakEncounter> { room, _ -> room.nextSpecialIsRoar }
+        private val roarLaunched =
+            roomCondition<ZebakEncounter> { room, _ -> room.greatRoar?.launched == true }
+        private val wavesFromSouth =
+            roomCondition<ZebakEncounter> { room, _ -> room.tidalWaves?.fromSouth == true }
+        private val styleMelee =
+            roomCondition<ZebakEncounter> { room, _ -> room.autos.style == ZebakAutos.Style.MELEE }
+        private val styleMagic =
+            roomCondition<ZebakEncounter> { room, _ -> room.autos.style == ZebakAutos.Style.MAGIC }
+        private val nextIsBarrage =
+            roomCondition<ZebakEncounter> { room, _ -> room.bloodMagic.nextIsBarrage }
+        private val cloudsFromSouth =
+            roomCondition<ZebakEncounter> { room, _ -> room.bloodMagic.cloudsFromSouth }
+        private val bloodThinners = roomCondition<ZebakEncounter> { room, _ ->
             room.raid.isActive(ZebakInvocations.BLOOD_THINNERS)
         }
     }

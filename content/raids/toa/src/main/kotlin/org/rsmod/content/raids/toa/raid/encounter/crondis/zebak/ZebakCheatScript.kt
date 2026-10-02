@@ -3,7 +3,7 @@ package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 import dev.or2.central.account.Rights
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.script.onCommand
-import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
+import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -19,7 +19,7 @@ class ZebakCheatScript : PluginScript() {
     }
 
     private fun Cheat.trigger(mechanic: String) {
-        val room = player.currentRaid?.encounterOf(player) as? ZebakEncounter
+        val room = ToaRooms.of<ZebakEncounter>(player)
         if (room == null) {
             player.mes("You are not in Zebak's room.")
             return

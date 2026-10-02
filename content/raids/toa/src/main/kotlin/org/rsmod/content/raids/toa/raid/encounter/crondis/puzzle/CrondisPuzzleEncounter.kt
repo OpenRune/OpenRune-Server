@@ -24,7 +24,6 @@ import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
-import org.rsmod.game.map.Direction
 import org.rsmod.game.obj.Obj
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
@@ -34,7 +33,7 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
 
     private val acid = CrondisAcid(this)
     private val spears = CrondisSpears(this)
-    private val crocodiles = CrondisCrocodiles(this)
+    internal val crocodiles = CrondisCrocodiles(this)
 
     internal var palm: Npc? = null
         private set
@@ -158,7 +157,7 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
 
     private fun spawnPalm() {
         palm?.let(::despawn)
-        palm = spawnNpc(CrondisNpcs.PALMS[0], CrondisCoords.PALM)
+        palm = spawn(CrondisNpcs.PALMS[0], coords(CrondisCoords.PALM))
         palmStage = 0
     }
 
@@ -237,7 +236,7 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
     private fun hazardTick() {
         if (stage != ToaStage.STARTED) return
         if ((deps.mapClock.cycle - startCycle) % HEADBAR_INTERVAL == 0) showPalmHeadbar()
-        val targets = hazardTargets()
+        val targets = targets()
         acid.tick(targets)
         spears.tick(targets)
         crocodiles.tick()
@@ -248,9 +247,6 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         acid.clear()
         spears.clear()
     }
-
-    internal fun hazardTargets(): List<Player> =
-        players.filter { inChallengeArea(it) && !raid.isGhost(it) && !raid.isDying(it) }
 
     internal fun hazardHit(
         player: Player,
@@ -296,26 +292,6 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         if (water <= 0) return
         val left = if (water < BITE_LOW_WATER) water - BITE_LOW_LOSS else (water + 1) / 2
         player.setContainerWater(slot, left.coerceAtLeast(0))
-    }
-
-    private fun spawnNpc(type: String, static: CoordGrid, facing: Direction? = null): Npc {
-        val npc = Npc(type, coords(static))
-        if (facing != null) npc.respawnDir = facing
-        deps.npcRepo.add(npc, Int.MAX_VALUE)
-        npc.respawns = false
-        return npc
-    }
-
-    internal fun spawnRouted(type: String, static: CoordGrid, facing: Direction? = null): Npc {
-        owners.values.removeIf { it.destroyed }
-        val npc = spawnNpc(type, static, facing)
-        owners[npc] = this
-        return npc
-    }
-
-    internal fun despawn(npc: Npc) {
-        owners.remove(npc)
-        if (npc.isSlotAssigned) deps.npcRepo.del(npc, Int.MAX_VALUE)
     }
 
     private fun openEndBarrier() {
@@ -364,35 +340,6 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         private const val SCRIPT_SEQ_PREFETCH = 1846
 
         private val PRELOAD_SEQS: List<Int> = (9618..9646).toList() + listOf(9532, 9533, 9534, 9541)
-
-        private val owners = HashMap<Npc, CrondisPuzzleEncounter>()
-
-        private fun roomOf(npc: Npc): CrondisPuzzleEncounter? {
-            val room = owners[npc] ?: return null
-            if (room.destroyed) {
-                owners.remove(npc)
-                return null
-            }
-            return room
-        }
-
-        internal fun onCrocodileTick(croc: Npc) {
-            roomOf(croc)?.crocodiles?.ai(croc)
-        }
-
-        internal fun onCrocodileCombatTick(croc: Npc, target: Player): Boolean =
-            roomOf(croc)?.crocodiles?.mayBite(croc, target) ?: false
-
-        internal fun crocodileBiteDamage(croc: Npc, target: Player): Int =
-            roomOf(croc)?.crocodiles?.biteDamage(target) ?: 0
-
-        internal fun onCrocodileBite(croc: Npc, target: Player) {
-            roomOf(croc)?.biteWater(target)
-        }
-
-        internal fun onCrocodileHit(croc: Npc, player: Player) {
-            roomOf(croc)?.crocodiles?.hitBy(croc, player)
-        }
     }
 }
 

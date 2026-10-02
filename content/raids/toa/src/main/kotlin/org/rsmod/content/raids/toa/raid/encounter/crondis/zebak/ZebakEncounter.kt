@@ -18,7 +18,6 @@ import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.raid.ToaPath
 import org.rsmod.content.raids.toa.raid.ToaRaid
-import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.ToaBook
 import org.rsmod.content.raids.toa.raid.encounter.ToaBossEncounter
@@ -199,7 +198,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
     private fun playDeath() {
         val boss = zebak ?: return
         if (!boss.isSlotAssigned) return
-        owners.remove(boss)
+        release(boss)
         boss.ignoreCombatInteractions = true
         boss.noneMode()
         boss.hideAllOps()
@@ -301,15 +300,12 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         boss.apPlayer2(targets[deps.random.of(0, targets.lastIndex)], deps.aiInteractions)
     }
 
-    internal fun targets(): List<Player> =
-        players.filter { inChallengeArea(it) && !raid.isGhost(it) && !raid.isDying(it) }
-
     internal fun bossAlive(npc: Npc): Boolean =
         stage == ToaStage.STARTED && npc === zebak && npc.hitpoints > 0
 
     internal fun fighting(npc: Npc): Boolean = bossAlive(npc) && targets().isNotEmpty()
 
-    private fun combatTick(access: StandardNpcAccess, target: Player) {
+    internal fun combatTick(access: StandardNpcAccess, target: Player) {
         if (!fighting(access.npc)) return
         if (bloodMagic.tick(paused = specialRunning)) {
             deps.bossDeps.runAbility(access.npc, target, ZebakBoss.BLOOD_CAST)
@@ -347,7 +343,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         if (seq == null) npc.resetAnim() else npc.anim(seq)
     }
 
-    private fun zebakHit(boss: Npc, hit: Hit) {
+    internal fun zebakHit(boss: Npc, hit: Hit) {
         if (stage != ToaStage.STARTED || boss !== zebak) return
         holdDefenceFloor(boss)
         if (hit.damage > 0) {
@@ -404,25 +400,6 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         boss.hitpoints = min(boss.hitpoints, (boss.baseHitpointsLvl * ENRAGE_THRESHOLD).toInt())
         updateBars()
         return null
-    }
-
-    internal fun spawn(type: String, tile: CoordGrid, facing: Direction? = null): Npc {
-        val npc = Npc(type, tile)
-        if (facing != null) npc.respawnDir = facing
-        deps.npcRepo.add(npc, Int.MAX_VALUE)
-        adopt(npc)
-        return npc
-    }
-
-    internal fun adopt(npc: Npc) {
-        owners.values.removeIf { it.destroyed }
-        npc.respawns = false
-        owners[npc] = this
-    }
-
-    internal fun despawn(npc: Npc) {
-        owners.remove(npc)
-        if (npc.isSlotAssigned) deps.npcRepo.del(npc, Int.MAX_VALUE)
     }
 
     private fun addLoc(type: String, static: CoordGrid) {
@@ -491,78 +468,5 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val ENRAGE_THRESHOLD = 0.25
         private const val MAX_DEFENCE_DRAIN = 20
         private const val NOT_STARTED = "The fight hasn't started."
-
-        private val owners = HashMap<Npc, ZebakEncounter>()
-
-        internal fun roomOf(npc: Npc): ZebakEncounter? {
-            val room = owners[npc] ?: return null
-            if (room.destroyed) {
-                owners.remove(npc)
-                return null
-            }
-            return room
-        }
-
-        internal fun roomOf(player: Player): ZebakEncounter? =
-            player.currentRaid?.encounterOf(player) as? ZebakEncounter
-
-        internal fun onZebakHit(npc: Npc, hit: Hit) {
-            roomOf(npc)?.zebakHit(npc, hit)
-        }
-
-        internal fun onZebakDeath(npc: Npc) {
-            val room = roomOf(npc) ?: return
-            if (npc === room.zebak) room.complete()
-        }
-
-        internal fun onCombatTick(access: StandardNpcAccess, target: Player) {
-            roomOf(access.npc)?.combatTick(access, target)
-        }
-
-        internal fun onCloudTick(npc: Npc) {
-            roomOf(npc)?.bloodMagic?.cloudTick(npc)
-        }
-
-        internal fun onCloudDeath(npc: Npc) {
-            roomOf(npc)?.bloodMagic?.removeCloud(npc)
-        }
-
-        internal fun onJugMoved(player: Player, jug: Npc, push: Boolean) {
-            roomOf(jug)?.jugs?.move(player, jug, push)
-        }
-
-        internal fun onJugBroken(jug: Npc) {
-            roomOf(jug)?.jugs?.hit(jug)
-        }
-
-        internal fun onJugAttack(player: Player, jug: Npc) {
-            roomOf(jug)?.jugs?.attacking(player, jug)
-        }
-
-        internal fun onJugTick(jug: Npc) {
-            roomOf(jug)?.jugs?.tick(jug)
-        }
-
-        internal fun onBoulderDeath(boulder: Npc) {
-            roomOf(boulder)?.boulders?.remove(boulder)
-        }
-
-        internal fun onWaveTick(wave: Npc) {
-            roomOf(wave)?.waves?.tick(wave)
-        }
-
-        internal fun onCrocTick(croc: Npc) {
-            roomOf(croc)?.water?.crocodileTick(croc)
-        }
-
-        internal fun onCrocCombatTick(croc: Npc, target: Player): Boolean =
-            roomOf(croc)?.water?.mayBite(target) ?: false
-
-        internal fun onClimbRock(player: Player, rock: CoordGrid, angleId: Int) {
-            roomOf(player)?.water?.climbOut(player, rock, angleId)
-        }
-
-        internal fun isSwimming(player: Player): Boolean =
-            roomOf(player)?.water?.isSwimming(player) == true
     }
 }
