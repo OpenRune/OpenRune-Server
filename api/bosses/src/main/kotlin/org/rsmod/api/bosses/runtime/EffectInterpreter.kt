@@ -376,12 +376,8 @@ class EffectInterpreter internal constructor(
             if (damage > 0) {
                 hit.spotanim?.let { t.spotanim(it, delay = hit.spotanimDelay ?: 0, height = hit.spotanimHeight) }
             }
-            if (hit.hazard) {
-                t.queueHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier)
-                continue
-            }
             if (hit.resolveOnImpact) {
-                t.queueCombatRetaliate(npc, delay)
+                if (!hit.hazard) t.queueCombatRetaliate(npc, delay)
                 t.queueImpactHit(
                     npc,
                     delay,
@@ -402,6 +398,10 @@ class EffectInterpreter internal constructor(
                 val type = hit.type.toEngine()
                 val queued = t.queueHit(npc, delay, type, damage, deps.playerHitModifier, penetration = hit.penetration)
                 scheduleLanding(access, hit, t, damage, queued.damage, delay, clientDelay = 0)
+                continue
+            }
+            if (hit.hazard) {
+                t.queueHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier)
                 continue
             }
             val landed =
@@ -566,7 +566,7 @@ class EffectInterpreter internal constructor(
             }
             val praying = encounter.evaluate(Condition.TargetPraying(hit.type), t)
             deps.playerHitModifier.modify(this, t)
-            t.combatPlayDefendAnim()
+            if (!hit.hazard) t.combatPlayDefendAnim()
             if (hit.spotanimUnlessPraying && !praying) {
                 hit.spotanim?.let { t.spotanim(it, height = hit.spotanimHeight) }
             }
