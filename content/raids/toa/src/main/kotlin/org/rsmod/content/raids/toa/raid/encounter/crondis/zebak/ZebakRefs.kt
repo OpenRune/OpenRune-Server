@@ -19,6 +19,11 @@ internal object ZebakNpcs {
 
 internal object ZebakObjs {
     const val FANG = "obj.toa_zebak_fang"
+    const val BOOK = "obj.toa_book_zebak"
+}
+
+internal object ZebakVarbits {
+    const val BOOK_OWNED = "varbit.toa_book_zebak"
 }
 
 internal object ZebakLocs {
