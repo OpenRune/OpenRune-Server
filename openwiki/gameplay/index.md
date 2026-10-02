@@ -1,0 +1,6 @@
+# Files
+
+- [Combat system](combat.md) - How player-vs-NPC, NPC-vs-player and PvP combat is structured across the api/combat modules — attack resolution, accuracy and max-hit formulas, the attack manager, specialised weapons, special attacks, combat spells and queued hits — and how content extends it.
+- [Drop tables and instances](drops-and-instances.md) - How NPC and loc loot is defined (TOML tables and @RegisterDropTable Kotlin DSL), loaded by DropTableRegistry, selected per NPC and area, and rolled on kill; and how the instance system allocates private region copies for bosses with settings rows, InstanceScript, and an Active/Grace/Reclaim lifecycle.
+- [Inventories, vars and player state](inventories-and-player-state.md) - How content mutates inventories through atomic objtx transactions (invAdd/invDel/invTransfer), how virtual item storage hooks redirect items, how player state should be stored in varps/varbits via property delegates (attrs as last resort), and how stats xp modifiers and shops build on these.
+- [NPC AI, hunting and bosses](npc-ai-and-bosses.md) - How NPCs behave each tick (hunt, modes, AI timers and queues), what controllers are, and how bosses are built with the declarative boss DSL in api/bosses — BossSpec, phases, abilities, the combat tick loop, encounters, registration — plus the boss HP bar.

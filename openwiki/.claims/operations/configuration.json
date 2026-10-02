@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:7b0c73ce579f99f62288d71ad4934feab595549a77fd83865c3f27794c811389",
+  "claims": [
+    {
+      "id": "claim_07b4e3c337ab43b895d25cc7de4c3f3c",
+      "statement": "ServerConfigModule provides ServerConfig by loading ./game.yml through ServerConfigLoader.loadOrCreate, which writes a default config when the file is missing.",
+      "evidence": [
+        {
+          "resource": "repo://api/server-config/src/main/kotlin/org/rsmod/api/server/config/ServerConfigLoader.kt",
+          "version": "repo-file-v1:sha256:28f9a0925c53ab4e4ebd22412d7e6f5ffe4cf7e09735aeae465dc5b76ae91773"
+        },
+        {
+          "resource": "repo://api/server-config/src/main/kotlin/org/rsmod/api/server/config/ServerConfigModule.kt",
+          "version": "repo-file-v1:sha256:2c8fcf41155c2a9fce004287eee46ad95b00aff7dd4feb801d187d4432395339"
+        }
+      ]
+    },
+    {
+      "id": "claim_315bf63abbcd4383977cc7d0c27ea21c",
+      "statement": "ServerConfig contains name, game port, revision, environment, world, gameplay settings (drop-rate multiplier, quest requirement mode), optional game database and central settings, and logging toggles, ignoring unknown keys.",
+      "evidence": [
+        {
+          "resource": "repo://api/server-config/src/main/kotlin/org/rsmod/api/server/config/ServerConfig.kt",
+          "version": "repo-file-v1:sha256:bce531adcfc70cc7e8dd397465dcc2ebeead00233e9a3f595be42febf86c8f07"
+        }
+      ]
+    },
+    {
+      "id": "claim_3b0fef06028c49cd88c8e1a3c0abdbc8",
+      "statement": "Loading game.yml fails when central.same-instance is true but the central.postgres block is missing.",
+      "evidence": [
+        {
+          "resource": "repo://api/server-config/src/main/kotlin/org/rsmod/api/server/config/SameInstanceCentralConfigValidation.kt",
+          "version": "repo-file-v1:sha256:dae5c0cb86bf24e2bc5d0a04e5a396208d6c209e71af9f67b0dbad401daa214d"
+        }
+      ]
+    },
+    {
+      "id": "claim_3937e45ecc514084993875bb0810409c",
+      "statement": "generateRsa only runs when .data/game.key or .data/client.key is missing, and the logback setup tasks copy the novice or advanced logback config without overwriting an existing logback.xml.",
+      "evidence": [
+        {
+          "resource": "repo://build.gradle.kts#L84-L118",
+          "version": "repo-lines-v1:sha256:bd3d331a0e6117950aac6159f4c68225aea6cccdc6da7393b6c50b4df4517af7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzOGE5YjFkZmI5YjIzYmNiNWZhNmZiYjNmY2Y0MWU5YWY4Y2NiMGZkNDdlZGY2YzYzMjAzOTA3MjcwZDFkZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNDRhYmE1MTI0Y2VmNDViMmI5MTFjOTM4YzIyNzgyNTBlNGNkZTIyYTFhMDFjMzQwZmVlODk1Y2UzOGFjZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY4M2VmNTFjYmIyNTU5MzJhMjI1OTAzOGZhMTYxZjJhMDliZmMxMzRlYzI2MTZmMWYyOGRkMjA3M2M1ODU1MDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1MmJlOGYyNmYzNjQzNjBmNDFmZTg4NWY0Mzc5ZTA5MWExYTI1MGQ5Yzg5MTMwNzJmYzYwN2M2NzIwYTdkMzgifQ"
+        },
+        {
+          "resource": "repo://server/install/src/main/kotlin/org/rsmod/server/install/GameServerLogbackCopy.kt",
+          "version": "repo-file-v1:sha256:73ea53167c4375f535b2b60e9ef600309154059ba405dcee56916d490e354c84"
+        }
+      ]
+    },
+    {
+      "id": "claim_f24ba5aa14c74798981ee4e0bcc985c9",
+      "statement": "CI generates cache and gameval sources before compiling, runs assemble and test, then boots the server and fails unless it logs 'Server ready in' within the timeout.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/ci.yml#L50-L95",
+          "version": "repo-lines-v1:sha256:95ad8353ffaf7526b3d65843f43915d872187f0c71af48ae6ac2cc75602b909f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiOTcxM2JiNjQ2NjBiODI2MWFkN2NjYzNkM2ZkNjUyMDdkMGFiNWFlN2Q3ZGVmMTkzNDE3YzgzNGJlMGY5M2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1NTBmZjViMGJjOTM5YmYwNDcxYzllZTRhOGJhZmVjNDQ3OTc5YmU1Y2I1MDVjYTU0M2FlMjg1N2RhOGRkZDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4OTRmOTE5MTE5ZDUzNWQ3ZGQ1NDRmY2E5NjgxYmIwZWI0NjM5NzU4MGQyMWJmNDdkZGI2NmJlYjhiYjRhOTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6435a78077394c508344f73a6ff02a6c",
+      "statement": "The release workflow builds the cache, merges plugin gamevals, builds the shadow jar and bundles server.jar, game.yml and .data into a release zip, creating GitHub releases on pushes to production or when requested manually.",
+      "evidence": [
+        {
+          "resource": "repo://docs/RELEASE_CI.md#L1-L30",
+          "version": "repo-lines-v1:sha256:0044ef202e95d1470a2294409ff98d6040870d1d4401d4c6a6d8cf5734eb94b7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NmYxMjZiM2M0MzEyZWI4MGEwMzJjZGQyZTM0OTFhMDY0OTI1NTQ1ODU1OWI2ZjAwNWZmMjUyMTBjMmU4YzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1OWIwZWQzNzM5ZGUxYzllZTU2MmMzMDk4NzEzNTVkNmUyNzE2YjdmMGNjYWYxY2JkMTJjMmUxMTY3MjBhZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg5NjgyYzhiZDRhOTc5ZjEyZmRjZmQxMjY0NjJhMjhkZWY3ZTI4ZmI0ODcyMjFhNDA1MDIzMzg4MjA1ZjBhODYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_42be4920aafe49f99b8a592ec5682b50",
+      "statement": "PROGRESS.md and the README progress block are generated by tools/progress/content-progress.mjs, whose --check mode exits non-zero when outputs are stale.",
+      "evidence": [
+        {
+          "resource": "repo://tools/progress/content-progress.mjs#L1-L25",
+          "version": "repo-lines-v1:sha256:78d4a9b8cb8f0e63aa7eba1f69d9873d0008390dc83e1b4a9e4ae4def5849000:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxODdkZGUzNTQ2Njk1YTk0MzIyN2FiMjJiNmIwMzYwOTQ4YTA2YTg1ZmVjMjYxZmQ1NDRmNzBmNWQxODU5MmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3NTRlZmI4NDk5NjA0ZTliZWY2ZTkwNTM4MDdkMTQ0MmQ2MzA2YmViYWYyNjkxMjljNTg5Y2RmZTI3ZjFhYjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhYjc5MGMwNzlmZTcwZDYzZjA4YzVjODIwNjYwOGVkYThhNTI5OGM5OTY5NWMzYTYxZTAxMTNjYWY4YzU2OTMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

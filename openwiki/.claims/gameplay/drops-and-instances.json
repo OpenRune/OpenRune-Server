@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:19df382645c65909b0b765e3ad644136032583ed55833a4fc0cbe9f94321157f",
+  "claims": [
+    {
+      "id": "claim_66a8d628f85641818e64b7d247c42308",
+      "statement": "DropTableRegistry loads TOML drop tables from the shared classpath scan before registering @RegisterDropTable annotated Kotlin fields, and logs counts and durations for both.",
+      "evidence": [
+        {
+          "resource": "repo://api/drop-table-plugin/src/main/kotlin/org/rsmod/api/droptable/DropTableRegistry.kt#L24-L41",
+          "version": "repo-lines-v1:sha256:d501e6ec272ece0cd2a395f7c7391e3e36506143fcd952feabb7fd85f04c0cf8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4NmM4NjQyYWYxMGNkNjQ4ZGNjNGI0NmE0Y2M1MDU1NTdlNDg4YzFjMjg3YzA2YWI2YzNkMzIyZjliNGNhMjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5MTNkYmRhYzE0ZTk0Mjg5MWNkZmZiOGM5N2Y4ZGI0NmQ2ZDdhMmVkMDljZjEyMzNjYjI2NjEzNjg2YTQ2NmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNjNjU0NTViMGM4ZmEyNmI1NDg2MWI2NmExZGM0ZGE1ZGQ2MjNmNmFmMjAyYjU2YTQyOTNiODg5ZTZmNDZjN2IifQ"
+        },
+        {
+          "resource": "repo://api/drop-table-plugin/src/main/kotlin/org/rsmod/api/droptable/DropTableRegistry.kt#L80-L135",
+          "version": "repo-lines-v1:sha256:38acc71c119ac592de3124fa0e4ea4fd098384a4137364400307243194c3a3d3:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzYzljNjRkNWU4Yzc5Y2RjODAzNGQ2NTE5ZDlhMjg2NGFjNmE5ZWM2MGU1NTg5OTk5ODhiNTI4NDNiMjEwYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwMzYzZWQ1MTdkZmU4NzUwMDI2ODg5NTU4Nzg2YTg2MjgyYjg4ODg0Y2Y5NDA5ODQzNDU0ZGRiM2Q0MjVjY2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzYzJhMTc0ZWVlMzM5MjlhZTA5MzVjNzE5YTIzZWMxODJmMTViZmFhNDQ0NmNhNzY5ZTQyOTllMmIyMzVhYTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ffeb899c54954c90b818161f2010de4c",
+      "statement": "When several drop tables target the same NPC, forNpc selects the single table whose areas contain the NPC, falls back to an area-less table when none match, and throws when more than one area matches.",
+      "evidence": [
+        {
+          "resource": "repo://api/drop-table-plugin/src/main/kotlin/org/rsmod/api/droptable/DropTableRegistry.kt#L43-L72",
+          "version": "repo-lines-v1:sha256:025775c4db15b98ebc87c4a54b0786d5422fba5f871f15932239060f07de9365:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwOGZmMDMxYmQwYzQyNjFkODUxMDQ4MWNjZDAyZDc1MDIxYzFiZmE4Zjg4MWU5OTZhOTdkNTg5NzYxMzk2YTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NTRlYmJmZDhlZmVhNGQ0OWVjNWM3YTM4Yjg3MTYwNWNlNGYzMGM5NTY3NmQ2ZTU5MTBmYzQ4ZjUwMzQ1MTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYwNGFjYjU5ZjAzNzMwMzZmMTU0YTk0ZDUwMDE3ZTk2ZjA3ZjAwOTJjYjU0NmU4OWM4ZmQ0NWIxZWY1ZDRkOTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_42799180440f4c20ad8c7d2476ad119f",
+      "statement": "The shared plugin classpath scan accepts the drops/tables resource root so TOML drop tables are discovered alongside plugin classes.",
+      "evidence": [
+        {
+          "resource": "repo://engine/plugin/src/main/kotlin/org/rsmod/plugin/scan/PluginClasspathScan.kt",
+          "version": "repo-file-v1:sha256:c4e4c87030f2bc54785e2b372b544297b7d0c32b5585d1a21914bc110adaa0fc"
+        }
+      ]
+    },
+    {
+      "id": "claim_591b89803bbd4ff5b2bea7aece2a849e",
+      "statement": "NpcDropTableKillHook rolls the NPC's drop table for the killer on death, applies conditions, kill conditions and transforms, grants collection log entries, lets NpcDeathDropHooks consume drops, and otherwise spawns ground items and loot tracker entries, recursing into bonus drops.",
+      "evidence": [
+        {
+          "resource": "repo://content/drops/src/main/kotlin/org/rsmod/content/drops/NpcDropTableKillHook.kt",
+          "version": "repo-file-v1:sha256:95a494f20e68033fb4b1e958588cf1e4b2867beb9deb47717010060e21f9e79d"
+        }
+      ]
+    },
+    {
+      "id": "claim_b4f7b4fffc8e4dccb8c59df93be474d1",
+      "statement": "InstanceManager tracks instance sessions, NPC-to-instance mapping and damage contributions, and handles create, join, leave, logout, death, boss kills and periodic reclaim of empty instances.",
+      "evidence": [
+        {
+          "resource": "repo://api/instances/src/main/kotlin/org/rsmod/api/instances/InstanceManager.kt#L72-L530",
+          "version": "repo-lines-v1:sha256:e3314de4d3e13465f0ab1b0ebff0c793b8131893683be6cff895231e49e131eb:eyJzZWxlY3RlZExpbmVDb3VudCI6NDU5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlYzhlZjFjZTBjMzIwZGNjNjNkMDY3NzY1NDFkNDM0NGVlM2UxODQ1ZGRjOWNmOWFlM2QxNGIyOTQzOWY5ZmRkIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI3ZWI3MDI1NzU5M2RhMDZmNjgyYTNkZGRhNTRhOWQyNjBkNGZjNTE0ZjY0NTIzN2Y1Y2E3NGIwOGY4ZGE2MWE2IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxOGUxZTg2MTc3ODFiZjBjYTM1MjU3NWY2ZGZhYWVjMTQwMmE2ZTVmMDBmNzYxMzEyYzUyZDdjMDUyOTVlNGU3IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIwYzM4NDIxNWNkZjRiNGZjNjRjMzUzODQwYzdiM2JhMThiYjRlYzlhZWY2YjI1ZWUyN2Q4NGQ1ZDQxYmMwZDc4In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_a9590861a7cd49b886cf9f1617d578a1",
+      "statement": "Instanced bosses are defined by an InstanceSettingsTable row plus an InstanceScript subclass that supplies the settings row and the instance area with NPC spawns.",
+      "evidence": [
+        {
+          "resource": "repo://api/instances/src/main/kotlin/org/rsmod/api/instances/InstanceScript.kt",
+          "version": "repo-file-v1:sha256:cd50a7defeadc807b6e812390d166a36a9d677025f170f1a7c8380c6648e1da7"
+        },
+        {
+          "resource": "repo://docs/instances.md#L36-L140",
+          "version": "repo-lines-v1:sha256:b53729216fcea96b1b54a8837c2bba75d1558473a0a2138c6ca002845a444f16:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlODc3MTNiM2ZiODkwNDI3ZWExNDllZTNlNTg3NDlmZjhhMzgxN2Y0ODExODQwYmY5OGE2MjMyNDhjYzk0ZmM0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1MmNkOWJmNGQ5NDRhODI0NDZiNTI5MDZhM2M5M2EzMTJmMzJjYTBjOWJkMjQ2YjRkYjQxMDM2OTE4ZDc5M2FkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4YThmMTgwOWEzMTJhOGI3NWVjZTZkMWY5ZmJiZTEwNjA0NGVhYzRmODEwMjhiZjZiNDQwNjI2YmNjMTAwMTU4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI4M2UwZGVmODc1NTAwYTRjZGQyZmYxOWZmODcxOGVmNzIwZTFmN2IxNDlhMTQ0YjZiYjFkN2QyNDE2YmZlMzg3In0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

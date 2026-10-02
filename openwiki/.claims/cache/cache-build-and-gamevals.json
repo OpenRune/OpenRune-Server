@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:148db9f54b4de49ba407c56e5351e0575999660766b099c5d9905ba4ea037b36",
+  "claims": [
+    {
+      "id": "claim_3b6d0165667c4b8d9db95105a284ff6c",
+      "statement": "The or-cache module registers buildCache, freshCache, cleanCs2 and mergePluginGamevals tasks; the first three run dev.openrune.CacheToolsKt with BUILD, FRESH_INSTALL and CLEAN_CS2 and the last runs PluginGamevalMergerKt from the repository root.",
+      "evidence": [
+        {
+          "resource": "repo://or-cache/build.gradle.kts#L38-L74",
+          "version": "repo-lines-v1:sha256:7db61283874655bba3870427b1d5468d79b03f6ce04bc737fd4e5d256967161e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkYjRjYTA0NmI1YjVmM2I4YWExNzhkZWZkNzZlNzY3OTYwMmQzYjI1ZjE4NDU1NWY0NWUxMmNiZjYwNzllOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlMjBjNDcxMmZjNDhhNWI3ZmY4ZGRiNGZkMTBhYTg0MTEzMTY2ZjY5MWQ3Njk1MjRmNDE1ZjQ3Yjc2ZDkyMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFlYTUyZDI3MjMwYjg5Y2ExYjczMjg2NmFmYmUxMzdhOThlNjUxMDAwNDlhNTZiMzI5M2RlZjhkNWZlN2RkYTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4a546606a0304dd4a1befa1fc6e9c4a6",
+      "statement": "Only content subprojects whose name ends in -pack are on the cache build classpath, so building the cache does not compile plugin game scripts.",
+      "evidence": [
+        {
+          "resource": "repo://or-cache/build.gradle.kts#L32-L36",
+          "version": "repo-lines-v1:sha256:d0eeb4080fe1d9f68449f64277aa04dfe2a55064183f5bd572d19dd2872e8e39:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWMzY2Y0ZDI5ZDMzYzE0ZGQ2YzA1N2Q4MDlmNjVhY2MzMjkwMTVhMTI2NDVkMzYxNzdkMzAxNGViNWYyZGQ4NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBiNDIxOTQ0MGQ5YWVmNzEwYTgyYjcyOTk5NDk5YzI5NDBmYTI3NjVhMDNlNDc2MmE3YzAzNDIyMTkwNThjMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjZkMGI0MjZiNjE1YjgzN2M5YjM2MmRmZjA2MzY0YTFkNmE2Y2E5OWVkZGQwNjBiZDVkYzRiN2IzNGJhNzhlNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjIzYTQwODA1ZDY3MDFiZWNhZWJkNGFhYjVmMmQ5ZTNiNDk3NTQ3M2NmNWQ0NDAxZWQ5YzY2OWI0YzNkY2MzZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e99554cf0044484bba35f7561ab2f1e8",
+      "statement": "A fresh install downloads the revision into the LIVE and SERVER caches, clears incremental state, dumps gamevals, and then runs a forced BUILD.",
+      "evidence": [
+        {
+          "resource": "repo://or-cache/src/main/kotlin/dev/openrune/CacheTools.kt",
+          "version": "repo-file-v1:sha256:f8341e336de0006f1f46fd1729cb5b31eb4acaa560308b7de07e02e60d7b20c9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2261216ea3574da29e902503a622f6ed",
+      "statement": "buildCache discovers PluginPack subclasses, builds pack tasks (configs, models, sprites, interfaces, CS2, db tables, world map) for the LIVE cache, and for BUILD also builds the SERVER cache from the server-relevant subset plus server configs and map packers before finalizing code generation.",
+      "evidence": [
+        {
+          "resource": "repo://or-cache/src/main/kotlin/dev/openrune/CacheTools.kt",
+          "version": "repo-file-v1:sha256:f8341e336de0006f1f46fd1729cb5b31eb4acaa560308b7de07e02e60d7b20c9"
+        },
+        {
+          "resource": "repo://or-cache/src/main/kotlin/dev/openrune/pack/PluginPacks.kt#L52-L80",
+          "version": "repo-lines-v1:sha256:12527733e483f1b89077067fbe03bea8d03616b01cfbec2737f81f4552ae0043:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxZjY5YWZkZjI5YTVkYzU3NTVhMTAxMWYyNjVmMDRhMWI5YzE5OTJjYjgxYzhhYjExMzUwZGEwYTg2YzY0ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwMTVlNDQ2YzJmY2NiYjNhNTFkYmI3MGI5YTM4MjllYjgyOWFmNzM5MWVkMzc1MGNhZDU4ODI2NDY3ODkwNjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0MTY0ZTc0NTJmNDBhZDNjZTVjMzE1ZWU1N2Y1MzcyNGRkMjZmODk1N2YyNDhmNjlmY2M3ZDU4N2Y0MmI2YTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_70e08334c0c4451284f7ff6a04811918",
+      "statement": "PluginPack resource directories (configs, models, sprites, cs2, interfaces) are discovered by convention under src/main/resources/pack of the pack module or its parent, with overridable hooks for db tables, DSL interfaces and extra tasks.",
+      "evidence": [
+        {
+          "resource": "repo://or-cache/src/main/kotlin/dev/openrune/pack/PluginPack.kt",
+          "version": "repo-file-v1:sha256:6f165054307e75fe5400af8966b6474ac3c77d889843a675a4a8c12a6694487b"
+        }
+      ]
+    },
+    {
+      "id": "claim_60995316776e44f0a810f4f53492d431",
+      "statement": "PluginGamevalMerger walks content/ for gamevals.toml files, rejects unknown table names, and only appends keys that are not already present in the matching .data/gamevals/<table>.rscm file.",
+      "evidence": [
+        {
+          "resource": "repo://or-cache/src/main/kotlin/dev/openrune/gamevals/PluginGamevalMerger.kt",
+          "version": "repo-file-v1:sha256:c5435280cde9c8ca9321021bd08da87e84065ef2b3fd181373608e6b009c31a8"
+        }
+      ]
+    },
+    {
+      "id": "claim_ca6573fbd2e9479a9d95f729e51d00bf",
+      "statement": "ServerCacheManager.init loads gamevals, the SERVER cache and the LIVE cache JS5 provider, then decodes all type tables into read-only maps used by static lookup functions.",
+      "evidence": [
+        {
+          "resource": "repo://or-cache/src/main/kotlin/dev/openrune/ServerCacheManager.kt#L120-L183",
+          "version": "repo-lines-v1:sha256:7b343f65e5d1eda843b0a0407e913650409f40bc16bc02bb2c9b9b85a17b226f:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwMWYxYmFkZjE0MjNmY2E2MmRmMDE3MTY5N2MyOGUxZWNlYWU2NDUwYjI2ZWI2YzE0ZGMxY2I5NTViMzViZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5Mzc5OGY1YjEzOTVjZDVmNmQ3YWM5NmMwNjlmNjdhMTRiN2U4OTcyYzU2MTE4ODM5ZmRiZTk3MzdlODM5MDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA4OGI3ZDI2NjY1NjBhMzc0NzFiODc4ZmVkMzllMTMyNTcxY2RmOTE1YjY0YjkwN2Q0NGUzOGMxMjIzMjVhN2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0Zjk4ODJjMTEwODFkMTlhYjM4NzFhY2JjZDliMmNlNTZhMmE5N2FlZGE2MGE3NzMyNDVkNDU0YTE3ZjNkZGIifQ"
+        },
+        {
+          "resource": "repo://or-cache/src/main/kotlin/dev/openrune/ServerCacheManager.kt#L242-L320",
+          "version": "repo-lines-v1:sha256:0da1fb100528925e51982b8e44ff55dea25f7a217240e5a7b695f53fff0a9d26:eyJzZWxlY3RlZExpbmVDb3VudCI6NzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhMTRlMDkzMjE4ODdiNmViYjQ4NzEwYjc5ZjZhZTM0YTZlNDFiMjA3ZDdhMjJkZGE4ZWE3ZDhjYjdlZjE4ZGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkN2NkN2ZiY2YxMTA4MTcxNWM5NzFkYTQwYmQ5MjlmNjhiYzU4NGRlOWE0OTFhMjlhODA0M2QwNjE2ZTQ3Y2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2NTc5ODNkYmY0NWViNzdmNGJkMTc3MzM2YWM1YWRiZTE1N2FiM2JkM2NkNDk1YTQwNGNjOGQ0ZTI1OGFjZDMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

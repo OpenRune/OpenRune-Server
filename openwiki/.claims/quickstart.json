@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:2728d7e120349fb0694074a4591c24d598d22f0f95ff56da00b377cc3214bb94",
+  "claims": [
+    {
+      "id": "claim_bc6ef82e4411465b8180acfec2144265",
+      "statement": "The root run task delegates to :server:app:run and the install task depends on :or-cache:freshCache.",
+      "evidence": [
+        {
+          "resource": "repo://build.gradle.kts#L16-L68",
+          "version": "repo-lines-v1:sha256:4db2f6549f89225432213208cd14ecc592e9be5b1985660da6231a4d54fb703e:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkY2EzZGM1MjI5OWFkMjIxZWI1NWY5MWVmM2ViZDJlMGM5Mzg0MmE0MDEwODAzZjA2MzI1ZGY0YWYyNmJlNWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkYTgzMTU3ZDZiNjk1NGFlYzUwN2QxY2YyZWZlNjljMzNhNzI5NzhkMzYwOGUwYzk5NDBlZmRlNjQ3ZmQwZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcwOTJjNDI2ZmI4N2M0ODA5NmFhN2RkMGI4OGIzM2RkZTkxYTNlMjAzMGRhOTU5NjVjOGMwMjJjYmUzNWI3YWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_40caa5b0161f4a829729eb957088d1fe",
+      "statement": "A successful server boot logs 'Server ready in' followed by the total time and per-phase breakdown.",
+      "evidence": [
+        {
+          "resource": "repo://server/app/src/main/kotlin/org/rsmod/server/app/GameServer.kt#L226-L228",
+          "version": "repo-lines-v1:sha256:099193b5531187772fe29c40f8a0817e98977fedc4ba7b5f452023bc83b087f0:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjk4YTc0NDBhNmQ3Y2M3NDZiMjI1NTZlMTI5OWVmNWY5MDEzY2UzMDI0NDRmNmVjZjBhZWE5MGM3MjEyNzBiOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODllYWI3ZjIxZjRmOGMwMTQ0NmUxZWE0ZjFkNjhkMjUzYzcxZDZhYmUxY2U2NDc4MGM4NzNiMjY5OTk2YzE0YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmU0NzY5MzM2NWJlYjk2NjFlZjkxYTE0YzAzN2Y5OWRlNjMzNWViMmEzMWE4YmNhMmNhYjlhNmQyMWZmNzEyMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGFmMTFlOTBiMmYzZWQ2MGNlOTk4ODgxZjEzOThiNTFjY2MyZWZlZmI3NDY5Y2YyNDhhOWNiYjllYzU5Njg1MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_cbb217df4d764f64a5cdd095a3e44afb",
+      "statement": "The example game config targets revision 241 and enables the same-instance central server.",
+      "evidence": [
+        {
+          "resource": "repo://game.example.yml#L1-L26",
+          "version": "repo-lines-v1:sha256:f55b3980256efebb98b26f1393822acdb0f1626695359e41857691f4b0bba144:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwNGRjZjU2NjNjNDg0ZGQ4ZGI3MjgzZjZlYjdmNDE5ZWMwYmE0MDJiZmNiOGRjZDVjMGIxYTIzMGZjZmQ3NWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjNjlkY2U0MmU3NDQxYWIzM2RkOWYyMzFlZDk0YWIwMGJjOTMxZmMyOTQ5NDQ5YmMxYjQzNjgwZmU2ZjBlYzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzMmNiYmJhYjYyN2NjMDJkNDk2Y2Y4YzAxNDQ0MTM5YTRkNWEzYmRlYmRjNWRhMDk3M2M0NWVkZmFkYzY5YWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_29f4eb40243e4807819767aadaf977a6",
+      "statement": "The spawn menu interface is defined by an .if3 resource in the spawn pack module rather than a Kotlin interface DSL file.",
+      "evidence": [
+        {
+          "resource": "repo://content/other/spawn/pack/src/main/resources/pack/interfaces/spawn_menu.if3#L1-L5",
+          "version": "repo-lines-v1:sha256:57f550ca256b7f99337c5d019ed0db61e5ba79fa74f4719086a20efc8cb5dcc2:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzU0OTQ4NmNhZWYzNmZjNmUxN2NmMGU2YWZlN2JlMWUzMzg5MWUxYjc4ZGRlYWU1NDBhYmNlMjVmNTlmNDA4NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzYzNGU0Zjk0MWFhMDFlNjIwZWY2OWNjNzVlZWI1ZmY2MGMzYjhmODJmYTNiODE2MDRiZGMyMmJkNGU2Njg0NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGI5OGVhMTQ4MTE1YjhiNTU3NmQ2ZGYzNThjN2E3OWE2NDVmNWUzNWU3NmU5YjY0YTQ2ZDY1Yzg1NDE5OWQ5YSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f991e38080324e4dade4847ef84d53b4",
+      "statement": "The project includes api, content, engine, server, or-cache, example-plugin and tools subprojects in its Gradle settings.",
+      "evidence": [
+        {
+          "resource": "repo://settings.gradle.kts#L29-L43",
+          "version": "repo-lines-v1:sha256:eb58a25ae787a8c3842b89d376ca736871cea2b3255db8196df6c951c5b7642b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4Njk2ZDM1Mzg1YzQ1NWM3YjM2NjdmYjZiNGI3OTQ0M2NlNWUxZjRiZjkzYmJhN2VmOTZkYjIxMzQ1OTk1NGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwZTczYTYwYjhiZThlMmJiYWY5MzE2MTM1OWQ0MzNjZmJhNTg4NTRiMTgwMDc2NTlkNDc5MDU2ODMzMTU5YzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5YjAyMjAwNzkxODdkZmIyNmExY2UxOGVjYzBiMTIzMTM1MzJmN2E1MTc5ZjY5YmFjOGNhMzY5YjNlY2VmODMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1NTRlYmEwNTUyZGM0MTZmNDkyMmVmOGY4ZDliODEzZTBlNTYyNjhlYTY2ZjVhNmQzNjc4NDExYWFiMGRjMGIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "pages": {
+    "/openwiki/architecture/boot-sequence.md": {
+      "pageVersion": "sha256:6992e350db081c8e69196ffe2f095a4b8e29c7fdeccf5f7f4499fc612aa88786",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/architecture/events-and-coroutines.md": {
+      "pageVersion": "sha256:3f092808b0c870a49a84e74e6c4f234ed57fe014ec94aa80a0b97d775d16c193",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/architecture/game-cycle.md": {
+      "pageVersion": "sha256:8033597ba20d08ebb94f5e76f1b9060867090f4cf2ceae0eaffb6c6f0e124ba4",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/architecture/overview.md": {
+      "pageVersion": "sha256:5180ed4fda9728525d4757d3934218dc1c11a8e919e308ff38ecec9869474a4c",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/cache/cache-build-and-gamevals.md": {
+      "pageVersion": "sha256:148db9f54b4de49ba407c56e5351e0575999660766b099c5d9905ba4ea037b36",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/gameplay/combat.md": {
+      "pageVersion": "sha256:7cd479311ee4f76cd217269db7e0d72e874f42419140758094e1ae264d0c1a0e",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/gameplay/drops-and-instances.md": {
+      "pageVersion": "sha256:19df382645c65909b0b765e3ad644136032583ed55833a4fc0cbe9f94321157f",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/gameplay/inventories-and-player-state.md": {
+      "pageVersion": "sha256:e8ee61ae97718450ac5490721b9315ad6d4bf0c2c224a5aabed220f67069088d",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/gameplay/npc-ai-and-bosses.md": {
+      "pageVersion": "sha256:55c66a3887a9d76b2111c5cc15e65ed40541911d23a68af97dbeda3cab78ed01",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/interfaces/interfaces-and-clientscripts.md": {
+      "pageVersion": "sha256:9c7d200eacf349f3220f10a654ceab128d914ddf91d5252a8d2d89a08b243822",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/networking/protocol-and-central.md": {
+      "pageVersion": "sha256:201acc229402cc1f44718adfe8761039a4c9c97c283759f9d1c3ee39fc3ad8cb",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/operations/configuration.md": {
+      "pageVersion": "sha256:7b0c73ce579f99f62288d71ad4934feab595549a77fd83865c3f27794c811389",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/persistence/accounts-and-database.md": {
+      "pageVersion": "sha256:98cf697fe0ee906c83320460ce19ef636b4e47979b76dc9106ba89df846bd287",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/plugins/external-plugins.md": {
+      "pageVersion": "sha256:ebc72c705b509c558cfdfa4ebcbc39d86c83333b9b0f2bf54eb87485087015c8",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/plugins/plugin-scripts.md": {
+      "pageVersion": "sha256:4bb5fbcdde16c80b95ee77808eb12b3f53a136b4976fe152e9e4059997eaf538",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/quickstart.md": {
+      "pageVersion": "sha256:2728d7e120349fb0694074a4591c24d598d22f0f95ff56da00b377cc3214bb94",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    },
+    "/openwiki/testing/testing.md": {
+      "pageVersion": "sha256:8e9eaf84ab0cd9b227e4df3c50b509f80bf719f195461286b2a42bfe8c058045",
+      "completedBy": "claude-code",
+      "completedRunId": "7a3c725c-2a88-4d19-a866-8381d9fa465b",
+      "gitHead": "e436dda5fd99b06437fee11ad87b9bf9f58da1af",
+      "sourceFingerprint": "sha256:7bd5977e64ca56b65a7bf951fe2c987baccabdda11c8a39232dba2a383cc6a7a"
+    }
+  }
+}

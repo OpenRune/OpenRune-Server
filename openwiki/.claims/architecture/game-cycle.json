@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:8033597ba20d08ebb94f5e76f1b9060867090f4cf2ceae0eaffb6c6f0e124ba4",
+  "claims": [
+    {
+      "id": "claim_a59d4a9ca16241939471f3f1235f9206",
+      "statement": "GameService runs the game cycle on a single daemon thread named `game` every 600 ms, and when a cycle overruns it logs an error and sleeps until the next 600 ms boundary instead of running catch-up ticks.",
+      "evidence": [
+        {
+          "resource": "repo://server/app/src/main/kotlin/org/rsmod/server/app/GameService.kt#L27-L60",
+          "version": "repo-lines-v1:sha256:7c52eee02e36ac58743826fa28bb0c9b19dd66e7165b7db32261530547ac3233:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyMWQzZWY5YWZiMDllMGJhNTQ3ODcwNGRjMjY2NGRkZmM4MTJiODc5ODdlY2ViNDQ5ZDc3N2E5OWQ3YjhhNWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjYjU3YjRjNWNlM2RhNWEzYWU1MTZkNzU0YzNhZGIzOTM2M2Y1MGM4YjgyMzQ2MDdmZjYyMWMxNzRjNWExYjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzYmFhYjJiNjQ5NzAwNzQ1NmU4NGQyNDJhMzhjOGZjZWMyOTkzYjllMGE5NmRkMjk5OGUxOWQ1ZTUwZmM2NWYifQ"
+        },
+        {
+          "resource": "repo://server/app/src/main/kotlin/org/rsmod/server/app/GameService.kt#L85-L89",
+          "version": "repo-lines-v1:sha256:ef49797e21bfeaddf500b2bb724908d6c835e238d4230e0b697697dfae38431c:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGM3MGE2MzdmNWJjNThlMWVmMmVhNjVhMWE0OTkyOGNiMDEwMTA5YTU5NDFmMzY5NjFkMmQ1M2VhYmI2NWM3OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f28759eef2994d339fc9f1ebdc2cc788",
+      "statement": "GameCycle.tick publishes StartCycle, runs world main, npc pre-tick, player shuffle, player input, route requests, npc main, controller main, player main, logout and login processes, ticks the map clock, publishes LateCycle, runs world and player post-tick, then publishes EndCycle.",
+      "evidence": [
+        {
+          "resource": "repo://api/game-process/src/main/kotlin/org/rsmod/api/game/process/GameCycle.kt#L35-L67",
+          "version": "repo-lines-v1:sha256:2d9b301fa2c5ae03403bf292b7862ea0bef5649136c03cf2d4c402c4a649f80e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3OGIwYjZhMzdmYWU4MTA5MzhlN2RkYmRiZjViZDgwOTBhNjdiOTIwNjc2MDc2ZDA2NDkxM2FiMjU3NmI3NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5Yjg0MDg0ZDYwOGU5MjMyMmIzMmFiNTNhZWRmZDk4ZWMzMTgxNWE1MmU5ZGZhYjAyYzM2NGYwMTlkOWEwZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1053b01375374c4f9ce8561e88bfe40e",
+      "statement": "PlayerInputProcess refreshes each player's currentMapClock before reading client packets so delays set by packet handlers use the current cycle as baseline.",
+      "evidence": [
+        {
+          "resource": "repo://api/game-process/src/main/kotlin/org/rsmod/api/game/process/player/PlayerInputProcess.kt#L18-L46",
+          "version": "repo-lines-v1:sha256:ce6723774cb3874418958c561979b5cd91876d21685ff3ae2015877e8a9166a5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyMWY1OTU3ZjBiMGZmOGFiYWIwOGY0ZDk3NzlmOGExYjQzNjEwNTI1MWNjYmUyY2E2ZGI4MzZkZmViMzYyYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRkMzRjZTNiYzA1OGUzYzNlODcxODdjNmVjNmYwYjk3ZjliM2RjM2U5MzNhNzk1MGRlN2NiOGI2YjI4NWY2M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYjZkOTc0YTRjY2I1ZmFjZjA2ZWEwMmI3YTA3ODExMjEwZjYyMjhhZjJhODE3ODBkZGI1MzU0MThlYTMyNGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_551153e9ed9e41908de4d874aa0d8df8",
+      "statement": "PlayerMainProcess advances each player's active coroutine when not delayed, then processes interface closes, queues, timers, areas, engine queues and interactions, and force-disconnects a player whose processing throws an Exception or NotImplementedError.",
+      "evidence": [
+        {
+          "resource": "repo://api/game-process/src/main/kotlin/org/rsmod/api/game/process/player/PlayerMainProcess.kt#L32-L129",
+          "version": "repo-lines-v1:sha256:e90e44c5c5db26a7c7e4960e59c2b08d0f46c8a6d562185df91df0cfc0153451:eyJzZWxlY3RlZExpbmVDb3VudCI6OTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyMDhhZjdkYmU2Yzc2Zjk1YWFjNmIxYTdlZDdhMWNhOGMwNzg5ZjE4MzM2NTM0N2I3NmU3YmU5MmUzZDJhM2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlYTI0MTExMTY5YzdmMjUwNTNjZjI3MGM5ZjQ2Y2RkNjg4N2ZhMDVjMmNmZTM5MTlkNmRjMDRkMGNjOTI4Y2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bac0ac6e40cd465882f497c63da0d675",
+      "statement": "NpcMainProcess runs coroutine resume, reveal, hunt, regen, AI timers, AI queues, queues, timers, modes and interactions per NPC inside tryOrDespawn.",
+      "evidence": [
+        {
+          "resource": "repo://api/game-process/src/main/kotlin/org/rsmod/api/game/process/npc/NpcMainProcess.kt#L30-L47",
+          "version": "repo-lines-v1:sha256:58aeb3476739b5c8be20a69387e6f80cb4514c4ba94608a02439cc08fba42aa7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyMWY1OTU3ZjBiMGZmOGFiYWIwOGY0ZDk3NzlmOGExYjQzNjEwNTI1MWNjYmUyY2E2ZGI4MzZkZmViMzYyYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkzNzkyNWRmMzZmN2RmMTgwODk3MmMyZDUzOTdmOTdmMmYyMDllZTQ1OTNhOWI4OWYwYTY1MGU2YWFmOWMzMTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiNWFlMTJlMGM2YWVkNmI1ZWRlODRkNzMwMDIzOWVjZTI5MWZjZTg0NGUxNTdkNzIxYzI0Y2UyM2NjZWZhNGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_316f89687952454eb7c101ad484df475",
+      "statement": "PlayerPostTickProcess updates protocol info and publishes GameLifecycle.UpdateInfo, sends per-player map/zone/inv/stat/run updates and post-tick hooks, and finishes with the autosave orchestrator.",
+      "evidence": [
+        {
+          "resource": "repo://api/game-process/src/main/kotlin/org/rsmod/api/game/process/player/PlayerPostTickProcess.kt#L148-L150",
+          "version": "repo-lines-v1:sha256:6a9190148a14ca7f3b55b51ba2987edca896622f9f2dc9d353325c0a82be434a:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTEzZTAxMmIyNDM3YzZhZjZlNjZmOTk2NmIxNWY4MTQ0Yjk3Yzc5YmRiNWM0OWE2NmFmZThhYTA5ZGJkYTNlYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2VmYTkzYmZhNGIyMmJlMDIwOWJiZDQ4YzA0ZWE2OTMzOWRkNDg5NTgzNjYyMjZmYmMzYjMxZmYyNmYzYzUzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjU1MzMxNmIxNDIzN2JhZTVjMzI4ZWM1YWJkNGI5ZDE2YTMzNzcyZmMzNTViNTI1MDMzNWIzNThjM2M2Yzc4MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWY1ZjBhMWY2OWEyMTA1M2ExMzAzOGJhOWZkNGY2YTQzZmY0YzQzODg2NzU1ZGFlZWI3NDVkZDdlNGQzYmU1OSJ9"
+        },
+        {
+          "resource": "repo://api/game-process/src/main/kotlin/org/rsmod/api/game/process/player/PlayerPostTickProcess.kt#L34-L80",
+          "version": "repo-lines-v1:sha256:248a3fa56a245a6d2707c464c471e00ac58922e16249179e04f326a71007c65a:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyMWY1OTU3ZjBiMGZmOGFiYWIwOGY0ZDk3NzlmOGExYjQzNjEwNTI1MWNjYmUyY2E2ZGI4MzZkZmViMzYyYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEwNmRlYTcyZWFiNTEwZWZhMTAzM2UzZWNjNmVlM2E5NmJlNzBlNzBmMDFmMjRjZWJkYjlkODk4ZjYwMDU2M2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVjMmQ2MTQ3NzQ2MTc5YjkzMGQ1MzMwNDI4MmVmMDRlMmQ1NmZhM2RhNTZjMjdlODIxZGI5MGNkMzQzMzkwODcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0dfc3a7456db481d89a35ac28f1b157b",
+      "statement": "On shutdown MainGameProcess flags all players pendingShutdown, fast-forwards the DB synchronizer, runs up to 1024 undelayed cycles, and logs players who failed to log out.",
+      "evidence": [
+        {
+          "resource": "repo://api/game-process/src/main/kotlin/org/rsmod/api/game/process/MainGameProcess.kt#L27-L74",
+          "version": "repo-lines-v1:sha256:3de316b2f2a9ac7bc61a49e8626802f34cae2273df9f9d468d56216aa925cfc5:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2YTU3ODgyMjkzZThmMWUyMDQ1NWIxMTZhMWYwZTc2YTYzNzk4Yzk2NDQ2ZjkxYjJiNWNiMTVmNGQxNDc3MzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlYWY5YzIwNGEyOTc1MDg2YmQ4Y2JkZjM4YTFmMDM4NTU2MTljYzUxNTZmNTlhZmZlNzk3MTkyMzIzMzRkYTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

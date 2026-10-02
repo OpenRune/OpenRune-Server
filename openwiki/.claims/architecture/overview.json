@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:5180ed4fda9728525d4757d3934218dc1c11a8e919e308ff38ecec9869474a4c",
+  "claims": [
+    {
+      "id": "claim_bb82cb6ec54f4648a9e4dba0b1789adc",
+      "statement": "settings.gradle.kts recursively includes every directory with a build.gradle.kts under api, content, engine and server as a Gradle project, and renames projects named `pack` to `<parent>-pack` so pack modules get distinct coordinates.",
+      "evidence": [
+        {
+          "resource": "repo://settings.gradle.kts#L40-L75",
+          "version": "repo-lines-v1:sha256:acf2e4486e8e561b90a33483ad07c23f0f9ac4cbba39b01d90ad6d61f48089b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwMzYyOWU3NDQ0MDllZTU1M2Q3NjdjZTk3OGI5YjkwMzA5OWVhNDVlYzJjM2U0ZTMyMmZlNzdmMWRjNzNiYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhNmIxOWQzZGRmYjBmZjJjNTQ1MWExMGI1ZTBiZTYzMzdhNzc2MDcxODlmNDk2OWVkZDJjOGIzNTQxZTQ3NmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b6a689f6a69f42c6a684829b3dc357e3",
+      "statement": "server/shared exposes every content subproject and every non-testing api subproject as api dependencies, which places all plugins on the server runtime classpath without per-module registration.",
+      "evidence": [
+        {
+          "resource": "repo://server/shared/build.gradle.kts",
+          "version": "repo-file-v1:sha256:4d79947d93d2b24243d8514995bc1332d946d94dcb87d8d966a545cece2ef169"
+        }
+      ]
+    },
+    {
+      "id": "claim_d6063a3869544a03acb158055a118bbc",
+      "statement": "base-conventions applies formatter, kotlin, publish and test conventions and adds :or-cache as an implementation dependency to every project except or-cache, engine:map and engine:routefinder.",
+      "evidence": [
+        {
+          "resource": "repo://build-logic/src/main/kotlin/base-conventions.gradle.kts",
+          "version": "repo-file-v1:sha256:619fc73a4e80c4f56347e168195af27e0ea27bdf94c28caecbd733a2ec56e028"
+        }
+      ]
+    },
+    {
+      "id": "claim_4537296ac409483fafce010685e85360",
+      "statement": "api:plugin-commons re-exports the commonly used api and engine modules so content modules can depend on it as a facade.",
+      "evidence": [
+        {
+          "resource": "repo://api/plugin-commons/build.gradle.kts",
+          "version": "repo-file-v1:sha256:5c1ab06886f2c194656cd0e55b78f945d2af78324aead5bfeb4f7c24c3089f76"
+        },
+        {
+          "resource": "repo://content/areas/city/lumbridge/build.gradle.kts",
+          "version": "repo-file-v1:sha256:981b09bf7183f8d5cebbe45229d15b2454b8addb908a9167e874b4446aa6b27b"
+        }
+      ]
+    },
+    {
+      "id": "claim_bf9d7b6241ec492cbd76791f6fe928cb",
+      "statement": "server/app is an application with main class org.rsmod.server.app.GameServerKt, runs with the repository root as working directory, and configures heap bounds and G1 periodic GC JVM arguments.",
+      "evidence": [
+        {
+          "resource": "repo://server/app/build.gradle.kts#L1-L66",
+          "version": "repo-lines-v1:sha256:0f412ae84c7476279880d02fc2d07f87d49a083653138dd46667db8dc20909a3:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmYzFhMTUyM2FmOTAxOWU5NTZmNTEzMjM0OTAzMjhiYjVjOGMzZTQwMzFjMzA1N2EyMDViNGZhNjg5YTk0NmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0NGQyNGE0ZWY3MDc1ZTZkZDY0NTY5OTBiNjA0ZjdiNWEwMzFiZDYzMDc2MGRmMjJmNTg3OTQ4M2M1YWUyYjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}
