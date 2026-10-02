@@ -68,6 +68,13 @@ constructor(
         applyEffect(access, effect)
     }
 
+    fun boostStamina(access: ProtectedAccess, duration: Int) {
+        with(access) {
+            val remaining = (player.attr[PotionBuffState.staminaExpiresAt] ?: 0) - mapClock
+            applyStamina(maxOf(duration, remaining))
+        }
+    }
+
     fun healMix(
         access: ProtectedAccess,
         amount: Int,

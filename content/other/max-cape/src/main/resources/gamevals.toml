@@ -1,0 +1,9 @@
+[gamevals.varp]
+max_cape_reset_day = 65350
+max_cape_preferences = 65351
+max_cape_next_collection = 65352
+max_cape_escape_pending = 65353
+
+[gamevals.varbit]
+max_cape_stamina_used = 65350
+max_cape_junk_disabled = 65351
