@@ -111,6 +111,26 @@ jobs:
           chmod 600 ~/.ssh/config
           ssh testserver 'echo "connected as $(id -un)"'
 
+      - name: Check remote layout
+        run: |
+          workdir="$(ssh testserver bash -s -- "$SERVICE" <<'EOS'
+          set -eu
+          export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+          systemctl --user show "$1" -p WorkingDirectory --value
+          EOS
+          )"
+          if [ -z "$workdir" ]; then
+            echo "unit is not installed for this user, or lingering is not enabled"
+            exit 1
+          fi
+          if [ "$workdir" != "$REMOTE_DIR" ]; then
+            echo "TEST_SERVER_DIR and the unit's WorkingDirectory disagree, so the deploy"
+            echo "would write the jar where the service will not look for it."
+            echo "  TEST_SERVER_DIR: $REMOTE_DIR"
+            echo "  WorkingDirectory: $workdir"
+            exit 1
+          fi
+
       - name: Stop test server
         run: |
           ssh testserver bash -s -- "$SERVICE" <<'EOS'
