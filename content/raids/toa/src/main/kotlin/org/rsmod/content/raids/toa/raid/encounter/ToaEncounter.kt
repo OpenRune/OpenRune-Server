@@ -12,6 +12,7 @@ import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRaidDeps
 import org.rsmod.content.raids.toa.raid.ToaRaidManager
 import org.rsmod.content.raids.toa.raid.ToaRoom
+import org.rsmod.content.raids.toa.raid.ToaStats
 import org.rsmod.content.raids.toa.raid.personalContribution
 import org.rsmod.content.raids.toa.raid.toaBossRestore
 import org.rsmod.content.raids.toa.raid.wipeAftermath
@@ -167,6 +168,13 @@ open class ToaEncounter(
         )
         player.mes("Tombs of Amascut total completion time: <col=ef1020>$raidTime</col>")
         ToaKillCount.record(player, mode)
+        ToaStats.recordTimes(
+            player,
+            mode,
+            raid.partySize,
+            raid.totalChallengeTicks(),
+            raid.elapsedTicks(now),
+        )
         val limit = raid.timeLimitMinutes ?: return
         if (raid.failedTimeLimit) {
             player.mes("<col=FF0000>Your party failed to beat the overall target time of $limit:00</col>")
