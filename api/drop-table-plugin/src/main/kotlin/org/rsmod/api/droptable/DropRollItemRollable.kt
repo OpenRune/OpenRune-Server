@@ -25,7 +25,7 @@ public fun dropRollableWithPlayerCondition(drop: DropRollItem): Rollable<Player,
     if (drop.isNothing) {
         return dropRollable(drop)
     }
-    return singleRollable {
+    return PreviewableDrop(drop, singleRollable {
         shouldInclude { player, otherArgs ->
             if (!drop.condition(player)) {
                 return@shouldInclude false
@@ -36,11 +36,11 @@ public fun dropRollableWithPlayerCondition(drop: DropRollItem): Rollable<Player,
             killCondition(player, npc, areaChecker)
         }
         result(drop)
-    }
+    })
 }
 
 private fun conditionalDropRollable(drop: DropRollItem): Rollable<Player, DropRollItem> =
-    singleRollable {
+    PreviewableDrop(drop, singleRollable {
         shouldInclude { player, otherArgs ->
             if (!drop.condition(player)) {
                 return@shouldInclude false
@@ -51,7 +51,12 @@ private fun conditionalDropRollable(drop: DropRollItem): Rollable<Player, DropRo
             killCondition(player, npc, areaChecker)
         }
         result(drop)
-    }
+    })
+
+public class PreviewableDrop(
+    public val item: DropRollItem,
+    delegate: Rollable<Player, DropRollItem>,
+) : Rollable<Player, DropRollItem> by delegate
 
 public fun nothing(): Rollable<Player, DropRollItem> = dropRollable(nothingDrop(includeWhen = { true }))
 

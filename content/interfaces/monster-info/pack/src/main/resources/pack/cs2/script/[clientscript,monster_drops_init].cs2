@@ -1,0 +1,5 @@
+[clientscript,monster_drops_init](component $frame, component $previous, component $next, component $stats)
+~steelborder($frame, "Monster drops", 0);
+~stonebutton_draw(false, "Back", p11_full, 1, $previous);
+~stonebutton_draw(false, "Next", p11_full, 1, $next);
+~stonebutton_draw(false, "Stats", p12_full, 1, $stats);

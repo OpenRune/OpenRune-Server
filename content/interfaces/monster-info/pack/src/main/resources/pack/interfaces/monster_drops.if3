@@ -1,0 +1,129 @@
+[[interface]]
+name = "interface.monster_drops"
+width = 190
+height = 261
+on_load = ["clientscript.monster_drops_init", "component.monster_drops:frame", "component.monster_drops:previous", "component.monster_drops:next", "component.monster_drops:stats"]
+
+[[component]]
+name = "frame"
+type = "layer"
+width = 190
+height = 261
+no_click_through = true
+
+[[component]]
+name = "name"
+type = "text"
+x = 10
+y = 33
+width = 170
+height = 17
+text = ""
+font = "bold"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "left"
+color = "#FF981F"
+
+[[component]]
+name = "notice"
+type = "text"
+x = 10
+y = 50
+width = 170
+height = 25
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "left"
+color = "#BEBEBE"
+
+[[component]]
+name = "row_0"
+type = "text"
+x = 10
+y = 79
+width = 170
+height = 48
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "left"
+color = "#FFFFFF"
+
+[[component]]
+name = "row_1"
+type = "text"
+x = 10
+y = 128
+width = 170
+height = 48
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "left"
+color = "#FFFFFF"
+
+[[component]]
+name = "row_2"
+type = "text"
+x = 10
+y = 177
+width = 170
+height = 48
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "left"
+color = "#FFFFFF"
+
+[[component]]
+name = "page"
+type = "text"
+x = 51
+y = 235
+width = 33
+height = 15
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "left"
+color = "#FFFFFF"
+
+[[component]]
+name = "previous"
+type = "layer"
+x = 10
+y = 232
+width = 36
+height = 20
+options = ["Previous"]
+
+[[component]]
+name = "next"
+type = "layer"
+x = 85
+y = 232
+width = 36
+height = 20
+options = ["Next"]
+
+[[component]]
+name = "stats"
+type = "layer"
+x = 126
+y = 232
+width = 54
+height = 20
+options = ["Stats"]

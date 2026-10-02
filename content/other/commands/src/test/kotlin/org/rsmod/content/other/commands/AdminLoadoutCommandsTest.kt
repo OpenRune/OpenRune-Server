@@ -13,6 +13,7 @@ import org.junit.jupiter.api.parallel.ResourceLock
 import org.mockito.Mockito.mock
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
@@ -26,6 +27,23 @@ import org.rsmod.utils.bits.getBits
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class AdminLoadoutCommandsTest {
+    private var Player.specialEnergy by intVarp("varp.sa_energy")
+
+    @Test
+    fun `spres restores energy without changing inventory and is admin only`() {
+        val fixture = Fixture()
+        fixture.player.specialEnergy = 75
+        fixture.player.inv[0] = item("airrune", 17)
+        fixture.run("spres")
+        assertEquals(1000, fixture.player.vars["varp.sa_energy"])
+        assertEquals(17, fixture.player.inv[0]?.count)
+        assertEquals(Rights.ADMINISTRATOR, fixture.commands.commands.getValue("spres").requiredRights)
+        fixture.player.specialEnergy = 0
+        fixture.player.modLevel = Rights.NONE
+        fixture.run("spres")
+        assertEquals(0, fixture.player.vars["varp.sa_energy"])
+    }
+
     @Test
     fun `all runes adds real stacks including combinations and the current cache runes`() {
         val fixture = Fixture()

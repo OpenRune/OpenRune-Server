@@ -76,7 +76,7 @@ public data class WeightedRollableImpl<T, R>(
 
 public class WeightedCollectionRollable<T, R>(
     override val weight: Double,
-    internal val rollables: Collection<WeightedRollable<T, R>>,
+    public val rollables: Collection<WeightedRollable<T, R>>,
     internal val hooks: RollableHooks<T, R> = RollableHooks.Default(),
 ) : WeightedRollable<T, R>, RollableHooks<T, R> by hooks {
 

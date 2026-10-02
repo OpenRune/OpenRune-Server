@@ -4,10 +4,12 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.config.constants
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.plugin.scripts.PluginScript
@@ -15,7 +17,16 @@ import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.utils.bits.withBits
 
 class AdminLoadoutCommands @Inject constructor() : PluginScript() {
+    private var Player.specialEnergy by intVarp("varp.sa_energy")
     override fun ScriptContext.startup() {
+        onCommand("spres", "Reset special attack energy to 100%", {
+            if (args.isNotEmpty()) {
+                player.mes("Usage: ::spres")
+            } else {
+                player.specialEnergy = constants.sa_max_energy
+                player.mes("Special attack energy restored to 100%.")
+            }
+        })
         for (loadout in AdminLoadout.entries) {
             onCommand(loadout.command, loadout.description, {
                 if (args.isNotEmpty()) {

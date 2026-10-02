@@ -1,0 +1,5 @@
+[gamevals.interface]
+monster_drops = 1102
+
+[gamevals.clientscript]
+monster_drops_init = 45541
