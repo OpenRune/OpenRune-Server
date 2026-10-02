@@ -17,6 +17,10 @@ internal object ZebakNpcs {
     const val WAVE_BLOODY = "npc.toa_zebak_wave_bloody"
 }
 
+internal object ZebakObjs {
+    const val FANG = "obj.toa_zebak_fang"
+}
+
 internal object ZebakLocs {
     const val BLOCKER = "loc.invisible_type8_blocking_size9"
     const val BOULDER_BLOCKER = "loc.invisible_type8_blocking_active"
