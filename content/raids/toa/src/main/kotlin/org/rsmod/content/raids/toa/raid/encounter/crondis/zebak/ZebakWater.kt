@@ -10,6 +10,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.map.CoordGrid
@@ -40,12 +41,14 @@ internal class ZebakWater(private val room: ZebakEncounter) {
         if (!swimmers.add(player)) return
         player.bas = swimBas
         player.rebuildAppearance()
+        PathingEntityCommon.setAnimProtect(player, true)
     }
 
     fun stopSwimming(player: Player) {
         if (!swimmers.remove(player)) return
         player.bas = null
         player.rebuildAppearance()
+        PathingEntityCommon.setAnimProtect(player, false)
     }
 
     fun dropDeadSwimmers() {
