@@ -9,7 +9,6 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocAngle
-import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.map.CoordGrid
 
 internal class ZebakPoison(private val room: ZebakEncounter) {
@@ -37,7 +36,7 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
 
     fun add(tile: CoordGrid, spread: Boolean, guaranteed: Boolean) {
         val owner = liveZebak ?: return
-        if (tile in this) return
+        if (tile in this || !room.isOpenFloor(tile)) return
         val type = ZebakLocs.POISON[deps.random.of(0, ZebakLocs.POISON.lastIndex)]
         val angle = LocAngle.entries[deps.random.of(0, LocAngle.entries.lastIndex)]
         bossDeps.spawnOwnedLoc(owner, tile, type, angle.id, blockPlayersOnly = false, onStand = ::hurt)
@@ -50,7 +49,7 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
                 if (dx == 0 && dz == 0) continue
                 if ((!guaranteed || dz != 0) && deps.random.of(0, 2) != 0) continue
                 val next = tile.translate(dx, dz)
-                if (next in this || deps.collision.isWalkBlocked(next)) continue
+                if (next in this || !room.isOpenFloor(next)) continue
                 val spot = ZebakSpots.POISON_SPREAD
                 deps.worldRepo.projectile(spot, tile, next, ZebakProjs.POISON_SPREAD)
                 spreadTo += next
