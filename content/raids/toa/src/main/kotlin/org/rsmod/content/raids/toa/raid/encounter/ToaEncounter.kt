@@ -70,6 +70,14 @@ open class ToaEncounter(
 
     internal open val hpBar: ToaHpBar? = null
 
+    internal open val combatantSpecs: List<ToaCombatant.Spec>
+        get() = emptyList()
+
+    private val combatants = LinkedHashMap<Npc, ToaCombatant>()
+
+    private val scalingPartySize: Int
+        get() = if (stage == ToaStage.NOT_STARTED) raid.players.size.coerceAtLeast(1) else teamSize
+
     internal val pathLevel: Int
         get() = room.path?.let { raid.pathLevels[it.ordinal] } ?: 0
 
@@ -107,7 +115,7 @@ open class ToaEncounter(
 
     open fun honeyLocusts(): Int = deps.random.of(HONEY_LOCUSTS_MIN, HONEY_LOCUSTS_MAX)
 
-    open fun pointMultiplier(npc: Npc): Double = 1.0
+    fun pointMultiplier(npc: Npc): Double = combatants[npc]?.pointMultiplier ?: 1.0
 
     open val roomPointsCap: Int
         get() = if (room.kind == ToaRoom.Kind.WARDENS) WARDENS_POINTS_CAP else ROOM_POINTS_CAP
@@ -279,10 +287,31 @@ open class ToaEncounter(
     internal fun adopt(npc: Npc) {
         npc.respawns = false
         ToaRooms.adopt(npc, this)
+        pruneCombatants()
+        if (npc in combatants) return
+        val spec = combatantSpecs.firstOrNull { it.typeId == npc.type.id } ?: return
+        combatants[npc] = ToaCombatant(this, npc, spec).also { it.scale(scalingPartySize) }
     }
 
     internal fun release(npc: Npc) {
         ToaRooms.release(npc)
+        combatants.remove(npc)
+    }
+
+    internal fun combatantOf(npc: Npc): ToaCombatant? = combatants[npc]
+
+    protected fun scaleCombatants() {
+        pruneCombatants()
+        for (combatant in combatants.values) combatant.scale(teamSize)
+    }
+
+    protected fun holdDefenceFloors() {
+        pruneCombatants()
+        for (combatant in combatants.values) combatant.holdDefenceFloor()
+    }
+
+    private fun pruneCombatants() {
+        combatants.keys.removeIf { !it.isSlotAssigned }
     }
 
     internal fun despawn(npc: Npc) {

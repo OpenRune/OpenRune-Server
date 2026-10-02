@@ -33,7 +33,6 @@ import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossExtensionContext
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.spec.BossSpec
-import org.rsmod.api.bosses.spec.DamageExpr
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.TargetExpr
 import org.rsmod.api.combat.commons.player.queueCombatRetaliate
@@ -42,8 +41,8 @@ import org.rsmod.content.raids.toa.raid.encounter.eachTarget
 import org.rsmod.content.raids.toa.raid.encounter.onRoomExternal
 import org.rsmod.content.raids.toa.raid.encounter.roomCombatTick
 import org.rsmod.content.raids.toa.raid.encounter.roomCondition
-import org.rsmod.content.raids.toa.raid.encounter.roomDamage
 import org.rsmod.content.raids.toa.raid.encounter.roomSummon
+import org.rsmod.content.raids.toa.raid.encounter.scaled
 import org.rsmod.content.raids.toa.raid.encounter.targetCondition
 import org.rsmod.content.raids.toa.raid.encounter.timeline
 import org.rsmod.map.CoordGrid
@@ -462,12 +461,6 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
         private fun offset(tile: CoordGrid): TargetExpr.Single =
             spawnTile(tile.x - ZebakCoords.ZEBAK.x, tile.z - ZebakCoords.ZEBAK.z)
-
-        private fun scaled(base: Int): DamageExpr =
-            roomDamage<ZebakEncounter> { room, _, _ -> room.rollScaled(base) }
-
-        private fun scaled(min: Int, base: Int): DamageExpr =
-            roomDamage<ZebakEncounter> { room, _, _ -> room.rollScaled(min, base) }
 
         private val isMeleeTarget =
             targetCondition<ZebakEncounter> { room, target -> target in room.autos.meleeTargets }

@@ -46,6 +46,10 @@ internal inline fun <reified R : ToaEncounter> roomDamage(
 ): DamageExpr =
     DamageExpr.Custom { npc, target -> ToaRooms.of<R>(npc)?.let { roll(it, npc, target) } ?: 0 }
 
+internal fun scaled(base: Int): DamageExpr = combatantDamage { it.rollScaled(base) }
+
+internal fun scaled(min: Int, base: Int): DamageExpr = combatantDamage { it.rollScaled(min, base) }
+
 internal inline fun <reified R : ToaEncounter> BossDeps.onRoomExternal(
     name: String,
     noinline handler: (R, BossExtensionContext) -> Unit,
@@ -102,6 +106,9 @@ internal fun timeline(vararg steps: Pair<Int, Effect>): Effect =
             after(ticks, if (rest == null) effect else sequence(effect, rest))
         }
     )
+
+private fun combatantDamage(roll: (ToaCombatant) -> Int): DamageExpr =
+    DamageExpr.Custom { npc, _ -> ToaRooms.roomOf(npc)?.combatantOf(npc)?.let(roll) ?: 0 }
 
 private fun challengeCorner(corner: (ToaRoom) -> CoordGrid?): TargetExpr.Single =
     TargetExpr.Custom { npc, _ ->
