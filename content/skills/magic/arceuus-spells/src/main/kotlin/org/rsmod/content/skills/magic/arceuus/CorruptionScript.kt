@@ -157,39 +157,58 @@ constructor(private val spells: MagicSpellRegistry, private val runes: MagicRune
         player.timer(Corruption.TIMER, Corruption.interval(player.corruptionFast))
     }
 
-    private fun Player.clearCorruption() {
-        corruptionIteration = 0
-        corruptionTargetIterations = 0
-        corruptionBaseDrain = 0
-        corruptionFast = false
+}
+
+internal fun Player.clearCorruption() {
+    corruptionIteration = 0
+    corruptionTargetIterations = 0
+    corruptionBaseDrain = 0
+    corruptionFast = false
+}
+
+public class CorruptionStrike
+internal constructor(internal val baseDrain: Int, internal val marked: Boolean) {
+    public val steps: Int = Corruption.DRAIN_STEPS
+    public val intervalTicks: Int
+        get() = Corruption.interval(marked)
+
+    public fun drainAt(step: Int): Int = Corruption.drainAt(baseDrain, step)
+}
+
+/** Rolls the primed corruption spell on a successful hit, consuming it only when it procs. */
+public fun Player.rollCorruption(random: GameRandom): CorruptionStrike? {
+    val type = CorruptionSpell.entries.firstOrNull { it.primedValue == corruptionPrimed } ?: return null
+    val marked = corruptionMarked
+    if (random.of(100) >= Corruption.chance(marked)) {
+        return null
     }
+    corruptionPrimed = 0
+    corruptionMarked = false
+    mes("<col=ff289d>Your target has been corrupted!</col>")
+    return CorruptionStrike(type.baseDrain, marked)
+}
+
+public fun Player.afflictCorruption(baseDrain: Int, marked: Boolean = false): Boolean {
+    if (wardOfArceuusActive || isCorrupted) {
+        return false
+    }
+    corruptionBaseDrain = baseDrain
+    corruptionIteration = 1
+    corruptionTargetIterations = Corruption.DRAIN_STEPS
+    corruptionFast = marked
+    timer(Corruption.TIMER, Corruption.interval(marked))
+    mes("<col=ef0083>You have been corrupted!</col>")
+    return true
 }
 
 internal class CorruptionHitHook @Inject constructor(private val random: GameRandom) :
     PvPPlayerHitHook {
     override fun onPlayerHit(attacker: Player, target: Player, damage: Int) {
-        val type = CorruptionSpell.entries.firstOrNull { it.primedValue == attacker.corruptionPrimed }
-        if (type == null || damage <= 0) {
-            return
-        }
-        if (target.wardOfArceuusActive || target.isCorrupted) {
+        if (damage <= 0 || target.wardOfArceuusActive || target.isCorrupted) {
             return
         }
 
-        val marked = attacker.corruptionMarked
-        if (random.of(100) >= Corruption.chance(marked)) {
-            return
-        }
-
-        attacker.corruptionPrimed = 0
-        attacker.corruptionMarked = false
-        attacker.mes("<col=ff289d>Your target has been corrupted!</col>")
-        target.mes("<col=ef0083>You have been corrupted!</col>")
-
-        target.corruptionBaseDrain = type.baseDrain
-        target.corruptionIteration = 1
-        target.corruptionTargetIterations = Corruption.DRAIN_STEPS
-        target.corruptionFast = marked
-        target.timer(Corruption.TIMER, Corruption.interval(marked))
+        val strike = attacker.rollCorruption(random) ?: return
+        target.afflictCorruption(strike.baseDrain, strike.marked)
     }
 }

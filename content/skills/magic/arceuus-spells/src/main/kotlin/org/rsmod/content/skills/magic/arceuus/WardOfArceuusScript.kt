@@ -50,6 +50,12 @@ constructor(private val spells: MagicSpellRegistry, private val runes: MagicRune
         spotanim("spotanim.ward_of_arceuus_cast_spotanim")
         mes("Your defence against Arceuus magic has been strengthened.")
 
+        if (player.isCorrupted) {
+            player.clearTimer(CORRUPTION_TIMER)
+            player.clearCorruption()
+            mes("Your ward cleanses you of corruption.")
+        }
+
         val duration = player.magicLvl
         player.wardOfArceuusActive = true
         player.wardOfArceuusCooldown = true
@@ -67,6 +73,7 @@ constructor(private val spells: MagicSpellRegistry, private val runes: MagicRune
     }
 
     private companion object {
+        const val CORRUPTION_TIMER = Corruption.TIMER
         const val EXPIRE_QUEUE = "queue.ward_of_arceuus_expire"
         const val COOLDOWN_QUEUE = "queue.ward_of_arceuus_cooldown"
         const val BUFF_BAR_START_CLIENTSCRIPT = 5931
