@@ -28,6 +28,10 @@ internal object MaxHitOperations {
             modified = max(0, modified - reduction)
         }
 
+        if (DamageReductionAttributes.WardOfArceuus in reductionAttributes) {
+            modified -= modified / 10
+        }
+
         return modified
     }
 }

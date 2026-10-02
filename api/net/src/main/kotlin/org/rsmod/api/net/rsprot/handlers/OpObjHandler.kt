@@ -11,7 +11,7 @@ import org.rsmod.api.player.vars.ctrlMoveSpeed
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.interact.InteractionObj
+import org.rsmod.game.interact.InteractionObjOp
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.movement.RouteRequestCoord
 import org.rsmod.game.obj.Obj
@@ -49,7 +49,7 @@ constructor(
         val opTrigger = objInteractions.hasOpTrigger(obj, message.interactionOp, type)
         val apTrigger = objInteractions.hasApTrigger(obj, message.interactionOp, type)
         val interaction =
-            InteractionObj(
+            InteractionObjOp(
                 target = obj,
                 op = message.interactionOp,
                 hasOpTrigger = opTrigger,

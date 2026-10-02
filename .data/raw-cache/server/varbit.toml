@@ -620,3 +620,38 @@ id = "varbit.barrows_open_center_door"
 varp = "varp.barrows_state"
 startBit = 10
 endBit = 11
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.mark_of_darkness_active"
+varp = "varp.generic_temp_state_65516"
+startBit = 3
+endBit = 3
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.ward_of_arceuus_active"
+varp = "varp.generic_temp_state_65516"
+startBit = 4
+endBit = 4
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.death_charge_charges"
+varp = "varp.generic_temp_state_65516"
+startBit = 5
+endBit = 6
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.corruption_marked"
+varp = "varp.generic_temp_state_65516"
+startBit = 7
+endBit = 7
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.corruption_fast"
+varp = "varp.generic_temp_state_65516"
+startBit = 8
+endBit = 8

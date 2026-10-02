@@ -74,9 +74,11 @@ private fun Npc.shouldRetaliateAp(interactions: AiPlayerInteractions, target: Pl
     return interactions.apTrigger(this, target, InteractionOp.Op2) != null
 }
 
+public fun Npc.isDarkLured(): Boolean = vars["varn.dark_lure_end_clock"] > currentMapClock
+
 private fun Npc.retaliate(target: Player, interactions: AiPlayerInteractions, ap: Boolean) {
     when {
-        hitpoints <= param(params.retreat) -> {
+        hitpoints <= param(params.retreat) && !isDarkLured() -> {
             playerEscape(target)
         }
         visType.wanderRange > 0 && !target.isWithinDistance(spawnCoords, aggressionRange()) -> {

@@ -79,7 +79,7 @@ public class WildernessPvPHook @Inject constructor(private val areaChecker: Area
         }
     }
 
-    override fun onPlayerHit(attacker: Player, target: Player) {
+    override fun onPlayerHit(attacker: Player, target: Player, damage: Int) {
         if (!attacker.canPvp()) {
             return
         }
