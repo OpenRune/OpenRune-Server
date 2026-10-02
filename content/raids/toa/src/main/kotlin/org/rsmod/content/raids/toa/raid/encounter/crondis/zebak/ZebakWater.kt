@@ -7,6 +7,7 @@ import org.rsmod.annotations.InternalApi
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.vars.walkOnly
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -29,7 +30,7 @@ internal class ZebakWater(private val room: ZebakEncounter) {
             walkBack = swim,
             walkLeft = swim,
             walkRight = swim,
-            running = swim,
+            running = -1,
         )
     }
 
@@ -42,6 +43,7 @@ internal class ZebakWater(private val room: ZebakEncounter) {
         player.bas = swimBas
         player.rebuildAppearance()
         PathingEntityCommon.setAnimProtect(player, true)
+        player.walkOnly = true
     }
 
     fun stopSwimming(player: Player) {
@@ -49,6 +51,7 @@ internal class ZebakWater(private val room: ZebakEncounter) {
         player.bas = null
         player.rebuildAppearance()
         PathingEntityCommon.setAnimProtect(player, false)
+        player.walkOnly = false
     }
 
     fun dropDeadSwimmers() {
