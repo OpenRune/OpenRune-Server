@@ -372,12 +372,12 @@ class EffectInterpreter internal constructor(
             if (damage > 0) {
                 hit.spotanim?.let { t.spotanim(it, delay = hit.spotanimDelay ?: 0, height = hit.spotanimHeight) }
             }
-            if (hit.resolveOnImpact) {
-                resolveHitOnLanding(access, hit, t, delay, damage)
-                continue
-            }
             if (hit.hazard) {
                 t.queueHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier)
+                continue
+            }
+            if (hit.resolveOnImpact) {
+                resolveHitOnLanding(access, hit, t, delay, damage)
                 continue
             }
             val landed =
@@ -393,9 +393,7 @@ class EffectInterpreter internal constructor(
         delay: Int,
         damage: Int,
     ) {
-        if (!hit.hazard) {
-            t.queueCombatRetaliate(npc, if (hit.reactOnLanding) delay else 1)
-        }
+        t.queueCombatRetaliate(npc, if (hit.reactOnLanding) delay else 1)
         t.queueImpactHit(
             npc,
             delay,
@@ -404,10 +402,6 @@ class EffectInterpreter internal constructor(
             landingModifier(access, hit, damage),
             penetration = hit.penetration,
         )
-        if (hit.hazard) {
-            showMissSpotanim(hit, t, damage, clientDelay = 0)
-            return
-        }
         if (!hit.reactOnLanding || delay <= 2) {
             t.combatPlayDefendAnim()
         } else {

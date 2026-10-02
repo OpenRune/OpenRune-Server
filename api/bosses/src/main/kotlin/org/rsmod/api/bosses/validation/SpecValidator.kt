@@ -455,8 +455,8 @@ object SpecValidator {
             if (projectile != null && (hit.resolveOnImpact || hit.reactOnLanding)) {
                 error("${scope.prefix}a projectile hit uses the projectile's resolveOnImpact, not the hit's.")
             }
-            if (hit.hazard && hit.reactOnLanding) {
-                error("${scope.prefix}hazard() cannot be combined with reactOnLanding().")
+            if (hit.hazard && hit.resolveOnImpact) {
+                error("${scope.prefix}hazard() cannot be combined with resolveOnImpact().")
             }
             if (hit.reactOnLanding && !hit.resolveOnImpact) {
                 error("${scope.prefix}reactOnLanding() needs resolveOnImpact().")

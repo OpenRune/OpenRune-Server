@@ -122,27 +122,6 @@ class SpecValidatorTest {
     }
 
     @Test
-    fun `hazard resolves on impact but cannot react on landing`() {
-        val resolved =
-            hit {
-                damage(0..10).roll()
-                type(Ranged)
-                resolveOnImpact()
-                hazard()
-            }
-        assertEquals(emptyList<String>(), errorsFor(resolved))
-        val reacting =
-            hit {
-                damage(0..10).roll()
-                type(Ranged)
-                resolveOnImpact()
-                reactOnLanding()
-                hazard()
-            }
-        assertHasError(errorsFor(reacting), "reactOnLanding()")
-    }
-
-    @Test
     fun `switch needs cases and varn names`() {
         assertHasError(errorsFor(Effect.Switch("varn.stage", emptyMap())), "has no cases")
         assertHasError(errorsFor(switch("stage", 0 to resetAnim())), "is not a varn reference")
