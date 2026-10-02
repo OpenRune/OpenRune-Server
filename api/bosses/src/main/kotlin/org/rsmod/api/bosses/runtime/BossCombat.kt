@@ -105,8 +105,8 @@ object BossCombat {
                     onModifyHit?.invoke(this)
                     if (
                         onLethal != null &&
-                        !encounter.lethalHandled &&
-                        npc.hitpoints - hit.damage <= 0
+                            !encounter.lethalHandled &&
+                            npc.hitpoints - hit.damage <= 0
                     ) {
                         encounter.lethalHandled = true
                         onLethal(npc)
