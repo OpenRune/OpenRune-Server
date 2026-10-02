@@ -691,15 +691,15 @@ class EffectInterpreter internal constructor(
         // Only consider tiles that are walkable
         val spawnTiles =
             buildList {
-                for (dx in -radius..radius) {
-                    for (dz in -radius..radius) {
-                        val origin = center.translate(dx, dz)
-                        if (canStand(origin, npcType.size)) {
-                            add(origin)
+                    for (dx in -radius..radius) {
+                        for (dz in -radius..radius) {
+                            val origin = center.translate(dx, dz)
+                            if (canStand(origin, npcType.size)) {
+                                add(origin)
+                            }
                         }
                     }
                 }
-            }
                 .toMutableList()
 
         repeat(summon.count) {

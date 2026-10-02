@@ -9,8 +9,8 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.player.stat.statHeal
-import org.rsmod.content.other.consumables.ConsumableActivityAccess
 import org.rsmod.api.table.PotionEffectRow
+import org.rsmod.content.other.consumables.ConsumableActivityAccess
 import org.rsmod.content.other.consumables.potion.drainCurrentStats
 import org.rsmod.content.other.consumables.potion.restoreIfDrained
 import org.rsmod.game.entity.Player
