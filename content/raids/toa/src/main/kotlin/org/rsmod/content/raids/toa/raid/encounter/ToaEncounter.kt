@@ -1,9 +1,12 @@
 package org.rsmod.content.raids.toa.raid.encounter
 
+import kotlin.math.floor
+import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.output.runClientScript
 import org.rsmod.content.raids.toa.raid.ChallengeResult
 import org.rsmod.content.raids.toa.raid.ToaDamage
 import org.rsmod.content.raids.toa.raid.ToaKillCount
@@ -14,11 +17,14 @@ import org.rsmod.content.raids.toa.raid.ToaRaidManager
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.ToaStats
 import org.rsmod.content.raids.toa.raid.personalContribution
+import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.content.raids.toa.raid.toaBossRestore
 import org.rsmod.content.raids.toa.raid.wipeAftermath
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
+import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 
@@ -62,6 +68,14 @@ open class ToaEncounter(
     val challengePlayers: List<Player>
         get() = players.filter(::inChallengeArea)
 
+    internal open val hpBar: ToaHpBar? = null
+
+    internal val pathLevel: Int
+        get() = room.path?.let { raid.pathLevels[it.ordinal] } ?: 0
+
+    internal val pathTier: Int
+        get() = min(MAX_PATH_TIER, pathLevel / PATH_LEVELS_PER_TIER)
+
     fun coords(static: CoordGrid): CoordGrid = region.normal[static]
 
     fun staticCoords(coords: CoordGrid): CoordGrid = deps.regions.normalizeCoords(coords)
@@ -79,11 +93,13 @@ open class ToaEncounter(
 
     open fun onBuilt() {}
 
-    open fun onEnter(player: Player) {}
+    protected open fun onEnter(player: Player) {}
 
-    open fun onLeave(player: Player) {}
+    protected open fun onLeave(player: Player) {}
 
     protected open fun onStart() {}
+
+    protected open fun onTick(targets: List<Player>) {}
 
     protected open fun onComplete() {}
 
@@ -108,10 +124,31 @@ open class ToaEncounter(
         startCycle = deps.mapClock.cycle
         teamSize = raid.players.size.coerceAtLeast(1)
         onStart()
+        for (player in players) hpBar?.open(player)
+        schedule(1) { tick() }
         for (player in raid.players) {
             player.mes("Challenge started: $challengeName")
             ToaDamage.resetCurrent(player)
         }
+    }
+
+    private fun tick() {
+        if (stage != ToaStage.STARTED) return
+        onTick(targets())
+        schedule(1) { tick() }
+    }
+
+    internal fun enter(player: Player) {
+        for (seq in room.path?.preloadSeqs.orEmpty()) {
+            player.runClientScript(SEQ_PREFETCH_SCRIPT, seq)
+        }
+        if (stage == ToaStage.STARTED) hpBar?.open(player)
+        onEnter(player)
+    }
+
+    internal fun leave(player: Player) {
+        hpBar?.close(player)
+        onLeave(player)
     }
 
     internal fun continueChallenge(from: ToaEncounter) {
@@ -155,6 +192,7 @@ open class ToaEncounter(
 
         recoverPlayers()
         stopTasks()
+        hpBar?.complete()
         onComplete()
         if (isEnd) {
             ToaRaidManager.refreshTimers(raid)
@@ -221,6 +259,7 @@ open class ToaEncounter(
     fun reset() {
         stage = ToaStage.NOT_STARTED
         stopTasks()
+        for (player in players) hpBar?.close(player)
         onReset()
     }
 
@@ -251,6 +290,35 @@ open class ToaEncounter(
         if (npc.isSlotAssigned) deps.npcRepo.del(npc, Int.MAX_VALUE)
     }
 
+    internal fun isOpenFloor(tile: CoordGrid): Boolean =
+        !deps.collision.isWalkBlocked(tile) &&
+            deps.locRepo.findExact(tile, LocShape.CentrepieceStraight) == null
+
+    internal open fun isTaken(tile: CoordGrid): Boolean = false
+
+    internal fun freeTiles(
+        min: CoordGrid,
+        max: CoordGrid,
+        excludes: Collection<CoordGrid>,
+    ): List<CoordGrid> {
+        val from = coords(min)
+        val to = coords(max)
+        val tiles = ArrayList<CoordGrid>()
+        for (x in from.x..to.x) {
+            for (z in from.z..to.z) {
+                val tile = CoordGrid(x, z, from.level)
+                if (tile in excludes || isTaken(tile) || !isOpenFloor(tile)) continue
+                tiles += tile
+            }
+        }
+        return deps.random.shuffled(tiles)
+    }
+
+    internal fun hazardDamage(player: Player, base: Int, spread: Int) {
+        val min = floor(base * raid.damageMultiplier).toInt()
+        player.hitTypeless(deps.random.of(min, min + spread))
+    }
+
     fun schedule(ticks: Int, action: () -> Unit) {
         val generation = taskGeneration
         deps.worldQueues.add(ticks) {
@@ -274,6 +342,9 @@ open class ToaEncounter(
     override fun toString(): String = "ToaEncounter(room=$room, controllerId=$controllerId, stage=$stage)"
 
     private companion object {
+        const val SEQ_PREFETCH_SCRIPT = 1846
+        const val MAX_PATH_TIER = 2
+        const val PATH_LEVELS_PER_TIER = 2
         const val HONEY_LOCUSTS_MIN = 4
         const val HONEY_LOCUSTS_MAX = 6
 

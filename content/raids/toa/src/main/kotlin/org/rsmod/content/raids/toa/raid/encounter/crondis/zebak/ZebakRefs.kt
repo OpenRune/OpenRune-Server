@@ -62,8 +62,6 @@ internal object ZebakSeqs {
     const val PLAYER_MOVE_JUG = "seq.human_pickuptable"
     const val SWIM_READY = "seq.human_swim_ready"
     const val SWIM = "seq.human_swim"
-
-    val PRELOAD: List<Int> = (9618..9646).toList() + listOf(9532, 9533, 9534, 9541)
 }
 
 internal object ZebakSpots {

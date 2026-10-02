@@ -1,25 +1,18 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle
 
 import java.awt.Color
-import kotlin.math.floor
-import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
-import org.rsmod.api.player.hit.queueHit
-import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.output.spam
 import org.rsmod.api.player.stat.statSub
-import org.rsmod.api.player.ui.setColour
-import org.rsmod.api.player.vars.intVarBit
-import org.rsmod.api.player.vars.intVarp
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
+import org.rsmod.content.raids.toa.raid.encounter.ToaHpBar
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
-import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.npcType
+import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.headbar.Headbar
-import org.rsmod.game.hit.HitType
 import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
@@ -51,6 +44,17 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
 
     private val floorContainers = ArrayList<Obj>()
 
+    override val hpBar =
+        ToaHpBar(
+            this,
+            completion = ToaHpBar.Completion.Fade(BAR_FADE_DELAY, BAR_CLEAR_DELAY),
+            remainingOnClose = BAR_REMAINING_DEFAULT,
+            currentHp = { water },
+            maxHp = { goal },
+        ) {
+            palm
+        }
+
     override fun onBuilt() {
         for (tile in CrondisCoords.CONTAINERS) {
             floorContainers += deps.objRepo.add(CrondisObjs.CONTAINER, coords(tile), Int.MAX_VALUE)
@@ -66,34 +70,15 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
 
     override fun onStart() {
         water = 0
-        for (player in players) openBar(player)
         resetHazards()
-        schedule(1) { hazardTick() }
-    }
-
-    override fun onEnter(player: Player) {
-        for (seq in PRELOAD_SEQS) {
-            player.runClientScript(SCRIPT_SEQ_PREFETCH, seq)
-        }
-        if (stage == ToaStage.STARTED) openBar(player)
     }
 
     override fun onLeave(player: Player) {
-        closeBar(player)
         player.removeContainers()
     }
 
     override fun onComplete() {
         for (player in players) player.removeContainers()
-        schedule(BAR_FADE_DELAY) {
-            for (player in players) player.runClientScript(SCRIPT_HP_HUD_FADE_OUT, fadeArgs())
-        }
-        schedule(BAR_CLEAR_DELAY) {
-            for (player in players) {
-                closeBar(player)
-                player.clearBarVars()
-            }
-        }
         for (obj in floorContainers) deps.objRepo.del(obj, Int.MAX_VALUE)
         floorContainers.clear()
         restoreWaterfalls()
@@ -104,10 +89,7 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
     }
 
     override fun onReset() {
-        for (player in players) {
-            closeBar(player)
-            player.removeContainers()
-        }
+        for (player in players) player.removeContainers()
         water = 0
         spawnPalm()
         restoreWaterfalls()
@@ -121,7 +103,7 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
     fun waterPalm(amount: Int) {
         if (stage != ToaStage.STARTED || amount <= 0) return
         water = (water + amount).coerceAtMost(goal)
-        for (player in players) updateBar(player)
+        hpBar.update()
         showPalmHit(CrondisMarks.PALM_WATERED, amount)
 
         val newStage = stageFor(water)
@@ -135,7 +117,7 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         if (stage != ToaStage.STARTED || water <= 0) return
         val drained = amount.coerceAtMost(water)
         water -= drained
-        for (player in players) updateBar(player)
+        hpBar.update()
         showPalmHit(CrondisMarks.PALM_DRAINED, drained)
         val newStage = stageFor(water)
         if (newStage < palmStage) {
@@ -184,39 +166,9 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         npc.showHeadbar(Headbar.fromNoSource(id, id, fill, fill, startTime = 0, endTime = 0))
     }
 
-    private fun openBar(player: Player) {
-        val npc = palm ?: return
-        deps.bossHpBar.onOpen(player, npc)
-        player.barNpc = npc.visType.id
-        updateBar(player)
-    }
-
     private fun pointBarsAtPalm() {
-        schedule(1) {
-            val npc = palm ?: return@schedule
-            for (player in players) player.barNpc = npc.visType.id
-        }
+        schedule(1) { hpBar.point() }
     }
-
-    private fun updateBar(player: Player) {
-        val npc = palm ?: return
-        deps.bossHpBar.onUpdate(player, npc, currentHp = water, maxHp = goal)
-    }
-
-    private fun closeBar(player: Player) {
-        val npc = palm ?: return
-        deps.bossHpBar.onClose(player, npc, instant = true)
-        player.setColour(CrondisComponents.BAR_REMAINING, BAR_REMAINING_DEFAULT)
-    }
-
-    private fun Player.clearBarVars() {
-        barNpc = BAR_NPC_NONE
-        barHp = 0
-        barBaseHp = 0
-        barBoss = 0
-    }
-
-    private fun fadeArgs(): List<Any> = deps.bossHpBar.commonComponents.toList() + 0
 
     fun drainWaterfall(waterfall: BoundLocInfo) {
         val refillTicks =
@@ -233,14 +185,11 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         }
     }
 
-    private fun hazardTick() {
-        if (stage != ToaStage.STARTED) return
+    override fun onTick(targets: List<Player>) {
         if ((deps.mapClock.cycle - startCycle) % HEADBAR_INTERVAL == 0) showPalmHeadbar()
-        val targets = targets()
         acid.tick(targets)
         spears.tick(targets)
         crocodiles.tick()
-        schedule(1) { hazardTick() }
     }
 
     private fun resetHazards() {
@@ -260,13 +209,7 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         crocodiles.onHazardHit(player, now)
 
         spillWater(player)
-        val min = floor(baseDamage * raid.damageMultiplier).toInt()
-        player.queueHit(
-            delay = HIT_DELAY,
-            type = HitType.Typeless,
-            damage = deps.random.of(min, min + DAMAGE_SPREAD),
-            modifier = NoopPlayerHitModifier,
-        )
+        hazardDamage(player, baseDamage, DAMAGE_SPREAD)
         player.statSub("stat.defence", constant = DEFENCE_DRAIN, percent = 0)
         player.statSub("stat.agility", constant = AGILITY_DRAIN, percent = 0)
     }
@@ -317,7 +260,6 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         private const val BASE_REFILL_TICKS = 128
         private const val REFILL_TICKS_PER_PLAYER = 18
 
-        private const val HIT_DELAY = 1
         private const val DAMAGE_SPREAD = 8
         private const val DEFENCE_DRAIN = 6
         private const val AGILITY_DRAIN = 3
@@ -331,19 +273,7 @@ class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, contr
         private const val BITE_LOW_LOSS = 10
         private const val BAR_FADE_DELAY = 5
         private const val BAR_CLEAR_DELAY = 9
-        private const val BAR_NPC_NONE = -1
-
-        private const val SCRIPT_HP_HUD_FADE_OUT = 2889
 
         private val BAR_REMAINING_DEFAULT = Color(0x00CC00)
-
-        private const val SCRIPT_SEQ_PREFETCH = 1846
-
-        private val PRELOAD_SEQS: List<Int> = (9618..9646).toList() + listOf(9532, 9533, 9534, 9541)
     }
 }
-
-private var Player.barNpc by intVarp("varp.hpbar_hud_npc")
-private var Player.barHp by intVarBit("varbit.hpbar_hud_hp")
-private var Player.barBaseHp by intVarBit("varbit.hpbar_hud_basehp")
-private var Player.barBoss by intVarBit("varbit.hpbar_hud_boss")

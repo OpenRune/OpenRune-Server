@@ -54,10 +54,6 @@ internal object CrondisSynths {
     const val CROC_ATTACK = "synth.crocodile_attack"
 }
 
-internal object CrondisComponents {
-    const val BAR_REMAINING = "component.hpbar_hud:health_bar_remaining"
-}
-
 internal object CrondisMarks {
     const val PALM_HEADBAR = 11
     const val PALM_HEADBAR_SEGMENTS = 120

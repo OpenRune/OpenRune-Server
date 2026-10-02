@@ -1,6 +1,9 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
 import org.rsmod.api.npc.hit.queueHit as queueNpcHit
+import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
+import org.rsmod.content.raids.toa.raid.encounter.npcType
+import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
