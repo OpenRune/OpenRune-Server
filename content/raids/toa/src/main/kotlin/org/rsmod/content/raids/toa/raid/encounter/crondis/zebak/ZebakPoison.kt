@@ -1,7 +1,12 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
+import org.rsmod.api.bosses.runtime.clearOwnedLocs
+import org.rsmod.api.bosses.runtime.encounter
+import org.rsmod.api.bosses.runtime.removeOwnedLoc
+import org.rsmod.api.bosses.runtime.spawnOwnedLoc
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.map.collision.isWalkBlocked
@@ -9,11 +14,13 @@ import org.rsmod.map.CoordGrid
 
 internal class ZebakPoison(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
-    private val hazards = deps.bossDeps.hazards
+    private val bossDeps = deps.bossDeps
+    private val liveZebak: Npc?
+        get() = room.zebak?.takeIf { it.isSlotAssigned }
 
     operator fun contains(tile: CoordGrid): Boolean {
-        val owner = room.zebak ?: return false
-        return hazards.contains(owner, tile)
+        val owner = liveZebak ?: return false
+        return bossDeps.encounter(owner).ownsLocAt(tile)
     }
 
     fun land(tiles: List<CoordGrid>) {
@@ -29,11 +36,11 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
     }
 
     fun add(tile: CoordGrid, spread: Boolean, guaranteed: Boolean) {
-        val owner = room.zebak ?: return
-        if (hazards.contains(owner, tile)) return
+        val owner = liveZebak ?: return
+        if (tile in this) return
         val type = ZebakLocs.POISON[deps.random.of(0, ZebakLocs.POISON.lastIndex)]
         val angle = LocAngle.entries[deps.random.of(0, LocAngle.entries.lastIndex)]
-        hazards.place(owner, tile, type, angle = angle, onStand = ::hurt)
+        bossDeps.spawnOwnedLoc(owner, tile, type, angle.id, blockPlayersOnly = false, onStand = ::hurt)
         if (!spread) return
 
         val range = if (room.raid.isActive(ZebakInvocations.UPSET_STOMACH)) 2 else 1
@@ -43,7 +50,7 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
                 if (dx == 0 && dz == 0) continue
                 if ((!guaranteed || dz != 0) && deps.random.of(0, 2) != 0) continue
                 val next = tile.translate(dx, dz)
-                if (hazards.contains(owner, next) || deps.collision.isWalkBlocked(next)) continue
+                if (next in this || deps.collision.isWalkBlocked(next)) continue
                 val spot = ZebakSpots.POISON_SPREAD
                 deps.worldRepo.projectile(spot, tile, next, ZebakProjs.POISON_SPREAD)
                 spreadTo += next
@@ -57,13 +64,13 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
     }
 
     fun remove(tile: CoordGrid) {
-        val owner = room.zebak ?: return
-        hazards.remove(owner, tile)
+        val owner = liveZebak ?: return
+        bossDeps.removeOwnedLoc(owner, tile)
     }
 
     fun clear() {
-        val owner = room.zebak ?: return
-        hazards.clear(owner)
+        val owner = liveZebak ?: return
+        bossDeps.clearOwnedLocs(owner)
     }
 
     private fun hurt(player: Player) {
