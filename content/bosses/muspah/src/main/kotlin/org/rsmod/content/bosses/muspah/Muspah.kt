@@ -20,8 +20,6 @@ import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.config.refs.params
-import org.rsmod.content.skills.magic.arceuus.afflictCorruption
-import org.rsmod.content.skills.magic.arceuus.rollCorruption
 import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.events.PlayerHitEvents
@@ -32,6 +30,8 @@ import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onNpcHit
+import org.rsmod.content.skills.magic.arceuus.afflictCorruption
+import org.rsmod.content.skills.magic.arceuus.rollCorruption
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player

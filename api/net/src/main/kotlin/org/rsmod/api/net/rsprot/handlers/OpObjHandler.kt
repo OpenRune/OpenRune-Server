@@ -3,7 +3,6 @@ package org.rsmod.api.net.rsprot.handlers
 import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import jakarta.inject.Inject
-import net.rsprot.protocol.game.incoming.objs.OpObj
 import net.rsprot.protocol.game.incoming.objs.OpObjV2
 import org.rsmod.api.player.interact.ObjInteractions
 import org.rsmod.api.player.protect.clearPendingAction

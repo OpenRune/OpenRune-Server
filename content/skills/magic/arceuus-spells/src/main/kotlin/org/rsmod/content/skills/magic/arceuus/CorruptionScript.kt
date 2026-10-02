@@ -156,7 +156,6 @@ constructor(private val spells: MagicSpellRegistry, private val runes: MagicRune
         player.corruptionIteration = next
         player.timer(Corruption.TIMER, Corruption.interval(player.corruptionFast))
     }
-
 }
 
 internal fun Player.clearCorruption() {
