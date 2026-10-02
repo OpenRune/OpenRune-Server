@@ -17,10 +17,11 @@ import org.rsmod.api.bosses.dsl.whenever
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
-import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.bosses.spec.BossSpec
-import org.rsmod.api.bosses.spec.DamageExpr
 import org.rsmod.api.player.stat.hitpoints
+import org.rsmod.content.raids.toa.raid.encounter.onRoomExternal
+import org.rsmod.content.raids.toa.raid.encounter.roomCombatGate
+import org.rsmod.content.raids.toa.raid.encounter.roomDamage
 import org.rsmod.plugin.scripts.ScriptContext
 
 class CrondisCrocodileCombat @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
@@ -29,12 +30,13 @@ class CrondisCrocodileCombat @Inject constructor(deps: BossDeps) : BossPluginScr
             this,
             spec,
             deps,
-            onCombatTick = { target ->
-                if (!CrondisPuzzleEncounter.onCrocodileCombatTick(npc, target)) deps.suppressAttacks(npc, 1)
-            },
+            onCombatTick =
+                deps.roomCombatGate<CrondisPuzzleEncounter> { room, croc, target ->
+                    room.crocodiles.mayBite(croc, target)
+                },
         )
-        deps.extensionRegistry.register(BITE_WATER) { _, croc, target, _ ->
-            CrondisPuzzleEncounter.onCrocodileBite(croc, target)
+        deps.onRoomExternal<CrondisPuzzleEncounter>(BITE_WATER) { room, ext ->
+            room.biteWater(ext.target)
         }
     }
 
@@ -75,8 +77,8 @@ class CrondisCrocodileCombat @Inject constructor(deps: BossDeps) : BossPluginScr
         private const val PRAYER_DRAIN = 12
 
         private val biteDamage =
-            DamageExpr.Custom { croc, target ->
-                minOf(target.hitpoints, CrondisPuzzleEncounter.crocodileBiteDamage(croc, target))
+            roomDamage<CrondisPuzzleEncounter> { room, _, target ->
+                minOf(target.hitpoints, room.crocodiles.biteDamage(target))
             }
     }
 }

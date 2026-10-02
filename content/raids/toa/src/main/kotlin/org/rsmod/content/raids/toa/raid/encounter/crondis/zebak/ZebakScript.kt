@@ -1,12 +1,12 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
-import org.rsmod.api.script.onAiTimer
-import org.rsmod.api.script.onApNpc1
-import org.rsmod.api.script.onApNpc3
 import org.rsmod.api.script.onApNpc4
-import org.rsmod.api.script.onNpcHit
-import org.rsmod.api.script.onNpcQueue
-import org.rsmod.api.script.onOpLoc1
+import org.rsmod.content.raids.toa.raid.encounter.onRoomAiTimer
+import org.rsmod.content.raids.toa.raid.encounter.onRoomApNpc1
+import org.rsmod.content.raids.toa.raid.encounter.onRoomApNpc3
+import org.rsmod.content.raids.toa.raid.encounter.onRoomNpcHit
+import org.rsmod.content.raids.toa.raid.encounter.onRoomNpcQueue
+import org.rsmod.content.raids.toa.raid.encounter.onRoomOpLoc1
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -14,37 +14,39 @@ class ZebakScript : PluginScript() {
     override fun ScriptContext.startup() {
         ZebakJugs.registerAttackOp()
         for (name in listOf(ZebakNpcs.ZEBAK, ZebakNpcs.ZEBAK_ENRAGED)) {
-            val type = npcType(name)
-            onNpcHit(type) { ZebakEncounter.onZebakHit(npc, hit) }
-            onNpcQueue(type, "queue.death") { ZebakEncounter.onZebakDeath(npc) }
+            onRoomNpcHit<ZebakEncounter>(name) { npc, hit -> zebakHit(npc, hit) }
+            onRoomNpcQueue<ZebakEncounter>(name, DEATH) { if (it === zebak) complete() }
         }
 
         for (name in listOf(ZebakNpcs.BLOOD_CLOUD, ZebakNpcs.BLOOD_CLOUD_SMALL)) {
-            onAiTimer(name) { ZebakEncounter.onCloudTick(npc) }
-            onNpcQueue(npcType(name), "queue.death") { ZebakEncounter.onCloudDeath(npc) }
+            onRoomAiTimer<ZebakEncounter>(name) { bloodMagic.cloudTick(it) }
+            onRoomNpcQueue<ZebakEncounter>(name, DEATH) { bloodMagic.removeCloud(it) }
         }
 
-        onApNpc1(ZebakNpcs.JUG) {
-            if (isWithinApRange(it.npc, 1)) ZebakEncounter.onJugMoved(player, it.npc, push = true)
+        onRoomApNpc1<ZebakEncounter>(ZebakNpcs.JUG) { room, jug ->
+            if (isWithinApRange(jug, 1)) room.jugs.move(player, jug, push = true)
         }
-        onApNpc3(ZebakNpcs.JUG) {
-            if (isWithinApRange(it.npc, 1)) ZebakEncounter.onJugMoved(player, it.npc, push = false)
+        onRoomApNpc3<ZebakEncounter>(ZebakNpcs.JUG) { room, jug ->
+            if (isWithinApRange(jug, 1)) room.jugs.move(player, jug, push = false)
         }
         onApNpc4(ZebakNpcs.JUG) { opNpc2(it.npc) }
         for (name in listOf(ZebakNpcs.JUG, ZebakNpcs.JUG_ROLLING)) {
-            val type = npcType(name)
-            onAiTimer(name) { ZebakEncounter.onJugTick(npc) }
-            onNpcHit(type) { ZebakEncounter.onJugBroken(npc) }
-            onNpcQueue(type, "queue.death") { ZebakEncounter.onJugBroken(npc) }
+            onRoomAiTimer<ZebakEncounter>(name) { jugs.tick(it) }
+            onRoomNpcHit<ZebakEncounter>(name) { jug, _ -> jugs.hit(jug) }
+            onRoomNpcQueue<ZebakEncounter>(name, DEATH) { jugs.hit(it) }
         }
 
-        onNpcQueue(npcType(ZebakNpcs.BOULDER), "queue.death") { ZebakEncounter.onBoulderDeath(npc) }
+        onRoomNpcQueue<ZebakEncounter>(ZebakNpcs.BOULDER, DEATH) { boulders.remove(it) }
 
-        onAiTimer(ZebakNpcs.WAVE) { ZebakEncounter.onWaveTick(npc) }
-        onAiTimer(ZebakNpcs.WAVE_BLOODY) { ZebakEncounter.onWaveTick(npc) }
-        onAiTimer(ZebakNpcs.WATER_CROC) { ZebakEncounter.onCrocTick(npc) }
-        onOpLoc1(ZebakLocs.CLIMBING_ROCK) {
-            ZebakEncounter.onClimbRock(player, it.loc.coords, it.loc.angle.id)
+        onRoomAiTimer<ZebakEncounter>(ZebakNpcs.WAVE) { waves.tick(it) }
+        onRoomAiTimer<ZebakEncounter>(ZebakNpcs.WAVE_BLOODY) { waves.tick(it) }
+        onRoomAiTimer<ZebakEncounter>(ZebakNpcs.WATER_CROC) { water.crocodileTick(it) }
+        onRoomOpLoc1<ZebakEncounter>(ZebakLocs.CLIMBING_ROCK) { room, rock ->
+            room.water.climbOut(player, rock.coords, rock.angle.id)
         }
+    }
+
+    private companion object {
+        const val DEATH = "queue.death"
     }
 }
