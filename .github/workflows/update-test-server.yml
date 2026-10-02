@@ -1,0 +1,185 @@
+name: Update Test Server
+
+permissions:
+  contents: read
+
+on:
+  workflow_run:
+    workflows: ["Release Server"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to deploy (defaults to the latest release)"
+        required: false
+        type: string
+      restart_only:
+        description: "Skip the download and only restart the running test server"
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: test-server-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: deploy & restart
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: >-
+      github.repository == 'OpenRune/OpenRune-Server' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.head_branch == 'production'))
+
+    env:
+      TEST_HOST: ${{ secrets.TEST_SERVER_HOST }}
+      TEST_USER: ${{ secrets.TEST_SERVER_USER }}
+      TEST_SSH_PORT: ${{ secrets.TEST_SERVER_SSH_PORT }}
+      REMOTE_DIR: ${{ secrets.TEST_SERVER_DIR }}
+      SERVICE: ${{ secrets.TEST_SERVER_SERVICE }}
+      GAME_PORT: "43594"
+      CENTRAL_PORT: "9091"
+      HTTP_PORT: "9090"
+
+    steps:
+      - name: Check deploy secrets
+        env:
+          SSH_KEY: ${{ secrets.TEST_SERVER_SSH_KEY }}
+        run: |
+          missing=""
+          [ -n "$TEST_HOST" ] || missing="$missing TEST_SERVER_HOST"
+          [ -n "$TEST_USER" ] || missing="$missing TEST_SERVER_USER"
+          [ -n "$TEST_SSH_PORT" ] || missing="$missing TEST_SERVER_SSH_PORT"
+          [ -n "$REMOTE_DIR" ] || missing="$missing TEST_SERVER_DIR"
+          [ -n "$SERVICE" ] || missing="$missing TEST_SERVER_SERVICE"
+          [ -n "$SSH_KEY" ] || missing="$missing TEST_SERVER_SSH_KEY"
+          if [ -n "$missing" ]; then
+            echo "Missing repository secrets:$missing"
+            exit 1
+          fi
+
+      - name: Download release
+        id: release
+        if: ${{ !inputs.restart_only }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          if [ -z "$TAG" ]; then
+            TAG="$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName -q .tagName)"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" \
+            --pattern openrune-server-release.zip --dir .
+          unzip -q openrune-server-release.zip -d deploy
+          for path in server.jar game.yml .data/cache .data/gamevals .data/gamevals-binary; do
+            if [ ! -e "deploy/$path" ]; then
+              echo "release $TAG is missing $path"
+              exit 1
+            fi
+          done
+          echo "downloaded release $TAG"
+
+      - name: Configure SSH
+        env:
+          SSH_KEY: ${{ secrets.TEST_SERVER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.TEST_SERVER_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          if [ -n "$KNOWN_HOSTS" ]; then
+            printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            ssh-keyscan -p "$TEST_SSH_PORT" -H "$TEST_HOST" > ~/.ssh/known_hosts 2>/dev/null
+          fi
+          chmod 600 ~/.ssh/known_hosts
+          cat >> ~/.ssh/config <<EOF
+          Host testserver
+            HostName $TEST_HOST
+            User $TEST_USER
+            Port $TEST_SSH_PORT
+            IdentityFile ~/.ssh/id_deploy
+            IdentitiesOnly yes
+            BatchMode yes
+            ServerAliveInterval 30
+          EOF
+          chmod 600 ~/.ssh/config
+          ssh testserver 'echo "connected as $(id -un)"'
+
+      - name: Stop test server
+        run: |
+          ssh testserver bash -s -- "$SERVICE" <<'EOS'
+          set -eu
+          service="$1"
+          export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+          systemctl --user stop "$service" || true
+          for i in $(seq 1 60); do
+            systemctl --user is-active --quiet "$service" || break
+            sleep 1
+          done
+          if systemctl --user is-active --quiet "$service"; then
+            echo "$service did not stop"
+            exit 1
+          fi
+          echo "$service stopped"
+          EOS
+
+      - name: Upload release
+        if: ${{ !inputs.restart_only }}
+        run: |
+          ssh testserver "mkdir -p '$REMOTE_DIR/.data'"
+          for dir in cache gamevals gamevals-binary; do
+            rsync -az --delete "deploy/.data/$dir/" "testserver:$REMOTE_DIR/.data/$dir/"
+          done
+          rsync -az deploy/server.jar "testserver:$REMOTE_DIR/"
+          rsync -az deploy/game.yml "testserver:$REMOTE_DIR/game.yml.default"
+          [ -f deploy/.data/xteas.json ] && \
+            rsync -az deploy/.data/xteas.json "testserver:$REMOTE_DIR/.data/" || true
+          ssh testserver "cd '$REMOTE_DIR' && { [ -f game.yml ] || cp game.yml.default game.yml; }"
+
+      - name: Start test server
+        run: |
+          ssh testserver bash -s -- "$SERVICE" "$GAME_PORT" "$CENTRAL_PORT" "$HTTP_PORT" <<'EOS'
+          set -eu
+          service="$1"; shift
+          export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+          systemctl --user start "$service"
+          command -v ss >/dev/null || { echo "ss unavailable, skipping port check"; set --; }
+          for i in $(seq 1 300); do
+            if ! systemctl --user is-active --quiet "$service"; then
+              echo "$service exited during startup"
+              journalctl --user -u "$service" -n 40 --no-pager || true
+              exit 1
+            fi
+            missing=""
+            for port in "$@"; do
+              ss -ltnH "sport = :$port" 2>/dev/null | grep -q . || missing="$missing $port"
+            done
+            [ -z "$missing" ] && break
+            sleep 1
+          done
+          if [ -n "$missing" ]; then
+            echo "ports not listening after startup:$missing"
+            journalctl --user -u "$service" -n 60 --no-pager || true
+            exit 1
+          fi
+          echo "$service up, listening on $*"
+          journalctl --user -u "$service" -n 15 --no-pager || true
+          EOS
+
+      - name: Report
+        if: always()
+        run: |
+          if [ "${{ job.status }}" != "success" ]; then
+            echo ":x: Test server update failed - the service may be stopped" >> "$GITHUB_STEP_SUMMARY"
+          elif [ "${{ inputs.restart_only }}" = "true" ]; then
+            echo ":arrows_counterclockwise: Restarted the test server" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo ":rocket: Deployed release \`${{ steps.release.outputs.tag }}\` to the test server" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "Game $GAME_PORT, central $CENTRAL_PORT, http $HTTP_PORT" >> "$GITHUB_STEP_SUMMARY"
