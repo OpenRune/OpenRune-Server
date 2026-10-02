@@ -17,6 +17,7 @@ import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.content.raids.toa.raid.ToaPath
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
@@ -209,18 +210,28 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
             if (tailNpc != null && tailNpc.isSlotAssigned) {
                 tailNpc.transmog(npcType(ZebakNpcs.TAIL_DEAD), Int.MAX_VALUE)
             }
-            if (hero != null) dropFang(hero)
+            dropLoot(hero)
         }
     }
 
-    private fun dropFang(hero: Player) {
-        if (hero !in players) return
+    private fun dropLoot(hero: Player?) {
         val tile = coords(ZebakCoords.DROP)
-        val fang =
-            deps.objRepo.add(ZebakObjs.FANG, tile, FANG_DESPAWN, hero, reveal = FANG_DESPAWN + 1)
-        val dead = npcType(ZebakNpcs.ZEBAK_DEAD).id
-        ClientScripts.lootTrackerAddLoot(hero, dead, deps.mapClock.cycle, fang.type, fang.count)
+        if (hero != null && hero in players) dropFor(hero, ZebakObjs.FANG, tile)
+        for (player in players) {
+            if (!ownsBook(player)) dropFor(player, ZebakObjs.BOOK, tile)
+        }
     }
+
+    private fun dropFor(player: Player, obj: String, tile: CoordGrid) {
+        val drop = deps.objRepo.add(obj, tile, DROP_DESPAWN, player, reveal = DROP_DESPAWN + 1)
+        val dead = npcType(ZebakNpcs.ZEBAK_DEAD).id
+        ClientScripts.lootTrackerAddLoot(player, dead, deps.mapClock.cycle, drop.type, drop.count)
+    }
+
+    private fun ownsBook(player: Player): Boolean =
+        player.bookOwned == 1 ||
+            ZebakObjs.BOOK in player.inv ||
+            player.invMap[BANK]?.contains(ZebakObjs.BOOK) == true
 
     private fun applyScaling(npc: Npc, partySize: Int) {
         val type = npc.type
@@ -485,7 +496,10 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val DEATH_SHAKE_UP_DOWN = 5
         private const val DEATH_SHAKE_FORWARDS = 2
         private const val DEATH_MODEL_DELAY = 3
-        private const val FANG_DESPAWN = 18_000
+        private const val DROP_DESPAWN = 18_000
+        private const val BANK = "inv.bank"
+
+        private val Player.bookOwned by intVarBit(ZebakVarbits.BOOK_OWNED)
         private const val DAMAGED_SOUND_RADIUS = 10
         private const val SCRIPT_SEQ_PREFETCH = 1846
         private val SPECIAL_THRESHOLDS = doubleArrayOf(0.85, 0.70, 0.55, 0.40)
