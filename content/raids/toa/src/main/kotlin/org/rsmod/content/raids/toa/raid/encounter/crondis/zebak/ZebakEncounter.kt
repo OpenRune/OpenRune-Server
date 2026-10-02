@@ -14,6 +14,7 @@ import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.output.Camera
+import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.raid.ToaPath
@@ -194,6 +195,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         boss.anim(ZebakSeqs.DEATH)
         tail?.anim(ZebakSeqs.TAIL_DEATH)
         val tailNpc = tail
+        val hero = boss.findHero(deps.playerList)
         schedule(DEATH_SHAKE_DELAY) {
             for (player in players) {
                 Camera.camShake(player, CamShakeAxis.LEFT_RIGHT, DEATH_SHAKE_LEFT_RIGHT, 0, 0)
@@ -207,7 +209,17 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
             if (tailNpc != null && tailNpc.isSlotAssigned) {
                 tailNpc.transmog(npcType(ZebakNpcs.TAIL_DEAD), Int.MAX_VALUE)
             }
+            if (hero != null) dropFang(hero)
         }
+    }
+
+    private fun dropFang(hero: Player) {
+        if (hero !in players) return
+        val tile = coords(ZebakCoords.DROP)
+        val fang =
+            deps.objRepo.add(ZebakObjs.FANG, tile, FANG_DESPAWN, hero, reveal = FANG_DESPAWN + 1)
+        val dead = npcType(ZebakNpcs.ZEBAK_DEAD).id
+        ClientScripts.lootTrackerAddLoot(hero, dead, deps.mapClock.cycle, fang.type, fang.count)
     }
 
     private fun applyScaling(npc: Npc, partySize: Int) {
@@ -473,6 +485,7 @@ class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId:
         private const val DEATH_SHAKE_UP_DOWN = 5
         private const val DEATH_SHAKE_FORWARDS = 2
         private const val DEATH_MODEL_DELAY = 3
+        private const val FANG_DESPAWN = 18_000
         private const val DAMAGED_SOUND_RADIUS = 10
         private const val SCRIPT_SEQ_PREFETCH = 1846
         private val SPECIAL_THRESHOLDS = doubleArrayOf(0.85, 0.70, 0.55, 0.40)

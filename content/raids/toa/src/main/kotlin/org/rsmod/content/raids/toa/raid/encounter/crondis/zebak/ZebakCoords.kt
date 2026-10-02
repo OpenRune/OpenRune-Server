@@ -8,6 +8,8 @@ internal object ZebakCoords {
 
     val CENTRE = CoordGrid(3922, 5408, 0)
 
+    val DROP = CoordGrid(3927, 5408, 0)
+
     val MIDDLE = CoordGrid(3926, 5408, 0)
 
     val THROW_SOUND = CoordGrid(3927, 5408, 0)
