@@ -10,8 +10,6 @@ import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.vars.typePlayerUidVarn
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.script.onAiTimer
-import org.rsmod.api.script.onNpcHit
 import org.rsmod.api.script.onNpcQueue
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
@@ -20,8 +18,10 @@ import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.api.script.onOpObj3
-import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
+import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.content.raids.toa.raid.encounter.onRoomAiTimer
+import org.rsmod.content.raids.toa.raid.encounter.onRoomNpcHit
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.inv.InvObj
@@ -53,13 +53,13 @@ constructor(
             onOpNpcU(palmType, containerType) { waterPalm() }
         }
 
-        onAiTimer(CrondisNpcs.CROCODILE) { CrondisPuzzleEncounter.onCrocodileTick(npc) }
+        onRoomAiTimer<CrondisPuzzleEncounter>(CrondisNpcs.CROCODILE) { crocodiles.ai(it) }
 
         val crocodileType = ServerCacheManager.getNpc(CrondisNpcs.CROCODILE.asRSCM(RSCMType.NPC))!!
-        onNpcHit(crocodileType) {
+        onRoomNpcHit<CrondisPuzzleEncounter>(CrondisNpcs.CROCODILE) { croc, hit ->
             if (hit.isFromPlayer) {
-                val player = hit.resolvePlayerSource(playerList) ?: return@onNpcHit
-                CrondisPuzzleEncounter.onCrocodileHit(npc, player)
+                val player = hit.resolvePlayerSource(playerList) ?: return@onRoomNpcHit
+                crocodiles.hitBy(croc, player)
             }
         }
         onNpcQueue(crocodileType, "queue.com_retaliate_player") { crocodileRetaliate() }
@@ -72,7 +72,7 @@ constructor(
     }
 
     private val ProtectedAccess.room: CrondisPuzzleEncounter?
-        get() = player.currentRaid?.encounterOf(player) as? CrondisPuzzleEncounter
+        get() = ToaRooms.of<CrondisPuzzleEncounter>(player)
 
     private suspend fun ProtectedAccess.takeContainer() {
         val room = room ?: return

@@ -72,6 +72,9 @@ open class ToaEncounter(
         return room.inChallengeArea(static)
     }
 
+    internal fun targets(): List<Player> =
+        players.filter { inChallengeArea(it) && !raid.isGhost(it) && !raid.isDying(it) }
+
     open fun arrival(): Arrival = Arrival(coords(room.randomSpawn(deps.random)), facing = null)
 
     open fun onBuilt() {}
@@ -224,6 +227,28 @@ open class ToaEncounter(
     open fun debugComplete() {
         start()
         complete()
+    }
+
+    internal fun spawn(type: String, tile: CoordGrid, facing: Direction? = null): Npc {
+        val npc = Npc(type, tile)
+        if (facing != null) npc.respawnDir = facing
+        deps.npcRepo.add(npc, Int.MAX_VALUE)
+        adopt(npc)
+        return npc
+    }
+
+    internal fun adopt(npc: Npc) {
+        npc.respawns = false
+        ToaRooms.adopt(npc, this)
+    }
+
+    internal fun release(npc: Npc) {
+        ToaRooms.release(npc)
+    }
+
+    internal fun despawn(npc: Npc) {
+        release(npc)
+        if (npc.isSlotAssigned) deps.npcRepo.del(npc, Int.MAX_VALUE)
     }
 
     fun schedule(ticks: Int, action: () -> Unit) {

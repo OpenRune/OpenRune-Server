@@ -60,7 +60,8 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         val spawns = room.crocSide.spawns
         val count = minOf((room.teamSize + 1) / 2, spawns.size)
         for (i in 0 until count) {
-            val croc = room.spawnRouted(CrondisNpcs.CROCODILE, spawns[i], facingPalm(spawns[i]))
+            val tile = spawns[i]
+            val croc = room.spawn(CrondisNpcs.CROCODILE, room.coords(tile), facingPalm(tile))
             croc.defaultMoveSpeed = MoveSpeed.Crawl
             croc.noneMode()
             room.palm?.let { croc.faceSquare(it.coords, it.size, it.size) }
@@ -93,7 +94,7 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
     }
 
     private fun chooseTarget(croc: Npc): Any? {
-        val players = room.hazardTargets()
+        val players = room.targets()
         players
             .firstOrNull { croc.isWithinDistance(it, AGGRO_RANGE) && it.containerWater() > 0 }
             ?.let { return it }
