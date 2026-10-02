@@ -1,6 +1,7 @@
 package org.rsmod.content.raids.toa.raid.encounter
 
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.raid.ChallengeResult
@@ -12,7 +13,7 @@ import org.rsmod.content.raids.toa.raid.ToaRaidDeps
 import org.rsmod.content.raids.toa.raid.ToaRaidManager
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.personalContribution
-import org.rsmod.content.raids.toa.raid.toaRestore
+import org.rsmod.content.raids.toa.raid.toaBossRestore
 import org.rsmod.content.raids.toa.raid.wipeAftermath
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -174,14 +175,13 @@ open class ToaEncounter(
         }
     }
 
-    // TODO: check the restore against a capture.  called `reset()` here, which
     @OptIn(InternalApi::class)
     private fun recoverPlayers() {
         val challengeSpawn = room.challengeSpawn
-        val restore = room.kind != ToaRoom.Kind.PUZZLE
+        val boss = room.kind != ToaRoom.Kind.PUZZLE
         for (player in players) {
             raid.revive(player)
-            if (restore) player.toaRestore(prayersOff = false)
+            if (boss) player.toaBossRestore() else player.cureAllToxins()
             if (challengeSpawn != null && !inChallengeArea(player)) {
                 val dest = coords(challengeSpawn)
                 deps.launcher.launchLenient(player) { telejump(dest, TeleportType.Exempt) }
