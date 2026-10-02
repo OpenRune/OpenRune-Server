@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:e8ee61ae97718450ac5490721b9315ad6d4bf0c2c224a5aabed220f67069088d",
+  "claims": [
+    {
+      "id": "claim_10a8cb4e8e5f42b69bb2bb3a6c44d277",
+      "statement": "objtx Transaction executes insert/delete/transfer/swap/dump/compact queries and throws TransactionCancellation on the first error result, aborting the remaining queries.",
+      "evidence": [
+        {
+          "resource": "repo://engine/objtx/src/main/kotlin/org/rsmod/objtx/Transaction.kt#L1-L70",
+          "version": "repo-lines-v1:sha256:bd8323c797ff47d38d99020f7dbf2ed4f107ff04292dfa0527266b47b9e9f473:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyNTEzYjQ4MTg3Y2U3OGFjZjMyNjE4Y2IzNmYxOGYwYjhlNWM0OTM0YmVhYzkxZjJmN2EwYjJhNzYxMzM0MmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlOTFhODQ1ZDEzNWQ1ZjFhZjNmZGIyNjkxODQwZjMyZjA5NDlhODI3MDU2M2FjODdlNmZkNmM1MWY4ZmZhYTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ca4991e05e85447790f6aa70ad6bd6a7",
+      "statement": "InvTransactions.transaction swallows TransactionCancellation and commits all inventory changes only when every query succeeded and autoCommit is enabled.",
+      "evidence": [
+        {
+          "resource": "repo://api/invtx/src/main/kotlin/org/rsmod/api/invtx/InvTransactions.kt",
+          "version": "repo-file-v1:sha256:7ae2fa0072b22954b101476377b77d0a29ee2649da4b3554b0c8f911f599392f"
+        }
+      ]
+    },
+    {
+      "id": "claim_90ed6c83708d49c0b5fa5913afcdcfe9",
+      "statement": "InvTransactions builds cert, transform, placeholder, stackable and dummy-item lookups from all cache item types.",
+      "evidence": [
+        {
+          "resource": "repo://api/invtx/src/main/kotlin/org/rsmod/api/invtx/InvTransactions.kt",
+          "version": "repo-file-v1:sha256:7ae2fa0072b22954b101476377b77d0a29ee2649da4b3554b0c8f911f599392f"
+        }
+      ]
+    },
+    {
+      "id": "claim_f5d625f2da304ae2ba42e7153c0ce87a",
+      "statement": "Player inventory helpers such as invAdd, invDel, invTransfer, invSwap and invTakeFee wrap single-query transactions, and invAdd can redirect items into virtual storage hooks unless ignoreVirtualStorage is set.",
+      "evidence": [
+        {
+          "resource": "repo://api/inv-storage/src/main/kotlin/org/rsmod/api/inv/storage/PlayerItemStorageHook.kt",
+          "version": "repo-file-v1:sha256:24d0a9f9681bb73ad8fd59680bb3bf0ea66bb47d16e146a983f0956f08b57224"
+        },
+        {
+          "resource": "repo://api/invtx/src/main/kotlin/org/rsmod/api/invtx/InvTransactionExtensions.kt#L20-L130",
+          "version": "repo-lines-v1:sha256:a2962a0844a4681c539c3cc49f74eb40ac3d8590dbaf9ac746cf065f915dac7f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTExLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5NmNmMDA3OTIzNDI3OTJhYTcyZjNlY2RkNTg1NDU4MmUzOGVmMTcxN2M2MWUyNGU3Zjc4NzYwMmE0ZTQ4MGIxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIyODg0NTdmNTg1ODZkYWVhNTU1NjgxYzAwYzA4NDg3Yjg0NDhlNGIyNWE1ZTgyNTVhYjliZWZmZWQ4NjRmOGU0IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmNDIzYTNmMWQ4YmFiZDEwYzkzYzZkNzU3NDAzYzBkOTQ1YzY3YjRmYWY3M2JjNDExN2ZhNmU5M2ZhMzBhMDVhIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0NzNjMzI0NDk5NmFmMmEyNDdmZGRiOTkxYTlkOTk1MmM0ZTFmNTBiMWRiMjQ2ZDI2MTlhZTEwZTkxYWZmNTNlIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_ee8d08f563db469b949c072ab472cfce",
+      "statement": "Player state is exposed to content through varp and varbit property delegates (int, bool, string, coord, uid, typed and enum variants) keyed by gameval symbols.",
+      "evidence": [
+        {
+          "resource": "repo://api/player/src/main/kotlin/org/rsmod/api/player/vars/VarPlayerTypeDelegates.kt#L24-L130",
+          "version": "repo-lines-v1:sha256:f641071ca8b21fbedea65f48c2bfdc2be86c29a814c049369cc3a86f8f2e617d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhMjQ2N2FhYzYzOTFkNDU5ZGZiMjk2ODVjZmE4OTYwZGFmOGFiZmMxNjIzNGM3NjVmNzY2MzZkOWFiYzUzYzJhIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNTUxYjhkYzIzYjQwNWVjNDFhODgxYTY3YzE2NjIxNmY5NDczNTkwNTdhYmRkZTg3MGZjMDg3N2IwMzZhNjcwIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJiNjMyYTY3ZDUwYzE4ZGFlNzVhNzZlYzVmZWQ3ZDliMDEwZjg5YjQ2MDM4Mzk3MWFjMGIyZDNiYmM1MjA2ZDMyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIwZWRmNDIwZjJjM2E3ZTE4YWUxZGZjNmQ3YTA0MzQ5MGFlMzc2NGExMDllN2MxNWE0NWM2NGU4ODA1ZjQ5YzQ5In0"
+        },
+        {
+          "resource": "repo://content/areas/city/draynor/src/main/kotlin/org/rsmod/content/areas/city/draynor/ErnestLeverPuzzle.kt#L17-L20",
+          "version": "repo-lines-v1:sha256:20700e9a5068794c9e4928f4d37592a8592e77c8ee38bce54677229dc8daac65:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzA2MTZhNmMxYzMzM2QwZDAzNDYxOTRiZWIzMTJlYWRhNjRlNGRkNmZlNzk4NDUxMmRjOWFmMGQzYmE0ZTJhOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGE1NDFlYzQyZmJiZGQwZmE3NTc5ZDlmMjQwODgyMDE2NGQ0ZTk2ODFmYmYxMmYxODQyNWIzZWRlZjVlMzdhNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWI5NjBkYmE1YmViZjViYWQzZmFjZTJkNGFkZTEwOGQ3ZDAwNjkxMGY2ZmMzYzI0NDEyMjhkOTI0YjRiMDllZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzExMWE3ODQ2ZDc1ZjVhYjFkNmRiYjEzYjdmMzBkMGQ4NzNmOTk5OWMwODY0MDk5YjJiZmJkNzk3YjFjODQ0MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d441896ff4f24b82b75c30d582b3c0a2",
+      "statement": "AttributeKey values persist with the character only when a persistenceKey is supplied, and can be flagged to reset on death or as temporary.",
+      "evidence": [
+        {
+          "resource": "repo://api/attr/src/main/kotlin/org/rsmod/api/attr/AttributeKey.kt",
+          "version": "repo-file-v1:sha256:65ec0c491274c35bd4d83df50ce7a6a0de5970663f2064f5e09c8e61440c18f6"
+        }
+      ]
+    },
+    {
+      "id": "claim_0803793b743d433e8abbea114e3e5450",
+      "statement": "Shops.open uses a single global inventory for shared-scope shop invs and a per-player inventory otherwise, records the opened shop, transmits both inventories and opens the shopmain/shopside interfaces.",
+      "evidence": [
+        {
+          "resource": "repo://api/shops/src/main/kotlin/org/rsmod/api/shops/Shops.kt#L96-L188",
+          "version": "repo-lines-v1:sha256:f1336d610a36f950ecb50bfdb8baf72641f0e50c4b49ccd08f4d7e654d156b2e:eyJzZWxlY3RlZExpbmVDb3VudCI6OTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5MDM3ZTZhZWMyNjljZTQyY2Y3N2UwMjY1NGYzOTUwYzU5MWE2YzM1MTE4MjgyMzM2MDNmM2EyYjU4NTIxZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYxYjhkOWI2YzgzMTFmNjY0YWMzNDVhNDZmNGEwMDNlNDY4OWY0NjBkYjBhMmFhYmRlOThkZmE4MmVkN2U4M2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

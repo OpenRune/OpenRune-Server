@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:55c66a3887a9d76b2111c5cc15e65ed40541911d23a68af97dbeda3cab78ed01",
+  "claims": [
+    {
+      "id": "claim_afec6fb9d2fc48e1a2fe49fd72d9d995",
+      "statement": "NpcHuntProcessor acquires targets from the NPC's cache hunt mode and hunt range, skipping NPCs that are invalid targets, delayed, ignoring combat interactions, or without a hunt mode, and gating non-player hunts on range, hunt type, current interaction, nobody-near pausing and the hunt clock rate.",
+      "evidence": [
+        {
+          "resource": "repo://api/game-process/src/main/kotlin/org/rsmod/api/game/process/npc/hunt/NpcHuntProcessor.kt",
+          "version": "repo-file-v1:sha256:9a3c4998e8fd9c8315aee6a14de7bb484ca5d41f2ec3d8e12da0b5ee7656e9fe"
+        }
+      ]
+    },
+    {
+      "id": "claim_70a8cf9aae1e425f99d3e76c736d3f71",
+      "statement": "NpcModeProcessor dispatches each NPC's mode to wander, patrol, escape, follow, face and AI op processors for players, NPCs, locs and objs, with OpPlayer6-8 still unimplemented.",
+      "evidence": [
+        {
+          "resource": "repo://api/game-process/src/main/kotlin/org/rsmod/api/game/process/npc/mode/NpcModeProcessor.kt#L22-L60",
+          "version": "repo-lines-v1:sha256:7101d1aae1ad38365f01fbb3458f95d3211956f0f430a14cbe9603f80794cb4e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllOGYzOTM2MWFkMjAwNDliOWUxOWFhMDFlNmY2N2IyNGU4YTUyMzE0MDQ3ZWM2ZmRhZWQzMTNlNDNlMDg1N2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhMDYyMjQzOTk0M2E3Njg1NTBkYTY1NTI0NjMwMGFlZmVjYWI5NTZlMDhhOGJiODJmODMwMmRmNDQxZTNkN2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3NzZhODhhOTZhMzljZWVjOGNhMWEzMzgwMzczMGU4YWY0MzBhMDE1ZDY1MGZmNDMzOWExZmFmYmFiYjAzYjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkOWU1Y2UyZTMwODQ2YzY4YTdmNWM5OWVmOTM5NjhmN2VlMDRiNzliNzA0NWQ3OTgwNTZlZDM0M2M5MjQ4NjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2cfaa7e0b3564434b448f062d716bfaf",
+      "statement": "ControllerMainProcess advances each controller's coroutine, AI timers, queues and timers when it is not delayed, deleting controllers whose processing fails.",
+      "evidence": [
+        {
+          "resource": "repo://api/game-process/src/main/kotlin/org/rsmod/api/game/process/controller/ControllerMainProcess.kt",
+          "version": "repo-file-v1:sha256:9771c68760c0457c9920be0f079ee5d08ccd0a4a0268a170ab9ac99f44e9e6eb"
+        }
+      ]
+    },
+    {
+      "id": "claim_b2ad46311bd7468c9128de6ae01fc980",
+      "statement": "Boss specs are validated when built by the boss DSL, so invalid specs fail at plugin startup.",
+      "evidence": [
+        {
+          "resource": "repo://api/bosses/src/main/kotlin/org/rsmod/api/bosses/dsl/BossDsl.kt",
+          "version": "repo-file-v1:sha256:42163091e5eb2e599254a2cf03c57750ed2f8e1d3697296a5e7966ee04b0ba1f"
+        },
+        {
+          "resource": "repo://docs/boss-dsl.md#L32-L60",
+          "version": "repo-lines-v1:sha256:158ca47e1abdcdeb9a6605a47679092b702eff9348cb9bc95061b2cb21b7ff3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZTM0ODQxZDQ5Y2U5ZWMzYTA1MjgxZjA1NGUyNGQ3Y2M0MDBkYzA3MjE0OTMxNzU5ZWQzN2E3NWU1ZWVlZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc3NmVjMWNiOTYxNTc0Mzk5YTU1ZDBiNzE1NWEwODQwMjQzMWQwOWEwNDczNzkwNmZmZTE3N2QxYzhjNDdmNzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkYjkxYzc4MjgxMTE0MzY4NDEzNGQ5MWE0NzExZmE0NmJmNmQ4NDUwODA4NjZhNmYyYjEwNTU5MmRjYWYzNzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7c8f384934a447c991c855921ab6c02b",
+      "statement": "BossCombat.register hooks AI op/ap player option 2 for each boss NPC type and runs a per-tick loop of phase transitions, triggers, busy and attack-ready gates, priority picks and selector picks.",
+      "evidence": [
+        {
+          "resource": "repo://api/bosses/src/main/kotlin/org/rsmod/api/bosses/runtime/BossCombat.kt",
+          "version": "repo-file-v1:sha256:e830a1628329f5a0e892fa170b7437bc7f540ffdd68e326816aa13d8ecec9ec0"
+        },
+        {
+          "resource": "repo://docs/boss-dsl.md#L334-L360",
+          "version": "repo-lines-v1:sha256:be36071d9f7f99bfaac6f0db1f6e076d8189ce38553f964ff191c408cd28919e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkYmRjNjQxZjY5NDQzZjdkYmU5ZDI2YjQwYTZhNDAxMjg1OTkwZmJiZWUzZTg0ZDk1ODU4NTM3Y2VkOGM3MTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRiM2RmMWNmMzhlZWE2NzVkMDVhNDQ2NGU3ZDcyM2Q0ODFmMzBmOTQxOGVmZDdlZjQyNGRlMDdjZDY2N2VkODEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NTIwNDYyNmFjNDhkN2FjN2RjOGViZWIzNGFjOWIwZjViNjM0YjY0MmMzNGM4ZWEzNzk2ZWNmNzMyNmM2OTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e01db49719654076b604755441b09820",
+      "statement": "BossPluginScript registers a single default spec in startup; registering multiple specs for a type requires content to call startEncounter for each NPC before it fights.",
+      "evidence": [
+        {
+          "resource": "repo://api/bosses/src/main/kotlin/org/rsmod/api/bosses/runtime/BossPluginScript.kt",
+          "version": "repo-file-v1:sha256:23efc1b8b8c3fa856ca064586f690abfab2c4f6a3df3bb00057a141bcbde83f0"
+        },
+        {
+          "resource": "repo://docs/boss-dsl.md#L465-L500",
+          "version": "repo-lines-v1:sha256:31e65e68a58c15479689f0f68b6c223993c566db9dd556c6925be6ef8126cf85:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjZGNhMDllZDE3N2M2NGZiNWI0ZDY3ODlhZGUxYWZjZjRkZDA1MDAwYWYyMDYxZWVkMDU5MmRmNjIzYmUyNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjYTAzOGMyZmEzYzczZjEwYjE1ZjQ3MWI2NTBhMTM2N2FmNzRmMTZiZDEzYzRmNDc3NmYzZDY5ZjNiNzFjZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY5NGZlN2YzNDZlNWZhOTBhYmFhZGQxM2I1ZmU1YTc4MjkzOTgxMDJjNDg0ZjEzZTIzMjJhOTI0OWI5MWVlNDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxODRiNzM4N2MzMDM3ZmQwNzM2NTliMTRkYjBkZDE0OWU1ZTE2ZDQ0NTRjYmE0MWFkNDdhODM4ODQ4Mjg4NDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_58b718cf37d047648401209ca1428875",
+      "statement": "The boss HP bar is controlled by the boss_hp_bar_mode NPC param with values NEVER, ON_ATTACK and ON_ENTER.",
+      "evidence": [
+        {
+          "resource": "repo://docs/boss-hp-bar.md#L1-L30",
+          "version": "repo-lines-v1:sha256:3a1b5981086e0b144f9253dffa6a19ce9a552d3ab8b0326aab555ce62c9b4d4c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhNDYwOTEyN2NhNjg4ZWM5ZGQ5OWFiNTVhY2Q0ZTc0MjJjZTJhNzhmMmRjMWFiY2VjMmZiNDQ3MzIwOTk2MTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjZmMwMGY4ZGYwNGUwMTVlMTRmNzhhMmQ0NjVjZjdlODNjOWE0NzVkOTczNTQwYTJlYzQyYjVkMjdiNTllNmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZmMmY2YjU3ZjJlYjU3NTNjYjU0OTUyNjMyMDgyNzE5Yjg0N2FkNzBmMTAxOTdjNzE1ZTRhODNhMmRmYzMzODIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

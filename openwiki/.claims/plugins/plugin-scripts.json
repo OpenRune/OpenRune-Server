@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:4bb5fbcdde16c80b95ee77808eb12b3f53a136b4976fe152e9e4059997eaf538",
+  "claims": [
+    {
+      "id": "claim_1e96f262e99f447f8b73936f5c67ad47",
+      "statement": "PluginClasspathScan performs a single shared ClassGraph scan over org.rsmod.api and org.rsmod.content plus the drops/tables resource root, rejecting integration test packages, and can be released and lazily rebuilt.",
+      "evidence": [
+        {
+          "resource": "repo://engine/plugin/src/main/kotlin/org/rsmod/plugin/scan/PluginClasspathScan.kt",
+          "version": "repo-file-v1:sha256:c4e4c87030f2bc54785e2b372b544297b7d0c32b5585d1a21914bc110adaa0fc"
+        }
+      ]
+    },
+    {
+      "id": "claim_9ab3e09f472446d5bbc4d954a6cb9263",
+      "statement": "PluginModuleLoader instantiates only direct PluginModule subclasses using their no-arg constructors.",
+      "evidence": [
+        {
+          "resource": "repo://server/shared/src/main/kotlin/org/rsmod/server/shared/loader/PluginModuleLoader.kt",
+          "version": "repo-file-v1:sha256:8aee6e143052f6affa969e5592cc2f8b3e4ce2a69fe3f3b188fa8e2c99e86a8f"
+        }
+      ]
+    },
+    {
+      "id": "claim_74d32a67420d4ec3a4627988a3d6b80f",
+      "statement": "PluginScriptLoader constructs every non-abstract, non-interface PluginScript subclass through the Guice injector and rethrows construction failures unless lenient.",
+      "evidence": [
+        {
+          "resource": "repo://server/shared/src/main/kotlin/org/rsmod/server/shared/loader/PluginScriptLoader.kt",
+          "version": "repo-file-v1:sha256:f1eb071fc02e0c4b2fb143f35149c2e0f78faba365c59624b3e68348b66851ea"
+        }
+      ]
+    },
+    {
+      "id": "claim_c9fc7c2d97a74dfabbc1dc7125edeb1d",
+      "statement": "PluginModule provides helpers for singleton, instance, provider and base-to-implementation bindings plus Multibinder set bindings for extensible contributions.",
+      "evidence": [
+        {
+          "resource": "repo://engine/plugin/src/main/kotlin/org/rsmod/plugin/module/PluginModule.kt",
+          "version": "repo-file-v1:sha256:3b2aed6bb3741e92162a502482aa9101019626a997bd59abb77ecb9f752ca007"
+        }
+      ]
+    },
+    {
+      "id": "claim_cd944e3994d4497bb9a97d05e0a8e5df",
+      "statement": "ScriptContext exposes the EventBus, CheatCommandMap and EngineQueueCache to scripts, and onCommand registers cheat commands on the CheatCommandMap.",
+      "evidence": [
+        {
+          "resource": "repo://api/script/src/main/kotlin/org/rsmod/api/script/ScriptEventExtensions.kt#L13-L14",
+          "version": "repo-lines-v1:sha256:cbf54a44dd5cd0de10a6fea861b024d6dcd6181666f611b97b371710103d71ac:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWU2ODg5ZDRiYTExZjY0MTcxZDBiMTM3NzA2ZmMzODM5YTIyNzk2MTRjNmNiMzhkOGIyZTk1ZGY5MzQ5OTEzMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzFmMjFjYmE4MTdkZTQ4Yjg1MTBmNDliYzRiMDM2ZTczODY0N2RiN2UxN2Y2MWFiZTI2ZDJhYjdiZjQ3MjVjMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2RiNGM2MTljNWI4NmMzMGYzODAxOTg5OWE1Y2YxOWUzMjEzNmRjYTVmODJlNTIyMTc2MDMzZWQzMzNhNzVmMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzg4MDM0NDBmZjBlODRlNzE5MmRlMWM2NzBmZDU4NWIwY2VmODk2MzYzMTQ1MjdlNmExNDM2YTkzMGYzMDVhNiJ9"
+        },
+        {
+          "resource": "repo://engine/plugin/src/main/kotlin/org/rsmod/plugin/scripts/ScriptContext.kt",
+          "version": "repo-file-v1:sha256:cacfd575d686a93d4c561e8a14ee88115adbcbe89000c71df6f90c947f11f873"
+        }
+      ]
+    },
+    {
+      "id": "claim_1ecaf957b24d4626b2af7605a61c91fc",
+      "statement": "Lumbridge's Bob binds talk and trade options with onOpNpc1/onOpNpc3 and marks the repair option with onUnimplementedOpNpc4, using a suspend dialogue with choice and chat lines.",
+      "evidence": [
+        {
+          "resource": "repo://content/areas/city/lumbridge/src/main/kotlin/org/rsmod/content/areas/city/lumbridge/npcs/Bob.kt",
+          "version": "repo-file-v1:sha256:3b967791c443b12bde3fc4a53fe4a9ea2f1560bcba519053a3c90e68d95dfbd5"
+        }
+      ]
+    },
+    {
+      "id": "claim_420f13597ab841d9bce630e5d4db0057",
+      "statement": "onUnimplementedOpNpc handlers in script-advanced register protected events for NPC ops whose content is not implemented yet.",
+      "evidence": [
+        {
+          "resource": "repo://api/script-advanced/src/main/kotlin/org/rsmod/api/script/advanced/NpcScriptEventExtensions.kt#L29-L32",
+          "version": "repo-lines-v1:sha256:b6a5154a4499207b6bed527db710769fb47cf4adb7ca15a1aa1f9329a136ae8b:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTkxNmZmNzRiNGQ2NzM0ZDcwODM2NTEzZjBiOWFkZTAwOGRhODZiZWE4NWY4YzAzZjBjZjQ4Y2FmYjcwMGUwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTFhNzJkODZkODdlYzE3OGNjN2RlOTE1YjBiZDcyOWU0ZjI1Yzk5ZGZjYWM3MDA4YTg0NDY5NzBiMzZmODdjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTFmMTY1NWU4ODRjMWNlMTRlNTRkNzI3ZjQ3NTQ5Yjg4NDdhMGY0N2M2ZDUwMGJlZDk4MzBhYmQ5NmQ1ZGQ1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjg1Mjg3NTcyM2YwZmJmYmU0OWM3YjgxZTM4ZmExODA5MTVlOTcyODRmZTU5OWE1YWM3ODg2MTdmOWMwNDExMyJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

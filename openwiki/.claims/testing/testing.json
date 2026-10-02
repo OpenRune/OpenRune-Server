@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:8e9eaf84ab0cd9b227e4df3c50b509f80bf719f195461286b2a42bfe8c058045",
+  "claims": [
+    {
+      "id": "claim_b1bd67c99a16424f85ed9cd48a1fc002",
+      "statement": "The test convention configures JUnit 5 with a 2 GB heap and concurrent parallel execution of classes and methods by default.",
+      "evidence": [
+        {
+          "resource": "repo://build-logic/src/main/kotlin/test-conventions.gradle.kts",
+          "version": "repo-file-v1:sha256:2e16a5c97ddba422fd3d60c148ae5d1f0448287f00d531e0dff29010989f9f2b"
+        }
+      ]
+    },
+    {
+      "id": "claim_ca21da25aa5d4a5ebd29d0b91f7ae283",
+      "statement": "game-cache-test-conventions runs tests from the repository root and declares the SERVER cache directory and gamevals.dat as test task inputs.",
+      "evidence": [
+        {
+          "resource": "repo://api/game-process/build.gradle.kts#L1-L5",
+          "version": "repo-lines-v1:sha256:84af7ff0edc76f2f6892d30b42f6b2c317c5265c18068ef9aeebeae781495be5:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmU2NTcwZjE5YTIyMzA3ZTMyYzFjYWMzMzcwNDk3ZTUxOGNlZGZiYzU3MzU3MTVjYzUwMmFkZTc0YmExMjNhYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjBhM2U3Mzg0ODliMmQyNjA4ZTgxNjdkNDdhYTk2YjA4ZWY5ODFlYmIxNGQyYmZmNzBjODI3MWQzYzE0YTQxZiJ9"
+        },
+        {
+          "resource": "repo://build-logic/src/main/kotlin/game-cache-test-conventions.gradle.kts",
+          "version": "repo-file-v1:sha256:7839089a6933cc746704f9416896e0c39d940d9276bcf39c59cf792b9200faee"
+        }
+      ]
+    },
+    {
+      "id": "claim_4f3708a3fee041e59e7120269cc1eeb2",
+      "statement": "Cache-backed tests initialise ServerCacheManager in a BeforeAll and use same-thread execution with a ServerCacheManager resource lock.",
+      "evidence": [
+        {
+          "resource": "repo://api/game-process/src/test/kotlin/org/rsmod/api/game/process/player/ForcedWalkTest.kt#L233-L240",
+          "version": "repo-lines-v1:sha256:5f785a87cf930e7443cd76fbd6d96a4aac27724ea92bbd34ef3691e3eca1859b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTIwZGI3ZDMzODBiMzc1ODljYzg5YWQ3N2U2OGQ3OTQyZDY5NDAzNGQ5MTRlNjA2NDhmODI3MjBmNDQxN2MxYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzc1NGViYmZkOGVmZWE0ZDQ5ZWM1YzdhMzhiODcxNjA1Y2U0ZjMwYzk1Njc2ZDZlNTkxMGZjNDhmNTAzNDUxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://api/game-process/src/test/kotlin/org/rsmod/api/game/process/player/ForcedWalkTest.kt#L27-L30",
+          "version": "repo-lines-v1:sha256:4728f32c699339ee7ae23d7c521357e7581fd37b12ce5eeade86b3ec743d6b13:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjk3YmU3ODE3MDlkYmQwZTE5ODE0MTY1NTRhNzMyNDcxNDMzYzFiM2FiZDgzNzc0ZjYzMDBmMjIyZDJiNjVkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWM4Y2U0OTA5NmZmYTZkNjhmMzhjMTk5NDFmMjlmY2JiM2FjYWIxZmZiNmFlZWZhMjFmOGZmOTc5OGQwYTUyMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGIwNTk4ZWJkNjFjYmYyMWMxZjcwYjRkZTZiMDEyMTdhZWQxYzM2OTM4MzEzOWFkNjFjZWUxZTdiMjE5MzBiMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODYxZjZmODc4MTVlMjBiZTY1MzE4NDRiNWFlM2YxMTYxMDE0ZGJiYmJhMTI5MjhmYWM4NDdiNDNmNDczZDFjMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ab7c2631a5854d3e880c48a0e4326e68",
+      "statement": "The integration-test-suite convention depends on an :api:testing project, but no build file applies that convention, so src/integration test sources such as the woodcutting GameTestState tests are not compiled.",
+      "evidence": [
+        {
+          "resource": "repo://build-logic/src/main/kotlin/integration-test-suite.gradle.kts",
+          "version": "repo-file-v1:sha256:a15d7a8993408adc894f7852e6b15f5bae12f47d45d0f5cea3b887d8d959bd2e"
+        },
+        {
+          "resource": "repo://content/skills/woodcutting/build.gradle.kts",
+          "version": "repo-file-v1:sha256:7c14869203c52a032ce7a4eaf8d74a9c143a9c9fb6f62da4fbc0ff32ccce7502"
+        },
+        {
+          "resource": "repo://content/skills/woodcutting/src/integration/kotlin/org/rsmod/content/skills/woodcutting/scripts/WoodcuttingScriptTest.kt#L1-L30",
+          "version": "repo-lines-v1:sha256:c3bea559ec098144d29a37743a862bea1772fcbdaa49d0a1067c2cfcdaf7f901:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzOTk4MTMxMzAyZWIzZDNlNzAxMWQ2ZGI1ZjEzMDIxYTNjYjkxNDg0MzBiN2NjZmU4NTY4YWUxMjgzZDkxZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4MDllMGNlZjBiYjMwMzIxZDA0YTQ3ZmIzMDNkMTlmYTgxZWEwMDNjZGZhN2IzMzc4MDRkNzI5Y2QxYjg0NmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1NGEwODAzYzQzZDcwODNkZThkZGViZDk3NzcxODQ2OWJmNGE2YzJhNzE4YzYzYmFkOGY2YjdjYjk0Y2Y1OGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ebdf99a8d34e4bc8843359d9abd1956c",
+      "statement": "The boss framework has unit tests for encounter runtime behaviour and spec validation.",
+      "evidence": [
+        {
+          "resource": "repo://api/bosses/src/test/kotlin/org/rsmod/api/bosses/runtime/EncounterRegistryTest.kt",
+          "version": "repo-file-v1:sha256:63b7e0c17f1273202c2bbb94ff49b3827fdc2c64a0cefd3d3e9752e8b6f35131"
+        },
+        {
+          "resource": "repo://api/bosses/src/test/kotlin/org/rsmod/api/bosses/validation/SpecValidatorTest.kt",
+          "version": "repo-file-v1:sha256:412ed7b104c172385dedb6d8c4816ae99bb0966bb781008d5ca9142fe8250843"
+        }
+      ]
+    },
+    {
+      "id": "claim_2ec15734908740369646cbcf4d766dc5",
+      "statement": "CI runs assemble and test and then boots the server, failing if it does not log 'Server ready in'.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/ci.yml#L64-L90",
+          "version": "repo-lines-v1:sha256:a2a6d722bb2dfae6575eb21a958af0313af52055b19ff10b1ac9f8f1af30c8fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0NDQ3YWFkZjVkMTQ1YzQ2YjdkNGVhYmE5ZTRiMjc1NzRhOGE4NDZmYzhiMjM3YjlkNWM0OTgyYzZmZDYwNTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzYzcwNWE5NmM4YTlhMmVkMDJlYWM1MmIwM2ZmZTQ3NzYyYTU5MTBlNWZiNzAwNTI0NzNiODdjY2U4NmIwZDAifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

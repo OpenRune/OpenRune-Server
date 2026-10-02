@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:7cd479311ee4f76cd217269db7e0d72e874f42419140758094e1ae264d0c1a0e",
+  "claims": [
+    {
+      "id": "claim_7c6714dfa5fd424fb5fbc4e2f777c449",
+      "statement": "PvNCombatScript binds the default ap/op NPC option 2 handlers for player-vs-NPC attacks and registers an onApNpcT handler for every combat spell.",
+      "evidence": [
+        {
+          "resource": "repo://api/combat/combat-scripts/src/main/kotlin/org/rsmod/api/combat/scripts/PvNCombatScript.kt",
+          "version": "repo-file-v1:sha256:0f6278e363f860db7d1a144c7eeb5cedc2b9857c4b7b9a97e5f840ffa1060ae7"
+        }
+      ]
+    },
+    {
+      "id": "claim_163ea5d5f4b84f27aa672ca633f739a5",
+      "statement": "For combat spells, rune availability is checked before attack validation, and attack validation consults every bound NpcAttackValidateHook which may deny with a message or bypass the single-way PvN restriction.",
+      "evidence": [
+        {
+          "resource": "repo://api/combat/combat-scripts/src/main/kotlin/org/rsmod/api/combat/scripts/PvNCombatScript.kt",
+          "version": "repo-file-v1:sha256:0f6278e363f860db7d1a144c7eeb5cedc2b9857c4b7b9a97e5f840ffa1060ae7"
+        }
+      ]
+    },
+    {
+      "id": "claim_e34050ee1be840f18a92a1e5bf43de95",
+      "statement": "PvNCombat melee attacks set the next attack delay first, then try an armed weapon special, then a shield special, then a registered specialised weapon, and only otherwise roll damage, give xp, play fx, queue the hit and continue combat.",
+      "evidence": [
+        {
+          "resource": "repo://api/combat/combat-scripts/src/main/kotlin/org/rsmod/api/combat/PvNCombat.kt#L48-L106",
+          "version": "repo-lines-v1:sha256:534a114fe7e53a8da6929aa1638ad1732920fb9b53b78e052447715707da53da:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhOGU4NmQ0ZmQ0ZGIyYzg4ZmUyN2VlMTAwY2M4N2M3NmNmMDE3NDg4MDE5NTcxN2RkNTllZjRjY2RjMjM2YzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhMWIzMzRlYzQxNzg0N2Q1OWQ3YTE1OTNhN2UxMzU4MDQzNTVkYjBiNzFlNzQ3ODRkZjNmYWE4YmM3ODU3MWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ4NjE0MzFiNjY2NjllNDg0ZDY5M2YwMjY0YWNkYzI1MmQ3MzBmZWYyZWNhZGRiYWUwMzc1NDUxZWY3ZTU5M2IifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7e30abf0d8be49e183f791bd9f9d3cd7",
+      "statement": "Weapon implementations return true to take over the attack and must explicitly continue or stop combat themselves.",
+      "evidence": [
+        {
+          "resource": "repo://api/weapons/src/main/kotlin/org/rsmod/api/weapons/Weapon.kt",
+          "version": "repo-file-v1:sha256:d2d7c952594ee6cb4936aa0aca7e92d851e05a20828071ca6206f8507071d3a0"
+        }
+      ]
+    },
+    {
+      "id": "claim_a369193f80ec425d98451c3807ae5473",
+      "statement": "SpecialAttackRegistry registers specials by obj symbol and rejects duplicates and objs without special energy mapping.",
+      "evidence": [
+        {
+          "resource": "repo://api/specials/src/main/kotlin/org/rsmod/api/specials/SpecialAttackRegistry.kt",
+          "version": "repo-file-v1:sha256:bbf6d27fa8d05294e1eb0e31e5f23ebb975be3c81d94cbceb41139de524ce938"
+        }
+      ]
+    },
+    {
+      "id": "claim_07995541b0d243209b1167c9b494f7cd",
+      "statement": "Content contributes special attacks by binding SpecialAttackMap implementations through a PluginModule set binding.",
+      "evidence": [
+        {
+          "resource": "repo://content/other/special-attacks/src/main/kotlin/org/rsmod/content/other/special/attacks/SpecialAttackModule.kt",
+          "version": "repo-file-v1:sha256:1603332e402177a24dd7722c01a5eaf439703d22c84194a73c006865b3cbc375"
+        },
+        {
+          "resource": "repo://content/other/special-attacks/src/main/kotlin/org/rsmod/content/other/special/attacks/melee/DragonLongswordSpecialAttack.kt",
+          "version": "repo-file-v1:sha256:694cb59db67c29ab5a2153dda15fcb15abe93b81f2f624cdd52fac720e8abf65"
+        }
+      ]
+    },
+    {
+      "id": "claim_e0bb06d607d0407ab1dddaee808f2f19",
+      "statement": "NPC hits are applied through a `queue.hit` NPC queue handled by NpcHitScript rather than immediately when the attack is rolled.",
+      "evidence": [
+        {
+          "resource": "repo://api/hit-plugin/src/main/kotlin/org/rsmod/api/hit/plugin/NpcHitScript.kt",
+          "version": "repo-file-v1:sha256:1f3ea68e4c17fc2ea3609823bd34106da73b2be6b21b6316f738dabcd532c6d4"
+        },
+        {
+          "resource": "repo://api/weapons/src/main/kotlin/org/rsmod/api/weapons/WeaponAttackManager.kt#L202-L210",
+          "version": "repo-lines-v1:sha256:cdf8eab67d7f921c3f4bd2a89b49e20398c6518a4556653e3227a789e8d4182f:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDM3MTY0MzRmNTUzNWQ4Y2Y5YjZjZTE2ZDU4OTAyNTIwYWYxZWNkMWFlNThlMDI5NjU4OTBjNmQ4NTY3NmIzNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDdlYzFhZThjNTc3NzM0YzIwODcxYjUxMDFjMjRlODM1YjkwNWZkZTUzNzc5ZmRmOGMwYjMwMzAwYTJlMzdkZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmU5YjU1ZGFkMzQyOTRlYWFmMjNjOTNiYzNkN2RlNDRkYTRhODBlODY2ZWE1YTM1MDUwY2JhY2JiYmU5MjAxZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWY1YzU0N2IxNTBjMTJiZTU1MmMzN2FiNWM2ZjkwOGYwMmYzY2RjODdjZmZjM2IzYTEwMzcwNDcyYzY3OWY5MiJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

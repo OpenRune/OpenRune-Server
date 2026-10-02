@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:9c7d200eacf349f3220f10a654ceab128d914ddf91d5252a8d2d89a08b243822",
+  "claims": [
+    {
+      "id": "claim_9c643b0555dc41eca98e090f0544373c",
+      "statement": "The spawn menu interface is defined as an .if3 file in its pack module, declaring the interface size, on_load clientscript and named components.",
+      "evidence": [
+        {
+          "resource": "repo://content/other/spawn/pack/src/main/resources/pack/interfaces/spawn_menu.if3#L1-L50",
+          "version": "repo-lines-v1:sha256:1671959bc92cbc3c7a01d22097c8a80110b5278e404a6885b8358ab5a47c97df:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1NDk0ODZjYWVmMzZmYzZlMTdjZjBlNmFmZTdiZTFlMzM4OTFlMWI3OGRkZWFlNTQwYWJjZTI1ZjU5ZjQwODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3OGQ1OTRkZmI0NzI2MGJmZGE5Y2YwZGZiMzc4NWY2NWU4YWI5NjRlYzg3MTg4MjY0ODczMjYwNTgxMGQ5NzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzZDA3ZWUxZDI1ZTYyMWM5MWMwNzAzNTA2NTZjMTQ0ZTFjYTRiMjY2YjdkNzk1Y2I5NTRhNDUzMDdhYjA4YmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_93b02579aed047d8abcc8546a2548c8d",
+      "statement": "PluginPacks builds a single PackIfType task from DSL interfaces returned by active packs and from their interfaces resource directories.",
+      "evidence": [
+        {
+          "resource": "repo://or-cache/src/main/kotlin/dev/openrune/pack/PluginPacks.kt#L34-L50",
+          "version": "repo-lines-v1:sha256:b0690b370fcb1388a4e5fd6a5ca99277bc01aa327ffafca347d623d17155a214:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0YTQ3MjRhYzJhODFkNWNlM2NiNjc1MWJmZjRhNmI1OTVkMjRjZGY3NWVjZjlhZTQ5N2Q1MTA5ZTg0OWI0OGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdlY2NmNzcxNzRmMmE5NTcxNGRjOTRkMjUxN2RlYzE4OWEyODQzMTIyMDE4YzBiMmFhNDYzN2M5YTkxZmQwM2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5ZTkwNmMzZWY4NTJmMTBiODU3ZTA0MDc0NzRjYjhiNjIzZjYwZWUzNTMyYjJkMzFkMzAyMjJkZGMxZjBiYTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fd91e92fe7434e039433e11cb7e1e073",
+      "statement": "CS2 overrides combine gameval-derived symbols for custom ids above the cache's max base id with each pack's script sources and .sym files, with pack symbols taking precedence.",
+      "evidence": [
+        {
+          "resource": "repo://or-cache/src/main/kotlin/dev/openrune/pack/PluginPacks.kt#L80-L135",
+          "version": "repo-lines-v1:sha256:484c326e28f8c6cd33dfffc7da665459f87535a0e27690897077b7b80c8ae219:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4OTAwYmZhYmEyYzg1OWIwZjI2YzExNTk5OTI3ZTUxYzNlMjdmMDVmZjU2Y2VkMGIzMTZlNTFlMDExYTQwZTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1MTllNTBjZjdjM2Q1ZGNlYjY5YmRhYTU4NWYxNGU1ZDE1YjEzYmRlNGJjMGI5MDI0YTIwYTQxODkyZmRhNDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlMmQzY2ZkMGU1MzhhMjBlNGE1NDViZmNlMjljMWM5NGI5YWRkYzlkM2ZhZmQ3NmU1YmU2YTY2OGVlNjQzNGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a8a66c0c3bc846379dd1b4e1fe7c050d",
+      "statement": "Interface, CS2, model, sprite and world-map tasks are excluded from the SERVER cache build.",
+      "evidence": [
+        {
+          "resource": "repo://or-cache/src/main/kotlin/dev/openrune/CacheTools.kt",
+          "version": "repo-file-v1:sha256:f8341e336de0006f1f46fd1729cb5b31eb4acaa560308b7de07e02e60d7b20c9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2587bceba4bd4056b5aa49e6a8b2e833",
+      "statement": "SpawnMenuScript opens its modal via a cheat command, enables Op1 events on grid slots and script-trigger events on the search text, transmits a temporary result inventory, sends labels via runClientScript and cleans up state in onIfClose.",
+      "evidence": [
+        {
+          "resource": "repo://content/other/spawn/pack/src/main/resources/pack/configs/spawn.toml",
+          "version": "repo-file-v1:sha256:37a94e571eb3825427976451448b527bbc4cbb1d7dc967fe40f437d354552999"
+        },
+        {
+          "resource": "repo://content/other/spawn/src/main/kotlin/org/rsmod/content/other/spawn/SpawnMenuScript.kt#L150-L250",
+          "version": "repo-lines-v1:sha256:08ca8f16e903c4909cc8e6c9b6093cb3b5aeb783a3133d2a6c3271f8b1890589:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0NjRjNzFiMzE0ZmE1NjM4ZGIyMjZhMzI4YjQ2MTMwYjhhZWFmMzM1OTU1YjFjZDdlYTkyYTQ2YWI4ODZkNWU3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI3YjliNTQwODgyZDdjY2JhY2ZjOGNkNTkyOTIxNTJiZTkwNDU5MTBlMDRiMDZjNTAwNjkxMTlmYTk1MjEzZTQ2IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI1NWE1MjMxMWE5NDZkZWMxNjRmOGJkZjhkMmE1OTBiYTIzMzZlNmQwZmEwNzNmOTQzNjg1ZjMxMzg4Y2M1M2RjIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzYTMyZGMwOWMzZWE4ZGEyMDA1MjNmNjdhYjE1MTY0YjFiZGJhMjFjYzlmYjgwMmM1NWIxYzM0MDlkZGMxMzYxIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_16a22c00c7964bd8959d8a779675f744",
+      "statement": "Player interface helpers provide open variants for side, main modal, main, main/side pair, overlay and full overlay, plus close helpers.",
+      "evidence": [
+        {
+          "resource": "repo://api/player/src/main/kotlin/org/rsmod/api/player/ui/PlayerInterfaceExtensions.kt#L94-L205",
+          "version": "repo-lines-v1:sha256:b142c0603b5149d6fcc87b60c788de84ebe768d05abd28207d666a7cb3392917:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1MjEzNjg5OGI3NzI2OTE1MzY3ODhmNDJiMWRkMTNjNjIyNGY4NDlmNWFiZWE5YzFlNmY2Njc4MjA0NGU4YWMxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJjMzkxM2Y1ZmQ2ZTU2NTZjNDc2NTlmYWQ3ZjY0NDY2YmI3YWI5NDJlNmM4MDNkNzYyNGY1ZDgyMTY1NzgxNzhhIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkNDM2YmNlZjc1YTVmZDI3ZjFiNzY4NjFlOGE3ODcwYmRkNGNlNTM4MDc2Mzg5Y2QxOTg1OTIzNGViYjhhZjlkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmZjhlNzBlMjBkNjk4OWFkZGQzNDRlZWM2OTg3ZjNiNjVkNDgwODQ4YzViYzk5Yjk4OWVjNWNkYzZmZTVmYWJjIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_8b2f59266c4f473594b39b0843634a64",
+      "statement": "Player.runClientScript sends a clientscript invocation with arbitrary arguments to the client.",
+      "evidence": [
+        {
+          "resource": "repo://api/player-output/src/main/kotlin/org/rsmod/api/player/output/ClientScripts.kt#L15-L22",
+          "version": "repo-lines-v1:sha256:9dbefc470a2e26b50bfdf37358d25ccbe3384156c785282542cf082258711b3f:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWNjOTI4ZGQ0ZDY3N2I0OTFlYWJiMDRiOTFiNGFmYjJkYTRhNjY4ZGY0MmJlNjQ4ODkwYWFhNGZhYWEzZjQ0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2EyNTIzZWZjZTA4YTdlMTMzZWYwMGZiN2JlNTBhOWUyNzkxZmI3NDg5M2ZmYzkzMGJjMzhlY2E1Yzg1YmI2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTgxMDgyYjUxZDQ1NDI3ZjJmNmZlMzE2NzQ0M2MyNTcyOWRlODE5YjFlNzg0NzA5MzVkYzc3NmVkOWM3NGQxMCJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}
