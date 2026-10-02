@@ -130,6 +130,14 @@ jobs:
             echo "  WorkingDirectory: $workdir"
             exit 1
           fi
+          # Deploys never sync keys, and a missing game.key sends the server down its
+          # source-checkout install path, which fails on a release bundle.
+          if ! ssh testserver "test -f '$REMOTE_DIR/.data/game.key'"; then
+            echo "no .data/game.key on the test server. Copy the keypair your client was"
+            echo "built against, then re-run:"
+            echo "  scp .data/game.key .data/client.key <user>@<host>:<dir>/.data/"
+            exit 1
+          fi
 
       - name: Stop test server
         run: |

@@ -50,6 +50,15 @@ class GameServerLogbackCopy : CliktCommand(name = "logback-copy") {
         val copy = resourceDir.resolve(copyName)
 
         if (!copy.exists()) {
+            // Release bundles ship no source tree to copy from and fall back to the config
+            // packaged in the jar, so only a half-present resource dir is an actual error.
+            if (!resourceDir.exists()) {
+                logger.info {
+                    "Skipping logback copy: no resource directory. " +
+                        "(${resourceDir.absolutePathString()})"
+                }
+                return
+            }
             val error = "Source logback file `$copyName` not found. (${copy.absolutePathString()})"
             throw FileNotFoundException(error)
         }

@@ -18,17 +18,15 @@ on:
         required: false
         type: boolean
         default: true
-
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 360
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
-          ref: ${{ inputs.ref || github.ref }}
           fetch-depth: 1
 
       - name: Set up JDK 21
@@ -41,17 +39,16 @@ jobs:
       - name: Prepare game config
         run: cp game.example.yml game.yml
 
-      # Cache generation must be its own invocation: nothing in the task graph orders
-      # freshCache before the compile chain, so sharing a build lets
-      # :api:generated:compileKotlin snapshot an empty source dir and fail downstream
-      # modules on unresolved table classes.
-      - name: Generate cache and gameval sources
+      # Split from the build: freshCache generates the sources under api/generated
+      # (gitignored) that api modules compile against. In one invocation Gradle is
+      # free to start those compile tasks before the generator has run.
+      - name: Build cache
         run: |
           chmod +x gradlew
           ./gradlew :or-cache:freshCache :or-cache:mergePluginGamevals --no-daemon --stacktrace
 
       - name: Build server jar
-        run: ./gradlew :server:app:shadowJar --no-daemon --stacktrace
+        run: ./gradlew generateRsa :server:app:shadowJar --no-daemon --stacktrace
 
       - name: Prepare release bundle
         run: |
@@ -67,9 +64,6 @@ jobs:
         run: |
           DATE="$(date -u +'%Y-%m-%d')"
           BRANCH="${{ github.ref_name }}"
-          if [ -n "${{ inputs.ref }}" ]; then
-            BRANCH="${{ inputs.ref }}"
-          fi
           BRANCH_TAG="$(echo "$BRANCH" | tr '/' '-')"
           SHORT_SHA="$(git rev-parse --short HEAD)"
           FULL_SHA="$(git rev-parse HEAD)"
@@ -82,16 +76,20 @@ jobs:
           echo "full_sha=$FULL_SHA" >> "$GITHUB_OUTPUT"
           echo "commit_url=${{ github.server_url }}/${REPO}/commit/${FULL_SHA}" >> "$GITHUB_OUTPUT"
 
+      # Pushes attach the zip to the GitHub release, which does not count against
+      # the Actions storage quota. Only manual runs need the artifact copy.
       - name: Upload release artifact
+        if: github.event_name != 'push'
         uses: actions/upload-artifact@v7
         with:
           name: openrune-server-release
           path: openrune-server-release.zip
-          retention-days: 14
+          retention-days: 1
 
       - name: Create GitHub release
         if: github.event_name == 'push' || inputs.create_release
         uses: softprops/action-gh-release@v3
+
         with:
           tag_name: ${{ steps.meta.outputs.tag }}
           name: "${{ steps.meta.outputs.date }} - ${{ steps.meta.outputs.branch }}"
@@ -101,7 +99,7 @@ jobs:
             **Commit:** [`${{ steps.meta.outputs.short_sha }}`](${{ steps.meta.outputs.commit_url }})
 
             ## Contents
-            - `server.jar` - runnable server (`java -jar server.jar`)
+            - `openrune-server.jar` - runnable server (`java -jar openrune-server.jar`)
             - `game.yml` - server configuration
             - `.data/` - compiled cache, gamevals, and RSA keys (raw-cache sources omitted)
 
