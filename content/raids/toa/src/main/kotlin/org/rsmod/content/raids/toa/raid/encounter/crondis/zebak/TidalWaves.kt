@@ -2,11 +2,12 @@ package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import kotlin.math.min
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
+import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocShape
@@ -60,7 +61,7 @@ internal class TidalWaves(private val room: ZebakEncounter) {
     fun spawnRow() {
         val base = room.coords(if (fromSouth) ZebakCoords.WAVE_SOUTH else ZebakCoords.WAVE_NORTH)
         val gap = if (lastGap == -1) deps.random.of(0, GAP_RANGE) else GAP_RANGE - lastGap
-        val gapWidth = GAP_WIDTH - min(2, room.pathLevel / 2)
+        val gapWidth = GAP_WIDTH - room.pathTier
         val dz = if (fromSouth) 1 else -1
         for (x in 0 until ROW_LENGTH) {
             val column = x - SOLID_COLUMNS
