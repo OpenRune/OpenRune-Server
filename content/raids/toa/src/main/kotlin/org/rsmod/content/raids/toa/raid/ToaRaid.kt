@@ -4,6 +4,13 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfSubType
+import org.rsmod.api.instances.DEFAULT_EMPTY_INSTANCE_RECLAIM_TICKS
+import org.rsmod.api.instances.DEFAULT_INSTANCE_GRACE_TICKS
+import org.rsmod.api.instances.InstanceAccess
+import org.rsmod.api.instances.InstanceArea
+import org.rsmod.api.instances.InstanceSession
+import org.rsmod.api.instances.InstanceSpec
+import org.rsmod.api.instances.RegionLocal
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.ui.ifOpenSub
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
@@ -18,7 +25,7 @@ import org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle.CrondisPuzzleEn
 import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakEncounter
 import org.rsmod.content.raids.toa.raid.supplies.ToaSupplies
 import org.rsmod.game.entity.Player
-import org.rsmod.game.region.Region
+import org.rsmod.map.CoordGrid
 
 data class ChallengeResult(val room: ToaRoom, val ticks: Int)
 
@@ -149,11 +156,15 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     }
 
     fun advanceTo(room: ToaRoom): ToaEncounter? {
-        val region = deps.regionRepo.add(room.template) ?: return null
+        val session =
+            deps.instances.createServerOwned(
+                key = INSTANCE_KEY,
+                spec = instanceSpec(room),
+                access = InstanceAccess.Private,
+                currentTick = deps.mapClock.cycle,
+            ) ?: return null
 
-        deps.regionRepo.protect(region)
-
-        val encounter = createEncounter(room, region, ToaRaidManager.nextControllerId())
+        val encounter = createEncounter(room, session, ToaRaidManager.nextControllerId())
         encounters += encounter
         val previous = current
         current = encounter
@@ -162,16 +173,30 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
         return encounter
     }
 
-    private fun createEncounter(room: ToaRoom, region: Region, controllerId: Int): ToaEncounter =
-        when {
-            room == ToaRoom.MAIN_HALL -> MainHallEncounter(this, room, region, controllerId)
-            room == ToaRoom.WARDENS_FIRST_ROOM -> WardensFirstEncounter(this, room, region, controllerId)
-            room == ToaRoom.WARDENS_SECOND_ROOM -> WardensSecondEncounter(this, room, region, controllerId)
-            room == ToaRoom.CRONDIS_PUZZLE -> CrondisPuzzleEncounter(this, room, region, controllerId)
-            room == ToaRoom.CRONDIS_BOSS -> ZebakEncounter(this, room, region, controllerId)
-            room.kind == ToaRoom.Kind.BOSS -> ToaBossEncounter(this, room, region, controllerId)
+    private fun instanceSpec(room: ToaRoom): InstanceSpec =
+        InstanceSpec(
+            fee = 0,
+            maxPlayers = ToaLobbyParty.MAX_PARTY_MEMBERS,
+            reclaimTicks = DEFAULT_EMPTY_INSTANCE_RECLAIM_TICKS,
+            graceTicks = DEFAULT_INSTANCE_GRACE_TICKS,
+            area = InstanceArea.template(room.template, room.spawn.regionLocal(), TOA_OUTSIDE),
+            settingsRowId = NO_SETTINGS_ROW,
+        )
 
-            else -> ToaEncounter(this, room, region, controllerId)
+    private fun createEncounter(
+        room: ToaRoom,
+        session: InstanceSession,
+        controllerId: Int,
+    ): ToaEncounter =
+        when {
+            room == ToaRoom.MAIN_HALL -> MainHallEncounter(this, room, session, controllerId)
+            room == ToaRoom.WARDENS_FIRST_ROOM -> WardensFirstEncounter(this, room, session, controllerId)
+            room == ToaRoom.WARDENS_SECOND_ROOM -> WardensSecondEncounter(this, room, session, controllerId)
+            room == ToaRoom.CRONDIS_PUZZLE -> CrondisPuzzleEncounter(this, room, session, controllerId)
+            room == ToaRoom.CRONDIS_BOSS -> ZebakEncounter(this, room, session, controllerId)
+            room.kind == ToaRoom.Kind.BOSS -> ToaBossEncounter(this, room, session, controllerId)
+
+            else -> ToaEncounter(this, room, session, controllerId)
         }
 
     internal fun place(player: Player, encounter: ToaEncounter) {
@@ -226,6 +251,9 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     fun totalChallengeTicks(): Int = challengeResults.sumOf { it.ticks }
 
     companion object {
+        private const val INSTANCE_KEY = "toa"
+        private const val NO_SETTINGS_ROW = -1
+
         private const val GHOST_NPC = "npc.toa_player_ghost"
 
         private val GHOST_TABS =
@@ -250,5 +278,7 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
                 "%d:%02d".format(minutes, seconds)
             }
         }
+
+        private fun CoordGrid.regionLocal(): RegionLocal = RegionLocal(level, mx, mz, lx, lz)
     }
 }

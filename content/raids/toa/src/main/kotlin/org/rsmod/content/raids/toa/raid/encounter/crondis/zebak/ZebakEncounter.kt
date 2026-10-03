@@ -8,6 +8,7 @@ import org.rsmod.api.bosses.runtime.runAbility
 import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.combat.commons.player.combatPlayDefendAnim
 import org.rsmod.api.death.NpcAttackValidateResult
+import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.soundSynth
@@ -27,12 +28,15 @@ import org.rsmod.game.hit.Hit
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
-import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.StepValidator
 
-class ZebakEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId: Int) :
-    ToaBossEncounter(raid, room, region, controllerId) {
+class ZebakEncounter(
+    raid: ToaRaid,
+    room: ToaRoom,
+    session: InstanceSession,
+    controllerId: Int,
+) : ToaBossEncounter(raid, room, session, controllerId) {
 
     internal var zebak: Npc? = null
         private set

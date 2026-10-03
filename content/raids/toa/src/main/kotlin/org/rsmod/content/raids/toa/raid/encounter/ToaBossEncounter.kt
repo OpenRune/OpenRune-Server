@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.bosses.runtime.suppressAttacks
+import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.CamShakeAxis
@@ -16,11 +17,14 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.map.Direction
-import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 
-open class ToaBossEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId: Int) :
-    ToaEncounter(raid, room, region, controllerId) {
+open class ToaBossEncounter(
+    raid: ToaRaid,
+    room: ToaRoom,
+    session: InstanceSession,
+    controllerId: Int,
+) : ToaEncounter(raid, room, session, controllerId) {
 
     internal open val fight: ToaFight? = null
 
