@@ -1,5 +1,6 @@
 package org.rsmod.content.other.special.weapons.melee
 
+import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -8,6 +9,7 @@ import org.rsmod.api.weapons.MeleeWeapon
 import org.rsmod.api.weapons.WeaponAttackManager
 import org.rsmod.api.weapons.WeaponMap
 import org.rsmod.api.weapons.WeaponRepository
+import org.rsmod.content.other.special.weapons.scripts.charge.ScytheCharges
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
@@ -18,7 +20,10 @@ import org.rsmod.game.map.translate
 class ScytheOfViturWeapons @Inject constructor(private val worldRepo: WorldRepository) :
     WeaponMap {
     override fun WeaponRepository.register(manager: WeaponAttackManager) {
-        register("obj.scythe_of_vitur", ScytheOfVitur(manager, worldRepo))
+        for ((charged, empty) in ScytheCharges.variants) {
+            register(charged, ScytheOfVitur(manager, worldRepo))
+            register(empty, ScytheOfVitur(manager, worldRepo))
+        }
     }
 
     private class ScytheOfVitur(
@@ -29,7 +34,8 @@ class ScytheOfViturWeapons @Inject constructor(private val worldRepo: WorldRepos
             target: Npc,
             attack: CombatAttack.Melee,
         ): Boolean {
-            manager.playWeaponFx(this, attack)
+            val current = normalize(attack) ?: return true
+            manager.playWeaponFx(this, current)
             playSpecGfx(target)
 
             val extraHits = (target.size - 1).coerceIn(0, 2)
@@ -41,7 +47,7 @@ class ScytheOfViturWeapons @Inject constructor(private val worldRepo: WorldRepos
                     manager.rollMeleeDamage(
                         source = this,
                         target = target,
-                        attack = attack,
+                        attack = current,
                         accuracyMultiplier = 1.0,
                         maxHitMultiplier = multiplier,
                     )
@@ -49,7 +55,8 @@ class ScytheOfViturWeapons @Inject constructor(private val worldRepo: WorldRepos
                 manager.queueMeleeHit(this, target, damage)
             }
 
-            manager.giveCombatXp(this, target, attack, totalDamage)
+            manager.giveCombatXp(this, target, current, totalDamage)
+            consume(current, totalDamage)
             manager.continueCombat(this, target)
             return true
         }
@@ -58,20 +65,42 @@ class ScytheOfViturWeapons @Inject constructor(private val worldRepo: WorldRepos
             target: Player,
             attack: CombatAttack.Melee,
         ): Boolean {
-            manager.playWeaponFx(this, attack)
+            val current = normalize(attack) ?: return true
+            manager.playWeaponFx(this, current)
             playSpecGfx(target)
             val damage =
                 manager.rollMeleeDamage(
                     source = this,
                     target = target,
-                    attack = attack,
+                    attack = current,
                     accuracyMultiplier = 1.0,
                     maxHitMultiplier = 1.0,
                 )
-            manager.giveCombatXp(this, target, attack, damage)
+            manager.giveCombatXp(this, target, current, damage)
             manager.queueMeleeHit(this, target, damage)
+            consume(current, damage)
             manager.continueCombat(this, target)
             return true
+        }
+
+        private fun ProtectedAccess.normalize(attack: CombatAttack.Melee): CombatAttack.Melee? {
+            val item = player.worn[Wearpos.RightHand.slot]
+            if (item == null || item != attack.weapon || ScytheCharges.variant(item) == null) {
+                manager.stopCombat(this)
+                return null
+            }
+            val normalized = ScytheCharges.withCharges(item, ScytheCharges.count(item))
+            player.worn[Wearpos.RightHand.slot] = normalized
+            return attack.copy(weapon = normalized)
+        }
+
+        private fun ProtectedAccess.consume(attack: CombatAttack.Melee, damage: Int) {
+            val item = player.worn[Wearpos.RightHand.slot] ?: return
+            if (item != attack.weapon || damage <= 0) return
+            val before = ScytheCharges.count(item)
+            if (before == 0) return
+            player.worn[Wearpos.RightHand.slot] = ScytheCharges.withCharges(item, before - 1)
+            if (before == 1) mes("Your scythe has run out of charges.")
         }
 
         private fun ProtectedAccess.playSpecGfx(target: PathingEntity) {

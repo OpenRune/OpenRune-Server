@@ -3,7 +3,6 @@ package org.rsmod.content.other.special.attacks.ranged
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.RangedAmmoManager
@@ -21,20 +20,22 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.type.getInvObj
 import org.rsmod.game.type.getOrNull
 
-class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmmoManager) :
+class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmmoManager, private val formula: RangedSpecialDamage) :
     SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
-        registerRanged("obj.darkbow", DarkBow(manager, ammunition))
-        registerRanged("obj.darkbow_green", DarkBow(manager, ammunition))
-        registerRanged("obj.darkbow_blue", DarkBow(manager, ammunition))
-        registerRanged("obj.darkbow_yellow", DarkBow(manager, ammunition))
-        registerRanged("obj.darkbow_white", DarkBow(manager, ammunition))
-        registerRanged("obj.bh_darkbow_imbue", DarkBow(manager, ammunition))
+        for (weapon in listOf("obj.darkbow", "obj.darkbow_green", "obj.darkbow_blue",
+            "obj.darkbow_yellow", "obj.darkbow_white", "obj.br_darkbow",
+            "obj.deadman_blighted_dark_bow", "obj.deadman_darkbow")) {
+            registerRanged(weapon, DarkBow(manager, ammunition, formula))
+        }
+        registerRanged("obj.bh_darkbow_imbue", DarkBow(manager, ammunition, formula, bountyHunter = true))
     }
 
     private class DarkBow(
         private val manager: SpecialAttackManager,
         private val ammunition: RangedAmmoManager,
+        private val formula: RangedSpecialDamage,
+        private val bountyHunter: Boolean = false,
     ) : RangedSpecialAttack {
         override suspend fun ProtectedAccess.attack(
             target: Npc,
@@ -61,7 +62,7 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
 
             // All valid ammunition requires a `proj_travel` param to build the projectiles.
             val travelSpotanim = quiverType?.paramOrNull(params.proj_travel)
-            if (travelSpotanim == null) {
+            if (travelSpotanim == null || quiverType.paramOrNull(params.proj_launch_double) == null) {
                 manager.stopCombat(this)
                 mes("You are unable to fire your ammunition.")
                 return false
@@ -96,7 +97,7 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
             anim("seq.human_bow")
             soundSynth("synth.darkbow_doublefire")
             soundSynth("synth.darkbow_shadow_attack")
-            spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,launchSpot!!.id), height = 96, slot = constants.spotanim_slot_combat)
+            spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM, launchSpot!!.id), height = 96, slot = constants.spotanim_slot_combat)
 
             val descentTravel = "spotanim.darkbow_generic_smoke_arrow_flight"
             val descentImpact = "spotanim.darkbow_smoke_arrow_impact"
@@ -119,8 +120,6 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
             val hitDelay1 = proj1.serverCycles
             val hitDelay2 = proj2.serverCycles
 
-            manager.giveCombatXp(this, target, attack, damage.total)
-
             ammunition.useQuiverAmmo(
                 player = player,
                 quiverType = quiverType,
@@ -128,7 +127,8 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
                 dropDelay = hitDelay1,
             )
 
-            manager.queueRangedHit(this, target, quiverType, damage[0], clientDelay2, hitDelay1)
+            val firstHit = manager.queueRangedHit(this, target, quiverType, damage[0], clientDelay1, hitDelay1)
+            manager.giveCombatXp(this, target, attack, firstHit.damage)
 
             ammunition.useQuiverAmmo(
                 player = player,
@@ -137,7 +137,8 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
                 dropDelay = hitDelay2,
             )
 
-            manager.queueRangedDamage(this, target, quiverType, damage[1], hitDelay2)
+            val secondHit = manager.queueRangedDamage(this, target, quiverType, damage[1], hitDelay2)
+            manager.giveCombatXp(this, target, attack, secondHit.damage)
 
             if (player.quiver?.count == 1) {
                 mes("You now have only 1 arrow left in your quiver.")
@@ -154,7 +155,7 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
             anim("seq.human_bow")
             soundSynth("synth.darkbow_doublefire")
             soundSynth("synth.darkbow_dragon_attack")
-            spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,launchSpot!!.id), height = 96, slot = constants.spotanim_slot_combat)
+            spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM, launchSpot!!.id), height = 96, slot = constants.spotanim_slot_combat)
 
             val descentTravel = "spotanim.darkbow_dragon_head_flying_projanim"
             val descentImpact = "spotanim.darkbow_dragon_head_flying_impact_anim"
@@ -176,8 +177,6 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
             val hitDelay1 = proj1.serverCycles
             val hitDelay2 = proj2.serverCycles
 
-            manager.giveCombatXp(this, target, attack, damage.total)
-
             ammunition.useQuiverAmmo(
                 player = player,
                 quiverType = quiverType,
@@ -185,7 +184,8 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
                 dropDelay = hitDelay1,
             )
 
-            manager.queueRangedHit(this, target, quiverType, damage[0], clientDelay2, hitDelay1)
+            val firstHit = manager.queueRangedHit(this, target, quiverType, damage[0], clientDelay1, hitDelay1)
+            manager.giveCombatXp(this, target, attack, firstHit.damage)
 
             ammunition.useQuiverAmmo(
                 player = player,
@@ -194,7 +194,8 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
                 dropDelay = hitDelay2,
             )
 
-            manager.queueRangedDamage(this, target, quiverType, damage[1], hitDelay2)
+            val secondHit = manager.queueRangedDamage(this, target, quiverType, damage[1], hitDelay2)
+            manager.giveCombatXp(this, target, attack, secondHit.damage)
 
             if (player.quiver?.count == 1) {
                 mes("You now have only 1 arrow left in your quiver.")
@@ -218,29 +219,38 @@ class DarkBowSpecialAttack @Inject constructor(private val ammunition: RangedAmm
                 )
             }
             val damage =
-                manager.calculateRangedMaxHit(
-                    source = this,
+                formula.maximum(
+                    source = player,
                     target = target,
-                    attackType = attack.type,
-                    attackStyle = attack.style,
+                    attack = attack,
                     multiplier = multiplier,
-                    boltSpecDamage = 0,
                 )
-            val first = if (!accuracySuccess()) 0 else random.of(0..damage).coerceIn(damageRange)
-            val second = if (!accuracySuccess()) 0 else random.of(0..damage).coerceIn(damageRange)
+            fun roll(): Int {
+                val minimum = damageRange.first + if (bountyHunter) 2 else 0
+                val rolled = rollDamage(accuracySuccess(), damage, minimum, damageRange.last, bountyHunter) { random.of(it) }
+                return formula.modifyRolledHit(player, target, attack, rolled)
+            }
+            val first = roll()
+            val second = roll()
             return DescentHit(first, second)
         }
 
         private data class DescentHit(val first: Int, val second: Int) {
-            val total: Int
-                get() = first + second
-
             operator fun get(index: Int): Int =
                 when (index) {
                     0 -> first
                     1 -> second
                     else -> throw ArrayIndexOutOfBoundsException()
                 }
+        }
+    }
+
+    internal companion object {
+        fun rollDamage(accurate: Boolean, maximum: Int, minimum: Int, cap: Int,
+                       bountyHunter: Boolean, roll: (IntRange) -> Int): Int {
+            if (!accurate) return minimum
+            val range = if (bountyHunter) minimum..maximum.coerceIn(minimum, cap) else 0..maximum.coerceAtLeast(0)
+            return roll(range).coerceIn(minimum, cap)
         }
     }
 }

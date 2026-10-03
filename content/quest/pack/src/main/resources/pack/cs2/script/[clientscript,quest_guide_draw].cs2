@@ -1,0 +1,45 @@
+[clientscript,quest_guide_draw](dbrow $quest, string $subtitle, string $title, string $log, int $combat, int $mode)
+~steelborder(quest_guide:frame, $title, 0);
+if ($mode = 0) {
+    ~stonebutton_draw(true, "Overview", p11_full, 1, quest_guide:overview);
+    ~stonebutton_draw(false, "Journal", p11_full, 1, quest_guide:journal);
+} else {
+    ~stonebutton_draw(false, "Overview", p11_full, 1, quest_guide:overview);
+    ~stonebutton_draw(true, "Journal", p11_full, 1, quest_guide:journal);
+}
+def_component $body = quest_guide:body;
+def_component $viewport = quest_guide:viewport;
+def_component $scrollbar = quest_guide:scrollbar;
+def_int $height = 0;
+if ($mode = 0) {
+    ~questjournal_overview_setup($quest, $subtitle, quest_guide:frame, $body, $viewport, $scrollbar, quest_guide:frame, quest_guide:frame, quest_guide:frame, $combat);
+    if_setontimer(null, quest_guide:frame);
+    def_int $child = 0;
+    while (cc_find($body, $child) = true) {
+        if (cc_getcolour = 0x000080) {
+            cc_setcolour(0xff981f);
+        } else if (cc_getcolour = 0x800000 | cc_getcolour = 0) {
+            cc_setcolour(0xffffff);
+        }
+        cc_settextshadow(true);
+        cc_settext(~quest_guide_text(cc_gettext));
+        $child = calc($child + 1);
+    }
+    $height = if_getheight($body);
+} else {
+    cc_deleteall($body);
+    $log = ~quest_guide_text($log);
+    $height = calc(paraheight($log, if_getwidth($body), p12_full) * 18 + 12);
+    if_setsize(if_getwidth($body), $height, ^setsize_abs, ^setsize_abs, $body);
+    cc_create($body, ^iftype_text, 0);
+    cc_setsize(0, $height, ^setsize_minus, ^setsize_abs);
+    cc_settextfont(p12_full);
+    cc_settextalign(^settextalign_left, ^settextalign_top, 18);
+    cc_setcolour(0xffffff);
+    cc_settextshadow(true);
+    cc_settext($log);
+}
+if_setscrollpos(0, 0, $viewport);
+if_setscrollsize(0, max(if_getheight($viewport), $height), $viewport);
+cc_deleteall($scrollbar);
+~scrollbar_vertical($scrollbar, $viewport, "scrollbar_dragger_v2,3", "scrollbar_dragger_v2,0", "scrollbar_dragger_v2,1", "scrollbar_dragger_v2,2", "scrollbar_v2,0", "scrollbar_v2,1");

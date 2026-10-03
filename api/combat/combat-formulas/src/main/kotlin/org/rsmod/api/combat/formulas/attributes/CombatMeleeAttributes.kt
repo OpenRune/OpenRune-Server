@@ -20,6 +20,7 @@ public enum class CombatMeleeAttributes {
     ForinthrySurge,
     RevenantWeapon,
     Silverlight,
+    SilverlightAccuracy,
     LeafBladed,
     ColossalBlade,
     RatBoneWeapon,

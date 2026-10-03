@@ -1,0 +1,690 @@
+{
+  "root": "C:\\Users\\hpvic\\Documents\\Codex\\2026-10-01\\github-plugin-github-openai-curated-remote\\work\\gameplay-smoke-7d86a006",
+  "ports": [
+    54892,
+    54893,
+    54894,
+    54895
+  ],
+  "serverSha256": "feb8047951b5569627bf392c67516acd89e32b0c29e975be5a3a95cd75c63c31",
+  "pluginSha256": "e7236cc9eaebbc9575d245158613c51e123a0aef3605ca7612cf960db1c5b584",
+  "cacheSha256": "28d32fe58bfd64169ed3587c8bcd530060f46f302fe13f2416bf3643006fc197",
+  "isolatedDatabase": "C:/Users/hpvic/Documents/Codex/2026-10-01/github-plugin-github-openai-curated-remote/work/gameplay-smoke-7d86a006/.data/postgres-isolated",
+  "ready": true,
+  "assets": {
+    "ok": true,
+    "items": [
+      {
+        "type": "OBJECT",
+        "id": 25187,
+        "name": "A burnt tree",
+        "width": 2,
+        "length": 2
+      },
+      {
+        "type": "OBJECT",
+        "id": 25188,
+        "name": "A burnt tree",
+        "width": 2,
+        "length": 2
+      },
+      {
+        "type": "OBJECT",
+        "id": 25190,
+        "name": "A tropical tree",
+        "width": 2,
+        "length": 2
+      }
+    ]
+  },
+  "cleanupErrors": [],
+  "runtimeMappingFiles": [
+    {
+      "path": "content/areas/city/draynor/src/main/resources/gamevals.toml",
+      "sha256": "6fc40c7a9aa5a39d603d64afcd28390491c44ce6f32739401b4ef2f5080bb915"
+    },
+    {
+      "path": "content/areas/city/falador/src/main/resources/gamevals.toml",
+      "sha256": "c6a456c1db7121df54a15387f156d975f5e5140f6f17d6de611db89cbca7c513"
+    },
+    {
+      "path": "content/areas/city/lumbridge/src/main/resources/gamevals.toml",
+      "sha256": "ef3be95809cbc9876d0c3bc0739a4e82e18b54c7b8a3c70d7ce1d71e0969dc63"
+    },
+    {
+      "path": "content/areas/city/port-sarim/src/main/resources/gamevals.toml",
+      "sha256": "a810d8a915f953bfddbfe0c6c3759b7f2406358163ac9d1a5011b4d20bc3d422"
+    },
+    {
+      "path": "content/areas/city/rimmington/src/main/resources/gamevals.toml",
+      "sha256": "fa9734fc24f8f30ed000e8be8717f510bae6cd782930dc3a57dff29f695c9a69"
+    },
+    {
+      "path": "content/areas/misc/mining-guild/src/main/resources/gamevals.toml",
+      "sha256": "ccdfa5e424951de7edc8be3f77b3e87d7af723d36bd0f1e7db3e655ffb3fe6f4"
+    },
+    {
+      "path": "content/areas/misc/motherlode-mine/src/main/resources/gamevals.toml",
+      "sha256": "5d0b4716deebe2a5afe265bf2b67135c23bee03c1686e8905029ddfda75dae56"
+    },
+    {
+      "path": "content/areas/misc/wizards_tower/src/main/resources/gamevals.toml",
+      "sha256": "3a8441c938bff03739baa439c86a0468dc10e36aabe02253cfdf0a37c9fce495"
+    },
+    {
+      "path": "content/events/shooting-stars/src/main/resources/gamevals.toml",
+      "sha256": "93375d4228bf6fe323f69f2ab0a409bb0fee5c7ee67ee77b65cd86960f009259"
+    },
+    {
+      "path": "content/generic/generic-locs/src/main/resources/gamevals.toml",
+      "sha256": "bfab820013dc6e49fb2380cfef451f01f1529174abafea7b8d59ef4d29a2760e"
+    },
+    {
+      "path": "content/interfaces/collection-log/src/main/resources/gamevals.toml",
+      "sha256": "23234230178c794592312e9b4e355357fe84ba1dba5e7aa94c2e7303cc8a6e0a"
+    },
+    {
+      "path": "content/interfaces/monster-info/src/main/resources/gamevals.toml",
+      "sha256": "2dcb2baf9324351aa6754582a7bb1aa24960d7a43d7d5b13ff16a303a9d9315a"
+    },
+    {
+      "path": "content/interfaces/omnishop/src/main/resources/gamevals.toml",
+      "sha256": "3d70ecd7b37a15b8a8b8e08d487866f0e7564c62fead6ac61ffa377db5e16a27"
+    },
+    {
+      "path": "content/interfaces/settings/src/main/resources/gamevals.toml",
+      "sha256": "c2a108980263be69242a23bcf642ccdc2563ab8b49ccf53ce7efad0059497d6a"
+    },
+    {
+      "path": "content/interfaces/skill-guides/src/main/resources/gamevals.toml",
+      "sha256": "cab0fd7545e7da1374777e81d53c63fd22658aeafe239dd3f89ea247670ca4b8"
+    },
+    {
+      "path": "content/other/commands/src/main/resources/gamevals.toml",
+      "sha256": "164608d9711763be0c3dc4dedfba2224f607b76997a91611c8f8832aee7556a7"
+    },
+    {
+      "path": "content/other/consumables/src/main/kotlin/resources/gamevals.toml",
+      "sha256": "35f7dcd59e215a1c56fdb414e06488cfec583491b51b5bbb152204784d23fd7f"
+    },
+    {
+      "path": "content/other/dave/pack/src/main/resources/gamevals.toml",
+      "sha256": "7ecd374332935287541fcb43b1d78f681058cef6152d4ea8a76c59509b2df76a"
+    },
+    {
+      "path": "content/other/max-cape/src/main/resources/gamevals.toml",
+      "sha256": "e856f58d922bdb23d254f5193fcbf3001866693194b8a98b64c382a897a52b2e"
+    },
+    {
+      "path": "content/other/pets/src/main/resources/gamevals.toml",
+      "sha256": "8e29f541a9320e35e969ff36c1ccc1290abfc2a57a55dcd52043508167e9631a"
+    },
+    {
+      "path": "content/other/sandstorm/src/main/resources/gamevals.toml",
+      "sha256": "0936c91aa3e5e3dd0dd7e3be162ca33c958bfe537a9d3391a083eecda8041105"
+    },
+    {
+      "path": "content/other/spawn/src/main/resources/gamevals.toml",
+      "sha256": "2ba5099e3396c5be0ec4e53d70eaf6a03d5349d68d662d31327d47845a98915d"
+    },
+    {
+      "path": "content/other/special-attacks/src/main/resources/gamevals.toml",
+      "sha256": "c1c7d91af76e4bee1f36324c3b437f583009cc95877fee8552656d4e7b9ed03d"
+    },
+    {
+      "path": "content/other/special-weapons/src/main/resources/gamevals.toml",
+      "sha256": "da834b609ece6239b949e6f4328febae2bba0f7ce5948ad67bded761c2c414c9"
+    },
+    {
+      "path": "content/other/windmill/src/main/resources/gamevals.toml",
+      "sha256": "b947105c7280ea62e5d6996f29cec472b85f86c50d587031faabe0ea80f91e0c"
+    },
+    {
+      "path": "content/quest/pack/src/main/resources/gamevals.toml",
+      "sha256": "52cfef85393c4a7f38aa7e6c402ba9746d86d3d033f82eaaef4a82e7e3e30e2e"
+    },
+    {
+      "path": "content/quest/src/main/resources/gamevals.toml",
+      "sha256": "fa0d611a02e9b8d35baafd83fd5ff75b1fb3b3960a628ab6df7ed2ef411d4475"
+    },
+    {
+      "path": "content/skills/cooking/src/main/resources/gamevals.toml",
+      "sha256": "ea7c774c06b5205c4210aab9c91764fc6a90d9abb4aa377c7b81721e93f38742"
+    },
+    {
+      "path": "content/skills/crafting/src/main/resources/gamevals.toml",
+      "sha256": "f8fca2d0f608c502c6c20b0537329b238fd4fded604a5a29a1937c91cf337486"
+    },
+    {
+      "path": "content/skills/firemaking/src/main/resources/gamevals.toml",
+      "sha256": "89461dd8c843921855aeb1a6f075cb7bb28cc63840676c15715381bee2c7a09f"
+    },
+    {
+      "path": "content/skills/fishing/src/main/resources/gamevals.toml",
+      "sha256": "ca57438bdff21b59a6146aa4b515bf93aaae20880ba48ac59009492bd4ecfdcd"
+    },
+    {
+      "path": "content/skills/herblore/src/main/resources/gamevals.toml",
+      "sha256": "b55141697991b8704a91bb807db1e5a6e95fa4bd6afb9686325f91405b828962"
+    },
+    {
+      "path": "content/skills/magic/alchemy/src/main/resources/gamevals.toml",
+      "sha256": "f9e54c7a02e2906d2faad3489056b874952bf5b849b1b88db22bdef7a83a47fb"
+    },
+    {
+      "path": "content/skills/magic/spell-teleports/src/main/resources/gamevals.toml",
+      "sha256": "a6e6f5f2be6724491ec158fce378cbf6179b9233ec8bf8ca35969eb74285e3ac"
+    },
+    {
+      "path": "content/skills/mining/src/main/resources/gamevals.toml",
+      "sha256": "9d01ce8a921cf5afbe4cfd7c32c7cee91178467ab2ece84e8e800cea4688ca65"
+    },
+    {
+      "path": "content/skills/prayer/src/main/resources/gamevals.toml",
+      "sha256": "d94e26fe03423c4e2e77870705699103923e47306323180ec167e1fdce3f1696"
+    },
+    {
+      "path": "content/skills/runecrafting/src/main/resources/gamevals.toml",
+      "sha256": "4cbef017b75b7a0eaf220f7b66c267f00a1d4f111a1c9410435ec315c673f04a"
+    },
+    {
+      "path": "content/skills/slayer/src/main/resources/gamevals.toml",
+      "sha256": "2b01270d0e54a30bacb4d61b4b721b9b5cdf680f7c3d88021d2b74a0f4182a74"
+    },
+    {
+      "path": "content/skills/smithing/src/main/resources/gamevals.toml",
+      "sha256": "c6decbb222307a392ee96b73087d8460cf348f39dcad5afb7b824a01fd06a191"
+    },
+    {
+      "path": "content/skills/thieving/src/main/resources/gamevals.toml",
+      "sha256": "baa1e86359c54c6f6f51c755c198fe27d8f4b367a0b9fc68137e6b788476f387"
+    },
+    {
+      "path": "api/instances/src/main/resources/gamevals.toml",
+      "sha256": "b0e8a85566735e8543733754457962e2900581fe50d9b6cbff7f9b574ed5289b"
+    }
+  ],
+  "runtimeMappingSha256": "1c1fdd6b042910965e9fcc9252bff4557e68b4b18483254dafa0da756b8e7236",
+  "bootInitialized": true,
+  "httpChecks": [
+    {
+      "path": "health",
+      "attempts": 1,
+      "elapsedSeconds": 0.079
+    },
+    {
+      "path": "assets/search?q=tree&type=OBJECT&limit=3",
+      "attempts": 1,
+      "elapsedSeconds": 0.035
+    },
+    {
+      "path": "assets/search?q=25187&type=OBJECT&limit=3",
+      "attempts": 1,
+      "elapsedSeconds": 0.012
+    },
+    {
+      "path": "assets/search?q=&type=OBJECT&limit=60",
+      "attempts": 1,
+      "elapsedSeconds": 0.047
+    },
+    {
+      "path": "boss/respawns",
+      "attempts": 4,
+      "elapsedSeconds": 1.832
+    },
+    {
+      "path": "boss/respawns",
+      "attempts": 1,
+      "elapsedSeconds": 0.014
+    }
+  ],
+  "exactObjectLookup": {
+    "ok": true,
+    "items": [
+      {
+        "type": "OBJECT",
+        "id": 25187,
+        "name": "A burnt tree",
+        "width": 2,
+        "length": 2
+      }
+    ]
+  },
+  "browseObjects": {
+    "ok": true,
+    "items": [
+      {
+        "type": "OBJECT",
+        "id": 26286,
+        "name": "<col=ff9040>Air rune",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26281,
+        "name": "<col=ff9040>Anti-dragon shield",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 31950,
+        "name": "<col=ff9040>Bearhead</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26457,
+        "name": "<col=ff9040>Bird snare",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26285,
+        "name": "<col=ff9040>Blood rune",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 31862,
+        "name": "<col=ff9040>Bronze axe</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 542,
+        "name": "<col=ff9040>Brown spice (4)</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 30147,
+        "name": "<col=ff9040>Bucket</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26283,
+        "name": "<col=ff9040>Chaos rune",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 47501,
+        "name": "<col=ff9040>Chisel</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26284,
+        "name": "<col=ff9040>Death rune",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 39574,
+        "name": "<col=ff9040>Death's scythe</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26288,
+        "name": "<col=ff9040>Earth rune",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26268,
+        "name": "<col=ff9040>Empty vial",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26289,
+        "name": "<col=ff9040>Fire rune",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 29711,
+        "name": "<col=ff9040>Hammer</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 13485,
+        "name": "<col=ff9040>Houndmaster's Diary</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 41754,
+        "name": "<col=ff9040>Iron pickaxe</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 29751,
+        "name": "<col=ff9040>Keystone crystal</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 34648,
+        "name": "<col=ff9040>King worm</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26282,
+        "name": "<col=ff9040>Magic secateurs",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 12310,
+        "name": "<col=ff9040>Nistirio's manifesto</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 33265,
+        "name": "<col=ff9040>Old man's coffin</col>",
+        "width": 2,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 541,
+        "name": "<col=ff9040>Orange spice (4)</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 35944,
+        "name": "<col=ff9040>Orb of light</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 27047,
+        "name": "<col=ff9040>Overseer's book</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26290,
+        "name": "<col=ff9040>Pickaxe",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26269,
+        "name": "<col=ff9040>Potion",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26276,
+        "name": "<col=ff9040>Potion",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26264,
+        "name": "<col=ff9040>Power surge",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26265,
+        "name": "<col=ff9040>Recurrent damage",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 540,
+        "name": "<col=ff9040>Red spice (4)</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 40892,
+        "name": "<col=ff9040>Sled</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 674,
+        "name": "<col=ff9040>Small fishing net</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26270,
+        "name": "<col=ff9040>Spectator potion",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 32986,
+        "name": "<col=ff9040>Tatty toy</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 13482,
+        "name": "<col=ff9040>Tekton's journal</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 31634,
+        "name": "<col=ff9040>Tinderbox</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 13483,
+        "name": "<col=ff9040>Transdimensional notes</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26266,
+        "name": "<col=ff9040>Ultimate force",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 13484,
+        "name": "<col=ff9040>Vanguard Judgement</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26287,
+        "name": "<col=ff9040>Water rune",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 39579,
+        "name": "<col=ff9040>Weapons</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 543,
+        "name": "<col=ff9040>Yellow spice (4)</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 26256,
+        "name": "<col=ff9040>Zapper",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 11701,
+        "name": "<col=ff9040>Zul-Andra teleport</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 49608,
+        "name": "<col=ffff00>Advisor</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 31843,
+        "name": "<col=ffff00>Annette</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 40248,
+        "name": "<col=ffff00>Baby Mole",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 55199,
+        "name": "<col=ffff00>Bank buffalo</col>",
+        "width": 2,
+        "length": 2
+      },
+      {
+        "type": "OBJECT",
+        "id": 46075,
+        "name": "<col=ffff00>Bank Camel</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 46076,
+        "name": "<col=ffff00>Bank Camel</col>",
+        "width": 2,
+        "length": 2
+      },
+      {
+        "type": "OBJECT",
+        "id": 58094,
+        "name": "<col=ffff00>Bank Crab</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 60435,
+        "name": "<col=ffff00>Bank Crab</col>",
+        "width": 2,
+        "length": 2
+      },
+      {
+        "type": "OBJECT",
+        "id": 33375,
+        "name": "<col=ffff00>Blood Tithe</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 33376,
+        "name": "<col=ffff00>Blood Tithe</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 33377,
+        "name": "<col=ffff00>Blood Tithe</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 33378,
+        "name": "<col=ffff00>Blood Tithe</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 33379,
+        "name": "<col=ffff00>Blood Tithe</col>",
+        "width": 1,
+        "length": 1
+      },
+      {
+        "type": "OBJECT",
+        "id": 33380,
+        "name": "<col=ffff00>Blood Tithe</col>",
+        "width": 1,
+        "length": 1
+      }
+    ]
+  },
+  "respawnStartupUnavailableResponses": 3,
+  "bossRespawns": {
+    "ok": true,
+    "respawns": []
+  },
+  "bossRespawnsRefreshed": {
+    "ok": true,
+    "respawns": []
+  },
+  "exitCode": 0,
+  "postgresPidFileAbsent": true,
+  "passed": true
+}

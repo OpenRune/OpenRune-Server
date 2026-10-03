@@ -1,0 +1,15 @@
+[clientscript,monster_drops_init](component $frame)
+~steelborder($frame, "Monster Guide", 0);
+~thinbox(monster_drops:list_panel, 0);
+~thinbox(monster_drops:detail_panel, 0);
+~stonebutton_draw(false, "NPCs", p11_full, 1, monster_drops:npc);
+~stonebutton_draw(false, "Items", p11_full, 1, monster_drops:item);
+~stonebutton_draw(false, "Search", p11_full, 1, monster_drops:search);
+~stonebutton_draw(false, "Clear", p11_full, 1, monster_drops:clear);
+~stonebutton_draw(false, "", p11_full, 1, monster_drops:drops);
+~stonebutton_draw(false, "", p11_full, 1, monster_drops:locations);
+~stonebutton_draw(false, "", p11_full, 1, monster_drops:stats);
+~stonebutton_draw(false, "Back", p11_full, 1, monster_drops:list_previous);
+~stonebutton_draw(false, "Next", p11_full, 1, monster_drops:list_next);
+~stonebutton_draw(false, "Back", p11_full, 1, monster_drops:previous);
+~stonebutton_draw(false, "Next", p11_full, 1, monster_drops:next);

@@ -1,0 +1,22 @@
+{
+  "baseline": "ce60c23c328d9f57c1c019d14f672f7b817638e5",
+  "npcDefinitionsBefore": 16577,
+  "npcDefinitionsAfter": 16577,
+  "demonFlagChanges": 96,
+  "dukeResistanceFlagChanges": 2,
+  "unrelatedDefinitionChanges": 0,
+  "method": "Compare stable server definition strings with sorted parameter maps, excluding only demon and demonbane_resistant; all IDs matched.",
+  "reference": "weirdgloop/osrs-dps-calc@89c3e25b344aea90d0189746e4b5f73dde0f0383/cdn/json/monsters.json",
+  "inputs": {
+    "npc-params-before.tsv": "5c286dbcd205172671ac6626740f013636ae87556bc2aa90fec528c37040201a",
+    "npc-params-after.tsv": "f3965b0531c1a7ef8ea5ac911983f0e4cfe8a1250712ef5e735b1e17f0bfbb95"
+  },
+  "selectedTests": {
+    "passed": 122,
+    "failed": 0
+  },
+  "isolatedBoot": {
+    "ready": true,
+    "exitCode": 0
+  }
+}

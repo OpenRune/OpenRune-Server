@@ -1,17 +1,21 @@
 package org.rsmod.api.specials
 
-import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.specials.combat.MagicSpecialAttack
 import org.rsmod.api.specials.combat.MeleeSpecialAttack
 import org.rsmod.api.specials.combat.RangedSpecialAttack
+import org.rsmod.api.specials.combat.ShieldSpecialAttack
 import org.rsmod.api.specials.instant.InstantSpecialAttack
 import org.rsmod.api.specials.weapon.SpecialAttackWeapons
 
 public class SpecialAttackRepository
 @Inject
 constructor(private val registry: SpecialAttackRegistry) {
+    public fun registerShield(shield: String, special: ShieldSpecialAttack) {
+        assertValidResult(shield, registry.add(shield, special))
+    }
+
     /**
      * Registers the [specWeapon] special attack ([special]) as an [InstantSpecialAttack], which
      * triggers immediately when the player enables it.

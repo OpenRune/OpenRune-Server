@@ -1,0 +1,286 @@
+id	symbol	name	category	energy	description
+27655	obj.wild_cave_webweaver_charged	Webweaver bow	Bow	500	Swarm: Fire 4 times in quick succession, dealing reduced damage and inflicting poison.
+12808	obj.blessed_saradomin_sword	Sara's blessed sword (full)	TwoHandedSword	650	Saradomin's Lightning: Call upon Saradomin's power to perform an attack with 25% higher max hit.
+12809	obj.blessed_saradomin_sword_degraded	Saradomin's blessed sword	TwoHandedSword	650	Saradomin's Lightning: Call upon Saradomin's power to perform an attack with 25% higher max hit.
+11785	obj.acb	Armadyl crossbow	Crossbow	500	Armadyl Eye: Deal an attack with double accuracy, also doubles the base activation chance of enchanted bolt effects.
+28682	obj.dinhs_bulwark_ornament	Dinh's blazing bulwark	Bulwark	500	Shield Bash: Hit surrounding targets within a 10x10 area with 20% increased accuracy.
+21003	obj.elder_maul	Elder maul	Blunt	500	Pulverize: A crushing blow with 25% bonus accuracy that will reduce your target's defence by 35%.
+27660	obj.wild_cave_ursine_charged	Ursine chainmace	Spiked	500	Bear Down: Perform an attack with double accuracy, dealing additional damage over time, draining your target's agility level and preventing them from running.
+11791	obj.sotd	Staff of the Dead	BladedStaff	1000	Power of Death: Reduce all melee damage you receive by 50% for the next minute while the staff remains equipped. Stacks with Protect from Melee.
+28688	obj.toxic_blowpipe_loaded_ornament	Blazing blowpipe	Thrown	500	Toxic Siphon: Deal an attack with 100% increased accuracy that inflicts 50% more damage and heals you for 50% of the damage dealt.
+21009	obj.dragon_shortsword	Dragon sword	StabSword	400	Wild Stab: Deal an attack which hits through Protect from Melee with 25% increased accuracy and damage.
+27665	obj.wild_cave_accursed_charged	Accursed sceptre	PoweredStaff	500	Condemn: Fire a powerful spell with increased accuracy and damage, lowering your target's magic and defence levels by up to 15%.
+11283	obj.dragonfire_shield	Dragonfire shield	Unarmed	0	null
+27157	obj.br_dragon_knife	Dragon knife	Thrown	250	Duality: Throws two knives at your opponent.
+25110	obj.league_trailblazer_axe	Echo axe	Axe	1000	Lumber Up: Increase your Woodcutting level by 3.
+19478	obj.light_ballista	Light ballista	Crossbow	650	Concentrated Shot: Deal an attack with 25% increased accuracy and damage, but takes an additional 2.4 seconds to fire.
+21015	obj.dinhs_bulwark	Dinh's bulwark	Bulwark	500	Shield Bash: Hit surrounding targets within a 10x10 area with 20% increased accuracy.
+25112	obj.league_trailblazer_pickaxe	Echo pickaxe	Pickaxe	1000	Rock Knocker: Increase your Mining level by 3.
+19481	obj.heavy_ballista	Heavy ballista	Crossbow	650	Concentrated Shot: Deal an attack with 25% increased accuracy and damage, but takes an additional 2.4 seconds to fire.
+11802	obj.ags	Armadyl godsword	TwoHandedSword	500	The Judgement: Deal an attack that inflicts 37.5% more damage with double accuracy.
+25114	obj.league_trailblazer_harpoon	Echo harpoon	StabSword	1000	Fishstabber: Increase your Fishing level by 3.
+11804	obj.bgs	Bandos godsword	TwoHandedSword	500	Warstrike: Deal an attack, with double accuracy, that inflicts 21% more damage and drains one of your target's combat stats by the damage dealt.
+3101	obj.rune_claws	Rune claws	Claw	250	Impale: Deal an attack with 10% increased Attack and Strength, but with a slower speed.
+11806	obj.sgs	Saradomin godsword	TwoHandedSword	500	Healing Blade: Deal an attack that inflicts 10% more damage with double accuracy, while restoring your Hitpoints and Prayer by 50% and 25% of the damage dealt respectively.
+27679	obj.wild_cave_accursed_charged_recol	Accursed sceptre (a)	Staff	500	Condemn: Fire a powerful spell with increased accuracy and damage, lowering your target's magic and defence levels by up to 15%.
+20000	obj.dragon_scimitar_ornament	Dragon scimitar (or)	SlashSword	550	Sever: Deal a slash with increased accuracy that prevents your target from using protection prayers for 5 seconds if it successfully hits.
+11808	obj.zgs	Zamorak godsword	TwoHandedSword	500	Ice Cleave: Deal an attack that inflicts 10% more damage with double accuracy and freezes your target for 20 seconds if it successfully hits.
+35	obj.excalibur	Excalibur	SlashSword	1000	Sanctuary: Temporarily increase your Defence level by 8.
+21028	obj.dragon_harpoon	Dragon harpoon	StabSword	1000	Fishstabber: Increase your Fishing level by 3.
+21031	obj.infernal_harpoon	Infernal harpoon	StabSword	1000	Fishstabber: Increase your Fishing level by 3.
+30759	obj.soulflame_horn	Soulflame horn	Unarmed	250	Entice: Buffs yours and your allies next melee accuracy roll. Costs additional energy per ally affected.
+21033	obj.infernal_harpoon_empty	Infernal harpoon (uncharged)	StabSword	1000	Fishstabber: Increase your Fishing level by 3.
+24617	obj.bh_vestas_longsword	Vesta's blighted longsword	SlashSword	250	Feint: Deal an attack which treats your target's defence as if it was reduced by 75%. It will deal a minimum of 20% extra damage.
+27690	obj.voidwaker	Voidwaker	SlashSword	500	Disrupt: Summon a powerful bolt of lightning that deals guaranteed magic damage based on your max hit.
+20011	obj.3a_axe	3rd Age axe	Axe	1000	Lumber Up: Increase your Woodcutting level by 3.
+10284	obj.trail_composite_bow_magic	Magic comp bow	Bow	350	Powershot: Deal an attack that is guaranteed to hit your target.
+20014	obj.3a_pickaxe	3rd Age pickaxe	Pickaxe	1000	Rock Knocker: Increase your Mining level by 3.
+5680	obj.dragon_dagger_p+	Dragon dagger(p+)	StabSword	250	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
+27184	obj.br_ancient_godsword	Ancient godsword	TwoHandedSword	500	Blood Sacrifice: Deal an attack that inflicts 10% more damage with double accuracy and marks your target for a blood sacrifice. Targets marked for a blood sacrifice will be hit for 25 damage after a short delay, unless they move away. If they are hit, you'll also be healed for the damage dealt. (Heal is capped at 15 in PvP)
+12848	obj.granite_maul_pretty	Granite maul	Blunt	600	Quick Smash: Deal an extra attack instantly.
+11824	obj.zamorak_spear	Zamorakian spear	Spear	250	Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
+27186	obj.br_zaryte_xbow	Zaryte crossbow	Crossbow	750	Evoke: Perform an attack with double accuracy, with a guaranteed enchanted bolt activation rate on successful hit.
+27188	obj.br_light_ballista	Light ballista	Crossbow	650	Concentrated Shot: Deal an attack with 25% increased accuracy and damage, but takes an additional 2.4 seconds to fire.
+4151	obj.abyssal_whip	Abyssal whip	Whip	500	Energy Drain: Deal an attack with 25% increased accuracy that siphons 10% of your target's run energy.
+33335	obj.soulreaper_axe_orn	Soulreaper axe (o)	Unarmed	1	Behead: Consume all Soul Stacks, attacking with increased damage and accuracy per stack.
+28217	obj.dragon_axe_2h	Dragon felling axe	Axe	1000	Lumber Up: Increase your Woodcutting level by 3.
+4153	obj.granite_maul	Granite maul	Blunt	600	Quick Smash: Deal an extra attack instantly.
+23611	obj.br_acb	Armadyl crossbow	Crossbow	500	Armadyl Eye: Deal an attack with double accuracy, also doubles the base activation chance of enchanted bolt effects.
+28220	obj.crystal_axe_2h	Crystal felling axe	Axe	1000	Lumber Up: Increase your Woodcutting level by 3.
+24125	obj.crystal_halberd_2500	Crystal halberd	Polearm	300	Sweep: If your target is small, adjacent targets may be hit too. Otherwise, your target may be hit a second time, with 25% decreased accuracy. Damage in all cases is increased by 10% of your max hit.
+23613	obj.br_sotd	Staff of the Dead	BladedStaff	1000	Power of Death: Reduce all melee damage you receive by 50% for the next minute while the staff remains equipped. Stacks with Protect from Melee.
+11838	obj.saradomin_sword	Saradomin sword	TwoHandedSword	1000	Saradomin's Lightning: Call upon Saradomin's power to perform an attack that inflicts 10% more melee damage and 1-16 extra magic damage.
+28223	obj.crystal_axe_2h_inactive	Crystal felling axe (inactive)	Axe	1000	Lumber Up: Increase your Woodcutting level by 3.
+23615	obj.br_vestas_longsword	Vesta's longsword	SlashSword	250	Feint: Deal an attack which treats your target's defence as if it was reduced by 75%. It will deal a minimum of 20% extra damage.
+28226	obj.3a_axe_2h	3rd Age felling axe	Axe	1000	Lumber Up: Increase your Woodcutting level by 3.
+5698	obj.dragon_dagger_p++	Dragon dagger(p++)	StabSword	250	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
+23619	obj.br_morrigans_javelin	Morrigan's javelin	Thrown	500	Phantom Strike: This does nothing vs non-player targets. As well as dealing a regular attack, your target will suffer that damage again over time.
+6724	obj.daganoth_cave_magic_shortbow	Seercull	Bow	1000	Soulshot: Deal an attack that is guaranteed to hit your target and lowers your target's Magic level by the damage dealt.
+23620	obj.br_statius_warhammer	Statius's warhammer	Blunt	350	Smash: Deal an attack which deals a minimum of 25% extra damage and lowers your target's Defence level by 30%.
+20557	obj.br_granite_maul	Granite maul	Blunt	500	Quick Smash: Deal an extra attack instantly.
+20558	obj.br_magic_bow	Magic shortbow	Unarmed	550	Snapshot: Fire two arrows within quick succession, but with reduced accuracy.
+23630	obj.br_heavy_ballista	Heavy ballista	Crossbow	650	Concentrated Shot: Deal an attack with 25% increased accuracy and damage, but takes an additional 2.4 seconds to fire.
+20559	obj.br_dragon_2h	Dragon 2h sword	Unarmed	600	Powerstab: Hit up to fourteen enemies surrounding you.
+24144	obj.staff_of_balance	Staff of Balance	BladedStaff	1000	Power of Death: Reduce all melee damage you receive by 50% for the next minute while the staff remains equipped. Stacks with Protect from Melee.
+22610	obj.vestas_spear	Vesta's spear	Spear	500	Spear Wall: All damage dealt by this attack is reduced by 50%, but will damage up to sixteen targets surrounding you. After using this attack, you will be immune from melee and ranged attacks for 5 seconds.
+6739	obj.dragon_axe	Dragon axe	Axe	1000	Lumber Up: Increase your Woodcutting level by 3.
+5716	obj.dragon_spear_p+	Dragon spear(p+)	Spear	250	Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
+26708	obj.dragon_claws_ornament	Dragon claws (or)	Claw	500	Slice and Dice: Hit 4 times in quick succession, with great accuracy.
+22613	obj.vestas_longsword	Vesta's longsword	SlashSword	250	Feint: Deal an attack which treats your target's defence as if it was reduced by 75%. It will deal a minimum of 20% extra damage.
+26710	obj.dragon_warhammer_ornament	Dragon warhammer (or)	Blunt	500	Smash: Deal an attack that inflicts 50% more damage and lowers your target's Defence level by 30%.
+26712	obj.heavy_ballista_ornament	Heavy ballista (or)	Crossbow	650	Concentrated Shot: Deal an attack with 25% increased accuracy and damage, but takes an additional 2.4 seconds to fire.
+6746	obj.darklight	Darklight	SlashSword	500	Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is twice as effective against demons.
+22622	obj.statius_warhammer	Statius's warhammer	Blunt	350	Smash: Deal an attack which deals a minimum of 25% extra damage and lowers your target's Defence level by 30%.
+30305	obj.arclight_inactive	Arclight (inactive)	SlashSword	500	Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is twice as effective against demons.
+5730	obj.dragon_spear_p++	Dragon spear(p++)	Spear	250	Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
+29796	obj.noxious_halberd	Noxious halberd	Polearm	500	Virulence: Instantly metabolize any poison you are suffering from to buff your next attack by that amount of damage.
+12902	obj.toxic_sotd	Toxic staff (uncharged)	BladedStaff	1000	Power of Death: Reduce all melee damage you receive by 50% for the next minute while the staff remains equipped. Stacks with Protect from Melee.
+12904	obj.toxic_sotd_charged	Toxic Staff of the Dead	BladedStaff	1000	Power of Death: Reduce all melee damage you receive by 50% for the next minute while the staff remains equipped. Stacks with Protect from Melee.
+3176	obj.tbwt_dragon_spear_kp	Dragon spear(kp)	Spear	250	Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
+22634	obj.morrigans_thrownaxe	Morrigan's throwing axe	Thrown	250	Hamstring: Deal a minimum of 20% extra damage and hamstring player targets, causing them to lose run energy 6x faster for 1 minute. A successful hit reduces your next attack delay by 1.
+26219	obj.osmumtens_fang	Osmumten's fang	StabSword	250	Eviscerate: Perform an attack with your true maximum hit and a 50% accuracy bonus.
+22636	obj.morrigans_javelin	Morrigan's javelin	Thrown	500	Phantom Strike: This does nothing vs non-player targets. As well as dealing a regular attack, your target will suffer that damage again over time.
+27246	obj.osmumtens_fang_ornament	Osmumten's fang (or)	StabSword	250	Eviscerate: Perform an attack with your true maximum hit and a 50% accuracy bonus.
+11889	obj.zamorak_hasta	Zamorakian hasta	Spear	250	Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
+20593	obj.br_ags	Armadyl godsword	TwoHandedSword	500	The Judgement: Deal an attack that inflicts 37.5% more damage with double accuracy.
+23673	obj.crystal_axe	Crystal axe	Axe	1000	Lumber Up: Increase your Woodcutting level by 3.
+26233	obj.ancient_godsword	Ancient godsword	TwoHandedSword	500	Blood Sacrifice: Deal an attack that inflicts 10% more damage with double accuracy and marks your target for a blood sacrifice. Targets marked for a blood sacrifice will be hit for 25 damage after a short delay, unless they move away. If they are hit, you'll also be healed for the damage dealt. (Heal is capped at 15 in PvP)
+24699	obj.blisterwood_flail	Blisterwood flail	Staff	100	Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
+23675	obj.crystal_axe_inactive	Crystal axe (inactive)	Axe	1000	Lumber Up: Increase your Woodcutting level by 3.
+23677	obj.zalcano_pickaxe	Dragon pickaxe (or)	Pickaxe	1000	Rock Knocker: Increase your Mining level by 3.
+12926	obj.toxic_blowpipe_loaded	Toxic blowpipe	Thrown	500	Toxic Siphon: Deal an attack with 100% increased accuracy that inflicts 50% more damage and heals you for 50% of the damage dealt.
+23680	obj.crystal_pickaxe	Crystal pickaxe	Pickaxe	1000	Rock Knocker: Increase your Mining level by 3.
+21633	obj.wyvern_shield	Ancient wyvern shield	Unarmed	0	null
+23682	obj.crystal_pickaxe_inactive	Crystal pickaxe (inactive)	Pickaxe	1000	Rock Knocker: Increase your Mining level by 3.
+3204	obj.dragon_halberd	Dragon halberd	Polearm	300	Sweep: If your target is small, adjacent targets may be hit too. Otherwise, your target may be hit a second time, with 25% decreased accuracy. Damage in all cases is increased by 10% of your max hit.
+30340	obj.echo_gauntlet_crystal_dagger_t3	Crystal dagger (perfected)	StabSword	250	Crystalline Severance: Launch a powerful attack the pierces the Crystalline Hunllef's prayers and disables them briefly.
+30342	obj.trailblazer_reloaded_harpoon	Infernal harpoon (or)	StabSword	1000	null
+30343	obj.trailblazer_reloaded_harpoon_empty	Infernal harpoon (uncharged)	StabSword	1000	null
+10887	obj.brain_anchor	Barrelchest anchor	Spiked	500	Sunder: Deal an attack with double accuracy and 10% higher max hit. Lowers your target's Attack, Defence, Ranged or Magic level by 10% of the damage dealt.
+30345	obj.trailblazer_reloaded_pickaxe	Infernal pickaxe (or)	Pickaxe	1000	null
+30346	obj.trailblazer_reloaded_pickaxe_empty	Infernal pickaxe (uncharged)	Pickaxe	1000	null
+30347	obj.trailblazer_reloaded_axe	Infernal axe (or)	Axe	1000	null
+30348	obj.trailblazer_reloaded_axe_empty	Infernal axe (uncharged)	Axe	1000	null
+30349	obj.trailblazer_reloaded_harpoon_no_infernal	Dragon harpoon (or)	StabSword	1000	null
+30351	obj.trailblazer_reloaded_pickaxe_no_infernal	Dragon pickaxe (or)	Pickaxe	1000	null
+11920	obj.dragon_pickaxe	Dragon pickaxe	Pickaxe	1000	Rock Knocker: Increase your Mining level by 3.
+30352	obj.trailblazer_reloaded_axe_no_infernal	Dragon axe (or)	Axe	1000	null
+27287	obj.keris_partisan_corruption	Keris partisan of corruption	Unarmed	750	Wrath of Amascut: Perform an attack with 100% increased accuracy and 25% increased damage, but with halved attack speed. If hit, the opponent will take 25% increased damage for the next 6 seconds. This special attack can only be used within the Tombs of Amascut.
+29849	obj.br_frostmoon_spear	Blue Moon spear	BladedStaff	500	Break Shackles: Attack with increased accuracy and damage based on the duration of any binding spells affecting them and ending said effect. This special attack requires the full Blue Moon set to be worn.
+29850	obj.br_dual_macuahuitl	Dual macuahuitl	Spiked	250	Blood infusion: Sacrifice 25% of your current hp to deal an attack with 25% increased accuracy and damage, with a guaranteed set effect activation on hit. This special attack requires the full Bloodrager set to be worn.
+27291	obj.keris_partisan_sun	Keris partisan of the sun	Unarmed	750	Tumeken's Light: Sacrifice 50 prayer points to restore your hitpoints to 20% above their maximum, cure all poison, restore all drained stats (except prayer) and fully restore your run energy. This special attack can only be used within the Tombs of Amascut.
+29851	obj.br_eclipse_atlatl	Eclipse atlatl	Bow	500	Eclipse: Attack with 50% increased accuracy, consuming all remaining burn damage affecting the target and raising the max hit by that amount. This special attack requires the full Eclipse set to be worn.
+30367	obj.echo_godsword	The dogsword	TwoHandedSword	500	Echo slash: Launch an attack that applies each of the other godswords' effects.
+24225	obj.granite_maul_plus	Granite maul	Blunt	500	Quick Smash: Deal an extra attack instantly.
+30369	obj.weapon_of_sol	Sunlight spear	StabSword	7	Sol Slam: Immediately deal an AoE attack around you in a 7x7 radius, increases damage based on your prayer bonus.
+27810	obj.osb10_dragon_candle	Dragon candle dagger	Blunt	250	Celebrate: Perform an attack to leave the area feeling more festive.
+24227	obj.granite_maul_pretty_plus	Granite maul	Blunt	500	Quick Smash: Deal an extra attack instantly.
+8872	obj.dttd_bone_dagger	Bone dagger	StabSword	750	Backstab: Deal an attack with greatly increased accuracy on unsuspecting targets and that lowers your target's Defence level by the damage dealt.
+8874	obj.dttd_bone_dagger_p	Bone dagger (p)	StabSword	750	Backstab: Deal an attack with greatly increased accuracy on unsuspecting targets and that lowers your target's Defence level by the damage dealt.
+8876	obj.dttd_bone_dagger_p+	Bone dagger (p+)	StabSword	750	Backstab: Deal an attack with greatly increased accuracy on unsuspecting targets and that lowers your target's Defence level by the damage dealt.
+8878	obj.dttd_bone_dagger_p++	Bone dagger (p++)	StabSword	750	Backstab: Deal an attack with greatly increased accuracy on unsuspecting targets and that lowers your target's Defence level by the damage dealt.
+8880	obj.dttd_bone_crossbow	Dorgeshuun crossbow	Crossbow	750	Snipe: Deal an attack with greatly increased accuracy on unsuspecting targets and that lowers your target's Defence level by the damage dealt.
+28338	obj.soulreaper	Soulreaper axe	Axe	1	Behead: Consume all Soul Stacks, attacking with increased damage and accuracy per stack.
+33460	obj.br_xbows_crossbow_dragon	Dragon crossbow	Unarmed	600	Annihilate: Hit your target with 20% extra damage and in multicombat zones, hit all adjacent targets by 20% less damage.
+30388	obj.thunder_khopesh	Thunder khopesh	SlashSword	500	Lingering Lightning: Attack the target twice, if either attack hits spawn additional lightning wherever the npc was standing, dealing damage to targets around it.
+1215	obj.dragon_dagger	Dragon dagger	StabSword	250	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
+22731	obj.brut_dragon_spear	Dragon hasta	Spear	50	Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
+27853	obj.bh_darkbow_imbue	Dark bow (bh)	Bow	550	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 7 per hit).
+22734	obj.brut_dragon_spear_p	Dragon hasta(p)	Spear	50	Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
+1231	obj.dragon_dagger_p	Dragon dagger(p)	StabSword	250	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
+27855	obj.bh_brain_anchor_imbue	Barrelchest anchor (bh)	Spiked	500	Sunder: Deal an attack with double accuracy and 25% higher max hit. Lowers your target's Attack, Defence, Ranged or Magic level by 10% of the damage dealt. Reduces the next attack delay by 1.2 seconds.
+27857	obj.bh_dragon_mace_imbue	Dragon mace (bh)	Spiked	150	Shatter: Increase damage by 50% and accuracy by 25% for one hit, treats your target's defence as if it was reduced to 60%.
+22737	obj.brut_dragon_spear_p+	Dragon hasta(p+)	Spear	50	Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
+23762	obj.crystal_harpoon	Crystal harpoon	StabSword	1000	Fishstabber: Increase your Fishing level by 3.
+27859	obj.bh_dragon_longsword_imbue	Dragon longsword (bh)	SlashSword	150	Cleave: Deal a powerful attack that inflicts 25% more damage with 25% increased accuracy and increased speed.
+23764	obj.crystal_harpoon_inactive	Crystal harpoon (inactive)	StabSword	1000	Fishstabber: Increase your Fishing level by 3.
+22740	obj.brut_dragon_spear_p++	Dragon hasta(p++)	Spear	50	Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
+27861	obj.bh_abyssal_dagger_imbue	Abyssal dagger (bh)	StabSword	350	Abyssal Puncture: Deal an attack that hits twice with 25% increased accuracy, but inflicts 5% less damage per hit. The second hit is guaranteed if the first deals damage.
+21205	obj.br_elder_maul	Elder maul	Blunt	500	Pulverize: A crushing blow with 25% bonus accuracy that will reduce your target's defence by 35%.
+21206	obj.br_dragon_sword	Dragon sword	Unarmed	400	Wild Stab: Deal an attack which hits through Protect from Melee with 25% increased accuracy and damage.
+27863	obj.bh_abyssal_dagger_p_imbue	Abyssal dagger (bh)(p)	StabSword	350	Abyssal Puncture: Deal an attack that hits twice with 25% increased accuracy, but inflicts 5% less damage per hit. The second hit is guaranteed if the first deals damage.
+21207	obj.br_dragon_thrownaxe	Dragon thrownaxe	Unarmed	250	Momentum Throw: Deal a fast attack with 25% improved accuracy.
+22743	obj.brut_dragon_spear_kp	Dragon hasta(kp)	Spear	50	Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
+27865	obj.bh_abyssal_dagger_p+_imbue	Abyssal dagger (bh)(p+)	StabSword	350	Abyssal Puncture: Deal an attack that hits twice with 25% increased accuracy, but inflicts 5% less damage per hit. The second hit is guaranteed if the first deals damage.
+19675	obj.arclight	Arclight	SlashSword	500	Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is twice as effective against demons.
+27867	obj.bh_abyssal_dagger_p++_imbue	Abyssal dagger (bh)(p++)	StabSword	350	Abyssal Puncture: Deal an attack that hits twice with 25% increased accuracy, but inflicts 5% less damage per hit. The second hit is guaranteed if the first deals damage.
+27869	obj.br_voidwaker	Voidwaker	SlashSword	500	Disrupt: Summon a powerful bolt of lightning that deals guaranteed magic damage based on your max hit.
+1249	obj.dragon_spear	Dragon spear	Spear	250	Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
+12006	obj.abyssal_tentacle	Abyssal tentacle	Whip	500	Binding Tentacle: Bind your target for 5 seconds and increase the chance of them being poisoned.
+30955	obj.arkan_blade	Arkan blade	Unarmed	300	Flames of Ralos: Perform a devastating blow to your enemy with 50% increased accuracy and damage. If your attack successfully hits, the target will burn for 10 damage over 24 seconds.
+21742	obj.granite_hammer	Granite hammer	Blunt	600	Hammer Blow: Deal an attack with 50% more accuracy and a guaranteed +5 damage.
+1263	obj.dragon_spear_p	Dragon spear(p)	Spear	250	Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
+28919	obj.tonalztics_of_ralos_uncharged	Tonalztics of Ralos (uncharged)	Thrown	500	Division: Fire a powerful piercing blade that reduces the target's Defence by 12.5% of their Magic Level.
+28922	obj.tonalztics_of_ralos_charged	Tonalztics of Ralos	Thrown	500	Division: Fire a powerful piercing blade that reduces the target's Defence by 12.5% of their Magic Level.
+27900	obj.vestas_spear_bh	Vesta's spear (bh)	Spear	500	Spear Wall: Will hit twice with second hit deals a damage between 50% - 75% of the first hit damage. After using this attack, you will be immune from melee and ranged attacks for 5 seconds and the next attack delay is reduced by 0.6 seconds.
+27904	obj.vestas_longsword_bh	Vesta's longsword (bh)	SlashSword	250	Feint: Deal an attack which treats your target's defence as if it was reduced by 75%. It will deal a minimum of 20% extra damage.
+27908	obj.statius_warhammer_bh	Statius's warhammer (bh)	Blunt	350	Smash: Deal an attack which deals a minimum of 25% extra damage and lowers your target's Defence level by 75%.
+26374	obj.zaryte_xbow	Zaryte crossbow	Crossbow	750	Evoke: Perform an attack with double accuracy, with a guaranteed enchanted bolt activation rate on successful hit.
+13576	obj.dragon_warhammer	Dragon warhammer	Blunt	500	Smash: Deal an attack that inflicts 50% more damage and lowers your target's Defence level by 30%.
+27912	obj.morrigans_thrownaxe_bh	Morrigan's throwing axe (bh)	Thrown	500	Hamstring: Deal a minimum of 50% extra damage with 150% accuracy and hamstring player targets, causing them to lose run energy 6x faster for 1 minute.
+33035	obj.toxic_sotd_deadman	Toxic staff (uncharged)	Unarmed	1000	Power of Death: Reduce all melee damage you receive by 50% for the next minute while the staff remains equipped. Stacks with Protect from Melee.
+27916	obj.morrigans_javelin_bh	Morrigan's javelin (bh)	Thrown	500	Phantom Strike: This does nothing vs non-player targets. As well as dealing a regular attack with 150% accuracy, your target will suffer 75% damage again over time.
+33036	obj.toxic_sotd_charged_deadman	Toxic staff (Deadman)	Unarmed	1000	Power of Death: Reduce all melee damage you receive by 50% for the next minute while the staff remains equipped. Stacks with Protect from Melee.
+33038	obj.deadman_dogsword	The dogsword	Unarmed	600	Power of the Gods: Launch an attack that applies each of the other godswords' effects. The ancient godsword blood sacrifice effects are reduced against players to 15 damage, 10 heal.
+33041	obj.deadman_thunder_khopesh	Thunder khopesh	Unarmed	600	Lightning Strike: Against monsters, attacks twice. If either attack is successful an additional lightning bolt is summoned rolling up to 100% of the original attacks max hit. Against players, increases damage by 30% and summons a barrage of lightning. Each lightning bolt hits between 30% and 45% of your original damage.
+22804	obj.dragon_knife	Dragon knife	Thrown	250	Duality: Throws two knives at your opponent.
+22806	obj.dragon_knife_p	Dragon knife(p)	Thrown	250	Duality: Throws two knives at your opponent.
+25367	obj.trailblazer_harpoon_empty	Infernal harpoon (uncharged)	StabSword	1000	null
+22296	obj.staff_of_light	Staff of Light	BladedStaff	1000	Power of Death: Reduce all melee damage you receive by 50% for the next minute while the staff remains equipped. Stacks with Protect from Melee.
+22808	obj.dragon_knife_p+	Dragon knife(p+)	Thrown	250	Duality: Throws two knives at your opponent.
+25369	obj.trailblazer_pickaxe_empty	Infernal pickaxe (uncharged)	Pickaxe	1000	null
+1305	obj.dragon_longsword	Dragon longsword	SlashSword	250	Cleave: Deal a powerful attack that inflicts 25% more damage.
+22810	obj.dragon_knife_p++	Dragon knife(p++)	Thrown	250	Duality: Throws two knives at your opponent.
+25371	obj.trailblazer_axe_empty	Infernal axe (uncharged)	Axe	1000	null
+25373	obj.trailblazer_harpoon_no_infernal	Dragon harpoon (or)	StabSword	1000	null
+11037	obj.olaf2_brine_sabre	Brine sabre	SlashSword	750	Liquify: Deal an attack with double the chance of hitting that boosts your Strength, Attack and Defence levels by 25% of the damage dealt. Can only be used underwater.
+25376	obj.trailblazer_pickaxe_no_infernal	Dragon pickaxe (or)	Pickaxe	1000	null
+25378	obj.trailblazer_axe_no_infernal	Dragon axe (or)	Axe	1000	null
+805	obj.rune_thrownaxe	Rune thrownaxe	Thrown	100	Chainhit: Throw an axe which hits your target and then chains to hit further nearby targets, costing 10% additional special attack per extra target.
+20784	obj.br_dragon_claws	Dragon claws	Claw	500	Slice and Dice: Hit 4 times in quick succession, with great accuracy.
+20785	obj.br_dragon_warhammer	Dragon warhammer	Unarmed	500	Smash: Deal an attack that inflicts 50% more damage and lowers your target's Defence level by 30%.
+11061	obj.ancient_goblin_mace	Ancient mace	Spiked	1000	Favour of the War God: Deal an attack which hits through Protect from Melee and siphons Prayer points equal to the damage dealt.
+28988	obj.frostmoon_spear	Blue Moon spear	BladedStaff	500	Break Shackles: Attack with increased accuracy and damage based on the duration of any binding spells affecting them and ending said effect. This special attack requires the full Blue Moon set to be worn.
+28997	obj.dual_macuahuitl	Dual macuahuitl	Spiked	250	Blood infusion: Sacrifice 25% of your current hp to deal an attack with 25% increased accuracy and damage, with a guaranteed set effect activation on hit. This special attack requires the full Bloodrager set to be worn.
+29000	obj.eclipse_atlatl	Eclipse atlatl	Bow	500	Eclipse: Attack with 50% increased accuracy, consuming all remaining burn damage affecting the target and raising the max hit by that amount. This special attack requires the full Eclipse set to be worn.
+13652	obj.dragon_claws	Dragon claws	Claw	500	Slice and Dice: Hit 4 times in quick succession, with great accuracy.
+859	obj.magic_longbow	Magic longbow	Bow	350	Powershot: Deal an attack that is guaranteed to hit your target.
+861	obj.magic_shortbow	Magic shortbow	Bow	550	Snapshot: Fire two arrows within quick succession, but with reduced accuracy.
+31583	obj.rosewood_blowpipe	Rosewood blowpipe	Unarmed	250	Rapid Burst: Fire two darts in rapid succession with 20% reduced accuracy and 10% increased damage.
+33631	obj.crimson_kisten	Crimson kisten	Unarmed	500	Brutal Swing: Rolls accuracy 4 times. If any hit, the attacks deals 70-110% of your maximum hit. Each additional successful hit increases both the minimum and maximum hit by 20%
+1377	obj.dragon_battleaxe	Dragon battleaxe	Axe	1000	Rampage: Drain your Attack, Defence, Ranged & Magic levels by 10%, while increasing your Strength by 10 levels, plus 25% of the drained levels.
+24424	obj.nightmare_staff_volatile	Volatile Nightmare staff	Staff	550	Immolate: Fire a powerful spell with 50% improved accuracy. Damage scales based upon magic level and can be increased with magic damage boosting equipment. Costs no runes to use.
+24425	obj.nightmare_staff_eldritch	Eldritch Nightmare staff	Staff	550	Invocate: Fire a powerful spell that restores your prayer points by 50% of the damage dealt. Damage scales based upon magic level and can be increased with magic damage boosting equipment. Your prayer points can go above your level, to a maximum of 120. Costs no runes to use.
+20849	obj.dragon_thrownaxe	Dragon thrownaxe	Thrown	250	Momentum Throw: Deal a fast attack with 25% improved accuracy.
+26482	obj.league_3_whip	Abyssal whip (or)	Whip	500	Energy Drain: Deal an attack with 25% increased accuracy that siphons 10% of your target's run energy.
+28019	obj.bh_dragon_dagger_corrupted	Dragon dagger (cr)	StabSword	250	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
+28531	obj.deadman_blighted_voidwaker	Corrupted voidwaker	SlashSword	500	Disrupt: Summon a powerful bolt of lightning that deals guaranteed magic damage based on your max hit.
+26484	obj.league_3_whip_tentacle	Abyssal tentacle (or)	Whip	500	Binding Tentacle: Bind your target for 5 seconds and increase the chance of them being poisoned.
+28021	obj.bh_dragon_dagger_p_corrupted	Dragon dagger (p)(cr)	StabSword	250	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
+28534	obj.deadman_blighted_dragon_claws	Corrupted dragon claws	Claw	500	Slice and Dice: Hit 4 times in quick succession, with great accuracy.
+28023	obj.bh_dragon_dagger_p+_corrupted	Dragon dagger (p+)(cr)	StabSword	250	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
+28025	obj.bh_dragon_dagger_p++_corrupted	Dragon dagger (p++)(cr)	StabSword	250	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
+28537	obj.deadman_blighted_ags	Corrupted armadyl godsword	TwoHandedSword	500	The Judgement: Deal an attack that inflicts 37.5% more damage with double accuracy.
+28027	obj.bh_dragon_mace_corrupted	Dragon mace (cr)	Spiked	250	Shatter: Increase damage by 50% and accuracy by 25% for one hit.
+28029	obj.bh_dragon_shortsword_corrupted	Dragon sword (cr)	StabSword	400	Wild Stab: Deal an attack which hits through Protect from Melee with 25% increased accuracy and damage.
+22398	obj.ivandis_flail	Ivandis flail	Staff	100	Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
+28031	obj.bh_dragon_scimitar_corrupted	Dragon scimitar (cr)	SlashSword	550	Sever: Deal a slash with increased accuracy that prevents your target from using protection prayers for 5 seconds if it successfully hits.
+28033	obj.bh_dragon_longsword_corrupted	Dragon longsword (cr)	SlashSword	250	Cleave: Deal a powerful attack that inflicts 25% more damage.
+28035	obj.bh_dragon_warhammer_corrupted	Dragon warhammer (cr)	Blunt	500	Smash: Deal an attack that inflicts 50% more damage and lowers your target's Defence level by 30%.
+28037	obj.bh_dragon_battleaxe_corrupted	Dragon battleaxe (cr)	Axe	1000	Rampage: Drain your Attack, Defence, Ranged & Magic levels by 10%, while increasing your Strength by 10 levels, plus 25% of the drained levels.
+28039	obj.bh_dragon_claws_corrupted	Dragon claws (cr)	Claw	500	Slice and Dice: Hit 4 times in quick succession, with great accuracy.
+28041	obj.bh_dragon_spear_corrupted	Dragon spear (cr)	Spear	250	Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
+29577	obj.bone_claws	Burning claws	Claw	350	Burning barrage: Attacks 3 times in quick succession, with a chance to burn the enemy on each hit.
+31113	obj.eye_of_ayak	Eye of Ayak	Unarmed	500	Soul Rend: Deliver a strike with doubled accuracy and 30% higher max hit, draining Magic Defence equal to the damage dealt.
+28043	obj.bh_dragon_spear_p_corrupted	Dragon spear (p)(cr)	Spear	250	Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
+28045	obj.bh_dragon_spear_p+_corrupted	Dragon spear (p+)(cr)	Spear	250	Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
+21902	obj.xbows_crossbow_dragon	Dragon crossbow	Crossbow	600	Annihilate: Hit your target with 20% extra damage and in multicombat zones, hit all adjacent targets by 20% less damage.
+28047	obj.bh_dragon_spear_p++_corrupted	Dragon spear (p++)(cr)	Spear	250	Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
+20368	obj.agsg	Armadyl godsword (or)	TwoHandedSword	500	The Judgement: Deal an attack that inflicts 37.5% more damage with double accuracy.
+28049	obj.bh_dragon_halberd_corrupted	Dragon halberd (cr)	Polearm	300	Sweep: If your target is small, adjacent targets may be hit too. Otherwise, your target may be hit a second time, with 25% decreased accuracy. Damage in all cases is increased by 10% of your max hit.
+20370	obj.bgsg	Bandos godsword (or)	TwoHandedSword	500	Warstrike: Deal an attack, with double accuracy, that inflicts 21% more damage and drains one of your target's combat stats by the damage dealt.
+28051	obj.bh_dragon_2h_sword_corrupted	Dragon 2h sword (cr)	TwoHandedSword	600	Powerstab: Hit up to fourteen enemies surrounding you.
+20372	obj.sgsg	Saradomin godsword (or)	TwoHandedSword	500	Healing Blade: Deal an attack that inflicts 10% more damage with double accuracy, while restoring your Hitpoints and Prayer by 50% and 25% of the damage dealt respectively.
+29589	obj.emberlight	Emberlight	SlashSword	500	Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is three times as effective against demons.
+28053	obj.bh_xbows_crossbow_dragon_corrupted	Dragon crossbow (cr)	Crossbow	600	Annihilate: Hit your target with 20% extra damage and in multicombat zones, hit all adjacent targets by 20% less damage.
+20374	obj.zgsg	Zamorak godsword (or)	TwoHandedSword	500	Ice Cleave: Deal an attack that inflicts 10% more damage with double accuracy and freezes your target for 20 seconds if it successfully hits.
+33174	obj.br_osmumtens_fang	Osmumten's fang	Unarmed	250	Eviscerate: Perform an attack with your true maximum hit and a 50% accuracy bonus.
+29591	obj.scorching_bow	Scorching bow	Bow	250	Scorching shackles: A scorching shot with 30% bonus accuracy that will bind and burn enemy demons for 12 seconds.)
+1434	obj.dragon_mace	Dragon mace	Spiked	250	Shatter: Increase damage by 50% and accuracy by 25% for one hit.
+29594	obj.purging_staff	Purging staff	Staff	250	Scatter ashes: Casts the highest available demonbane spell. If it kills a demon, it refunds its special attack energy cost, and reduces the next attack delay.
+33178	obj.br_noxious_halberd	Noxious halberd	Unarmed	500	Virulence: Instantly metabolize any poison you are suffering from to buff your next attack by that amount of damage.
+29599	obj.deadman_blighted_dark_bow	Corrupted dark bow	Bow	550	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
+33184	obj.br_purging_staff	Purging staff	Unarmed	250	Scatter ashes: Casts the highest available demonbane spell. If it kills a demon, it refunds its special attack energy cost, and reduces the next attack delay.
+29602	obj.deadman_blighted_volatile_staff	Corrupted Volatile Nightmare staff	Staff	550	Immolate: Fire a powerful spell with 50% improved accuracy. Damage scales based upon magic level and can be increased with magic damage boosting equipment. Costs no runes to use.
+29605	obj.deadman_ags	Armadyl godsword (Deadman)	TwoHandedSword	500	The Judgement: Deal an attack that inflicts 37.5% more damage with double accuracy.
+29607	obj.deadman_voidwaker	Voidwaker (Deadman)	SlashSword	500	Disrupt: Summon a powerful bolt of lightning that deals guaranteed magic damage based on your max hit.
+29609	obj.deadman_nightmare_staff_volatile	Volatile Nightmare staff (Deadman)	Staff	550	Immolate: Fire a powerful spell with 50% improved accuracy. Damage scales based upon magic level and can be increased with magic damage boosting equipment. Costs no runes to use.
+29611	obj.deadman_darkbow	Dark bow (Deadman)	Bow	550	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
+25517	obj.br_nightmare_staff_volatile	Volatile Nightmare staff	Staff	550	Immolate: Fire a powerful spell with 50% improved accuracy. Damage scales based upon magic level and can be increased with magic damage boosting equipment. Costs no runes to use.
+33200	obj.br_bone_claws	Burning claws	Unarmed	350	Burning barrage: Attacks 3 times in quick succession, with a chance to burn the enemy on each hit.
+23987	obj.crystal_halberd	Crystal halberd	Polearm	300	Sweep: If your target is small, adjacent targets may be hit too. Otherwise, your target may be hit a second time, with 25% decreased accuracy. Damage in all cases is increased by 10% of your max hit.
+20405	obj.br_abyssal_whip	Abyssal whip	Whip	500	Energy Drain: Deal an attack with 25% increased accuracy that siphons 10% of your target's run energy.
+33718	obj.hallowed_flail	Hallowed flail	Unarmed	100	Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
+20406	obj.br_dragon_scimitar	Dragon scimitar	SlashSword	550	Sever: Deal a slash with increased accuracy that can prevent your target from using protection prayers for 5 seconds.
+20407	obj.br_dragon_dagger	Dragon dagger	StabSword	250	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
+20408	obj.br_darkbow	Dark bow	Bow	550	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
+13241	obj.infernal_axe	Infernal axe	Axe	1000	Lumber Up: Increase your Woodcutting level by 3.
+13242	obj.infernal_axe_empty	Infernal axe (uncharged)	Axe	1000	Lumber Up: Increase your Woodcutting level by 3.
+33722	obj.sunspear	Sunspear	Unarmed	500	Seeking Lunge: Always deals 70% of your maximum damage on a successful hit. If a monster has less health than this attack would deal, the attack always rolls exactly 70% of its maximum accuracy roll.
+13243	obj.infernal_pickaxe	Infernal pickaxe	Pickaxe	1000	Rock Knocker: Increase your Mining level by 3.
+13244	obj.infernal_pickaxe_empty	Infernal pickaxe (uncharged)	Pickaxe	1000	Rock Knocker: Increase your Mining level by 3.
+13263	obj.abyssal_bludgeon	Abyssal bludgeon	Bludgeon	500	Penance: Deal an attack that inflicts 0.5% more damage per prayer point that you have used.
+13265	obj.abyssal_dagger	Abyssal dagger	StabSword	250	Abyssal Puncture: Deal an attack that hits twice with 25% increased accuracy, but inflicts 15% less damage per hit. The second hit is guaranteed if the first deals damage.
+13267	obj.abyssal_dagger_p	Abyssal dagger (p)	StabSword	250	Abyssal Puncture: Deal an attack that hits twice with 25% increased accuracy, but inflicts 15% less damage per hit. The second hit is guaranteed if the first deals damage.
+13269	obj.abyssal_dagger_p+	Abyssal dagger (p+)	StabSword	250	Abyssal Puncture: Deal an attack that hits twice with 25% increased accuracy, but inflicts 15% less damage per hit. The second hit is guaranteed if the first deals damage.
+7639	obj.burgh_rod_command_final_10	Rod of Ivandis (10)	Staff	100	Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
+13271	obj.abyssal_dagger_p++	Abyssal dagger (p++)	StabSword	250	Abyssal Puncture: Deal an attack that hits twice with 25% increased accuracy, but inflicts 15% less damage per hit. The second hit is guaranteed if the first deals damage.
+7640	obj.burgh_rod_command_final_9	Rod of Ivandis (9)	Staff	100	Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
+7641	obj.burgh_rod_command_final_8	Rod of Ivandis (8)	Staff	100	Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
+7642	obj.burgh_rod_command_final_7	Rod of Ivandis (7)	Staff	100	Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
+7643	obj.burgh_rod_command_final_6	Rod of Ivandis (6)	Staff	100	Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
+33243	obj.infernal_tecpatl	Infernal tecpatl	Unarmed	500	Brand: Unleash 4 melee hits in quick succession with 25% increased max hit and accuracy.
+7644	obj.burgh_rod_command_final_5	Rod of Ivandis (5)	Staff	100	Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
+27100	obj.elder_maul_ornament	Elder maul (or)	Blunt	500	Pulverize: A crushing blow with 25% bonus accuracy that will reduce your target's defence by 35%.
+7645	obj.burgh_rod_command_final_4	Rod of Ivandis (4)	Staff	100	Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
+12765	obj.darkbow_green	Dark bow	Bow	550	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
+7646	obj.burgh_rod_command_final_3	Rod of Ivandis (3)	Staff	100	Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
+12766	obj.darkbow_blue	Dark bow	Bow	550	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
+7647	obj.burgh_rod_command_final_2	Rod of Ivandis (2)	Staff	100	Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
+12767	obj.darkbow_yellow	Dark bow	Bow	550	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
+7648	obj.burgh_rod_command_final_1	Rod of Ivandis (1)	Staff	100	Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
+12768	obj.darkbow_white	Dark bow	Bow	550	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
+33249	obj.fang_of_the_hound	Fang of the hound	Unarmed	500	Ferocity: Unleash an instant attack on your target.
+25059	obj.trailblazer_harpoon	Infernal harpoon (or)	StabSword	1000	null
+11235	obj.darkbow	Dark bow	Bow	550	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
+12773	obj.abyssal_whip_lava	Volcanic abyssal whip	Whip	500	Energy Drain: Deal an attack with 25% increased accuracy that siphons 10% of your target's run energy.
+12774	obj.abyssal_whip_ice	Frozen abyssal whip	Whip	500	Energy Drain: Deal an attack with 25% increased accuracy that siphons 10% of your target's run energy.
+25063	obj.trailblazer_pickaxe	Infernal pickaxe (or)	Pickaxe	1000	null
+33255	obj.lithic_sceptre_charged	Lithic sceptre	Unarmed	5	Explosive Shatter: Consume 5 shatter stacks to instantly deal 150% of your max hit as magic damage and up to 75% as typeless damage to 12 enemies within 3 tiles
+25066	obj.trailblazer_axe	Infernal axe (or)	Axe	1000	null
+4587	obj.dragon_scimitar	Dragon scimitar	SlashSword	550	Sever: Deal a slash with increased accuracy that prevents your target from using protection prayers for 5 seconds if it successfully hits.
+22002	obj.dragonfire_ward	Dragonfire ward	Unarmed	0	null
+12788	obj.magic_shortbow_i	Magic shortbow (i)	Bow	500	Snapshot: Fire two arrows within quick succession, but with reduced accuracy.
+22516	obj.verzik_special_weapon	Dawnbringer	PoweredStaff	350	Pulsate: Fire an incredibly powerful burst of energy.
+7158	obj.dragon_2h_sword	Dragon 2h sword	TwoHandedSword	600	Powerstab: Hit up to fourteen enemies surrounding you.
+12797	obj.dragon_pickaxe_pretty	Dragon pickaxe	Pickaxe	1000	Rock Knocker: Increase your Mining level by 3.

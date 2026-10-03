@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 
 }
 
@@ -8,6 +9,7 @@ kotlin {
 }
 
 dependencies {
+    testImplementation("org.mockito:mockito-core:5.14.2")
     implementation(libs.guice)
     implementation(projects.api.areaChecker)
     implementation(projects.api.combat.combatCommons)

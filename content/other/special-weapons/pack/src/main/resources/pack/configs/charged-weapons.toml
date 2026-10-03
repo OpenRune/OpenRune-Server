@@ -1,0 +1,37 @@
+[[varobj]]
+id = "varobj.ayak_charges"
+startBit = 0
+endBit = 15
+
+[[varobj]]
+id = "varobj.ayak_tear_charges"
+startBit = 16
+endBit = 16
+
+[[varn]]
+id = "varn.magic_defence_bonus_drain"
+
+[[varn]]
+id = "varn.npc_venom_strikes"
+
+[[item]]
+id = "obj.eye_of_ayak"
+inherit = "obj.eye_of_ayak"
+weaponCategory = "PoweredStaff"
+[item.params]
+"param.attackrate" = 3
+"param.attack_range" = 6
+"param.attack_anim_stance1" = "seq.human_eye_of_ayak_normal"
+"param.attack_anim_stance2" = "seq.human_eye_of_ayak_normal"
+"param.attack_anim_stance4" = "seq.human_eye_of_ayak_normal"
+
+[[item]]
+id = "obj.eye_of_ayak_uncharged"
+inherit = "obj.eye_of_ayak_uncharged"
+weaponCategory = "PoweredStaff"
+[item.params]
+"param.attackrate" = 3
+"param.attack_range" = 6
+"param.attack_anim_stance1" = "seq.human_eye_of_ayak_normal"
+"param.attack_anim_stance2" = "seq.human_eye_of_ayak_normal"
+"param.attack_anim_stance4" = "seq.human_eye_of_ayak_normal"

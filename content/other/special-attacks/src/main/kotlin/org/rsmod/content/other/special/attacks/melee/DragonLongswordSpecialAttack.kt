@@ -15,9 +15,11 @@ import org.rsmod.game.entity.Player
 class DragonLongswordSpecialAttack : SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
         registerMelee("obj.dragon_longsword", DragonLongsword(manager))
+        registerMelee("obj.bh_dragon_longsword_corrupted", DragonLongsword(manager))
+        registerMelee("obj.bh_dragon_longsword_imbue", DragonLongsword(manager, imbued = true))
     }
 
-    private class DragonLongsword(private val manager: SpecialAttackManager) : MeleeSpecialAttack {
+    private class DragonLongsword(private val manager: SpecialAttackManager, private val imbued: Boolean = false) : MeleeSpecialAttack {
         override suspend fun ProtectedAccess.attack(
             target: Npc,
             attack: CombatAttack.Melee,
@@ -47,12 +49,13 @@ class DragonLongswordSpecialAttack : SpecialAttackMap {
                     source = this,
                     target = target,
                     attack = attack,
-                    accuracyMultiplier = 1.25,
+                    accuracyMultiplier = if (imbued) 1.25 else 1.0,
                     maxHitMultiplier = 1.25,
                     blockType = MeleeAttackType.Slash,
                 )
             manager.giveCombatXp(this, target, attack, damage)
             manager.queueMeleeHit(this, target, damage)
+            if (imbued) manager.setNextAttackDelay(this, 4)
             manager.continueCombat(this, target)
         }
     }

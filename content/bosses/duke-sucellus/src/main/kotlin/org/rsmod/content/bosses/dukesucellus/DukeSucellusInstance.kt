@@ -28,6 +28,8 @@ import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.interact.AiPlayerInteractions
+import org.rsmod.api.npc.respawn.BossRespawnPolicy
+import org.rsmod.api.npc.respawn.BossRespawnTimers
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.isValidTarget
@@ -76,6 +78,7 @@ constructor(
     private val locRepo: LocRepository,
     private val aiPlayerInteractions: AiPlayerInteractions,
     private val npcDeath: NpcDeath,
+    private val bossRespawns: BossRespawnTimers,
 ) : InstanceScript(registry) {
 
     private val pendingAwakened = HashSet<Player>()
@@ -264,7 +267,9 @@ constructor(
         npcDeath.spawnDrops(this, coords.translate(DEATH_DROP_OFFSET_X, DEATH_DROP_OFFSET_Z))
         npc.vars["varn.awakened_state"] = 0
         npc.vars["varn.skip_killcount"] = 0
-        delay(DEATH_RESET_DELAY)
+        bossRespawns.schedule(npc, BossRespawnPolicy.OTHER_BOSS_TICKS)
+        delay(BossRespawnPolicy.OTHER_BOSS_TICKS)
+        bossRespawns.cancel(npc)
 
         npc.resetTransmog()
         npc.copyStats(asleep)
@@ -619,7 +624,6 @@ constructor(
         private const val DEATH_SEQ = "seq.npc_duke_sucellus01_death_01"
         private const val DEATH_RESET_SEQ = "seq.npc_duke_sucellus01_death_reset_01"
         private const val DEATH_DROP_DELAY = 4
-        private const val DEATH_RESET_DELAY = 19
         private const val DEATH_DROP_OFFSET_X = 3
         private const val DEATH_DROP_OFFSET_Z = -1
         private const val ESCAPE_LOC = "loc.duke_sucellus_escape"

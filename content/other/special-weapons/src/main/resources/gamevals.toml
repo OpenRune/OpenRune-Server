@@ -1,0 +1,10 @@
+[gamevals.varobj]
+ayak_charges = 65528
+ayak_tear_charges = 65527
+
+[gamevals.varn]
+magic_defence_bonus_drain = 63000
+npc_venom_strikes = 63001
+
+[gamevals.timer]
+npc_venom = 30000

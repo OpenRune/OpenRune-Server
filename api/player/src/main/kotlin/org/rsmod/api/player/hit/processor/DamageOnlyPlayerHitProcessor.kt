@@ -32,6 +32,13 @@ constructor(
             return
         }
 
+        val event = PlayerHitEvents.BeforeImpact(this, hit)
+        eventBus.publish(event)
+        processValidated(event.hit)
+    }
+
+    private fun Player.processValidated(hit: Hit) {
+
         val oldHitpoints = hitpoints
         val damage = min(oldHitpoints, hit.damage)
         if (damage > 0) {
@@ -61,6 +68,7 @@ constructor(
         val headbar = hit.createHeadbar(hitpoints, baseHitpointsLvl)
         showHeadbar(headbar)
 
+        hit.impactEffects.complete(damage)
         eventBus.publish(PlayerHitEvents.Impact(this, hit))
     }
 

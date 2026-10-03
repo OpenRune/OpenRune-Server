@@ -239,6 +239,12 @@ constructor(
         indexNpc(instanceId, npc)
     }
 
+    /** Forget an encounter-owned NPC on its Delete event, before its slot is cleared/reused. */
+    public fun detachNpc(npc: Npc) {
+        val instanceId = npcInstanceIndex.remove(npc.slotId) ?: return
+        spawnedNpcs[instanceId]?.remove(npc)
+    }
+
     public fun registerSessionNpc(player: Player, npc: Npc): Boolean {
         val instanceId =
             player.currentInstanceId() ?: playerIndex[player.playerId()] ?: return false

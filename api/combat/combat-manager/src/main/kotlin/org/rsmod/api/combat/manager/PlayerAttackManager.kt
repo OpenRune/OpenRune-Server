@@ -707,6 +707,15 @@ constructor(
             is Player -> queueMeleeHit(source, target, damage, delay)
         }
 
+    public fun queueMeleeHitIgnoringPrayer(source: Player, target: PathingEntity, damage: Int, delay: Int = 1): Hit =
+        when (target) {
+            is Npc -> queueMeleeHit(source, target, damage, delay)
+            is Player -> queueMeleeHit(source, target, damage, delay, PlayerHitModifier { victim ->
+                penetration = 100
+                with(playerHitModifier) { modify(victim) }
+            })
+        }
+
     private fun queueMeleeHit(source: Player, target: Npc, damage: Int, delay: Int): Hit {
         // Note: Retaliation must be queued _before_ the hit. If queued after, every hit would
         // trigger the "speed-up" death mechanic, since the hit queues would no longer be the
@@ -718,13 +727,14 @@ constructor(
         return hit
     }
 
-    private fun queueMeleeHit(source: Player, target: Player, damage: Int, delay: Int): Hit {
+    private fun queueMeleeHit(source: Player, target: Player, damage: Int, delay: Int,
+        modifier: PlayerHitModifier = playerHitModifier): Hit {
         // Note: Retaliation must be queued _before_ the hit. If queued after, every hit would
         // trigger the "speed-up" death mechanic, since the hit queues would no longer be the
         // last entries in the queue list at the time of processing.
         target.queueCombatRetaliate(source)
 
-        val hit = target.queueHit(source, delay, HitType.Melee, damage, playerHitModifier)
+        val hit = target.queueHit(source, delay, HitType.Melee, damage, modifier)
         notifyPlayerHit(source, target)
         target.combatPlayDefendAnim()
         return hit

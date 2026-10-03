@@ -17,6 +17,7 @@ import org.rsmod.api.combat.formulas.attributes.collector.CombatNpcAttributeColl
 import org.rsmod.api.combat.formulas.isSlayerTask
 import org.rsmod.api.combat.formulas.scale
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.npc.MagicDefenceDrain
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Npc
@@ -89,6 +90,7 @@ constructor(
                 targetMagic = targetMagic,
                 amascutInvocationLvl = amascutInvocationLvl,
                 npcAttributes = npcAttributes,
+                magicBonusDrain = npc?.vars?.get(MagicDefenceDrain.VAR) ?: 0,
             )
         val defenceRoll = modifySpellDefenceRoll(baseDefenceRoll, spellAttributes)
 
@@ -158,6 +160,7 @@ constructor(
                 targetMagic = targetMagic,
                 amascutInvocationLvl = amascutInvocationLvl,
                 npcAttributes = npcAttributes,
+                magicBonusDrain = npc?.vars?.get(MagicDefenceDrain.VAR) ?: 0,
             )
         val defenceRoll = modifyStaffDefenceRoll(baseDefenceRoll, staffAttributes)
 
@@ -186,6 +189,7 @@ constructor(
         targetMagic: Int,
         amascutInvocationLvl: Int,
         npcAttributes: EnumSet<CombatNpcAttributes>,
+        magicBonusDrain: Int = 0,
     ): Int {
         val defenceLevel =
             if (target.param(params.magic_defence_uses_defence_level)) {
@@ -194,7 +198,7 @@ constructor(
                 targetMagic
             }
         val effectiveDefence = NpcMagicAccuracy.calculateEffectiveDefence(defenceLevel)
-        val defenceBonus = target.param(params.defence_magic)
+        val defenceBonus = MagicDefenceDrain.bonus(target.param(params.defence_magic), magicBonusDrain)
         val defenceRoll = NpcMagicAccuracy.calculateBaseDefenceRoll(effectiveDefence, defenceBonus)
         return AccuracyOperations.modifyDefenceRoll(
             defenceRoll = defenceRoll,

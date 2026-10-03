@@ -1,8 +1,12 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 dependencies {
+    implementation(projects.api.specials)
+    implementation(projects.api.weapons)
+    testImplementation(projects.api.invStorage)
     implementation(libs.fastutil)
     implementation(libs.simmetrics.core)
     implementation(projects.api.areaChecker)
@@ -17,4 +21,6 @@ dependencies {
 
     implementation(projects.api.utils.utilsSystem)
     implementation(projects.engine.utilsBits)
+    testImplementation(libs.rsprot.api)
+    testImplementation("org.mockito:mockito-core:5.14.2")
 }

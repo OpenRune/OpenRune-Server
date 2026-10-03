@@ -1,0 +1,484 @@
+# Verified ID/name matches against OSRS Wiki DPS data, commit 89c3e25b344aea90d0189746e4b5f73dde0f0383.
+# Only the demon classification is overridden; preserve inherited NPC configuration.
+
+[[npc_params]]
+id = "npc.slayer_nechryael"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.slayer_nechryael_strongholdcave"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.hellhound"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.black_demon_strongholdcave_1"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.slayer_abyssal"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.slayer_pyrefiend_1"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.slayer_bloodveld"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.agrith_naar"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.arena_bouncer"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.mm_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.lesser_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.greater_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.brut_waterfiend"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.waterfiend_strongholdcave"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.godwars_zamorak_avatar"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.godwars_ancient_greater_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.godwars_ancient_lesser_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.godwars_ancient_black_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.godwars_ancient_hellhound"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.godwars_ancient_imp"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.godwars_bloodveld"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.godwars_pyrefiend_1"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.godwars_icefiend_1"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.champions_lesserdemon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.nezikchened"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.slayer_icefiend_1"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.chronozon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.imp"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.skeleton_hellhound"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.cerberus_attacking"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.abyssalsire_sire_stasis_sleeping"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.abyssalsire_sire_puppet"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.abyssalsire_sire_panicking"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.abyssalsire_sire_apocalypse"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.abyssalsire_lung"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.slayer_pyrebeast_1"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.slayer_pyrebeast_2"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.arceuus_reanimated_imp"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.arceuus_reanimated_bloodveld"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.arceuus_reanimated_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.arceuus_reanimated_abyssal"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.mm2_demon_gorilla_1_melee"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.mm2_demon_gorilla_2_melee"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.kourend_abyssal"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.kourend_black_demon_1"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.kourend_black_demon_2"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.kourend_greater_demon1"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.kourend_greater_demon2"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.kourend_greater_demon3"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.kourend_lesser_demon1"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.kourend_lesser_demon2"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.kourend_bloodveld"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.kourend_nechryael"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.cata_boss"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.cata_boss_minion"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.cata_boss_altar_open_n"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.superior_pyrefiend"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.superior_bloodveld"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.superior_kourend_bloodveld"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.superior_abyssal_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.superior_nechryael"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.ma2_boss_zamorak_spawning"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.raids_icedemon_noncombat"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.wild_cave_lesser_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.wild_cave_greater_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.wild_cave_black_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.wild_cave_hell_hound"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.othainian_vis"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.doomion_vis"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.holthion_vis"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.superior_pyrelord"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.wild_cave_abyssal"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.wild_cave_nechryael"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.nex_prison_blood_reaver"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.nex_prison_blood_reaver_boss"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.arceuus_reanimated_hellhound"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.duke_sucellus_awake"
+[npc_params.params]
+"param.demon" = 1
+"param.demonbane_resistant" = 1
+
+[[npc_params]]
+id = "npc.duke_sucellus_awake_quest"
+[npc_params.params]
+"param.demon" = 1
+"param.demonbane_resistant" = 1
+
+[[npc_params]]
+id = "npc.dt2_scar_maze_mage_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.dt2_scar_maze_melee_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.dt2_scar_maze_ranged_demon"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.dt2_scar_maze_2_pillar_attacker"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.dt2_scar_maze_2_pillar_attacker_dog"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.dt2_scar_maze_3_link_npc"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.dt2_scar_maze_3_link_attacker"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.dt2_scar_black_demon_2"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.dt2_scar_greater_demon_2"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.dt2_scar_lesser_demon_2"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.tormented_demon_1"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.tormented_demon_2"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.tormented_demon_quest_1"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.tormented_demon_quest_2"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.yama"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.yama_voidflare"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.yama_judge_of_yama"
+[npc_params.params]
+"param.demon" = 1
+
+[[npc_params]]
+id = "npc.dom_boss"
+[npc_params.params]
+"param.demon" = 1

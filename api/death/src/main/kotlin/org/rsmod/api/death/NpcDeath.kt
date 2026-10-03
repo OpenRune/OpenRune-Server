@@ -9,6 +9,8 @@ import jakarta.inject.Singleton
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.npc.access.StandardNpcAccess
+import org.rsmod.api.npc.respawn.BossRespawnPolicy
+import org.rsmod.api.npc.respawn.BossRespawnTimers
 import org.rsmod.api.npc.vars.typePlayerUidVarn
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.soundSynth
@@ -31,18 +33,19 @@ constructor(
     private val objRepo: ObjRepository,
     private val deathDropHooks: Set<NpcDeathDropHook>,
     private val deathKillHooks: Set<NpcDeathKillHook>,
+    private val bossRespawns: BossRespawnTimers,
 ) {
     private var lootTrackerEventId: Int = 0
 
     public suspend fun deathNoDrops(access: StandardNpcAccess) {
-        access.death(npcRepo, players)
+        access.death(npcRepo, players, bossRespawns)
     }
 
     public suspend fun deathWithDrops(
         access: StandardNpcAccess,
         dropCoords: CoordGrid = access.coords,
     ) {
-        access.death(npcRepo, players)
+        access.death(npcRepo, players, bossRespawns)
         access.npc.spawnDeathDrops(dropCoords)
     }
 
@@ -132,7 +135,11 @@ private var Npc.aggressivePlayer by typePlayerUidVarn("varn.aggressive_player")
  *   (`onNpcQueue(npc_type, queues.death)`), you must explicitly handle drop spawns in the script by
  *   injecting `NpcDeath` and calling either [NpcDeath.deathWithDrops] or [NpcDeath.spawnDrops].
  */
-public suspend fun StandardNpcAccess.death(npcRepo: NpcRepository, players: PlayerList) {
+public suspend fun StandardNpcAccess.death(
+    npcRepo: NpcRepository,
+    players: PlayerList,
+    bossRespawns: BossRespawnTimers,
+) {
     walk(coords)
     noneMode()
     hideAllOps()
@@ -160,7 +167,9 @@ public suspend fun StandardNpcAccess.death(npcRepo: NpcRepository, players: Play
     delay(deathAnim)
 
     if (npc.respawns) {
-        npcRepo.despawn(npc, npc.type.respawnRate)
+        val bossTicks = BossRespawnPolicy.ticksFor(npc.type.id)
+        npcRepo.despawn(npc, bossTicks ?: npc.type.respawnRate)
+        if (bossTicks != null) bossRespawns.schedule(npc, bossTicks)
         return
     }
 

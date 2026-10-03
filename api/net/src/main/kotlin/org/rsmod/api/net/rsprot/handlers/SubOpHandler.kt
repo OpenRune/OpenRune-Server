@@ -68,7 +68,8 @@ class IfSubOpHandler
         val invObj = if (tryHeld) inventory[comsub] else null
 
         if (player.ui.containsOverlay(interfaceType) || player.ui.containsTopLevel(interfaceType)) {
-            if (tryHeld && invObj != null) {
+            val scriptedOverlay = eventBus.suspend[IfOverlaySubOpMenu::class.java, componentType.packed] != null
+            if (!scriptedOverlay && tryHeld && invObj != null) {
                 if (!verifyHeldSubOp(player, inventory, invObj, packetObjType, heldOp)) {
                     return
                 }
@@ -98,7 +99,8 @@ class IfSubOpHandler
             if (player.isModalButtonProtected) {
                 return
             }
-            if (tryHeld && invObj != null) {
+            val scriptedModal = eventBus.suspend[IfModalSubOpMenu::class.java, componentType.packed] != null
+            if (!scriptedModal && tryHeld && invObj != null) {
                 if (!verifyHeldSubOp(player, inventory, invObj, packetObjType, heldOp)) {
                     return
                 }

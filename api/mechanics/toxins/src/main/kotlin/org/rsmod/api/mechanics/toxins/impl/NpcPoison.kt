@@ -16,7 +16,7 @@ public object NpcPoison {
         (npc.visType.paramOrNull(params.poison_immunity) ?: 0) > 0
 
     public fun tryPoison(npc: Npc, severity: Int): Boolean {
-        if (severity <= 0 || isImmune(npc)) {
+        if (severity <= 0 || isImmune(npc) || NpcVenom.isEnvenomed(npc)) {
             return false
         }
         val current = npc.vars["varn.poison_severity"]

@@ -1,0 +1,4 @@
+[[varp]]
+id = "varp.dragonfire_special_ready_epoch"
+scope = "Perm"
+transmit = "Never"

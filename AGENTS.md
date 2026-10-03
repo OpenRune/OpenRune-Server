@@ -1,3 +1,14 @@
+## Fork workflow entry point
+
+Before substantial fork maintenance, read [CODEX_START_HERE.md](CODEX_START_HERE.md),
+[OpenRune_Fork_Development_Workflow.md](OpenRune_Fork_Development_Workflow.md),
+[CUSTOM_CONTENT.md](CUSTOM_CONTENT.md) and [CUSTOM_PROGRESS.md](CUSTOM_PROGRESS.md).
+User instructions take precedence. The accepted runtime is recorded in
+[docs/custom/baseline.md](docs/custom/baseline.md). This repository-organization pass
+must preserve that runtime exactly; do not import old branch code or upgrade the
+client/cache while cleaning branches. Future changes use focused commits and the
+feature-equivalence review/test gates in the workflow.
+
 # OpenRune-Server — Agent Guide
 
 OSRS-compatible game server (revision 240.2), Kotlin, modular fork of RSMod/Alter.

@@ -405,3 +405,9 @@ pet_drop_venenatis = 62352
 pet_drop_venenatis_singles = 62353
 pet_drop_vetion_2 = 62354
 pet_drop_vetion_2_single = 62355
+
+[gamevals.interface]
+pet_menu = 1103
+
+[gamevals.clientscript]
+pet_menu_init = 45542

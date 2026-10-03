@@ -18,6 +18,7 @@ import org.rsmod.api.droptable.toml.DropTableTomlTextFixer
 import org.rsmod.api.droptable.toml.TomlDropTableDef
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scan.PluginClasspathScan
 
 @Singleton
@@ -46,7 +47,15 @@ constructor(tomlResolver: DropTableTomlResolver) {
         npc: Npc,
         areaChecker: AreaChecker?,
     ): RSDropTable<Player, DropRollItem>? {
-        val candidates = tablesByNpc[npc.type.internalName] ?: return null
+        return forNpcType(npc.type.internalName, npc.coords, areaChecker)
+    }
+
+    public fun forNpcType(
+        symbol: String,
+        coords: CoordGrid,
+        areaChecker: AreaChecker? = null,
+    ): RSDropTable<Player, DropRollItem>? {
+        val candidates = tablesByNpc[symbol] ?: return null
         if (candidates.size == 1) {
             return candidates.first()
         }
@@ -55,15 +64,15 @@ constructor(tomlResolver: DropTableTomlResolver) {
             val areaMatched =
                 candidates.filter { table ->
                     table.areas.isNotEmpty() &&
-                        table.areas.any { areaChecker.inArea(it, npc.coords) }
+                        table.areas.any { areaChecker.inArea(it, coords) }
                 }
             when (areaMatched.size) {
                 1 -> return areaMatched.first()
                 0 -> return candidates.firstOrNull { it.areas.isEmpty() } ?: candidates.first()
                 else ->
                     error(
-                        "Multiple drop tables match npc '${npc.type.internalName}' " +
-                            "at ${npc.coords}: ${areaMatched.map { it.tableIdentifier }}",
+                        "Multiple drop tables match npc '$symbol' " +
+                            "at $coords: ${areaMatched.map { it.tableIdentifier }}",
                     )
             }
         }
@@ -72,6 +81,9 @@ constructor(tomlResolver: DropTableTomlResolver) {
     }
 
     public fun forLoc(loc: String): RSDropTable<Player, DropRollItem>? = tablesByLoc[loc]
+
+    public fun npcTables(): Map<String, List<RSDropTable<Player, DropRollItem>>> =
+        tablesByNpc.mapValues { (_, tables) -> tables.toList() }
 
     /**
      * Parsing (file I/O + Jackson decode) runs in parallel since each resource is independent;

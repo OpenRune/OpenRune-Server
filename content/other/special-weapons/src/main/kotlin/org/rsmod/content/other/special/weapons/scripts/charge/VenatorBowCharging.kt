@@ -5,7 +5,6 @@ import kotlin.math.min
 import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
-import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpHeld5
@@ -19,7 +18,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class VenatorBowCharging
 @Inject
-constructor(private val charges: ObjChargeManager, private val objRepo: ObjRepository) :
+constructor(private val charges: ObjChargeManager) :
     PluginScript() {
     override fun ScriptContext.startup() {
         onOpHeld3("obj.venator_bow_uncharged") { charge(it.inventory, it.slot) }
@@ -35,6 +34,8 @@ constructor(private val charges: ObjChargeManager, private val objRepo: ObjRepos
     }
 
     private suspend fun ProtectedAccess.charge(inventory: Inventory, invSlot: Int) {
+        val original = inventory[invSlot] ?: return
+        if (!WeaponChargeTransfer.VENATOR.accepts(original)) return
         if ("obj.ancient_essence" !in inv) {
             mes("You don't appear to have any ancient essence to charge the Venator bow with.")
             return
@@ -48,17 +49,14 @@ constructor(private val charges: ObjChargeManager, private val objRepo: ObjRepos
 
         val maxCharges = min(MAX_CHARGES - currCharges, invTotal(inv, "obj.ancient_essence"))
         val question = "How many charges do you want to apply? (Up to $maxCharges)"
-        val requested = min(countDialog(question), maxCharges)
+        val requested = countDialog(question).coerceIn(0, maxCharges)
         if (requested == 0) {
             return
         }
 
-        val removeEssence = invDel(inv, "obj.ancient_essence", requested)
-        if (removeEssence.failure) {
+        if (!WeaponChargeTransfer.VENATOR.transfer(player, inventory, invSlot, original, requested, false)) {
             return
         }
-
-        charges.addCharges(inventory, invSlot, requested, "varobj.venator_bow_charges", MAX_CHARGES)
         objbox(
             "obj.venator_bow",
             400,
@@ -72,6 +70,8 @@ constructor(private val charges: ObjChargeManager, private val objRepo: ObjRepos
     }
 
     private suspend fun ProtectedAccess.uncharge(inventory: Inventory, invSlot: Int) {
+        val original = inventory[invSlot] ?: return
+        if (!WeaponChargeTransfer.VENATOR.accepts(original)) return
         val currCharges = charges.getCharges(inventory[invSlot], "varobj.venator_bow_charges")
         if (currCharges == 0) {
             charges.removeAllCharges(inventory, invSlot, "varobj.venator_bow_charges")
@@ -96,10 +96,11 @@ constructor(private val charges: ObjChargeManager, private val objRepo: ObjRepos
             return
         }
 
-        val chargesRemoved = charges.removeAllCharges(inv, invSlot, "varobj.venator_bow_charges")
-        check(chargesRemoved > 0)
-
-        invAddOrDrop(objRepo, "obj.ancient_essence", chargesRemoved)
+        if (!WeaponChargeTransfer.VENATOR.transfer(player, inventory, invSlot, original, currCharges, true)) {
+            mes("The bow or inventory changed. Nothing has been removed.")
+            return
+        }
+        val chargesRemoved = currCharges
 
         val message =
             "You uncharge your Venator bow, regaining ${chargesRemoved.formatAmount} " +

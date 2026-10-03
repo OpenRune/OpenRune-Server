@@ -12,7 +12,9 @@ import org.rsmod.api.player.ui.PlayerInterfaceUpdates
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.player.ui.ifSetEvents
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onIfOverlayButton
+import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.table.StatComponentsRow
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
@@ -32,6 +34,9 @@ class SkillGuideEvents @Inject constructor(
 
     @OptIn(InternalApi::class)
     override fun ScriptContext.startup() {
+        onPlayerLogin {
+            VarPlayerIntMapSetter.set(player, "varbit.option_skill_guide", 1)
+        }
         StatComponentsRow.all().forEach { row ->
             onIfOverlayButton(row.component) {
                 ifClose()
@@ -49,7 +54,6 @@ class SkillGuideEvents @Inject constructor(
                 }
             }
         }
-
 
         onIfOverlayButton("component.skill_guide:close") {
             player.ifCloseOverlay("interface.skill_guide", eventBus)
@@ -73,8 +77,8 @@ class SkillGuideEvents @Inject constructor(
         player.statMap.setBaseLevel(stat, targetLevel.toByte())
 
         when {
-            levelDelta > 0 -> statAdd(stat, constant = levelDelta,percent = 0)
-            levelDelta < 0 -> statSub(stat, constant = -levelDelta,percent = 0)
+            levelDelta > 0 -> statAdd(stat, constant = levelDelta, percent = 0)
+            levelDelta < 0 -> statSub(stat, constant = -levelDelta, percent = 0)
         }
 
         player.appearance.combatLevel = PlayerSkillXP.calculateCombatLevel(player)
@@ -82,23 +86,8 @@ class SkillGuideEvents @Inject constructor(
     }
 
     private fun ProtectedAccess.openStatGuide(skillGuideBit: Int) {
-        player.openSkillGuide(skillGuideBit, player.vars["varbit.option_skill_guide"] != 0)
-    }
-
-    private fun Player.openSkillGuide(
-        skillGuideBit: Int,
-        useV2: Boolean,
-        sectionVar: Int = 0,
-    ) = if (useV2) {
-        openSkillGuideV2(skillGuideBit, sectionVar)
-    } else {
-        openSkillGuideV1(skillGuideBit)
-    }
-
-    private fun Player.openSkillGuideV1(skillGuideBit: Int) {
-        ifOpenOverlay("interface.skill_guide", eventBus)
-        ifSetEvents("component.skill_guide:icons", 0..99)
-        runClientScript(9340, skillGuideBit, 0, 0, 0)
+        VarPlayerIntMapSetter.set(player, "varbit.option_skill_guide", 1)
+        player.openSkillGuideV2(skillGuideBit, 0)
     }
 
     private fun Player.openSkillGuideV2(
@@ -108,6 +97,6 @@ class SkillGuideEvents @Inject constructor(
 
         ifOpenOverlay("interface.skill_guide_v2", eventBus)
         ifSetEvents("component.skill_guide_v2:tabs", 0..200, IfEvent.Op1)
-        runClientScript(1902, skillGuideBit, sectionVar)
+        runClientScript(1902, skillGuideBit, sectionVar, 0, 0)
     }
 }

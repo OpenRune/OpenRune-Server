@@ -6,7 +6,6 @@ import kotlin.math.min
 import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
-import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
@@ -16,13 +15,12 @@ import org.rsmod.api.script.onOpWorn2
 import org.rsmod.api.utils.format.formatAmount
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.inv.isType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class TumekensShadowCharging
 @Inject
-constructor(private val charges: ObjChargeManager, private val objRepo: ObjRepository) :
+constructor(private val charges: ObjChargeManager) :
     PluginScript() {
     override fun ScriptContext.startup() {
         onOpHeld2("obj.tumekens_shadow_uncharged") { wieldUncharged() }
@@ -54,6 +52,8 @@ constructor(private val charges: ObjChargeManager, private val objRepo: ObjRepos
         invSlot: Int,
         obj: ItemServerType,
     ) {
+        val original = inventory[invSlot] ?: return
+        if (original.id != obj.id || !WeaponChargeTransfer.SHADOW.accepts(original)) return
         if ("obj.soulrune" !in inv) {
             mes("You don't appear to have any soul runes to charge Tumeken's shadow with.")
             return
@@ -75,28 +75,14 @@ constructor(private val charges: ObjChargeManager, private val objRepo: ObjRepos
 
         val maxCharges = min(MAX_CHARGES - currCharges, getMaxRuneCharges())
         val question = "How many charges do you want to apply? (Up to $maxCharges)"
-        val requested = min(countDialog(question), maxCharges)
+        val requested = countDialog(question).coerceIn(0, maxCharges)
         if (requested == 0) {
             return
         }
 
-        val removeRunes =
-            invDel(
-                inv = inv,
-                type1 = "obj.chaosrune",
-                count1 = requested * CHAOS_PER_CHARGE,
-                type2 = "obj.soulrune",
-                count2 = requested * SOUL_PER_CHARGE,
-            )
-
-        if (removeRunes.failure) {
+        if (!WeaponChargeTransfer.SHADOW.transfer(player, inventory, invSlot, original, requested, false)) {
             return
         }
-
-        // Paranoid check: Should always be the case.
-        check(inventory[invSlot].isType(obj))
-
-        charges.addCharges(inventory, invSlot, requested, "varobj.tumeken_charges", MAX_CHARGES)
         // Official message: Uses "charges" even when applying a single charge.
         objbox("obj.tumekens_shadow", 400, "You apply $requested charges to your Tumeken's shadow.")
     }
@@ -114,6 +100,8 @@ constructor(private val charges: ObjChargeManager, private val objRepo: ObjRepos
     }
 
     private suspend fun ProtectedAccess.uncharge(inventory: Inventory, invSlot: Int) {
+        val original = inventory[invSlot] ?: return
+        if (!WeaponChargeTransfer.SHADOW.accepts(original)) return
         val currCharges = charges.getCharges(inventory[invSlot], "varobj.tumeken_charges")
         if (currCharges == 0) {
             charges.removeAllCharges(inventory, invSlot, "varobj.tumeken_charges")
@@ -152,14 +140,15 @@ constructor(private val charges: ObjChargeManager, private val objRepo: ObjRepos
             return
         }
 
-        val chargesRemoved = charges.removeAllCharges(inv, invSlot, "varobj.tumeken_charges")
-        check(chargesRemoved > 0)
+        if (!WeaponChargeTransfer.SHADOW.transfer(player, inventory, invSlot, original, currCharges, true)) {
+            mes("The staff or inventory changed. Nothing has been removed.")
+            return
+        }
+        val chargesRemoved = currCharges
 
         val soulCount = chargesRemoved * SOUL_PER_CHARGE
-        invAddOrDrop(objRepo, "obj.soulrune", soulCount)
 
         val chaosCount = chargesRemoved * CHAOS_PER_CHARGE
-        invAddOrDrop(objRepo, "obj.chaosrune", chaosCount)
 
         val message =
             "You uncharge your Tumeken's shadow, regaining ${soulCount.formatAmount} " +

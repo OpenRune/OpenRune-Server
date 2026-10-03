@@ -10,6 +10,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.content.other.pets.cats.Cats
 import org.rsmod.content.other.pets.dogs.Dogs
@@ -88,6 +89,10 @@ constructor(
             player.faceNpc(npc)
         }
         player.followerNpc = npc.uid.packed
+        // The first login post-tick runs before the main tick enables automatic varp transmission.
+        if (player.processedMapClock <= 0) {
+            player.resyncVar("varp.follower_npc")
+        }
         player.followerObj = form.objId
     }
 

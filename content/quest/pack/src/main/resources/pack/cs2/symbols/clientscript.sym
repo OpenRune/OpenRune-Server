@@ -1,2 +1,5 @@
 45550	[clientscript,quest_available_set]
 45553	[clientscript,quest_policy_complete_set]
+45543	[clientscript,quest_guide_init]
+45544	[clientscript,quest_guide_draw]
+45545	[proc,quest_guide_text]

@@ -6,6 +6,7 @@ import org.rsmod.api.specials.combat.CombatSpecialAttack
 import org.rsmod.api.specials.combat.MagicSpecialAttack
 import org.rsmod.api.specials.combat.MeleeSpecialAttack
 import org.rsmod.api.specials.combat.RangedSpecialAttack
+import org.rsmod.api.specials.combat.ShieldSpecialAttack
 import org.rsmod.api.specials.instant.InstantSpecialAttack
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
@@ -18,6 +19,11 @@ public sealed class SpecialAttack {
     }
 
     public sealed class Combat : SpecialAttack()
+
+    public data class Shield(val special: ShieldSpecialAttack) : Combat() {
+        public suspend fun attack(access: ProtectedAccess, target: PathingEntity): Unit =
+            special.attack(access, target)
+    }
 
     public data class Melee(
         public val energyInHundreds: Int,

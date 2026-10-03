@@ -1,0 +1,7 @@
+[clientscript,pet_menu_init](component $frame)
+~steelborder($frame, "Pets", 0);
+~thinbox(pet_menu:content_panel, 0);
+~stonebutton_draw(false, "Search", p11_full, 1, pet_menu:search);
+~stonebutton_draw(false, "Clear", p11_full, 1, pet_menu:clear);
+~stonebutton_draw(false, "Back", p11_full, 1, pet_menu:previous);
+~stonebutton_draw(false, "Next", p11_full, 1, pet_menu:next);

@@ -9,6 +9,7 @@ import org.rsmod.game.entity.npc.NpcUid
 
 public class DamageContributions {
     private val entries: LinkedHashMap<DamageContributorKey, DamageContributor> = linkedMapOf()
+    private var lastDamager: DamageContributorKey? = null
 
     public val isEmpty: Boolean
         get() = entries.isEmpty()
@@ -18,13 +19,19 @@ public class DamageContributions {
 
     public fun clear() {
         entries.clear()
+        lastDamager = null
     }
+
+    /** The last positive damage source, independent of contribution totals or insertion order. */
+    public fun wasLastDamagedBy(source: Player): Boolean =
+        source.uuid?.let { lastDamager == DamageContributorKey.Player(it) } ?: false
 
     public fun record(source: Player, damage: Int) {
         if (damage <= 0) {
             return
         }
         val uuid = source.uuid ?: error("Unexpected null uuid for player: $source")
+        lastDamager = DamageContributorKey.Player(uuid)
         recordPlayer(uuid, damage)
     }
 
@@ -32,6 +39,7 @@ public class DamageContributions {
         if (damage <= 0) {
             return
         }
+        lastDamager = DamageContributorKey.Npc(source.uid)
         recordNpc(source.uid, damage)
     }
 

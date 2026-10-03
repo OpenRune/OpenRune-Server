@@ -1,0 +1,31 @@
+[[varp]]
+id = "varp.max_cape_reset_day"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.max_cape_preferences"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.max_cape_next_collection"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.max_cape_escape_pending"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.max_cape_stamina_used"
+varp = "varp.max_cape_preferences"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+id = "varbit.max_cape_junk_disabled"
+varp = "varp.max_cape_preferences"
+startBit = 1
+endBit = 1

@@ -37,6 +37,12 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
         if (!hit.isValid(this)) {
             return
         }
+        val event = PlayerHitEvents.BeforeImpact(player, hit)
+        publish(event)
+        processValidated(event.hit)
+    }
+
+    private fun ProtectedAccess.processValidated(hit: Hit) {
         preventLogout("You can't log out until 10 seconds after the end of combat.", 16)
 
         // TODO(combat): Process degradation, ring of recoil, retribution, etc.
@@ -64,6 +70,7 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
         val headbar = hit.createHeadbar(player.hitpoints, player.baseHitpointsLvl)
         player.showHeadbar(headbar)
 
+        hit.impactEffects.complete(damage)
         publish(PlayerHitEvents.Impact(player, hit))
     }
 

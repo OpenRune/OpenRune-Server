@@ -57,6 +57,14 @@ public object MeleeAccuracyOperations {
                 }
         }
 
+        if (MeleeAttr.SilverlightAccuracy in meleeAttributes && NpcAttr.Demon in npcAttributes) {
+            modified = if (NpcAttr.DemonbaneResistance in npcAttributes) {
+                scale(modified, multiplier = 142, divisor = 100)
+            } else {
+                scale(modified, multiplier = 160, divisor = 100)
+            }
+        }
+
         if (MeleeAttr.BurningClaws in meleeAttributes && NpcAttr.Demon in npcAttributes) {
             modified =
                 if (NpcAttr.DemonbaneResistance in npcAttributes) {

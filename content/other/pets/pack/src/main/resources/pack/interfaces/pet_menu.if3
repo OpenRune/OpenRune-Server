@@ -1,0 +1,893 @@
+[[interface]]
+name = "interface.pet_menu"
+width = 512
+height = 334
+on_load = ["clientscript.pet_menu_init", "component.pet_menu:frame"]
+
+[[component]]
+name = "frame"
+type = "layer"
+width = 512
+height = 334
+no_click_through = true
+
+[[component]]
+name = "content_panel"
+type = "layer"
+x = 10
+y = 64
+width = 492
+height = 240
+
+[[component]]
+name = "query"
+type = "text"
+x = 18
+y = 39
+width = 290
+height = 20
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "search"
+type = "layer"
+x = 362
+y = 39
+width = 76
+height = 20
+options = ["Search"]
+
+[[component]]
+name = "clear"
+type = "layer"
+x = 442
+y = 39
+width = 60
+height = 20
+options = ["Clear"]
+
+[[component]]
+name = "icon_0"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 16
+y = 70
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_0"
+type = "text"
+x = 52
+y = 67
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_0"
+type = "text"
+x = 52
+y = 92
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_1"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 178
+y = 70
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_1"
+type = "text"
+x = 214
+y = 67
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_1"
+type = "text"
+x = 214
+y = 92
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_2"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 340
+y = 70
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_2"
+type = "text"
+x = 376
+y = 67
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_2"
+type = "text"
+x = 376
+y = 92
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_3"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 16
+y = 109
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_3"
+type = "text"
+x = 52
+y = 106
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_3"
+type = "text"
+x = 52
+y = 131
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_4"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 178
+y = 109
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_4"
+type = "text"
+x = 214
+y = 106
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_4"
+type = "text"
+x = 214
+y = 131
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_5"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 340
+y = 109
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_5"
+type = "text"
+x = 376
+y = 106
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_5"
+type = "text"
+x = 376
+y = 131
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_6"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 16
+y = 148
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_6"
+type = "text"
+x = 52
+y = 145
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_6"
+type = "text"
+x = 52
+y = 170
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_7"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 178
+y = 148
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_7"
+type = "text"
+x = 214
+y = 145
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_7"
+type = "text"
+x = 214
+y = 170
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_8"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 340
+y = 148
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_8"
+type = "text"
+x = 376
+y = 145
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_8"
+type = "text"
+x = 376
+y = 170
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_9"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 16
+y = 187
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_9"
+type = "text"
+x = 52
+y = 184
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_9"
+type = "text"
+x = 52
+y = 209
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_10"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 178
+y = 187
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_10"
+type = "text"
+x = 214
+y = 184
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_10"
+type = "text"
+x = 214
+y = 209
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_11"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 340
+y = 187
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_11"
+type = "text"
+x = 376
+y = 184
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_11"
+type = "text"
+x = 376
+y = 209
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_12"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 16
+y = 226
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_12"
+type = "text"
+x = 52
+y = 223
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_12"
+type = "text"
+x = 52
+y = 248
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_13"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 178
+y = 226
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_13"
+type = "text"
+x = 214
+y = 223
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_13"
+type = "text"
+x = 214
+y = 248
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_14"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 340
+y = 226
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_14"
+type = "text"
+x = 376
+y = 223
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_14"
+type = "text"
+x = 376
+y = 248
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_15"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 16
+y = 265
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_15"
+type = "text"
+x = 52
+y = 262
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_15"
+type = "text"
+x = 52
+y = 287
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_16"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 178
+y = 265
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_16"
+type = "text"
+x = 214
+y = 262
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_16"
+type = "text"
+x = 214
+y = 287
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "icon_17"
+type = "graphic"
+sprite_id = 0
+hide = true
+border_type = 1
+shadow_color = "#333333"
+x = 340
+y = 265
+width = 32
+height = 32
+options = ["Choose pet"]
+
+[[component]]
+name = "pet_17"
+type = "text"
+x = 376
+y = 262
+width = 118
+height = 24
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+options = ["Choose pet"]
+
+[[component]]
+name = "category_17"
+type = "text"
+x = 376
+y = 287
+width = 118
+height = 12
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"
+
+[[component]]
+name = "previous"
+type = "layer"
+x = 10
+y = 308
+width = 48
+height = 20
+options = ["Back"]
+
+[[component]]
+name = "next"
+type = "layer"
+x = 454
+y = 308
+width = 48
+height = 20
+options = ["Next"]
+
+[[component]]
+name = "page"
+type = "text"
+x = 68
+y = 310
+width = 110
+height = 16
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+
+[[component]]
+name = "status"
+type = "text"
+x = 188
+y = 308
+width = 256
+height = 20
+text = ""
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FFFFFF"

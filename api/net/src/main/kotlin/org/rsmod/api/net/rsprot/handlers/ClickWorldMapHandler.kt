@@ -18,7 +18,7 @@ constructor(
     override fun handle(player: Player, message: ClickWorldMap) {
         val worldMapClick = WorldMapClick(
             player = player,
-            coord = CoordGrid(message.x, message.z, player.level)
+            coord = CoordGrid(message.x, message.z, message.level)
         )
         protectedAccess.launch(player) {
             eventBus.publish(this, worldMapClick)
