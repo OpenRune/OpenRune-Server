@@ -29,6 +29,7 @@ import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.hit.*
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.proj.ProjAnim
@@ -121,6 +122,7 @@ class BlowpipeWeaponsTest {
             assertTrue(BlowpipeCharges.read(player.worn[Wearpos.RightHand.slot]).ready)
             10
         }
+        `when`(manager.queueRangedHit(access, target, dart, 10, 25, 1)).thenReturn(Hit(HitType.Ranged, Hitmark(0).copy(damage = 10), null, null, null))
         complete { with(registry.getRanged(item)!!) { access.attack(target, attack) } }
         verify(manager).setNextAttackDelay(access, 2)
         verify(manager).queueRangedHit(access, target, dart, 10, 25, 1)

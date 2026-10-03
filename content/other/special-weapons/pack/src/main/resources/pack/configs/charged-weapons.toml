@@ -11,6 +11,9 @@ endBit = 16
 [[varn]]
 id = "varn.magic_defence_bonus_drain"
 
+[[varn]]
+id = "varn.npc_venom_strikes"
+
 [[item]]
 id = "obj.eye_of_ayak"
 inherit = "obj.eye_of_ayak"

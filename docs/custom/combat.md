@@ -93,3 +93,14 @@ the corresponding ordinary/Holy cache effects. Empty and PvP attempts do not cas
 Six Sanguinesti tests pass; combined selected suites now total 75 (34 weapons, 39
 specials, 2 engine). PvP minigame exceptions and live effect trajectories remain open.
 Reference: https://github.com/weirdgloop/osrs-dps-calc/blob/main/src/lib/PlayerVsNPCCalc.ts
+
+Venom follow-up: blowpipe (normal and Toxic Siphon) and swamp-trident impacts now
+roll their one-in-four venom chance only after positive damage. Charged serpent helm
+identities guarantee NPC venom. NPC venom ticks every 30 ticks, increasing 6 through
+20 damage, respects poison immunity and falls back to poison for venom-only immunity.
+Ordinary poison cannot downgrade active venom; death/respawn clears the native state.
+Helmet charge consumption itself remains outside this slice. Trident final-charge
+consumption now follows hit construction so the equipped attack state is retained.
+Five venom tests pass; selected suites total 80 (39 weapons, 39 specials, 2 engine).
+The isolated cache build passed. Live client FX verification is still pending.
+The accepted Zulrah source remains identical to the organization baseline.

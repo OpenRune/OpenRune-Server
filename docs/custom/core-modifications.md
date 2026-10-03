@@ -157,6 +157,16 @@ protections as active. See the branch audit and exact baseline for recovery refe
 - Behaviour: optional callbacks survive Hit.copy, run once after native damage
   processing and receive actual damage. Hits without callbacks retain their effects.
 - Introducing commit: `fix(combat): apply weapon effects on actual hit impact`.
+
+## NPC weapon venom
+
+- Paths: `api/mechanics/toxins/.../{NpcVenomTimerScript,impl/NpcVenom,impl/NpcPoison}.kt`
+  and `api/combat/combat-commons/.../WeaponVenom.kt`.
+- Reason: venom-capable weapons previously had no NPC venom lifecycle. Use native
+  varn/timer state, immunity checks, poison fallback and actual hit callbacks.
+- Dependency: special-weapons cache pack supplies the venom varn and timer gamevals.
+- Verification: five venom regression tests; existing weapon and special suites pass.
+- Zulrah's encounter implementation and player venom attacks are unchanged.
 - Risk: new/custom hit processors must explicitly complete callbacks after applying
   damage. Compare any upstream impact callback API before merging it; migrate callers
   and remove this list if an upstream equivalent supplies the same cancellation semantics.

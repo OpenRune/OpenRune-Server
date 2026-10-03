@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
 import org.rsmod.api.combat.commons.CombatAttack
+import org.rsmod.api.combat.commons.WeaponVenom
 import org.rsmod.api.combat.commons.ranged.RangedAmmunition
 import org.rsmod.api.combat.commons.styles.RangedAttackStyle
 import org.rsmod.api.combat.commons.types.RangedAttackType
@@ -42,6 +43,7 @@ class BlowpipeSpecialAttacks : SpecialAttackMap {
             val projectile = manager.spawnProjectile(this, target, travel, "projanim.thrown")
             val damage = manager.rollRangedDamage(this, target, attack, 2.0, 1.5, blockType = RangedAttackType.Light)
             val hit = manager.queueRangedHit(this, target, dart, damage, projectile.clientCycles, projectile.serverCycles)
+            WeaponVenom.attach(hit, player, target, random)
             manager.giveCombatXp(this, target, attack, hit.damage)
             player.worn[Wearpos.RightHand.slot] = BlowpipeCharges.consume(weapon, RangedAmmunition.conserveAmmo(player, random), random.of(3) != 0)
             val source = player

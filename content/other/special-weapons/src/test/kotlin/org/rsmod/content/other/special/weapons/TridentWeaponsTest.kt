@@ -13,6 +13,7 @@ import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.random.GameRandom
 import org.rsmod.api.weapons.*
 import org.rsmod.content.other.special.weapons.magic.TridentWeapons
 import org.rsmod.content.other.special.weapons.scripts.charge.*
@@ -20,6 +21,7 @@ import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.hit.*
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.proj.ProjAnim
@@ -160,6 +162,8 @@ class TridentWeaponsTest {
             `when`(manager.spawnProjectile(access, target, "spotanim.${prefix}_projectile$suffix", "projanim.magic_spell")).thenReturn(projectile)
             `when`(manager.rollStaffAccuracy(access, target, attack)).thenReturn(true)
             `when`(manager.rollStaffMaxHit(access, target, if (kind.toxic) 31 else 28)).thenReturn(17)
+            `when`(access.random).thenReturn(mock(GameRandom::class.java))
+            `when`(manager.queueMagicHit(access, target, 17, 61, 3)).thenReturn(Hit(HitType.Magic, Hitmark(0).copy(damage = 17), null, null, null))
             val handler = registry(manager).getMagic(weapon)!!
             run { with(handler) { access.attack(target, attack) } }
             verify(access).spotanim("spotanim.${prefix}_casting$suffix", 0, 100, 0)

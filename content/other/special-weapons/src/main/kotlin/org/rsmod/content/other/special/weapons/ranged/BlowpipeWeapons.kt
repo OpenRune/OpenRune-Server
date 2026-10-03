@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
 import org.rsmod.api.combat.commons.CombatAttack
+import org.rsmod.api.combat.commons.WeaponVenom
 import org.rsmod.api.combat.commons.ranged.RangedAmmunition
 import org.rsmod.api.combat.commons.styles.RangedAttackStyle
 import org.rsmod.api.combat.commons.types.RangedAttackType
@@ -39,7 +40,8 @@ class BlowpipeWeapons : WeaponMap {
             val damage = manager.rollRangedDamage(this, target, attack, blockType = RangedAttackType.Light)
             // Formula reads the loaded dart before the final dart is removed.
             manager.giveCombatXp(this, target, attack, damage)
-            manager.queueRangedHit(this, target, dart, damage, projectile.clientCycles, projectile.serverCycles)
+            val hit = manager.queueRangedHit(this, target, dart, damage, projectile.clientCycles, projectile.serverCycles)
+            WeaponVenom.attach(hit, player, target, random)
             player.worn[Wearpos.RightHand.slot] = BlowpipeCharges.consume(item, RangedAmmunition.conserveAmmo(player, random), random.of(3) != 0)
             if (!BlowpipeCharges.read(player.worn[Wearpos.RightHand.slot]).ready) {
                 mes("Your blowpipe has run out of darts or scales.")

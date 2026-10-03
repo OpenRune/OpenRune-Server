@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
 import org.rsmod.api.combat.commons.CombatAttack
+import org.rsmod.api.combat.commons.WeaponVenom
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.magicLvl
@@ -48,8 +49,6 @@ class TridentWeapons : WeaponMap {
             val prefix = if (kind.toxic) "toxic_tots" else "slayer_tots"
             val suffix = if (ornament) "_orn_leagues6" else ""
             val seq = getInvObj(weapon).param(params.attack_anim_stance1)
-            // A splash still consumes a cast; preserve the worn item's other packed state.
-            player.worn[Wearpos.RightHand.slot] = TridentCharges.withCharges(weapon, count - 1)
             manager.setNextAttackDelay(this, 4)
             anim(RSCM.getReverseMapping(RSCMType.SEQ, seq.id))
             spotanim("spotanim.${prefix}_casting$suffix", height = 100)
@@ -61,8 +60,10 @@ class TridentWeapons : WeaponMap {
             target.spotanim(if (accurate) "spotanim.${prefix}_impact$suffix" else "spotanim.failedspell_impact", height = 100, delay = clientDelay)
             if (accurate) {
                 manager.giveCombatXp(this, target, attack, damage)
-                manager.queueMagicHit(this, target, damage, clientDelay, serverDelay)
+                val hit = manager.queueMagicHit(this, target, damage, clientDelay, serverDelay)
+                if (kind.toxic) WeaponVenom.attach(hit, player, target, random)
             } else manager.queueSplashHit(this, target, clientDelay, serverDelay)
+            player.worn[Wearpos.RightHand.slot] = TridentCharges.withCharges(weapon, count - 1)
             if (count == 1) {
                 mes("Your trident has run out of charges.")
                 manager.stopCombat(this)
