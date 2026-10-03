@@ -174,3 +174,8 @@ They merge after existing server NPC overrides without changing client definitio
 combat stats, movement or other parameters. Unknown NPC IDs fail the pack.
 Reference catalogue: [pinned Wiki DPS NPC data](https://github.com/weirdgloop/osrs-dps-calc/blob/89c3e25b344aea90d0189746e4b5f73dde0f0383/cdn/json/monsters.json).
 Duke resistance: [Wiki strategy](https://oldschool.runescape.wiki/w/Duke_Sucellus/Strategies).
+
+Silverlight/Darklight follow-up: both normal swords now receive their 60% demonbane
+accuracy and damage bonuses (42% with Duke resistance). Dyed Silverlight retains
+only its damage bonus; non-demons are unchanged. The actual equipped-item collector
+and formula operations are regression-tested alongside Arclight/Emberlight controls.

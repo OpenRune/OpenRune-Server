@@ -195,3 +195,12 @@ protections as active. See the branch audit and exact baseline for recovery refe
 - Related system: demonbane specials and existing combat attribute collectors.
 - Evidence: 16,577 definitions compared; only 96 demon flags and two Duke resistance flags changed. Existing fields and kill-count parameters match. The codec regression test retains full custom fields and client render priority.
 - Upstream conflict risk: cache overlay parser and codec constructor. Remove this extension if upstream supplies equivalent parameter-only patching or the native cache gains verified attributes. Introducing commit: the focused demon-metadata commit following `9b7daa8e4`.
+
+## Silverlight/Darklight combat attributes (2026-10-03)
+
+- Files: `CombatMeleeAttributes`, `CombatMeleeAttributeCollector`, `MeleeAccuracyOperations` in `api/combat/combat-formulas`.
+- Reason: only dyed Silverlight received the damage flag; neither ordinary Silverlight nor Darklight received their demonbane accuracy/damage bonuses.
+- Change: both swords receive the existing damage flag plus an explicit accuracy flag. Dyed Silverlight retains damage-only behavior. Against demons the bonus is 60%, or 42% with Duke resistance; other targets are unchanged.
+- Evidence: equipped-item collector plus actual accuracy/damage operations tested for ordinary/dyed Silverlight, Darklight, Arclight, Emberlight and Dragon sword against ordinary/demon/resistant targets.
+- Reference: [pinned Wiki DPS formulas](https://github.com/weirdgloop/osrs-dps-calc/blob/89c3e25b344aea90d0189746e4b5f73dde0f0383/src/lib/PlayerVsNPCCalc.ts).
+- Upstream conflict risk: shared equipment attribute mappings and melee accuracy operations. Reconcile rather than stack bonuses when upstream adds equivalent coverage. Introducing commit: focused demonbane-formula follow-up to `61c605a8c`.
