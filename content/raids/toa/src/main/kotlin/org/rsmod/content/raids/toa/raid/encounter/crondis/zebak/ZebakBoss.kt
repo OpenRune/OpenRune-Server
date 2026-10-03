@@ -1,7 +1,6 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
 import jakarta.inject.Inject
-import org.rsmod.api.bosses.dsl.Accuracy
 import org.rsmod.api.bosses.dsl.CurrentTarget
 import org.rsmod.api.bosses.dsl.Magic
 import org.rsmod.api.bosses.dsl.Melee
@@ -40,6 +39,7 @@ import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.challengePlayers
 import org.rsmod.content.raids.toa.raid.encounter.eachTarget
 import org.rsmod.content.raids.toa.raid.encounter.onRoomExternal
+import org.rsmod.content.raids.toa.raid.encounter.raidAccuracy
 import org.rsmod.content.raids.toa.raid.encounter.roomCombatTick
 import org.rsmod.content.raids.toa.raid.encounter.roomCondition
 import org.rsmod.content.raids.toa.raid.encounter.roomSummon
@@ -114,7 +114,7 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
                     onMovingHit = external(BLEED_SPLAT),
                     otherwise =
                         hit {
-                            damage(Accuracy(scaled(MELEE_MAX_HIT), meleeAttackType = MeleeAttackType.Slash))
+                            damage(raidAccuracy(MELEE_MAX_HIT, Melee, MeleeAttackType.Slash))
                             type(Melee)
                             delay = MELEE_HIT_DELAY
                             penetration(MELEE_PENETRATION)
@@ -172,7 +172,7 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             ),
             spotanim(impact, height = IMPACT_HEIGHT, delay = IMPACT_DELAY, target = CurrentTarget),
             hit {
-                damage(Accuracy(scaled(RANGED_MAGIC_MAX_HIT)))
+                damage(raidAccuracy(RANGED_MAGIC_MAX_HIT, if (mage) Magic else Ranged))
                 type(if (mage) Magic else Ranged)
                 delay = SPLIT_HIT_DELAY
                 resolveOnImpact()
