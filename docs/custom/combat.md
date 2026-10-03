@@ -230,3 +230,16 @@ rejects graphics accidentally used as player animations throughout the melee tab
 All 73 special tests pass; 174/285 registrations, 111 missing. Live timing/height
 verification is still pending.
 Reference: [Abyssal tentacle](https://oldschool.runescape.wiki/w/Abyssal_tentacle).
+
+Staff protection slice: eight Dead/Light/Balance/toxic/Deadman identities now activate
+their variant-specific player and cast effects for 100% special energy. A temporary
+native varp expires at 100 ticks. Incoming melee damage halves at impact after
+normal prayer reduction; magic/ranged/typeless damage is unchanged. Switching away
+alone does not cancel protection, but receiving positive damage without a supported
+staff does. Zero damage does not cancel; activation refreshes rather than stacks;
+login/logout clears state. Native impact tests cover health, damage callbacks and
+prayer-rounding order. Cache rebuild, 79 special / 143 selected tests, full JAR,
+isolated startup/catalogue/clean shutdown pass. Registry: 182/285, 103 missing.
+Legacy duel restrictions, passive rune-saving/charges and live visual qualification
+remain open. There is no claim that cast effects alone reproduce every lingering
+visual stage. Reference: [Staff of the dead](https://oldschool.runescape.wiki/w/Staff_of_the_dead).

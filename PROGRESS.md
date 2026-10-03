@@ -13,7 +13,7 @@ It is preserved unchanged during repository organization.
 | Current playable build | User-accepted; 121 selected server tests + 86 Nero tests; isolated boot and server GitHub CI passed |
 | Pets, commands, max cape, timers | Implemented; covered regression cases verified |
 | Monster/pet/skill/quest interfaces | Implemented; remaining visual edge cases listed in the detailed progress |
-| All weapon specials | IN PROGRESS on `feature/weapon-completeness`; 174/285 registered; 111 still missing; registration does not certify full mechanics |
+| All weapon specials | IN PROGRESS on `feature/weapon-completeness`; 182/285 registered; 103 still missing; registration does not certify full mechanics |
 | Charged weapons | Tested charge/attack slices for tridents, scythes, blowpipe, Eye of Ayak and Sanguinesti; atomic Shadow/Venator loading/refunds; 83 selected weapon/special/impact tests pass; live effect qualification pending |
 | Weapon checkpoint validation | 103 tests including NPC/pet/Zulrah regressions pass; server JAR build and isolated Nero-bridge boot pass; accepted installation not replaced |
 | Installable weapon checkpoint | `weapons-update-20261003`, server `880c6a9fa`; 100 payload targets checked against installed guides/cape baseline; installer/rollback tests pass; user installation pending |

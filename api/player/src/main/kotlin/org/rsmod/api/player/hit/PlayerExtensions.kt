@@ -39,7 +39,8 @@ import org.rsmod.game.hit.HitType
  *   bypassed** when using this function; however, it can be changed when using [takeInstantHit].
  * - As the hit is immediately modified, this function **returns an accurate** [Hit] representation
  *   of what will be dealt once the cycle [delay] passes. The only exception is if this [Player]'s
- *   respective queue list is cleared, which would remove the hit before it has been processed.
+ *   respective queue list is cleared, or an opt-in [org.rsmod.api.player.events.PlayerHitEvents.BeforeImpact]
+ *   listener applies an impact-time defence such as staff protection.
  *
  * @param damage The initial damage intended for this [Player]. This value may change based on
  *   various factors from [modifier].

@@ -1,0 +1,4 @@
+[[varp]]
+id = "varp.staff_protection_end_clock"
+scope = "Temp"
+transmit = "Never"

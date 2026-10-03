@@ -112,3 +112,9 @@ Abyssal tentacle: two variants added, including miss-triggered freeze and indepe
 poison with native immunities. Whip graphics/player animation mix-up repaired and
 target ownership regression-tested. 73 special tests pass; 174/285 registrations,
 111 missing. Tentacle charge degradation and live visual parity remain open.
+
+Staff protection: eight variants added with temporary native state, 100-tick expiry,
+prayer stacking and damage-time weapon checks. 79 special / 143 selected tests,
+full JAR, cache rebuild and isolated Nero-bridge startup/clean shutdown pass.
+Registry now 182/285; 103 missing. Live visual qualification and remaining weapon
+mechanics are still open; the accepted installation and frozen installer are intact.
