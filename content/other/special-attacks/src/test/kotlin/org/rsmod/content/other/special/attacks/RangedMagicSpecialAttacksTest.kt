@@ -162,6 +162,22 @@ class RangedMagicSpecialAttacksTest {
         verify(fixture.manager).queueMagicHit(fixture.access, fixture.target, 40, 60, 2, null)
     }
 
+    @Test fun `nightmare player animation never uses the cast graphic sequence`() {
+        val codec = dev.openrune.definition.codec.SpotAnimCodec(240)
+        for (eldritch in listOf(false, true)) {
+            val f = nightmareFixture(false, eldritch)
+            assertTrue(run(f.action))
+            verify(f.access).anim("seq.nightmare_staff_special", 0)
+            val name = if (eldritch) "eldritch" else "volatile"
+            val spot = "spotanim.nightmare_staff_${name}_cast_spotanim"
+            verify(f.access).spotanim(spot, 0, 0, 0)
+            val id = spot.asRSCM(RSCMType.SPOTANIM)
+            val definition = codec.loadData(id, checkNotNull(cache.data(2, 13, id, null)))
+            assertNotEquals(definition.animationId, "seq.nightmare_staff_special".asRSCM(RSCMType.SEQ))
+            assertEquals(1, mockingDetails(f.access).invocations.count { it.method.name == "anim" })
+        }
+    }
+
     private fun register(map: SpecialAttackMap, manager: SpecialAttackManager): SpecialAttackRegistry {
         val registry = SpecialAttackRegistry(weapons)
         with(map) { SpecialAttackRepository(registry).register(manager) }
@@ -204,20 +220,20 @@ class RangedMagicSpecialAttacksTest {
 
     private class Fixture(val manager: SpecialAttackManager, val ammo: RangedAmmoManager, val access: ProtectedAccess, val target: Npc, val action: suspend () -> Boolean)
 
-    private fun nightmareFixture(accurate: Boolean): Fixture {
+    private fun nightmareFixture(accurate: Boolean, eldritch: Boolean = false): Fixture {
         val manager = mock(SpecialAttackManager::class.java)
         val access = mock(ProtectedAccess::class.java)
         val player = Player()
         player.statMap.setCurrentLevel("stat.magic", 99.toByte())
         `when`(access.player).thenReturn(player)
         val target = Npc(ServerCacheManager.getNpcs().values.first { it.name == "Goblin" })
-        `when`(manager.rollStaffAccuracy(access, target, null, 1.5)).thenReturn(accurate)
+        `when`(manager.rollStaffAccuracy(access, target, null, if (eldritch) 1.0 else 1.5)).thenReturn(accurate)
         `when`(manager.rollStaffMaxHit(access, target, 58, 1.0)).thenReturn(40)
         val hit = mock(Hit::class.java)
         val damage = if (accurate) 40 else 0
         `when`(hit.damage).thenReturn(damage)
         `when`(manager.queueMagicHit(access, target, damage, 60, 2, null)).thenReturn(hit)
-        val item = InvObj("obj.nightmare_staff_volatile")
+        val item = InvObj(if (eldritch) "obj.nightmare_staff_eldritch" else "obj.nightmare_staff_volatile")
         val special = register(NightmareStaffSpecialAttacks(WorldQueueList()), manager)[item] as SpecialAttack.Magic
         return Fixture(manager, mock(RangedAmmoManager::class.java), access, target) { special.attack(access, target, CombatAttack.Staff(item, null)) }
     }

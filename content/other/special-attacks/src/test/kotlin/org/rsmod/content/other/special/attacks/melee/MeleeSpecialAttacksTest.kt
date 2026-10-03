@@ -439,6 +439,25 @@ class MeleeSpecialAttacksTest {
         }
     }
 
+    @Test fun `bludgeon graphic is below NPC and player targets not the wielder`() {
+        val f = attackFixture("obj.abyssal_bludgeon", spyTarget = true)
+        f.run()
+        verify(f.target).spotanim("spotanim.abyssal_miasma_spotanim_bludgeon", 30, 0, 0)
+        verify(f.access).anim("seq.abyssal_bludgeon_special_attack", 0)
+        assertFalse(mockingDetails(f.access).invocations.any { it.method.name == "spotanim" })
+
+        val target = spy(Player())
+        val zero = Hit(org.rsmod.game.hit.HitType.Melee, org.rsmod.game.hit.Hitmark(0), null, null, null)
+        `when`(f.manager.queueMeleeHit(f.access, target, 0, 1)).thenReturn(zero)
+        val item = InvObj("obj.abyssal_bludgeon")
+        val special = register(MeleeWeaponSpecialAttacks(mock(GameRandom::class.java), mock(MeleeSpecialDamage::class.java)), f.manager)[item] as SpecialAttack.Melee
+        Fixture(f.manager, f.access, f.target) {
+            special.attack(f.access, target, CombatAttack.Melee(item, MeleeAttackType.Stab, MeleeAttackStyle.Accurate, CombatStance.Stance1))
+        }.run()
+        verify(target).spotanim("spotanim.abyssal_miasma_spotanim_bludgeon", 30, 0, 0)
+        assertFalse(mockingDetails(f.access).invocations.any { it.method.name == "spotanim" })
+    }
+
     private fun attackFixture(weapon: String, spyTarget: Boolean = false): Fixture {
         val manager = mock(SpecialAttackManager::class.java)
         val access = mock(ProtectedAccess::class.java)

@@ -292,3 +292,25 @@ Registry: 191/285, 94 missing. References:
 
 Dorgeshuun candidate isolated startup/catalogue and clean shutdown passed; proof
 in dorgeshuun-validation-20261003.json. Live installation remains untouched.
+
+## Acceptance FX correction (2026-10-04)
+
+Bludgeon Penance now places its miasma graphic on the NPC/player target, height 0,
+with the existing 30-client-cycle impact delay. The wielder retains the attack
+animation and no longer receives the target graphic.
+
+Both Nightmare staff specials now animate the player with
+`seq.nightmare_staff_special` (8532). Revision-240 cache decoding shows that
+Volatile cast spot 1760 uses sequence 8546 and Eldritch cast spot 1762 uses
+sequence 8548. The previous implementation incorrectly applied these effect-model
+sequences to the player's body as well, producing disappearance/scale glitches.
+The cast graphics retain their own sequences; target graphics, damage, energy,
+attack speed and hit timing are unchanged. No cache/client patch is required.
+
+Regression tests execute Bludgeon against NPC and player targets and distinguish
+both Nightmare player animations from the decoded graphic sequences. Live visual
+acceptance remains required. No new weapon family is added; special development
+remains paused at 191/285 registrations pending user acceptance of PR #15.
+
+Validation: 99 special-attack tests pass (0 failures/errors/skips); full server
+JAR builds successfully. Visual acceptance is not claimed by these tests.

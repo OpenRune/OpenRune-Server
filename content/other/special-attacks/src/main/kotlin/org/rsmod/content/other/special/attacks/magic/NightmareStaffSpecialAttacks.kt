@@ -27,7 +27,7 @@ class NightmareStaffSpecialAttacks @Inject constructor(private val queues: World
 
         private fun ProtectedAccess.cast(target: PathingEntity, attack: CombatAttack.Staff): Boolean {
             val name = if (eldritch) "eldritch" else "volatile"
-            anim(if (eldritch) "seq.nightmare_staff_eldritch_player_cast" else "seq.nightmare_staff_volatile_cast")
+            anim("seq.nightmare_staff_special")
             spotanim("spotanim.nightmare_staff_${name}_cast_spotanim")
             manager.setNextAttackDelay(this, 5)
             val accurate = manager.rollStaffAccuracy(this, target, attack.style, if (eldritch) 1.0 else 1.5)

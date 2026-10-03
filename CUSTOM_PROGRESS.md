@@ -131,3 +131,8 @@ double-launch metadata; mode restrictions, boss drain floors and live FX validat
 remain open. The accepted installation and frozen installer remain unchanged.
 
 Weapon acceptance command: `::weptest <set>` supplies registered combat weapons/shields in inventory-only atomic batches. New specials are paused; 94 missing registrations remain deferred. See [commands](docs/custom/commands.md).
+
+Final acceptance FX correction: Bludgeon graphic moved below NPC/player targets;
+Volatile/Eldritch player animation separated from their graphic-model sequences.
+Damage and hit timing unchanged. New specials remain paused; final visual user
+check and explicit merge approval are still pending.

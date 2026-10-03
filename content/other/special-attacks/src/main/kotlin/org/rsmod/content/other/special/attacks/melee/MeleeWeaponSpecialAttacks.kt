@@ -45,7 +45,7 @@ class MeleeWeaponSpecialAttacks @Inject constructor(private val rng: GameRandom,
 
         private fun ProtectedAccess.perform(target: PathingEntity, attack: CombatAttack.Melee): Boolean {
             anim(spec.animation)
-            if (spec.effect == MeleeEffect.Whip || spec.effect == MeleeEffect.Tentacle) {
+            if (spec.effect == MeleeEffect.Whip || spec.effect == MeleeEffect.Tentacle || spec.effect == MeleeEffect.Bludgeon) {
                 target.spotanim(spec.spot, delay = 30, height = spec.effectHeight)
             } else spotanim(spec.spot, height = spec.effectHeight, slot = constants.spotanim_slot_combat)
             val firstAccurate = accuracy(target, attack)
@@ -266,7 +266,7 @@ internal enum class MeleeWeaponSpec(
     ),
     Bludgeon(
         listOf("obj.abyssal_bludgeon"),
-        "seq.abyssal_bludgeon_special_attack", "spotanim.abyssal_miasma_spotanim_bludgeon", 1.0, 1.0, MeleeAttackType.Crush, MeleeEffect.Bludgeon,
+        "seq.abyssal_bludgeon_special_attack", "spotanim.abyssal_miasma_spotanim_bludgeon", 1.0, 1.0, MeleeAttackType.Crush, MeleeEffect.Bludgeon, effectHeight = 0,
     ),
     GraniteHammer(
         listOf("obj.granite_hammer"),
