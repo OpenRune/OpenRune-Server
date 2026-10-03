@@ -3,6 +3,7 @@ package org.rsmod.api.bosses.runtime
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.ProjAnimType
 import dev.openrune.types.aconverted.SpotanimType
 import kotlin.math.abs
@@ -20,6 +21,7 @@ import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.disableOverheadPrayers
 import org.rsmod.api.player.disablePrayers
+import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.modify
 import org.rsmod.api.player.hit.queueHit
@@ -93,7 +95,14 @@ class EffectInterpreter internal constructor(
                     t.soundSynth(effect.synth, effect.loops, effect.delay)
                 }
             }
-            is Effect.Spotanim -> npc.spotanim(effect.spot, effect.delay, effect.height, effect.slot)
+            is Effect.Spotanim -> {
+                val on = effect.target
+                if (on == null) {
+                    npc.spotanim(effect.spot, effect.delay, effect.height, effect.slot)
+                } else {
+                    for (t in resolvePlayers(on)) t.spotanim(effect.spot, effect.delay, effect.height, effect.slot)
+                }
+            }
             is Effect.MapSpotanim -> {
                 val coord = resolveTile(effect.at)
                 val spot = SpotanimType(effect.spot.asRSCM(RSCMType.SPOTANIM))
@@ -133,6 +142,13 @@ class EffectInterpreter internal constructor(
             is Effect.TileAoE -> applyTileAoE(effect)
             is Effect.Debris -> applyDebris(effect)
             is Effect.Summon -> summon(access, effect)
+            is Effect.Bleed -> {
+                if (deps.random.of(effect.outOf) >= effect.chance) {
+                    run(access, effect.otherwise, onComplete)
+                    return
+                }
+                applyBleed(access, effect)
+            }
             is Effect.Poison -> applyPoison(effect)
             is Effect.Freeze -> applyFreeze(effect)
             is Effect.DisablePrayers ->
@@ -360,10 +376,85 @@ class EffectInterpreter internal constructor(
                 t.queueHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier)
                 continue
             }
+            if (hit.resolveOnImpact) {
+                resolveHitOnLanding(access, hit, t, delay, damage)
+                continue
+            }
             val landed =
                 t.finishNpcHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier, hit.penetration)
             scheduleLanding(access, hit, t, damage, landed.damage, delay, clientDelay = 0)
         }
+    }
+
+    private fun resolveHitOnLanding(
+        access: StandardNpcAccess?,
+        hit: Effect.Hit,
+        t: Player,
+        delay: Int,
+        damage: Int,
+    ) {
+        t.queueCombatRetaliate(npc, if (hit.reactOnLanding) delay else 1)
+        t.queueImpactHit(
+            npc,
+            delay,
+            hit.type.toEngine(),
+            damage,
+            landingModifier(access, hit, damage),
+            penetration = hit.penetration,
+        )
+        if (!hit.reactOnLanding || delay <= 2) {
+            t.combatPlayDefendAnim()
+        } else {
+            deps.worldQueues.add(delay - 2) { if (t.isValidTarget()) t.combatPlayDefendAnim() }
+        }
+        showMissSpotanim(hit, t, damage, clientDelay = 0)
+    }
+
+    private fun landingModifier(access: StandardNpcAccess?, hit: Effect.Hit, rolled: Int): PlayerHitModifier {
+        val onHit = landingEffect(hit, rolled)
+        if (onHit == null && hit.lifesteal <= 0) return deps.playerHitModifier
+        return PlayerHitModifier { t ->
+            deps.playerHitModifier.modify(this, t)
+            if (!npc.isValidTarget()) return@PlayerHitModifier
+            val heal = damage * hit.lifesteal / 100
+            if (heal > 0) npc.heal(heal)
+            onHit?.let { child(target = t).run(access, it) }
+        }
+    }
+
+    private fun applyBleed(access: StandardNpcAccess?, bleed: Effect.Bleed) {
+        deps.bleeds.apply(
+            owner = npc,
+            player = target,
+            duration = bleed.duration,
+            stillInterval = bleed.stillInterval,
+            onApply = { player ->
+                if (npc.isValidTarget()) {
+                    bleed.applyDamage?.let { bleedHit(player, it, bleed.hitmark) }
+                    bleed.onApply?.let { child(target = player).run(access, it) }
+                }
+            },
+            onStill = { player ->
+                if (npc.isValidTarget()) bleed.stillDamage?.let { bleedHit(player, it, bleed.hitmark) }
+            },
+            onMoving = { player ->
+                if (npc.isValidTarget()) {
+                    bleedHit(player, bleed.movingDamage, bleed.hitmark)
+                    bleed.onMovingHit?.let { child(target = player).run(access, it) }
+                }
+            },
+        )
+    }
+
+    private fun bleedHit(player: Player, expr: DamageExpr, hitmark: HitmarkTypeGroup) {
+        val damage = evaluateDamage(expr, BossHitType.Typeless, player)
+        player.queueHit(
+            delay = 1,
+            type = BossHitType.Typeless.toEngine(),
+            damage = damage,
+            modifier = NoopPlayerHitModifier,
+            hitmark = hitmark,
+        )
     }
 
     private fun rollDamage(hit: Effect.Hit, t: Player): Int {

@@ -164,17 +164,17 @@ class ToaOverTimeEffect {
 
         private const val SILK_DRESSING_INTERVAL: Int = 5
 
-         // Silk dressing heals once immediately and nineteen more times,
-         // for twenty total activations.
+        // Silk dressing heals once immediately and nineteen more times,
+        // for twenty total activations.
 
         private const val SILK_DRESSING_DELAYED_PULSES: Int = 19
         private const val SILK_DRESSING_HEAL: Int = 5
         private const val BLESSED_SCARAB_INTERVAL: Int = 4
 
-         // The initial restore is immediate, followed by nine
-         // pulses.
+        // The initial restore is immediate, followed by eight
+        // pulses: OSRS Wiki (Blessed crystal scarab), 8 prayer 9 times, 72 in total.
 
-        private const val BLESSED_SCARAB_DELAYED_PULSES: Int = 9
+        private const val BLESSED_SCARAB_DELAYED_PULSES: Int = 8
         private const val BLESSED_SCARAB_RESTORE: Int = 8
 
         private const val HITPOINTS: String =

@@ -1,8 +1,10 @@
 package org.rsmod.api.bosses.dsl
 
+import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.bosses.validation.SpecValidator
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -52,6 +54,7 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
         nextPhase: String? = null,
         idleAnim: String? = null,
         attackRate: Int? = null,
+        keepFacingLock: Boolean = false,
         block: PhaseBuilder.() -> Unit,
     ): PhaseRef {
         val builder = PhaseBuilder(name).apply(block)
@@ -69,6 +72,7 @@ class BossSpecBuilder(private val npcTypes: List<String>) {
                 selector = builder.selector,
                 forceAbilities = builder.forceAbilities,
                 timers = builder.timers,
+                keepFacingLock = keepFacingLock,
             )
         return PhaseRef(name)
     }
@@ -143,6 +147,8 @@ class HitBuilder internal constructor() {
     private var onHitEffect: Effect? = null
     private var onHitEvenOnMiss: Boolean = false
     private var lifestealPercent: Int = 0
+    private var resolveOnImpactFlag: Boolean = false
+    private var reactOnLandingFlag: Boolean = false
 
     fun damage(expr: DamageExpr) {
         damageExpr = expr
@@ -191,6 +197,14 @@ class HitBuilder internal constructor() {
         lifestealPercent = percent
     }
 
+    fun resolveOnImpact() {
+        resolveOnImpactFlag = true
+    }
+
+    fun reactOnLanding() {
+        reactOnLandingFlag = true
+    }
+
     internal fun commitDamage(expr: DamageExpr) {
         damageExpr = expr
     }
@@ -215,6 +229,8 @@ class HitBuilder internal constructor() {
             spotanimUnlessPraying = spotanimUnlessPraying,
             penetrationWhen = penetrationWhen,
             hazard = hazardHit,
+            resolveOnImpact = resolveOnImpactFlag,
+            reactOnLanding = reactOnLandingFlag,
         )
 }
 
@@ -262,9 +278,9 @@ class AbilityBuilder {
         effects += Effect.ForceNext(ability.name)
     }
 
-    /** Plays [spot] on the caster (the boss npc itself), not on the target. */
-    fun spotanim(spot: String, height: Int = 0, delay: Int = 0, slot: Int = 0) {
-        effects += Effect.Spotanim(spot, height, delay, slot)
+    /** Plays [spot] on the caster (the boss npc itself), or on each player [target] resolves to. */
+    fun spotanim(spot: String, height: Int = 0, delay: Int = 0, slot: Int = 0, target: TargetExpr? = null) {
+        effects += Effect.Spotanim(spot, height, delay, slot, target)
     }
 
     fun say(text: String) {
@@ -518,6 +534,35 @@ class AbilityBuilder {
         type: HitType,
     ) {
         effects += Effect.TileAoE(tiles, telegraph, damage, type)
+    }
+
+    fun bleed(
+        duration: Int,
+        movingDamage: DamageExpr,
+        applyDamage: DamageExpr? = null,
+        stillDamage: DamageExpr? = null,
+        stillInterval: Int = 0,
+        hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
+        chance: Int = 1,
+        outOf: Int = 1,
+        onApply: Effect? = null,
+        onMovingHit: Effect? = null,
+        otherwise: Effect = Effect.NoOp,
+    ) {
+        effects +=
+            Effect.Bleed(
+                duration,
+                movingDamage,
+                applyDamage,
+                stillDamage,
+                stillInterval,
+                hitmark,
+                chance,
+                outOf,
+                onApply,
+                onMovingHit,
+                otherwise,
+            )
     }
 
     fun summon(

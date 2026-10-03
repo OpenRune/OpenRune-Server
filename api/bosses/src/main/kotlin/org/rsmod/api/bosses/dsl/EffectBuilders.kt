@@ -1,8 +1,10 @@
 package org.rsmod.api.bosses.dsl
 
+import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.spec.*
 import org.rsmod.api.combat.commons.types.MeleeAttackType as EngineMeleeAttackType
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.random.GameRandom
 import org.rsmod.game.entity.Npc
@@ -19,9 +21,9 @@ fun resetAnim(): Effect = Effect.ResetAnim
 
 fun forceNext(ability: AbilityRef): Effect = Effect.ForceNext(ability.name)
 
-/** Plays [spot] on the caster (the boss npc itself), not on the target. */
-fun spotanim(spot: String, height: Int = 0, delay: Int = 0, slot: Int = 0): Effect =
-    Effect.Spotanim(spot, height, delay, slot)
+/** Plays [spot] on the caster (the boss npc itself), or on each player [target] resolves to. */
+fun spotanim(spot: String, height: Int = 0, delay: Int = 0, slot: Int = 0, target: TargetExpr? = null): Effect =
+    Effect.Spotanim(spot, height, delay, slot, target)
 fun say(text: String): Effect = Effect.Say(text)
 fun sound(synth: String, radius: Int = 10, at: TargetExpr.Single? = null, delay: Int = 0): Effect =
     Effect.Sound(synth, radius, at, delay)
@@ -289,6 +291,33 @@ fun lastAbility(ability: String): Condition = Condition.LastAbility(ability)
 fun lastAbility(ability: AbilityRef): Condition = Condition.LastAbility(ability.name)
 
 operator fun Condition.not(): Condition = Condition.Not(this)
+
+fun bleed(
+    duration: Int,
+    movingDamage: DamageExpr,
+    applyDamage: DamageExpr? = null,
+    stillDamage: DamageExpr? = null,
+    stillInterval: Int = 0,
+    hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
+    chance: Int = 1,
+    outOf: Int = 1,
+    onApply: Effect? = null,
+    onMovingHit: Effect? = null,
+    otherwise: Effect = Effect.NoOp,
+): Effect =
+    Effect.Bleed(
+        duration,
+        movingDamage,
+        applyDamage,
+        stillDamage,
+        stillInterval,
+        hitmark,
+        chance,
+        outOf,
+        onApply,
+        onMovingHit,
+        otherwise,
+    )
 
 fun transmog(to: String, durationTicks: Int): Effect = Effect.Transmog(to, durationTicks)
 fun poison(damage: Int, chance: Int = 1, outOf: Int = 1): Effect = Effect.Poison(damage, chance, outOf)

@@ -134,6 +134,7 @@ object BossCombat {
      */
     private fun resetBoss(npc: Npc, deps: BossDeps) {
         deps.encounterRegistry.remove(npc)?.let(deps::disposeOwned)
+        deps.bleeds.clear(npc)
         npc.movementLocked = false
         npc.apRangeOverride = null
         npc.apRequiresLineOfSight = true

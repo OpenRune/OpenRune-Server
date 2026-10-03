@@ -414,6 +414,12 @@ object SpecValidator {
                 is Effect.SoundTo -> target(effect.target, scope, name)
                 is Effect.Sound -> effect.at?.let { target(it, scope, name) }
                 is Effect.MapSpotanim -> target(effect.at, scope, name)
+                is Effect.Spotanim -> effect.target?.let { target(it, scope, name) }
+                is Effect.Bleed -> {
+                    effect.onApply?.let { effect(it, scope.copy(deferred = true)) }
+                    effect.onMovingHit?.let { effect(it, scope.copy(deferred = true)) }
+                    effect(effect.otherwise, scope)
+                }
                 is Effect.CamShake -> effect.target?.let { target(it, scope, name) }
                 is Effect.CamReset -> target(effect.target, scope, name)
                 is Effect.Debris -> target(effect.center, scope, name)
@@ -445,6 +451,15 @@ object SpecValidator {
             }
             if (projectile != null && hit.hazard) {
                 error("${scope.prefix}hazard() has no effect on a projectile hit, which always resolves as combat.")
+            }
+            if (projectile != null && (hit.resolveOnImpact || hit.reactOnLanding)) {
+                error("${scope.prefix}a projectile hit uses the projectile's resolveOnImpact, not the hit's.")
+            }
+            if (hit.hazard && hit.resolveOnImpact) {
+                error("${scope.prefix}hazard() cannot be combined with resolveOnImpact().")
+            }
+            if (hit.reactOnLanding && !hit.resolveOnImpact) {
+                error("${scope.prefix}reactOnLanding() needs resolveOnImpact().")
             }
             hit.onHit?.let { effect(it, scope.copy(deferred = true)) }
         }
