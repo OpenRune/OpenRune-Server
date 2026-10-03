@@ -2,6 +2,7 @@ package org.rsmod.content.other.special.attacks
 
 import org.rsmod.api.specials.SpecialAttackMap
 import org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks
+import org.rsmod.content.other.special.attacks.magic.AyakSpecialAttack
 import org.rsmod.content.other.special.attacks.magic.NightmareStaffSpecialAttacks
 import org.rsmod.content.other.special.attacks.melee.DragonLongswordSpecialAttack
 import org.rsmod.content.other.special.attacks.melee.DragonTwoHandedSpecialAttack
@@ -27,5 +28,6 @@ class SpecialAttackModule : PluginModule() {
         addSetBinding<SpecialAttackMap>(DragonTwoHandedSpecialAttack::class.java)
         addSetBinding<SpecialAttackMap>(RangedWeaponSpecialAttacks::class.java)
         addSetBinding<SpecialAttackMap>(NightmareStaffSpecialAttacks::class.java)
+        addSetBinding<SpecialAttackMap>(AyakSpecialAttack::class.java)
     }
 }

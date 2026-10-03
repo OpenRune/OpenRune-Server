@@ -132,3 +132,17 @@ protections as active. See the branch audit and exact baseline for recovery refe
   adopting an equivalent upstream implementation.
 - Validation: nine dart tiers, both variants, max packed fields, unrelated quiver ammo,
   atomic loading/refunds and last-dart attack covered by cache-backed tests.
+
+### Eye of Ayak charge state and per-spawn Magic defence (2026-10-03)
+
+- Paths: `api/player/.../worn/AyakCharges.kt`, `api/npc/.../MagicDefenceDrain.kt`,
+  `api/combat/combat-formulas/.../accuracy/magic/{PvNMagicAccuracy,NvNMagicAccuracy}.kt`.
+- Reason: normal and special attacks must share item state; Soul Rend drains a bonus,
+  not an NPC's Magic level or the shared type's params.
+- State lives in native varobjs/varn defined by the special-weapons pack. No attrs.
+- Behaviour: undrained NPCs have identical formulas; drained positive bonuses floor
+  at zero. Negative original bonuses are preserved. Native respawn clears the varn.
+- Introducing commit: focused `feat(weapons): implement Eye of Ayak charges and Soul Rend`.
+- Risk: upstream per-NPC bonus modifiers may overlap; compare both magic accuracy
+  call paths and reset semantics before adoption. Removal path: migrate the shared
+  state/formula access to an upstream equivalent while preserving packed item values.

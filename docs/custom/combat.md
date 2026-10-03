@@ -56,3 +56,22 @@ Venom, exact live projectile trajectory and impact-time cancellation remain unqu
 Current registry: 139/285 (146 missing). Tests: 21 special-weapons + 35 special-attacks
 passed. Full registry snapshot: [weapon registry](weapons-registry-20261003.tsv).
 Reference: https://oldschool.runescape.wiki/w/Blowpibe
+
+Eye of Ayak slice: server cache category corrected to PoweredStaff with range 6 and
+3-tick ordinary casts. Native per-item varobjs preserve up to 50,000 charges and
+whether the recipe used two death runes/one chaos rune or one demon tear. Recipes
+cannot be mixed before uncharging; all remaining materials can be refunded atomically.
+Soul Rend costs 50%, has 2x accuracy, scales the base maximum by 13/10 before gear,
+and uses a 5-tick attack delay. Magic defence bonus drain is per NPC spawn, floors at
+zero without altering Magic level or shared NPC definitions, and applies to subsequent
+player and NPC magic accuracy. Respawn clears it. Ordinary and special PvP attempts
+are rejected without spending resources. Doom passive recharge is deferred with Doom.
+
+Validation: isolated revision-240 cache build passed; 27 ordinary-weapon and 39 special
+attack tests passed. Registry: 140/285 registered, 145 missing. Tests cover refunds,
+full inventories, final-charge splashes, cast/impact ownership, deferred drain, negative
+base bonuses and respawn cleanup. The first cache build exposed stale shared CS2;
+a fresh workspace-local LOCALAPPDATA resolved it. Live effect height/trajectory and
+special impact timing still need client capture verification; tests confirm the intended
+source/target wiring, not visual parity. No accepted installation files were replaced.
+Mechanics/formula reference: https://github.com/weirdgloop/osrs-dps-calc/blob/main/src/lib/PlayerVsNPCCalc.ts

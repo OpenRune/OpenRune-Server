@@ -266,7 +266,7 @@ id	name	category	energy	registered_kind	handler	description
 30388	Thunder khopesh	SlashSword	500	missing		Lingering Lightning: Attack the target twice, if either attack hits spawn additional lightning wherever the npc was standing, dealing damage to targets around it.
 30759	Soulflame horn	Unarmed	250	missing		Entice: Buffs yours and your allies next melee accuracy roll. Costs additional energy per ally affected.
 30955	Arkan blade	Unarmed	300	missing		Flames of Ralos: Perform a devastating blow to your enemy with 50% increased accuracy and damage. If your attack successfully hits, the target will burn for 10 damage over 24 seconds.
-31113	Eye of Ayak	Unarmed	500	missing		Soul Rend: Deliver a strike with doubled accuracy and 30% higher max hit, draining Magic Defence equal to the damage dealt.
+31113	Eye of Ayak	PoweredStaff	500	Magic	org.rsmod.content.other.special.attacks.magic.AyakSpecialAttack$SoulRend	Soul Rend: Deliver a strike with doubled accuracy and 30% higher max hit, draining Magic Defence equal to the damage dealt.
 31583	Rosewood blowpipe	Unarmed	250	missing		Rapid Burst: Fire two darts in rapid succession with 20% reduced accuracy and 10% increased damage.
 33035	Toxic staff (uncharged)	Unarmed	1000	missing		Power of Death: Reduce all melee damage you receive by 50% for the next minute while the staff remains equipped. Stacks with Protect from Melee.
 33036	Toxic staff (Deadman)	Unarmed	1000	missing		Power of Death: Reduce all melee damage you receive by 50% for the next minute while the staff remains equipped. Stacks with Protect from Melee.
