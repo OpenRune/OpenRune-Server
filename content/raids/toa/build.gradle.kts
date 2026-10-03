@@ -10,6 +10,7 @@ dependencies {
     implementation(projects.api.bosses)
     implementation(projects.api.combat.combatFormulas)
     implementation(projects.api.combat.combatCommons)
+    implementation(projects.api.instances)
     implementation(projects.api.registry)
     implementation(projects.api.mechanics.toxins)
     implementation(libs.rsprot.api)
