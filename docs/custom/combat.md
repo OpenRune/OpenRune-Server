@@ -22,11 +22,10 @@ Branch: feature/weapon-completeness, based on accepted runtime plus organization
 commit 82d6c0203. User requests complete specials and normal weapon/charge behaviour.
 Zulrah encounter files, rotations, reach policy and respawn policy remain unchanged.
 
-Latest checkpoint: 140/285 registered special-energy items, 145 missing. Registration
-is not visual or mechanical parity. Selected weapon/special/impact suites: 83 passing
-tests (42 weapons, 39 specials, 2 engine). The full server JAR builds successfully.
-Broader regression checks add 20 passing tests (NPC 5, Zulrah 2, pets 13): 103 total.
-An isolated revision-240 server boot with the existing Nero server plugin passes
+Latest registry: 157/285 registered special-energy items, 128 missing. Registration
+is not visual or mechanical parity. Selected suites pass 119 tests: 42 weapons,
+55 specials, 2 engine, 5 NPC, 2 Zulrah and 13 pets. The full server JAR builds.
+The earlier installable checkpoint passed 103 tests. Its isolated revision-240 server boot with the existing Nero server plugin passes
 bridge health, catalogue search and continuously refreshed respawn snapshots, then
 shuts down cleanly. This does not exercise a live game client or visually certify FX.
 The following slices are a chronological implementation record; earlier counts below
@@ -52,6 +51,34 @@ does not drain, and Healing Blade retains its pre-overkill heal basis. Callbacks
 once-only and reject replacement logins. Three new tests pass, including execution
 through the registered Warhammer handler; all 42 special tests pass. No extra weapon
 registrations are claimed and client FX placement remains unqualified.
+
+Further melee families (not in the frozen installer): 17 additional item variants.
+Dragon claws has four conditional accuracy branches, bounded split damage, the
+all-miss chip outcome and paired hit delays. Dragon scimitar locks protection
+prayers for eight ticks on positive impact without disabling Protect Item.
+Darklight, Arclight (including inactive) and Emberlight drain Attack, Strength and
+Defence additively from base levels after an accurate hit impacts; demon flags select
+10%/15% rather than 5%, with the additional one level. Their special does not consume
+Arclight charges; its ordinary charge/infusion lifecycle remains unfinished.
+Dragon sword and Ancient mace use native melee hit processing with PvP prayer
+penetration, retaining retaliation, hit modifiers and damage attribution. Ancient
+mace drains actual PvP damage and restores prayer up to base plus that hit; NPC
+restoration retains the rolled amount even when weapon immunity blocks damage.
+Tests cover cancellation/relogin, zero hits, source/target FX ownership, exact
+animation symbols, prayer expiry, damage bounds and a real prayer-piercing hit queue.
+The subsequent full JAR also passed the isolated revision-240 boot, Nero catalogue,
+live respawn snapshot refresh and graceful database/server shutdown checks. This
+validation did not replace files in the accepted installation.
+
+Remaining qualification: client animation height/frame alignment, variant cosmetics,
+claw per-hit post-special reductions, NPC prayer/immunity interactions, boss stat-drain
+floors and demon metadata coverage. The cache-only fixture has no positive demon
+params, so drain tests explicitly construct both demon and non-demon definitions;
+this is not evidence that every live NPC is correctly classified. No local developer
+client was listening on port 7780 during this validation. No "perfect FX" claim.
+Formula references: [claw distributions](https://github.com/weirdgloop/osrs-dps-calc/blob/main/src/lib/dists/claws.ts),
+[base-level demonbane drains](https://github.com/weirdgloop/osrs-dps-calc/blob/main/src/lib/scaling/DefenceReduction.ts),
+[Ancient mace](https://oldschool.runescape.wiki/w/Ancient_mace).
 
 Trident slice: eight normal/enhanced/ornament sea/swamp pairs plus full sea identities.
 Item-local charge state uses the existing powered-staff varobj bit layout; inventory

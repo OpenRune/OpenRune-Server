@@ -15,14 +15,14 @@ id	name	category	energy	registered_kind	handler	description
 3204	Dragon halberd	Polearm	300	Melee	org.rsmod.content.other.special.attacks.melee.HalberdSpecialAttacks$Sweep	Sweep: If your target is small, adjacent targets may be hit too. Otherwise, your target may be hit a second time, with 25% decreased accuracy. Damage in all cases is increased by 10% of your max hit.
 4151	Abyssal whip	Whip	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Energy Drain: Deal an attack with 25% increased accuracy that siphons 10% of your target's run energy.
 4153	Granite maul	Blunt	600	missing		Quick Smash: Deal an extra attack instantly.
-4587	Dragon scimitar	SlashSword	550	missing		Sever: Deal a slash with increased accuracy that prevents your target from using protection prayers for 5 seconds if it successfully hits.
+4587	Dragon scimitar	SlashSword	550	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Sever: Deal a slash with increased accuracy that prevents your target from using protection prayers for 5 seconds if it successfully hits.
 5680	Dragon dagger(p+)	StabSword	250	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
 5698	Dragon dagger(p++)	StabSword	250	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
 5716	Dragon spear(p+)	Spear	250	missing		Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
 5730	Dragon spear(p++)	Spear	250	missing		Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
 6724	Seercull	Bow	1000	Ranged	org.rsmod.content.other.special.attacks.ranged.RangedWeaponSpecialAttacks$WeaponAttack	Soulshot: Deal an attack that is guaranteed to hit your target and lowers your target's Magic level by the damage dealt.
 6739	Dragon axe	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$1	Lumber Up: Increase your Woodcutting level by 3.
-6746	Darklight	SlashSword	500	missing		Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is twice as effective against demons.
+6746	Darklight	SlashSword	500	Melee	org.rsmod.content.other.special.attacks.melee.DemonbaneSpecialAttacks$Weaken	Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is twice as effective against demons.
 7158	Dragon 2h sword	TwoHandedSword	600	Melee	org.rsmod.content.other.special.attacks.melee.DragonTwoHandedSpecialAttack$Powerstab	Powerstab: Hit up to fourteen enemies surrounding you.
 7639	Rod of Ivandis (10)	Staff	100	missing		Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
 7640	Rod of Ivandis (9)	Staff	100	missing		Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
@@ -42,7 +42,7 @@ id	name	category	energy	registered_kind	handler	description
 10284	Magic comp bow	Bow	350	Ranged	org.rsmod.content.other.special.attacks.ranged.RangedWeaponSpecialAttacks$WeaponAttack	Powershot: Deal an attack that is guaranteed to hit your target.
 10887	Barrelchest anchor	Spiked	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Sunder: Deal an attack with double accuracy and 10% higher max hit. Lowers your target's Attack, Defence, Ranged or Magic level by 10% of the damage dealt.
 11037	Brine sabre	SlashSword	750	missing		Liquify: Deal an attack with double the chance of hitting that boosts your Strength, Attack and Defence levels by 25% of the damage dealt. Can only be used underwater.
-11061	Ancient mace	Spiked	1000	missing		Favour of the War God: Deal an attack which hits through Protect from Melee and siphons Prayer points equal to the damage dealt.
+11061	Ancient mace	Spiked	1000	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Favour of the War God: Deal an attack which hits through Protect from Melee and siphons Prayer points equal to the damage dealt.
 11235	Dark bow	Bow	550	Ranged	org.rsmod.content.other.special.attacks.ranged.DarkBowSpecialAttack$DarkBow	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
 11283	Dragonfire shield	Unarmed	0	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1	-
 11785	Armadyl crossbow	Crossbow	500	missing		Armadyl Eye: Deal an attack with double accuracy, also doubles the base activation chance of enchanted bolt effects.
@@ -80,11 +80,11 @@ id	name	category	energy	registered_kind	handler	description
 13269	Abyssal dagger (p+)	StabSword	250	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Abyssal Puncture: Deal an attack that hits twice with 25% increased accuracy, but inflicts 15% less damage per hit. The second hit is guaranteed if the first deals damage.
 13271	Abyssal dagger (p++)	StabSword	250	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Abyssal Puncture: Deal an attack that hits twice with 25% increased accuracy, but inflicts 15% less damage per hit. The second hit is guaranteed if the first deals damage.
 13576	Dragon warhammer	Blunt	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Smash: Deal an attack that inflicts 50% more damage and lowers your target's Defence level by 30%.
-13652	Dragon claws	Claw	500	missing		Slice and Dice: Hit 4 times in quick succession, with great accuracy.
+13652	Dragon claws	Claw	500	Melee	org.rsmod.content.other.special.attacks.melee.DragonClawsSpecialAttack$SliceAndDice	Slice and Dice: Hit 4 times in quick succession, with great accuracy.
 19478	Light ballista	Crossbow	650	Ranged	org.rsmod.content.other.special.attacks.ranged.RangedWeaponSpecialAttacks$WeaponAttack	Concentrated Shot: Deal an attack with 25% increased accuracy and damage, but takes an additional 2.4 seconds to fire.
 19481	Heavy ballista	Crossbow	650	Ranged	org.rsmod.content.other.special.attacks.ranged.RangedWeaponSpecialAttacks$WeaponAttack	Concentrated Shot: Deal an attack with 25% increased accuracy and damage, but takes an additional 2.4 seconds to fire.
-19675	Arclight	SlashSword	500	missing		Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is twice as effective against demons.
-20000	Dragon scimitar (or)	SlashSword	550	missing		Sever: Deal a slash with increased accuracy that prevents your target from using protection prayers for 5 seconds if it successfully hits.
+19675	Arclight	SlashSword	500	Melee	org.rsmod.content.other.special.attacks.melee.DemonbaneSpecialAttacks$Weaken	Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is twice as effective against demons.
+20000	Dragon scimitar (or)	SlashSword	550	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Sever: Deal a slash with increased accuracy that prevents your target from using protection prayers for 5 seconds if it successfully hits.
 20011	3rd Age axe	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$3	Lumber Up: Increase your Woodcutting level by 3.
 20014	3rd Age pickaxe	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$38	Rock Knocker: Increase your Mining level by 3.
 20368	Armadyl godsword (or)	TwoHandedSword	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	The Judgement: Deal an attack that inflicts 37.5% more damage with double accuracy.
@@ -92,24 +92,24 @@ id	name	category	energy	registered_kind	handler	description
 20372	Saradomin godsword (or)	TwoHandedSword	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Healing Blade: Deal an attack that inflicts 10% more damage with double accuracy, while restoring your Hitpoints and Prayer by 50% and 25% of the damage dealt respectively.
 20374	Zamorak godsword (or)	TwoHandedSword	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Ice Cleave: Deal an attack that inflicts 10% more damage with double accuracy and freezes your target for 20 seconds if it successfully hits.
 20405	Abyssal whip	Whip	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Energy Drain: Deal an attack with 25% increased accuracy that siphons 10% of your target's run energy.
-20406	Dragon scimitar	SlashSword	550	missing		Sever: Deal a slash with increased accuracy that can prevent your target from using protection prayers for 5 seconds.
+20406	Dragon scimitar	SlashSword	550	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Sever: Deal a slash with increased accuracy that can prevent your target from using protection prayers for 5 seconds.
 20407	Dragon dagger	StabSword	250	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
 20408	Dark bow	Bow	550	missing		Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
 20557	Granite maul	Blunt	500	missing		Quick Smash: Deal an extra attack instantly.
 20558	Magic shortbow	Unarmed	550	missing		Snapshot: Fire two arrows within quick succession, but with reduced accuracy.
 20559	Dragon 2h sword	Unarmed	600	missing		Powerstab: Hit up to fourteen enemies surrounding you.
 20593	Armadyl godsword	TwoHandedSword	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	The Judgement: Deal an attack that inflicts 37.5% more damage with double accuracy.
-20784	Dragon claws	Claw	500	missing		Slice and Dice: Hit 4 times in quick succession, with great accuracy.
+20784	Dragon claws	Claw	500	Melee	org.rsmod.content.other.special.attacks.melee.DragonClawsSpecialAttack$SliceAndDice	Slice and Dice: Hit 4 times in quick succession, with great accuracy.
 20785	Dragon warhammer	Unarmed	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Smash: Deal an attack that inflicts 50% more damage and lowers your target's Defence level by 30%.
 20849	Dragon thrownaxe	Thrown	250	missing		Momentum Throw: Deal a fast attack with 25% improved accuracy.
 21003	Elder maul	Blunt	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Pulverize: A crushing blow with 25% bonus accuracy that will reduce your target's defence by 35%.
-21009	Dragon sword	StabSword	400	missing		Wild Stab: Deal an attack which hits through Protect from Melee with 25% increased accuracy and damage.
+21009	Dragon sword	StabSword	400	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Wild Stab: Deal an attack which hits through Protect from Melee with 25% increased accuracy and damage.
 21015	Dinh's bulwark	Bulwark	500	missing		Shield Bash: Hit surrounding targets within a 10x10 area with 20% increased accuracy.
 21028	Dragon harpoon	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$18	Fishstabber: Increase your Fishing level by 3.
 21031	Infernal harpoon	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$20	Fishstabber: Increase your Fishing level by 3.
 21033	Infernal harpoon (uncharged)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$25	Fishstabber: Increase your Fishing level by 3.
 21205	Elder maul	Blunt	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Pulverize: A crushing blow with 25% bonus accuracy that will reduce your target's defence by 35%.
-21206	Dragon sword	Unarmed	400	missing		Wild Stab: Deal an attack which hits through Protect from Melee with 25% increased accuracy and damage.
+21206	Dragon sword	Unarmed	400	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Wild Stab: Deal an attack which hits through Protect from Melee with 25% increased accuracy and damage.
 21207	Dragon thrownaxe	Unarmed	250	missing		Momentum Throw: Deal a fast attack with 25% improved accuracy.
 21633	Ancient wyvern shield	Unarmed	0	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1	-
 21742	Granite hammer	Blunt	600	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Hammer Blow: Deal an attack with 50% more accuracy and a guaranteed +5 damage.
@@ -172,7 +172,7 @@ id	name	category	energy	registered_kind	handler	description
 26374	Zaryte crossbow	Crossbow	750	missing		Evoke: Perform an attack with double accuracy, with a guaranteed enchanted bolt activation rate on successful hit.
 26482	Abyssal whip (or)	Whip	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Energy Drain: Deal an attack with 25% increased accuracy that siphons 10% of your target's run energy.
 26484	Abyssal tentacle (or)	Whip	500	missing		Binding Tentacle: Bind your target for 5 seconds and increase the chance of them being poisoned.
-26708	Dragon claws (or)	Claw	500	missing		Slice and Dice: Hit 4 times in quick succession, with great accuracy.
+26708	Dragon claws (or)	Claw	500	Melee	org.rsmod.content.other.special.attacks.melee.DragonClawsSpecialAttack$SliceAndDice	Slice and Dice: Hit 4 times in quick succession, with great accuracy.
 26710	Dragon warhammer (or)	Blunt	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Smash: Deal an attack that inflicts 50% more damage and lowers your target's Defence level by 30%.
 26712	Heavy ballista (or)	Crossbow	650	Ranged	org.rsmod.content.other.special.attacks.ranged.RangedWeaponSpecialAttacks$WeaponAttack	Concentrated Shot: Deal an attack with 25% increased accuracy and damage, but takes an additional 2.4 seconds to fire.
 27100	Elder maul (or)	Blunt	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Pulverize: A crushing blow with 25% bonus accuracy that will reduce your target's defence by 35%.
@@ -208,12 +208,12 @@ id	name	category	energy	registered_kind	handler	description
 28023	Dragon dagger (p+)(cr)	StabSword	250	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
 28025	Dragon dagger (p++)(cr)	StabSword	250	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
 28027	Dragon mace (cr)	Spiked	250	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Shatter: Increase damage by 50% and accuracy by 25% for one hit.
-28029	Dragon sword (cr)	StabSword	400	missing		Wild Stab: Deal an attack which hits through Protect from Melee with 25% increased accuracy and damage.
-28031	Dragon scimitar (cr)	SlashSword	550	missing		Sever: Deal a slash with increased accuracy that prevents your target from using protection prayers for 5 seconds if it successfully hits.
+28029	Dragon sword (cr)	StabSword	400	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Wild Stab: Deal an attack which hits through Protect from Melee with 25% increased accuracy and damage.
+28031	Dragon scimitar (cr)	SlashSword	550	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Sever: Deal a slash with increased accuracy that prevents your target from using protection prayers for 5 seconds if it successfully hits.
 28033	Dragon longsword (cr)	SlashSword	250	Melee	org.rsmod.content.other.special.attacks.melee.DragonLongswordSpecialAttack$DragonLongsword	Cleave: Deal a powerful attack that inflicts 25% more damage.
 28035	Dragon warhammer (cr)	Blunt	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Smash: Deal an attack that inflicts 50% more damage and lowers your target's Defence level by 30%.
 28037	Dragon battleaxe (cr)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$47	Rampage: Drain your Attack, Defence, Ranged & Magic levels by 10%, while increasing your Strength by 10 levels, plus 25% of the drained levels.
-28039	Dragon claws (cr)	Claw	500	missing		Slice and Dice: Hit 4 times in quick succession, with great accuracy.
+28039	Dragon claws (cr)	Claw	500	Melee	org.rsmod.content.other.special.attacks.melee.DragonClawsSpecialAttack$SliceAndDice	Slice and Dice: Hit 4 times in quick succession, with great accuracy.
 28041	Dragon spear (cr)	Spear	250	missing		Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
 28043	Dragon spear (p)(cr)	Spear	250	missing		Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
 28045	Dragon spear (p+)(cr)	Spear	250	missing		Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
@@ -227,7 +227,7 @@ id	name	category	energy	registered_kind	handler	description
 28226	3rd Age felling axe	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$14	Lumber Up: Increase your Woodcutting level by 3.
 28338	Soulreaper axe	Axe	1	missing		Behead: Consume all Soul Stacks, attacking with increased damage and accuracy per stack.
 28531	Corrupted voidwaker	SlashSword	500	Melee	org.rsmod.content.other.special.attacks.melee.VoidwakerSpecialAttack$Disrupt	Disrupt: Summon a powerful bolt of lightning that deals guaranteed magic damage based on your max hit.
-28534	Corrupted dragon claws	Claw	500	missing		Slice and Dice: Hit 4 times in quick succession, with great accuracy.
+28534	Corrupted dragon claws	Claw	500	Melee	org.rsmod.content.other.special.attacks.melee.DragonClawsSpecialAttack$SliceAndDice	Slice and Dice: Hit 4 times in quick succession, with great accuracy.
 28537	Corrupted armadyl godsword	TwoHandedSword	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	The Judgement: Deal an attack that inflicts 37.5% more damage with double accuracy.
 28682	Dinh's blazing bulwark	Bulwark	500	missing		Shield Bash: Hit surrounding targets within a 10x10 area with 20% increased accuracy.
 28688	Blazing blowpipe	Thrown	500	Ranged	org.rsmod.content.other.special.attacks.ranged.BlowpipeSpecialAttacks$Siphon	Toxic Siphon: Deal an attack with 100% increased accuracy that inflicts 50% more damage and heals you for 50% of the damage dealt.
@@ -237,7 +237,7 @@ id	name	category	energy	registered_kind	handler	description
 28997	Dual macuahuitl	Spiked	250	missing		Blood infusion: Sacrifice 25% of your current hp to deal an attack with 25% increased accuracy and damage, with a guaranteed set effect activation on hit. This special attack requires the full Bloodrager set to be worn.
 29000	Eclipse atlatl	Bow	500	missing		Eclipse: Attack with 50% increased accuracy, consuming all remaining burn damage affecting the target and raising the max hit by that amount. This special attack requires the full Eclipse set to be worn.
 29577	Burning claws	Claw	350	missing		Burning barrage: Attacks 3 times in quick succession, with a chance to burn the enemy on each hit.
-29589	Emberlight	SlashSword	500	missing		Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is three times as effective against demons.
+29589	Emberlight	SlashSword	500	Melee	org.rsmod.content.other.special.attacks.melee.DemonbaneSpecialAttacks$Weaken	Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is three times as effective against demons.
 29591	Scorching bow	Bow	250	missing		Scorching shackles: A scorching shot with 30% bonus accuracy that will bind and burn enemy demons for 12 seconds.)
 29594	Purging staff	Staff	250	missing		Scatter ashes: Casts the highest available demonbane spell. If it kills a demon, it refunds its special attack energy cost, and reduces the next attack delay.
 29599	Corrupted dark bow	Bow	550	missing		Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
@@ -250,7 +250,7 @@ id	name	category	energy	registered_kind	handler	description
 29849	Blue Moon spear	BladedStaff	500	missing		Break Shackles: Attack with increased accuracy and damage based on the duration of any binding spells affecting them and ending said effect. This special attack requires the full Blue Moon set to be worn.
 29850	Dual macuahuitl	Spiked	250	missing		Blood infusion: Sacrifice 25% of your current hp to deal an attack with 25% increased accuracy and damage, with a guaranteed set effect activation on hit. This special attack requires the full Bloodrager set to be worn.
 29851	Eclipse atlatl	Bow	500	missing		Eclipse: Attack with 50% increased accuracy, consuming all remaining burn damage affecting the target and raising the max hit by that amount. This special attack requires the full Eclipse set to be worn.
-30305	Arclight (inactive)	SlashSword	500	missing		Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is twice as effective against demons.
+30305	Arclight (inactive)	SlashSword	500	Melee	org.rsmod.content.other.special.attacks.melee.DemonbaneSpecialAttacks$Weaken	Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is twice as effective against demons.
 30340	Crystal dagger (perfected)	StabSword	250	missing		Crystalline Severance: Launch a powerful attack the pierces the Crystalline Hunllef's prayers and disables them briefly.
 30342	Infernal harpoon (or)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$27	-
 30343	Infernal harpoon (uncharged)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$28	-

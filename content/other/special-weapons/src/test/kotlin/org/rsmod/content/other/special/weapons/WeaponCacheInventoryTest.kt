@@ -24,12 +24,15 @@ class WeaponCacheInventoryTest {
             assertTrue(items.isNotEmpty())
             val report = File("content/other/special-weapons/build/reports/charged-weapon-cache.txt")
             report.parentFile.mkdirs()
+            File(report.parentFile, "all-item-symbols.tsv").writeText(ServerCacheManager.getItems().values.joinToString("\n") {
+                "${it.id}\t${it.name}\t${RSCM.getReverseMapping(RSCMType.OBJ, it.id)}"
+            })
             report.writeText(items.joinToString("\n") { RSCM.getReverseMapping(RSCMType.OBJ, it.id) + " " + it.toString() })
             val methods = File(report.parentFile, "cache-fx-symbols.txt")
             methods.writeText(listOf(RSCMType.SEQ to 20000, RSCMType.SPOTANIM to 10000, RSCMType.PROJANIM to 1000).flatMap { (type, max) ->
                 (0..max).mapNotNull { id ->
                     val symbol = runCatching { RSCM.getReverseMapping(type, id) }.getOrNull()
-                    symbol?.takeIf { listOf("trident", "tots", "ayak", "sanguinesti", "scythe", "blowpipe").any { part -> it.contains(part) } }
+                    symbol
                 }
             }.joinToString("\n"))
         } finally { cache.close() }

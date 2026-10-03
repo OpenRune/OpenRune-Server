@@ -172,3 +172,17 @@ protections as active. See the branch audit and exact baseline for recovery refe
   and remove this list if an upstream equivalent supplies the same cancellation semantics.
 - Tests: copied/capped/zero damage, once-only execution, native NPC HP deduction,
   Siphon overkill healing, source relog and Soul Rend impact/cancellation.
+
+## Prayer-piercing melee specials (2026-10-03)
+
+- Paths: `api/combat/combat-manager/.../PlayerAttackManager.kt` and
+  `api/specials/.../SpecialAttackManager.kt`.
+- Adds an explicit prayer-piercing route for Dragon sword and Ancient mace.
+  Only PvP protection penetration changes; normal modifiers, retaliation, source
+  attribution and defend animation still execute. Ordinary melee calls are unchanged.
+- Verified by real queued hits: 20 damage becomes 12 with normal Protect from Melee,
+  remains 20 for a piercing hit, and remains zero against admin invulnerability.
+- NPC style immunity is deliberately still processed. Boss-specific prayer mechanics
+  require separate review; this route does not bypass every NPC immunity.
+- Upstream adoption: replace the route with an equivalent per-hit penetration API
+  only after the native queue regression and weapon tests pass.

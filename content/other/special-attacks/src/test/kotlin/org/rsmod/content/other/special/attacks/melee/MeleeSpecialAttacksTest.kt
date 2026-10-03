@@ -20,12 +20,15 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.mockito.Mockito.*
+import org.rsmod.annotations.InternalApi
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.CombatStance
 import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.enums.SaEnums
+import org.rsmod.api.player.overheadsLocked
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.worn.DragonfireShields
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.specials.SpecialAttack
@@ -39,7 +42,6 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.inv.InvObj
-import org.rsmod.annotations.InternalApi
 import org.rsmod.map.CoordGrid
 
 @ResourceLock("ServerCacheManager")
@@ -49,6 +51,9 @@ import org.rsmod.map.CoordGrid
 class MeleeSpecialAttacksTest {
     private lateinit var cache: Cache
     private lateinit var weapons: SpecialAttackWeapons
+    private var Player.testMeleePrayer by intVarBit("varbit.prayer_protectfrommelee")
+    private var Player.testMagicPrayer by intVarBit("varbit.prayer_protectfrommagic")
+    private var Player.testItemPrayer by intVarBit("varbit.prayer_protectitem")
 
     @BeforeAll fun loadCache() {
         cache = ServerCacheManager.init(240)
@@ -285,6 +290,37 @@ class MeleeSpecialAttacksTest {
 
     private fun npc(): Npc = Npc(ServerCacheManager.getNpcs().values.first { it.name == "Goblin" })
 
+    @Test fun `scimitar impact disables only protection prayers for eight ticks`() {
+        val source = Player().apply { slotId = 1; uuid = 1; assignUid() }
+        val target = Player().apply {
+            slotId = 2; uuid = 2; assignUid(); currentMapClock = 100
+            testMeleePrayer = 1
+            testItemPrayer = 1
+        }
+        val hit = Hit(org.rsmod.game.hit.HitType.Melee, org.rsmod.game.hit.Hitmark(0).copy(damage = 10), null, null, null)
+        MeleeWeaponSpecialAttacks.attachEffect(hit, source, target, MeleeEffect.Scimitar, mock(GameRandom::class.java))
+        assertFalse(target.overheadsLocked)
+        assertEquals(1, target.vars["varbit.prayer_protectfrommelee"])
+        hit.impactEffects.complete(6)
+        assertTrue(target.overheadsLocked)
+        assertEquals(0, target.vars["varbit.prayer_protectfrommelee"])
+        assertEquals(1, target.vars["varbit.prayer_protectitem"])
+        target.currentMapClock = 107
+        assertTrue(target.overheadsLocked)
+        target.currentMapClock = 108
+        assertFalse(target.overheadsLocked)
+    }
+
+    @Test fun `scimitar zero impact preserves protection prayers`() {
+        val source = Player().apply { slotId = 1; uuid = 1; assignUid() }
+        val target = Player().apply { slotId = 2; uuid = 2; assignUid(); currentMapClock = 100; testMagicPrayer = 1 }
+        val hit = Hit(org.rsmod.game.hit.HitType.Melee, org.rsmod.game.hit.Hitmark(0).copy(damage = 10), null, null, null)
+        MeleeWeaponSpecialAttacks.attachEffect(hit, source, target, MeleeEffect.Scimitar, mock(GameRandom::class.java))
+        hit.impactEffects.complete(0)
+        assertFalse(target.overheadsLocked)
+        assertEquals(1, target.vars["varbit.prayer_protectfrommagic"])
+    }
+
     @Test fun `registered warhammer drains only on impact and exactly once`() {
         val f = attackFixture("obj.dragon_warhammer")
         f.access.player.apply { slotId = 1; uuid = 1; assignUid() }
@@ -333,6 +369,61 @@ class MeleeSpecialAttacksTest {
         source.uuid = 2; source.assignUid()
         oldLogin.impactEffects.complete(60)
         assertEquals(50.toByte(), source.statMap.getCurrentLevel("stat.hitpoints"))
+    }
+
+    @Test fun `prayer piercing weapons use penetrating hit route with their own effects`() {
+        for (spec in listOf(MeleeWeaponSpec.DragonSword, MeleeWeaponSpec.AncientMace)) {
+            for (weapon in spec.weapons) {
+                val f = attackFixture(weapon)
+                `when`(f.manager.rollMeleeAccuracy(f.access, f.target, MeleeAttackType.Stab,
+                    MeleeAttackStyle.Accurate, spec.blockType, spec.accuracyMultiplier)).thenReturn(true)
+                `when`(f.manager.rollMeleeMaxHit(f.access, f.target, MeleeAttackType.Stab,
+                    MeleeAttackStyle.Accurate, spec.damageMultiplier)).thenReturn(10)
+                `when`(f.manager.queueMeleeHitIgnoringPrayer(f.access, f.target, 10, 1)).thenReturn(f.queuedHit)
+                f.run()
+                verify(f.manager).queueMeleeHitIgnoringPrayer(f.access, f.target, 10, 1)
+                verify(f.manager, never()).queueMeleeHit(f.access, f.target, 10, 1)
+                verify(f.access).anim(spec.animation, 0)
+                verify(f.access).spotanim(spec.spot, 0, 0, org.rsmod.api.config.constants.spotanim_slot_combat)
+            }
+        }
+    }
+
+    @Test fun `ancient mace uses applied damage for prayer drain and capped restoration`() {
+        val source = Player().apply {
+            slotId = 1; uuid = 1; assignUid()
+            statMap.setBaseLevel("stat.prayer", 70); statMap.setCurrentLevel("stat.prayer", 70)
+        }
+        val target = Player().apply {
+            slotId = 2; uuid = 2; assignUid()
+            statMap.setBaseLevel("stat.prayer", 70); statMap.setCurrentLevel("stat.prayer", 20)
+        }
+        fun hit(actual: Int) {
+            val hit = Hit(org.rsmod.game.hit.HitType.Melee, org.rsmod.game.hit.Hitmark(0).copy(damage = 50), null, null, null)
+            MeleeWeaponSpecialAttacks.attachEffect(hit, source, target, MeleeEffect.AncientMace, mock(GameRandom::class.java))
+            hit.impactEffects.complete(actual)
+        }
+        hit(7)
+        assertEquals(77.toByte(), source.statMap.getCurrentLevel("stat.prayer"))
+        assertEquals(13.toByte(), target.statMap.getCurrentLevel("stat.prayer"))
+        hit(3)
+        assertEquals(77.toByte(), source.statMap.getCurrentLevel("stat.prayer"))
+        assertEquals(10.toByte(), target.statMap.getCurrentLevel("stat.prayer"))
+        hit(0)
+        assertEquals(10.toByte(), target.statMap.getCurrentLevel("stat.prayer"))
+    }
+
+    @Test fun `ancient mace restores prayer on NPC weapon immunity only after impact`() {
+        val source = Player().apply {
+            slotId = 1; uuid = 1; assignUid()
+            statMap.setBaseLevel("stat.prayer", 70); statMap.setCurrentLevel("stat.prayer", 70)
+        }
+        val target = npc().apply { slotId = 2; assignUid() }
+        val blocked = Hit(org.rsmod.game.hit.HitType.Melee, org.rsmod.game.hit.Hitmark(0), null, null, null)
+        MeleeWeaponSpecialAttacks.attachEffect(blocked, source, target, MeleeEffect.AncientMace, mock(GameRandom::class.java), 12)
+        assertEquals(70.toByte(), source.statMap.getCurrentLevel("stat.prayer"))
+        blocked.impactEffects.complete(0)
+        assertEquals(82.toByte(), source.statMap.getCurrentLevel("stat.prayer"))
     }
 
     private fun attackFixture(weapon: String): Fixture {
