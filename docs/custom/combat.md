@@ -83,3 +83,13 @@ actual damage and Siphon heals its calculated pre-overkill amount only when that
 impacts, retaining the source-login guard. Their previous independent world timers
 are removed. Verified with two engine tests, a native NPC processor integration test,
 and the full special suite (39 tests). No callback is registered by existing Zulrah code.
+
+Sanguinesti slice: both ordinary and Holy staffs have native item-local 20,000-charge
+storage, 2-blood-rune recharge/refund transactions and their cache check/charge/uncharge
+menus. A four-tick cast consumes one charge even on splash. The current 2026 formula
+uses floor(Magic/3), 1/5 leech chance and +8 damage on a leech proc; healing uses half
+actual impact damage and cannot affect a replacement login. Cast, impact and heal use
+the corresponding ordinary/Holy cache effects. Empty and PvP attempts do not cast.
+Six Sanguinesti tests pass; combined selected suites now total 75 (34 weapons, 39
+specials, 2 engine). PvP minigame exceptions and live effect trajectories remain open.
+Reference: https://github.com/weirdgloop/osrs-dps-calc/blob/main/src/lib/PlayerVsNPCCalc.ts
