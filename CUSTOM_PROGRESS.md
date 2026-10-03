@@ -22,6 +22,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 | Repository organization | VERIFIED | 15 stale branches archived and removed; 2 branches retained; accepted runtime preserved |
 | Accepted gameplay bundle | VERIFIED at baseline | User acceptance + 121 selected server tests, 86 Nero tests, isolated boot; GitHub server CI/format/gameval checks passed |
 | Weapon completeness | IN PROGRESS on `feature/weapon-completeness` | Requested after cleanup: 285/285 special target plus normal attacks, charges and FX; Zulrah encounter is frozen |
+| Weapon test installer | IMPLEMENTED / NEEDS USER TESTING | `weapons-update-20261003`, checkpoint `880c6a9fa`; preflight and scratch install/rollback pass; later melee-impact work is separate |
 
 ## Bosses
 

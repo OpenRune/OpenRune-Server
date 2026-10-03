@@ -20,9 +20,9 @@ import org.rsmod.api.specials.combat.MeleeSpecialAttack
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
-import org.rsmod.game.queue.WorldQueueList
+import org.rsmod.game.hit.Hit
 
-class MeleeWeaponSpecialAttacks @Inject constructor(private val queues: WorldQueueList, private val rng: GameRandom, private val specialDamage: MeleeSpecialDamage) :
+class MeleeWeaponSpecialAttacks @Inject constructor(private val rng: GameRandom, private val specialDamage: MeleeSpecialDamage) :
     SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
         for (spec in MeleeWeaponSpec.entries) {
@@ -67,7 +67,7 @@ class MeleeWeaponSpecialAttacks @Inject constructor(private val queues: WorldQue
                 val delay = if (spec.effect == MeleeEffect.ElderMaul) 2 else 1
                 val hit = manager.queueMeleeHit(this, target, damage, delay)
                 manager.giveCombatXp(this, target, attack, hit.damage)
-                if (hit.damage > 0) scheduleEffect(target, hit.damage, delay)
+                if (hit.damage > 0) attachEffect(hit, player, target, spec.effect, rng)
             }
             if (spec == MeleeWeaponSpec.AnchorImbued && firstAccurate) manager.setNextAttackDelay(this, 4)
             manager.continueCombat(this, target)
@@ -77,29 +77,31 @@ class MeleeWeaponSpecialAttacks @Inject constructor(private val queues: WorldQue
         private fun ProtectedAccess.accuracy(target: PathingEntity, attack: CombatAttack.Melee): Boolean =
             manager.rollMeleeAccuracy(this, target, attack.type, attack.style, spec.blockType, spec.accuracyMultiplier)
 
-        private fun ProtectedAccess.scheduleEffect(target: PathingEntity, damage: Int, delay: Int) {
-            if (spec.effect !in setOf(MeleeEffect.Warhammer, MeleeEffect.ElderMaul, MeleeEffect.Bandos,
+    }
+
+    internal companion object {
+        fun attachEffect(hit: Hit, source: Player, target: PathingEntity, effect: MeleeEffect, rng: GameRandom) {
+            if (effect !in setOf(MeleeEffect.Warhammer, MeleeEffect.ElderMaul, MeleeEffect.Bandos,
                 MeleeEffect.Saradomin, MeleeEffect.Zamorak, MeleeEffect.Whip, MeleeEffect.Anchor)) return
-            val source = player
             val sourceUid = source.uid.packed
             val targetUid = when (target) {
                 is Npc -> target.uid.packed
                 is Player -> target.uid.packed
             }
-            queues.add(delay) {
+            hit.impactEffects.add { actualDamage ->
                 val valid = when (target) {
                     is Npc -> target.isSlotAssigned && target.uid.packed == targetUid
                     is Player -> target.isSlotAssigned && target.uid.packed == targetUid
                 }
-                if (valid && source.isSlotAssigned && source.uid.packed == sourceUid) {
-                    val roll = if (spec.effect == MeleeEffect.Zamorak) rng.of(100) else 99
-                    applyEffect(source, target, damage, spec.effect, roll)
+                if (valid && source.isSlotAssigned && source.uid.packed == sourceUid &&
+                    (actualDamage > 0 || effect == MeleeEffect.Saradomin)) {
+                    val roll = if (effect == MeleeEffect.Zamorak) rng.of(100) else 99
+                    // Healing Blade retains its pre-overkill heal basis; drains use applied damage.
+                    val damage = if (effect == MeleeEffect.Saradomin) hit.damage else actualDamage
+                    applyEffect(source, target, damage, effect, roll)
                 }
             }
         }
-    }
-
-    internal companion object {
         fun applyEffect(source: Player, target: PathingEntity, damage: Int, effect: MeleeEffect, roll: Int = 99) {
             when (effect) {
                 MeleeEffect.Warhammer -> drainDefence(target, 30)

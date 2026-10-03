@@ -40,6 +40,19 @@ are retained. Three regression cases exercise both weapon families, including fu
 capacity, swapped items and a refund where only one of two material stacks fits.
 This does not certify their remaining normal-attack mechanics or live effects.
 
+Installable checkpoint: `weapons-update-20261003` is frozen at `880c6a9fa`, expects
+the guides/cape baseline and includes rollback. Its 100 target files and prerequisites
+pass read-only validation; scratch installer tests cover install, repeat install,
+rollback, corrupt payloads, modified files, process guards and mid-copy recovery.
+
+Subsequent melee impact slice (not in that installer): Warhammer, Elder Maul,
+Bandos/Saradomin/Zamorak godswords, Whip and Anchor effects now attach to the native
+hit instead of independent world timers. Drains use applied damage, zero damage
+does not drain, and Healing Blade retains its pre-overkill heal basis. Callbacks are
+once-only and reject replacement logins. Three new tests pass, including execution
+through the registered Warhammer handler; all 42 special tests pass. No extra weapon
+registrations are claimed and client FX placement remains unqualified.
+
 Trident slice: eight normal/enhanced/ornament sea/swamp pairs plus full sea identities.
 Item-local charge state uses the existing powered-staff varobj bit layout; inventory
 transactions atomically pay/refund resources and preserve ornament and remaining charges.

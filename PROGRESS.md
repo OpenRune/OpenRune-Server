@@ -16,6 +16,8 @@ It is preserved unchanged during repository organization.
 | All weapon specials | IN PROGRESS on `feature/weapon-completeness`; 140/285 registered; 145 still missing; registration does not certify full mechanics |
 | Charged weapons | Tested charge/attack slices for tridents, scythes, blowpipe, Eye of Ayak and Sanguinesti; atomic Shadow/Venator loading/refunds; 83 selected weapon/special/impact tests pass; live effect qualification pending |
 | Weapon checkpoint validation | 103 tests including NPC/pet/Zulrah regressions pass; server JAR build and isolated Nero-bridge boot pass; accepted installation not replaced |
+| Installable weapon checkpoint | `weapons-update-20261003`, server `880c6a9fa`; 100 payload targets checked against installed guides/cape baseline; installer/rollback tests pass; user installation pending |
+| Subsequent melee special effects | Native impact callbacks replace independent timers for drains/healing/freeze/run-energy effects; 42 special tests pass; not included in the frozen installer above |
 | Zulrah | Active custom encounter; old alternative recovery code is review material, not installed |
 | Araxxor | Planned; capture researched; no encounter implementation yet |
 | Doom | Research only; no active encounter/delve system |
