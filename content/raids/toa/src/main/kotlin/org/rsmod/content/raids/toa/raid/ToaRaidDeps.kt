@@ -5,6 +5,9 @@ import net.rsprot.protocol.api.NetworkService
 import org.rsmod.api.bossbar.plugin.BossHpBarScript
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.combat.formulas.AccuracyFormulae
+import org.rsmod.api.combat.formulas.accuracy.magic.NvPMagicAccuracy
+import org.rsmod.api.combat.formulas.accuracy.melee.NvPMeleeAccuracy
+import org.rsmod.api.combat.formulas.accuracy.ranged.NvPRangedAccuracy
 import org.rsmod.api.death.PlayerDeathDrops
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.market.MarketPrices
@@ -38,6 +41,9 @@ constructor(
     val worldRepo: WorldRepository,
     val aiInteractions: AiPlayerInteractions,
     val accuracy: AccuracyFormulae,
+    val nvpMeleeAccuracy: NvPMeleeAccuracy,
+    val nvpRangedAccuracy: NvPRangedAccuracy,
+    val nvpMagicAccuracy: NvPMagicAccuracy,
     val worldQueues: WorldQueueList,
     val mapClock: MapClock,
     val random: GameRandom,

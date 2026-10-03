@@ -14,7 +14,9 @@ import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.DamageExpr
 import org.rsmod.api.bosses.spec.Effect
+import org.rsmod.api.bosses.spec.HitType
 import org.rsmod.api.bosses.spec.TargetExpr
+import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.game.entity.Npc
@@ -49,6 +51,20 @@ internal inline fun <reified R : ToaEncounter> roomDamage(
 internal fun scaled(base: Int): DamageExpr = combatantDamage { it.rollScaled(base) }
 
 internal fun scaled(min: Int, base: Int): DamageExpr = combatantDamage { it.rollScaled(min, base) }
+
+internal fun raidAccuracy(
+    base: Int,
+    style: HitType,
+    meleeAttackType: MeleeAttackType? = null,
+): DamageExpr =
+    DamageExpr.Custom { npc, target ->
+        val combatant = ToaRooms.roomOf(npc)?.combatantOf(npc)
+        if (combatant != null && combatant.rollAccuracy(target, style, meleeAttackType)) {
+            combatant.rollScaled(base)
+        } else {
+            0
+        }
+    }
 
 internal inline fun <reified R : ToaEncounter> BossDeps.onRoomExternal(
     name: String,
