@@ -4,7 +4,7 @@ Updated: 2026-10-04. The user has accepted the current runtime and explicitly re
 it to be preserved. The completed organization pass changed documentation and Git references,
 not gameplay, cache, plugins or the installed package.
 
-**Current accepted server:** `444ead71bec435e3eba0c378aa6718f7a7ac57d4` (revision 240).
+**Current accepted server:** `6168204ee3992a3e00f6906e34200d4cff3e95f4` (revision 240).
 **Paired Nero Studio:** `0efcb039c539a469a1dab2c4c654c61ecf41aa51`.
 [Baseline / test evidence](docs/custom/baseline.md) ? [Branch audit](docs/custom/branch-audit-20261003.md)
 
@@ -21,8 +21,8 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 |---|---|---|
 | Repository organization | VERIFIED | 15 stale branches archived and removed; 2 branches retained; accepted runtime preserved |
 | Accepted gameplay bundle | VERIFIED at baseline | User acceptance + 121 selected server tests, 86 Nero tests, isolated boot; GitHub server CI/format/gameval checks passed |
-| Weapon completeness | PAUSED FOR USER ACCEPTANCE on `feature/weapon-completeness` | Requested after cleanup: 285/285 special target plus normal attacks, charges and FX; Zulrah encounter is frozen |
-| Weapon test installer | IMPLEMENTED / NEEDS USER TESTING | `specials-update-20261003` at `7c87f7ccb` installed; `weptest-update-20261004` adds inventory test sets; user acceptance pending |
+| Weapon completeness | ACCEPTED CHECKPOINT / REMAINDER PAUSED on `feature/weapon-completeness` | Requested after cleanup: 285/285 special target plus normal attacks, charges and FX; Zulrah encounter is frozen |
+| Weapon test installer | IMPLEMENTED / NEEDS USER TESTING | `special-fx-update-20261004` at `6168204ee`; user gave explicit green light on 2026-10-04 |
 
 ## Bosses
 
@@ -42,7 +42,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 | Native commands / inventory loadouts / ::spres | VERIFIED for covered regressions | UPSTREAM + CUSTOM EXTENSIONS | Inventory-only grants; no replacement of worn gear |
 | Max cape submenu indexing | VERIFIED for covered regressions | CUSTOM | 15 tests, including actual packets and Farming Guild selection |
 | Monster drops, pet gallery, skill/quest guides | IMPLEMENTED / NEEDS TESTING for visual edge cases | HYBRID | Search, navigation, log/map and all skill buttons tested; fixed/resized scrolling remains an explicit visual checklist |
-| Combat specials and shields | PAUSED / NEEDS USER TESTING | UPSTREAM + CUSTOM EXTENSIONS | 191/285 special-energy items registered; 94 missing, six shield forms covered separately; see combat audit |
+| Combat specials and shields | ACCEPTED CHECKPOINT / REMAINDER PAUSED | UPSTREAM + CUSTOM EXTENSIONS | 191/285 special-energy items registered; 94 missing, six shield forms covered separately; see combat audit |
 | Respawn countdowns | VERIFIED for covered regressions | HYBRID | Actual deadline snapshots; non-GWD policy is 34 ticks = 20.4 s |
 | Nero object library and loot colours | VERIFIED for covered regressions | CUSTOM integration | Paired plugin tests; native Ground Items aggregation/value colour fallback |
 | Plugin lifecycle / offline login / installer alternatives | NEEDS REVIEW | Archived custom alternatives | Not imported into the accepted runtime |
@@ -63,7 +63,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 
 ### NOW
 
-- Test the current weapon checkpoint with `::weptest <set>`; special development is paused at user request. Merge PR #15 only after explicit user acceptance.
+- User accepted PR #15 on 2026-10-04. Preserve this checkpoint; remaining specials are parked. Araxxor is the next focused feature.
 - Keep the accepted baseline recoverable and main organized.
 
 ### NEXT
@@ -136,3 +136,7 @@ Final acceptance FX correction: Bludgeon graphic moved below NPC/player targets;
 Volatile/Eldritch player animation separated from their graphic-model sequences.
 Damage and hit timing unchanged. New specials remain paused; final visual user
 check and explicit merge approval are still pending.
+
+## Acceptance milestone — 2026-10-04
+
+User explicitly approved the final FX checkpoint (6168204ee) for merge. PR #15 is merged into the gameplay integration branch; PR #14 carries the combined accepted work to main. 99 special tests, 12 command/interface tests, full build and isolated boot passed; all three GitHub workflows on 6168204ee passed. This acceptance does not declare 285/285 completeness: 191 registered, 94 deferred. Earlier pending notes above describe historical checkpoints.

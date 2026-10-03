@@ -1,4 +1,19 @@
-# Accepted runtime baseline
+# Current accepted checkpoint (2026-10-04)
+
+The user gave explicit green light to merge the final weapon/FX checkpoint:
+`6168204ee3992a3e00f6906e34200d4cff3e95f4`, revision 240, paired Nero Studio
+`0efcb039c539a469a1dab2c4c654c61ecf41aa51`.
+Package: `outputs/special-fx-update-20261004`; its install manifest records exact
+JAR/cache hashes. Recovery: `outputs/checkpoint-20261004-voor-special-fx-update`.
+PR #15 includes the accepted specials, charges, test command and three final FX
+corrections. 191/285 registrations; 94 and remaining mechanics are deferred.
+99 special tests, 12 command/interface tests, build and isolated boot passed;
+GitHub CI, formatting and gameval checks passed on the accepted runtime commit.
+No live files or player databases are changed by the merge.
+Araxxor is next; the remaining specials stay parked.
+
+## Previous recovery baseline
+
 
 The user explicitly accepted the current work on 2026-10-03 and required exact
 preservation during organization. This overrides suggestions to adopt old fixes.
