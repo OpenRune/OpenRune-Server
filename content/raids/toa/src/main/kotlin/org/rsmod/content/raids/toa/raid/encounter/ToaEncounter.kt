@@ -4,6 +4,7 @@ import kotlin.math.floor
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.death.NpcAttackValidateResult
+import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
@@ -40,11 +41,13 @@ data class Arrival(val coords: CoordGrid, val facing: Direction?)
 open class ToaEncounter(
     val raid: ToaRaid,
     val room: ToaRoom,
-    val region: Region,
+    val session: InstanceSession,
     val controllerId: Int,
 ) {
     protected val deps: ToaRaidDeps
         get() = raid.deps
+
+    val region: Region = checkNotNull(deps.instances.regionOf(session))
 
     var stage: ToaStage = ToaStage.NOT_STARTED
         private set
@@ -369,7 +372,7 @@ open class ToaEncounter(
         if (destroyed) return
         destroyed = true
         stopTasks()
-        deps.regionRepo.unprotect(region)
+        deps.instances.end(session)
     }
 
     override fun toString(): String = "ToaEncounter(room=$room, controllerId=$controllerId, stage=$stage)"

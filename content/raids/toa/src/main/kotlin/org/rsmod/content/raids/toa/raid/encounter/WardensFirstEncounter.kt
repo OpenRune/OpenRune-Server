@@ -1,13 +1,17 @@
 package org.rsmod.content.raids.toa.raid.encounter
 
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.instances.InstanceSession
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.travel
-import org.rsmod.game.region.Region
 
-class WardensFirstEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId: Int) :
-    ToaEncounter(raid, room, region, controllerId) {
+class WardensFirstEncounter(
+    raid: ToaRaid,
+    room: ToaRoom,
+    session: InstanceSession,
+    controllerId: Int,
+) : ToaEncounter(raid, room, session, controllerId) {
 
     override fun debugComplete() {
         start()

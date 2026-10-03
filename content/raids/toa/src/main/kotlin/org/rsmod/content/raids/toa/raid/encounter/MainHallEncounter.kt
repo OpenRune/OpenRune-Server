@@ -1,5 +1,6 @@
 package org.rsmod.content.raids.toa.raid.encounter
 
+import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaPath
@@ -11,11 +12,14 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
-import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 
-class MainHallEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId: Int) :
-    ToaEncounter(raid, room, region, controllerId) {
+class MainHallEncounter(
+    raid: ToaRaid,
+    room: ToaRoom,
+    session: InstanceSession,
+    controllerId: Int,
+) : ToaEncounter(raid, room, session, controllerId) {
 
     var selectedPath: ToaPath? = null
         private set

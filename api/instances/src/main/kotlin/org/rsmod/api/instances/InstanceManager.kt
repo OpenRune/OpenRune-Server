@@ -222,6 +222,8 @@ constructor(
 
     public fun npcsForInstance(id: InstanceId): List<Npc> = spawnedNpcs[id] ?: emptyList()
 
+    public fun regionOf(session: InstanceSession): Region? = regions[session.id]
+
     public fun resolveCoord(session: InstanceSession, coord: CoordGrid): CoordGrid? {
         val region = regions[session.id] ?: return null
         val local = RegionLocal(
@@ -358,6 +360,11 @@ constructor(
             is InstanceAccess.Friends -> true
             is InstanceAccess.Code -> code != null && code == access.value
         }
+
+    public fun end(session: InstanceSession) {
+        require(session.isServerOwned) { "Instance is not server-owned: ${session.id}" }
+        destroy(session)
+    }
 
     public fun leave(player: Player, session: InstanceSession, currentTick: Int): CoordGrid {
         removeOccupant(player, session, currentTick)
@@ -653,9 +660,9 @@ constructor(
         publishPlayerLeave(player, session)
         if (
             session.spec.destroyWhenEmpty &&
-                !session.isServerOwned &&
-                session.occupants.isEmpty() &&
-                session.state !is SessionState.Grace
+            !session.isServerOwned &&
+            session.occupants.isEmpty() &&
+            session.state !is SessionState.Grace
         ) {
             destroy(session)
             return
