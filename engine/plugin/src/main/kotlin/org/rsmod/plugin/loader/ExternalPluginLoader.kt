@@ -280,7 +280,9 @@ public object ExternalPluginLoader {
         val sources = bootableSources()
         val scripts =
             sources.flatMap { source ->
-                scanSourceScripts(source, classLoaderFor(source), injector)
+                scanSourceScripts(source, classLoaderFor(source), injector).also {
+                    loadedScripts[sourceName(source)] = it
+                }
             }
         for (source in sources) {
             loadedSourcePaths += source.canonicalPath
