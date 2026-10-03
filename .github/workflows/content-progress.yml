@@ -73,12 +73,12 @@ jobs:
       - name: Commit changes
         if: steps.check.outputs.run == 'true'
         run: |
-          if git diff --quiet -- README.md PROGRESS.md tools/progress/wiki-cache.json; then
+          if git diff --quiet -- README.md CONTENT_INVENTORY.md tools/progress/wiki-cache.json; then
             echo "Progress report already up to date."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md PROGRESS.md tools/progress/wiki-cache.json
+          git add README.md CONTENT_INVENTORY.md tools/progress/wiki-cache.json
           git commit -m "chore: refresh content progress report"
           git push
