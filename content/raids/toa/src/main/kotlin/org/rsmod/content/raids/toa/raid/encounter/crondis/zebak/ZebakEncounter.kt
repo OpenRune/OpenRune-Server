@@ -103,8 +103,6 @@ class ZebakEncounter(
             book = ToaBook(ZebakObjs.BOOK, ZebakVarbits.BOOK_OWNED),
         )
 
-    override val roomPointsCap: Int = ZEBAK_POINTS_CAP
-
     private val specials = HpThresholds(SPECIAL_THRESHOLDS, catchUp = true)
     private var specialsQueued = 0
     private var hazardsDoneCycle = -1
@@ -320,7 +318,6 @@ class ZebakEncounter(
         private const val ENRAGE_SPEEDUP = 3
         private const val FIRST_ATTACK_DELAY = 10
         private const val ZEBAK_POINTS = 1.5
-        private const val ZEBAK_POINTS_CAP = 10_000
         private const val DEATH_SHAKE_DELAY = 2
         private const val DEATH_SHAKE_LEFT_RIGHT = 5
         private const val DEATH_SHAKE_UP_DOWN = 5
