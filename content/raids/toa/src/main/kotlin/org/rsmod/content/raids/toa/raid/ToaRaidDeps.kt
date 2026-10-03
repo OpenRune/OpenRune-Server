@@ -6,6 +6,7 @@ import org.rsmod.api.bossbar.plugin.BossHpBarScript
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.combat.formulas.AccuracyFormulae
 import org.rsmod.api.death.PlayerDeathDrops
+import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
@@ -15,7 +16,6 @@ import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
-import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.route.RouteFactory
 import org.rsmod.api.route.StepFactory
@@ -30,7 +30,7 @@ import org.rsmod.routefinder.collision.CollisionFlagMap
 class ToaRaidDeps
 @Inject
 constructor(
-    val regionRepo: RegionRepository,
+    val instances: InstanceManager,
     val regions: RegionRegistry,
     val locRepo: LocRepository,
     val npcRepo: NpcRepository,

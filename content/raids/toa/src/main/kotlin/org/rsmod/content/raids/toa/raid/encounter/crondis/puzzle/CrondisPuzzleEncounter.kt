@@ -1,6 +1,7 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle
 
 import java.awt.Color
+import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.output.spam
 import org.rsmod.api.player.stat.statSub
@@ -18,11 +19,14 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.obj.Obj
-import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 
-class CrondisPuzzleEncounter(raid: ToaRaid, room: ToaRoom, region: Region, controllerId: Int) :
-    ToaEncounter(raid, room, region, controllerId) {
+class CrondisPuzzleEncounter(
+    raid: ToaRaid,
+    room: ToaRoom,
+    session: InstanceSession,
+    controllerId: Int,
+) : ToaEncounter(raid, room, session, controllerId) {
 
     private val acid = CrondisAcid(this)
     private val spears = CrondisSpears(this)
