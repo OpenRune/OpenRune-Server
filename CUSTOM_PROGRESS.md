@@ -1,6 +1,6 @@
 # EvolvedMind OpenRune progress
 
-Updated: 2026-10-03. The user has accepted the current runtime and explicitly requires
+Updated: 2026-10-04. The user has accepted the current runtime and explicitly requires
 it to be preserved. The completed organization pass changed documentation and Git references,
 not gameplay, cache, plugins or the installed package.
 
@@ -21,8 +21,8 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 |---|---|---|
 | Repository organization | VERIFIED | 15 stale branches archived and removed; 2 branches retained; accepted runtime preserved |
 | Accepted gameplay bundle | VERIFIED at baseline | User acceptance + 121 selected server tests, 86 Nero tests, isolated boot; GitHub server CI/format/gameval checks passed |
-| Weapon completeness | IN PROGRESS on `feature/weapon-completeness` | Requested after cleanup: 285/285 special target plus normal attacks, charges and FX; Zulrah encounter is frozen |
-| Weapon test installer | IMPLEMENTED / NEEDS USER TESTING | `weapons-update-20261003`, checkpoint `880c6a9fa`; preflight and scratch install/rollback pass; later melee-impact work is separate |
+| Weapon completeness | PAUSED FOR USER ACCEPTANCE on `feature/weapon-completeness` | Requested after cleanup: 285/285 special target plus normal attacks, charges and FX; Zulrah encounter is frozen |
+| Weapon test installer | IMPLEMENTED / NEEDS USER TESTING | `specials-update-20261003` at `7c87f7ccb` installed; `weptest-update-20261004` adds inventory test sets; user acceptance pending |
 
 ## Bosses
 
@@ -42,7 +42,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 | Native commands / inventory loadouts / ::spres | VERIFIED for covered regressions | UPSTREAM + CUSTOM EXTENSIONS | Inventory-only grants; no replacement of worn gear |
 | Max cape submenu indexing | VERIFIED for covered regressions | CUSTOM | 15 tests, including actual packets and Farming Guild selection |
 | Monster drops, pet gallery, skill/quest guides | IMPLEMENTED / NEEDS TESTING for visual edge cases | HYBRID | Search, navigation, log/map and all skill buttons tested; fixed/resized scrolling remains an explicit visual checklist |
-| Combat specials and shields | IN PROGRESS | UPSTREAM + CUSTOM EXTENSIONS | 162/285 special-energy items registered; 123 missing, six shield forms covered separately; see combat audit |
+| Combat specials and shields | PAUSED / NEEDS USER TESTING | UPSTREAM + CUSTOM EXTENSIONS | 191/285 special-energy items registered; 94 missing, six shield forms covered separately; see combat audit |
 | Respawn countdowns | VERIFIED for covered regressions | HYBRID | Actual deadline snapshots; non-GWD policy is 34 ticks = 20.4 s |
 | Nero object library and loot colours | VERIFIED for covered regressions | CUSTOM integration | Paired plugin tests; native Ground Items aggregation/value colour fallback |
 | Plugin lifecycle / offline login / installer alternatives | NEEDS REVIEW | Archived custom alternatives | Not imported into the accepted runtime |
@@ -63,7 +63,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 
 ### NOW
 
-- Complete weapon families in tested chunks: normal attacks, charges, special mechanics and effect placement.
+- Test the current weapon checkpoint with `::weptest <set>`; special development is paused at user request. Merge PR #15 only after explicit user acceptance.
 - Keep the accepted baseline recoverable and main organized.
 
 ### NEXT
@@ -129,3 +129,5 @@ contribution totals are unchanged. 97 special / 161 selected tests and the full
 server JAR pass. Current registry: 191/285; 94 missing. Seeking arrows need missing
 double-launch metadata; mode restrictions, boss drain floors and live FX validation
 remain open. The accepted installation and frozen installer remain unchanged.
+
+Weapon acceptance command: `::weptest <set>` supplies registered combat weapons/shields in inventory-only atomic batches. New specials are paused; 94 missing registrations remain deferred. See [commands](docs/custom/commands.md).

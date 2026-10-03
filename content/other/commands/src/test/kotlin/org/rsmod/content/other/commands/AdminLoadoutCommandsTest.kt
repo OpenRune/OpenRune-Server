@@ -11,9 +11,18 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.player.worn.DragonfireShields
+import org.rsmod.api.specials.SpecialAttack
+import org.rsmod.api.specials.SpecialAttackRegistry
+import org.rsmod.api.specials.combat.MeleeSpecialAttack
+import org.rsmod.api.specials.combat.ShieldSpecialAttack
+import org.rsmod.api.specials.weapon.SpecialAttackWeapons
+import org.rsmod.api.weapons.MeleeWeapon
+import org.rsmod.api.weapons.WeaponRegistry
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
@@ -107,7 +116,57 @@ class AdminLoadoutCommandsTest {
         assertEquals(before, fixture.player.inv.objs.toList())
     }
 
+    @Test
+    fun `weapon test pages deliver registered items once and preserve gear`() {
+        val fixture = Fixture()
+        val originals = ServerCacheManager.getItems().values
+            .filter { it.wearpos1 == 3 && !it.stackable }.sortedBy { it.id }.take(25)
+        for (type in originals) {
+            `when`(fixture.specials[InvObj(type)]).thenReturn(SpecialAttack.Melee(250, mock(MeleeSpecialAttack::class.java)))
+        }
+        fixture.player.worn[3] = item("abyssal_whip")
+        val worn = fixture.player.worn.objs.toList()
+        fixture.run("weptest", listOf("1"))
+        assertEquals(originals.take(20).map { it.id }, fixture.player.inv.objs.filterNotNull().map { it.id })
+        fixture.run("weptest", listOf("2"))
+        assertEquals(originals.map { it.id }, fixture.player.inv.objs.filterNotNull().map { it.id })
+        assertEquals(worn, fixture.player.worn.objs.toList())
+        val before = fixture.player.inv.objs.toList()
+        fixture.run("weptest", listOf("1"))
+        assertEquals(before, fixture.player.inv.objs.toList())
+        for (args in listOf(emptyList(), listOf("0"), listOf("-1"), listOf("3"), listOf("abc"), listOf("1", "2"))) {
+            fixture.run("weptest", args)
+            assertEquals(before, fixture.player.inv.objs.toList())
+        }
+        assertEquals(Rights.ADMINISTRATOR, fixture.commands.commands.getValue("weptest").requiredRights)
+        fixture.player.modLevel = Rights.NONE
+        fixture.run("weptest", listOf("2"))
+        assertEquals(before, fixture.player.inv.objs.toList())
+    }
+
+    @Test
+    fun `weapon test excludes missing specials and unrelated items but includes normal handlers and charged shields`() {
+        val fixture = Fixture()
+        val normal = item("scythe_of_vitur")
+        val pending = item("elder_maul")
+        val shield = item("dragonfire_shield")
+        `when`(fixture.weapons.getMelee(normal)).thenReturn(mock(MeleeWeapon::class.java))
+        `when`(fixture.specialWeapons.getSpecialEnergy(normal.id)).thenReturn(null)
+        `when`(fixture.weapons.getMelee(pending)).thenReturn(mock(MeleeWeapon::class.java))
+        `when`(fixture.specialWeapons.getSpecialEnergy(pending.id)).thenReturn(500)
+        `when`(fixture.specials[shield]).thenReturn(SpecialAttack.Shield(mock(ShieldSpecialAttack::class.java)))
+        val command = WeaponTestCommand(fixture.specials, fixture.weapons, fixture.specialWeapons)
+        val items = command.items()
+        assertEquals(setOf(normal.id, shield.id), items.map { it.id }.toSet())
+        assertEquals(50, DragonfireShields.charges(items.single { it.id == shield.id }))
+        fixture.run("weptest", listOf("1"))
+        assertEquals(items, fixture.player.inv.objs.filterNotNull())
+    }
+
     private class Fixture {
+        val specials = mock(SpecialAttackRegistry::class.java)
+        val weapons = mock(WeaponRegistry::class.java)
+        val specialWeapons = mock(SpecialAttackWeapons::class.java)
         val commands = CheatCommandMap()
         val scripts = ScriptContext(EventBus(), commands, EngineQueueCache())
         val player = Player(RecordingClient()).apply {
@@ -120,10 +179,11 @@ class AdminLoadoutCommandsTest {
         init {
             with(InvTransactionsScript(mock(PlayerItemStorage::class.java))) { scripts.startup() }
             with(AdminLoadoutCommands()) { scripts.startup() }
+            with(WeaponTestCommand(specials, weapons, specialWeapons)) { scripts.startup() }
         }
 
-        fun run(command: String) {
-            assertTrue(commands.execute(player, command, emptyList()))
+        fun run(command: String, args: List<String> = emptyList()) {
+            assertTrue(commands.execute(player, command, args))
         }
     }
 
