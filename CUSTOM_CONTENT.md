@@ -24,3 +24,6 @@ Fork: https://github.com/EvolvedMind/OpenRune-Server
 Paired launcher: https://github.com/EvolvedMind/Nero-OpenRune-Studio
 
 Do not reactivate archived implementations alongside these handlers. Compare first.
+
+Weapon charge and normal-attack work is tracked under
+content/other/special-weapons on feature/weapon-completeness; see the combat document.

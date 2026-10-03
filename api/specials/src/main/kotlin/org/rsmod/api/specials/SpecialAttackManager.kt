@@ -3,9 +3,6 @@ package org.rsmod.api.specials
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.ProjAnimType
-import dev.openrune.types.aconverted.SpotanimType
-import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.styles.MagicAttackStyle
@@ -175,6 +172,9 @@ constructor(
         damage: Int,
         delay: Int = 1,
     ): Hit = manager.queueMeleeHit(source.player, target, damage, delay)
+
+    public fun queueMeleeHitIgnoringPrayer(source: ProtectedAccess, target: PathingEntity, damage: Int, delay: Int = 1): Hit =
+        manager.queueMeleeHitIgnoringPrayer(source.player, target, damage, delay)
 
     /** @see [PlayerAttackManager.rollRangedDamage] */
     public fun rollRangedDamage(

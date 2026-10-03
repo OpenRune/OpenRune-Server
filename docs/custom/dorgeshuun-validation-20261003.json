@@ -1,0 +1,33 @@
+{
+  "root": "C:\\Users\\hpvic\\Documents\\Codex\\2026-10-01\\github-plugin-github-openai-curated-remote\\work\\gameplay-smoke-ad8f478f",
+  "ports": [
+    56141,
+    56142,
+    56143,
+    56144
+  ],
+  "serverSha256": "b6e3d2cccedff3c56b1d3d220ca5a184a12723d996ab8d1803b0e918a047fb3b",
+  "pluginSha256": "e7236cc9eaebbc9575d245158613c51e123a0aef3605ca7612cf960db1c5b584",
+  "cacheSha256": "6fe1173fa3893fdf439fce1c4966f9480c3e10e216e32b42821fe3c851d354e5",
+  "ready": true,
+  "exitCode": 0,
+  "selectedTests": {
+    "specials": 97,
+    "weapons": 42,
+    "engine": 2,
+    "npc": 5,
+    "zulrah": 2,
+    "pets": 13,
+    "total": 161
+  },
+  "registry": {
+    "registered": 191,
+    "missing": 94,
+    "total": 285
+  },
+  "buildLog": "work/dorgeshuun-full-validation.log",
+  "smokeLog": "work/dorgeshuun-smoke.log",
+  "liveInstallationModified": false,
+  "zulrahSourceUnchanged": true,
+  "liveVisualVerification": false
+}

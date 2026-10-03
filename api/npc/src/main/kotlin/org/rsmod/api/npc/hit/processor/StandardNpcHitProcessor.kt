@@ -105,6 +105,7 @@ constructor(
         val headbar = hit.createHeadbar(npc.hitpoints, npc.baseHitpointsLvl, visHeadbar)
         npc.showHeadbar(headbar)
 
+        hit.impactEffects.complete(hit.damage)
         npc.publishHitEvent(hit)
     }
 

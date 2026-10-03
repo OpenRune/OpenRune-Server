@@ -30,7 +30,7 @@ class VoidwakerSpecialAttack @Inject constructor(
         private fun ProtectedAccess.perform(target: PathingEntity, attack: CombatAttack.Melee): Boolean {
             anim("seq.human_special_voidwaker")
             spotanim("spotanim.fx_voidwaker02_special", slot = constants.spotanim_slot_combat)
-            val maximum = damage.maximum(player, target, attack, magic = true).coerceAtLeast(0)
+            val maximum = damage.maximum(player, target, attack, deferReductions = true).coerceAtLeast(0)
             var amount = if (player.adminMaxHit) maximum * 3 / 2 else rng.of(maximum / 2, maximum * 3 / 2)
             if (target is Player) amount = damage.reduce(target, amount)
             target.spotanim("spotanim.fx_voidwaker_impact", delay = 30, height = 96)

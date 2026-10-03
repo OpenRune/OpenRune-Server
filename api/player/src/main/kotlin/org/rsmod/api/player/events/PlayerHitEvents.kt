@@ -8,5 +8,7 @@ import org.rsmod.game.hit.HitBuilder
 public class PlayerHitEvents {
     public data class Modify(public val player: Player, public val hit: HitBuilder) : UnboundEvent
 
+    public data class BeforeImpact(public val player: Player, public var hit: Hit) : UnboundEvent
+
     public data class Impact(public val player: Player, public val hit: Hit) : UnboundEvent
 }

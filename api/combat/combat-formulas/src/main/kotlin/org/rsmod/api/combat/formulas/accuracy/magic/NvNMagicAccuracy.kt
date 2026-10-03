@@ -4,6 +4,7 @@ import dev.openrune.types.NpcServerType
 import org.rsmod.api.combat.accuracy.npc.NpcMagicAccuracy
 import org.rsmod.api.combat.formulas.accuracy.AccuracyOperations
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.npc.MagicDefenceDrain
 import org.rsmod.game.entity.Npc
 
 public class NvNMagicAccuracy {
@@ -22,7 +23,7 @@ public class NvNMagicAccuracy {
         targetType: NpcServerType,
     ): Int {
         val attackRoll = computeAttackRoll(source, sourceType)
-        val defenceRoll = computeDefenceRoll(targetType, target.defenceLvl, target.magicLvl)
+        val defenceRoll = computeDefenceRoll(targetType, target.defenceLvl, target.magicLvl, target.vars[MagicDefenceDrain.VAR])
         return AccuracyOperations.calculateHitChance(attackRoll, defenceRoll)
     }
 
@@ -36,6 +37,7 @@ public class NvNMagicAccuracy {
         target: NpcServerType,
         targetDefence: Int,
         targetMagic: Int,
+        magicBonusDrain: Int = 0,
     ): Int {
         val defenceLevel =
             if (target.param(params.magic_defence_uses_defence_level)) {
@@ -44,7 +46,7 @@ public class NvNMagicAccuracy {
                 targetMagic
             }
         val effectiveDefence = NpcMagicAccuracy.calculateEffectiveDefence(defenceLevel)
-        val defenceBonus = target.param(params.defence_magic)
+        val defenceBonus = MagicDefenceDrain.bonus(target.param(params.defence_magic), magicBonusDrain)
         return NpcMagicAccuracy.calculateBaseDefenceRoll(effectiveDefence, defenceBonus)
     }
 }

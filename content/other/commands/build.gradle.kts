@@ -4,6 +4,8 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.specials)
+    implementation(projects.api.weapons)
     testImplementation(projects.api.invStorage)
     implementation(libs.fastutil)
     implementation(libs.simmetrics.core)

@@ -7,9 +7,11 @@ import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.cheat.adminMaxHit
+import org.rsmod.api.player.lockOverheads
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statBase
+import org.rsmod.api.player.stat.statBoost
 import org.rsmod.api.player.stat.statHeal
 import org.rsmod.api.player.stat.statSub
 import org.rsmod.api.random.GameRandom
@@ -20,9 +22,9 @@ import org.rsmod.api.specials.combat.MeleeSpecialAttack
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
-import org.rsmod.game.queue.WorldQueueList
+import org.rsmod.game.hit.Hit
 
-class MeleeWeaponSpecialAttacks @Inject constructor(private val queues: WorldQueueList, private val rng: GameRandom, private val specialDamage: MeleeSpecialDamage) :
+class MeleeWeaponSpecialAttacks @Inject constructor(private val rng: GameRandom, private val specialDamage: MeleeSpecialDamage) :
     SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
         for (spec in MeleeWeaponSpec.entries) {
@@ -43,7 +45,9 @@ class MeleeWeaponSpecialAttacks @Inject constructor(private val queues: WorldQue
 
         private fun ProtectedAccess.perform(target: PathingEntity, attack: CombatAttack.Melee): Boolean {
             anim(spec.animation)
-            spotanim(spec.spot, height = 96, slot = constants.spotanim_slot_combat)
+            if (spec.effect == MeleeEffect.Whip || spec.effect == MeleeEffect.Tentacle || spec.effect == MeleeEffect.Bludgeon) {
+                target.spotanim(spec.spot, delay = 30, height = spec.effectHeight)
+            } else spotanim(spec.spot, height = spec.effectHeight, slot = constants.spotanim_slot_combat)
             val firstAccurate = accuracy(target, attack)
             val hits = if (spec.effect == MeleeEffect.Dagger || spec.effect == MeleeEffect.AbyssalDagger) 2 else 1
             for (index in 0 until hits) {
@@ -65,9 +69,13 @@ class MeleeWeaponSpecialAttacks @Inject constructor(private val queues: WorldQue
                 } else manager.rollMeleeMaxHit(this, target, attack.type, attack.style, multiplier).coerceAtLeast(1)
                 if (spec.effect == MeleeEffect.GraniteHammer) damage += 5
                 val delay = if (spec.effect == MeleeEffect.ElderMaul) 2 else 1
-                val hit = manager.queueMeleeHit(this, target, damage, delay)
+                val hit = if (spec.ignoresPrayer) manager.queueMeleeHitIgnoringPrayer(this, target, damage, delay)
+                    else manager.queueMeleeHit(this, target, damage, delay)
                 manager.giveCombatXp(this, target, attack, hit.damage)
-                if (hit.damage > 0) scheduleEffect(target, hit.damage, delay)
+                if (spec.effect == MeleeEffect.Tentacle) TentacleSpecialEffects.attach(hit, player, target, rng)
+                if (hit.damage > 0 || (accurate && spec.effect == MeleeEffect.AncientMace)) {
+                    attachEffect(hit, player, target, spec.effect, rng, damage)
+                }
             }
             if (spec == MeleeWeaponSpec.AnchorImbued && firstAccurate) manager.setNextAttackDelay(this, 4)
             manager.continueCombat(this, target)
@@ -76,30 +84,36 @@ class MeleeWeaponSpecialAttacks @Inject constructor(private val queues: WorldQue
 
         private fun ProtectedAccess.accuracy(target: PathingEntity, attack: CombatAttack.Melee): Boolean =
             manager.rollMeleeAccuracy(this, target, attack.type, attack.style, spec.blockType, spec.accuracyMultiplier)
+    }
 
-        private fun ProtectedAccess.scheduleEffect(target: PathingEntity, damage: Int, delay: Int) {
-            if (spec.effect !in setOf(MeleeEffect.Warhammer, MeleeEffect.ElderMaul, MeleeEffect.Bandos,
-                MeleeEffect.Saradomin, MeleeEffect.Zamorak, MeleeEffect.Whip, MeleeEffect.Anchor)) return
-            val source = player
+    internal companion object {
+        fun attachEffect(hit: Hit, source: Player, target: PathingEntity, effect: MeleeEffect, rng: GameRandom,
+            rolledDamage: Int = hit.damage) {
+            if (effect !in setOf(MeleeEffect.Warhammer, MeleeEffect.ElderMaul, MeleeEffect.Bandos,
+                MeleeEffect.Saradomin, MeleeEffect.Zamorak, MeleeEffect.Whip, MeleeEffect.Anchor, MeleeEffect.Scimitar, MeleeEffect.AncientMace)) return
             val sourceUid = source.uid.packed
             val targetUid = when (target) {
                 is Npc -> target.uid.packed
                 is Player -> target.uid.packed
             }
-            queues.add(delay) {
+            hit.impactEffects.add { actualDamage ->
                 val valid = when (target) {
                     is Npc -> target.isSlotAssigned && target.uid.packed == targetUid
                     is Player -> target.isSlotAssigned && target.uid.packed == targetUid
                 }
-                if (valid && source.isSlotAssigned && source.uid.packed == sourceUid) {
-                    val roll = if (spec.effect == MeleeEffect.Zamorak) rng.of(100) else 99
-                    applyEffect(source, target, damage, spec.effect, roll)
+                if (valid && source.isSlotAssigned && source.uid.packed == sourceUid &&
+                    (actualDamage > 0 || effect == MeleeEffect.Saradomin || (effect == MeleeEffect.AncientMace && target is Npc))) {
+                    val roll = if (effect == MeleeEffect.Zamorak) rng.of(100) else 99
+                    // Healing Blade retains its pre-overkill heal basis; drains use applied damage.
+                    val damage = when {
+                        effect == MeleeEffect.Saradomin -> hit.damage
+                        effect == MeleeEffect.AncientMace && target is Npc -> rolledDamage
+                        else -> actualDamage
+                    }
+                    applyEffect(source, target, damage, effect, roll)
                 }
             }
         }
-    }
-
-    internal companion object {
         fun applyEffect(source: Player, target: PathingEntity, damage: Int, effect: MeleeEffect, roll: Int = 99) {
             when (effect) {
                 MeleeEffect.Warhammer -> drainDefence(target, 30)
@@ -119,6 +133,11 @@ class MeleeWeaponSpecialAttacks @Inject constructor(private val queues: WorldQue
                     source.runEnergy = (source.runEnergy + drained).coerceAtMost(constants.run_max_energy)
                 }
                 MeleeEffect.Anchor -> drainAnchor(target, damage / 10)
+                MeleeEffect.Scimitar -> if (target is Player) target.lockOverheads(8)
+                MeleeEffect.AncientMace -> {
+                    source.statBoost("stat.prayer", damage, 0)
+                    if (target is Player) target.statSub("stat.prayer", damage, 0)
+                }
                 else -> Unit
             }
         }
@@ -166,7 +185,7 @@ class MeleeWeaponSpecialAttacks @Inject constructor(private val queues: WorldQue
     }
 }
 
-internal enum class MeleeEffect { None, Dagger, AbyssalDagger, Warhammer, ElderMaul, Bandos, Saradomin, Zamorak, Whip, Fang, Bludgeon, GraniteHammer, Anchor }
+internal enum class MeleeEffect { None, Dagger, AbyssalDagger, Warhammer, ElderMaul, Bandos, Saradomin, Zamorak, Whip, Tentacle, Fang, Bludgeon, GraniteHammer, Anchor, Scimitar, AncientMace }
 
 internal enum class MeleeWeaponSpec(
     val weapons: List<String>,
@@ -176,7 +195,23 @@ internal enum class MeleeWeaponSpec(
     val damageMultiplier: Double,
     val blockType: MeleeAttackType,
     val effect: MeleeEffect = MeleeEffect.None,
+    val ignoresPrayer: Boolean = false,
+    val effectHeight: Int = 96,
 ) {
+    DragonSword(
+        listOf("obj.dragon_shortsword", "obj.br_dragon_sword", "obj.bh_dragon_shortsword_corrupted"),
+        "seq.human_dragon_sword_spec", "spotanim.dragon_sword_spec_spotanim", 1.25, 1.25, MeleeAttackType.Stab,
+        ignoresPrayer = true, effectHeight = 0,
+    ),
+    AncientMace(
+        listOf("obj.ancient_goblin_mace"),
+        "seq.slice_player_mace_special_attack", "spotanim.slice_player_mace_special_attack_spotanim", 1.0, 1.0, MeleeAttackType.Crush,
+        MeleeEffect.AncientMace, ignoresPrayer = true, effectHeight = 0,
+    ),
+    DragonScimitar(
+        listOf("obj.dragon_scimitar", "obj.dragon_scimitar_ornament", "obj.br_dragon_scimitar", "obj.bh_dragon_scimitar_corrupted"),
+        "seq.sp_attack_dragon_scimitar", "spotanim.sp_attack_dragon_scimitar_trail_spotanim", 1.25, 1.0, MeleeAttackType.Slash, MeleeEffect.Scimitar,
+    ),
     DragonDagger(
         listOf("obj.dragon_dagger", "obj.dragon_dagger_p", "obj.dragon_dagger_p+", "obj.dragon_dagger_p++", "obj.br_dragon_dagger", "obj.bh_dragon_dagger_corrupted", "obj.bh_dragon_dagger_p_corrupted", "obj.bh_dragon_dagger_p+_corrupted", "obj.bh_dragon_dagger_p++_corrupted"),
         "seq.puncture", "spotanim.sp_attack_puncture_spotanim", 1.15, 1.15, MeleeAttackType.Slash, MeleeEffect.Dagger,
@@ -219,7 +254,11 @@ internal enum class MeleeWeaponSpec(
     ),
     AbyssalWhip(
         listOf("obj.abyssal_whip", "obj.abyssal_whip_lava", "obj.abyssal_whip_ice", "obj.league_3_whip", "obj.br_abyssal_whip"),
-        "seq.slayer_whip_sp_attack", "spotanim.sp_attack_abyssal_whip", 1.25, 1.0, MeleeAttackType.Slash, MeleeEffect.Whip,
+        "seq.slayer_abyssal_whip_attack", "spotanim.sp_attack_abyssal_whip", 1.25, 1.0, MeleeAttackType.Slash, MeleeEffect.Whip,
+    ),
+    AbyssalTentacle(
+        listOf("obj.abyssal_tentacle", "obj.league_3_whip_tentacle"),
+        "seq.slayer_abyssal_whip_attack", "spotanim.sp_attack_abyssal_whip", 1.0, 1.0, MeleeAttackType.Slash, MeleeEffect.Tentacle,
     ),
     Fang(
         listOf("obj.osmumtens_fang", "obj.osmumtens_fang_ornament"),
@@ -227,7 +266,7 @@ internal enum class MeleeWeaponSpec(
     ),
     Bludgeon(
         listOf("obj.abyssal_bludgeon"),
-        "seq.abyssal_bludgeon_special_attack", "spotanim.abyssal_miasma_spotanim_bludgeon", 1.0, 1.0, MeleeAttackType.Crush, MeleeEffect.Bludgeon,
+        "seq.abyssal_bludgeon_special_attack", "spotanim.abyssal_miasma_spotanim_bludgeon", 1.0, 1.0, MeleeAttackType.Crush, MeleeEffect.Bludgeon, effectHeight = 0,
     ),
     GraniteHammer(
         listOf("obj.granite_hammer"),

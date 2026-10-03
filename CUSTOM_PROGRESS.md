@@ -1,7 +1,7 @@
 # EvolvedMind OpenRune progress
 
-Updated: 2026-10-03. The user has accepted the current runtime and explicitly requires
-it to be preserved. This organization pass changes documentation and Git references,
+Updated: 2026-10-04. The user has accepted the current runtime and explicitly requires
+it to be preserved. The completed organization pass changed documentation and Git references,
 not gameplay, cache, plugins or the installed package.
 
 **Current accepted server:** `444ead71bec435e3eba0c378aa6718f7a7ac57d4` (revision 240).
@@ -21,7 +21,8 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 |---|---|---|
 | Repository organization | VERIFIED | 15 stale branches archived and removed; 2 branches retained; accepted runtime preserved |
 | Accepted gameplay bundle | VERIFIED at baseline | User acceptance + 121 selected server tests, 86 Nero tests, isolated boot; GitHub server CI/format/gameval checks passed |
-| New gameplay | NOT STARTED in this pass | No old fixes or upstream content adopted during cleanup |
+| Weapon completeness | PAUSED FOR USER ACCEPTANCE on `feature/weapon-completeness` | Requested after cleanup: 285/285 special target plus normal attacks, charges and FX; Zulrah encounter is frozen |
+| Weapon test installer | IMPLEMENTED / NEEDS USER TESTING | `specials-update-20261003` at `7c87f7ccb` installed; `weptest-update-20261004` adds inventory test sets; user acceptance pending |
 
 ## Bosses
 
@@ -41,7 +42,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 | Native commands / inventory loadouts / ::spres | VERIFIED for covered regressions | UPSTREAM + CUSTOM EXTENSIONS | Inventory-only grants; no replacement of worn gear |
 | Max cape submenu indexing | VERIFIED for covered regressions | CUSTOM | 15 tests, including actual packets and Farming Guild selection |
 | Monster drops, pet gallery, skill/quest guides | IMPLEMENTED / NEEDS TESTING for visual edge cases | HYBRID | Search, navigation, log/map and all skill buttons tested; fixed/resized scrolling remains an explicit visual checklist |
-| Combat specials and shields | IMPLEMENTED / NEEDS TESTING | UPSTREAM + CUSTOM EXTENSIONS | 137/285 audited special-energy items registered; 148 missing, six shield forms covered separately; see combat audit |
+| Combat specials and shields | PAUSED / NEEDS USER TESTING | UPSTREAM + CUSTOM EXTENSIONS | 191/285 special-energy items registered; 94 missing, six shield forms covered separately; see combat audit |
 | Respawn countdowns | VERIFIED for covered regressions | HYBRID | Actual deadline snapshots; non-GWD policy is 34 ticks = 20.4 s |
 | Nero object library and loot colours | VERIFIED for covered regressions | CUSTOM integration | Paired plugin tests; native Ground Items aggregation/value colour fallback |
 | Plugin lifecycle / offline login / installer alternatives | NEEDS REVIEW | Archived custom alternatives | Not imported into the accepted runtime |
@@ -62,7 +63,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 
 ### NOW
 
-- Branch cleanup and documentation completed; review the active integration PR before merging main.
+- Test the current weapon checkpoint with `::weptest <set>`; special development is paused at user request. Merge PR #15 only after explicit user acceptance.
 - Keep the accepted baseline recoverable and main organized.
 
 ### NEXT
@@ -73,7 +74,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 ### LATER
 
 - Paired revision 241 upgrade: client/protocol/cache, Boss DSL, custom encounter and HUD review.
-- Complete missing special-attack families in focused, tested chunks.
+- Other weapon families remain in the active completeness audit; never promote registration counts to full mechanic verification.
 
 ### BACKLOG
 
@@ -86,3 +87,52 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 Revision 241 and Boss DSL changes overlap custom dependencies. Outcome:
 **DEFERRED REVIEW**; no upstream merge or runtime upgrade in this organization pass.
 See [upstream review](docs/custom/upstream-review.md).
+
+Demonbane follow-up: parameter-only cache overlays add 96 verified demon flags and
+two Duke resistance flags; all 16,577 NPC definitions retain other fields. Claws
+reductions now apply per split hit. 122 selected tests, the full server JAR and isolated Nero-bridge boot pass;
+these changes are outside the frozen `880c6a9fa` installer.
+
+Dragon hasta slice: all five variants implemented; 61 special tests pass including
+partial/full energy, misses, NPC/PvP and native cost modifiers. Coverage 162/285;
+123 registrations remain missing, and live FX qualification is still pending.
+
+Saradomin sword slice: all three identities registered with distinct ordinary and
+blessed damage paths, caster/target effects and hybrid accuracy. 65 special tests
+and 129 selected tests overall pass; full server JAR builds. Current registry is
+165/285, with 120 missing. Blessed sword degradation and live FX qualification
+remain open. The frozen installer and accepted installation are unchanged.
+
+Ancient warrior slice: four Vesta longswords and three Statius warhammers registered;
+variant-specific 30%/75% Defence drains, post-roll damage reductions and reduced
+defence accuracy tested. 68 special tests pass; registry 172/285 with 113 missing.
+Their mode restrictions, degradation and visual alignment are not fully qualified.
+
+Abyssal tentacle: two variants added, including miss-triggered freeze and independent
+poison with native immunities. Whip graphics/player animation mix-up repaired and
+target ownership regression-tested. 73 special tests pass; 174/285 registrations,
+111 missing. Tentacle charge degradation and live visual parity remain open.
+
+Staff protection: eight variants added with temporary native state, 100-tick expiry,
+prayer stacking and damage-time weapon checks. 79 special / 143 selected tests,
+full JAR, cache rebuild and isolated Nero-bridge startup/clean shutdown pass.
+Registry at this slice: 182/285; 103 missing. Live visual qualification and remaining weapon
+mechanics are still open; the accepted installation and frozen installer are intact.
+
+
+Latest ranged / BH / Dorgeshuun slices: nine Dark bow identities, corrected minimum
+hits and BH distributions, projectile timing and Dragon knife Duality effects.
+BH Dragon mace uses its own 60% defence roll. Four Bone daggers and Dorgeshuun
+crossbow now guarantee hits according to the last positive damager, respecting the
+quest policy; their non-stacking Defence drain waits for actual impact. Native
+contribution totals are unchanged. 97 special / 161 selected tests and the full
+server JAR pass. Current registry: 191/285; 94 missing. Seeking arrows need missing
+double-launch metadata; mode restrictions, boss drain floors and live FX validation
+remain open. The accepted installation and frozen installer remain unchanged.
+
+Weapon acceptance command: `::weptest <set>` supplies registered combat weapons/shields in inventory-only atomic batches. New specials are paused; 94 missing registrations remain deferred. See [commands](docs/custom/commands.md).
+
+Final acceptance FX correction: Bludgeon graphic moved below NPC/player targets;
+Volatile/Eldritch player animation separated from their graphic-model sequences.
+Damage and hit timing unchanged. New specials remain paused; final visual user
+check and explicit merge approval are still pending.

@@ -118,3 +118,130 @@ No additional core change remains from this organization pass.
 The archived Central-startup, offline-login and installer alternatives are not part
 of this baseline. The temporary lifecycle import was reverted; do not describe those
 protections as active. See the branch audit and exact baseline for recovery references.
+
+## Weapon completeness: blowpipe ammunition bonus
+
+- Paths: api/player/src/main/kotlin/org/rsmod/api/player/worn/BlowpipeCharges.kt and
+  api/player/src/main/kotlin/org/rsmod/api/player/bonus/WornBonuses.kt.
+- Reason: ranged formulas and equipment UI previously ignored darts inside blowpipes.
+- Behaviour: decode per-item native varobjs and add the actual loaded dart bonuses;
+  other weapons and quiver-ignore rules retain their existing behaviour.
+- Introducing commit: the focused feat(weapons) blowpipe chunk on feature/weapon-completeness.
+- Risk: overlap with any future upstream blowpipe/bonus implementation; compare rather
+  than double-applying bonuses. Removal path: retain state compatibility and tests when
+  adopting an equivalent upstream implementation.
+- Validation: nine dart tiers, both variants, max packed fields, unrelated quiver ammo,
+  atomic loading/refunds and last-dart attack covered by cache-backed tests.
+
+### Eye of Ayak charge state and per-spawn Magic defence (2026-10-03)
+
+- Paths: `api/player/.../worn/AyakCharges.kt`, `api/npc/.../MagicDefenceDrain.kt`,
+  `api/combat/combat-formulas/.../accuracy/magic/{PvNMagicAccuracy,NvNMagicAccuracy}.kt`.
+- Reason: normal and special attacks must share item state; Soul Rend drains a bonus,
+  not an NPC's Magic level or the shared type's params.
+- State lives in native varobjs/varn defined by the special-weapons pack. No attrs.
+- Behaviour: undrained NPCs have identical formulas; drained positive bonuses floor
+  at zero. Negative original bonuses are preserved. Native respawn clears the varn.
+- Introducing commit: focused `feat(weapons): implement Eye of Ayak charges and Soul Rend`.
+- Risk: upstream per-NPC bonus modifiers may overlap; compare both magic accuracy
+  call paths and reset semantics before adoption. Removal path: migrate the shared
+  state/formula access to an upstream equivalent while preserving packed item values.
+
+### Once-only hit impact effects (2026-10-03)
+
+- Paths: `engine/game/.../hit/{Hit,HitImpactEffects}.kt`,
+  `api/npc/.../hit/processor/StandardNpcHitProcessor.kt`,
+  `api/player/.../hit/processor/{StandardPlayerHitProcessor,DamageOnlyPlayerHitProcessor}.kt`.
+- Reason: weapon healing/drain must follow a processed hit, not an independent timer
+  that can outlive cancellation or use pre-impact HP. No attrs or persistence changes.
+- Behaviour: optional callbacks survive Hit.copy, run once after native damage
+  processing and receive actual damage. Hits without callbacks retain their effects.
+- Introducing commit: `fix(combat): apply weapon effects on actual hit impact`.
+
+## NPC weapon venom
+
+- Paths: `api/mechanics/toxins/.../{NpcVenomTimerScript,impl/NpcVenom,impl/NpcPoison}.kt`
+  and `api/combat/combat-commons/.../WeaponVenom.kt`.
+- Reason: venom-capable weapons previously had no NPC venom lifecycle. Use native
+  varn/timer state, immunity checks, poison fallback and actual hit callbacks.
+- Dependency: special-weapons cache pack supplies the venom varn and timer gamevals.
+- Verification: five venom regression tests; existing weapon and special suites pass.
+- Zulrah's encounter implementation and player venom attacks are unchanged.
+- Risk: new/custom hit processors must explicitly complete callbacks after applying
+  damage. Compare any upstream impact callback API before merging it; migrate callers
+  and remove this list if an upstream equivalent supplies the same cancellation semantics.
+- Tests: copied/capped/zero damage, once-only execution, native NPC HP deduction,
+  Siphon overkill healing, source relog and Soul Rend impact/cancellation.
+
+## Prayer-piercing melee specials (2026-10-03)
+
+- Paths: `api/combat/combat-manager/.../PlayerAttackManager.kt` and
+  `api/specials/.../SpecialAttackManager.kt`.
+- Adds an explicit prayer-piercing route for Dragon sword and Ancient mace.
+  Only PvP protection penetration changes; normal modifiers, retaliation, source
+  attribution and defend animation still execute. Ordinary melee calls are unchanged.
+- Verified by real queued hits: 20 damage becomes 12 with normal Protect from Melee,
+  remains 20 for a piercing hit, and remains zero against admin invulnerability.
+- NPC style immunity is deliberately still processed. Boss-specific prayer mechanics
+  require separate review; this route does not bypass every NPC immunity.
+- Upstream adoption: replace the route with an equivalent per-hit penetration API
+  only after the native queue regression and weapon tests pass.
+
+## Parameter-only NPC cache overlays (2026-10-03)
+
+- Files: `or-cache/.../tools/PackServerConfigOSRS.kt` and `codec/osrs/impl/NpcServerCodec.kt`.
+- Reason: a full NPC override for a demon flag replaced earlier server overrides and reset client render priority.
+- Change: `npc_params` overlays parse only ID and params, participate in NPC incremental inputs, and merge at the end of the existing server codec. No client NPC record is rewritten. Unknown base IDs fail validation.
+- Related system: demonbane specials and existing combat attribute collectors.
+- Evidence: 16,577 definitions compared; only 96 demon flags and two Duke resistance flags changed. Existing fields and kill-count parameters match. The codec regression test retains full custom fields and client render priority.
+- Upstream conflict risk: cache overlay parser and codec constructor. Remove this extension if upstream supplies equivalent parameter-only patching or the native cache gains verified attributes. Introducing commit: the focused demon-metadata commit following `9b7daa8e4`.
+
+## Silverlight/Darklight combat attributes (2026-10-03)
+
+- Files: `CombatMeleeAttributes`, `CombatMeleeAttributeCollector`, `MeleeAccuracyOperations` in `api/combat/combat-formulas`.
+- Reason: only dyed Silverlight received the damage flag; neither ordinary Silverlight nor Darklight received their demonbane accuracy/damage bonuses.
+- Change: both swords receive the existing damage flag plus an explicit accuracy flag. Dyed Silverlight retains damage-only behavior. Against demons the bonus is 60%, or 42% with Duke resistance; other targets are unchanged.
+- Evidence: equipped-item collector plus actual accuracy/damage operations tested for ordinary/dyed Silverlight, Darklight, Arclight, Emberlight and Dragon sword against ordinary/demon/resistant targets.
+- Reference: [pinned Wiki DPS formulas](https://github.com/weirdgloop/osrs-dps-calc/blob/89c3e25b344aea90d0189746e4b5f73dde0f0383/src/lib/PlayerVsNPCCalc.ts).
+- Upstream conflict risk: shared equipment attribute mappings and melee accuracy operations. Reconcile rather than stack bonuses when upstream adds equivalent coverage. Introducing commit: focused demonbane-formula follow-up to `61c605a8c`.
+
+## Melee offence against magic defence (2026-10-03)
+
+- File: `api/combat/combat-formulas/.../accuracy/melee/MeleeAgainstMagicAccuracy.kt`.
+- Reason: blessed Saradomin sword contests magic defence while retaining melee offence and melee damage classification.
+- Change: composes existing melee offence, NPC/player magic defence and native accuracy operations, including NPC magic-defence drain and raid scaling. Existing melee/magic formulas are unchanged.
+- Evidence: helper routing tests verify selected melee stance/type, NPC defence/Magic inputs and player magic defence; special tests verify melee hit queues and protection behavior.
+- Upstream conflict risk: formula helper signatures. Replace with an equivalent upstream mixed-accuracy route only after retaining these tests. Introducing commit: Saradomin sword slice after `6f300c4aa`.
+
+## Reduced melee defence roll (2026-10-03)
+
+- File: `api/combat/combat-formulas/.../accuracy/melee/ReducedMeleeDefenceAccuracy.kt`.
+- Reason: Vesta's longsword reduces the target defence roll for that attempt; increasing attacker accuracy or temporarily editing target stats is not equivalent.
+- Change: reuses existing offence and NPC/player defence formulas with an explicit defence percentage; no persistent stat mutation.
+- Evidence: NPC/PvP probability-boundary regression verifies one-quarter defence and unchanged target level.
+- Upstream conflict risk: formula helper signatures. Prefer an equivalent upstream per-attempt defence modifier when available. Introducing commit: ancient-warrior slice following `e74577500`.
+
+## Opt-in player defence at impact (2026-10-03)
+
+- Files: `PlayerHitEvents`, `StandardPlayerHitProcessor`, `DamageOnlyPlayerHitProcessor`, hit API documentation.
+- Reason: staff protection depends on remaining duration and equipped weapon when damage lands, after ordinary prayer reduction. Queue-time modification cannot represent this correctly.
+- Change: publish `BeforeImpact` after native validation and before health/hitmarks. The default retains the original hit. Opt-in listeners can replace the immutable hit; shared completion callbacks survive copies and see actual applied damage.
+- Evidence: real damage processor tests cover inactive identity behavior, reduced health loss, completion callback damage, and the rounding order after real prayer-modified queued hits. Six new staff tests; 143 selected tests and isolated boot pass.
+- Upstream conflict risk: player hit-processing order. Reconcile with equivalent upstream impact-modifier hooks; retain default-hit and callback regressions. Introducing commit: staff protection slice following `178e232d8`.
+
+ReducedMeleeDefenceAccuracy follow-up: optional attackPercent defaults to 100 and
+allows BH Dragon mace to combine 125% offence with 60% defence. Existing Vesta
+calls retain their default. Boundary regressions cover both modifiers together.
+
+## Last positive damage source (2026-10-03)
+
+- File: engine/game/.../damage/DamageContributions.kt.
+- Reason: Bone dagger/Snipe guarantee depends on the last damager, not total damage.
+- Change: stores one optional contributor key when a positive Player/NPC hit is
+  recorded, clears it with encounter contributions, exposes wasLastDamagedBy(Player).
+  Zero hits and absorbFrom totals do not alter it. Existing totals/order are unchanged.
+- Validation: last-attacker/zero-hit/repeated-attacker/NPC/reset/import tests, native
+  impact drain tests and full NPC/player/pet/Zulrah regressions. No Zulrah source edit.
+- Upstream conflict risk: contribution lifecycle; preserve real-hit versus transferred
+  totals semantics when reconciling upstream changes. Content adds a dependency on
+  the existing quest module to respect its configured completion policy.
