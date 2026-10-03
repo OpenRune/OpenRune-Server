@@ -146,3 +146,19 @@ protections as active. See the branch audit and exact baseline for recovery refe
 - Risk: upstream per-NPC bonus modifiers may overlap; compare both magic accuracy
   call paths and reset semantics before adoption. Removal path: migrate the shared
   state/formula access to an upstream equivalent while preserving packed item values.
+
+### Once-only hit impact effects (2026-10-03)
+
+- Paths: `engine/game/.../hit/{Hit,HitImpactEffects}.kt`,
+  `api/npc/.../hit/processor/StandardNpcHitProcessor.kt`,
+  `api/player/.../hit/processor/{StandardPlayerHitProcessor,DamageOnlyPlayerHitProcessor}.kt`.
+- Reason: weapon healing/drain must follow a processed hit, not an independent timer
+  that can outlive cancellation or use pre-impact HP. No attrs or persistence changes.
+- Behaviour: optional callbacks survive Hit.copy, run once after native damage
+  processing and receive actual damage. Hits without callbacks retain their effects.
+- Introducing commit: `fix(combat): apply weapon effects on actual hit impact`.
+- Risk: new/custom hit processors must explicitly complete callbacks after applying
+  damage. Compare any upstream impact callback API before merging it; migrate callers
+  and remove this list if an upstream equivalent supplies the same cancellation semantics.
+- Tests: copied/capped/zero damage, once-only execution, native NPC HP deduction,
+  Siphon overkill healing, source relog and Soul Rend impact/cancellation.

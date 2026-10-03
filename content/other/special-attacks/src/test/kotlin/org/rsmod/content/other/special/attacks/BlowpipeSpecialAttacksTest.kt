@@ -24,10 +24,10 @@ import org.rsmod.content.other.special.attacks.ranged.BlowpipeSpecialAttacks
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
+import org.rsmod.game.hit.HitImpactEffects
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.proj.ProjAnim
-import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.game.type.getInvObj
 
 @ResourceLock("ServerCacheManager")
@@ -43,9 +43,9 @@ class BlowpipeSpecialAttacksTest {
             assertEquals(1, BlowpipeCharges.read(f.player.worn[Wearpos.RightHand.slot]).count)
             verify(f.manager).queueRangedHit(f.access, f.target, getInvObj(InvObj("obj.dragon_dart")), 21, 45, 2)
             assertEquals(50.toByte(), f.player.statMap.getCurrentLevel("stat.hitpoints"))
-            val scheduled = f.queues.iterator().next()
-            assertEquals(2, scheduled.remainingCycles)
-            scheduled.action()
+            val scheduled = f.effects
+
+            scheduled.complete(1)
             assertEquals(60.toByte(), f.player.statMap.getCurrentLevel("stat.hitpoints"))
             val fx = if (symbol.endsWith("ornament")) "spotanim.toxic_blowpipe_specialattack_league04" else "spotanim.toxic_blowpipe_specialattack"
             verify(f.access).spotanim(fx, 0, 96, 0)
@@ -56,7 +56,7 @@ class BlowpipeSpecialAttacksTest {
         val f = fixture(BlowpipeCharges.variants.first().first, 0)
         assertFalse(complete(f.action))
         assertEquals(listOf("stopCombat"), mockingDetails(f.manager).invocations.map { it.method.name })
-        assertEquals(0, f.queues.size)
+        f.effects.complete(0)
         assertTrue(mockingDetails(f.access).invocations.none { it.method.name == "anim" || it.method.name == "spotanim" })
     }
 
@@ -67,10 +67,10 @@ class BlowpipeSpecialAttacksTest {
         verify(f.manager).stopCombat(f.access)
         f.player.uuid = 2
         f.player.assignUid()
-        f.queues.iterator().next().action()
+        f.effects.complete(21)
         assertEquals(50.toByte(), f.player.statMap.getCurrentLevel("stat.hitpoints"))
     }
-    private data class Fixture(val player: Player, val access: ProtectedAccess, val manager: SpecialAttackManager, val target: Npc, val attack: CombatAttack.Ranged, val queues: WorldQueueList, val special: SpecialAttack.Ranged, val action: suspend () -> Boolean)
+    private data class Fixture(val player: Player, val access: ProtectedAccess, val manager: SpecialAttackManager, val target: Npc, val attack: CombatAttack.Ranged, val effects: HitImpactEffects, val special: SpecialAttack.Ranged, val action: suspend () -> Boolean)
     private fun fixture(symbol: String, count: Int): Fixture {
         val player = Player().apply {
             worn = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.worn".asRSCM())), arrayOfNulls(14))
@@ -86,11 +86,11 @@ class BlowpipeSpecialAttacksTest {
         `when`(access.random).thenReturn(random)
         `when`(random.of(3)).thenReturn(1)
         val manager = mock(SpecialAttackManager::class.java)
-        val queues = WorldQueueList()
+        val effects = HitImpactEffects()
         val weapons = SpecialAttackWeapons()
         SpecialAttackWeapons::class.java.declaredMethods.single { it.name.startsWith("startup") }.also { it.isAccessible = true }.invoke(weapons)
         val registry = SpecialAttackRegistry(weapons)
-        with(BlowpipeSpecialAttacks(queues)) { SpecialAttackRepository(registry).register(manager) }
+        with(BlowpipeSpecialAttacks()) { SpecialAttackRepository(registry).register(manager) }
         val target = Npc(ServerCacheManager.getNpcs().values.first { it.name == "Goblin" })
         val attack = CombatAttack.Ranged(item, RangedAttackType.Light, RangedAttackStyle.Rapid)
         val dart = getInvObj(InvObj("obj.dragon_dart"))
@@ -101,10 +101,11 @@ class BlowpipeSpecialAttacksTest {
         `when`(manager.spawnProjectile(access, target, travel, "projanim.thrown")).thenReturn(proj)
         `when`(manager.rollRangedDamage(access, target, attack, 2.0, 1.5)).thenReturn(21)
         val hit = mock(Hit::class.java)
+        `when`(hit.impactEffects).thenReturn(effects)
         `when`(hit.damage).thenReturn(21)
         `when`(manager.queueRangedHit(access, target, dart, 21, 45, 2)).thenReturn(hit)
         val special = registry[item] as SpecialAttack.Ranged
-        return Fixture(player, access, manager, target, attack, queues, special) { special.attack(access, target, attack) }
+        return Fixture(player, access, manager, target, attack, effects, special) { special.attack(access, target, attack) }
     }
     private fun complete(block: suspend () -> Boolean): Boolean {
         var value: Boolean? = null

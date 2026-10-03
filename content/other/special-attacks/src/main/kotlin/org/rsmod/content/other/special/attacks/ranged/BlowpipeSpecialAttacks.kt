@@ -3,7 +3,6 @@ package org.rsmod.content.other.special.attacks.ranged
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
-import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.ranged.RangedAmmunition
 import org.rsmod.api.combat.commons.styles.RangedAttackStyle
@@ -17,10 +16,9 @@ import org.rsmod.api.specials.combat.RangedSpecialAttack
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
-import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.game.type.getInvObj
 
-class BlowpipeSpecialAttacks @Inject constructor(private val queues: WorldQueueList) : SpecialAttackMap {
+class BlowpipeSpecialAttacks : SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
         for ((loaded, _) in BlowpipeCharges.variants) registerRanged(loaded, Siphon(manager))
     }
@@ -49,7 +47,7 @@ class BlowpipeSpecialAttacks @Inject constructor(private val queues: WorldQueueL
             val source = player
             val uid = source.uid
             val heal = hit.damage / 2
-            if (heal > 0) queues.add(projectile.serverCycles) {
+            if (heal > 0) hit.impactEffects.add {
                 if (source.isSlotAssigned && source.uid == uid) source.statHeal("stat.hitpoints", heal, 0)
             }
             if (BlowpipeCharges.read(player.worn[Wearpos.RightHand.slot]).ready) manager.continueCombat(this, target)

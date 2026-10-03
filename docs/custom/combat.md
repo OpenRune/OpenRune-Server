@@ -75,3 +75,11 @@ a fresh workspace-local LOCALAPPDATA resolved it. Live effect height/trajectory 
 special impact timing still need client capture verification; tests confirm the intended
 source/target wiring, not visual parity. No accepted installation files were replaced.
 Mechanics/formula reference: https://github.com/weirdgloop/osrs-dps-calc/blob/main/src/lib/PlayerVsNPCCalc.ts
+
+Impact completion follow-up: hits now share an opt-in, once-only effect list through
+copies made by native processors. Callbacks run after damage is applied and receive
+actual capped damage; discarded/cancelled hits never invoke them. Soul Rend drains
+actual damage and Siphon heals its calculated pre-overkill amount only when that hit
+impacts, retaining the source-login guard. Their previous independent world timers
+are removed. Verified with two engine tests, a native NPC processor integration test,
+and the full special suite (39 tests). No callback is registered by existing Zulrah code.

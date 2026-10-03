@@ -21,9 +21,9 @@ import org.rsmod.content.other.special.attacks.magic.AyakSpecialAttack
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
+import org.rsmod.game.hit.HitImpactEffects
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.queue.WorldQueueList
 
 @ResourceLock("ServerCacheManager")
 @Execution(ExecutionMode.SAME_THREAD)
@@ -42,9 +42,9 @@ class AyakSpecialAttackTest {
         verify(f.access).spotanim("spotanim.vfx_ayak_player_special_spotanim", 0, 0, 0)
         verify(f.target).spotanim("spotanim.vfx_ayak_impact_special_spotanim", 60, 0, 0)
         assertEquals(0, f.target.vars[MagicDefenceDrain.VAR])
-        val delayed = f.queues.iterator().next()
-        assertEquals(2, delayed.remainingCycles)
-        delayed.action()
+        val delayed = f.effects
+
+        delayed.complete(23)
         assertEquals(23, f.target.vars[MagicDefenceDrain.VAR])
         assertEquals(0, other.vars[MagicDefenceDrain.VAR])
         assertEquals(baseBonus, f.target.visType.param(params.defence_magic))
@@ -74,23 +74,23 @@ class AyakSpecialAttackTest {
         assertFalse(complete { f.special.attack(f.access, Player(), f.attack) })
         verify(f.manager).stopCombat(f.access)
         verifyNoMoreInteractions(f.manager)
-        assertFalse(f.queues.iterator().hasNext())
+        assertEquals(0, f.target.vars[MagicDefenceDrain.VAR])
     }
 
-    @Test fun `splash spends final charge without drain and respawn invalidates pending effect`() {
+    @Test fun `splash spends final charge and cancelled hit never drains`() {
         val splash = fixture(charges = 1, accurate = false)
         assertTrue(complete { splash.special.attack(splash.access, splash.target, splash.attack) })
         assertEquals(AyakCharges.EMPTY.asRSCM(), splash.player.worn[Wearpos.RightHand.slot]!!.id)
-        assertFalse(splash.queues.iterator().hasNext())
+        splash.effects.complete(0)
         verify(splash.manager).stopCombat(splash.access)
         val f = fixture()
         assertTrue(complete { f.special.attack(f.access, f.target, f.attack) })
         f.target.lifecycleRespawnCycle = 20
         f.target.setRespawnValues()
-        f.queues.iterator().next().action()
+        // A cancelled hit never reaches the processor or completes its effects.
         assertEquals(0, f.target.vars[MagicDefenceDrain.VAR])
     }
-    private data class Fixture(val player: Player, val access: ProtectedAccess, val manager: SpecialAttackManager, val target: Npc, val attack: CombatAttack.Staff, val queues: WorldQueueList, val special: SpecialAttack.Magic)
+    private data class Fixture(val player: Player, val access: ProtectedAccess, val manager: SpecialAttackManager, val target: Npc, val attack: CombatAttack.Staff, val effects: HitImpactEffects, val special: SpecialAttack.Magic)
     private fun fixture(charges: Int = 2, accurate: Boolean = true): Fixture {
         val player = Player().apply {
             worn = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.worn".asRSCM())), arrayOfNulls(14))
@@ -101,11 +101,11 @@ class AyakSpecialAttackTest {
         val access = mock(ProtectedAccess::class.java)
         `when`(access.player).thenReturn(player)
         val manager = mock(SpecialAttackManager::class.java)
-        val queues = WorldQueueList()
+        val effects = HitImpactEffects()
         val weapons = SpecialAttackWeapons()
         SpecialAttackWeapons::class.java.declaredMethods.single { it.name.startsWith("startup") }.also { it.isAccessible = true }.invoke(weapons)
         val registry = SpecialAttackRegistry(weapons)
-        with(AyakSpecialAttack(queues)) { SpecialAttackRepository(registry).register(manager) }
+        with(AyakSpecialAttack()) { SpecialAttackRepository(registry).register(manager) }
         val target = spy(Npc(ServerCacheManager.getNpcs().values.first { it.param(params.defence_magic) > 40 })).apply {
             slotId = 1
             assignUid()
@@ -115,9 +115,10 @@ class AyakSpecialAttackTest {
         `when`(manager.rollStaffMaxHit(access, target, 35, 1.0)).thenReturn(23)
         val damage = if (accurate) 23 else 0
         val hit = mock(Hit::class.java)
+        `when`(hit.impactEffects).thenReturn(effects)
         `when`(hit.damage).thenReturn(damage)
         `when`(manager.queueMagicHit(access, target, damage, 60, 2)).thenReturn(hit)
-        return Fixture(player, access, manager, target, attack, queues, registry[item] as SpecialAttack.Magic)
+        return Fixture(player, access, manager, target, attack, effects, registry[item] as SpecialAttack.Magic)
     }
     private fun complete(block: suspend () -> Boolean): Boolean {
         var value: Boolean? = null

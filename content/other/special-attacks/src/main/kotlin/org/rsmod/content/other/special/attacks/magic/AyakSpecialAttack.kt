@@ -1,7 +1,6 @@
 package org.rsmod.content.other.special.attacks.magic
 
 import dev.openrune.util.Wearpos
-import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.npc.MagicDefenceDrain
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -13,9 +12,8 @@ import org.rsmod.api.specials.SpecialAttackRepository
 import org.rsmod.api.specials.combat.MagicSpecialAttack
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.queue.WorldQueueList
 
-class AyakSpecialAttack @Inject constructor(private val queues: WorldQueueList) : SpecialAttackMap {
+class AyakSpecialAttack : SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
         registerMagic(AyakCharges.CHARGED, SoulRend(manager))
     }
@@ -46,12 +44,8 @@ class AyakSpecialAttack @Inject constructor(private val queues: WorldQueueList) 
             target.spotanim(if (accurate) "spotanim.vfx_ayak_impact_special_spotanim" else "spotanim.failedspell_impact", delay = 60)
             val hit = manager.queueMagicHit(this, target, damage, 60, delay)
             manager.giveCombatXp(this, target, attack, hit.damage)
-            if (hit.damage > 0) {
-                val targetUid = target.uid
-                val respawnCycle = target.lifecycleRespawnCycle
-                queues.add(delay) {
-                    if (target.isSlotAssigned && target.uid == targetUid && target.lifecycleRespawnCycle == respawnCycle && target.hitpoints > 0) MagicDefenceDrain.apply(target, hit.damage)
-                }
+            hit.impactEffects.add { actualDamage ->
+                if (actualDamage > 0 && target.hitpoints > 0) MagicDefenceDrain.apply(target, actualDamage)
             }
             player.worn[Wearpos.RightHand.slot] = AyakCharges.write(weapon, charges - 1)
             if (charges == 1) manager.stopCombat(this) else manager.continueCombat(this, target)

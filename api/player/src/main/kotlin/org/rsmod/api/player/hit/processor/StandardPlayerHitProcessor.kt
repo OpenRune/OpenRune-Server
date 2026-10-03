@@ -64,6 +64,7 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
         val headbar = hit.createHeadbar(player.hitpoints, player.baseHitpointsLvl)
         player.showHeadbar(headbar)
 
+        hit.impactEffects.complete(damage)
         publish(PlayerHitEvents.Impact(player, hit))
     }
 
