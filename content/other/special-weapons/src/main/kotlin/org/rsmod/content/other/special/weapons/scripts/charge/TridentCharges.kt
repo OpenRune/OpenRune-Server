@@ -6,7 +6,7 @@ import org.rsmod.game.inv.InvObj
 import org.rsmod.utils.bits.getBits
 import org.rsmod.utils.bits.withBits
 
-/** Persistent, item-local state. The existing powered-staff varobj supplies its 16-bit layout. */
+/** Persistent, item-local state. The existing powered-staff varobj supplies its 15-bit layout. */
 internal object TridentCharges {
     data class Kind(val charged: String, val empty: String, val max: Int, val toxic: Boolean, val full: String? = null) {
         val symbols get() = listOfNotNull(charged, empty, full)

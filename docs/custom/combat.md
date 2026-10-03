@@ -44,3 +44,15 @@ Vyre-well storage/refunds, secondary area targets, variant FX qualification and
 impact-modified damage accounting remain open. Corrupted and quest forms are not
 silently aliased. Fifteen module tests pass (nine trident, five scythe, one cache export).
 These slices do not change the 137/285 special registration count.
+
+Blowpipe slice: normal and Blazing blowpipes store nine dart types and scales in the
+existing three native varobjs. Load/unload/uncharge transactions are atomic. Ranged
+bonuses use the loaded dart, not unrelated quiver arrows. Normal attacks and Toxic
+Siphon consume stored ammunition with Ava conservation and two-thirds scale usage.
+PvM/PvP rapid delays are two/three ticks. Siphon uses doubled accuracy, 1.5x maximum
+and schedules half the queued damage as healing, guarded against replacement logins.
+Venom, exact live projectile trajectory and impact-time cancellation remain unqualified.
+
+Current registry: 139/285 (146 missing). Tests: 21 special-weapons + 35 special-attacks
+passed. Full registry snapshot: [weapon registry](weapons-registry-20261003.tsv).
+Reference: https://oldschool.runescape.wiki/w/Blowpibe

@@ -118,3 +118,17 @@ No additional core change remains from this organization pass.
 The archived Central-startup, offline-login and installer alternatives are not part
 of this baseline. The temporary lifecycle import was reverted; do not describe those
 protections as active. See the branch audit and exact baseline for recovery references.
+
+## Weapon completeness: blowpipe ammunition bonus
+
+- Paths: api/player/src/main/kotlin/org/rsmod/api/player/worn/BlowpipeCharges.kt and
+  api/player/src/main/kotlin/org/rsmod/api/player/bonus/WornBonuses.kt.
+- Reason: ranged formulas and equipment UI previously ignored darts inside blowpipes.
+- Behaviour: decode per-item native varobjs and add the actual loaded dart bonuses;
+  other weapons and quiver-ignore rules retain their existing behaviour.
+- Introducing commit: the focused feat(weapons) blowpipe chunk on feature/weapon-completeness.
+- Risk: overlap with any future upstream blowpipe/bonus implementation; compare rather
+  than double-applying bonuses. Removal path: retain state compatibility and tests when
+  adopting an equivalent upstream implementation.
+- Validation: nine dart tiers, both variants, max packed fields, unrelated quiver ammo,
+  atomic loading/refunds and last-dart attack covered by cache-backed tests.
