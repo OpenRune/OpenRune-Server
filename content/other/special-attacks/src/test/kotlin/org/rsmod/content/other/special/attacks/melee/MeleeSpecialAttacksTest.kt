@@ -72,6 +72,9 @@ class MeleeSpecialAttacksTest {
         for (spec in MeleeWeaponSpec.entries) {
             assertTrue(spec.animation.asRSCM(RSCMType.SEQ) >= 0)
             assertTrue(spec.spot.asRSCM(RSCMType.SPOTANIM) >= 0)
+            val spotId = spec.spot.asRSCM(RSCMType.SPOTANIM)
+            val spot = dev.openrune.definition.codec.SpotAnimCodec(240).loadData(spotId, cache.data(2, 13, spotId))
+            assertNotEquals(spot.animationId, spec.animation.asRSCM(), "${spec.name}: graphic animation must not animate the player")
             for (weapon in spec.weapons) {
                 val id = weapon.asRSCM(RSCMType.OBJ)
                 val mapped = registry[InvObj(weapon)] as SpecialAttack.Melee
@@ -426,13 +429,23 @@ class MeleeSpecialAttacksTest {
         assertEquals(82.toByte(), source.statMap.getCurrentLevel("stat.prayer"))
     }
 
-    private fun attackFixture(weapon: String): Fixture {
+    @Test fun `whip and tentacle animate the wielder but place their graphic on the target`() {
+        for (weapon in listOf("obj.abyssal_whip", "obj.abyssal_tentacle", "obj.league_3_whip_tentacle")) {
+            val f = attackFixture(weapon, spyTarget = true)
+            f.run()
+            verify(f.access).anim("seq.slayer_abyssal_whip_attack", 0)
+            verify(f.target).spotanim("spotanim.sp_attack_abyssal_whip", 30, 96, 0)
+            assertFalse(mockingDetails(f.access).invocations.any { it.method.name == "spotanim" })
+        }
+    }
+
+    private fun attackFixture(weapon: String, spyTarget: Boolean = false): Fixture {
         val manager = mock(SpecialAttackManager::class.java)
         val access = mock(ProtectedAccess::class.java)
         val player = Player()
         `when`(access.player).thenReturn(player)
         `when`(access.coords).thenReturn(CoordGrid(3200, 3200, 0))
-        val target = npc()
+        val target = if (spyTarget) spy(npc()) else npc()
         val zero = Hit(org.rsmod.game.hit.HitType.Melee, org.rsmod.game.hit.Hitmark(0), null, null, null)
         val ten = zero.copy(hitmark = zero.hitmark.copy(damage = 10))
 

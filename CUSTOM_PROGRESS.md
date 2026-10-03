@@ -107,3 +107,8 @@ Ancient warrior slice: four Vesta longswords and three Statius warhammers regist
 variant-specific 30%/75% Defence drains, post-roll damage reductions and reduced
 defence accuracy tested. 68 special tests pass; registry 172/285 with 113 missing.
 Their mode restrictions, degradation and visual alignment are not fully qualified.
+
+Abyssal tentacle: two variants added, including miss-triggered freeze and independent
+poison with native immunities. Whip graphics/player animation mix-up repaired and
+target ownership regression-tested. 73 special tests pass; 174/285 registrations,
+111 missing. Tentacle charge degradation and live visual parity remain open.

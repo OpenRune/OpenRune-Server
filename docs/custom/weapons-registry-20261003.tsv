@@ -55,7 +55,7 @@ id	name	category	energy	registered_kind	handler	description
 11838	Saradomin sword	TwoHandedSword	1000	Melee	org.rsmod.content.other.special.attacks.melee.SaradominSwordSpecialAttacks$Lightning	Saradomin's Lightning: Call upon Saradomin's power to perform an attack that inflicts 10% more melee damage and 1-16 extra magic damage.
 11889	Zamorakian hasta	Spear	250	missing		Shove: Push your target back and stun them for 3 seconds. This attack deals no damage.
 11920	Dragon pickaxe	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$30	Rock Knocker: Increase your Mining level by 3.
-12006	Abyssal tentacle	Whip	500	missing		Binding Tentacle: Bind your target for 5 seconds and increase the chance of them being poisoned.
+12006	Abyssal tentacle	Whip	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Binding Tentacle: Bind your target for 5 seconds and increase the chance of them being poisoned.
 12765	Dark bow	Bow	550	Ranged	org.rsmod.content.other.special.attacks.ranged.DarkBowSpecialAttack$DarkBow	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
 12766	Dark bow	Bow	550	Ranged	org.rsmod.content.other.special.attacks.ranged.DarkBowSpecialAttack$DarkBow	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
 12767	Dark bow	Bow	550	Ranged	org.rsmod.content.other.special.attacks.ranged.DarkBowSpecialAttack$DarkBow	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
@@ -171,7 +171,7 @@ id	name	category	energy	registered_kind	handler	description
 26233	Ancient godsword	TwoHandedSword	500	missing		Blood Sacrifice: Deal an attack that inflicts 10% more damage with double accuracy and marks your target for a blood sacrifice. Targets marked for a blood sacrifice will be hit for 25 damage after a short delay, unless they move away. If they are hit, you'll also be healed for the damage dealt. (Heal is capped at 15 in PvP)
 26374	Zaryte crossbow	Crossbow	750	missing		Evoke: Perform an attack with double accuracy, with a guaranteed enchanted bolt activation rate on successful hit.
 26482	Abyssal whip (or)	Whip	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Energy Drain: Deal an attack with 25% increased accuracy that siphons 10% of your target's run energy.
-26484	Abyssal tentacle (or)	Whip	500	missing		Binding Tentacle: Bind your target for 5 seconds and increase the chance of them being poisoned.
+26484	Abyssal tentacle (or)	Whip	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Binding Tentacle: Bind your target for 5 seconds and increase the chance of them being poisoned.
 26708	Dragon claws (or)	Claw	500	Melee	org.rsmod.content.other.special.attacks.melee.DragonClawsSpecialAttack$SliceAndDice	Slice and Dice: Hit 4 times in quick succession, with great accuracy.
 26710	Dragon warhammer (or)	Blunt	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Smash: Deal an attack that inflicts 50% more damage and lowers your target's Defence level by 30%.
 26712	Heavy ballista (or)	Crossbow	650	Ranged	org.rsmod.content.other.special.attacks.ranged.RangedWeaponSpecialAttacks$WeaponAttack	Concentrated Shot: Deal an attack with 25% increased accuracy and damage, but takes an additional 2.4 seconds to fire.

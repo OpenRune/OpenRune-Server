@@ -218,3 +218,15 @@ References: [Vesta's longsword](https://oldschool.runescape.wiki/w/Vesta%27s_lon
 revision-240 per-item special descriptions. The packed Statius effect uses the
 same sequence/model as the granite hammer effect with its own recolours; retained
 the Statius-specific symbol rather than substituting the granite recolour.
+
+Abyssal tentacle slice: both variants implement Binding Tentacle. Impact freezes
+for eight ticks even on a miss and independently rolls 50% poison starting at four.
+Native freeze/poison immunity, existing freeze duration, cancelled hits, dead targets
+and stale source logins are covered. Charge degradation remains unfinished.
+The whip previously used graphic sequence 1669 as its player animation; the packed
+spot 341 confirms 1669 belongs to that graphic. Whip/tentacle now animate the player
+with the native whip attack and send the graphic to the target. A cache-backed test
+rejects graphics accidentally used as player animations throughout the melee table.
+All 73 special tests pass; 174/285 registrations, 111 missing. Live timing/height
+verification is still pending.
+Reference: [Abyssal tentacle](https://oldschool.runescape.wiki/w/Abyssal_tentacle).

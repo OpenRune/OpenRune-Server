@@ -45,7 +45,9 @@ class MeleeWeaponSpecialAttacks @Inject constructor(private val rng: GameRandom,
 
         private fun ProtectedAccess.perform(target: PathingEntity, attack: CombatAttack.Melee): Boolean {
             anim(spec.animation)
-            spotanim(spec.spot, height = spec.effectHeight, slot = constants.spotanim_slot_combat)
+            if (spec.effect == MeleeEffect.Whip || spec.effect == MeleeEffect.Tentacle) {
+                target.spotanim(spec.spot, delay = 30, height = spec.effectHeight)
+            } else spotanim(spec.spot, height = spec.effectHeight, slot = constants.spotanim_slot_combat)
             val firstAccurate = accuracy(target, attack)
             val hits = if (spec.effect == MeleeEffect.Dagger || spec.effect == MeleeEffect.AbyssalDagger) 2 else 1
             for (index in 0 until hits) {
@@ -70,6 +72,7 @@ class MeleeWeaponSpecialAttacks @Inject constructor(private val rng: GameRandom,
                 val hit = if (spec.ignoresPrayer) manager.queueMeleeHitIgnoringPrayer(this, target, damage, delay)
                     else manager.queueMeleeHit(this, target, damage, delay)
                 manager.giveCombatXp(this, target, attack, hit.damage)
+                if (spec.effect == MeleeEffect.Tentacle) TentacleSpecialEffects.attach(hit, player, target, rng)
                 if (hit.damage > 0 || (accurate && spec.effect == MeleeEffect.AncientMace)) {
                     attachEffect(hit, player, target, spec.effect, rng, damage)
                 }
@@ -182,7 +185,7 @@ class MeleeWeaponSpecialAttacks @Inject constructor(private val rng: GameRandom,
     }
 }
 
-internal enum class MeleeEffect { None, Dagger, AbyssalDagger, Warhammer, ElderMaul, Bandos, Saradomin, Zamorak, Whip, Fang, Bludgeon, GraniteHammer, Anchor, Scimitar, AncientMace }
+internal enum class MeleeEffect { None, Dagger, AbyssalDagger, Warhammer, ElderMaul, Bandos, Saradomin, Zamorak, Whip, Tentacle, Fang, Bludgeon, GraniteHammer, Anchor, Scimitar, AncientMace }
 
 internal enum class MeleeWeaponSpec(
     val weapons: List<String>,
@@ -251,7 +254,11 @@ internal enum class MeleeWeaponSpec(
     ),
     AbyssalWhip(
         listOf("obj.abyssal_whip", "obj.abyssal_whip_lava", "obj.abyssal_whip_ice", "obj.league_3_whip", "obj.br_abyssal_whip"),
-        "seq.slayer_whip_sp_attack", "spotanim.sp_attack_abyssal_whip", 1.25, 1.0, MeleeAttackType.Slash, MeleeEffect.Whip,
+        "seq.slayer_abyssal_whip_attack", "spotanim.sp_attack_abyssal_whip", 1.25, 1.0, MeleeAttackType.Slash, MeleeEffect.Whip,
+    ),
+    AbyssalTentacle(
+        listOf("obj.abyssal_tentacle", "obj.league_3_whip_tentacle"),
+        "seq.slayer_abyssal_whip_attack", "spotanim.sp_attack_abyssal_whip", 1.0, 1.0, MeleeAttackType.Slash, MeleeEffect.Tentacle,
     ),
     Fang(
         listOf("obj.osmumtens_fang", "obj.osmumtens_fang_ornament"),
