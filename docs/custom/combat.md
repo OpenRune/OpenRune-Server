@@ -22,6 +22,24 @@ Branch: feature/weapon-completeness, based on accepted runtime plus organization
 commit 82d6c0203. User requests complete specials and normal weapon/charge behaviour.
 Zulrah encounter files, rotations, reach policy and respawn policy remain unchanged.
 
+Latest checkpoint: 140/285 registered special-energy items, 145 missing. Registration
+is not visual or mechanical parity. Selected weapon/special/impact suites: 83 passing
+tests (42 weapons, 39 specials, 2 engine). The full server JAR builds successfully.
+Broader regression checks add 20 passing tests (NPC 5, Zulrah 2, pets 13): 103 total.
+An isolated revision-240 server boot with the existing Nero server plugin passes
+bridge health, catalogue search and continuously refreshed respawn snapshots, then
+shuts down cleanly. This does not exercise a live game client or visually certify FX.
+The following slices are a chronological implementation record; earlier counts below
+refer to their respective checkpoints, not the current total.
+
+Shadow/Venator charge follow-up: charging and full refunds now use a single native
+inventory transaction, revalidate the exact item after dialogue and reject negative or
+over-capacity amounts. Resource shortages or insufficient refund space roll back both
+the weapon and every material. Existing recipes, native charge layouts and capacities
+are retained. Three regression cases exercise both weapon families, including full
+capacity, swapped items and a refund where only one of two material stacks fits.
+This does not certify their remaining normal-attack mechanics or live effects.
+
 Trident slice: eight normal/enhanced/ornament sea/swamp pairs plus full sea identities.
 Item-local charge state uses the existing powered-staff varobj bit layout; inventory
 transactions atomically pay/refund resources and preserve ornament and remaining charges.
