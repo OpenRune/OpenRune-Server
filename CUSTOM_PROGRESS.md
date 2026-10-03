@@ -87,3 +87,8 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 Revision 241 and Boss DSL changes overlap custom dependencies. Outcome:
 **DEFERRED REVIEW**; no upstream merge or runtime upgrade in this organization pass.
 See [upstream review](docs/custom/upstream-review.md).
+
+Demonbane follow-up: parameter-only cache overlays add 96 verified demon flags and
+two Duke resistance flags; all 16,577 NPC definitions retain other fields. Claws
+reductions now apply per split hit. 122 selected tests, the full server JAR and isolated Nero-bridge boot pass;
+these changes are outside the frozen `880c6a9fa` installer.

@@ -23,8 +23,8 @@ commit 82d6c0203. User requests complete specials and normal weapon/charge behav
 Zulrah encounter files, rotations, reach policy and respawn policy remain unchanged.
 
 Latest registry: 157/285 registered special-energy items, 128 missing. Registration
-is not visual or mechanical parity. Selected suites pass 119 tests: 42 weapons,
-55 specials, 2 engine, 5 NPC, 2 Zulrah and 13 pets. The full server JAR builds.
+is not visual or mechanical parity. Selected suites pass 122 tests: 42 weapons,
+58 specials, 2 engine, 5 NPC, 2 Zulrah and 13 pets. The full server JAR builds.
 The earlier installable checkpoint passed 103 tests. Its isolated revision-240 server boot with the existing Nero server plugin passes
 bridge health, catalogue search and continuously refreshed respawn snapshots, then
 shuts down cleanly. This does not exercise a live game client or visually certify FX.
@@ -74,9 +74,13 @@ validation did not replace files in the accepted installation.
 
 Remaining qualification: client animation height/frame alignment, variant cosmetics,
 NPC prayer/immunity interactions, boss stat-drain
-floors and demon metadata coverage. The cache-only fixture has no positive demon
-params, so drain tests explicitly construct both demon and non-demon definitions;
-this is not evidence that every live NPC is correctly classified. No local developer
+floors and complete demon metadata coverage. The initial cache had no demon flags.
+A parameter-only cache overlay now classifies 96 exact ID/name matches against
+pinned Wiki DPS data and sets Duke resistance on two variants. A full comparison of
+16,577 NPC definitions confirms zero unrelated field/parameter changes; an ordinary
+NPC override was rejected because it reset existing fields. Tests exercise both
+real packed Waterfiends and synthetic drain fixtures. This is not full coverage of
+all transformed/NMZ demons or special vulnerabilities such as Yama. No local developer
 client was listening on port 7780 during this validation. No "perfect FX" claim.
 Formula references: [claw distributions](https://github.com/weirdgloop/osrs-dps-calc/blob/main/src/lib/dists/claws.ts),
 [base-level demonbane drains](https://github.com/weirdgloop/osrs-dps-calc/blob/main/src/lib/scaling/DefenceReduction.ts),
@@ -164,3 +168,9 @@ consumption now follows hit construction so the equipped attack state is retaine
 Five venom tests pass; selected suites total 80 (39 weapons, 39 specials, 2 engine).
 The isolated cache build passed. Live client FX verification is still pending.
 The accepted Zulrah source remains identical to the organization baseline.
+
+Parameter-only NPC overlays use `[[npc_params]]`, `id` and `[npc_params.params]`.
+They merge after existing server NPC overrides without changing client definitions,
+combat stats, movement or other parameters. Unknown NPC IDs fail the pack.
+Reference catalogue: [pinned Wiki DPS NPC data](https://github.com/weirdgloop/osrs-dps-calc/blob/89c3e25b344aea90d0189746e4b5f73dde0f0383/cdn/json/monsters.json).
+Duke resistance: [Wiki strategy](https://oldschool.runescape.wiki/w/Duke_Sucellus/Strategies).

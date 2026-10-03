@@ -186,3 +186,12 @@ protections as active. See the branch audit and exact baseline for recovery refe
   require separate review; this route does not bypass every NPC immunity.
 - Upstream adoption: replace the route with an equivalent per-hit penetration API
   only after the native queue regression and weapon tests pass.
+
+## Parameter-only NPC cache overlays (2026-10-03)
+
+- Files: `or-cache/.../tools/PackServerConfigOSRS.kt` and `codec/osrs/impl/NpcServerCodec.kt`.
+- Reason: a full NPC override for a demon flag replaced earlier server overrides and reset client render priority.
+- Change: `npc_params` overlays parse only ID and params, participate in NPC incremental inputs, and merge at the end of the existing server codec. No client NPC record is rewritten. Unknown base IDs fail validation.
+- Related system: demonbane specials and existing combat attribute collectors.
+- Evidence: 16,577 definitions compared; only 96 demon flags and two Duke resistance flags changed. Existing fields and kill-count parameters match. The codec regression test retains full custom fields and client render priority.
+- Upstream conflict risk: cache overlay parser and codec constructor. Remove this extension if upstream supplies equivalent parameter-only patching or the native cache gains verified attributes. Introducing commit: the focused demon-metadata commit following `9b7daa8e4`.

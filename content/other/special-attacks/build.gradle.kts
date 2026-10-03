@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    testImplementation(libs.or2.all.cache)
     testImplementation(projects.api.invStorage)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.specials)

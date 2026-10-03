@@ -2,8 +2,8 @@ package dev.openrune.tools
 
 import dev.openrune.OsrsCacheProvider
 import dev.openrune.cache.*
-import dev.openrune.cache.filestore.definition.ConfigDefinitionDecoder
 import dev.openrune.cache.CacheDelegate
+import dev.openrune.cache.filestore.definition.ConfigDefinitionDecoder
 import dev.openrune.cache.tools.TaskPriority
 import dev.openrune.cache.tools.incremental.PackUnit
 import dev.openrune.cache.tools.tasks.CacheTask
@@ -53,12 +53,14 @@ data class PackType(
  * from [directory] alone.
  */
 class PackServerConfig(
-    private val rev : Int,
+    private val rev: Int,
     private val directory: File,
     private val extraDirectories: List<File> = emptyList(),
     private val tokenizedReplacements: Map<String, String> = emptyMap(),
     private val tokenizedFile: Path? = null,
 ) : CacheTask(serverTaskOnly = true) {
+
+    private val npcParameterPatches = mutableMapOf<Int, Map<Int, Any>>()
 
     val mapper = tomlMapper {
         rsconfig {
@@ -100,7 +102,7 @@ class PackServerConfig(
             table = "object",
             decoder = ObjectDecoder(rev),
             loadBaseInto = { c, dest -> OsrsCacheProvider.ObjectDecoder(dev.openrune.revision.first).load(c, dest) },
-            codec = { base, overlay -> ObjectServerCodec(rev,base, overlay, examinesObject) },
+            codec = { base, overlay -> ObjectServerCodec(rev, base, overlay, examinesObject) },
             create = { ObjectServerType(it) },
         )
 
@@ -132,6 +134,7 @@ class PackServerConfig(
                     slayerTaskByNpcId,
                     slayerTaskTipByNpcId,
                     slayerSuperiorByNpcId,
+                    npcParameterPatches,
                 )
             },
             create = { NpcServerType(it) },
@@ -141,7 +144,7 @@ class PackServerConfig(
             table = "item",
             decoder = ItemDecoder(rev),
             loadBaseInto = { c, dest -> OsrsCacheProvider.ItemDecoder(dev.openrune.revision.first).load(c, dest) },
-            codec = { base, overlay -> ItemServerCodec(rev,base, overlay) },
+            codec = { base, overlay -> ItemServerCodec(rev, base, overlay) },
             create = { ItemServerType(it) },
         )
 
@@ -304,6 +307,7 @@ class PackServerConfig(
     @OptIn(InternalAPI::class)
     override fun init(cache: Cache) {
         val parsedDefinitions = mutableMapOf<String, MutableList<Definition>>()
+        npcParameterPatches.clear()
         // Which files feed which type: a type only repacks when one of its own files changed.
         val filesByTable = mutableMapOf<String, MutableSet<File>>()
 
@@ -312,6 +316,17 @@ class PackServerConfig(
         for (file in files) {
             val blocks = mapper.decodeRuneScapeBlocks(file.toPath())
             for (block in blocks) {
+                // A parameter-only overlay must not replace an existing full NPC definition.
+                if (block.name == "npc_params") {
+                    require(block.map.properties.keys.all { it == "id" || it == "params" || it == "debugName" }) {
+                        "npc_params accepts only id and params: $file keys=${block.map.properties.keys}"
+                    }
+                    val patch = mapper.decodeRuneScape(typeOf<List<NpcServerType>>(), block.map.properties) as NpcServerType
+                    require(patch.id >= 0 && !patch.paramsRaw.isNullOrEmpty()) { "Invalid npc_params in $file" }
+                    npcParameterPatches[patch.id] = npcParameterPatches[patch.id].orEmpty() + patch.paramsRaw.orEmpty()
+                    filesByTable.getOrPut("npc") { linkedSetOf() }.add(file)
+                    continue
+                }
                 val packType = packTypes[block.name] ?: continue
                 val def =
                     packType.tomlMapper.decodeRuneScape(packType.kType, block.map.properties)

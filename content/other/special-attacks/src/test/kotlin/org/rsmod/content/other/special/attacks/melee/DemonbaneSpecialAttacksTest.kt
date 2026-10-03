@@ -24,6 +24,35 @@ import org.rsmod.game.inv.InvObj
 @Execution(ExecutionMode.SAME_THREAD)
 @OptIn(InternalApi::class)
 class DemonbaneSpecialAttacksTest {
+    @Test fun `packed demon metadata reaches real combat without changing existing NPC fields`() {
+        val types = ServerCacheManager.getNpcs().values
+        val waterfiend = Npc(types.first { it.name == "Waterfiend" })
+        waterfiend.baseAttackLvl = 100; waterfiend.attackLvl = 100
+        DemonbaneSpecialAttacks.weaken(waterfiend, true)
+        assertEquals(84, waterfiend.attackLvl)
+        assertEquals(0, types.first { it.name == "Goblin" }.paramOrNull(params.demon) ?: 0)
+        val duke = types.first { it.name == "Duke Sucellus" && it.paramOrNull(params.demon) == 1 }
+        assertEquals(1, duke.paramOrNull(params.demonbane_resistant))
+    }
+
+    @Test fun `parameter patches retain custom fields existing parameters and client display data`() {
+        val base = dev.openrune.definition.type.NpcType(id = 1, name = "Fixture demon", renderPriority = 1, combatLevel = 100)
+        val custom = dev.openrune.types.NpcServerType(id = 1, wanderRange = 2,
+            examine = "Preserve me", paramsRaw = mutableMapOf(params.killcount_varp.id to 123))
+        val original = dev.openrune.types.NpcServerType(id = 1)
+        val patched = dev.openrune.types.NpcServerType(id = 1)
+        with(dev.openrune.codec.osrs.impl.NpcServerCodec(240, mapOf(1 to base), mapOf(1 to custom))) {
+            original.createData()
+        }
+        with(dev.openrune.codec.osrs.impl.NpcServerCodec(240, mapOf(1 to base), mapOf(1 to custom),
+            parameterPatches = mapOf(1 to mapOf(params.demon.id to 1)))) {
+            patched.createData()
+        }
+        assertEquals(original.copy(paramsRaw = original.paramsRaw.orEmpty().toMutableMap().apply {
+            put(params.demon.id, 1)
+        }), patched)
+    }
+
     @Test fun `drains use base levels additively and clamp at zero`() {
         for ((demon, emberlight, drain) in listOf(Triple(false, false, 6), Triple(false, true, 6),
             Triple(true, false, 11), Triple(true, true, 16))) {
