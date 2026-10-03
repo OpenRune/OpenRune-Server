@@ -232,3 +232,16 @@ protections as active. See the branch audit and exact baseline for recovery refe
 ReducedMeleeDefenceAccuracy follow-up: optional attackPercent defaults to 100 and
 allows BH Dragon mace to combine 125% offence with 60% defence. Existing Vesta
 calls retain their default. Boundary regressions cover both modifiers together.
+
+## Last positive damage source (2026-10-03)
+
+- File: engine/game/.../damage/DamageContributions.kt.
+- Reason: Bone dagger/Snipe guarantee depends on the last damager, not total damage.
+- Change: stores one optional contributor key when a positive Player/NPC hit is
+  recorded, clears it with encounter contributions, exposes wasLastDamagedBy(Player).
+  Zero hits and absorbFrom totals do not alter it. Existing totals/order are unchanged.
+- Validation: last-attacker/zero-hit/repeated-attacker/NPC/reset/import tests, native
+  impact drain tests and full NPC/player/pet/Zulrah regressions. No Zulrah source edit.
+- Upstream conflict risk: contribution lifecycle; preserve real-hit versus transferred
+  totals semantics when reconciling upstream changes. Content adds a dependency on
+  the existing quest module to respect its configured completion policy.

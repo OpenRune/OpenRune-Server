@@ -34,6 +34,7 @@ class SpecialAttackModule : PluginModule() {
         addSetBinding<SpecialAttackMap>(SaradominSwordSpecialAttacks::class.java)
         addSetBinding<SpecialAttackMap>(AncientWarriorSpecialAttacks::class.java)
         addSetBinding<SpecialAttackMap>(BountyHunterMaceSpecialAttack::class.java)
+        addSetBinding<SpecialAttackMap>(DorgeshuunSpecialAttacks::class.java)
         addSetBinding<SpecialAttackMap>(DemonbaneSpecialAttacks::class.java)
         addSetBinding<SpecialAttackMap>(HalberdSpecialAttacks::class.java)
         addSetBinding<SpecialAttackMap>(MeleeWeaponSpecialAttacks::class.java)

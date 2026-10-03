@@ -274,3 +274,21 @@ Two new tests cover NPC/PvP accuracy boundaries, handler routing, FX, damage sta
 and energy. All 89 special tests pass; registry 186/285, 99 missing. Live visuals
 and BH world restrictions remain open. Primary reference:
 [Dragon mace (bh)](https://oldschool.runescape.wiki/w/Dragon_mace_(bh)).
+
+Dorgeshuun slice: four Bone daggers and the Dorgeshuun crossbow use the last positive
+damage contributor to choose guaranteed versus normal accuracy. This is independent
+of top damage and insertion order; misses and imported totals do not replace the
+last attacker. Contributions clear resets the marker. Both specials respect
+QuestRequirements for quest_deathtothedorgeshuun and cost 75% native energy.
+Defence drains by actual damage only when Defence is not already lowered; cancelled
+hits and stale source/target identities have no effect. Bone dagger uses its native
+player stab plus a distinct graphic; Snipe uses the bone special projectile and
+one native ammo-consumption attempt. Native target/prayer modifiers remain in the
+hit queue. Boss-specific drain floors and Kephri's special team-case are not yet
+qualified. Eight new tests pass; 97 special / 161 selected tests and full JAR pass.
+Registry: 191/285, 94 missing. References:
+[Bone dagger](https://oldschool.runescape.wiki/w/Bone_dagger),
+[Dorgeshuun crossbow](https://oldschool.runescape.wiki/w/Dorgeshuun_crossbow).
+
+Dorgeshuun candidate isolated startup/catalogue and clean shutdown passed; proof
+in dorgeshuun-validation-20261003.json. Live installation remains untouched.

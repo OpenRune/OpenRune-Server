@@ -9,5 +9,6 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.api.specials)
     implementation(projects.api.combat.combatFormulas)
+    implementation(projects.content.quest)
     testImplementation("org.mockito:mockito-core:5.14.2")
 }

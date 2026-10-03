@@ -116,5 +116,16 @@ target ownership regression-tested. 73 special tests pass; 174/285 registrations
 Staff protection: eight variants added with temporary native state, 100-tick expiry,
 prayer stacking and damage-time weapon checks. 79 special / 143 selected tests,
 full JAR, cache rebuild and isolated Nero-bridge startup/clean shutdown pass.
-Registry now 186/285; 99 missing. Live visual qualification and remaining weapon
+Registry at this slice: 182/285; 103 missing. Live visual qualification and remaining weapon
 mechanics are still open; the accepted installation and frozen installer are intact.
+
+
+Latest ranged / BH / Dorgeshuun slices: nine Dark bow identities, corrected minimum
+hits and BH distributions, projectile timing and Dragon knife Duality effects.
+BH Dragon mace uses its own 60% defence roll. Four Bone daggers and Dorgeshuun
+crossbow now guarantee hits according to the last positive damager, respecting the
+quest policy; their non-stacking Defence drain waits for actual impact. Native
+contribution totals are unchanged. 97 special / 161 selected tests and the full
+server JAR pass. Current registry: 191/285; 94 missing. Seeking arrows need missing
+double-launch metadata; mode restrictions, boss drain floors and live FX validation
+remain open. The accepted installation and frozen installer remain unchanged.
