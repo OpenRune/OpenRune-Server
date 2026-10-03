@@ -15,7 +15,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
 
-class DragonClawsSpecialAttack @Inject constructor(private val rng: GameRandom) : SpecialAttackMap {
+class DragonClawsSpecialAttack @Inject constructor(private val rng: GameRandom, private val damage: MeleeSpecialDamage) : SpecialAttackMap {
     override fun SpecialAttackRepository.register(manager: SpecialAttackManager) {
         val handler = SliceAndDice(manager)
         WEAPONS.forEach { registerMelee(it, handler) }
@@ -28,12 +28,13 @@ class DragonClawsSpecialAttack @Inject constructor(private val rng: GameRandom) 
         private fun ProtectedAccess.perform(target: PathingEntity, attack: CombatAttack.Melee): Boolean {
             anim(ANIMATION)
             spotanim(EFFECT, height = 0, slot = constants.spotanim_slot_combat)
-            val maximum = manager.calculateMeleeMaxHit(this, target, attack.type, attack.style, 1.0).coerceAtLeast(0)
+            val maximum = damage.maximum(player, target, attack, deferReductions = true).coerceAtLeast(0)
             val amounts = roll(maximum, rng, player.adminMaxHit) {
                 manager.rollMeleeAccuracy(this, target, attack.type, attack.style, MeleeAttackType.Slash, 1.0)
             }
             amounts.forEachIndexed { index, amount ->
-                val hit = manager.queueMeleeHit(this, target, amount, 1 + index / 2)
+                val reduced = damage.modifyRolledHit(player, target, attack, amount)
+                val hit = manager.queueMeleeHit(this, target, reduced, 1 + index / 2)
                 manager.giveCombatXp(this, target, attack, hit.damage)
             }
             manager.continueCombat(this, target)

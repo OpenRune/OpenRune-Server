@@ -26,21 +26,16 @@ class MeleeSpecialDamage @Inject constructor(
     private val random: GameRandom,
 ) {
     fun maximum(source: Player, target: PathingEntity, attack: CombatAttack.Melee,
-                firstPercent: Int = 100, secondPercent: Int = 100, magic: Boolean = false): Int {
+                firstPercent: Int = 100, secondPercent: Int = 100, deferReductions: Boolean = false): Int {
         val melee = meleeAttributes.collect(source, attack.type)
-        val npc = when (target) {
-            is Npc -> npcAttributes.collect(target.visType, target, target.hitpoints,
-                target.baseHitpointsLvl, source.vars["varp.slayer_target"].let { task ->
-                    task > 0 && target.visType.paramOrNull(BaseParams.slayer_task_id) == task
-                })
-            is Player -> EnumSet.noneOf(CombatNpcAttributes::class.java)
-        }
+        val npc = targetAttributes(source, target)
         val base = when (target) {
             is Npc -> npcMaxHit.computeModifiedDamage(source, attack.style, melee, npc)
             is Player -> playerMaxHit.computeModifiedDamage(source, attack.style, melee, npc)
         }
         val boosted = scaledMaximum(base, firstPercent, secondPercent)
-        if (magic) return boosted // Voidwaker does not inherit Corp's melee reduction.
+        // Claws reduce each split hit; Voidwaker uses magic rather than Corp's melee reduction.
+        if (deferReductions) return boosted
         return when (target) {
             is Npc -> npcMaxHit.modifyPostSpec(source, boosted, melee, npc)
             is Player -> reduce(target, playerMaxHit.modifyPostSpec(source, boosted, melee, npc))
@@ -49,6 +44,23 @@ class MeleeSpecialDamage @Inject constructor(
 
     fun reduce(target: Player, damage: Int): Int =
         if (DamageReductionAttributes.ElysianProc in reductions.collectPvP(target, random)) damage * 3 / 4 else damage
+
+    fun modifyRolledHit(source: Player, target: PathingEntity, attack: CombatAttack.Melee, damage: Int): Int {
+        val melee = meleeAttributes.collect(source, attack.type)
+        val npc = targetAttributes(source, target)
+        return when (target) {
+            is Npc -> npcMaxHit.modifyPostSpec(source, damage, melee, npc)
+            is Player -> reduce(target, playerMaxHit.modifyPostSpec(source, damage, melee, npc))
+        }
+    }
+
+    private fun targetAttributes(source: Player, target: PathingEntity): EnumSet<CombatNpcAttributes> = when (target) {
+        is Npc -> npcAttributes.collect(target.visType, target, target.hitpoints,
+            target.baseHitpointsLvl, source.vars["varp.slayer_target"].let { task ->
+                task > 0 && target.visType.paramOrNull(BaseParams.slayer_task_id) == task
+            })
+        is Player -> EnumSet.noneOf(CombatNpcAttributes::class.java)
+    }
 
     internal companion object {
         fun scaledMaximum(base: Int, firstPercent: Int, secondPercent: Int): Int =

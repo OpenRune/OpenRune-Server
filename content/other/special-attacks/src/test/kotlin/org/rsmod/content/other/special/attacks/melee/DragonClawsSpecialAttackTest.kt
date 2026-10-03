@@ -68,16 +68,18 @@ class DragonClawsSpecialAttackTest {
             val manager = mock(SpecialAttackManager::class.java)
             val random = mock(GameRandom::class.java)
             val registry = SpecialAttackRegistry(weapons)
-            with(DragonClawsSpecialAttack(random)) { SpecialAttackRepository(registry).register(manager) }
+            val damage = mock(MeleeSpecialDamage::class.java)
+            with(DragonClawsSpecialAttack(random, damage)) { SpecialAttackRepository(registry).register(manager) }
             val access = mock(ProtectedAccess::class.java)
             `when`(access.player).thenReturn(Player())
             val target = Npc(ServerCacheManager.getNpcs().values.first { it.name == "Goblin" })
             val attack = CombatAttack.Melee(InvObj(symbol), MeleeAttackType.Stab, MeleeAttackStyle.Accurate, CombatStance.Stance1)
-            `when`(manager.calculateMeleeMaxHit(access, target, attack.type, attack.style, 1.0)).thenReturn(40)
+            `when`(damage.maximum(access.player, target, attack, 100, 100, true)).thenReturn(40)
             `when`(manager.rollMeleeAccuracy(access, target, attack.type, attack.style, MeleeAttackType.Slash, 1.0)).thenReturn(true)
             `when`(random.of(40, 79)).thenReturn(79)
             for ((amount, delay) in listOf(39 to 1, 19 to 1, 9 to 2, 10 to 2)) {
-                `when`(manager.queueMeleeHit(access, target, amount, delay)).thenReturn(Hit(HitType.Melee, Hitmark(0).copy(damage = amount), null, null, null))
+                `when`(damage.modifyRolledHit(access.player, target, attack, amount)).thenReturn(amount / 2)
+                `when`(manager.queueMeleeHit(access, target, amount / 2, delay)).thenReturn(Hit(HitType.Melee, Hitmark(0).copy(damage = amount / 2), null, null, null))
             }
             val special = registry[InvObj(symbol)] as SpecialAttack.Melee
             assertEquals(500, special.energyInHundreds)
@@ -89,9 +91,36 @@ class DragonClawsSpecialAttackTest {
             assertEquals(true, result)
             verify(access).anim(DragonClawsSpecialAttack.ANIMATION, 0)
             verify(access).spotanim(DragonClawsSpecialAttack.EFFECT, 0, 0, constants.spotanim_slot_combat)
-            for ((amount, delay) in listOf(39 to 1, 19 to 1, 9 to 2, 10 to 2)) verify(manager).queueMeleeHit(access, target, amount, delay)
+            for ((amount, delay) in listOf(39 to 1, 19 to 1, 9 to 2, 10 to 2)) {
+                verify(damage).modifyRolledHit(access.player, target, attack, amount)
+                verify(manager).queueMeleeHit(access, target, amount / 2, delay)
+            }
             verify(manager, times(1)).rollMeleeAccuracy(access, target, attack.type, attack.style, MeleeAttackType.Slash, 1.0)
         }
+    }
+
+    @Test fun `Elysian reduction is rolled separately for each already split hit`() {
+        val melee = mock(org.rsmod.api.combat.formulas.attributes.collector.CombatMeleeAttributeCollector::class.java)
+        val npc = mock(org.rsmod.api.combat.formulas.attributes.collector.CombatNpcAttributeCollector::class.java)
+        val npcMaximum = mock(org.rsmod.api.combat.formulas.maxhit.melee.PvNMeleeMaxHit::class.java)
+        val playerMaximum = mock(org.rsmod.api.combat.formulas.maxhit.melee.PvPMeleeMaxHit::class.java)
+        val reductions = mock(org.rsmod.api.combat.formulas.attributes.collector.DamageReductionAttributeCollector::class.java)
+        val random = mock(GameRandom::class.java)
+        val source = Player()
+        val target = Player()
+        val attack = CombatAttack.Melee(InvObj("obj.dragon_claws"), MeleeAttackType.Slash, MeleeAttackStyle.Accurate, CombatStance.Stance1)
+        val meleeFlags = java.util.EnumSet.noneOf(org.rsmod.api.combat.formulas.attributes.CombatMeleeAttributes::class.java)
+        val npcFlags = java.util.EnumSet.noneOf(org.rsmod.api.combat.formulas.attributes.CombatNpcAttributes::class.java)
+        `when`(melee.collect(source, attack.type)).thenReturn(meleeFlags)
+        val proc = java.util.EnumSet.of(org.rsmod.api.combat.formulas.attributes.DamageReductionAttributes.ElysianProc)
+        val noProc = java.util.EnumSet.noneOf(org.rsmod.api.combat.formulas.attributes.DamageReductionAttributes::class.java)
+        `when`(reductions.collectPvP(target, random)).thenReturn(proc, noProc, proc, noProc)
+        for (amount in listOf(39, 19, 9, 10)) {
+            `when`(playerMaximum.modifyPostSpec(source, amount, meleeFlags, npcFlags)).thenReturn(amount)
+        }
+        val damage = MeleeSpecialDamage(melee, npc, npcMaximum, playerMaximum, reductions, random)
+        assertEquals(listOf(29, 19, 6, 10), listOf(39, 19, 9, 10).map { damage.modifyRolledHit(source, target, attack, it) })
+        verify(reductions, times(4)).collectPvP(target, random)
     }
 
     companion object { @JvmStatic @BeforeAll fun setup() { ServerCacheManager.init(240).close() } }

@@ -54,7 +54,9 @@ registrations are claimed and client FX placement remains unqualified.
 
 Further melee families (not in the frozen installer): 17 additional item variants.
 Dragon claws has four conditional accuracy branches, bounded split damage, the
-all-miss chip outcome and paired hit delays. Dragon scimitar locks protection
+all-miss chip outcome and paired hit delays. Post-special reductions apply separately
+to each split hit, including independent Elysian rolls and integer rounding.
+Dragon scimitar locks protection
 prayers for eight ticks on positive impact without disabling Protect Item.
 Darklight, Arclight (including inactive) and Emberlight drain Attack, Strength and
 Defence additively from base levels after an accurate hit impacts; demon flags select
@@ -71,7 +73,7 @@ live respawn snapshot refresh and graceful database/server shutdown checks. This
 validation did not replace files in the accepted installation.
 
 Remaining qualification: client animation height/frame alignment, variant cosmetics,
-claw per-hit post-special reductions, NPC prayer/immunity interactions, boss stat-drain
+NPC prayer/immunity interactions, boss stat-drain
 floors and demon metadata coverage. The cache-only fixture has no positive demon
 params, so drain tests explicitly construct both demon and non-demon definitions;
 this is not evidence that every live NPC is correctly classified. No local developer
