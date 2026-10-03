@@ -204,3 +204,11 @@ protections as active. See the branch audit and exact baseline for recovery refe
 - Evidence: equipped-item collector plus actual accuracy/damage operations tested for ordinary/dyed Silverlight, Darklight, Arclight, Emberlight and Dragon sword against ordinary/demon/resistant targets.
 - Reference: [pinned Wiki DPS formulas](https://github.com/weirdgloop/osrs-dps-calc/blob/89c3e25b344aea90d0189746e4b5f73dde0f0383/src/lib/PlayerVsNPCCalc.ts).
 - Upstream conflict risk: shared equipment attribute mappings and melee accuracy operations. Reconcile rather than stack bonuses when upstream adds equivalent coverage. Introducing commit: focused demonbane-formula follow-up to `61c605a8c`.
+
+## Melee offence against magic defence (2026-10-03)
+
+- File: `api/combat/combat-formulas/.../accuracy/melee/MeleeAgainstMagicAccuracy.kt`.
+- Reason: blessed Saradomin sword contests magic defence while retaining melee offence and melee damage classification.
+- Change: composes existing melee offence, NPC/player magic defence and native accuracy operations, including NPC magic-defence drain and raid scaling. Existing melee/magic formulas are unchanged.
+- Evidence: helper routing tests verify selected melee stance/type, NPC defence/Magic inputs and player magic defence; special tests verify melee hit queues and protection behavior.
+- Upstream conflict risk: formula helper signatures. Replace with an equivalent upstream mixed-accuracy route only after retaining these tests. Introducing commit: Saradomin sword slice after `6f300c4aa`.

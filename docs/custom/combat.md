@@ -189,3 +189,18 @@ all variants and reduced-cost mode. The caster uses the shared thrust animation
 with the distinct post-2024 hasta spot effect at height zero. Live frame alignment
 remains unverified. Reference: [Dragon hasta](https://oldschool.runescape.wiki/w/Dragon_hasta).
 The special suite now passes 61 tests; registered coverage is 162/285.
+
+Saradomin sword slice: ordinary Saradomin sword has its shared-accuracy melee hit
+and separate 1-16 magic hit, with separate melee/Magic experience. PvP Protect from
+Magic blocks the secondary hit entirely. Both blessed identities use melee offence
+against magic defence, 25% increased maximum damage and 65% energy; their damage
+still follows melee prayers and immunities. Caster sword effects and target lightning
+use separate cache symbols. Tests cover NPC/PvP, hit/miss, protection prayers,
+energy, experience routing and actual hybrid accuracy calculation. Blessed sword
+ordinary degradation remains a separate unfinished weapon task. Visual frame/height
+parity has not been verified in a live client.
+References: [Saradomin sword](https://oldschool.runescape.wiki/w/Saradomin_sword),
+[blessed sword](https://oldschool.runescape.wiki/w/Saradomin%27s_blessed_sword),
+[magical melee](https://oldschool.runescape.wiki/w/Magical_melee).
+Validation: 65 special tests, 129 selected tests overall, full server JAR build.
+Registry: 165/285 registered, 120 missing; registration does not certify full mechanics.

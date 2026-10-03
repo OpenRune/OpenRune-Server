@@ -11,6 +11,7 @@ import org.rsmod.content.other.special.attacks.melee.DragonLongswordSpecialAttac
 import org.rsmod.content.other.special.attacks.melee.DragonTwoHandedSpecialAttack
 import org.rsmod.content.other.special.attacks.melee.HalberdSpecialAttacks
 import org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks
+import org.rsmod.content.other.special.attacks.melee.SaradominSwordSpecialAttacks
 import org.rsmod.content.other.special.attacks.melee.VoidwakerSpecialAttack
 import org.rsmod.content.other.special.attacks.ranged.BlowpipeSpecialAttacks
 import org.rsmod.content.other.special.attacks.ranged.DarkBowSpecialAttack
@@ -27,6 +28,7 @@ class SpecialAttackModule : PluginModule() {
         addSetBinding<SpecialAttackMap>(DragonLongswordSpecialAttack::class.java)
         addSetBinding<SpecialAttackMap>(DragonClawsSpecialAttack::class.java)
         addSetBinding<SpecialAttackMap>(DragonHastaSpecialAttack::class.java)
+        addSetBinding<SpecialAttackMap>(SaradominSwordSpecialAttacks::class.java)
         addSetBinding<SpecialAttackMap>(DemonbaneSpecialAttacks::class.java)
         addSetBinding<SpecialAttackMap>(HalberdSpecialAttacks::class.java)
         addSetBinding<SpecialAttackMap>(MeleeWeaponSpecialAttacks::class.java)

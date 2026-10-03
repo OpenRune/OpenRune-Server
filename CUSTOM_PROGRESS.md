@@ -96,3 +96,9 @@ these changes are outside the frozen `880c6a9fa` installer.
 Dragon hasta slice: all five variants implemented; 61 special tests pass including
 partial/full energy, misses, NPC/PvP and native cost modifiers. Coverage 162/285;
 123 registrations remain missing, and live FX qualification is still pending.
+
+Saradomin sword slice: all three identities registered with distinct ordinary and
+blessed damage paths, caster/target effects and hybrid accuracy. 65 special tests
+and 129 selected tests overall pass; full server JAR builds. Current registry is
+165/285, with 120 missing. Blessed sword degradation and live FX qualification
+remain open. The frozen installer and accepted installation are unchanged.
