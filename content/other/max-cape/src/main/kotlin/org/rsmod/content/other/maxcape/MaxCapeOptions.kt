@@ -54,7 +54,7 @@ internal object MaxCapeOptions {
         3 -> if (wornVariant) portals else spells
         4 -> features
         else -> emptyList()
-    }.getOrNull(subop - 1)
+    }.getOrNull(subop)
 
     fun worn(op: Int, subop: Int): CapeAction? = when (op) {
         4 -> guilds
@@ -63,5 +63,5 @@ internal object MaxCapeOptions {
         7 -> spells
         8 -> features
         else -> emptyList()
-    }.getOrNull(subop - 1)
+    }.getOrNull(subop)
 }

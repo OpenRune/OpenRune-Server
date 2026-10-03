@@ -1,0 +1,72 @@
+[[interface]]
+name = "interface.quest_guide"
+width = 512
+height = 334
+on_load = ["clientscript.quest_guide_init"]
+
+[[component]]
+name = "frame"
+type = "layer"
+width = 512
+height = 334
+no_click_through = true
+
+[[component]]
+name = "overview"
+type = "layer"
+x = 10
+y = 39
+width = 90
+height = 20
+options = ["Overview"]
+
+[[component]]
+name = "journal"
+type = "layer"
+x = 104
+y = 39
+width = 90
+height = 20
+options = ["Journal"]
+
+[[component]]
+name = "map"
+type = "layer"
+x = 398
+y = 39
+width = 104
+height = 20
+options = ["Show on map"]
+
+[[component]]
+name = "panel"
+type = "layer"
+x = 10
+y = 64
+width = 492
+height = 260
+
+[[component]]
+name = "viewport"
+type = "layer"
+x = 18
+y = 72
+width = 460
+height = 244
+no_click_through = true
+
+[[component]]
+name = "body"
+type = "layer"
+parent = "viewport"
+x = 5
+width = 450
+height = 244
+
+[[component]]
+name = "scrollbar"
+type = "layer"
+x = 480
+y = 72
+width = 16
+height = 244

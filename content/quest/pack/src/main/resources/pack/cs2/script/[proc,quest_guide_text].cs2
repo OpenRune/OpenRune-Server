@@ -1,0 +1,29 @@
+[proc,quest_guide_text](string $text)(string)
+def_string $result = "";
+def_int $offset = 0;
+def_int $start = string_indexof_char($text, '<');
+while ($start >= 0) {
+    $result = "<$result><substring($text, $offset, $start)>";
+    def_int $end = string_indexof_string($text, ">", $start);
+    if ($end < 0) {
+        return("<$result><substring($text, $start, string_length($text))>");
+    }
+    def_string $tag = substring($text, $start, calc($end + 1));
+    def_string $lower = lowercase($tag);
+    if (compare($lower, "<"<col=000080>">") = 0 | compare($lower, "<"<col=0000ff>">") = 0 | compare($lower, "<"<col=ff>">") = 0) {
+        $tag = "<"<col=ff981f>">";
+    } else if (compare($lower, "<"<col=000000>">") = 0 | compare($lower, "<"<col=0>">") = 0) {
+        $tag = "<"<col=ffffff>">";
+    } else if (compare($lower, "<"<col=800000>">") = 0 | compare($lower, "<"<col=7f0000>">") = 0 | compare($lower, "<"<col=ff0000>">") = 0) {
+        $tag = "<"<col=ff6666>">";
+    } else if (compare($lower, "<"<col=008000>">") = 0 | compare($lower, "<"<col=8000>">") = 0) {
+        $tag = "<"<col=00ff00>">";
+    }
+    $result = "<$result><$tag>";
+    $offset = calc($end + 1);
+    $start = string_indexof_char(substring($text, $offset, string_length($text)), '<');
+    if ($start >= 0) {
+        $start = calc($start + $offset);
+    }
+}
+return("<$result><substring($text, $offset, string_length($text))>");

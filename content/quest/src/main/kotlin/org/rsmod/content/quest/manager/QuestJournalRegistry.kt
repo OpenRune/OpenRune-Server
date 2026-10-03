@@ -1,5 +1,6 @@
 package org.rsmod.content.quest.manager
 
+import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.output.runClientScript
@@ -32,47 +33,20 @@ object QuestJournalRegistry {
     fun openJournal(access: ProtectedAccess, quest: Quest, type: JournalState) {
         val content = get(quest) ?: return
         access.player.attr[ACTIVE_QUEST_JOURNAL_ATTR] = quest.key
-        when (type) {
-            JournalState.OVERVIEW -> openJournalOverview(access, quest, content)
-            JournalState.LOG -> openQuestLog(access, quest, content)
-        }
+        val log = if (type == JournalState.LOG) {
+            val source = if (quest.isQuestCompleted(access.player)) content.completedLog(access) else content.questLog(access)
+            source.lines().joinToString("<br>") { it.toRs(inheritPreviousTags = true, wrapAt = 10_000) }
+        } else ""
+        access.ifOpenMain("interface.quest_guide")
+        access.ifSetEvents("component.quest_guide:body", 0..200, IfEvent.Op1, IfEvent.Op2, IfEvent.Op3, IfEvent.Op4)
+        access.runClientScript(
+            RSCM.getRSCM("clientscript.quest_guide_draw"), quest.rowID, content.subTitle(),
+            quest.displayName, log, access.player.combatLevel, if (type == JournalState.OVERVIEW) 0 else 1,
+        )
     }
 
     fun activeQuest(player: Player): Quest? {
         val key = player.attr[ACTIVE_QUEST_JOURNAL_ATTR] ?: return null
         return Quest.get(key)
-    }
-
-    private fun openJournalOverview(access: ProtectedAccess, quest: Quest, content: QuestJournalContent) {
-        access.ifOpenMain("interface.questjournal_overview")
-        access.ifSetText("component.questjournal_overview:title", "<col=7f0000>${quest.displayName}</col>")
-
-        access.runClientScript(
-            6821,
-            quest.rowID,
-            content.subTitle(),
-            RSCM.getRSCM("component.questjournal_overview:universe"),
-            RSCM.getRSCM("component.questjournal_overview:content_inner"),
-            RSCM.getRSCM("component.questjournal_overview:content_outer"),
-            RSCM.getRSCM("component.questjournal_overview:scrollbar"),
-            RSCM.getRSCM("component.questjournal_overview:inner"),
-            RSCM.getRSCM("component.questjournal_overview:container"),
-            RSCM.getRSCM("component.questjournal_overview:scroll"),
-            access.player.combatLevel,
-        )
-    }
-
-    private fun openQuestLog(access: ProtectedAccess, quest: Quest, content: QuestJournalContent) {
-        val lines = (if (quest.isQuestCompleted(access.player)) content.completedLog(access) else content.questLog(access))
-            .lines()
-            .flatMap { it.toRs(inheritPreviousTags = true, wrapAt = 64).split("<br>") }
-
-        access.ifOpenMain("interface.questjournal")
-        access.runClientScript(5240)
-        access.ifSetText("component.questjournal:title", "<col=7f0000>${quest.displayName}</col>")
-
-        lines.forEachIndexed { index, line ->
-            access.ifSetText("component.questjournal:qj${index + 1}", line)
-        }
     }
 }

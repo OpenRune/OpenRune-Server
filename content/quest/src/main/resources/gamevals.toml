@@ -1,5 +1,11 @@
 [gamevals.clientscript]
 quest_available_set = 45550
+quest_guide_init = 45543
+quest_guide_draw = 45544
+quest_guide_text = 45545
+
+[gamevals.interface]
+quest_guide = 1104
 
 [gamevals.timer]
 quest_scroll_close = 402

@@ -53,13 +53,22 @@ import org.rsmod.routefinder.collision.CollisionFlagMap
 @OptIn(InternalApi::class)
 class MaxCapeTest {
     @Test fun `every client submenu action resolves and boat actions remain disabled`() {
-        for (n in 1..20) assertNotNull(MaxCapeOptions.held(2, n), "teleport $n")
-        for (n in 1..5) assertNotNull(MaxCapeOptions.held(3, n), "spellbook $n")
-        for (n in 1..6) assertNotNull(MaxCapeOptions.held(4, n), "feature $n")
-        assertEquals(CapeAction.Sailing, MaxCapeOptions.held(2, 20))
+        for (n in 0..19) assertNotNull(MaxCapeOptions.held(2, n), "teleport $n")
+        for (n in 0..4) assertNotNull(MaxCapeOptions.held(3, n), "spellbook $n")
+        for (n in 0..5) assertNotNull(MaxCapeOptions.held(4, n), "feature $n")
+        assertEquals(CapeAction.Teleport(CapeDestination.Warriors), MaxCapeOptions.held(2, 0))
+        assertEquals(CapeAction.Teleport(CapeDestination.Farming), MaxCapeOptions.held(2, 3))
+        assertEquals(CapeAction.Teleport(CapeDestination.Crafting), MaxCapeOptions.worn(4, 0))
+        assertEquals(CapeAction.Teleport(CapeDestination.Farming), MaxCapeOptions.worn(4, 1))
+        assertEquals(CapeAction.Spellbook(0), MaxCapeOptions.held(3, 0))
+        assertEquals(CapeAction.Check, MaxCapeOptions.held(3, 4))
+        assertEquals(CapeAction.Search, MaxCapeOptions.held(4, 0))
+        assertEquals(CapeAction.Stamina, MaxCapeOptions.held(4, 3))
+        assertEquals(CapeAction.Search, MaxCapeOptions.worn(8, 0))
+        assertEquals(CapeAction.Sailing, MaxCapeOptions.held(2, 19))
         assertEquals(CapeAction.Sailing, MaxCapeOptions.held(4, 5))
-        assertNull(MaxCapeOptions.held(4, 0))
-        assertNull(MaxCapeOptions.held(4, 7))
+        assertNull(MaxCapeOptions.held(4, -1))
+        assertNull(MaxCapeOptions.held(4, 6))
         assertNull(MaxCapeOptions.worn(1, 1))
     }
 
@@ -136,8 +145,26 @@ class MaxCapeTest {
         val component = ServerCacheManager.fromComponent("component.inventory:items")
         f.player.ui.overlays.backing.put(0, component.packed ushr 16)
         f.player.ui.events.add("component.inventory:items", 0..27, IfEvent.Op4.bitmask)
-        IfSubOpHandler(f.events, f.launcher).handle(f.player, IfSubOp(CombinedId(component.packed), 0, obj.id, 4, 2))
+        IfSubOpHandler(f.events, f.launcher).handle(f.player, IfSubOp(CombinedId(component.packed), 0, obj.id, 4, 1))
         assertEquals(Spellbook.Ancients, f.books.activeSpellbook(f.player))
+    }
+
+    @Test fun `client Farming Guild index 3 teleports to Farming instead of Crafting`() {
+        val f = Fixture()
+        f.inventoryPacket(3, 3)
+        assertTrue(f.player.coords.chebyshevDistance(CapeDestination.Farming.coords) <= 3)
+    }
+
+    @Test fun `client first feature index 0 searches and fourth feature index 3 boosts stamina`() {
+        val f = Fixture()
+        f.inventoryPacket(6, 0)
+        assertTrue("obj.xbows_crossbow_bronze" in f.player.inv)
+        assertEquals(1, f.player.capeSearchUses)
+        f.player.runEnergy = 0
+        f.inventoryPacket(6, 3)
+        assertEquals(10_000, f.player.runEnergy)
+        assertTrue(f.player.capeStaminaUsed)
+        assertFalse(f.player.capeJunkDisabled)
     }
 
     @Test fun `worn submenu packet is not mistaken for an inventory click at the same slot`() {
@@ -146,7 +173,7 @@ class MaxCapeTest {
         val component = equipment_tab_to_slots_map[Wearpos.Back.slot]!!
         f.player.ui.overlays.backing.put(0, component.packed ushr 16)
         f.player.ui.events.add(RSCM.getReverseMapping(RSCMType.COMPONENT, component.packed), 0..0, IfEvent.Op7.bitmask)
-        IfSubOpHandler(f.events, f.launcher).handle(f.player, IfSubOp(CombinedId(component.packed), 0, f.player.back!!.id, 7, 2))
+        IfSubOpHandler(f.events, f.launcher).handle(f.player, IfSubOp(CombinedId(component.packed), 0, f.player.back!!.id, 7, 1))
         assertEquals(Spellbook.Ancients, f.books.activeSpellbook(f.player))
     }
 
@@ -166,9 +193,9 @@ class MaxCapeTest {
         f.player.ui.modals.backing.put(0, component.packed ushr 16)
         f.player.ui.events.add(RSCM.getReverseMapping(RSCMType.COMPONENT, component.packed), 0..0, IfEvent.Op7.bitmask)
         val handler = IfSubOpHandler(f.events, f.launcher)
-        handler.handle(f.player, IfSubOp(CombinedId(component.packed), 0, "obj.shark".asRSCM(), 7, 2))
+        handler.handle(f.player, IfSubOp(CombinedId(component.packed), 0, "obj.shark".asRSCM(), 7, 1))
         assertEquals(Spellbook.Standard, f.books.activeSpellbook(f.player))
-        handler.handle(f.player, IfSubOp(CombinedId(component.packed), 0, f.player.back!!.id, 7, 2))
+        handler.handle(f.player, IfSubOp(CombinedId(component.packed), 0, f.player.back!!.id, 7, 1))
         assertEquals(Spellbook.Ancients, f.books.activeSpellbook(f.player))
     }
 
@@ -277,6 +304,12 @@ class MaxCapeTest {
         }
         fun access(block: suspend ProtectedAccess.() -> Unit) { assertTrue(ProtectedAccessLauncher.withProtectedAccess(player, context, block = block)) }
         fun action(action: CapeAction) { with(script) { access { perform(action) } } }
+        fun inventoryPacket(op: Int, subop: Int) {
+            val component = ServerCacheManager.fromComponent("component.inventory:items")
+            player.ui.overlays.backing.put(0, component.packed ushr 16)
+            player.ui.events.add("component.inventory:items", 0..27, IfEvent.Op3.bitmask or IfEvent.Op6.bitmask)
+            IfSubOpHandler(events, launcher).handle(player, IfSubOp(CombinedId(component.packed), 0, player.inv[0]!!.id, op, subop))
+        }
     }
 
     companion object {

@@ -1,0 +1,6 @@
+[clientscript,quest_guide_init]
+~steelborder(quest_guide:frame, "Quest Guide", 0);
+~thinbox(quest_guide:panel, 0);
+~stonebutton_draw(false, "Overview", p11_full, 1, quest_guide:overview);
+~stonebutton_draw(false, "Journal", p11_full, 1, quest_guide:journal);
+~stonebutton_draw(false, "Show on map", p11_full, 1, quest_guide:map);
