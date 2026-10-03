@@ -34,3 +34,13 @@ exceptions remain to verify. Selected handler tests do not certify live client v
 Registration baseline remains 137/285; ordinary trident attacks add no special entries.
 
 Mechanics reference: https://oldschool.runescape.wiki/w/Trident_of_seas_full
+
+Scythe charge slice: normal, Holy and Sanguine forms now have persistent per-item
+charges, atomic 200-blood-rune/one-vial payments for 100 charges, check/uncharge menus,
+and one charge consumed for a damaging swing rather than per hit. Empty forms retain
+the existing size-based normal attack with their weaker stats. No uncharge refund is
+implied outside a well; confirmation explicitly warns that resources are lost.
+Vyre-well storage/refunds, secondary area targets, variant FX qualification and
+impact-modified damage accounting remain open. Corrupted and quest forms are not
+silently aliased. Fifteen module tests pass (nine trident, five scythe, one cache export).
+These slices do not change the 137/285 special registration count.
