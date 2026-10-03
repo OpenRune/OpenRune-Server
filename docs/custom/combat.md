@@ -22,7 +22,7 @@ Branch: feature/weapon-completeness, based on accepted runtime plus organization
 commit 82d6c0203. User requests complete specials and normal weapon/charge behaviour.
 Zulrah encounter files, rotations, reach policy and respawn policy remain unchanged.
 
-Latest registry: 157/285 registered special-energy items, 128 missing. Registration
+Latest registry: 162/285 registered special-energy items, 123 missing. Registration
 is not visual or mechanical parity. Selected suites pass 122 tests: 42 weapons,
 58 specials, 2 engine, 5 NPC, 2 Zulrah and 13 pets. The full server JAR builds.
 The earlier installable checkpoint passed 103 tests. Its isolated revision-240 server boot with the existing Nero server plugin passes
@@ -179,3 +179,13 @@ Silverlight/Darklight follow-up: both normal swords now receive their 60% demonb
 accuracy and damage bonuses (42% with Duke resistance). Dyed Silverlight retains
 only its damage bonus; non-demons are unchanged. The actual equipped-item collector
 and formula operations are regression-tested alongside Arclight/Emberlight controls.
+
+Dragon hasta: all five poisoned/unpoisoned variants now implement Unleash. Damage
+and accuracy scale by full 5%-energy steps, selected melee accuracy rolls against
+stab defence, and PvP Protect from Melee is pierced via the native hit path. The
+handler pays extra cost and leaves the minimum to the normal dispatcher; both
+use native energy modifiers. Tests cover 5%, 25% and 100%, misses/hits, NPC/PvP,
+all variants and reduced-cost mode. The caster uses the shared thrust animation
+with the distinct post-2024 hasta spot effect at height zero. Live frame alignment
+remains unverified. Reference: [Dragon hasta](https://oldschool.runescape.wiki/w/Dragon_hasta).
+The special suite now passes 61 tests; registered coverage is 162/285.

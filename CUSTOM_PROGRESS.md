@@ -42,7 +42,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 | Native commands / inventory loadouts / ::spres | VERIFIED for covered regressions | UPSTREAM + CUSTOM EXTENSIONS | Inventory-only grants; no replacement of worn gear |
 | Max cape submenu indexing | VERIFIED for covered regressions | CUSTOM | 15 tests, including actual packets and Farming Guild selection |
 | Monster drops, pet gallery, skill/quest guides | IMPLEMENTED / NEEDS TESTING for visual edge cases | HYBRID | Search, navigation, log/map and all skill buttons tested; fixed/resized scrolling remains an explicit visual checklist |
-| Combat specials and shields | IN PROGRESS | UPSTREAM + CUSTOM EXTENSIONS | 157/285 special-energy items registered; 128 missing, six shield forms covered separately; see combat audit |
+| Combat specials and shields | IN PROGRESS | UPSTREAM + CUSTOM EXTENSIONS | 162/285 special-energy items registered; 123 missing, six shield forms covered separately; see combat audit |
 | Respawn countdowns | VERIFIED for covered regressions | HYBRID | Actual deadline snapshots; non-GWD policy is 34 ticks = 20.4 s |
 | Nero object library and loot colours | VERIFIED for covered regressions | CUSTOM integration | Paired plugin tests; native Ground Items aggregation/value colour fallback |
 | Plugin lifecycle / offline login / installer alternatives | NEEDS REVIEW | Archived custom alternatives | Not imported into the accepted runtime |
@@ -92,3 +92,7 @@ Demonbane follow-up: parameter-only cache overlays add 96 verified demon flags a
 two Duke resistance flags; all 16,577 NPC definitions retain other fields. Claws
 reductions now apply per split hit. 122 selected tests, the full server JAR and isolated Nero-bridge boot pass;
 these changes are outside the frozen `880c6a9fa` installer.
+
+Dragon hasta slice: all five variants implemented; 61 special tests pass including
+partial/full energy, misses, NPC/PvP and native cost modifiers. Coverage 162/285;
+123 registrations remain missing, and live FX qualification is still pending.

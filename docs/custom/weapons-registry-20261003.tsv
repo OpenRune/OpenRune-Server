@@ -123,11 +123,11 @@ id	name	category	energy	registered_kind	handler	description
 22622	Statius's warhammer	Blunt	350	missing		Smash: Deal an attack which deals a minimum of 25% extra damage and lowers your target's Defence level by 30%.
 22634	Morrigan's throwing axe	Thrown	250	missing		Hamstring: Deal a minimum of 20% extra damage and hamstring player targets, causing them to lose run energy 6x faster for 1 minute. A successful hit reduces your next attack delay by 1.
 22636	Morrigan's javelin	Thrown	500	missing		Phantom Strike: This does nothing vs non-player targets. As well as dealing a regular attack, your target will suffer that damage again over time.
-22731	Dragon hasta	Spear	50	missing		Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
-22734	Dragon hasta(p)	Spear	50	missing		Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
-22737	Dragon hasta(p+)	Spear	50	missing		Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
-22740	Dragon hasta(p++)	Spear	50	missing		Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
-22743	Dragon hasta(kp)	Spear	50	missing		Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
+22731	Dragon hasta	Spear	50	Melee	org.rsmod.content.other.special.attacks.melee.DragonHastaSpecialAttack$Unleash	Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
+22734	Dragon hasta(p)	Spear	50	Melee	org.rsmod.content.other.special.attacks.melee.DragonHastaSpecialAttack$Unleash	Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
+22737	Dragon hasta(p+)	Spear	50	Melee	org.rsmod.content.other.special.attacks.melee.DragonHastaSpecialAttack$Unleash	Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
+22740	Dragon hasta(p++)	Spear	50	Melee	org.rsmod.content.other.special.attacks.melee.DragonHastaSpecialAttack$Unleash	Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
+22743	Dragon hasta(kp)	Spear	50	Melee	org.rsmod.content.other.special.attacks.melee.DragonHastaSpecialAttack$Unleash	Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
 22804	Dragon knife	Thrown	250	Ranged	org.rsmod.content.other.special.attacks.ranged.RangedWeaponSpecialAttacks$WeaponAttack	Duality: Throws two knives at your opponent.
 22806	Dragon knife(p)	Thrown	250	Ranged	org.rsmod.content.other.special.attacks.ranged.RangedWeaponSpecialAttacks$WeaponAttack	Duality: Throws two knives at your opponent.
 22808	Dragon knife(p+)	Thrown	250	Ranged	org.rsmod.content.other.special.attacks.ranged.RangedWeaponSpecialAttacks$WeaponAttack	Duality: Throws two knives at your opponent.
