@@ -228,3 +228,7 @@ protections as active. See the branch audit and exact baseline for recovery refe
 - Change: publish `BeforeImpact` after native validation and before health/hitmarks. The default retains the original hit. Opt-in listeners can replace the immutable hit; shared completion callbacks survive copies and see actual applied damage.
 - Evidence: real damage processor tests cover inactive identity behavior, reduced health loss, completion callback damage, and the rounding order after real prayer-modified queued hits. Six new staff tests; 143 selected tests and isolated boot pass.
 - Upstream conflict risk: player hit-processing order. Reconcile with equivalent upstream impact-modifier hooks; retain default-hit and callback regressions. Introducing commit: staff protection slice following `178e232d8`.
+
+ReducedMeleeDefenceAccuracy follow-up: optional attackPercent defaults to 100 and
+allows BH Dragon mace to combine 125% offence with 60% defence. Existing Vesta
+calls retain their default. Boundary regressions cover both modifiers together.

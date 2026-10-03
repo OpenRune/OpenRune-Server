@@ -24,8 +24,9 @@ public class ReducedMeleeDefenceAccuracy @Inject constructor(
     private val rng: GameRandom,
 ) {
     public fun roll(source: Player, target: PathingEntity, attack: CombatAttack.Melee,
-                    blockType: MeleeAttackType, defencePercent: Int): Boolean {
+                    blockType: MeleeAttackType, defencePercent: Int, attackPercent: Int = 100): Boolean {
         require(defencePercent in 0..100)
+        require(attackPercent > 0)
         if (source.adminMaxHit) return true
         val npc = when (target) {
             is Npc -> npcAttributes.collect(target.visType, target, target.hitpoints,
@@ -33,7 +34,8 @@ public class ReducedMeleeDefenceAccuracy @Inject constructor(
             is Player -> EnumSet.noneOf(CombatNpcAttributes::class.java)
         }
         val equipment = meleeAttributes.collect(source, attack.type)
-        val attackRoll = npcMelee.computeAttackRoll(source, attack.type, attack.style, equipment, npc)
+        val baseAttackRoll = npcMelee.computeAttackRoll(source, attack.type, attack.style, equipment, npc)
+        val attackRoll = (baseAttackRoll.toLong() * attackPercent / 100).toInt()
         val defenceRoll = when (target) {
             is Npc -> npcMelee.computeDefenceRoll(target.visType, target.defenceLvl,
                 source.vars["varbit.toa_client_raid_level"], blockType, npc)

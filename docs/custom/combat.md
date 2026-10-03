@@ -266,3 +266,11 @@ and packed item/projectile definitions. This is not a claim of 285/285 completio
 
 Validation: 87 special / 151 selected tests pass; server JAR and isolated
 Nero-bridge startup, catalogue and clean shutdown pass. Zulrah source is unchanged.
+
+BH Dragon mace: Shatter uses 15% native energy, 125% selected melee offence against
+60% of crush defence and 150% melee maximum. Target levels remain unchanged.
+Damage reductions follow the rolled damage; misses do not roll or apply modifiers.
+Two new tests cover NPC/PvP accuracy boundaries, handler routing, FX, damage stages
+and energy. All 89 special tests pass; registry 186/285, 99 missing. Live visuals
+and BH world restrictions remain open. Primary reference:
+[Dragon mace (bh)](https://oldschool.runescape.wiki/w/Dragon_mace_(bh)).
