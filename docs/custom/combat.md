@@ -15,3 +15,22 @@ need timer and duplicate-death tests as well as combat tests.
 
 Upstream risks: target reach, autocast, shield dispatch, hit scheduling, NPC death hooks,
 Boss DSL and stats/bonuses. Preserve current behaviour while evaluating any replacement.
+
+## Active weapon completeness work (2026-10-03)
+
+Branch: feature/weapon-completeness, based on accepted runtime plus organization
+commit 82d6c0203. User requests complete specials and normal weapon/charge behaviour.
+Zulrah encounter files, rotations, reach policy and respawn policy remain unchanged.
+
+Trident slice: eight normal/enhanced/ornament sea/swamp pairs plus full sea identities.
+Item-local charge state uses the existing powered-staff varobj bit layout; inventory
+transactions atomically pay/refund resources and preserve ornament and remaining charges.
+Full tradable tridents derive 2500 charges from their identity. Coins are not refunded.
+A cast spends one charge even on a splash; empty/PvP attempts do not create free hits.
+Caster launch and target impact use distinct cache FX and projectile timing.
+
+This is not yet full toxic-trident qualification: NPC venom and all encounter/PvP-area
+exceptions remain to verify. Selected handler tests do not certify live client visuals.
+Registration baseline remains 137/285; ordinary trident attacks add no special entries.
+
+Mechanics reference: https://oldschool.runescape.wiki/w/Trident_of_seas_full

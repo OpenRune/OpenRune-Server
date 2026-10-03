@@ -1,7 +1,7 @@
 # EvolvedMind OpenRune progress
 
 Updated: 2026-10-03. The user has accepted the current runtime and explicitly requires
-it to be preserved. This organization pass changes documentation and Git references,
+it to be preserved. The completed organization pass changed documentation and Git references,
 not gameplay, cache, plugins or the installed package.
 
 **Current accepted server:** `444ead71bec435e3eba0c378aa6718f7a7ac57d4` (revision 240).
@@ -21,7 +21,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 |---|---|---|
 | Repository organization | VERIFIED | 15 stale branches archived and removed; 2 branches retained; accepted runtime preserved |
 | Accepted gameplay bundle | VERIFIED at baseline | User acceptance + 121 selected server tests, 86 Nero tests, isolated boot; GitHub server CI/format/gameval checks passed |
-| New gameplay | NOT STARTED in this pass | No old fixes or upstream content adopted during cleanup |
+| Weapon completeness | IN PROGRESS on `feature/weapon-completeness` | Requested after cleanup: 285/285 special target plus normal attacks, charges and FX; Zulrah encounter is frozen |
 
 ## Bosses
 
@@ -62,7 +62,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 
 ### NOW
 
-- Branch cleanup and documentation completed; review the active integration PR before merging main.
+- Complete weapon families in tested chunks: normal attacks, charges, special mechanics and effect placement.
 - Keep the accepted baseline recoverable and main organized.
 
 ### NEXT
@@ -73,7 +73,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 ### LATER
 
 - Paired revision 241 upgrade: client/protocol/cache, Boss DSL, custom encounter and HUD review.
-- Complete missing special-attack families in focused, tested chunks.
+- Other weapon families remain in the active completeness audit; never promote registration counts to full mechanic verification.
 
 ### BACKLOG
 

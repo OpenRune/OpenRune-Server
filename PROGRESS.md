@@ -13,7 +13,7 @@ It is preserved unchanged during repository organization.
 | Current playable build | User-accepted; 121 selected server tests + 86 Nero tests; isolated boot and server GitHub CI passed |
 | Pets, commands, max cape, timers | Implemented; covered regression cases verified |
 | Monster/pet/skill/quest interfaces | Implemented; remaining visual edge cases listed in the detailed progress |
-| All weapon specials | Partial: 137/285 audited special-energy items registered; 148 still missing |
+| All weapon specials | IN PROGRESS on `feature/weapon-completeness`; baseline partial: 137/285 audited special-energy items registered; 148 still missing |
 | Zulrah | Active custom encounter; old alternative recovery code is review material, not installed |
 | Araxxor | Planned; capture researched; no encounter implementation yet |
 | Doom | Research only; no active encounter/delve system |
