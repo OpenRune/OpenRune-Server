@@ -212,3 +212,11 @@ protections as active. See the branch audit and exact baseline for recovery refe
 - Change: composes existing melee offence, NPC/player magic defence and native accuracy operations, including NPC magic-defence drain and raid scaling. Existing melee/magic formulas are unchanged.
 - Evidence: helper routing tests verify selected melee stance/type, NPC defence/Magic inputs and player magic defence; special tests verify melee hit queues and protection behavior.
 - Upstream conflict risk: formula helper signatures. Replace with an equivalent upstream mixed-accuracy route only after retaining these tests. Introducing commit: Saradomin sword slice after `6f300c4aa`.
+
+## Reduced melee defence roll (2026-10-03)
+
+- File: `api/combat/combat-formulas/.../accuracy/melee/ReducedMeleeDefenceAccuracy.kt`.
+- Reason: Vesta's longsword reduces the target defence roll for that attempt; increasing attacker accuracy or temporarily editing target stats is not equivalent.
+- Change: reuses existing offence and NPC/player defence formulas with an explicit defence percentage; no persistent stat mutation.
+- Evidence: NPC/PvP probability-boundary regression verifies one-quarter defence and unchanged target level.
+- Upstream conflict risk: formula helper signatures. Prefer an equivalent upstream per-attempt defence modifier when available. Introducing commit: ancient-warrior slice following `e74577500`.

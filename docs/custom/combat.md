@@ -204,3 +204,17 @@ References: [Saradomin sword](https://oldschool.runescape.wiki/w/Saradomin_sword
 [magical melee](https://oldschool.runescape.wiki/w/Magical_melee).
 Validation: 65 special tests, 129 selected tests overall, full server JAR build.
 Registry: 165/285 registered, 120 missing; registration does not certify full mechanics.
+
+Ancient warrior slice: four Vesta longsword identities use selected melee offence
+against one-quarter of stab defence, with 20%-120% damage bounds. Three Statius
+warhammers use 25%-125% damage bounds and drain current Defence only on positive
+impact: 30% for ordinary/Last Man Standing, 75% for Bounty Hunter. Reductions apply
+after rolling damage. Cancelled, blocked or stale-login hits do not drain. All 68
+special tests pass, including exact accuracy boundaries and cumulative drains.
+Registry: 172/285, 113 missing. Bounty Hunter/Deadman usage restrictions, degradation,
+boss-specific drain floors and live effect alignment remain separate open work.
+References: [Vesta's longsword](https://oldschool.runescape.wiki/w/Vesta%27s_longsword),
+[Statius's warhammer](https://oldschool.runescape.wiki/w/Statius%27s_warhammer),
+revision-240 per-item special descriptions. The packed Statius effect uses the
+same sequence/model as the granite hammer effect with its own recolours; retained
+the Statius-specific symbol rather than substituting the granite recolour.

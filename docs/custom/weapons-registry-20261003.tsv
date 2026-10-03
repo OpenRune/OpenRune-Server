@@ -44,7 +44,7 @@ id	name	category	energy	registered_kind	handler	description
 11037	Brine sabre	SlashSword	750	missing		Liquify: Deal an attack with double the chance of hitting that boosts your Strength, Attack and Defence levels by 25% of the damage dealt. Can only be used underwater.
 11061	Ancient mace	Spiked	1000	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Favour of the War God: Deal an attack which hits through Protect from Melee and siphons Prayer points equal to the damage dealt.
 11235	Dark bow	Bow	550	Ranged	org.rsmod.content.other.special.attacks.ranged.DarkBowSpecialAttack$DarkBow	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
-11283	Dragonfire shield	Unarmed	0	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1	
+11283	Dragonfire shield	Unarmed	0	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1	-
 11785	Armadyl crossbow	Crossbow	500	missing		Armadyl Eye: Deal an attack with double accuracy, also doubles the base activation chance of enchanted bolt effects.
 11791	Staff of the Dead	BladedStaff	1000	missing		Power of Death: Reduce all melee damage you receive by 50% for the next minute while the staff remains equipped. Stacks with Protect from Melee.
 11802	Armadyl godsword	TwoHandedSword	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	The Judgement: Deal an attack that inflicts 37.5% more damage with double accuracy.
@@ -111,16 +111,16 @@ id	name	category	energy	registered_kind	handler	description
 21205	Elder maul	Blunt	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Pulverize: A crushing blow with 25% bonus accuracy that will reduce your target's defence by 35%.
 21206	Dragon sword	Unarmed	400	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Wild Stab: Deal an attack which hits through Protect from Melee with 25% increased accuracy and damage.
 21207	Dragon thrownaxe	Unarmed	250	missing		Momentum Throw: Deal a fast attack with 25% improved accuracy.
-21633	Ancient wyvern shield	Unarmed	0	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1	
+21633	Ancient wyvern shield	Unarmed	0	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1	-
 21742	Granite hammer	Blunt	600	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Hammer Blow: Deal an attack with 50% more accuracy and a guaranteed +5 damage.
 21902	Dragon crossbow	Crossbow	600	missing		Annihilate: Hit your target with 20% extra damage and in multicombat zones, hit all adjacent targets by 20% less damage.
-22002	Dragonfire ward	Unarmed	0	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1	
+22002	Dragonfire ward	Unarmed	0	Shield	org.rsmod.content.other.special.attacks.shield.DragonfireShieldSpecialAttacks$register$special$1	-
 22296	Staff of Light	BladedStaff	1000	missing		Power of Death: Reduce all melee damage you receive by 50% for the next minute while the staff remains equipped. Stacks with Protect from Melee.
 22398	Ivandis flail	Staff	100	missing		Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
 22516	Dawnbringer	PoweredStaff	350	missing		Pulsate: Fire an incredibly powerful burst of energy.
 22610	Vesta's spear	Spear	500	missing		Spear Wall: All damage dealt by this attack is reduced by 50%, but will damage up to sixteen targets surrounding you. After using this attack, you will be immune from melee and ranged attacks for 5 seconds.
-22613	Vesta's longsword	SlashSword	250	missing		Feint: Deal an attack which treats your target's defence as if it was reduced by 75%. It will deal a minimum of 20% extra damage.
-22622	Statius's warhammer	Blunt	350	missing		Smash: Deal an attack which deals a minimum of 25% extra damage and lowers your target's Defence level by 30%.
+22613	Vesta's longsword	SlashSword	250	Melee	org.rsmod.content.other.special.attacks.melee.AncientWarriorSpecialAttacks$Strike	Feint: Deal an attack which treats your target's defence as if it was reduced by 75%. It will deal a minimum of 20% extra damage.
+22622	Statius's warhammer	Blunt	350	Melee	org.rsmod.content.other.special.attacks.melee.AncientWarriorSpecialAttacks$Strike	Smash: Deal an attack which deals a minimum of 25% extra damage and lowers your target's Defence level by 30%.
 22634	Morrigan's throwing axe	Thrown	250	missing		Hamstring: Deal a minimum of 20% extra damage and hamstring player targets, causing them to lose run energy 6x faster for 1 minute. A successful hit reduces your next attack delay by 1.
 22636	Morrigan's javelin	Thrown	500	missing		Phantom Strike: This does nothing vs non-player targets. As well as dealing a regular attack, your target will suffer that damage again over time.
 22731	Dragon hasta	Spear	50	Melee	org.rsmod.content.other.special.attacks.melee.DragonHastaSpecialAttack$Unleash	Unleash: Deal an attack which has 5% increased accuracy and 2.5% increased strength per 5% of the special attack bar used.
@@ -134,9 +134,9 @@ id	name	category	energy	registered_kind	handler	description
 22810	Dragon knife(p++)	Thrown	250	Ranged	org.rsmod.content.other.special.attacks.ranged.RangedWeaponSpecialAttacks$WeaponAttack	Duality: Throws two knives at your opponent.
 23611	Armadyl crossbow	Crossbow	500	missing		Armadyl Eye: Deal an attack with double accuracy, also doubles the base activation chance of enchanted bolt effects.
 23613	Staff of the Dead	BladedStaff	1000	missing		Power of Death: Reduce all melee damage you receive by 50% for the next minute while the staff remains equipped. Stacks with Protect from Melee.
-23615	Vesta's longsword	SlashSword	250	missing		Feint: Deal an attack which treats your target's defence as if it was reduced by 75%. It will deal a minimum of 20% extra damage.
+23615	Vesta's longsword	SlashSword	250	Melee	org.rsmod.content.other.special.attacks.melee.AncientWarriorSpecialAttacks$Strike	Feint: Deal an attack which treats your target's defence as if it was reduced by 75%. It will deal a minimum of 20% extra damage.
 23619	Morrigan's javelin	Thrown	500	missing		Phantom Strike: This does nothing vs non-player targets. As well as dealing a regular attack, your target will suffer that damage again over time.
-23620	Statius's warhammer	Blunt	350	missing		Smash: Deal an attack which deals a minimum of 25% extra damage and lowers your target's Defence level by 30%.
+23620	Statius's warhammer	Blunt	350	Melee	org.rsmod.content.other.special.attacks.melee.AncientWarriorSpecialAttacks$Strike	Smash: Deal an attack which deals a minimum of 25% extra damage and lowers your target's Defence level by 30%.
 23630	Heavy ballista	Crossbow	650	Ranged	org.rsmod.content.other.special.attacks.ranged.RangedWeaponSpecialAttacks$WeaponAttack	Concentrated Shot: Deal an attack with 25% increased accuracy and damage, but takes an additional 2.4 seconds to fire.
 23673	Crystal axe	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$6	Lumber Up: Increase your Woodcutting level by 3.
 23675	Crystal axe (inactive)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$7	Lumber Up: Increase your Woodcutting level by 3.
@@ -152,20 +152,20 @@ id	name	category	energy	registered_kind	handler	description
 24227	Granite maul	Blunt	500	missing		Quick Smash: Deal an extra attack instantly.
 24424	Volatile Nightmare staff	Staff	550	Magic	org.rsmod.content.other.special.attacks.magic.NightmareStaffSpecialAttacks$StaffAttack	Immolate: Fire a powerful spell with 50% improved accuracy. Damage scales based upon magic level and can be increased with magic damage boosting equipment. Costs no runes to use.
 24425	Eldritch Nightmare staff	Staff	550	Magic	org.rsmod.content.other.special.attacks.magic.NightmareStaffSpecialAttacks$StaffAttack	Invocate: Fire a powerful spell that restores your prayer points by 50% of the damage dealt. Damage scales based upon magic level and can be increased with magic damage boosting equipment. Your prayer points can go above your level, to a maximum of 120. Costs no runes to use.
-24617	Vesta's blighted longsword	SlashSword	250	missing		Feint: Deal an attack which treats your target's defence as if it was reduced by 75%. It will deal a minimum of 20% extra damage.
+24617	Vesta's blighted longsword	SlashSword	250	Melee	org.rsmod.content.other.special.attacks.melee.AncientWarriorSpecialAttacks$Strike	Feint: Deal an attack which treats your target's defence as if it was reduced by 75%. It will deal a minimum of 20% extra damage.
 24699	Blisterwood flail	Staff	100	missing		Retainer: Traps a vampyre juvenile or juvinate provided they have 50% or less hitpoints remaining.
-25059	Infernal harpoon (or)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$21	
-25063	Infernal pickaxe (or)	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$36	
-25066	Infernal axe (or)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$5	
+25059	Infernal harpoon (or)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$21	-
+25063	Infernal pickaxe (or)	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$36	-
+25066	Infernal axe (or)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$5	-
 25110	Echo axe	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$10	Lumber Up: Increase your Woodcutting level by 3.
 25112	Echo pickaxe	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$41	Rock Knocker: Increase your Mining level by 3.
 25114	Echo harpoon	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$26	Fishstabber: Increase your Fishing level by 3.
-25367	Infernal harpoon (uncharged)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$22	
-25369	Infernal pickaxe (uncharged)	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$37	
-25371	Infernal axe (uncharged)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$9	
-25373	Dragon harpoon (or)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$19	
-25376	Dragon pickaxe (or)	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$32	
-25378	Dragon axe (or)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$2	
+25367	Infernal harpoon (uncharged)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$22	-
+25369	Infernal pickaxe (uncharged)	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$37	-
+25371	Infernal axe (uncharged)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$9	-
+25373	Dragon harpoon (or)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$19	-
+25376	Dragon pickaxe (or)	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$32	-
+25378	Dragon axe (or)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$2	-
 25517	Volatile Nightmare staff	Staff	550	Magic	org.rsmod.content.other.special.attacks.magic.NightmareStaffSpecialAttacks$StaffAttack	Immolate: Fire a powerful spell with 50% improved accuracy. Damage scales based upon magic level and can be increased with magic damage boosting equipment. Costs no runes to use.
 26219	Osmumten's fang	StabSword	250	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Eviscerate: Perform an attack with your true maximum hit and a 50% accuracy bonus.
 26233	Ancient godsword	TwoHandedSword	500	missing		Blood Sacrifice: Deal an attack that inflicts 10% more damage with double accuracy and marks your target for a blood sacrifice. Targets marked for a blood sacrifice will be hit for 25 damage after a short delay, unless they move away. If they are hit, you'll also be healed for the damage dealt. (Heal is capped at 15 in PvP)
@@ -199,8 +199,8 @@ id	name	category	energy	registered_kind	handler	description
 27867	Abyssal dagger (bh)(p++)	StabSword	350	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Abyssal Puncture: Deal an attack that hits twice with 25% increased accuracy, but inflicts 5% less damage per hit. The second hit is guaranteed if the first deals damage.
 27869	Voidwaker	SlashSword	500	Melee	org.rsmod.content.other.special.attacks.melee.VoidwakerSpecialAttack$Disrupt	Disrupt: Summon a powerful bolt of lightning that deals guaranteed magic damage based on your max hit.
 27900	Vesta's spear (bh)	Spear	500	missing		Spear Wall: Will hit twice with second hit deals a damage between 50% - 75% of the first hit damage. After using this attack, you will be immune from melee and ranged attacks for 5 seconds and the next attack delay is reduced by 0.6 seconds.
-27904	Vesta's longsword (bh)	SlashSword	250	missing		Feint: Deal an attack which treats your target's defence as if it was reduced by 75%. It will deal a minimum of 20% extra damage.
-27908	Statius's warhammer (bh)	Blunt	350	missing		Smash: Deal an attack which deals a minimum of 25% extra damage and lowers your target's Defence level by 75%.
+27904	Vesta's longsword (bh)	SlashSword	250	Melee	org.rsmod.content.other.special.attacks.melee.AncientWarriorSpecialAttacks$Strike	Feint: Deal an attack which treats your target's defence as if it was reduced by 75%. It will deal a minimum of 20% extra damage.
+27908	Statius's warhammer (bh)	Blunt	350	Melee	org.rsmod.content.other.special.attacks.melee.AncientWarriorSpecialAttacks$Strike	Smash: Deal an attack which deals a minimum of 25% extra damage and lowers your target's Defence level by 75%.
 27912	Morrigan's throwing axe (bh)	Thrown	500	missing		Hamstring: Deal a minimum of 50% extra damage with 150% accuracy and hamstring player targets, causing them to lose run energy 6x faster for 1 minute.
 27916	Morrigan's javelin (bh)	Thrown	500	missing		Phantom Strike: This does nothing vs non-player targets. As well as dealing a regular attack with 150% accuracy, your target will suffer 75% damage again over time.
 28019	Dragon dagger (cr)	StabSword	250	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
@@ -252,15 +252,15 @@ id	name	category	energy	registered_kind	handler	description
 29851	Eclipse atlatl	Bow	500	missing		Eclipse: Attack with 50% increased accuracy, consuming all remaining burn damage affecting the target and raising the max hit by that amount. This special attack requires the full Eclipse set to be worn.
 30305	Arclight (inactive)	SlashSword	500	Melee	org.rsmod.content.other.special.attacks.melee.DemonbaneSpecialAttacks$Weaken	Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is twice as effective against demons.
 30340	Crystal dagger (perfected)	StabSword	250	missing		Crystalline Severance: Launch a powerful attack the pierces the Crystalline Hunllef's prayers and disables them briefly.
-30342	Infernal harpoon (or)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$27	
-30343	Infernal harpoon (uncharged)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$28	
-30345	Infernal pickaxe (or)	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$42	
-30346	Infernal pickaxe (uncharged)	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$43	
-30347	Infernal axe (or)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$15	
-30348	Infernal axe (uncharged)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$16	
-30349	Dragon harpoon (or)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$29	
-30351	Dragon pickaxe (or)	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$44	
-30352	Dragon axe (or)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$17	
+30342	Infernal harpoon (or)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$27	-
+30343	Infernal harpoon (uncharged)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$28	-
+30345	Infernal pickaxe (or)	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$42	-
+30346	Infernal pickaxe (uncharged)	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$43	-
+30347	Infernal axe (or)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$15	-
+30348	Infernal axe (uncharged)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$16	-
+30349	Dragon harpoon (or)	StabSword	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$29	-
+30351	Dragon pickaxe (or)	Pickaxe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$44	-
+30352	Dragon axe (or)	Axe	1000	Instant	org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks$register$17	-
 30367	The dogsword	TwoHandedSword	500	missing		Echo slash: Launch an attack that applies each of the other godswords' effects.
 30369	Sunlight spear	StabSword	7	missing		Sol Slam: Immediately deal an AoE attack around you in a 7x7 radius, increases damage based on your prayer bonus.
 30388	Thunder khopesh	SlashSword	500	missing		Lingering Lightning: Attack the target twice, if either attack hits spawn additional lightning wherever the npc was standing, dealing damage to targets around it.

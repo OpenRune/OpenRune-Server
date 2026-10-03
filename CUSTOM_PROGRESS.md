@@ -102,3 +102,8 @@ blessed damage paths, caster/target effects and hybrid accuracy. 65 special test
 and 129 selected tests overall pass; full server JAR builds. Current registry is
 165/285, with 120 missing. Blessed sword degradation and live FX qualification
 remain open. The frozen installer and accepted installation are unchanged.
+
+Ancient warrior slice: four Vesta longswords and three Statius warhammers registered;
+variant-specific 30%/75% Defence drains, post-roll damage reductions and reduced
+defence accuracy tested. 68 special tests pass; registry 172/285 with 113 missing.
+Their mode restrictions, degradation and visual alignment are not fully qualified.

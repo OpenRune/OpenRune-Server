@@ -4,6 +4,7 @@ import org.rsmod.api.specials.SpecialAttackMap
 import org.rsmod.content.other.special.attacks.boost.StatBoostSpecialAttacks
 import org.rsmod.content.other.special.attacks.magic.AyakSpecialAttack
 import org.rsmod.content.other.special.attacks.magic.NightmareStaffSpecialAttacks
+import org.rsmod.content.other.special.attacks.melee.AncientWarriorSpecialAttacks
 import org.rsmod.content.other.special.attacks.melee.DemonbaneSpecialAttacks
 import org.rsmod.content.other.special.attacks.melee.DragonClawsSpecialAttack
 import org.rsmod.content.other.special.attacks.melee.DragonHastaSpecialAttack
@@ -29,6 +30,7 @@ class SpecialAttackModule : PluginModule() {
         addSetBinding<SpecialAttackMap>(DragonClawsSpecialAttack::class.java)
         addSetBinding<SpecialAttackMap>(DragonHastaSpecialAttack::class.java)
         addSetBinding<SpecialAttackMap>(SaradominSwordSpecialAttacks::class.java)
+        addSetBinding<SpecialAttackMap>(AncientWarriorSpecialAttacks::class.java)
         addSetBinding<SpecialAttackMap>(DemonbaneSpecialAttacks::class.java)
         addSetBinding<SpecialAttackMap>(HalberdSpecialAttacks::class.java)
         addSetBinding<SpecialAttackMap>(MeleeWeaponSpecialAttacks::class.java)
