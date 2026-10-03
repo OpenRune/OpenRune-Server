@@ -243,3 +243,26 @@ isolated startup/catalogue/clean shutdown pass. Registry: 182/285, 103 missing.
 Legacy duel restrictions, passive rune-saving/charges and live visual qualification
 remain open. There is no claim that cast effects alone reproduce every lingering
 visual stage. Reference: [Staff of the dead](https://oldschool.runescape.wiki/w/Staff_of_the_dead).
+
+
+Dark bow / Duality slice: nine Dark bow identities now dispatch, including LMS and
+both Deadman identities. Ordinary Descent retains 5/8 minimum damage on accuracy
+misses; its 0-to-maximum roll clamps low rolls, while BH uses a uniform 7/10-to-maximum
+roll. Dragon damage caps at 48 before target reductions; native Corp and Elysian
+reductions run after the roll. Each arrow uses its own projectile delay and processed
+hit for XP. Missing double-launch metadata rejects before resource use, including
+Seeking dragon arrows in the current server cache: this ammunition still needs its
+native projectile metadata completed. No extra Seeking minimum is added.
+Dragon knife Duality now uses the native two-knife player animation; poisoned knives
+have their own player/projectile effects. Its explicit special projectile no longer
+fails validation merely because normal projectile metadata is absent. Tests execute
+all five knife variants and reject single-knife attacks before animation/consumption.
+Registry: 185/285, 100 missing. Live frame/height qualification, event-world usage
+restrictions and unimplemented target-specific reductions remain open.
+References: [Dark bow](https://oldschool.runescape.wiki/w/Dark_bow),
+[Dark bow (bh)](https://oldschool.runescape.wiki/w/Dark_bow_(bh)),
+[Dragon knife](https://oldschool.runescape.wiki/w/Dragon_knife), revision-240 symbols
+and packed item/projectile definitions. This is not a claim of 285/285 completion.
+
+Validation: 87 special / 151 selected tests pass; server JAR and isolated
+Nero-bridge startup, catalogue and clean shutdown pass. Zulrah source is unchanged.

@@ -94,7 +94,7 @@ id	name	category	energy	registered_kind	handler	description
 20405	Abyssal whip	Whip	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Energy Drain: Deal an attack with 25% increased accuracy that siphons 10% of your target's run energy.
 20406	Dragon scimitar	SlashSword	550	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Sever: Deal a slash with increased accuracy that can prevent your target from using protection prayers for 5 seconds.
 20407	Dragon dagger	StabSword	250	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	Puncture: Deal two quick slashes with 15% increased accuracy and 15% increased damage.
-20408	Dark bow	Bow	550	missing		Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
+20408	Dark bow	Bow	550	Ranged	org.rsmod.content.other.special.attacks.ranged.DarkBowSpecialAttack$DarkBow	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
 20557	Granite maul	Blunt	500	missing		Quick Smash: Deal an extra attack instantly.
 20558	Magic shortbow	Unarmed	550	missing		Snapshot: Fire two arrows within quick succession, but with reduced accuracy.
 20559	Dragon 2h sword	Unarmed	600	missing		Powerstab: Hit up to fourteen enemies surrounding you.
@@ -240,12 +240,12 @@ id	name	category	energy	registered_kind	handler	description
 29589	Emberlight	SlashSword	500	Melee	org.rsmod.content.other.special.attacks.melee.DemonbaneSpecialAttacks$Weaken	Weaken: Temporarily drain your target's Attack, Strength and Defence by 5%. Is three times as effective against demons.
 29591	Scorching bow	Bow	250	missing		Scorching shackles: A scorching shot with 30% bonus accuracy that will bind and burn enemy demons for 12 seconds.)
 29594	Purging staff	Staff	250	missing		Scatter ashes: Casts the highest available demonbane spell. If it kills a demon, it refunds its special attack energy cost, and reduces the next attack delay.
-29599	Corrupted dark bow	Bow	550	missing		Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
+29599	Corrupted dark bow	Bow	550	Ranged	org.rsmod.content.other.special.attacks.ranged.DarkBowSpecialAttack$DarkBow	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
 29602	Corrupted Volatile Nightmare staff	Staff	550	Magic	org.rsmod.content.other.special.attacks.magic.NightmareStaffSpecialAttacks$StaffAttack	Immolate: Fire a powerful spell with 50% improved accuracy. Damage scales based upon magic level and can be increased with magic damage boosting equipment. Costs no runes to use.
 29605	Armadyl godsword (Deadman)	TwoHandedSword	500	Melee	org.rsmod.content.other.special.attacks.melee.MeleeWeaponSpecialAttacks$WeaponAttack	The Judgement: Deal an attack that inflicts 37.5% more damage with double accuracy.
 29607	Voidwaker (Deadman)	SlashSword	500	Melee	org.rsmod.content.other.special.attacks.melee.VoidwakerSpecialAttack$Disrupt	Disrupt: Summon a powerful bolt of lightning that deals guaranteed magic damage based on your max hit.
 29609	Volatile Nightmare staff (Deadman)	Staff	550	Magic	org.rsmod.content.other.special.attacks.magic.NightmareStaffSpecialAttacks$StaffAttack	Immolate: Fire a powerful spell with 50% improved accuracy. Damage scales based upon magic level and can be increased with magic damage boosting equipment. Costs no runes to use.
-29611	Dark bow (Deadman)	Bow	550	missing		Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
+29611	Dark bow (Deadman)	Bow	550	Ranged	org.rsmod.content.other.special.attacks.ranged.DarkBowSpecialAttack$DarkBow	Descent of Darkness: Deal a double attack that inflicts up to 30% more damage (minimum damage of 5 per hit).
 29796	Noxious halberd	Polearm	500	missing		Virulence: Instantly metabolize any poison you are suffering from to buff your next attack by that amount of damage.
 29849	Blue Moon spear	BladedStaff	500	missing		Break Shackles: Attack with increased accuracy and damage based on the duration of any binding spells affecting them and ending said effect. This special attack requires the full Blue Moon set to be worn.
 29850	Dual macuahuitl	Spiked	250	missing		Blood infusion: Sacrifice 25% of your current hp to deal an attack with 25% increased accuracy and damage, with a guaranteed set effect activation on hit. This special attack requires the full Bloodrager set to be worn.

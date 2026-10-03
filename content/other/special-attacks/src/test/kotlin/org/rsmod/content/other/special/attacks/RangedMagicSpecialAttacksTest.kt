@@ -103,6 +103,32 @@ class RangedMagicSpecialAttacksTest {
         assertEquals(1, mockingDetails(fixture.ammo).invocations.count { it.method.name.startsWith("useQuiverAmmo") })
     }
 
+    @Test fun `dragon knife variants use the duality animation and correct poisoned projectiles`() {
+        for (spec in listOf(RangedWeaponSpec.DragonKnife, RangedWeaponSpec.PoisonedDragonKnife)) {
+            for (weapon in spec.weapons) {
+                val fixture = fixture(weapon, weapon, 2, thrown = true)
+                assertTrue(run(fixture.action))
+                verify(fixture.access).anim(spec.animation, 0)
+                assertNotEquals("seq.human_dragon_knife".asRSCM(), spec.animation.asRSCM())
+                val projectiles = mockingDetails(fixture.manager).invocations.filter { it.method.name == "spawnProjectile" }
+                assertEquals(2, projectiles.size)
+                assertTrue(projectiles.all { it.arguments[2] == spec.travel })
+                assertEquals(2, mockingDetails(fixture.manager).invocations.count { it.method.name == "queueRangedHit" })
+                assertEquals(2, mockingDetails(fixture.ammo).invocations.count { it.method.name.startsWith("useThrownWeapon") })
+                assertEquals(0, mockingDetails(fixture.ammo).invocations.count { it.method.name.startsWith("useQuiverAmmo") })
+            }
+        }
+        assertNotEquals(RangedWeaponSpec.DragonKnife.animation, RangedWeaponSpec.PoisonedDragonKnife.animation)
+        assertNotEquals(RangedWeaponSpec.DragonKnife.travel, RangedWeaponSpec.PoisonedDragonKnife.travel)
+    }
+
+    @Test fun `duality rejects a single knife without throwing or animating`() {
+        val fixture = fixture("obj.dragon_knife", "obj.dragon_knife", 1, thrown = true)
+        assertFalse(run(fixture.action))
+        assertFalse(mockingDetails(fixture.access).invocations.any { it.method.name == "anim" })
+        assertFalse(mockingDetails(fixture.ammo).invocations.any { it.method.name.startsWith("useThrownWeapon") })
+    }
+
     @Test fun `accurate powershot zero roll becomes one while a snapshot miss remains zero`() {
         val fixture = fixture("obj.magic_longbow", "obj.rune_arrow", 1)
         `when`(fixture.access.random.of(0..19)).thenReturn(0)
@@ -142,7 +168,7 @@ class RangedMagicSpecialAttacksTest {
         return registry
     }
 
-    private fun fixture(weapon: String, ammunition: String, count: Int): Fixture {
+    private fun fixture(weapon: String, ammunition: String, count: Int, thrown: Boolean = false): Fixture {
         val manager = mock(SpecialAttackManager::class.java)
         val ammoManager = mock(RangedAmmoManager::class.java)
         val access = mock(ProtectedAccess::class.java)
@@ -151,24 +177,25 @@ class RangedMagicSpecialAttacksTest {
             statMap.setCurrentLevel("stat.ranged", 99.toByte())
             worn = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.worn".asRSCM())), arrayOfNulls(14))
         }
-        val item = InvObj(weapon)
+        val item = InvObj(weapon, if (thrown) count else 1)
         val ammo = InvObj(ammunition, count)
         player.worn[Wearpos.RightHand.slot] = item
-        player.worn[Wearpos.Quiver.slot] = ammo
+        if (!thrown) player.worn[Wearpos.Quiver.slot] = ammo
         `when`(access.player).thenReturn(player)
         `when`(access.random).thenReturn(random)
         `when`(random.of(0..19)).thenReturn(12)
         `when`(ammoManager.attemptAmmoUsage(player, getInvObj(item), getInvObj(ammo))).thenReturn(true)
         val target = Npc(ServerCacheManager.getNpcs().values.first { it.name == "Goblin" })
-        val travel = RSCM.getReverseMapping(RSCMType.SPOTANIM, getInvObj(ammo).param(params.proj_travel).id)
+        val travel = if (thrown) RangedWeaponSpec.entries.single { weapon in it.weapons }.travel!! else RSCM.getReverseMapping(RSCMType.SPOTANIM, getInvObj(ammo).param(params.proj_travel).id)
         val proj = mock(ProjAnim::class.java)
         `when`(proj.clientCycles).thenReturn(30)
         `when`(proj.serverCycles).thenReturn(2)
-        for (path in listOf("projanim.doublearrow_one", "projanim.doublearrow_two", "projanim.arrow")) `when`(manager.spawnProjectile(access, target, travel, path)).thenReturn(proj)
+        val normalTrajectory = RSCM.getReverseMapping(RSCMType.PROJANIM, getInvObj(item).param(params.proj_type).id)
+        for (path in listOf("projanim.doublearrow_one", "projanim.doublearrow_two", normalTrajectory)) `when`(manager.spawnProjectile(access, target, travel, path)).thenReturn(proj)
         for (damage in listOf(0, 1, 12)) {
             val hit = mock(Hit::class.java)
             `when`(hit.damage).thenReturn(damage)
-            `when`(manager.queueRangedHit(access, target, getInvObj(ammo), damage, 30, 2)).thenReturn(hit)
+            `when`(manager.queueRangedHit(access, target, if (thrown) null else getInvObj(ammo), damage, 30, 2)).thenReturn(hit)
         }
         val special = register(RangedWeaponSpecialAttacks(ammoManager, WorldQueueList()), manager)[item] as SpecialAttack.Ranged
         val attack = CombatAttack.Ranged(item, RangedAttackType.Standard, RangedAttackStyle.Accurate)

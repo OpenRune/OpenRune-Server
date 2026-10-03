@@ -116,5 +116,5 @@ target ownership regression-tested. 73 special tests pass; 174/285 registrations
 Staff protection: eight variants added with temporary native state, 100-tick expiry,
 prayer stacking and damage-time weapon checks. 79 special / 143 selected tests,
 full JAR, cache rebuild and isolated Nero-bridge startup/clean shutdown pass.
-Registry now 182/285; 103 missing. Live visual qualification and remaining weapon
+Registry now 185/285; 100 missing. Live visual qualification and remaining weapon
 mechanics are still open; the accepted installation and frozen installer are intact.

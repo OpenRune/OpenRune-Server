@@ -50,7 +50,7 @@ class RangedWeaponSpecialAttacks @Inject constructor(
             }
             val travel = ammo?.paramOrNull(params.proj_travel)
             val projectile = weapon.paramOrNull(params.proj_type)
-            if (travel == null || projectile == null || count < spec.hits) {
+            if (ammo == null || (travel == null && spec.travel == null) || projectile == null || count < spec.hits) {
                 mes("You need enough compatible ammunition for this special attack.")
                 manager.stopCombat(this)
                 return false
@@ -62,7 +62,7 @@ class RangedWeaponSpecialAttacks @Inject constructor(
                 val trajectory = if (spec == RangedWeaponSpec.MagicShortbow) {
                     if (index == 0) "projanim.doublearrow_one" else "projanim.doublearrow_two"
                 } else RSCM.getReverseMapping(RSCMType.PROJANIM, projectile.id)
-                val travelName = spec.travel ?: RSCM.getReverseMapping(RSCMType.SPOTANIM, travel.id)
+                val travelName = spec.travel ?: RSCM.getReverseMapping(RSCMType.SPOTANIM, checkNotNull(travel).id)
                 val proj = manager.spawnProjectile(this, target, travelName, trajectory)
                 val accurate = spec.guaranteed || manager.rollRangedAccuracy(this, target, attack.type, attack.style, attack.type, spec.accuracy)
                 val damage = when {
@@ -109,5 +109,6 @@ internal enum class RangedWeaponSpec(
     Seercull(listOf("obj.daganoth_cave_magic_shortbow"), "seq.human_bow", guaranteed = true, ammoOnlyMaxHit = true),
     Ballista(listOf("obj.light_ballista", "obj.heavy_ballista", "obj.br_light_ballista", "obj.br_heavy_ballista"), "seq.ballista_special_attack", accuracy = 1.25, damage = 1.25, launch = "spotanim.ballista_special"),
     OrnateBallista(listOf("obj.heavy_ballista_ornament"), "seq.ballista02_special_attack", accuracy = 1.25, damage = 1.25, launch = "spotanim.ballista_special"),
-    DragonKnife(listOf("obj.dragon_knife", "obj.dragon_knife_p", "obj.dragon_knife_p+", "obj.dragon_knife_p++", "obj.br_dragon_knife"), "seq.human_dragon_knife", hits = 2, thrown = true, travel = "spotanim.dragon_tknife_travel_spec"),
+    DragonKnife(listOf("obj.dragon_knife", "obj.br_dragon_knife"), "seq.human_dragon_tknives_spec", hits = 2, thrown = true, travel = "spotanim.dragon_tknife_travel_spec"),
+    PoisonedDragonKnife(listOf("obj.dragon_knife_p", "obj.dragon_knife_p+", "obj.dragon_knife_p++"), "seq.human_dragon_tknives_spec_poison", hits = 2, thrown = true, travel = "spotanim.dragon_tknife_travel_spec_p"),
 }
