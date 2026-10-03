@@ -293,7 +293,7 @@ open class ToaEncounter(
 
     internal fun adopt(npc: Npc) {
         npc.respawns = false
-        ToaRooms.adopt(npc, this)
+        deps.instances.attachNpc(session.id, npc)
         pruneCombatants()
         if (npc in combatants) return
         val spec = combatantSpecs.firstOrNull { it.typeId == npc.type.id } ?: return
@@ -301,7 +301,7 @@ open class ToaEncounter(
     }
 
     internal fun release(npc: Npc) {
-        ToaRooms.release(npc)
+        deps.instances.detachNpc(npc)
         combatants.remove(npc)
     }
 
@@ -372,6 +372,7 @@ open class ToaEncounter(
         if (destroyed) return
         destroyed = true
         stopTasks()
+        ToaRooms.unregister(this)
         deps.instances.end(session)
     }
 
