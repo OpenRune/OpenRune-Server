@@ -123,14 +123,9 @@ constructor(
             raid = running
         }
 
-        val hall = raid.current?.takeIf { it.room == ToaRoom.MAIN_HALL && !it.destroyed }
-        if (hall == null) {
-            mesbox("Your leader, ${raid.leaderName}, must enter first.")
-            return
-        }
+        val hall = resolveTarget(raid, ToaRoom.MAIN_HALL, checkLeader = true) ?: return
 
         mes("You enter the Tombs of Amascut (${raid.settings.mode} Mode)...")
-        ifCloseSub(ToaPartyManager.LOBBY_HUD)
         travel(hall, fromLobby = true)
     }
 

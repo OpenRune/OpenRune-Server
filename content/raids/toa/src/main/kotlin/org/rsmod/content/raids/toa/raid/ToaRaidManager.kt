@@ -135,7 +135,7 @@ object ToaRaidManager {
         raid.deps.network.resetNpcView(player)
         player.currentRaid = null
         raid.remove(player)
-        raid.players.remove(player)
+        raid.removePlayer(player)
 
         if (!logout) {
             resetClientVars(player)
@@ -154,7 +154,7 @@ object ToaRaidManager {
     fun onLeftParty(player: Player, party: ToaLobbyParty) {
         val raid = raids[party] ?: return
         if (raid.isInside(player)) return
-        if (!raid.players.remove(player)) return
+        if (!raid.removePlayer(player)) return
         refreshHud(raid)
         if (raid.players.isEmpty()) end(raid)
     }

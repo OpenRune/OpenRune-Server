@@ -5,6 +5,7 @@ import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.content.raids.toa.party.ToaPartyManager
+import org.rsmod.content.raids.toa.party.openLobbyHud
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
 import org.rsmod.game.entity.Player
 import org.rsmod.game.map.Direction
@@ -49,14 +50,16 @@ internal suspend fun ProtectedAccess.proceed(raid: ToaRaid, room: ToaRoom, annou
 
 internal suspend fun ProtectedAccess.travel(target: ToaEncounter, fromLobby: Boolean) {
     val raid = target.raid
+    if (fromLobby) ifCloseSub(ToaPartyManager.LOBBY_HUD)
     fadeOut()
     delay(1)
     minimapHideMap()
     delay(2)
 
-    if (target.destroyed) {
+    if (target.destroyed || player !in raid.players) {
         minimapReset()
         closeFadeOverlayNow()
+        if (fromLobby) openLobbyHud()
         if (raid.isInside(player)) reopenHud(raid)
         return
     }
