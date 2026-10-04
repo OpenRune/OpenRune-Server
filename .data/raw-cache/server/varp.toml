@@ -857,3 +857,9 @@ isServerOnly = true
 id = "varp.barrows_state"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.dom_loot_claimed"
+scope = "Temp"
+transmit = "Never"

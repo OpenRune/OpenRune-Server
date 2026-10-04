@@ -21,9 +21,10 @@ internal constructor(
     private val delves: DoomDelves,
     private val acid: DoomAcid,
     private val loot: DoomLoot,
+    private val stats: DoomStats,
 ) : InstanceScript(registry) {
 
-    override fun settingsRow(): String = "dbrow.instance_doom_of_mokhaiotl"
+    override fun settingsRow(): String = SETTINGS_ROW
 
     override fun area(): InstanceArea = INSTANCE
 
@@ -44,6 +45,7 @@ internal constructor(
             player.missedOrbs = 0
             acid.reset(player)
             loot.reset(player)
+            stats.startRun(player)
             delves.placeExit(session)
             delves.startLevel(this, session, level)
         }
@@ -52,12 +54,16 @@ internal constructor(
         onInstancePlayerLeave {
             player.missedOrbs = 0
             acid.reset(player)
+            loot.stash(player)
             loot.reset(player)
             delves.resetLevel(player)
         }
 
-        onOpLoc1(HOLE_LOC) { with(loot) { openEndLevel() } }
-        onOpLoc2(HOLE_LOC) { descend() }
+        for (hole in listOf(HOLE_LOC, UNIQUE_HOLE_LOC)) {
+            onOpLoc1(hole) { with(loot) { openEndLevel() } }
+            onOpLoc2(hole) { descend() }
+        }
+        onOpLoc1(CHEST_LOC) { with(loot) { openChest() } }
 
         onIfModalButton("$END_LEVEL:btn_claim") { with(loot) { claim() } }
         onIfModalButton("$END_LEVEL:btn_descend") {
@@ -68,6 +74,7 @@ internal constructor(
         onIfModalButton("$END_LEVEL:btn_leave") {
             if (!player.lootClaimed) return@onIfModalButton
             with(loot) { closeEndLevel() }
+            if (manager.sessionForPlayer(player) == null) return@onIfModalButton
             defaultLeaveFlow()
         }
         onIfModalButton("$END_LEVEL:btn_inv_all") { with(loot) { takeAll(inv) } }
@@ -108,9 +115,14 @@ internal constructor(
 
     private suspend fun ProtectedAccess.descend() {
         val session = manager.sessionForPlayer(player) ?: return
-        if (!delves.canDescend(player)) {
-            mes("The burrow is too deep to follow any further.")
-            return
+        if (loot.hasUnique(player)) {
+            val proceed =
+                choice2(
+                    "Descend anyway", true,
+                    "Stay", false,
+                    title = "You have a unique in your loot. Dying will lose it.",
+                )
+            if (!proceed) return
         }
         delves.removeHoles(session)
         val next = delves.currentLevel(player) + 1
@@ -119,8 +131,12 @@ internal constructor(
         delves.startLevel(this, session, next)
     }
 
-    private companion object {
+    internal companion object {
+        const val SETTINGS_ROW = "dbrow.instance_doom_of_mokhaiotl"
+
         private const val HOLE_LOC = "loc.dom_descend_hole"
+        private const val UNIQUE_HOLE_LOC = "loc.dom_descend_hole_unique"
+        private const val CHEST_LOC = "loc.dom_chest_loot"
         private const val END_LEVEL = "component.dom_end_level_ui"
         private const val JUMP_MESSAGE = "You jump the gap..."
         private const val DESCEND_MESSAGE = "You jump further into the burrow..."

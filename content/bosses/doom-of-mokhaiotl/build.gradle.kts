@@ -7,6 +7,7 @@ dependencies {
     implementation(projects.api.bosses)
     implementation(projects.api.combat.combatCommons)
     implementation(projects.api.config)
+    implementation(projects.api.death)
     implementation(projects.api.dropTable)
     implementation(projects.api.dropTablePlugin)
     implementation(projects.api.instances)

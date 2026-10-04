@@ -1,6 +1,8 @@
 package org.rsmod.content.bosses.doom
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.definition.type.widget.IfEvent
 import dtx.core.ArgMap
 import dtx.core.RollResult
@@ -21,14 +23,16 @@ import org.rsmod.api.invtx.invClear
 import org.rsmod.api.invtx.invMoveAll
 import org.rsmod.api.invtx.invTransfer
 import org.rsmod.api.market.MarketPrices
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarp
 import org.rsmod.content.interfaces.collectionlog.CollectionLog
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.type.uncert
 
-internal var Player.lootClaimed by boolVarp("varp.dom_temp")
+internal var Player.lootClaimed by boolVarp("varp.dom_loot_claimed")
 
 @Singleton
 internal class DoomLoot
@@ -40,12 +44,28 @@ constructor(
     private val random: GameRandom,
     private val instances: InstanceManager,
     private val playerList: PlayerList,
+    private val stats: DoomStats,
 ) {
-    fun roll(access: StandardNpcAccess) {
+    /** Returns true when this kill rolled a unique. */
+    fun roll(access: StandardNpcAccess): Boolean {
         val npc = access.npc
-        val player = killer(access) ?: return
+        val player = killer(access)
+        if (player == null) {
+            println("[DoomLoot] roll aborted: no killer for npc=${npc.id}")
+            return false
+        }
+        return rollFor(player, npc, recordStats = true)
+    }
+
+    fun rollFor(player: Player, npc: Npc, recordStats: Boolean): Boolean {
         val level = delves.currentLevel(player)
-        val table = registry.forNpc(BOSS_TABLE) ?: return
+        debug(player, "roll start level=$level npc=${npc.id}")
+        if (recordStats) stats.complete(player, level)
+        val table = registry.forNpc(BOSS_TABLE)
+        if (table == null) {
+            debug(player, "roll aborted: no drop table for $BOSS_TABLE")
+            return false
+        }
         val result = table.roll(player, ArgMap(KillRollContext.npc with npc)).flatten()
         val drops =
             when (result) {
@@ -53,36 +73,70 @@ constructor(
                 is RollResult.ListOf -> result.results
                 else -> emptyList()
             }
-        for (drop in drops) award(player, drop, level)
+        debug(player, "table result=${result::class.simpleName} drops=${drops.size}")
+        var unique = false
+        for (drop in drops) unique = award(player, drop, level) || unique
         if (level >= TEARS_FROM_LEVEL) {
             val tears = minOf(TEARS_BASE + TEARS_STEP * (level - TEARS_FROM_LEVEL), TEARS_CAP)
             add(player, "obj.demon_tear", tears)
+            debug(player, "tears +$tears")
         }
+        debug(player, "earned slots used=${earned(player).objs.count { it != null }}")
+        return unique
     }
 
-    private fun killer(access: StandardNpcAccess): Player? {
+    fun hasUnique(player: Player): Boolean {
+        val uniques = UNIQUES.map { it.asRSCM(RSCMType.OBJ) }.toSet()
+        return earned(player).objs.filterNotNull().any { it.id in uniques }
+    }
+
+    fun stash(player: Player) {
+        val earned = earned(player)
+        for (obj in earned.objs.filterNotNull()) {
+            val type = ServerCacheManager.getItem(obj.id) ?: continue
+            CollectionLog.grant(player, uncert(type).id, obj.count)
+        }
+        player.invMoveAll(earned, claimed(player))
+    }
+
+    fun ProtectedAccess.openChest() {
+        player.lootClaimed = true
+        openEndLevel()
+    }
+
+    fun killer(access: StandardNpcAccess): Player? {
         access.findHero(playerList)?.let { return it }
         access.topDamager(playerList)?.let { return it }
         val session = instances.instanceForNpc(access.npc)?.let(instances::sessionForId) ?: return null
         return playerList.firstOrNull { it.uuid in session.occupants }
     }
 
-    private fun award(player: Player, drop: DropRollItem, level: Int) {
-        if (drop.isNothing || !drop.condition(player)) return
+    private fun award(player: Player, drop: DropRollItem, level: Int): Boolean {
+        if (drop.isNothing || !drop.condition(player)) {
+            debug(player, "skipped drop nothing=${drop.isNothing} obj=${drop.obj}")
+            return false
+        }
         val base = drop.rollCount(random)
         val multiplier = QUANTITY_MULTIPLIER[minOf(level, QUANTITY_MULTIPLIER.size) - 1]
         val count = base + (base * multiplier).toInt()
-        add(player, drop.transformObj(player) ?: drop.obj, count.coerceAtLeast(1))
-        drop.bonusDrops.forEach { award(player, it, level) }
+        val obj = drop.transformObj(player) ?: drop.obj
+        val added = add(player, obj, count.coerceAtLeast(1))
+        debug(player, "award $obj base=$base count=${count.coerceAtLeast(1)} success=$added")
+        var unique = obj in UNIQUES
+        for (bonus in drop.bonusDrops) unique = award(player, bonus, level) || unique
+        return unique
+    }
+
+    private fun debug(player: Player, message: String) {
+        player.mes("[DoomLoot] $message")
     }
 
     fun earned(player: Player): Inventory = player.invMap.getOrPut(EARNED_INV)
 
     fun claimed(player: Player): Inventory = player.invMap.getOrPut(CLAIMED_INV)
 
-    fun add(player: Player, obj: String, count: Int) {
-        player.invAdd(earned(player), obj, count)
-    }
+    fun add(player: Player, obj: String, count: Int): Boolean =
+        player.invAdd(earned(player), obj, count).success
 
     fun reset(player: Player) {
         player.invClear(earned(player))
@@ -129,12 +183,7 @@ constructor(
                 "Confirm",
             )
         if (!confirmed) return
-        val earned = earned(player)
-        for (obj in earned.objs.filterNotNull()) {
-            val type = ServerCacheManager.getItem(obj.id) ?: continue
-            CollectionLog.grant(player, uncert(type).id, obj.count)
-        }
-        player.invMoveAll(earned, claimed(player))
+        stash(player)
         player.lootClaimed = true
         runClientScript(CLAIMED_SCRIPT, 1)
         ifClose()
@@ -184,6 +233,8 @@ constructor(
         private const val INIT_SCRIPT = 7927
         private const val CLAIMED_SCRIPT = 7928
         private const val BOSS_TABLE = "npc.dom_boss"
+        private val UNIQUES =
+            setOf("obj.avernic_treads", "obj.eye_of_ayak_uncharged", "obj.mokhaiotl_cloth", "obj.dompet")
         private const val TEARS_FROM_LEVEL = 3
         private const val TEARS_BASE = 50
         private const val TEARS_STEP = 10

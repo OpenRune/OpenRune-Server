@@ -65,3 +65,19 @@ inherit = "inv.trail_rewardinv"
 scope = "Temp"
 stack = "Always"
 protect = false
+
+[[inventory]]
+isServerOnly = true
+id = "inv.dom_lootpile"
+inherit = "inv.dom_lootpile"
+scope = "Temp"
+stack = "Always"
+protect = false
+
+[[inventory]]
+isServerOnly = true
+id = "inv.dom_lootpile_during"
+inherit = "inv.dom_lootpile_during"
+scope = "Temp"
+stack = "Always"
+protect = false

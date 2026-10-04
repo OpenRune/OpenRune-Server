@@ -36,7 +36,7 @@ internal data class DoomDelve(
         get() = level >= 5
 
     companion object {
-        val LEVELS: List<DoomDelve> =
+        private val NAMED: List<DoomDelve> =
             listOf(
                 DoomDelve(
                     level = 1,
@@ -196,8 +196,13 @@ internal data class DoomDelve(
                 ),
             )
 
-        val DEEPEST: Int = LEVELS.last().level
+        const val DEEP_LEVEL = 9
+        private const val DEEP_HITPOINTS = 625
 
-        fun of(level: Int): DoomDelve = LEVELS.first { it.level == level }
+        val DEEPEST: Int = NAMED.last().level
+
+        val LEVELS: List<DoomDelve> = NAMED + NAMED.last().copy(level = DEEP_LEVEL, hitpoints = DEEP_HITPOINTS)
+
+        fun of(level: Int): DoomDelve = LEVELS.first { it.level == minOf(level, DEEP_LEVEL) }
     }
 }

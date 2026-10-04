@@ -11,6 +11,7 @@ internal object DoomArena {
     val BOSS_SPAWN = CoordGrid(1309, 9571, 0)
     val LANDING = CoordGrid(1311, 9559, 0)
     val GAP = CoordGrid(1310, 9557, 0)
+    val LOBBY = CoordGrid(1311, 9551, 0)
 
     const val FLOOR_MIN_X = -10
     const val FLOOR_MAX_X = 14

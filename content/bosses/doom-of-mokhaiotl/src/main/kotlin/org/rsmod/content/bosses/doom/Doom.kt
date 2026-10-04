@@ -183,6 +183,7 @@ internal constructor(
     private val specs: DoomSpecs,
     private val delves: DoomDelves,
     private val loot: DoomLoot,
+    private val holyWater: DoomHolyWater,
     private val shockwaves: DoomShockwaves,
     private val larvae: DoomLarvae,
     private val shields: DoomShields,
@@ -216,8 +217,9 @@ internal constructor(
             val type = ServerCacheManager.getNpc(name.asRSCM(RSCMType.NPC))!!
             onNpcQueue(type, "queue.death") {
                 if (shields.absorbsDeath(npc)) return@onNpcQueue
-                loot.roll(this)
-                delves.onDeath(this)
+                val unique = loot.roll(this)
+                holyWater.onDeath(this)
+                delves.onDeath(this, unique)
             }
         }
     }

@@ -30,6 +30,7 @@ constructor(
     private val drops: PlayerDeathDrops,
     private val handlingResolver: PlayerDeathHandlingResolver,
     private val cleanupHooks: Set<PlayerDeathCleanupHook>,
+    private val respawnHooks: Set<PlayerRespawnHook>,
     private val areaChecker: AreaChecker,
 ) {
     private var Player.specialAttackType by intVarp("varp.sa_attack")
@@ -41,8 +42,10 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.deathSequence() {
-        val respawn = CoordGrid(0, 50, 50, 21, 18)
-        val randomRespawn = mapFindSquareLineOfWalk(respawn, minRadius = 0, maxRadius = 2)
+        val hooked = respawnHooks.firstNotNullOfOrNull { it.respawnCoords(player) }
+        val respawn = hooked ?: CoordGrid(0, 50, 50, 21, 18)
+        val randomRespawn =
+            if (hooked != null) null else mapFindSquareLineOfWalk(respawn, minRadius = 0, maxRadius = 2)
 
         stopAction()
         delay(2)

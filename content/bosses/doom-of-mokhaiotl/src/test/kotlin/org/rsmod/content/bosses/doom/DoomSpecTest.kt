@@ -45,6 +45,6 @@ class DoomSpecTest {
 
     @Test
     fun `delve levels are contiguous from one`() {
-        assertEquals((1..DoomDelve.DEEPEST).toList(), DoomDelve.LEVELS.map { it.level })
+        assertEquals((1..DoomDelve.DEEP_LEVEL).toList(), DoomDelve.LEVELS.map { it.level })
     }
 }

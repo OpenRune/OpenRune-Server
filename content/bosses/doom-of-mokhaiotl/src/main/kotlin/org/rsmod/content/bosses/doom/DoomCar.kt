@@ -140,7 +140,7 @@ internal object DoomCar {
         }.toSet()
 
     fun slamTiles(centre: CoordGrid, bossSw: CoordGrid, size: Int, rocks: Set<CoordGrid>, floor: Iterable<CoordGrid>): Set<CoordGrid> =
-        floor.filter { tile ->
+        if (centre in rocks) emptySet() else floor.filter { tile ->
             val dx = tile.x - centre.x
             val dz = tile.z - centre.z
             dx * dx + dz * dz <= SLAM_RADIUS_SQUARED && tile !in rocks &&
@@ -148,7 +148,7 @@ internal object DoomCar {
         }.toSet()
 
     fun exposedRocks(centre: CoordGrid, bossSw: CoordGrid, size: Int, rocks: Set<CoordGrid>): List<CoordGrid> =
-        rocks.filter {
+        if (centre in rocks) listOf(centre) else rocks.filter {
             centre.chebyshevDistance(it) <= CRUMBLE_RANGE && !inside(bossSw, size, it) &&
                 !shadowed(centre, it, bossSw, size, rocks)
         }
@@ -260,7 +260,8 @@ constructor(
             }
             val from = boss.coords
             val swept = DoomCar.sweptTiles(listOf(from) + chunk, boss.size)
-            swept.forEach { destroyRock(player, it) }
+            val landing = if (index == steps.lastIndex) chunk.last().translate(half, half) else null
+            swept.forEach { if (it != landing) destroyRock(player, it) }
             if (!trampled && player.coords in swept) {
                 trampled = true
                 shove(boss, player, swept)

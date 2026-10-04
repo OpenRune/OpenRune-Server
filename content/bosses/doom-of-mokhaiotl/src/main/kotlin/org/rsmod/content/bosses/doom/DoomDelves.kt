@@ -33,14 +33,17 @@ constructor(
     private val hpBar: BossHpBarScript,
     private val aiPlayerInteractions: AiPlayerInteractions,
     private val acid: DoomAcid,
+    private val stats: DoomStats,
 ) {
     fun currentLevel(player: Player): Int = player.vars[CURRENT_LEVEL_VARP] + 1
+
+    fun setLevel(player: Player, level: Int) {
+        player.currentLevelVarp = level - 1
+    }
 
     fun resetLevel(player: Player) {
         player.currentLevelVarp = 0
     }
-
-    fun canDescend(player: Player): Boolean = currentLevel(player) < DoomDelve.DEEPEST
 
     fun startLevel(access: ProtectedAccess, session: InstanceSession, level: Int) {
         val player = access.player
@@ -73,11 +76,11 @@ constructor(
 
     fun removeHoles(session: InstanceSession) {
         val spawn = instances.resolveCoord(session, DoomArena.BOSS_SPAWN) ?: return
-        val hole = HOLE_LOC.asRSCM(RSCMType.LOC)
+        val holes = setOf(HOLE_LOC.asRSCM(RSCMType.LOC), UNIQUE_HOLE_LOC.asRSCM(RSCMType.LOC))
         for (dx in DoomArena.FLOOR_MIN_X..DoomArena.FLOOR_MAX_X) {
             for (dz in DoomArena.FLOOR_MIN_Z..DoomArena.FLOOR_MAX_Z) {
                 deps.locRepo.findExact(spawn.translate(dx, dz), LocShape.CentrepieceStraight)
-                    ?.takeIf { it.id == hole }
+                    ?.takeIf { it.id in holes }
                     ?.let { deps.locRepo.del(it, Int.MAX_VALUE) }
             }
         }
@@ -95,6 +98,7 @@ constructor(
         instances.registerSessionNpc(player, npc)
         deps.startEncounter(npc, specs.of(delve))
         acid.attach(player, npc, delve)
+        stats.startLevel(player)
 
         npc.anim(EMERGE_SEQ)
         npc.spotanim(EMERGE_SPOTANIM)
@@ -103,14 +107,14 @@ constructor(
         npc.apPlayer2(player, aiPlayerInteractions)
     }
 
-    suspend fun onDeath(access: StandardNpcAccess) {
+    suspend fun onDeath(access: StandardNpcAccess, unique: Boolean) {
         val npc = access.npc
         access.noneMode()
         access.hideAllOps()
         access.anim(DESPAWN_SEQ)
         access.spotanim(DESPAWN_SPOTANIM)
         access.delay(HOLE_DELAY)
-        val hole = deps.locRepo.add(npc.coords, HOLE_LOC, Int.MAX_VALUE, LocAngle.West, LocShape.CentrepieceStraight)
+        val hole = deps.locRepo.add(npc.coords, if (unique) UNIQUE_HOLE_LOC else HOLE_LOC, Int.MAX_VALUE, LocAngle.West, LocShape.CentrepieceStraight)
         acid.forget(npc, npc.coords)
         deps.worldRepo.locAnim(hole, HOLE_SPAWN_SEQ)
         access.delay(DESPAWN_DELAY - HOLE_DELAY)
@@ -121,6 +125,7 @@ constructor(
         private const val CURRENT_LEVEL_VARP = "varp.dom_current_level_temp"
         private const val EXIT_LOC = "loc.dom_entrance_exit"
         private const val HOLE_LOC = "loc.dom_descend_hole"
+        private const val UNIQUE_HOLE_LOC = "loc.dom_descend_hole_unique"
         private const val ROCK_LOC = "loc.dom_rock"
 
         private const val SPAWN_DELAY = 4

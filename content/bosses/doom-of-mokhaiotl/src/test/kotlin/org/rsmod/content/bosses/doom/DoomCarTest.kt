@@ -98,6 +98,13 @@ class DoomCarTest {
     }
 
     @Test
+    fun `a rock on the boss centre tile blocks the whole slam and is the only rock destroyed`() {
+        val rocks = setOf(centre, centre.translate(5, 0), centre.translate(0, 8))
+        assertTrue(DoomCar.slamTiles(centre, sw, 5, rocks, floor).isEmpty())
+        assertEquals(listOf(centre), DoomCar.exposedRocks(centre, sw, 5, rocks))
+    }
+
+    @Test
     fun `only exposed rocks within 15 tiles crumble`() {
         val near = centre.translate(5, 0)
         val behind = centre.translate(8, 0)
