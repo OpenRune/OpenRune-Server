@@ -1,0 +1,6 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.romeo_juliet_progress"
+varp = "varp.rjquest"
+startBit = 0
+endBit = 6

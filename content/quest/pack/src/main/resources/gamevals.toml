@@ -60,6 +60,10 @@ grim_piano_f5 = 3703
 grim_piano_g5 = 3705
 grim_piano_a5 = 3693
 grim_piano_b5 = 3695
+romeo_juliet_collapse = 505
+romeo_juliet_crypt_door = 1816
+romeo_juliet_crypt_enter = 1815
+romeo_juliet_drink = 2401
 
 [gamevals.varp]
 restless_ghost_rising_tile = 63703
@@ -83,6 +87,7 @@ gertrudes_cat_progress = 63711
 gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
 gertrudes_cat_told_sardines = 63714
+romeo_juliet_progress = 63730
 
 [gamevals.models]
 misthalin_gem_diamond = 32333
