@@ -31,7 +31,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 | Zulrah | IMPLEMENTED / NEEDS TESTING for exhaustive mechanics | CUSTOM | User played it; halberd regression covered; old death-recovery implementation is archived, not active |
 | GWD four bosses | IMPLEMENTED / NEEDS TESTING for full encounters | UPSTREAM + CUSTOM EXTENSIONS | Current respawn policy 100 ticks / 60 s; Nero reads actual deadlines |
 | Other existing boss modules | IMPLEMENTED / NEEDS TESTING | UPSTREAM; selected custom timer integration | Amoxliatl, Barrows, Callisto, demonic gorilla, Duke, gemstone crab, KBD, Leviathan, Muspah, Scurrius, Spindel, tormented demon, Vardorvis, Whisperer |
-| Araxxor | PLANNED | CUSTOM research | Capture inventory exists; encounter not implemented |
+| Araxxor | IN PROGRESS on `feature/araxxor` | CUSTOM | Deterministic cycle and native asset checks; no live encounter yet; see docs/custom/araxxor.md |
 | Doom of Mokhaiotl | NOT STARTED encounter | CUSTOM research + upstream drop/pet data | Archived research exists; a drop table does not constitute a boss fight |
 
 ## Systems
@@ -140,3 +140,5 @@ check and explicit merge approval are still pending.
 ## Acceptance milestone — 2026-10-04
 
 User explicitly approved the final FX checkpoint (6168204ee) for merge. PR #15 is merged into the gameplay integration branch; PR #14 carries the combined accepted work to main. 99 special tests, 12 command/interface tests, full build and isolated boot passed; all three GitHub workflows on 6168204ee passed. This acceptance does not declare 285/285 completeness: 191 registered, 94 deferred. Earlier pending notes above describe historical checkpoints.
+
+Araxxor foundation: separate cycle/asset module and reproducible capture evidence; runtime entry/combat/loot still pending. The seven-egg snapshot is incomplete and later-timestamped initial-state rows must not be mixed into the start snapshot. No live installation changes.

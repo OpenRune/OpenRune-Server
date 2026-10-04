@@ -1,0 +1,261 @@
+{
+  "packSha256": "6f1167c9868e6f886d466d3db8fd05b7e88f51008d7dae67525460080d573ca4",
+  "bridgeSha256": "348e60e30bfc055538305045d9ed46b0e5c56f2ce165cd979d7a008b69e943ad",
+  "source": "alora-runelite-java11",
+  "eventCount": 1816,
+  "eventTypes": {
+    "NPC_INITIAL_STATE": 13,
+    "PLAYER_INITIAL_STATE": 1,
+    "RECORDING_STARTED": 1,
+    "POSE_FRAME_CHANGED": 662,
+    "ANIMATION_CHANGED": 153,
+    "PROJECTILE_SPAWNED": 45,
+    "HITSPLAT": 139,
+    "TARGET_CHANGED": 191,
+    "MOVE": 109,
+    "POSE_ANIMATION_CHANGED": 125,
+    "ORIENTATION_CHANGED": 237,
+    "OBJECT_SPAWNED": 39,
+    "NPC_SPAWNED": 5,
+    "NPC_DESPAWNED": 13,
+    "GRAPHIC_CHANGED": 1,
+    "ACTOR_DEATH": 2,
+    "ITEM_SPAWNED": 1,
+    "OBJECT_DESPAWNED": 78,
+    "RECORDING_STOPPED": 1
+  },
+  "snapshotActors": [
+    {
+      "npc": 13670,
+      "templateX": 3626,
+      "templateY": 9809,
+      "plane": 0
+    },
+    {
+      "npc": 13670,
+      "templateX": 3630,
+      "templateY": 9828,
+      "plane": 0
+    },
+    {
+      "npc": 13668,
+      "templateX": 3633,
+      "templateY": 9816,
+      "plane": 0
+    },
+    {
+      "npc": 13674,
+      "templateX": 3632,
+      "templateY": 9804,
+      "plane": 0
+    },
+    {
+      "npc": 13672,
+      "templateX": 3638,
+      "templateY": 9804,
+      "plane": 0
+    },
+    {
+      "npc": 13672,
+      "templateX": 3638,
+      "templateY": 9828,
+      "plane": 0
+    },
+    {
+      "npc": 13670,
+      "templateX": 3644,
+      "templateY": 9808,
+      "plane": 0
+    },
+    {
+      "npc": 13674,
+      "templateX": 3644,
+      "templateY": 9824,
+      "plane": 0
+    }
+  ],
+  "bossAnimations": [
+    {
+      "tick": 1,
+      "animation": 11479
+    },
+    {
+      "tick": 7,
+      "animation": 11480
+    },
+    {
+      "tick": 13,
+      "animation": 11480
+    },
+    {
+      "tick": 19,
+      "animation": 11476
+    },
+    {
+      "tick": 25,
+      "animation": 11480
+    },
+    {
+      "tick": 31,
+      "animation": 11480
+    },
+    {
+      "tick": 37,
+      "animation": 11480
+    },
+    {
+      "tick": 43,
+      "animation": 11480
+    },
+    {
+      "tick": 49,
+      "animation": 11480
+    },
+    {
+      "tick": 55,
+      "animation": 11480
+    },
+    {
+      "tick": 61,
+      "animation": 11476
+    },
+    {
+      "tick": 67,
+      "animation": 11480
+    },
+    {
+      "tick": 73,
+      "animation": 11480
+    },
+    {
+      "tick": 79,
+      "animation": 11480
+    },
+    {
+      "tick": 85,
+      "animation": 11480
+    },
+    {
+      "tick": 91,
+      "animation": 11480
+    },
+    {
+      "tick": 97,
+      "animation": 11480
+    },
+    {
+      "tick": 103,
+      "animation": 11476
+    },
+    {
+      "tick": 109,
+      "animation": 11480
+    },
+    {
+      "tick": 115,
+      "animation": 11480
+    },
+    {
+      "tick": 121,
+      "animation": 11480
+    },
+    {
+      "tick": 127,
+      "animation": 11480
+    },
+    {
+      "tick": 133,
+      "animation": 11480
+    },
+    {
+      "tick": 139,
+      "animation": 11480
+    },
+    {
+      "tick": 145,
+      "animation": 11476
+    },
+    {
+      "tick": 151,
+      "animation": 11480
+    },
+    {
+      "tick": 157,
+      "animation": 11480
+    },
+    {
+      "tick": 163,
+      "animation": 11480
+    },
+    {
+      "tick": 169,
+      "animation": 11488
+    },
+    {
+      "tick": 171,
+      "animation": 11489
+    },
+    {
+      "tick": 174,
+      "animation": 11487
+    },
+    {
+      "tick": 178,
+      "animation": 11487
+    },
+    {
+      "tick": 182,
+      "animation": 11487
+    },
+    {
+      "tick": 186,
+      "animation": 11487
+    },
+    {
+      "tick": 190,
+      "animation": 11487
+    },
+    {
+      "tick": 194,
+      "animation": 11487
+    },
+    {
+      "tick": 198,
+      "animation": 11487
+    },
+    {
+      "tick": 202,
+      "animation": 11481
+    }
+  ],
+  "retrospectiveInitialStates": [],
+  "laterInitialStates": [
+    {
+      "npc": 13671,
+      "tick": 26
+    },
+    {
+      "npc": 13673,
+      "tick": 68
+    },
+    {
+      "npc": 13675,
+      "tick": 110
+    },
+    {
+      "npc": 13671,
+      "tick": 152
+    },
+    {
+      "npc": 13669,
+      "tick": 208
+    }
+  ],
+  "limitations": [
+    "Foreign-server observation, not proof of OSRS mechanics.",
+    "Snapshot contains only seven eggs; not a complete nine-egg placement reference.",
+    "Initial-state rows after tick zero represent later actors, not the initial egg layout.",
+    "NPC template coordinates and terrain coordinates differ by actor footprint; do not use one global offset.",
+    "Projectile 1560 includes player attacks and must not be assigned to Araxxor."
+  ]
+}

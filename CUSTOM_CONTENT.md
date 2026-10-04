@@ -17,7 +17,8 @@ not evidence that every mechanic is complete.
 | Boss respawn policy and Nero countdowns | HYBRID server/client integration | `api/npc`, `api/death`, `api/instances`; Nero plugins | [Architecture](docs/custom/architecture.md) |
 | External plugin loading and interface mappings | UPSTREAM + CUSTOM EXTENSIONS | `engine/plugin`, `or-cache`, `server/app` | [Core modifications](docs/custom/core-modifications.md) |
 | Object library, native loot value display | CUSTOM Nero integration | Separate Nero Studio repository | [Architecture](docs/custom/architecture.md) |
-| Araxxor / Doom research | CUSTOM research, no active encounter | Research documents and archived branch history | [Research](docs/custom/research.md) |
+| Araxxor foundation | CUSTOM, no active encounter yet | `content/bosses/araxxor`, capture inspection | [Araxxor](docs/custom/araxxor.md) |
+| Doom research | CUSTOM research, no active encounter | Archived branch history | [Research](docs/custom/research.md) |
 
 Upstream: https://github.com/OpenRune/OpenRune-Server
 Fork: https://github.com/EvolvedMind/OpenRune-Server

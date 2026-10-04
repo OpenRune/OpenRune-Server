@@ -21,7 +21,7 @@ It is preserved unchanged during repository organization.
 | Further melee families | Dragon claws, Dragon scimitar, Darklight/Arclight/Emberlight, Dragon sword and Ancient mace: 17 additional item variants; 58 special tests and 122 selected tests total pass; full server build passes; client animation verification pending |
 | Latest special validation | 99 special tests + 12 command/interface tests pass; build and isolated boot pass; user gave merge approval on 2026-10-04 |
 | Zulrah | Active custom encounter; old alternative recovery code is review material, not installed |
-| Araxxor | Planned; capture researched; no encounter implementation yet |
+| Araxxor | IN PROGRESS: cycle model, native asset checks and capture evidence; no playable encounter yet |
 | Doom | Research only; no active encounter/delve system |
 | Revision 241 | Upstream review pending; no automatic upgrade |
 | Repository organization | Complete: 15 stale branches archived and removed; main and active integration branch retained |
