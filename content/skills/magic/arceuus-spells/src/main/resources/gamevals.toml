@@ -1,0 +1,24 @@
+[gamevals.area]
+dark_altar = 60
+
+[gamevals.varbit]
+mark_of_darkness_active = 64210
+ward_of_arceuus_active = 64211
+death_charge_charges = 64212
+corruption_marked = 64213
+corruption_fast = 64214
+
+[gamevals.queue]
+mark_of_darkness_expire = 65525
+mark_of_darkness_warn = 65523
+ward_of_arceuus_expire = 65522
+ward_of_arceuus_cooldown = 65521
+death_charge_expire = 65520
+corruption_cooldown = 65519
+shadow_veil_expire = 65518
+shadow_veil_cooldown = 65517
+vile_vigour_cooldown = 65516
+arceuus_offering_cooldown = 65514
+
+[gamevals.timer]
+corruption = 65520

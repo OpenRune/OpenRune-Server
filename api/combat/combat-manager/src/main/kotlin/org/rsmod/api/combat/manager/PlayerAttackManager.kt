@@ -725,7 +725,7 @@ constructor(
         target.queueCombatRetaliate(source)
 
         val hit = target.queueHit(source, delay, HitType.Melee, damage, playerHitModifier)
-        notifyPlayerHit(source, target)
+        notifyPlayerHit(source, target, damage)
         target.combatPlayDefendAnim()
         return hit
     }
@@ -1067,15 +1067,15 @@ constructor(
                 modifier = playerHitModifier,
                 sourceSecondary = ammo,
             )
-        notifyPlayerHit(source, target)
+        notifyPlayerHit(source, target, damage)
         target.combatPlayDefendAnim(clientDelay)
         target.combatPlayDefendSpot(ammo, clientDelay)
         return hit
     }
 
-    private fun notifyPlayerHit(source: Player, target: Player) {
+    private fun notifyPlayerHit(source: Player, target: Player, damage: Int) {
         for (hook in pvpPlayerHitHooks) {
-            hook.onPlayerHit(source, target)
+            hook.onPlayerHit(source, target, damage)
         }
     }
 
@@ -1580,7 +1580,7 @@ constructor(
                 modifier = playerHitModifier,
                 sourceSecondary = spell,
             )
-        notifyPlayerHit(source, target)
+        notifyPlayerHit(source, target, damage)
         target.combatPlayDefendAnim(clientDelay)
         return hit
     }

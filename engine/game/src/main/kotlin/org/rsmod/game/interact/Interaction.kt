@@ -103,12 +103,11 @@ public class InteractionNpcT(
     startApRange: Int = PathingEntity.DEFAULT_AP_RANGE,
 ) : InteractionNpc(target, hasOpTrigger, hasApTrigger, startApRange)
 
-public class InteractionObj(
+public sealed class InteractionObj(
     public val target: Obj,
-    public val op: InteractionOp,
     hasOpTrigger: Boolean,
     hasApTrigger: Boolean,
-    startApRange: Int = PathingEntity.DEFAULT_AP_RANGE,
+    startApRange: Int,
 ) : Interaction(hasOpTrigger, hasApTrigger, startApRange) {
     override fun toString(): String =
         "InteractionObj(" +
@@ -120,6 +119,24 @@ public class InteractionObj(
             "interacted=$interacted" +
             ")"
 }
+
+public class InteractionObjOp(
+    public val op: InteractionOp,
+    target: Obj,
+    hasOpTrigger: Boolean,
+    hasApTrigger: Boolean,
+    startApRange: Int = PathingEntity.DEFAULT_AP_RANGE,
+) : InteractionObj(target, hasOpTrigger, hasApTrigger, startApRange)
+
+public class InteractionObjT(
+    public val objType: ItemServerType?,
+    public val component: ComponentType,
+    public val comsub: Int,
+    target: Obj,
+    hasOpTrigger: Boolean,
+    hasApTrigger: Boolean,
+    startApRange: Int = PathingEntity.DEFAULT_AP_RANGE,
+) : InteractionObj(target, hasOpTrigger, hasApTrigger, startApRange)
 
 public sealed class InteractionPlayer(
     public val target: Player,

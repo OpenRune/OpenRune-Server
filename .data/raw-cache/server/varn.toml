@@ -131,6 +131,9 @@ id = "varn.muspah_pre_shield_max_hp"
 id = "varn.muspah_final_attacks"
 
 [[varn]]
+id = "varn.muspah_shield_corrupted"
+
+[[varn]]
 id = "varn.vardorvis_next_head_gaze"
 
 [[varn]]
@@ -150,3 +153,6 @@ id = "varn.td_defenceless"
 
 [[varn]]
 id = "varn.td_defenceless_at"
+
+[[varn]]
+id = "varn.dark_lure_end_clock"

@@ -24,7 +24,7 @@ constructor(
         val baseDamage = NpcMagicMaxHit.calculateBaseDamage(effectiveMagic, npc.magicStrength)
 
         val defenceBonus = bonuses.defensiveMagicBonus(target)
-        val reductionAttributes = reductions.collectNvP(target, random)
+        val reductionAttributes = reductions.collectNvP(target, npc, random)
         return MaxHitOperations.applyDamageReductions(baseDamage, defenceBonus, reductionAttributes)
     }
 }

@@ -15,6 +15,7 @@ import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.combat.commons.player.finishNpcHit
+import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
@@ -27,8 +28,11 @@ import org.rsmod.api.player.ui.ifSetAnim
 import org.rsmod.api.script.onEvent
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
+import org.rsmod.game.entity.npc.NpcUid
+import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.HitType as EngineHitType
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
@@ -38,6 +42,7 @@ class DukeSucellus
 constructor(
     deps: BossDeps,
     private val eventBus: EventBus,
+    private val npcList: NpcList,
 ) : BossPluginScript(deps) {
 
     override fun ScriptContext.startup() {
@@ -62,6 +67,7 @@ constructor(
         onEvent<NpcStateEvents.Respawn> {
             if (npc.type.id in bossNpcIds) resetFlareState(npc)
         }
+        onEvent<PlayerHitEvents.Modify> { applyWardOfArceuus(player, hit) }
         deps.extensionRegistry.register(GAZE_RESOLVE) { _, npc, target, _ ->
             if (isFighting(npc) && target.isValidTarget()) resolveGaze(npc, target)
         } }
@@ -71,6 +77,15 @@ constructor(
     }
 
     private fun isFighting(npc: Npc): Boolean = npc.isSlotAssigned && npc.isVisType(BOSS_NPC)
+
+    private fun Player.hasWardOfArceuus(): Boolean = vars[WARD_OF_ARCEUUS_VARBIT] == 1
+
+    private fun applyWardOfArceuus(player: Player, hit: HitBuilder) {
+        if (!hit.isFromNpc || !player.hasWardOfArceuus()) return
+        val source = hit.sourceUid?.let { NpcUid(it).resolve(npcList) } ?: return
+        if (source.type.id !in bossNpcIds) return
+        hit.damage -= hit.damage / 10
+    }
 
     private fun behindPillar(npc: Npc, target: Player): Boolean {
         val west = npc.coords.x
@@ -190,7 +205,13 @@ constructor(
     private fun strikeGas(npc: Npc, centre: CoordGrid) {
         for (player in deps.playerList) {
             if (!player.isValidTarget() || centre.chebyshevDistance(player.coords) > GAS_CLOUD_RADIUS) continue
-            player.statSub("stat.prayer", GAS_PRAYER_DRAIN, 0)
+            val drain =
+                if (player.hasWardOfArceuus()) {
+                    GAS_PRAYER_DRAIN * WARD_PRAYER_DRAIN_PERCENT / 100
+                } else {
+                    GAS_PRAYER_DRAIN
+                }
+            player.statSub("stat.prayer", drain, 0)
             val damage = GAS_DAMAGE.first + deps.random.of(GAS_DAMAGE.last - GAS_DAMAGE.first + 1)
             player.finishNpcHit(npc, GAS_HIT_DELAY, EngineHitType.Typeless, damage, deps.playerHitModifier)
         }
@@ -408,6 +429,8 @@ constructor(
         private const val GAS_VENT_DESPAWN_DURATION = GAS_VENT_LIFESPAN + 1
         private const val GAS_CLOUD_RADIUS = 1
         private const val GAS_PRAYER_DRAIN = 4
+        private const val WARD_PRAYER_DRAIN_PERCENT = 67
+        private const val WARD_OF_ARCEUUS_VARBIT = "varbit.ward_of_arceuus_active"
         private const val GAS_HIT_DELAY = 1
         private val GAS_DAMAGE = 0..12
 

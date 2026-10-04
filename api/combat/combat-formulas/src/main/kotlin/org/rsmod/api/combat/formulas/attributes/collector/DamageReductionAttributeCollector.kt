@@ -5,6 +5,7 @@ import java.util.EnumSet
 import org.rsmod.api.combat.commons.styles.AttackStyle
 import org.rsmod.api.combat.formulas.attributes.DamageReductionAttributes
 import org.rsmod.api.combat.weapon.styles.AttackStyles
+import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.hat
 import org.rsmod.api.player.lefthand
 import org.rsmod.api.player.legs
@@ -12,6 +13,7 @@ import org.rsmod.api.player.righthand
 import org.rsmod.api.player.torso
 import org.rsmod.api.player.worn.EquipmentChecks
 import org.rsmod.api.random.GameRandom
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.isType
 import org.rsmod.game.type.getOrNull
@@ -21,7 +23,11 @@ public class DamageReductionAttributeCollector
 constructor(private val attackStyles: AttackStyles) {
     // `random` is an explicit parameter to indicate that this function relies on randomness
     // for certain effects, such as the Elysian spirit shield proc.
-    public fun collectNvP(player: Player, random: GameRandom): EnumSet<DamageReductionAttributes> {
+    public fun collectNvP(
+        player: Player,
+        npc: Npc,
+        random: GameRandom,
+    ): EnumSet<DamageReductionAttributes> {
         val attributes = EnumSet.noneOf(DamageReductionAttributes::class.java)
 
         val shield = player.lefthand
@@ -41,6 +47,11 @@ constructor(private val attackStyles: AttackStyles) {
 
         if (EquipmentChecks.isJusticiarSet(player.hat, player.torso, player.legs)) {
             attributes += DamageReductionAttributes.Justiciar
+        }
+
+        val demonAttacker = npc.visType.param(params.demon) != 0
+        if (demonAttacker && player.vars["varbit.ward_of_arceuus_active"] == 1) {
+            attributes += DamageReductionAttributes.WardOfArceuus
         }
 
         return attributes

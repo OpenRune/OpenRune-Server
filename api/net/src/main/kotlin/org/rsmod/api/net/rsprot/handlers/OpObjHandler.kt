@@ -3,7 +3,6 @@ package org.rsmod.api.net.rsprot.handlers
 import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import jakarta.inject.Inject
-import net.rsprot.protocol.game.incoming.objs.OpObj
 import net.rsprot.protocol.game.incoming.objs.OpObjV2
 import org.rsmod.api.player.interact.ObjInteractions
 import org.rsmod.api.player.protect.clearPendingAction
@@ -11,7 +10,7 @@ import org.rsmod.api.player.vars.ctrlMoveSpeed
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
-import org.rsmod.game.interact.InteractionObj
+import org.rsmod.game.interact.InteractionObjOp
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.movement.RouteRequestCoord
 import org.rsmod.game.obj.Obj
@@ -49,7 +48,7 @@ constructor(
         val opTrigger = objInteractions.hasOpTrigger(obj, message.interactionOp, type)
         val apTrigger = objInteractions.hasApTrigger(obj, message.interactionOp, type)
         val interaction =
-            InteractionObj(
+            InteractionObjOp(
                 target = obj,
                 op = message.interactionOp,
                 hasOpTrigger = opTrigger,
