@@ -194,3 +194,7 @@ Zulrah, Araxxor, Barrows and the parked special-attacks baseline are preserved.
 - Registered public crevice Enter and inner Use exit; verified both destination tiles against cache collision.
 - 12 Kraken tests, module formatting and full JAR build passed. Isolated startup and installer checks recorded in package evidence.
 - New candidate: outputs/kraken-fix-20261004/INSTALLEREN.cmd. In-game retest pending; no merge approval.
+
+## 2026-10-04 - Kraken accepted
+
+User confirmed Kraken works perfectly and authorized merge. Accepted runtime: dab74feae, installer kraken-fix-20261004. Preserve ranged damage / 7. Merge PR #18 dependency then PR #19 into main. Private instances remain out of scope.

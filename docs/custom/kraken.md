@@ -82,4 +82,6 @@ magic/typeless split. Real-cache registration also covers both crevice options.
 The previous tests only covered cancelled projectiles and missed this exception.
 
 Follow-up validation: 12 Kraken tests, module formatting and full JAR build pass.
-Installer: `outputs/kraken-fix-20261004/INSTALLEREN.cmd`; in-game retest pending.
+Installer: `outputs/kraken-fix-20261004/INSTALLEREN.cmd`; in-game retest accepted by the user on 2026-10-04.
+
+User gave green light to merge on 2026-10-04. The tested gameplay code is unchanged.
