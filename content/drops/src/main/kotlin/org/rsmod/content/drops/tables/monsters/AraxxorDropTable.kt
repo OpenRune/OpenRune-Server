@@ -1,18 +1,31 @@
 package org.rsmod.content.drops.tables.monsters
 
+import dtx.core.singleRollable
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
-import org.rsmod.api.droptable.rsPlayerGuaranteedTable
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.KillRollContext
+import org.rsmod.api.droptable.PreviewableDrop
+import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.content.drops.tables.shared.SharedDropTables
-import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.brimstoneKeyRoll
 import org.rsmod.content.drops.clueScrollTransformObj
-import org.rsmod.api.droptable.nothing
-import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.content.drops.tables.shared.SharedDropTables
 import org.rsmod.game.entity.Player
+
+internal val araxxorMorphDrop = DropRollItem("obj.araxxor_pet_morph", 1, condition = { player ->
+    player.vars["varbit.pet_nid_rax"] == 0 &&
+        player.invMap.values.none { "obj.araxxor_pet_morph" in it }
+})
+
+internal val araxxorMorphRoll = PreviewableDrop(araxxorMorphDrop, singleRollable<Player, DropRollItem> {
+    vetoRoll { player, args ->
+        args[KillRollContext.elapsedTicks]?.let { it in 1..124 } != true || !araxxorMorphDrop.condition(player)
+    }
+    result(araxxorMorphDrop)
+})
 
 @field:RegisterDropTable
 @JvmField
@@ -72,15 +85,24 @@ public val araxxorDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
         16 weight nothing()
     },
     tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.araxxor_pet_morph" count 1 condition { player ->
-            // Drops Need Manual: Guaranteed reward for defeating Araxxor in under 1:15, provided that the player does not already have one in their possession, or has not already used one on Nid.
-             true
-        }
+        1 outOf 1 chance araxxorMorphRoll
         onBuilder { brimstoneKeyRoll(konarTaskBonus = true) }
-        // Drops Need Manual (rate): The pet drop rate is doubled if the player chooses to destroy Araxxor's corpse instead of harvesting it.
         1 outOf 3000 weight "obj.araxxorpet" count 1
         1 outOf 47 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
              player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
+        }
+    },
+)
+
+@field:RegisterDropTable
+@JvmField
+public val araxxorDestroyDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
+    tableIdentifier = "Araxxor Destroy",
+    npcs = npcs("npc.araxxor_dead"),
+    tertiaries = rsPlayerTertiaryTable {
+        1 outOf 1500 weight "obj.araxxorpet" count 1
+        1 outOf 47 weight "obj.trail_elite_emote_exp1" count 1 transformObj { player ->
+            player.clueScrollTransformObj("obj.trail_elite_emote_exp1")
         }
     },
 )

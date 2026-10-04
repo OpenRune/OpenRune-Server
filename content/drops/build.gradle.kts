@@ -1,8 +1,11 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 dependencies {
+    testImplementation(libs.or2.all.cache)
+    testImplementation(libs.fastutil)
     implementation(libs.guice)
     implementation(projects.api.areaChecker)
     implementation(projects.api.config)

@@ -9,6 +9,7 @@ public data class NpcDeathKillContext(
     public val npc: Npc,
     public val lootTrackerEventId: Int,
     public val dropCoords: CoordGrid = npc.coords,
+    public val rewards: NpcDeathRewards = NpcDeathRewards(),
 )
 
 /**

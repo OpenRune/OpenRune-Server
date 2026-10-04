@@ -4,6 +4,23 @@ package org.rsmod.game.hit
 public class HitImpactEffects {
     private var actions: MutableList<(Int) -> Unit>? = null
     private var completed: Boolean = false
+    private var beforeImpact: MutableList<(Int) -> Int>? = null
+    private var preparedDamage: Int? = null
+
+    /** Resolve target-dependent damage at arrival, shared once across hit copies. */
+    public fun beforeImpact(action: (damage: Int) -> Int) {
+        check(preparedDamage == null && !completed)
+        (beforeImpact ?: mutableListOf<(Int) -> Int>().also { beforeImpact = it }).add(action)
+    }
+
+    public fun prepare(damage: Int): Int {
+        preparedDamage?.let { return it }
+        var result = damage
+        beforeImpact?.forEach { result = it(result).coerceAtLeast(0) }
+        beforeImpact = null
+        preparedDamage = result
+        return result
+    }
 
     public fun add(action: (actualDamage: Int) -> Unit) {
         check(!completed) { "Cannot add an effect after impact." }

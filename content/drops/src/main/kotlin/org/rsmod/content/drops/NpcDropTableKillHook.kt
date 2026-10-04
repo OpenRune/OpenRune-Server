@@ -39,7 +39,10 @@ constructor(
 ) : NpcDeathKillHook {
 
     override fun onKill(context: NpcDeathKillContext) {
-        val table = registry.forNpc(context.npc, areaChecker) ?: return
+        val overrideNpc = context.rewards.tableNpc
+        val table = (if (overrideNpc != null)
+            registry.forNpcType(overrideNpc, context.npc.coords, areaChecker)
+        else registry.forNpc(context.npc, areaChecker)) ?: return
 
         val player = context.hero
         val duration = player.lootDropDuration ?: constants.lootdrop_duration
@@ -53,6 +56,7 @@ constructor(
                         player,
                         ArgMap(
                             KillRollContext.npc with npc,
+                            KillRollContext.elapsedTicks with context.rewards.elapsedTicks,
                             KillRollContext.areaChecker with areaChecker,
                         ),
                     ).flatten()

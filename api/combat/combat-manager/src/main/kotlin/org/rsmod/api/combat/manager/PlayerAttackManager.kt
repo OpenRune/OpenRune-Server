@@ -74,6 +74,7 @@ constructor(
     private val playerInteractions: PlayerInteractions,
     private val playerTInteractions: PlayerTInteractions,
     private val pvpPlayerHitHooks: Set<PvPPlayerHitHook>,
+    private val npcMaxHits: NpcMaxHitRegistry,
 ) {
     /**
      * Determines if the player is still under an active attack delay.
@@ -545,7 +546,7 @@ constructor(
         blockType: MeleeAttackType?,
         multiplier: Double,
     ): Boolean {
-        if (source.adminMaxHit) {
+        if (source.adminMaxHit || npcMaxHits.melee(source, target, attackType)) {
             return true
         }
         return when (target) {
@@ -618,7 +619,7 @@ constructor(
     ): Int {
         val maxHit =
             calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier, roundUp)
-        if (source.adminMaxHit) {
+        if (source.adminMaxHit || npcMaxHits.melee(source, target, attackType)) {
             return maxHit
         }
         return random.of(1..maxHit)
@@ -820,7 +821,7 @@ constructor(
         blockType: RangedAttackType?,
         multiplier: Double,
     ): Boolean {
-        if (source.adminMaxHit) {
+        if (source.adminMaxHit || npcMaxHits.ranged(source, target, attackType)) {
             return true
         }
         return when (target) {
@@ -898,7 +899,7 @@ constructor(
                 multiplier = multiplier,
                 boltSpecDamage = boltSpecDamage,
             )
-        if (source.adminMaxHit) {
+        if (source.adminMaxHit || npcMaxHits.ranged(source, target, attackType)) {
             return maxHit
         }
         return random.of(1..maxHit)
