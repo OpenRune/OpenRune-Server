@@ -430,6 +430,11 @@ public class Player(
     }
 
     @InternalApi
+    public fun engineQueueAdvanceCombat(level: Int) {
+        engineQueueList.add(EngineQueueType.AdvanceCombat, args = level, label = level)
+    }
+
+    @InternalApi
     public fun engineQueueMapzone(square: MapSquareKey) {
         engineQueueList.add(EngineQueueType.Mapzone, args = square, label = square.id)
     }

@@ -8,6 +8,7 @@ kotlin {
 
 dependencies {
     implementation(libs.guice)
+    implementation(libs.kotlin.inline.logger)
     implementation(projects.api.config)
     implementation(projects.api.player)
     implementation(projects.api.script)

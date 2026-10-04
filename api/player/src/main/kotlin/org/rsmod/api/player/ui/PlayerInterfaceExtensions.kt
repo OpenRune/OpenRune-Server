@@ -518,6 +518,20 @@ internal fun Player.ifObjbox(
     ifSetText("component.objectbox:text", text)
 }
 
+internal fun Player.ifLevelUpDisplay(
+    layer: String,
+    title: String,
+    text: String,
+    pauseText: String,
+    eventBus: EventBus,
+) {
+    ifOpenChat("interface.levelup_display", constants.modal_fixedwidthandheight, eventBus)
+    ifSetHide(layer, false)
+    ifSetText("component.levelup_display:text1", title)
+    ifSetText("component.levelup_display:text2", text)
+    ifSetPauseText("component.levelup_display:continue", pauseText)
+}
+
 internal fun Player.ifDoubleobjbox(
     text: String,
     obj1: Int,

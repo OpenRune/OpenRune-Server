@@ -69,9 +69,13 @@ public object PlayerSkillXP {
 
         val combatLevel = calculateCombatLevel(this)
         if (combatLevel != this.combatLevel) {
+            val advanced = combatLevel > this.combatLevel
             appearance.combatLevel = combatLevel
             // TODO: Should this update the entire combat tab or just the combat level vars?
             PlayerInterfaceUpdates.updateCombatLevel(this)
+            if (advanced) {
+                engineQueueAdvanceCombat(combatLevel)
+            }
         }
     }
 
