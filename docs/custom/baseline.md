@@ -52,3 +52,13 @@ short-lived review branch from the tag only when reviewing that implementation.
 Do not replace accepted code by checking out an archive into the installed server.
 A verified full Git bundle and original ref manifest also exist at
 `outputs/repository-cleanup-20261003` in the Codex workspace.
+
+## Accepted Araxxor test checkpoint - 2026-10-04
+
+The user reports the initial Araxxor fight works well. Source checkpoint:
+`b87051471a7b023d3a57f066adf4434563cde1bd`, package
+`outputs/araxxor-test-20261004`, Studio `0efcb039`. Read-only comparison confirms
+the installed prerequisite and payload files still match this manifest exactly.
+The completion candidate has a separate installer and rollback checkpoint.
+Tag `server-araxxor-accepted-20261004` retains this accepted source permanently.
+No live installation is performed by the development agent.

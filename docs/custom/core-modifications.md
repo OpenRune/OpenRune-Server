@@ -245,3 +245,27 @@ calls retain their default. Boundary regressions cover both modifiers together.
 - Upstream conflict risk: contribution lifecycle; preserve real-hit versus transferred
   totals semantics when reconciling upstream changes. Content adds a dependency on
   the existing quest module to respect its configured completion policy.
+
+## Araxxor opt-in combat and reward extensions (2026-10-04)
+
+- Files: `engine/game/.../hit/HitBuilder.kt`, `HitImpactEffects.kt` and
+  `api/npc/.../hit/processor/StandardNpcHitProcessor.kt`.
+  Reason: Mirrorback must inspect the encounter at impact, after projectile flight.
+  Builder-owned callbacks survive immutable hit copies. A damage transform prepares
+  once, before the native HP cap; completion sees applied damage. Existing hits have
+  no transform and retain normal damage. Zero transformed hits use native zero marks.
+  Native-processor and shared-copy tests cover ordering, caps and cancellation.
+- Files: `api/combat/combat-manager/.../NpcMaxHitRegistry.kt`, `PlayerAttackManager.kt`.
+  Reason: minion max rolls must precede XP and special-hit splitting. Content registers
+  predicates by NPC type; no generic Araxxor IDs or item conditions enter the engine.
+  NPCs without a rule and all player targets retain the original roll path.
+- Files: `api/death/.../NpcDeathRewards.kt`, `NpcDeath.kt`, `NpcDeathKillHook.kt`,
+  `api/drop-table-plugin/.../KillRollContext.kt`, `content/drops/.../NpcDropTableKillHook.kt`.
+  Reason: Harvest/Destroy need different loot while retaining the killed NPC's
+  contribution, Slayer and kill-count context. Optional reward-table override,
+  kill duration and remains suppression default to previous behaviour. An invalid
+  explicit override fails closed rather than accidentally granting normal loot.
+- Introducing commit: `ba41dcff2`; encounter integration and regressions: `e466703da` (PR #16).
+- Upstream conflict risk: NPC hit-processing order, player damage rolls and death/drop
+  context signatures. Prefer equivalent upstream opt-in hooks if introduced; retain
+  isolation, applied-damage and reward-selection regressions when migrating.

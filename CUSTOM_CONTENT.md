@@ -1,6 +1,6 @@
 # EvolvedMind custom content
 
-Runtime baseline: **OpenRune revision 240**, server `444ead71b`, Nero Studio
+Runtime baseline: **OpenRune revision 240**, server `b87051471`, Nero Studio
 `0efcb039`. [Exact baseline and validation](docs/custom/baseline.md).
 [Current progress](CUSTOM_PROGRESS.md) is the status authority; file existence is
 not evidence that every mechanic is complete.
@@ -17,7 +17,7 @@ not evidence that every mechanic is complete.
 | Boss respawn policy and Nero countdowns | HYBRID server/client integration | `api/npc`, `api/death`, `api/instances`; Nero plugins | [Architecture](docs/custom/architecture.md) |
 | External plugin loading and interface mappings | UPSTREAM + CUSTOM EXTENSIONS | `engine/plugin`, `or-cache`, `server/app` | [Core modifications](docs/custom/core-modifications.md) |
 | Object library, native loot value display | CUSTOM Nero integration | Separate Nero Studio repository | [Architecture](docs/custom/architecture.md) |
-| Araxxor encounter | CUSTOM, development runtime; acceptance pending | `content/bosses/araxxor`, capture inspection | [Araxxor](docs/custom/araxxor.md) |
+| Araxxor encounter | CUSTOM, initial runtime accepted; completion candidate needs final visual testing | `content/bosses/araxxor`, capture inspection | [Araxxor](docs/custom/araxxor.md) |
 | Doom research | CUSTOM research, no active encounter | Archived branch history | [Research](docs/custom/research.md) |
 
 Upstream: https://github.com/OpenRune/OpenRune-Server
@@ -27,4 +27,5 @@ Paired launcher: https://github.com/EvolvedMind/Nero-OpenRune-Studio
 Do not reactivate archived implementations alongside these handlers. Compare first.
 
 Weapon charge and normal-attack work is tracked under
-content/other/special-weapons on feature/weapon-completeness; see the combat document.
+content/other/special-weapons in the accepted PR #15 checkpoint; remaining work is
+paused. See the combat document.

@@ -4,7 +4,8 @@ Updated: 2026-10-04. The user has accepted the current runtime and explicitly re
 it to be preserved. The completed organization pass changed documentation and Git references,
 not gameplay, cache, plugins or the installed package.
 
-**Current accepted server:** `6168204ee3992a3e00f6906e34200d4cff3e95f4` (revision 240).
+**Current accepted server:** `b87051471a7b023d3a57f066adf4434563cde1bd` (initial Araxxor test build, revision 240).
+Previous weapons baseline: `6168204ee3992a3e00f6906e34200d4cff3e95f4`.
 **Paired Nero Studio:** `0efcb039c539a469a1dab2c4c654c61ecf41aa51`.
 [Baseline / test evidence](docs/custom/baseline.md) ? [Branch audit](docs/custom/branch-audit-20261003.md)
 
@@ -20,8 +21,9 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 | Work | State | Scope |
 |---|---|---|
 | Repository organization | VERIFIED | 15 stale branches archived and removed; 2 branches retained; accepted runtime preserved |
+| Araxxor completion | IMPLEMENTED / NEEDS FINAL VISUAL TESTING | PR #16; 186 tests, full JAR and isolated boot pass; accepted b87051471 preserved |
 | Accepted gameplay bundle | VERIFIED at baseline | User acceptance + 121 selected server tests, 86 Nero tests, isolated boot; GitHub server CI/format/gameval checks passed |
-| Weapon completeness | ACCEPTED CHECKPOINT / REMAINDER PAUSED on `feature/weapon-completeness` | Requested after cleanup: 285/285 special target plus normal attacks, charges and FX; Zulrah encounter is frozen |
+| Weapon completeness | ACCEPTED CHECKPOINT / REMAINDER PAUSED (merged PR #15) | Requested after cleanup: 285/285 special target plus normal attacks, charges and FX; Zulrah encounter is frozen |
 | Weapon test installer | IMPLEMENTED / NEEDS USER TESTING | `special-fx-update-20261004` at `6168204ee`; user gave explicit green light on 2026-10-04 |
 
 ## Bosses
@@ -31,7 +33,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 | Zulrah | IMPLEMENTED / NEEDS TESTING for exhaustive mechanics | CUSTOM | User played it; halberd regression covered; old death-recovery implementation is archived, not active |
 | GWD four bosses | IMPLEMENTED / NEEDS TESTING for full encounters | UPSTREAM + CUSTOM EXTENSIONS | Current respawn policy 100 ticks / 60 s; Nero reads actual deadlines |
 | Other existing boss modules | IMPLEMENTED / NEEDS TESTING | UPSTREAM; selected custom timer integration | Amoxliatl, Barrows, Callisto, demonic gorilla, Duke, gemstone crab, KBD, Leviathan, Muspah, Scurrius, Spindel, tormented demon, Vardorvis, Whisperer |
-| Araxxor | IN PROGRESS on `feature/araxxor` | CUSTOM | Private entry/combat/eggs/hazards/harvest runtime; visual parity and remaining mechanics/rewards open; see docs/custom/araxxor.md |
+| Araxxor | IMPLEMENTED / NEEDS FINAL VISUAL TESTING on `feature/araxxor` | CUSTOM | Initial runtime b87051471 accepted by user; completion adds impact reflection, max-hit rules, native acid ball, Slayer gates and Harvest/Destroy rewards; see docs/custom/araxxor.md |
 | Doom of Mokhaiotl | NOT STARTED encounter | CUSTOM research + upstream drop/pet data | Archived research exists; a drop table does not constitute a boss fight |
 
 ## Systems
@@ -142,3 +144,11 @@ check and explicit merge approval are still pending.
 User explicitly approved the final FX checkpoint (6168204ee) for merge. PR #15 is merged into the gameplay integration branch; PR #14 carries the combined accepted work to main. 99 special tests, 12 command/interface tests, full build and isolated boot passed; all three GitHub workflows on 6168204ee passed. This acceptance does not declare 285/285 completeness: 191 registered, 94 deferred. Earlier pending notes above describe historical checkpoints.
 
 Araxxor runtime: private tunnel entry, native attacks, egg/arachnid cycles, acid, enrage/cleave, one-time harvest and 34-tick respawn are implemented. Full server build and isolated boot pass. Two egg positions, exact hazard patterns/FX, Mirrorback impact timing, minion max-hit rules, Destroy rewards and the upstream unconditional morph drop remain open. This is a development checkpoint, not completed boss acceptance. No live installation changes.
+
+## Araxxor completion candidate - 2026-10-04
+
+Initial Araxxor runtime `b87051471` was tested and accepted by the user.
+`outputs/araxxor-test-20261004` is preserved as the installation baseline.
+Completion work is isolated on PR #16; final changed-effect visual acceptance remains
+open. No claim of exhaustive OSRS parity, full Vengeance spell support or Combat
+Achievements completion is made. Specials remain paused; Zulrah source is unchanged.

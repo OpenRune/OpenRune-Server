@@ -1,7 +1,9 @@
 # Araxxor
 
 Origin: CUSTOM on the accepted revision-240 APIs. Branch: `feature/araxxor`.
-Status: IN PROGRESS; private encounter runtime added, acceptance pending.
+Status: IMPLEMENTED / NEEDS TESTING for final visual acceptance.
+The user accepted the initial private runtime (`b87051471`) on 2026-10-04.
+The completion candidate extends that checkpoint; it does not replace its rollback.
 Accepted baseline: `6168204ee` / merged main `8b974210c`; specials remain parked.
 
 ## Implemented first chunk
@@ -26,7 +28,7 @@ Accepted baseline: `6168204ee` / merged main `8b974210c`; specials remain parked
 - Native melee/ranged/magic attacks, launch-time protection, player mitigation,
   Defence/Prayer drains, egg hatching and all three araxyte handlers are connected.
 - Acid hazards, special cycles, enrage, dodgeable cleave, self-damage and Aranea
-  boots now have runtime handlers. Some patterns remain provisional; see below.
+  boots have runtime handlers. Completion changes and visual limits are below.
 - Actor and graphic sequences are separate. Explicit death/harvest animations
   replace fallback handling in the private encounter. The smaller corpse retains
   the boss's centre. Destroy is correctly registered on native menu option 3.
@@ -36,7 +38,7 @@ Accepted baseline: `6168204ee` / merged main `8b974210c`; specials remain parked
   removes the boss, eggs, hatching actors, spiders, acid and countdown.
 
 The pre-existing public Araxxor has basic attacks only. Use the private arena for
-the encounter cycle. The installed accepted server has not been replaced.
+the encounter cycle. The installed initial Araxxor test build is the rollback baseline.
 
 ## Evidence
 
@@ -54,30 +56,69 @@ footprints, not one global runtime offset. The recording is from Alora and is
 supporting evidence, not an authoritative OSRS ruleset.
 
 Mechanics reference: [OSRS Wiki strategy](https://oldschool.runescape.wiki/w/Araxxor_guide).
-The model uses its egg-cycle, hatch-health and enrage rules. The remaining runtime
-behaviour still needs implementation and verification against independent evidence.
+The model uses its egg-cycle, hatch-health and enrage rules. The strategy reference guides encounter behaviour; cache symbols establish asset identity,
+not animation quality or exhaustive OSRS parity.
 
-## Open acceptance work
+## Completion candidate - 2026-10-04
 
-1. Confirm the two inferred western egg positions. The native map NPC archive
-   confirms the boss origin, but contains no eggs; the capture confirms seven.
-2. Validate actor skeletons, projectile heights/timing, hatching, death and harvest
-   in the client. The stretched blue effect reported by the user is not yet
-   reproduced or visually verified as fixed. Symbol checks are not visual proof.
-3. Replace provisional square acid spray and acid-ball rendering with verified
-   patterns; qualify Ruptura distance falloff and Mirrorback reflection timing
-   (currently at attack launch). Minion guaranteed-max-hit rules remain open.
-4. Implement Destroy-for-pet rewards and Slayer entry rules. Qualify native drops:
-   the upstream pet-morph condition is still an unconditional placeholder and must
-   be corrected before reward acceptance. Destroy currently explains its status.
-5. Produce a test installer after remaining mechanics/reward checks; obtain live
-   visual acceptance before merge. This is not a completed-boss or parity claim.
+- Mirrorback interception resolves when the incoming hit lands, not when launched.
+  Simultaneous hits reserve available spider HP, so damage cannot be redirected
+  twice into the same remaining HP. Recoil uses actual applied spider damage;
+  native NPC impacts have the required minimum one-tick queue. Close melee recoil
+  uses actual damage, and an active Vengeance flag redirects that recoil.
+- Content-owned max-hit rules give guaranteed native damage/accuracy rolls for
+  crush or heavy ranged when that style has the highest equipped accuracy bonus.
+  Noxious halberd bypasses the melee style requirement. Unregistered NPCs and PvP
+  retain their previous path. Instance actors inherit the assigned Slayer category
+  without mutating cached NPC definitions or decrementing tasks for hatchlings.
+- Acid spray uses a forward fan centred on the player's sampled position. Acid
+  cannon uses its native rolling NPC and explosion sequence, a 3x3 damage footprint,
+  collision-limited ray and wall splashes. Venom trail and acidic-spider death use
+  their native graphics. Phase/death/exit cleanup removes rolling actors as well
+  as pools and invalidates their delayed callbacks.
+- Ruptura distance uses both actor footprints. Egg damage is capped at 64, leaving
+  an undamaged egg at 1 HP; a depleted hatch advances after three standard attacks.
+  Self-detonation retains its explosion sequence instead of playing another death
+  animation over it. The accepted player falloff (80 close, 40 at distance 2, 7 at
+  distance 3) is retained; conflicting published distance/max-hit descriptions
+  mean these values are not represented as independently verified OSRS parity.
+- Normal tunnel access requires current/boosted 92 Slayer and an active araxyte or
+  spider assignment, resolved from native task rows. Exhausted tasks prevent the
+  next spawn. Administrator `::araxxor` deliberately bypasses those requirements
+  for testing, including repeat kills; `::araxxor leave` returns to the entry tile.
+- Harvest and Destroy resolve once, share kill credit and respawn timing, and do
+  not create fallback bones. Harvest retains the existing table. Destroy rolls
+  only Nid (1/1500 instead of 1/3000) and the existing elite clue roll (1/47, with
+  the fork's normal clue modifiers). It cannot grant a normal unique/material drop.
+- Araxyte morph is conditional on a measured kill under 75 seconds (1..124 ticks),
+  no unlocked morph and no item in the player's stored inventories. Untimed public
+  kills cannot receive it. The condition vetoes the actual roll, not just preview
+  eligibility. Native pet, collection-log, Slayer and clue hooks remain in use.
 
-Use native symbol mappings. Do not adopt raw IDs or foreign assets from the capture.
-Do not change accepted Zulrah or resume deferred special attacks as a side effect.
+## Validation and acceptance boundaries
 
-Validation: 18 passing tests cover cycle/assets, native collision, prayer snapshots,
-mitigation, cleave/ray geometry, namespace registration and lifecycle. Full server
-JAR and isolated server/Nero bridge startup and clean shutdown pass. No live-client
-visual acceptance or installer validation is claimed. The initial boot caught an
-NPC/content queue-namespace error; it is fixed and covered by a registration test.
+186 selected tests pass (27 encounter, 2 reward, 157 existing/shared regressions).
+Automated checks exercise native hit processing, actual-damage callbacks, delayed
+Mirrorback appearance/death/departure, simultaneous interception, Slayer task rows,
+boosted levels, max-hit isolation, footprint/egg damage, the 75-second boundary,
+owned/unlocked morphs and Destroy's exact reward domain. Existing tests cover all
+starting colours, egg cycles, cache assets, collision, protection snapshots,
+mitigation, corpse claim, 34-tick respawn and cleanup.
+
+The full server JAR build and isolated server/Nero bridge startup and clean shutdown
+pass. The build uses a fresh Gradle JVM (`--no-daemon`, 4 GB heap, 2 GB metaspace,
+`--no-parallel --max-workers=2`) and in-process Kotlin compilation.
+
+The completion package includes the exact passing XML reports, full-build log,
+isolated server/Nero bridge boot result and file hashes. The installer checks the
+accepted Araxxor test package before replacement and provides rollback. Player
+saves and the accepted Zulrah/special-attack content are not part of this update.
+
+User acceptance confirms the initial fight works well. Final client inspection of
+the changed rolling acid ball, fan and death effects is still required before
+claiming visual completion or merging. Two western egg positions retain the
+accepted layout; the supplied capture independently establishes only seven.
+General Vengeance spell casting and exhaustive Combat Achievements are not added
+by this encounter; the combat handler honours an already active Vengeance flag.
+
+No foreign assets or hardcoded raw asset IDs are imported. Specials remain parked.
