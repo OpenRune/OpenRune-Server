@@ -2,7 +2,7 @@
 instance_doom_of_mokhaiotl = 63225
 
 [gamevals.varn]
-dom_charge = 51
+dom_charge = 59
 dom_fight_ticks = 52
 dom_attacks = 53
 dom_shield_stashed_hp = 54
