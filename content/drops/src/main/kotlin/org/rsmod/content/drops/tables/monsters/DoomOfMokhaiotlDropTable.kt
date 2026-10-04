@@ -41,14 +41,16 @@ public val doomOfMokhaiotlDropTable: RSDropTable<Player, DropRollItem> = RSDropT
         1 weight "obj.varlamore_key_half_1" count 1
         7 weight "obj.demon_tear" count 100..300
         7 weight "obj.dom_teleport_item" count 1..2
-        1 outOf 1350 separate "obj.avernic_treads" count 1 condition {
-            player -> player.hasReachedDelve(4)
-        }
-        1 outOf 2000 separate "obj.eye_of_ayak_uncharged" count 1 condition {
-            player -> player.hasReachedDelve(3)
-        }
-        1 outOf 2500 separate "obj.mokhaiotl_cloth" count 1 condition {
-            player -> player.hasReachedDelve(2)
+        boosted {
+            1 outOf 1350 separate "obj.avernic_treads" count 1 condition {
+                player -> player.hasReachedDelve(4)
+            }
+            1 outOf 2000 separate "obj.eye_of_ayak_uncharged" count 1 condition {
+                player -> player.hasReachedDelve(3)
+            }
+            1 outOf 2500 separate "obj.mokhaiotl_cloth" count 1 condition {
+                player -> player.hasReachedDelve(2)
+            }
         }
         5 weight rsPlayerWeightedTable(total = 3) {
             name("Shark drops")
@@ -56,6 +58,8 @@ public val doomOfMokhaiotlDropTable: RSDropTable<Player, DropRollItem> = RSDropT
             1 weight "obj.shark_lure" count 40..70
         }
         1 outOf 75 separate "obj.trail_elite_emote_exp1" count 1
-        1 outOf 1000 separate "obj.dompet" count 1 condition { player -> player.hasReachedDelve(6) }
+        boosted {
+            1 outOf 1000 separate "obj.dompet" count 1 condition { player -> player.hasReachedDelve(6) }
+        }
     },
 )
