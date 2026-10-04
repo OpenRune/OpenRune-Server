@@ -4,6 +4,8 @@ plugins {
 }
 
 dependencies {
+    testImplementation(projects.api.invStorage)
+    testImplementation(libs.rsprot.api)
     testImplementation("org.mockito:mockito-core:5.14.2")
     implementation(projects.api.combat.combatManager)
     implementation(projects.api.player)

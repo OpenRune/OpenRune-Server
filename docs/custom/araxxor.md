@@ -137,3 +137,18 @@ item handler, cache upgrade or change to the accepted installer.
 `RancourCraftingTest` loads the actual cache and verifies the recipe requirements,
 quantities, XP conversion, confirmation, animation stages and live registration.
 The native `HeldUInteractions` dispatcher tries both item orders.
+
+## Fang etching follow-up
+
+The earlier Rancour checks covered only the unetched fang recipe. They did not
+cover the cache's Etch option or an etched fang; user testing exposed both missing
+handlers. `FangCraftingScript` now routes Etch and chisel use to the same native
+Crafting transaction. Araxyte fang requires current Crafting 86; elder venator fang
+requires 84. Etching consumes one fang, preserves the chisel and awards no XP.
+An etched araxyte fang can use the existing Rancour confirmation/animation recipe
+with torture. The original raw-fang recipe and the working rupture assembly are
+preserved. The fix requires user acceptance in the client.
+
+Interaction tests dispatch the real item handlers, including both selected-item
+orders, insufficient levels, missing chisel, full inventories, confirmation
+cancellation, completed Rancour and the existing rupture assembly.
