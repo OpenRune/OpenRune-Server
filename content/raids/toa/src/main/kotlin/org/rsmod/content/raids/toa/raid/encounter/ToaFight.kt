@@ -5,7 +5,7 @@ import org.rsmod.game.entity.Npc
 internal class ToaFight(
     val boss: () -> Npc?,
     val combatants: List<ToaCombatant.Spec>,
-    val music: Int? = null,
+    val music: String? = null,
     val firstAttackDelay: Int = 0,
     val attackRate: (() -> Int)? = null,
     val death: ToaDeath? = null,

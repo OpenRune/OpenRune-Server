@@ -31,7 +31,11 @@ import org.rsmod.map.CoordGrid
 
 data class ChallengeResult(val room: ToaRoom, val ticks: Int)
 
-class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val deps: ToaRaidDeps) {
+class ToaRaid(
+    val lobbyParty: ToaLobbyParty,
+    val settings: ToaPartySettings,
+    val deps: ToaRaidDeps,
+) {
 
     val players: MutableList<Player> = lobbyParty.members.toMutableList()
 
@@ -102,7 +106,8 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     val supplies = ToaSupplies()
 
     val damageMultiplier: Double
-        get() = (1.0 + settings.raidLevel * DAMAGE_PER_RAID_LEVEL).coerceAtMost(MAX_DAMAGE_MULTIPLIER)
+        get() =
+            (1.0 + settings.raidLevel * DAMAGE_PER_RAID_LEVEL).coerceAtMost(MAX_DAMAGE_MULTIPLIER)
 
     val timerStarted: Boolean
         get() = startCycle >= 0
@@ -196,9 +201,12 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     ): ToaEncounter =
         when {
             room == ToaRoom.MAIN_HALL -> MainHallEncounter(this, room, session, controllerId)
-            room == ToaRoom.WARDENS_FIRST_ROOM -> WardensFirstEncounter(this, room, session, controllerId)
-            room == ToaRoom.WARDENS_SECOND_ROOM -> WardensSecondEncounter(this, room, session, controllerId)
-            room == ToaRoom.CRONDIS_PUZZLE -> CrondisPuzzleEncounter(this, room, session, controllerId)
+            room == ToaRoom.WARDENS_FIRST_ROOM ->
+                WardensFirstEncounter(this, room, session, controllerId)
+            room == ToaRoom.WARDENS_SECOND_ROOM ->
+                WardensSecondEncounter(this, room, session, controllerId)
+            room == ToaRoom.CRONDIS_PUZZLE ->
+                CrondisPuzzleEncounter(this, room, session, controllerId)
             room == ToaRoom.CRONDIS_BOSS -> ZebakEncounter(this, room, session, controllerId)
             room.kind == ToaRoom.Kind.BOSS -> ToaBossEncounter(this, room, session, controllerId)
 

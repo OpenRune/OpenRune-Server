@@ -18,7 +18,7 @@ enum class ToaPath(
     val returnTile: CoordGrid,
     val returnSpreadZ: Int,
     val returnFacing: Direction,
-    val preloadSeqs: List<Int> = emptyList(),
+    val preloadSeqs: List<String> = emptyList(),
 ) {
     SCABARAS(
         pathName = "Scabaras",
@@ -79,10 +79,48 @@ enum class ToaPath(
         returnTile = CoordGrid(3544, 5154, 0),
         returnSpreadZ = 0,
         returnFacing = Direction.SouthEast,
-        preloadSeqs = (9618..9646).toList() + listOf(9532, 9533, 9534, 9541),
+        preloadSeqs = CRONDIS_PRELOAD_SEQS,
     );
 
     companion object {
-        fun of(room: ToaRoom): ToaPath? = entries.firstOrNull { it.puzzle == room || it.boss == room }
+        fun of(room: ToaRoom): ToaPath? =
+            entries.firstOrNull { it.puzzle == room || it.boss == room }
     }
 }
+
+private val CRONDIS_PRELOAD_SEQS =
+    listOf(
+        "seq.npc_zebak01_idle",
+        "seq.npc_zebak02_idle",
+        "seq.npc_zebak01_attack_melee",
+        "seq.npc_zebak02_attack_melee",
+        "seq.npc_zebak01_attack_melee_enraged",
+        "seq.npc_zebak02_attack_melee_enraged",
+        "seq.npc_zebak01_attack_ranged",
+        "seq.npc_zebak02_attack_ranged",
+        "seq.npc_zebak01_attack_ranged_enraged",
+        "seq.npc_zebak02_attack_ranged_enraged",
+        "seq.npc_zebak01_attack_roar",
+        "seq.npc_zebak02_attack_roar",
+        "seq.npc_zebak01_attack_tail",
+        "seq.npc_zebak02_attack_tail",
+        "seq.npc_zebak01_attack_special",
+        "seq.npc_zebak02_attack_special",
+        "seq.npc_zebak01_death",
+        "seq.npc_zebak02_death",
+        "seq.npc_zebak01_dead",
+        "seq.npc_zebak02_dead",
+        "seq.spotanim_zebak_magic01",
+        "seq.projectile_zebak_ranged01",
+        "seq.projectile_zebak_ranged01_enraged",
+        "seq.spotanim_zebak_ranged01",
+        "seq.projectile_zebak_pitcher01",
+        "seq.projectile_zebak_pitcher01_enraged",
+        "seq.spotanim_zebak_pitcher01",
+        "seq.projectile_zebak_shield01",
+        "seq.spotanim_zebak_shield01",
+        "seq.npc_crondis_idle01",
+        "seq.npc_crondis_walk01",
+        "seq.npc_crondis_trapped01",
+        "seq.vfx_pantheon_trapped01",
+    )

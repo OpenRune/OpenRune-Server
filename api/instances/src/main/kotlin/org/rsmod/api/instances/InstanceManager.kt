@@ -661,9 +661,9 @@ constructor(
         publishPlayerLeave(player, session)
         if (
             session.spec.destroyWhenEmpty &&
-            !session.isServerOwned &&
-            session.occupants.isEmpty() &&
-            session.state !is SessionState.Grace
+                !session.isServerOwned &&
+                session.occupants.isEmpty() &&
+                session.state !is SessionState.Grace
         ) {
             destroy(session)
             return

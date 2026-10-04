@@ -6,7 +6,6 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.varp.VarpServerType
 import dev.openrune.types.varp.baseVar
-import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.output.VarpSync
 import org.rsmod.game.entity.Player
 import org.rsmod.game.movement.MoveSpeed
@@ -17,13 +16,7 @@ internal var Player.prayerDrainCounter by intVarBit("varbit.prayer_drain_counter
 
 private var Player.varSpeed: MoveSpeed by typeIntVarp("varp.option_run", ::getSpeed, ::getSpeedId)
 
-private val WALK_ONLY = AttributeKey<Boolean>()
-
-public var Player.walkOnly: Boolean
-    get() = attr[WALK_ONLY] == true
-    set(value) {
-        attr[WALK_ONLY] = value
-    }
+public var Player.walkOnly: Boolean by boolVarBit("varbit.walk_only")
 
 public var Player.varMoveSpeed: MoveSpeed
     get() = varSpeed

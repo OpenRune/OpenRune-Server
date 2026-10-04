@@ -72,7 +72,10 @@ data class ToaInvocation(
 
             val categoryOrdinal = categoryId - CATEGORY_OFFSET
             val category = ToaInvocationCategory.entries.getOrNull(categoryOrdinal)
-                ?: error("Struct ${struct.id} has unknown category $categoryId (ordinal $categoryOrdinal)")
+                ?: error(
+                    "Struct ${struct.id} has unknown category $categoryId " +
+                        "(ordinal $categoryOrdinal)"
+                )
 
             val levelModifier = params[PARAM_LEVEL_MODIFIER] as? Int
                 ?: error("Struct ${struct.id} missing param $PARAM_LEVEL_MODIFIER")

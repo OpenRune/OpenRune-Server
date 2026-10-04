@@ -43,7 +43,10 @@ internal suspend fun ProtectedAccess.proceed(raid: ToaRaid, room: ToaRoom, annou
         return
     }
     if (existing == null) {
-        raid.announce(player, "${player.displayName} $announcement. Join ${player.objectPronoun()}...")
+        raid.announce(
+            player,
+            "${player.displayName} $announcement. Join ${player.objectPronoun()}...",
+        )
     }
     travel(target, fromLobby = false)
 }
@@ -117,8 +120,14 @@ internal suspend fun ProtectedAccess.exitRaid() {
 internal suspend fun ProtectedAccess.confirmYesNo(title: String): Boolean =
     choice2("Yes.", true, "No.", false, title = title)
 
-internal suspend fun ProtectedAccess.confirmAbandonStragglers(raid: ToaRaid, action: String): Boolean {
-    mesbox("Some of your party don't seem to have arrived yet.<br>If you proceed, they will be abandoned.")
+internal suspend fun ProtectedAccess.confirmAbandonStragglers(
+    raid: ToaRaid,
+    action: String,
+): Boolean {
+    mesbox(
+        "Some of your party don't seem to have arrived yet.<br>" +
+            "If you proceed, they will be abandoned."
+    )
     val abandon =
         choice2(
             "No, wait for any stragglers.",

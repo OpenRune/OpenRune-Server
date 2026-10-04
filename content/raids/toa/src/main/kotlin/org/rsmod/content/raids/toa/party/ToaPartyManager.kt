@@ -22,7 +22,6 @@ object ToaPartyManager {
     private val CURRENT_PARTY = AttributeKey<ToaLobbyParty>()
     private val VIEWING_PARTY = AttributeKey<ToaLobbyParty>()
     private val APPLIED_PARTY = AttributeKey<ToaLobbyParty>()
-    private val CURRENT_TAB = AttributeKey<Int>()
 
     const val PARTY_STATUS_NONE = 0
     const val PARTY_STATUS_IN_PARTY = 1
@@ -32,7 +31,8 @@ object ToaPartyManager {
 
     const val LOBBY_HUD = "interface.toa_lobby"
     private const val LOBBY_HUD_NAMES = "component.toa_lobby:names"
-    private val EMPTY_PARTY_NAMES = Array(ToaLobbyParty.MAX_PARTY_MEMBERS) { "-" }.joinToString("<br>")
+    private val EMPTY_PARTY_NAMES =
+        Array(ToaLobbyParty.MAX_PARTY_MEMBERS) { "-" }.joinToString("<br>")
 
     private var Player.personalInvocationsA by intVarp("varp.toa_personal_invocations_a")
     private var Player.personalInvocationsB by intVarp("varp.toa_personal_invocations_b")
@@ -83,9 +83,7 @@ object ToaPartyManager {
             if (value != null) attr[APPLIED_PARTY] = value else attr.remove(APPLIED_PARTY)
         }
 
-    var Player.currentTab: Int
-        get() = attr.getOrDefault(CURRENT_TAB, 0)
-        set(value) { attr[CURRENT_TAB] = value }
+    var Player.currentTab by intVarBit("varbit.toa_party_tab")
 
     fun createParty(player: Player, settings: ToaPartySettings, currentCycle: Int): ToaLobbyParty? {
         if (isLobbyFull()) return null
@@ -144,7 +142,8 @@ object ToaPartyManager {
         if (!viewer.ui.containsModal("interface.toa_partydetails")) return
         val coroutine = viewer.activeCoroutine ?: return
         if (!coroutine.isAwaiting(ResumePauseButtonInput::class)) return
-        viewer.resumeActiveCoroutine(ResumePauseButtonInput(REFRESH_COMPONENT, REFRESH_SUBCOMPONENT))
+        val input = ResumePauseButtonInput(REFRESH_COMPONENT, REFRESH_SUBCOMPONENT)
+        viewer.resumeActiveCoroutine(input)
     }
 
     private const val REFRESH_COMPONENT = "component.toa_partydetails:pausebuttons"
@@ -153,7 +152,11 @@ object ToaPartyManager {
     fun loadPersonalSettings(player: Player): ToaPartySettings {
         val settings = ToaPartySettings()
         settings.loadPreset(
-            intArrayOf(player.personalInvocationsA, player.personalInvocationsB, player.personalInvocationsC)
+            intArrayOf(
+                player.personalInvocationsA,
+                player.personalInvocationsB,
+                player.personalInvocationsC,
+            )
         )
         settings.kcRequirement = player.personalKcRequirement
         return settings

@@ -228,7 +228,8 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
                     ROAR_FIRST_WAVE to whenever(bossAlive, external(ROAR_WAVE, true)),
                     ROAR_WAVE_GAP to whenever(bossAlive, external(ROAR_WAVE, false)),
                     ROAR_WAVE_GAP to whenever(bossAlive, external(ROAR_WAVE, false)),
-                    ROAR_END_DELAY to whenever(bossAlive, sequence(external(ROAR_END), endSpecial())),
+                    ROAR_END_DELAY to
+                        whenever(bossAlive, sequence(external(ROAR_END), endSpecial())),
                 ),
             ),
         )
@@ -244,7 +245,8 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
                 timeline(
                     1 to whenever(bossAlive, external(WAVES_LAUNCH)),
                     WAVES_CALL_DELAY to whenever(bossAlive, callWaves()),
-                    WAVES_ROCKS_DELAY to whenever(bossAlive, whenever(hasTargets, wavesRocks(), endSpecial())),
+                    WAVES_ROCKS_DELAY to
+                        whenever(bossAlive, whenever(hasTargets, wavesRocks(), endSpecial())),
                 ),
             ),
         )
@@ -262,7 +264,10 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
                 rockFall(ZebakCoords.WAVE_SOUTH),
                 rockFall(ZebakCoords.WAVE_NORTH),
             ),
-            after(WAVES_CAMERA_DELAY, whenever(bossAlive, whenever(hasTargets, wavesRows(), endSpecial()))),
+            after(
+                WAVES_CAMERA_DELAY,
+                whenever(bossAlive, whenever(hasTargets, wavesRows(), endSpecial())),
+            ),
         )
     }
 
@@ -284,10 +289,17 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             after(
                 WAVES_ROW_DELAY,
                 sequence(
-                    repeat(WAVE_ROWS, gap = WAVE_ROW_GAP, effect = whenever(bossAlive, external(WAVE_ROW))),
+                    repeat(
+                        WAVE_ROWS,
+                        gap = WAVE_ROW_GAP,
+                        effect = whenever(bossAlive, external(WAVE_ROW)),
+                    ),
                     parallel(
                         sequence(wait(LAST_ROW_HOLD)),
-                        after(WAVES_END_DELAY, whenever(bossAlive, sequence(external(WAVES_END), endSpecial()))),
+                        after(
+                            WAVES_END_DELAY,
+                            whenever(bossAlive, sequence(external(WAVES_END), endSpecial())),
+                        ),
                     ),
                 ),
             ),

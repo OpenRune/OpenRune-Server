@@ -1,5 +1,7 @@
 package org.rsmod.content.raids.toa.raid.encounter
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import kotlin.math.floor
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
@@ -9,6 +11,7 @@ import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
+import org.rsmod.content.raids.toa.lobby.ToaStats
 import org.rsmod.content.raids.toa.raid.ChallengeResult
 import org.rsmod.content.raids.toa.raid.ToaDamage
 import org.rsmod.content.raids.toa.raid.ToaKillCount
@@ -17,7 +20,6 @@ import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRaidDeps
 import org.rsmod.content.raids.toa.raid.ToaRaidManager
 import org.rsmod.content.raids.toa.raid.ToaRoom
-import org.rsmod.content.raids.toa.raid.ToaStats
 import org.rsmod.content.raids.toa.raid.personalContribution
 import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.content.raids.toa.raid.toaBossRestore
@@ -155,7 +157,7 @@ open class ToaEncounter(
 
     internal fun enter(player: Player) {
         for (seq in room.path?.preloadSeqs.orEmpty()) {
-            player.runClientScript(SEQ_PREFETCH_SCRIPT, seq)
+            player.runClientScript(SEQ_PREFETCH_SCRIPT, seq.asRSCM(RSCMType.SEQ))
         }
         if (stage == ToaStage.STARTED) hpBar?.open(player)
         onEnter(player)
@@ -214,7 +216,12 @@ open class ToaEncounter(
         }
     }
 
-    private fun sendRaidCompleteMessages(player: Player, duration: String, total: String, now: Int) {
+    private fun sendRaidCompleteMessages(
+        player: Player,
+        duration: String,
+        total: String,
+        now: Int,
+    ) {
         val mode = raid.settings.mode
         val name = "Tombs of Amascut${ToaKillCount.modeSuffix(mode)}"
         val raidTime = ToaRaid.formatTicks(raid.elapsedTicks(now))
@@ -233,7 +240,9 @@ open class ToaEncounter(
         )
         val limit = raid.timeLimitMinutes ?: return
         if (raid.failedTimeLimit) {
-            player.mes("<col=FF0000>Your party failed to beat the overall target time of $limit:00</col>")
+            player.mes(
+                "<col=FF0000>Your party failed to beat the overall target time of $limit:00</col>"
+            )
         } else {
             player.mes("<col=00FF00>Your party beat the overall target time of $limit:00!</col>")
         }
@@ -374,7 +383,8 @@ open class ToaEncounter(
         deps.instances.end(session)
     }
 
-    override fun toString(): String = "ToaEncounter(room=$room, controllerId=$controllerId, stage=$stage)"
+    override fun toString(): String =
+        "ToaEncounter(room=$room, controllerId=$controllerId, stage=$stage)"
 
     private companion object {
         const val SEQ_PREFETCH_SCRIPT = 1846

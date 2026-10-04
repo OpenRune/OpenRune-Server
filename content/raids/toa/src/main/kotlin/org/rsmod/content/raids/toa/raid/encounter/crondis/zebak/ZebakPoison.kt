@@ -40,7 +40,14 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
         if (tile in this || !room.isOpenFloor(tile)) return
         val type = ZebakLocs.POISON[deps.random.of(0, ZebakLocs.POISON.lastIndex)]
         val angle = LocAngle.entries[deps.random.of(0, LocAngle.entries.lastIndex)]
-        bossDeps.spawnOwnedLoc(owner, tile, type, angle.id, blockPlayersOnly = false, onStand = ::hurt)
+        bossDeps.spawnOwnedLoc(
+            owner,
+            tile,
+            type,
+            angle.id,
+            blockPlayersOnly = false,
+            onStand = ::hurt,
+        )
         if (!spread) return
 
         val range = if (room.raid.isActive(ToaInvocationKey.UpsetStomach)) 2 else 1

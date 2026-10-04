@@ -200,7 +200,7 @@ constructor(
                 player = player,
                 consumable =
                     ActivityConsumable(
-                        type = ConsumableType.FOOD,
+                        type = consumableType,
                         restoresHitpoints = true,
                     ),
             )

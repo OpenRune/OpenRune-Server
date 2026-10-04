@@ -178,7 +178,8 @@ constructor(
         val raid = player.currentRaid ?: return
         if (raid.encounterOf(player) !is MainHallEncounter) return
 
-        val wardens = raid.current?.takeIf { it.room == ToaRoom.WARDENS_FIRST_ROOM && !it.destroyed }
+        val wardens =
+            raid.current?.takeIf { it.room == ToaRoom.WARDENS_FIRST_ROOM && !it.destroyed }
         if (wardens != null) {
             travel(wardens, fromLobby = false)
             return
@@ -199,7 +200,8 @@ constructor(
         val target = resolveTarget(raid, ToaRoom.WARDENS_FIRST_ROOM, checkLeader = true) ?: return
         raid.announce(
             player,
-            "${player.displayName} has proceeded to the lower level. Join ${player.objectPronoun()}...",
+            "${player.displayName} has proceeded to the lower level. " +
+                "Join ${player.objectPronoun()}...",
         )
         travel(target, fromLobby = false)
     }

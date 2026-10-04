@@ -11,6 +11,7 @@ import org.rsmod.game.entity.Player
 class ToaTeleportHook @Inject constructor() : PlayerTeleportValidateHook {
     override fun validate(player: Player, type: TeleportType, areaChecker: AreaChecker): String? {
         val raid = player.currentRaid ?: return null
-        return if (raid.isGhost(player)) "A mysterious force prevents you from doing that." else null
+        if (!raid.isGhost(player)) return null
+        return "A mysterious force prevents you from doing that."
     }
 }
