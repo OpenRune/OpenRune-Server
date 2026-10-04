@@ -28,6 +28,11 @@ class ToaPoints(members: List<Player>) {
         room.clear()
     }
 
+    fun remove(player: Player) {
+        totals.remove(player)
+        room.remove(player)
+    }
+
     fun onDeath(player: Player) {
         val total = totals[player] ?: return
         val loss = maxOf(total * DEATH_LOSS_PERCENT / 100, DEATH_LOSS_MIN)
@@ -35,7 +40,8 @@ class ToaPoints(members: List<Player>) {
     }
 
     fun completeRoom(teamSize: Int, completionPoints: Int, awardsMvp: Boolean) {
-        val mvp = if (awardsMvp) totals.keys.maxByOrNull { roomPoints(it) } else null
+        val scorers = totals.keys.filter { roomPoints(it) > 0 }
+        val mvp = if (awardsMvp) scorers.maxByOrNull(::roomPoints) else null
         for (entry in totals.entries) {
             var earned = roomPoints(entry.key) + completionPoints
             if (entry.key === mvp) earned += MVP_PER_PLAYER * teamSize

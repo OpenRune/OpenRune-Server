@@ -445,6 +445,7 @@ class ToaPartyListScript @Inject constructor(
         if (comsub < 0 || comsub >= invocations.size) return
 
         val invocation = invocations[comsub]
+        if (invocation.eventOnly) return
         val settings = party.settings
 
         if (settings.isActive(invocation)) {

@@ -114,7 +114,9 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         }
 
         val target = state.target
-        if (target != null && !cloud.isBeside(target)) cloud.walk(target.coords)
+        if (target != null) {
+            if (cloud.isBeside(target)) cloud.abortRoute() else cloud.walk(cloud.besideTile(target))
+        }
         if (state.startDelay > 0) return
 
         for (player in targets) {

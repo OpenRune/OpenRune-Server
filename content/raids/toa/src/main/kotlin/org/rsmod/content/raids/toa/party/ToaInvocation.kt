@@ -34,6 +34,9 @@ data class ToaInvocation(
 
     val dependents: List<ToaInvocation>
         get() = ALL.filter { it.prerequisiteStructId == structId }
+
+    val eventOnly: Boolean
+        get() = category == ToaInvocationCategory.BLAZING_TOMBS
     companion object {
         private const val INVOCATION_ENUM_ID = 4664
         private const val PARAM_INDEX = 1159
