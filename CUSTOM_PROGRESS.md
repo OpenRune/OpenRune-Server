@@ -198,3 +198,15 @@ Zulrah, Araxxor, Barrows and the parked special-attacks baseline are preserved.
 ## 2026-10-04 - Kraken accepted
 
 User confirmed Kraken works perfectly and authorized merge. Accepted runtime: dab74feae, installer kraken-fix-20261004. Preserve ranged damage / 7. Merge PR #18 dependency then PR #19 into main. Private instances remain out of scope.
+
+## 2026-10-04 - Corporeal Beast (IN PROGRESS)
+
+Branch feature/corporeal-beast from accepted main 0dbd0110a. Native encounter, core, lair access, testcorp and testloot corp. See docs/custom/corporeal-beast.md. No merge or in-game acceptance yet.
+
+## 2026-10-04 - Corporeal Beast test candidate
+
+- Encounter, core, lair access and testcorp implemented; testloot corp adds native loot rolls with sigils.
+- 13 Corp tests and 16 commands tests pass; cache and full server JAR build pass.
+- Isolated startup, bridge request and shutdown pass. NPC audit: only Corp (319) changed across 16,577 definitions.
+- Installer: outputs/corporeal-beast-update-20261004 with rollback to accepted Kraken baseline.
+- In-game acceptance pending. Timing choices and remaining clan-instance/CA scope are documented in docs/custom/corporeal-beast.md. No merge authorized.
