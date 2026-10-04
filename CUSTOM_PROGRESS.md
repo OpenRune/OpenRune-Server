@@ -214,3 +214,7 @@ Branch feature/corporeal-beast from accepted main 0dbd0110a. Native encounter, c
 ## 2026-10-04 - Corporeal Beast accepted (PR #20)
 
 User confirmed perfect and authorized merge. Accepted runtime 1e4f7f7e4, installer corporeal-beast-update-20261004. Preserve encounter and earlier accepted bosses. Clan instances and individual CA conditions remain separate future scope.
+
+## 2026-10-04 - Spirit shields and Zulrah item crafting
+
+Implemented spirit shield blessing/sigils, blowpipe assembly, existing serpentine helm and toxic weapon recipes, enhanced/ornamented tridents, mutagen variants, scale dismantling and reversible component separation. Native atomic inventory transactions preserve ingredients on failure. 60 focused tests, formatting, full server build and isolated startup/bridge/shutdown pass. User authorized merge; new recipe in-game verification remains pending. Installer: outputs/boss-item-crafting-20261004. See docs/custom/boss-item-crafting.md.
