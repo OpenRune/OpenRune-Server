@@ -84,5 +84,16 @@ class AraxxorCombatTest {
         assertTrue(AraxxorAttackRules.ray(from, from, 12).isEmpty())
     }
 
+    @Test fun `spray spans a forward arc centred on the target`() {
+        val origin = CoordGrid(100, 100)
+        val target = CoordGrid(110, 100)
+        val fan = AraxxorAttackRules.spray(origin, target)
+        assertTrue(target in fan)
+        assertTrue(fan.all { it.x > origin.x })
+        assertTrue(fan.any { it.z < 95 })
+        assertTrue(fan.any { it.z > 105 })
+        assertEquals(fan.size, fan.distinct().size)
+    }
+
     companion object { @JvmStatic @BeforeAll fun cache() { ServerCacheManager.init(240).close() } }
 }

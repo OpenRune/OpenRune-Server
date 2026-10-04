@@ -31,7 +31,8 @@ class AraxxorRegistrationTest {
         val context = ScriptContext(mock(EventBus::class.java), mock(CheatCommandMap::class.java),
             mock(EngineQueueCache::class.java))
         val controller = mock(AraxxorController::class.java)
-        with(AraxxorScript(deps, controller, mock(NpcDeath::class.java))) { context.startup() }
+        with(AraxxorScript(deps, controller, mock(NpcDeath::class.java),
+            org.rsmod.api.combat.manager.NpcMaxHitRegistry(), mock(AraxyteMaxHits::class.java))) { context.startup() }
         with(AraxxorEntryScript(mock(InstanceManager::class.java),
             mock(ProtectedAccessLauncher::class.java), controller)) { context.startup() }
     }

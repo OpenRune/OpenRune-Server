@@ -22,6 +22,7 @@ internal class AraxxorCycle(start: AraxyteKind) {
         private set
     private var standardAttacks = 0
     private var nextEgg = 0
+    private var nextHatchAt = 3
     private val eggHealth = IntArray(9) { EGG_HP }
     private var claimed = false
     val attackTicks get() = if (phase == AraxxorPhase.ENRAGED) 4 else 6
@@ -32,7 +33,8 @@ internal class AraxxorCycle(start: AraxyteKind) {
     fun standardAttack(): Step {
         if (phase != AraxxorPhase.NORMAL) return Step()
         standardAttacks++
-        val hatch = if (standardAttacks >= 3 && (standardAttacks - 3) % 6 == 0) hatchNext() else null
+        val hatch = if (standardAttacks == nextHatchAt) hatchNext() else null
+        if (standardAttacks == nextHatchAt) nextHatchAt += if (hatch?.hitpoints == 0) 3 else 6
         return Step(hatch, if (standardAttacks % 6 == 0) special else null)
     }
 

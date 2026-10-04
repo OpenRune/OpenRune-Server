@@ -27,6 +27,7 @@ import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.*
 import org.rsmod.game.hit.*
+import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
@@ -87,11 +88,11 @@ class AraxxorControllerTest {
 
     @Test fun `spawn is single owner only and reentry cannot duplicate actors`() {
         owner.pendingLogout = true
-        controller.spawn(owner, session)
+        controller.spawn(owner, session, testEntry = true)
         assertFalse(npcs.any())
         owner.pendingLogout = false
-        controller.spawn(owner, session)
-        controller.spawn(owner, session)
+        controller.spawn(owner, session, testEntry = true)
+        controller.spawn(owner, session, testEntry = true)
         assertEquals(10, npcs.count())
         assertEquals(1, npcs.count { it.id == AraxxorAssets.BOSS.asRSCM() })
         assertTrue(npcs.all { !it.respawns })
@@ -101,7 +102,7 @@ class AraxxorControllerTest {
     }
 
     @Test fun `leaving cancels delayed damage and hatching before slots can be reused`() {
-        controller.spawn(owner, session)
+        controller.spawn(owner, session, testEntry = true)
         val boss = bossNpc()
         `when`(combat.style(boss, owner)).thenReturn(HitType.Melee)
         `when`(combat.roll(boss, owner, HitType.Melee, null)).thenReturn(Hit(HitType.Melee, Hitmark(0), null, null, null))
@@ -114,7 +115,7 @@ class AraxxorControllerTest {
     }
 
     @Test fun `enrage preserves drained levels and applies its boosts only once`() {
-        controller.spawn(owner, session)
+        controller.spawn(owner, session, testEntry = true)
         val boss = bossNpc()
         boss.defenceLvl = 50
         boss.magicLvl = 70
@@ -128,7 +129,7 @@ class AraxxorControllerTest {
     }
 
     @Test fun `corpse reward is owner only exactly once with actual 34 tick respawn`() {
-        controller.spawn(owner, session)
+        controller.spawn(owner, session, testEntry = true)
         val boss = bossNpc()
         boss.hitpoints = 0
         assertTrue(controller.beginDeath(boss))
@@ -155,7 +156,7 @@ class AraxxorControllerTest {
     }
 
     @Test fun `logout during corpse phase removes rewards and all actors`() {
-        controller.spawn(owner, session)
+        controller.spawn(owner, session, testEntry = true)
         val boss = bossNpc()
         boss.hitpoints = 0
         controller.beginDeath(boss)
@@ -170,7 +171,59 @@ class AraxxorControllerTest {
         assertFalse(npcs.any())
     }
 
+    @Test fun `destroy chooses pet table once and cannot also harvest`() {
+        controller.spawn(owner, session, testEntry = true)
+        val boss = bossNpc()
+        `when`(combat.style(boss, owner)).thenReturn(HitType.Melee)
+        `when`(combat.roll(boss, owner, HitType.Melee, null)).thenReturn(Hit(HitType.Melee, Hitmark(0), null, null, null))
+        controller.attack(boss, owner)
+        clock.cycle += 100
+        boss.hitpoints = 0
+        controller.beginDeath(boss)
+        val rewards = mutableListOf<org.rsmod.api.death.NpcDeathRewards>()
+        controller.finishDeath(boss) { rewards += it }
+        val corpse = npcs.single { it.id == AraxxorAssets.CORPSE.asRSCM() }
+        assertTrue(controller.harvest(owner, corpse, destroy = true))
+        assertFalse(controller.harvest(owner, corpse))
+        assertEquals(1, rewards.size)
+        assertEquals(AraxxorAssets.CORPSE, rewards.single().tableNpc)
+        assertEquals(100, rewards.single().elapsedTicks)
+        assertFalse(rewards.single().includeRemains)
+    }
+
     private fun bossNpc() = npcs.single { it.id == AraxxorAssets.BOSS.asRSCM() }
+
+    @Test fun `boss projectile resolves mirrorback presence at arrival rather than launch`() {
+        controller.spawn(owner, session, testEntry = true)
+        val boss = bossNpc()
+        `when`(combat.style(boss, owner)).thenReturn(HitType.Melee)
+        `when`(combat.roll(boss, owner, HitType.Melee, null)).thenReturn(Hit(HitType.Melee, Hitmark(0), null, null, null))
+        val beforeHatch = playerHit(50)
+        controller.modifyHit(boss, beforeHatch)
+        repeat(10) { controller.attack(boss, owner) }
+        advance(2)
+        val mirror = npcs.single { it.id == AraxyteKind.MIRRORBACK.spider.asRSCM() }
+        assertEquals(40, beforeHatch.impactEffects.prepare(beforeHatch.damage))
+        assertEquals(40, beforeHatch.impactEffects.prepare(beforeHatch.damage))
+        val simultaneous = playerHit(1000)
+        controller.modifyHit(boss, simultaneous)
+        assertEquals(952, simultaneous.impactEffects.prepare(simultaneous.damage))
+        val afterReserved = playerHit(50)
+        controller.modifyHit(boss, afterReserved)
+        assertEquals(50, afterReserved.impactEffects.prepare(afterReserved.damage))
+        val afterHatch = playerHit(50)
+        controller.modifyHit(boss, afterHatch)
+        mirror.hitpoints = 0
+        assertEquals(50, afterHatch.impactEffects.prepare(afterHatch.damage))
+        val beforeLeave = playerHit(50)
+        controller.modifyHit(boss, beforeLeave)
+        controller.end(session.id)
+        assertEquals(0, beforeLeave.impactEffects.prepare(beforeLeave.damage))
+    }
+
+    private fun playerHit(damage: Int) = HitBuilder(HitType.Ranged, damage,
+        owner.uid.packed, owner.slotId, false, true, 0, null, null,
+        0, 0, 0, 0, 0, 0, Int.MAX_VALUE, Int.MAX_VALUE)
 
     private fun advance(ticks: Int) = repeat(ticks) {
         clock.tick()

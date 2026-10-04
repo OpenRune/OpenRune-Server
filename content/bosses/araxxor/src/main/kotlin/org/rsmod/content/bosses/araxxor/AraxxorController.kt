@@ -1,13 +1,18 @@
 package org.rsmod.content.bosses.araxxor
 
+import dev.openrune.ParamMap
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcMode
+import dev.openrune.types.aconverted.SpotanimType
+import dev.openrune.util.BlockWalk
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.encounter
+import org.rsmod.api.config.refs.BaseParams
+import org.rsmod.api.death.NpcDeathRewards
 import org.rsmod.api.instances.InstanceId
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.instances.InstanceSession
@@ -24,6 +29,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statSub
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.route.RouteFactory
 import org.rsmod.api.route.walkTo
 import org.rsmod.game.entity.Npc
@@ -50,17 +56,21 @@ internal class AraxxorController @Inject constructor(
     private val routes: RouteFactory,
     private val respawns: BossRespawnTimers,
 ) {
-    private class Fight(val owner: Player, val session: InstanceSession, val boss: Npc, val cycle: AraxxorCycle) {
+    private class Fight(val owner: Player, val session: InstanceSession, val boss: Npc, val cycle: AraxxorCycle, val testEntry: Boolean) {
         val acid = mutableMapOf<CoordGrid, LocInfo>()
         var acidTicks = 0
         var corpse: Npc? = null
-        var reward: (() -> Unit)? = null
+        var reward: ((NpcDeathRewards) -> Unit)? = null
+        var startedAt: Int? = null
+        var elapsedTicks: Int? = null
         var respawnAt = Int.MAX_VALUE
         val eggs = mutableMapOf<Int, Npc>()
         val eggHealth = IntArray(9) { AraxxorCycle.EGG_HP }
         val spiders = mutableMapOf<Npc, AraxyteKind>()
         val exploding = mutableSetOf<Npc>()
         val hatching = mutableSetOf<Npc>()
+        val hazards = mutableSetOf<Npc>()
+        val pendingMirrorDamage = mutableMapOf<Npc, Int>()
         var pendingSpecial: AraxxorSpecial? = null
         var bootsReady = 0
     }
@@ -68,13 +78,20 @@ internal class AraxxorController @Inject constructor(
     private val fights = mutableMapOf<InstanceId, Fight>()
     private val actors = mutableMapOf<Npc, Fight>()
 
-    fun spawn(owner: Player, session: InstanceSession) {
+    fun spawn(owner: Player, session: InstanceSession, testEntry: Boolean = false) {
         if (!valid(owner, session) || session.id in fights) return
+        if (!testEntry && !AraxxorAccess.allowed(owner)) {
+            owner.mes("You need 92 Slayer and an active araxyte or spider task to continue. Use the tunnel to leave.")
+            return
+        }
         val tile = instances.resolveCoord(session, AraxxorArena.bossSpawn) ?: return
         val boss = spawnNpc(AraxxorAssets.BOSS, tile, session)
         check(instances.registerSessionNpc(owner, boss))
         val cycle = AraxxorCycle(AraxyteKind.entries[deps.random.of(0..2)])
-        val fight = Fight(owner, session, boss, cycle)
+        val fight = Fight(owner, session, boss, cycle, testEntry)
+        AraxxorAccess.task(owner)?.let { task ->
+            boss.type.paramMap = ParamMap(boss.type.paramMap?.primitiveMap.orEmpty() + (BaseParams.slayer_task_id.id to task))
+        }
         fights[session.id] = fight
         actors[boss] = fight
         cycle.eggs.forEachIndexed { index, kind ->
@@ -92,7 +109,8 @@ internal class AraxxorController @Inject constructor(
 
     private fun spawnNpc(symbol: String, tile: CoordGrid, session: InstanceSession): Npc {
         val cached = checkNotNull(ServerCacheManager.getNpc(symbol.asRSCM(RSCMType.NPC)))
-        val type = cached.copy(wanderRange = 0, maxRange = 64, defaultMode = NpcMode.None)
+        val type = cached.copy(wanderRange = 0, maxRange = 64, defaultMode = NpcMode.None,
+            blockWalk = if (symbol == "npc.araxxor_acid_cannon_projectile") BlockWalk.None else cached.blockWalk)
             .also { it.paramMap = cached.paramMap }
         return Npc(type, tile).also {
             deps.npcRepo.add(it, Int.MAX_VALUE)
@@ -124,19 +142,33 @@ internal class AraxxorController @Inject constructor(
             hit.damage = 0
             return
         }
-        if (npc === fight.boss && hit.isFromPlayer && hit.damage > 0) {
-            val mirror = fight.spiders.entries.firstOrNull {
-                it.value == AraxyteKind.MIRRORBACK && it.key.isSlotAssigned && it.key.hitpoints > 0
-            }?.key
-            if (mirror != null) {
-                val redirected = minOf(mirror.hitpoints, hit.damage / 5)
-                hit.damage -= redirected
-                mirror.queueHit(0, HitType.Typeless, redirected, npcHitModifier)
-                reflect(fight, mirror, redirected / 2)
+        if (hit.isFromPlayer && fight.startedAt == null) fight.startedAt = deps.mapClock.cycle
+        if (npc === fight.boss && hit.isFromPlayer) {
+            hit.impactEffects.beforeImpact { damage ->
+                if (!active(fight)) return@beforeImpact 0
+                val mirror = fight.spiders.entries.firstOrNull {
+                    it.value == AraxyteKind.MIRRORBACK && it.key.isSlotAssigned && it.key.hitpoints > 0
+                }?.key ?: return@beforeImpact damage
+                val available = (mirror.hitpoints - fight.pendingMirrorDamage.getOrDefault(mirror, 0)).coerceAtLeast(0)
+                val redirected = minOf(available, damage.coerceAtMost(npc.hitpoints) / 5)
+                if (redirected > 0) {
+                    fight.pendingMirrorDamage[mirror] = fight.pendingMirrorDamage.getOrDefault(mirror, 0) + redirected
+                    mirror.queueHit(1, HitType.Typeless, redirected, npcHitModifier).impactEffects.add { actual ->
+                        if (actors[mirror] === fight) {
+                            fight.pendingMirrorDamage[mirror] = (fight.pendingMirrorDamage.getOrDefault(mirror, 0) - redirected).coerceAtLeast(0)
+                            reflect(fight, mirror, actual / 2)
+                        }
+                    }
+                }
+                damage - redirected
             }
-        } else if (fight.spiders[npc] == AraxyteKind.MIRRORBACK && hit.isFromPlayer &&
-            hit.type == HitType.Melee && Bounds(fight.owner.coords).isWithinDistance(Bounds(npc.coords, npc.size), 1)) {
-            reflect(fight, npc, minOf(hit.damage, npc.hitpoints) / 2)
+        } else if (fight.spiders[npc] == AraxyteKind.MIRRORBACK && hit.isFromPlayer && hit.type == HitType.Melee) {
+            hit.impactEffects.add { actual ->
+                if (actors[npc] === fight && valid(fight.owner, fight.session) &&
+                    Bounds(fight.owner.coords).isWithinDistance(Bounds(npc.coords, npc.size), 1)) {
+                    reflect(fight, npc, actual / 2)
+                }
+            }
         }
     }
 
@@ -149,6 +181,7 @@ internal class AraxxorController @Inject constructor(
             special(fight, special)
             return
         }
+        if (fight != null && fight.startedAt == null) fight.startedAt = deps.mapClock.cycle
         val style = combat.style(npc, target)
         if (fight?.cycle?.phase == AraxxorPhase.ENRAGED && style == HitType.Melee) {
             cleave(fight)
@@ -205,6 +238,9 @@ internal class AraxxorController @Inject constructor(
             removeActor(egg)
             if (hatch.hitpoints <= 0) return@add
             val spider = spawnNpc(hatch.kind.spider, tile, fight.session)
+            AraxxorAccess.task(fight.owner)?.let { task ->
+                spider.type.paramMap = ParamMap(spider.type.paramMap?.primitiveMap.orEmpty() + (BaseParams.slayer_task_id.id to task))
+            }
             spider.hitpoints = hatch.hitpoints
             spider.anim("seq.npc_araxyte02_hatch")
             fight.spiders[spider] = hatch.kind
@@ -233,10 +269,15 @@ internal class AraxxorController @Inject constructor(
 
     private fun reflect(fight: Fight, npc: Npc, damage: Int) {
         if (damage <= 0) return
-        val hit = combat.snapshot(npc, fight.owner, HitType.Typeless, damage)
-        deps.worldQueues.add(0) {
-            if (active(fight)) combat.impact(npc, fight.owner, hit)
+        if (!valid(fight.owner, fight.session)) return
+        if (fight.owner.vars["varbit.vengeance_rebound"] != 0) {
+            VarPlayerIntMapSetter.set(fight.owner, "varbit.vengeance_rebound", 0)
+            fight.owner.say("Taste vengeance!")
+            npc.queueHit(1, HitType.Typeless, damage, npcHitModifier)
+            return
         }
+        val hit = combat.snapshot(npc, fight.owner, HitType.Typeless, damage)
+        combat.impact(npc, fight.owner, hit)
     }
 
     private fun special(fight: Fight, special: AraxxorSpecial) {
@@ -248,14 +289,15 @@ internal class AraxxorController @Inject constructor(
                 boss.anim("seq.npc_araxxor_01_attack_acid_leak_01")
                 projectile(boss, tile, AraxxorAssets.ACID_PROJECTILE, 2, fight.owner)
                 for (delay in 2..7) deps.worldQueues.add(delay) {
-                    if (active(fight) && fight.cycle.acceptsCallback(epoch)) addAcid(fight, fight.owner.coords)
+                    if (active(fight) && fight.cycle.acceptsCallback(epoch)) {
+                        fight.owner.spotanim("spotanim.araxxor_venom_drip")
+                        addAcid(fight, fight.owner.coords)
+                    }
                 }
             }
             AraxxorSpecial.ACID_SPRAY -> {
                 boss.anim("seq.npc_araxxor_01_attack_acid_spray_01")
-                for (dx in -3..3) for (dz in -3..3) {
-                    if (deps.random.of(0..2) != 0) continue
-                    val impact = tile.translate(dx, dz)
+                for (impact in AraxxorAttackRules.spray(boss.coords.translate(boss.size / 2, boss.size / 2), tile)) {
                     projectile(boss, impact, AraxxorAssets.ACID_PROJECTILE, 3)
                     deps.worldQueues.add(3) {
                         if (!active(fight) || !fight.cycle.acceptsCallback(epoch)) return@add
@@ -274,11 +316,14 @@ internal class AraxxorController @Inject constructor(
                     pass
                 }
                 if (trajectory.isEmpty()) return
-                projectile(boss, trajectory.last(), AraxxorAssets.ACID_PROJECTILE, trajectory.size + 1)
+                val ball = spawnNpc("npc.araxxor_acid_cannon_projectile", centre.translate(-1, -1), fight.session)
+                fight.hazards += ball
+                actors[ball] = fight
                 for ((index, to) in trajectory.withIndex()) {
                     val distance = index + 1
                     deps.worldQueues.add(distance + 1) {
-                        if (!active(fight) || !fight.cycle.acceptsCallback(epoch)) return@add
+                        if (!active(fight) || !fight.cycle.acceptsCallback(epoch) || actors[ball] !== fight) return@add
+                        ball.teleport(deps.collision, to.translate(-1, -1))
                         if (fight.owner.coords.chebyshevDistance(to) <= 1) {
                             combat.impact(boss, fight.owner, combat.snapshot(boss, fight.owner, HitType.Typeless, 18))
                             PlayerVenom.tryVenom(fight.owner)
@@ -287,7 +332,9 @@ internal class AraxxorController @Inject constructor(
                     }
                 }
                 deps.worldQueues.add(trajectory.size + 2) {
-                    if (!active(fight) || !fight.cycle.acceptsCallback(epoch)) return@add
+                    if (!active(fight) || !fight.cycle.acceptsCallback(epoch) || actors[ball] !== fight) return@add
+                    ball.anim("seq.araxxor_acid_cannon_explode")
+                    deps.worldQueues.add(2) { if (actors[ball] === fight) removeActor(ball) }
                     val wall = trajectory.last()
                     for (sx in -3..3) for (sz in -3..3) {
                         if (deps.random.of(0..2) == 0) acidSplash(fight, wall.translate(sx, sz))
@@ -298,6 +345,7 @@ internal class AraxxorController @Inject constructor(
     }
 
     private fun acidSplash(fight: Fight, tile: CoordGrid) {
+        deps.worldRepo.spotanimMap(SpotanimType(AraxxorAssets.ACID_SPLASH.asRSCM()), tile)
         if (fight.owner.coords == tile) {
             combat.impact(fight.boss, fight.owner,
                 combat.snapshot(fight.boss, fight.owner, HitType.Typeless, deps.random.of(4..8)))
@@ -320,7 +368,7 @@ internal class AraxxorController @Inject constructor(
             if (fight.owner.coords in tiles && !blockWithBoots(fight)) combat.impact(boss, fight.owner, hit)
             pools.forEach { addAcid(fight, it) }
             if (tiles.any { Bounds(it).isWithinDistance(Bounds(boss.coords, boss.size), 0) }) {
-                boss.queueHit(0, HitType.Typeless, deps.random.of(8..12), npcHitModifier)
+                boss.queueHit(1, HitType.Typeless, deps.random.of(8..12), npcHitModifier)
             }
         }
     }
@@ -356,13 +404,14 @@ internal class AraxxorController @Inject constructor(
             if (fight.cycle.phase == AraxxorPhase.FINISHED) {
                 if (deps.mapClock.cycle >= fight.respawnAt) {
                     end(fight.session.id)
-                    spawn(fight.owner, fight.session)
+                    spawn(fight.owner, fight.session, fight.testEntry)
                 }
                 continue
             }
             if (!active(fight)) continue
             tickSpiders(fight)
             if (fight.cycle.updateHealth(fight.boss.hitpoints)) {
+                fight.hazards.toList().forEach(::removeActor)
                 fight.boss.anim(AraxxorAssets.ENRAGE)
                 fight.boss.defenceLvl += 35
                 fight.boss.magicLvl += 28
@@ -401,8 +450,7 @@ internal class AraxxorController @Inject constructor(
 
     private fun explode(fight: Fight, spider: Npc) {
         val health = spider.hitpoints.coerceIn(0, AraxxorCycle.SPIDER_HP)
-        val centre = spider.coords.translate(spider.size / 2, spider.size / 2)
-        val distance = fight.owner.coords.chebyshevDistance(centre)
+        val distance = AraxxorAttackRules.distance(spider.coords, spider.size, fight.owner.coords, 1)
         if (distance <= 3) {
             val maximum = when (distance) { 0, 1 -> 80; 2 -> 40; else -> 7 }
             combat.impact(spider, fight.owner,
@@ -411,14 +459,10 @@ internal class AraxxorController @Inject constructor(
         val targets = listOf(fight.boss) + fight.eggs.values + fight.spiders.keys.filter { it !== spider }
         for (target in targets) {
             if (!target.isSlotAssigned || target.hitpoints <= 0) continue
-            val bounds = Bounds(target.coords, target.size)
-            val maximum = when {
-                Bounds(centre).isWithinDistance(bounds, 0) -> 80
-                Bounds(centre).isWithinDistance(bounds, 1) -> 64
-                Bounds(centre).isWithinDistance(bounds, 3) -> 33
-                else -> continue
-            }
-            target.queueHit(0, HitType.Typeless, maximum * health / AraxxorCycle.SPIDER_HP, npcHitModifier)
+            val distanceToTarget = AraxxorAttackRules.distance(spider.coords, spider.size, target.coords, target.size)
+            val maximum = AraxxorAttackRules.rupturaNpcMax(distanceToTarget, target in fight.eggs.values)
+            if (maximum == 0) continue
+            target.queueHit(1, HitType.Typeless, maximum * health / AraxxorCycle.SPIDER_HP, npcHitModifier)
         }
         spider.spotanim("spotanim.araxyte_explosive_spider_explosion")
         spider.hitpoints = 0
@@ -433,6 +477,7 @@ internal class AraxxorController @Inject constructor(
             fight.eggs.remove(egg.key)
         }
         if (fight.spiders.remove(npc) == AraxyteKind.ACIDIC && active(fight)) {
+            npc.spotanim("spotanim.araxyte_acid_spider_explosion")
             for (dx in -3..3) for (dz in -3..3) {
                 if (deps.random.of(0..2) == 0) acidSplash(fight, npc.coords.translate(dx, dz))
             }
@@ -441,11 +486,15 @@ internal class AraxxorController @Inject constructor(
         return true
     }
 
+    fun isExploding(npc: Npc): Boolean = actors[npc]?.exploding?.contains(npc) == true
+
     fun removeActor(npc: Npc) {
         val fight = actors.remove(npc) ?: return
         fight.spiders.remove(npc)
         fight.exploding.remove(npc)
         fight.hatching.remove(npc)
+        fight.hazards.remove(npc)
+        fight.pendingMirrorDamage.remove(npc)
         instances.detachNpc(npc)
         if (npc.isSlotAssigned) deps.npcRepo.del(npc, Int.MAX_VALUE)
     }
@@ -453,14 +502,15 @@ internal class AraxxorController @Inject constructor(
     fun beginDeath(npc: Npc): Boolean {
         val fight = actors[npc] ?: return false
         if (npc !== fight.boss || !valid(fight.owner, fight.session) || !fight.cycle.die()) return false
+        fight.elapsedTicks = fight.startedAt?.let { (deps.mapClock.cycle - it).coerceAtLeast(1) }
         instances.handleBossKill(npc, deps.mapClock.cycle)
         clearAcid(fight)
-        (fight.eggs.values.toList() + fight.spiders.keys.toList() + fight.hatching.toList()).forEach(::removeActor)
+        (fight.eggs.values.toList() + fight.spiders.keys.toList() + fight.hatching.toList() + fight.hazards.toList()).forEach(::removeActor)
         fight.eggs.clear()
         return true
     }
 
-    fun finishDeath(npc: Npc, reward: () -> Unit) {
+    fun finishDeath(npc: Npc, reward: (NpcDeathRewards) -> Unit) {
         val fight = actors[npc] ?: return
         if (!valid(fight.owner, fight.session) || fight.cycle.phase != AraxxorPhase.CORPSE || fight.corpse != null) return
         val corpseSize = checkNotNull(ServerCacheManager.getNpc(AraxxorAssets.CORPSE.asRSCM())).size
@@ -473,7 +523,7 @@ internal class AraxxorController @Inject constructor(
         deps.npcRepo.hide(npc, Int.MAX_VALUE)
     }
 
-    fun harvest(player: Player, corpse: Npc): Boolean {
+    fun harvest(player: Player, corpse: Npc, destroy: Boolean = false): Boolean {
         val fight = actors[corpse] ?: return false
         if (fight.owner !== player || !valid(player, fight.session) || fight.corpse !== corpse ||
             !corpse.isSlotAssigned || !fight.cycle.claim()) return false
@@ -483,7 +533,10 @@ internal class AraxxorController @Inject constructor(
         corpse.anim(AraxxorAssets.HARVEST)
         fight.respawnAt = deps.mapClock.cycle + BossRespawnPolicy.OTHER_BOSS_TICKS
         respawns.schedule(fight.boss, BossRespawnPolicy.OTHER_BOSS_TICKS)
-        reward?.invoke()
+        reward?.invoke(NpcDeathRewards(
+            tableNpc = if (destroy) AraxxorAssets.CORPSE else null,
+            elapsedTicks = fight.elapsedTicks, includeRemains = false,
+        ))
         return true
     }
 

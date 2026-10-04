@@ -8,6 +8,7 @@ import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.stat.hitpoints
+import org.rsmod.api.player.stat.stat
 import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.plugin.scripts.PluginScript
@@ -25,7 +26,7 @@ internal class AraxxorEntryScript @Inject constructor(
             cheat {
                 val leave = args.singleOrNull()?.equals("leave", ignoreCase = true) == true
                 access.launch(player) {
-                    if (leave) leaveArena() else enterArena()
+                    if (leave) leaveArena() else enterArena(testEntry = true)
                 }
             }
         }
@@ -39,8 +40,18 @@ internal class AraxxorEntryScript @Inject constructor(
         }
     }
 
-    private suspend fun ProtectedAccess.enterArena() {
+    private suspend fun ProtectedAccess.enterArena(testEntry: Boolean = false) {
         if (player.hitpoints <= 0 || player.loggingOut || player.pendingLogout) return
+        if (!testEntry) {
+            if (player.stat("stat.slayer") < 92) {
+                mes("You need a Slayer level of 92 to enter Araxxor's lair.")
+                return
+            }
+            if (AraxxorAccess.task(player) == null) {
+                mes("You must be assigned araxytes or spiders to fight Araxxor.")
+                return
+            }
+        }
         val owner = player.uuid ?: return
         if (instances.sessionForPlayer(player) != null || instances.sessionForOwner(owner) != null) {
             mes("Leave your current instance before entering Araxxor's lair.")
@@ -59,7 +70,7 @@ internal class AraxxorEntryScript @Inject constructor(
         try {
             telejump(result.enter, TeleportType.Exempt)
             instances.finalizeEntry(player, result.session, mapClock)
-            controller.spawn(player, result.session)
+            controller.spawn(player, result.session, testEntry)
             entered = true
             mes("You enter Araxxor's lair.")
         } finally {

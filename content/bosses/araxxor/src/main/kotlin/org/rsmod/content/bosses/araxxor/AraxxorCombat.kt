@@ -84,6 +84,26 @@ internal class AraxxorCombat @Inject constructor(
 }
 
 internal object AraxxorAttackRules {
+    fun distance(from: CoordGrid, size: Int, to: CoordGrid, targetSize: Int): Int = maxOf(
+        0, from.x - (to.x + targetSize - 1), to.x - (from.x + size - 1),
+        from.z - (to.z + targetSize - 1), to.z - (from.z + size - 1))
+
+    fun rupturaNpcMax(distance: Int, egg: Boolean): Int {
+        val damage = when (distance) { 0 -> 80; 1 -> 64; 2, 3 -> 33; else -> 0 }
+        return if (egg) damage.coerceAtMost(64) else damage
+    }
+
+    /** Fan centred on the target bearing; duplicate rounded tiles are emitted only once. */
+    fun spray(origin: CoordGrid, target: CoordGrid): List<CoordGrid> {
+        val bearing = kotlin.math.atan2((target.z - origin.z).toDouble(), (target.x - origin.x).toDouble())
+        val radius = kotlin.math.hypot((target.x - origin.x).toDouble(), (target.z - origin.z).toDouble()).coerceAtLeast(4.0)
+        return (-4..4).map { step ->
+            val angle = bearing + step * kotlin.math.PI / 12
+            origin.translate(kotlin.math.round(kotlin.math.cos(angle) * radius).toInt(),
+                kotlin.math.round(kotlin.math.sin(angle) * radius).toInt())
+        }.distinct()
+    }
+
     fun ray(from: CoordGrid, through: CoordGrid, length: Int): List<CoordGrid> {
         val dx = through.x - from.x
         val dz = through.z - from.z

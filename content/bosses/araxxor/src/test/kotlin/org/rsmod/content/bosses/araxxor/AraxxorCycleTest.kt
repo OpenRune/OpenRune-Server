@@ -29,7 +29,7 @@ class AraxxorCycleTest {
         val depleted = cycle.standardAttack().hatch!!
         assertEquals(1, depleted.index)
         assertEquals(0, depleted.hitpoints)
-        repeat(5) { assertNull(cycle.standardAttack().hatch) }
+        repeat(2) { assertNull(cycle.standardAttack().hatch) }
         assertEquals(2, cycle.standardAttack().hatch!!.index)
     }
 
