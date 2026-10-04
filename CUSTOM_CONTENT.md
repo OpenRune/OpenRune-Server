@@ -8,6 +8,7 @@ not evidence that every mechanic is complete.
 | System | Origin | Implementation | Details |
 |---|---|---|---|
 | Zulrah encounter and shoreline reach | CUSTOM using upstream APIs | `content/bosses/zulrah` | [Zulrah](docs/custom/zulrah.md) |
+| Cave krakens and Kraken public-cave encounter | CUSTOM using native map, models and drops | `content/bosses/kraken` | [Kraken](docs/custom/kraken.md), user testing pending |
 | Pet followers, relog and morph fixes, pet gallery | UPSTREAM + CUSTOM EXTENSIONS | `content/other/pets` | [Pets](docs/custom/pets.md) |
 | Commands, inventory loadouts, special reset, map teleport | UPSTREAM + CUSTOM EXTENSIONS | `content/other/commands`, `content/interfaces/worldmap` | [Commands](docs/custom/commands.md) |
 | Monster search, drop previews and stats | CUSTOM using upstream data | `content/interfaces/monster-info`, `api/drop-table-plugin` | [Interfaces](docs/custom/interfaces.md) |

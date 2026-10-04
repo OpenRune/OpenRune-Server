@@ -81,7 +81,7 @@ internal enum class AdminLoadout(
         "maxrange", "Max ranged gear", "Spawn Masori, Twisted bow, quiver and 5000 dragon arrows",
         listOf(
             "masori_mask_fortified", "masori_body_fortified", "masori_chaps_fortified",
-            "dizanas_quiver_infinite", "zenyte_necklace_enchanted", "twisted_bow",
+            "dizanas_quiver_infinite", "necklace_of_rupture", "twisted_bow",
             "zaryte_vambraces", "avernic_treads_max", "venator_ring", "dragon_arrow",
         ),
     ),

@@ -38,6 +38,13 @@ import org.rsmod.utils.bits.getBits
 class AdminLoadoutCommandsTest {
     private var Player.specialEnergy by intVarp("varp.sa_energy")
 
+    @Test fun `maxrange supplies necklace of rupture in inventory`() {
+        val fixture = Fixture()
+        fixture.run("maxrange")
+        assertTrue(fixture.player.inv.objs.filterNotNull().any { it.id == "obj.necklace_of_rupture".asRSCM() })
+        assertTrue(fixture.player.inv.objs.filterNotNull().none { it.id == "obj.zenyte_necklace_enchanted".asRSCM() })
+    }
+
     @Test
     fun `spres restores energy without changing inventory and is admin only`() {
         val fixture = Fixture()

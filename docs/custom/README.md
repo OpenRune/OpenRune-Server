@@ -8,6 +8,7 @@ Start with [content inventory](../../CUSTOM_CONTENT.md) and [progress](../../CUS
 - [Branch audit](branch-audit-20261003.md)
 - [Upstream equivalence review](upstream-review.md)
 - [Zulrah](zulrah.md), [pets](pets.md), [commands](commands.md)
+- [Cave krakens and Kraken](kraken.md)
 - [Interfaces](interfaces.md), [combat](combat.md), [research](research.md)
 
 Use one logical feature/fix per commit. Document tests and unresolved limits. Do not
