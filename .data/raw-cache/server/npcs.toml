@@ -16498,6 +16498,7 @@ inherit = "npc.dom_demonic_energy"
 defaultMode = "None"
 [npc.params]
 "param.attackable_on_cooldown"=true
+"param.demon"=1
 
 [[npc]]
 id = "npc.dom_demonic_energy_range"
@@ -16505,6 +16506,7 @@ inherit = "npc.dom_demonic_energy_range"
 defaultMode = "None"
 [npc.params]
 "param.attackable_on_cooldown"=true
+"param.demon"=1
 
 [[npc]]
 id = "npc.dom_demonic_energy_mage"
@@ -16512,6 +16514,7 @@ inherit = "npc.dom_demonic_energy_mage"
 defaultMode = "None"
 [npc.params]
 "param.attackable_on_cooldown"=true
+"param.demon"=1
 
 [[npc]]
 id = "npc.dom_demonic_energy_melee"
@@ -16519,6 +16522,23 @@ inherit = "npc.dom_demonic_energy_melee"
 defaultMode = "None"
 [npc.params]
 "param.attackable_on_cooldown"=true
+"param.demon"=1
+
+[[npc]]
+id = "npc.dom_demonic_energy_giant_mage"
+inherit = "npc.dom_demonic_energy_giant_mage"
+defaultMode = "None"
+[npc.params]
+"param.attackable_on_cooldown"=true
+"param.demon"=1
+
+[[npc]]
+id = "npc.dom_demonic_energy_giant_range"
+inherit = "npc.dom_demonic_energy_giant_range"
+defaultMode = "None"
+[npc.params]
+"param.attackable_on_cooldown"=true
+"param.demon"=1
 
 [[npc]]
 id = "npc.dom_shockwave_path_node"
