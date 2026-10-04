@@ -6,6 +6,7 @@ import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaPath
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
+import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
@@ -120,11 +121,8 @@ class MainHallEncounter(
                     else -> 0
                 }
             val remaining = ToaPath.entries.filter { it !in raid.pathsCompleted }
-            repeat(rolls) {
-                if (remaining.isNotEmpty()) {
-                    val path = remaining[deps.random.of(maxExclusive = remaining.size)]
-                    levelIncreases[path.ordinal]++
-                }
+            for (path in deps.random.shuffled(remaining).take(rolls)) {
+                levelIncreases[path.ordinal]++
             }
         }
 

@@ -138,8 +138,7 @@ internal class GreatRoar(private val room: ZebakEncounter) {
             if (row.isNotEmpty()) candidates += row[deps.random.of(maxExclusive = row.size)]
         }
         if (candidates.isEmpty()) return null
-        val count = if (room.teamSize > 1) BOULDERS_TEAM else BOULDERS_SOLO
-        return deps.random.shuffled(candidates).take(count)
+        return deps.random.shuffled(candidates).take(BOULDERS)
     }
 
     private fun jugTiles(boulders: List<CoordGrid>): List<CoordGrid>? {
@@ -175,8 +174,7 @@ internal class GreatRoar(private val room: ZebakEncounter) {
         const val BOULDER_ACID_DX = 2
         const val BOULDER_ROWS = 6
         const val BOULDER_COLUMNS = 3
-        const val BOULDERS_TEAM = 2
-        const val BOULDERS_SOLO = 3
+        const val BOULDERS = 3
         const val BOULDER_DAMAGE = 50
         const val SAFE_STRIP = 3
         const val PUSH_TILES = 2

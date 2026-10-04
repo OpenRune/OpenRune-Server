@@ -68,7 +68,13 @@ internal class ZebakWater(private val room: ZebakEncounter) {
             )
             return
         }
-        val dest = rock.translate(0, if (angleId == 0) 1 else -1)
+        val dest =
+            when (angleId) {
+                0 -> rock.translate(0, 1)
+                1 -> rock.translate(1, 0)
+                2 -> rock.translate(0, -1)
+                else -> rock.translate(-1, 0)
+            }
         stopSwimming(player)
         deps.launcher.launchLenient(player) { telejump(dest, TeleportType.Exempt) }
         player.mes("You use the steps to get yourself back onto the island.")
