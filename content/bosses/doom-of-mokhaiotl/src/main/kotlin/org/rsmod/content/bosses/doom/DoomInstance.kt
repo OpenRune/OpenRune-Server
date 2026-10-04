@@ -51,7 +51,9 @@ internal constructor(
         }
         onEnterObject { defaultInstanceEntry() }
         onExitObject { defaultLeaveFlow() }
+        onInstancePlayerJoin { player.npcViewDistance = NPC_VIEW_DISTANCE }
         onInstancePlayerLeave {
+            player.npcViewDistance = null
             player.missedOrbs = 0
             acid.reset(player)
             loot.stash(player)
@@ -114,6 +116,7 @@ internal constructor(
     }
 
     private suspend fun ProtectedAccess.descend() {
+        if (player.lootClaimed) return
         val session = manager.sessionForPlayer(player) ?: return
         if (loot.hasUnique(player)) {
             val proceed =
@@ -140,6 +143,7 @@ internal constructor(
         private const val END_LEVEL = "component.dom_end_level_ui"
         private const val JUMP_MESSAGE = "You jump the gap..."
         private const val DESCEND_MESSAGE = "You jump further into the burrow..."
+        private const val NPC_VIEW_DISTANCE = 32
 
         private val INSTANCE = InstanceArea.copyRegions(centerRegionId = DoomArena.REGION)
     }
