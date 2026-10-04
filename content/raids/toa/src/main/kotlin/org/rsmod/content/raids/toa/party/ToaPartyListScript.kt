@@ -426,13 +426,17 @@ class ToaPartyListScript @Inject constructor(
             }
             if (ToaPartyManager.acceptApplicant(party, target)) {
                 player.mes("You have accepted ${target.displayName} into your party.")
-                target.mes("Your application to the party of ${party.leaderName} has been accepted.")
+                target.mes(
+                    "Your application to the party of ${party.leaderName} has been accepted."
+                )
             }
         } else {
             if (party.decline(target)) {
                 target.appliedParty = null
                 player.mes("You have declined the party application from ${target.displayName}.")
-                target.mes("Your application to the party of ${party.leaderName} has been declined.")
+                target.mes(
+                    "Your application to the party of ${party.leaderName} has been declined."
+                )
                 ToaPartyManager.refreshDetailsView(target)
             }
         }
@@ -465,10 +469,16 @@ class ToaPartyListScript @Inject constructor(
         settings.unflag(invocation)
     }
 
-    private fun ProtectedAccess.tryActivate(settings: ToaPartySettings, invocation: ToaInvocation): Boolean {
+    private fun ProtectedAccess.tryActivate(
+        settings: ToaPartySettings,
+        invocation: ToaInvocation,
+    ): Boolean {
         val prerequisite = invocation.prerequisite
         if (prerequisite != null && !settings.isActive(prerequisite)) {
-            player.mes("You cannot activate this invocation without first enabling <col=ff0000>${prerequisite.name}</col>.")
+            player.mes(
+                "You cannot activate this invocation without first enabling " +
+                    "<col=ff0000>${prerequisite.name}</col>."
+            )
             return false
         }
 
@@ -568,7 +578,8 @@ class ToaPartyListScript @Inject constructor(
     private suspend fun ProtectedAccess.handleSetCompletions(party: ToaLobbyParty) {
         if (!party.isLeader(player)) return
 
-        val value = countDialog("Set a preferred number of completions up to 100 (or 0 to clear it):")
+        val value =
+            countDialog("Set a preferred number of completions up to 100 (or 0 to clear it):")
         party.settings.kcRequirement = value.coerceIn(0, 100)
     }
 

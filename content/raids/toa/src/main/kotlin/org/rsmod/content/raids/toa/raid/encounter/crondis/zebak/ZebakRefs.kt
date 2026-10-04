@@ -132,6 +132,8 @@ internal object ZebakSynths {
             "synth.toa_zebak_tidal_wave_7600ms_01" to 530,
             "synth.toa_zebak_tidal_wave_7600ms_01" to 920,
         )
+}
 
-    const val MIDI = 736
+internal object ZebakMidis {
+    const val FIGHT = "midi.toa_boss_zebak"
 }

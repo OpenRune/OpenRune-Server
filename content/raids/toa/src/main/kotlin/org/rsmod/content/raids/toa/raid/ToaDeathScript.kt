@@ -23,8 +23,10 @@ import org.rsmod.api.player.stat.statRestoreAll
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onPlayerHit
 import org.rsmod.api.script.onPlayerQueue
+import org.rsmod.content.raids.toa.lobby.ToaStats
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
+import org.rsmod.content.raids.toa.raid.ToaRetrieval.protectItemAtDeath
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Player
@@ -42,7 +44,7 @@ class ToaDeathScript : PluginScript() {
         if (STANDARD_DEATH_QUEUE !in player.queueList) return
         player.clearQueue(STANDARD_DEATH_QUEUE)
         if (!raid.startDying(player)) return
-        player.attr[ToaRetrieval.PROTECT_ITEM_AT_DEATH] = player.hasProtectItemPrayer()
+        player.protectItemAtDeath = player.hasProtectItemPrayer()
         player.queue(TOA_DEATH_QUEUE, 1)
     }
 
@@ -163,7 +165,7 @@ internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Bo
         }
     } else {
         ToaRaidManager.leave(player, logout = false)
-        val protectItem = player.attr[ToaRetrieval.PROTECT_ITEM_AT_DEATH] == true
+        val protectItem = player.protectItemAtDeath
         val deps = raid.deps
         if (ToaRetrieval.store(player, deps.deathDrops, deps.marketPrices, protectItem)) {
             mes(
@@ -223,7 +225,7 @@ private const val HONEY_LOCUST = "obj.toa_honey_locust"
 
 private const val STOP_MUSIC = "midi.stop_music"
 
-private const val RAID_MIDI = 730
+private const val RAID_MIDI = "midi.toa_ambience"
 
 private const val WIPE_JINGLE = 90
 private const val WIPE_JINGLE_MILLIS = 4_718

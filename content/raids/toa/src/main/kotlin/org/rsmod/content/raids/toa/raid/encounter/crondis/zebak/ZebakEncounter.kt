@@ -78,7 +78,7 @@ class ZebakEncounter(
                         pointMultiplier = ZEBAK_POINTS,
                     )
                 ),
-            music = ZebakSynths.MIDI,
+            music = ZebakMidis.FIGHT,
             firstAttackDelay = FIRST_ATTACK_DELAY,
             attackRate = { attackSpeed },
             death =

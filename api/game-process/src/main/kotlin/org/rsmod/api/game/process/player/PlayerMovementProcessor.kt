@@ -61,7 +61,7 @@ constructor(
         }
         processWalkTrigger()
 
-        if (walkOnly && moveSpeed == MoveSpeed.Run) {
+        if (moveSpeed == MoveSpeed.Run && walkOnly) {
             moveSpeed = MoveSpeed.Walk
         }
         val completeCrawlStep = moveSpeed == MoveSpeed.Crawl && !hasMovedPreviousCycle

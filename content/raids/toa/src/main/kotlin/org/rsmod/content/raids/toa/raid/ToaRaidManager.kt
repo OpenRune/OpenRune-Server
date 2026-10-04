@@ -11,6 +11,7 @@ import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.content.raids.toa.lobby.ToaStats
 import org.rsmod.content.raids.toa.party.ToaLobbyParty
 import org.rsmod.content.raids.toa.party.ToaPartyManager
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
@@ -94,7 +95,10 @@ object ToaRaidManager {
             raid.startTimer(raid.deps.mapClock.cycle)
             raid.timeLimitMinutes?.let { limit ->
                 for (member in raid.players) {
-                    member.mes("Overall time to beat: <col=ef1020>$limit:00</col>. The timer has started!")
+                    member.mes(
+                        "Overall time to beat: <col=ef1020>$limit:00</col>. " +
+                            "The timer has started!"
+                    )
                 }
             }
             refreshTimers(raid)
@@ -108,7 +112,12 @@ object ToaRaidManager {
         val room = raid.encounterOf(player)
 
         var unsafeLogout = false
-        if (logout && room != null && room.stage == ToaStage.STARTED && room.inChallengeArea(player)) {
+        if (
+            logout &&
+            room != null &&
+            room.stage == ToaStage.STARTED &&
+            room.inChallengeArea(player)
+        ) {
             unsafeLogout = true
             raid.totalDeaths++
             ToaStats.recordDeath(player, raid.settings.mode)

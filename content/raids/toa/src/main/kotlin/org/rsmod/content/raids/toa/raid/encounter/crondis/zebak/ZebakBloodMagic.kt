@@ -75,7 +75,8 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
             player.spotanim(ZebakSpots.BLOOD_BARRAGE)
             player.combatPlayDefendAnim()
             for (other in targets) {
-                if (other === player || player.coords.chebyshevDistance(other.coords) > radius) continue
+                if (other === player) continue
+                if (player.coords.chebyshevDistance(other.coords) > radius) continue
                 heal += barrageHit(boss, other, damage)
             }
         }

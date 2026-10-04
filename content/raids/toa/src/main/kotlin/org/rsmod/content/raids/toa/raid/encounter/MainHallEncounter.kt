@@ -52,7 +52,11 @@ class MainHallEncounter(
         }
 
         val wardensDoor =
-            if (raid.pathsCompleted.size == ToaPath.entries.size) WARDENS_DOOR_OPEN else WARDENS_DOOR
+            if (raid.pathsCompleted.size == ToaPath.entries.size) {
+                WARDENS_DOOR_OPEN
+            } else {
+                WARDENS_DOOR
+            }
         schedule(WARDENS_DOOR_DELAY) {
             deps.locRepo.add(
                 coords(WARDENS_DOOR_TILE),
@@ -67,7 +71,9 @@ class MainHallEncounter(
     override fun onEnter(player: Player) {
         for (path in ToaPath.entries) {
             if (levelIncreases[path.ordinal] != 0) {
-                player.mes("You hear a mysterious rumbling coming from the Path of ${path.pathName}.")
+                player.mes(
+                    "You hear a mysterious rumbling coming from the Path of ${path.pathName}."
+                )
             }
         }
 

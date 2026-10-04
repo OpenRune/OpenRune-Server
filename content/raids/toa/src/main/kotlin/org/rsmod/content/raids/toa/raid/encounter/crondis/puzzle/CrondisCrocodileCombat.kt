@@ -56,7 +56,10 @@ class CrondisCrocodileCombat @Inject constructor(deps: BossDeps) : BossPluginScr
                         penetration(PRAYER_IN_DAMAGE)
                         onHit(
                             sequence(
-                                whenever(TargetPraying(Melee), statDrain(PRAYER, amount = PRAYER_DRAIN)),
+                                whenever(
+                                    TargetPraying(Melee),
+                                    statDrain(PRAYER, amount = PRAYER_DRAIN),
+                                ),
                                 external(BITE_WATER),
                             ),
                         )
