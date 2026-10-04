@@ -38,3 +38,13 @@ PR #15 remains unmerged until the user gives explicit green light.
 
 Validation (2026-10-04): 12 command/interface tests pass, full server JAR builds,
 and isolated Nero-bridge startup succeeds. In-game acceptance remains pending.
+
+## Barrows loot test
+
+`::testloot barrows` generates 100 full-potential chest rewards on the ground.
+`::testloot barrows 5` generates five. Accepted range: 1..1000; administrators only.
+Each chest uses all six brothers and 1012 reward potential through the normal
+Barrows reward calculation, including the player's diary rune bonus, equipment
+drop multiplier and clue conversion. The test does not change killed-brother
+flags, active crypt state, chest count, quest state or collection-log progress.
+Normal Barrows chest play was accepted by the user on 2026-10-04.

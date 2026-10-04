@@ -26,11 +26,14 @@ val barrowsChestDropTable: RSDropTable<Player, DropRollItem> =
             },
     )
 
-private fun Player.rollBarrowsChest(): RollResult<DropRollItem> {
+internal fun Player.rollBarrowsChest(
+    slain: List<BarrowsBrother> = slainBrothers,
+    potential: Int = fullPotential,
+): RollResult<DropRollItem> {
     val loot =
         BarrowsLoot.roll(
-            slain = slainBrothers,
-            potential = fullPotential,
+            slain = slain,
+            potential = potential,
             runeBonus = vars["varbit.morytania_diary_hard_complete"] == 1,
             clueDenominator = eliteClueDropDenominator(BarrowsLoot.CLUE_DENOMINATOR),
             equipmentBoost = DropRateModifiers.multiplierFor(this),

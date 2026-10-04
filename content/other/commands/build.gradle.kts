@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.content.bosses.barrows)
     implementation(projects.api.specials)
     implementation(projects.api.weapons)
     testImplementation(projects.api.invStorage)
