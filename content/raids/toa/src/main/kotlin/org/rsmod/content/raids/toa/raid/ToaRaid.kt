@@ -11,6 +11,7 @@ import org.rsmod.api.instances.InstanceArea
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.instances.InstanceSpec
 import org.rsmod.api.instances.RegionLocal
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.ui.ifOpenSub
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
@@ -35,6 +36,9 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
     val players: MutableList<Player> = lobbyParty.members.toMutableList()
 
     val partySize: Int = players.size
+
+    var leader: Player = players.first()
+        private set
 
     private val locations = HashMap<Player, ToaEncounter>()
 
@@ -139,10 +143,10 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
         }
     }
 
-    fun isLeader(player: Player): Boolean = lobbyParty.isLeader(player)
+    fun isLeader(player: Player): Boolean = player === leader
 
     val leaderName: String
-        get() = lobbyParty.leader?.displayName ?: lobbyParty.leaderName
+        get() = leader.displayName
 
     fun isInside(player: Player): Boolean = player in locations
 
@@ -209,6 +213,15 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
             releaseIfIdle(it)
         }
         encounter.enter(player)
+    }
+
+    internal fun removePlayer(player: Player): Boolean {
+        if (!players.remove(player)) return false
+        if (player === leader && players.isNotEmpty()) {
+            leader = players.firstOrNull(::isInside) ?: players.first()
+            leader.mes("You have been promoted to the raid party leader.")
+        }
+        return true
     }
 
     internal fun remove(player: Player) {

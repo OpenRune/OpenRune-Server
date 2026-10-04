@@ -17,6 +17,9 @@ class ToaLobbyParty(leader: Player, creationCycle: Int) {
 
     val creationCycle: Int = creationCycle
 
+    var insideRaid: Boolean = false
+        private set
+
     init {
         members.add(leader)
     }
@@ -51,7 +54,7 @@ class ToaLobbyParty(leader: Player, creationCycle: Int) {
     }
 
     fun apply(player: Player): Boolean {
-        if (isBlocked(player) || isApplicant(player) || isFull()) return false
+        if (insideRaid || isBlocked(player) || isApplicant(player) || isFull()) return false
         applicants.add(player)
         return true
     }
@@ -77,6 +80,10 @@ class ToaLobbyParty(leader: Player, creationCycle: Int) {
 
     fun unblock(player: Player): Boolean {
         return blockedPlayers.remove(player)
+    }
+
+    fun lockForRaid() {
+        insideRaid = true
     }
 
     fun buildPartyString(): String {

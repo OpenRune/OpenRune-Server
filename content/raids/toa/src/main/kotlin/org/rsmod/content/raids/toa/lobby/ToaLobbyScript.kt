@@ -9,6 +9,7 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.content.interfaces.bank.tryOpenBank
 import org.rsmod.content.raids.toa.party.ToaPartyManager
+import org.rsmod.content.raids.toa.party.openLobbyHud
 import org.rsmod.content.raids.toa.raid.ToaRaidManager
 import org.rsmod.game.entity.Player
 import org.rsmod.game.map.Direction
@@ -21,7 +22,7 @@ class ToaLobbyScript : PluginScript() {
     private var Player.entranceOpen by intVarBit("varbit.toa_entrance_open")
 
     override fun ScriptContext.startup() {
-        onArea(LOBBY_AREA) { enterLobby() }
+        onArea(LOBBY_AREA) { openLobbyHud() }
         onAreaExit(LOBBY_AREA) { exitLobby() }
 
         onOpLoc1("loc.toa_entrance_open") { travel(INSIDE_DEST, Direction.South) }
@@ -57,11 +58,6 @@ class ToaLobbyScript : PluginScript() {
         closeFadeOverlay(cycles = 2)
     }
 
-    private fun ProtectedAccess.enterLobby() {
-        ifOpenOverlay(ToaPartyManager.LOBBY_HUD, HUD_TARGET)
-        ToaPartyManager.sendLobbyHud(player)
-    }
-
     private fun ProtectedAccess.exitLobby() {
         ifCloseSub(ToaPartyManager.LOBBY_HUD)
 
@@ -75,8 +71,6 @@ class ToaLobbyScript : PluginScript() {
 
     private companion object {
         const val LOBBY_AREA = "area.toa_lobby"
-
-        const val HUD_TARGET = "component.toplevel_osrs_stretch:overlay_hud"
 
         val INSIDE_DEST = CoordGrid(3359, 9128, 0)
         val OUTSIDE_DEST = CoordGrid(3357, 2713, 0)
