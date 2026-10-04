@@ -1,9 +1,9 @@
 package org.rsmod.content.bosses.doom
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.definition.type.widget.IfEvent
 import dtx.core.ArgMap
 import dtx.core.RollResult
 import dtx.core.flatten
@@ -14,21 +14,21 @@ import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.DropTableRegistry
 import org.rsmod.api.droptable.KillRollContext
 import org.rsmod.api.droptable.rollCount
-import org.rsmod.api.random.GameRandom
 import org.rsmod.api.instances.InstanceManager
-import org.rsmod.api.npc.access.StandardNpcAccess
-import org.rsmod.game.entity.PlayerList
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invClear
 import org.rsmod.api.invtx.invMoveAll
 import org.rsmod.api.invtx.invTransfer
 import org.rsmod.api.market.MarketPrices
+import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarp
+import org.rsmod.api.random.GameRandom
 import org.rsmod.content.interfaces.collectionlog.CollectionLog
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.type.uncert
 

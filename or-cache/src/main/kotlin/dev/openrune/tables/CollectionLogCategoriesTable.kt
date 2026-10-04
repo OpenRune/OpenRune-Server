@@ -715,6 +715,5 @@ object CollectionLogCategoriesTable {
             column(STRUCT_ID, 534)
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_other_misc_completed")
         }
-
     }
 }

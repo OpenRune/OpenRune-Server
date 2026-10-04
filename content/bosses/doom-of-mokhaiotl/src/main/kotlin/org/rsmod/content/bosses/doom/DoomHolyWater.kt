@@ -5,15 +5,14 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import kotlin.math.abs
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.player.stat.statHeal
 import org.rsmod.api.player.vars.intVarp
-import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
-import kotlin.math.abs
 
 private var Player.specialEnergy by intVarp("varp.sa_energy")
 
