@@ -46,11 +46,11 @@ internal class TidalWaves(private val room: ZebakEncounter) {
         val upDown = deps.random.of(SHAKE_UP_DOWN)
         val forwards = deps.random.of(SHAKE_FORWARDS)
         for (player in room.targets()) {
+            Camera.camReset(player)
             Camera.camShake(player, CamShakeAxis.LEFT_RIGHT, leftRight, 0, 0)
             Camera.camShake(player, CamShakeAxis.UP_DOWN, upDown, 0, 0)
             Camera.camShake(player, CamShakeAxis.FORWARDS_BACKWARDS, forwards, 0, 0)
             player.soundSynth(ZebakSynths.RUMBLING)
-            Camera.camReset(player)
         }
     }
 
