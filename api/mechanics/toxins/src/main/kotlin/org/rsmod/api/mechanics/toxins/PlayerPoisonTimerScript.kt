@@ -1,6 +1,7 @@
 package org.rsmod.api.mechanics.toxins
 
 import jakarta.inject.Inject
+import org.rsmod.api.mechanics.toxins.impl.PlayerBleed
 import org.rsmod.api.mechanics.toxins.impl.PlayerDisease
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
@@ -86,6 +87,14 @@ constructor(
             "timer.player_venom",
         ) {
             PlayerVenom.onVenomTimerTick(
+                player,
+            )
+        }
+
+        onPlayerTimer(
+            "timer.player_bleed",
+        ) {
+            PlayerBleed.onBleedTimerTick(
                 player,
             )
         }
