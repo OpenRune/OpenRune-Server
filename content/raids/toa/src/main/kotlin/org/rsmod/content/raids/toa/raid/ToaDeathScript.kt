@@ -158,7 +158,9 @@ internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Bo
     raid.revive(player)
     player.toaRestore()
     if (retry) {
-        if (!raid.isActive(ToaInvocationKey.OnADiet)) invAdd(inv, HONEY_LOCUST, room.honeyLocusts())
+        if (!raid.isActive(ToaInvocationKey.OnADiet)) {
+            invAddOrDrop(raid.deps.objRepo, HONEY_LOCUST, room.honeyLocusts())
+        }
     } else {
         ToaRaidManager.leave(player, logout = false)
         val protectItem = player.attr[ToaRetrieval.PROTECT_ITEM_AT_DEATH] == true

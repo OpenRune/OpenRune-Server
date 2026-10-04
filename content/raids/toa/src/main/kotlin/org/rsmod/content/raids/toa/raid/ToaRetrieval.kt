@@ -67,6 +67,13 @@ internal object ToaRetrieval {
             untradeableHandling = UntradeableHandling.DROP,
         )
 
+    fun discard(player: Player) {
+        val chest = player.invMap[INV] ?: return
+        if (chest.isEmpty()) return
+        chest.fillNulls()
+        player.retrievalLocked = 0
+    }
+
     fun fee(player: Player, prices: MarketPrices): Int {
         var total = 0L
         for (obj in player.retrievalChest.filterNotNull { true }) {
