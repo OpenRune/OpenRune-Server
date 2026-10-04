@@ -1,9 +1,10 @@
 # Araxxor
 
 Origin: CUSTOM on the accepted revision-240 APIs. Branch: `feature/araxxor`.
-Status: IMPLEMENTED / NEEDS TESTING for final visual acceptance.
+Status: VERIFIED for covered regressions / USER ACCEPTED on 2026-10-04.
 The user accepted the initial private runtime (`b87051471`) on 2026-10-04.
-The completion candidate extends that checkpoint; it does not replace its rollback.
+The user also accepted completion build `f7c349c0e` and approved PR #16 for merge.
+The initial checkpoint and its rollback remain preserved.
 Accepted baseline: `6168204ee` / merged main `8b974210c`; specials remain parked.
 
 ## Implemented first chunk
@@ -114,11 +115,25 @@ isolated server/Nero bridge boot result and file hashes. The installer checks th
 accepted Araxxor test package before replacement and provides rollback. Player
 saves and the accepted Zulrah/special-attack content are not part of this update.
 
-User acceptance confirms the initial fight works well. Final client inspection of
-the changed rolling acid ball, fan and death effects is still required before
-claiming visual completion or merging. Two western egg positions retain the
+The user accepted the completion build and explicitly approved merging PR #16.
+This records user acceptance, not independently measured exhaustive OSRS parity. Two western egg positions retain the
 accepted layout; the supplied capture independently establishes only seven.
 General Vengeance spell casting and exhaustive Combat Achievements are not added
 by this encounter; the combat handler honours an already active Vengeance flag.
 
 No foreign assets or hardcoded raw asset IDs are imported. Specials remain parked.
+
+## Araxyte fang to amulet of rancour
+
+Use an Araxyte fang on an amulet of torture (either item order), with both
+unnoted items in inventory and current Crafting level 86 or higher. The native
+Crafting combine flow requests confirmation, plays the start/end animations and
+graphics, consumes one of each ingredient and creates one amulet of rancour.
+It grants 500 base Crafting XP. Cancellation does not consume ingredients;
+missing ingredients prevent completion. This uses the existing packed
+`crafting_amulet_of_rancour` recipe and `HeldCraftingScript`, with no duplicate
+item handler, cache upgrade or change to the accepted installer.
+
+`RancourCraftingTest` loads the actual cache and verifies the recipe requirements,
+quantities, XP conversion, confirmation, animation stages and live registration.
+The native `HeldUInteractions` dispatcher tries both item orders.

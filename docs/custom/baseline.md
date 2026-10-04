@@ -62,3 +62,11 @@ the installed prerequisite and payload files still match this manifest exactly.
 The completion candidate has a separate installer and rollback checkpoint.
 Tag `server-araxxor-accepted-20261004` retains this accepted source permanently.
 No live installation is performed by the development agent.
+
+## Accepted Araxxor completion - 2026-10-04
+
+The user accepted `f7c349c0edff7b4b9c9194b4c2d78fa80a777760` and explicitly
+approved merging PR #16. The immutable `outputs/araxxor-completion-20261004`
+package and its rollback remain unchanged. All three GitHub checks passed:
+build & boot, formatting, and gameval conflicts. The subsequent Rancour work
+adds regression coverage for an existing native recipe, not a runtime replacement.
