@@ -162,3 +162,12 @@ drop-rate modifiers and clue conversion. Loot goes to the ground; active run,
 quest progress, collection log and chest count are not modified by this test.
 Araxxor PR #16 is merged as 2e3473d25; its branch was removed after ancestry
 verification and tag server-araxxor-complete-20261004 preserves the milestone.
+
+## Fang crafting fix - 2026-10-04
+
+IMPLEMENTED / NEEDS USER TESTING: Etch and chisel handlers for Araxyte fang
+(86 Crafting) and elder venator fang (84), plus etched fang with torture.
+Earlier Rancour coverage only verified the unetched recipe; that limitation is
+now covered by real interaction tests. Accepted rupture assembly is unchanged.
+Validation: 8 Crafting tests and full server JAR build pass, including real
+item dispatch, confirmation cancellation, inventory transactions and rupture.
