@@ -1,6 +1,25 @@
 id = "Corporeal Beast Drops"
 npcs = ["npc.corp_beast"]
 
+[[pre_roll_separate_rolls]]
+numerator = 1
+denominator = 585
+
+[[pre_roll_separate_rolls.entries]]
+weight = 1
+obj = "obj.elysian_sigil"
+count = 1
+
+[[pre_roll_separate_rolls.entries]]
+weight = 3
+obj = "obj.spectral_sigil"
+count = 1
+
+[[pre_roll_separate_rolls.entries]]
+weight = 3
+obj = "obj.arcane_sigil"
+count = 1
+
 [main]
 total = 512
 name = "Corporeal Beast Drops"
