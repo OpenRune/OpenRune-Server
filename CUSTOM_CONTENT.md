@@ -32,3 +32,5 @@ content/other/special-weapons in the accepted PR #15 checkpoint; remaining work 
 paused. See the combat document.
 
 Corporeal Beast: CUSTOM using native combat and loot APIs; [implementation and validation](docs/custom/corporeal-beast.md).
+
+Spirit shields and Zulrah item assembly: [recipes, dismantling and validation](docs/custom/boss-item-crafting.md).
