@@ -6,6 +6,7 @@ import org.rsmod.api.utils.logging.GameExceptionHandler
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.util.EntityFaceAngle
+import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.game.seq.EntitySeq
 import org.rsmod.map.zone.ZoneKey
@@ -155,6 +156,7 @@ constructor(
         facing.process(this)
         if (pendingFaceAngle != EntityFaceAngle.NULL) {
             infoProtocol.setFaceAngle(pendingFaceAngle.intValue, instant = false)
+            PathingEntityCommon.resetFaceEntity(this)
         }
     }
 
