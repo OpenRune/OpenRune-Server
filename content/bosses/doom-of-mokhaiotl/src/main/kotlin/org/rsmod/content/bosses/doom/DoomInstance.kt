@@ -9,6 +9,7 @@ import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.instances.InstanceScript
 import org.rsmod.api.instances.withInstanceEnterTransition
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.realm.Realm
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
@@ -18,6 +19,7 @@ class DoomInstance
 @Inject
 internal constructor(
     registry: BossInstanceRegistry,
+    private val realm: Realm,
     private val delves: DoomDelves,
     private val acid: DoomAcid,
     private val loot: DoomLoot,
@@ -97,6 +99,7 @@ internal constructor(
     }
 
     private suspend fun ProtectedAccess.startingLevel(): Int {
+        if (!realm.config.devMode) return 1
         val level =
             choice5(
                 "Delve level 1", 1,

@@ -18,6 +18,7 @@ dependencies {
     implementation(projects.api.npc)
     implementation(projects.api.player)
     implementation(projects.api.playerOutput)
+    implementation(projects.api.realm)
     implementation(projects.api.repo)
     implementation(projects.api.route)
     implementation(projects.api.pluginCommons)
