@@ -103,7 +103,13 @@ constructor(
             return
         }
         val empty =
-            choice2("Yes, empty water container.", true, "No.", false, title = "Empty water container")
+            choice2(
+                "Yes, empty water container.",
+                true,
+                "No.",
+                false,
+                title = "Empty water container",
+            )
         if (!empty) return
         val slot = player.containerSlot() ?: return
         player.setContainerWater(slot, 0)

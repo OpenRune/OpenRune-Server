@@ -1,4 +1,4 @@
-package org.rsmod.content.raids.toa.raid
+package org.rsmod.content.raids.toa.lobby
 
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.game.entity.Player

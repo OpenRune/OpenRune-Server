@@ -6,7 +6,6 @@ import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.utils.format.formatAmount
 import org.rsmod.content.raids.toa.raid.ToaKillCount
-import org.rsmod.content.raids.toa.raid.ToaStats
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext

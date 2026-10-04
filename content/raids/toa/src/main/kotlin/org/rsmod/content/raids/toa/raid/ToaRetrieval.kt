@@ -1,13 +1,13 @@
 package org.rsmod.content.raids.toa.raid
 
 import kotlin.math.min
-import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.death.PlayerDeathDrops
 import org.rsmod.api.death.PlayerDeathHandling
 import org.rsmod.api.death.UntradeableHandling
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.player.ironman.PlayerGamemode
+import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
@@ -16,9 +16,8 @@ import org.rsmod.game.type.getInvObj
 internal object ToaRetrieval {
     const val INV = "inv.gravestone"
 
-    val PROTECT_ITEM_AT_DEATH = AttributeKey<Boolean>()
-
     var Player.retrievalLocked by intVarp("varp.toa_retrieval_locked")
+    var Player.protectItemAtDeath by boolVarBit("varbit.toa_protect_item_at_death")
     val Player.retrievalChest: Inventory
         get() = invMap.getOrPut(INV)
 

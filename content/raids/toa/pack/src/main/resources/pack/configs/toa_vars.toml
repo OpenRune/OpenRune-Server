@@ -37,6 +37,26 @@ transmit = "Never"
 
 [[varp]]
 isServerOnly = true
+id = "varp.toa_temp_state"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.toa_protect_item_at_death"
+varp = "varp.toa_temp_state"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.toa_party_tab"
+varp = "varp.toa_temp_state"
+startBit = 1
+endBit = 2
+
+[[varp]]
+isServerOnly = true
 id = "varp.toa_attempts_entry"
 scope = "Perm"
 transmit = "Never"

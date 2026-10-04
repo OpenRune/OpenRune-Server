@@ -58,6 +58,11 @@ toa_best_overall_expert_5 = 64055
 toa_best_overall_expert_6 = 64056
 toa_best_overall_expert_7 = 64057
 toa_best_overall_expert_8 = 64058
+toa_temp_state = 64059
+
+[gamevals.varbit]
+toa_protect_item_at_death = 64000
+toa_party_tab = 64001
 
 [gamevals.area]
 toa_lobby = 60
@@ -65,6 +70,10 @@ toa_raid = 61
 
 [gamevals.queue]
 toa_death = 61
+
+[gamevals.midi]
+toa_ambience = 730
+toa_boss_zebak = 736
 
 [gamevals.synth]
 toa_crondis_fill_container = 6522

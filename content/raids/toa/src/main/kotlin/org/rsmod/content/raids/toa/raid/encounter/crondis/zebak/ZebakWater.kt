@@ -64,7 +64,8 @@ internal class ZebakWater(private val room: ZebakEncounter) {
     fun climbOut(player: Player, rock: CoordGrid, angleId: Int) {
         if (!isSwimming(player)) {
             player.mes(
-                "The eyes looking at you from below the surface make you reconsider going down there."
+                "The eyes looking at you from below the surface make you reconsider " +
+                    "going down there."
             )
             return
         }
