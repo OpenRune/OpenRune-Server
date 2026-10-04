@@ -1,0 +1,15 @@
+[[npc]]
+id = "npc.corp_beast"
+inherit = "npc.corp_beast"
+
+[npc.params]
+"param.defence_light" = 230
+"param.defence_standard" = 230
+"param.defence_heavy" = 100
+"param.attack_melee" = 50
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+"param.defend_anim" = "seq.corpbeast_defend"
+"param.elemental_weakness_type" = 0
+"param.elemental_weakness_percent" = 0
+"param.death_anim" = "seq.corpbeast_death"
