@@ -1,12 +1,12 @@
 # Araxxor
 
 Origin: CUSTOM on the accepted revision-240 APIs. Branch: `feature/araxxor`.
-Status: IN PROGRESS; encounter foundation only, not yet playable.
+Status: IN PROGRESS; private encounter runtime added, acceptance pending.
 Accepted baseline: `6168204ee` / merged main `8b974210c`; specials remain parked.
 
 ## Implemented first chunk
 
-- Separate `content/bosses/araxxor` module; no active NPC handlers or entry commands yet.
+- Separate `content/bosses/araxxor` module using native instance/combat/death APIs.
 - Deterministic nine-egg cycle and all three starting colours; hatch after attack 3
   and every six subsequent standard attacks; separate six-attack special clock.
 - Destroyed-egg skipping, damage carryover to hatchlings, exhausted hatch handling.
@@ -16,9 +16,27 @@ Accepted baseline: `6168204ee` / merged main `8b974210c`; specials remain parked
 - Capture inspection script reads named JSON entries without extracting/importing
   foreign models, scripts or cache files. Evidence records input hashes.
 
-No production instance, hazards, damage handlers, loot grants or respawn task is
-registered by this chunk. The cycle class is an isolated model awaiting runtime
-integration; its guards are not yet a complete death/logout security boundary.
+## Runtime integration - 2026-10-04
+
+- The boss-side web tunnel at (3655, 9814) enters a private one-player arena; the
+  inside tunnel exits. Administrator `::araxxor` / `::araxxor leave` is a test route.
+  Entry retains the exact return tile and rolls back on failure.
+- Native map collision tests check arrival, boss footprint, exit and egg attack
+  reach. No replacement map or foreign assets are imported.
+- Native melee/ranged/magic attacks, launch-time protection, player mitigation,
+  Defence/Prayer drains, egg hatching and all three araxyte handlers are connected.
+- Acid hazards, special cycles, enrage, dodgeable cleave, self-damage and Aranea
+  boots now have runtime handlers. Some patterns remain provisional; see below.
+- Actor and graphic sequences are separate. Explicit death/harvest animations
+  replace fallback handling in the private encounter. The smaller corpse retains
+  the boss's centre. Destroy is correctly registered on native menu option 3.
+- Harvest invokes native reward hooks once and schedules the 34-tick countdown.
+  The hidden original NPC retains contribution context until the reward is claimed.
+- Ownership, phase epochs, logout and departure invalidate queued work. Cleanup
+  removes the boss, eggs, hatching actors, spiders, acid and countdown.
+
+The pre-existing public Araxxor has basic attacks only. Use the private arena for
+the encounter cycle. The installed accepted server has not been replaced.
 
 ## Evidence
 
@@ -39,21 +57,27 @@ Mechanics reference: [OSRS Wiki strategy](https://oldschool.runescape.wiki/w/Ara
 The model uses its egg-cycle, hatch-health and enrage rules. The remaining runtime
 behaviour still needs implementation and verification against independent evidence.
 
-## Next chunks
+## Open acceptance work
 
-1. Native instance entry/exit, full nine-egg arena placement, attack registration
-   and lifecycle cleanup (death, logout, teleport, abandoned entry and re-entry).
-2. Normal melee/ranged/magic selection and launch-time protection; drains; acid
-   special patterns and all three araxyte behaviours.
-3. Enrage cleave telegraph/geometry, persistent acid, self-damage and Aranea boots.
-4. Corpse harvest/destroy choice, native drop table/KC/pet/collection log, one-time
-   reward guarantee and requested 34-tick (20.4 s) respawn/HUD integration.
-5. Isolated build/boot, live visual acceptance, then a new installer and explicit
-   approval before merging. Do not merge this foundation as a completed boss.
+1. Confirm the two inferred western egg positions. The native map NPC archive
+   confirms the boss origin, but contains no eggs; the capture confirms seven.
+2. Validate actor skeletons, projectile heights/timing, hatching, death and harvest
+   in the client. The stretched blue effect reported by the user is not yet
+   reproduced or visually verified as fixed. Symbol checks are not visual proof.
+3. Replace provisional square acid spray and acid-ball rendering with verified
+   patterns; qualify Ruptura distance falloff and Mirrorback reflection timing
+   (currently at attack launch). Minion guaranteed-max-hit rules remain open.
+4. Implement Destroy-for-pet rewards and Slayer entry rules. Qualify native drops:
+   the upstream pet-morph condition is still an unconditional placeholder and must
+   be corrected before reward acceptance. Destroy currently explains its status.
+5. Produce a test installer after remaining mechanics/reward checks; obtain live
+   visual acceptance before merge. This is not a completed-boss or parity claim.
 
 Use native symbol mappings. Do not adopt raw IDs or foreign assets from the capture.
 Do not change accepted Zulrah or resume deferred special attacks as a side effect.
 
-Validation: 7 tests pass, module formatting passes, full server shadow JAR builds.
-Capture inspection successfully processes all 1816 events. No live encounter or
-installer validation is claimed for this foundation.
+Validation: 18 passing tests cover cycle/assets, native collision, prayer snapshots,
+mitigation, cleave/ray geometry, namespace registration and lifecycle. Full server
+JAR and isolated server/Nero bridge startup and clean shutdown pass. No live-client
+visual acceptance or installer validation is claimed. The initial boot caught an
+NPC/content queue-namespace error; it is fixed and covered by a registration test.
