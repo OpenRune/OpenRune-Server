@@ -15,14 +15,14 @@ import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
-import org.rsmod.content.raids.toa.party.ToaPartyManager.appliedParty
-import org.rsmod.content.raids.toa.party.ToaPartyManager.currentParty
-import org.rsmod.content.raids.toa.party.ToaPartyManager.currentTab
 import org.rsmod.content.raids.toa.party.ToaPartyManager.VIEW_APPLICANT
 import org.rsmod.content.raids.toa.party.ToaPartyManager.VIEW_KICKED
 import org.rsmod.content.raids.toa.party.ToaPartyManager.VIEW_LEADER
 import org.rsmod.content.raids.toa.party.ToaPartyManager.VIEW_MEMBER
 import org.rsmod.content.raids.toa.party.ToaPartyManager.VIEW_NON_MEMBER
+import org.rsmod.content.raids.toa.party.ToaPartyManager.appliedParty
+import org.rsmod.content.raids.toa.party.ToaPartyManager.currentParty
+import org.rsmod.content.raids.toa.party.ToaPartyManager.currentTab
 import org.rsmod.content.raids.toa.party.ToaPartyManager.viewingParty
 import org.rsmod.content.raids.toa.raid.ToaKillCount
 import org.rsmod.game.entity.Player
@@ -42,6 +42,8 @@ private const val SYNTH_INVOCATION_OFF = 6588
 private const val SYNTH_PRESET_SAVE_LOAD = 2655
 private const val PRESET_SLOTS = 5
 private val PRESET_PARTS = listOf("a", "b", "c")
+private const val JOIN_PARTY_IN_TOMBS = "You should join your party in the tombs."
+private const val NO_LONGER_RECRUITING = "That party is no longer recruiting."
 private val SINGLE_SELECT_CATEGORIES = setOf(
     ToaInvocationCategory.ATTEMPTS,
     ToaInvocationCategory.TIME_LIMIT,
@@ -53,8 +55,6 @@ private val SINGLE_SELECT_CATEGORIES = setOf(
 class ToaPartyListScript @Inject constructor(
     private val protectedAccess: ProtectedAccessLauncher,
 ) : PluginScript() {
-
-    private val playerPartyLists = HashMap<Player, List<ToaLobbyParty>>()
 
     private var Player.friendsOnlyFilter by intVarBit(VARBIT_FRIENDS_FILTER)
     private var Player.clientPartyStatusVar by intVarBit(VARBIT_PARTY_STATUS)
@@ -82,7 +82,7 @@ class ToaPartyListScript @Inject constructor(
         while (true) {
             player.viewingParty = null
             player.currentPartyVar = if (player.currentParty != null) 0 else -1
-            populateList()
+            val listed = populateList()
 
             val input = pauseButton()
             ifClose()
@@ -103,7 +103,7 @@ class ToaPartyListScript @Inject constructor(
                     }
                 }
                 "component.toa_partylist:list" -> {
-                    val party = handleRowClick(input.subcomponent)
+                    val party = handleRowClick(listed, input.subcomponent)
                     if (party != null) {
                         partyDetailsLoop()
                     }
@@ -114,7 +114,7 @@ class ToaPartyListScript @Inject constructor(
         }
     }
 
-    private fun ProtectedAccess.populateList() {
+    private fun ProtectedAccess.populateList(): List<ToaLobbyParty> {
         ifOpenMainModal("interface.toa_partylist", transparency = -2)
 
         ifSetEvents(
@@ -141,7 +141,7 @@ class ToaPartyListScript @Inject constructor(
             }
         }
 
-        playerPartyLists[player] = visibleParties
+        return visibleParties
     }
 
     private fun ProtectedAccess.buildRowString(party: ToaLobbyParty): String {
@@ -194,13 +194,17 @@ class ToaPartyListScript @Inject constructor(
         return party
     }
 
-    private fun ProtectedAccess.handleRowClick(comsub: Int): ToaLobbyParty? {
-        val parties = playerPartyLists[player] ?: return null
-        if (comsub < 0 || comsub >= parties.size) return null
-
-        val selectedParty = parties[comsub]
+    private suspend fun ProtectedAccess.handleRowClick(
+        listed: List<ToaLobbyParty>,
+        comsub: Int,
+    ): ToaLobbyParty? {
+        val selectedParty = listed.getOrNull(comsub) ?: return null
+        if (player.currentParty?.insideRaid == true) {
+            mesbox(JOIN_PARTY_IN_TOMBS)
+            return null
+        }
         if (!ToaPartyManager.partyExists(selectedParty)) {
-            player.mes("That party is no longer recruiting.")
+            mesbox(NO_LONGER_RECRUITING)
             return null
         }
 
@@ -301,7 +305,7 @@ class ToaPartyListScript @Inject constructor(
     private suspend fun ProtectedAccess.handleActionButton(party: ToaLobbyParty): Boolean {
         return when (ToaPartyManager.resolveViewingValue(player, party)) {
             VIEW_NON_MEMBER -> handleApply(party)
-            VIEW_MEMBER -> { handleLeave(party); false }
+            VIEW_MEMBER -> handleLeave(party)
             VIEW_LEADER -> { handleDisband(party); false }
             VIEW_APPLICANT -> { handleWithdraw(party); true }
             VIEW_KICKED -> { player.mes("You have been declined by this party."); true }
@@ -310,22 +314,29 @@ class ToaPartyListScript @Inject constructor(
     }
 
     private suspend fun ProtectedAccess.handleApply(party: ToaLobbyParty): Boolean {
-        val previouslyApplied = player.appliedParty
-        if (previouslyApplied != null) {
-            previouslyApplied.withdraw(player)
-            player.appliedParty = null
-            ToaPartyManager.refreshViewers(previouslyApplied, exclude = player)
-        }
-
         val existing = player.currentParty
         if (existing != null) {
-            val choice = choice2(
-                "Stay in my existing party.", 1,
-                "Quit that one and apply to this one.", 2,
-                title = "You are already in a party",
-            )
-            if (choice == 1) return true
-            ToaPartyManager.leaveParty(player)
+            if (!existing.insideRaid) {
+                val choice = choice2(
+                    "Stay in my existing party.", 1,
+                    "Quit that one and apply to this one.", 2,
+                    title = "You are already in a party",
+                )
+                if (choice == 1) return true
+            }
+            if (existing.insideRaid) {
+                mesbox(JOIN_PARTY_IN_TOMBS)
+                return true
+            }
+        }
+
+        if (!ToaPartyManager.partyExists(party)) {
+            mesbox(NO_LONGER_RECRUITING)
+            return false
+        }
+
+        ToaPartyManager.withdrawApplication(player)
+        if (existing != null && ToaPartyManager.leaveParty(player)) {
             ToaPartyManager.refreshViewers(existing, exclude = player)
         }
 
@@ -335,17 +346,22 @@ class ToaPartyListScript @Inject constructor(
             if (player.currentTab != 1) player.currentTab = 1
             return true
         } else {
-            player.mes("That party is no longer recruiting.")
+            mesbox(NO_LONGER_RECRUITING)
             return false
         }
     }
 
-    private fun ProtectedAccess.handleLeave(party: ToaLobbyParty) {
+    private suspend fun ProtectedAccess.handleLeave(party: ToaLobbyParty): Boolean {
+        if (party.insideRaid) {
+            mesbox(JOIN_PARTY_IN_TOMBS)
+            return true
+        }
         val leaderName = party.leaderName
         if (ToaPartyManager.leaveParty(player)) {
             player.mes("You have left the party of $leaderName.")
             ToaPartyManager.refreshViewers(party, exclude = player)
         }
+        return false
     }
 
     private fun ProtectedAccess.handleDisband(party: ToaLobbyParty) {
@@ -383,7 +399,7 @@ class ToaPartyListScript @Inject constructor(
             return false
         }
 
-        ToaPartyManager.kickMember(party, target)
+        ToaPartyManager.kickMember(target)
         target.mes("You have been kicked from the party of ${player.displayName}.")
         player.mes("You have kicked ${target.displayName} from your party.")
         return true

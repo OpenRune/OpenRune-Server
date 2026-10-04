@@ -2,11 +2,20 @@ package org.rsmod.content.raids.toa.party
 
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.input.ResumePauseButtonInput
+import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.content.raids.toa.raid.ToaRaidManager
 import org.rsmod.game.entity.Player
+
+private const val LOBBY_HUD_TARGET = "component.toplevel_osrs_stretch:overlay_hud"
+
+internal fun ProtectedAccess.openLobbyHud() {
+    ifOpenOverlay(ToaPartyManager.LOBBY_HUD, LOBBY_HUD_TARGET)
+    ToaPartyManager.sendLobbyHud(player)
+}
 
 object ToaPartyManager {
 
@@ -81,6 +90,7 @@ object ToaPartyManager {
     fun createParty(player: Player, settings: ToaPartySettings, currentCycle: Int): ToaLobbyParty? {
         if (isLobbyFull()) return null
         if (player.currentParty != null) return null
+        withdrawApplication(player)
         val party = ToaLobbyParty(player, currentCycle)
         party.settings = settings
         player.currentParty = party
@@ -99,13 +109,16 @@ object ToaPartyManager {
         return true
     }
 
-    fun kickMember(party: ToaLobbyParty, target: Player) {
-        party.removeMember(target)
-        target.currentParty = null
-        target.clientPartyStatus = PARTY_STATUS_NONE
-        sendLobbyHud(target)
-        refreshLobbyHud(party)
+    fun kickMember(target: Player) {
+        leaveParty(target)
         refreshDetailsView(target)
+    }
+
+    fun withdrawApplication(player: Player) {
+        val appliedTo = player.appliedParty ?: return
+        appliedTo.withdraw(player)
+        player.appliedParty = null
+        refreshViewers(appliedTo, exclude = player)
     }
 
     fun sendLobbyHud(player: Player) {
@@ -174,9 +187,12 @@ object ToaPartyManager {
         ToaRaidManager.onLeftParty(player, party)
         if (party.members.isEmpty()) {
             removeParty(party)
+            for (applicant in releaseApplicants(party)) {
+                applicant.mes("The party to which you were applying has disbanded.")
+            }
         } else {
             refreshLobbyHud(party)
-            if (wasLeader) {
+            if (wasLeader && !party.insideRaid) {
                 party.leader?.let { savePersonalSettings(it, party.settings) }
             }
         }
@@ -192,6 +208,7 @@ object ToaPartyManager {
             member.currentParty = null
             member.clientPartyStatus = PARTY_STATUS_NONE
             sendLobbyHud(member)
+            ToaRaidManager.onLeftParty(member, party)
         }
         for (applicant in applicants) {
             applicant.appliedParty = null
@@ -215,12 +232,7 @@ object ToaPartyManager {
     )
 
     fun onLeaveLobby(player: Player): Boolean {
-        val appliedTo = player.appliedParty
-        if (appliedTo != null) {
-            appliedTo.withdraw(player)
-            player.appliedParty = null
-            refreshViewers(appliedTo, exclude = player)
-        }
+        withdrawApplication(player)
 
         val party = player.currentParty
         val left = leaveParty(player)
@@ -237,13 +249,9 @@ object ToaPartyManager {
     }
 
     fun onRaidStarted(party: ToaLobbyParty) {
+        party.lockForRaid()
         removeParty(party)
-        val applicants = party.applicants.toList()
-        for (applicant in applicants) {
-            party.withdraw(applicant)
-            if (applicant.appliedParty == party) applicant.appliedParty = null
-            refreshDetailsView(applicant)
-        }
+        releaseApplicants(party)
         for (member in party.members) {
             if (!party.isLeader(member)) {
                 member.clientPartyStatus = PARTY_STATUS_STEP_INSIDE
@@ -251,14 +259,22 @@ object ToaPartyManager {
         }
     }
 
+    private fun releaseApplicants(party: ToaLobbyParty): List<Player> {
+        val applicants = party.applicants.toList()
+        party.applicants.clear()
+        for (applicant in applicants) {
+            if (applicant.appliedParty == party) applicant.appliedParty = null
+            refreshDetailsView(applicant)
+        }
+        return applicants
+    }
+
     fun onLogout(player: Player) {
         for (party in lobbyParties) {
             party.withdraw(player)
             party.unblock(player)
         }
-        val appliedTo = player.appliedParty
-        player.appliedParty = null
-        appliedTo?.let { refreshViewers(it, exclude = player) }
+        withdrawApplication(player)
         val party = player.currentParty
         leaveParty(player)
         party?.let { refreshViewers(it, exclude = player) }
