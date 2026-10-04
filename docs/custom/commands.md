@@ -48,3 +48,9 @@ Barrows reward calculation, including the player's diary rune bonus, equipment
 drop multiplier and clue conversion. The test does not change killed-brother
 flags, active crypt state, chest count, quest state or collection-log progress.
 Normal Barrows chest play was accepted by the user on 2026-10-04.
+
+## Max ranged necklace - 2026-10-04
+
+`::maxrange` now supplies necklace of rupture instead of necklace of anguish.
+Delivery remains inventory-only and atomic; worn items and existing inventory are preserved.
+The command integration test verifies the actual native item identifier.
