@@ -1,8 +1,10 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 dependencies {
+    testImplementation("org.mockito:mockito-core:5.14.2")
     implementation(projects.api.combat.combatManager)
     implementation(projects.api.player)
     implementation(projects.api.pluginCommons)
