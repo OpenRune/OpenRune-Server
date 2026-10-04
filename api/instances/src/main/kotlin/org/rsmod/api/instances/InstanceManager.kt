@@ -242,12 +242,6 @@ constructor(
         indexNpc(instanceId, npc)
     }
 
-    public fun detachNpc(npc: Npc) {
-        val instanceId = instanceForNpc(npc) ?: return
-        npcInstanceIndex.remove(npc.slotId)
-        spawnedNpcs[instanceId]?.remove(npc)
-    }
-
     public fun registerSessionNpc(player: Player, npc: Npc): Boolean {
         val instanceId =
             player.currentInstanceId() ?: playerIndex[player.playerId()] ?: return false
