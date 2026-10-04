@@ -217,6 +217,7 @@ class ToaRaid(val lobbyParty: ToaLobbyParty, val settings: ToaPartySettings, val
 
     internal fun removePlayer(player: Player): Boolean {
         if (!players.remove(player)) return false
+        points.remove(player)
         if (player === leader && players.isNotEmpty()) {
             leader = players.firstOrNull(::isInside) ?: players.first()
             leader.mes("You have been promoted to the raid party leader.")

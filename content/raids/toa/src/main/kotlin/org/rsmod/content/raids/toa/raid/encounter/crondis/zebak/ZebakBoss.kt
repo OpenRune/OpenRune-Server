@@ -71,7 +71,14 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             ability(MELEE_ENRAGED, melee(ZebakSeqs.MELEE_ENRAGED, ZebakSeqs.TAIL_MELEE_ENRAGED))
             ability(MAGIC, split(mage = true))
             ability(RANGED, split(mage = false))
-            ability(SPECIAL, sequence(wait(1), whenever(fighting, run(SPECIAL_NOW))))
+            ability(
+                SPECIAL,
+                sequence(
+                    external(SPECIAL_PENDING, true),
+                    wait(1),
+                    whenever(fighting, run(SPECIAL_NOW), external(SPECIAL_PENDING, false)),
+                ),
+            )
             ability(SPECIAL_NOW, whenever(nextIsRoar, run(GREAT_ROAR), run(TIDAL_WAVES)))
             ability(GREAT_ROAR, greatRoar())
             ability(ROAR_SCREAM, roarScream())
@@ -348,6 +355,7 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
     private fun registerHandlers() {
         onZebak(ROLL_STYLE) { room, ext -> room.autos.rollStyle(ext.npc) }
         onZebak(TAIL) { room, ext -> room.tailAnim(ext.params as String?) }
+        onZebak(SPECIAL_PENDING) { room, ext -> room.specialPending = ext.params as Boolean }
         onZebak(BEGIN_SPECIAL) { room, ext -> room.beginSpecial(ext.params as Boolean) }
         onZebak(END_SPECIAL) { room, _ -> room.endSpecial() }
         onZebak(ROAR_LAUNCH) { room, _ -> room.greatRoar?.launch() }
@@ -397,6 +405,7 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         private const val ROLL_STYLE = "zebak.roll_style"
         private const val BLEED_SPLAT = "zebak.bleed_splat"
         private const val TAIL = "zebak.tail"
+        private const val SPECIAL_PENDING = "zebak.special_pending"
         private const val BEGIN_SPECIAL = "zebak.begin_special"
         private const val END_SPECIAL = "zebak.end_special"
         private const val ROAR_LAUNCH = "zebak.roar_launch"

@@ -47,6 +47,9 @@ class ToaPartySettings(
         require(preset.size == BITMAP_COUNT) { "Preset must have $BITMAP_COUNT bitmaps" }
         preset.copyInto(invocationBitmaps)
         recalculate()
+        for (invocation in ToaInvocation.ALL) {
+            if (invocation.eventOnly && isActive(invocation)) unflag(invocation)
+        }
     }
 
     fun clear() {

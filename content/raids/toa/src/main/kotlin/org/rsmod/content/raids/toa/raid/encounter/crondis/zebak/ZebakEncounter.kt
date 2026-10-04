@@ -65,6 +65,8 @@ class ZebakEncounter(
     internal var nextSpecialIsRoar = false
         private set
 
+    internal var specialPending = false
+
     override val fight =
         ToaFight(
             boss = { zebak },
@@ -183,6 +185,7 @@ class ZebakEncounter(
         tail = spawn(ZebakNpcs.TAIL, coords(ZebakCoords.TAIL))
         enraged = false
         specialsQueued = 0
+        specialPending = false
         specials.reset()
         nextSpecialIsRoar = deps.random.of(0, 1) == 0
     }
@@ -221,12 +224,13 @@ class ZebakEncounter(
     }
 
     internal fun specialReady(npc: Npc): Boolean =
-        fighting(npc) && !enraged && !specialRunning && specialsQueued > 0
+        fighting(npc) && !enraged && !specialRunning && !specialPending && specialsQueued > 0
 
     internal fun enrageDue(npc: Npc): Boolean =
         bossAlive(npc) && !enraged && npc.hitpoints <= npc.baseHitpointsLvl * ENRAGE_THRESHOLD
 
     internal fun beginSpecial(roar: Boolean) {
+        specialPending = false
         specialsQueued = max(0, specialsQueued - 1)
         nextSpecialIsRoar = !roar
         if (roar) greatRoar = GreatRoar(this) else tidalWaves = TidalWaves(this)

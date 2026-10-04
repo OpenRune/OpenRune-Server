@@ -137,7 +137,11 @@ private fun abandonStragglers(raid: ToaRaid) {
     for (straggler in raid.stragglers()) {
         straggler.mes("Your party moved on without you.")
         if (raid.isInside(straggler)) {
-            raid.deps.launcher.launchLenient(straggler) { exitRaid() }
+            val dying = raid.isDying(straggler)
+            raid.deps.launcher.launchLenient(straggler) {
+                if (dying) player.toaRestore()
+                exitRaid()
+            }
         } else {
             val party = raid.lobbyParty
             if (ToaPartyManager.leaveParty(straggler)) {
