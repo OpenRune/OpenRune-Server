@@ -673,8 +673,14 @@ constructor(
             val npcName =
                 when (args[0].lowercase()) {
                     "zulrah" -> "snakeboss_boss_ranged"
+                    "corp", "corporeal", "corporeal_beast" -> "corp_beast"
                     else -> args[0]
                 }
+            if (npcName == "corp_beast" && (args.size > 2 ||
+                (args.size == 2 && args[1].toIntOrNull() !in 1..1000))) {
+                player.mes("Use as ::testloot corp [count: 1-1000] (default: 100)")
+                return
+            }
             val typeId = "npc.$npcName".asRSCM()
             val type = ServerCacheManager.getNpc(typeId)
             if (type == null) {
