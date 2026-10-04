@@ -58,6 +58,20 @@ internal fun Npc.isBeside(player: Player): Boolean {
         (c.z in coords.z..maxZ && (c.x == coords.x - 1 || c.x == maxX + 1))
 }
 
+internal fun Npc.besideTile(player: Player): CoordGrid {
+    val c = player.coords
+    val tiles =
+        (0 until size).flatMap { i ->
+            listOf(
+                CoordGrid(c.x - size, c.z - i, c.level),
+                CoordGrid(c.x + 1, c.z - i, c.level),
+                CoordGrid(c.x - i, c.z - size, c.level),
+                CoordGrid(c.x - i, c.z + 1, c.level),
+            )
+        }
+    return tiles.minBy { it.chebyshevDistance(coords) }
+}
+
 internal fun faceAngle(dx: Int, dz: Int): Int =
     when {
         dx == 0 && dz > 0 -> Constants.em_face_north

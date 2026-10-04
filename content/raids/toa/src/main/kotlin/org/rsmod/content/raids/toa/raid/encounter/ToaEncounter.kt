@@ -258,7 +258,6 @@ open class ToaEncounter(
     fun checkRoomReset() {
         if (destroyed || stage != ToaStage.STARTED) return
         val inRoom = players
-        if (inRoom.isEmpty()) return
         if (inRoom.any { inChallengeArea(it) || !raid.isGhost(it) }) return
 
         raid.teamDeaths++
