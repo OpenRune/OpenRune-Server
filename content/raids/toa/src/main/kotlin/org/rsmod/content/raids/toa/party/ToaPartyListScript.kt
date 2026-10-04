@@ -171,9 +171,13 @@ class ToaPartyListScript @Inject constructor(
         return sb.toString()
     }
 
-    private fun ProtectedAccess.handleMakeParty(): ToaLobbyParty? {
+    private suspend fun ProtectedAccess.handleMakeParty(): ToaLobbyParty? {
         val existing = player.currentParty
         if (existing != null) {
+            if (existing.insideRaid) {
+                mesbox(JOIN_PARTY_IN_TOMBS)
+                return null
+            }
             player.viewingParty = existing
             player.currentTab = 0
             return existing
