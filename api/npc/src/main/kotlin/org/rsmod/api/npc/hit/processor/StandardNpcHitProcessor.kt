@@ -26,7 +26,14 @@ constructor(
     private val damageContributors: Set<NpcDamageContributor>,
 ) : NpcHitProcessor {
     override fun StandardNpcAccess.process(hit: Hit) {
-        var changedDamage: Int? = null
+        val prepared = hit.impactEffects.prepare(hit.damage)
+        val transformed = prepared != hit.damage
+        val impact = if (transformed) hit.copy(hitmark = hit.hitmark.copy(damage = prepared)) else hit
+        processPrepared(impact, transformed)
+    }
+
+    private fun StandardNpcAccess.processPrepared(hit: Hit, transformed: Boolean) {
+        var changedDamage: Int? = if (transformed && hit.damage == 0) 0 else null
         if (!npc.hitpointsLocked && hit.damage > npc.hitpoints) {
             changedDamage = npc.hitpoints
         }

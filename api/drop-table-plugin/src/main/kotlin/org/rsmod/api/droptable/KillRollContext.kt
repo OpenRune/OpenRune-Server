@@ -6,6 +6,7 @@ import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.game.entity.Npc
 
 public object KillRollContext {
+    public val elapsedTicks: ArgKey<Int?> = ArgKey("killElapsedTicks", null)
     public val npc: ArgKey<Npc?> = ArgKey("killRollNpc", null)
     public val areaChecker: ArgKey<AreaChecker?> = ArgKey("killRollAreaChecker", null)
 }

@@ -27,6 +27,8 @@ public class HitBuilder(
      */
     public var penetration: Int = 0
 
+    public val impactEffects: HitImpactEffects = HitImpactEffects()
+
     public fun isRighthandObj(type: ItemServerType): Boolean = type.id == righthandType
 
     public fun isSecondaryObj(type: ItemServerType): Boolean = type.id == secondaryType
@@ -39,6 +41,7 @@ public class HitBuilder(
             sourceUid = sourceUid,
             righthandObj = righthandType,
             secondaryObj = secondaryType,
+            impactEffects = impactEffects,
         )
     }
 

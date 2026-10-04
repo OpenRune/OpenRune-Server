@@ -49,7 +49,7 @@ constructor(
         access.npc.spawnDeathDrops(dropCoords)
     }
 
-    private fun Npc.spawnDeathDrops(dropCoords: CoordGrid) {
+    private fun Npc.spawnDeathDrops(dropCoords: CoordGrid, rewards: NpcDeathRewards = NpcDeathRewards()) {
         // TODO: Drop tables.
         val hero = findHero(players)
         if (hero != null) {
@@ -58,7 +58,7 @@ constructor(
 
             val remainsParam = paramOrNull(params.dropped_remains)
             val explicitlyNoRemains = remainsParam == null && type.hasParam(params.dropped_remains.raw)
-            if (!explicitlyNoRemains) {
+            if (rewards.includeRemains && !explicitlyNoRemains) {
                 val droppedRemains =
                     remainsParam
                         ?: ServerCacheManager.getItem("obj.bones".asRSCM())
@@ -94,6 +94,7 @@ constructor(
                 NpcDeathKillContext(
                     hero = hero,
                     npc = this,
+                    rewards = rewards,
                     lootTrackerEventId = lootTrackerEventId,
                     dropCoords = dropCoords,
                 )
@@ -111,8 +112,9 @@ constructor(
     // Note: We may be able to have `Npc` as the arg instead of `StandardNpcAccess`, however we
     // will need to wait and see how [spawnDeathDrops] ends up once it handles everything it needs
     // to.
-    public fun spawnDrops(access: StandardNpcAccess, dropCoords: CoordGrid = access.coords) {
-        access.npc.spawnDeathDrops(dropCoords)
+    public fun spawnDrops(access: StandardNpcAccess, dropCoords: CoordGrid = access.coords,
+        rewards: NpcDeathRewards = NpcDeathRewards()) {
+        access.npc.spawnDeathDrops(dropCoords, rewards)
     }
 }
 
