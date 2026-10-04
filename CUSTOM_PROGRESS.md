@@ -210,3 +210,7 @@ Branch feature/corporeal-beast from accepted main 0dbd0110a. Native encounter, c
 - Isolated startup, bridge request and shutdown pass. NPC audit: only Corp (319) changed across 16,577 definitions.
 - Installer: outputs/corporeal-beast-update-20261004 with rollback to accepted Kraken baseline.
 - In-game acceptance pending. Timing choices and remaining clan-instance/CA scope are documented in docs/custom/corporeal-beast.md. No merge authorized.
+
+## 2026-10-04 - Corporeal Beast accepted (PR #20)
+
+User confirmed perfect and authorized merge. Accepted runtime 1e4f7f7e4, installer corporeal-beast-update-20261004. Preserve encounter and earlier accepted bosses. Clan instances and individual CA conditions remain separate future scope.

@@ -1,6 +1,6 @@
 # Corporeal Beast
 
-Status: test candidate, not accepted in-game. Branch: feature/corporeal-beast.
+Status: accepted by the user on 2026-10-04; merge authorized for PR #20. Branch: feature/corporeal-beast.
 Accepted baseline: main 0dbd0110a (Kraken and fang crafting merged).
 
 ## Encounter
@@ -63,3 +63,7 @@ Full server JAR build passes. Isolated server startup, catalogue bridge request
 and graceful shutdown pass against the candidate cache and JAR. Installer:
 `outputs/corporeal-beast-update-20261004/INSTALLEREN.cmd`, based on the installed
 `kraken-fix-20261004` package, with a software-only rollback checkpoint.
+
+User confirmed the delivered encounter works perfectly and authorized merging
+PR #20. Preserve accepted runtime 1e4f7f7e4 and its installer. Previously noted
+clan-instance/Combat Achievement exclusions remain separate future scope.
