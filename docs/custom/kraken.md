@@ -61,3 +61,25 @@ copied as numeric animation IDs from another revision.
 
 This branch starts after the fang-crafting fix (PR #18). That fix remains intact;
 Kraken is a separate review/test candidate and has not been approved for merge.
+
+## Follow-up: attack disconnect and public crevice (2026-10-04)
+
+The first candidate missed public crevice handlers and used a zero-delay player
+hit queue after the projectile callback. A regression reproduced the exact
+`cycles must be greater than 0` exception. The callback now waits one world tick
+and queues the native hit for one player tick. All three actor types retain
+normal hit processing and the two-tick scheduling budget.
+
+Enter on the public crevice (537) checks the existing Slayer/test access rule
+and moves to (2280, 10022). Use on the inner crevice (538) returns unconditionally
+to (2280, 10016), also triggering encounter cleanup. Both destination tiles were
+verified against the actual cache collision map. Paid private instances remain
+outside this candidate.
+
+The regression now executes incoming attacks for cave kraken, tentacle and boss,
+asserting native queued hits, positive delay, 13/2/28 maximum damage and the
+magic/typeless split. Real-cache registration also covers both crevice options.
+The previous tests only covered cancelled projectiles and missed this exception.
+
+Follow-up validation: 12 Kraken tests, module formatting and full JAR build pass.
+Installer: `outputs/kraken-fix-20261004/INSTALLEREN.cmd`; in-game retest pending.

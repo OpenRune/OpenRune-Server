@@ -10,10 +10,12 @@ import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.death.NpcDeath
 import org.rsmod.api.death.NpcDeathRewards
 import org.rsmod.api.game.process.GameLifecycle
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.*
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.npc.NpcStateEvents
+import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -27,6 +29,17 @@ internal class KrakenScript @Inject constructor(
             requiredRights = Rights.ADMINISTRATOR
             desc = "Temporarily test Kraken without changing your Slayer task; use off to disable"
             cheat { controller.setTesting(player, args.singleOrNull()?.equals("off", true) != true) }
+        }
+        onOpLoc1("loc.slayer_cave_kraken_boss_entrance") {
+            if (controller.allowed(player)) {
+                telejump(CoordGrid(2280, 10022), TeleportType.Exempt)
+            } else {
+                mes("You need level 87 Slayer and a cave kraken task to enter.")
+            }
+        }
+        onOpLoc1("loc.slayer_cave_kraken_boss_exit") {
+            telejump(CoordGrid(2280, 10016), TeleportType.Exempt)
+            controller.tick()
         }
         for (kind in KrakenKind.entries) {
             val spec = boss(kind.active) {

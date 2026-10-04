@@ -158,9 +158,10 @@ internal class KrakenController @Inject constructor(
         val projectile = if (actor.kind == KrakenKind.BOSS) "spotanim.firewave_travel" else "spotanim.waterwave_travel"
         deps.worldRepo.projAnim(ProjAnim(projectile.asRSCM(), 40, 30, 0, 60, 15, 64, 0,
             -(target.slotId + 1), npc.coords.translate(npc.size / 2, npc.size / 2), target.coords))
-        deps.worldQueues.add(2) {
+        // One world tick plus one native player-hit tick preserves the two-tick impact.
+        deps.worldQueues.add(1) {
             if (actors[npc] === actor && !actor.dying && valid(actor))
-                target.finishNpcHit(npc, 0, if (actor.kind == KrakenKind.CAVE) HitType.Magic else HitType.Typeless,
+                target.finishNpcHit(npc, 1, if (actor.kind == KrakenKind.CAVE) HitType.Magic else HitType.Typeless,
                     damage, deps.playerHitModifier)
         }
     }

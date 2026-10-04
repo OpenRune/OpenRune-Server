@@ -186,3 +186,11 @@ isolated startup/bridge/shutdown pass. In-game visual acceptance remains pending
 Installer: outputs/kraken-update-20261004, based on the installed fang-crafting fix.
 Maxrange, Kraken runtime and documentation are separate commits. No merge yet;
 Zulrah, Araxxor, Barrows and the parked special-attacks baseline are preserved.
+
+## 2026-10-04 - Kraken attack/crevice follow-up (PR #19)
+
+- Reproduced first-impact exception: native player hit queue rejected cycles=0.
+- Fixed scheduling for cave kraken, tentacles and boss; added real incoming-hit regression.
+- Registered public crevice Enter and inner Use exit; verified both destination tiles against cache collision.
+- 12 Kraken tests, module formatting and full JAR build passed. Isolated startup and installer checks recorded in package evidence.
+- New candidate: outputs/kraken-fix-20261004/INSTALLEREN.cmd. In-game retest pending; no merge approval.

@@ -26,7 +26,9 @@ import org.rsmod.api.table.slayer.SlayerTaskRow
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.*
+import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitType
+import org.rsmod.game.inv.Inventory
 import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.collision.CollisionFlagMap
@@ -60,9 +62,9 @@ class KrakenControllerTest {
             val idle = ability("idle", Effect.NoOp)
             phase("combat") { rotationSelector { +then(idle) } }
         })
-        val deps = BossDeps(mock(GameRandom::class.java), mock(WorldRepository::class.java), repo,
+        val deps = BossDeps(mock(GameRandom::class.java) { call -> (call.arguments.firstOrNull() as? IntRange)?.last ?: 0 }, mock(WorldRepository::class.java), repo,
             mock(LocRepository::class.java), PlayerList().apply { this[1] = owner }, clock,
-            queues, collision, registry, BossExtensionRegistry(), mock(AccuracyFormulae::class.java),
+            queues, collision, registry, BossExtensionRegistry(), mock(AccuracyFormulae::class.java) { true },
             mock(MaxHitFormulae::class.java), hitModifier)
         controller = KrakenController(deps, mock(AiPlayerInteractions::class.java), playerInteractions, BossRespawnTimers(clock))
         bossPool = pool(KrakenKind.BOSS, CoordGrid(2278, 10034))
@@ -72,6 +74,7 @@ class KrakenControllerTest {
 
     private fun player(slot: Int) = Player().apply {
         slotId = slot; uuid = slot.toLong(); assignUid(); coords = CoordGrid(2280, 10030)
+        worn = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.worn".asRSCM())), arrayOfNulls(14))
         statMap.setCurrentLevel("stat.hitpoints", 99)
         statMap.setCurrentLevel("stat.slayer", 87)
         statMap.setBaseLevel("stat.slayer", 87)
@@ -150,6 +153,35 @@ class KrakenControllerTest {
         assertFalse(controller.disturb(owner, cave, true))
         assertFalse(cave.hidden)
         assertTrue(active(KrakenKind.CAVE).isEmpty())
+    }
+
+    @Test fun `every surfaced actor queues a real incoming hit without disconnecting`() {
+        controller.disturb(owner, bossPool, true)
+        controller.disturb(owner, pool(KrakenKind.CAVE, CoordGrid(2270, 10030)))
+        for (kind in KrakenKind.entries) controller.attack(active(kind).first(), owner)
+        repeat(2) {
+            val iterator = queues.iterator()
+            while (iterator.hasNext()) {
+                val queue = iterator.next()
+                if (--queue.remainingCycles <= 0) { iterator.remove(); queue.action() }
+            }
+            iterator.cleanUp()
+        }
+        assertEquals(3, mockingDetails(hitModifier).invocations.size)
+        assertEquals(3, owner.queueList.count("queue.hit"))
+        val hits = mutableListOf<Hit>()
+        val iterator = owner.queueList.iterator()!!
+        while (iterator.hasNext()) {
+            val queue = iterator.next()
+            if (queue.args is Hit) {
+                assertEquals(1, queue.remainingCycles)
+                hits += queue.args as Hit
+            }
+        }
+        iterator.cleanUp()
+        assertEquals(listOf(2, 13, 28), hits.map { it.damage }.sorted())
+        assertEquals(1, hits.count { it.type == HitType.Magic })
+        assertEquals(2, hits.count { it.type == HitType.Typeless })
     }
 
     @Test fun `leaving cancels pending projectiles and delayed auto attack`() {

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.parallel.ResourceLock
 import org.mockito.Mockito.*
 import org.rsmod.api.bosses.runtime.*
 import org.rsmod.api.death.NpcDeath
+import org.rsmod.api.player.events.interact.LocEvents
 import org.rsmod.api.player.events.interact.NpcEvents
 import org.rsmod.api.player.events.interact.NpcUEvents
 import org.rsmod.events.EventBus
@@ -31,6 +32,9 @@ class KrakenRegistrationTest {
         val bus = EventBus()
         val context = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
         with(KrakenScript(deps, mock(KrakenController::class.java), mock(NpcDeath::class.java))) { context.startup() }
+        for (loc in listOf("loc.slayer_cave_kraken_boss_entrance", "loc.slayer_cave_kraken_boss_exit")) {
+            assertTrue(bus.contains(LocEvents.Op1::class.java, loc.asRSCM()), loc)
+        }
         for (kind in KrakenKind.entries) {
             assertTrue(bus.contains(NpcEvents.Op2::class.java, kind.poolId))
             assertTrue(bus.contains(NpcEvents.Ap2::class.java, kind.poolId))
