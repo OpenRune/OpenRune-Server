@@ -4,7 +4,7 @@ Updated **2026-10-04**. This is the human-reviewed progress entry point.
 The automatic scanner writes [CONTENT_INVENTORY.md](CONTENT_INVENTORY.md), never this file.
 A symbol, pet or drop table does not establish a playable or verified boss.
 
-**Accepted runtime:** revision 240, server `6168204ee`, Nero Studio `0efcb039`.
+**Accepted runtime:** revision 240, server `f7c349c0e`, Nero Studio `0efcb039`.
 It is preserved unchanged during repository organization.
 [Exact recovery baseline](docs/custom/baseline.md).
 
@@ -21,7 +21,8 @@ It is preserved unchanged during repository organization.
 | Further melee families | Dragon claws, Dragon scimitar, Darklight/Arclight/Emberlight, Dragon sword and Ancient mace: 17 additional item variants; 58 special tests and 122 selected tests total pass; full server build passes; client animation verification pending |
 | Latest special validation | 99 special tests + 12 command/interface tests pass; build and isolated boot pass; user gave merge approval on 2026-10-04 |
 | Zulrah | Active custom encounter; old alternative recovery code is review material, not installed |
-| Araxxor | IN PROGRESS: cycle model, native asset checks and capture evidence; no playable encounter yet |
+| Araxxor | USER ACCEPTED; PR #16 merged, 186 encounter/shared tests plus 2 native Rancour recipe tests pass |
+| Barrows | IMPLEMENTED / USER ACCEPTED; native chest test command `::testloot barrows [count]` |
 | Doom | Research only; no active encounter/delve system |
 | Revision 241 | Upstream review pending; no automatic upgrade |
 | Repository organization | Complete: 15 stale branches archived and removed; main and active integration branch retained |
@@ -39,4 +40,4 @@ two Duke resistance flags; all 16,577 NPC definitions retain other fields. Claws
 reductions now apply per split hit. 122 selected tests, the full server JAR and isolated Nero-bridge boot pass;
 these changes are outside the frozen `880c6a9fa` installer.
 
-Current acceptance milestone: `special-fx-update-20261004` / `6168204ee`. User approved the final checkpoint for merge; prior pending notes describe older packages. Remaining specials are parked. Araxxor is next.
+Current acceptance milestone: `araxxor-completion-20261004` / `f7c349c0e`, merged in PR #16 and preserved by tag `server-araxxor-complete-20261004`. Barrows is also user accepted. Prior pending notes describe older checkpoints; remaining specials are parked.

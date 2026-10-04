@@ -21,7 +21,7 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 | Work | State | Scope |
 |---|---|---|
 | Repository organization | VERIFIED | 15 stale branches archived and removed; 2 branches retained; accepted runtime preserved |
-| Araxxor completion | VERIFIED / USER ACCEPTED | PR #16; 186 tests, full JAR and isolated boot pass; completion f7c349c0e accepted; initial rollback preserved |
+| Araxxor completion | VERIFIED / USER ACCEPTED | Merged PR #16; 186 tests, full JAR and isolated boot pass; completion f7c349c0e accepted; initial rollback preserved |
 | Accepted gameplay bundle | VERIFIED at baseline | User acceptance + 121 selected server tests, 86 Nero tests, isolated boot; GitHub server CI/format/gameval checks passed |
 | Weapon completeness | ACCEPTED CHECKPOINT / REMAINDER PAUSED (merged PR #15) | Requested after cleanup: 285/285 special target plus normal attacks, charges and FX; Zulrah encounter is frozen |
 | Weapon test installer | IMPLEMENTED / NEEDS USER TESTING | `special-fx-update-20261004` at `6168204ee`; user gave explicit green light on 2026-10-04 |
@@ -32,8 +32,9 @@ PLANNED / NOT STARTED describe future work, not functionality in the current bui
 |---|---|---|---|
 | Zulrah | IMPLEMENTED / NEEDS TESTING for exhaustive mechanics | CUSTOM | User played it; halberd regression covered; old death-recovery implementation is archived, not active |
 | GWD four bosses | IMPLEMENTED / NEEDS TESTING for full encounters | UPSTREAM + CUSTOM EXTENSIONS | Current respawn policy 100 ticks / 60 s; Nero reads actual deadlines |
-| Other existing boss modules | IMPLEMENTED / NEEDS TESTING | UPSTREAM; selected custom timer integration | Amoxliatl, Barrows, Callisto, demonic gorilla, Duke, gemstone crab, KBD, Leviathan, Muspah, Scurrius, Spindel, tormented demon, Vardorvis, Whisperer |
+| Other existing boss modules | IMPLEMENTED / NEEDS TESTING | UPSTREAM; selected custom timer integration | Amoxliatl, Callisto, demonic gorilla, Duke, gemstone crab, KBD, Leviathan, Muspah, Scurrius, Spindel, tormented demon, Vardorvis, Whisperer |
 | Araxxor | VERIFIED / USER ACCEPTED (PR #16) | CUSTOM | Completion f7c349c0e accepted by user; completion adds impact reflection, max-hit rules, native acid ball, Slayer gates and Harvest/Destroy rewards; see docs/custom/araxxor.md |
+| Barrows | VERIFIED / USER ACCEPTED | UPSTREAM | User reports encounter works perfectly; ::testloot barrows exercises the native chest reward calculation |
 | Doom of Mokhaiotl | NOT STARTED encounter | CUSTOM research + upstream drop/pet data | Archived research exists; a drop table does not constitute a boss fight |
 
 ## Systems
@@ -151,3 +152,13 @@ Initial Araxxor runtime `b87051471` was tested and accepted by the user.
 `outputs/araxxor-test-20261004` is preserved as the installation baseline.
 Completion work is in PR #16; the user accepted it and explicitly approved merge. No claim of exhaustive OSRS parity, full Vengeance spell support or Combat
 Achievements completion is made. Specials remain paused; Zulrah source is unchanged.
+
+## Barrows acceptance and loot testing - 2026-10-04
+
+User confirmed Barrows works perfectly. Added ::testloot barrows [count], default
+100, range 1..1000, for administrator-only chest loot with all six brothers and
+maximum reward potential. Uses the native reward calculation, diary rune bonus,
+drop-rate modifiers and clue conversion. Loot goes to the ground; active run,
+quest progress, collection log and chest count are not modified by this test.
+Araxxor PR #16 is merged as 2e3473d25; its branch was removed after ancestry
+verification and tag server-araxxor-complete-20261004 preserves the milestone.
