@@ -171,3 +171,18 @@ Earlier Rancour coverage only verified the unetched recipe; that limitation is
 now covered by real interaction tests. Accepted rupture assembly is unchanged.
 Validation: 8 Crafting tests and full server JAR build pass, including real
 item dispatch, confirmation cancellation, inventory transactions and rupture.
+
+## Kraken and ranged loadout candidate - 2026-10-04
+
+IMPLEMENTED / NEEDS USER TESTING: ::maxrange now supplies necklace of rupture.
+Cave krakens and Kraken use the existing whirlpools/models, native animations,
+magic versus typeless boss attacks, four tentacles, fishing explosives, native
+loot/Slayer hooks, owner isolation, cleanup and repeat-kill respawns/countdown.
+::krakentest enables temporary admin access inside the cave without assigning a
+new Slayer task. Paid instances and boss-specific Combat Achievements remain out
+of scope. Details: [Kraken](docs/custom/kraken.md).
+Validation: 11 Kraken tests, 9 command tests, formatting, full server JAR and
+isolated startup/bridge/shutdown pass. In-game visual acceptance remains pending.
+Installer: outputs/kraken-update-20261004, based on the installed fang-crafting fix.
+Maxrange, Kraken runtime and documentation are separate commits. No merge yet;
+Zulrah, Araxxor, Barrows and the parked special-attacks baseline are preserved.
