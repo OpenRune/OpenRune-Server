@@ -301,7 +301,6 @@ open class ToaEncounter(
     }
 
     internal fun release(npc: Npc) {
-        deps.instances.detachNpc(npc)
         combatants.remove(npc)
     }
 

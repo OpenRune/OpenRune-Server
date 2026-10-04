@@ -138,9 +138,8 @@ open class ToaBossEncounter(
     private fun spawnOsmumten() {
         val tile = room.osmumtenTile ?: return
         val challengeSpawn = room.challengeSpawn ?: return
-        val npc = Npc(OSMUMTEN, coords(tile))
-        npc.respawnDir = if (challengeSpawn.x > tile.x) Direction.East else Direction.West
-        deps.npcRepo.add(npc, Int.MAX_VALUE)
+        val facing = if (challengeSpawn.x > tile.x) Direction.East else Direction.West
+        val npc = spawn(OSMUMTEN, coords(tile), facing)
         npc.noneMode()
         npc.anim(OSMUMTEN_SPAWN_ANIM)
         for (player in players) {

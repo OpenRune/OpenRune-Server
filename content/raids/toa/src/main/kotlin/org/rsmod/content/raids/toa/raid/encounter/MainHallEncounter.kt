@@ -6,8 +6,6 @@ import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaPath
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
-import org.rsmod.content.raids.toa.raid.supplies.ToaSupplies
-import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
@@ -38,7 +36,7 @@ class MainHallEncounter(
     override fun onBuilt() {
         addPathLevels()
         if (raid.supplies.offerIfDue(raid)) {
-            deps.npcRepo.add(Npc(SPIRIT, coords(SPIRIT_TILE)), Int.MAX_VALUE)
+            spawn(SPIRIT, coords(SPIRIT_TILE))
             deps.locRepo.add(
                 coords(DEPOSIT_POT_TILE),
                 DEPOSIT_POT,
