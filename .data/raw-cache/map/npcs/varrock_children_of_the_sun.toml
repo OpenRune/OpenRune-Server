@@ -1,0 +1,91 @@
+[[spawn]]
+npc = "npc.vmq1_alina"
+coords = "0_50_53_25_34"
+
+[[spawn]]
+npc = "npc.vmq1_noah"
+coords = "0_50_53_26_35"
+
+[[spawn]]
+npc = "npc.vmq1_guard_sergeant"
+coords = "0_50_53_13_46"
+
+[[spawn]]
+npc = "npc.vmq1_knight_1_castle"
+coords = "0_50_54_10_4"
+
+[[spawn]]
+npc = "npc.vmq1_knight_2_castle"
+coords = "0_50_54_15_4"
+
+[[spawn]]
+npc = "npc.vmq1_guard_1"
+coords = "0_50_53_6_33"
+
+[[spawn]]
+npc = "npc.vmq1_guard_2"
+coords = "0_50_53_18_38"
+
+[[spawn]]
+npc = "npc.vmq1_guard_3"
+coords = "0_50_53_45_38"
+
+[[spawn]]
+npc = "npc.vmq1_guard_4"
+coords = "0_50_53_34_38"
+
+[[spawn]]
+npc = "npc.vmq1_guard_5"
+coords = "0_50_53_9_39"
+
+[[spawn]]
+npc = "npc.vmq1_guard_6"
+coords = "0_50_53_14_33"
+
+[[spawn]]
+npc = "npc.vmq1_guard_7"
+coords = "0_50_53_19_45"
+
+[[spawn]]
+npc = "npc.vmq1_guard_8"
+coords = "0_50_53_22_42"
+
+[[spawn]]
+npc = "npc.vmq1_guard_9"
+coords = "0_50_53_27_38"
+
+[[spawn]]
+npc = "npc.vmq1_guard_10"
+coords = "0_50_53_39_38"
+
+[[spawn]]
+npc = "npc.vmq1_bag_guard_varrock"
+coords = "0_50_53_60_8"
+
+[[spawn]]
+npc = "npc.vmq1_bandit_1_varrock"
+coords = "0_50_53_63_8"
+
+[[spawn]]
+npc = "npc.vmq1_bandit_2_varrock"
+coords = "0_50_53_61_9"
+
+[[spawn]]
+npc = "npc.vmq1_bandit_3_varrock"
+coords = "0_50_53_63_7"
+
+[[spawn]]
+npc = "npc.vmq1_bandit_4_varrock"
+coords = "0_50_53_61_6"
+
+[[spawn]]
+npc = "npc.vmq1_guard_sergeant_roof"
+coords = "2_50_54_4_18"
+
+[[spawn]]
+npc = "npc.vmq1_itzla"
+coords = "2_50_54_2_18"
+
+[[spawn]]
+npc = "npc.vmq1_bandit_4_cell"
+coords = "2_50_54_3_15"
