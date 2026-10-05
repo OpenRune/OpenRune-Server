@@ -534,9 +534,7 @@ constructor(
         val locZoneKey = LocZoneKey(zoneGrid, locInfo.layer)
         locZoneStorage.mapLocs[zoneKey, locZoneKey] = entity
 
-        if (type.id !in ServerCacheManager.getObjects()) {
-            TestCacheTypes.objects.register(type.id, type)
-        }
+        TestCacheTypes.objects.registerIfSynthetic(type.id, type)
 
         return boundLoc
     }

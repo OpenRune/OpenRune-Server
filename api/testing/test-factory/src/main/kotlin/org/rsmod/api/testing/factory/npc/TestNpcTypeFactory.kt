@@ -15,9 +15,7 @@ public class TestNpcTypeFactory {
         val typeId = id ?: TestCacheTypes.npcs.nextId()
         val type = NpcServerType(id = typeId, name = "test_npc_type", defaultMode = NpcMode.None)
         type.apply(init)
-        if (type.id !in ServerCacheManager.getNpcs()) {
-            TestCacheTypes.npcs.register(type.id, type)
-        }
+        TestCacheTypes.npcs.registerIfSynthetic(type.id, type)
         return type
     }
 }

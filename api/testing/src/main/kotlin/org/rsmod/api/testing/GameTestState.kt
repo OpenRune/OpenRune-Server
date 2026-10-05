@@ -13,6 +13,7 @@ import org.rsmod.api.route.RayCastFactory
 import org.rsmod.api.route.RayCastValidator
 import org.rsmod.api.route.RouteFactory
 import org.rsmod.api.route.StepFactory
+import org.rsmod.api.testing.factory.TestCacheTypes
 import org.rsmod.api.testing.scope.AdvancedGameTestScope
 import org.rsmod.api.testing.scope.AdvancedReadOnly
 import org.rsmod.api.testing.scope.BasicGameTestScope
@@ -142,6 +143,8 @@ public class GameTestState {
 
             val realm = injector.getInstance(Realm::class.java)
             realm.updateConfig(TestRealmConfig.create())
+
+            TestCacheTypes.install()
         }
         logger.info { "Set up game-test state in $duration." }
     }
