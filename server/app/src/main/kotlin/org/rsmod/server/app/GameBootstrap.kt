@@ -42,6 +42,9 @@ class GameBootstrap @Inject constructor(
         } finally {
             try {
                 Runtime.getRuntime().removeShutdownHook(shutdownHook)
+                // Without a JVM shutdown the hook never runs, and the embedded database has none.
+                runCatching { centralEmbedded.stopIfRunning() }
+                EmbeddedSameInstancePostgres.stop()
             } catch (_: IllegalStateException) {
                 // Virtual machine is already in the process of shutting down - can safely noop.
             }
@@ -75,11 +78,14 @@ class GameBootstrap @Inject constructor(
             }
         try {
             serviceManager.shutdown()
-            serviceManager.awaitShutdownOrThrow(
-                signalTimeoutSecs = HOOK_TIMEOUT_SECS,
-                cleanupTimeoutSecs = HOOK_TIMEOUT_SECS,
-                shutdownTimeoutSecs = HOOK_TIMEOUT_SECS,
-            )
+            // A shutdown report with errors still stops the database gracefully.
+            runCatching {
+                serviceManager.awaitShutdownOrThrow(
+                    signalTimeoutSecs = HOOK_TIMEOUT_SECS,
+                    cleanupTimeoutSecs = HOOK_TIMEOUT_SECS,
+                    shutdownTimeoutSecs = HOOK_TIMEOUT_SECS,
+                )
+            }
             runCatching { centralEmbedded.stopIfRunning() }
             EmbeddedSameInstancePostgres.stop()
         } catch (_: Throwable) {
