@@ -8,7 +8,7 @@ OpenRune Server ships runnable releases through the [Release Server](../workflow
 2. **Prepare config** by copying `game.example.yml` to `game.yml`.
 3. **Build artifacts** with Gradle:
    - `:or-cache:freshCache` — rebuilds the compiled cache under `.data/`
-   - `:or-cache:mergePluginGamevals` — merges `content/**/gamevals.toml` into `.data/gamevals/*.rscm`
+   - `:or-cache:mergePluginGamevals` — merges `content/**/gamevals.toml` and `api/**/gamevals.toml` into `.data/gamevals/*.rscm`
    - `:server:app:shadowJar` — produces the fat jar as `server/app/build/libs/server.jar`
 4. **Bundle the release** into `openrune-server-release.zip` containing:
    - `server.jar`

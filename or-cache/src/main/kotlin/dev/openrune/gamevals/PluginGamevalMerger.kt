@@ -10,17 +10,18 @@ import java.io.InputStream
 object PluginGamevalMerger {
     private val tomlMapper = ObjectMapper(TomlFactory()).findAndRegisterModules()
 
+    private val pluginDirs = listOf("content", "api")
+
     fun merge(rootDir: File) {
         val gamevalsDir = File(rootDir, ".data/gamevals").apply { mkdirs() }
-        val contentDir = File(rootDir, "content")
-        if (!contentDir.isDirectory) {
-            return
-        }
-
-        contentDir
-            .walk()
-            .filter { it.isFile && it.name == "gamevals.toml" && !it.isGeneratedGamevalPath() }
-            .forEach { mergeTomlFile(it, gamevalsDir) }
+        pluginDirs
+            .map { File(rootDir, it) }
+            .filter(File::isDirectory)
+            .forEach { dir ->
+                dir.walk()
+                    .filter { it.isFile && it.name == "gamevals.toml" && !it.isGeneratedGamevalPath() }
+                    .forEach { mergeTomlFile(it, gamevalsDir) }
+            }
     }
 
     fun mergeTomlStream(input: InputStream, source: String, gamevalsDir: File) {
