@@ -62,6 +62,9 @@ jobs:
         if: steps.gamecache.outputs.cache-hit == 'true'
         run: ./gradlew :or-cache:buildCache :or-cache:mergePluginGamevals
 
+      - name: Create game config
+        run: '[ -f game.yml ] || cp game.example.yml game.yml'
+
       - name: Compile and run tests
         run: ./gradlew assemble test integration
 
@@ -71,7 +74,6 @@ jobs:
       - name: Boot server to ready
         run: |
           ./gradlew generateRsa
-          [ -f game.yml ] || cp game.example.yml game.yml
           ./gradlew run -q > boot.log 2>&1 &
           GRADLE_PID=$!
           for i in $(seq 1 300); do
