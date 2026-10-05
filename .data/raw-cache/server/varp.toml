@@ -863,3 +863,21 @@ isServerOnly = true
 id = "varp.dom_loot_claimed"
 scope = "Temp"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.aggression_tolerance_start"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.aggression_tolerance_anchor"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.aggression_tolerance_seen"
+scope = "Temp"
+transmit = "Never"

@@ -1,0 +1,67 @@
+[[npc]]
+id = "npc.zeah_sandcrab_inactive"
+inherit = "npc.zeah_sandcrab_inactive"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+
+[[npc]]
+id = "npc.zeah_sandcrab"
+inherit = "npc.zeah_sandcrab"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+
+[[npc]]
+id = "npc.zeah_sandcrab_small_inactive"
+inherit = "npc.zeah_sandcrab_small_inactive"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+
+[[npc]]
+id = "npc.zeah_sandcrab_small"
+inherit = "npc.zeah_sandcrab_small"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20

@@ -180,3 +180,6 @@ id = "varn.dom_rotation_step"
 
 [[varn]]
 id = "varn.dom_step_attacks"
+
+[[varn]]
+id = "varn.disguise_idle"
