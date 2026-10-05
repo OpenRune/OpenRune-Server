@@ -60,7 +60,6 @@ object Smithing {
                 output("obj.rune_cannonball")
             }
         }
-
     }
 
     fun dragonForge() = productionTable("dbtable.smithing_dragon_forge", serverOnly = true, defaultCategory = "Forge") {
@@ -119,7 +118,6 @@ object Smithing {
                 output("obj.sailing_boat_large_keel_part_dragon", 1)
             }
         }
-
     }
 
     fun bars() = productionTable(
@@ -261,7 +259,6 @@ object Smithing {
             column(COL_SMITH_XP, 75)
             column(COL_PREFIX, "rune")
         }
-
     }
 
     fun crystalSinging() = productionTable(
@@ -448,5 +445,4 @@ object Smithing {
             column(COL_SHORT_NAME, "saeldor")
         }
     }
-
 }
