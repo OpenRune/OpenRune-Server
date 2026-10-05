@@ -3,8 +3,6 @@ package org.rsmod.api.combat
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
-import org.rsmod.api.death.NpcAttackValidateHook
-import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.PlayerAttackManager
 import org.rsmod.api.combat.manager.RangedAmmoManager
@@ -16,6 +14,8 @@ import org.rsmod.api.combat.player.specialAttackType
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.death.NpcAttackValidateHook
+import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.lefthand
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -59,7 +59,7 @@ constructor(
             return
         }
 
-        if (manager.isAttackDelayed(player)) {
+        if (manager.isAttackDelayed(player, npc)) {
             manager.continueCombat(player, npc)
             return
         }
@@ -109,7 +109,7 @@ constructor(
             return
         }
 
-        if (manager.isAttackDelayed(player)) {
+        if (manager.isAttackDelayed(player, npc)) {
             manager.continueCombat(player, npc)
             return
         }
@@ -187,7 +187,7 @@ constructor(
             return
         }
 
-        val projanimType = RSCM.getReverseMapping(RSCMType.PROJANIM,projectileID)
+        val projanimType = RSCM.getReverseMapping(RSCMType.PROJANIM, projectileID)
 
         // All valid ranged weapons require an `attack_anim_stance1` seq type param to be used in
         // combat.
@@ -202,8 +202,8 @@ constructor(
         // has no `proj_launch` param, a "null" (-1) spotanim will still be sent in the same slot
         // and height as usual.
         val launchSpotanim = weaponType.paramOrNull(params.proj_launch)?.id ?: NULL_SPOTANIM_ID
-    
-        val launchSpotanimName = launchSpotanim.takeUnless { it == NULL_SPOTANIM_ID } ?.let { RSCM.getReverseMapping(RSCMType.SPOTANIM, it) }
+
+        val launchSpotanimName = launchSpotanim.takeUnless { it == NULL_SPOTANIM_ID }?.let { RSCM.getReverseMapping(RSCMType.SPOTANIM, it) }
         spotanim(launchSpotanimName, height = 96, slot = constants.spotanim_slot_combat)
 
         val projanim = manager.spawnProjectile(player, npc, travelSpotanim, projanimType)
@@ -234,7 +234,7 @@ constructor(
             return
         }
 
-        if (manager.isAttackDelayed(player)) {
+        if (manager.isAttackDelayed(player, npc)) {
             manager.continueCombat(player, npc, attack.spell)
             return
         }
@@ -242,7 +242,7 @@ constructor(
         val attackRate = MAGIC_SPELL_ATTACK_RATE
         manager.setNextAttackDelay(player, attackRate)
 
-        val spell = spellsReg[RSCM.getReverseMapping(RSCMType.OBJ,attack.spell.obj.id)]
+        val spell = spellsReg[RSCM.getReverseMapping(RSCMType.OBJ, attack.spell.obj.id)]
         if (spell != null) {
             spell.attack(this, npc, attack)
             return
@@ -258,7 +258,7 @@ constructor(
             return
         }
 
-        if (manager.isAttackDelayed(player)) {
+        if (manager.isAttackDelayed(player, npc)) {
             manager.continueCombat(player, npc)
             return
         }

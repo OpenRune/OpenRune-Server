@@ -442,7 +442,15 @@ class EffectInterpreter internal constructor(
 
         proj.impact?.let { impactSpot ->
             val spot = SpotanimType(impactSpot.asRSCM(RSCMType.SPOTANIM))
-            deps.worldQueues.add(ticks) { deps.worldRepo.spotanimMap(spot, destCoord) }
+            val wholeTicks = projAnim.endTime / CLIENT_CYCLES_PER_TICK
+            val remainder = projAnim.endTime % CLIENT_CYCLES_PER_TICK
+            if (wholeTicks == 0) {
+                deps.worldRepo.spotanimMap(spot, destCoord, delay = remainder)
+            } else {
+                deps.worldQueues.add(wholeTicks) {
+                    deps.worldRepo.spotanimMap(spot, destCoord, delay = remainder)
+                }
+            }
         }
 
         proj.onImpact?.let { onImpact ->
@@ -716,6 +724,10 @@ class EffectInterpreter internal constructor(
                 set.tiles(npc, target, deps.random).filter { isFree(box, it) }.distinct()
             }
             is TileSet.Plus -> (resolveTiles(set.a) + resolveTiles(set.b)).distinct()
+            is TileSet.Minus -> {
+                val excluded = resolveTiles(set.b).toSet()
+                resolveTiles(set.a).filter { it !in excluded }
+            }
             is TileSet.Bound -> bindings.set(set.name)
         }
     }

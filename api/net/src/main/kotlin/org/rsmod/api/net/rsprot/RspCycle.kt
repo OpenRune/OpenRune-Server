@@ -53,6 +53,8 @@ class RspCycle(
 
     private var cachedRegionZoneProvider: RebuildRegionV2.RebuildRegionZoneProvider? = null
 
+    private var knownNpcViewDistance: Int? = null
+
     private val playerInfo
         get() = infos.playerInfo
 
@@ -76,6 +78,7 @@ class RspCycle(
         player.updateMoveSpeed()
         player.updateCoords()
         player.rebuildArea()
+        player.syncNpcViewDistance()
         player.applyExactMove()
         player.applyPublicMessage()
         player.applyFacePathingEntity()
@@ -225,6 +228,23 @@ class RspCycle(
         session.queue(rebuild)
     }
 
+    private fun Player.syncNpcViewDistance() {
+        val distance = npcViewDistance
+        if (distance == knownNpcViewDistance) {
+            return
+        }
+        val npcInfo = infos.npcInfo
+        if (distance == null) {
+            npcInfo.resetRenderDistance()
+            npcInfo.setZoneSearchRadius(DEFAULT_NPC_ZONE_SEARCH_RADIUS)
+        } else {
+            npcInfo.setRenderDistance(distance)
+            val radius = (distance + ZONE_SIZE - 1) / ZONE_SIZE
+            npcInfo.setZoneSearchRadius(maxOf(DEFAULT_NPC_ZONE_SEARCH_RADIUS, radius))
+        }
+        knownNpcViewDistance = distance
+    }
+
     private fun createRegionZoneProvider(region: Region): RebuildRegionV2.RebuildRegionZoneProvider {
         val regionZones = region.toZoneList()
         val rebuildZones = regionZones.associateWith { zone ->
@@ -296,10 +316,10 @@ class RspCycle(
         playerExtendedInfo.setTinting(
             startTime = tint.startCycle,
             endTime = tint.endCycle,
-            hue = tint.hue,
-            saturation = tint.saturation,
-            lightness = tint.lightness,
-            weight = tint.weight,
+            hue = tint.hue and 0xFF,
+            saturation = tint.saturation and 0xFF,
+            lightness = tint.lightness and 0xFF,
+            weight = tint.weight and 0xFF,
         )
     }
 
@@ -445,5 +465,10 @@ class RspCycle(
             val objType = getInvObj(obj)
             info.setWornObj(wearpos.slot, obj.id, objType.wearpos2, objType.wearpos3)
         }
+    }
+
+    private companion object {
+        private const val ZONE_SIZE = 8
+        private const val DEFAULT_NPC_ZONE_SEARCH_RADIUS = 3
     }
 }

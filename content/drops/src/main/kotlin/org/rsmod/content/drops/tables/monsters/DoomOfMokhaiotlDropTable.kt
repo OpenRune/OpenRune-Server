@@ -2,15 +2,10 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
-import org.rsmod.api.droptable.rsPlayerGuaranteedTable
-import org.rsmod.api.droptable.rsPlayerTertiaryTable
-import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.api.droptable.DropRollItem
-import org.rsmod.content.drops.hasCompletedQuest
-import org.rsmod.content.drops.isOnQuest
-import org.rsmod.api.droptable.nothing
 import org.rsmod.api.droptable.RegisterDropTable
+import org.rsmod.api.droptable.rsPlayerWeightedTable
+import org.rsmod.content.drops.hasReachedDelve
 import org.rsmod.game.entity.Player
 
 @field:RegisterDropTable
@@ -42,22 +37,25 @@ public val doomOfMokhaiotlDropTable: RSDropTable<Player, DropRollItem> = RSDropT
         1 weight "obj.varlamore_key_half_1" count 1
         7 weight "obj.demon_tear" count 100..300
         7 weight "obj.dom_teleport_item" count 1..2
-        1 outOf 1350 separate "obj.avernic_treads" count 1 condition {
-            player -> player.hasCompletedQuest("quest_delvelevel4anddeeper")
+        boosted {
+            1 outOf 1350 separate "obj.avernic_treads" count 1 condition {
+                player -> player.hasReachedDelve(4)
+            }
+            1 outOf 2000 separate "obj.eye_of_ayak_uncharged" count 1 condition {
+                player -> player.hasReachedDelve(3)
+            }
+            1 outOf 2500 separate "obj.mokhaiotl_cloth" count 1 condition {
+                player -> player.hasReachedDelve(2)
+            }
         }
-        1 outOf 2000 separate "obj.eye_of_ayak_uncharged" count 1 condition {
-            player -> player.hasCompletedQuest("quest_delvelevel3anddeeper")
+        5 weight rsPlayerWeightedTable(total = 3) {
+            name("Shark drops")
+            2 weight "obj.cert_raw_shark" count 20..35
+            1 weight "obj.shark_lure" count 40..70
         }
-        1 outOf 2500 separate "obj.mokhaiotl_cloth" count 1 condition {
-            player -> player.hasCompletedQuest("quest_delvelevel2anddeeper")
-        }
-        10 outOf 312 separate "obj.cert_raw_shark" count 20..35
-        5 outOf 312 separate "obj.shark_lure" count 40..70
         1 outOf 75 separate "obj.trail_elite_emote_exp1" count 1
-        1 outOf 1000 separate "obj.dompet" count 1
-        5 weight nothing()
-    },
-    tertiaries = rsPlayerTertiaryTable {
-        1 outOf 1 weight "obj.demon_tear" count 50
+        boosted {
+            1 outOf 1000 separate "obj.dompet" count 1 condition { player -> player.hasReachedDelve(6) }
+        }
     },
 )

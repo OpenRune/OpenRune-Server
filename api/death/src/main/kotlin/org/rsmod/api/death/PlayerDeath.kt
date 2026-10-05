@@ -1,20 +1,20 @@
 package org.rsmod.api.death
 
-import dev.or2.central.account.Rights
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
+import dev.or2.central.account.Rights
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.area.checker.isInWildernessBasic
+import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.death.DEATH_CAUSE_ATTR
 import org.rsmod.api.player.death.DeathCause
-import org.rsmod.api.player.hasProtectItemPrayer
-import org.rsmod.api.player.hook.TeleportType
-import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.deathResetTimers
 import org.rsmod.api.player.disablePrayers
+import org.rsmod.api.player.hasProtectItemPrayer
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarp
@@ -30,6 +30,7 @@ constructor(
     private val drops: PlayerDeathDrops,
     private val handlingResolver: PlayerDeathHandlingResolver,
     private val cleanupHooks: Set<PlayerDeathCleanupHook>,
+    private val respawnHooks: Set<PlayerRespawnHook>,
     private val areaChecker: AreaChecker,
 ) {
     private var Player.specialAttackType by intVarp("varp.sa_attack")
@@ -41,8 +42,10 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.deathSequence() {
-        val respawn = CoordGrid(0, 50, 50, 21, 18)
-        val randomRespawn = mapFindSquareLineOfWalk(respawn, minRadius = 0, maxRadius = 2)
+        val hooked = respawnHooks.firstNotNullOfOrNull { it.respawnCoords(player) }
+        val respawn = hooked ?: CoordGrid(0, 50, 50, 21, 18)
+        val randomRespawn =
+            if (hooked != null) null else mapFindSquareLineOfWalk(respawn, minRadius = 0, maxRadius = 2)
 
         stopAction()
         delay(2)

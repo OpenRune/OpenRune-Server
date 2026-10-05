@@ -256,6 +256,24 @@ object InstanceSettingsTable {
             columnRSCM(EXIT_OBJECT, "loc.duke_sucellus_escape")
         }
 
+        row("dbrow.instance_doom_of_mokhaiotl") {
+            column(KEY, "doom_of_mokhaiotl")
+            columnCoord(EXIT_COORD, CoordGrid(1311, 9556, 0))
+            columnCoord(ENTER_COORD, CoordGrid(1311, 9559, 0))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 1)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.dom_boss")
+            column(BOSS_NAME, "Doom of Mokhaiotl")
+            column(RECOMMENDED_COMBAT, 100, 126)
+            column(TEAM_SIZE, 1)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "The delving demon of the Ruins of Mokhaiotl.")
+            columnRSCM(ENTER_OBJECT, "loc.dom_entrance")
+            columnRSCM(EXIT_OBJECT, "loc.dom_entrance_exit")
+        }
+
         row("dbrow.instance_leviathan") {
             column(KEY, "leviathan")
             columnCoord(EXIT_COORD, CoordGrid(2064, 6436, 0))

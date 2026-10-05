@@ -52350,6 +52350,17 @@ id = "obj.emberlight"
 inherit = "obj.emberlight"
 weaponCategory="SlashSword"
 tradeable = false
+[item.params]
+"param.equipment_sound"=2238
+"param.attack_anim_stance1"="seq.human_sword_slash"
+"param.attack_sound_stance1"=2500
+"param.attack_anim_stance2"="seq.human_sword_slash"
+"param.attack_sound_stance2"=2500
+"param.attack_anim_stance3"="seq.human_sword_stab"
+"param.attack_sound_stance3"=2501
+"param.attack_anim_stance4"="seq.human_sword_slash"
+"param.attack_sound_stance4"=2500
+"param.defend_anim"="seq.human_sword_def"
 
 
 [[item]]
@@ -52538,6 +52549,13 @@ tradeable = false
 [item.params]
 "param.proj_type"="projanim.arrow"
 "param.attack_range"=10
+"param.attack_anim_stance1"="seq.human_bow"
+"param.attack_sound_stance1"=2700
+"param.attack_anim_stance2"="seq.human_bow"
+"param.attack_sound_stance2"=2700
+"param.attack_anim_stance4"="seq.human_bow"
+"param.attack_sound_stance4"=2700
+"param.defend_anim"="seq.human_unarmedblock"
 "param.attackrate"=5
 
 

@@ -124,6 +124,9 @@ object CollectionLogCategoriesTable {
         row("dbrow.collection_log_category_doom_of_mokhaiotl") {
             column(STRUCT_ID, 5029)
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_bosses_dom_completed")
+            columnRSCM(COUNT_VARP_1, "varp.total_dom_levels")
+            columnRSCM(COUNT_VARP_2, "varp.dom_level_8_plus_completions")
+            columnRSCM(COUNT_VARP_3, "varp.dom_deepest_level")
         }
 
         row("dbrow.collection_log_category_duke_sucellus") {
@@ -712,6 +715,5 @@ object CollectionLogCategoriesTable {
             column(STRUCT_ID, 534)
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_other_misc_completed")
         }
-
     }
 }

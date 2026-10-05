@@ -222,6 +222,8 @@ fun customTiles(
 
 operator fun TileSet.plus(other: TileSet): TileSet = TileSet.Plus(this, other)
 
+operator fun TileSet.minus(other: TileSet): TileSet = TileSet.Minus(this, other)
+
 fun offset(of: TargetExpr.Single, dx: Int, dz: Int): TargetExpr.Single =
     TargetExpr.Offset(of, dx, dz)
 

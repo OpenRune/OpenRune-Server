@@ -184,6 +184,7 @@ public class Player(
     public var buildArea: CoordGrid = CoordGrid.NULL
     public val visibleZoneKeys: IntList = IntArrayList()
     public var lastMapBuildComplete: Int = Int.MIN_VALUE
+    public var npcViewDistance: Int? = null
 
     public val activeAreas: ShortArraySet = ShortArraySet()
     public val pendingAreas: ShortArrayList = ShortArrayList()

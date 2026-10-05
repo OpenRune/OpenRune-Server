@@ -314,6 +314,10 @@ object SpecValidator {
                     tileSet(tiles.a, scope)
                     tileSet(tiles.b, scope)
                 }
+                is TileSet.Minus -> {
+                    tileSet(tiles.a, scope)
+                    tileSet(tiles.b, scope)
+                }
                 is TileSet.Bound -> boundSet(tiles.name, scope, what)
             }
         }
