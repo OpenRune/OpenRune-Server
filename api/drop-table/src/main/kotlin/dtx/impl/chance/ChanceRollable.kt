@@ -66,6 +66,10 @@ public class ChanceRollableImpl<T, R>(
     private val hooks: RollableHooks<T, R> = RollableHooks.Default()
 ) : ChanceRollable<T, R>, RollableHooks<T, R> by hooks {
 
+    override fun includeInRoll(onTarget: T, otherArgs: ArgMap): Boolean {
+        return hooks.includeInRoll(onTarget, otherArgs) && rollable.includeInRoll(onTarget, otherArgs)
+    }
+
     override fun selectResult(target: T, otherArgs: ArgMap): RollResult<R> {
         return rollable.roll(target, otherArgs)
     }

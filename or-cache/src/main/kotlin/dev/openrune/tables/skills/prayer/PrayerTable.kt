@@ -10,7 +10,7 @@ object PrayerTable {
         column("item", 0, VarType.OBJ)
         column("exp", 1, VarType.INT)
         column("ashes", 2, VarType.BOOLEAN)
-    
+
         column("prayer_restore", 3, VarType.INT)
 
         row("dbrow.bones") {
@@ -225,8 +225,8 @@ object PrayerTable {
 
         row("dbrow.beardedgorillabones") {
             columnRSCM(0, "obj.mm_bearded_gorilla_monkey_bones")
-            column(1, 18)
-            column(2, true)
+            column(1, 20)
+            column(2, false)
             column(3, 0)
         }
 

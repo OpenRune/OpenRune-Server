@@ -60,7 +60,6 @@ object Smithing {
                 output("obj.rune_cannonball")
             }
         }
-
     }
 
     fun dragonForge() = productionTable("dbtable.smithing_dragon_forge", serverOnly = true, defaultCategory = "Forge") {
@@ -119,7 +118,6 @@ object Smithing {
                 output("obj.sailing_boat_large_keel_part_dragon", 1)
             }
         }
-
     }
 
     fun bars() = productionTable(
@@ -151,7 +149,7 @@ object Smithing {
                 output("obj.blurite_bar")
             }
             column(COL_SMITH_XP, 17)
-            column(COL_SMELT_XP_ALTERNATE, 10)
+            column(COL_SMELT_XP_ALTERNATE, 8)
             column(COL_PREFIX, "blurite")
         }
         row("dbrow.iron") {
@@ -198,7 +196,7 @@ object Smithing {
         row("dbrow.gold") {
             production {
                 input("obj.gold_ore", 1)
-                statReq("stat.smithing", 30)
+                statReq("stat.smithing", 40)
                 xp(22)
                 output("obj.gold_bar")
             }
@@ -261,7 +259,6 @@ object Smithing {
             column(COL_SMITH_XP, 75)
             column(COL_PREFIX, "rune")
         }
-
     }
 
     fun crystalSinging() = productionTable(
@@ -448,5 +445,4 @@ object Smithing {
             column(COL_SHORT_NAME, "saeldor")
         }
     }
-
 }

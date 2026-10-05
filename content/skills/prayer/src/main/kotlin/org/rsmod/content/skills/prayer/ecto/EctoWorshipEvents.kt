@@ -41,7 +41,7 @@ class EctoWorshipEvents : PluginScript() {
             invAdd(inv, "obj.pot_empty", 1)
         }
 
-        statAdvance("stat.prayer", recipe.xp * 4.0)
+        statAdvance("stat.prayer", recipe.xp)
         ectoTokens += 5
     }
 }
