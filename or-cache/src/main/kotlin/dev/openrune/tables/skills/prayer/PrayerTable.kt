@@ -225,8 +225,8 @@ object PrayerTable {
 
         row("dbrow.beardedgorillabones") {
             columnRSCM(0, "obj.mm_bearded_gorilla_monkey_bones")
-            column(1, 18)
-            column(2, true)
+            column(1, 20)
+            column(2, false)
             column(3, 0)
         }
 

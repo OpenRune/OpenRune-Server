@@ -153,7 +153,7 @@ object EctofuntusBonemeal {
             production {
                 input("obj.mm_bearded_gorilla_monkey_bones")
                 statReq("stat.prayer", 1)
-                xp(72)
+                xp(80)
                 output("obj.pot_bonemeal_bearded_gorilla_monkey")
             }
         }
