@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.combat.combatCommons)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.scriptAdvanced)
 }
