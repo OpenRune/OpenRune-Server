@@ -33,6 +33,16 @@ internal object CotsNpc {
 
     fun guardVarbit(guard: Int): String = "varbit.vmq1_guard_$guard"
 
+    // The world spawns the base multinpcs and the engine dispatches ops on the base id, so
+    // handlers bind these; the *_vis/_marked forms above are only for chatheads and visibility.
+    const val AlinaBase = "npc.vmq1_alina"
+    const val NoahBase = "npc.vmq1_noah"
+    const val TobynBase = "npc.vmq1_guard_sergeant"
+    const val TobynRoofBase = "npc.vmq1_guard_sergeant_roof"
+    const val ItzlaBase = "npc.vmq1_itzla"
+
+    fun guardBase(guard: Int): String = "npc.vmq1_guard_$guard"
+
     fun markableGuard(guard: Int): String = "npc.vmq1_guard_${guard}_unmarked"
 
     fun markedGuard(guard: Int): String = "npc.vmq1_guard_${guard}_marked"

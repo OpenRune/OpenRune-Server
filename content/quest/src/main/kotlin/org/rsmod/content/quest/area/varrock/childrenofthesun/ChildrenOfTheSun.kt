@@ -44,13 +44,18 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
                 "but the script completes at ${CotsStage.Complete}."
         }
 
-        onOpNpc1(CotsNpc.Alina) { talkToAlina(it.npc) }
-        onOpNpc1(CotsNpc.Noah) { talkToAlina(it.npc) }
-        onOpNpc1(CotsNpc.Tobyn) { startDialogue(it.npc) { tobynConversation() } }
-        onOpNpc1(CotsNpc.Itzla) { startDialogue(it.npc) { itzlaConversation() } }
+        onOpNpc1(CotsNpc.AlinaBase) { talkToAlina(it.npc) }
+        onOpNpc1(CotsNpc.NoahBase) { talkToAlina(it.npc) }
+        onOpNpc1(CotsNpc.TobynBase) { startDialogue(it.npc) { tobynConversation() } }
+        onOpNpc1(CotsNpc.TobynRoofBase) { startDialogue(it.npc) { tobynConversation() } }
+        onOpNpc1(CotsNpc.ItzlaBase) { startDialogue(it.npc) { itzlaConversation() } }
         for (guard in 1..CotsNpc.GuardCount) {
-            onOpNpc1(CotsNpc.markableGuard(guard)) { markGuard(guard) }
-            onOpNpc1(CotsNpc.markedGuard(guard)) { unmarkGuard(guard) }
+            onOpNpc1(CotsNpc.guardBase(guard)) {
+                when (player.vars[CotsNpc.guardVarbit(guard)]) {
+                    GuardUnmarked -> markGuard(guard)
+                    GuardMarked -> unmarkGuard(guard)
+                }
+            }
         }
 
         onPlayerTimer(TailTimer) { tailTick() }

@@ -211,12 +211,12 @@ class ChildrenOfTheSunInteractionTest {
     @Test fun `marking and unmarking guards flips their state`() {
         val f = Fixture(CotsStage.Marking)
         f.script.syncGuards(f.player)
-        f.talk("npc.vmq1_guard_3_unmarked")
+        f.talk("npc.vmq1_guard_3")
         f.finish()
         assertEquals(2, f.player.vars["varbit.vmq1_guard_3"])
         assertEquals(1, f.script.markedCount(f.player))
         assertTrue(f.output().contains("You mark the guard."), f.output())
-        f.talk("npc.vmq1_guard_3_marked")
+        f.talk("npc.vmq1_guard_3")
         f.finish()
         assertEquals(1, f.player.vars["varbit.vmq1_guard_3"])
         assertEquals(0, f.script.markedCount(f.player))
@@ -518,7 +518,7 @@ class ChildrenOfTheSunInteractionTest {
         }
 
         fun mark(guard: Int) {
-            talk("npc.vmq1_guard_${guard}_unmarked")
+            talk("npc.vmq1_guard_$guard")
             finish()
         }
 
@@ -615,10 +615,10 @@ class ChildrenOfTheSunInteractionTest {
     }
 
     companion object {
-        private const val Alina = "npc.vmq1_alina_vis"
-        private const val Noah = "npc.vmq1_noah_vis"
-        private const val Tobyn = "npc.vmq1_guard_sergeant_vis"
-        private const val Itzla = "npc.vmq1_itzla_vis"
+        private const val Alina = "npc.vmq1_alina"
+        private const val Noah = "npc.vmq1_noah"
+        private const val Tobyn = "npc.vmq1_guard_sergeant"
+        private const val Itzla = "npc.vmq1_itzla"
         private val restored = mutableListOf<() -> Unit>()
 
         @OptIn(InternalApi::class)
