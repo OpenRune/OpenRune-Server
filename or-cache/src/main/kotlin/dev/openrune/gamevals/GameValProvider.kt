@@ -10,7 +10,9 @@ import java.io.InputStream
 import java.nio.file.Paths
 import kotlin.io.use
 
-class GameValProvider : MutableMappingProvider {
+class GameValProvider(
+    private val gamevalResources: ClassLoader? = GameValProvider::class.java.classLoader,
+) : MutableMappingProvider {
 
     override val mappings: MutableMap<String, MutableMap<String, Int>> = mutableMapOf()
     val maxBaseID: MutableMap<String, Int> = mutableMapOf()
@@ -73,6 +75,8 @@ class GameValProvider : MutableMappingProvider {
         gamevalsDir?.walk()
             ?.filter(File::isFile)
             ?.forEach(::processRSCMFile)
+
+        loadClasspathGameValTomls()
 
         collectUnassigned()
     }
@@ -224,7 +228,22 @@ class GameValProvider : MutableMappingProvider {
         file.inputStream().use { stream -> processGameValToml(stream, file) }
     }
 
-    private fun processGameValToml(input: InputStream, file: File) {
+    private fun loadClasspathGameValTomls() {
+        val loader = gamevalResources ?: return
+        loader.getResources("gamevals.toml").asSequence().forEach { url ->
+            url.openStream().use { stream -> processGameValToml(stream, file = null) }
+        }
+    }
+
+    private fun isClasspathFillIn(table: String, key: String, value: Int): Boolean {
+        val tableMappings = mappings.getValue(table)
+        return value != UNASSIGNED_ID &&
+            !tableMappings.containsKey("$table.$key") &&
+            !tableMappings.containsValue(value)
+    }
+
+    /** A null [file] is a classpath resource: it only adds assigned keys no source declared. */
+    private fun processGameValToml(input: InputStream, file: File?) {
         var currentTable: String? = null
 
         input.bufferedReader().useLines { lines ->
@@ -240,10 +259,14 @@ class GameValProvider : MutableMappingProvider {
                 }
 
                 val table = currentTable ?: return@forEach
-                val (key, value) = parseGameValTomlEntry(trimmed, file.name) ?: return@forEach
+                val (key, value) =
+                    parseGameValTomlEntry(trimmed, file?.name ?: "gamevals.toml") ?: return@forEach
 
                 mappings.putIfAbsent(table, mutableMapOf())
                 val (parsedKey, parsedValue) = parseRSCMV2Line("$key=$value", 0)
+                if (file == null && !isClasspathFillIn(table, parsedKey, parsedValue)) {
+                    return@forEach
+                }
                 putMapping(table, parsedKey, parsedValue, file)
             }
         }
@@ -290,12 +313,12 @@ class GameValProvider : MutableMappingProvider {
         }
     }
 
-    private fun putMapping(table: String, key: String, value: Int, file: File) {
+    private fun putMapping(table: String, key: String, value: Int, file: File?) {
         val tableMappings = mappings[table]
             ?: throw IllegalArgumentException("Table '$table' does not exist in mappings.")
         val fullKey = "$table.$key"
 
-        fun remember() = run { sources[table to key] = file }
+        fun remember() = run { if (file != null) sources[table to key] = file }
 
         if (value == UNASSIGNED_ID) {
             if (tableMappings[fullKey] != null && tableMappings[fullKey] != UNASSIGNED_ID) return
