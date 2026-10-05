@@ -5,6 +5,7 @@ import kotlin.random.Random
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocCategory2
+import org.rsmod.api.script.onOpLocCategoryU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.smithing.SmithingBarsRow
@@ -54,6 +55,16 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
         }
 
         onOpLoc1("loc.lovakengj_furnace_large_01") { openLovakiteSmeltMenu() }
+
+        for (ore in normalBars.flatMap { bar -> bar.input.map { it.internalName } }.distinct()) {
+            onOpLocCategoryU("category.furnace", ore) {
+                if (hasBarSmeltMaterials()) {
+                    openStandardSmeltMenu(it.type.internalName, it.loc.coords)
+                } else {
+                    mes("Nothing interesting happens.")
+                }
+            }
+        }
 
         onPlayerQueueWithArgs<SmeltTask>("queue.smithing_bar_smelt") {
             processSmeltTask(it.args)
@@ -243,8 +254,8 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
             if (invAdd(inv, bar.output.internalName, outputCount).success) {
                 val xp = SmithingSmeltXp.resolve(player, inv, bar, isSuperHeat, xpMods, regularFurnace)
                 statAdvance("stat.smithing", xp)
-                val oreName = SmithingUtils.itemName(bar.input.first(), "ore")
-                mes("You smelt the $oreName in the furnace.")
+                val metal = SmithingUtils.itemName(bar.output, "bar").removeSuffix(" bar").lowercase()
+                mes("You retrieve a bar of $metal.")
                 if (outputCount > 1) {
                     val barName = SmithingUtils.itemName(bar.output, "bar")
                     mes("Your Varrock armour helps you smelt an extra $barName.")
