@@ -160,7 +160,8 @@ private constructor(
      * - Cancel all active [ScheduledService] coroutine jobs.
      * - Shut down all [ScheduledService] executors.
      * - Send the shutdown signal to [ScheduledListenerService] and [ListenerService].
-     * - Call [Service.shutdown] on all registered services concurrently.
+     * - Call [Service.shutdown] on all registered services concurrently, and then on every
+     *   [ResourceService] once the others have finished.
      *
      * If any service throws an exception during its shutdown calls, the error will be captured and
      * returned as part of the resulting [ShutdownResult.Report].
@@ -320,16 +321,20 @@ private constructor(
     private fun shutdownServices(timeoutMillis: Long) = runBlocking {
         try {
             withTimeout(timeoutMillis) {
-                supervisorScope {
-                    try {
-                        val shutdownJobs = services.map { service -> async { service.shutdown() } }
-                        shutdownJobs.awaitAll()
-                    } catch (t: Throwable) {
-                        scheduledErrors += t
-                    }
-                }
+                val (resources, dependents) = services.partition { it is ResourceService }
+                shutdownConcurrently(dependents)
+                shutdownConcurrently(resources)
             }
         } catch (t: TimeoutCancellationException) {
+            scheduledErrors += t
+        }
+    }
+
+    private suspend fun shutdownConcurrently(phase: List<Service>) = supervisorScope {
+        try {
+            val shutdownJobs = phase.map { service -> async { service.shutdown() } }
+            shutdownJobs.awaitAll()
+        } catch (t: Throwable) {
             scheduledErrors += t
         }
     }
