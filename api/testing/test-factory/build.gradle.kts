@@ -7,6 +7,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.mockk)
     implementation(projects.api.registry)
     implementation(projects.engine.events)
     implementation(projects.engine.game)

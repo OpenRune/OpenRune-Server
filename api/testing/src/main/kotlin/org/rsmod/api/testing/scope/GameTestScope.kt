@@ -99,6 +99,7 @@ import org.rsmod.api.stats.xpmod.XpMod
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.capture.CaptureClient
+import org.rsmod.api.testing.factory.TestCacheTypes
 import org.rsmod.api.testing.factory.collisionFactory
 import org.rsmod.api.testing.random.FixedRandom
 import org.rsmod.api.testing.random.SequenceRandom
@@ -512,7 +513,9 @@ constructor(
         val locZoneKey = LocZoneKey(zoneGrid, locInfo.layer)
         locZoneStorage.mapLocs[zoneKey, locZoneKey] = entity
 
-        ServerCacheManager.registerTestObject(type)
+        if (type.id !in ServerCacheManager.getObjects()) {
+            TestCacheTypes.objects.register(type.id, type)
+        }
 
         return boundLoc
     }

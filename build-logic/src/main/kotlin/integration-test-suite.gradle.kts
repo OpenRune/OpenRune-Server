@@ -18,6 +18,7 @@ testing.suites {
             }
             testTask.configure {
                 workingDir = rootDir
+                jvmArgs("-XX:+EnableDynamicAgentLoading")
                 systemProperty("junit.jupiter.extensions.autodetection.enabled", true)
                 systemProperty("junit.jupiter.execution.parallel.enabled", true)
                 systemProperty("junit.jupiter.execution.parallel.mode.default", "concurrent")
