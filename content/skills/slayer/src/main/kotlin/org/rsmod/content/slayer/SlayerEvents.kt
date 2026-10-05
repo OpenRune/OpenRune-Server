@@ -29,19 +29,18 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class SlayerEvents @Inject constructor(private val shops: Shops) : PluginScript() {
 
-
     override fun ScriptContext.startup() {
         val npcIds = SlayerTaskManager.slayerMasterNpcs.map { it.id }.toSet()
         for (npcId in npcIds) {
             val npcName = RSCM.getReverseMapping(RSCMType.NPC, npcId)
-            onOpNpc1(npcName) { handleOp1(it.npc,npcName) }
-            onOpNpc3(npcName) { handleOp3(it.npc,npcName) }
+            onOpNpc1(npcName) { handleOp1(it.npc, npcName) }
+            onOpNpc3(npcName) { handleOp3(it.npc, npcName) }
             onOpNpc4(npcName) { openSlayerShop() }
             onOpNpc5(npcName) { handleOp5(npcName) }
         }
     }
 
-    private suspend fun ProtectedAccess.handleOp1(npc: Npc,internalName : String) {
+    private suspend fun ProtectedAccess.handleOp1(npc: Npc, internalName: String) {
         focusMaster(internalName)
         startDialogue(npc) {
             when (npc.id) {
@@ -58,7 +57,7 @@ class SlayerEvents @Inject constructor(private val shops: Shops) : PluginScript(
         }
     }
 
-    private suspend fun ProtectedAccess.handleOp3(npc: Npc, internalName : String) {
+    private suspend fun ProtectedAccess.handleOp3(npc: Npc, internalName: String) {
         focusMaster(internalName)
         startDialogue(npc) {
             when (npc.id) {
@@ -88,12 +87,11 @@ class SlayerEvents @Inject constructor(private val shops: Shops) : PluginScript(
     }
 
     private fun ProtectedAccess.handleOp5(npcId: String) {
-        SlayerInterfaces.openInterface(this,npcId)
+        SlayerInterfaces.openInterface(this, npcId)
     }
 
     private fun ProtectedAccess.focusMaster(internalName: String) {
         val master = SlayerTaskManager.findMasterByNpc(internalName) ?: return
         VarPlayerIntMapSetter.set(player, "varbit.slayer_master_in_focus", master.masterId)
     }
-
 }
