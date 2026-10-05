@@ -3,7 +3,6 @@ package org.rsmod.api.player.stat
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.StatType
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.player.ui.PlayerInterfaceUpdates
