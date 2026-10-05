@@ -62,8 +62,10 @@ jobs:
         if: steps.gamecache.outputs.cache-hit == 'true'
         run: ./gradlew :or-cache:buildCache :or-cache:mergePluginGamevals
 
-      - name: Create game config
-        run: '[ -f game.yml ] || cp game.example.yml game.yml'
+      - name: Create game config and RSA keys
+        run: |
+          [ -f game.yml ] || cp game.example.yml game.yml
+          ./gradlew generateRsa
 
       - name: Compile and run tests
         run: ./gradlew assemble test integration
@@ -73,7 +75,6 @@ jobs:
       # "Server ready" line within the timeout.
       - name: Boot server to ready
         run: |
-          ./gradlew generateRsa
           ./gradlew run -q > boot.log 2>&1 &
           GRADLE_PID=$!
           for i in $(seq 1 300); do
