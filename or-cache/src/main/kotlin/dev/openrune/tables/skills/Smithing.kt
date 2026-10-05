@@ -151,7 +151,7 @@ object Smithing {
                 output("obj.blurite_bar")
             }
             column(COL_SMITH_XP, 17)
-            column(COL_SMELT_XP_ALTERNATE, 10)
+            column(COL_SMELT_XP_ALTERNATE, 8)
             column(COL_PREFIX, "blurite")
         }
         row("dbrow.iron") {
@@ -198,7 +198,7 @@ object Smithing {
         row("dbrow.gold") {
             production {
                 input("obj.gold_ore", 1)
-                statReq("stat.smithing", 30)
+                statReq("stat.smithing", 40)
                 xp(22)
                 output("obj.gold_bar")
             }
