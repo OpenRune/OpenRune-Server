@@ -30,8 +30,8 @@ class InventoryServerCodec(
                             List(buf.readByte().toInt()) {
                                 InvStock(
                                     buf.readInt(),
-                                    buf.readShort().toInt(),
-                                    buf.readShort().toInt(),
+                                    buf.readUnsignedShort(),
+                                    buf.readUnsignedShort(),
                                 )
                             }
                     },
