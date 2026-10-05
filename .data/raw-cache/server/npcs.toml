@@ -16799,3 +16799,8 @@ inherit = "npc.kittens_mew"
 timer = 1
 moveRestrict = "NoMove"
 wanderRange = 0
+
+[[npc]]
+id = "npc.poh_sawmill_opp"
+inherit = "npc.poh_sawmill_opp"
+wanderRange = 0

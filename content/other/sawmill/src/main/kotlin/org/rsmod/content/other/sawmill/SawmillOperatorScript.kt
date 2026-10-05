@@ -6,6 +6,10 @@ import jakarta.inject.Inject
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.script.onApNpc1
+import org.rsmod.api.script.onApNpc3
+import org.rsmod.api.script.onApNpc4
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
@@ -14,6 +18,7 @@ import org.rsmod.content.skills.SkillMultiConfig
 import org.rsmod.content.skills.SkillMultiEntry
 import org.rsmod.content.skills.SkillingActionType
 import org.rsmod.content.skills.openSkillMulti
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -24,11 +29,23 @@ constructor(private val shops: Shops, private val hooks: SawmillHooks) : PluginS
 
     override fun ScriptContext.startup() {
         for (operator in SawmillOperator.entries) {
-            onOpNpc1(operator.npc) { startDialogue(it.npc) { talk(operator) } }
-            onOpNpc3(operator.npc) { startDialogue(it.npc) { makePlanks() } }
+            onOpNpc1(operator.npc) { talkTo(it.npc, operator) }
+            onOpNpc3(operator.npc) { buyPlanks(it.npc) }
             onOpNpc4(operator.npc) { openSupplies(player) }
+            onApNpc1(operator.npc) { approach(it.npc) { talkTo(it.npc, operator) } }
+            onApNpc3(operator.npc) { approach(it.npc) { buyPlanks(it.npc) } }
+            onApNpc4(operator.npc) { approach(it.npc) { openSupplies(player) } }
         }
     }
+
+    private suspend fun ProtectedAccess.approach(npc: Npc, action: suspend () -> Unit) {
+        if (isWithinApRange(npc, APPROACH_RANGE)) action()
+    }
+
+    private suspend fun ProtectedAccess.talkTo(npc: Npc, operator: SawmillOperator) =
+        startDialogue(npc) { talk(operator) }
+
+    private suspend fun ProtectedAccess.buyPlanks(npc: Npc) = startDialogue(npc) { makePlanks() }
 
     private suspend fun Dialogue.talk(operator: SawmillOperator) {
         chatNpc(neutral, operator.greeting)
@@ -175,6 +192,7 @@ constructor(private val shops: Shops, private val hooks: SawmillHooks) : PluginS
     }
 
     private companion object {
+        const val APPROACH_RANGE = 2
         const val Coins = "obj.coins"
         const val SuppliesInv = "inv.poh_sawmill_shop"
     }

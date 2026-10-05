@@ -33,6 +33,7 @@ import org.rsmod.api.shops.Shops
 import org.rsmod.content.skills.validButtons
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
+import org.rsmod.events.SuspendEvent
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Npc
@@ -307,10 +308,36 @@ class SawmillOperatorTest {
         assertFalse(prif.output().contains("Extra option"))
     }
 
+    @Test
+    fun `approach triggers serve a player standing across the counter`() {
+        for (operator in SawmillOperator.entries) {
+            val talk = Fixture().apply { approachTalk(operator) }
+            talk.finish(listOf(3))
+            assertTrue(talk.output().contains("Do you want me to make some planks"), operator.npc)
+
+            val buy = Fixture(coins = 100, "obj.logs" to 1).apply { approachBuyPlank(operator) }
+            buy.finish(plank = Plank.Wood to 1)
+            assertEquals(1, buy.player.inv.count("obj.woodplank"), operator.npc)
+
+            val trade = Fixture().apply { approachTrade(operator) }
+            trade.finish()
+            assertNotNull(trade.player.openedShop, operator.npc)
+        }
+    }
+
+    @Test
+    fun `approach triggers wait until the player is within two tiles`() {
+        val f = Fixture(far = true).apply { approachTalk(SawmillOperator.LumberYard) }
+        f.finish()
+        assertFalse(f.output().contains("Do you want me to make some planks"), f.output())
+        assertNull(f.player.openedShop)
+    }
+
     private class Fixture(
         coins: Int = 0,
         vararg items: Pair<String, Int>,
         val shops: Shops = Shops(EventBus()),
+        val far: Boolean = false,
     ) {
         val events = EventBus()
         val hooks = SawmillHooks()
@@ -334,7 +361,7 @@ class SawmillOperatorTest {
                 observerUUID = 793L
                 slotId = 1
                 assignUid()
-                coords = CoordGrid(3302, 3490, 0)
+                coords = if (far) CoordGrid(3302, 3480, 0) else CoordGrid(3302, 3490, 0)
                 currentMapClock = 100
                 processedMapClock = 100
                 inv =
@@ -375,8 +402,17 @@ class SawmillOperatorTest {
 
         fun trade(operator: SawmillOperator) = op(operator) { NpcEvents.Op4(it) }
 
-        private fun op(operator: SawmillOperator, event: (Npc) -> NpcEvents.Op) = start {
-            assertTrue(events.publish(this, event(Npc(operator.npc, coords.translateZ(1)))))
+        fun approachTalk(operator: SawmillOperator) = op(operator) { NpcEvents.Ap1(it) }
+
+        fun approachBuyPlank(operator: SawmillOperator) = op(operator) { NpcEvents.Ap3(it) }
+
+        fun approachTrade(operator: SawmillOperator) = op(operator) { NpcEvents.Ap4(it) }
+
+        private fun op(
+            operator: SawmillOperator,
+            event: (Npc) -> SuspendEvent<ProtectedAccess>,
+        ) = start {
+            assertTrue(events.publish(this, event(Npc(operator.npc, coords.translateZ(if (far) 6 else 1)))))
         }
 
         private fun start(block: suspend ProtectedAccess.() -> Unit) {
