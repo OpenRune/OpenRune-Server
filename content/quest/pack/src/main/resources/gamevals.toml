@@ -69,6 +69,7 @@ misthalin_mirror_blocker = 63701
 misthalin_puzzle_state = 63702
 cooks_assistant_ingredients = 63705
 gertrudes_cat_state = 63711
+daddyshome_state = 64040
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
@@ -83,6 +84,7 @@ gertrudes_cat_progress = 63711
 gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
 gertrudes_cat_told_sardines = 63714
+daddyshome_crate_opened = 64041
 
 [gamevals.models]
 misthalin_gem_diamond = 32333
