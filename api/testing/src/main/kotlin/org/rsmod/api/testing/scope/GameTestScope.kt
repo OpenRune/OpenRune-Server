@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Assertions
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.account.character.CharacterDataStage
 import org.rsmod.api.db.Database
+import org.rsmod.api.db.DatabaseConfig
 import org.rsmod.api.db.DatabaseConnection
 import org.rsmod.api.game.process.GameCycle
 import org.rsmod.api.inv.map.InvMapInit
@@ -44,6 +45,7 @@ import org.rsmod.api.net.rsprot.handlers.OpLocHandler
 import org.rsmod.api.net.rsprot.handlers.OpNpcHandler
 import org.rsmod.api.net.rsprot.handlers.ResumePCountDialogHandler
 import org.rsmod.api.npc.apPlayer2
+import org.rsmod.api.npc.hit.NpcDamageContributor
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.modifier.StandardNpcHitModifier
 import org.rsmod.api.npc.hit.processor.NpcHitProcessor
@@ -51,7 +53,14 @@ import org.rsmod.api.npc.hit.processor.StandardNpcHitProcessor
 import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
+import org.rsmod.api.player.hit.modifier.PlayerHitModifier
+import org.rsmod.api.player.hit.modifier.StandardPlayerHitModifier
 import org.rsmod.api.player.hit.processor.DamageOnlyPlayerHitProcessor
+import org.rsmod.api.player.hook.PlayerGroundItemDropHook
+import org.rsmod.api.player.hook.PlayerInvUpdateHook
+import org.rsmod.api.player.hook.PlayerObjTakeValidateHook
+import org.rsmod.api.player.hook.PlayerPostTickHook
+import org.rsmod.api.player.hook.PlayerTeleportValidateHook
 import org.rsmod.api.player.hit.processor.InstantPlayerHitProcessor
 import org.rsmod.api.player.interact.LocInteractions
 import org.rsmod.api.player.interact.NpcInteractions
@@ -261,6 +270,18 @@ constructor(
 
     public fun Player.setVarBit(varbit: VarBitType, value: Int) {
         VarPlayerIntMapSetter.set(this, varbit, value)
+    }
+
+    public fun Player.setVarBit(varbit: String, value: Int) {
+        VarPlayerIntMapSetter.set(this, varbit, value)
+    }
+
+    public fun Player.setCurrentLevel(stat: String, level: Int) {
+        statMap.setCurrentLevel(stat, level.toByte())
+    }
+
+    public fun Player.setBaseLevel(stat: String, level: Int) {
+        statMap.setBaseLevel(stat, level.toByte())
     }
 
     public fun Player.setCurrentLevel(stat: StatType, level: Int) {
@@ -832,6 +853,8 @@ constructor(
 
             bind(Realm::class.java).toInstance(createTestRealm())
             bind(Database::class.java).to(ThrowDatabase::class.java).`in`(Scopes.SINGLETON)
+            bind(DatabaseConfig::class.java)
+                .toInstance(DatabaseConfig("jdbc:test", "test", "test", usesEmbeddedPostgres = false))
 
             bind(EventBus::class.java).`in`(Scopes.SINGLETON)
             bind(GameUpdate::class.java).`in`(Scopes.SINGLETON)
@@ -884,7 +907,14 @@ constructor(
                 .toProvider(ShuffledPlayerListProvider::class.java)
                 .`in`(Scopes.SINGLETON)
 
+            Multibinder.newSetBinder(binder(), NpcDamageContributor::class.java)
+            Multibinder.newSetBinder(binder(), PlayerInvUpdateHook::class.java)
+            Multibinder.newSetBinder(binder(), PlayerPostTickHook::class.java)
+            Multibinder.newSetBinder(binder(), PlayerGroundItemDropHook::class.java)
+            Multibinder.newSetBinder(binder(), PlayerObjTakeValidateHook::class.java)
+            Multibinder.newSetBinder(binder(), PlayerTeleportValidateHook::class.java)
             bind(NpcHitModifier::class.java).to(StandardNpcHitModifier::class.java)
+            bind(PlayerHitModifier::class.java).to(StandardPlayerHitModifier::class.java)
             bind(NpcHitProcessor::class.java).to(StandardNpcHitProcessor::class.java)
             bind(InstantPlayerHitProcessor::class.java).to(DamageOnlyPlayerHitProcessor::class.java)
 

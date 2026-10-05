@@ -2,9 +2,7 @@ package org.rsmod.api.combat.formulas
 
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
-import dev.openrune.definition.type.VarBitType
-import dev.openrune.types.ItemServerType
-import dev.openrune.types.obj.Wearpos
+import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatStance
 import org.rsmod.api.combat.commons.magic.Spellbook
@@ -23,9 +21,9 @@ import org.rsmod.api.combat.weapon.scripts.WeaponAttackStylesScript
 import org.rsmod.api.combat.weapon.scripts.WeaponAttackTypesScript
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.combat.weapon.types.AttackTypes
-import org.rsmod.api.config.refs.stats
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.testing.GameTestState
+import org.rsmod.api.testing.factory.itemType
 import org.rsmod.api.testing.params.TestArgs
 import org.rsmod.api.testing.params.TestArgsProvider
 import org.rsmod.api.testing.params.TestWithArgs
@@ -63,7 +61,7 @@ class PvPFormulaTest {
     ): Result {
         val accuracyBoost = mp.specialAccuracy
         val damageBoost = mp.specialDamage
-        val spell = mp.castSpell
+        val spell = mp.castSpell?.let(::itemType)
 
         val attackType = deps.types.get(this)
         val attackStyle = deps.styles.get(this)
@@ -199,26 +197,26 @@ class PvPFormulaTest {
         @MatchupDsl
         data class MatchupPlayer(
             var stance: CombatStance = CombatStance.Stance1,
-            var helm: ItemServerType? = null,
-            var cape: ItemServerType? = null,
-            var amulet: ItemServerType? = null,
-            var ammo: ItemServerType? = null,
-            var weapon: ItemServerType? = null,
-            var body: ItemServerType? = null,
-            var shield: ItemServerType? = null,
-            var legs: ItemServerType? = null,
-            var gloves: ItemServerType? = null,
-            var feet: ItemServerType? = null,
-            var ring: ItemServerType? = null,
+            var helm: String? = null,
+            var cape: String? = null,
+            var amulet: String? = null,
+            var ammo: String? = null,
+            var weapon: String? = null,
+            var body: String? = null,
+            var shield: String? = null,
+            var legs: String? = null,
+            var gloves: String? = null,
+            var feet: String? = null,
+            var ring: String? = null,
             var attackLvl: Int = 99,
             var defenceLvl: Int = 99,
             var rangedLvl: Int = 99,
             var strengthLvl: Int = 99,
             var magicLvl: Int = 99,
             var hitpoints: Int = 99,
-            val vars: MutableMap<VarBitType, Int> = mutableMapOf(),
+            val vars: MutableMap<String, Int> = mutableMapOf(),
             var spellbook: Spellbook = Spellbook.Standard,
-            var castSpell: ItemServerType? = null,
+            var castSpell: String? = null,
             var spellMaxHit: Int? = null,
             var staffMaxHit: Int? = null,
             var specialAccuracy: Double = 1.0,
@@ -486,21 +484,21 @@ class PvPFormulaTest {
     private fun GameTestScope.copy(player: Player, matchup: Matchup.MatchupPlayer) {
         player.setVarp("varp.com_mode", matchup.stance.varValue)
 
-        player.setBaseLevel(stats.attack, matchup.attackLvl)
-        player.setBaseLevel(stats.defence, matchup.defenceLvl)
-        player.setBaseLevel(stats.ranged, matchup.rangedLvl)
-        player.setBaseLevel(stats.strength, matchup.strengthLvl)
-        player.setBaseLevel(stats.magic, matchup.magicLvl)
-        player.setBaseLevel(stats.hitpoints, matchup.hitpoints)
+        player.setBaseLevel("stat.attack", matchup.attackLvl)
+        player.setBaseLevel("stat.defence", matchup.defenceLvl)
+        player.setBaseLevel("stat.ranged", matchup.rangedLvl)
+        player.setBaseLevel("stat.strength", matchup.strengthLvl)
+        player.setBaseLevel("stat.magic", matchup.magicLvl)
+        player.setBaseLevel("stat.hitpoints", matchup.hitpoints)
 
-        player.setCurrentLevel(stats.attack, matchup.attackLvl)
-        player.setCurrentLevel(stats.defence, matchup.defenceLvl)
-        player.setCurrentLevel(stats.ranged, matchup.rangedLvl)
-        player.setCurrentLevel(stats.strength, matchup.strengthLvl)
-        player.setCurrentLevel(stats.magic, matchup.magicLvl)
-        player.setCurrentLevel(stats.hitpoints, matchup.hitpoints)
+        player.setCurrentLevel("stat.attack", matchup.attackLvl)
+        player.setCurrentLevel("stat.defence", matchup.defenceLvl)
+        player.setCurrentLevel("stat.ranged", matchup.rangedLvl)
+        player.setCurrentLevel("stat.strength", matchup.strengthLvl)
+        player.setCurrentLevel("stat.magic", matchup.magicLvl)
+        player.setCurrentLevel("stat.hitpoints", matchup.hitpoints)
 
-        player.worn[Wearpos.Head.slot] = matchup.helm?.let(::InvObj)
+        player.worn[Wearpos.Hat.slot] = matchup.helm?.let(::InvObj)
         player.worn[Wearpos.Back.slot] = matchup.cape?.let(::InvObj)
         player.worn[Wearpos.Front.slot] = matchup.amulet?.let(::InvObj)
         player.worn[Wearpos.Quiver.slot] = matchup.ammo?.let(::InvObj)

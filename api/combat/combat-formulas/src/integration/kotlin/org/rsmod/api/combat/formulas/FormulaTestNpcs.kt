@@ -1,8 +1,9 @@
 package org.rsmod.api.combat.formulas
 
-import dev.openrune.types.util.ParamMap
+import dev.openrune.ParamMap
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.util.ParamMapBuilder
-import org.rsmod.api.config.refs.npcs
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.testing.factory.npcTypeFactory
 
@@ -41,7 +42,7 @@ object FormulaTestNpcs {
         }
 
     val corporeal_beast =
-        npcTypeFactory.create(npcs.corp_beast.id) {
+        npcTypeFactory.create("npc.corp_beast".asRSCM(RSCMType.NPC)) {
             name = "Corporeal Beast"
             size = 5
             hitpoints = 2000
