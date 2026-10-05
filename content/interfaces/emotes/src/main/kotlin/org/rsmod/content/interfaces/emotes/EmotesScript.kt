@@ -171,7 +171,7 @@ private constructor(
                 lockedLoopAnimDialog(
                     "seq.emote_slap_head",
                     "seq.emote_slap_head_loop",
-                    "varbit.sos_emote_idea",
+                    "varbit.sos_emote_doh",
                     "You can't use that emote yet - visit the Stronghold of Security to unlock it.",
                     op = op,
                 )

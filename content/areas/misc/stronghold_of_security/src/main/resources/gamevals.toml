@@ -1,0 +1,8 @@
+[gamevals.varp]
+sos_state = 64060
+
+[gamevals.varbit]
+sos_war_claimed = 64060
+sos_fam_claimed = 64061
+sos_pest_claimed = 64062
+sos_death_claimed = 64063
