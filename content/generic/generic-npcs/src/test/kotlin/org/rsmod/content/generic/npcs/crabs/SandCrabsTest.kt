@@ -240,6 +240,8 @@ class SandCrabsTest {
             assertEquals(60, type.hitpoints, name)
             assertEquals(2, type.paramOrNull(params.elemental_weakness_type), name)
             assertEquals(20, type.paramOrNull(params.elemental_weakness_percent), name)
+            assertTrue(type.hasParam(params.dropped_remains.raw), "$name must leave no remains")
+            assertNull(type.paramOrNull(params.dropped_remains), name)
             assertEquals(NpcMode.None, type.defaultMode, name)
             assertEquals(1, type.attack, name)
             assertEquals(1, type.strength, name)

@@ -19,6 +19,7 @@ timer = 1
 "param.cannon_immunity" = 1
 "param.elemental_weakness_type" = 2
 "param.elemental_weakness_percent" = 20
+"param.dropped_remains" = -1
 
 [[npc]]
 isServerOnly = true
@@ -37,6 +38,7 @@ timer = 1
 "param.cannon_immunity" = 1
 "param.elemental_weakness_type" = 2
 "param.elemental_weakness_percent" = 20
+"param.dropped_remains" = -1
 
 [[npc]]
 isServerOnly = true
@@ -55,6 +57,7 @@ timer = 1
 "param.cannon_immunity" = 1
 "param.elemental_weakness_type" = 2
 "param.elemental_weakness_percent" = 20
+"param.dropped_remains" = -1
 
 [[npc]]
 isServerOnly = true
@@ -73,3 +76,4 @@ timer = 1
 "param.cannon_immunity" = 1
 "param.elemental_weakness_type" = 2
 "param.elemental_weakness_percent" = 20
+"param.dropped_remains" = -1
