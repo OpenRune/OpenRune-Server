@@ -31,6 +31,9 @@ import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.zone.ZoneUpdateMap
+import org.rsmod.api.shops.Shops
+import org.rsmod.content.other.sawmill.SawmillHooks
+import org.rsmod.content.other.sawmill.SawmillOperatorScript
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
@@ -392,11 +395,11 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `other sawmill operators refuse to touch the waxwood`() {
-        for (operator in listOf("npc.prif_sawmill_operator", "npc.auburn_sawmill_operator")) {
+        for ((operator, option) in mapOf("npc.prif_sawmill_operator" to 4, "npc.auburn_sawmill_operator" to 3)) {
             val f = Fixture(DaddysHomeQuest.Building)
             f.give("obj.daddyshome_waxwood_logs" to 3)
             f.talkSawmill(operator)
-            f.finish(listOf(3))
+            f.finish(listOf(option))
             assertEquals(3, f.player.inv.count("obj.daddyshome_waxwood_logs"), operator)
             assertEquals(0, f.player.inv.count("obj.daddyshome_waxwood_plank"), operator)
             assertTrue(f.output().contains("some other sawmill operator"), f.output())
@@ -662,7 +665,9 @@ class DaddysHomeInteractionTest {
             val scripts = ScriptContext(events, CheatCommandMap(), EngineQueueCache())
             with(quest) { scripts.startup() }
             with(DaddysHomeFurniture(quest)) { scripts.startup() }
-            with(DaddysHomeSawmill(quest)) { scripts.startup() }
+            val hooks = SawmillHooks()
+            with(DaddysHomeSawmill(quest, hooks)) { scripts.startup() }
+            with(SawmillOperatorScript(Shops(events), hooks)) { scripts.startup() }
             setStage(stage)
         }
 

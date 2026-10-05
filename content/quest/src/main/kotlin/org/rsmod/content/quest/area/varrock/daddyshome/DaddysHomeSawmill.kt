@@ -6,57 +6,40 @@ import jakarta.inject.Inject
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.api.script.onOpNpc1
-import org.rsmod.content.quest.manager.menu
+import org.rsmod.content.other.sawmill.SawmillHooks
+import org.rsmod.content.other.sawmill.SawmillOperator
+import org.rsmod.content.other.sawmill.SawmillTalkHook
+import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class DaddysHomeSawmill @Inject constructor(private val daddysHome: DaddysHomeQuest) :
-    PluginScript() {
+class DaddysHomeSawmill
+@Inject
+constructor(private val daddysHome: DaddysHomeQuest, private val hooks: SawmillHooks) :
+    PluginScript(), SawmillTalkHook {
 
     override fun ScriptContext.startup() {
-        onOpNpc1(Lumberyard) { startDialogue(it.npc) { sawmillDialogue(lumberyard = true) } }
-        for (operator in OtherOperators) {
-            onOpNpc1(operator) { startDialogue(it.npc) { sawmillDialogue(lumberyard = false) } }
+        hooks.register(this@DaddysHomeSawmill)
+    }
+
+    override fun ScriptContext.shutdown() {
+        hooks.unregister(this@DaddysHomeSawmill)
+    }
+
+    override fun option(player: Player, operator: SawmillOperator): String? {
+        val stage = daddysHome.stage(player)
+        return if (stage in DaddysHomeQuest.Building until DaddysHomeQuest.Complete) {
+            "I need some waxwood planks for Old Man Yarlo."
+        } else {
+            null
         }
     }
 
-    private suspend fun Dialogue.sawmillDialogue(lumberyard: Boolean) {
-        val stage = daddysHome.stage(player)
-        val waxwood = stage in DaddysHomeQuest.Building until DaddysHomeQuest.Complete
-        val greeting =
-            "Do you want me to make some planks for you? I can make planks from wood, oak, teak " +
-                "and mahogany logs. Or would you like to buy some other housing supplies?"
-        chatNpc(neutral, if (lumberyard && waxwood) greeting else "Hello there. $greeting")
-        val options = buildList {
-            add("Yes, please make me some planks." to Option.Planks)
-            add("Can I buy some housing supplies?" to Option.Supplies)
-            if (waxwood) add("I need some waxwood planks for Old Man Yarlo." to Option.Waxwood)
-            add("I'm good, thanks." to Option.Leave)
-        }
-        when (menu(options)) {
-            Option.Planks -> {
-                chatPlayer(happy, "Yes, please make me some planks.")
-                chatNpc(neutral, "Use the Buy-plank option on me and I'll see what I can do.")
-            }
-            Option.Supplies -> {
-                chatPlayer(quiz, "Can I buy some housing supplies?")
-                chatNpc(happy, "Of course! Use the Trade option on me.")
-            }
-            Option.Waxwood -> waxwoodPlanks(lumberyard)
-            Option.Leave -> {
-                chatPlayer(neutral, "I'm good, thanks.")
-                chatNpc(
-                    happy,
-                    "Well come back when you want some. You'll struggle to find quality planks " +
-                        "anywhere but here!",
-                )
-            }
-        }
+    override suspend fun choose(dialogue: Dialogue, operator: SawmillOperator) {
+        dialogue.waxwoodPlanks(lumberyard = operator == SawmillOperator.LumberYard)
     }
 
     private suspend fun Dialogue.waxwoodPlanks(lumberyard: Boolean) {
-        chatPlayer(neutral, "I need some waxwood planks for Old Man Yarlo.")
         if (!lumberyard) {
             chatNpc(
                 neutral,
@@ -99,17 +82,5 @@ class DaddysHomeSawmill @Inject constructor(private val daddysHome: DaddysHomeQu
             DaddysHomeQuest.WaxwoodPlank,
             "The sawmill operator turns your waxwood logs into planks.",
         )
-    }
-
-    private enum class Option {
-        Planks,
-        Supplies,
-        Waxwood,
-        Leave,
-    }
-
-    private companion object {
-        const val Lumberyard = "npc.poh_sawmill_opp"
-        val OtherOperators = listOf("npc.prif_sawmill_operator", "npc.auburn_sawmill_operator")
     }
 }

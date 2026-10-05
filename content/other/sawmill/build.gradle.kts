@@ -8,10 +8,7 @@ dependencies {
     testImplementation(projects.api.gameProcess)
     testImplementation(projects.api.invStorage)
     testImplementation(projects.api.registry)
-    testImplementation(libs.fastutil)
-    implementation(projects.content.other.sawmill)
     implementation(projects.api.pluginCommons)
-    implementation(projects.api.attr)
-    implementation(projects.api.serverConfig)
-    implementation(libs.rsprot.api)
+    implementation(projects.api.shops)
+    implementation(projects.content.skills.utils)
 }
