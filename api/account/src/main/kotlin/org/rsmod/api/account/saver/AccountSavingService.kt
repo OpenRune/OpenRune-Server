@@ -17,7 +17,7 @@ import org.rsmod.api.account.saver.request.AccountSaveRequest
 import org.rsmod.api.account.saver.request.AccountSaveResponse
 import org.rsmod.api.db.jdbc.GameDatabase
 import org.rsmod.api.server.config.ServerConfig
-import org.rsmod.server.services.concurrent.ScheduledService
+import org.rsmod.server.services.concurrent.ScheduledDrainService
 
 // Serialized account saves: one writer at a time avoids overlapping transactions on the game DB.
 // Therefore, save operations are not parallelized and instead run on a single thread.
@@ -28,7 +28,7 @@ constructor(
     private val repository: CharacterAccountRepository,
     private val pipelines: Set<CharacterDataStage.Pipeline>,
     private val serverConfig: ServerConfig,
-) : ScheduledService {
+) : ScheduledDrainService {
     private val logger = InlineLogger()
 
     private val pendingRequests = ConcurrentLinkedQueue<AccountSaveRequest>()

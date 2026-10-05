@@ -126,23 +126,24 @@ public object EmbeddedSameInstancePostgres {
 
     private fun startNewEmbedded(dataDir: Path): EmbeddedPostgres {
         try {
-            return EmbeddedPostgres.builder()
-                .setDataDirectory(dataDir.toFile())
-                .setCleanDataDirectory(false)
-                .setPGStartupWait(Duration.ofSeconds(30))
-                .start()
+            return embeddedBuilder(dataDir).start()
         } catch (t: Throwable) {
             if (!isBindException(t)) {
                 throw t
             }
             EmbeddedPostgresSupport.forceStop(dataDir)
-            return EmbeddedPostgres.builder()
-                .setDataDirectory(dataDir.toFile())
-                .setCleanDataDirectory(false)
-                .setPGStartupWait(Duration.ofSeconds(30))
-                .start()
+            return embeddedBuilder(dataDir).start()
         }
     }
+
+    // zonky's own shutdown hook would stop the database in parallel with GameBootstrap's, before
+    // the final player saves; GameBootstrap stops it once every service has shut down.
+    private fun embeddedBuilder(dataDir: Path): EmbeddedPostgres.Builder =
+        EmbeddedPostgres.builder()
+            .setDataDirectory(dataDir.toFile())
+            .setCleanDataDirectory(false)
+            .setPGStartupWait(Duration.ofSeconds(30))
+            .setRegisterShutdownHook(false)
 
     private fun isBindException(t: Throwable): Boolean {
         var current: Throwable? = t
