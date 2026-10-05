@@ -1,6 +1,7 @@
 package dev.openrune.types.util
 
 import dev.openrune.ParamMap
+import dev.openrune.TypedParamType
 import dev.openrune.definition.type.ParamType
 import dev.openrune.literal.CacheVarTypeMap
 
@@ -19,6 +20,10 @@ public value class ParamMapBuilder(private val typed: MutableMap<Int, Any> = has
     public fun isNotEmpty(): Boolean = typed.isNotEmpty()
 
     public operator fun <T : Any> set(param: ParamType, value: T) {
+        typed[param.id] = value
+    }
+
+    public operator fun <T : Any> set(param: TypedParamType<T>, value: T) {
         typed[param.id] = value
     }
 }

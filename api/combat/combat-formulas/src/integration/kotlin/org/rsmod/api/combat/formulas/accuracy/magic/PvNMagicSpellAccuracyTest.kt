@@ -1,12 +1,9 @@
 package org.rsmod.api.combat.formulas.accuracy.magic
 
 import com.google.inject.Inject
-import dev.openrune.definition.type.VarBitType
-import dev.openrune.types.ItemServerType
-import dev.openrune.types.npc.UnpackedNpcType
+import dev.openrune.types.NpcServerType
 import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.combat.formulas.test_npcs
-import org.rsmod.api.config.refs.stats
 import org.rsmod.api.player.back
 import org.rsmod.api.player.feet
 import org.rsmod.api.player.front
@@ -19,6 +16,7 @@ import org.rsmod.api.player.righthand
 import org.rsmod.api.player.ring
 import org.rsmod.api.player.torso
 import org.rsmod.api.testing.GameTestState
+import org.rsmod.api.testing.factory.itemType
 import org.rsmod.api.testing.params.TestArgs
 import org.rsmod.api.testing.params.TestArgsProvider
 import org.rsmod.api.testing.params.TestWithArgs
@@ -32,10 +30,10 @@ class PvNMagicSpellAccuracyTest {
         state.runInjectedGameTest(SpellAccuracyTestDependencies::class) {
             val accuracy = it.accuracy
 
-            player.setCurrentLevel(stats.magic, matchup.magicLvl)
-            player.setBaseLevel(stats.magic, matchup.baseMagicLvl)
-            player.setCurrentLevel(stats.hitpoints, matchup.hitpoints)
-            player.setBaseLevel(stats.hitpoints, matchup.baseHitpointsLvl)
+            player.setCurrentLevel("stat.magic", matchup.magicLvl)
+            player.setBaseLevel("stat.magic", matchup.baseMagicLvl)
+            player.setCurrentLevel("stat.hitpoints", matchup.hitpoints)
+            player.setBaseLevel("stat.hitpoints", matchup.baseHitpointsLvl)
 
             player.hat = matchup.hat
             player.back = matchup.back
@@ -61,7 +59,7 @@ class PvNMagicSpellAccuracyTest {
                 accuracy.getSpellHitChance(
                     player = player,
                     target = npc,
-                    spell = matchup.spell,
+                    spell = itemType(matchup.spell),
                     spellbook = matchup.spellbook,
                     usedSunfireRune = false,
                 )
@@ -70,9 +68,9 @@ class PvNMagicSpellAccuracyTest {
 
     data class Matchup(
         val expectedAccuracy: Double,
-        val spell: ItemServerType = "obj.01_wind_strike",
+        val spell: String = "obj.01_wind_strike",
         val spellbook: Spellbook = Spellbook.Standard,
-        val npc: UnpackedNpcType = test_npcs.man,
+        val npc: NpcServerType = test_npcs.man,
         val npcCurrHp: Int = 1,
         val npcMaxHp: Int = 1,
         val hat: InvObj? = null,
@@ -90,33 +88,33 @@ class PvNMagicSpellAccuracyTest {
         val baseMagicLvl: Int = 99,
         val hitpoints: Int = 99,
         val baseHitpointsLvl: Int = 99,
-        val prayers: Set<VarBitType> = emptySet(),
+        val prayers: Set<String> = emptySet(),
     ) {
-        fun withSpell(spell: ItemServerType): Matchup = copy(spell = spell)
+        fun withSpell(spell: String): Matchup = copy(spell = spell)
 
-        fun withNpcTarget(npc: UnpackedNpcType) = copy(npc = npc)
+        fun withNpcTarget(npc: NpcServerType) = copy(npc = npc)
 
-        fun withHelm(obj: ItemServerType?) = copy(hat = obj?.let(::InvObj))
+        fun withHelm(obj: String?) = copy(hat = obj?.let(::InvObj))
 
-        fun withCape(obj: ItemServerType?) = copy(back = obj?.let(::InvObj))
+        fun withCape(obj: String?) = copy(back = obj?.let(::InvObj))
 
-        fun withAmulet(obj: ItemServerType?) = copy(front = obj?.let(::InvObj))
+        fun withAmulet(obj: String?) = copy(front = obj?.let(::InvObj))
 
-        fun withWeapon(obj: ItemServerType?) = copy(righthand = obj?.let(::InvObj))
+        fun withWeapon(obj: String?) = copy(righthand = obj?.let(::InvObj))
 
-        fun withBody(obj: ItemServerType?) = copy(torso = obj?.let(::InvObj))
+        fun withBody(obj: String?) = copy(torso = obj?.let(::InvObj))
 
-        fun withShield(obj: ItemServerType?) = copy(lefthand = obj?.let(::InvObj))
+        fun withShield(obj: String?) = copy(lefthand = obj?.let(::InvObj))
 
-        fun withLegs(obj: ItemServerType?) = copy(legs = obj?.let(::InvObj))
+        fun withLegs(obj: String?) = copy(legs = obj?.let(::InvObj))
 
-        fun withGloves(obj: ItemServerType?) = copy(hands = obj?.let(::InvObj))
+        fun withGloves(obj: String?) = copy(hands = obj?.let(::InvObj))
 
-        fun withFeet(obj: ItemServerType?) = copy(feet = obj?.let(::InvObj))
+        fun withFeet(obj: String?) = copy(feet = obj?.let(::InvObj))
 
-        fun withRing(obj: ItemServerType?) = copy(ring = obj?.let(::InvObj))
+        fun withRing(obj: String?) = copy(ring = obj?.let(::InvObj))
 
-        fun withPrayers(vararg prayers: VarBitType) = copy(prayers = prayers.toSet())
+        fun withPrayers(vararg prayers: String) = copy(prayers = prayers.toSet())
 
         fun withSaturatedHeart(): Matchup {
             val add = 4 + (baseMagicLvl * 0.1).toInt()
@@ -170,7 +168,7 @@ class PvNMagicSpellAccuracyTest {
                 if (prayers.isEmpty()) {
                     "None"
                 } else {
-                    prayers.joinToString(transform = VarBitType::internalNameValue)
+                    prayers.joinToString()
                 }
         }
     }

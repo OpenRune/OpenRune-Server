@@ -1,13 +1,10 @@
 package org.rsmod.api.combat.formulas.accuracy.multi
 
 import com.google.inject.Inject
-import dev.openrune.definition.type.VarBitType
-import dev.openrune.types.ItemServerType
 import dev.openrune.types.NpcServerType
 import org.rsmod.api.combat.commons.styles.MeleeAttackStyle
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.formulas.test_npcs
-import org.rsmod.api.config.refs.stats
 import org.rsmod.api.player.back
 import org.rsmod.api.player.feet
 import org.rsmod.api.player.front
@@ -32,10 +29,10 @@ class PvNMultiStyleAccuracyMagicalMeleeTest {
         state.runInjectedGameTest(MultiStyleAccuracyTestDependencies::class) {
             val accuracy = it.accuracy
 
-            player.setCurrentLevel(stats.attack, matchup.attackLvl)
-            player.setBaseLevel(stats.attack, matchup.baseAttackLvl)
-            player.setCurrentLevel(stats.hitpoints, matchup.hitpoints)
-            player.setBaseLevel(stats.hitpoints, matchup.baseHitpointsLvl)
+            player.setCurrentLevel("stat.attack", matchup.attackLvl)
+            player.setBaseLevel("stat.attack", matchup.baseAttackLvl)
+            player.setCurrentLevel("stat.hitpoints", matchup.hitpoints)
+            player.setBaseLevel("stat.hitpoints", matchup.baseHitpointsLvl)
 
             player.hat = matchup.hat
             player.back = matchup.back
@@ -86,32 +83,32 @@ class PvNMultiStyleAccuracyMagicalMeleeTest {
         val baseAttackLvl: Int = 99,
         val hitpoints: Int = 99,
         val baseHitpointsLvl: Int = 99,
-        val prayers: Set<VarBitType> = emptySet(),
+        val prayers: Set<String> = emptySet(),
         val attackType: MeleeAttackType? = null,
         val attackStyle: MeleeAttackStyle? = null,
         val specMultiplier: Double = 1.0,
     ) {
         fun withNpcTarget(npc: NpcServerType) = copy(npc = npc)
 
-        fun withHelm(obj: ItemServerType?) = copy(hat = obj?.let(::InvObj))
+        fun withHelm(obj: String?) = copy(hat = obj?.let(::InvObj))
 
-        fun withCape(obj: ItemServerType?) = copy(back = obj?.let(::InvObj))
+        fun withCape(obj: String?) = copy(back = obj?.let(::InvObj))
 
-        fun withAmulet(obj: ItemServerType?) = copy(front = obj?.let(::InvObj))
+        fun withAmulet(obj: String?) = copy(front = obj?.let(::InvObj))
 
-        fun withWeapon(obj: ItemServerType?) = copy(righthand = obj?.let(::InvObj))
+        fun withWeapon(obj: String?) = copy(righthand = obj?.let(::InvObj))
 
-        fun withBody(obj: ItemServerType?) = copy(torso = obj?.let(::InvObj))
+        fun withBody(obj: String?) = copy(torso = obj?.let(::InvObj))
 
-        fun withLegs(obj: ItemServerType?) = copy(legs = obj?.let(::InvObj))
+        fun withLegs(obj: String?) = copy(legs = obj?.let(::InvObj))
 
-        fun withGloves(obj: ItemServerType?) = copy(hands = obj?.let(::InvObj))
+        fun withGloves(obj: String?) = copy(hands = obj?.let(::InvObj))
 
-        fun withFeet(obj: ItemServerType?) = copy(feet = obj?.let(::InvObj))
+        fun withFeet(obj: String?) = copy(feet = obj?.let(::InvObj))
 
-        fun withRing(obj: ItemServerType?) = copy(ring = obj?.let(::InvObj))
+        fun withRing(obj: String?) = copy(ring = obj?.let(::InvObj))
 
-        fun withPrayers(vararg prayers: VarBitType) = copy(prayers = prayers.toSet())
+        fun withPrayers(vararg prayers: String) = copy(prayers = prayers.toSet())
 
         fun withAttackType(attackType: MeleeAttackType?) = copy(attackType = attackType)
 
@@ -163,7 +160,7 @@ class PvNMultiStyleAccuracyMagicalMeleeTest {
                 if (prayers.isEmpty()) {
                     "None"
                 } else {
-                    prayers.joinToString(transform = VarBitType::internalNameValue)
+                    prayers.joinToString()
                 }
         }
     }

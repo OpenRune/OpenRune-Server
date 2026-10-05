@@ -1,13 +1,10 @@
 package org.rsmod.api.combat.formulas.accuracy.ranged
 
 import com.google.inject.Inject
-import dev.openrune.definition.type.VarBitType
-import dev.openrune.types.ItemServerType
 import dev.openrune.types.NpcServerType
 import org.rsmod.api.combat.commons.styles.RangedAttackStyle
 import org.rsmod.api.combat.commons.types.RangedAttackType
 import org.rsmod.api.combat.formulas.test_npcs
-import org.rsmod.api.config.refs.stats
 import org.rsmod.api.player.back
 import org.rsmod.api.player.feet
 import org.rsmod.api.player.front
@@ -33,10 +30,10 @@ class PvNRangedAccuracyTest {
         state.runInjectedGameTest(RangedAccuracyTestDependencies::class) {
             val accuracy = it.accuracy
 
-            player.setCurrentLevel(stats.ranged, matchup.rangedLvl)
-            player.setBaseLevel(stats.ranged, matchup.baseRangedLvl)
-            player.setCurrentLevel(stats.hitpoints, matchup.hitpoints)
-            player.setBaseLevel(stats.hitpoints, matchup.baseHitpointsLvl)
+            player.setCurrentLevel("stat.ranged", matchup.rangedLvl)
+            player.setBaseLevel("stat.ranged", matchup.baseRangedLvl)
+            player.setCurrentLevel("stat.hitpoints", matchup.hitpoints)
+            player.setBaseLevel("stat.hitpoints", matchup.baseHitpointsLvl)
 
             player.hat = matchup.hat
             player.back = matchup.back
@@ -91,36 +88,36 @@ class PvNRangedAccuracyTest {
         val baseRangedLvl: Int = 99,
         val hitpoints: Int = 99,
         val baseHitpointsLvl: Int = 99,
-        val prayers: Set<VarBitType> = emptySet(),
+        val prayers: Set<String> = emptySet(),
         val attackType: RangedAttackType? = null,
         val attackStyle: RangedAttackStyle? = null,
         val specMultiplier: Double = 1.0,
     ) {
         fun withNpcTarget(npc: NpcServerType) = copy(npc = npc)
 
-        fun withHelm(obj: ItemServerType?) = copy(hat = obj?.let(::InvObj))
+        fun withHelm(obj: String?) = copy(hat = obj?.let(::InvObj))
 
-        fun withCape(obj: ItemServerType?) = copy(back = obj?.let(::InvObj))
+        fun withCape(obj: String?) = copy(back = obj?.let(::InvObj))
 
-        fun withAmulet(obj: ItemServerType?) = copy(front = obj?.let(::InvObj))
+        fun withAmulet(obj: String?) = copy(front = obj?.let(::InvObj))
 
-        fun withAmmo(obj: ItemServerType?) = copy(quiver = obj?.let(::InvObj))
+        fun withAmmo(obj: String?) = copy(quiver = obj?.let(::InvObj))
 
-        fun withWeapon(obj: ItemServerType?) = copy(righthand = obj?.let(::InvObj))
+        fun withWeapon(obj: String?) = copy(righthand = obj?.let(::InvObj))
 
-        fun withBody(obj: ItemServerType?) = copy(torso = obj?.let(::InvObj))
+        fun withBody(obj: String?) = copy(torso = obj?.let(::InvObj))
 
-        fun withShield(obj: ItemServerType?) = copy(lefthand = obj?.let(::InvObj))
+        fun withShield(obj: String?) = copy(lefthand = obj?.let(::InvObj))
 
-        fun withLegs(obj: ItemServerType?) = copy(legs = obj?.let(::InvObj))
+        fun withLegs(obj: String?) = copy(legs = obj?.let(::InvObj))
 
-        fun withGloves(obj: ItemServerType?) = copy(hands = obj?.let(::InvObj))
+        fun withGloves(obj: String?) = copy(hands = obj?.let(::InvObj))
 
-        fun withFeet(obj: ItemServerType?) = copy(feet = obj?.let(::InvObj))
+        fun withFeet(obj: String?) = copy(feet = obj?.let(::InvObj))
 
-        fun withRing(obj: ItemServerType?) = copy(ring = obj?.let(::InvObj))
+        fun withRing(obj: String?) = copy(ring = obj?.let(::InvObj))
 
-        fun withPrayers(vararg prayers: VarBitType) = copy(prayers = prayers.toSet())
+        fun withPrayers(vararg prayers: String) = copy(prayers = prayers.toSet())
 
         fun withAttackType(attackType: RangedAttackType?) = copy(attackType = attackType)
 
@@ -180,7 +177,7 @@ class PvNRangedAccuracyTest {
                 if (prayers.isEmpty()) {
                     "None"
                 } else {
-                    prayers.joinToString(transform = VarBitType::internalNameValue)
+                    prayers.joinToString()
                 }
         }
     }

@@ -14,6 +14,7 @@ dependencies {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     maxHeapSize = "2048m"
+    jvmArgs("-XX:+EnableDynamicAgentLoading")
     systemProperty("junit.jupiter.extensions.autodetection.enabled", false)
     systemProperty("junit.jupiter.execution.parallel.enabled", true)
     systemProperty("junit.jupiter.execution.parallel.mode.default", "concurrent")

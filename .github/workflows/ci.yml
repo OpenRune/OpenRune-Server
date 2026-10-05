@@ -9,6 +9,7 @@ on:
     paths:
       - "**/*.kt"
       - "**/*.kts"
+      - ".github/workflows/ci.yml"
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -62,16 +63,19 @@ jobs:
         if: steps.gamecache.outputs.cache-hit == 'true'
         run: ./gradlew :or-cache:buildCache :or-cache:mergePluginGamevals
 
+      - name: Create game config and RSA keys
+        run: |
+          [ -f game.yml ] || cp game.example.yml game.yml
+          ./gradlew generateRsa
+
       - name: Compile and run tests
-        run: ./gradlew assemble test
+        run: ./gradlew assemble test integration
 
       # Config errors in a data-driven server surface at boot (unmapped
       # gamevals throw by design), so start the server and require the
       # "Server ready" line within the timeout.
       - name: Boot server to ready
         run: |
-          ./gradlew generateRsa
-          [ -f game.yml ] || cp game.example.yml game.yml
           ./gradlew run -q > boot.log 2>&1 &
           GRADLE_PID=$!
           for i in $(seq 1 300); do

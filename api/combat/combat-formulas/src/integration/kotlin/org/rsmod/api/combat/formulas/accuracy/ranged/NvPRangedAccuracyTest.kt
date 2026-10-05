@@ -2,15 +2,12 @@ package org.rsmod.api.combat.formulas.accuracy.ranged
 
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
-import dev.openrune.definition.type.VarBitType
-import dev.openrune.types.ItemServerType
 import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatStance
 import org.rsmod.api.combat.formulas.test_npcs
 import org.rsmod.api.combat.weapon.scripts.WeaponAttackStylesScript
 import org.rsmod.api.combat.weapon.styles.AttackStyles
-import org.rsmod.api.config.refs.stats
 import org.rsmod.api.player.back
 import org.rsmod.api.player.feet
 import org.rsmod.api.player.front
@@ -39,10 +36,10 @@ class NvPRangedAccuracyTest {
         ) {
             val accuracy = it.accuracy
 
-            player.setCurrentLevel(stats.defence, matchup.defenceLvl)
-            player.setBaseLevel(stats.defence, matchup.baseDefenceLvl)
-            player.setCurrentLevel(stats.hitpoints, matchup.hitpoints)
-            player.setBaseLevel(stats.hitpoints, matchup.baseHitpointsLvl)
+            player.setCurrentLevel("stat.defence", matchup.defenceLvl)
+            player.setBaseLevel("stat.defence", matchup.baseDefenceLvl)
+            player.setCurrentLevel("stat.hitpoints", matchup.hitpoints)
+            player.setBaseLevel("stat.hitpoints", matchup.baseHitpointsLvl)
             player.setVarp("varp.com_mode", matchup.blockStance.varValue)
 
             player.hat = matchup.hat
@@ -83,33 +80,33 @@ class NvPRangedAccuracyTest {
         val baseDefenceLvl: Int = 99,
         val hitpoints: Int = 99,
         val baseHitpointsLvl: Int = 99,
-        val prayers: Set<VarBitType> = emptySet(),
+        val prayers: Set<String> = emptySet(),
     ) {
         fun withNpcSource(npc: NpcServerType) = copy(npc = npc)
 
-        fun withHelm(obj: ItemServerType?) = copy(hat = obj?.let(::InvObj))
+        fun withHelm(obj: String?) = copy(hat = obj?.let(::InvObj))
 
-        fun withCape(obj: ItemServerType?) = copy(back = obj?.let(::InvObj))
+        fun withCape(obj: String?) = copy(back = obj?.let(::InvObj))
 
-        fun withAmulet(obj: ItemServerType?) = copy(front = obj?.let(::InvObj))
+        fun withAmulet(obj: String?) = copy(front = obj?.let(::InvObj))
 
-        fun withWeapon(obj: ItemServerType?) = copy(righthand = obj?.let(::InvObj))
+        fun withWeapon(obj: String?) = copy(righthand = obj?.let(::InvObj))
 
-        fun withBody(obj: ItemServerType?) = copy(torso = obj?.let(::InvObj))
+        fun withBody(obj: String?) = copy(torso = obj?.let(::InvObj))
 
-        fun withShield(obj: ItemServerType?) = copy(lefthand = obj?.let(::InvObj))
+        fun withShield(obj: String?) = copy(lefthand = obj?.let(::InvObj))
 
-        fun withLegs(obj: ItemServerType?) = copy(legs = obj?.let(::InvObj))
+        fun withLegs(obj: String?) = copy(legs = obj?.let(::InvObj))
 
-        fun withGloves(obj: ItemServerType?) = copy(hands = obj?.let(::InvObj))
+        fun withGloves(obj: String?) = copy(hands = obj?.let(::InvObj))
 
-        fun withFeet(obj: ItemServerType?) = copy(feet = obj?.let(::InvObj))
+        fun withFeet(obj: String?) = copy(feet = obj?.let(::InvObj))
 
-        fun withRing(obj: ItemServerType?) = copy(ring = obj?.let(::InvObj))
+        fun withRing(obj: String?) = copy(ring = obj?.let(::InvObj))
 
         fun withDefenceLevel(defenceLvl: Int) = copy(defenceLvl = defenceLvl)
 
-        fun withPrayers(vararg prayers: VarBitType) = copy(prayers = prayers.toSet())
+        fun withPrayers(vararg prayers: String) = copy(prayers = prayers.toSet())
 
         override fun toString(): String =
             "Matchup(" +
@@ -153,7 +150,7 @@ class NvPRangedAccuracyTest {
                 if (prayers.isEmpty()) {
                     "None"
                 } else {
-                    prayers.joinToString(transform = VarBitType::internalNameValue)
+                    prayers.joinToString()
                 }
         }
     }
