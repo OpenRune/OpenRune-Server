@@ -35,6 +35,9 @@ public class RateBoostChanceRollable<T, R>(
         return (numerator.toDouble() / adjustedDenom.toDouble() * 100.0).coerceAtMost(100.0)
     }
 
+    override fun includeInRoll(onTarget: T, otherArgs: ArgMap): Boolean =
+        hooks.includeInRoll(onTarget, otherArgs) && rollable.includeInRoll(onTarget, otherArgs)
+
     override fun selectResult(target: T, otherArgs: ArgMap): RollResult<R> =
         rollable.roll(target, otherArgs)
 }
