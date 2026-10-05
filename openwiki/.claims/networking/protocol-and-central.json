@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:201acc229402cc1f44718adfe8761039a4c9c97c283759f9d1c3ee39fc3ad8cb",
+  "claims": [
+    {
+      "id": "claim_b92cb5c3ed2d41b29e844ff7eedc2af1",
+      "statement": "NetworkModule binds the RSProt NetworkService through NetworkFactory and contributes RspService to the service set so the network starts and stops with the ServiceManager.",
+      "evidence": [
+        {
+          "resource": "repo://api/net/src/main/kotlin/org/rsmod/api/net/rsprot/NetworkModule.kt",
+          "version": "repo-file-v1:sha256:522ef1c82cd74a0e2e89f98608f5e5ed202ed56575e71011333512916135f756"
+        },
+        {
+          "resource": "repo://api/net/src/main/kotlin/org/rsmod/api/net/rsprot/RspService.kt",
+          "version": "repo-file-v1:sha256:983632fb84f3d9a615a8e011606091c23e8155ad167395a311871a62ed822106"
+        }
+      ]
+    },
+    {
+      "id": "claim_4fd2cba9147448319e4b4ccc6899f682",
+      "statement": "NetworkFactory listens on the configured game port, accepts only desktop OSRS clients, loads the RSA key from .data/game.key, and uses NIO event loops.",
+      "evidence": [
+        {
+          "resource": "repo://api/net/src/main/kotlin/org/rsmod/api/net/rsprot/NetworkFactory.kt",
+          "version": "repo-file-v1:sha256:0807f0cfd21ca61473c4b316323be5cc73925c08da222ad66d71d5005a4f1f90"
+        }
+      ]
+    },
+    {
+      "id": "claim_b7d8e3e77ac342df888a638bbeaac0ac",
+      "statement": "Incoming packets are processed on the game thread when RspClient.read calls session.processIncomingPackets for the player.",
+      "evidence": [
+        {
+          "resource": "repo://api/game-process/src/main/kotlin/org/rsmod/api/game/process/player/PlayerInputProcess.kt#L44-L46",
+          "version": "repo-lines-v1:sha256:99ac11aa17b8a95a5b464fc66805235723d40efb5924d87840c3cf3186329d59:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzBhMTI1YWM4MjBkYzRkZDgzYWY1NDYzZmU5OGNhOGJmOGE5YmFkZjZkMmU5NmZiYWQ3NjliMGFkODBiMDJhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjQwYTRlNmViMDMzYmNjZjNmNGMxMjIwMTIyY2VjYTRkMmE2YjcyMzZmOGRjY2QyMWZmNjA4ZmI4NTZjNzZlNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGFiNmQ5NzRhNGNjYjVmYWNmMDZlYTAyYjdhMDc4MTEyMTBmNjIyOGFmMmE4MTc4MGRkYjUzNTQxOGVhMzI0YSJ9"
+        },
+        {
+          "resource": "repo://api/net/src/main/kotlin/org/rsmod/api/net/rsprot/RspClient.kt",
+          "version": "repo-file-v1:sha256:f11e685e9041ad593baae4c2b1bae8891b766eb7fd72f9cf33c5e70037a422b6"
+        }
+      ]
+    },
+    {
+      "id": "claim_e7ace3e8cd0a49da818b856cc0f06cb7",
+      "statement": "Login is rejected while plugin scripts are not ready or the account loader is shutting down or rejecting requests, and password login fails when OpenRune Central is not configured.",
+      "evidence": [
+        {
+          "resource": "repo://api/net/src/main/kotlin/org/rsmod/api/net/rsprot/ConnectionHandler.kt#L56-L120",
+          "version": "repo-lines-v1:sha256:1e9aeba6183cf98eae17c8f9db906025179a204a0b7d421522d0b3f27d3d71f4:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4MGMxMzU5Y2IyNjU4ZjU1YTU0YzhjMmIxZjc1YTM1OGQzYzMxOTBiYjNiMmNhNGMxNWEzZGNhY2RjNWZiOWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1NDQ3YjY3YjAzZTA1ZGQ2MDgzOTAxZjVhYWE5M2M4N2MyMDlhZGVjMzYxMjZjM2JjZTgwMGJlYjQ1ZTUxMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA0YTI5YzUzNjRmN2M4ODkyN2NlODBhNGI0MzZhMTQwZmNiZjVhOGY2MDFkMmMxOTkyN2U1NDdiZGZkM2FkMjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bccd95f749cc4515ac2da7bb21a21167",
+      "statement": "Password login submits an account loadOrCreate request with a lazily computed password hash and an AccountLoadResponseHook, and clears password buffers after use.",
+      "evidence": [
+        {
+          "resource": "repo://api/net/src/main/kotlin/org/rsmod/api/net/rsprot/ConnectionHandler.kt#L81-L170",
+          "version": "repo-lines-v1:sha256:4a89371ade3b9dab6d904f23c523c6f7efcf0a5ed0ea76a9f1d709223cb258c2:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3MTA1NTc1OGE3YzdmNGExMWU5N2EyYWU1NmUxMTQ2OGRiZGMyZjYyNzNiNGUyMDZiZDg5YjE5MDliZjc5MWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NTRlYmJmZDhlZmVhNGQ0OWVjNWM3YTM4Yjg3MTYwNWNlNGYzMGM5NTY3NmQ2ZTU5MTBmYzQ4ZjUwMzQ1MTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU3ZDYyOTNhMTc5Nzg2MWVhYTBmZjk5NjkzMmM2NTZiZGM4MWU4YmY5OWFlOTVkNDgwZmNmMWQ3OWFjNzk4Y2EifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f4574b81642742a09e4a92af4a584cd4",
+      "statement": "OpenRuneCentralWorldLink buffers inbound central pushes (revokes, kicks, mutes, reboots, broadcasts, name syncs, private messages, friend presence) in concurrent queues that NetworkScript drains on the game thread.",
+      "evidence": [
+        {
+          "resource": "repo://api/net/src/main/kotlin/org/rsmod/api/net/central/OpenRuneCentralWorldLink.kt#L1-L80",
+          "version": "repo-lines-v1:sha256:9ef6e03656dbcda967922bc618598757735ea1519f6bc6983a9a303583e022d6:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4MDdmZmRhZDljNmU5MDQzOWE1NGVjZTIzNTMxNmYxMzFiYjcwODg3ZTdlMDllZjE3MzBiYjljZWU5ZGE2NTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjMjBjNTg0NTUzOGY3ZTA2NWZmYzUwODQyMzI4MWFkNTNiNjRhYjg5NGJlMGM5OGE5ZDUwYTg1YWMxODg2N2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZjYjQ1OTkzOTBmODgwMzBkZjk4MWE3NzRiYzAwNjM1YWU1NjZiNzI0YjJkZGNkYzk2NTgxZWQwMjFlMWQxMGMifQ"
+        },
+        {
+          "resource": "repo://api/net/src/main/kotlin/org/rsmod/api/net/rsprot/NetworkScript.kt#L92-L98",
+          "version": "repo-lines-v1:sha256:b0724593d4a2273667c782dd0580c3c652518ed3466c55ec8fd34c6591f65f8b:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTIxM2JkZDMzMjQ5MmRkMDM4ZWVhNzRhOTUxODMwY2Q2N2Q4NDA5YWU5MTY1MTVjZTA0N2ZjMGFkMzM0YjZjNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2ZiM2UwOTRkMTQxYTA5NTc4MTkzYzFhOGRjNTc4ZmQ2NWU0YzIwMWUwY2IxNDIyMTYwMzA3YWM5YTY3OTI4YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmVlYWI2YTQxYTZmYjQ1NTVmOTcyOWRmYzQxM2VjZTBjMmJhMTIyNTJhZTE3ZWYzMThkNzc2YWY0YjAwYThiNCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_08c4d2042d58428e81e7e3f51d5200ec",
+      "statement": "The example game config enables a same-instance central on localhost link port 9091, with commented settings for a remote central including world key and JDBC URL.",
+      "evidence": [
+        {
+          "resource": "repo://game.example.yml#L21-L43",
+          "version": "repo-lines-v1:sha256:b7428432b8bd43c1c981f3678372ffcd98a8c1ae13a8e1865a25325975f5f77a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyYWE0ODU5ZjM1MWJiNmUxZTZhZTNmZTk4YjJmYzA0YTRjYzEyMzBkODU4ZWNlMzM1NmRhN2I2OWU3ZDA2YTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmMGNlMDA1OTdkYjU3ZDhlY2QzNTU1ZGM2ZjVhZjIwZmMwMTU4ZWM0MjRiODYzNTBiMmU4ODEyNjFkZDIzYzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkODMzZDZmYWVmMjM4NDA1YTM5NjQ2ODU0MWQ5MzQxNDM0OTUzZWQ0N2NkZDk0ODBiYzhmMWJmZDQxOTAxYWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_aee65be2e49a454ca312c1e7cea7bb25",
+      "statement": "Realm exposes a mutable RealmConfig that throws until first updated and must only be updated from the game thread; RealmConfig holds login messages, xp rates, spawn coords, dev mode and registration settings.",
+      "evidence": [
+        {
+          "resource": "repo://api/realm/src/main/kotlin/org/rsmod/api/realm/Realm.kt",
+          "version": "repo-file-v1:sha256:48127c6536ebcd883340cf5f4078351af00bf66268547dcbe87f95299987ddc7"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

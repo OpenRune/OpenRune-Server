@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:6992e350db081c8e69196ffe2f095a4b8e29c7fdeccf5f7f4499fc612aa88786",
+  "claims": [
+    {
+      "id": "claim_7f9a9e9bbf6b409ebf0da4d3d8d094fd",
+      "statement": "GameServer aborts startup with an instruction to run `gradlew install` when the LIVE cache dir, SERVER cache dir, or game.yml is missing, and generates the RSA key in-process when only the key is missing.",
+      "evidence": [
+        {
+          "resource": "repo://server/app/src/main/kotlin/org/rsmod/server/app/GameServer.kt#L259-L272",
+          "version": "repo-lines-v1:sha256:5de0c7974bd1bd28e065a4f3ea2b4675a61c312745bf46923db74bfdcc3f915c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhZTQwMTRkMjNhMDBlZGYxZGZhYTRkYzQzODY5NDM3YjlkOTZjNWMwMGM5YTQ4OTlmZDVmYWI4YjU3ZWNmMjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlNjNlY2RmYzI3NTdkMGI3ZDYxMzM4NzllMTM0Yjc1OGRmODhmOGExY2FiNzBlNWNlYWU5NjI5NjVmMzdiNjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2ZjMxYWFhMDU0ZGNjYTY5NTVlOTg5NzFiNjVmZTcyNDViNWU2Zjk5YzdhMDJkYzkwMjQ1MGQzNDFkZjdjZGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9c015f79035a467f9d1e67e9eaeb8ac3",
+      "statement": "Boot creates the Guice injector from GameServerModule combined with every discovered PluginModule (classpath scan plus external plugins) before loading config, cache, and map.",
+      "evidence": [
+        {
+          "resource": "repo://server/app/src/main/kotlin/org/rsmod/server/app/GameServer.kt#L90-L129",
+          "version": "repo-lines-v1:sha256:a91182be775618c52502f37a3a0baef20e66e0c4aed6e8394f3f2156a214e082:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3OWYyOWZlZmE2ZDhiNGFlNWIxYjkwMGI5N2M2ODQ0ZjdjNDY1YTE1MWYxM2U1YmFlZmUwNjg5MGVkYjAxMjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjExM2Q1YWZkYzVlOGFiYmQ0OWJmODg4MGEyMjcxZTNlMmU4NjE3NzNmZTI5Njg0YTA1MTBkZjVlY2RjZTQ4NGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhkM2FmZjRjMTIxNTM3NGM5YTEzNjBmZTMyZmEzYTdjZDVkZmNlMmFhMmEyMWQ3ODJkM2VjNjY4NDU3ODlkYmUifQ"
+        },
+        {
+          "resource": "repo://server/shared/src/main/kotlin/org/rsmod/server/shared/loader/PluginModuleLoader.kt",
+          "version": "repo-file-v1:sha256:8aee6e143052f6affa969e5592cc2f8b3e4ce2a69fe3f3b188fa8e2c99e86a8f"
+        }
+      ]
+    },
+    {
+      "id": "claim_00b9487097274268a64792219d76098c",
+      "statement": "Map NPC/obj spawns are queued via addDelayed during map loading and only flushed after all plugin scripts have run startup(), so spawn handlers exist before entities appear and before login opens.",
+      "evidence": [
+        {
+          "resource": "repo://server/app/src/main/kotlin/org/rsmod/server/app/GameServer.kt#L131-L160",
+          "version": "repo-lines-v1:sha256:14a32d00c8728614bd2ad6edebbb2571f8cffe73f9677b9e7444305c7d135f80:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3Y2E5N2UwZmM1ODMyMDUwYTgzNWU1ZGEzMGVmZGMwYTJkN2EyOGQ0MzZiOTYzNzgxYTQ3OTc2N2Q3ZjI5NjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZkOGRiNDcwY2EyYjk4Zjk0ZGM3YTNhNjA1YTFmNDM0NzA4YzgyMzIyMDhmODQ5OTY5YTEyNDY3Y2ZhMTI0ODciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFlNWZiMWY2NTY4MmIwNDJmYmY2MTEyMjkzOTYzNzg4MjBjYWQ5NGRkYzAzODVkYmJlMWMzMjMyOWVjZjg3MjcifQ"
+        },
+        {
+          "resource": "repo://server/app/src/main/kotlin/org/rsmod/server/app/GameServer.kt#L177-L202",
+          "version": "repo-lines-v1:sha256:102f82d68cc6f1d186cbfdf3fbfbc3f5dc5c44befc5d3067e2eb39ca3e6d6736:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxODA0NWM0OWU3OGI4ZmFiNGM1NWU4OTY3NWNiM2E4YTgyOWE2ZDhiYjJjZjBkMTg5NzEzY2U0ZTczYTAzYmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjczNWUyNDVkN2I3NDkwZTBiZDM5YTljZTg4MzU3OWZjNGViNTYwMDIwNzZhMmM1ZjIwYzY0ZTc3YzdkYjY2NWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiZWY2MWM4OGYxNWMyYjZmNDQ0MjcwMDlmYzM1MTI2ZGJjMTljNTIxNzIxZmYyNzE1ZTY5MGE3NThmMjhlNjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_547b18296c7344eeb0dbacc575407667",
+      "statement": "Plugin script loading runs concurrently with service startup, and GameService.setup blocks on PluginScriptBootGate.awaitReady (5 minute timeout) so the game process does not start before scripts are ready.",
+      "evidence": [
+        {
+          "resource": "repo://api/game-process/src/main/kotlin/org/rsmod/api/game/process/PluginScriptBootGate.kt",
+          "version": "repo-file-v1:sha256:0044facf888eb340ca4803c8134f6e88fb605ab97b29d3b1126d96d370ec5925"
+        },
+        {
+          "resource": "repo://server/app/src/main/kotlin/org/rsmod/server/app/GameServer.kt#L210-L224",
+          "version": "repo-lines-v1:sha256:5c203f5fee46d2921407ba0677dcdfbb5b3d7677b34880f1d9aa0258eaf32e24:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkMzAyNTBhMWE2MGFhOWUyZWFmNDMxMDg2YWZkMmNjN2U2MDJjZmM5ZjM2YTNlY2YyMmFmNmEwZmZlNWQ5YzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5NjA0NTkwNjlkMjA3OTRjMTQ4MjFlZDIzMmYxOTA0ZTVhYjkxZTRjZWViY2NiZTgyNWIzNDc1YTc0NTFlZGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxN2E0YzA1YzJiYzY5YzQxYWM2MzRmYTQzNTE3ZDgxOGFhZDM2ZmVlNDU0N2U0ZjRjMmQxOTcyY2E5MzllY2EifQ"
+        },
+        {
+          "resource": "repo://server/app/src/main/kotlin/org/rsmod/server/app/GameService.kt#L62-L65",
+          "version": "repo-lines-v1:sha256:35c7ba8a415ea67b712be210158781884cf96e09e095c435e2bb158482d14036:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmI4ZmQyZmMxYWIzYzM2ZmY1YmI1MThhYWVjMTk3MGQ1YTAwZTc2ZjgzMjFkMWQ1NTBkZmE5N2Q0Y2Q0ZjdkOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2FmZWMwYjM0MmViZjdjZTJlNTEwMGZjYzMwNWRiYjA3NzU5ODIxOGI2ODU0NDRkNTEzZWQ3MjA2NWU3MmM3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTY2YTRkYzdmZTYyYTk1ZjUxNDE2YjRiNzhmOWM3ODUzNjdkNGY0NTY3ZDFmZDA5MTNiZmYyZmMwNmRkNmY5ZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_9d5c31e6a41c466ea358d0d95bee854f",
+      "statement": "ServiceManager starts core services concurrently, then signals listeners, creates executors for scheduled services, signals scheduled listeners and schedules run loops, shutting down already-started services if any step fails.",
+      "evidence": [
+        {
+          "resource": "repo://server/services/src/main/kotlin/org/rsmod/server/services/ServiceManager.kt#L27-L150",
+          "version": "repo-lines-v1:sha256:96796b8793d3b1c1212a886a8fd63a073ea88d57089a0c8e84616905d081d625:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0NWQ1YWJhY2EyMjY4MGFlOTUzMzY3MDBkZjc2NjM2MTk3YTdjYjZjMDA0ZjRjZDc5YWMxYjFmZDJmMGFjNGE1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmMDAxOTBmMGNmNzBjM2RjMzQxMmJlYjYwYmQ0M2E4MDNkNjVmYTFlY2U0ZTRhODExYTNjMDAzYTQ0MWFiMmFiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyNzRkYTM2YTM2OTQ2MTFlN2E5Mzc0Y2QwMjhmZGJkMDA1YTFlMjBlMTM3MTY0OTM0YjVhNDBiYWJmNjIwY2QwIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJjZGY1ZTMyZGU1ZmNiOTE3YWMzOTRjNDJmZWM2NjI5Mzk3OWRiYmVmZDE3MGMyYzA0YTExOGE2NTgxMTExNmEwIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_543ee1a18aa64bf08b2123b6ee501474",
+      "statement": "The JVM shutdown hook in GameBootstrap shuts down services with 5 second timeouts and a watchdog halts the process after 20 seconds if shutdown has not completed.",
+      "evidence": [
+        {
+          "resource": "repo://server/app/src/main/kotlin/org/rsmod/server/app/GameBootstrap.kt#L56-L111",
+          "version": "repo-lines-v1:sha256:b0afc417e50edd6f6a3a103fcecc044927440f7d4b24b22c5c46d48ca9064db2:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMDg1MTE5ZjlhMjdhODg3YTlhNGVlYmYyODEwYzkxYWZhYWFkMTNmZTNlZGJlMmJkN2JkNWE1NDQ1N2QxMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5M2Y4MmY5ZGZhOGMwMmU1YzkyMzRjZjAxOWYxZjFkZmI0NGVjMjJkNzg3Yjk5MzZmZGU5Mjc3MGUzZDdkMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8feb56567e144826b4694506fcb8fead",
+      "statement": "The root install task depends on :or-cache:freshCache, runs GameServerInstall (logback copy and RSA generation), and copies game.example.yml to game.yml.",
+      "evidence": [
+        {
+          "resource": "repo://build.gradle.kts#L50-L68",
+          "version": "repo-lines-v1:sha256:28789474dcc04cb65a38d6031ebf1b3ee528546286792a4da60467c554d9f24a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiOGQyYzc5NjMxMjExNjAxOWM0NjdlMDM4OTc2ZTcyOGU2NzYwNGY2NjI0MDViZjQxZmQyNGU2ZDhkZjUwYjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzN2E4MDRlNWJlMDk4MGYxMjEyODc3OTFkZjQxNzA2Mzk1MDFmOTdiODhiYmEyZDc1OTVhMzVjZTExZTJkMmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcwOTJjNDI2ZmI4N2M0ODA5NmFhN2RkMGI4OGIzM2RkZTkxYTNlMjAzMGRhOTU5NjVjOGMwMjJjYmUzNWI3YWIifQ"
+        },
+        {
+          "resource": "repo://server/install/src/main/kotlin/org/rsmod/server/install/GameServerInstall.kt",
+          "version": "repo-file-v1:sha256:c3851b01c9e9321c110b8cd44cad50822a25ee514501fd90b58115310b6d9a79"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

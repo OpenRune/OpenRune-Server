@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:ebc72c705b509c558cfdfa4ebcbc39d86c83333b9b0f2bf54eb87485087015c8",
+  "claims": [
+    {
+      "id": "claim_ced67997cb79433587be5ac51622133b",
+      "statement": "ExternalPluginLoader refuses to load a plugin source that is missing, disabled, or lacks a valid plugin.properties manifest with name, description, revision and author.",
+      "evidence": [
+        {
+          "resource": "repo://engine/plugin/src/main/kotlin/org/rsmod/plugin/loader/ExternalPluginLoader.kt#L136-L165",
+          "version": "repo-lines-v1:sha256:0fd336ee42860e29d5ee6f0e6f1409d3ef1e2d0f451197feea0532a656bcab4c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlOTZmODQwODhiZjg0ZTQxOWMxNjMxMGI4YTFhNjVjMjQ2NDgwNDU1YTkyMzJjMDQzMTdiYmY0MGFhMDM0ZjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MDkwNjNjOWM4Mjg1Yjk1NzJiMGYxZjJiYjQyZjUwNGU1ZGM4ZTUyYzEyNzBlZWU5MDJiZGUzODlmMjBlODciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhiNGY2YTY5ZmMxZDFjYzdjYzA2NzQyM2Y5M2JlMzhmMjY4ZTNlZGNlZWZjNDYwOGNlZjk3ZmNmZGY5YTBmODMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2OTU0MDIxYjVlY2FkYTYyYTk1NjQ3MWRkMTE3MzA3YjQxODcyMjBiMWVlNGU2MzNhODExMzRhNTQ0Y2Q0YzQifQ"
+        },
+        {
+          "resource": "repo://engine/plugin/src/main/kotlin/org/rsmod/plugin/loader/ExternalPluginLoader.kt#L291-L313",
+          "version": "repo-lines-v1:sha256:cb75784a05f44f00b9c47b308c7c997b4d0179e17558efc2d0b52e926737f428:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4MTA3MTUwYmQyYTAwYmIyODZmYzhjYjA0MzRkMTJhZDJjOTgyZDUyOGMyYWFjYTA1YzY3YmVhZjk3ZmNjNTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFkNTM3ODRmYzMyNjAzNWRkNGNhMDYzNzkxNTE3MTcxY2JiOWFjMzdlMzUwMWM3N2VjMmM2YmI4ZTEwNDNhZjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAzYzVkYTkzNGE1ZDI5N2IxNDM2OWNkNzdjMzk4MmZhMTQ2M2ZlOTAwZjcxYWQzZTBlOGE0OWUyMTdjZjE0ZDYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fca8be3627074e05988a5b8909a92828",
+      "statement": "Loading an already-loaded source unloads it first, then scans it with a new URLClassLoader; modules from a hot-loaded source only apply to a child injector used for that source's scripts.",
+      "evidence": [
+        {
+          "resource": "repo://engine/plugin/src/main/kotlin/org/rsmod/plugin/loader/ExternalPluginLoader.kt#L315-L338",
+          "version": "repo-lines-v1:sha256:21a038ab5bc7bb5b803aac7b2dafa9d8b184d926c4f5d53caa11db55a45e4f88:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhZWNiMDVlYzNmYTU3NWE4NWZjNWE3OGMxYmJhZjcxYjBiNjRjNGRiY2VkYWVmOWE2MDZlMDg4NGFhYzhkODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1NDkxZmY2ZDMyZjFkZmM5NTIwNWIzY2JhYzBjNTFiOWM3MWVmMTFhZTE4ODUxZmRkYjYzZmI4NDIyYWMxNmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5MWY2NTViN2FiOWNjZWEwNGVhYjk2YTY5MjA0YmNhNzgyMmRhMjdmNjMwYWVlMDRlYmU1Mzg2ZDc4N2Q0YzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2ZjMxYWFhMDU0ZGNjYTY5NTVlOTg5NzFiNjVmZTcyNDViNWU2Zjk5YzdhMDJkYzkwMjQ1MGQzNDFkZjdjZGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0065b9e4b4114992abf8cd8a8a868cd8",
+      "statement": "Unloading runs the scripts' shutdown hooks, removes event bus subscribers, cheat commands and engine queue bindings defined by the source's classloader, and closes that classloader.",
+      "evidence": [
+        {
+          "resource": "repo://engine/plugin/src/main/kotlin/org/rsmod/plugin/loader/ExternalPluginLoader.kt#L365-L382",
+          "version": "repo-lines-v1:sha256:07788a23683f2ba7044aad67e0b26b0418c2bc08d0484d60dc02ceef763d1bd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5MDBmNTFkOTliNGQxZmI1YmU3M2Q3MmQ3NTQ3OWMyMGE0MzQxZDgwYzRiYmM5NWMxMjRhZjI3ZTJhMTNmYzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiM2E2NjkzMDY0N2VkNGJiOWEwZDIzMzQxYjlkNzU3YzkyNjE5NWU2YjRiNmJjYjdhNTFlZTM5MzQ5ZDJmMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ1MzVjYmZlN2MzZTU5ZWEyYTM1ODQwYzliNDI5NjM4NGU5ZDU4MDBmM2JmNTNiMzNhNjQ0YmU0NDc3NDA0MDIifQ"
+        },
+        {
+          "resource": "repo://engine/plugin/src/main/kotlin/org/rsmod/plugin/scripts/PluginScript.kt",
+          "version": "repo-file-v1:sha256:9d2e681643aecc33e96ca71096be406e41a101a67e953483cd9ca74f0723b2d2"
+        }
+      ]
+    },
+    {
+      "id": "claim_55a54132bb994cefacf46cb4594c6086",
+      "statement": "Plugin enabled/disabled state persists in plugins/plugins-state.properties.",
+      "evidence": [
+        {
+          "resource": "repo://engine/plugin/src/main/kotlin/org/rsmod/plugin/loader/ExternalPluginLoader.kt#L45-L110",
+          "version": "repo-lines-v1:sha256:363030901b970293c722d040a4efd599faca9f420d2670e011343fb03ff52a3a:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyMGJlYTgzY2I1YTdlYmQ4MDYzMmYzYTBkYjE0MTIxNDNkYzgwZjllMTcyMDFlNmE2ODNlM2Y4NTg4NjFlM2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyNWRkNGYxODZlZDAxYTVhOWMxOTRkNGZhNmJiYmE3ODk1MDRmNzRiM2NmMzM0NGJkZTNjNjU3MDBhNmZmOTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3YzBkNzJkMWE4NzZmNmVmNTc3OTNjZDg1MDY4ZThkMTMxMzFlZjE1NTBhMWRlNWM3M2JjODkxZGU4ODJiMGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBkNDU4ZjFjMjg4ZTQyMjhmZTQ0ZTE3OTdjYzZlYzRjYTM5NGIzN2JhZjU4NTNhYTQ3NzAwMmFkYjAxOGE0Y2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_279fc3323dc6479fbbfadca872877516",
+      "statement": "At boot, external plugin modules are combined into the main injector and external scripts start with built-in scripts, and all plugin classloaders are released after the server is ready.",
+      "evidence": [
+        {
+          "resource": "repo://server/app/src/main/kotlin/org/rsmod/server/app/GameServer.kt#L125-L129",
+          "version": "repo-lines-v1:sha256:6c8d734eee5514ed13d62918922979d331c437acc86b9a9867a9b0b6c6b5625a:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjNiMDVkZjFhOWYzNTYzOWNiYTYyOGMyYWE3MTgwZjE5Y2Y3MzRiM2JjMzAyNDM5ZWZmMmNlMTg0NTUyN2UwMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzc1NGViYmZkOGVmZWE0ZDQ5ZWM1YzdhMzhiODcxNjA1Y2U0ZjMwYzk1Njc2ZDZlNTkxMGZjNDhmNTAzNDUxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGQzYWZmNGMxMjE1Mzc0YzlhMTM2MGZlMzJmYTNhN2NkNWRmY2UyYWEyYTIxZDc4MmQzZWM2Njg0NTc4OWRiZSJ9"
+        },
+        {
+          "resource": "repo://server/app/src/main/kotlin/org/rsmod/server/app/GameServer.kt#L177-L183",
+          "version": "repo-lines-v1:sha256:bee74dc056ecac7d3585ee55e2c78d94b4dea5f533e06a9feb5976a5ab140344:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDE4MDQ1YzQ5ZTc4YjhmYWI0YzU1ZTg5Njc1Y2IzYThhODI5YTZkOGJiMmNmMGQxODk3MTNjZTRlNzNhMDNiZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjNkNmE5YzJmMjFkMzJhMjEzMjEwMWExYzRjMjNhZmVlZTE2Y2M4MDMzYmQ4NWQ4YjRmODE3NWEzOTNmZGFkMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzM1ZTI0NWQ3Yjc0OTBlMGJkMzlhOWNlODgzNTc5ZmM0ZWI1NjAwMjA3NmEyYzVmMjBjNjRlNzdjN2RiNjY1ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzVjMjU5MzY5ZTQ4MTA1YzY1ZjA1YTU4NWU0NjViYWY1OWJjMzM1ZWJkYzYwOWU2NzdmMGNhOWRhZTA1NDg4NyJ9"
+        },
+        {
+          "resource": "repo://server/app/src/main/kotlin/org/rsmod/server/app/GameServer.kt#L229-L236",
+          "version": "repo-lines-v1:sha256:f8906a5ca383aa13ad3a831c9e794005e4b2ef25ffb2884eb53ead1c6a18b4b9:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDk5MTkzYjU1MzExODc3NzJmZTI5YzQwZjhhMDgxN2U5ODk3N2ZlZGM0YmE3YjVmNDUyMDIzYmM4M2IwODdmMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGE2MzFhYzQ3ZTk0MjJkM2JhMWM2NTBkN2NkMGEzZGY2YzQ5ZDlkNGRiMzI5ODJjZmIwYmIwODAzMWFkNDNhOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_097e92edcf884655b9f7a8d45954401a",
+      "statement": "The example-plugin template is built with :example-plugin:jar, copied into plugins/, and loaded with ::loadplugin as a reload test.",
+      "evidence": [
+        {
+          "resource": "repo://docs/external-plugins.md#L1-L20",
+          "version": "repo-lines-v1:sha256:a5d830897acb0e8493ab4a9f522fadb3fd77258d3909128b2c972f3af3b103b5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlZTc4YzVhZmY0NmMxMjk4YjY0ZjZjYWZmNjA5NWQ1MjhmYjIxM2E0OGMyOWU4ZjRhOTdmNTM0YzlkMDlhYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhjMDYwMTJiY2EzZGNkMmI5NDU2MmYwZWMyYjFmZTM5ZDAyOTliNTA0NWRlNTM3ZWRkMzNhZjNjMGY4ZDFkYzQifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

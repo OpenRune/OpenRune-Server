@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:3f092808b0c870a49a84e74e6c4f234ed57fe014ec94aa80a0b97d775d16c193",
+  "claims": [
+    {
+      "id": "claim_1719191cab2044ad9a1d57f3d25c93df",
+      "statement": "The EventBus keeps separate unbound, keyed and suspend event maps; unbound events fan out to every subscriber while keyed and suspend events allow exactly one handler per type and id and throw on duplicate registration.",
+      "evidence": [
+        {
+          "resource": "repo://engine/events/src/main/kotlin/org/rsmod/events/Event.kt",
+          "version": "repo-file-v1:sha256:c3ab85b562ab01ee01079cb8d02be0ced2f0b7bc8379f42312f0aa45a9e81ff0"
+        },
+        {
+          "resource": "repo://engine/events/src/main/kotlin/org/rsmod/events/EventBus.kt#L1-L50",
+          "version": "repo-lines-v1:sha256:ca386e81f34a4b8d42d98589dc6a95e5022cbf4fa5f6f37bb88182803c85838e:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmMmE1YmQ3NTJmMThiOTY3OGQzYmEzNjdiYzA3MGMyMzc5ZmMwMGUxYWIxZTEzOTUxOWY1YjZmNjcwMjk5ZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiZTFmN2EzNGQ4NWIwMTVlODM0YjMzZTc0NDIwMDYxNGYwMjAwYTVlOThlYzZlMTZjMzkwODJjNGQ2NzFmYTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkNTllNGEzOTY0NjI0NGQ0NzFjZGRmZjYwZmYyNGZjZDEyYTQ4YjYxMmU1OTExYjEwZjc2ZjA5YjVmZWEyYjIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_813eb0b4ac6a41c9abbf794c1f7d1981",
+      "statement": "EventBus.removeByClassLoader removes all subscribers whose lambda classes were defined by a given classloader, supporting external plugin reload.",
+      "evidence": [
+        {
+          "resource": "repo://engine/events/src/main/kotlin/org/rsmod/events/EventBus.kt#L56-L66",
+          "version": "repo-lines-v1:sha256:45a165640f0dbae62675d62ec1326d5952d117bbbe0b850ec58e62eb6db96aee:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmZjNhNGU3NmY5NjExMDUwYWU5NTVmNjE3YmQ5ZDJjZTcwZTQ1YjRmNmM3YjU2MjAwZmNlYmI3YTc5MDE5ZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkOTIyMTEzZTUwZjA1NTgyZTEzNmJmZTBhYTA1NTE1YmQ0YjAzZDdjY2U2ZDcyNDkzOTlkMmY2MWZjMDhkZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkMTgxMzQ2YjQ1NGUzZGMyZjUyN2FhZGI5NTUwOWUxZmFmNGJlODgzZWY5NDQ0OTBkYzFmZDhmOGU3NTIyYjYifQ"
+        },
+        {
+          "resource": "repo://engine/events/src/main/kotlin/org/rsmod/events/EventMap.kt#L11-L40",
+          "version": "repo-lines-v1:sha256:fb74991c01573bd819ddc0af26dffc5a331c26ae23338d36c597fa143898112d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiOTQyMmZjMDY4OTQyMmYwMDhkYjQxZjRmYTA3YzE5MGVjMjdhZWExZTY5MDZiYTdjMGVlYWI1YjVlYzFhNWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwZGE0NjdiYTk3MGFjNWFlNjU5ZDdmY2QzNmUxNDIyMTJlYzY4NDRjYTZiN2NmOTM4ZTMzNzcxYzA4OGNlZjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_05fd1806a3454e6fa81f744142634bcd",
+      "statement": "Script DSL op handlers such as onOpNpc1 resolve a gameval symbol to an id via asRSCM and register a suspend handler with a ProtectedAccess receiver.",
+      "evidence": [
+        {
+          "resource": "repo://api/script/src/main/kotlin/org/rsmod/api/script/NpcScriptEventExtensions.kt#L26-L39",
+          "version": "repo-lines-v1:sha256:8f26ff4a6dab76e4ee35fc27d02f1f909b526dda677e975aa2fef4061eac9ca3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyZWZhYjNlMmZlYzQ0NGMxNGI0ODdhZjVkMmI0NTI1MWUxNjc5YTkzMWQwY2EyMjUzZjU1NzRkZjk2Y2I2ZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczYTRjZWM1ODkwOGQxOTIxZWY0NTg1ZjZjYTUyMGU2MTJkODA0YTMxMWI3NGU0ZjJiY2ZhZjEzY2IzODZjYTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUxMDU5NjljNmI2MjJlNWVkZjNlNTVjNzYwZWI5NDQ1NzlkZmIwZTFmMTY3YTdiZjhiZTUzYjJlYWE2YWMxYzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0NmMwZmZjMjk0Zjg1MGQ1ZDI5M2VkNTA5NDExNDBkZmE2ODg2NGQwODYxZTYzOTRiMTMxMDM3NGQ0MjRhYWIifQ"
+        },
+        {
+          "resource": "repo://api/script/src/main/kotlin/org/rsmod/api/script/ScriptEventExtensions.kt#L13-L40",
+          "version": "repo-lines-v1:sha256:4de2a3df4df84448c7b7b2f8c17dba2bdb2b9d635815f0745a6e7b9ba62bc9b6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlNjg4OWQ0YmExMWY2NDE3MWQwYjEzNzcwNmZjMzgzOWEyMjc5NjE0YzZjYjM4ZDhiMmU5NWRmOTM0OTkxMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5NDIxOTM3NTI0NjhiOWFkNTNiODBkOWU3MjRkZjU4ZWE4YmVlZTgxODkyODAxNzMzMDQ4ZjM5YzY3Zjg3N2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNkYjRjNjE5YzViODZjMzBmMzgwMTk4OTlhNWNmMTllMzIxMzZkY2E1ZjgyZTUyMjE3NjAzM2VkMzMzYTc1ZjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlZTdhNzc5N2I3MmI5OWNjMmI4OThkYjFiN2QyNjVkZjZmNDJlY2I4MWJkMjhhZWU1NTQyYjBmYjhiMzVlZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5709eb8869bc44d0a7b6410de3a475fd",
+      "statement": "GameCoroutine holds a single suspension with either a predicate or a deferred typed-value resume condition, and advance() clears the suspension before resuming so the resumed code can suspend again.",
+      "evidence": [
+        {
+          "resource": "repo://engine/coroutine/src/main/kotlin/org/rsmod/coroutine/GameCoroutine.kt#L13-L78",
+          "version": "repo-lines-v1:sha256:19adfbf982b0142f301a39990ae4bf2cdb00aa7906f5496f2bd65ab0aee92b6c:eyJzZWxlY3RlZExpbmVDb3VudCI6NjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZTgxODI1YWU4NmI0OWY5ZTc0OGEzODA2NDBkODQyMjYzMGZjZDU3ODEzMzQ1ODBiNTgxNDQwZjU0MzAwZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNGZhNWI0NjQwZWJiYjNkOWU0MDI1MTk2ZWJjMmMwZWJjZTdhYjk3MWIwYjFkNDU3YjkzMWU4YWYwNTU1OGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzOWU1NDJjNmUwYjk4M2RkNWEyNTg2NDIyOWIwYjJjYzY2YmI5NGI4NmVmNTNlZTE2YThhYjVkMDU1MzM2NWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e08b4d87fde44b9daaccff77420b4871",
+      "statement": "PathingEntity.launch cancels the existing active coroutine before starting a new one, while launchBeside runs a block without touching the active coroutine and cancels it if it suspends.",
+      "evidence": [
+        {
+          "resource": "repo://engine/game/src/main/kotlin/org/rsmod/game/entity/PathingEntity.kt#L211-L245",
+          "version": "repo-lines-v1:sha256:562edb3b9496375968eaefabbcb2b2a94177c10a595e704c7306d64cbe6c4543:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyZDEyNjRkMGEwYTZmMWVmOTI4ZDRmM2E0ZWY3MjMyOGNhZDY3ZTA3YTgyMzFkY2FjYTBkMjhiZDM3M2Q1YzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3NGRjNGM3ZjcyNzViMjY4Mjk1ZGZkY2U5MjcwM2EwMzA1ZDM5MjRmYWY4NzdkMDBkNzc2NDk5MjhmYzYzZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmZTljMTFjZTI0ZThmZjI2YWJkMDJhNDk2ZGRmYjg2NzA0ZjBlMDhmNzg0ZDg5ZmU0OGRiYzJmNjI1ZTY5MDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6ef84b98bbab41a19c62e5a0082e79eb",
+      "statement": "A player is access-protected while busy or while their active coroutine is suspended (unless pending shutdown), and ProtectedAccessLauncher.launch refuses to start a script in that state.",
+      "evidence": [
+        {
+          "resource": "repo://api/player/src/main/kotlin/org/rsmod/api/player/protect/ProtectedAccessLauncher.kt#L45-L62",
+          "version": "repo-lines-v1:sha256:721a08b9c8f90379f5334a87d0b3ceb1017f963c63485e8c9c5378f74d8e86e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwNzYyYjI4M2QwNmNiOTMwNDkxNGY3M2Q2Nzc3ZGU3N2IxODQxODJiZjAwNGEwYWE5NjdmOGI1Nzc5ZjFmMzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NTRlYmJmZDhlZmVhNGQ0OWVjNWM3YTM4Yjg3MTYwNWNlNGYzMGM5NTY3NmQ2ZTU5MTBmYzQ4ZjUwMzQ1MTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://engine/game/src/main/kotlin/org/rsmod/game/entity/Player.kt#L320-L324",
+          "version": "repo-lines-v1:sha256:899aa4865d449d4f46d02aa2947ab15139adc4a5a1d3ba293460a0db8e6c3e50:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDgxZTE1MGVjMTVjMmNlZDZjNzhiMzgyYmRiZGUzMDAzNmEwODc5NWQ3N2YyYTUyZWI0NjhmNTMyNmYwMTRkNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzNhNTJhNzVlZTVhZjA4MTlkNzgwOTdlZDVlMzE4OTVjMzY5YWE3YzAwMTA5NGZiZmMzYWQzZGY2MGZmYTBkZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDRjNDRhM2M2NmIyNTgzYWNiODgzYjM5ODM5MTBjMTIwYmQzYTYwN2IxZjRkYTk0NDBjN2ZiNzE1YWQ4MTFhYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2M4MTg0ZWViZDVhZDFkY2MzYmVlZGNkMWI0MDk2YjM5YzdhZGQxODcwZTk5ODg1NmM5YzQxYzFlNjM1MjI2MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3be8e75341f74f70aef01a91594b65ae",
+      "statement": "Suspending ProtectedAccess verbs re-validate on resume and throw ProtectedAccessLostException if the player became protected elsewhere, the active coroutine changed, or the expected modal changed; advanceActiveCoroutine swallows that exception.",
+      "evidence": [
+        {
+          "resource": "repo://api/player/src/main/kotlin/org/rsmod/api/player/protect/ProtectedAccess.kt#L2005-L2017",
+          "version": "repo-lines-v1:sha256:3e4ed0b0f2973441e1ecbe19e2bff1063916c351784da4487b2a0f0dc2a3e034:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzY2VjYzc3ODVkMjFjMThiMTY4MTY4MjZhODBmMDM2OGRiZTczODY2ODdjYzNjM2U0ZmI3ZjVmZmIwYWEzMzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4MTU3NTI4MmRhZDgzNzY3NjcxZGUwNGFmZmE5OWY5N2ZiMDkyMzIyYTRmMzkxMzRjNjRmYTFjYzBkNjliYzEifQ"
+        },
+        {
+          "resource": "repo://api/player/src/main/kotlin/org/rsmod/api/player/protect/ProtectedAccess.kt#L3038-L3078",
+          "version": "repo-lines-v1:sha256:367af17369409fd89d59a23d57694b1e60cbd725048ac467ae2d16bd52a00ef8:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhMmQ4ZjQ5ZTBkNDZkMGIxOGE1MjliNTY4Zjk4M2ViMWQxNjA3YmY3YzY4ZmEwM2EwNDM3YTA3NGM4MTA5ZjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3ZGJlMGQxNmVkYzc2NmY3M2FjOTEyNzBiMGZiNjM4NGI1NGNjYzUzZGQzNDExZDJhMzBhYWU1MWI5ZGJhYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlNTNjNzZiNjM4MjI2M2JlYjVhMmIyNzRhMzAyNmM0MDU5NzE0YjExNTA5MjI2YWI3OTVmNGRjZDRlZWQ4YTAifQ"
+        },
+        {
+          "resource": "repo://engine/game/src/main/kotlin/org/rsmod/game/entity/PathingEntity.kt#L247-L256",
+          "version": "repo-lines-v1:sha256:16b814b1a8242798d44413bf6cd0a43e39ce2966cd2577d2baee8948d04a152b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyNGE2YWRmZGQ1ZWQ3ZWQ1Mzc2NGU1MGU4ZWE5NThiNDg1M2M3M2I4ZjM2ZWUwYmJiMjU5YWNjZWJlYjM5ZjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI4OWYxNWFjOTM3ZmE4YjYzMjFkNzk5NjE3MzY1ODc2ZWJkNDcyYWFjZmYxZjIzYzllMmUxY2JiNWQwNjc1MDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM0OTA5ZDExMWNlNGVmZjhiNzEyY2VmZDIxYzIyNGU4OWYxMThhZGExNmYzYTlhNzk2ZjVkYWJjNmU5NjYwNGMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}

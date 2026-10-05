@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:98cf697fe0ee906c83320460ce19ef636b4e47979b76dc9106ba89df846bd287",
+  "claims": [
+    {
+      "id": "claim_a0003249bec0467ca2498c5fe79b723f",
+      "statement": "ResponseDbGatewayService runs database requests on worker threads, retries failed or timed-out requests before answering with an error, and never invokes response callbacks on worker threads.",
+      "evidence": [
+        {
+          "resource": "repo://api/db-gateway/src/main/kotlin/org/rsmod/api/db/gateway/service/ResponseDbGatewayService.kt#L1-L60",
+          "version": "repo-lines-v1:sha256:1a8b0eb97e7e598e6724180a092ac6df3b9dfacd1b487cdcb83621d4db499a71:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0MzAwMjdjNzA5Y2ExMDJjYTc4MDZhMDA5MmRiNjE5NzM0MmIyYzk4MTFiZWQzODFjYWE2MGNlNjNiYzk3OGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MDc3N2QwMDY5Y2RiODQxYTA0NzZkMWQ1MDZkZmVlZWY1OTYwN2Q0M2E1OWRlOTY1NDBkNzQwOTY5OTFjNDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlZDU2YWI3N2YzOTU3MmQ2ZmE3MjRmYjU4MzI0ODVkMTIwZDJiNjY0NTAyYmYzYTEwYjA4MDFkOGY2YzBlMmQifQ"
+        },
+        {
+          "resource": "repo://api/db-gateway/src/main/kotlin/org/rsmod/api/db/gateway/service/ResponseDbGatewayService.kt#L280-L310",
+          "version": "repo-lines-v1:sha256:e1d919b02e2cf78dfb2c2aa3b5fa989ed4f7356cbe30fe7b333d5f62e026b8ed:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjZjVmZDQ5OWFmZGU1ODdhYTAxNWZjOGY5ZDc0MjQ3YWM1OTE1NjM0N2IzZGQ3NmJjNzJkMmVmMGYxMTgxYmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmMDk4YTAwOGEwNzQxNDNiNjk0NDA4MmE4YzBmMWViZWZlNGI2YzBiNTk5MzYwMTJiNTI5MGNmNjEwNWZjNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NTRlYmJmZDhlZmVhNGQ0OWVjNWM3YTM4Yjg3MTYwNWNlNGYzMGM5NTY3NmQ2ZTU5MTBmYzQ4ZjUwMzQ1MTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxYzM4MTQxZTNhMzQ1OTFiZTAyM2Y5NDgzNDI4OTJhZDM3MjY0ODlkN2RmODkzMDNlYmNmNzU0N2VjMzIzZWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_87d6d42f9014477393f80383c9977267",
+      "statement": "WorldDbSyncProcess invokes up to 50 pending database callbacks per game tick on the game thread.",
+      "evidence": [
+        {
+          "resource": "repo://api/db-gateway/src/main/kotlin/org/rsmod/api/db/gateway/GameDbSynchronizer.kt",
+          "version": "repo-file-v1:sha256:250b890ec4bc0883210fa2c5e80e43a893533ef6e44a4383be4313f84ea546fb"
+        },
+        {
+          "resource": "repo://api/game-process/src/main/kotlin/org/rsmod/api/game/process/world/WorldDbSyncProcess.kt",
+          "version": "repo-file-v1:sha256:6b99ab6de74345bea2e42eb1542dac53611c21299e2e380314af35d97dabf66b"
+        }
+      ]
+    },
+    {
+      "id": "claim_3f48b1bc143c425bb8db91b4ad5fa534",
+      "statement": "During shutdown GameDbSynchronizer blocks until the gateway's fast-forward shutdown completes or a 2 minute watchdog expires.",
+      "evidence": [
+        {
+          "resource": "repo://api/db-gateway/src/main/kotlin/org/rsmod/api/db/gateway/GameDbSynchronizer.kt",
+          "version": "repo-file-v1:sha256:250b890ec4bc0883210fa2c5e80e43a893533ef6e44a4383be4313f84ea546fb"
+        }
+      ]
+    },
+    {
+      "id": "claim_7e3d3d5ccb42432e858ce857576f4359",
+      "statement": "AccountLoaderService refuses to queue requests once 2000 are active and processes queued account loads in batches.",
+      "evidence": [
+        {
+          "resource": "repo://api/account/src/main/kotlin/org/rsmod/api/account/loader/AccountLoaderService.kt#L290-L310",
+          "version": "repo-lines-v1:sha256:588bcc50385a7d2f963b7d209b9b5cb4c9ec0da7ac2f148f3dd734eb9604c5a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjZjVmZDQ5OWFmZGU1ODdhYTAxNWZjOGY5ZDc0MjQ3YWM1OTE1NjM0N2IzZGQ3NmJjNzJkMmVmMGYxMTgxYmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlYmFkYzBjMmY2NTYyZGNlNzE2NGQ5ZTU3Zjk4NmNjYmNlN2NiYzQ0NDI1YTFlMmY2YmZmZjljNWM2N2VjYmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVmOTU4ZWFjNTk5YjgxZGM3NGZiZGI5YWU5MDUxOTRhY2MxYTdjZDBjM2U4OTRmOWE5ZjcyYWZkMmQ2MDE0NDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwODlkNTBjOGFhYWFhMWRmMjRjZjE4MmJkYWIxNWQ4NmQ1ZmFhOThmMTQxMWExYmVmZjdmNWEzZTA0ZmE0MTIifQ"
+        },
+        {
+          "resource": "repo://api/account/src/main/kotlin/org/rsmod/api/account/loader/AccountLoaderService.kt#L44-L60",
+          "version": "repo-lines-v1:sha256:52bca629db11994acc5ff2001cca6d769e05b9a127db1f6eb7ad6f4fc105137d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhMmQ4ZjQ5ZTBkNDZkMGIxOGE1MjliNTY4Zjk4M2ViMWQxNjA3YmY3YzY4ZmEwM2EwNDM3YTA3NGM4MTA5ZjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhMmQ4ZjQ5ZTBkNDZkMGIxOGE1MjliNTY4Zjk4M2ViMWQxNjA3YmY3YzY4ZmEwM2EwNDM3YTA3NGM4MTA5ZjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3NjcxMzAzNWQ5YzBlYWIwNWM1MWNmODBlNmI2ZDg2ZGM5MzY5ODI3NTIyNTk2OTdiZmM0MGM2MjIyNjRiNWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk2NGQyOWFiYTMyYTJlMWU0OGZkZTRlMDMxZTExMGRjOTM1ODEyZDgyZTFkODNhMDVkZDk4Mjg0MzE3ZWQwYTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0c4979a57f6a4c8eb5b77aae6cf5491d",
+      "statement": "Character loading reads the account row with persistent varps and attributes, and character data pipelines append further segments that appliers apply to the player on the game thread before registration.",
+      "evidence": [
+        {
+          "resource": "repo://api/account/src/main/kotlin/org/rsmod/api/account/character/CharacterDataStage.kt",
+          "version": "repo-file-v1:sha256:9a5b40f913a46c976764ed3b9481b726d73fb5a12289d4c19e0145eec685a7ef"
+        },
+        {
+          "resource": "repo://api/account/src/main/kotlin/org/rsmod/api/account/character/main/CharacterAccountRepository.kt#L114-L180",
+          "version": "repo-lines-v1:sha256:43c4574ba206a7b46039aa80aaf3b70d889a12577bdc64667bbdd27a14ee7fb6:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0Njg5NzM2MDRmNWVmYjhiMWNhZTljNGE1MjNmYTcxNGNmYjJkYzY4ZjY4YmIzM2E4NmYwZTJmYzgzOGJjYjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4OTAzYzY5OTU4MGRiNjI4ZDdlMTZhM2QwZWYzNDU4YWRhZjk4MzJiYWE0YWQzOGE2NGFkNThiNjc3YmNjZTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NTRlYmJmZDhlZmVhNGQ0OWVjNWM3YTM4Yjg3MTYwNWNlNGYzMGM5NTY3NmQ2ZTU5MTBmYzQ4ZjUwMzQ1MTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFhOWU0MGFhNTVjNzIyODM2YWNlZGEyOTFhNzNmYWQxMzExM2Y1ZWIwZDYzNTdiZGMyMmZjY2EwNDAyYTIyMTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_55d996924dfb4460ad82d930213663ba",
+      "statement": "Account saves run in a single transaction that saves the character account row and then every bound character data pipeline.",
+      "evidence": [
+        {
+          "resource": "repo://api/account/src/main/kotlin/org/rsmod/api/account/saver/AccountSavingService.kt#L84-L112",
+          "version": "repo-lines-v1:sha256:641e94d06161ff7cc37bc6bfb84d343568f02446d548bfbd6d9994d610678abc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2ZTM1M2JkZjMxOGZkZjUxNDlhYWJmNzM2OGFhYmFkNTVmZjY0MDg1ODU0Yzk3Y2QwYWM0ZjBhOGQ1MWE2MjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1OThiY2I5MmYzZTEzZTkxYWE3M2FjMTRkMTRiZjgzMjI1NzU1Yjc2NzAwYTY1ZDVkZTk1NjZkYmU2MDczYjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NTRlYmJmZDhlZmVhNGQ0OWVjNWM3YTM4Yjg3MTYwNWNlNGYzMGM5NTY3NmQ2ZTU5MTBmYzQ4ZjUwMzQ1MTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4OTlmZTEzNDc0MjA5NzQxMTE0ZTFhMTk5NTgxZTJjNTE5MmU1NGM4OGQ2NTlkNzQzNTgyZTZjZGJmNmYyMmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5f8f2e68be904352a9779005ccd2404d",
+      "statement": "Inventory and stat persistence are contributed as CharacterDataStage.Pipeline set bindings.",
+      "evidence": [
+        {
+          "resource": "repo://api/account/src/main/kotlin/org/rsmod/api/account/character/CharacterModule.kt",
+          "version": "repo-file-v1:sha256:7b5c27bafd8c2adead164f84d390717a38fbe57c59c553387e71f92eab874278"
+        }
+      ]
+    },
+    {
+      "id": "claim_2bac702d1afe4bde84dacf5e8d8f14a1",
+      "statement": "PlayerAutosaveOrchestrator saves players with modified permanent inventories or persistent attribute changes, saves all eligible players every 500 cycles, and coalesces in-flight saves per player.",
+      "evidence": [
+        {
+          "resource": "repo://api/account/src/main/kotlin/org/rsmod/api/account/autosave/PlayerAutosaveOrchestrator.kt",
+          "version": "repo-file-v1:sha256:dc661cbb89e22aee678bc13a257635b6ebd81e15158ca3f453136bf4cca3ad17"
+        }
+      ]
+    },
+    {
+      "id": "claim_9c3f09bc8b2347e7b22eafb49c313dea",
+      "statement": "Embedded PostgreSQL is started for same-instance central when no JDBC URL is configured.",
+      "evidence": [
+        {
+          "resource": "repo://api/db/src/main/kotlin/org/rsmod/api/db/jdbc/EmbeddedSameInstancePostgres.kt#L28-L60",
+          "version": "repo-lines-v1:sha256:3c6cf2407d198c5b549076ec14bd94d4fa71a934fb4ff47d529cd527ab225027:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhMmQ4ZjQ5ZTBkNDZkMGIxOGE1MjliNTY4Zjk4M2ViMWQxNjA3YmY3YzY4ZmEwM2EwNDM3YTA3NGM4MTA5ZjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM0OWE2ZTA3M2M3ZWFhMDE2YmM0MDM3YTEzZDcxMjAyODZlYzZjZDE3MDZkOTk5YzIyMzlmNDU5MWQ2ZThkNzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlhMzRjMDJkOTZiNDU1MzllM2VmYWFmODFmNGY3M2NmNjM3NmNlZjcyYmRhNTg0ZWY0Nzk1MWNlMjY5ZTcyZWIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-02T20:46:41.242Z"
+  }
+}
