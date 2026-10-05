@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withTimeout
+import org.rsmod.server.services.concurrent.ScheduledDrainService
 import org.rsmod.server.services.concurrent.ScheduledListenerService
 import org.rsmod.server.services.concurrent.ScheduledService
 import org.rsmod.server.services.util.safeShutdown
@@ -257,7 +258,7 @@ private constructor(
         coroutineScope.launch {
             try {
                 service.setup()
-                while (isActive && !shutdownRequest.get()) {
+                while (isActive && (!shutdownRequest.get() || service is ScheduledDrainService)) {
                     service.run()
                 }
             } catch (_: CleanupException) {

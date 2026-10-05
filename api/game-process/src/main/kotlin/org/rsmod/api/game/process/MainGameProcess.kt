@@ -48,7 +48,12 @@ constructor(
     }
 
     private fun fastForwardCycles() {
-        repeat(SHUTDOWN_MAX_SIMULATIONS) { cycle() }
+        for (i in 0 until SHUTDOWN_MAX_SIMULATIONS) {
+            if (playerList.none()) {
+                return
+            }
+            cycle()
+        }
     }
 
     private fun logRemainingPlayers() {
