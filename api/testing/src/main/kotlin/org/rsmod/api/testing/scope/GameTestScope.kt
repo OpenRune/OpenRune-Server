@@ -56,14 +56,12 @@ import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.modifier.StandardPlayerHitModifier
 import org.rsmod.api.player.hit.processor.DamageOnlyPlayerHitProcessor
+import org.rsmod.api.player.hit.processor.InstantPlayerHitProcessor
 import org.rsmod.api.player.hook.PlayerGroundItemDropHook
 import org.rsmod.api.player.hook.PlayerInvUpdateHook
 import org.rsmod.api.player.hook.PlayerObjTakeValidateHook
 import org.rsmod.api.player.hook.PlayerPostTickHook
 import org.rsmod.api.player.hook.PlayerTeleportValidateHook
-import org.rsmod.api.player.hit.processor.InstantPlayerHitProcessor
-import org.rsmod.api.player.interact.LocInteractions
-import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.protect.clearPendingAction
