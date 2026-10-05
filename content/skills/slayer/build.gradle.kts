@@ -18,6 +18,7 @@ dependencies {
     implementation(projects.api.route)
     implementation(projects.api.random)
     implementation(projects.api.script)
+    implementation(projects.api.shops)
     implementation(projects.engine.game)
     implementation(projects.api.invtx)
     implementation(projects.content.skills.utils)
