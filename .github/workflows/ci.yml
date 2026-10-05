@@ -9,6 +9,7 @@ on:
     paths:
       - "**/*.kt"
       - "**/*.kts"
+      - ".github/workflows/ci.yml"
 
 concurrency:
   group: ci-${{ github.ref }}
