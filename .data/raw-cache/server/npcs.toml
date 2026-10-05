@@ -10997,6 +10997,13 @@ inherit = "npc.black_demon_strongholdcave_5"
 "param.elemental_weakness_percent"=40
 
 [[npc]]
+id = "npc.zeah_sandcrab"
+inherit = "npc.zeah_sandcrab"
+[npc.params]
+"param.elemental_weakness_type"=2
+"param.elemental_weakness_percent"=20
+
+[[npc]]
 id = "npc.dungeon_dagganoth_magic_monster"
 inherit = "npc.dungeon_dagganoth_magic_monster"
 [npc.params]
@@ -11695,6 +11702,13 @@ inherit = "npc.mm2_demon_gorilla_noncombat"
 [npc.params]
 "param.elemental_weakness_type"=1
 "param.elemental_weakness_percent"=35
+
+[[npc]]
+id = "npc.zeah_sandcrab_small"
+inherit = "npc.zeah_sandcrab_small"
+[npc.params]
+"param.elemental_weakness_type"=2
+"param.elemental_weakness_percent"=20
 
 [[npc]]
 id = "npc.wcguild_ent"

@@ -236,7 +236,11 @@ class SandCrabsTest {
         val names = listOf(rocks, crab, "npc.zeah_sandcrab_small_inactive", "npc.zeah_sandcrab_small")
         for (name in names) {
             val type = checkNotNull(ServerCacheManager.getNpc(name.asRSCM(RSCMType.NPC)))
+            assertTrue(type.name.isNotEmpty(), "$name has an empty cache definition; see sand_crabs.toml")
             assertEquals(60, type.hitpoints, name)
+            assertEquals(2, type.paramOrNull(params.elemental_weakness_type), name)
+            assertEquals(20, type.paramOrNull(params.elemental_weakness_percent), name)
+            assertEquals(NpcMode.None, type.defaultMode, name)
             assertEquals(1, type.attack, name)
             assertEquals(1, type.strength, name)
             assertEquals(1, type.defence, name)

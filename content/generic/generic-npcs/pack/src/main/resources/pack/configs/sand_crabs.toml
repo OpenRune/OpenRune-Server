@@ -1,4 +1,9 @@
+# Server-only on purpose. The awake types' original entries stay in .data/raw-cache/server/npcs.toml:
+# the incremental cache build treats a config entry moving between files as a removal and then
+# inherits from the definition it just deleted, which leaves the cache with an empty npc. These
+# entries override those for the server (a later file wins), so they repeat the weakness params.
 [[npc]]
+isServerOnly = true
 id = "npc.zeah_sandcrab_inactive"
 inherit = "npc.zeah_sandcrab_inactive"
 defaultMode = "None"
@@ -16,6 +21,7 @@ timer = 1
 "param.elemental_weakness_percent" = 20
 
 [[npc]]
+isServerOnly = true
 id = "npc.zeah_sandcrab"
 inherit = "npc.zeah_sandcrab"
 defaultMode = "None"
@@ -33,6 +39,7 @@ timer = 1
 "param.elemental_weakness_percent" = 20
 
 [[npc]]
+isServerOnly = true
 id = "npc.zeah_sandcrab_small_inactive"
 inherit = "npc.zeah_sandcrab_small_inactive"
 defaultMode = "None"
@@ -50,6 +57,7 @@ timer = 1
 "param.elemental_weakness_percent" = 20
 
 [[npc]]
+isServerOnly = true
 id = "npc.zeah_sandcrab_small"
 inherit = "npc.zeah_sandcrab_small"
 defaultMode = "None"
