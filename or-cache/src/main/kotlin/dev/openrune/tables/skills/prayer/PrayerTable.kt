@@ -10,7 +10,7 @@ object PrayerTable {
         column("item", 0, VarType.OBJ)
         column("exp", 1, VarType.INT)
         column("ashes", 2, VarType.BOOLEAN)
-    
+
         column("prayer_restore", 3, VarType.INT)
 
         row("dbrow.bones") {
