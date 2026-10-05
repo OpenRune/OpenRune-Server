@@ -63,7 +63,7 @@ jobs:
         run: ./gradlew :or-cache:buildCache :or-cache:mergePluginGamevals
 
       - name: Compile and run tests
-        run: ./gradlew assemble test
+        run: ./gradlew assemble test integration
 
       # Config errors in a data-driven server surface at boot (unmapped
       # gamevals throw by design), so start the server and require the
