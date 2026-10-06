@@ -5,7 +5,6 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest
 import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest.Companion.KidsFee
-import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest.Companion.STAGE_GAVE_MILK
 import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest.Companion.STAGE_PAID_KIDS
 import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest.Companion.STAGE_STARTED
 import org.rsmod.plugin.scripts.PluginScript
