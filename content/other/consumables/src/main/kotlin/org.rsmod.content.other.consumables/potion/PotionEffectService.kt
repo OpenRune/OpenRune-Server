@@ -473,7 +473,7 @@ constructor(
             restoredStats(
                 allStats = ServerCacheManager.getStats().values.map { it.internalName },
                 included = effect.skills.map { it.internalName },
-                excluded = effect.excludedSkills.mapTo(hashSetOf()) { it.internalName },
+                excluded = setOfNotNull(effect.excludedSkills?.internalName),
                 restorePrayer = effect.restorePrayer,
             )
 
