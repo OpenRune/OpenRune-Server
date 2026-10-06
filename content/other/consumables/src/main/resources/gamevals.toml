@@ -481,3 +481,6 @@ effect_toa_liquid_adrenaline=64135
 effect_toa_smelling_salts=64134
 effect_toa_silk_dressing=64133
 effect_toa_blessed_crystal_scarab=64132
+effect_magic_essence_boost=63300
+magic_essence=63301
+magic_essence_mix=63302
