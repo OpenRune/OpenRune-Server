@@ -4,6 +4,8 @@ import org.rsmod.api.combat.commons.magic.SpellQuestRequirement
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.player.hook.SpadeDigHook
 import org.rsmod.content.generic.locs.bookcases.BookcaseSearchHook
+import org.rsmod.content.quest.area.alkharid.princealirescue.DisguiseMakers
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.TouristCentreBookcases
 import org.rsmod.content.quest.area.falador.doricsquest.DoricsQuest
 import org.rsmod.content.quest.area.falador.knightssword.KnightsSwordQuest
@@ -25,6 +27,8 @@ public class QuestModule : PluginModule() {
         bindInstance<DoricsQuest>()
         bindInstance<IdesOfMilkQuest>()
         bindInstance<KnightsSwordQuest>()
+        bindInstance<PrinceAliRescueQuest>()
+        bindInstance<DisguiseMakers>()
         addSetBinding<SpellQuestRequirement>(PolicySpellQuestRequirement::class.java)
         addSetBinding<BookcaseSearchHook>(TouristCentreBookcases::class.java)
         addSetBinding<SpadeDigHook>(XMarksTheSpotQuest::class.java)
