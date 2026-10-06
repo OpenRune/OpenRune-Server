@@ -97,17 +97,18 @@ class StrongholdInteractionTest {
     }
 
     @Test
-    fun `a door asks players leaving the space between a pair and a correct answer opens it`() {
+    fun `a correct answer moves the player through a door that stays shut`() {
         for (floor in StrongholdFloor.entries) {
             val f = Fixture(InsideDoors)
             f.doorPair(floor)
             f.ask(question = 0)
             f.op(f.find(Far, floor.face), options = listOf(3))
-            assertEquals(CoordGrid(1858, 5235, 0), f.player.coords, floor.name)
-            assertTrue(f.output().contains("To pass you must answer me this"), floor.name)
-            assertTrue(f.output().contains("Correct!"), floor.name)
-            assertFalse(f.has(Far, floor.face), floor.name)
-            assertTrue(f.has(f.openAt(Far), floor.faceOpen), floor.name)
+            assertEquals(CoordGrid(1858, 5235, 0), f.player.coords, floor.doorTitle)
+            assertTrue(f.output().contains("To pass you must answer me this"), floor.doorTitle)
+            assertTrue(f.output().contains("Correct!"), floor.doorTitle)
+            assertTrue(f.has(Far, floor.face), floor.doorTitle)
+            assertTrue(f.has(Far.translateX(1), floor.mirror), floor.doorTitle)
+            assertTrue(f.locsAt(Far.translateZ(1)).isEmpty(), floor.doorTitle)
         }
     }
 
@@ -118,9 +119,9 @@ class StrongholdInteractionTest {
             f.doorPair(floor)
             f.ask(question = 0)
             f.op(f.find(Far, floor.face), options = listOf(1))
-            assertEquals(InsideDoors, f.player.coords, floor.name)
-            assertTrue(f.output().contains("Wrong! Membership requires"), floor.name)
-            assertTrue(f.has(Far, floor.face), floor.name)
+            assertEquals(InsideDoors, f.player.coords, floor.doorTitle)
+            assertTrue(f.output().contains("Wrong! Membership requires"), floor.doorTitle)
+            assertTrue(f.has(Far, floor.face), floor.doorTitle)
         }
     }
 
@@ -135,14 +136,16 @@ class StrongholdInteractionTest {
     }
 
     @Test
-    fun `either leaf of a doorway asks the same question and opens both`() {
+    fun `either leaf of a doorway asks and lets the player through`() {
+        val pestilence = StrongholdFloor.Pestilence
+        val mirror = CoordGrid(1859, 5235, 0)
         val f = Fixture(CoordGrid(1859, 5236, 0))
-        f.doorPair(StrongholdFloor.Pestilence)
+        f.doorPair(pestilence)
         f.ask(question = 1)
-        f.op(f.find(CoordGrid(1859, 5235, 0), StrongholdFloor.Pestilence.mirror), options = listOf(1))
-        assertEquals(CoordGrid(1859, 5235, 0), f.player.coords)
-        assertTrue(f.has(f.openAt(Far), StrongholdFloor.Pestilence.faceOpen))
-        assertTrue(f.has(f.openAt(CoordGrid(1859, 5235, 0)), StrongholdFloor.Pestilence.mirrorOpen))
+        f.op(f.find(mirror, pestilence.mirror), options = listOf(1))
+        assertEquals(mirror, f.player.coords)
+        assertTrue(f.has(Far, pestilence.face))
+        assertTrue(f.has(mirror, pestilence.mirror))
     }
 
     @Test
@@ -151,8 +154,11 @@ class StrongholdInteractionTest {
             val f = Fixture(CoordGrid(1858, 5234, 0))
             f.doorPair(floor)
             f.op(f.find(Far, floor.face))
-            assertEquals(CoordGrid(1858, 5236, 0), f.player.coords, floor.name)
-            assertFalse(f.output().contains("To pass you must answer me this"), floor.name)
+            assertEquals(CoordGrid(1858, 5236, 0), f.player.coords, floor.doorTitle)
+            assertFalse(
+                f.output().contains("To pass you must answer me this"),
+                floor.doorTitle,
+            )
         }
     }
 
@@ -562,8 +568,8 @@ class StrongholdInteractionTest {
 
         fun doorPair(floor: StrongholdFloor) {
             for (z in listOf(5235, 5238)) {
-                spawnLoc(floor.face, CoordGrid(1858, z, 0), LocAngle.North, LocShape.WallStraight)
-                spawnLoc(floor.mirror, CoordGrid(1859, z, 0), LocAngle.North, LocShape.WallStraight)
+                spawnLoc(floor.face, CoordGrid(1858, z, 0), LocAngle.North, Wall)
+                spawnLoc(floor.mirror, CoordGrid(1859, z, 0), LocAngle.North, Wall)
             }
         }
 
@@ -573,7 +579,7 @@ class StrongholdInteractionTest {
         fun has(at: CoordGrid, loc: String): Boolean =
             locs.findAll(at).any { it.id == loc.asRSCM(RSCMType.LOC) }
 
-        fun openAt(closed: CoordGrid): CoordGrid = closed.translateZ(1)
+        fun locsAt(at: CoordGrid): List<LocInfo> = locs.findAll(at).toList()
 
         fun op(loc: LocInfo, options: List<Int> = emptyList()) {
             val baseType = checkNotNull(ServerCacheManager.getObject(loc.id))
@@ -687,6 +693,7 @@ class StrongholdInteractionTest {
         private val InsideDoors = CoordGrid(1858, 5236, 0)
         private val Far = CoordGrid(1858, 5235, 0)
         private val Near = CoordGrid(1858, 5238, 0)
+        private val Wall = LocShape.WallStraight
 
         private val restored = mutableListOf<() -> Unit>()
 

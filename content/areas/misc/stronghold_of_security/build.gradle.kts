@@ -9,6 +9,6 @@ dependencies {
     testImplementation(projects.api.invStorage)
     testImplementation(projects.api.registry)
     testImplementation(libs.fastutil)
+    testImplementation(projects.content.generic.genericLocs)
     implementation(projects.api.pluginCommons)
-    implementation(projects.content.generic.genericLocs)
 }
