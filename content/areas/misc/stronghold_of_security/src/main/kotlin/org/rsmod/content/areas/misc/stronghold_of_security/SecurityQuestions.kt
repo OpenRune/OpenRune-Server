@@ -30,9 +30,9 @@ internal object SecurityQuestions {
                 wrong(
                     "Give them the information they asked for.",
                     "Wrong! Membership requires a subscription paid or a bond to be redeemed - " +
-                        "they are trying to trick you. Never give your account details to anyone. " +
-                        "Press the 'Report Abuse' button and fill in the offending player's name " +
-                        "and the correct category.",
+                        "they are trying to trick you. Never give your account details to " +
+                        "anyone. Press the 'Report Abuse' button and fill in the offending " +
+                        "player's name and the correct category.",
                 ),
                 wrong(
                     "Don't tell them anything and ignore them.",
@@ -328,7 +328,8 @@ internal object SecurityQuestions {
                 "My friend asks me for my password so that he can do a difficult quest for me. " +
                     "Do I give it to him?",
                 wrong(
-                    "Yes. He is my best friend and I've already spent ages trying this quest.",
+                    "Yes. He is my best friend and I've already spent ages trying " +
+                        "this quest.",
                     "Wrong! Don't give your password to anyone otherwise you can lose " +
                         "everything you have worked so hard for.",
                 ),
