@@ -1,0 +1,36 @@
+[[varp]]
+id = "varp.sos_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.sos_war_claimed"
+varp = "varp.sos_state"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+id = "varbit.sos_fam_claimed"
+varp = "varp.sos_state"
+startBit = 1
+endBit = 1
+
+[[varbit]]
+id = "varbit.sos_pest_claimed"
+varp = "varp.sos_state"
+startBit = 2
+endBit = 2
+
+[[varbit]]
+id = "varbit.sos_death_claimed"
+varp = "varp.sos_state"
+startBit = 3
+endBit = 3
+
+[[item]]
+id = "obj.sos_boots3"
+inherit = "obj.sos_boots3"
+tradeable = false
+[item.params]
+"param.equipment_sound"=2237
+
