@@ -87,17 +87,16 @@ constructor(private val shops: Shops, private val disguiseMakers: DisguiseMakers
         chatNpc(happy, "What can I help you with?")
         val dyes =
             if (player.metAggie == 0) "What could you make for me?" to AggieTopic.WhatCanYouMake
-            else "Can you make dyes for me, please?" to AggieTopic.MakeDyes
+            else "Can you make dyes for me please?" to AggieTopic.MakeDyes
         val topic =
             menu(
                 buildList {
-                    add("Cool, do you turn people into frogs?" to AggieTopic.Frogs)
                     add(dyes)
                     if (disguiseMakers.offers(player)) {
                         add("Can you make skin paste?" to AggieTopic.SkinPaste)
                     }
+                    add("Cool, do you turn people into frogs?" to AggieTopic.Frogs)
                     add("You mad old witch, you can't help me." to AggieTopic.Insult)
-                    add("I'm okay, thanks." to AggieTopic.Leave)
                 }
             )
         when (topic) {
@@ -116,18 +115,17 @@ constructor(private val shops: Shops, private val disguiseMakers: DisguiseMakers
                 player.metAggie = 1
                 chatNpc(
                     neutral,
-                    "I mostly just make what I find pretty. I sometimes make dye for clothes to " +
+                    "I mostly just make what I find pretty. I sometimes make dye for the women's clothes to " +
                         "brighten the place up. I can make red, yellow and blue dyes. If you'd " +
                         "like some, just bring me the appropriate ingredients.",
                 )
                 dyeMenu(includeDecline = true)
             }
             AggieTopic.MakeDyes -> {
-                chatPlayer(quiz, "Can you make dyes for me, please?")
+                chatPlayer(quiz, "Can you make dyes for me please?")
                 aggieDyes()
             }
             AggieTopic.Insult -> aggieInsult()
-            AggieTopic.Leave -> chatPlayer(neutral, "I'm okay, thanks.")
         }
     }
 
@@ -1179,7 +1177,6 @@ constructor(private val shops: Shops, private val disguiseMakers: DisguiseMakers
         MakeDyes,
         SkinPaste,
         Insult,
-        Leave,
     }
 
     private enum class DyeChoice {

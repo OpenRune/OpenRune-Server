@@ -69,7 +69,9 @@ class Joe @Inject constructor(private val princeAli: PrinceAliRescueQuest) : Plu
                     beer()
                     return
                 }
-                Topic.Life -> lifeOfAGuard()
+                Topic.Life -> {
+                    if (lifeOfAGuard()) return
+                }
                 Topic.Boy -> {
                     if (boyhood()) return
                 }
@@ -122,7 +124,8 @@ class Joe @Inject constructor(private val princeAli: PrinceAliRescueQuest) : Plu
         )
     }
 
-    private suspend fun Dialogue.lifeOfAGuard() {
+    /** Returns true once the conversation has ended. */
+    private suspend fun Dialogue.lifeOfAGuard(): Boolean {
         chatPlayer(quiz, "Tell me about the life of a guard.")
         chatNpc(neutral, "Well, the hours are good, but most of those hours are a drag.")
         chatNpc(
@@ -130,6 +133,19 @@ class Joe @Inject constructor(private val princeAli: PrinceAliRescueQuest) : Plu
             "Sometimes I wonder if I should have spent more time learning when I was a young boy. " +
                 "Maybe I wouldn't be here now, scared of Keli.",
         )
+        return if (
+            choice2(
+                "What did you want to be when you were a boy?",
+                true,
+                "I'd better go.",
+                false,
+            )
+        ) {
+            boyhood()
+        } else {
+            leave()
+            true
+        }
     }
 
     /** Returns true once the conversation has ended. */
@@ -151,10 +167,7 @@ class Joe @Inject constructor(private val princeAli: PrinceAliRescueQuest) : Plu
             )
         ) {
             1 -> return chillOut()
-            2 -> {
-                lifeOfAGuard()
-                return false
-            }
+            2 -> return lifeOfAGuard()
             else -> {
                 leave()
                 return true
@@ -187,10 +200,7 @@ class Joe @Inject constructor(private val princeAli: PrinceAliRescueQuest) : Plu
                     chatNpc(happy, "It's what I enjoy these days. I can't resist the sight of a really cold beer.")
                     return false
                 }
-                2 -> {
-                    lifeOfAGuard()
-                    return false
-                }
+                2 -> return lifeOfAGuard()
                 3 -> {
                     chatPlayer(shifty, "Would you be interested in making a little more money?")
                     chatNpc(

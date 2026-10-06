@@ -15,7 +15,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 /**
  * Prince Ali Rescue.
  *
- * The stage is the whole cache varp `varp.princequest` (endstate 110), which also drives the jail
+ * Every npc handler binds the base id the map spawns: the engine dispatches ops on the base id, so\n * handlers on the _vis forms that the multinpcs show would never fire.\n *\n * The stage is the whole cache varp `varp.princequest` (endstate 110), which also drives the jail
  * multinpcs and the toll gate's multilocs: Lady Keli is shown up to [StageJoeDrunk], the
  * imprisoned Prince up to [StageKeliTied], Joe until Hassan pays, the Prince in the palace from
  * [StageAliEscaped], and the toll gate loses its Pay-toll option from [StageAliEscaped] as well.
@@ -283,12 +283,12 @@ class PrinceAliRescueQuest @Inject constructor() :
         const val Redberries = "obj.redberries"
 
         const val NpcHassan = "npc.hassan"
-        const val NpcOsman = "npc.osman"
+        const val NpcOsman = "npc.contact_osman_multi"
         const val NpcLeela = "npc.leela"
-        const val NpcKeli = "npc.lady_keli_vis"
-        const val NpcJoe = "npc.joe_vis"
-        const val NpcPrinceCell = "npc.prince_ali_vis_blackeye"
-        const val NpcPrincePalace = "npc.prince_ali_vis"
+        const val NpcKeli = "npc.lady_keli"
+        const val NpcJoe = "npc.joe"
+        const val NpcPrinceCell = "npc.prince_ali_prison"
+        const val NpcPrincePalace = "npc.prince_ali_palace"
 
         const val CellDoor = "loc.alidoor"
     }

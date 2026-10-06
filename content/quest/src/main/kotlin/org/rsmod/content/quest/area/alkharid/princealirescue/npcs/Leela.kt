@@ -97,11 +97,7 @@ class Leela @Inject constructor(private val princeAli: PrinceAliRescueQuest) : P
         chatPlayer(happy, "You must be Leela. Your father sent me to help rescue Prince Ali.")
         chatNpc(neutral, "Yes, he sent word ahead that you'd be coming. Are you aware of the plan?")
         princeAli.setMetLeela(player)
-        if (handOverKey() && princeAli.hasKey(player) && princeAli.hasDisguise(player)) {
-            chatPlayer(happy, "Yes. In fact, I already have everything we need.")
-            guardAdvice()
-            return
-        }
+        handOverKey()
         chatPlayer(
             neutral,
             "I need to obtain a copy of the key to the Prince's cell, create a disguise for him " +
@@ -168,13 +164,6 @@ class Leela @Inject constructor(private val princeAli: PrinceAliRescueQuest) : P
 
     private suspend fun Dialogue.keyIdeas() {
         chatPlayer(quiz, "Any ideas for the key?")
-        if (princeAli.keyOrdered(player) || princeAli.keyObtained(player)) {
-            chatNpc(
-                neutral,
-                "The key is taken care of. Concentrate on the disguise for now.",
-            )
-            return
-        }
         chatNpc(
             neutral,
             "Keli keeps it on her at all times, on a chain around her neck. If you can convince her " +

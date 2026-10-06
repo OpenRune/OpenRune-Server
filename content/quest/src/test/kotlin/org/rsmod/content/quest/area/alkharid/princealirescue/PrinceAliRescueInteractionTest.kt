@@ -28,12 +28,13 @@ import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.events.interact.HeldUEvents
+import org.rsmod.api.player.events.interact.LocEvents
 import org.rsmod.api.player.events.interact.NpcEvents
-import org.rsmod.api.player.events.interact.NpcUDefaultEvents
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.LocInteractions
 import org.rsmod.api.player.interact.LocUInteractions
 import org.rsmod.api.player.interact.NpcInteractions
+import org.rsmod.api.player.interact.NpcUInteractions
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.clearPendingAction
@@ -233,6 +234,26 @@ class PrinceAliRescueInteractionTest {
     }
 
     @Test
+    fun `the furnace route reaches Leela's go-ahead without Osman ever touching the key`() =
+        respectingProgress {
+            val f = Fixture(StageBriefed)
+            f.imprintKey()
+            assertEquals(1, f.count(KeyPrint))
+            f.give(BronzeBar)
+            f.choose(1)
+            f.furnaceUse()
+            assertEquals(1, f.count(Key))
+            assertFalse(f.quest.keyOrdered(f.player))
+
+            f.giveDisguise()
+            f.choose(LeelaLeave)
+            f.talk(NpcLeela)
+            assertEquals(StageBriefed, f.stage())
+            f.talk(NpcLeela)
+            assertEquals(StagePrepared, f.stage())
+            assertEquals(1, f.count(Key))
+        }
+    @Test
     fun `declining Hassan leaves the quest unstarted`() {
         val f = Fixture()
         f.choose(1, 2)
@@ -312,17 +333,42 @@ class PrinceAliRescueInteractionTest {
     }
 
     @Test
-    fun `leela moves straight on when everything is ready at the first meeting`() {
+    fun `leela still gives her briefing at the first meeting even with everything ready`() {
         val f = Fixture(StageBriefed)
         f.give(Key)
         f.give(BlondWig)
         f.give(SkinPaste)
         f.give(PinkSkirt)
+        f.choose(LeelaLeave)
         f.talk(NpcLeela)
-        assertTrue(f.said("I already have everything we need"))
+        assertTrue(f.said("I'd say that's a good summary."))
+        assertEquals(StageBriefed, f.stage())
+        f.talk(NpcLeela)
         assertEquals(StagePrepared, f.stage())
     }
 
+    @Test
+    fun `every quest npc is spawned on the base id the handlers bind`() {
+        val f = Fixture()
+        for (npc in listOf(NpcHassan, NpcOsman, NpcLeela, NpcKeli, NpcJoe, NpcPrinceCell, NpcPrincePalace)) {
+            val id = npc.asRSCM(RSCMType.NPC)
+            assertTrue(f.events.contains(NpcEvents.Op1::class.java, id), "$npc has no op1 handler")
+        }
+        for (visible in listOf("npc.lady_keli_vis", "npc.joe_vis", "npc.prince_ali_vis_blackeye", "npc.prince_ali_vis")) {
+            assertFalse(f.events.contains(NpcEvents.Op1::class.java, visible.asRSCM(RSCMType.NPC)), visible)
+        }
+    }
+
+    @Test
+    fun `the prince stays put with the disguise but without the key`() {
+        val f = Fixture(StageKeliTied)
+        f.give(BlondWig)
+        f.give(SkinPaste)
+        f.give(PinkSkirt)
+        f.talk(NpcPrinceCell)
+        assertEquals(StageKeliTied, f.stage())
+        assertEquals(1, f.count(BlondWig))
+    }
     @Test
     fun `a lost key is replaced for fifteen coins`() {
         val f = Fixture(StagePrepared)
@@ -612,7 +658,7 @@ class PrinceAliRescueInteractionTest {
         assertEquals("Pay-toll(10gp)", before.actions.getOpOrNull(3))
         assertEquals(null, after.actions.getOpOrNull(3))
         assertEquals("Open", after.actions.getOpOrNull(0))
-        assertTrue(f.events.contains(org.rsmod.api.player.events.interact.LocEvents.Op4::class.java, left.id))
+        assertTrue(f.events.contains(LocEvents.Op4::class.java, left.id))
     }
 
     @Test
@@ -659,6 +705,12 @@ class PrinceAliRescueInteractionTest {
         private val npcRepo: NpcRepository
         val locRepo: LocRepository
         private val picks = ArrayDeque<Int>()
+        private val npcU =
+            NpcUInteractions::class
+                .java
+                .getDeclaredConstructor(EventBus::class.java)
+                .apply { isAccessible = true }
+                .newInstance(events)
         private val locU =
             LocUInteractions::class
                 .java
@@ -769,6 +821,10 @@ class PrinceAliRescueInteractionTest {
 
         fun giveDisguiseAndKey() {
             give(Key)
+            giveDisguise()
+        }
+
+        fun giveDisguise() {
             give(BlondWig)
             give(SkinPaste)
             give(PinkSkirt)
@@ -818,7 +874,11 @@ class PrinceAliRescueInteractionTest {
         fun talk(type: String, at: CoordGrid = player.coords.translateX(1)) {
             val npc = Npc(type, at)
             npcRepo.add(npc, Int.MAX_VALUE)
-            dispatch { assertTrue(events.publish(this, NpcEvents.Op1(npc))) }
+            val trigger =
+                checkNotNull(NpcInteractions(events).opTrigger(player, npc, InteractionOp.Op1)) {
+                    "The engine finds no op1 handler for the spawned npc $type"
+                }
+            dispatch { assertTrue(events.publish(this, trigger)) }
             if (npc.isSlotAssigned) npcRepo.del(npc, Int.MAX_VALUE)
         }
 
@@ -828,7 +888,7 @@ class PrinceAliRescueInteractionTest {
             val slot = player.inv.indexOfFirst { it?.id == obj.asRSCM() }
             val objType = checkNotNull(ServerCacheManager.getItem(obj.asRSCM()))
             val npcType = checkNotNull(ServerCacheManager.getNpc(type.asRSCM()))
-            dispatch { assertTrue(events.publish(this, NpcUDefaultEvents.OpType(npc, slot, objType, npcType))) }
+            dispatch { npcU.interactOp(this, npc, player.inv, slot, npcType, objType) }
             if (npc.isSlotAssigned) npcRepo.del(npc, Int.MAX_VALUE)
         }
 
