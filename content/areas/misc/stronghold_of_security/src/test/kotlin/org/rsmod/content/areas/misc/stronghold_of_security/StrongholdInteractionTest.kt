@@ -355,11 +355,11 @@ class StrongholdInteractionTest {
                 "loc.sos_dung_ent_open" to StrongholdTravel.WarArrival,
                 "loc.sos_war_ladd_up" to StrongholdTravel.Surface,
                 "loc.sos_war_ladd_down" to StrongholdTravel.FamineArrival,
-                "loc.sos_fam_ladd_up" to StrongholdTravel.WarRewardLadder,
+                "loc.sos_fam_ladd_up" to StrongholdTravel.WarArrival,
                 "loc.sos_fam_ladd_down" to StrongholdTravel.PestilenceArrival,
-                "loc.sos_pest_ladd_up" to StrongholdTravel.FamineRewardLadder,
+                "loc.sos_pest_ladd_up" to StrongholdTravel.FamineArrival,
                 "loc.sos_pest_ladd_down" to StrongholdTravel.DeathArrival,
-                "loc.sos_death_ladd_up" to StrongholdTravel.Surface,
+                "loc.sos_death_ladd_up" to StrongholdTravel.PestilenceArrival,
                 "loc.sos_war_chainbottom" to StrongholdFloor.War.start,
                 "loc.sos_fam_rope_up" to StrongholdFloor.Famine.start,
                 "loc.sos_pest_rope_up" to StrongholdFloor.Pestilence.start,
@@ -370,6 +370,14 @@ class StrongholdInteractionTest {
             f.op(f.spawnLoc(loc, CoordGrid(1900, 5201, 0)))
             assertEquals(dest, f.player.coords, loc)
         }
+    }
+
+    @Test
+    fun `the bone chain in the cradle of life room leads out of the dungeon`() {
+        val chain = StrongholdTravel.CradleRoomChain
+        val f = Fixture(chain.translateZ(-1))
+        f.op(f.spawnLoc("loc.sos_death_rope_up", chain))
+        assertEquals(StrongholdTravel.Surface, f.player.coords)
     }
 
     @Test
@@ -535,8 +543,7 @@ class StrongholdInteractionTest {
                         StrongholdTravel.FamineArrival,
                         StrongholdTravel.PestilenceArrival,
                         StrongholdTravel.DeathArrival,
-                        StrongholdTravel.WarRewardLadder,
-                        StrongholdTravel.FamineRewardLadder,
+                        StrongholdTravel.CradleRoomChain,
                     )
             for (anchor in anchors) {
                 for (dx in -16..16 step 8) for (dz in -16..16 step 8) {

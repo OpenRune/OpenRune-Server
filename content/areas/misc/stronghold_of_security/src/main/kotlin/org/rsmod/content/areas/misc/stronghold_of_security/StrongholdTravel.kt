@@ -12,16 +12,16 @@ class StrongholdTravel : PluginScript() {
         onOpLoc1("loc.sos_dung_ent_open") { climb(WarArrival) }
         onOpLoc1("loc.sos_war_ladd_up") { climb(Surface) }
         onOpLoc1("loc.sos_war_ladd_down") { climb(FamineArrival) }
-        onOpLoc1("loc.sos_fam_ladd_up") { climb(WarRewardLadder) }
+        onOpLoc1("loc.sos_fam_ladd_up") { climb(WarArrival) }
         onOpLoc1("loc.sos_fam_ladd_down") { climb(PestilenceArrival) }
-        onOpLoc1("loc.sos_pest_ladd_up") { climb(FamineRewardLadder) }
+        onOpLoc1("loc.sos_pest_ladd_up") { climb(FamineArrival) }
         onOpLoc1("loc.sos_pest_ladd_down") { climb(DeathArrival) }
-        onOpLoc1("loc.sos_death_ladd_up") { climb(Surface) }
+        onOpLoc1("loc.sos_death_ladd_up") { climb(PestilenceArrival) }
 
         onOpLoc1("loc.sos_war_chainbottom") { climb(StrongholdFloor.War.start) }
         onOpLoc1("loc.sos_fam_rope_up") { climb(StrongholdFloor.Famine.start) }
         onOpLoc1("loc.sos_pest_rope_up") { climb(StrongholdFloor.Pestilence.start) }
-        onOpLoc1("loc.sos_death_rope_up") { climb(StrongholdFloor.Death.start) }
+        onOpLoc1("loc.sos_death_rope_up") { climb(boneChainDestination(it.loc.coords)) }
 
         for (floor in StrongholdFloor.entries) {
             onOpLoc1(floor.portal) { usePortal(floor) }
@@ -57,8 +57,10 @@ class StrongholdTravel : PluginScript() {
         val FamineArrival = CoordGrid(2042, 5245, 0)
         val PestilenceArrival = CoordGrid(2123, 5252, 0)
         val DeathArrival = CoordGrid(2357, 5216, 0)
-        val WarRewardLadder = CoordGrid(1902, 5223, 0)
-        val FamineRewardLadder = CoordGrid(2027, 5218, 0)
+        val CradleRoomChain = CoordGrid(2350, 5215, 0)
+
+        fun boneChainDestination(chain: CoordGrid): CoordGrid =
+            if (chain == CradleRoomChain) Surface else StrongholdFloor.Death.start
     }
 }
 

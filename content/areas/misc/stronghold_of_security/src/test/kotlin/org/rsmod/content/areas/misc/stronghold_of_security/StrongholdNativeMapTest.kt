@@ -73,12 +73,27 @@ class StrongholdNativeMapTest {
                 "loc.sos_death_portal" to listOf(CoordGrid(2365, 5212, 0)),
                 "loc.sos_death_pram" to listOf(CoordGrid(2344, 5214, 0)),
                 "loc.sos_death_ladd_up" to listOf(CoordGrid(2358, 5216, 0)),
+                "loc.sos_fam_rope_up" to
+                    listOf(
+                        CoordGrid(2011, 5192, 0),
+                        CoordGrid(2017, 5210, 0),
+                        CoordGrid(2031, 5189, 0),
+                        CoordGrid(2040, 5208, 0),
+                    ),
+                "loc.sos_death_rope_up" to
+                    listOf(CoordGrid(2309, 5240, 0), StrongholdTravel.CradleRoomChain),
             )
         for ((loc, coords) in expected) {
             assertEquals(coords.sortedBy { it.x }, at(loc).sortedBy { it.x }, loc)
         }
-        assertEquals(4, at("loc.sos_fam_rope_up").size)
-        assertEquals(2, at("loc.sos_death_rope_up").size)
+    }
+
+    @Test
+    fun `the bone chain out of the dungeon stands beside the cradle of life`() {
+        val death = StrongholdFloor.Death
+        val chain = StrongholdTravel.CradleRoomChain
+        assertTrue(chain.chebyshevDistance(at(death.reward).single()) <= 6)
+        assertTrue(chain.chebyshevDistance(death.rewardRoom) <= 6)
     }
 
     @Test
@@ -91,8 +106,6 @@ class StrongholdNativeMapTest {
                     StrongholdTravel.FamineArrival,
                     StrongholdTravel.PestilenceArrival,
                     StrongholdTravel.DeathArrival,
-                    StrongholdTravel.WarRewardLadder,
-                    StrongholdTravel.FamineRewardLadder,
                 )
         val blocked = CollisionFlag.BLOCK_WALK or CollisionFlag.LOC or CollisionFlag.GROUND_DECOR
         for (tile in arrivals) {
