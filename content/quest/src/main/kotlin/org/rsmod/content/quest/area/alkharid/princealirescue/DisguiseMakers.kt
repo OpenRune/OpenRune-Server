@@ -115,8 +115,8 @@ class DisguiseMakers @Inject constructor(private val princeAli: PrinceAliRescueQ
         }
         chatNpc(
             happy,
-            "Yes, I can. I see you already have the ingredients - the water, flour, ashes and " +
-                "redberries. Would you like me to mix some for you now?",
+            "Yes I can. I see you already have the ingredients. Would you like me to mix some for " +
+                "you now?",
         )
         val mix =
             menu(

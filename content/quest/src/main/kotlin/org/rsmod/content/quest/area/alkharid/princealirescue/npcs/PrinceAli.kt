@@ -10,7 +10,6 @@ import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQues
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.PinkSkirt
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.SkinPaste
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageAliEscaped
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageKeliTied
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -33,11 +32,7 @@ class PrinceAli @Inject constructor(private val princeAli: PrinceAliRescueQuest)
         }
         chatPlayer(neutral, "Prince Ali? I'm here to rescue you.")
         chatNpc(happy, "Oh thank goodness! What's your plan?")
-        if (stage < StageKeliTied) {
-            chatNpc(worried, "Wait! Keli is still out there. Please, deal with her first.")
-            return
-        }
-        if (!princeAli.hasDisguise(player)) {
+        if (!princeAli.hasDisguise(player) || !princeAli.hasKey(player)) {
             chatPlayer(
                 neutral,
                 "I've already dealt with Lady Keli and the guard. I'm going to get you a disguise " +

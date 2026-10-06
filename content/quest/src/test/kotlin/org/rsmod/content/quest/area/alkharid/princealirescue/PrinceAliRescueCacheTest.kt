@@ -24,8 +24,11 @@ import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.table.QuestRow
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.CellDoor
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcHassan
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcJoe
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcKeli
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcLeela
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcOsman
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcPrinceCell
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcPrincePalace
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.QuestKey
@@ -55,20 +58,20 @@ class PrinceAliRescueCacheTest {
 
     @Test
     fun `the jail multinpcs follow the stage`() {
-        assertShownUntil("npc.lady_keli", NpcKeli, StageJoeDrunk, StageKeliTied)
-        assertShownUntil("npc.prince_ali_prison", NpcPrinceCell, StageKeliTied, StageAliEscaped)
-        assertShownUntil("npc.joe", NpcJoe, StageAliEscaped, StageComplete)
-        val palace = npc("npc.prince_ali_palace")
-        assertEquals(NpcPrincePalace.asRSCM(RSCMType.NPC), palace.transforms!![StageAliEscaped])
+        assertShownUntil(NpcKeli, "npc.lady_keli_vis", StageJoeDrunk, StageKeliTied)
+        assertShownUntil(NpcPrinceCell, "npc.prince_ali_vis_blackeye", StageKeliTied, StageAliEscaped)
+        assertShownUntil(NpcJoe, "npc.joe_vis", StageAliEscaped, StageComplete)
+        val palace = npc(NpcPrincePalace)
+        assertEquals("npc.prince_ali_vis".asRSCM(RSCMType.NPC), palace.transforms!![StageAliEscaped])
         assertEquals(-1, palace.transforms!![0])
     }
 
     @Test
     fun `the cell gate separates the prince from his guard`() {
         assertLocAt(CellDoor, CoordGrid(3123, 3243, 0))
-        assertNpcAt("npc.prince_ali_prison", CoordGrid(3123, 3242, 0))
-        assertNpcAt("npc.joe", CoordGrid(3123, 3245, 0))
-        assertNpcAt("npc.lady_keli", CoordGrid(3128, 3244, 0))
+        assertNpcAt(NpcPrinceCell, CoordGrid(3123, 3242, 0))
+        assertNpcAt(NpcJoe, CoordGrid(3123, 3245, 0))
+        assertNpcAt(NpcKeli, CoordGrid(3128, 3244, 0))
     }
 
     @Test
@@ -154,6 +157,26 @@ class PrinceAliRescueCacheTest {
             assertEquals(state, varbit.baseVar.id, name)
         }
         assertFalse(checkNotNull(ServerCacheManager.getVarp(state)).transmit.name == "Always")
+    }
+
+    @Test
+    fun `every quest npc the script binds is spawned by the map on that base id`() {
+        assertNpcAt(NpcHassan, CoordGrid(3302, 3163, 0))
+        assertNpcAt(NpcLeela, CoordGrid(3112, 3262, 0))
+        assertNpcAt(NpcOsman, CoordGrid(3289, 3181, 0))
+        assertNpcAt(NpcPrincePalace, CoordGrid(3286, 3161, 0))
+        assertNpcAt("npc.borderguard1", CoordGrid(3267, 3226, 0))
+        assertNpcAt("npc.borderguard2", CoordGrid(3268, 3226, 0))
+    }
+
+    @Test
+    fun `exactly one osman stands outside the palace`() {
+        val spawns = npcSpawns(CoordGrid(3289, 3181, 0))
+        val osmen =
+            listOf("npc.osman", NpcOsman).map { it.asRSCM(RSCMType.NPC) }.let { ids ->
+                spawns.filter { it.first in ids }
+            }
+        assertEquals(listOf(NpcOsman.asRSCM(RSCMType.NPC) to CoordGrid(3289, 3181, 0)), osmen)
     }
 
     private fun assertShownUntil(base: String, vis: String, lastShown: Int, firstHidden: Int) {
