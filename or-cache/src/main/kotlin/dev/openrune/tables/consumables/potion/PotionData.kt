@@ -1554,6 +1554,18 @@ internal enum class PotionData(
         category = "barbarian_mix",
         mix = true,
         heal = 6,
+    ),
+    EGNIOL_POTION(
+        key = "egniol_potion",
+        displayName = "Egniol potion",
+        items = listOf(
+            "obj.gauntlet_potion_4",
+            "obj.gauntlet_potion_3",
+            "obj.gauntlet_potion_2",
+            "obj.gauntlet_potion_1",
+        ),
+        empty = "obj.gauntlet_vial_empty",
+        effect = "dbrow.effect_egniol",
     );
 
     val row: String
