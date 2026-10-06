@@ -162,7 +162,7 @@ constructor(
         if (
             !ConsumableDelayState.canConsume(
                 access = this,
-                type = ConsumableType.POTION,
+                type = potionConsumableType(potion.mix),
             )
         ) {
             return
@@ -233,7 +233,7 @@ constructor(
 
         ConsumableDelayState.recordConsumption(
             access = this,
-            type = ConsumableType.POTION,
+            type = potionConsumableType(potion.mix),
             consumeDelay = potion.drinkDelay,
             combatDelay = potion.combatDelay,
         )
@@ -353,3 +353,6 @@ constructor(
             )
     }
 }
+
+internal fun potionConsumableType(mix: Boolean): ConsumableType =
+    if (mix) ConsumableType.FOOD else ConsumableType.POTION

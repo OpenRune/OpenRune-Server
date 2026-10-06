@@ -13,7 +13,7 @@ internal enum class PotionData(
     val mix: Boolean = false,
     val heal: Int = 0,
     val drinkDelay: Int = 3,
-    val combatDelay: Int = 0,
+    val combatDelay: Int = if (mix) FOOD_ATTACK_DELAY else 0,
 ) {
     // Standard potions.
     ATTACK_POTION(
@@ -1534,3 +1534,5 @@ internal enum class PotionData(
     val row: String
         get() = "dbrow.$key"
 }
+
+private const val FOOD_ATTACK_DELAY: Int = 3

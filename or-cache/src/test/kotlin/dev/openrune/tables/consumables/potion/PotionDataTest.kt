@@ -70,6 +70,15 @@ class PotionDataTest {
             }
     }
 
+    @Test
+    fun `barbarian mixes carry the food attack delay and potions none`() {
+        PotionData.entries.forEach { potion ->
+            assertEquals(potion.category == "barbarian_mix", potion.mix, potion.name)
+            assertEquals(3, potion.drinkDelay, potion.name)
+            assertEquals(if (potion.mix) 3 else 0, potion.combatDelay, potion.name)
+        }
+    }
+
     private fun runEnergyPercent(row: String): Int {
         val effect = effect(row)
         return when (effect.kind) {
