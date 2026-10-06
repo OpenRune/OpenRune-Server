@@ -1,0 +1,15 @@
+[[npc]]
+isServerOnly = true
+id = "npc.osman"
+inherit = "npc.osman"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.contact_osman_multi"
+inherit = "npc.contact_osman_multi"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"

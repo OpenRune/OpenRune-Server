@@ -1,0 +1,47 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.prince_ali_progress"
+varp = "varp.princequest"
+startBit = 0
+endBit = 6
+
+[[varp]]
+isServerOnly = true
+id = "varp.prince_ali_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.prince_ali_keli_asked"
+varp = "varp.prince_ali_state"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.prince_ali_key_ordered"
+varp = "varp.prince_ali_state"
+startBit = 1
+endBit = 1
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.prince_ali_met_leela"
+varp = "varp.prince_ali_state"
+startBit = 2
+endBit = 2
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.prince_ali_key_obtained"
+varp = "varp.prince_ali_state"
+startBit = 3
+endBit = 3
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.prince_ali_joe_beer"
+varp = "varp.prince_ali_state"
+startBit = 4
+endBit = 4
