@@ -192,6 +192,22 @@ class WaterfallCacheTest {
     }
 
     @Test
+    fun `the ordinary tourist centre bookcases are the generic ones the hook claims`() {
+        assertEquals("Search", loc("loc.bookcase").actions.getOpOrNull(0))
+        assertEquals("Search", loc("loc.bookcase2").actions.getOpOrNull(0))
+        val tourist =
+            listOf(
+                "loc.bookcase" to CoordGrid(2517, 3424, 1),
+                "loc.bookcase" to CoordGrid(2520, 3429, 1),
+                "loc.bookcase2" to CoordGrid(2516, 3431, 1),
+                "loc.bookcase2" to CoordGrid(2519, 3424, 1),
+            )
+        for ((symbol, at) in tourist) {
+            assertPlaced(symbol, at)
+        }
+    }
+
+    @Test
     fun `the six pillars of the tomb room stand where the rune bits expect them`() {
         for (x in listOf(2562, 2569)) {
             for (z in listOf(9910, 9912, 9914)) {

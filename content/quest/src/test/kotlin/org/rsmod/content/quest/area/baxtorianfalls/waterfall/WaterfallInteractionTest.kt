@@ -26,6 +26,7 @@ import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.events.interact.HeldObjEvents
+import org.rsmod.api.player.events.interact.LocContentEvents
 import org.rsmod.api.player.events.interact.LocEvents
 import org.rsmod.api.player.events.interact.LocUEvents
 import org.rsmod.api.player.events.interact.NpcEvents
@@ -36,6 +37,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.random.DefaultGameRandom
 import org.rsmod.api.registry.controller.ControllerRegistry
 import org.rsmod.api.registry.loc.LocRegistry
 import org.rsmod.api.registry.loc.LocRegistryNormal
@@ -51,6 +53,7 @@ import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.route.RayCastValidator
+import org.rsmod.content.generic.locs.bookcases.BookcasesScript
 import org.rsmod.content.quest.area.ardougne.QuestDoors
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Amulet
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.BaxtorianKey
@@ -339,7 +342,26 @@ class WaterfallInteractionTest {
         f.read(Book)
         f.until { f.stage() == ReadBook }
         assertTrue(f.player.ui.containsModal("interface.book"))
+        assertTrue(f.output().contains("<u>The Missing Relics</u>"), f.output())
+        assertTrue(f.output().contains("dwarf miners recovered them"), f.output())
+        assertTrue(f.output().contains("the Tree Gnome Village."), f.output())
         assertTrue(f.journal().contains("Glarial's pebble"), f.journal())
+    }
+
+    @Test
+    fun `the other tourist centre bookcases hold nothing worth reading`() {
+        for ((symbol, coords) in
+            listOf("loc.bookcase2" to TouristBookcaseThin, "loc.bookcase" to TouristBookcaseWide)) {
+            val f = Fixture(MetHudon)
+            if (symbol == "loc.bookcase") f.contentLoc(symbol, coords) else f.loc(symbol, coords)
+            f.finish()
+            val output = f.output()
+            assertTrue(output.contains("You search the books..."), output)
+            assertTrue(Uninteresting.count { output.contains(it) } == 1, output)
+            assertFalse(output.contains("None of them look very interesting."), output)
+            assertEquals(0, f.count(Book))
+        }
+        assertFalse(TouristCentreBookcases().claims(Fixture().player, bookcaseAt(OutsideBookcase)))
     }
 
     @Test
@@ -440,7 +462,17 @@ class WaterfallInteractionTest {
 
     @Test
     fun `the tombstone stays shut for the armed and opens for the peaceful`() {
-        for (carried in listOf("obj.bronze_sword", "obj.airrune", "obj.logs", "obj.bronze_arrow")) {
+        val refused =
+            listOf(
+                "obj.bronze_sword",
+                "obj.airrune",
+                "obj.logs",
+                "obj.bronze_arrow",
+                "obj.skillcape_attack",
+                "obj.mythical_cape",
+                "obj.ardy_cape_easy",
+            )
+        for (carried in refused) {
             val f = Fixture(ReadBook)
             f.player.coords = TombstoneBank
             f.give(Pebble)
@@ -465,6 +497,8 @@ class WaterfallInteractionTest {
         peaceful.give(Pebble)
         peaceful.give("obj.swordfish")
         peaceful.give("obj.coins", 100)
+        peaceful.give("obj.tome_of_fire")
+        peaceful.player.worn[1] = InvObj("obj.graceful_cape", 1)
         peaceful.useOnLoc(Tombstone, TombstoneCoords, Pebble)
         peaceful.finish()
         assertTrue(peaceful.output().contains(SlabSlides), peaceful.output())
@@ -478,7 +512,7 @@ class WaterfallInteractionTest {
         val f = Fixture()
         f.loc(Tombstone, TombstoneCoords)
         f.finish()
-        assertTrue(f.output().contains("Only those who come in peace"), f.output())
+        assertTrue(f.output().contains(TombstoneText), f.output())
 
         f.give(Pebble)
         f.useOnLoc(Tombstone, TombstoneCoords, Pebble)
@@ -904,6 +938,7 @@ class WaterfallInteractionTest {
                     getNpcList = { npcList },
                     getTeleportValidator = { PlayerTeleportValidator(emptySet()) },
                     getAreaChecker = { AreaChecker(regions, AreaIndex()) },
+                    getRandom = { DefaultGameRandom(1) },
                 )
 
         @OptIn(InternalApi::class)
@@ -954,6 +989,7 @@ class WaterfallInteractionTest {
             with(GlarialsTomb(quest, locs, objs)) { scripts.startup() }
             with(WaterfallDungeon(quest, objs, world, doors)) { scripts.startup() }
             with(BaxtorianFalls(quest, search)) { scripts.startup() }
+            with(BookcasesScript(setOf(TouristCentreBookcases()))) { scripts.startup() }
             stageTo(stage)
         }
 
@@ -1023,6 +1059,12 @@ class WaterfallInteractionTest {
                     if (slot == 2) LocEvents.Op2(loc, loc, type) else LocEvents.Op1(loc, loc, type)
                 assertTrue(events.publish(this, event))
             }
+        }
+
+        fun contentLoc(symbol: String, coords: CoordGrid) {
+            val (loc, type) =
+                boundLoc(symbol, coords, LocShape.CentrepieceStraight, LocAngle.West)
+            run { assertTrue(events.publish(this, LocContentEvents.Op1(loc, loc, type, type.contentGroup))) }
         }
 
         fun useOnLoc(symbol: String, coords: CoordGrid, obj: String, handled: Boolean = true) {
@@ -1166,6 +1208,9 @@ class WaterfallInteractionTest {
         private const val SlabSlides =
             "You place the pebble in the gravestone's small indent. The stone slab slides back " +
                 "revealing a ladder. You climb down it."
+        private const val TombstoneText =
+            "Here lies Glarial, wife of Baxtorian, true friend of nature in life and death. " +
+                "May she now rest knowing only visitors with peaceful intent can enter."
         private const val LedgeFlooded =
             "You try to open the door, but the ledge is suddenly flooded with water..."
 
@@ -1198,6 +1243,20 @@ class WaterfallInteractionTest {
         private val LedgeDoorCoords = CoordGrid(2511, 3464, 0)
         private val BarrelCoords = CoordGrid(2512, 3463, 1)
         private val BookcaseCoords = CoordGrid(2520, 3426, 1)
+        private val TouristBookcaseThin = CoordGrid(2516, 3431, 1)
+        private val TouristBookcaseWide = CoordGrid(2517, 3424, 1)
+        private val OutsideBookcase = CoordGrid(2518, 3493, 0)
+        private val Uninteresting =
+            listOf(
+                "You don't find anything that you'd ever want to read.",
+                "You find nothing to interest you.",
+                "None of them look very interesting",
+            )
+
+        private fun bookcaseAt(coords: CoordGrid): BoundLocInfo {
+            val type = checkNotNull(ServerCacheManager.getObject("loc.bookcase".asRSCM(RSCMType.LOC)))
+            return BoundLocInfo(LocInfo(2, coords, LocEntity(type.id, 10, 0)), type)
+        }
         private val GolrieCrateCoords = CoordGrid(2548, 9565, 0)
         private val GolrieGateCoords = CoordGrid(2515, 9575, 0)
         private val GateSouth = CoordGrid(2515, 9574, 0)

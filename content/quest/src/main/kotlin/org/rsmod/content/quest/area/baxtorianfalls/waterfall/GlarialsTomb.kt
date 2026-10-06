@@ -39,9 +39,8 @@ constructor(
 
     private suspend fun ProtectedAccess.readTombstone() {
         mesbox(
-            "Most of the stone is carved in elven script, but part of it reads: 'Glarial, " +
-                "beloved of Baxtorian and friend of nature. Only those who come in peace may " +
-                "enter here.'"
+            "Here lies Glarial, wife of Baxtorian, true<br>friend of nature in life and death. " +
+                "May she<br>now rest knowing only visitors with peaceful<br>intent can enter."
         )
     }
 

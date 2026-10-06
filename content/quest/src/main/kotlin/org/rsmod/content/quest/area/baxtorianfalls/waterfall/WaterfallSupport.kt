@@ -78,9 +78,12 @@ internal suspend fun ProtectedAccess.washDownstream(ouch: Boolean) {
 }
 
 /**
- * Glarial's tombstone only opens for visitors with peaceful intent: no weapons, armour, capes,
- * ammunition, runes, or the materials to make any of them. Jewellery, clothing without combat
- * bonuses, food and potions are all welcome.
+ * Glarial's tombstone only opens for visitors with peaceful intent. The wiki's restricted list:
+ * weapons, armour (worn gear with combat bonuses, capes included) and the supplies to make it,
+ * runes, ammunition and its supplies, looting bags, clue scrolls, magic secateurs, mythical capes,
+ * skillcapes, Ardougne cloaks, weight-reducing camo clothing and the dwarf multicannon. Clothing
+ * without combat bonuses (a Graceful cape among it), jewellery, food and potions pass, as do the
+ * off-hand tomes, the Imcando hammer (off-hand), the chronicle and the goblin paint cannon.
  */
 internal fun Player.carriesUnpeacefulItem(): Boolean {
     val carried = inv.filterNotNull { true } + worn.filterNotNull { true }
@@ -88,6 +91,10 @@ internal fun Player.carriesUnpeacefulItem(): Boolean {
 }
 
 private fun ItemServerType.isUnpeaceful(): Boolean {
+    val lower = name.lowercase()
+    if (ALLOWED_NAME_PARTS.any { it in lower }) {
+        return false
+    }
     val slot = Wearpos[wearpos1]
     if (slot in ALWAYS_FORBIDDEN_SLOTS) {
         return true
@@ -98,7 +105,9 @@ private fun ItemServerType.isUnpeaceful(): Boolean {
     if (category == RUNE_CATEGORY) {
         return true
     }
-    val lower = name.lowercase()
+    if (" rune" in lower && "pouch" !in lower) {
+        return true
+    }
     return lower in FORBIDDEN_NAMES || FORBIDDEN_NAME_PARTS.any { it in lower }
 }
 
@@ -108,10 +117,18 @@ private const val FALL_DAMAGE = 8
 
 private val RUNE_CATEGORY = "category.rune".asRSCM(RSCMType.CATEGORY)
 
-private val ALWAYS_FORBIDDEN_SLOTS = setOf(Wearpos.RightHand, Wearpos.Back, Wearpos.Quiver)
+private val ALWAYS_FORBIDDEN_SLOTS = setOf(Wearpos.RightHand, Wearpos.Quiver)
 
 private val ARMOUR_SLOTS =
-    setOf(Wearpos.Hat, Wearpos.Torso, Wearpos.LeftHand, Wearpos.Legs, Wearpos.Hands, Wearpos.Feet)
+    setOf(
+        Wearpos.Hat,
+        Wearpos.Back,
+        Wearpos.Torso,
+        Wearpos.LeftHand,
+        Wearpos.Legs,
+        Wearpos.Hands,
+        Wearpos.Feet,
+    )
 
 private val FORBIDDEN_NAMES =
     setOf(
@@ -123,18 +140,25 @@ private val FORBIDDEN_NAMES =
         "ball of wool",
         "leather",
         "hard leather",
+        "snakeskin",
         "nails",
         "feather",
         "bow string",
         "arrow shaft",
         "headless arrow",
         "looting bag",
+        "magic secateurs",
+        "mythical cape",
+        "fancy boots",
+        "fighting boots",
+        "fancier boots",
+        "spotted cape",
+        "spottier cape",
     )
 
 private val FORBIDDEN_NAME_PARTS =
     listOf(
         " logs",
-        " rune",
         "arrowtips",
         "clue scroll",
         "(u)",
@@ -143,9 +167,19 @@ private val FORBIDDEN_NAME_PARTS =
         "cannon stand",
         "cannon barrels",
         "cannon furnace",
+        "dwarf cannon set",
         "rune pack",
         "feather pack",
+        "initiate harness",
+        "proselyte harness",
+        "ardougne cloak",
+        " cape(t)",
+        " camo top",
+        " camo legs",
     )
+
+private val ALLOWED_NAME_PARTS =
+    listOf("tome of ", "imcando hammer (off-hand)", "chronicle", "goblin paint cannon")
 
 private val BONUS_PARAMS =
     listOf(

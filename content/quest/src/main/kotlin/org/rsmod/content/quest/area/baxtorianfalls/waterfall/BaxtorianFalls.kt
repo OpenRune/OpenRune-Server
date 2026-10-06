@@ -180,9 +180,9 @@ constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch
             return
         }
         soundSynth(DoorSound)
-        mes("You enter the waterfall.")
         telejump(WaterfallCoords.FALLS_ENTRY, TeleportType.Exempt)
         waterfall.advanceTo(this, EnteredFalls)
+        mesbox("You enter the waterfall.")
     }
 
     private suspend fun ProtectedAccess.rideBarrel() {

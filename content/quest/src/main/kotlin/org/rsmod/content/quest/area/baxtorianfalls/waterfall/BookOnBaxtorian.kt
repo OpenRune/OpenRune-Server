@@ -31,14 +31,11 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
     }
 
     private suspend fun ProtectedAccess.searchBookcase() {
-        anim(SearchSeq)
-        val stage = waterfall.stage(player)
-        if (stage < MetHudon) {
-            mes("You search the books...")
-            delay(1)
-            mes(Uninteresting.random())
+        if (waterfall.stage(player) < MetHudon) {
+            searchUninterestingBooks()
             return
         }
+        anim(SearchSeq)
         if (player.inv.contains(Book)) {
             mes("You search the bookcase but find nothing of interest")
             return
@@ -111,89 +108,118 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
         const val SearchSeq = "seq.human_pickuptable"
         const val PageSound = "synth.paper_move"
         const val LinesPerPage = 15
-        const val WrapWidth = 26
 
         const val PageLeft = "component.book:page_left_button"
         const val PageRight = "component.book:page_right_button"
 
-        val Uninteresting =
+        val Pages =
             listOf(
-                "You don't find anything that you'd ever want to read.",
-                "You find nothing to interest you.",
-                "None of them look very interesting",
+                listOf(
+                    "<u>The Missing Relics</u>",
+                    "",
+                    "Many artefacts of elven",
+                    "history were lost after the",
+                    "Fourth Age, following the",
+                    "departure of the elves from",
+                    "these lands. The greatest loss",
+                    "to our collections of elf",
+                    "history were the hidden",
+                    "treasures of Baxtorian.",
+                    "",
+                    "Some believe these treasures",
+                    "are still unclaimed, but it is",
+                    "more commonly believed that",
+                    "dwarf miners recovered them",
+                ),
+                listOf(
+                    "early in the Fifth Age.",
+                    "",
+                    "Another great loss was",
+                    "Glarial's pebble, a key which",
+                    "allowed her family to visit her",
+                    "tomb. The pebble was taken",
+                    "by a gnome family over a",
+                    "century ago. It is hoped that",
+                    "descendants of that gnome",
+                    "may still have the pebble",
+                    "hidden in their cave under",
+                    "the Tree Gnome Village.",
+                ),
+                listOf(
+                    "<u>The Sonnet of Baxtorian</u>",
+                    "",
+                    "The love between Baxtorian",
+                    "and Glarial was said to have",
+                    "lasted over a century. They",
+                    "lived a peaceful life learning",
+                    "and teaching the laws of",
+                    "nature.",
+                    "",
+                    "When trouble hit their home",
+                    "in the west, Baxtorian left on",
+                    "a great campaign. He",
+                    "returned to find his people",
+                    "slaughtered and his wife",
+                    "taken by the enemy.",
+                ),
+                listOf(
+                    "After years of searching for",
+                    "his love, he finally gave up",
+                    "and returned to the home he",
+                    "had made for Glarial under",
+                    "the Baxtorian Falls. Once he",
+                    "entered, he never returned.",
+                    "",
+                    "Only he and Glarial had the",
+                    "power to enter the waterfall.",
+                    "Since Baxtorian entered, no",
+                    "one else has been able to get",
+                    "in. It's as if the powers of",
+                    "nature still work to protect",
+                    "him.",
+                ),
+                listOf(
+                    "<u>The Power of Nature</u>",
+                    "",
+                    "Glarial and Baxtorian were",
+                    "masters of nature. Trees",
+                    "would grow, hills form and",
+                    "rivers flood on their",
+                    "command.",
+                    "",
+                    "Baxtorian in particular had",
+                    "perfected rune lore. It was",
+                    "said that he could use the",
+                    "stones to control water, earth",
+                    "and air.",
+                ),
+                listOf(
+                    "<u>Ode to Eternity</u>",
+                    "",
+                    "A short piece written by",
+                    "Baxtorian himself.",
+                    "",
+                    "What care I for this mortal",
+                    "coil,",
+                    "where treasures are yet so",
+                    "frail,",
+                    "for it is you that is my life",
+                    "blood,",
+                    "the wine to my holy grail,",
+                    "and if I see the judgement",
+                    "day,",
+                    "when gods fill the air with",
+                ),
+                listOf(
+                    "dust,",
+                    "I'll happily choke on your",
+                    "memory,",
+                    "as my kingdom turns to",
+                    "rust.",
+                ),
+                emptyList(),
             )
 
-        val Chapters =
-            listOf(
-                "<u>The Lost Relics</u>" to
-                    listOf(
-                        "When the elves left these lands at the close of the Fourth Age, much of " +
-                            "their history went with them. Most mourned of all are the hidden " +
-                            "treasures of Baxtorian.",
-                        "Some say the treasures still lie where he left them. Most scholars " +
-                            "believe dwarven miners carried them off long ago.",
-                        "Also lost is Glarial's pebble, the key that let her kin visit her tomb. " +
-                            "A gnome family took it more than a century past, and their " +
-                            "descendants may still keep it in their cave beneath the Tree Gnome " +
-                            "Village.",
-                    ),
-                "<u>Baxtorian and Glarial</u>" to
-                    listOf(
-                        "For over a hundred years Baxtorian and Glarial lived together in peace, " +
-                            "studying and teaching the ways of nature.",
-                        "When war came to their western home, Baxtorian marched away to fight. " +
-                            "He returned to find his people dead and his queen taken.",
-                        "He searched for her for many years before retreating to the home he had " +
-                            "made for her beneath the falls. He went inside and never came out.",
-                        "Only the king and queen could pass into the waterfall, and none have " +
-                            "entered since. Nature itself seems to guard his rest.",
-                    ),
-                "<u>Masters of Nature</u>" to
-                    listOf(
-                        "At their word forests grew, hills rose and rivers burst their banks.",
-                        "Baxtorian's mastery of rune lore was unmatched. It was said that with " +
-                            "the right stones he could bend water, earth and air to his will.",
-                    ),
-                "<u>A Verse by Baxtorian</u>" to
-                    listOf(
-                        "The book ends with a short poem in Baxtorian's own hand. In it he " +
-                            "counts every treasure worthless beside his queen, and swears to " +
-                            "hold her memory close even as his kingdom crumbles to dust.",
-                    ),
-            )
-
-        /** Every page's lines, two pages to a spread. */
-        val Spreads: List<Pair<List<String>, List<String>>> by lazy {
-            val lines = mutableListOf<String>()
-            for ((heading, paragraphs) in Chapters) {
-                if (lines.size % LinesPerPage != 0) {
-                    repeat(LinesPerPage - lines.size % LinesPerPage) { lines += "" }
-                }
-                lines += heading
-                lines += ""
-                for (paragraph in paragraphs) {
-                    lines += wrap(paragraph)
-                    lines += ""
-                }
-            }
-            val pages = lines.chunked(LinesPerPage)
-            val padded = if (pages.size % 2 == 0) pages else pages + listOf(emptyList())
-            padded.chunked(2).map { it[0] to it[1] }
-        }
-
-        fun wrap(text: String): List<String> {
-            val lines = mutableListOf<String>()
-            var line = StringBuilder()
-            for (word in text.split(' ')) {
-                if (line.isNotEmpty() && line.length + 1 + word.length > WrapWidth) {
-                    lines += line.toString()
-                    line = StringBuilder()
-                }
-                if (line.isNotEmpty()) line.append(' ')
-                line.append(word)
-            }
-            if (line.isNotEmpty()) lines += line.toString()
-            return lines
-        }
+        val Spreads = Pages.chunked(2).map { it[0] to it[1] }
     }
 }

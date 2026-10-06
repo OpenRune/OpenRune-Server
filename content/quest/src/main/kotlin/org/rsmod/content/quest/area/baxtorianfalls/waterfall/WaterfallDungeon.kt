@@ -58,8 +58,8 @@ constructor(
 
     private suspend fun ProtectedAccess.exitFalls() {
         soundSynth(DoorSound)
-        mes("You exit the dungeon.")
         telejump(WaterfallCoords.LEDGE, TeleportType.Exempt)
+        mesbox("You exit the dungeon.")
     }
 
     private suspend fun ProtectedAccess.searchCrate() {
