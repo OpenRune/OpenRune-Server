@@ -14,6 +14,7 @@ import org.rsmod.content.other.consumables.potion.cox.CoxPotionEffect
 import org.rsmod.content.other.consumables.potion.moons.MoonlightPotionEffect
 import org.rsmod.content.other.consumables.potion.nmz.NightmareZonePotionEffect
 import org.rsmod.content.other.consumables.potion.toa.ToaPotionEffect
+import org.rsmod.content.other.consumables.restoreRunEnergy
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.timerAt

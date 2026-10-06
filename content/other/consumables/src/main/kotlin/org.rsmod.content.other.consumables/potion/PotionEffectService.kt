@@ -16,6 +16,7 @@ import org.rsmod.api.player.stat.clearPositiveStatBoost
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.table.PotionEffectRow
+import org.rsmod.content.other.consumables.restoreRunEnergy
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.timerAt

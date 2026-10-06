@@ -188,7 +188,7 @@ internal enum class PotionEffectData(
     ENERGY_RESTORE(
         key = "energy_restore",
         kind = "run_energy",
-        amount = 10,
+        amount = 15,
     ),
     SUPER_ENERGY_RESTORE(
         key = "super_energy_restore",
@@ -565,7 +565,7 @@ internal enum class PotionEffectData(
         key = "moonlight_potion",
         kind = "handler",
         handler = "moonlight_potion",
-    );
+    )
 }
 
 private fun seconds(value: Int): Int =

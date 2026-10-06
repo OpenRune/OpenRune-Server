@@ -1,7 +1,5 @@
 package org.rsmod.content.other.consumables.potion
 
-import org.rsmod.api.config.constants
-import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statBase
@@ -55,34 +53,6 @@ internal fun ProtectedAccess.restoreHitpointsIfDrained(
         stat = HITPOINTS,
         constant = amount,
         percent = 0,
-    )
-}
-
-internal fun ProtectedAccess.restoreRunEnergy(
-    percent: Int,
-) {
-    if (percent <= 0) {
-        return
-    }
-
-    val restored =
-        (
-            player.runEnergy +
-                percent * RUN_ENERGY_PERCENT_SCALE
-            ).coerceAtMost(
-                constants.run_max_energy,
-            )
-
-    if (restored == player.runEnergy) {
-        return
-    }
-
-    player.runEnergy =
-        restored
-
-    UpdateRun.energy(
-        player,
-        restored,
     )
 }
 
