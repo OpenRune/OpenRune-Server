@@ -259,6 +259,7 @@ internal enum class PotionEffectData(
             "dbrow.effect_superantipoison",
         ),
         curesDisease = true,
+        duration = minutes(15),
     ),
     SARADOMIN_BREW(
         key = "saradomin_brew",

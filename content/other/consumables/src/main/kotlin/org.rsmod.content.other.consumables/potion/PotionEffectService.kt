@@ -417,6 +417,7 @@ constructor(
 
                     if (effect.curesDisease) {
                         PlayerDisease.clear(player)
+                        PlayerDisease.grantImmunity(player, effect.duration)
                     }
                 }
 

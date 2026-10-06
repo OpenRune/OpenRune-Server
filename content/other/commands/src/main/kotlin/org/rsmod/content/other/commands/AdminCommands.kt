@@ -369,7 +369,7 @@ constructor(
                 if (ok) {
                     "Disease applied (drain per tick=$drain)."
                 } else {
-                    "Disease not applied (no eligible skill)."
+                    "Disease not applied (immune, or no eligible skill)."
                 }
             )
         }

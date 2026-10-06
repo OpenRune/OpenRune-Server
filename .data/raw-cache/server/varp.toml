@@ -219,6 +219,12 @@ transmit = "Never"
 
 [[varp]]
 isServerOnly = true
+id = "varp.disease_immunity"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
 id = "varp.poison_severity"
 scope = "Perm"
 transmit = "Never"

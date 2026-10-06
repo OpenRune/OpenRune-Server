@@ -79,6 +79,14 @@ class PotionDataTest {
         }
     }
 
+    @Test
+    fun `sanfew serum cures disease and gives fifteen minutes of disease immunity`() {
+        val sanfew = effect(PotionData.SANFEW_SERUM.effect)
+        assertEquals(true, sanfew.curesDisease)
+        assertEquals(false, sanfew.stamina)
+        assertEquals(minutesInTicks(15), sanfew.duration)
+    }
+
     private fun runEnergyPercent(row: String): Int {
         val effect = effect(row)
         return when (effect.kind) {

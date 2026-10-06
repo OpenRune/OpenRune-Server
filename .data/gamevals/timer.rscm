@@ -32,6 +32,7 @@ potion_nzone_overload_damage=32
 potion_moonlight=33
 food_delayed_heal=34
 heart_cooldown=35
+disease_immunity=36
 boss_hp_bar_check=114
 whisperer_sanity=115
 whisperer_insanity=116

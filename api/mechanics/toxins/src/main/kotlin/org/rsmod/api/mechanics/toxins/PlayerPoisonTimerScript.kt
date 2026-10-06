@@ -59,6 +59,11 @@ constructor(
                 clock = clock,
             )
 
+            PlayerDisease.rearmImmunityAfterLogin(
+                player = player,
+                clock = clock,
+            )
+
             ToxinImmunity.onLogin(
                 player = player,
                 clock = clock,
@@ -91,6 +96,10 @@ constructor(
             PlayerDisease.onDiseaseTimerTick(
                 player,
             )
+        }
+
+        onPlayerTimer(PlayerDisease.IMMUNITY_TIMER) {
+            PlayerDisease.onImmunityTimerTick(player)
         }
 
         onPlayerTimer(
