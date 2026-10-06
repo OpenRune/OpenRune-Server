@@ -7,4 +7,5 @@ dependencies {
     implementation(projects.api.registry)
     implementation(projects.content.skills.utils)
     implementation(projects.content.generic.genericLocs)
+    implementation(projects.content.quest)
 }

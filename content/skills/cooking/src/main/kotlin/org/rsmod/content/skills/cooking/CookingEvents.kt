@@ -11,6 +11,7 @@ import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.FiremakingColoredLogsRow
 import org.rsmod.api.table.cooking.CookingFoodsRow
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.Material
 import org.rsmod.content.skills.SkillMultiConfig
 import org.rsmod.content.skills.SkillMultiEntry
@@ -59,7 +60,8 @@ class CookingEvents @Inject constructor(
         rangeTypeByContent.forEach { (content, rangeType) ->
             foods.forEach { food ->
                 onOpContentMixedLocU(content, food.raw.internalName) {
-                    cookFood(food, CookingSurface.Range(rangeType, it.type.internalName))
+                    val surface = CookingSurface.Range(rangeType, it.type.internalName)
+                    if (canUseRange(surface)) cookFood(food, surface)
                 }
             }
         }
@@ -71,11 +73,19 @@ class CookingEvents @Inject constructor(
         }
         rangeTypeByContent.forEach { (content, rangeType) ->
             onOpContentLoc1(content) {
-                openCookingMenu(CookingSurface.Range(rangeType, it.type.internalName))
+                val surface = CookingSurface.Range(rangeType, it.type.internalName)
+                if (canUseRange(surface)) openCookingMenu(surface)
             }
         }
 
         onPlayerQueueWithArgs<CookTask>("queue.cooking_cook") { processCookTick(it.args) }
+    }
+
+    private suspend fun ProtectedAccess.canUseRange(surface: CookingSurface.Range): Boolean {
+        if (surface.rangeType != RangeType.LUMBRIDGE) return true
+        if (QuestRequirements.hasCompleted(player, "quest_cooksassistant")) return true
+        startDialogue { chatNpcSpecific("Cook", "npc.cook", angry, "Hey, who said you could use that?") }
+        return false
     }
 
     private fun ProtectedAccess.burnReduction(surface: CookingSurface, food: CookingFoodsRow): Int {

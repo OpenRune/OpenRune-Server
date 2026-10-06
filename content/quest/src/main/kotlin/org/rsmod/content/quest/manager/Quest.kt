@@ -108,6 +108,14 @@ data class Quest(
         return stages[key] ?: 0
     }
 
+    fun migrateLegacyStage(player: Player) {
+        if (questVarbit == null) return
+        val legacy = player.attr[QUEST_STAGE_MAP_ATTR]?.remove(key) ?: return
+        if (player.questState == 0) {
+            player.questState = legacy.coerceIn(0, maxSteps)
+        }
+    }
+
     private fun storeQuestStage(access: ProtectedAccess, stage: Int) {
         if (questVarbit != null) return
         val clampedStage = stage.coerceIn(0, maxSteps)

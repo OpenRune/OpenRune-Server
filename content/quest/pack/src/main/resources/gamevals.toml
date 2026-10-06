@@ -67,6 +67,7 @@ restless_ghost_return_tile = 63704
 misthalin_return_tile = 63700
 misthalin_mirror_blocker = 63701
 misthalin_puzzle_state = 63702
+cooks_assistant_ingredients = 63705
 gertrudes_cat_state = 63711
 
 [gamevals.varbit]
@@ -74,6 +75,10 @@ restless_ghost_progress = 63702
 imp_catcher_progress = 63703
 misthalin_reflections = 63700
 misthalin_gem_row_slot = 63701
+cooks_assistant_progress = 63704
+cooks_assistant_milk = 63705
+cooks_assistant_egg = 63706
+cooks_assistant_flour = 63707
 gertrudes_cat_progress = 63711
 gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
