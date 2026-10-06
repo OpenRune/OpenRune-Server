@@ -364,7 +364,7 @@ constructor(
                     restoreIfDrained(
                         stat = PRAYER,
                         constant = effect.base,
-                        percent = effect.percent,
+                        percent = prayerRestorePercent(effect.percent),
                     )
 
                 KIND_PRAYER_REGENERATION ->
@@ -478,7 +478,12 @@ constructor(
             restoreIfDrained(
                 stat = stat,
                 constant = effect.base,
-                percent = effect.percent,
+                percent =
+                    if (stat == PRAYER) {
+                        prayerRestorePercent(effect.percent)
+                    } else {
+                        effect.percent
+                    },
             )
         }
     }
