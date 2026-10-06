@@ -31,10 +31,10 @@ import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.zone.ZoneUpdateMap
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.shops.Shops
 import org.rsmod.content.other.sawmill.SawmillHooks
 import org.rsmod.content.other.sawmill.SawmillOperatorScript
-import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
