@@ -61,6 +61,15 @@ grim_piano_g5 = 3705
 grim_piano_a5 = 3693
 grim_piano_b5 = 3695
 
+splash_and_river = 1308
+cf_swim = 1436
+cf_tierope = 1439
+contact_rumble = 1464
+watersplash = 2496
+vial_pour = 2613
+smokepuff = 1930
+stone_door = 86
+
 [gamevals.varp]
 restless_ghost_rising_tile = 63703
 restless_ghost_return_tile = 63704
@@ -69,6 +78,7 @@ misthalin_mirror_blocker = 63701
 misthalin_puzzle_state = 63702
 cooks_assistant_ingredients = 63705
 gertrudes_cat_state = 63711
+waterfall_state = 64400
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
@@ -83,6 +93,10 @@ gertrudes_cat_progress = 63711
 gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
 gertrudes_cat_told_sardines = 63714
+waterfall_progress = 64400
+waterfall_heard_of_treasure = 64401
+waterfall_met_golrie = 64402
+waterfall_pillar_runes = 64403
 
 [gamevals.models]
 misthalin_gem_diamond = 32333

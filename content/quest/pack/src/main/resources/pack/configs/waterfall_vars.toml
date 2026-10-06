@@ -1,0 +1,33 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.waterfall_progress"
+varp = "varp.waterfall_quest"
+startBit = 0
+endBit = 4
+
+[[varp]]
+isServerOnly = true
+id = "varp.waterfall_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.waterfall_heard_of_treasure"
+varp = "varp.waterfall_state"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.waterfall_met_golrie"
+varp = "varp.waterfall_state"
+startBit = 1
+endBit = 1
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.waterfall_pillar_runes"
+varp = "varp.waterfall_state"
+startBit = 2
+endBit = 19
