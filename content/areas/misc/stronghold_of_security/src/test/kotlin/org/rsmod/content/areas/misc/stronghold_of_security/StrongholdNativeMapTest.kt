@@ -7,8 +7,10 @@ import dev.openrune.map.GameMapDecoder
 import dev.openrune.map.loc.MapLocListDecoder
 import dev.openrune.map.tile.MapTileDecoder
 import dev.openrune.map.util.InlineByteBuf
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ObjectServerType
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -45,6 +47,9 @@ import org.rsmod.map.zone.ZoneKey
 import org.rsmod.routefinder.collision.CollisionFlagMap
 import org.rsmod.routefinder.flag.CollisionFlag
 import org.rsmod.routefinder.loc.LocLayerConstants
+
+private val ObjectServerType.rscm: String
+    get() = RSCM.getReverseMapping(RSCMType.LOC, id)
 
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
@@ -90,16 +95,16 @@ class StrongholdNativeMapTest {
 
     @Test
     fun `the bone chain out of the dungeon stands beside the cradle of life`() {
-        val death = StrongholdFloor.Death
+        val death = StrongholdFloors.death
         val chain = StrongholdTravel.CradleRoomChain
-        assertTrue(chain.chebyshevDistance(at(death.reward).single()) <= 6)
+        assertTrue(chain.chebyshevDistance(at(death.reward.rscm).single()) <= 6)
         assertTrue(chain.chebyshevDistance(death.rewardRoom) <= 6)
     }
 
     @Test
     fun `every arrival tile is open ground`() {
         val arrivals =
-            StrongholdFloor.entries.flatMap { listOf(it.start, it.rewardRoom) } +
+            StrongholdFloors.all.flatMap { listOf(it.start, it.rewardRoom) } +
                 listOf(
                     StrongholdTravel.Surface,
                     StrongholdTravel.WarArrival,
@@ -115,48 +120,54 @@ class StrongholdNativeMapTest {
 
     @Test
     fun `reward rooms are next to their chests`() {
-        val chests = StrongholdFloor.entries.associateWith { at(it.reward).single() }
-        for ((floor, chest) in chests) {
-            assertTrue(floor.rewardRoom.chebyshevDistance(chest) <= 2, floor.name)
+        for (floor in StrongholdFloors.all) {
+            val chest = at(floor.reward.rscm).single()
+            assertTrue(floor.rewardRoom.chebyshevDistance(chest) <= 2, floor.doorTitle)
         }
     }
 
     @Test
     fun `every doorway has exactly one space between its pair of doors`() {
-        for (floor in StrongholdFloor.entries) {
-            val doors = at(floor.face).map { it to floor.face } + at(floor.mirror).map { it to floor.mirror }
-            assertTrue(doors.size >= 30, "${floor.name} has ${doors.size} door leaves")
+        for (floor in StrongholdFloors.all) {
+            val face = floor.doorFace.rscm
+            val mirror = floor.doorMirror.rscm
+            val doors = at(face).map { it to face } + at(mirror).map { it to mirror }
+            assertTrue(doors.size >= 30, "${floor.doorTitle} has ${doors.size} door leaves")
             for ((coords, loc) in doors) {
                 val info = map.locAt(coords, loc)
                 val sides =
                     listOf(true, false).count { onLocSide ->
                         map.locs.standsBetweenDoors(floor, info, onLocSide)
                     }
-                assertEquals(1, sides, "${floor.name} $loc at $coords")
+                assertEquals(1, sides, "${floor.doorTitle} $loc at $coords")
             }
         }
     }
 
     @Test
     fun `doors always come as a face and a mirror side by side`() {
-        for (floor in StrongholdFloor.entries) {
-            val faces = at(floor.face)
-            val mirrors = at(floor.mirror).toSet()
-            assertEquals(faces.size, mirrors.size, floor.name)
+        for (floor in StrongholdFloors.all) {
+            val faces = at(floor.doorFace.rscm)
+            val mirrors = at(floor.doorMirror.rscm).toSet()
+            assertEquals(faces.size, mirrors.size, floor.doorTitle)
             for (face in faces) {
-                val info = map.locAt(face, floor.face)
+                val info = map.locAt(face, floor.doorFace.rscm)
                 val partners =
-                    listOf(
-                        DoorTranslations.translateClose(info.coords, info.shape, info.angle),
-                        DoorTranslations.translateCloseOpposite(info.coords, info.shape, info.angle),
-                    )
-                assertEquals(1, partners.count { it in mirrors }, "${floor.name} $face")
+                    with(info) {
+                        listOf(
+                            DoorTranslations.translateClose(coords, shape, angle),
+                            DoorTranslations.translateCloseOpposite(coords, shape, angle),
+                        )
+                    }
+                assertEquals(1, partners.count { it in mirrors }, "${floor.doorTitle} $face")
             }
         }
     }
 
-    private fun at(loc: String): List<CoordGrid> =
-        map.placed.filter { it.first == loc.asRSCM(RSCMType.LOC) && it.second.level == 0 }.map { it.second }
+    private fun at(loc: String): List<CoordGrid> {
+        val id = loc.asRSCM(RSCMType.LOC)
+        return map.placed.filter { it.first == id && it.second.level == 0 }.map { it.second }
+    }
 
     private class NativeMap {
         val collision = CollisionFlagMap()
@@ -189,9 +200,11 @@ class StrongholdNativeMapTest {
         init {
             val cache = ServerCacheManager.init(240)
             try {
-                val squares =
-                    listOf(28, 29, 30, 31, 32, 33, 36).flatMap { x -> listOf(80, 81, 82).map { x to it } } +
-                        listOf(48 to 53)
+                val strongholdSquares =
+                    listOf(28, 29, 30, 31, 32, 33, 36).flatMap { x ->
+                        listOf(80, 81, 82).map { x to it }
+                    }
+                val squares = strongholdSquares + listOf(48 to 53)
                 for ((x, z) in squares) {
                     val group = (x shl 8) or z
                     val tileData = cache.data(MAPS, group, 0) ?: continue
@@ -221,13 +234,13 @@ class StrongholdNativeMapTest {
             } finally {
                 cache.close()
             }
-            for (floor in StrongholdFloor.entries) {
-                for (loc in listOf(floor.face, floor.mirror)) {
-                    val id = loc.asRSCM(RSCMType.LOC)
+            for (floor in StrongholdFloors.all) {
+                for (id in listOf(floor.doorFace.id, floor.doorMirror.id)) {
                     for ((entityId, coords) in placed) {
                         if (entityId != id || coords.level != 0) continue
                         val entity = entities.getValue(entityId to coords)
-                        locs.add(LocInfo(LocLayerConstants.of(entity.shape), coords, entity), Int.MAX_VALUE)
+                        val info = LocInfo(LocLayerConstants.of(entity.shape), coords, entity)
+                        locs.add(info, Int.MAX_VALUE)
                     }
                 }
             }

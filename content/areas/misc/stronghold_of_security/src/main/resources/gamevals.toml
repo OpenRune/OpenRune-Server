@@ -6,3 +6,12 @@ sos_war_claimed = 64060
 sos_fam_claimed = 64061
 sos_pest_claimed = 64062
 sos_death_claimed = 64063
+
+[gamevals.dbtable]
+stronghold_floors = 65493
+
+[gamevals.dbrow]
+stronghold_floor_war = 63240
+stronghold_floor_famine = 63241
+stronghold_floor_pestilence = 63242
+stronghold_floor_death = 63243

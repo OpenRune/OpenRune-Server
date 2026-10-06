@@ -2,6 +2,7 @@ package org.rsmod.content.areas.misc.stronghold_of_security
 
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.table.StrongholdFloorsRow
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -18,12 +19,12 @@ class StrongholdTravel : PluginScript() {
         onOpLoc1("loc.sos_pest_ladd_down") { climb(DeathArrival) }
         onOpLoc1("loc.sos_death_ladd_up") { climb(PestilenceArrival) }
 
-        onOpLoc1("loc.sos_war_chainbottom") { climb(StrongholdFloor.War.start) }
-        onOpLoc1("loc.sos_fam_rope_up") { climb(StrongholdFloor.Famine.start) }
-        onOpLoc1("loc.sos_pest_rope_up") { climb(StrongholdFloor.Pestilence.start) }
+        onOpLoc1("loc.sos_war_chainbottom") { climb(StrongholdFloors.war.start) }
+        onOpLoc1("loc.sos_fam_rope_up") { climb(StrongholdFloors.famine.start) }
+        onOpLoc1("loc.sos_pest_rope_up") { climb(StrongholdFloors.pestilence.start) }
         onOpLoc1("loc.sos_death_rope_up") { climb(boneChainDestination(it.loc.coords)) }
 
-        for (floor in StrongholdFloor.entries) {
+        for (floor in StrongholdFloors.all) {
             onOpLoc1(floor.portal) { usePortal(floor) }
         }
     }
@@ -35,7 +36,7 @@ class StrongholdTravel : PluginScript() {
         telejump(dest)
     }
 
-    private suspend fun ProtectedAccess.usePortal(floor: StrongholdFloor) {
+    private suspend fun ProtectedAccess.usePortal(floor: StrongholdFloorsRow) {
         arriveDelay()
         if (!player.mayUsePortal(floor)) {
             mes(portalRefusal(floor))
@@ -44,7 +45,7 @@ class StrongholdTravel : PluginScript() {
         telejump(floor.rewardRoom)
     }
 
-    private fun portalRefusal(floor: StrongholdFloor): String {
+    private fun portalRefusal(floor: StrongholdFloorsRow): String {
         val level = floor.portalCombatLevel
             ?: return "The portal will only carry you to the reward room once you have claimed it."
         return "The portal will only carry you to the reward room if you have claimed it or are " +
@@ -60,11 +61,11 @@ class StrongholdTravel : PluginScript() {
         val CradleRoomChain = CoordGrid(2350, 5215, 0)
 
         fun boneChainDestination(chain: CoordGrid): CoordGrid =
-            if (chain == CradleRoomChain) Surface else StrongholdFloor.Death.start
+            if (chain == CradleRoomChain) Surface else StrongholdFloors.death.start
     }
 }
 
-internal fun Player.mayUsePortal(floor: StrongholdFloor): Boolean {
+internal fun Player.mayUsePortal(floor: StrongholdFloorsRow): Boolean {
     if (hasClaimed(floor)) {
         return true
     }

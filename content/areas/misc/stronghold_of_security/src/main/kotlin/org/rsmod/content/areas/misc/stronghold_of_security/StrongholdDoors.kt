@@ -1,13 +1,12 @@
 package org.rsmod.content.areas.misc.stronghold_of_security
 
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.types.MesAnimType
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.table.StrongholdFloorsRow
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
@@ -17,13 +16,13 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class StrongholdDoors @Inject constructor(private val locRepo: LocRepository) : PluginScript() {
     override fun ScriptContext.startup() {
-        for (floor in StrongholdFloor.entries) {
-            onOpLoc1(floor.face) { useDoor(floor, it.loc.toLocInfo()) }
-            onOpLoc1(floor.mirror) { useDoor(floor, it.loc.toLocInfo()) }
+        for (floor in StrongholdFloors.all) {
+            onOpLoc1(floor.doorFace) { useDoor(floor, it.loc.toLocInfo()) }
+            onOpLoc1(floor.doorMirror) { useDoor(floor, it.loc.toLocInfo()) }
         }
     }
 
-    private suspend fun ProtectedAccess.useDoor(floor: StrongholdFloor, door: LocInfo) {
+    private suspend fun ProtectedAccess.useDoor(floor: StrongholdFloorsRow, door: LocInfo) {
         if (asksQuestion(floor, door) && !passesQuestion(floor)) {
             return
         }
@@ -31,7 +30,7 @@ class StrongholdDoors @Inject constructor(private val locRepo: LocRepository) : 
         telejump(door.otherSide(player.coords))
     }
 
-    private fun ProtectedAccess.asksQuestion(floor: StrongholdFloor, door: LocInfo): Boolean {
+    private fun ProtectedAccess.asksQuestion(floor: StrongholdFloorsRow, door: LocInfo): Boolean {
         if (player.doorsStayQuiet(floor)) {
             return false
         }
@@ -41,7 +40,7 @@ class StrongholdDoors @Inject constructor(private val locRepo: LocRepository) : 
         return random.of(maxExclusive = QuestionSkipOdds) != 0
     }
 
-    private suspend fun ProtectedAccess.passesQuestion(floor: StrongholdFloor): Boolean {
+    private suspend fun ProtectedAccess.passesQuestion(floor: StrongholdFloorsRow): Boolean {
         val question = random.pick(SecurityQuestions.all)
         var passed = false
         startDialogue {
@@ -62,12 +61,12 @@ class StrongholdDoors @Inject constructor(private val locRepo: LocRepository) : 
     }
 
     private suspend fun Dialogue.say(
-        floor: StrongholdFloor,
+        floor: StrongholdFloorsRow,
         mesanim: MesAnimType,
         text: String,
     ) {
         for (part in text.splitForChatbox()) {
-            chatNpcSpecific(floor.doorTitle, floor.doorNpc, mesanim, part)
+            chatNpcSpecific(floor.doorTitle, floor.doorNpcName, mesanim, part)
         }
     }
 
@@ -97,13 +96,13 @@ class StrongholdDoors @Inject constructor(private val locRepo: LocRepository) : 
 
 /** Only the second door of a pair asks, so leaving a room of monsters is never held up. */
 internal fun LocRepository.standsBetweenDoors(
-    floor: StrongholdFloor,
+    floor: StrongholdFloorsRow,
     door: LocInfo,
     onLocSide: Boolean,
 ): Boolean {
     val here = if (onLocSide) door.coords else door.acrossTile()
     val there = if (onLocSide) door.acrossTile() else door.coords
-    val doorIds = setOf(floor.face, floor.mirror).map { it.asRSCM(RSCMType.LOC) }.toSet()
+    val doorIds = setOf(floor.doorFace.id, floor.doorMirror.id)
     return (1..StrongholdDoors.MaxVestibuleDepth).any { depth ->
         val tile = here.translate((here.x - there.x) * depth, (here.z - there.z) * depth)
         findAll(tile).any { it.id in doorIds }

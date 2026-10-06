@@ -1,8 +1,10 @@
 package org.rsmod.content.areas.misc.stronghold_of_security
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ObjectServerType
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
@@ -45,6 +47,7 @@ import org.rsmod.api.registry.zone.ZonePlayerActivityBitSet
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.table.StrongholdFloorsRow
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -80,6 +83,9 @@ private var Player.ideaEmote by boolVarBit("varbit.sos_emote_idea")
 private var Player.stampEmote by boolVarBit("varbit.sos_emote_stamp")
 private var Player.metSolztunFlag by boolVarBit("varbit.sos_brother_found")
 
+private val ObjectServerType.rscm: String
+    get() = RSCM.getReverseMapping(RSCMType.LOC, id)
+
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 @OptIn(InternalApi::class)
@@ -98,62 +104,62 @@ class StrongholdInteractionTest {
 
     @Test
     fun `a correct answer moves the player through a door that stays shut`() {
-        for (floor in StrongholdFloor.entries) {
+        for (floor in StrongholdFloors.all) {
             val f = Fixture(InsideDoors)
             f.doorPair(floor)
             f.ask(question = 0)
-            f.op(f.find(Far, floor.face), options = listOf(3))
+            f.op(f.find(Far, floor.doorFace.rscm), options = listOf(3))
             assertEquals(CoordGrid(1858, 5235, 0), f.player.coords, floor.doorTitle)
             assertTrue(f.output().contains("To pass you must answer me this"), floor.doorTitle)
             assertTrue(f.output().contains("Correct!"), floor.doorTitle)
-            assertTrue(f.has(Far, floor.face), floor.doorTitle)
-            assertTrue(f.has(Far.translateX(1), floor.mirror), floor.doorTitle)
+            assertTrue(f.has(Far, floor.doorFace.rscm), floor.doorTitle)
+            assertTrue(f.has(Far.translateX(1), floor.doorMirror.rscm), floor.doorTitle)
             assertTrue(f.locsAt(Far.translateZ(1)).isEmpty(), floor.doorTitle)
         }
     }
 
     @Test
     fun `a wrong answer refuses the door and explains why`() {
-        for (floor in StrongholdFloor.entries) {
+        for (floor in StrongholdFloors.all) {
             val f = Fixture(InsideDoors)
             f.doorPair(floor)
             f.ask(question = 0)
-            f.op(f.find(Far, floor.face), options = listOf(1))
+            f.op(f.find(Far, floor.doorFace.rscm), options = listOf(1))
             assertEquals(InsideDoors, f.player.coords, floor.doorTitle)
             assertTrue(f.output().contains("Wrong! Membership requires"), floor.doorTitle)
-            assertTrue(f.has(Far, floor.face), floor.doorTitle)
+            assertTrue(f.has(Far, floor.doorFace.rscm), floor.doorTitle)
         }
     }
 
     @Test
     fun `a merely decent answer does not open the door either`() {
         val f = Fixture(InsideDoors)
-        f.doorPair(StrongholdFloor.War)
+        f.doorPair(StrongholdFloors.war)
         f.ask(question = 0)
-        f.op(f.find(Far, StrongholdFloor.War.face), options = listOf(2))
+        f.op(f.find(Far, StrongholdFloors.war.doorFace.rscm), options = listOf(2))
         assertEquals(InsideDoors, f.player.coords)
         assertTrue(f.output().contains("Quite good."))
     }
 
     @Test
     fun `either leaf of a doorway asks and lets the player through`() {
-        val pestilence = StrongholdFloor.Pestilence
+        val pestilence = StrongholdFloors.pestilence
         val mirror = CoordGrid(1859, 5235, 0)
         val f = Fixture(CoordGrid(1859, 5236, 0))
         f.doorPair(pestilence)
         f.ask(question = 1)
-        f.op(f.find(mirror, pestilence.mirror), options = listOf(1))
+        f.op(f.find(mirror, pestilence.doorMirror.rscm), options = listOf(1))
         assertEquals(mirror, f.player.coords)
-        assertTrue(f.has(Far, pestilence.face))
-        assertTrue(f.has(mirror, pestilence.mirror))
+        assertTrue(f.has(Far, pestilence.doorFace.rscm))
+        assertTrue(f.has(mirror, pestilence.doorMirror.rscm))
     }
 
     @Test
     fun `opening a door from a room of monsters is always immediate`() {
-        for (floor in StrongholdFloor.entries) {
+        for (floor in StrongholdFloors.all) {
             val f = Fixture(CoordGrid(1858, 5234, 0))
             f.doorPair(floor)
-            f.op(f.find(Far, floor.face))
+            f.op(f.find(Far, floor.doorFace.rscm))
             assertEquals(CoordGrid(1858, 5236, 0), f.player.coords, floor.doorTitle)
             assertFalse(
                 f.output().contains("To pass you must answer me this"),
@@ -165,9 +171,9 @@ class StrongholdInteractionTest {
     @Test
     fun `leaving the space between doors the other way is questioned too`() {
         val f = Fixture(CoordGrid(1858, 5237, 0))
-        f.doorPair(StrongholdFloor.War)
+        f.doorPair(StrongholdFloors.war)
         f.ask(question = 0)
-        f.op(f.find(Near, StrongholdFloor.War.face), options = listOf(3))
+        f.op(f.find(Near, StrongholdFloors.war.doorFace.rscm), options = listOf(3))
         assertEquals(CoordGrid(1858, 5239, 0), f.player.coords)
         assertTrue(f.output().contains("Correct!"))
     }
@@ -175,9 +181,9 @@ class StrongholdInteractionTest {
     @Test
     fun `players sometimes pass a door that is not asking`() {
         val f = Fixture(InsideDoors)
-        f.doorPair(StrongholdFloor.War)
+        f.doorPair(StrongholdFloors.war)
         f.skipQuestion()
-        f.op(f.find(Far, StrongholdFloor.War.face))
+        f.op(f.find(Far, StrongholdFloors.war.doorFace.rscm))
         assertEquals(CoordGrid(1858, 5235, 0), f.player.coords)
         assertFalse(f.output().contains("To pass you must answer me this"))
     }
@@ -185,26 +191,26 @@ class StrongholdInteractionTest {
     @Test
     fun `claiming a floor stops its doors asking but not the others`() {
         val f = Fixture(InsideDoors)
-        f.doorPair(StrongholdFloor.War)
-        f.player.markClaimed(StrongholdFloor.War)
-        f.op(f.find(Far, StrongholdFloor.War.face))
+        f.doorPair(StrongholdFloors.war)
+        f.player.markClaimed(StrongholdFloors.war)
+        f.op(f.find(Far, StrongholdFloors.war.doorFace.rscm))
         assertEquals(CoordGrid(1858, 5235, 0), f.player.coords)
         assertFalse(f.output().contains("To pass you must answer me this"))
 
         val other = Fixture(InsideDoors)
-        other.doorPair(StrongholdFloor.Famine)
-        other.player.markClaimed(StrongholdFloor.War)
+        other.doorPair(StrongholdFloors.famine)
+        other.player.markClaimed(StrongholdFloors.war)
         other.ask(question = 0)
-        other.op(other.find(Far, StrongholdFloor.Famine.face), options = listOf(1))
+        other.op(other.find(Far, StrongholdFloors.famine.doorFace.rscm), options = listOf(1))
         assertEquals(InsideDoors, other.player.coords)
     }
 
     @Test
     fun `completing the stronghold ends all questioning`() {
         val f = Fixture(InsideDoors)
-        f.doorPair(StrongholdFloor.Death)
-        for (floor in StrongholdFloor.entries) f.player.markClaimed(floor)
-        f.op(f.find(Far, StrongholdFloor.Death.face))
+        f.doorPair(StrongholdFloors.death)
+        for (floor in StrongholdFloors.all) f.player.markClaimed(floor)
+        f.op(f.find(Far, StrongholdFloors.death.doorFace.rscm))
         assertEquals(CoordGrid(1858, 5235, 0), f.player.coords)
         assertFalse(f.output().contains("To pass you must answer me this"))
     }
@@ -228,10 +234,10 @@ class StrongholdInteractionTest {
         f.player.statMap.setCurrentLevel("stat.hitpoints", 10)
         f.player.statMap.setBaseLevel("stat.prayer", 40)
         f.player.statMap.setCurrentLevel("stat.prayer", 3)
-        val chest = f.spawnLoc(StrongholdFloor.War.reward, CoordGrid(1907, 5222, 0))
+        val chest = f.spawnLoc(StrongholdFloors.war.reward.rscm, CoordGrid(1907, 5222, 0))
         f.op(chest)
         assertEquals(2_000, f.player.inv.count("obj.coins"))
-        assertTrue(f.player.hasClaimed(StrongholdFloor.War))
+        assertTrue(f.player.hasClaimed(StrongholdFloors.war))
         assertTrue(f.player.flapEmote)
         assertFalse(f.player.slapHeadEmote)
         assertEquals(50, f.player.stat("stat.hitpoints"))
@@ -244,13 +250,13 @@ class StrongholdInteractionTest {
     @Test
     fun `the grain of plenty pays three thousand and teaches slap head`() {
         val f = Fixture(CoordGrid(2021, 5214, 0))
-        val sack = f.spawnLoc(StrongholdFloor.Famine.reward, CoordGrid(2021, 5215, 0))
+        val sack = f.spawnLoc(StrongholdFloors.famine.reward.rscm, CoordGrid(2021, 5215, 0))
         f.op(sack)
         f.op(sack)
         assertEquals(3_000, f.player.inv.count("obj.coins"))
         assertTrue(f.player.slapHeadEmote)
         assertFalse(f.player.ideaEmote)
-        assertTrue(f.player.hasClaimed(StrongholdFloor.Famine))
+        assertTrue(f.player.hasClaimed(StrongholdFloors.famine))
     }
 
     @Test
@@ -260,7 +266,7 @@ class StrongholdInteractionTest {
         f.player.statMap.setCurrentLevel("stat.strength", 40)
         f.player.statMap.setBaseLevel("stat.attack", 55)
         f.player.statMap.setCurrentLevel("stat.attack", 70)
-        val box = f.spawnLoc(StrongholdFloor.Pestilence.reward, CoordGrid(2144, 5280, 0))
+        val box = f.spawnLoc(StrongholdFloors.pestilence.reward.rscm, CoordGrid(2144, 5280, 0))
         f.op(box)
         f.op(box)
         assertEquals(5_000, f.player.inv.count("obj.coins"))
@@ -273,20 +279,20 @@ class StrongholdInteractionTest {
     @Test
     fun `chests can be claimed in any order`() {
         val f = Fixture(CoordGrid(2144, 5279, 0))
-        f.op(f.spawnLoc(StrongholdFloor.Pestilence.reward, CoordGrid(2144, 5280, 0)))
-        assertTrue(f.player.hasClaimed(StrongholdFloor.Pestilence))
-        assertFalse(f.player.hasClaimed(StrongholdFloor.War))
-        assertFalse(f.player.hasClaimed(StrongholdFloor.Famine))
+        f.op(f.spawnLoc(StrongholdFloors.pestilence.reward.rscm, CoordGrid(2144, 5280, 0)))
+        assertTrue(f.player.hasClaimed(StrongholdFloors.pestilence))
+        assertFalse(f.player.hasClaimed(StrongholdFloors.war))
+        assertFalse(f.player.hasClaimed(StrongholdFloors.famine))
         assertFalse(f.player.completedStronghold())
     }
 
     @Test
     fun `the cradle of life teaches stamp once and offers boots every time`() {
         val f = Fixture(CoordGrid(2344, 5213, 0))
-        val cradle = f.spawnLoc(StrongholdFloor.Death.reward, CoordGrid(2344, 5214, 0))
+        val cradle = f.spawnLoc(StrongholdFloors.death.reward.rscm, CoordGrid(2344, 5214, 0))
         f.op(cradle, options = listOf(3))
         assertTrue(f.player.stampEmote)
-        assertTrue(f.player.hasClaimed(StrongholdFloor.Death))
+        assertTrue(f.player.hasClaimed(StrongholdFloors.death))
         assertEquals(1, f.player.inv.count("obj.sos_boots3"))
         assertEquals(0, f.player.inv.count("obj.coins"))
 
@@ -303,7 +309,7 @@ class StrongholdInteractionTest {
     fun `completing all four floors completes the stronghold`() {
         val f = Fixture(CoordGrid(2344, 5213, 0))
         assertFalse(f.player.completedStronghold())
-        for (floor in StrongholdFloor.entries) f.player.markClaimed(floor)
+        for (floor in StrongholdFloors.all) f.player.markClaimed(floor)
         assertTrue(f.player.completedStronghold())
     }
 
@@ -311,40 +317,41 @@ class StrongholdInteractionTest {
     fun `portals need the reward or a high enough combat level`() {
         for ((floor, level) in
             listOf(
-                StrongholdFloor.War to 26,
-                StrongholdFloor.Famine to 51,
-                StrongholdFloor.Pestilence to 76,
+                StrongholdFloors.war to 26,
+                StrongholdFloors.famine to 51,
+                StrongholdFloors.pestilence to 76,
             )) {
+            val portal = floor.portal.rscm
             val low = Fixture(floor.start)
             low.player.appearance.combatLevel = level - 1
-            low.op(low.spawnLoc(floor.portal, floor.start.translateZ(1)))
-            assertEquals(floor.start, low.player.coords, floor.name)
-            assertTrue(low.output().contains("combat level $level"), floor.name)
+            low.op(low.spawnLoc(portal, floor.start.translateZ(1)))
+            assertEquals(floor.start, low.player.coords, floor.doorTitle)
+            assertTrue(low.output().contains("combat level $level"), floor.doorTitle)
 
             val high = Fixture(floor.start)
             high.player.appearance.combatLevel = level
-            high.op(high.spawnLoc(floor.portal, floor.start.translateZ(1)))
-            assertEquals(floor.rewardRoom, high.player.coords, floor.name)
+            high.op(high.spawnLoc(portal, floor.start.translateZ(1)))
+            assertEquals(floor.rewardRoom, high.player.coords, floor.doorTitle)
 
             val claimed = Fixture(floor.start)
             claimed.player.markClaimed(floor)
-            claimed.op(claimed.spawnLoc(floor.portal, floor.start.translateZ(1)))
-            assertEquals(floor.rewardRoom, claimed.player.coords, floor.name)
+            claimed.op(claimed.spawnLoc(portal, floor.start.translateZ(1)))
+            assertEquals(floor.rewardRoom, claimed.player.coords, floor.doorTitle)
         }
     }
 
     @Test
     fun `the portal of death only opens once the cradle has been claimed`() {
-        val floor = StrongholdFloor.Death
+        val floor = StrongholdFloors.death
         val locked = Fixture(floor.start)
         locked.player.appearance.combatLevel = 126
-        locked.op(locked.spawnLoc(floor.portal, floor.start.translateZ(1)))
+        locked.op(locked.spawnLoc(floor.portal.rscm, floor.start.translateZ(1)))
         assertEquals(floor.start, locked.player.coords)
         assertTrue(locked.output().contains("claimed it"))
 
         val claimed = Fixture(floor.start)
         claimed.player.markClaimed(floor)
-        claimed.op(claimed.spawnLoc(floor.portal, floor.start.translateZ(1)))
+        claimed.op(claimed.spawnLoc(floor.portal.rscm, floor.start.translateZ(1)))
         assertEquals(floor.rewardRoom, claimed.player.coords)
     }
 
@@ -360,10 +367,10 @@ class StrongholdInteractionTest {
                 "loc.sos_pest_ladd_up" to StrongholdTravel.FamineArrival,
                 "loc.sos_pest_ladd_down" to StrongholdTravel.DeathArrival,
                 "loc.sos_death_ladd_up" to StrongholdTravel.PestilenceArrival,
-                "loc.sos_war_chainbottom" to StrongholdFloor.War.start,
-                "loc.sos_fam_rope_up" to StrongholdFloor.Famine.start,
-                "loc.sos_pest_rope_up" to StrongholdFloor.Pestilence.start,
-                "loc.sos_death_rope_up" to StrongholdFloor.Death.start,
+                "loc.sos_war_chainbottom" to StrongholdFloors.war.start,
+                "loc.sos_fam_rope_up" to StrongholdFloors.famine.start,
+                "loc.sos_pest_rope_up" to StrongholdFloors.pestilence.start,
+                "loc.sos_death_rope_up" to StrongholdFloors.death.start,
             )
         for ((loc, dest) in routes) {
             val f = Fixture(CoordGrid(1900, 5200, 0))
@@ -431,7 +438,9 @@ class StrongholdInteractionTest {
     fun `every scripted loc and npc has an op handler`() {
         val f = Fixture(CoordGrid(1900, 5200, 0))
         val locs =
-            StrongholdFloor.entries.flatMap { listOf(it.face, it.mirror, it.portal, it.reward) } +
+            StrongholdFloors.all.flatMap {
+                listOf(it.doorFace, it.doorMirror, it.portal, it.reward).map { loc -> loc.rscm }
+            } +
                 listOf(
                     "loc.sos_dung_ent_open",
                     "loc.sos_war_ladd_up",
@@ -536,7 +545,7 @@ class StrongholdInteractionTest {
         init {
             val anchors =
                 listOf(start) +
-                    StrongholdFloor.entries.flatMap { listOf(it.start, it.rewardRoom) } +
+                    StrongholdFloors.all.flatMap { listOf(it.start, it.rewardRoom) } +
                     listOf(
                         StrongholdTravel.Surface,
                         StrongholdTravel.WarArrival,
@@ -573,10 +582,10 @@ class StrongholdInteractionTest {
             return info
         }
 
-        fun doorPair(floor: StrongholdFloor) {
+        fun doorPair(floor: StrongholdFloorsRow) {
             for (z in listOf(5235, 5238)) {
-                spawnLoc(floor.face, CoordGrid(1858, z, 0), LocAngle.North, Wall)
-                spawnLoc(floor.mirror, CoordGrid(1859, z, 0), LocAngle.North, Wall)
+                spawnLoc(floor.doorFace.rscm, CoordGrid(1858, z, 0), LocAngle.North, Wall)
+                spawnLoc(floor.doorMirror.rscm, CoordGrid(1859, z, 0), LocAngle.North, Wall)
             }
         }
 
