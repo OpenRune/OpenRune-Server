@@ -10,7 +10,7 @@ import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Comp
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ReadBook
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.RecommendedCombat
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Started
-import org.rsmod.content.quest.manager.startQuestPrompt
+import org.rsmod.content.quest.manager.menu
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -26,47 +26,53 @@ class Almera @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
             0 -> notStarted()
             Started -> {
                 chatPlayer(happy, "Hello Almera.")
-                chatNpc(worried, "Hello again. Any sign of my boy?")
-                chatPlayer(neutral, "Not yet, but I doubt he's gone far.")
-                chatNpc(worried, "I hope you're right. These are dangerous times.")
+                chatNpc(happy, "Hello brave adventurer, have you seen my boy yet?")
+                chatPlayer(neutral, "I'm afraid not, but I'm sure he hasn't gone far.")
+                chatNpc(worried, "I do hope so, you can't be too careful these days.")
             }
             MetHudon -> {
                 chatPlayer(happy, "Hello again.")
-                chatNpc(happy, "Oh, you're still here.")
-                chatPlayer(sad, "I found Hudon on the river, but he wouldn't come back with me.")
+                chatNpc(happy, "Well hello, you're still around then.")
+                chatPlayer(sad, "I saw Hudon by the river but he refused to come back with me.")
                 chatNpc(
                     angry,
-                    "I know. The silly boy came home soaked through after going over the " +
-                        "falls. He's lucky to be alive, and he won't be leaving his room for the " +
-                        "rest of the summer.",
+                    "Yes he told me, the foolish lad came in drenched to the bone, he had " +
+                        "fallen into the waterfall, lucky he wasn't killed! Now he can spend " +
+                        "the rest of the summer in his room.",
                 )
-                chatPlayer(quiz, "Is there anything else around here worth seeing?")
-                chatNpc(neutral, "You could try the tourist centre south of the waterfall.")
+                chatPlayer(quiz, "Any ideas what I could do while I'm here?")
+                chatNpc(neutral, "Why don't you visit the tourist centre south of the waterfall?")
             }
             ReadBook -> {
                 chatPlayer(happy, "Hello again Almera.")
-                chatNpc(happy, "Hello again. Enjoying the peace and quiet out here?")
-                chatPlayer(happy, "Very much so.")
                 chatNpc(
                     happy,
-                    "Some officials once wanted to turn this whole valley into a mine. We " +
-                        "locals refused to move, and in the end they gave up.",
+                    "Well hello again brave adventurer, are you enjoying the tranquil scenery " +
+                        "of these parts?",
+                )
+                chatPlayer(happy, "Yes, very relaxing.")
+                chatNpc(
+                    happy,
+                    "Well I'm glad to hear it The authorities wanted to dig up this whole area " +
+                        "for a mine, but the few locals who lived here wouldn't budge and they " +
+                        "gave up.",
                 )
                 chatPlayer(happy, "Good for you.")
                 chatNpc(laugh, "Good for all of us!")
             }
-            in EnteredTomb..Int.MAX_VALUE -> postTomb()
+            in EnteredTomb..Int.MAX_VALUE -> afterTheTomb()
         }
     }
 
-    private suspend fun Dialogue.postTomb() {
+    private suspend fun Dialogue.afterTheTomb() {
         chatPlayer(happy, "Hello Almera.")
-        chatNpc(quiz, "Hello there. How is the treasure hunting going?")
-        chatPlayer(neutral, "I'm only here for the scenery.")
+        chatNpc(quiz, "Hello adventurer, how's your treasure hunt going?")
+        chatPlayer(neutral, "Oh, I'm just sight seeing.")
         chatNpc(
             laugh,
-            "Nobody stays this long just for the scenery. Still, that's your business. Use " +
-                "the raft whenever you like, just try not to wreck it again!",
+            "No adventurer stays here this long just to sight see. But your business is yours " +
+                "alone, if you need to use the raft go ahead. But please try not crash it this " +
+                "time!",
         )
         chatPlayer(happy, "Thanks Almera.")
     }
@@ -75,8 +81,8 @@ class Almera @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
         chatPlayer(happy, "Hello.")
         chatNpc(
             happy,
-            "Oh, hello. It's nice to see a new face around here. I don't suppose you have a " +
-                "moment? I could use some help.",
+            "Ah, hello there. Nice to see an outsider for a change. Are you busy? I have a " +
+                "problem.",
         )
         if (player.combatLevel < RecommendedCombat) {
             mesbox(
@@ -84,24 +90,26 @@ class Almera @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
                     "recommended level of $RecommendedCombat."
             )
         }
-        if (!startQuestPrompt(waterfall.quest)) {
-            chatPlayer(neutral, "Sorry, I'm in a hurry.")
-            chatNpc(sad, "Oh. Never mind then.")
+        val title = "Start the ${waterfall.quest.displayName}?"
+        val start = menu("Yes." to true, "No." to false, title = title)
+        if (!start) {
+            chatPlayer(neutral, "I'm afraid I'm in a rush.")
+            chatNpc(sad, "Oh okay, never mind.")
             return
         }
-        chatPlayer(quiz, "What's the problem?")
+        chatPlayer(quiz, "How can I help?")
         chatNpc(
             worried,
-            "My son Hudon is forever getting into mischief. He's got it into his head that " +
-                "there's treasure hidden in the river, and I'm worried sick. The poor boy can't " +
-                "even swim.",
+            "It's my son Hudon, he's always getting into trouble. The boy's convinced there's " +
+                "hidden treasure in the river and I'm a bit worried about his safety, the poor " +
+                "lad can't even swim.",
         )
-        chatPlayer(happy, "I could go and look for him, if you like.")
+        chatPlayer(happy, "I could go and take a look for you if you like?")
         waterfall.quest.advanceQuestStage(access)
         chatNpc(
             happy,
-            "Would you? That's very kind of you. Take the little raft out the back, but " +
-                "please be careful. The current downstream is fierce.",
+            "Would you? You are kind. You can use the small raft out back if you wish, do be " +
+                "careful, the current down stream is very strong.",
         )
     }
 }

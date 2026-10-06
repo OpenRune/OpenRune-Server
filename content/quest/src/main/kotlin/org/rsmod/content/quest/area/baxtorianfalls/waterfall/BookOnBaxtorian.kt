@@ -40,7 +40,7 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
             return
         }
         if (player.inv.contains(Book)) {
-            mes("You search the bookcase but find nothing of interest.")
+            mes("You search the bookcase but find nothing of interest")
             return
         }
         invAddOrDrop(objRepo, Book)
@@ -118,9 +118,9 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
 
         val Uninteresting =
             listOf(
-                "Nothing here looks worth reading.",
-                "You find nothing that interests you.",
-                "None of them catch your eye.",
+                "You don't find anything that you'd ever want to read.",
+                "You find nothing to interest you.",
+                "None of them look very interesting",
             )
 
         val Chapters =

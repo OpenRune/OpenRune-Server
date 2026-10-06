@@ -84,6 +84,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
+import org.rsmod.game.entity.player.Appearance
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
@@ -112,7 +113,7 @@ class WaterfallInteractionTest {
         f.finish(listOf(1))
         assertEquals(Started, f.stage())
         assertEquals(Started, f.player.vars["varp.waterfall_quest"])
-        assertTrue(f.output().contains("Take the little raft out the back"), f.output())
+        assertTrue(f.output().contains("You can use the small raft out back"), f.output())
         assertTrue(f.output().contains("recommended level of 25"), f.output())
         assertTrue(f.journal().contains("log raft"), f.journal())
     }
@@ -123,13 +124,13 @@ class WaterfallInteractionTest {
         declined.talk(AlmeraNpc)
         declined.finish(listOf(2))
         assertEquals(0, declined.stage())
-        assertTrue(declined.output().contains("Never mind then"), declined.output())
+        assertTrue(declined.output().contains("Oh okay, never mind."), declined.output())
 
         val started = Fixture(Started)
         started.talk(AlmeraNpc)
         started.finish()
         assertEquals(Started, started.stage())
-        assertTrue(started.output().contains("Any sign of my boy"), started.output())
+        assertTrue(started.output().contains("have you seen my boy yet"), started.output())
     }
 
     @Test
@@ -137,10 +138,10 @@ class WaterfallInteractionTest {
         val expected =
             mapOf(
                 MetHudon to "tourist centre south of the waterfall",
-                ReadBook to "turn this whole valley into a mine",
-                EnteredTomb to "How is the treasure hunting going",
-                EnteredFalls to "How is the treasure hunting going",
-                Complete to "try not to wreck it again",
+                ReadBook to "wanted to dig up this whole area for a mine",
+                EnteredTomb to "how's your treasure hunt going",
+                EnteredFalls to "how's your treasure hunt going",
+                Complete to "please try not crash it this time",
             )
         for ((stage, text) in expected) {
             val f = Fixture(stage)
@@ -157,7 +158,7 @@ class WaterfallInteractionTest {
         before.loc(Raft, RaftCoords)
         before.finish()
         assertEquals(RaftBank, before.player.coords)
-        assertTrue(before.output().contains("doesn't look very safe"), before.output())
+        assertTrue(before.output().contains(RaftUnsafe), before.output())
 
         val f = Fixture(Started)
         f.addNpc(HudonNpc, HudonCoords)
@@ -166,7 +167,7 @@ class WaterfallInteractionTest {
         assertEquals(WaterfallCoords.RAFT_CRASH, f.player.coords)
         assertTrue(f.output().contains("push off down stream"), f.output())
         assertTrue(f.output().contains("you crash into a small island"), f.output())
-        assertTrue(f.output().contains("Looks to me like you're the one who needs a hand"))
+        assertTrue(f.output().contains("It looks like you need the help"))
         assertEquals(MetHudon, f.stage())
     }
 
@@ -184,7 +185,7 @@ class WaterfallInteractionTest {
         val early = Fixture(Started)
         early.player.coords = WaterfallCoords.RAFT_CRASH
         early.talk(HudonNpc)
-        early.until { early.output().contains("I don't need any help") }
+        early.until { early.output().contains("I'm fine alone") }
         early.cancel()
         assertEquals(Started, early.stage())
 
@@ -193,7 +194,7 @@ class WaterfallInteractionTest {
         full.talk(HudonNpc)
         full.finish()
         assertEquals(MetHudon, full.stage())
-        assertTrue(full.output().contains("Hmm... I wonder what this treasure could be"))
+        assertTrue(full.output().contains("Hmm... I wonder what this treasure is."))
         assertTrue(full.journal().contains("Hadley"), full.journal())
     }
 
@@ -203,16 +204,15 @@ class WaterfallInteractionTest {
         bank.talk(HudonNpc)
         bank.finish()
         assertEquals(Started, bank.stage())
-        assertTrue(bank.output().contains("roar of the waterfall"), bank.output())
+        assertTrue(bank.output().contains(NoiseOfTheWaterfall), bank.output())
 
         val expected =
             mapOf(
-                0 to "Go away, I'm busy",
-                MetHudon to "I'll find that treasure any day now",
-                ReadBook to "swept me downstream three times",
-                EnteredTomb to "Because I'm the one who told you about it",
-                EnteredFalls to "Nothing yet",
-                Complete to "You took my treasure",
+                MetHudon to "I'll find that treasure soon, just you wait and see.",
+                ReadBook to "been washed downstream three times already.",
+                EnteredTomb to "Because I told you about the treasure.",
+                EnteredFalls to "No luck yet I'm afraid.",
+                Complete to "You stole my treasure. I saw you!",
             )
         for ((stage, text) in expected) {
             val f = Fixture(stage)
@@ -226,20 +226,25 @@ class WaterfallInteractionTest {
     @Test
     fun `swimming sweeps the player to Gerald who tells of the treasure once`() {
         val f = Fixture(MetHudon)
+        f.addNpc(GeraldNpc, GeraldCoords)
         f.player.coords = WaterfallCoords.RAFT_CRASH
         f.loc(River, RiverCoords)
         f.finish()
         assertEquals(WaterfallCoords.DOWNSTREAM, f.player.coords)
         assertTrue(f.player.heardOfTreasure)
-        assertTrue(f.output().contains("Try Hadley"), f.output())
+        assertTrue(f.output().contains("Blimey! Where did you come from?"), f.output())
+        assertTrue(f.output().contains("You could ask Hadley the tourist guide"), f.output())
+        assertTrue(f.output().contains("You swim out into the water..."), f.output())
+        assertTrue(f.output().contains("...but the current is too strong, washing you downstream."))
 
         f.player.coords = WaterfallCoords.RAFT_CRASH
-        val before = f.output().split("Try Hadley").size
+        val before = f.output().split("Blimey!").size
         f.loc(River, RiverCoords)
         f.finish()
-        assertEquals(before, f.output().split("Try Hadley").size)
+        assertEquals(before, f.output().split("Blimey!").size)
 
         val early = Fixture(Started)
+        early.addNpc(GeraldNpc, GeraldCoords)
         early.player.coords = WaterfallCoords.RAFT_CRASH
         early.loc(River, RiverCoords)
         early.finish()
@@ -248,25 +253,45 @@ class WaterfallInteractionTest {
     }
 
     @Test
+    fun `only the wash-out right after Hudon starts the treasure hunter talk with Gerald`() {
+        val later = Fixture(ReadBook)
+        later.addNpc(GeraldNpc, GeraldCoords)
+        later.player.coords = WaterfallCoords.RAFT_CRASH
+        later.loc(Rock, RockCoords)
+        later.finish()
+        assertEquals(WaterfallCoords.DOWNSTREAM, later.player.coords)
+        assertFalse(later.output().contains("Blimey!"), later.output())
+
+        val rock = Fixture(MetHudon)
+        rock.addNpc(GeraldNpc, GeraldCoords)
+        rock.player.coords = WaterfallCoords.RAFT_CRASH
+        rock.loc(Rock, RockCoords)
+        rock.finish()
+        assertTrue(rock.output().contains("Blimey! Where did you come from?"), rock.output())
+        assertTrue(rock.output().contains("Treasure hunters?"), rock.output())
+        assertTrue(rock.player.heardOfTreasure)
+    }
+
+    @Test
     fun `Gerald points treasure hunters to Hadley and stays chatty outside the quest`() {
         val idle = Fixture()
         idle.talk(GeraldNpc)
         idle.finish()
-        assertTrue(idle.output().contains("THIS big"), idle.output())
+        assertTrue(idle.output().contains("The last one was this big!"), idle.output())
 
         val searching = Fixture(Started)
         searching.talk(GeraldNpc)
         searching.finish()
-        assertTrue(searching.output().contains("Plenty of young fish"), searching.output())
+        assertTrue(searching.output().contains("plenty of small fish though."), searching.output())
 
         val hunter = Fixture(MetHudon)
         hunter.talk(GeraldNpc)
         hunter.finish()
         assertTrue(hunter.player.heardOfTreasure)
-        assertTrue(hunter.output().contains("Try Hadley"), hunter.output())
+        assertTrue(hunter.output().contains("You could ask Hadley the tourist guide"), hunter.output())
         hunter.talk(GeraldNpc)
         hunter.finish()
-        assertTrue(hunter.output().contains("None of them ever find a thing"), hunter.output())
+        assertTrue(hunter.output().contains("they never find anything though."), hunter.output())
     }
 
     @Test
@@ -274,20 +299,25 @@ class WaterfallInteractionTest {
         val tourist = Fixture()
         tourist.talk(HadleyNpc)
         tourist.finish(listOf(1, 4))
-        assertTrue(tourist.output().contains("He died a very long time ago"), tourist.output())
-        assertTrue(tourist.output().contains("Enjoy your stay"), tourist.output())
+        assertTrue(tourist.output().contains("I guess he died a long long time ago"), tourist.output())
+        assertTrue(tourist.output().contains("Enjoy your visit."), tourist.output())
+        assertTrue(tourist.output().contains("Well hello, come in, come in"), tourist.output())
+        assertTrue(tourist.output().contains("Surely pretty is an understatement, sir."))
 
         val hunter = Fixture(MetHudon)
+        hunter.player.heardOfTreasure = true
         hunter.talk(HadleyNpc)
         hunter.finish(listOf(3, 2, 4))
-        assertTrue(hunter.output().contains("nobody has ever reached it"), hunter.output())
+        assertTrue(hunter.output().contains("Are you on holiday?"), hunter.output())
+        assertTrue(hunter.output().contains("no one's been able to get to it"), hunter.output())
         assertTrue(hunter.output().contains("Who was Glarial"), hunter.output())
 
         val booked = Fixture(MetHudon)
+        booked.player.heardOfTreasure = true
         booked.give(Book)
         booked.talk(HadleyNpc)
         booked.finish(listOf(4))
-        assertTrue(booked.output().contains("do give it a read"), booked.output())
+        assertTrue(booked.output().contains("Make sure you give it a read."), booked.output())
     }
 
     @Test
@@ -334,27 +364,35 @@ class WaterfallInteractionTest {
         none.player.coords = GateSouth
         none.loc(GolrieGate, GolrieGateCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
         none.finish()
-        assertTrue(none.output().contains("lost the key somewhere"), none.output())
+        assertTrue(none.output().contains("Hello, are you okay?"), none.output())
+        assertTrue(none.output().contains("but I've left the key somewhere."), none.output())
+        assertTrue(none.output().contains("I'll have a look for a key."), none.output())
 
-        val unread = Fixture(MetHudon)
-        unread.player.coords = GateSouth
-        unread.loc(GolrieGate, GolrieGateCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
-        unread.finish()
-        assertTrue(unread.output().contains("Leave before you land yourself in trouble"))
+        val unstarted = Fixture()
+        unstarted.player.coords = GateSouth
+        unstarted.loc(GolrieGate, GolrieGateCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
+        unstarted.finish()
+        assertTrue(unstarted.output().contains("Leave before you get yourself into trouble."))
+
+        val done = Fixture(Complete)
+        done.player.coords = GateSouth
+        done.loc(GolrieGate, GolrieGateCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
+        done.finish()
+        assertTrue(done.output().contains("Golrie has locked himself in."), done.output())
 
         val keyed = Fixture(ReadBook)
         keyed.player.coords = GateSouth
         keyed.give(GolrieKey)
         keyed.loc(GolrieGate, GolrieGateCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
         keyed.finish()
-        assertTrue(keyed.output().contains("You unlock the gate with the key."), keyed.output())
+        assertTrue(keyed.output().contains("You use the key to unlock the gate."), keyed.output())
         assertEquals(1, keyed.count(GolrieKey))
 
         val inside = Fixture(ReadBook)
         inside.player.coords = GateSouth.translateZ(2)
         inside.loc(GolrieGate, GolrieGateCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
         inside.finish()
-        assertFalse(inside.output().contains("lost the key"), inside.output())
+        assertTrue(inside.output().contains("You open the gate and walk through."), inside.output())
     }
 
     @Test
@@ -366,35 +404,37 @@ class WaterfallInteractionTest {
         assertEquals(1, f.count(Pebble))
         assertEquals(0, f.count(GolrieKey))
         assertTrue(f.player.metGolrie)
-        assertTrue(f.output().contains("Could I have this old pebble"), f.output())
+        assertTrue(f.output().contains("Could I take this old pebble?"), f.output())
+        assertTrue(f.output().contains("You give Golrie the key."), f.output())
+        assertTrue(f.output().contains("thanks a lot for the key, traveller."), f.output())
 
         f.talk(GolrieNpc)
         f.finish()
         assertEquals(1, f.count(Pebble))
-        assertTrue(f.output().contains("Had any luck getting out"), f.output())
+        assertTrue(f.output().contains("Any luck getting out?"), f.output())
 
         f.player.inv[f.player.inv.indexOfFirst { it?.id == Pebble.asRSCM() }] = null
         f.talk(GolrieNpc)
         f.finish()
         assertEquals(1, f.count(Pebble))
-        assertTrue(f.output().contains("another rummage"), f.output())
+        assertTrue(f.output().contains("have another look through this stuff?"), f.output())
     }
 
     @Test
     fun `Golrie does not give the pebble early and a full inventory does not lose it`() {
-        val early = Fixture(MetHudon)
+        val early = Fixture()
         early.talk(GolrieNpc)
         early.finish()
         assertEquals(0, early.count(Pebble))
         assertFalse(early.player.metGolrie)
-        assertTrue(early.output().contains("Leave before you land yourself in trouble"))
+        assertTrue(early.output().contains("Leave before you get yourself into trouble."))
 
         val full = Fixture(ReadBook)
         full.fillInventory()
         full.talk(GolrieNpc)
         full.finish()
         assertEquals(0, full.count(Pebble))
-        assertTrue(full.output().contains("you don't have room"), full.output())
+        assertTrue(full.output().contains("but you don't have enough room to take it."), full.output())
         assertFalse(full.player.metGolrie)
     }
 
@@ -409,7 +449,7 @@ class WaterfallInteractionTest {
             f.finish()
             assertEquals(TombstoneBank, f.player.coords, carried)
             assertEquals(ReadBook, f.stage(), carried)
-            assertTrue(f.output().contains("nothing happens"), "$carried ${f.output()}")
+            assertTrue(f.output().contains(NothingHappens), "$carried ${f.output()}")
         }
 
         val worn = Fixture(ReadBook)
@@ -427,6 +467,7 @@ class WaterfallInteractionTest {
         peaceful.give("obj.coins", 100)
         peaceful.useOnLoc(Tombstone, TombstoneCoords, Pebble)
         peaceful.finish()
+        assertTrue(peaceful.output().contains(SlabSlides), peaceful.output())
         assertEquals(WaterfallCoords.TOMB_ENTRY, peaceful.player.coords)
         assertEquals(EnteredTomb, peaceful.stage())
         assertEquals(1, peaceful.count(Pebble))
@@ -491,7 +532,8 @@ class WaterfallInteractionTest {
         f.loc(Tree, TreeCoords)
         f.finish()
         assertEquals(WaterfallCoords.DOWNSTREAM, f.player.coords)
-        assertTrue(f.output().contains("lose your grip"), f.output())
+        assertTrue(f.output().contains("You try to use the tree to climb down..."), f.output())
+        assertTrue(f.output().contains("...but you slip and fall into the water."), f.output())
     }
 
     @Test
@@ -508,6 +550,7 @@ class WaterfallInteractionTest {
         f.finish()
         assertEquals(WaterfallCoords.LEDGE, f.player.coords)
         assertEquals(1, f.count(Rope))
+        assertTrue(f.output().contains("You tie the rope to the tree and climb down to the ledge below."))
     }
 
     @Test
@@ -517,25 +560,29 @@ class WaterfallInteractionTest {
         f.loc(Barrel, BarrelCoords)
         f.finish()
         assertEquals(WaterfallCoords.DOWNSTREAM, f.player.coords)
+        assertTrue(f.output().contains("You climb into the barrel and push off the edge."))
+        assertTrue(f.output().contains("You are carried down the river."))
     }
 
     @Test
-    fun `the waterfall door needs the amulet in the pack or on the neck`() {
+    fun `the waterfall door needs the amulet worn`() {
         val none = Fixture(EnteredTomb)
         none.player.coords = WaterfallCoords.LEDGE
         none.loc(LedgeDoor, LedgeDoorCoords, shape = LocShape.CentrepieceStraight)
         none.finish()
         assertEquals(WaterfallCoords.DOWNSTREAM, none.player.coords)
         assertEquals(EnteredTomb, none.stage())
-        assertTrue(none.output().contains("pushes you over the waterfall"), none.output())
+        assertTrue(none.output().contains(LedgeFlooded), none.output())
+        assertTrue(none.output().contains("...you are pushed over the waterfall and into the river."))
 
         val packed = Fixture(EnteredTomb)
         packed.player.coords = WaterfallCoords.LEDGE
         packed.give(Amulet)
         packed.loc(LedgeDoor, LedgeDoorCoords, shape = LocShape.CentrepieceStraight)
         packed.finish()
-        assertEquals(WaterfallCoords.FALLS_ENTRY, packed.player.coords)
-        assertEquals(EnteredFalls, packed.stage())
+        assertEquals(WaterfallCoords.DOWNSTREAM, packed.player.coords)
+        assertEquals(EnteredTomb, packed.stage())
+        assertTrue(packed.output().contains(LedgeFlooded), packed.output())
 
         val worn = Fixture(EnteredTomb)
         worn.player.coords = WaterfallCoords.LEDGE
@@ -544,6 +591,7 @@ class WaterfallInteractionTest {
         worn.finish()
         assertEquals(WaterfallCoords.FALLS_ENTRY, worn.player.coords)
         assertEquals(EnteredFalls, worn.stage())
+        assertTrue(worn.output().contains("You enter the waterfall."), worn.output())
     }
 
     @Test
@@ -563,6 +611,7 @@ class WaterfallInteractionTest {
         f.loc(ExitDoor, ExitDoorCoords, shape = LocShape.WallStraight, angle = LocAngle.South)
         f.finish()
         assertEquals(WaterfallCoords.LEDGE, f.player.coords)
+        assertTrue(f.output().contains("You exit the dungeon."), f.output())
     }
 
     @Test
@@ -613,7 +662,8 @@ class WaterfallInteractionTest {
         f.finish()
         assertEquals(5, f.count("obj.airrune"))
         assertEquals(1, f.player.pillarRunes)
-        assertTrue(f.output().contains("already placed"), f.output())
+        assertTrue(f.output().contains("You've already put that type of rune on this pillar."))
+        assertTrue(f.output().contains("You place the rune on the pillar. It disappears in a puff of smoke."))
 
         for ((index, pillar) in PillarCoords.withIndex()) {
             for (rune in listOf("obj.airrune", "obj.waterrune", "obj.earthrune")) {
@@ -650,6 +700,8 @@ class WaterfallInteractionTest {
         assertEquals(WaterfallCoords.DOWNSTREAM, f.player.coords)
         assertEquals(0, f.count(Amulet))
         assertEquals(EnteredFalls, f.stage())
+        assertTrue(f.output().contains("However, water floods into the room as you do..."))
+        assertTrue(f.output().contains("...you are washed out of the cave and down the river."))
     }
 
     @Test
@@ -661,6 +713,7 @@ class WaterfallInteractionTest {
         f.give(UrnFull)
         f.useOnLoc(Statue, StatueCoords, Amulet)
         f.finish()
+        assertTrue(f.output().contains("You hear a loud rumble from beneath as the floor rises."))
         assertEquals(RoomCenter.translate(38, -1), f.player.coords)
         assertEquals(0, f.count(Amulet))
         assertEquals(FloorRisen, f.stage())
@@ -674,6 +727,7 @@ class WaterfallInteractionTest {
         f.useOnLoc(Chalice, ChaliceCoords, UrnFull)
         f.finish()
         f.assertRewards()
+        assertTrue(f.output().contains("You carefully pour the ashes into the chalice and remove"))
         assertEquals(1, f.count(UrnEmpty))
         assertEquals(0, f.count(UrnFull))
         assertTrue(f.player.ui.containsModal("interface.questscroll"))
@@ -702,6 +756,8 @@ class WaterfallInteractionTest {
         assertEquals(FloorRisen, f.stage())
         assertEquals(1, f.count(UrnFull))
         assertEquals(0, f.player.vars["varp.qp"])
+        assertTrue(f.output().contains("You go to take the treasure from the chalice."))
+        assertTrue(f.output().contains("...you are washed out of the cave and down the river."))
     }
 
     @Test
@@ -734,7 +790,7 @@ class WaterfallInteractionTest {
         f.finish()
         f.assertRewards()
         assertEquals(1, f.count(UrnFull))
-        assertTrue(f.output().contains("only contains some old ashes"), f.output())
+        assertTrue(f.output().contains("The chalice only contains some old ashes."), f.output())
         assertTrue(f.quest.completedLog(f.access()).contains("chalice of eternity"))
     }
 
@@ -745,6 +801,33 @@ class WaterfallInteractionTest {
         f.loc(TombDoor, CoordGrid(2604, 9900, 0), shape = LocShape.WallStraight, angle = LocAngle.North)
         f.finish()
         assertEquals(CoordGrid(2566, 9901, 0), f.player.coords)
+    }
+
+    @Test
+    fun `Hadley answers the tourist questions word for word`() {
+        val f = Fixture()
+        f.talk(HadleyNpc)
+        f.finish(listOf(2, 3, 4))
+        val wildlife =
+            "Well, there's a wide variety of wildlife, although unfortunately most of it's " +
+                "quite dangerous. Please don't feed the goblins."
+        assertTrue(f.output().contains(wildlife), f.output())
+        assertTrue(f.output().contains("There is a lovely spot for a picnic on the hill"))
+        assertTrue(f.output().contains("That's just silly talk."), f.output())
+
+        val lady = Fixture()
+        lady.player.appearance.bodyType = Appearance.BODY_TYPE_B
+        lady.talk(HadleyNpc)
+        lady.finish(listOf(4))
+        assertTrue(lady.output().contains("Surely pretty is an understatement, lady."))
+    }
+
+    @Test
+    fun `Hudon cannot be heard before the quest even from the island`() {
+        val f = Fixture()
+        f.talk(HudonNpc)
+        f.finish()
+        assertTrue(f.output().contains(NoiseOfTheWaterfall), f.output())
     }
 
     @Test
@@ -1073,6 +1156,19 @@ class WaterfallInteractionTest {
         private val HadleyNpc = WaterfallQuest.HadleyNpc
         private val GolrieNpc = WaterfallQuest.GolrieNpc
 
+        private const val RaftUnsafe =
+            "You're not sure if the raft is safe to use. Best to leave it alone."
+        private const val NoiseOfTheWaterfall =
+            "Hudon can't hear you because of the noise of the waterfall. Perhaps the acoustics " +
+                "would be better from that island?"
+        private const val NothingHappens =
+            "You place the pebble in the gravestone's small indent but nothing happens."
+        private const val SlabSlides =
+            "You place the pebble in the gravestone's small indent. The stone slab slides back " +
+                "revealing a ladder. You climb down it."
+        private const val LedgeFlooded =
+            "You try to open the door, but the ledge is suddenly flooded with water..."
+
         private const val Raft = "loc.lograft_waterfall_quest"
         private const val River = "loc.waterfall_swim_point"
         private const val Rock = "loc.crossing_rock_waterfall_quest"
@@ -1092,6 +1188,7 @@ class WaterfallInteractionTest {
         private const val Statue = "loc.statue_queen_waterfall_quest"
         private const val Chalice = "loc.baxtorian_chalice_waterfall_quest"
 
+        private val GeraldCoords = CoordGrid(2528, 3414, 0)
         private val RaftBank = CoordGrid(2510, 3492, 0)
         private val RaftCoords = CoordGrid(2509, 3493, 0)
         private val HudonCoords = CoordGrid(2511, 3484, 0)

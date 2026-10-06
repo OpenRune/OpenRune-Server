@@ -1,10 +1,13 @@
 package org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs
 
+import dev.openrune.types.hunt.HuntVis
 import jakarta.inject.Inject
+import org.rsmod.api.hunt.NpcSearch
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Complete
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GeraldNpc
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.MetHudon
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Started
@@ -22,71 +25,78 @@ class Gerald @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
     private suspend fun Dialogue.gerald() {
         val stage = waterfall.stage(player)
         when {
-            stage == 0 -> {
-                chatPlayer(happy, "Hello there.")
-                chatNpc(
-                    happy,
-                    "Good day, traveller. Come to fish, or just taking in the view? I've " +
-                        "landed some real monsters down here.",
-                )
-                chatPlayer(quiz, "Is that so?")
-                chatNpc(laugh, "The last one was THIS big!")
-            }
+            stage == 0 || stage == Complete -> beforeTheQuest()
             stage == Started -> {
                 chatPlayer(happy, "Hello.")
                 chatNpc(happy, "Hello there.")
-                chatPlayer(quiz, "Have you seen a young boy around here?")
-                chatNpc(laugh, "Can't say I have. Plenty of young fish, mind.")
+                chatPlayer(quiz, "Have you seen a small boy?")
+                chatNpc(laugh, "Nope, plenty of small fish though.")
             }
             player.heardOfTreasure -> {
                 chatNpc(happy, "Hello there.")
-                chatNpc(quiz, "Back again, traveller? Fishing, or treasure hunting?")
-                chatPlayer(quiz, "What makes you say that?")
+                chatNpc(quiz, "Hello traveller. Are you here to fish or to hunt for treasure?")
+                chatPlayer(quiz, "Why do you say that?")
                 chatNpc(neutral, AdventurersLine)
             }
-            stage >= MetHudon -> {
+            else -> {
                 chatPlayer(happy, "Hello.")
-                chatNpc(quiz, "Hello traveller. Here to fish, or to go looking for treasure?")
-                chatPlayer(quiz, "What makes you say that?")
+                chatNpc(quiz, "Hello traveller. Are you here to fish or to hunt for treasure?")
+                chatPlayer(quiz, "Why do you say that?")
                 chatNpc(neutral, AdventurersLine)
-                chatPlayer(quiz, "What is it they're looking for?")
+                chatPlayer(quiz, "What treasure are they looking for?")
                 chatNpc(neutral, LegendLine)
-                chatPlayer(quiz, "Interesting. Where could I find out more?")
-                chatNpc(happy, HadleyLine)
-                player.heardOfTreasure = true
+                learnOfHadley()
             }
         }
     }
+
+    private suspend fun Dialogue.beforeTheQuest() {
+        chatPlayer(happy, "Hello there.")
+        chatNpc(
+            happy,
+            "Good day to you traveller, are you here to fish or just looking around? I've " +
+                "caught some beauties down here.",
+        )
+        chatPlayer(quiz, "Really?")
+        chatNpc(laugh, "The last one was this big!")
+    }
 }
 
-private const val GeraldName = "Gerald"
 private const val AdventurersLine =
-    "Adventurers come through here every week. None of them ever find a thing."
+    "Adventurers pass through here every week, they never find anything though."
 private const val LegendLine =
-    "Legend has it the old elf king left a treasure hidden inside the waterfall. Not that " +
-        "anybody has ever found it."
-private const val HadleyLine = "Try Hadley, the tourist guide. He's in the building right here."
+    "They say there's treasure hidden within the waterfall, left behind by the old elven king. " +
+        "Not that anyone's ever found anything."
+private const val GeraldSearchRadius = 8
+
+private suspend fun Dialogue.learnOfHadley() {
+    chatPlayer(quiz, "Interesting, is there somewhere I can learn more about this?")
+    chatNpc(happy, "You could ask Hadley the tourist guide. He'll be in this building just here.")
+    player.heardOfTreasure = true
+}
 
 /**
- * Gerald's greeting when the river dumps the player at his feet, once they have met Hudon and
- * before they have heard the legend.
+ * Gerald's greeting when the river dumps a player who has just met Hudon at his feet. It opens
+ * on landing, with Gerald, and only until the player has heard the legend.
  */
-internal suspend fun ProtectedAccess.geraldGreetsWashedUp(waterfall: WaterfallQuest) {
-    if (waterfall.stage(player) < MetHudon || player.heardOfTreasure) {
+internal suspend fun ProtectedAccess.geraldGreetsWashedUp(
+    waterfall: WaterfallQuest,
+    search: NpcSearch,
+) {
+    if (waterfall.stage(player) != MetHudon || player.heardOfTreasure) {
         return
     }
-    startDialogue {
-        chatNpcSpecific(
-            GeraldName,
-            GeraldNpc,
+    delay(1)
+    val gerald =
+        npcFind(player.coords, GeraldNpc, GeraldSearchRadius, HuntVis.Off, search) ?: return
+    startDialogue(gerald) {
+        chatNpc(
             shocked,
-            "Good grief! Where did you spring from? You're not another of those treasure " +
-                "hunters, are you?",
+            "Blimey! Where did you come from? Not another one of those treasure hunters are " +
+                "you?",
         )
         chatPlayer(quiz, "Treasure hunters?")
-        chatNpcSpecific(GeraldName, GeraldNpc, neutral, LegendLine)
-        chatPlayer(quiz, "Interesting. Where could I find out more?")
-        chatNpcSpecific(GeraldName, GeraldNpc, happy, HadleyLine)
-        player.heardOfTreasure = true
+        chatNpc(neutral, LegendLine)
+        learnOfHadley()
     }
 }

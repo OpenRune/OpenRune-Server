@@ -47,19 +47,12 @@ constructor(
 
     private suspend fun ProtectedAccess.placePebble() {
         if (player.carriesUnpeacefulItem()) {
-            mesbox(
-                "You place the pebble into the small hollow in the gravestone, but nothing " +
-                    "happens."
-            )
-            mes(
-                "The tomb only opens for those who come in peace, without weapons, armour, " +
-                    "ammunition or runes."
-            )
+            mesbox("You place the pebble in the gravestone's small indent but nothing happens.")
             return
         }
         mesbox(
-            "You place the pebble into the small hollow in the gravestone. The slab slides aside " +
-                "to reveal a ladder, and you climb down."
+            "You place the pebble in the gravestone's small indent. The stone slab slides back " +
+                "revealing a ladder. You climb down it."
         )
         soundSynth(SlabSound)
         anim(ClimbSeq)
@@ -82,7 +75,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.searchChest() {
-        if (player.ownsAnywhere(Amulet)) {
+        if (player.hasAmulet()) {
             mes("You search the chest but find nothing.")
             return
         }

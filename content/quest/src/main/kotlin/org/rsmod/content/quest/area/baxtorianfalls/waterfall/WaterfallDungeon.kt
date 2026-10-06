@@ -58,7 +58,7 @@ constructor(
 
     private suspend fun ProtectedAccess.exitFalls() {
         soundSynth(DoorSound)
-        mes("You leave the waterfall.")
+        mes("You exit the dungeon.")
         telejump(WaterfallCoords.LEDGE, TeleportType.Exempt)
     }
 
@@ -82,7 +82,7 @@ constructor(
                 return
             }
             mes("You use the key to unlock the door.")
-            doors.open(this, door, TombDoorOpen)
+            passThrough(door)
             return
         }
         if (door.coords.inRaisedCopy()) {
@@ -91,7 +91,13 @@ constructor(
             telejump(door.coords.toRealRoom(), TeleportType.Exempt)
             return
         }
+        passThrough(door)
+    }
+
+    private fun ProtectedAccess.passThrough(door: BoundLocInfo) {
+        val across = door.tileAcross(player.coords)
         doors.open(this, door, TombDoorOpen)
+        walk(across)
     }
 
     private suspend fun ProtectedAccess.placeRune(pillar: BoundLocInfo, rune: String) {
@@ -100,7 +106,7 @@ constructor(
         val bit = 1 shl (pillarIndex * RunesPerPillar + runeIndex)
         val placed = player.pillarRunes
         if ((placed and bit) != 0) {
-            mes("You have already placed that kind of rune on this pillar.")
+            mes("You've already put that type of rune on this pillar.")
             return
         }
         if (invDel(inv, rune).failure) {
@@ -110,7 +116,7 @@ constructor(
         soundSynth(PlaceSound)
         spotanimMap(worldRepo, SmokeSpotanim, pillar.coords)
         player.pillarRunes = placed or bit
-        objbox(rune, "You place the rune on the pillar and it disappears in a puff of smoke.")
+        objbox(rune, "You place the rune on the pillar. It disappears in a puff of smoke.")
         if (waterfall.allRunesPlaced(player)) {
             waterfall.advanceTo(this, RunesPlaced)
         }
@@ -124,19 +130,19 @@ constructor(
         if (!waterfall.allRunesPlaced(player)) {
             invDel(inv, Amulet)
             mesbox(
-                "You go to place the amulet on the statue, but the pillars are not ready and " +
-                    "water floods the chamber..."
+                "You go to place the amulet around the neck of the statue. However, water " +
+                    "floods into the room as you do..."
             )
-            mesbox("...and washes you out of the cave and down the river.")
-            washDownstream(bruised = true)
+            mesbox("...you are washed out of the cave and down the river.")
+            washDownstream(ouch = false)
             return
         }
         if (invDel(inv, Amulet).failure) {
             return
         }
         mesbox(
-            "You place the amulet around the statue's neck. You hear a loud rumble as the " +
-                "floor rises."
+            "You place the amulet around the neck of the statue. You hear a loud rumble from " +
+                "beneath as the floor rises."
         )
         soundSynth(RumbleSound)
         fadeToBlack()
@@ -148,17 +154,20 @@ constructor(
 
     private suspend fun ProtectedAccess.takeTreasure() {
         if (waterfall.isComplete(player)) {
-            mes("The chalice only contains some old ashes.")
+            mesbox("The chalice only contains some old ashes.")
             return
         }
-        mesbox("You go to take the treasure from the chalice, but water floods the chamber...")
-        mesbox("...and washes you out of the cave and down the river.")
-        washDownstream(bruised = true)
+        mesbox(
+            "You go to take the treasure from the chalice. However, water floods into the " +
+                "room as you do..."
+        )
+        mesbox("...you are washed out of the cave and down the river.")
+        washDownstream(ouch = false)
     }
 
     private suspend fun ProtectedAccess.pourAshes() {
         if (waterfall.isComplete(player)) {
-            mes("The chalice only contains some old ashes.")
+            mesbox("The chalice only contains some old ashes.")
             return
         }
         if (waterfall.stage(player) < FloorRisen) {
@@ -175,7 +184,7 @@ constructor(
         invAddOrDrop(objRepo, UrnEmpty)
         anim(PourSeq)
         soundSynth(PourSound)
-        mesbox("You carefully pour Glarial's ashes into the chalice and take Baxtorian's treasure.")
+        mesbox("You carefully pour the ashes into the chalice and remove Baxtorian's treasure...")
         waterfall.quest.completeQuest(this)
     }
 

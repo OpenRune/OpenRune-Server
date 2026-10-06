@@ -45,7 +45,8 @@ constructor(
 
     private suspend fun ProtectedAccess.openGate(gate: BoundLocInfo) {
         if (!gate.playerIsSouth(player.coords)) {
-            doors.open(this, gate, Gate, GateSound)
+            mes("You open the gate and walk through.")
+            passThrough(gate)
             return
         }
         if (GolrieKey in player.inv) {
@@ -54,28 +55,28 @@ constructor(
         }
         soundSynth(LockedSound)
         when {
-            waterfall.stage(player) < ReadBook -> {
+            waterfall.stage(player) == 0 -> {
                 startDialogue {
                     chatNpcSpecific(
                         GolrieName,
                         GolrieNpc,
                         angry,
-                        "What are you doing down here? Leave before you land yourself in trouble.",
+                        "What are you doing down here? Leave before you get yourself into trouble.",
                     )
                 }
             }
             waterfall.isComplete(player) -> mesbox("Golrie has locked himself in.")
             else -> {
                 startDialogue {
-                    chatPlayer(worried, "Hello? Are you alright in there?")
+                    chatPlayer(worried, "Hello, are you okay?")
                     chatNpcSpecific(
                         GolrieName,
                         GolrieNpc,
                         happy,
-                        "Oh, I'm perfectly fine. I locked myself in to keep safe, but I've gone " +
-                            "and lost the key somewhere.",
+                        "Oh, don't worry, I'm totally fine. I locked myself in here for " +
+                            "protection, but I've left the key somewhere.",
                     )
-                    chatPlayer(confused, "Right... I'll keep an eye out for it.")
+                    chatPlayer(confused, "Okay... I'll have a look for a key.")
                 }
             }
         }
@@ -83,9 +84,15 @@ constructor(
 
     private fun ProtectedAccess.unlockGate(gate: BoundLocInfo) {
         if (gate.playerIsSouth(player.coords)) {
-            mes("You unlock the gate with the key.")
+            mes("You use the key to unlock the gate.")
         }
+        passThrough(gate)
+    }
+
+    private fun ProtectedAccess.passThrough(gate: BoundLocInfo) {
+        val across = gate.tileAcross(player.coords)
         doors.open(this, gate, Gate, GateSound)
+        walk(across)
     }
 
     private companion object {

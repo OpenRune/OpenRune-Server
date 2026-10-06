@@ -48,21 +48,27 @@ internal fun Player.hasAmulet(): Boolean = inv.contains(Amulet) || worn.contains
 /** Every door and gate here is a wall on the north edge of its tile. */
 internal fun BoundLocInfo.playerIsSouth(coords: CoordGrid): Boolean = coords.z <= this.coords.z
 
+/** The tile just across a north-edge wall from [from]. */
+internal fun BoundLocInfo.tileAcross(from: CoordGrid): CoordGrid =
+    if (from.z > coords.z) coords else coords.translateZ(1)
+
+internal fun Player.wearsAmulet(): Boolean = worn.contains(Amulet)
+
 internal fun Player.ownsAnywhere(obj: String): Boolean =
     inv.contains(obj) || worn.contains(obj) || invMap.getOrPut("inv.bank").contains(obj)
 
 /**
- * Carries the player off down the river to [WaterfallCoords.DOWNSTREAM]. [bruised] is for the
- * falls themselves: the player takes a knock and says so.
+ * Carries the player off down the river to [WaterfallCoords.DOWNSTREAM]. [ouch] is for the falls
+ * themselves: the player takes a knock and says so.
  */
-internal suspend fun ProtectedAccess.washDownstream(bruised: Boolean) {
+internal suspend fun ProtectedAccess.washDownstream(ouch: Boolean) {
     soundSynth(SPLASH_SOUND)
     spotanim(SPLASH_SPOTANIM)
     fadeToBlack()
     telejump(WaterfallCoords.DOWNSTREAM, TeleportType.Exempt)
     delay(1)
     fadeFromBlack()
-    if (bruised) {
+    if (ouch) {
         val damage = FALL_DAMAGE.coerceAtMost(player.hitpoints - 1)
         if (damage > 0) {
             queueHit(delay = 1, type = HitType.Typeless, damage = damage)

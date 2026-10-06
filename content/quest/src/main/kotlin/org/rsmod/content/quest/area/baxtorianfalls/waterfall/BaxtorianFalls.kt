@@ -71,7 +71,7 @@ constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch
 
     private suspend fun ProtectedAccess.boardRaft() {
         if (waterfall.stage(player) == 0) {
-            mesbox("The raft doesn't look very safe. You decide to leave it alone.")
+            mesbox("You're not sure if the raft is safe to use. Best to leave it alone.")
             return
         }
         mesbox("You board the small raft and push off down stream...")
@@ -91,10 +91,10 @@ constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch
 
     private suspend fun ProtectedAccess.swim() {
         anim(SwimSeq)
-        mesbox("You wade out into the water...")
-        mesbox("...but the current is far too strong, and it carries you away downstream.")
-        washDownstream(bruised = false)
-        geraldGreetsWashedUp(waterfall)
+        mesbox("You swim out into the water...")
+        mesbox("...but the current is too strong, washing you downstream.")
+        washDownstream(ouch = false)
+        geraldGreetsWashedUp(waterfall, search)
     }
 
     private suspend fun ProtectedAccess.apRock(
@@ -149,14 +149,14 @@ constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch
         mesbox("You try to use the tree to climb down...")
         anim(ClimbDownSeq)
         delay(1)
-        mesbox("...but you lose your grip and tumble into the water.")
-        washDownstream(bruised = true)
-        geraldGreetsWashedUp(waterfall)
+        mesbox("...but you slip and fall into the water.")
+        washDownstream(ouch = true)
+        geraldGreetsWashedUp(waterfall, search)
     }
 
     private suspend fun ProtectedAccess.ropeDown() {
         soundSynth(TieRopeSound)
-        mesbox("You tie the rope to the tree and lower yourself down onto the ledge below.")
+        mesbox("You tie the rope to the tree and climb down to the ledge below.")
         anim(ClimbDownSeq)
         soundSynth(RopeClimbSound)
         exactMove(
@@ -172,10 +172,11 @@ constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch
     }
 
     private suspend fun ProtectedAccess.enterFalls() {
-        if (!waterfall.isComplete(player) && !player.hasAmulet()) {
-            mesbox("You try to open the door...")
-            mesbox("...but a surge of water floods the ledge and pushes you over the waterfall.")
-            washDownstream(bruised = true)
+        if (!waterfall.isComplete(player) && !player.wearsAmulet()) {
+            mesbox("You try to open the door, but the ledge is suddenly flooded with water...")
+            mesbox("...you are pushed over the waterfall and into the river.")
+            washDownstream(ouch = true)
+            geraldGreetsWashedUp(waterfall, search)
             return
         }
         soundSynth(DoorSound)
@@ -185,10 +186,10 @@ constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch
     }
 
     private suspend fun ProtectedAccess.rideBarrel() {
-        mesbox("You climb into the barrel and begin to float down the river.")
+        mesbox("You climb into the barrel and push off the edge. You are carried down the river.")
         anim(BarrelSeq)
-        washDownstream(bruised = false)
-        geraldGreetsWashedUp(waterfall)
+        washDownstream(ouch = false)
+        geraldGreetsWashedUp(waterfall, search)
     }
 
     private companion object {

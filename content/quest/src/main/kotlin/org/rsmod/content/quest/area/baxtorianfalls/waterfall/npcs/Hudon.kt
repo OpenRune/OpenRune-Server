@@ -36,10 +36,13 @@ class Hudon @Inject constructor(private val waterfall: WaterfallQuest) : PluginS
     }
 
     private suspend fun ProtectedAccess.talk(npc: Npc) {
-        if (!WaterfallCoords.onHudonIsland(player.coords)) {
+        val stage = waterfall.stage(player)
+        if (stage != WaterfallQuest.Complete &&
+            (stage == 0 || !WaterfallCoords.onHudonIsland(player.coords))
+        ) {
             mesbox(
-                "Hudon can't hear a word over the roar of the waterfall. You might have more " +
-                    "luck from the island he's standing beside."
+                "Hudon can't hear you because of the noise of the waterfall. Perhaps the " +
+                    "acoustics would be better from that island?"
             )
             return
         }
@@ -56,58 +59,58 @@ internal suspend fun Dialogue.hudon(waterfall: WaterfallQuest) {
     when {
         waterfall.isComplete(player) -> {
             chatPlayer(happy, "Hello again.")
-            chatNpc(angry, "You took my treasure! I saw you do it!")
-            chatPlayer(happy, "Don't worry, I'll put it to good use.")
-            chatNpc(angry, "Hmph!")
-        }
-        stage == 0 -> {
-            chatPlayer(happy, "Hello there.")
-            chatNpc(angry, "Go away, I'm busy.")
+            chatNpc(angry, "You stole my treasure. I saw you!")
+            chatPlayer(happy, "I'll make sure it goes to a good cause.")
+            chatNpc(angry, "Hmmmm!")
         }
         stage == Started -> hudonFirstMeeting(waterfall)
         stage == MetHudon -> {
-            chatPlayer(quiz, "Still out here then?")
-            chatNpc(happy, "I'll find that treasure any day now, you'll see.")
+            chatPlayer(quiz, "So you're still here.")
+            chatNpc(happy, "I'll find that treasure soon, just you wait and see.")
         }
         stage == ReadBook -> {
             chatPlayer(happy, "Hello Hudon.")
-            chatNpc(angry, "You again. Still after my treasure?")
-            chatPlayer(confused, "I didn't realise it was yours.")
+            chatNpc(angry, "Oh it's you, trying to find my treasure again are you?")
+            chatPlayer(confused, "I didn't know it belonged to you.")
             chatNpc(
                 angry,
-                "It will be once I find it. I just need to get inside that stupid waterfall. " +
-                    "It's already swept me downstream three times.",
+                "It will do when I find it. I just need to get into this blasted waterfall I've " +
+                    "been washed downstream three times already.",
             )
         }
         stage == EnteredTomb -> {
             chatPlayer(happy, "Hello again.")
-            chatNpc(angry, "Haven't you given up yet?")
-            chatPlayer(laugh, "And miss out on all the fun?")
-            chatNpc(angry, "Anything you find, you have to share with me.")
-            chatPlayer(quiz, "And why is that?")
-            chatNpc(angry, "Because I'm the one who told you about it!")
-            chatPlayer(neutral, "I wouldn't get your hopes up.")
+            chatNpc(angry, "Not you still, why don't you give up?")
+            chatPlayer(laugh, "And miss all the fun!")
+            chatNpc(angry, "You do understand that anything you find you have to share with me.")
+            chatPlayer(quiz, "Why's that?")
+            chatNpc(angry, "Because I told you about the treasure.")
+            chatPlayer(neutral, "Well, I wouldn't count on it.")
             chatNpc(sad, "That's not fair.")
-            chatPlayer(neutral, "Life isn't fair, kid.")
+            chatPlayer(neutral, "Neither is life kid.")
         }
         stage >= EnteredFalls -> {
-            chatPlayer(quiz, "How's it going, Hudon?")
-            chatNpc(sad, "Nothing yet.")
-            chatPlayer(happy, "Me neither, but I'm not one to give up.")
+            chatPlayer(quiz, "How are you doing, Hudon?")
+            chatNpc(sad, "No luck yet I'm afraid.")
+            chatPlayer(happy, "Me neither. but I don't give up easily.")
         }
     }
 }
 
 /** The first conversation, which the raft crash also leads straight into. */
 internal suspend fun Dialogue.hudonFirstMeeting(waterfall: WaterfallQuest) {
-    chatPlayer(worried, "Are you alright, lad? Do you need a hand?")
-    chatNpc(laugh, "Looks to me like you're the one who needs a hand.")
-    chatPlayer(neutral, "Your mother asked me to come and find you.")
-    chatNpc(angry, "Don't pretend to be nice. You're after the treasure as well, I can tell.")
-    chatPlayer(quiz, "What treasure is that?")
-    chatNpc(angry, "I might be small, but I'm not stupid! If I told you, you'd keep it all.")
-    chatPlayer(happy, "Perhaps I could help you look.")
-    chatNpc(angry, "I don't need any help.")
-    chatPlayer(confused, "Hmm... I wonder what this treasure could be.")
+    chatPlayer(worried, "Hello son, are you okay? You need help?")
+    chatNpc(laugh, "It looks like you need the help.")
+    chatPlayer(neutral, "Your mum sent me to find you.")
+    chatNpc(angry, "Don't play nice with me, I know you're looking for the treasure too.")
+    chatPlayer(quiz, "Where is this treasure you talk of?")
+    chatNpc(
+        angry,
+        "Just because I'm small doesn't mean I'm dumb! If I told you, you would take it all " +
+            "for yourself.",
+    )
+    chatPlayer(happy, "Maybe I could help.")
+    chatNpc(angry, "I'm fine alone.")
+    chatPlayer(confused, "Hmm... I wonder what this treasure is.")
     waterfall.advanceTo(access, MetHudon)
 }

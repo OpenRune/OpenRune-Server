@@ -8,7 +8,6 @@ import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GolrieKey
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GolrieNpc
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Pebble
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ReadBook
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.metGolrie
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.ownsAnywhere
 import org.rsmod.plugin.scripts.PluginScript
@@ -29,69 +28,69 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
 
     private suspend fun Dialogue.golrie() {
         when {
-            waterfall.stage(player) < ReadBook -> {
+            waterfall.stage(player) == 0 -> {
                 chatNpc(
                     angry,
-                    "What are you doing down here? Leave before you land yourself in trouble.",
+                    "What are you doing down here? Leave before you get yourself into trouble.",
                 )
             }
             !player.metGolrie -> firstMeeting()
             player.ownsAnywhere(Pebble) -> {
                 chatPlayer(happy, "Hello, Golrie.")
                 chatNpc(happy, "Hello again.")
-                chatPlayer(quiz, "Had any luck getting out?")
+                chatPlayer(quiz, "Any luck getting out?")
                 chatNpc(
                     neutral,
-                    "Not yet, but don't you worry. I'll think of something, I just need a " +
-                        "little more time.",
+                    "Not yet, but don't worry. I'm sure I'll work something out. I just need " +
+                        "some time to think.",
                 )
-                chatPlayer(happy, "Well, good luck.")
+                chatPlayer(happy, "Well good luck.")
             }
             else -> {
                 chatPlayer(happy, "Hello, Golrie.")
                 chatNpc(happy, "Hello again.")
-                chatPlayer(quiz, "Mind if I have another rummage through this stuff?")
-                chatNpc(happy, "Not at all.")
+                chatPlayer(quiz, "Do you mind if I have another look through this stuff?")
+                chatNpc(happy, "No, of course not.")
                 findPebble(takeKey = false)
             }
         }
     }
 
     private suspend fun Dialogue.firstMeeting() {
-        chatPlayer(quiz, "Who are you, and what are you doing down here?")
+        chatPlayer(quiz, "Who are you, and what are you doing here?")
         chatNpc(
             neutral,
-            "I'm Golrie, and this is my home. The trouble is, those hob-gobs keep trying to " +
-                "pinch my family's heirlooms, so I've been shut in here for ages!",
+            "I'm Golrie, and this is my home. Thing is, as you can see, I've got a small " +
+                "problem. Those hob-gobs are all over the place trying to steal my family's " +
+                "heirlooms. I've been stuck here for ages!",
         )
-        chatPlayer(quiz, "Can I help at all?")
+        chatPlayer(quiz, "Do you need some help?")
         chatNpc(
             happy,
-            "Oh, don't worry about me. I'll figure something out, I just need time to think.",
+            "Oh don't worry, I'm sure I'll work something out. I just need some time to think.",
         )
-        chatPlayer(quiz, "In that case, would you mind if I had a look around?")
-        chatNpc(happy, "Of course not.")
+        chatPlayer(quiz, "In that case, do you mind if I have a look around?")
+        chatNpc(happy, "No, of course not.")
         val handedKey = GolrieKey in player.inv
         if (!findPebble(takeKey = true)) {
             return
         }
-        chatPlayer(quiz, "Could I have this old pebble?")
-        chatNpc(neutral, "That? Help yourself. It's just a bit of old elven junk, I think.")
+        chatPlayer(quiz, "Could I take this old pebble?")
+        chatNpc(neutral, "Oh that. Yes, have it. It's just some old elven junk I believe.")
         if (handedKey) {
-            objbox(GolrieKey, "You hand Golrie the key.")
-            chatNpc(happy, "Ah, thank you for bringing my key back, traveller.")
+            mesbox("You give Golrie the key.")
+            chatNpc(happy, "Ah, thanks a lot for the key, traveller.")
         }
-        chatPlayer(happy, "No problem. Look after yourself, Golrie.")
+        chatPlayer(happy, "No problem. Take care, Golrie.")
     }
 
     /** The pebble, the key hand-in and the met flag change together, before any dialogue line. */
     private suspend fun Dialogue.findPebble(takeKey: Boolean): Boolean {
         val keyTaken = takeKey && access.invDel(access.inv, GolrieKey).success
         if (player.inv.isFull()) {
-            objbox(
-                Pebble,
-                "Among the junk on the floor you spot Glarial's pebble, but you don't have " +
-                    "room to carry it.",
+            mesbox(
+                "You look amongst the junk on the floor and find Glarial's pebble but you " +
+                    "don't have enough room to take it."
             )
             if (keyTaken) {
                 access.invAddOrDrop(objRepo, GolrieKey)
@@ -100,7 +99,7 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
         }
         access.invAddOrDrop(objRepo, Pebble)
         player.metGolrie = true
-        objbox(Pebble, "Among the junk on the floor you find Glarial's pebble.")
+        mesbox("You look amongst the junk on the floor and find Glarial's pebble.")
         return true
     }
 }

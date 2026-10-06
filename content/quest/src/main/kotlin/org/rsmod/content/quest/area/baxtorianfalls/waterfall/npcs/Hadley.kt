@@ -5,8 +5,11 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Book
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Complete
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.HadleyNpc
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.MetHudon
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Started
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.heardOfTreasure
+import org.rsmod.game.entity.player.Appearance
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -18,33 +21,54 @@ class Hadley @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
     }
 
     private suspend fun Dialogue.hadley() {
-        val onTheTrail = waterfall.stage(player) >= MetHudon
+        val stage = waterfall.stage(player)
+        val onTheTrail = stage in Started until Complete && player.heardOfTreasure
         chatPlayer(happy, "Hello there.")
-        if (onTheTrail && player.inv.contains(Book)) {
-            chatNpc(
-                happy,
-                "I hope you're enjoying your visit. That book you're carrying is full of " +
-                    "useful information, so do give it a read.",
-            )
-        } else {
-            welcome()
+        when {
+            onTheTrail && player.inv.contains(Book) -> {
+                chatNpc(
+                    happy,
+                    "I hope you're enjoying your stay, there should be lots of useful " +
+                        "infomation in that book you've got. Make sure you give it a read.",
+                )
+            }
+            onTheTrail -> {
+                chatNpc(
+                    happy,
+                    "Are you on holiday? If so you've come to the right place. I'm Hadley the " +
+                        "tourist guide, anything you need to know just ask me. We have some of " +
+                        "the most unspoilt wildlife and scenery in Gielinor.",
+                )
+                chatNpc(
+                    happy,
+                    "People come from miles around to fish in the clear lakes or to wander the " +
+                        "beautiful hillsides.",
+                )
+                prettyUnderstatement()
+            }
+            else -> {
+                chatNpc(
+                    happy,
+                    "Well hello, come in, come in, my name's Hadley, I'm head of tourism here. " +
+                        "There's some of the most unspoilt wildlife and scenery in Gielinor " +
+                        "here. People come from miles around to fish in the clear lakes or to " +
+                        "wander the",
+                )
+                chatNpc(happy, "beautiful hillsides.")
+                prettyUnderstatement()
+            }
         }
         if (onTheTrail) treasureTopics() else touristTopics()
     }
 
-    private suspend fun Dialogue.welcome() {
+    private suspend fun Dialogue.prettyUnderstatement() {
+        chatPlayer(neutral, "It is quite pretty.")
+        val address = if (player.appearance.bodyType == Appearance.BODY_TYPE_A) "sir" else "lady"
         chatNpc(
             happy,
-            "Welcome, welcome! I'm Hadley, the local tourist guide. If you have any " +
-                "questions, just ask. This valley has some of the finest unspoilt countryside " +
-                "in Gielinor.",
-        )
-        chatNpc(happy, "Visitors travel for miles to fish our lakes and stroll across our hills.")
-        chatPlayer(neutral, "It is rather pretty.")
-        chatNpc(
-            happy,
-            "Pretty? Breathtaking, more like! Have you seen Baxtorian Falls yet? They're " +
-                "named after the elf king who lies buried beneath them.",
+            "Surely pretty is an understatement, $address. Beautiful, amazing or possibly " +
+                "life-changing would be more suitable wording. Have you seen Baxtorian Falls? " +
+                "Named after the elven king who was buried beneath them.",
         )
     }
 
@@ -62,20 +86,23 @@ class Hadley @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
                     4,
                 )
             ) {
-                1 -> baxtorianStory(mentionBook = false)
+                1 -> {
+                    chatPlayer(quiz, "What happened to the elven king?")
+                    baxtorianStory()
+                }
                 2 -> {
                     chatPlayer(quiz, "Where else is worth visiting around here?")
                     chatNpc(
                         worried,
-                        "There's plenty of wildlife, though I'm afraid most of it is rather " +
-                            "dangerous. And please don't feed the goblins.",
+                        "Well, there's a wide variety of wildlife, although unfortunately most " +
+                            "of it's quite dangerous. Please don't feed the goblins.",
                     )
-                    chatPlayer(neutral, "Right.")
+                    chatPlayer(neutral, "Okay.")
                     glarialMonument()
                 }
                 3 -> {
                     chatPlayer(angry, "I don't like nature, it gives me a rash!")
-                    chatNpc(confused, "Oh, don't be ridiculous.")
+                    chatNpc(confused, "That's just silly talk.")
                 }
                 else -> {
                     goodbye()
@@ -99,35 +126,44 @@ class Hadley @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
                     4,
                 )
             ) {
-                1 -> baxtorianStory(mentionBook = true)
+                1 -> {
+                    chatPlayer(quiz, "Can you tell me what happened to the elven king?")
+                    baxtorianStory()
+                    chatNpc(
+                        neutral,
+                        "Anyway, I believe we have a book on him upstairs if you want to learn " +
+                            "more.",
+                    )
+                }
                 2 -> {
                     chatPlayer(quiz, "Where else is worth visiting around here?")
                     glarialMonument()
                     chatPlayer(quiz, "Who was Glarial?")
                     chatNpc(
                         sad,
-                        "Baxtorian's wife, and the only other person who could enter the " +
-                            "waterfall. She was queen back when elves lived in these lands.",
+                        "Baxtorian's wife, the only other person who could also enter the " +
+                            "waterfall apart from him. She was queen when this land was " +
+                            "inhabited by elven kind.",
                     )
                     chatNpc(
                         sad,
-                        "She was taken while Baxtorian was away at war. Her body was eventually " +
-                            "recovered and brought home to be laid to rest.",
+                        "Glarial was kidnapped while Baxtorian was away, but they eventually " +
+                            "recovered her body and brought her home to rest.",
                     )
-                    chatPlayer(sad, "How sad.")
+                    chatPlayer(sad, "That's sad.")
                     chatNpc(
                         neutral,
-                        "It is. There's a book about Baxtorian and Glarial upstairs, if you'd " +
-                            "like to read more.",
+                        "True, I believe we have a book on Baxtorian and Glarial upstairs if " +
+                            "you want to learn more.",
                     )
                 }
                 3 -> {
                     chatPlayer(quiz, "Is there treasure under the waterfall?")
                     chatNpc(
                         laugh,
-                        "Ha! Another treasure hunter. If there is, nobody has ever reached it. " +
-                            "People have been searching that river for years without finding a " +
-                            "thing.",
+                        "Ha ha... Another treasure hunter. Well if there is no one's been able " +
+                            "to get to it. They've been searching that river for decades, all " +
+                            "to no avail.",
                     )
                 }
                 else -> {
@@ -138,38 +174,31 @@ class Hadley @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
         }
     }
 
-    private suspend fun Dialogue.baxtorianStory(mentionBook: Boolean) {
-        chatPlayer(quiz, "What happened to the elven king?")
+    private suspend fun Dialogue.baxtorianStory() {
         chatNpc(
             sad,
-            "Baxtorian? He died a very long time ago. It's a sad tale. He left his kingdom to " +
-                "drive back an invasion, and came home to find his wife Glarial had been taken " +
-                "by the enemy.",
+            "Baxtorian? I guess he died a long long time ago, it's quite sad really. After " +
+                "leaving his kingdom to deal with invading forces, Baxtorian returned to find " +
+                "his wife Glarial had been captured by the enemy.",
         )
         chatNpc(
             sad,
-            "It broke him. After years of searching he withdrew from the world and shut " +
-                "himself inside the hidden home he had built for Glarial beneath the waterfall. " +
-                "Nobody has managed to get in since.",
+            "This destroyed Baxtorian, after years of searching he became a recluse. He went " +
+                "into the secret home he had made for Glarial under the waterfall and sealed " +
+                "himself in. To this day, no one has managed to enter.",
         )
-        if (mentionBook) {
-            chatNpc(
-                neutral,
-                "Anyway, we keep a book about him upstairs if you'd like to know more.",
-            )
-        }
     }
 
     private suspend fun Dialogue.glarialMonument() {
         chatNpc(
             happy,
-            "There's a lovely picnic spot on the hill to the north-east, beside a monument to " +
-                "the elven queen Glarial. It's very pretty up there.",
+            "There is a lovely spot for a picnic on the hill to the north east, there's a " +
+                "monument to the elven queen Glarial. It really is quite pretty.",
         )
     }
 
     private suspend fun Dialogue.goodbye() {
         chatPlayer(happy, "Thanks, goodbye.")
-        chatNpc(happy, "Enjoy your stay.")
+        chatNpc(happy, "Enjoy your visit.")
     }
 }
