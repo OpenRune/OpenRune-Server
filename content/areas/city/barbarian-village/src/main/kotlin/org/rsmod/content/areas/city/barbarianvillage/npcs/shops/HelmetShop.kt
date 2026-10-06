@@ -41,5 +41,4 @@ class HelmetShop @Inject constructor(private val shops: Shops) : PluginScript() 
             }
         }
     }
-
 }
