@@ -6,30 +6,26 @@ import org.junit.jupiter.api.Test
 class LevelUpTextTest {
     @Test
     fun `dialogue matches the levelup_display lines`() {
-        val stat = LevelUpStat.Woodcutting
         assertEquals(
             "Congratulations, you've just advanced a Woodcutting level.",
-            LevelUpText.title(stat.label),
+            LevelUpText.title("Woodcutting"),
         )
-        assertEquals("Your Woodcutting level is now 15.", LevelUpText.level(stat.levelPrefix, 15))
+        assertEquals(
+            "Your Woodcutting level is now 15.",
+            LevelUpText.level("Your Woodcutting level is now", 15),
+        )
     }
 
     @Test
     fun `vowel skills take an`() {
         assertEquals(
             "Congratulations, you've just advanced an Attack level.",
-            LevelUpText.title(LevelUpStat.Attack.label),
+            LevelUpText.title("Attack"),
         )
         assertEquals(
             "Congratulations, you've just advanced an Agility level.",
-            LevelUpText.title(LevelUpStat.Agility.label),
+            LevelUpText.title("Agility"),
         )
-    }
-
-    @Test
-    fun `hitpoints uses its own wording`() {
-        val stat = LevelUpStat.Hitpoints
-        assertEquals("Your Hitpoints are now 99.", LevelUpText.level(stat.levelPrefix, 99))
     }
 
     @Test

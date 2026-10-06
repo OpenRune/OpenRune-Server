@@ -2223,7 +2223,7 @@ public class ProtectedAccess(
      *   the coroutine suspension.
      * @see [resumePauseButtonWithProtectedAccess]
      */
-    public suspend fun levelUpDisplay(layer: String, title: String, text: String) {
+    public suspend fun levelUpDisplay(layer: ComponentType, title: String, text: String) {
         player.ifLevelUpDisplay(layer, title, text, constants.cm_pausebutton, context.eventBus)
         val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
         val input = coroutine.pause(ResumePauseButtonInput::class)
