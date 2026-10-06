@@ -1,7 +1,6 @@
 package org.rsmod.content.interfaces.emotes
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.definition.type.VarBitType
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
@@ -319,7 +318,7 @@ private constructor(
 
     private fun ProtectedAccess.simpleAnim(internal: String, spot: String? = null) {
 
-        val seq = ServerCacheManager.getAnim(internal.asRSCM(RSCMType.SEQ))?: error("Invalid sequence: $internal")
+        val seq = ServerCacheManager.getAnim(internal.asRSCM(RSCMType.SEQ)) ?: error("Invalid sequence: $internal")
         if (seq.requiresWalkTrigger() && !trySetWalkTrigger("walktrigger.emote_cancelanim")) {
             return
         }
@@ -424,7 +423,7 @@ private constructor(
         }
         playAnim(internal, spotanim)
 
-        val seq = ServerCacheManager.getAnim(internal.asRSCM(RSCMType.SEQ))?: error("Invalid sequence: $internal")
+        val seq = ServerCacheManager.getAnim(internal.asRSCM(RSCMType.SEQ)) ?: error("Invalid sequence: $internal")
 
         delay(seq)
         rebuildAppearance()
