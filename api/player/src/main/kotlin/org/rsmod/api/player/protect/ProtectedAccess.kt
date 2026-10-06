@@ -113,6 +113,7 @@ import org.rsmod.api.player.ui.ifConfirmDestroy
 import org.rsmod.api.player.ui.ifConfirmOverlay
 import org.rsmod.api.player.ui.ifConfirmOverlayClose
 import org.rsmod.api.player.ui.ifDoubleobjbox
+import org.rsmod.api.player.ui.ifLevelUpDisplay
 import org.rsmod.api.player.ui.ifMenu
 import org.rsmod.api.player.ui.ifMesbox
 import org.rsmod.api.player.ui.ifObjbox
@@ -2215,6 +2216,18 @@ public class ProtectedAccess(
         }
         val page = pages.first()
         player.ifObjbox(page.text, obj.asRSCM(RSCMType.OBJ), zoom, pauseText = "", context.eventBus)
+    }
+
+    /**
+     * @throws ProtectedAccessLostException if the player could not retain protected access after
+     *   the coroutine suspension.
+     * @see [resumePauseButtonWithProtectedAccess]
+     */
+    public suspend fun levelUpDisplay(layer: ComponentType, title: String, text: String) {
+        player.ifLevelUpDisplay(layer, title, text, constants.cm_pausebutton, context.eventBus)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
+        val input = coroutine.pause(ResumePauseButtonInput::class)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.levelup_display:continue")
     }
 
     /**
