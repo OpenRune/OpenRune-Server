@@ -10,7 +10,7 @@ public class PlayerBuildAreaProcessor {
     }
 
     private fun Player.processBuildAreaChange() {
-        val rebuildBuildArea = BuildAreaUtils.requiresNewBuildArea(this)
+        val rebuildBuildArea = regionRebuildPending || BuildAreaUtils.requiresNewBuildArea(this)
         if (rebuildBuildArea) {
             enterBuildArea()
         }

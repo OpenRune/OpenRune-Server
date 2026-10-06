@@ -194,6 +194,7 @@ public class Player(
     public var followCoord: CoordGrid = CoordGrid.NULL
     public var buildArea: CoordGrid = CoordGrid.NULL
     public val visibleZoneKeys: IntList = IntArrayList()
+    public var regionRebuildPending: Boolean = false
     public var lastMapBuildComplete: Int = Int.MIN_VALUE
     public var npcViewDistance: Int? = null
 
