@@ -114,6 +114,7 @@ abstract class QuestScript(
         )
 
         onPlayerLogin {
+            quest.migrateLegacyStage(player)
             VarPlayerIntMapSetter.set(player, questVarbit ?: questVarp, quest.getQuestStage(player))
         }
 
