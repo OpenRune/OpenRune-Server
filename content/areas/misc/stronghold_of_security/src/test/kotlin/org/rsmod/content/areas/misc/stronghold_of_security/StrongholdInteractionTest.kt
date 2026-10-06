@@ -8,6 +8,8 @@ import dev.openrune.types.ObjectServerType
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetHide
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetText
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -426,6 +428,47 @@ class StrongholdInteractionTest {
     }
 
     @Test
+    fun `the chapter index only shows on the first page`() {
+        val f = Fixture(CoordGrid(1860, 5239, 0))
+        f.player.inv[0] = InvObj("obj.sos_stronghold_book", 1)
+        f.startHeld("obj.sos_stronghold_book")
+        assertEquals("Description", f.lastText(StrongholdNotesBook.chapterLink(3)))
+        assertFalse(f.lastHide(StrongholdNotesBook.chapterLink(3)))
+        f.press(StrongholdNotesBook.PageRight)
+        for (line in 1..StrongholdNotesBook.LinesPerPage) {
+            for (side in listOf("left", "right")) {
+                val index = "component.indexed_book:page_${side}_index_$line"
+                assertEquals("", f.lastText(index), index)
+                assertTrue(f.lastHide(index), index)
+            }
+        }
+        assertEquals("but no one has been able to", f.lastText(BookLeftLine1))
+    }
+
+    @Test
+    fun `every spread replaces all of the previous spread`() {
+        val f = Fixture(CoordGrid(1860, 5239, 0))
+        f.player.inv[0] = InvObj("obj.sos_stronghold_book", 1)
+        f.startHeld("obj.sos_stronghold_book")
+        f.assertSpread(0)
+        val last = StrongholdNotesBook.lastSpread
+        val presses =
+            List(last) { StrongholdNotesBook.PageRight } +
+                List(last) { StrongholdNotesBook.PageLeft } +
+                StrongholdNotesBook.Chapters.indices.flatMap {
+                    val line = StrongholdNotesBook.FirstChapterLine + it
+                    listOf(StrongholdNotesBook.chapterLink(line), StrongholdNotesBook.FirstPage)
+                }
+        var spread = 0
+        for (pressed in presses) {
+            spread = StrongholdNotesBook.turn(spread, pressed)
+            f.clearOutput()
+            f.press(pressed)
+            f.assertSpread(spread)
+        }
+    }
+
+    @Test
     fun `Solztun chats and remembers the player`() {
         val f = Fixture(CoordGrid(2338, 5212, 0))
         f.talk("npc.sos_barb_spirit", options = listOf(1, 3))
@@ -685,6 +728,44 @@ class StrongholdInteractionTest {
         }
 
         fun output(): String = client.messages.joinToString("\n")
+
+        fun clearOutput() = client.messages.clear()
+
+        private fun target(component: String) =
+            ServerCacheManager.fromComponent(component.asRSCM(RSCMType.COMPONENT))
+
+        fun lastText(component: String): String {
+            val t = target(component)
+            val sent =
+                client.messages.filterIsInstance<IfSetText>().lastOrNull {
+                    it.interfaceId == t.interfaceId && it.componentId == t.component
+                }
+            return checkNotNull(sent) { "No text sent to $component" }.text
+        }
+
+        fun lastHide(component: String): Boolean {
+            val t = target(component)
+            val sent =
+                client.messages.filterIsInstance<IfSetHide>().lastOrNull {
+                    it.interfaceId == t.interfaceId && it.componentId == t.component
+                }
+            return checkNotNull(sent) { "No hide sent to $component" }.hidden
+        }
+
+        fun assertSpread(spread: Int) {
+            val (left, right) = StrongholdNotesBook.spread(spread)
+            for (line in 1..StrongholdNotesBook.LinesPerPage) {
+                val l = "component.indexed_book:page_left_text_$line"
+                val r = "component.indexed_book:page_right_text_$line"
+                assertEquals(left.getOrElse(line - 1) { "" }, lastText(l), "$spread $l")
+                assertEquals(right.getOrElse(line - 1) { "" }, lastText(r), "$spread $r")
+            }
+            for ((index, text) in StrongholdNotesBook.indexLines(spread)) {
+                assertEquals(text, lastText(index), "$spread $index")
+                assertEquals(text.isEmpty(), lastHide(index), "$spread $index")
+                assertTrue(spread == 0 || text.isEmpty(), "$spread $index")
+            }
+        }
     }
 
     private class RecordingClient : Client<Any, Any> {
@@ -710,6 +791,7 @@ class StrongholdInteractionTest {
         private val Far = CoordGrid(1858, 5235, 0)
         private val Near = CoordGrid(1858, 5238, 0)
         private val Wall = LocShape.WallStraight
+        private const val BookLeftLine1 = "component.indexed_book:page_left_text_1"
 
         private val restored = mutableListOf<() -> Unit>()
 

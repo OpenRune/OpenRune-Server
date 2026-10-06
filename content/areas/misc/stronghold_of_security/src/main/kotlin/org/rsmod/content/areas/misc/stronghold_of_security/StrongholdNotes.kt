@@ -77,17 +77,12 @@ class StrongholdNotes @Inject constructor(private val objRepo: ObjRepository) : 
         ifSetHide(StrongholdNotesBook.PageLeft, spread == 0)
         ifSetHide(StrongholdNotesBook.PageRight, spread == StrongholdNotesBook.lastSpread)
         ifSetHide(StrongholdNotesBook.FirstPage, spread == 0)
-        if (spread == 0) {
-            showChapterLinks()
-        }
-    }
-
-    private fun ProtectedAccess.showChapterLinks() {
-        for ((i, chapter) in StrongholdNotesBook.Chapters.withIndex()) {
-            val link = StrongholdNotesBook.chapterLink(StrongholdNotesBook.FirstChapterLine + i)
-            ifSetText(link, chapter.first)
-            ifSetEvents(link, -1..-1, IfEvent.PauseButton)
-            ifSetHide(link, false)
+        for ((line, text) in StrongholdNotesBook.indexLines(spread)) {
+            ifSetText(line, text)
+            ifSetHide(line, text.isEmpty())
+            if (text.isNotEmpty()) {
+                ifSetEvents(line, -1..-1, IfEvent.PauseButton)
+            }
         }
     }
 

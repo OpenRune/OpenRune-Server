@@ -11,6 +11,18 @@ internal object StrongholdNotesBook {
 
     fun chapterLink(line: Int): String = "component.indexed_book:page_left_index_$line"
 
+    private fun rightIndexLine(line: Int): String = "component.indexed_book:page_right_index_$line"
+
+    fun indexLines(spread: Int): Map<String, String> {
+        val lines = linkedMapOf<String, String>()
+        for (line in 1..LinesPerPage) {
+            val chapter = Chapters.getOrNull(line - FirstChapterLine)
+            lines[chapterLink(line)] = if (spread == 0 && chapter != null) chapter.first else ""
+            lines[rightIndexLine(line)] = ""
+        }
+        return lines
+    }
+
     val Chapters: List<Pair<String, Int>> =
         listOf(
             "Description" to 2,
@@ -218,16 +230,18 @@ internal object StrongholdNotesBook {
                 PageLeft -> spread - 1
                 PageRight -> spread + 1
                 FirstPage -> 0
-                else -> chapterPage(pressed)?.let(::spreadOf) ?: spread
+                else -> chapterPage(spread, pressed)?.let(::spreadOf) ?: spread
             }
         return target.coerceIn(0, lastSpread)
     }
 
-    private fun chapterPage(pressed: String): Int? =
-        Chapters.withIndex()
-            .firstOrNull { (i, _) -> chapterLink(FirstChapterLine + i) == pressed }
-            ?.value
-            ?.second
+    private fun chapterPage(spread: Int, pressed: String): Int? {
+        if (spread != 0) {
+            return null
+        }
+        val chapter = Chapters.indices.firstOrNull { chapterLink(FirstChapterLine + it) == pressed }
+        return chapter?.let { Chapters[it].second }
+    }
 
     private fun heading(text: String): String = "<col=000080>$text</col>"
 }
