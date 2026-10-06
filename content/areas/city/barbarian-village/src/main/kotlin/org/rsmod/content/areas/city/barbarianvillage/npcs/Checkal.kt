@@ -1,21 +1,16 @@
 package org.rsmod.content.areas.city.barbarianvillage.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
-import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class Checkal : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1("npc.bim_checkal") { talk(it.npc) }
+        onOpNpc1("npc.bim_checkal_barb") { startDialogue(it.npc) { preQuest() } }
+        onOpNpc1("npc.bim_checkal_temple_outside") { startDialogue(it.npc) { preQuest() } }
+        onOpNpc1("npc.bim_checkal_postquest") { startDialogue(it.npc) { postQuest() } }
     }
-
-    private suspend fun ProtectedAccess.talk(npc: Npc) =
-        startDialogue(npc) {
-            if (npc.type.isType("npc.bim_checkal_postquest")) postQuest() else preQuest()
-        }
 
     private suspend fun Dialogue.preQuest() {
         val title = if (access.isBodyTypeA()) "sir" else "miss"
