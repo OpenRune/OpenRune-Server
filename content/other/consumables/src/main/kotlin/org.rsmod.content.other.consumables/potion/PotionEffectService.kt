@@ -466,40 +466,21 @@ constructor(
     private fun ProtectedAccess.restoreStats(
         effect: PotionEffectRow,
     ) {
-        val excluded =
-            effect.excludedSkills.mapTo(
-                hashSetOf(),
-            ) {
-                it.internalName
-            }
+        val stats =
+            restoredStats(
+                allStats = ServerCacheManager.getStats().values.map { it.internalName },
+                included = effect.skills.map { it.internalName },
+                excluded = effect.excludedSkills.mapTo(hashSetOf()) { it.internalName },
+                restorePrayer = effect.restorePrayer,
+            )
 
-        ServerCacheManager
-            .getStats()
-            .values
-            .forEach { stat ->
-                val internalName =
-                    stat.internalName
-
-                if (
-                    internalName in excluded ||
-                    internalName == "stat.hitpoints"
-                ) {
-                    return@forEach
-                }
-
-                if (
-                    internalName == "stat.prayer" &&
-                    !effect.restorePrayer
-                ) {
-                    return@forEach
-                }
-
-                restoreIfDrained(
-                    stat = internalName,
-                    constant = effect.base,
-                    percent = effect.percent,
-                )
-            }
+        stats.forEach { stat ->
+            restoreIfDrained(
+                stat = stat,
+                constant = effect.base,
+                percent = effect.percent,
+            )
+        }
     }
 
     fun processPrayerRegeneration(

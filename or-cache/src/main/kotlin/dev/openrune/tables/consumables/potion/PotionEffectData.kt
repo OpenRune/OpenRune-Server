@@ -164,12 +164,15 @@ internal enum class PotionEffectData(
     RESTORE_POTION(
         key = "restore_potion",
         kind = "stat_restore",
+        skills = listOf(
+            "stat.attack",
+            "stat.strength",
+            "stat.defence",
+            "stat.ranged",
+            "stat.magic",
+        ),
         base = 10,
         percent = 30,
-        excludedSkills = listOf(
-            "stat.hitpoints",
-            "stat.prayer",
-        ),
     ),
     PRAYER_RESTORE(
         key = "prayer_restore",

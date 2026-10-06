@@ -56,6 +56,20 @@ internal fun ProtectedAccess.restoreHitpointsIfDrained(
     )
 }
 
+internal fun restoredStats(
+    allStats: Collection<String>,
+    included: List<String>,
+    excluded: Set<String>,
+    restorePrayer: Boolean,
+): List<String> {
+    val candidates = included.ifEmpty { allStats }
+    return candidates.filter { stat ->
+        stat !in excluded &&
+            stat != HITPOINTS &&
+            (stat != PRAYER || restorePrayer)
+    }
+}
+
 internal fun ProtectedAccess.drainCurrentStat(
     stat: String,
     constant: Int,
@@ -172,5 +186,8 @@ internal fun Player.restartTimer(
 
 private const val HITPOINTS: String =
     "stat.hitpoints"
+
+private const val PRAYER: String =
+    "stat.prayer"
 
 private const val RUN_ENERGY_PERCENT_SCALE: Int = 10

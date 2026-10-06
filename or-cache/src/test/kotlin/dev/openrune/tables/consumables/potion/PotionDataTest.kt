@@ -55,6 +55,21 @@ class PotionDataTest {
         assertEquals(name, potion.displayName.lowercase())
     }
 
+    @Test
+    fun `restore potions restore only the stats the wiki lists`() {
+        val combat = listOf("stat.attack", "stat.strength", "stat.defence", "stat.ranged", "stat.magic")
+        assertEquals(combat, effect(PotionData.RESTORE_POTION.effect).skills)
+        assertEquals(PotionData.RESTORE_POTION.effect, PotionData.RESTORE_MIX.effect)
+
+        listOf(PotionData.SUPER_RESTORE, PotionData.SUPER_RESTORE_MIX, PotionData.BLIGHTED_SUPER_RESTORE)
+            .forEach { potion ->
+                val restore = effect(potion.effect)
+                assertEquals(emptyList<String>(), restore.skills, potion.name)
+                assertEquals(listOf("stat.hitpoints"), restore.excludedSkills, potion.name)
+                assertEquals(true, restore.restorePrayer, potion.name)
+            }
+    }
+
     private fun runEnergyPercent(row: String): Int {
         val effect = effect(row)
         return when (effect.kind) {
