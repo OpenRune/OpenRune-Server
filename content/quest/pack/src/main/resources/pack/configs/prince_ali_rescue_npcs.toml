@@ -13,3 +13,19 @@ inherit = "npc.contact_osman_multi"
 wanderRange = 0
 defaultMode = "None"
 moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.borderguard1"
+inherit = "npc.borderguard1"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
+
+[[npc]]
+isServerOnly = true
+id = "npc.borderguard2"
+inherit = "npc.borderguard2"
+wanderRange = 0
+defaultMode = "None"
+moveRestrict = "NoMove"
