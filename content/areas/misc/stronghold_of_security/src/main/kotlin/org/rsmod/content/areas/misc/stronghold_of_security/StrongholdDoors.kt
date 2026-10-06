@@ -120,7 +120,6 @@ class StrongholdDoors @Inject constructor(private val locRepo: LocRepository) : 
         const val QuestionSkipOdds = 4
 
         private const val ChatboxLimit = 200
-        const val MesboxLimit = 280
 
         fun String.splitForChatbox(limit: Int = ChatboxLimit): List<String> {
             val parts = mutableListOf<String>()

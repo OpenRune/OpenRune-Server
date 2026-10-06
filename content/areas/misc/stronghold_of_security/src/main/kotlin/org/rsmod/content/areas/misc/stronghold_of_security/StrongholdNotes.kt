@@ -1,15 +1,18 @@
 package org.rsmod.content.areas.misc.stronghold_of_security
 
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
-import org.rsmod.content.areas.misc.stronghold_of_security.StrongholdDoors.Companion.MesboxLimit
-import org.rsmod.content.areas.misc.stronghold_of_security.StrongholdDoors.Companion.splitForChatbox
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -38,27 +41,53 @@ class StrongholdNotes @Inject constructor(private val objRepo: ObjRepository) : 
     }
 
     private suspend fun ProtectedAccess.readNotes() {
-        startDialogue {
-            while (true) {
-                val section: NoteSection? =
-                    choice5(
-                        "Introduction",
-                        NoteSection.Introduction,
-                        "Levels 1 and 2",
-                        NoteSection.UpperLevels,
-                        "Levels 3 and 4",
-                        NoteSection.LowerLevels,
-                        "Navigation and diary",
-                        NoteSection.NavigationAndDiary,
-                        "Close the book",
-                        null,
-                        title = "Stronghold notes",
-                    )
-                val page = section ?: return@startDialogue
-                for (part in page.text.replace("\n\n", " ").splitForChatbox(MesboxLimit)) {
-                    mesbox(part)
-                }
-            }
+        var spread = 0
+        openSpread(spread)
+        while (true) {
+            spread = StrongholdNotesBook.turn(spread, pauseButton().component)
+            openSpread(spread)
+        }
+    }
+
+    private fun ProtectedAccess.openSpread(spread: Int) {
+        ifOpenMainModal(BookInterface)
+        player.runClientScript(
+            BookInitScript,
+            RSCM.getRSCM("component.indexed_book:close_button"),
+            RSCM.getRSCM("component.indexed_book:close_graphic"),
+            RSCM.getRSCM(StrongholdNotesBook.PageLeft),
+            RSCM.getRSCM("component.indexed_book:page_left_graphic"),
+            RSCM.getRSCM(StrongholdNotesBook.PageRight),
+            RSCM.getRSCM("component.indexed_book:page_right_graphic"),
+            RSCM.getRSCM(StrongholdNotesBook.FirstPage),
+        )
+        ifSetText("component.indexed_book:title", StrongholdNotesBook.Title)
+        val (left, right) = StrongholdNotesBook.spread(spread)
+        for (line in 1..StrongholdNotesBook.LinesPerPage) {
+            val index = line - 1
+            ifSetText("component.indexed_book:page_left_text_$line", left.getOrElse(index) { "" })
+            ifSetText("component.indexed_book:page_right_text_$line", right.getOrElse(index) { "" })
+        }
+        ifSetText("component.indexed_book:page_left_number", (spread * 2 + 1).toString())
+        ifSetText("component.indexed_book:page_right_number", (spread * 2 + 2).toString())
+        for (button in listOf(StrongholdNotesBook.PageLeft, StrongholdNotesBook.PageRight)) {
+            ifSetEvents(button, -1..-1, IfEvent.PauseButton)
+        }
+        ifSetEvents(StrongholdNotesBook.FirstPage, -1..-1, IfEvent.PauseButton)
+        ifSetHide(StrongholdNotesBook.PageLeft, spread == 0)
+        ifSetHide(StrongholdNotesBook.PageRight, spread == StrongholdNotesBook.lastSpread)
+        ifSetHide(StrongholdNotesBook.FirstPage, spread == 0)
+        if (spread == 0) {
+            showChapterLinks()
+        }
+    }
+
+    private fun ProtectedAccess.showChapterLinks() {
+        for ((i, chapter) in StrongholdNotesBook.Chapters.withIndex()) {
+            val link = StrongholdNotesBook.chapterLink(StrongholdNotesBook.FirstChapterLine + i)
+            ifSetText(link, chapter.first)
+            ifSetEvents(link, -1..-1, IfEvent.PauseButton)
+            ifSetHide(link, false)
         }
     }
 
@@ -172,65 +201,11 @@ class StrongholdNotes @Inject constructor(private val objRepo: ObjRepository) : 
         Bye,
     }
 
-    private enum class NoteSection(val text: String) {
-        Introduction(
-            "This stronghold was unearthed by a miner prospecting for new ores around the " +
-                "Barbarian Village. After gathering some equipment he ventured into the maze " +
-                "of tunnels and was missing for a long time. He finally emerged along with " +
-                "copious notes regarding the new beasts and strange experiences which had " +
-                "befallen him. He also mentioned that there was treasure to be had, but no " +
-                "one has been able to wring a word from him about this, he simply flapped his " +
-                "arms and slapped his head. This book details his notes and my diary of " +
-                "exploration. I am exploring to see if I can find out more..."
-        ),
-        UpperLevels(
-            "Level 1: As well as goblins, creatures like a man but also like a cow infest this " +
-                "place! The area itself is reminiscent of frontline castles, with many walls, " +
-                "doors and skeletons of dead enemies. I'm sure I hear voices in my head each " +
-                "time I pass through the gates. I have dubbed this level War as it seems like " +
-                "an eternal battleground. I found only one small peaceful area here.\n\n" +
-                "Level 2: My supplies are running low and I find myself in barren passages " +
-                "with seemingly endless malnourished beasts attacking me, ravenous for food. " +
-                "Nothing appears to be able to grow, many adventurers have died through lack " +
-                "of food and the very air appears to suck vitality from me. I've come to call " +
-                "this place famine."
-        ),
-        LowerLevels(
-            "Level 3: Just breathing in this place makes me shudder at the thought of what " +
-                "foul disease I may contract. The walls and floor ooze and pulsate like " +
-                "something pox ridden. There is a very strange beast whom I narrowly escaped " +
-                "from. Luckily I found a small place where I could heal myself and rest a " +
-                "while. I have named this area pestilence for it reeks with decay.\n\n" +
-                "Level 4: Nothing truly alive exists here, even those beings who do wander " +
-                "the halls are not alive as such, but they do know that I am and I get the " +
-                "distinct impression that were they to have their way, I would not be for " +
-                "long! Death is everywhere and thus I shall name this place. There is one " +
-                "small place of life, which was gladdening to find and very worth my while!"
-        ),
-        NavigationAndDiary(
-            "After getting lost several times I finally worked out the key to all the " +
-                "ladders and chains around this death infested place. All ropes and chains " +
-                "will take you to the start of the level that you are on. However most " +
-                "ladders will simply take you to the level above. The one exception is the " +
-                "ladder in the bottom level treasure room, which appears to lead through " +
-                "several extremely twisty passages and eventually takes you out of the " +
-                "dungeon completely. The portals may be used if you are of sufficient level " +
-                "or have already claimed your reward from the treasure room.\n\n" +
-                "Day 1: Today I set out to find out more about this place. From my research I " +
-                "knew about the sentient doors, imbued by some unknown force to talk to you " +
-                "and ask questions before they will let you pass. I have so far passed these " +
-                "doors without incident, giving the correct answer seems to work a treat.\n\n" +
-                "Day 2: I have fought my way through the fearsome beasts on the first level " +
-                "and am preparing myself to journey deeper. I hope that things are not too " +
-                "difficult further on as I am already sick of bread and cheese for dinner.\n\n" +
-                "Day 3: I ventured down into the famine level today... I was wounded and have " +
-                "returned to the relative safety of the level above. I am going to try to " +
-                "make my way out through the goblins and mancow things... I hope I make it....."
-        ),
-    }
-
     private companion object {
         const val Notes = "obj.sos_stronghold_book"
         const val Ghostspeak = "obj.amulet_of_ghostspeak"
+        const val BookInterface = "interface.indexed_book"
+        val BookInitScript =
+            "clientscript.[clientscript,book_indexed_init]".asRSCM(RSCMType.CLIENTSCRIPT)
     }
 }

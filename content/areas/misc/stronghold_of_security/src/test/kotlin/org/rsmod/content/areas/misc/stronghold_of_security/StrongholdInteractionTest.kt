@@ -378,14 +378,30 @@ class StrongholdInteractionTest {
     }
 
     @Test
-    fun `the notes can be read section by section`() {
+    fun `the notes open as a book on the chapter list`() {
         val f = Fixture(CoordGrid(1860, 5239, 0))
         f.player.inv[0] = InvObj("obj.sos_stronghold_book", 1)
-        f.useHeld("obj.sos_stronghold_book", options = listOf(1, 2, 4, 5))
+        f.startHeld("obj.sos_stronghold_book")
+        assertTrue(f.player.ui.containsModal("interface.indexed_book"))
         val output = f.output()
-        assertTrue(output.contains("miner prospecting"), output)
-        assertTrue(output.contains("eternal battleground"), output)
-        assertTrue(output.contains("ladders and chains"), output)
+        assertTrue(output.contains("Stronghold of Security - Notes"), output)
+        for ((chapter, _) in StrongholdNotesBook.Chapters) {
+            assertTrue(output.contains(chapter), chapter)
+        }
+        assertTrue(output.contains("there was treasure to be had,"), output)
+    }
+
+    @Test
+    fun `the notes turn pages and jump to chapters`() {
+        val f = Fixture(CoordGrid(1860, 5239, 0))
+        f.player.inv[0] = InvObj("obj.sos_stronghold_book", 1)
+        f.startHeld("obj.sos_stronghold_book")
+        f.press(StrongholdNotesBook.PageRight)
+        assertTrue(f.output().contains("wring a word from him about"))
+        f.press(StrongholdNotesBook.FirstPage)
+        f.press(StrongholdNotesBook.chapterLink(StrongholdNotesBook.FirstChapterLine + 5))
+        assertTrue(f.output().contains("key to all the ladders and"))
+        assertTrue(f.player.ui.containsModal("interface.indexed_book"))
     }
 
     @Test
@@ -566,14 +582,20 @@ class StrongholdInteractionTest {
             finish(options)
         }
 
-        fun useHeld(obj: String, options: List<Int> = emptyList()) {
+        fun startHeld(obj: String) {
             val slot = (0 until 28).first { player.inv[it]?.id == obj.asRSCM() }
             val type = checkNotNull(ServerCacheManager.getItem(obj.asRSCM()))
             start {
                 val event = HeldObjEvents.Op1(slot, checkNotNull(inv[slot]), type, inv)
                 assertTrue(events.publish(this, event))
             }
-            finish(options)
+            assertTrue(coroutine.isAwaiting(ResumePauseButtonInput::class))
+        }
+
+        fun press(component: String) {
+            coroutine.resumeWith(ResumePauseButtonInput(component, -1))
+            result?.getOrThrow()
+            assertTrue(coroutine.isAwaiting(ResumePauseButtonInput::class))
         }
 
         fun talk(npc: String, options: List<Int> = emptyList()) {
