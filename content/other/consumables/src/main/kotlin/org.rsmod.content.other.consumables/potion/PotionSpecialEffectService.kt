@@ -404,13 +404,7 @@ constructor(
          // Venom conversion takes priority. The newly created poison
          // should not also be weakened by this same dose.
 
-        if (
-            PlayerVenom.reduceToPoison(
-                player = player,
-                initialPoisonDamage =
-                    GUTHIX_REST_CONVERTED_POISON_DAMAGE,
-            )
-        ) {
+        if (PlayerVenom.reduceToPoison(player)) {
             return
         }
 
@@ -504,7 +498,6 @@ constructor(
 
         private const val GUTHIX_REST_HEAL: Int = 5
         private const val GUTHIX_REST_RUN_ENERGY: Int = 5
-        private const val GUTHIX_REST_CONVERTED_POISON_DAMAGE: Int = 6
         private const val GUTHIX_REST_POISON_SEVERITY_REDUCTION: Int = 5
 
         private const val ZAMORAK_HITPOINTS_PERCENT: Int = 12

@@ -374,9 +374,11 @@ constructor(
                     restoreRunEnergy(effect.amount)
 
                 KIND_POISON_CURE -> {
-                    if (!PlayerVenom.reduceToPoison(player)) {
-                        PlayerPoison.clear(player)
+                    if (PlayerVenom.reduceToPoison(player)) {
+                        return
                     }
+
+                    PlayerPoison.clear(player)
 
                     ToxinImmunity.grantImmunity(
                         player = player,
