@@ -21,6 +21,7 @@ inherit = "npc.borderguard1"
 wanderRange = 0
 defaultMode = "None"
 moveRestrict = "NoMove"
+respawnDir = "West"
 
 [[npc]]
 isServerOnly = true
@@ -29,3 +30,4 @@ inherit = "npc.borderguard2"
 wanderRange = 0
 defaultMode = "None"
 moveRestrict = "NoMove"
+respawnDir = "East"
