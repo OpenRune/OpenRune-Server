@@ -43,7 +43,7 @@ constructor(
             when (effect.kind) {
                 KIND_DIVINE -> {
                     if (player.hitpoints <= effect.damage) {
-                        mes("You need more Hitpoints to drink this potion.")
+                        mes(divineRefusalMessage(effect.damage))
                         false
                     } else {
                         effect.baseEffect?.let { canApply(this, it) } ?: false
