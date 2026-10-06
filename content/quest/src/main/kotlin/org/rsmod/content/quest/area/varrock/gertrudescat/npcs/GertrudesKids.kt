@@ -10,10 +10,6 @@ import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest.Compa
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Shilop and Wilough, Gertrude's sons, loitering in Varrock's market place. Either of them will
- * sell the location of their secret play area; the other chips in from the side.
- */
 class GertrudesKids @Inject constructor(private val gertrudesCat: GertrudesCatQuest) :
     PluginScript() {
 

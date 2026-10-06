@@ -107,10 +107,8 @@ class GertrudesCatQuest :
     fun stage(player: Player): Int = quest.getQuestStage(player)
 
     /**
-     * Gertrude's dialogue from the moment she is first asked until Fluffs is reunited with her
-     * kitten. Returns `false` once the quest is ready to finish or already finished; the varrock
-     * area's Gertrude handles that because the reward kitten belongs to the pets module, which
-     * itself depends on this module.
+     * Returns `false` once the quest is ready to finish: the varrock area's Gertrude finishes it,
+     * because the reward kitten lives in the pets module, which depends on this one.
      */
     suspend fun Dialogue.gertrudeDialogue(): Boolean {
         when (stage(player)) {

@@ -13,10 +13,6 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The invisible "Crate" npcs around the lumber yard that mew now and then and can be searched.
- * Once Fluffs has eaten the sardine, one of them (fixed per player) holds her kitten.
- */
 class LumberYardCrates
 @Inject
 constructor(
