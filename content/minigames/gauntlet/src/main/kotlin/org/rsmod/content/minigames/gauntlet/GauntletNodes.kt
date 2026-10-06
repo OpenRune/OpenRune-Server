@@ -14,6 +14,7 @@ class GauntletNodes
 constructor(
     private val runs: GauntletRuns,
     private val lighting: GauntletLighting,
+    private val contents: GauntletContents,
     private val regions: RegionRegistry,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
@@ -38,6 +39,7 @@ constructor(
         val target = lighting.neighbour(run, from, lighting.edgeOf(region, coords)) ?: return
         if (target.index in run.revealed || target.kind == RoomKind.BOSS) return
         with(lighting) { light(coords, run, from, target) }
+        contents.spawn(region, run, target, player)
         spam("You light the nodes in the corridor to help guide the way.")
     }
 }

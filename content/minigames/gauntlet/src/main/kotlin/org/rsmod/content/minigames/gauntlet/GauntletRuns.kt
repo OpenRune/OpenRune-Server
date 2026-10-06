@@ -19,6 +19,7 @@ import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.content.minigames.gauntlet.layout.GauntletLayout
 import org.rsmod.content.minigames.gauntlet.layout.LayoutTemplateBuilder
+import org.rsmod.content.minigames.gauntlet.layout.RoomContentsGenerator
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 
@@ -45,13 +46,14 @@ constructor(
             return
         }
         val layout = GauntletLayout.generate(Random)
+        val contents = RoomContentsGenerator.generate(layout, mode, GauntletContents.SLOTS, Random)
         val spec = spec(mode, layout)
         when (val result = manager.create(player, KEY, spec, InstanceAccess.Private, clock.cycle)) {
             is InstanceManager.Result.Failed -> mes(result.reason)
             is InstanceManager.Result.Created ->
                 withInstanceEnterTransition(InstanceEnterTransition()) {
                     active.keys.removeIf { manager.sessionForId(it) == null }
-                    val run = GauntletRun(layout, mode)
+                    val run = GauntletRun(layout, mode, contents)
                     active[result.session.id] = run
                     telejump(result.enter, TeleportType.Exempt)
                     manager.finalizeEntry(player, result.session, clock.cycle)
@@ -64,6 +66,7 @@ constructor(
                     mes("You enter the Gauntlet.")
                     ifOpenOverlay(OVERLAY, OVERLAY_TARGET)
                     runClientScript(TIMER_SCRIPT.asRSCM(RSCMType.CLIENTSCRIPT), mode.timerTicks, if (mode.corrupted) 1 else 0)
+                    if (ENFORCE_TIME_LIMIT) player.softTimer(TIME_LIMIT_TIMER, mode.timerTicks)
                 }
             is InstanceManager.Result.Joined -> Unit
         }
@@ -98,6 +101,8 @@ constructor(
         const val KEY = "gauntlet"
         const val OVERLAY = "interface.gauntlet_overlay"
         const val OVERLAY_TARGET = "component.toplevel_osrs_stretch:overlay_hud"
+        const val TIME_LIMIT_TIMER = "timer.gauntlet_time_limit"
+        const val ENFORCE_TIME_LIMIT = false
         private const val TIMER_SCRIPT = "clientscript.[clientscript,gauntlet_timer_update]"
     }
 }

@@ -7,6 +7,7 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.types.ObjectServerType
 import dev.openrune.types.SequenceServerType
 import jakarta.inject.Inject
+import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.config.Constants
 import org.rsmod.api.config.locParam
 import org.rsmod.api.config.locXpParam
@@ -40,6 +41,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.type.getInvObj
+import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -130,6 +132,8 @@ constructor(
         if (type.hasDespawnTimer) {
             treeSwingDespawnTick(tree, type)
             despawn = cutLogs && isTreeDespawnRequired(tree)
+        } else if (type.treeFixedYields > 0) {
+            despawn = cutLogs && countYield(tree, type.treeFixedYields)
         } else {
             despawn = cutLogs && random.of(1, 255) > type.treeDepleteChance
         }
@@ -157,7 +161,9 @@ constructor(
             locRepo.change(tree, type.treeStump, respawnTime)
             resetAnim()
             soundSynth("synth.tree_fall_sound")
-            sendLocalOverlayLoc(tree, type, respawnTime)
+            if (respawnTime != Int.MAX_VALUE) {
+                sendLocalOverlayLoc(tree, type, respawnTime)
+            }
         }
 
         opLoc3(tree)
@@ -216,6 +222,17 @@ constructor(
         spawn.aiTimer(1)
     }
 
+    private fun ProtectedAccess.countYield(tree: BoundLocInfo, yields: Int): Boolean {
+        val counts = player.attr.getOrPut(TREE_YIELD_COUNT_ATTR) { mutableMapOf() }
+        val count = (counts[tree.coords] ?: 0) + 1
+        if (count < yields) {
+            counts[tree.coords] = count
+            return false
+        }
+        counts.remove(tree.coords)
+        return true
+    }
+
     private fun isTreeDespawnRequired(tree: BoundLocInfo): Boolean {
         val controller = conRepo.findExact(tree.coords, "controller.woodcutting_tree_duration")
         return controller != null && controller.treeActivelyCutTicks >= controller.durationStart
@@ -254,6 +271,8 @@ constructor(
         private const val INFERNAL_FIREMAKING_REQ = 85
         private const val SONG_OF_THE_ELVES = "quest_songoftheelves"
 
+        private val TREE_YIELD_COUNT_ATTR = AttributeKey<MutableMap<CoordGrid, Int>>()
+
         var Controller.treeActivelyCutTicks: Int by intVarCon("varcon.woodcutting_tree_cut_ticks")
         var Controller.treeLastCut: Int by intVarCon("varcon.woodcutting_tree_last_cut")
         var Controller.treeLocId: Int by intVarCon("varcon.woodcutting_tree_loc")
@@ -267,6 +286,7 @@ constructor(
         val ObjectServerType.treeStump: ObjectServerType by locParam(params.next_loc_stage)
         val ObjectServerType.treeDespawnTime: Int by locParam(params.despawn_time)
         val ObjectServerType.treeDepleteChance: Int by locParam(params.deplete_chance)
+        val ObjectServerType.treeFixedYields: Int by locParam(WoodcuttingParams.fixed_yields)
         val ObjectServerType.treeRespawnTime: Int by locParam(params.respawn_time)
         val ObjectServerType.treeRespawnTimeLow: Int by locParam(params.respawn_time_low)
         val ObjectServerType.treeRespawnTimeHigh: Int by locParam(params.respawn_time_high)

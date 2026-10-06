@@ -3,6 +3,8 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.config)
+    implementation(projects.api.death)
     implementation(projects.api.instances)
     implementation(projects.api.invtx)
     implementation(projects.api.player)

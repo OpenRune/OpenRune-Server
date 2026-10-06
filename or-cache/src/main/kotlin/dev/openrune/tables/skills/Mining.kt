@@ -690,5 +690,28 @@ object Mining {
                 column(COL_MINING_CAPE, false)
                 column(COL_CELESTIAL_RING, false)
             }
+
+            for ((suffix, rowName) in
+                listOf("" to "dbrow.mining_gauntlet_rock", "_hm" to "dbrow.mining_gauntlet_rock_hm")) {
+                row(rowName) {
+                    columnRSCM(COL_ROCK_OBJECT, "loc.gauntlet_rock$suffix")
+                    column(COL_LEVEL, 1)
+                    column(COL_XP, 100)
+                    columnRSCM(COL_ORE_ITEM, "obj.gauntlet_ore$suffix")
+                    column(COL_RESPAWN_CYCLES, Int.MAX_VALUE)
+                    column(COL_SUCCESS_RATE_LOW, 255)
+                    column(COL_SUCCESS_RATE_HIGH, 255)
+                    column(COL_DEPLETE_MECHANIC, 2)
+                    columnRSCM(COL_EMPTY_ROCK, "loc.gauntlet_rock_depleted$suffix")
+                    column(COL_CLUE_BASE_CHANCE, 0)
+                    column(COL_DEPLETE_MIN, 3)
+                    column(COL_DEPLETE_MAX, 3)
+                    column(COL_MINING_WALL, false)
+                    column(COL_MINING_GLOVES, 0)
+                    column(COL_VARROCK_ARMOUR, 0)
+                    column(COL_MINING_CAPE, false)
+                    column(COL_CELESTIAL_RING, false)
+                }
+            }
         }
 }

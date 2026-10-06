@@ -10,6 +10,7 @@ import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onEvent
+import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.events.EventBus
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -36,7 +37,16 @@ constructor(
                 }
             }
         }
+        onPlayerSoftTimer(GauntletRuns.TIME_LIMIT_TIMER) {
+            player.clearSoftTimer(GauntletRuns.TIME_LIMIT_TIMER)
+            if (!GauntletRuns.ENFORCE_TIME_LIMIT) return@onPlayerSoftTimer
+            protectedAccess.launch(player) {
+                mes("You have run out of time.")
+                with(runs) { leave() }
+            }
+        }
         onEvent<InstancePlayerLeaveEvent>(instanceEventId(GauntletRuns.KEY)) {
+            player.clearSoftTimer(GauntletRuns.TIME_LIMIT_TIMER)
             GauntletHolding.restore(player)
             player.ifCloseOverlay(GauntletRuns.OVERLAY, eventBus)
             player.inGauntlet = false

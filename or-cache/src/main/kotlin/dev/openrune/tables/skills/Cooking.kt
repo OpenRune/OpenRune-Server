@@ -744,6 +744,20 @@ object Cooking {
             column(COL_LOW, 50)
             column(COL_HIGH, 256)
         }
+        row("dbrow.cooking_paddlefish") {
+            production {
+                input("obj.gauntlet_raw_food")
+                statReq("stat.cooking", 1)
+                xp(15)
+                output("obj.gauntlet_food")
+                category("Fish")
+            }
+            columnRSCM(COL_BURNT, "obj.gauntlet_burnt_food")
+            column(COL_STOP_BURN_FIRE, 47)
+            column(COL_STOP_BURN_RANGE, 47)
+            column(COL_LOW, 155)
+            column(COL_HIGH, 368)
+        }
         row("dbrow.cooking_cake") {
             production {
                 input("obj.uncooked_cake")

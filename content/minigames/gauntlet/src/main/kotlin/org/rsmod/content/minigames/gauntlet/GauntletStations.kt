@@ -17,7 +17,6 @@ class GauntletStations @Inject constructor(private val runs: GauntletRuns) : Plu
             onOpLoc1("loc.gauntlet_book_2$suffix") { readEgniolScroll() }
             onOpLoc1("loc.gauntlet_exit$suffix") { confirmLeave() }
             onOpLoc2("loc.gauntlet_exit$suffix") { with(runs) { leave() } }
-            onOpLocU("loc.gauntlet_range$suffix", "obj.gauntlet_raw_food") { cookPaddlefish() }
             val vial = "obj.gauntlet_vial_empty$suffix"
             onOpLocU("loc.gauntlet_sink$suffix", vial) { fillVials(vial) }
         }
@@ -53,15 +52,6 @@ class GauntletStations @Inject constructor(private val runs: GauntletRuns) : Plu
             "Egniol potion: fill a crystal vial at the water pump, add a grym leaf, " +
                 "then mix in crystal dust made by crushing shards with the pestle."
         )
-    }
-
-    private suspend fun ProtectedAccess.cookPaddlefish() {
-        while ("obj.gauntlet_raw_food" in inv) {
-            invDel(inv, "obj.gauntlet_raw_food", 1)
-            invAdd(inv, "obj.gauntlet_food", 1)
-            spam("You successfully cook a paddlefish.")
-            delay(4)
-        }
     }
 
     private suspend fun ProtectedAccess.fillVials(vial: String) {

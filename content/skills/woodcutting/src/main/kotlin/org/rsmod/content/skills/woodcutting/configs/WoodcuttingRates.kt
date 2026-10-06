@@ -7,4 +7,5 @@ import dev.openrune.types.enums.enum
 
 object WoodcuttingParams {
     val success_rates = param<EnumTypeMap<ItemServerType, Int>>("woodcutting_axe_success_rates")
+    val fixed_yields = param<Int>("woodcutting_fixed_yields")
 }
