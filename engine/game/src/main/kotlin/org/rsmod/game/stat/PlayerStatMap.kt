@@ -3,7 +3,6 @@ package org.rsmod.game.stat
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.StatType
 import it.unimi.dsi.fastutil.bytes.Byte2ByteOpenHashMap
 import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap
 import org.rsmod.annotations.InternalApi
@@ -40,6 +39,18 @@ public class PlayerStatMap(
 
     public fun setCurrentLevel(stat: String, level: Byte) {
         this.currLevels[stat.asRSCM(RSCMType.STAT).toByte()] = level
+    }
+
+    /**
+     * Drops every stat back to "never set", so a subsequent load replaces rather than merges.
+     *
+     * Needed when one save is swapped for another on a live player - see the world-type switch.
+     * Without it a stat the incoming save has no row for would keep the outgoing save's level.
+     */
+    public fun clear() {
+        xp.clear()
+        baseLevels.clear()
+        currLevels.clear()
     }
 
     public companion object {

@@ -50,6 +50,7 @@ import org.rsmod.game.timer.PlayerTimerMap
 import org.rsmod.game.ui.UserInterfaceMap
 import org.rsmod.game.vars.VarPlayerIntMap
 import org.rsmod.game.vars.VarPlayerStrMap
+import org.rsmod.game.world.WorldType
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.square.MapSquareKey
 import org.rsmod.map.zone.ZoneKey
@@ -163,6 +164,16 @@ public class Player(
      * _This value is **always** expected to be set on login._
      */
     public var characterId: Int by Delegates.notNull()
+
+    /**
+     * The world type this character's save was loaded from.
+     *
+     * _This value is **always** expected to be set on login._
+     */
+    public var worldType: WorldType by Delegates.notNull()
+
+    /** Blocks background saves while this player's state is deliberately inconsistent. */
+    public var persistenceSuspended: Boolean = false
 
     // Currently unsure of the exact requirements for this value's use case, however, it should
     // **always** be set on login (like the other player identifiers).

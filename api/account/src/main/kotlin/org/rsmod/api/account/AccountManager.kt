@@ -9,12 +9,19 @@ import org.rsmod.api.account.saver.AccountSavingService
 import org.rsmod.api.account.saver.request.AccountSaveCallback
 import org.rsmod.api.account.saver.request.AccountSaveRequest
 import org.rsmod.game.entity.Player
+import org.rsmod.game.world.WorldType
 
 public class AccountManager
 @Inject
 constructor(private val loader: AccountLoaderService, private val saver: AccountSavingService) {
     public fun save(player: Player, callback: AccountSaveCallback) {
-        val request = AccountSaveRequest(player.accountId, player.characterId, player, callback)
+        val request =
+            AccountSaveRequest(
+                accountId = player.accountId,
+                characterId = player.characterId,
+                player = player,
+                callback = callback,
+            )
         saver.queue(request)
     }
 
@@ -23,7 +30,8 @@ constructor(private val loader: AccountLoaderService, private val saver: Account
         accountName: String,
         callback: AccountLoadCallback,
     ): Boolean {
-        val loadRequest = AccountLoadRequest.StrictSearch(auth, accountName, callback)
+        val loadRequest =
+            AccountLoadRequest.StrictSearch(auth, accountName, WorldType.DEFAULT, callback)
         return loader.queue(loadRequest)
     }
 
@@ -34,7 +42,29 @@ constructor(private val loader: AccountLoaderService, private val saver: Account
         callback: AccountLoadCallback,
     ): Boolean {
         val loadRequest =
-            AccountLoadRequest.SearchOrCreateWithPassword(hashedPassword, auth, accountName, callback)
+            AccountLoadRequest.SearchOrCreateWithPassword(
+                hashedPassword,
+                auth,
+                accountName,
+                WorldType.DEFAULT,
+                callback,
+            )
+        return loader.queue(loadRequest)
+    }
+
+    /** Loads [worldType]'s save, pinning the mode instead of resolving it from the preference. */
+    public fun loadWorldTypeSwitch(
+        accountName: String,
+        worldType: WorldType,
+        callback: AccountLoadCallback,
+    ): Boolean {
+        val loadRequest =
+            AccountLoadRequest.WorldTypeSwitch(
+                auth = AccountLoadAuth.UnknownDevice,
+                accountName = accountName,
+                worldType = worldType,
+                callback = callback,
+            )
         return loader.queue(loadRequest)
     }
 

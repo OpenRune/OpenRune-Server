@@ -2,9 +2,10 @@ package org.rsmod.game.cheat
 
 import org.rsmod.game.entity.Player
 
-public class CheatCommandMap {
-    public val commands: MutableMap<String, CheatHandler> = hashMapOf()
-
+/** [commands] is a constructor property so a decorator can register into the same backing map. */
+public open class CheatCommandMap(
+    public val commands: MutableMap<String, CheatHandler> = hashMapOf(),
+) {
     public fun execute(player: Player, command: String, args: List<String>): Boolean {
         val handler = this[command] ?: return false
         val cheat = Cheat(player, command, args)
@@ -12,7 +13,7 @@ public class CheatCommandMap {
         return true
     }
 
-    public fun put(name: String, handler: CheatHandler) {
+    public open fun put(name: String, handler: CheatHandler) {
         commands[name] = handler
     }
 

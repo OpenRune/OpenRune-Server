@@ -6,6 +6,19 @@ revision: 241
 environment: "LIVE"
 world: 255
 
+# Every gameplay mode this world serves, each with its own player saves. Nothing is implied: list
+# exactly what you want playable. The first entry is the world's default, used when a player has no
+# stored choice. Omit the key entirely for a plain main-only world.
+#
+#   world-types: ["main"]                           normal world
+#   world-types: ["main", "raging_echoes_league"]   main players and leagues players together
+#   world-types: ["raging_echoes_league"]           dedicated leagues world, no normal play
+#   world-types: ["gridmaster", "raging_echoes_league"]
+#
+# Valid keys (org.rsmod.game.world.WorldType): main, twisted_league, trailblazer_league,
+# shattered_relics_league, trailblazer_reloaded_league, raging_echoes_league, gridmaster.
+world-types: ["main"]
+
 gameplay:
   drop-rates:
     # Server-wide multiplier for drops flagged `boosted` (2.0 turns 1/512 into 1/256). Stacks with

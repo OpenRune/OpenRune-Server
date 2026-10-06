@@ -61,6 +61,8 @@ public data class ServerConfig(
     val revision: Int,
     val environment: String,
     val world: Int,
+    /** Every mode this world serves, first one being its default. Empty means `main` only. */
+    @JsonProperty("world-types") val worldTypes: List<String> = emptyList(),
     val gameplay: GameplayConfig = GameplayConfig(),
     val database: GameDatabaseYaml? = null,
     val central: OpenRuneCentralGameConfig? = null,

@@ -21,6 +21,7 @@ import org.rsmod.api.account.loader.request.AccountLoadRequest
 import org.rsmod.api.account.loader.request.AccountLoadResponse
 import org.rsmod.api.db.DatabaseConnection
 import org.rsmod.api.db.jdbc.GameDatabase
+import org.rsmod.game.world.WorldType
 import org.rsmod.server.services.concurrent.ScheduledService
 
 public class AccountLoaderService
@@ -32,6 +33,10 @@ constructor(
     private val serverConfig: org.rsmod.api.server.config.ServerConfig,
 ) : ScheduledService {
     private val logger = InlineLogger()
+
+    private val servedWorldTypes: List<WorldType> by lazy {
+        WorldType.supportedFrom(serverConfig.worldTypes)
+    }
 
     private val shuttingDown = AtomicBoolean(false)
 
@@ -190,7 +195,11 @@ constructor(
 
     private suspend fun handleRequest(request: AccountLoadRequest) {
         val startedAt = System.nanoTime()
-        val response = database.withTransaction { connection -> connection.handleRequest(request) }
+        val worldType = resolveWorldType(request)
+        val response =
+            database.withSchemaTransaction(worldType.key) { connection ->
+                connection.handleRequest(request, worldType)
+            }
         val elapsedMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startedAt)
         if (serverConfig.loginTimingLogs && elapsedMs >= ACCOUNT_DB_TIMING_INFO_MS) {
             val level =
@@ -209,32 +218,88 @@ constructor(
         request.callback(response)
     }
 
-    private fun DatabaseConnection.handleRequest(request: AccountLoadRequest): AccountLoadResponse {
-        val metadataList = repository.selectAndCreateMetadataList(this, request.accountName)
+    /**
+     * In order: the account's stored preference, the request's hint, `main`, then the world's first
+     * configured mode - each only if this world serves it.
+     */
+    private suspend fun resolveWorldType(request: AccountLoadRequest): WorldType {
+        if (request is AccountLoadRequest.WorldTypeSwitch) {
+            return request.worldType
+        }
+        val stored =
+            try {
+                database.withTransaction { connection ->
+                    repository.selectActiveWorldType(connection, request.accountName)
+                }
+            } catch (e: Exception) {
+                logger.warn(e) { "Could not read active world type for: '${request.accountName}'" }
+                null
+            }
+        val preferred = stored?.let(WorldType::byKeyOrNull)
+        val resolved =
+            preferred?.takeIf(servedWorldTypes::contains)
+                ?: request.worldType.takeIf(servedWorldTypes::contains)
+                ?: WorldType.DEFAULT.takeIf(servedWorldTypes::contains)
+                ?: servedWorldTypes.first()
+        if (preferred != null && preferred != resolved) {
+            logger.info {
+                "World type '${preferred.key}' is not served here; '${request.accountName}' " +
+                    "falls back to '${resolved.key}'."
+            }
+        }
+        return resolved
+    }
+
+    private fun DatabaseConnection.handleRequest(
+        request: AccountLoadRequest,
+        worldType: WorldType,
+    ): AccountLoadResponse {
+        var firstVisitToWorldType = false
+        val metadataList =
+            repository.selectAndCreateMetadataList(this, request.accountName) {
+                firstVisitToWorldType = true
+            }
         if (metadataList == null) {
-            val response = accountNotFoundResponse(request)
+            val response = accountNotFoundResponse(request, worldType)
             return response
         }
         for (pipeline in pipelines) {
             pipeline.append(this, metadataList)
         }
         val response =
-            AccountLoadResponse.Ok.LoadAccount(request.auth, metadataList.accountData, metadataList)
+            AccountLoadResponse.Ok.LoadAccount(
+                request.auth,
+                metadataList.accountData,
+                metadataList,
+                worldType,
+                firstVisitToWorldType,
+            )
         return response
     }
 
-    private fun DatabaseConnection.accountNotFoundResponse(request: AccountLoadRequest) =
+    private fun DatabaseConnection.accountNotFoundResponse(
+        request: AccountLoadRequest,
+        worldType: WorldType,
+    ) =
         when (request) {
-            is AccountLoadRequest.StrictSearch -> AccountLoadResponse.Err.AccountNotFound
-            is AccountLoadRequest.SearchOrCreateWithPassword -> createAccountResponse(request)
+            is AccountLoadRequest.StrictSearch,
+            is AccountLoadRequest.WorldTypeSwitch -> AccountLoadResponse.Err.AccountNotFound
+            is AccountLoadRequest.SearchOrCreateWithPassword ->
+                createAccountResponse(request, worldType)
         }
 
     private fun DatabaseConnection.createAccountResponse(
-        request: AccountLoadRequest.SearchOrCreateWithPassword
+        request: AccountLoadRequest.SearchOrCreateWithPassword,
+        worldType: WorldType,
     ): AccountLoadResponse =
         try {
             val metadataList = createMetadataList(request.accountName, request.hashedPassword())
-            AccountLoadResponse.Ok.NewAccount(request.auth, metadataList.accountData, metadataList)
+            AccountLoadResponse.Ok.NewAccount(
+                request.auth,
+                metadataList.accountData,
+                metadataList,
+                worldType,
+            )
         } catch (e: Exception) {
             AccountLoadResponse.Err.Exception(e)
         }

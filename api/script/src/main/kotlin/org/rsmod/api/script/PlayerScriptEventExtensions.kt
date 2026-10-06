@@ -17,6 +17,7 @@ import org.rsmod.api.player.input.DialogInput
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.WorldMapClick
 import org.rsmod.game.entity.player.SessionStateEvent
+import org.rsmod.game.entity.player.WorldTypeChangedEvent
 import org.rsmod.plugin.scripts.ScriptContext
 
 public fun ScriptContext.onPlayerInit(action: SessionStateEvent.Initialize.() -> Unit): Unit =
@@ -28,6 +29,9 @@ public fun ScriptContext.onPlayerLogin(action: SessionStateEvent.Login.() -> Uni
 public fun ScriptContext.onDialogInput(action: DialogInput.() -> Unit): Unit = onEvent(action)
 
 public fun ScriptContext.onPlayerLogout(action: SessionStateEvent.Logout.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onWorldTypeChanged(action: WorldTypeChangedEvent.() -> Unit): Unit =
     onEvent(action)
 
 /* Op functions */
