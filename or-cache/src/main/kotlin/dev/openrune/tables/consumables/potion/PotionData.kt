@@ -1529,6 +1529,31 @@ internal enum class PotionData(
         empty = "obj.vial_empty",
         effect = "dbrow.effect_moonlight_potion",
         minigameOnly = "moons_of_peril",
+    ),
+    MAGIC_ESSENCE(
+        key = "magic_essence",
+        displayName = "Magic essence",
+        items = listOf(
+            "obj.4dosemagicess",
+            "obj.3dosemagicess",
+            "obj.2dosemagicess",
+            "obj.1dosemagicess",
+        ),
+        empty = "obj.vial_empty",
+        effect = "dbrow.effect_magic_essence_boost",
+    ),
+    MAGIC_ESSENCE_MIX(
+        key = "magic_essence_mix",
+        displayName = "Magic essence mix",
+        items = listOf(
+            "obj.brutal_2dosemagicess",
+            "obj.brutal_1dosemagicess",
+        ),
+        empty = "obj.vial_empty",
+        effect = "dbrow.effect_magic_essence_boost",
+        category = "barbarian_mix",
+        mix = true,
+        heal = 6,
     );
 
     val row: String

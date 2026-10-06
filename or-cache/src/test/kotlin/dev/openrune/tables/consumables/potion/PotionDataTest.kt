@@ -87,6 +87,16 @@ class PotionDataTest {
         assertEquals(minutesInTicks(15), sanfew.duration)
     }
 
+    @Test
+    fun `magic essence and its mix boost magic by 3`() {
+        val boost = effect(PotionData.MAGIC_ESSENCE.effect)
+        assertEquals("flat_stat_boost", boost.kind)
+        assertEquals(listOf("stat.magic"), boost.skills)
+        assertEquals(3, boost.amount)
+        assertEquals(PotionData.MAGIC_ESSENCE.effect, PotionData.MAGIC_ESSENCE_MIX.effect)
+        assertEquals(6, PotionData.MAGIC_ESSENCE_MIX.heal)
+    }
+
     private fun runEnergyPercent(row: String): Int {
         val effect = effect(row)
         return when (effect.kind) {

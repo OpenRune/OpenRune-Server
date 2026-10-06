@@ -569,7 +569,13 @@ internal enum class PotionEffectData(
         key = "moonlight_potion",
         kind = "handler",
         handler = "moonlight_potion",
-    )
+    ),
+    MAGIC_ESSENCE_BOOST(
+        key = "magic_essence_boost",
+        kind = "flat_stat_boost",
+        skills = listOf("stat.magic"),
+        amount = 3,
+    ),
 }
 
 private fun seconds(value: Int): Int =
