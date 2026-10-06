@@ -1,4 +1,4 @@
-package dev.openrune.tables
+package org.rsmod.content.areas.misc.stronghold_of_security.pack
 
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType

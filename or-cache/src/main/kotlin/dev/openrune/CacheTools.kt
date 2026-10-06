@@ -39,7 +39,6 @@ import dev.openrune.tables.PickableObjects
 import dev.openrune.tables.SettingConfigs
 import dev.openrune.tables.ShopCurrencyTable
 import dev.openrune.tables.StatComponents
-import dev.openrune.tables.StrongholdFloorsTable
 import dev.openrune.tables.consumables.food.FoodTable
 import dev.openrune.tables.consumables.potion.PotionEffectTable
 import dev.openrune.tables.consumables.potion.PotionTable
@@ -227,7 +226,6 @@ fun tablesToPack(): List<DBTable> = listOf(
     InstanceSettingsTable.instanceSettings(),
     CollectionLogCategoriesTable.collectionLogCategories(),
     ShopCurrencyTable.shopCurrencies(),
-    StrongholdFloorsTable.strongholdFloors(),
 )
 
 private fun newCacheTool(type: TaskType, packTasks: List<CacheTask>): CacheTool {
