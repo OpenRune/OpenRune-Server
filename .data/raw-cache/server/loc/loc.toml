@@ -1045,6 +1045,19 @@ inherit = "loc.laddermiddle"
 contentGroup = "content.ladder_option"
 
 [[object]]
+id = "loc.laddertop_directional"
+inherit = "loc.laddertop_directional"
+contentGroup = "content.ladder_down"
+
+[object.params]
+"param.climb_anim" = "seq.human_pickupfloor"
+
+[[object]]
+id = "loc.ladder_directional"
+inherit = "loc.ladder_directional"
+contentGroup = "content.ladder_up"
+
+[[object]]
 id = "loc.ladder_from_cellar"
 inherit = "loc.ladder_from_cellar"
 contentGroup = "content.dungeonladder_up"
