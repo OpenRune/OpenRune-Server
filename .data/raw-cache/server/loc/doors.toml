@@ -188,3 +188,57 @@ contentGroup = "content.closed_left_picketgate"
 [object.params]
 "param.next_loc_stage" = "loc.rustic_openfencegate_l"
 "param.opensound" = "synth.picketgate_open"
+
+[[object]]
+id = "loc.fai_barbarian_large_doubledoor_l"
+inherit = "loc.fai_barbarian_large_doubledoor_l"
+contentGroup = "content.closed_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_barbarian_open_large_doubledoor_l"
+"param.opensound" = "synth.door_open"
+
+[[object]]
+id = "loc.fai_barbarian_open_large_doubledoor_l"
+inherit = "loc.fai_barbarian_open_large_doubledoor_l"
+contentGroup = "content.opened_left_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_barbarian_large_doubledoor_l"
+"param.closesound" = "synth.door_close"
+
+[[object]]
+id = "loc.fai_barbarian_large_doubledoor_r"
+inherit = "loc.fai_barbarian_large_doubledoor_r"
+contentGroup = "content.closed_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_barbarian_open_large_doubledoor_r"
+"param.opensound" = "synth.door_open"
+
+[[object]]
+id = "loc.fai_barbarian_open_large_doubledoor_r"
+inherit = "loc.fai_barbarian_open_large_doubledoor_r"
+contentGroup = "content.opened_right_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_barbarian_large_doubledoor_r"
+"param.closesound" = "synth.door_close"
+
+[[object]]
+id = "loc.fai_barbarian_poordoor"
+inherit = "loc.fai_barbarian_poordoor"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_barbarian_poordooropen"
+"param.opensound" = "synth.door_open"
+
+[[object]]
+id = "loc.fai_barbarian_poordooropen"
+inherit = "loc.fai_barbarian_poordooropen"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.fai_barbarian_poordoor"
+"param.closesound" = "synth.door_close"
