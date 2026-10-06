@@ -84,6 +84,16 @@ public object ExternalPluginLoader {
     private val loadedSourcePaths = mutableSetOf<String>()
     private val loadedClassLoaders = mutableMapOf<String, ClassLoader>()
     private val loadedScripts = mutableMapOf<String, List<PluginScript>>()
+
+    /**
+     * Resolves the [ScriptContext] a script registers through, or `null` to skip it entirely.
+     *
+     * The game server installs a resolver applying `PluginScript.worldTypes`, so a plugin reloaded
+     * at runtime is scoped like a built-in one; the engine cannot read `game.yml` itself.
+     */
+    @Volatile
+    public var scriptContextResolver: (PluginScript, ScriptContext) -> ScriptContext? =
+        { _, context -> context }
     private val disabledNames = mutableSetOf<String>()
     private var stateLoaded = false
 
@@ -321,9 +331,19 @@ public object ExternalPluginLoader {
         val modules = scanSourceModules(source, loader)
         val effectiveInjector =
             if (modules.isEmpty()) injector else injector.createChildInjector(modules)
-        val scripts = scanSourceScripts(source, loader, effectiveInjector)
-        for (script in scripts) {
-            with(script) { scriptContext.startup() }
+        val scanned = scanSourceScripts(source, loader, effectiveInjector)
+        val scripts = ArrayList<PluginScript>(scanned.size)
+        for (script in scanned) {
+            val context = scriptContextResolver(script, scriptContext)
+            if (context == null) {
+                logger.info {
+                    "plugins/${sourceName(source)}: skipped ${script::class.java.name} " +
+                        "(world types not served by this world)."
+                }
+                continue
+            }
+            with(script) { context.startup() }
+            scripts += script
         }
 
         loadedSourcePaths += source.canonicalPath

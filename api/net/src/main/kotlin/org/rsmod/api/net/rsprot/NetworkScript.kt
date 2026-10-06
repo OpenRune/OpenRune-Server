@@ -23,6 +23,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.game.entity.player.SessionStateEvent
+import org.rsmod.game.world.WorldType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -112,21 +113,26 @@ constructor(
         touchOnlineSessionHeartbeats()
     }
 
+    /** One transaction per mode, since saves live in a schema per world type. */
     private fun touchOnlineSessionHeartbeats() {
-        try {
-            database.withTransactionBlocking { connection ->
-                playerRegistry.forEachOnline { player ->
-                    if (player.characterId > 0) {
-                        characterRepository.setOnlineSession(
-                            connection,
-                            player.characterId,
-                            config.world,
-                        )
+        val byWorldType = mutableMapOf<WorldType, MutableList<Int>>()
+        playerRegistry.forEachOnline { player ->
+            if (player.characterId > 0) {
+                byWorldType.getOrPut(player.worldType) { mutableListOf() } += player.characterId
+            }
+        }
+        for ((worldType, characterIds) in byWorldType) {
+            try {
+                database.withTransactionBlocking(worldType.key) { connection ->
+                    for (characterId in characterIds) {
+                        characterRepository.setOnlineSession(connection, characterId, config.world)
                     }
                 }
+            } catch (e: Exception) {
+                logger.warn(e) {
+                    "Could not refresh online-session heartbeats for world type='${worldType.key}'"
+                }
             }
-        } catch (e: Exception) {
-            logger.warn(e) { "Could not refresh online-session heartbeats" }
         }
     }
 
@@ -157,7 +163,7 @@ constructor(
     private fun SessionStateEvent.Login.markDbOnlineSession() {
         val startedAt = System.nanoTime()
         try {
-            database.withTransactionBlocking { connection ->
+            database.withTransactionBlocking(player.worldType.key) { connection ->
                 characterRepository.setOnlineSession(
                     connection,
                     player.characterId,
@@ -183,7 +189,7 @@ constructor(
 
     private fun finalizeCentralSession(player: Player) {
         try {
-            database.withTransactionBlocking { connection ->
+            database.withTransactionBlocking(player.worldType.key) { connection ->
                 characterRepository.clearOnlineSession(connection, player.characterId)
             }
         } catch (e: Exception) {

@@ -15,6 +15,7 @@ dependencies {
     implementation(libs.kotlin.coroutines.core)
     implementation(libs.postgresql)
     implementation(projects.api.serverConfig)
+    implementation(projects.engine.game)
     implementation(projects.engine.module)
     implementation(projects.server.services)
 }

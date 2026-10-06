@@ -1,6 +1,6 @@
 package org.rsmod.events
 
-public class EventBus(
+public open class EventBus(
     public val unbound: UnboundEventMap = UnboundEventMap(),
     public val keyed: KeyedEventMap = KeyedEventMap(),
     public val suspend: SuspendEventMap = SuspendEventMap(),
@@ -13,7 +13,7 @@ public class EventBus(
         return true
     }
 
-    public fun <T : UnboundEvent> subscribeUnbound(type: Class<T>, action: T.() -> Unit) {
+    public open fun <T : UnboundEvent> subscribeUnbound(type: Class<T>, action: T.() -> Unit) {
         unbound.add(type, action)
     }
 
@@ -23,7 +23,7 @@ public class EventBus(
         return true
     }
 
-    public fun <T : KeyedEvent> subscribeKeyed(type: Class<T>, id: Long, action: T.() -> Unit) {
+    public open fun <T : KeyedEvent> subscribeKeyed(type: Class<T>, id: Long, action: T.() -> Unit) {
         val previous = keyed.putIfAbsent(type, id, action)
         if (previous != null) {
             error("Event with id already registered: id=$id, type=${type.simpleName}")
@@ -36,7 +36,7 @@ public class EventBus(
         return true
     }
 
-    public fun <R, T : SuspendEvent<R>> subscribeSuspend(
+    public open fun <R, T : SuspendEvent<R>> subscribeSuspend(
         type: Class<T>,
         id: Long,
         action: suspend R.(T) -> Unit,

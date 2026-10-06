@@ -1,9 +1,14 @@
 package org.rsmod.api.account.loader.request
 
+import org.rsmod.game.world.WorldType
+
 public sealed class AccountLoadRequest {
     public abstract val auth: AccountLoadAuth
     public abstract val accountName: String
     public abstract val callback: AccountLoadCallback
+
+    /** A hint for the mode to load; ignored when this world does not serve it. */
+    public abstract val worldType: WorldType
 
     /**
      * Account requests that only require read access to the database or other account-related
@@ -18,6 +23,15 @@ public sealed class AccountLoadRequest {
     public data class StrictSearch(
         override val auth: AccountLoadAuth,
         override val accountName: String,
+        override val worldType: WorldType,
+        override val callback: AccountLoadCallback,
+    ) : ReadOnly()
+
+    /** Loads [worldType] exactly, bypassing the stored preference and the world's default. */
+    public data class WorldTypeSwitch(
+        override val auth: AccountLoadAuth,
+        override val accountName: String,
+        override val worldType: WorldType,
         override val callback: AccountLoadCallback,
     ) : ReadOnly()
 
@@ -35,6 +49,7 @@ public sealed class AccountLoadRequest {
         public val hashedPassword: () -> String,
         override val auth: AccountLoadAuth,
         override val accountName: String,
+        override val worldType: WorldType,
         override val callback: AccountLoadCallback,
     ) : WriteRequired()
 }

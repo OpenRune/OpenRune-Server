@@ -255,7 +255,10 @@ class AccountLoadResponseHook(
 
     private fun safeQueueLogin(response: AccountLoadResponse.Ok) {
         try {
-            val player = createPlayer(response).apply { applyConfigTransforms(config) }
+            val player =
+                createPlayer(response).apply {
+                    applyConfigTransforms(config, response.firstVisitToWorldType)
+                }
             accountRegistry.queueLogin(player, response, ::safeHandleGameLogin)
         } catch (e: Exception) {
             writeErrorResponse(LoginResponse.ConnectFail)
@@ -279,6 +282,7 @@ class AccountLoadResponseHook(
             resizable = loginBlock.resizable,
         )
         player.newAccount = fromResponse.isNewAccount()
+        player.worldType = fromResponse.worldType
         return player
     }
 
@@ -299,8 +303,17 @@ class AccountLoadResponseHook(
 
     public val LOGIN_EXIT_COORD: AttributeKey<Int> = AttributeKey(persistenceKey = "instance_exit_coord")
 
-    private fun Player.applyConfigTransforms(config: RealmConfig) {
-        if (!newAccount) {
+    /**
+     * [firstVisitToWorldType] covers an existing character playing a world type for the first time:
+     * the account and name are not new, but it has no save for that mode, so it starts from spawn
+     * rather than wherever it last stood in another mode.
+     */
+    private fun Player.applyConfigTransforms(config: RealmConfig, firstVisitToWorldType: Boolean) {
+        // Before the early return: a dev realm grants admin on every login, not just the first.
+        if (config.devMode) {
+            modLevel = Rights.ADMINISTRATOR
+        }
+        if (!newAccount && !firstVisitToWorldType) {
             val hasExit = attr[LOGIN_EXIT_COORD]
             if (hasExit != null) {
                 coords = CoordGrid(hasExit)
@@ -312,11 +325,14 @@ class AccountLoadResponseHook(
 
         coords = config.spawnCoord
         xpRate = config.baseXpRate
-        if (config.autoAssignDisplayNames) {
-            displayName = username.toDisplayName()
+        // A first visit needs the new-account initialisation, or the empty stat map reads as
+        // level 1 everywhere. The flag is a varp, so it stays scoped to this mode.
+        if (firstVisitToWorldType) {
+            newAccount = true
         }
-        if (config.devMode) {
-            modLevel = Rights.ADMINISTRATOR
+        // The name is shared by every mode, so a first visit already has one.
+        if (config.autoAssignDisplayNames && displayName.isBlank()) {
+            displayName = username.toDisplayName()
         }
     }
 
@@ -357,7 +373,7 @@ class AccountLoadResponseHook(
         val characterId = loadResponse.account.characterData.characterId
         val duplicateCheckStart = System.nanoTime()
         val sessionHeldElsewhere =
-            database.withTransactionBlocking { connection ->
+            database.withTransactionBlocking(loadResponse.worldType.key) { connection ->
                 characterRepository.isActiveSessionOnOtherWorld(
                     connection,
                     characterId,

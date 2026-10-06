@@ -22,4 +22,6 @@ public object NoopClientCycle : ClientCycle {
     override fun flush(player: Player) {}
 
     override fun release() {}
+
+    override fun forceSceneRebuild() {}
 }

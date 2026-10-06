@@ -41,6 +41,7 @@ dependencies {
     implementation(projects.api.parsers.json)
     implementation(projects.api.parsers.toml)
     implementation(projects.api.registry)
+    implementation(projects.api.script)
     implementation(projects.api.shops)
     implementation(projects.engine.annotations)
     implementation(projects.engine.events)
