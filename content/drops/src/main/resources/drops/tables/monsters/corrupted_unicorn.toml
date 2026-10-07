@@ -1,13 +1,13 @@
-id = "Crystalline Unicorn Drops"
-npcs = ["npc.crystal_unicorn"]
+id = "Corrupted Unicorn Drops"
+npcs = ["npc.crystal_unicorn_hm"]
 
 [[guaranteed]]
-obj = "obj.gauntlet_crystal_shard"
+obj = "obj.gauntlet_crystal_shard_hm"
 count = "80..100"
 
 [main]
 total = 21
-name = "Crystalline Unicorn Drops"
+name = "Corrupted Unicorn Drops"
 
 [[main.entries]]
 weight = 6
@@ -15,7 +15,7 @@ nothing = true
 
 [[main.entries]]
 weight = 9
-obj = "obj.gauntlet_crystal_shard"
+obj = "obj.gauntlet_crystal_shard_hm"
 count = "7..14"
 
 [[main.entries]]
@@ -25,10 +25,10 @@ count = "2..4"
 
 [[main.entries]]
 weight = 2
-obj = "obj.gauntlet_herb"
+obj = "obj.gauntlet_herb_hm"
 count = 1
 
 [[main.entries]]
 weight = 1
-obj = "obj.gauntlet_teleport_crystal"
+obj = "obj.gauntlet_teleport_crystal_hm"
 count = 1

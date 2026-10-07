@@ -13,5 +13,7 @@ class GauntletRun(
     val revealed: MutableSet<Int> = hashSetOf(layout.startIndex, GauntletLayout.BOSS_INDEX)
     val charges: MutableMap<CoordGrid, Int> = hashMapOf()
     val nextGather: MutableMap<Player, Int> = hashMapOf()
-    var weaponFrameGiven = false
+    var weakFrameGiven = false
+    var strongKillsWithoutFrame = 0
+    var componentsObtained = 0
 }
