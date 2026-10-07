@@ -142,6 +142,7 @@ class VarrockStaircaseTest {
                     getTeleportValidator = { PlayerTeleportValidator(emptySet()) },
                     getAreaChecker = { AreaChecker(regions, AreaIndex()) },
                 )
+
         @OptIn(InternalApi::class)
         val player =
             Player().apply {
