@@ -104,7 +104,7 @@ internal class GuardTail(
     val lookingAt: CoordGrid
         get() = route[(index - 1).coerceAtLeast(0)]
 
-    /** [at] is where the guard npc really stands, which lags [guard] until its step is processed. */
+    /** [at] is where the guard npc really stands; it lags [guard] until the npc takes its step. */
     fun tick(player: CoordGrid, at: CoordGrid = guard): TailResult {
         if (player.level != at.level || distance(at, player) > MaxDistance) {
             return TailResult.TooFar
