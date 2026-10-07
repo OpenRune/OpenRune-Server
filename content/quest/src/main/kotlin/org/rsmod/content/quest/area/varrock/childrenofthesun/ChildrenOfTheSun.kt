@@ -224,37 +224,40 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
 
     private suspend fun Dialogue.beforeQuest() {
         if (!player.metAlina) {
-            noah(quiz, "So these people really are from the west?")
+            noah(quiz, "So they're from the west?")
             alina(
                 happy,
-                "They are! Varlamore, the Shining Kingdom! They say it's one of the most " +
-                    "beautiful places in the world!",
+                "Yes! They call it Varlamore, the Shining Kingdom! It's meant to be one of the " +
+                    "most beautiful places in the world!",
             )
-            chatPlayer(quiz, "What are you two talking about?")
+            chatPlayer(quiz, "What are you talking about?")
             player.metAlina = true
             alina(happy, "Oh, hello! Are you here to see the delegation?")
             chatPlayer(quiz, "Delegation?")
-            noah(confused, "See? It's not only me who has no idea what's going on.")
+            noah(confused, "See! It's not just me who doesn't know what's happening.")
             alina(
                 happy,
-                "The delegation from Varlamore, of course! After all these years they're " +
-                    "finally opening the kingdom up to travel and trade. Isn't it exciting?",
+                "The delegation from Varlamore, of course! After all these years, they're " +
+                    "finally opening up the kingdom for travel and trade! Isn't it exciting?",
             )
-            noah(bored, "Why would I be excited about a place I didn't even know existed?")
+            noah(bored, "Why would I be excited about a place I never even knew existed?")
         }
         alina(
             happy,
-            "A whole land shut away for hundreds of years! Don't you want to be one of the " +
-                "first outsiders to set foot there? Think of the adventure!",
+            "A whole land locked off for hundreds of years! Do you not want to be one of the " +
+                "first outsiders to step foot there? Think of the adventure!",
         )
-        noah(worried, "Adventure? Sounds dangerous. I'll be staying right here, thank you.")
+        noah(
+            worried,
+            "Adventure? Sounds dangerous. I'll be staying right here, thank you very much!",
+        )
         alina(angry, "Bah! Boring! What about you, stranger?")
         if (!startQuestPrompt(quest)) {
             chatPlayer(neutral, "I'm not sure. Doesn't really sound like my kind of thing.")
-            alina(neutral, "Well... suit yourself, I suppose.")
+            alina(neutral, "Well... suit yourself, I guess.")
             return
         }
-        chatPlayer(happy, "Well, I'm actually something of an adventurer myself.")
+        chatPlayer(happy, "Well I'm actually something of an adventurer myself.")
         alina(
             laugh,
             "That's the spirit! I bet you'll want to be one of the first to head over to " +
@@ -300,27 +303,27 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         chatPlayer(quiz, "What can you tell me about Varlamore?")
         alina(
             neutral,
-            "It's far across the western sea, over the mountains south of Great Kourend. With " +
-                "the sea on one side and the mountains on the other, it's completely cut off. " +
-                "Nobody comes or goes without good reason.",
+            "It's far across the western sea, over the mountains south of Great Kourend. " +
+                "Between the sea and the mountains, it's totally isolated! No one is allowed to " +
+                "come or go without good reason.",
         )
         noah(quiz, "Sounds like a prison.")
         alina(
             happy,
-            "Quite the opposite! It's a beautiful and prosperous kingdom, ruled by the Sun " +
+            "Quite the opposite! It's a beautiful and prosperous kingdom, ruled over by the Sun " +
                 "Queen!",
         )
         chatPlayer(quiz, "The Sun Queen?")
         alina(
             happy,
             "Yes! She rules from her palace in their capital, Civitas illa Fortis. The sun " +
-                "matters a great deal to Varlamorians. They actually worship it!",
+                "plays an important role in Varlamorian life. In fact, they worship it!",
         )
         noah(confused, "What... the sun?")
         alina(
             happy,
-            "That's right! They have a whole religion built around the sun and the moon. Isn't " +
-                "that fascinating?",
+            "That's right! They have their own religion over there dedicated to the sun and the " +
+                "moon. Isn't that fascinating?",
         )
         noah(worried, "I don't know... It all sounds a bit odd to me.")
     }
@@ -329,25 +332,25 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         chatPlayer(quiz, "How come you know so much about Varlamore?")
         alina(
             neutral,
-            "Some time ago a group of travellers passed through on their way to the dark lands " +
-                "of Morytania. They told us they were from the College of Bards!",
+            "A while back, a group of travellers came through here, on their way to the dark " +
+                "lands of Morytania. They said they were from the College of Bards!",
         )
-        noah(quiz, "The College of Bards?")
+        noah(quiz, "College of Bards?")
         alina(
             happy,
-            "Yes! It's in the floating city of Tempestus. Members of the College are about the " +
-                "only people allowed to travel to and from Varlamore.",
+            "Yes! It's found in the floating city of Tempestus! Members of the College are some " +
+                "of the only people allowed to travel to and from Varlamore.",
         )
         alina(
             happy,
-            "They stayed the night at the Blue Moon Inn and spent hours telling us all about " +
+            "They stayed the night in the Blue Moon Inn and spent hours telling us all about " +
                 "their homeland. I've been dying to visit ever since!",
         )
     }
 
     private suspend fun Dialogue.delegationArrival() {
         chatPlayer(quiz, "When will this delegation arrive?")
-        alina(happy, "Well, it should be any time now!")
+        alina(happy, "Well it should be any time now!")
         noah(confused, "Hang on... what's going on over there?")
         alina(shocked, "Wait! That's them! They're here!")
         scenes.delegation(access)
@@ -379,45 +382,45 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
 
     private suspend fun Dialogue.reportBandits() {
         tobyn(neutral, "Move along, citizen.")
-        chatPlayer(shocked, "Wait! I have some information you need to hear.")
+        chatPlayer(shocked, "Wait! I have some information that you need to hear.")
         tobyn(quiz, "What is it?")
         chatPlayer(
             worried,
-            "There are bandits disguised as guards! I think they're planning to attack the " +
-                "delegation from Varlamore!",
+            "There are some bandits disguising themselves as guards! I think they're planning " +
+                "to attack the delegation from Varlamore!",
         )
         tobyn(confused, "Surely you can't be serious?")
         chatPlayer(
             worried,
-            "It's true! One of them slipped in among your guards and stole some uniforms. He " +
-                "came right through here earlier with them.",
+            "It's true! One of them infiltrated your guards and stole some uniforms. He came " +
+                "right through here earlier with them.",
         )
         tobyn(
             quiz,
-            "The one with the big bag? I thought I didn't recognise him, but it's so hard to " +
-                "keep up. We get through guards so quickly around here for some reason...",
+            "The one with the large bag? I thought I didn't recognise him, but then it's so " +
+                "hard to keep up. We get through guards so quickly around here for some reason...",
         )
         chatPlayer(quiz, "So what do we do? Should we warn the delegation?")
         tobyn(
             neutral,
-            "And risk a panic? No. Better we deal with this now, while they're safe in the " +
+            "And risk a panic? No. Better we deal with this now while they're safe in the " +
                 "palace. Do you know how many bandits there are?",
         )
         chatPlayer(neutral, "Four in total.")
         tobyn(
             neutral,
-            "Right, we can work with that. Get out there and point them out. They're in " +
-                "disguise, so keep a close eye out for any guard who looks or acts differently " +
-                "from the others.",
+            "Right, we can work with that. You get out there and point them out. With them " +
+                "being disguised, you'll need to keep a close eye out for any guard who looks " +
+                "or acts differently to the others.",
         )
         tobyn(
             neutral,
-            "Don't go too far. If the bandits mean to attack the delegation, they'll be either " +
-                "here in the square or on the eastern road between the square and the bank.",
+            "Don't go too far. If the bandits intend to attack the delegation, they'll either " +
+                "be here in the square or on the eastern road between the square and the bank.",
         )
         tobyn(
             neutral,
-            "Come back to me once you've found all four and we'll take them at the same time.",
+            "Return to me once you've found all four and we'll take them all at the same time.",
         )
         chatPlayer(neutral, "Alright, I'll get to it.")
         access.setStage(CotsStage.Marking)
@@ -427,13 +430,14 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         if (markedCount(player) < CotsNpc.BanditGuards) {
             tobyn(
                 neutral,
-                "Get out there and point out the four bandits. They're in disguise, so keep a " +
-                    "close eye out for any guard who looks or acts differently from the others.",
+                "Get out there and point out the four bandits. They're in disguise, so be sure " +
+                    "to keep a close eye out for any guard who looks or acts differently to the " +
+                    "others.",
             )
             tobyn(
                 neutral,
-                "Remember, if they mean to attack the delegation, they'll be either here in the " +
-                    "square or on the eastern road between the square and the bank.",
+                "Remember, if they intend to attack the delegation, they'll either be here in " +
+                    "the square or on the eastern road between the square and the bank.",
             )
             chatPlayer(neutral, "Alright, I'll be back soon.")
             return
@@ -442,7 +446,7 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         if (!markedCorrectly(player)) {
             tobyn(
                 confused,
-                "Are you sure? I definitely recognise at least one of those as one of my " +
+                "Are you sure? I definitely recognise at least one of them as one of my " +
                     "guards. Maybe you should try again.",
             )
             return
@@ -480,12 +484,15 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         when (stage(player)) {
             CotsStage.OnRoof -> {
                 itzla(neutral, "Ah, nilsal, sergeant.")
-                tobyn(shocked, "Prince Itzla! I... I'm sorry, I wasn't expecting you here.")
+                tobyn(
+                    shocked,
+                    "Prince Itzla! I... I'm sorry, but I wasn't expecting you here.",
+                )
                 itzla(
                     happy,
-                    "All that politics downstairs was getting rather dry, and then I heard " +
-                        "there'd been a commotion. I thought I'd come and see what the fuss was " +
-                        "about. You don't mind, do you?",
+                    "Well all that politics downstairs was getting a bit dry, but then I heard " +
+                        "there'd been a bit of a commotion. I thought I'd come see what the fuss " +
+                        "was all about. You don't mind, do you?",
                 )
                 tobyn(worried, "Well no, it's just...")
                 itzla(happy, "Wonderful! And you! Who are you?")
@@ -499,11 +506,11 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
                 chatPlayer(neutral, "That's right.")
                 itzla(
                     happy,
-                    "Then why don't you and I put a few little questions to this one? You don't " +
-                        "mind, sergeant?",
+                    "Well then, why don't you and I ask this one a few little questions. You " +
+                        "don't mind, do you, sergeant?",
                 )
                 tobyn(worried, "Not at all, but...")
-                itzla(laugh, "Excellent! Let's get started, then.")
+                itzla(laugh, "Excellent! Let's get started then.")
                 access.setStage(CotsStage.Interrogating)
                 interrogate()
             }
@@ -525,28 +532,29 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         tobyn(quiz, "You're sure he told you everything?")
         itzla(
             laugh,
-            "Oh yes. The fear of being cooked will do that to a person. All total rubbish, of " +
-                "course! Imagine burning someone alive! We're far more civilised in Varlamore.",
+            "Oh yes. The fear of being cooked will do that to a person. All total rubbish of " +
+                "course! Imagine burning someone alive! We're much more civilised over in " +
+                "Varlamore.",
         )
-        itzla(happy, "We simply cut out their heart while it's still beating.")
-        chatPlayer(confused, "I can't tell whether you're joking or not...")
+        itzla(happy, "We just cut out their heart while it's still beating instead.")
+        chatPlayer(confused, "I can't tell if you're joking or not...")
         itzla(
             neutral,
-            "Anyway, it sounds as though there'll be work waiting for me back home. An " +
-                "assassination attempt on the Teokan of Ralos... Concerning. First, though, I'd " +
-                "better get back to the politics!",
+            "Anyway, sounds like there'll be some work to do when we get back home. An " +
+                "assassination attempt on the Teokan of Ralos... Concerning stuff. First up " +
+                "though, I'd better get back to the politics!",
         )
         itzla(
             happy,
-            "$name, once the papers are signed, you lot will be free to travel to Varlamore for " +
-                "the first time! No more needing explicit permission. You can come and go as " +
-                "you please!",
+            "$name, once we've got these papers signed, you lot will be free to travel to " +
+                "Varlamore for the first time! No more needing explicit permission. You can " +
+                "come and go as you please!",
         )
         itzla(
             quiz,
-            "It's entirely up to you, of course, but since we have you to thank for stopping " +
-                "this plot, I'd be very keen for you to join me in Varlamore to continue the " +
-                "investigation.",
+            "Now, it's entirely up to you of course, but given we have you to thank for " +
+                "stopping this plot, I'd be very keen if you'd join me in Varlamore to continue " +
+                "the investigation.",
         )
         itzla(
             neutral,
@@ -558,7 +566,7 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
             "Now, they'll be missing me downstairs. Timoiva, and may the sun light your way!",
         )
         access.setStage(CotsStage.ItzlaLeft)
-        mesbox("Prince Itzla departs.")
+        mesbox("Itzla departs.")
         finale()
     }
 
@@ -566,12 +574,12 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         tobyn(neutral, "Well, that was interesting...")
         chatPlayer(
             quiz,
-            "It isn't every day the heir to a far-off land turns up to interrogate one of your " +
-                "prisoners, is it?",
+            "Not every day the heir to a far-off land comes and interrogates one of your " +
+                "prisoners?",
         )
         tobyn(
             laugh,
-            "Oddly enough, no. This will make an interesting report to write. And on that note, " +
+            "Oddly enough, no. This will be an interesting report to write. And on that note, " +
                 "I'd best get to it. All the best, adventurer. Thank you for your help.",
         )
         quest.completeQuest(access)

@@ -280,7 +280,7 @@ class ChildrenOfTheSunInteractionTest {
         f.talk(Itzla)
         f.finish()
         f.assertCompleted(interrogations = 1)
-        assertTrue(f.output().contains("Prince Itzla departs."), f.output())
+        assertTrue(f.output().contains("Itzla departs."), f.output())
     }
 
     @Test fun `Tobyn on the roof starts the interrogation too`() {
@@ -309,7 +309,7 @@ class ChildrenOfTheSunInteractionTest {
         f.talk(Tobyn)
         f.finish()
         f.assertCompleted(interrogations = 0)
-        assertFalse(f.output().contains("Prince Itzla departs."), f.output())
+        assertFalse(f.output().contains("Itzla departs."), f.output())
     }
 
     @Test fun `Itzla has nothing to say once he has left`() {
@@ -395,6 +395,9 @@ class ChildrenOfTheSunInteractionTest {
         assertTrue(out.contains("big bag") || out.contains("that bag"), out)
         assertTrue(out.contains("You're late."), out)
         assertTrue(out.contains("Kuaini!"), out)
+        assertTrue(out.contains("What are you up to in there...?"), out)
+        assertTrue(out.contains("a spot of bother."), out)
+        assertTrue(out.contains("what are your thoughts on chicken?"), out)
     }
 
     @Test fun `every npc the scenes spawn exists in the cache`() {

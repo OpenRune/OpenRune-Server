@@ -451,95 +451,99 @@ private fun Player.sendLoc(coords: CoordGrid, loc: String?, shape: Int, angle: I
 internal suspend fun Dialogue.delegationArrives() {
     alina(
         happy,
-        "There they are! The children of the sun! That's Itzla Arkan, heir to the throne of " +
-            "Varlamore, and next to him is Servius, the Teokan of Ralos!",
+        "There they are: The children of the sun! That's Itzla Arkan, heir to the throne of " +
+            "Varlamore! And there's Servius, the Teokan of Ralos!",
     )
-    noah(confused, "A Teokan? What on earth is a Teokan?")
-    alina(neutral, "It means High Priest. He leads the religion over in Varlamore.")
-    noah(bored, "Huh.")
+    noah(confused, "Teokan? What's a Teokan?")
+    alina(neutral, "It means High Priest. He's the religious leader in Varlamore.")
+    noah(bored, "Huh...")
 }
 
 internal suspend fun Dialogue.guardLeaves() {
-    tobyn(quiz, "You there! What are you doing with that bag?")
-    bagGuard(worried, "Oh! Er... just taking some supplies out to the guards on the gates.")
-    tobyn(neutral, "Then be quick about it. I want everybody at their posts.")
-    noah(quiz, "That's an awfully big bag he's lugging about.")
-    chatPlayer(quiz, "Hmm... Now where could he be taking that?")
+    tobyn(quiz, "What are you doing with that bag?")
+    bagGuard(worried, "Oh... Er... Just delivering some supplies to the guards at the gates.")
+    tobyn(neutral, "Well hurry back. We need everyone at their posts.")
+    noah(quiz, "That's an unusually big bag he's carrying.")
+    chatPlayer(quiz, "Hmm... Now where might you be going with that...?")
 }
 
 internal suspend fun Dialogue.eavesdropOpening() {
-    chatPlayer(quiz, "What are they up to in there...?")
+    chatPlayer(quiz, "What are you up to in there...?")
 }
 
 internal suspend fun Dialogue.banditsTalk() {
     bandit(CotsNpc.RedHood, angry, "You're late.")
     bagGuard(
         angry,
-        "I'm here, aren't I? If you wanted it done faster you should have stolen the uniforms " +
-            "yourself!",
+        "I'm here aren't I? If you're not happy, maybe you should have been the one to steal " +
+            "the uniforms!",
     )
-    bandit(CotsNpc.Woman, verymad, "Enough! There's no time for this. Did you bring everything?")
-    bagGuard(shifty, "Most of it.")
-    bandit(CotsNpc.RedHood, confused, "Most of it?")
-    bagGuard(worried, "I took what I could get my hands on!")
+    bandit(CotsNpc.Woman, verymad, "Enough! We don't have much time. Do you have everything?")
+    bagGuard(shifty, "Mostly.")
+    bandit(CotsNpc.RedHood, confused, "Mostly?")
+    bagGuard(worried, "I grabbed what I could!")
     bandit(
         CotsNpc.Bearded,
         neutral,
-        "We'll have to make do. The delegation is already inside the palace, and we need to " +
-            "be ready the moment they come out.",
+        "We're just going to have to make do. The delegation is already in the palace. We " +
+            "need to be ready to strike as they leave.",
     )
     bandit(
         CotsNpc.Tanned,
         neutral,
-        "Quite. You all know who the target is. Change quickly and get to your posts.",
+        "Indeed. You all know the target. Get changed quick and be ready to take your " +
+            "positions.",
     )
-    bagGuard(shifty, "Well, good luck. You're going to need it.")
+    bagGuard(shifty, "Good luck. You're going to need it.")
     bandit(
         CotsNpc.Bearded,
         laugh,
-        "You worry too much, the lot of you. It'll go smoothly. Now, let's move.",
+        "You lot panic too much. It's going to be fine. Now, let's get going.",
     )
 }
 
 internal suspend fun Dialogue.eavesdropClosing() {
-    chatPlayer(
-        worried,
-        "That doesn't sound good. I'd better let that sergeant know right away.",
-    )
+    chatPlayer(worried, "This doesn't sound good. I'd better let that sergeant know.")
 }
 
 internal suspend fun Dialogue.interrogationInCell(wrapUp: () -> Unit = {}) {
     val name = access.player.displayName
-    itzla(neutral, "Nilsal to you, iknami. I hear you've landed yourself in a spot of trouble.")
+    itzla(
+        neutral,
+        "Nilsal to you, iknami. I hear you managed to get yourself into a spot of bother.",
+    )
     bandit(CotsNpc.Bearded, angry, "I'm not telling you anything.")
-    itzla(happy, "Ah, tetamo. What a shame. Never mind, we'll have you talking soon enough.")
+    itzla(
+        happy,
+        "Ah, tetamo! Such a shame. No matter though! We'll have you talking in no time.",
+    )
     itzla(
         quiz,
-        "You'll have to forgive me, I'm rather new around here and your customs are strange " +
-            "to me. Tell me, iknami, what is the preferred method of interrogation in these " +
-            "parts?",
+        "Now, you'll need to forgive me, but I'm a bit new around here, so your customs are " +
+            "not familiar to me. Tell me, iknami, what's the preferred method of interrogation " +
+            "in these parts?",
     )
     bandit(CotsNpc.Bearded, confused, "You're asking me how you should interrogate me?")
     itzla(
         happy,
-        "It seemed only polite to ask. Back home in Varlamore we have all sorts of " +
-            "entertaining methods. We could try one or two of them, if you like?",
+        "Well it just seemed polite to ask. We have all sorts of fun methods back home in " +
+            "Varlamore. We could give one or two of them a go if you want?",
     )
-    bandit(CotsNpc.Bearded, worried, "If I like?")
-    itzla(happy, "Of course! Now, tell me, what do you think of chicken?")
+    bandit(CotsNpc.Bearded, worried, "If I want?")
+    itzla(happy, "Absolutely! Now, what are your thoughts on chicken?")
     bandit(CotsNpc.Bearded, confused, "Chicken?")
     itzla(
         quiz,
-        "$name, do you not have chickens here? Forgive me, all of this is quite new to me.",
+        "Oh, $name, do you not have chickens here? Sorry, again, all this is quite new to me.",
     )
-    chatPlayer(neutral, "We do have chickens. The farms around here are full of them.")
+    chatPlayer(neutral, "Yes, we have chickens. The farms around here have loads.")
     itzla(
         quiz,
-        "Then why the confusion? Have you never seen one? You poor sheltered thing. Did your " +
-            "parents never show you the wonders of the countryside?",
+        "Well then, why the confusion? Have you never seen one before? Oh you poor sheltered " +
+            "thing. Did your parents never show you the wonders of the countryside?",
     )
     bandit(CotsNpc.Bearded, angry, "I know what a chicken is!")
-    itzla(laugh, "Then why didn't you say so?")
+    itzla(laugh, "Well why didn't you say so?")
     bandit(
         CotsNpc.Bearded,
         verymad,
@@ -547,33 +551,35 @@ internal suspend fun Dialogue.interrogationInCell(wrapUp: () -> Unit = {}) {
     )
     itzla(
         neutral,
-        "No game at all, iknami. You see, one of our favoured methods involves just a little " +
-            "fire, and you would not believe the smell of human flesh once it gets going...",
+        "No game at all, iknami. The reason I ask is because one of our preferred methods in " +
+            "Varlamore involves just a small amount of fire, and you'd never believe it, but " +
+            "the smell of human flesh once it gets going...",
     )
     bandit(CotsNpc.Bearded, shocked, "You're going to cook me?")
     itzla(
         laugh,
-        "Cook you? Certainly not! That would mean I intended to eat you, and I am no " +
-            "barbarian! Although I am curious whether it tastes like chicken as well...",
+        "Cook? No, not at all! That would imply I'm going to eat you, and I'm not a " +
+            "barbarian! Though, it would be interesting to know if it tastes like chicken as " +
+            "well...",
     )
-    bandit(CotsNpc.Bearded, worried, "Alright, enough! I'll tell you whatever you want!")
+    bandit(CotsNpc.Bearded, worried, "Alright, enough! I'll tell you what you want!")
     itzla(happy, "Kuaini!")
-    itzla(quiz, "So, who is it you work for?")
+    itzla(quiz, "So who are you working for?")
     bandit(
         CotsNpc.Bearded,
         sad,
-        "I never learned their name. They just paid us to attack the delegation. They didn't " +
-            "look local either. I'd say it was one of your lot!",
+        "I don't know their name. They just paid us to attack the delegation. They didn't look " +
+            "to be from around here. I reckon it was one of your lot!",
     )
-    itzla(quiz, "And why did they want the delegation attacked?")
-    bandit(
-        CotsNpc.Bearded,
-        sad,
-        "They didn't say, but it was the priest they were after. He was the target!",
+    itzla(quiz, "Why did they want you to attack the delegation?")
+    bandit(CotsNpc.Bearded, sad, "They didn't say, but that priest... he was the target!")
+    itzla(
+        confused,
+        "So a Varlamorian paid you to assassinate the Teokan? You're not giving me much to go " +
+            "on.",
     )
-    itzla(confused, "So a Varlamorian paid you to murder the Teokan? That's not much to go on.")
-    bandit(CotsNpc.Bearded, worried, "That's all I know, I swear!")
+    bandit(CotsNpc.Bearded, worried, "That's all I know!")
     wrapUp()
     itzla(neutral, "Hmm...")
-    itzla(neutral, "Well, I think we're done here. Come along, $name.")
+    itzla(neutral, "Well I think we're done here. Come, $name.")
 }
