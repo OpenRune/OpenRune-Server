@@ -1,5 +1,8 @@
 package org.rsmod.content.minigames.gauntlet
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlin.math.abs
@@ -44,8 +47,10 @@ constructor(
             run.charges[coords] = CHARGES.getValue(resource.kind)
         }
         for (monster in contents.monsters) {
-            val coords = placeable(region, room, monster.tile, 1, taken) ?: continue
-            val npc = Npc("npc.crystal_${monster.kind.locName}$suffix", coords)
+            val type = "npc.crystal_${monster.kind.locName}$suffix"
+            val size = requireNotNull(ServerCacheManager.getNpc(type.asRSCM(RSCMType.NPC))).size
+            val coords = placeable(region, room, monster.tile, size, taken) ?: continue
+            val npc = Npc(type, coords)
             npcRepo.add(npc, NPC_LIFETIME)
             if (instanceId != null) manager.attachNpc(instanceId, npc)
         }
@@ -112,8 +117,20 @@ constructor(
         private const val NPC_LIFETIME = 100_000
         private const val FISHING_SIZE = 2
         private const val SEARCH_RADIUS = GauntletLighting.ROOM_TILES - 1
+        private const val WALL_FLAGS =
+            CollisionFlag.WALL_NORTH_WEST or
+                CollisionFlag.WALL_NORTH or
+                CollisionFlag.WALL_NORTH_EAST or
+                CollisionFlag.WALL_EAST or
+                CollisionFlag.WALL_SOUTH_EAST or
+                CollisionFlag.WALL_SOUTH or
+                CollisionFlag.WALL_SOUTH_WEST or
+                CollisionFlag.WALL_WEST
         private const val BLOCKED_FLAGS =
-            CollisionFlag.LOC or CollisionFlag.BLOCK_WALK or CollisionFlag.GROUND_DECOR
+            CollisionFlag.LOC or
+                CollisionFlag.BLOCK_WALK or
+                CollisionFlag.GROUND_DECOR or
+                WALL_FLAGS
         private val SHAPE = LocShape.CentrepieceStraight
         private val CHARGES =
             mapOf(
