@@ -195,3 +195,14 @@ angle = 8
 lengthAdjustment = 15
 progress = 11
 stepMultiplier = 5
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.crystal_staff"
+startHeight = 92
+endHeight = 60
+delay = 51
+angle = 16
+lengthAdjustment = -5
+progress = 64
+stepMultiplier = 10

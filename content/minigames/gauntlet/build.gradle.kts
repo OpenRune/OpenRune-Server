@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.combat.combatManager)
     implementation(projects.api.config)
     implementation(projects.api.death)
     implementation(projects.api.instances)
@@ -12,5 +13,6 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.api.registry)
     implementation(projects.api.repo)
+    implementation(projects.api.weapons)
     implementation(projects.content.skills.utils)
 }
