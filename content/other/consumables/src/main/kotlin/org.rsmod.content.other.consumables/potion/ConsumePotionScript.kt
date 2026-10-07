@@ -162,7 +162,7 @@ constructor(
         if (
             !ConsumableDelayState.canConsume(
                 access = this,
-                type = ConsumableType.POTION,
+                type = potionConsumableType(potion.mix),
             )
         ) {
             return
@@ -177,13 +177,8 @@ constructor(
             return
         }
 
-        if (
-            potion.wildernessOnly &&
-            !coords.isInWilderness(areaChecker)
-        ) {
-            mes(
-                "You can only drink this potion in the Wilderness.",
-            )
+        if (potion.wildernessOnly && !canDrinkBlighted()) {
+            mes("The blighted potion can be used only in the Wilderness.")
             return
         }
 
@@ -238,7 +233,7 @@ constructor(
 
         ConsumableDelayState.recordConsumption(
             access = this,
-            type = ConsumableType.POTION,
+            type = potionConsumableType(potion.mix),
             consumeDelay = potion.drinkDelay,
             combatDelay = potion.combatDelay,
         )
@@ -256,6 +251,9 @@ constructor(
             ),
         )
     }
+
+    private fun ProtectedAccess.canDrinkBlighted(): Boolean =
+        coords.isInWilderness(areaChecker) || areaChecker.inArea(FEROX_ENCLAVE, coords)
 
     private fun remainingDoseMessage(
         potion: PotionRow,
@@ -344,6 +342,8 @@ constructor(
         const val DRINK_ANIMATION: String =
             "seq.human_eat"
 
+        const val FEROX_ENCLAVE: String = "area.ferox_enclave"
+
         val CONSUME_OPTIONS: Set<String> =
             setOf(
                 "Drink",
@@ -353,3 +353,6 @@ constructor(
             )
     }
 }
+
+internal fun potionConsumableType(mix: Boolean): ConsumableType =
+    if (mix) ConsumableType.FOOD else ConsumableType.POTION

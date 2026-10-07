@@ -4,7 +4,6 @@ import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.area.checker.isInWilderness
-import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseHitpointsLvl
 import org.rsmod.api.player.stat.hitpoints
@@ -15,6 +14,7 @@ import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.table.FoodRow
 import org.rsmod.content.other.consumables.ConsumableDelayState
 import org.rsmod.content.other.consumables.ConsumableType
+import org.rsmod.content.other.consumables.restoreRunEnergy
 import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -370,7 +370,7 @@ constructor(
         sweets: Boolean,
     ) {
         if (sweets) {
-            restoreSweetsEnergy()
+            restoreRunEnergy(SWEETS_RUN_ENERGY_PERCENT)
 
             mes(
                 "You eat the sweets. " +
@@ -435,24 +435,6 @@ constructor(
             stat = HITPOINTS,
             constant = actual,
             percent = 0,
-        )
-    }
-
-    private fun ProtectedAccess.restoreSweetsEnergy() {
-        val restored =
-            (player.runEnergy + SWEETS_RUN_ENERGY)
-                .coerceAtMost(MAX_RUN_ENERGY)
-
-        if (restored == player.runEnergy) {
-            return
-        }
-
-        player.runEnergy =
-            restored
-
-        UpdateRun.energy(
-            player = player,
-            energy = restored,
         )
     }
 
@@ -561,8 +543,7 @@ constructor(
         const val EAT_FOOD_SOUND: Int = 2393
         const val DEFAULT_EAT_DELAY: Int = 3
         const val DEFAULT_COMBAT_DELAY: Int = 3
-        const val SWEETS_RUN_ENERGY: Int = 100
-        const val MAX_RUN_ENERGY: Int = 1_000
+        const val SWEETS_RUN_ENERGY_PERCENT: Int = 10
 
         const val PURPLE_SWEETS: String =
             "obj.trail_sweets"

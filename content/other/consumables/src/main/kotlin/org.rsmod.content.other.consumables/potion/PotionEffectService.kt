@@ -16,6 +16,7 @@ import org.rsmod.api.player.stat.clearPositiveStatBoost
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.table.PotionEffectRow
+import org.rsmod.content.other.consumables.restoreRunEnergy
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.timerAt
@@ -42,7 +43,7 @@ constructor(
             when (effect.kind) {
                 KIND_DIVINE -> {
                     if (player.hitpoints <= effect.damage) {
-                        mes("You need more Hitpoints to drink this potion.")
+                        mes(divineRefusalMessage(effect.damage))
                         false
                     } else {
                         effect.baseEffect?.let { canApply(this, it) } ?: false
@@ -363,7 +364,7 @@ constructor(
                     restoreIfDrained(
                         stat = PRAYER,
                         constant = effect.base,
-                        percent = effect.percent,
+                        percent = prayerRestorePercent(effect.percent),
                     )
 
                 KIND_PRAYER_REGENERATION ->
@@ -373,9 +374,11 @@ constructor(
                     restoreRunEnergy(effect.amount)
 
                 KIND_POISON_CURE -> {
-                    if (!PlayerVenom.reduceToPoison(player)) {
-                        PlayerPoison.clear(player)
+                    if (PlayerVenom.reduceToPoison(player)) {
+                        return
                     }
+
+                    PlayerPoison.clear(player)
 
                     ToxinImmunity.grantImmunity(
                         player = player,
@@ -416,6 +419,7 @@ constructor(
 
                     if (effect.curesDisease) {
                         PlayerDisease.clear(player)
+                        PlayerDisease.grantImmunity(player, effect.duration)
                     }
                 }
 
@@ -465,40 +469,26 @@ constructor(
     private fun ProtectedAccess.restoreStats(
         effect: PotionEffectRow,
     ) {
-        val excluded =
-            effect.excludedSkills.mapTo(
-                hashSetOf(),
-            ) {
-                it.internalName
-            }
+        val stats =
+            restoredStats(
+                allStats = ServerCacheManager.getStats().values.map { it.internalName },
+                included = effect.skills.map { it.internalName },
+                excluded = setOfNotNull(effect.excludedSkills?.internalName),
+                restorePrayer = effect.restorePrayer,
+            )
 
-        ServerCacheManager
-            .getStats()
-            .values
-            .forEach { stat ->
-                val internalName =
-                    stat.internalName
-
-                if (
-                    internalName in excluded ||
-                    internalName == "stat.hitpoints"
-                ) {
-                    return@forEach
-                }
-
-                if (
-                    internalName == "stat.prayer" &&
-                    !effect.restorePrayer
-                ) {
-                    return@forEach
-                }
-
-                restoreIfDrained(
-                    stat = internalName,
-                    constant = effect.base,
-                    percent = effect.percent,
-                )
-            }
+        stats.forEach { stat ->
+            restoreIfDrained(
+                stat = stat,
+                constant = effect.base,
+                percent =
+                    if (stat == PRAYER) {
+                        prayerRestorePercent(effect.percent)
+                    } else {
+                        effect.percent
+                    },
+            )
+        }
     }
 
     fun processPrayerRegeneration(

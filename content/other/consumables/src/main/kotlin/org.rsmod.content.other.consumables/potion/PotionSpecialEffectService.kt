@@ -14,6 +14,7 @@ import org.rsmod.content.other.consumables.potion.cox.CoxPotionEffect
 import org.rsmod.content.other.consumables.potion.moons.MoonlightPotionEffect
 import org.rsmod.content.other.consumables.potion.nmz.NightmareZonePotionEffect
 import org.rsmod.content.other.consumables.potion.toa.ToaPotionEffect
+import org.rsmod.content.other.consumables.restoreRunEnergy
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.timerAt
@@ -403,13 +404,7 @@ constructor(
          // Venom conversion takes priority. The newly created poison
          // should not also be weakened by this same dose.
 
-        if (
-            PlayerVenom.reduceToPoison(
-                player = player,
-                initialPoisonDamage =
-                    GUTHIX_REST_CONVERTED_POISON_DAMAGE,
-            )
-        ) {
+        if (PlayerVenom.reduceToPoison(player)) {
             return
         }
 
@@ -503,7 +498,6 @@ constructor(
 
         private const val GUTHIX_REST_HEAL: Int = 5
         private const val GUTHIX_REST_RUN_ENERGY: Int = 5
-        private const val GUTHIX_REST_CONVERTED_POISON_DAMAGE: Int = 6
         private const val GUTHIX_REST_POISON_SEVERITY_REDUCTION: Int = 5
 
         private const val ZAMORAK_HITPOINTS_PERCENT: Int = 12

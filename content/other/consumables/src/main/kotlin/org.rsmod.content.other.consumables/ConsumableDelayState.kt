@@ -6,9 +6,9 @@ import org.rsmod.api.player.protect.ProtectedAccess
 /**
  * Shared consume locks for food, potions and combo food.
  *
- * A potion blocks another potion and subsequent regular food, while combo
- * food may follow either regular food or a potion. Once combo food is eaten,
- * it blocks both remaining categories until its own consume delay expires.
+ * Potions keep their own timer, so a sip fits between regular food and combo
+ * food in one tick. Once combo food is eaten, it blocks both remaining
+ * categories until its own consume delay expires.
  */
 object ConsumableDelayState {
     private val foodUntil =
@@ -49,9 +49,7 @@ object ConsumableDelayState {
         return with(access) {
             when (type) {
                 ConsumableType.FOOD ->
-                    !isActive(foodUntil) &&
-                        !isActive(potionUntil) &&
-                        !isActive(comboFoodUntil)
+                    !isActive(foodUntil) && !isActive(comboFoodUntil)
 
                 ConsumableType.POTION ->
                     !isActive(potionUntil) &&

@@ -2,13 +2,12 @@ package org.rsmod.content.other.consumables.potion.toa
 
 import jakarta.inject.Singleton
 import org.rsmod.api.attr.AttributeKey
-import org.rsmod.api.config.constants
-import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statRestore
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.content.other.consumables.potion.nextTimedEffectDelay
+import org.rsmod.content.other.consumables.restoreRunEnergy
 import org.rsmod.game.entity.Player
 
 @Singleton
@@ -127,30 +126,7 @@ class ToaSmellingSaltsEffect {
             )
         }
 
-        restoreRunEnergy()
-    }
-
-    private fun ProtectedAccess.restoreRunEnergy() {
-        val restored =
-            (
-                player.runEnergy +
-                    RUN_ENERGY_RESTORE *
-                    RUN_ENERGY_PERCENT_SCALE
-                ).coerceAtMost(
-                    constants.run_max_energy,
-                )
-
-        if (restored == player.runEnergy) {
-            return
-        }
-
-        player.runEnergy =
-            restored
-
-        UpdateRun.energy(
-            player,
-            restored,
-        )
+        restoreRunEnergy(RUN_ENERGY_RESTORE)
     }
 
     private fun startDisplay(
@@ -214,7 +190,6 @@ class ToaSmellingSaltsEffect {
         private const val BOOST_PERCENT: Int = 16
 
         private const val RUN_ENERGY_RESTORE: Int = 25
-        private const val RUN_ENERGY_PERCENT_SCALE: Int = 10
 
         private val BOOSTED_STATS: List<String> =
             listOf(
