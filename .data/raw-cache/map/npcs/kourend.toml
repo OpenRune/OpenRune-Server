@@ -1920,10 +1920,6 @@ coords = "2_26_59_42_23"
 
 ## Arcis
 
-[[spawn]]
-npc = "npc.vmq1_itzla"
-coords = "0_25_58_52_45"
-
 ## Bank Deposit Box
 
 [[spawn]]
@@ -2329,18 +2325,6 @@ npc = "npc.giant6"
 coords = "0_22_56_32_22"
 
 ## Great Kourend Statue
-
-[[spawn]]
-npc = "npc.vmq1_bandit_1_varrock"
-coords = "0_25_57_32_30"
-
-[[spawn]]
-npc = "npc.vmq1_knight_1_castle"
-coords = "0_25_57_38_20"
-
-[[spawn]]
-npc = "npc.vmq1_knight_2_castle"
-coords = "0_25_57_31_22"
 
 ## Hosidius
 
@@ -4725,30 +4709,6 @@ npc = "npc.spider"
 coords = "0_24_59_9_31"
 
 [[spawn]]
-npc = "npc.vmq1_bag_guard_varrock"
-coords = "0_23_59_13_58"
-
-[[spawn]]
-npc = "npc.vmq1_guard_4"
-coords = "0_22_58_45_34"
-
-[[spawn]]
-npc = "npc.vmq1_guard_5"
-coords = "0_22_59_32_9"
-
-[[spawn]]
-npc = "npc.vmq1_guard_6"
-coords = "0_22_59_21_19"
-
-[[spawn]]
-npc = "npc.vmq1_guard_7"
-coords = "0_22_58_52_49"
-
-[[spawn]]
-npc = "npc.vmq1_guard_8"
-coords = "0_23_58_52_38"
-
-[[spawn]]
 npc = "npc.vulcana_lovakengj"
 coords = "0_23_58_11_36"
 
@@ -5225,10 +5185,6 @@ coords = "0_23_60_26_32"
 [[spawn]]
 npc = "npc.rat_indoors"
 coords = "1_27_58_63_25"
-
-[[spawn]]
-npc = "npc.vmq1_bandit_2_varrock"
-coords = "0_28_58_1_27"
 
 ## Regath's Wares
 
@@ -6151,14 +6107,6 @@ coords = "0_24_55_3_36"
 [[spawn]]
 npc = "npc.shayzien_weaponshop"
 coords = "0_24_55_31_25"
-
-[[spawn]]
-npc = "npc.vmq1_bandit_4_varrock"
-coords = "0_23_55_60_25"
-
-[[spawn]]
-npc = "npc.vmq1_guard_sergeant_roof"
-coords = "0_23_55_60_25"
 
 ## Shayzien Shayzia Ruin
 
@@ -9405,66 +9353,6 @@ coords = "0_26_56_36_25"
 [[spawn]]
 npc = "npc.viking_fox"
 coords = "0_28_54_22_27"
-
-[[spawn]]
-npc = "npc.vmq1_bandit_3_varrock"
-coords = "0_25_57_41_31"
-
-[[spawn]]
-npc = "npc.vmq1_bandit_4_cell"
-coords = "0_25_57_42_25"
-
-[[spawn]]
-npc = "npc.vmq1_guard_1"
-coords = "0_26_55_37_9"
-
-[[spawn]]
-npc = "npc.vmq1_guard_2"
-coords = "0_27_55_35_3"
-
-[[spawn]]
-npc = "npc.vmq1_guard_2"
-coords = "0_27_55_36_23"
-
-[[spawn]]
-npc = "npc.vmq1_guard_2"
-coords = "0_27_55_36_31"
-
-[[spawn]]
-npc = "npc.vmq1_guard_2"
-coords = "0_27_55_37_9"
-
-[[spawn]]
-npc = "npc.vmq1_guard_2"
-coords = "0_27_55_39_15"
-
-[[spawn]]
-npc = "npc.vmq1_guard_2"
-coords = "0_27_55_42_25"
-
-[[spawn]]
-npc = "npc.vmq1_guard_2"
-coords = "0_27_55_42_33"
-
-[[spawn]]
-npc = "npc.vmq1_guard_2"
-coords = "0_27_55_43_3"
-
-[[spawn]]
-npc = "npc.vmq1_guard_2"
-coords = "0_27_55_45_9"
-
-[[spawn]]
-npc = "npc.vmq1_guard_2"
-coords = "0_27_55_47_15"
-
-[[spawn]]
-npc = "npc.vmq1_guard_2"
-coords = "0_27_55_48_27"
-
-[[spawn]]
-npc = "npc.vmq1_guard_2"
-coords = "0_27_55_48_35"
 
 [[spawn]]
 npc = "npc.watson_bloodhoundpet"
