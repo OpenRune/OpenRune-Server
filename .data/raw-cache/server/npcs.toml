@@ -16804,6 +16804,8 @@ wanderRange = 0
 [[npc]]
 id = "npc.crystal_rat"
 inherit = "npc.crystal_rat"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.giant_rat_update_attack"
@@ -16812,6 +16814,8 @@ inherit = "npc.crystal_rat"
 [[npc]]
 id = "npc.crystal_rat_hm"
 inherit = "npc.crystal_rat_hm"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.giant_rat_update_attack"
@@ -16820,6 +16824,8 @@ inherit = "npc.crystal_rat_hm"
 [[npc]]
 id = "npc.crystal_spider"
 inherit = "npc.crystal_spider"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.sote_gauntlet_spider_attack_melee"
@@ -16828,6 +16834,8 @@ inherit = "npc.crystal_spider"
 [[npc]]
 id = "npc.crystal_spider_hm"
 inherit = "npc.crystal_spider_hm"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.sote_gauntlet_spider_attack_melee"
@@ -16836,6 +16844,8 @@ inherit = "npc.crystal_spider_hm"
 [[npc]]
 id = "npc.crystal_bat"
 inherit = "npc.crystal_bat"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.bat_rework_attack"
@@ -16844,6 +16854,8 @@ inherit = "npc.crystal_bat"
 [[npc]]
 id = "npc.crystal_bat_hm"
 inherit = "npc.crystal_bat_hm"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.bat_rework_attack"
@@ -16852,6 +16864,8 @@ inherit = "npc.crystal_bat_hm"
 [[npc]]
 id = "npc.crystal_unicorn"
 inherit = "npc.crystal_unicorn"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.unicorn_rework_attack"
@@ -16860,6 +16874,8 @@ inherit = "npc.crystal_unicorn"
 [[npc]]
 id = "npc.crystal_unicorn_hm"
 inherit = "npc.crystal_unicorn_hm"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.unicorn_rework_attack"
@@ -16868,6 +16884,8 @@ inherit = "npc.crystal_unicorn_hm"
 [[npc]]
 id = "npc.crystal_scorpion"
 inherit = "npc.crystal_scorpion"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.scorpion_update_attack_tail"
@@ -16876,6 +16894,8 @@ inherit = "npc.crystal_scorpion"
 [[npc]]
 id = "npc.crystal_scorpion_hm"
 inherit = "npc.crystal_scorpion_hm"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.scorpion_update_attack_tail"
@@ -16884,6 +16904,8 @@ inherit = "npc.crystal_scorpion_hm"
 [[npc]]
 id = "npc.crystal_wolf"
 inherit = "npc.crystal_wolf"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.dog_update_wolf_attack"
@@ -16892,6 +16914,8 @@ inherit = "npc.crystal_wolf"
 [[npc]]
 id = "npc.crystal_wolf_hm"
 inherit = "npc.crystal_wolf_hm"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.dog_update_wolf_attack"
@@ -16900,6 +16924,8 @@ inherit = "npc.crystal_wolf_hm"
 [[npc]]
 id = "npc.crystal_bear"
 inherit = "npc.crystal_bear"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.bear_rework_attack"
@@ -16908,6 +16934,8 @@ inherit = "npc.crystal_bear"
 [[npc]]
 id = "npc.crystal_bear_hm"
 inherit = "npc.crystal_bear_hm"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.bear_rework_attack"
@@ -16916,6 +16944,8 @@ inherit = "npc.crystal_bear_hm"
 [[npc]]
 id = "npc.crystal_dragon"
 inherit = "npc.crystal_dragon"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.dragon_firebreath_all_attack"
@@ -16924,6 +16954,8 @@ inherit = "npc.crystal_dragon"
 [[npc]]
 id = "npc.crystal_dragon_hm"
 inherit = "npc.crystal_dragon_hm"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.dragon_firebreath_all_attack"
@@ -16932,6 +16964,8 @@ inherit = "npc.crystal_dragon_hm"
 [[npc]]
 id = "npc.crystal_dark_beast"
 inherit = "npc.crystal_dark_beast"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.dark_beast_update_attack"
@@ -16940,6 +16974,8 @@ inherit = "npc.crystal_dark_beast"
 [[npc]]
 id = "npc.crystal_dark_beast_hm"
 inherit = "npc.crystal_dark_beast_hm"
+maxRange = 20
+wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
 "param.attack_anim"="seq.dark_beast_update_attack"
