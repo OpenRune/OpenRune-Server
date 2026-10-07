@@ -12,7 +12,8 @@ internal enum class TailResult {
 
 /**
  * The guard's path through south-east Varrock. Between the lookouts the guard walks one tile per
- * tick; at each lookout it stops, then turns around and spots anyone with line of sight to him.
+ * tick; at each lookout it stops, turns around and, once the turn has played out, spots anyone with
+ * line of sight to him.
  */
 internal object CotsRoute {
     val Door: CoordGrid = CoordGrid(3259, 3400)
@@ -81,6 +82,7 @@ internal class GuardTail(
         Setup,
         Walking,
         Stopped,
+        Turning,
         Looking,
     }
 
@@ -96,16 +98,23 @@ internal class GuardTail(
     val isLooking: Boolean
         get() = phase == Phase.Looking
 
+    val startedTurning: Boolean
+        get() = phase == Phase.Turning && phaseTicks == 0
+
     val lookingAt: CoordGrid
         get() = route[(index - 1).coerceAtLeast(0)]
 
-    fun tick(player: CoordGrid): TailResult {
-        if (player.level != guard.level || distance(player) > MaxDistance) {
+    /** [at] is where the guard npc really stands, which lags [guard] until its step is processed. */
+    fun tick(player: CoordGrid, at: CoordGrid = guard): TailResult {
+        if (player.level != at.level || distance(at, player) > MaxDistance) {
             return TailResult.TooFar
         }
         when (phase) {
             Phase.Setup -> if (++phaseTicks >= SetupTicks) enter(Phase.Walking)
             Phase.Walking -> {
+                if (at != guard) {
+                    return TailResult.Continue
+                }
                 if (index == route.lastIndex) {
                     return TailResult.Arrived
                 }
@@ -114,13 +123,25 @@ internal class GuardTail(
                     enter(Phase.Stopped)
                 }
             }
-            Phase.Stopped -> if (++phaseTicks >= StopTicks) enter(Phase.Looking)
-            Phase.Looking -> {
-                if (distance(player) <= SightRange && canSee(guard, player)) {
-                    return TailResult.Spotted
+            Phase.Stopped -> if (at == guard && ++phaseTicks >= StopTicks) enter(Phase.Turning)
+            Phase.Turning -> {
+                if (++phaseTicks < TurnTicks) {
+                    return TailResult.Continue
                 }
-                if (++phaseTicks >= LookTicks) enter(Phase.Walking)
+                enter(Phase.Looking)
+                return look(player, at)
             }
+            Phase.Looking -> return look(player, at)
+        }
+        return TailResult.Continue
+    }
+
+    private fun look(player: CoordGrid, at: CoordGrid): TailResult {
+        if (distance(at, player) <= SightRange && canSee(at, player)) {
+            return TailResult.Spotted
+        }
+        if (++phaseTicks >= LookTicks) {
+            enter(Phase.Walking)
         }
         return TailResult.Continue
     }
@@ -130,12 +151,13 @@ internal class GuardTail(
         phaseTicks = 0
     }
 
-    private fun distance(player: CoordGrid): Int =
-        maxOf(abs(player.x - guard.x), abs(player.z - guard.z))
+    private fun distance(from: CoordGrid, to: CoordGrid): Int =
+        maxOf(abs(to.x - from.x), abs(to.z - from.z))
 
     companion object {
         const val SetupTicks = 3
         const val StopTicks = 2
+        const val TurnTicks = 2
         const val LookTicks = 3
         const val MaxDistance = 16
         const val SightRange = 16

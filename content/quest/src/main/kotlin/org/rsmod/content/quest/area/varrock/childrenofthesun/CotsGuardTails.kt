@@ -1,5 +1,6 @@
 package org.rsmod.content.quest.area.varrock.childrenofthesun
 
+import dev.openrune.types.MoveRestrict
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.npc.NpcRepository
@@ -36,6 +37,7 @@ constructor(private val npcRepo: NpcRepository, private val sight: RayCastValida
         val guard = Npc(GuardType, tail.guard)
         npcRepo.add(guard, SessionLifespan)
         guard.noneMode()
+        guard.moveRestrict = MoveRestrict.PassThru
         sessions[uuid] = Session(tail, guard)
         player.timer(TailTimer, 1)
     }
@@ -46,11 +48,11 @@ constructor(private val npcRepo: NpcRepository, private val sight: RayCastValida
         if (!session.guard.isSlotAssigned) {
             return TailResult.TooFar
         }
-        val before = session.tail.guard
-        val result = session.tail.tick(player.coords)
+        val result = session.tail.tick(player.coords, session.guard.coords)
         when (result) {
-            TailResult.Continue -> advance(session, before)
+            TailResult.Continue -> advance(session)
             TailResult.Spotted -> {
+                player.clearTimer(TailTimer)
                 session.guard.facePlayer(player)
                 session.guard.say(SpottedShout)
             }
@@ -62,6 +64,8 @@ constructor(private val npcRepo: NpcRepository, private val sight: RayCastValida
     internal fun guardTile(player: Player): CoordGrid? =
         player.uuid?.let(sessions::get)?.tail?.guard
 
+    internal fun guardNpc(player: Player): Npc? = player.uuid?.let(sessions::get)?.guard
+
     override fun stop(player: Player) {
         player.clearTimer(TailTimer)
         val uuid = player.uuid ?: return
@@ -71,13 +75,14 @@ constructor(private val npcRepo: NpcRepository, private val sight: RayCastValida
         }
     }
 
-    private fun advance(session: Session, before: CoordGrid) {
+    private fun advance(session: Session) {
         val tail = session.tail
-        if (tail.guard != before) {
-            session.guard.walk(tail.guard)
+        val npc = session.guard
+        if (npc.coords != tail.guard && npc.routeDestination.lastOrNull() != tail.guard) {
+            npc.walk(tail.guard)
         }
-        if (tail.isLooking) {
-            session.guard.faceSquare(tail.lookingAt)
+        if (tail.startedTurning) {
+            npc.faceSquare(tail.lookingAt)
         }
     }
 

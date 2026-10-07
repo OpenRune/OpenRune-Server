@@ -147,10 +147,12 @@ class ChildrenOfTheSunInteractionTest {
         assertTrue(f.output().contains("large bag"), f.output())
     }
 
-    @Test fun `being spotted ends the tail without losing progress`() {
+    @Test fun `being spotted lets the guard shout, then ends the tail without losing progress`() {
         val f = Fixture(CotsStage.Tailing)
         f.tails.results += TailResult.Spotted
         f.tick()
+        assertEquals(0, f.tails.stops)
+        assertFalse(f.output().contains("failed to stay hidden"), f.output())
         f.finish()
         assertEquals(CotsStage.Tailing, f.stage())
         assertEquals(1, f.tails.stops)

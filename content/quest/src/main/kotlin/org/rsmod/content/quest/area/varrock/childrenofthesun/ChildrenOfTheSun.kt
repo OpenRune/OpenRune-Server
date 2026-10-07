@@ -171,6 +171,7 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         when (tails.tick(player)) {
             TailResult.Continue -> return
             TailResult.Spotted -> {
+                delay(SpottedTicks)
                 tails.stop(player)
                 startDialogue { mesbox("You failed to stay hidden from the guard.") }
             }
@@ -594,6 +595,8 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         private const val RewardModel = "obj.sunfirerune"
 
         private const val BanditCount = CotsNpc.BanditGuards
+
+        private const val SpottedTicks = 2
 
         private const val GuardHidden = 0
         private const val GuardUnmarked = 1

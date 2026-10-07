@@ -7,6 +7,7 @@ import dev.openrune.map.GameMapDecoder
 import dev.openrune.map.loc.MapLocListDecoder
 import dev.openrune.map.tile.MapTileDecoder
 import dev.openrune.map.util.InlineByteBuf
+import dev.openrune.types.MoveRestrict
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.math.abs
@@ -94,8 +95,47 @@ class GuardTailTest {
             assertEquals(TailResult.Continue, result)
         }
         assertEquals(lookouts, seen)
-        val pauses = lookouts.size * (GuardTail.StopTicks + GuardTail.LookTicks)
-        assertEquals(GuardTail.SetupTicks + route.lastIndex + pauses + 1, ticks)
+        val pause = GuardTail.StopTicks + GuardTail.TurnTicks + GuardTail.LookTicks - 1
+        assertEquals(GuardTail.SetupTicks + route.lastIndex + lookouts.size * pause + 1, ticks)
+    }
+
+    @Test fun `the guard only spots the player once his turn has played out`() {
+        val tail = tail(open)
+        var tick = 0
+        var turnedOn = -1
+        var result: TailResult
+        do {
+            result = tail.tick(tail.guard.translateX(-2))
+            if (tail.startedTurning) turnedOn = tick
+            tick++
+        } while (result == TailResult.Continue)
+        assertEquals(TailResult.Spotted, result)
+        assertTrue(turnedOn >= 0)
+        assertEquals(GuardTail.TurnTicks, tick - 1 - turnedOn)
+    }
+
+    @Test fun `a guard held up on the way neither moves on nor looks until he gets there`() {
+        val tail = tail(open)
+        val stuck = route.first()
+        repeat(50) {
+            assertEquals(TailResult.Continue, tail.tick(stuck.translateX(-2), at = stuck))
+        }
+        assertEquals(1, tail.index)
+        assertFalse(tail.isLooking)
+    }
+
+    @Test fun `sight is judged from where the guard really stands`() {
+        val froms = mutableListOf<CoordGrid>()
+        val tail = GuardTail(route, CotsRoute.LookoutIndices) { from, _ ->
+            froms += from
+            false
+        }
+        while (!tail.startedTurning) tail.tick(tail.guard.translateX(-2))
+        val pushed = tail.guard.translateZ(-1)
+        repeat(GuardTail.TurnTicks + 1) { tail.tick(tail.guard.translateX(-2), pushed) }
+        assertTrue(tail.isLooking)
+        assertTrue(froms.isNotEmpty())
+        assertTrue(froms.all { it == pushed }, "$froms")
     }
 
     @Test fun `anyone with line of sight is spotted when the guard turns around`() {
@@ -262,6 +302,32 @@ class GuardTailTest {
             )
 
         fun guards(): Int = (0 until 100).count { npcs[it] != null }
+
+        fun tick(): TailResult {
+            val result = tails.tick(player)
+            val npc = tails.guardNpc(player) ?: return result
+            npc.routeDestination.lastOrNull()?.let { npc.coords = it }
+            npc.routeDestination.clear()
+            return result
+        }
+    }
+
+    @Test fun `the guard walks through a player standing in his way`() {
+        val rt = Runtime()
+        rt.tails.start(rt.access)
+        assertEquals(MoveRestrict.PassThru, checkNotNull(rt.tails.guardNpc(rt.player)).moveRestrict)
+        rt.tails.stop(rt.player)
+    }
+
+    @Test fun `the runtime waits for the guard npc before moving the tail on`() {
+        val rt = Runtime()
+        rt.tails.start(rt.access)
+        rt.player.coords = HideSpots[0]
+        repeat(GuardTail.SetupTicks + 10) { rt.tails.tick(rt.player) }
+        assertEquals(route[1], rt.tails.guardTile(rt.player))
+        assertEquals(route[0], rt.tails.guardNpc(rt.player)?.coords)
+        assertEquals(route[1], rt.tails.guardNpc(rt.player)?.routeDestination?.lastOrNull())
+        rt.tails.stop(rt.player)
     }
 
     @Test fun `the runtime keeps one guard per player and removes it when the tail ends`() {
@@ -284,9 +350,10 @@ class GuardTailTest {
             val index = route.indexOf(checkNotNull(rt.tails.guardTile(rt.player)))
             val passed = lookouts.count { it < index }
             rt.player.coords = HideSpots[passed.coerceAtMost(HideSpots.lastIndex)]
-            result = rt.tails.tick(rt.player)
+            result = rt.tick()
         } while (result == TailResult.Continue)
         assertEquals(TailResult.Arrived, result)
+        assertEquals(route.last(), rt.tails.guardNpc(rt.player)?.coords)
         rt.tails.stop(rt.player)
     }
 
@@ -296,9 +363,11 @@ class GuardTailTest {
         rt.player.coords = ExposedSpots[0]
         var result: TailResult
         do {
-            result = rt.tails.tick(rt.player)
+            result = rt.tick()
         } while (result == TailResult.Continue)
         assertEquals(TailResult.Spotted, result)
+        assertFalse(rt.player.timerMap.isNotEmpty)
+        assertEquals(1, rt.guards())
         rt.tails.stop(rt.player)
         assertEquals(0, rt.guards())
     }
