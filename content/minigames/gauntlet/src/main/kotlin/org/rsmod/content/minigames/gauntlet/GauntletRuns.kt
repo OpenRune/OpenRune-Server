@@ -66,7 +66,7 @@ constructor(
                     mes("You enter the Gauntlet.")
                     ifOpenOverlay(OVERLAY, OVERLAY_TARGET)
                     runClientScript(TIMER_SCRIPT.asRSCM(RSCMType.CLIENTSCRIPT), mode.timerTicks, if (mode.corrupted) 1 else 0)
-                    if (ENFORCE_TIME_LIMIT) player.softTimer(TIME_LIMIT_TIMER, mode.timerTicks)
+                    player.softTimer(TIME_LIMIT_TIMER, mode.timerTicks)
                 }
             is InstanceManager.Result.Joined -> Unit
         }
@@ -102,7 +102,6 @@ constructor(
         const val OVERLAY = "interface.gauntlet_overlay"
         const val OVERLAY_TARGET = "component.toplevel_osrs_stretch:overlay_hud"
         const val TIME_LIMIT_TIMER = "timer.gauntlet_time_limit"
-        const val ENFORCE_TIME_LIMIT = false
         private const val TIMER_SCRIPT = "clientscript.[clientscript,gauntlet_timer_update]"
     }
 }
