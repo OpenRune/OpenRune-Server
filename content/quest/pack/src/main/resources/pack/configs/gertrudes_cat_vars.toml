@@ -1,0 +1,33 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.gertrudes_cat_progress"
+varp = "varp.fluffs"
+startBit = 0
+endBit = 2
+
+[[varp]]
+isServerOnly = true
+id = "varp.gertrudes_cat_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.gertrudes_cat_kitten_crate"
+varp = "varp.gertrudes_cat_state"
+startBit = 0
+endBit = 2
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.gertrudes_cat_met_fluffs"
+varp = "varp.gertrudes_cat_state"
+startBit = 3
+endBit = 3
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.gertrudes_cat_told_sardines"
+varp = "varp.gertrudes_cat_state"
+startBit = 4
+endBit = 4
