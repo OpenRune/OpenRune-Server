@@ -27,6 +27,8 @@ internal object CotsNpc {
     const val Woman = "npc.vmq1_bandit_2_vis"
     const val Tanned = "npc.vmq1_bandit_3_vis"
     const val Bearded = "npc.vmq1_bandit_4_vis"
+    const val CellBandit = "npc.vmq1_bandit_4_cell"
+    const val ItzlaCutscene = "npc.vmq1_itzla_cutscene"
 
     const val GuardCount = 10
     const val BanditGuards = 4

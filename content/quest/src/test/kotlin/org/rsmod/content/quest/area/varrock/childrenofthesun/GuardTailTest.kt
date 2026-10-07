@@ -6,6 +6,7 @@ import dev.openrune.map.GameMapBuilder
 import dev.openrune.map.GameMapDecoder
 import dev.openrune.map.loc.MapLocListDecoder
 import dev.openrune.map.tile.MapTileDecoder
+import dev.openrune.map.tile.MapTileSimpleDefinition
 import dev.openrune.map.util.InlineByteBuf
 import dev.openrune.types.MoveRestrict
 import java.nio.file.Files
@@ -233,16 +234,54 @@ class GuardTailTest {
             places["tobynScene"] = TobynScene
             places["bagGuardStart"] = BagGuardStart
             places["bagGuardStop"] = BagGuardStop
-            places["bagGuardInside"] = BagGuardInside
             places["eavesdropVantage"] = EavesdropVantage
             places["roofArrival"] = RoofArrival
             places["roofTobyn"] = RoofTobyn
             places["roofItzla"] = RoofItzla
             places["roofCell"] = RoofCell
+            places["cellPlayer"] = CellPlayer
+            places["cellItzla"] = CellItzla
         }
         for ((name, tile) in places) {
             assertFalse(isBlocked(tile.x, tile.z, tile.level), "$name $tile is blocked")
         }
+    }
+
+    @Test fun `interior scene cameras sit under the roof of the room they film`() {
+        for (camera in listOf(CotsPlaces.EavesdropCamera, CotsPlaces.CellCamera)) {
+            val eye = camera.eye
+            assertTrue(roofed(eye), "$eye is not under a roof")
+            assertTrue(camera.eyeHeight in 300 until 800, "${camera.eyeHeight} at $eye")
+            assertTrue(camera.lookAtHeight < camera.eyeHeight)
+        }
+    }
+
+    @Test fun `the scenes turn the npcs that the map really spawns`() {
+        val spawns = staticSpawns()
+        assertEquals(CotsPlaces.RoofCell, spawns.getValue(CotsNpc.CellBandit))
+        for (type in CotsPlaces.HideoutGang) {
+            val tile = spawns.getValue(type)
+            val table = CotsPlaces.HideoutTable
+            assertTrue(abs(tile.x - table.x) <= 2 && abs(tile.z - table.z) <= 2, "$type at $tile")
+        }
+    }
+
+    private fun staticSpawns(): Map<String, CoordGrid> {
+        val file = Path.of(".data", "raw-cache", "map", "npcs", "varrock_children_of_the_sun.toml")
+        val spawn =
+            Regex("""npc = "(npc\.[a-z0-9_]+)"\s+coords = "(\d)_(\d+)_(\d+)_(\d+)_(\d+)"""")
+        return spawn.findAll(Files.readString(file)).associate { match ->
+            val (name, level, mx, mz, lx, lz) = match.destructured
+            val x = mx.toInt() * 64 + lx.toInt()
+            val z = mz.toInt() * 64 + lz.toInt()
+            name to CoordGrid(x, z, level.toInt())
+        }
+    }
+
+    private fun roofed(tile: CoordGrid): Boolean {
+        val square = roofs[MapSquareKey(tile.x / 64, tile.z / 64)] ?: return false
+        val flags = square[tile.x % 64, tile.z % 64, tile.level].toInt()
+        return flags and MapTileSimpleDefinition.REMOVE_ROOFS != 0
     }
 
     @Test fun `every static spawn is on a walkable tile and only one file spawns the npcs`() {
@@ -398,6 +437,8 @@ class GuardTailTest {
 
         lateinit var collision: CollisionFlagMap
 
+        val roofs = HashMap<MapSquareKey, MapTileSimpleDefinition>()
+
         @JvmStatic
         @BeforeAll
         fun cache() {
@@ -409,6 +450,7 @@ class GuardTailTest {
                     val tilesData = cache.data(MAPS, group, 0) ?: continue
                     val locsData = cache.data(MAPS, group, 1) ?: continue
                     val tiles = MapTileDecoder.decode(InlineByteBuf(tilesData))
+                    roofs[MapSquareKey(mx, mz)] = tiles
                     val spawns = MapLocListDecoder.decode(InlineByteBuf(locsData))
                     for (level in 0..3) for (x in 0 until 64 step 8) for (z in 0 until 64 step 8) {
                         collision.allocateIfAbsent(mx * 64 + x, mz * 64 + z, level)
@@ -426,6 +468,7 @@ class GuardTailTest {
         @AfterAll
         fun release() {
             collision = CollisionFlagMap()
+            roofs.clear()
         }
     }
 }

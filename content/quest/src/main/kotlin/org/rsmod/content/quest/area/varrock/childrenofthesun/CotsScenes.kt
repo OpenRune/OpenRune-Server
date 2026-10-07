@@ -8,6 +8,7 @@ import org.rsmod.content.quest.area.misthalin.SceneCamera
 import org.rsmod.content.quest.area.misthalin.lockedScene
 import org.rsmod.game.entity.Npc
 import org.rsmod.map.CoordGrid
+import org.rsmod.map.zone.ZoneKey
 
 internal interface CotsScenes {
     suspend fun delegation(access: ProtectedAccess)
@@ -67,20 +68,35 @@ internal object CotsPlaces {
             lookAtHeight = 100,
         )
 
-    val BagGuardInside = CoordGrid(3260, 3400)
-    val EavesdropVantage = CoordGrid(3258, 3401)
+    val EavesdropVantage = CoordGrid(3259, 3401)
+    val EavesdropWindow = CoordGrid(3260, 3401)
+    val HideoutTable = CoordGrid(3261, 3399)
+    const val HideoutTableSize = 2
+    val HideoutGang =
+        listOf(
+            "npc.vmq1_bag_guard_varrock",
+            "npc.vmq1_bandit_1_varrock",
+            "npc.vmq1_bandit_2_varrock",
+            "npc.vmq1_bandit_3_varrock",
+            "npc.vmq1_bandit_4_varrock",
+        )
+
+    // The client hides roofs only for a camera on a roofed tile under 800 units high.
     val EavesdropCamera =
         SceneCamera(
-            eye = CoordGrid(3260, 3403),
-            eyeHeight = 220,
+            eye = CoordGrid(3261, 3403),
+            eyeHeight = 600,
             lookAt = CoordGrid(3261, 3399),
-            lookAtHeight = 90,
+            lookAtHeight = 100,
         )
 
     val RoofArrival = CoordGrid(3204, 3473, 2)
     val RoofTobyn = CoordGrid(3204, 3474, 2)
     val RoofItzla = CoordGrid(3202, 3474, 2)
     val RoofCell = CoordGrid(3203, 3471, 2)
+    val CellPlayer = CoordGrid(3204, 3470, 2)
+    val CellItzla = CoordGrid(3202, 3470, 2)
+    val CellBanditFacing = CoordGrid(3203, 3470, 2)
     val RoofCamera =
         SceneCamera(
             eye = CoordGrid(3204, 3478, 2),
@@ -91,9 +107,9 @@ internal object CotsPlaces {
     val CellCamera =
         SceneCamera(
             eye = CoordGrid(3206, 3471, 2),
-            eyeHeight = 160,
-            lookAt = CoordGrid(3203, 3471, 2),
-            lookAtHeight = 90,
+            eyeHeight = 420,
+            lookAt = CoordGrid(3203, 3470, 2),
+            lookAtHeight = 110,
         )
 }
 
@@ -118,7 +134,7 @@ internal class WorldScenes @Inject constructor(private val npcRepo: NpcRepositor
                 }
                 delegates =
                     listOf(
-                        spawn("npc.vmq1_itzla_cutscene", CotsPlaces.DelegationStart[0]),
+                        spawn(CotsNpc.ItzlaCutscene, CotsPlaces.DelegationStart[0]),
                         spawn("npc.vmq1_servius_cutscene", CotsPlaces.DelegationStart[1]),
                         spawn("npc.vmq1_furia_cutscene", CotsPlaces.DelegationStart[2]),
                         spawn("npc.vmq1_ennius_cutscene", CotsPlaces.DelegationStart[3]),
@@ -153,13 +169,23 @@ internal class WorldScenes @Inject constructor(private val npcRepo: NpcRepositor
         val back = access.player.coords
         access.lockedScene(
             vantage = CotsPlaces.EavesdropVantage,
-            faceAt = CotsPlaces.BagGuardInside,
+            faceAt = CotsPlaces.EavesdropWindow,
             camera = CotsPlaces.EavesdropCamera,
             returnTo = back,
+            underFade = {
+                val size = CotsPlaces.HideoutTableSize
+                for (npc in hideoutGang()) npc.faceSquare(CotsPlaces.HideoutTable, size, size)
+            },
         ) {
             startDialogue { banditsScheme() }
         }
     }
+
+    private fun hideoutGang(): List<Npc> =
+        npcRepo
+            .findAll(ZoneKey.from(CotsPlaces.HideoutTable), zoneRadius = 1)
+            .filter { npc -> CotsPlaces.HideoutGang.any(npc::isType) }
+            .toList()
 
     override suspend fun toRoof(access: ProtectedAccess) {
         access.ifCloseChat()
@@ -175,15 +201,24 @@ internal class WorldScenes @Inject constructor(private val npcRepo: NpcRepositor
     override suspend fun interrogation(access: ProtectedAccess) {
         access.ifCloseChat()
         val back = access.player.coords
+        var itzla: Npc? = null
         access.lockedScene(
-            vantage = CotsPlaces.RoofArrival,
+            vantage = CotsPlaces.CellPlayer,
             faceAt = CotsPlaces.RoofCell,
             camera = CotsPlaces.CellCamera,
             returnTo = back,
+            underFade = {
+                cellBandit()?.faceSquare(CotsPlaces.CellBanditFacing)
+                itzla = spawn(CotsNpc.ItzlaCutscene, CotsPlaces.CellItzla, CotsPlaces.RoofCell)
+            },
+            teardown = { itzla?.let(::despawn) },
         ) {
             startDialogue { interrogationInCell() }
         }
     }
+
+    private fun cellBandit(): Npc? =
+        npcRepo.findAll(CotsPlaces.RoofCell).firstOrNull { it.isType(CotsNpc.CellBandit) }
 
     private fun spawn(type: String, coords: CoordGrid, facing: CoordGrid? = null): Npc {
         val npc = Npc(type, coords)
