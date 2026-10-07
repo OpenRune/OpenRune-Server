@@ -12,7 +12,10 @@ import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.content.minigames.gauntlet.layout.GauntletRoom
+import org.rsmod.api.table.GauntletRoomSlotsRow
+import org.rsmod.content.minigames.gauntlet.layout.MonsterKind
 import org.rsmod.content.minigames.gauntlet.layout.ResourceKind
+import org.rsmod.content.minigames.gauntlet.layout.RoomKind
 import org.rsmod.content.minigames.gauntlet.layout.RoomSlots
 import org.rsmod.content.minigames.gauntlet.layout.Tile
 import org.rsmod.game.entity.Npc
@@ -51,6 +54,7 @@ constructor(
             val size = requireNotNull(ServerCacheManager.getNpc(type.asRSCM(RSCMType.NPC))).size
             val coords = placeable(region, room, monster.tile, size, taken) ?: continue
             val npc = Npc(type, coords)
+            if (monster.kind in MonsterKind.DEMI) npc.apRangeOverride = DEMI_AP_RANGE
             npcRepo.add(npc, NPC_LIFETIME)
             if (instanceId != null) manager.attachNpc(instanceId, npc)
         }
@@ -116,6 +120,7 @@ constructor(
     companion object {
         private const val NPC_LIFETIME = 100_000
         private const val FISHING_SIZE = 2
+        private const val DEMI_AP_RANGE = 10
         private const val SEARCH_RADIUS = GauntletLighting.ROOM_TILES - 1
         private const val WALL_FLAGS =
             CollisionFlag.WALL_NORTH_WEST or
@@ -142,11 +147,21 @@ constructor(
             )
 
         val SLOTS: RoomSlots by lazy {
-            val stream =
-                requireNotNull(GauntletContents::class.java.getResourceAsStream(SLOTS_RESOURCE))
-            RoomSlots.parse(stream.bufferedReader().readLines())
+            RoomSlots.fromTemplates(
+                GauntletRoomSlotsRow.all().map { row ->
+                    val tiles =
+                        mapOf(
+                            ResourceKind.DEPOSIT to row.rock.map(::unpack),
+                            ResourceKind.PHREN to row.tree.map(::unpack),
+                            ResourceKind.FISHING to row.pond.map(::unpack),
+                            ResourceKind.GRYM to row.herb.map(::unpack),
+                            ResourceKind.LINUM to row.fibre.map(::unpack),
+                        )
+                    Triple(RoomKind.entries[row.kind], row.variant, tiles)
+                }
+            )
         }
 
-        private const val SLOTS_RESOURCE = "/gauntlet/room-slots.txt"
+        private fun unpack(packed: Int) = Tile(packed shr 8, packed and 0xFF)
     }
 }

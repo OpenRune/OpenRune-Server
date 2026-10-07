@@ -37,7 +37,24 @@ class RoomSlots(private val templates: Map<Pair<RoomKind, Int>, TemplateSlots>) 
                     text.startsWith("loc:") -> current?.let { readLoc(text, it) }
                 }
             }
-            val templates = raw.mapValues { (_, slots) -> TemplateSlots(slots.mapValues { it.value.toList() }) }
+            return build(raw)
+        }
+
+        fun fromTemplates(
+            templates: List<Triple<RoomKind, Int, Map<ResourceKind, List<Tile>>>>
+        ): RoomSlots =
+            build(
+                templates.associate { (kind, variant, tiles) ->
+                    (kind to variant) to
+                        tiles.mapValues { it.value.toMutableSet() }.toMutableMap()
+                }
+            )
+
+        private fun build(
+            raw: Map<Pair<RoomKind, Int>, Map<ResourceKind, Set<Tile>>>
+        ): RoomSlots {
+            val templates =
+                raw.mapValues { (_, slots) -> TemplateSlots(slots.mapValues { it.value.toList() }) }
             return RoomSlots(fillSparse(templates))
         }
 
