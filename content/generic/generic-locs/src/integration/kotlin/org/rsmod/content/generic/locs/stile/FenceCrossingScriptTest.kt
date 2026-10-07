@@ -2,10 +2,15 @@ package org.rsmod.content.generic.locs.stile
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
+import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.map.CoordGrid
 
+@Execution(ExecutionMode.SAME_THREAD)
+@ResourceLock("ServerCacheManager")
 class FenceCrossingScriptTest {
     @Test
     fun GameTestState.`climbing a north-facing fence from the south lands north of it`() =
