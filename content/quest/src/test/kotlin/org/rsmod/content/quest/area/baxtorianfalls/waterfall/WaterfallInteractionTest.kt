@@ -54,7 +54,6 @@ import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.route.RayCastValidator
 import org.rsmod.content.generic.locs.bookcases.BookcasesScript
-import org.rsmod.content.quest.area.ardougne.QuestDoors
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Amulet
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.BaxtorianKey
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Book
@@ -76,6 +75,7 @@ import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.Gerald
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.Golrie
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.Hadley
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.Hudon
+import org.rsmod.content.quest.util.QuestDoors
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock

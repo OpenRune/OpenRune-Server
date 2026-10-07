@@ -8,9 +8,9 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.hitpoints
-import org.rsmod.content.quest.area.ardougne.fadeFromBlack
-import org.rsmod.content.quest.area.ardougne.fadeToBlack
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Amulet
+import org.rsmod.content.quest.util.fadeFromBlack
+import org.rsmod.content.quest.util.fadeToBlack
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.BoundLocInfo

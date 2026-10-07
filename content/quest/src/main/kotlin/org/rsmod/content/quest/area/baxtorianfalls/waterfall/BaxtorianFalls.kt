@@ -13,14 +13,14 @@ import org.rsmod.api.script.onApLoc1
 import org.rsmod.api.script.onApLocT
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
-import org.rsmod.content.quest.area.ardougne.fadeFromBlack
-import org.rsmod.content.quest.area.ardougne.fadeToBlack
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.EnteredFalls
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.HudonNpc
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Rope
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Started
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.geraldGreetsWashedUp
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.hudonFirstMeeting
+import org.rsmod.content.quest.util.fadeFromBlack
+import org.rsmod.content.quest.util.fadeToBlack
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
