@@ -23,22 +23,6 @@ class RoomSlots(private val templates: Map<Pair<RoomKind, Int>, TemplateSlots>) 
     companion object {
         private val EMPTY = TemplateSlots(emptyMap())
         private const val SPARSE_TILES = 6
-        private const val NORMAL_BASE = 232
-        private const val CORRUPTED_BASE = 240
-        private const val FIRST_VARIANT_Z = 704
-
-        fun parse(lines: List<String>): RoomSlots {
-            val raw = mutableMapOf<Pair<RoomKind, Int>, MutableMap<ResourceKind, MutableSet<Tile>>>()
-            var current: MutableMap<ResourceKind, MutableSet<Tile>>? = null
-            for (line in lines) {
-                val text = line.trim()
-                when {
-                    text.startsWith("ROOM") -> current = templateOf(text, raw)
-                    text.startsWith("loc:") -> current?.let { readLoc(text, it) }
-                }
-            }
-            return build(raw)
-        }
 
         fun fromTemplates(
             templates: List<Triple<RoomKind, Int, Map<ResourceKind, List<Tile>>>>
@@ -56,33 +40,6 @@ class RoomSlots(private val templates: Map<Pair<RoomKind, Int>, TemplateSlots>) 
             val templates =
                 raw.mapValues { (_, slots) -> TemplateSlots(slots.mapValues { it.value.toList() }) }
             return RoomSlots(fillSparse(templates))
-        }
-
-        private fun templateOf(
-            header: String,
-            raw: MutableMap<Pair<RoomKind, Int>, MutableMap<ResourceKind, MutableSet<Tile>>>,
-        ): MutableMap<ResourceKind, MutableSet<Tile>>? {
-            val (zoneX, zoneZ) = header.substringAfter("zone=").split(',').map { it.trim().toInt() }
-            val offset = zoneX - if (zoneX >= CORRUPTED_BASE) CORRUPTED_BASE else NORMAL_BASE
-            val kind =
-                when (offset) {
-                    0 -> RoomKind.MIDDLE
-                    2 -> RoomKind.EDGE
-                    4 -> RoomKind.CORNER
-                    else -> return null
-                }
-            val variant = (zoneZ - FIRST_VARIANT_Z) / 2
-            return raw.getOrPut(kind to variant) { mutableMapOf() }
-        }
-
-        private fun readLoc(text: String, into: MutableMap<ResourceKind, MutableSet<Tile>>) {
-            val name = text.substringAfter("loc:").substringBefore(' ')
-            val kind = ResourceKind.entries.firstOrNull { it.locName == name } ?: return
-            val tiles = text.substringAfter(':', "").substringAfter(':').trim()
-            for (pair in tiles.split(' ').filter { it.isNotEmpty() }) {
-                val (x, z) = pair.split(',').map { it.toInt() }
-                into.getOrPut(kind) { mutableSetOf() } += Tile(x, z)
-            }
         }
 
         private fun fillSparse(

@@ -8,10 +8,13 @@ import org.rsmod.content.minigames.gauntlet.GauntletMode
 
 class RoomContentsTest {
     private val slots =
-        RoomSlots.parse(
-            javaClass.getResourceAsStream("/gauntlet/room-slots.txt")!!
-                .bufferedReader()
-                .readLines()
+        RoomSlots.fromTemplates(
+            listOf(RoomKind.MIDDLE, RoomKind.EDGE, RoomKind.CORNER).flatMap { kind ->
+                (0 until GauntletLayout.VARIANTS).map { variant ->
+                    val tiles = (2..13).flatMap { x -> (2..13 step 3).map { z -> Tile(x, z) } }
+                    Triple(kind, variant, ResourceKind.entries.associateWith { tiles })
+                }
+            }
         )
 
     private fun generate(seed: Int, mode: GauntletMode = GauntletMode.NORMAL) =
