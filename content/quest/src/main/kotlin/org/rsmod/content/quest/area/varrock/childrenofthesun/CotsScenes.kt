@@ -4,11 +4,9 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
-import net.rsprot.protocol.game.outgoing.util.OpFlags
-import net.rsprot.protocol.game.outgoing.zone.header.UpdateZonePartialFollows
-import net.rsprot.protocol.game.outgoing.zone.payload.LocAddChangeV2
-import net.rsprot.protocol.game.outgoing.zone.payload.LocDel
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.output.locAddChangePrivate
+import org.rsmod.api.player.output.locDelPrivate
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
@@ -19,7 +17,6 @@ import org.rsmod.content.quest.area.misthalin.lockedScene
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
-import org.rsmod.map.zone.ZoneGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
@@ -435,17 +432,11 @@ internal fun Player.restoreSceneLocs(locs: Iterable<SceneLoc>) {
 }
 
 private fun Player.sendLoc(coords: CoordGrid, loc: String?, shape: Int, angle: Int) {
-    val zone = ZoneKey.from(coords).toCoords()
-    val inZone = ZoneGrid.from(coords)
-    client.write(UpdateZonePartialFollows(zone.x - buildArea.x, zone.z - buildArea.z, zone.level))
-    val prot =
-        if (loc == null) {
-            LocDel(inZone.x, inZone.z, shape, angle)
-        } else {
-            val id = loc.asRSCM(RSCMType.LOC)
-            LocAddChangeV2(id, inZone.x, inZone.z, shape, angle, OpFlags.ALL_SHOWN)
-        }
-    client.write(prot)
+    if (loc == null) {
+        locDelPrivate(coords, shape, angle)
+    } else {
+        locAddChangePrivate(coords, loc, shape, angle)
+    }
 }
 
 internal suspend fun Dialogue.delegationArrives() {
