@@ -69,6 +69,10 @@ watersplash = 2496
 vial_pour = 2613
 smokepuff = 1930
 stone_door = 86
+chest_open = 52
+chest_close = 51
+irondoor_locked = 72
+ropeclimb = 2482
 
 [gamevals.varp]
 restless_ghost_rising_tile = 63703
