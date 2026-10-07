@@ -85,25 +85,27 @@ class ChildrenOfTheSunInteractionTest {
         assertTrue(f.output().contains("Are you here to see the delegation?"), f.output())
     }
 
-    @Test fun `free-to-play worlds cannot start the quest`() {
+    @Test fun `the quest does not check membership to start`() {
         val f = Fixture()
         f.player.members = false
         f.talk(Alina)
-        f.finish(listOf(1))
-        assertEquals(CotsStage.NotStarted, f.stage())
-        assertEquals(0, f.player.vars["varbit.vmq1_met_alina"])
-        assertTrue(f.output().contains("nothing you need to worry about"), f.output())
-        assertTrue(f.output().contains("members' quest"), f.output())
+        f.finish(listOf(1, 4))
+        assertEquals(CotsStage.Started, f.stage())
+        assertEquals(1, f.player.vars["varbit.vmq1_met_alina"])
+        assertFalse(f.output().contains("members'"), f.output())
     }
 
-    @Test fun `free-to-play worlds only get a brush-off mid quest`() {
+    @Test fun `the quest does not check membership once started`() {
         val f = Fixture(CotsStage.Started)
         f.player.members = false
         f.talk(Alina)
+        f.finish(listOf(3))
+        assertEquals(CotsStage.Tailing, f.stage())
+        assertEquals(1, f.scenes.delegations)
+        f.talk(Noah)
         f.finish()
-        assertEquals(CotsStage.Started, f.stage())
-        assertEquals(0, f.scenes.delegations)
-        assertTrue(f.output().contains("can't stop to talk"), f.output())
+        assertEquals(2, f.tails.starts)
+        assertFalse(f.output().contains("members'"), f.output())
     }
 
     @Test fun `the topics Alina offers loop until the player moves on`() {
@@ -483,7 +485,6 @@ class ChildrenOfTheSunInteractionTest {
                 uuid = 793L
                 slotId = 1
                 assignUid()
-                members = true
                 coords = CoordGrid(3225, 3427, 0)
                 currentMapClock = 100
                 processedMapClock = 100

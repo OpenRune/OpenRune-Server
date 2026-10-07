@@ -199,10 +199,6 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         when (stage(player)) {
             CotsStage.NotStarted -> beforeQuest()
             CotsStage.Started -> {
-                if (!player.members) {
-                    busyOnFreeWorld()
-                    return
-                }
                 alina(
                     happy,
                     "Hello again! So what do you think? Reckon you'll be one of the first to " +
@@ -211,10 +207,6 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
                 delegationTopics()
             }
             CotsStage.Tailing -> {
-                if (!player.members) {
-                    busyOnFreeWorld()
-                    return
-                }
                 noah(
                     quiz,
                     "That was quite a large bag that guard was carrying. I wonder where he's " +
@@ -225,20 +217,8 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         }
     }
 
-    private suspend fun Dialogue.busyOnFreeWorld() {
-        alina(neutral, "Sorry, I can't stop to talk right now.")
-        membersOnly()
-    }
-
-    private suspend fun Dialogue.membersOnly() {
-        mesbox(
-            "Children of the Sun is a members' quest. You will need to log in to a members' " +
-                "world to take part."
-        )
-    }
-
     private suspend fun Dialogue.beforeQuest() {
-        if (!player.members || !player.metAlina) {
+        if (!player.metAlina) {
             noah(quiz, "So these people really are from the west?")
             alina(
                 happy,
@@ -246,11 +226,6 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
                     "beautiful places in the world!",
             )
             chatPlayer(quiz, "What are you two talking about?")
-            if (!player.members) {
-                alina(neutral, "Oh, nothing you need to worry about.")
-                membersOnly()
-                return
-            }
             player.metAlina = true
             alina(happy, "Oh, hello! Are you here to see the delegation?")
             chatPlayer(quiz, "Delegation?")
