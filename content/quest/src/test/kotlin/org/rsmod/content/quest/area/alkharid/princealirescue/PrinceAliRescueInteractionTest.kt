@@ -253,6 +253,7 @@ class PrinceAliRescueInteractionTest {
             assertEquals(StagePrepared, f.stage())
             assertEquals(1, f.count(Key))
         }
+
     @Test
     fun `declining Hassan leaves the quest unstarted`() {
         val f = Fixture()
@@ -369,6 +370,7 @@ class PrinceAliRescueInteractionTest {
         assertEquals(StageKeliTied, f.stage())
         assertEquals(1, f.count(BlondWig))
     }
+
     @Test
     fun `a lost key is replaced for fifteen coins`() {
         val f = Fixture(StagePrepared)
@@ -553,6 +555,7 @@ class PrinceAliRescueInteractionTest {
         assertEquals(GateEast, f.player.routeDestination.lastOrNull())
         assertTrue(TollGateOpenTicks >= 6, "open for $TollGateOpenTicks ticks")
     }
+
     @Test
     fun `the toll gate refuses a player who cannot pay`() {
         val f = Fixture()
@@ -631,6 +634,7 @@ class PrinceAliRescueInteractionTest {
         assertEquals(10, f.count(Coins))
         assertFalse(f.output().contains("Can I come through"), f.output())
     }
+
     @Test
     fun `leaving al kharid through the gate is free and silent for everyone`() {
         val f = Fixture()
