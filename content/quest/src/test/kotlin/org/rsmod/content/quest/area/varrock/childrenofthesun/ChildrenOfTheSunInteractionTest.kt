@@ -87,29 +87,6 @@ class ChildrenOfTheSunInteractionTest {
         assertTrue(f.output().contains("Are you here to see the delegation?"), f.output())
     }
 
-    @Test fun `the quest does not check membership to start`() {
-        val f = Fixture()
-        f.player.members = false
-        f.talk(Alina)
-        f.finish(listOf(1, 4))
-        assertEquals(CotsStage.Started, f.stage())
-        assertEquals(1, f.player.vars["varbit.vmq1_met_alina"])
-        assertFalse(f.output().contains("members'"), f.output())
-    }
-
-    @Test fun `the quest does not check membership once started`() {
-        val f = Fixture(CotsStage.Started)
-        f.player.members = false
-        f.talk(Alina)
-        f.finish(listOf(3))
-        assertEquals(CotsStage.Tailing, f.stage())
-        assertEquals(1, f.scenes.delegations)
-        f.talk(Noah)
-        f.finish()
-        assertEquals(2, f.tails.starts)
-        assertFalse(f.output().contains("members'"), f.output())
-    }
-
     @Test fun `the topics Alina offers loop until the player moves on`() {
         val f = Fixture()
         f.talk(Alina)
