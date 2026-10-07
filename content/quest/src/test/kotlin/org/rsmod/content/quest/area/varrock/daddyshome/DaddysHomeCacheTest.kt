@@ -59,8 +59,8 @@ class DaddysHomeCacheTest {
     fun `the crate flag is a server-only varbit inside the allotted range`() {
         val varp = "varp.daddyshome_state".asRSCM(RSCMType.VARP)
         val flag = "varbit.daddyshome_crate_opened".asRSCM(RSCMType.VARBIT)
-        assertTrue(varp in 64040..64059, varp.toString())
-        assertTrue(flag in 64040..64059, flag.toString())
+        assertTrue(varp in 64064..64079, varp.toString())
+        assertTrue(flag in 64064..64079, flag.toString())
         assertEquals(VarpLifetime.Perm, ServerCacheManager.getVarp(varp)!!.scope)
         assertEquals(varp, varbit("varbit.daddyshome_crate_opened").baseVar.id)
     }
