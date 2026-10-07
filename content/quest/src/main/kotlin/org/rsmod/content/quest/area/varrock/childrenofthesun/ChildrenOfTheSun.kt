@@ -588,7 +588,7 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
     private suspend fun Dialogue.afterQuest() {
         tobyn(
             happy,
-            "Good to see you, adventurer. I hope everything's going well for you out there.",
+            "Good to see you, adventurer. Hope everything is going well for you out there.",
         )
         chatPlayer(happy, "Not bad, thanks.")
         tobyn(neutral, "Glad to hear it. Did you end up travelling to Varlamore?")
