@@ -50118,6 +50118,14 @@ inherit = "obj.gauntlet_sceptre_hm"
 weaponCategory="Blunt"
 tradeable = false
 [item.params]
+"param.equipment_sound"=2233
+"param.attack_anim_stance1"="seq.human_blunt_pound"
+"param.attack_sound_stance1"=2567
+"param.attack_anim_stance2"="seq.human_blunt_pound"
+"param.attack_sound_stance2"=2567
+"param.attack_anim_stance4"="seq.human_blunt_pound"
+"param.attack_sound_stance4"=2567
+"param.defend_anim"="seq.human_blunt_block"
 "param.attackrate"=5
 
 
@@ -51623,6 +51631,14 @@ inherit = "obj.gauntlet_sceptre"
 weaponCategory="Blunt"
 tradeable = false
 [item.params]
+"param.equipment_sound"=2233
+"param.attack_anim_stance1"="seq.human_blunt_pound"
+"param.attack_sound_stance1"=2567
+"param.attack_anim_stance2"="seq.human_blunt_pound"
+"param.attack_sound_stance2"=2567
+"param.attack_anim_stance4"="seq.human_blunt_pound"
+"param.attack_sound_stance4"=2567
+"param.defend_anim"="seq.human_blunt_block"
 "param.attackrate"=5
 
 
