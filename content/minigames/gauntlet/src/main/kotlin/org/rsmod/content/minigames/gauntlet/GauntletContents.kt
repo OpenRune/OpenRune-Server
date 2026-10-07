@@ -46,7 +46,7 @@ constructor(
         for (monster in contents.monsters) {
             val coords = placeable(region, room, monster.tile, 1, taken) ?: continue
             val npc = Npc("npc.crystal_${monster.kind.locName}$suffix", coords)
-            npcRepo.add(npc, Int.MAX_VALUE)
+            npcRepo.add(npc, NPC_LIFETIME)
             if (instanceId != null) manager.attachNpc(instanceId, npc)
         }
     }
@@ -109,6 +109,7 @@ constructor(
         )
 
     companion object {
+        private const val NPC_LIFETIME = 100_000
         private const val FISHING_SIZE = 2
         private const val SEARCH_RADIUS = GauntletLighting.ROOM_TILES - 1
         private const val BLOCKED_FLAGS =
