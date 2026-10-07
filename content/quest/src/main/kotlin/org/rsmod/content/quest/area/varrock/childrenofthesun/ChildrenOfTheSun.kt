@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.route.RayCastValidator
 import org.rsmod.api.script.onOpNpc1
@@ -19,6 +20,7 @@ import org.rsmod.content.quest.manager.startQuestPrompt
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.routefinder.collision.CollisionFlagMap
 
 class ChildrenOfTheSun
 internal constructor(private val scenes: CotsScenes, private val tails: CotsTails) :
@@ -33,8 +35,10 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
     @Inject
     constructor(
         npcRepo: NpcRepository,
+        locRepo: LocRepository,
+        collision: CollisionFlagMap,
         sight: RayCastValidator,
-    ) : this(WorldScenes(npcRepo), GuardTails(npcRepo, sight))
+    ) : this(WorldScenes(npcRepo, locRepo, collision), GuardTails(npcRepo, sight))
 
     private var Player.metAlina by boolVarBit("varbit.vmq1_met_alina")
 

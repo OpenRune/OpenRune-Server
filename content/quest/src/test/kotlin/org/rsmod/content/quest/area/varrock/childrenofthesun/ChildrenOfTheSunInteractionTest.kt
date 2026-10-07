@@ -24,6 +24,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.route.RayCastValidator
 import org.rsmod.content.quest.manager.QuestProgressState
@@ -38,6 +39,7 @@ import org.rsmod.game.inv.Inventory
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.routefinder.collision.CollisionFlagMap
 
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
@@ -382,7 +384,9 @@ class ChildrenOfTheSunInteractionTest {
         f.dialogue {
             delegationArrives()
             guardLeaves()
-            banditsScheme()
+            eavesdropOpening()
+            banditsTalk()
+            eavesdropClosing()
             interrogationInCell()
         }
         f.finish()
@@ -418,7 +422,12 @@ class ChildrenOfTheSunInteractionTest {
             }
         assertEquals(1, injectable.size)
         assertEquals(
-            listOf(NpcRepository::class.java, RayCastValidator::class.java),
+            listOf(
+                NpcRepository::class.java,
+                LocRepository::class.java,
+                CollisionFlagMap::class.java,
+                RayCastValidator::class.java,
+            ),
             injectable.single().parameterTypes.toList(),
         )
     }

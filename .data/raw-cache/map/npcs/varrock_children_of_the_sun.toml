@@ -64,28 +64,28 @@ coords = "0_50_53_60_8"
 
 [[spawn]]
 npc = "npc.vmq1_bandit_1_varrock"
-coords = "0_50_53_63_8"
-
-[[spawn]]
-npc = "npc.vmq1_bandit_2_varrock"
-coords = "0_50_53_61_9"
-
-[[spawn]]
-npc = "npc.vmq1_bandit_3_varrock"
-coords = "0_50_53_63_7"
-
-[[spawn]]
-npc = "npc.vmq1_bandit_4_varrock"
 coords = "0_50_53_61_6"
 
 [[spawn]]
+npc = "npc.vmq1_bandit_2_varrock"
+coords = "0_50_53_63_7"
+
+[[spawn]]
+npc = "npc.vmq1_bandit_3_varrock"
+coords = "0_50_53_63_9"
+
+[[spawn]]
+npc = "npc.vmq1_bandit_4_varrock"
+coords = "0_50_53_61_10"
+
+[[spawn]]
 npc = "npc.vmq1_guard_sergeant_roof"
-coords = "2_50_54_4_18"
+coords = "2_50_54_2_17"
 
 [[spawn]]
 npc = "npc.vmq1_itzla"
-coords = "2_50_54_2_18"
+coords = "2_50_54_4_17"
 
 [[spawn]]
 npc = "npc.vmq1_bandit_4_cell"
-coords = "2_50_54_3_15"
+coords = "2_50_54_1_14"
