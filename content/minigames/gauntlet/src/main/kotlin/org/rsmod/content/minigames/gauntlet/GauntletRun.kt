@@ -2,6 +2,7 @@ package org.rsmod.content.minigames.gauntlet
 
 import org.rsmod.content.minigames.gauntlet.layout.GauntletLayout
 import org.rsmod.content.minigames.gauntlet.layout.RoomContents
+import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
 class GauntletRun(
@@ -11,5 +12,6 @@ class GauntletRun(
 ) {
     val revealed: MutableSet<Int> = hashSetOf(layout.startIndex, GauntletLayout.BOSS_INDEX)
     val charges: MutableMap<CoordGrid, Int> = hashMapOf()
+    val nextGather: MutableMap<Player, Int> = hashMapOf()
     var weaponFrameGiven = false
 }

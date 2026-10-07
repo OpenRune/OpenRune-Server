@@ -10,6 +10,8 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.script.onPlayerQueueWithArgs
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
@@ -17,7 +19,11 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class GauntletGathering
 @Inject
-constructor(private val runs: GauntletRuns, private val locRepo: LocRepository) : PluginScript() {
+constructor(
+    private val runs: GauntletRuns,
+    private val locRepo: LocRepository,
+    private val clock: MapClock,
+) : PluginScript() {
     private enum class Node(
         val loc: String,
         val stat: String,
@@ -74,6 +80,7 @@ constructor(private val runs: GauntletRuns, private val locRepo: LocRepository) 
                 onOpLoc1("loc.gauntlet_${node.loc}$suffix") { gather(node, it.loc) }
             }
         }
+        onPlayerQueueWithArgs<GatherTask>(GATHER_QUEUE) { collect(it.args) }
         onEvent<SkillingActionCompleteEvent> {
             val product = context as? SkillingActionContext.Product ?: return@onEvent
             if (product.isBonus || product.item !in SKILLED_PRODUCTS) return@onEvent
@@ -91,31 +98,41 @@ constructor(private val runs: GauntletRuns, private val locRepo: LocRepository) 
                 return
             }
         }
-        val seq = if (node == Node.FISHING && corrupted) HARPOON_CORRUPTED else node.seq
-        val product = gauntletObj(node.product, corrupted)
         spam(node.start)
-        anim(seq)
-        delay(1)
-        while (true) {
-            val remaining = run.charges[loc.coords] ?: return
-            if (!invAdd(inv, product, 1).success) {
-                mesbox(node.full)
-                return
-            }
-            statAdvance(node.stat, node.xp)
-            rollShards(player, corrupted)
-            run.charges[loc.coords] = remaining - 1
-            if (remaining - 1 <= 0) {
-                spam(node.last)
-                resetAnim()
-                deplete(node, loc, corrupted)
-                return
-            }
-            node.yield?.let(::spam)
-            anim(seq)
-            delay(CYCLE)
-        }
+        anim(animFor(node, corrupted))
+        val wait = ((run.nextGather[player] ?: 0) - clock.cycle).coerceAtLeast(1)
+        clearWeakQueue(GATHER_QUEUE)
+        weakQueue(GATHER_QUEUE, wait, GatherTask(node, loc))
     }
+
+    private suspend fun ProtectedAccess.collect(task: GatherTask) {
+        val (node, loc) = task
+        val run = runs.runFor(player) ?: return
+        val corrupted = run.mode.corrupted
+        val remaining = run.charges[loc.coords] ?: return
+        if (!invAdd(inv, gauntletObj(node.product, corrupted), 1).success) {
+            mesbox(node.full)
+            return
+        }
+        statAdvance(node.stat, node.xp)
+        rollShards(player, corrupted)
+        run.charges[loc.coords] = remaining - 1
+        run.nextGather[player] = clock + CYCLE
+        if (remaining - 1 <= 0) {
+            spam(node.last)
+            resetAnim()
+            deplete(node, loc, corrupted)
+            return
+        }
+        node.yield?.let(::spam)
+        anim(animFor(node, corrupted))
+        weakQueue(GATHER_QUEUE, CYCLE, task)
+    }
+
+    private fun animFor(node: Node, corrupted: Boolean) =
+        if (node == Node.FISHING && corrupted) HARPOON_CORRUPTED else node.seq
+
+    private data class GatherTask(val node: Node, val loc: BoundLocInfo)
 
     private fun rollShards(player: Player, corrupted: Boolean) {
         if (Random.nextInt(SHARD_ODDS) != 0) return
@@ -134,6 +151,7 @@ constructor(private val runs: GauntletRuns, private val locRepo: LocRepository) 
     private companion object {
         val SKILLED_PRODUCTS =
             setOf("obj.gauntlet_ore", "obj.gauntlet_ore_hm", "obj.gauntlet_bark", "obj.gauntlet_bark_hm")
+        const val GATHER_QUEUE = "queue.generic_queue9"
         const val CYCLE = 3
         const val SHARD_ODDS = 3
         const val SHARD_MIN = 10
