@@ -6,14 +6,16 @@ import org.rsmod.map.CoordGrid
 
 private val logger = InlineLogger()
 
+internal const val SceneSnapRate = 232
+
 internal class SceneCamera(
     val eye: CoordGrid,
     val eyeHeight: Int,
     val lookAt: CoordGrid,
     val lookAtHeight: Int,
+    val rate: Int = SceneSnapRate,
+    val rate2: Int = SceneSnapRate,
 )
-
-internal const val SceneSnapRate = 232
 
 internal const val SceneDriftRate = 10
 
@@ -84,12 +86,12 @@ internal suspend fun ProtectedAccess.beginScene(
     telejump(vantage)
     rebuildAppearance()
 
-    camMoveToV3(camera.eye, height = camera.eyeHeight, rate = SceneSnapRate, rate2 = SceneSnapRate)
+    camMoveToV3(camera.eye, height = camera.eyeHeight, rate = camera.rate, rate2 = camera.rate2)
     camLookAtV3(
         camera.lookAt,
         height = camera.lookAtHeight,
-        rate = SceneSnapRate,
-        rate2 = SceneSnapRate,
+        rate = camera.rate,
+        rate2 = camera.rate2,
     )
     faceSquare(faceAt)
 
@@ -182,8 +184,6 @@ internal suspend fun ProtectedAccess.endScene(
 
 private fun ProtectedAccess.restoreSceneState() {
     ifClose()
-    camUnlock(unlock = false)
-    camReset()
 
     showEntityOps()
     restoreLastAcceptAid()
@@ -193,6 +193,7 @@ private fun ProtectedAccess.restoreSceneState() {
     camModeReset()
     showTopLevel()
     showHealthHud()
+    camReset()
     openTopLevelTabs()
 
     syncDrawDistance()
