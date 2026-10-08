@@ -3,7 +3,6 @@ package org.rsmod.api.stats.plugin
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.StatType
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.hands
 import org.rsmod.api.player.stat.StatBoostDecayPrevention
@@ -22,13 +21,13 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 public class StatRegenScript : PluginScript() {
-    private val regenStats by lazy { ServerCacheManager.getStats().values.toRegenStats() }
+    private val regenStats by lazy { statNames().filter(StatDecayRules::regenerates) }
 
     override fun ScriptContext.startup() {
         onPlayerLogin { player.initRegenTimers() }
 
         onPlayerSoftTimer("timer.stat_regen") { player.statRegen() }
-        onPlayerSoftTimer("timer.stat_boost_restore") { player.statBoostRestore() }
+        onPlayerSoftTimer("timer.stat_boost_restore") { player.decayBoostedStats() }
         onPlayerSoftTimer("timer.health_regen") { player.healthRegen() }
 
         onPlayerSoftTimer("timer.rapidrestore_regen") { player.statRegen() }
@@ -41,35 +40,11 @@ public class StatRegenScript : PluginScript() {
     }
 
     private fun Player.statRegen() {
-        for (stat in regenStats) {
-            val statInternal = RSCM.getReverseMapping(RSCMType.STAT,stat.id)
-
+        for (statInternal in regenStats) {
             val base = statBase(statInternal)
             val current = stat(statInternal)
             if (current < base) {
                 statAdd(statInternal, constant = 1, percent = 0)
-            }
-        }
-    }
-
-    private fun Player.statBoostRestore() {
-        for (stat in regenStats) {
-            val statInternal = RSCM.getReverseMapping(RSCMType.STAT,stat.id)
-
-            val base = statBase(statInternal)
-            val current = stat(statInternal)
-            if (
-                current > base &&
-                !StatBoostDecayPrevention.prevents(
-                    player = this,
-                    stat = statInternal,
-                )
-            ) {
-                statSub(
-                    statInternal,
-                    constant = 1,
-                    percent = 0,
-                )
             }
         }
     }
@@ -81,8 +56,28 @@ public class StatRegenScript : PluginScript() {
         val amount = if (hands.isType("obj.jewl_bracelet_regen")) 2 else 1
         statHeal("stat.hitpoints", constant = amount, percent = 0)
     }
+}
 
-    private fun Collection<StatType>.toRegenStats(): List<StatType> {
-        return filter { !it.isType("stat.prayer") && !it.isType("stat.hitpoints") }
+internal fun statNames(): List<String> =
+    ServerCacheManager.getStats().values.map { RSCM.getReverseMapping(RSCMType.STAT, it.id) }
+
+private val boostDecayStats by lazy { statNames().filter(StatDecayRules::boostDecays) }
+
+internal fun Player.decayBoostedStats() {
+    for (statInternal in boostDecayStats) {
+        val base = statBase(statInternal)
+        val current = stat(statInternal)
+        if (current > base && !StatBoostDecayPrevention.prevents(player = this, stat = statInternal)) {
+            statSub(statInternal, constant = 1, percent = 0)
+        }
     }
+}
+
+internal object StatDecayRules {
+    fun regenerates(stat: String): Boolean = stat != PRAYER && stat != HITPOINTS
+
+    fun boostDecays(stat: String): Boolean = stat != PRAYER
+
+    private const val PRAYER = "stat.prayer"
+    private const val HITPOINTS = "stat.hitpoints"
 }

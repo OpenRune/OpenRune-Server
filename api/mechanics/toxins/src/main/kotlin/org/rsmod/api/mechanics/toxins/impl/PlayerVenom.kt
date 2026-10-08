@@ -46,9 +46,11 @@ public object PlayerVenom {
         return true
     }
 
+    public fun lastDamage(strikes: Int): Int = damageForStrikeIndex(strikes - 2)
+
     public fun reduceToPoison(
         player: Player,
-        initialPoisonDamage: Int = 6,
+        initialPoisonDamage: Int = lastDamage(player.vars["varp.venom_strikes"]),
     ): Boolean {
         if (!isEnvenomed(player)) {
             return false

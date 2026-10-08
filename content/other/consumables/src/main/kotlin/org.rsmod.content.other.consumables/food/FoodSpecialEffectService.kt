@@ -2,10 +2,8 @@ package org.rsmod.content.other.consumables.food
 
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import org.rsmod.api.config.constants
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
-import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseHitpointsLvl
 import org.rsmod.api.player.stat.hitpoints
@@ -13,6 +11,7 @@ import org.rsmod.content.other.consumables.food.kebab.KebabEffect
 import org.rsmod.content.other.consumables.food.kebab.KebabOutcome
 import org.rsmod.content.other.consumables.food.stew.SpicyStewEffect
 import org.rsmod.content.other.consumables.food.stew.SpicyStewState
+import org.rsmod.content.other.consumables.restoreRunEnergy
 
 @Singleton
 class FoodSpecialEffectService
@@ -431,34 +430,6 @@ constructor(
         }
     }
 
-    private fun ProtectedAccess.restoreRunEnergy(
-        percent: Int,
-    ) {
-        if (percent <= 0) {
-            return
-        }
-
-        val restored =
-            (
-                player.runEnergy +
-                    percent * RUN_ENERGY_PERCENT_SCALE
-                ).coerceAtMost(
-                    constants.run_max_energy,
-                )
-
-        if (restored == player.runEnergy) {
-            return
-        }
-
-        player.runEnergy =
-            restored
-
-        UpdateRun.energy(
-            player = player,
-            energy = restored,
-        )
-    }
-
     private fun ceilPercent(
         value: Int,
         percent: Int,
@@ -475,7 +446,6 @@ constructor(
 
         private const val DELAYED_HEAL_DELAY: Int = 7
         private const val DASHING_RUN_ENERGY: Int = 10
-        private const val RUN_ENERGY_PERCENT_SCALE: Int = 10
 
         private const val HADDOCK: String =
             "haddock"

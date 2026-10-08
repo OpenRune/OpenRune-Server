@@ -16792,3 +16792,10 @@ id = "npc.yama_voidflare"
 inherit = "npc.yama_voidflare"
 [npc.params]
 "param.demon"=1
+
+[[npc]]
+id = "npc.kittens_mew"
+inherit = "npc.kittens_mew"
+timer = 1
+moveRestrict = "NoMove"
+wanderRange = 0

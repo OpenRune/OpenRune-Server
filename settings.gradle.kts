@@ -20,6 +20,7 @@ dependencyResolutionManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        mavenLocal()
         maven("https://jitpack.io")
         maven("https://repo.openrs2.org/repository/openrs2-snapshots")
         maven("https://raw.githubusercontent.com/OpenRune/hosting/master")

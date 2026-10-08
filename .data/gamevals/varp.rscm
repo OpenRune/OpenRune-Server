@@ -121,6 +121,7 @@ leviathan_vestige_progress=65462
 whisperer_vestige_progress=65463
 drop_rate_multiplier=65658
 wilderness_boss_fee_nowarn=65659
+disease_immunity=65660
 barrows_state=64132
 aggression_tolerance_start=64140
 aggression_tolerance_anchor=64141

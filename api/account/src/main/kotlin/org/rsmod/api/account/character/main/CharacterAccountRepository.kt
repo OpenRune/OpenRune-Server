@@ -2,14 +2,14 @@ package org.rsmod.api.account.character.main
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import dev.openrune.ServerCacheManager
+import dev.openrune.types.varp.VarpLifetime
 import dev.or2.central.account.AccountData
 import dev.or2.central.account.CharacterData
 import dev.or2.central.account.Rights
 import dev.or2.central.account.TrustedDeviceData
 import dev.or2.central.account.TwoFactorAuthData
 import dev.or2.sql.OpenRuneSql
-import dev.openrune.ServerCacheManager
-import dev.openrune.types.varp.VarpLifetime
 import jakarta.inject.Inject
 import java.sql.Statement
 import java.sql.Timestamp
@@ -23,10 +23,10 @@ import org.rsmod.api.db.DatabaseConnection
 import org.rsmod.api.db.util.getIntOrNull
 import org.rsmod.api.db.util.getLocalDateTime
 import org.rsmod.api.db.util.getStringOrNull
-import org.rsmod.api.db.util.setNullableInt
 import org.rsmod.api.db.util.setNullableString
 import org.rsmod.api.parsers.json.Json
 import org.rsmod.game.entity.Player
+import org.rsmod.game.world.WorldType
 
 public class CharacterAccountRepository
 @Inject
@@ -71,6 +71,37 @@ constructor(
         return accountId
     }
 
+    /** Read from `accounts`, so it resolves before a mode's schema is selected. */
+    public fun selectActiveWorldType(
+        connection: DatabaseConnection,
+        accountName: String,
+    ): String? {
+        val sql = OpenRuneSql.text("game/character/accounts_select_active_world_type_by_name.sql")
+        return connection.prepareStatement(sql).use { ps ->
+            ps.setString(1, accountName.trim())
+            ps.executeQuery().use { rs ->
+                if (rs.next()) {
+                    rs.getStringOrNull("active_world_type")
+                } else {
+                    null
+                }
+            }
+        }
+    }
+
+    public fun updateActiveWorldType(
+        connection: DatabaseConnection,
+        accountId: Int,
+        worldType: WorldType,
+    ) {
+        val sql = OpenRuneSql.text("game/character/accounts_update_active_world_type.sql")
+        connection.prepareStatement(sql).use { ps ->
+            ps.setString(1, worldType.key)
+            ps.setInt(2, accountId)
+            ps.executeUpdate()
+        }
+    }
+
     public fun insertAndSelectCharacterId(connection: DatabaseConnection, accountId: Int): Int? {
         val countSql = OpenRuneSql.text("game/character/characters_count_for_account.sql")
         val existing =
@@ -111,9 +142,25 @@ constructor(
         }
     }
 
+    /** Creates the save for the mode on the search path; `true` when a row was created. */
+    public fun ensureProgressRow(connection: DatabaseConnection, characterId: Int): Boolean {
+        val sql = OpenRuneSql.text("game/character/character_progress_insert.sql")
+        return connection.prepareStatement(sql).use { ps ->
+            ps.setInt(1, characterId)
+            ps.executeUpdate() > 0
+        }
+    }
+
+    /**
+     * Loads identity from `public` and the save from the world-type schema on the search path.
+     *
+     * [onFirstVisitToWorldType] fires when the character has no save for this mode yet; the row is
+     * created and the caller should treat the login as fresh.
+     */
     public fun selectAndCreateMetadataList(
         connection: DatabaseConnection,
         accountName: String,
+        onFirstVisitToWorldType: () -> Unit = {},
     ): CharacterMetadataList? {
         val loginLookup = accountName.trim()
 
@@ -131,6 +178,9 @@ constructor(
                     val canonicalName = resultSet.getString("account_name")
                     val rights = Rights.fromRightsColumn(resultSet.getString("rights"))
                     val displayName = resultSet.getString("display_name")
+                    val previousDisplayName = resultSet.getStringOrNull("previous_display_name")
+                    val displayNameChangedAtMillis =
+                        resultSet.getLong("display_name_changed_at").takeIf { !resultSet.wasNull() }
                     val email = resultSet.getString("email")
                     val discordId = resultSet.getStringOrNull("discord_id")?.toLongOrNull()
                     val members = resultSet.getBoolean("members")
@@ -154,14 +204,18 @@ constructor(
                     val onlineCentralWorldId = resultSet.getIntOrNull("online_central_world_id")
                     val onlineSessionHeartbeat =
                         resultSet.getLocalDateTime("online_session_heartbeat")
+                    if (resultSet.getBoolean("progress_missing")) {
+                        ensureProgressRow(connection, characterId)
+                        onFirstVisitToWorldType()
+                    }
                     val varps = selectPersistentVarps(connection, characterId)
                     val attrs = selectPersistentAttrs(connection, characterId)
                     val characterData =
                         CharacterData(
                             characterId = characterId,
                             displayName = displayName,
-                            previousDisplayName = null,
-                            displayNameChangedAtMillis = null,
+                            previousDisplayName = previousDisplayName,
+                            displayNameChangedAtMillis = displayNameChangedAtMillis,
                             members = members,
                             modLevel = null,
                             worldId = worldId,
@@ -209,11 +263,11 @@ constructor(
         gameWorldId: Int,
     ) {
         val clearPresence = player.pendingLogout
-        val sql =
+        val progressSql =
             if (clearPresence) {
-                OpenRuneSql.text("game/character/characters_update_save_clear_presence.sql")
+                OpenRuneSql.text("game/character/character_progress_update_clear_presence.sql")
             } else {
-                OpenRuneSql.text("game/character/characters_update_save_set_presence.sql")
+                OpenRuneSql.text("game/character/character_progress_update_set_presence.sql")
             }
 
         val persistentVarps =
@@ -223,20 +277,26 @@ constructor(
 
         val persistentAttrs = player.attr.toPersistentMap()
 
-        connection.prepareStatement(sql).use {
+        val identitySql = OpenRuneSql.text("game/character/characters_update_identity.sql")
+        connection.prepareStatement(identitySql).use {
+            it.setNullableString(1, player.displayName.takeIf(String::isNotBlank))
+            it.setBoolean(2, player.members)
+            it.setInt(3, characterId)
+            it.executeUpdate()
+        }
+
+        connection.prepareStatement(progressSql).use {
             it.setInt(1, player.x)
             it.setInt(2, player.z)
             it.setInt(3, player.level)
             it.setTimestamp(4, Timestamp.valueOf(player.lastLogin))
             it.setInt(5, player.runEnergy)
             it.setInt(6, (player.xpRate * 100).roundToInt())
-            it.setNullableString(7, player.displayName.takeIf(String::isNotBlank))
-            it.setBoolean(8, player.members)
             if (!clearPresence) {
-                it.setInt(9, gameWorldId)
-                it.setInt(10, characterId)
+                it.setInt(7, gameWorldId)
+                it.setInt(8, characterId)
             } else {
-                it.setInt(9, characterId)
+                it.setInt(7, characterId)
             }
             it.executeUpdate()
         }

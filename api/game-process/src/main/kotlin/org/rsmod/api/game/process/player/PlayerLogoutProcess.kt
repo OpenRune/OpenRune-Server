@@ -2,13 +2,14 @@ package org.rsmod.api.game.process.player
 
 import jakarta.inject.Inject
 import org.rsmod.api.player.forceDisconnect
+import org.rsmod.api.player.isLogoutBlocked
+import org.rsmod.api.player.logoutBlockedMessage
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.ui.ifCloseModals
 import org.rsmod.api.registry.account.AccountRegistry
 import org.rsmod.api.utils.logging.GameExceptionHandler
 import org.rsmod.events.EventBus
-import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.ShuffledPlayerList
 import org.rsmod.game.queue.QueueCategory
@@ -17,7 +18,6 @@ public class PlayerLogoutProcess
 @Inject
 constructor(
     private val eventBus: EventBus,
-    private val mapClock: MapClock,
     private val playerList: ShuffledPlayerList,
     private val accountRegistry: AccountRegistry,
     private val exceptionHandler: GameExceptionHandler,
@@ -77,7 +77,7 @@ constructor(
         }
 
         if (clientDisconnectedCycles == RECONNECT_GRACE_PERIOD) {
-            val preventLogout = mapClock <= preventLogoutUntil
+            val preventLogout = isLogoutBlocked()
             val bypassPrevention = preventLogoutCounter++ >= PREVENT_LOGOUT_HARD_CAP_PERIOD
             if (!preventLogout || bypassPrevention) {
                 queueLogout()
@@ -95,9 +95,8 @@ constructor(
         }
         manualLogout = false
 
-        val preventLogout = mapClock <= preventLogoutUntil
-        if (preventLogout) {
-            preventLogoutMessage?.let { mes(it, ChatType.Engine) }
+        if (isLogoutBlocked()) {
+            mes(logoutBlockedMessage(), ChatType.Engine)
             return
         }
 
@@ -179,9 +178,8 @@ constructor(
         private const val RECONNECT_GRACE_PERIOD: Int = 16
 
         /**
-         * A hard cap period (in server cycles) after which the player's [Player.preventLogoutUntil]
-         * will no longer apply. This prevents players from permanently being stuck online after
-         * x-logging.
+         * A hard cap period (in server cycles) after which the logout block no longer applies. This
+         * prevents players from permanently being stuck online after x-logging.
          */
         private const val PREVENT_LOGOUT_HARD_CAP_PERIOD: Int = 100
     }

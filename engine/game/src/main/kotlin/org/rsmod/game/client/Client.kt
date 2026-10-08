@@ -22,4 +22,14 @@ public interface ClientCycle {
     public fun flush(player: Player)
 
     public fun release()
+
+    /**
+     * Marks the client's scene stale so the next [update] resends it in full, even though the player
+     * has not moved.
+     *
+     * The scene is normally only resent when the build area changes. A world-type switch replaces
+     * the player's save in place, so the world around them can be entirely different while they
+     * stand on the same tile - without this the client would keep showing the mode they left.
+     */
+    public fun forceSceneRebuild()
 }

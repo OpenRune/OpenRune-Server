@@ -8,6 +8,10 @@ rg_place_skull = 1744
 rg_skeleton_awake = 1746
 destroy_object = 2381
 shade_sigh = 748
+kittens_mew = 339
+purr = 340
+cat_hiss = 335
+meeoow = 1169
 skeleton_attack = 776
 skelly_hit = 779
 skeleton_death = 777
@@ -63,12 +67,22 @@ restless_ghost_return_tile = 63704
 misthalin_return_tile = 63700
 misthalin_mirror_blocker = 63701
 misthalin_puzzle_state = 63702
+cooks_assistant_ingredients = 63705
+gertrudes_cat_state = 63711
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
 imp_catcher_progress = 63703
 misthalin_reflections = 63700
 misthalin_gem_row_slot = 63701
+cooks_assistant_progress = 63704
+cooks_assistant_milk = 63705
+cooks_assistant_egg = 63706
+cooks_assistant_flour = 63707
+gertrudes_cat_progress = 63711
+gertrudes_cat_kitten_crate = 63712
+gertrudes_cat_met_fluffs = 63713
+gertrudes_cat_told_sardines = 63714
 
 [gamevals.models]
 misthalin_gem_diamond = 32333

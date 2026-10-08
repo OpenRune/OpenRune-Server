@@ -1,10 +1,10 @@
 package org.rsmod.content.quest.area.lumbridge
 
-
-import dev.openrune.types.ItemServerType
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestProgressState
 import org.rsmod.content.quest.manager.QuestScript
@@ -13,18 +13,41 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
 
-class CooksAssistant : QuestScript("quest_cooksassistant", "varp.cookquest", rewards {
-    xp("stat.cooking", 300.0)
-}, ItemRewardDisplay("obj.cake")) {
+class CooksAssistant : QuestScript(
+    "quest_cooksassistant",
+    "varp.cookquest",
+    rewards { xp("stat.cooking", 300.0) },
+    ItemRewardDisplay("obj.cake"),
+    questVarbit = "varbit.cooks_assistant_progress",
+) {
 
-    private val GIVEN_EGG = quest.attribute(name = "GIVEN_EGG", default = false)
-    private val GIVEN_MILK = quest.attribute(name = "GIVEN_MILK", default = false)
-    private val GIVEN_FLOUR = quest.attribute(name = "GIVEN_FLOUR", default = false)
+    private var Player.givenMilk by boolVarBit("varbit.cooks_assistant_milk")
+    private var Player.givenEgg by boolVarBit("varbit.cooks_assistant_egg")
+    private var Player.givenFlour by boolVarBit("varbit.cooks_assistant_flour")
+
+    private val legacyGivenMilk = quest.attribute(name = "GIVEN_MILK", default = false)
+    private val legacyGivenEgg = quest.attribute(name = "GIVEN_EGG", default = false)
+    private val legacyGivenFlour = quest.attribute(name = "GIVEN_FLOUR", default = false)
 
     private val potFlour = "obj.pot_flour"
 
     override fun ScriptContext.init() {
+        check(quest.maxSteps == COMPLETE_STAGE) {
+            "Cook's Assistant end state is ${quest.maxSteps} in the cache dbrow, " +
+                "but the hand-in completes at $COMPLETE_STAGE."
+        }
+
+        onPlayerLogin { migrateLegacyIngredients(player) }
         onOpNpc1("npc.cook") { startCookDialogue(it.npc) }
+    }
+
+    internal fun migrateLegacyIngredients(player: Player) {
+        if (legacyGivenMilk.getOrNull(player) == true) player.givenMilk = true
+        if (legacyGivenEgg.getOrNull(player) == true) player.givenEgg = true
+        if (legacyGivenFlour.getOrNull(player) == true) player.givenFlour = true
+        legacyGivenMilk.clear(player)
+        legacyGivenEgg.clear(player)
+        legacyGivenFlour.clear(player)
     }
 
     private suspend fun ProtectedAccess.startCookDialogue(npc: Npc) {
@@ -47,17 +70,17 @@ class CooksAssistant : QuestScript("quest_cooksassistant", "varp.cookquest", rew
         description("It's the <red>Duke of Lumbridge's</red> birthday and I have to help his <red>Cook</red> make him a <red>birthday cake</red>. To do this I need to bring him the following ingredients:")
 
         objective("I need to find a <red>bucket of milk</red>. There's a cattle field east of Lumbridge, I should make sure I take an empty bucket with me.") {
-            attribute(GIVEN_MILK, "I have given the cook a <red>bucket of milk</red>.").strike()
+            custom(player.player.givenMilk, "I have given the cook a <red>bucket of milk</red>.", finalise = true).strike()
             hasItem("bucket_milk", "I have found a <red>bucket of milk</red> to give to the cook.")
         }
 
         objective("I need to find a <red>pot of flour</red>. There's a mill found north-west of Lumbridge, I should take an empty pot with me.") {
-            attribute(GIVEN_FLOUR, "I have given the cook a <red>pot of flour</red>.").strike()
+            custom(player.player.givenFlour, "I have given the cook a <red>pot of flour</red>.", finalise = true).strike()
             hasItem("pot_flour", "I have found a pot of flour to give to the cook.")
         }
 
         objective("I need to find an <red>egg</red>. The cook normally gets from the Groats' farm, found just to the west of the cattle field.") {
-            attribute(GIVEN_EGG, "I have given the cook an egg.").strike()
+            custom(player.player.givenEgg, "I have given the cook an egg.", finalise = true).strike()
             hasItem("egg", "I have found an egg to give to the cook.")
         }
     }
@@ -69,16 +92,16 @@ class CooksAssistant : QuestScript("quest_cooksassistant", "varp.cookquest", rew
     }
 
     private fun hasMilk(player: Player): Boolean =
-        player.inv.count("obj.bucket_milk") > 0 || GIVEN_MILK.get(player)
+        player.inv.count("obj.bucket_milk") > 0 || player.givenMilk
 
     private fun hasEgg(player: Player): Boolean =
-        player.inv.count("obj.egg") > 0 || GIVEN_EGG.get(player)
+        player.inv.count("obj.egg") > 0 || player.givenEgg
 
     private fun hasFlour(player: Player): Boolean =
-        player.inv.count(potFlour) > 0 || GIVEN_FLOUR.get(player)
+        player.inv.count(potFlour) > 0 || player.givenFlour
 
     private fun allItemsDelivered(player: Player): Boolean =
-        GIVEN_MILK.get(player) && GIVEN_EGG.get(player) && GIVEN_FLOUR.get(player)
+        player.givenMilk && player.givenEgg && player.givenFlour
 
     private suspend fun Dialogue.deliverItem(
         item: String,
@@ -113,9 +136,9 @@ class CooksAssistant : QuestScript("quest_cooksassistant", "varp.cookquest", rew
             return
         }
 
-        deliverItem("obj.bucket_milk", "Here's a bucket of milk.") { GIVEN_MILK.set(player, true) }
-        deliverItem("obj.egg", "Here's a fresh egg.") { GIVEN_EGG.set(player, true) }
-        deliverItem(potFlour, "Here's a pot of flour.") { GIVEN_FLOUR.set(player, true) }
+        deliverItem("obj.bucket_milk", "Here's a bucket of milk.") { player.givenMilk = true }
+        deliverItem("obj.egg", "Here's a fresh egg.") { player.givenEgg = true }
+        deliverItem(potFlour, "Here's a pot of flour.") { player.givenFlour = true }
 
         if (allItemsDelivered(player)) {
             questFinishing(npc)
@@ -275,14 +298,7 @@ class CooksAssistant : QuestScript("quest_cooksassistant", "varp.cookquest", rew
             "I've forgotten to buy the ingredients. I'll never get them in time now. He'll sack me! What will I do? I have four children and a goat to look after. Would you help me? Please?",
         )
 
-        when (
-            choice2(
-                "I'm always happy to help a cook in distress.",
-                1,
-                "I can't right now, maybe later.",
-                2,
-            )
-        ) {
+        when (choice2("Yes.", 1, "No.", 2, title = "Start the Cook's Assistant quest?")) {
             1 -> {
                 chatPlayer(happy, "Yes, I'll help you.")
                 quest.advanceQuestStage(access)
@@ -300,9 +316,9 @@ class CooksAssistant : QuestScript("quest_cooksassistant", "varp.cookquest", rew
                     access.invDel(access.inv, "obj.egg")
                     access.invDel(access.inv, potFlour)
 
-                    GIVEN_FLOUR.set(player, true)
-                    GIVEN_EGG.set(player, true)
-                    GIVEN_MILK.set(player, true)
+                    player.givenFlour = true
+                    player.givenEgg = true
+                    player.givenMilk = true
 
                     questFinishing(npc)
                     return
@@ -314,5 +330,9 @@ class CooksAssistant : QuestScript("quest_cooksassistant", "varp.cookquest", rew
                 chatNpc(angry, "Fine. I always knew you Adventurer types were callous beasts. Go on your merry way!")
             }
         }
+    }
+
+    private companion object {
+        const val COMPLETE_STAGE = 2
     }
 }

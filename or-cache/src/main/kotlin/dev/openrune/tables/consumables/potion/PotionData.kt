@@ -13,7 +13,7 @@ internal enum class PotionData(
     val mix: Boolean = false,
     val heal: Int = 0,
     val drinkDelay: Int = 3,
-    val combatDelay: Int = 0,
+    val combatDelay: Int = if (mix) FOOD_ATTACK_DELAY else 0,
 ) {
     // Standard potions.
     ATTACK_POTION(
@@ -248,10 +248,10 @@ internal enum class PotionData(
         key = "super_antifire",
         displayName = "Super antifire",
         items = listOf(
-            "obj.4dose2antidragon",
-            "obj.3dose2antidragon",
-            "obj.2dose2antidragon",
-            "obj.1dose2antidragon",
+            "obj.4dose3antidragon",
+            "obj.3dose3antidragon",
+            "obj.2dose3antidragon",
+            "obj.1dose3antidragon",
         ),
         empty = "obj.vial_empty",
         effect = "dbrow.effect_super_antifire",
@@ -929,10 +929,10 @@ internal enum class PotionData(
         key = "extended_antifire",
         displayName = "Extended antifire",
         items = listOf(
-            "obj.4dose4antidragon",
-            "obj.3dose4antidragon",
-            "obj.2dose4antidragon",
-            "obj.1dose4antidragon",
+            "obj.4dose2antidragon",
+            "obj.3dose2antidragon",
+            "obj.2dose2antidragon",
+            "obj.1dose2antidragon",
         ),
         empty = "obj.vial_empty",
         effect = "dbrow.effect_extended_antifire",
@@ -941,10 +941,10 @@ internal enum class PotionData(
         key = "extended_super_antifire",
         displayName = "Extended super antifire",
         items = listOf(
-            "obj.4dose3antidragon",
-            "obj.3dose3antidragon",
-            "obj.2dose3antidragon",
-            "obj.1dose3antidragon",
+            "obj.4dose4antidragon",
+            "obj.3dose4antidragon",
+            "obj.2dose4antidragon",
+            "obj.1dose4antidragon",
         ),
         empty = "obj.vial_empty",
         effect = "dbrow.effect_extended_super_antifire",
@@ -1529,8 +1529,35 @@ internal enum class PotionData(
         empty = "obj.vial_empty",
         effect = "dbrow.effect_moonlight_potion",
         minigameOnly = "moons_of_peril",
+    ),
+    MAGIC_ESSENCE(
+        key = "magic_essence",
+        displayName = "Magic essence",
+        items = listOf(
+            "obj.4dosemagicess",
+            "obj.3dosemagicess",
+            "obj.2dosemagicess",
+            "obj.1dosemagicess",
+        ),
+        empty = "obj.vial_empty",
+        effect = "dbrow.effect_magic_essence_boost",
+    ),
+    MAGIC_ESSENCE_MIX(
+        key = "magic_essence_mix",
+        displayName = "Magic essence mix",
+        items = listOf(
+            "obj.brutal_2dosemagicess",
+            "obj.brutal_1dosemagicess",
+        ),
+        empty = "obj.vial_empty",
+        effect = "dbrow.effect_magic_essence_boost",
+        category = "barbarian_mix",
+        mix = true,
+        heal = 6,
     );
 
     val row: String
         get() = "dbrow.$key"
 }
+
+private const val FOOD_ATTACK_DELAY: Int = 3

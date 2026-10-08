@@ -1,10 +1,10 @@
 package org.rsmod.api.account.autosave
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.types.InvScope
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import java.util.concurrent.ConcurrentHashMap
-import dev.openrune.types.InvScope
 import org.rsmod.api.account.AccountManager
 import org.rsmod.api.account.saver.request.AccountSaveResponse
 import org.rsmod.api.attr.AttributeKey
@@ -97,4 +97,4 @@ constructor(
 }
 
 private fun Player.persistenceSaveEligible(): Boolean =
-    accountId > 0 && characterId > 0 && processedMapClock > 0
+    accountId > 0 && characterId > 0 && processedMapClock > 0 && !persistenceSuspended

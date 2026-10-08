@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 kotlin {
@@ -9,6 +10,7 @@ kotlin {
 dependencies {
     implementation(libs.guice)
     implementation(projects.api.config)
+    implementation(projects.api.generated)
     implementation(projects.api.player)
     implementation(projects.api.script)
     implementation(projects.api.scriptAdvanced)

@@ -5,27 +5,40 @@ import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onOpNpc3
 import org.rsmod.content.other.pets.cats.CatCare
 import org.rsmod.content.other.pets.cats.CatColour
 import org.rsmod.content.other.pets.cats.CatStage
 import org.rsmod.content.other.pets.cats.Cats
 import org.rsmod.content.other.pets.cats.catMedalGiven
 import org.rsmod.content.other.pets.cats.catRatsCaught
-import org.rsmod.content.other.pets.onPetOpIfPresent
 import org.rsmod.content.other.pets.storesAnyObj
+import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest
+import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest.Companion.STAGE_COMPLETE
+import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest.Companion.STAGE_KITTEN_RETURNED
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class Gertrude @Inject constructor(private val care: CatCare) : PluginScript() {
+class Gertrude
+@Inject
+constructor(private val care: CatCare, private val gertrudesCat: GertrudesCatQuest) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(GERTRUDE) { talk(it.npc) }
-        onPetOpIfPresent(GERTRUDE, KITTEN_OP) { quickBuy(it) }
+        onOpNpc3(GERTRUDE) { quickBuy(it.npc) }
     }
 
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
+            if (with(gertrudesCat) { gertrudeDialogue() }) {
+                return@startDialogue
+            }
+            if (gertrudesCat.stage(player) == STAGE_KITTEN_RETURNED) {
+                finishQuest()
+                return@startDialogue
+            }
             if (medalDue(player)) {
                 medal()
                 return@startDialogue
@@ -39,6 +52,66 @@ class Gertrude @Inject constructor(private val care: CatCare) : PluginScript() {
                 2 -> chatPlayer(neutral, "I'll be off. See you another time.")
             }
         }
+
+    private suspend fun Dialogue.finishQuest() {
+        chatPlayer(happy, "Hello Gertrude. Fluffs has run off home with her kitten.")
+        chatNpc(
+            happy,
+            "You're back! Thank you! Thank you! Fluffs just came home! I think she was just upset " +
+                "because she couldn't find her kitten.",
+        )
+        if (access.inv.freeSpace() < REWARD_SLOTS) {
+            chatNpc(
+                neutral,
+                "I've got something for you, but you'll need $REWARD_SLOTS free spaces in your " +
+                    "pack first. Come straight back!",
+            )
+            return
+        }
+        mesbox("Gertrude gives you a hug.")
+        chatNpc(happy, "If you hadn't found her kitten it would have died out there!")
+        chatPlayer(happy, "That's okay, I like to do my bit.")
+        chatNpc(
+            neutral,
+            "I don't know how to thank you. I have no real material possessions. I do have " +
+                "kittens, though! I can only really look after one.",
+        )
+        chatPlayer(happy, "Well, if it needs a home...")
+        chatNpc(
+            neutral,
+            "I would sell it to my cousin in West Ardougne. I hear there's a rat epidemic there. " +
+                "But it's too far.",
+        )
+        chatNpc(happy, "Here you go. Look after her, and thank you again!")
+        chatNpc(
+            neutral,
+            "Oh, by the way: the kitten can live in your backpack, but to make it grow you must " +
+                "take it out and feed and stroke it often.",
+        )
+        val colour = if (wearingCharos(player)) pickColour() ?: access.randomColour() else access.randomColour()
+        val kitten = Cats.of(CatStage.Kitten, colour).obj
+        objbox(kitten, "Gertrude gives you a kitten.")
+        mesbox("...and some food!")
+        if (!rewardQuest(kitten)) {
+            chatNpc(neutral, "You'll need $REWARD_SLOTS free spaces in your pack. Come straight back!")
+        }
+    }
+
+    private fun Dialogue.rewardQuest(kitten: String): Boolean {
+        val inv = access.inv
+        if (inv.freeSpace() < REWARD_SLOTS) {
+            return false
+        }
+        val raisingAnother = hasYoungCat(player)
+        if (access.invAdd(inv, kitten, 1).failure) {
+            return false
+        }
+        if (!raisingAnother) {
+            care.resetKitten(player)
+        }
+        gertrudesCat.quest.setQuestStage(access, STAGE_COMPLETE)
+        return true
+    }
 
     private suspend fun Dialogue.medal() {
         chatPlayer(happy, "Hello again Gertrude!")
@@ -99,6 +172,10 @@ class Gertrude @Inject constructor(private val care: CatCare) : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.quickBuy(npc: Npc) {
+        if (!gertrudesCat.quest.isQuestCompleted(player)) {
+            return
+        }
+        player.faceNpc(npc)
         if (hasYoungCat(player)) {
             startDialogue(npc) {
                 chatNpc(
@@ -155,12 +232,12 @@ class Gertrude @Inject constructor(private val care: CatCare) : PluginScript() {
 
     private companion object {
         const val GERTRUDE = "npc.gertrude"
-        const val KITTEN_OP = "Kitten"
         const val COINS = "obj.coins"
         const val CHAROS = "obj.ring_of_charos_unlocked"
         const val MEDAL = "obj.felinemedal"
         const val PRICE = 100
         const val MEDAL_RATS = 100
         const val PICK_TITLE = "Pick a kitten"
+        const val REWARD_SLOTS = 3
     }
 }

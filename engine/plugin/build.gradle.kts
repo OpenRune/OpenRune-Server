@@ -12,5 +12,6 @@ dependencies {
     implementation(libs.kotlin.inline.logger)
     runtimeOnly(libs.logback.classic)
     implementation(projects.engine.events)
-    implementation(projects.engine.game)
+    // `api`: PluginScript.worldTypes exposes WorldType in its public signature.
+    api(projects.engine.game)
 }

@@ -108,6 +108,9 @@ public object ClientScripts {
 
     public fun chatDefaultRestoreInput(player: Player): Unit = player.runClientScript(2158)
 
+    /** Redraws the chatbox from the client's current chat buffer. */
+    public fun rebuildChatbox(player: Player): Unit = player.runClientScript(216)
+
     public fun topLevelMainModalOpen(
         player: Player,
         colour: Int = -1,

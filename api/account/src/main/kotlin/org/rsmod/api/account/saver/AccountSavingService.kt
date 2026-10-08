@@ -94,7 +94,9 @@ constructor(
     }
 
     private suspend fun saveSegments(request: AccountSaveRequest) {
-        database.withTransaction { connection ->
+        // Schema and data both come from the player, so a request queued cycles ago cannot write
+        // one world type's state into another's tables.
+        database.withSchemaTransaction(request.player.worldType.key) { connection ->
             repository.save(
                 connection,
                 request.player,

@@ -1,0 +1,33 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.cooks_assistant_progress"
+varp = "varp.cookquest"
+startBit = 0
+endBit = 1
+
+[[varp]]
+isServerOnly = true
+id = "varp.cooks_assistant_ingredients"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.cooks_assistant_milk"
+varp = "varp.cooks_assistant_ingredients"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.cooks_assistant_egg"
+varp = "varp.cooks_assistant_ingredients"
+startBit = 1
+endBit = 1
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.cooks_assistant_flour"
+varp = "varp.cooks_assistant_ingredients"
+startBit = 2
+endBit = 2

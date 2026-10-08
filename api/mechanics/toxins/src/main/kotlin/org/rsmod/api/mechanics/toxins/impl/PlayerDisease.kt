@@ -28,6 +28,12 @@ public object PlayerDisease {
 
     public const val TICK_INTERVAL: Int = PlayerPoison.TICK_INTERVAL
 
+    public const val IMMUNITY_TIMER: String = "timer.disease_immunity"
+
+    private const val IMMUNITY_VARP: String = "varp.disease_immunity"
+
+    private const val IMMUNITY_TIMER_INTERVAL: Int = TICK_INTERVAL
+
     private object DiseaseSplatOnlyProcessor : InstantPlayerHitProcessor {
         override fun Player.process(hit: Hit) {
             showHitmark(hit.hitmark)
@@ -62,11 +68,49 @@ public object PlayerDisease {
     }
 
     public fun tryDisease(player: Player, drainPerTick: Int): Boolean {
-        if (drainPerTick <= 0) {
+        if (drainPerTick <= 0 || hasImmunity(player)) {
             return false
         }
         return applyDisease(player, drainPerTick)
     }
+
+    public fun hasImmunity(player: Player): Boolean = player.vars[IMMUNITY_VARP] > 0
+
+    public fun grantImmunity(player: Player, duration: Int) {
+        if (duration <= player.vars[IMMUNITY_VARP]) {
+            return
+        }
+        VarPlayerIntMapSetter.set(player, IMMUNITY_VARP, duration)
+        player.clearTimer(IMMUNITY_TIMER)
+        player.timer(IMMUNITY_TIMER, immunityTimerDelay(duration))
+    }
+
+    public fun onImmunityTimerTick(player: Player) {
+        val remaining = remainingImmunityAfterTick(player.vars[IMMUNITY_VARP])
+        VarPlayerIntMapSetter.set(player, IMMUNITY_VARP, remaining)
+        if (remaining > 0) {
+            player.timer(IMMUNITY_TIMER, immunityTimerDelay(remaining))
+        }
+    }
+
+    public fun rearmImmunityAfterLogin(player: Player, clock: Int) {
+        val remaining = player.vars[IMMUNITY_VARP]
+        if (remaining <= 0) {
+            return
+        }
+        player.clearTimer(IMMUNITY_TIMER)
+        player.timerAt(
+            timer = IMMUNITY_TIMER,
+            mapClock = clock,
+            cycles = immunityTimerDelay(remaining),
+        )
+    }
+
+    public fun immunityTimerDelay(remaining: Int): Int =
+        remaining.coerceIn(1, IMMUNITY_TIMER_INTERVAL)
+
+    public fun remainingImmunityAfterTick(remaining: Int): Int =
+        (remaining - immunityTimerDelay(remaining)).coerceAtLeast(0)
 
     private fun applyDisease(player: Player, drainPerTick: Int): Boolean {
         if (eligibleDiseaseStats().isEmpty()) {
@@ -148,7 +192,7 @@ public object PlayerDisease {
                 modifier = NoopPlayerHitModifier,
             )
         } else {
-            applyDiseaseDrain(player, RSCM.getReverseMapping(RSCMType.STAT,targetStat.id), drain)
+            applyDiseaseDrain(player, RSCM.getReverseMapping(RSCMType.STAT, targetStat.id), drain)
         }
 
         player.timer("timer.player_disease", TICK_INTERVAL)

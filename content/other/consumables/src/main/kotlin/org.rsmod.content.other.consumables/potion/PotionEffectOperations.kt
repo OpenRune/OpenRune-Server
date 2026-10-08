@@ -1,7 +1,5 @@
 package org.rsmod.content.other.consumables.potion
 
-import org.rsmod.api.config.constants
-import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statBase
@@ -58,32 +56,21 @@ internal fun ProtectedAccess.restoreHitpointsIfDrained(
     )
 }
 
-internal fun ProtectedAccess.restoreRunEnergy(
-    percent: Int,
-) {
-    if (percent <= 0) {
-        return
+internal fun divineRefusalMessage(damage: Int): String =
+    "You need more than $damage hitpoints to survive the power of a divine potion."
+
+internal fun restoredStats(
+    allStats: Collection<String>,
+    included: List<String>,
+    excluded: Set<String>,
+    restorePrayer: Boolean,
+): List<String> {
+    val candidates = included.ifEmpty { allStats }
+    return candidates.filter { stat ->
+        stat !in excluded &&
+            stat != HITPOINTS &&
+            (stat != PRAYER || restorePrayer)
     }
-
-    val restored =
-        (
-            player.runEnergy +
-                percent * RUN_ENERGY_PERCENT_SCALE
-            ).coerceAtMost(
-                constants.run_max_energy,
-            )
-
-    if (restored == player.runEnergy) {
-        return
-    }
-
-    player.runEnergy =
-        restored
-
-    UpdateRun.energy(
-        player,
-        restored,
-    )
 }
 
 internal fun ProtectedAccess.drainCurrentStat(
@@ -202,5 +189,8 @@ internal fun Player.restartTimer(
 
 private const val HITPOINTS: String =
     "stat.hitpoints"
+
+private const val PRAYER: String =
+    "stat.prayer"
 
 private const val RUN_ENERGY_PERCENT_SCALE: Int = 10

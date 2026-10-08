@@ -32,17 +32,20 @@ import org.rsmod.api.game.process.PluginScriptBootGate
 import org.rsmod.api.repo.EntityDelayedProcess
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.script.WorldTypeScriptContext
 import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.map.LocZoneStorage
 import org.rsmod.game.obj.Obj
 import org.rsmod.game.obj.ObjEntity
 import org.rsmod.game.obj.ObjScope
+import org.rsmod.game.world.WorldType
+import org.rsmod.game.world.WorldTypeGate
 import org.rsmod.map.CoordGrid
+import org.rsmod.plugin.loader.ExternalPluginLoader
 import org.rsmod.plugin.module.PluginModule
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
-import org.rsmod.plugin.loader.ExternalPluginLoader
 import org.rsmod.server.install.GameNetworkRsaGenerator
 import org.rsmod.server.install.GameServerLogbackCopy
 import org.rsmod.server.shared.loader.PluginModuleLoader
@@ -181,10 +184,30 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
             scriptLoader.load(PluginScript::class.java, injector) +
                 ExternalPluginLoader.loadScriptsAtBoot(injector)
         val scriptContext = injector.getInstance(ScriptContext::class.java)
+        val served = WorldType.supportedFrom(serverConfig.worldTypes)
+
+        // Applies to plugins reloaded at runtime too, not just this boot pass.
+        ExternalPluginLoader.scriptContextResolver = { script, context ->
+            resolveScriptContext(script, context, served)
+        }
+
         val timings = mutableListOf<Pair<String, Duration>>()
+        var skipped = 0
         for (script in scripts) {
-            val (_, duration) = measureTimedValue { startupPluginScript(script, scriptContext) }
+            val context = resolveScriptContext(script, scriptContext, served)
+            if (context == null) {
+                skipped++
+                logger.debug {
+                    "Skipped ${script::class.java.name}: world types not served by this world " +
+                        "(${script.worldTypes.joinToString { it.key }})"
+                }
+                continue
+            }
+            val (_, duration) = measureTimedValue { startupPluginScript(script, context) }
             timings += script::class.java.name to duration
+        }
+        if (skipped > 0) {
+            logger.info { "Skipped $skipped plugin script(s) scoped to other world types." }
         }
         logger.info {
             val slowest =
@@ -193,12 +216,17 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
                 }
             "Slowest script startup() calls: $slowest"
         }
+        // Queued here rather than in loadMap so these spawns go through the same delayed flush as
+        // the cache's map spawns, and so onNpcSpawn handlers already exist.
+        injector.getInstance(WorldTypeNpcSpawns::class.java).spawnAll(served.map { it.key })
+
         // Map spawns are queued via addDelayed during loadMap so onNpcSpawn handlers exist
         // first. Flush them here before opening login so players never see entities pop in.
         logger.info { "Spawning map entities..." }
         injector.getInstance(EntityDelayedProcess::class.java).flush()
         injector.getInstance(PluginScriptBootGate::class.java).markReady()
-        logger.info { "Loaded ${scripts.size} script${if (scripts.size == 1) "" else "s"}." }
+        val started = scripts.size - skipped
+        logger.info { "Loaded $started script${if (started == 1) "" else "s"}." }
     }
 
     private fun startupGame(
@@ -236,6 +264,18 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
         }
 
         bootstrap.awaitShutdown(shutdownHook)
+    }
+
+    /** The context [script] registers through, or `null` if this world serves none of its modes. */
+    private fun resolveScriptContext(
+        script: PluginScript,
+        context: ScriptContext,
+        served: Collection<WorldType>,
+    ): ScriptContext? {
+        if (!WorldTypeGate.servedBy(served, script.worldTypes)) {
+            return null
+        }
+        return WorldTypeScriptContext.forScript(script, context)
     }
 
     private fun startupPluginScript(script: PluginScript, context: ScriptContext) {

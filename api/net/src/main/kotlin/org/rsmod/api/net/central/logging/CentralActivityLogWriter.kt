@@ -3,8 +3,8 @@ package org.rsmod.api.net.central.logging
 import com.github.michaelbull.logging.InlineLogger
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import dev.or2.central.logs.CentralActivityLog
 import dev.openrune.types.ItemServerType
+import dev.or2.central.logs.CentralActivityLog
 import dev.or2.central.logs.CentralActivityLogRepository
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
@@ -134,6 +134,7 @@ constructor(
     ) {
         val repo = repository ?: return
         val worldId = config.world
+        val worldType = player.worldType.key
         val charId = player.characterId
         val now = System.currentTimeMillis()
         val accountId = player.accountId.toLong()
@@ -149,6 +150,7 @@ constructor(
                         command = command,
                         args = argsCopy,
                     ),
+                    worldType,
                 )
             } catch (e: Exception) {
                 logger.warn(e) {
@@ -165,6 +167,7 @@ constructor(
     public fun logPlayerLogin(player: Player) {
         val repo = repository ?: return
         val worldId = config.world
+        val worldType = player.worldType.key
         val now = System.currentTimeMillis()
         val charId = player.characterId
         val accountId = player.accountId.toLong()
@@ -177,6 +180,7 @@ constructor(
                         characterId = charId,
                         accountId = accountId,
                     ),
+                    worldType,
                 )
             } catch (e: Exception) {
                 logger.warn(e) {
@@ -195,6 +199,7 @@ constructor(
     ) {
         val repo = repository ?: return
         val worldId = config.world
+        val worldType = player.worldType.key
         val now = System.currentTimeMillis()
         val charId = player.characterId
         val accountId = player.accountId.toLong()
@@ -208,6 +213,7 @@ constructor(
                         accountId = accountId,
                         sessionId = centralSessionId,
                     ),
+                    worldType,
                 )
             } catch (e: Exception) {
                 logger.warn(e) {
@@ -236,6 +242,7 @@ constructor(
     ) {
         val repo = repository ?: return
         val worldId = config.world
+        val worldType = player.worldType.key
         val charId = player.characterId
         val accountId = player.accountId.toLong()
         val now = System.currentTimeMillis()
@@ -243,7 +250,7 @@ constructor(
         val z = player.z
         executor.execute {
             try {
-                repo.insert(log(worldId, now, charId, accountId, itemId, quantity, x, z))
+                repo.insert(log(worldId, now, charId, accountId, itemId, quantity, x, z), worldType)
             } catch (e: Exception) {
                 logger.warn(e) {
                     "Central activity log $failureLabel failed accountId=$accountId characterId=$charId itemId=$itemId qty=$quantity"

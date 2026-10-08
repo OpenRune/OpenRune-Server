@@ -146,6 +146,7 @@ import org.rsmod.game.region.RegionListSmall
 import org.rsmod.game.stat.PlayerSkillXPTable
 import org.rsmod.game.stat.PlayerStatMap
 import org.rsmod.game.ui.UserInterface
+import org.rsmod.game.world.WorldType
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneGrid
 import org.rsmod.map.zone.ZoneKey
@@ -236,6 +237,7 @@ constructor(
         player.uuid = resolvedUuid
         player.accountId = resolvedUuid.toInt()
         player.characterId = resolvedUuid.toInt()
+        player.worldType = WorldType.DEFAULT
         player.accountHash = resolvedUuid
         player.userId = resolvedUuid
         player.runEnergy = Int.MAX_VALUE
@@ -935,7 +937,14 @@ constructor(
         }
 
         private class ThrowDatabase : Database {
-            override suspend fun <T> withTransaction(block: (DatabaseConnection) -> T): T =
+            override suspend fun <T> withTransaction(block: (DatabaseConnection) -> T): T = unavailable()
+
+            override suspend fun <T> withSchemaTransaction(
+                schema: String?,
+                block: (DatabaseConnection) -> T,
+            ): T = unavailable()
+
+            private fun unavailable(): Nothing =
                 error(
                     "ThrowDatabase was used: no real Database is available. " +
                         "If your test needs database access, bind a test-specific Database."

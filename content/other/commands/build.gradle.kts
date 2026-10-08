@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation(libs.fastutil)
     implementation(libs.simmetrics.core)
+    implementation(projects.api.account)
     implementation(projects.api.areaChecker)
     implementation(projects.api.combat.combatCommons)
     implementation(projects.api.instances)
@@ -13,6 +14,7 @@ dependencies {
     implementation(projects.api.dbGateway)
     implementation(projects.api.mechanics.toxins)
     implementation(projects.api.pluginCommons)
+    implementation(projects.api.realm)
     implementation(projects.api.spellsAutocast)
 
     implementation(projects.api.utils.utilsSystem)

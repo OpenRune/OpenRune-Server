@@ -50,6 +50,10 @@ public fun ScriptContext.onAdvanceStat(
     action: suspend ProtectedAccess.(EngineQueueEvents.Labelled) -> Unit,
 ): Unit = onEngineQueue(EngineQueueType.AdvanceStat, stat.id, action)
 
+public fun ScriptContext.onAdvanceCombat(
+    action: suspend ProtectedAccess.(EngineQueueEvents.Default<Int>) -> Unit
+): Unit = onEngineQueue(EngineQueueType.AdvanceCombat, action)
+
 public fun ScriptContext.onMapzone(
     square: MapSquareKey,
     action: suspend ProtectedAccess.(EngineQueueEvents.Labelled) -> Unit,
