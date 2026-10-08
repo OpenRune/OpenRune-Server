@@ -206,3 +206,25 @@ angle = 16
 lengthAdjustment = -5
 progress = 64
 stepMultiplier = 10
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.crystal_dragon_magic"
+startHeight = 58
+endHeight = 104
+delay = 51
+angle = 12
+lengthAdjustment = 20
+progress = 128
+stepMultiplier = 3
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.crystal_dark_beast_ranged"
+startHeight = 76
+endHeight = 94
+delay = 36
+angle = 8
+lengthAdjustment = 20
+progress = 128
+stepMultiplier = 3

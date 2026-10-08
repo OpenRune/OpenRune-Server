@@ -16948,8 +16948,11 @@ maxRange = 20
 wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
+"param.npc_attack_type"="category.attacktype_magic"
 "param.attack_anim"="seq.dragon_firebreath_all_attack"
 "param.death_anim"="seq.dragon_death"
+"param.proj_type"="projanim.crystal_dragon_magic"
+"param.proj_travel"="spotanim.crystal_dragon_magic_travel"
 
 [[npc]]
 id = "npc.crystal_dragon_hm"
@@ -16958,8 +16961,11 @@ maxRange = 20
 wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
+"param.npc_attack_type"="category.attacktype_magic"
 "param.attack_anim"="seq.dragon_firebreath_all_attack"
 "param.death_anim"="seq.dragon_death"
+"param.proj_type"="projanim.crystal_dragon_magic"
+"param.proj_travel"="spotanim.crystal_dragon_magic_travel_hm"
 
 [[npc]]
 id = "npc.crystal_dark_beast"
@@ -16968,8 +16974,11 @@ maxRange = 20
 wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
+"param.npc_attack_type"="category.attacktype_standard"
 "param.attack_anim"="seq.dark_beast_update_attack"
 "param.death_anim"="seq.dark_beast_update_death"
+"param.proj_type"="projanim.crystal_dark_beast_ranged"
+"param.proj_travel"="spotanim.crystal_dark_beast_range_travel"
 
 [[npc]]
 id = "npc.crystal_dark_beast_hm"
@@ -16978,8 +16987,11 @@ maxRange = 20
 wanderRange = 10
 [npc.params]
 "param.dropped_remains"=-1
+"param.npc_attack_type"="category.attacktype_standard"
 "param.attack_anim"="seq.dark_beast_update_attack"
 "param.death_anim"="seq.dark_beast_update_death"
+"param.proj_type"="projanim.crystal_dark_beast_ranged"
+"param.proj_travel"="spotanim.crystal_dark_beast_range_travel_hm"
 
 [[npc]]
 id = "npc.crystal_hunllef_melee"
