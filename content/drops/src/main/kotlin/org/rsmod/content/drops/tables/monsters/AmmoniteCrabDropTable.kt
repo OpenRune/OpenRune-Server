@@ -18,7 +18,7 @@ import org.rsmod.game.entity.Player
 @JvmField
 public val ammoniteCrabDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
     tableIdentifier = "Ammonite Crab Drops",
-    npcs = npcs("npc.fossil_ammonitecrab"),
+    npcs = npcs("npc.fossil_ammonitecrab", "npc.fossil_ammonitecrab_inactive"),
     mainTable = rsPlayerWeightedTable(total = 128) {
         name("Ammonite Crab Drops")
         5 weight "obj.iron_pickaxe" count 1
