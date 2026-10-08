@@ -16986,36 +16986,54 @@ id = "npc.crystal_hunllef_melee"
 inherit = "npc.crystal_hunllef_melee"
 [npc.params]
 "param.dropped_remains"=-1
+"param.boss_hp_bar_colour_back"=13107200
+"param.boss_hp_bar_colour_sliding"=36864
+"param.boss_hp_bar_colour_remaining"=51200
 
 [[npc]]
 id = "npc.crystal_hunllef_melee_hm"
 inherit = "npc.crystal_hunllef_melee_hm"
 [npc.params]
 "param.dropped_remains"=-1
+"param.boss_hp_bar_colour_back"=13107200
+"param.boss_hp_bar_colour_sliding"=36864
+"param.boss_hp_bar_colour_remaining"=51200
 
 [[npc]]
 id = "npc.crystal_hunllef_ranged"
 inherit = "npc.crystal_hunllef_ranged"
 [npc.params]
 "param.dropped_remains"=-1
+"param.boss_hp_bar_colour_back"=13107200
+"param.boss_hp_bar_colour_sliding"=36864
+"param.boss_hp_bar_colour_remaining"=51200
 
 [[npc]]
 id = "npc.crystal_hunllef_ranged_hm"
 inherit = "npc.crystal_hunllef_ranged_hm"
 [npc.params]
 "param.dropped_remains"=-1
+"param.boss_hp_bar_colour_back"=13107200
+"param.boss_hp_bar_colour_sliding"=36864
+"param.boss_hp_bar_colour_remaining"=51200
 
 [[npc]]
 id = "npc.crystal_hunllef_magic"
 inherit = "npc.crystal_hunllef_magic"
 [npc.params]
 "param.dropped_remains"=-1
+"param.boss_hp_bar_colour_back"=13107200
+"param.boss_hp_bar_colour_sliding"=36864
+"param.boss_hp_bar_colour_remaining"=51200
 
 [[npc]]
 id = "npc.crystal_hunllef_magic_hm"
 inherit = "npc.crystal_hunllef_magic_hm"
 [npc.params]
 "param.dropped_remains"=-1
+"param.boss_hp_bar_colour_back"=13107200
+"param.boss_hp_bar_colour_sliding"=36864
+"param.boss_hp_bar_colour_remaining"=51200
 
 [[npc]]
 id = "npc.crystal_hunllef_death"

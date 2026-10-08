@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.bossbar.plugin.BossHpBarScript
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
@@ -22,13 +23,20 @@ internal var Player.gauntletBossStarted by boolVarBit("varbit.gauntlet_boss_star
 @Singleton
 class GauntletBossEntry
 @Inject
-constructor(private val runs: GauntletRuns, private val regions: RegionRegistry) {
+constructor(
+    private val runs: GauntletRuns,
+    private val regions: RegionRegistry,
+    private val lighting: GauntletLighting,
+    private val bossHpBar: BossHpBarScript,
+) {
     fun ProtectedAccess.begin() {
         val run = runs.runFor(player) ?: return
         if (player.gauntletBossStarted) return
         player.gauntletBossStarted = true
         player.clearSoftTimer(GauntletRuns.TIME_LIMIT_TIMER)
+        lighting.lightBossRoom(player.coords, run)
         runClientScript(TIMER_END.asRSCM(RSCMType.CLIENTSCRIPT))
+        run.hunllef?.let { bossHpBar.onOpen(player, it) }
         val region = regions[player.coords] ?: return
         val room = run.layout.bossRoom
         val inside = RegionRotations.translateZone(room.rotation, INSIDE_X, INSIDE_Z, ROOM, ROOM)

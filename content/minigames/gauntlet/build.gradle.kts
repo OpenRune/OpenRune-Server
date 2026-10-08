@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.bossHpBarPlugin)
     implementation(projects.api.combat.combatManager)
     implementation(projects.api.config)
     implementation(projects.api.death)

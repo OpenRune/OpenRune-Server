@@ -17,6 +17,7 @@ import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
+import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.content.minigames.gauntlet.layout.GauntletLayout
 import org.rsmod.content.minigames.gauntlet.layout.LayoutTemplateBuilder
 import org.rsmod.content.minigames.gauntlet.layout.RoomContentsGenerator
@@ -34,6 +35,8 @@ constructor(
     private val manager: InstanceManager,
     private val clock: MapClock,
     private val lighting: GauntletLighting,
+    private val spawner: GauntletContents,
+    private val regions: RegionRegistry,
 ) {
     private val active = HashMap<InstanceId, GauntletRun>()
 
@@ -58,6 +61,7 @@ constructor(
                     telejump(result.enter, TeleportType.Exempt)
                     manager.finalizeEntry(player, result.session, clock.cycle)
                     with(lighting) { lightEntry(result.enter, run) }
+                    regions[result.enter]?.let { spawner.spawnHunllef(it, run, player) }
                     GauntletHolding.store(player)
                     GauntletHolding.giveStartingKit(player, mode)
                     player.inGauntlet = true

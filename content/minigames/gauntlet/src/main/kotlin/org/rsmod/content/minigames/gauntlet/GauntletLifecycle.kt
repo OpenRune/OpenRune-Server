@@ -1,6 +1,7 @@
 package org.rsmod.content.minigames.gauntlet
 
 import jakarta.inject.Inject
+import org.rsmod.api.bossbar.plugin.BossHpBarScript
 import org.rsmod.api.instances.events.InstancePlayerLeaveEvent
 import org.rsmod.api.instances.events.instanceEventId
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -17,6 +18,7 @@ constructor(
     private val protectedAccess: ProtectedAccessLauncher,
     private val eventBus: EventBus,
     private val bossEntry: GauntletBossEntry,
+    private val bossHpBar: BossHpBarScript,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onPlayerSoftTimer(GauntletRuns.TIME_LIMIT_TIMER) {
@@ -27,6 +29,7 @@ constructor(
             player.clearSoftTimer(GauntletRuns.TIME_LIMIT_TIMER)
             GauntletHolding.restore(player)
             player.ifCloseOverlay(GauntletRuns.OVERLAY, eventBus)
+            if (player.gauntletBossStarted) bossHpBar.onDeathClose(player)
             player.inGauntlet = false
             player.gauntletCorrupted = false
             player.gauntletStart = 0

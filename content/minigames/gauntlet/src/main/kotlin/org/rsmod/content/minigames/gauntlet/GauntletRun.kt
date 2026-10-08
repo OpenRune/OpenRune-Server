@@ -2,6 +2,7 @@ package org.rsmod.content.minigames.gauntlet
 
 import org.rsmod.content.minigames.gauntlet.layout.GauntletLayout
 import org.rsmod.content.minigames.gauntlet.layout.RoomContents
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
@@ -16,4 +17,5 @@ class GauntletRun(
     var weakFrameGiven = false
     var strongKillsWithoutFrame = 0
     var componentsObtained = 0
+    var hunllef: Npc? = null
 }

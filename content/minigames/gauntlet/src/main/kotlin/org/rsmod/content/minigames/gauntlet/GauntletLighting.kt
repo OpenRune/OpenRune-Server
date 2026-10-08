@@ -91,6 +91,15 @@ constructor(private val regions: RegionRegistry, private val locRepo: LocReposit
         player.regionRebuildPending = true
     }
 
+    fun lightBossRoom(coords: CoordGrid, run: GauntletRun) {
+        val region = regions[coords] ?: return
+        val boss = run.layout.bossRoom
+        for (edge in Edge.entries) {
+            val next = neighbour(run, boss, edge) ?: continue
+            if (next.index in run.revealed) lightStrip(region, boss, edge)
+        }
+    }
+
     private fun reveal(region: Region, room: GauntletRoom, mode: GauntletMode) {
         val zoneX = RoomTemplates.zoneX(mode, room.kind)
         val zoneZ = RoomTemplates.zoneZ(room)

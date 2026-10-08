@@ -60,6 +60,16 @@ constructor(
         }
     }
 
+    fun spawnHunllef(region: Region, run: GauntletRun, player: Player) {
+        val type = if (run.mode.corrupted) "npc.crystal_hunllef_melee_hm" else "npc.crystal_hunllef_melee"
+        val size = requireNotNull(ServerCacheManager.getNpc(type.asRSCM(RSCMType.NPC))).size
+        val npc = Npc(type, coordsOf(region, run.layout.bossRoom, HUNLLEF_TILE, size))
+        npcRepo.add(npc, NPC_LIFETIME)
+        manager.sessionForPlayer(player)?.let { manager.attachNpc(it.id, npc) }
+        npc.anim("seq.hunllef_spawn", delay = HUNLLEF_SPAWN_DELAY)
+        run.hunllef = npc
+    }
+
     private fun placeable(
         region: Region,
         room: GauntletRoom,
@@ -121,6 +131,8 @@ constructor(
         private const val NPC_LIFETIME = 100_000
         private const val FISHING_SIZE = 2
         private const val DEMI_AP_RANGE = 10
+        private const val HUNLLEF_SPAWN_DELAY = 120
+        private val HUNLLEF_TILE = Tile(6, 6)
         private const val SEARCH_RADIUS = GauntletLighting.ROOM_TILES - 1
         private const val WALL_FLAGS =
             CollisionFlag.WALL_NORTH_WEST or
