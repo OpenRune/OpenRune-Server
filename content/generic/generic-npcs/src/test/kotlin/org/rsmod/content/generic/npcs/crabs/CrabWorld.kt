@@ -47,7 +47,7 @@ import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
-/** Just enough of the game cycle to run npc hunting, ai timers and the sand crab script. */
+/** Just enough of the game cycle to run npc hunting, ai timers and the crab script. */
 @OptIn(InternalApi::class)
 class CrabWorld {
     val events = EventBus()
@@ -98,7 +98,7 @@ class CrabWorld {
 
     init {
         val context = ScriptContext(events, CheatCommandMap(), EngineQueueCache())
-        with(SandCrabs(disguises)) { context.startup() }
+        with(Crabs(disguises)) { context.startup() }
     }
 
     fun spawn(type: String, at: CoordGrid): Npc {

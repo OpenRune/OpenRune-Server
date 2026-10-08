@@ -24,7 +24,8 @@ import org.rsmod.routefinder.collision.CollisionFlagMap
  * base type never changes, only its transmog does, so stats, params, drops and respawns all come
  * from [dormant] and both types need the same combat params.
  *
- * @property wakeRange chebyshev distance at which a player in line of sight wakes the npc.
+ * @property wakeRange tile distance from any edge of the npc at which a player in line of sight
+ *   wakes it.
  * @property restTicks ticks out of combat before the npc heads back to its spawn and burrows.
  * @property huntMode id of the hunt mode (`stalk.*`) the awake npc picks its target with.
  * @property tolerant whether players become tolerant of the awake npc after ten minutes.
@@ -70,8 +71,10 @@ constructor(
         if (!npc.isAnyoneNear()) {
             return
         }
-        val nearby = hunt.findPlayers(npc.coords, disguise.wakeRange, HuntVis.LineOfSight)
-        if (nearby.any { !tolerance.isTolerant(npc, it) }) {
+        val reach = disguise.wakeRange + npc.size - 1
+        val nearby = hunt.findPlayers(npc.coords, reach, HuntVis.LineOfSight)
+        val wakers = nearby.filter { npc.isWithinDistance(it, disguise.wakeRange) }
+        if (wakers.any { !tolerance.isTolerant(npc, it) }) {
             wake(npc, disguise)
         }
     }
