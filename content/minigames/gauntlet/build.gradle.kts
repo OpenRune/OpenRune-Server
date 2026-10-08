@@ -4,11 +4,13 @@ plugins {
 
 dependencies {
     implementation(projects.api.bossHpBarPlugin)
+    implementation(projects.api.bosses)
     implementation(projects.api.combat.combatManager)
     implementation(projects.api.config)
     implementation(projects.api.death)
     implementation(projects.api.instances)
     implementation(projects.api.invtx)
+    implementation(projects.api.npc)
     implementation(projects.api.player)
     implementation(projects.api.playerOutput)
     implementation(projects.api.pluginCommons)

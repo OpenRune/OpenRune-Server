@@ -17,3 +17,9 @@ gauntlet_slots_corner_0 = 56009
 gauntlet_slots_corner_1 = 56010
 gauntlet_slots_corner_2 = 56011
 gauntlet_slots_corner_3 = 56012
+
+[gamevals.varn]
+hunllef_style = 60
+hunllef_cycle = 61
+hunllef_protect = 62
+hunllef_off_prayer = 63

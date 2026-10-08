@@ -5,6 +5,8 @@ import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.bossbar.plugin.BossHpBarScript
+import org.rsmod.api.npc.apPlayer2
+import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
@@ -12,6 +14,7 @@ import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc5
+import org.rsmod.content.minigames.gauntlet.hunllef.HunllefFloor
 import org.rsmod.game.entity.Player
 import org.rsmod.game.region.util.RegionRotations
 import org.rsmod.map.CoordGrid
@@ -28,6 +31,8 @@ constructor(
     private val regions: RegionRegistry,
     private val lighting: GauntletLighting,
     private val bossHpBar: BossHpBarScript,
+    private val floor: HunllefFloor,
+    private val aiPlayerInteractions: AiPlayerInteractions,
 ) {
     fun ProtectedAccess.begin() {
         val run = runs.runFor(player) ?: return
@@ -48,6 +53,11 @@ constructor(
             ),
             TeleportType.Exempt,
         )
+        run.hunllef?.let { boss ->
+            run.fighter = player
+            boss.apPlayer2(player, aiPlayerInteractions)
+            floor.start(boss, player, run.mode.corrupted, region, room)
+        }
     }
 
     private companion object {

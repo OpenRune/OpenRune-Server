@@ -8,6 +8,7 @@ import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onPlayerSoftTimer
+import org.rsmod.content.minigames.gauntlet.hunllef.HunllefFloor
 import org.rsmod.events.EventBus
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -19,6 +20,7 @@ constructor(
     private val eventBus: EventBus,
     private val bossEntry: GauntletBossEntry,
     private val bossHpBar: BossHpBarScript,
+    private val hunllefFloor: HunllefFloor,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onPlayerSoftTimer(GauntletRuns.TIME_LIMIT_TIMER) {
@@ -27,6 +29,7 @@ constructor(
         }
         onEvent<InstancePlayerLeaveEvent>(instanceEventId(GauntletRuns.KEY)) {
             player.clearSoftTimer(GauntletRuns.TIME_LIMIT_TIMER)
+            hunllefFloor.stopFor(player)
             GauntletHolding.restore(player)
             player.ifCloseOverlay(GauntletRuns.OVERLAY, eventBus)
             if (player.gauntletBossStarted) bossHpBar.onDeathClose(player)

@@ -22,6 +22,7 @@ import org.rsmod.content.minigames.gauntlet.layout.GauntletLayout
 import org.rsmod.content.minigames.gauntlet.layout.LayoutTemplateBuilder
 import org.rsmod.content.minigames.gauntlet.layout.RoomContentsGenerator
 import org.rsmod.game.MapClock
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
 internal var Player.inGauntlet by boolVarBit("varbit.player_in_gauntlet")
@@ -39,6 +40,8 @@ constructor(
     private val regions: RegionRegistry,
 ) {
     private val active = HashMap<InstanceId, GauntletRun>()
+
+    fun runFor(npc: Npc): GauntletRun? = manager.instanceForNpc(npc)?.let { active[it] }
 
     fun runFor(player: Player): GauntletRun? =
         manager.sessionForPlayer(player)?.let { active[it.id] }
