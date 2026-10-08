@@ -52,6 +52,7 @@ data class SkillMultiConfig(
     val verb: String,
     val entries: List<SkillMultiEntry>,
     val maxCountProvider: ((Inventory, SkillMultiEntry) -> Int)? = null,
+    val defaultAmount: Int? = null,
 ) {
 
     val title: String
@@ -235,7 +236,7 @@ private fun skillmultiSetupArgs(
         add(labels)
         add(maxCount)
         addAll(itemIds)
-        add(maxCount)
+        add(config.defaultAmount ?: maxCount)
     }
 }
 
