@@ -192,7 +192,6 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
         chatNpc(neutral, "You haven't got a contract at the moment.")
     }
 
-    /** Returns true when the conversation is over. */
     private suspend fun Dialogue.favour(): Boolean {
         chatPlayer(quiz, "What kind of favour do you want me to do?")
         chatNpc(
