@@ -66,7 +66,6 @@ import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Comp
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.URN_EMPTY
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.URN_FULL
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.Golrie
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.Hudon
 import org.rsmod.content.quest.util.QuestDoors
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
@@ -759,7 +758,6 @@ class WaterfallInteractionTest {
 
     companion object {
         private val GOLRIE_NPC = WaterfallQuest.GOLRIE_NPC
-
 
         private const val BOOKCASE = "loc.bookcase_waterfall_quest"
         private const val GOLRIE_CRATE = "loc.golrie_crate_waterfall_quest"
