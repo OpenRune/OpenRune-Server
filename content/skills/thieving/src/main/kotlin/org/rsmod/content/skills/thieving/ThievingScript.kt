@@ -15,8 +15,8 @@ import org.rsmod.api.player.hands
 import org.rsmod.api.player.hat
 import org.rsmod.api.player.legs
 import org.rsmod.api.player.output.ChatType
-import org.rsmod.api.player.torso
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.torso
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onOpHeld1
