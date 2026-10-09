@@ -53,7 +53,7 @@ class CrabWorld {
     val events = EventBus()
     val collision = CollisionFlagMap()
     val clock = MapClock().apply { cycle = 100 }
-    val tolerance = AggressionTolerance(clock)
+    private val tolerance = AggressionTolerance(clock)
     private val updates = ZoneUpdateMap()
     private val zones = LocZoneStorage()
     private val activity = ZonePlayerActivityBitSet()
@@ -93,7 +93,7 @@ class CrabWorld {
             AiLocInteractions(BoundValidator(collision), events),
         )
     private val aiTimers = AiTimerProcessor(events)
-    val disguises = DisguisedNpcs(hunt, tolerance, playerList, collision)
+    private val disguises = DisguisedNpcs(hunt, tolerance, playerList, collision)
     private var nextSlot = 1
 
     init {
@@ -148,17 +148,6 @@ class CrabWorld {
                     aiTimers.process(npc)
                 }
             }
-        }
-    }
-
-    /** Advances the clock while [player] keeps being seen by an enrolled npc. */
-    fun stayFor(player: Player, ticks: Int) {
-        var left = ticks
-        while (left > 0) {
-            val step = minOf(left, 25)
-            clock.cycle += step
-            tolerance.isTolerant(player)
-            left -= step
         }
     }
 

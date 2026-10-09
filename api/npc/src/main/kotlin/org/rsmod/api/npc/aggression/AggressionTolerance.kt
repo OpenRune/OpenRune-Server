@@ -65,12 +65,6 @@ public class AggressionTolerance @Inject constructor(private val mapClock: MapCl
         return now - (player.toleranceStart - 1) >= TOLERANCE_TICKS
     }
 
-    public fun reset(player: Player) {
-        player.toleranceStart = 0
-        player.toleranceAnchor = 0
-        player.toleranceSeen = 0
-    }
-
     public companion object {
         public const val TOLERANCE_TICKS: Int = 1000
         public const val LEAVE_DISTANCE: Int = 38
