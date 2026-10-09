@@ -10,7 +10,12 @@ import jakarta.inject.Inject
 import org.rsmod.api.droptable.rollCount
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
+import org.rsmod.api.player.feet
+import org.rsmod.api.player.hands
+import org.rsmod.api.player.hat
+import org.rsmod.api.player.legs
 import org.rsmod.api.player.output.ChatType
+import org.rsmod.api.player.torso
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
@@ -24,6 +29,7 @@ import org.rsmod.api.table.thieving.ThievingPickpocketRow
 import org.rsmod.api.table.thieving.ThievingStallRow
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.hit.HitType
+import org.rsmod.game.inv.isType
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
@@ -38,6 +44,9 @@ constructor(
     private val aiPlayerInteractions: AiPlayerInteractions,
 ) : PluginScript() {
     private val restockingUntil = HashMap<CoordGrid, Int>()
+    private val coinPouches by lazy {
+        ThievingCoinPouchRow.all().associateBy { it.obj.internalName }
+    }
 
     override fun ScriptContext.startup() {
         val stallLoot = lootTables(ThievingDropTables.stalls, ThievingStallRow.all()) { it.rowId }
@@ -185,7 +194,9 @@ constructor(
             mes("You need to empty your coin pouches before you can continue pickpocketing.")
             return
         }
-        val loot = rollLoot(table)
+        val rogue = rogueOutfitActivates()
+        val stolen = rollLoot(table).let { if (rogue) doubleLoot(it, pouch) else it }
+        val loot = stolen + rogueCoins(stolen, pouch, rogue)
         if (!player.addLoot(inv, loot, commit = false)) {
             mes("You don't have enough inventory space.")
             return
@@ -204,10 +215,44 @@ constructor(
         mes("You pick $owner's pocket.", ChatType.Spam)
         anim(PICKPOCKET_SEQ)
         soundSynth(PICK_SYNTH)
-        for (drop in loot.filter { it.obj != pouch }) {
+        if (rogue) {
+            mes("Your rogue clothing allows you to steal twice as much loot!", ChatType.Spam)
+        }
+        for (drop in stolen.filter { it.obj != pouch }) {
             mes("You steal ${describe(drop.obj, drop.count)}.", ChatType.Spam)
         }
         statAdvance(THIEVING, target.xp / 10.0)
+    }
+
+    private fun ProtectedAccess.rogueOutfitActivates(): Boolean {
+        val pieces =
+            listOf(
+                    player.hat.isType("obj.roguesden_helm"),
+                    player.torso.isType("obj.roguesden_body"),
+                    player.legs.isType("obj.roguesden_legs"),
+                    player.hands.isType("obj.roguesden_gloves"),
+                    player.feet.isType("obj.roguesden_boots"),
+                )
+                .count { it }
+        val chance = if (pieces == ROGUE_PIECES) 100 else pieces * ROGUE_CHANCE_PER_PIECE
+        return random.of(100) < chance
+    }
+
+    private fun doubleLoot(loot: List<LootDrop>, pouch: String?): List<LootDrop> =
+        loot.map { if (it.obj == pouch) it else it.copy(count = it.count * 2) }
+
+    /** A doubled coin pouch is paid out as the pouch plus its value in coins, not two pouches. */
+    private fun ProtectedAccess.rogueCoins(
+        stolen: List<LootDrop>,
+        pouch: String?,
+        rogue: Boolean,
+    ): List<LootDrop> {
+        if (!rogue || pouch == null) return emptyList()
+        val row = coinPouches[pouch] ?: return emptyList()
+        val pouches = stolen.filter { it.obj == pouch }.sumOf { it.count }
+        if (pouches == 0) return emptyList()
+        val coins = (1..pouches).sumOf { random.of(row.coinsMin, row.coinsMax) }
+        return listOf(LootDrop(COINS, coins))
     }
 
     private fun ProtectedAccess.openPouches(pouch: ThievingCoinPouchRow, all: Boolean) {
@@ -286,6 +331,9 @@ constructor(
         const val STUN_SYNTH = "synth.thieving_stunned"
         const val FREEZE_TIMER = "timer.combat_freeze"
         const val MAX_POUCHES = 28
+        const val COINS = "obj.coins"
+        const val ROGUE_PIECES = 5
+        const val ROGUE_CHANCE_PER_PIECE = 15
         const val PICKPOCKET_OP = "Pickpocket"
     }
 }
