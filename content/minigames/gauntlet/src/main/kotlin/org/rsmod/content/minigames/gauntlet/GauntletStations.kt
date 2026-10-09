@@ -19,7 +19,17 @@ class GauntletStations @Inject constructor(private val runs: GauntletRuns) : Plu
             onOpLoc2("loc.gauntlet_exit$suffix") { with(runs) { leave() } }
             val vial = "obj.gauntlet_vial_empty$suffix"
             onOpLocU("loc.gauntlet_sink$suffix", vial) { fillVials(vial) }
+            onOpLoc1("loc.gauntlet_sink$suffix") { fillVials(vial) }
+            onOpLocU("loc.gauntlet_pond$suffix", vial) { fillVialsAtPond(vial) }
         }
+    }
+
+    private fun ProtectedAccess.fillVialsAtPond(vial: String) {
+        val count = inv.count(vial)
+        if (count == 0) return
+        invDel(inv, vial, count)
+        invAdd(inv, "obj.gauntlet_vial_water", count)
+        spam("You fill the crystal vials with water.")
     }
 
     private suspend fun ProtectedAccess.confirmLeave() {
@@ -55,6 +65,10 @@ class GauntletStations @Inject constructor(private val runs: GauntletRuns) : Plu
     }
 
     private suspend fun ProtectedAccess.fillVials(vial: String) {
+        if (vial !in inv) {
+            mes("You need an empty crystal vial to use the pump.")
+            return
+        }
         while (vial in inv) {
             invDel(inv, vial, 1)
             invAdd(inv, "obj.gauntlet_vial_water", 1)
