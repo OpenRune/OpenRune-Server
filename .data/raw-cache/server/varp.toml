@@ -872,6 +872,30 @@ transmit = "Never"
 
 [[varp]]
 isServerOnly = true
+id = "varp.gauntlet_reward_tier"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.gauntlet_flags"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.gauntlet_points"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.hpbar_open_generation"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
 id = "varp.aggression_tolerance_start"
 scope = "Temp"
 transmit = "Never"

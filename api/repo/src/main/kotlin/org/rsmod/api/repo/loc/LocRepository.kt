@@ -49,12 +49,12 @@ constructor(
         // despawn entry in [addDurations] when the new [locReg.add] returned [NormalMapLoc], so the
         // stale timer could never remove the visible loc and no new timer was scheduled.
         clearTimedDespawnAt(loc.coords, loc.layer)
+        delDurations.removeExisting(loc)
 
         if (add.shouldDespawn() && duration != Int.MAX_VALUE) {
             val revertCycle = mapClock + duration
             val validator = add.regionValidator()
             val locDuration = LocCycleDuration(loc, revertCycle, validator, onDespawn)
-            delDurations.removeExisting(loc)
             addDurations.add(locDuration)
         }
 
@@ -151,6 +151,9 @@ constructor(
             }
         }
     }
+
+    public fun findPendingRespawn(coords: CoordGrid, layer: Int): LocInfo? =
+        delDurations.firstOrNull { it.loc.coords == coords && it.loc.layer == layer }?.loc
 
     public fun findAll(zone: ZoneKey): Sequence<LocInfo> = locReg.findAll(zone)
 

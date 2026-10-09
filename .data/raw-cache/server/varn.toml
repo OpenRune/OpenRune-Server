@@ -182,4 +182,16 @@ id = "varn.dom_rotation_step"
 id = "varn.dom_step_attacks"
 
 [[varn]]
+id = "varn.hunllef_style"
+
+[[varn]]
+id = "varn.hunllef_cycle"
+
+[[varn]]
+id = "varn.hunllef_protect"
+
+[[varn]]
+id = "varn.hunllef_off_prayer"
+
+[[varn]]
 id = "varn.disguise_idle"
