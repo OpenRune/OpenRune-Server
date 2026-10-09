@@ -1,6 +1,12 @@
 package org.rsmod.content.quest.area.baxtorianfalls.waterfall
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.obj.ObjRepository
@@ -129,7 +135,9 @@ constructor(
             return
         }
         if (!waterfall.allRunesPlaced(player)) {
-            invDel(inv, AMULET)
+            if (invDel(inv, AMULET).failure) {
+                return
+            }
             mesbox(
                 "You go to place the amulet around the neck of the statue. However, water " +
                     "floods into the room as you do..."
@@ -166,6 +174,18 @@ constructor(
         washDownstream(ouch = false)
     }
 
+    private fun ProtectedAccess.canCarryTreasure(): Boolean =
+        player
+            .invTransaction(inv, autoCommit = false) {
+                val target = select(inv)
+                delete(target, URN_FULL.asRSCM(RSCMType.OBJ), count = 1)
+                add(target, URN_EMPTY.asRSCM(RSCMType.OBJ), count = 1)
+                for ((item, amount) in waterfall.quest.rewards.items) {
+                    add(target, item.asRSCM(RSCMType.OBJ), count = amount)
+                }
+            }
+            .success
+
     private suspend fun ProtectedAccess.pourAshes() {
         if (waterfall.isComplete(player)) {
             mesbox("The chalice only contains some old ashes.")
@@ -175,7 +195,10 @@ constructor(
             mes("You can't reach the chalice from here.")
             return
         }
-        if (inv.freeSpace() < REWARD_SLOTS) {
+        if (URN_FULL !in player.inv) {
+            return
+        }
+        if (!canCarryTreasure()) {
             mesbox("You need at least $REWARD_SLOTS free inventory spaces to carry the treasure.")
             return
         }
