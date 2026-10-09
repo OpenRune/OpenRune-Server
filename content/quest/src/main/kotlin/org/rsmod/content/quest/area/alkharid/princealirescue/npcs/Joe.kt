@@ -14,10 +14,6 @@ import org.rsmod.content.quest.manager.menu
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Joe, the Prince's guard. He won't say a word until Leela has the player looking for his
- * weakness, which turns out to be cold beer: three of them leave him too drunk to notice anything.
- */
 class Joe @Inject constructor(private val princeAli: PrinceAliRescueQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -124,7 +120,6 @@ class Joe @Inject constructor(private val princeAli: PrinceAliRescueQuest) : Plu
         )
     }
 
-    /** Returns true once the conversation has ended. */
     private suspend fun Dialogue.lifeOfAGuard(): Boolean {
         chatPlayer(quiz, "Tell me about the life of a guard.")
         chatNpc(neutral, "Well, the hours are good, but most of those hours are a drag.")
@@ -148,7 +143,6 @@ class Joe @Inject constructor(private val princeAli: PrinceAliRescueQuest) : Plu
         }
     }
 
-    /** Returns true once the conversation has ended. */
     private suspend fun Dialogue.boyhood(): Boolean {
         chatPlayer(quiz, "What did you want to be when you were a boy?")
         chatNpc(

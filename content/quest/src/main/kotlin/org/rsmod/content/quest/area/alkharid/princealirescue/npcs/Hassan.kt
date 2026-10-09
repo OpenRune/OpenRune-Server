@@ -15,7 +15,6 @@ import org.rsmod.content.quest.manager.startQuestPrompt
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/** Chancellor Hassan starts the quest in the Al Kharid palace and pays out once the Prince is home. */
 class Hassan @Inject constructor(private val princeAli: PrinceAliRescueQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {

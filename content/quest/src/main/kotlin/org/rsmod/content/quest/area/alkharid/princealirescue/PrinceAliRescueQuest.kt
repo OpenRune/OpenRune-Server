@@ -12,26 +12,7 @@ import org.rsmod.content.quest.manager.rewards
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Prince Ali Rescue.
- *
- * Every npc handler binds the base id the map spawns: the engine dispatches ops on the base id, so\n * handlers on the _vis forms that the multinpcs show would never fire.\n *\n * The stage is the whole cache varp `varp.princequest` (endstate 110), which also drives the jail
- * multinpcs and the toll gate's multilocs: Lady Keli is shown up to [STAGE_JOE_DRUNK], the
- * imprisoned Prince up to [STAGE_KELI_TIED], Joe until Hassan pays, the Prince in the palace from
- * [STAGE_ALI_ESCAPED], and the toll gate loses its Pay-toll option from [STAGE_ALI_ESCAPED] as well.
- * - [STAGE_STARTED]: Hassan sent the player to Osman.
- * - [STAGE_BRIEFED]: Osman explained the plan; the key and the disguise are being gathered.
- * - [STAGE_PREPARED]: Leela has seen the key and disguise and pointed the player at Joe.
- * - [STAGE_JOE_DRUNK]: Joe has had his three beers.
- * - [STAGE_KELI_TIED]: Keli is tied up in the cupboard and the cell door can be unlocked.
- * - [STAGE_ALI_ESCAPED]: the Prince has escaped in disguise.
- * - [STAGE_COMPLETE]: Hassan has paid the reward.
- *
- * Progress the stage cannot hold sits on the server-only `varp.prince_ali_state`: whether Keli has
- * heard the player wants to join her gang, whether Osman is having a key copied, whether the
- * player has ever been given a key, whether Leela has been met, and whether Joe has had his first
- * beer.
- */
+// Handlers bind the base npc ids; ops are never dispatched on the _vis multinpc forms.
 class PrinceAliRescueQuest @Inject constructor() :
     QuestScript(
         QUEST_KEY,

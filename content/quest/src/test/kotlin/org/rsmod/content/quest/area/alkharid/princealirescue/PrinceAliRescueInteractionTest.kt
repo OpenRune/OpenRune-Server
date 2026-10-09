@@ -108,12 +108,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.StepValidator
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
-/**
- * Drives the quest's real scripts through the event bus on the real collision map around the toll
- * gate and the jail: the whole rescue from Hassan to the reward, every refusal along the way, the
- * furnace key, the lost-key replacement, Joe's beers across visits, the cell door, and the toll
- * gate from both sides before and after the quest.
- */
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class PrinceAliRescueInteractionTest {

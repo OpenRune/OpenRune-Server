@@ -14,10 +14,6 @@ import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQues
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
 
-/**
- * The disguise pieces made in Draynor Village while the rescue is under way: Ned's wig and Aggie's
- * skin paste. Their own scripts offer these topics while [offers] holds.
- */
 class DisguiseMakers @Inject constructor(private val princeAli: PrinceAliRescueQuest) {
 
     fun offers(player: Player): Boolean = princeAli.gatheringDisguise(player)

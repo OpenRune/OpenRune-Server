@@ -16,11 +16,6 @@ import org.rsmod.content.quest.manager.menu
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Leela, Osman's daughter, watches the jail from the field east of Draynor Village. She explains
- * the key and the disguise, hands over the key her father had copied (and sells a replacement if
- * it is lost), and sends the player after Joe once everything is ready.
- */
 class Leela @Inject constructor(private val princeAli: PrinceAliRescueQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -111,7 +106,6 @@ class Leela @Inject constructor(private val princeAli: PrinceAliRescueQuest) : P
         questions("Don't think so. I'll go and prepare.")
     }
 
-    /** Passes on the copy Osman had made, if it is waiting; false only when there is no room. */
     private suspend fun Dialogue.handOverKey(): Boolean {
         if (!princeAli.keyOrdered(player)) {
             return true

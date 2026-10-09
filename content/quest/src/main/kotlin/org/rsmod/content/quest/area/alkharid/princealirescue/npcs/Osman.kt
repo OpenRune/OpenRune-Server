@@ -15,10 +15,6 @@ import org.rsmod.content.quest.manager.menu
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Osman, the Emir's spymaster, waits just north of the palace. He briefs the player on the plan
- * and, if given a key imprint and a bronze bar, has the copy sent to Leela in Draynor.
- */
 class Osman @Inject constructor(private val princeAli: PrinceAliRescueQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {

@@ -20,15 +20,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 internal const val TOLL_GATE_OPEN_TICKS = 8
 
-/**
- * The toll gate between Lumbridge and Al Kharid. Going east costs 10 coins until Prince Ali is out
- * of the jail, after which the gate just opens. Going west is always free and never speaks. The gate
- * is a pair of multilocs keyed on the quest varp: before the quest ends they show Open and
- * Pay-toll, from the escape onwards only Open.
- *
- * The closed leaves block the doorway, so both are swapped for open gates and stay that way for
- * [TOLL_GATE_OPEN_TICKS], which is long enough for the player to finish the step from either side.
- */
 class AlKharidTollGate
 @Inject
 constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: LocRepository) :
@@ -88,7 +79,6 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
         }
     }
 
-    /** Runs the toll conversation and returns true when the player agreed to pay. */
     private suspend fun Dialogue.askToll(): Boolean {
         chatPlayer(neutral, "Can I come through this gate?")
         speak(neutral, "You must pay a toll of 10 gold coins to pass.")
