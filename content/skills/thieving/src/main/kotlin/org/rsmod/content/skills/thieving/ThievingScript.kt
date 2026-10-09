@@ -160,7 +160,11 @@ constructor(
             mes("You need to empty your coin pouches before you can continue pickpocketing.")
             return
         }
-        if (inv.isFull() && (pouch == null || inv.count(pouch.obj) == 0)) {
+        val loot =
+            (target.guaranteed + listOfNotNull(target.loot?.roll(random))).map {
+                LootDrop(it.obj, random.of(it.min, it.max))
+            }
+        if (!player.addLoot(inv, loot, commit = false)) {
             mes("You don't have enough inventory space.")
             return
         }
@@ -171,23 +175,27 @@ constructor(
             failPickpocket(npc, target, owner)
             return
         }
+        if (!player.addLoot(inv, loot)) {
+            mes("You don't have enough inventory space.")
+            return
+        }
         mes("You pick $owner's pocket.", ChatType.Spam)
         anim(PICKPOCKET_SEQ)
         soundSynth(PICK_SYNTH)
-        for (loot in target.guaranteed + listOfNotNull(target.loot?.roll(random))) {
-            val count = random.of(loot.min, loot.max)
-            invAdd(inv, loot.obj, count)
-            if (loot.obj != pouch?.obj) {
-                mes("You steal ${describe(loot.obj, count)}.", ChatType.Spam)
-            }
+        for (drop in loot.filter { it.obj != pouch?.obj }) {
+            mes("You steal ${describe(drop.obj, drop.count)}.", ChatType.Spam)
         }
         statAdvance(THIEVING, target.xp)
     }
 
     private fun ProtectedAccess.openPouches(pouch: CoinPouch, all: Boolean) {
         val count = if (all) inv.count(pouch.obj) else 1
-        if (count == 0 || invDel(inv, pouch.obj, count).failure) return
-        invAdd(inv, COINS, (1..count).sumOf { random.of(pouch.min, pouch.max) })
+        if (count == 0) return
+        val coins = (1..count).sumOf { random.of(pouch.min, pouch.max).toLong() }
+        if (!player.exchangePouches(inv, pouch.obj, count, coins)) {
+            mes("You don't have enough inventory space.")
+            return
+        }
         val message = if (count > 1) "You open all of the pouches." else "You open the coin pouch."
         mes(message, ChatType.Spam)
     }
@@ -245,7 +253,6 @@ constructor(
         const val STUN_SYNTH = "synth.thieving_stunned"
         const val FREEZE_TIMER = "timer.combat_freeze"
         const val MAX_POUCHES = 28
-        const val COINS = "obj.coins"
         const val STEAL_OP = "Steal-from"
         const val PICKPOCKET_OP = "Pickpocket"
     }
