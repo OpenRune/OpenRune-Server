@@ -17,6 +17,7 @@ class GauntletRun(
     var weakFrameGiven = false
     var strongKillsWithoutFrame = 0
     var componentsObtained = 0
+    var completed = false
     var hunllef: Npc? = null
     var fighter: Player? = null
 }

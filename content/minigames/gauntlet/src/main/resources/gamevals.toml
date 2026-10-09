@@ -23,3 +23,7 @@ hunllef_style = 60
 hunllef_cycle = 61
 hunllef_protect = 62
 hunllef_off_prayer = 63
+
+[gamevals.varp]
+gauntlet_reward_tier = 65300
+gauntlet_points = 65301

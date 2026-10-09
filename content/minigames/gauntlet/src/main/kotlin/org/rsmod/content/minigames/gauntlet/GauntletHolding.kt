@@ -1,6 +1,11 @@
 package org.rsmod.content.minigames.gauntlet
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
+import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
+import org.rsmod.api.player.stat.statRestoreAll
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.ui.PlayerInterfaceUpdates
 import org.rsmod.api.player.vars.boolVarBit
@@ -66,4 +71,19 @@ internal object GauntletHolding {
         PlayerInterfaceUpdates.updateCombatLevel(player)
         PlayerInterfaceUpdates.updateCombatTab(player)
     }
+}
+
+internal fun GauntletHolding.giveFullKit(player: Player, corrupted: Boolean) {
+    for (name in listOf("helmet_t3", "chestplate_t3", "platelegs_t3", "melee_t3", "magic_t3", "ranged_t3")) {
+        player.invAdd(player.inv, gauntletObj(name, corrupted), 1)
+    }
+    val fish = gauntletObj("combo_food", corrupted)
+    while (player.invAdd(player.inv, fish, 1).success) continue
+}
+
+internal fun GauntletHolding.resetVitals(player: Player) {
+    player.cureAllToxins()
+    player.statRestoreAll(
+        ServerCacheManager.getStats().values.map { RSCM.getReverseMapping(RSCMType.STAT, it.id) }
+    )
 }

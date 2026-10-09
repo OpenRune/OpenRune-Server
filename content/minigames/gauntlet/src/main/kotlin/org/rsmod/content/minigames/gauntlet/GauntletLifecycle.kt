@@ -37,6 +37,7 @@ constructor(
             player.gauntletCorrupted = false
             player.gauntletStart = 0
             player.gauntletBossStarted = false
+            player.gauntletPoints = 0
         }
     }
 }

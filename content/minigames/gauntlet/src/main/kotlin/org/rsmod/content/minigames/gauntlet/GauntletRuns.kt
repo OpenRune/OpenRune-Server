@@ -38,6 +38,7 @@ constructor(
     private val lighting: GauntletLighting,
     private val spawner: GauntletContents,
     private val regions: RegionRegistry,
+    private val rewards: GauntletRewards,
 ) {
     private val active = HashMap<InstanceId, GauntletRun>()
 
@@ -49,6 +50,10 @@ constructor(
     suspend fun ProtectedAccess.enter(mode: GauntletMode) {
         if (manager.sessionForPlayer(player) != null) {
             mes("You are already inside an instance.")
+            return
+        }
+        if (player.gauntletRewardAvailable) {
+            mes("You should claim the reward waiting in the nearby chest first.")
             return
         }
         val layout = GauntletLayout.generate(Random)
@@ -66,6 +71,7 @@ constructor(
                     with(lighting) { lightEntry(result.enter, run) }
                     regions[result.enter]?.let { spawner.spawnHunllef(it, run, player) }
                     GauntletHolding.store(player)
+                    GauntletHolding.resetVitals(player)
                     GauntletHolding.giveStartingKit(player, mode)
                     player.inGauntlet = true
                     player.gauntletCorrupted = mode.corrupted
@@ -79,8 +85,9 @@ constructor(
         }
     }
 
-    suspend fun ProtectedAccess.leave() {
+    suspend fun ProtectedAccess.leave(loot: Boolean = false) {
         val session = manager.sessionForPlayer(player) ?: return
+        if (loot) active[session.id]?.let { rewards.settleByPoints(player, it) }
         active.remove(session.id)
         withInstanceLeaveTransition(InstanceEnterTransition()) {
             val exit = manager.leave(player, session, clock.cycle)

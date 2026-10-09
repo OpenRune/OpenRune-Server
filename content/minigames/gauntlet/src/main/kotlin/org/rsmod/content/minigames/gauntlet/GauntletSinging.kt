@@ -63,6 +63,7 @@ private fun ProtectedAccess.craftOne(recipe: GauntletRecipe): String? {
         }
         return "You don't have enough inventory space."
     }
+    player.addGauntletPoints(GauntletPoints.forCraft(recipe.product))
     if (recipe.xp > 0) {
         statAdvance("stat.crafting", recipe.xp.toDouble())
         statAdvance("stat.smithing", recipe.xp.toDouble())

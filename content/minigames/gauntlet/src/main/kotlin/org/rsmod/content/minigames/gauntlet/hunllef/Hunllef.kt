@@ -14,6 +14,7 @@ import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.script.onNpcQueue
+import org.rsmod.content.minigames.gauntlet.GauntletRewards
 import org.rsmod.content.minigames.gauntlet.GauntletRuns
 import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.hit.HitType
@@ -27,6 +28,7 @@ internal constructor(
     private val floor: HunllefFloor,
     private val tornadoes: HunllefTornadoes,
     private val runs: GauntletRuns,
+    private val rewards: GauntletRewards,
     private val protectedAccess: ProtectedAccessLauncher,
 ) : BossPluginScript(deps) {
     override val spec: BossSpec = specs.crystalline
@@ -70,6 +72,7 @@ internal constructor(
         val run = runs.runFor(npc)
         val player = run?.fighter
         floor.stop(npc)
+        if (run != null && player != null) rewards.complete(player, run)
         deps.clearOwnedNpcs(npc)
         noneMode()
         hideAllOps()

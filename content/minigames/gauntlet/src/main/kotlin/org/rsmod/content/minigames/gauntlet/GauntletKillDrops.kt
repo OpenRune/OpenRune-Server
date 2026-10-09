@@ -45,6 +45,13 @@ constructor(private val runs: GauntletRuns, private val objRepo: ObjRepository) 
         val kind = kindOf(context.npc) ?: return
         val run = runs.runFor(context.hero) ?: return
         val corrupted = run.mode.corrupted
+        context.hero.addGauntletPoints(
+            when (tierOf(kind)) {
+                Tier.WEAK -> GauntletPoints.WEAK_KILL
+                Tier.STRONG -> GauntletPoints.STRONG_KILL
+                Tier.DEMI -> GauntletPoints.DEMI_KILL
+            }
+        )
         if (frameDrops(run, kind)) give(context, gauntletObj("generic_component", corrupted))
         if (tierOf(kind) == Tier.DEMI) {
             componentFor(run, kind)?.let { give(context, gauntletObj(it, corrupted)) }

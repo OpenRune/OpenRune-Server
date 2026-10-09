@@ -17,7 +17,9 @@ constructor(private val manager: InstanceManager, private val runs: GauntletRuns
         for (corrupted in listOf(false, true)) {
             val teleport = gauntletObj("teleport_crystal", corrupted)
             onOpHeld1(teleport) { useTeleportCrystal(teleport, corrupted) }
-            onOpHeld1(gauntletObj("escape_crystal", corrupted)) { with(runs) { leave() } }
+            onOpHeld1(gauntletObj("escape_crystal", corrupted)) {
+                with(runs) { leave(loot = player.gauntletBossStarted) }
+            }
 
             val shard = gauntletObj("crystal_shard", corrupted)
             val dust = gauntletObj("crystal_shard_crushed", corrupted)

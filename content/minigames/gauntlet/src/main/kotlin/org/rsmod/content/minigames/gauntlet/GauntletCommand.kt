@@ -30,5 +30,23 @@ constructor(
                 }
             }
         }
+        for ((name, mode) in listOf("gauntletkit" to GauntletMode.NORMAL, "gauntletkithm" to GauntletMode.CORRUPTED)) {
+            onCommand(name) {
+                requiredRights = Rights.ADMINISTRATOR
+                desc = "Enter the ${if (mode.corrupted) "Corrupted " else ""}Gauntlet with full tier 3 gear and paddlefish"
+                cheat {
+                    protectedAccess.launch(player) {
+                        if (manager.sessionForPlayer(player) != null) {
+                            mes("You are already inside an instance.")
+                            return@launch
+                        }
+                        with(runs) { enter(mode) }
+                        if (manager.sessionForPlayer(player) != null) {
+                            GauntletHolding.giveFullKit(player, mode.corrupted)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

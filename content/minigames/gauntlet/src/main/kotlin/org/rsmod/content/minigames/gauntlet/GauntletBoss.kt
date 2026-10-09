@@ -77,7 +77,7 @@ constructor(private val entry: GauntletBossEntry, private val runs: GauntletRuns
             val enter = "loc.gauntlet_blockade_enter$suffix"
             onOpLoc1(enter) { confirmEnter() }
             onOpLoc2(enter) { with(entry) { begin() } }
-            onOpLoc5("loc.gauntlet_blockade_escape$suffix") { with(runs) { leave() } }
+            onOpLoc5("loc.gauntlet_blockade_escape$suffix") { with(runs) { leave(loot = true) } }
         }
     }
 
