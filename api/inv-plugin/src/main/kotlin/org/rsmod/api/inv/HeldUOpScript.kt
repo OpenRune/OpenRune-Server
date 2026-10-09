@@ -36,6 +36,10 @@ constructor(
         targetObj: ItemServerType,
         targetSlot: Int,
     ) {
+        if (isDelayed) {
+            resendSlot(inv, 0)
+            return
+        }
         clearPendingAction(eventBus)
         resetFaceEntity()
         if (isAccessProtected) {

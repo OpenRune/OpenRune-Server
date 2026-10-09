@@ -357,7 +357,9 @@ constructor(
                         continue
                     }
 
-                    val loc = LocInfo(regionLocKey.layer, regionCoords, entity)
+                    val regionAngle = (entity.angle + copiedZone.rotation) and ANGLE_BIT_MASK
+                    val regionEntity = entity.copy(angle = regionAngle)
+                    val loc = LocInfo(regionLocKey.layer, regionCoords, regionEntity)
                     yield(loc)
                 }
             }

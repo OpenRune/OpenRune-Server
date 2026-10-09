@@ -12,6 +12,7 @@ data class WeightedRef(
     val ability: String,
     val weight: Int = 1,
     val cooldown: Int = 0,
+    val persistCooldown: Boolean = false,
     val requires: Condition = Condition.Always,
 )
 

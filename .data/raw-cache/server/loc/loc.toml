@@ -54,6 +54,36 @@ inherit = "loc.bookcase"
 contentGroup = "content.bookcase"
 
 [[object]]
+id = "loc.gauntlet_tree"
+inherit = "loc.gauntlet_tree"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.gauntlet_tree_axes"
+"param.woodcutting_fixed_yields" = 3
+"param.respawn_time" = 2147483647
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.gauntlet_bark"
+"param.skill_xp" = 100
+"param.next_loc_stage" = "loc.gauntlet_tree_depleted"
+
+[[object]]
+id = "loc.gauntlet_tree_hm"
+inherit = "loc.gauntlet_tree_hm"
+contentGroup = "content.tree"
+
+[object.params]
+"param.levelrequire" = 1
+"param.woodcutting_axe_success_rates" = "enum.gauntlet_tree_axes"
+"param.woodcutting_fixed_yields" = 3
+"param.respawn_time" = 2147483647
+"param.deplete_chance" = 0
+"param.skill_productitem" = "obj.gauntlet_bark_hm"
+"param.skill_xp" = 100
+"param.next_loc_stage" = "loc.gauntlet_tree_depleted_hm"
+
+[[object]]
 id = "loc.tree"
 inherit = "loc.tree"
 contentGroup = "content.tree"
@@ -1541,6 +1571,26 @@ inherit = "loc.hos_cooking_range_02"
 contentGroup = "content.cooking_range_hosidius"
 
 # Mining rocks (data in dbtable.mining_rocks; locs only keep content group)
+
+[[object]]
+id = "loc.gauntlet_range"
+inherit = "loc.gauntlet_range"
+contentGroup = "content.cooking_range_standard"
+
+[[object]]
+id = "loc.gauntlet_range_hm"
+inherit = "loc.gauntlet_range_hm"
+contentGroup = "content.cooking_range_standard"
+
+[[object]]
+id = "loc.gauntlet_rock"
+inherit = "loc.gauntlet_rock"
+contentGroup = "content.rock"
+
+[[object]]
+id = "loc.gauntlet_rock_hm"
+inherit = "loc.gauntlet_rock_hm"
+contentGroup = "content.rock"
 
 [[object]]
 id = "loc.clayrock1"

@@ -1,0 +1,33 @@
+[gamevals.timer]
+gauntlet_time_limit = 420
+
+[gamevals.dbtable]
+gauntlet_room_slots = 56000
+
+[gamevals.dbrow]
+gauntlet_slots_middle_0 = 56001
+gauntlet_slots_middle_1 = 56002
+gauntlet_slots_middle_2 = 56003
+gauntlet_slots_middle_3 = 56004
+gauntlet_slots_edge_0 = 56005
+gauntlet_slots_edge_1 = 56006
+gauntlet_slots_edge_2 = 56007
+gauntlet_slots_edge_3 = 56008
+gauntlet_slots_corner_0 = 56009
+gauntlet_slots_corner_1 = 56010
+gauntlet_slots_corner_2 = 56011
+gauntlet_slots_corner_3 = 56012
+
+[gamevals.varn]
+hunllef_style = 60
+hunllef_cycle = 61
+hunllef_protect = 62
+hunllef_off_prayer = 63
+
+[gamevals.varp]
+gauntlet_reward_tier = 65300
+gauntlet_points = 65301
+gauntlet_flags = 65302
+
+[gamevals.varbit]
+gauntlet_spoken_to_bryn = 64300
