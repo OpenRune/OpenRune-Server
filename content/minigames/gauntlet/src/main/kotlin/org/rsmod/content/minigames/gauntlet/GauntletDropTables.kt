@@ -67,8 +67,12 @@ val gauntletNormalRewardTable: RSDropTable<Player, DropRollItem> =
                 }
                 1 outOf 120 weight "obj.crystal_seed_old" count 1
                 1 outOf 120 weight "obj.prif_armour_seed" count 1
-                1 outOf 2000 weight "obj.prif_weapon_seed_enhanced" count 1
-                1 outOf 2000 weight "obj.gauntletpet" count 1
+                boosted {
+                    1 outOf 2000 weight "obj.prif_weapon_seed_enhanced" count 1
+                }
+                boosted {
+                    1 outOf 2000 weight "obj.gauntletpet" count 1
+                }
             },
     )
 
@@ -119,8 +123,12 @@ val gauntletCorruptedRewardTable: RSDropTable<Player, DropRollItem> =
                 }
                 1 outOf 50 weight "obj.crystal_seed_old" count 1
                 1 outOf 50 weight "obj.prif_armour_seed" count 1
-                1 outOf 400 weight "obj.prif_weapon_seed_enhanced" count 1
-                1 outOf 800 weight "obj.gauntletpet_corrupt" count 1
+                boosted {
+                    1 outOf 400 weight "obj.prif_weapon_seed_enhanced" count 1
+                }
+                boosted {
+                    1 outOf 800 weight "obj.gauntletpet_corrupt" count 1
+                }
             },
     )
 
