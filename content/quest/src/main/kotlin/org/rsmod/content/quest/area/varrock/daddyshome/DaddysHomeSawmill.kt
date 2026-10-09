@@ -30,7 +30,7 @@ constructor(private val daddysHome: DaddysHomeQuest, private val hooks: SawmillH
 
     override fun option(player: Player, operator: SawmillOperatorsRow): String? {
         val stage = daddysHome.stage(player)
-        return if (stage in DaddysHomeQuest.Building until DaddysHomeQuest.Complete) {
+        return if (stage in DaddysHomeQuest.BUILDING until DaddysHomeQuest.COMPLETE) {
             "I need some waxwood planks for Old Man Yarlo."
         } else {
             null
@@ -60,7 +60,7 @@ constructor(private val daddysHome: DaddysHomeQuest, private val hooks: SawmillH
             neutral,
             "That old geezer? Oh, alright. I won't charge for this, since it's for him.",
         )
-        val logs = access.inv.count(DaddysHomeQuest.WaxwoodLogs)
+        val logs = access.inv.count(DaddysHomeQuest.WAXWOOD_LOGS)
         if (logs == 0) {
             chatNpc(neutral, "I'll need some waxwood logs to work with first.")
             return
@@ -70,18 +70,18 @@ constructor(private val daddysHome: DaddysHomeQuest, private val hooks: SawmillH
                 val from = select(access.inv)
                 delete {
                     this.from = from
-                    this.obj = DaddysHomeQuest.WaxwoodLogs.asRSCM(RSCMType.OBJ)
+                    this.obj = DaddysHomeQuest.WAXWOOD_LOGS.asRSCM(RSCMType.OBJ)
                     this.strictCount = logs
                 }
                 insert {
                     this.into = from
-                    this.obj = DaddysHomeQuest.WaxwoodPlank.asRSCM(RSCMType.OBJ)
+                    this.obj = DaddysHomeQuest.WAXWOOD_PLANK.asRSCM(RSCMType.OBJ)
                     this.strictCount = logs
                 }
             }
         if (converted.failure) return
         objbox(
-            DaddysHomeQuest.WaxwoodPlank,
+            DaddysHomeQuest.WAXWOOD_PLANK,
             "The sawmill operator turns your waxwood logs into planks.",
         )
     }

@@ -18,10 +18,10 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 internal object Furniture {
-    const val Untouched = 0
-    const val Broken = 1
-    const val Cleared = 2
-    const val Built = 3
+    const val UNTOUCHED = 0
+    const val BROKEN = 1
+    const val CLEARED = 2
+    const val BUILT = 3
 
     val all: List<DaddysHomeFurnitureRow>
         get() = DaddysHomeFurnitureRow.all()
@@ -76,8 +76,8 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
                 onOpLoc1(loc) { interact(furniture, it.loc) }
             }
         }
-        onOpLoc1(DaddysHomeQuest.Crates) { searchCrates(it.loc) }
-        onOpHeld1(DaddysHomeQuest.Crate) { openCrate() }
+        onOpLoc1(DaddysHomeQuest.CRATES) { searchCrates(it.loc) }
+        onOpHeld1(DaddysHomeQuest.CRATE) { openCrate() }
     }
 
     private suspend fun ProtectedAccess.interact(
@@ -87,29 +87,29 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         arriveDelay()
         faceLoc(loc)
         when (daddysHome.furnitureState(player, furniture)) {
-            Furniture.Broken -> demolish(furniture)
-            Furniture.Cleared -> build(furniture)
+            Furniture.BROKEN -> demolish(furniture)
+            Furniture.CLEARED -> build(furniture)
             else -> mes("Nothing interesting happens.")
         }
     }
 
     private suspend fun ProtectedAccess.demolish(furniture: DaddysHomeFurnitureRow) {
-        if (daddysHome.stage(player) < DaddysHomeQuest.Removing) return
-        anim(BuildSeq)
-        delay(BuildDelay)
-        if (daddysHome.furnitureState(player, furniture) != Furniture.Broken) return
-        daddysHome.setFurnitureState(player, furniture, Furniture.Cleared)
+        if (daddysHome.stage(player) < DaddysHomeQuest.REMOVING) return
+        anim(BUILD_SEQ)
+        delay(BUILD_DELAY)
+        if (daddysHome.furnitureState(player, furniture) != Furniture.BROKEN) return
+        daddysHome.setFurnitureState(player, furniture, Furniture.CLEARED)
         if (
-            daddysHome.stage(player) == DaddysHomeQuest.Removing &&
-                daddysHome.allFurnitureAtLeast(player, Furniture.Cleared)
+            daddysHome.stage(player) == DaddysHomeQuest.REMOVING &&
+                daddysHome.allFurnitureAtLeast(player, Furniture.CLEARED)
         ) {
-            daddysHome.quest.setQuestStage(this, DaddysHomeQuest.Removed)
+            daddysHome.quest.setQuestStage(this, DaddysHomeQuest.REMOVED)
         }
         mes("You demolish the ${furniture.demolished}.")
     }
 
     private suspend fun ProtectedAccess.build(furniture: DaddysHomeFurnitureRow) {
-        if (daddysHome.stage(player) < DaddysHomeQuest.Building) {
+        if (daddysHome.stage(player) < DaddysHomeQuest.BUILDING) {
             mes("You should talk to Old Man Yarlo before you start building.")
             return
         }
@@ -124,24 +124,24 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         var confirmed = false
         startDialogue {
             confirmed =
-                choice2(furniture.menuLabel, true, "Cancel.", false, title = BuildMenuTitle)
+                choice2(furniture.menuLabel, true, "Cancel.", false, title = BUILD_MENU_TITLE)
         }
         if (!confirmed) return
-        anim(BuildSeq)
-        delay(BuildDelay)
-        if (daddysHome.furnitureState(player, furniture) != Furniture.Cleared) return
+        anim(BUILD_SEQ)
+        delay(BUILD_DELAY)
+        if (daddysHome.furnitureState(player, furniture) != Furniture.CLEARED) return
         if (!consumeMaterials(furniture)) {
             mes("You don't have the materials to build that.")
             return
         }
-        daddysHome.setFurnitureState(player, furniture, Furniture.Built)
+        daddysHome.setFurnitureState(player, furniture, Furniture.BUILT)
         statAdvance("stat.construction", furniture.xp.toDouble())
         mes("You build the ${furniture.label}.")
     }
 
-    private fun ProtectedAccess.hasHammer(): Boolean = Hammers.any { it in inv }
+    private fun ProtectedAccess.hasHammer(): Boolean = HAMMERS.any { it in inv }
 
-    private fun ProtectedAccess.hasSaw(): Boolean = Saws.any { it in inv }
+    private fun ProtectedAccess.hasSaw(): Boolean = SAWS.any { it in inv }
 
     private fun ProtectedAccess.missingToolsMessage(): String =
         when {
@@ -155,17 +155,17 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
             inv.count(furniture.plank.internalName) < furniture.planks ->
                 "You don't have enough ${furniture.plankName}s to build that."
             nailCount() < furniture.nails -> "You don't have enough nails to build that."
-            inv.count(Cloth) < furniture.cloth ->
+            inv.count(CLOTH) < furniture.cloth ->
                 "You don't have enough bolts of cloth to build that."
             else -> null
         }
 
-    private fun ProtectedAccess.nailCount(): Int = Nails.sumOf { inv.count(it) }
+    private fun ProtectedAccess.nailCount(): Int = NAILS.sumOf { inv.count(it) }
 
     private fun ProtectedAccess.nailPlan(count: Int): List<Pair<String, Int>>? {
         var left = count
         val plan = mutableListOf<Pair<String, Int>>()
-        for (nail in Nails) {
+        for (nail in NAILS) {
             if (left == 0) break
             val take = minOf(left, inv.count(nail))
             if (take > 0) plan += nail to take
@@ -196,7 +196,7 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
                 if (furniture.cloth > 0) {
                     delete {
                         this.from = from
-                        this.obj = Cloth.asRSCM(RSCMType.OBJ)
+                        this.obj = CLOTH.asRSCM(RSCMType.OBJ)
                         this.strictCount = furniture.cloth
                     }
                 }
@@ -209,19 +209,19 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         faceLoc(loc)
         val stage = daddysHome.stage(player)
         val needsLogs =
-            stage in DaddysHomeQuest.Building until DaddysHomeQuest.Complete &&
-                daddysHome.furnitureState(player, Furniture.bed) < Furniture.Built
+            stage in DaddysHomeQuest.BUILDING until DaddysHomeQuest.COMPLETE &&
+                daddysHome.furnitureState(player, Furniture.bed) < Furniture.BUILT
         if (!needsLogs) {
             mes("You search the crates but find nothing interesting.")
             return
         }
-        if (invAdd(inv, DaddysHomeQuest.WaxwoodLogs, WaxwoodLogCount).failure) {
+        if (invAdd(inv, DaddysHomeQuest.WAXWOOD_LOGS, WAXWOOD_LOG_COUNT).failure) {
             mes("You don't have enough inventory space.")
             return
         }
         startDialogue {
             objbox(
-                DaddysHomeQuest.WaxwoodLogs,
+                DaddysHomeQuest.WAXWOOD_LOGS,
                 "The crate contains that water-repellant waxwood Old Man Yarlo described. You " +
                     "take some.",
             )
@@ -234,7 +234,7 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
                 val from = select(inv)
                 delete {
                     this.from = from
-                    this.obj = DaddysHomeQuest.Crate.asRSCM(RSCMType.OBJ)
+                    this.obj = DaddysHomeQuest.CRATE.asRSCM(RSCMType.OBJ)
                     this.strictCount = 1
                 }
                 for (item in DaddysHomeCrateRow.all()) {
@@ -254,16 +254,16 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
     }
 
     internal companion object {
-        const val BuildSeq = "seq.human_poh_build"
-        const val BuildDelay = 3
-        const val BuildMenuTitle = "Furniture Creation Menu"
-        const val WaxwoodLogCount = 3
-        const val Cloth = "obj.cloth"
+        const val BUILD_SEQ = "seq.human_poh_build"
+        const val BUILD_DELAY = 3
+        const val BUILD_MENU_TITLE = "Furniture Creation Menu"
+        const val WAXWOOD_LOG_COUNT = 3
+        const val CLOTH = "obj.cloth"
         const val FIFTH_OP = 5
 
-        val Hammers = listOf("obj.hammer", "obj.imcando_hammer")
-        val Saws = listOf("obj.poh_saw", "obj.wearable_saw", "obj.eyeglo_crystal_saw")
-        val Nails =
+        val HAMMERS = listOf("obj.hammer", "obj.imcando_hammer")
+        val SAWS = listOf("obj.poh_saw", "obj.wearable_saw", "obj.eyeglo_crystal_saw")
+        val NAILS =
             listOf(
                 "obj.nails_dragon",
                 "obj.nails_rune",

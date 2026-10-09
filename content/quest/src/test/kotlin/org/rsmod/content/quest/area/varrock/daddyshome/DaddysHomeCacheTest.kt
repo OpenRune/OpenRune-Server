@@ -36,7 +36,7 @@ class DaddysHomeCacheTest {
     @Test
     fun `the miniquest row matches the stages and rewards`() {
         val row = QuestRow.getRow("dbrow.miniquest_daddyshome".asRSCM())
-        assertEquals(DaddysHomeQuest.Complete, row.endstate)
+        assertEquals(DaddysHomeQuest.COMPLETE, row.endstate)
         assertEquals(0, row.questpoints)
         assertEquals(1, row.type)
         assertEquals("npc.con_contractor_varrock", row.startnpc.single().internalName)
@@ -46,7 +46,7 @@ class DaddysHomeCacheTest {
     @Test
     fun `the status varbit is Jagex's own and holds every stage`() {
         val status = varbit("varbit.daddyshome_status")
-        assertTrue((1 shl (status.endBit - status.startBit + 1)) > DaddysHomeQuest.Complete)
+        assertTrue((1 shl (status.endBit - status.startBit + 1)) > DaddysHomeQuest.COMPLETE)
         assertEquals(VarpLifetime.Perm, ServerCacheManager.getVarp(status.baseVar.id)!!.scope)
         for (furniture in Furniture.all) {
             val type = furniture.varbitType
@@ -74,10 +74,10 @@ class DaddysHomeCacheTest {
             val op = furniture.op - 1
             val states =
                 (0..3).map { checkNotNull(ServerCacheManager.getObject(base.multiLoc[it] and 0xFFFF)) }
-            assertNull(states[Furniture.Untouched].actions.getOpOrNull(op), name)
-            assertNotNull(states[Furniture.Broken].actions.getOpOrNull(op), name)
-            assertEquals("Build", states[Furniture.Cleared].actions.getOpOrNull(op), name)
-            assertNull(states[Furniture.Built].actions.getOpOrNull(op), name)
+            assertNull(states[Furniture.UNTOUCHED].actions.getOpOrNull(op), name)
+            assertNotNull(states[Furniture.BROKEN].actions.getOpOrNull(op), name)
+            assertEquals("Build", states[Furniture.CLEARED].actions.getOpOrNull(op), name)
+            assertNull(states[Furniture.BUILT].actions.getOpOrNull(op), name)
         }
     }
 
@@ -139,16 +139,16 @@ class DaddysHomeCacheTest {
     fun `the items the script hands out exist`() {
         val objs =
             listOf(
-                DaddysHomeQuest.Crate,
-                DaddysHomeQuest.WaxwoodLogs,
-                DaddysHomeQuest.WaxwoodPlank,
-                DaddysHomeQuest.Plank,
-                DaddysHomeFurniture.Cloth,
+                DaddysHomeQuest.CRATE,
+                DaddysHomeQuest.WAXWOOD_LOGS,
+                DaddysHomeQuest.WAXWOOD_PLANK,
+                DaddysHomeQuest.PLANK,
+                DaddysHomeFurniture.CLOTH,
                 "obj.coins",
             ) +
-                DaddysHomeFurniture.Hammers +
-                DaddysHomeFurniture.Saws +
-                DaddysHomeFurniture.Nails
+                DaddysHomeFurniture.HAMMERS +
+                DaddysHomeFurniture.SAWS +
+                DaddysHomeFurniture.NAILS
         for (obj in objs) {
             assertNotNull(ServerCacheManager.getItem(obj.asRSCM(RSCMType.OBJ)), obj)
         }

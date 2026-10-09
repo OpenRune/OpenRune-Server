@@ -143,7 +143,7 @@ constructor(private val shops: Shops, private val hooks: SawmillHooks) : PluginS
         }
         val amount = minOf(requested, held)
         val cost = amount * plank.price
-        if (access.inv.count(Coins) < cost) {
+        if (access.inv.count(COINS) < cost) {
             chatNpc(
                 neutral,
                 "Those planks cost ${"%,d".format(cost)} coins. You don't have enough money for " +
@@ -155,7 +155,7 @@ constructor(private val shops: Shops, private val hooks: SawmillHooks) : PluginS
             val from = select(access.inv)
             delete {
                 this.from = from
-                this.obj = Coins.asRSCM(RSCMType.OBJ)
+                this.obj = COINS.asRSCM(RSCMType.OBJ)
                 this.strictCount = cost
             }
             delete {
@@ -175,7 +175,7 @@ constructor(private val shops: Shops, private val hooks: SawmillHooks) : PluginS
         shops.open(
             player = player,
             title = "Construction supplies",
-            shopInv = SuppliesInv,
+            shopInv = SUPPLIES_INV,
             buyPercentage = 50.0,
             sellPercentage = 130.0,
             changePercentage = 0.0,
@@ -196,7 +196,7 @@ constructor(private val shops: Shops, private val hooks: SawmillHooks) : PluginS
 
     private companion object {
         const val APPROACH_RANGE = 2
-        const val Coins = "obj.coins"
-        const val SuppliesInv = "inv.poh_sawmill_shop"
+        const val COINS = "obj.coins"
+        const val SUPPLIES_INV = "inv.poh_sawmill_shop"
     }
 }

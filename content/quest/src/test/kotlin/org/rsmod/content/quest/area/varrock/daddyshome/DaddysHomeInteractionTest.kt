@@ -62,8 +62,8 @@ class DaddysHomeInteractionTest {
         val f = Fixture()
         f.talkMarlo()
         f.finish(listOf(3, 3, 3))
-        assertEquals(DaddysHomeQuest.Started, f.stage())
-        assertEquals(DaddysHomeQuest.Started, f.player.vars["varbit.daddyshome_status"])
+        assertEquals(DaddysHomeQuest.STARTED, f.stage())
+        assertEquals(DaddysHomeQuest.STARTED, f.player.vars["varbit.daddyshome_status"])
         assertTrue(f.output().contains("south-east of Varrock"), f.output())
     }
 
@@ -97,42 +97,42 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `Yarlo asks for the old furniture to be removed and makes it demolishable`() {
-        val f = Fixture(DaddysHomeQuest.Started)
+        val f = Fixture(DaddysHomeQuest.STARTED)
         f.talkYarlo()
         f.finish()
-        assertEquals(DaddysHomeQuest.Removing, f.stage())
+        assertEquals(DaddysHomeQuest.REMOVING, f.stage())
         for (furniture in Furniture.all) {
-            assertEquals(Furniture.Broken, f.state(furniture), furniture.loc.internalName)
+            assertEquals(Furniture.BROKEN, f.state(furniture), furniture.loc.internalName)
         }
     }
 
     @Test
     fun `furniture cannot be demolished before Yarlo has asked`() {
-        val f = Fixture(DaddysHomeQuest.Started)
+        val f = Fixture(DaddysHomeQuest.STARTED)
         f.use(Furniture.chair)
-        assertEquals(Furniture.Untouched, f.state(Furniture.chair))
-        assertEquals(DaddysHomeQuest.Started, f.stage())
+        assertEquals(Furniture.UNTOUCHED, f.state(Furniture.chair))
+        assertEquals(DaddysHomeQuest.STARTED, f.stage())
     }
 
     @Test
     fun `every piece is demolished one at a time and the last one moves the stage on`() {
-        val f = Fixture(DaddysHomeQuest.Removing)
-        f.setAll(Furniture.Broken)
+        val f = Fixture(DaddysHomeQuest.REMOVING)
+        f.setAll(Furniture.BROKEN)
         for ((index, furniture) in Furniture.all.withIndex()) {
-            assertEquals(DaddysHomeQuest.Removing, f.stage())
+            assertEquals(DaddysHomeQuest.REMOVING, f.stage())
             f.use(furniture)
-            assertEquals(Furniture.Cleared, f.state(furniture), furniture.loc.internalName)
-            if (index < Furniture.all.size - 1) assertEquals(DaddysHomeQuest.Removing, f.stage())
+            assertEquals(Furniture.CLEARED, f.state(furniture), furniture.loc.internalName)
+            if (index < Furniture.all.size - 1) assertEquals(DaddysHomeQuest.REMOVING, f.stage())
         }
-        assertEquals(DaddysHomeQuest.Removed, f.stage())
+        assertEquals(DaddysHomeQuest.REMOVED, f.stage())
     }
 
     @Test
     fun `Yarlo lists what is still standing`() {
-        val f = Fixture(DaddysHomeQuest.Removing)
-        f.setAll(Furniture.Broken)
-        f.set(Furniture.kitchenStool, Furniture.Cleared)
-        f.set(Furniture.carpet, Furniture.Cleared)
+        val f = Fixture(DaddysHomeQuest.REMOVING)
+        f.setAll(Furniture.BROKEN)
+        f.set(Furniture.kitchenStool, Furniture.CLEARED)
+        f.set(Furniture.carpet, Furniture.CLEARED)
         f.talkYarlo()
         f.finish()
         val output = f.output().replace("<br>", " ")
@@ -140,13 +140,13 @@ class DaddysHomeInteractionTest {
         assertTrue(output.contains("The old campbed"), output)
         assertFalse(output.contains("A broken stool in the kitchen"), output)
         assertFalse(output.contains("The rotten carpet"), output)
-        assertEquals(DaddysHomeQuest.Removing, f.stage())
+        assertEquals(DaddysHomeQuest.REMOVING, f.stage())
     }
 
     @Test
     fun `Yarlo repeats the whole task when nothing has been removed`() {
-        val f = Fixture(DaddysHomeQuest.Removing)
-        f.setAll(Furniture.Broken)
+        val f = Fixture(DaddysHomeQuest.REMOVING)
+        f.setAll(Furniture.BROKEN)
         f.talkYarlo()
         f.finish()
         assertTrue(f.output().contains("What am I supposed to be doing again?"), f.output())
@@ -154,11 +154,11 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `skipping the lecture still gives the building instructions`() {
-        val f = Fixture(DaddysHomeQuest.Removed)
-        f.setAll(Furniture.Cleared)
+        val f = Fixture(DaddysHomeQuest.REMOVED)
+        f.setAll(Furniture.CLEARED)
         f.talkYarlo()
         f.finish(listOf(2))
-        assertEquals(DaddysHomeQuest.Building, f.stage())
+        assertEquals(DaddysHomeQuest.BUILDING, f.stage())
         assertTrue(f.output().contains("optimise the fun out of life"), f.output())
         assertTrue(f.output().contains("two new stools, two new tables"), f.output())
         assertFalse(f.output().contains("Teleport Nexus"), f.output())
@@ -166,19 +166,19 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `listening to the lecture plays it before the instructions`() {
-        val f = Fixture(DaddysHomeQuest.Removed)
-        f.setAll(Furniture.Cleared)
+        val f = Fixture(DaddysHomeQuest.REMOVED)
+        f.setAll(Furniture.CLEARED)
         f.talkYarlo()
         f.finish(listOf(1))
-        assertEquals(DaddysHomeQuest.Building, f.stage())
+        assertEquals(DaddysHomeQuest.BUILDING, f.stage())
         assertTrue(f.output().contains("Teleport Nexus"), f.output())
         assertTrue(f.output().contains("two new stools, two new tables"), f.output())
     }
 
     @Test
     fun `players who own a house point that out before the lecture`() {
-        val f = Fixture(DaddysHomeQuest.Removed)
-        f.setAll(Furniture.Cleared)
+        val f = Fixture(DaddysHomeQuest.REMOVED)
+        f.setAll(Furniture.CLEARED)
         VarPlayerIntMapSetter.set(f.player, "varbit.poh_house_location", 2)
         f.talkYarlo()
         f.finish(listOf(2))
@@ -187,16 +187,16 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `an interrupted lecture is offered again`() {
-        val f = Fixture(DaddysHomeQuest.Lecture)
-        f.setAll(Furniture.Cleared)
+        val f = Fixture(DaddysHomeQuest.LECTURE)
+        f.setAll(Furniture.CLEARED)
         f.talkYarlo()
         f.finish(listOf(1))
-        assertEquals(DaddysHomeQuest.Building, f.stage())
+        assertEquals(DaddysHomeQuest.BUILDING, f.stage())
     }
 
     @Test
     fun `Yarlo lends a hammer and a saw to anyone without them`() {
-        val f = Fixture(DaddysHomeQuest.Building)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
         f.talkYarlo()
         f.finish(listOf(3, 1, 1, 5))
         assertEquals(1, f.player.inv.count("obj.hammer"))
@@ -205,7 +205,7 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `Yarlo does not hand out tools that are already carried`() {
-        val f = Fixture(DaddysHomeQuest.Building)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
         f.give("obj.hammer" to 1, "obj.poh_saw" to 1)
         f.talkYarlo()
         f.finish(listOf(3, 5))
@@ -216,7 +216,7 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `declining Yarlo's tools gives nothing`() {
-        val f = Fixture(DaddysHomeQuest.Building)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
         f.talkYarlo()
         f.finish(listOf(3, 2, 2, 5))
         assertEquals(0, f.player.inv.count("obj.hammer"))
@@ -225,22 +225,22 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `building needs Yarlo's instructions first`() {
-        val f = Fixture(DaddysHomeQuest.Removed)
-        f.setAll(Furniture.Cleared)
-        f.give(*Tools, "obj.woodplank" to 2, "obj.nails" to 2)
+        val f = Fixture(DaddysHomeQuest.REMOVED)
+        f.setAll(Furniture.CLEARED)
+        f.give(*TOOLS, "obj.woodplank" to 2, "obj.nails" to 2)
         f.use(Furniture.chair)
-        assertEquals(Furniture.Cleared, f.state(Furniture.chair))
+        assertEquals(Furniture.CLEARED, f.state(Furniture.chair))
         assertEquals(2, f.player.inv.count("obj.woodplank"))
         assertTrue(f.output().contains("talk to Old Man Yarlo before you start building"), f.output())
     }
 
     @Test
     fun `building without both tools consumes nothing`() {
-        val f = Fixture(DaddysHomeQuest.Building)
-        f.setAll(Furniture.Cleared)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
         f.give("obj.hammer" to 1, "obj.woodplank" to 2, "obj.nails" to 2)
         f.use(Furniture.chair)
-        assertEquals(Furniture.Cleared, f.state(Furniture.chair))
+        assertEquals(Furniture.CLEARED, f.state(Furniture.chair))
         assertEquals(2, f.player.inv.count("obj.woodplank"))
         assertEquals(2, f.player.inv.count("obj.nails"))
         assertTrue(f.output().contains("You need a saw"), f.output())
@@ -248,11 +248,11 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `building without enough materials consumes nothing`() {
-        val f = Fixture(DaddysHomeQuest.Building)
-        f.setAll(Furniture.Cleared)
-        f.give(*Tools, "obj.woodplank" to 1, "obj.nails" to 2)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
+        f.give(*TOOLS, "obj.woodplank" to 1, "obj.nails" to 2)
         f.use(Furniture.chair)
-        assertEquals(Furniture.Cleared, f.state(Furniture.chair))
+        assertEquals(Furniture.CLEARED, f.state(Furniture.chair))
         assertEquals(1, f.player.inv.count("obj.woodplank"))
         assertTrue(f.output().contains("enough planks"), f.output())
         assertEquals(0, f.xp())
@@ -260,11 +260,11 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `too few nails stops a table`() {
-        val f = Fixture(DaddysHomeQuest.Building)
-        f.setAll(Furniture.Cleared)
-        f.give(*Tools, "obj.woodplank" to 3, "obj.nails" to 3)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
+        f.give(*TOOLS, "obj.woodplank" to 3, "obj.nails" to 3)
         f.use(Furniture.kitchenTable)
-        assertEquals(Furniture.Cleared, f.state(Furniture.kitchenTable))
+        assertEquals(Furniture.CLEARED, f.state(Furniture.kitchenTable))
         assertEquals(3, f.player.inv.count("obj.nails"))
         assertTrue(f.output().contains("enough nails"), f.output())
     }
@@ -280,11 +280,11 @@ class DaddysHomeInteractionTest {
                 Furniture.bedroomTable to Triple(87, 3, 4),
             )
         for ((furniture, cost) in expected) {
-            val f = Fixture(DaddysHomeQuest.Building)
-            f.setAll(Furniture.Cleared)
-            f.give(*Tools, "obj.woodplank" to 10, "obj.nails" to 10)
+            val f = Fixture(DaddysHomeQuest.BUILDING)
+            f.setAll(Furniture.CLEARED)
+            f.give(*TOOLS, "obj.woodplank" to 10, "obj.nails" to 10)
             f.use(furniture)
-            assertEquals(Furniture.Built, f.state(furniture), furniture.loc.internalName)
+            assertEquals(Furniture.BUILT, f.state(furniture), furniture.loc.internalName)
             assertEquals(cost.first, f.xp(), furniture.loc.internalName)
             assertEquals(10 - cost.second, f.player.inv.count("obj.woodplank"), furniture.loc.internalName)
             assertEquals(10 - cost.third, f.player.inv.count("obj.nails"), furniture.loc.internalName)
@@ -295,28 +295,28 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `the carpet takes three bolts of cloth through its remove and build op`() {
-        val f = Fixture(DaddysHomeQuest.Removing)
-        f.setAll(Furniture.Broken)
+        val f = Fixture(DaddysHomeQuest.REMOVING)
+        f.setAll(Furniture.BROKEN)
         f.use(Furniture.carpet)
-        assertEquals(Furniture.Cleared, f.state(Furniture.carpet))
-        f.setStage(DaddysHomeQuest.Building)
-        f.give(*Tools, "obj.cloth" to 4)
+        assertEquals(Furniture.CLEARED, f.state(Furniture.carpet))
+        f.setStage(DaddysHomeQuest.BUILDING)
+        f.give(*TOOLS, "obj.cloth" to 4)
         f.use(Furniture.carpet)
-        assertEquals(Furniture.Built, f.state(Furniture.carpet))
+        assertEquals(Furniture.BUILT, f.state(Furniture.carpet))
         assertEquals(1, f.player.inv.count("obj.cloth"))
         assertEquals(45, f.xp())
     }
 
     @Test
     fun `the waxwood bed takes three waxwood planks and two bolts of cloth`() {
-        val f = Fixture(DaddysHomeQuest.Building)
-        f.setAll(Furniture.Cleared)
-        f.give(*Tools, "obj.woodplank" to 3, "obj.cloth" to 2, "obj.daddyshome_waxwood_plank" to 2)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
+        f.give(*TOOLS, "obj.woodplank" to 3, "obj.cloth" to 2, "obj.daddyshome_waxwood_plank" to 2)
         f.use(Furniture.bed)
-        assertEquals(Furniture.Cleared, f.state(Furniture.bed))
+        assertEquals(Furniture.CLEARED, f.state(Furniture.bed))
         f.give("obj.daddyshome_waxwood_plank" to 1)
         f.use(Furniture.bed)
-        assertEquals(Furniture.Built, f.state(Furniture.bed))
+        assertEquals(Furniture.BUILT, f.state(Furniture.bed))
         assertEquals(0, f.player.inv.count("obj.daddyshome_waxwood_plank"))
         assertEquals(0, f.player.inv.count("obj.cloth"))
         assertEquals(3, f.player.inv.count("obj.woodplank"))
@@ -325,20 +325,20 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `the best nails are used first and mixed nails make up the difference`() {
-        val f = Fixture(DaddysHomeQuest.Building)
-        f.setAll(Furniture.Cleared)
-        f.give(*Tools, "obj.woodplank" to 3, "obj.nails_bronze" to 3, "obj.nails_mithril" to 2)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
+        f.give(*TOOLS, "obj.woodplank" to 3, "obj.nails_bronze" to 3, "obj.nails_mithril" to 2)
         f.use(Furniture.kitchenTable)
-        assertEquals(Furniture.Built, f.state(Furniture.kitchenTable))
+        assertEquals(Furniture.BUILT, f.state(Furniture.kitchenTable))
         assertEquals(0, f.player.inv.count("obj.nails_mithril"))
         assertEquals(1, f.player.inv.count("obj.nails_bronze"))
     }
 
     @Test
     fun `a built piece and an untouched piece do nothing when used again`() {
-        val f = Fixture(DaddysHomeQuest.Building)
-        f.setAll(Furniture.Built)
-        f.give(*Tools, "obj.woodplank" to 3, "obj.nails" to 4)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.BUILT)
+        f.give(*TOOLS, "obj.woodplank" to 3, "obj.nails" to 4)
         f.use(Furniture.kitchenTable)
         assertEquals(3, f.player.inv.count("obj.woodplank"))
         assertEquals(0, f.xp())
@@ -346,8 +346,8 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `the crates give three waxwood logs while the bed is unbuilt`() {
-        val f = Fixture(DaddysHomeQuest.Building)
-        f.setAll(Furniture.Cleared)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
         f.crates()
         assertEquals(3, f.player.inv.count("obj.daddyshome_waxwood_logs"))
         assertTrue(f.output().contains("water-repellant waxwood"), f.output())
@@ -355,19 +355,19 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `the crates hold nothing before the building stage or once the bed is built`() {
-        val early = Fixture(DaddysHomeQuest.Removing)
+        val early = Fixture(DaddysHomeQuest.REMOVING)
         early.crates()
         assertEquals(0, early.player.inv.count("obj.daddyshome_waxwood_logs"))
-        val late = Fixture(DaddysHomeQuest.Building)
-        late.setAll(Furniture.Built)
+        val late = Fixture(DaddysHomeQuest.BUILDING)
+        late.setAll(Furniture.BUILT)
         late.crates()
         assertEquals(0, late.player.inv.count("obj.daddyshome_waxwood_logs"))
     }
 
     @Test
     fun `a full inventory does not lose the logs`() {
-        val f = Fixture(DaddysHomeQuest.Building)
-        f.setAll(Furniture.Cleared)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
         for (slot in 0 until 28) f.player.inv[slot] = InvObj("obj.bronze_dagger", 1)
         f.crates()
         assertEquals(0, f.player.inv.count("obj.daddyshome_waxwood_logs"))
@@ -376,7 +376,7 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `the Lumber Yard operator turns the logs into planks for free`() {
-        val f = Fixture(DaddysHomeQuest.Building)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
         f.give("obj.daddyshome_waxwood_logs" to 3)
         f.talkSawmill("npc.poh_sawmill_opp")
         f.finish(listOf(3))
@@ -387,7 +387,7 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `the Lumber Yard operator wants logs to work with`() {
-        val f = Fixture(DaddysHomeQuest.Building)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
         f.talkSawmill("npc.poh_sawmill_opp")
         f.finish(listOf(3))
         assertEquals(0, f.player.inv.count("obj.daddyshome_waxwood_plank"))
@@ -397,7 +397,7 @@ class DaddysHomeInteractionTest {
     @Test
     fun `other sawmill operators refuse to touch the waxwood`() {
         for ((operator, option) in mapOf("npc.prif_sawmill_operator" to 4, "npc.auburn_sawmill_operator" to 3)) {
-            val f = Fixture(DaddysHomeQuest.Building)
+            val f = Fixture(DaddysHomeQuest.BUILDING)
             f.give("obj.daddyshome_waxwood_logs" to 3)
             f.talkSawmill(operator)
             f.finish(listOf(option))
@@ -409,7 +409,7 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `the waxwood option is only offered while building`() {
-        val f = Fixture(DaddysHomeQuest.Removing)
+        val f = Fixture(DaddysHomeQuest.REMOVING)
         f.talkSawmill("npc.poh_sawmill_opp")
         f.finish(listOf(3))
         assertFalse(f.output().contains("Old Man Yarlo"), f.output())
@@ -417,52 +417,52 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `Yarlo thanks the player once everything is built and points them to Marlo`() {
-        val f = Fixture(DaddysHomeQuest.Building)
-        f.setAll(Furniture.Built)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.BUILT)
         f.talkYarlo()
         f.finish()
-        assertEquals(DaddysHomeQuest.Built, f.stage())
+        assertEquals(DaddysHomeQuest.BUILT, f.stage())
         assertTrue(f.output().contains("Trot off back to my boy Marlo"), f.output())
     }
 
     @Test
     fun `Yarlo does not move on while a piece is still missing`() {
-        val f = Fixture(DaddysHomeQuest.Building)
-        f.setAll(Furniture.Built)
-        f.set(Furniture.bed, Furniture.Cleared)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.BUILT)
+        f.set(Furniture.bed, Furniture.CLEARED)
         f.talkYarlo()
         f.finish(listOf(5))
-        assertEquals(DaddysHomeQuest.Building, f.stage())
+        assertEquals(DaddysHomeQuest.BUILDING, f.stage())
     }
 
     @Test
     fun `Yarlo asks whether Marlo has paid yet`() {
-        val f = Fixture(DaddysHomeQuest.Built)
-        f.setAll(Furniture.Built)
+        val f = Fixture(DaddysHomeQuest.BUILT)
+        f.setAll(Furniture.BUILT)
         f.talkYarlo()
         f.finish()
         assertTrue(f.output().contains("Has my boy Marlo rewarded you yet?"), f.output())
-        assertEquals(DaddysHomeQuest.Built, f.stage())
+        assertEquals(DaddysHomeQuest.BUILT, f.stage())
     }
 
     @Test
     fun `Marlo reminds a player in the middle of the job where Yarlo lives`() {
-        val f = Fixture(DaddysHomeQuest.Building)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
         f.talkMarlo()
         f.finish(listOf(1))
         assertTrue(f.output().contains("He's sure to be at home"), f.output())
-        assertEquals(DaddysHomeQuest.Building, f.stage())
+        assertEquals(DaddysHomeQuest.BUILDING, f.stage())
     }
 
     @Test
     fun `claiming the reward without a house grants one, the crate, experience and the scroll once`() {
-        val f = Fixture(DaddysHomeQuest.Built)
-        f.setAll(Furniture.Built)
+        val f = Fixture(DaddysHomeQuest.BUILT)
+        f.setAll(Furniture.BUILT)
         f.talkMarlo()
         f.finish(listOf(1))
-        assertEquals(DaddysHomeQuest.Complete, f.stage())
+        assertEquals(DaddysHomeQuest.COMPLETE, f.stage())
         assertEquals(400, f.xp())
-        assertEquals(1, f.player.inv.count(DaddysHomeQuest.Crate))
+        assertEquals(1, f.player.inv.count(DaddysHomeQuest.CRATE))
         assertEquals(1, f.player.vars["varbit.poh_house_location"])
         assertEquals(0, f.player.inv.count("obj.coins"))
         assertEquals(0, f.player.vars["varp.qp"])
@@ -473,18 +473,18 @@ class DaddysHomeInteractionTest {
         f.talkMarlo()
         f.finish()
         assertEquals(400, f.xp())
-        assertEquals(1, f.player.inv.count(DaddysHomeQuest.Crate))
+        assertEquals(1, f.player.inv.count(DaddysHomeQuest.CRATE))
         assertEquals(1, f.player.vars["varbit.miniquests_completed_count"])
     }
 
     @Test
     fun `players who already own a house are paid a thousand coins instead`() {
-        val f = Fixture(DaddysHomeQuest.Built)
-        f.setAll(Furniture.Built)
+        val f = Fixture(DaddysHomeQuest.BUILT)
+        f.setAll(Furniture.BUILT)
         VarPlayerIntMapSetter.set(f.player, "varbit.poh_house_location", 4)
         f.talkMarlo()
         f.finish(listOf(1))
-        assertEquals(DaddysHomeQuest.Complete, f.stage())
+        assertEquals(DaddysHomeQuest.COMPLETE, f.stage())
         assertEquals(1_000, f.player.inv.count("obj.coins"))
         assertEquals(4, f.player.vars["varbit.poh_house_location"])
         assertEquals(400, f.xp())
@@ -492,54 +492,54 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `a full inventory drops the rewards instead of losing them`() {
-        val f = Fixture(DaddysHomeQuest.Built)
-        f.setAll(Furniture.Built)
+        val f = Fixture(DaddysHomeQuest.BUILT)
+        f.setAll(Furniture.BUILT)
         VarPlayerIntMapSetter.set(f.player, "varbit.poh_house_location", 1)
         for (slot in 0 until 28) f.player.inv[slot] = InvObj("obj.bronze_dagger", 1)
         f.talkMarlo()
         f.finish(listOf(1))
-        assertEquals(DaddysHomeQuest.Complete, f.stage())
+        assertEquals(DaddysHomeQuest.COMPLETE, f.stage())
         assertEquals(400, f.xp())
-        assertEquals(0, f.player.inv.count(DaddysHomeQuest.Crate))
-        assertEquals(1, f.objsOnFloor(DaddysHomeQuest.Crate))
+        assertEquals(0, f.player.inv.count(DaddysHomeQuest.CRATE))
+        assertEquals(1, f.objsOnFloor(DaddysHomeQuest.CRATE))
         assertEquals(1_000, f.objsOnFloor("obj.coins"))
     }
 
     @Test
     fun `putting off the reward is remembered and Marlo asks again`() {
-        val f = Fixture(DaddysHomeQuest.Built)
-        f.setAll(Furniture.Built)
+        val f = Fixture(DaddysHomeQuest.BUILT)
+        f.setAll(Furniture.BUILT)
         f.talkMarlo()
         f.finish(listOf(3))
-        assertEquals(DaddysHomeQuest.RewardPending, f.stage())
+        assertEquals(DaddysHomeQuest.REWARD_PENDING, f.stage())
         assertEquals(0, f.xp())
         assertTrue(f.output().contains("not qualified to do contracts"), f.output())
         f.talkMarlo()
         f.finish(listOf(1))
         assertTrue(f.output().contains("I haven't forgotten"), f.output())
-        assertEquals(DaddysHomeQuest.Complete, f.stage())
+        assertEquals(DaddysHomeQuest.COMPLETE, f.stage())
         assertEquals(400, f.xp())
     }
 
     @Test
     fun `asking about the contract does not claim the reward`() {
-        val f = Fixture(DaddysHomeQuest.Built)
-        f.setAll(Furniture.Built)
+        val f = Fixture(DaddysHomeQuest.BUILT)
+        f.setAll(Furniture.BUILT)
         f.talkMarlo()
         f.finish(listOf(2))
-        assertEquals(DaddysHomeQuest.RewardPending, f.stage())
+        assertEquals(DaddysHomeQuest.REWARD_PENDING, f.stage())
         assertEquals(0, f.xp())
     }
 
     @Test
     fun `after the miniquest Marlo talks about the company and Yarlo about the house`() {
-        val f = Fixture(DaddysHomeQuest.Complete)
-        f.give(DaddysHomeQuest.Crate to 1)
+        val f = Fixture(DaddysHomeQuest.COMPLETE)
+        f.give(DaddysHomeQuest.CRATE to 1)
         f.talkMarlo()
         f.finish()
         assertTrue(f.output().contains("Gielinor's first construction company"), f.output())
-        assertEquals(1, f.player.inv.count(DaddysHomeQuest.Crate))
-        val g = Fixture(DaddysHomeQuest.Complete)
+        assertEquals(1, f.player.inv.count(DaddysHomeQuest.CRATE))
+        val g = Fixture(DaddysHomeQuest.COMPLETE)
         g.talkYarlo()
         g.finish(listOf(1))
         assertTrue(g.output().contains("wonders for my little home"), g.output())
@@ -547,34 +547,34 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `Yarlo replays the lecture after the miniquest`() {
-        val f = Fixture(DaddysHomeQuest.Complete)
+        val f = Fixture(DaddysHomeQuest.COMPLETE)
         f.talkYarlo()
         f.finish(listOf(2))
         assertTrue(f.output().contains("Teleport Nexus"), f.output())
-        assertEquals(DaddysHomeQuest.Complete, f.stage())
+        assertEquals(DaddysHomeQuest.COMPLETE, f.stage())
     }
 
     @Test
     fun `a lost crate is replaced once and never after it has been opened`() {
-        val lost = Fixture(DaddysHomeQuest.Complete)
+        val lost = Fixture(DaddysHomeQuest.COMPLETE)
         lost.talkMarlo()
         lost.finish()
-        assertEquals(1, lost.player.inv.count(DaddysHomeQuest.Crate))
-        val opened = Fixture(DaddysHomeQuest.Complete)
-        opened.give(DaddysHomeQuest.Crate to 1)
+        assertEquals(1, lost.player.inv.count(DaddysHomeQuest.CRATE))
+        val opened = Fixture(DaddysHomeQuest.COMPLETE)
+        opened.give(DaddysHomeQuest.CRATE to 1)
         opened.openCrate(0)
-        assertEquals(0, opened.player.inv.count(DaddysHomeQuest.Crate))
+        assertEquals(0, opened.player.inv.count(DaddysHomeQuest.CRATE))
         opened.talkMarlo()
         opened.finish()
-        assertEquals(0, opened.player.inv.count(DaddysHomeQuest.Crate))
+        assertEquals(0, opened.player.inv.count(DaddysHomeQuest.CRATE))
     }
 
     @Test
     fun `opening the crate hands over the supplies once`() {
-        val f = Fixture(DaddysHomeQuest.Complete)
-        f.give(DaddysHomeQuest.Crate to 1)
+        val f = Fixture(DaddysHomeQuest.COMPLETE)
+        f.give(DaddysHomeQuest.CRATE to 1)
         f.openCrate(0)
-        assertEquals(0, f.player.inv.count(DaddysHomeQuest.Crate))
+        assertEquals(0, f.player.inv.count(DaddysHomeQuest.CRATE))
         assertEquals(25, f.player.inv.count("obj.cert_woodplank"))
         assertEquals(50, f.player.inv.count("obj.nails_mithril"))
         assertEquals(5, f.player.inv.count("obj.cert_steel_bar"))
@@ -587,11 +587,11 @@ class DaddysHomeInteractionTest {
 
     @Test
     fun `a crate is kept when there is no room to open it`() {
-        val f = Fixture(DaddysHomeQuest.Complete)
+        val f = Fixture(DaddysHomeQuest.COMPLETE)
         for (slot in 0 until 28) f.player.inv[slot] = InvObj("obj.bronze_dagger", 1)
-        f.player.inv[0] = InvObj(DaddysHomeQuest.Crate, 1)
+        f.player.inv[0] = InvObj(DaddysHomeQuest.CRATE, 1)
         f.openCrate(0)
-        assertEquals(1, f.player.inv.count(DaddysHomeQuest.Crate))
+        assertEquals(1, f.player.inv.count(DaddysHomeQuest.CRATE))
         assertEquals(0, f.player.inv.count("obj.cert_woodplank"))
         assertEquals(0, f.player.vars["varbit.daddyshome_crate_opened"])
     }
@@ -600,26 +600,26 @@ class DaddysHomeInteractionTest {
     fun `the journal follows the miniquest`() {
         val expected =
             mapOf(
-                DaddysHomeQuest.Started to "speak to <red>Old Man Yarlo</red>",
-                DaddysHomeQuest.Removing to "remove all of the old furniture",
-                DaddysHomeQuest.Removed to "talk to <red>Old Man Yarlo</red> again",
-                DaddysHomeQuest.Building to "build new furniture",
-                DaddysHomeQuest.Built to "return to <red>Marlo</red>",
+                DaddysHomeQuest.STARTED to "speak to <red>Old Man Yarlo</red>",
+                DaddysHomeQuest.REMOVING to "remove all of the old furniture",
+                DaddysHomeQuest.REMOVED to "talk to <red>Old Man Yarlo</red> again",
+                DaddysHomeQuest.BUILDING to "build new furniture",
+                DaddysHomeQuest.BUILT to "return to <red>Marlo</red>",
             )
         for ((stage, text) in expected) {
             val f = Fixture(stage)
             val log = f.quest.questLog(f.access())
             assertTrue(log.contains(text, ignoreCase = true), "stage $stage: $log")
         }
-        val done = Fixture(DaddysHomeQuest.Complete)
+        val done = Fixture(DaddysHomeQuest.COMPLETE)
         assertTrue(done.quest.completedLog(done.access()).contains("QUEST COMPLETE"))
     }
 
     @Test
     fun `the bed objective drops out once the bed is built`() {
-        val f = Fixture(DaddysHomeQuest.Building)
+        val f = Fixture(DaddysHomeQuest.BUILDING)
         assertTrue(f.quest.questLog(f.access()).contains("waxwood planks"))
-        f.set(Furniture.bed, Furniture.Built)
+        f.set(Furniture.bed, Furniture.BUILT)
         assertFalse(f.quest.questLog(f.access()).contains("waxwood planks"))
     }
 
@@ -732,14 +732,14 @@ class DaddysHomeInteractionTest {
         }
 
         fun crates() {
-            val type = checkNotNull(ServerCacheManager.getObject(DaddysHomeQuest.Crates.asRSCM(RSCMType.LOC)))
+            val type = checkNotNull(ServerCacheManager.getObject(DaddysHomeQuest.CRATES.asRSCM(RSCMType.LOC)))
             val loc = BoundLocInfo(LocInfo(0, CoordGrid(3243, 3398, 0), LocEntity(type.id, 10, 0)), type)
             start { assertTrue(events.publish(this, LocEvents.Op1(loc, loc, type))) }
             finish()
         }
 
         fun openCrate(slot: Int) {
-            val type = checkNotNull(ServerCacheManager.getItem(DaddysHomeQuest.Crate.asRSCM(RSCMType.OBJ)))
+            val type = checkNotNull(ServerCacheManager.getItem(DaddysHomeQuest.CRATE.asRSCM(RSCMType.OBJ)))
             start {
                 val event = HeldObjEvents.Op1(slot, checkNotNull(inv[slot]), type, inv)
                 assertTrue(events.publish(this, event))
@@ -827,7 +827,7 @@ class DaddysHomeInteractionTest {
     }
 
     companion object {
-        private val Tools = arrayOf("obj.hammer" to 1, "obj.poh_saw" to 1)
+        private val TOOLS = arrayOf("obj.hammer" to 1, "obj.poh_saw" to 1)
         private val restored = mutableListOf<() -> Unit>()
 
         @OptIn(InternalApi::class)

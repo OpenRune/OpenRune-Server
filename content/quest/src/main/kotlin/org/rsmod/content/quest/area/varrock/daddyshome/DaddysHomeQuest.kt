@@ -23,7 +23,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
         questKey = "miniquest_daddyshome",
         questVarp = "varp.karam_dungeon_varbit",
         rewards = rewards {},
-        completedQuestItemDisplay = ItemRewardDisplay(Crate),
+        completedQuestItemDisplay = ItemRewardDisplay(CRATE),
         questVarbit = "varbit.daddyshome_status",
     ) {
 
@@ -33,12 +33,12 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
     private var Player.miniquestsCompleted by intVarBit("varbit.miniquests_completed_count")
 
     override fun ScriptContext.init() {
-        check(quest.maxSteps == Complete) {
+        check(quest.maxSteps == COMPLETE) {
             "Daddy's Home end state is ${quest.maxSteps} in the cache dbrow, " +
-                "but the script completes at $Complete."
+                "but the script completes at $COMPLETE."
         }
-        onOpNpc1(Marlo) { startDialogue(it.npc) { marloDialogue() } }
-        onOpNpc1(Yarlo) { startDialogue(it.npc) { yarloDialogue() } }
+        onOpNpc1(MARLO) { startDialogue(it.npc) { marloDialogue() } }
+        onOpNpc1(YARLO) { startDialogue(it.npc) { yarloDialogue() } }
     }
 
     override fun subTitle(): String =
@@ -56,17 +56,17 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
                 "I should speak to <red>Old Man Yarlo</red> in the south-east of <red>Varrock</red>, " +
                     "west of <red>Aubury's Rune Shop</red>."
             ) {
-                visibleWhen { stage(access.player) == Started }
+                visibleWhen { stage(access.player) == STARTED }
             }
 
             objective("I need to <red>remove all of the old furniture</red> from Yarlo's house.") {
-                visibleWhen { stage(access.player) == Removing }
+                visibleWhen { stage(access.player) == REMOVING }
             }
 
             objective(
                 "I have removed the old furniture. I should talk to <red>Old Man Yarlo</red> again."
             ) {
-                visibleWhen { stage(access.player) in Removed..Lecture }
+                visibleWhen { stage(access.player) in REMOVED..LECTURE }
             }
 
             objective(
@@ -74,7 +74,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
                     "<red>saw</red>: two <red>stools</red>, two <red>tables</red>, a " +
                     "<red>chair</red>, a <red>carpet</red> and a <red>bed</red>."
             ) {
-                visibleWhen { stage(access.player) in Building until Built }
+                visibleWhen { stage(access.player) in BUILDING until BUILT }
             }
 
             objective(
@@ -83,20 +83,20 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
                     "for planks for Yarlo."
             ) {
                 visibleWhen {
-                    stage(access.player) in Building until Built &&
-                        furnitureState(access.player, Furniture.bed) < Furniture.Built
+                    stage(access.player) in BUILDING until BUILT &&
+                        furnitureState(access.player, Furniture.bed) < Furniture.BUILT
                 }
             }
 
             objective("I have rebuilt Yarlo's furniture and should talk to <red>Old Man Yarlo</red>.") {
                 visibleWhen {
-                    stage(access.player) in Building until Built &&
-                        allFurnitureAtLeast(access.player, Furniture.Built)
+                    stage(access.player) in BUILDING until BUILT &&
+                        allFurnitureAtLeast(access.player, Furniture.BUILT)
                 }
             }
 
             objective("I should return to <red>Marlo</red> in Varrock to claim my reward.") {
-                visibleWhen { stage(access.player) in Built until Complete }
+                visibleWhen { stage(access.player) in BUILT until COMPLETE }
             }
         }
 
@@ -137,8 +137,8 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
         val stage = stage(player)
         when {
             stage == 0 -> marloBeforeStart()
-            stage < Built -> marloInProgress()
-            stage < Complete -> marloReward(first = stage == Built)
+            stage < BUILT -> marloInProgress()
+            stage < COMPLETE -> marloReward(first = stage == BUILT)
             else -> marloAfterQuest()
         }
     }
@@ -151,8 +151,8 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
         )
         while (true) {
             val options = buildList {
-                if (player.contractorDiscussed == 0) add(AskCompany to MarloOption.Company)
-                add(AskContract to MarloOption.Contract)
+                if (player.contractorDiscussed == 0) add(ASK_COMPANY to MarloOption.Company)
+                add(ASK_CONTRACT to MarloOption.Contract)
                 add("What kind of favour do you want me to do?" to MarloOption.Favour)
                 add("Maybe another time." to MarloOption.Leave)
             }
@@ -168,7 +168,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
     }
 
     private suspend fun Dialogue.aboutCompany() {
-        chatPlayer(quiz, AskCompany)
+        chatPlayer(quiz, ASK_COMPANY)
         chatNpc(
             happy,
             "Oh, we redecorate people's houses, fixing things and building new furniture. " +
@@ -187,7 +187,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
     }
 
     private suspend fun Dialogue.noContract() {
-        chatPlayer(quiz, AskContract)
+        chatPlayer(quiz, ASK_CONTRACT)
         chatNpc(neutral, "You haven't got a contract at the moment.")
     }
 
@@ -203,8 +203,8 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
         var detailed = false
         while (true) {
             val options = buildList {
-                add(AskConstruction to FavourOption.Company)
-                add(AskBadHouse to FavourOption.BadHouse)
+                add(ASK_CONSTRUCTION to FavourOption.Company)
+                add(ASK_BAD_HOUSE to FavourOption.BadHouse)
                 if (detailed) {
                     add("Tell me where he lives, and I'll do the job." to FavourOption.Accept)
                 } else {
@@ -214,7 +214,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
             }
             when (menu(options)) {
                 FavourOption.Company -> {
-                    chatPlayer(quiz, AskConstruction)
+                    chatPlayer(quiz, ASK_CONSTRUCTION)
                     chatNpc(
                         worried,
                         "See, my dad just - um - found the house. No-one was using it, so he " +
@@ -229,7 +229,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
                     )
                 }
                 FavourOption.BadHouse -> {
-                    chatPlayer(quiz, AskBadHouse)
+                    chatPlayer(quiz, ASK_BAD_HOUSE)
                     chatNpc(
                         sad,
                         "Some kind of economic downturn wiped out his pension plans. It happens " +
@@ -254,7 +254,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
                         "Fabulous! Dad lives in the south-east of Varrock, west of Aubury's " +
                             "Rune Shop. His name's Yarlo. Old Man Yarlo, they call him.",
                     )
-                    quest.setQuestStage(access, Started)
+                    quest.setQuestStage(access, STARTED)
                     return true
                 }
                 FavourOption.Refuse -> {
@@ -271,7 +271,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
         val options =
             listOf(
                 "Where did you say he lived?" to MarloOption.Where,
-                AskContract to MarloOption.Contract,
+                ASK_CONTRACT to MarloOption.Contract,
             )
         when (menu(options)) {
             MarloOption.Where -> {
@@ -305,7 +305,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
         val options =
             listOf(
                 "Yeah, what have you got for me?" to MarloOption.Reward,
-                AskContract to MarloOption.Contract,
+                ASK_CONTRACT to MarloOption.Contract,
                 "Can I do some other kind of building work for you?" to MarloOption.OtherWork,
             )
         when (menu(options)) {
@@ -328,7 +328,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
     }
 
     private fun Dialogue.rewardPending() {
-        if (stage(player) == Built) quest.setQuestStage(access, RewardPending)
+        if (stage(player) == BUILT) quest.setQuestStage(access, REWARD_PENDING)
     }
 
     private suspend fun Dialogue.claimReward() {
@@ -359,10 +359,10 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
                 "on the walking a bit, as well as one for visiting my boss in Falador. Now, let " +
                 "me tell you some tricks of the trade too...",
         )
-        if (stage(player) !in Built until Complete) return
+        if (stage(player) !in BUILT until COMPLETE) return
         val payout = completeMiniquest(hasHouse)
         objbox(
-            Crate,
+            CRATE,
             if (hasHouse) {
                 "Marlo rewards you with a crate of supplies, some money, and 400 Construction XP."
             } else {
@@ -374,17 +374,17 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
     }
 
     private fun Dialogue.completeMiniquest(hasHouse: Boolean): List<String> {
-        VarPlayerIntMapSetter.set(player, "varbit.daddyshome_status", Complete)
+        VarPlayerIntMapSetter.set(player, "varbit.daddyshome_status", COMPLETE)
         player.miniquestsCompleted++
-        player.midiJingle(MiniquestJingle)
-        access.statAdvance("stat.construction", ConstructionXp)
-        access.invAddOrDrop(objRepo, Crate)
+        player.midiJingle(MINIQUEST_JINGLE)
+        access.statAdvance("stat.construction", CONSTRUCTION_XP)
+        access.invAddOrDrop(objRepo, CRATE)
         val lines = mutableListOf("400 Construction XP", "Marlo's crate of supplies")
         if (hasHouse) {
-            access.invAddOrDrop(objRepo, "obj.coins", HouseCoins)
+            access.invAddOrDrop(objRepo, "obj.coins", HOUSE_COINS)
             lines += "1,000 coins"
         } else {
-            player.houseLocation = RimmingtonHouse
+            player.houseLocation = RIMMINGTON_HOUSE
             lines += "A player-owned house in Rimmington"
         }
         return lines
@@ -393,8 +393,8 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
     private fun Dialogue.showCompletionScroll(lines: List<String>) {
         access.ifOpenMain("interface.questscroll")
         access.ifSetText("component.questscroll:quest_title", "You have completed ${quest.displayName}!")
-        access.ifSetObj("component.questscroll:quest_model", obj = Crate, zoom = 10)
-        for (i in 1..ScrollRewardLines) {
+        access.ifSetObj("component.questscroll:quest_model", obj = CRATE, zoom = 10)
+        for (i in 1..SCROLL_REWARD_LINES) {
             access.ifSetText("component.questscroll:quest_reward$i", lines.getOrNull(i - 1) ?: "")
         }
     }
@@ -405,8 +405,8 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
                 happy,
                 "Hello again! Did you lose that crate of supplies I gave you? Here, take another.",
             )
-            access.invAddOrDrop(objRepo, Crate)
-            objbox(Crate, "Marlo gives you another crate of supplies.")
+            access.invAddOrDrop(objRepo, CRATE)
+            objbox(CRATE, "Marlo gives you another crate of supplies.")
         }
         chatNpc(neutral, "Hey, how can I help you?")
         chatPlayer(quiz, "What do you do here?")
@@ -425,17 +425,17 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
     }
 
     private fun Dialogue.crateOwned(): Boolean =
-        player.crateOpened || Crate in access.inv || Crate in access.bank
+        player.crateOpened || CRATE in access.inv || CRATE in access.bank
 
     private suspend fun Dialogue.yarloDialogue() {
         val stage = stage(player)
         when {
             stage == 0 -> yarloStandard()
-            stage == Started -> yarloBegin()
-            stage == Removing -> yarloRemoving()
-            stage < Building -> yarloLecture()
-            stage < Built -> yarloBuilding()
-            stage < Complete -> yarloAwaitingReward()
+            stage == STARTED -> yarloBegin()
+            stage == REMOVING -> yarloRemoving()
+            stage < BUILDING -> yarloLecture()
+            stage < BUILT -> yarloBuilding()
+            stage < COMPLETE -> yarloAwaitingReward()
             else -> yarloAfterQuest()
         }
     }
@@ -474,11 +474,11 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
                 "terrible state. You'll want to start by removing all the tatty old furniture.",
         )
         for (furniture in Furniture.all) {
-            if (furnitureState(player, furniture) == Furniture.Untouched) {
-                setFurnitureState(player, furniture, Furniture.Broken)
+            if (furnitureState(player, furniture) == Furniture.UNTOUCHED) {
+                setFurnitureState(player, furniture, Furniture.BROKEN)
             }
         }
-        quest.setQuestStage(access, Removing)
+        quest.setQuestStage(access, REMOVING)
         chatNpc(
             neutral,
             "There are two stools, two tables, a chair and a rotten carpet to replace. I need a " +
@@ -488,9 +488,9 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
 
     private suspend fun Dialogue.yarloRemoving() {
         chatNpc(quiz, "Ah, young ${youngPerson()}, how's the redecoration coming on?")
-        val remaining = Furniture.all.filter { furnitureState(player, it) < Furniture.Cleared }
+        val remaining = Furniture.all.filter { furnitureState(player, it) < Furniture.CLEARED }
         if (remaining.isEmpty()) {
-            quest.setQuestStage(access, Removed)
+            quest.setQuestStage(access, REMOVED)
             yarloLecture()
             return
         }
@@ -506,9 +506,9 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
         }
         chatPlayer(neutral, "I've been removing the old furniture.")
         val lines = remaining.map { "- ${it.remaining}" }
-        val firstPage = lines.take(RemainingPerPage)
+        val firstPage = lines.take(REMAINING_PER_PAGE)
         chatNpc(neutral, "You still need to remove:<br>" + firstPage.joinToString("<br>"))
-        val rest = lines.drop(RemainingPerPage)
+        val rest = lines.drop(REMAINING_PER_PAGE)
         if (rest.isNotEmpty()) chatNpc(neutral, rest.joinToString("<br>"))
     }
 
@@ -542,7 +542,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
                 false,
             )
         if (listen) {
-            quest.setQuestStage(access, Lecture)
+            quest.setQuestStage(access, LECTURE)
             constructionLecture()
         } else {
             chatNpc(
@@ -553,7 +553,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
             )
         }
         buildInstructions()
-        quest.setQuestStage(access, Building)
+        quest.setQuestStage(access, BUILDING)
         chatNpc(
             happy,
             "I think that's everything - two stools, two tables, a chair, a bed and a carpet. " +
@@ -609,7 +609,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
                 "chair.",
         )
         objbox(
-            Plank,
+            PLANK,
             "Some basic wooden planks and some nails should do, for those. I won't ask for " +
                 "anything more fancy - it'd only get stolen anyway, in this neighbourhood.",
         )
@@ -629,13 +629,13 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
 
     private suspend fun Dialogue.waxwoodExplanation(lastLine: Boolean) {
         objbox(
-            WaxwoodLogs,
+            WAXWOOD_LOGS,
             "Those abandoned crates in the kitchen were here when I moved in, and I found they " +
                 "contain waxwood logs. Waxwood isn't much used in carpentry, but it resists " +
                 "water, so I want a bed made from that.",
         )
         objbox(
-            WaxwoodPlank,
+            WAXWOOD_PLANK,
             if (lastLine) {
                 "You'll have to take three logs from the crate to the sawmill. The chap there " +
                     "will turn them into planks if you mention my name - I've known his family " +
@@ -648,13 +648,13 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
     }
 
     private suspend fun Dialogue.yarloBuilding() {
-        if (allFurnitureAtLeast(player, Furniture.Built)) {
+        if (allFurnitureAtLeast(player, Furniture.BUILT)) {
             chatNpc(
                 happy,
                 "That's everything! Thank you so much, young ${youngPerson()}. Trot off back to " +
                     "my boy Marlo, now. He'll have something for you.",
             )
-            quest.setQuestStage(access, Built)
+            quest.setQuestStage(access, BUILT)
             chatPlayer(happy, "Okay, I'll head back to Marlo.")
             return
         }
@@ -711,8 +711,8 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
     }
 
     private suspend fun Dialogue.tools() {
-        val hammer = DaddysHomeFurniture.Hammers.any { it in access.inv }
-        val saw = DaddysHomeFurniture.Saws.any { it in access.inv }
+        val hammer = DaddysHomeFurniture.HAMMERS.any { it in access.inv }
+        val saw = DaddysHomeFurniture.SAWS.any { it in access.inv }
         if (hammer && saw) {
             chatNpc(
                 neutral,
@@ -807,34 +807,34 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
     }
 
     internal companion object {
-        const val Started = 1
-        const val Removing = 2
-        const val Removed = 3
-        const val Lecture = 4
-        const val Building = 5
-        const val Built = 10
-        const val RewardPending = 12
-        const val Complete = 13
+        const val STARTED = 1
+        const val REMOVING = 2
+        const val REMOVED = 3
+        const val LECTURE = 4
+        const val BUILDING = 5
+        const val BUILT = 10
+        const val REWARD_PENDING = 12
+        const val COMPLETE = 13
 
-        const val Marlo = "npc.con_contractor_varrock"
-        const val Yarlo = "npc.daddyshome_daddy"
+        const val MARLO = "npc.con_contractor_varrock"
+        const val YARLO = "npc.daddyshome_daddy"
 
-        const val Plank = "obj.woodplank"
-        const val WaxwoodLogs = "obj.daddyshome_waxwood_logs"
-        const val WaxwoodPlank = "obj.daddyshome_waxwood_plank"
-        const val Crate = "obj.daddyshome_reward"
-        const val Crates = "loc.daddyshome_crates"
+        const val PLANK = "obj.woodplank"
+        const val WAXWOOD_LOGS = "obj.daddyshome_waxwood_logs"
+        const val WAXWOOD_PLANK = "obj.daddyshome_waxwood_plank"
+        const val CRATE = "obj.daddyshome_reward"
+        const val CRATES = "loc.daddyshome_crates"
 
-        private const val ConstructionXp = 400.0
-        private const val HouseCoins = 1_000
-        private const val RimmingtonHouse = 1
-        private const val MiniquestJingle = 283
-        private const val ScrollRewardLines = 7
-        private const val RemainingPerPage = 3
+        private const val CONSTRUCTION_XP = 400.0
+        private const val HOUSE_COINS = 1_000
+        private const val RIMMINGTON_HOUSE = 1
+        private const val MINIQUEST_JINGLE = 283
+        private const val SCROLL_REWARD_LINES = 7
+        private const val REMAINING_PER_PAGE = 3
 
-        private const val AskCompany = "What does this Mahogany Homes company do?"
-        private const val AskContract = "What's my current construction contract?"
-        private const val AskConstruction = "Aren't you in a construction company yourself though?"
-        private const val AskBadHouse = "Why has he got such a bad house?"
+        private const val ASK_COMPANY = "What does this Mahogany Homes company do?"
+        private const val ASK_CONTRACT = "What's my current construction contract?"
+        private const val ASK_CONSTRUCTION = "Aren't you in a construction company yourself though?"
+        private const val ASK_BAD_HOUSE = "Why has he got such a bad house?"
     }
 }
