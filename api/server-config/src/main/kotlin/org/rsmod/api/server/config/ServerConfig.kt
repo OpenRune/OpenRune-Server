@@ -11,7 +11,13 @@ public data class OpenRuneCentralGameConfig(
     @JsonProperty("link-port") val linkPort: Int = 9091,
     @JsonProperty("world-key") val worldKey: String = "",
     val postgres: CentralPostgresYaml? = null,
-)
+) {
+    // `ServerConfig` is logged at startup; never print the world-link secret.
+    override fun toString(): String =
+        "OpenRuneCentralGameConfig(sameInstance=$sameInstance, httpPort=$httpPort, " +
+            "host=$host, linkPort=$linkPort, worldKey=${redactSecret(worldKey)}, " +
+            "postgres=$postgres)"
+}
 
 public data class CentralPostgresYaml(
     @JsonProperty("jdbc-url") val jdbcUrl: String = "",
@@ -19,7 +25,11 @@ public data class CentralPostgresYaml(
     val password: String = "openrune",
     @JsonProperty("pool-size") val poolSize: Int = 10,
     @JsonProperty("embedded-pgdata-dir") val embeddedPgdataDir: String = ".data/postgres",
-)
+) {
+    override fun toString(): String =
+        "CentralPostgresYaml(jdbcUrl=${redactJdbcUrl(jdbcUrl)}, user=$user, password=${redactSecret(password)}, " +
+            "poolSize=$poolSize, embeddedPgdataDir=$embeddedPgdataDir)"
+}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public data class GameDatabaseYaml(
@@ -30,7 +40,10 @@ public data class PostgresDbYaml(
     @JsonProperty("jdbc-url") val jdbcUrl: String = "",
     val user: String = "openrune",
     val password: String = "openrune",
-)
+) {
+    override fun toString(): String =
+        "PostgresDbYaml(jdbcUrl=${redactJdbcUrl(jdbcUrl)}, user=$user, password=${redactSecret(password)})"
+}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public data class GameplayConfig(
@@ -69,3 +82,11 @@ public data class ServerConfig(
     @JsonProperty("login-timing-logs") val loginTimingLogs: Boolean = false,
     @JsonProperty("social-pm-trace-logs") val socialPmTraceLogs: Boolean = false,
 )
+
+/** Masks a secret for `toString()`; an empty value stays visible so "unset" is still obvious. */
+private fun redactSecret(value: String): String = if (value.isEmpty()) "" else "***"
+
+private val JDBC_PASSWORD_PARAM = Regex("(?i)(password=)[^&;]*")
+
+/** JDBC URLs may carry credentials as a query parameter (`...?user=x&password=y`). */
+private fun redactJdbcUrl(url: String): String = url.replace(JDBC_PASSWORD_PARAM, "$1***")
