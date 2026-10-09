@@ -1450,6 +1450,9 @@
     },
     "Vale Totems": {
       "image": "https://oldschool.runescape.wiki/images/thumb/Vale_Totems_%28minigame%29.png/48px-Vale_Totems_%28minigame%29.png?91627"
+    },
+    "Pete Kayer's Challenges": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Pete_Kayer%27s_Challenges.png/48px-Pete_Kayer%27s_Challenges.png?6949d"
     }
   },
   "categories": {
@@ -1663,6 +1666,7 @@
       "Mess",
       "Nightmare Zone",
       "Pest Control",
+      "Pete Kayer's Challenges",
       "Pyramid Plunder",
       "Rat Pits",
       "Rogues' Den",
@@ -1684,5 +1688,5 @@
       "Volcanic Mine"
     ]
   },
-  "fetched": "2026-10-05"
+  "fetched": "2026-10-09"
 }

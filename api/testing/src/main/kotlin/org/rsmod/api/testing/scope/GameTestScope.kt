@@ -830,7 +830,7 @@ constructor(
             collisionFactory.borrowSharedMap().let { collision ->
                 // Copy the original game's collision flag map into the test.
                 // Important Note: This does _not_ add locs into the loc registry.
-                gameCollisionMap.flags.copyInto(collision.flags)
+                collision.copyFrom(gameCollisionMap)
                 bind(CollisionFlagMap::class.java).toInstance(collision)
             }
 
