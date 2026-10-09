@@ -12,7 +12,3 @@ dependencies {
     testImplementation(projects.api.registry)
     testImplementation(libs.fastutil)
 }
-
-tasks.test {
-    inputs.dir(rootProject.file(".data/raw-cache/server/loc"))
-}

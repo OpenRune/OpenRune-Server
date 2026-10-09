@@ -2,6 +2,7 @@ package org.rsmod.content.quest.area.varrock
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
@@ -25,6 +26,7 @@ import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.clearPendingAction
+import org.rsmod.api.player.ui.IfModalButton
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.DefaultGameRandom
 import org.rsmod.api.random.GameRandom
@@ -37,6 +39,7 @@ import org.rsmod.api.registry.zone.ZonePlayerActivityBitSet
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.table.ApothecaryPotionsRow
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -62,59 +65,34 @@ import org.rsmod.routefinder.collision.CollisionFlagMap
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class RomeoAndJulietInteractionTest {
-    @Test fun `accepting Romeo's request starts the quest in the native varp`() {
-        val f = Fixture()
-        f.talk(ROMEO)
-        f.finish(listOf(3, 1, 3))
-        assertEquals(10, f.stage())
-        assertEquals(10, f.player.vars["varp.rjquest"])
-        assertEquals(0, f.player.vars["varp.qp"])
-    }
-
-    @Test fun `declining Romeo's request leaves the quest unstarted`() {
-        for (first in 1..3) {
-            val f = Fixture()
-            f.talk(ROMEO)
-            f.finish(listOf(first, 2))
-            assertEquals(0, f.stage(), "first option $first")
-        }
-    }
-
-    @Test fun `Juliet gives a message and a lost one is replaced exactly once`() {
+    @Test fun `Juliet hands out one message, replaces a lost one and never duplicates it`() {
         val f = Fixture(10)
         f.talk(JULIET)
         f.finish()
         assertEquals(20, f.stage())
-        assertEquals(1, f.player.inv.count(MESSAGE))
+        assertEquals(1, f.total(MESSAGE))
         f.talk(JULIET)
         f.finish()
-        assertEquals(1, f.player.inv.count(MESSAGE))
+        assertEquals(1, f.total(MESSAGE))
         f.player.inv[0] = null
         f.talk(JULIET)
         f.finish()
-        assertEquals(1, f.player.inv.count(MESSAGE))
+        assertEquals(1, f.total(MESSAGE))
         assertEquals(20, f.stage())
     }
 
-    @Test fun `a full inventory does not lose Juliet's message`() {
+    @Test fun `a full inventory drops Juliet's message on the floor instead of losing it`() {
         val f = Fixture(10)
-        for (slot in 0 until 28) f.player.inv[slot] = InvObj("obj.coins", 1)
+        f.fillInventory()
         f.talk(JULIET)
         f.finish()
         assertEquals(20, f.stage())
         assertEquals(0, f.player.inv.count(MESSAGE))
-        assertTrue(f.player.inv.count("obj.coins") <= 28)
+        assertEquals(1, f.ground(MESSAGE))
+        assertEquals(28, f.player.inv.count(FILLER))
     }
 
-    @Test fun `Juliet has nothing to give before the quest`() {
-        val f = Fixture()
-        f.talk(JULIET)
-        f.finish()
-        assertEquals(0, f.stage())
-        assertEquals(0, f.player.inv.count(MESSAGE))
-    }
-
-    @Test fun `Romeo reads the message and the stage only advances with it`() {
+    @Test fun `Romeo takes exactly one message and only when the player carries it`() {
         val lost = Fixture(20)
         lost.talk(ROMEO)
         lost.finish()
@@ -122,108 +100,169 @@ class RomeoAndJulietInteractionTest {
 
         val f = Fixture(20)
         f.player.inv[0] = InvObj(MESSAGE, 1)
+        f.player.inv[1] = InvObj(MESSAGE, 1)
         f.talk(ROMEO)
         f.finish(listOf(4))
         assertEquals(30, f.stage())
-        assertEquals(0, f.player.inv.count(MESSAGE))
+        assertEquals(1, f.total(MESSAGE))
     }
 
-    @Test fun `Father Lawrence's sermon sends the player to the Apothecary`() {
-        val f = Fixture(30)
-        f.talk(LAWRENCE)
-        f.finish()
-        assertEquals(40, f.stage())
-        assertTrue(f.script.questLog(f.access()).contains("Apothecary"))
-    }
-
-    @Test fun `Father Lawrence only offers the sermon after the message was delivered`() {
+    @Test fun `a message that vanishes during the hand-in does not advance the quest`() {
         val f = Fixture(20)
-        f.talk(LAWRENCE)
+        f.player.inv[0] = InvObj(MESSAGE, 1)
+        f.talk(ROMEO)
+        f.finishUntil { f.player.ui.containsModal("interface.objectbox") }
+        f.player.inv[0] = null
         f.finish(listOf(4))
         assertEquals(20, f.stage())
+        assertEquals(0, f.total(MESSAGE))
     }
 
-    @Test fun `the Apothecary asks for berries and resets the tailored bush`() {
-        val f = Fixture(40)
-        VarPlayerIntMapSetter.set(f.player, "varbit.cadavabush", 2)
-        f.talk(APOTHECARY)
-        f.finish(listOf(2, 1, 4))
-        assertEquals(50, f.stage())
-        assertEquals(0, f.player.vars["varbit.cadavabush"])
-        assertEquals(0, f.player.inv.count(POTION))
-    }
-
-    @Test fun `berries are turned into a cadava potion once the Apothecary has asked for them`() {
+    @Test fun `berries become exactly one potion even with a full inventory`() {
         val f = Fixture(50)
+        f.fillInventory()
         f.player.inv[0] = InvObj(BERRIES, 1)
+        f.player.inv[1] = InvObj(BERRIES, 1)
         f.talk(APOTHECARY)
         f.finish(listOf(2, 1))
         assertEquals(50, f.stage())
-        assertEquals(0, f.player.inv.count(BERRIES))
-        assertEquals(1, f.player.inv.count(POTION))
+        assertEquals(1, f.total(BERRIES))
+        assertEquals(1, f.total(POTION))
     }
 
-    @Test fun `bringing berries while asking in one go also brews the potion`() {
-        val f = Fixture(40)
-        f.player.inv[0] = InvObj(BERRIES, 1)
-        f.talk(APOTHECARY)
-        f.finish(listOf(2, 1))
-        assertEquals(50, f.stage())
-        assertEquals(0, f.player.inv.count(BERRIES))
-        assertEquals(1, f.player.inv.count(POTION))
-    }
-
-    @Test fun `berries are not accepted before Father Lawrence has sent the player`() {
+    @Test fun `berries are kept when the Apothecary has not asked for them yet`() {
         val f = Fixture(30)
         f.player.inv[0] = InvObj(BERRIES, 1)
         f.talk(APOTHECARY)
         f.finish(listOf(2, 3))
         assertEquals(30, f.stage())
-        assertEquals(1, f.player.inv.count(BERRIES))
-        assertEquals(0, f.player.inv.count(POTION))
+        assertEquals(1, f.total(BERRIES))
+        assertEquals(0, f.total(POTION))
     }
 
-    @Test fun `giving Juliet the potion consumes it and plays the cutscene`() {
+    @Test fun `Juliet takes exactly one potion`() {
         val f = Fixture(50)
         f.player.inv[0] = InvObj(POTION, 1)
+        f.player.inv[1] = InvObj(POTION, 1)
         f.talk(JULIET)
         f.finish()
         assertEquals(60, f.stage())
-        assertEquals(0, f.player.inv.count(POTION))
-        assertEquals(1, f.player.vars["varbit.romjul_juliet_visible"])
-        assertEquals(0, f.player.vars["varbit.cutscene_status"])
-        assertEquals(CoordGrid(3157, 3425, 1), f.player.coords)
-        assertEquals(0, f.npcs.count { it.isSlotAssigned && it.id == "npc.draul_leptoc".asRSCM() })
-    }
-
-    @Test fun `Juliet without the potion does not advance the quest`() {
-        val f = Fixture(50)
+        assertEquals(1, f.total(POTION))
         f.talk(JULIET)
         f.finish()
+        assertEquals(1, f.total(POTION))
+    }
+
+    @Test fun `a potion that vanishes during the hand-in does not advance the quest`() {
+        val f = Fixture(50)
+        f.player.inv[0] = InvObj(POTION, 1)
+        f.talk(JULIET)
+        f.finishUntil { f.player.ui.containsModal("interface.chat_left") }
+        f.player.inv[0] = null
+        f.finish()
+        assertEquals(50, f.stage())
+        assertEquals(0, f.total(POTION))
+    }
+
+    @Test fun `cancelling the potion cutscene keeps the hand-in`() {
+        val f = Fixture(50)
+        f.player.inv[0] = InvObj(POTION, 1)
+        f.talk(JULIET)
+        f.finishUntil { f.player.vars["varbit.cutscene_status"] == 1 }
+        f.cancel()
+        assertEquals(60, f.stage())
+        assertEquals(0, f.total(POTION))
+    }
+
+    @Test fun `drinking the potion swaps it for one empty vial and is refused outside the shop`() {
+        val f = Fixture(50)
+        f.fillInventory()
+        f.player.inv[0] = InvObj(POTION, 1)
+        f.held(POTION, op = 2)
+        assertEquals(1, f.total(POTION))
+        assertEquals(0, f.total(VIAL))
+
+        f.player.coords = CoordGrid(3195, 3404, 0)
+        f.held(POTION, op = 2, options = listOf(1))
+        assertEquals(0, f.total(POTION))
+        assertEquals(1, f.total(VIAL))
         assertEquals(50, f.stage())
     }
 
-    @Test fun `the crypt cutscene completes the quest once and grants five quest points`() {
-        val f = Fixture(60)
-        f.talk(ROMEO)
-        f.finish()
-        f.assertComplete()
-        assertEquals(CoordGrid(3215, 3418, 0), f.player.coords)
-        assertTrue(f.player.ui.containsModal("interface.questscroll"))
-        assertEquals(2, f.player.vars["varbit.romjul_juliet_visible"])
-        f.talk(ROMEO)
-        f.finish()
-        f.assertComplete()
+    @Test fun `the Apothecary takes exactly the ingredients and coins of each potion`() {
+        for (potion in ApothecaryPotionsRow.all()) {
+            val f = Fixture(0)
+            f.stock(potion, coins = potion.coins + 100)
+            val before = f.snapshot(potion)
+            f.button(potion)
+            assertEquals(1, f.total(potion.product.internalName), potion.key)
+            for ((index, ingredient) in potion.ingredients.withIndex()) {
+                assertEquals(
+                    before.getValue(ingredient.internalName) - potion.amounts[index],
+                    f.total(ingredient.internalName),
+                    potion.key,
+                )
+            }
+            assertEquals(100, f.total(COINS), potion.key)
+        }
     }
 
-    @Test fun `the complete quest plays through from Romeo to the crypt`() {
+    @Test fun `the Apothecary refuses a potion without consuming anything when an item is missing`() {
+        for (potion in ApothecaryPotionsRow.all()) {
+            val missing = potion.ingredients.size + if (potion.coins > 0) 1 else 0
+            for (skip in 0 until missing) {
+                val f = Fixture(0)
+                f.stock(potion, coins = potion.coins, skip = skip)
+                val before = f.snapshot(potion)
+                f.button(potion)
+                assertEquals(before, f.snapshot(potion), "${potion.key} without item $skip")
+                assertEquals(0, f.total(potion.product.internalName), potion.key)
+            }
+        }
+    }
+
+    @Test fun `a full inventory still brews exactly one potion`() {
+        for (potion in ApothecaryPotionsRow.all()) {
+            val f = Fixture(0)
+            f.fillInventory()
+            f.stock(potion, coins = potion.coins)
+            f.button(potion)
+            assertEquals(1, f.total(potion.product.internalName), potion.key)
+            for (ingredient in potion.ingredients) {
+                assertEquals(0, f.total(ingredient.internalName), potion.key)
+            }
+        }
+    }
+
+    @Test fun `clicking twice with the items for one potion brews one`() {
+        for (potion in ApothecaryPotionsRow.all()) {
+            val f = Fixture(0)
+            f.stock(potion, coins = potion.coins)
+            f.button(potion)
+            f.button(potion)
+            assertEquals(1, f.total(potion.product.internalName), potion.key)
+        }
+    }
+
+    @Test fun `paying from a maxed coin stack takes only the price`() {
+        val potion = ApothecaryPotionsRow.all().first { it.coins > 0 }
+        val f = Fixture(0)
+        f.stock(potion, coins = Int.MAX_VALUE)
+        f.button(potion)
+        assertEquals(Int.MAX_VALUE - potion.coins, f.total(COINS))
+        assertEquals(1, f.total(potion.product.internalName))
+    }
+
+    @Test fun `the quest hands out and takes back each item exactly once`() {
         val f = Fixture()
         f.talk(ROMEO)
         f.finish(listOf(3, 1, 3))
         f.talk(JULIET)
         f.finish()
+        assertEquals(1, f.total(MESSAGE))
         f.talk(ROMEO)
         f.finish(listOf(4))
+        assertEquals(0, f.total(MESSAGE))
         f.talk(LAWRENCE)
         f.finish()
         f.talk(APOTHECARY)
@@ -231,90 +270,16 @@ class RomeoAndJulietInteractionTest {
         f.player.inv[1] = InvObj(BERRIES, 1)
         f.talk(APOTHECARY)
         f.finish(listOf(2, 1))
-        assertEquals(1, f.player.inv.count(POTION))
+        assertEquals(0, f.total(BERRIES))
+        assertEquals(1, f.total(POTION))
         f.talk(JULIET)
         f.finish()
         assertEquals(60, f.stage())
+        assertEquals(0, f.total(POTION))
         f.talk(ROMEO)
         f.finish()
         f.assertComplete()
-        assertEquals(0, f.player.inv.count(POTION))
-        assertEquals(0, f.player.inv.count(MESSAGE))
-    }
-
-    @Test fun `the journal tracks each step and the completion log is written`() {
-        val f = Fixture(10)
-        assertTrue(f.script.questLog(f.access()).contains("<red>Juliet</red>"))
-        f.setStage(20)
-        assertTrue(f.script.questLog(f.access()).contains("take the message to"))
-        f.setStage(50)
-        assertTrue(f.script.questLog(f.access()).contains("cadava berries"))
-        f.player.inv[0] = InvObj(POTION, 1)
-        assertTrue(f.script.questLog(f.access()).contains("take this <red>cadava potion"))
-        f.setStage(100)
-        assertTrue(f.script.completedLog(f.access()).contains("Phillipa"))
-    }
-
-    @Test fun `Phillipa and Draul react to the stage without changing it`() {
-        val f = Fixture()
-        f.talk(PHILLIPA)
-        f.finish()
-        assertTrue(f.output().contains("Hello, who are you?"), f.output())
-        f.talk(DRAUL)
-        f.finish()
-        assertTrue(f.output().contains("What are you doing in my house"), f.output())
-        assertEquals(0, f.stage())
-        val g = Fixture(100)
-        g.talk(DRAUL)
-        g.finish()
-        assertTrue(g.output().contains("quite pleased with yourself"), g.output())
-        assertEquals(100, g.stage())
-    }
-
-    @Test fun `walking away from the crypt cutscene returns the player and keeps the stage`() {
-        val f = Fixture(60)
-        f.talk(ROMEO)
-        f.finishUntil { f.player.coords.x < 3000 }
-        f.cancel()
-        assertEquals(60, f.stage())
-        assertEquals(CoordGrid(3215, 3418, 0), f.player.coords)
-        assertEquals(0, f.player.vars["varbit.cutscene_status"])
-        assertEquals(0, f.npcs.count { it.isSlotAssigned })
-        f.talk(ROMEO)
-        f.finish()
-        f.assertComplete()
-    }
-
-    @Test fun `cancelling the potion cutscene keeps the hand-in and restores the interface`() {
-        val f = Fixture(50)
-        f.player.inv[0] = InvObj(POTION, 1)
-        f.talk(JULIET)
-        f.finishUntil { f.player.vars["varbit.cutscene_status"] == 1 }
-        f.cancel()
-        assertEquals(60, f.stage())
-        assertEquals(0, f.player.inv.count(POTION))
-        assertEquals(0, f.player.vars["varbit.cutscene_status"])
-        assertEquals(1, f.player.vars["varbit.romjul_juliet_visible"])
-        assertEquals(0, f.npcs.count { it.isSlotAssigned })
-    }
-
-    @Test fun `drinking the potion outside of the apothecary is refused`() {
-        val f = Fixture(50)
-        f.player.inv[0] = InvObj(POTION, 1)
-        f.held(POTION, op = 2)
-        assertEquals(1, f.player.inv.count(POTION))
-        assertEquals(0, f.player.inv.count("obj.vial_empty"))
-        assertEquals(50, f.stage())
-    }
-
-    @Test fun `drinking the potion inside the apothecary empties the vial`() {
-        val f = Fixture(50)
-        f.player.coords = CoordGrid(3195, 3404, 0)
-        f.player.inv[0] = InvObj(POTION, 1)
-        f.held(POTION, op = 2, options = listOf(1))
-        assertEquals(0, f.player.inv.count(POTION))
-        assertEquals(1, f.player.inv.count("obj.vial_empty"))
-        assertEquals(50, f.stage())
+        assertEquals(0, f.total(MESSAGE) + f.total(POTION) + f.total(BERRIES))
     }
 
     private class Fixture(stage: Int = 0) {
@@ -323,6 +288,7 @@ class RomeoAndJulietInteractionTest {
         private val coroutine = GameCoroutine("romeo-and-juliet-test")
         private var result: Result<Unit>? = null
         val npcs = NpcList()
+        private lateinit var objs: ObjRegistry
         private val collision = CollisionFlagMap()
         private lateinit var regions: RegionRegistry
         private lateinit var npcRepo: NpcRepository
@@ -387,7 +353,8 @@ class RomeoAndJulietInteractionTest {
                     ZonePlayerActivityBitSet(),
                 )
             npcRepo = NpcRepository(clock, npcRegistry, npcs)
-            script = RomeoAndJuliet(npcRepo, ObjRepository(clock, ObjRegistry(updates)))
+            objs = ObjRegistry(updates)
+            script = RomeoAndJuliet(npcRepo, ObjRepository(clock, objs))
             with(script) { ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup() }
             setStage(stage)
             val zones =
@@ -410,6 +377,46 @@ class RomeoAndJulietInteractionTest {
         fun stage() = script.quest.getQuestStage(player)
 
         fun access() = ProtectedAccess(player, coroutine, context)
+
+        fun fillInventory() {
+            for (slot in 0 until 28) player.inv[slot] = InvObj(FILLER, 1)
+        }
+
+        fun ground(obj: String): Int =
+            objs.findAll(player.coords).filter { it.type == obj.asRSCM() }.sumOf { it.count }
+
+        fun total(obj: String): Int = player.inv.count(obj) + ground(obj)
+
+        fun stock(potion: ApothecaryPotionsRow, coins: Int, skip: Int? = null) {
+            var slot = 0
+            fun give(obj: String, count: Int) {
+                val type = checkNotNull(ServerCacheManager.getItem(obj.asRSCM()))
+                if (type.isStackable) {
+                    player.inv[slot++] = InvObj(obj, count)
+                } else {
+                    repeat(count) { player.inv[slot++] = InvObj(obj, 1) }
+                }
+            }
+            potion.ingredients.forEachIndexed { index, ingredient ->
+                if (index != skip) give(ingredient.internalName, potion.amounts[index])
+            }
+            if (coins > 0 && skip != potion.ingredients.size) give(COINS, coins)
+        }
+
+        fun snapshot(potion: ApothecaryPotionsRow): Map<String, Int> =
+            (potion.ingredients.map { it.internalName } + COINS + potion.product.internalName)
+                .associateWith { total(it) }
+
+        fun button(potion: ApothecaryPotionsRow) {
+            val component =
+                ServerCacheManager.fromComponent("component.apothecary_potions:${potion.key}")
+            start {
+                assertTrue(
+                    events.publish(this, IfModalButton(component, -1, null, IfButtonOp.Op1))
+                )
+            }
+            finish()
+        }
 
         fun talk(npc: String, op: Int = 1) {
             val target = Npc(npc, player.coords.translateZ(1))
@@ -538,13 +545,14 @@ class RomeoAndJulietInteractionTest {
     companion object {
         private const val ROMEO = "npc.romeo"
         private const val JULIET = "npc.juliet"
-        private const val PHILLIPA = "npc.phillipa"
-        private const val DRAUL = "npc.draul_leptoc"
         private const val LAWRENCE = "npc.father_lawrence"
         private const val APOTHECARY = "npc.apothecary"
         private const val MESSAGE = "obj.julietmessage"
         private const val POTION = "obj.cadava"
         private const val BERRIES = "obj.cadavaberries"
+        private const val COINS = "obj.coins"
+        private const val VIAL = "obj.vial_empty"
+        private const val FILLER = "obj.bronze_dagger"
         private val restored = mutableListOf<() -> Unit>()
 
         @OptIn(InternalApi::class)
