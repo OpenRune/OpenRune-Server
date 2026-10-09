@@ -227,6 +227,7 @@ class HunllefSpecs @Inject constructor() {
                             weight = 1,
                             requires = varnIs(HunllefVarns.STYLE, HunllefVarns.MAGIC),
                             cooldown = PRAYER_DISABLE_COOLDOWN,
+                            persistCooldown = true,
                         )
                     }
                     forceWhen(underBoss, stomp)
