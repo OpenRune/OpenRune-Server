@@ -26,7 +26,6 @@ public class AggressionTolerance @Inject constructor(private val mapClock: MapCl
 
     public fun appliesTo(npc: Npc): Boolean = npc.type.id in enrolled
 
-    /** Counts the player as seen, so call it for every player an enrolled npc considers. */
     public fun isTolerant(npc: Npc, player: Player): Boolean {
         if (!appliesTo(npc)) {
             return false
@@ -56,7 +55,6 @@ public class AggressionTolerance @Inject constructor(private val mapClock: MapCl
         public const val LEAVE_DISTANCE: Int = 38
         public const val ABSENT_TICKS: Int = 150
 
-        /** Varp writes ask the persistence layer for a save, so `seen` is only refreshed this often. */
         private const val SEEN_REFRESH_TICKS: Int = 50
     }
 }

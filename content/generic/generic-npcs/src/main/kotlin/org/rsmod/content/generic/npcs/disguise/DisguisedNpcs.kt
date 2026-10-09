@@ -16,10 +16,6 @@ import org.rsmod.game.entity.PlayerList
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
-/**
- * The npc's base type never changes, only its transmog does, so stats, params, drops and respawns
- * come from [dormant] and both types need the same combat params.
- */
 data class Disguise(
     val dormant: String,
     val awake: String,
