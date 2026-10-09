@@ -14,6 +14,8 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.shops.Shops
+import org.rsmod.api.table.SawmillOperatorsRow
+import org.rsmod.api.table.SawmillPlanksRow
 import org.rsmod.content.skills.SkillMultiConfig
 import org.rsmod.content.skills.SkillMultiEntry
 import org.rsmod.content.skills.SkillingActionType
@@ -28,13 +30,14 @@ class SawmillOperatorScript
 constructor(private val shops: Shops, private val hooks: SawmillHooks) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        for (operator in SawmillOperator.entries) {
-            onOpNpc1(operator.npc) { talkTo(it.npc, operator) }
-            onOpNpc3(operator.npc) { buyPlanks(it.npc) }
-            onOpNpc4(operator.npc) { openSupplies(player) }
-            onApNpc1(operator.npc) { approach(it.npc) { talkTo(it.npc, operator) } }
-            onApNpc3(operator.npc) { approach(it.npc) { buyPlanks(it.npc) } }
-            onApNpc4(operator.npc) { approach(it.npc) { openSupplies(player) } }
+        for (operator in SawmillOperators.all) {
+            val npc = operator.npc.internalName
+            onOpNpc1(npc) { talkTo(it.npc, operator) }
+            onOpNpc3(npc) { buyPlanks(it.npc) }
+            onOpNpc4(npc) { openSupplies(player) }
+            onApNpc1(npc) { approach(it.npc) { talkTo(it.npc, operator) } }
+            onApNpc3(npc) { approach(it.npc) { buyPlanks(it.npc) } }
+            onApNpc4(npc) { approach(it.npc) { openSupplies(player) } }
         }
     }
 
@@ -42,12 +45,12 @@ constructor(private val shops: Shops, private val hooks: SawmillHooks) : PluginS
         if (isWithinApRange(npc, APPROACH_RANGE)) action()
     }
 
-    private suspend fun ProtectedAccess.talkTo(npc: Npc, operator: SawmillOperator) =
+    private suspend fun ProtectedAccess.talkTo(npc: Npc, operator: SawmillOperatorsRow) =
         startDialogue(npc) { talk(operator) }
 
     private suspend fun ProtectedAccess.buyPlanks(npc: Npc) = startDialogue(npc) { makePlanks() }
 
-    private suspend fun Dialogue.talk(operator: SawmillOperator) {
+    private suspend fun Dialogue.talk(operator: SawmillOperatorsRow) {
         chatNpc(neutral, operator.greeting)
         val options = buildList {
             add("Yes, please make me some planks." to Choice.Planks)
@@ -122,18 +125,18 @@ constructor(private val shops: Shops, private val hooks: SawmillHooks) : PluginS
             SkillMultiConfig(
                 actionType = SkillingActionType.BUY,
                 verb = "buy",
-                entries = Plank.entries.map { SkillMultiEntry(it.plank) },
+                entries = SawmillPlanks.all.map { SkillMultiEntry(it.plank.internalName) },
                 maxCountProvider = { inv, entry ->
-                    maxOf(1, inv.count(Plank.forPlank(entry.internal).logs))
+                    maxOf(1, inv.count(SawmillPlanks.forPlank(entry.internal).logs.internalName))
                 },
             )
         access.openSkillMulti(config) { selection ->
-            buy(Plank.forPlank(selection.entry.internal), selection.amount)
+            buy(SawmillPlanks.forPlank(selection.entry.internal), selection.amount)
         }
     }
 
-    private suspend fun Dialogue.buy(plank: Plank, requested: Int) {
-        val held = access.inv.count(plank.logs)
+    private suspend fun Dialogue.buy(plank: SawmillPlanksRow, requested: Int) {
+        val held = access.inv.count(plank.logs.internalName)
         if (held == 0) {
             chatNpc(neutral, "You'll need to bring me some more logs.")
             return
@@ -157,12 +160,12 @@ constructor(private val shops: Shops, private val hooks: SawmillHooks) : PluginS
             }
             delete {
                 this.from = from
-                this.obj = plank.logs.asRSCM(RSCMType.OBJ)
+                this.obj = plank.logs.id
                 this.strictCount = amount
             }
             insert {
                 this.into = from
-                this.obj = plank.plank.asRSCM(RSCMType.OBJ)
+                this.obj = plank.plank.id
                 this.strictCount = amount
             }
         }

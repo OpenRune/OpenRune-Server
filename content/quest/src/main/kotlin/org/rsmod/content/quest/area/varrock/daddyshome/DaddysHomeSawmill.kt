@@ -6,9 +6,11 @@ import jakarta.inject.Inject
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.table.SawmillOperatorsRow
 import org.rsmod.content.other.sawmill.SawmillHooks
-import org.rsmod.content.other.sawmill.SawmillOperator
+import org.rsmod.content.other.sawmill.SawmillOperators
 import org.rsmod.content.other.sawmill.SawmillTalkHook
+import org.rsmod.content.other.sawmill.isSameOperator
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -26,7 +28,7 @@ constructor(private val daddysHome: DaddysHomeQuest, private val hooks: SawmillH
         hooks.unregister(this@DaddysHomeSawmill)
     }
 
-    override fun option(player: Player, operator: SawmillOperator): String? {
+    override fun option(player: Player, operator: SawmillOperatorsRow): String? {
         val stage = daddysHome.stage(player)
         return if (stage in DaddysHomeQuest.Building until DaddysHomeQuest.Complete) {
             "I need some waxwood planks for Old Man Yarlo."
@@ -35,8 +37,8 @@ constructor(private val daddysHome: DaddysHomeQuest, private val hooks: SawmillH
         }
     }
 
-    override suspend fun choose(dialogue: Dialogue, operator: SawmillOperator) {
-        dialogue.waxwoodPlanks(lumberyard = operator == SawmillOperator.LumberYard)
+    override suspend fun choose(dialogue: Dialogue, operator: SawmillOperatorsRow) {
+        dialogue.waxwoodPlanks(lumberyard = operator.isSameOperator(SawmillOperators.lumberYard))
     }
 
     private suspend fun Dialogue.waxwoodPlanks(lumberyard: Boolean) {

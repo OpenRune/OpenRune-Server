@@ -25,11 +25,13 @@ class SawmillReachTest {
         val spawns = spawns()
         assertEquals(
             mapOf(
-                SawmillOperator.LumberYard to listOf(CoordGrid(3302, 3492, 0), CoordGrid(1623, 3500, 0)),
-                SawmillOperator.Prifddinas to listOf(CoordGrid(3315, 6116, 0)),
-                SawmillOperator.Auburnvale to listOf(CoordGrid(1395, 3369, 0)),
+                SawmillOperators.lumberYard.npc.internalName to listOf(CoordGrid(3302, 3492, 0), CoordGrid(1623, 3500, 0)),
+                SawmillOperators.prifddinas.npc.internalName to listOf(CoordGrid(3315, 6116, 0)),
+                SawmillOperators.auburnvale.npc.internalName to listOf(CoordGrid(1395, 3369, 0)),
             ),
-            SawmillOperator.entries.associateWith { op -> spawns[op.npc].orEmpty().sortedBy { it.x }.reversed() },
+            SawmillOperators.all.associate { op ->
+                op.npc.internalName to spawns[op.npc.internalName].orEmpty().sortedBy { it.x }.reversed()
+            },
         )
     }
 
@@ -95,7 +97,7 @@ class SawmillReachTest {
                 "npc = \"(npc[.][a-z0-9_]+)\"\\s*\\r?\\n" +
                     "coords = \"(\\d+)_(\\d+)_(\\d+)_(\\d+)_(\\d+)\""
             )
-        val names = SawmillOperator.entries.map { it.npc }.toSet()
+        val names = SawmillOperators.all.map { it.npc.internalName }.toSet()
         val found = mutableMapOf<String, MutableList<CoordGrid>>()
         for (file in File(".data/raw-cache/map/npcs").listFiles { f -> f.extension == "toml" }.orEmpty()) {
             for (match in pattern.findAll(file.readText())) {

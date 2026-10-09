@@ -30,6 +30,8 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.shops.Shops
+import org.rsmod.api.table.SawmillOperatorsRow
+import org.rsmod.api.table.SawmillPlanksRow
 import org.rsmod.content.skills.validButtons
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
@@ -51,17 +53,17 @@ class SawmillOperatorTest {
 
     @Test
     fun `every operator has Talk-to, Buy-plank and Trade on the expected ops`() {
-        for (operator in SawmillOperator.entries) {
-            val type = checkNotNull(ServerCacheManager.getNpc(operator.npc.asRSCM(RSCMType.NPC)))
-            assertEquals("Talk-to", type.actions.getOpOrNull(0), operator.npc)
-            assertEquals("Buy-plank", type.actions.getOpOrNull(2), operator.npc)
-            assertEquals("Trade", type.actions.getOpOrNull(3), operator.npc)
+        for (operator in SawmillOperators.all) {
+            val type = checkNotNull(ServerCacheManager.getNpc(operator.npc.id))
+            assertEquals("Talk-to", type.actions.getOpOrNull(0), operator.npc.internalName)
+            assertEquals("Buy-plank", type.actions.getOpOrNull(2), operator.npc.internalName)
+            assertEquals("Trade", type.actions.getOpOrNull(3), operator.npc.internalName)
         }
     }
 
     @Test
     fun `the Lumber Yard operator walks every talk branch`() {
-        val op = SawmillOperator.LumberYard
+        val op = SawmillOperators.lumberYard
 
         val decline = Fixture().apply { talk(op) }
         decline.finish(listOf(3))
@@ -76,7 +78,7 @@ class SawmillOperatorTest {
         assertNotNull(supplies.player.openedShop)
 
         val planks = Fixture(coins = 1000, "obj.logs" to 5).apply { talk(op) }
-        planks.finish(listOf(1), Plank.Wood to 5)
+        planks.finish(listOf(1), plank("wood") to 5)
         assertTrue(planks.output().contains("Yes, please make me some planks."))
         assertEquals(5, planks.player.inv.count("obj.woodplank"))
         assertEquals(500, planks.player.inv.count("obj.coins"))
@@ -84,7 +86,7 @@ class SawmillOperatorTest {
 
     @Test
     fun `the Prifddinas operator explains the planks and does not say of course`() {
-        val op = SawmillOperator.Prifddinas
+        val op = SawmillOperators.prifddinas
 
         val kinds = Fixture().apply { talk(op) }
         kinds.finish(listOf(2))
@@ -105,13 +107,13 @@ class SawmillOperatorTest {
         assertTrue(decline.output().contains("You can't get good quality planks anywhere but here!"))
 
         val planks = Fixture(coins = 250, "obj.oak_logs" to 1).apply { talk(op) }
-        planks.finish(listOf(1), Plank.Oak to 1)
+        planks.finish(listOf(1), plank("oak") to 1)
         assertEquals(1, planks.player.inv.count("obj.plank_oak"))
     }
 
     @Test
     fun `the Auburnvale operator greets in Varlamorian and walks every branch`() {
-        val op = SawmillOperator.Auburnvale
+        val op = SawmillOperators.auburnvale
 
         val decline = Fixture().apply { talk(op) }
         decline.finish(listOf(3))
@@ -125,20 +127,20 @@ class SawmillOperatorTest {
         assertNotNull(supplies.player.openedShop)
 
         val planks = Fixture(coins = 500, "obj.teak_logs" to 1).apply { talk(op) }
-        planks.finish(listOf(1), Plank.Teak to 1)
+        planks.finish(listOf(1), plank("teak") to 1)
         assertEquals(1, planks.player.inv.count("obj.plank_teak"))
     }
 
     @Test
     fun `Buy-plank turns each log type into its plank at the listed price`() {
-        for (operator in SawmillOperator.entries) {
-            for (plank in Plank.entries) {
-                val f = Fixture(coins = plank.price * 3 + 7, plank.logs to 3)
+        for (operator in SawmillOperators.all) {
+            for (plank in SawmillPlanks.all) {
+                val f = Fixture(coins = plank.price * 3 + 7, plank.logs.internalName to 3)
                 f.buyPlank(operator)
                 f.finish(plank = plank to 3)
-                assertEquals(0, f.player.inv.count(plank.logs), "$operator $plank")
-                assertEquals(3, f.player.inv.count(plank.plank), "$operator $plank")
-                assertEquals(7, f.player.inv.count("obj.coins"), "$operator $plank")
+                assertEquals(0, f.player.inv.count(plank.logs.internalName), "${operator.npc.internalName} ${plank.plank.internalName}")
+                assertEquals(3, f.player.inv.count(plank.plank.internalName), "${operator.npc.internalName} ${plank.plank.internalName}")
+                assertEquals(7, f.player.inv.count("obj.coins"), "${operator.npc.internalName} ${plank.plank.internalName}")
             }
         }
     }
@@ -147,24 +149,24 @@ class SawmillOperatorTest {
     fun `the plank prices match the wiki`() {
         assertEquals(
             listOf(100, 250, 500, 1500, 2500, 5000, 7500),
-            Plank.entries.map { it.price },
+            SawmillPlanks.all.map { it.price },
         )
     }
 
     @Test
     fun `Buy-plank offers all seven planks even without logs`() {
         val f = Fixture(coins = 0)
-        f.buyPlank(SawmillOperator.LumberYard)
+        f.buyPlank(SawmillOperators.lumberYard)
         assertTrue(f.player.ui.containsModal("interface.skillmulti"))
-        f.finish(plank = Plank.Oak to 1)
+        f.finish(plank = plank("oak") to 1)
         assertTrue(f.output().contains("You'll need to bring me some more logs."), f.output())
     }
 
     @Test
     fun `having only a different log type is the same as having none`() {
         val f = Fixture(coins = 100000, "obj.logs" to 10)
-        f.buyPlank(SawmillOperator.LumberYard)
-        f.finish(plank = Plank.Mahogany to 5)
+        f.buyPlank(SawmillOperators.lumberYard)
+        f.finish(plank = plank("mahogany") to 5)
         assertTrue(f.output().contains("You'll need to bring me some more logs."), f.output())
         assertEquals(10, f.player.inv.count("obj.logs"))
         assertEquals(100000, f.player.inv.count("obj.coins"))
@@ -173,8 +175,8 @@ class SawmillOperatorTest {
     @Test
     fun `noted logs are not accepted`() {
         val f = Fixture(coins = 100000, "obj.cert_logs" to 1)
-        f.buyPlank(SawmillOperator.LumberYard)
-        f.finish(plank = Plank.Wood to 1)
+        f.buyPlank(SawmillOperators.lumberYard)
+        f.finish(plank = plank("wood") to 1)
         assertTrue(f.output().contains("You'll need to bring me some more logs."), f.output())
         assertEquals(1, f.player.inv.count("obj.cert_logs"))
         assertEquals(0, f.player.inv.count("obj.woodplank"))
@@ -183,8 +185,8 @@ class SawmillOperatorTest {
     @Test
     fun `not enough coins reports the full price and changes nothing`() {
         val f = Fixture(coins = 1499, "obj.mahogany_logs" to 1)
-        f.buyPlank(SawmillOperator.LumberYard)
-        f.finish(plank = Plank.Mahogany to 1)
+        f.buyPlank(SawmillOperators.lumberYard)
+        f.finish(plank = plank("mahogany") to 1)
         assertTrue(
             f.output().contains("Those planks cost 1,500 coins. You don't have enough money for all of them."),
             f.output(),
@@ -197,8 +199,8 @@ class SawmillOperatorTest {
     @Test
     fun `not enough coins for the whole quantity prices the whole quantity`() {
         val f = Fixture(coins = 799, "obj.oak_logs" to 4, "obj.teak_logs" to 2)
-        f.buyPlank(SawmillOperator.Prifddinas)
-        f.finish(plank = Plank.Oak to 4)
+        f.buyPlank(SawmillOperators.prifddinas)
+        f.finish(plank = plank("oak") to 4)
         assertTrue(f.output().contains("Those planks cost 1,000 coins."), f.output())
         assertEquals(4, f.player.inv.count("obj.oak_logs"))
         assertEquals(799, f.player.inv.count("obj.coins"))
@@ -207,8 +209,8 @@ class SawmillOperatorTest {
     @Test
     fun `asking for more planks than logs only converts the logs held`() {
         val f = Fixture(coins = 10000, "obj.oak_logs" to 3)
-        f.buyPlank(SawmillOperator.Auburnvale)
-        f.finish(plank = Plank.Oak to 28)
+        f.buyPlank(SawmillOperators.auburnvale)
+        f.finish(plank = plank("oak") to 28)
         assertEquals(0, f.player.inv.count("obj.oak_logs"))
         assertEquals(3, f.player.inv.count("obj.plank_oak"))
         assertEquals(9250, f.player.inv.count("obj.coins"))
@@ -218,8 +220,8 @@ class SawmillOperatorTest {
     fun `quantities one five and ten convert exactly that many`() {
         for (quantity in listOf(1, 5, 10)) {
             val f = Fixture(coins = 100000, "obj.logs" to 20)
-            f.buyPlank(SawmillOperator.LumberYard)
-            f.finish(plank = Plank.Wood to quantity)
+            f.buyPlank(SawmillOperators.lumberYard)
+            f.finish(plank = plank("wood") to quantity)
             assertEquals(20 - quantity, f.player.inv.count("obj.logs"), "quantity $quantity")
             assertEquals(quantity, f.player.inv.count("obj.woodplank"), "quantity $quantity")
             assertEquals(100000 - quantity * 100, f.player.inv.count("obj.coins"), "quantity $quantity")
@@ -229,8 +231,8 @@ class SawmillOperatorTest {
     @Test
     fun `mixed log types only convert the chosen one`() {
         val f = Fixture(coins = 10000, "obj.logs" to 4, "obj.oak_logs" to 4, "obj.teak_logs" to 4)
-        f.buyPlank(SawmillOperator.LumberYard)
-        f.finish(plank = Plank.Oak to 4)
+        f.buyPlank(SawmillOperators.lumberYard)
+        f.finish(plank = plank("oak") to 4)
         assertEquals(4, f.player.inv.count("obj.logs"))
         assertEquals(0, f.player.inv.count("obj.oak_logs"))
         assertEquals(4, f.player.inv.count("obj.teak_logs"))
@@ -242,22 +244,22 @@ class SawmillOperatorTest {
     fun `paying with the last coins in a full inventory still works`() {
         val f = Fixture(coins = 250, "obj.oak_logs" to 1)
         for (slot in 0 until 28) if (f.player.inv[slot] == null) f.player.inv[slot] = InvObj("obj.bronze_dagger", 1)
-        f.buyPlank(SawmillOperator.LumberYard)
-        f.finish(plank = Plank.Oak to 1)
+        f.buyPlank(SawmillOperators.lumberYard)
+        f.finish(plank = plank("oak") to 1)
         assertEquals(1, f.player.inv.count("obj.plank_oak"))
         assertEquals(0, f.player.inv.count("obj.coins"))
     }
 
     @Test
     fun `Trade opens the construction supplies shop with the wiki stock`() {
-        for (operator in SawmillOperator.entries) {
+        for (operator in SawmillOperators.all) {
             val f = Fixture()
             f.trade(operator)
             f.finish()
             val shop = checkNotNull(f.player.openedShop)
-            assertEquals(130.0, shop.sellPercentage, operator.npc)
-            assertEquals(50.0, shop.buyPercentage, operator.npc)
-            assertEquals(0.0, shop.changePercentage, operator.npc)
+            assertEquals(130.0, shop.sellPercentage, operator.npc.internalName)
+            assertEquals(50.0, shop.buyPercentage, operator.npc.internalName)
+            assertEquals(0.0, shop.changePercentage, operator.npc.internalName)
             val stock = checkNotNull(shop.inv.type.stock).filterNotNull().associate { it.obj to it.count }
             val expected =
                 mapOf(
@@ -267,42 +269,43 @@ class SawmillOperatorTest {
                     "obj.nails_iron" to 1000,
                     "obj.nails" to 1000,
                 )
-            assertEquals(expected.mapKeys { it.key.asRSCM(RSCMType.OBJ) }, stock, operator.npc)
+            assertEquals(expected.mapKeys { it.key.asRSCM(RSCMType.OBJ) }, stock, operator.npc.internalName)
             assertEquals("inv.poh_sawmill_shop".asRSCM(RSCMType.INV), shop.inv.type.id)
         }
     }
 
     @Test
     fun `every operator shares the same stock`() {
-        val a = Fixture().apply { trade(SawmillOperator.LumberYard) }
+        val a = Fixture().apply { trade(SawmillOperators.lumberYard) }
         a.finish()
-        val b = Fixture(shops = a.shops).apply { trade(SawmillOperator.Prifddinas) }
+        val b = Fixture(shops = a.shops).apply { trade(SawmillOperators.prifddinas) }
         b.finish()
         assertTrue(checkNotNull(a.player.openedShop).inv === checkNotNull(b.player.openedShop).inv)
     }
 
     @Test
     fun `registered hooks add options to the talk menu and run when chosen`() {
-        var chosen: SawmillOperator? = null
+        var chosen: SawmillOperatorsRow? = null
         val hook =
             object : SawmillTalkHook {
-                override fun option(player: Player, operator: SawmillOperator) =
-                    if (operator == SawmillOperator.Prifddinas) null else "Extra option"
+                override fun option(player: Player, operator: SawmillOperatorsRow): String? =
+                    if (operator.isSameOperator(SawmillOperators.prifddinas)) null
+                    else "Extra option"
 
-                override suspend fun choose(dialogue: Dialogue, operator: SawmillOperator) {
+                override suspend fun choose(dialogue: Dialogue, operator: SawmillOperatorsRow) {
                     chosen = operator
                     dialogue.chatNpc(dialogue.neutral, "Hook ran.")
                 }
             }
         val f = Fixture().apply { hooks.register(hook) }
-        f.talk(SawmillOperator.LumberYard)
+        f.talk(SawmillOperators.lumberYard)
         f.finish(listOf(3))
-        assertEquals(SawmillOperator.LumberYard, chosen)
+        assertEquals(SawmillOperators.lumberYard.rowId, chosen?.rowId)
         assertTrue(f.output().contains("Hook ran."))
 
         chosen = null
         val prif = Fixture().apply { hooks.register(hook) }
-        prif.talk(SawmillOperator.Prifddinas)
+        prif.talk(SawmillOperators.prifddinas)
         prif.finish(listOf(3))
         assertNull(chosen)
         assertFalse(prif.output().contains("Extra option"))
@@ -310,28 +313,31 @@ class SawmillOperatorTest {
 
     @Test
     fun `approach triggers serve a player standing across the counter`() {
-        for (operator in SawmillOperator.entries) {
+        for (operator in SawmillOperators.all) {
             val talk = Fixture().apply { approachTalk(operator) }
             talk.finish(listOf(3))
-            assertTrue(talk.output().contains("Do you want me to make some planks"), operator.npc)
+            assertTrue(talk.output().contains("Do you want me to make some planks"), operator.npc.internalName)
 
             val buy = Fixture(coins = 100, "obj.logs" to 1).apply { approachBuyPlank(operator) }
-            buy.finish(plank = Plank.Wood to 1)
-            assertEquals(1, buy.player.inv.count("obj.woodplank"), operator.npc)
+            buy.finish(plank = plank("wood") to 1)
+            assertEquals(1, buy.player.inv.count("obj.woodplank"), operator.npc.internalName)
 
             val trade = Fixture().apply { approachTrade(operator) }
             trade.finish()
-            assertNotNull(trade.player.openedShop, operator.npc)
+            assertNotNull(trade.player.openedShop, operator.npc.internalName)
         }
     }
 
     @Test
     fun `approach triggers wait until the player is within two tiles`() {
-        val f = Fixture(far = true).apply { approachTalk(SawmillOperator.LumberYard) }
+        val f = Fixture(far = true).apply { approachTalk(SawmillOperators.lumberYard) }
         f.finish()
         assertFalse(f.output().contains("Do you want me to make some planks"), f.output())
         assertNull(f.player.openedShop)
     }
+
+    private fun plank(name: String): SawmillPlanksRow =
+        SawmillPlanksRow.getRow("dbrow.sawmill_plank_$name")
 
     private class Fixture(
         coins: Int = 0,
@@ -344,7 +350,7 @@ class SawmillOperatorTest {
         private val client = RecordingClient()
         private val coroutine = GameCoroutine("sawmill-test")
         private var result: Result<Unit>? = null
-        private var plank: Pair<Plank, Int>? = null
+        private var plank: Pair<SawmillPlanksRow, Int>? = null
         private val context =
             ProtectedAccessContextFactory.empty()
                 .copy(
@@ -396,23 +402,23 @@ class SawmillOperatorTest {
 
         fun access() = ProtectedAccess(player, coroutine, context)
 
-        fun talk(operator: SawmillOperator) = op(operator) { NpcEvents.Op1(it) }
+        fun talk(operator: SawmillOperatorsRow) = op(operator) { NpcEvents.Op1(it) }
 
-        fun buyPlank(operator: SawmillOperator) = op(operator) { NpcEvents.Op3(it) }
+        fun buyPlank(operator: SawmillOperatorsRow) = op(operator) { NpcEvents.Op3(it) }
 
-        fun trade(operator: SawmillOperator) = op(operator) { NpcEvents.Op4(it) }
+        fun trade(operator: SawmillOperatorsRow) = op(operator) { NpcEvents.Op4(it) }
 
-        fun approachTalk(operator: SawmillOperator) = op(operator) { NpcEvents.Ap1(it) }
+        fun approachTalk(operator: SawmillOperatorsRow) = op(operator) { NpcEvents.Ap1(it) }
 
-        fun approachBuyPlank(operator: SawmillOperator) = op(operator) { NpcEvents.Ap3(it) }
+        fun approachBuyPlank(operator: SawmillOperatorsRow) = op(operator) { NpcEvents.Ap3(it) }
 
-        fun approachTrade(operator: SawmillOperator) = op(operator) { NpcEvents.Ap4(it) }
+        fun approachTrade(operator: SawmillOperatorsRow) = op(operator) { NpcEvents.Ap4(it) }
 
         private fun op(
-            operator: SawmillOperator,
+            operator: SawmillOperatorsRow,
             event: (Npc) -> SuspendEvent<ProtectedAccess>,
         ) = start {
-            assertTrue(events.publish(this, event(Npc(operator.npc, coords.translateZ(if (far) 6 else 1)))))
+            assertTrue(events.publish(this, event(Npc(operator.npc.internalName, coords.translateZ(if (far) 6 else 1)))))
         }
 
         private fun start(block: suspend ProtectedAccess.() -> Unit) {
@@ -436,7 +442,7 @@ class SawmillOperatorTest {
             result?.getOrThrow()
         }
 
-        fun finish(options: List<Int> = emptyList(), plank: Pair<Plank, Int>? = null) {
+        fun finish(options: List<Int> = emptyList(), plank: Pair<SawmillPlanksRow, Int>? = null) {
             this.plank = plank
             val selections = options.iterator()
             repeat(400) {
@@ -452,7 +458,7 @@ class SawmillOperatorTest {
                     when {
                         player.ui.containsModal("interface.skillmulti") -> {
                             val (selected, quantity) = checkNotNull(plank) { "no plank selection" }
-                            ResumePauseButtonInput(validButtons[selected.ordinal], quantity)
+                            ResumePauseButtonInput(validButtons[SawmillPlanks.all.indexOfFirst { it.rowId == selected.rowId }], quantity)
                         }
                         player.ui.containsModal("interface.chatmenu") ->
                             ResumePauseButtonInput(
