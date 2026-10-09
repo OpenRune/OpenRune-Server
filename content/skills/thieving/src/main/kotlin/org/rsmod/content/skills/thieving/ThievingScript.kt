@@ -4,7 +4,11 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dtx.core.ArgMap
+import dtx.core.RollResult
+import dtx.core.flatten
 import jakarta.inject.Inject
+import org.rsmod.api.droptable.rollCount
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.output.ChatType
@@ -23,6 +27,9 @@ import org.rsmod.api.script.onOpNpc2
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.script.onOpNpc5
+import org.rsmod.api.table.thieving.ThievingCoinPouchRow
+import org.rsmod.api.table.thieving.ThievingPickpocketRow
+import org.rsmod.api.table.thieving.ThievingStallRow
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.BoundLocInfo
@@ -41,18 +48,18 @@ constructor(
     private val restockingUntil = HashMap<CoordGrid, Int>()
 
     override fun ScriptContext.startup() {
-        for (stall in ThievingTables.stalls) {
-            val type = ServerCacheManager.getObject(stall.loc.asRSCM(RSCMType.LOC)) ?: continue
-            when (opSlot { type.actions.getOpOrNull(it) == STEAL_OP }) {
-                1 -> onOpLoc1(stall.loc) { stealFromStall(it.loc, stall) }
-                2 -> onOpLoc2(stall.loc) { stealFromStall(it.loc, stall) }
-                3 -> onOpLoc3(stall.loc) { stealFromStall(it.loc, stall) }
-                4 -> onOpLoc4(stall.loc) { stealFromStall(it.loc, stall) }
-                5 -> onOpLoc5(stall.loc) { stealFromStall(it.loc, stall) }
+        val stallLoot = lootTables(ThievingDropTables.stalls, ThievingStallRow.all()) { it.rowId }
+        stallLoot.forEach { (stall, loot) ->
+            when (opSlot { stall.loc.actions.getOpOrNull(it) == STEAL_OP }) {
+                1 -> onOpLoc1(stall.loc) { stealFromStall(it.loc, stall, loot) }
+                2 -> onOpLoc2(stall.loc) { stealFromStall(it.loc, stall, loot) }
+                3 -> onOpLoc3(stall.loc) { stealFromStall(it.loc, stall, loot) }
+                4 -> onOpLoc4(stall.loc) { stealFromStall(it.loc, stall, loot) }
+                5 -> onOpLoc5(stall.loc) { stealFromStall(it.loc, stall, loot) }
             }
         }
         bindPickpockets()
-        for (pouch in ThievingTables.pickpockets.mapNotNull { it.pouch }.distinctBy { it.obj }) {
+        ThievingCoinPouchRow.all().forEach { pouch ->
             onOpHeld1(pouch.obj) { openPouches(pouch, all = true) }
             onOpHeld2(pouch.obj) { openPouches(pouch, all = false) }
         }
@@ -63,8 +70,10 @@ constructor(
      * whose symbol prefix it carries when its name is its own (Prifddinas elves, Darkmeyer vyres).
      */
     private fun ScriptContext.bindPickpockets() {
-        val byName = ThievingTables.pickpockets.associateBy { it.name.lowercase() }
-        val byPrefix = ThievingTables.pickpockets.flatMap { t -> t.symbolPrefixes.map { it to t } }
+        val targets = ThievingPickpocketRow.all()
+        val loot = lootTables(ThievingDropTables.pickpockets, targets) { it.rowId }
+        val byName = targets.associateBy { it.name.lowercase() }
+        val byPrefix = targets.flatMap { t -> t.symbolPrefixes.map { it to t } }
         for ((id, type) in ServerCacheManager.getNpcs()) {
             val slot = opSlot { type.actions.getOpOrNull(it) == PICKPOCKET_OP } ?: continue
             val symbol = runCatching { RSCM.getReverseMapping(RSCMType.NPC, id) }.getOrNull()
@@ -74,19 +83,49 @@ constructor(
                 byName[type.name.lowercase()]
                     ?: byPrefix.firstOrNull { bare.startsWith(it.first) }?.second
                     ?: continue
+            val table = loot.getValue(target)
             when (slot) {
-                1 -> onOpNpc1(symbol) { pickpocket(it.npc, target) }
-                2 -> onOpNpc2(symbol) { pickpocket(it.npc, target) }
-                3 -> onOpNpc3(symbol) { pickpocket(it.npc, target) }
-                4 -> onOpNpc4(symbol) { pickpocket(it.npc, target) }
-                5 -> onOpNpc5(symbol) { pickpocket(it.npc, target) }
+                1 -> onOpNpc1(symbol) { pickpocket(it.npc, target, table) }
+                2 -> onOpNpc2(symbol) { pickpocket(it.npc, target, table) }
+                3 -> onOpNpc3(symbol) { pickpocket(it.npc, target, table) }
+                4 -> onOpNpc4(symbol) { pickpocket(it.npc, target, table) }
+                5 -> onOpNpc5(symbol) { pickpocket(it.npc, target, table) }
             }
+        }
+    }
+
+    private fun <R> lootTables(
+        tables: Map<String, ThievingDropTable>,
+        rows: List<R>,
+        rowId: (R) -> Int,
+    ): Map<R, ThievingDropTable> {
+        val byId = tables.mapKeys { (symbol, _) -> symbol.asRSCM(RSCMType.DBROW) and 0xFFFF }
+        val orphaned = byId.keys - rows.map { rowId(it) and 0xFFFF }.toSet()
+        check(orphaned.isEmpty()) { "Thieving loot keyed to rows outside its table: $orphaned" }
+        return rows.associateWith { row ->
+            byId[rowId(row) and 0xFFFF] ?: error("No thieving loot for dbrow ${rowId(row)}")
         }
     }
 
     private fun opSlot(matches: (Int) -> Boolean): Int? = (0 until 5).firstOrNull(matches)?.plus(1)
 
-    private suspend fun ProtectedAccess.stealFromStall(loc: BoundLocInfo, stall: Stall) {
+    private fun ProtectedAccess.rollLoot(table: ThievingDropTable): List<LootDrop> {
+        val drops =
+            when (val result = table.roll(player, ArgMap()).flatten()) {
+                is RollResult.Nothing -> emptyList()
+                is RollResult.Single -> listOf(result.result)
+                is RollResult.ListOf -> result.results
+            }
+        return drops
+            .filter { !it.isNothing && it.condition(player) }
+            .map { LootDrop(it.transformObj(player) ?: it.obj, it.rollCount(random)) }
+    }
+
+    private suspend fun ProtectedAccess.stealFromStall(
+        loc: BoundLocInfo,
+        stall: ThievingStallRow,
+        table: ThievingDropTable,
+    ) {
         if (player.isFrozen) return
         arriveDelay()
         faceLoc(loc)
@@ -95,7 +134,8 @@ constructor(
             return
         }
         if (restockingUntil.getOrDefault(loc.coords, 0) > mapClock) return
-        if (inv.isFull()) {
+        val loot = rollLoot(table)
+        if (!player.addLoot(inv, loot, commit = false)) {
             mes("You don't have enough inventory space.")
             return
         }
@@ -107,63 +147,68 @@ constructor(
         }
         anim(STALL_SEQ)
         delay(2)
-        val loot = stall.loot.roll(random)
-        val count = random.of(loot.min, loot.max)
-        invAdd(inv, loot.obj, count)
-        mes("You steal ${describe(loot.obj, count)}.")
-        statAdvance(THIEVING, stall.xp)
+        if (!player.addLoot(inv, loot)) {
+            mes("You don't have enough inventory space.")
+            return
+        }
+        for (drop in loot) {
+            mes("You steal ${describe(drop.obj, drop.count)}.")
+        }
+        statAdvance(THIEVING, stall.xp / 10.0)
         restock(loc, stall)
     }
 
-    private fun ProtectedAccess.findSpotter(stall: Stall): Npc? {
+    private fun ProtectedAccess.findSpotter(stall: ThievingStallRow): Npc? {
         val watchers = stall.owners + stall.guards
         return npcRepo
             .findAll(ZoneKey.from(player.coords), zoneRadius = 1)
-            .filter { npc -> watchers.any { npc.type.isType(it) } }
+            .filter { npc -> watchers.any { it.id == npc.type.id } }
             .filter { it.coords.level == player.coords.level }
             .filter { it.coords.chebyshevDistance(player.coords) <= SPOT_RANGE }
             .filter { lineOfSight(it.coords, player.coords) }
             .minByOrNull { it.coords.chebyshevDistance(player.coords) }
     }
 
-    private fun ProtectedAccess.caughtAtStall(spotter: Npc, stall: Stall) {
+    private fun ProtectedAccess.caughtAtStall(spotter: Npc, stall: ThievingStallRow) {
         spotter.say(CAUGHT_SHOUT)
         val guard =
-            if (stall.guards.any { spotter.type.isType(it) }) {
+            if (stall.guards.any { it.id == spotter.type.id }) {
                 spotter
             } else {
                 npcRepo
                     .findAll(ZoneKey.from(player.coords), zoneRadius = 1)
-                    .filter { npc -> stall.guards.any { npc.type.isType(it) } }
+                    .filter { npc -> stall.guards.any { it.id == npc.type.id } }
                     .minByOrNull { it.coords.chebyshevDistance(player.coords) }
             }
         guard?.opPlayer2(player, aiPlayerInteractions)
     }
 
-    private fun ProtectedAccess.restock(loc: BoundLocInfo, stall: Stall) {
-        if (stall.emptyLoc != null) {
-            locRepo.change(loc, stall.emptyLoc, stall.restockTicks)
+    private fun ProtectedAccess.restock(loc: BoundLocInfo, stall: ThievingStallRow) {
+        val empty = stall.empty
+        if (empty != null) {
+            locRepo.change(loc, empty, stall.respawn)
         } else {
-            restockingUntil[loc.coords] = mapClock + stall.restockTicks
+            restockingUntil[loc.coords] = mapClock + stall.respawn
         }
     }
 
-    private suspend fun ProtectedAccess.pickpocket(npc: Npc, target: Pickpocket) {
+    private suspend fun ProtectedAccess.pickpocket(
+        npc: Npc,
+        target: ThievingPickpocketRow,
+        table: ThievingDropTable,
+    ) {
         if (player.isFrozen) return
         val owner = pocketOwner(npc, target)
         if (stat(THIEVING) < target.level) {
             mes("You need to be level ${target.level} to pickpocket $owner.")
             return
         }
-        val pouch = target.pouch
-        if (pouch != null && inv.count(pouch.obj) >= MAX_POUCHES) {
+        val pouch = target.pouch?.internalName
+        if (pouch != null && inv.count(pouch) >= MAX_POUCHES) {
             mes("You need to empty your coin pouches before you can continue pickpocketing.")
             return
         }
-        val loot =
-            (target.guaranteed + listOfNotNull(target.loot?.roll(random))).map {
-                LootDrop(it.obj, random.of(it.min, it.max))
-            }
+        val loot = rollLoot(table)
         if (!player.addLoot(inv, loot, commit = false)) {
             mes("You don't have enough inventory space.")
             return
@@ -171,7 +216,7 @@ constructor(
         faceEntitySquare(npc)
         mes("You attempt to pick $owner's pocket.", ChatType.Spam)
         delay(1)
-        if (!statRandom(THIEVING, target.lowChance, target.highChance, invisibleBoost = 0)) {
+        if (!statRandom(THIEVING, target.low, target.high, invisibleBoost = 0)) {
             failPickpocket(npc, target, owner)
             return
         }
@@ -182,17 +227,18 @@ constructor(
         mes("You pick $owner's pocket.", ChatType.Spam)
         anim(PICKPOCKET_SEQ)
         soundSynth(PICK_SYNTH)
-        for (drop in loot.filter { it.obj != pouch?.obj }) {
+        for (drop in loot.filter { it.obj != pouch }) {
             mes("You steal ${describe(drop.obj, drop.count)}.", ChatType.Spam)
         }
-        statAdvance(THIEVING, target.xp)
+        statAdvance(THIEVING, target.xp / 10.0)
     }
 
-    private fun ProtectedAccess.openPouches(pouch: CoinPouch, all: Boolean) {
-        val count = if (all) inv.count(pouch.obj) else 1
+    private fun ProtectedAccess.openPouches(pouch: ThievingCoinPouchRow, all: Boolean) {
+        val obj = pouch.obj.internalName
+        val count = if (all) inv.count(obj) else 1
         if (count == 0) return
-        val coins = (1..count).sumOf { random.of(pouch.min, pouch.max).toLong() }
-        if (!player.exchangePouches(inv, pouch.obj, count, coins)) {
+        val total = (1..count).sumOf { random.of(pouch.coinsMin, pouch.coinsMax).toLong() }
+        if (!player.exchangePouches(inv, obj, count, total)) {
             mes("You don't have enough inventory space.")
             return
         }
@@ -200,7 +246,11 @@ constructor(
         mes(message, ChatType.Spam)
     }
 
-    private suspend fun ProtectedAccess.failPickpocket(npc: Npc, target: Pickpocket, owner: String) {
+    private suspend fun ProtectedAccess.failPickpocket(
+        npc: Npc,
+        target: ThievingPickpocketRow,
+        owner: String,
+    ) {
         mes("You fail to pick $owner's pocket.", ChatType.Spam)
         if (player.vars[SHADOW_VEIL_ACTIVE] == 1 && random.of(100) < SHADOW_VEIL_CHANCE) {
             mes("Your attempt to steal goes unnoticed.", ChatType.Spam)
@@ -225,7 +275,7 @@ constructor(
         player.timer(FREEZE_TIMER, ticks + 1)
     }
 
-    private fun pocketOwner(npc: Npc, target: Pickpocket): String {
+    private fun pocketOwner(npc: Npc, target: ThievingPickpocketRow): String {
         val name = if (target.lowercaseName) npc.visType.name.lowercase() else npc.visType.name
         return if (name.contains(" the ")) name else "the $name"
     }

@@ -6,4 +6,6 @@ plugins {
 dependencies {
     testImplementation(projects.api.invStorage)
     implementation(projects.api.pluginCommons)
+    implementation(projects.api.dropTable)
+    implementation(projects.api.dropTablePlugin)
 }

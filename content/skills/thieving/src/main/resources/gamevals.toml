@@ -1,6 +1,7 @@
 [gamevals.dbtable]
 thieving_pickpocket = 65480
 thieving_stall = 65481
+thieving_coin_pouch = 65482
 
 [gamevals.dbrow]
 thieving_man = 62400
@@ -42,6 +43,26 @@ spicethiefstall_thieving = 62455
 gemthiefstall_thieving = 62456
 rag_market_stall_thieving = 62457
 seed_stall_thieving = 62458
+thieving_coin_pouch_citizen = 62460
+thieving_coin_pouch_farmer = 62461
+thieving_coin_pouch_ham = 62462
+thieving_coin_pouch_warrior = 62463
+thieving_coin_pouch_rogue = 62464
+thieving_coin_pouch_cavegoblin = 62465
+thieving_coin_pouch_guard = 62466
+thieving_coin_pouch_fremennik = 62467
+thieving_coin_pouch_bandit2 = 62468
+thieving_coin_pouch_varlamore_wealthy = 62469
+thieving_coin_pouch_desertbandit = 62470
+thieving_coin_pouch_knight = 62471
+thieving_coin_pouch_bandit = 62472
+thieving_coin_pouch_watchman = 62473
+thieving_coin_pouch_menaphite = 62474
+thieving_coin_pouch_paladin = 62475
+thieving_coin_pouch_gnome = 62476
+thieving_coin_pouch_hero = 62477
+thieving_coin_pouch_vyre = 62478
+thieving_coin_pouch_elf = 62479
 
 [gamevals.synth]
 thieving_stunned = 2727
