@@ -80,7 +80,6 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
         chatPlayer(happy, "No problem. Take care, Golrie.")
     }
 
-    /** The pebble, the key hand-in and the met flag change together, before any dialogue line. */
     private suspend fun Dialogue.findPebble(takeKey: Boolean): Boolean {
         val keyTaken = takeKey && access.invDel(access.inv, GOLRIE_KEY).success
         if (player.inv.isFull()) {

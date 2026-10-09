@@ -172,7 +172,6 @@ class WaterfallQuest @Inject constructor() :
     companion object {
         const val QUEST_KEY = "quest_waterfall"
 
-        // Stage values follow the client quest helper, hence the gaps.
         const val STARTED = 1
         const val MET_HUDON = 2
         const val READ_BOOK = 3

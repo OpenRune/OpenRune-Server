@@ -40,7 +40,6 @@ internal object WaterfallCoords {
 
 internal fun Player.hasAmulet(): Boolean = inv.contains(AMULET) || worn.contains(AMULET)
 
-/** Every door and gate here is a wall on the north edge of its tile. */
 internal fun BoundLocInfo.playerIsSouth(coords: CoordGrid): Boolean = coords.z <= this.coords.z
 
 internal fun BoundLocInfo.tileAcross(from: CoordGrid): CoordGrid =

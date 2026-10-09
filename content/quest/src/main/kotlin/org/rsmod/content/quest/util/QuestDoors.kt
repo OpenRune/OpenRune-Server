@@ -13,7 +13,6 @@ import org.rsmod.map.CoordGrid
 
 class QuestDoors @Inject constructor(private val locRepo: LocRepository) {
 
-    /** [outward] swings the door the other way around its hinge, onto the doorway tile. */
     fun open(
         access: ProtectedAccess,
         closed: BoundLocInfo,
@@ -29,7 +28,6 @@ class QuestDoors @Inject constructor(private val locRepo: LocRepository) {
         locRepo.add(coords, opened, DURATION, closed.turnAngle(1), closed.shape)
     }
 
-    /** The open forms are named because quest doors carry no `next_loc_stage` param. */
     fun openDouble(
         access: ProtectedAccess,
         left: LocInfo?,
@@ -51,7 +49,6 @@ class QuestDoors @Inject constructor(private val locRepo: LocRepository) {
         }
     }
 
-    /** Unless [symmetric], both leaves fold onto the left post like a picket gate. */
     fun openGate(
         access: ProtectedAccess,
         left: LocInfo?,

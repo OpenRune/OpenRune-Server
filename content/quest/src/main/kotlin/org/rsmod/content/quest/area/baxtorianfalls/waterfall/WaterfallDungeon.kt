@@ -208,7 +208,6 @@ constructor(
         const val TOMB_DOOR = "loc.baxtorian_door_2_waterfall_quest"
         const val TOMB_DOOR_OPEN = "loc.baxtorian_door_2_open_waterfall_quest"
 
-        // Multiloc: onOpLocU is handed the resolved form, so every form is bound.
         val PILLAR_FORMS =
             listOf(
                 "loc.stonepillar_small_waterfall_quest",
@@ -228,7 +227,6 @@ constructor(
         const val PILLAR_SOUTH_Z = 9910
         const val PILLAR_ROW_GAP = 2
 
-        // The raised room is a copy of the tomb room, 38 tiles east and one south.
         const val COPY_OFFSET_X = 38
         const val COPY_OFFSET_Z = -1
         const val COPY_MIN_X = 2590
