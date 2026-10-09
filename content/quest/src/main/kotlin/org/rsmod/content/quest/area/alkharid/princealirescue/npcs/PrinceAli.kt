@@ -4,12 +4,12 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BlondWig
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcPrinceCell
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcPrincePalace
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.PinkSkirt
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.SkinPaste
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageAliEscaped
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BLOND_WIG
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_PRINCE_CELL
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_PRINCE_PALACE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.PINK_SKIRT
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.SKIN_PASTE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_ALI_ESCAPED
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -20,13 +20,13 @@ import org.rsmod.plugin.scripts.ScriptContext
 class PrinceAli @Inject constructor(private val princeAli: PrinceAliRescueQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpNpc1(NpcPrinceCell) { startDialogue(it.npc) { inCell() } }
-        onOpNpc1(NpcPrincePalace) { startDialogue(it.npc) { atHome() } }
+        onOpNpc1(NPC_PRINCE_CELL) { startDialogue(it.npc) { inCell() } }
+        onOpNpc1(NPC_PRINCE_PALACE) { startDialogue(it.npc) { atHome() } }
     }
 
     private suspend fun Dialogue.inCell() {
         val stage = princeAli.stage(player)
-        if (stage >= StageAliEscaped) {
+        if (stage >= STAGE_ALI_ESCAPED) {
             atHome()
             return
         }
@@ -43,10 +43,10 @@ class PrinceAli @Inject constructor(private val princeAli: PrinceAliRescueQuest)
         chatPlayer(neutral, "Take this disguise. You can use it to get past the guards outside.")
         chatNpc(happy, "Thank you, my friend. I must leave you now, but my father will pay you well for this.")
         val inv = access.inv
-        if (access.invDel(inv, BlondWig).failure) return
-        if (access.invDel(inv, SkinPaste).failure) return
-        if (access.invDel(inv, PinkSkirt).failure) return
-        princeAli.setStage(access, StageAliEscaped)
+        if (access.invDel(inv, BLOND_WIG).failure) return
+        if (access.invDel(inv, SKIN_PASTE).failure) return
+        if (access.invDel(inv, PINK_SKIRT).failure) return
+        princeAli.setStage(access, STAGE_ALI_ESCAPED)
         mesbox("Prince Ali puts on the disguise and uses it to escape.")
     }
 

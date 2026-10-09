@@ -5,10 +5,10 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.CellDoor
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Key
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageAliEscaped
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageKeliTied
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.CELL_DOOR
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.KEY
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_ALI_ESCAPED
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_KELI_TIED
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
@@ -28,8 +28,8 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
     PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpLoc1(CellDoor) { open(it.loc) }
-        onOpLocU(CellDoor, Key) { unlock(it.loc) }
+        onOpLoc1(CELL_DOOR) { open(it.loc) }
+        onOpLocU(CELL_DOOR, KEY) { unlock(it.loc) }
     }
 
     private suspend fun ProtectedAccess.open(door: BoundLocInfo) {
@@ -48,11 +48,11 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
             return
         }
         val stage = princeAli.stage(player)
-        if (stage < StageKeliTied) {
+        if (stage < STAGE_KELI_TIED) {
             mesbox("You'll need to deal with Lady Keli before freeing the Prince.")
             return
         }
-        if (stage >= StageAliEscaped) {
+        if (stage >= STAGE_ALI_ESCAPED) {
             mes("The gate is locked.")
             return
         }
@@ -63,11 +63,11 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
     private suspend fun ProtectedAccess.passThrough(door: BoundLocInfo) {
         val inside = insideCell(door)
         soundSynth("synth.iron_door_open")
-        locRepo.del(door, OpenTicks)
+        locRepo.del(door, OPEN_TICKS)
         locRepo.add(
-            OpenDoorCoords,
+            OPEN_DOOR_COORDS,
             "loc.inactiveprisondoor",
-            OpenTicks,
+            OPEN_TICKS,
             LocAngle.East,
             LocShape.WallStraight,
         )
@@ -78,7 +78,7 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
     private fun ProtectedAccess.insideCell(door: BoundLocInfo): Boolean = coords.z <= door.coords.z
 
     private companion object {
-        const val OpenTicks = 5
-        val OpenDoorCoords = CoordGrid(3123, 3244, 0)
+        const val OPEN_TICKS = 5
+        val OPEN_DOOR_COORDS = CoordGrid(3123, 3244, 0)
     }
 }

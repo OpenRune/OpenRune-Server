@@ -8,15 +8,15 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Key
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.KeyPrint
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcKeli
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Rope
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.ShieldOfArrav
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.SoftClay
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageBriefed
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageJoeDrunk
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageKeliTied
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.KEY
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.KEY_PRINT
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_KELI
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.ROPE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.SHIELD_OF_ARRAV
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.SOFT_CLAY
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_BRIEFED
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_JOE_DRUNK
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_KELI_TIED
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Npc
@@ -32,9 +32,9 @@ import org.rsmod.plugin.scripts.ScriptContext
 class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpNpc1(NpcKeli) { talk(it.npc) }
-        onOpNpcU(NpcKeli) {
-            if (it.objType.id == Rope.asRSCM(RSCMType.OBJ)) {
+        onOpNpc1(NPC_KELI) { talk(it.npc) }
+        onOpNpcU(NPC_KELI) {
+            if (it.objType.id == ROPE.asRSCM(RSCMType.OBJ)) {
                 useRope()
             } else {
                 mes("Nothing interesting happens.")
@@ -44,7 +44,7 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
 
     private suspend fun ProtectedAccess.talk(npc: Npc) {
         val stage = princeAli.stage(player)
-        if (stage == StageJoeDrunk && readyToTie()) {
+        if (stage == STAGE_JOE_DRUNK && readyToTie()) {
             startDialogue(npc) {
                 chatPlayer(angry, "Hello! I'm here to tie you up!")
                 chatNpc(shocked, "What?")
@@ -53,7 +53,7 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
             return
         }
         startDialogue(npc) {
-            if (stage in StageBriefed until StageKeliTied) {
+            if (stage in STAGE_BRIEFED until STAGE_KELI_TIED) {
                 keli()
             } else {
                 chatNpc(angry, "What do you want?")
@@ -64,7 +64,7 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
     }
 
     private suspend fun ProtectedAccess.useRope() {
-        if (princeAli.stage(player) != StageJoeDrunk || !readyToTie()) {
+        if (princeAli.stage(player) != STAGE_JOE_DRUNK || !readyToTie()) {
             mesbox("You cannot tie Keli up until you have all equipment and disabled the guard!")
             return
         }
@@ -72,13 +72,13 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
     }
 
     private fun ProtectedAccess.readyToTie(): Boolean =
-        Rope in player.inv && princeAli.hasKey(player) && princeAli.hasDisguise(player)
+        ROPE in player.inv && princeAli.hasKey(player) && princeAli.hasDisguise(player)
 
     private suspend fun ProtectedAccess.tieUp() {
-        if (invDel(inv, Rope).failure) {
+        if (invDel(inv, ROPE).failure) {
             return
         }
-        princeAli.setStage(this, StageKeliTied)
+        princeAli.setStage(this, STAGE_KELI_TIED)
         mesbox("You overpower Keli, tie her up, and put her in a cupboard.")
     }
 
@@ -97,7 +97,7 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
         }
         chatPlayer(quiz, "Are you the famous Lady Keli? Leader of the toughest gang of bandits around?")
         chatNpc(neutral, "Yes, I am Keli. You've heard of me then?")
-        val katrine = QuestRequirements.hasCompleted(player, ShieldOfArrav)
+        val katrine = QuestRequirements.hasCompleted(player, SHIELD_OF_ARRAV)
         val opening =
             menu(
                 buildList {
@@ -146,20 +146,20 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
         val choice =
             menu(
                 buildList {
-                    if (katrine) add("I think Katrine is still tougher." to Talk.Katrine)
-                    add("What's your latest plan then?" to Talk.Plan)
-                    add("You must have trained a lot for this work." to Talk.Trained)
-                    add("I shouldn't disturb someone as tough as you." to Talk.Leave)
+                    if (katrine) add("I think Katrine is still tougher." to Talk.KATRINE)
+                    add("What's your latest plan then?" to Talk.PLAN)
+                    add("You must have trained a lot for this work." to Talk.TRAINED)
+                    add("I shouldn't disturb someone as tough as you." to Talk.LEAVE)
                 },
             )
         when (choice) {
-            Talk.Katrine -> {
+            Talk.KATRINE -> {
                 chatPlayer(neutral, "I think Katrine is still tougher.")
                 katrineIsTougher()
             }
-            Talk.Plan -> plan()
-            Talk.Trained -> trained()
-            Talk.Leave -> leave()
+            Talk.PLAN -> plan()
+            Talk.TRAINED -> trained()
+            Talk.LEAVE -> leave()
         }
     }
 
@@ -175,13 +175,13 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
     private suspend fun Dialogue.smallTalk() {
         when (
             choice3(
-                "What's your latest plan then?", Talk.Plan,
-                "You must have trained a lot for this work.", Talk.Trained,
-                "I shouldn't disturb someone as tough as you.", Talk.Leave,
+                "What's your latest plan then?", Talk.PLAN,
+                "You must have trained a lot for this work.", Talk.TRAINED,
+                "I shouldn't disturb someone as tough as you.", Talk.LEAVE,
             )
         ) {
-            Talk.Plan -> plan()
-            Talk.Trained -> trained()
+            Talk.PLAN -> plan()
+            Talk.TRAINED -> trained()
             else -> leave()
         }
     }
@@ -226,7 +226,7 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
             }
             2 -> {
                 chatPlayer(happy, "Actually, I have heard of you. You're famous in Gielinor!")
-                famous(QuestRequirements.hasCompleted(player, ShieldOfArrav))
+                famous(QuestRequirements.hasCompleted(player, SHIELD_OF_ARRAV))
             }
             3 -> trained()
             else -> leave()
@@ -241,11 +241,11 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
         )
         when (
             choice2(
-                "What's your latest plan then?", Talk.Plan,
-                "I shouldn't disturb someone as tough as you.", Talk.Leave,
+                "What's your latest plan then?", Talk.PLAN,
+                "I shouldn't disturb someone as tough as you.", Talk.LEAVE,
             )
         ) {
-            Talk.Plan -> plan()
+            Talk.PLAN -> plan()
             else -> leave()
         }
     }
@@ -345,8 +345,8 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
             "Well I suppose there's no harm in letting you see it. After all, you have no hope of " +
                 "stealing it.",
         )
-        objbox(Key, "Keli shows you a small key on a strong looking chain.")
-        if (SoftClay !in player.inv || !princeAli.needsImprint(player)) {
+        objbox(KEY, "Keli shows you a small key on a strong looking chain.")
+        if (SOFT_CLAY !in player.inv || !princeAli.needsImprint(player)) {
             chatPlayer(happy, "Thank you. I'd better go now.")
             return
         }
@@ -359,12 +359,12 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
             1 -> {
                 chatPlayer(quiz, "Could I touch the key for a moment please?")
                 chatNpc(neutral, "Well... only for a moment then.")
-                if (access.invDel(access.inv, SoftClay).failure) {
+                if (access.invDel(access.inv, SOFT_CLAY).failure) {
                     return
                 }
-                access.invAdd(access.inv, KeyPrint)
+                access.invAdd(access.inv, KEY_PRINT)
                 objbox(
-                    KeyPrint,
+                    KEY_PRINT,
                     "As you touch the key, you take an imprint of it using your soft clay.",
                 )
                 chatPlayer(happy, "Thank you so much! You are too kind.")
@@ -386,9 +386,9 @@ class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) 
     }
 
     private object Talk {
-        const val Katrine = 0
-        const val Plan = 1
-        const val Trained = 2
-        const val Leave = 3
+        const val KATRINE = 0
+        const val PLAN = 1
+        const val TRAINED = 2
+        const val LEAVE = 3
     }
 }

@@ -2,15 +2,15 @@ package org.rsmod.content.quest.area.alkharid.princealirescue
 
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Ashes
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BallOfWool
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BucketOfWater
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.JugOfWater
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.PotOfFlour
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Redberries
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.SkinPaste
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Wig
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.WoolPerWig
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.ASHES
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BALL_OF_WOOL
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BUCKET_OF_WATER
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.JUG_OF_WATER
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.POT_OF_FLOUR
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.REDBERRIES
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.SKIN_PASTE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.WIG
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.WOOL_PER_WIG
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
 
@@ -65,7 +65,7 @@ class DisguiseMakers @Inject constructor(private val princeAli: PrinceAliRescueQ
             "Well... that's an interesting thought. Yes, I think I could do something. Give me " +
                 "three balls of wool and I might be able to do it.",
         )
-        if (player.inv.count(BallOfWool) < WoolPerWig) {
+        if (player.inv.count(BALL_OF_WOOL) < WOOL_PER_WIG) {
             chatPlayer(happy, "Great, I will get some. I think a wig would be useful.")
             return
         }
@@ -81,11 +81,11 @@ class DisguiseMakers @Inject constructor(private val princeAli: PrinceAliRescueQ
         }
         chatPlayer(happy, "I have them here. Please make me a wig.")
         chatNpc(happy, "Okay, I'll have a go.")
-        if (access.invDel(access.inv, BallOfWool, WoolPerWig).failure) {
+        if (access.invDel(access.inv, BALL_OF_WOOL, WOOL_PER_WIG).failure) {
             return
         }
-        access.invAdd(access.inv, Wig)
-        objbox(Wig, "Ned gives you a pretty good wig.")
+        access.invAdd(access.inv, WIG)
+        objbox(WIG, "Ned gives you a pretty good wig.")
         chatNpc(happy, "Here you go. How's that for a quick effort? Not bad I think!")
         chatPlayer(happy, "Thanks Ned. There's more to you than meets the eye.")
     }
@@ -95,9 +95,9 @@ class DisguiseMakers @Inject constructor(private val princeAli: PrinceAliRescueQ
         val water = waterFor(player)
         val hasAll =
             water != null &&
-                Ashes in player.inv &&
-                PotOfFlour in player.inv &&
-                Redberries in player.inv
+                ASHES in player.inv &&
+                POT_OF_FLOUR in player.inv &&
+                REDBERRIES in player.inv
         if (!hasAll) {
             chatNpc(
                 happy,
@@ -131,27 +131,27 @@ class DisguiseMakers @Inject constructor(private val princeAli: PrinceAliRescueQ
         chatPlayer(happy, "Yes please. Mix me some skin paste.")
         chatNpc(happy, "That should be simple. Hand the things to Aggie then.")
         val inv = access.inv
-        if (access.invDel(inv, Ashes, 1, PotOfFlour, 1).failure) {
+        if (access.invDel(inv, ASHES, 1, POT_OF_FLOUR, 1).failure) {
             return
         }
         access.invDel(inv, checkNotNull(water))
-        access.invDel(inv, Redberries)
-        access.invAdd(inv, SkinPaste)
+        access.invDel(inv, REDBERRIES)
+        access.invAdd(inv, SKIN_PASTE)
         doubleobjbox(
-            Redberries,
-            PotOfFlour,
+            REDBERRIES,
+            POT_OF_FLOUR,
             "You hand the ash, flour, water and redberries to Aggie. She tips the ingredients into " +
                 "a cauldron and mutters some words.",
         )
         chatNpc(confused, "Tourniquet, Fenderbaum, Tottenham, Marshmallow, Marblearch.")
-        objbox(SkinPaste, "Aggie hands you the skin paste.")
+        objbox(SKIN_PASTE, "Aggie hands you the skin paste.")
         chatNpc(happy, "There you go dearie. That will make you look good at the Varrock dances.")
     }
 
     private fun waterFor(player: Player): String? =
         when {
-            BucketOfWater in player.inv -> BucketOfWater
-            JugOfWater in player.inv -> JugOfWater
+            BUCKET_OF_WATER in player.inv -> BUCKET_OF_WATER
+            JUG_OF_WATER in player.inv -> JUG_OF_WATER
             else -> null
         }
 
