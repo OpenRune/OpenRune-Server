@@ -35,8 +35,6 @@ constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch
         onOpLoc1(RIVER) { swim() }
         onApLoc1(ROCK) { apRock(it.loc) { swim() } }
         onOpLoc1(ROCK) { swim() }
-        // Only the op step of a used item is bridged to onOpLocU, so approach handlers bind to the
-        // inventory component.
         val inventory = ServerCacheManager.fromComponent(INVENTORY.asRSCM(RSCMType.COMPONENT))
         onApLocT(ROCK, inventory) {
             if (it.objType?.id == ROPE.asRSCM(RSCMType.OBJ)) {

@@ -41,11 +41,6 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
         objbox(BOOK, "You find a book named 'Book on Baxtorian' on the bookcase.")
     }
 
-    /**
-     * The book's page arrows are pause buttons. The server queues the book to close when one is
-     * pressed, and the client ignores further presses until the interface is sent again, so every
-     * turn re-opens the book at the new spread.
-     */
     private suspend fun ProtectedAccess.readBook() {
         var spread = 0
         openSpread(spread)
