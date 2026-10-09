@@ -1,7 +1,5 @@
 package org.rsmod.content.generic.locs.doors
 
-import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
