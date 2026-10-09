@@ -7,6 +7,7 @@ import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
+import org.rsmod.api.table.WaterfallPillarRunesRow
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.AMULET
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.BAXTORIAN_KEY
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.FLOOR_RISEN
@@ -209,7 +210,9 @@ constructor(
         const val CHALICE_ASH = "loc.baxtorian_chalice_waterfall_quest_ash"
 
         /** Rune obj to its bit within a pillar's three. */
-        val PILLAR_RUNES = mapOf("obj.airrune" to 0, "obj.waterrune" to 1, "obj.earthrune" to 2)
+        val PILLAR_RUNES: Map<String, Int> by lazy {
+            WaterfallPillarRunesRow.all().associate { it.rune.internalName to it.bit }
+        }
 
         const val PILLAR_WEST_X = 2562
         const val PILLAR_EAST_X = 2569

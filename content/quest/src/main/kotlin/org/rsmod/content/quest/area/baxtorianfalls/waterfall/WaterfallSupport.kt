@@ -8,6 +8,7 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.hitpoints
+import org.rsmod.api.table.GlarialRestrictionsRow
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.AMULET
 import org.rsmod.content.quest.util.fadeFromBlack
 import org.rsmod.content.quest.util.fadeToBlack
@@ -130,56 +131,17 @@ private val ARMOUR_SLOTS =
         Wearpos.Feet,
     )
 
-private val FORBIDDEN_NAMES =
-    setOf(
-        "logs",
-        "knife",
-        "fletching knife",
-        "needle",
-        "thread",
-        "ball of wool",
-        "leather",
-        "hard leather",
-        "snakeskin",
-        "nails",
-        "feather",
-        "bow string",
-        "arrow shaft",
-        "headless arrow",
-        "looting bag",
-        "magic secateurs",
-        "mythical cape",
-        "fancy boots",
-        "fighting boots",
-        "fancier boots",
-        "spotted cape",
-        "spottier cape",
-    )
+private val FORBIDDEN_NAMES: Set<String> by lazy {
+    GlarialRestrictionsRow.getRow("dbrow.glarial_forbidden_names").entries.toSet()
+}
 
-private val FORBIDDEN_NAME_PARTS =
-    listOf(
-        " logs",
-        "arrowtips",
-        "clue scroll",
-        "(u)",
-        "dragon leather",
-        "cannon base",
-        "cannon stand",
-        "cannon barrels",
-        "cannon furnace",
-        "dwarf cannon set",
-        "rune pack",
-        "feather pack",
-        "initiate harness",
-        "proselyte harness",
-        "ardougne cloak",
-        " cape(t)",
-        " camo top",
-        " camo legs",
-    )
+private val FORBIDDEN_NAME_PARTS: List<String> by lazy {
+    GlarialRestrictionsRow.getRow("dbrow.glarial_forbidden_parts").entries
+}
 
-private val ALLOWED_NAME_PARTS =
-    listOf("tome of ", "imcando hammer (off-hand)", "chronicle", "goblin paint cannon")
+private val ALLOWED_NAME_PARTS: List<String> by lazy {
+    GlarialRestrictionsRow.getRow("dbrow.glarial_allowed_parts").entries
+}
 
 private val BONUS_PARAMS =
     listOf(
