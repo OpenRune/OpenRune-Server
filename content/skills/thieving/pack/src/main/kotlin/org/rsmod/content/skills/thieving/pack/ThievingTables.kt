@@ -6,43 +6,13 @@ import dev.openrune.definition.util.VarType
 private const val DEFAULT_SHOUT: String = "What do you think you're doing?"
 
 /**
- * [low] and [high] are the level-1 and level-99 odds out of 256 fed to the shared skilling success
- * formula, taken from the wiki's own pickpocket charts.
- *
- * [npcs] is every npc that pickpockets as this target; each must carry Pickpocket on [op].
- */
-data class PickpocketTarget(
-    val displayName: String,
-    val level: Int,
-    val xp: Double,
-    val low: Int,
-    val high: Int,
-    val stunTicks: Int,
-    val stunDamage: Int,
-    val npcs: List<String> = emptyList(),
-    val op: Int = 3,
-    val pouch: String? = null,
-    val caughtShout: String = DEFAULT_SHOUT,
-    val lowercaseName: Boolean = true,
-)
-
-/** Stealing is refused when one of [owners] or [guards] can see the player; a guard attacks. */
-data class StallTarget(
-    val loc: String,
-    val level: Int,
-    val xp: Double,
-    val empty: String? = null,
-    val respawn: Int = 20,
-    val owners: List<String> = emptyList(),
-    val guards: List<String> = emptyList(),
-    val attemptMessage: String? = null,
-)
-
-data class CoinPouch(val obj: String, val coins: IntRange)
-
-/**
  * Pickpocket targets, market stalls and the coin pouches pickpocketing hands out. Loot lives in
  * the thieving module's drop tables, keyed by these rows.
+ *
+ * Pickpocket `low` and `high` are the level-1 and level-99 odds out of 256 fed to the shared
+ * skilling success formula, taken from the wiki's own pickpocket charts. Every npc listed for a
+ * target must carry Pickpocket on its `op`. Stealing from a stall is refused when one of its owners
+ * or guards can see the player; a guard attacks.
  *
  * Xp is stored multiplied by ten: the wiki quotes fractional values - a Workman is 10.4 - and the
  * xp column is an int. ThievingScript divides by ten when awarding it.
@@ -74,15 +44,6 @@ object ThievingTables {
     const val POUCH_COINS_MIN = 1
     const val POUCH_COINS_MAX = 2
 
-    private fun rowName(displayName: String): String =
-        "dbrow.thieving_" +
-            displayName
-                .lowercase()
-                .map { if (it.isLetterOrDigit()) it else '_' }
-                .joinToString("")
-                .replace(Regex("_+"), "_")
-                .trim('_')
-
     fun pickpockets() =
         dbTable("dbtable.thieving_pickpocket", serverOnly = true) {
             column("name", PP_NAME, VarType.STRING)
@@ -98,73 +59,56 @@ object ThievingTables {
             column("lowercase_name", PP_LOWERCASE_NAME, VarType.BOOLEAN)
             column("op", PP_OP, VarType.INT)
 
-            for (target in pickpocketTargets) {
-                row(rowName(target.displayName)) {
-                    column(PP_NAME, target.displayName)
-                    column(PP_LEVEL, target.level)
-                    column(PP_XP, (target.xp * 10).toInt())
-                    column(PP_LOW, target.low)
-                    column(PP_HIGH, target.high)
-                    column(PP_STUN_TICKS, target.stunTicks)
-                    column(PP_STUN_DAMAGE, target.stunDamage)
-                    if (target.npcs.isNotEmpty()) {
-                        columnRSCM(PP_NPCS, *target.npcs.toTypedArray())
+            fun pickpocket(
+                name: String,
+                displayName: String,
+                level: Int,
+                xp: Double,
+                low: Int,
+                high: Int,
+                stunTicks: Int,
+                stunDamage: Int,
+                npcs: List<String> = emptyList(),
+                op: Int = 3,
+                pouch: String? = null,
+                caughtShout: String = DEFAULT_SHOUT,
+                lowercaseName: Boolean = true,
+            ) =
+                row(name) {
+                    column(PP_NAME, displayName)
+                    column(PP_LEVEL, level)
+                    column(PP_XP, (xp * 10).toInt())
+                    column(PP_LOW, low)
+                    column(PP_HIGH, high)
+                    column(PP_STUN_TICKS, stunTicks)
+                    column(PP_STUN_DAMAGE, stunDamage)
+                    if (npcs.isNotEmpty()) {
+                        columnRSCM(PP_NPCS, *npcs.toTypedArray())
                     }
-                    target.pouch?.let { columnRSCM(PP_POUCH, it) }
-                    column(PP_CAUGHT_SHOUT, target.caughtShout)
-                    column(PP_LOWERCASE_NAME, target.lowercaseName)
-                    column(PP_OP, target.op)
+                    pouch?.let { columnRSCM(PP_POUCH, it) }
+                    column(PP_CAUGHT_SHOUT, caughtShout)
+                    column(PP_LOWERCASE_NAME, lowercaseName)
+                    column(PP_OP, op)
                 }
-            }
-        }
 
-    fun stalls() =
-        dbTable("dbtable.thieving_stall", serverOnly = true) {
-            column("loc", STALL_LOC, VarType.LOC)
-            column("level", STALL_LEVEL, VarType.INT)
-            column("xp", STALL_XP, VarType.INT)
-            column("empty", STALL_EMPTY, VarType.LOC)
-            column("respawn", STALL_RESPAWN, VarType.INT)
-            column("owners", STALL_OWNERS, VarType.NPC)
-            column("guards", STALL_GUARDS, VarType.NPC)
-            column("attempt_message", STALL_ATTEMPT_MESSAGE, VarType.STRING)
+            fun hamMember(name: String, displayName: String, npcs: List<String> = emptyList()) =
+                pickpocket(
+                    name,
+                    displayName,
+                    level = 15,
+                    xp = 22.2,
+                    low = 135,
+                    high = 239,
+                    stunTicks = 7,
+                    stunDamage = 1,
+                    pouch = "obj.pickpocket_coin_pouch_ham",
+                    lowercaseName = false,
+                    npcs = npcs,
+                    op = 1,
+                )
 
-            for (stall in stallTargets) {
-                row("dbrow." + stall.loc.removePrefix("loc.") + "_thieving") {
-                    columnRSCM(STALL_LOC, stall.loc)
-                    column(STALL_LEVEL, stall.level)
-                    column(STALL_XP, (stall.xp * 10).toInt())
-                    stall.empty?.let { columnRSCM(STALL_EMPTY, it) }
-                    column(STALL_RESPAWN, stall.respawn)
-                    if (stall.owners.isNotEmpty()) {
-                        columnRSCM(STALL_OWNERS, *stall.owners.toTypedArray())
-                    }
-                    if (stall.guards.isNotEmpty()) {
-                        columnRSCM(STALL_GUARDS, *stall.guards.toTypedArray())
-                    }
-                    stall.attemptMessage?.let { column(STALL_ATTEMPT_MESSAGE, it) }
-                }
-            }
-        }
-
-    fun coinPouches() =
-        dbTable("dbtable.thieving_coin_pouch", serverOnly = true) {
-            column("obj", POUCH_OBJ, VarType.OBJ)
-            column("coins_min", POUCH_COINS_MIN, VarType.INT)
-            column("coins_max", POUCH_COINS_MAX, VarType.INT)
-
-            for (pouch in coinPouches) {
-                row("dbrow.thieving_" + pouch.obj.removePrefix("obj.pickpocket_")) {
-                    columnRSCM(POUCH_OBJ, pouch.obj)
-                    column(POUCH_COINS_MIN, pouch.coins.first)
-                    column(POUCH_COINS_MAX, pouch.coins.last)
-                }
-            }
-        }
-
-    internal val pickpocketTargets: List<PickpocketTarget> =
-        listOf(
-            PickpocketTarget(
+            pickpocket(
+                "dbrow.thieving_man",
                 "Man",
                 1,
                 8.0,
@@ -201,8 +145,9 @@ object ThievingTables {
                         "npc.shayzien_man_1",
                         "npc.shayzien_man_2",
                     ),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_woman",
                 "Woman",
                 1,
                 8.0,
@@ -228,8 +173,9 @@ object ThievingTables {
                         "npc.shayzien_woman_1",
                         "npc.shayzien_woman_2",
                     ),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_citizen",
                 "Citizen",
                 1,
                 8.0,
@@ -315,8 +261,9 @@ object ThievingTables {
                         "npc.tal_teklan_citizen_rich_m_1",
                         "npc.tal_teklan_citizen_rich_f_1",
                     ),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_farmer",
                 displayName = "Farmer",
                 level = 10,
                 xp = 14.5,
@@ -348,14 +295,16 @@ object ThievingTables {
                         "npc.kastori_farmer_f_2",
                         "npc.tal_teklan_farmer",
                     ),
-            ),
-            hamMember("Male H.A.M. Member"),
-            hamMember("Female H.A.M. Member"),
+            )
+            hamMember("dbrow.thieving_male_h_a_m_member", "Male H.A.M. Member")
+            hamMember("dbrow.thieving_female_h_a_m_member", "Female H.A.M. Member")
             hamMember(
+                "dbrow.thieving_h_a_m_member",
                 "H.A.M. Member",
                 listOf("npc.favour_male_ham_civilian", "npc.favour_female_ham_civilian"),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_warrior_woman",
                 "Warrior woman",
                 25,
                 26.0,
@@ -364,8 +313,9 @@ object ThievingTables {
                 8,
                 2,
                 pouch = "obj.pickpocket_coin_pouch_warrior",
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_warrior",
                 "Warrior",
                 25,
                 26.0,
@@ -384,8 +334,9 @@ object ThievingTables {
                         "npc.warrior_woman_variant02",
                         "npc.al_kharid_warrior",
                     ),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_workman",
                 displayName = "Workman",
                 level = 25,
                 xp = 10.4,
@@ -393,8 +344,9 @@ object ThievingTables {
                 high = 240,
                 stunTicks = 7,
                 stunDamage = 1,
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_villager",
                 "Villager",
                 30,
                 8.0,
@@ -414,8 +366,9 @@ object ThievingTables {
                         "npc.feud_villager_3_2",
                         "npc.feud_villager_3_3",
                     ),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_rogue",
                 displayName = "Rogue",
                 level = 32,
                 xp = 36.5,
@@ -425,8 +378,9 @@ object ThievingTables {
                 stunDamage = 2,
                 pouch = "obj.pickpocket_coin_pouch_rogue",
                 npcs = listOf("npc.rogue"),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_cave_goblin",
                 displayName = "Cave goblin",
                 level = 36,
                 xp = 40.0,
@@ -456,8 +410,9 @@ object ThievingTables {
                         "npc.dorgesh_female_8",
                         "npc.dorgesh_female_9",
                     ),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_master_farmer",
                 displayName = "Master Farmer",
                 level = 38,
                 xp = 43.0,
@@ -487,8 +442,9 @@ object ThievingTables {
                         "npc.kastori_master_farmer_f_1",
                         "npc.kastori_master_farmer_f_2",
                     ),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_guard",
                 "Guard",
                 40,
                 46.8,
@@ -595,8 +551,9 @@ object ThievingTables {
                         "npc.port_roberts_guard_f1",
                         "npc.port_roberts_guard_f2",
                     ),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_fremennik_citizen",
                 "Fremennik citizen",
                 45,
                 65.0,
@@ -617,8 +574,9 @@ object ThievingTables {
                         "npc.viking_woman4",
                         "npc.viking_woman_indoors",
                     ),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_bearded_pollnivnian_bandit",
                 "Bearded Pollnivnian Bandit",
                 45,
                 65.0,
@@ -629,8 +587,9 @@ object ThievingTables {
                 pouch = "obj.pickpocket_coin_pouch_bandit2",
                 lowercaseName = false,
                 npcs = listOf("npc.feud_arabian_guard2_1", "npc.feud_arabian_guard2_2"),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_wealthy_citizen",
                 "Wealthy citizen",
                 50,
                 96.0,
@@ -647,8 +606,9 @@ object ThievingTables {
                         "npc.varlamore_wealthy_citizen_d",
                     ),
                 op = 1,
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_desert_bandit",
                 displayName = "Desert Bandit",
                 level = 53,
                 xp = 79.4,
@@ -660,8 +620,9 @@ object ThievingTables {
                 lowercaseName = false,
                 npcs =
                     listOf("npc.fourdiamonds_sword_bandit_1", "npc.fourdiamonds_sword_bandit_free"),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_knight_of_ardougne",
                 "Knight of Ardougne",
                 55,
                 84.3,
@@ -679,8 +640,9 @@ object ThievingTables {
                         "npc.knight_of_ardougne_west_vis",
                         "npc.knight_of_ardougne_f_west_vis",
                     ),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_knight_of_varlamore",
                 "Knight of Varlamore",
                 55,
                 84.3,
@@ -699,8 +661,9 @@ object ThievingTables {
                         "npc.varlamore_knight_f_2",
                         "npc.varlamore_knight_f_3",
                     ),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_pollnivnian_bandit",
                 "Pollnivnian Bandit",
                 55,
                 84.3,
@@ -711,8 +674,9 @@ object ThievingTables {
                 pouch = "obj.pickpocket_coin_pouch_bandit",
                 lowercaseName = false,
                 npcs = listOf("npc.feud_arabian_guard1_1", "npc.feud_arabian_guard1_2"),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_watchman",
                 displayName = "Watchman",
                 level = 65,
                 xp = 137.5,
@@ -722,8 +686,9 @@ object ThievingTables {
                 stunDamage = 3,
                 pouch = "obj.pickpocket_coin_pouch_watchman",
                 npcs = listOf("npc.yanille_watchman"),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_menaphite_thug",
                 "Menaphite Thug",
                 65,
                 137.5,
@@ -734,8 +699,9 @@ object ThievingTables {
                 pouch = "obj.pickpocket_coin_pouch_menaphite",
                 lowercaseName = false,
                 npcs = listOf("npc.feud_egyptian_doorman_2"),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_paladin",
                 displayName = "Paladin",
                 level = 70,
                 xp = 131.8,
@@ -755,8 +721,9 @@ object ThievingTables {
                         "npc.paladin_west_vis",
                         "npc.paladin_west_f_vis",
                     ),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_gnome",
                 displayName = "Gnome",
                 level = 75,
                 xp = 133.3,
@@ -777,8 +744,9 @@ object ThievingTables {
                         "npc.gnomechildblue",
                         "npc.grim_gnome_incage_1",
                     ),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_hero",
                 displayName = "Hero",
                 level = 80,
                 xp = 163.3,
@@ -788,8 +756,9 @@ object ThievingTables {
                 stunDamage = 3,
                 pouch = "obj.pickpocket_coin_pouch_hero",
                 npcs = listOf("npc.hero", "npc.hero_variant01", "npc.hero_f"),
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_vyre",
                 displayName = "Vyre",
                 level = 82,
                 xp = 306.9,
@@ -832,8 +801,9 @@ object ThievingTables {
                     ),
                 pouch = "obj.pickpocket_coin_pouch_vyre",
                 lowercaseName = false,
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_elf",
                 displayName = "Elf",
                 level = 85,
                 xp = 353.3,
@@ -895,8 +865,9 @@ object ThievingTables {
                     ),
                 pouch = "obj.pickpocket_coin_pouch_elf",
                 lowercaseName = false,
-            ),
-            PickpocketTarget(
+            )
+            pickpocket(
+                "dbrow.thieving_tzhaar_hur",
                 displayName = "TzHaar-Hur",
                 level = 90,
                 xp = 103.4,
@@ -914,12 +885,48 @@ object ThievingTables {
                         "npc.tzhaar_hur_city5",
                         "npc.tzhaar_hur_city6",
                     ),
-            ),
-        )
+            )
+        }
 
-    internal val stallTargets: List<StallTarget> =
-        listOf(
-            StallTarget(
+    fun stalls() =
+        dbTable("dbtable.thieving_stall", serverOnly = true) {
+            column("loc", STALL_LOC, VarType.LOC)
+            column("level", STALL_LEVEL, VarType.INT)
+            column("xp", STALL_XP, VarType.INT)
+            column("empty", STALL_EMPTY, VarType.LOC)
+            column("respawn", STALL_RESPAWN, VarType.INT)
+            column("owners", STALL_OWNERS, VarType.NPC)
+            column("guards", STALL_GUARDS, VarType.NPC)
+            column("attempt_message", STALL_ATTEMPT_MESSAGE, VarType.STRING)
+
+            fun stall(
+                name: String,
+                loc: String,
+                level: Int,
+                xp: Double,
+                empty: String? = null,
+                respawn: Int = 20,
+                owners: List<String> = emptyList(),
+                guards: List<String> = emptyList(),
+                attemptMessage: String? = null,
+            ) =
+                row(name) {
+                    columnRSCM(STALL_LOC, loc)
+                    column(STALL_LEVEL, level)
+                    column(STALL_XP, (xp * 10).toInt())
+                    empty?.let { columnRSCM(STALL_EMPTY, it) }
+                    column(STALL_RESPAWN, respawn)
+                    if (owners.isNotEmpty()) {
+                        columnRSCM(STALL_OWNERS, *owners.toTypedArray())
+                    }
+                    if (guards.isNotEmpty()) {
+                        columnRSCM(STALL_GUARDS, *guards.toTypedArray())
+                    }
+                    attemptMessage?.let { column(STALL_ATTEMPT_MESSAGE, it) }
+                }
+
+            stall(
+                "dbrow.cakethiefstall_thieving",
                 loc = "loc.cakethiefstall",
                 level = 5,
                 xp = 16.0,
@@ -927,15 +934,17 @@ object ThievingTables {
                 respawn = 4,
                 owners = BAKERS,
                 guards = ARDOUGNE_MARKET_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.tea_stall_thieving",
                 loc = "loc.tea_stall",
                 level = 5,
                 xp = 16.0,
                 respawn = 4,
                 owners = listOf("npc.tea_seller"),
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.silkthiefstall_thieving",
                 loc = "loc.silkthiefstall",
                 level = 20,
                 xp = 24.0,
@@ -943,8 +952,9 @@ object ThievingTables {
                 respawn = 8,
                 owners = listOf("npc.silk_merchant_ardougne", "npc.silk_merchant"),
                 guards = ARDOUGNE_MARKET_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.rag_market_stall_thieving",
                 loc = "loc.rag_market_stall",
                 level = 22,
                 xp = 27.0,
@@ -953,8 +963,9 @@ object ThievingTables {
                 owners = listOf("npc.rag_wine_merchant"),
                 guards = DRAYNOR_MARKET_GUARDS,
                 attemptMessage = "You attempt to steal something from the wine merchant's stall.",
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.seed_stall_thieving",
                 loc = "loc.seed_stall",
                 level = 27,
                 xp = 10.0,
@@ -962,8 +973,9 @@ object ThievingTables {
                 owners = listOf("npc.seed_merchant"),
                 guards = DRAYNOR_MARKET_GUARDS,
                 attemptMessage = "You attempt to steal some seeds from the seed merchant's stall.",
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.furthiefstall_thieving",
                 loc = "loc.furthiefstall",
                 level = 35,
                 xp = 45.0,
@@ -971,8 +983,9 @@ object ThievingTables {
                 respawn = 12,
                 owners = listOf("npc.fur_merchant_ardougne", "npc.fur_merchant"),
                 guards = ARDOUGNE_MARKET_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.silverthiefstall_thieving",
                 loc = "loc.silverthiefstall",
                 level = 50,
                 xp = 205.0,
@@ -980,8 +993,9 @@ object ThievingTables {
                 respawn = 32,
                 owners = listOf("npc.silver_merchant_ardougne"),
                 guards = ARDOUGNE_MARKET_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.spicethiefstall_thieving",
                 loc = "loc.spicethiefstall",
                 level = 65,
                 xp = 92.0,
@@ -989,8 +1003,9 @@ object ThievingTables {
                 respawn = 10,
                 owners = listOf("npc.spice_merchant_ardougne", "npc.spice_merchant"),
                 guards = ARDOUGNE_MARKET_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.gemthiefstall_thieving",
                 loc = "loc.gemthiefstall",
                 level = 75,
                 xp = 408.0,
@@ -998,8 +1013,9 @@ object ThievingTables {
                 respawn = 100,
                 owners = listOf("npc.gem_merchant_ardougne", "npc.gem_merchant"),
                 guards = ARDOUGNE_MARKET_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.prif_marketstall_silk_thieving",
                 loc = "loc.prif_marketstall_silk",
                 level = 20,
                 xp = 24.0,
@@ -1007,8 +1023,9 @@ object ThievingTables {
                 respawn = 8,
                 owners = listOf("npc.prif_silk"),
                 guards = PRIFDDINAS_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.prif_marketstall_silver_thieving",
                 loc = "loc.prif_marketstall_silver",
                 level = 50,
                 xp = 205.0,
@@ -1016,8 +1033,9 @@ object ThievingTables {
                 respawn = 32,
                 owners = listOf("npc.prif_silver"),
                 guards = PRIFDDINAS_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.prif_marketstall_spice_thieving",
                 loc = "loc.prif_marketstall_spice",
                 level = 65,
                 xp = 92.0,
@@ -1025,8 +1043,9 @@ object ThievingTables {
                 respawn = 10,
                 owners = listOf("npc.prif_spice"),
                 guards = PRIFDDINAS_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.prif_marketstall_gem_thieving",
                 loc = "loc.prif_marketstall_gem",
                 level = 75,
                 xp = 408.0,
@@ -1034,8 +1053,9 @@ object ThievingTables {
                 respawn = 100,
                 owners = listOf("npc.prif_gem"),
                 guards = PRIFDDINAS_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.viking_fish_market_thieving",
                 loc = "loc.viking_fish_market",
                 level = 42,
                 xp = 42.0,
@@ -1043,8 +1063,9 @@ object ThievingTables {
                 respawn = 12,
                 owners = listOf("npc.viking_fish_monger"),
                 guards = listOf("npc.viking_guard"),
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.viking_fur_market_thieving",
                 loc = "loc.viking_fur_market",
                 level = 35,
                 xp = 45.0,
@@ -1052,97 +1073,110 @@ object ThievingTables {
                 respawn = 12,
                 owners = listOf("npc.viking_fur_monger"),
                 guards = listOf("npc.viking_guard"),
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.misc_fish_market_thieving",
                 loc = "loc.misc_fish_market",
                 level = 42,
                 xp = 42.0,
                 respawn = 12,
                 owners = listOf("npc.misc_fish_monger"),
                 guards = listOf("npc.royal_misc_guard"),
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.misc_veg_market_thieving",
                 loc = "loc.misc_veg_market",
                 level = 2,
                 xp = 10.0,
                 respawn = 2,
                 owners = listOf("npc.misc_veg_monger"),
                 guards = listOf("npc.royal_misc_guard"),
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.etc_fish_market_thieving",
                 loc = "loc.etc_fish_market",
                 level = 42,
                 xp = 42.0,
                 respawn = 12,
                 owners = listOf("npc.etc_fish_monger"),
                 guards = ETCETERIA_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.etc_veg_market_thieving",
                 loc = "loc.etc_veg_market",
                 level = 2,
                 xp = 10.0,
                 respawn = 2,
                 owners = listOf("npc.etc_veg_monger"),
                 guards = ETCETERIA_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.dwarf_market_bakery_thieving",
                 loc = "loc.dwarf_market_bakery",
                 level = 5,
                 xp = 16.0,
                 empty = "loc.dwarf_market_empty_stall",
                 respawn = 16,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.dwarf_market_crafting_thieving",
                 loc = "loc.dwarf_market_crafting",
                 level = 5,
                 xp = 20.0,
                 empty = "loc.dwarf_market_empty_stall",
                 respawn = 8,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.xbows_dwarf_market_thieving",
                 loc = "loc.xbows_dwarf_market",
                 level = 49,
                 xp = 52.0,
                 respawn = 8,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.dwarf_market_silver_thieving",
                 loc = "loc.dwarf_market_silver",
                 level = 50,
                 xp = 205.0,
                 empty = "loc.dwarf_market_empty_stall",
                 respawn = 32,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.dwarf_market_gems_thieving",
                 loc = "loc.dwarf_market_gems",
                 level = 75,
                 xp = 408.0,
                 empty = "loc.dwarf_market_empty_stall",
                 respawn = 100,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.hos_stall_bread_thieving",
                 loc = "loc.hos_stall_bread",
                 level = 5,
                 xp = 16.0,
                 empty = "loc.hos_stall_empty",
                 respawn = 4,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.hos_fruit_stall_02_thieving",
                 loc = "loc.hos_fruit_stall_02",
                 level = 25,
                 xp = 28.5,
                 empty = "loc.hos_fruit_stall",
                 respawn = 4,
                 guards = listOf("npc.hosidius_guarddog"),
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.fish_stall_warrens_thieving",
                 loc = "loc.fish_stall_warrens",
                 level = 42,
                 xp = 42.0,
                 respawn = 12,
                 owners = listOf("npc.warrens_fishmonger"),
                 guards = listOf("npc.warrens_thief_stall"),
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.fortis_market_stall_bakers_thieving",
                 loc = "loc.fortis_market_stall_bakers",
                 level = 5,
                 xp = 16.0,
@@ -1150,8 +1184,9 @@ object ThievingTables {
                 respawn = 4,
                 owners = listOf("npc.fortis_shop_baker"),
                 guards = FORTIS_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.fortis_market_stall_silk_thieving",
                 loc = "loc.fortis_market_stall_silk",
                 level = 20,
                 xp = 24.0,
@@ -1159,8 +1194,9 @@ object ThievingTables {
                 respawn = 8,
                 owners = listOf("npc.fortis_shop_silk"),
                 guards = FORTIS_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.fortis_market_stall_fur_thieving",
                 loc = "loc.fortis_market_stall_fur",
                 level = 35,
                 xp = 45.0,
@@ -1168,8 +1204,9 @@ object ThievingTables {
                 respawn = 12,
                 owners = listOf("npc.fortis_shop_fur"),
                 guards = FORTIS_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.fortis_market_stall_spice_thieving",
                 loc = "loc.fortis_market_stall_spice",
                 level = 65,
                 xp = 92.0,
@@ -1177,8 +1214,9 @@ object ThievingTables {
                 respawn = 10,
                 owners = listOf("npc.fortis_shop_spices"),
                 guards = FORTIS_GUARDS,
-            ),
-            StallTarget(
+            )
+            stall(
+                "dbrow.fortis_market_stall_gems_thieving",
                 loc = "loc.fortis_market_stall_gems",
                 level = 75,
                 xp = 408.0,
@@ -1186,48 +1224,68 @@ object ThievingTables {
                 respawn = 100,
                 owners = listOf("npc.fortis_shop_gems"),
                 guards = FORTIS_GUARDS,
-            ),
-        )
+            )
+        }
 
-    internal val coinPouches: List<CoinPouch> =
-        listOf(
-            CoinPouch("obj.pickpocket_coin_pouch_citizen", 3..3),
-            CoinPouch("obj.pickpocket_coin_pouch_farmer", 9..9),
-            CoinPouch("obj.pickpocket_coin_pouch_ham", 1..21),
-            CoinPouch("obj.pickpocket_coin_pouch_warrior", 18..18),
-            CoinPouch("obj.pickpocket_coin_pouch_rogue", 25..40),
-            CoinPouch("obj.pickpocket_coin_pouch_cavegoblin", 10..50),
-            CoinPouch("obj.pickpocket_coin_pouch_guard", 30..30),
-            CoinPouch("obj.pickpocket_coin_pouch_fremennik", 40..40),
-            CoinPouch("obj.pickpocket_coin_pouch_bandit2", 40..40),
-            CoinPouch("obj.pickpocket_coin_pouch_varlamore_wealthy", 85..85),
-            CoinPouch("obj.pickpocket_coin_pouch_desertbandit", 30..30),
-            CoinPouch("obj.pickpocket_coin_pouch_knight", 50..50),
-            CoinPouch("obj.pickpocket_coin_pouch_bandit", 50..50),
-            CoinPouch("obj.pickpocket_coin_pouch_watchman", 60..60),
-            CoinPouch("obj.pickpocket_coin_pouch_menaphite", 60..60),
-            CoinPouch("obj.pickpocket_coin_pouch_paladin", 80..80),
-            CoinPouch("obj.pickpocket_coin_pouch_gnome", 300..300),
-            CoinPouch("obj.pickpocket_coin_pouch_hero", 200..300),
-            CoinPouch("obj.pickpocket_coin_pouch_vyre", 230..315),
-            CoinPouch("obj.pickpocket_coin_pouch_elf", 280..350),
-        )
+    fun coinPouches() =
+        dbTable("dbtable.thieving_coin_pouch", serverOnly = true) {
+            column("obj", POUCH_OBJ, VarType.OBJ)
+            column("coins_min", POUCH_COINS_MIN, VarType.INT)
+            column("coins_max", POUCH_COINS_MAX, VarType.INT)
+
+            fun pouch(name: String, obj: String, coins: IntRange) =
+                row(name) {
+                    columnRSCM(POUCH_OBJ, obj)
+                    column(POUCH_COINS_MIN, coins.first)
+                    column(POUCH_COINS_MAX, coins.last)
+                }
+
+            pouch("dbrow.thieving_coin_pouch_citizen", "obj.pickpocket_coin_pouch_citizen", 3..3)
+            pouch("dbrow.thieving_coin_pouch_farmer", "obj.pickpocket_coin_pouch_farmer", 9..9)
+            pouch("dbrow.thieving_coin_pouch_ham", "obj.pickpocket_coin_pouch_ham", 1..21)
+            pouch("dbrow.thieving_coin_pouch_warrior", "obj.pickpocket_coin_pouch_warrior", 18..18)
+            pouch("dbrow.thieving_coin_pouch_rogue", "obj.pickpocket_coin_pouch_rogue", 25..40)
+            pouch(
+                "dbrow.thieving_coin_pouch_cavegoblin",
+                "obj.pickpocket_coin_pouch_cavegoblin",
+                10..50,
+            )
+            pouch("dbrow.thieving_coin_pouch_guard", "obj.pickpocket_coin_pouch_guard", 30..30)
+            pouch(
+                "dbrow.thieving_coin_pouch_fremennik",
+                "obj.pickpocket_coin_pouch_fremennik",
+                40..40,
+            )
+            pouch("dbrow.thieving_coin_pouch_bandit2", "obj.pickpocket_coin_pouch_bandit2", 40..40)
+            pouch(
+                "dbrow.thieving_coin_pouch_varlamore_wealthy",
+                "obj.pickpocket_coin_pouch_varlamore_wealthy",
+                85..85,
+            )
+            pouch(
+                "dbrow.thieving_coin_pouch_desertbandit",
+                "obj.pickpocket_coin_pouch_desertbandit",
+                30..30,
+            )
+            pouch("dbrow.thieving_coin_pouch_knight", "obj.pickpocket_coin_pouch_knight", 50..50)
+            pouch("dbrow.thieving_coin_pouch_bandit", "obj.pickpocket_coin_pouch_bandit", 50..50)
+            pouch(
+                "dbrow.thieving_coin_pouch_watchman",
+                "obj.pickpocket_coin_pouch_watchman",
+                60..60,
+            )
+            pouch(
+                "dbrow.thieving_coin_pouch_menaphite",
+                "obj.pickpocket_coin_pouch_menaphite",
+                60..60,
+            )
+            pouch("dbrow.thieving_coin_pouch_paladin", "obj.pickpocket_coin_pouch_paladin", 80..80)
+            pouch("dbrow.thieving_coin_pouch_gnome", "obj.pickpocket_coin_pouch_gnome", 300..300)
+            pouch("dbrow.thieving_coin_pouch_hero", "obj.pickpocket_coin_pouch_hero", 200..300)
+            pouch("dbrow.thieving_coin_pouch_vyre", "obj.pickpocket_coin_pouch_vyre", 230..315)
+            pouch("dbrow.thieving_coin_pouch_elf", "obj.pickpocket_coin_pouch_elf", 280..350)
+        }
 }
-
-private fun hamMember(displayName: String, npcs: List<String> = emptyList()) =
-    PickpocketTarget(
-        displayName = displayName,
-        level = 15,
-        xp = 22.2,
-        low = 135,
-        high = 239,
-        stunTicks = 7,
-        stunDamage = 1,
-        pouch = "obj.pickpocket_coin_pouch_ham",
-        lowercaseName = false,
-        npcs = npcs,
-        op = 1,
-    )
 
 private val BAKERS =
     listOf("npc.baker_merchant_ardougne", "npc.baker_merchant_ardougne2", "npc.baker_merchant")
