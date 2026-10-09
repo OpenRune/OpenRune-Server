@@ -35,13 +35,15 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
     PluginScript() {
 
     override fun ScriptContext.startup() {
-        for (leaf in listOf(LEFT_GATE, RIGHT_GATE)) {
-            onOpLoc1(leaf) { open() }
-            onOpLoc4(leaf) { payToll() }
-        }
-        for (guard in listOf(GUARD_1, GUARD_2)) {
-            onOpNpc1(guard) { talkToGuard(it.npc) }
-        }
+        bindLeaf(LEFT_GATE)
+        bindLeaf(RIGHT_GATE)
+        onOpNpc1(GUARD_1) { talkToGuard(it.npc) }
+        onOpNpc1(GUARD_2) { talkToGuard(it.npc) }
+    }
+
+    private fun ScriptContext.bindLeaf(leaf: String) {
+        onOpLoc1(leaf) { open() }
+        onOpLoc4(leaf) { payToll() }
     }
 
     private suspend fun ProtectedAccess.open() {
