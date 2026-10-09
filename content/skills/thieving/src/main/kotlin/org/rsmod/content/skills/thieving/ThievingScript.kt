@@ -258,14 +258,20 @@ constructor(
         }
         npc.say(target.caughtShout)
         npc.facePlayer(player)
-        stun(target.stunTicks)
-        delay(1)
-        spotanim(STUN_SPOTANIM, height = STUN_SPOTANIM_HEIGHT)
-        anim(STUN_BLOCK_SEQ)
-        soundSynth(STUN_SYNTH)
-        queueHit(delay = 1, type = HitType.Typeless, damage = target.stunDamage)
-        delay(1)
-        mes("You've been stunned!", ChatType.Spam)
+        try {
+            stun(target.stunTicks)
+            delay(1)
+            spotanim(STUN_SPOTANIM, height = STUN_SPOTANIM_HEIGHT)
+            anim(STUN_BLOCK_SEQ)
+            soundSynth(STUN_SYNTH)
+            queueHit(delay = 1, type = HitType.Typeless, damage = target.stunDamage)
+            delay(1)
+            mes("You've been stunned!", ChatType.Spam)
+        } finally {
+            if (npc.faceEntity.playerSlot == player.slotId) {
+                npc.resetFaceEntity()
+            }
+        }
     }
 
     private fun ProtectedAccess.stun(ticks: Int) {
