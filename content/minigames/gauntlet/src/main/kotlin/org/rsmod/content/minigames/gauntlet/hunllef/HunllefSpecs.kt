@@ -39,10 +39,13 @@ class HunllefSpecs @Inject constructor() {
 
         fun tiers(player: Player) = HunllefDamage.armourTiers(player, corrupted)
 
-        fun attackDamage(type: HitType): DamageExpr =
-            DamageExpr.Custom { _, target ->
-                HunllefDamage.rollAttack(corrupted, tiers(target), isPraying(target, type))
-            }
+        val attackDamage =
+            DamageExpr.Accuracy(
+                on =
+                    DamageExpr.Custom { _, target ->
+                        HunllefDamage.rollAttack(corrupted, tiers(target), prayed = false)
+                    }
+            )
 
         val flight =
             ProjectileConfig(
@@ -90,11 +93,12 @@ class HunllefSpecs @Inject constructor() {
                         projectile(
                             spotanim = "spotanim.crystal_hunllef_range_travel$sfx",
                             config = flight,
+                            resolveOnImpact = true,
                             hit =
                                 hit {
-                                    damage(attackDamage(HitType.Ranged))
+                                    damage(attackDamage)
                                     type(HitType.Ranged)
-                                    penetration(FULL_PENETRATION)
+                                    penetration(PRAYED_DAMAGE_PERCENT, whenever = TargetPraying(HitType.Ranged))
                                 },
                         ),
                         advanceCycle,
@@ -109,11 +113,12 @@ class HunllefSpecs @Inject constructor() {
                         projectile(
                             spotanim = "spotanim.crystal_hunllef_magic_travel$sfx",
                             config = flight,
+                            resolveOnImpact = true,
                             hit =
                                 hit {
-                                    damage(attackDamage(HitType.Magic))
+                                    damage(attackDamage)
                                     type(HitType.Magic)
-                                    penetration(FULL_PENETRATION)
+                                    penetration(PRAYED_DAMAGE_PERCENT, whenever = TargetPraying(HitType.Magic))
                                     spotanim(
                                         "spotanim.crystal_hunllef_magic_impact$sfx",
                                         height = IMPACT_HEIGHT,
@@ -133,11 +138,12 @@ class HunllefSpecs @Inject constructor() {
                             spotanim = "spotanim.crystal_hunllef_prayer_travel$sfx",
                             config = flight,
                             impact = "spotanim.crystal_hunllef_prayer_impact$sfx",
+                            resolveOnImpact = true,
                             hit =
                                 hit {
-                                    damage(attackDamage(HitType.Magic))
+                                    damage(attackDamage)
                                     type(HitType.Magic)
-                                    penetration(FULL_PENETRATION)
+                                    penetration(PRAYED_DAMAGE_PERCENT, whenever = TargetPraying(HitType.Magic))
                                     onHit(
                                         sequence(disablePrayers(), message(PRAYERS_DISABLED)),
                                         evenOnMiss = true,
@@ -220,6 +226,7 @@ class HunllefSpecs @Inject constructor() {
                             prayerDisable,
                             weight = 1,
                             requires = varnIs(HunllefVarns.STYLE, HunllefVarns.MAGIC),
+                            cooldown = PRAYER_DISABLE_COOLDOWN,
                         )
                     }
                     forceWhen(underBoss, stomp)
@@ -241,14 +248,6 @@ class HunllefSpecs @Inject constructor() {
             headIcon(HEAD_ICON_SLOT, HEAD_ICON_GRAPHIC, protectValue),
         )
 
-
-    private fun isPraying(target: Player, type: HitType): Boolean =
-        when (type) {
-            HitType.Ranged -> target.vars[PROTECT_FROM_MISSILES] > 0
-            HitType.Magic -> target.vars[PROTECT_FROM_MAGIC] > 0
-            HitType.Melee -> target.vars[PROTECT_FROM_MELEE] > 0
-            else -> false
-        }
 
     private fun standsUnder(npc: Npc, target: Player): Boolean {
         val dx = target.coords.x - npc.coords.x
@@ -278,8 +277,9 @@ class HunllefSpecs @Inject constructor() {
         private const val ARENA_CENTRE_OFFSET = 2
         private const val TORNADO_MIN_ATTACKS = 8
         private const val TORNADO_MAX_ATTACKS = 11
+        private const val PRAYER_DISABLE_COOLDOWN = 20
         private const val STOMP_DELAY = 2
-        private const val FULL_PENETRATION = 100
+        private const val PRAYED_DAMAGE_PERCENT = 24
         private const val IMPACT_HEIGHT = 124
 
         private const val PROJECTILE_START_HEIGHT = 214
@@ -297,10 +297,5 @@ class HunllefSpecs @Inject constructor() {
 
         private const val PRAYERS_DISABLED = "<col=ef1020>Your prayers have been disabled!</col>"
         private const val STOMP_MESSAGE = "You're trampled beneath the Hunllef."
-
-        private const val PROTECT_FROM_MELEE = "varbit.prayer_protectfrommelee"
-        private const val PROTECT_FROM_MISSILES = "varbit.prayer_protectfrommissiles"
-        private const val PROTECT_FROM_MAGIC = "varbit.prayer_protectfrommagic"
-
     }
 }
