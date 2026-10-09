@@ -16,10 +16,6 @@ import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Comp
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The bookcase upstairs in the tourist centre and the book it hides. The book only turns up once
- * the player has met Hudon, and reading it is what sends them after Glarial's pebble.
- */
 class BookOnBaxtorian
 @Inject
 constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepository) :

@@ -15,7 +15,6 @@ import org.rsmod.content.quest.area.baxtorianfalls.waterfall.heardOfTreasure
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/** Gerald fishes on the bank where the river washes treasure hunters ashore. */
 class Gerald @Inject constructor(private val waterfall: WaterfallQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -75,10 +74,6 @@ private suspend fun Dialogue.learnOfHadley() {
     player.heardOfTreasure = true
 }
 
-/**
- * Gerald's greeting when the river dumps a player who has just met Hudon at his feet. It opens
- * on landing, with Gerald, and only until the player has heard the legend.
- */
 internal suspend fun ProtectedAccess.geraldGreetsWashedUp(
     waterfall: WaterfallQuest,
     search: NpcSearch,

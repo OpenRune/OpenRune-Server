@@ -17,10 +17,6 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Hudon stands on a rock in the river, cut off from the island the raft runs aground on, so he
- * is talked to across the water. From the riverbank the falls drown out the conversation.
- */
 class Hudon @Inject constructor(private val waterfall: WaterfallQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -97,7 +93,6 @@ internal suspend fun Dialogue.hudon(waterfall: WaterfallQuest) {
     }
 }
 
-/** The first conversation, which the raft crash also leads straight into. */
 internal suspend fun Dialogue.hudonFirstMeeting(waterfall: WaterfallQuest) {
     chatPlayer(worried, "Hello son, are you okay? You need help?")
     chatNpc(laugh, "It looks like you need the help.")

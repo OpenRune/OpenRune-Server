@@ -25,17 +25,6 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The way down Baxtorian Falls to the waterfall door: the log raft behind Almera's house runs
- * aground on Hudon's island, a rope tied to the rock pulls the player across to the dead tree,
- * and a rope tied to the tree lowers them onto the ledge. Every shortcut (swimming, climbing
- * without a rope, forcing the door without Glarial's amulet) sweeps them down the river to
- * Gerald's bank; the barrel on the ledge does the same, but gently.
- *
- * The rock and the tree stand in the water, so both are worked from a distance. A used item
- * arrives as a `LocT` interaction and only its op step is bridged to `onOpLocU`, so the rope's
- * approach handlers are registered on the inventory component directly.
- */
 class BaxtorianFalls
 @Inject
 constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch) :
@@ -46,6 +35,8 @@ constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch
         onOpLoc1(RIVER) { swim() }
         onApLoc1(ROCK) { apRock(it.loc) { swim() } }
         onOpLoc1(ROCK) { swim() }
+        // Only the op step of a used item is bridged to onOpLocU, so approach handlers bind to the
+        // inventory component.
         val inventory = ServerCacheManager.fromComponent(INVENTORY.asRSCM(RSCMType.COMPONENT))
         onApLocT(ROCK, inventory) {
             if (it.objType?.id == ROPE.asRSCM(RSCMType.OBJ)) {

@@ -13,7 +13,6 @@ import org.rsmod.game.entity.player.Appearance
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/** Hadley, the tourist guide in the information centre south of the falls. */
 class Hadley @Inject constructor(private val waterfall: WaterfallQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {

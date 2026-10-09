@@ -30,15 +30,6 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The caves inside Baxtorian Falls.
- *
- * Baxtorian's tomb is mapped twice. The room the player walks into (2561..2570 x 9902..9917) has
- * the six pillars, the statues of Baxtorian and Glarial, and the chalice floating out of reach on
- * level 1. An identical copy 38 tiles east and one tile south has the chalice on the floor.
- * Placing the amulet "raises the floor" by moving the player into the copy, and leaving the copy
- * through its doors puts them back at the matching spot in the real corridor.
- */
 class WaterfallDungeon
 @Inject
 constructor(
@@ -80,7 +71,6 @@ constructor(
         objbox(BAXTORIAN_KEY, "You find a key in the crate.")
     }
 
-    /** Both tomb doors sit on the north edge of their tile and are locked to the south. */
     private suspend fun ProtectedAccess.openTombDoor(door: BoundLocInfo) {
         if (door.playerIsSouth(player.coords)) {
             if (BAXTORIAN_KEY !in player.inv) {
@@ -218,10 +208,7 @@ constructor(
         const val TOMB_DOOR = "loc.baxtorian_door_2_waterfall_quest"
         const val TOMB_DOOR_OPEN = "loc.baxtorian_door_2_open_waterfall_quest"
 
-        /**
-         * The pillar is a multiloc on `varbit.sote`, and the used-item bridge hands the resolved
-         * form to `onOpLocU`, so every form is registered.
-         */
+        // Multiloc: onOpLocU is handed the resolved form, so every form is bound.
         val PILLAR_FORMS =
             listOf(
                 "loc.stonepillar_small_waterfall_quest",
@@ -232,7 +219,6 @@ constructor(
         const val CHALICE = "loc.baxtorian_chalice_waterfall_quest"
         const val CHALICE_ASH = "loc.baxtorian_chalice_waterfall_quest_ash"
 
-        /** Rune obj to its bit within a pillar's three. */
         val PILLAR_RUNES: Map<String, Int> by lazy {
             WaterfallPillarRunesRow.all().associate { it.rune.internalName to it.bit }
         }
@@ -242,6 +228,7 @@ constructor(
         const val PILLAR_SOUTH_Z = 9910
         const val PILLAR_ROW_GAP = 2
 
+        // The raised room is a copy of the tomb room, 38 tiles east and one south.
         const val COPY_OFFSET_X = 38
         const val COPY_OFFSET_Z = -1
         const val COPY_MIN_X = 2590

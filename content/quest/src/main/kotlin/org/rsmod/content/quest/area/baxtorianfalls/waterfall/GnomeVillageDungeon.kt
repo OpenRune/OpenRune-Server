@@ -13,11 +13,6 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The hobgoblin caves beneath the Tree Gnome Village: the odd crate in the east room hides the
- * key to the gate Golrie has locked himself behind in the west room (the gate sits on the north
- * edge of 2515,9575; Golrie's room is north of it).
- */
 class GnomeVillageDungeon
 @Inject
 constructor(

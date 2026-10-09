@@ -13,10 +13,6 @@ import org.rsmod.content.quest.area.baxtorianfalls.waterfall.ownsAnywhere
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Golrie, the gnome who locked himself in his store room beneath the Tree Gnome Village to keep
- * the hobgoblins away from his family's heirlooms.
- */
 class Golrie
 @Inject
 constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepository) :

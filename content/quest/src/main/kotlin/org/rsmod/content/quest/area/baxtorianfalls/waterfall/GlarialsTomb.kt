@@ -16,10 +16,6 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Glarial's tombstone on the hill north-west of the Fishing Guild and the tomb beneath it. The
- * way out is the ladder at 2556,9844, which the generic passage script already climbs.
- */
 class GlarialsTomb
 @Inject
 constructor(
@@ -82,7 +78,6 @@ constructor(
         objbox(AMULET, "You find a small amulet in the chest.")
     }
 
-    /** The search takes a while, and the tomb's guardians are free to attack meanwhile. */
     private suspend fun ProtectedAccess.searchCoffin() {
         anim(SEARCH_SEQ)
         delay(COFFIN_SEARCH_TICKS)

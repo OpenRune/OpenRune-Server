@@ -19,22 +19,16 @@ import org.rsmod.game.type.getInvObj
 import org.rsmod.map.CoordGrid
 
 internal object WaterfallCoords {
-    /** Where the log raft runs aground, beside the broken raft on Hudon's island. */
     val RAFT_CRASH = CoordGrid(2512, 3481, 0)
 
-    /** The shore by Gerald and the tourist centre, where the river washes swimmers up. */
     val DOWNSTREAM = CoordGrid(2527, 3413, 0)
 
-    /** The patch of land beside the dead tree, reached by roping the rock. */
     val TREE_ISLAND = CoordGrid(2513, 3468, 0)
 
-    /** The ledge in front of the waterfall door, reached by roping the dead tree. */
     val LEDGE = CoordGrid(2511, 3463, 0)
 
-    /** Just inside the waterfall, north of the exit door (2575,9861). */
     val FALLS_ENTRY = CoordGrid(2575, 9862, 0)
 
-    /** Beside the ladder up out of Glarial's tomb (2556,9844). */
     val TOMB_ENTRY = CoordGrid(2555, 9844, 0)
 
     fun onHudonIsland(coords: CoordGrid): Boolean =
@@ -49,7 +43,6 @@ internal fun Player.hasAmulet(): Boolean = inv.contains(AMULET) || worn.contains
 /** Every door and gate here is a wall on the north edge of its tile. */
 internal fun BoundLocInfo.playerIsSouth(coords: CoordGrid): Boolean = coords.z <= this.coords.z
 
-/** The tile just across a north-edge wall from [from]. */
 internal fun BoundLocInfo.tileAcross(from: CoordGrid): CoordGrid =
     if (from.z > coords.z) coords else coords.translateZ(1)
 
@@ -58,10 +51,6 @@ internal fun Player.wearsAmulet(): Boolean = worn.contains(AMULET)
 internal fun Player.ownsAnywhere(obj: String): Boolean =
     inv.contains(obj) || worn.contains(obj) || invMap.getOrPut("inv.bank").contains(obj)
 
-/**
- * Carries the player off down the river to [WaterfallCoords.DOWNSTREAM]. [ouch] is for the falls
- * themselves: the player takes a knock and says so.
- */
 internal suspend fun ProtectedAccess.washDownstream(ouch: Boolean) {
     soundSynth(SPLASH_SOUND)
     spotanim(SPLASH_SPOTANIM)
@@ -78,14 +67,6 @@ internal suspend fun ProtectedAccess.washDownstream(ouch: Boolean) {
     }
 }
 
-/**
- * Glarial's tombstone only opens for visitors with peaceful intent. The wiki's restricted list:
- * weapons, armour (worn gear with combat bonuses, capes included) and the supplies to make it,
- * runes, ammunition and its supplies, looting bags, clue scrolls, magic secateurs, mythical capes,
- * skillcapes, Ardougne cloaks, weight-reducing camo clothing and the dwarf multicannon. Clothing
- * without combat bonuses (a Graceful cape among it), jewellery, food and potions pass, as do the
- * off-hand tomes, the Imcando hammer (off-hand), the chronicle and the goblin paint cannon.
- */
 internal fun Player.carriesUnpeacefulItem(): Boolean {
     val carried = inv.filterNotNull { true } + worn.filterNotNull { true }
     return carried.any { getInvObj(it).isUnpeaceful() }

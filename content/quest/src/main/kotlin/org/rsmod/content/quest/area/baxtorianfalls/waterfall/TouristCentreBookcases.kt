@@ -5,7 +5,6 @@ import org.rsmod.content.generic.locs.bookcases.BookcaseSearchHook
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
 
-/** The ordinary bookcases upstairs in the tourist centre, beside the one hiding the book. */
 class TouristCentreBookcases : BookcaseSearchHook {
     override fun claims(player: Player, bookcase: BoundLocInfo): Boolean =
         bookcase.coords.level == UPSTAIRS_LEVEL &&

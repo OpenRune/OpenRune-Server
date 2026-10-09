@@ -11,16 +11,9 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.map.CoordGrid
 
-/**
- * Opens and closes quest doors and gates that carry no generic door content group. Opened
- * locs revert on their own after [DURATION] cycles.
- */
 class QuestDoors @Inject constructor(private val locRepo: LocRepository) {
 
-    /**
-     * Swings a single door open. A door normally swings onto the tile inside the room; with
-     * [outward] it swings the other way around the same hinge, onto the doorway tile itself.
-     */
+    /** [outward] swings the door the other way around its hinge, onto the doorway tile. */
     fun open(
         access: ProtectedAccess,
         closed: BoundLocInfo,
@@ -36,10 +29,7 @@ class QuestDoors @Inject constructor(private val locRepo: LocRepository) {
         locRepo.add(coords, opened, DURATION, closed.turnAngle(1), closed.shape)
     }
 
-    /**
-     * Opens both leaves of a double door. [left] and [right] are the closed leaves; the open forms
-     * are named explicitly because the quest doors carry no `next_loc_stage` param.
-     */
+    /** The open forms are named because quest doors carry no `next_loc_stage` param. */
     fun openDouble(
         access: ProtectedAccess,
         left: LocInfo?,
@@ -61,10 +51,7 @@ class QuestDoors @Inject constructor(private val locRepo: LocRepository) {
         }
     }
 
-    /**
-     * Opens a gate pair. Each leaf swings on its own post, the way the metal gates do, unless
-     * [symmetric] is false, in which case both fold onto the left post like a picket gate.
-     */
+    /** Unless [symmetric], both leaves fold onto the left post like a picket gate. */
     fun openGate(
         access: ProtectedAccess,
         left: LocInfo?,
@@ -90,19 +77,15 @@ class QuestDoors @Inject constructor(private val locRepo: LocRepository) {
         }
     }
 
-    /** The right half of a gate, found from the closed left half [left]. */
     fun rightOfGate(left: BoundLocInfo, rightType: String): LocInfo? =
         find(left.coords + GateTranslations.leftGateRightPair(left.shape, left.angle), rightType)
 
-    /** The left half of a gate, found from the closed right half [right]. */
     fun leftOfGate(right: BoundLocInfo, leftType: String): LocInfo? =
         find(right.coords - GateTranslations.leftGateRightPair(right.shape, right.angle), leftType)
 
-    /** The right leaf paired with the closed left leaf [left]. */
     fun rightLeafOf(left: BoundLocInfo, rightType: String): LocInfo? =
         find(DoorTranslations.translateClose(left.coords, left.shape, left.angle), rightType)
 
-    /** The left leaf paired with the closed right leaf [right]. */
     fun leftLeafOf(right: BoundLocInfo, leftType: String): LocInfo? =
         find(
             DoorTranslations.translateCloseOpposite(right.coords, right.shape, right.angle),

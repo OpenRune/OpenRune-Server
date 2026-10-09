@@ -15,16 +15,6 @@ internal var Player.heardOfTreasure by boolVarBit("varbit.waterfall_heard_of_tre
 internal var Player.metGolrie by boolVarBit("varbit.waterfall_met_golrie")
 internal var Player.pillarRunes by intVarBit("varbit.waterfall_pillar_runes")
 
-/**
- * The stage lives in `varp.waterfall_quest` through the server-only progress varbit. The values
- * follow the stages the client's quest helper expects: 1 once Almera asks for help, 2 after
- * meeting Hudon, 3 once the book on Baxtorian has been read, 4 on entering Glarial's tomb, 5 on
- * entering the waterfall, 6 when all six pillars hold their runes and 8 once the floor has risen
- * to the chalice. Nothing in the cache transforms on the stage, so the gaps are harmless.
- *
- * The side flags (Gerald's rumour, Golrie's pebble, the runes on each pillar) are server-only
- * varbits on `varp.waterfall_state`.
- */
 @Singleton
 class WaterfallQuest @Inject constructor() :
     QuestScript(
@@ -52,7 +42,6 @@ class WaterfallQuest @Inject constructor() :
 
     fun isComplete(player: Player): Boolean = quest.isQuestCompleted(player)
 
-    /** Only moves a started quest on: walking into the tomb or the falls never starts it. */
     fun advanceTo(access: ProtectedAccess, stage: Int) {
         val current = stage(access.player)
         if (current > 0 && stage > current) {
@@ -183,6 +172,7 @@ class WaterfallQuest @Inject constructor() :
     companion object {
         const val QUEST_KEY = "quest_waterfall"
 
+        // Stage values follow the client quest helper, hence the gaps.
         const val STARTED = 1
         const val MET_HUDON = 2
         const val READ_BOOK = 3
