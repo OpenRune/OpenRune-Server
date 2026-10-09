@@ -64,7 +64,7 @@ import org.rsmod.routefinder.collision.CollisionFlagMap
 class RomeoAndJulietInteractionTest {
     @Test fun `accepting Romeo's request starts the quest in the native varp`() {
         val f = Fixture()
-        f.talk(Romeo)
+        f.talk(ROMEO)
         f.finish(listOf(3, 1, 3))
         assertEquals(10, f.stage())
         assertEquals(10, f.player.vars["varp.rjquest"])
@@ -74,7 +74,7 @@ class RomeoAndJulietInteractionTest {
     @Test fun `declining Romeo's request leaves the quest unstarted`() {
         for (first in 1..3) {
             val f = Fixture()
-            f.talk(Romeo)
+            f.talk(ROMEO)
             f.finish(listOf(first, 2))
             assertEquals(0, f.stage(), "first option $first")
         }
@@ -82,55 +82,55 @@ class RomeoAndJulietInteractionTest {
 
     @Test fun `Juliet gives a message and a lost one is replaced exactly once`() {
         val f = Fixture(10)
-        f.talk(Juliet)
+        f.talk(JULIET)
         f.finish()
         assertEquals(20, f.stage())
-        assertEquals(1, f.player.inv.count(Message))
-        f.talk(Juliet)
+        assertEquals(1, f.player.inv.count(MESSAGE))
+        f.talk(JULIET)
         f.finish()
-        assertEquals(1, f.player.inv.count(Message))
+        assertEquals(1, f.player.inv.count(MESSAGE))
         f.player.inv[0] = null
-        f.talk(Juliet)
+        f.talk(JULIET)
         f.finish()
-        assertEquals(1, f.player.inv.count(Message))
+        assertEquals(1, f.player.inv.count(MESSAGE))
         assertEquals(20, f.stage())
     }
 
     @Test fun `a full inventory does not lose Juliet's message`() {
         val f = Fixture(10)
         for (slot in 0 until 28) f.player.inv[slot] = InvObj("obj.coins", 1)
-        f.talk(Juliet)
+        f.talk(JULIET)
         f.finish()
         assertEquals(20, f.stage())
-        assertEquals(0, f.player.inv.count(Message))
+        assertEquals(0, f.player.inv.count(MESSAGE))
         assertTrue(f.player.inv.count("obj.coins") <= 28)
     }
 
     @Test fun `Juliet has nothing to give before the quest`() {
         val f = Fixture()
-        f.talk(Juliet)
+        f.talk(JULIET)
         f.finish()
         assertEquals(0, f.stage())
-        assertEquals(0, f.player.inv.count(Message))
+        assertEquals(0, f.player.inv.count(MESSAGE))
     }
 
     @Test fun `Romeo reads the message and the stage only advances with it`() {
         val lost = Fixture(20)
-        lost.talk(Romeo)
+        lost.talk(ROMEO)
         lost.finish()
         assertEquals(20, lost.stage())
 
         val f = Fixture(20)
-        f.player.inv[0] = InvObj(Message, 1)
-        f.talk(Romeo)
+        f.player.inv[0] = InvObj(MESSAGE, 1)
+        f.talk(ROMEO)
         f.finish(listOf(4))
         assertEquals(30, f.stage())
-        assertEquals(0, f.player.inv.count(Message))
+        assertEquals(0, f.player.inv.count(MESSAGE))
     }
 
     @Test fun `Father Lawrence's sermon sends the player to the Apothecary`() {
         val f = Fixture(30)
-        f.talk(Lawrence)
+        f.talk(LAWRENCE)
         f.finish()
         assertEquals(40, f.stage())
         assertTrue(f.script.questLog(f.access()).contains("Apothecary"))
@@ -138,7 +138,7 @@ class RomeoAndJulietInteractionTest {
 
     @Test fun `Father Lawrence only offers the sermon after the message was delivered`() {
         val f = Fixture(20)
-        f.talk(Lawrence)
+        f.talk(LAWRENCE)
         f.finish(listOf(4))
         assertEquals(20, f.stage())
     }
@@ -146,50 +146,50 @@ class RomeoAndJulietInteractionTest {
     @Test fun `the Apothecary asks for berries and resets the tailored bush`() {
         val f = Fixture(40)
         VarPlayerIntMapSetter.set(f.player, "varbit.cadavabush", 2)
-        f.talk(Apothecary)
+        f.talk(APOTHECARY)
         f.finish(listOf(2, 1, 4))
         assertEquals(50, f.stage())
         assertEquals(0, f.player.vars["varbit.cadavabush"])
-        assertEquals(0, f.player.inv.count(Potion))
+        assertEquals(0, f.player.inv.count(POTION))
     }
 
     @Test fun `berries are turned into a cadava potion once the Apothecary has asked for them`() {
         val f = Fixture(50)
-        f.player.inv[0] = InvObj(Berries, 1)
-        f.talk(Apothecary)
+        f.player.inv[0] = InvObj(BERRIES, 1)
+        f.talk(APOTHECARY)
         f.finish(listOf(2, 1))
         assertEquals(50, f.stage())
-        assertEquals(0, f.player.inv.count(Berries))
-        assertEquals(1, f.player.inv.count(Potion))
+        assertEquals(0, f.player.inv.count(BERRIES))
+        assertEquals(1, f.player.inv.count(POTION))
     }
 
     @Test fun `bringing berries while asking in one go also brews the potion`() {
         val f = Fixture(40)
-        f.player.inv[0] = InvObj(Berries, 1)
-        f.talk(Apothecary)
+        f.player.inv[0] = InvObj(BERRIES, 1)
+        f.talk(APOTHECARY)
         f.finish(listOf(2, 1))
         assertEquals(50, f.stage())
-        assertEquals(0, f.player.inv.count(Berries))
-        assertEquals(1, f.player.inv.count(Potion))
+        assertEquals(0, f.player.inv.count(BERRIES))
+        assertEquals(1, f.player.inv.count(POTION))
     }
 
     @Test fun `berries are not accepted before Father Lawrence has sent the player`() {
         val f = Fixture(30)
-        f.player.inv[0] = InvObj(Berries, 1)
-        f.talk(Apothecary)
+        f.player.inv[0] = InvObj(BERRIES, 1)
+        f.talk(APOTHECARY)
         f.finish(listOf(2, 3))
         assertEquals(30, f.stage())
-        assertEquals(1, f.player.inv.count(Berries))
-        assertEquals(0, f.player.inv.count(Potion))
+        assertEquals(1, f.player.inv.count(BERRIES))
+        assertEquals(0, f.player.inv.count(POTION))
     }
 
     @Test fun `giving Juliet the potion consumes it and plays the cutscene`() {
         val f = Fixture(50)
-        f.player.inv[0] = InvObj(Potion, 1)
-        f.talk(Juliet)
+        f.player.inv[0] = InvObj(POTION, 1)
+        f.talk(JULIET)
         f.finish()
         assertEquals(60, f.stage())
-        assertEquals(0, f.player.inv.count(Potion))
+        assertEquals(0, f.player.inv.count(POTION))
         assertEquals(1, f.player.vars["varbit.romjul_juliet_visible"])
         assertEquals(0, f.player.vars["varbit.cutscene_status"])
         assertEquals(CoordGrid(3157, 3425, 1), f.player.coords)
@@ -198,48 +198,48 @@ class RomeoAndJulietInteractionTest {
 
     @Test fun `Juliet without the potion does not advance the quest`() {
         val f = Fixture(50)
-        f.talk(Juliet)
+        f.talk(JULIET)
         f.finish()
         assertEquals(50, f.stage())
     }
 
     @Test fun `the crypt cutscene completes the quest once and grants five quest points`() {
         val f = Fixture(60)
-        f.talk(Romeo)
+        f.talk(ROMEO)
         f.finish()
         f.assertComplete()
         assertEquals(CoordGrid(3215, 3418, 0), f.player.coords)
         assertTrue(f.player.ui.containsModal("interface.questscroll"))
         assertEquals(2, f.player.vars["varbit.romjul_juliet_visible"])
-        f.talk(Romeo)
+        f.talk(ROMEO)
         f.finish()
         f.assertComplete()
     }
 
     @Test fun `the complete quest plays through from Romeo to the crypt`() {
         val f = Fixture()
-        f.talk(Romeo)
+        f.talk(ROMEO)
         f.finish(listOf(3, 1, 3))
-        f.talk(Juliet)
+        f.talk(JULIET)
         f.finish()
-        f.talk(Romeo)
+        f.talk(ROMEO)
         f.finish(listOf(4))
-        f.talk(Lawrence)
+        f.talk(LAWRENCE)
         f.finish()
-        f.talk(Apothecary)
+        f.talk(APOTHECARY)
         f.finish(listOf(2, 1, 4))
-        f.player.inv[1] = InvObj(Berries, 1)
-        f.talk(Apothecary)
+        f.player.inv[1] = InvObj(BERRIES, 1)
+        f.talk(APOTHECARY)
         f.finish(listOf(2, 1))
-        assertEquals(1, f.player.inv.count(Potion))
-        f.talk(Juliet)
+        assertEquals(1, f.player.inv.count(POTION))
+        f.talk(JULIET)
         f.finish()
         assertEquals(60, f.stage())
-        f.talk(Romeo)
+        f.talk(ROMEO)
         f.finish()
         f.assertComplete()
-        assertEquals(0, f.player.inv.count(Potion))
-        assertEquals(0, f.player.inv.count(Message))
+        assertEquals(0, f.player.inv.count(POTION))
+        assertEquals(0, f.player.inv.count(MESSAGE))
     }
 
     @Test fun `the journal tracks each step and the completion log is written`() {
@@ -249,7 +249,7 @@ class RomeoAndJulietInteractionTest {
         assertTrue(f.script.questLog(f.access()).contains("take the message to"))
         f.setStage(50)
         assertTrue(f.script.questLog(f.access()).contains("cadava berries"))
-        f.player.inv[0] = InvObj(Potion, 1)
+        f.player.inv[0] = InvObj(POTION, 1)
         assertTrue(f.script.questLog(f.access()).contains("take this <red>cadava potion"))
         f.setStage(100)
         assertTrue(f.script.completedLog(f.access()).contains("Phillipa"))
@@ -257,15 +257,15 @@ class RomeoAndJulietInteractionTest {
 
     @Test fun `Phillipa and Draul react to the stage without changing it`() {
         val f = Fixture()
-        f.talk(Phillipa)
+        f.talk(PHILLIPA)
         f.finish()
         assertTrue(f.output().contains("Hello, who are you?"), f.output())
-        f.talk(Draul)
+        f.talk(DRAUL)
         f.finish()
         assertTrue(f.output().contains("What are you doing in my house"), f.output())
         assertEquals(0, f.stage())
         val g = Fixture(100)
-        g.talk(Draul)
+        g.talk(DRAUL)
         g.finish()
         assertTrue(g.output().contains("quite pleased with yourself"), g.output())
         assertEquals(100, g.stage())
@@ -273,26 +273,26 @@ class RomeoAndJulietInteractionTest {
 
     @Test fun `walking away from the crypt cutscene returns the player and keeps the stage`() {
         val f = Fixture(60)
-        f.talk(Romeo)
+        f.talk(ROMEO)
         f.finishUntil { f.player.coords.x < 3000 }
         f.cancel()
         assertEquals(60, f.stage())
         assertEquals(CoordGrid(3215, 3418, 0), f.player.coords)
         assertEquals(0, f.player.vars["varbit.cutscene_status"])
         assertEquals(0, f.npcs.count { it.isSlotAssigned })
-        f.talk(Romeo)
+        f.talk(ROMEO)
         f.finish()
         f.assertComplete()
     }
 
     @Test fun `cancelling the potion cutscene keeps the hand-in and restores the interface`() {
         val f = Fixture(50)
-        f.player.inv[0] = InvObj(Potion, 1)
-        f.talk(Juliet)
+        f.player.inv[0] = InvObj(POTION, 1)
+        f.talk(JULIET)
         f.finishUntil { f.player.vars["varbit.cutscene_status"] == 1 }
         f.cancel()
         assertEquals(60, f.stage())
-        assertEquals(0, f.player.inv.count(Potion))
+        assertEquals(0, f.player.inv.count(POTION))
         assertEquals(0, f.player.vars["varbit.cutscene_status"])
         assertEquals(1, f.player.vars["varbit.romjul_juliet_visible"])
         assertEquals(0, f.npcs.count { it.isSlotAssigned })
@@ -300,9 +300,9 @@ class RomeoAndJulietInteractionTest {
 
     @Test fun `drinking the potion outside of the apothecary is refused`() {
         val f = Fixture(50)
-        f.player.inv[0] = InvObj(Potion, 1)
-        f.held(Potion, op = 2)
-        assertEquals(1, f.player.inv.count(Potion))
+        f.player.inv[0] = InvObj(POTION, 1)
+        f.held(POTION, op = 2)
+        assertEquals(1, f.player.inv.count(POTION))
         assertEquals(0, f.player.inv.count("obj.vial_empty"))
         assertEquals(50, f.stage())
     }
@@ -310,9 +310,9 @@ class RomeoAndJulietInteractionTest {
     @Test fun `drinking the potion inside the apothecary empties the vial`() {
         val f = Fixture(50)
         f.player.coords = CoordGrid(3195, 3404, 0)
-        f.player.inv[0] = InvObj(Potion, 1)
-        f.held(Potion, op = 2, options = listOf(1))
-        assertEquals(0, f.player.inv.count(Potion))
+        f.player.inv[0] = InvObj(POTION, 1)
+        f.held(POTION, op = 2, options = listOf(1))
+        assertEquals(0, f.player.inv.count(POTION))
         assertEquals(1, f.player.inv.count("obj.vial_empty"))
         assertEquals(50, f.stage())
     }
@@ -536,15 +536,15 @@ class RomeoAndJulietInteractionTest {
     }
 
     companion object {
-        private const val Romeo = "npc.romeo"
-        private const val Juliet = "npc.juliet"
-        private const val Phillipa = "npc.phillipa"
-        private const val Draul = "npc.draul_leptoc"
-        private const val Lawrence = "npc.father_lawrence"
-        private const val Apothecary = "npc.apothecary"
-        private const val Message = "obj.julietmessage"
-        private const val Potion = "obj.cadava"
-        private const val Berries = "obj.cadavaberries"
+        private const val ROMEO = "npc.romeo"
+        private const val JULIET = "npc.juliet"
+        private const val PHILLIPA = "npc.phillipa"
+        private const val DRAUL = "npc.draul_leptoc"
+        private const val LAWRENCE = "npc.father_lawrence"
+        private const val APOTHECARY = "npc.apothecary"
+        private const val MESSAGE = "obj.julietmessage"
+        private const val POTION = "obj.cadava"
+        private const val BERRIES = "obj.cadavaberries"
         private val restored = mutableListOf<() -> Unit>()
 
         @OptIn(InternalApi::class)
