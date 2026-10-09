@@ -10,7 +10,7 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.script.onPlayerLogin
-import org.rsmod.content.quest.area.lumbridge.XMarksTheSpot
+import org.rsmod.content.quest.area.lumbridge.xmarksthespot.npcs.Veos
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -25,14 +25,14 @@ private enum class VeosPort(val displayName: String, val arrival: CoordGrid) {
     LandsEnd("Land's End", CoordGrid(1504, 3399, 0)),
 }
 
-class VeosScript @Inject constructor(private val xMarks: XMarksTheSpot) : PluginScript() {
+class VeosScript @Inject constructor(private val veos: Veos) : PluginScript() {
     override fun ScriptContext.startup() {
         onPlayerLogin {
             if (player.veosPiscVis == 0) player.veosPiscVis = VEOS_PISC_TRAVEL
         }
 
         onOpNpc1(VEOS_SARIM) {
-            startDialogue(it.npc) { if (!with(xMarks) { veosSarimQuest() }) veosAtSarim() }
+            startDialogue(it.npc) { if (!with(veos) { veosSarimQuest() }) veosAtSarim() }
         }
         onOpNpc3(VEOS_SARIM) { sail(VeosPort.PortPiscarilius) }
         onOpNpc4(VEOS_SARIM) { sail(VeosPort.LandsEnd) }

@@ -1,4 +1,4 @@
-package org.rsmod.content.quest.area.lumbridge
+package org.rsmod.content.quest.area.lumbridge.xmarksthespot
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
@@ -28,6 +28,7 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.content.quest.area.lumbridge.xmarksthespot.npcs.Veos
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -184,10 +185,14 @@ class XMarksTheSpotInteractionTest {
                     )
             }
 
-        val script = XMarksTheSpot(ObjRepository(MapClock(100), ObjRegistry(ZoneUpdateMap())))
+        private val objRepo = ObjRepository(MapClock(100), ObjRegistry(ZoneUpdateMap()))
+        val script = XMarksTheSpotQuest(objRepo)
+        private val veos = Veos(script, objRepo)
 
         init {
-            with(script) { ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup() }
+            val scriptContext = ScriptContext(events, CheatCommandMap(), EngineQueueCache())
+            with(script) { scriptContext.startup() }
+            with(veos) { scriptContext.startup() }
             VarPlayerIntMapSetter.set(player, "varbit.cluequest", stage)
         }
 
@@ -205,7 +210,7 @@ class XMarksTheSpotInteractionTest {
 
         fun talkToVeosAtSarim(expectQuestDialogue: Boolean = true) = start {
             startDialogue(Npc("npc.veos_sarim", coords)) {
-                with(script) { assertEquals(expectQuestDialogue, veosSarimQuest()) }
+                with(veos) { assertEquals(expectQuestDialogue, veosSarimQuest()) }
             }
         }
 
