@@ -1812,5 +1812,5 @@ internal enum class FoodData(
         combo = true,
         eatDelay = listOf(3),
         combatDelay = listOf(2),
-    );
+    )
 }

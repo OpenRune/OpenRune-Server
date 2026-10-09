@@ -4,9 +4,9 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
+import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.stat.statRestoreAll
-import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.ui.PlayerInterfaceUpdates
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.game.entity.Player

@@ -4,13 +4,13 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.content.minigames.gauntlet.layout.GauntletLayout
 import org.rsmod.content.minigames.gauntlet.layout.GauntletRoom
 import org.rsmod.content.minigames.gauntlet.layout.RoomKind
 import org.rsmod.content.minigames.gauntlet.layout.RoomTemplates
-import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.game.region.Region
 import org.rsmod.game.region.util.RegionRotations
 import org.rsmod.game.region.zone.RegionZoneCopy

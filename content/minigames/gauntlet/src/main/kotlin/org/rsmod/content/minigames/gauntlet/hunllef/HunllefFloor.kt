@@ -9,11 +9,11 @@ import kotlin.random.Random
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.stat.hitpoints
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.content.minigames.gauntlet.GauntletLighting
 import org.rsmod.content.minigames.gauntlet.GauntletZones
 import org.rsmod.content.minigames.gauntlet.layout.GauntletRoom
 import org.rsmod.content.minigames.gauntlet.layout.Tile
-import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType

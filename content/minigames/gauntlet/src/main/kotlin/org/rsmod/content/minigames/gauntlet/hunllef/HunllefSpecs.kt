@@ -249,7 +249,6 @@ class HunllefSpecs @Inject constructor() {
             headIcon(HEAD_ICON_SLOT, HEAD_ICON_GRAPHIC, protectValue),
         )
 
-
     private fun standsUnder(npc: Npc, target: Player): Boolean {
         val dx = target.coords.x - npc.coords.x
         val dz = target.coords.z - npc.coords.z

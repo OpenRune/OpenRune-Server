@@ -125,7 +125,6 @@ suspend fun ProtectedAccess.openSkillMulti(
     onComplete: suspend (SkillMultiSelection) -> Unit = {},
 ) {
 
-
     val available = config.entries.mapNotNull { entry ->
         val amount = config.maxCountProvider?.invoke(inv, entry)
             ?: entry.maxCount(inv)

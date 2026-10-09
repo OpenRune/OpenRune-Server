@@ -13,9 +13,9 @@ import org.rsmod.api.bosses.runtime.startEncounter
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.table.GauntletRoomSlotsRow
 import org.rsmod.content.minigames.gauntlet.hunllef.HunllefSpecs
 import org.rsmod.content.minigames.gauntlet.layout.GauntletRoom
-import org.rsmod.api.table.GauntletRoomSlotsRow
 import org.rsmod.content.minigames.gauntlet.layout.MonsterKind
 import org.rsmod.content.minigames.gauntlet.layout.ResourceKind
 import org.rsmod.content.minigames.gauntlet.layout.RoomKind

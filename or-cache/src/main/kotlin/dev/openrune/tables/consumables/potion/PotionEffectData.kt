@@ -587,7 +587,7 @@ internal enum class PotionEffectData(
         effects = listOf("dbrow.effect_prayer_restore", "dbrow.effect_gauntlet_energy"),
         stamina = true,
         duration = minutes(2),
-    );
+    )
 }
 
 private fun seconds(value: Int): Int =
