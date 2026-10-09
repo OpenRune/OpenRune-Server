@@ -1,7 +1,6 @@
 package org.rsmod.content.skills.thieving
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dtx.core.ArgMap
@@ -19,10 +18,7 @@ import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpNpc1
-import org.rsmod.api.script.onOpNpc2
 import org.rsmod.api.script.onOpNpc3
-import org.rsmod.api.script.onOpNpc4
-import org.rsmod.api.script.onOpNpc5
 import org.rsmod.api.table.thieving.ThievingCoinPouchRow
 import org.rsmod.api.table.thieving.ThievingPickpocketRow
 import org.rsmod.api.table.thieving.ThievingStallRow
@@ -58,31 +54,21 @@ constructor(
         }
     }
 
-    /**
-     * Binds every npc with a Pickpocket op to the target sharing its cache name, or to the target
-     * whose symbol prefix it carries when its name is its own (Prifddinas elves, Darkmeyer vyres).
-     */
     private fun ScriptContext.bindPickpockets() {
         val targets = ThievingPickpocketRow.all()
         val loot = lootTables(ThievingDropTables.pickpockets, targets) { it.rowId }
-        val byName = targets.associateBy { it.name.lowercase() }
-        val byPrefix = targets.flatMap { t -> t.symbolPrefixes.map { it to t } }
-        for ((id, type) in ServerCacheManager.getNpcs()) {
-            val slot = opSlot { type.actions.getOpOrNull(it) == PICKPOCKET_OP } ?: continue
-            val symbol = runCatching { RSCM.getReverseMapping(RSCMType.NPC, id) }.getOrNull()
-            if (symbol.isNullOrBlank()) continue
-            val bare = symbol.removePrefix("npc.")
-            val target =
-                byName[type.name.lowercase()]
-                    ?: byPrefix.firstOrNull { bare.startsWith(it.first) }?.second
-                    ?: continue
+        for (target in targets) {
             val table = loot.getValue(target)
-            when (slot) {
-                1 -> onOpNpc1(symbol) { pickpocket(it.npc, target, table) }
-                2 -> onOpNpc2(symbol) { pickpocket(it.npc, target, table) }
-                3 -> onOpNpc3(symbol) { pickpocket(it.npc, target, table) }
-                4 -> onOpNpc4(symbol) { pickpocket(it.npc, target, table) }
-                5 -> onOpNpc5(symbol) { pickpocket(it.npc, target, table) }
+            for (npc in target.npcs) {
+                val symbol = npc.internalName
+                check(npc.actions.getOpOrNull(target.op - 1) == PICKPOCKET_OP) {
+                    "$symbol has no Pickpocket on op${target.op} for the ${target.name} target"
+                }
+                when (target.op) {
+                    1 -> onOpNpc1(symbol) { pickpocket(it.npc, target, table) }
+                    3 -> onOpNpc3(symbol) { pickpocket(it.npc, target, table) }
+                    else -> error("Unsupported pickpocket op${target.op} for ${target.name}")
+                }
             }
         }
     }
@@ -99,8 +85,6 @@ constructor(
             byId[rowId(row) and 0xFFFF] ?: error("No thieving loot for dbrow ${rowId(row)}")
         }
     }
-
-    private fun opSlot(matches: (Int) -> Boolean): Int? = (0 until 5).firstOrNull(matches)?.plus(1)
 
     private fun ProtectedAccess.rollLoot(table: ThievingDropTable): List<LootDrop> {
         val drops =

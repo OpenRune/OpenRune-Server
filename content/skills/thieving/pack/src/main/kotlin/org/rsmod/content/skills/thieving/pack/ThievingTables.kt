@@ -9,10 +9,7 @@ private const val DEFAULT_SHOUT: String = "What do you think you're doing?"
  * [low] and [high] are the level-1 and level-99 odds out of 256 fed to the shared skilling success
  * formula, taken from the wiki's own pickpocket charts.
  *
- * [symbolPrefixes] binds npcs whose cache name is their own rather than the table's - every
- * Prifddinas citizen is an "Elf" target, every named Darkmeyer resident a "Vyre", every named
- * Rellekka citizen a "Fremennik citizen", and the "Bandit"s of Pollnivneach and the Bandit Camp
- * are told apart by symbol.
+ * [npcs] is every npc that pickpockets as this target; each must carry Pickpocket on [op].
  */
 data class PickpocketTarget(
     val displayName: String,
@@ -22,7 +19,8 @@ data class PickpocketTarget(
     val high: Int,
     val stunTicks: Int,
     val stunDamage: Int,
-    val symbolPrefixes: List<String> = emptyList(),
+    val npcs: List<String> = emptyList(),
+    val op: Int = 3,
     val pouch: String? = null,
     val caughtShout: String = DEFAULT_SHOUT,
     val lowercaseName: Boolean = true,
@@ -57,10 +55,11 @@ object ThievingTables {
     const val PP_HIGH = 4
     const val PP_STUN_TICKS = 5
     const val PP_STUN_DAMAGE = 6
-    const val PP_SYMBOL_PREFIXES = 7
+    const val PP_NPCS = 7
     const val PP_POUCH = 8
     const val PP_CAUGHT_SHOUT = 9
     const val PP_LOWERCASE_NAME = 10
+    const val PP_OP = 11
 
     const val STALL_LOC = 0
     const val STALL_LEVEL = 1
@@ -93,10 +92,11 @@ object ThievingTables {
             column("high", PP_HIGH, VarType.INT)
             column("stun_ticks", PP_STUN_TICKS, VarType.INT)
             column("stun_damage", PP_STUN_DAMAGE, VarType.INT)
-            column("symbol_prefixes", PP_SYMBOL_PREFIXES, VarType.STRING)
+            column("npcs", PP_NPCS, VarType.NPC)
             column("pouch", PP_POUCH, VarType.OBJ)
             column("caught_shout", PP_CAUGHT_SHOUT, VarType.STRING)
             column("lowercase_name", PP_LOWERCASE_NAME, VarType.BOOLEAN)
+            column("op", PP_OP, VarType.INT)
 
             for (target in pickpocketTargets) {
                 row(rowName(target.displayName)) {
@@ -107,12 +107,13 @@ object ThievingTables {
                     column(PP_HIGH, target.high)
                     column(PP_STUN_TICKS, target.stunTicks)
                     column(PP_STUN_DAMAGE, target.stunDamage)
-                    if (target.symbolPrefixes.isNotEmpty()) {
-                        column(PP_SYMBOL_PREFIXES, *target.symbolPrefixes.toTypedArray())
+                    if (target.npcs.isNotEmpty()) {
+                        columnRSCM(PP_NPCS, *target.npcs.toTypedArray())
                     }
                     target.pouch?.let { columnRSCM(PP_POUCH, it) }
                     column(PP_CAUGHT_SHOUT, target.caughtShout)
                     column(PP_LOWERCASE_NAME, target.lowercaseName)
+                    column(PP_OP, target.op)
                 }
             }
         }
@@ -172,11 +173,33 @@ object ThievingTables {
                 8,
                 1,
                 pouch = "obj.pickpocket_coin_pouch_citizen",
-                symbolPrefixes =
+                npcs =
                     listOf(
-                        "falador_doric_area_man",
-                        "falador_man",
-                        "rimmington_hengel",
+                        "npc.varrock_man1",
+                        "npc.man",
+                        "npc.man2",
+                        "npc.man3",
+                        "npc.man4",
+                        "npc.man4_for_musa_point",
+                        "npc.man5",
+                        "npc.man_indoor",
+                        "npc.al_kharid_man",
+                        "npc.falador_man1",
+                        "npc.falador_man2",
+                        "npc.falador_man3",
+                        "npc.falador_doric_area_man1",
+                        "npc.falador_doric_area_man2",
+                        "npc.falador_doric_area_man3",
+                        "npc.falador_doric_area_man4",
+                        "npc.rimmington_hengel",
+                        "npc.ardougnian_male1",
+                        "npc.karamja_man",
+                        "npc.death_man_indoors1",
+                        "npc.zeah_man",
+                        "npc.zeah_man2",
+                        "npc.zeah_man3",
+                        "npc.shayzien_man_1",
+                        "npc.shayzien_man_2",
                     ),
             ),
             PickpocketTarget(
@@ -188,9 +211,22 @@ object ThievingTables {
                 8,
                 1,
                 pouch = "obj.pickpocket_coin_pouch_citizen",
-                symbolPrefixes =
+                npcs =
                     listOf(
-                        "rimmington_anja",
+                        "npc.varrock_woman1",
+                        "npc.woman",
+                        "npc.woman2",
+                        "npc.woman3",
+                        "npc.woman4",
+                        "npc.falador_woman2",
+                        "npc.rimmington_anja",
+                        "npc.ardougnian_female1",
+                        "npc.zeah_woman",
+                        "npc.zeah_woman2",
+                        "npc.zeah_woman3",
+                        "npc.zeah_woman_outside",
+                        "npc.shayzien_woman_1",
+                        "npc.shayzien_woman_2",
                     ),
             ),
             PickpocketTarget(
@@ -202,6 +238,83 @@ object ThievingTables {
                 8,
                 1,
                 pouch = "obj.pickpocket_coin_pouch_citizen",
+                npcs =
+                    listOf(
+                        "npc.vmq2_citizen_vis",
+                        "npc.varlamore_citizen_poor_m_1",
+                        "npc.varlamore_citizen_poor_m_2",
+                        "npc.varlamore_citizen_poor_m_3",
+                        "npc.varlamore_citizen_poor_m_4",
+                        "npc.varlamore_citizen_poor_m_5",
+                        "npc.varlamore_citizen_poor_f_1",
+                        "npc.varlamore_citizen_poor_f_2",
+                        "npc.varlamore_citizen_poor_f_3",
+                        "npc.varlamore_citizen_poor_f_4",
+                        "npc.varlamore_citizen_poor_f_5",
+                        "npc.varlamore_citizen_normal_m_1",
+                        "npc.varlamore_citizen_normal_m_2",
+                        "npc.varlamore_citizen_normal_m_3",
+                        "npc.varlamore_citizen_normal_m_4",
+                        "npc.varlamore_citizen_normal_m_5",
+                        "npc.varlamore_citizen_normal_f_1",
+                        "npc.varlamore_citizen_normal_f_2",
+                        "npc.varlamore_citizen_normal_f_3",
+                        "npc.varlamore_citizen_normal_f_4",
+                        "npc.varlamore_citizen_normal_f_5",
+                        "npc.varlamore_citizen_rich_m_1",
+                        "npc.varlamore_citizen_rich_m_2",
+                        "npc.varlamore_citizen_rich_m_3",
+                        "npc.varlamore_citizen_rich_m_4",
+                        "npc.varlamore_citizen_rich_m_5",
+                        "npc.varlamore_citizen_rich_f_1",
+                        "npc.varlamore_citizen_rich_f_2",
+                        "npc.varlamore_citizen_rich_f_3",
+                        "npc.varlamore_citizen_rich_f_4",
+                        "npc.varlamore_citizen_rich_f_5",
+                        "npc.aldarin_citizen_poor_m_1",
+                        "npc.aldarin_citizen_poor_m_2",
+                        "npc.aldarin_citizen_poor_m_3",
+                        "npc.aldarin_citizen_poor_f_1",
+                        "npc.aldarin_citizen_poor_f_2",
+                        "npc.aldarin_citizen_poor_f_3",
+                        "npc.aldarin_citizen_normal_m_1",
+                        "npc.aldarin_citizen_normal_m_2",
+                        "npc.aldarin_citizen_normal_m_3",
+                        "npc.aldarin_citizen_normal_m_4",
+                        "npc.aldarin_citizen_normal_f_1",
+                        "npc.aldarin_citizen_normal_f_2",
+                        "npc.aldarin_citizen_normal_f_3",
+                        "npc.aldarin_citizen_normal_f_4",
+                        "npc.aldarin_citizen_normal_f_5",
+                        "npc.aldarin_citizen_rich_m_1",
+                        "npc.aldarin_citizen_rich_m_2",
+                        "npc.aldarin_citizen_rich_f_1",
+                        "npc.aldarin_citizen_rich_f_2",
+                        "npc.auburn_citizen_normal_m_1",
+                        "npc.auburn_citizen_normal_m_2",
+                        "npc.auburn_citizen_normal_m_3",
+                        "npc.auburn_citizen_normal_f_1",
+                        "npc.auburn_citizen_normal_f_2",
+                        "npc.auburn_citizen_normal_f_3",
+                        "npc.auburn_citizen_rich_m_1",
+                        "npc.auburn_citizen_rich_f_1",
+                        "npc.kastori_citizen_normal_m_1",
+                        "npc.kastori_citizen_normal_m_2",
+                        "npc.kastori_citizen_normal_m_3",
+                        "npc.kastori_citizen_normal_f_1",
+                        "npc.kastori_citizen_normal_f_2",
+                        "npc.kastori_citizen_normal_f_3",
+                        "npc.kastori_citizen_rich_m_1",
+                        "npc.kastori_citizen_rich_f_1",
+                        "npc.tal_teklan_citizen_normal_m_1",
+                        "npc.tal_teklan_citizen_normal_m_2",
+                        "npc.tal_teklan_citizen_normal_m_3",
+                        "npc.tal_teklan_citizen_normal_f_1",
+                        "npc.tal_teklan_citizen_normal_f_2",
+                        "npc.tal_teklan_citizen_normal_f_3",
+                        "npc.tal_teklan_citizen_rich_m_1",
+                        "npc.tal_teklan_citizen_rich_f_1",
+                    ),
             ),
             PickpocketTarget(
                 displayName = "Farmer",
@@ -212,10 +325,36 @@ object ThievingTables {
                 stunTicks = 8,
                 stunDamage = 1,
                 pouch = "obj.pickpocket_coin_pouch_farmer",
+                npcs =
+                    listOf(
+                        "npc.farmer1",
+                        "npc.farmer2",
+                        "npc.farmer3",
+                        "npc.farmer4",
+                        "npc.farmer1_f",
+                        "npc.farmer2_f",
+                        "npc.farmer3_f",
+                        "npc.varlamore_farmer_m_1",
+                        "npc.varlamore_farmer_m_2",
+                        "npc.varlamore_farmer_m_3",
+                        "npc.varlamore_farmer_m_4",
+                        "npc.varlamore_farmer_f_1",
+                        "npc.varlamore_farmer_f_2",
+                        "npc.varlamore_farmer_f_3",
+                        "npc.varlamore_farmer_f_4",
+                        "npc.kastori_farmer_m_1",
+                        "npc.kastori_farmer_m_2",
+                        "npc.kastori_farmer_f_1",
+                        "npc.kastori_farmer_f_2",
+                        "npc.tal_teklan_farmer",
+                    ),
             ),
             hamMember("Male H.A.M. Member"),
             hamMember("Female H.A.M. Member"),
-            hamMember("H.A.M. Member"),
+            hamMember(
+                "H.A.M. Member",
+                listOf("npc.favour_male_ham_civilian", "npc.favour_female_ham_civilian"),
+            ),
             PickpocketTarget(
                 "Warrior woman",
                 25,
@@ -235,7 +374,16 @@ object ThievingTables {
                 8,
                 2,
                 pouch = "obj.pickpocket_coin_pouch_warrior",
-                symbolPrefixes = listOf("al_kharid_warrior"),
+                npcs =
+                    listOf(
+                        "npc.warrior_man",
+                        "npc.warrior_man_variant01",
+                        "npc.warrior_man_variant02",
+                        "npc.warrior_woman",
+                        "npc.warrior_woman_variant01",
+                        "npc.warrior_woman_variant02",
+                        "npc.al_kharid_warrior",
+                    ),
             ),
             PickpocketTarget(
                 displayName = "Workman",
@@ -246,7 +394,27 @@ object ThievingTables {
                 stunTicks = 7,
                 stunDamage = 1,
             ),
-            PickpocketTarget("Villager", 30, 8.0, 100, 240, 8, 2),
+            PickpocketTarget(
+                "Villager",
+                30,
+                8.0,
+                100,
+                240,
+                8,
+                2,
+                npcs =
+                    listOf(
+                        "npc.feud_villager_1_1",
+                        "npc.feud_villager_1_2",
+                        "npc.feud_villager_1_3",
+                        "npc.feud_villager_2_1",
+                        "npc.feud_villager_2_2",
+                        "npc.feud_villager_2_3",
+                        "npc.feud_villager_3_1",
+                        "npc.feud_villager_3_2",
+                        "npc.feud_villager_3_3",
+                    ),
+            ),
             PickpocketTarget(
                 displayName = "Rogue",
                 level = 32,
@@ -256,6 +424,7 @@ object ThievingTables {
                 stunTicks = 8,
                 stunDamage = 2,
                 pouch = "obj.pickpocket_coin_pouch_rogue",
+                npcs = listOf("npc.rogue"),
             ),
             PickpocketTarget(
                 displayName = "Cave goblin",
@@ -266,6 +435,27 @@ object ThievingTables {
                 stunTicks = 7,
                 stunDamage = 1,
                 pouch = "obj.pickpocket_coin_pouch_cavegoblin",
+                npcs =
+                    listOf(
+                        "npc.dorgesh_male_1",
+                        "npc.dorgesh_male_2",
+                        "npc.dorgesh_male_3",
+                        "npc.dorgesh_male_4",
+                        "npc.dorgesh_male_5",
+                        "npc.dorgesh_male_6",
+                        "npc.dorgesh_male_7",
+                        "npc.dorgesh_male_8",
+                        "npc.dorgesh_male_9",
+                        "npc.dorgesh_female_1",
+                        "npc.dorgesh_female_2",
+                        "npc.dorgesh_female_3",
+                        "npc.dorgesh_female_4",
+                        "npc.dorgesh_female_5",
+                        "npc.dorgesh_female_6",
+                        "npc.dorgesh_female_7",
+                        "npc.dorgesh_female_8",
+                        "npc.dorgesh_female_9",
+                    ),
             ),
             PickpocketTarget(
                 displayName = "Master Farmer",
@@ -277,7 +467,26 @@ object ThievingTables {
                 stunDamage = 3,
                 lowercaseName = false,
                 caughtShout = "Cor blimey mate, what are ye doing in me pockets?",
-                symbolPrefixes = listOf("martin_the_master_farmer"),
+                npcs =
+                    listOf(
+                        "npc.master_farmer_1",
+                        "npc.master_farmer_2",
+                        "npc.master_farmer_1_f",
+                        "npc.master_farmer_2_f",
+                        "npc.martin_the_master_farmer",
+                        "npc.varlamore_master_farmer_m_1",
+                        "npc.varlamore_master_farmer_m_2",
+                        "npc.varlamore_master_farmer_m_3",
+                        "npc.varlamore_master_farmer_m_4",
+                        "npc.varlamore_master_farmer_f_1",
+                        "npc.varlamore_master_farmer_f_2",
+                        "npc.varlamore_master_farmer_f_3",
+                        "npc.varlamore_master_farmer_f_4",
+                        "npc.kastori_master_farmer_m_1",
+                        "npc.kastori_master_farmer_m_2",
+                        "npc.kastori_master_farmer_f_1",
+                        "npc.kastori_master_farmer_f_2",
+                    ),
             ),
             PickpocketTarget(
                 "Guard",
@@ -288,9 +497,103 @@ object ThievingTables {
                 8,
                 2,
                 pouch = "obj.pickpocket_coin_pouch_guard",
-                symbolPrefixes =
+                npcs =
                     listOf(
-                        "kourend_guard_",
+                        "npc.guard1",
+                        "npc.guard1_variant01",
+                        "npc.guard1_f",
+                        "npc.guard1_f_variant01",
+                        "npc.fai_varrock_guard",
+                        "npc.fai_varrock_guard_captain",
+                        "npc.fai_varrock_guard02",
+                        "npc.fai_varrock_guard02_variant01",
+                        "npc.fai_varrock_guard02_variant02",
+                        "npc.fai_varrock_guard02_f",
+                        "npc.fai_varrock_guard02_f_variant01",
+                        "npc.fai_varrock_guard02_f_variant02",
+                        "npc.fai_varrock_guard_captain02",
+                        "npc.fai_falador_guard1",
+                        "npc.fai_falador_guard1_variant01",
+                        "npc.fai_falador_guard1_variant02",
+                        "npc.fai_falador_guard1_f",
+                        "npc.fai_falador_guard2",
+                        "npc.fai_falador_guard2_f",
+                        "npc.fai_falador_guard3",
+                        "npc.fai_falador_guard3_f",
+                        "npc.fai_falador_guard4",
+                        "npc.fai_falador_guard4_f",
+                        "npc.fai_falador_guard5",
+                        "npc.fai_falador_guard6",
+                        "npc.falador_doric_area_guard",
+                        "npc.ardougne_guard",
+                        "npc.ardougne_guard_variant01",
+                        "npc.ardougne_guard_f",
+                        "npc.ardougne_guard_f_variant01",
+                        "npc.jail_guard_1",
+                        "npc.jail_guard_2",
+                        "npc.jail_guard_3",
+                        "npc.jail_guard_4",
+                        "npc.jail_guard_5",
+                        "npc.hos_town_guard_01",
+                        "npc.hos_town_guard_02",
+                        "npc.hos_town_guard_03",
+                        "npc.hos_town_guard_04",
+                        "npc.kourend_guard_m1",
+                        "npc.kourend_guard_m1_big",
+                        "npc.kourend_guard_m2",
+                        "npc.kourend_guard_m2_big",
+                        "npc.kourend_guard_m3",
+                        "npc.kourend_guard_m3_big",
+                        "npc.kourend_guard_m4",
+                        "npc.kourend_guard_m4_big",
+                        "npc.kourend_guard_f1",
+                        "npc.kourend_guard_f1_big",
+                        "npc.kourend_guard_f2",
+                        "npc.kourend_guard_f2_big",
+                        "npc.kourend_guard_f3",
+                        "npc.kourend_guard_f3_big",
+                        "npc.kourend_guard_f4",
+                        "npc.kourend_guard_f4_big",
+                        "npc.varlamore_guard_m_1",
+                        "npc.varlamore_guard_m_2",
+                        "npc.varlamore_guard_m_3",
+                        "npc.varlamore_guard_m_4",
+                        "npc.varlamore_guard_m_5",
+                        "npc.varlamore_guard_f_1",
+                        "npc.varlamore_guard_f_2",
+                        "npc.varlamore_guard_f_3",
+                        "npc.varlamore_guard_f_4",
+                        "npc.varlamore_guard_f_5",
+                        "npc.aldarin_guard_m_1",
+                        "npc.aldarin_guard_m_2",
+                        "npc.aldarin_guard_m_3",
+                        "npc.aldarin_guard_m_4",
+                        "npc.aldarin_guard_m_5",
+                        "npc.aldarin_guard_f_1",
+                        "npc.aldarin_guard_f_2",
+                        "npc.aldarin_guard_f_3",
+                        "npc.aldarin_guard_f_4",
+                        "npc.aldarin_guard_f_5",
+                        "npc.auburnvale_guard_m_1",
+                        "npc.auburnvale_guard_m_2",
+                        "npc.auburnvale_guard_m_3",
+                        "npc.auburnvale_guard_m_4",
+                        "npc.auburnvale_guard_f_1",
+                        "npc.auburnvale_guard_f_2",
+                        "npc.auburnvale_guard_f_3",
+                        "npc.auburnvale_guard_f_4",
+                        "npc.tlati_guard_m_1",
+                        "npc.tlati_guard_m_2",
+                        "npc.tlati_guard_m_3",
+                        "npc.tlati_guard_m_4",
+                        "npc.tlati_guard_f_1",
+                        "npc.tlati_guard_f_2",
+                        "npc.tlati_guard_f_3",
+                        "npc.tlati_guard_f_4",
+                        "npc.port_roberts_guard_m1",
+                        "npc.port_roberts_guard_m2",
+                        "npc.port_roberts_guard_f1",
+                        "npc.port_roberts_guard_f2",
                     ),
             ),
             PickpocketTarget(
@@ -302,10 +605,17 @@ object ThievingTables {
                 8,
                 2,
                 pouch = "obj.pickpocket_coin_pouch_fremennik",
-                symbolPrefixes =
+                npcs =
                     listOf(
-                        "viking_man",
-                        "viking_woman",
+                        "npc.viking_man",
+                        "npc.viking_man2",
+                        "npc.viking_man3",
+                        "npc.viking_man4",
+                        "npc.viking_man5",
+                        "npc.viking_woman2",
+                        "npc.viking_woman3",
+                        "npc.viking_woman4",
+                        "npc.viking_woman_indoors",
                     ),
             ),
             PickpocketTarget(
@@ -318,10 +628,7 @@ object ThievingTables {
                 5,
                 pouch = "obj.pickpocket_coin_pouch_bandit2",
                 lowercaseName = false,
-                symbolPrefixes =
-                    listOf(
-                        "feud_arabian_guard2_",
-                    ),
+                npcs = listOf("npc.feud_arabian_guard2_1", "npc.feud_arabian_guard2_2"),
             ),
             PickpocketTarget(
                 "Wealthy citizen",
@@ -332,6 +639,14 @@ object ThievingTables {
                 7,
                 3,
                 pouch = "obj.pickpocket_coin_pouch_varlamore_wealthy",
+                npcs =
+                    listOf(
+                        "npc.varlamore_wealthy_citizen_a",
+                        "npc.varlamore_wealthy_citizen_b",
+                        "npc.varlamore_wealthy_citizen_c",
+                        "npc.varlamore_wealthy_citizen_d",
+                    ),
+                op = 1,
             ),
             PickpocketTarget(
                 displayName = "Desert Bandit",
@@ -343,10 +658,8 @@ object ThievingTables {
                 stunDamage = 3,
                 pouch = "obj.pickpocket_coin_pouch_desertbandit",
                 lowercaseName = false,
-                symbolPrefixes =
-                    listOf(
-                        "fourdiamonds_sword_bandit",
-                    ),
+                npcs =
+                    listOf("npc.fourdiamonds_sword_bandit_1", "npc.fourdiamonds_sword_bandit_free"),
             ),
             PickpocketTarget(
                 "Knight of Ardougne",
@@ -358,6 +671,14 @@ object ThievingTables {
                 3,
                 pouch = "obj.pickpocket_coin_pouch_knight",
                 lowercaseName = false,
+                npcs =
+                    listOf(
+                        "npc.knight_of_ardougne",
+                        "npc.knight_of_ardougne2",
+                        "npc.knight_of_ardougne_f",
+                        "npc.knight_of_ardougne_west_vis",
+                        "npc.knight_of_ardougne_f_west_vis",
+                    ),
             ),
             PickpocketTarget(
                 "Knight of Varlamore",
@@ -369,6 +690,15 @@ object ThievingTables {
                 3,
                 pouch = "obj.pickpocket_coin_pouch_knight",
                 lowercaseName = false,
+                npcs =
+                    listOf(
+                        "npc.varlamore_knight_m_1",
+                        "npc.varlamore_knight_m_2",
+                        "npc.varlamore_knight_m_3",
+                        "npc.varlamore_knight_f_1",
+                        "npc.varlamore_knight_f_2",
+                        "npc.varlamore_knight_f_3",
+                    ),
             ),
             PickpocketTarget(
                 "Pollnivnian Bandit",
@@ -380,10 +710,7 @@ object ThievingTables {
                 5,
                 pouch = "obj.pickpocket_coin_pouch_bandit",
                 lowercaseName = false,
-                symbolPrefixes =
-                    listOf(
-                        "feud_arabian_guard1_",
-                    ),
+                npcs = listOf("npc.feud_arabian_guard1_1", "npc.feud_arabian_guard1_2"),
             ),
             PickpocketTarget(
                 displayName = "Watchman",
@@ -394,6 +721,7 @@ object ThievingTables {
                 stunTicks = 8,
                 stunDamage = 3,
                 pouch = "obj.pickpocket_coin_pouch_watchman",
+                npcs = listOf("npc.yanille_watchman"),
             ),
             PickpocketTarget(
                 "Menaphite Thug",
@@ -405,6 +733,7 @@ object ThievingTables {
                 5,
                 pouch = "obj.pickpocket_coin_pouch_menaphite",
                 lowercaseName = false,
+                npcs = listOf("npc.feud_egyptian_doorman_2"),
             ),
             PickpocketTarget(
                 displayName = "Paladin",
@@ -415,6 +744,17 @@ object ThievingTables {
                 stunTicks = 8,
                 stunDamage = 3,
                 pouch = "obj.pickpocket_coin_pouch_paladin",
+                npcs =
+                    listOf(
+                        "npc.paladin",
+                        "npc.paladin_variant01",
+                        "npc.paladin_variant02",
+                        "npc.paladin2",
+                        "npc.paladin_f",
+                        "npc.paladin_f_variant01",
+                        "npc.paladin_west_vis",
+                        "npc.paladin_west_f_vis",
+                    ),
             ),
             PickpocketTarget(
                 displayName = "Gnome",
@@ -425,10 +765,17 @@ object ThievingTables {
                 stunTicks = 8,
                 stunDamage = 1,
                 pouch = "obj.pickpocket_coin_pouch_gnome",
-                symbolPrefixes =
+                npcs =
                     listOf(
-                        "gnomechild",
-                        "gnomefemale",
+                        "npc.gnome",
+                        "npc.browclothedgnome",
+                        "npc.darkskinned_gnome",
+                        "npc.gnomefemale",
+                        "npc.gnomefemale_dskinned",
+                        "npc.gnomechild",
+                        "npc.gnomechildgreen",
+                        "npc.gnomechildblue",
+                        "npc.grim_gnome_incage_1",
                     ),
             ),
             PickpocketTarget(
@@ -440,6 +787,7 @@ object ThievingTables {
                 stunTicks = 10,
                 stunDamage = 3,
                 pouch = "obj.pickpocket_coin_pouch_hero",
+                npcs = listOf("npc.hero", "npc.hero_variant01", "npc.hero_f"),
             ),
             PickpocketTarget(
                 displayName = "Vyre",
@@ -449,37 +797,38 @@ object ThievingTables {
                 high = 128,
                 stunTicks = 10,
                 stunDamage = 5,
-                symbolPrefixes =
+                npcs =
                     listOf(
-                        "vallessia_",
-                        "alek_constantine",
-                        "caninelle_draynar",
-                        "carnivus_belamorta",
-                        "crimsonette_van_marr",
-                        "diphylla_bechstein",
-                        "draconis_sanguine",
-                        "episcula_helsing",
-                        "grigor_rasputin",
-                        "haemas_lamescus",
-                        "lasenna_rasputin",
-                        "misdrievus_shadum",
-                        "mort_nightshade",
-                        "mortina_daubenton",
-                        "nakasa_jovkai",
-                        "natalidae_shadum",
-                        "noctillion_lugosi",
-                        "pipistrelle_draynar",
-                        "remus_kaninus",
-                        "valentin_rasputin",
-                        "valentina_diaemus",
-                        "vampyressa_van_von",
-                        "vampyrus_diaemus",
-                        "violetta_sanguine",
-                        "vlad_bechstein",
-                        "vlad_diaemus",
-                        "von_van_von",
-                        "vonnetta_varnis",
-                        "vormar_vakan",
+                        "npc.alek_constantine",
+                        "npc.caninelle_draynar",
+                        "npc.carnivus_belamorta",
+                        "npc.crimsonette_van_marr",
+                        "npc.diphylla_bechstein",
+                        "npc.draconis_sanguine",
+                        "npc.episcula_helsing",
+                        "npc.grigor_rasputin",
+                        "npc.haemas_lamescus",
+                        "npc.lasenna_rasputin",
+                        "npc.misdrievus_shadum",
+                        "npc.mort_nightshade",
+                        "npc.mortina_daubenton",
+                        "npc.nakasa_jovkai",
+                        "npc.natalidae_shadum",
+                        "npc.noctillion_lugosi",
+                        "npc.pipistrelle_draynar",
+                        "npc.remus_kaninus",
+                        "npc.valentin_rasputin",
+                        "npc.valentina_diaemus",
+                        "npc.vallessia_dracyula",
+                        "npc.vallessia_von_pitt",
+                        "npc.vampyressa_van_von",
+                        "npc.vampyrus_diaemus",
+                        "npc.violetta_sanguine",
+                        "npc.vlad_bechstein",
+                        "npc.vlad_diaemus",
+                        "npc.von_van_von",
+                        "npc.vonnetta_varnis",
+                        "npc.vormar_vakan",
                     ),
                 pouch = "obj.pickpocket_coin_pouch_vyre",
                 lowercaseName = false,
@@ -492,7 +841,58 @@ object ThievingTables {
                 high = 100,
                 stunTicks = 10,
                 stunDamage = 5,
-                symbolPrefixes = listOf("prif_citizen_"),
+                npcs =
+                    listOf(
+                        "npc.prif_citizen_anaire",
+                        "npc.prif_citizen_aranwe",
+                        "npc.prif_citizen_aredhel",
+                        "npc.prif_citizen_caranthir",
+                        "npc.prif_citizen_celebrian",
+                        "npc.prif_citizen_celegorm",
+                        "npc.prif_citizen_cirdan",
+                        "npc.prif_citizen_curufin",
+                        "npc.prif_citizen_earwen",
+                        "npc.prif_citizen_edrahil",
+                        "npc.prif_citizen_elenwe",
+                        "npc.prif_citizen_elladan",
+                        "npc.prif_citizen_enel",
+                        "npc.prif_citizen_enelye",
+                        "npc.prif_citizen_enerdhil",
+                        "npc.prif_citizen_erestor",
+                        "npc.prif_citizen_feanor",
+                        "npc.prif_citizen_findis",
+                        "npc.prif_citizen_finduilas",
+                        "npc.prif_citizen_fingolfin",
+                        "npc.prif_citizen_fingon",
+                        "npc.prif_citizen_galathil",
+                        "npc.prif_citizen_gelmir",
+                        "npc.prif_citizen_glorfindel",
+                        "npc.prif_citizen_guilin",
+                        "npc.prif_citizen_hendor",
+                        "npc.prif_citizen_idril",
+                        "npc.prif_citizen_imin",
+                        "npc.prif_citizen_iminye",
+                        "npc.prif_citizen_indis",
+                        "npc.prif_citizen_ingwe",
+                        "npc.prif_citizen_ingwion",
+                        "npc.prif_citizen_lenwe",
+                        "npc.prif_citizen_lindir",
+                        "npc.prif_citizen_maeglin",
+                        "npc.prif_citizen_mahtan",
+                        "npc.prif_citizen_miriel",
+                        "npc.prif_citizen_mithrellas",
+                        "npc.prif_citizen_nellas",
+                        "npc.prif_citizen_nerdanel",
+                        "npc.prif_citizen_nimloth",
+                        "npc.prif_citizen_oropher",
+                        "npc.prif_citizen_orophin",
+                        "npc.prif_citizen_saeros",
+                        "npc.prif_citizen_salgant",
+                        "npc.prif_citizen_tatie",
+                        "npc.prif_citizen_thingol",
+                        "npc.prif_citizen_turgon",
+                        "npc.prif_citizen_vaire",
+                    ),
                 pouch = "obj.pickpocket_coin_pouch_elf",
                 lowercaseName = false,
             ),
@@ -505,6 +905,15 @@ object ThievingTables {
                 stunTicks = 10,
                 stunDamage = 4,
                 lowercaseName = false,
+                npcs =
+                    listOf(
+                        "npc.tzhaar_hur_city1",
+                        "npc.tzhaar_hur_city2",
+                        "npc.tzhaar_hur_city3",
+                        "npc.tzhaar_hur_city4",
+                        "npc.tzhaar_hur_city5",
+                        "npc.tzhaar_hur_city6",
+                    ),
             ),
         )
 
@@ -805,7 +1214,7 @@ object ThievingTables {
         )
 }
 
-private fun hamMember(displayName: String) =
+private fun hamMember(displayName: String, npcs: List<String> = emptyList()) =
     PickpocketTarget(
         displayName = displayName,
         level = 15,
@@ -816,6 +1225,8 @@ private fun hamMember(displayName: String) =
         stunDamage = 1,
         pouch = "obj.pickpocket_coin_pouch_ham",
         lowercaseName = false,
+        npcs = npcs,
+        op = 1,
     )
 
 private val BAKERS =
