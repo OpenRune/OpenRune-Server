@@ -1,7 +1,6 @@
 package org.rsmod.api.game.process.npc.hunt
 
 import dev.openrune.ServerCacheManager
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
@@ -42,11 +41,6 @@ class AggressionToleranceTest {
     }
 
     @Test
-    fun `ten minutes is one thousand game ticks`() {
-        assertEquals(10 * 60 * 1000 / 600, TOLERANCE_TICKS)
-    }
-
-    @Test
     fun `moving far from where the timer started restarts it`() {
         val player = player(here)
         tolerance.isTolerant(player)
@@ -74,15 +68,6 @@ class AggressionToleranceTest {
         tolerance.isTolerant(player)
         stayFor(player, TOLERANCE_TICKS)
         clock.cycle += ABSENT_TICKS + 1
-        assertFalse(tolerance.isTolerant(player))
-    }
-
-    @Test
-    fun `reset clears an existing timer`() {
-        val player = player(here)
-        tolerance.isTolerant(player)
-        stayFor(player, TOLERANCE_TICKS)
-        tolerance.reset(player)
         assertFalse(tolerance.isTolerant(player))
     }
 

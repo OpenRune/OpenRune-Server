@@ -84,7 +84,7 @@ class CrabsTest {
     }
 
     @Test
-    fun `a crab that lost its target returns to its rocks`() {
+    fun `a crab that lost its target or was lured off its spot returns to its rocks`() {
         val world = CrabWorld()
         val npc = world.spawn(rocks, spot)
         val player = world.player(spot.translate(1, 0))
@@ -93,20 +93,8 @@ class CrabsTest {
 
         world.move(player, spot.translate(60, 0))
         npc.defaultMode()
-        world.tick(20 + world.ticks("seq.horror_crab_hide") + 6)
-        assertEquals(rocks.asRSCM(RSCMType.NPC), npc.visType.id)
-    }
-
-    @Test
-    fun `a crab that was lured off its spot ends up back on it`() {
-        val world = CrabWorld()
-        val npc = world.spawn(rocks, spot)
-        val player = world.player(spot.translate(1, 0))
-        world.tick()
-        world.move(player, spot.translate(60, 0))
         npc.coords = spot.translate(3, 3)
-
-        world.tick(world.ticks("seq.horror_crab_reveal") + 20 + DisguisedNpcs.RETURN_GRACE + 10)
+        world.tick(20 + world.ticks("seq.horror_crab_hide") + DisguisedNpcs.RETURN_GRACE + 10)
         assertEquals(rocks.asRSCM(RSCMType.NPC), npc.visType.id)
         assertEquals(spot, npc.coords)
     }
