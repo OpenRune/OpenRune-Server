@@ -20,7 +20,7 @@ class SpadeScript @Inject constructor(private val hooks: Set<@JvmSuppressWildcar
         }
         anim("seq.human_dig")
         soundSynth("synth.digspade")
-        delay(DigTicks)
+        delay(DIG_TICKS)
         resetAnim()
         if (hook == null) {
             mes("You dig a hole in the ground... but find nothing.")
@@ -30,6 +30,6 @@ class SpadeScript @Inject constructor(private val hooks: Set<@JvmSuppressWildcar
     }
 
     private companion object {
-        private const val DigTicks = 2
+        private const val DIG_TICKS = 2
     }
 }
