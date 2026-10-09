@@ -17,11 +17,7 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
-import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
-import org.rsmod.api.script.onOpLoc3
-import org.rsmod.api.script.onOpLoc4
-import org.rsmod.api.script.onOpLoc5
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc2
 import org.rsmod.api.script.onOpNpc3
@@ -50,13 +46,10 @@ constructor(
     override fun ScriptContext.startup() {
         val stallLoot = lootTables(ThievingDropTables.stalls, ThievingStallRow.all()) { it.rowId }
         stallLoot.forEach { (stall, loot) ->
-            when (opSlot { stall.loc.actions.getOpOrNull(it) == STEAL_OP }) {
-                1 -> onOpLoc1(stall.loc) { stealFromStall(it.loc, stall, loot) }
-                2 -> onOpLoc2(stall.loc) { stealFromStall(it.loc, stall, loot) }
-                3 -> onOpLoc3(stall.loc) { stealFromStall(it.loc, stall, loot) }
-                4 -> onOpLoc4(stall.loc) { stealFromStall(it.loc, stall, loot) }
-                5 -> onOpLoc5(stall.loc) { stealFromStall(it.loc, stall, loot) }
-            }
+            onOpLoc2(stall.loc) { stealFromStall(it.loc, stall, loot) }
+        }
+        onOpLoc2("loc.dwarf_market_clothes") {
+            mes("You don't really see anything you'd want to steal from this stall.")
         }
         bindPickpockets()
         ThievingCoinPouchRow.all().forEach { pouch ->
@@ -309,7 +302,6 @@ constructor(
         const val STUN_SYNTH = "synth.thieving_stunned"
         const val FREEZE_TIMER = "timer.combat_freeze"
         const val MAX_POUCHES = 28
-        const val STEAL_OP = "Steal-from"
         const val PICKPOCKET_OP = "Pickpocket"
     }
 }

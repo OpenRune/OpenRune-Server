@@ -179,16 +179,7 @@ internal object ThievingDropTables {
 
     val stalls: Map<String, ThievingDropTable> =
         mapOf(
-            "dbrow.cakethiefstall_thieving" to
-                RSDropTable(
-                    tableIdentifier = "Baker's stall",
-                    mainTable =
-                        rsPlayerWeightedTable {
-                            6 weight "obj.cake" count 1
-                            3 weight "obj.bread" count 1
-                            1 weight "obj.chocolate_slice" count 1
-                        },
-                ),
+            "dbrow.cakethiefstall_thieving" to bakeryStall(),
             "dbrow.tea_stall_thieving" to single("Tea stall", "obj.cup_of_tea"),
             "dbrow.silkthiefstall_thieving" to single("Silk stall", "obj.silk"),
             "dbrow.rag_market_stall_thieving" to
@@ -228,19 +219,130 @@ internal object ThievingDropTables {
                         },
                 ),
             "dbrow.furthiefstall_thieving" to single("Fur stall", "obj.grey_wolf_fur"),
-            "dbrow.silverthiefstall_thieving" to single("Silver stall", "obj.silver_ore"),
+            "dbrow.silverthiefstall_thieving" to silverStall(),
             "dbrow.spicethiefstall_thieving" to single("Spice stall", "obj.spicespot"),
-            "dbrow.gemthiefstall_thieving" to
+            "dbrow.gemthiefstall_thieving" to gemStall(),
+            "dbrow.prif_marketstall_silk_thieving" to single("Silk stall", "obj.silk"),
+            "dbrow.prif_marketstall_silver_thieving" to silverStall(),
+            "dbrow.prif_marketstall_spice_thieving" to single("Spice stall", "obj.spicespot"),
+            "dbrow.prif_marketstall_gem_thieving" to gemStall(),
+            "dbrow.viking_fish_market_thieving" to fishStall(),
+            "dbrow.viking_fur_market_thieving" to single("Fur stall", "obj.grey_wolf_fur"),
+            "dbrow.misc_fish_market_thieving" to fishStall(),
+            "dbrow.misc_veg_market_thieving" to vegStall(),
+            "dbrow.etc_fish_market_thieving" to fishStall(),
+            "dbrow.etc_veg_market_thieving" to vegStall(),
+            "dbrow.dwarf_market_bakery_thieving" to bakeryStall(),
+            "dbrow.dwarf_market_crafting_thieving" to
                 RSDropTable(
-                    tableIdentifier = "Gem stall",
+                    tableIdentifier = "Crafting stall",
                     mainTable =
                         rsPlayerWeightedTable {
-                            100 weight "obj.uncut_sapphire" count 1
-                            25 weight "obj.uncut_emerald" count 1
-                            12 weight "obj.uncut_ruby" count 1
-                            3 weight "obj.uncut_diamond" count 1
+                            12 weight "obj.amulet_mould" count 1
+                            12 weight "obj.jewl_bracelet_mould" count 1
+                            11 weight "obj.necklace_mould" count 1
+                            11 weight "obj.ring_mould" count 1
+                            6 weight "obj.chisel" count 1
+                            2 weight "obj.gold_bar" count 1
                         },
                 ),
+            "dbrow.xbows_dwarf_market_thieving" to
+                RSDropTable(
+                    tableIdentifier = "Crossbow stall",
+                    mainTable =
+                        rsPlayerWeightedTable {
+                            46 weight "obj.bolt" count 3
+                            18 weight "obj.xbows_crossbow_limbs_bronze" count 3
+                            12 weight "obj.xbows_crossbow_stock_wood" count 3
+                            3 weight "obj.xbows_crossbow_bolts_mithril" count 3
+                            1 weight "obj.xbows_crossbow_limbs_mithril" count 3
+                        },
+                ),
+            "dbrow.dwarf_market_silver_thieving" to single("Silver stall", "obj.silver_ore"),
+            "dbrow.dwarf_market_gems_thieving" to gemStall(),
+            "dbrow.hos_stall_bread_thieving" to bakeryStall(),
+            "dbrow.hos_fruit_stall_02_thieving" to
+                RSDropTable(
+                    tableIdentifier = "Fruit stall",
+                    mainTable =
+                        rsPlayerWeightedTable {
+                            40 weight "obj.cooking_apple" count 1
+                            20 weight "obj.banana" count 1
+                            7 weight "obj.strawberry" count 1
+                            5 weight "obj.jangerberries" count 1
+                            5 weight "obj.lemon" count 1
+                            5 weight "obj.redberries" count 1
+                            5 weight "obj.pineapple" count 1
+                            5 weight "obj.lime" count 1
+                            5 weight "obj.macro_triffidfruit" count 1
+                            2 weight "obj.golovanova_top" count 1
+                            1 weight "obj.papaya" count 1
+                        },
+                ),
+            "dbrow.fish_stall_warrens_thieving" to fishStall(),
+            "dbrow.fortis_market_stall_bakers_thieving" to bakeryStall(),
+            "dbrow.fortis_market_stall_silk_thieving" to single("Silk stall", "obj.silk"),
+            "dbrow.fortis_market_stall_fur_thieving" to single("Fur stall", "obj.grey_wolf_fur"),
+            "dbrow.fortis_market_stall_spice_thieving" to single("Spice stall", "obj.spicespot"),
+            "dbrow.fortis_market_stall_gems_thieving" to gemStall(),
+        )
+
+    private fun bakeryStall(): ThievingDropTable =
+        RSDropTable(
+            tableIdentifier = "Baker's stall",
+            mainTable =
+                rsPlayerWeightedTable {
+                    13 weight "obj.cake" count 1
+                    5 weight "obj.bread" count 1
+                    2 weight "obj.chocolate_slice" count 1
+                },
+        )
+
+    private fun fishStall(): ThievingDropTable =
+        RSDropTable(
+            tableIdentifier = "Fish stall",
+            mainTable =
+                rsPlayerWeightedTable {
+                    14 weight "obj.raw_salmon" count 1
+                    5 weight "obj.raw_tuna" count 1
+                    1 weight "obj.raw_lobster" count 1
+                },
+        )
+
+    private fun vegStall(): ThievingDropTable =
+        RSDropTable(
+            tableIdentifier = "Veg stall",
+            mainTable =
+                rsPlayerWeightedTable {
+                    3 weight "obj.potato" count 1
+                    2 weight "obj.cabbage" count 1
+                    2 weight "obj.onion" count 1
+                    2 weight "obj.tomato" count 1
+                    1 weight "obj.garlic" count 1
+                },
+        )
+
+    private fun silverStall(): ThievingDropTable =
+        RSDropTable(
+            tableIdentifier = "Silver stall",
+            mainTable =
+                rsPlayerWeightedTable {
+                    16 weight "obj.silver_ore" count 1
+                    3 weight "obj.silver_bar" count 1
+                    1 weight "obj.tiara" count 1
+                },
+        )
+
+    private fun gemStall(): ThievingDropTable =
+        RSDropTable(
+            tableIdentifier = "Gem stall",
+            mainTable =
+                rsPlayerWeightedTable {
+                    105 weight "obj.uncut_sapphire" count 1
+                    17 weight "obj.uncut_emerald" count 1
+                    5 weight "obj.uncut_ruby" count 1
+                    1 weight "obj.uncut_diamond" count 1
+                },
         )
 
     private fun pouchOnly(name: String, pouch: String): ThievingDropTable =
