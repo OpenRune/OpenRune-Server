@@ -100,3 +100,11 @@ misthalin_gem_emerald = 32334
 [gamevals.timer]
 restless_ghost_coffin_ghost = 123
 restless_skeleton_attack = 124
+
+[gamevals.dbtable]
+apothecary_potions = 65496
+
+[gamevals.dbrow]
+apothecary_strength = 63688
+apothecary_energy = 63687
+apothecary_antipoison = 63686

@@ -1,8 +1,14 @@
 package org.rsmod.content.quest.area.varrock
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.MesAnimType
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.outgoing.camera.CamShake
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.cinematic.Cinematic
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.midiJingle
@@ -17,6 +23,7 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.api.script.onPlayerLogin
+import org.rsmod.api.table.ApothecaryPotionsRow
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestScript
 import org.rsmod.content.quest.manager.menu
@@ -77,9 +84,9 @@ constructor(
                 mes("Nothing interesting happens.")
             }
         }
-        onIfModalButton("component.apothecary_potions:strength") { brew(STRENGTH) }
-        onIfModalButton("component.apothecary_potions:energy") { brew(ENERGY) }
-        onIfModalButton("component.apothecary_potions:antipoison") { brew(ANTIPOISON) }
+        for (potion in ApothecaryPotionsRow.all()) {
+            onIfModalButton("component.apothecary_potions:${potion.key}") { brew(potion) }
+        }
         onOpHeld1(POTION) {
             objbox(
                 POTION,
@@ -1536,25 +1543,54 @@ constructor(
 
     private fun ProtectedAccess.openPotions() {
         ifOpenMainModal("interface.apothecary_potions")
-        for (potion in listOf(STRENGTH, ENERGY, ANTIPOISON)) {
+        for (potion in ApothecaryPotionsRow.all()) {
             ifSetText("component.apothecary_potions:${potion.key}_title", potion.title)
-            ifSetText("component.apothecary_potions:${potion.key}_contents", potion.contents(this))
-            ifSetObj("component.apothecary_potions:${potion.key}_pic", potion.product, zoom = 380)
+            ifSetText("component.apothecary_potions:${potion.key}_contents", contents(potion))
+            ifSetObj("component.apothecary_potions:${potion.key}_pic", potion.product.internalName, zoom = 380)
         }
     }
 
-    private fun ProtectedAccess.brew(potion: ApothecaryPotion) {
-        if (!potion.hasIngredients(this)) {
+    private fun ProtectedAccess.hasIngredients(potion: ApothecaryPotionsRow): Boolean =
+        potion.ingredients.indices.all { inv.count(potion.ingredients[it].internalName) >= potion.amounts[it] } &&
+            inv.count(COINS) >= potion.coins
+
+    private fun ProtectedAccess.contents(potion: ApothecaryPotionsRow): String {
+        val lines =
+            potion.ingredients.indices.map {
+                strikeUnless(inv.count(potion.ingredients[it].internalName) >= potion.amounts[it], potion.labels[it])
+            }
+        val coinLine =
+            if (potion.coins > 0) {
+                listOf(strikeUnless(inv.count(COINS) >= potion.coins, "${potion.coins} coins"))
+            } else {
+                emptyList()
+            }
+        return (lines + coinLine).joinToString("<br>")
+    }
+
+    private fun strikeUnless(has: Boolean, text: String): String =
+        if (has) text else "<str>$text</str>"
+
+    private fun ProtectedAccess.brew(potion: ApothecaryPotionsRow) {
+        if (!hasIngredients(potion)) {
             mes("You haven't got the required items.")
             return
         }
-        for ((obj, count) in potion.ingredients) {
-            invDel(inv, obj, count)
+        val result =
+            player.invTransaction(inv) {
+                val target = select(inv)
+                potion.ingredients.forEachIndexed { index, ingredient ->
+                    delete(target, ingredient.id, count = potion.amounts[index])
+                }
+                if (potion.coins > 0) {
+                    delete(target, COINS.asRSCM(RSCMType.OBJ), count = potion.coins)
+                }
+                add(target, potion.product.id, count = 1)
+            }
+        if (!result.success) {
+            mes("You don't have enough inventory space.")
+            return
         }
-        if (potion.coins > 0) {
-            invDel(inv, COINS, potion.coins)
-        }
-        invAdd(inv, potion.product)
         mes("The Apothecary brews you ${potion.article} ${potion.title.lowercase()}.")
         openPotions()
     }
@@ -1608,34 +1644,6 @@ constructor(
                     "they walked into the shop.",
             )
         }
-    }
-
-    private class ApothecaryPotion(
-        val key: String,
-        val title: String,
-        val article: String,
-        val product: String,
-        val ingredients: List<Pair<String, Int>>,
-        val coins: Int,
-        val labels: List<String>,
-    ) {
-        fun hasIngredients(access: ProtectedAccess): Boolean =
-            ingredients.all { (obj, count) -> access.inv.count(obj) >= count } &&
-                access.inv.count(COINS) >= coins
-
-        fun contents(access: ProtectedAccess): String {
-            val lines =
-                ingredients.mapIndexed { index, (obj, count) ->
-                    strikeUnless(access.inv.count(obj) >= count, labels[index])
-                }
-            val coinLine =
-                if (coins > 0) listOf(strikeUnless(access.inv.count(COINS) >= coins, "$coins coins"))
-                else emptyList()
-            return (lines + coinLine).joinToString("<br>")
-        }
-
-        private fun strikeUnless(has: Boolean, text: String): String =
-            if (has) text else "<str>$text</str>"
     }
 
     private companion object {
@@ -1695,37 +1703,6 @@ constructor(
                 CoordGrid(2327, 4645, 0),
                 CoordGrid(2326, 4644, 0),
                 CoordGrid(2325, 4644, 0),
-            )
-
-        val STRENGTH =
-            ApothecaryPotion(
-                key = "strength",
-                title = "Strength potion",
-                article = "a",
-                product = "obj.strength4",
-                ingredients = listOf("obj.red_spiders_eggs" to 1, "obj.limpwurt_root" to 1),
-                coins = 5,
-                labels = listOf("Red spiders' eggs", "Limpwurt root"),
-            )
-        val ENERGY =
-            ApothecaryPotion(
-                key = "energy",
-                title = "Energy potion",
-                article = "an",
-                product = "obj.4dose1energy",
-                ingredients = listOf("obj.chocolate_dust" to 1, "obj.limpwurt_root" to 2),
-                coins = 0,
-                labels = listOf("Chocolate dust", "2 limpwurt roots"),
-            )
-        val ANTIPOISON =
-            ApothecaryPotion(
-                key = "antipoison",
-                title = "Antipoison potion",
-                article = "an",
-                product = "obj.4doseantipoison",
-                ingredients = listOf("obj.cadavaberries" to 1, "obj.limpwurt_root" to 1),
-                coins = 5,
-                labels = listOf("Cadava berry", "Limpwurt root"),
             )
     }
 }
