@@ -77,6 +77,11 @@ constructor(private val deps: BossDeps, private val locRepo: LocRepository) {
         paint(session, session.pattern, State.Normal)
     }
 
+    fun outerRingCoords(player: Player): List<CoordGrid> {
+        val session = sessions.values.firstOrNull { it.player === player } ?: return emptyList()
+        return HunllefPatterns.outerRing().mapNotNull { session.tiles[it] }
+    }
+
     fun stopFor(player: Player) {
         sessions.values.filter { it.player === player }.forEach { stop(it.boss) }
     }

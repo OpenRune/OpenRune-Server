@@ -67,6 +67,8 @@ internal object HunllefPatterns {
             HunllefStage.Three -> STAGE_THREE
         }
 
+    fun outerRing(): Set<Tile> = ring(1)
+
     fun timing(corrupted: Boolean, stage: HunllefStage, hpFraction: Double): FloorTiming =
         if (corrupted) {
             when (stage) {

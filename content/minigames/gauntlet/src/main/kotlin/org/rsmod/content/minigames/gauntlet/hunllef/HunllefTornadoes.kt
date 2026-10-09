@@ -11,16 +11,29 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.hit.HitType
+import org.rsmod.game.map.collision.isWalkBlocked
 
 @Singleton
-class HunllefTornadoes @Inject constructor(private val deps: BossDeps) {
+class HunllefTornadoes
+@Inject
+constructor(private val deps: BossDeps, private val floor: HunllefFloor) {
     fun registerExtensions() {
         deps.extensionRegistry.register(CHASE_EXT) { _, tornado, target, params ->
             chase(tornado, target, params as Boolean)
         }
     }
 
+    private fun moveToOuterRing(tornado: Npc, player: Player) {
+        val edge =
+            floor.outerRingCoords(player).filter {
+                !deps.collision.isWalkBlocked(it) && it.chebyshevDistance(player.coords) > SAFE_DISTANCE
+            }
+        if (edge.isEmpty()) return
+        PathingEntityCommon.teleport(tornado, deps.collision, edge.random())
+    }
+
     private fun chase(tornado: Npc, player: Player, corrupted: Boolean) {
+        moveToOuterRing(tornado, player)
         var paused = false
         deps.repeatTick(
             ticks = LIFETIME_TICKS,
@@ -57,6 +70,7 @@ class HunllefTornadoes @Inject constructor(private val deps: BossDeps) {
     companion object {
         const val CHASE_EXT = "hunllef_tornado_chase"
         const val LIFETIME_TICKS = 20
+        private const val SAFE_DISTANCE = 2
         private const val HIT_HEIGHT = 0
         private const val HIT_SPOTANIM = "spotanim.crystal_hunllef_crystals_hit"
         private const val HIT_SPOTANIM_HM = "spotanim.crystal_hunllef_crystals_hit_hm"
