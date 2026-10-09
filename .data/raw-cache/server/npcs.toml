@@ -16997,6 +16997,7 @@ wanderRange = 10
 id = "npc.crystal_hunllef_melee"
 inherit = "npc.crystal_hunllef_melee"
 [npc.params]
+"param.boss_hp_bar_mode"=1
 "param.dropped_remains"=-1
 "param.boss_hp_bar_colour_back"=13107200
 "param.boss_hp_bar_colour_sliding"=36864
@@ -17006,6 +17007,7 @@ inherit = "npc.crystal_hunllef_melee"
 id = "npc.crystal_hunllef_melee_hm"
 inherit = "npc.crystal_hunllef_melee_hm"
 [npc.params]
+"param.boss_hp_bar_mode"=1
 "param.dropped_remains"=-1
 "param.boss_hp_bar_colour_back"=13107200
 "param.boss_hp_bar_colour_sliding"=36864
@@ -17015,6 +17017,7 @@ inherit = "npc.crystal_hunllef_melee_hm"
 id = "npc.crystal_hunllef_ranged"
 inherit = "npc.crystal_hunllef_ranged"
 [npc.params]
+"param.boss_hp_bar_mode"=1
 "param.dropped_remains"=-1
 "param.boss_hp_bar_colour_back"=13107200
 "param.boss_hp_bar_colour_sliding"=36864
@@ -17024,6 +17027,7 @@ inherit = "npc.crystal_hunllef_ranged"
 id = "npc.crystal_hunllef_ranged_hm"
 inherit = "npc.crystal_hunllef_ranged_hm"
 [npc.params]
+"param.boss_hp_bar_mode"=1
 "param.dropped_remains"=-1
 "param.boss_hp_bar_colour_back"=13107200
 "param.boss_hp_bar_colour_sliding"=36864
@@ -17033,6 +17037,7 @@ inherit = "npc.crystal_hunllef_ranged_hm"
 id = "npc.crystal_hunllef_magic"
 inherit = "npc.crystal_hunllef_magic"
 [npc.params]
+"param.boss_hp_bar_mode"=1
 "param.dropped_remains"=-1
 "param.boss_hp_bar_colour_back"=13107200
 "param.boss_hp_bar_colour_sliding"=36864
@@ -17042,6 +17047,7 @@ inherit = "npc.crystal_hunllef_magic"
 id = "npc.crystal_hunllef_magic_hm"
 inherit = "npc.crystal_hunllef_magic_hm"
 [npc.params]
+"param.boss_hp_bar_mode"=1
 "param.dropped_remains"=-1
 "param.boss_hp_bar_colour_back"=13107200
 "param.boss_hp_bar_colour_sliding"=36864
