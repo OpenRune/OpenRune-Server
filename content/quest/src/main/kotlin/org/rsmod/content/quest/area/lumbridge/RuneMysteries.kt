@@ -18,7 +18,6 @@ class RuneMysteriesQuest : QuestScript(
     val doubtedIdentity = quest.attribute(name = "DOUBTED_IDENTITY", default = false)
 
     override fun ScriptContext.init() {
-
     }
 
     override fun subTitle(): String =
