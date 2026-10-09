@@ -4,12 +4,12 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.AlmeraNpc
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.EnteredTomb
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.MetHudon
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ReadBook
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.RecommendedCombat
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Started
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ALMERA_NPC
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ENTERED_TOMB
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.MET_HUDON
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.READ_BOOK
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.RECOMMENDED_COMBAT
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.STARTED
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -18,19 +18,19 @@ import org.rsmod.plugin.scripts.ScriptContext
 class Almera @Inject constructor(private val waterfall: WaterfallQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpNpc1(AlmeraNpc) { startDialogue(it.npc) { almera() } }
+        onOpNpc1(ALMERA_NPC) { startDialogue(it.npc) { almera() } }
     }
 
     private suspend fun Dialogue.almera() {
         when (waterfall.stage(player)) {
             0 -> notStarted()
-            Started -> {
+            STARTED -> {
                 chatPlayer(happy, "Hello Almera.")
                 chatNpc(happy, "Hello brave adventurer, have you seen my boy yet?")
                 chatPlayer(neutral, "I'm afraid not, but I'm sure he hasn't gone far.")
                 chatNpc(worried, "I do hope so, you can't be too careful these days.")
             }
-            MetHudon -> {
+            MET_HUDON -> {
                 chatPlayer(happy, "Hello again.")
                 chatNpc(happy, "Well hello, you're still around then.")
                 chatPlayer(sad, "I saw Hudon by the river but he refused to come back with me.")
@@ -43,7 +43,7 @@ class Almera @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
                 chatPlayer(quiz, "Any ideas what I could do while I'm here?")
                 chatNpc(neutral, "Why don't you visit the tourist centre south of the waterfall?")
             }
-            ReadBook -> {
+            READ_BOOK -> {
                 chatPlayer(happy, "Hello again Almera.")
                 chatNpc(
                     happy,
@@ -60,7 +60,7 @@ class Almera @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
                 chatPlayer(happy, "Good for you.")
                 chatNpc(laugh, "Good for all of us!")
             }
-            in EnteredTomb..Int.MAX_VALUE -> afterTheTomb()
+            in ENTERED_TOMB..Int.MAX_VALUE -> afterTheTomb()
         }
     }
 
@@ -84,10 +84,10 @@ class Almera @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
             "Ah, hello there. Nice to see an outsider for a change. Are you busy? I have a " +
                 "problem.",
         )
-        if (player.combatLevel < RecommendedCombat) {
+        if (player.combatLevel < RECOMMENDED_COMBAT) {
             mesbox(
                 "Before starting this quest, be aware that your combat level is lower than the " +
-                    "recommended level of $RecommendedCombat."
+                    "recommended level of $RECOMMENDED_COMBAT."
             )
         }
         val title = "Start the ${waterfall.quest.displayName}?"

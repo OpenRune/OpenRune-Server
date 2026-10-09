@@ -7,10 +7,10 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Complete
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GeraldNpc
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.MetHudon
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Started
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.COMPLETE
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GERALD_NPC
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.MET_HUDON
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.STARTED
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.heardOfTreasure
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -19,14 +19,14 @@ import org.rsmod.plugin.scripts.ScriptContext
 class Gerald @Inject constructor(private val waterfall: WaterfallQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpNpc1(GeraldNpc) { startDialogue(it.npc) { gerald() } }
+        onOpNpc1(GERALD_NPC) { startDialogue(it.npc) { gerald() } }
     }
 
     private suspend fun Dialogue.gerald() {
         val stage = waterfall.stage(player)
         when {
-            stage == 0 || stage == Complete -> beforeTheQuest()
-            stage == Started -> {
+            stage == 0 || stage == COMPLETE -> beforeTheQuest()
+            stage == STARTED -> {
                 chatPlayer(happy, "Hello.")
                 chatNpc(happy, "Hello there.")
                 chatPlayer(quiz, "Have you seen a small boy?")
@@ -36,15 +36,15 @@ class Gerald @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
                 chatNpc(happy, "Hello there.")
                 chatNpc(quiz, "Hello traveller. Are you here to fish or to hunt for treasure?")
                 chatPlayer(quiz, "Why do you say that?")
-                chatNpc(neutral, AdventurersLine)
+                chatNpc(neutral, ADVENTURERS_LINE)
             }
             else -> {
                 chatPlayer(happy, "Hello.")
                 chatNpc(quiz, "Hello traveller. Are you here to fish or to hunt for treasure?")
                 chatPlayer(quiz, "Why do you say that?")
-                chatNpc(neutral, AdventurersLine)
+                chatNpc(neutral, ADVENTURERS_LINE)
                 chatPlayer(quiz, "What treasure are they looking for?")
-                chatNpc(neutral, LegendLine)
+                chatNpc(neutral, LEGEND_LINE)
                 learnOfHadley()
             }
         }
@@ -62,12 +62,12 @@ class Gerald @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
     }
 }
 
-private const val AdventurersLine =
+private const val ADVENTURERS_LINE =
     "Adventurers pass through here every week, they never find anything though."
-private const val LegendLine =
+private const val LEGEND_LINE =
     "They say there's treasure hidden within the waterfall, left behind by the old elven king. " +
         "Not that anyone's ever found anything."
-private const val GeraldSearchRadius = 8
+private const val GERALD_SEARCH_RADIUS = 8
 
 private suspend fun Dialogue.learnOfHadley() {
     chatPlayer(quiz, "Interesting, is there somewhere I can learn more about this?")
@@ -83,12 +83,12 @@ internal suspend fun ProtectedAccess.geraldGreetsWashedUp(
     waterfall: WaterfallQuest,
     search: NpcSearch,
 ) {
-    if (waterfall.stage(player) != MetHudon || player.heardOfTreasure) {
+    if (waterfall.stage(player) != MET_HUDON || player.heardOfTreasure) {
         return
     }
     delay(1)
     val gerald =
-        npcFind(player.coords, GeraldNpc, GeraldSearchRadius, HuntVis.Off, search) ?: return
+        npcFind(player.coords, GERALD_NPC, GERALD_SEARCH_RADIUS, HuntVis.Off, search) ?: return
     startDialogue(gerald) {
         chatNpc(
             shocked,
@@ -96,7 +96,7 @@ internal suspend fun ProtectedAccess.geraldGreetsWashedUp(
                 "you?",
         )
         chatPlayer(quiz, "Treasure hunters?")
-        chatNpc(neutral, LegendLine)
+        chatNpc(neutral, LEGEND_LINE)
         learnOfHadley()
     }
 }

@@ -34,7 +34,7 @@ class WaterfallCacheTest {
     @Test
     fun `the quest row matches the stages and points`() {
         val row = QuestRow.getRow("dbrow.quest_waterfall".asRSCM())
-        assertEquals(WaterfallQuest.Complete, row.endstate)
+        assertEquals(WaterfallQuest.COMPLETE, row.endstate)
         assertEquals(1, row.questpoints)
     }
 
@@ -42,7 +42,7 @@ class WaterfallCacheTest {
     fun `progress sits on the quest varp and the ids are in the range of this quest`() {
         val progress = varbit("varbit.waterfall_progress")
         assertEquals("varp.waterfall_quest".asRSCM(RSCMType.VARP), progress.baseVar.id)
-        assertTrue((1 shl (progress.endBit - progress.startBit + 1)) > WaterfallQuest.Complete)
+        assertTrue((1 shl (progress.endBit - progress.startBit + 1)) > WaterfallQuest.COMPLETE)
         for (name in
             listOf(
                 "varbit.waterfall_progress",
@@ -72,7 +72,7 @@ class WaterfallCacheTest {
         }
         assertEquals(bits.size, bits.distinct().size)
         val pillars = varbit("varbit.waterfall_pillar_runes")
-        assertTrue(pillars.endBit - pillars.startBit + 1 >= WaterfallQuest.PillarCount * 3)
+        assertTrue(pillars.endBit - pillars.startBit + 1 >= WaterfallQuest.PILLAR_COUNT * 3)
     }
 
     @Test
@@ -93,14 +93,14 @@ class WaterfallCacheTest {
     fun `the items and npcs exist with the ops the script binds`() {
         for (obj in
             listOf(
-                WaterfallQuest.Book,
-                WaterfallQuest.GolrieKey,
-                WaterfallQuest.Pebble,
-                WaterfallQuest.Amulet,
-                WaterfallQuest.UrnFull,
-                WaterfallQuest.UrnEmpty,
-                WaterfallQuest.BaxtorianKey,
-                WaterfallQuest.Rope,
+                WaterfallQuest.BOOK,
+                WaterfallQuest.GOLRIE_KEY,
+                WaterfallQuest.PEBBLE,
+                WaterfallQuest.AMULET,
+                WaterfallQuest.URN_FULL,
+                WaterfallQuest.URN_EMPTY,
+                WaterfallQuest.BAXTORIAN_KEY,
+                WaterfallQuest.ROPE,
                 "obj.diamond",
                 "obj.gold_bar",
                 "obj.mithril_seed",
@@ -109,16 +109,16 @@ class WaterfallCacheTest {
         }
         assertEquals(
             "Read",
-            checkNotNull(ServerCacheManager.getItem(WaterfallQuest.Book.asRSCM(RSCMType.OBJ)))
+            checkNotNull(ServerCacheManager.getItem(WaterfallQuest.BOOK.asRSCM(RSCMType.OBJ)))
                 .interfaceOptions.getOrNull(0),
         )
         for (npc in
             listOf(
-                WaterfallQuest.AlmeraNpc,
-                WaterfallQuest.HudonNpc,
-                WaterfallQuest.GeraldNpc,
-                WaterfallQuest.HadleyNpc,
-                WaterfallQuest.GolrieNpc,
+                WaterfallQuest.ALMERA_NPC,
+                WaterfallQuest.HUDON_NPC,
+                WaterfallQuest.GERALD_NPC,
+                WaterfallQuest.HADLEY_NPC,
+                WaterfallQuest.GOLRIE_NPC,
             )) {
             val type = checkNotNull(ServerCacheManager.getNpc(npc.asRSCM(RSCMType.NPC))) { npc }
             assertEquals("Talk-to", type.actions.getOpOrNull(0), npc)
@@ -235,11 +235,11 @@ class WaterfallCacheTest {
         val spawns = rawSpawns()
         val expected =
             mapOf(
-                WaterfallQuest.AlmeraNpc to CoordGrid(2522, 3498, 0),
-                WaterfallQuest.HudonNpc to CoordGrid(2511, 3484, 0),
-                WaterfallQuest.GeraldNpc to CoordGrid(2528, 3414, 0),
-                WaterfallQuest.HadleyNpc to CoordGrid(2516, 3428, 0),
-                WaterfallQuest.GolrieNpc to CoordGrid(2515, 9581, 0),
+                WaterfallQuest.ALMERA_NPC to CoordGrid(2522, 3498, 0),
+                WaterfallQuest.HUDON_NPC to CoordGrid(2511, 3484, 0),
+                WaterfallQuest.GERALD_NPC to CoordGrid(2528, 3414, 0),
+                WaterfallQuest.HADLEY_NPC to CoordGrid(2516, 3428, 0),
+                WaterfallQuest.GOLRIE_NPC to CoordGrid(2515, 9581, 0),
             )
         for ((npc, at) in expected) {
             assertTrue(spawns.any { it.first == npc && it.second == at }, "$npc at $at")

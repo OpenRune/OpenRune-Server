@@ -7,12 +7,12 @@ import org.rsmod.api.script.onApNpc1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallCoords
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.EnteredFalls
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.EnteredTomb
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.HudonNpc
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.MetHudon
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ReadBook
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Started
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ENTERED_FALLS
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ENTERED_TOMB
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.HUDON_NPC
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.MET_HUDON
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.READ_BOOK
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.STARTED
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -24,12 +24,12 @@ import org.rsmod.plugin.scripts.ScriptContext
 class Hudon @Inject constructor(private val waterfall: WaterfallQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onApNpc1(HudonNpc) { apTalk(it.npc) }
-        onOpNpc1(HudonNpc) { talk(it.npc) }
+        onApNpc1(HUDON_NPC) { apTalk(it.npc) }
+        onOpNpc1(HUDON_NPC) { talk(it.npc) }
     }
 
     private suspend fun ProtectedAccess.apTalk(npc: Npc) {
-        if (WaterfallCoords.onHudonIsland(player.coords) && !isWithinApRange(npc, TalkRange)) {
+        if (WaterfallCoords.onHudonIsland(player.coords) && !isWithinApRange(npc, TALK_RANGE)) {
             return
         }
         talk(npc)
@@ -37,7 +37,7 @@ class Hudon @Inject constructor(private val waterfall: WaterfallQuest) : PluginS
 
     private suspend fun ProtectedAccess.talk(npc: Npc) {
         val stage = waterfall.stage(player)
-        if (stage != WaterfallQuest.Complete &&
+        if (stage != WaterfallQuest.COMPLETE &&
             (stage == 0 || !WaterfallCoords.onHudonIsland(player.coords))
         ) {
             mesbox(
@@ -50,7 +50,7 @@ class Hudon @Inject constructor(private val waterfall: WaterfallQuest) : PluginS
     }
 
     private companion object {
-        const val TalkRange = 5
+        const val TALK_RANGE = 5
     }
 }
 
@@ -63,12 +63,12 @@ internal suspend fun Dialogue.hudon(waterfall: WaterfallQuest) {
             chatPlayer(happy, "I'll make sure it goes to a good cause.")
             chatNpc(angry, "Hmmmm!")
         }
-        stage == Started -> hudonFirstMeeting(waterfall)
-        stage == MetHudon -> {
+        stage == STARTED -> hudonFirstMeeting(waterfall)
+        stage == MET_HUDON -> {
             chatPlayer(quiz, "So you're still here.")
             chatNpc(happy, "I'll find that treasure soon, just you wait and see.")
         }
-        stage == ReadBook -> {
+        stage == READ_BOOK -> {
             chatPlayer(happy, "Hello Hudon.")
             chatNpc(angry, "Oh it's you, trying to find my treasure again are you?")
             chatPlayer(confused, "I didn't know it belonged to you.")
@@ -78,7 +78,7 @@ internal suspend fun Dialogue.hudon(waterfall: WaterfallQuest) {
                     "been washed downstream three times already.",
             )
         }
-        stage == EnteredTomb -> {
+        stage == ENTERED_TOMB -> {
             chatPlayer(happy, "Hello again.")
             chatNpc(angry, "Not you still, why don't you give up?")
             chatPlayer(laugh, "And miss all the fun!")
@@ -89,7 +89,7 @@ internal suspend fun Dialogue.hudon(waterfall: WaterfallQuest) {
             chatNpc(sad, "That's not fair.")
             chatPlayer(neutral, "Neither is life kid.")
         }
-        stage >= EnteredFalls -> {
+        stage >= ENTERED_FALLS -> {
             chatPlayer(quiz, "How are you doing, Hudon?")
             chatNpc(sad, "No luck yet I'm afraid.")
             chatPlayer(happy, "Me neither. but I don't give up easily.")
@@ -112,5 +112,5 @@ internal suspend fun Dialogue.hudonFirstMeeting(waterfall: WaterfallQuest) {
     chatPlayer(happy, "Maybe I could help.")
     chatNpc(angry, "I'm fine alone.")
     chatPlayer(confused, "Hmm... I wonder what this treasure is.")
-    waterfall.advanceTo(access, MetHudon)
+    waterfall.advanceTo(access, MET_HUDON)
 }

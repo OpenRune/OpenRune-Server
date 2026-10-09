@@ -8,23 +8,23 @@ import org.rsmod.game.loc.BoundLocInfo
 /** The ordinary bookcases upstairs in the tourist centre, beside the one hiding the book. */
 class TouristCentreBookcases : BookcaseSearchHook {
     override fun claims(player: Player, bookcase: BoundLocInfo): Boolean =
-        bookcase.coords.level == UpstairsLevel &&
-            bookcase.coords.x in UpstairsX &&
-            bookcase.coords.z in UpstairsZ
+        bookcase.coords.level == UPSTAIRS_LEVEL &&
+            bookcase.coords.x in UPSTAIRS_X &&
+            bookcase.coords.z in UPSTAIRS_Z
 
     override suspend fun ProtectedAccess.search(bookcase: BoundLocInfo) {
         searchUninterestingBooks()
     }
 
     private companion object {
-        const val UpstairsLevel = 1
-        val UpstairsX = 2514..2523
-        val UpstairsZ = 3421..3433
+        const val UPSTAIRS_LEVEL = 1
+        val UPSTAIRS_X = 2514..2523
+        val UPSTAIRS_Z = 3421..3433
     }
 }
 
 internal suspend fun ProtectedAccess.searchUninterestingBooks() {
-    anim(SearchSeq)
+    anim(SEARCH_SEQ)
     mes("You search the books...")
     delay(1)
     mes(
@@ -36,4 +36,4 @@ internal suspend fun ProtectedAccess.searchUninterestingBooks() {
     )
 }
 
-private const val SearchSeq = "seq.human_pickuptable"
+private const val SEARCH_SEQ = "seq.human_pickuptable"

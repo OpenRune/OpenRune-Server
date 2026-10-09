@@ -5,9 +5,9 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GolrieKey
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GolrieNpc
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ReadBook
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GOLRIE_KEY
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GOLRIE_NPC
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.READ_BOOK
 import org.rsmod.content.quest.util.QuestDoors
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
@@ -27,20 +27,20 @@ constructor(
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpLoc1(Crate) { searchCrate() }
-        onOpLoc1(Gate) { openGate(it.loc) }
-        onOpLocU(Gate, GolrieKey) { unlockGate(it.loc) }
+        onOpLoc1(CRATE) { searchCrate() }
+        onOpLoc1(GATE) { openGate(it.loc) }
+        onOpLocU(GATE, GOLRIE_KEY) { unlockGate(it.loc) }
     }
 
     private suspend fun ProtectedAccess.searchCrate() {
-        anim(SearchSeq)
+        anim(SEARCH_SEQ)
         delay(1)
-        if (waterfall.stage(player) < ReadBook || GolrieKey in player.inv) {
+        if (waterfall.stage(player) < READ_BOOK || GOLRIE_KEY in player.inv) {
             mes("You search the crate but find nothing of interest.")
             return
         }
-        invAddOrDrop(objRepo, GolrieKey)
-        objbox(GolrieKey, "You find a key in the crate.")
+        invAddOrDrop(objRepo, GOLRIE_KEY)
+        objbox(GOLRIE_KEY, "You find a key in the crate.")
     }
 
     private suspend fun ProtectedAccess.openGate(gate: BoundLocInfo) {
@@ -49,17 +49,17 @@ constructor(
             passThrough(gate)
             return
         }
-        if (GolrieKey in player.inv) {
+        if (GOLRIE_KEY in player.inv) {
             unlockGate(gate)
             return
         }
-        soundSynth(LockedSound)
+        soundSynth(LOCKED_SOUND)
         when {
             waterfall.stage(player) == 0 -> {
                 startDialogue {
                     chatNpcSpecific(
-                        GolrieName,
-                        GolrieNpc,
+                        GOLRIE_NAME,
+                        GOLRIE_NPC,
                         angry,
                         "What are you doing down here? Leave before you get yourself into trouble.",
                     )
@@ -70,8 +70,8 @@ constructor(
                 startDialogue {
                     chatPlayer(worried, "Hello, are you okay?")
                     chatNpcSpecific(
-                        GolrieName,
-                        GolrieNpc,
+                        GOLRIE_NAME,
+                        GOLRIE_NPC,
                         happy,
                         "Oh, don't worry, I'm totally fine. I locked myself in here for " +
                             "protection, but I've left the key somewhere.",
@@ -91,16 +91,16 @@ constructor(
 
     private fun ProtectedAccess.passThrough(gate: BoundLocInfo) {
         val across = gate.tileAcross(player.coords)
-        doors.open(this, gate, Gate, GateSound)
+        doors.open(this, gate, GATE, GATE_SOUND)
         walk(across)
     }
 
     private companion object {
-        const val Crate = "loc.golrie_crate_waterfall_quest"
-        const val Gate = "loc.golrie_gate_waterfall_quest"
-        const val GolrieName = "Golrie"
-        const val SearchSeq = "seq.human_pickuptable"
-        const val GateSound = "synth.door_open"
-        const val LockedSound = "synth.irondoor_locked"
+        const val CRATE = "loc.golrie_crate_waterfall_quest"
+        const val GATE = "loc.golrie_gate_waterfall_quest"
+        const val GOLRIE_NAME = "Golrie"
+        const val SEARCH_SEQ = "seq.human_pickuptable"
+        const val GATE_SOUND = "synth.door_open"
+        const val LOCKED_SOUND = "synth.irondoor_locked"
     }
 }

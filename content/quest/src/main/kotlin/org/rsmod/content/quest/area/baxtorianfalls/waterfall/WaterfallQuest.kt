@@ -28,23 +28,23 @@ internal var Player.pillarRunes by intVarBit("varbit.waterfall_pillar_runes")
 @Singleton
 class WaterfallQuest @Inject constructor() :
     QuestScript(
-        QuestKey,
+        QUEST_KEY,
         "varp.waterfall_quest",
         rewards {
-            xp("stat.attack", CombatXp)
-            xp("stat.strength", CombatXp)
+            xp("stat.attack", COMBAT_XP)
+            xp("stat.strength", COMBAT_XP)
             item("obj.diamond", 2)
             item("obj.gold_bar", 2)
             item("obj.mithril_seed", 40)
         },
-        ItemRewardDisplay(UrnFull),
+        ItemRewardDisplay(URN_FULL),
         questVarbit = "varbit.waterfall_progress",
     ) {
 
     override fun ScriptContext.init() {
-        check(quest.maxSteps == Complete) {
+        check(quest.maxSteps == COMPLETE) {
             "Waterfall Quest end state is ${quest.maxSteps} in the cache dbrow, " +
-                "but the script completes at $Complete."
+                "but the script completes at $COMPLETE."
         }
     }
 
@@ -60,7 +60,7 @@ class WaterfallQuest @Inject constructor() :
         }
     }
 
-    fun allRunesPlaced(player: Player): Boolean = player.pillarRunes == AllPillarRunes
+    fun allRunesPlaced(player: Player): Boolean = player.pillarRunes == ALL_PILLAR_RUNES
 
     override fun subTitle(): String =
         "talking to <col=800000>Almera</col> in her house on top of <col=800000>Baxtorian " +
@@ -73,7 +73,7 @@ class WaterfallQuest @Inject constructor() :
                     "treasure hunting on the river. She said I could take the " +
                     "<red>log raft</red> behind her house to find him."
             ) {
-                visibleWhen { stage(access.player) == Started }
+                visibleWhen { stage(access.player) == STARTED }
             }
 
             objective(
@@ -81,9 +81,9 @@ class WaterfallQuest @Inject constructor() :
                     "thinks there is treasure hidden in the falls. <red>Hadley</red>, the " +
                     "tourist guide south of the falls, might know more about it."
             ) {
-                visibleWhen { stage(access.player) == MetHudon }
+                visibleWhen { stage(access.player) == MET_HUDON }
                 hasItem(
-                        Book.removePrefix(ObjPrefix),
+                        BOOK.removePrefix(OBJ_PREFIX),
                         "I found a book on Baxtorian in the tourist centre.",
                     )
                     .strike()
@@ -93,8 +93,8 @@ class WaterfallQuest @Inject constructor() :
                 "The book says <red>Glarial's pebble</red> opens her tomb, and that a gnome " +
                     "family living beneath the <red>Tree Gnome Village</red> may still have it."
             ) {
-                visibleWhen { stage(access.player) == ReadBook }
-                hasItem(Pebble.removePrefix(ObjPrefix), "I have Glarial's pebble.").strike()
+                visibleWhen { stage(access.player) == READ_BOOK }
+                hasItem(PEBBLE.removePrefix(OBJ_PREFIX), "I have Glarial's pebble.").strike()
             }
 
             objective(
@@ -103,16 +103,16 @@ class WaterfallQuest @Inject constructor() :
                     "leave weapons, armour and runes behind."
             ) {
                 visibleWhen {
-                    stage(access.player) == ReadBook && access.player.inv.contains(Pebble)
+                    stage(access.player) == READ_BOOK && access.player.inv.contains(PEBBLE)
                 }
             }
 
             objective(
                 "Inside Glarial's tomb I need to find her <red>amulet</red> and her <red>urn</red>."
             ) {
-                visibleWhen { stage(access.player) == EnteredTomb }
+                visibleWhen { stage(access.player) == ENTERED_TOMB }
                 custom(access.player.hasAmulet(), "I have Glarial's amulet.").strike()
-                hasItem(UrnFull.removePrefix(ObjPrefix), "I have Glarial's urn.").strike()
+                hasItem(URN_FULL.removePrefix(OBJ_PREFIX), "I have Glarial's urn.").strike()
             }
 
             objective(
@@ -121,9 +121,9 @@ class WaterfallQuest @Inject constructor() :
                     "so I should bring six of each, and a <red>rope</red> to reach the ledge."
             ) {
                 visibleWhen {
-                    stage(access.player) == EnteredTomb &&
+                    stage(access.player) == ENTERED_TOMB &&
                         access.player.hasAmulet() &&
-                        access.player.inv.contains(UrnFull)
+                        access.player.inv.contains(URN_FULL)
                 }
             }
 
@@ -131,8 +131,8 @@ class WaterfallQuest @Inject constructor() :
                 "I am inside the waterfall. A key somewhere in these caves should open the way " +
                     "to Baxtorian's tomb."
             ) {
-                visibleWhen { stage(access.player) == EnteredFalls }
-                hasItem(BaxtorianKey.removePrefix(ObjPrefix), "I have a key from the caves.")
+                visibleWhen { stage(access.player) == ENTERED_FALLS }
+                hasItem(BAXTORIAN_KEY.removePrefix(OBJ_PREFIX), "I have a key from the caves.")
                     .strike()
             }
 
@@ -140,7 +140,7 @@ class WaterfallQuest @Inject constructor() :
                 "Six small pillars stand before the statues of Baxtorian and Glarial. Each " +
                     "has a dent shaped for a rune."
             ) {
-                visibleWhen { stage(access.player) == EnteredFalls }
+                visibleWhen { stage(access.player) == ENTERED_FALLS }
                 custom(
                         allRunesPlaced(access.player),
                         "Every pillar holds an air, water and earth rune.",
@@ -151,14 +151,14 @@ class WaterfallQuest @Inject constructor() :
             objective(
                 "The pillars are charged. I should place <red>Glarial's amulet</red> on her statue."
             ) {
-                visibleWhen { stage(access.player) == RunesPlaced }
+                visibleWhen { stage(access.player) == RUNES_PLACED }
             }
 
             objective(
                 "The floor rose up to the <red>chalice</red>. I should lay Glarial to rest " +
                     "beside Baxtorian by pouring her ashes into it."
             ) {
-                visibleWhen { stage(access.player) == FloorRisen }
+                visibleWhen { stage(access.player) == FLOOR_RISEN }
             }
         }
 
@@ -181,37 +181,37 @@ class WaterfallQuest @Inject constructor() :
         }
 
     companion object {
-        const val QuestKey = "quest_waterfall"
+        const val QUEST_KEY = "quest_waterfall"
 
-        const val Started = 1
-        const val MetHudon = 2
-        const val ReadBook = 3
-        const val EnteredTomb = 4
-        const val EnteredFalls = 5
-        const val RunesPlaced = 6
-        const val FloorRisen = 8
-        const val Complete = 10
+        const val STARTED = 1
+        const val MET_HUDON = 2
+        const val READ_BOOK = 3
+        const val ENTERED_TOMB = 4
+        const val ENTERED_FALLS = 5
+        const val RUNES_PLACED = 6
+        const val FLOOR_RISEN = 8
+        const val COMPLETE = 10
 
-        const val CombatXp = 13750.0
-        const val RecommendedCombat = 25
-        const val PillarCount = 6
-        const val RunesPerPillar = 3
-        const val AllPillarRunes = (1 shl (PillarCount * RunesPerPillar)) - 1
+        const val COMBAT_XP = 13750.0
+        const val RECOMMENDED_COMBAT = 25
+        const val PILLAR_COUNT = 6
+        const val RUNES_PER_PILLAR = 3
+        const val ALL_PILLAR_RUNES = (1 shl (PILLAR_COUNT * RUNES_PER_PILLAR)) - 1
 
-        const val ObjPrefix = "obj."
-        const val Book = "obj.baxtorian_book_waterfall_quest"
-        const val GolrieKey = "obj.golrie_key_waterfall_quest"
-        const val Pebble = "obj.glarials_pebble_waterfall_quest"
-        const val Amulet = "obj.glarials_amulet_waterfall_quest"
-        const val UrnFull = "obj.glarials_urn_full_waterfall_quest"
-        const val UrnEmpty = "obj.glarials_urn_empty_waterfall_quest"
-        const val BaxtorianKey = "obj.baxtorian_key_waterfall_quest"
-        const val Rope = "obj.rope"
+        const val OBJ_PREFIX = "obj."
+        const val BOOK = "obj.baxtorian_book_waterfall_quest"
+        const val GOLRIE_KEY = "obj.golrie_key_waterfall_quest"
+        const val PEBBLE = "obj.glarials_pebble_waterfall_quest"
+        const val AMULET = "obj.glarials_amulet_waterfall_quest"
+        const val URN_FULL = "obj.glarials_urn_full_waterfall_quest"
+        const val URN_EMPTY = "obj.glarials_urn_empty_waterfall_quest"
+        const val BAXTORIAN_KEY = "obj.baxtorian_key_waterfall_quest"
+        const val ROPE = "obj.rope"
 
-        const val AlmeraNpc = "npc.almera_waterfall_quest"
-        const val HudonNpc = "npc.hudon_waterfall_quest"
-        const val GeraldNpc = "npc.gerald_waterfall_quest"
-        const val HadleyNpc = "npc.hadley_waterfall_quest"
-        const val GolrieNpc = "npc.golrie_waterfall_quest"
+        const val ALMERA_NPC = "npc.almera_waterfall_quest"
+        const val HUDON_NPC = "npc.hudon_waterfall_quest"
+        const val GERALD_NPC = "npc.gerald_waterfall_quest"
+        const val HADLEY_NPC = "npc.hadley_waterfall_quest"
+        const val GOLRIE_NPC = "npc.golrie_waterfall_quest"
     }
 }

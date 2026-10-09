@@ -8,7 +8,7 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.hitpoints
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Amulet
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.AMULET
 import org.rsmod.content.quest.util.fadeFromBlack
 import org.rsmod.content.quest.util.fadeToBlack
 import org.rsmod.game.entity.Player
@@ -43,7 +43,7 @@ internal object WaterfallCoords {
         coords.level == 0 && coords.x in 2512..2513 && coords.z in 3466..3474
 }
 
-internal fun Player.hasAmulet(): Boolean = inv.contains(Amulet) || worn.contains(Amulet)
+internal fun Player.hasAmulet(): Boolean = inv.contains(AMULET) || worn.contains(AMULET)
 
 /** Every door and gate here is a wall on the north edge of its tile. */
 internal fun BoundLocInfo.playerIsSouth(coords: CoordGrid): Boolean = coords.z <= this.coords.z
@@ -52,7 +52,7 @@ internal fun BoundLocInfo.playerIsSouth(coords: CoordGrid): Boolean = coords.z <
 internal fun BoundLocInfo.tileAcross(from: CoordGrid): CoordGrid =
     if (from.z > coords.z) coords else coords.translateZ(1)
 
-internal fun Player.wearsAmulet(): Boolean = worn.contains(Amulet)
+internal fun Player.wearsAmulet(): Boolean = worn.contains(AMULET)
 
 internal fun Player.ownsAnywhere(obj: String): Boolean =
     inv.contains(obj) || worn.contains(obj) || invMap.getOrPut("inv.bank").contains(obj)

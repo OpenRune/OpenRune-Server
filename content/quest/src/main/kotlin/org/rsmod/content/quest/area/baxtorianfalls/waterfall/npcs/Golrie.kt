@@ -5,9 +5,9 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GolrieKey
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GolrieNpc
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Pebble
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GOLRIE_KEY
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GOLRIE_NPC
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.PEBBLE
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.metGolrie
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.ownsAnywhere
 import org.rsmod.plugin.scripts.PluginScript
@@ -23,7 +23,7 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
     PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpNpc1(GolrieNpc) { startDialogue(it.npc) { golrie() } }
+        onOpNpc1(GOLRIE_NPC) { startDialogue(it.npc) { golrie() } }
     }
 
     private suspend fun Dialogue.golrie() {
@@ -35,7 +35,7 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
                 )
             }
             !player.metGolrie -> firstMeeting()
-            player.ownsAnywhere(Pebble) -> {
+            player.ownsAnywhere(PEBBLE) -> {
                 chatPlayer(happy, "Hello, Golrie.")
                 chatNpc(happy, "Hello again.")
                 chatPlayer(quiz, "Any luck getting out?")
@@ -71,7 +71,7 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
         )
         chatPlayer(quiz, "In that case, do you mind if I have a look around?")
         chatNpc(happy, "No, of course not.")
-        val handedKey = GolrieKey in player.inv
+        val handedKey = GOLRIE_KEY in player.inv
         if (!findPebble(takeKey = true)) {
             return
         }
@@ -86,18 +86,18 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
 
     /** The pebble, the key hand-in and the met flag change together, before any dialogue line. */
     private suspend fun Dialogue.findPebble(takeKey: Boolean): Boolean {
-        val keyTaken = takeKey && access.invDel(access.inv, GolrieKey).success
+        val keyTaken = takeKey && access.invDel(access.inv, GOLRIE_KEY).success
         if (player.inv.isFull()) {
             mesbox(
                 "You look amongst the junk on the floor and find Glarial's pebble but you " +
                     "don't have enough room to take it."
             )
             if (keyTaken) {
-                access.invAddOrDrop(objRepo, GolrieKey)
+                access.invAddOrDrop(objRepo, GOLRIE_KEY)
             }
             return false
         }
-        access.invAddOrDrop(objRepo, Pebble)
+        access.invAddOrDrop(objRepo, PEBBLE)
         player.metGolrie = true
         mesbox("You look amongst the junk on the floor and find Glarial's pebble.")
         return true

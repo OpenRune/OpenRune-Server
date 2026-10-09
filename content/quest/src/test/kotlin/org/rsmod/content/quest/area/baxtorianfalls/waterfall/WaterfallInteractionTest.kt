@@ -54,22 +54,22 @@ import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.route.RayCastValidator
 import org.rsmod.content.generic.locs.bookcases.BookcasesScript
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Amulet
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.BaxtorianKey
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Book
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Complete
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.EnteredFalls
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.EnteredTomb
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.FloorRisen
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GolrieKey
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.MetHudon
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Pebble
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ReadBook
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Rope
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.RunesPlaced
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Started
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.UrnEmpty
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.UrnFull
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.AMULET
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.BAXTORIAN_KEY
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.BOOK
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.COMPLETE
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ENTERED_FALLS
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ENTERED_TOMB
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.FLOOR_RISEN
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GOLRIE_KEY
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.MET_HUDON
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.PEBBLE
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.READ_BOOK
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ROPE
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.RUNES_PLACED
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.STARTED
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.URN_EMPTY
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.URN_FULL
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.Almera
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.Gerald
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.Golrie
@@ -112,10 +112,10 @@ class WaterfallInteractionTest {
     @Test
     fun `accepting Almera's request starts the quest`() {
         val f = Fixture()
-        f.talk(AlmeraNpc)
+        f.talk(ALMERA_NPC)
         f.finish(listOf(1))
-        assertEquals(Started, f.stage())
-        assertEquals(Started, f.player.vars["varp.waterfall_quest"])
+        assertEquals(STARTED, f.stage())
+        assertEquals(STARTED, f.player.vars["varp.waterfall_quest"])
         assertTrue(f.output().contains("You can use the small raft out back"), f.output())
         assertTrue(f.output().contains("recommended level of 25"), f.output())
         assertTrue(f.journal().contains("log raft"), f.journal())
@@ -124,15 +124,15 @@ class WaterfallInteractionTest {
     @Test
     fun `declining leaves the quest unstarted and a started quest is not restarted`() {
         val declined = Fixture()
-        declined.talk(AlmeraNpc)
+        declined.talk(ALMERA_NPC)
         declined.finish(listOf(2))
         assertEquals(0, declined.stage())
         assertTrue(declined.output().contains("Oh okay, never mind."), declined.output())
 
-        val started = Fixture(Started)
-        started.talk(AlmeraNpc)
+        val started = Fixture(STARTED)
+        started.talk(ALMERA_NPC)
         started.finish()
-        assertEquals(Started, started.stage())
+        assertEquals(STARTED, started.stage())
         assertTrue(started.output().contains("have you seen my boy yet"), started.output())
     }
 
@@ -140,15 +140,15 @@ class WaterfallInteractionTest {
     fun `Almera's talk changes with the stage and after the quest`() {
         val expected =
             mapOf(
-                MetHudon to "tourist centre south of the waterfall",
-                ReadBook to "wanted to dig up this whole area for a mine",
-                EnteredTomb to "how's your treasure hunt going",
-                EnteredFalls to "how's your treasure hunt going",
-                Complete to "please try not crash it this time",
+                MET_HUDON to "tourist centre south of the waterfall",
+                READ_BOOK to "wanted to dig up this whole area for a mine",
+                ENTERED_TOMB to "how's your treasure hunt going",
+                ENTERED_FALLS to "how's your treasure hunt going",
+                COMPLETE to "please try not crash it this time",
             )
         for ((stage, text) in expected) {
             val f = Fixture(stage)
-            f.talk(AlmeraNpc)
+            f.talk(ALMERA_NPC)
             f.finish()
             assertTrue(f.output().contains(text), "stage $stage: ${f.output()}")
             assertEquals(stage, f.stage())
@@ -158,69 +158,69 @@ class WaterfallInteractionTest {
     @Test
     fun `the raft is refused before the quest and carries the player to the island after`() {
         val before = Fixture()
-        before.loc(Raft, RaftCoords)
+        before.loc(RAFT, RAFT_COORDS)
         before.finish()
-        assertEquals(RaftBank, before.player.coords)
-        assertTrue(before.output().contains(RaftUnsafe), before.output())
+        assertEquals(RAFT_BANK, before.player.coords)
+        assertTrue(before.output().contains(RAFT_UNSAFE), before.output())
 
-        val f = Fixture(Started)
-        f.addNpc(HudonNpc, HudonCoords)
-        f.loc(Raft, RaftCoords)
+        val f = Fixture(STARTED)
+        f.addNpc(HUDON_NPC, HUDON_COORDS)
+        f.loc(RAFT, RAFT_COORDS)
         f.finish()
         assertEquals(WaterfallCoords.RAFT_CRASH, f.player.coords)
         assertTrue(f.output().contains("push off down stream"), f.output())
         assertTrue(f.output().contains("you crash into a small island"), f.output())
         assertTrue(f.output().contains("It looks like you need the help"))
-        assertEquals(MetHudon, f.stage())
+        assertEquals(MET_HUDON, f.stage())
     }
 
     @Test
     fun `the raft keeps working after the quest`() {
-        val f = Fixture(Complete)
-        f.loc(Raft, RaftCoords)
+        val f = Fixture(COMPLETE)
+        f.loc(RAFT, RAFT_COORDS)
         f.finish()
         assertEquals(WaterfallCoords.RAFT_CRASH, f.player.coords)
-        assertEquals(Complete, f.stage())
+        assertEquals(COMPLETE, f.stage())
     }
 
     @Test
     fun `Hudon only advances the quest once the whole conversation is heard`() {
-        val early = Fixture(Started)
+        val early = Fixture(STARTED)
         early.player.coords = WaterfallCoords.RAFT_CRASH
-        early.talk(HudonNpc)
+        early.talk(HUDON_NPC)
         early.until { early.output().contains("I'm fine alone") }
         early.cancel()
-        assertEquals(Started, early.stage())
+        assertEquals(STARTED, early.stage())
 
-        val full = Fixture(Started)
+        val full = Fixture(STARTED)
         full.player.coords = WaterfallCoords.RAFT_CRASH
-        full.talk(HudonNpc)
+        full.talk(HUDON_NPC)
         full.finish()
-        assertEquals(MetHudon, full.stage())
+        assertEquals(MET_HUDON, full.stage())
         assertTrue(full.output().contains("Hmm... I wonder what this treasure is."))
         assertTrue(full.journal().contains("Hadley"), full.journal())
     }
 
     @Test
     fun `Hudon cannot be heard from the bank and says more as the quest goes on`() {
-        val bank = Fixture(Started)
-        bank.talk(HudonNpc)
+        val bank = Fixture(STARTED)
+        bank.talk(HUDON_NPC)
         bank.finish()
-        assertEquals(Started, bank.stage())
-        assertTrue(bank.output().contains(NoiseOfTheWaterfall), bank.output())
+        assertEquals(STARTED, bank.stage())
+        assertTrue(bank.output().contains(NOISE_OF_THE_WATERFALL), bank.output())
 
         val expected =
             mapOf(
-                MetHudon to "I'll find that treasure soon, just you wait and see.",
-                ReadBook to "been washed downstream three times already.",
-                EnteredTomb to "Because I told you about the treasure.",
-                EnteredFalls to "No luck yet I'm afraid.",
-                Complete to "You stole my treasure. I saw you!",
+                MET_HUDON to "I'll find that treasure soon, just you wait and see.",
+                READ_BOOK to "been washed downstream three times already.",
+                ENTERED_TOMB to "Because I told you about the treasure.",
+                ENTERED_FALLS to "No luck yet I'm afraid.",
+                COMPLETE to "You stole my treasure. I saw you!",
             )
         for ((stage, text) in expected) {
             val f = Fixture(stage)
             f.player.coords = WaterfallCoords.RAFT_CRASH
-            f.talk(HudonNpc)
+            f.talk(HUDON_NPC)
             f.finish()
             assertTrue(f.output().contains(text), "stage $stage: ${f.output()}")
         }
@@ -228,10 +228,10 @@ class WaterfallInteractionTest {
 
     @Test
     fun `swimming sweeps the player to Gerald who tells of the treasure once`() {
-        val f = Fixture(MetHudon)
-        f.addNpc(GeraldNpc, GeraldCoords)
+        val f = Fixture(MET_HUDON)
+        f.addNpc(GERALD_NPC, GERALD_COORDS)
         f.player.coords = WaterfallCoords.RAFT_CRASH
-        f.loc(River, RiverCoords)
+        f.loc(RIVER, RIVER_COORDS)
         f.finish()
         assertEquals(WaterfallCoords.DOWNSTREAM, f.player.coords)
         assertTrue(f.player.heardOfTreasure)
@@ -242,14 +242,14 @@ class WaterfallInteractionTest {
 
         f.player.coords = WaterfallCoords.RAFT_CRASH
         val before = f.output().split("Blimey!").size
-        f.loc(River, RiverCoords)
+        f.loc(RIVER, RIVER_COORDS)
         f.finish()
         assertEquals(before, f.output().split("Blimey!").size)
 
-        val early = Fixture(Started)
-        early.addNpc(GeraldNpc, GeraldCoords)
+        val early = Fixture(STARTED)
+        early.addNpc(GERALD_NPC, GERALD_COORDS)
         early.player.coords = WaterfallCoords.RAFT_CRASH
-        early.loc(River, RiverCoords)
+        early.loc(RIVER, RIVER_COORDS)
         early.finish()
         assertEquals(WaterfallCoords.DOWNSTREAM, early.player.coords)
         assertFalse(early.player.heardOfTreasure)
@@ -257,18 +257,18 @@ class WaterfallInteractionTest {
 
     @Test
     fun `only the wash-out right after Hudon starts the treasure hunter talk with Gerald`() {
-        val later = Fixture(ReadBook)
-        later.addNpc(GeraldNpc, GeraldCoords)
+        val later = Fixture(READ_BOOK)
+        later.addNpc(GERALD_NPC, GERALD_COORDS)
         later.player.coords = WaterfallCoords.RAFT_CRASH
-        later.loc(Rock, RockCoords)
+        later.loc(ROCK, ROCK_COORDS)
         later.finish()
         assertEquals(WaterfallCoords.DOWNSTREAM, later.player.coords)
         assertFalse(later.output().contains("Blimey!"), later.output())
 
-        val rock = Fixture(MetHudon)
-        rock.addNpc(GeraldNpc, GeraldCoords)
+        val rock = Fixture(MET_HUDON)
+        rock.addNpc(GERALD_NPC, GERALD_COORDS)
         rock.player.coords = WaterfallCoords.RAFT_CRASH
-        rock.loc(Rock, RockCoords)
+        rock.loc(ROCK, ROCK_COORDS)
         rock.finish()
         assertTrue(rock.output().contains("Blimey! Where did you come from?"), rock.output())
         assertTrue(rock.output().contains("Treasure hunters?"), rock.output())
@@ -278,21 +278,21 @@ class WaterfallInteractionTest {
     @Test
     fun `Gerald points treasure hunters to Hadley and stays chatty outside the quest`() {
         val idle = Fixture()
-        idle.talk(GeraldNpc)
+        idle.talk(GERALD_NPC)
         idle.finish()
         assertTrue(idle.output().contains("The last one was this big!"), idle.output())
 
-        val searching = Fixture(Started)
-        searching.talk(GeraldNpc)
+        val searching = Fixture(STARTED)
+        searching.talk(GERALD_NPC)
         searching.finish()
         assertTrue(searching.output().contains("plenty of small fish though."), searching.output())
 
-        val hunter = Fixture(MetHudon)
-        hunter.talk(GeraldNpc)
+        val hunter = Fixture(MET_HUDON)
+        hunter.talk(GERALD_NPC)
         hunter.finish()
         assertTrue(hunter.player.heardOfTreasure)
         assertTrue(hunter.output().contains("You could ask Hadley the tourist guide"), hunter.output())
-        hunter.talk(GeraldNpc)
+        hunter.talk(GERALD_NPC)
         hunter.finish()
         assertTrue(hunter.output().contains("they never find anything though."), hunter.output())
     }
@@ -300,47 +300,47 @@ class WaterfallInteractionTest {
     @Test
     fun `Hadley tells the tourist story and treasure story`() {
         val tourist = Fixture()
-        tourist.talk(HadleyNpc)
+        tourist.talk(HADLEY_NPC)
         tourist.finish(listOf(1, 4))
         assertTrue(tourist.output().contains("I guess he died a long long time ago"), tourist.output())
         assertTrue(tourist.output().contains("Enjoy your visit."), tourist.output())
         assertTrue(tourist.output().contains("Well hello, come in, come in"), tourist.output())
         assertTrue(tourist.output().contains("Surely pretty is an understatement, sir."))
 
-        val hunter = Fixture(MetHudon)
+        val hunter = Fixture(MET_HUDON)
         hunter.player.heardOfTreasure = true
-        hunter.talk(HadleyNpc)
+        hunter.talk(HADLEY_NPC)
         hunter.finish(listOf(3, 2, 4))
         assertTrue(hunter.output().contains("Are you on holiday?"), hunter.output())
         assertTrue(hunter.output().contains("no one's been able to get to it"), hunter.output())
         assertTrue(hunter.output().contains("Who was Glarial"), hunter.output())
 
-        val booked = Fixture(MetHudon)
+        val booked = Fixture(MET_HUDON)
         booked.player.heardOfTreasure = true
-        booked.give(Book)
-        booked.talk(HadleyNpc)
+        booked.give(BOOK)
+        booked.talk(HADLEY_NPC)
         booked.finish(listOf(4))
         assertTrue(booked.output().contains("Make sure you give it a read."), booked.output())
     }
 
     @Test
     fun `the book is only found once Hudon has been met and reading it moves the quest on`() {
-        val early = Fixture(Started)
-        early.loc(Bookcase, BookcaseCoords)
+        val early = Fixture(STARTED)
+        early.loc(BOOKCASE, BOOKCASE_COORDS)
         early.finish()
-        assertEquals(0, early.count(Book))
+        assertEquals(0, early.count(BOOK))
 
-        val f = Fixture(MetHudon)
-        f.loc(Bookcase, BookcaseCoords)
+        val f = Fixture(MET_HUDON)
+        f.loc(BOOKCASE, BOOKCASE_COORDS)
         f.finish()
-        assertEquals(1, f.count(Book))
+        assertEquals(1, f.count(BOOK))
         assertTrue(f.output().contains("Book on Baxtorian"), f.output())
-        f.loc(Bookcase, BookcaseCoords)
+        f.loc(BOOKCASE, BOOKCASE_COORDS)
         f.finish()
-        assertEquals(1, f.count(Book))
+        assertEquals(1, f.count(BOOK))
 
-        f.read(Book)
-        f.until { f.stage() == ReadBook }
+        f.read(BOOK)
+        f.until { f.stage() == READ_BOOK }
         assertTrue(f.player.ui.containsModal("interface.book"))
         assertTrue(f.output().contains("<u>The Missing Relics</u>"), f.output())
         assertTrue(f.output().contains("dwarf miners recovered them"), f.output())
@@ -351,111 +351,111 @@ class WaterfallInteractionTest {
     @Test
     fun `the other tourist centre bookcases hold nothing worth reading`() {
         for ((symbol, coords) in
-            listOf("loc.bookcase2" to TouristBookcaseThin, "loc.bookcase" to TouristBookcaseWide)) {
-            val f = Fixture(MetHudon)
+            listOf("loc.bookcase2" to TOURIST_BOOKCASE_THIN, "loc.bookcase" to TOURIST_BOOKCASE_WIDE)) {
+            val f = Fixture(MET_HUDON)
             if (symbol == "loc.bookcase") f.contentLoc(symbol, coords) else f.loc(symbol, coords)
             f.finish()
             val output = f.output()
             assertTrue(output.contains("You search the books..."), output)
-            assertTrue(Uninteresting.count { output.contains(it) } == 1, output)
+            assertTrue(UNINTERESTING.count { output.contains(it) } == 1, output)
             assertFalse(output.contains("None of them look very interesting."), output)
-            assertEquals(0, f.count(Book))
+            assertEquals(0, f.count(BOOK))
         }
-        assertFalse(TouristCentreBookcases().claims(Fixture().player, bookcaseAt(OutsideBookcase)))
+        assertFalse(TouristCentreBookcases().claims(Fixture().player, bookcaseAt(OUTSIDE_BOOKCASE)))
     }
 
     @Test
     fun `Golrie's key turns up in the crate only after the book was read`() {
-        val early = Fixture(MetHudon)
-        early.loc(GolrieCrate, GolrieCrateCoords)
+        val early = Fixture(MET_HUDON)
+        early.loc(GOLRIE_CRATE, GOLRIE_CRATE_COORDS)
         early.finish()
-        assertEquals(0, early.count(GolrieKey))
+        assertEquals(0, early.count(GOLRIE_KEY))
 
-        val f = Fixture(ReadBook)
-        f.loc(GolrieCrate, GolrieCrateCoords)
+        val f = Fixture(READ_BOOK)
+        f.loc(GOLRIE_CRATE, GOLRIE_CRATE_COORDS)
         f.finish()
-        assertEquals(1, f.count(GolrieKey))
-        f.loc(GolrieCrate, GolrieCrateCoords)
+        assertEquals(1, f.count(GOLRIE_KEY))
+        f.loc(GOLRIE_CRATE, GOLRIE_CRATE_COORDS)
         f.finish()
-        assertEquals(1, f.count(GolrieKey))
+        assertEquals(1, f.count(GOLRIE_KEY))
     }
 
     @Test
     fun `Golrie's gate talks without the key and unlocks with it`() {
-        val none = Fixture(ReadBook)
-        none.player.coords = GateSouth
-        none.loc(GolrieGate, GolrieGateCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
+        val none = Fixture(READ_BOOK)
+        none.player.coords = GATE_SOUTH
+        none.loc(GOLRIE_GATE, GOLRIE_GATE_COORDS, shape = LocShape.WallStraight, angle = LocAngle.North)
         none.finish()
         assertTrue(none.output().contains("Hello, are you okay?"), none.output())
         assertTrue(none.output().contains("but I've left the key somewhere."), none.output())
         assertTrue(none.output().contains("I'll have a look for a key."), none.output())
 
         val unstarted = Fixture()
-        unstarted.player.coords = GateSouth
-        unstarted.loc(GolrieGate, GolrieGateCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
+        unstarted.player.coords = GATE_SOUTH
+        unstarted.loc(GOLRIE_GATE, GOLRIE_GATE_COORDS, shape = LocShape.WallStraight, angle = LocAngle.North)
         unstarted.finish()
         assertTrue(unstarted.output().contains("Leave before you get yourself into trouble."))
 
-        val done = Fixture(Complete)
-        done.player.coords = GateSouth
-        done.loc(GolrieGate, GolrieGateCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
+        val done = Fixture(COMPLETE)
+        done.player.coords = GATE_SOUTH
+        done.loc(GOLRIE_GATE, GOLRIE_GATE_COORDS, shape = LocShape.WallStraight, angle = LocAngle.North)
         done.finish()
         assertTrue(done.output().contains("Golrie has locked himself in."), done.output())
 
-        val keyed = Fixture(ReadBook)
-        keyed.player.coords = GateSouth
-        keyed.give(GolrieKey)
-        keyed.loc(GolrieGate, GolrieGateCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
+        val keyed = Fixture(READ_BOOK)
+        keyed.player.coords = GATE_SOUTH
+        keyed.give(GOLRIE_KEY)
+        keyed.loc(GOLRIE_GATE, GOLRIE_GATE_COORDS, shape = LocShape.WallStraight, angle = LocAngle.North)
         keyed.finish()
         assertTrue(keyed.output().contains("You use the key to unlock the gate."), keyed.output())
-        assertEquals(1, keyed.count(GolrieKey))
+        assertEquals(1, keyed.count(GOLRIE_KEY))
 
-        val inside = Fixture(ReadBook)
-        inside.player.coords = GateSouth.translateZ(2)
-        inside.loc(GolrieGate, GolrieGateCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
+        val inside = Fixture(READ_BOOK)
+        inside.player.coords = GATE_SOUTH.translateZ(2)
+        inside.loc(GOLRIE_GATE, GOLRIE_GATE_COORDS, shape = LocShape.WallStraight, angle = LocAngle.North)
         inside.finish()
         assertTrue(inside.output().contains("You open the gate and walk through."), inside.output())
     }
 
     @Test
     fun `Golrie takes the key back and hands over the pebble`() {
-        val f = Fixture(ReadBook)
-        f.give(GolrieKey)
-        f.talk(GolrieNpc)
+        val f = Fixture(READ_BOOK)
+        f.give(GOLRIE_KEY)
+        f.talk(GOLRIE_NPC)
         f.finish()
-        assertEquals(1, f.count(Pebble))
-        assertEquals(0, f.count(GolrieKey))
+        assertEquals(1, f.count(PEBBLE))
+        assertEquals(0, f.count(GOLRIE_KEY))
         assertTrue(f.player.metGolrie)
         assertTrue(f.output().contains("Could I take this old pebble?"), f.output())
         assertTrue(f.output().contains("You give Golrie the key."), f.output())
         assertTrue(f.output().contains("thanks a lot for the key, traveller."), f.output())
 
-        f.talk(GolrieNpc)
+        f.talk(GOLRIE_NPC)
         f.finish()
-        assertEquals(1, f.count(Pebble))
+        assertEquals(1, f.count(PEBBLE))
         assertTrue(f.output().contains("Any luck getting out?"), f.output())
 
-        f.player.inv[f.player.inv.indexOfFirst { it?.id == Pebble.asRSCM() }] = null
-        f.talk(GolrieNpc)
+        f.player.inv[f.player.inv.indexOfFirst { it?.id == PEBBLE.asRSCM() }] = null
+        f.talk(GOLRIE_NPC)
         f.finish()
-        assertEquals(1, f.count(Pebble))
+        assertEquals(1, f.count(PEBBLE))
         assertTrue(f.output().contains("have another look through this stuff?"), f.output())
     }
 
     @Test
     fun `Golrie does not give the pebble early and a full inventory does not lose it`() {
         val early = Fixture()
-        early.talk(GolrieNpc)
+        early.talk(GOLRIE_NPC)
         early.finish()
-        assertEquals(0, early.count(Pebble))
+        assertEquals(0, early.count(PEBBLE))
         assertFalse(early.player.metGolrie)
         assertTrue(early.output().contains("Leave before you get yourself into trouble."))
 
-        val full = Fixture(ReadBook)
+        val full = Fixture(READ_BOOK)
         full.fillInventory()
-        full.talk(GolrieNpc)
+        full.talk(GOLRIE_NPC)
         full.finish()
-        assertEquals(0, full.count(Pebble))
+        assertEquals(0, full.count(PEBBLE))
         assertTrue(full.output().contains("but you don't have enough room to take it."), full.output())
         assertFalse(full.player.metGolrie)
     }
@@ -473,97 +473,97 @@ class WaterfallInteractionTest {
                 "obj.ardy_cape_easy",
             )
         for (carried in refused) {
-            val f = Fixture(ReadBook)
-            f.player.coords = TombstoneBank
-            f.give(Pebble)
+            val f = Fixture(READ_BOOK)
+            f.player.coords = TOMBSTONE_BANK
+            f.give(PEBBLE)
             f.give(carried)
-            f.useOnLoc(Tombstone, TombstoneCoords, Pebble)
+            f.useOnLoc(TOMBSTONE, TOMBSTONE_COORDS, PEBBLE)
             f.finish()
-            assertEquals(TombstoneBank, f.player.coords, carried)
-            assertEquals(ReadBook, f.stage(), carried)
-            assertTrue(f.output().contains(NothingHappens), "$carried ${f.output()}")
+            assertEquals(TOMBSTONE_BANK, f.player.coords, carried)
+            assertEquals(READ_BOOK, f.stage(), carried)
+            assertTrue(f.output().contains(NOTHING_HAPPENS), "$carried ${f.output()}")
         }
 
-        val worn = Fixture(ReadBook)
-        worn.player.coords = TombstoneBank
-        worn.give(Pebble)
+        val worn = Fixture(READ_BOOK)
+        worn.player.coords = TOMBSTONE_BANK
+        worn.give(PEBBLE)
         worn.player.worn[3] = InvObj("obj.bronze_sword", 1)
-        worn.useOnLoc(Tombstone, TombstoneCoords, Pebble)
+        worn.useOnLoc(TOMBSTONE, TOMBSTONE_COORDS, PEBBLE)
         worn.finish()
-        assertEquals(TombstoneBank, worn.player.coords)
+        assertEquals(TOMBSTONE_BANK, worn.player.coords)
 
-        val peaceful = Fixture(ReadBook)
-        peaceful.player.coords = TombstoneBank
-        peaceful.give(Pebble)
+        val peaceful = Fixture(READ_BOOK)
+        peaceful.player.coords = TOMBSTONE_BANK
+        peaceful.give(PEBBLE)
         peaceful.give("obj.swordfish")
         peaceful.give("obj.coins", 100)
         peaceful.give("obj.tome_of_fire")
         peaceful.player.worn[1] = InvObj("obj.graceful_cape", 1)
-        peaceful.useOnLoc(Tombstone, TombstoneCoords, Pebble)
+        peaceful.useOnLoc(TOMBSTONE, TOMBSTONE_COORDS, PEBBLE)
         peaceful.finish()
-        assertTrue(peaceful.output().contains(SlabSlides), peaceful.output())
+        assertTrue(peaceful.output().contains(SLAB_SLIDES), peaceful.output())
         assertEquals(WaterfallCoords.TOMB_ENTRY, peaceful.player.coords)
-        assertEquals(EnteredTomb, peaceful.stage())
-        assertEquals(1, peaceful.count(Pebble))
+        assertEquals(ENTERED_TOMB, peaceful.stage())
+        assertEquals(1, peaceful.count(PEBBLE))
     }
 
     @Test
     fun `the tombstone can be read and entering the tomb never starts the quest`() {
         val f = Fixture()
-        f.loc(Tombstone, TombstoneCoords)
+        f.loc(TOMBSTONE, TOMBSTONE_COORDS)
         f.finish()
-        assertTrue(f.output().contains(TombstoneText), f.output())
+        assertTrue(f.output().contains(TOMBSTONE_TEXT), f.output())
 
-        f.give(Pebble)
-        f.useOnLoc(Tombstone, TombstoneCoords, Pebble)
+        f.give(PEBBLE)
+        f.useOnLoc(TOMBSTONE, TOMBSTONE_COORDS, PEBBLE)
         f.finish()
         assertEquals(0, f.stage())
     }
 
     @Test
     fun `the tomb chest and coffin give the amulet and urn once each`() {
-        val f = Fixture(EnteredTomb)
-        f.loc(ChestOpen, ChestCoords)
+        val f = Fixture(ENTERED_TOMB)
+        f.loc(CHEST_OPEN, CHEST_COORDS)
         f.finish()
-        assertEquals(1, f.count(Amulet))
-        f.loc(ChestOpen, ChestCoords)
+        assertEquals(1, f.count(AMULET))
+        f.loc(CHEST_OPEN, CHEST_COORDS)
         f.finish()
-        assertEquals(1, f.count(Amulet))
+        assertEquals(1, f.count(AMULET))
         assertTrue(f.output().contains("find nothing"), f.output())
 
-        f.loc(Coffin, CoffinCoords)
+        f.loc(COFFIN, COFFIN_COORDS)
         f.finish()
-        assertEquals(1, f.count(UrnFull))
-        f.loc(Coffin, CoffinCoords)
+        assertEquals(1, f.count(URN_FULL))
+        f.loc(COFFIN, COFFIN_COORDS)
         f.finish()
-        assertEquals(1, f.count(UrnFull))
+        assertEquals(1, f.count(URN_FULL))
     }
 
     @Test
     fun `the chest gives a replacement amulet once the first one is gone`() {
-        val f = Fixture(EnteredFalls)
-        f.give(Amulet)
-        f.loc(ChestOpen, ChestCoords)
+        val f = Fixture(ENTERED_FALLS)
+        f.give(AMULET)
+        f.loc(CHEST_OPEN, CHEST_COORDS)
         f.finish()
-        assertEquals(1, f.count(Amulet))
+        assertEquals(1, f.count(AMULET))
 
-        f.player.inv[f.player.inv.indexOfFirst { it?.id == Amulet.asRSCM() }] = null
-        f.loc(ChestOpen, ChestCoords)
+        f.player.inv[f.player.inv.indexOfFirst { it?.id == AMULET.asRSCM() }] = null
+        f.loc(CHEST_OPEN, CHEST_COORDS)
         f.finish()
-        assertEquals(1, f.count(Amulet))
+        assertEquals(1, f.count(AMULET))
 
-        val worn = Fixture(EnteredFalls)
-        worn.player.worn[2] = InvObj(Amulet, 1)
-        worn.loc(ChestOpen, ChestCoords)
+        val worn = Fixture(ENTERED_FALLS)
+        worn.player.worn[2] = InvObj(AMULET, 1)
+        worn.loc(CHEST_OPEN, CHEST_COORDS)
         worn.finish()
-        assertEquals(0, worn.count(Amulet))
+        assertEquals(0, worn.count(AMULET))
     }
 
     @Test
     fun `climbing the tree without a rope drops the player in the river`() {
-        val f = Fixture(EnteredTomb)
+        val f = Fixture(ENTERED_TOMB)
         f.player.coords = WaterfallCoords.TREE_ISLAND
-        f.loc(Tree, TreeCoords)
+        f.loc(TREE, TREE_COORDS)
         f.finish()
         assertEquals(WaterfallCoords.DOWNSTREAM, f.player.coords)
         assertTrue(f.output().contains("You try to use the tree to climb down..."), f.output())
@@ -572,26 +572,26 @@ class WaterfallInteractionTest {
 
     @Test
     fun `the rope on the rock and then the tree leads to the ledge`() {
-        val f = Fixture(EnteredTomb)
+        val f = Fixture(ENTERED_TOMB)
         f.player.coords = WaterfallCoords.RAFT_CRASH
-        f.give(Rope)
-        f.useOnLoc(Rock, RockCoords, Rope)
+        f.give(ROPE)
+        f.useOnLoc(ROCK, ROCK_COORDS, ROPE)
         f.finish()
         assertEquals(WaterfallCoords.TREE_ISLAND, f.player.coords)
-        assertEquals(1, f.count(Rope))
+        assertEquals(1, f.count(ROPE))
 
-        f.useOnLoc(Tree, TreeCoords, Rope)
+        f.useOnLoc(TREE, TREE_COORDS, ROPE)
         f.finish()
         assertEquals(WaterfallCoords.LEDGE, f.player.coords)
-        assertEquals(1, f.count(Rope))
+        assertEquals(1, f.count(ROPE))
         assertTrue(f.output().contains("You tie the rope to the tree and climb down to the ledge below."))
     }
 
     @Test
     fun `the barrel brings the player back down the river`() {
-        val f = Fixture(EnteredTomb)
+        val f = Fixture(ENTERED_TOMB)
         f.player.coords = WaterfallCoords.LEDGE
-        f.loc(Barrel, BarrelCoords)
+        f.loc(BARREL, BARREL_COORDS)
         f.finish()
         assertEquals(WaterfallCoords.DOWNSTREAM, f.player.coords)
         assertTrue(f.output().contains("You climb into the barrel and push off the edge."))
@@ -600,49 +600,49 @@ class WaterfallInteractionTest {
 
     @Test
     fun `the waterfall door needs the amulet worn`() {
-        val none = Fixture(EnteredTomb)
+        val none = Fixture(ENTERED_TOMB)
         none.player.coords = WaterfallCoords.LEDGE
-        none.loc(LedgeDoor, LedgeDoorCoords, shape = LocShape.CentrepieceStraight)
+        none.loc(LEDGE_DOOR, LEDGE_DOOR_COORDS, shape = LocShape.CentrepieceStraight)
         none.finish()
         assertEquals(WaterfallCoords.DOWNSTREAM, none.player.coords)
-        assertEquals(EnteredTomb, none.stage())
-        assertTrue(none.output().contains(LedgeFlooded), none.output())
+        assertEquals(ENTERED_TOMB, none.stage())
+        assertTrue(none.output().contains(LEDGE_FLOODED), none.output())
         assertTrue(none.output().contains("...you are pushed over the waterfall and into the river."))
 
-        val packed = Fixture(EnteredTomb)
+        val packed = Fixture(ENTERED_TOMB)
         packed.player.coords = WaterfallCoords.LEDGE
-        packed.give(Amulet)
-        packed.loc(LedgeDoor, LedgeDoorCoords, shape = LocShape.CentrepieceStraight)
+        packed.give(AMULET)
+        packed.loc(LEDGE_DOOR, LEDGE_DOOR_COORDS, shape = LocShape.CentrepieceStraight)
         packed.finish()
         assertEquals(WaterfallCoords.DOWNSTREAM, packed.player.coords)
-        assertEquals(EnteredTomb, packed.stage())
-        assertTrue(packed.output().contains(LedgeFlooded), packed.output())
+        assertEquals(ENTERED_TOMB, packed.stage())
+        assertTrue(packed.output().contains(LEDGE_FLOODED), packed.output())
 
-        val worn = Fixture(EnteredTomb)
+        val worn = Fixture(ENTERED_TOMB)
         worn.player.coords = WaterfallCoords.LEDGE
-        worn.player.worn[2] = InvObj(Amulet, 1)
-        worn.loc(LedgeDoor, LedgeDoorCoords, shape = LocShape.CentrepieceStraight)
+        worn.player.worn[2] = InvObj(AMULET, 1)
+        worn.loc(LEDGE_DOOR, LEDGE_DOOR_COORDS, shape = LocShape.CentrepieceStraight)
         worn.finish()
         assertEquals(WaterfallCoords.FALLS_ENTRY, worn.player.coords)
-        assertEquals(EnteredFalls, worn.stage())
+        assertEquals(ENTERED_FALLS, worn.stage())
         assertTrue(worn.output().contains("You enter the waterfall."), worn.output())
     }
 
     @Test
     fun `after the quest the falls open without the amulet and the stage stays`() {
-        val f = Fixture(Complete)
+        val f = Fixture(COMPLETE)
         f.player.coords = WaterfallCoords.LEDGE
-        f.loc(LedgeDoor, LedgeDoorCoords, shape = LocShape.CentrepieceStraight)
+        f.loc(LEDGE_DOOR, LEDGE_DOOR_COORDS, shape = LocShape.CentrepieceStraight)
         f.finish()
         assertEquals(WaterfallCoords.FALLS_ENTRY, f.player.coords)
-        assertEquals(Complete, f.stage())
+        assertEquals(COMPLETE, f.stage())
     }
 
     @Test
     fun `the exit door leads back to the ledge`() {
-        val f = Fixture(EnteredFalls)
+        val f = Fixture(ENTERED_FALLS)
         f.player.coords = WaterfallCoords.FALLS_ENTRY
-        f.loc(ExitDoor, ExitDoorCoords, shape = LocShape.WallStraight, angle = LocAngle.South)
+        f.loc(EXIT_DOOR, EXIT_DOOR_COORDS, shape = LocShape.WallStraight, angle = LocAngle.South)
         f.finish()
         assertEquals(WaterfallCoords.LEDGE, f.player.coords)
         assertTrue(f.output().contains("You exit the dungeon."), f.output())
@@ -650,75 +650,75 @@ class WaterfallInteractionTest {
 
     @Test
     fun `the dungeon crate holds one key and the locked doors need it from the south`() {
-        val f = Fixture(EnteredFalls)
-        f.loc(Crate, CrateCoords, angle = LocAngle.North)
+        val f = Fixture(ENTERED_FALLS)
+        f.loc(CRATE, CRATE_COORDS, angle = LocAngle.North)
         f.finish()
-        assertEquals(1, f.count(BaxtorianKey))
-        f.loc(Crate, CrateCoords, angle = LocAngle.North)
+        assertEquals(1, f.count(BAXTORIAN_KEY))
+        f.loc(CRATE, CRATE_COORDS, angle = LocAngle.North)
         f.finish()
-        assertEquals(1, f.count(BaxtorianKey))
+        assertEquals(1, f.count(BAXTORIAN_KEY))
 
-        val locked = Fixture(EnteredFalls)
-        locked.player.coords = TombDoorSouth
-        locked.loc(TombDoor, TombDoorCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
+        val locked = Fixture(ENTERED_FALLS)
+        locked.player.coords = TOMB_DOOR_SOUTH
+        locked.loc(TOMB_DOOR, TOMB_DOOR_COORDS, shape = LocShape.WallStraight, angle = LocAngle.North)
         locked.finish()
         assertTrue(locked.output().contains("The door is locked."), locked.output())
 
-        val keyed = Fixture(EnteredFalls)
-        keyed.player.coords = TombDoorSouth
-        keyed.give(BaxtorianKey)
-        keyed.loc(TombDoor, TombDoorCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
+        val keyed = Fixture(ENTERED_FALLS)
+        keyed.player.coords = TOMB_DOOR_SOUTH
+        keyed.give(BAXTORIAN_KEY)
+        keyed.loc(TOMB_DOOR, TOMB_DOOR_COORDS, shape = LocShape.WallStraight, angle = LocAngle.North)
         keyed.finish()
         assertTrue(keyed.output().contains("You use the key to unlock the door."), keyed.output())
-        assertEquals(1, keyed.count(BaxtorianKey))
+        assertEquals(1, keyed.count(BAXTORIAN_KEY))
 
-        val inside = Fixture(EnteredFalls)
-        inside.player.coords = TombDoorSouth.translateZ(2)
-        inside.loc(TombDoor, TombDoorCoords, shape = LocShape.WallStraight, angle = LocAngle.North)
+        val inside = Fixture(ENTERED_FALLS)
+        inside.player.coords = TOMB_DOOR_SOUTH.translateZ(2)
+        inside.loc(TOMB_DOOR, TOMB_DOOR_COORDS, shape = LocShape.WallStraight, angle = LocAngle.North)
         inside.finish()
         assertFalse(inside.output().contains("The door is locked."), inside.output())
     }
 
     @Test
     fun `each pillar takes one rune of each kind and the sixth charge moves the quest on`() {
-        val f = Fixture(EnteredFalls)
-        f.player.coords = RoomCenter
+        val f = Fixture(ENTERED_FALLS)
+        f.player.coords = ROOM_CENTER
         f.give("obj.airrune", 6)
         f.give("obj.waterrune", 6)
         f.give("obj.earthrune", 6)
 
-        f.useOnLoc(Pillar, PillarCoords[0], "obj.airrune")
+        f.useOnLoc(PILLAR, PILLAR_COORDS[0], "obj.airrune")
         f.finish()
         assertEquals(5, f.count("obj.airrune"))
         assertEquals(1, f.player.pillarRunes)
 
-        f.useOnLoc(Pillar, PillarCoords[0], "obj.airrune")
+        f.useOnLoc(PILLAR, PILLAR_COORDS[0], "obj.airrune")
         f.finish()
         assertEquals(5, f.count("obj.airrune"))
         assertEquals(1, f.player.pillarRunes)
         assertTrue(f.output().contains("You've already put that type of rune on this pillar."))
         assertTrue(f.output().contains("You place the rune on the pillar. It disappears in a puff of smoke."))
 
-        for ((index, pillar) in PillarCoords.withIndex()) {
+        for ((index, pillar) in PILLAR_COORDS.withIndex()) {
             for (rune in listOf("obj.airrune", "obj.waterrune", "obj.earthrune")) {
                 if (index == 0 && rune == "obj.airrune") continue
-                f.useOnLoc(Pillar, pillar, rune)
+                f.useOnLoc(PILLAR, pillar, rune)
                 f.finish()
             }
         }
-        assertEquals(WaterfallQuest.AllPillarRunes, f.player.pillarRunes)
+        assertEquals(WaterfallQuest.ALL_PILLAR_RUNES, f.player.pillarRunes)
         assertEquals(0, f.count("obj.airrune") + f.count("obj.waterrune") + f.count("obj.earthrune"))
-        assertEquals(RunesPlaced, f.stage())
+        assertEquals(RUNES_PLACED, f.stage())
         assertTrue(f.quest.allRunesPlaced(f.player))
         assertTrue(f.journal().contains("place <red>Glarial's amulet"), f.journal())
     }
 
     @Test
     fun `other runes and other pillars are not accepted`() {
-        val f = Fixture(EnteredFalls)
-        f.player.coords = RoomCenter
+        val f = Fixture(ENTERED_FALLS)
+        f.player.coords = ROOM_CENTER
         f.give("obj.firerune", 2)
-        f.useOnLoc(Pillar, PillarCoords[0], "obj.firerune", handled = false)
+        f.useOnLoc(PILLAR, PILLAR_COORDS[0], "obj.firerune", handled = false)
         f.finish()
         assertEquals(2, f.count("obj.firerune"))
         assertEquals(0, f.player.pillarRunes)
@@ -726,69 +726,69 @@ class WaterfallInteractionTest {
 
     @Test
     fun `the amulet before the pillars are charged floods the room and is lost`() {
-        val f = Fixture(EnteredFalls)
-        f.player.coords = RoomCenter
-        f.give(Amulet)
-        f.useOnLoc(Statue, StatueCoords, Amulet)
+        val f = Fixture(ENTERED_FALLS)
+        f.player.coords = ROOM_CENTER
+        f.give(AMULET)
+        f.useOnLoc(STATUE, STATUE_COORDS, AMULET)
         f.finish()
         assertEquals(WaterfallCoords.DOWNSTREAM, f.player.coords)
-        assertEquals(0, f.count(Amulet))
-        assertEquals(EnteredFalls, f.stage())
+        assertEquals(0, f.count(AMULET))
+        assertEquals(ENTERED_FALLS, f.stage())
         assertTrue(f.output().contains("However, water floods into the room as you do..."))
         assertTrue(f.output().contains("...you are washed out of the cave and down the river."))
     }
 
     @Test
     fun `the amulet on the statue raises the floor and only then can the urn be poured`() {
-        val f = Fixture(RunesPlaced)
-        f.player.pillarRunes = WaterfallQuest.AllPillarRunes
-        f.player.coords = RoomCenter
-        f.give(Amulet)
-        f.give(UrnFull)
-        f.useOnLoc(Statue, StatueCoords, Amulet)
+        val f = Fixture(RUNES_PLACED)
+        f.player.pillarRunes = WaterfallQuest.ALL_PILLAR_RUNES
+        f.player.coords = ROOM_CENTER
+        f.give(AMULET)
+        f.give(URN_FULL)
+        f.useOnLoc(STATUE, STATUE_COORDS, AMULET)
         f.finish()
         assertTrue(f.output().contains("You hear a loud rumble from beneath as the floor rises."))
-        assertEquals(RoomCenter.translate(38, -1), f.player.coords)
-        assertEquals(0, f.count(Amulet))
-        assertEquals(FloorRisen, f.stage())
+        assertEquals(ROOM_CENTER.translate(38, -1), f.player.coords)
+        assertEquals(0, f.count(AMULET))
+        assertEquals(FLOOR_RISEN, f.stage())
         assertTrue(f.journal().contains("pouring her ashes"), f.journal())
 
-        f.give(Amulet)
-        f.useOnLoc(Statue, StatueCoords.translate(38, -1), Amulet)
+        f.give(AMULET)
+        f.useOnLoc(STATUE, STATUE_COORDS.translate(38, -1), AMULET)
         f.finish()
-        assertEquals(FloorRisen, f.stage())
+        assertEquals(FLOOR_RISEN, f.stage())
 
-        f.useOnLoc(Chalice, ChaliceCoords, UrnFull)
+        f.useOnLoc(CHALICE, CHALICE_COORDS, URN_FULL)
         f.finish()
         f.assertRewards()
         assertTrue(f.output().contains("You carefully pour the ashes into the chalice and remove"))
-        assertEquals(1, f.count(UrnEmpty))
-        assertEquals(0, f.count(UrnFull))
+        assertEquals(1, f.count(URN_EMPTY))
+        assertEquals(0, f.count(URN_FULL))
         assertTrue(f.player.ui.containsModal("interface.questscroll"))
     }
 
     @Test
     fun `the urn cannot be poured before the floor has risen`() {
-        val f = Fixture(RunesPlaced)
-        f.player.coords = RoomCenter
-        f.give(UrnFull)
-        f.useOnLoc(Chalice, ChaliceCoords, UrnFull)
+        val f = Fixture(RUNES_PLACED)
+        f.player.coords = ROOM_CENTER
+        f.give(URN_FULL)
+        f.useOnLoc(CHALICE, CHALICE_COORDS, URN_FULL)
         f.finish()
-        assertEquals(RunesPlaced, f.stage())
-        assertEquals(1, f.count(UrnFull))
+        assertEquals(RUNES_PLACED, f.stage())
+        assertEquals(1, f.count(URN_FULL))
         assertTrue(f.output().contains("can't reach the chalice"), f.output())
     }
 
     @Test
     fun `taking the treasure without the ashes floods the room and keeps the urn`() {
-        val f = Fixture(FloorRisen)
-        f.player.coords = RoomCenter.translate(38, -1)
-        f.give(UrnFull)
-        f.loc(Chalice, ChaliceCoords)
+        val f = Fixture(FLOOR_RISEN)
+        f.player.coords = ROOM_CENTER.translate(38, -1)
+        f.give(URN_FULL)
+        f.loc(CHALICE, CHALICE_COORDS)
         f.finish()
         assertEquals(WaterfallCoords.DOWNSTREAM, f.player.coords)
-        assertEquals(FloorRisen, f.stage())
-        assertEquals(1, f.count(UrnFull))
+        assertEquals(FLOOR_RISEN, f.stage())
+        assertEquals(1, f.count(URN_FULL))
         assertEquals(0, f.player.vars["varp.qp"])
         assertTrue(f.output().contains("You go to take the treasure from the chalice."))
         assertTrue(f.output().contains("...you are washed out of the cave and down the river."))
@@ -796,43 +796,43 @@ class WaterfallInteractionTest {
 
     @Test
     fun `a full inventory cannot pour the urn and loses nothing`() {
-        val f = Fixture(FloorRisen)
-        f.player.coords = RoomCenter.translate(38, -1)
-        f.give(UrnFull)
+        val f = Fixture(FLOOR_RISEN)
+        f.player.coords = ROOM_CENTER.translate(38, -1)
+        f.give(URN_FULL)
         f.fillInventory()
-        f.useOnLoc(Chalice, ChaliceCoords, UrnFull)
+        f.useOnLoc(CHALICE, CHALICE_COORDS, URN_FULL)
         f.finish()
-        assertEquals(FloorRisen, f.stage())
-        assertEquals(1, f.count(UrnFull))
+        assertEquals(FLOOR_RISEN, f.stage())
+        assertEquals(1, f.count(URN_FULL))
         assertTrue(f.output().contains("5 free inventory spaces"), f.output())
         assertEquals(0, f.player.vars["varp.qp"])
     }
 
     @Test
     fun `the rewards come exactly once and the chalice is empty afterwards`() {
-        val f = Fixture(FloorRisen)
-        f.player.coords = RoomCenter.translate(38, -1)
-        f.give(UrnFull)
-        f.useOnLoc(Chalice, ChaliceCoords, UrnFull)
+        val f = Fixture(FLOOR_RISEN)
+        f.player.coords = ROOM_CENTER.translate(38, -1)
+        f.give(URN_FULL)
+        f.useOnLoc(CHALICE, CHALICE_COORDS, URN_FULL)
         f.finish()
         f.assertRewards()
 
-        f.give(UrnFull)
-        f.useOnLoc(Chalice, ChaliceCoords, UrnFull)
+        f.give(URN_FULL)
+        f.useOnLoc(CHALICE, CHALICE_COORDS, URN_FULL)
         f.finish()
-        f.loc(Chalice, ChaliceCoords)
+        f.loc(CHALICE, CHALICE_COORDS)
         f.finish()
         f.assertRewards()
-        assertEquals(1, f.count(UrnFull))
+        assertEquals(1, f.count(URN_FULL))
         assertTrue(f.output().contains("The chalice only contains some old ashes."), f.output())
         assertTrue(f.quest.completedLog(f.access()).contains("chalice of eternity"))
     }
 
     @Test
     fun `leaving the raised room through its doors lands in the corridor of the real room`() {
-        val f = Fixture(FloorRisen)
+        val f = Fixture(FLOOR_RISEN)
         f.player.coords = CoordGrid(2604, 9901, 0)
-        f.loc(TombDoor, CoordGrid(2604, 9900, 0), shape = LocShape.WallStraight, angle = LocAngle.North)
+        f.loc(TOMB_DOOR, CoordGrid(2604, 9900, 0), shape = LocShape.WallStraight, angle = LocAngle.North)
         f.finish()
         assertEquals(CoordGrid(2566, 9901, 0), f.player.coords)
     }
@@ -840,7 +840,7 @@ class WaterfallInteractionTest {
     @Test
     fun `Hadley answers the tourist questions word for word`() {
         val f = Fixture()
-        f.talk(HadleyNpc)
+        f.talk(HADLEY_NPC)
         f.finish(listOf(2, 3, 4))
         val wildlife =
             "Well, there's a wide variety of wildlife, although unfortunately most of it's " +
@@ -851,7 +851,7 @@ class WaterfallInteractionTest {
 
         val lady = Fixture()
         lady.player.appearance.bodyType = Appearance.BODY_TYPE_B
-        lady.talk(HadleyNpc)
+        lady.talk(HADLEY_NPC)
         lady.finish(listOf(4))
         assertTrue(lady.output().contains("Surely pretty is an understatement, lady."))
     }
@@ -859,9 +859,9 @@ class WaterfallInteractionTest {
     @Test
     fun `Hudon cannot be heard before the quest even from the island`() {
         val f = Fixture()
-        f.talk(HudonNpc)
+        f.talk(HUDON_NPC)
         f.finish()
-        assertTrue(f.output().contains(NoiseOfTheWaterfall), f.output())
+        assertTrue(f.output().contains(NOISE_OF_THE_WATERFALL), f.output())
     }
 
     @Test
@@ -869,25 +869,25 @@ class WaterfallInteractionTest {
         val f = Fixture()
         val expected =
             mapOf(
-                Started to "log raft",
-                MetHudon to "Hadley",
-                ReadBook to "Glarial's pebble",
-                EnteredTomb to "amulet",
-                EnteredFalls to "A key somewhere",
-                RunesPlaced to "The pillars are charged",
-                FloorRisen to "pouring her ashes",
+                STARTED to "log raft",
+                MET_HUDON to "Hadley",
+                READ_BOOK to "Glarial's pebble",
+                ENTERED_TOMB to "amulet",
+                ENTERED_FALLS to "A key somewhere",
+                RUNES_PLACED to "The pillars are charged",
+                FLOOR_RISEN to "pouring her ashes",
             )
         for ((stage, text) in expected) {
             f.stageTo(stage)
             assertTrue(f.journal().contains(text), "stage $stage: ${f.journal()}")
         }
-        f.stageTo(Complete)
+        f.stageTo(COMPLETE)
         assertTrue(f.quest.completedLog(f.access()).contains("Almera asked me"))
     }
 
     @Test
     fun `the quest ends at the stage the cache expects`() {
-        assertEquals(Complete, Fixture().quest.quest.maxSteps)
+        assertEquals(COMPLETE, Fixture().quest.quest.maxSteps)
     }
 
     private class Fixture(stage: Int = 0) {
@@ -949,7 +949,7 @@ class WaterfallInteractionTest {
                 observerUUID = 1465L
                 slotId = 1
                 assignUid()
-                coords = RaftBank
+                coords = RAFT_BANK
                 currentMapClock = 100
                 processedMapClock = 100
                 inv =
@@ -1160,8 +1160,8 @@ class WaterfallInteractionTest {
         }
 
         fun assertRewards() {
-            assertEquals(Complete, stage())
-            assertEquals(Complete, player.vars["varp.waterfall_quest"])
+            assertEquals(COMPLETE, stage())
+            assertEquals(COMPLETE, player.vars["varp.waterfall_quest"])
             assertEquals(1, player.vars["varp.qp"])
             assertEquals(13750, player.statMap.getXP("stat.attack"))
             assertEquals(13750, player.statMap.getXP("stat.strength"))
@@ -1192,61 +1192,61 @@ class WaterfallInteractionTest {
     }
 
     companion object {
-        private val AlmeraNpc = WaterfallQuest.AlmeraNpc
-        private val HudonNpc = WaterfallQuest.HudonNpc
-        private val GeraldNpc = WaterfallQuest.GeraldNpc
-        private val HadleyNpc = WaterfallQuest.HadleyNpc
-        private val GolrieNpc = WaterfallQuest.GolrieNpc
+        private val ALMERA_NPC = WaterfallQuest.ALMERA_NPC
+        private val HUDON_NPC = WaterfallQuest.HUDON_NPC
+        private val GERALD_NPC = WaterfallQuest.GERALD_NPC
+        private val HADLEY_NPC = WaterfallQuest.HADLEY_NPC
+        private val GOLRIE_NPC = WaterfallQuest.GOLRIE_NPC
 
-        private const val RaftUnsafe =
+        private const val RAFT_UNSAFE =
             "You're not sure if the raft is safe to use. Best to leave it alone."
-        private const val NoiseOfTheWaterfall =
+        private const val NOISE_OF_THE_WATERFALL =
             "Hudon can't hear you because of the noise of the waterfall. Perhaps the acoustics " +
                 "would be better from that island?"
-        private const val NothingHappens =
+        private const val NOTHING_HAPPENS =
             "You place the pebble in the gravestone's small indent but nothing happens."
-        private const val SlabSlides =
+        private const val SLAB_SLIDES =
             "You place the pebble in the gravestone's small indent. The stone slab slides back " +
                 "revealing a ladder. You climb down it."
-        private const val TombstoneText =
+        private const val TOMBSTONE_TEXT =
             "Here lies Glarial, wife of Baxtorian, true friend of nature in life and death. " +
                 "May she now rest knowing only visitors with peaceful intent can enter."
-        private const val LedgeFlooded =
+        private const val LEDGE_FLOODED =
             "You try to open the door, but the ledge is suddenly flooded with water..."
 
-        private const val Raft = "loc.lograft_waterfall_quest"
-        private const val River = "loc.waterfall_swim_point"
-        private const val Rock = "loc.crossing_rock_waterfall_quest"
-        private const val Tree = "loc.overhanging_tree1_waterfall_quest"
-        private const val LedgeDoor = "loc.waterfall_ledge_door"
-        private const val Barrel = "loc.barrel_waterfall_quest"
-        private const val Bookcase = "loc.bookcase_waterfall_quest"
-        private const val GolrieCrate = "loc.golrie_crate_waterfall_quest"
-        private const val GolrieGate = "loc.golrie_gate_waterfall_quest"
-        private const val Tombstone = "loc.glarials_tombstone_waterfall_quest"
-        private const val ChestOpen = "loc.glarials_chest_open_waterfall_quest"
-        private const val Coffin = "loc.glarials_tomb_waterfall_quest"
-        private const val ExitDoor = "loc.baxtorian_door_waterfall_quest"
-        private const val Crate = "loc.baxtorian_crate_waterfall_quest"
-        private const val TombDoor = "loc.baxtorian_door_2_waterfall_quest"
-        private const val Pillar = "loc.stonepillar_small_waterfall_quest_op"
-        private const val Statue = "loc.statue_queen_waterfall_quest"
-        private const val Chalice = "loc.baxtorian_chalice_waterfall_quest"
+        private const val RAFT = "loc.lograft_waterfall_quest"
+        private const val RIVER = "loc.waterfall_swim_point"
+        private const val ROCK = "loc.crossing_rock_waterfall_quest"
+        private const val TREE = "loc.overhanging_tree1_waterfall_quest"
+        private const val LEDGE_DOOR = "loc.waterfall_ledge_door"
+        private const val BARREL = "loc.barrel_waterfall_quest"
+        private const val BOOKCASE = "loc.bookcase_waterfall_quest"
+        private const val GOLRIE_CRATE = "loc.golrie_crate_waterfall_quest"
+        private const val GOLRIE_GATE = "loc.golrie_gate_waterfall_quest"
+        private const val TOMBSTONE = "loc.glarials_tombstone_waterfall_quest"
+        private const val CHEST_OPEN = "loc.glarials_chest_open_waterfall_quest"
+        private const val COFFIN = "loc.glarials_tomb_waterfall_quest"
+        private const val EXIT_DOOR = "loc.baxtorian_door_waterfall_quest"
+        private const val CRATE = "loc.baxtorian_crate_waterfall_quest"
+        private const val TOMB_DOOR = "loc.baxtorian_door_2_waterfall_quest"
+        private const val PILLAR = "loc.stonepillar_small_waterfall_quest_op"
+        private const val STATUE = "loc.statue_queen_waterfall_quest"
+        private const val CHALICE = "loc.baxtorian_chalice_waterfall_quest"
 
-        private val GeraldCoords = CoordGrid(2528, 3414, 0)
-        private val RaftBank = CoordGrid(2510, 3492, 0)
-        private val RaftCoords = CoordGrid(2509, 3493, 0)
-        private val HudonCoords = CoordGrid(2511, 3484, 0)
-        private val RiverCoords = CoordGrid(2512, 3475, 0)
-        private val RockCoords = CoordGrid(2512, 3468, 0)
-        private val TreeCoords = CoordGrid(2512, 3465, 0)
-        private val LedgeDoorCoords = CoordGrid(2511, 3464, 0)
-        private val BarrelCoords = CoordGrid(2512, 3463, 1)
-        private val BookcaseCoords = CoordGrid(2520, 3426, 1)
-        private val TouristBookcaseThin = CoordGrid(2516, 3431, 1)
-        private val TouristBookcaseWide = CoordGrid(2517, 3424, 1)
-        private val OutsideBookcase = CoordGrid(2518, 3493, 0)
-        private val Uninteresting =
+        private val GERALD_COORDS = CoordGrid(2528, 3414, 0)
+        private val RAFT_BANK = CoordGrid(2510, 3492, 0)
+        private val RAFT_COORDS = CoordGrid(2509, 3493, 0)
+        private val HUDON_COORDS = CoordGrid(2511, 3484, 0)
+        private val RIVER_COORDS = CoordGrid(2512, 3475, 0)
+        private val ROCK_COORDS = CoordGrid(2512, 3468, 0)
+        private val TREE_COORDS = CoordGrid(2512, 3465, 0)
+        private val LEDGE_DOOR_COORDS = CoordGrid(2511, 3464, 0)
+        private val BARREL_COORDS = CoordGrid(2512, 3463, 1)
+        private val BOOKCASE_COORDS = CoordGrid(2520, 3426, 1)
+        private val TOURIST_BOOKCASE_THIN = CoordGrid(2516, 3431, 1)
+        private val TOURIST_BOOKCASE_WIDE = CoordGrid(2517, 3424, 1)
+        private val OUTSIDE_BOOKCASE = CoordGrid(2518, 3493, 0)
+        private val UNINTERESTING =
             listOf(
                 "You don't find anything that you'd ever want to read.",
                 "You find nothing to interest you.",
@@ -1257,21 +1257,21 @@ class WaterfallInteractionTest {
             val type = checkNotNull(ServerCacheManager.getObject("loc.bookcase".asRSCM(RSCMType.LOC)))
             return BoundLocInfo(LocInfo(2, coords, LocEntity(type.id, 10, 0)), type)
         }
-        private val GolrieCrateCoords = CoordGrid(2548, 9565, 0)
-        private val GolrieGateCoords = CoordGrid(2515, 9575, 0)
-        private val GateSouth = CoordGrid(2515, 9574, 0)
-        private val TombstoneCoords = CoordGrid(2558, 3444, 0)
-        private val TombstoneBank = CoordGrid(2558, 3443, 0)
-        private val ChestCoords = CoordGrid(2530, 9844, 0)
-        private val CoffinCoords = CoordGrid(2542, 9811, 0)
-        private val ExitDoorCoords = CoordGrid(2575, 9861, 0)
-        private val CrateCoords = CoordGrid(2589, 9888, 0)
-        private val TombDoorCoords = CoordGrid(2568, 9893, 0)
-        private val TombDoorSouth = CoordGrid(2568, 9892, 0)
-        private val RoomCenter = CoordGrid(2565, 9908, 0)
-        private val StatueCoords = CoordGrid(2565, 9916, 0)
-        private val ChaliceCoords = CoordGrid(2603, 9910, 0)
-        private val PillarCoords =
+        private val GOLRIE_CRATE_COORDS = CoordGrid(2548, 9565, 0)
+        private val GOLRIE_GATE_COORDS = CoordGrid(2515, 9575, 0)
+        private val GATE_SOUTH = CoordGrid(2515, 9574, 0)
+        private val TOMBSTONE_COORDS = CoordGrid(2558, 3444, 0)
+        private val TOMBSTONE_BANK = CoordGrid(2558, 3443, 0)
+        private val CHEST_COORDS = CoordGrid(2530, 9844, 0)
+        private val COFFIN_COORDS = CoordGrid(2542, 9811, 0)
+        private val EXIT_DOOR_COORDS = CoordGrid(2575, 9861, 0)
+        private val CRATE_COORDS = CoordGrid(2589, 9888, 0)
+        private val TOMB_DOOR_COORDS = CoordGrid(2568, 9893, 0)
+        private val TOMB_DOOR_SOUTH = CoordGrid(2568, 9892, 0)
+        private val ROOM_CENTER = CoordGrid(2565, 9908, 0)
+        private val STATUE_COORDS = CoordGrid(2565, 9916, 0)
+        private val CHALICE_COORDS = CoordGrid(2603, 9910, 0)
+        private val PILLAR_COORDS =
             listOf(2562, 2569).flatMap { x -> listOf(9910, 9912, 9914).map { z -> CoordGrid(x, z, 0) } }
 
         private val restored = mutableListOf<() -> Unit>()

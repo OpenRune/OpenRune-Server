@@ -8,10 +8,10 @@ import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLocU
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Amulet
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.EnteredTomb
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Pebble
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.UrnFull
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.AMULET
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ENTERED_TOMB
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.PEBBLE
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.URN_FULL
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -29,12 +29,12 @@ constructor(
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpLoc1(Tombstone) { readTombstone() }
-        onOpLocU(Tombstone, Pebble) { placePebble() }
-        onOpLoc1(ChestClosed) { openChest(it.loc) }
-        onOpLoc1(ChestOpen) { searchChest() }
-        onOpLoc2(ChestOpen) { shutChest(it.loc) }
-        onOpLoc1(Coffin) { searchCoffin() }
+        onOpLoc1(TOMBSTONE) { readTombstone() }
+        onOpLocU(TOMBSTONE, PEBBLE) { placePebble() }
+        onOpLoc1(CHEST_CLOSED) { openChest(it.loc) }
+        onOpLoc1(CHEST_OPEN) { searchChest() }
+        onOpLoc2(CHEST_OPEN) { shutChest(it.loc) }
+        onOpLoc1(COFFIN) { searchCoffin() }
     }
 
     private suspend fun ProtectedAccess.readTombstone() {
@@ -53,24 +53,24 @@ constructor(
             "You place the pebble in the gravestone's small indent. The stone slab slides back " +
                 "revealing a ladder. You climb down it."
         )
-        soundSynth(SlabSound)
-        anim(ClimbSeq)
+        soundSynth(SLAB_SOUND)
+        anim(CLIMB_SEQ)
         delay(1)
         telejump(WaterfallCoords.TOMB_ENTRY, TeleportType.Exempt)
-        waterfall.advanceTo(this, EnteredTomb)
+        waterfall.advanceTo(this, ENTERED_TOMB)
     }
 
     private fun ProtectedAccess.openChest(chest: BoundLocInfo) {
-        anim(ChestSeq)
-        soundSynth(ChestOpenSound)
-        locRepo.del(chest, ChestOpenTicks)
-        locRepo.add(chest.coords, ChestOpen, ChestOpenTicks, chest.angle, chest.shape)
+        anim(CHEST_SEQ)
+        soundSynth(CHEST_OPEN_SOUND)
+        locRepo.del(chest, CHEST_OPEN_TICKS)
+        locRepo.add(chest.coords, CHEST_OPEN, CHEST_OPEN_TICKS, chest.angle, chest.shape)
     }
 
     private fun ProtectedAccess.shutChest(chest: BoundLocInfo) {
-        soundSynth(ChestCloseSound)
-        locRepo.del(chest, ChestOpenTicks)
-        locRepo.add(chest.coords, ChestClosed, ChestOpenTicks, chest.angle, chest.shape)
+        soundSynth(CHEST_CLOSE_SOUND)
+        locRepo.del(chest, CHEST_OPEN_TICKS)
+        locRepo.add(chest.coords, CHEST_CLOSED, CHEST_OPEN_TICKS, chest.angle, chest.shape)
     }
 
     private suspend fun ProtectedAccess.searchChest() {
@@ -78,36 +78,36 @@ constructor(
             mes("You search the chest but find nothing.")
             return
         }
-        invAddOrDrop(objRepo, Amulet)
-        objbox(Amulet, "You find a small amulet in the chest.")
+        invAddOrDrop(objRepo, AMULET)
+        objbox(AMULET, "You find a small amulet in the chest.")
     }
 
     /** The search takes a while, and the tomb's guardians are free to attack meanwhile. */
     private suspend fun ProtectedAccess.searchCoffin() {
-        anim(SearchSeq)
-        delay(CoffinSearchTicks)
-        if (UrnFull in player.inv) {
+        anim(SEARCH_SEQ)
+        delay(COFFIN_SEARCH_TICKS)
+        if (URN_FULL in player.inv) {
             mes("You search the tomb but find nothing.")
             return
         }
-        invAddOrDrop(objRepo, UrnFull)
-        objbox(UrnFull, "You find an urn full of ashes in the tomb.")
+        invAddOrDrop(objRepo, URN_FULL)
+        objbox(URN_FULL, "You find an urn full of ashes in the tomb.")
     }
 
     private companion object {
-        const val Tombstone = "loc.glarials_tombstone_waterfall_quest"
-        const val ChestClosed = "loc.glarials_chest_closed_waterfall_quest"
-        const val ChestOpen = "loc.glarials_chest_open_waterfall_quest"
-        const val Coffin = "loc.glarials_tomb_waterfall_quest"
+        const val TOMBSTONE = "loc.glarials_tombstone_waterfall_quest"
+        const val CHEST_CLOSED = "loc.glarials_chest_closed_waterfall_quest"
+        const val CHEST_OPEN = "loc.glarials_chest_open_waterfall_quest"
+        const val COFFIN = "loc.glarials_tomb_waterfall_quest"
 
-        const val ClimbSeq = "seq.human_reachforladder"
-        const val ChestSeq = "seq.human_openchest"
-        const val SearchSeq = "seq.human_pickuptable"
-        const val SlabSound = "synth.stone_door"
-        const val ChestOpenSound = "synth.chest_open"
-        const val ChestCloseSound = "synth.chest_close"
+        const val CLIMB_SEQ = "seq.human_reachforladder"
+        const val CHEST_SEQ = "seq.human_openchest"
+        const val SEARCH_SEQ = "seq.human_pickuptable"
+        const val SLAB_SOUND = "synth.stone_door"
+        const val CHEST_OPEN_SOUND = "synth.chest_open"
+        const val CHEST_CLOSE_SOUND = "synth.chest_close"
 
-        const val ChestOpenTicks = 100
-        const val CoffinSearchTicks = 3
+        const val CHEST_OPEN_TICKS = 100
+        const val COFFIN_SEARCH_TICKS = 3
     }
 }

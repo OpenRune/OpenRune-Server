@@ -4,10 +4,10 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Book
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Complete
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.HadleyNpc
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Started
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.BOOK
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.COMPLETE
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.HADLEY_NPC
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.STARTED
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.heardOfTreasure
 import org.rsmod.game.entity.player.Appearance
 import org.rsmod.plugin.scripts.PluginScript
@@ -17,15 +17,15 @@ import org.rsmod.plugin.scripts.ScriptContext
 class Hadley @Inject constructor(private val waterfall: WaterfallQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpNpc1(HadleyNpc) { startDialogue(it.npc) { hadley() } }
+        onOpNpc1(HADLEY_NPC) { startDialogue(it.npc) { hadley() } }
     }
 
     private suspend fun Dialogue.hadley() {
         val stage = waterfall.stage(player)
-        val onTheTrail = stage in Started until Complete && player.heardOfTreasure
+        val onTheTrail = stage in STARTED until COMPLETE && player.heardOfTreasure
         chatPlayer(happy, "Hello there.")
         when {
-            onTheTrail && player.inv.contains(Book) -> {
+            onTheTrail && player.inv.contains(BOOK) -> {
                 chatNpc(
                     happy,
                     "I hope you're enjoying your stay, there should be lots of useful " +

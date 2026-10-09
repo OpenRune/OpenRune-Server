@@ -7,14 +7,14 @@ import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Amulet
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.BaxtorianKey
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.FloorRisen
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.PillarCount
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.RunesPerPillar
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.RunesPlaced
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.UrnEmpty
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.UrnFull
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.AMULET
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.BAXTORIAN_KEY
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.FLOOR_RISEN
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.PILLAR_COUNT
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.RUNES_PER_PILLAR
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.RUNES_PLACED
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.URN_EMPTY
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.URN_FULL
 import org.rsmod.content.quest.util.QuestDoors
 import org.rsmod.content.quest.util.fadeFromBlack
 import org.rsmod.content.quest.util.fadeToBlack
@@ -42,42 +42,42 @@ constructor(
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpLoc1(ExitDoor) { exitFalls() }
-        onOpLoc1(Crate) { searchCrate() }
-        onOpLoc1(TombDoor) { openTombDoor(it.loc) }
-        for (pillar in PillarForms) {
-            for (rune in PillarRunes.keys) {
+        onOpLoc1(EXIT_DOOR) { exitFalls() }
+        onOpLoc1(CRATE) { searchCrate() }
+        onOpLoc1(TOMB_DOOR) { openTombDoor(it.loc) }
+        for (pillar in PILLAR_FORMS) {
+            for (rune in PILLAR_RUNES.keys) {
                 onOpLocU(pillar, rune) { placeRune(it.loc, rune) }
             }
         }
-        onOpLocU(StatueGlarial, Amulet) { placeAmulet() }
-        onOpLoc1(Chalice) { takeTreasure() }
-        onOpLoc1(ChaliceAsh) { takeTreasure() }
-        onOpLocU(Chalice, UrnFull) { pourAshes() }
+        onOpLocU(STATUE_GLARIAL, AMULET) { placeAmulet() }
+        onOpLoc1(CHALICE) { takeTreasure() }
+        onOpLoc1(CHALICE_ASH) { takeTreasure() }
+        onOpLocU(CHALICE, URN_FULL) { pourAshes() }
     }
 
     private suspend fun ProtectedAccess.exitFalls() {
-        soundSynth(DoorSound)
+        soundSynth(DOOR_SOUND)
         telejump(WaterfallCoords.LEDGE, TeleportType.Exempt)
         mesbox("You exit the dungeon.")
     }
 
     private suspend fun ProtectedAccess.searchCrate() {
-        anim(SearchSeq)
+        anim(SEARCH_SEQ)
         delay(1)
-        if (BaxtorianKey in player.inv) {
+        if (BAXTORIAN_KEY in player.inv) {
             mes("You search the crate but find nothing of interest.")
             return
         }
-        invAddOrDrop(objRepo, BaxtorianKey)
-        objbox(BaxtorianKey, "You find a key in the crate.")
+        invAddOrDrop(objRepo, BAXTORIAN_KEY)
+        objbox(BAXTORIAN_KEY, "You find a key in the crate.")
     }
 
     /** Both tomb doors sit on the north edge of their tile and are locked to the south. */
     private suspend fun ProtectedAccess.openTombDoor(door: BoundLocInfo) {
         if (door.playerIsSouth(player.coords)) {
-            if (BaxtorianKey !in player.inv) {
-                soundSynth(LockedSound)
+            if (BAXTORIAN_KEY !in player.inv) {
+                soundSynth(LOCKED_SOUND)
                 mes("The door is locked.")
                 return
             }
@@ -86,7 +86,7 @@ constructor(
             return
         }
         if (door.coords.inRaisedCopy()) {
-            soundSynth(DoorSound)
+            soundSynth(DOOR_SOUND)
             arriveDelay()
             telejump(door.coords.toRealRoom(), TeleportType.Exempt)
             return
@@ -96,14 +96,14 @@ constructor(
 
     private fun ProtectedAccess.passThrough(door: BoundLocInfo) {
         val across = door.tileAcross(player.coords)
-        doors.open(this, door, TombDoorOpen)
+        doors.open(this, door, TOMB_DOOR_OPEN)
         walk(across)
     }
 
     private suspend fun ProtectedAccess.placeRune(pillar: BoundLocInfo, rune: String) {
-        val runeIndex = PillarRunes.getValue(rune)
+        val runeIndex = PILLAR_RUNES.getValue(rune)
         val pillarIndex = pillarIndex(pillar.coords) ?: return
-        val bit = 1 shl (pillarIndex * RunesPerPillar + runeIndex)
+        val bit = 1 shl (pillarIndex * RUNES_PER_PILLAR + runeIndex)
         val placed = player.pillarRunes
         if ((placed and bit) != 0) {
             mes("You've already put that type of rune on this pillar.")
@@ -112,13 +112,13 @@ constructor(
         if (invDel(inv, rune).failure) {
             return
         }
-        anim(PlaceSeq)
-        soundSynth(PlaceSound)
-        spotanimMap(worldRepo, SmokeSpotanim, pillar.coords)
+        anim(PLACE_SEQ)
+        soundSynth(PLACE_SOUND)
+        spotanimMap(worldRepo, SMOKE_SPOTANIM, pillar.coords)
         player.pillarRunes = placed or bit
         objbox(rune, "You place the rune on the pillar. It disappears in a puff of smoke.")
         if (waterfall.allRunesPlaced(player)) {
-            waterfall.advanceTo(this, RunesPlaced)
+            waterfall.advanceTo(this, RUNES_PLACED)
         }
     }
 
@@ -128,7 +128,7 @@ constructor(
             return
         }
         if (!waterfall.allRunesPlaced(player)) {
-            invDel(inv, Amulet)
+            invDel(inv, AMULET)
             mesbox(
                 "You go to place the amulet around the neck of the statue. However, water " +
                     "floods into the room as you do..."
@@ -137,19 +137,19 @@ constructor(
             washDownstream(ouch = false)
             return
         }
-        if (invDel(inv, Amulet).failure) {
+        if (invDel(inv, AMULET).failure) {
             return
         }
         mesbox(
             "You place the amulet around the neck of the statue. You hear a loud rumble from " +
                 "beneath as the floor rises."
         )
-        soundSynth(RumbleSound)
+        soundSynth(RUMBLE_SOUND)
         fadeToBlack()
         telejump(player.coords.toRaisedCopy(), TeleportType.Exempt)
         delay(1)
         fadeFromBlack()
-        waterfall.advanceTo(this, FloorRisen)
+        waterfall.advanceTo(this, FLOOR_RISEN)
     }
 
     private suspend fun ProtectedAccess.takeTreasure() {
@@ -170,88 +170,88 @@ constructor(
             mesbox("The chalice only contains some old ashes.")
             return
         }
-        if (waterfall.stage(player) < FloorRisen) {
+        if (waterfall.stage(player) < FLOOR_RISEN) {
             mes("You can't reach the chalice from here.")
             return
         }
-        if (inv.freeSpace() < RewardSlots) {
-            mesbox("You need at least $RewardSlots free inventory spaces to carry the treasure.")
+        if (inv.freeSpace() < REWARD_SLOTS) {
+            mesbox("You need at least $REWARD_SLOTS free inventory spaces to carry the treasure.")
             return
         }
-        if (invDel(inv, UrnFull).failure) {
+        if (invDel(inv, URN_FULL).failure) {
             return
         }
-        invAddOrDrop(objRepo, UrnEmpty)
-        anim(PourSeq)
-        soundSynth(PourSound)
+        invAddOrDrop(objRepo, URN_EMPTY)
+        anim(POUR_SEQ)
+        soundSynth(POUR_SOUND)
         mesbox("You carefully pour the ashes into the chalice and remove Baxtorian's treasure...")
         waterfall.quest.completeQuest(this)
     }
 
     private companion object {
-        const val ExitDoor = "loc.baxtorian_door_waterfall_quest"
-        const val Crate = "loc.baxtorian_crate_waterfall_quest"
-        const val TombDoor = "loc.baxtorian_door_2_waterfall_quest"
-        const val TombDoorOpen = "loc.baxtorian_door_2_open_waterfall_quest"
+        const val EXIT_DOOR = "loc.baxtorian_door_waterfall_quest"
+        const val CRATE = "loc.baxtorian_crate_waterfall_quest"
+        const val TOMB_DOOR = "loc.baxtorian_door_2_waterfall_quest"
+        const val TOMB_DOOR_OPEN = "loc.baxtorian_door_2_open_waterfall_quest"
 
         /**
          * The pillar is a multiloc on `varbit.sote`, and the used-item bridge hands the resolved
          * form to `onOpLocU`, so every form is registered.
          */
-        val PillarForms =
+        val PILLAR_FORMS =
             listOf(
                 "loc.stonepillar_small_waterfall_quest",
                 "loc.stonepillar_small_waterfall_quest_noop",
                 "loc.stonepillar_small_waterfall_quest_op",
             )
-        const val StatueGlarial = "loc.statue_queen_waterfall_quest"
-        const val Chalice = "loc.baxtorian_chalice_waterfall_quest"
-        const val ChaliceAsh = "loc.baxtorian_chalice_waterfall_quest_ash"
+        const val STATUE_GLARIAL = "loc.statue_queen_waterfall_quest"
+        const val CHALICE = "loc.baxtorian_chalice_waterfall_quest"
+        const val CHALICE_ASH = "loc.baxtorian_chalice_waterfall_quest_ash"
 
         /** Rune obj to its bit within a pillar's three. */
-        val PillarRunes = mapOf("obj.airrune" to 0, "obj.waterrune" to 1, "obj.earthrune" to 2)
+        val PILLAR_RUNES = mapOf("obj.airrune" to 0, "obj.waterrune" to 1, "obj.earthrune" to 2)
 
-        const val PillarWestX = 2562
-        const val PillarEastX = 2569
-        const val PillarSouthZ = 9910
-        const val PillarRowGap = 2
+        const val PILLAR_WEST_X = 2562
+        const val PILLAR_EAST_X = 2569
+        const val PILLAR_SOUTH_Z = 9910
+        const val PILLAR_ROW_GAP = 2
 
-        const val CopyOffsetX = 38
-        const val CopyOffsetZ = -1
-        const val CopyMinX = 2590
+        const val COPY_OFFSET_X = 38
+        const val COPY_OFFSET_Z = -1
+        const val COPY_MIN_X = 2590
 
-        const val RewardSlots = 5
+        const val REWARD_SLOTS = 5
 
-        const val SearchSeq = "seq.human_pickuptable"
-        const val PlaceSeq = "seq.human_pickuptable"
-        const val PourSeq = "seq.human_pickuptable"
-        const val SmokeSpotanim = "spotanim.smokepuff"
-        const val DoorSound = "synth.door_open"
-        const val LockedSound = "synth.irondoor_locked"
-        const val PlaceSound = "synth.smokepuff"
-        const val RumbleSound = "synth.contact_rumble"
-        const val PourSound = "synth.vial_pour"
+        const val SEARCH_SEQ = "seq.human_pickuptable"
+        const val PLACE_SEQ = "seq.human_pickuptable"
+        const val POUR_SEQ = "seq.human_pickuptable"
+        const val SMOKE_SPOTANIM = "spotanim.smokepuff"
+        const val DOOR_SOUND = "synth.door_open"
+        const val LOCKED_SOUND = "synth.irondoor_locked"
+        const val PLACE_SOUND = "synth.smokepuff"
+        const val RUMBLE_SOUND = "synth.contact_rumble"
+        const val POUR_SOUND = "synth.vial_pour"
 
-        fun CoordGrid.inRaisedCopy(): Boolean = x >= CopyMinX
+        fun CoordGrid.inRaisedCopy(): Boolean = x >= COPY_MIN_X
 
-        fun CoordGrid.toRaisedCopy(): CoordGrid = translate(CopyOffsetX, CopyOffsetZ)
+        fun CoordGrid.toRaisedCopy(): CoordGrid = translate(COPY_OFFSET_X, COPY_OFFSET_Z)
 
-        fun CoordGrid.toRealRoom(): CoordGrid = translate(-CopyOffsetX, -CopyOffsetZ)
+        fun CoordGrid.toRealRoom(): CoordGrid = translate(-COPY_OFFSET_X, -COPY_OFFSET_Z)
 
         fun pillarIndex(coords: CoordGrid): Int? {
             val real = if (coords.inRaisedCopy()) coords.toRealRoom() else coords
             val column =
                 when (real.x) {
-                    PillarWestX -> 0
-                    PillarEastX -> 1
+                    PILLAR_WEST_X -> 0
+                    PILLAR_EAST_X -> 1
                     else -> return null
                 }
-            val offset = real.z - PillarSouthZ
-            val row = offset / PillarRowGap
-            if (row !in 0 until PillarCount / 2 || offset % PillarRowGap != 0) {
+            val offset = real.z - PILLAR_SOUTH_Z
+            val row = offset / PILLAR_ROW_GAP
+            if (row !in 0 until PILLAR_COUNT / 2 || offset % PILLAR_ROW_GAP != 0) {
                 return null
             }
-            return column * (PillarCount / 2) + row
+            return column * (PILLAR_COUNT / 2) + row
         }
     }
 }

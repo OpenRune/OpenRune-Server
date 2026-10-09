@@ -10,9 +10,9 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpLoc1
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.Book
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.MetHudon
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ReadBook
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.BOOK
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.MET_HUDON
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.READ_BOOK
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -26,22 +26,22 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
     PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpLoc1(Bookcase) { searchBookcase() }
-        onOpHeld1(Book) { readBook() }
+        onOpLoc1(BOOKCASE) { searchBookcase() }
+        onOpHeld1(BOOK) { readBook() }
     }
 
     private suspend fun ProtectedAccess.searchBookcase() {
-        if (waterfall.stage(player) < MetHudon) {
+        if (waterfall.stage(player) < MET_HUDON) {
             searchUninterestingBooks()
             return
         }
-        anim(SearchSeq)
-        if (player.inv.contains(Book)) {
+        anim(SEARCH_SEQ)
+        if (player.inv.contains(BOOK)) {
             mes("You search the bookcase but find nothing of interest")
             return
         }
-        invAddOrDrop(objRepo, Book)
-        objbox(Book, "You find a book named 'Book on Baxtorian' on the bookcase.")
+        invAddOrDrop(objRepo, BOOK)
+        objbox(BOOK, "You find a book named 'Book on Baxtorian' on the bookcase.")
     }
 
     /**
@@ -52,18 +52,18 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
     private suspend fun ProtectedAccess.readBook() {
         var spread = 0
         openSpread(spread)
-        if (waterfall.stage(player) == MetHudon) {
-            waterfall.advanceTo(this, ReadBook)
+        if (waterfall.stage(player) == MET_HUDON) {
+            waterfall.advanceTo(this, READ_BOOK)
         }
         while (true) {
             val input = pauseButton()
             val turned =
                 when (input.component) {
-                    PageLeft -> spread - 1
-                    PageRight -> spread + 1
+                    PAGE_LEFT -> spread - 1
+                    PAGE_RIGHT -> spread + 1
                     else -> spread
                 }
-            if (turned in Spreads.indices) {
+            if (turned in SPREADS.indices) {
                 spread = turned
             }
             openSpread(spread)
@@ -71,48 +71,48 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
     }
 
     private fun ProtectedAccess.openSpread(spread: Int) {
-        ifOpenMainModal(BookInterface)
+        ifOpenMainModal(BOOK_INTERFACE)
         player.runClientScript(
-            BookInitScript,
+            BOOK_INIT_SCRIPT,
             RSCM.getRSCM("component.book:close_button"),
             RSCM.getRSCM("component.book:close_graphic"),
-            RSCM.getRSCM(PageLeft),
+            RSCM.getRSCM(PAGE_LEFT),
             RSCM.getRSCM("component.book:page_left_graphic"),
-            RSCM.getRSCM(PageRight),
+            RSCM.getRSCM(PAGE_RIGHT),
             RSCM.getRSCM("component.book:page_right_graphic"),
         )
-        ifSetText("component.book:title", Title)
-        ifSetEvents(PageLeft, -1..-1, IfEvent.PauseButton)
-        ifSetEvents(PageRight, -1..-1, IfEvent.PauseButton)
+        ifSetText("component.book:title", TITLE)
+        ifSetEvents(PAGE_LEFT, -1..-1, IfEvent.PauseButton)
+        ifSetEvents(PAGE_RIGHT, -1..-1, IfEvent.PauseButton)
         showSpread(spread)
-        soundSynth(PageSound)
+        soundSynth(PAGE_SOUND)
     }
 
     private fun ProtectedAccess.showSpread(spread: Int) {
-        val (left, right) = Spreads[spread]
-        for (line in 1..LinesPerPage) {
+        val (left, right) = SPREADS[spread]
+        for (line in 1..LINES_PER_PAGE) {
             ifSetText("component.book:page_left_text_$line", left.getOrElse(line - 1) { "" })
             ifSetText("component.book:page_right_text_$line", right.getOrElse(line - 1) { "" })
         }
         ifSetText("component.book:page_left_number", (spread * 2 + 1).toString())
         ifSetText("component.book:page_right_number", (spread * 2 + 2).toString())
-        ifSetHide(PageLeft, spread == 0)
-        ifSetHide(PageRight, spread == Spreads.lastIndex)
+        ifSetHide(PAGE_LEFT, spread == 0)
+        ifSetHide(PAGE_RIGHT, spread == SPREADS.lastIndex)
     }
 
     private companion object {
-        const val Bookcase = "loc.bookcase_waterfall_quest"
-        const val BookInterface = "interface.book"
-        val BookInitScript = "clientscript.[clientscript,book_init]".asRSCM(RSCMType.CLIENTSCRIPT)
-        const val Title = "Book on Baxtorian"
-        const val SearchSeq = "seq.human_pickuptable"
-        const val PageSound = "synth.paper_move"
-        const val LinesPerPage = 15
+        const val BOOKCASE = "loc.bookcase_waterfall_quest"
+        const val BOOK_INTERFACE = "interface.book"
+        val BOOK_INIT_SCRIPT = "clientscript.[clientscript,book_init]".asRSCM(RSCMType.CLIENTSCRIPT)
+        const val TITLE = "Book on Baxtorian"
+        const val SEARCH_SEQ = "seq.human_pickuptable"
+        const val PAGE_SOUND = "synth.paper_move"
+        const val LINES_PER_PAGE = 15
 
-        const val PageLeft = "component.book:page_left_button"
-        const val PageRight = "component.book:page_right_button"
+        const val PAGE_LEFT = "component.book:page_left_button"
+        const val PAGE_RIGHT = "component.book:page_right_button"
 
-        val Pages =
+        val PAGES =
             listOf(
                 listOf(
                     "<u>The Missing Relics</u>",
@@ -220,6 +220,6 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
                 emptyList(),
             )
 
-        val Spreads = Pages.chunked(2).map { it[0] to it[1] }
+        val SPREADS = PAGES.chunked(2).map { it[0] to it[1] }
     }
 }
