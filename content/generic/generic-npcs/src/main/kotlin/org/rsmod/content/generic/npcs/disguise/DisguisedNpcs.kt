@@ -17,18 +17,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
 /**
- * A monster that sits disguised as scenery (sandy rocks, a boulder, ...) until a player walks past,
- * then reveals itself, hunts the player like any aggressive npc and eventually burrows back.
- *
- * Both [dormant] and [awake] are cache npc types. Map spawns place the [dormant] type; the npc's
- * base type never changes, only its transmog does, so stats, params, drops and respawns all come
- * from [dormant] and both types need the same combat params.
- *
- * @property wakeRange tile distance from any edge of the npc at which a player in line of sight
- *   wakes it.
- * @property restTicks ticks out of combat before the npc heads back to its spawn and burrows.
- * @property huntMode id of the hunt mode (`stalk.*`) the awake npc picks its target with.
- * @property tolerant whether players become tolerant of the awake npc after ten minutes.
+ * The npc's base type never changes, only its transmog does, so stats, params, drops and respawns
+ * come from [dormant] and both types need the same combat params.
  */
 data class Disguise(
     val dormant: String,
@@ -41,7 +31,6 @@ data class Disguise(
     val tolerant: Boolean = true,
 )
 
-/** `stalk.aggressive_melee`. */
 private const val AGGRESSIVE_MELEE = 6
 
 class DisguisedNpcs

@@ -12,16 +12,6 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
-/**
- * OSRS aggression tolerance: after a player spends [TOLERANCE_TICKS] (10 minutes) in the vicinity
- * of aggressive monsters, those monsters stop being aggressive towards that player until the player
- * leaves the area and comes back.
- *
- * Tolerance only applies to npc types that have been [enroll]ed, so unenrolled npcs keep their
- * existing aggression untouched. Per-player state lives in temporary varps; a player's timer
- * restarts whenever they are first seen after moving more than [LEAVE_DISTANCE] tiles from where it
- * started, or after going [ABSENT_TICKS] without being seen by an enrolled npc.
- */
 @Singleton
 public class AggressionTolerance @Inject constructor(private val mapClock: MapClock) {
     private val enrolled: MutableSet<Int> = ConcurrentHashMap.newKeySet()
@@ -36,11 +26,7 @@ public class AggressionTolerance @Inject constructor(private val mapClock: MapCl
 
     public fun appliesTo(npc: Npc): Boolean = npc.type.id in enrolled
 
-    /**
-     * Returns `true` if [npc] should ignore [player] due to tolerance. Always `false` when the
-     * npc's type is not enrolled. Evaluating this also counts as the player being seen in the area,
-     * so it must be called for every player an enrolled npc considers.
-     */
+    /** Counts the player as seen, so call it for every player an enrolled npc considers. */
     public fun isTolerant(npc: Npc, player: Player): Boolean {
         if (!appliesTo(npc)) {
             return false
