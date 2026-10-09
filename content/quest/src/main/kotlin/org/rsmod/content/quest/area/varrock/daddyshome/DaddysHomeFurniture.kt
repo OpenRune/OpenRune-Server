@@ -4,7 +4,12 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.VarBitType
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.enums.EnumTypeMap
 import jakarta.inject.Inject
+import org.rsmod.api.enums.DaddysHomeEnums.daddys_home_hammers
+import org.rsmod.api.enums.DaddysHomeEnums.daddys_home_nails
+import org.rsmod.api.enums.DaddysHomeEnums.daddys_home_saws
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -16,6 +21,20 @@ import org.rsmod.api.table.DaddysHomeFurnitureRow
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
+
+internal object DaddysHomeTools {
+    val hammers: List<ItemServerType>
+        get() = daddys_home_hammers.inOrder()
+
+    val saws: List<ItemServerType>
+        get() = daddys_home_saws.inOrder()
+
+    val nails: List<ItemServerType>
+        get() = daddys_home_nails.inOrder()
+
+    private fun EnumTypeMap<Int, ItemServerType>.inOrder(): List<ItemServerType> =
+        backing.entries.sortedBy { it.key }.mapNotNull { it.value }
+}
 
 internal object Furniture {
     const val UNTOUCHED = 0
@@ -139,9 +158,11 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         mes("You build the ${furniture.label}.")
     }
 
-    private fun ProtectedAccess.hasHammer(): Boolean = HAMMERS.any { it in inv }
+    private fun ProtectedAccess.hasHammer(): Boolean =
+        DaddysHomeTools.hammers.any { it.internalName in inv }
 
-    private fun ProtectedAccess.hasSaw(): Boolean = SAWS.any { it in inv }
+    private fun ProtectedAccess.hasSaw(): Boolean =
+        DaddysHomeTools.saws.any { it.internalName in inv }
 
     private fun ProtectedAccess.missingToolsMessage(): String =
         when {
@@ -160,15 +181,16 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
             else -> null
         }
 
-    private fun ProtectedAccess.nailCount(): Int = NAILS.sumOf { inv.count(it) }
+    private fun ProtectedAccess.nailCount(): Int =
+        DaddysHomeTools.nails.sumOf { inv.count(it.internalName) }
 
     private fun ProtectedAccess.nailPlan(count: Int): List<Pair<String, Int>>? {
         var left = count
         val plan = mutableListOf<Pair<String, Int>>()
-        for (nail in NAILS) {
+        for (nail in DaddysHomeTools.nails) {
             if (left == 0) break
-            val take = minOf(left, inv.count(nail))
-            if (take > 0) plan += nail to take
+            val take = minOf(left, inv.count(nail.internalName))
+            if (take > 0) plan += nail.internalName to take
             left -= take
         }
         return if (left == 0) plan else null
@@ -260,19 +282,5 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         const val WAXWOOD_LOG_COUNT = 3
         const val CLOTH = "obj.cloth"
         const val FIFTH_OP = 5
-
-        val HAMMERS = listOf("obj.hammer", "obj.imcando_hammer")
-        val SAWS = listOf("obj.poh_saw", "obj.wearable_saw", "obj.eyeglo_crystal_saw")
-        val NAILS =
-            listOf(
-                "obj.nails_dragon",
-                "obj.nails_rune",
-                "obj.nails_adamant",
-                "obj.nails_mithril",
-                "obj.nails_black",
-                "obj.nails",
-                "obj.nails_iron",
-                "obj.nails_bronze",
-            )
     }
 }

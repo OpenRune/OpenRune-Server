@@ -2,6 +2,7 @@ package org.rsmod.content.quest.area.varrock.daddyshome
 
 import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
+import org.rsmod.api.enums.DaddysHomeEnums.daddys_home_house_cities
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -711,8 +712,8 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
     }
 
     private suspend fun Dialogue.tools() {
-        val hammer = DaddysHomeFurniture.HAMMERS.any { it in access.inv }
-        val saw = DaddysHomeFurniture.SAWS.any { it in access.inv }
+        val hammer = DaddysHomeTools.hammers.any { it.internalName in access.inv }
+        val saw = DaddysHomeTools.saws.any { it.internalName in access.inv }
         if (hammer && saw) {
             chatNpc(
                 neutral,
@@ -768,17 +769,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
     }
 
     private fun houseCity(location: Int): String =
-        when (location) {
-            1 -> "Rimmington"
-            2 -> "Taverley"
-            3 -> "Pollnivneach"
-            4 -> "Hosidius"
-            5 -> "Rellekka"
-            6 -> "Brimhaven"
-            7 -> "Yanille"
-            8 -> "Prifddinas"
-            else -> "Gielinor"
-        }
+        daddys_home_house_cities.getOrNull(location) ?: "Gielinor"
 
     private enum class MarloOption {
         Company,

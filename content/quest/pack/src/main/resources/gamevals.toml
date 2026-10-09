@@ -117,3 +117,9 @@ daddys_home_crate_oak_planks = 63433
 daddys_home_crate_cloth = 63434
 daddys_home_crate_house_tablets = 63435
 daddys_home_crate_falador_tablet = 63436
+
+[gamevals.enum]
+daddys_home_hammers = 65460
+daddys_home_saws = 65461
+daddys_home_nails = 65462
+daddys_home_house_cities = 65463
