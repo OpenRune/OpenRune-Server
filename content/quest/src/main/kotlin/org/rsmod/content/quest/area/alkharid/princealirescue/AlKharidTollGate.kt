@@ -8,8 +8,8 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc4
 import org.rsmod.api.script.onOpNpc1
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Coins
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageAliEscaped
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.COINS
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_ALI_ESCAPED
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.loc.LocAngle
@@ -18,7 +18,7 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-internal const val TollGateOpenTicks = 8
+internal const val TOLL_GATE_OPEN_TICKS = 8
 
 /**
  * The toll gate between Lumbridge and Al Kharid. Going east costs 10 coins until Prince Ali is out
@@ -27,7 +27,7 @@ internal const val TollGateOpenTicks = 8
  * Pay-toll, from the escape onwards only Open.
  *
  * The closed leaves block the doorway, so both are swapped for open gates and stay that way for
- * [TollGateOpenTicks], which is long enough for the player to finish the step from either side.
+ * [TOLL_GATE_OPEN_TICKS], which is long enough for the player to finish the step from either side.
  */
 class AlKharidTollGate
 @Inject
@@ -35,11 +35,11 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
     PluginScript() {
 
     override fun ScriptContext.startup() {
-        for (leaf in listOf(LeftGate, RightGate)) {
+        for (leaf in listOf(LEFT_GATE, RIGHT_GATE)) {
             onOpLoc1(leaf) { open() }
             onOpLoc4(leaf) { payToll() }
         }
-        for (guard in listOf(Guard1, Guard2)) {
+        for (guard in listOf(GUARD_1, GUARD_2)) {
             onOpNpc1(guard) { talkToGuard(it.npc) }
         }
     }
@@ -118,12 +118,12 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
         if (npc != null) {
             chatNpc(mesanim, text)
         } else {
-            chatNpcSpecific("Border Guard", Guard1, mesanim, text)
+            chatNpcSpecific("Border Guard", GUARD_1, mesanim, text)
         }
     }
 
     private suspend fun ProtectedAccess.payAndPass() {
-        if (invDel(inv, Coins, TollPrice).failure) {
+        if (invDel(inv, COINS, TOLL_PRICE).failure) {
             startDialogue {
                 chatPlayer(sad, "Oh dear, I don't actually seem to have enough money.")
             }
@@ -133,38 +133,38 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
     }
 
     private suspend fun ProtectedAccess.passThrough() {
-        val eastbound = coords.x < GateX
-        val z = coords.z.coerceIn(GateMinZ, GateMaxZ)
+        val eastbound = coords.x < GATE_X
+        val z = coords.z.coerceIn(GATE_MIN_Z, GATE_MAX_Z)
         swingOpen()
-        playerWalkWithMinDelay(CoordGrid(if (eastbound) GateX else GateX - 1, z, 0))
+        playerWalkWithMinDelay(CoordGrid(if (eastbound) GATE_X else GATE_X - 1, z, 0))
     }
     private fun ProtectedAccess.swingOpen() {
-        for (z in GateMinZ..GateMaxZ) {
-            locRepo.findExact(CoordGrid(GateX, z, 0), LocShape.WallStraight)?.let {
-                locRepo.del(it, TollGateOpenTicks)
+        for (z in GATE_MIN_Z..GATE_MAX_Z) {
+            locRepo.findExact(CoordGrid(GATE_X, z, 0), LocShape.WallStraight)?.let {
+                locRepo.del(it, TOLL_GATE_OPEN_TICKS)
             }
         }
         locRepo.add(
-            CoordGrid(GateX - 1, GateMinZ, 0),
-            OpenLeft,
-            TollGateOpenTicks,
+            CoordGrid(GATE_X - 1, GATE_MIN_Z, 0),
+            OPEN_LEFT,
+            TOLL_GATE_OPEN_TICKS,
             LocAngle.South,
             LocShape.WallStraight,
         )
         locRepo.add(
-            CoordGrid(GateX - 1, GateMaxZ, 0),
-            OpenRight,
-            TollGateOpenTicks,
+            CoordGrid(GATE_X - 1, GATE_MAX_Z, 0),
+            OPEN_RIGHT,
+            TOLL_GATE_OPEN_TICKS,
             LocAngle.North,
             LocShape.WallStraight,
         )
         soundSynth("synth.iron_door_open")
     }
 
-    private fun ProtectedAccess.isLeaving(): Boolean = coords.x >= GateX
+    private fun ProtectedAccess.isLeaving(): Boolean = coords.x >= GATE_X
 
     private fun ProtectedAccess.friendOfAlKharid(): Boolean =
-        princeAli.stage(player) >= StageAliEscaped
+        princeAli.stage(player) >= STAGE_ALI_ESCAPED
 
     private enum class Toll {
         Pay,
@@ -173,16 +173,16 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
     }
 
     private companion object {
-        const val LeftGate = "loc.kharidmetalgateclosedl"
-        const val RightGate = "loc.kharidmetalgateclosedr"
-        const val OpenLeft = "loc.inacmetalgateopenl"
-        const val OpenRight = "loc.inacmetalgateopenr"
-        const val Guard1 = "npc.borderguard1"
-        const val Guard2 = "npc.borderguard2"
+        const val LEFT_GATE = "loc.kharidmetalgateclosedl"
+        const val RIGHT_GATE = "loc.kharidmetalgateclosedr"
+        const val OPEN_LEFT = "loc.inacmetalgateopenl"
+        const val OPEN_RIGHT = "loc.inacmetalgateopenr"
+        const val GUARD_1 = "npc.borderguard1"
+        const val GUARD_2 = "npc.borderguard2"
 
-        const val GateX = 3268
-        const val GateMinZ = 3227
-        const val GateMaxZ = 3228
-        const val TollPrice = 10
+        const val GATE_X = 3268
+        const val GATE_MIN_Z = 3227
+        const val GATE_MAX_Z = 3228
+        const val TOLL_PRICE = 10
     }
 }

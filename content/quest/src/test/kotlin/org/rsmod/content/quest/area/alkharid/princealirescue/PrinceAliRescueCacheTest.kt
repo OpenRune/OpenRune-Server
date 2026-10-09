@@ -23,19 +23,19 @@ import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.table.QuestRow
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.CellDoor
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcHassan
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcJoe
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcKeli
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcLeela
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcOsman
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcPrinceCell
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcPrincePalace
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.QuestKey
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageAliEscaped
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageComplete
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageJoeDrunk
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageKeliTied
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.CELL_DOOR
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_HASSAN
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_JOE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_KELI
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_LEELA
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_OSMAN
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_PRINCE_CELL
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_PRINCE_PALACE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.QUEST_KEY
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_ALI_ESCAPED
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_COMPLETE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_JOE_DRUNK
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_KELI_TIED
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.square.MapSquareKey
 
@@ -51,27 +51,27 @@ class PrinceAliRescueCacheTest {
 
     @Test
     fun `the quest row matches the stages the script uses`() {
-        val row = QuestRow.getRow("dbrow.$QuestKey".asRSCM())
-        assertEquals(StageComplete, row.endstate)
+        val row = QuestRow.getRow("dbrow.$QUEST_KEY".asRSCM())
+        assertEquals(STAGE_COMPLETE, row.endstate)
         assertEquals(3, row.questpoints)
     }
 
     @Test
     fun `the jail multinpcs follow the stage`() {
-        assertShownUntil(NpcKeli, "npc.lady_keli_vis", StageJoeDrunk, StageKeliTied)
-        assertShownUntil(NpcPrinceCell, "npc.prince_ali_vis_blackeye", StageKeliTied, StageAliEscaped)
-        assertShownUntil(NpcJoe, "npc.joe_vis", StageAliEscaped, StageComplete)
-        val palace = npc(NpcPrincePalace)
-        assertEquals("npc.prince_ali_vis".asRSCM(RSCMType.NPC), palace.transforms!![StageAliEscaped])
+        assertShownUntil(NPC_KELI, "npc.lady_keli_vis", STAGE_JOE_DRUNK, STAGE_KELI_TIED)
+        assertShownUntil(NPC_PRINCE_CELL, "npc.prince_ali_vis_blackeye", STAGE_KELI_TIED, STAGE_ALI_ESCAPED)
+        assertShownUntil(NPC_JOE, "npc.joe_vis", STAGE_ALI_ESCAPED, STAGE_COMPLETE)
+        val palace = npc(NPC_PRINCE_PALACE)
+        assertEquals("npc.prince_ali_vis".asRSCM(RSCMType.NPC), palace.transforms!![STAGE_ALI_ESCAPED])
         assertEquals(-1, palace.transforms!![0])
     }
 
     @Test
     fun `the cell gate separates the prince from his guard`() {
-        assertLocAt(CellDoor, CoordGrid(3123, 3243, 0))
-        assertNpcAt(NpcPrinceCell, CoordGrid(3123, 3242, 0))
-        assertNpcAt(NpcJoe, CoordGrid(3123, 3245, 0))
-        assertNpcAt(NpcKeli, CoordGrid(3128, 3244, 0))
+        assertLocAt(CELL_DOOR, CoordGrid(3123, 3243, 0))
+        assertNpcAt(NPC_PRINCE_CELL, CoordGrid(3123, 3242, 0))
+        assertNpcAt(NPC_JOE, CoordGrid(3123, 3245, 0))
+        assertNpcAt(NPC_KELI, CoordGrid(3128, 3244, 0))
     }
 
     @Test
@@ -88,10 +88,10 @@ class PrinceAliRescueCacheTest {
             val side = leaf.removePrefix("loc.kharidmetalgateclosed")
             val toll = loc("loc.kharidmetalgateclosed${side}_2op")
             val free = loc("loc.kharidmetalgateclosed${side}_1op")
-            for (stage in 0 until StageAliEscaped) {
+            for (stage in 0 until STAGE_ALI_ESCAPED) {
                 assertEquals(toll.id, type.multiLoc[stage] and 0xFFFF, "$leaf at stage $stage")
             }
-            assertEquals(free.id, type.multiLoc[StageAliEscaped] and 0xFFFF)
+            assertEquals(free.id, type.multiLoc[STAGE_ALI_ESCAPED] and 0xFFFF)
             assertEquals(free.id, type.multiDefault)
             assertEquals("Open", toll.actions.getOpOrNull(0))
             assertEquals("Pay-toll(10gp)", toll.actions.getOpOrNull(3))
@@ -142,7 +142,7 @@ class PrinceAliRescueCacheTest {
     fun `the progress varbit sits on the quest varp and the flags share one server varp`() {
         val progress = checkNotNull(ServerCacheManager.getVarbit("varbit.prince_ali_progress".asRSCM(RSCMType.VARBIT)))
         assertEquals("varp.princequest".asRSCM(RSCMType.VARP), progress.baseVar.id)
-        assertTrue((1 shl (progress.endBit - progress.startBit + 1)) > StageComplete)
+        assertTrue((1 shl (progress.endBit - progress.startBit + 1)) > STAGE_COMPLETE)
 
         val state = "varp.prince_ali_state".asRSCM(RSCMType.VARP)
         for (name in
@@ -161,10 +161,10 @@ class PrinceAliRescueCacheTest {
 
     @Test
     fun `every quest npc the script binds is spawned by the map on that base id`() {
-        assertNpcAt(NpcHassan, CoordGrid(3302, 3163, 0))
-        assertNpcAt(NpcLeela, CoordGrid(3112, 3262, 0))
-        assertNpcAt(NpcOsman, CoordGrid(3289, 3181, 0))
-        assertNpcAt(NpcPrincePalace, CoordGrid(3286, 3161, 0))
+        assertNpcAt(NPC_HASSAN, CoordGrid(3302, 3163, 0))
+        assertNpcAt(NPC_LEELA, CoordGrid(3112, 3262, 0))
+        assertNpcAt(NPC_OSMAN, CoordGrid(3289, 3181, 0))
+        assertNpcAt(NPC_PRINCE_PALACE, CoordGrid(3286, 3161, 0))
         assertNpcAt("npc.borderguard1", CoordGrid(3267, 3226, 0))
         assertNpcAt("npc.borderguard2", CoordGrid(3268, 3226, 0))
     }
@@ -173,10 +173,10 @@ class PrinceAliRescueCacheTest {
     fun `exactly one osman stands outside the palace`() {
         val spawns = npcSpawns(CoordGrid(3289, 3181, 0))
         val osmen =
-            listOf("npc.osman", NpcOsman).map { it.asRSCM(RSCMType.NPC) }.let { ids ->
+            listOf("npc.osman", NPC_OSMAN).map { it.asRSCM(RSCMType.NPC) }.let { ids ->
                 spawns.filter { it.first in ids }
             }
-        assertEquals(listOf(NpcOsman.asRSCM(RSCMType.NPC) to CoordGrid(3289, 3181, 0)), osmen)
+        assertEquals(listOf(NPC_OSMAN.asRSCM(RSCMType.NPC) to CoordGrid(3289, 3181, 0)), osmen)
     }
 
     private fun assertShownUntil(base: String, vis: String, lastShown: Int, firstHidden: Int) {

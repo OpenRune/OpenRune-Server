@@ -16,16 +16,16 @@ import org.rsmod.plugin.scripts.ScriptContext
  * Prince Ali Rescue.
  *
  * Every npc handler binds the base id the map spawns: the engine dispatches ops on the base id, so\n * handlers on the _vis forms that the multinpcs show would never fire.\n *\n * The stage is the whole cache varp `varp.princequest` (endstate 110), which also drives the jail
- * multinpcs and the toll gate's multilocs: Lady Keli is shown up to [StageJoeDrunk], the
- * imprisoned Prince up to [StageKeliTied], Joe until Hassan pays, the Prince in the palace from
- * [StageAliEscaped], and the toll gate loses its Pay-toll option from [StageAliEscaped] as well.
- * - [StageStarted]: Hassan sent the player to Osman.
- * - [StageBriefed]: Osman explained the plan; the key and the disguise are being gathered.
- * - [StagePrepared]: Leela has seen the key and disguise and pointed the player at Joe.
- * - [StageJoeDrunk]: Joe has had his three beers.
- * - [StageKeliTied]: Keli is tied up in the cupboard and the cell door can be unlocked.
- * - [StageAliEscaped]: the Prince has escaped in disguise.
- * - [StageComplete]: Hassan has paid the reward.
+ * multinpcs and the toll gate's multilocs: Lady Keli is shown up to [STAGE_JOE_DRUNK], the
+ * imprisoned Prince up to [STAGE_KELI_TIED], Joe until Hassan pays, the Prince in the palace from
+ * [STAGE_ALI_ESCAPED], and the toll gate loses its Pay-toll option from [STAGE_ALI_ESCAPED] as well.
+ * - [STAGE_STARTED]: Hassan sent the player to Osman.
+ * - [STAGE_BRIEFED]: Osman explained the plan; the key and the disguise are being gathered.
+ * - [STAGE_PREPARED]: Leela has seen the key and disguise and pointed the player at Joe.
+ * - [STAGE_JOE_DRUNK]: Joe has had his three beers.
+ * - [STAGE_KELI_TIED]: Keli is tied up in the cupboard and the cell door can be unlocked.
+ * - [STAGE_ALI_ESCAPED]: the Prince has escaped in disguise.
+ * - [STAGE_COMPLETE]: Hassan has paid the reward.
  *
  * Progress the stage cannot hold sits on the server-only `varp.prince_ali_state`: whether Keli has
  * heard the player wants to join her gang, whether Osman is having a key copied, whether the
@@ -34,13 +34,13 @@ import org.rsmod.plugin.scripts.ScriptContext
  */
 class PrinceAliRescueQuest @Inject constructor() :
     QuestScript(
-        QuestKey,
+        QUEST_KEY,
         "varp.princequest",
         rewards {
-            item(Coins, CoinReward, label = "$CoinReward Coins")
+            item(COINS, COIN_REWARD, label = "$COIN_REWARD Coins")
             extra("Free passage through the Al Kharid toll gate")
         },
-        ItemRewardDisplay(Key, zoom = 300),
+        ItemRewardDisplay(KEY, zoom = 300),
         questVarbit = "varbit.prince_ali_progress",
     ) {
 
@@ -51,25 +51,25 @@ class PrinceAliRescueQuest @Inject constructor() :
     private var Player.joeHadBeer by boolVarBit("varbit.prince_ali_joe_beer")
 
     override fun ScriptContext.init() {
-        check(quest.maxSteps == StageComplete) {
+        check(quest.maxSteps == STAGE_COMPLETE) {
             "Prince Ali Rescue end state is ${quest.maxSteps} in the cache dbrow, " +
-                "but the script completes at $StageComplete."
+                "but the script completes at $STAGE_COMPLETE."
         }
-        onOpHeldU(YellowDye, Wig) { dyeWig() }
-        onOpLocCategoryU("category.furnace", KeyPrint) { copyKeyAtFurnace() }
+        onOpHeldU(YELLOW_DYE, WIG) { dyeWig() }
+        onOpLocCategoryU("category.furnace", KEY_PRINT) { copyKeyAtFurnace() }
     }
 
     private fun ProtectedAccess.dyeWig() {
-        if (invDel(inv, YellowDye, 1, Wig, 1).failure) {
+        if (invDel(inv, YELLOW_DYE, 1, WIG, 1).failure) {
             return
         }
-        invAdd(inv, BlondWig)
+        invAdd(inv, BLOND_WIG)
         mes("You dye the wig blond.")
     }
 
     private suspend fun ProtectedAccess.copyKeyAtFurnace() {
         arriveDelay()
-        if (BronzeBar !in inv) {
+        if (BRONZE_BAR !in inv) {
             mes("You need a bronze bar to make a copy of the key.")
             return
         }
@@ -78,12 +78,12 @@ class PrinceAliRescueQuest @Inject constructor() :
                 return@startDialogue
             }
             anim("seq.human_furnace")
-            if (invDel(inv, KeyPrint, 1, BronzeBar, 1).failure) {
+            if (invDel(inv, KEY_PRINT, 1, BRONZE_BAR, 1).failure) {
                 return@startDialogue
             }
-            invAdd(inv, Key)
+            invAdd(inv, KEY)
             player.keyObtained = true
-            statAdvance("stat.crafting", KeyCraftingXp)
+            statAdvance("stat.crafting", KEY_CRAFTING_XP)
         }
     }
 
@@ -97,7 +97,7 @@ class PrinceAliRescueQuest @Inject constructor() :
             val start =
                 "Chancellor Hassan of Al Kharid needs help with an urgent problem. He told me to " +
                     "speak to <red>Osman</red>, the Emir's spymaster, just outside the palace."
-            if (stage == StageStarted) {
+            if (stage == STAGE_STARTED) {
                 line(start)
                 return@questJournal
             }
@@ -105,14 +105,14 @@ class PrinceAliRescueQuest @Inject constructor() :
             val briefing =
                 "Prince Ali has been kidnapped by Lady Keli's bandits and is held in the abandoned " +
                     "jail east of Draynor Village. I need to get him out without any bloodshed."
-            if (stage == StageBriefed) {
+            if (stage == STAGE_BRIEFED) {
                 line(briefing)
                 gathering(p)
                 return@questJournal
             }
             strike(briefing)
             strike("I gathered a copy of the cell key and a disguise to make the Prince look like Keli.")
-            if (stage == StagePrepared) {
+            if (stage == STAGE_PREPARED) {
                 line(
                     "Leela told me to deal with the Prince's guard, <red>Joe</red>, without " +
                         "violence. Maybe three beers would do the trick."
@@ -120,12 +120,12 @@ class PrinceAliRescueQuest @Inject constructor() :
                 return@questJournal
             }
             strike("I got Joe the guard too drunk to notice anything.")
-            if (stage == StageJoeDrunk) {
+            if (stage == STAGE_JOE_DRUNK) {
                 line("I need to tie <red>Lady Keli</red> up with a rope before I free the Prince.")
                 return@questJournal
             }
             strike("I tied Lady Keli up and hid her in a cupboard.")
-            if (stage < StageAliEscaped) {
+            if (stage < STAGE_ALI_ESCAPED) {
                 line(
                     "I should unlock the <red>cell door</red> with the key and give the Prince " +
                         "his disguise so he can slip past the guards."
@@ -143,7 +143,7 @@ class PrinceAliRescueQuest @Inject constructor() :
                 line("I have lost the key. <red>Leela</red> can sell me another for 15 coins.")
             p.keyOrdered ->
                 line("Osman is having a copy of the key made. He will send it to <red>Leela</red>.")
-            KeyPrint in p.inv ->
+            KEY_PRINT in p.inv ->
                 line(
                     "I have an imprint of the key. I can make a copy at a <red>furnace</red> with " +
                         "a bronze bar."
@@ -155,16 +155,16 @@ class PrinceAliRescueQuest @Inject constructor() :
                 )
         }
         when {
-            BlondWig in p.inv -> strike("I have a blond wig.")
-            Wig in p.inv -> line("I have a wig. I need to dye it yellow.")
+            BLOND_WIG in p.inv -> strike("I have a blond wig.")
+            WIG in p.inv -> line("I have a wig. I need to dye it yellow.")
             else -> line("<red>Ned</red>, the old sailor in Draynor Village, might make a wig.")
         }
-        if (SkinPaste in p.inv) {
+        if (SKIN_PASTE in p.inv) {
             strike("I have some skin paste.")
         } else {
             line("<red>Aggie</red>, the witch in Draynor Village, could make skin paste.")
         }
-        if (PinkSkirt in p.inv) {
+        if (PINK_SKIRT in p.inv) {
             strike("I have a pink skirt.")
         } else {
             line("I need a <red>pink skirt</red>. Thessalia in Varrock sells them.")
@@ -199,7 +199,7 @@ class PrinceAliRescueQuest @Inject constructor() :
         access.player.keyObtained = false
         access.player.metLeela = false
         access.player.joeHadBeer = false
-        setStage(access, StageStarted)
+        setStage(access, STAGE_STARTED)
     }
 
     fun keliAsked(player: Player): Boolean = player.keliAsked
@@ -233,63 +233,63 @@ class PrinceAliRescueQuest @Inject constructor() :
     }
 
     fun needsImprint(player: Player): Boolean =
-        !player.keyOrdered && !player.keyObtained && KeyPrint !in player.inv
+        !player.keyOrdered && !player.keyObtained && KEY_PRINT !in player.inv
 
-    fun hasKey(player: Player): Boolean = Key in player.inv
+    fun hasKey(player: Player): Boolean = KEY in player.inv
 
     fun hasDisguise(player: Player): Boolean =
-        BlondWig in player.inv && SkinPaste in player.inv && PinkSkirt in player.inv
+        BLOND_WIG in player.inv && SKIN_PASTE in player.inv && PINK_SKIRT in player.inv
 
     fun ProtectedAccess.lostKey(): Boolean =
-        player.keyObtained && Key !in inv && Key !in bank
+        player.keyObtained && KEY !in inv && KEY !in bank
 
-    fun gatheringDisguise(player: Player): Boolean = stage(player) in StageStarted until StageAliEscaped
+    fun gatheringDisguise(player: Player): Boolean = stage(player) in STAGE_STARTED until STAGE_ALI_ESCAPED
 
     companion object {
-        const val QuestKey = "quest_princealirescue"
-        const val ShieldOfArrav = "quest_shieldofarrav"
+        const val QUEST_KEY = "quest_princealirescue"
+        const val SHIELD_OF_ARRAV = "quest_shieldofarrav"
 
-        const val StageStarted = 10
-        const val StageBriefed = 20
-        const val StagePrepared = 30
-        const val StageJoeDrunk = 40
-        const val StageKeliTied = 50
-        const val StageAliEscaped = 100
-        const val StageComplete = 110
+        const val STAGE_STARTED = 10
+        const val STAGE_BRIEFED = 20
+        const val STAGE_PREPARED = 30
+        const val STAGE_JOE_DRUNK = 40
+        const val STAGE_KELI_TIED = 50
+        const val STAGE_ALI_ESCAPED = 100
+        const val STAGE_COMPLETE = 110
 
-        const val CoinReward = 700
-        const val LostKeyPrice = 15
-        const val BeersNeeded = 3
-        const val WoolPerWig = 3
-        const val KeyCraftingXp = 2.0
+        const val COIN_REWARD = 700
+        const val LOST_KEY_PRICE = 15
+        const val BEERS_NEEDED = 3
+        const val WOOL_PER_WIG = 3
+        const val KEY_CRAFTING_XP = 2.0
 
-        const val Coins = "obj.coins"
-        const val Key = "obj.princeskey"
-        const val KeyPrint = "obj.keyprint"
-        const val SoftClay = "obj.softclay"
-        const val BronzeBar = "obj.bronze_bar"
-        const val Wig = "obj.plainwig"
-        const val BlondWig = "obj.blondwig"
-        const val YellowDye = "obj.yellowdye"
-        const val SkinPaste = "obj.skinpaste"
-        const val PinkSkirt = "obj.pink_skirt"
-        const val Beer = "obj.beer"
-        const val Rope = "obj.rope"
-        const val BallOfWool = "obj.ball_of_wool"
-        const val JugOfWater = "obj.jug_water"
-        const val BucketOfWater = "obj.bucket_water"
-        const val Ashes = "obj.ashes"
-        const val PotOfFlour = "obj.pot_flour"
-        const val Redberries = "obj.redberries"
+        const val COINS = "obj.coins"
+        const val KEY = "obj.princeskey"
+        const val KEY_PRINT = "obj.keyprint"
+        const val SOFT_CLAY = "obj.softclay"
+        const val BRONZE_BAR = "obj.bronze_bar"
+        const val WIG = "obj.plainwig"
+        const val BLOND_WIG = "obj.blondwig"
+        const val YELLOW_DYE = "obj.yellowdye"
+        const val SKIN_PASTE = "obj.skinpaste"
+        const val PINK_SKIRT = "obj.pink_skirt"
+        const val BEER = "obj.beer"
+        const val ROPE = "obj.rope"
+        const val BALL_OF_WOOL = "obj.ball_of_wool"
+        const val JUG_OF_WATER = "obj.jug_water"
+        const val BUCKET_OF_WATER = "obj.bucket_water"
+        const val ASHES = "obj.ashes"
+        const val POT_OF_FLOUR = "obj.pot_flour"
+        const val REDBERRIES = "obj.redberries"
 
-        const val NpcHassan = "npc.hassan"
-        const val NpcOsman = "npc.contact_osman_multi"
-        const val NpcLeela = "npc.leela"
-        const val NpcKeli = "npc.lady_keli"
-        const val NpcJoe = "npc.joe"
-        const val NpcPrinceCell = "npc.prince_ali_prison"
-        const val NpcPrincePalace = "npc.prince_ali_palace"
+        const val NPC_HASSAN = "npc.hassan"
+        const val NPC_OSMAN = "npc.contact_osman_multi"
+        const val NPC_LEELA = "npc.leela"
+        const val NPC_KELI = "npc.lady_keli"
+        const val NPC_JOE = "npc.joe"
+        const val NPC_PRINCE_CELL = "npc.prince_ali_prison"
+        const val NPC_PRINCE_PALACE = "npc.prince_ali_palace"
 
-        const val CellDoor = "loc.alidoor"
+        const val CELL_DOOR = "loc.alidoor"
     }
 }

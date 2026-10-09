@@ -50,39 +50,39 @@ import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.route.BoundValidator
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Ashes
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BallOfWool
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Beer
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BlondWig
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BronzeBar
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BucketOfWater
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Coins
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.JugOfWater
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Key
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.KeyPrint
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcHassan
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcJoe
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcKeli
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcLeela
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcOsman
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcPrinceCell
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcPrincePalace
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.PinkSkirt
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.PotOfFlour
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.QuestKey
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Redberries
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Rope
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.SkinPaste
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.SoftClay
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageAliEscaped
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageBriefed
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageComplete
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageJoeDrunk
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageKeliTied
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StagePrepared
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageStarted
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Wig
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.YellowDye
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.ASHES
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BALL_OF_WOOL
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BEER
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BLOND_WIG
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BRONZE_BAR
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BUCKET_OF_WATER
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.COINS
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.JUG_OF_WATER
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.KEY
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.KEY_PRINT
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_HASSAN
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_JOE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_KELI
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_LEELA
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_OSMAN
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_PRINCE_CELL
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_PRINCE_PALACE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.PINK_SKIRT
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.POT_OF_FLOUR
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.QUEST_KEY
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.REDBERRIES
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.ROPE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.SKIN_PASTE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.SOFT_CLAY
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_ALI_ESCAPED
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_BRIEFED
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_COMPLETE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_JOE_DRUNK
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_KELI_TIED
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_PREPARED
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_STARTED
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.WIG
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.YELLOW_DYE
 import org.rsmod.content.quest.area.alkharid.princealirescue.npcs.Hassan
 import org.rsmod.content.quest.area.alkharid.princealirescue.npcs.Joe
 import org.rsmod.content.quest.area.alkharid.princealirescue.npcs.LadyKeli
@@ -137,97 +137,97 @@ class PrinceAliRescueInteractionTest {
     fun `the full rescue with Osman making the key completes the quest and pays out once`() =
         respectingProgress {
             val f = Fixture()
-            assertFalse(QuestRequirements.hasCompleted(f.player, QuestKey))
+            assertFalse(QuestRequirements.hasCompleted(f.player, QUEST_KEY))
 
             f.choose(1, 1)
-            f.talk(NpcHassan)
-            assertEquals(StageStarted, f.stage())
+            f.talk(NPC_HASSAN)
+            assertEquals(STAGE_STARTED, f.stage())
             assertTrue(f.journal().contains("Osman"))
 
-            f.choose(OsmanLeave)
-            f.talk(NpcOsman)
-            assertEquals(StageBriefed, f.stage())
+            f.choose(OSMAN_LEAVE)
+            f.talk(NPC_OSMAN)
+            assertEquals(STAGE_BRIEFED, f.stage())
             assertTrue(f.said("abandoned jail just east of Draynor Village"))
 
             f.imprintKey()
-            assertEquals(1, f.count(KeyPrint))
-            assertEquals(0, f.count(SoftClay))
+            assertEquals(1, f.count(KEY_PRINT))
+            assertEquals(0, f.count(SOFT_CLAY))
             assertTrue(f.journal().contains("imprint"))
 
-            f.give(BronzeBar)
-            f.choose(OsmanLeave)
-            f.talk(NpcOsman)
+            f.give(BRONZE_BAR)
+            f.choose(OSMAN_LEAVE)
+            f.talk(NPC_OSMAN)
             assertTrue(f.quest.keyOrdered(f.player))
-            assertEquals(0, f.count(KeyPrint))
-            assertEquals(0, f.count(BronzeBar))
+            assertEquals(0, f.count(KEY_PRINT))
+            assertEquals(0, f.count(BRONZE_BAR))
 
-            f.choose(LeelaLeave)
-            f.talk(NpcLeela)
+            f.choose(LEELA_LEAVE)
+            f.talk(NPC_LEELA)
             assertTrue(f.quest.keyObtained(f.player))
             assertFalse(f.quest.keyOrdered(f.player))
-            assertEquals(1, f.count(Key))
-            assertEquals(StageBriefed, f.stage())
+            assertEquals(1, f.count(KEY))
+            assertEquals(STAGE_BRIEFED, f.stage())
 
             f.makeDisguise()
-            assertEquals(1, f.count(BlondWig))
-            assertEquals(1, f.count(SkinPaste))
+            assertEquals(1, f.count(BLOND_WIG))
+            assertEquals(1, f.count(SKIN_PASTE))
 
-            f.talk(NpcLeela)
-            assertEquals(StagePrepared, f.stage())
+            f.talk(NPC_LEELA)
+            assertEquals(STAGE_PREPARED, f.stage())
             assertTrue(f.said("deal with his personal guard"))
 
-            f.give(Beer, 3)
+            f.give(BEER, 3)
             f.choose(1)
-            f.talk(NpcJoe)
-            assertEquals(StageJoeDrunk, f.stage())
-            assertEquals(0, f.count(Beer))
+            f.talk(NPC_JOE)
+            assertEquals(STAGE_JOE_DRUNK, f.stage())
+            assertEquals(0, f.count(BEER))
 
-            f.give(Rope)
-            f.npcU(NpcKeli, Rope)
-            assertEquals(StageKeliTied, f.stage())
-            assertEquals(0, f.count(Rope))
+            f.give(ROPE)
+            f.npcU(NPC_KELI, ROPE)
+            assertEquals(STAGE_KELI_TIED, f.stage())
+            assertEquals(0, f.count(ROPE))
             assertTrue(f.said("tie her up"))
 
-            f.talk(NpcPrinceCell)
-            assertEquals(StageAliEscaped, f.stage())
-            assertEquals(0, f.count(BlondWig))
-            assertEquals(0, f.count(SkinPaste))
-            assertEquals(0, f.count(PinkSkirt))
+            f.talk(NPC_PRINCE_CELL)
+            assertEquals(STAGE_ALI_ESCAPED, f.stage())
+            assertEquals(0, f.count(BLOND_WIG))
+            assertEquals(0, f.count(SKIN_PASTE))
+            assertEquals(0, f.count(PINK_SKIRT))
 
-            f.talk(NpcHassan)
-            assertEquals(StageComplete, f.stage())
+            f.talk(NPC_HASSAN)
+            assertEquals(STAGE_COMPLETE, f.stage())
             assertEquals(3, f.player.vars["varp.qp"])
-            assertEquals(700, f.count(Coins))
+            assertEquals(700, f.count(COINS))
             assertTrue(f.player.ui.containsModal("interface.questscroll"))
-            assertTrue(QuestRequirements.hasCompleted(f.player, QuestKey))
+            assertTrue(QuestRequirements.hasCompleted(f.player, QUEST_KEY))
 
-            f.talk(NpcHassan)
-            assertEquals(700, f.count(Coins))
+            f.talk(NPC_HASSAN)
+            assertEquals(700, f.count(COINS))
             assertEquals(3, f.player.vars["varp.qp"])
-            f.talk(NpcPrincePalace)
+            f.talk(NPC_PRINCE_PALACE)
             assertTrue(f.said("forever in your debt"))
         }
 
     @Test
     fun `the key can be made at a furnace from the imprint and a bronze bar`() {
-        val f = Fixture(StageBriefed)
-        f.give(KeyPrint)
+        val f = Fixture(STAGE_BRIEFED)
+        f.give(KEY_PRINT)
         f.furnaceUse()
-        assertEquals(1, f.count(KeyPrint))
-        assertEquals(0, f.count(Key))
+        assertEquals(1, f.count(KEY_PRINT))
+        assertEquals(0, f.count(KEY))
         assertTrue(f.said("You need a bronze bar"))
 
-        f.give(BronzeBar)
+        f.give(BRONZE_BAR)
         f.choose(2)
         f.furnaceUse()
-        assertEquals(1, f.count(KeyPrint))
-        assertEquals(1, f.count(BronzeBar))
+        assertEquals(1, f.count(KEY_PRINT))
+        assertEquals(1, f.count(BRONZE_BAR))
 
         f.choose(1)
         f.furnaceUse()
-        assertEquals(0, f.count(KeyPrint))
-        assertEquals(0, f.count(BronzeBar))
-        assertEquals(1, f.count(Key))
+        assertEquals(0, f.count(KEY_PRINT))
+        assertEquals(0, f.count(BRONZE_BAR))
+        assertEquals(1, f.count(KEY))
         assertTrue(f.quest.keyObtained(f.player))
         assertTrue(f.player.statMap.getXP("stat.crafting") > 0)
         assertTrue(f.journal().contains("copy of the cell key"))
@@ -236,32 +236,32 @@ class PrinceAliRescueInteractionTest {
     @Test
     fun `the furnace route reaches Leela's go-ahead without Osman ever touching the key`() =
         respectingProgress {
-            val f = Fixture(StageBriefed)
+            val f = Fixture(STAGE_BRIEFED)
             f.imprintKey()
-            assertEquals(1, f.count(KeyPrint))
-            f.give(BronzeBar)
+            assertEquals(1, f.count(KEY_PRINT))
+            f.give(BRONZE_BAR)
             f.choose(1)
             f.furnaceUse()
-            assertEquals(1, f.count(Key))
+            assertEquals(1, f.count(KEY))
             assertFalse(f.quest.keyOrdered(f.player))
 
             f.giveDisguise()
-            f.choose(LeelaLeave)
-            f.talk(NpcLeela)
-            assertEquals(StageBriefed, f.stage())
-            f.talk(NpcLeela)
-            assertEquals(StagePrepared, f.stage())
-            assertEquals(1, f.count(Key))
+            f.choose(LEELA_LEAVE)
+            f.talk(NPC_LEELA)
+            assertEquals(STAGE_BRIEFED, f.stage())
+            f.talk(NPC_LEELA)
+            assertEquals(STAGE_PREPARED, f.stage())
+            assertEquals(1, f.count(KEY))
         }
 
     @Test
     fun `declining Hassan leaves the quest unstarted`() {
         val f = Fixture()
         f.choose(1, 2)
-        f.talk(NpcHassan)
+        f.talk(NPC_HASSAN)
         assertEquals(0, f.stage())
         f.choose(4)
-        f.talk(NpcHassan)
+        f.talk(NPC_HASSAN)
         assertEquals(0, f.stage())
     }
 
@@ -269,89 +269,89 @@ class PrinceAliRescueInteractionTest {
     fun `Hassan hands out a jug of water when it is too hot`() {
         val f = Fixture()
         f.choose(2, 4)
-        f.talk(NpcHassan)
-        assertEquals(1, f.count(JugOfWater))
+        f.talk(NPC_HASSAN)
+        assertEquals(1, f.count(JUG_OF_WATER))
         assertEquals(0, f.stage())
     }
 
     @Test
     fun `the quest npcs keep to themselves before the briefing`() {
-        val f = Fixture(StageStarted)
-        f.give(SoftClay)
-        f.talk(NpcKeli)
+        val f = Fixture(STAGE_STARTED)
+        f.give(SOFT_CLAY)
+        f.talk(NPC_KELI)
         assertTrue(f.said("Clear off then."))
-        f.talk(NpcLeela)
+        f.talk(NPC_LEELA)
         assertTrue(f.said("That is no concern of yours"))
-        assertEquals(1, f.count(SoftClay))
-        assertEquals(StageStarted, f.stage())
+        assertEquals(1, f.count(SOFT_CLAY))
+        assertEquals(STAGE_STARTED, f.stage())
     }
 
     @Test
     fun `keli shows the key but no imprint is taken without soft clay`() = respectingProgress {
-        val f = Fixture(StageBriefed)
+        val f = Fixture(STAGE_BRIEFED)
         f.choose(1, 1, 2, 1)
-        f.talk(NpcKeli)
+        f.talk(NPC_KELI)
         assertTrue(f.said("Keli shows you a small key"))
-        assertEquals(0, f.count(KeyPrint))
+        assertEquals(0, f.count(KEY_PRINT))
         assertTrue(f.quest.keliAsked(f.player))
-        f.give(SoftClay)
+        f.give(SOFT_CLAY)
         f.choose(2, 1, 1)
-        f.talk(NpcKeli)
+        f.talk(NPC_KELI)
         assertTrue(f.said("Hello again!"))
-        assertEquals(1, f.count(KeyPrint))
-        assertEquals(0, f.count(SoftClay))
+        assertEquals(1, f.count(KEY_PRINT))
+        assertEquals(0, f.count(SOFT_CLAY))
     }
 
     @Test
     fun `osman keeps the imprint until a bronze bar comes with it`() {
-        val f = Fixture(StageBriefed)
-        f.give(KeyPrint)
-        f.choose(OsmanLeave)
-        f.talk(NpcOsman)
+        val f = Fixture(STAGE_BRIEFED)
+        f.give(KEY_PRINT)
+        f.choose(OSMAN_LEAVE)
+        f.talk(NPC_OSMAN)
         assertTrue(f.said("Bring me a bronze bar"))
-        assertEquals(1, f.count(KeyPrint))
+        assertEquals(1, f.count(KEY_PRINT))
         assertFalse(f.quest.keyOrdered(f.player))
     }
 
     @Test
     fun `leela waits for the whole disguise and a dyed wig`() {
-        val f = Fixture(StageBriefed)
+        val f = Fixture(STAGE_BRIEFED)
         f.quest.setMetLeela(f.player)
-        f.give(Key)
-        f.give(Wig)
-        f.give(SkinPaste)
-        f.give(PinkSkirt)
-        f.choose(LeelaLeave)
-        f.talk(NpcLeela)
-        assertEquals(StageBriefed, f.stage())
-        f.give(YellowDye)
-        f.use(YellowDye, Wig)
-        assertEquals(1, f.count(BlondWig))
-        assertEquals(0, f.count(Wig))
-        assertEquals(0, f.count(YellowDye))
-        f.talk(NpcLeela)
-        assertEquals(StagePrepared, f.stage())
+        f.give(KEY)
+        f.give(WIG)
+        f.give(SKIN_PASTE)
+        f.give(PINK_SKIRT)
+        f.choose(LEELA_LEAVE)
+        f.talk(NPC_LEELA)
+        assertEquals(STAGE_BRIEFED, f.stage())
+        f.give(YELLOW_DYE)
+        f.use(YELLOW_DYE, WIG)
+        assertEquals(1, f.count(BLOND_WIG))
+        assertEquals(0, f.count(WIG))
+        assertEquals(0, f.count(YELLOW_DYE))
+        f.talk(NPC_LEELA)
+        assertEquals(STAGE_PREPARED, f.stage())
     }
 
     @Test
     fun `leela still gives her briefing at the first meeting even with everything ready`() {
-        val f = Fixture(StageBriefed)
-        f.give(Key)
-        f.give(BlondWig)
-        f.give(SkinPaste)
-        f.give(PinkSkirt)
-        f.choose(LeelaLeave)
-        f.talk(NpcLeela)
+        val f = Fixture(STAGE_BRIEFED)
+        f.give(KEY)
+        f.give(BLOND_WIG)
+        f.give(SKIN_PASTE)
+        f.give(PINK_SKIRT)
+        f.choose(LEELA_LEAVE)
+        f.talk(NPC_LEELA)
         assertTrue(f.said("I'd say that's a good summary."))
-        assertEquals(StageBriefed, f.stage())
-        f.talk(NpcLeela)
-        assertEquals(StagePrepared, f.stage())
+        assertEquals(STAGE_BRIEFED, f.stage())
+        f.talk(NPC_LEELA)
+        assertEquals(STAGE_PREPARED, f.stage())
     }
 
     @Test
     fun `every quest npc is spawned on the base id the handlers bind`() {
         val f = Fixture()
-        for (npc in listOf(NpcHassan, NpcOsman, NpcLeela, NpcKeli, NpcJoe, NpcPrinceCell, NpcPrincePalace)) {
+        for (npc in listOf(NPC_HASSAN, NPC_OSMAN, NPC_LEELA, NPC_KELI, NPC_JOE, NPC_PRINCE_CELL, NPC_PRINCE_PALACE)) {
             val id = npc.asRSCM(RSCMType.NPC)
             assertTrue(f.events.contains(NpcEvents.Op1::class.java, id), "$npc has no op1 handler")
         }
@@ -362,103 +362,103 @@ class PrinceAliRescueInteractionTest {
 
     @Test
     fun `the prince stays put with the disguise but without the key`() {
-        val f = Fixture(StageKeliTied)
-        f.give(BlondWig)
-        f.give(SkinPaste)
-        f.give(PinkSkirt)
-        f.talk(NpcPrinceCell)
-        assertEquals(StageKeliTied, f.stage())
-        assertEquals(1, f.count(BlondWig))
+        val f = Fixture(STAGE_KELI_TIED)
+        f.give(BLOND_WIG)
+        f.give(SKIN_PASTE)
+        f.give(PINK_SKIRT)
+        f.talk(NPC_PRINCE_CELL)
+        assertEquals(STAGE_KELI_TIED, f.stage())
+        assertEquals(1, f.count(BLOND_WIG))
     }
 
     @Test
     fun `a lost key is replaced for fifteen coins`() {
-        val f = Fixture(StagePrepared)
+        val f = Fixture(STAGE_PREPARED)
         f.quest.setMetLeela(f.player)
         f.quest.setKeyObtained(f.player)
-        f.talk(NpcLeela)
+        f.talk(NPC_LEELA)
         assertTrue(f.said("I haven't got that much."))
-        assertEquals(0, f.count(Key))
-        f.give(Coins, 20)
-        f.talk(NpcLeela)
-        assertEquals(1, f.count(Key))
-        assertEquals(5, f.count(Coins))
-        f.talk(NpcLeela)
-        assertEquals(1, f.count(Key))
-        assertEquals(5, f.count(Coins))
+        assertEquals(0, f.count(KEY))
+        f.give(COINS, 20)
+        f.talk(NPC_LEELA)
+        assertEquals(1, f.count(KEY))
+        assertEquals(5, f.count(COINS))
+        f.talk(NPC_LEELA)
+        assertEquals(1, f.count(KEY))
+        assertEquals(5, f.count(COINS))
     }
 
     @Test
     fun `one beer is remembered and two more finish the job`() {
-        val f = Fixture(StagePrepared)
-        f.give(Beer, 2)
+        val f = Fixture(STAGE_PREPARED)
+        f.give(BEER, 2)
         f.choose(1)
-        f.talk(NpcJoe)
-        assertEquals(StagePrepared, f.stage())
-        assertEquals(1, f.count(Beer))
+        f.talk(NPC_JOE)
+        assertEquals(STAGE_PREPARED, f.stage())
+        assertEquals(1, f.count(BEER))
         assertTrue(f.said("at least two more"))
         assertTrue(f.quest.joeHadBeer(f.player))
 
-        f.give(Beer, 1)
+        f.give(BEER, 1)
         f.choose(1)
-        f.talk(NpcJoe)
-        assertEquals(StageJoeDrunk, f.stage())
-        assertEquals(0, f.count(Beer))
+        f.talk(NPC_JOE)
+        assertEquals(STAGE_JOE_DRUNK, f.stage())
+        assertEquals(0, f.count(BEER))
     }
 
     @Test
     fun `joe does not talk before leela has sent the player`() {
-        val f = Fixture(StageBriefed)
-        f.give(Beer, 3)
-        f.talk(NpcJoe)
+        val f = Fixture(STAGE_BRIEFED)
+        f.give(BEER, 3)
+        f.talk(NPC_JOE)
         assertTrue(f.said("Can't say. It's all very secret."))
-        assertEquals(3, f.count(Beer))
+        assertEquals(3, f.count(BEER))
     }
 
     @Test
     fun `keli cannot be tied up before joe is drunk or without the disguise`() = respectingProgress {
-        val f = Fixture(StagePrepared)
-        f.give(Rope)
-        f.npcU(NpcKeli, Rope)
-        assertEquals(StagePrepared, f.stage())
-        assertEquals(1, f.count(Rope))
+        val f = Fixture(STAGE_PREPARED)
+        f.give(ROPE)
+        f.npcU(NPC_KELI, ROPE)
+        assertEquals(STAGE_PREPARED, f.stage())
+        assertEquals(1, f.count(ROPE))
         assertTrue(f.said("You cannot tie Keli up"))
 
-        f.setStage(StageJoeDrunk)
-        f.npcU(NpcKeli, Rope)
-        assertEquals(StageJoeDrunk, f.stage())
-        assertEquals(1, f.count(Rope))
+        f.setStage(STAGE_JOE_DRUNK)
+        f.npcU(NPC_KELI, ROPE)
+        assertEquals(STAGE_JOE_DRUNK, f.stage())
+        assertEquals(1, f.count(ROPE))
 
         f.giveDisguiseAndKey()
-        f.talk(NpcKeli)
+        f.talk(NPC_KELI)
         assertTrue(f.said("I'm here to tie you up!"))
-        assertEquals(StageKeliTied, f.stage())
-        assertEquals(0, f.count(Rope))
+        assertEquals(STAGE_KELI_TIED, f.stage())
+        assertEquals(0, f.count(ROPE))
     }
 
     @Test
     fun `the prince stays put without his disguise`() {
-        val f = Fixture(StageKeliTied)
-        f.give(Key)
-        f.give(BlondWig)
-        f.talk(NpcPrinceCell)
-        assertEquals(StageKeliTied, f.stage())
-        assertEquals(1, f.count(BlondWig))
+        val f = Fixture(STAGE_KELI_TIED)
+        f.give(KEY)
+        f.give(BLOND_WIG)
+        f.talk(NPC_PRINCE_CELL)
+        assertEquals(STAGE_KELI_TIED, f.stage())
+        assertEquals(1, f.count(BLOND_WIG))
         assertTrue(f.said("I'll be back once I have it."))
     }
 
     @Test
     fun `hassan holds the payment back until there is room for the coins`() {
-        val f = Fixture(StageAliEscaped)
+        val f = Fixture(STAGE_ALI_ESCAPED)
         f.fill()
-        f.talk(NpcHassan)
-        assertEquals(StageAliEscaped, f.stage())
+        f.talk(NPC_HASSAN)
+        assertEquals(STAGE_ALI_ESCAPED, f.stage())
         assertTrue(f.said("your pack is full"))
         assertEquals(0, f.player.vars["varp.qp"])
         f.drop("obj.bronze_dagger")
-        f.talk(NpcHassan)
-        assertEquals(StageComplete, f.stage())
-        assertEquals(700, f.count(Coins))
+        f.talk(NPC_HASSAN)
+        assertEquals(STAGE_COMPLETE, f.stage())
+        assertEquals(700, f.count(COINS))
         assertEquals(3, f.player.vars["varp.qp"])
     }
 
@@ -466,199 +466,199 @@ class PrinceAliRescueInteractionTest {
     fun `ned and aggie only make the disguise while the rescue is under way`() {
         val f = Fixture()
         assertFalse(f.makers.offers(f.player))
-        f.setStage(StageStarted)
+        f.setStage(STAGE_STARTED)
         assertTrue(f.makers.offers(f.player))
-        f.setStage(StageAliEscaped)
+        f.setStage(STAGE_ALI_ESCAPED)
         assertFalse(f.makers.offers(f.player))
     }
 
     @Test
     fun `ned makes a wig from three balls of wool and not from fewer`() {
-        val f = Fixture(StageBriefed)
-        f.give(BallOfWool, 2)
+        val f = Fixture(STAGE_BRIEFED)
+        f.give(BALL_OF_WOOL, 2)
         f.choose(2)
         f.nedOtherThings()
-        assertEquals(0, f.count(Wig))
-        assertEquals(2, f.count(BallOfWool))
+        assertEquals(0, f.count(WIG))
+        assertEquals(2, f.count(BALL_OF_WOOL))
 
-        f.give(BallOfWool, 1)
+        f.give(BALL_OF_WOOL, 1)
         f.choose(2, 1)
         f.nedOtherThings()
-        assertEquals(1, f.count(Wig))
-        assertEquals(0, f.count(BallOfWool))
+        assertEquals(1, f.count(WIG))
+        assertEquals(0, f.count(BALL_OF_WOOL))
     }
 
     @Test
     fun `aggie lists the paste ingredients until she has them all`() {
-        val f = Fixture(StageBriefed)
-        f.give(Ashes)
-        f.give(PotOfFlour)
+        val f = Fixture(STAGE_BRIEFED)
+        f.give(ASHES)
+        f.give(POT_OF_FLOUR)
         f.aggieSkinPaste()
         assertTrue(f.said("ash, flour and water"))
-        assertEquals(0, f.count(SkinPaste))
-        assertEquals(1, f.count(Ashes))
+        assertEquals(0, f.count(SKIN_PASTE))
+        assertEquals(1, f.count(ASHES))
 
-        f.give(JugOfWater)
-        f.give(Redberries)
+        f.give(JUG_OF_WATER)
+        f.give(REDBERRIES)
         f.choose(1)
         f.aggieSkinPaste()
-        assertEquals(1, f.count(SkinPaste))
-        assertEquals(0, f.count(Ashes))
-        assertEquals(0, f.count(PotOfFlour))
-        assertEquals(0, f.count(JugOfWater))
-        assertEquals(0, f.count(Redberries))
+        assertEquals(1, f.count(SKIN_PASTE))
+        assertEquals(0, f.count(ASHES))
+        assertEquals(0, f.count(POT_OF_FLOUR))
+        assertEquals(0, f.count(JUG_OF_WATER))
+        assertEquals(0, f.count(REDBERRIES))
     }
 
     @Test
     fun `the cell door is locked without the key and only opens once keli is out of the way`() {
-        val f = Fixture(StagePrepared)
-        f.player.coords = CellOutside
+        val f = Fixture(STAGE_PREPARED)
+        f.player.coords = CELL_OUTSIDE
         f.cellDoorOp()
         assertTrue(f.said("The gate is locked."))
         assertTrue(f.player.routeDestination.isEmpty())
 
-        f.give(Key)
+        f.give(KEY)
         f.cellDoorKey()
         assertTrue(f.said("deal with Lady Keli"))
         assertTrue(f.player.routeDestination.isEmpty())
 
-        f.setStage(StageKeliTied)
+        f.setStage(STAGE_KELI_TIED)
         f.cellDoorKey()
-        assertEquals(CellDoorTile, f.player.routeDestination.lastOrNull())
-        assertTrue(f.canStep(CellOutside, 0, -1), "the door stays open while the player steps in ")
+        assertEquals(CELL_DOOR_TILE, f.player.routeDestination.lastOrNull())
+        assertTrue(f.canStep(CELL_OUTSIDE, 0, -1), "the door stays open while the player steps in ")
 
-        f.player.coords = CellDoorTile
+        f.player.coords = CELL_DOOR_TILE
         f.player.routeDestination.clear()
         f.cellDoorOp()
-        assertEquals(CellOutside, f.player.routeDestination.lastOrNull(), "let out without a key")
+        assertEquals(CELL_OUTSIDE, f.player.routeDestination.lastOrNull(), "let out without a key")
     }
 
     @Test
     fun `the toll gate charges ten coins on the way east and lets the player right through`() {
         val f = Fixture()
-        f.player.coords = GateWest
-        f.give(Coins, 25)
-        assertFalse(f.canStep(GateWest, 1, 0), "the closed gate blocks the way")
+        f.player.coords = GATE_WEST
+        f.give(COINS, 25)
+        assertFalse(f.canStep(GATE_WEST, 1, 0), "the closed gate blocks the way")
         f.gate(InteractionOp.Op4)
-        assertEquals(15, f.count(Coins))
-        assertEquals(GateEast, f.player.routeDestination.lastOrNull(), "the far side, not the gate")
-        assertTrue(f.canStep(GateWest, 1, 0), "the gate is open for the step")
+        assertEquals(15, f.count(COINS))
+        assertEquals(GATE_EAST, f.player.routeDestination.lastOrNull(), "the far side, not the gate")
+        assertTrue(f.canStep(GATE_WEST, 1, 0), "the gate is open for the step")
         assertFalse(f.output().contains("Can I come through"), "no conversation on the pay option")
     }
 
     @Test
     fun `the toll gate stays open for the whole walk even from beside the gate`() {
         val f = Fixture()
-        f.player.coords = GateWest.translateZ(-1)
-        f.give(Coins, 10)
+        f.player.coords = GATE_WEST.translateZ(-1)
+        f.give(COINS, 10)
         f.gate(InteractionOp.Op4)
-        assertEquals(GateEast, f.player.routeDestination.lastOrNull())
-        assertTrue(TollGateOpenTicks >= 6, "open for $TollGateOpenTicks ticks")
+        assertEquals(GATE_EAST, f.player.routeDestination.lastOrNull())
+        assertTrue(TOLL_GATE_OPEN_TICKS >= 6, "open for $TOLL_GATE_OPEN_TICKS ticks")
     }
 
     @Test
     fun `the toll gate refuses a player who cannot pay`() {
         val f = Fixture()
-        f.player.coords = GateWest
-        f.give(Coins, 9)
+        f.player.coords = GATE_WEST
+        f.give(COINS, 9)
         f.gate(InteractionOp.Op4)
-        assertEquals(9, f.count(Coins))
+        assertEquals(9, f.count(COINS))
         assertTrue(f.said("I don't actually seem to have enough money"))
         assertTrue(f.player.routeDestination.isEmpty())
-        assertFalse(f.canStep(GateWest, 1, 0))
+        assertFalse(f.canStep(GATE_WEST, 1, 0))
     }
 
     @Test
     fun `opening the toll gate asks for the toll with the three transcript options`() {
         val f = Fixture()
-        f.player.coords = GateWest
-        f.give(Coins, 10)
+        f.player.coords = GATE_WEST
+        f.give(COINS, 10)
         f.choose(2)
         f.gate(InteractionOp.Op1)
         assertTrue(f.said("You must pay a toll of 10 gold coins to pass."))
         assertTrue(f.said("The money goes to the city of Al-Kharid."))
-        assertEquals(10, f.count(Coins))
+        assertEquals(10, f.count(COINS))
         assertTrue(f.player.routeDestination.isEmpty())
 
         f.choose(3)
         f.gate(InteractionOp.Op1)
         assertTrue(f.said("Ok suit yourself."))
-        assertEquals(10, f.count(Coins))
+        assertEquals(10, f.count(COINS))
         assertTrue(f.player.routeDestination.isEmpty())
 
         f.choose(1)
         f.gate(InteractionOp.Op1)
-        assertEquals(0, f.count(Coins))
-        assertEquals(GateEast, f.player.routeDestination.lastOrNull())
+        assertEquals(0, f.count(COINS))
+        assertEquals(GATE_EAST, f.player.routeDestination.lastOrNull())
     }
 
     @Test
     fun `the border guard asks for the toll and a friend of Al Kharid passes for free`() =
         respectingProgress {
             val f = Fixture()
-            f.player.coords = GateWest
-            f.give(Coins, 10)
+            f.player.coords = GATE_WEST
+            f.give(COINS, 10)
             f.choose(1)
-            f.talk("npc.borderguard1", at = GateWest.translateZ(-1))
-            assertEquals(0, f.count(Coins))
-            assertEquals(GateEast, f.player.routeDestination.lastOrNull())
+            f.talk("npc.borderguard1", at = GATE_WEST.translateZ(-1))
+            assertEquals(0, f.count(COINS))
+            assertEquals(GATE_EAST, f.player.routeDestination.lastOrNull())
 
-            val friend = Fixture(StageComplete)
-            friend.player.coords = GateWest
-            friend.give(Coins, 10)
-            friend.talk("npc.borderguard1", at = GateWest.translateZ(-1))
+            val friend = Fixture(STAGE_COMPLETE)
+            friend.player.coords = GATE_WEST
+            friend.give(COINS, 10)
+            friend.talk("npc.borderguard1", at = GATE_WEST.translateZ(-1))
             assertTrue(friend.said("You may pass for free, you are a friend of Al-Kharid."))
-            assertEquals(10, friend.count(Coins))
-            assertEquals(GateEast, friend.player.routeDestination.lastOrNull())
+            assertEquals(10, friend.count(COINS))
+            assertEquals(GATE_EAST, friend.player.routeDestination.lastOrNull())
         }
 
     @Test
     fun `after the quest the gate just opens with no conversation`() = respectingProgress {
-        val f = Fixture(StageComplete)
-        f.player.coords = GateWest
-        f.give(Coins, 10)
+        val f = Fixture(STAGE_COMPLETE)
+        f.player.coords = GATE_WEST
+        f.give(COINS, 10)
         f.gate(InteractionOp.Op1)
-        assertEquals(GateEast, f.player.routeDestination.lastOrNull())
-        assertEquals(10, f.count(Coins))
+        assertEquals(GATE_EAST, f.player.routeDestination.lastOrNull())
+        assertEquals(10, f.count(COINS))
         assertFalse(f.output().contains("Can I come through"), "no dialogue after the quest")
-        assertTrue(f.canStep(GateWest, 1, 0))
+        assertTrue(f.canStep(GATE_WEST, 1, 0))
     }
 
     @Test
     fun `the gate is free as soon as the prince is out and before hassan pays`() = respectingProgress {
-        val f = Fixture(StageAliEscaped)
-        f.player.coords = GateWest
-        f.give(Coins, 10)
+        val f = Fixture(STAGE_ALI_ESCAPED)
+        f.player.coords = GATE_WEST
+        f.give(COINS, 10)
         f.gate(InteractionOp.Op1)
-        assertEquals(GateEast, f.player.routeDestination.lastOrNull())
-        assertEquals(10, f.count(Coins))
+        assertEquals(GATE_EAST, f.player.routeDestination.lastOrNull())
+        assertEquals(10, f.count(COINS))
         assertFalse(f.output().contains("Can I come through"), f.output())
     }
 
     @Test
     fun `leaving al kharid through the gate is free and silent for everyone`() {
         val f = Fixture()
-        f.player.coords = GateEast
-        f.give(Coins, 10)
+        f.player.coords = GATE_EAST
+        f.give(COINS, 10)
         f.gate(InteractionOp.Op1)
-        assertEquals(GateWest, f.player.routeDestination.lastOrNull())
-        assertEquals(10, f.count(Coins))
+        assertEquals(GATE_WEST, f.player.routeDestination.lastOrNull())
+        assertEquals(10, f.count(COINS))
         assertFalse(f.output().contains("toll"), f.output())
-        assertTrue(f.canStep(GateEast, -1, 0))
+        assertTrue(f.canStep(GATE_EAST, -1, 0))
 
         val guard = Fixture()
-        guard.player.coords = GateEast
-        guard.talk("npc.borderguard2", at = GateEast.translateZ(-1))
-        assertEquals(GateWest, guard.player.routeDestination.lastOrNull())
+        guard.player.coords = GATE_EAST
+        guard.talk("npc.borderguard2", at = GATE_EAST.translateZ(-1))
+        assertEquals(GATE_WEST, guard.player.routeDestination.lastOrNull())
         assertFalse(guard.output().contains("toll"), guard.output())
     }
 
     @Test
     fun `the gate resolves to the right visible op for the quest state`() {
         val f = Fixture()
-        val left = checkNotNull(ServerCacheManager.getObject(GateLeft.asRSCM(RSCMType.LOC)))
+        val left = checkNotNull(ServerCacheManager.getObject(GATE_LEFT.asRSCM(RSCMType.LOC)))
         val before = checkNotNull(ServerCacheManager.getObject(left.multiLoc[0]))
-        val after = checkNotNull(ServerCacheManager.getObject(left.multiLoc[StageAliEscaped]))
+        val after = checkNotNull(ServerCacheManager.getObject(left.multiLoc[STAGE_ALI_ESCAPED]))
         assertEquals("Pay-toll(10gp)", before.actions.getOpOrNull(3))
         assertEquals(null, after.actions.getOpOrNull(3))
         assertEquals("Open", after.actions.getOpOrNull(0))
@@ -667,16 +667,16 @@ class PrinceAliRescueInteractionTest {
 
     @Test
     fun `quest progress and flags survive saving and loading`() {
-        val f = Fixture(StageBriefed)
+        val f = Fixture(STAGE_BRIEFED)
         f.quest.setMetLeela(f.player)
         f.quest.setKeyObtained(f.player)
         f.quest.setKeliAsked(f.player)
         val loaded = f.saveAndReload()
-        assertEquals(StageBriefed, f.quest.stage(loaded))
+        assertEquals(STAGE_BRIEFED, f.quest.stage(loaded))
         assertTrue(f.quest.metLeela(loaded))
         assertTrue(f.quest.keyObtained(loaded))
         assertTrue(f.quest.keliAsked(loaded))
-        assertEquals(StageBriefed, loaded.vars["varp.princequest"])
+        assertEquals(STAGE_BRIEFED, loaded.vars["varp.princequest"])
     }
 
     private fun respectingProgress(block: () -> Unit) {
@@ -730,7 +730,7 @@ class PrinceAliRescueInteractionTest {
                 observerUUID = 7171L
                 slotId = 1
                 assignUid()
-                coords = Start
+                coords = START
                 currentMapClock = 100
                 processedMapClock = 100
                 pendingSequence = EntitySeq.NULL
@@ -778,10 +778,10 @@ class PrinceAliRescueInteractionTest {
             with(JailCellDoor(quest, locRepo)) { scripts.startup() }
             with(AlKharidTollGate(quest, locRepo)) { scripts.startup() }
             for (z in listOf(3227, 3228)) {
-                val leaf = if (z == 3227) GateLeft else GateRight
+                val leaf = if (z == 3227) GATE_LEFT else GATE_RIGHT
                 locRepo.add(CoordGrid(3268, z, 0), leaf, Int.MAX_VALUE, LocAngle.West, LocShape.WallStraight)
             }
-            locRepo.add(CellDoorTile, CellDoor, Int.MAX_VALUE, LocAngle.North, LocShape.WallStraight)
+            locRepo.add(CELL_DOOR_TILE, CELL_DOOR, Int.MAX_VALUE, LocAngle.North, LocShape.WallStraight)
             if (stage > 0) setStage(stage)
         }
 
@@ -824,41 +824,41 @@ class PrinceAliRescueInteractionTest {
         fun said(text: String): Boolean = output().contains(text)
 
         fun giveDisguiseAndKey() {
-            give(Key)
+            give(KEY)
             giveDisguise()
         }
 
         fun giveDisguise() {
-            give(BlondWig)
-            give(SkinPaste)
-            give(PinkSkirt)
+            give(BLOND_WIG)
+            give(SKIN_PASTE)
+            give(PINK_SKIRT)
         }
 
         fun imprintKey() {
-            give(SoftClay)
+            give(SOFT_CLAY)
             choose(1, 1, 2, 1, 1)
-            talk(NpcKeli)
+            talk(NPC_KELI)
         }
 
         fun makeDisguise() {
-            give(BallOfWool, 3)
+            give(BALL_OF_WOOL, 3)
             choose(2, 1)
             nedOtherThings()
-            assertEquals(1, count(Wig))
-            assertEquals(0, count(BallOfWool))
-            give(YellowDye)
-            use(YellowDye, Wig)
-            give(Ashes)
-            give(PotOfFlour)
-            give(BucketOfWater)
-            give(Redberries)
+            assertEquals(1, count(WIG))
+            assertEquals(0, count(BALL_OF_WOOL))
+            give(YELLOW_DYE)
+            use(YELLOW_DYE, WIG)
+            give(ASHES)
+            give(POT_OF_FLOUR)
+            give(BUCKET_OF_WATER)
+            give(REDBERRIES)
             choose(1)
             aggieSkinPaste()
-            assertEquals(0, count(Ashes))
-            assertEquals(0, count(PotOfFlour))
-            assertEquals(0, count(BucketOfWater))
-            assertEquals(0, count(Redberries))
-            give(PinkSkirt)
+            assertEquals(0, count(ASHES))
+            assertEquals(0, count(POT_OF_FLOUR))
+            assertEquals(0, count(BUCKET_OF_WATER))
+            assertEquals(0, count(REDBERRIES))
+            give(PINK_SKIRT)
         }
 
         fun nedOtherThings() {
@@ -906,7 +906,7 @@ class PrinceAliRescueInteractionTest {
 
         fun gate(op: InteractionOp) {
             val at = CoordGrid(3268, 3227, 0)
-            val type = checkNotNull(ServerCacheManager.getObject(GateLeft.asRSCM(RSCMType.LOC)))
+            val type = checkNotNull(ServerCacheManager.getObject(GATE_LEFT.asRSCM(RSCMType.LOC)))
             val loc = BoundLocInfo(LocInfo(0, at, LocEntity(type.id, 0, 0)), type)
             val trigger =
                 checkNotNull(LocInteractions(BoundValidator(collision), events).opTrigger(player, loc, op))
@@ -914,8 +914,8 @@ class PrinceAliRescueInteractionTest {
         }
 
         fun cellDoorOp() {
-            val type = checkNotNull(ServerCacheManager.getObject(CellDoor.asRSCM(RSCMType.LOC)))
-            val loc = BoundLocInfo(LocInfo(0, CellDoorTile, LocEntity(type.id, 0, 1)), type)
+            val type = checkNotNull(ServerCacheManager.getObject(CELL_DOOR.asRSCM(RSCMType.LOC)))
+            val loc = BoundLocInfo(LocInfo(0, CELL_DOOR_TILE, LocEntity(type.id, 0, 1)), type)
             val trigger =
                 checkNotNull(
                     LocInteractions(BoundValidator(collision), events).opTrigger(player, loc, InteractionOp.Op1)
@@ -923,13 +923,13 @@ class PrinceAliRescueInteractionTest {
             dispatch { assertTrue(events.publish(this, trigger)) }
         }
 
-        fun cellDoorKey() = useOnLoc(CellDoor, CellDoorTile, Key, shape = 0)
+        fun cellDoorKey() = useOnLoc(CELL_DOOR, CELL_DOOR_TILE, KEY, shape = 0)
 
         fun furnaceUse() {
             val furnace = "category.furnace".asRSCM(RSCMType.CATEGORY)
             val type =
                 ServerCacheManager.getObjects().values.first { it.category == furnace && it.actions.getOpOrNull(0) != null }
-            useOnLoc(locName(type.id), Start.translateX(1), KeyPrint)
+            useOnLoc(locName(type.id), START.translateX(1), KEY_PRINT)
         }
 
         private fun locName(id: Int): String = dev.openrune.rscm.RSCM.getReverseMapping(RSCMType.LOC, id)
@@ -1039,25 +1039,25 @@ class PrinceAliRescueInteractionTest {
     }
 
     companion object {
-        val Start = CoordGrid(3120, 3250, 0)
-        val GateWest = CoordGrid(3267, 3227, 0)
-        val GateEast = CoordGrid(3268, 3227, 0)
-        val CellDoorTile = CoordGrid(3123, 3243, 0)
-        val CellOutside = CoordGrid(3123, 3244, 0)
+        val START = CoordGrid(3120, 3250, 0)
+        val GATE_WEST = CoordGrid(3267, 3227, 0)
+        val GATE_EAST = CoordGrid(3268, 3227, 0)
+        val CELL_DOOR_TILE = CoordGrid(3123, 3243, 0)
+        val CELL_OUTSIDE = CoordGrid(3123, 3244, 0)
 
-        const val GateLeft = "loc.kharidmetalgateclosedl"
-        const val GateRight = "loc.kharidmetalgateclosedr"
-        const val CellDoor = "loc.alidoor"
+        const val GATE_LEFT = "loc.kharidmetalgateclosedl"
+        const val GATE_RIGHT = "loc.kharidmetalgateclosedr"
+        const val CELL_DOOR = "loc.alidoor"
 
-        const val OsmanLeave = 3
-        const val LeelaLeave = 3
+        const val OSMAN_LEAVE = 3
+        const val LEELA_LEAVE = 3
 
-        private val Squares = listOf(51 to 50, 48 to 50).map { (x, z) -> MapSquareKey(x, z) }
+        private val SQUARES = listOf(51 to 50, 48 to 50).map { (x, z) -> MapSquareKey(x, z) }
         private val restored = mutableListOf<() -> Unit>()
         private lateinit var cache: dev.openrune.filesystem.Cache
 
         fun loadMap(collision: CollisionFlagMap) {
-            for (square in Squares) {
+            for (square in SQUARES) {
                 val group = (square.x shl 8) or square.z
                 val tiles =
                     MapTileDecoder.decode(InlineByteBuf(checkNotNull(cache.data(MAPS, group, 0))))

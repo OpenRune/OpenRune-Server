@@ -4,13 +4,13 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BronzeBar
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.KeyPrint
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcOsman
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageAliEscaped
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageBriefed
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageComplete
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageStarted
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.BRONZE_BAR
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.KEY_PRINT
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_OSMAN
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_ALI_ESCAPED
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_BRIEFED
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_COMPLETE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_STARTED
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -22,16 +22,16 @@ import org.rsmod.plugin.scripts.ScriptContext
 class Osman @Inject constructor(private val princeAli: PrinceAliRescueQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpNpc1(NpcOsman) { startDialogue(it.npc) { osman() } }
+        onOpNpc1(NPC_OSMAN) { startDialogue(it.npc) { osman() } }
     }
 
     private suspend fun Dialogue.osman() {
         val stage = princeAli.stage(player)
         when {
-            stage < StageStarted -> stranger()
-            stage == StageStarted -> briefing()
-            stage < StageAliEscaped -> progress()
-            stage < StageComplete ->
+            stage < STAGE_STARTED -> stranger()
+            stage == STAGE_STARTED -> briefing()
+            stage < STAGE_ALI_ESCAPED -> progress()
+            stage < STAGE_COMPLETE ->
                 chatNpc(shifty, "Prince Ali is safe once more. Chancellor Hassan has your payment.")
             else ->
                 chatNpc(
@@ -128,7 +128,7 @@ class Osman @Inject constructor(private val princeAli: PrinceAliRescueQuest) : P
             "Of course, you'll need to find a way to get Keli to show you the key without " +
                 "causing suspicion. I'm sure Leela can help you with that.",
         )
-        princeAli.setStage(access, StageBriefed)
+        princeAli.setStage(access, STAGE_BRIEFED)
         chatPlayer(happy, "Sounds like I should head on over to Draynor Village and see Leela then.")
         chatNpc(quiz, "Indeed. Do you have any further questions before you go?")
         questions("No. I think I know everything I need to.") {
@@ -138,15 +138,15 @@ class Osman @Inject constructor(private val princeAli: PrinceAliRescueQuest) : P
 
     private suspend fun Dialogue.progress() {
         chatNpc(shifty, "You again. How are things going in Draynor?")
-        val hasPrint = KeyPrint in player.inv && !princeAli.keyOrdered(player)
+        val hasPrint = KEY_PRINT in player.inv && !princeAli.keyOrdered(player)
         when {
-            hasPrint && BronzeBar in player.inv -> {
+            hasPrint && BRONZE_BAR in player.inv -> {
                 chatPlayer(neutral, "I have an imprint of the key.")
-                if (access.invDel(access.inv, KeyPrint, 1, BronzeBar, 1).failure) {
+                if (access.invDel(access.inv, KEY_PRINT, 1, BRONZE_BAR, 1).failure) {
                     return
                 }
                 princeAli.orderKey(player, true)
-                doubleobjbox(KeyPrint, BronzeBar, "You give Osman the imprint along with a bronze bar.")
+                doubleobjbox(KEY_PRINT, BRONZE_BAR, "You give Osman the imprint along with a bronze bar.")
                 chatNpc(
                     shifty,
                     "I'll use this to have a copy of the key made. I'll send it to Leela once it's " +

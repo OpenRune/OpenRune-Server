@@ -4,14 +4,14 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.Key
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.KeyPrint
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.LostKeyPrice
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NpcLeela
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageAliEscaped
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageBriefed
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StageComplete
-import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.StagePrepared
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.KEY
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.KEY_PRINT
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.LOST_KEY_PRICE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.NPC_LEELA
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_ALI_ESCAPED
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_BRIEFED
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_COMPLETE
+import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQuest.Companion.STAGE_PREPARED
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -24,17 +24,17 @@ import org.rsmod.plugin.scripts.ScriptContext
 class Leela @Inject constructor(private val princeAli: PrinceAliRescueQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpNpc1(NpcLeela) { startDialogue(it.npc) { leela() } }
+        onOpNpc1(NPC_LEELA) { startDialogue(it.npc) { leela() } }
     }
 
     private suspend fun Dialogue.leela() {
         val stage = princeAli.stage(player)
         when {
-            stage < StageBriefed -> stranger()
-            stage == StageBriefed -> planning()
-            stage < StageAliEscaped && with(princeAli) { access.lostKey() } -> replaceKey()
-            stage == StagePrepared -> guard()
-            stage < StageAliEscaped -> {
+            stage < STAGE_BRIEFED -> stranger()
+            stage == STAGE_BRIEFED -> planning()
+            stage < STAGE_ALI_ESCAPED && with(princeAli) { access.lostKey() } -> replaceKey()
+            stage == STAGE_PREPARED -> guard()
+            stage < STAGE_ALI_ESCAPED -> {
                 chatNpc(quiz, "You're back. How are things going with that guard?")
                 chatPlayer(happy, "He's been dealt with.")
                 chatNpc(
@@ -44,7 +44,7 @@ class Leela @Inject constructor(private val princeAli: PrinceAliRescueQuest) : P
                         "him his disguise so the guards outside don't spot him.",
                 )
             }
-            stage < StageComplete ->
+            stage < STAGE_COMPLETE ->
                 chatNpc(
                     happy,
                     "You did it! Prince Ali is now safe again. You should head back to Al Kharid. I " +
@@ -121,18 +121,18 @@ class Leela @Inject constructor(private val princeAli: PrinceAliRescueQuest) : P
             "My father sent this copy of the key along. Keep it safe, there won't be another " +
                 "chance to make one.",
         )
-        if (access.invAdd(access.inv, Key).failure) {
+        if (access.invAdd(access.inv, KEY).failure) {
             chatNpc(neutral, "You'll need to make some room in your pack before I can give it to you.")
             return false
         }
         princeAli.orderKey(player, false)
         princeAli.setKeyObtained(player)
-        objbox(Key, "Leela gives you a key.")
+        objbox(KEY, "Leela gives you a key.")
         return true
     }
 
     private suspend fun Dialogue.guardAdvice() {
-        princeAli.setStage(access, StagePrepared)
+        princeAli.setStage(access, STAGE_PREPARED)
         chatNpc(
             neutral,
             "Good work. Now, before breaking the Prince out, you'll need to find a way to deal with " +
@@ -169,7 +169,7 @@ class Leela @Inject constructor(private val princeAli: PrinceAliRescueQuest) : P
             "Keli keeps it on her at all times, on a chain around her neck. If you can convince her " +
                 "to show it to you, you might be able to use some soft clay to take an imprint.",
         )
-        if (KeyPrint in player.inv) {
+        if (KEY_PRINT in player.inv) {
             chatPlayer(happy, "I already have the imprint!")
             chatNpc(
                 neutral,
@@ -222,17 +222,17 @@ class Leela @Inject constructor(private val princeAli: PrinceAliRescueQuest) : P
         chatNpc(
             angry,
             "Well that was foolish. I can sort you out with another, but it will cost you " +
-                "$LostKeyPrice coins.",
+                "$LOST_KEY_PRICE coins.",
         )
-        if (!access.invTakeFee(LostKeyPrice)) {
+        if (!access.invTakeFee(LOST_KEY_PRICE)) {
             chatPlayer(sad, "I haven't got that much.")
             chatNpc(neutral, "Then come back to me when you do.")
             return
         }
-        chatPlayer(neutral, "Here, I have $LostKeyPrice coins.")
-        access.invAdd(access.inv, Key)
-        objbox(Key, "Leela gives you a key.")
-        if (princeAli.stage(player) != StagePrepared) {
+        chatPlayer(neutral, "Here, I have $LOST_KEY_PRICE coins.")
+        access.invAdd(access.inv, KEY)
+        objbox(KEY, "Leela gives you a key.")
+        if (princeAli.stage(player) != STAGE_PREPARED) {
             return
         }
         chatNpc(quiz, "Now, how are things going with that guard?")
