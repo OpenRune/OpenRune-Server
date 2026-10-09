@@ -4,3 +4,4 @@ quest_available_set = 45550
 [gamevals.timer]
 quest_scroll_close = 402
 quest_dialogue_close = 403
+cots_tail = 430
