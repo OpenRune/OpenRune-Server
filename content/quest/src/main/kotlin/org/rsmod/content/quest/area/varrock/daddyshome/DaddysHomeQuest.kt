@@ -10,6 +10,7 @@ import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.table.DaddysHomeFurnitureRow
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestScript
 import org.rsmod.content.quest.manager.menu
@@ -83,7 +84,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
             ) {
                 visibleWhen {
                     stage(access.player) in Building until Built &&
-                        furnitureState(access.player, Furniture.Bed) < Furniture.Built
+                        furnitureState(access.player, Furniture.bed) < Furniture.Built
                 }
             }
 
@@ -111,15 +112,19 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
 
     internal fun stage(player: Player): Int = quest.getQuestStage(player)
 
-    internal fun furnitureState(player: Player, furniture: Furniture): Int =
-        player.vars[furniture.varbit]
+    internal fun furnitureState(player: Player, furniture: DaddysHomeFurnitureRow): Int =
+        player.vars[furniture.varbitType]
 
-    internal fun setFurnitureState(player: Player, furniture: Furniture, state: Int) {
-        VarPlayerIntMapSetter.set(player, furniture.varbit, state)
+    internal fun setFurnitureState(
+        player: Player,
+        furniture: DaddysHomeFurnitureRow,
+        state: Int,
+    ) {
+        VarPlayerIntMapSetter.set(player, furniture.varbitType, state)
     }
 
     internal fun allFurnitureAtLeast(player: Player, state: Int): Boolean =
-        Furniture.entries.all { furnitureState(player, it) >= state }
+        Furniture.all.all { furnitureState(player, it) >= state }
 
     internal fun markCrateOpened(player: Player) {
         player.crateOpened = true
@@ -468,7 +473,7 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
             "My boy Marlo sent you? Oh yes, you've come to help with my furniture. It's in a " +
                 "terrible state. You'll want to start by removing all the tatty old furniture.",
         )
-        for (furniture in Furniture.entries) {
+        for (furniture in Furniture.all) {
             if (furnitureState(player, furniture) == Furniture.Untouched) {
                 setFurnitureState(player, furniture, Furniture.Broken)
             }
@@ -483,13 +488,13 @@ class DaddysHomeQuest @Inject constructor(private val objRepo: ObjRepository) :
 
     private suspend fun Dialogue.yarloRemoving() {
         chatNpc(quiz, "Ah, young ${youngPerson()}, how's the redecoration coming on?")
-        val remaining = Furniture.entries.filter { furnitureState(player, it) < Furniture.Cleared }
+        val remaining = Furniture.all.filter { furnitureState(player, it) < Furniture.Cleared }
         if (remaining.isEmpty()) {
             quest.setQuestStage(access, Removed)
             yarloLecture()
             return
         }
-        if (remaining.size == Furniture.entries.size) {
+        if (remaining.size == Furniture.all.size) {
             chatPlayer(quiz, "What am I supposed to be doing again?")
             chatNpc(
                 neutral,

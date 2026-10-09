@@ -1,5 +1,7 @@
 package org.rsmod.content.quest.area.varrock.daddyshome
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.VarBitType
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
@@ -9,134 +11,79 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc5
+import org.rsmod.api.table.DaddysHomeCrateRow
+import org.rsmod.api.table.DaddysHomeFurnitureRow
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-internal enum class Furniture(
-    val loc: String,
-    val varbit: String,
-    val label: String,
-    val remaining: String,
-    val plank: String,
-    val planks: Int,
-    val nails: Int,
-    val cloth: Int,
-    val xp: Double,
-) {
-    KitchenStool(
-        "loc.daddyshome_stool_1",
-        "varbit.daddyshome_stool_1",
-        "wooden stool",
-        "A broken stool in the kitchen",
-        DaddysHomeQuest.Plank,
-        planks = 1,
-        nails = 2,
-        cloth = 0,
-        xp = 29.0,
-    ),
-    BedroomStool(
-        "loc.daddyshome_stool_2",
-        "varbit.daddyshome_stool_2",
-        "wooden stool",
-        "A broken stool in the bedroom",
-        DaddysHomeQuest.Plank,
-        planks = 1,
-        nails = 2,
-        cloth = 0,
-        xp = 29.0,
-    ),
-    Chair(
-        "loc.daddyshome_chair",
-        "varbit.daddyshome_chair",
-        "wooden chair",
-        "A broken chair in the bedroom",
-        DaddysHomeQuest.Plank,
-        planks = 2,
-        nails = 2,
-        cloth = 0,
-        xp = 58.0,
-    ),
-    KitchenTable(
-        "loc.daddyshome_table_1",
-        "varbit.daddyshome_table_1",
-        "wooden table",
-        "A broken table in the kitchen",
-        DaddysHomeQuest.Plank,
-        planks = 3,
-        nails = 4,
-        cloth = 0,
-        xp = 87.0,
-    ),
-    BedroomTable(
-        "loc.daddyshome_table_2",
-        "varbit.daddyshome_table_2",
-        "wooden table",
-        "A broken table in the bedroom",
-        DaddysHomeQuest.Plank,
-        planks = 3,
-        nails = 4,
-        cloth = 0,
-        xp = 87.0,
-    ),
-    Bed(
-        "loc.daddyshome_bed",
-        "varbit.daddyshome_bed",
-        "waxwood bed",
-        "The old campbed",
-        DaddysHomeQuest.WaxwoodPlank,
-        planks = 3,
-        nails = 0,
-        cloth = 2,
-        xp = 207.0,
-    ),
-    Carpet(
-        "loc.daddyshome_carpet_middle",
-        "varbit.daddyshome_carpet",
-        "carpet",
-        "The rotten carpet",
-        DaddysHomeQuest.Plank,
-        planks = 0,
-        nails = 0,
-        cloth = 3,
-        xp = 45.0,
-    );
+internal object Furniture {
+    const val Untouched = 0
+    const val Broken = 1
+    const val Cleared = 2
+    const val Built = 3
 
-    val menuLabel: String
-        get() {
-            val plankName = if (plank == DaddysHomeQuest.Plank) "plank" else "waxwood plank"
-            val materials = buildList {
-                if (planks > 0) add("$planks $plankName${if (planks == 1) "" else "s"}")
-                if (nails > 0) add("$nails nails")
-                if (cloth > 0) add("$cloth ${if (cloth == 1) "bolt" else "bolts"} of cloth")
-            }
-            return "${label.replaceFirstChar { it.uppercase() }} (${materials.joinToString(", ")})"
-        }
+    val all: List<DaddysHomeFurnitureRow>
+        get() = DaddysHomeFurnitureRow.all()
 
-    companion object {
-        const val Untouched = 0
-        const val Broken = 1
-        const val Cleared = 2
-        const val Built = 3
-    }
+    val kitchenStool: DaddysHomeFurnitureRow
+        get() = DaddysHomeFurnitureRow.getRow("dbrow.daddys_home_furniture_kitchen_stool")
+
+    val bedroomStool: DaddysHomeFurnitureRow
+        get() = DaddysHomeFurnitureRow.getRow("dbrow.daddys_home_furniture_bedroom_stool")
+
+    val chair: DaddysHomeFurnitureRow
+        get() = DaddysHomeFurnitureRow.getRow("dbrow.daddys_home_furniture_chair")
+
+    val kitchenTable: DaddysHomeFurnitureRow
+        get() = DaddysHomeFurnitureRow.getRow("dbrow.daddys_home_furniture_kitchen_table")
+
+    val bedroomTable: DaddysHomeFurnitureRow
+        get() = DaddysHomeFurnitureRow.getRow("dbrow.daddys_home_furniture_bedroom_table")
+
+    val bed: DaddysHomeFurnitureRow
+        get() = DaddysHomeFurnitureRow.getRow("dbrow.daddys_home_furniture_bed")
+
+    val carpet: DaddysHomeFurnitureRow
+        get() = DaddysHomeFurnitureRow.getRow("dbrow.daddys_home_furniture_carpet")
 }
+
+internal val DaddysHomeFurnitureRow.varbitType: VarBitType
+    get() = checkNotNull(ServerCacheManager.getVarbit(varbit)) { "Missing varbit: $varbit" }
+
+internal fun DaddysHomeFurnitureRow.isSameFurniture(other: DaddysHomeFurnitureRow): Boolean =
+    rowId == other.rowId
+
+private val DaddysHomeFurnitureRow.menuLabel: String
+    get() {
+        val materials = buildList {
+            if (planks > 0) add("$planks $plankName${if (planks == 1) "" else "s"}")
+            if (nails > 0) add("$nails nails")
+            if (cloth > 0) add("$cloth ${if (cloth == 1) "bolt" else "bolts"} of cloth")
+        }
+        return "${label.replaceFirstChar { it.uppercase() }} (${materials.joinToString(", ")})"
+    }
 
 class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHomeQuest) :
     PluginScript() {
 
     override fun ScriptContext.startup() {
-        for (furniture in Furniture.entries) {
-            if (furniture == Furniture.Carpet) {
-                onOpLoc5(furniture.loc) { interact(furniture, it.loc) }
+        for (furniture in Furniture.all) {
+            val loc = furniture.loc.internalName
+            if (furniture.op == FIFTH_OP) {
+                onOpLoc5(loc) { interact(furniture, it.loc) }
             } else {
-                onOpLoc1(furniture.loc) { interact(furniture, it.loc) }
+                onOpLoc1(loc) { interact(furniture, it.loc) }
             }
         }
         onOpLoc1(DaddysHomeQuest.Crates) { searchCrates(it.loc) }
         onOpHeld1(DaddysHomeQuest.Crate) { openCrate() }
     }
 
-    private suspend fun ProtectedAccess.interact(furniture: Furniture, loc: BoundLocInfo) {
+    private suspend fun ProtectedAccess.interact(
+        furniture: DaddysHomeFurnitureRow,
+        loc: BoundLocInfo,
+    ) {
         arriveDelay()
         faceLoc(loc)
         when (daddysHome.furnitureState(player, furniture)) {
@@ -146,7 +93,7 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         }
     }
 
-    private suspend fun ProtectedAccess.demolish(furniture: Furniture) {
+    private suspend fun ProtectedAccess.demolish(furniture: DaddysHomeFurnitureRow) {
         if (daddysHome.stage(player) < DaddysHomeQuest.Removing) return
         anim(BuildSeq)
         delay(BuildDelay)
@@ -158,17 +105,10 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         ) {
             daddysHome.quest.setQuestStage(this, DaddysHomeQuest.Removed)
         }
-        mes("You demolish the ${demolishName(furniture)}.")
+        mes("You demolish the ${furniture.demolished}.")
     }
 
-    private fun demolishName(furniture: Furniture): String =
-        when (furniture) {
-            Furniture.Bed -> "old campbed"
-            Furniture.Carpet -> "rotten carpet"
-            else -> "broken ${furniture.label.removePrefix("wooden ")}"
-        }
-
-    private suspend fun ProtectedAccess.build(furniture: Furniture) {
+    private suspend fun ProtectedAccess.build(furniture: DaddysHomeFurnitureRow) {
         if (daddysHome.stage(player) < DaddysHomeQuest.Building) {
             mes("You should talk to Old Man Yarlo before you start building.")
             return
@@ -195,7 +135,7 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
             return
         }
         daddysHome.setFurnitureState(player, furniture, Furniture.Built)
-        statAdvance("stat.construction", furniture.xp)
+        statAdvance("stat.construction", furniture.xp.toDouble())
         mes("You build the ${furniture.label}.")
     }
 
@@ -210,14 +150,10 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
             else -> "You need a saw to build furniture."
         }
 
-    private fun ProtectedAccess.missingMaterials(furniture: Furniture): String? =
+    private fun ProtectedAccess.missingMaterials(furniture: DaddysHomeFurnitureRow): String? =
         when {
-            inv.count(furniture.plank) < furniture.planks ->
-                if (furniture.plank == DaddysHomeQuest.Plank) {
-                    "You don't have enough planks to build that."
-                } else {
-                    "You don't have enough waxwood planks to build that."
-                }
+            inv.count(furniture.plank.internalName) < furniture.planks ->
+                "You don't have enough ${furniture.plankName}s to build that."
             nailCount() < furniture.nails -> "You don't have enough nails to build that."
             inv.count(Cloth) < furniture.cloth ->
                 "You don't have enough bolts of cloth to build that."
@@ -238,7 +174,7 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         return if (left == 0) plan else null
     }
 
-    private fun ProtectedAccess.consumeMaterials(furniture: Furniture): Boolean {
+    private fun ProtectedAccess.consumeMaterials(furniture: DaddysHomeFurnitureRow): Boolean {
         val nails = nailPlan(furniture.nails) ?: return false
         val result =
             player.invTransaction(inv) {
@@ -246,7 +182,7 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
                 if (furniture.planks > 0) {
                     delete {
                         this.from = from
-                        this.obj = furniture.plank.asRSCM(RSCMType.OBJ)
+                        this.obj = furniture.plank.id
                         this.strictCount = furniture.planks
                     }
                 }
@@ -274,7 +210,7 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         val stage = daddysHome.stage(player)
         val needsLogs =
             stage in DaddysHomeQuest.Building until DaddysHomeQuest.Complete &&
-                daddysHome.furnitureState(player, Furniture.Bed) < Furniture.Built
+                daddysHome.furnitureState(player, Furniture.bed) < Furniture.Built
         if (!needsLogs) {
             mes("You search the crates but find nothing interesting.")
             return
@@ -301,11 +237,11 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
                     this.obj = DaddysHomeQuest.Crate.asRSCM(RSCMType.OBJ)
                     this.strictCount = 1
                 }
-                for ((obj, count) in CrateContents) {
+                for (item in DaddysHomeCrateRow.all()) {
                     insert {
                         this.into = from
-                        this.obj = obj.asRSCM(RSCMType.OBJ)
-                        this.strictCount = count
+                        this.obj = item.obj.id
+                        this.strictCount = item.count
                     }
                 }
             }
@@ -323,6 +259,7 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         const val BuildMenuTitle = "Furniture Creation Menu"
         const val WaxwoodLogCount = 3
         const val Cloth = "obj.cloth"
+        const val FIFTH_OP = 5
 
         val Hammers = listOf("obj.hammer", "obj.imcando_hammer")
         val Saws = listOf("obj.poh_saw", "obj.wearable_saw", "obj.eyeglo_crystal_saw")
@@ -336,17 +273,6 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
                 "obj.nails",
                 "obj.nails_iron",
                 "obj.nails_bronze",
-            )
-
-        val CrateContents =
-            listOf(
-                "obj.cert_woodplank" to 25,
-                "obj.nails_mithril" to 50,
-                "obj.cert_steel_bar" to 5,
-                "obj.cert_plank_oak" to 10,
-                "obj.cert_cloth" to 8,
-                "obj.poh_tablet_teleporttohouse" to 5,
-                "obj.poh_tablet_faladorteleport" to 1,
             )
     }
 }

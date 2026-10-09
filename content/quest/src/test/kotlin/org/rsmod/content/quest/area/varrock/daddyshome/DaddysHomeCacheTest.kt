@@ -48,10 +48,10 @@ class DaddysHomeCacheTest {
         val status = varbit("varbit.daddyshome_status")
         assertTrue((1 shl (status.endBit - status.startBit + 1)) > DaddysHomeQuest.Complete)
         assertEquals(VarpLifetime.Perm, ServerCacheManager.getVarp(status.baseVar.id)!!.scope)
-        for (furniture in Furniture.entries) {
-            val type = varbit(furniture.varbit)
-            assertEquals(status.baseVar.id, type.baseVar.id, furniture.varbit)
-            assertEquals(1, type.endBit - type.startBit, furniture.varbit)
+        for (furniture in Furniture.all) {
+            val type = furniture.varbitType
+            assertEquals(status.baseVar.id, type.baseVar.id, furniture.loc.internalName)
+            assertEquals(1, type.endBit - type.startBit, furniture.loc.internalName)
         }
     }
 
@@ -67,16 +67,17 @@ class DaddysHomeCacheTest {
 
     @Test
     fun `each furniture multiloc walks through untouched, broken, hotspot and built`() {
-        for (furniture in Furniture.entries) {
-            val base = loc(furniture.loc)
-            assertEquals(furniture.varbit.asRSCM(RSCMType.VARBIT), base.multiVarBit, furniture.loc)
-            val op = if (furniture == Furniture.Carpet) 4 else 0
+        for (furniture in Furniture.all) {
+            val base = furniture.loc
+            val name = base.internalName
+            assertEquals(furniture.varbit, base.multiVarBit, name)
+            val op = furniture.op - 1
             val states =
                 (0..3).map { checkNotNull(ServerCacheManager.getObject(base.multiLoc[it] and 0xFFFF)) }
-            assertNull(states[Furniture.Untouched].actions.getOpOrNull(op), furniture.loc)
-            assertNotNull(states[Furniture.Broken].actions.getOpOrNull(op), furniture.loc)
-            assertEquals("Build", states[Furniture.Cleared].actions.getOpOrNull(op), furniture.loc)
-            assertNull(states[Furniture.Built].actions.getOpOrNull(op), furniture.loc)
+            assertNull(states[Furniture.Untouched].actions.getOpOrNull(op), name)
+            assertNotNull(states[Furniture.Broken].actions.getOpOrNull(op), name)
+            assertEquals("Build", states[Furniture.Cleared].actions.getOpOrNull(op), name)
+            assertNull(states[Furniture.Built].actions.getOpOrNull(op), name)
         }
     }
 
@@ -147,8 +148,7 @@ class DaddysHomeCacheTest {
             ) +
                 DaddysHomeFurniture.Hammers +
                 DaddysHomeFurniture.Saws +
-                DaddysHomeFurniture.Nails +
-                DaddysHomeFurniture.CrateContents.map { it.first }
+                DaddysHomeFurniture.Nails
         for (obj in objs) {
             assertNotNull(ServerCacheManager.getItem(obj.asRSCM(RSCMType.OBJ)), obj)
         }
