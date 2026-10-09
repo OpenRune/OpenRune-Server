@@ -7,6 +7,8 @@ valueType = "INT"
 [enum.values]
 "obj.rock" = 741600
 "obj.clay" = 741600
+"obj.gauntlet_ore" = 0
+"obj.gauntlet_ore_hm" = 0
 "obj.copper_ore" = 741600
 "obj.tin_ore" = 741600
 "obj.blurite_ore" = 741600
@@ -34,6 +36,8 @@ valueType = "INT"
 
 [enum.values]
 "obj.logs" = 317647
+"obj.gauntlet_bark" = 0
+"obj.gauntlet_bark_hm" = 0
 "obj.oak_logs" = 361146
 "obj.willow_logs" = 289286
 "obj.teak_logs" = 264336
