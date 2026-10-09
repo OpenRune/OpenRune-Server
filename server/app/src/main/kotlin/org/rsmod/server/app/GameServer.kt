@@ -44,6 +44,7 @@ import org.rsmod.game.world.WorldTypeGate
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.loader.ExternalPluginLoader
 import org.rsmod.plugin.module.PluginModule
+import org.rsmod.plugin.scan.PluginClasspathScan
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.server.install.GameNetworkRsaGenerator
@@ -227,6 +228,7 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
         injector.getInstance(PluginScriptBootGate::class.java).markReady()
         val started = scripts.size - skipped
         logger.info { "Loaded $started script${if (started == 1) "" else "s"}." }
+        PluginClasspathScan.release()
     }
 
     private fun startupGame(
@@ -261,6 +263,10 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
         val released = ExternalPluginLoader.releaseAllClassLoaders()
         if (released > 0) {
             logger.info { "Released $released external plugin classloader(s) after boot." }
+        }
+
+        if (PluginClasspathScan.release()) {
+            logger.info { "Released boot classpath scan." }
         }
 
         bootstrap.awaitShutdown(shutdownHook)

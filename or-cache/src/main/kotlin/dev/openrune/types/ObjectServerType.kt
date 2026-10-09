@@ -26,7 +26,7 @@ data class ObjectServerType(
     @param:TomlField(["params"],serializer = ParamSerializer::class)
     var paramsRaw: MutableMap<Int, Any>? = null,
     var name: String = "",
-    var actions: EntityOpsDefinition = EntityOpsDefinition(),
+    var actions: EntityOpsDefinition = EntityOpsDefinition.EMPTY,
     var multiVarBit: Int = -1,
     var multiDefault: Int = -1,
     var multiVarp: Int = -1,
