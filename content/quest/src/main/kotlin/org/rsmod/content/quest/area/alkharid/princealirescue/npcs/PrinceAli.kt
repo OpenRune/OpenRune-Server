@@ -13,10 +13,6 @@ import org.rsmod.content.quest.area.alkharid.princealirescue.PrinceAliRescueQues
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Prince Ali, in his cell in the Draynor jail until the disguise gets him out, and afterwards back
- * in the Al Kharid palace. Both forms are `varp.princequest` multinpcs.
- */
 class PrinceAli @Inject constructor(private val princeAli: PrinceAliRescueQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {

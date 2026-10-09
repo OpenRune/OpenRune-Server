@@ -16,12 +16,6 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The gate of the Prince's cell in the Draynor jail. Only the copied key opens it from outside,
- * and only once Keli is out of the way; anyone inside can always let themselves out. The wall
- * pieces are swapped for an open gate while the player steps across, which the client draws as an
- * ordinary walk.
- */
 class JailCellDoor
 @Inject
 constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: LocRepository) :

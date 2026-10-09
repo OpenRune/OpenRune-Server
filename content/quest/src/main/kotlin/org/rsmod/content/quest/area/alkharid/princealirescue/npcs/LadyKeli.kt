@@ -23,12 +23,6 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Lady Keli, leader of the bandits holding the Prince. Flattery and an interest in joining her
- * gang get her to show off the cell key, which soft clay can take an imprint of. Once Joe is
- * drunk and the player has the key and disguise, a rope sees her tied up in a cupboard; the
- * `varp.princequest` multinpc then hides her.
- */
 class LadyKeli @Inject constructor(private val princeAli: PrinceAliRescueQuest) : PluginScript() {
 
     override fun ScriptContext.startup() {
