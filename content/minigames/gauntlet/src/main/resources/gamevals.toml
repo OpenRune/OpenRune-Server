@@ -27,6 +27,7 @@ hunllef_off_prayer = 63
 [gamevals.varp]
 gauntlet_reward_tier = 65300
 gauntlet_points = 65301
+gauntlet_flags = 65302
 
 [gamevals.varbit]
 gauntlet_spoken_to_bryn = 64300
