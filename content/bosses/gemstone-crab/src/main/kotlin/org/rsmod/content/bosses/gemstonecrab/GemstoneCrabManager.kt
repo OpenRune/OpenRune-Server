@@ -46,6 +46,7 @@ constructor(
     private var remainsDisintegrating = false
     private var remainsSpotCycle = -1
     private var topDealers: List<DamageContributor.ByPlayer> = emptyList()
+    private var damagers: List<Player> = emptyList()
 
     private val barOpenPlayers: MutableSet<Player> = Collections.newSetFromMap(IdentityHashMap())
     private val claimedMiners: MutableSet<Long> = mutableSetOf()
@@ -170,11 +171,12 @@ constructor(
     private fun startBurrow(live: Npc) {
         burrowStartCycle = mapClock.cycle
         nextLocationIndex = pickNextLocation()
-        topDealers =
+        val dealers =
             live.damageContributions
                 .sortedByDamageDescending()
                 .filterIsInstance<DamageContributor.ByPlayer>()
-                .take(TOP_DAMAGE_DEALERS)
+        damagers = dealers.mapNotNull { it.resolve(playerList) }
+        topDealers = dealers.take(TOP_DAMAGE_DEALERS)
 
         burrowCycle = mapClock.cycle
         for (player in barOpenPlayers) {
@@ -213,6 +215,7 @@ constructor(
         eligibleMiners = topDealers.map { it.uuid }.toSet()
         claimedMiners.clear()
         topDealers = emptyList()
+        damagers = emptyList()
         burrowStartCycle = -1
 
         val coords = live.coords
@@ -253,7 +256,7 @@ constructor(
     }
 
     private fun broadcast(text: String) {
-        for (player in playerList) {
+        for (player in damagers) {
             player.mes(text, ChatType.Broadcast)
         }
     }
