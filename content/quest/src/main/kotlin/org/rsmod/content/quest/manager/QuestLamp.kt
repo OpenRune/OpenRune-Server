@@ -34,12 +34,6 @@ private val LampStats =
 
 private val AllLampSkillsMask = LampStats.indices.fold(0) { mask, index -> mask or (1 shl (index + 1)) }
 
-/**
- * Opens the experience reward interface (the "choose a skill" lamp) and suspends until the
- * player confirms a skill. The client greys out skills the player cannot pick (missing quests,
- * members-only skills on free worlds, below [minLevel]). Returns the chosen `stat.*` symbol, or
- * `null` if the interface was dismissed.
- */
 suspend fun ProtectedAccess.chooseLampSkill(title: String, minLevel: Int = 0): String? {
     VarPlayerIntMapSetter.set(player, "varp.if1", minLevel)
     VarPlayerIntMapSetter.set(player, "varp.if2", AllLampSkillsMask)
