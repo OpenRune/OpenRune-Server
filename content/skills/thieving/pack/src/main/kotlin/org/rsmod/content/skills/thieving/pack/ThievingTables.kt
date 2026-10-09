@@ -940,6 +940,7 @@ object ThievingTables {
                 loc = "loc.tea_stall",
                 level = 5,
                 xp = 16.0,
+                empty = "loc.market",
                 respawn = 4,
                 owners = listOf("npc.tea_seller"),
             )
@@ -969,6 +970,7 @@ object ThievingTables {
                 loc = "loc.seed_stall",
                 level = 27,
                 xp = 10.0,
+                empty = "loc.market",
                 respawn = 5,
                 owners = listOf("npc.seed_merchant"),
                 guards = DRAYNOR_MARKET_GUARDS,
