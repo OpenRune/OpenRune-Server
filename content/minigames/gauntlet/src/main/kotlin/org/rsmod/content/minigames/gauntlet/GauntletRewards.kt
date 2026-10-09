@@ -69,6 +69,9 @@ constructor(
         store(player, if (corrupted) RewardTier.CORRUPTED else RewardTier.NORMAL)
     }
 
+    fun isFirstNormalCompletion(player: Player, run: GauntletRun): Boolean =
+        run.completed && !run.mode.corrupted && player.gauntletCompletions == 1
+
     fun settleByPoints(player: Player, run: GauntletRun) {
         if (run.completed) return
         val tier = GauntletRewardTables.tierForPoints(player.gauntletPoints)

@@ -655,3 +655,10 @@ id = "varbit.corruption_fast"
 varp = "varp.generic_temp_state_65516"
 startBit = 8
 endBit = 8
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.gauntlet_spoken_to_bryn"
+varp = "varp.gauntlet_reward_tier"
+startBit = 8
+endBit = 8

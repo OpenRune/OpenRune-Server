@@ -39,6 +39,7 @@ constructor(
     private val spawner: GauntletContents,
     private val regions: RegionRegistry,
     private val rewards: GauntletRewards,
+    private val bryn: GauntletBryn,
 ) {
     private val active = HashMap<InstanceId, GauntletRun>()
 
@@ -52,10 +53,7 @@ constructor(
             mes("You are already inside an instance.")
             return
         }
-        if (player.gauntletRewardAvailable) {
-            mes("You should claim the reward waiting in the nearby chest first.")
-            return
-        }
+        if (!with(bryn) { canEnter() }) return
         val layout = GauntletLayout.generate(Random)
         val contents = RoomContentsGenerator.generate(layout, mode, GauntletContents.SLOTS, Random)
         val spec = spec(mode, layout)
@@ -87,11 +85,15 @@ constructor(
 
     suspend fun ProtectedAccess.leave(loot: Boolean = false) {
         val session = manager.sessionForPlayer(player) ?: return
-        if (loot) active[session.id]?.let { rewards.settleByPoints(player, it) }
+        val run = active[session.id]
+        if (loot && run != null) rewards.settleByPoints(player, run)
         active.remove(session.id)
         withInstanceLeaveTransition(InstanceEnterTransition()) {
             val exit = manager.leave(player, session, clock.cycle)
             telejump(exit, TeleportType.Exempt)
+        }
+        if (run != null && rewards.isFirstNormalCompletion(player, run)) {
+            with(bryn) { corruptedUnlock() }
         }
     }
 
