@@ -1,19 +1,22 @@
 package org.rsmod.content.areas.city.portsarim.travel
 
+import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.script.onPlayerLogin
+import org.rsmod.content.quest.area.lumbridge.xmarksthespot.npcs.Veos
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-private var Player.veosSarimVis: Int by intVarBit("varbit.veos_sarim_vis")
+private var Player.metVeosInKourend: Boolean by boolVarBit("varbit.cluequest_veos_already_met")
 private var Player.veosPiscVis: Int by intVarBit("varbit.veos_pisc_vis")
 
 private enum class VeosPort(val displayName: String, val arrival: CoordGrid) {
@@ -22,18 +25,22 @@ private enum class VeosPort(val displayName: String, val arrival: CoordGrid) {
     LandsEnd("Land's End", CoordGrid(1504, 3399, 0)),
 }
 
-class VeosScript : PluginScript() {
+class VeosScript @Inject constructor(private val veos: Veos) : PluginScript() {
     override fun ScriptContext.startup() {
         onPlayerLogin {
-            if (player.veosSarimVis == 0) player.veosSarimVis = VEOS_SARIM_TRAVEL
             if (player.veosPiscVis == 0) player.veosPiscVis = VEOS_PISC_TRAVEL
         }
 
-        onOpNpc1(VEOS_SARIM) { startDialogue(it.npc) { veosAtSarim() } }
+        onOpNpc1(VEOS_SARIM) {
+            startDialogue(it.npc) { if (!with(veos) { veosSarimQuest() }) veosAtSarim() }
+        }
         onOpNpc3(VEOS_SARIM) { sail(VeosPort.PortPiscarilius) }
         onOpNpc4(VEOS_SARIM) { sail(VeosPort.LandsEnd) }
 
-        onOpNpc1(VEOS_PISCARILIUS) { startDialogue(it.npc) { veosAtPiscarilius() } }
+        onOpNpc1(VEOS_PISCARILIUS) {
+            player.metVeosInKourend = true
+            startDialogue(it.npc) { veosAtPiscarilius() }
+        }
         onOpNpc3(VEOS_PISCARILIUS) { sail(VeosPort.PortSarim) }
         onOpNpc4(VEOS_PISCARILIUS) { sail(VeosPort.LandsEnd) }
 
@@ -190,7 +197,6 @@ class VeosScript : PluginScript() {
     private companion object {
         const val VEOS_SARIM = "npc.veos_sarim"
         const val VEOS_PISCARILIUS = "npc.veos"
-        const val VEOS_SARIM_TRAVEL = 2
         const val VEOS_PISC_TRAVEL = 1
         const val LONG_VOYAGE = "As you wish, I hope you don't get seasick, it is a long voyage."
 
