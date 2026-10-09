@@ -12,7 +12,6 @@ import org.rsmod.content.quest.manager.rewards
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
 
-// Handlers bind the base npc ids; ops are never dispatched on the _vis multinpc forms.
 class PrinceAliRescueQuest @Inject constructor() :
     QuestScript(
         QUEST_KEY,
