@@ -3,3 +3,9 @@ item_pack_contents=65473
 
 [gamevals.queue]
 item_pack_open=400
+
+[gamevals.dbtable]
+books = 65492
+
+[gamevals.dbrow]
+book_on_baxtorian = 63675
