@@ -36,6 +36,7 @@ sealed interface Condition {
      */
     data class TargetInArc(val bearingVarn: String, val offset: Int, val halfArc: Int) : Condition
     data class Custom(val test: (npc: Npc, target: Player?) -> Boolean) : Condition
+
     /** Only valid inside a `whenever`. */
     data class Chance(val chance: Int, val outOf: Int) : Condition {
         init {
