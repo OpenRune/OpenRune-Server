@@ -19,7 +19,7 @@ object Slayer {
     const val COL_BONUS_INTERVAL = 0
     const val COL_BONUS_MULTIPLIER = 1
 
-    fun masters() = dbTable("dbtable.slayer_masters",serverOnly = true) {
+    fun masters() = dbTable("dbtable.slayer_masters", serverOnly = true) {
         column("master_id", COL_MASTER_ID, VarType.INT)
         column("npc_ids", COL_NPC_IDS, VarType.NPC)
         column("slayer_level", COL_SLAYER_LEVEL, VarType.INT)
@@ -33,7 +33,7 @@ object Slayer {
 
         row("dbrow.turael_aya") {
             column(COL_MASTER_ID, 1)
-            columnRSCM(COL_NPC_IDS,"npc.slayer_master_1_tureal","npc.slayer_master_1_aya")
+            columnRSCM(COL_NPC_IDS, "npc.slayer_master_1_tureal", "npc.slayer_master_1_aya")
             column(COL_SLAYER_LEVEL, 1)
             column(COL_COMBAT_LEVEL, 1)
             column(COL_POINTS_PER_TASK, 0)
@@ -52,7 +52,7 @@ object Slayer {
 
         row("dbrow.spira") {
             column(COL_MASTER_ID, 9)
-            columnRSCM(COL_NPC_IDS,"npc.slayer_master_9_active","npc.porcine_spria")
+            columnRSCM(COL_NPC_IDS, "npc.slayer_master_9_active", "npc.porcine_spria")
             column(COL_SLAYER_LEVEL, 1)
             column(COL_COMBAT_LEVEL, 1)
             column(COL_POINTS_PER_TASK, 0)
@@ -71,7 +71,7 @@ object Slayer {
 
         row("dbrow.krystilia") {
             column(COL_MASTER_ID, 7)
-            columnRSCM(COL_NPC_IDS,"npc.slayer_master_7")
+            columnRSCM(COL_NPC_IDS, "npc.slayer_master_7")
             column(COL_SLAYER_LEVEL, 1)
             column(COL_COMBAT_LEVEL, 1)
             column(COL_POINTS_PER_TASK, 25)
@@ -90,7 +90,7 @@ object Slayer {
 
         row("dbrow.mazchna_achtryn") {
             column(COL_MASTER_ID, 2)
-            columnRSCM(COL_NPC_IDS,"npc.slayer_master_2_mazchna","npc.slayer_master_2_achtryn_vis")
+            columnRSCM(COL_NPC_IDS, "npc.slayer_master_2_mazchna", "npc.slayer_master_2_achtryn_vis")
             column(COL_SLAYER_LEVEL, 1)
             column(COL_COMBAT_LEVEL, 20)
             column(COL_POINTS_PER_TASK, 6)
@@ -109,7 +109,7 @@ object Slayer {
 
         row("dbrow.vannaka") {
             column(COL_MASTER_ID, 3)
-            columnRSCM(COL_NPC_IDS,"npc.slayer_master_3")
+            columnRSCM(COL_NPC_IDS, "npc.slayer_master_3")
             column(COL_SLAYER_LEVEL, 1)
             column(COL_COMBAT_LEVEL, 40)
             column(COL_POINTS_PER_TASK, 8)
@@ -128,7 +128,7 @@ object Slayer {
 
         row("dbrow.chaeldar") {
             column(COL_MASTER_ID, 4)
-            columnRSCM(COL_NPC_IDS,"npc.slayer_master_4")
+            columnRSCM(COL_NPC_IDS, "npc.slayer_master_4")
             column(COL_SLAYER_LEVEL, 1)
             column(COL_COMBAT_LEVEL, 70)
             column(COL_POINTS_PER_TASK, 10)
@@ -147,7 +147,7 @@ object Slayer {
 
         row("dbrow.konar") {
             column(COL_MASTER_ID, 8)
-            columnRSCM(COL_NPC_IDS,"npc.slayer_master_8")
+            columnRSCM(COL_NPC_IDS, "npc.slayer_master_8")
             column(COL_SLAYER_LEVEL, 1)
             column(COL_COMBAT_LEVEL, 75)
             column(COL_POINTS_PER_TASK, 18)
@@ -168,7 +168,7 @@ object Slayer {
 
         row("dbrow.nieve_steve") {
             column(COL_MASTER_ID, 6)
-            columnRSCM(COL_NPC_IDS,"npc.slayer_master_nieve","npc.slayer_master_steve")
+            columnRSCM(COL_NPC_IDS, "npc.slayer_master_nieve", "npc.slayer_master_steve")
             column(COL_SLAYER_LEVEL, 1)
             column(COL_COMBAT_LEVEL, 85)
             column(COL_POINTS_PER_TASK, 12)
@@ -189,7 +189,7 @@ object Slayer {
 
         row("dbrow.duradel_kuradal") {
             column(COL_MASTER_ID, 5)
-            columnRSCM(COL_NPC_IDS,"npc.slayer_master_5_kuradal","npc.slayer_master_5_duradel")
+            columnRSCM(COL_NPC_IDS, "npc.slayer_master_5_kuradal", "npc.slayer_master_5_duradel")
             column(COL_SLAYER_LEVEL, 50)
             column(COL_COMBAT_LEVEL, 100)
             column(COL_POINTS_PER_TASK, 15)
@@ -220,7 +220,6 @@ object Slayer {
             column(COL_CAN_ASSIGN_BOSSES, false)
             column(COL_BLOCK_COST, 120)
         }
-
     }
 
     fun streakBonuses() = dbTable("dbtable.slayer_streak_bonuses", serverOnly = true) {
