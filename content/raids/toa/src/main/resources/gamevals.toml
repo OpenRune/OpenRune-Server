@@ -65,8 +65,15 @@ toa_protect_item_at_death = 64000
 toa_party_tab = 64001
 
 [gamevals.area]
-toa_lobby = 60
-toa_raid = 61
+toa_lobby = 61
+toa_raid = 62
+
+[gamevals.param]
+toa_invocation_index = 1159
+toa_invocation_name = 1160
+toa_invocation_category = 1161
+toa_invocation_level_modifier = 1162
+toa_invocation_prerequisite = 1346
 
 [gamevals.queue]
 toa_death = 61
@@ -91,6 +98,8 @@ toa_zebak_redirected_jug_break_01 = 5878
 toa_zebak_redirected_projectile_02 = 5896
 toa_zebak_projectile_impact_01 = 5884
 toa_zebak_defend_01 = 6590
+toa_invocation_on = 6589
+toa_invocation_off = 6588
 fi_trollking_roar = 3405
 toa_zebak_vomit_colours_projectile_10 = 5908
 toa_zebak_vomit_colours_projectile_splat_03 = 5909

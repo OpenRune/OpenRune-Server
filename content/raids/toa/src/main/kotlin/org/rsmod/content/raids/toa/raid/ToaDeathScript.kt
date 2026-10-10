@@ -2,6 +2,7 @@ package org.rsmod.content.raids.toa.raid
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import net.rsprot.protocol.game.outgoing.sound.MidiJingle
 import org.rsmod.api.config.constants
@@ -124,7 +125,7 @@ internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Bo
     }
     fadeOut()
     player.midiSong(STOP_MUSIC)
-    player.jingle(WIPE_JINGLE, WIPE_JINGLE_MILLIS)
+    player.jingle(WIPE_JINGLE.asRSCM(RSCMType.JINGLE), WIPE_JINGLE_MILLIS)
     delay(1)
     minimapHideMap()
     delay(1)
@@ -201,5 +202,5 @@ private const val STOP_MUSIC = "midi.stop_music"
 
 private const val RAID_MIDI = "midi.toa_ambience"
 
-private const val WIPE_JINGLE = 90
+private const val WIPE_JINGLE = "jingle.lord_drakan_reveal_part_1"
 private const val WIPE_JINGLE_MILLIS = 4_718
