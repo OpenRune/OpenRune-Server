@@ -10,6 +10,8 @@ import org.rsmod.api.bosses.dsl.after
 import org.rsmod.api.bosses.dsl.anim
 import org.rsmod.api.bosses.dsl.bleed
 import org.rsmod.api.bosses.dsl.boss
+import org.rsmod.api.bosses.dsl.camReset
+import org.rsmod.api.bosses.dsl.camShake
 import org.rsmod.api.bosses.dsl.external
 import org.rsmod.api.bosses.dsl.hit
 import org.rsmod.api.bosses.dsl.mapSpotanim
@@ -35,6 +37,7 @@ import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.TargetExpr
 import org.rsmod.api.combat.commons.player.queueCombatRetaliate
+import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.challengePlayers
 import org.rsmod.content.raids.toa.raid.encounter.eachTarget
@@ -257,7 +260,15 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
     private fun wavesRocks(): Effect {
         val sounds = ZebakSynths.WAVES_LAND.map { (synth, delay) -> soundTo(synth, delay = delay) }
         return sequence(
-            external(WAVES_SHAKE),
+            eachTarget(
+                sequence(
+                    camReset(),
+                    camShake(CamShakeAxis.LEFT_RIGHT, SHAKE_LEFT_RIGHT, CurrentTarget),
+                    camShake(CamShakeAxis.UP_DOWN, SHAKE_UP_DOWN, CurrentTarget),
+                    camShake(CamShakeAxis.FORWARDS_BACKWARDS, SHAKE_FORWARDS, CurrentTarget),
+                    soundTo(ZebakSynths.RUMBLING),
+                )
+            ),
             eachTarget(sequence(*sounds.toTypedArray())),
             whenever(
                 wavesFromSouth,
@@ -285,7 +296,7 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
     private fun wavesRows(): Effect =
         sequence(
-            external(WAVES_CAMERA),
+            eachTarget(camReset()),
             after(
                 WAVES_ROW_DELAY,
                 sequence(
@@ -374,8 +385,6 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         onZebak(ROAR_WAVE) { room, ext -> room.greatRoar?.roarWave(ext.params as Boolean) }
         onZebak(ROAR_END) { room, _ -> room.greatRoar?.end() }
         onZebak(WAVES_LAUNCH) { room, _ -> room.tidalWaves?.launch() }
-        onZebak(WAVES_SHAKE) { room, _ -> room.tidalWaves?.shakeCameras() }
-        onZebak(WAVES_CAMERA) { room, _ -> room.tidalWaves?.resetCameras() }
         onZebak(WAVE_ROW) { room, _ -> room.tidalWaves?.spawnRow() }
         onZebak(WAVES_END) { room, _ -> room.tidalWaves?.end() }
         onZebak(BLOOD_BARRAGE) { room, _ -> room.bloodMagic.barrage() }
@@ -424,8 +433,6 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         private const val ROAR_WAVE = "zebak.roar_wave"
         private const val ROAR_END = "zebak.roar_end"
         private const val WAVES_LAUNCH = "zebak.waves_launch"
-        private const val WAVES_SHAKE = "zebak.waves_shake"
-        private const val WAVES_CAMERA = "zebak.waves_camera"
         private const val WAVE_ROW = "zebak.wave_row"
         private const val WAVES_END = "zebak.waves_end"
         private const val BLOOD_BARRAGE = "zebak.blood_barrage"
@@ -477,6 +484,9 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         private const val ROCK_SPOTS = 7
         private const val ROCK_SPACING = 3
         private const val SPLASH_DELAY = 200
+        private val SHAKE_LEFT_RIGHT = 5..7
+        private val SHAKE_UP_DOWN = 7..8
+        private val SHAKE_FORWARDS = 6..6
 
         private const val BLOOD_CAST_DELAY = 3
         private const val SMALL_CLOUDS = 3

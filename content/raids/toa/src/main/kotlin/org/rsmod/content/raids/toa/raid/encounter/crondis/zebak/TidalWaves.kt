@@ -2,9 +2,6 @@ package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import org.rsmod.api.player.output.CamShakeAxis
-import org.rsmod.api.player.output.Camera
-import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.npcType
@@ -41,23 +38,6 @@ internal class TidalWaves(private val room: ZebakEncounter) {
         }
     }
 
-    fun shakeCameras() {
-        val leftRight = deps.random.of(SHAKE_LEFT_RIGHT)
-        val upDown = deps.random.of(SHAKE_UP_DOWN)
-        val forwards = deps.random.of(SHAKE_FORWARDS)
-        for (player in room.targets()) {
-            Camera.camReset(player)
-            Camera.camShake(player, CamShakeAxis.LEFT_RIGHT, leftRight, 0, 0)
-            Camera.camShake(player, CamShakeAxis.UP_DOWN, upDown, 0, 0)
-            Camera.camShake(player, CamShakeAxis.FORWARDS_BACKWARDS, forwards, 0, 0)
-            player.soundSynth(ZebakSynths.RUMBLING)
-        }
-    }
-
-    fun resetCameras() {
-        for (player in room.targets()) Camera.camReset(player)
-    }
-
     fun spawnRow() {
         val base = room.coords(if (fromSouth) ZebakCoords.WAVE_SOUTH else ZebakCoords.WAVE_NORTH)
         val gap = if (lastGap == -1) deps.random.of(0, GAP_RANGE) else GAP_RANGE - lastGap
@@ -83,9 +63,6 @@ internal class TidalWaves(private val room: ZebakEncounter) {
         const val SOLID_COLUMNS = 4
         const val GAP_RANGE = 12
         const val GAP_WIDTH = 3
-        val SHAKE_LEFT_RIGHT = 5..7
-        val SHAKE_UP_DOWN = 7..8
-        val SHAKE_FORWARDS = 6..6
     }
 }
 
