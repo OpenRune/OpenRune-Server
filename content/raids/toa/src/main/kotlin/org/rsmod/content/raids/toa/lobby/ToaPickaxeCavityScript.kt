@@ -67,7 +67,13 @@ class ToaPickaxeCavityScript : PluginScript() {
         }
         val value = ToaPickaxeStorage.value(held.obj)
         if (value == 0) {
-            mes(LobbyCavity.BRONZE_REFUSED)
+            mes(
+                if (held.obj == LobbyCavity.BRONZE) {
+                    LobbyCavity.BRONZE_REFUSED
+                } else {
+                    LobbyCavity.NOTHING_INTERESTING
+                }
+            )
             return
         }
         anim(LobbyCavity.ANIM)
@@ -80,9 +86,12 @@ class ToaPickaxeCavityScript : PluginScript() {
         listOf(worn, inv).flatMap { from -> from.indices.mapNotNull { held(from, it) } }
 
     private fun held(from: Inventory, slot: Int): Held? {
-        val obj = from[slot]?.let { getInvObj(it).internalName } ?: return null
-        val pickaxe = obj == LobbyCavity.BRONZE || ToaPickaxeStorage.value(obj) > 0
-        return if (pickaxe) Held(from, slot, obj) else null
+        val type = from[slot]?.let { getInvObj(it) } ?: return null
+        return if (type.isContentType(LobbyCavity.PICKAXE_CONTENT)) {
+            Held(from, slot, type.internalName)
+        } else {
+            null
+        }
     }
 
     private fun nameOf(obj: String): String =

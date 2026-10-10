@@ -131,6 +131,7 @@ toa_zebak_lob_far = 65530
 toa_rooms = 64100
 toa_room_exclusions = 64101
 toa_paths = 64102
+toa_pickaxes = 64103
 
 [gamevals.dbrow]
 toa_room_main_hall = 57000
@@ -151,3 +152,18 @@ toa_path_scabaras = 57030
 toa_path_het = 57031
 toa_path_apmeken = 57032
 toa_path_crondis = 57033
+toa_pickaxe_iron_pickaxe = 57040
+toa_pickaxe_steel_pickaxe = 57041
+toa_pickaxe_black_pickaxe = 57042
+toa_pickaxe_mithril_pickaxe = 57043
+toa_pickaxe_adamant_pickaxe = 57044
+toa_pickaxe_rune_pickaxe = 57045
+toa_pickaxe_trail_gilded_pickaxe = 57046
+toa_pickaxe_dragon_pickaxe = 57047
+toa_pickaxe_dragon_pickaxe_pretty = 57048
+toa_pickaxe_zalcano_pickaxe = 57049
+toa_pickaxe_infernal_pickaxe = 57050
+toa_pickaxe_infernal_pickaxe_empty = 57051
+toa_pickaxe_3a_pickaxe = 57052
+toa_pickaxe_crystal_pickaxe = 57053
+toa_pickaxe_crystal_pickaxe_inactive = 57054
