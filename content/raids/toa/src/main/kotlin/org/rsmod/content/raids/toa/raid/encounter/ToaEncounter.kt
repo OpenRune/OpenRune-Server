@@ -234,7 +234,7 @@ open class ToaEncounter(
         ToaStats.recordTimes(
             player,
             mode,
-            raid.partySize,
+            teamSize,
             raid.totalChallengeTicks(),
             raid.elapsedTicks(now),
         )
