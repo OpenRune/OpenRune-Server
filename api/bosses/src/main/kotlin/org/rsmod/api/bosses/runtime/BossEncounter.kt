@@ -8,6 +8,7 @@ import kotlin.math.abs
 import kotlin.random.Random
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.spec.*
+import org.rsmod.api.random.GameRandom
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -271,8 +272,9 @@ class BossEncounter(
         target: Player? = null,
         tiles: TileScope? = null,
         hit: HitContext? = null,
+        random: GameRandom? = null,
     ): Boolean {
-        fun eval(inner: Condition) = evaluate(inner, target, tiles, hit)
+        fun eval(inner: Condition) = evaluate(inner, target, tiles, hit, random)
         fun requireHit(): HitContext =
             checkNotNull(hit) { "$condition evaluated outside an incoming hit." }
         return when (condition) {
@@ -305,6 +307,10 @@ class BossEncounter(
                 val name = condition.name
                 val scope = checkNotNull(tiles) { "tilesEmpty(\"$name\") evaluated outside an effect." }
                 scope.set(name).isEmpty()
+            }
+            is Condition.Chance -> {
+                val rng = checkNotNull(random) { "$condition evaluated outside a whenever effect." }
+                rng.of(condition.outOf) < condition.chance
             }
             is Condition.Custom -> condition.test(npc, target)
             is Condition.Not -> !eval(condition.c)

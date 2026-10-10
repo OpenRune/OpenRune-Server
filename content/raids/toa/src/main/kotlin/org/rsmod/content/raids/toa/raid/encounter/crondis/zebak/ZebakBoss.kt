@@ -12,6 +12,7 @@ import org.rsmod.api.bosses.dsl.bleed
 import org.rsmod.api.bosses.dsl.boss
 import org.rsmod.api.bosses.dsl.camReset
 import org.rsmod.api.bosses.dsl.camShake
+import org.rsmod.api.bosses.dsl.chance
 import org.rsmod.api.bosses.dsl.external
 import org.rsmod.api.bosses.dsl.hit
 import org.rsmod.api.bosses.dsl.mapSpotanim
@@ -114,14 +115,16 @@ class ZebakBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             anim(seq),
             external(TAIL, tailSeq),
             eachMeleeTarget(
-                bleed(
-                    duration = BLEED_TICKS,
-                    movingDamage = scaled(BLEED_MOVING_MIN, BLEED_MOVING_MAX),
-                    applyDamage = scaled(BLEED_APPLY_MIN, BLEED_APPLY_MAX),
-                    chance = BLEED_CHANCE,
-                    outOf = BLEED_OUT_OF,
-                    onApply = message(BLEED_MESSAGE),
-                    onMovingHit = external(BLEED_SPLAT),
+                whenever(
+                    chance(BLEED_CHANCE, BLEED_OUT_OF),
+                    then =
+                        bleed(
+                            duration = BLEED_TICKS,
+                            movingDamage = scaled(BLEED_MOVING_MIN, BLEED_MOVING_MAX),
+                            applyDamage = scaled(BLEED_APPLY_MIN, BLEED_APPLY_MAX),
+                            onApply = message(BLEED_MESSAGE),
+                            onMovingHit = external(BLEED_SPLAT),
+                        ),
                     otherwise =
                         hit {
                             damage(raidAccuracy(MELEE_MAX_HIT, Melee, MeleeAttackType.Slash))

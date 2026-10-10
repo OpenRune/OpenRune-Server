@@ -172,11 +172,8 @@ sealed interface Effect {
         val stillDamage: DamageExpr? = null,
         val stillInterval: Int = 0,
         val hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
-        val chance: Int = 1,
-        val outOf: Int = 1,
         val onApply: Effect? = null,
         val onMovingHit: Effect? = null,
-        val otherwise: Effect = NoOp,
     ) : Effect {
         init {
             require(duration > 0) { "Bleed duration must be greater than 0." }
@@ -184,7 +181,6 @@ sealed interface Effect {
             require((stillInterval > 0) == (stillDamage != null)) {
                 "Bleed stillDamage and stillInterval must be set together."
             }
-            require(outOf > 0) { "Bleed outOf must be greater than 0." }
         }
     }
 

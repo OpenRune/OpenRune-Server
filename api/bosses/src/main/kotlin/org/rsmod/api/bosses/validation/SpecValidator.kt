@@ -424,7 +424,6 @@ object SpecValidator {
                 is Effect.Bleed -> {
                     effect.onApply?.let { effect(it, scope.copy(deferred = true)) }
                     effect.onMovingHit?.let { effect(it, scope.copy(deferred = true)) }
-                    effect(effect.otherwise, scope)
                 }
                 is Effect.Debris -> target(effect.center, scope, name)
                 is Effect.Summon -> target(effect.centeredOn, scope, name)

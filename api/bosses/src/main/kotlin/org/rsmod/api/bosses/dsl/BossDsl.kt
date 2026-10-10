@@ -555,11 +555,8 @@ class AbilityBuilder {
         stillDamage: DamageExpr? = null,
         stillInterval: Int = 0,
         hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
-        chance: Int = 1,
-        outOf: Int = 1,
         onApply: Effect? = null,
         onMovingHit: Effect? = null,
-        otherwise: Effect = Effect.NoOp,
     ) {
         effects +=
             Effect.Bleed(
@@ -569,11 +566,8 @@ class AbilityBuilder {
                 stillDamage,
                 stillInterval,
                 hitmark,
-                chance,
-                outOf,
                 onApply,
                 onMovingHit,
-                otherwise,
             )
     }
 
