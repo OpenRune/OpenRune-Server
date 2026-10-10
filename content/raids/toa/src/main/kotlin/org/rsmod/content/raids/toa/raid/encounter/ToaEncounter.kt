@@ -139,7 +139,7 @@ open class ToaEncounter(
         if (stage != ToaStage.NOT_STARTED) return
         stage = ToaStage.STARTED
         startCycle = deps.mapClock.cycle
-        teamSize = raid.players.size.coerceAtLeast(1)
+        teamSize = players.size.coerceAtLeast(1)
         onStart()
         for (player in players) hpBar?.open(player)
         schedule(1) { tick() }
