@@ -87,7 +87,7 @@ public object MagicAccuracyOperations {
             modified = scale(modified, 100 + percent, divisor = 100)
         }
 
-        if (SpellAttr.RevenantWeapon in spellAttributes && NpcAttr.Revenant in npcAttributes) {
+        if (SpellAttr.RevenantWeapon in spellAttributes && NpcAttr.Wilderness in npcAttributes) {
             modified = scale(modified, multiplier = 3, divisor = 2)
         }
 
@@ -170,7 +170,7 @@ public object MagicAccuracyOperations {
             modified = scale(modified, multiplier = 23, divisor = 20)
         }
 
-        if (StaffAttr.RevenantWeapon in staffAttributes && NpcAttr.Revenant in npcAttributes) {
+        if (StaffAttr.RevenantWeapon in staffAttributes && NpcAttr.Wilderness in npcAttributes) {
             modified = scale(modified, multiplier = 3, divisor = 2)
         }
 

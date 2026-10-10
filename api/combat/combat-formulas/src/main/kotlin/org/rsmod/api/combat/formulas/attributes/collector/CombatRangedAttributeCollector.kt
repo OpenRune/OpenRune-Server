@@ -89,7 +89,7 @@ public class CombatRangedAttributeCollector {
                     CombatRangedAttributes.TwistedBow
                 }
 
-                weapon.isAnyType("obj.wild_cave_bow_charged", "obj.wild_cave_webweaver_charged") -> {
+                weapon.isAnyType("obj.wild_cave_bow_charged", "obj.wild_cave_webweaver_charged") && weapon.hasUsableRevenantEther() -> {
                     CombatRangedAttributes.RevenantWeapon
                 }
 

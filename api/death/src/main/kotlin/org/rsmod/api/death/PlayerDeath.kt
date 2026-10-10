@@ -95,8 +95,10 @@ constructor(
         val handling = handlingResolver.resolve(context)
 
         val result = drops.selectDrops(player, context, handling)
+        val complete = drops.prepareCompletion(context)
         drops.applyDrops(player, result, handling, deathCoords)
         drops.spawnRemains(deathCoords, handling)
+        complete()
 
         player.attr.remove(DEATH_KILLER_ATTR)
         player.attr.remove(DEATH_CAUSE_ATTR)

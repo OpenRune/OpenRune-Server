@@ -18,6 +18,8 @@ public class RSDropTable<T, R>(
     private val tertiaries: RSTable<T, R> = RSPreRollTable.Empty(),
     private val hooks: TableHooks<T, R> = TableHooks.Default(),
     public val mainRolls: Int = 1,
+    /** Roll before kill progression mutates task state; reward delivery keeps normal hook order. */
+    public val rollBeforeProgression: Boolean = false,
 ) : RSTable<T, R>, TableHooks<T, R> by hooks {
 
     private val separateRolls: RSTable<T, R> = mergeInlineSeparateRolls(separateRolls, mainTable)

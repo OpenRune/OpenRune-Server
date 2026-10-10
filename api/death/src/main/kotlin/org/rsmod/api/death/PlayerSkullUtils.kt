@@ -4,8 +4,7 @@ import org.rsmod.api.config.constants
 import org.rsmod.game.entity.Player
 
 public fun Player.hasSkullDeathPenalty(): Boolean {
-    val icon = skullIcon ?: return false
-    return !constants.isForinthrySurgeSkull(icon)
+    return skullIcon != null
 }
 
 public fun Player.isHighRiskSkulled(): Boolean {

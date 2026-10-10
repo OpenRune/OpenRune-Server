@@ -24,17 +24,31 @@ constructor(
     private val objRepo: ObjRepository,
     private val marketPrices: MarketPrices,
     private val groundItemDrops: GroundItemDropResolver,
+    private val dropHooks: Set<@JvmSuppressWildcards PlayerDeathDropHook> = emptySet(),
 ) {
     public fun selectDrops(
         player: Player,
         context: PlayerDeathContext,
         handling: PlayerDeathHandling,
-    ): DeathDropResult =
-        selectDrops(
+    ): DeathDropResult {
+        var result = selectDrops(
             carried = sortedCarriedObjs(player),
             rules = DeathDropRules(isUIM = context.isUIM, isPvpDeath = context.isPvpDeath),
             handling = handling,
         )
+        for (hook in dropHooks) result = hook.resolve(context, result)
+        return if (handling.untradeableHandling == UntradeableHandling.COINS)
+            result.copy(coinsForKiller = result.lostUntradeable.sumOf(::untradeableConversionValue))
+        else result
+    }
+
+    public fun complete(context: PlayerDeathContext) {
+        dropHooks.forEach { it.complete(context) }
+    }
+    public fun prepareCompletion(context: PlayerDeathContext): () -> Unit {
+        val actions = dropHooks.map { it.prepareCompletion(context) }
+        return { actions.forEach { it() } }
+    }
 
     public fun selectDrops(
         carried: List<InvObj>,
@@ -52,11 +66,11 @@ constructor(
         val normal = allCarried - slotlessKept.toSet() - neverKept.toSet()
 
         if (handling.untradeableHandling == UntradeableHandling.KEEP) {
-            return selectInstanceDrops(slotlessKept, normal, handling)
+            return selectInstanceDrops(slotlessKept, normal, neverKept, handling)
         }
 
         val keptNormal = normal.take(handling.keepCount)
-        val lost = normal.drop(handling.keepCount)
+        val lost = normal.drop(handling.keepCount) + neverKept
 
         val (supply, lostRemainder) = if (handling.supplyPile) {
             lost.partition { isSupplyPileItem(it) }
@@ -87,6 +101,7 @@ constructor(
     private fun selectInstanceDrops(
         slotlessKept: List<InvObj>,
         normal: List<InvObj>,
+        neverKept: List<InvObj>,
         handling: PlayerDeathHandling,
     ): DeathDropResult {
         val (untradeablesKept, tradeables) = normal.partition { isUntradeable(it) }
@@ -95,8 +110,8 @@ constructor(
         return DeathDropResult(
             kept = slotlessKept + untradeablesKept + keptTradeables,
             supplyPile = emptyList(),
-            lostTradeable = lostTradeables,
-            lostUntradeable = emptyList(),
+            lostTradeable = lostTradeables + neverKept.filterNot(::isUntradeable),
+            lostUntradeable = neverKept.filter(::isUntradeable),
             coinsForKiller = 0L,
         )
     }
@@ -108,7 +123,7 @@ constructor(
     ): DeathDropResult {
         val slotlessKept = allCarried.filter { isSlotlessKept(it, rules) }
         val neverKept = allCarried.filter { isNeverKeptInternal(it, rules) }
-        val rest = allCarried - slotlessKept.toSet() - neverKept.toSet()
+        val rest = allCarried - slotlessKept.toSet()
 
         val (supply, remaining) = if (handling.supplyPile) {
             rest.partition { isSupplyPileItem(it) }
@@ -245,7 +260,11 @@ constructor(
 
     private fun isUntradeable(obj: InvObj): Boolean = !getInvObj(obj).tradeable
 
-    private fun marketPriceSingle(obj: InvObj): Long = effectiveDeathValue(getInvObj(obj))
+    private fun marketPriceSingle(obj: InvObj): Long {
+        var equivalent = obj
+        for (hook in dropHooks) equivalent = hook.valueObj(equivalent)
+        return effectiveDeathValue(getInvObj(equivalent))
+    }
 
     private fun effectiveDeathValue(type: dev.openrune.types.ItemServerType): Long =
         (marketPrices[type] ?: type.cost).toLong().coerceAtLeast(1)

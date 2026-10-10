@@ -1,13 +1,19 @@
 package org.rsmod.api.combat.formulas.attributes.collector
 
 import dev.openrune.types.NpcServerType
+import jakarta.inject.Inject
 import java.util.EnumSet
+import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.area.checker.isInWilderness
+import org.rsmod.api.area.checker.isInWildernessBasic
 import org.rsmod.api.combat.formulas.attributes.CombatNpcAttributes
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
 import org.rsmod.game.entity.Npc
 
-public class CombatNpcAttributeCollector {
+public class CombatNpcAttributeCollector @Inject constructor(private val areas: AreaChecker?) {
+    public constructor() : this(null)
+
     /**
      * @param npc the live npc being attacked, when available. Passing it lets branches that depend on
      *   per-fight runtime state (e.g. the Tormented Demon fire shield) read npc vars rather than only
@@ -30,7 +36,7 @@ public class CombatNpcAttributeCollector {
             attributes += CombatNpcAttributes.SlayerTask
         }
 
-        // TODO(combat): "In wilderness" area check.
+        if (npc != null && (areas?.let { npc.coords.isInWilderness(it) } ?: npc.coords.isInWildernessBasic())) attributes += CombatNpcAttributes.Wilderness
 
         val sizeAttribute =
             when (val size = type.size) {

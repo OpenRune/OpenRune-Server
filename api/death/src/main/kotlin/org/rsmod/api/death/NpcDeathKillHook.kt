@@ -19,4 +19,7 @@ public data class NpcDeathKillContext(
  */
 public fun interface NpcDeathKillHook {
     public fun onKill(context: NpcDeathKillContext)
+
+    /** Capture volatile kill-time inputs before any progression hook runs. */
+    public fun prepare(context: NpcDeathKillContext): () -> Unit = { onKill(context) }
 }

@@ -31,6 +31,7 @@ internal var ProtectedAccess.specialAttackType by enumVarp<SpecialAttackType>("v
 internal var Player.lastCombat: Int by intVarp("varp.lastcombat")
 internal var Player.lastCombatPvp: Int by intVarp("varp.lastcombat_pvp")
 internal var Player.aggressiveNpc: NpcUid? by typeNpcUidVarp("varp.aggressive_npc")
+internal var Player.pkPrey1: PlayerUid? by typePlayerUidVarp("varp.pk_prey1")
 internal var Player.pkPredator1: PlayerUid? by typePlayerUidVarp("varp.pk_predator1")
 internal var Player.pkPredator2: PlayerUid? by typePlayerUidVarp("varp.pk_predator2")
 internal var Player.pkPredator3: PlayerUid? by typePlayerUidVarp("varp.pk_predator3")
