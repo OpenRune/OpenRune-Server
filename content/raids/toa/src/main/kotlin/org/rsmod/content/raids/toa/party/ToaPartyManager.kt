@@ -214,10 +214,7 @@ object ToaPartyManager {
             ToaRaidManager.onLeftParty(member, party)
         }
         for (applicant in applicants) {
-            applicant.appliedParty = null
-        }
-        for (blockedPlayer in blocked) {
-            blockedPlayer.appliedParty = null
+            if (applicant.appliedParty == party) applicant.appliedParty = null
         }
 
         party.members.clear()
