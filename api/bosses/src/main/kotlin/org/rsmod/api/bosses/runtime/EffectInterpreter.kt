@@ -16,6 +16,7 @@ import org.rsmod.api.combat.commons.player.combatPlayDefendAnim
 import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.combat.commons.player.queueCombatRetaliate
 import org.rsmod.api.combat.commons.types.MeleeAttackType
+import org.rsmod.api.mechanics.toxins.impl.PlayerBleed
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.isValidTarget
@@ -621,7 +622,7 @@ class EffectInterpreter internal constructor(
     }
 
     private fun applyBleed(access: StandardNpcAccess?, bleed: Effect.Bleed) {
-        deps.bleeds.apply(
+        PlayerBleed.apply(
             owner = npc,
             player = target,
             duration = bleed.duration,

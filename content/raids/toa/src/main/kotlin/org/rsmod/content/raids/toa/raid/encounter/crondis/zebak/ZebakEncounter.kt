@@ -9,6 +9,7 @@ import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.combat.commons.player.combatPlayDefendAnim
 import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.instances.InstanceSession
+import org.rsmod.api.mechanics.toxins.impl.PlayerBleed
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.soundSynth
@@ -138,7 +139,7 @@ class ZebakEncounter(
 
     override fun onLeave(player: Player) {
         water.stopSwimming(player)
-        zebak?.let { deps.bossDeps.bleeds.remove(it, player) }
+        zebak?.let { PlayerBleed.removeOwned(it, player) }
         bloodMagic.forget(player)
     }
 
@@ -166,7 +167,7 @@ class ZebakEncounter(
         hazardsDoneCycle = -1
         landings.clear()
         pendingAfterHazards.clear()
-        zebak?.let { deps.bossDeps.bleeds.clear(it) }
+        zebak?.let { PlayerBleed.clearOwnedBy(it, deps.bossDeps.playerList) }
         autos.clear()
         bloodMagic.clear()
         jugs.clear()
