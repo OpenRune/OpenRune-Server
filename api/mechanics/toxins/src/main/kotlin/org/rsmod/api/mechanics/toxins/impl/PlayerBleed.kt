@@ -46,6 +46,16 @@ public object PlayerBleed {
         player.clearTimer("timer.player_bleed")
     }
 
+    public fun removeOwned(owner: Npc, player: Player): Boolean {
+        if (ownerOf(player) !== owner) return false
+        clear(player)
+        return true
+    }
+
+    public fun clearOwnedBy(owner: Npc, players: Iterable<Player>) {
+        for (player in players) removeOwned(owner, player)
+    }
+
     public fun onBleedTimerTick(player: Player) {
         val bleed = player.attr[bleedKey]
         if (bleed == null || player.hitpoints <= 0 || !bleed.owner.isSlotAssigned) {
