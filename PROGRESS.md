@@ -21,6 +21,9 @@ archives, unrelated SERVER files and 220,158 existing mappings are preserved;
 six new server vars are added. In-game visuals, route feel and multiplayer
 acceptance remain open. [Sources, configured differences and tests](docs/custom/revenant-caves.md).
 
+[Draft PR #36](https://github.com/EvolvedMind/OpenRune-Server/pull/36).
+Guarded test package: `outputs/revenants-20261010/INSTALLEREN.cmd`.
+
 ## 🟢 Complete: teleport animation correction and all scroll routes
 
 [PR #35](https://github.com/EvolvedMind/OpenRune-Server/pull/35) is merged
