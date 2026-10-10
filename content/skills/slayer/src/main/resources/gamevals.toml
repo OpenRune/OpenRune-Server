@@ -1,5 +1,6 @@
 [gamevals.dbtable]
 slayer_masters=65518
+slayer_streak_bonuses=65478
 
 [gamevals.enum]
 slayer_toggleable_rewards=65475
@@ -59,3 +60,8 @@ konar=65176
 nieve_steve=65175
 duradel_kuradal=65174
 mortimer=64131
+slayer_streak_bonus_10=63850
+slayer_streak_bonus_50=63851
+slayer_streak_bonus_100=63852
+slayer_streak_bonus_250=63853
+slayer_streak_bonus_1000=63854

@@ -14,6 +14,9 @@ object Slayer {
     const val COL_CAN_ASSIGN_BOSSES = 6
     const val COL_BLOCK_COST = 7
 
+    const val COL_BONUS_INTERVAL = 0
+    const val COL_BONUS_MULTIPLIER = 1
+
     fun masters() = dbTable("dbtable.slayer_masters",serverOnly = true) {
         column("master_id", COL_MASTER_ID, VarType.INT)
         column("npc_ids", COL_NPC_IDS, VarType.NPC)
@@ -212,4 +215,33 @@ object Slayer {
 
     }
 
+    fun streakBonuses() = dbTable("dbtable.slayer_streak_bonuses", serverOnly = true) {
+        column("interval", COL_BONUS_INTERVAL, VarType.INT)
+        column("multiplier", COL_BONUS_MULTIPLIER, VarType.INT)
+
+        row("dbrow.slayer_streak_bonus_10") {
+            column(COL_BONUS_INTERVAL, 10)
+            column(COL_BONUS_MULTIPLIER, 5)
+        }
+
+        row("dbrow.slayer_streak_bonus_50") {
+            column(COL_BONUS_INTERVAL, 50)
+            column(COL_BONUS_MULTIPLIER, 15)
+        }
+
+        row("dbrow.slayer_streak_bonus_100") {
+            column(COL_BONUS_INTERVAL, 100)
+            column(COL_BONUS_MULTIPLIER, 25)
+        }
+
+        row("dbrow.slayer_streak_bonus_250") {
+            column(COL_BONUS_INTERVAL, 250)
+            column(COL_BONUS_MULTIPLIER, 35)
+        }
+
+        row("dbrow.slayer_streak_bonus_1000") {
+            column(COL_BONUS_INTERVAL, 1000)
+            column(COL_BONUS_MULTIPLIER, 50)
+        }
+    }
 }

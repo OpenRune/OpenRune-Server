@@ -215,6 +215,7 @@ fun tablesToPack(): List<DBTable> = listOf(
     Smithing.dragonForge(),
     Smithing.crystalSinging(),
     Slayer.masters(),
+    Slayer.streakBonuses(),
     Runecrafting.altars(),
     Runecrafting.runes(),
     Runecrafting.tiara(),
