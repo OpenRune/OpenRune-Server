@@ -14,6 +14,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.types.MoveRestrict
 import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
+import dev.openrune.types.SlayerTaskKey
 import dev.openrune.util.BlockWalk
 import dev.openrune.util.Coord
 import dev.openrune.util.DefinitionOpcodeParamMap
@@ -27,12 +28,13 @@ class NpcServerCodec(
     val npcs: Map<Int, NpcType>? = null,
     val custom: Map<Int, NpcServerType>? = emptyMap(),
     val examines: Map<Int, String> = emptyMap(),
-    val slayerTaskByNpcId: Map<Int, Int> = emptyMap(),
+    val slayerTaskKeysByNpcId: Map<Int, List<Int>> = emptyMap(),
     val slayerTaskTipByNpcId: Map<Int, String> = emptyMap(),
     val slayerSuperiorByNpcId: Map<Int, SlayerSuperiorMonsterLoader.SuperiorNpcParam> = emptyMap(),
 ) : OpcodeDefinitionCodec<NpcServerType>() {
 
     private val slayerTaskParamId = "param.slayer_task_id".asRSCM()
+    private val slayerTaskIdsParamId = "param.slayer_task_ids".asRSCM()
     private val slayerTaskTipParamId = "param.slayer_task_tip".asRSCM()
     private val slayerSuperiorParamId = "param.slayer_superior".asRSCM()
     private val slayerSuperiorWildernessOnlyParamId = "param.available_in_wilderness".asRSCM()
@@ -189,7 +191,12 @@ class NpcServerCodec(
             waypoints = customData.waypoints
         }
 
-        slayerTaskByNpcId[id]?.let { taskId -> paramsRaw?.set(slayerTaskParamId, taskId) }
+        slayerTaskKeysByNpcId[id]?.let { keys ->
+            val primary = keys.firstOrNull { !SlayerTaskKey.isBoss(it) }
+            if (primary != null) paramsRaw?.set(slayerTaskParamId, primary)
+            val extras = keys.filter { it != primary }
+            if (extras.isNotEmpty()) paramsRaw?.set(slayerTaskIdsParamId, SlayerTaskKey.encode(extras))
+        }
         slayerTaskTipByNpcId[id]?.let { tip -> paramsRaw?.set(slayerTaskTipParamId, tip) }
         slayerSuperiorByNpcId[id]?.let { superior ->
             paramsRaw?.set(slayerSuperiorParamId, superior.superiorNpcId)

@@ -8,6 +8,7 @@ slayer_task_tips=65535
 [gamevals.param]
 slayer_task_id=65507
 slayer_task_tip=65527
+slayer_task_ids=65523
 slayer_superior=65521
 available_in_wilderness=65522
 
