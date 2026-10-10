@@ -5,3 +5,14 @@ quest_available_set = 45550
 quest_scroll_close = 402
 quest_dialogue_close = 403
 cots_tail = 430
+
+[gamevals.varp]
+prince_ali_state = 63620
+
+[gamevals.varbit]
+prince_ali_keli_asked = 63620
+prince_ali_key_ordered = 63621
+prince_ali_met_leela = 63622
+prince_ali_progress = 63623
+prince_ali_key_obtained = 63624
+prince_ali_joe_beer = 63625
