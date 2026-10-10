@@ -1,16 +1,27 @@
 package org.rsmod.content.generic.locs.bookcases
 
+import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpContentLoc1
+import org.rsmod.api.script.onOpLoc1
+import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class BookcasesScript : PluginScript() {
+class BookcasesScript
+@Inject
+constructor(private val hooks: Set<@JvmSuppressWildcards BookcaseSearchHook>) : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpContentLoc1("content.bookcase") { search() }
+        onOpContentLoc1("content.bookcase") { search(it.loc) }
+        onOpLoc1("loc.bookcase2") { search(it.loc) }
     }
 
-    private suspend fun ProtectedAccess.search() {
+    private suspend fun ProtectedAccess.search(bookcase: BoundLocInfo) {
+        val hook = hooks.firstOrNull { it.claims(player, bookcase) }
+        if (hook != null) {
+            with(hook) { search(bookcase) }
+            return
+        }
         arriveDelay()
         spam("You search the books...")
         delay(2)

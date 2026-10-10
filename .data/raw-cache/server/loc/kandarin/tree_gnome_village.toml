@@ -1,0 +1,4 @@
+[[object]]
+id = "loc.roving_golrie_ladder_to_cellar"
+inherit = "loc.roving_golrie_ladder_to_cellar"
+contentGroup = "content.dungeonladder_down"
