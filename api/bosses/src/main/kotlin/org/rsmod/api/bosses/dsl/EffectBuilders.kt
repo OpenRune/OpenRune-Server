@@ -159,11 +159,8 @@ fun bleed(
     stillDamage: DamageExpr? = null,
     stillInterval: Int = 0,
     hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
-    chance: Int = 1,
-    outOf: Int = 1,
     onApply: Effect? = null,
     onMovingHit: Effect? = null,
-    otherwise: Effect = Effect.NoOp,
 ): Effect =
     Effect.Bleed(
         duration,
@@ -172,11 +169,8 @@ fun bleed(
         stillDamage,
         stillInterval,
         hitmark,
-        chance,
-        outOf,
         onApply,
         onMovingHit,
-        otherwise,
     )
 
 fun summon(
@@ -279,6 +273,8 @@ fun bound(name: String): TileSet = TileSet.Bound(name)
 fun randomOf(name: String): TargetExpr.Single = TargetExpr.RandomOfBound(name)
 
 fun tilesEmpty(name: String): Condition = Condition.TilesEmpty(name)
+
+fun chance(chance: Int, outOf: Int): Condition = Condition.Chance(chance, outOf)
 
 fun hitStyle(type: HitType): Condition = Condition.HitStyle(type)
 

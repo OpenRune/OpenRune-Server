@@ -145,13 +145,7 @@ class EffectInterpreter internal constructor(
             is Effect.TileAoE -> applyTileAoE(effect)
             is Effect.Debris -> applyDebris(effect)
             is Effect.Summon -> summon(access, effect)
-            is Effect.Bleed -> {
-                if (deps.random.of(effect.outOf) >= effect.chance) {
-                    run(access, effect.otherwise, onComplete)
-                    return
-                }
-                applyBleed(access, effect)
-            }
+            is Effect.Bleed -> applyBleed(access, effect)
             is Effect.Poison -> applyPoison(effect)
             is Effect.Freeze -> applyFreeze(effect)
             is Effect.DisablePrayers ->
@@ -216,7 +210,7 @@ class EffectInterpreter internal constructor(
                 return
             }
             is Effect.Whenever -> {
-                val holds = encounter.evaluate(effect.condition, target, tileScope(target))
+                val holds = encounter.evaluate(effect.condition, target, tileScope(target), random = deps.random)
                 val next = if (holds) effect.then else effect.otherwise
                 run(access, next, onComplete)
                 return
