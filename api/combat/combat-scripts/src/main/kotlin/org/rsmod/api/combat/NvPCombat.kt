@@ -8,10 +8,10 @@ import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.npc.NpcAttackHook
 import org.rsmod.api.combat.commons.npc.NpcAttackOverride
 import org.rsmod.api.combat.commons.npc.NpcAttackOverrideHook
+import org.rsmod.api.combat.commons.npc.attackRate
 import org.rsmod.api.combat.commons.npc.guaranteesHit
 import org.rsmod.api.combat.commons.npc.penetration
 import org.rsmod.api.combat.commons.npc.rollDamage
-import org.rsmod.api.combat.commons.npc.attackRate
 import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.combat.formulas.AccuracyFormulae
 import org.rsmod.api.combat.formulas.MaxHitFormulae
