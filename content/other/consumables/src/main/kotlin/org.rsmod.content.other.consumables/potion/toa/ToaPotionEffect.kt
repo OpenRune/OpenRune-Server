@@ -63,12 +63,6 @@ constructor(
         }
     }
 
-    /**
-     * Clears every active Tombs-specific timed effect.
-     *
-     * The future raid session should call this when the player dies,
-     * leaves, or finishes the raid.
-     */
     fun clearSessionEffects(
         player: Player,
     ) {
