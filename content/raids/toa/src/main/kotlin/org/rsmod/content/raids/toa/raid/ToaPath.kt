@@ -1,126 +1,46 @@
 package org.rsmod.content.raids.toa.raid
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.SequenceServerType
+import org.rsmod.api.table.ToaPathsRow
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 
-enum class ToaPath(
-    val pathName: String,
-    val hudPath: Int,
-    val levelVarbit: String,
-    val door: CoordGrid,
-    val doorAngle: LocAngle,
-    val doorOpen: String,
-    val doorUnselected: String,
-    val doorClosed: String,
-    val puzzle: ToaRoom,
-    val boss: ToaRoom,
-    val returnTile: CoordGrid,
-    val returnSpreadZ: Int,
-    val returnFacing: Direction,
-    val preloadSeqs: List<String> = emptyList(),
-) {
-    SCABARAS(
-        pathName = "Scabaras",
-        hudPath = 1,
-        levelVarbit = "varbit.toa_client_scabaras_level",
-        door = CoordGrid(3559, 5155, 0),
-        doorAngle = LocAngle.West,
-        doorOpen = "loc.toa_nexus_scabaras_door",
-        doorUnselected = "loc.toa_nexus_scabaras_door_unselected",
-        doorClosed = "loc.toa_nexus_scabaras_door_closed",
-        puzzle = ToaRoom.SCABARAS_PUZZLE,
-        boss = ToaRoom.SCABARAS_BOSS,
-        returnTile = CoordGrid(3558, 5154, 0),
-        returnSpreadZ = 0,
-        returnFacing = Direction.SouthWest,
-    ),
-    HET(
-        pathName = "Het",
-        hudPath = 2,
-        levelVarbit = "varbit.toa_client_het_level",
-        door = CoordGrid(3539, 5146, 0),
-        doorAngle = LocAngle.South,
-        doorOpen = "loc.toa_nexus_het_door",
-        doorUnselected = "loc.toa_nexus_het_door_unselected",
-        doorClosed = "loc.toa_nexus_het_door_closed",
-        puzzle = ToaRoom.HET_PUZZLE,
-        boss = ToaRoom.HET_BOSS,
-        returnTile = CoordGrid(3541, 5146, 0),
-        returnSpreadZ = 2,
-        returnFacing = Direction.East,
-    ),
-    APMEKEN(
-        pathName = "Apmeken",
-        hudPath = 3,
-        levelVarbit = "varbit.toa_client_apmeken_level",
-        door = CoordGrid(3562, 5146, 0),
-        doorAngle = LocAngle.North,
-        doorOpen = "loc.toa_nexus_apmeken_door",
-        doorUnselected = "loc.toa_nexus_apmeken_door_unselected",
-        doorClosed = "loc.toa_nexus_apmeken_door_closed",
-        puzzle = ToaRoom.APMEKEN_PUZZLE,
-        boss = ToaRoom.APMEKEN_BOSS,
-        returnTile = CoordGrid(3561, 5146, 0),
-        returnSpreadZ = 2,
-        returnFacing = Direction.West,
-    ),
-    CRONDIS(
-        pathName = "Crondis",
-        hudPath = 4,
-        levelVarbit = "varbit.toa_client_crondis_level",
-        door = CoordGrid(3541, 5155, 0),
-        doorAngle = LocAngle.South,
-        doorOpen = "loc.toa_nexus_crondis_door",
-        doorUnselected = "loc.toa_nexus_crondis_door_unselected",
-        doorClosed = "loc.toa_nexus_crondis_door_closed",
-        puzzle = ToaRoom.CRONDIS_PUZZLE,
-        boss = ToaRoom.CRONDIS_BOSS,
-        returnTile = CoordGrid(3544, 5154, 0),
-        returnSpreadZ = 0,
-        returnFacing = Direction.SouthEast,
-        preloadSeqs = CRONDIS_PRELOAD_SEQS,
-    );
+class ToaPath private constructor(row: ToaPathsRow, val ordinal: Int) {
+    val pathName: String = row.name
+    val hudPath: Int = row.hudPath
+    val levelVarbit: VarBitType = ServerCacheManager.getVarbit(row.levelVarbit)!!
+    val door: CoordGrid = row.door
+    val doorAngle: LocAngle = LocAngle.valueOf(row.doorAngle)
+    val doorOpen: String = row.doorOpen.internalName
+    val doorUnselected: String = row.doorUnselected.internalName
+    val doorClosed: String = row.doorClosed.internalName
+    val puzzle: ToaRoom = ToaRoom.of(row.puzzleRoom)
+    val boss: ToaRoom = ToaRoom.of(row.bossRoom)
+    val returnTile: CoordGrid = row.returnTile
+    val returnSpreadZ: Int = row.returnSpreadZ
+    val returnFacing: Direction = Direction.valueOf(row.returnFacing)
+    val preloadSeqs: List<SequenceServerType> = row.preloadSeqs
 
     companion object {
-        fun of(room: ToaRoom): ToaPath? =
-            entries.firstOrNull { it.puzzle == room || it.boss == room }
-    }
-}
+        val entries: List<ToaPath> by lazy {
+            ToaPathsRow.all().mapIndexed { index, row -> ToaPath(row, index) }
+        }
 
-private val CRONDIS_PRELOAD_SEQS =
-    listOf(
-        "seq.npc_zebak01_idle",
-        "seq.npc_zebak02_idle",
-        "seq.npc_zebak01_attack_melee",
-        "seq.npc_zebak02_attack_melee",
-        "seq.npc_zebak01_attack_melee_enraged",
-        "seq.npc_zebak02_attack_melee_enraged",
-        "seq.npc_zebak01_attack_ranged",
-        "seq.npc_zebak02_attack_ranged",
-        "seq.npc_zebak01_attack_ranged_enraged",
-        "seq.npc_zebak02_attack_ranged_enraged",
-        "seq.npc_zebak01_attack_roar",
-        "seq.npc_zebak02_attack_roar",
-        "seq.npc_zebak01_attack_tail",
-        "seq.npc_zebak02_attack_tail",
-        "seq.npc_zebak01_attack_special",
-        "seq.npc_zebak02_attack_special",
-        "seq.npc_zebak01_death",
-        "seq.npc_zebak02_death",
-        "seq.npc_zebak01_dead",
-        "seq.npc_zebak02_dead",
-        "seq.spotanim_zebak_magic01",
-        "seq.projectile_zebak_ranged01",
-        "seq.projectile_zebak_ranged01_enraged",
-        "seq.spotanim_zebak_ranged01",
-        "seq.projectile_zebak_pitcher01",
-        "seq.projectile_zebak_pitcher01_enraged",
-        "seq.spotanim_zebak_pitcher01",
-        "seq.projectile_zebak_shield01",
-        "seq.spotanim_zebak_shield01",
-        "seq.npc_crondis_idle01",
-        "seq.npc_crondis_walk01",
-        "seq.npc_crondis_trapped01",
-        "seq.vfx_pantheon_trapped01",
-    )
+        fun of(room: ToaRoom): ToaPath? = entries.firstOrNull { it.puzzle == room || it.boss == room }
+
+        fun of(symbol: String): ToaPath {
+            val rowId = ToaPathsRow.getRow(symbol).rowId
+            return entries.first { it.rowId == rowId }
+        }
+
+        val SCABARAS by lazy { of("dbrow.toa_path_scabaras") }
+        val HET by lazy { of("dbrow.toa_path_het") }
+        val APMEKEN by lazy { of("dbrow.toa_path_apmeken") }
+        val CRONDIS by lazy { of("dbrow.toa_path_crondis") }
+    }
+
+    private val rowId: Int = row.rowId
+}
