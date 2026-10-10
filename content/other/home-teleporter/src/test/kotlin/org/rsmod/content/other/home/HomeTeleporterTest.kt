@@ -156,6 +156,9 @@ internal class HomeTeleporterTest {
         }
         for (category in TeleportCategory.entries) assertTrue(ServerCacheManager.getItem(category.icon.asRSCM()) != null, category.label)
         assertTrue(ServerCacheManager.getNpc(TeleportCatalogue.WIZARD_TYPE.asRSCM()) != null)
+        val wizard = ServerCacheManager.getNpc(TeleportCatalogue.WIZARD_TYPE.asRSCM())!!
+        assertEquals(0, wizard.huntRange)
+        assertTrue(wizard.huntMode == null)
         assertEquals(61, HomeTravel.QUEUE.asRSCM())
         assertTrue(TeleportCatalogue.all.size >= 140)
         assertTrue(TeleportCatalogue.all.filter { it.category == TeleportCategory.Raids }.none { it.available })

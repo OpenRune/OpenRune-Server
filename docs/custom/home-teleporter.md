@@ -50,6 +50,8 @@ reused from the accepted teleport fix.
 Menu state belongs to the player and is removed on interface close/logout. The
 wizard is owned by this plugin and removed on unload; unrelated NPCs and world
 edits are retained.
+It retains the friendly native wizard's absent hunt mode, with zero hunt and
+wander range; it cannot start an aggression loop against nearby players.
 
 ## Edgeville Emblem trader
 
