@@ -7,6 +7,7 @@ import dev.openrune.types.hunt.HuntType
 import jakarta.inject.Inject
 import org.rsmod.api.config.constants
 import org.rsmod.api.hunt.Hunt
+import org.rsmod.api.npc.aggression.AggressionTolerance
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.random.CoreRandom
 import org.rsmod.api.random.GameRandom
@@ -22,6 +23,7 @@ constructor(
     @CoreRandom private val random: GameRandom,
     private val mapClock: MapClock,
     private val hunt: Hunt,
+    private val tolerance: AggressionTolerance,
 ) {
     public fun process(npc: Npc) {
         if (!npc.isValidTarget() || npc.isDelayed) {
@@ -61,6 +63,10 @@ constructor(
         val players = hunt.findPlayers(coords, huntRange, mode.checkVis)
         for (player in players) {
             if (player.isInvisible) {
+                continue
+            }
+
+            if (tolerance.isTolerant(this, player)) {
                 continue
             }
 
