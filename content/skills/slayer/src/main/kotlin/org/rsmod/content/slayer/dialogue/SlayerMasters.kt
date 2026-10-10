@@ -89,7 +89,7 @@ object SlayerMasters {
             return
         }
         val npcId =
-            if (npc?.id == Npc.spria) Npc.spria else Npc.spriaActive
+            if (npc?.let { access.npcVisType(it).id } == Npc.spria) Npc.spria else Npc.spriaActive
         openMain(npcId, extras = extraMenuOptions(this, npcId))
     }
 

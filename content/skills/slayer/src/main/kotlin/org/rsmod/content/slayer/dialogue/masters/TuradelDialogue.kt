@@ -54,7 +54,7 @@ object TuradelDialogue {
                     "Oh okay then, you twisted my arm. You'll have to train against specific groups of creatures.",
                 )
                 chatPlayer(quiz, "Okay, what's first?")
-                assignNewTask(npc!!.visType.internalName) { taskName, count ->
+                assignNewTask(access.npcVisType(npc!!).internalName) { taskName, count ->
                     chatNpc(
                         neutral,
                         "We'll start you off hunting $taskName, you'll need to kill $count of them.",
