@@ -71,7 +71,7 @@ constructor(
         npc.assignUid()
         npc.vars[IDLE] = 0
         npc.anim(disguise.reveal)
-        npc.delay(disguise.reveal.ticks())
+        npc.delay(WAKE_DELAY)
         val mode = checkNotNull(ServerCacheManager.getHunt(disguise.huntMode))
         npc.setHuntMode(mode)
         npc.setHunt(npc.type.huntRange)
@@ -139,5 +139,6 @@ constructor(
         const val IDLE = "varn.disguise_idle"
         const val BURROWING = -1
         const val RETURN_GRACE = 30
+        const val WAKE_DELAY = 1
     }
 }
