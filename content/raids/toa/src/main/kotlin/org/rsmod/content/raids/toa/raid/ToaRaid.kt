@@ -39,8 +39,6 @@ class ToaRaid(
 
     val players: MutableList<Player> = lobbyParty.members.toMutableList()
 
-    val partySize: Int = players.size
-
     var leader: Player = players.first()
         private set
 
