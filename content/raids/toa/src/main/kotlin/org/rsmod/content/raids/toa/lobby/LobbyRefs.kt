@@ -1,5 +1,7 @@
 package org.rsmod.content.raids.toa.lobby
 
+import org.rsmod.api.table.ToaPickaxesRow
+
 internal object LobbyLocs {
     const val SACK = "loc.toa_sack_full"
     const val SHROUD_CHEST = "loc.toa_lobby_cape_chest"
@@ -88,6 +90,7 @@ internal object LobbyCavity {
             "loc.toa_lobby_wall02_cavity_pickaxe_trailblazer_reloaded",
         )
     const val STORED = "varbit.toa_pickaxe_stored"
+    const val PICKAXE_CONTENT = "content.mining_pickaxe"
     const val BRONZE = "obj.bronze_pickaxe"
     const val ANIM = "seq.human_pickuptable"
     const val TAKEN = "You take the %s."
@@ -101,33 +104,9 @@ internal object LobbyCavity {
 }
 
 internal object ToaPickaxeStorage {
-    private val PICKAXES =
-        listOf(
-            "obj.iron_pickaxe",
-            "obj.steel_pickaxe",
-            "obj.black_pickaxe",
-            "obj.mithril_pickaxe",
-            "obj.adamant_pickaxe",
-            "obj.rune_pickaxe",
-            "obj.trail_gilded_pickaxe",
-            "obj.dragon_pickaxe",
-            "obj.dragon_pickaxe_pretty",
-            "obj.zalcano_pickaxe",
-            "obj.infernal_pickaxe",
-            "obj.infernal_pickaxe_empty",
-            "obj.3a_pickaxe",
-            "obj.crystal_pickaxe",
-            "obj.crystal_pickaxe_inactive",
-            "obj.league_trailblazer_pickaxe",
-            "obj.trailblazer_pickaxe",
-            "obj.trailblazer_pickaxe_empty",
-            "obj.trailblazer_pickaxe_no_infernal",
-            "obj.trailblazer_reloaded_pickaxe",
-            "obj.trailblazer_reloaded_pickaxe_empty",
-            "obj.trailblazer_reloaded_pickaxe_no_infernal",
-        )
+    fun obj(value: Int): String? =
+        ToaPickaxesRow.all().firstOrNull { it.value == value }?.obj?.internalName
 
-    fun obj(value: Int): String? = PICKAXES.getOrNull(value - 1)
-
-    fun value(obj: String): Int = PICKAXES.indexOf(obj) + 1
+    fun value(obj: String): Int =
+        ToaPickaxesRow.all().firstOrNull { it.obj.internalName == obj }?.value ?: 0
 }
