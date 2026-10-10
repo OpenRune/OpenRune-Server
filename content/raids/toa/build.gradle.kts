@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 dependencies {
@@ -26,4 +27,12 @@ dependencies {
     // ConsumableActivityGate / ToaPotionEffect: unlocking the Helpful Spirit's supplies in the
     // raid, and clearing their timed effects on death and on leaving.
     implementation(projects.content.other.consumables)
+}
+
+dependencies {
+    testImplementation(projects.api.invPlugin)
+    testImplementation(projects.api.gameProcess)
+    testImplementation(projects.api.invStorage)
+    testImplementation(libs.fastutil)
+    testImplementation(libs.mockk)
 }
