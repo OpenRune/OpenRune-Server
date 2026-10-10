@@ -9,6 +9,7 @@ import org.rsmod.api.death.*
 import org.rsmod.api.player.hook.PlayerTeleportDelayHook
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.weapons.WeaponMap
+import org.rsmod.content.areas.wilderness.EmblemTraderExchangeHook
 import org.rsmod.content.areas.wilderness.applyForinthrySurge
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
@@ -19,6 +20,7 @@ import org.rsmod.plugin.module.PluginModule
 
 class RevenantModule : PluginModule() {
     override fun bind() {
+        addSetBinding<EmblemTraderExchangeHook>(RevenantTraderScript::class.java)
         addSetBinding<PlayerTeleportDelayHook>(RevenantTeleportDelay::class.java)
         addSetBinding<WeaponMap>(RevenantWeapons::class.java)
         addSetBinding<NpcDeathKillHook>(RevenantMaledictusController::class.java)

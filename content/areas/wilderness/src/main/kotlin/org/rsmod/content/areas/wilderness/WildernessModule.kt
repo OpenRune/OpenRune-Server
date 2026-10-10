@@ -15,6 +15,7 @@ import org.rsmod.plugin.module.PluginModule
 
 public class WildernessModule : PluginModule() {
     override fun bind() {
+        newSetBinding<EmblemTraderExchangeHook>()
         addSetBinding<PlayerDeathHook>(WildernessDeathHook::class.java)
         addSetBinding<PlayerDeathCleanupHook>(WildernessDeathCleanupHook::class.java)
         addSetBinding<PvPAttackValidateHook>(WildernessPvPHook::class.java)

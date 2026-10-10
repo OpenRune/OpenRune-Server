@@ -1,0 +1,11 @@
+[gamevals.npc]
+home_teleport_wizard = 65526
+
+[gamevals.interface]
+home_teleports = 1105
+
+[gamevals.clientscript]
+home_teleports_init = 45546
+
+[gamevals.queue]
+home_teleport = 61

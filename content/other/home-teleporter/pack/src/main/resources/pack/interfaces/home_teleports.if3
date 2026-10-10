@@ -1,0 +1,583 @@
+[[interface]]
+name = "interface.home_teleports"
+width = 512
+height = 334
+on_load = ["clientscript.home_teleports_init", "component.home_teleports:frame"]
+
+[[component]]
+name = "frame"
+type = "layer"
+x = 0
+y = 0
+width = 512
+height = 334
+no_click_through = true
+
+[[component]]
+name = "categories"
+type = "layer"
+x = 10
+y = 58
+width = 128
+height = 260
+
+[[component]]
+name = "destinations"
+type = "layer"
+x = 142
+y = 84
+width = 360
+height = 193
+
+[[component]]
+name = "query"
+type = "text"
+x = 146
+y = 61
+width = 214
+height = 18
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+
+[[component]]
+name = "search"
+type = "layer"
+x = 362
+y = 61
+width = 76
+height = 20
+options = ["Search"]
+
+[[component]]
+name = "clear"
+type = "layer"
+x = 442
+y = 61
+width = 60
+height = 20
+options = ["Clear"]
+
+[[component]]
+name = "tab_cities"
+type = "text"
+x = 18
+y = 68
+width = 112
+height = 22
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = "Cities"
+options = ["Select category"]
+
+[[component]]
+name = "tab_monsters"
+type = "text"
+x = 18
+y = 94
+width = 112
+height = 22
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = "Monsters"
+options = ["Select category"]
+
+[[component]]
+name = "tab_bosses"
+type = "text"
+x = 18
+y = 120
+width = 112
+height = 22
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = "Bosses"
+options = ["Select category"]
+
+[[component]]
+name = "tab_skilling"
+type = "text"
+x = 18
+y = 146
+width = 112
+height = 22
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = "Skilling"
+options = ["Select category"]
+
+[[component]]
+name = "tab_dungeons"
+type = "text"
+x = 18
+y = 172
+width = 112
+height = 22
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = "Dungeons"
+options = ["Select category"]
+
+[[component]]
+name = "tab_minigames"
+type = "text"
+x = 18
+y = 198
+width = 112
+height = 22
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = "Minigames"
+options = ["Select category"]
+
+[[component]]
+name = "tab_raids"
+type = "text"
+x = 18
+y = 224
+width = 112
+height = 22
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = "Raids"
+options = ["Select category"]
+
+[[component]]
+name = "tab_pvp"
+type = "text"
+x = 18
+y = 250
+width = 112
+height = 22
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = "Pvp"
+options = ["Select category"]
+
+[[component]]
+name = "tab_other"
+type = "text"
+x = 18
+y = 276
+width = 112
+height = 22
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = "Other"
+options = ["Select category"]
+
+[[component]]
+name = "row_0"
+type = "layer"
+x = 148
+y = 90
+width = 348
+height = 29
+options = ["Select destination"]
+
+[[component]]
+name = "icon_0"
+type = "graphic"
+x = 150
+y = 91
+width = 28
+height = 28
+options = ["Select destination"]
+sprite_id = 0
+hide = true
+border_type = 1
+
+[[component]]
+name = "name_0"
+type = "text"
+x = 182
+y = 90
+width = 216
+height = 28
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+options = ["Select destination"]
+
+[[component]]
+name = "status_0"
+type = "text"
+x = 400
+y = 90
+width = 94
+height = 28
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+options = ["Select destination"]
+
+[[component]]
+name = "row_1"
+type = "layer"
+x = 148
+y = 120
+width = 348
+height = 29
+options = ["Select destination"]
+
+[[component]]
+name = "icon_1"
+type = "graphic"
+x = 150
+y = 121
+width = 28
+height = 28
+options = ["Select destination"]
+sprite_id = 0
+hide = true
+border_type = 1
+
+[[component]]
+name = "name_1"
+type = "text"
+x = 182
+y = 120
+width = 216
+height = 28
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+options = ["Select destination"]
+
+[[component]]
+name = "status_1"
+type = "text"
+x = 400
+y = 120
+width = 94
+height = 28
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+options = ["Select destination"]
+
+[[component]]
+name = "row_2"
+type = "layer"
+x = 148
+y = 150
+width = 348
+height = 29
+options = ["Select destination"]
+
+[[component]]
+name = "icon_2"
+type = "graphic"
+x = 150
+y = 151
+width = 28
+height = 28
+options = ["Select destination"]
+sprite_id = 0
+hide = true
+border_type = 1
+
+[[component]]
+name = "name_2"
+type = "text"
+x = 182
+y = 150
+width = 216
+height = 28
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+options = ["Select destination"]
+
+[[component]]
+name = "status_2"
+type = "text"
+x = 400
+y = 150
+width = 94
+height = 28
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+options = ["Select destination"]
+
+[[component]]
+name = "row_3"
+type = "layer"
+x = 148
+y = 180
+width = 348
+height = 29
+options = ["Select destination"]
+
+[[component]]
+name = "icon_3"
+type = "graphic"
+x = 150
+y = 181
+width = 28
+height = 28
+options = ["Select destination"]
+sprite_id = 0
+hide = true
+border_type = 1
+
+[[component]]
+name = "name_3"
+type = "text"
+x = 182
+y = 180
+width = 216
+height = 28
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+options = ["Select destination"]
+
+[[component]]
+name = "status_3"
+type = "text"
+x = 400
+y = 180
+width = 94
+height = 28
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+options = ["Select destination"]
+
+[[component]]
+name = "row_4"
+type = "layer"
+x = 148
+y = 210
+width = 348
+height = 29
+options = ["Select destination"]
+
+[[component]]
+name = "icon_4"
+type = "graphic"
+x = 150
+y = 211
+width = 28
+height = 28
+options = ["Select destination"]
+sprite_id = 0
+hide = true
+border_type = 1
+
+[[component]]
+name = "name_4"
+type = "text"
+x = 182
+y = 210
+width = 216
+height = 28
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+options = ["Select destination"]
+
+[[component]]
+name = "status_4"
+type = "text"
+x = 400
+y = 210
+width = 94
+height = 28
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+options = ["Select destination"]
+
+[[component]]
+name = "row_5"
+type = "layer"
+x = 148
+y = 240
+width = 348
+height = 29
+options = ["Select destination"]
+
+[[component]]
+name = "icon_5"
+type = "graphic"
+x = 150
+y = 241
+width = 28
+height = 28
+options = ["Select destination"]
+sprite_id = 0
+hide = true
+border_type = 1
+
+[[component]]
+name = "name_5"
+type = "text"
+x = 182
+y = 240
+width = 216
+height = 28
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+options = ["Select destination"]
+
+[[component]]
+name = "status_5"
+type = "text"
+x = 400
+y = 240
+width = 94
+height = 28
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+options = ["Select destination"]
+
+[[component]]
+name = "previous"
+type = "layer"
+x = 146
+y = 280
+width = 60
+height = 20
+options = ["Previous page"]
+
+[[component]]
+name = "page"
+type = "text"
+x = 210
+y = 280
+width = 54
+height = 20
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""
+
+[[component]]
+name = "next"
+type = "layer"
+x = 268
+y = 280
+width = 60
+height = 20
+options = ["Next page"]
+
+[[component]]
+name = "teleport"
+type = "layer"
+x = 420
+y = 280
+width = 80
+height = 20
+options = ["Teleport"]
+hide = true
+
+[[component]]
+name = "detail"
+type = "text"
+x = 146
+y = 302
+width = 350
+height = 27
+font = "small"
+text_shadow = true
+line_height = 12
+h_align = "left"
+v_align = "center"
+color = "#FF981F"
+text = ""

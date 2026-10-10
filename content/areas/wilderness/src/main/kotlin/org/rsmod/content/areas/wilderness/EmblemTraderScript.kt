@@ -4,14 +4,22 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc5
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class EmblemTraderScript @Inject constructor() : PluginScript() {
+class EmblemTraderScript @Inject constructor(private val exchanges: Set<@JvmSuppressWildcards EmblemTraderExchangeHook>) : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1("npc.emblem_trader") { startDialogue(it.npc) }
+        onOpNpc1("npc.emblem_trader") {
+            val exchange = exchanges.firstOrNull { it.hasArtefacts(player) }
+            if (exchange != null) exchange.exchange(this) else startDialogue(it.npc)
+        }
+        onOpNpc3("npc.emblem_trader") {
+            val exchange = exchanges.firstOrNull()
+            if (exchange != null) exchange.exchange(this) else startDialogue(it.npc) { tradeRewards() }
+        }
         onOpNpc5("npc.emblem_trader") { startDialogue(it.npc) { requestPkSkull() } }
     }
 
@@ -74,6 +82,8 @@ class EmblemTraderScript @Inject constructor() : PluginScript() {
     }
 
     private suspend fun Dialogue.tradeRewards() {
+        val exchange = exchanges.firstOrNull()
+        if (exchange != null) { exchange.exchange(access); return }
         chatPlayer(neutral, "Let's trade for rewards.")
         chatNpc(neutral, "I don't carry rewards out here, it is far too dangerous.")
         chatNpc(neutral, "Meet me in Daimon's Crater if you would like to buy rewards.")

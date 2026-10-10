@@ -10,6 +10,7 @@ This index contains implementation notes and evidence, not a second status list.
 | Araxxor | `content/bosses/araxxor` | [Encounter and fang recipes](araxxor.md) |
 | Lizardman Shamans | `content/bosses/lizardman-shaman` and `pack` | [Combat, Shayzien protection, drops and test commands](lizardman-shamans.md) |
 | Revenant Caves | `content/areas/revenant-caves` and `pack` | [Access, combat, ether, artefacts and Maledictus](revenant-caves.md) |
+| Edgeville home teleporter | `content/other/home-teleporter` and `pack` | [Catalogue, native interface, travel safety and Emblem trader](home-teleporter.md) |
 | Kraken | `content/bosses/kraken` | [Public-cave encounter](kraken.md) |
 | Tormented Demons | `content/bosses/tormented-demon` and `pack` | [Encounter, Temple, rewards, crafting and acceptance evidence](tormented-demons.md) |
 | Teleport animations and scrolls | `content/skills/magic/spell-teleports` | [Rev240 animation cleanup, all scroll routes and validation](teleport-scrolls.md) |
