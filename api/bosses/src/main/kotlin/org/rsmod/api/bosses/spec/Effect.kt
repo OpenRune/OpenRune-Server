@@ -166,7 +166,6 @@ sealed interface Effect {
         val center: TargetExpr.Single = TargetExpr.Self,
     ) : Effect
 
-
     data class Bleed(
         val duration: Int,
         val movingDamage: DamageExpr,
