@@ -47,7 +47,7 @@ class CrondisCrocodileCombat @Inject constructor(deps: BossDeps) : BossPluginScr
                 BITE,
                 sequence(
                     anim(CrondisSeqs.CROC_ATTACK),
-                    sound(CrondisSynths.CROC_ATTACK, target = CurrentTarget),
+                    sound(CrondisSynths.CROC_ATTACK, at = CurrentTarget),
                     hit {
                         resolveOnImpact()
                         type(Melee)
