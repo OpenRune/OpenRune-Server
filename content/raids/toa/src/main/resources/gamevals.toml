@@ -126,3 +126,28 @@ toa_zebak_poison_spread = 65533
 toa_zebak_lob = 65532
 toa_zebak_jug_splash = 65531
 toa_zebak_lob_far = 65530
+
+[gamevals.dbtable]
+toa_rooms = 64100
+toa_room_exclusions = 64101
+toa_paths = 64102
+
+[gamevals.dbrow]
+toa_room_main_hall = 57000
+toa_room_reward = 57001
+toa_room_wardens_first = 57002
+toa_room_wardens_second = 57003
+toa_room_scabaras_puzzle = 57004
+toa_room_het_puzzle = 57005
+toa_room_apmeken_puzzle = 57006
+toa_room_crondis_puzzle = 57007
+toa_room_scabaras_boss = 57008
+toa_room_het_boss = 57009
+toa_room_apmeken_boss = 57010
+toa_room_crondis_boss = 57011
+toa_room_exclusion_zebak_a = 57020
+toa_room_exclusion_zebak_b = 57021
+toa_path_scabaras = 57030
+toa_path_het = 57031
+toa_path_apmeken = 57032
+toa_path_crondis = 57033
