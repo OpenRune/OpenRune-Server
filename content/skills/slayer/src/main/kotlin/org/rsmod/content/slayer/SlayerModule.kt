@@ -3,8 +3,10 @@ package org.rsmod.content.slayer
 import org.rsmod.api.combat.commons.npc.NpcAttackOverrideHook
 import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.death.NpcDeathKillHook
+import org.rsmod.api.npc.hit.NpcHitpointsFloorHook
 import org.rsmod.api.player.hook.PlayerPostTickHook
 import org.rsmod.content.slayer.SlayerNpcKillHook
+import org.rsmod.content.slayer.requirements.SlayerFinisherFloor
 import org.rsmod.content.slayer.requirements.SlayerGearAttackHook
 import org.rsmod.content.slayer.requirements.SlayerLevelAttackHook
 import org.rsmod.content.slayer.superior.SlayerSuperiorAttackHook
@@ -17,6 +19,7 @@ class SlayerModule : PluginModule() {
         addSetBinding<NpcAttackValidateHook>(SlayerSuperiorAttackHook::class.java)
         addSetBinding<NpcAttackValidateHook>(SlayerLevelAttackHook::class.java)
         addSetBinding<NpcAttackOverrideHook>(SlayerGearAttackHook::class.java)
+        addSetBinding<NpcHitpointsFloorHook>(SlayerFinisherFloor::class.java)
         addSetBinding<PlayerPostTickHook>(SlayerSuperiorEvents::class.java)
     }
 }
