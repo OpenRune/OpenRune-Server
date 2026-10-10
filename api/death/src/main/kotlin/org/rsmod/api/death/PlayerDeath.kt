@@ -33,6 +33,7 @@ constructor(
     private val cleanupHooks: Set<PlayerDeathCleanupHook>,
     private val storageHooks: Set<PlayerDeathStorageHook>,
     private val respawnHooks: Set<PlayerRespawnHook>,
+    private val deathOverrideHooks: Set<PlayerDeathOverrideHook>,
     private val areaChecker: AreaChecker,
 ) {
     private var Player.specialAttackType by intVarp("varp.sa_attack")
@@ -41,6 +42,9 @@ constructor(
     private var Player.insideWilderness by boolVarBit("varbit.inside_wilderness")
 
     public suspend fun death(access: ProtectedAccess) {
+        for (hook in deathOverrideHooks) {
+            if (with(hook) { access.override() }) return
+        }
         access.deathSequence()
     }
 

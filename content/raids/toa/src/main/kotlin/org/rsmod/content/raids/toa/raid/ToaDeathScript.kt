@@ -9,7 +9,6 @@ import org.rsmod.api.mechanics.toxins.Toxin.cureAllToxins
 import org.rsmod.api.player.death.DEATH_CAUSE_ATTR
 import org.rsmod.api.player.deathResetTimers
 import org.rsmod.api.player.disablePrayers
-import org.rsmod.api.player.hasProtectItemPrayer
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.musicClocks
@@ -21,8 +20,6 @@ import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.player.stat.statRestore
 import org.rsmod.api.player.stat.statRestoreAll
 import org.rsmod.api.player.vars.intVarp
-import org.rsmod.api.script.onPlayerHit
-import org.rsmod.api.script.onPlayerQueue
 import org.rsmod.content.raids.toa.lobby.ToaStats
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
@@ -30,31 +27,8 @@ import org.rsmod.content.raids.toa.raid.ToaRetrieval.protectItemAtDeath
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Player
-import org.rsmod.plugin.scripts.PluginScript
-import org.rsmod.plugin.scripts.ScriptContext
 
-class ToaDeathScript : PluginScript() {
-    override fun ScriptContext.startup() {
-        onPlayerHit { interceptDeath(player) }
-        onPlayerQueue(TOA_DEATH_QUEUE) { raidDeath() }
-    }
-
-    private fun interceptDeath(player: Player) {
-        val raid = player.currentRaid ?: return
-        if (STANDARD_DEATH_QUEUE !in player.queueList) return
-        player.clearQueue(STANDARD_DEATH_QUEUE)
-        if (!raid.startDying(player)) return
-        player.protectItemAtDeath = player.hasProtectItemPrayer()
-        player.queue(TOA_DEATH_QUEUE, 1)
-    }
-
-    private companion object {
-        const val STANDARD_DEATH_QUEUE = "queue.death"
-        const val TOA_DEATH_QUEUE = "queue.toa_death"
-    }
-}
-
-private suspend fun ProtectedAccess.raidDeath() {
+internal suspend fun ProtectedAccess.raidDeath() {
     player.attr.remove(DEATH_CAUSE_ATTR)
 
     val raid = player.currentRaid
