@@ -10,7 +10,6 @@ import org.rsmod.content.other.consumables.ConsumableType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-
 class ToaHoneyLocustScript
 @Inject
 constructor(private val activityAccess: ConsumableActivityAccess) : PluginScript() {
