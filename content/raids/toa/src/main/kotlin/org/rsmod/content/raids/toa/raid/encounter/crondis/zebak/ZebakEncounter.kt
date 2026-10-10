@@ -144,6 +144,7 @@ class ZebakEncounter(
 
     override fun onFightComplete() {
         clearFight()
+        water.dropDeadSwimmers()
         water.removeCrocodiles()
     }
 
@@ -155,6 +156,7 @@ class ZebakEncounter(
 
     override fun onReset() {
         clearFight()
+        water.clear()
         spawnZebak()
     }
 
@@ -170,7 +172,6 @@ class ZebakEncounter(
         jugs.clear()
         boulders.clear()
         waves.clear()
-        water.clear()
         poison.clear()
     }
 
