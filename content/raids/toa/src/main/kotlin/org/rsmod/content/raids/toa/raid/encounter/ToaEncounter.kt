@@ -159,7 +159,7 @@ open class ToaEncounter(
         for (seq in room.path?.preloadSeqs.orEmpty()) {
             player.runClientScript(
                 SEQ_PREFETCH_SCRIPT.asRSCM(RSCMType.CLIENTSCRIPT),
-                seq.asRSCM(RSCMType.SEQ),
+                seq.id,
             )
         }
         if (stage == ToaStage.STARTED) hpBar?.open(player)
