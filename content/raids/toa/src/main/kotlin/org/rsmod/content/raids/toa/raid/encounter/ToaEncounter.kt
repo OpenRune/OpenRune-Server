@@ -330,6 +330,7 @@ open class ToaEncounter(
 
     internal fun despawn(npc: Npc) {
         release(npc)
+        deps.instances.detachNpc(npc)
         if (npc.isSlotAssigned) deps.npcRepo.del(npc, Int.MAX_VALUE)
     }
 
