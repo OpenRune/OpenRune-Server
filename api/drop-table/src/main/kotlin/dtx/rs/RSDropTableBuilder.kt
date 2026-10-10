@@ -8,6 +8,8 @@ public fun locs(vararg ids: String): List<String> = ids.toList()
 
 public fun areas(vararg ids: String): List<String> = ids.toList()
 
+public fun pickpockets(vararg ids: String): List<String> = ids.toList()
+
 public class RSDropTableBuilder<T, R> {
     public var tableIdentifier: String = "Unnamed Drop Table"
     public var npcs: List<String> = emptyList()
@@ -20,6 +22,7 @@ public class RSDropTableBuilder<T, R> {
     public var tertiaries: RSTable<T, R> = RSPreRollTable.Empty()
     public var hooks: TableHooks<T, R> = TableHooks.Default()
     public var mainRolls: Int = 1
+    public var pickpockets: List<String> = emptyList()
 
     public fun npcs(vararg ids: String) {
         npcs = ids.toList()
@@ -31,6 +34,10 @@ public class RSDropTableBuilder<T, R> {
 
     public fun areas(vararg ids: String) {
         areas = ids.toList()
+    }
+
+    public fun pickpockets(vararg ids: String) {
+        pickpockets = ids.toList()
     }
 
     public fun build(): RSDropTable<T, R> =
@@ -46,6 +53,7 @@ public class RSDropTableBuilder<T, R> {
             tertiaries = tertiaries,
             hooks = hooks,
             mainRolls = mainRolls,
+            pickpockets = pickpockets,
         )
 }
 

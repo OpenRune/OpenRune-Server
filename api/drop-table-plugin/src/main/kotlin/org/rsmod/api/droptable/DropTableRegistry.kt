@@ -24,8 +24,11 @@ import org.rsmod.plugin.scan.PluginClasspathScan
 public class DropTableRegistry
 @Inject
 constructor(tomlResolver: DropTableTomlResolver) {
-    private val tablesByNpc: MutableMap<String, MutableList<RSDropTable<Player, DropRollItem>>> = hashMapOf()
+    private val tablesByNpc: MutableMap<String, MutableList<RSDropTable<Player, DropRollItem>>> =
+        hashMapOf()
     private val tablesByLoc: MutableMap<String, RSDropTable<Player, DropRollItem>> = hashMapOf()
+    private val tablesByPickpocket: MutableMap<String, RSDropTable<Player, DropRollItem>> =
+        hashMapOf()
     private val tomlTablesByNpc: MutableMap<String, MutableSet<String>> = hashMapOf()
 
     private val logger = InlineLogger()
@@ -40,7 +43,8 @@ constructor(tomlResolver: DropTableTomlResolver) {
         }
     }
 
-    public fun forNpc(npc: Npc): RSDropTable<Player, DropRollItem>? = forNpc(npc, areaChecker = null)
+    public fun forNpc(npc: Npc): RSDropTable<Player, DropRollItem>? =
+        forNpc(npc, areaChecker = null)
 
     public fun forNpc(
         npc: Npc,
@@ -76,6 +80,9 @@ constructor(tomlResolver: DropTableTomlResolver) {
 
     public fun forLoc(loc: String): RSDropTable<Player, DropRollItem>? = tablesByLoc[loc]
 
+    public fun forPickpocket(key: String): RSDropTable<Player, DropRollItem>? =
+        tablesByPickpocket[key]
+
     /**
      * Parsing (file I/O + Jackson decode) runs in parallel since each resource is independent;
      * [register] mutates shared maps, so it's applied back on the calling thread afterward.
@@ -90,7 +97,8 @@ constructor(tomlResolver: DropTableTomlResolver) {
             tomlResources
                 .parallelStream()
                 .map { resource ->
-                    val raw = DropTableTomlTextFixer.hoistTableLevelKeys(resource.getContentAsString())
+                    val raw =
+                        DropTableTomlTextFixer.hoistTableLevelKeys(resource.getContentAsString())
                     val def = mapper.readValue<TomlDropTableDef>(raw)
                     DropTableTomlParser.parse(def, resolver, sourcePath = resource.path)
                 }
@@ -139,8 +147,8 @@ constructor(tomlResolver: DropTableTomlResolver) {
     }
 
     private fun register(table: RSDropTable<Player, DropRollItem>, source: DropTableSource) {
-        check(table.npcs.isNotEmpty() || table.locs.isNotEmpty()) {
-            "Drop table '${table.tableIdentifier}' must define at least one npc or loc."
+        check(table.npcs.isNotEmpty() || table.locs.isNotEmpty() || table.pickpockets.isNotEmpty()) {
+            "Drop table '${table.tableIdentifier}' must define at least one npc, loc or pickpocket."
         }
 
         table.npcs.forEach { npc ->
@@ -157,6 +165,14 @@ constructor(tomlResolver: DropTableTomlResolver) {
                 "Duplicate drop table for loc '$loc': '${tablesByLoc[loc]?.tableIdentifier}' and '${table.tableIdentifier}'."
             }
             tablesByLoc[loc] = table
+        }
+
+        table.pickpockets.forEach { key ->
+            check(!tablesByPickpocket.containsKey(key)) {
+                "Duplicate pickpocket drop table for '$key': " +
+                    "'${tablesByPickpocket[key]?.tableIdentifier}' and '${table.tableIdentifier}'."
+            }
+            tablesByPickpocket[key] = table
         }
     }
 
@@ -193,8 +209,10 @@ constructor(tomlResolver: DropTableTomlResolver) {
             when {
                 source == DropTableSource.Annotation && tomlLoaded ->
                     " Remove the @RegisterDropTable Kotlin definition or the TOML file under drops/tables/."
+
                 source == DropTableSource.Toml ->
                     " Duplicate TOML drop tables cannot target the same npc."
+
                 else ->
                     " Remove duplicate @RegisterDropTable definitions."
             }
