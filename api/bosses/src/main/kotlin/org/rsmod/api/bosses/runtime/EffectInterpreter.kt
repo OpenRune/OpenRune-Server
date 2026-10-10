@@ -33,11 +33,11 @@ import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.statDrain
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.hit.HitType
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.EntityExactMove
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.headbar.Headbar as EngineHeadbar
+import org.rsmod.game.hit.HitType
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
@@ -625,7 +625,6 @@ class EffectInterpreter internal constructor(
         }
         if (windup > 0) deps.worldQueues.add(windup) { strike() } else strike()
     }
-
 
     private fun applyBleed(access: StandardNpcAccess?, bleed: Effect.Bleed) {
         deps.bleeds.apply(
