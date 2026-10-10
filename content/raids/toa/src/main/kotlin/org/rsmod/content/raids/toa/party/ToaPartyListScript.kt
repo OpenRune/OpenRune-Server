@@ -1,6 +1,8 @@
 package org.rsmod.content.raids.toa.party
 
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.player.output.mes
@@ -29,17 +31,17 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-private const val CS_PARTYLIST_ADDLINE = 6601
-private const val CS_ADD_MEMBER = 6722
-private const val CS_ADD_APPLICANT = 6727
-private const val CS_MASTER_UPDATE = 6729
+private const val CS_PARTYLIST_ADDLINE = "clientscript.[clientscript,toa_partylist_addline]"
+private const val CS_ADD_MEMBER = "clientscript.[clientscript,toa_partydetails_addmember]"
+private const val CS_ADD_APPLICANT = "clientscript.[clientscript,toa_partydetails_addapplicant]"
+private const val CS_MASTER_UPDATE = "clientscript.[clientscript,script6729]"
 private const val VARP_CURRENT_PARTY = "varp.toa_mycontroller"
 private const val VARBIT_FRIENDS_FILTER = "varbit.toa_partylist_filter"
 private const val VARBIT_PARTY_STATUS = "varbit.toa_client_partystatus"
 private const val VARBIT_PRESET_SELECTED = "varbit.toa_preset_selected"
-private const val SYNTH_INVOCATION_ON = 6589
-private const val SYNTH_INVOCATION_OFF = 6588
-private const val SYNTH_PRESET_SAVE_LOAD = 2655
+private const val SYNTH_INVOCATION_ON = "synth.toa_invocation_on"
+private const val SYNTH_INVOCATION_OFF = "synth.toa_invocation_off"
+private const val SYNTH_PRESET_SAVE_LOAD = "synth.found_gem"
 private const val PRESET_SLOTS = 5
 private val PRESET_PARTS = listOf("a", "b", "c")
 private const val JOIN_PARTY_IN_TOMBS = "You should join your party in the tombs."
@@ -134,9 +136,13 @@ class ToaPartyListScript @Inject constructor(
         for (index in 0 until ToaLobbyParty.MAX_LOBBY_PARTIES) {
             val party = allParties.getOrNull(index)
             if (party == null) {
-                player.runClientScript(CS_PARTYLIST_ADDLINE, index, "")
+                player.runClientScript(CS_PARTYLIST_ADDLINE.asRSCM(RSCMType.CLIENTSCRIPT), index, "")
             } else {
-                player.runClientScript(CS_PARTYLIST_ADDLINE, index, buildRowString(party))
+                player.runClientScript(
+                    CS_PARTYLIST_ADDLINE.asRSCM(RSCMType.CLIENTSCRIPT),
+                    index,
+                    buildRowString(party),
+                )
                 visibleParties.add(party)
             }
         }
@@ -270,20 +276,27 @@ class ToaPartyListScript @Inject constructor(
         val viewValue = ToaPartyManager.resolveViewingValue(player, party)
         for (i in 0 until ToaLobbyParty.MAX_PARTY_MEMBERS) {
             if (i >= party.members.size) {
-                player.runClientScript(CS_ADD_MEMBER, viewValue, "")
+                player.runClientScript(CS_ADD_MEMBER.asRSCM(RSCMType.CLIENTSCRIPT), viewValue, "")
             } else {
-                player.runClientScript(CS_ADD_MEMBER, viewValue, buildStatString(party.members[i]))
+                player.runClientScript(
+                    CS_ADD_MEMBER.asRSCM(RSCMType.CLIENTSCRIPT),
+                    viewValue,
+                    buildStatString(party.members[i]),
+                )
             }
         }
 
         for (applicant in party.applicants) {
-            player.runClientScript(CS_ADD_APPLICANT, buildStatString(applicant))
+            player.runClientScript(
+                CS_ADD_APPLICANT.asRSCM(RSCMType.CLIENTSCRIPT),
+                buildStatString(applicant),
+            )
         }
 
         val settings = party.settings
         val bitmaps = settings.invocationBitmaps
         player.runClientScript(
-            CS_MASTER_UPDATE,
+            CS_MASTER_UPDATE.asRSCM(RSCMType.CLIENTSCRIPT),
             ToaPartyManager.resolveViewingValue(player, party),
             settings.kcRequirement,
             settings.activeInvocations,

@@ -1,6 +1,8 @@
 package org.rsmod.content.raids.toa.raid
 
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import kotlin.math.min
@@ -43,7 +45,7 @@ class ToaRetrievalScript @Inject constructor(private val prices: MarketPrices) :
         val fee = if (player.retrievalLocked == 1) ToaRetrieval.fee(player, prices) else 0
         if (fee == 0) player.retrievalLocked = 0
 
-        player.runClientScript(SCRIPT_TRANSMIT_DATA, fee, COFFER)
+        player.runClientScript(SCRIPT_TRANSMIT_DATA.asRSCM(RSCMType.CLIENTSCRIPT), fee, COFFER)
         player.retrievalType = if (fee > 0) TYPE_LOCKED else TYPE_UNLOCKED
         invTransmit(chest)
         ifOpenMainModal(INTERFACE)
@@ -66,7 +68,7 @@ class ToaRetrievalScript @Inject constructor(private val prices: MarketPrices) :
         if (fromInv > 0) invDel(inv, COINS, fromInv)
         if (fee > fromInv) invDel(bank, COINS, fee - fromInv)
         player.retrievalLocked = 0
-        player.runClientScript(SCRIPT_TRANSMIT_DATA, 0, COFFER)
+        player.runClientScript(SCRIPT_TRANSMIT_DATA.asRSCM(RSCMType.CLIENTSCRIPT), 0, COFFER)
         player.retrievalType = TYPE_UNLOCKED
         mes("You've unlocked the contents of the retrieval service.")
     }
@@ -162,7 +164,7 @@ class ToaRetrievalScript @Inject constructor(private val prices: MarketPrices) :
         const val COINS = "obj.coins"
         const val TYPE_LOCKED = 39
         const val TYPE_UNLOCKED = 38
-        const val SCRIPT_TRANSMIT_DATA = 3478
+        const val SCRIPT_TRANSMIT_DATA = "clientscript.[clientscript,gravestone_transmit_data]"
         const val COFFER = 0
     }
 }
