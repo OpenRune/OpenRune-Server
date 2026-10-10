@@ -171,7 +171,7 @@ Edit source/configuration, then run `node tools/progress/content-progress.mjs`.
 | [Penance Queen](https://oldschool.runescape.wiki/w/Penance_Queen) | Not detected | — |
 | [Pestilent Bloat](https://oldschool.runescape.wiki/w/Pestilent_Bloat) | Drop table only | [PestilentBloatDropTable.kt](content/drops/src/main/kotlin/org/rsmod/content/drops/tables/monsters/PestilentBloatDropTable.kt) |
 | [Phosani's Nightmare](https://oldschool.runescape.wiki/w/Phosani's_Nightmare) | Drop table only | [PhosanisNightmareDropTable.kt](content/drops/src/main/kotlin/org/rsmod/content/drops/tables/monsters/PhosanisNightmareDropTable.kt) |
-| [Revenant maledictus](https://oldschool.runescape.wiki/w/Revenant_maledictus) | Not detected | — |
+| [Revenant maledictus](https://oldschool.runescape.wiki/w/Revenant_maledictus) | References only | [ForinthrySurgeKillHook.kt](content/areas/wilderness/src/main/kotlin/org/rsmod/content/areas/wilderness/ForinthrySurgeKillHook.kt) |
 | [Royal Titans](https://oldschool.runescape.wiki/w/Royal_Titans) | Not detected | — |
 | [Salarin the twisted](https://oldschool.runescape.wiki/w/Salarin_the_twisted) | Drop table only | [salarin_the_twisted.toml](content/drops/src/main/resources/drops/tables/monsters/salarin_the_twisted.toml) |
 | [Sarachnis](https://oldschool.runescape.wiki/w/Sarachnis) | Drop table only | [SarachnisDropTable.kt](content/drops/src/main/kotlin/org/rsmod/content/drops/tables/monsters/SarachnisDropTable.kt) |
@@ -335,6 +335,8 @@ Edit source/configuration, then run `node tools/progress/content-progress.mjs`.
 | [content/areas/misc/ver_sinhaza](content/areas/misc/ver_sinhaza) |
 | [content/areas/misc/wizards_tower](content/areas/misc/wizards_tower) |
 | [content/areas/misc/wizards_tower/pack](content/areas/misc/wizards_tower/pack) |
+| [content/areas/revenant-caves](content/areas/revenant-caves) |
+| [content/areas/revenant-caves/pack](content/areas/revenant-caves/pack) |
 | [content/areas/wilderness](content/areas/wilderness) |
 | [content/areas/zeah](content/areas/zeah) |
 | [content/bosses/demonic-gorilla](content/bosses/demonic-gorilla) |

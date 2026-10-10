@@ -552,19 +552,6 @@
       "size": "M"
     },
     {
-      "title": "Revenants",
-      "status": "not_added",
-      "summary": "Build Revenants and the Revenant Caves into a complete combat/reward system.",
-      "details": [
-        "Implement revenant NPC behaviours, cave rules, aggression and combat handling.",
-        "Cover bracelet interactions, ether mechanics, unique drops and Wilderness behaviour.",
-        "Integrate drops, Collection Log, loot tracking and relevant risk/reward systems.",
-        "Add regression tests and in-game acceptance checks before marking added."
-      ],
-      "category": "other",
-      "size": "M–L"
-    },
-    {
       "title": "Hunter Guild",
       "status": "not_added",
       "summary": "Build the Hunter Guild and Hunters' Rumours into a complete Hunter system.",
