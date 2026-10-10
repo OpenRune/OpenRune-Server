@@ -5,5 +5,10 @@ import dev.openrune.pack.PluginPack
 
 class ToaPluginPack : PluginPack() {
     override fun dbTables(): List<DBTable> =
-        listOf(ToaRoomsTable.rooms(), ToaRoomsTable.exclusions(), ToaPathsTable.paths())
+        listOf(
+            ToaRoomsTable.rooms(),
+            ToaRoomsTable.exclusions(),
+            ToaPathsTable.paths(),
+            ToaPickaxesTable.pickaxes(),
+        )
 }
