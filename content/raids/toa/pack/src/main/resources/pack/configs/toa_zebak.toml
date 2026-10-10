@@ -1,0 +1,199 @@
+[[npc]]
+id = "npc.toa_zebak"
+inherit = "npc.toa_zebak"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "East"
+regenRate = 0
+maxRange = 10
+attackRange = 40
+[npc.params]
+"param.boss_hp_bar_colour_back" = 13107200
+"param.boss_hp_bar_colour_sliding" = 36864
+"param.boss_hp_bar_colour_remaining" = 51200
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.toa_zebak_enraged"
+inherit = "npc.toa_zebak_enraged"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "East"
+regenRate = 0
+maxRange = 10
+attackRange = 40
+[npc.params]
+"param.boss_hp_bar_colour_back" = 13107200
+"param.boss_hp_bar_colour_sliding" = 36864
+"param.boss_hp_bar_colour_remaining" = 51200
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.toa_zebak_dead"
+inherit = "npc.toa_zebak_dead"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "East"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_tail"
+inherit = "npc.toa_zebak_tail"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "East"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_tail_dead"
+inherit = "npc.toa_zebak_tail_dead"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "East"
+regenRate = 0
+
+[[npc]]
+id = "npc.spotanim_zebak_ranged01_npc"
+inherit = "npc.spotanim_zebak_ranged01_npc"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "South"
+blockWalk = "None"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_watercroc"
+inherit = "npc.toa_zebak_watercroc"
+defaultMode = "Wander"
+wanderRange = 4
+maxRange = 64
+respawnDir = "South"
+timer = 1
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_blood_cloud"
+inherit = "npc.toa_zebak_blood_cloud"
+defaultMode = "None"
+respawnDir = "West"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_blood_cloud_small"
+inherit = "npc.toa_zebak_blood_cloud_small"
+defaultMode = "None"
+respawnDir = "West"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_zebak_initial"
+startHeight = 200
+endHeight = 700
+delay = 60
+angle = 30
+lengthAdjustment = 60
+progress = 0
+stepMultiplier = 0
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_zebak_split"
+startHeight = 700
+endHeight = 90
+delay = 0
+angle = 127
+lengthAdjustment = 90
+progress = 0
+stepMultiplier = 0
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_zebak_poison_spread"
+startHeight = 0
+endHeight = 0
+delay = 0
+angle = 20
+lengthAdjustment = 30
+progress = 10
+stepMultiplier = 0
+
+[[npc]]
+id = "npc.toa_zebak_jug"
+inherit = "npc.toa_zebak_jug"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_jug_rolling"
+inherit = "npc.toa_zebak_jug_rolling"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_safespot"
+inherit = "npc.toa_zebak_safespot"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_zebak_lob"
+startHeight = 250
+endHeight = 0
+delay = 30
+angle = 35
+lengthAdjustment = 0
+progress = 100
+stepMultiplier = 30
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_zebak_lob_far"
+startHeight = 250
+endHeight = 0
+delay = 30
+angle = 35
+lengthAdjustment = 120
+progress = 100
+stepMultiplier = 0
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_zebak_jug_splash"
+startHeight = 30
+endHeight = 0
+delay = 10
+angle = 20
+lengthAdjustment = 10
+progress = 0
+stepMultiplier = 0
+
+[[npc]]
+id = "npc.toa_zebak_wave"
+inherit = "npc.toa_zebak_wave"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+timer = 1
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_zebak_wave_bloody"
+inherit = "npc.toa_zebak_wave_bloody"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+timer = 1
+regenRate = 0

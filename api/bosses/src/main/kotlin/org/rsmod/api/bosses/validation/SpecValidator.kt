@@ -418,8 +418,13 @@ object SpecValidator {
                 is Effect.SoundTo -> target(effect.target, scope, name)
                 is Effect.Sound -> effect.at?.let { target(it, scope, name) }
                 is Effect.MapSpotanim -> target(effect.at, scope, name)
+                is Effect.Spotanim -> effect.target?.let { target(it, scope, name) }
                 is Effect.CamShake -> effect.target?.let { target(it, scope, name) }
                 is Effect.CamReset -> target(effect.target, scope, name)
+                is Effect.Bleed -> {
+                    effect.onApply?.let { effect(it, scope.copy(deferred = true)) }
+                    effect.onMovingHit?.let { effect(it, scope.copy(deferred = true)) }
+                }
                 is Effect.Debris -> target(effect.center, scope, name)
                 is Effect.Summon -> target(effect.centeredOn, scope, name)
                 is Effect.Teleport -> target(effect.to, scope, name)
@@ -433,6 +438,12 @@ object SpecValidator {
         private fun hit(hit: Effect.Hit, scope: Scope, projectile: Effect.Projectile?) {
             target(hit.target, scope, "Hit")
             hit.penetrationWhen?.let { condition(it, scope) }
+            if (!hit.react && (hit.resolveOnImpact || hit.reactOnLanding)) {
+                error("${scope.prefix}Hit noReaction cannot be combined with resolveOnImpact or reactOnLanding.")
+            }
+            if (!hit.react && projectile != null) {
+                error("${scope.prefix}Projectile hit cannot use noReaction.")
+            }
             val resolvedOnImpact = projectile?.resolveOnImpact == true
             if (!resolvedOnImpact && hit.penetrationWhen != null) {
                 error(
