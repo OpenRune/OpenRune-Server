@@ -52,7 +52,7 @@ internal class RevenantAccessScript @Inject constructor(private val access: Prot
         }
     }
     private suspend fun ProtectedAccess.enter(destination: CoordGrid) {
-        if (actionDelay > mapClock || !player.members || player.pendingLogout || player.hitpoints == 0) return
+        if (actionDelay > mapClock || player.pendingLogout || player.hitpoints == 0) return
         if (!collision.isZoneValid(destination)) { mes("This entrance is currently unavailable."); return }
         val origin = coords
         if (player.revenantAdmission and 1 == 0) {

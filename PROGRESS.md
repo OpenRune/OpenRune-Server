@@ -1,6 +1,6 @@
 # Project overview
 
-Reviewed **2026-10-10**. This is the source for current status and priorities.
+Reviewed **2026-10-11**. This is the source for current status and priorities.
 Implementation details: [custom documentation](docs/custom/README.md).
 Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
@@ -15,14 +15,19 @@ ethereum/weapon charges, ancient artefacts and Maledictus with its specials,
 MVP/participant rewards and Surge. Native loot/KC/Collection Log routes and
 administrator test commands are connected. Existing rev240 content is retained.
 
-**44 new feature tests; 204 selected tests in total**, scoped format checks,
+**46 new feature tests; 206 selected tests in total**, scoped format checks,
 the runtime JAR and bounded cache/mapping/login checks pass. All 117,585 LIVE
 archives, unrelated SERVER files and 220,158 existing mappings are preserved;
 six new server vars are added. In-game visuals, route feel and multiplayer
 acceptance remain open. [Sources, configured differences and tests](docs/custom/revenant-caves.md).
 
 [Draft PR #36](https://github.com/EvolvedMind/OpenRune-Server/pull/36).
-Guarded test package: `outputs/revenants-20261010/INSTALLEREN.cmd`.
+Guarded test package: `outputs/revenants-entrance-fix-20261011/INSTALLEREN.cmd`.
+
+Entrance fix: remove the silent account-membership gate on this members world.
+Regression tests cover the default account flag and real map routing/object
+clicks for all three entrances. The 100,000-coin fee and safe cancellation remain.
+
 
 ## 🟢 Complete: teleport animation correction and all scroll routes
 

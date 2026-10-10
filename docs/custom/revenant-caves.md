@@ -107,11 +107,11 @@ for animation appearance, route feel and multiplayer behaviour in the client.
 
 ## Automated validation
 
-44 new feature tests and 204 selected tests pass, including existing drops,
+46 new feature tests and 206 selected tests pass, including existing drops,
 teleports, special weapons, Tormented Demons, shamans and gorillas. All 58
 changed Kotlin files pass the scoped formatter. The final runtime JAR boots
 with the accepted rev240 cache/Nero plugin in an isolated database and exposes
-working health, catalogue, effect and respawn endpoints. All 15 entrance, exit
+working health, catalogue, effect and respawn endpoints. All 18 surface, entrance, exit
 and shortcut landing tiles are walkable in the native runtime map.
 
 Cache comparison preserves 117,585 LIVE archives, unrelated SERVER files and
@@ -121,6 +121,21 @@ process exits normally and its PostgreSQL PID file is removed. It retains the
 previous teleport baseline's database-close diagnostic during shutdown; this
 does not establish a new Revenant regression.
 
-The guarded package is `outputs/revenants-20261010`. It includes the candidate,
+The guarded package is `outputs/revenants-entrance-fix-20261011`. It includes the candidate,
 before/after hashes, a verified rollback checkpoint and test/cache/boot evidence.
 No live installation is performed by preparing or checking this package.
+
+## Cavern entry regression
+
+The owner's installed package matched all 80 targets and 998 prerequisites.
+The entrance silently returned when `Player.members` was false, which is the
+default account flag; this fork's world already exposes members content. Earlier
+fixtures explicitly enabled that flag and did not detect the regression. Remove
+the account-membership gate without changing admission, payment or cancellation.
+A new native click test first reproduced the failure before the fix.
+
+The map regression decodes the real rev240 surface map, verifies walkable test
+teleport tiles and finds a route to each object's permitted interaction side.
+It then uses the actual Cavern/Crevice shape, rotation and native loc interaction
+producer to verify entry and one fee with the default membership flag. Existing
+objects and their cache definitions are retained. No access objects are replaced.
