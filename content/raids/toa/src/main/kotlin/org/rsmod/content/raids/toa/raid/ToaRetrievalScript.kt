@@ -11,7 +11,6 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
-import org.rsmod.api.player.ui.IfModalButton
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
@@ -32,7 +31,7 @@ class ToaRetrievalScript @Inject constructor(private val prices: MarketPrices) :
         onIfClose(INTERFACE) { player.stopInvTransmit(player.retrievalChest) }
         onIfModalButton(BUTTON) { unlockOrTakeAll() }
         onIfModalButton(DISCARD) { discardAll() }
-        onIfModalButton(ITEMS) { itemOp(it) }
+        onIfModalButton(ITEMS) { itemOp(it.comsub, it.op) }
     }
 
     private suspend fun ProtectedAccess.openChest() {
@@ -52,11 +51,11 @@ class ToaRetrievalScript @Inject constructor(private val prices: MarketPrices) :
         ifSetEvents(ITEMS, chest.indices, IfEvent.Op2, IfEvent.Op9, IfEvent.Op10)
     }
 
-    private fun ProtectedAccess.unlockOrTakeAll() {
+    internal fun ProtectedAccess.unlockOrTakeAll() {
         if (player.retrievalLocked == 1) unlock() else takeAll()
     }
 
-    private fun ProtectedAccess.unlock() {
+    internal fun ProtectedAccess.unlock() {
         val fee = ToaRetrieval.fee(player, prices)
         val carried = invTotal(inv, COINS)
         val banked = invTotal(bank, COINS)
@@ -73,7 +72,7 @@ class ToaRetrievalScript @Inject constructor(private val prices: MarketPrices) :
         mes("You've unlocked the contents of the retrieval service.")
     }
 
-    private fun ProtectedAccess.takeAll() {
+    internal fun ProtectedAccess.takeAll() {
         val chest = player.retrievalChest
         for (slot in chest.indices) {
             val obj = chest[slot] ?: continue
@@ -113,10 +112,10 @@ class ToaRetrievalScript @Inject constructor(private val prices: MarketPrices) :
         mes("All the contents of the retrieval service have been discarded.")
     }
 
-    private fun ProtectedAccess.itemOp(event: IfModalButton) {
+    internal fun ProtectedAccess.itemOp(comsub: Int, op: IfButtonOp) {
         val chest = player.retrievalChest
-        val obj = chest[event.comsub] ?: return
-        when (event.op) {
+        val obj = chest[comsub] ?: return
+        when (op) {
             IfButtonOp.Op2 -> {
                 if (player.retrievalLocked == 1) {
                     mes("You need to unlock your retrieval service first.")
@@ -150,7 +149,7 @@ class ToaRetrievalScript @Inject constructor(private val prices: MarketPrices) :
                 val value = (prices[type] ?: type.cost).toLong() * obj.count
                 mes("The value of ${type.name} x ${obj.count} is ${"%,d".format(value)} coins.")
             }
-            IfButtonOp.Op10 -> objExamine(chest, event.comsub)
+            IfButtonOp.Op10 -> objExamine(chest, comsub)
             else -> Unit
         }
     }
