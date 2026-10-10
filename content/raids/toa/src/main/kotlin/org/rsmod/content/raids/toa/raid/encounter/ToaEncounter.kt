@@ -157,7 +157,10 @@ open class ToaEncounter(
 
     internal fun enter(player: Player) {
         for (seq in room.path?.preloadSeqs.orEmpty()) {
-            player.runClientScript(SEQ_PREFETCH_SCRIPT, seq.asRSCM(RSCMType.SEQ))
+            player.runClientScript(
+                SEQ_PREFETCH_SCRIPT.asRSCM(RSCMType.CLIENTSCRIPT),
+                seq.asRSCM(RSCMType.SEQ),
+            )
         }
         if (stage == ToaStage.STARTED) hpBar?.open(player)
         onEnter(player)
@@ -388,7 +391,7 @@ open class ToaEncounter(
         "ToaEncounter(room=$room, controllerId=$controllerId, stage=$stage)"
 
     private companion object {
-        const val SEQ_PREFETCH_SCRIPT = 1846
+        const val SEQ_PREFETCH_SCRIPT = "clientscript.[clientscript,script1846]"
         const val MAX_PATH_TIER = 2
         const val PATH_LEVELS_PER_TIER = 2
         const val HONEY_LOCUSTS_MIN = 4

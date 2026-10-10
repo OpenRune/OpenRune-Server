@@ -52,8 +52,9 @@ object ToaRaidManager {
 
     private const val HUD_REFRESH_TICKS = 3
 
-    private const val SCRIPT_HUD_STATUS_NAMES = 6585
-    private const val SCRIPT_SPEEDRUN_TIME_UPDATE = 6580
+    private const val SCRIPT_HUD_STATUS_NAMES = "clientscript.[clientscript,toa_hud_statusnames]"
+    private const val SCRIPT_SPEEDRUN_TIME_UPDATE =
+        "clientscript.[clientscript,toa_speedrun_time_update]"
 
     fun raidFor(party: ToaLobbyParty): ToaRaid? = raids[party]
 
@@ -222,7 +223,7 @@ object ToaRaidManager {
         val names = Array(ToaLobbyParty.MAX_PARTY_MEMBERS) { i ->
             raid.players.getOrNull(i)?.displayName ?: ""
         }
-        viewer.runClientScript(SCRIPT_HUD_STATUS_NAMES, *names)
+        viewer.runClientScript(SCRIPT_HUD_STATUS_NAMES.asRSCM(RSCMType.CLIENTSCRIPT), *names)
         sendTimer(viewer, raid)
     }
 
@@ -262,7 +263,11 @@ object ToaRaidManager {
     private fun sendTimer(viewer: Player, raid: ToaRaid) {
         val ticks = raid.elapsedTicks(raid.deps.mapClock.cycle)
         val frozen = !raid.timerStarted || raid.finished
-        viewer.runClientScript(SCRIPT_SPEEDRUN_TIME_UPDATE, ticks, if (frozen) 1 else 0)
+        viewer.runClientScript(
+            SCRIPT_SPEEDRUN_TIME_UPDATE.asRSCM(RSCMType.CLIENTSCRIPT),
+            ticks,
+            if (frozen) 1 else 0,
+        )
     }
 
     private fun healthState(player: Player): Int {

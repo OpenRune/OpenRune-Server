@@ -1,5 +1,7 @@
 package org.rsmod.content.raids.toa.raid.encounter
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import java.awt.Color
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.ui.setColour
@@ -55,7 +57,8 @@ internal class ToaHpBar(
             is Completion.Fade -> {
                 room.schedule(completion.fadeTicks) {
                     val args: List<Any> = bossHpBar.commonComponents.toList() + 0
-                    for (player in room.players) player.runClientScript(FADE_OUT_SCRIPT, args)
+                    val script = FADE_OUT_SCRIPT.asRSCM(RSCMType.CLIENTSCRIPT)
+                    for (player in room.players) player.runClientScript(script, args)
                 }
                 room.schedule(completion.clearTicks) {
                     for (player in room.players) {
@@ -80,7 +83,7 @@ internal class ToaHpBar(
 
     private companion object {
         const val REMAINING = "component.hpbar_hud:health_bar_remaining"
-        const val FADE_OUT_SCRIPT = 2889
+        const val FADE_OUT_SCRIPT = "clientscript.[clientscript,hp_hud_fade_out]"
         const val NO_NPC = -1
     }
 }

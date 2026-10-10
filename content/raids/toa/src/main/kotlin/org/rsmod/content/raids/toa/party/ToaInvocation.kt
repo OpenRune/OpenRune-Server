@@ -2,6 +2,8 @@ package org.rsmod.content.raids.toa.party
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.StructType
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.enums.enum
 
 enum class ToaInvocationCategory {
@@ -38,18 +40,18 @@ data class ToaInvocation(
     val eventOnly: Boolean
         get() = category == ToaInvocationCategory.BLAZING_TOMBS
     companion object {
-        private const val INVOCATION_ENUM_ID = 4664
-        private const val PARAM_INDEX = 1159
-        private const val PARAM_NAME = 1160
-        private const val PARAM_CATEGORY = 1161
-        private const val PARAM_LEVEL_MODIFIER = 1162
-        private const val PARAM_PREREQUISITE = 1346
+        private const val INVOCATION_ENUM = "toa_invocations"
+        private const val PARAM_INDEX = "param.toa_invocation_index"
+        private const val PARAM_NAME = "param.toa_invocation_name"
+        private const val PARAM_CATEGORY = "param.toa_invocation_category"
+        private const val PARAM_LEVEL_MODIFIER = "param.toa_invocation_level_modifier"
+        private const val PARAM_PREREQUISITE = "param.toa_invocation_prerequisite"
         private const val CATEGORY_OFFSET = 3
 
         val ALL: List<ToaInvocation> by lazy { loadAll() }
 
         private fun loadAll(): List<ToaInvocation> {
-            val invocationEnum = enum<Int, Int>(INVOCATION_ENUM_ID)
+            val invocationEnum = enum<Int, Int>(INVOCATION_ENUM)
             return invocationEnum.backing.entries
                 .sortedBy { it.key }
                 .mapNotNull { (_, structId) ->
@@ -61,13 +63,13 @@ data class ToaInvocation(
             val params = struct.params
                 ?: error("Struct ${struct.id} has no params")
 
-            val index = params[PARAM_INDEX] as? Int
+            val index = params[PARAM_INDEX.asRSCM(RSCMType.PARAM)] as? Int
                 ?: error("Struct ${struct.id} missing param $PARAM_INDEX")
 
-            val name = params[PARAM_NAME] as? String
+            val name = params[PARAM_NAME.asRSCM(RSCMType.PARAM)] as? String
                 ?: "Unknown"
 
-            val categoryId = params[PARAM_CATEGORY] as? Int
+            val categoryId = params[PARAM_CATEGORY.asRSCM(RSCMType.PARAM)] as? Int
                 ?: error("Struct ${struct.id} missing param $PARAM_CATEGORY")
 
             val categoryOrdinal = categoryId - CATEGORY_OFFSET
@@ -77,10 +79,10 @@ data class ToaInvocation(
                         "(ordinal $categoryOrdinal)"
                 )
 
-            val levelModifier = params[PARAM_LEVEL_MODIFIER] as? Int
+            val levelModifier = params[PARAM_LEVEL_MODIFIER.asRSCM(RSCMType.PARAM)] as? Int
                 ?: error("Struct ${struct.id} missing param $PARAM_LEVEL_MODIFIER")
 
-            val prerequisiteStructId = params[PARAM_PREREQUISITE] as? Int
+            val prerequisiteStructId = params[PARAM_PREREQUISITE.asRSCM(RSCMType.PARAM)] as? Int
 
             return ToaInvocation(
                 structId = struct.id,
