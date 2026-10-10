@@ -11,7 +11,6 @@ import org.rsmod.api.table.slayer.SlayerMastersRow
 import org.rsmod.api.table.slayer.SlayerTaskRow
 import org.rsmod.api.table.slayer.SlayerTaskSublistRow
 import org.rsmod.api.table.slayer.SlayerUnlockRow
-import org.rsmod.game.entity.Player
 
 object SlayerBossTasks {
 
@@ -51,8 +50,6 @@ object SlayerBossTasks {
     fun isBossTask(taskId: Int): Boolean = taskId == BOSS_TASK_ID
 
     fun bossRow(bossId: Int): SlayerTaskSublistRow? = bossesById[bossId]
-
-    fun currentBossId(player: Player): Int = player.vars[BOSS_ID_VARBIT]
 
     fun eligibleBosses(
         master: SlayerMastersRow,
