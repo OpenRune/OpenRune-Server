@@ -13,6 +13,8 @@ object Slayer {
     const val COL_BLOCK_VARBITS = 5
     const val COL_CAN_ASSIGN_BOSSES = 6
     const val COL_BLOCK_COST = 7
+    const val COL_DIARY_VARBIT = 8
+    const val COL_DIARY_POINTS_PER_TASK = 9
 
     const val COL_BONUS_INTERVAL = 0
     const val COL_BONUS_MULTIPLIER = 1
@@ -26,6 +28,8 @@ object Slayer {
         column("block_varbits", COL_BLOCK_VARBITS, VarType.INT)
         column("assign_bosses", COL_CAN_ASSIGN_BOSSES, VarType.BOOLEAN)
         column("block_cost", COL_BLOCK_COST, VarType.INT)
+        column("diary_varbit", COL_DIARY_VARBIT, VarType.INT)
+        column("diary_points_per_task", COL_DIARY_POINTS_PER_TASK, VarType.INT)
 
         row("dbrow.turael_aya") {
             column(COL_MASTER_ID, 1)
@@ -158,6 +162,8 @@ object Slayer {
             )
             column(COL_CAN_ASSIGN_BOSSES, true)
             column(COL_BLOCK_COST, 80)
+            columnRSCM(COL_DIARY_VARBIT, "varbit.kourend_diary_elite_complete")
+            column(COL_DIARY_POINTS_PER_TASK, 20)
         }
 
         row("dbrow.nieve_steve") {
@@ -177,6 +183,8 @@ object Slayer {
             )
             column(COL_CAN_ASSIGN_BOSSES, true)
             column(COL_BLOCK_COST, 90)
+            columnRSCM(COL_DIARY_VARBIT, "varbit.western_diary_elite_complete")
+            column(COL_DIARY_POINTS_PER_TASK, 15)
         }
 
         row("dbrow.duradel_kuradal") {

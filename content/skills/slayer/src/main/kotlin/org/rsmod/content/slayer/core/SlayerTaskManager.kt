@@ -159,12 +159,13 @@ object SlayerTaskManager {
         val streak = player.vars[streakVarbit] + 1
         VarPlayerIntMapSetter.set(player, streakVarbit, streak)
 
-        val points = SlayerTaskRewards.pointsForTask(master.pointsPerTask, streak)
+        val basePoints = basePointsPerTask(player, master)
+        val points = SlayerTaskRewards.pointsForTask(basePoints, streak)
         val awarded = awardPoints(player, points)
         return when {
             streak < SlayerTaskRewards.FIRST_REWARDED_STREAK ->
                 SlayerTaskRewards.needMoreTasksMessage(streak, wilderness)
-            master.pointsPerTask <= 0 -> SlayerTaskRewards.noPointsMessage(streak, wilderness)
+            basePoints <= 0 -> SlayerTaskRewards.noPointsMessage(streak, wilderness)
             else ->
                 SlayerTaskRewards.pointsMessage(
                     streak = streak,
@@ -174,6 +175,13 @@ object SlayerTaskManager {
                     maxed = awarded.maxed,
                 )
         }
+    }
+
+    private fun basePointsPerTask(player: Player, master: SlayerMastersRow): Int {
+        val diaryVarbit = master.diaryVarbit ?: return master.pointsPerTask
+        val diaryDone = player.vars[RSCM.getReverseMapping(RSCMType.VARBIT, diaryVarbit)] != 0
+        if (!diaryDone) return master.pointsPerTask
+        return master.diaryPointsPerTask ?: master.pointsPerTask
     }
 
     private fun awardPoints(player: Player, points: Int): AwardedPoints {
