@@ -152,7 +152,6 @@ fun debris(
 ): Effect =
     Effect.Debris(telegraph, damage, type, impact, windup, targetRadius, scatterRadius, count, center)
 
-
 fun bleed(
     duration: Int,
     movingDamage: DamageExpr,
