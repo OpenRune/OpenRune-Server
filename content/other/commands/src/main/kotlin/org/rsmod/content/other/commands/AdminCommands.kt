@@ -684,6 +684,8 @@ constructor(
             }
             val npcName =
                 when (args[0].lowercase()) {
+                    "revenant", "revenants", "revs" -> "wild_cave_dragon"
+                    "maledictus", "revenant_maledictus" -> "wild_cave_superior"
                     "zulrah" -> "snakeboss_boss_ranged"
                     "kraken" -> "slayer_kraken_boss"
                     "shaman", "shamans", "lizardman_shaman", "lizardman_shamans" -> "zeah_lizardshaman_1"
@@ -691,7 +693,7 @@ constructor(
                     "td", "tds", "tormented", "tormented_demon", "tormented_demons" -> "tormented_demon_1"
                     else -> args[0]
                 }
-            if (npcName in setOf("corp_beast", "slayer_kraken_boss", "tormented_demon_1", "zeah_lizardshaman_1") && (args.size > 2 ||
+            if (npcName in setOf("corp_beast", "slayer_kraken_boss", "tormented_demon_1", "zeah_lizardshaman_1", "wild_cave_dragon", "wild_cave_superior") && (args.size > 2 ||
                 (args.size == 2 && args[1].toIntOrNull() !in 1..1000))) {
                 player.mes("Use as ::testloot ${args[0]} [count: 1-1000] (default: 100)")
                 return
@@ -706,9 +708,7 @@ constructor(
             repeat(count) { i ->
                 val npc = Npc(type, player.coords)
                 val context = NpcDeathKillContext(hero = player, npc = npc, lootTrackerEventId = i)
-                for (hook in deathKillHooks) {
-                    hook.onKill(context)
-                }
+                deathKillHooks.map { it.prepare(context) }.forEach { it() }
             }
             if (npcName == "zeah_lizardshaman_1") player.mes("Shaman kill count: ${player.vars["varp.shaman_killcount"]}")
             player.mes("Fired death-kill hooks for `npc.$npcName` x$count.")

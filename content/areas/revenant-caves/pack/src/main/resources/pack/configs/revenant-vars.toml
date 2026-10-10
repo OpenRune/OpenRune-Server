@@ -1,0 +1,33 @@
+[[varp]]
+id = "varp.revenant_caves_admission"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.revenant_caves_killcount"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.revenant_maledictus_killcount"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.revenant_scroll_nowarn"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varobj]]
+id = "varobj.revenant_ether"
+startBit = 0
+endBit = 14
+
+[[varobj]]
+id = "varobj.revenant_absorption"
+startBit = 15
+endBit = 15

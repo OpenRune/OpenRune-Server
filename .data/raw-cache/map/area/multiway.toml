@@ -222,19 +222,6 @@ vertices = [
 ]
 
 [[area]]
-name = "Revenant caves singles-plus"
-area_id = "area.multiway"
-levels = [0, 1, 2, 3]
-
-[[area.polygons]]
-vertices = [
-    [3136, 10048],
-    [3263, 10048],
-    [3263, 10239],
-    [3136, 10239],
-]
-
-[[area]]
 name = "Hosidius ruins"
 area_id = "area.multiway"
 levels = [0]
