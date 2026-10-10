@@ -1,0 +1,640 @@
+package org.rsmod.content.quest.area.varrock.daddyshome
+
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.startCoroutine
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
+import org.junit.jupiter.api.parallel.ResourceLock
+import org.rsmod.annotations.InternalApi
+import org.rsmod.api.inv.storage.PlayerItemStorage
+import org.rsmod.api.invtx.InvTransactionsScript
+import org.rsmod.api.player.dialogue.align.TextAlignment
+import org.rsmod.api.player.events.interact.HeldObjEvents
+import org.rsmod.api.player.events.interact.LocEvents
+import org.rsmod.api.player.events.interact.NpcEvents
+import org.rsmod.api.player.input.ResumePauseButtonInput
+import org.rsmod.api.player.interact.NpcInteractions
+import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.protect.ProtectedAccessContextFactory
+import org.rsmod.api.player.protect.clearPendingAction
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.registry.obj.ObjRegistry
+import org.rsmod.api.registry.zone.ZoneUpdateMap
+import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.shops.Shops
+import org.rsmod.api.table.DaddysHomeFurnitureRow
+import org.rsmod.content.other.sawmill.SawmillHooks
+import org.rsmod.content.other.sawmill.SawmillOperatorScript
+import org.rsmod.coroutine.GameCoroutine
+import org.rsmod.events.EventBus
+import org.rsmod.game.MapClock
+import org.rsmod.game.cheat.CheatCommandMap
+import org.rsmod.game.client.Client
+import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.InvObj
+import org.rsmod.game.inv.InvVirtualStorageHolder
+import org.rsmod.game.inv.Inventory
+import org.rsmod.game.loc.BoundLocInfo
+import org.rsmod.game.loc.LocEntity
+import org.rsmod.game.loc.LocInfo
+import org.rsmod.game.queue.EngineQueueCache
+import org.rsmod.map.CoordGrid
+import org.rsmod.plugin.scripts.ScriptContext
+
+@Execution(ExecutionMode.SAME_THREAD)
+@ResourceLock("ServerCacheManager")
+class DaddysHomeInteractionTest {
+
+    @Test
+    fun `Yarlo lends a hammer and a saw to anyone without them`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.talkYarlo()
+        f.finish(listOf(3, 1, 1, 5))
+        assertEquals(1, f.player.inv.count("obj.hammer"))
+        assertEquals(1, f.player.inv.count("obj.poh_saw"))
+    }
+
+    @Test
+    fun `Yarlo does not hand out tools that are already carried`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.give("obj.hammer" to 1, "obj.poh_saw" to 1)
+        f.talkYarlo()
+        f.finish(listOf(3, 5))
+        assertEquals(1, f.player.inv.count("obj.hammer"))
+        assertEquals(1, f.player.inv.count("obj.poh_saw"))
+        assertTrue(f.output().contains("You've got a hammer and a saw"), f.output())
+    }
+
+    @Test
+    fun `declining Yarlo's tools gives nothing`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.talkYarlo()
+        f.finish(listOf(3, 2, 2, 5))
+        assertEquals(0, f.player.inv.count("obj.hammer"))
+        assertEquals(0, f.player.inv.count("obj.poh_saw"))
+    }
+
+    @Test
+    fun `building without both tools consumes nothing`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
+        f.give("obj.hammer" to 1, "obj.woodplank" to 2, "obj.nails" to 2)
+        f.use(Furniture.chair)
+        assertEquals(Furniture.CLEARED, f.state(Furniture.chair))
+        assertEquals(2, f.player.inv.count("obj.woodplank"))
+        assertEquals(2, f.player.inv.count("obj.nails"))
+        assertTrue(f.output().contains("You need a saw"), f.output())
+    }
+
+    @Test
+    fun `building without enough materials consumes nothing`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
+        f.give(*TOOLS, "obj.woodplank" to 1, "obj.nails" to 2)
+        f.use(Furniture.chair)
+        assertEquals(Furniture.CLEARED, f.state(Furniture.chair))
+        assertEquals(1, f.player.inv.count("obj.woodplank"))
+        assertTrue(f.output().contains("enough planks"), f.output())
+        assertEquals(0, f.xp())
+    }
+
+    @Test
+    fun `too few nails stops a table`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
+        f.give(*TOOLS, "obj.woodplank" to 3, "obj.nails" to 3)
+        f.use(Furniture.kitchenTable)
+        assertEquals(Furniture.CLEARED, f.state(Furniture.kitchenTable))
+        assertEquals(3, f.player.inv.count("obj.nails"))
+        assertTrue(f.output().contains("enough nails"), f.output())
+    }
+
+    @Test
+    fun `each piece takes its own materials and pays its own experience`() {
+        val expected =
+            mapOf(
+                Furniture.kitchenStool to Triple(29, 1, 2),
+                Furniture.bedroomStool to Triple(29, 1, 2),
+                Furniture.chair to Triple(58, 2, 2),
+                Furniture.kitchenTable to Triple(87, 3, 4),
+                Furniture.bedroomTable to Triple(87, 3, 4),
+            )
+        for ((furniture, cost) in expected) {
+            val f = Fixture(DaddysHomeQuest.BUILDING)
+            f.setAll(Furniture.CLEARED)
+            f.give(*TOOLS, "obj.woodplank" to 10, "obj.nails" to 10)
+            f.use(furniture)
+            assertEquals(Furniture.BUILT, f.state(furniture), furniture.loc.internalName)
+            assertEquals(cost.first, f.xp(), furniture.loc.internalName)
+            assertEquals(10 - cost.second, f.player.inv.count("obj.woodplank"), furniture.loc.internalName)
+            assertEquals(10 - cost.third, f.player.inv.count("obj.nails"), furniture.loc.internalName)
+            assertEquals(1, f.player.inv.count("obj.hammer"))
+            assertEquals(1, f.player.inv.count("obj.poh_saw"))
+        }
+    }
+
+    @Test
+    fun `the carpet takes three bolts of cloth through its remove and build op`() {
+        val f = Fixture(DaddysHomeQuest.REMOVING)
+        f.setAll(Furniture.BROKEN)
+        f.use(Furniture.carpet)
+        assertEquals(Furniture.CLEARED, f.state(Furniture.carpet))
+        f.setStage(DaddysHomeQuest.BUILDING)
+        f.give(*TOOLS, "obj.cloth" to 4)
+        f.use(Furniture.carpet)
+        assertEquals(Furniture.BUILT, f.state(Furniture.carpet))
+        assertEquals(1, f.player.inv.count("obj.cloth"))
+        assertEquals(45, f.xp())
+    }
+
+    @Test
+    fun `the waxwood bed takes three waxwood planks and two bolts of cloth`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
+        f.give(*TOOLS, "obj.woodplank" to 3, "obj.cloth" to 2, "obj.daddyshome_waxwood_plank" to 2)
+        f.use(Furniture.bed)
+        assertEquals(Furniture.CLEARED, f.state(Furniture.bed))
+        f.give("obj.daddyshome_waxwood_plank" to 1)
+        f.use(Furniture.bed)
+        assertEquals(Furniture.BUILT, f.state(Furniture.bed))
+        assertEquals(0, f.player.inv.count("obj.daddyshome_waxwood_plank"))
+        assertEquals(0, f.player.inv.count("obj.cloth"))
+        assertEquals(3, f.player.inv.count("obj.woodplank"))
+        assertEquals(207, f.xp())
+    }
+
+    @Test
+    fun `the best nails are used first and mixed nails make up the difference`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
+        f.give(*TOOLS, "obj.woodplank" to 3, "obj.nails_bronze" to 3, "obj.nails_mithril" to 2)
+        f.use(Furniture.kitchenTable)
+        assertEquals(Furniture.BUILT, f.state(Furniture.kitchenTable))
+        assertEquals(0, f.player.inv.count("obj.nails_mithril"))
+        assertEquals(1, f.player.inv.count("obj.nails_bronze"))
+    }
+
+    @Test
+    fun `a built piece and an untouched piece do nothing when used again`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.BUILT)
+        f.give(*TOOLS, "obj.woodplank" to 3, "obj.nails" to 4)
+        f.use(Furniture.kitchenTable)
+        assertEquals(3, f.player.inv.count("obj.woodplank"))
+        assertEquals(0, f.xp())
+    }
+
+    @Test
+    fun `the crates give three waxwood logs while the bed is unbuilt`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
+        f.crates()
+        assertEquals(3, f.player.inv.count("obj.daddyshome_waxwood_logs"))
+        assertTrue(f.output().contains("water-repellant waxwood"), f.output())
+    }
+
+    @Test
+    fun `the crates hold nothing before the building stage or once the bed is built`() {
+        val early = Fixture(DaddysHomeQuest.REMOVING)
+        early.crates()
+        assertEquals(0, early.player.inv.count("obj.daddyshome_waxwood_logs"))
+        val late = Fixture(DaddysHomeQuest.BUILDING)
+        late.setAll(Furniture.BUILT)
+        late.crates()
+        assertEquals(0, late.player.inv.count("obj.daddyshome_waxwood_logs"))
+    }
+
+    @Test
+    fun `a full inventory does not lose the logs`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
+        for (slot in 0 until 28) f.player.inv[slot] = InvObj("obj.bronze_dagger", 1)
+        f.crates()
+        assertEquals(0, f.player.inv.count("obj.daddyshome_waxwood_logs"))
+        assertTrue(f.output().contains("enough inventory space"), f.output())
+    }
+
+    @Test
+    fun `the Lumber Yard operator turns the logs into planks for free`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.give("obj.daddyshome_waxwood_logs" to 3)
+        f.talkSawmill("npc.poh_sawmill_opp")
+        f.finish(listOf(3))
+        assertEquals(0, f.player.inv.count("obj.daddyshome_waxwood_logs"))
+        assertEquals(3, f.player.inv.count("obj.daddyshome_waxwood_plank"))
+        assertTrue(f.output().contains("I won't charge for this"), f.output())
+    }
+
+    @Test
+    fun `the Lumber Yard operator wants logs to work with`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.talkSawmill("npc.poh_sawmill_opp")
+        f.finish(listOf(3))
+        assertEquals(0, f.player.inv.count("obj.daddyshome_waxwood_plank"))
+        assertTrue(f.output().contains("waxwood logs to work with"), f.output())
+    }
+
+    @Test
+    fun `other sawmill operators refuse to touch the waxwood`() {
+        for ((operator, option) in mapOf("npc.prif_sawmill_operator" to 4, "npc.auburn_sawmill_operator" to 3)) {
+            val f = Fixture(DaddysHomeQuest.BUILDING)
+            f.give("obj.daddyshome_waxwood_logs" to 3)
+            f.talkSawmill(operator)
+            f.finish(listOf(option))
+            assertEquals(3, f.player.inv.count("obj.daddyshome_waxwood_logs"), operator)
+            assertEquals(0, f.player.inv.count("obj.daddyshome_waxwood_plank"), operator)
+            assertTrue(f.output().contains("some other sawmill operator"), f.output())
+        }
+    }
+
+    @Test
+    fun `claiming the reward without a house grants one, the crate, experience and the scroll once`() {
+        val f = Fixture(DaddysHomeQuest.BUILT)
+        f.setAll(Furniture.BUILT)
+        f.talkMarlo()
+        f.finish(listOf(1))
+        assertEquals(DaddysHomeQuest.COMPLETE, f.stage())
+        assertEquals(400, f.xp())
+        assertEquals(1, f.player.inv.count(DaddysHomeQuest.CRATE))
+        assertEquals(1, f.player.vars["varbit.poh_house_location"])
+        assertEquals(0, f.player.inv.count("obj.coins"))
+        assertEquals(0, f.player.vars["varp.qp"])
+        assertEquals(1, f.player.vars["varbit.miniquests_completed_count"])
+        assertEquals(0, f.player.vars["varbit.quests_completed_count"])
+        assertTrue(f.player.ui.containsModal("interface.questscroll"))
+        assertTrue(f.output().contains("persuaded the Estate Agent"), f.output())
+        f.talkMarlo()
+        f.finish()
+        assertEquals(400, f.xp())
+        assertEquals(1, f.player.inv.count(DaddysHomeQuest.CRATE))
+        assertEquals(1, f.player.vars["varbit.miniquests_completed_count"])
+    }
+
+    @Test
+    fun `players who already own a house are paid a thousand coins instead`() {
+        val f = Fixture(DaddysHomeQuest.BUILT)
+        f.setAll(Furniture.BUILT)
+        VarPlayerIntMapSetter.set(f.player, "varbit.poh_house_location", 4)
+        f.talkMarlo()
+        f.finish(listOf(1))
+        assertEquals(DaddysHomeQuest.COMPLETE, f.stage())
+        assertEquals(1_000, f.player.inv.count("obj.coins"))
+        assertEquals(4, f.player.vars["varbit.poh_house_location"])
+        assertEquals(400, f.xp())
+    }
+
+    @Test
+    fun `a full inventory drops the rewards instead of losing them`() {
+        val f = Fixture(DaddysHomeQuest.BUILT)
+        f.setAll(Furniture.BUILT)
+        VarPlayerIntMapSetter.set(f.player, "varbit.poh_house_location", 1)
+        for (slot in 0 until 28) f.player.inv[slot] = InvObj("obj.bronze_dagger", 1)
+        f.talkMarlo()
+        f.finish(listOf(1))
+        assertEquals(DaddysHomeQuest.COMPLETE, f.stage())
+        assertEquals(400, f.xp())
+        assertEquals(0, f.player.inv.count(DaddysHomeQuest.CRATE))
+        assertEquals(1, f.objsOnFloor(DaddysHomeQuest.CRATE))
+        assertEquals(1_000, f.objsOnFloor("obj.coins"))
+    }
+
+    @Test
+    fun `a lost crate is replaced once and never after it has been opened`() {
+        val lost = Fixture(DaddysHomeQuest.COMPLETE)
+        lost.talkMarlo()
+        lost.finish()
+        assertEquals(1, lost.player.inv.count(DaddysHomeQuest.CRATE))
+        val opened = Fixture(DaddysHomeQuest.COMPLETE)
+        opened.give(DaddysHomeQuest.CRATE to 1)
+        opened.openCrate(0)
+        assertEquals(0, opened.player.inv.count(DaddysHomeQuest.CRATE))
+        opened.talkMarlo()
+        opened.finish()
+        assertEquals(0, opened.player.inv.count(DaddysHomeQuest.CRATE))
+    }
+
+    @Test
+    fun `opening the crate hands over the supplies once`() {
+        val f = Fixture(DaddysHomeQuest.COMPLETE)
+        f.give(DaddysHomeQuest.CRATE to 1)
+        f.openCrate(0)
+        assertEquals(0, f.player.inv.count(DaddysHomeQuest.CRATE))
+        assertEquals(25, f.player.inv.count("obj.cert_woodplank"))
+        assertEquals(50, f.player.inv.count("obj.nails_mithril"))
+        assertEquals(5, f.player.inv.count("obj.cert_steel_bar"))
+        assertEquals(10, f.player.inv.count("obj.cert_plank_oak"))
+        assertEquals(8, f.player.inv.count("obj.cert_cloth"))
+        assertEquals(5, f.player.inv.count("obj.poh_tablet_teleporttohouse"))
+        assertEquals(1, f.player.inv.count("obj.poh_tablet_faladorteleport"))
+        assertEquals(1, f.player.vars["varbit.daddyshome_crate_opened"])
+    }
+
+    @Test
+    fun `a crate is kept when there is no room to open it`() {
+        val f = Fixture(DaddysHomeQuest.COMPLETE)
+        for (slot in 0 until 28) f.player.inv[slot] = InvObj("obj.bronze_dagger", 1)
+        f.player.inv[0] = InvObj(DaddysHomeQuest.CRATE, 1)
+        f.openCrate(0)
+        assertEquals(1, f.player.inv.count(DaddysHomeQuest.CRATE))
+        assertEquals(0, f.player.inv.count("obj.cert_woodplank"))
+        assertEquals(0, f.player.vars["varbit.daddyshome_crate_opened"])
+    }
+
+    @Test
+    fun `a crate is kept when a stack in the inventory would overflow`() {
+        val f = Fixture(DaddysHomeQuest.COMPLETE)
+        f.give(DaddysHomeQuest.CRATE to 1)
+        f.player.inv[1] = InvObj("obj.cert_woodplank", Int.MAX_VALUE)
+        val before = f.totals()
+        f.openCrate(0)
+        assertEquals(before, f.totals())
+        assertEquals(0, f.player.vars["varbit.daddyshome_crate_opened"])
+    }
+
+    @Test
+    fun `opening the same crate twice in a row only pays out once`() {
+        val f = Fixture(DaddysHomeQuest.COMPLETE)
+        f.give(DaddysHomeQuest.CRATE to 1)
+        f.openCrateTwice(0)
+        assertEquals(25, f.player.inv.count("obj.cert_woodplank"))
+        assertEquals(50, f.player.inv.count("obj.nails_mithril"))
+        assertEquals(0, f.player.inv.count(DaddysHomeQuest.CRATE))
+    }
+
+    @Test
+    fun `the Lumber Yard operator turns a full inventory of waxwood logs into the same number of planks`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.give("obj.daddyshome_waxwood_logs" to 28)
+        f.talkSawmill("npc.poh_sawmill_opp")
+        f.finish(listOf(3))
+        assertEquals(0, f.player.inv.count("obj.daddyshome_waxwood_logs"))
+        assertEquals(28, f.player.inv.count("obj.daddyshome_waxwood_plank"))
+    }
+
+    private class Fixture(stage: Int = 0) {
+        val events = EventBus()
+        private val client = RecordingClient()
+        private val coroutine = GameCoroutine("daddys-home-test")
+        private var result: Result<Unit>? = null
+        private val context =
+            ProtectedAccessContextFactory.empty()
+                .copy(
+                    getEventBus = { events },
+                    getAlignment = { TextAlignment() },
+                    getNpcInteractions = { NpcInteractions(events) },
+                )
+
+        @OptIn(InternalApi::class)
+        val player =
+            Player().apply {
+                this.client = this@Fixture.client
+                uuid = 793L
+                observerUUID = 793L
+                slotId = 1
+                assignUid()
+                coords = CoordGrid(3240, 3395, 0)
+                currentMapClock = 100
+                processedMapClock = 100
+                inv =
+                    Inventory(
+                        checkNotNull(ServerCacheManager.getInventory("inv.inv".asRSCM())),
+                        arrayOfNulls(28),
+                    )
+                worn =
+                    Inventory(
+                        checkNotNull(ServerCacheManager.getInventory("inv.worn".asRSCM())),
+                        arrayOfNulls(14),
+                    )
+            }
+
+        private val objRepo = ObjRepository(MapClock(100), ObjRegistry(ZoneUpdateMap()))
+        val quest = DaddysHomeQuest(objRepo)
+
+        init {
+            val scripts = ScriptContext(events, CheatCommandMap(), EngineQueueCache())
+            with(quest) { scripts.startup() }
+            with(DaddysHomeFurniture(quest)) { scripts.startup() }
+            val hooks = SawmillHooks()
+            with(DaddysHomeSawmill(quest, hooks)) { scripts.startup() }
+            with(SawmillOperatorScript(Shops(events), hooks)) { scripts.startup() }
+            setStage(stage)
+        }
+
+        fun setStage(stage: Int) {
+            VarPlayerIntMapSetter.set(player, "varbit.daddyshome_status", stage)
+        }
+
+        fun stage() = quest.quest.getQuestStage(player)
+
+        fun state(furniture: DaddysHomeFurnitureRow): Int = player.vars[furniture.varbitType]
+
+        fun set(furniture: DaddysHomeFurnitureRow, state: Int) {
+            VarPlayerIntMapSetter.set(player, furniture.varbitType, state)
+        }
+
+        fun setAll(state: Int) {
+            for (furniture in Furniture.all) set(furniture, state)
+        }
+
+        fun xp(): Int = player.statMap.getXP("stat.construction")
+
+        fun totals(): Map<String, Int> {
+            val totals = mutableMapOf<String, Int>()
+            for (slot in 0 until 28) {
+                val obj = player.inv[slot] ?: continue
+                val name = checkNotNull(ServerCacheManager.getItem(obj.id)).internalName
+                totals.merge(name, obj.count, Int::plus)
+            }
+            return totals
+        }
+
+        fun access() = ProtectedAccess(player, coroutine, context)
+
+        fun give(vararg objs: Pair<String, Int>) {
+            for ((obj, count) in objs) {
+                val type = checkNotNull(ServerCacheManager.getItem(obj.asRSCM(RSCMType.OBJ)))
+                val stacks = if (type.stackable) listOf(count) else List(count) { 1 }
+                for (amount in stacks) {
+                    val slot = (0 until 28).first { player.inv[it] == null }
+                    player.inv[slot] = InvObj(obj, amount)
+                }
+            }
+        }
+
+        fun objsOnFloor(obj: String): Int =
+            objRepo.findAll(player.coords).filter { it.type == obj.asRSCM(RSCMType.OBJ) }.sumOf { it.count }
+
+        fun talkMarlo() = talk("npc.con_contractor_varrock")
+
+        fun talkYarlo() = talk("npc.daddyshome_daddy")
+
+        fun talkSawmill(operator: String) = talk(operator)
+
+        private fun talk(npc: String) = start {
+            assertTrue(events.publish(this, NpcEvents.Op1(Npc(npc, coords.translateZ(1)))))
+        }
+
+        fun use(furniture: DaddysHomeFurnitureRow) {
+            val type = furniture.loc
+            val loc = BoundLocInfo(LocInfo(0, CoordGrid(3240, 3394, 0), LocEntity(type.id, 10, 0)), type)
+            start {
+                val event =
+                    if (furniture.op == DaddysHomeFurniture.FIFTH_OP) {
+                        LocEvents.Op5(loc, loc, type)
+                    } else {
+                        LocEvents.Op1(loc, loc, type)
+                    }
+                assertTrue(events.publish(this, event))
+            }
+            finish()
+        }
+
+        fun crates() {
+            val type = checkNotNull(ServerCacheManager.getObject(DaddysHomeQuest.CRATES.asRSCM(RSCMType.LOC)))
+            val loc = BoundLocInfo(LocInfo(0, CoordGrid(3243, 3398, 0), LocEntity(type.id, 10, 0)), type)
+            start { assertTrue(events.publish(this, LocEvents.Op1(loc, loc, type))) }
+            finish()
+        }
+
+        fun openCrate(slot: Int) {
+            val type = checkNotNull(ServerCacheManager.getItem(DaddysHomeQuest.CRATE.asRSCM(RSCMType.OBJ)))
+            start {
+                val event = HeldObjEvents.Op1(slot, checkNotNull(inv[slot]), type, inv)
+                assertTrue(events.publish(this, event))
+            }
+            finish()
+        }
+
+        fun openCrateTwice(slot: Int) {
+            val type = checkNotNull(ServerCacheManager.getItem(DaddysHomeQuest.CRATE.asRSCM(RSCMType.OBJ)))
+            val crate = checkNotNull(player.inv[slot])
+            repeat(2) {
+                start { events.publish(this, HeldObjEvents.Op1(slot, crate, type, inv)) }
+                finish()
+            }
+        }
+
+        private fun start(block: suspend ProtectedAccess.() -> Unit) {
+            while (player.isDelayed) {
+                player.currentMapClock++
+                player.processedMapClock = player.currentMapClock
+            }
+            player.clearPendingAction(events)
+            result = null
+            player.activeCoroutine = coroutine
+            val body: suspend () -> Unit = { access().block() }
+            body.startCoroutine(
+                object : Continuation<Unit> {
+                    override val context = EmptyCoroutineContext
+
+                    override fun resumeWith(result: Result<Unit>) {
+                        this@Fixture.result = result
+                    }
+                }
+            )
+            result?.getOrThrow()
+        }
+
+        fun finish(options: List<Int> = emptyList()) {
+            val selections = options.iterator()
+            repeat(400) {
+                if (coroutine.isIdle) return
+                advance(selections)
+            }
+            fail<Unit>("Interaction did not finish: ${output()}")
+        }
+
+        private fun advance(options: Iterator<Int>) {
+            if (coroutine.isAwaiting(ResumePauseButtonInput::class)) {
+                val input =
+                    when {
+                        player.ui.containsModal("interface.chatmenu") ->
+                            ResumePauseButtonInput(
+                                "component.chatmenu:options",
+                                if (options.hasNext()) options.next() else 1,
+                            )
+                        player.ui.containsModal("interface.objectbox") ->
+                            ResumePauseButtonInput("component.objectbox:universe", -1)
+                        else -> {
+                            val parent =
+                                listOf("chat_left", "chat_right", "messagebox").firstOrNull {
+                                    player.ui.containsModal("interface.$it")
+                                } ?: error("Unknown dialogue: ${output()}")
+                            ResumePauseButtonInput("component.$parent:continue", -1)
+                        }
+                    }
+                coroutine.resumeWith(input)
+            } else {
+                player.currentMapClock++
+                player.processedMapClock = player.currentMapClock
+                coroutine.advance()
+            }
+            result?.getOrThrow()
+        }
+
+        fun output() = client.messages.joinToString("\n").replace("<br>", " ")
+    }
+
+    private class RecordingClient : Client<Any, Any> {
+        val messages = mutableListOf<Any>()
+
+        override fun write(message: Any) {
+            messages += message
+        }
+
+        override fun close() {}
+
+        override fun read(player: Player) {}
+
+        override fun flush() {}
+
+        override fun flushHighPriority() {}
+
+        override fun unregister(service: Any, player: Player) {}
+    }
+
+    companion object {
+        private val TOOLS = arrayOf("obj.hammer" to 1, "obj.poh_saw" to 1)
+        private val restored = mutableListOf<() -> Unit>()
+
+        @OptIn(InternalApi::class)
+        @JvmStatic
+        @BeforeAll
+        fun cache() {
+            ServerCacheManager.init(240).close()
+            for ((owner, name) in
+                listOf(
+                    "org.rsmod.api.invtx.InvTransactionsScriptKt" to "cachedInventoryTransactions",
+                    "org.rsmod.api.invtx.VirtualInvTransactionsKt" to "cachedPlayerItemStorage",
+                )) {
+                val field =
+                    Class.forName(owner).getDeclaredField(name).apply { isAccessible = true }
+                val old = field.get(null)
+                restored += { field.set(null, old) }
+            }
+            val oldStorage = InvVirtualStorageHolder.instance
+            restored += { InvVirtualStorageHolder.instance = oldStorage }
+            with(InvTransactionsScript(PlayerItemStorage(emptySet()))) {
+                ScriptContext(EventBus(), CheatCommandMap(), EngineQueueCache()).startup()
+            }
+        }
+
+        @JvmStatic
+        @AfterAll
+        fun restore() {
+            restored.asReversed().forEach { it() }
+            restored.clear()
+        }
+    }
+}

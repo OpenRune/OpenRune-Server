@@ -69,6 +69,7 @@ misthalin_mirror_blocker = 63701
 misthalin_puzzle_state = 63702
 cooks_assistant_ingredients = 63705
 gertrudes_cat_state = 63711
+daddyshome_state = 64064
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
@@ -83,6 +84,7 @@ gertrudes_cat_progress = 63711
 gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
 gertrudes_cat_told_sardines = 63714
+daddyshome_crate_opened = 64064
 
 [gamevals.models]
 misthalin_gem_diamond = 32333
@@ -95,3 +97,29 @@ misthalin_gem_emerald = 32334
 [gamevals.timer]
 restless_ghost_coffin_ghost = 123
 restless_skeleton_attack = 124
+
+[gamevals.dbtable]
+daddys_home_furniture = 65472
+daddys_home_crate = 65473
+
+[gamevals.dbrow]
+daddys_home_furniture_kitchen_stool = 63420
+daddys_home_furniture_bedroom_stool = 63421
+daddys_home_furniture_chair = 63422
+daddys_home_furniture_kitchen_table = 63423
+daddys_home_furniture_bedroom_table = 63424
+daddys_home_furniture_bed = 63425
+daddys_home_furniture_carpet = 63426
+daddys_home_crate_planks = 63430
+daddys_home_crate_nails = 63431
+daddys_home_crate_steel_bars = 63432
+daddys_home_crate_oak_planks = 63433
+daddys_home_crate_cloth = 63434
+daddys_home_crate_house_tablets = 63435
+daddys_home_crate_falador_tablet = 63436
+
+[gamevals.enum]
+daddys_home_hammers = 65460
+daddys_home_saws = 65461
+daddys_home_nails = 65462
+daddys_home_house_cities = 65463
