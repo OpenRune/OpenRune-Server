@@ -26,9 +26,11 @@ persistence, rollback and native interaction validation is still in progress.
   separate set bit, never the overlapping op-visibility mask. POH DIQ requires
   a built house ring (Construction is not implemented); remaining prerequisite
   checks and client acceptance remain open.
-- Agility: **353 upstream candidate links** audited against native definitions.
-  Validation exposed wrong symbols/options and blocked intermediate/end tiles;
-  these are being corrected before the module is considered usable.
+- Agility: **434 candidate links** compared with native definitions, map placements
+  and the current Wiki/Shortest Path sources. Native option/animation registration
+  and walkable landings pass. **Six tests** also exercise bridge repair, rope setup
+  and interrupted travel through real loc inputs. Remaining Wiki routes, grapples,
+  detailed animations/failures and full route acceptance are still in progress.
 - Containers: all **39 Wiki categories** inventoried against native items.
   Rune/looting pouch baselines adapted. Initial storage operations for **51
   native forms in 16 families**, plus **57 native fruit basket/vegetable sack
@@ -39,6 +41,10 @@ persistence, rollback and native interaction validation is still in progress.
   Basket/sack contents stay in their individual native item states. Generic
   storage has pure death previews, deferred PvP/Flamtaer cleanup, last-container
   destroy cleanup and family-specific bank-side filling/emptying.
+- Fish barrels: native Fill/Open/Close, worn sack controls, combination/dismantling,
+  direct fishing storage and bank-side Empty pass **seven native input tests**.
+  Full-bank failures retain contents; PvP previews protect the barrel without
+  changing storage. Deposit-box/UIM handling and final client checks remain open.
 - Shared storage safety: dry runs no longer mutate virtual contents; physical
   inventory and storage commit together. Bank inventories cannot consume held
   coal/essence. Pickup rechecks capacity and permissions before ground deletion,

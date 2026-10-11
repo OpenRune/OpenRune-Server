@@ -109,3 +109,39 @@ account storage. Bank-side Use fills tackle/Huntsman kits; plank sacks fill if
 planks are carried and otherwise empty to the bank. Eighteen tests pass in this
 initial chunk. Specialised native UIs/consumers and the remaining categories
 are still in progress.
+
+
+## Native shortcut foundation
+
+[Shortest Path](https://github.com/Skretzo/shortest-path/tree/7e81a40d0312e767fd7833637e57caae80a80253)
+provides additional route pairs at pinned commit
+`7e81a40d0312e767fd7833637e57caae80a80253`; its BSD 2-Clause license and
+attribution accompany the module. The 434 candidate links are not equivalent
+to completion of every Wiki row. Native multi-loc children supply actual
+click options; effective map levels account for bridge-floor flags. Existing
+working area handlers retain ownership. The old Port Sarim Wyvern placeholder
+is replaced by native west/east shortcut routes.
+
+Six tests validate registration/animations, collision at every landing and actual
+loc inputs for rope setup, bridge repair and interrupted crossings. Mausoleum
+bridge repair uses the detailed Wiki page's six teak planks and 28 nails of any
+tier per side, native persistent bridge bits and 550 Construction XP only after
+an atomic physical/virtual inventory commit. Both sides must be repaired to
+cross. Karamja's three stones have independent rolls and XP per successful stone.
+The current Wiki Giants' Plateau IDs refer to Catherby in revision 240; they
+cannot safely transfer the Giants' level or XP to the Catherby shortcut.
+
+## Fish barrel integration
+
+The original `fish_barrel` save key remains intact. Native inventory options
+are read from the item definition, preserving Wear on option two for sack
+barrels. Fishing awards enter opened barrels through the pure storage hook;
+stored fish are never exposed as cooking/eating inputs. Combination and
+splitting are atomic and retain shared contents and open/closed state.
+
+Seven tests use Held/HeldU/Worn producers, the fishing award producer and native
+IF3 bank option nine. Bank-side explicit container actions now take precedence
+when their Type event is handled, matching the label produced by the bank UI.
+A full bank never removes unstored fish. Death previews protect fish barrels in
+PvP without mutating persistent contents. Deposit-box/UIM interaction requires
+further work; these tests do not establish visual client acceptance.
