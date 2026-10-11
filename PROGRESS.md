@@ -1,20 +1,54 @@
 # Project overview
 
-Reviewed **2026-10-11**. This is the source for current status and priorities.
+Reviewed **2026-10-12**. This is the source for current status and priorities.
 Implementation details: [custom documentation](docs/custom/README.md).
 Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
 **Status:** 🟢 Complete · 🟡 Started · 🔴 Not started
 
+## 🟡 Started: Nero completionist cape, customiser and particles
+
+The v0.7 handoff is implemented locally on `feature/nero-completionist`,
+in three reviewable commits (`a6a558393`, `34cb51b9f`, `03c5b74ee`).
+Curator purchase/fusion/customiser, 22 fusion recipes, 48 Wear options,
+24 max-variant bonuses, native menus/teleports/Ava, Dizana ammo/combat,
+eight lock/repair families and permanent appearance persistence are connected.
+
+**23 new integration tests and 15 existing max-cape tests pass**, including
+real PostgreSQL save/load and native death/drop application. The bounded pack
+preserves **538,211 existing config definitions**. Supplied item/model/NPC/
+interface IDs remain; style varps use **63300–63341** and new non-wearable repair
+states use **63200–63223**. The runtime JAR, isolated server boot, guarded client
+startup and installer/rollback rehearsal pass.
+
+Local test entry point:
+`outputs/nero-completionist-v07-20261012/TESTEN.cmd`.
+Native visual gameplay/HD acceptance is pending. Particle rendering is still
+a guarded preview approximation; exact source-engine material/simulation parity
+is not certified. Full cache building has existing unrelated CS2 errors;
+the bounded pack is validated. This branch is not pushed, merged or installed.
+The accepted live JAR/cache/RSA/playerdata remain unchanged.
+
 ## 🟡 Started: world shortcuts, containers and fairy rings
 
-Owner-requested scope: every revision-240 Agility shortcut, all container items
-in the Wiki list, the full fairy-ring network, and the missing surface Spider
-Cave entrance/exit for araxytes and Araxxor. Work uses existing native mechanics
-and separate reviewable chunks. Upstream #227/#216 and the current Wiki lists
-are being compared with the fork; content presence is not completion evidence.
-Existing accepted Araxxor combat and travel remain intact. Full route, storage,
-persistence, rollback and native interaction validation is still in progress.
+Resumed on **2026-10-12** at the owner's request, retaining Forestry checkpoint
+`84b002717` on `feature/shortcuts-containers-fairy-rings`. Scope remains all
+revision-240 shortcuts, all 39 Wiki container categories, fairy rings and
+surface Spider Cave access. Existing upstream review and accepted combat remain.
+
+Implemented locally: **525 shortcut links**, all **64 fairy-ring code rows**
+with **54 fixed destinations**, Spider Cave access, rune/looting pouches,
+generic/specialist containers, seed box, chugging barrel, all **112 potion
+storage families**, quiver/bolt pouch controls, native bank/death interactions,
+crafting and Forestry kit/basket harvest consumers.
+
+The latest Forestry chunk passes **22 native input tests**, with full
+Containers/Pouches/InvTx regression checks passing. Previous recorded route
+checks include 26 shortcut, 18 fairy-ring and 29 Araxxor tests.
+Next: finish remaining specialist consumers and Forestry bird-nest/cape effects,
+then final route/animation, native interface/death acceptance and a guarded
+world-content test package. Forestry events, Barbarian Assault and Construction
+ownership dependencies remain open. This branch is not merged or installed.
 
 ## 🟢 Complete: Edgeville home teleporter and Emblem trader
 
