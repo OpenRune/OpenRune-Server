@@ -55,11 +55,11 @@ import dev.openrune.tables.skills.Smithing
 import dev.openrune.tables.skills.prayer.EctofuntusBonemeal
 import dev.openrune.tables.skills.prayer.PrayerBlessedBone
 import dev.openrune.tables.skills.prayer.PrayerTable
+import dev.openrune.toml.rsconfig.rsconfig
+import dev.openrune.toml.tomlMapper
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
 import dev.openrune.tools.SlayerTargetMonsterLoader
-import dev.openrune.toml.rsconfig.rsconfig
-import dev.openrune.toml.tomlMapper
 import dev.openrune.types.SlayerNpcData
 import java.io.File
 import kotlin.system.exitProcess
