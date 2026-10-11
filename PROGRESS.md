@@ -21,16 +21,19 @@ persistence, rollback and native interaction validation is still in progress.
   All **29 Araxxor module tests** pass; client acceptance is still pending.
 - Fairy rings: **64 native code rows**, **54 fixed destinations** and native
   loc-to-IF3 travel, favourites/Last-destination and cancellation checks pass
-  (**12 tests**). Native centres have walkable exits. The AIR/DLR/DJQ/AJS
+  (**13 tests**). Native centres have walkable exits. The AIR/DLR/DJQ/AJS
   hideout sequence and all six rotation buttons pass; Last-destination uses the
   separate set bit, never the overlapping op-visibility mask. POH DIQ requires
   a built house ring (Construction is not implemented); remaining prerequisite
   checks and client acceptance remain open.
-- Agility: **487 candidate links** compared with native definitions, map placements
+- Agility: **508 candidate links** compared with native definitions, map placements
   and the current Wiki/Shortest Path sources. Native option/animation registration
-  and walkable landings pass. **Nine tests** also exercise bridge repair, rope setup
+  and walkable landings pass. **Ten tests** also exercise bridge repair, rope setup
   and interrupted travel through real loc inputs. Remaining Wiki routes, grapples,
   detailed animations/failures and full route acceptance are still in progress.
+  Native Stronghold tunnel pieces work from both shores. Waterbirth and the dense
+  essence mine retain their one-way rules; spiritual fairy-tree Ring options
+  use their distinct native numbering.
 - Containers: all **39 Wiki categories** inventoried against native items.
   Rune/looting pouch baselines adapted. **15 pouch tests** cover codecs, storage
   rules, native rune insertion/withdrawal, interrupted Divine crafting and atomic

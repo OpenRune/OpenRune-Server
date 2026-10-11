@@ -486,3 +486,24 @@ loc.slayer_dungeon_floor_spikes_sc	Jump-over	2775,10003,0	2773,10003,0	43	0	10	0
 loc.slayer_dungeon_floor_spikes_sc	Jump-over	2773,10003,0	2775,10003,0	43	0	10	0	0	GEAR_NONE			0	false	0		
 loc.slayer_dungeon_floor_spikes_sc	Jump-over	2770,10002,0	2768,10002,0	43	0	10	0	0	GEAR_NONE			0	false	0		
 loc.slayer_dungeon_floor_spikes_sc	Jump-over	2768,10002,0	2770,10002,0	43	0	10	0	0	GEAR_NONE			0	false	0		
+loc.slayer_cave_tunnel_left	Enter	2429,9806,0	2435,9806,0	72	0	4	0	0	GEAR_NONE			0	false	0		
+loc.slayer_cave_tunnel_left	Enter	2435,9806,0	2429,9806,0	72	0	4	0	0	GEAR_NONE			0	false	0		
+loc.slayer_cave_tunnel_left	Enter	2429,9807,0	2435,9807,0	72	0	4	0	0	GEAR_NONE			0	false	0		
+loc.slayer_cave_tunnel_left	Enter	2435,9807,0	2429,9807,0	72	0	4	0	0	GEAR_NONE			0	false	0		
+loc.slayer_cave_tunnel_right	Enter	2435,9806,0	2429,9806,0	72	0	4	0	0	GEAR_NONE			0	false	0		
+loc.slayer_cave_tunnel_right	Enter	2435,9807,0	2429,9807,0	72	0	4	0	0	GEAR_NONE			0	false	0		
+loc.prif_slayer_dungeon_shortcut_1b	Pass	3216,12441,0	3222,12441,0	78	1	3	0	0	GEAR_NONE	quest_songoftheelves		0	false	0		
+loc.prif_slayer_dungeon_shortcut_1a	Pass	3222,12441,0	3216,12441,0	78	1	3	0	0	GEAR_NONE	quest_songoftheelves		0	false	0		
+loc.prif_slayer_dungeon_shortcut_2b	Pass	3232,12420,0	3242,12420,0	84	1.5	3	0	0	GEAR_NONE	quest_songoftheelves		0	false	0		
+loc.prif_slayer_dungeon_shortcut_2a	Pass	3242,12420,0	3232,12420,0	84	1.5	3	0	0	GEAR_NONE	quest_songoftheelves		0	false	0		
+loc.karam_cavewall_vine_climbable_bottom	Climb	2673,9583,0	2670,9583,2	87	0	4	0	0	GEAR_NONE			0	false	0		
+loc.karam_cavewall_vine_climbable_top	Climb	2670,9583,2	2673,9583,0	87	0	4	0	0	GEAR_NONE			0	false	0		
+loc.karuulm_dungeon_shortcut_pipe_active	Enter	1315,10214,0	1345,10232,0	88	0	5	0	0	GEAR_NONE			0	false	0		
+loc.karuulm_dungeon_shortcut_pipe_active	Enter	1345,10232,0	1315,10214,0	88	0	5	0	0	GEAR_NONE			0	false	0		
+loc.dagannoth_crevice	Squeeze-Through	1854,4406,3	1863,4406,1	81	10	4	0	0	GEAR_NONE			0	false	0		
+loc.barrows_drystonewall_shortcut	Jump-Across	3545,3282,0	3546,3282,0	72	25	2	0	0	GEAR_NONE			0	false	0		
+loc.barrows_drystonewall_shortcut	Jump-Across	3546,3282,0	3545,3282,0	72	25	2	0	0	GEAR_NONE			0	false	0		
+loc.godwars_climbing_rocks_plain_up	Climb	2950,3767,0	2943,3767,0	60	0	2	0	0	GEAR_NONE			0	false	0		
+loc.fossil_zipwire_start	Teeth-grip	3765,3883,1	3765,3898,0	74	0	10	0	0	GEAR_NONE	quest_bonevoyage		0	false	0		
+loc.grimstone_shortcut_south	Climb	2902,10454,0	2902,10456,0	83	0	4	0	0	GEAR_NONE			0	false	0		
+loc.grimstone_shortcut_south	Climb	2902,10456,0	2902,10454,0	83	0	4	0	0	GEAR_NONE			0	false	0		

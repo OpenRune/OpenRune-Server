@@ -58,7 +58,7 @@ class TeleportScrollTravel @Inject constructor(private val teleports: PlayerTele
 
     private fun ProtectedAccess.allowed(scroll: TeleportScroll, destination: CoordGrid = scroll.destination): Boolean {
         if (player.pendingLogout || player.loggingOut || player.hitpoints == 0) return false
-        if (scroll == TeleportScroll.GuthixianTemple && !QuestRequirements.hasCompleted(player, "quest.whileguthixsleeps")) {
+        if (scroll == TeleportScroll.GuthixianTemple && !QuestRequirements.hasCompleted(player, "quest_whileguthixsleeps")) {
             mes("You must complete While Guthix Sleeps to enter the Ancient Guthixian Temple.")
             return false
         }

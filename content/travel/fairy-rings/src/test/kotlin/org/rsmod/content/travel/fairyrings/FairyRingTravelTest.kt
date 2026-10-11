@@ -140,6 +140,17 @@ internal class FairyRingTravelTest {
         assertEquals(CoordGrid(2328, 4426), f.player.coords)
     }
 
+    @Test fun `native spiritual fairy tree ring options configure travel and last destination`() {
+        for (symbol in listOf("loc.poh_spirit_ring", "loc.league_5_poh_spirit_ring")) {
+            val f = Fixture(); f.ringSymbol = symbol
+            f.loc(InteractionOp.Op3); assertTrue(f.player.ui.containsModal("interface.fairyrings"))
+            val target = rings.byCode("AIQ")!!; f.setCode(target); f.click("component.fairyrings:confirm"); f.finish(); assertEquals(target.destination, f.player.coords)
+            f.loc(InteractionOp.Op2); f.finish(); assertEquals(HUB, f.player.coords)
+            // Return to the previously selected destination through native Last option four.
+            VarPlayerIntMapSetter.set(f.player, "varbit.fairyring_lastloc", target.logIndex)
+            f.loc(InteractionOp.Op4); f.finish(); assertEquals(target.destination, f.player.coords)
+        }
+    }
     private class Fixture {
         val bus = EventBus(); val ctx = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
         val player = Player(client).apply {
@@ -149,13 +160,14 @@ internal class FairyRingTravelTest {
             statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99)
         }
         var denial: String? = null
+        var ringSymbol: String? = null
         private val areas = mock(AreaChecker::class.java)
         private val validator = PlayerTeleportValidator(setOf(PlayerTeleportValidateHook { _, _, _ -> denial }))
         val launcher: ProtectedAccessLauncher
         private val queues: PlayerQueueProcessor
         private val locProducer = LocInteractions(BoundValidator(map), bus)
         private val hub: BoundLocInfo get() {
-            val symbol = if (player.coords == HUB) "loc.fairyring_homehub" else "loc.fairyring_minorhub"
+            val symbol = ringSymbol ?: if (player.coords == HUB) "loc.fairyring_homehub" else "loc.fairyring_minorhub"
             return BoundLocInfo(LocInfo(2, player.coords, LocEntity(symbol.asRSCM(), 10, 0)), ServerCacheManager.getObject(symbol.asRSCM())!!)
         }
         init {

@@ -206,3 +206,21 @@ pickups and bank withdrawals are not redirected by this consumer. Stringing XP
 uses the detailed [Fletching table](https://oldschool.runescape.wiki/w/Fletching),
 native sequences and the existing XP modifier service. Client acceptance remains
 a separate check.
+
+
+## Additional tunnel and ring options
+
+The 508 candidate route links pass native placement and landing checks. Ten
+shortcut tests include both Stronghold cave tunnel pieces from either shore and
+the one-way Waterbirth crevice. The dense essence mine west shortcut cannot be
+climbed in reverse, following its detailed Wiki page. Iorwerth gaps use 1 and
+1.5 XP, Barrows wall uses 25 and Waterbirth uses 10. Karuulm uses five ticks.
+Brimhaven's vine returns to its actual plane-two platform.
+
+Native Spiritual Fairy Trees (regular and League variant) have Ring-Zanaris,
+Ring-configure and Ring-last-destination on options 2, 3 and 4. Thirteen fairy
+ring tests pass, including those native loc inputs; their Tree/Remove options
+retain their respective systems' ownership. Quest keys for the hideout and
+Guthix scroll now match the quest registry convention. Nineteen standalone
+spell-teleport tests pass. House DIQ still requires a Construction-owned built
+ring; no false house coordinate is substituted.

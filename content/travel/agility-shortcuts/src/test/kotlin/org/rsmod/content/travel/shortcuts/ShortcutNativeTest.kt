@@ -22,12 +22,14 @@ import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
 import org.rsmod.routefinder.flag.CollisionFlag
 
+internal val shortcutTestCollision = CollisionFlagMap()
+
 @ResourceLock("ServerCacheManager")
 internal class ShortcutNativeTest {
     @BeforeEach fun nativeCache() { ServerCacheManager.init(240).close() }
 
     @Test fun `all configured shortcut options and animations are native and handlers register`() {
-        val script = ShortcutScript(CollisionFlagMap(), XpModifiers(emptySet()))
+        val script = ShortcutScript(shortcutTestCollision, XpModifiers(emptySet()))
         val context = ScriptContext(EventBus(), CheatCommandMap(), EngineQueueCache())
         with(script) { context.startup() }
         with(ShortcutSetupScript(org.rsmod.api.inv.storage.PlayerItemStorage(emptySet()), XpModifiers(emptySet()))) { context.startup() }
@@ -37,7 +39,7 @@ internal class ShortcutNativeTest {
     @Test fun `every configured landing is walkable in the accepted native map`() {
         val cache = ServerCacheManager.init(240)
         try {
-            val map = CollisionFlagMap()
+            val map = shortcutTestCollision
             val squares = ShortcutRoutes.all.flatMap { listOf(it.origin, it.destination) }.map { MapSquareKey(it.x shr 6, it.z shr 6) }.distinct()
             for (square in squares) {
                 val group = square.x shl 8 or square.z

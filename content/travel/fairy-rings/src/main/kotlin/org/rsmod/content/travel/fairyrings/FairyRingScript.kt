@@ -67,6 +67,11 @@ constructor(
             onOpLoc4(loc) { favourites() }
         }
 
+        for (loc in listOf("loc.poh_spirit_ring", "loc.league_5_poh_spirit_ring")) {
+            onOpLoc2(loc) { zanaris() }
+            onOpLoc3(loc) { configure() }
+            onOpLoc4(loc) { lastDestination() }
+        }
         onIfModalButton("component.fairyrings_log:hideout") { if (vars["varbit.fairyrings_log_hideout"] != 0) hideoutSequence() }
 
         for ((dial, varbit) in DIAL_VARBITS.withIndex()) {
@@ -249,7 +254,7 @@ constructor(
     }
 
     private fun ProtectedAccess.canEnterHideout(): Boolean =
-        QuestRequirements.hasCompleted(player, "dbrow.quest_fairytale2") || inv.contains("obj.fairytale2_nuffs_certificate")
+        QuestRequirements.hasCompleted(player, "quest_fairytale2") || inv.contains("obj.fairytale2_nuffs_certificate")
 
     private suspend fun ProtectedAccess.travel(ring: FairyRing, override: CoordGrid? = null): Boolean {
         if (!hasFairyMagic()) {

@@ -27,7 +27,6 @@ import org.rsmod.game.loc.*
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
-import org.rsmod.routefinder.collision.CollisionFlagMap
 
 @ResourceLock("ServerCacheManager")
 internal class ShortcutInteractionTest {
@@ -126,8 +125,18 @@ internal class ShortcutInteractionTest {
             assertEquals(0, f.player.statMap.getXP("stat.agility"))
         }
     }
+
+    @Test fun `native tunnel pieces work from both shores and Waterbirth remains one way`() {
+        for (symbol in listOf("loc.slayer_cave_tunnel_left", "loc.slayer_cave_tunnel_right")) {
+            val f = Fixture(CoordGrid(2429, 9806)); f.op(symbol, CoordGrid(2430, 9806)); f.finish(); assertEquals(2435, f.player.coords.x)
+            f.op(symbol, CoordGrid(2434, 9807)); f.finish(); assertEquals(2429, f.player.coords.x)
+        }
+        val f = Fixture(CoordGrid(1854, 4406, 3)); f.op("loc.dagannoth_crevice", CoordGrid(1853, 4406, 3)); f.finish()
+        assertEquals(CoordGrid(1863, 4406, 1), f.player.coords); assertEquals(10, f.player.statMap.getXP("stat.agility"))
+        f.op("loc.dagannoth_crevice", CoordGrid(1861, 4406, 1)); f.finish(); assertEquals(CoordGrid(1863, 4406, 1), f.player.coords); assertEquals(10, f.player.statMap.getXP("stat.agility"))
+    }
     private class Fixture(origin: CoordGrid) {
-        val bus = EventBus(); val ctx = ScriptContext(bus, CheatCommandMap(), EngineQueueCache()); val map = CollisionFlagMap()
+        val bus = EventBus(); val ctx = ScriptContext(bus, CheatCommandMap(), EngineQueueCache()); val map = shortcutTestCollision
         val player = Player(client).apply {
             coords = origin; currentMapClock = 100; processedMapClock = 100; inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn")
             for (stat in listOf("stat.agility", "stat.construction", "stat.mining", "stat.attack", "stat.hitpoints", "stat.ranged", "stat.strength")) { statMap.setBaseLevel(stat, 99); statMap.setCurrentLevel(stat, 99) }

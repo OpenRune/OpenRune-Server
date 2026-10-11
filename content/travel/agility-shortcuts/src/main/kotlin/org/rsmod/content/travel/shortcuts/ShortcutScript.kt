@@ -40,6 +40,7 @@ internal class ShortcutScript @Inject constructor(private val collision: Collisi
 
     private suspend fun ProtectedAccess.cross(loc: BoundLocInfo, routes: List<ShortcutRoute>) {
         if (player.hitpoints == 0 || player.pendingLogout || player.loggingOut) return
+        if (loc.id == "loc.dagannoth_crevice".asRSCM() && coords.level == 1) { mes("You try to go up the crevice, but it is slippery and you slide back down. This is one way only."); return }
         val from = coords
         val route = routes.filter { it.origin.level == from.level && it.origin.chebyshevDistance(from) <= 6 &&
             it.origin.chebyshevDistance(loc.coords) <= 18 }.minByOrNull { it.origin.chebyshevDistance(from) }

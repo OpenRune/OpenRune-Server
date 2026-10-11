@@ -34,6 +34,7 @@ internal class ShortcutSetupScript @Inject constructor(private val storage: Play
         }
         for ((loc, gate) in listOf("loc.darkm_outer_wall_2h_shortcut_no_rope" to "varbit.darkm_shortcut_inner", "loc.darkm_outer_wall_3h_shortcut_no_rope" to "varbit.darkm_shortcut_outer"))
             onOpLocU(loc, "obj.long_rope") { attachRope(gate, it.invSlot) }
+        onOpLoc1("loc.archeuus_runestone_shortcut_grey_bottom") { mes("You cannot climb up this shortcut from below.") }
         onOpLoc1("loc.xbows_rock_not_grappled") { attachGrapple() }
         onOpLoc1("loc.viyeldi_shortcut_rock_ropeless") { mes("Attach a long rope to these rocks first.") }
         onOpLocU("loc.viyeldi_shortcut_rock_ropeless", "obj.long_rope") { attachViyeldi(it.invSlot) }
