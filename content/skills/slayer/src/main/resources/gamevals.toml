@@ -1,6 +1,6 @@
 [gamevals.dbtable]
 slayer_masters=65518
-slayer_streak_bonuses=65478
+slayer_streak_bonuses=65469
 slayer_monsters=60510
 slayer_gear=60511
 slayer_finishers=60512
@@ -69,11 +69,11 @@ konar=65176
 nieve_steve=65175
 duradel_kuradal=65174
 mortimer=64131
-slayer_streak_bonus_10=63850
-slayer_streak_bonus_50=63851
-slayer_streak_bonus_100=63852
-slayer_streak_bonus_250=63853
-slayer_streak_bonus_1000=63854
+slayer_streak_bonus_10=63670
+slayer_streak_bonus_50=63671
+slayer_streak_bonus_100=63672
+slayer_streak_bonus_250=63673
+slayer_streak_bonus_1000=63674
 slayer_monster_crawling_hand=60150
 slayer_monster_cave_bug=60151
 slayer_monster_cave_crawler=60152
