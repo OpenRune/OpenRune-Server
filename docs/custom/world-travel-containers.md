@@ -224,3 +224,15 @@ retain their respective systems' ownership. Quest keys for the hideout and
 Guthix scroll now match the quest registry convention. Nineteen standalone
 spell-teleport tests pass. House DIQ still requires a Construction-owned built
 ring; no false house coordinate is substituted.
+
+### Gnomish firelighter native consumer
+
+The existing revision-240 normal-log Firemaking queue now accepts the charged
+gnomish firelighter directly. Count (maximum 1,000) and one of the five native
+colours are packed into this individual item's inventory vars; separate items
+retain separate contents. Charging and Uncharge use inventory transactions. The
+queue revalidates the exact item, ground log, coordinates and lifecycle before
+consuming one charge, creating the matching native coloured fire and awarding
+40 + 10 XP. Ordinary tinderbox and coloured-log behaviour remains covered.
+Five real Held/HeldU/queue tests pass, including all colours, refund rollback,
+item loss and lifecycle interruption. Source: [Gnomish firelighter](https://oldschool.runescape.wiki/w/Gnomish_firelighter).

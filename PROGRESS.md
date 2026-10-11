@@ -52,6 +52,11 @@ persistence, rollback and native interaction validation is still in progress.
   storage and all twelve ordinary bow-stringing routes pass **six tests**,
   including 27 bows per inventory and actual spinning output. Interrupted actions
   preserve charges and XP; visual native input acceptance remains pending.
+- Gnomish firelighter: per-item storage for all five colours, 1,000-charge limit,
+  native Check/Uncharge and actual Firemaking queues pass **five tests**. A fire
+  consumes one charge and grants the normal-log XP plus 10; late item loss,
+  movement, death/logout and full-inventory refunds preserve charges and XP.
+  Visual and final death-path acceptance remain open.
 - Master scroll book: all **20 native scroll types** store up to 1,000 each, use
   the native UI and support default selection/withdrawal. **Five tests** cover
   native item/IF3 producers, every teleport, Revenant entrance/warning selection,

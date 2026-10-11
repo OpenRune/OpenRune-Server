@@ -2,6 +2,7 @@ package org.rsmod.content.skills.firemaking
 
 import dev.openrune.map.MapSingletons.collision
 import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
@@ -9,6 +10,7 @@ import org.rsmod.api.player.events.skilling.LogBurnedEvent
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.firemakingLvl
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpHeldU
@@ -18,6 +20,7 @@ import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.FiremakingColoredLogsRow
 import org.rsmod.api.table.FiremakingLogsRow
 import org.rsmod.game.MapClock
+import org.rsmod.game.inv.InvObj
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
@@ -63,6 +66,11 @@ public class BurnLogEvents @Inject constructor(
             onOpObj4(log.input) { startBurn(log, it.obj, BurnMethod.Tinderbox) }
         }
 
+        val ordinary = FiremakingLogsRow.all().first { it.input.internalName == "obj.logs" }
+        onOpHeldU(GnomishFirelighter.CHARGED, "obj.logs") {
+            if (inv[it.firstSlot]?.id != GnomishFirelighter.CHARGED.asRSCM() || inv[it.secondSlot]?.id != ordinary.input.id) return@onOpHeldU
+            startBurn(ordinary, method = BurnMethod.Firelighter, firelighterSlot = it.firstSlot)
+        }
         onPlayerQueueWithArgs("queue.firemaking_light") { processBurnTick(it.args) }
     }
 
@@ -71,8 +79,9 @@ public class BurnLogEvents @Inject constructor(
         groundObj: Obj? = null,
         method: BurnMethod,
         burnAnim: String = "seq.human_createfire",
+        firelighterSlot: Int? = null,
     ) {
-        if (!canBurn(log, groundObj, method)) {
+        if (!canBurn(log, groundObj, method, firelighterSlot)) {
             resetAnim()
             return
         }
@@ -80,7 +89,7 @@ public class BurnLogEvents @Inject constructor(
         var obj = groundObj
 
         if (obj == null) {
-            invDel(player.inv, log.input.internalName)
+            if (invDel(player.inv, log.input.internalName).failure) return
             obj = Obj.fromServer(worldClock, coords, log.input.internalName, 1)
             objRegistry.add(obj)
         }
@@ -89,18 +98,19 @@ public class BurnLogEvents @Inject constructor(
         anim(burnAnim)
         player.mes(
             when (method) {
-                BurnMethod.Tinderbox -> "You attempt to light the logs."
+                BurnMethod.Tinderbox, BurnMethod.Firelighter -> "You attempt to light the logs."
                 BurnMethod.Bow -> "You attempt to light the logs with your bow."
             },
         )
 
-        weakQueue("queue.firemaking_light", 4, BurnTask(log, obj, method))
+        weakQueue("queue.firemaking_light", 4, BurnTask(log, obj, method, firelighterSlot, firelighterSlot?.let { inv[it] }))
     }
 
     private fun ProtectedAccess.canBurn(
         log: FiremakingLogsRow,
         obj: Obj?,
         method: BurnMethod,
+        firelighterSlot: Int? = null,
     ): Boolean {
         if (obj != null && !objRepo.isValid(player, obj)) {
             return false
@@ -111,8 +121,9 @@ public class BurnLogEvents @Inject constructor(
             return false
         }
 
+        if (method == BurnMethod.Firelighter && (firelighterSlot == null || inv[firelighterSlot]?.let { GnomishFirelighter.count(it) > 0 } != true)) return false
         val reqLevel = when (method) {
-            BurnMethod.Tinderbox -> log.statReq.first().t1
+            BurnMethod.Tinderbox, BurnMethod.Firelighter -> log.statReq.first().t1
             BurnMethod.Bow -> (log.statReq.first().t1 + 20).coerceAtMost(99)
         }
         if (player.firemakingLvl < reqLevel) {
@@ -134,12 +145,13 @@ public class BurnLogEvents @Inject constructor(
             locRepo.findExact(tile, LocShape.CentrepieceDiagonal) != null
 
     private fun ProtectedAccess.processBurnTick(task: BurnTask) {
-        if (!canBurn(task.log, task.obj, task.method)) {
+        if (task.method == BurnMethod.Firelighter && (player.coords != task.obj.coords || player.hitpoints <= 0 || player.pendingLogout || player.loggingOut)) { resetAnim(); return }
+        if ((task.firelighterSlot != null && inv[task.firelighterSlot] !== task.firelighter) || !canBurn(task.log, task.obj, task.method, task.firelighterSlot)) {
             resetAnim()
             return
         }
 
-        val success = coloredLogs.contains(task.log.input.internalName) ||
+        val success = task.method == BurnMethod.Firelighter || coloredLogs.contains(task.log.input.internalName) ||
             skillSuccess(64, 512, player.firemakingLvl)
 
         if (!success) {
@@ -151,10 +163,12 @@ public class BurnLogEvents @Inject constructor(
     }
 
     private fun ProtectedAccess.completeBurn(task: BurnTask) {
+        val firelighterColour = task.firelighter?.let { GnomishFirelighter.colour(it) }
+        if (task.firelighterSlot != null && (task.firelighter == null || !GnomishFirelighter.consume(player, task.firelighterSlot, task.firelighter))) { resetAnim(); return }
         objRepo.del(task.obj)
 
         val fireCoords = task.obj.coords
-        val fireId = coloredFire[task.log.input.internalName] ?: "loc.fire"
+        val fireId = firelighterColour?.fireObject?.internalName ?: coloredFire[task.log.input.internalName] ?: "loc.fire"
 
         locRepo.add(
             fireCoords,
@@ -170,7 +184,7 @@ public class BurnLogEvents @Inject constructor(
 
         resetAnim()
         val xpModifier = xpMods.get(player, "stat.firemaking")
-        val xp = task.log.xp * task.method.xpMultiplier(task.log.input.internalName) * xpModifier
+        val xp = (task.log.xp * task.method.xpMultiplier(task.log.input.internalName) + if (task.method == BurnMethod.Firelighter) 10.0 else 0.0) * xpModifier
         statAdvance("stat.firemaking", xp)
         publish(LogBurnedEvent(player, task.log.input.internalName))
         mes("The fire catches and the logs begin to burn.")
@@ -188,10 +202,13 @@ public class BurnLogEvents @Inject constructor(
         val log: FiremakingLogsRow,
         val obj: Obj,
         val method: BurnMethod,
+        val firelighterSlot: Int? = null,
+        val firelighter: InvObj? = null,
     )
 
     enum class BurnMethod {
         Tinderbox,
+        Firelighter,
         Bow,
         ;
 
