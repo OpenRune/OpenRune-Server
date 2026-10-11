@@ -31,10 +31,14 @@ persistence, rollback and native interaction validation is still in progress.
   these are being corrected before the module is considered usable.
 - Containers: all **39 Wiki categories** inventoried against native items.
   Rune/looting pouch baselines adapted. Initial storage operations for **51
-  native forms in 16 families** pass **12 native interaction/pickup tests**.
+  native forms in 16 families**, plus **57 native fruit basket/vegetable sack
+  forms**, pass **18 interaction/pickup/death tests**.
   Whitelists reject quest herbs, unsupported kit items, notes and over-capacity
   inserts; save/load and full-inventory withdrawals are covered. Family-specific
-  interfaces, death/destroy/crafting and remaining containers are in progress.
+  interfaces, remaining crafting and specialised containers are in progress.
+  Basket/sack contents stay in their individual native item states. Generic
+  storage has pure death previews, deferred PvP/Flamtaer cleanup, last-container
+  destroy cleanup and family-specific bank-side filling/emptying.
 - Shared storage safety: dry runs no longer mutate virtual contents; physical
   inventory and storage commit together. Bank inventories cannot consume held
   coal/essence. Pickup rechecks capacity and permissions before ground deletion,

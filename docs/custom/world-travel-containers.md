@@ -96,3 +96,16 @@ to set; only `fairyring_lastloc_set` is written alongside the destination. DIQ
 requires an actual built house ring. Construction/house instances do not exist
 in the fork yet, so an unavailable house route is explained rather than sent to
 a made-up location.
+
+
+The first container chunk also handles the 57 native fruit-basket and vegetable-
+sack states as individual items, without account-shared contents. Actual Held
+and HeldU input tests cover separate baskets, incompatible mixing, full inventory,
+partial withdrawal, sack priorities and Remove-one. Generic death previews are
+pure; PvP herbs spill even if their sack is protected, protected tackle contents
+persist, and Flamtaer bags/contents are destroyed on death. Confirmed destruction
+clears the last shared container's state, except the Huntsman's kit's persistent
+account storage. Bank-side Use fills tackle/Huntsman kits; plank sacks fill if
+planks are carried and otherwise empty to the bank. Eighteen tests pass in this
+initial chunk. Specialised native UIs/consumers and the remaining categories
+are still in progress.
