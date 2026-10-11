@@ -761,3 +761,58 @@ Validation: five new tests use actual held/item-use producers, exact capacities,
 partial Empty, invalid/lifecycle inputs, tier changes, non-persistent contents
 and repeated pure death previews/deferred cleanup. All **166 Containers tests**
 pass (`collection-bag-full-validation.log`), and scoped formatting passes.
+
+### Existing coal bag and essence pouch repair
+
+The baseline implementations at upstream
+`bbc78dfc259c988a77d5c840196946c72de862e9` were retained and corrected.
+All-state upstream PR searches for coal bag, essence pouch and colossal pouch
+returned zero matches (`coal-essence-pr-search.json`). The current native held
+options are verified in `coal-essence-native-ops-audit.log` and the coal bank
+parameter audit; no cache revision or inventory-ID change is used.
+
+Coal Fill counts/deletes physical inventory coal rather than recycling virtual
+contents. Both closed/open bags provide stored coal to smelting transactions;
+physical inventory coal is consumed first. Only Open intercepts incoming coal.
+Open/Close replaces the selected slot; partial Empty bypasses virtual refill.
+Normal max cape (including its worn form) grants capacity 36; cosmetic variants
+do not grant this Smithing perk. Destroy refuses a nonempty bag and rechecks
+contents, identity and lifecycle after native confirmation.
+
+Essence Fill tops up, Empty returns only successfully added essence, and virtual
+altar input is restricted to actually carried pouch tiers. Regular pouch decay
+rolls independently for each essence; the colossal counter retains its documented
+eight-full-fill first decay. Lower colossal tiers scale the threshold and capacity
+linearly. Excess on decay is returned as a complete batch only when it fits,
+otherwise it is lost, matching the documented 39+1 colossal example. Runecraft/max
+capes and a redwood lantern at base Firemaking 90 prevent further decay without
+repairing prior capacity loss. Repair resets wear but preserves contents/type,
+including banked and colossal pouches. Dark mage Repair uses this full set.
+Cordelia charges pearls at the completed unlock/repair rather than before a
+cancelable conversation. Colossal crafting checks all original ingredients again
+after three ticks, forbids a banked duplicate and commits all inputs/output
+atomically; 1000 Crafting XP is awarded only after success.
+
+Manual successful Drop clears pouch contents; a rejected ground placement leaves
+them intact. Death hooks capture carried tiers before removal, preserve pure
+previews and clear only lost carried storage after actual native drop application.
+Bank-only tiers remain intact. Drop/death retain degradation progression for
+retrieved pouches; disintegration/Destroy resets it for a replacement.
+
+Sources: [Essence pouch](https://oldschool.runescape.wiki/w/Essence_pouch),
+[Colossal pouch](https://oldschool.runescape.wiki/w/Colossal_pouch),
+[Coal bag](https://oldschool.runescape.wiki/w/Coal_bag),
+[Max cape](https://oldschool.runescape.wiki/w/Max_cape) and
+[Abyssal lantern](https://oldschool.runescape.wiki/w/Abyssal_lantern). Primary Wiki
+API copies and hashes are in `coal-essence-additional-sources.json`.
+Web-reader access was denied by robots; the official API provided the content.
+
+Validation: `coal-essence-full-validation-5.log` passes **12 Runecrafting, seven
+Smithing, 166 Containers and 35 Pouches tests** (220). Nineteen new tests use
+native held, item-use, Dark mage, manual Drop and death selection/application,
+including banked storage, failed ground placement, lifecycle interruptions,
+per-essence randomness, capacity loss, ingredient rollback and XP. Initial API
+binding and fixture owner/XP expectations were corrected before the passing run.
+Coal bank/reward producers, complete Cordelia conversation acceptance and
+pouch acquisition rules remain separate checks; no full activity implementation
+is inferred from these container tests.

@@ -14,7 +14,7 @@ object DarkMageDialogue {
     }
 
     suspend fun ProtectedAccess.repairPouchesDirectly(npc: Npc) {
-        if (!EssencePouch.hasPouchesNeedingRepair(this, includeColossal = false)) {
+        if (!EssencePouch.hasPouchesNeedingRepair(this, includeColossal = true)) {
             startDialogue(npc) {
                 chatNpc(angry, "You don't seem to have any pouches in need of repair. Leave me alone!")
             }
@@ -22,7 +22,7 @@ object DarkMageDialogue {
         }
 
         mes("The Dark mage repairs your essence pouches.")
-        EssencePouch.repairPouches(this, includeColossal = false)
+        EssencePouch.repairPouches(this, includeColossal = true)
         startDialogue(npc) {
             chatNpc(angry, "There, I have repaired your pouches. Now leave me alone. I'm concentrating!")
         }
@@ -158,13 +158,13 @@ object DarkMageDialogue {
 
     private suspend fun Dialogue.repairPouchesFromDialogue() {
         chatPlayer(neutral, "Can you repair my pouches?")
-        if (!EssencePouch.hasPouchesNeedingRepair(access, includeColossal = false)) {
+        if (!EssencePouch.hasPouchesNeedingRepair(access, includeColossal = true)) {
             chatNpc(angry, "You don't seem to have any pouches in need of repair. Leave me alone!")
             return
         }
 
         chatNpc(angry, "Fine. A simple transfiguration spell should resolve things for you.")
-        EssencePouch.repairPouches(access, includeColossal = false)
+        EssencePouch.repairPouches(access, includeColossal = true)
         chatPlayer(happy, "Thanks.")
         chatNpc(angry, "Now can you leave me alone? I can't keep affording these distractions!")
         helpMenu()

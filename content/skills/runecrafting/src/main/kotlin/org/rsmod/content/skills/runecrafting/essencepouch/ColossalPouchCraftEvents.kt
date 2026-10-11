@@ -1,11 +1,15 @@
 package org.rsmod.content.skills.runecrafting.essencepouch
 
-import org.rsmod.api.invtx.invAdd
-import org.rsmod.api.invtx.invDel
+import dev.openrune.rscm.RSCM.asRSCM
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.events.interact.HeldUEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseCraftingLvl
 import org.rsmod.api.player.stat.baseRunecraftingLvl
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.game.inv.isType
 import org.rsmod.plugin.scripts.PluginScript
@@ -24,6 +28,7 @@ class ColossalPouchCraftEvents : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.craftColossalPouch(ev: HeldUEvents.Type) {
+        if (player.hitpoints <= 0 || player.pendingLogout || player.loggingOut) return
         if (isColossalPouchInteraction(ev)) {
             mes("You don't want to poke the pouch with a needle again. It was bad enough the first time.")
             return
@@ -64,23 +69,25 @@ class ColossalPouchCraftEvents : PluginScript() {
         }
 
         anim("seq.human_runecraft")
+        val origin = coords
+        val first = inv[ev.firstSlot]
+        val second = inv[ev.secondSlot]
+        val ingredients = inv.objs.withIndex().filter { (_, obj) -> obj != null && (EssencePouch.tierForInvObj(obj) != null || obj.isType(ABYSSAL_NEEDLE)) }
         delay(CRAFT_DELAY_CYCLES)
-
+        if (player.hitpoints <= 0 || player.pendingLogout || player.loggingOut || coords != origin || inv[ev.firstSlot] !== first || inv[ev.secondSlot] !== second || ingredients.any { inv[it.index] !== it.value } ||
+            player.baseRunecraftingLvl < RUNECRAFT_LEVEL_REQ || player.baseCraftingLvl < CRAFTING_LEVEL_REQ || EssencePouch.hasColossalPouch(player) ||
+            !EssencePouch.hasRequiredCraftPouches(player) || !EssencePouch.craftPouchesAreEmpty(player) || !inv.contains(ABYSSAL_NEEDLE)) return
+        val result = player.invTransaction(inv) {
+            val bag = select(inv)
+            for (tier in EssencePouch.craftablePouchTiers) delete(bag, tier.intactItem.asRSCM(), 1)
+            delete(bag, ABYSSAL_NEEDLE.asRSCM(), 1)
+            add(bag, EssencePouch.Tier.Colossal.intactItem.asRSCM(), 1)
+        }
+        if (result.failure) return
         for (tier in EssencePouch.craftablePouchTiers) {
-            if (invDel(inv, tier.intactItem, 1).failure) {
-                return
-            }
             EssencePouch.resetTier(player, tier)
         }
-
-        if (invDel(inv, ABYSSAL_NEEDLE, 1).failure) {
-            return
-        }
-
-        if (invAdd(inv, EssencePouch.Tier.Colossal.intactItem, 1).failure) {
-            return
-        }
-
+        EssencePouch.resetTier(player, EssencePouch.Tier.Colossal)
         statAdvance("stat.crafting", CRAFTING_XP)
 
         val capacity = EssencePouch.colossalCapacity(player.baseRunecraftingLvl)

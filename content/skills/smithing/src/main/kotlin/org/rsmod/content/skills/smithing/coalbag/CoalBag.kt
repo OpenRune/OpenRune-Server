@@ -12,15 +12,17 @@ object CoalBag {
     fun isOpenInInventory(player: Player): Boolean = "obj.coal_bag_open" in player.inv
 
     fun shouldInterceptIncoming(player: Player): Boolean = isOpenInInventory(player)
+    fun owns(player: Player): Boolean = "obj.coal_bag" in player.inv || isOpenInInventory(player)
 
     fun capacity(player: Player): Int =
-        if ("obj.skillcape_smithing" in player.worn || "obj.skillcape_smithing_trimmed" in player.worn || "obj.skillcape_max" in player.worn) {
+        if ("obj.skillcape_smithing" in player.worn || "obj.skillcape_smithing_trimmed" in player.worn || "obj.skillcape_max" in player.worn || "obj.skillcape_max_worn" in player.worn) {
             36
         } else {
             27
         }
 
     fun storedAmount(player: Player): Int = player.storedCoal
+    fun clear(player: Player) { player.storedCoal = 0 }
 
     fun freeSpace(player: Player): Int =
         (capacity(player) - storedAmount(player)).coerceAtLeast(0)

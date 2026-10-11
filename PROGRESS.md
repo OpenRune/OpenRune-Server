@@ -28,10 +28,11 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Dizana’s quiver | Native ammo slot, compatible combat selection/bonuses, Sunfire charges/progress, native Fill/Swap/Remove, Ava and Ralos, exact item-vars account loading | Bank charge configuration, Minimus/max-cape conversion, quiver death/Trouver and native visuals |
 | Bolt pouch | Four native slots, caps/grapple, actual held/UI/drag/equipment transfers, Hirko purchase, PvM ghost storage/PvP spill | Final native visuals and actual Destroy input review |
 | Collection bags | All five native tiers; 2/4/6/7/8 eggs, shared temporary contents, Look-in/Empty/item-use and deferred death cleanup | Collector auto-pickup/calls/hopper require the unstarted Barbarian Assault activity; native visuals |
-| Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Coal/essence baseline audit and final consumer review |
+| Coal bag / essence pouches | Native held operations, physical-first coal consumption, independent essence decay, capacity clamp, non-destructive repair, atomic colossal crafting and loss cleanup; 19 tests | Coal bank/reward producers, Cordelia dialogue acceptance, pouch acquisition review and native visuals |
+| Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Final consumer review |
 
-Latest validation: **166 Containers pass** in the latest full module run, including
-five new collection-bag tests. Previous runs also passed **35 Pouches, two
+Latest validation: **166 Containers, 35 Pouches, 12 Runecrafting and seven Smithing
+tests pass** (220 in the latest module run). Previous runs also passed **two
 combat-commons, one combat formula and 12 network tests**. Nineteen
 new ammo-container tests use actual held/NPC/object/IF3/drag/equipment producers,
 real combat consumption, unsigned item-vars account loading, capacity rollback,

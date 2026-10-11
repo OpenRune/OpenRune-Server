@@ -1,8 +1,11 @@
 package org.rsmod.content.skills.runecrafting.essencepouch
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.util.Wearpos
+import org.rsmod.api.player.stat.baseFiremakingLvl
 import org.rsmod.api.player.stat.baseRunecraftingLvl
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
@@ -79,7 +82,6 @@ object EssencePouch {
         }
     }
 
-
     fun isEssence(itemInternal: String): Boolean = itemInternal in fillableEssences
 
     fun tierForInvObj(obj: InvObj): Tier? =
@@ -87,7 +89,6 @@ object EssencePouch {
 
     fun hasPouchInInventory(player: Player): Boolean =
         player.inv.any { obj -> obj != null && tierForInvObj(obj) != null }
-
 
     fun shouldIntercept(player: Player, itemInternal: String): Boolean =
         isEssence(itemInternal) &&
@@ -99,7 +100,7 @@ object EssencePouch {
             return 0
         }
         return Tier.entries.sumOf { tier ->
-            if (matchesStoredEssenceType(player, tier, itemInternal)) {
+            if (ownsTier(player, tier) && matchesStoredEssenceType(player, tier, itemInternal)) {
                 storedAmount(player, tier)
             } else {
                 0
@@ -153,13 +154,15 @@ object EssencePouch {
         }
 
     fun capacity(player: Player, tier: Tier): Int {
-        if (!tier.degradable || playerHasDegradeProtection(player)) {
+        if (!tier.degradable) {
             return baseCapacity(player, tier)
         }
         return degradedCapacity(player, tier, tier.degradeThreshold(player))
     }
 
     fun storedAmount(player: Player, tier: Tier): Int = tier.storedAmount(player)
+
+    fun ownsTier(player: Player, tier: Tier): Boolean = tier.items.any { player.inv.contains(it) }
 
     fun preferredEssenceType(player: Player, tier: Tier): String {
         storedEssenceTypeName(player, tier)?.let { return it }
@@ -191,7 +194,7 @@ object EssencePouch {
             if (remaining <= 0) {
                 break
             }
-            if (!matchesStoredEssenceType(player, tier, itemInternal)) {
+            if (!ownsTier(player, tier) || !matchesStoredEssenceType(player, tier, itemInternal)) {
                 continue
             }
             val current = storedAmount(player, tier)
@@ -219,15 +222,15 @@ object EssencePouch {
         return take
     }
 
-    fun applyDegradation(player: Player, tier: Tier, amountDeposited: Int, randomMultiplier: Int): Int {
-        if (!tier.degradable) {
-            return baseCapacity(player, tier)
+    fun applyDegradation(player: Player, tier: Tier, amountDeposited: Int, randomIncrement: Int): Int {
+        if (!tier.degradable || playerHasDegradeProtection(player)) {
+            return capacity(player, tier)
         }
         val threshold = tier.degradeThreshold(player)
         val increment =
             when (tier) {
                 Tier.Colossal -> amountDeposited
-                else -> randomMultiplier * amountDeposited
+                else -> randomIncrement
             }
         val newThreshold = threshold + increment
         tier.setDegradeThreshold(player, newThreshold)
@@ -255,8 +258,7 @@ object EssencePouch {
         )
 
     fun hasColossalPouch(player: Player): Boolean =
-        player.inv.contains(Tier.Colossal.intactItem) ||
-            (Tier.Colossal.degradedItem != null && player.inv.contains(Tier.Colossal.degradedItem))
+        Tier.Colossal.items.any { player.inv.contains(it) || player.invMap["inv.bank"]?.contains(it) == true }
 
     fun hasRequiredCraftPouches(player: Player): Boolean =
         craftablePouchTiers.all { tier -> player.inv.contains(tier.intactItem) }
@@ -299,7 +301,7 @@ object EssencePouch {
             }
 
         for (tier in tiers) {
-            resetTier(player, tier)
+            tier.setDegradeThreshold(player, 0)
             replaceDegradedWithIntact(access.inv, tier)
             replaceDegradedWithIntact(access.bank, tier)
         }
@@ -316,10 +318,13 @@ object EssencePouch {
         }
     }
 
-    fun playerHasDegradeProtection(player: Player): Boolean =
-        "obj.skillcape_runecrafting" in player.worn ||
-            "obj.skillcape_runecrafting_trimmed" in player.worn ||
-            "obj.skillcape_max" in player.worn
+    fun playerHasDegradeProtection(player: Player): Boolean {
+        val cape = player.worn[Wearpos.Back.slot]
+        val name = cape?.let { RSCM.getReverseMapping(RSCMType.OBJ, it.id) }.orEmpty()
+        val maxCape = name.startsWith("obj.skillcape_max") && !name.contains("hood") && !name.contains("dummy") && !name.contains("broken") && !name.contains("mangled")
+        return "obj.skillcape_runecrafting" in player.worn || "obj.skillcape_runecrafting_trimmed" in player.worn || maxCape ||
+            ("obj.abyssal_lantern_redwood" in player.worn && player.baseFiremakingLvl >= 90)
+    }
 
     private fun degradedCapacity(player: Player, tier: Tier, threshold: Int): Int {
         val base = baseCapacity(player, tier)
@@ -350,28 +355,25 @@ object EssencePouch {
                     else -> 0
                 }
             Tier.Colossal -> {
-                val firstDecay = colossalFirstDecayThreshold(base)
-                if (threshold < firstDecay) {
-                    return base
-                }
+                if (base <= 0) return 0
+                val scaledThreshold = threshold.toLong() * 40 / base
                 val step =
                     when {
-                        threshold < firstDecay + 245 -> 35
-                        threshold < firstDecay + 425 -> 30
-                        threshold < firstDecay + 550 -> 25
-                        threshold < firstDecay + 630 -> 20
-                        threshold < firstDecay + 675 -> 15
-                        threshold < firstDecay + 695 -> 10
-                        threshold < firstDecay + 701 -> 5
+                        scaledThreshold < 320 -> 40
+                        scaledThreshold < 565 -> 35
+                        scaledThreshold < 745 -> 30
+                        scaledThreshold < 870 -> 25
+                        scaledThreshold < 950 -> 20
+                        scaledThreshold < 995 -> 15
+                        scaledThreshold < 1015 -> 10
+                        scaledThreshold < 1020 -> 5
                         else -> 0
                     }
-                minOf(base, step)
+                base * step / 40
             }
             else -> base
         }
     }
-
-    private fun colossalFirstDecayThreshold(baseCapacity: Int): Int = 8 * baseCapacity
 
     private var Player.smallEssencePouch by intVarBit("varbit.small_essence_pouch")
     private var Player.mediumEssencePouch by intVarBit("varbit.medium_essence_pouch")

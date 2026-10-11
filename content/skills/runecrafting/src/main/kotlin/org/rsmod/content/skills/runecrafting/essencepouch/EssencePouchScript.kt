@@ -2,10 +2,13 @@ package org.rsmod.content.skills.runecrafting.essencepouch
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseRunecraftingLvl
+import org.rsmod.api.player.stat.hitpoints
+import org.rsmod.api.script.advanced.onDestroyHeld
+import org.rsmod.api.script.advanced.onDropHeld
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeld3
@@ -17,21 +20,15 @@ class EssencePouchScript : PluginScript() {
 
     override fun ScriptContext.startup() {
         EssencePouch.Tier.entries.flatMap { it.items.toList() }.forEach { pouch ->
-            onOpHeld1(pouch) { toggleFillOrEmpty(it.slot) }
-            onOpHeld2(pouch) { checkPouch(it.slot) }
-            onOpHeld3(pouch) { emptyPouch(it.slot) }
+            onOpHeld1(pouch) { if (canOperate()) fillPouch(it.slot) }
+            onOpHeld2(pouch) { if (canOperate()) checkPouch(it.slot) }
+            onOpHeld3(pouch) { if (canOperate()) emptyPouch(it.slot) }
         }
+        onDropHeld { EssencePouch.tierForInvObj(obj)?.let { tier -> if (!EssencePouch.ownsTier(player, tier)) EssencePouch.clearStorage(player, tier) } }
+        onDestroyHeld { EssencePouch.tierForInvObj(obj)?.let { tier -> if (!EssencePouch.ownsTier(player, tier) && tier.items.none { player.invMap["inv.bank"]?.contains(it) == true }) EssencePouch.resetTier(player, tier) } }
     }
 
-    private fun ProtectedAccess.toggleFillOrEmpty(slot: Int) {
-        val pouchObj = inv[slot] ?: return
-        val tier = EssencePouch.tierForInvObj(pouchObj) ?: return
-        if (EssencePouch.storedAmount(player, tier) > 0) {
-            emptyPouch(slot)
-        } else {
-            fillPouch(slot)
-        }
-    }
+    private fun ProtectedAccess.canOperate() = player.hitpoints > 0 && !player.pendingLogout && !player.loggingOut
 
     private fun ProtectedAccess.fillPouch(slot: Int) {
         val pouchObj = inv[slot] ?: return
@@ -42,7 +39,8 @@ class EssencePouchScript : PluginScript() {
             return
         }
 
-        val essenceType = EssencePouch.fillableEssences.firstOrNull { inv.physicalCount(it) > 0 } ?: run {
+        val storedType = EssencePouch.storedEssenceTypeName(player, tier)
+        val essenceType = (storedType?.takeIf { inv.physicalCount(it) > 0 } ?: EssencePouch.fillableEssences.firstOrNull { inv.physicalCount(it) > 0 }) ?: run {
             mes("You do not have any essence to fill your pouch with.")
             return
         }
@@ -54,8 +52,8 @@ class EssencePouchScript : PluginScript() {
             return
         }
 
-        val amountToDeposit = minOf(inv.physicalCount(essenceType), freeSpace)
-        if (amountToDeposit <= 0) {
+        val requested = minOf(inv.physicalCount(essenceType), freeSpace)
+        if (requested <= 0) {
             return
         }
 
@@ -64,25 +62,26 @@ class EssencePouchScript : PluginScript() {
             return
         }
 
-        if (invDel(inv, essenceType, amountToDeposit, ignoreVirtualStorage = true).failure) {
-            return
-        }
-
-        EssencePouch.depositUpTo(player, tier, amountToDeposit)
+        if (invDel(inv, essenceType, requested, ignoreVirtualStorage = true).failure) return
+        EssencePouch.depositUpTo(player, tier, requested)
         EssencePouch.setStoredEssenceType(player, tier, essenceType)
-
+        var newCapacity = capacityBefore
         if (tier.degradable && !EssencePouch.playerHasDegradeProtection(player)) {
-            val newCapacity =
-                EssencePouch.applyDegradation(player, tier, amountToDeposit, random.of(0, 3))
+            newCapacity = EssencePouch.applyDegradation(player, tier, requested, (0 until requested).sumOf { random.of(0, 3) })
             handleDegradation(slot, tier, pouchObj, capacityBefore, newCapacity)
             if (newCapacity <= 0) {
                 return
             }
         }
 
+        val excess = (EssencePouch.storedAmount(player, tier) - newCapacity).coerceAtLeast(0)
+        if (excess > 0) {
+            if (inv.freeSpace() >= excess) invAdd(inv, essenceType, excess, ignoreVirtualStorage = true)
+            EssencePouch.removeStoredFromTier(player, tier, excess)
+        }
         val essenceName =
             ServerCacheManager.getItem(essenceType.asRSCM(RSCMType.OBJ))?.name?.lowercase() ?: "essence"
-        mes("You fill the pouch with $amountToDeposit $essenceName.")
+        mes("You fill the pouch with $requested $essenceName.")
     }
 
     private fun ProtectedAccess.handleDegradation(
@@ -96,7 +95,7 @@ class EssencePouchScript : PluginScript() {
             val itemType = RSCM.getReverseMapping(RSCMType.OBJ, pouchObj.id)
             val name = ServerCacheManager.getItem(itemType.asRSCM(RSCMType.OBJ))?.name?.lowercase() ?: "pouch"
             mes("Your $name has disintegrated.")
-            EssencePouch.clearStorage(player, tier)
+            EssencePouch.resetTier(player, tier)
             invDel(inv, itemType, 1, slot = slot)
             return
         }

@@ -3,6 +3,7 @@ package org.rsmod.content.skills.runecrafting.essencepouch
 import dev.openrune.types.MesAnimType
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.content.skills.runecrafting.cordeliaPouchRepairUnlocked
 import org.rsmod.game.entity.Npc
 
@@ -47,22 +48,14 @@ object CordeliaDialogue {
 
     private suspend fun Dialogue.confirmUnlock() {
         chatPlayer(neutral, "Yes, please.")
-        if (
-            access.invDel(
-                access.inv,
-                "obj.abyssal_pearl",
-                25,
-            ).failure
-        ) {
-            chatPlayer(neutral, "I don't have enough abyssal pearls for that, I'm afraid.")
-            return
-        }
-
+        val origin = access.coords
         chatNpc(neutral, "Now bear with me whilst I contact the mage.")
         access.anim("seq.human_casting")
         chatNpc(neutral, "Hello, can you hear me?")
         chatDarkMage(angry, "Quiet! Why do you all try to break my concentration?")
         chatNpc(happy, "OK. The contact has been set up.")
+        if (!valid(origin) || access.player.cordeliaPouchRepairUnlocked == 1) return
+        if (access.invDel(access.inv, "obj.abyssal_pearl", 25).failure) return
         access.player.cordeliaPouchRepairUnlocked = 1
         chatNpc(
             neutral,
@@ -112,17 +105,7 @@ object CordeliaDialogue {
             return
         }
 
-        if (
-            access.invDel(
-                access.inv,
-                "obj.abyssal_pearl",
-                1,
-            ).failure
-        ) {
-            chatPlayer(neutral, "I don't have enough abyssal pearls for that, I'm afraid.")
-            return
-        }
-
+        val origin = access.coords
         chatNpc(neutral, "Bear with me whilst I make the contact for repairing the pouches.")
         access.anim("seq.human_casting")
         chatNpc(neutral, "Hi, it's me again.")
@@ -133,9 +116,12 @@ object CordeliaDialogue {
         chatDarkMage(angry, "Fine. What do you want?")
         chatNpc(neutral, "I got someone here in need of a pouch repair.")
         chatDarkMage(neutral, "OK...It's done.")
+        if (!valid(origin) || access.player.cordeliaPouchRepairUnlocked != 1 || !EssencePouch.hasPouchesNeedingRepair(access)) return
+        if (access.invDel(access.inv, "obj.abyssal_pearl", 1).failure) return
         EssencePouch.repairPouches(access, includeColossal = true)
         chatNpc(happy, "Your pouches have been repaired.")
     }
+    private fun Dialogue.valid(origin: org.rsmod.map.CoordGrid) = access.player.hitpoints > 0 && !access.player.pendingLogout && !access.player.loggingOut && access.coords == origin
 
     private suspend fun Dialogue.chatDarkMage(mesanim: MesAnimType, text: String) {
         chatNpcSpecific(

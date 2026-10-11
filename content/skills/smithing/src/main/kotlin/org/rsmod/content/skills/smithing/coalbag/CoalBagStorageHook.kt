@@ -8,7 +8,7 @@ import org.rsmod.api.inv.storage.VirtualItemConsumePolicy
 
 @Singleton
 internal class CoalBagStorageHook @Inject constructor() : PlayerItemStorageHook {
-    override val consumePolicy: VirtualItemConsumePolicy = VirtualItemConsumePolicy.StorageFirst
+    override val consumePolicy: VirtualItemConsumePolicy = VirtualItemConsumePolicy.InventoryFirst
 
     override fun contains(ctx: PlayerItemStorageContext): Int = CoalBag.storedAmount(ctx.player)
 
@@ -16,10 +16,10 @@ internal class CoalBagStorageHook @Inject constructor() : PlayerItemStorageHook 
         CoalBag.removeStored(ctx.player, amount)
 
     override fun add(ctx: PlayerItemStorageContext, amount: Int): Int =
-        CoalBag.depositUpTo(ctx.player, amount)
+        if (CoalBag.shouldInterceptIncoming(ctx.player)) CoalBag.depositUpTo(ctx.player, amount) else 0
 
-    override fun incomingCapacity(ctx: PlayerItemStorageContext): Int = CoalBag.freeSpace(ctx.player)
+    override fun incomingCapacity(ctx: PlayerItemStorageContext): Int = if (CoalBag.shouldInterceptIncoming(ctx.player)) CoalBag.freeSpace(ctx.player) else 0
 
     override fun shouldProcess(ctx: PlayerItemStorageContext): Boolean =
-        ctx.inventory === ctx.player.inv && CoalBag.isCoal(ctx.itemInternal) && CoalBag.shouldInterceptIncoming(ctx.player)
+        ctx.inventory === ctx.player.inv && CoalBag.isCoal(ctx.itemInternal) && CoalBag.owns(ctx.player)
 }
