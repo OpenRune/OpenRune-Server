@@ -15,8 +15,8 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Area | Verified implementation | Remaining |
 |---|---|---|
 | Spider Cave | Surface Enter/Exit, real routing and cancellation; 29 Araxxor tests | Client acceptance |
-| Fairy rings | 64 code rows, 54 fixed destinations, native dials/favourites/Last-destination, permission and ten quest gates; 16 tests | Sailing first visits, DIQ house prerequisite, native visual acceptance |
-| Agility shortcuts | 518 candidate links, native options/landings, repair/setup, Vampyrium stages and slide cooldown; 14 tests | Remaining Wiki routes, grapple rules, detailed animations/failures and route acceptance |
+| Fairy rings | 64 code rows, 54 fixed destinations, native dials/favourites/Last-destination, permission, ten quest gates and observed island first visits; 18 tests | Construction-owned DIQ house prerequisite and native visual acceptance |
+| Agility shortcuts | 525 links, actual option-producer traversal for every owned route, native landings, grapple loss/equipment, permanent Observatory setup, bridge/God Wars pieces and cancellation; 26 tests | Detailed animation/failure review and native route acceptance |
 | Rune/looting pouches | Native storage, pickup/altar producers, Divine crafting/revert, bank Configure and ten loadouts, death/Destroy; 35 tests | Trouver and looting input review, UI acceptance |
 | Generic containers | 56 forms in 17 families plus 57 fruit/vegetable item states; limits, pure previews, persistence, death and bank transfers | Family consumers and final UI/death acceptance |
 | Crafting | Gem, Hunter and silklined sack recipes, coffin locks, harness/clothes pouch, fish crates | Unstarted activity reward producers remain separate |
@@ -25,7 +25,7 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Chugging barrel | Five families, 100 doses each, native controls/animation, four bank loadouts, bank and potion storage transfers, ghost death storage | Seven missing potion effects, verified barrel sound and visuals |
 | Potion storage | All 112 native families, permanent counters, dose sizes/favourites/vials, real bank input, barrel transfers | Native visual acceptance; members-world policy when such a mode exists |
 | Mixology container rewards | Native Supervisor shop; exact Mox/Aga/Lye costs, reagent pouch/barrel purchases and potion-storage unlock | Natural supervisor placement and visuals; Mixology activity is not implemented |
-| Dizana’s quiver | Native ammo/combat, Sunfire charges, Ava/Ralos, max-cape conversion, bank Configure, Minimus, Perdu lock/unlock/repair, permanent paid locks and PvM/PvP death handling | Max-cape knife/Mac returns and native visuals |
+| Dizana’s quiver | Native ammo/combat, Sunfire charges, Ava/Ralos, max-cape conversion, bank Configure, Minimus, Perdu lock/unlock/repair, permanent paid locks and PvM/PvP death handling | Native visuals; knife separation and exact Mac returns now pass five input tests |
 | Bolt pouch | Four native slots, caps/grapple, actual held/UI/drag/equipment transfers, Hirko purchase, PvM ghost storage/PvP spill | Final native visuals and actual Destroy input review |
 | Collection bags | All five native tiers; 2/4/6/7/8 eggs, shared temporary contents, Look-in/Empty/item-use and deferred death cleanup | Collector auto-pickup/calls/hopper require the unstarted Barbarian Assault activity; native visuals |
 | Coal bag / essence pouches | Native held operations, physical-first coal consumption, independent essence decay, capacity clamp, non-destructive repair, atomic colossal crafting and loss cleanup; 19 tests | Coal bank/reward producers, Cordelia dialogue acceptance, pouch acquisition review and native visuals |

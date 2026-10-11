@@ -1,13 +1,12 @@
 package org.rsmod.content.areas.city.lumbridge
 
-import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM.asRSCM
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.agilityLvl
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.rangedLvl
 import org.rsmod.api.player.stat.strengthLvl
+import org.rsmod.api.player.worn.AgilityGrapple
 import org.rsmod.api.script.onApLoc1
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -46,15 +45,14 @@ class BrokenRaft : PluginScript() {
             exactMove(origin, destination, 0, 90, face, TeleportType.Exempt)
             expected = destination
             delay(3)
-            finished = active(destination)
+            finished = active(destination) && grappleEquipped() && player.agilityLvl >= 8 && player.rangedLvl >= 37 && player.strengthLvl >= 19
+            if (finished && AgilityGrapple.breakAfterUse(player, random)) mes("<col=ff0000>After untying the rope, you find that your grapple is broken and useless.</col>")
         } finally {
             resetAnim()
             if (!finished && active(expected)) teleport(origin, TeleportType.Exempt)
         }
     }
-    private fun ProtectedAccess.grappleEquipped() =
-        player.worn[13]?.id == "obj.xbows_grapple_tip_bolt_mithril_rope".asRSCM() &&
-            player.worn[3]?.id?.let { ServerCacheManager.getItem(it)?.name?.contains("crossbow", true) } == true
+    private fun ProtectedAccess.grappleEquipped() = AgilityGrapple.equipped(player)
 
     private suspend fun ProtectedAccess.cross(eastbound: Boolean) {
         val facing = if (eastbound) FACE_EAST else FACE_WEST

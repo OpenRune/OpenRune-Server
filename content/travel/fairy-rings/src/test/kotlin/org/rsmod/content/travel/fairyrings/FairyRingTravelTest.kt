@@ -200,6 +200,32 @@ internal class FairyRingTravelTest {
             f.loc(InteractionOp.Op4); f.finish(); assertEquals(target.destination, f.player.coords)
         }
     }
+
+    @Test fun `island first visits are observed from real native ring clicks and survive account reload`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.VirtualCompletions, setOf("quest_fairytale2")))
+        for (code in listOf("DLP", "CJQ")) {
+            val target = rings.byCode(code)!!; val f = Fixture()
+            f.open(); f.setCode(target); f.click("component.fairyrings:confirm"); f.finish(); assertEquals(HUB, f.player.coords)
+            assertEquals(0, f.player.vars["varp.great_conch_general"])
+            f.player.coords = target.destination!!; f.open()
+            if (code == "DLP") assertEquals(1, f.player.vars["varbit.grimstone_visited"]) else assertTrue(f.player.attr[FairyRingRequirements.GREAT_CONCH_VISITED] == true)
+            f.player.coords = HUB; f.open(); f.setCode(target); f.click("component.fairyrings:confirm"); f.finish(); assertEquals(target.destination, f.player.coords)
+            assertEquals(0, f.player.vars["varp.great_conch_general"]); assertEquals(0, f.player.vars["varp.tt_primary"])
+            if (code == "CJQ") {
+                val g = Fixture(); g.player.attr.putAllFromPersistence(f.player.attr.toPersistentMap()); g.open(); g.setCode(target); g.click("component.fairyrings:confirm"); g.finish(); assertEquals(target.destination, g.player.coords)
+            }
+        }
+    }
+
+    @Test fun `island destination rechecks first visit after vanish and native quest completion admits Great Conch`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.VirtualCompletions, setOf("quest_fairytale2")))
+        val f = Fixture(); val target = rings.byCode("DLP")!!
+        VarPlayerIntMapSetter.set(f.player, "varbit.grimstone_visited", 1); f.open(); f.setCode(target); f.click("component.fairyrings:confirm")
+        VarPlayerIntMapSetter.set(f.player, "varbit.grimstone_visited", 0); f.finish(); assertEquals(HUB, f.player.coords)
+        val g = Fixture(); val conch = rings.byCode("CJQ")!!; VarPlayerIntMapSetter.set(g.player, "varp.tt_primary", 44)
+        g.open(); g.setCode(conch); g.click("component.fairyrings:confirm"); g.finish(); assertEquals(conch.destination, g.player.coords)
+    }
+
     private class Fixture {
         val bus = EventBus(); val ctx = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
         val player = Player(client).apply {

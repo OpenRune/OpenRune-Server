@@ -3,6 +3,7 @@ package org.rsmod.content.areas.city.portsarim
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.agilityLvl
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.content.generic.locs.doors.DoorTranslations
@@ -62,9 +63,12 @@ class PortSarimLocScript @Inject constructor(private val locRepo: LocRepository)
         }
         anim("seq.human_crawling")
         soundSynth("synth.underwall_tunnel_crawl")
-        delay(1)
-        teleport(exit)
-        resetAnim()
+        val origin = coords
+        try {
+            delay(1)
+            if (coords != origin || player.hitpoints <= 0 || player.pendingLogout || player.loggingOut || player.agilityLvl < UNDERWALL_TUNNEL_LEVEL) return
+            teleport(exit)
+        } finally { resetAnim() }
     }
 
     private suspend fun ProtectedAccess.climbStile(stile: BoundLocInfo) {

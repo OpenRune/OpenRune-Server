@@ -9,6 +9,7 @@ import org.rsmod.api.invtx.*
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.*
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.player.worn.AgilityGrapple
 import org.rsmod.api.script.*
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.content.quest.manager.QuestRequirements
@@ -78,19 +79,19 @@ internal class ShortcutSetupScript @Inject constructor(private val storage: Play
         } finally { resetAnim() }
     }
     private suspend fun ProtectedAccess.attachGrapple() {
+        if (vars["varbit.observatory_shortcut_rope"] != 0) return
+        if (!QuestRequirements.hasCompleted(player, "quest_observatory")) { mes("Complete Observatory Quest before securing this rope."); return }
         if (player.agilityLvl < 23 || player.rangedLvl < 24 || player.strengthLvl < 28) { mes("You need 23 Agility, 24 Ranged and 28 Strength."); return }
         if (!grappleEquipped()) { mes("Equip a crossbow and mith grapple first."); return }
         val origin = coords; anim("seq.xbows_human_hook_grapple_to_rock_part1")
         try {
             delay(2)
-            if (!active(origin) || !grappleEquipped()) return
+            if (!active(origin) || vars["varbit.observatory_shortcut_rope"] != 0 || player.agilityLvl < 23 || player.rangedLvl < 24 || player.strengthLvl < 28 || !QuestRequirements.hasCompleted(player, "quest_observatory") || !AgilityGrapple.consume(player)) return
             vars["varbit.observatory_shortcut_rope"] = 1
             mes("You secure the grapple. You can now climb the rope.")
         } finally { resetAnim() }
     }
-    private fun ProtectedAccess.grappleEquipped(): Boolean =
-        player.worn[13]?.id == "obj.xbows_grapple_tip_bolt_mithril_rope".asRSCM() &&
-        player.worn[3]?.id?.let { dev.openrune.ServerCacheManager.getItem(it)?.name?.contains("crossbow", true) } == true
+    private fun ProtectedAccess.grappleEquipped(): Boolean = AgilityGrapple.equipped(player)
 
     private suspend fun ProtectedAccess.buildBridge(gate: String) {
         if (vars[gate] != 1 || player.constructionLvl < 59 || !inv.contains("obj.hammer")) { mes("You need 59 Construction and a hammer to repair this bridge."); return }

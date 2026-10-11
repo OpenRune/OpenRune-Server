@@ -61,10 +61,10 @@ constructor(
         rings = FairyRings.load()
 
         for (loc in RING_LOCS) {
-            if (loc != "loc.fairyring_homehub") onOpLoc1(loc) { zanaris() }
-            onOpLoc2(loc) { configure() }
-            onOpLoc3(loc) { lastDestination() }
-            onOpLoc4(loc) { favourites() }
+            if (loc != "loc.fairyring_homehub") onOpLoc1(loc) { observeVisit(it.loc.coords); zanaris() }
+            onOpLoc2(loc) { observeVisit(it.loc.coords); configure() }
+            onOpLoc3(loc) { observeVisit(it.loc.coords); lastDestination() }
+            onOpLoc4(loc) { observeVisit(it.loc.coords); favourites() }
         }
 
         for (loc in listOf("loc.poh_spirit_ring", "loc.league_5_poh_spirit_ring")) {
@@ -105,6 +105,16 @@ constructor(
     }
 
     /* Ring ops */
+
+    private fun ProtectedAccess.observeVisit(source: CoordGrid) {
+        if (player.hitpoints <= 0 || player.pendingLogout || player.loggingOut || coords.level != source.level || coords.chebyshevDistance(source) > 3) return
+        for (code in listOf("DLP", "CJQ")) {
+            val destination = rings.byCode(code)?.destination ?: continue
+            if (source.level != destination.level || source.chebyshevDistance(destination) > 2) continue
+            if (code == "DLP") vars["varbit.grimstone_visited"] = 1
+            else player.attr[FairyRingRequirements.GREAT_CONCH_VISITED] = true
+        }
+    }
 
     private suspend fun ProtectedAccess.zanaris() {
         val ring = rings.byCode(ZANARIS_CODE) ?: return

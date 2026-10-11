@@ -2,6 +2,7 @@ package org.rsmod.content.areas.misc.motherlode.scripts
 
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.agilityLvl
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.game.entity.Player
@@ -31,9 +32,12 @@ class MotherlodeShortcutScript : PluginScript() {
         }
         anim("seq.human_longcrawl")
         soundSynth(CRAWL_SOUND, loops = 2, delay = 4)
-        delay(CRAWL_CYCLES)
-        telejump(route.exit)
-        resetAnim()
+        val origin = coords
+        try {
+            delay(CRAWL_CYCLES)
+            if (coords != origin || player.hitpoints <= 0 || player.pendingLogout || player.loggingOut || player.agilityLvl < AGILITY_LEVEL || route.requiresDiary && !(player.faladorEasyDiaryComplete && player.faladorMediumDiaryComplete)) return
+            telejump(route.exit)
+        } finally { resetAnim() }
     }
 
     private data class Route(val exit: CoordGrid, val requiresDiary: Boolean)

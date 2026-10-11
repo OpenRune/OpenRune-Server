@@ -9,6 +9,7 @@ import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.*
+import org.rsmod.api.player.worn.AgilityGrapple
 import org.rsmod.api.script.*
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.content.quest.manager.QuestRequirements
@@ -49,12 +50,14 @@ internal class ShortcutScript @Inject constructor(private val collision: Collisi
         if (loc.id == "loc.dagannoth_crevice".asRSCM() && coords.level == 1) { mes("You try to go up the crevice, but it is slippery and you slide back down. This is one way only."); return }
         val from = coords
         val route = routes.filter { it.origin.level == from.level && it.origin.chebyshevDistance(from) <= 6 &&
-            it.origin.chebyshevDistance(loc.coords) <= 18 }.minByOrNull { it.origin.chebyshevDistance(from) }
+            it.origin.chebyshevDistance(loc.coords) <= 18 }.minWithOrNull(compareBy<ShortcutRoute> { it.origin.chebyshevDistance(from) }.thenBy {
+                kotlin.math.abs(it.origin.x + it.destination.x - 2 * loc.coords.x) + kotlin.math.abs(it.origin.z + it.destination.z - 2 * loc.coords.z)
+            })
             ?: run { mes("Approach this shortcut from its entrance."); return }
         if (!requirements(route) || collision[route.destination.x, route.destination.z, route.destination.level] and BLOCKED != 0) return
         arriveDelay()
         faceSquare(route.destination)
-        if (loc.id in setOf("loc.fenk_bridge_multi_north".asRSCM(), "loc.fenk_bridge_multi_north_mirror".asRSCM(), "loc.fenk_bridge_multi_south".asRSCM(), "loc.fenk_bridge_multi_south_mirror".asRSCM()) &&
+        if (route.loc.startsWith("loc.fenk_bridge") &&
             (vars["varbit.fenk_built_bridge_north"] != 2 || vars["varbit.fenk_built_bridge_south"] != 2)) { mes("Both sides of the bridge must be reinforced first."); return }
         if (route.stages.isNotEmpty()) { crossStages(route, from); return }
         val failure = route.failure.split(',')
@@ -71,6 +74,7 @@ internal class ShortcutScript @Inject constructor(private val collision: Collisi
             repeat(route.ticks) { tick ->
                 delay(1)
                 if (player.pendingLogout || player.loggingOut || player.hitpoints == 0) return
+                if (route.gear == "GEAR_GRAPPLE" && !(route.bareLevel > 0 && player.agilityLvl >= route.bareLevel) && !AgilityGrapple.equipped(player)) return
                 if (samePlane && !failed && coords != route.destination) return
                 if (!samePlane && coords != from) return
                 if (tick > 0 && !jump && samePlane) anim(route.animation)
@@ -85,7 +89,11 @@ internal class ShortcutScript @Inject constructor(private val collision: Collisi
             }
             if (!samePlane) teleport(route.destination, TeleportType.Exempt)
             if (coords != route.destination) return
+            if (!requirements(route)) return
             arrived = true
+            if (route.gear == "GEAR_GRAPPLE" && !(route.bareLevel > 0 && player.agilityLvl >= route.bareLevel) && AgilityGrapple.breakAfterUse(player, random)) {
+                mes("<col=ff0000>After untying the rope, you find that your grapple is broken and useless.</col>")
+            }
             val award = if (route.loc.startsWith("loc.voros_rockslide02_shortcut")) {
                 val now = Instant.now().epochSecond.toInt()
                 val previous = player.attr[VAMPYRIUM_LAST_SLIDE]
@@ -142,8 +150,7 @@ internal class ShortcutScript @Inject constructor(private val collision: Collisi
                 mes("You need Ranged ${r.ranged} and Strength ${r.strength} to use this shortcut."); return false
             }
             if (r.gear == "GEAR_GRAPPLE") {
-                val weapon = player.worn[3]?.id?.let { ServerCacheManager.getItem(it) }?.name.orEmpty()
-                if (!weapon.contains("crossbow", true) || player.worn[13]?.id != "obj.xbows_grapple_tip_bolt_mithril_rope".asRSCM()) {
+                if (!AgilityGrapple.equipped(player)) {
                     mes("Wield a crossbow and equip a mith grapple to use this shortcut."); return false
                 }
             }

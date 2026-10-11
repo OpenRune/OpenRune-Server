@@ -90,7 +90,7 @@ loc.mine_log_balance1	Walk-across	2602,3478,0	2598,3477,0	20	8.5	3	0	0	GEAR_NONE
 loc.mine_log_balance1	Walk-across	2603,3477,0	2598,3477,0	20	8.5	3	0	0	GEAR_NONE			0	false	0		
 loc.varrock_sc_tunnel_east	Climb-into	3142,3513,0	3137,3516,0	21	0.0	7	0	0	GEAR_NONE			0	false	0		
 loc.varrock_sc_tunnel_west	Climb-into	3137,3516,0	3142,3513,0	21	0.0	7	0	0	GEAR_NONE			0	false	0		
-loc.xbows_rock_grappled	Grapple	2449,3155,0	2444,3165,0	23	0.0	3	24	28	GEAR_NONE		varbit.observatory_shortcut_rope	1	true	0		
+loc.xbows_rock_grappled	Grapple	2449,3155,0	2444,3165,0	23	0.0	3	24	28	GEAR_NONE	quest_observatory	varbit.observatory_shortcut_rope	1	true	0
 loc.xbows_rope_diagonal_obs	Climb	2449,3155,0	2444,3165,0	23	0.0	5	24	28	GEAR_NONE			0	false	0		
 loc.av_lowwall_climb_1	Climb-over	1369,3294,0	1369,3296,0	24	6.0	2	0	0	GEAR_NONE			0	false	0		
 loc.av_lowwall_climb_1	Climb-over	1369,3296,0	1369,3294,0	24	6.0	2	0	0	GEAR_NONE			0	false	0		
@@ -123,8 +123,6 @@ loc.av_tunnel_1	Climb-into	1368,3327,0	1368,3323,0	33	7.5	5	0	0	GEAR_NONE			0	fa
 loc.agility_obstical_pipe_barbarian	Squeeze-through	2552,3558,0	2552,3561,0	35	0.0	5	0	0	GEAR_NONE			0	false	0		
 loc.agility_obstical_pipe_barbarian	Squeeze-through	2552,3561,0	2552,3558,0	35	0.0	5	0	0	GEAR_NONE			0	false	0		
 loc.garden_trellis_concave_shortcut	Climb	3228,3470,0	3228,3471,0	35	0.0	5	0	0	GEAR_NONE			0	false	0		
-loc.av_stepstone_1	Cross	1393,3309,0	1399,3309,0	36	0.0	7	0	0	GEAR_NONE			0	false	0		
-loc.av_stepstone_1	Cross	1399,3309,0	1393,3309,0	36	0.0	7	0	0	GEAR_NONE			0	false	0		
 loc.xbows_beach_to_island_tree_basic	Grapple	2841,3427,0	2841,3433,0	36	0.0	3	39	22	GEAR_GRAPPLE			0	false	72		
 loc.gnome_stronghold_sc_rock_bottom	Climb	2489,3521,0	2486,3515,0	37	0.0	9	0	0	GEAR_NONE	quest_grandtree		0	false	0		
 loc.gnome_stronghold_sc_rock_top	Climb	2486,3515,0	2489,3521,0	37	0.0	9	0	0	GEAR_NONE	quest_grandtree		0	false	0		
@@ -256,10 +254,9 @@ loc.darkm_outer_wall_3h_shortcut	Climb	3672,3376,0	3670,3375,0	63	0.0	3	0	0	GEAR
 loc.darkm_outer_wall_3h_shortcut	Climb	3673,3375,0	3670,3375,0	63	0.0	3	0	0	GEAR_NONE		varbit.darkm_shortcut_outer	1	true	0		
 loc.deepdungeonlooserailing	Squeeze-through	2935,9810,0	2936,9810,0	63	0.0	3	0	0	GEAR_NONE			0	false	0		
 loc.deepdungeonlooserailing	Squeeze-through	2936,9810,0	2935,9810,0	63	0.0	3	0	0	GEAR_NONE			0	false	0		
-loc.hosdun_agility_shortcut	Jump-over	1820,9945,0	1820,9947,0	63	10.0	2	0	0	GEAR_NONE			0	false	0		
-loc.hosdun_agility_shortcut	Jump-over	1820,9947,0	1820,9945,0	63	10.0	2	0	0	GEAR_NONE			0	false	0		
-loc.hosdun_agility_shortcut	Jump-over	1820,9944,0	1820,9947,0	63	0.0	4	0	0	GEAR_NONE			0	false	0		
-loc.hosdun_agility_shortcut	Jump-over	1820,9947,0	1820,9944,0	63	0.0	4	0	0	GEAR_NONE			0	false	0		
+loc.hosdun_agility_shortcut	Jump-over	1820,9945,0	1820,9947,0	63	10.0	2	0	0	GEAR_NONE			0	false	0
+loc.hosdun_agility_shortcut	Jump-over	1820,9947,0	1820,9945,0	63	10.0	2	0	0	GEAR_NONE			0	false	0
+loc.hosdun_agility_shortcut	Jump-over	1820,9944,0	1820,9947,0	63	10.0	2	0	0	GEAR_NONE			0	false	0
 loc.fossil_volcano_agility_rope_bottom	Climb Up	3778,3821,0	3784,3821,0	64	0.0	6	0	0	GEAR_NONE			0	false	0		
 loc.fossil_volcano_agility_rope_top	Climb Down	3784,3821,0	3778,3821,0	64	0.0	6	0	0	GEAR_NONE			0	false	0		
 loc.trollheim_wildy_climb_rocks	Climb	2915,3672,0	2918,3672,0	64	0.0	3	0	0	GEAR_NONE			0	false	0		
@@ -517,3 +514,13 @@ loc.bush_shortcut	Crawl-through	2666,7837,0	2668,7837,0	64	2	3	0	0	GEAR_NONE	que
 loc.bush_shortcut	Crawl-through	2668,7837,0	2666,7837,0	64	2	3	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0
 loc.vampyrium_stepping_stone_shortcut_pillar	Jump-to	2575,7802,0	2571,7790,0	73	5.7	4	0	0	GEAR_NONE	quest_bloodmoonrises	varbit.vampyrium_traversal_rock_mined	1	false	0		2571,7800,0;2571,7797,0;2571,7794,0
 loc.vampyrium_stepping_stone_shortcut_pillar	Jump-to	2571,7790,0	2575,7802,0	73	5.7	4	0	0	GEAR_NONE	quest_bloodmoonrises	varbit.vampyrium_traversal_rock_mined	1	false	0		2571,7794,0;2571,7797,0;2571,7800,0
+loc.godwars_climbing_rocks_inactive	Climb	2927,3761,0	2928,3757,0	60	0.0	3	0	0	GEAR_NONE			0	false	0
+loc.godwars_climbing_rocks_inactive	Climb	2927,3758,0	2927,3761,0	60	0.0	3	0	0	GEAR_NONE			0	false	0
+loc.godwars_climbing_rocks_inactive	Climb	2928,3757,0	2927,3761,0	60	0.0	3	0	0	GEAR_NONE			0	false	0
+loc.godwars_climbing_rocks_inactive	Climb	2929,3758,0	2927,3761,0	60	0.0	3	0	0	GEAR_NONE			0	false	0
+loc.fenk_bridgesurface	Cross	3503,3562,0	3503,3559,0	69	0.0	4	0	0	GEAR_NONE		varbit.fenk_built_bridge_south	2	true	0
+loc.fenk_bridgesurface	Cross	3503,3559,0	3503,3562,0	69	0.0	4	0	0	GEAR_NONE		varbit.fenk_built_bridge_south	2	true	0
+loc.godwars_climbing_rocks_inactive_plain	Climb	2943,3769,0	2950,3767,0	60	0	2	0	0	GEAR_NONE			0	false	0
+loc.godwars_climbing_rocks_inactive_plain	Climb	2943,3767,0	2950,3767,0	60	0	2	0	0	GEAR_NONE			0	false	0
+loc.godwars_climbing_rocks_inactive_plain	Climb	2942,3768,0	2950,3767,0	60	0	2	0	0	GEAR_NONE			0	false	0
+loc.godwars_climbing_rocks_inactive_plain	Climb	2950,3767,0	2943,3767,0	60	0	2	0	0	GEAR_NONE			0	false	0

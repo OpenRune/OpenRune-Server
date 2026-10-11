@@ -1,5 +1,6 @@
 package org.rsmod.content.travel.fairyrings
 
+import org.rsmod.api.attr.AttributeKey
 import org.rsmod.content.quest.manager.QuestRequirementMode
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Player
@@ -21,8 +22,14 @@ internal object FairyRingRequirements {
             player.vars["varbit.varlamore_visited"] == 0) {
             return "Travel to Varlamore with Regulus Cento before using this fairy ring."
         }
+        if (QuestRequirements.activePolicy().mode != QuestRequirementMode.AssumeCompleted) {
+            if (code == "DLP" && player.vars["varbit.grimstone_visited"] == 0) return "Visit Grimstone before using this fairy ring."
+            if (code == "CJQ" && player.attr[GREAT_CONCH_VISITED] != true && player.vars["varp.tt_primary"] < 44 && !QuestRequirements.hasCompleted(player, "quest_troubledtortugans")) return "Reach the Great Conch during Troubled Tortugans before using this fairy ring."
+        }
         return null
     }
+
+    val GREAT_CONCH_VISITED = AttributeKey<Boolean>(persistenceKey = "fairyring_great_conch_visited")
 
     private val partialQuests = setOf("BJR", "BLQ")
     private val varlamore = setOf("AIS", "AJP", "CKQ")

@@ -963,3 +963,65 @@ fixture opt-in/modal-close errors were corrected before the complete passing run
 Scoped formatting of all fourteen changed Kotlin files passes. All fourteen
 accepted source-file hashes and the accepted runtime JAR SHA-256 remain unchanged.
 `quiver-ground-network-validation.log` also passes all **12 network tests**.
+
+### Grapple equipment, island visits and complete route producer traversal
+
+All native crossbows accept a mith grapple for travel, independently of their
+combat ammunition level/category restrictions. The love crossbow and unfinished
+crossbows are excluded. A grapple in Dizana's extra ammunition slot is usable
+only while a usable quiver is worn. Ordinary equipped ammo takes priority.
+A completed non-barehanded crossing rolls one of 25 outcomes and consumes one
+grapple only on zero; denied/interrupted crossings never spend ammo. Equipment,
+stats, location and lifecycle are revalidated before completion. Observatory
+setup consumes its first grapple permanently, checks its quest/levels again and
+sets only its native rope bit; later crossings cannot consume another grapple.
+
+The current catalogue has 525 links after removal of three redundant/conflicting
+imports. God Wars inactive handhold pieces and the Fenkenstrain bridge surface
+now use the same level/setup rules as their active pieces. Wintertodt routing
+uses both the player's shore and the clicked pillar to distinguish adjacent
+gaps. Custodia stepping stones retain their 14 XP rather than an older zero-XP
+shadow row. Native Motherlode and Draynor handlers retain ownership and reject
+late departure, death/logout or stat loss.
+
+A single exhaustive producer scenario reaches every owned catalogue destination
+with fulfilled prerequisites, in addition to individual failure/equipment tests.
+This proves actual native option dispatch and server movement; it does not
+independently prove every animation/failure formula or client appearance.
+The 26-test shortcut suite passes (`world-routes-max-validation-3.log`). Native
+map checks still validate all configured landings. The updated coverage audit
+includes native transforms, existing area owners and actual placements. Wiki
+IDs 23544/23545 are unused in the accepted map. ToA's puzzle platform has no
+Agility requirement and belongs to the unstarted raid, rather than an invented
+world teleport.
+
+DLP records `varbit.grimstone_visited` when a player operates the actual island
+ring. CJQ records an observed Great Conch visit in a permanent attribute; native
+`varp.tt_primary >= 44` (verified completed state) or the fork's virtual quest
+completion also admits the destination. The full free-travel policy remains
+unchanged. No guessed partial quest stage or unrelated bit is written into
+`varp.great_conch_general`. Gates are rechecked after vanish; source clicks and
+account reload are exercised by two new tests. All 18 fairy-ring tests pass.
+Construction retains responsibility for an actual DIQ house ring.
+
+Dizana's max cape can be separated with a knife or sold to native Mac for
+1,900,800 coins and its blessed quiver. A present matching hood is consumed and
+converted on separation; Mac's native transcript permits cape-only returns.
+Locked or damaged capes require Perdu first. Strict transactions preserve all
+inputs on insufficient space, cancellation, stale references or lifecycle
+changes, and retain shared ammo. Five actual held/NPCU producer tests pass.
+Native item-use already reverses combinations; the duplicate registration and
+fixture resume/primitive-array compilation issues found in early runs were
+corrected before passing validation.
+
+Sources: [Mith grapple](https://oldschool.runescape.wiki/w/Mith_grapple),
+[Observatory rocks](https://oldschool.runescape.wiki/w/Rocks_(Observatory)),
+[Shortcuts](https://oldschool.runescape.wiki/w/Shortcuts),
+[Motherlode Mine](https://oldschool.runescape.wiki/w/Motherlode_Mine),
+[Mac transcript](https://oldschool.runescape.wiki/w/Transcript:Mac),
+[Dizana's max cape](https://oldschool.runescape.wiki/w/Dizana%27s_max_cape),
+[Great Conch](https://oldschool.runescape.wiki/w/The_Great_Conch).
+Official source hashes are in `world-shortcut-edge-sources.json` and
+`world-edge-sources.json`. All fourteen accepted source hashes and the accepted
+runtime JAR remain unchanged. Source-cache packaging and native acceptance are
+still separate; this chunk does not install or merge the feature.

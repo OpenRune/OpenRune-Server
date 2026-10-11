@@ -192,6 +192,155 @@ internal class ShortcutInteractionTest {
         } finally { org.rsmod.content.quest.manager.QuestRequirements.install(old) }
     }
 
+    @Test fun `native crossbow grapple routes accept low level bows and quiver ammo without combat ammo restrictions`() {
+        val r = ShortcutRoutes.all.first { it.loc == "loc.xbows_rock_hilltop_basic" && it.gear == "GEAR_GRAPPLE" }
+        for (bow in listOf("obj.phoenix_crossbow", "obj.crossbow", "obj.xbows_crossbow_bronze", "obj.dttd_bone_crossbow", "obj.barrows_karil_weapon", "obj.hunting_crossbow_sunlight", "obj.xbows_crossbow_runite")) {
+            for (extra in listOf(false, true)) {
+                val f = Fixture(r.origin); f.player.statMap.setCurrentLevel("stat.agility", 32)
+                f.player.worn[3] = InvObj(bow)
+                if (extra) {
+                    f.player.worn[1] = InvObj("obj.dizanas_quiver_uncharged")
+                    org.rsmod.api.player.worn.DizanasQuiver.store(f.player, InvObj("obj.xbows_grapple_tip_bolt_mithril_rope"))
+                } else f.player.worn[13] = InvObj("obj.xbows_grapple_tip_bolt_mithril_rope")
+                f.op(r.loc, r.origin); f.finish()
+                assertEquals(r.destination, f.player.coords, "$bow extra=$extra")
+                verify(f.random).of(25)
+                assertEquals(1, if (extra) org.rsmod.api.player.worn.DizanasQuiver.stored(f.player)?.count else f.player.worn[13]?.count)
+            }
+        }
+    }
+
+    @Test fun `native route denies decorative and unfinished crossbows and unworn stored grapples`() {
+        val r = ShortcutRoutes.all.first { it.loc == "loc.xbows_rock_hilltop_basic" && it.gear == "GEAR_GRAPPLE" }
+        for (bow in listOf("obj.pride23_crossbow", "obj.xbows_crossbow_unstrung_runite", "obj.bronze_longsword")) {
+            val f = Fixture(r.origin); f.player.statMap.setCurrentLevel("stat.agility", 32)
+            f.player.worn[3] = InvObj(bow); f.player.worn[13] = InvObj("obj.xbows_grapple_tip_bolt_mithril_rope")
+            f.op(r.loc, r.origin); f.finish(); assertEquals(r.origin, f.player.coords); verify(f.random, never()).of(25)
+        }
+        val f = Fixture(r.origin); f.player.statMap.setCurrentLevel("stat.agility", 32); f.player.worn[3] = InvObj("obj.xbows_crossbow_runite")
+        f.player.inv[0] = InvObj("obj.dizanas_quiver_uncharged")
+        org.rsmod.api.player.worn.DizanasQuiver.store(f.player, InvObj("obj.xbows_grapple_tip_bolt_mithril_rope"))
+        f.op(r.loc, r.origin); f.finish(); assertEquals(r.origin, f.player.coords); verify(f.random, never()).of(25)
+    }
+
+    @Test fun `successful native grapple crossing consumes one grapple for exactly one of twenty five outcomes`() {
+        val r = ShortcutRoutes.all.first { it.loc == "loc.xbows_rock_hilltop_basic" && it.gear == "GEAR_GRAPPLE" }
+        for (roll in 0..24) for (extra in listOf(false, true)) {
+            val f = Fixture(r.origin); f.player.statMap.setCurrentLevel("stat.agility", 32); `when`(f.random.of(25)).thenReturn(roll)
+            f.player.worn[3] = InvObj("obj.dttd_bone_crossbow")
+            if (extra) { f.player.worn[1] = InvObj("obj.dizanas_quiver_uncharged"); org.rsmod.api.player.worn.DizanasQuiver.store(f.player, InvObj("obj.xbows_grapple_tip_bolt_mithril_rope", 2)) } else f.player.worn[13] = InvObj("obj.xbows_grapple_tip_bolt_mithril_rope", 2)
+            f.op(r.loc, r.origin); f.finish(); assertEquals(r.destination, f.player.coords)
+            val remaining = if (extra) org.rsmod.api.player.worn.DizanasQuiver.stored(f.player) else f.player.worn[13]
+            assertEquals(if (roll == 0) 1 else 2, remaining?.count); verify(f.random).of(25)
+        }
+    }
+
+    @Test fun `grapple cancellation and late stat removal roll back crossing without spending ammo`() {
+        val r = ShortcutRoutes.all.first { it.loc == "loc.xbows_rock_hilltop_basic" && it.gear == "GEAR_GRAPPLE" }
+        for (mode in 0..3) {
+            val f = Fixture(r.origin); f.player.statMap.setCurrentLevel("stat.agility", 32)
+            f.player.worn[3] = InvObj("obj.xbows_crossbow_runite"); f.player.worn[13] = InvObj("obj.xbows_grapple_tip_bolt_mithril_rope")
+            f.op(r.loc, r.origin)
+            when (mode) { 0 -> f.player.worn[3] = null; 1 -> f.player.statMap.setCurrentLevel("stat.ranged", 34); 2 -> f.player.pendingLogout = true; 3 -> f.player.coords = r.origin.translateX(20) }
+            f.finish(); verify(f.random, never()).of(25); assertEquals(1, f.player.worn[13]?.count)
+            if (mode == 0 || mode == 1) assertEquals(r.origin, f.player.coords)
+            if (mode == 3) assertEquals(r.origin.translateX(20), f.player.coords)
+        }
+    }
+
+    @Test fun `barehanded native shortcut does not require ranged gear or roll grapple loss`() {
+        val r = ShortcutRoutes.all.first { it.loc == "loc.xbows_jungletree_karamja_basic" }
+        val f = Fixture(r.origin); f.player.statMap.setCurrentLevel("stat.agility", 78); f.player.statMap.setCurrentLevel("stat.ranged", 1); f.player.statMap.setCurrentLevel("stat.strength", 1)
+        f.set("varbit.observatory_shortcut_rope", 1)
+        f.op(r.loc, r.origin); f.finish(); assertEquals(r.destination, f.player.coords); verify(f.random, never()).of(25)
+    }
+
+    @Test fun `Observatory setup consumes its first grapple once and interrupted setup leaves rope unset`() {
+        for (mode in 0..5) {
+            val f = Fixture(CoordGrid(2449, 3155)); f.player.worn[3] = InvObj("obj.xbows_crossbow_bronze"); f.player.worn[13] = InvObj("obj.xbows_grapple_tip_bolt_mithril_rope", 2)
+            f.op("loc.xbows_rock_not_grappled", CoordGrid(2448, 3155))
+            when (mode) { 1 -> f.player.pendingLogout = true; 2 -> f.player.statMap.setCurrentLevel("stat.agility", 22); 3 -> f.player.statMap.setCurrentLevel("stat.ranged", 23); 4 -> f.player.statMap.setCurrentLevel("stat.strength", 27); 5 -> f.player.worn[3] = null }
+            f.finish(); assertEquals(if (mode == 0) 1 else 0, f.player.vars["varbit.observatory_shortcut_rope"])
+            assertEquals(if (mode == 0) 1 else 2, f.player.worn[13]?.count); verify(f.random, never()).of(25)
+            if (mode == 0) { f.op("loc.xbows_rock_not_grappled", CoordGrid(2448, 3155)); f.finish(); assertEquals(1, f.player.worn[13]?.count) }
+        }
+        val old = org.rsmod.content.quest.manager.QuestRequirements.activePolicy()
+        try {
+            org.rsmod.content.quest.manager.QuestRequirements.install(org.rsmod.content.quest.manager.QuestRequirementPolicy(org.rsmod.content.quest.manager.QuestRequirementMode.RespectProgress))
+            val f = Fixture(CoordGrid(2449, 3155)); f.player.worn[3] = InvObj("obj.xbows_crossbow_bronze"); f.player.worn[13] = InvObj("obj.xbows_grapple_tip_bolt_mithril_rope")
+            f.op("loc.xbows_rock_not_grappled", CoordGrid(2448, 3155)); f.finish(); assertEquals(0, f.player.vars["varbit.observatory_shortcut_rope"]); assertEquals(1, f.player.worn[13]?.count)
+        } finally { org.rsmod.content.quest.manager.QuestRequirements.install(old) }
+    }
+
+    @Test fun `raft arrival rechecks equipment before accepting the crossing and rolling loss`() {
+        val f = Fixture(CoordGrid(3246, 3180)); f.player.worn[3] = InvObj("obj.xbows_crossbow_runite"); f.player.worn[13] = InvObj("obj.xbows_grapple_tip_bolt_mithril_rope")
+        f.ap("loc.xbows_raft_br", CoordGrid(3253, 3180))
+        repeat(6) { if (f.player.coords == CoordGrid(3246, 3180)) f.advance(1) }
+        assertEquals(CoordGrid(3259, 3180), f.player.coords)
+        f.player.worn[3] = null; f.finish(); assertEquals(CoordGrid(3246, 3180), f.player.coords); verify(f.random, never()).of(25); assertEquals(1, f.player.worn[13]?.count)
+    }
+
+    @Test fun `all native God Wars handhold pieces enforce Agility sixty and cross in the authored direction`() {
+        for (r in ShortcutRoutes.all.filter { it.loc in setOf("loc.godwars_climbing_rocks_inactive", "loc.godwars_climbing_rocks_inactive_plain") }) {
+            val f = Fixture(r.origin); f.player.statMap.setCurrentLevel("stat.agility", 59); f.op(r.loc, r.origin); f.finish(); assertEquals(r.origin, f.player.coords)
+            f.player.statMap.setCurrentLevel("stat.agility", 60); f.op(r.loc, r.origin); f.finish(); assertEquals(r.destination, f.player.coords)
+        }
+    }
+
+    @Test fun `native bridge surface never bypasses the two repaired sides`() {
+        val f = Fixture(CoordGrid(3503, 3559)); f.set("varbit.fenk_built_bridge_south", 2)
+        f.op("loc.fenk_bridgesurface", CoordGrid(3503, 3558)); f.finish(); assertEquals(CoordGrid(3503, 3559), f.player.coords)
+        f.set("varbit.fenk_built_bridge_north", 2); f.op("loc.fenk_bridgesurface", CoordGrid(3503, 3558)); f.finish(); assertEquals(CoordGrid(3503, 3562), f.player.coords)
+    }
+
+    @Test fun `native Motherlode shortcuts preserve diaries and reject interruption in every direction`() {
+        for ((loc, exit, diary) in listOf(Triple(CoordGrid(3760, 5670), CoordGrid(3765, 5671), true), Triple(CoordGrid(3764, 5671), CoordGrid(3759, 5670), true), Triple(CoordGrid(3744, 5642), CoordGrid(3745, 5646), false), Triple(CoordGrid(3745, 5645), CoordGrid(3744, 5641), false))) {
+            for (mode in 0..4) {
+                val f = Fixture(loc)
+                if (diary && mode != 4) { f.set("varbit.falador_diary_easy_complete", 1); f.set("varbit.falador_diary_medium_complete", 1) }
+                f.op("loc.motherlode_shortcut", loc)
+                when (mode) { 1 -> f.player.pendingLogout = true; 2 -> f.player.coords = loc.translateX(12); 3 -> f.player.statMap.setCurrentLevel("stat.agility", 53) }
+                f.finish(); assertEquals(if (mode == 0 || mode == 4 && !diary) exit else if (mode == 2) loc.translateX(12) else loc, f.player.coords)
+            }
+        }
+    }
+
+    @Test fun `native Draynor underwall traversal checks both directions and interruption before teleport`() {
+        for ((symbol, origin, exit) in listOf(Triple("loc.draynor_diary_under_wall_w", CoordGrid(3066, 3257), CoordGrid(3070, 3257)), Triple("loc.draynor_diary_under_wall_e", CoordGrid(3070, 3257), CoordGrid(3066, 3257)))) for (mode in 0..3) {
+            val f = Fixture(origin); f.op(symbol, origin)
+            when (mode) { 1 -> f.player.pendingLogout = true; 2 -> f.player.statMap.setCurrentLevel("stat.hitpoints", 0); 3 -> f.player.statMap.setCurrentLevel("stat.agility", 41) }
+            f.finish(); assertEquals(if (mode == 0) exit else origin, f.player.coords)
+        }
+    }
+
+    @Test fun `every owned catalogue route crosses through its native option producer with fulfilled requirements`() {
+        val old = org.rsmod.content.quest.manager.QuestRequirements.activePolicy()
+        try {
+            org.rsmod.content.quest.manager.QuestRequirements.install(org.rsmod.content.quest.manager.QuestRequirementPolicy(org.rsmod.content.quest.manager.QuestRequirementMode.AssumeCompleted))
+            val errors = mutableListOf<String>()
+            for (r in ShortcutRoutes.all.filter { it.loc !in ShortcutRoutes.external }) {
+                val f = Fixture(r.origin)
+                r.gate?.let { f.set(it, r.gateValue) }
+                if (r.loc.startsWith("loc.fenk_bridge")) { f.set("varbit.fenk_built_bridge_north", 2); f.set("varbit.fenk_built_bridge_south", 2) }
+                f.player.worn[3] = InvObj("obj.xbows_crossbow_runite"); f.player.worn[13] = InvObj("obj.xbows_grapple_tip_bolt_mithril_rope"); f.player.worn[10] = InvObj("obj.death_climbingboots")
+                val base = ServerCacheManager.getObject(r.loc.asRSCM())!!
+                val variants = if (base.multiLoc.isNotEmpty()) base.multiLoc.asSequence().mapNotNull { ServerCacheManager.getObject(it) }.toList() else listOf(base)
+                val type = variants.first { t -> t.id !in setOf(5160, 57710) && (0..4).any { t.actions.getOpOrNull(it).equals(r.option, true) } }
+                val index = (0..4).first { type.actions.getOpOrNull(it).equals(r.option, true) }
+                val symbol = dev.openrune.rscm.RSCM.getReverseMapping(dev.openrune.rscm.RSCMType.LOC, type.id)
+                if (r.loc == "loc.vampyrium_stepping_stone_shortcut_pillar") f.ap(symbol, r.origin)
+                else {
+                    val source = if (r.loc == "loc.wint_pillar_jump") CoordGrid((r.origin.x + r.destination.x) / 2, 4023) else r.origin
+                    f.option(symbol, source, InteractionOp.entries[index])
+                }
+                f.advance(maxOf(20, r.ticks + 10, r.stages.size + 10))
+                if (r.destination != f.player.coords) errors += "${r.loc} ${r.option} ${r.origin} -> ${r.destination}; actual ${f.player.coords}"
+            }
+            java.nio.file.Files.writeString(java.nio.file.Path.of("../shortcut-producer-conflicts.txt"), errors.joinToString("\n"))
+            assertTrue(errors.isEmpty(), errors.joinToString("\n"))
+        } finally { org.rsmod.content.quest.manager.QuestRequirements.install(old) }
+    }
+
     private class Fixture(origin: CoordGrid) {
         val bus = EventBus(); val ctx = ScriptContext(bus, CheatCommandMap(), EngineQueueCache()); val map = shortcutTestCollision
         val player = Player(client).apply {
@@ -207,11 +356,12 @@ internal class ShortcutInteractionTest {
         }))
         val producer = LocInteractions(BoundValidator(map), bus)
         val useProducer = LocUInteractions::class.java.getDeclaredConstructor(EventBus::class.java).apply { isAccessible = true }.newInstance(bus)
+        val random = mock(GameRandom::class.java)
         val launcher: ProtectedAccessLauncher; val queues: PlayerQueueProcessor
         init {
             for (l in 0..3)for (x in origin.x - 32..origin.x + 32 step 8)for (z in origin.z - 32..origin.z + 32 step 8)map.allocateIfAbsent(x, z, l)
             for (route in ShortcutRoutes.all) map.allocateIfAbsent(route.destination.x, route.destination.z, route.destination.level)
-            val random = mock(GameRandom::class.java)
+            `when`(random.of(25)).thenReturn(1)
             val context = ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getCollision = { map }, getAreaChecker = { mock(AreaChecker::class.java) }, getAlignment = { TextAlignment() }, getRandom = { random })
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(context)
             launcher = ProtectedAccessLauncher(factory); queues = PlayerQueueProcessor(bus, launcher)
@@ -219,13 +369,17 @@ internal class ShortcutInteractionTest {
             with(ShortcutScript(map, XpModifiers(emptySet()))) { ctx.startup() }
             with(ShortcutSetupScript(storage, XpModifiers(emptySet()))) { ctx.startup() }
             with(org.rsmod.content.areas.city.lumbridge.BrokenRaft()) { ctx.startup() }
+            with(org.rsmod.content.areas.misc.motherlode.scripts.MotherlodeShortcutScript()) { ctx.startup() }
+            with(org.rsmod.content.areas.city.portsarim.PortSarimLocScript(mock(org.rsmod.api.repo.loc.LocRepository::class.java))) { ctx.startup() }
         }
         fun set(symbol: String, value: Int) = VarPlayerIntMapSetter.set(player, symbol, value)
         fun bound(symbol: String, coords: CoordGrid) = BoundLocInfo(LocInfo(2, coords, LocEntity(symbol.asRSCM(), 10, 0)), ServerCacheManager.getObject(symbol.asRSCM())!!)
-        fun op(symbol: String, coords: CoordGrid) { val loc = bound(symbol, coords); producer.interact(player, loc, InteractionOp.Op1); val event = checkNotNull(producer.opTrigger(player, loc, InteractionOp.Op1)); launcher.launch(player) { assertTrue(bus.publish(this, event)) } }
+        fun op(symbol: String, coords: CoordGrid) = option(symbol, coords, InteractionOp.Op1)
+        fun option(symbol: String, coords: CoordGrid, op: InteractionOp) { val loc = bound(symbol, coords); producer.interact(player, loc, op); val event = checkNotNull(producer.opTrigger(player, loc, op)); launcher.launch(player) { assertTrue(bus.publish(this, event)) } }
         fun ap(symbol: String, coords: CoordGrid) { val loc = bound(symbol, coords); producer.interact(player, loc, InteractionOp.Op1); val event = checkNotNull(producer.apTrigger(player, loc, InteractionOp.Op1)); launcher.launch(player) { assertTrue(bus.publish(this, event)) } }
         fun use(symbol: String, coords: CoordGrid, slot: Int) { val loc = bound(symbol, coords); val type = ServerCacheManager.getItem(player.inv[slot]!!.id)!!; launcher.launch(player) { useProducer.interactOp(this, loc, loc, ServerCacheManager.getObject(loc.id)!!, type, inv, slot) } }
-        fun finish() { repeat(14) { player.currentMapClock++; player.processedMapClock = player.currentMapClock; player.activeCoroutine?.advance(); queues.process(player) } }
+        fun advance(ticks: Int) { repeat(ticks) { player.currentMapClock++; player.processedMapClock = player.currentMapClock; player.activeCoroutine?.advance(); queues.process(player) } }
+        fun finish() = advance(14)
         fun bridgeMaterials() { player.inv.fillNulls(); player.inv[0] = InvObj("obj.hammer"); for (i in 1..6)player.inv[i] = InvObj("obj.plank_teak"); player.inv[7] = InvObj("obj.nails_mithril", 28) }
     }
     companion object {
