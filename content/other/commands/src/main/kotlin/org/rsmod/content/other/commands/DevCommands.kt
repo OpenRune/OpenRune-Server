@@ -51,28 +51,52 @@ constructor(
     private fun commands(cheat: Cheat) =
         with(cheat) {
             val filter = args.joinToString("_")
-            val matches = cheats.commands.entries.filter { it.key.contains(filter) }
+            val matches =
+                cheats.commands.entries.filter { it.key.contains(filter) }.sortedBy { it.key }
             if (matches.isEmpty()) {
                 player.mes("No commands match: '$filter'")
                 return
             }
             val lines =
-                matches
-                    .sortedBy { it.key }
-                    .map { (name, handler) -> "<col=800000>::$name</col> - ${handler.desc}" }
+                matches.flatMap { (name, handler) -> wrap("::$name", handler.desc.orEmpty()) }
             val launched =
                 protectedAccess.launch(player) {
-                    ifOpenMainModal("interface.longscroll")
+                    ifOpenMain("interface.questjournal")
+                    runClientScript(QUEST_JOURNAL_RESET.asRSCM(RSCMType.CLIENTSCRIPT))
+                    ifSetText("component.questjournal:title", "Commands (${matches.size})")
+                    val shown = lines.take(QUEST_JOURNAL_LINES)
+                    shown.forEachIndexed { index, line ->
+                        ifSetText("component.questjournal:qj${index + 1}", line)
+                    }
                     runClientScript(
-                        LONGSCROLL_SETUP.asRSCM(RSCMType.CLIENTSCRIPT),
-                        "Commands (${matches.size})",
-                        lines.joinToString("<br>"),
+                        QUEST_JOURNAL_SCROLLBAR.asRSCM(RSCMType.CLIENTSCRIPT),
+                        1,
+                        shown.size,
                     )
                 }
             if (!launched) {
                 player.mes(constants.dm_busy)
             }
         }
+
+    /** Word-wraps "name - desc" into journal lines, with the name in the quest-log red. */
+    private fun wrap(name: String, desc: String): List<String> {
+        val lines = mutableListOf<String>()
+        var line = StringBuilder("<col=800000>$name</col> -")
+        var visible = name.length + 2
+        for (word in desc.split(' ')) {
+            if (visible + 1 + word.length > LINE_CHARS) {
+                lines += line.toString()
+                line = StringBuilder(word)
+                visible = word.length
+            } else {
+                line.append(' ').append(word)
+                visible += 1 + word.length
+            }
+        }
+        lines += line.toString()
+        return lines
+    }
 
     private fun setLevel(cheat: Cheat): Unit =
         with(cheat) {
@@ -154,11 +178,20 @@ constructor(
     private fun statName(type: StatType): String = RSCM.getReverseMapping(RSCMType.STAT, type.id)
 
     private companion object {
+        /** Clears every `questjournal:qj*` line (`enum_1968` lists them). */
+        const val QUEST_JOURNAL_RESET = "clientscript.[clientscript,quest_journal_reset]"
+
         /**
-         * `[clientscript,longscroll_setup](string title, string text)`: sets the title and text of
-         * `longscroll` and sizes its scroll layer to the text.
+         * `script2523(boolean reset_scroll, int lines)`: sizes `questjournal:textlayer` to the line
+         * count and builds its scrollbar. Without it the journal doesn't scroll.
          */
-        const val LONGSCROLL_SETUP = "clientscript.[clientscript,longscroll_setup]"
+        const val QUEST_JOURNAL_SCROLLBAR = "clientscript.[clientscript,script2523]"
+
+        /** `questjournal:qj1` to `qj210`. */
+        const val QUEST_JOURNAL_LINES = 210
+
+        /** Characters per journal line; upstream's quest log wraps at 64. */
+        const val LINE_CHARS = 60
 
         val STAT_ALIASES =
             mapOf(
