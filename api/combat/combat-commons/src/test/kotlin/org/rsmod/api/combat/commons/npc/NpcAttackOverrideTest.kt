@@ -24,5 +24,4 @@ class NpcAttackOverrideTest {
         assertEquals(0, override.rollDamage(accurate = false, { standardMaxHit }, roll))
         assertEquals(0, override.penetration())
     }
-
 }

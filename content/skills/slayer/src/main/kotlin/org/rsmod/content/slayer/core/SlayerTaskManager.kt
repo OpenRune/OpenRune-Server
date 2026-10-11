@@ -5,8 +5,8 @@ import dev.openrune.definition.type.DBRowType
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.varp.bits
 import dev.openrune.types.NpcServerType
+import dev.openrune.types.varp.bits
 import kotlin.math.floor
 import kotlin.math.min
 import kotlin.random.Random

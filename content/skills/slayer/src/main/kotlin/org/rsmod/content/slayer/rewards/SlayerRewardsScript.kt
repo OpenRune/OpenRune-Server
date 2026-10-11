@@ -1,10 +1,6 @@
 package org.rsmod.content.slayer.rewards
 
-import dev.openrune.definition.type.widget.IfEvent
-import org.rsmod.api.enums.SlayerItemRewardsEnums.slayer_item_rewards_ids
-import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.script.onIfModalButton
-import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.plugin.scripts.PluginScript

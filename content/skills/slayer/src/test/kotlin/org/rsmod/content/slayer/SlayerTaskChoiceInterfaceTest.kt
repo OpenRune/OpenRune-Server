@@ -11,5 +11,4 @@ class SlayerTaskChoiceInterfaceTest {
         assertEquals(1, SlayerTaskChoiceInterface.resolveSlot(10, 3))
         assertEquals(2, SlayerTaskChoiceInterface.resolveSlot(20, 3))
     }
-
 }

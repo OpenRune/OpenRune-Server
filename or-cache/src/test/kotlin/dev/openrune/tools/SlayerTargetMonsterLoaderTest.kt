@@ -36,5 +36,4 @@ class SlayerTargetMonsterLoaderTest {
         assertEquals(listOf(25, SlayerTaskKey.of(SlayerTaskKey.BOSS_TASK_ID, 23)), keys[7])
         assertFalse(SlayerTaskKey.BOSS_TASK_ID in keys.getValue(7))
     }
-
 }

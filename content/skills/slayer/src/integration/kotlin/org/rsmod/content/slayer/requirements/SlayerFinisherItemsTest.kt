@@ -60,5 +60,4 @@ class SlayerFinisherItemsTest {
 
             assertEquals(InvObj(nine, 1), player.inv[4])
         }
-
 }
