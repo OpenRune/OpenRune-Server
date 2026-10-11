@@ -115,7 +115,7 @@ class PackServerConfig(
                 }
 
         val slayerDir = File(directory, "slayer")
-        val slayerTaskKeysByNpcId = SlayerTargetMonsterLoader.loadNpcSlayerTaskKeys(slayerDir, mapper)
+        val slayerDataByNpcId = SlayerTargetMonsterLoader.loadNpcSlayerData(slayerDir, mapper)
         val slayerTaskTipByNpcId = SlayerNpcTipLoader.loadNpcSlayerTaskTips(slayerDir, mapper)
         val slayerSuperiorByNpcId = SlayerSuperiorMonsterLoader.loadNpcSuperiorParams(slayerDir, mapper)
 
@@ -129,7 +129,7 @@ class PackServerConfig(
                     base,
                     overlay,
                     examinesNpc,
-                    slayerTaskKeysByNpcId,
+                    slayerDataByNpcId,
                     slayerTaskTipByNpcId,
                     slayerSuperiorByNpcId,
                 )

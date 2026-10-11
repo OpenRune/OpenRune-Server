@@ -2,11 +2,22 @@
 
 [[slayer_target_monster]]
 targetId = 41
-targets = ["npc.slayer_abberant_spectre_1", "npc.slayer_abberant_spectre_2", "npc.slayer_abberant_spectre_3", "npc.slayer_abberant_spectre_4", "npc.slayer_aberrantspectre_1_strongholdcave", "npc.slayer_aberrantspectre_2_strongholdcave", "npc.kourend_spectre", "npc.superior_abberant_spectre", "npc.superior_kourend_spectre", "npc.league_superior_abberant_spectre", "npc.league_superior_kourend_spectre"]
+variant = 1
+targets = ["npc.slayer_abberant_spectre_1", "npc.slayer_abberant_spectre_2", "npc.slayer_abberant_spectre_3", "npc.slayer_abberant_spectre_4", "npc.slayer_aberrantspectre_1_strongholdcave", "npc.slayer_aberrantspectre_2_strongholdcave", "npc.kourend_spectre"]
+
+[[slayer_target_monster]]
+targetId = 41
+variant = 2
+targets = ["npc.superior_abberant_spectre", "npc.superior_kourend_spectre", "npc.league_superior_abberant_spectre", "npc.league_superior_kourend_spectre"]
 
 [[slayer_target_monster]]
 targetId = 42
-targets = ["npc.slayer_abyssal", "npc.slayer_abyssal_strongholdcave", "npc.abyssalsire_sire_stasis_sleeping", "npc.abyssalsire_sire_stasis_awake", "npc.abyssalsire_sire_stasis_stunned", "npc.abyssalsire_sire_puppet", "npc.abyssalsire_sire_wandering", "npc.abyssalsire_sire_panicking", "npc.abyssalsire_sire_apocalypse", "npc.kourend_abyssal", "npc.wild_cave_abyssal", "npc.abyssalsire_lung", "npc.arceuus_reanimated_abyssal", "npc.superior_abyssal_demon", "npc.deadman_breach_superior_abyssal_demon", "npc.league_superior_abyssal_demon"]
+targets = ["npc.slayer_abyssal", "npc.slayer_abyssal_strongholdcave", "npc.abyssalsire_sire_stasis_sleeping", "npc.abyssalsire_sire_stasis_awake", "npc.abyssalsire_sire_stasis_stunned", "npc.abyssalsire_sire_puppet", "npc.abyssalsire_sire_wandering", "npc.abyssalsire_sire_panicking", "npc.abyssalsire_sire_apocalypse", "npc.kourend_abyssal", "npc.wild_cave_abyssal", "npc.abyssalsire_lung", "npc.superior_abyssal_demon", "npc.deadman_breach_superior_abyssal_demon", "npc.league_superior_abyssal_demon"]
+
+[[slayer_target_monster]]
+targetId = 42
+level = 1
+targets = ["npc.arceuus_reanimated_abyssal"]
 
 [[slayer_target_monster]]
 targetId = 79
@@ -30,11 +41,33 @@ targets = ["npc.black_heather", "npc.donny_the_lad", "npc.speedy_keith", "npc.br
 
 [[slayer_target_monster]]
 targetId = 38
-targets = ["npc.slayer_banshee_1", "npc.kourend_banshee", "npc.superior_banshee", "npc.superior_kourend_banshee", "npc.league_superior_banshee", "npc.league_superior_kourend_banshee"]
+variant = 1
+targets = ["npc.slayer_banshee_1"]
+
+[[slayer_target_monster]]
+targetId = 38
+variant = 2
+targets = ["npc.kourend_banshee"]
+
+[[slayer_target_monster]]
+targetId = 38
+targets = ["npc.superior_banshee", "npc.superior_kourend_banshee", "npc.league_superior_banshee", "npc.league_superior_kourend_banshee"]
 
 [[slayer_target_monster]]
 targetId = 43
-targets = ["npc.slayer_basilisk", "npc.basilisk_knight", "npc.slayer_basilisk_baby", "npc.superior_basilisk", "npc.superior_basilisk_knight", "npc.vikingexile_youngling", "npc.vikingexile_basilisk", "npc.vikingexile_basilisk_huntplayer", "npc.vikingexile_basilisk_baby", "npc.vikingexile_basilisk_baby_huntplayer", "npc.vikingexile_basilisk_superior", "npc.vikingexile_basilisk_superior_huntplayer", "npc.jormungand_frozen", "npc.jormungand_turn", "npc.jormungand", "npc.jormungand_dead", "npc.bakuna", "npc.typhor_cutscene", "npc.typhor", "npc.vritra", "npc.league_superior_basilisk", "npc.league_superior_basilisk_knight"]
+variant = 1
+targets = ["npc.slayer_basilisk", "npc.slayer_basilisk_baby", "npc.superior_basilisk", "npc.league_superior_basilisk"]
+
+[[slayer_target_monster]]
+targetId = 43
+variant = 2
+level = 60
+targets = ["npc.basilisk_knight", "npc.superior_basilisk_knight", "npc.league_superior_basilisk_knight"]
+
+[[slayer_target_monster]]
+targetId = 43
+level = 1
+targets = ["npc.vikingexile_youngling", "npc.vikingexile_basilisk", "npc.vikingexile_basilisk_huntplayer", "npc.vikingexile_basilisk_baby", "npc.vikingexile_basilisk_baby_huntplayer", "npc.vikingexile_basilisk_superior", "npc.vikingexile_basilisk_superior_huntplayer", "npc.jormungand_frozen", "npc.jormungand_turn", "npc.jormungand", "npc.jormungand_dead", "npc.bakuna", "npc.typhor_cutscene", "npc.typhor", "npc.vritra"]
 
 [[slayer_target_monster]]
 targetId = 8
@@ -54,7 +87,12 @@ targets = ["npc.black_demon_strongholdcave_1", "npc.koldemon", "npc.black_demon"
 
 [[slayer_target_monster]]
 targetId = 27
-targets = ["npc.king_dragon", "npc.black_dragon", "npc.black_dragon2", "npc.black_dragon3", "npc.black_dragon4", "npc.black_dragon5", "npc.black_dragon_strongholdcave_1", "npc.black_dragon_strongholdcave_2", "npc.black_dragon_strongholdcave_3", "npc.chickenquest_baby_black_dragon", "npc.baby_black_dragon_strongholdcave", "npc.twocats_kbd_cutscene", "npc.kourend_black_dragon", "npc.wild_cave_black_dragon", "npc.wild_cave_black_dragon2", "npc.wild_cave_black_dragon3", "npc.baby_black_dragon_nohunt", "npc.ds2_black_dragon_cutscene", "npc.ds2_black_dragon", "npc.ds2_brut_black_dragon_cutscene", "npc.ds2_brut_black_dragon", "npc.clancup_king_dragon", "npc.deadman_breach_king_black_dragon", "npc.black_dragon_echokbd", "npc.league_6_kbd"]
+targets = ["npc.king_dragon", "npc.black_dragon", "npc.black_dragon2", "npc.black_dragon3", "npc.black_dragon4", "npc.black_dragon5", "npc.black_dragon_strongholdcave_1", "npc.black_dragon_strongholdcave_2", "npc.black_dragon_strongholdcave_3", "npc.chickenquest_baby_black_dragon", "npc.baby_black_dragon_strongholdcave", "npc.twocats_kbd_cutscene", "npc.wild_cave_black_dragon", "npc.wild_cave_black_dragon2", "npc.wild_cave_black_dragon3", "npc.baby_black_dragon_nohunt", "npc.ds2_black_dragon_cutscene", "npc.ds2_black_dragon", "npc.clancup_king_dragon", "npc.deadman_breach_king_black_dragon", "npc.black_dragon_echokbd", "npc.league_6_kbd"]
+
+[[slayer_target_monster]]
+targetId = 27
+level = 77
+targets = ["npc.kourend_black_dragon", "npc.ds2_brut_black_dragon_cutscene", "npc.ds2_brut_black_dragon"]
 
 [[slayer_target_monster]]
 targetId = 119
@@ -62,7 +100,12 @@ targets = ["npc.black_knight", "npc.aggressive_black_knight", "npc.kr_aggressive
 
 [[slayer_target_monster]]
 targetId = 48
-targets = ["npc.slayer_bloodveld", "npc.slayer_bloodveld_baby", "npc.slayer_bloodveld_strongholdcave", "npc.slayer_bloodveld_baby_strongholdcave", "npc.godwars_bloodveld", "npc.arceuus_reanimated_bloodveld", "npc.kourend_bloodveld", "npc.superior_bloodveld", "npc.superior_kourend_bloodveld", "npc.myq5_vanstrom_bloodveld", "npc.myq5_bloodveld_noop", "npc.myq5_bloodveld", "npc.league_superior_bloodveld", "npc.league_superior_kourend_bloodveld"]
+targets = ["npc.slayer_bloodveld", "npc.slayer_bloodveld_baby", "npc.slayer_bloodveld_strongholdcave", "npc.slayer_bloodveld_baby_strongholdcave", "npc.godwars_bloodveld", "npc.kourend_bloodveld", "npc.superior_bloodveld", "npc.superior_kourend_bloodveld", "npc.league_superior_bloodveld", "npc.league_superior_kourend_bloodveld"]
+
+[[slayer_target_monster]]
+targetId = 48
+level = 1
+targets = ["npc.arceuus_reanimated_bloodveld", "npc.myq5_vanstrom_bloodveld", "npc.myq5_bloodveld_noop", "npc.myq5_bloodveld"]
 
 [[slayer_target_monster]]
 targetId = 25
@@ -86,6 +129,7 @@ targets = ["npc.slayer_cave_crawler_1", "npc.slayer_cave_crawler_2", "npc.slayer
 
 [[slayer_target_monster]]
 targetId = 80
+variant = 1
 targets = ["npc.harmless_island_cave_horror_worker", "npc.harmless_island_cave_horror_young_worker", "npc.harmless_island_cave_horror_guard", "npc.harmless_island_cave_horror_small_guard", "npc.harmless_island_cave_horror_alpha", "npc.superior_cave_horror", "npc.league_superior_cave_horror"]
 
 [[slayer_target_monster]]
@@ -102,7 +146,18 @@ targets = ["npc.chaos_druid", "npc.wilderness_chaos_druid", "npc.salarin_the_twi
 
 [[slayer_target_monster]]
 targetId = 44
-targets = ["npc.slayer_cockatrice", "npc.slayer_cockatrice_daddy", "npc.superior_cockatrice", "npc.league_superior_cockatrice", "npc.varlamore_cockatrice_moon01"]
+variant = 1
+targets = ["npc.slayer_cockatrice", "npc.superior_cockatrice", "npc.league_superior_cockatrice"]
+
+[[slayer_target_monster]]
+targetId = 44
+targets = ["npc.slayer_cockatrice_daddy"]
+
+[[slayer_target_monster]]
+targetId = 44
+variant = 1
+level = 1
+targets = ["npc.varlamore_cockatrice_moon01"]
 
 [[slayer_target_monster]]
 targetId = 6
@@ -122,7 +177,22 @@ targets = ["npc.ics_little_croc", "npc.ics_little_croc_blocked", "npc.ics_little
 
 [[slayer_target_monster]]
 targetId = 126
-targets = ["npc.juvenile_custodian_stalker", "npc.mature_custodian_stalker", "npc.elder_custodian_stalker", "npc.superior_custodian", "npc.soc_quest_juvenile"]
+targets = ["npc.juvenile_custodian_stalker"]
+
+[[slayer_target_monster]]
+targetId = 126
+level = 67
+targets = ["npc.mature_custodian_stalker"]
+
+[[slayer_target_monster]]
+targetId = 126
+level = 76
+targets = ["npc.elder_custodian_stalker", "npc.superior_custodian"]
+
+[[slayer_target_monster]]
+targetId = 126
+level = 1
+targets = ["npc.soc_quest_juvenile"]
 
 [[slayer_target_monster]]
 targetId = 35
@@ -146,7 +216,13 @@ targets = ["npc.drake", "npc.drake_death", "npc.superior_drake", "npc.superior_d
 
 [[slayer_target_monster]]
 targetId = 49
-targets = ["npc.slayer_dustdevil", "npc.kourend_dustdevil", "npc.wild_cave_dustdevil", "npc.superior_dustdevil", "npc.league_superior_dustdevil"]
+variant = 1
+targets = ["npc.slayer_dustdevil", "npc.kourend_dustdevil", "npc.wild_cave_dustdevil"]
+
+[[slayer_target_monster]]
+targetId = 49
+variant = 2
+targets = ["npc.superior_dustdevil", "npc.league_superior_dustdevil"]
 
 [[slayer_target_monster]]
 targetId = 57
@@ -178,7 +254,12 @@ targets = ["npc.sos_fam_fleshcrawler", "npc.sos_fam_fleshcrawler2", "npc.sos_fam
 
 [[slayer_target_monster]]
 targetId = 106
-targets = ["npc.wyvern_long_tailed", "npc.wyvern_taloned", "npc.wyvern_spitting", "npc.ancient_wyvern"]
+targets = ["npc.wyvern_long_tailed", "npc.wyvern_taloned", "npc.wyvern_spitting"]
+
+[[slayer_target_monster]]
+targetId = 106
+level = 82
+targets = ["npc.ancient_wyvern"]
 
 [[slayer_target_monster]]
 targetId = 130
@@ -186,7 +267,12 @@ targets = ["npc.frost_dragon"]
 
 [[slayer_target_monster]]
 targetId = 46
-targets = ["npc.slayer_gargoyle_1", "npc.slayer_gargoyle_dead", "npc.slayer_cave_gargoyle", "npc.gargboss_dusk_phase1_defensive", "npc.gargboss_dusk_phase1_transition", "npc.gargboss_dusk_phase1_flytransition", "npc.gargboss_dusk_phase2_attacking", "npc.gargboss_dusk_phase3_defensive", "npc.gargboss_dusk_phase3_transition", "npc.gargboss_dusk_phase4_spawn", "npc.gargboss_dusk_phase4", "npc.gargboss_dusk_death", "npc.superior_gargoyle", "npc.superior_gargoyle_dead", "npc.league_superior_gargoyle", "npc.league_superior_gargoyle_dead"]
+variant = 1
+targets = ["npc.slayer_gargoyle_1", "npc.slayer_gargoyle_dead", "npc.slayer_cave_gargoyle", "npc.superior_gargoyle", "npc.league_superior_gargoyle"]
+
+[[slayer_target_monster]]
+targetId = 46
+targets = ["npc.gargboss_dusk_phase1_defensive", "npc.gargboss_dusk_phase1_transition", "npc.gargboss_dusk_phase1_flytransition", "npc.gargboss_dusk_phase2_attacking", "npc.gargboss_dusk_phase3_defensive", "npc.gargboss_dusk_phase3_transition", "npc.gargboss_dusk_phase4_spawn", "npc.gargboss_dusk_phase4", "npc.gargboss_dusk_death", "npc.superior_gargoyle_dead", "npc.league_superior_gargoyle_dead"]
 
 [[slayer_target_monster]]
 targetId = 12
@@ -210,7 +296,12 @@ targets = ["npc.green_dragon", "npc.green_dragon2", "npc.green_dragon3", "npc.gr
 
 [[slayer_target_monster]]
 targetId = 128
-targets = ["npc.slayer_gryphon_1", "npc.slayer_gryphon_2", "npc.gryphon_boss", "npc.superior_gryphon", "npc.tt_conch_gryphon", "npc.tt_pearl_gryphon"]
+targets = ["npc.slayer_gryphon_1", "npc.slayer_gryphon_2", "npc.gryphon_boss", "npc.superior_gryphon"]
+
+[[slayer_target_monster]]
+targetId = 128
+level = 1
+targets = ["npc.tt_conch_gryphon", "npc.tt_pearl_gryphon"]
 
 [[slayer_target_monster]]
 targetId = 70
@@ -262,10 +353,12 @@ targets = ["npc.kalphite_worker", "npc.kalphite_worker_strongholdcave", "npc.kal
 
 [[slayer_target_monster]]
 targetId = 73
+variant = 1
 targets = ["npc.slayer_killerwatt", "npc.slayer_killerwatt_ball"]
 
 [[slayer_target_monster]]
 targetId = 45
+variant = 1
 targets = ["npc.slayer_kursk_1", "npc.slayer_kursk_2", "npc.superior_kurask", "npc.league_superior_kurask"]
 
 [[slayer_target_monster]]
@@ -278,7 +371,12 @@ targets = ["npc.lesser_demon", "npc.lesser_demon2", "npc.lesser_demon3", "npc.le
 
 [[slayer_target_monster]]
 targetId = 123
-targets = ["npc.pmoon_sulphur_nagua", "npc.amoxliatl", "npc.frost_nagua_cutscene", "npc.vmq3_ruins_frost_nagua", "npc.frost_nagua", "npc.earth_nagua", "npc.earth_nagua_reinforced", "npc.pmoon_quest_nagua", "npc.pmoon_quest_nagua_vis", "npc.amoxliatl_quest", "npc.amoxliatl_cutscene"]
+targets = ["npc.pmoon_sulphur_nagua", "npc.amoxliatl", "npc.frost_nagua_cutscene", "npc.vmq3_ruins_frost_nagua", "npc.frost_nagua", "npc.earth_nagua", "npc.earth_nagua_reinforced", "npc.amoxliatl_quest"]
+
+[[slayer_target_monster]]
+targetId = 123
+level = 1
+targets = ["npc.pmoon_quest_nagua", "npc.pmoon_quest_nagua_vis", "npc.amoxliatl_cutscene"]
 
 [[slayer_target_monster]]
 targetId = 90
@@ -286,7 +384,17 @@ targets = ["npc.zeah_lizardshaman_1", "npc.zeah_lizardshaman_2", "npc.zeah_lizar
 
 [[slayer_target_monster]]
 targetId = 68
-targets = ["npc.slayer_lizard_massive", "npc.slayer_lizard_large1_green", "npc.slayer_lizard_large2_sandy", "npc.slayer_lizard_large3_sandy", "npc.slayer_lizard_small1_green", "npc.slayer_lizard_small2_sandy", "npc.sulphur_lizard", "npc.slayer_lizard_large1_green_lowrange", "npc.slayer_lizard_small1_green_lowrange", "npc.grimy_lizard", "npc.crypt_of_tonali_grimy_lizard", "npc.deadman_breach_sulphur_lizard"]
+variant = 1
+targets = ["npc.slayer_lizard_massive", "npc.slayer_lizard_large1_green", "npc.slayer_lizard_large2_sandy", "npc.slayer_lizard_large3_sandy", "npc.slayer_lizard_small1_green", "npc.slayer_lizard_small2_sandy", "npc.slayer_lizard_large1_green_lowrange", "npc.slayer_lizard_small1_green_lowrange"]
+
+[[slayer_target_monster]]
+targetId = 68
+level = 44
+targets = ["npc.sulphur_lizard", "npc.grimy_lizard", "npc.crypt_of_tonali_grimy_lizard"]
+
+[[slayer_target_monster]]
+targetId = 68
+targets = ["npc.deadman_breach_sulphur_lizard"]
 
 [[slayer_target_monster]]
 targetId = 91
@@ -354,6 +462,7 @@ targets = ["npc.wild_cave_imp", "npc.wild_cave_goblin", "npc.wild_cave_pyrefiend
 
 [[slayer_target_monster]]
 targetId = 51
+variant = 1
 targets = ["npc.slayer_rockslug", "npc.slayer_rockslug_baby", "npc.slayer_rockslug_crypt_of_tonali", "npc.superior_rockslug", "npc.league_superior_rockslug"]
 
 [[slayer_target_monster]]
@@ -370,7 +479,12 @@ targets = ["npc.sos_pest_scorpion", "npc.sos_pest_scorpion2", "npc.giant_lobster
 
 [[slayer_target_monster]]
 targetId = 71
-targets = ["npc.royal_sea_snake_medium", "npc.royal_sea_snake_baby", "npc.royal_sea_snake_mother_smaller", "npc.slayer_reef_snake"]
+level = 1
+targets = ["npc.royal_sea_snake_medium"]
+
+[[slayer_target_monster]]
+targetId = 71
+targets = ["npc.royal_sea_snake_baby", "npc.royal_sea_snake_mother_smaller", "npc.slayer_reef_snake"]
 
 [[slayer_target_monster]]
 targetId = 64
@@ -390,7 +504,12 @@ targets = ["npc.skeleton_unarmed", "npc.skeleton_unarmed2", "npc.skeleton_unarme
 
 [[slayer_target_monster]]
 targetId = 95
-targets = ["npc.smoke_devil", "npc.smoke_devil_boss", "npc.superior_smoke_devil", "npc.league_superior_smoke_devil", "npc.deadman_breach_smoke_devil"]
+variant = 1
+targets = ["npc.smoke_devil", "npc.smoke_devil_boss", "npc.superior_smoke_devil", "npc.league_superior_smoke_devil"]
+
+[[slayer_target_monster]]
+targetId = 95
+targets = ["npc.deadman_breach_smoke_devil"]
 
 [[slayer_target_monster]]
 targetId = 121
@@ -402,7 +521,17 @@ targets = ["npc.barrows_spider", "npc.barrows_giantspider", "npc.sos_pest_giants
 
 [[slayer_target_monster]]
 targetId = 89
-targets = ["npc.godwars_spiritual_saradomin_warrior", "npc.godwars_spiritual_saradomin_ranger", "npc.godwars_spiritual_saradomin_mage", "npc.godwars_spiritual_bandos_ranger", "npc.godwars_spiritual_bandos_warrior", "npc.godwars_spiritual_bandos_mage", "npc.godwars_spiritual_zamorak_warrior", "npc.godwars_spiritual_zamorak_ranger", "npc.godwars_spiritual_zamorak_mage", "npc.godwars_spiritual_armadyl_warrior", "npc.godwars_spiritual_armadyl_ranger", "npc.godwars_spiritual_armadyl_mage", "npc.nex_prison_warrior", "npc.nex_prison_ranger", "npc.nex_prison_mage"]
+level = 68
+targets = ["npc.godwars_spiritual_saradomin_warrior", "npc.godwars_spiritual_bandos_warrior", "npc.godwars_spiritual_zamorak_warrior", "npc.godwars_spiritual_armadyl_warrior", "npc.nex_prison_warrior"]
+
+[[slayer_target_monster]]
+targetId = 89
+targets = ["npc.godwars_spiritual_saradomin_ranger", "npc.godwars_spiritual_bandos_ranger", "npc.godwars_spiritual_zamorak_ranger", "npc.godwars_spiritual_armadyl_ranger", "npc.nex_prison_ranger"]
+
+[[slayer_target_monster]]
+targetId = 89
+level = 83
+targets = ["npc.godwars_spiritual_saradomin_mage", "npc.godwars_spiritual_bandos_mage", "npc.godwars_spiritual_zamorak_mage", "npc.godwars_spiritual_armadyl_mage", "npc.nex_prison_mage"]
 
 [[slayer_target_monster]]
 targetId = 83
@@ -418,7 +547,12 @@ targets = ["npc.trollromance_arrg", "npc.trollromance_arrg_attackable", "npc.tro
 
 [[slayer_target_monster]]
 targetId = 36
-targets = ["npc.slayer_turoth_dad", "npc.slayer_turoth_mum", "npc.slayer_turoth_child", "npc.slayer_turoth_baby", "npc.slayer_turoth", "npc.slayer_turoth_dad2", "npc.slayer_turoth_dad3", "npc.superior_turoth", "npc.league_superior_turoth"]
+variant = 1
+targets = ["npc.slayer_turoth_dad", "npc.slayer_turoth_mum", "npc.slayer_turoth_child", "npc.slayer_turoth_baby", "npc.superior_turoth", "npc.league_superior_turoth"]
+
+[[slayer_target_monster]]
+targetId = 36
+targets = ["npc.slayer_turoth", "npc.slayer_turoth_dad2", "npc.slayer_turoth_dad3"]
 
 [[slayer_target_monster]]
 targetId = 96
@@ -426,14 +560,21 @@ targets = ["npc.tzhaar_mej1", "npc.tzhaar_mej2", "npc.tzhaar_mej3", "npc.tzhaar_
 
 [[slayer_target_monster]]
 targetId = 34
-targets = ["npc.godwars_ancient_vampire", "npc.vampire_flyer", "npc.vampire_juve", "npc.sang_myq3_male_juvenile", "npc.sang_myq3_female_juvenile", "npc.sang_myq3_male_juvinate", "npc.sang_myq3_female_juvinate", "npc.sang_myq3_male_juvenile_held", "npc.sang_myq3_female_juvenile_held", "npc.sang_myq3_male_juvinate_held", "npc.sang_myq3_female_juvinate_held", "npc.myq3_angry_juvenile", "npc.myq3_angry_juvinate", "npc.sang_myq3_female_walk_vyrewatch_1", "npc.sang_myq3_female_walk_vyrewatch_2", "npc.sang_myq3_female_walk_vyrewatch_3", "npc.sang_myq3_female_walk_vyrewatch_4", "npc.myreque_pt3_takeoff_vyrewatch_female_1", "npc.myreque_pt3_takeoff_vyrewatch_female_2", "npc.myreque_pt3_takeoff_vyrewatch_female_3", "npc.myreque_pt3_takeoff_vyrewatch_female_4", "npc.sang_myq3_female_flying_vyrewatch_1", "npc.sang_myq3_female_flying_vyrewatch_2", "npc.sang_myq3_female_flying_vyrewatch_3", "npc.sang_myq3_female_flying_vyrewatch_4", "npc.sang_myq3_male_walk_vyrewatch_1", "npc.sang_myq3_male_walk_vyrewatch_2", "npc.sang_myq3_male_walk_vyrewatch_3", "npc.sang_myq3_male_walk_vyrewatch_4", "npc.myreque_pt3_takeoff_vyrewatch_male_1", "npc.myreque_pt3_takeoff_vyrewatch_male_2", "npc.myreque_pt3_takeoff_vyrewatch_male_3", "npc.myreque_pt3_takeoff_vyrewatch_male_4", "npc.sang_myq3_male_flying_vyrewatch_1", "npc.sang_myq3_male_flying_vyrewatch_2", "npc.sang_myq3_male_flying_vyrewatch_3", "npc.sang_myq3_male_flying_vyrewatch_4", "npc.sang_myq3_female_flying_ns_vyrewatch_1", "npc.sang_myq3_female_flying_ns_vyrewatch_2", "npc.sang_myq3_female_flying_ns_vyrewatch_3", "npc.sang_myq3_female_flying_ns_vyrewatch_4", "npc.sang_myq3_male_flying_ns_vyrewatch_1", "npc.sang_myq3_male_flying_ns_vyrewatch_2", "npc.sang_myq3_male_flying_ns_vyrewatch_3", "npc.sang_myq3_male_flying_ns_vyrewatch_4", "npc.sang_myq3_female_walk_ns_vyrewatch_1", "npc.sang_myq3_female_walk_ns_vyrewatch_2", "npc.sang_myq3_female_walk_ns_vyrewatch_3", "npc.sang_myq3_female_walk_ns_vyrewatch_4", "npc.sang_myq3_male_walk_ns_vyrewatch_1", "npc.sang_myq3_male_walk_ns_vyrewatch_2", "npc.sang_myq3_male_walk_ns_vyrewatch_3", "npc.sang_myq3_male_walk_ns_vyrewatch_4", "npc.burgh_vampire_juve_1", "npc.burgh_vampire_juve_2", "npc.burgh_vampire_juve_3", "npc.burgh_vampire_juve_4", "npc.burgh_vampire_juve_angry", "npc.burgh_vampire_juve_held", "npc.burgh_vampire_juvenile_1", "npc.burgh_vampire_juvenile_2", "npc.burgh_vampire_juvenile_3", "npc.burgh_vampire_juvenile_held", "npc.burgh_ivan_temple_vampire_juve_1", "npc.burgh_ivan_temple_vampire_juve_2", "npc.burgh_vampire_juve_1_attackable", "npc.burgh_vampire_juve_2_attackable", "npc.templetrek_vampire_1", "npc.templetrek_vampire_2", "npc.templetrek_vampire_3", "npc.trek_vampire_juve_held_1", "npc.trek_vampire_juve_held_2", "npc.trek_vampire_juve_held_3", "npc.trek_vampire_juve_angry_1", "npc.trek_vampire_juve_angry_2", "npc.trek_vampire_juve_angry_3", "npc.myq4_vyrewatch_1_crowd", "npc.myq4_vyrewatch_2_crowd", "npc.myq4_vyrewatch_3_crowd", "npc.myq4_vyrewatch_4_crowd", "npc.myq4_vyrewatch_1", "npc.myq4_vyrewatch_2", "npc.myq4_vyrewatch_3", "npc.myq4_vyrewatch_4", "npc.slepe_vyrewatch_female_1", "npc.slepe_vyrewatch_female_2", "npc.slepe_vyrewatch_female_3", "npc.slepe_vyrewatch_female_4", "npc.slepe_vyrewatch_male_1", "npc.slepe_vyrewatch_male_2", "npc.slepe_vyrewatch_male_3", "npc.slepe_vyrewatch_male_4", "npc.myq5_trek_juvinate_1", "npc.myq5_trek_juvinate_2", "npc.myq5_trek_juvinate_1_held", "npc.myq5_trek_juvinate_2_held", "npc.darkm_juvinate_01", "npc.darkm_juvinate_02", "npc.darkm_juvinate_01_held", "npc.darkm_juvinate_02_held", "npc.darkm_juvenile_01", "npc.darkm_juvenile_02", "npc.darkm_juvenile_01_held", "npc.darkm_juvenile_02_held", "npc.darkm_vyrewatch_female_1", "npc.darkm_vyrewatch_female_2", "npc.darkm_vyrewatch_female_3", "npc.darkm_vyrewatch_female_4", "npc.darkm_vyrewatch_male_1", "npc.darkm_vyrewatch_male_2", "npc.darkm_vyrewatch_male_3", "npc.darkm_vyrewatch_male_4", "npc.vyrewatch_elite_1", "npc.vyrewatch_elite_2", "npc.vyrewatch_elite_3", "npc.vyrewatch_elite_4", "npc.vyrewatch_elite_5", "npc.vyrewatch_elite_6", "npc.vyrewatch_elite_7", "npc.vyrewatch_elite_8", "npc.nzone_blooddiamond_vampirewarrior_hard", "npc.vampire_count", "npc.blooddiamond_vampirewarrior", "npc.blooddiamond_vampirewarrior_unkillable", "npc.count_draynor", "npc.count_draynor_coffin", "npc.sang_myq3_mine_guard_juvinate_male", "npc.sang_myq3_mine_guard_juvinate_female", "npc.sang_myq3_male_juvinate_pouch_tray", "npc.myq3_vanstrom_klause_vampyre_attack", "npc.myq3_vanstrom_klause_vampyre_cutscene", "npc.myreque_pt3_takeoff_ns_vyrewatch_female_1", "npc.myreque_pt3_takeoff_ns_vyrewatch_female_2", "npc.myreque_pt3_takeoff_ns_vyrewatch_female_3", "npc.myreque_pt3_takeoff_ns_vyrewatch_female_4", "npc.myreque_pt3_takeoff_ns_vyrewatch_male_1", "npc.myreque_pt3_takeoff_ns_vyrewatch_male_2", "npc.myreque_pt3_takeoff_ns_vyrewatch_male_3", "npc.myreque_pt3_takeoff_ns_vyrewatch_male_4", "npc.burgh_juve1_multinpc", "npc.burgh_juve2_multinpc", "npc.nzone_count_draynor_hard", "npc.nzone_blooddiamond_vampirewarrior_normal", "npc.nzone_count_draynor_normal", "npc.myq4_ranis_vampyre", "npc.myq4_ranis_vampyre_flying", "npc.myq4_ranis_vampyre_combat", "npc.myq4_ranis_vampyre_transition", "npc.myq4_ranis_vampyre_flying_combat", "npc.myq4_ranis_vampyre_flying_transition", "npc.myq4_ranis_vampyre_combat_enrage", "npc.morytania_boot_vampyre", "npc.myq5_kroy_combat", "npc.myq5_damien_cutscene", "npc.myq5_damien_cutscene_weak", "npc.myq5_damien_cutscene_strong", "npc.myq5_damien_combat", "npc.myq5_vanstrom_vampyre_cutscene_vislevel", "npc.myq5_vanstrom_vampyre_enrage_cutscene_vislevel", "npc.myq5_vanstrom_combat", "npc.myq5_vanstrom_combat_noop", "npc.myq5_vanstrom_combat_enrage", "npc.myq5_juvinate_01_cutscene", "npc.myq5_juvinate_02_cutscene", "npc.route_vanstrom_vampire", "npc.tobquest_vyrewatch_female_1", "npc.tobquest_vyrewatch_female_2", "npc.tobquest_vyrewatch_male_1", "npc.tobquest_vyrewatch_male_2"]
+targets = ["npc.godwars_ancient_vampire", "npc.vampire_flyer", "npc.vampire_juve", "npc.sang_myq3_male_juvenile", "npc.sang_myq3_female_juvenile", "npc.sang_myq3_male_juvinate", "npc.sang_myq3_female_juvinate", "npc.sang_myq3_male_juvenile_held", "npc.sang_myq3_female_juvenile_held", "npc.sang_myq3_male_juvinate_held", "npc.sang_myq3_female_juvinate_held", "npc.myq3_angry_juvenile", "npc.myq3_angry_juvinate", "npc.sang_myq3_female_walk_vyrewatch_1", "npc.sang_myq3_female_walk_vyrewatch_2", "npc.sang_myq3_female_walk_vyrewatch_3", "npc.sang_myq3_female_walk_vyrewatch_4", "npc.myreque_pt3_takeoff_vyrewatch_female_1", "npc.myreque_pt3_takeoff_vyrewatch_female_2", "npc.myreque_pt3_takeoff_vyrewatch_female_3", "npc.myreque_pt3_takeoff_vyrewatch_female_4", "npc.sang_myq3_female_flying_vyrewatch_1", "npc.sang_myq3_female_flying_vyrewatch_2", "npc.sang_myq3_female_flying_vyrewatch_3", "npc.sang_myq3_female_flying_vyrewatch_4", "npc.sang_myq3_male_walk_vyrewatch_1", "npc.sang_myq3_male_walk_vyrewatch_2", "npc.sang_myq3_male_walk_vyrewatch_3", "npc.sang_myq3_male_walk_vyrewatch_4", "npc.myreque_pt3_takeoff_vyrewatch_male_1", "npc.myreque_pt3_takeoff_vyrewatch_male_2", "npc.myreque_pt3_takeoff_vyrewatch_male_3", "npc.myreque_pt3_takeoff_vyrewatch_male_4", "npc.sang_myq3_male_flying_vyrewatch_1", "npc.sang_myq3_male_flying_vyrewatch_2", "npc.sang_myq3_male_flying_vyrewatch_3", "npc.sang_myq3_male_flying_vyrewatch_4", "npc.sang_myq3_female_flying_ns_vyrewatch_1", "npc.sang_myq3_female_flying_ns_vyrewatch_2", "npc.sang_myq3_female_flying_ns_vyrewatch_3", "npc.sang_myq3_female_flying_ns_vyrewatch_4", "npc.sang_myq3_male_flying_ns_vyrewatch_1", "npc.sang_myq3_male_flying_ns_vyrewatch_2", "npc.sang_myq3_male_flying_ns_vyrewatch_3", "npc.sang_myq3_male_flying_ns_vyrewatch_4", "npc.sang_myq3_female_walk_ns_vyrewatch_1", "npc.sang_myq3_female_walk_ns_vyrewatch_2", "npc.sang_myq3_female_walk_ns_vyrewatch_3", "npc.sang_myq3_female_walk_ns_vyrewatch_4", "npc.sang_myq3_male_walk_ns_vyrewatch_1", "npc.sang_myq3_male_walk_ns_vyrewatch_2", "npc.sang_myq3_male_walk_ns_vyrewatch_3", "npc.sang_myq3_male_walk_ns_vyrewatch_4", "npc.burgh_vampire_juve_1", "npc.burgh_vampire_juve_2", "npc.burgh_vampire_juve_3", "npc.burgh_vampire_juve_4", "npc.burgh_vampire_juve_angry", "npc.burgh_vampire_juve_held", "npc.burgh_vampire_juvenile_1", "npc.burgh_vampire_juvenile_2", "npc.burgh_vampire_juvenile_3", "npc.burgh_vampire_juvenile_held", "npc.burgh_ivan_temple_vampire_juve_1", "npc.burgh_ivan_temple_vampire_juve_2", "npc.burgh_vampire_juve_1_attackable", "npc.burgh_vampire_juve_2_attackable", "npc.templetrek_vampire_1", "npc.templetrek_vampire_2", "npc.templetrek_vampire_3", "npc.trek_vampire_juve_held_1", "npc.trek_vampire_juve_held_2", "npc.trek_vampire_juve_held_3", "npc.trek_vampire_juve_angry_1", "npc.trek_vampire_juve_angry_2", "npc.trek_vampire_juve_angry_3", "npc.myq4_vyrewatch_1_crowd", "npc.myq4_vyrewatch_2_crowd", "npc.myq4_vyrewatch_3_crowd", "npc.myq4_vyrewatch_4_crowd", "npc.myq4_vyrewatch_1", "npc.myq4_vyrewatch_2", "npc.myq4_vyrewatch_3", "npc.myq4_vyrewatch_4", "npc.slepe_vyrewatch_female_1", "npc.slepe_vyrewatch_female_2", "npc.slepe_vyrewatch_female_3", "npc.slepe_vyrewatch_female_4", "npc.slepe_vyrewatch_male_1", "npc.slepe_vyrewatch_male_2", "npc.slepe_vyrewatch_male_3", "npc.slepe_vyrewatch_male_4", "npc.myq5_trek_juvinate_1", "npc.myq5_trek_juvinate_2", "npc.myq5_trek_juvinate_1_held", "npc.myq5_trek_juvinate_2_held", "npc.darkm_juvinate_01", "npc.darkm_juvinate_02", "npc.darkm_juvinate_01_held", "npc.darkm_juvinate_02_held", "npc.darkm_juvenile_01", "npc.darkm_juvenile_02", "npc.darkm_juvenile_01_held", "npc.darkm_juvenile_02_held", "npc.darkm_vyrewatch_female_1", "npc.darkm_vyrewatch_female_2", "npc.darkm_vyrewatch_female_3", "npc.darkm_vyrewatch_female_4", "npc.darkm_vyrewatch_male_1", "npc.darkm_vyrewatch_male_2", "npc.darkm_vyrewatch_male_3", "npc.darkm_vyrewatch_male_4", "npc.nzone_blooddiamond_vampirewarrior_hard", "npc.vampire_count", "npc.blooddiamond_vampirewarrior", "npc.blooddiamond_vampirewarrior_unkillable", "npc.count_draynor", "npc.count_draynor_coffin", "npc.sang_myq3_mine_guard_juvinate_male", "npc.sang_myq3_mine_guard_juvinate_female", "npc.sang_myq3_male_juvinate_pouch_tray", "npc.myq3_vanstrom_klause_vampyre_attack", "npc.myq3_vanstrom_klause_vampyre_cutscene", "npc.myreque_pt3_takeoff_ns_vyrewatch_female_1", "npc.myreque_pt3_takeoff_ns_vyrewatch_female_2", "npc.myreque_pt3_takeoff_ns_vyrewatch_female_3", "npc.myreque_pt3_takeoff_ns_vyrewatch_female_4", "npc.myreque_pt3_takeoff_ns_vyrewatch_male_1", "npc.myreque_pt3_takeoff_ns_vyrewatch_male_2", "npc.myreque_pt3_takeoff_ns_vyrewatch_male_3", "npc.myreque_pt3_takeoff_ns_vyrewatch_male_4", "npc.burgh_juve1_multinpc", "npc.burgh_juve2_multinpc", "npc.nzone_count_draynor_hard", "npc.nzone_blooddiamond_vampirewarrior_normal", "npc.nzone_count_draynor_normal", "npc.myq4_ranis_vampyre", "npc.myq4_ranis_vampyre_flying", "npc.myq4_ranis_vampyre_combat", "npc.myq4_ranis_vampyre_transition", "npc.myq4_ranis_vampyre_flying_combat", "npc.myq4_ranis_vampyre_flying_transition", "npc.myq4_ranis_vampyre_combat_enrage", "npc.morytania_boot_vampyre", "npc.myq5_kroy_combat", "npc.myq5_damien_cutscene", "npc.myq5_damien_cutscene_weak", "npc.myq5_damien_cutscene_strong", "npc.myq5_damien_combat", "npc.myq5_vanstrom_vampyre_cutscene_vislevel", "npc.myq5_vanstrom_vampyre_enrage_cutscene_vislevel", "npc.myq5_vanstrom_combat", "npc.myq5_vanstrom_combat_noop", "npc.myq5_vanstrom_combat_enrage", "npc.myq5_juvinate_01_cutscene", "npc.myq5_juvinate_02_cutscene", "npc.route_vanstrom_vampire", "npc.tobquest_vyrewatch_female_1", "npc.tobquest_vyrewatch_female_2", "npc.tobquest_vyrewatch_male_1", "npc.tobquest_vyrewatch_male_2"]
+
+[[slayer_target_monster]]
+targetId = 34
+level = 38
+targets = ["npc.vyrewatch_elite_1", "npc.vyrewatch_elite_2", "npc.vyrewatch_elite_3", "npc.vyrewatch_elite_4", "npc.vyrewatch_elite_5", "npc.vyrewatch_elite_6", "npc.vyrewatch_elite_7", "npc.vyrewatch_elite_8"]
 
 [[slayer_target_monster]]
 targetId = 61
+variant = 1
 targets = ["npc.swamp_wallbeast", "npc.swamp_wallbeast_combat"]
 
 [[slayer_target_monster]]
 targetId = 122
+level = 56
 targets = ["npc.pog_mutated_tortoise", "npc.pog_mutated_terrorbird_1", "npc.pog_mutated_terrorbird_2", "npc.pog_mutated_terrorbird_3", "npc.pog_mutated_terrorbird_4", "npc.pog_mutated_terrorbird_5", "npc.pog_mutated_terrorbird_6", "npc.pog_mutated_terrorbird_7", "npc.pog_mutated_terrorbird_8", "npc.pog_mutated_terrorbird_boss_1", "npc.pog_mutated_terrorbird_boss_2", "npc.pog_mutated_terrorbird_boss_3", "npc.pog_mutated_terrorbird_boss_1_background_vis", "npc.pog_mutated_terrorbird_boss_2_background_vis", "npc.pog_mutated_terrorbird_boss_3_background_vis", "npc.superior_warped_terrorbird", "npc.superior_warped_tortoise"]
 
 [[slayer_target_monster]]
@@ -458,7 +599,13 @@ targets = ["npc.zombie_unarmed", "npc.zombie_unarmed2", "npc.zombie_unarmed3", "
 
 [[slayer_target_monster]]
 targetId = 74
-targets = ["npc.fossil_zygomite", "npc.fossil_zygomite_cap", "npc.slayer_mutated_zygomite_adolescent", "npc.slayer_mutated_zygomite_adult"]
+variant = 1
+targets = ["npc.fossil_zygomite", "npc.slayer_mutated_zygomite_adolescent", "npc.slayer_mutated_zygomite_adult"]
+
+[[slayer_target_monster]]
+targetId = 74
+level = 1
+targets = ["npc.fossil_zygomite_cap"]
 
 [[slayer_target_monster]]
 targetId = 82
@@ -627,3 +774,7 @@ targets = ["npc.araxxor"]
 targetId = 98
 bossId = 32
 targets = ["npc.gryphon_boss"]
+
+[[slayer_target_monster]]
+level = 75
+targets = ["npc.gargboss_dawn_death", "npc.gargboss_dawn_phase1", "npc.gargboss_dawn_phase1_transition", "npc.gargboss_dawn_phase3"]

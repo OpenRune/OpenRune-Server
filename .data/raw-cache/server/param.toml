@@ -94,6 +94,18 @@ type = "STRING"
 isMembers = true
 
 [[params]]
+id = "param.slayer_variant"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.slayer_level"
+type = "INT"
+defaultInt = -1
+isMembers = true
+
+[[params]]
 id = "param.slayer_superior"
 type = "NPC"
 isMembers = true
