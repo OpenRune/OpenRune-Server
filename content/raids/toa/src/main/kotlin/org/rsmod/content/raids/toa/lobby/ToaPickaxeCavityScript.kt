@@ -8,6 +8,7 @@ import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLocU
+import org.rsmod.content.raids.toa.raid.encounter.het.puzzle.HetStatues
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.type.getInvObj
@@ -19,14 +20,20 @@ class ToaPickaxeCavityScript : PluginScript() {
 
     override fun ScriptContext.startup() {
         for (loc in LobbyCavity.LOCS) {
-            onOpLoc1(loc) { takePickaxe() }
+            onOpLoc1(loc) { takePickaxe(bronzeFallback = false) }
+            onOpLoc2(loc) { depositBest() }
+            onOpLocU(loc) { depositUsed(it.invSlot) }
+        }
+        for (loc in HetStatues.LOCS) {
+            onOpLoc1(loc) { takePickaxe(bronzeFallback = true) }
             onOpLoc2(loc) { depositBest() }
             onOpLocU(loc) { depositUsed(it.invSlot) }
         }
     }
 
-    private fun ProtectedAccess.takePickaxe() {
-        val obj = ToaPickaxeStorage.obj(player.storedPickaxe) ?: return
+    private fun ProtectedAccess.takePickaxe(bronzeFallback: Boolean) {
+        val stored = ToaPickaxeStorage.obj(player.storedPickaxe)
+        val obj = stored ?: LobbyCavity.BRONZE.takeIf { bronzeFallback } ?: return
         if (heldPickaxes().isNotEmpty()) {
             mes(LobbyCavity.ALREADY_HELD)
             return
