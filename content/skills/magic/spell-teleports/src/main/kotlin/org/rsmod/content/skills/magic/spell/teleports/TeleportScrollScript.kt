@@ -4,18 +4,13 @@ import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.hook.PlayerTeleportValidator
-import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
-import org.rsmod.content.quest.manager.QuestRequirements
-import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.map.collision.isZoneValid
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -44,72 +39,18 @@ class TeleportScrollScript @Inject constructor(
     }
 
     private suspend fun ProtectedAccess.teleport(scroll: TeleportScroll, inventory: Inventory, slot: Int, item: InvObj) {
-        if (actionDelay > mapClock || !allowed(scroll)) return
-        val destination = if (scroll == TeleportScroll.Revenants) {
-            val selected = choice4(
-                "Northern entrance", scroll.destination,
-                "Middle entrance", REVENANT_MIDDLE,
-                "Southern entrance", REVENANT_SOUTH,
-                "Cancel", null,
-            )
-            ifCloseChat()
-            selected ?: return
-        } else scroll.destination
-        if (scroll == TeleportScroll.Revenants && player.vars["varp.revenant_scroll_nowarn"] == 0) {
-            mesbox("This teleport takes you into the Wilderness, where other players can attack you.")
-            val confirmed = choice2("Teleport", true, "Cancel", false)
-            ifCloseChat()
-            if (!confirmed || !allowed(scroll, destination)) return
-        }
-        beginTeleport()
-        val origin = coords
-        actionDelay = mapClock + 3
-        resetAnim()
-        resetSpotanim()
-        anim("seq.teleport_scroll_open")
-        spotanim("spotanim.telescroll_teleport")
-        try {
-            delay(2)
-            if (coords != origin || inventory[slot] !== item || !allowed(scroll, destination)) return
-            val arrive = {
-                // Keep the scroll until the cave delay actually activates, including late blocks.
-                if (coords == origin && inventory[slot] === item && allowed(scroll, destination) &&
-                    player.invDel(inventory, scroll.item, 1, slot = slot).success) {
-                    PathingEntityCommon.telejump(player, collision, destination)
-                    resetAnim(); resetSpotanim()
-                }
-            }
-            if (!teleports.defer(player, TeleportType.Standard, areas, arrive)) arrive()
-        } finally {
-            resetSpotanim()
-            if (player.hitpoints > 0) resetAnim()
-        }
+        TeleportScrollTravel(teleports, areas, collision).travel(this, scroll,
+            valid = { inventory[slot] === item },
+            consume = { player.invDel(inventory, scroll.item, 1, slot = slot).success })
     }
 
-    private fun ProtectedAccess.allowed(scroll: TeleportScroll, destination: CoordGrid = scroll.destination): Boolean {
-        if (player.pendingLogout || player.hitpoints == 0) return false
-        if (scroll == TeleportScroll.GuthixianTemple && !QuestRequirements.hasCompleted(player, "quest.whileguthixsleeps")) {
-            mes("You must complete While Guthix Sleeps to enter the Ancient Guthixian Temple.")
-            return false
-        }
-        val denial = teleports.validate(player, TeleportType.Standard, areas)
-        if (denial != null) {
-            mes(denial)
-            return false
-        }
-        if (!collision.isZoneValid(destination)) {
-            mes("That teleport destination is unavailable.")
-            return false
-        }
-        return true
-    }
     internal companion object {
         val REVENANT_MIDDLE = CoordGrid(3069, 3740)
         val REVENANT_SOUTH = CoordGrid(3075, 3653)
     }
 }
 
-internal enum class TeleportScroll(val item: String, val destination: CoordGrid) {
+enum class TeleportScroll(val item: String, val destination: CoordGrid) {
     Nardah("obj.teleportscroll_nardah", CoordGrid(3421, 2917)),
     Digsite("obj.teleportscroll_digsite", CoordGrid(3324, 3412)),
     FeldipHills("obj.teleportscroll_feldip", CoordGrid(2542, 2925)),
