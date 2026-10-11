@@ -32,7 +32,11 @@ persistence, rollback and native interaction validation is still in progress.
   and interrupted travel through real loc inputs. Remaining Wiki routes, grapples,
   detailed animations/failures and full route acceptance are still in progress.
 - Containers: all **39 Wiki categories** inventoried against native items.
-  Rune/looting pouch baselines adapted. Initial storage operations for **51
+  Rune/looting pouch baselines adapted. **15 pouch tests** cover codecs, storage
+  rules, native rune insertion/withdrawal, interrupted Divine crafting and atomic
+  revert with thread return and fourth-slot warning. Loadouts, automatic pickup/
+  Runecrafting, looting-bag native/death validation and final UI acceptance remain
+  open. Initial storage operations for **51
   native forms in 16 families**, plus **57 native fruit basket/vegetable sack
   forms**, pass **18 interaction/pickup/death tests**.
   Whitelists reject quest herbs, unsupported kit items, notes and over-capacity
@@ -41,6 +45,12 @@ persistence, rollback and native interaction validation is still in progress.
   Basket/sack contents stay in their individual native item states. Generic
   storage has pure death previews, deferred PvP/Flamtaer cleanup, last-container
   destroy cleanup and family-specific bank-side filling/emptying.
+- Master scroll book: all **20 native scroll types** store up to 1,000 each, use
+  the native UI and support default selection/withdrawal. **Five tests** cover
+  native item/IF3 producers, every teleport, Revenant entrance/warning selection,
+  full inventory and deferred arrival/late cancellation. The existing standalone
+  scroll suite also passes after sharing its travel service. Client labels and
+  visual acceptance remain open.
 - Fish barrels: native Fill/Open/Close, worn sack controls, combination/dismantling,
   direct fishing storage and bank-side Empty pass **seven native input tests**.
   Full-bank failures retain contents; PvP previews protect the barrel without

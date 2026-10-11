@@ -145,3 +145,27 @@ when their Type event is handled, matching the label produced by the bank UI.
 A full bank never removes unstored fish. Death previews protect fish barrels in
 PvP without mutating persistent contents. Deposit-box/UIM interaction requires
 further work; these tests do not establish visual client acceptance.
+
+
+## Rune pouch and scroll book native routes
+
+Fifteen pouch tests include actual Held/HeldU/IF3 inputs for rune insertion,
+withdrawal, Divine creation and Revert. Three-tick crafting checks a needle,
+boosted Crafting 75 and both original item references again before an atomic
+transaction. Revert returns the thread and pouch together; the warning explains
+that slot four is lost, and a failed output does not clear any rune vars. Creation
+awards no Crafting XP. Native bankside presets and auto-pickup/Runecrafting still
+require integration; their absence is not concealed by the storage unit tests.
+
+The native scroll-book interface 597 handles the twenty accepted scrolls through
+its own Activate/Set as default/Remove controls. Five input tests use the actual
+IF3 handler and Held/HeldU producers; the standalone scroll tests pass after
+extracting a shared travel service. Both payment sources recheck ownership,
+permission and count at deferred arrival without creating a temporary scroll.
+
+Native CS2 procedure 2832 reads Watson's count as `high * 256 + low`. Procedure
+5157 reads the default destination as `high * 15 + low`; it is not a bitshift.
+Those formulas were decoded from the isolated accepted revision-240 scripts and
+are asserted through native vars by the input tests. Counts/defaults use the
+permanent native varbits, preserving existing save state. Visual confirmation of
+the native Revenant dynamic labels remains an explicit client check.
