@@ -1,0 +1,140 @@
+[[npc]]
+id = "npc.toa_kephri_boss_shielded"
+inherit = "npc.toa_kephri_boss_shielded"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 40
+[npc.params]
+"param.amascutnpc" = 1
+"param.min_defence" = 60
+"param.headbar" = "headbar.shield_140"
+"param.hitmark_lit" = "hitmark.shield_damage_lit"
+"param.hitmark_tint" = "hitmark.shield_damage_tint"
+"param.hitmark_max" = "hitmark.shield_damage_max"
+"param.boss_hp_bar_colour_back" = 8224
+"param.boss_hp_bar_colour_sliding" = 39032
+"param.boss_hp_bar_colour_remaining" = 53416
+
+[[npc]]
+id = "npc.toa_kephri_boss_weak"
+inherit = "npc.toa_kephri_boss_weak"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 40
+[npc.params]
+"param.amascutnpc" = 1
+"param.min_defence" = 60
+"param.headbar" = "headbar.shield_140"
+"param.hitmark_lit" = "hitmark.shield_damage_lit"
+"param.hitmark_tint" = "hitmark.shield_damage_tint"
+"param.hitmark_max" = "hitmark.shield_damage_max"
+"param.boss_hp_bar_colour_back" = 8224
+"param.boss_hp_bar_colour_sliding" = 39032
+"param.boss_hp_bar_colour_remaining" = 53416
+
+[[npc]]
+id = "npc.toa_kephri_boss_enrage"
+inherit = "npc.toa_kephri_boss_enrage"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 40
+[npc.params]
+"param.amascutnpc" = 1
+"param.min_defence" = 60
+"param.headbar" = "headbar.health_140"
+"param.boss_hp_bar_colour_back" = 13107200
+"param.boss_hp_bar_colour_sliding" = 36864
+"param.boss_hp_bar_colour_remaining" = 51200
+
+[[npc]]
+id = "npc.toa_kephri_boss_dead"
+inherit = "npc.toa_kephri_boss_dead"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_kephri_shield_scarab"
+inherit = "npc.toa_kephri_shield_scarab"
+defaultMode = "None"
+moveRestrict = "NoMove"
+blockWalk = "None"
+respawnDir = "West"
+regenRate = 0
+[npc.params]
+"param.death_anim" = "seq.npc_swarm01_scarab01_death01"
+"param.defend_anim" = "seq.npc_swarm01_scarab01_idle01"
+
+[[npc]]
+id = "npc.kephri_egg_explode"
+inherit = "npc.kephri_egg_explode"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+
+[[npc]]
+id = "npc.kephri_egg_hatch"
+inherit = "npc.kephri_egg_hatch"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_kephri_scarab_rangekite"
+inherit = "npc.toa_kephri_scarab_rangekite"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+[npc.params]
+"param.death_anim" = "seq.npc_scarab_flying_death02"
+"param.defend_anim" = "seq.npc_scarab_flying_idle"
+
+[[npc]]
+id = "npc.toa_kephri_guardian_melee"
+inherit = "npc.toa_kephri_guardian_melee"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+"param.headbar" = "headbar.health_60"
+"param.death_anim" = "seq.npc_scarab_death"
+"param.defend_anim" = "seq.npc_scarab_idle"
+
+[[npc]]
+id = "npc.toa_kephri_guardian_ranged"
+inherit = "npc.toa_kephri_guardian_ranged"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+"param.headbar" = "headbar.health_60"
+"param.death_anim" = "seq.npc_scarab_death"
+"param.defend_anim" = "seq.npc_scarab_idle"
+
+[[npc]]
+id = "npc.toa_kephri_guardian_mage"
+inherit = "npc.toa_kephri_guardian_mage"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+"param.headbar" = "headbar.health_60"
+"param.death_anim" = "seq.npc_scarab_flying_death02"
+"param.defend_anim" = "seq.npc_scarab_flying_idle"
