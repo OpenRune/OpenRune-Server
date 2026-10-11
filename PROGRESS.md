@@ -10,7 +10,8 @@ Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
 Owner scope: all revision-240 shortcuts, all 39 Wiki container categories, the
 fairy-ring network and surface Spider Cave access. Accepted combat/cache remain
-preserved. [Implementation, sources and tests](docs/custom/world-travel-containers.md).
+preserved. **Parked at the owner's request after the Forestry harvest chunk;
+next active work is the Nero completionist-cape handoff.** [Implementation, sources and tests](docs/custom/world-travel-containers.md).
 
 | Area | Verified implementation | Remaining |
 |---|---|---|
@@ -20,7 +21,7 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Rune/looting pouches | Native storage, pickup/altar producers, Divine crafting/revert, bank Configure and ten loadouts, death/Destroy with stale-item guards, legacy save migration, real Deposit/pickups and Ferox/ditch rules, native Perdu lock/unlock, persistent paid locks and protected-pouch death and bank redemption of both notes; 65 tests | Native UI/death acceptance |
 | Generic containers | 56 forms in 17 families plus 57 fruit/vegetable item states; limits, pure previews, persistence, death and bank transfers | Family consumers and final UI/death acceptance |
 | Crafting | Gem, Hunter and silklined sack recipes, coffin locks, harness/clothes pouch, fish crates | Unstarted activity reward producers remain separate |
-| Forestry kit/basket | Native interfaces/equipment, Woodcutting storage, cape/clothes bonuses and rations | Remaining consumables and bird-nest effects |
+| Forestry kit/basket | Native interfaces/equipment, Woodcutting storage, clothes bonuses, rations, nature offerings and secateurs/leaf harvest consumers | Bird-nest producer/cape effect and Forestry event consumers |
 | Seed box | Six ordered seed types, native UI, Farming/ground pickup/Master Farmer, bank/death/Destroy and persistence | Install isolated CS2 candidate and client acceptance |
 | Chugging barrel | Five families, 100 doses each, native controls/animation, four bank loadouts, bank and potion storage transfers, ghost death storage | Seven missing potion effects, verified barrel sound and visuals |
 | Potion storage | All 112 native families, permanent counters, dose sizes/favourites/vials, real bank input, barrel transfers | Native visual acceptance; members-world policy when such a mode exists |
@@ -31,7 +32,14 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Coal bag / essence pouches | Native held operations, physical-first coal consumption, independent essence decay, capacity clamp, non-destructive repair, atomic colossal crafting loss cleanup and native bank coal Fill/Empty | Native Percy acquisition review, Cordelia dialogue acceptance, pouch-note redemption works; native visuals |
 | Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Native bank/deposit-box extra options and collective Empty containers work; final consumer review |
 
-Latest affected-module validation: **293 tests pass** (217 Containers, 65 Pouches,
+Latest Forestry validation: the full Containers/Pouches/InvTx run passes;
+**22 native Forestry input tests** also pass after adding leaf withdrawal and
+full-output checks. Offerings consume once per successful original cut, with
+60-80% grouped bonus chance and no bonus XP. Attachments consume only after
+successful species-leaf output; full storage retains them. Accepted source
+hashes and the server JAR remain unchanged. Remaining work is parked.
+
+Earlier affected-module validation: **293 tests pass** (217 Containers, 65 Pouches,
 11 InvTx). Native Perdu locks/unlocks both pouch types with atomic inventory/bank
 fees and unchanged runes; locked upgrades require removing the lock. Four native
 server-only pouch metadata records round-trip while 34,602 other item files and

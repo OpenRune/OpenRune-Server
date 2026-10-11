@@ -35,7 +35,6 @@ import org.rsmod.content.interfaces.bank.bankCapacity
 import org.rsmod.content.interfaces.bank.scripts.BankInvScript
 import org.rsmod.content.skills.crafting.scripts.HeldCraftingScript
 import org.rsmod.content.skills.woodcutting.scripts.Woodcutting
-import org.rsmod.content.skills.woodcutting.scripts.Woodcutting.Companion.treeLevelReq
 import org.rsmod.content.skills.woodcutting.scripts.Woodcutting.Companion.treeLogs
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -153,12 +152,59 @@ internal class ForestryInteractionTest {
     @Test fun `clothes crafting preserves every ingredient XP and output after a late interrupted action`() {
         for (mode in 0..4) { val f = Fixture(); f.put(0, "obj.needle"); f.put(1, "obj.forestry_clothes_pouch_blueprint"); f.put(2, "obj.leather"); f.put(3, "obj.thread"); f.use(0, 1); when (mode) { 0 -> f.player.coords = f.player.coords.translateX(1); 1 -> f.player.pendingLogout = true; 2 -> f.player.statMap.setCurrentLevel("stat.hitpoints", 0); 3 -> f.put(1, "obj.forestry_clothes_pouch_blueprint"); 4 -> f.player.inv[0] = null }; f.advance(); assertEquals(0, f.player.inv.physicalCount("obj.forestry_clothes_pouch")); assertEquals(1, f.player.inv.physicalCount("obj.forestry_clothes_pouch_blueprint")); assertEquals(1, f.player.inv.physicalCount("obj.leather")); assertEquals(1, f.player.inv.physicalCount("obj.thread")); assertEquals(0, f.player.statMap.getXP("stat.crafting")) }
     }
+
+    @Test fun `actual native harvesting consumes physical or stored offerings even on failed bonus rolls without bonus XP`() {
+        for (stored in listOf(false, true)) for (roll in listOf(59, 60)) {
+            val f = Fixture(); f.put(0, ForestryContainers.OPEN); f.player.worn[3] = InvObj("obj.rune_axe"); if (stored) f.store.update(f.player, ForestryContainers.kit, "obj.nature_offerings".asRSCM(), 5) else f.put(1, "obj.nature_offerings", 5)
+            `when`(f.random.of(100)).thenReturn(roll); f.cut(); assertEquals(if (roll == 59) 2 else 1, f.logs()); assertEquals(25, f.player.statMap.getXP("stat.woodcutting")); assertEquals(4, if (stored) f.store.count(f.player, ForestryContainers.kit, "obj.nature_offerings".asRSCM()) else f.player.inv.physicalCount("obj.nature_offerings"))
+        }
+    }
+
+    @Test fun `offering group chance counts active choppers and caps at ten while idle dead departed or other-tree players add nothing`() {
+        for (mode in 0..6) {
+            val f = Fixture(); f.put(0, ForestryContainers.OPEN); f.player.worn[3] = InvObj("obj.rune_axe"); f.put(1, "obj.nature_offerings", 5)
+            repeat(12) { val other = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); coords = f.player.coords; currentMapClock = 100; processedMapClock = 100; actionDelay = 103; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }; f.locs.interact(other, f.tree(), InteractionOp.Op1); if (mode == 6) other.coords = other.coords.translateX(1).also { f.locs.interact(other, f.tree().let { tree -> BoundLocInfo(LocInfo(2, tree.coords.translateX(1), LocEntity(tree.id, 10, 0)), ServerCacheManager.getObject(tree.id)!!) }, InteractionOp.Op1) }; when (mode) { 1 -> other.clearInteraction(); 2 -> other.pendingLogout = true; 3 -> other.statMap.setCurrentLevel("stat.hitpoints", 0); 4 -> other.coords = other.coords.translateX(20); 5 -> other.actionDelay = 99 }; f.choppers.add(other) }
+            `when`(f.random.of(100)).thenReturn(79); f.cut(); assertEquals(if (mode == 0) 2 else 1, f.logs()); assertEquals(4, f.player.inv.physicalCount("obj.nature_offerings"))
+        }
+    }
+
+    @Test fun `native successful cuts consume offerings with one free slot but cannot create a bonus and failed cuts consume nothing`() {
+        for (slots in listOf(0, 1, 2)) {
+            val f = Fixture(); f.put(0, ForestryContainers.KIT); f.player.worn[3] = InvObj("obj.rune_axe"); f.store.update(f.player, ForestryContainers.kit, "obj.nature_offerings".asRSCM(), 5)
+            for (slot in 1 until 28 - slots) f.put(slot, "obj.lobster")
+            f.cut(); assertEquals(if (slots == 0) 5 else 4, f.store.count(f.player, ForestryContainers.kit, "obj.nature_offerings".asRSCM())); assertEquals(if (slots == 0) 0 else if (slots == 1) 1 else 2, f.player.inv.physicalCount("obj.logs")); assertEquals(if (slots == 0) 0 else 25, f.player.statMap.getXP("stat.woodcutting"))
+        }
+    }
+
+    @Test fun `native oak harvesting rolls leaves once and consumes one physical or stored attachment only on leaf success`() {
+        for (stored in listOf(false, true)) for (roll in listOf(0, 1)) {
+            val f = Fixture(); f.put(0, ForestryContainers.OPEN); f.player.worn[3] = InvObj("obj.rune_axe"); if (stored) f.store.update(f.player, ForestryContainers.kit, "obj.forestry_secateurs_attachment".asRSCM(), 5) else f.put(1, "obj.forestry_secateurs_attachment", 5)
+            `when`(f.random.of(4)).thenReturn(roll); f.cut("obj.oak_logs"); assertEquals(if (roll == 0) 2 else 0, f.store.count(f.player, ForestryContainers.kit, "obj.leaves_oak".asRSCM())); assertEquals(if (roll == 0) 4 else 5, if (stored) f.store.count(f.player, ForestryContainers.kit, "obj.forestry_secateurs_attachment".asRSCM()) else f.player.inv.physicalCount("obj.forestry_secateurs_attachment")); assertEquals(1, f.store.count(f.player, ForestryContainers.logs, "obj.oak_logs".asRSCM())); assertEquals(37, f.player.statMap.getXP("stat.woodcutting")); verify(f.random, times(1)).of(4)
+        }
+    }
+
+    @Test fun `regular logs have no leaf roll and bonus logs cannot spend extra rations or offerings`() {
+        val f = Fixture(); f.put(0, ForestryContainers.OPEN); f.player.worn[3] = InvObj("obj.rune_axe"); f.player.runEnergy = 5000; for (item in listOf("obj.forestry_ration", "obj.forestry_secateurs_attachment", "obj.nature_offerings")) f.store.update(f.player, ForestryContainers.kit, item.asRSCM(), 5)
+        f.cut(); assertEquals(2, f.logs()); assertEquals(4, f.store.count(f.player, ForestryContainers.kit, "obj.forestry_ration".asRSCM())); assertEquals(4, f.store.count(f.player, ForestryContainers.kit, "obj.nature_offerings".asRSCM())); assertEquals(5, f.store.count(f.player, ForestryContainers.kit, "obj.forestry_secateurs_attachment".asRSCM())); assertEquals(7000, f.player.runEnergy); verify(f.random, never()).of(4)
+    }
+
+    @Test fun `harvest leaves withdraw through native kit UI without reentering automatic storage`() {
+        val f = Fixture(); f.put(0, ForestryContainers.KIT); f.player.worn[3] = InvObj("obj.rune_axe"); f.put(1, "obj.forestry_secateurs_attachment", 5); f.cut("obj.oak_logs")
+        assertEquals(2, f.store.count(f.player, ForestryContainers.kit, "obj.leaves_oak".asRSCM())); f.op(0, HeldOp.Op1); val row = ForestryKitScript.items.indexOf("obj.leaves_oak"); assertTrue(row >= 0); f.ui("list", row * 12, 6)
+        assertEquals(0, f.store.count(f.player, ForestryContainers.kit, "obj.leaves_oak".asRSCM())); assertEquals(2, f.player.inv.physicalCount("obj.leaves_oak")); assertEquals(1, f.player.inv.physicalCount("obj.oak_logs"))
+    }
+
+    @Test fun `leaf output with full native and virtual inventories preserves attachment after an original stored log`() {
+        val f = Fixture(); f.put(0, ForestryContainers.OPEN); f.player.worn[3] = InvObj("obj.rune_axe"); for (slot in 1..27) f.put(slot, "obj.lobster"); f.store.update(f.player, ForestryContainers.kit, "obj.leaves_oak".asRSCM(), Int.MAX_VALUE); f.store.update(f.player, ForestryContainers.kit, "obj.forestry_secateurs_attachment".asRSCM(), 5); f.cut("obj.oak_logs")
+        assertEquals(1, f.store.count(f.player, ForestryContainers.logs, "obj.oak_logs".asRSCM())); assertEquals(Int.MAX_VALUE, f.store.count(f.player, ForestryContainers.kit, "obj.leaves_oak".asRSCM())); assertEquals(5, f.store.count(f.player, ForestryContainers.kit, "obj.forestry_secateurs_attachment".asRSCM())); assertEquals(37, f.player.statMap.getXP("stat.woodcutting"))
+    }
     private class Fixture {
-        val bus = EventBus(); val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache()); val store = ContainerStore(); val map = forestryTestCollision; val clock = MapClock(); val random = mock(GameRandom::class.java)
+        val bus = EventBus(); val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache()); val store = ContainerStore(); val map = forestryTestCollision; val clock = MapClock(); val random = mock(GameRandom::class.java); val players = mock(PlayerRepository::class.java); val choppers = mutableListOf<Player>()
         val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); coords = CoordGrid(3000, 3000); currentMapClock = 100; processedMapClock = 100; bankCapacity = 800; for (stat in listOf("hitpoints", "woodcutting", "smithing", "crafting")) { statMap.setBaseLevel("stat.$stat", 99); statMap.setCurrentLevel("stat.$stat", 99) } }
         var legacySubmenuCalls = 0
         val bank = player.invMap.getOrPut("inv.bank"); val launcher: ProtectedAccessLauncher; val held: HeldInteractions; val locs = LocInteractions(BoundValidator(map), bus)
         init {
+            `when`(players.findAll(org.rsmod.map.zone.ZoneKey.from(player.coords), 1)).thenAnswer { choppers.asSequence() }
             clock.cycle = 100; for (x in 2990..3010 step 8) for (z in 2990..3010 step 8) map.allocateIfAbsent(x, z, 0)
             val context = ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getAlignment = { TextAlignment() }, getRandom = { random }, getLocInteractions = { locs }, getCollision = { map })
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(context); launcher = ProtectedAccessLauncher(factory)
@@ -166,7 +212,7 @@ internal class ForestryInteractionTest {
             with(InvTransactionsScript(PlayerItemStorage(setOf(ContainerStorageHook(store))))) { scripts.startup() }; with(bankScript) { scripts.startup() }; with(ContainerScript(store, bankScript)) { scripts.startup() }; with(ForestryKitScript(store)) { scripts.startup() }; with(ForestryBasketScript(store, bankScript, ForestryKitScript(store))) { scripts.startup() }
             with(scripts) { onIfOverlaySubOpMenu(dev.openrune.rscm.RSCM.getReverseMapping(dev.openrune.rscm.RSCMType.COMPONENT, org.rsmod.api.enums.EquipmentEnums.equipment_tab_to_slots_map[1]!!.packed)) { legacySubmenuCalls++ } }
             with(HeldCraftingScript(setOf(ContainerCraftingScript(store, XpModifiers(emptySet())), ForestryCraftingProvider(XpModifiers(emptySet()))))) { scripts.startup() }
-            with(ForestryRationsScript(store, random)) { scripts.startup() }; with(Woodcutting(mock(LocRepository::class.java), mock(ControllerRepository::class.java), mock(PlayerRepository::class.java), XpModifiers(emptySet()), InvisibleLevels(emptySet()), clock)) { scripts.startup() }
+            with(ForestryRationsScript(store, random)) { scripts.startup() }; with(ForestryHarvestScript(store, random, players, bus)) { scripts.startup() }; with(Woodcutting(mock(LocRepository::class.java), mock(ControllerRepository::class.java), mock(PlayerRepository::class.java), XpModifiers(emptySet()), InvisibleLevels(emptySet()), clock)) { scripts.startup() }
             val ctor = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }; val dropCtor = ctor.parameterTypes[2].declaredConstructors.single().apply { isAccessible = true }; val drop = dropCtor.newInstance(*dropCtor.parameterTypes.map { if (it == EventBus::class.java) bus else mock(it) }.toTypedArray()); held = ctor.newInstance(bus, mock(ctor.parameterTypes[1]), drop, mock(ctor.parameterTypes[3])) as HeldInteractions
         }
         fun put(slot: Int, name: String, amount: Int = 1) { player.inv[slot] = InvObj(name, amount) }
@@ -183,9 +229,9 @@ internal class ForestryInteractionTest {
         fun amount(n: Int) { player.activeCoroutine!!.resumeWith(ResumePCountDialogInput(n)) }
         fun subOp(invOp: Int, subop: Int) { val op = when (invOp) { 1 -> 2; 3 -> 4; else -> 6 }; val component = ServerCacheManager.fromComponent("component.inventory:items"); player.ui.overlays.backing.put(0, component.packed ushr 16); player.ui.events.add("component.inventory:items", 0..27, when (op) { 2 -> IfEvent.Op2.bitmask; 4 -> IfEvent.Op4.bitmask; else -> IfEvent.Op6.bitmask }); IfSubOpHandler(bus, launcher).handle(player, IfSubOp(CombinedId(component.packed), 0, player.inv[0]!!.id, op, subop)) }
         fun wornSubOp(op: Int, subop: Int) { val component = org.rsmod.api.enums.EquipmentEnums.equipment_tab_to_slots_map[1]!!; player.ui.overlays.backing.put(0, component.packed ushr 16); player.ui.events.add(dev.openrune.rscm.RSCM.getReverseMapping(dev.openrune.rscm.RSCMType.COMPONENT, component.packed), -1..0, if (op == 2) IfEvent.Op2.bitmask else IfEvent.Op3.bitmask); IfSubOpHandler(bus, launcher).handle(player, IfSubOp(CombinedId(component.packed), -1, player.worn[1]!!.id, op, subop)) }
-        fun cut() {
-            val type = ServerCacheManager.getObjects().values.first { it.isContentType("content.tree") && it.treeLogs.id == "obj.logs".asRSCM() && it.treeLevelReq == 1 }
-            val tree = BoundLocInfo(LocInfo(2, player.coords.translateX(1), LocEntity(type.id, 10, 0)), type); player.actionDelay = 100
+        fun tree(item: String = "obj.logs"): BoundLocInfo { val type = ServerCacheManager.getObjects().values.first { it.isContentType("content.tree") && it.treeLogs.id == item.asRSCM() }; return BoundLocInfo(LocInfo(2, player.coords.translateX(1), LocEntity(type.id, 10, 0)), type) }
+        fun cut(item: String = "obj.logs") {
+            val tree = tree(item); val type = ServerCacheManager.getObject(tree.id)!!; player.actionDelay = 100
             locs.interact(player, tree, InteractionOp.Op1); val event = checkNotNull(locs.opTrigger(player, tree, InteractionOp.Op1)); assertTrue(event is org.rsmod.api.player.events.interact.LocContentEvents.Op1, "tree=${type.id} event=${event::class} id=${event.id}"); run { player.actionDelay = clock.cycle; bus.publish(this, event) }
         }
     }

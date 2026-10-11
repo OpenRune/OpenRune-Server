@@ -1185,3 +1185,42 @@ duplicate ownership, lifecycle denial and paid-lock recovery. Scoped formatting
 passes. Earlier affected Containers/InvTx suites pass 217/11; accepted file
 hashes and JAR remain unchanged. Sources: [Rune pouch note](https://oldschool.runescape.wiki/w/Rune_pouch_note),
 [Looting bag note](https://oldschool.runescape.wiki/w/Looting_bag_note).
+
+
+### Forestry harvest consumers and owner pause
+
+The actual Woodcutting producer now uses physical or kit-stored nature offerings
+and secateurs attachments. Offerings consume once on a successful original cut,
+including a failed bonus roll. The sourced 60% solo chance gains 2% per other
+active player on the same tree, capped at ten. The extra log requires two free
+physical slots before harvesting and grants no extra XP. Five native species
+roll their leaves once per original harvest; successful leaf output consumes
+one attachment for two leaves. Ordinary logs do not invent a leaf drop.
+
+Only leaves and anima-infused bark automatically enter an owned kit/basket;
+upgrades, clothing and supplies retain their explicit controls. Native Withdraw
+uses the existing physical inventory transaction, avoiding re-entry into the
+storage hook. Full virtual/physical output preserves the attachment. Bonus
+products cannot spend another ration or offering. Temporary harvest snapshots
+contain only scalar/coordinate fields and clear on completion/logout.
+
+Sources: [Nature offerings](https://oldschool.runescape.wiki/w/Nature_offerings),
+[Secateurs attachment](https://oldschool.runescape.wiki/w/Secateurs_attachment),
+[Leaves](https://oldschool.runescape.wiki/w/Leaves),
+[Forestry kit](https://oldschool.runescape.wiki/w/Forestry_kit).
+Primary raw copies and source hashes are retained in the isolated review folder.
+The base Woodcutting bird-nest producer/cape effect and event-owned Forestry
+mechanics remain separate open work; this chunk does not claim their completion.
+
+The owner requested parking the remaining world-travel/container work after this
+Forestry chunk and switching to the Nero completionist-cape handoff. The branch
+and isolated candidate cache remain preserved; no feature runtime is installed.
+
+Validation: `world-forestry-final-validation.log` passes the full
+Containers/Pouches/InvTx run. `world-forestry-extra-validation.log` passes all
+22 native Forestry input tests, adding exact UI leaf withdrawal and failed leaf
+output; active group tests also distinguish another tree. Scoped formatting
+passes. A network metadata failure was avoided by using already cached Gradle
+dependencies offline. The first native leaf test exposed the kit's non-openable
+catalogue form; collection now handles only its eligible automatic resources.
+Fourteen accepted source hashes and the accepted server JAR remain unchanged.

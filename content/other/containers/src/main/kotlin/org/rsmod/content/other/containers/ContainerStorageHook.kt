@@ -29,11 +29,11 @@ internal class ContainerStorageHook @Inject constructor(private val store: Conta
         if (ctx.inventory !== ctx.player.inv) return null
         val id = ctx.itemInternal.asRSCM()
         return ContainerCatalog.all.filter { id in it.accepted && store.owns(ctx.player, it) &&
-            ((it.autoCollect && it.opened) || (it.family in CONSUMABLE && (it.family != "reagent_pouch" || it.opened))) }.maxByOrNull { it.capacity }
+            (collects(it, id) || (it.family in CONSUMABLE && (it.family != "reagent_pouch" || it.opened))) }.maxByOrNull { it.capacity }
     }
     override fun shouldProcess(ctx: PlayerItemStorageContext) = spec(ctx) != null
     override fun contains(ctx: PlayerItemStorageContext): Int = spec(ctx)?.takeIf { it.family in CONSUMABLE }?.let { store.count(ctx.player, it, ctx.itemInternal.asRSCM()) } ?: 0
-    override fun incomingCapacity(ctx: PlayerItemStorageContext): Int = spec(ctx)?.takeIf { it.opened && it.autoCollect }?.let { store.room(ctx.player, it, ctx.itemInternal.asRSCM()) } ?: 0
+    override fun incomingCapacity(ctx: PlayerItemStorageContext): Int = spec(ctx)?.takeIf { collects(it, ctx.itemInternal.asRSCM()) }?.let { store.room(ctx.player, it, ctx.itemInternal.asRSCM()) } ?: 0
     override fun remove(ctx: PlayerItemStorageContext, amount: Int): Int {
         val s = spec(ctx) ?: return 0
         if (s.family !in CONSUMABLE) return 0
@@ -47,5 +47,6 @@ internal class ContainerStorageHook @Inject constructor(private val store: Conta
         if (moved > 0) store.update(ctx.player, s, ctx.itemInternal.asRSCM(), moved)
         return moved
     }
+    private fun collects(spec: ContainerSpec, item: Int): Boolean = spec.autoCollect && spec.opened || spec.family == "forestry_kit" && (item in ForestryContainers.leaves || item == "obj.forestry_currency".asRSCM())
     private companion object { val CONSUMABLE = setOf("plank_sack", "reagent_pouch") }
 }

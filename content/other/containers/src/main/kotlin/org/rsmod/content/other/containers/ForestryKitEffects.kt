@@ -43,7 +43,7 @@ internal class ForestryRationsScript @Inject constructor(private val store: Cont
     override fun ScriptContext.startup() {
         onEvent<SkillingActionCompleteEvent> {
             val product = context as? SkillingActionContext.Product ?: return@onEvent
-            if (product.source !is SkillingProductSource.Woodcutting || product.count <= 0 || player.hitpoints <= 0 || player.pendingLogout || player.loggingOut || player.runEnergy >= 9000) return@onEvent
+            if (product.isBonus || product.source !is SkillingProductSource.Woodcutting || product.count <= 0 || player.hitpoints <= 0 || player.pendingLogout || player.loggingOut || player.runEnergy >= 9000) return@onEvent
             val kit = ForestryContainers.kit; val ration = "obj.forestry_ration".asRSCM()
             if (!store.owns(player, kit) || store.count(player, kit, ration) <= 0 || random.of(100) >= 30) return@onEvent
             store.update(player, kit, ration, -1)
