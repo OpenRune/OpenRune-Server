@@ -192,6 +192,12 @@ constructor(
         }
         val count =
             when (op) {
+                IfButtonOp.Op1 -> {
+                    val item = inv[slot] ?: return resendSlot(inv, 0)
+                    val event = HeldBanksideEvents.Configure(slot, getInvObj(item))
+                    if (!eventBus.publish(this, event)) mes("This item has no bank configuration.")
+                    return
+                }
                 IfButtonOp.Op2 -> resolveLeftClickQty()
                 IfButtonOp.Op3 -> 1
                 IfButtonOp.Op4 -> 5

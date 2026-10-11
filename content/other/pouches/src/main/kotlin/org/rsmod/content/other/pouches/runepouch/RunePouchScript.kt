@@ -22,6 +22,7 @@ import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpHeldU
+import org.rsmod.api.script.onProtectedEvent
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.obj.Obj
@@ -50,6 +51,9 @@ constructor(private val objRepo: ObjRepository, private val protectedAccess: Pro
             onOpHeldU(pouch) { storeFromInventory(it.firstSlot, it.secondSlot) }
             onOpHeld4(pouch) { emptyPouch() }
             onEvent<HeldBanksideEvents.Type>(pouch.asRSCM(RSCMType.OBJ)) { banksideOp(player) }
+            onProtectedEvent<HeldBanksideEvents.Configure>(pouch.asRSCM(RSCMType.OBJ)) {
+                if (inv[it.slot]?.id == pouch.asRSCM() && player.hitpoints > 0 && !player.pendingLogout && !player.loggingOut) openPouch()
+            }
         }
         onOpHeld3(RunePouches.DIVINE) { revertDivine(it.slot) }
         for (pouch in listOf(RunePouches.REGULAR, RunePouches.REGULAR_LOCKED)) {

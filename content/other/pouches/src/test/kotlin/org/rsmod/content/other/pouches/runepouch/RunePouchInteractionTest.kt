@@ -7,9 +7,11 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.mockito.Mockito.*
+import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.net.rsprot.handlers.If3ButtonHandler
+import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.*
@@ -17,6 +19,7 @@ import org.rsmod.api.player.protect.*
 import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.player.worn.HeldEquipOp
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.content.interfaces.bank.scripts.BankInvScript
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.entity.Player
@@ -28,6 +31,19 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 @ResourceLock("ServerCacheManager")
 internal class RunePouchInteractionTest {
+    @Test fun `native bankside Configure opens every pouch instead of throwing an invalid-op exception`() {
+        for (pouch in RunePouches.ALL) {
+            val f = Fixture(); f.put(0, pouch)
+            f.launcher.launch(f.player) { ifOpenMainSidePair("interface.bankmain", "interface.bankside"); ifSetEvents("component.bankside:items", 0..27, dev.openrune.definition.type.widget.IfEvent.Op1) }
+            f.button("component.bankside:items", 0, pouch, 1)
+            assertTrue(f.player.ui.containsModal("interface.rune_pouch"), pouch)
+        }
+        val f = Fixture(); f.put(0, RunePouches.REGULAR)
+        f.launcher.launch(f.player) { ifOpenMainSidePair("interface.bankmain", "interface.bankside"); ifSetEvents("component.bankside:items", 0..27, dev.openrune.definition.type.widget.IfEvent.Op1) }
+        f.player.pendingLogout = true; f.button("component.bankside:items", 0, RunePouches.REGULAR, 1)
+        assertFalse(f.player.ui.containsModal("interface.rune_pouch"))
+    }
+
     @Test fun `real item use stores matching runes up to capacity without making a fourth regular slot`() {
         val f = Fixture(); f.put(0, RunePouches.REGULAR)
         for ((i, rune)in listOf("obj.airrune", "obj.waterrune", "obj.earthrune").withIndex()) { f.put(1, rune, 20000); f.use(1, 0); assertEquals(16000, f.player.readRunePouch(3).counts[i]); assertEquals(4000, f.player.inv[1]!!.count) }
@@ -79,6 +95,7 @@ internal class RunePouchInteractionTest {
             with(InvTransactionsScript(PlayerItemStorage(emptySet()))) { scripts.startup() }
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(context); launcher = ProtectedAccessLauncher(factory)
             with(RunePouchScript(mock(ObjRepository::class.java), launcher)) { scripts.startup() }
+            with(BankInvScript(bus, mock(WornBonuses::class.java), mock(WeaponSpeeds::class.java))) { scripts.startup() }
             val c = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }; held = c.newInstance(bus, mock(c.parameterTypes[1]), mock(c.parameterTypes[2]), HeldEquipOp(bus))as HeldInteractions
         }
         fun put(slot: Int, symbol: String, count: Int = 1) { player.inv[slot] = InvObj(symbol, count) }

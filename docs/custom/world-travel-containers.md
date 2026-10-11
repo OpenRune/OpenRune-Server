@@ -359,3 +359,14 @@ death and logout before consuming essence or awarding XP. Six producer tests
 and all 21 pouch, 51 container and six atomic transaction tests pass. Rune
 loadouts and full death/UI acceptance remain open. Source:
 [Rune pouch interface](https://oldschool.runescape.wiki/w/Rune_pouch#Interface).
+
+### Bank-side pouch Configure
+
+The accepted LIVE and SERVER interface-15 bytes agree and contain components
+0–96. They predate the current gameval dictionary's new rune-pouch loadout
+buttons (128–135). Existing bank controls are preserved. Native bank-side item
+Configure now dispatches a protected item-specific event and opens the existing
+rune pouch interface for each of its four forms. Late logout refuses the action.
+The native IF3 producer test passes; all 22 pouch tests pass and Bank compiles
+(its own test task has no sources). Ten-loadout controls still require a
+compatible interface implementation, rather than assigning nonexistent widgets.
