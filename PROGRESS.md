@@ -16,6 +16,19 @@ are being compared with the fork; content presence is not completion evidence.
 Existing accepted Araxxor combat and travel remain intact. Full route, storage,
 persistence, rollback and native interaction validation is still in progress.
 
+- Surface Spider Cave: native Enter/Exit handlers and free landing tiles added;
+  real loc interaction/routing and death/logout/movement cancellation pass.
+  All **29 Araxxor module tests** pass; client acceptance is still pending.
+- Fairy rings: **64 native code rows** and dial round trips/handler registration
+  pass (**5 tests**). Travel, special codes, prerequisites and client acceptance
+  remain under validation.
+- Agility: **353 upstream candidate links** audited against native definitions.
+  Validation exposed wrong symbols/options and blocked intermediate/end tiles;
+  these are being corrected before the module is considered usable.
+- Containers: all **39 Wiki categories** inventoried against native items.
+  Rune/looting pouch baselines adapted; full storage, death and interaction
+  validation and the remaining container families are in progress.
+
 ## 🟢 Complete: Edgeville home teleporter and Emblem trader
 
 Owner-selected home: **Edgeville**. Public `::home` arrives near the bank;

@@ -153,3 +153,26 @@ preserved. The fix requires user acceptance in the client.
 Interaction tests dispatch the real item handlers, including both selected-item
 orders, insufficient levels, missing chisel, full inventories, confirmation
 cancellation, completed Rancour and the existing rupture assembly.
+
+## Public Spider Cave access (2026-10-11)
+
+The native surface `loc.araxyte_cave_entry` (42594) at (3656,3408,0)
+had no Enter consumer. `SpiderCaveTravel` now connects it to the public araxyte
+cave at **(3679,9797,0)**. The native inner exit (42595) at (3678,9795,0)
+returns to the existing scroll landing **(3658,3403,0)**. The initial inner
+candidate (3679,9796,0) was blocked by native collision and was replaced with
+the verified adjacent free tile. Physical climbing is exempt from spell
+teleport restrictions, with animation cleanup on normal arrival and cancellation.
+
+No Slayer task is required for this public cave; the accepted private Araxxor
+tunnel/instance retains its own requirements and lifecycle.
+
+`SpiderCaveTravelTest` decodes the accepted native floor and loc archives, routes
+from the scroll landing to the real placed entrance, and dispatches both native
+Op1 producer/consumer interactions. Death, logout and movement cancellation
+also pass. The complete Araxxor module run passes **29 tests** using
+`HomeTests.init.gradle` with the isolated accepted home cache. No live files
+were replaced. In-client entry, exit and subsequent Araxxor tunnel access remain
+for owner acceptance.
+
+Primary reference: [Morytania Spider Cave](https://oldschool.runescape.wiki/w/Morytania_Spider_Cave).
