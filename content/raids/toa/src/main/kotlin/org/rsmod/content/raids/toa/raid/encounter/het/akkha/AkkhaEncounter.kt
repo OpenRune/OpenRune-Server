@@ -130,7 +130,6 @@ class AkkhaEncounter(
     internal fun akkhaHit(boss: Npc, hit: Hit) {
         if (stage != ToaStage.STARTED || boss !== akkha) return
         if (hit.isFromPlayer) shadows.disrupt()
-        combatantOf(boss)?.holdDefenceFloor()
         hpBar?.update()
         if (capped) {
             trail.clear()

@@ -12,6 +12,7 @@ attackRange = 40
 "param.boss_hp_bar_colour_sliding" = 36864
 "param.boss_hp_bar_colour_remaining" = 51200
 "param.amascutnpc" = 1
+"param.min_defence" = 50
 
 [[npc]]
 id = "npc.toa_zebak_enraged"

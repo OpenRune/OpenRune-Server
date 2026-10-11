@@ -70,7 +70,6 @@ open class ToaBossEncounter(
 
     final override fun onTick(targets: List<Player>) {
         val boss = fight?.boss?.invoke() ?: return
-        holdDefenceFloors()
         onFightTick(boss, targets)
         engage(boss, targets)
     }

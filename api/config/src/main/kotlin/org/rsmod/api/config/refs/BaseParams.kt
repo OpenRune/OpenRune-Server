@@ -98,6 +98,7 @@ object BaseParams {
     val spell_castxp: ParamInt = param("spell_castxp")
     val spell_parent_obj: ParamObj = param("spell_parent_obj")
     val amascutnpc: ParamInt = param("amascutnpc")
+    val min_defence: ParamInt = param("min_defence")
     val xerician: ParamInt = param("xerician")
     val poison_immunity: ParamInt = param("poison_immunity")
     val worn_poison_envenom_immunity: ParamInt = param("worn_poison_envenom_immunity")

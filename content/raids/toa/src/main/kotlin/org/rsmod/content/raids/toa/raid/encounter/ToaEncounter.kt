@@ -322,11 +322,6 @@ open class ToaEncounter(
         for (combatant in combatants.values) combatant.scale(teamSize)
     }
 
-    protected fun holdDefenceFloors() {
-        pruneCombatants()
-        for (combatant in combatants.values) combatant.holdDefenceFloor()
-    }
-
     private fun pruneCombatants() {
         combatants.keys.removeIf { !it.isSlotAssigned }
     }

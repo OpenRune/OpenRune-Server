@@ -14,14 +14,11 @@ import org.rsmod.game.entity.Player
 internal class ToaCombatant(private val room: ToaEncounter, val npc: Npc, private val spec: Spec) {
     class Spec(
         val type: String,
-        val defenceCap: Int? = null,
         val pointMultiplier: Double = 1.0,
         val pathScaled: Boolean = true,
     ) {
         internal val typeId: Int by lazy { type.asRSCM(RSCMType.NPC) }
     }
-
-    var defenceCap: Int? = spec.defenceCap
 
     var damageFactor: Double = 1.0
         private set
@@ -44,12 +41,6 @@ internal class ToaCombatant(private val room: ToaEncounter, val npc: Npc, privat
         val levelFactor =
             if (pathLevel > 0) PATH_LEVEL_FIRST + (pathLevel - 1) * PATH_LEVEL_EACH else 0.0
         damageFactor = min(MAX_DAMAGE_FACTOR, raidFactor + levelFactor)
-    }
-
-    fun holdDefenceFloor() {
-        val cap = defenceCap ?: return
-        val floor = npc.type.defence - cap
-        if (npc.defenceLvl < floor) npc.defenceLvl = floor
     }
 
     fun rollAccuracy(target: Player, style: HitType, meleeAttackType: MeleeAttackType?): Boolean {
