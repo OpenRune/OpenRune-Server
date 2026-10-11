@@ -5,6 +5,7 @@ import dev.openrune.definition.type.DBRowType
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.varp.bits
 import dev.openrune.types.NpcServerType
 import kotlin.math.floor
 import kotlin.math.min
@@ -281,9 +282,24 @@ object SlayerTaskManager {
         )
     }
 
-    fun slayerStreak(access: ProtectedAccess): Int = access.vars["varbit.slayer_streak"]
+    fun slayerStreak(access: ProtectedAccess): Int = access.vars[STREAK_VARBIT]
 
-    fun slayerWildyStreak(access: ProtectedAccess): Int = access.vars["varbit.slayer_wildy_streak"]
+    fun slayerWildyStreak(access: ProtectedAccess): Int = access.vars[WILDY_STREAK_VARBIT]
+
+    fun moveLegacyStreaks(player: Player) {
+        moveLegacyStreak(player, LEGACY_STREAK_VARBIT, STREAK_VARBIT)
+        moveLegacyStreak(player, LEGACY_WILDY_STREAK_VARBIT, WILDY_STREAK_VARBIT)
+    }
+
+    private fun moveLegacyStreak(player: Player, legacy: String, target: String) {
+        val old = player.vars[legacy]
+        if (old <= 0) return
+        val type = ServerCacheManager.getVarbit(target.asRSCM(RSCMType.VARBIT)) ?: return
+        val max = (1 shl (type.bits.last - type.bits.first + 1)) - 1
+        val moved = maxOf(player.vars[target], old).coerceAtMost(max)
+        VarPlayerIntMapSetter.set(player, target, moved)
+        VarPlayerIntMapSetter.set(player, legacy, 0)
+    }
 
     fun resetStreak(access: ProtectedAccess, wilderness: Boolean) {
         val varbit = if (wilderness) WILDY_STREAK_VARBIT else STREAK_VARBIT
@@ -673,8 +689,10 @@ object SlayerTaskManager {
     fun hasUnlockedReward(access: ProtectedAccess, bit: Int): Boolean = hasUnlockedReward(access.player, bit)
 
     private const val KONAR_MASTER_ID = 8
-    private const val STREAK_VARBIT = "varbit.slayer_streak"
-    private const val WILDY_STREAK_VARBIT = "varbit.slayer_wildy_streak"
+    private const val STREAK_VARBIT = "varbit.slayer_tasks_completed"
+    private const val WILDY_STREAK_VARBIT = "varbit.slayer_wilderness_tasks_completed"
+    private const val LEGACY_STREAK_VARBIT = "varbit.slayer_streak"
+    private const val LEGACY_WILDY_STREAK_VARBIT = "varbit.slayer_wildy_streak"
     private const val SLAYER_XP_HP_CAP = 2000
     private const val SLAYER_XP_DIVISOR = 200_000
 
