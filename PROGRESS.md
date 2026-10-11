@@ -48,6 +48,11 @@ persistence, rollback and native interaction validation is still in progress.
   Basket/sack contents stay in their individual native item states. Generic
   storage has pure death previews, deferred PvP/Flamtaer cleanup, last-container
   destroy cleanup and family-specific bank-side filling/emptying.
+- Tackle box / huntsman's kit: native main/side screens, Fill/Empty, quantity
+  controls, partial transfers and 35/32-type limits pass **eight tests**. Existing
+  tackle contents and charged-tool vars are preserved. Native account loading and
+  confirmed last-kit destruction are covered; all **37 container module tests**
+  pass. Visual UI acceptance and final bank/death integration remain open.
 - Bow string spool: six native capacity tiers (250 to 100,000), notes, account
   storage and all twelve ordinary bow-stringing routes pass **six tests**,
   including 27 bows per inventory and actual spinning output. Interrupted actions

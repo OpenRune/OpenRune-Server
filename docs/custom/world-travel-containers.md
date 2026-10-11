@@ -236,3 +236,30 @@ consuming one charge, creating the matching native coloured fire and awarding
 40 + 10 XP. Ordinary tinderbox and coloured-log behaviour remains covered.
 Five real Held/HeldU/queue tests pass, including all colours, refund rollback,
 item loss and lifecycle interruption. Source: [Gnomish firelighter](https://oldschool.runescape.wiki/w/Gnomish_firelighter).
+
+### Native equipment kit interfaces and persistent storage
+
+The old Fishing tackle-box handler has been consolidated into the Containers
+module to prevent duplicate Held handlers and separate delete/add operations
+that could lose contents on full-inventory withdrawal. The existing inventory
+651 remains the source of truth, preserving prior contents. Native inventory
+855 is used for the huntsman's kit. Both receive server-only pack overrides:
+Always stack, Perm scope, unprotected storage, original native sizes 35 and 32.
+Their native CS2 scripts (4049/4061 and 4988/5000), quantity varbit 11795 and
+actual main/side IF3 item events are connected. The native account inventory
+loader restores counts and item vars. Different charge states for an already
+stored type are rejected rather than merged; deposits and withdrawals retain
+vars. Contents cannot substitute for carried Fishing/Hunter tools. PvP
+previews preserve item vars, and real final-item Destroy clears storage only
+after confirmation (remaining kits retain shared contents).
+
+Eight native input tests and all 37 Containers module tests pass. Scoped cache
+validation compares all 338,195 accepted SERVER configuration files: only native
+inventories 651 and 855 differ. The accepted config reference table must be
+preserved when packing: CacheLibrary updates otherwise alter the native signed
+-1 varp sentinel and break unrelated varbit bases. That test-stage failure was
+repaired from the accepted package and the complete regression suite rerun.
+No live cache or player data was changed. Final packaging must use this same
+reference preservation, with the two inventory overrides explicitly allowed.
+Sources: [Tackle box](https://oldschool.runescape.wiki/w/Tackle_box),
+[Huntsman's kit](https://oldschool.runescape.wiki/w/Huntsman%27s_kit).

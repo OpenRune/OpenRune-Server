@@ -19,15 +19,14 @@ internal class ContainerScript @Inject constructor(private val store: ContainerS
     override fun ScriptContext.startup() {
         onDestroyHeld {
             val spec = ContainerCatalog.byId[type.asRSCM()] ?: return@onDestroyHeld
-            if (spec.family == "huntsman_kit") return@onDestroyHeld
             val remaining = ContainerCatalog.all.any { it.family == spec.family && store.owns(player, it) }
-            if (!remaining) player.attr.remove(spec.stateKey)
+            if (!remaining) store.clear(player, spec)
         }
         for (spec in ContainerCatalog.all) {
             val type = ServerCacheManager.getItem(spec.id)!!
             for (op in 1..5) {
                 val action = type.interfaceOptions[op - 1] ?: continue
-                if (action !in ACTIONS) continue
+                if (action !in ACTIONS || spec.family in setOf("tackle_box", "huntsman_kit") && action == "View") continue
                 when (op) {
                     1 -> onOpHeld1(spec.symbol) { operate(spec, it.slot, action) }
                     2 -> onOpHeld2(spec.symbol) { operate(spec, it.slot, action) }

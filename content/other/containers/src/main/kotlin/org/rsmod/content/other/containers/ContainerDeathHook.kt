@@ -15,7 +15,8 @@ internal class ContainerDeathHook @Inject constructor(private val store: Contain
 
     override fun resolve(context: PlayerDeathContext, result: DeathDropResult): DeathDropResult {
         val dropped = carried(context).filter { spills(it, context, result) }.flatMap { s ->
-            store.contents(context.player, s).mapNotNull { (id, count) ->
+            if (store.inventoryName(s) != null) store.storedObjects(context.player, s).filter { ServerCacheManager.getItem(it.id)?.tradeable == true }
+            else store.contents(context.player, s).mapNotNull { (id, count) ->
                 ServerCacheManager.getItem(id.toInt())?.takeIf { it.tradeable }?.let { InvObj(it, count) }
             }
         }
