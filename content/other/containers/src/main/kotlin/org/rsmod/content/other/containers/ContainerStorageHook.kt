@@ -15,6 +15,7 @@ internal class ContainersModule : PluginModule() {
         addSetBinding<PlayerItemStorageHook>(BowStringSpoolStorageHook::class.java)
         addSetBinding<org.rsmod.content.interfaces.omnishop.OmnishopPurchase>(MixologyContainerRewards::class.java)
         addSetBinding<org.rsmod.content.interfaces.bank.BankDepositStorage>(PotionStorage::class.java)
+        addSetBinding<org.rsmod.content.interfaces.bank.BankDepositStorage>(ContainerBankDeposits::class.java)
         addSetBinding<org.rsmod.api.death.PlayerDeathDropHook>(ContainerDeathHook::class.java)
         addSetBinding<org.rsmod.api.death.PlayerDeathDropHook>(SeedBoxDeathHook::class.java)
         addSetBinding<org.rsmod.api.death.PlayerDeathDropHook>(BoltPouchDeathHook::class.java)

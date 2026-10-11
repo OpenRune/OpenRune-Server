@@ -1094,3 +1094,29 @@ opening; two Fishing tests cover all four barrel/sack forms and bank capacity.
 An early fixture omitted BankOpenScript and its real menu setup; the final
 fixture includes it. Fourteen accepted file hashes and the accepted JAR remain
 unchanged. Collective Empty containers input is a subsequent owner integration.
+
+### Native collective Empty containers
+
+Bankmain `depositcontainers` (12:45) and deposit-box `deposit_lootingbag`
+(192:32) call the existing injected `BankDepositStorage` set. Resource storage,
+chugging barrel, rune/looting pouches, all fish barrel forms, coal bag and every
+essence pouch tier return only quantities actually accepted by native bank
+transactions. Shared forms are deduplicated. Full-bank rollback, dose splitting,
+old bank tabs, item state and degraded essence forms remain intact. Aggregate
+moved quantities use Long, including valid maximum coin stacks plus runes.
+
+The actual looting-bag View and Bank all producer exposed a protected inventory
+transfer failure. The owner now presents each stack to the native bank helper,
+preserving vars, and removes only committed quantities from shared storage.
+Core protected-inventory checks are unchanged. Quantity prompts recheck the
+selected item, bag, position and lifecycle before completion.
+
+`world-container-bulk-final-validation-2.log` passes **397 tests**: 214 Containers,
+53 Pouches, 10 Fishing, 13 Runecrafting, eight Smithing, 11 InvTx, three combat,
+26 Shortcuts, 18 Fairy rings, 29 Araxxor and 12 network. Scoped formatting passes.
+Earlier failures were two missing test imports, an uninitialised fixture bank
+capacity and an invalid quantity for a var-bearing item; the genuine bag transfer
+failure was repaired before this complete passing run. Both native collective
+buttons and looting-bag bank-panel input are tested through If3ButtonHandler.
+Fourteen accepted file hashes and the accepted server JAR remain unchanged.
+Native visual acceptance and an isolated runtime package are still pending.

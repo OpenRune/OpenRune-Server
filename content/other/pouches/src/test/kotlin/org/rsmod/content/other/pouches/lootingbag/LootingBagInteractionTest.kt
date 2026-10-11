@@ -22,7 +22,9 @@ import org.rsmod.api.player.protect.*
 import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.player.worn.HeldEquipOp
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.content.interfaces.bank.bankCapacity
 import org.rsmod.content.interfaces.bank.scripts.BankInvScript
+import org.rsmod.content.interfaces.bank.scripts.BankOpenScript
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.entity.Player
@@ -74,17 +76,43 @@ internal class LootingBagInteractionTest {
         val f = Fixture(); f.put(0, LootingBags.OPEN); f.put(1, "obj.coins", 100); f.op(0, HeldOp.Op3); f.player.inv[0] = null
         f.button(1, "obj.coins", 3); assertTrue(f.player.lootingBag.isEmpty()); assertEquals(100, f.player.inv[1]!!.count)
     }
+
+    @Test fun `native bank View panel deposits item state and Bank all commits only bankable space`() {
+        for (symbol in LootingBags.ALL) {
+            val f = Fixture(); f.put(0, symbol); f.player.lootingBag[0] = InvObj("obj.coins", 123); f.player.lootingBag[1] = InvObj("obj.coins", 1, Int.MIN_VALUE); f.player.saveLootingBag()
+            f.viewBank(); f.bankButton("component.bankside:lootingbag_items", 0, "obj.coins".asRSCM(), 3)
+            assertEquals(118, f.player.lootingBag[0]!!.count); assertEquals(5, f.player.invMap.getOrPut("inv.bank")[0]!!.count); assertEquals(0, f.player.invMap.getOrPut("inv.bank")[0]!!.vars)
+            f.bankButton("component.bankside:lootingbag_bankall"); f.bankButton("component.bankside:lootingbag_bankall")
+            assertTrue(f.player.lootingBag.isEmpty()); assertEquals(123, f.player.invMap.getOrPut("inv.bank")[0]!!.count); assertEquals(1, f.player.invMap.getOrPut("inv.bank").filterNotNull().single { it.vars == Int.MIN_VALUE }.count); assertTrue(f.player.attr[LOOTING_BAG_ATTR] == null)
+        }
+        val f = Fixture(); f.put(0, LootingBags.CLOSED); f.player.bankCapacity = 1; f.player.invMap.getOrPut("inv.bank")[0] = InvObj("obj.coins", Int.MAX_VALUE - 5); f.player.lootingBag[0] = InvObj("obj.coins", 10); f.player.lootingBag[1] = InvObj("obj.abyssal_whip"); f.player.saveLootingBag()
+        f.viewBank(); f.bankButton("component.bankside:lootingbag_bankall"); assertEquals(5, f.player.lootingBag.count("obj.coins")); assertTrue(f.player.lootingBag.contains("obj.abyssal_whip")); assertEquals(Int.MAX_VALUE, f.player.invMap.getOrPut("inv.bank")[0]!!.count)
+    }
+
+    @Test fun `open bank panel rejects removed bag death logout and stale quantity prompts`() {
+        for (mode in 0..6) {
+            val f = Fixture(); f.put(0, LootingBags.CLOSED); f.player.lootingBag[0] = InvObj("obj.coins", 50); f.player.saveLootingBag(); f.viewBank()
+            if (mode >= 4) f.bankButton("component.bankside:lootingbag_items", 0, "obj.coins".asRSCM(), 6)
+            when (mode) { 0 -> f.player.inv[0] = null; 1 -> f.player.statMap.setCurrentLevel("stat.hitpoints", 0); 2 -> f.player.pendingLogout = true; 3 -> f.player.loggingOut = true; 4 -> f.player.lootingBag[0] = InvObj("obj.coins", 50); 5 -> f.player.coords = f.player.coords.translateX(1); 6 -> f.player.inv[0] = null }
+            if (mode >= 4) f.player.activeCoroutine?.resumeWith(ResumePCountDialogInput(10)) else f.bankButton("component.bankside:lootingbag_bankall")
+            assertEquals(50, f.player.lootingBag[0]!!.count); assertTrue(f.player.invMap.getOrPut("inv.bank").isEmpty()); assertTrue(f.player.attr[LOOTING_BAG_ATTR] != null)
+        }
+    }
     private class Fixture {
         val bus = EventBus()
-        val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); coords = CoordGrid(3150, 3635); currentMapClock = 100; processedMapClock = 100; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
+        val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); bankCapacity = 800; coords = CoordGrid(3150, 3635); currentMapClock = 100; processedMapClock = 100; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
         val launcher: ProtectedAccessLauncher; val held: HeldInteractions
         init {
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getAlignment = { TextAlignment() })); launcher = ProtectedAccessLauncher(factory)
             val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache()); with(InvTransactionsScript(PlayerItemStorage(emptySet()))) { scripts.startup() }
             val bank = BankInvScript(bus, mock(WornBonuses::class.java), mock(WeaponSpeeds::class.java))
+            with(bank) { scripts.startup() }
+            with(BankOpenScript(WornBonuses(), mock(WeaponSpeeds::class.java), bus)) { scripts.startup() }
             with(LootingBagScript(mock(ObjRepository::class.java), bank, mock(MarketPrices::class.java), LootingBagAreaTestData.areas)) { scripts.startup() }
             val c = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }; held = c.newInstance(bus, mock(c.parameterTypes[1]), mock(c.parameterTypes[2]), HeldEquipOp(bus)) as HeldInteractions
         }
+        fun viewBank() { player.ifClose(bus); launcher.launch(player) { ifOpenMainSidePair("interface.bankmain", "interface.bankside") }; bankButton("component.bankside:items", 0, player.inv[0]!!.id, 1); assertTrue(player.ui.hasEvent(ServerCacheManager.fromComponent("component.bankside:lootingbag_items".asRSCM()), 0, dev.openrune.definition.type.widget.IfEvent.Op3)) }
+        fun bankButton(component: String, slot: Int = -1, obj: Int = -1, op: Int = 1) { val c = If3Button::class.java.declaredConstructors.single { it.parameterCount == 5 }; If3ButtonHandler(bus, launcher).handle(player, c.newInstance(component.asRSCM(), slot, obj, op, null) as If3Button) }
         fun put(slot: Int, symbol: String, count: Int = 1) { player.inv[slot] = InvObj(symbol, count) }
         fun op(slot: Int, op: HeldOp) { player.ifClose(bus); assertTrue(launcher.launch(player) { held.interact(this, inv, slot, op) }) }
         fun use(first: Int, second: Int) { player.ifClose(bus); assertTrue(launcher.launch(player) { HeldUInteractions(bus).interact(this, inv, ServerCacheManager.getItem(inv[first]!!.id)!!, first, ServerCacheManager.getItem(inv[second]!!.id)!!, second) }) }

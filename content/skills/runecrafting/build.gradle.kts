@@ -5,6 +5,7 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.content.interfaces.bank)
     implementation(projects.api.combat.combatManager)
     implementation(projects.api.invStorage)
     implementation(projects.api.invtx)
@@ -17,6 +18,8 @@ dependencies {
     implementation(projects.api.spells)
     implementation(projects.api.stats.xpmod)
     implementation(projects.content.skills.utils)
+    testImplementation(projects.api.net)
+    testImplementation(libs.rsprot.api)
     testImplementation("org.mockito:mockito-core:5.14.2")
 }
 

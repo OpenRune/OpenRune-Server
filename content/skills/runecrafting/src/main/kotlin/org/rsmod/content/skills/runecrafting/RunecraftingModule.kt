@@ -8,6 +8,7 @@ import org.rsmod.plugin.module.PluginModule
 
 public class RunecraftingModule : PluginModule() {
     override fun bind() {
+        addSetBinding<org.rsmod.content.interfaces.bank.BankDepositStorage>(org.rsmod.content.skills.runecrafting.essencepouch.EssencePouchBankDeposits::class.java)
         addSetBinding<PlayerItemStorageHook>(EssencePouchStorageHook::class.java)
         addSetBinding<PlayerDeathDropHook>(EssencePouchDeathHook::class.java)
     }

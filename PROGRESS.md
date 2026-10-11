@@ -17,7 +17,7 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Spider Cave | Surface Enter/Exit, real routing and cancellation; 29 Araxxor tests | Client acceptance |
 | Fairy rings | 64 code rows, 54 fixed destinations, native dials/favourites/Last-destination, permission, ten quest gates and observed island first visits; 18 tests | Construction-owned DIQ house prerequisite and native visual acceptance |
 | Agility shortcuts | 525 links, actual option-producer traversal for every owned route, native landings, grapple loss/equipment, permanent Observatory setup, bridge/God Wars pieces and cancellation; 26 tests | Detailed animation/failure review and native route acceptance |
-| Rune/looting pouches | Native storage, pickup/altar producers, Divine crafting/revert, bank Configure and ten loadouts, death/Destroy with stale-item guards, legacy save migration, real Deposit/pickups and Ferox/ditch rules; 49 tests | Trouver compatibility and UI acceptance |
+| Rune/looting pouches | Native storage, pickup/altar producers, Divine crafting/revert, bank Configure and ten loadouts, death/Destroy with stale-item guards, legacy save migration, real Deposit/pickups and Ferox/ditch rules; 53 tests | Trouver compatibility and UI acceptance |
 | Generic containers | 56 forms in 17 families plus 57 fruit/vegetable item states; limits, pure previews, persistence, death and bank transfers | Family consumers and final UI/death acceptance |
 | Crafting | Gem, Hunter and silklined sack recipes, coffin locks, harness/clothes pouch, fish crates | Unstarted activity reward producers remain separate |
 | Forestry kit/basket | Native interfaces/equipment, Woodcutting storage, cape/clothes bonuses and rations | Remaining consumables and bird-nest effects |
@@ -29,21 +29,20 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Bolt pouch | Four native slots, caps/grapple, actual held/UI/drag/equipment transfers, Hirko purchase, PvM ghost storage/PvP spill | Final native visuals; confirmed Destroy and stale-item input tests pass |
 | Collection bags | All five native tiers; 2/4/6/7/8 eggs, shared temporary contents, Look-in/Empty/item-use and deferred death cleanup | Collector auto-pickup/calls/hopper require the unstarted Barbarian Assault activity; native visuals |
 | Coal bag / essence pouches | Native held operations, physical-first coal consumption, independent essence decay, capacity clamp, non-destructive repair, atomic colossal crafting loss cleanup and native bank coal Fill/Empty | Native Percy acquisition review, Cordelia dialogue acceptance, pouch acquisition review and native visuals |
-| Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Native deposit-box extra options work; collective Empty containers and final consumer review |
+| Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Native bank/deposit-box extra options and collective Empty containers work; final consumer review |
 
-Latest focused pouch validation: **49 tests pass**, including native area-backed
-Ferox pickup, ditch/Enclave Destroy loss, real held/item-use/IF3 Deposit input and
-stale ownership/lifecycle guards. The real Deposit modal lock failure is fixed
-inside the owned transaction; general inventory guards are unchanged.
-
-Latest combined validation: **386 tests pass**: 210 Containers, 49 Pouches,
-nine Fishing, 12 Runecrafting, seven Smithing, 11 inventory transaction,
+Latest combined validation: **397 tests pass**: 214 Containers, 53 Pouches,
+10 Fishing, 13 Runecrafting, eight Smithing, 11 inventory transaction,
 three combat, 26 shortcut, 18 fairy-ring, 29 Araxxor and 12 network tests.
-Native deposit-box extra actions share the normal bank dispatcher and preserve
-the selected bank tab. Tests cover herb/gem bags, every fish barrel/sack form,
-full-bank rollback and partial stacking, lifecycle guards and both coal-bag forms.
-Coal can fill from an ordinary bank and empty to inventory; deposit-box Fill cannot
-withdraw bank items. The collective Empty containers button is the next integration.
+Both native Empty containers buttons dispatch to the existing bank storage API.
+Shared container forms deposit once; full banks retain contents; chugging doses
+use the existing bank/potion-storage return rules. Rune, looting, fish, coal and
+essence storage are included. Native looting-bag View/Bank all preserves item
+vars and partial stacks; stale quantity dialogs and removed ownership are denied.
+An inventory-protection failure in the old looting-bag bank route is fixed inside
+the container owner without weakening the core guard. Native deposit-box extra
+actions retain the selected bank tab; coal-bag Fill cannot withdraw bank items
+from a deposit box. Resource transfers count large stacks using Long totals.
 The native five-argument ground constructor and normal coin stacking are preserved.
 Seventeen server-only quiver metadata candidates round-trip in the isolated cache;
 34,589 unrelated native item files and original reference IDs remain unchanged.

@@ -2,7 +2,9 @@
 package org.rsmod.content.skills.runecrafting.essencepouch
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.util.Wearpos
+import net.rsprot.protocol.game.incoming.buttons.If3Button
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -10,11 +12,14 @@ import org.junit.jupiter.api.parallel.ResourceLock
 import org.mockito.Mockito.*
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
+import org.rsmod.api.net.rsprot.handlers.If3ButtonHandler
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.interact.*
 import org.rsmod.api.player.protect.*
 import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.random.GameRandom
+import org.rsmod.content.interfaces.bank.bankCapacity
+import org.rsmod.content.interfaces.bank.scripts.BankInvScript
 import org.rsmod.content.skills.runecrafting.colossalPouchDegradeThreshold
 import org.rsmod.content.skills.runecrafting.mediumPouchDegradeThreshold
 import org.rsmod.events.EventBus
@@ -99,17 +104,27 @@ internal class EssencePouchInteractionTest {
             assertEquals(if (kept)3 else 0, f.stored()); assertEquals(9, EssencePouch.storedAmount(f.player, EssencePouch.Tier.Large))
         }
     }
+
+    @Test fun `native bulk Empty containers deposits every essence tier and retains degraded pouch state`() {
+        for (tier in EssencePouch.Tier.entries) {
+            val f = Fixture(tier); f.seed(tier, 3); if (tier.degradedItem != null) f.put(0, tier.degradedItem!!)
+            val original = f.player.inv[0]; f.bulk(); f.bulk()
+            assertEquals(3, f.player.invMap.getOrPut("inv.bank").physicalCount(EssencePouch.PURE_ESSENCE)); assertEquals(0, f.stored()); assertSame(original, f.player.inv[0])
+        }
+    }
     private class Fixture(val tier: EssencePouch.Tier = EssencePouch.Tier.Small) {
         var dropAccepted = true
         val bus = EventBus(); val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache()); val random = mock(GameRandom::class.java)
-        val player = Player().apply { inv = Inventory.create("inv.inv").also { it.owner = this }; worn = Inventory.create("inv.worn"); coords = CoordGrid(3000, 3000); observerUUID = 1001; currentMapClock = 100; processedMapClock = 100; for (stat in listOf("hitpoints", "runecrafting", "crafting")) { statMap.setBaseLevel("stat.$stat", 99); statMap.setCurrentLevel("stat.$stat", 99) }; inv[0] = InvObj(tier.intactItem) }
+        val player = Player().apply { inv = Inventory.create("inv.inv").also { it.owner = this }; worn = Inventory.create("inv.worn"); bankCapacity = 800; coords = CoordGrid(3000, 3000); observerUUID = 1001; currentMapClock = 100; processedMapClock = 100; for (stat in listOf("hitpoints", "runecrafting", "crafting")) { statMap.setBaseLevel("stat.$stat", 99); statMap.setCurrentLevel("stat.$stat", 99) }; inv[0] = InvObj(tier.intactItem) }
+        val banking = BankInvScript(bus, mock(org.rsmod.api.player.bonus.WornBonuses::class.java), mock(org.rsmod.api.combat.weapon.WeaponSpeeds::class.java), setOf(EssencePouchBankDeposits()))
         val launcher: ProtectedAccessLauncher; val held: HeldInteractions
         init { val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getAlignment = { TextAlignment() }, getRandom = { random })); launcher = ProtectedAccessLauncher(factory)
-            with(InvTransactionsScript(PlayerItemStorage(setOf(EssencePouchStorageHook())))) { scripts.startup() }; with(EssencePouchScript()) { scripts.startup() }; with(ColossalPouchCraftEvents()) { scripts.startup() }; with(PouchRepairEvents()) { scripts.startup() }
+            with(InvTransactionsScript(PlayerItemStorage(setOf(EssencePouchStorageHook())))) { scripts.startup() }; with(banking) { scripts.startup() }; with(EssencePouchScript()) { scripts.startup() }; with(ColossalPouchCraftEvents()) { scripts.startup() }; with(PouchRepairEvents()) { scripts.startup() }
             val ctor = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }; val dc = ctor.parameterTypes[2].declaredConstructors.single().apply { isAccessible = true }; val drop = dc.newInstance(*dc.parameterTypes.map { when { it == EventBus::class.java -> bus; it.simpleName == "GroundItemDropResolver" -> org.rsmod.api.player.hook.GroundItemDropResolver(emptySet()); it.simpleName == "ObjRepository" -> mock(it) { call -> if (call.method.name == "add" && call.method.returnType == Boolean::class.javaPrimitiveType)dropAccepted else RETURNS_DEFAULTS.answer(call) }; else -> mock(it) } }.toTypedArray()); held = ctor.newInstance(bus, mock(ctor.parameterTypes[1]), drop, mock(ctor.parameterTypes[3]))as HeldInteractions
         }
         fun put(slot: Int, item: String) { player.inv[slot] = InvObj(item) }
         fun seed(t: EssencePouch.Tier, n: Int) { EssencePouch.depositUpTo(player, t, n); EssencePouch.setStoredEssenceType(player, t, EssencePouch.PURE_ESSENCE) }
+        fun bulk() { run { ifOpenMainSidePair("interface.bankmain", "interface.bankside") }; val c = If3Button::class.java.declaredConstructors.single { it.parameterCount == 5 }; If3ButtonHandler(bus, launcher).handle(player, c.newInstance("component.bankmain:depositcontainers".asRSCM(), -1, -1, 1, null) as If3Button) }
         fun stored() = EssencePouch.storedAmount(player, tier)
         fun run(block: suspend ProtectedAccess.() -> Unit) { player.ifClose(bus); launcher.launch(player, block = block) }
         fun op(op: HeldOp) = run { held.interact(this, inv, 0, op) }

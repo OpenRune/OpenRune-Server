@@ -117,6 +117,11 @@ internal class FishBarrelInteractionTest {
         f.player.invMap.getOrPut("inv.bank")[0] = InvObj("obj.coins", 100); f.boxClick()
         assertEquals(28, FishBarrelContents.total(f.player)); assertEquals(0, f.player.invMap.getOrPut("inv.bank").physicalCount("obj.raw_lobster"))
     }
+
+    @Test fun `native bulk Empty containers banks shared fish storage exactly once with duplicate barrel forms`() {
+        val f = Fixture(); f.put(0, "obj.fish_barrel_open"); f.put(1, "obj.fish_barrel_closed"); FishBarrelContents.update(f.player, "obj.raw_lobster", 28)
+        f.bulk(); f.bulk(); assertEquals(28, f.player.invMap.getOrPut("inv.bank").physicalCount("obj.raw_lobster")); assertEquals(0, FishBarrelContents.total(f.player)); assertEquals(2, f.player.inv.occupiedSpace())
+    }
     private class Fixture {
         val bus = EventBus(); val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
         val player = Player(client).apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); currentMapClock = 100; processedMapClock = 100; bankCapacity = 800; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
@@ -124,7 +129,7 @@ internal class FishBarrelInteractionTest {
         val launcher: ProtectedAccessLauncher; val held: HeldInteractions
         init {
             with(InvTransactionsScript(PlayerItemStorage(setOf(FishBarrelStorageHook())))) { scripts.startup() }
-            val bankScript = BankInvScript(bus, mock(org.rsmod.api.player.bonus.WornBonuses::class.java), mock(org.rsmod.api.combat.weapon.WeaponSpeeds::class.java))
+            val bankScript = BankInvScript(bus, mock(org.rsmod.api.player.bonus.WornBonuses::class.java), mock(org.rsmod.api.combat.weapon.WeaponSpeeds::class.java), setOf(FishBarrelBankDeposits()))
             with(FishBarrelScript(bankScript)) { scripts.startup() }
             with(bankScript) { scripts.startup() }
             with(DepositBoxInterfaceScript(bus, bankScript)) { scripts.startup() }
@@ -137,6 +142,10 @@ internal class FishBarrelInteractionTest {
         fun op(slot: Int, op: HeldOp) = run { held.interact(this, inv, slot, op) }
         fun use(first: Int, second: Int) = run { HeldUInteractions(bus).interact(this, inv, ServerCacheManager.getItem(inv[first]!!.id)!!, first, ServerCacheManager.getItem(inv[second]!!.id)!!, second) }
         fun choose(index: Int) { val c = player.activeCoroutine!!; assertTrue(c.isAwaiting(ResumePauseButtonInput::class)); c.resumeWith(ResumePauseButtonInput("component.chatmenu:options", index)) }
+        fun bulk() {
+            run { ifOpenMainModal("interface.bank_depositbox") }
+            val c = If3Button::class.java.declaredConstructors.single { it.parameterCount == 5 }; If3ButtonHandler(bus, launcher).handle(player, c.newInstance("component.bank_depositbox:deposit_lootingbag".asRSCM(), -1, -1, 1, null) as If3Button)
+        }
         fun boxClick() {
             run { ifOpenMainModal("interface.bank_depositbox") }
             val ctor = If3Button::class.java.declaredConstructors.single { it.parameterCount == 5 }

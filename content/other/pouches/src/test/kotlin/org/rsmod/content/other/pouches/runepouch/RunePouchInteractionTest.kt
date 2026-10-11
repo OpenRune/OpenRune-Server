@@ -24,6 +24,8 @@ import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onIfOpen
 import org.rsmod.content.interfaces.bank.bankCapacity
 import org.rsmod.content.interfaces.bank.scripts.BankInvScript
+import org.rsmod.content.other.pouches.PouchBankDeposits
+import org.rsmod.content.other.pouches.lootingbag.*
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.entity.Player
@@ -170,6 +172,22 @@ internal class RunePouchInteractionTest {
         }
         val f = Fixture(); f.put(0, RunePouches.DIVINE); f.op(0, HeldOp.Op3); f.choose(2); assertEquals(RunePouches.DIVINE.asRSCM(), f.player.inv[0]!!.id)
     }
+
+    @Test fun `native Empty containers banks runes and looting contents without overflowing aggregate coin counts`() {
+        for (symbol in RunePouches.ALL) {
+            val f = Fixture(); f.put(0, symbol); f.put(1, LootingBags.OPEN)
+            val contents = RunePouchContents.empty(if (symbol in listOf(RunePouches.DIVINE, RunePouches.DIVINE_LOCKED)) 4 else 3)
+            contents.add(RunePouchRunes.byObj("obj.airrune".asRSCM())!!.compactId, 50); f.player.writeRunePouch(contents)
+            f.player.lootingBag[0] = InvObj("obj.coins", Int.MAX_VALUE); f.player.saveLootingBag(); f.bulk(); f.bulk()
+            assertEquals(50, f.player.invMap.getOrPut("inv.bank").physicalCount("obj.airrune")); assertEquals(Int.MAX_VALUE, f.player.invMap.getOrPut("inv.bank").physicalCount("obj.coins")); assertTrue(f.player.readRunePouch(4).isEmpty()); assertTrue(f.player.lootingBag.isEmpty()); assertTrue(f.player.attr[LOOTING_BAG_ATTR] == null); assertEquals(2, f.player.inv.occupiedSpace())
+        }
+    }
+
+    @Test fun `native Empty containers cannot discard runes or looting contents when bank is full`() {
+        val f = Fixture(); f.put(0, RunePouches.REGULAR); f.put(1, LootingBags.CLOSED); f.player.bankCapacity = 1; f.player.invMap.getOrPut("inv.bank")[0] = InvObj("obj.lobster")
+        val contents = RunePouchContents.empty(3); contents.add(RunePouchRunes.byObj("obj.airrune".asRSCM())!!.compactId, 50); f.player.writeRunePouch(contents); f.player.lootingBag[0] = InvObj("obj.coins", 100); f.player.saveLootingBag()
+        f.bulk(); assertEquals(50, f.player.readRunePouch(3).counts[0]); assertEquals(100, f.player.lootingBag[0]!!.count); assertTrue(f.player.attr[LOOTING_BAG_ATTR] != null)
+    }
     private class Fixture {
         val bus = EventBus(); val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
         val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); bankCapacity = 800; coords = CoordGrid(3222, 3218); currentMapClock = 100; processedMapClock = 100; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
@@ -179,11 +197,12 @@ internal class RunePouchInteractionTest {
             scripts.onIfOpen("interface.bankside") { player.ifSetEvents("component.bankside:items", player.inv.indices, dev.openrune.definition.type.widget.IfEvent.Op1, dev.openrune.definition.type.widget.IfEvent.Op9) }
             with(InvTransactionsScript(PlayerItemStorage(emptySet()))) { scripts.startup() }
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(context); launcher = ProtectedAccessLauncher(factory)
-            val bankScript = BankInvScript(bus, mock(WornBonuses::class.java), mock(WeaponSpeeds::class.java))
+            val bankScript = BankInvScript(bus, mock(WornBonuses::class.java), mock(WeaponSpeeds::class.java), setOf(PouchBankDeposits()))
             with(RunePouchScript(mock(ObjRepository::class.java), launcher, bankScript)) { scripts.startup() }
             with(bankScript) { scripts.startup() }
             val c = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }; held = c.newInstance(bus, mock(c.parameterTypes[1]), mock(c.parameterTypes[2]), HeldEquipOp(bus))as HeldInteractions
         }
+        fun bulk() { player.ifClose(bus); bankOpen(); val c = If3Button::class.java.declaredConstructors.single { it.parameterCount == 5 }; If3ButtonHandler(bus, launcher).handle(player, c.newInstance("component.bankmain:depositcontainers".asRSCM(), -1, -1, 1, null) as If3Button) }
         fun bankOpen() { launcher.launch(player) { ifOpenMainSidePair("interface.bankmain", "interface.bankside"); ifSetEvents("component.bankside:items", inv.indices, dev.openrune.definition.type.widget.IfEvent.Op1) } }
         fun config() = button("component.bankside:items", 0, if (player.inv[0]!!.id in RunePouches.divineIds)RunePouches.DIVINE else RunePouches.REGULAR, 1)
         fun put(slot: Int, symbol: String, count: Int = 1) { player.inv[slot] = InvObj(symbol, count) }

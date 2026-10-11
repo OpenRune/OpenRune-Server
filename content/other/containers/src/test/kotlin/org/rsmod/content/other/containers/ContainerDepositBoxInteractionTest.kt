@@ -72,16 +72,49 @@ internal class ContainerDepositBoxInteractionTest {
             f.click("obj.gem_bag"); assertEquals(40, f.count("obj.gem_bag", "obj.uncut_sapphire")); assertEquals(0, f.bank.physicalCount("obj.uncut_sapphire"))
         }
     }
+
+    @Test fun `both native Empty containers buttons bank each shared family once and retain container forms`() {
+        for (box in listOf(false, true)) {
+            val f = Fixture(); f.put(0, "obj.slayer_herb_sack"); f.put(1, "obj.slayer_herb_sack_open"); f.put(2, "obj.gem_bag")
+            f.store("obj.slayer_herb_sack", "obj.unidentified_guam", 20); f.store("obj.gem_bag", "obj.uncut_sapphire", 8)
+            if (box) f.open() else f.openBank(); f.bulk(box); f.bulk(box)
+            assertEquals(20, f.bank.physicalCount("obj.unidentified_guam")); assertEquals(8, f.bank.physicalCount("obj.uncut_sapphire")); assertEquals(3, f.player.inv.occupiedSpace())
+            assertEquals(0, f.count("obj.slayer_herb_sack", "obj.unidentified_guam")); assertEquals(0, f.count("obj.gem_bag", "obj.uncut_sapphire"))
+        }
+    }
+
+    @Test fun `bulk Empty containers preserves full-bank contents and commits only available stack space`() {
+        val f = Fixture(); f.put(0, "obj.slayer_herb_sack"); f.put(1, "obj.gem_bag"); f.store("obj.slayer_herb_sack", "obj.unidentified_guam", 20); f.store("obj.gem_bag", "obj.uncut_sapphire", 8)
+        f.player.bankCapacity = 1; f.bank[0] = InvObj("obj.coins"); f.open(); f.bulk(true)
+        assertEquals(20, f.count("obj.slayer_herb_sack", "obj.unidentified_guam")); assertEquals(8, f.count("obj.gem_bag", "obj.uncut_sapphire"))
+        f.bank[0] = InvObj("obj.unidentified_guam", Int.MAX_VALUE - 5); f.bulk(true)
+        assertEquals(15, f.count("obj.slayer_herb_sack", "obj.unidentified_guam")); assertEquals(8, f.count("obj.gem_bag", "obj.uncut_sapphire")); assertEquals(Int.MAX_VALUE, f.bank[0]!!.count)
+    }
+
+    @Test fun `bulk Empty containers returns chugging doses through the native dose-family bank output`() {
+        val f = Fixture(); f.put(0, ChuggingBarrel.ITEM); val family = PotionFamilies.byItem("obj.4doseprayerrestore".asRSCM())!!
+        f.barrel.write(f.player, listOf(ChuggingBarrel.Slot(family.id, 10), null, null, null, null)); f.open(); f.bulk(true)
+        assertTrue(f.barrel.contents(f.player).all { it == null }); assertEquals(2, f.bank.physicalCount("obj.4doseprayerrestore")); assertEquals(1, f.bank.physicalCount("obj.2doseprayerrestore"))
+    }
+
+    @Test fun `bulk Empty containers rejects dead logout and unowned container state`() {
+        for (mode in 0..3) {
+            val f = Fixture(); f.put(0, "obj.gem_bag"); f.store("obj.gem_bag", "obj.uncut_sapphire", 8); f.open()
+            when (mode) { 0 -> f.player.statMap.setCurrentLevel("stat.hitpoints", 0); 1 -> f.player.pendingLogout = true; 2 -> f.player.loggingOut = true; 3 -> f.player.inv[0] = null }
+            f.bulk(true); assertEquals(8, f.count("obj.gem_bag", "obj.uncut_sapphire")); assertEquals(0, f.bank.physicalCount("obj.uncut_sapphire"))
+        }
+    }
     private class Fixture {
         val bus = EventBus(); val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache()); val storage = ContainerStore()
         val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); currentMapClock = 100; processedMapClock = 100; bankCapacity = 800; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
+        val barrel = ChuggingBarrel(); val potions = PotionStorage()
         val bank = player.invMap.getOrPut("inv.bank")
         val launcher: ProtectedAccessLauncher
         init {
             val context = ProtectedAccessContextFactory.empty().copy(getEventBus = { bus })
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(context); launcher = ProtectedAccessLauncher(factory)
             val bonuses = WornBonuses(); val speeds = mock(WeaponSpeeds::class.java)
-            val bankScript = BankInvScript(bus, bonuses, speeds)
+            val bankScript = BankInvScript(bus, bonuses, speeds, setOf(ContainerBankDeposits(storage, barrel, potions)))
             with(InvTransactionsScript(PlayerItemStorage(setOf(ContainerStorageHook(storage))))) { scripts.startup() }
             with(bankScript) { scripts.startup() }; with(BankOpenScript(bonuses, speeds, bus)) { scripts.startup() }; with(ContainerScript(storage, bankScript)) { scripts.startup() }
             with(DepositBoxInterfaceScript(bus, bankScript)) { scripts.startup() }; with(CoalBagScript(bankScript)) { scripts.startup() }
@@ -93,6 +126,7 @@ internal class ContainerDepositBoxInteractionTest {
         fun openBank() { VarPlayerIntMapSetter.set(player, "varbit.bank_tab_main", bank.occupiedSpace()); player.ifClose(bus); launcher.launch(player) { ifOpenMainSidePair("interface.bankmain", "interface.bankside") } }
         fun click(item: String? = null) = clickComponent("component.bank_depositbox:inventory", item)
         fun clickBank() = clickComponent("component.bankside:items", null)
+        fun bulk(box: Boolean) { val c = If3Button::class.java.declaredConstructors.single { it.parameterCount == 5 }; val component = if (box) "component.bank_depositbox:deposit_lootingbag" else "component.bankmain:depositcontainers"; If3ButtonHandler(bus, launcher).handle(player, c.newInstance(component.asRSCM(), -1, -1, 1, null) as If3Button) }
         private fun clickComponent(component: String, item: String?) {
             val ctor = If3Button::class.java.declaredConstructors.single { it.parameterCount == 5 }
             If3ButtonHandler(bus, launcher).handle(player, ctor.newInstance(component.asRSCM(), 0, item?.asRSCM() ?: player.inv[0]!!.id, 9, null) as If3Button)

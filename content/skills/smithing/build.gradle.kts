@@ -13,5 +13,7 @@ dependencies {
     implementation(projects.api.attr)
     implementation(projects.content.skills.utils)
     implementation(projects.content.skills.crafting)
+    testImplementation(projects.api.net)
+    testImplementation(libs.rsprot.api)
     testImplementation("org.mockito:mockito-core:5.14.2")
 }

@@ -308,9 +308,9 @@ constructor(
             objExamine(bag, slot)
             return
         }
-        if (bag[slot] == null) {
-            return
-        }
+        val original = bag[slot] ?: return
+        val originalBag = inv.firstOrNull { it?.id in LootingBags.ids } ?: return
+        val origin = coords
         val count =
             when (op) {
                 IfButtonOp.Op1 -> bankLeftClickQuantity()
@@ -329,6 +329,7 @@ constructor(
                 IfButtonOp.Op7 -> Int.MAX_VALUE
                 else -> return
             }
+        if (coords != origin || bag[slot] !== original || inv.none { it === originalBag }) return
         bankFromBag(slot, count)
     }
 
@@ -343,8 +344,12 @@ constructor(
 
     private fun ProtectedAccess.bankFromBag(slot: Int, count: Int): Boolean {
         val bag = player.lootingBag
-        val deposited = with(bankInv) { invDeposit(slot, count, bag) }
+        if (!player.hasLootingBag() || player.hitpoints <= 0 || player.pendingLogout || player.loggingOut || !player.ui.containsModal("interface.bankmain")) return false
+        val original = bag[slot] ?: return false
+        val moved = with(bankInv) { depositStoredItem(original, count) }
+        val deposited = moved > 0
         if (deposited) {
+            bag[slot] = if (moved == original.count) null else original.copy(count = original.count - moved)
             invCompress(bag)
             player.saveLootingBag()
         }
@@ -352,6 +357,7 @@ constructor(
     }
 
     private fun ProtectedAccess.bankAll() {
+        if (!player.hasLootingBag() || player.hitpoints <= 0 || player.pendingLogout || player.loggingOut || !player.ui.containsModal("interface.bankmain")) return
         val bag = player.lootingBag
         if (bag.isEmpty()) {
             mes("The bag is empty.")
@@ -361,7 +367,9 @@ constructor(
             if (bag[slot] == null) {
                 continue
             }
-            with(bankInv) { invDeposit(slot, Int.MAX_VALUE, bag) }
+            val original = bag[slot] ?: continue
+            val moved = with(bankInv) { depositStoredItem(original, original.count) }
+            if (moved > 0) bag[slot] = if (moved == original.count) null else original.copy(count = original.count - moved)
         }
         invCompress(bag)
         player.saveLootingBag()

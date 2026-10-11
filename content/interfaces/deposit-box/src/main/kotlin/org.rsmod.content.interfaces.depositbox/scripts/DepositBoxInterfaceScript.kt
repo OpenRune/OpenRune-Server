@@ -58,6 +58,10 @@ constructor(private val eventBus: EventBus, private val bankInv: BankInvScript) 
             }
         }
 
+        onIfModalButton("component.bank_depositbox:deposit_lootingbag") {
+            intoMainTab { with(bankInv) { if (depositContainers()) playDepositAnim() } }
+        }
+
         onIfModalButton(DepositBoxConstants.COMP_DEPOSIT_INV) {
             if (bankDepositInv(bankInv)) {
                 playDepositAnim()

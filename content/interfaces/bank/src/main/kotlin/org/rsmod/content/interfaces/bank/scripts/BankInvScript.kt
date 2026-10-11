@@ -99,6 +99,7 @@ constructor(
             mainInvOp(it.comsub, it.op)
         }
         onIfModalButton("component.bankside:wornops") { wornInvOp(it.comsub, it.op) }
+        onIfModalButton("component.bankmain:depositcontainers") { depositContainers() }
         onIfModalButton("component.bankmain:depositinv") { depositInv() }
         onIfModalButton("component.bankmain:depositworn") { depositWorn() }
         onIfModalButton("component.bankmain:tabs") { selectTab(it.comsub, it.op) }
@@ -234,11 +235,27 @@ constructor(
         invDeposit(slot, count, inv)
     }
 
+    fun ProtectedAccess.depositContainers(): Boolean {
+        if (player.hitpoints <= 0 || player.pendingLogout || player.loggingOut || !(player.ui.containsModal("interface.bankmain") || player.ui.containsModal("interface.bank_depositbox"))) return false
+        var moved = false
+        for (store in depositStores) if (store.depositContainers(this, this@BankInvScript) > 0) moved = true
+        setBanksideExtraOps()
+        return moved
+    }
+
     /** Deposits virtual-container contents through the same rules as a physical bank deposit. */
     public fun ProtectedAccess.depositStoredStack(item: Int, count: Int, strict: Boolean = false): Int {
         if (count <= 0) return 0
+        val type = ServerCacheManager.getItem(item) ?: return 0
+        return depositStoredItem(InvObj(type, count), count, strict)
+    }
+
+    /** A container owner removes only the committed amount; item vars survive the native deposit. */
+    public fun ProtectedAccess.depositStoredItem(item: InvObj, requested: Int, strict: Boolean = false): Int {
+        val count = minOf(item.count, requested)
+        if (count <= 0) return 0
         val source = Inventory.create("inv.bank")
-        source[0] = InvObj(ServerCacheManager.getItem(item) ?: return 0, count)
+        source[0] = item.copy(count = count)
         invDeposit(0, count, source, strict)
         return count - (source[0]?.count ?: 0)
     }
