@@ -507,13 +507,13 @@ loc.godwars_climbing_rocks_plain_up	Climb	2950,3767,0	2943,3767,0	60	0	2	0	0	GEA
 loc.fossil_zipwire_start	Teeth-grip	3765,3883,1	3765,3898,0	74	0	10	0	0	GEAR_NONE	quest_bonevoyage		0	false	0		
 loc.grimstone_shortcut_south	Climb	2902,10454,0	2902,10456,0	83	0	4	0	0	GEAR_NONE			0	false	0		
 loc.grimstone_shortcut_south	Climb	2902,10456,0	2902,10454,0	83	0	4	0	0	GEAR_NONE			0	false	0		
-loc.voros_rockslide02_shortcut_down	Descend	2553,7823,0	2559,7820,0	78	27.5	4	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0		
-loc.voros_rockslide02_shortcut_up	Climb	2559,7820,0	2553,7823,0	61	0	4	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0		
-loc.voros_rockslide02_shortcut_down_big	Descend	2573,7767,0	2580,7767,0	78	27.5	4	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0		
-loc.voros_rockslide02_shortcut_up_big	Climb	2580,7767,0	2573,7767,0	61	0	4	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0		
-loc.bush_shortcut	Crawl-through	2656,7816,0	2658,7816,0	64	2	3	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0		
-loc.bush_shortcut	Crawl-through	2658,7816,0	2656,7816,0	64	2	3	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0		
-loc.bush_shortcut	Crawl-through	2666,7837,0	2668,7837,0	64	2	3	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0		
-loc.bush_shortcut	Crawl-through	2668,7837,0	2666,7837,0	64	2	3	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0		
+loc.voros_rockslide02_shortcut_down	Descend	2553,7823,0	2559,7820,0	78	27.5	4	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0
+loc.voros_rockslide02_shortcut_up	Climb	2559,7820,0	2553,7823,0	61	0	4	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0
+loc.voros_rockslide02_shortcut_down_big	Descend	2573,7767,0	2580,7767,0	78	27.5	4	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0
+loc.voros_rockslide02_shortcut_up_big	Climb	2580,7767,0	2573,7767,0	61	0	4	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0
+loc.bush_shortcut	Crawl-through	2656,7816,0	2658,7816,0	64	2	3	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0
+loc.bush_shortcut	Crawl-through	2658,7816,0	2656,7816,0	64	2	3	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0
+loc.bush_shortcut	Crawl-through	2666,7837,0	2668,7837,0	64	2	3	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0
+loc.bush_shortcut	Crawl-through	2668,7837,0	2666,7837,0	64	2	3	0	0	GEAR_NONE	quest_bloodmoonrises		0	false	0
 loc.vampyrium_stepping_stone_shortcut_pillar	Jump-to	2575,7802,0	2571,7790,0	73	5.7	4	0	0	GEAR_NONE	quest_bloodmoonrises	varbit.vampyrium_traversal_rock_mined	1	false	0		2571,7800,0;2571,7797,0;2571,7794,0
 loc.vampyrium_stepping_stone_shortcut_pillar	Jump-to	2571,7790,0	2575,7802,0	73	5.7	4	0	0	GEAR_NONE	quest_bloodmoonrises	varbit.vampyrium_traversal_rock_mined	1	false	0		2571,7794,0;2571,7797,0;2571,7800,0

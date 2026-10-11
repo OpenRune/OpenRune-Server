@@ -35,7 +35,7 @@ internal object ShortcutRoutes {
             fun coord(index: Int): CoordGrid { val c = v[index].split(',').map(String::toInt); return CoordGrid(c[0], c[1], c[2]) }
             ShortcutRoute(v[0], v[1], coord(2), coord(3), v[4].toInt(), v[5].toDouble(), v[6].toInt(),
                 v[7].toInt(), v[8].toInt(), v[9], v[10].ifBlank { null }, v[11].ifBlank { null },
-                v[12].toInt(), v[13].toBooleanStrict(), v[14].toInt(), v[15], v.getOrElse(16) { "" }.split(';').filter { it.isNotBlank() }.map { value -> val c = value.split(',').map(String::toInt); CoordGrid(c[0], c[1], c[2]) })
+                v[12].toInt(), v[13].toBooleanStrict(), v[14].toInt(), v.getOrElse(15) { "" }, v.getOrElse(16) { "" }.split(';').filter { it.isNotBlank() }.map { value -> val c = value.split(',').map(String::toInt); CoordGrid(c[0], c[1], c[2]) })
         }.toList()
     }
 
