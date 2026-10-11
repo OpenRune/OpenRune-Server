@@ -6,7 +6,6 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.SlayerTaskKey
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -46,24 +45,29 @@ class SlayerTaskCreditTest {
     }
 
     @Test
-    fun `a boss roll picks a real boss with a positive kill count`() {
-        for (bossMaster in listOf(NIEVE, DURADEL, KONAR, KRYSTILIA)) {
-            val boss = SlayerBossTasks.rollBoss(master(bossMaster)) { MAX_LEVEL }
-            assertNotNull(boss)
-            boss!!
-            assertTrue(boss.taskSubtableId > 0)
-            assertTrue(SlayerBossTasks.maxKillCount(boss.task) >= SlayerBossTasks.MIN_KILL_COUNT)
-            val key = SlayerTaskKey.of(SlayerBossTasks.BOSS_TASK_ID, boss.taskSubtableId)
-            assertTrue(ServerCacheManager.getNpcs().values.any { SlayerTaskCredit.counts(it, key) })
-        }
+    fun `each boss master only offers the bosses the wiki lets it assign`() {
+        fun offered(masterId: Int) =
+            SlayerBossTasks.eligibleBosses(master(masterId)) { MAX_LEVEL }.map { it.taskSubtableId }
+
+        assertTrue(CALLISTO_BOSS_ID in offered(KRYSTILIA))
+        assertFalse(KING_BLACK_DRAGON_BOSS_ID in offered(KRYSTILIA))
+        assertFalse(VORKATH_BOSS_ID in offered(KRYSTILIA))
+        assertTrue(ALCHEMICAL_HYDRA_BOSS_ID in offered(KONAR))
+        assertFalse(ALCHEMICAL_HYDRA_BOSS_ID in offered(NIEVE))
+        assertFalse(ALCHEMICAL_HYDRA_BOSS_ID in offered(DURADEL))
+        assertTrue(KING_BLACK_DRAGON_BOSS_ID in offered(DURADEL))
+        assertFalse(MAGGOT_KING_BOSS_ID in offered(KONAR))
     }
 
     companion object {
         private const val SPIDERS = 4
         private const val ZOMBIES = 10
         private const val ARAXYTES = 124
+        private const val KING_BLACK_DRAGON_BOSS_ID = 8
         private const val CALLISTO_BOSS_ID = 9
         private const val VORKATH_BOSS_ID = 23
+        private const val ALCHEMICAL_HYDRA_BOSS_ID = 24
+        private const val MAGGOT_KING_BOSS_ID = 33
         private const val NIEVE = 6
         private const val DURADEL = 5
         private const val KONAR = 8

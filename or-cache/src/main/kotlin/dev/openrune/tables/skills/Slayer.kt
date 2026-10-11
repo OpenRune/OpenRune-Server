@@ -15,6 +15,8 @@ object Slayer {
     const val COL_BLOCK_COST = 7
     const val COL_DIARY_VARBIT = 8
     const val COL_DIARY_POINTS_PER_TASK = 9
+    const val COL_BOSSES = 10
+    const val COL_EXCLUDED_BOSSES = 11
 
     const val COL_BONUS_INTERVAL = 0
     const val COL_BONUS_MULTIPLIER = 1
@@ -30,6 +32,8 @@ object Slayer {
         column("block_cost", COL_BLOCK_COST, VarType.INT)
         column("diary_varbit", COL_DIARY_VARBIT, VarType.INT)
         column("diary_points_per_task", COL_DIARY_POINTS_PER_TASK, VarType.INT)
+        column("bosses", COL_BOSSES, VarType.DBROW)
+        column("excluded_bosses", COL_EXCLUDED_BOSSES, VarType.DBROW)
 
         row("dbrow.turael_aya") {
             column(COL_MASTER_ID, 1)
@@ -86,6 +90,16 @@ object Slayer {
             )
             column(COL_CAN_ASSIGN_BOSSES, false)
             column(COL_BLOCK_COST, 100)
+            columnRSCM(
+                COL_BOSSES,
+                "dbrow.slayer_boss_task_callisto",
+                "dbrow.slayer_boss_task_venenatis",
+                "dbrow.slayer_boss_task_vetion",
+                "dbrow.slayer_boss_task_chaoselemental",
+                "dbrow.slayer_boss_task_chaosfanatic",
+                "dbrow.slayer_boss_task_crazyarchaeologist",
+                "dbrow.slayer_boss_task_scorpia",
+            )
         }
 
         row("dbrow.mazchna_achtryn") {
@@ -164,6 +178,7 @@ object Slayer {
             column(COL_BLOCK_COST, 80)
             columnRSCM(COL_DIARY_VARBIT, "varbit.kourend_diary_elite_complete")
             column(COL_DIARY_POINTS_PER_TASK, 20)
+            columnRSCM(COL_EXCLUDED_BOSSES, "dbrow.slayer_boss_task_maggot_king")
         }
 
         row("dbrow.nieve_steve") {
@@ -185,6 +200,11 @@ object Slayer {
             column(COL_BLOCK_COST, 90)
             columnRSCM(COL_DIARY_VARBIT, "varbit.western_diary_elite_complete")
             column(COL_DIARY_POINTS_PER_TASK, 15)
+            columnRSCM(
+                COL_EXCLUDED_BOSSES,
+                "dbrow.slayer_boss_task_hydraboss",
+                "dbrow.slayer_boss_task_maggot_king",
+            )
         }
 
         row("dbrow.duradel_kuradal") {
@@ -204,6 +224,11 @@ object Slayer {
             )
             column(COL_CAN_ASSIGN_BOSSES, true)
             column(COL_BLOCK_COST, 100)
+            columnRSCM(
+                COL_EXCLUDED_BOSSES,
+                "dbrow.slayer_boss_task_hydraboss",
+                "dbrow.slayer_boss_task_maggot_king",
+            )
         }
 
         row("dbrow.mortimer") {
