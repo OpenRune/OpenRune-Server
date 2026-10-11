@@ -56,12 +56,12 @@ handles the revision-240 signed varp sentinel explicitly; a Displee rewrite
 otherwise moves existing varp file IDs by 32768. The failed candidate was
 replaced with an untouched accepted cache copy before qualification.
 
-**14 Curator/cape integration tests + 15 existing max-cape tests pass**. The
+**23 Curator/cape integration tests + 15 existing max-cape tests pass**. The
 actual NPC, held-item, pause-dialog and IF3 input paths cover purchases, all 22
 recipes in both directions/full inventory, all 48 Wear options, editor
 save/cancel/close/presets/migration, 24 worn-bonus calculations and Dizana
-held/ammo/combat/persistence scopes. These tests do not prove native visual
-acceptance or the locked death/repair lifecycle.
+held/ammo/combat/persistence, actual PostgreSQL save/load, variant teleports
+and native death/Perdu routes. Native visual acceptance is still separate.
 
 Dizana reuses the reviewed shared ammo implementation from the parked branch;
 only the necessary API changes and new-cape handlers are included. Full parked
@@ -79,10 +79,71 @@ bootstrap bridge and qualified player/NPC/model/attachment/scene hooks without
 opening a client. Original revision/API/HD fingerprint guards, particle scale
 and hem offset are retained.
 
+## Variant behavior and protection
+
+Held options come from each native max variant; regular/trimmed also retain
+the native worn labels/submenus. Fixed forms keep their matching cape behavior.
+Ardougne/Mythical teleports use shared teleport validation and collision checks.
+Ava variants keep native recovery rates and Commune; regular forms have 72%
+recovery. Guild entry and essence-pouch protection apply to all wearable max
+variants; full smelting/coal/runecrafting/cooking perks apply to regular forms.
+Dizana is blessed with shared extra ammunition and Ava upgrade.
+
+Eight custom protection families have non-wearable broken, locked broken and
+locked mangled forms at free IDs 63200-63223. They keep the custom inventory
+model but clear bonuses/equipment slots. The revision-240 native cache already
+has broken/mangled Infernal and Dizana max forms. These custom families use the
+permanent lock/repair lifecycle reviewed in the parked quiver implementation;
+this extends that policy to the custom families without replacing old items.
+Low PvP loss returns a broken form and repair bounty. Deep unlocked loss yields
+569,250 coins; locked deep loss returns a mangled form with 500k bounty/repair.
+Broken items cannot consume protection slots or pay another repair bounty.
+PvM locked items remain equipped; death previews stay pure. Dizana shared ammo
+spills on PvP death even if its cape is protected.
+
+Perdu revalidates selected references and pays atomically from inventory/bank.
+Lock: parchment + 500k. Unlock: parchment + 475k refund. Repair keeps the family
+and lock state. Locked fusion consumes a locked ingredient, so it creates no
+free additional lock. Fees follow the matching max-family repair table:
+Fire 150k, other non-Dizana families 99k, Dizana 400k.
+References: [death table](https://oldschool.runescape.wiki/w/Death) and
+[max exceptions](https://oldschool.runescape.wiki/w/Max_cape). The indexed wiki
+is older than this cache and does not prove current mangled-state behavior.
+
 ## Validation and integration still to run
 
-Repeated bounded pack/cache regeneration; broader shared-code regression;
-actual account save/load; complete applicable cape perks and locked
-death/Perdu/repair routes; software/qualified-HD depth and palette isolation;
-isolated boot/login, guarded deployment with backups and client startup/rollback.
-The original handoff proof is reference evidence, not a passed integration run.
+Exact-file ktlint hygiene passes, excluding all accepted baseline sources.
+Repeated bounded regeneration passes. Native account save/load uses a fresh
+temporary PostgreSQL database and the existing repository/applier: saved colors,
+presets, Ava toggle and ammo survive; temporary drafts/timers do not. Touched
+crafting/cooking/runecrafting modules compile.
+
+The 217MB packaged JAR is built and preserves all nine accepted private Studio
+pack entries byte-for-byte. Isolated boot loads 585 scripts, Central and a fresh
+PostgreSQL database; the correct revision-240 JS5 handshake and appearance schema
+1 both pass. Windows-assigned wildcard-tested TCP ports avoid reserved/busy fixed
+ports; the test profile binds its own existing-key gamepack copy to those ports.
+The actual Java 11 client initializes, side-loads the supplied particle plugin
+and reports software particle/depth readiness. Only that owned client/server
+were stopped afterward. No old profiles, RSProx, live cache/RSA/data were edited.
+
+Installer rehearsal on an independent server copy passes Check, Install,
+idempotent Install and exact Rollback of all 32 originals. An unknown target
+change is refused before replacement. Process guards cover the selected server
+and its game port, allowing unrelated clients to remain open. The original
+live JAR and all fourteen accepted source hashes still match the baseline.
+
+Package: `outputs/nero-completionist-v07-20261012` in the task workspace.
+`TESTEN.cmd` prepares/starts the isolated test server and opt-in client;
+`TESTEN.ps1 -Action Stop` stops the owned server. `VALIDATION.json` records the
+actual evidence, and `LEESMIJ.md` contains the manual scenarios. The package
+installer has not been run against the live installation.
+
+Still open: native in-game visual acceptance of both genders, idle/walk/emote,
+color/palette isolation and software/qualified-HD depth. The supplied renderer
+still reports `sourceMaterial744=false` and `exact646Simulation=false`: it is
+the v0.7 preview implementation, not a newly proven exact native particle engine.
+Original render proof is reference evidence; startup does not prove appearance.
+The older full-completion eligibility proposal is not part of v0.7 purchase
+behavior and awaits an owner decision. Actual live installation/merge awaits
+subsequent owner acceptance.

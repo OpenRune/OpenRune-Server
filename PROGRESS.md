@@ -1,6 +1,6 @@
 # Project overview
 
-Reviewed **2026-10-11**. This is the source for current status and priorities.
+Reviewed **2026-10-12**. This is the source for current status and priorities.
 Implementation details: [custom documentation](docs/custom/README.md).
 Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
@@ -12,20 +12,24 @@ Owner requested the v0.7 handoff integration after the Forestry chunk. Work is
 isolated on `feature/nero-completionist`, based on accepted Home/Revenants
 `44f15a55f`; existing live JAR/cache/RSA/playerdata remain unchanged.
 
-Validated local chunk: native Curator purchase/fusion/customiser, 22 recipes,
-all 48 Wear options, 24 matching max-variant bonuses (+2, magic raw +20),
-regular/trimmed max-cape integration and Dizana ammo/combat. **14 new native
-integration tests and 15 existing max-cape tests pass**. The bounded pack
-preserves **538,211 existing config definitions**, including signed varp IDs.
-Only style vars move: **63300–63341**; item/model/NPC/interface IDs stay.
+Validated local chunk: Curator purchase/fusion/customiser, 22 recipes, all 48
+Wear options, 24 matching max-variant bonuses (+2, magic raw +20), native worn
+menus, variant teleports/Ava, guild/pouch exceptions, Dizana ammo/combat and all
+eight custom lock/repair families. **23 new native integration tests and 15
+existing max-cape tests pass**, including actual PostgreSQL account save/load
+and native death selection/application/ground loot. The bounded pack preserves
+**538,211 existing config definitions** and signed varp IDs. Style vars move to
+**63300-63341**; supplied item/model/NPC/interface IDs stay. New non-wearable
+repair states use free item IDs **63200-63223**.
 
-The supplied opt-in particles client retains revision/API/HD guards; all 34
-local pinned libraries and native runtime hook linkage qualify. Client visual
-acceptance, full locked death/repair and guarded test-package deployment are
-still open. The ordinary full cache build has unrelated CS2 failures; only the
-bounded pack route is currently qualified. Purchase prices follow the v0.7
-prototype (10m cape / 5m hood); the older full-completion eligibility design has
-not been silently discarded. See [integration evidence](docs/custom/nero-completionist.md).
+The opt-in particles client retains revision/API/HD guards; all 34 pinned local
+libraries and native runtime hook linkage qualify. Packaged JAR boot, actual client startup and installer/rollback rehearsal
+pass; the [local test package](../../outputs/nero-completionist-v07-20261012/LEESMIJ.md)
+is ready. Native visual gameplay and HD acceptance remain open. Full
+cache building has unrelated existing CS2 failures; the bounded pack route is
+qualified. Purchases follow v0.7 (10m cape / 5m hood); the older completion
+eligibility design remains a separate owner decision.
+See [integration evidence](docs/custom/nero-completionist.md).
 
 ## 🟡 Parked: world shortcuts, containers and fairy rings
 
