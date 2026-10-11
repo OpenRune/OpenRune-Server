@@ -433,3 +433,56 @@ loc.mos_le_harmless_step_2	Cross	3811,3056,0	3810,3048,0	82	0	4	0	0	GEAR_NONE	qu
 loc.cof_shortcut_top	Climb	1435,10076,2	1436,10074,0	83	4	4	0	0	GEAR_NONE			0	false	0		
 loc.pollnivneach_scramble_up	Climb-up	3348,2981,0	3339,2981,0	83	4	4	0	0	GEAR_NONE			0	false	0		
 loc.pollnivneach_scramble_down	Climb-down	3339,2981,0	3348,2981,0	83	4	4	0	0	GEAR_NONE			0	false	0		
+loc.av_stepstone_1	Cross	1393,3309,0	1399,3309,0	36	14	4	0	0	GEAR_NONE			0	false	0		
+loc.av_stepstone_1	Cross	1399,3309,0	1393,3309,0	36	14	4	0	0	GEAR_NONE			0	false	0		
+loc.vmq4_crypt_stepstone	Cross	1313,9378,0	1317,9378,0	46	0	4	0	0	GEAR_NONE			0	false	0		
+loc.vmq4_crypt_stepstone	Cross	1317,9378,0	1313,9378,0	46	0	4	0	0	GEAR_NONE			0	false	0		
+loc.vmq4_crypt_log_balance_1	Walk-across	1301,9398,0	1306,9398,0	46	0	4	0	0	GEAR_NONE			0	false	0		
+loc.vmq4_crypt_log_balance_1	Walk-across	1306,9398,0	1301,9398,0	46	0	4	0	0	GEAR_NONE			0	false	0		
+loc.great_conch_cliff_shortcut_southeast_top	Climb	3272,2333,0	3272,2327,0	52	0	4	0	0	GEAR_NONE			0	false	0		
+loc.great_conch_cliff_shortcut_southeast_bottom	Climb	3272,2327,0	3272,2333,0	52	0	4	0	0	GEAR_NONE			0	false	0		
+loc.great_conch_cliff_shortcut_east_1_top	Climb	3235,2390,0	3235,2386,0	55	0	4	0	0	GEAR_NONE			0	false	0		
+loc.great_conch_cliff_shortcut_east_1_bottom	Climb	3235,2386,0	3235,2390,0	55	0	4	0	0	GEAR_NONE			0	false	0		
+loc.great_conch_cliff_shortcut_east_2_top	Climb	3254,2398,0	3260,2398,0	57	0	4	0	0	GEAR_NONE			0	false	0		
+loc.great_conch_cliff_shortcut_east_2_bottom	Climb	3260,2398,0	3254,2398,0	57	0	4	0	0	GEAR_NONE			0	false	0		
+loc.great_conch_stepping_stone	Cross	3206,2395,0	3212,2395,0	61	0	4	0	0	GEAR_NONE			0	false	0		
+loc.great_conch_stepping_stone	Cross	3212,2395,0	3206,2395,0	61	0	4	0	0	GEAR_NONE			0	false	0		
+loc.proudspire_climbing_rocks_grey01_op	Climb	1581,3249,0	1576,3251,0	71	0	4	0	0	GEAR_NONE			0	false	0		
+loc.proudspire_climbing_rocks_grey03_op	Climb	1576,3251,0	1581,3249,0	71	0	4	0	0	GEAR_NONE			0	false	0		
+loc.darkfrost_shortcut_top	Climb	1477,3305,0	1477,3309,0	76	0	4	0	0	GEAR_NONE			0	false	0		
+loc.darkfrost_shortcut_bottom	Climb	1477,3309,0	1477,3305,0	76	0	4	0	0	GEAR_NONE			0	false	0		
+loc.deepfin_cave_shortcut	Squeeze-through	2075,9203,0	2083,9203,0	84	0	4	0	0	GEAR_NONE			0	false	0		
+loc.deepfin_cave_shortcut	Squeeze-through	2083,9203,0	2075,9203,0	84	0	4	0	0	GEAR_NONE			0	false	0		
+loc.myq5_wall_cave_shortcut_1	Enter	3560,9814,0	3560,9809,0	74	0	4	0	0	GEAR_NONE			0	false	0		
+loc.myq5_wall_cave_shortcut_2	Enter	3560,9809,0	3560,9814,0	74	0	4	0	0	GEAR_NONE			0	false	0		
+loc.myq5_wall_cave_shortcut_3	Enter	3555,9783,0	3555,9788,0	74	0	4	0	0	GEAR_NONE			0	false	0		
+loc.myq5_wall_cave_shortcut_4	Enter	3555,9788,0	3555,9783,0	74	0	4	0	0	GEAR_NONE			0	false	0		
+loc.myq5_wall_cave_shortcut_6_parent	Enter	3536,9768,0	3500,9805,0	93	0	4	0	0	GEAR_NONE		varbit.myq5_lab_sc_unlocked	1	false	0		
+loc.myq5_wall_cave_shortcut_5	Enter	3500,9805,0	3536,9768,0	93	0	4	0	0	GEAR_NONE		varbit.myq5_lab_sc_unlocked	1	false	0		
+loc.myq5_wall_cave_shortcut_7	Enter	3539,9772,0	3543,9772,0	93	0	4	0	0	GEAR_NONE			0	false	0		
+loc.myq5_wall_cave_shortcut_8	Enter	3543,9772,0	3539,9772,0	93	0	4	0	0	GEAR_NONE			0	false	0		
+loc.wyrmscraig_cliff_shortcut_top	Climb	2550,2209,0	2554,2209,0	54	5	4	0	0	GEAR_NONE	quest_fallenfromgrace	varbit.wyrmscraig_cliff_shortcut	1	false	0		
+loc.wyrmscraig_cliff_shortcut_bottom	Climb	2554,2209,0	2550,2209,0	54	5	4	0	0	GEAR_NONE	quest_fallenfromgrace	varbit.wyrmscraig_cliff_shortcut	1	false	0		
+loc.wyrmscraig_stepping_stone_1	Cross	2584,2280,0	2584,2286,0	58	5	4	0	0	GEAR_NONE			0	false	0		
+loc.wyrmscraig_stepping_stone_1	Cross	2584,2286,0	2584,2280,0	58	5	4	0	0	GEAR_NONE			0	false	0		
+loc.wyrmscraig_stepping_stone_3	Cross	2565,2217,0	2565,2221,0	62	5	4	0	0	GEAR_NONE			0	false	0		
+loc.wyrmscraig_stepping_stone_3	Cross	2565,2221,0	2565,2217,0	62	5	4	0	0	GEAR_NONE			0	false	0		
+loc.viyeldi_shortcut_rock_multi	Climb	2378,4714,0	2382,4714,0	91	0	4	0	0	GEAR_NONE	quest_legends	varbit.viyeldi_shortcut	1	false	0		
+loc.viyeldi_shortcut_rope_base_multi	Climb	2382,4714,0	2378,4714,0	91	0	4	0	0	GEAR_NONE	quest_legends	varbit.viyeldi_shortcut	1	false	0		
+loc.moki_agil_shortcut_south	Jump-to	1311,9505,1	1311,9510,1	75	0	4	0	0	GEAR_NONE	quest_finaldawn		0	false	0		
+loc.moki_agil_shortcut_north	Jump-to	1311,9510,1	1311,9505,1	75	0	4	0	0	GEAR_NONE	quest_finaldawn		0	false	0		
+loc.hunting_polar_climbing_rocks	Climb	2740,3830,1	2744,3830,1	35	1	2	0	0	GEAR_NONE			0	false	0		
+loc.hunting_polar_climbing_rocks_inactive	Climb	2744,3830,1	2740,3830,1	35	1	2	0	0	GEAR_NONE			0	false	0		
+loc.godwars_climbing_rocks_plain_down	Climb	2943,3769,0	2950,3767,0	60	0	2	0	0	GEAR_NONE			0	false	0		
+loc.godwars_climbing_rocks_plain_down	Climb	2943,3767,0	2950,3767,0	60	0	2	0	0	GEAR_NONE			0	false	0		
+loc.godwars_climbing_rocks_plain_down	Climb	2942,3768,0	2950,3767,0	60	0	2	0	0	GEAR_NONE			0	false	0		
+loc.wint_pillar_jump	Jump	1633,4023,0	1631,4023,0	60	18	2	0	0	GEAR_NONE			0	false	0		
+loc.wint_pillar_jump	Jump	1631,4023,0	1629,4023,0	60	18	2	0	0	GEAR_NONE			0	false	0		
+loc.wint_pillar_jump	Jump	1629,4023,0	1627,4023,0	60	18	2	0	0	GEAR_NONE			0	false	0		
+loc.wint_pillar_jump	Jump	1631,4023,0	1633,4023,0	60	18	2	0	0	GEAR_NONE			0	false	0		
+loc.wint_pillar_jump	Jump	1629,4023,0	1631,4023,0	60	18	2	0	0	GEAR_NONE			0	false	0		
+loc.wint_pillar_jump	Jump	1627,4023,0	1629,4023,0	60	18	2	0	0	GEAR_NONE			0	false	0		
+loc.slayer_dungeon_floor_spikes_sc	Jump-over	2775,10003,0	2773,10003,0	43	0	10	0	0	GEAR_NONE			0	false	0		
+loc.slayer_dungeon_floor_spikes_sc	Jump-over	2773,10003,0	2775,10003,0	43	0	10	0	0	GEAR_NONE			0	false	0		
+loc.slayer_dungeon_floor_spikes_sc	Jump-over	2770,10002,0	2768,10002,0	43	0	10	0	0	GEAR_NONE			0	false	0		
+loc.slayer_dungeon_floor_spikes_sc	Jump-over	2768,10002,0	2770,10002,0	43	0	10	0	0	GEAR_NONE			0	false	0		

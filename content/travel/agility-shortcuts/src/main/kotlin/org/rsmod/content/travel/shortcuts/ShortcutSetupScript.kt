@@ -1,6 +1,8 @@
 package org.rsmod.content.travel.shortcuts
 
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.*
@@ -10,6 +12,9 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.*
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.content.skills.mining.scripts.Mining
+import org.rsmod.content.skills.mining.scripts.Mining.Companion.pickaxeAnim
+import org.rsmod.game.type.getInvObj
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -30,6 +35,35 @@ internal class ShortcutSetupScript @Inject constructor(private val storage: Play
         for ((loc, gate) in listOf("loc.darkm_outer_wall_2h_shortcut_no_rope" to "varbit.darkm_shortcut_inner", "loc.darkm_outer_wall_3h_shortcut_no_rope" to "varbit.darkm_shortcut_outer"))
             onOpLocU(loc, "obj.long_rope") { attachRope(gate, it.invSlot) }
         onOpLoc1("loc.xbows_rock_not_grappled") { attachGrapple() }
+        onOpLoc1("loc.viyeldi_shortcut_rock_ropeless") { mes("Attach a long rope to these rocks first.") }
+        onOpLocU("loc.viyeldi_shortcut_rock_ropeless", "obj.long_rope") { attachViyeldi(it.invSlot) }
+        onOpLoc1("loc.myq5_wall_cave_shortcut_6_child_blocked") { clearRock("varbit.myq5_lab_sc_unlocked", 78, null) }
+        onOpLoc1("loc.wyrmscraig_cliff_shortcut_blockage_vis") { clearRock("varbit.wyrmscraig_cliff_shortcut", 1, "quest_fallenfromgrace") }
+        for (item in dev.openrune.ServerCacheManager.getItemTypes().filter { it.isContentType("content.mining_pickaxe") }) {
+            onOpLocU("loc.myq5_wall_cave_shortcut_6_child_blocked", item.internalName) { clearRock("varbit.myq5_lab_sc_unlocked", 78, null) }
+            onOpLocU("loc.wyrmscraig_cliff_shortcut_blockage_vis", item.internalName) { clearRock("varbit.wyrmscraig_cliff_shortcut", 1, "quest_fallenfromgrace") }
+        }
+    }
+    private suspend fun ProtectedAccess.attachViyeldi(slot: Int) {
+        if (vars["varbit.viyeldi_shortcut"] != 0 || !QuestRequirements.hasCompleted(player, "quest_legends"))return
+        val rope = inv[slot] ?: return
+        if (rope.id != "obj.long_rope".asRSCM())return
+        val origin = coords; anim("seq.rope_tie")
+        try { delay(2); if (!active(origin) || vars["varbit.viyeldi_shortcut"] != 0 || inv[slot] !== rope)return
+            if (invDel(inv, "obj.long_rope", 1, slot = slot).success) { vars["varbit.viyeldi_shortcut"] = 1; mes("You secure the long rope to the rocks.") }
+        } finally { resetAnim() }
+    }
+    private suspend fun ProtectedAccess.clearRock(gate: String, level: Int, quest: String?) {
+        if (vars[gate] != 0)return
+        if (player.miningLvl < level) { mes("You need Mining $level to clear this shortcut."); return }
+        if (quest != null && !QuestRequirements.hasCompleted(player, quest)) { mes("You haven't unlocked access to these rocks yet."); return }
+        val pick = Mining.findPickaxe(player) ?: run { mes("You need a usable pickaxe to clear these rocks."); return }
+        val origin = coords; anim(RSCM.getReverseMapping(RSCMType.SEQ, getInvObj(pick).pickaxeAnim.id))
+        try {
+            delay(3)
+            if (!active(origin) || vars[gate] != 0 || player.miningLvl < level || Mining.findPickaxe(player) == null || quest != null && !QuestRequirements.hasCompleted(player, quest))return
+            vars[gate] = 1; mes("You clear the rocks and permanently unlock the shortcut.")
+        } finally { resetAnim() }
     }
     private suspend fun ProtectedAccess.attachRope(gate: String, slot: Int) {
         if (!QuestRequirements.hasCompleted(player, "quest_sinsofthefather") || vars[gate] != 0 || inv[slot]?.id != "obj.long_rope".asRSCM()) return

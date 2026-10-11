@@ -169,3 +169,20 @@ Those formulas were decoded from the isolated accepted revision-240 scripts and
 are asserted through native vars by the input tests. Counts/defaults use the
 permanent native varbits, preserving existing save state. Visual confirmation of
 the native Revenant dynamic labels remains an explicit client check.
+
+
+## Additional native shortcut setup
+
+The expanded 487 links pass native option registration, placement matching and
+walkable landing checks. Nine tests include actual Loc/LocU/Ap producers for the
+Viyeldi long rope, Mining 78 laboratory wall and River Lum grapple; interrupted
+setup does not consume materials or grant unlocks. The native persistent varbits
+control the Viyeldi, laboratory and Wyrmscraig transforms. Long cave connections
+teleport after their action rather than drawing an exact-move line through walls.
+
+Primary pages for the additional Varlamore, Meiyerditch and Sailing routes were
+retrieved through the Wiki API on 11 October 2026. Native Nemus stepping stones
+differ from the current Wiki ID. The Fremennik spike floor awards no XP, the
+Wintertodt gaps award 18 and polar hunting rocks award 1. These values follow
+the detailed primary pages rather than guessed defaults. Visual timings and
+remaining Wiki coverage still require validation.

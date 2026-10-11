@@ -84,11 +84,53 @@ internal class ShortcutInteractionTest {
         f.player.coords = r.origin; f.op(r.loc, r.origin); f.finish()
         assertEquals(r.destination, f.player.coords); assertEquals(r.xp.toInt(), f.player.statMap.getXP("stat.agility"))
     }
+
+    @Test fun `native Viyeldi long rope setup is permanent and cancels without consumption`() {
+        for (mode in 0..3) {
+            val f = Fixture(CoordGrid(2381, 4714)); f.player.inv[0] = InvObj("obj.long_rope")
+            f.use("loc.viyeldi_shortcut_rock_multi", CoordGrid(2379, 4714), 0)
+            when (mode) { 1 -> f.player.pendingLogout = true; 2 -> f.player.inv[0] = null; 3 -> f.player.coords = CoordGrid(2380, 4711) }
+            f.finish(); assertEquals(if (mode == 0) 1 else 0, f.player.vars["varbit.viyeldi_shortcut"])
+            if (mode != 2) assertEquals(if (mode == 0) 0 else 1, f.player.inv.physicalCount("obj.long_rope"))
+        }
+    }
+
+    @Test fun `native blocked laboratory wall requires a usable pickaxe and boosted Mining 78`() {
+        for (mode in 0..4) {
+            val f = Fixture(CoordGrid(3536, 9768))
+            if (mode != 0) f.player.inv[0] = InvObj("obj.rune_pickaxe")
+            if (mode == 1) f.player.statMap.setCurrentLevel("stat.mining", 77)
+            f.op("loc.myq5_wall_cave_shortcut_6_parent", CoordGrid(3535, 9768))
+            if (mode == 3) f.player.inv[0] = null
+            if (mode == 4) f.player.pendingLogout = true
+            f.finish(); assertEquals(if (mode == 2) 1 else 0, f.player.vars["varbit.myq5_lab_sc_unlocked"])
+            assertEquals(0, f.player.statMap.getXP("stat.mining"))
+            if (mode == 2) {
+                f.op("loc.myq5_wall_cave_shortcut_6_parent", CoordGrid(3535, 9768)); f.finish()
+                assertEquals(CoordGrid(3500, 9805), f.player.coords)
+            }
+        }
+    }
+
+    @Test fun `broken raft grapple uses native approach and respects late equipment changes`() {
+        for (mode in 0..3) {
+            val f = Fixture(CoordGrid(3246, 3180))
+            f.player.worn[3] = InvObj("obj.xbows_crossbow_runite")
+            f.player.worn[13] = InvObj("obj.xbows_grapple_tip_bolt_mithril_rope")
+            if (mode == 1) f.player.statMap.setCurrentLevel("stat.ranged", 36)
+            f.ap("loc.xbows_raft_br", CoordGrid(3253, 3180))
+            if (mode == 2) f.player.worn[13] = null
+            if (mode == 3) f.player.coords = CoordGrid(3244, 3178)
+            f.finish()
+            assertEquals(when (mode) { 0 -> CoordGrid(3259, 3180); 3 -> CoordGrid(3244, 3178); else -> CoordGrid(3246, 3180) }, f.player.coords)
+            assertEquals(0, f.player.statMap.getXP("stat.agility"))
+        }
+    }
     private class Fixture(origin: CoordGrid) {
         val bus = EventBus(); val ctx = ScriptContext(bus, CheatCommandMap(), EngineQueueCache()); val map = CollisionFlagMap()
         val player = Player(client).apply {
             coords = origin; currentMapClock = 100; processedMapClock = 100; inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn")
-            for (stat in listOf("stat.agility", "stat.construction", "stat.hitpoints", "stat.ranged", "stat.strength")) { statMap.setBaseLevel(stat, 99); statMap.setCurrentLevel(stat, 99) }
+            for (stat in listOf("stat.agility", "stat.construction", "stat.mining", "stat.attack", "stat.hitpoints", "stat.ranged", "stat.strength")) { statMap.setBaseLevel(stat, 99); statMap.setCurrentLevel(stat, 99) }
         }
         var storedPlanks = 0
         val storage = PlayerItemStorage(setOf(object : PlayerItemStorageHook {
@@ -102,6 +144,7 @@ internal class ShortcutInteractionTest {
         val launcher: ProtectedAccessLauncher; val queues: PlayerQueueProcessor
         init {
             for (l in 0..3)for (x in origin.x - 32..origin.x + 32 step 8)for (z in origin.z - 32..origin.z + 32 step 8)map.allocateIfAbsent(x, z, l)
+            for (route in ShortcutRoutes.all) map.allocateIfAbsent(route.destination.x, route.destination.z, route.destination.level)
             val random = mock(GameRandom::class.java)
             val context = ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getCollision = { map }, getAreaChecker = { mock(AreaChecker::class.java) }, getAlignment = { TextAlignment() }, getRandom = { random })
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(context)
@@ -109,10 +152,12 @@ internal class ShortcutInteractionTest {
             with(InvTransactionsScript(storage)) { ctx.startup() }
             with(ShortcutScript(map, XpModifiers(emptySet()))) { ctx.startup() }
             with(ShortcutSetupScript(storage, XpModifiers(emptySet()))) { ctx.startup() }
+            with(org.rsmod.content.areas.city.lumbridge.BrokenRaft()) { ctx.startup() }
         }
         fun set(symbol: String, value: Int) = VarPlayerIntMapSetter.set(player, symbol, value)
         fun bound(symbol: String, coords: CoordGrid) = BoundLocInfo(LocInfo(2, coords, LocEntity(symbol.asRSCM(), 10, 0)), ServerCacheManager.getObject(symbol.asRSCM())!!)
         fun op(symbol: String, coords: CoordGrid) { val loc = bound(symbol, coords); producer.interact(player, loc, InteractionOp.Op1); val event = checkNotNull(producer.opTrigger(player, loc, InteractionOp.Op1)); launcher.launch(player) { assertTrue(bus.publish(this, event)) } }
+        fun ap(symbol: String, coords: CoordGrid) { val loc = bound(symbol, coords); producer.interact(player, loc, InteractionOp.Op1); val event = checkNotNull(producer.apTrigger(player, loc, InteractionOp.Op1)); launcher.launch(player) { assertTrue(bus.publish(this, event)) } }
         fun use(symbol: String, coords: CoordGrid, slot: Int) { val loc = bound(symbol, coords); val type = ServerCacheManager.getItem(player.inv[slot]!!.id)!!; launcher.launch(player) { useProducer.interactOp(this, loc, loc, ServerCacheManager.getObject(loc.id)!!, type, inv, slot) } }
         fun finish() { repeat(14) { player.currentMapClock++; player.processedMapClock = player.currentMapClock; player.activeCoroutine?.advance(); queues.process(player) } }
         fun bridgeMaterials() { player.inv.fillNulls(); player.inv[0] = InvObj("obj.hammer"); for (i in 1..6)player.inv[i] = InvObj("obj.plank_teak"); player.inv[7] = InvObj("obj.nails_mithril", 28) }

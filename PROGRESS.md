@@ -26,9 +26,9 @@ persistence, rollback and native interaction validation is still in progress.
   separate set bit, never the overlapping op-visibility mask. POH DIQ requires
   a built house ring (Construction is not implemented); remaining prerequisite
   checks and client acceptance remain open.
-- Agility: **434 candidate links** compared with native definitions, map placements
+- Agility: **487 candidate links** compared with native definitions, map placements
   and the current Wiki/Shortest Path sources. Native option/animation registration
-  and walkable landings pass. **Six tests** also exercise bridge repair, rope setup
+  and walkable landings pass. **Nine tests** also exercise bridge repair, rope setup
   and interrupted travel through real loc inputs. Remaining Wiki routes, grapples,
   detailed animations/failures and full route acceptance are still in progress.
 - Containers: all **39 Wiki categories** inventoried against native items.

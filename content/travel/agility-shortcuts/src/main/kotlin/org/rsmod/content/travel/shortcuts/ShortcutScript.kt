@@ -56,7 +56,7 @@ internal class ShortcutScript @Inject constructor(private val collision: Collisi
         try {
             anim(route.animation)
             val jump = route.option.startsWith("Jump", true) || route.option.startsWith("Step", true)
-            val samePlane = from.level == route.destination.level
+            val samePlane = from.level == route.destination.level && !(route.option.equals("Enter", true) && from.chebyshevDistance(route.destination) > 8)
             if (!failed && samePlane) {
                 val direction = ((atan2((route.destination.x - from.x).toDouble(), (route.destination.z - from.z).toDouble()) * 325.949323) + 2048).toInt() and 2047
                 exactMove(from, route.destination, 0, if (jump) 30 else route.ticks * 30, direction, TeleportType.Exempt)
@@ -65,6 +65,7 @@ internal class ShortcutScript @Inject constructor(private val collision: Collisi
                 delay(1)
                 if (player.pendingLogout || player.loggingOut || player.hitpoints == 0) return
                 if (samePlane && !failed && coords != route.destination) return
+                if (!samePlane && coords != from) return
                 if (tick > 0 && !jump && samePlane) anim(route.animation)
             }
             if (failed) {
