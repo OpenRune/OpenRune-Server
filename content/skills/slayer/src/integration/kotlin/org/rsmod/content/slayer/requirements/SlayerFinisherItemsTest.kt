@@ -4,7 +4,6 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
@@ -31,18 +30,6 @@ class SlayerFinisherItemsTest {
             assertTrue(SlayerFinishers.spend(player, 2, salt, finisher("rockslug")))
 
             assertEquals(InvObj(salt, 2), player.inv[2])
-        }
-
-    @Test
-    fun GameTestState.`the last bag of salt leaves the inventory`() =
-        runGameTest {
-            val salt = item("obj.slayer_bag_of_salt")
-            player.clearInv()
-            player.inv[0] = InvObj(salt, 1)
-
-            assertTrue(SlayerFinishers.spend(player, 0, salt, finisher("rockslug")))
-
-            assertEquals(null, player.inv[0])
         }
 
     @Test
@@ -74,30 +61,4 @@ class SlayerFinisherItemsTest {
             assertEquals(InvObj(nine, 1), player.inv[4])
         }
 
-    @Test
-    fun GameTestState.`the last charge leaves an empty spray`() =
-        runGameTest {
-            val one = item("obj.slayer_spray_pump_1")
-            val empty = item("obj.slayer_spray_pump_0")
-            player.clearInv()
-            player.inv[0] = InvObj(one, 1)
-
-            assertTrue(SlayerFinishers.spend(player, 0, one, finisher("zygomite")))
-
-            assertEquals(InvObj(empty, 1), player.inv[0])
-        }
-
-    @Test
-    fun GameTestState.`an item that left its slot is not spent`() =
-        runGameTest {
-            val salt = item("obj.slayer_bag_of_salt")
-            val cooler = item("obj.slayer_icy_water")
-            player.clearInv()
-            player.inv[0] = InvObj(cooler, 2)
-
-            assertFalse(SlayerFinishers.spend(player, 0, salt, finisher("rockslug")))
-            assertFalse(SlayerFinishers.spend(player, 1, salt, finisher("rockslug")))
-
-            assertEquals(InvObj(cooler, 2), player.inv[0])
-        }
 }

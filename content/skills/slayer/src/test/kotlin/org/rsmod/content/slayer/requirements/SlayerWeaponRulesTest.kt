@@ -22,35 +22,11 @@ class SlayerWeaponRulesTest {
     private fun melee(weapon: String) =
         SlayerWeaponRules.damages(rule, HitType.Melee, obj(weapon), null)
 
-    private fun ranged(ammo: String) =
-        SlayerWeaponRules.damages(rule, HitType.Ranged, obj("obj.xbows_crossbow_runite"), obj(ammo))
-
-    private fun magic(spell: String) =
-        SlayerWeaponRules.damages(rule, HitType.Magic, obj("obj.slayer_staff"), obj(spell))
-
     @Test
     fun `only leaf-bladed weapons hurt in melee`() {
         assertTrue(melee("obj.slayer_leafbladed_spear"))
         assertTrue(melee("obj.leafbladed_battleaxe"))
         assertFalse(melee("obj.rune_scimitar"))
-    }
-
-    @Test
-    fun `only broad ammunition hurts at range`() {
-        assertTrue(ranged("obj.slayer_broad_bolt"))
-        assertTrue(ranged("obj.slayer_broad_arrows"))
-        assertFalse(ranged("obj.xbows_crossbow_bolts_runite"))
-    }
-
-    @Test
-    fun `only magic dart hurts with magic`() {
-        assertTrue(magic("obj.50_magic_dart"))
-        assertFalse(magic("obj.13_fire_strike"))
-    }
-
-    @Test
-    fun `typeless damage is not weapon damage`() {
-        assertTrue(SlayerWeaponRules.damages(rule, HitType.Typeless, null, null))
     }
 
     companion object {

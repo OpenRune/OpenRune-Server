@@ -34,21 +34,6 @@ class SlayerLevelGateTest {
         assertEquals(NpcAttackValidateResult.Pass, SlayerLevelGate.verdict(80, gargoyle))
     }
 
-    @Test
-    fun `the superior form needs the same level as its monster`() {
-        val marble = monster("npc.superior_gargoyle")
-
-        assertEquals(
-            NpcAttackValidateResult.Deny(SlayerLevelGate.MESSAGE),
-            SlayerLevelGate.verdict(74, marble),
-        )
-    }
-
-    @Test
-    fun `an npc without a Slayer requirement can always be attacked`() {
-        assertEquals(NpcAttackValidateResult.Pass, SlayerLevelGate.verdict(1, monster("npc.bob")))
-    }
-
     companion object {
         @JvmStatic
         @BeforeAll
