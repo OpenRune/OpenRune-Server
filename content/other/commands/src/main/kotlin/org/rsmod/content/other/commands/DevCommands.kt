@@ -23,6 +23,7 @@ import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
+import org.rsmod.game.map.Direction
 import org.rsmod.game.stat.PlayerSkillXPTable
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -232,11 +233,62 @@ internal fun ProtectedAccessLauncher.devTeleport(player: Player, dest: CoordGrid
     }
 }
 
-/** Handles `::tele name`; returns false when the args aren't a location name. */
+/**
+ * Jagex's `level,mx,mz,lx,lz` coordinate format, which the client sends for `::tele n 2` (it turns
+ * the relative move into absolute coordinates before the server sees it).
+ */
+private fun jagexCoordGrid(args: List<String>): CoordGrid? {
+    val parts = (if (args.size == 1) args[0].split(',') else args).map { it.toIntOrNull() }
+    if (parts.size != 5 || parts.any { it == null }) {
+        return null
+    }
+    val (level, mx, mz, lx, lz) = parts.map { it!! }
+    return CoordGrid(level, mx, mz, lx, lz)
+}
+
+/** `::tele n 2` and friends: a direction and an optional tile count (default 1). */
+private val TELE_DIRECTIONS: Map<String, Direction> =
+    mapOf(
+        "n" to Direction.North,
+        "north" to Direction.North,
+        "s" to Direction.South,
+        "south" to Direction.South,
+        "e" to Direction.East,
+        "east" to Direction.East,
+        "w" to Direction.West,
+        "west" to Direction.West,
+        "ne" to Direction.NorthEast,
+        "nw" to Direction.NorthWest,
+        "se" to Direction.SouthEast,
+        "sw" to Direction.SouthWest,
+    )
+
+/**
+ * Handles `::tele name`, `::tele n 2` and Jagex's `level,mx,mz,lx,lz`; returns false for upstream's
+ * `x y [level]` coordinates.
+ */
 internal fun ProtectedAccessLauncher.teleNamed(cheat: Cheat): Boolean {
     val first = cheat.args.firstOrNull() ?: return false
+    val jagexCoords = jagexCoordGrid(cheat.args)
+    if (jagexCoords != null) {
+        val launched = launch(cheat.player) { telejump(jagexCoords, TeleportType.Exempt) }
+        if (!launched) {
+            cheat.player.mes(constants.dm_busy)
+        }
+        return true
+    }
     if (first.toIntOrNull() != null || ',' in first) {
         return false
+    }
+    val direction = TELE_DIRECTIONS[first]
+    val tiles = if (cheat.args.size == 1) 1 else cheat.args[1].toIntOrNull()
+    if (direction != null && tiles != null && cheat.args.size <= 2) {
+        val dest = cheat.player.coords.translate(direction.xOff * tiles, direction.zOff * tiles)
+        val launched = launch(cheat.player) { telejump(dest, TeleportType.Exempt) }
+        if (!launched) {
+            cheat.player.mes(constants.dm_busy)
+        }
+        return true
     }
     val name = cheat.args.joinToString("_")
     val location = TeleLocations.find(name)
