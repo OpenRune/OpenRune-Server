@@ -312,3 +312,19 @@ claim of full gameplay acceptance is made for those details. Sources:
 [Rockslide (Vampyrium)](https://oldschool.runescape.wiki/w/Rockslide_(Vampyrium)),
 [Bush (Vampyrium)](https://oldschool.runescape.wiki/w/Bush_(Vampyrium)),
 [Pillar (Vampyrium)](https://oldschool.runescape.wiki/w/Pillar_(Vampyrium)).
+
+### Steel key ring native interface and storage
+
+All thirteen Wiki-listed reusable keys are accepted exactly once through real
+HeldU inputs. The account's permanent 13-bit storage is exposed through the
+existing virtual storage API only while a ring is carried. Banked rings retain
+contents but cannot satisfy carried-key checks. Explicit material transactions
+can still consume a stored key when the related miniquest calls for removal.
+Check-keys opens native interface 127, whose actual legacy IF1 Next/Previous/
+Remove inputs update models, text and selection. Removal is transactional and
+full-inventory failures retain the key. Real Drop calls the standard ground-item
+producer after a warning and stale/lifecycle rechecks. Losing the last ring
+clears keys unless a duplicate remains carried or banked. A pure native death
+hook always retains rings and does not change stored keys during previews.
+Seven input tests and all 51 Containers module tests pass. Door-specific key consumers and visual interface
+acceptance remain open. Source: [Steel key ring](https://oldschool.runescape.wiki/w/Steel_key_ring).

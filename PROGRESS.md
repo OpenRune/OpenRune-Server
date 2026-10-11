@@ -71,11 +71,15 @@ persistence, rollback and native interaction validation is still in progress.
   full inventory and deferred arrival/late cancellation. The existing standalone
   scroll suite also passes after sharing its travel service. Client labels and
   visual acceptance remain open.
+- Steel key ring: all thirteen reusable keys, the native Check-keys/IF1
+  interface, removal, drop warning and banked-duplicate protection pass **seven
+  tests**. Keys restore from permanent account attributes and stay kept on PvM/
+  PvP death. Door-specific consumer validation and client acceptance remain open.
 - Fish crates: all six deep-sea species, cooled-crate creation and camphor
   crafting pass **seven native input tests**. Real bank IF3 Empty returns the
   camphor crate; ordinary Empty discards it. Partial contents survive native
   account loading, and full-inventory/lifecycle failures preserve materials.
-  All **44 Containers module tests** pass. Sailing net/cargo producers are not
+  All **51 Containers module tests** pass. Sailing net/cargo producers are not
   available in this fork; visual acceptance remains open.
 - Fish barrels: native Fill/Open/Close, worn sack controls, combination/dismantling,
   direct fishing storage and bank-side Empty pass **seven native input tests**.
