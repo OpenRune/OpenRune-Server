@@ -15,4 +15,7 @@ public interface PlayerItemStorageHook {
     public fun remove(ctx: PlayerItemStorageContext, amount: Int): Int
 
     public fun add(ctx: PlayerItemStorageContext, amount: Int): Int
+
+    /** Pure capacity preview; contents must only change when the transaction commits. */
+    public fun incomingCapacity(ctx: PlayerItemStorageContext): Int = 0
 }

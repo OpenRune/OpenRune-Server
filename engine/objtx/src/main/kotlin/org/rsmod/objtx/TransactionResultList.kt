@@ -5,6 +5,8 @@ public data class TransactionResultList<T>(
     public val inventories: List<TransactionInventory<T>>,
     public val results: List<TransactionResult>,
     public val err: TransactionResult.Err? = results.findErr(),
+    public val validateCommit: (() -> Boolean)? = null,
+    public val afterCommit: (() -> Unit)? = null,
 ) {
     public var commited: Boolean = false
         private set
@@ -20,7 +22,9 @@ public data class TransactionResultList<T>(
 
     public fun commitAll() {
         check(!commited) { "Transaction already commited!" }
+        check(validateCommit?.invoke() != false) { "Transaction storage changed before commit." }
         inventories.commitAll()
+        afterCommit?.invoke()
         commited = true
     }
 

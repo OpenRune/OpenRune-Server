@@ -18,6 +18,8 @@ internal class CoalBagStorageHook @Inject constructor() : PlayerItemStorageHook 
     override fun add(ctx: PlayerItemStorageContext, amount: Int): Int =
         CoalBag.depositUpTo(ctx.player, amount)
 
+    override fun incomingCapacity(ctx: PlayerItemStorageContext): Int = CoalBag.freeSpace(ctx.player)
+
     override fun shouldProcess(ctx: PlayerItemStorageContext): Boolean =
-        CoalBag.isCoal(ctx.itemInternal) && CoalBag.shouldInterceptIncoming(ctx.player)
+        ctx.inventory === ctx.player.inv && CoalBag.isCoal(ctx.itemInternal) && CoalBag.shouldInterceptIncoming(ctx.player)
 }

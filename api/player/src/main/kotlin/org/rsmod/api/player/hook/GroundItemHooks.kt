@@ -3,6 +3,7 @@ package org.rsmod.api.player.hook
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.Inventory
 import org.rsmod.game.obj.Obj
 import org.rsmod.map.CoordGrid
 
@@ -42,6 +43,12 @@ public fun interface PlayerObjTakeValidateHook {
      * @return A denial message if the pickup should be blocked, or `null` if allowed.
      */
     public fun validateTake(player: Player, obj: Obj, objType: ItemServerType): String?
+}
+
+/** Alternate storage for an actual ground pickup, after ownership and area checks. */
+public interface PlayerObjTakeStorageHook {
+    public fun inventory(player: Player, obj: Obj, objType: ItemServerType): Inventory?
+    public fun committed(player: Player, obj: Obj, objType: ItemServerType) {}
 }
 
 public class GroundItemDropResolver

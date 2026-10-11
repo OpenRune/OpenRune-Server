@@ -11,7 +11,7 @@ internal class EssencePouchStorageHook @Inject constructor() : PlayerItemStorage
     override val consumePolicy: VirtualItemConsumePolicy = VirtualItemConsumePolicy.InventoryFirst
 
     override fun shouldProcess(ctx: PlayerItemStorageContext): Boolean =
-        EssencePouch.shouldIntercept(ctx.player, ctx.itemInternal)
+        ctx.inventory === ctx.player.inv && EssencePouch.shouldIntercept(ctx.player, ctx.itemInternal)
 
     override fun contains(ctx: PlayerItemStorageContext): Int =
         EssencePouch.storedAmountForType(ctx.player, ctx.itemInternal)

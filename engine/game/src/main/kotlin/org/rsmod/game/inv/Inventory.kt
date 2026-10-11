@@ -105,7 +105,8 @@ public class Inventory(public val type: InventoryServerType, public val objs: Ar
     public operator fun contains(type: ItemServerType): Boolean =
         objs.any { type.isAssociatedWith(it) }
 
-    public fun count(internal: String): Int = physicalCount(internal) + virtualCount(internal)
+    public fun count(internal: String): Int =
+        (physicalCount(internal).toLong() + virtualCount(internal)).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
 
     /** Slots-only count; ignores [InvVirtualStorage]. */
     public fun physicalCount(internal: String): Int {
