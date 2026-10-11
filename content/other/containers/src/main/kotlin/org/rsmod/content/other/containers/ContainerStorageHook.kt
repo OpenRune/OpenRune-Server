@@ -8,6 +8,7 @@ import org.rsmod.plugin.module.PluginModule
 internal class ContainersModule : PluginModule() {
     override fun bind() {
         addSetBinding<PlayerItemStorageHook>(ContainerStorageHook::class.java)
+        addSetBinding<PlayerItemStorageHook>(BowStringSpoolStorageHook::class.java)
         addSetBinding<org.rsmod.api.death.PlayerDeathDropHook>(ContainerDeathHook::class.java)
     }
 }

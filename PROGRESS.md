@@ -45,6 +45,10 @@ persistence, rollback and native interaction validation is still in progress.
   Basket/sack contents stay in their individual native item states. Generic
   storage has pure death previews, deferred PvP/Flamtaer cleanup, last-container
   destroy cleanup and family-specific bank-side filling/emptying.
+- Bow string spool: six native capacity tiers (250 to 100,000), notes, account
+  storage and all twelve ordinary bow-stringing routes pass **six tests**,
+  including 27 bows per inventory and actual spinning output. Interrupted actions
+  preserve charges and XP; visual native input acceptance remains pending.
 - Master scroll book: all **20 native scroll types** store up to 1,000 each, use
   the native UI and support default selection/withdrawal. **Five tests** cover
   native item/IF3 producers, every teleport, Revenant entrance/warning selection,

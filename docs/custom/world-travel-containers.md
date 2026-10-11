@@ -186,3 +186,23 @@ differ from the current Wiki ID. The Fremennik spike floor awards no XP, the
 Wintertodt gaps award 18 and polar hunting rocks award 1. These values follow
 the detailed primary pages rather than guessed defaults. Visual timings and
 remaining Wiki coverage still require validation.
+
+
+## Bow string spool
+
+[Bow string spool](https://oldschool.runescape.wiki/w/Bow_string_spool) storage
+uses native charges and capacity fields in permanent varp 4761. Charges occupy
+bits 0..16, the server capacity tier uses bits 28..31; six tiers cap at 100,000.
+Native CS2 5923 reads the charges field for the buff display. No state is cleared
+when a spool is dropped or lost. Combining deletes only the spare spool and
+preserves all charges. Filling accepts ordinary and noted bow strings; withdrawal
+returns only the amount the physical inventory can hold.
+
+Six tests exercise Held/HeldU inputs, every ordinary shortbow/longbow, 27-bow
+inventories, dry-run material transactions, interrupted consumption and native
+var restoration. Actual Crafting `craftOnce` spinning output invokes the storage
+consumer once; a full spool leaves the produced string in the inventory. Incoming
+pickups and bank withdrawals are not redirected by this consumer. Stringing XP
+uses the detailed [Fletching table](https://oldschool.runescape.wiki/w/Fletching),
+native sequences and the existing XP modifier service. Client acceptance remains
+a separate check.

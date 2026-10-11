@@ -9,6 +9,7 @@ dependencies {
     implementation(projects.api.death)
     implementation(projects.api.scriptAdvanced)
     implementation(projects.content.skills.magic.spellTeleports)
+    testImplementation(projects.content.skills.crafting)
     testImplementation(projects.api.net)
     testImplementation(libs.rsprot.api)
     testImplementation(libs.fastutil)
