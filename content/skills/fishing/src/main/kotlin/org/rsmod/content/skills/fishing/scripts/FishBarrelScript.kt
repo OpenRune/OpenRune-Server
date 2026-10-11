@@ -1,183 +1,98 @@
 package org.rsmod.content.skills.fishing.scripts
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
-import org.rsmod.api.table.fishing.FishingSpotRow
 import jakarta.inject.Inject
-import org.rsmod.api.attr.AttributeKey
-import org.rsmod.api.invtx.invAdd
-import org.rsmod.api.invtx.invDel
-import org.rsmod.api.player.events.interact.HeldBanksideEvents
-import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
-import org.rsmod.api.player.events.skilling.SkillingActionContext
-import org.rsmod.api.player.events.skilling.SkillingProductSource
+import org.rsmod.api.invtx.*
+import org.rsmod.api.player.events.interact.*
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.script.onEvent
-import org.rsmod.api.script.onOpHeld1
-import org.rsmod.api.script.onOpHeld2
-import org.rsmod.api.script.onOpHeld3
-import org.rsmod.api.script.onOpHeld4
-import org.rsmod.api.script.onOpHeld5
-import org.rsmod.api.script.onOpHeldU
+import org.rsmod.api.script.*
+import org.rsmod.content.skills.fishing.FishBarrelContents
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class FishBarrelScript @Inject constructor() : PluginScript() {
-
-    private val rawFish: Set<String> by lazy {
-        FishingSpotRow.all().mapTo(mutableSetOf()) { RSCM.getReverseMapping(RSCMType.OBJ, it.fish.id) }
-            .apply { add("obj.tbwt_raw_karambwan") }
-    }
-
     override fun ScriptContext.startup() {
-        for (barrel in ALL_BARRELS) {
-            onOpHeld1(barrel) { dispatch(1, barrel) }
-            onOpHeld2(barrel) { dispatch(2, barrel) }
-            onOpHeld3(barrel) { dispatch(3, barrel) }
-            onOpHeld4(barrel) { dispatch(4, barrel) }
-            onOpHeld5(barrel) { dispatch(5, barrel) }
-            onEvent<HeldBanksideEvents.Type>(barrel.asRSCM(RSCMType.OBJ)) { emptyIntoBank(player) }
+        for (symbol in FishBarrelContents.forms) {
+            val type = ServerCacheManager.getItem(symbol.asRSCM())!!
+            for (op in 1..4) {
+                val action = type.interfaceOptions[op - 1]
+                if (action !in setOf("Fill", "Check", "Configure", "Open", "Close"))continue
+                when (op) {
+                    1 -> onOpHeld1(symbol) { dispatch(symbol, it.slot, action!!) }
+                    2 -> onOpHeld2(symbol) { dispatch(symbol, it.slot, action!!) }
+                    3 -> onOpHeld3(symbol) { dispatch(symbol, it.slot, action!!) }
+                    4 -> onOpHeld4(symbol) { dispatch(symbol, it.slot, action!!) }
+                }
+            }
+            onEvent<HeldBanksideEvents.Type>(type.id) { if (player.inv[slot]?.id == type.id) emptyIntoBank(player) }
         }
-
-        onOpHeldU(FISH_SACK, BARREL_CLOSED) { combine(BARREL_CLOSED, SACK_CLOSED) }
-        onOpHeldU(FISH_SACK, BARREL_OPEN) { combine(BARREL_OPEN, SACK_OPEN) }
-
-        onEvent<SkillingActionCompleteEvent> {
-            val ctx = context
-            if (ctx is SkillingActionContext.Product && ctx.source is SkillingProductSource.Fishing) {
-                tryAutoDeposit(player, ctx.item)
+        for (symbol in listOf(SACK_CLOSED, SACK_OPEN)) {
+            onOpWorn2(symbol) { checkContents() }
+            onOpWorn3(symbol) { toggle(symbol, it.slot, player.worn) }
+        }
+        onOpHeldU(FISH_SACK, BARREL_CLOSED) { combine(BARREL_CLOSED, SACK_CLOSED, it.firstSlot, it.secondSlot) }
+        onOpHeldU(FISH_SACK, BARREL_OPEN) { combine(BARREL_OPEN, SACK_OPEN, it.firstSlot, it.secondSlot) }
+        onEvent<HeldDropEvents.Destroy> {
+            if (obj.id in FishBarrelContents.forms.map { it.asRSCM() } && !FishBarrelContents.owns(player))player.attr.remove(FishBarrelContents.key)
+        }
+    }
+    private suspend fun ProtectedAccess.dispatch(symbol: String, slot: Int, action: String) {
+        if (inv[slot]?.id != symbol.asRSCM())return
+        when (action) {
+            "Fill" -> fill()
+            "Check" -> checkContents()
+            "Open", "Close" -> toggle(symbol, slot, inv)
+            "Configure" -> when (menu("Fish sack barrel", hotkeys = true, choices = listOf("Check contents", "Dismantle", "Cancel"))) {
+                0 -> checkContents()
+                1 -> if (inv[slot]?.id == symbol.asRSCM())dismantle(symbol, slot)
             }
         }
     }
-
-    private fun ProtectedAccess.combine(barrel: String, sackBarrel: String) {
-        invDel(inv, FISH_SACK)
-        invDel(inv, barrel)
-        invAdd(inv, sackBarrel)
-        mes("You attach the fish sack to the barrel, making a fish sack barrel.")
-    }
-
-    private fun emptyIntoBank(player: Player) {
-        val store = player.attr.getOrPut(FISH_BARREL_ATTR) { mutableMapOf() }
-        if (store.isEmpty()) {
-            player.mes("The fish barrel is empty.")
-            return
-        }
-        val bank = player.invMap.getOrPut("inv.bank")
-        val iterator = store.entries.iterator()
-        while (iterator.hasNext()) {
-            val entry = iterator.next()
-            player.invAdd(bank, entry.key, entry.value)
-            iterator.remove()
-        }
-        player.mes("You empty the fish barrel into your bank.")
-    }
-
-    private fun ProtectedAccess.dispatch(op: Int, barrel: String) {
-        when (op) {
-            1 -> fill()
-            2 -> check()
-            3 -> toggleOpen()
-            4 -> empty()
-            else -> {}
-        }
-    }
-
-    private fun ProtectedAccess.contents(): MutableMap<String, Int> =
-        player.attr.getOrPut(FISH_BARREL_ATTR) { mutableMapOf() }
-
-    private fun MutableMap<String, Int>.total(): Int = values.sum()
-
     private fun ProtectedAccess.fill() {
-        val store = contents()
-        var filled = false
-        for (name in rawFish) {
-            if (store.total() >= CAPACITY) break
-            val have = invTotal(inv, name)
-            if (have <= 0) continue
-            val room = CAPACITY - store.total()
-            val move = minOf(have, room)
-            if (move <= 0) break
-            invDel(inv, name, move)
-            store[name] = (store[name] ?: 0) + move
-            filled = true
+        var moved = 0
+        for (item in FishBarrelContents.allowed) {
+            val room = FishBarrelContents.CAPACITY - FishBarrelContents.total(player)
+            val n = minOf(room, inv.physicalCount(item)); if (n <= 0)continue
+            val tx = player.invDel(inv, item.asRSCM(), n, autoCommit = false)
+            if (tx.failure)continue
+            tx.commitAll(); FishBarrelContents.update(player, item, n); moved += n
         }
-        mes(if (filled) "You fill the fish barrel." else "You have no raw fish to store, or the barrel is full.")
+        mes(if (moved > 0)"You fill the fish barrel."else "You have no suitable raw fish, or the barrel is full.")
     }
-
-    private fun ProtectedAccess.empty() {
-        val store = contents()
-        if (store.isEmpty()) {
-            mes("The fish barrel is empty.")
-            return
+    private fun ProtectedAccess.checkContents() {
+        val items = FishBarrelContents.contents(player)
+        mes(if (items.isEmpty())"The fish barrel is empty."else "Fish barrel (${FishBarrelContents.total(player)}/28): " + items.entries.joinToString(", ") { (symbol, n) -> "${ServerCacheManager.getItem(symbol.asRSCM())!!.name} x $n" })
+    }
+    private fun ProtectedAccess.toggle(symbol: String, slot: Int, target: Inventory) {
+        if (target[slot]?.id != symbol.asRSCM())return
+        val other = when (symbol) { BARREL_CLOSED -> BARREL_OPEN; BARREL_OPEN -> BARREL_CLOSED; SACK_CLOSED -> SACK_OPEN; else -> SACK_CLOSED }
+        player.invTransaction(target) { val i = select(target); delete(i, symbol.asRSCM(), 1, slot = slot); add(i, other.asRSCM(), 1, slot = slot) }
+    }
+    private fun ProtectedAccess.combine(barrel: String, result: String, sackSlot: Int, barrelSlot: Int) {
+        if (inv[sackSlot]?.id != FISH_SACK.asRSCM() || inv[barrelSlot]?.id != barrel.asRSCM())return
+        player.invTransaction(inv) { val i = select(inv); delete(i, FISH_SACK.asRSCM(), 1, slot = sackSlot); delete(i, barrel.asRSCM(), 1, slot = barrelSlot); add(i, result.asRSCM(), 1, slot = barrelSlot) }
+    }
+    private fun ProtectedAccess.dismantle(symbol: String, slot: Int) {
+        val barrel = if (symbol == SACK_OPEN)BARREL_OPEN else BARREL_CLOSED
+        val tx = player.invTransaction(inv, autoCommit = false) { val i = select(inv); delete(i, symbol.asRSCM(), 1, slot = slot); add(i, barrel.asRSCM(), 1, slot = slot); add(i, FISH_SACK.asRSCM(), 1) }
+        if (tx.failure) { mes("You need one free inventory slot."); return }; tx.commitAll()
+    }
+    private fun emptyIntoBank(player: Player) {
+        val bank = player.invMap.getOrPut("inv.bank")
+        var moved = 0
+        for ((item, n)in FishBarrelContents.contents(player).toMap()) {
+            val tx = player.invAdd(bank, item.asRSCM(), n, strict = false, autoCommit = false)
+            if (tx.failure)continue
+            val actual = tx.completed(); tx.commitAll(); FishBarrelContents.update(player, item, -actual); moved += actual
         }
-        val iterator = store.entries.iterator()
-        while (iterator.hasNext()) {
-            val entry = iterator.next()
-            val result = invAdd(inv, entry.key, entry.value)
-            val added = if (result.success) entry.value else 0
-            if (added >= entry.value) {
-                iterator.remove()
-            } else {
-                entry.setValue(entry.value - added)
-                mes("You don't have enough inventory space to empty the whole barrel.")
-                return
-            }
-        }
-        mes("You empty the fish barrel.")
+        player.mes(if (moved > 0)"You empty fish from the barrel into your bank."else "Your bank has no room, or the barrel is empty.")
     }
-
-    private fun ProtectedAccess.check() {
-        val store = contents()
-        if (store.isEmpty()) {
-            mes("The fish barrel is empty.")
-            return
-        }
-        mes("The fish barrel contains (${store.total()}/$CAPACITY):")
-        for ((name, count) in store) {
-            val display = ServerCacheManager.getItem(name.asRSCM(RSCMType.OBJ))?.name ?: name
-            mes("$display x $count")
-        }
-    }
-
-    private fun ProtectedAccess.toggleOpen() {
-        val (from, to, opened) =
-            when {
-                BARREL_OPEN in inv -> Triple(BARREL_OPEN, BARREL_CLOSED, false)
-                BARREL_CLOSED in inv -> Triple(BARREL_CLOSED, BARREL_OPEN, true)
-                SACK_OPEN in inv -> Triple(SACK_OPEN, SACK_CLOSED, false)
-                SACK_CLOSED in inv -> Triple(SACK_CLOSED, SACK_OPEN, true)
-                else -> return
-            }
-        invDel(inv, from)
-        invAdd(inv, to)
-        mes(if (opened) "You open the fish barrel." else "You close the fish barrel.")
-    }
-
-    private fun tryAutoDeposit(player: Player, item: String) {
-        if (BARREL_OPEN !in player.inv && SACK_OPEN !in player.inv) return
-        val store = player.attr.getOrPut(FISH_BARREL_ATTR) { mutableMapOf() }
-        if (store.values.sum() >= CAPACITY) return
-        if (item !in rawFish) return
-        player.invDel(player.inv, item, 1)
-        store[item] = (store[item] ?: 0) + 1
-    }
-
     private companion object {
-        private const val BARREL_CLOSED = "obj.fish_barrel_closed"
-        private const val BARREL_OPEN = "obj.fish_barrel_open"
-        private const val SACK_CLOSED = "obj.fish_sack_barrel_closed"
-        private const val SACK_OPEN = "obj.fish_sack_barrel_open"
-        private const val FISH_SACK = "obj.fish_sack"
-        private const val CAPACITY = 28
-
-        private val ALL_BARRELS = listOf(BARREL_CLOSED, BARREL_OPEN, SACK_CLOSED, SACK_OPEN)
-
-        private val FISH_BARREL_ATTR =
-            AttributeKey<MutableMap<String, Int>>(persistenceKey = "fish_barrel")
+        const val BARREL_CLOSED = "obj.fish_barrel_closed"; const val BARREL_OPEN = "obj.fish_barrel_open"
+        const val SACK_CLOSED = "obj.fish_sack_barrel_closed"; const val SACK_OPEN = "obj.fish_sack_barrel_open"; const val FISH_SACK = "obj.fish_sack"
     }
 }

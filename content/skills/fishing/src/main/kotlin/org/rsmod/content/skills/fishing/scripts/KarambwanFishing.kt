@@ -63,7 +63,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (inv.isFull() && org.rsmod.content.skills.fishing.FishBarrelContents.room(player, RAW_KARAMBWAN) == 0) {
             mes("Your inventory is too full to hold any more fish.")
             soundSynth("synth.pillory_wrong")
             return

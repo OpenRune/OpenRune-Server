@@ -219,7 +219,7 @@ constructor(
             return null
         }
 
-        if (inv.isFull()) {
+        if (inv.isFull() && eligible.none { org.rsmod.content.skills.fishing.FishBarrelContents.room(player, RSCM.getReverseMapping(RSCMType.OBJ, it.fishId)) > 0 }) {
             if (verbose) {
                 mes("Your inventory is too full to hold any more fish.")
                 soundSynth("synth.pillory_wrong")
@@ -389,7 +389,7 @@ constructor(
     private fun ProtectedAccess.rollExtraFish(item: String, count: Int, hasFlakes: Boolean) {
         val blessing = radasBlessingChance()
         val chance = (if (hasFlakes) SPIRIT_FLAKES_CHANCE else 0) + blessing
-        if (chance <= 0 || inv.isFull() || random.of(100) >= chance) {
+        if (chance <= 0 || (inv.isFull() && org.rsmod.content.skills.fishing.FishBarrelContents.room(player, item) < count) || random.of(100) >= chance) {
             return
         }
         invAdd(inv, item, count)

@@ -99,7 +99,7 @@ constructor(
         onIfModalDrag("component.bankside:wornops") { dragSideInv(it) }
         onIfModalDrag("component.bankmain:items", "component.bankmain:tabs") { dragIntoTab(it) }
 
-        val wornComponents = bank_equipment_tab_to_slots_map.filterValuesNotNull().map { it.key to RSCM.getReverseMapping(RSCMType.COMPONENT,it.value.packed) }
+        val wornComponents = bank_equipment_tab_to_slots_map.filterValuesNotNull().map { it.key to RSCM.getReverseMapping(RSCMType.COMPONENT, it.value.packed) }
         for ((slot, component) in wornComponents) {
             onIfModalButton(component) { wornOp(slot, it.op) }
         }
@@ -1102,6 +1102,9 @@ constructor(
     private suspend fun ProtectedAccess.clickBanksideExtraOp(slot: Int) {
         val obj = inv[slot] ?: return resendSlot(inv, 0)
         val type = getInvObj(obj)
+
+        // Native explicit actions (e.g. a fish sack barrel's Empty) precede the wearable fallback.
+        if (type.param(params.bankside_extraop).isNotBlank() && eventBus.publish(HeldBanksideEvents.Type(player, slot, type))) return
 
         val isWearable = type.wearpos1 != -1
         if (isWearable) {
