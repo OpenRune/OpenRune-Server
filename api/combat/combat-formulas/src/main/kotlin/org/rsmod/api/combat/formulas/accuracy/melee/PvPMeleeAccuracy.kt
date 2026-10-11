@@ -27,6 +27,7 @@ constructor(
         attackStyle: MeleeAttackStyle?,
         blockType: MeleeAttackType?,
         specialMultiplier: Double,
+        defenceMultiplier: Double = 1.0,
     ): Int =
         computeHitChance(
             source = player,
@@ -35,6 +36,7 @@ constructor(
             attackStyle = attackStyle,
             blockType = blockType,
             specialMultiplier = specialMultiplier,
+            defenceMultiplier = defenceMultiplier,
         )
 
     public fun computeHitChance(
@@ -44,6 +46,7 @@ constructor(
         attackStyle: MeleeAttackStyle?,
         blockType: MeleeAttackType?,
         specialMultiplier: Double,
+        defenceMultiplier: Double = 1.0,
     ): Int {
         val npcAttributes = EnumSet.noneOf(CombatNpcAttributes::class.java)
         val meleeAttributes = meleeAttributes.collect(source, attackType)
@@ -52,7 +55,8 @@ constructor(
             computeAttackRoll(source, attackType, attackStyle, meleeAttributes, npcAttributes)
         val attackRoll = (baseAttackRoll * specialMultiplier).toInt()
 
-        val defenceRoll = computeDefenceRoll(target, blockType)
+        val baseDefenceRoll = computeDefenceRoll(target, blockType)
+        val defenceRoll = (baseDefenceRoll * defenceMultiplier).toInt()
 
         val hitChance = AccuracyOperations.calculateHitChance(attackRoll, defenceRoll)
         return MeleeAccuracyOperations.modifyHitChance(
