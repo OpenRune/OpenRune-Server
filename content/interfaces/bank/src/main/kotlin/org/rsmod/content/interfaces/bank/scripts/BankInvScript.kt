@@ -23,6 +23,7 @@ import org.rsmod.api.player.events.interact.HeldDropEvents
 import org.rsmod.api.player.output.ClientScripts.mesLayerClose
 import org.rsmod.api.player.output.UpdateInventory.resendSlot
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.ui.IfModalDrag
 import org.rsmod.api.player.worn.WornUnequipOp
 import org.rsmod.api.player.worn.WornUnequipResult
@@ -1185,7 +1186,9 @@ constructor(
         player.setBankWornBonuses(wornBonuses, weaponSpeeds)
     }
 
-    private suspend fun ProtectedAccess.clickBanksideExtraOp(slot: Int) {
+    /** Native carried-item actions shared by the bank and deposit-box inventory grids. */
+    suspend fun ProtectedAccess.clickBanksideExtraOp(slot: Int) {
+        if (player.hitpoints <= 0 || player.pendingLogout || player.loggingOut || !(player.ui.containsModal("interface.bankmain") || player.ui.containsModal("interface.bank_depositbox"))) return
         val obj = inv[slot] ?: return resendSlot(inv, 0)
         val type = getInvObj(obj)
 

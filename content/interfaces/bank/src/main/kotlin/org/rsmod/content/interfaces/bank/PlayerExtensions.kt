@@ -42,7 +42,8 @@ internal fun Player.highlightNoClickClear() {
     runClientScript(3407, "component.bankside:bankside_highlight".asRSCM(RSCMType.COMPONENT))
 }
 
-internal fun Player.setBanksideExtraOps() {
+/** Refresh native carried-item menu bits for both banking interfaces. */
+fun Player.setBanksideExtraOps() {
     var specialBits = 0
     var wearBits = 0
     var consumableBits = 0

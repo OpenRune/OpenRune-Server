@@ -14,6 +14,7 @@ import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onIfOpen
 import org.rsmod.content.interfaces.bank.QuantityMode
 import org.rsmod.content.interfaces.bank.scripts.BankInvScript
+import org.rsmod.content.interfaces.bank.setBanksideExtraOps
 import org.rsmod.content.interfaces.depositbox.bankDepositInv
 import org.rsmod.content.interfaces.depositbox.bankDepositWorn
 import org.rsmod.content.interfaces.depositbox.configs.DepositBoxConstants
@@ -22,6 +23,7 @@ import org.rsmod.content.interfaces.depositbox.depositOption1Qty
 import org.rsmod.content.interfaces.depositbox.depositQuantityInput
 import org.rsmod.content.interfaces.depositbox.depositQuantityMode
 import org.rsmod.content.interfaces.depositbox.hideDepositWornButton
+import org.rsmod.content.interfaces.depositbox.intoMainTab
 import org.rsmod.content.interfaces.depositbox.playDepositAnim
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
@@ -86,6 +88,7 @@ constructor(private val eventBus: EventBus, private val bankInv: BankInvScript) 
         }
 
     private fun Player.onDepositBoxOpen() {
+        setBanksideExtraOps()
         setItemEvents()
         disableMainInventory()
     }
@@ -105,6 +108,7 @@ constructor(private val eventBus: EventBus, private val bankInv: BankInvScript) 
             IfEvent.Op4,
             IfEvent.Op5,
             IfEvent.Op6,
+            IfEvent.Op9,
             IfEvent.Op10,
             IfEvent.Depth1,
         )
@@ -120,16 +124,18 @@ constructor(private val eventBus: EventBus, private val bankInv: BankInvScript) 
             IfButtonOp.Op2 -> depositInventoryItem(bankInv, slot, 1)
             IfButtonOp.Op3 -> depositInventoryItem(bankInv, slot, 5)
             IfButtonOp.Op4 -> depositInventoryItem(bankInv, slot, 10)
-            IfButtonOp.Op5 -> { //x quantity
+            IfButtonOp.Op5 -> { // x quantity
                 val input = countDialog()
                 if (input > 0) {
                     depositInventoryItem(bankInv, slot, input)
                 }
             }
             IfButtonOp.Op6 -> depositInventoryItem(bankInv, slot, Int.MAX_VALUE)
+            IfButtonOp.Op9 -> intoMainTab { with(bankInv) { this@itemOp.clickBanksideExtraOp(slot) } }
             IfButtonOp.Op10 -> objExamine(inv, slot)
             else -> {}
         }
+        player.setBanksideExtraOps()
     }
 
     /** Clicking a worn item unequips it into the inventory rather than depositing it. */

@@ -5,6 +5,7 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.content.interfaces.bank)
     implementation(projects.api.invStorage)
     implementation(projects.api.death)
     implementation(projects.api.scriptAdvanced)

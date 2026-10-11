@@ -25,6 +25,7 @@ import org.rsmod.api.player.skilling.*
 import org.rsmod.api.player.ui.ifClose
 import org.rsmod.content.interfaces.bank.bankCapacity
 import org.rsmod.content.interfaces.bank.scripts.BankInvScript
+import org.rsmod.content.interfaces.depositbox.scripts.DepositBoxInterfaceScript
 import org.rsmod.content.skills.fishing.scripts.FishBarrelScript
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
@@ -102,6 +103,20 @@ internal class FishBarrelInteractionTest {
         repeat(2) { val resolved = hook.resolve(context, result); assertEquals(1, resolved.kept.size); assertTrue(resolved.lostUntradeable.isEmpty()); assertEquals(7, FishBarrelContents.total(f.player)) }
         assertEquals(result, hook.resolve(context.copy(killer = null, recentPvpDamage = false), result))
     }
+
+    @Test fun `real deposit-box Empty banks every fish barrel and sack form without banking the container`() {
+        for (symbol in FishBarrelContents.forms) {
+            val f = Fixture(); f.put(0, symbol); FishBarrelContents.update(f.player, "obj.raw_lobster", 28)
+            f.boxClick(); assertEquals(0, FishBarrelContents.total(f.player)); assertEquals(28, f.player.invMap.getOrPut("inv.bank").physicalCount("obj.raw_lobster")); assertEquals(symbol.asRSCM(), f.player.inv[0]!!.id)
+            f.boxClick(); assertEquals(28, f.player.invMap.getOrPut("inv.bank").physicalCount("obj.raw_lobster"))
+        }
+    }
+
+    @Test fun `deposit-box fish Empty respects full bank and leaves barrel storage unchanged`() {
+        val f = Fixture(); f.put(0, "obj.fish_barrel_open"); FishBarrelContents.update(f.player, "obj.raw_lobster", 28); f.player.bankCapacity = 1
+        f.player.invMap.getOrPut("inv.bank")[0] = InvObj("obj.coins", 100); f.boxClick()
+        assertEquals(28, FishBarrelContents.total(f.player)); assertEquals(0, f.player.invMap.getOrPut("inv.bank").physicalCount("obj.raw_lobster"))
+    }
     private class Fixture {
         val bus = EventBus(); val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
         val player = Player(client).apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); currentMapClock = 100; processedMapClock = 100; bankCapacity = 800; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
@@ -112,6 +127,7 @@ internal class FishBarrelInteractionTest {
             val bankScript = BankInvScript(bus, mock(org.rsmod.api.player.bonus.WornBonuses::class.java), mock(org.rsmod.api.combat.weapon.WeaponSpeeds::class.java))
             with(FishBarrelScript(bankScript)) { scripts.startup() }
             with(bankScript) { scripts.startup() }
+            with(DepositBoxInterfaceScript(bus, bankScript)) { scripts.startup() }
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(context); launcher = ProtectedAccessLauncher(factory)
             val c = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }
             held = c.newInstance(*c.parameterTypes.map { if (it == EventBus::class.java)bus else mock(it) }.toTypedArray())as HeldInteractions
@@ -121,8 +137,13 @@ internal class FishBarrelInteractionTest {
         fun op(slot: Int, op: HeldOp) = run { held.interact(this, inv, slot, op) }
         fun use(first: Int, second: Int) = run { HeldUInteractions(bus).interact(this, inv, ServerCacheManager.getItem(inv[first]!!.id)!!, first, ServerCacheManager.getItem(inv[second]!!.id)!!, second) }
         fun choose(index: Int) { val c = player.activeCoroutine!!; assertTrue(c.isAwaiting(ResumePauseButtonInput::class)); c.resumeWith(ResumePauseButtonInput("component.chatmenu:options", index)) }
+        fun boxClick() {
+            run { ifOpenMainModal("interface.bank_depositbox") }
+            val ctor = If3Button::class.java.declaredConstructors.single { it.parameterCount == 5 }
+            If3ButtonHandler(bus, launcher).handle(player, ctor.newInstance("component.bank_depositbox:inventory".asRSCM(), 0, player.inv[0]!!.id, 9, null) as If3Button)
+        }
         fun bankClick() {
-            run { ifOpenSide("interface.bankside"); ifSetEvents("component.bankside:items", 0..27, IfEvent.Op9) }
+            run { ifOpenMainSidePair("interface.bankmain", "interface.bankside"); ifSetEvents("component.bankside:items", 0..27, IfEvent.Op9) }
             val ctor = If3Button::class.java.declaredConstructors.single { it.parameterCount == 5 }
             If3ButtonHandler(bus, launcher).handle(player, ctor.newInstance("component.bankside:items".asRSCM(), 0, player.inv[0]!!.id, 9, null)as If3Button)
         }

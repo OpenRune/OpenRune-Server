@@ -28,20 +28,22 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Dizana’s quiver | Native ammo/combat, Sunfire charges, Ava/Ralos, max-cape conversion, bank Configure, Minimus, Perdu lock/unlock/repair, permanent paid locks and PvM/PvP death handling | Native visuals; knife separation and exact Mac returns now pass five input tests |
 | Bolt pouch | Four native slots, caps/grapple, actual held/UI/drag/equipment transfers, Hirko purchase, PvM ghost storage/PvP spill | Final native visuals; confirmed Destroy and stale-item input tests pass |
 | Collection bags | All five native tiers; 2/4/6/7/8 eggs, shared temporary contents, Look-in/Empty/item-use and deferred death cleanup | Collector auto-pickup/calls/hopper require the unstarted Barbarian Assault activity; native visuals |
-| Coal bag / essence pouches | Native held operations, physical-first coal consumption, independent essence decay, capacity clamp, non-destructive repair, atomic colossal crafting and loss cleanup; 19 tests | Coal bank/reward producers, Cordelia dialogue acceptance, pouch acquisition review and native visuals |
-| Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Final consumer review |
+| Coal bag / essence pouches | Native held operations, physical-first coal consumption, independent essence decay, capacity clamp, non-destructive repair, atomic colossal crafting loss cleanup and native bank coal Fill/Empty | Native Percy acquisition review, Cordelia dialogue acceptance, pouch acquisition review and native visuals |
+| Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Native deposit-box extra options work; collective Empty containers and final consumer review |
 
 Latest focused pouch validation: **49 tests pass**, including native area-backed
 Ferox pickup, ditch/Enclave Destroy loss, real held/item-use/IF3 Deposit input and
 stale ownership/lifecycle guards. The real Deposit modal lock failure is fixed
 inside the owned transaction; general inventory guards are unchanged.
 
-Latest combined validation: **354 tests pass**: 205 Containers, 43 Pouches,
-12 Runecrafting, seven Smithing, 11 inventory transaction, three combat,
-26 shortcut, 18 fairy-ring and 29 Araxxor tests. The pouch chunk checks actual
-Destroy confirmation/cancellation, replacement/movement/death/logout guards,
-duplicate pouch retention and ground pickup capacity/fallback/save-load.
-Looting-bag persistence now retains opaque item state and reads existing pair-based saves.
+Latest combined validation: **386 tests pass**: 210 Containers, 49 Pouches,
+nine Fishing, 12 Runecrafting, seven Smithing, 11 inventory transaction,
+three combat, 26 shortcut, 18 fairy-ring, 29 Araxxor and 12 network tests.
+Native deposit-box extra actions share the normal bank dispatcher and preserve
+the selected bank tab. Tests cover herb/gem bags, every fish barrel/sack form,
+full-bank rollback and partial stacking, lifecycle guards and both coal-bag forms.
+Coal can fill from an ordinary bank and empty to inventory; deposit-box Fill cannot
+withdraw bank items. The collective Empty containers button is the next integration.
 The native five-argument ground constructor and normal coin stacking are preserved.
 Seventeen server-only quiver metadata candidates round-trip in the isolated cache;
 34,589 unrelated native item files and original reference IDs remain unchanged.

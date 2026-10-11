@@ -1069,3 +1069,28 @@ AreaChecker, including safe-area flags deliberately made stale. Four new interac
 tests use held/item-use and the real IF3 button handler, covering Ferox storage,
 both item-use directions, full bags, replaced items/bags and ownership removal.
 Source: [Looting bag](https://oldschool.runescape.wiki/w/Looting_bag).
+
+### Native deposit-box container actions and coal-bag bank input
+
+The native `bank_depositbox_drawslot` clientscript already offers the carried-item
+extra action as Op9. The server now enables that op, refreshes the native menu bits,
+and shares the bank's actual item dispatcher. Deposit-box actions temporarily select
+the main bank tab and then restore the player's prior tab. Full banks/near-full
+stacks preserve uncommitted container contents. Existing lifecycle checks remain
+in the owner and the shared dispatcher checks the actual banking modal.
+
+Both coal-bag forms have a native bank action: Fill when empty withdraws directly
+from bank stock up to capacity and retains native placeholders; Empty returns coal
+to inventory. The native menu mask is refreshed after contents change. Deposit
+boxes can Empty, but cannot use Fill to withdraw from the bank. Source:
+[Coal bag](https://oldschool.runescape.wiki/w/Coal_bag). Existing Percy stock and
+native metadata already price the coal bag at 100 golden nuggets; acquisition
+uniqueness still requires its own review.
+
+`world-depositbox-full-validation-2.log` passes 386 tests across the container,
+pouch, Fishing, Runecrafting, Smithing, inventory, combat, travel, Araxxor and
+network groups. Five new tests use the real IF3 button handler and native bank
+opening; two Fishing tests cover all four barrel/sack forms and bank capacity.
+An early fixture omitted BankOpenScript and its real menu setup; the final
+fixture includes it. Fourteen accepted file hashes and the accepted JAR remain
+unchanged. Collective Empty containers input is a subsequent owner integration.

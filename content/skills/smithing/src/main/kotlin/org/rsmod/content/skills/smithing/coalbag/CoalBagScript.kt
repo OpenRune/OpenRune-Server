@@ -2,7 +2,9 @@ package org.rsmod.content.skills.smithing.coalbag
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
+import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.player.events.interact.HeldBanksideEvents
 import org.rsmod.api.player.events.interact.HeldDropEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.hitpoints
@@ -12,10 +14,13 @@ import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpHeld5
+import org.rsmod.api.script.onProtectedEvent
+import org.rsmod.content.interfaces.bank.scripts.BankInvScript
+import org.rsmod.content.interfaces.bank.setBanksideExtraOps
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class CoalBagScript : PluginScript() {
+class CoalBagScript @Inject constructor(private val bankInv: BankInvScript) : PluginScript() {
 
     override fun ScriptContext.startup() {
         listOf("obj.coal_bag", "obj.coal_bag_open").forEach { bag ->
@@ -31,6 +36,15 @@ class CoalBagScript : PluginScript() {
                     publish(HeldDropEvents.Destroy(player, it.slot, it.obj, bag))
                 }
             }
+        }
+
+        for (bag in listOf("obj.coal_bag", "obj.coal_bag_open")) onProtectedEvent<HeldBanksideEvents.Operate>(bag.asRSCM()) {
+            if (!canOperate() || inv[it.slot]?.id != bag.asRSCM()) return@onProtectedEvent
+            if (CoalBag.storedAmount(player) > 0) emptyBag() else if (player.ui.containsModal("interface.bankmain")) {
+                val added = with(bankInv) { withdrawStoredStack("obj.coal".asRSCM(), CoalBag.freeSpace(player)) }
+                if (added > 0) CoalBag.addStored(player, added)
+            }
+            player.setBanksideExtraOps()
         }
 
         onOpHeld2("obj.coal_bag") { if (canOperate()) invReplaceSlot(inv, it.slot, 1, ServerCacheManager.getItem("obj.coal_bag_open".asRSCM())!!) }

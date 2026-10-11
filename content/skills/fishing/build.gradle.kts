@@ -8,6 +8,7 @@ dependencies {
     implementation(projects.api.invStorage)
     implementation(projects.api.death)
     implementation(projects.content.interfaces.bank)
+    testImplementation(projects.content.interfaces.depositBox)
     testImplementation(projects.api.net)
     testImplementation(libs.rsprot.api)
     testImplementation(libs.fastutil)

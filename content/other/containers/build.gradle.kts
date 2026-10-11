@@ -17,6 +17,8 @@ dependencies {
     implementation(projects.content.other.consumables)
     implementation(projects.content.other.pets)
     implementation(projects.content.quest)
+    testImplementation(projects.content.interfaces.depositBox)
+    testImplementation(projects.content.skills.smithing)
     testImplementation(projects.api.combat.combatManager)
     testImplementation(projects.content.skills.woodcutting)
     testImplementation(projects.content.skills.thieving)

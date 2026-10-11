@@ -7,7 +7,7 @@ import org.rsmod.content.interfaces.bank.selectedTab
 import org.rsmod.game.inv.Inventory
 
 /** A deposit box only deposits into the main tab, so each deposit runs with the main tab selected and the player's tab selection in the bank is restored afterward. */
-private inline fun ProtectedAccess.intoMainTab(block: () -> Unit) {
+internal inline fun ProtectedAccess.intoMainTab(block: () -> Unit) {
     val previous = selectedTab
     if (previous != BankTab.Main) {
         selectedTab = BankTab.Main
