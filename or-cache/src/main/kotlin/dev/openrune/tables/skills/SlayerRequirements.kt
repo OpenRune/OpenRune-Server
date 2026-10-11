@@ -48,7 +48,7 @@ object SlayerRequirements {
     private const val COCKATRICE = 44
     private const val DUST_DEVILS = 49
     private const val SMOKE_DEVILS = 95
-    private const val THERMONUCLEAR_SMOKE_DEVIL_BOSS = 1019
+    private const val THERMONUCLEAR_SMOKE_DEVIL_BOSS = "dbrow.slayer_boss_task_smokedevilboss"
     private const val WALL_BEASTS = 61
     private const val KILLERWATTS = 73
     private const val CAVE_HORRORS = 80
@@ -66,7 +66,7 @@ object SlayerRequirements {
     private const val TUROTH = 36
     private const val KURASK = 45
 
-    fun gear() =
+    fun gear(bossKey: (String) -> Int) =
         dbTable("dbtable.slayer_gear", serverOnly = true) {
             column("tasks", GEAR_TASKS, VarType.INT)
             column("variant", GEAR_VARIANT, VarType.INT)
@@ -130,7 +130,7 @@ object SlayerRequirements {
             gear(
                 SMOKE_DEVILS,
                 1,
-                extraTask = THERMONUCLEAR_SMOKE_DEVIL_BOSS,
+                extraTask = bossKey(THERMONUCLEAR_SMOKE_DEVIL_BOSS),
                 item = "obj.slayer_facemask",
                 group = SLAYER_HELMET,
                 drains = "enum.slayer_drain_smoke_devil",

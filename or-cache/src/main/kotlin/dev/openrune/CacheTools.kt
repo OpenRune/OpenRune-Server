@@ -59,6 +59,7 @@ import dev.openrune.toml.rsconfig.rsconfig
 import dev.openrune.toml.tomlMapper
 import dev.openrune.tools.MinifyServerCache
 import dev.openrune.tools.PackServerConfig
+import dev.openrune.tools.SlayerBossKeys
 import dev.openrune.tools.SlayerTargetMonsterLoader
 import dev.openrune.types.SlayerNpcData
 import java.io.File
@@ -193,7 +194,7 @@ private fun finalizeServerCache(force: Boolean = false) {
     startEnumGeneration(enums, force)
 }
 
-fun tablesToPack(): List<DBTable> = tablesToPack(loadSlayerData())
+fun tablesToPack(): List<DBTable> = tablesToPack(loadSlayerData(), loadSlayerBossKeys())
 
 private fun loadSlayerData(): Map<Int, SlayerNpcData> =
     SlayerTargetMonsterLoader.loadNpcSlayerData(
@@ -201,7 +202,13 @@ private fun loadSlayerData(): Map<Int, SlayerNpcData> =
         tomlMapper { rsconfig { enableConstantProvider() } },
     )
 
-private fun tablesToPack(slayerData: Map<Int, SlayerNpcData>): List<DBTable> = listOf(
+private fun loadSlayerBossKeys(): (String) -> Int =
+    SlayerBossKeys.load(Cache.load(File(getCacheLocation()).toPath()), revision.first)
+
+private fun tablesToPack(
+    slayerData: Map<Int, SlayerNpcData>,
+    slayerBossKey: (String) -> Int,
+): List<DBTable> = listOf(
     GameframeTable.gameframe(),
     Music.musicClassic(),
     Music.musicModern(),
@@ -229,7 +236,7 @@ private fun tablesToPack(slayerData: Map<Int, SlayerNpcData>): List<DBTable> = l
     Smithing.crystalSinging(),
     Slayer.masters(),
     Slayer.streakBonuses(),
-    SlayerRequirements.gear(),
+    SlayerRequirements.gear(slayerBossKey),
     SlayerRequirements.finishers(slayerData),
     SlayerRequirements.weaponRules(slayerData),
     Runecrafting.altars(),
