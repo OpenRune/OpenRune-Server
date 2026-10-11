@@ -1161,3 +1161,27 @@ Yanni Talk-to. Scoped formatting passes. Early failures were an omitted test
 InternalApi opt-in and a test pickup attempted before closing its destroy chat;
 the input fixture now closes the modal and verifies that protected launch succeeds.
 Fourteen accepted file hashes and the accepted JAR remain unchanged.
+
+### Rune/looting pouch notes
+
+Native promissory notes `promissory_note_runepouch` (24587) and
+`promissory_note_lootingbag` (24585) expose Read at held op four. It explains the
+exchange without consuming a note. Item-on-banker/tutor, bank booth/chest and
+rune-note Grand Exchange clerk input redeems exactly one note using a single
+inventory transaction. Carried/banked regular, locked or Divine forms prevent
+another rune pouch; both bag forms prevent another bag. A final stacked note
+can free its own slot; a remaining stack in a full inventory rolls back. Native
+paid rune lock restoration runs only after successful redemption.
+
+Bank booth item-use uses the existing `onOpContentMixedLocU` extension, whose
+producer matches a loc content group with a concrete item. The first test caught
+use of the distinct content/content event family; the implementation now uses
+the correct API. No global banknote fallback or core event producer is changed.
+
+`world-pouch-note-final-validation.log` passes all **65 Pouches tests**. Five new
+tests exercise actual held and NPC/loc item-use producers across native bankers,
+tutors, untransformed bank chests, booths and Grand Exchange clerks, capacity,
+duplicate ownership, lifecycle denial and paid-lock recovery. Scoped formatting
+passes. Earlier affected Containers/InvTx suites pass 217/11; accepted file
+hashes and JAR remain unchanged. Sources: [Rune pouch note](https://oldschool.runescape.wiki/w/Rune_pouch_note),
+[Looting bag note](https://oldschool.runescape.wiki/w/Looting_bag_note).
