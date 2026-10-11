@@ -6,15 +6,35 @@ Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
 **Status:** 🟢 Complete · 🟡 Started · 🔴 Not started
 
-## 🟡 Started: world shortcuts, containers and fairy rings
+## 🟡 Started: Nero completionist cape, customiser and particles
 
-Owner-requested scope: every revision-240 Agility shortcut, all container items
-in the Wiki list, the full fairy-ring network, and the missing surface Spider
-Cave entrance/exit for araxytes and Araxxor. Work uses existing native mechanics
-and separate reviewable chunks. Upstream #227/#216 and the current Wiki lists
-are being compared with the fork; content presence is not completion evidence.
-Existing accepted Araxxor combat and travel remain intact. Full route, storage,
-persistence, rollback and native interaction validation is still in progress.
+Owner requested the v0.7 handoff integration after the Forestry chunk. Work is
+isolated on `feature/nero-completionist`, based on accepted Home/Revenants
+`44f15a55f`; existing live JAR/cache/RSA/playerdata remain unchanged.
+
+Validated local chunk: native Curator purchase/fusion/customiser, 22 recipes,
+all 48 Wear options, 24 matching max-variant bonuses (+2, magic raw +20),
+regular/trimmed max-cape integration and Dizana ammo/combat. **14 new native
+integration tests and 15 existing max-cape tests pass**. The bounded pack
+preserves **538,211 existing config definitions**, including signed varp IDs.
+Only style vars move: **63300–63341**; item/model/NPC/interface IDs stay.
+
+The supplied opt-in particles client retains revision/API/HD guards; all 34
+local pinned libraries and native runtime hook linkage qualify. Client visual
+acceptance, full locked death/repair and guarded test-package deployment are
+still open. The ordinary full cache build has unrelated CS2 failures; only the
+bounded pack route is currently qualified. Purchase prices follow the v0.7
+prototype (10m cape / 5m hood); the older full-completion eligibility design has
+not been silently discarded. See [integration evidence](docs/custom/nero-completionist.md).
+
+## 🟡 Parked: world shortcuts, containers and fairy rings
+
+Parked at the owner's request after Forestry checkpoint `84b002717` on
+`feature/shortcuts-containers-fairy-rings`. Forestry harvest/consumable and leaf
+storage work has **22 native integration tests**, with container/pouch/InvTx
+regressions passing. Existing accepted source/JAR were preserved. Remaining
+Forestry events/cape/nest effects and the wider route/container/fairy-ring
+acceptance stay on that branch; this cape branch does not claim their rollout.
 
 ## 🟢 Complete: Edgeville home teleporter and Emblem trader
 
@@ -410,7 +430,7 @@ Scope: XS = tiny, S = small, M = medium, L = large, XL = very large, XXL = multi
 | 🔴 | Combat Tasks | XXL |
 | 🔴 | Leagues | XXL |
 | 🔴 | Sailing Skill | XXL |
-| 🔴 | Completionist Cape + Particles | TBD |
+| 🟡 | Completionist Cape + Particles | TBD |
 | 🔴 | Hooded Slayer Helmets + Variants | TBD |
 
 ### Parked

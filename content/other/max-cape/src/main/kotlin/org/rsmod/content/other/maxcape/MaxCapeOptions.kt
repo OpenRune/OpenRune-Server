@@ -37,7 +37,9 @@ internal sealed interface CapeAction {
 internal object MaxCapeOptions {
     const val HELD = "obj.skillcape_max"
     const val WORN = "obj.skillcape_max_worn"
-    val capes = listOf(HELD, WORN)
+    val completionist = listOf("obj.nero_completionist_2011", "obj.nero_completionist_2011_trimmed")
+    val capes = listOf(HELD, WORN) + completionist
+    val wornCapes = listOf(WORN) + completionist
     private fun tele(destination: CapeDestination) = CapeAction.Teleport(destination)
     val guilds = listOf(CapeDestination.Crafting, CapeDestination.Farming, CapeDestination.Fishing,
         CapeDestination.Hunter, CapeDestination.Warriors).map(::tele)

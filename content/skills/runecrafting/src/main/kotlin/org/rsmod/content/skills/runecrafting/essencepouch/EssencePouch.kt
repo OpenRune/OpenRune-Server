@@ -6,6 +6,7 @@ import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.stat.baseRunecraftingLvl
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.player.worn.hasMaxCapePerks
 import org.rsmod.content.skills.runecrafting.colossalPouchDegradeThreshold
 import org.rsmod.content.skills.runecrafting.giantPouchDegradeThreshold
 import org.rsmod.content.skills.runecrafting.largePouchDegradeThreshold
@@ -79,7 +80,6 @@ object EssencePouch {
         }
     }
 
-
     fun isEssence(itemInternal: String): Boolean = itemInternal in fillableEssences
 
     fun tierForInvObj(obj: InvObj): Tier? =
@@ -87,7 +87,6 @@ object EssencePouch {
 
     fun hasPouchInInventory(player: Player): Boolean =
         player.inv.any { obj -> obj != null && tierForInvObj(obj) != null }
-
 
     fun shouldIntercept(player: Player, itemInternal: String): Boolean =
         isEssence(itemInternal) &&
@@ -319,7 +318,7 @@ object EssencePouch {
     fun playerHasDegradeProtection(player: Player): Boolean =
         "obj.skillcape_runecrafting" in player.worn ||
             "obj.skillcape_runecrafting_trimmed" in player.worn ||
-            "obj.skillcape_max" in player.worn
+            player.hasMaxCapePerks()
 
     private fun degradedCapacity(player: Player, tier: Tier, threshold: Int): Int {
         val base = baseCapacity(player, tier)

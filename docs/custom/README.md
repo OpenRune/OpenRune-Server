@@ -46,3 +46,5 @@ have [action, source and validation notes](clue-native-tasks.md).
 Current status remains in PROGRESS.md.
 
 The final ten skill-task routes have [native action and scope notes](clue-final-native-tasks.md).
+
+- [Nero completionist cape, customiser and particles](nero-completionist.md) — v0.7 native integration and current qualification limits.

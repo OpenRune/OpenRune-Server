@@ -1,0 +1,26 @@
+plugins {
+    id("base-conventions")
+    id("game-cache-test-conventions")
+}
+dependencies {
+    implementation(projects.api.pluginCommons)
+    implementation(projects.api.repo)
+    implementation(projects.api.gameProcess)
+    implementation(projects.api.invtx)
+    implementation(projects.api.net)
+    implementation(projects.api.scriptAdvanced)
+    implementation(projects.content.quest)
+    implementation(projects.api.death)
+    testImplementation(projects.api.combat.combatManager)
+    testImplementation(projects.content.other.maxCape)
+    testImplementation(projects.content.other.consumables)
+    testImplementation(projects.api.spellsAutocast)
+    implementation(libs.rsprot.api)
+    implementation("com.google.code.gson:gson:2.13.2")
+    testImplementation(projects.api.registry)
+    testImplementation(projects.api.invStorage)
+    testImplementation(projects.api.net)
+    testImplementation(libs.rsprot.api)
+    testImplementation(libs.fastutil)
+    testImplementation("org.mockito:mockito-core:5.14.2")
+}

@@ -1,6 +1,7 @@
 package org.rsmod.content.skills.smithing.coalbag
 
 import org.rsmod.api.player.vars.intVarBit
+import org.rsmod.api.player.worn.hasMaxCapePerks
 import org.rsmod.game.entity.Player
 
 object CoalBag {
@@ -14,7 +15,7 @@ object CoalBag {
     fun shouldInterceptIncoming(player: Player): Boolean = isOpenInInventory(player)
 
     fun capacity(player: Player): Int =
-        if ("obj.skillcape_smithing" in player.worn || "obj.skillcape_smithing_trimmed" in player.worn || "obj.skillcape_max" in player.worn) {
+        if ("obj.skillcape_smithing" in player.worn || "obj.skillcape_smithing_trimmed" in player.worn || player.hasMaxCapePerks()) {
             36
         } else {
             27
