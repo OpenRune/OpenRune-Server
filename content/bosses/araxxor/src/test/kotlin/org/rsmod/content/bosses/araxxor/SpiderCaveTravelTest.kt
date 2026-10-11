@@ -9,13 +9,13 @@ import dev.openrune.map.tile.MapTileDecoder
 import dev.openrune.map.util.InlineByteBuf
 import dev.openrune.rscm.RSCM.asRSCM
 import kotlin.coroutines.*
-import org.rsmod.api.route.BoundValidator
-import org.rsmod.coroutine.GameCoroutine
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.api.player.interact.LocInteractions
 import org.rsmod.api.player.protect.*
+import org.rsmod.api.route.BoundValidator
+import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
@@ -34,6 +34,7 @@ import org.rsmod.routefinder.flag.CollisionFlag
 @ResourceLock("ServerCacheManager")
 internal class SpiderCaveTravelTest {
     @BeforeEach fun nativeCache() { ServerCacheManager.init(240).close() }
+
     @Test fun `scroll landing reaches native entrance and both clicks use public cave without Slayer task`() {
         val f = Fixture()
         for ((symbol, target) in listOf("loc.araxyte_cave_entry" to SpiderCaveTravel.INNER, "loc.araxyte_cave_exit" to SpiderCaveTravel.OUTER)) {
@@ -42,11 +43,11 @@ internal class SpiderCaveTravelTest {
                 destX = loc.x, destZ = loc.z, destWidth = loc.width, destLength = loc.length, locShape = loc.shapeId,
                 locAngle = loc.angleId, blockAccessFlags = loc.forceApproachFlags, moveNear = false)
             assertTrue(route.success, "Cannot reach $symbol")
-            route.waypoints.lastOrNull()?.let { f.player.coords = CoordGrid(it.x, it.z) }
+            route.waypoints.firstOrNull()?.let { f.player.coords = CoordGrid(it.x, it.z) }
             f.click(loc)
             f.finish()
             assertEquals(target, f.player.coords)
-            assertEquals(0, f.map[target.x, target.z, 0] and BLOCKED, "Walkable near $target: " + (-3..3).flatMap { x -> (-3..3).map { z -> target.translate(x,z) } }.filter { f.map[it.x,it.z,0] and BLOCKED == 0 })
+            assertEquals(0, f.map[target.x, target.z, 0] and BLOCKED, "Walkable near $target: " + (-3..3).flatMap { x -> (-3..3).map { z -> target.translate(x, z) } }.filter { f.map[it.x, it.z, 0] and BLOCKED == 0 })
         }
     }
 

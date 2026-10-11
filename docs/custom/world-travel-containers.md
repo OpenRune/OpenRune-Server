@@ -46,11 +46,53 @@ Wiki raw/API requests are batched after encountering rate limiting. Local
 source manifests record URLs and SHA256 hashes.
 
 Native audit reads the accepted isolated home cache: 34,606 item definitions,
-62,525 loc definitions and 7,764 relevant placed objects. One pre-existing
+62,525 loc definitions and 8,258 relevant placed objects. One pre-existing
 malformed map archive group 25287 is recorded rather than silently counted as
 valid; affected routes must be checked separately if the requested content uses it.
 
 Spider Cave evidence and coordinates are documented in [Araxxor](araxxor.md).
-The combined Araxxor/fairy test run passes 29 Araxxor tests and 5 fairy tests.
-Fairy tests currently prove data/dials/registration, not every travel interaction.
+The Araxxor suite passes 29 tests. Fairy rings pass 12 tests covering all 64
+code combinations, 54 fixed destinations through native loc and IF3 inputs,
+favourites/Last-destination and cancellation. Native centres deliberately carry
+loc/decor collision; some also have a blocked-floor flag. Their authoritative
+row landing is retained and a free adjacent exit is required instead of treating
+the ring itself as an ordinary walkable destination. The sound alias is included
+in the isolated test package; it must accompany the eventual bounded deployment.
 No live installation has been performed.
+
+## Storage transaction safety
+
+The previous virtual-storage adapter mutated bags during dry-run capacity checks.
+It could retain a partial storage insert even if the physical inventory portion
+failed. Transfers now capture a pure capacity/count snapshot, validate it before
+physical commit and apply both portions once. Noted and variable-bearing products
+retain normal physical handling; zero/negative counts cannot mutate storage.
+Bank inventories are excluded from held coal/essence hooks.
+
+Ground pickup uses the same pure preflight, ownership checks and delayed recheck.
+The ground object is deleted only after the destination transaction can succeed.
+Alternate inventory storage is optional and receives its persistence callback
+only after a successful pickup. Generic container tests exercise the actual
+Held/HeldU/Obj interaction producers, storage persistence, full inventories and
+late denial/space/death/logout cases. Smithing and Runecrafting compile; their
+`test` tasks currently contain no test sources.
+
+## Initial generic container scope
+
+`containers.tsv` declares 51 native forms in 16 storage families. Native inventory
+options select their actual handler positions; Wear is left to normal equipment
+handling. Item insertion rejects notes, unsupported types and capacity overflow.
+Stored quantities persist as account attributes with notification on every
+change. Integer arithmetic is widened for seed stacks. These basic operations
+and twelve native interaction/pickup tests are a first chunk, not evidence that
+all 39 requested categories or their specialised interfaces are complete.
+
+
+Fairy-ring special travel covers the native AIR → DLR → DJQ → AJS hideout
+sequence (ring centre 2328,4426), repeated travel-log sequence, staff-free island
+return and all six native rotation inputs. `fairyring_lastloc_opvis` spans bits
+0–6 of the same varp as the destination and is derived visibility, not a boolean
+to set; only `fairyring_lastloc_set` is written alongside the destination. DIQ
+requires an actual built house ring. Construction/house instances do not exist
+in the fork yet, so an unavailable house route is explained rather than sent to
+a made-up location.

@@ -19,15 +19,27 @@ persistence, rollback and native interaction validation is still in progress.
 - Surface Spider Cave: native Enter/Exit handlers and free landing tiles added;
   real loc interaction/routing and death/logout/movement cancellation pass.
   All **29 Araxxor module tests** pass; client acceptance is still pending.
-- Fairy rings: **64 native code rows** and dial round trips/handler registration
-  pass (**5 tests**). Travel, special codes, prerequisites and client acceptance
-  remain under validation.
+- Fairy rings: **64 native code rows**, **54 fixed destinations** and native
+  loc-to-IF3 travel, favourites/Last-destination and cancellation checks pass
+  (**12 tests**). Native centres have walkable exits. The AIR/DLR/DJQ/AJS
+  hideout sequence and all six rotation buttons pass; Last-destination uses the
+  separate set bit, never the overlapping op-visibility mask. POH DIQ requires
+  a built house ring (Construction is not implemented); remaining prerequisite
+  checks and client acceptance remain open.
 - Agility: **353 upstream candidate links** audited against native definitions.
   Validation exposed wrong symbols/options and blocked intermediate/end tiles;
   these are being corrected before the module is considered usable.
 - Containers: all **39 Wiki categories** inventoried against native items.
-  Rune/looting pouch baselines adapted; full storage, death and interaction
-  validation and the remaining container families are in progress.
+  Rune/looting pouch baselines adapted. Initial storage operations for **51
+  native forms in 16 families** pass **12 native interaction/pickup tests**.
+  Whitelists reject quest herbs, unsupported kit items, notes and over-capacity
+  inserts; save/load and full-inventory withdrawals are covered. Family-specific
+  interfaces, death/destroy/crafting and remaining containers are in progress.
+- Shared storage safety: dry runs no longer mutate virtual contents; physical
+  inventory and storage commit together. Bank inventories cannot consume held
+  coal/essence. Pickup rechecks capacity and permissions before ground deletion,
+  supports alternate looting storage and cancels on death/logout. Atomic API
+  tests pass; Smithing/Runecrafting compile (their test tasks have no sources).
 
 ## 🟢 Complete: Edgeville home teleporter and Emblem trader
 
