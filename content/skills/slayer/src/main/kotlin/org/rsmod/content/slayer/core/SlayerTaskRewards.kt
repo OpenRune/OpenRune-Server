@@ -12,9 +12,8 @@ object SlayerTaskRewards {
     private const val TEXT = "<col=ef1020>"
     private const val VALUE = "</col>"
 
-    private val streakBonuses: List<SlayerStreakBonusesRow> by lazy {
+    private val streakBonuses: List<SlayerStreakBonusesRow> =
         SlayerStreakBonusesRow.all().sortedByDescending { it.interval }
-    }
 
     fun streakMultiplier(streak: Int): Int =
         streakBonuses.firstOrNull { streak % it.interval == 0 }?.multiplier ?: 1

@@ -36,6 +36,8 @@ class NpcServerCodec(
     private val slayerTaskIdsParamId = "param.slayer_task_ids".asRSCM()
     private val slayerVariantParamId = "param.slayer_variant".asRSCM()
     private val slayerLevelParamId = "param.slayer_level".asRSCM()
+    private val slayerSuperiorFormParamId = "param.slayer_superior_form".asRSCM()
+    private val superiorNpcIds = slayerSuperiorByNpcId.values.mapTo(HashSet()) { it.superiorNpcId }
     private val slayerTaskTipParamId = "param.slayer_task_tip".asRSCM()
     private val slayerSuperiorParamId = "param.slayer_superior".asRSCM()
     private val slayerSuperiorWildernessOnlyParamId = "param.available_in_wilderness".asRSCM()
@@ -202,6 +204,7 @@ class NpcServerCodec(
             if (data.level >= 0) paramsRaw?.set(slayerLevelParamId, data.level)
         }
         slayerTaskTipByNpcId[id]?.let { tip -> paramsRaw?.set(slayerTaskTipParamId, tip) }
+        if (id in superiorNpcIds) paramsRaw?.set(slayerSuperiorFormParamId, 1)
         slayerSuperiorByNpcId[id]?.let { superior ->
             paramsRaw?.set(slayerSuperiorParamId, superior.superiorNpcId)
             if (superior.wildernessAvailable) {

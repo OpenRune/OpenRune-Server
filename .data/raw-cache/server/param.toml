@@ -106,6 +106,12 @@ defaultInt = -1
 isMembers = true
 
 [[params]]
+id = "param.slayer_superior_form"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
 id = "param.slayer_superior"
 type = "NPC"
 isMembers = true

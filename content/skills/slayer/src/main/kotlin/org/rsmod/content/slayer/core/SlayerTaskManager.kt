@@ -200,24 +200,7 @@ object SlayerTaskManager {
     fun isTaskNpcType(type: NpcServerType, taskKey: Int): Boolean =
         SlayerTaskCredit.counts(type, taskKey)
 
-    fun countsAsTaskKill(npc: Npc, taskKey: Int): Boolean =
-        isTaskNpc(npc, taskKey) || isSuperiorForTask(npc.visType, taskKey)
-
-    fun isSuperiorForTask(type: NpcServerType, taskKey: Int): Boolean =
-        superiorNpcIdsByTaskKey[taskKey]?.contains(type.id) == true
-
-    private val superiorNpcIdsByTaskKey: Map<Int, Set<Int>> by lazy { buildSuperiorNpcIdsByTask() }
-
-    private fun buildSuperiorNpcIdsByTask(): Map<Int, Set<Int>> {
-        val map = mutableMapOf<Int, MutableSet<Int>>()
-        for ((_, type) in ServerCacheManager.getNpcs()) {
-            val superiorId = type.paramOrNull<NpcServerType>(BaseParams.slayer_superior)?.id ?: continue
-            for (key in SlayerTaskCredit.keys(type)) {
-                map.getOrPut(key) { mutableSetOf() }.add(superiorId)
-            }
-        }
-        return map
-    }
+    fun countsAsTaskKill(npc: Npc, taskKey: Int): Boolean = isTaskNpc(npc, taskKey)
 
     fun slayerXpForKill(npc: Npc): Double {
         val paramXp = npc.visType.paramOrNull(BaseParams.slayer_experience)

@@ -37,7 +37,7 @@ constructor(
 ) {
     private val ownedSuperiorsByPlayer = mutableMapOf<PlayerUid, MutableSet<Npc>>()
 
-    fun isSuperior(npc: Npc): Boolean = npc.visType.id in superiorNpcIds
+    fun isSuperior(npc: Npc): Boolean = npc.visType.hasParam(BaseParams.slayer_superior_form)
 
     fun trySpawnSuperior(player: Player, killed: Npc, npcRepo: NpcRepository) {
         if (!isSuperiorEnabled(player)) return
@@ -167,14 +167,6 @@ constructor(
 
     private fun despawn(npc: Npc, npcRepo: NpcRepository) {
         npcRepo.del(npc, duration = 0)
-    }
-
-    private val superiorNpcIds: Set<Int> by lazy {
-        buildSet {
-            for ((_, type) in ServerCacheManager.getNpcs()) {
-                type.paramOrNull(BaseParams.slayer_superior)?.id?.let { add(it) }
-            }
-        }
     }
 
     companion object {
