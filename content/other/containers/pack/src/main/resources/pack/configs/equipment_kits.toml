@@ -15,4 +15,3 @@ scope = "Perm"
 size = 32
 stack = "Always"
 protect = false
-

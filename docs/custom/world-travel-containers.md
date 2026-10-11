@@ -263,3 +263,25 @@ No live cache or player data was changed. Final packaging must use this same
 reference preservation, with the two inventory overrides explicitly allowed.
 Sources: [Tackle box](https://oldschool.runescape.wiki/w/Tackle_box),
 [Huntsman's kit](https://oldschool.runescape.wiki/w/Huntsman%27s_kit).
+
+### Native fish crates
+
+All six revision-240 deep-sea fish types use their native full and partial crate
+forms. Full crates contain ten fish; partial counts belong to that item's vars
+and survive the normal account inventory loader. The actual bankside IF3 Op9
+producer invokes Empty and returns a camphor crate after the final fish.
+Ordinary Empty discards the crate. Partial withdrawals, the last crate refund
+and fish output are one transaction, including full-inventory rollback. The
+Wiki-described marlin partial-crate refund bug is not reproduced: the same
+bank rule applies consistently to full and partial forms.
+
+Camphor logs require boosted Crafting 62, a chisel, a carried/worn valid hammer
+and four adamantite nails; successful two-tick output grants 50 XP. An ice
+cooler converts the camphor crate into an empty cooled crate. HeldU packing
+uses ten unnoted fish and revalidates the exact inputs after its one-tick delay.
+Seven native interaction tests and all 44 Containers tests pass. The Sailing
+net/cargo systems are not present in the fork, so their producer integration
+remains unavailable rather than being represented by a fake trawling event.
+Sources: [Fish crate (giant krill)](https://oldschool.runescape.wiki/w/Fish_crate_(giant_krill)),
+[Fish crate (marlin)](https://oldschool.runescape.wiki/w/Fish_crate_(marlin)),
+[Camphor crate](https://oldschool.runescape.wiki/w/Camphor_crate).

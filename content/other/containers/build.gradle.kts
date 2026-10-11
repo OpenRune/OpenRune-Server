@@ -10,6 +10,7 @@ dependencies {
     implementation(projects.api.scriptAdvanced)
     implementation(projects.content.skills.magic.spellTeleports)
     testImplementation(projects.content.skills.crafting)
+    testImplementation(projects.content.interfaces.bank)
     testImplementation(projects.api.account)
     testImplementation(projects.api.net)
     testImplementation(libs.rsprot.api)

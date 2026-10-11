@@ -68,6 +68,12 @@ persistence, rollback and native interaction validation is still in progress.
   full inventory and deferred arrival/late cancellation. The existing standalone
   scroll suite also passes after sharing its travel service. Client labels and
   visual acceptance remain open.
+- Fish crates: all six deep-sea species, cooled-crate creation and camphor
+  crafting pass **seven native input tests**. Real bank IF3 Empty returns the
+  camphor crate; ordinary Empty discards it. Partial contents survive native
+  account loading, and full-inventory/lifecycle failures preserve materials.
+  All **44 Containers module tests** pass. Sailing net/cargo producers are not
+  available in this fork; visual acceptance remains open.
 - Fish barrels: native Fill/Open/Close, worn sack controls, combination/dismantling,
   direct fishing storage and bank-side Empty pass **seven native input tests**.
   Full-bank failures retain contents; PvP previews protect the barrel without
