@@ -11,8 +11,10 @@ import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.dialogue.align.TextAlignment
+import org.rsmod.api.player.hook.PlayerTeleportDelayHook
 import org.rsmod.api.player.hook.PlayerTeleportValidateHook
 import org.rsmod.api.player.hook.PlayerTeleportValidator
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.HeldInteractions
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
@@ -25,12 +27,22 @@ import org.rsmod.game.interact.HeldOp
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.queue.EngineQueueCache
+import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.game.spot.EntitySpotanim
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
 @ResourceLock("ServerCacheManager")
 internal class TeleportScrollTest {
+    @Test fun `delayed native scroll retains its item until arrival and late cancellation consumes nothing`() {
+        for (cancel in listOf(false, true)) {
+            val f = Fixture(TeleportScroll.Nardah, delayed = true); val origin = f.player.coords
+            f.click(); f.finish(); assertEquals(origin, f.player.coords); assertEquals(2, f.player.inv.count(f.scroll.item))
+            f.release = true; if (cancel)f.denial = "Blocked"
+            f.finish(); assertEquals(if (cancel)origin else f.scroll.destination, f.player.coords); assertEquals(if (cancel)2 else 1, f.player.inv.count(f.scroll.item))
+        }
+    }
+
     @Test fun `catalogue covers every real native teleport scroll and correct inventory option`() {
         val native = ServerCacheManager.getItems().values.filter {
             it.internalName.startsWith("obj.teleportscroll_") && "Teleport" in it.interfaceOptions
@@ -122,12 +134,16 @@ internal class TeleportScrollTest {
         }
     }
 
-    private class Fixture(val scroll: TeleportScroll, destinationLoaded: Boolean = true) {
+    private class Fixture(val scroll: TeleportScroll, destinationLoaded: Boolean = true, delayed: Boolean = false) {
         val bus = EventBus()
         val collision = TeleportTestCollision.map
         val areas = mock(AreaChecker::class.java)
         var denial: String? = null
-        val validator = PlayerTeleportValidator(setOf(PlayerTeleportValidateHook { _, _, _ -> denial }))
+        var release = false; val queues = WorldQueueList()
+        val delays = if (delayed)setOf(object : PlayerTeleportDelayHook {
+            override fun remaining(player: Player, type: TeleportType, areas: AreaChecker) = if (release)0 else 2
+        }) else emptySet()
+        val validator = PlayerTeleportValidator(setOf(PlayerTeleportValidateHook { _, _, _ -> denial }), delays, queues)
         val player = Player().apply {
             inv = Inventory(ServerCacheManager.getInventory("inv.inv".asRSCM())!!, arrayOfNulls(28))
             inv[0] = InvObj(scroll.item, 2)
@@ -164,7 +180,9 @@ internal class TeleportScrollTest {
             }
         }
         fun finish() {
-            repeat(6) { player.currentMapClock++; player.processedMapClock = player.currentMapClock; player.activeCoroutine?.advance() }
+            repeat(6) { player.currentMapClock++; player.processedMapClock = player.currentMapClock; player.activeCoroutine?.advance()
+                val it = queues.iterator(); while (it.hasNext()) { val q = it.next(); if (--q.remainingCycles <= 0) { it.remove(); q.action() } }; it.cleanUp()
+            }
         }
     }
     companion object { @JvmStatic @BeforeAll fun cache() { ServerCacheManager.init(240).close() } }

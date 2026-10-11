@@ -1,0 +1,9 @@
+[gamevals.varp]
+revenant_caves_admission = 65468
+revenant_caves_killcount = 65467
+revenant_maledictus_killcount = 65466
+revenant_scroll_nowarn = 65465
+
+[gamevals.varobj]
+revenant_ether = 65523
+revenant_absorption = 65522

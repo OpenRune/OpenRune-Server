@@ -9,5 +9,8 @@ public fun interface PvPAttackValidateHook {
 public sealed class PvPAttackValidateResult {
     public data object Pass : PvPAttackValidateResult()
 
+    /** Singles-plus allows PvP to displace an NPC, while retaining one-player combat checks. */
+    public data object BypassSingleWayPvnRestriction : PvPAttackValidateResult()
+
     public data class Deny(val message: String) : PvPAttackValidateResult()
 }

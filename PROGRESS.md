@@ -1,12 +1,35 @@
 # Project overview
 
-Reviewed **2026-10-10**. This is the source for current status and priorities.
+Reviewed **2026-10-11**. This is the source for current status and priorities.
 Implementation details: [custom documentation](docs/custom/README.md).
 Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
 **Status:** 🟢 Complete · 🟡 Started · 🔴 Not started
 
-## 🟡 Started: teleport animation correction and all scroll routes
+## 🟡 Started: Revenant Caves
+
+Implementation ready for client acceptance: three entrances, two exits, five
+boostable Agility shortcuts, 100,000-coin admission/death risk, singles-plus,
+30 ordinary spawns across all eleven species, healing/prayer adaptation,
+ethereum/weapon charges, ancient artefacts and Maledictus with its specials,
+MVP/participant rewards and Surge. Native loot/KC/Collection Log routes and
+administrator test commands are connected. Existing rev240 content is retained.
+
+**46 new feature tests; 206 selected tests in total**, scoped format checks,
+the runtime JAR and bounded cache/mapping/login checks pass. All 117,585 LIVE
+archives, unrelated SERVER files and 220,158 existing mappings are preserved;
+six new server vars are added. In-game visuals, route feel and multiplayer
+acceptance remain open. [Sources, configured differences and tests](docs/custom/revenant-caves.md).
+
+[Draft PR #36](https://github.com/EvolvedMind/OpenRune-Server/pull/36).
+Guarded test package: `outputs/revenants-entrance-fix-20261011/INSTALLEREN.cmd`.
+
+Entrance fix: remove the silent account-membership gate on this members world.
+Regression tests cover the default account flag and real map routing/object
+clicks for all three entrances. The 100,000-coin fee and safe cancellation remain.
+
+
+## 🟢 Complete: teleport animation correction and all scroll routes
 
 [PR #35](https://github.com/EvolvedMind/OpenRune-Server/pull/35) is merged
 (`4b7a1ad84`); its tree matches tested head `a113bdc44`.
@@ -20,7 +43,7 @@ and all three entrances with a Wilderness confirmation.
 **69 selected tests**, scoped formatter checks and the runtime JAR build pass.
 Isolated rev240/Nero boot and all **22 arrival tiles** pass.
 The guarded test package is `outputs/teleport-fixes-20261010/INSTALLEREN.cmd`.
-Paired-client visual acceptance of the corrected arrival effects remains open.
+The owner accepted the test result on **2026-10-10** and authorized closeout.
 [Routes, upstream decision and validation](docs/custom/teleport-scrolls.md).
 
 ## 🟢 Complete: Lizardman Shamans — accepted; PR #34 merged
@@ -342,7 +365,6 @@ Scope: XS = tiny, S = small, M = medium, L = large, XL = very large, XXL = multi
 | Status | Feature | Scope |
 |:---:|---|---|
 | 🔴 | Warriors' Guild Cyclopes & Defenders | M |
-| 🔴 | Revenants | M–L |
 | 🔴 | Hunter Guild | L |
 | 🔴 | Random Events | XL |
 | 🔴 | Forestry | XL |

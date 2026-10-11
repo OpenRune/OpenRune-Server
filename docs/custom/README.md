@@ -9,6 +9,7 @@ This index contains implementation notes and evidence, not a second status list.
 | Zulrah | `content/bosses/zulrah` | [Encounter](zulrah.md) |
 | Araxxor | `content/bosses/araxxor` | [Encounter and fang recipes](araxxor.md) |
 | Lizardman Shamans | `content/bosses/lizardman-shaman` and `pack` | [Combat, Shayzien protection, drops and test commands](lizardman-shamans.md) |
+| Revenant Caves | `content/areas/revenant-caves` and `pack` | [Access, combat, ether, artefacts and Maledictus](revenant-caves.md) |
 | Kraken | `content/bosses/kraken` | [Public-cave encounter](kraken.md) |
 | Tormented Demons | `content/bosses/tormented-demon` and `pack` | [Encounter, Temple, rewards, crafting and acceptance evidence](tormented-demons.md) |
 | Teleport animations and scrolls | `content/skills/magic/spell-teleports` | [Rev240 animation cleanup, all scroll routes and validation](teleport-scrolls.md) |

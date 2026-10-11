@@ -1,3 +1,37 @@
+
+# Thirty ordinary spawns verified against the 2026-10-10 Wiki species maps.
+[[spawn]]
+npc = "npc.wild_cave_cyclops"
+coords = "0_49_159_31_19"
+
+[[spawn]]
+npc = "npc.wild_cave_cyclops"
+coords = "0_49_159_39_7"
+
+[[spawn]]
+npc = "npc.wild_cave_darkbeast"
+coords = "0_50_158_0_54"
+
+[[spawn]]
+npc = "npc.wild_cave_darkbeast"
+coords = "0_50_158_14_52"
+
+[[spawn]]
+npc = "npc.wild_cave_demon"
+coords = "0_49_158_16_0"
+
+[[spawn]]
+npc = "npc.wild_cave_demon"
+coords = "0_49_158_33_3"
+
+[[spawn]]
+npc = "npc.wild_cave_demon"
+coords = "0_49_159_43_25"
+
+[[spawn]]
+npc = "npc.wild_cave_demon"
+coords = "0_49_159_50_15"
+
 [[spawn]]
 npc = "npc.wild_cave_dragon"
 coords = "0_50_159_30_25"
@@ -7,8 +41,36 @@ npc = "npc.wild_cave_dragon"
 coords = "0_50_159_44_22"
 
 [[spawn]]
+npc = "npc.wild_cave_goblin"
+coords = "0_50_157_21_17"
+
+[[spawn]]
+npc = "npc.wild_cave_goblin"
+coords = "0_50_157_26_26"
+
+[[spawn]]
+npc = "npc.wild_cave_hellhound"
+coords = "0_50_158_40_48"
+
+[[spawn]]
+npc = "npc.wild_cave_hellhound"
+coords = "0_50_158_49_63"
+
+[[spawn]]
+npc = "npc.wild_cave_hobgoblin"
+coords = "0_50_157_40_48"
+
+[[spawn]]
+npc = "npc.wild_cave_hobgoblin"
+coords = "0_50_157_46_56"
+
+[[spawn]]
 npc = "npc.wild_cave_imp"
 coords = "0_49_157_61_22"
+
+[[spawn]]
+npc = "npc.wild_cave_imp"
+coords = "0_50_157_3_27"
 
 [[spawn]]
 npc = "npc.wild_cave_imp"
@@ -20,9 +82,41 @@ coords = "0_50_159_18_12"
 
 [[spawn]]
 npc = "npc.wild_cave_knight"
-coords = "0_50_159_28_45"
+coords = "0_50_159_9_40"
 
 [[spawn]]
 npc = "npc.wild_cave_knight"
-coords = "0_50_159_9_40"
+coords = "0_50_159_28_45"
+
+[[spawn]]
+npc = "npc.wild_cave_ork"
+coords = "0_50_157_7_45"
+
+[[spawn]]
+npc = "npc.wild_cave_ork"
+coords = "0_50_158_16_16"
+
+[[spawn]]
+npc = "npc.wild_cave_ork"
+coords = "0_50_157_21_47"
+
+[[spawn]]
+npc = "npc.wild_cave_ork"
+coords = "0_50_158_30_21"
+
+[[spawn]]
+npc = "npc.wild_cave_pyrefiend"
+coords = "0_49_158_33_46"
+
+[[spawn]]
+npc = "npc.wild_cave_pyrefiend"
+coords = "0_49_158_48_39"
+
+[[spawn]]
+npc = "npc.wild_cave_pyrefiend"
+coords = "0_50_158_48_40"
+
+[[spawn]]
+npc = "npc.wild_cave_pyrefiend"
+coords = "0_50_158_54_29"
 

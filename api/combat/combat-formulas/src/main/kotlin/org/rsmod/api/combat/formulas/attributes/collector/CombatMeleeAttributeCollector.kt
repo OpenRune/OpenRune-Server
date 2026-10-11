@@ -108,7 +108,7 @@ public class CombatMeleeAttributeCollector {
                     CombatMeleeAttributes.BarroniteMaceWeapon
                 }
 
-                weapon.isAnyType("obj.wild_cave_chainmace_charged", "obj.wild_cave_ursine_charged") -> {
+                weapon.isAnyType("obj.wild_cave_chainmace_charged", "obj.wild_cave_ursine_charged") && weapon.hasUsableRevenantEther() -> {
                     CombatMeleeAttributes.RevenantWeapon
                 }
 

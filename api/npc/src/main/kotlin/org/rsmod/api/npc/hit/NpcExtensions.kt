@@ -235,6 +235,7 @@ private fun Npc.modifyAndQueueHit(delay: Int, builder: HitBuilder, modifier: Npc
     modifier.modify(builder, this)
     val hit = builder.build()
     queue("queue.hit", delay, hit)
+    modifier.queued(this, hit)
     return hit
 }
 

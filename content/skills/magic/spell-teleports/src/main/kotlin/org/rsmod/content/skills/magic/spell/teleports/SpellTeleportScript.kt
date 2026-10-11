@@ -105,6 +105,7 @@ constructor(
     }
 
     private fun ProtectedAccess.startTeleport(teleport: SpellTeleport, destination: CoordGrid) {
+        beginTeleport()
         val style = teleport.style
         actionDelay = mapClock + TeleportActionDelay
         resetAnim()
@@ -123,8 +124,10 @@ constructor(
         if (player.hitpoints == 0) return
         resetAnim()
         if (player.pendingLogout || !canTeleport()) return
-        telejump(CoordGrid(task.destination))
-        task.teleport.style.endAnim?.let { anim(it) }
+        telejump(CoordGrid(task.destination), onArrival = {
+            resetAnim(); resetSpotanim()
+            task.teleport.style.endAnim?.let { anim(it) }
+        })
     }
 
     private fun ProtectedAccess.canTeleport(): Boolean {

@@ -140,7 +140,7 @@ public class CombatMagicAttributeCollector {
                     "obj.wild_cave_accursed_charged_recol",
                     "obj.wild_cave_sceptre_charged",
                     "obj.wild_cave_sceptre_charged_recol",
-                ) -> {
+                ) && weapon.hasUsableRevenantEther() -> {
                     CombatSpellAttributes.RevenantWeapon
                 }
 
@@ -221,7 +221,7 @@ public class CombatMagicAttributeCollector {
                     "obj.wild_cave_accursed_charged_recol",
                     "obj.wild_cave_sceptre_charged",
                     "obj.wild_cave_sceptre_charged_recol",
-                ) -> {
+                ) && weapon.hasUsableRevenantEther() -> {
                     CombatStaffAttributes.RevenantWeapon
                 }
 

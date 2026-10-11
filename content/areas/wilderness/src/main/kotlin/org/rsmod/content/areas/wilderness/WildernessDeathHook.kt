@@ -45,7 +45,7 @@ public class WildernessDeathHook @Inject constructor() : PlayerDeathHook {
 
     private fun revenantCaves(context: PlayerDeathContext): PlayerDeathHandling =
         PlayerDeathHandling(
-            keepCount = standardKeepCount(context.hasProtectItem),
+            keepCount = wildernessKeepCount(context.isSkulled, context.hasProtectItem),
             dropReceiver = null,
             dropDuration = DROP_DURATION_REVENANT,
             revealDelay = 0,

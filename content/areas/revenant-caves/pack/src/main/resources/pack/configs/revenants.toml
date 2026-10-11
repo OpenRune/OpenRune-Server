@@ -1,0 +1,300 @@
+# Native hunt slot 9 was empty in the accepted revision-240 cache.
+[[hunt]]
+id = 9
+type = "Player"
+checkVis = "LineOfSight"
+checkNotCombat = 65522
+checkNotCombatSelf = 1
+findNewMode = "ApPlayer2"
+checkInvObj = { inv = 94, type = 21816, operator = "Equals", required = 0 }
+
+[[npc]]
+id = "npc.wild_cave_imp"
+inherit = "npc.wild_cave_imp"
+attackRange = 8
+huntRange = 8
+huntMode = 9
+respawnRate = 20
+maxRange = 16
+
+[npc.params]
+"param.revenant" = 1
+"param.dropped_remains" = -1
+"param.undead" = 1
+"param.killcount_varp" = "varp.revenant_caves_killcount"
+"param.killcount_notify" = 0
+
+[[npc]]
+id = "npc.wild_cave_goblin"
+inherit = "npc.wild_cave_goblin"
+attackRange = 8
+huntRange = 8
+huntMode = 9
+respawnRate = 20
+maxRange = 16
+
+[npc.params]
+"param.revenant" = 1
+"param.dropped_remains" = -1
+"param.undead" = 1
+"param.killcount_varp" = "varp.revenant_caves_killcount"
+"param.killcount_notify" = 0
+
+[[npc]]
+id = "npc.wild_cave_pyrefiend"
+inherit = "npc.wild_cave_pyrefiend"
+attackRange = 8
+huntRange = 8
+huntMode = 9
+respawnRate = 20
+maxRange = 16
+
+[npc.params]
+"param.revenant" = 1
+"param.dropped_remains" = -1
+"param.undead" = 1
+"param.killcount_varp" = "varp.revenant_caves_killcount"
+"param.killcount_notify" = 0
+
+[[npc]]
+id = "npc.wild_cave_hobgoblin"
+inherit = "npc.wild_cave_hobgoblin"
+attackRange = 8
+huntRange = 8
+huntMode = 9
+respawnRate = 20
+maxRange = 16
+
+[npc.params]
+"param.revenant" = 1
+"param.dropped_remains" = -1
+"param.undead" = 1
+"param.killcount_varp" = "varp.revenant_caves_killcount"
+"param.killcount_notify" = 0
+
+[[npc]]
+id = "npc.wild_cave_cyclops"
+inherit = "npc.wild_cave_cyclops"
+attackRange = 8
+huntRange = 8
+huntMode = 9
+respawnRate = 20
+maxRange = 16
+
+[npc.params]
+"param.revenant" = 1
+"param.dropped_remains" = -1
+"param.undead" = 1
+"param.killcount_varp" = "varp.revenant_caves_killcount"
+"param.killcount_notify" = 0
+
+[[npc]]
+id = "npc.wild_cave_hellhound"
+inherit = "npc.wild_cave_hellhound"
+attackRange = 8
+huntRange = 8
+huntMode = 9
+respawnRate = 20
+maxRange = 16
+
+[npc.params]
+"param.revenant" = 1
+"param.dropped_remains" = -1
+"param.undead" = 1
+"param.killcount_varp" = "varp.revenant_caves_killcount"
+"param.killcount_notify" = 0
+
+[[npc]]
+id = "npc.wild_cave_demon"
+inherit = "npc.wild_cave_demon"
+attackRange = 8
+huntRange = 8
+huntMode = 9
+respawnRate = 20
+maxRange = 16
+
+[npc.params]
+"param.revenant" = 1
+"param.dropped_remains" = -1
+"param.undead" = 1
+"param.killcount_varp" = "varp.revenant_caves_killcount"
+"param.killcount_notify" = 0
+
+[[npc]]
+id = "npc.wild_cave_ork"
+inherit = "npc.wild_cave_ork"
+attackRange = 8
+huntRange = 8
+huntMode = 9
+respawnRate = 20
+maxRange = 16
+
+[npc.params]
+"param.revenant" = 1
+"param.dropped_remains" = -1
+"param.undead" = 1
+"param.killcount_varp" = "varp.revenant_caves_killcount"
+"param.killcount_notify" = 0
+
+[[npc]]
+id = "npc.wild_cave_darkbeast"
+inherit = "npc.wild_cave_darkbeast"
+attackRange = 8
+huntRange = 8
+huntMode = 9
+respawnRate = 20
+maxRange = 16
+
+[npc.params]
+"param.revenant" = 1
+"param.dropped_remains" = -1
+"param.undead" = 1
+"param.killcount_varp" = "varp.revenant_caves_killcount"
+"param.killcount_notify" = 0
+
+[[npc]]
+id = "npc.wild_cave_knight"
+inherit = "npc.wild_cave_knight"
+attackRange = 8
+huntRange = 8
+huntMode = 9
+respawnRate = 20
+maxRange = 16
+
+[npc.params]
+"param.revenant" = 1
+"param.dropped_remains" = -1
+"param.undead" = 1
+"param.killcount_varp" = "varp.revenant_caves_killcount"
+"param.killcount_notify" = 0
+
+[[npc]]
+id = "npc.wild_cave_dragon"
+inherit = "npc.wild_cave_dragon"
+attackRange = 8
+huntRange = 8
+huntMode = 9
+respawnRate = 20
+maxRange = 16
+
+[npc.params]
+"param.revenant" = 1
+"param.dropped_remains" = -1
+"param.undead" = 1
+"param.killcount_varp" = "varp.revenant_caves_killcount"
+"param.killcount_notify" = 0
+
+[[npc]]
+id = "npc.wild_cave_superior"
+inherit = "npc.wild_cave_superior"
+attackRange = 8
+huntRange = 8
+huntMode = 8
+respawnRate = 0
+maxRange = 16
+hitpoints = 1250
+
+[npc.params]
+"param.revenant" = 1
+"param.dropped_remains" = -1
+"param.undead" = 1
+"param.killcount_varp" = "varp.revenant_maledictus_killcount"
+"param.killcount_notify" = 0
+
+[[item]]
+id = "obj.wild_cave_bracelet_charged"
+inherit = "obj.wild_cave_bracelet_charged"
+
+[item.params]
+"param.death_never_kept" = true
+
+[[item]]
+id = "obj.wild_cave_bracelet_uncharged"
+inherit = "obj.wild_cave_bracelet_uncharged"
+
+[item.params]
+"param.death_never_kept" = true
+
+[[item]]
+id = "obj.wild_cave_artifact_500"
+inherit = "obj.wild_cave_artifact_500"
+
+[item.params]
+"param.death_never_kept" = true
+
+[[item]]
+id = "obj.wild_cave_artifact_1000"
+inherit = "obj.wild_cave_artifact_1000"
+
+[item.params]
+"param.death_never_kept" = true
+
+[[item]]
+id = "obj.wild_cave_artifact_2000"
+inherit = "obj.wild_cave_artifact_2000"
+
+[item.params]
+"param.death_never_kept" = true
+
+[[item]]
+id = "obj.wild_cave_artifact_4000"
+inherit = "obj.wild_cave_artifact_4000"
+
+[item.params]
+"param.death_never_kept" = true
+
+[[item]]
+id = "obj.wild_cave_artifact_8000"
+inherit = "obj.wild_cave_artifact_8000"
+
+[item.params]
+"param.death_never_kept" = true
+
+[[item]]
+id = "obj.wild_cave_artifact_16000"
+inherit = "obj.wild_cave_artifact_16000"
+
+[item.params]
+"param.death_never_kept" = true
+
+[[item]]
+id = "obj.cert_wild_cave_artifact_500"
+inherit = "obj.cert_wild_cave_artifact_500"
+
+[item.params]
+"param.death_never_kept" = true
+
+[[item]]
+id = "obj.cert_wild_cave_artifact_1000"
+inherit = "obj.cert_wild_cave_artifact_1000"
+
+[item.params]
+"param.death_never_kept" = true
+
+[[item]]
+id = "obj.cert_wild_cave_artifact_2000"
+inherit = "obj.cert_wild_cave_artifact_2000"
+
+[item.params]
+"param.death_never_kept" = true
+
+[[item]]
+id = "obj.cert_wild_cave_artifact_4000"
+inherit = "obj.cert_wild_cave_artifact_4000"
+
+[item.params]
+"param.death_never_kept" = true
+
+[[item]]
+id = "obj.cert_wild_cave_artifact_8000"
+inherit = "obj.cert_wild_cave_artifact_8000"
+
+[item.params]
+"param.death_never_kept" = true
+
+[[item]]
+id = "obj.cert_wild_cave_artifact_16000"
+inherit = "obj.cert_wild_cave_artifact_16000"
+
+[item.params]
+"param.death_never_kept" = true

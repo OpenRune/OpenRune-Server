@@ -9,6 +9,7 @@ import org.rsmod.api.combat.player.aggressiveNpc
 import org.rsmod.api.combat.player.attackRange
 import org.rsmod.api.combat.player.hasMagicSpecialSelected
 import org.rsmod.api.combat.player.pkPredator1
+import org.rsmod.api.combat.player.pkPrey1
 import org.rsmod.api.combat.player.resolveAutocastSpell
 import org.rsmod.api.combat.player.resolveCombatAttack
 import org.rsmod.api.combat.weapon.styles.AttackStyles
@@ -131,9 +132,11 @@ constructor(
             return false
         }
 
+        var bypassNpcRestriction = false
         for (hook in attackValidateHooks) {
             when (val result = hook.validate(player, target)) {
                 is PvPAttackValidateResult.Pass -> Unit
+                PvPAttackValidateResult.BypassSingleWayPvnRestriction -> bypassNpcRestriction = true
                 is PvPAttackValidateResult.Deny -> {
                     spam(result.message)
                     clearPendingAction()
@@ -142,25 +145,23 @@ constructor(
             }
         }
 
-        // TODO(combat): Updated multiway logic.
-        // TODO(combat): Add singles plus support.
         val singleCombat = !mapMultiway()
         if (singleCombat) {
             if (isInCombat()) {
-                if (pkPredator1 != null && pkPredator1 != target.uid) {
+                if ((pkPredator1 != null && pkPredator1 != target.uid) || (pkPrey1 != null && pkPrey1 != target.uid)) {
                     spam("I'm already under attack.")
                     return false
                 }
 
                 val aggressiveNpc = aggressiveNpc
-                if (aggressiveNpc != null && findUid(aggressiveNpc) != null) {
+                if (!bypassNpcRestriction && aggressiveNpc != null && findUid(aggressiveNpc) != null) {
                     spam("I'm already under attack.")
                     return false
                 }
             }
 
             if (target.isInPvpCombat()) {
-                if (target.pkPredator1 != null && target.pkPredator1 != player.uid) {
+                if ((target.pkPredator1 != null && target.pkPredator1 != player.uid) || (target.pkPrey1 != null && target.pkPrey1 != player.uid)) {
                     mes("${target.displayName} is fighting another player.")
                     return false
                 }

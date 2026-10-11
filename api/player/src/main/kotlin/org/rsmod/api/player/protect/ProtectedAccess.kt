@@ -309,10 +309,15 @@ public class ProtectedAccess(
         player.setActiveMoveSpeed(speed)
     }
 
+    public fun beginTeleport(teleportType: TeleportType = TeleportType.Standard) {
+        context.teleportValidator.begin(player, teleportType, context.areaChecker)
+    }
+
     public fun telejump(
         dest: CoordGrid,
         collision: CollisionFlagMap,
         teleportType: TeleportType = TeleportType.Standard,
+        onArrival: (() -> Unit)? = null,
     ) {
         if (!validateTeleport(teleportType)) {
             return
@@ -322,17 +327,21 @@ public class ProtectedAccess(
             mes("Invalid teleport!", ChatType.Engine)
             return
         }
-        PathingEntityCommon.telejump(player, collision, dest)
+        val arrive = { PathingEntityCommon.telejump(player, collision, dest); onArrival?.invoke(); Unit }
+        if (teleportType == TeleportType.Exempt) context.teleportValidator.cancel(player)
+        else if (context.teleportValidator.defer(player, teleportType, context.areaChecker, arrive)) return
+        arrive()
     }
 
-    public fun telejump(dest: CoordGrid, teleportType: TeleportType = TeleportType.Standard) {
-        telejump(dest, context.collision, teleportType)
+    public fun telejump(dest: CoordGrid, teleportType: TeleportType = TeleportType.Standard, onArrival: (() -> Unit)? = null) {
+        telejump(dest, context.collision, teleportType, onArrival)
     }
 
     public fun teleport(
         dest: CoordGrid,
         collision: CollisionFlagMap,
         teleportType: TeleportType = TeleportType.Standard,
+        onArrival: (() -> Unit)? = null,
     ) {
         if (!validateTeleport(teleportType)) {
             return
@@ -342,11 +351,14 @@ public class ProtectedAccess(
             mes("Invalid teleport!", ChatType.Engine)
             return
         }
-        PathingEntityCommon.teleport(player, collision, dest)
+        val arrive = { PathingEntityCommon.teleport(player, collision, dest); onArrival?.invoke(); Unit }
+        if (teleportType == TeleportType.Exempt) context.teleportValidator.cancel(player)
+        else if (context.teleportValidator.defer(player, teleportType, context.areaChecker, arrive)) return
+        arrive()
     }
 
-    public fun teleport(dest: CoordGrid, teleportType: TeleportType = TeleportType.Standard) {
-        teleport(dest, context.collision, teleportType)
+    public fun teleport(dest: CoordGrid, teleportType: TeleportType = TeleportType.Standard, onArrival: (() -> Unit)? = null) {
+        teleport(dest, context.collision, teleportType, onArrival)
     }
 
     /**

@@ -109,9 +109,8 @@ constructor(
                     lootTrackerEventId = lootTrackerEventId,
                     dropCoords = dropCoords,
                 )
-            for (hook in deathKillHooks) {
-                hook.onKill(killCtx)
-            }
+            val actions = deathKillHooks.map { it.prepare(killCtx) }
+            actions.forEach { it() }
         }
     }
 

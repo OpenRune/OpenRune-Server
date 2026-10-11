@@ -79,7 +79,7 @@ constructor(
                 getMusicPlayer = { error("No music player provided.") },
                 getMarketPrices = { error("No market prices provided.") },
                 getInstantHitProcessor = { error("No instant hit processor provided.") },
-                getTeleportValidator = { error("No teleport validator provided.") },
+                getTeleportValidator = { PlayerTeleportValidator(emptySet()) },
                 getHitModifier = { error("No hit modifier provided.") },
             )
 

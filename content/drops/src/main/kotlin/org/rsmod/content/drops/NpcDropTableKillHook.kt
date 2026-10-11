@@ -7,6 +7,7 @@ import dtx.core.ArgMap
 import dtx.core.RollResult
 import dtx.core.flatten
 import dtx.core.with
+import dtx.rs.RSDropTable
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.area.checker.AreaChecker
@@ -15,6 +16,7 @@ import org.rsmod.api.death.NpcDeathDropContext
 import org.rsmod.api.death.NpcDeathDropHook
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
+import org.rsmod.api.death.NpcLootQuantityHook
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.DropTableRegistry
 import org.rsmod.api.droptable.KillRollContext
@@ -37,31 +39,35 @@ constructor(
     private val objRepo: ObjRepository,
     private val random: GameRandom,
     private val deathDropHooks: Set<NpcDeathDropHook>,
+    private val quantityHooks: Set<@JvmSuppressWildcards NpcLootQuantityHook> = emptySet(),
 ) : NpcDeathKillHook {
 
-    override fun onKill(context: NpcDeathKillContext) {
+    private fun table(context: NpcDeathKillContext): RSDropTable<Player, DropRollItem>? {
         val overrideNpc = context.rewards.tableNpc
-        val table = (if (overrideNpc != null)
-            registry.forNpcType(overrideNpc, context.npc.coords, areaChecker)
-        else registry.forNpc(context.npc, areaChecker)) ?: return
+        return if (overrideNpc != null) registry.forNpcType(overrideNpc, context.npc.coords, areaChecker)
+            else registry.forNpc(context.npc, areaChecker)
+    }
+    private fun roll(context: NpcDeathKillContext, table: RSDropTable<Player, DropRollItem>): RollResult<DropRollItem> =
+        table.roll(context.hero, ArgMap(KillRollContext.npc with context.npc,
+            KillRollContext.elapsedTicks with context.rewards.elapsedTicks,
+            KillRollContext.areaChecker with areaChecker)).flatten()
 
+    override fun prepare(context: NpcDeathKillContext): () -> Unit {
+        val table = table(context)
+        if (table == null || !table.rollBeforeProgression) return { onKill(context) }
+        val result = roll(context, table)
+        return { deliver(context, result) }
+    }
+    override fun onKill(context: NpcDeathKillContext) {
+        val table = table(context) ?: return
+        deliver(context, roll(context, table))
+    }
+    private fun deliver(context: NpcDeathKillContext, result: RollResult<DropRollItem>) {
         val player = context.hero
         val duration = player.lootDropDuration ?: constants.lootdrop_duration
         val dropCoords = context.dropCoords
-
         val npc = context.npc
-        when (
-            val result =
-                table
-                    .roll(
-                        player,
-                        ArgMap(
-                            KillRollContext.npc with npc,
-                            KillRollContext.elapsedTicks with context.rewards.elapsedTicks,
-                            KillRollContext.areaChecker with areaChecker,
-                        ),
-                    ).flatten()
-        ) {
+        when (result) {
             is RollResult.Nothing -> Unit
             is RollResult.Single ->
                 spawnDrop(
@@ -101,10 +107,12 @@ constructor(
         val obj = drop.transformObj(receiver) ?: drop.obj
         val count = drop.rollCount(random)
         collectionLog.grant(receiver, obj, count, source = npc.name)
-        if (!consumedByHook(obj, count, coords, duration, receiver)) {
-            val spawned = objRepo.add(obj, coords, duration, receiver, count)
-            ClientScripts.lootTrackerAddLoot(receiver, npc.id, eventId, spawned.type, spawned.count)
-        }
+        val definition = checkNotNull(ServerCacheManager.getItem(obj.asRSCM()))
+        var remaining = count
+        for (hook in quantityHooks) remaining = hook.remaining(receiver, npc, definition, remaining).coerceIn(0, remaining)
+        val consumed = remaining > 0 && consumedByHook(obj, remaining, coords, duration, receiver)
+        if (remaining > 0 && !consumed) objRepo.add(obj, coords, duration, receiver, remaining)
+        if (!consumed) ClientScripts.lootTrackerAddLoot(receiver, npc.id, eventId, definition.id, count)
         for (bonus in drop.bonusDrops) {
             spawnDrop(bonus, coords, duration, receiver, npc, eventId)
         }

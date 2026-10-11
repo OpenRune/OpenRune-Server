@@ -17,6 +17,8 @@ dependencies {
     implementation(projects.api.combat.combatCommons)
     implementation(projects.api.combat.combatWeapon)
     implementation(projects.api.config)
+    implementation(projects.api.areaChecker)
+    implementation(projects.engine.utilsBits)
     implementation(projects.api.npc)
     implementation(projects.api.player)
     implementation(projects.api.random)

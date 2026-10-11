@@ -72,7 +72,7 @@ internal fun Player.applyPostEquipSkull() {
     applySkull(SkullSource.POST_EQUIP)
 }
 
-internal fun Player.applyVoluntarySkull() {
+public fun Player.applyVoluntarySkull() {
     if (isSkullEquipLocked()) {
         return
     }
@@ -91,7 +91,7 @@ internal fun Player.extendEmblemTraderSkull(): Boolean {
     return true
 }
 
-internal fun Player.applyForinthrySurge() {
+public fun Player.applyForinthrySurge() {
     if (worn[Wearpos.Front.slot]?.isType("obj.wild_cave_amulet") != true) {
         return
     }
@@ -165,7 +165,6 @@ internal fun Player.refreshSkullIcon() {
         cappedKeyCount > 0 -> constants.skullicon_loot_key_1 + (cappedKeyCount - 1)
         else -> baseIcon
     }
-
 }
 
 internal fun Player.refreshSkullIconIfLootKeysChanged() {

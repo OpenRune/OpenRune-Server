@@ -7,10 +7,12 @@ import org.rsmod.api.player.hook.PlayerTeleportValidator
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.hitpoints
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.map.collision.isZoneValid
@@ -30,7 +32,10 @@ class TeleportScrollScript @Inject constructor(
             if (scroll == TeleportScroll.Revenants) {
                 onOpHeld3(scroll.item) { teleport(scroll, it.inventory, it.slot, it.obj) }
                 onOpHeld4(scroll.item) {
-                    mes("Use Teleport to choose a cave entrance. Every route shows a Wilderness warning.")
+                    val skip = choice2("Show Wilderness warning", false, "Disable Wilderness warning", true)
+                    ifCloseChat()
+                    VarPlayerIntMapSetter.set(player, "varp.revenant_scroll_nowarn", if (skip) 1 else 0)
+                    mes("Revenant teleport warnings ${if (skip) "disabled" else "enabled"}.")
                 }
             } else {
                 onOpHeld1(scroll.item) { teleport(scroll, it.inventory, it.slot, it.obj) }
@@ -50,12 +55,13 @@ class TeleportScrollScript @Inject constructor(
             ifCloseChat()
             selected ?: return
         } else scroll.destination
-        if (scroll == TeleportScroll.Revenants) {
+        if (scroll == TeleportScroll.Revenants && player.vars["varp.revenant_scroll_nowarn"] == 0) {
             mesbox("This teleport takes you into the Wilderness, where other players can attack you.")
             val confirmed = choice2("Teleport", true, "Cancel", false)
             ifCloseChat()
             if (!confirmed || !allowed(scroll, destination)) return
         }
+        beginTeleport()
         val origin = coords
         actionDelay = mapClock + 3
         resetAnim()
@@ -65,10 +71,15 @@ class TeleportScrollScript @Inject constructor(
         try {
             delay(2)
             if (coords != origin || inventory[slot] !== item || !allowed(scroll, destination)) return
-            // Revalidate and consume on the game thread immediately before arrival.
-            if (player.invDel(inventory, scroll.item, 1, slot = slot).success) {
-                telejump(destination)
+            val arrive = {
+                // Keep the scroll until the cave delay actually activates, including late blocks.
+                if (coords == origin && inventory[slot] === item && allowed(scroll, destination) &&
+                    player.invDel(inventory, scroll.item, 1, slot = slot).success) {
+                    PathingEntityCommon.telejump(player, collision, destination)
+                    resetAnim(); resetSpotanim()
+                }
             }
+            if (!teleports.defer(player, TeleportType.Standard, areas, arrive)) arrive()
         } finally {
             resetSpotanim()
             if (player.hitpoints > 0) resetAnim()
