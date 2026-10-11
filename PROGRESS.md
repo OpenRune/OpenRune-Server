@@ -119,6 +119,14 @@ persistence, rollback and native interaction validation is still in progress.
   inputs. All **102 Containers**, **12 Farming**, **nine Thieving** and **16
   affected clue tests** pass. The accepted cache needs the isolated seed-window
   initializer before client acceptance; remaining specialised containers are open.
+- Chugging barrel: native Assemble/Open/Drink/Dismantle/Destroy, five ordered
+  potion families of 100 doses, four permanent bank loadouts, exact-dose filling,
+  partial-bottle retention and bank rollback are implemented. Native held/item-use,
+  IF3, drag, bank Configure, stale inputs, full inventories/banks and actual death
+  validate ghost storage. **Twenty-one new tests** and all **123 Containers tests**
+  pass. The native full-barrel animation is used. Potion storage integration,
+  seven unmapped potion-effect families, the specific drink sound and native visual
+  acceptance remain open; the whole container scope stays Started.
 
 ## 🟢 Complete: Edgeville home teleporter and Emblem trader
 

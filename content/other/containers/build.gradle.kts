@@ -13,6 +13,7 @@ dependencies {
     implementation(projects.content.skills.crafting)
     implementation(projects.content.skills.utils)
     implementation(projects.content.interfaces.bank)
+    implementation(projects.content.other.consumables)
     testImplementation(projects.content.skills.woodcutting)
     testImplementation(projects.content.skills.thieving)
     testImplementation(projects.api.account)

@@ -595,3 +595,56 @@ pickup, NPC pickpocket, patch planting, delayed inputs, real death coroutine,
 previews, UIM/ghost recovery and actual Destroy confirmation. The native clue
 Thieving fixture now includes normal player Hitpoints for the new death guard.
 Tithe Farm and Sailing activity producers remain outside this container chunk.
+
+## Chugging barrel native storage and bank loadouts
+
+The accepted revision-240 cache already has interface 886 and the bank-side
+barrel panel. Runtime uses its native scripts 7338/7353 and display inventory
+911 (five temporary slots). Permanent account attributes own dose contents;
+the display inventory cannot become a second storage owner. Native item 30002
+assembles to 30000 in three ticks, without requiring the Mixology activity.
+Inventory options retain native Drink/Open/Dismantle/Destroy numbering.
+Assembly and dismantling recheck the actual item reference, position, Hitpoints
+and logout. Dismantle and confirmed Destroy explicitly lose stored potions.
+Native death preserves ghost contents, including UIM and high Wilderness.
+
+Native dose enums 710/741 and the accepted can-store CS2 exclusions identify
+89 families. Five distinct families hold up to 100 doses each. Input potions
+retain their unconsumed doses and empty vials; notes and Hunter mixes are not
+accepted. Withdrawals stop at physical capacity. Drink applies existing real
+potion effects in stored order, checks divine Hitpoints requirements per dose,
+and records one shared potion consume delay. The verified native sequence is
+`seq.prepot_device_drink_full` (11645); it has no embedded sound events. The
+ordinary potion sound is provisional until the barrel-specific sound is verified.
+
+Native loadout potion IDs use permanent varps 4458–4477. The twenty dose caps
+use varbits 11389–11408 packed into 4453–4457; zero means 100 doses. Varbit
+11645 is a Sailing side-panel field and is never used for barrel caps.
+Bank Configure opens the existing panel with all four Save/Load buttons,
+slot selection, dose edits, clearing and native drag reordering. The selection
+menu restores the bank only after the same carried barrel survives the input.
+Bank loads use carried bottles first and the native bank transfer service
+afterwards. Exact-dose decants return leftovers transactionally or restore
+the original bank bottle. Partial load failures retain obsolete/excess barrel
+contents, tabs, placeholders and the saved target. Nearby usage checks actual
+banker actors or bank chest/booth objects; deposit-only chests do not qualify.
+
+Sources: [Chugging barrel](https://oldschool.runescape.wiki/w/Chugging_barrel)
+and [its transcript](https://oldschool.runescape.wiki/w/Transcript:Chugging_barrel),
+current Wiki API snapshots, accepted native configs and CS2. Upstream content
+and all-state PR searches for `chugging`, `prepot` and `potion storage` at
+`bbc78dfc259c988a77d5c840196946c72de862e9` returned no barrel implementation;
+the prepot results were mappings. Required missing runtime behavior is built
+inside the existing containers module; no branch imports or revision upgrades.
+
+`chug-final-container-validation.log`: all 123 Containers tests pass. Twenty-one
+new tests cover native held/item-use, IF3, drag, full and partial inventories,
+bank caps/rollback, loadout menus and native permanent fields, exact potion
+ordering, divine effects, interruptions, Destroy, nearby native banker/chest
+checks, account restore and real death coroutine/drops. Scoped format passes.
+Remaining integration: potion storage source selection, Mixology reward
+purchase, native visual acceptance and the barrel-specific sound. Seven native
+families lack a PotionRow in this fork: magic essence and its mix, Castle Wars
+brew, blighted overload, goading, surge and haemostatic dressing. Their doses
+remain stored rather than being consumed without an effect. Existing absent
+Castle Wars/Deadman activities are not marked implemented by storage support.
