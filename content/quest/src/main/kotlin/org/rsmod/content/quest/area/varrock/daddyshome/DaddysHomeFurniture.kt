@@ -13,7 +13,9 @@ import org.rsmod.api.enums.DaddysHomeEnums.daddys_home_nails
 import org.rsmod.api.enums.DaddysHomeEnums.daddys_home_saws
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
+import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc5
@@ -100,6 +102,7 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
                 onOpLoc1(loc) { interact(furniture, it.loc) }
             }
         }
+        onIfClose(BUILD_MENU) { ClientScripts.chatDefaultRestoreInput(player) }
         onOpLoc1(DaddysHomeQuest.CRATES) { searchCrates(it.loc) }
         onOpHeld1(DaddysHomeQuest.CRATE) { openCrate() }
     }
@@ -120,6 +123,7 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
     private suspend fun ProtectedAccess.demolish(furniture: DaddysHomeFurnitureRow) {
         if (daddysHome.stage(player) < DaddysHomeQuest.REMOVING) return
         anim(DEMOLISH_SEQ)
+        soundSynth(random.pick(DEMOLISH_SYNTH, DEMOLISH_SYNTH_ALT), delay = DEMOLISH_SYNTH_DELAY)
         delay(DEMOLISH_DELAY)
         if (daddysHome.furnitureState(player, furniture) != Furniture.BROKEN) return
         daddysHome.setFurnitureState(player, furniture, Furniture.CLEARED)
@@ -129,7 +133,6 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         ) {
             daddysHome.quest.setQuestStage(this, DaddysHomeQuest.REMOVED)
         }
-        mes("You demolish the ${furniture.demolished}.")
     }
 
     private suspend fun ProtectedAccess.build(furniture: DaddysHomeFurnitureRow) {
@@ -141,13 +144,27 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
             mes(missingToolsMessage())
             return
         }
-        if (!chooseFromBuildMenu(furniture)) return
+        if (!chooseFromBuildMenu(furniture)) {
+            ifClose()
+            return
+        }
         missingMaterials(furniture)?.let {
+            ifClose()
             mes(it)
             return
         }
+        soundSynth(BUILD_SYNTH)
+        ifClose()
         anim(BUILD_SEQ)
-        delay(BUILD_DELAY)
+        for (nail in 1..furniture.nails) {
+            delay(1)
+            spam(NAIL_MESSAGE)
+            if (nail % NAILS_PER_STROKE == 0 && nail < furniture.nails) {
+                anim(BUILD_SEQ)
+                soundSynth(BUILD_SYNTH)
+            }
+        }
+        delay(1)
         if (daddysHome.furnitureState(player, furniture) != Furniture.CLEARED) return
         if (!consumeMaterials(furniture)) {
             mes("You don't have the materials to build that.")
@@ -155,7 +172,6 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         }
         daddysHome.setFurnitureState(player, furniture, Furniture.BUILT)
         statAdvance("stat.construction", furniture.xp.toDouble())
-        mes("You build the ${furniture.label}.")
     }
 
     private suspend fun ProtectedAccess.chooseFromBuildMenu(
@@ -172,10 +188,8 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
             if (canBuild) 1 else 0,
         )
         runClientScript(BUILD_MENU_LAYOUT_SCRIPT.asRSCM(RSCMType.CLIENTSCRIPT), BUILD_MENU_SLOT, 0)
-        ifSetEvents(BUILD_MENU_ENTRY, -1..-1, IfEvent.Op1, IfEvent.Op10)
         ifSetEvents(BUILD_MENU_CONTENTS, BUILD_MENU_SLOT..BUILD_MENU_SLOT, IfEvent.PauseButton)
         val input = pauseButton()
-        ifClose()
         return input.isComponentType(BUILD_MENU_CONTENTS) && input.isSubcomponent(BUILD_MENU_SLOT)
     }
 
@@ -298,12 +312,16 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
 
     internal companion object {
         const val BUILD_SEQ = "seq.human_poh_build"
-        const val BUILD_DELAY = 3
+        const val BUILD_SYNTH = "synth.poh_build_furniture"
+        const val NAILS_PER_STROKE = 2
+        const val NAIL_MESSAGE = "You use a nail."
         const val DEMOLISH_SEQ = "seq.human_throw_away"
-        const val DEMOLISH_DELAY = 2
+        const val DEMOLISH_SYNTH = "synth.poh_remove_furniture"
+        const val DEMOLISH_SYNTH_ALT = "synth.poh_remove_furniture_alt"
+        const val DEMOLISH_SYNTH_DELAY = 20
+        const val DEMOLISH_DELAY = 1
         const val BUILD_MENU = "interface.poh_furniture_creation"
         const val BUILD_MENU_CONTENTS = "component.poh_furniture_creation:contents"
-        const val BUILD_MENU_ENTRY = "component.poh_furniture_creation:01"
         const val BUILD_MENU_ENTRY_SCRIPT = "clientscript.poh_furniture_creation_entry_old"
         const val BUILD_MENU_LAYOUT_SCRIPT = "clientscript.[clientscript,script1406]"
         const val BUILD_MENU_SLOT = 1

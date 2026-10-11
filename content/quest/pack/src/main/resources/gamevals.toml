@@ -30,6 +30,9 @@ fish_swim = 2601
 iron_door_open = 71
 swan_rumble = 1790
 unlock = 2419
+poh_build_furniture = 938
+poh_remove_furniture = 2097
+poh_remove_furniture_alt = 2098
 
 locked = 2402
 pyramid_block = 1395

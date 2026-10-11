@@ -28,6 +28,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.random.DefaultGameRandom
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.obj.ObjRepository
@@ -387,12 +388,14 @@ class DaddysHomeInteractionTest {
         private val client = RecordingClient()
         private val coroutine = GameCoroutine("daddys-home-test")
         private var result: Result<Unit>? = null
+        private val random = DefaultGameRandom(7L)
         private val context =
             ProtectedAccessContextFactory.empty()
                 .copy(
                     getEventBus = { events },
                     getAlignment = { TextAlignment() },
                     getNpcInteractions = { NpcInteractions(events) },
+                    getRandom = { random },
                 )
 
         @OptIn(InternalApi::class)
