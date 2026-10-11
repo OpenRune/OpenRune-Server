@@ -97,6 +97,7 @@ object BaseParams {
     val spell_telecoord: ParamCoord = param("spell_telecoord")
     val spell_castxp: ParamInt = param("spell_castxp")
     val amascutnpc: ParamInt = param("amascutnpc")
+    val min_defence: ParamInt = param("min_defence")
     val xerician: ParamInt = param("xerician")
     val poison_immunity: ParamInt = param("poison_immunity")
     val worn_poison_envenom_immunity: ParamInt = param("worn_poison_envenom_immunity")

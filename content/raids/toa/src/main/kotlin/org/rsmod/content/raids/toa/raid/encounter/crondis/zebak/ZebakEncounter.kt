@@ -73,11 +73,7 @@ class ZebakEncounter(
             boss = { zebak },
             combatants =
                 listOf(
-                    ToaCombatant.Spec(
-                        ZebakNpcs.ZEBAK,
-                        defenceCap = MAX_DEFENCE_DRAIN,
-                        pointMultiplier = ZEBAK_POINTS,
-                    )
+                    ToaCombatant.Spec(ZebakNpcs.ZEBAK, pointMultiplier = ZEBAK_POINTS)
                 ),
             music = ZebakMidis.FIGHT,
             firstAttackDelay = FIRST_ATTACK_DELAY,
@@ -259,7 +255,6 @@ class ZebakEncounter(
 
     internal fun zebakHit(boss: Npc, hit: Hit) {
         if (stage != ToaStage.STARTED || boss !== zebak) return
-        combatantOf(boss)?.holdDefenceFloor()
         if (hit.damage > 0) {
             val centre = coords(ZebakCoords.CENTRE)
             deps.worldRepo.soundArea(centre, ZebakSynths.DAMAGED, radius = DAMAGED_SOUND_RADIUS)
@@ -332,7 +327,6 @@ class ZebakEncounter(
         private const val DAMAGED_SOUND_RADIUS = 10
         private val SPECIAL_THRESHOLDS = doubleArrayOf(0.85, 0.70, 0.55, 0.40)
         private const val ENRAGE_THRESHOLD = 0.25
-        private const val MAX_DEFENCE_DRAIN = 20
         private const val NOT_STARTED = "The fight hasn't started."
         private const val SWIMMING_ATTACK =
             "I can't hit him from here. I'll have to get back onto the island!"

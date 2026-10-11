@@ -8,6 +8,7 @@ maxRange = 40
 attackRange = 1
 [npc.params]
 "param.amascutnpc" = 1
+"param.min_defence" = 70
 
 [[npc]]
 id = "npc.akkha_melee"
