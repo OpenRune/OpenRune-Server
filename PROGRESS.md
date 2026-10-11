@@ -18,7 +18,7 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Fairy rings | 64 code rows, 54 fixed destinations, native dials/favourites/Last-destination, permission and ten quest gates; 16 tests | Sailing first visits, DIQ house prerequisite, native visual acceptance |
 | Agility shortcuts | 518 candidate links, native options/landings, repair/setup, Vampyrium stages and slide cooldown; 14 tests | Remaining Wiki routes, grapple rules, detailed animations/failures and route acceptance |
 | Rune/looting pouches | Native storage, pickup/altar producers, Divine crafting/revert, bank Configure and ten loadouts, death/Destroy; 35 tests | Trouver and looting input review, UI acceptance |
-| Generic containers | 51 forms in 16 families plus 57 fruit/vegetable item states; limits, pure previews, persistence, death and bank transfers | Family consumers and final UI/death acceptance |
+| Generic containers | 56 forms in 17 families plus 57 fruit/vegetable item states; limits, pure previews, persistence, death and bank transfers | Family consumers and final UI/death acceptance |
 | Crafting | Gem, Hunter and silklined sack recipes, coffin locks, harness/clothes pouch, fish crates | Unstarted activity reward producers remain separate |
 | Forestry kit/basket | Native interfaces/equipment, Woodcutting storage, cape/clothes bonuses and rations | Remaining consumables and bird-nest effects |
 | Seed box | Six ordered seed types, native UI, Farming/ground pickup/Master Farmer, bank/death/Destroy and persistence | Install isolated CS2 candidate and client acceptance |
@@ -27,10 +27,12 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Mixology container rewards | Native Supervisor shop; exact Mox/Aga/Lye costs, reagent pouch/barrel purchases and potion-storage unlock | Natural supervisor placement and visuals; Mixology activity is not implemented |
 | Dizana’s quiver | Native ammo slot, compatible combat selection/bonuses, Sunfire charges/progress, native Fill/Swap/Remove, Ava and Ralos, exact item-vars account loading | Bank charge configuration, Minimus/max-cape conversion, quiver death/Trouver and native visuals |
 | Bolt pouch | Four native slots, caps/grapple, actual held/UI/drag/equipment transfers, Hirko purchase, PvM ghost storage/PvP spill | Final native visuals and actual Destroy input review |
-| Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Collection bag, coal/essence baseline audit and final consumer review |
+| Collection bags | All five native tiers; 2/4/6/7/8 eggs, shared temporary contents, Look-in/Empty/item-use and deferred death cleanup | Collector auto-pickup/calls/hopper require the unstarted Barbarian Assault activity; native visuals |
+| Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Coal/essence baseline audit and final consumer review |
 
-Latest validation: **161 Containers, 35 Pouches, two combat-commons, one combat
-formula and 12 network tests pass** (211 in the latest module run). Nineteen
+Latest validation: **166 Containers pass** in the latest full module run, including
+five new collection-bag tests. Previous runs also passed **35 Pouches, two
+combat-commons, one combat formula and 12 network tests**. Nineteen
 new ammo-container tests use actual held/NPC/object/IF3/drag/equipment producers,
 real combat consumption, unsigned item-vars account loading, capacity rollback,
 interruption and pure death previews followed by actual native drops. Early

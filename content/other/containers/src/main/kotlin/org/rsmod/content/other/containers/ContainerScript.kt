@@ -57,6 +57,7 @@ internal class ContainerScript @Inject constructor(private val store: ContainerS
                 }
             }
             onOpHeldU(spec.symbol) {
+                if (player.hitpoints <= 0 || player.pendingLogout || player.loggingOut) return@onOpHeldU
                 if (inv[it.firstSlot]?.id != spec.id || inv[it.secondSlot]?.id != it.second.id) return@onOpHeldU
                 val moved = store.store(player, spec, it.second.id, Int.MAX_VALUE)
                 mes(if (moved > 0) "You store $moved items." else "That item doesn't fit in this container.")
@@ -131,7 +132,7 @@ internal class ContainerScript @Inject constructor(private val store: ContainerS
                     }
                 }
             }
-            "Check", "Inspect" -> {
+            "Check", "Inspect", "Look-in" -> {
                 val items = store.contents(player, spec)
                 mes(if (items.isEmpty()) "This container is empty." else items.entries.joinToString("<br>") { (id, count) -> "${ServerCacheManager.getItem(id.toInt())?.name}: ${"%,d".format(count)}" })
             }

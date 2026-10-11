@@ -20,7 +20,7 @@ internal class ContainerDeathHook @Inject constructor(private val store: Contain
                 ServerCacheManager.getItem(id.toInt())?.takeIf { it.tradeable }?.let { InvObj(it, count) }
             }
         }
-        fun List<InvObj>.retained() = filterNot { ContainerCatalog.byId[it.id]?.family == "flamtaer_bag" }
+        fun List<InvObj>.retained() = filterNot { ContainerCatalog.byId[it.id]?.family in setOf("flamtaer_bag", CollectionBags.FAMILY) }
         return result.copy(kept = result.kept.retained(), supplyPile = result.supplyPile.retained(),
             lostTradeable = result.lostTradeable.retained() + dropped, lostUntradeable = result.lostUntradeable.retained())
     }
@@ -32,7 +32,7 @@ internal class ContainerDeathHook @Inject constructor(private val store: Contain
             for (spec in carried) {
                 val retained = context.player.inv.any { ContainerCatalog.byId[it?.id]?.family == spec.family } || context.player.worn.any { ContainerCatalog.byId[it?.id]?.family == spec.family }
                 when {
-                    spec.family == "flamtaer_bag" || context.isPvpDeath && spec.family == "herb_sack" -> context.player.attr.remove(spec.stateKey)
+                    spec.family in setOf("flamtaer_bag", CollectionBags.FAMILY) || context.isPvpDeath && spec.family == "herb_sack" -> context.player.attr.remove(spec.stateKey)
                     context.isPvpDeath && spec.family in setOf("tackle_box", "plank_sack") && !retained -> {
                         for ((id, count) in store.contents(context.player, spec).toMap())
                             if (ServerCacheManager.getItem(id.toInt())?.tradeable == true) store.update(context.player, spec, id.toInt(), -count)

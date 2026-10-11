@@ -50,3 +50,8 @@ satchel	obj.tol_black_sack	1	TYPE	2147483647	false	false	obj.banana,obj.cake,obj
 satchel	obj.tol_gold_sack	1	TYPE	2147483647	false	false	obj.banana,obj.cake,obj.triangle_sandwich
 satchel	obj.tol_rune_sack	1	TYPE	2147483647	false	false	obj.banana,obj.cake,obj.triangle_sandwich
 flamtaer_bag	obj.flamtaer_bag	60	TYPE	2147483647	false	false	obj.limestonebrick,obj.swamppaste,obj.timberbeam
+collection_bag	obj.barbassault_coll_bag_01	2	TOTAL	3	false	false	obj.barbassault_egg_01,obj.barbassault_egg_02,obj.barbassault_egg_03
+collection_bag	obj.barbassault_coll_bag_02	4	TOTAL	3	false	false	obj.barbassault_egg_01,obj.barbassault_egg_02,obj.barbassault_egg_03
+collection_bag	obj.barbassault_coll_bag_03	6	TOTAL	3	false	false	obj.barbassault_egg_01,obj.barbassault_egg_02,obj.barbassault_egg_03
+collection_bag	obj.barbassault_coll_bag_04	7	TOTAL	3	false	false	obj.barbassault_egg_01,obj.barbassault_egg_02,obj.barbassault_egg_03
+collection_bag	obj.barbassault_coll_bag_05	8	TOTAL	3	false	false	obj.barbassault_egg_01,obj.barbassault_egg_02,obj.barbassault_egg_03

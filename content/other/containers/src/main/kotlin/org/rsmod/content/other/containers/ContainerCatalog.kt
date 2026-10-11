@@ -10,7 +10,7 @@ internal data class ContainerSpec(
 ) {
     val id = symbol.asRSCM()
     val opened = symbol.endsWith("_open")
-    val stateKey = AttributeKey<MutableMap<String, Int>>(persistenceKey = family)
+    val stateKey = if (family == CollectionBags.FAMILY) CollectionBags.contents else AttributeKey<MutableMap<String, Int>>(persistenceKey = family)
     fun limit(item: Int): Int = if (family == "flamtaer_bag" && item == "obj.swamppaste".asRSCM()) 500 else capacity
 }
 

@@ -739,3 +739,25 @@ Validation: `ammo-container-final-validation-1.log` passes 161 Containers,
 Nineteen new tests cover the described native producers/consumers and negative
 cases. Early binding/import/name failures were corrected before the complete
 passing run. Fourteen unrelated accepted-file SHA-256 checks pass.
+### Collection bag integration
+
+Native `barbassault_coll_bag_01..05` have total capacities 2/4/6/7/8 and accept
+only the three regular egg colours. Their contents share temporary player-owned
+round storage; they are not serialized into accounts. Native Look-in, Empty and
+held item-use preserve full-inventory leftovers and reject queen/poison eggs.
+Death previews are pure and actual completion clears round contents and removes
+the bag. A common item-use lifecycle guard prevents input consumption after
+death or during logout.
+
+Source: [Collection bag](https://oldschool.runescape.wiki/w/Collection_bag),
+[Barbarian Assault strategies](https://oldschool.runescape.wiki/w/Barbarian_Assault/Strategies).
+Native inventory 490 is a single-slot temporary inventory; it was not repurposed
+as a guessed three-colour bag. Native collector call overlays and hopper belong
+to the activity, which remains unstarted. The existing upstream commit
+`bbc78dfc259c988a77d5c840196946c72de862e9` and all-state PR search showed no bag
+implementation to import.
+
+Validation: five new tests use actual held/item-use producers, exact capacities,
+partial Empty, invalid/lifecycle inputs, tier changes, non-persistent contents
+and repeated pure death previews/deferred cleanup. All **166 Containers tests**
+pass (`collection-bag-full-validation.log`), and scoped formatting passes.
