@@ -41,17 +41,17 @@ persistence, rollback and native interaction validation is still in progress.
   quest progress. Distant-click slide bumps and the bush repeat cooldown remain
   to be verified.
 - Containers: all **39 Wiki categories** inventoried against native items.
-  Rune/looting pouch baselines adapted. **28 pouch tests** cover codecs, storage
+  Rune/looting pouch baselines adapted. **35 pouch tests** cover codecs, storage
   rules, native rune insertion/withdrawal, interrupted Divine crafting and atomic
   revert with thread return and fourth-slot warning. The real ground-pickup and native altar producers now honour the native
   Rune-picking setting: complete matching stacks only, with ordinary inventory
   fallback and late cancellation. Six new tests cover these producers and pure
-  capacity previews. Native bank-side Configure now opens all four pouch forms without an invalid-op exception; bank regression compilation and 28 pouch tests pass. Native death sequence and Destroy confirmation now honour the rune-empty-on-death toggle and clear bag contents even while the death/dialogue lock is active. Wilderness bag destruction immediately exposes non-supplies; duplicates retain shared storage. Loadouts, Trouver protection review, remaining looting-bag input validation and final UI
+  capacity previews. Native bank-side Configure now opens all four pouch forms without an invalid-op exception; bank regression compilation and 35 pouch tests pass. Native death sequence and Destroy confirmation now honour the rune-empty-on-death toggle and clear bag contents even while the death/dialogue lock is active. Wilderness bag destruction immediately exposes non-supplies; duplicates retain shared storage. All ten native loadouts support save/load, quantity edits, names and clearing through the bank Configure menu. Native bank withdrawals preserve tabs/placeholders, partial deposits retain excess runes, and loading validates the carried pouch after interrupted menus. Trouver protection review, remaining looting-bag input validation and final UI
   acceptance remain open. Initial storage operations for **51
   native forms in 16 families**, plus **57 native fruit basket/vegetable sack
   forms**, pass **18 interaction/pickup/death tests**.
   Whitelists reject quest herbs, unsupported kit items, notes and over-capacity
-  inserts; save/load and full-inventory withdrawals are covered. Real bank-side input now uses the native bank deposit service for stored contents, enforcing configured capacity, selected tabs, placeholders and partial stack limits. Four new native-input tests pass; all 65 Containers and 28 Pouches tests pass. Family-specific interfaces, remaining crafting and specialised containers are in progress.
+  inserts; save/load and full-inventory withdrawals are covered. Real bank-side input now uses the native bank deposit service for stored contents, enforcing configured capacity, selected tabs, placeholders and partial stack limits. Four new native-input tests pass; all 65 Containers and 35 Pouches tests pass. Family-specific interfaces, remaining crafting and specialised containers are in progress.
   Basket/sack contents stay in their individual native item states. Generic
   storage has pure death previews, deferred PvP/Flamtaer cleanup, last-container
   destroy cleanup and family-specific bank-side filling/emptying.

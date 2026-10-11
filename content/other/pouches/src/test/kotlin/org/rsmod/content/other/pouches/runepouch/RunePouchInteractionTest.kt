@@ -17,8 +17,12 @@ import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.*
 import org.rsmod.api.player.protect.*
 import org.rsmod.api.player.ui.ifClose
+import org.rsmod.api.player.ui.ifSetEvents
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.worn.HeldEquipOp
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.script.onIfOpen
+import org.rsmod.content.interfaces.bank.bankCapacity
 import org.rsmod.content.interfaces.bank.scripts.BankInvScript
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
@@ -35,13 +39,93 @@ internal class RunePouchInteractionTest {
         for (pouch in RunePouches.ALL) {
             val f = Fixture(); f.put(0, pouch)
             f.launcher.launch(f.player) { ifOpenMainSidePair("interface.bankmain", "interface.bankside"); ifSetEvents("component.bankside:items", 0..27, dev.openrune.definition.type.widget.IfEvent.Op1) }
-            f.button("component.bankside:items", 0, pouch, 1)
+            f.button("component.bankside:items", 0, pouch, 1); f.choose(0)
             assertTrue(f.player.ui.containsModal("interface.rune_pouch"), pouch)
         }
         val f = Fixture(); f.put(0, RunePouches.REGULAR)
         f.launcher.launch(f.player) { ifOpenMainSidePair("interface.bankmain", "interface.bankside"); ifSetEvents("component.bankside:items", 0..27, dev.openrune.definition.type.widget.IfEvent.Op1) }
         f.player.pendingLogout = true; f.button("component.bankside:items", 0, RunePouches.REGULAR, 1)
         assertFalse(f.player.ui.containsModal("interface.rune_pouch"))
+    }
+
+    @Test fun `native bankside Empty honours capacity and maximum stacks without clearing excess runes`() {
+        for (pouch in RunePouches.ALL) {
+            val f = Fixture(); f.put(0, pouch); val runes = RunePouchContents.empty(4); runes.add(RunePouchRunes.byObj("obj.airrune".asRSCM())!!.compactId, 100); f.player.writeRunePouch(runes)
+            f.player.bankCapacity = 1; val bank = f.player.invMap.getOrPut("inv.bank"); bank[0] = InvObj("obj.coins", 1)
+            f.launcher.launch(f.player) { ifOpenMainSidePair("interface.bankmain", "interface.bankside"); ifSetEvents("component.bankside:items", inv.indices, dev.openrune.definition.type.widget.IfEvent.Op9) }
+            f.button("component.bankside:items", 0, pouch, 9); assertEquals(100, f.player.readRunePouch(4).counts[0]); assertEquals(0, bank.physicalCount("obj.airrune"))
+            bank[0] = InvObj("obj.airrune", Int.MAX_VALUE - 7); f.button("component.bankside:items", 0, pouch, 9)
+            assertEquals(93, f.player.readRunePouch(4).counts[0]); assertEquals(Int.MAX_VALUE, bank.physicalCount("obj.airrune"))
+            bank[0] = null; f.button("component.bankside:items", 0, pouch, 9); assertTrue(f.player.readRunePouch(4).isEmpty()); assertEquals(93, bank.physicalCount("obj.airrune"))
+        }
+    }
+
+    @Test fun `all ten native loadouts round trip split fields without corrupting neighbouring presets`() {
+        val f = Fixture(); val expected = mutableListOf<RunePouchContents>()
+        val runeTypes = listOf("obj.wrathrune", "obj.lavarune", "obj.soulrune", "obj.bloodrune").map { RunePouchRunes.byObj(it.asRSCM())!!.compactId }
+        for (index in 0..9) { val contents = RunePouchContents(runeTypes.toIntArray(), intArrayOf(16000 - index, 12345 - index, 15001 - index, 9999 - index)); expected += contents; RunePouchLoadoutCodec.write(f.player, index, contents) }
+        for (index in 0..9) { val contents = RunePouchLoadoutCodec.read(f.player, index); assertArrayEquals(expected[index].types, contents.types); assertArrayEquals(expected[index].counts, contents.counts) }
+        val restored = Player(); restored.vars.backing.putAll(f.player.vars.backing)
+        for (index in 0..9) assertArrayEquals(expected[index].counts, RunePouchLoadoutCodec.read(restored, index).counts)
+    }
+
+    @Test fun `native bank Configure can save and load every preset with quantities and native slot order`() {
+        for (index in 0..9) {
+            val f = Fixture(); f.put(0, RunePouches.DIVINE)
+            val types = listOf("obj.wrathrune", "obj.lavarune", "obj.soulrune", "obj.bloodrune"); val compact = types.map { RunePouchRunes.byObj(it.asRSCM())!!.compactId }
+            val contents = RunePouchContents(compact.toIntArray(), intArrayOf(101, 202, 303, 404)); f.player.writeRunePouch(contents); f.bankOpen()
+            f.config(); f.choose(1); if (index >= 5)f.choose(5); f.choose(index % 5); f.choose(1); f.choose(6)
+            assertArrayEquals(contents.counts, RunePouchLoadoutCodec.read(f.player, index).counts)
+            f.player.writeRunePouch(RunePouchContents.empty(4)); val bank = f.player.invMap.getOrPut("inv.bank")
+            for ((slot, item)in types.withIndex()) bank[slot] = InvObj(item, 1000)
+            VarPlayerIntMapSetter.set(f.player, "varbit.bank_tab_main", 4)
+            f.config(); f.choose(1); if (index >= 5)f.choose(5); f.choose(index % 5); f.choose(0); f.choose(6)
+            val loaded = f.player.readRunePouch(4); assertArrayEquals(compact.toIntArray(), loaded.types); assertArrayEquals(contents.counts, loaded.counts)
+            for ((slot, item)in types.withIndex())assertEquals(1000 - contents.counts[slot], bank.physicalCount(item))
+        }
+    }
+
+    @Test fun `loadout fills existing runes and returns obsolete runes while preserving placeholders and bank tabs`() {
+        val f = Fixture(); f.put(0, RunePouches.REGULAR); val current = RunePouchContents.empty(3); current.add(RunePouchRunes.byObj("obj.airrune".asRSCM())!!.compactId, 100); f.player.writeRunePouch(current)
+        val wanted = RunePouchContents.empty(3); wanted.add(RunePouchRunes.byObj("obj.soulrune".asRSCM())!!.compactId, 75); RunePouchLoadoutCodec.write(f.player, 0, wanted)
+        val bank = f.player.invMap.getOrPut("inv.bank"); bank[0] = InvObj("obj.soulrune", 75); VarPlayerIntMapSetter.set(f.player, "varbit.bank_tab_main", 1); VarPlayerIntMapSetter.set(f.player, "varbit.bank_leaveplaceholders", 1)
+        f.bankOpen(); f.config(); f.choose(1); f.choose(0); f.choose(0); f.choose(6)
+        assertEquals(100, bank.physicalCount("obj.airrune")); assertArrayEquals(wanted.types, f.player.readRunePouch(3).types); assertArrayEquals(wanted.counts, f.player.readRunePouch(3).counts)
+        assertEquals(2, f.player.vars["varbit.bank_tab_main"]); assertTrue(bank[0]!!.id != "obj.soulrune".asRSCM())
+    }
+
+    @Test fun `full banks missing supplies regular-pouch capacity and late movement never lose runes through loadouts`() {
+        for (mode in 0..4) {
+            val f = Fixture(); f.put(0, RunePouches.REGULAR); val current = RunePouchContents.empty(3); current.add(RunePouchRunes.byObj("obj.airrune".asRSCM())!!.compactId, 100); f.player.writeRunePouch(current)
+            val wanted = RunePouchContents.empty(4); for (type in listOf("obj.soulrune", "obj.lavarune", "obj.bloodrune", "obj.wrathrune").take(if (mode == 2)4 else 1))wanted.add(RunePouchRunes.byObj(type.asRSCM())!!.compactId, 75); RunePouchLoadoutCodec.write(f.player, 0, wanted)
+            val bank = f.player.invMap.getOrPut("inv.bank"); f.player.bankCapacity = 1; bank[0] = InvObj("obj.coins", 1); VarPlayerIntMapSetter.set(f.player, "varbit.bank_tab_main", 1)
+            f.bankOpen(); f.config(); f.choose(1); f.choose(0)
+            when (mode) { 3 -> f.player.coords = f.player.coords.translateX(1); 4 -> f.player.pendingLogout = true }
+            f.choose(0); if (mode < 3)f.choose(6)
+            assertEquals(100, f.player.readRunePouch(3).counts[0]); assertEquals(0, bank.physicalCount("obj.airrune")); assertEquals(1, bank.physicalCount("obj.coins"))
+        }
+    }
+
+    @Test fun `native preset quantity and rename inputs persist and reject out-of-range or late changes`() {
+        for (mode in 0..2) {
+            val f = Fixture(); f.put(0, RunePouches.REGULAR); val saved = RunePouchContents.empty(3); saved.add(RunePouchRunes.byObj("obj.airrune".asRSCM())!!.compactId, 100); RunePouchLoadoutCodec.write(f.player, 0, saved); f.bankOpen()
+            f.config(); f.choose(1); f.choose(0); f.choose(2); f.choose(0)
+            if (mode == 2)f.player.pendingLogout = true
+            val coroutine = f.player.activeCoroutine!!; assertTrue(coroutine.isAwaiting(org.rsmod.api.player.input.ResumePCountDialogInput::class)); coroutine.resumeWith(org.rsmod.api.player.input.ResumePCountDialogInput(if (mode == 1)17000 else 250))
+            if (mode != 2)f.choose(6)
+            assertEquals(if (mode == 0)250 else 100, RunePouchLoadoutCodec.read(f.player, 0).counts[0])
+        }
+        val f = Fixture(); f.put(0, RunePouches.REGULAR); f.bankOpen(); f.config(); f.choose(1); f.choose(0); f.choose(3)
+        val coroutine = f.player.activeCoroutine!!; assertTrue(coroutine.isAwaiting(org.rsmod.api.player.input.ResumePStringDialogInput::class)); coroutine.resumeWith(org.rsmod.api.player.input.ResumePStringDialogInput("Boss mage 1")); f.choose(6)
+        val restored = Player(); restored.attr.putAllFromPersistence(f.player.attr.toPersistentMap()); assertEquals("Boss mage 1", restored.attr[RunePouchLoadoutCodec.names]!!["0"])
+    }
+
+    @Test fun `a fully withdrawn bank stack releases space for obsolete pouch runes in the same loadout`() {
+        val f = Fixture(); f.put(0, RunePouches.REGULAR); val current = RunePouchContents.empty(3); current.add(RunePouchRunes.byObj("obj.airrune".asRSCM())!!.compactId, 100); f.player.writeRunePouch(current)
+        val wanted = RunePouchContents.empty(3); wanted.add(RunePouchRunes.byObj("obj.soulrune".asRSCM())!!.compactId, 75); RunePouchLoadoutCodec.write(f.player, 0, wanted)
+        val bank = f.player.invMap.getOrPut("inv.bank"); bank[0] = InvObj("obj.soulrune", 75); f.player.bankCapacity = 1; VarPlayerIntMapSetter.set(f.player, "varbit.bank_tab_main", 1)
+        f.bankOpen(); f.config(); f.choose(1); f.choose(0); f.choose(0); f.choose(6)
+        assertArrayEquals(wanted.types, f.player.readRunePouch(3).types); assertArrayEquals(wanted.counts, f.player.readRunePouch(3).counts); assertEquals(100, bank.physicalCount("obj.airrune")); assertEquals(0, bank.physicalCount("obj.soulrune")); assertEquals(1, f.player.vars["varbit.bank_tab_main"])
     }
 
     @Test fun `real item use stores matching runes up to capacity without making a fourth regular slot`() {
@@ -88,16 +172,20 @@ internal class RunePouchInteractionTest {
     }
     private class Fixture {
         val bus = EventBus(); val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
-        val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); coords = CoordGrid(3222, 3218); currentMapClock = 100; processedMapClock = 100; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
+        val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); bankCapacity = 800; coords = CoordGrid(3222, 3218); currentMapClock = 100; processedMapClock = 100; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
         val context = ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getAlignment = { TextAlignment() })
         val launcher: ProtectedAccessLauncher; val held: HeldInteractions
         init {
+            scripts.onIfOpen("interface.bankside") { player.ifSetEvents("component.bankside:items", player.inv.indices, dev.openrune.definition.type.widget.IfEvent.Op1, dev.openrune.definition.type.widget.IfEvent.Op9) }
             with(InvTransactionsScript(PlayerItemStorage(emptySet()))) { scripts.startup() }
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(context); launcher = ProtectedAccessLauncher(factory)
-            with(RunePouchScript(mock(ObjRepository::class.java), launcher)) { scripts.startup() }
-            with(BankInvScript(bus, mock(WornBonuses::class.java), mock(WeaponSpeeds::class.java))) { scripts.startup() }
+            val bankScript = BankInvScript(bus, mock(WornBonuses::class.java), mock(WeaponSpeeds::class.java))
+            with(RunePouchScript(mock(ObjRepository::class.java), launcher, bankScript)) { scripts.startup() }
+            with(bankScript) { scripts.startup() }
             val c = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }; held = c.newInstance(bus, mock(c.parameterTypes[1]), mock(c.parameterTypes[2]), HeldEquipOp(bus))as HeldInteractions
         }
+        fun bankOpen() { launcher.launch(player) { ifOpenMainSidePair("interface.bankmain", "interface.bankside"); ifSetEvents("component.bankside:items", inv.indices, dev.openrune.definition.type.widget.IfEvent.Op1) } }
+        fun config() = button("component.bankside:items", 0, if (player.inv[0]!!.id in RunePouches.divineIds)RunePouches.DIVINE else RunePouches.REGULAR, 1)
         fun put(slot: Int, symbol: String, count: Int = 1) { player.inv[slot] = InvObj(symbol, count) }
         fun run(action: suspend ProtectedAccess.() -> Unit) { player.ifClose(bus); launcher.launch(player) { action(this) } }
         fun op(slot: Int, op: HeldOp) = run { held.interact(this, inv, slot, op) }

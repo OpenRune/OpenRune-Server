@@ -474,3 +474,23 @@ Five producer/consumer tests pass, and all 70 Containers tests pass. Sources:
 [Gold locks](https://oldschool.runescape.wiki/w/Gold_locks).
 No direct pyre consumption is added: the documented mechanic requires removing
 remains before constructing a pyre. The unstarted Shades activity is preserved.
+
+
+### Rune bank loadouts and native transfers
+
+The bank Configure consumer offers Open pouch or ten A–J loadouts through the
+native dialogue menu. This keeps the accepted revision-240 bank cache: its
+loadout components are absent, although newer gameval dictionaries name them.
+Saving, loading, quantity edits, rename and clear use permanent native loadout
+fields. Split fields are read/written using their inspected widths, preserving
+other bits in the same varps; names use permanent account attributes.
+
+Native bank withdrawal/deposit services maintain configured capacity, tab sizes
+and placeholders. Excess runes stay in the pouch when the bank is full; a second
+return pass handles bank slots freed by withdrawals. Regular pouches refuse four
+rune types. Dialogue ownership, movement, death and logout are checked again
+before mutation. The native menu closes the bank modal, so completion restores
+the bank only for a still-valid session. All 35 Pouches, 70 Containers and seven
+Fishing tests pass, including actual quantity/name inputs, all ten loadouts,
+save/restore, full banks, missing supply and partial maximum stacks. Final client
+acceptance remains open.

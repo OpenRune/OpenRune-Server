@@ -230,6 +230,22 @@ constructor(
         return count - (source[0]?.count ?: 0)
     }
 
+    /** Withdraws a stack for a virtual container while preserving native placeholders and tabs. */
+    public fun ProtectedAccess.withdrawStoredStack(item: Int, requested: Int): Int {
+        if (requested <= 0) return 0
+        val slot = bank.indexOfFirst { it?.id == item }
+        if (slot == -1) return 0
+        val obj = bank[slot] ?: return 0
+        if (getInvObj(obj).isPlaceholder) return 0
+        val target = Inventory.create("inv.bank")
+        val count = minOf(requested, obj.count)
+        val query = invMoveFromSlot(from = bank, into = target, fromSlot = slot, count = count, strict = true, placehold = alwaysPlacehold)
+        if (!query.success) return 0
+        if (bank[slot] == null) notifySlotUpdate(slot)
+        setBanksideExtraOps()
+        return target.physicalCount(dev.openrune.rscm.RSCM.getReverseMapping(dev.openrune.rscm.RSCMType.OBJ, item))
+    }
+
     public fun ProtectedAccess.invDeposit(slot: Int, count: Int, inventory: Inventory): Boolean {
         val obj = inventory[slot]
         if (obj == null) {

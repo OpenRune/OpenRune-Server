@@ -16,13 +16,13 @@ import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.advanced.onDestroyHeld
-import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onProtectedEvent
+import org.rsmod.content.interfaces.bank.scripts.BankInvScript
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.obj.Obj
@@ -40,8 +40,9 @@ import org.rsmod.plugin.scripts.ScriptContext
 @OptIn(UncheckedType::class)
 class RunePouchScript
 @Inject
-constructor(private val objRepo: ObjRepository, private val protectedAccess: ProtectedAccessLauncher) :
+constructor(private val objRepo: ObjRepository, private val protectedAccess: ProtectedAccessLauncher, private val bankScript: BankInvScript) :
     PluginScript() {
+    private val loadouts = RunePouchLoadouts(bankScript)
     private var Player.quantityMode by intVarBit("varbit.rune_pouch_selectedquantity")
     private var Player.customQuantity by intVarBit("varbit.rune_pouch_customquantity")
 
@@ -50,9 +51,11 @@ constructor(private val objRepo: ObjRepository, private val protectedAccess: Pro
             onOpHeld1(pouch) { if (inv[it.slot]?.id == pouch.asRSCM()) openPouch() }
             onOpHeldU(pouch) { storeFromInventory(it.firstSlot, it.secondSlot) }
             onOpHeld4(pouch) { emptyPouch() }
-            onEvent<HeldBanksideEvents.Type>(pouch.asRSCM(RSCMType.OBJ)) { banksideOp(player) }
+            onProtectedEvent<HeldBanksideEvents.Operate>(pouch.asRSCM(RSCMType.OBJ)) {
+                if (inv[it.slot]?.id == pouch.asRSCM() && player.hitpoints > 0 && !player.pendingLogout && !player.loggingOut) banksideOp()
+            }
             onProtectedEvent<HeldBanksideEvents.Configure>(pouch.asRSCM(RSCMType.OBJ)) {
-                if (inv[it.slot]?.id == pouch.asRSCM() && player.hitpoints > 0 && !player.pendingLogout && !player.loggingOut) openPouch()
+                if (inv[it.slot]?.id == pouch.asRSCM() && player.hitpoints > 0 && !player.pendingLogout && !player.loggingOut) loadouts.configure(this, it.slot) { openPouch() }
             }
         }
         onOpHeld3(RunePouches.DIVINE) { revertDivine(it.slot) }
@@ -76,7 +79,7 @@ constructor(private val objRepo: ObjRepository, private val protectedAccess: Pro
         onIfModalButton(COMPONENT_QUANTITY_ALL) { player.quantityMode = RunePouchQuantity.MODE_ALL }
 
         onDestroyHeld {
-            if (obj.id in RunePouches.ids && player.runePouchSlots() == null) {
+            if (obj.id in RunePouches.ids && player.runePouchSlots() == null && player.invMap["inv.bank"]?.any { it?.id in RunePouches.ids } != true) {
                 spillRunes(player)
             }
         }
@@ -220,30 +223,19 @@ constructor(private val objRepo: ObjRepository, private val protectedAccess: Pro
 
     /**
      * The bank draws `Empty` (op9) and `Configure` (op1) on a pouch in the bankside inventory.
-     * Emptying puts the runes straight into the bank; configuring opens the pouch itself, which
-     * replaces the bank modal.
+     * Emptying uses native bank deposits. Configure offers the pouch screen and saved loadouts.
      */
-    private fun banksideOp(player: Player) {
+    private fun ProtectedAccess.banksideOp() {
         val slots = player.runePouchSlots() ?: return
         val contents = player.readRunePouch(slots)
-        if (contents.isEmpty()) {
-            player.mes("Your rune pouch is empty.")
-            return
-        }
-        val bank = player.invMap.getOrPut("inv.bank")
+        if (contents.isEmpty()) { mes("Your rune pouch is empty."); return }
         for (slot in 0 until slots) {
-            val count = contents.counts[slot]
-            if (count == 0) {
-                continue
-            }
             val rune = RunePouchRunes.byCompact(contents.types[slot]) ?: continue
-            val added = player.invAdd(bank, rune.name, count)
-            if (added.success) {
-                contents.remove(slot, count)
-            }
+            val moved = with(bankScript) { depositStoredStack(rune.id, contents.counts[slot]) }
+            if (moved > 0) contents.remove(slot, moved)
         }
         player.writeRunePouch(contents)
-        player.mes("You empty the runes from your pouch into your bank.")
+        mes(if (contents.isEmpty()) "You empty the runes from your pouch into your bank." else "Your bank could not hold all the runes.")
     }
 
     private fun ProtectedAccess.storeFromInventory(pouchSlot: Int, runeSlot: Int) {
