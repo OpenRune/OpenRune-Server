@@ -85,7 +85,11 @@ public final class PreserveConfigReference {
 
   /** Copies selected archive metadata from native builders, including deliberate new file IDs. */
   static byte[] mergeGroups(byte[] original, byte[] npcCandidate, Map<Integer,byte[]> fullSources) throws IOException {
-    byte[] metadata = merge(original,npcCandidate,58);
+    return mergeGroups(original,npcCandidate,fullSources,58);
+  }
+
+  static byte[] mergeGroups(byte[] original, byte[] candidate, Map<Integer,byte[]> fullSources, int changedArchive) throws IOException {
+    byte[] metadata = merge(original,candidate,changedArchive);
     Layout base = layout(metadata);
     var layouts = new HashMap<Integer,Layout>();
     for (var entry : fullSources.entrySet()) {

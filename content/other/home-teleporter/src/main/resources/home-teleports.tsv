@@ -1,0 +1,146 @@
+# key	name	category	x	z	level	dangerous	status	description
+edgeville	Edgeville	Cities	3087	3496	0	false	available	Travel to Edgeville.
+varrock	Varrock	Cities	3212	3424	0	false	available	Travel to Varrock.
+lumbridge	Lumbridge	Cities	3222	3218	0	false	available	Travel to Lumbridge.
+falador	Falador	Cities	2965	3380	0	false	available	Travel to Falador.
+al_kharid	Al Kharid	Cities	3293	3174	0	false	available	Travel to Al Kharid.
+ardougne	Ardougne	Cities	2661	3305	0	false	available	Travel to Ardougne.
+brimhaven	Brimhaven	Cities	2760	3178	0	false	available	Travel to Brimhaven.
+canifis	Canifis	Cities	3493	3474	0	false	available	Travel to Canifis.
+catherby	Catherby	Cities	2804	3434	0	false	available	Travel to Catherby.
+draynor_village	Draynor Village	Cities	3093	3244	0	false	available	Travel to Draynor Village.
+port_sarim	Port Sarim	Cities	3041	3237	0	false	available	Travel to Port Sarim.
+seers_village	Seers Village	Cities	2725	3485	0	false	available	Travel to Seers Village.
+rellekka	Rellekka	Cities	2668	3631	0	false	available	Travel to Rellekka.
+yanille	Yanille	Cities	2605	3093	0	false	available	Travel to Yanille.
+tree_gnome_stronghold	Tree Gnome Stronghold	Cities	2464	3447	0	false	available	Travel to Tree Gnome Stronghold.
+pollnivneach	Pollnivneach	Cities	3359	2967	0	false	available	Travel to Pollnivneach.
+neitiznot	Neitiznot	Cities	2336	3807	0	false	available	Travel to Neitiznot.
+kourend_castle	Kourend Castle	Cities	1643	3673	0	false	available	Travel to Kourend Castle.
+civitas_illa_fortis	Civitas illa Fortis	Cities	1680	3132	0	false	available	Travel to Civitas illa Fortis.
+prifddinas	Prifddinas	Cities	3263	6064	0	false	available	Travel to Prifddinas.
+darkmeyer	Darkmeyer	Cities	3606	3362	0	false	available	Travel to Darkmeyer.
+cam_torum	Cam Torum	Cities	1444	9556	0	false	available	Travel to Cam Torum.
+taverley	Taverley	Cities	2893	3465	0	false	available	Travel to Taverley.
+burthorpe	Burthorpe	Cities	2899	3544	0	false	available	Travel to Burthorpe.
+miscellania	Miscellania	Cities	2535	3891	0	false	available	Travel to Miscellania.
+slepe	Slepe	Cities	3702	3337	0	false	available	Travel to Slepe.
+zulrah	Zulrah	Bosses	2196	3056	0	false	available	Zul-Andra boat. Board it to start your existing encounter.
+araxxor	Araxxor	Bosses	3658	9816	0	false	available	Outside the web tunnel. Squeeze through to enter; Slayer requirements still apply.
+kraken	Kraken	Bosses	2278	10016	0	false	available	Outside the boss crevice. Enter to use the existing Kraken encounter.
+corporeal_beast	Corporeal Beast	Bosses	2966	4254	2	false	available	Corp pre-lair. Use the entrance; Ironman routing remains in place.
+barrows	Barrows	Bosses	3565	3313	0	false	available	Barrows mounds. Dig at a mound to begin.
+doom_of_mokhaiotl	Doom of Mokhaiotl	Bosses	1311	9551	0	false	available	Doom pre-lair. Cross the gap to start your delve.
+tormented_demons	Tormented Demons	Bosses	4061	4464	0	false	available	Ancient Guthixian Temple entrance. Continue north to the demons.
+lizardman_shamans	Lizardman Shamans	Bosses	1451	3696	0	false	available	Lizardman Canyon. Bring Shayzien armour and prepare for shaman specials.
+demonic_gorillas	Demonic Gorillas	Bosses	2428	3521	0	false	available	Surface hole with the danger sign. Climb down to the gorilla cavern.
+sand_crabs	Sand Crabs	Monsters	1725	3463	0	false	available	Travel to the area. Existing combat and access rules apply.
+rock_crabs	Rock Crabs	Monsters	2675	3715	0	false	available	Travel to the area. Existing combat and access rules apply.
+experiments	Experiments	Monsters	3557	9946	0	false	available	Travel to the area. Existing combat and access rules apply.
+desert_bandits	Desert Bandits	Monsters	3169	2982	0	false	available	Travel to the area. Existing combat and access rules apply.
+blue_dragons	Blue Dragons	Monsters	2900	9799	0	false	available	Travel to the area. Existing combat and access rules apply.
+steel_dragons	Steel Dragons	Monsters	2709	9436	0	false	available	Travel to the area. Existing combat and access rules apply.
+mithril_dragons	Mithril Dragons	Monsters	1778	5346	0	false	available	Travel to the area. Existing combat and access rules apply.
+yaks	Yaks	Monsters	2326	3796	0	false	available	Travel to the area. Existing combat and access rules apply.
+waterfiends	Waterfiends	Monsters	1739	5342	0	false	available	Travel to the area. Existing combat and access rules apply.
+suqahs	Suqahs	Monsters	2114	3915	0	false	available	Travel to the area. Existing combat and access rules apply.
+cave_horrors	Cave Horrors	Monsters	3748	9374	0	false	available	Travel to the area. Existing combat and access rules apply.
+gnome_agility	Gnome Agility	Skilling	2474	3437	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+draynor_agility	Draynor Agility	Skilling	3103	3279	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+barbarian_agility	Barbarian Agility	Skilling	2552	3561	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+falador_mine	Falador Mine	Skilling	3018	3338	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+crafting_guild	Crafting Guild	Skilling	2933	3286	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+fishing_guild	Fishing Guild	Skilling	2611	3391	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+catherby_fishing	Catherby Fishing	Skilling	2846	3432	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+karamja_fishing	Karamja Fishing	Skilling	2925	3175	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+woodcutting_guild	Woodcutting Guild	Skilling	1662	3505	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+farming_guild	Farming Guild	Skilling	1249	3719	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+hosidius_farming	Hosidius Farming	Skilling	1729	3551	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+feldip_hunter	Feldip Hunter	Skilling	2607	2922	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+red_chinchompas	Red Chinchompas	Skilling	2557	2914	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+falconry	Falconry	Skilling	2372	3619	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+fossil_island	Fossil Island	Skilling	3761	3896	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+rune_essence_mine	Rune Essence Mine	Skilling	2911	4832	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+ourania_altar	Ourania Altar	Skilling	2469	3245	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+dense_essence_mine	Dense Essence Mine	Skilling	1761	3852	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+al_kharid_mine	Al Kharid Mine	Skilling	3298	3298	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+mining_guild	Mining Guild	Skilling	3019	3339	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+otto_godblessed	Otto Godblessed	Skilling	2501	3487	0	false	available	Travel to the training location. Existing skill levels and area requirements still apply.
+taverley_dungeon	Taverley Dungeon	Dungeons	2884	3395	0	false	available	Travel to the entrance or main corridor. Use the existing passage mechanics.
+brimhaven_dungeon	Brimhaven Dungeon	Dungeons	2744	3152	0	false	available	Travel to the entrance or main corridor. Use the existing passage mechanics.
+catacombs_of_kourend	Catacombs of Kourend	Dungeons	1664	10049	0	false	available	Travel to the entrance or main corridor. Use the existing passage mechanics.
+stronghold_of_security	Stronghold of Security	Dungeons	3081	3421	0	false	available	Travel to the entrance or main corridor. Use the existing passage mechanics.
+fremennik_slayer_dungeon	Fremennik Slayer Dungeon	Dungeons	2805	10001	0	false	available	Travel to the entrance or main corridor. Use the existing passage mechanics.
+slayer_tower	Slayer Tower	Dungeons	3428	3535	0	false	available	Travel to the entrance or main corridor. Use the existing passage mechanics.
+ancient_guthixian_temple	Ancient Guthixian Temple	Dungeons	4061	4464	0	false	available	Travel to the entrance or main corridor. Use the existing passage mechanics.
+gorilla_cavern	Gorilla Cavern	Dungeons	2428	3521	0	false	available	Travel to the entrance or main corridor. Use the existing passage mechanics.
+chasm_of_fire	Chasm of Fire	Dungeons	1433	3673	0	false	available	Travel to the entrance or main corridor. Use the existing passage mechanics.
+revenant_caves	Revenant Caves	Dungeons	3075	3653	0	true	available	Southern Wilderness cavern entrance. The existing 100,000 coin admission fee applies.
+wilderness_ditch	Wilderness Ditch	Pvp	3087	3520	0	true	available	Wilderness destination. Prepare for PvP and item loss.
+ferox_enclave	Ferox Enclave	Pvp	3135	3630	0	true	available	Wilderness destination. Prepare for PvP and item loss.
+mage_bank	Mage Bank	Pvp	2539	4715	0	true	available	Wilderness destination. Prepare for PvP and item loss.
+chaos_temple	Chaos Temple	Pvp	3235	3636	0	true	available	Wilderness destination. Prepare for PvP and item loss.
+wilderness_resource_area	Wilderness Resource Area	Pvp	3187	3935	0	true	available	Wilderness destination. Prepare for PvP and item loss.
+treasure_trails	Treasure Trails	Other	3212	3424	0	false	available	Varrock clue hub. Clue trails are available; the remaining expansion is tracked in PROGRESS.md.
+thermonuclear_smoke_devil	Thermonuclear Smoke Devil	Bosses	-	-	-	false	planned	Thermonuclear Smoke Devil is planned; this content is not available yet.
+deranged_archaeologist	Deranged Archaeologist	Bosses	-	-	-	false	planned	Deranged Archaeologist is planned; this content is not available yet.
+giant_mole	Giant Mole	Bosses	-	-	-	false	planned	Giant Mole is planned; this content is not available yet.
+chaos_fanatic	Chaos Fanatic	Bosses	-	-	-	false	planned	Chaos Fanatic is planned; this content is not available yet.
+obor	Obor	Bosses	-	-	-	false	planned	Obor is planned; this content is not available yet.
+brutus	Brutus	Bosses	-	-	-	false	planned	Brutus is planned; this content is not available yet.
+chaos_elemental	Chaos Elemental	Bosses	-	-	-	false	planned	Chaos Elemental is planned; this content is not available yet.
+kalphite_queen	Kalphite Queen	Bosses	-	-	-	false	planned	Kalphite Queen is planned; this content is not available yet.
+dagannoth_kings	Dagannoth Kings	Bosses	-	-	-	false	planned	Dagannoth Kings is planned; this content is not available yet.
+sarachnis	Sarachnis	Bosses	-	-	-	false	planned	Sarachnis is planned; this content is not available yet.
+shellbane_gryphon	Shellbane Gryphon	Bosses	-	-	-	false	planned	Shellbane Gryphon is planned; this content is not available yet.
+royal_titans	Royal Titans	Bosses	-	-	-	false	planned	Royal Titans is planned; this content is not available yet.
+vet_ion_calvar_ion	Vet'ion & Calvar'ion	Bosses	-	-	-	false	planned	Vet'ion & Calvar'ion is planned; this content is not available yet.
+cerberus	Cerberus	Bosses	-	-	-	false	planned	Cerberus is planned; this content is not available yet.
+vorkath	Vorkath	Bosses	-	-	-	false	planned	Vorkath is planned; this content is not available yet.
+abyssal_sire	Abyssal Sire	Bosses	-	-	-	false	planned	Abyssal Sire is planned; this content is not available yet.
+alchemical_hydra	Alchemical Hydra	Bosses	-	-	-	false	planned	Alchemical Hydra is planned; this content is not available yet.
+grotesque_guardians	Grotesque Guardians	Bosses	-	-	-	false	planned	Grotesque Guardians is planned; this content is not available yet.
+the_hueycoatl	The Hueycoatl	Bosses	-	-	-	false	planned	The Hueycoatl is planned; this content is not available yet.
+nex	Nex	Bosses	-	-	-	false	planned	Nex is planned; this content is not available yet.
+the_nightmare	The Nightmare	Bosses	-	-	-	false	planned	The Nightmare is planned; this content is not available yet.
+yama	Yama	Bosses	-	-	-	false	planned	Yama is planned; this content is not available yet.
+aerial_fishing	Aerial Fishing	Minigames	-	-	-	false	planned	Aerial Fishing is planned; this content is not available yet.
+tithe_farm	Tithe Farm	Minigames	-	-	-	false	planned	Tithe Farm is planned; this content is not available yet.
+vale_totems	Vale Totems	Minigames	-	-	-	false	planned	Vale Totems is planned; this content is not available yet.
+puro_puro	Puro-Puro	Minigames	-	-	-	false	planned	Puro-Puro is planned; this content is not available yet.
+mahogany_homes	Mahogany Homes	Minigames	-	-	-	false	planned	Mahogany Homes is planned; this content is not available yet.
+mastering_mixology	Mastering Mixology	Minigames	-	-	-	false	planned	Mastering Mixology is planned; this content is not available yet.
+giants_foundry	Giants' Foundry	Minigames	-	-	-	false	planned	Giants' Foundry is planned; this content is not available yet.
+fight_caves	Fight Caves	Minigames	-	-	-	false	planned	Fight Caves is planned; this content is not available yet.
+zalcano	Zalcano	Minigames	-	-	-	false	planned	Zalcano is planned; this content is not available yet.
+wintertodt	Wintertodt	Minigames	-	-	-	false	planned	Wintertodt is planned; this content is not available yet.
+mage_training_arena	Mage Training Arena	Minigames	-	-	-	false	planned	Mage Training Arena is planned; this content is not available yet.
+tempoross	Tempoross	Minigames	-	-	-	false	planned	Tempoross is planned; this content is not available yet.
+pest_control	Pest Control	Minigames	-	-	-	false	planned	Pest Control is planned; this content is not available yet.
+moons_of_peril	Moons of Peril	Minigames	-	-	-	false	planned	Moons of Peril is planned; this content is not available yet.
+guardians_of_the_rift	Guardians of the Rift	Minigames	-	-	-	false	planned	Guardians of the Rift is planned; this content is not available yet.
+the_inferno	The Inferno	Minigames	-	-	-	false	planned	The Inferno is planned; this content is not available yet.
+fortis_colosseum	Fortis Colosseum	Minigames	-	-	-	false	planned	Fortis Colosseum is planned; this content is not available yet.
+the_gauntlet	The Gauntlet	Minigames	-	-	-	false	planned	The Gauntlet is planned; this content is not available yet.
+chambers_of_xeric	Chambers of Xeric	Raids	-	-	-	false	planned	Chambers of Xeric is planned; this content is not available yet.
+theatre_of_blood	Theatre of Blood	Raids	-	-	-	false	planned	Theatre of Blood is planned; this content is not available yet.
+tombs_of_amascut	Tombs of Amascut	Raids	-	-	-	false	planned	Tombs of Amascut is planned; this content is not available yet.
+the_mimic	The Mimic	Bosses	-	-	-	false	planned	Master clue Mimic encounter: planned as the final Treasure Trails expansion.
+amoxliatl	Amoxliatl	Bosses	-	-	-	false	planned	Amoxliatl: existing content needs review before public travel is enabled.
+callisto	Callisto	Bosses	-	-	-	false	planned	Callisto: existing content needs review before public travel is enabled.
+artio	Artio	Bosses	-	-	-	false	planned	Artio: existing content needs review before public travel is enabled.
+spindel	Spindel	Bosses	-	-	-	false	planned	Spindel: existing content needs review before public travel is enabled.
+venenatis	Venenatis	Bosses	-	-	-	false	planned	Venenatis: existing content needs review before public travel is enabled.
+king_black_dragon	King Black Dragon	Bosses	-	-	-	false	planned	King Black Dragon: existing content needs review before public travel is enabled.
+general_graardor	General Graardor	Bosses	-	-	-	false	planned	General Graardor: existing content needs review before public travel is enabled.
+kree_arra	Kree'arra	Bosses	-	-	-	false	planned	Kree'arra: existing content needs review before public travel is enabled.
+k_ril_tsutsaroth	K'ril Tsutsaroth	Bosses	-	-	-	false	planned	K'ril Tsutsaroth: existing content needs review before public travel is enabled.
+commander_zilyana	Commander Zilyana	Bosses	-	-	-	false	planned	Commander Zilyana: existing content needs review before public travel is enabled.
+duke_sucellus	Duke Sucellus	Bosses	-	-	-	false	planned	Duke Sucellus: existing content needs review before public travel is enabled.
+the_leviathan	The Leviathan	Bosses	-	-	-	false	planned	The Leviathan: existing content needs review before public travel is enabled.
+phantom_muspah	Phantom Muspah	Bosses	-	-	-	false	planned	Phantom Muspah: existing content needs review before public travel is enabled.
+scurrius	Scurrius	Bosses	-	-	-	false	planned	Scurrius: existing content needs review before public travel is enabled.
+vardorvis	Vardorvis	Bosses	-	-	-	false	planned	Vardorvis: existing content needs review before public travel is enabled.
+the_whisperer	The Whisperer	Bosses	-	-	-	false	planned	The Whisperer: existing content needs review before public travel is enabled.
+crazy_archaeologist	Crazy Archaeologist	Bosses	-	-	-	false	planned	Crazy Archaeologist: existing content needs review before public travel is enabled.
+gemstone_crab	Gemstone Crab	Monsters	1300	3403	0	false	available	Travel to the Gemstone Crab area.

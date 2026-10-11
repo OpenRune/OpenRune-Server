@@ -1,0 +1,8 @@
+[[npc]]
+id = "npc.home_teleport_wizard"
+inherit = "npc.watchtower_wizard"
+name = "Teleport wizard"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 0
+examine = "Your guide to the world of OpenRune."

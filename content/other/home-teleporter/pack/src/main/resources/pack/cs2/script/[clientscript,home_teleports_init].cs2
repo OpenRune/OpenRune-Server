@@ -1,0 +1,9 @@
+[clientscript,home_teleports_init](component $frame)
+~steelborder($frame, "Teleports", 0);
+~thinbox(home_teleports:categories, 0);
+~thinbox(home_teleports:destinations, 0);
+~stonebutton_draw(false, "Search", p11_full, 1, home_teleports:search);
+~stonebutton_draw(false, "Clear", p11_full, 1, home_teleports:clear);
+~stonebutton_draw(false, "Back", p11_full, 1, home_teleports:previous);
+~stonebutton_draw(false, "Next", p11_full, 1, home_teleports:next);
+~stonebutton_draw(false, "Teleport", p11_full, 1, home_teleports:teleport);

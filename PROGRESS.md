@@ -6,6 +6,33 @@ Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
 **Status:** 🟢 Complete · 🟡 Started · 🔴 Not started
 
+## 🟡 Started: Edgeville home teleporter and Emblem trader
+
+Owner-selected home: **Edgeville**. Public `::home` arrives near the bank;
+Talk-to the Teleport wizard or use `::teleports` to open the native catalogue.
+Nine categories, all-category search, paging, destination details and a separate
+Teleport button show **145 destinations: 84 enabled routes and 61 future/review
+entries**. Unfinished encounters stay visible as Coming soon without teleport
+output. Boss routes preserve the existing entrance/instance mechanics.
+
+Standard travel respects teleport blocks, Wilderness limits and Revenant delay;
+Wilderness destinations require confirmation. Native outgoing effects are
+cleared on arrival/cancellation. All enabled landing tiles use native collision
+checks; existing Varrock content remains intact.
+
+Edgeville's Emblem trader now redeems all six Revenant artefacts and their notes
+through the existing atomic exchange, including snapshot revalidation, cancel,
+death/logout/movement and coin-overflow handling. Existing skull logic remains.
+
+Validated: **110 selected tests**, including **15 new teleporter/trader tests**;
+formatter, runtime JAR, preservation of existing cache archives/file IDs and
+**220,164 mappings**, all **19,438 varbit bases**, native new/existing-account
+initialisation and isolated rev240/Nero boot. The final runtime verifies **85
+walkable tiles** and all **45 menu components**. Guarded package:
+`outputs/home-teleporter-20261011/INSTALLEREN.cmd` with checkpoint and rollback.
+Fixed/resizable client layout, animation timing and in-game end acceptance remain
+open. [Implementation, sources and manual tests](docs/custom/home-teleporter.md).
+
 ## 🟡 Started: Revenant Caves
 
 Implementation ready for client acceptance: three entrances, two exits, five

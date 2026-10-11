@@ -380,6 +380,8 @@ Edit source/configuration, then run `node tools/progress/content-progress.mjs`.
 | [content/other/consumables](content/other/consumables) |
 | [content/other/dave/pack](content/other/dave/pack) |
 | [content/other/discord](content/other/discord) |
+| [content/other/home-teleporter](content/other/home-teleporter) |
+| [content/other/home-teleporter/pack](content/other/home-teleporter/pack) |
 | [content/other/ironman](content/other/ironman) |
 | [content/other/login](content/other/login) |
 | [content/other/mapclock](content/other/mapclock) |
