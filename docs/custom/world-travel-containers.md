@@ -393,3 +393,23 @@ not assumed complete from generic PvP rune-spill tests. Primary sources:
 [Rune pouch](https://oldschool.runescape.wiki/w/Rune_pouch),
 [Looting bag](https://oldschool.runescape.wiki/w/Looting_bag), and
 [Trouver parchment](https://oldschool.runescape.wiki/w/Trouver_parchment).
+
+### Container crafting: gems and silklined herbs
+
+The five gem recipes (pouch, satchel, upgraded/direct tote and sack) use the
+existing Crafting item-use registry. Regular needles consume the recipe's whole
+thread reels; costume needles consume no thread. Open gem inputs are accepted.
+All linked physical ingredients and output use one inventory transaction.
+The sack combines the low-tier and ordinary gem-bag storage into its own state,
+refusing an overflowing combination without consuming materials. Other upgrades
+retain shared family storage. Silklined herb creation has a one-tick ownership
+check and preserves the original open/closed form.
+
+Six native item-use tests pass alongside the existing Crafting registrations;
+all 57 Containers tests pass. They cover every recipe/form/tool, XP, valid native
+unstackable material slots, full inventories, missing requirements, overflow and
+interrupted silk upgrades. Source pages: [Gem pouch](https://oldschool.runescape.wiki/w/Gem_pouch),
+[Gem satchel](https://oldschool.runescape.wiki/w/Gem_satchel),
+[Gem tote](https://oldschool.runescape.wiki/w/Gem_tote),
+[Gem sack](https://oldschool.runescape.wiki/w/Gem_sack), and
+[Silklined herb sack](https://oldschool.runescape.wiki/w/Silklined_herb_sack).

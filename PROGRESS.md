@@ -59,7 +59,7 @@ persistence, rollback and native interaction validation is still in progress.
 - Tackle box / huntsman's kit: native main/side screens, Fill/Empty, quantity
   controls, partial transfers and 35/32-type limits pass **eight tests**. Existing
   tackle contents and charged-tool vars are preserved. Native account loading and
-  confirmed last-kit destruction are covered; all **37 container module tests**
+  confirmed last-kit destruction are covered; all **57 container module tests**
   pass. Visual UI acceptance and final bank/death integration remain open.
 - Bow string spool: six native capacity tiers (250 to 100,000), notes, account
   storage and all twelve ordinary bow-stringing routes pass **six tests**,
@@ -80,11 +80,18 @@ persistence, rollback and native interaction validation is still in progress.
   interface, removal, drop warning and banked-duplicate protection pass **seven
   tests**. Keys restore from permanent account attributes and stay kept on PvM/
   PvP death. Door-specific consumer validation and client acceptance remain open.
+- Container crafting: native gem pouch/satchel/tote/sack recipes, direct tote
+  creation and regular/costume needles pass **six input tests**, including all
+  open source forms, correct XP, full inventories and overflowing shared storage.
+  Silklined herb-sack creation preserves herbs and the open state; late movement,
+  death, logout and stale silk cancel without consumption. Existing Crafting
+  item-use registrations remain compatible. Hunter pouch/coffin upgrades and
+  specialised container creation still need completion.
 - Fish crates: all six deep-sea species, cooled-crate creation and camphor
   crafting pass **seven native input tests**. Real bank IF3 Empty returns the
   camphor crate; ordinary Empty discards it. Partial contents survive native
   account loading, and full-inventory/lifecycle failures preserve materials.
-  All **51 Containers module tests** pass. Sailing net/cargo producers are not
+  All **57 Containers module tests** pass. Sailing net/cargo producers are not
   available in this fork; visual acceptance remains open.
 - Fish barrels: native Fill/Open/Close, worn sack controls, combination/dismantling,
   direct fishing storage and bank-side Empty pass **seven native input tests**.
