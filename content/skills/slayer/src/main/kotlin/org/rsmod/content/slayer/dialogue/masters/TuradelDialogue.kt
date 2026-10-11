@@ -1,11 +1,11 @@
 package org.rsmod.content.slayer.dialogue.masters
 
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.content.slayer.slayerTuraelIntroComplete
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.content.slayer.dialogue.GenericDialogue.slayerTip
-import org.rsmod.content.slayer.dialogue.StandardSlayerDialogue.openMain
 import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
+import org.rsmod.content.slayer.dialogue.StandardSlayerDialogue.openMain
+import org.rsmod.content.slayer.slayerTuraelIntroComplete
 
 object TuradelDialogue {
 

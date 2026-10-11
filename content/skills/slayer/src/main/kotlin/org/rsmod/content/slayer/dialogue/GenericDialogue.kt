@@ -18,8 +18,8 @@ object GenericDialogue {
             "I have quite a few rewards you can earn, and a wide variety of Slayer equipment for sale.",
         )
         when (choice3("Look at rewards.", 1, "Look at shop.", 2, "Cancel.", 3)) {
-            1 -> SlayerInterfaces.openInterface(access,access.npcVisType(npc!!).internalName)
-            2 -> SlayerInterfaces.openInterface(access,access.npcVisType(npc!!).internalName)
+            1 -> SlayerInterfaces.openInterface(access, access.npcVisType(npc!!).internalName)
+            2 -> SlayerInterfaces.openInterface(access, access.npcVisType(npc!!).internalName)
         }
     }
 
