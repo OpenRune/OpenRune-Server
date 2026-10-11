@@ -1,6 +1,5 @@
 package org.rsmod.content.other.pouches
 
-import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
@@ -100,6 +99,7 @@ internal class PouchDeathIntegrationTest {
             val f = Fixture(); f.player.inv[0] = InvObj(LootingBags.CLOSED)
             f.player.lootingBag[0] = InvObj("obj.coins", 123); f.player.lootingBag[1] = InvObj("obj.lobster"); f.player.lootingBag[2] = InvObj("obj.4doseprayerrestore"); f.player.saveLootingBag()
             VarPlayerIntMapSetter.set(f.player, "varbit.inside_wilderness", if (wild) 1 else 0)
+            if (!wild) f.player.coords = CoordGrid(3100, 3519)
             f.destroy(false); assertEquals(3, f.player.lootingBag.occupiedSpace()); assertTrue(f.ground.isEmpty())
             f.destroy(true); assertNull(f.player.inv[0]); assertTrue(f.player.lootingBag.isEmpty()); assertNull(f.player.attr[LOOTING_BAG_ATTR])
             assertEquals(if (wild) 1 else 0, f.ground.size); assertTrue(f.ground.all { it.type == "obj.coins".asRSCM() && it.isPublic })
@@ -148,6 +148,14 @@ internal class PouchDeathIntegrationTest {
         assertEquals(1, g.ground.size); assertEquals(item.vars, g.ground.single().vars); assertTrue(g.player.lootingBag.isEmpty()); assertTrue(g.player.attr[LOOTING_BAG_ATTR] == null)
     }
 
+    @Test fun `confirmed bag Destroy loses Ferox and two ditch tiles but spills beyond the actual Wilderness boundary`() {
+        for (coords in listOf(CoordGrid(3150, 3635), CoordGrid(3100, 3523), CoordGrid(3100, 3524), CoordGrid(3100, 3525))) {
+            val f = Fixture(); f.player.coords = coords; f.player.inv[0] = InvObj(LootingBags.CLOSED); f.player.lootingBag[0] = InvObj("obj.coins", 123); f.player.saveLootingBag()
+            VarPlayerIntMapSetter.set(f.player, "varbit.inside_wilderness", 1)
+            f.destroy(true); assertTrue(f.player.lootingBag.isEmpty()); assertNull(f.player.attr[LOOTING_BAG_ATTR]); assertNull(f.player.inv[0])
+            assertEquals(if (coords.z == 3525) 1 else 0, f.ground.size, "$coords")
+        }
+    }
     private class Fixture {
         val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); observerUUID = 1001; coords = CoordGrid(3100, 3600); currentMapClock = 100; processedMapClock = 100; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
         val ground = mutableListOf<Obj>(); val bus = EventBus(); val hook = PouchDeathHook()
@@ -161,7 +169,7 @@ internal class PouchDeathIntegrationTest {
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getAlignment = { TextAlignment() }, getCollision = { org.rsmod.routefinder.collision.CollisionFlagMap().apply { allocateIfAbsent(3222, 3218, 0) } }))
             launcher = ProtectedAccessLauncher(factory)
             val bankScript = BankInvScript(bus, mock(WornBonuses::class.java), mock(WeaponSpeeds::class.java))
-            with(LootingBagScript(repo, bankScript, prices)) { scripts.startup() }
+            with(LootingBagScript(repo, bankScript, prices, LootingBagAreaTestData.areas)) { scripts.startup() }
             with(RunePouchScript(repo, launcher, bankScript)) { scripts.startup() }
             with(PouchDestroyScript()) { scripts.startup() }
             val c = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }
@@ -177,5 +185,5 @@ internal class PouchDeathIntegrationTest {
         fun confirmDestroy(confirm: Boolean) { player.activeCoroutine?.takeIf { it.isAwaiting(ResumePauseButtonInput::class) }?.resumeWith(ResumePauseButtonInput("component.confirmdestroy:universe", if (confirm) 1 else 0)) }
         fun destroy(confirm: Boolean) { beginDestroy(); confirmDestroy(confirm) }
     }
-    companion object { @JvmStatic @BeforeAll fun cache() { ServerCacheManager.init(240).close() } }
+    companion object { @JvmStatic @BeforeAll fun cache() { LootingBagAreaTestData.initialize() } }
 }

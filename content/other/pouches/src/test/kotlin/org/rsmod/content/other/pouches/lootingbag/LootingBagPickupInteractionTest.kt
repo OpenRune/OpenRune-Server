@@ -1,6 +1,5 @@
 package org.rsmod.content.other.pouches.lootingbag
 
-import dev.openrune.ServerCacheManager
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -53,6 +52,7 @@ internal class LootingBagPickupInteractionTest {
         for (mode in 0..2) {
             val f = Fixture(); if (mode != 2) f.player.inv[0] = InvObj(if (mode == 0) LootingBags.CLOSED else LootingBags.OPEN)
             VarPlayerIntMapSetter.set(f.player, "varbit.inside_wilderness", if (mode == 1) 0 else 1)
+            if (mode == 1) f.player.coords = CoordGrid(3100, 3519)
             val item = InvObj("obj.coins", vars = Int.MAX_VALUE); val ground = f.add(item); f.take(ground)
             assertEquals(0, f.registry.count()); assertTrue(f.player.lootingBag.isEmpty()); assertTrue(f.player.inv.any { it == item })
         }
@@ -67,13 +67,23 @@ internal class LootingBagPickupInteractionTest {
             assertEquals(if (mode == 0) 0 else 1, f.registry.count()); assertEquals(if (mode == 0) 1 else 0, f.player.lootingBag.occupiedSpace())
         }
     }
+
+    @Test fun `Ferox real area permits pickup with Wilderness flag off and ditch safety strip does not`() {
+        for (coords in listOf(CoordGrid(3150, 3635), CoordGrid(3100, 3523), CoordGrid(3100, 3524), CoordGrid(3100, 3525))) {
+            val f = Fixture(); f.openBag(); f.player.coords = coords; VarPlayerIntMapSetter.set(f.player, "varbit.inside_wilderness", 0)
+            val item = InvObj("obj.abyssal_whip"); f.take(f.add(item))
+            val stored = coords == CoordGrid(3150, 3635) || coords.z == 3525
+            assertEquals(0, f.registry.count()); assertEquals(if (stored) 1 else 0, f.player.lootingBag.occupiedSpace(), "$coords")
+            assertEquals(!stored, f.player.inv.any { it == item }, "$coords")
+        }
+    }
     private class Fixture {
         val clock = MapClock(100); val bus = EventBus(); val registry = ObjRegistry(ZoneUpdateMap()); val repo = ObjRepository(clock, registry)
         val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); coords = CoordGrid(3100, 3600); currentMapClock = 100; processedMapClock = 100; observerUUID = 1001; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
         val launcher: ProtectedAccessLauncher
         init {
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(ProtectedAccessContextFactory.empty().copy(getEventBus = { bus })); launcher = ProtectedAccessLauncher(factory)
-            val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache()); with(InvTransactionsScript(PlayerItemStorage(emptySet()))) { scripts.startup() }; with(ObjTakePlugin(repo, PlayerObjTakeValidator(emptySet()), setOf(LootingBagTakeHook()))) { scripts.startup() }
+            val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache()); with(InvTransactionsScript(PlayerItemStorage(emptySet()))) { scripts.startup() }; with(ObjTakePlugin(repo, PlayerObjTakeValidator(emptySet()), setOf(LootingBagTakeHook(LootingBagAreaTestData.areas)))) { scripts.startup() }
         }
         fun openBag() { player.inv[0] = InvObj(LootingBags.OPEN); VarPlayerIntMapSetter.set(player, "varbit.inside_wilderness", 1) }
         fun add(item: InvObj): Obj = Obj.fromOwner(player, player.coords, item).also { assertTrue(repo.add(it, 600)) }
@@ -82,5 +92,5 @@ internal class LootingBagPickupInteractionTest {
             assertTrue(launcher.launch(player) { assertTrue(bus.publish(this, checkNotNull(producer.opTrigger(obj, InteractionOp.Op3)))) })
         }
     }
-    companion object { @JvmStatic @BeforeAll fun cache() { ServerCacheManager.init(240).close() } }
+    companion object { @JvmStatic @BeforeAll fun cache() { LootingBagAreaTestData.initialize() } }
 }

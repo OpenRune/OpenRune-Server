@@ -1047,3 +1047,25 @@ Validation: `world-full-route-container-validation-3.log` succeeds with 354 test
 transaction, three combat, 26 Shortcuts, 18 Fairy rings, 29 Araxxor). Earlier
 fixture/configuration failures were corrected before this complete run. Native
 visual acceptance, Ferox rules and parchment compatibility remain to review.
+
+### Looting-bag Ferox, ditch and native Deposit controls
+
+The real cache map areas classify Ferox separately and exclude it from Wilderness.
+At x=3100 the protected ditch tiles z=3523/3524 are outside the Wilderness polygon;
+z=3525 is inside. The bag now uses the existing AreaChecker for current coordinates:
+Wilderness/Ferox permit deposits/pickups, while only actual Wilderness permits
+Destroy spills. A stale `inside_wilderness` flag cannot change those results.
+
+Native held Deposit and IF3 Store input revealed a protected bag-inventory write
+being refused while its own modal was open. The owning handler now uses one native
+transaction anchored to the ordinary input inventory and selects the bag inside it.
+Capacity remains atomic; partial transfers count only the committed amount. General
+pickup/inventory protection remains unchanged. Item-use quantity input captures both
+exact source-item and bag references, rechecking ownership, area, death and logout.
+
+Validation: `world-looting-ferox-validation-3.log` passes all 49 pouch tests.
+Native map-file fixtures use the actual three affected squares and the real
+AreaChecker, including safe-area flags deliberately made stale. Four new interaction
+tests use held/item-use and the real IF3 button handler, covering Ferox storage,
+both item-use directions, full bags, replaced items/bags and ownership removal.
+Source: [Looting bag](https://oldschool.runescape.wiki/w/Looting_bag).

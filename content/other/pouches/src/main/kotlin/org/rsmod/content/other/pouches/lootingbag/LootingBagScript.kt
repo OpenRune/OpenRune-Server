@@ -13,6 +13,7 @@ import org.rsmod.api.player.events.interact.HeldBanksideEvents
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.startInvTransmit
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stopInvTransmit
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.ui.ifSetHide
@@ -36,7 +37,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.obj.Obj
 import org.rsmod.game.type.getInvObj
 import org.rsmod.objtx.TransactionResult
-import org.rsmod.objtx.isOk
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -56,9 +56,9 @@ constructor(
     private val objRepo: ObjRepository,
     private val bankInv: BankInvScript,
     private val marketPrices: MarketPrices,
+    private val areas: LootingBagAreas,
 ) : PluginScript() {
     private var Player.depositAll by boolVarBit("varbit.lootingbag_useallitems")
-    private var Player.insideWilderness by boolVarBit("varbit.inside_wilderness")
 
     override fun ScriptContext.startup() {
         onPlayerLogin { player.restoreLootingBag() }
@@ -69,7 +69,7 @@ constructor(
             onOpHeld2(bag) { openCheck() }
             onOpHeld3(bag) { openDeposit() }
             onOpHeld4(bag) { settings() }
-            onOpHeldU(bag) { useOnBag(it.secondSlot) }
+            onOpHeldU(bag) { useOnBag(it.firstSlot, it.secondSlot) }
             onEvent<HeldBanksideEvents.Type>(bag.asRSCM(RSCMType.OBJ)) { showBankPanel(player) }
         }
 
@@ -105,7 +105,7 @@ constructor(
     }
 
     private fun ProtectedAccess.openDeposit() {
-        if (!player.insideWilderness) {
+        if (!areas.canDeposit(player)) {
             mes(MSG_WILDERNESS_ONLY)
             return
         }
@@ -160,9 +160,10 @@ constructor(
     }
 
     /** Using an item on the bag asks for a count unless the `Settings` op said to take them all. */
-    private suspend fun ProtectedAccess.useOnBag(itemSlot: Int) {
+    private suspend fun ProtectedAccess.useOnBag(bagSlot: Int, itemSlot: Int) {
+        val originalBag = inv[bagSlot] ?: return
         val obj = inv[itemSlot] ?: return
-        if (!player.insideWilderness) {
+        if (!areas.canDeposit(player)) {
             mes(MSG_WILDERNESS_ONLY)
             return
         }
@@ -183,7 +184,7 @@ constructor(
                 input
             }
         val current = inv[itemSlot]
-        if (current == null || current.id != obj.id) {
+        if (current !== obj || inv[bagSlot] !== originalBag) {
             return
         }
         deposit(itemSlot, amount)
@@ -215,8 +216,9 @@ constructor(
      * @return `true` if anything was moved.
      */
     private fun ProtectedAccess.deposit(slot: Int, amount: Int): Boolean {
+        if (!player.hasLootingBag() || player.hitpoints <= 0 || player.pendingLogout || player.loggingOut) return false
         val obj = inv[slot] ?: return false
-        if (!player.insideWilderness) {
+        if (!areas.canDeposit(player)) {
             mes(MSG_WILDERNESS_ONLY)
             return false
         }
@@ -240,17 +242,18 @@ constructor(
                 break
             }
             val stack = inv[source] ?: continue
-            val take = if (type.stackable) minOf(amount, stack.count) else 1
-            val result = invMoveFromSlot(from = inv, into = bag, fromSlot = source, count = take, strict = false)
-            val outcome = result[0]
-            if (outcome == TransactionResult.NotEnoughSpace) {
-                full = true
+            val take = if (type.stackable) minOf(amount - moved, stack.count) else 1
+            // This owned modal operation may write its protected bag; general pickup guards stay intact.
+            val result = player.invTransaction(inv) {
+                transfer(from = select(inv), fromSlot = source, count = take, into = select(bag), strict = false)
+            }
+            val completed = result.completed()
+            if (completed <= 0) {
+                full = result[0] == TransactionResult.NotEnoughSpace
                 break
             }
-            if (!outcome.isOk()) {
-                break
-            }
-            moved += take
+            moved += completed
+            if (completed < take) { full = true; break }
         }
         if (moved > 0) {
             player.saveLootingBag()
@@ -372,7 +375,7 @@ constructor(
         if (bag.isEmpty()) {
             return
         }
-        if (insideWilderness) {
+        if (areas.spillOnDestroy(this)) {
             for (obj in bag.objs) {
                 if (obj == null || SupplyItems.isFoodOrPotion(getInvObj(obj))) continue
                 objRepo.add(Obj.fromServer(org.rsmod.game.MapClock(currentMapClock), coords, obj), SPILL_DURATION, 0)
@@ -415,7 +418,7 @@ constructor(
         private const val TITLE = "Looting bag"
 
         private const val MSG_WILDERNESS_ONLY =
-            "You can only put items in the looting bag while you're in the Wilderness."
+            "You can only put items in the looting bag while you're in the Wilderness or Ferox Enclave."
 
         /** Ticks the spilled contents of a destroyed bag stay on the floor. */
         private const val SPILL_DURATION = 300

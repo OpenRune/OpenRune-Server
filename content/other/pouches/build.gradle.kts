@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.areaChecker)
     implementation(projects.api.attr)
     implementation(projects.api.invStorage)
     implementation(projects.api.death)

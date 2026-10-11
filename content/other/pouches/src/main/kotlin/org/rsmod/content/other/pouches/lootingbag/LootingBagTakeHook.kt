@@ -15,12 +15,12 @@ import org.rsmod.game.obj.Obj
  * Anything the bag refuses, or no longer fits, takes the normal inventory route.
  */
 @OptIn(UncheckedType::class)
-class LootingBagTakeHook @Inject constructor() : PlayerObjTakeStorageHook {
+class LootingBagTakeHook @Inject constructor(private val areas: LootingBagAreas) : PlayerObjTakeStorageHook {
     override fun inventory(player: Player, obj: Obj, objType: ItemServerType): Inventory? {
         if (!player.hasOpenLootingBag()) {
             return null
         }
-        if (player.vars["varbit.inside_wilderness"] != 1) {
+        if (!areas.canDeposit(player)) {
             return null
         }
         if (LootingBags.rejection(InvObj(obj.type, obj.count, obj.vars), objType) != null) {

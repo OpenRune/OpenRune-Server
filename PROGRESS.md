@@ -17,7 +17,7 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Spider Cave | Surface Enter/Exit, real routing and cancellation; 29 Araxxor tests | Client acceptance |
 | Fairy rings | 64 code rows, 54 fixed destinations, native dials/favourites/Last-destination, permission, ten quest gates and observed island first visits; 18 tests | Construction-owned DIQ house prerequisite and native visual acceptance |
 | Agility shortcuts | 525 links, actual option-producer traversal for every owned route, native landings, grapple loss/equipment, permanent Observatory setup, bridge/God Wars pieces and cancellation; 26 tests | Detailed animation/failure review and native route acceptance |
-| Rune/looting pouches | Native storage, pickup/altar producers, Divine crafting/revert, bank Configure and ten loadouts, death/Destroy with stale-item guards, legacy save migration and real pickups; 43 tests | Trouver/Ferox review, UI acceptance |
+| Rune/looting pouches | Native storage, pickup/altar producers, Divine crafting/revert, bank Configure and ten loadouts, death/Destroy with stale-item guards, legacy save migration, real Deposit/pickups and Ferox/ditch rules; 49 tests | Trouver compatibility and UI acceptance |
 | Generic containers | 56 forms in 17 families plus 57 fruit/vegetable item states; limits, pure previews, persistence, death and bank transfers | Family consumers and final UI/death acceptance |
 | Crafting | Gem, Hunter and silklined sack recipes, coffin locks, harness/clothes pouch, fish crates | Unstarted activity reward producers remain separate |
 | Forestry kit/basket | Native interfaces/equipment, Woodcutting storage, cape/clothes bonuses and rations | Remaining consumables and bird-nest effects |
@@ -30,6 +30,11 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Collection bags | All five native tiers; 2/4/6/7/8 eggs, shared temporary contents, Look-in/Empty/item-use and deferred death cleanup | Collector auto-pickup/calls/hopper require the unstarted Barbarian Assault activity; native visuals |
 | Coal bag / essence pouches | Native held operations, physical-first coal consumption, independent essence decay, capacity clamp, non-destructive repair, atomic colossal crafting and loss cleanup; 19 tests | Coal bank/reward producers, Cordelia dialogue acceptance, pouch acquisition review and native visuals |
 | Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Final consumer review |
+
+Latest focused pouch validation: **49 tests pass**, including native area-backed
+Ferox pickup, ditch/Enclave Destroy loss, real held/item-use/IF3 Deposit input and
+stale ownership/lifecycle guards. The real Deposit modal lock failure is fixed
+inside the owned transaction; general inventory guards are unchanged.
 
 Latest combined validation: **354 tests pass**: 205 Containers, 43 Pouches,
 12 Runecrafting, seven Smithing, 11 inventory transaction, three combat,
