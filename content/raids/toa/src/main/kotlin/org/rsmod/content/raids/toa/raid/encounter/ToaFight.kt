@@ -14,7 +14,7 @@ internal class ToaFight(
 
 internal class ToaDeath(
     val anim: String,
-    val dead: String,
+    val dead: String?,
     val modelDelay: Int,
     val shake: Shake? = null,
     val parts: List<Part> = emptyList(),
