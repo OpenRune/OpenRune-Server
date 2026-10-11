@@ -995,6 +995,7 @@ public class ProtectedAccess(
         uncert: Boolean = false,
         autoCommit: Boolean = true,
         ignoreVirtualStorage: Boolean = false,
+        incomingSource: org.rsmod.api.inv.storage.ItemStorageSource = org.rsmod.api.inv.storage.ItemStorageSource.Default,
     ): TransactionResultList<InvObj> {
         return player.invAdd(
             inv = inv,
@@ -1007,6 +1008,7 @@ public class ProtectedAccess(
             uncert = uncert,
             autoCommit = autoCommit,
             ignoreVirtualStorage = ignoreVirtualStorage,
+            incomingSource = incomingSource,
         )
     }
 

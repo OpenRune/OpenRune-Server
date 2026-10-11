@@ -8,6 +8,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(projects.api.invStorage)
     implementation(libs.kotlin.inline.logger)
     runtimeOnly(libs.logback.classic)
     implementation(libs.fastutil)

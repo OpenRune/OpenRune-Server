@@ -11,8 +11,8 @@ public class PlayerItemStorage
 @Inject
 constructor(private val hooks: Set<@JvmSuppressWildcards PlayerItemStorageHook>) : InvVirtualStorage {
 
-    public fun isManaged(player: Player, inventory: Inventory, itemInternal: String): Boolean {
-        val ctx = PlayerItemStorageContext(player, inventory, itemInternal)
+    public fun isManaged(player: Player, inventory: Inventory, itemInternal: String, source: ItemStorageSource = ItemStorageSource.Default, incomingCount: Int = 0): Boolean {
+        val ctx = PlayerItemStorageContext(player, inventory, itemInternal, source, incomingCount)
         return hooks.any { it.shouldProcess(ctx) }
     }
 
@@ -44,8 +44,8 @@ constructor(private val hooks: Set<@JvmSuppressWildcards PlayerItemStorageHook>)
     }
 
     /** Plans are immutable previews. Native vars/attributes change only at commit. */
-    public fun planTransfer(player: Player, inventory: Inventory, itemInternal: String, amount: Int, incoming: Boolean): StorageTransfer {
-        val ctx = PlayerItemStorageContext(player, inventory, itemInternal)
+    public fun planTransfer(player: Player, inventory: Inventory, itemInternal: String, amount: Int, incoming: Boolean, source: ItemStorageSource = ItemStorageSource.Default): StorageTransfer {
+        val ctx = PlayerItemStorageContext(player, inventory, itemInternal, source, if (incoming) amount else 0)
         var remaining = amount.coerceAtLeast(0)
         val steps = mutableListOf<StorageTransfer.Step>()
         for (hook in hooks) {

@@ -2,9 +2,11 @@ package org.rsmod.content.skills.runecrafting.action
 
 import dev.openrune.types.ItemServerType
 import kotlin.math.floor
+import org.rsmod.api.inv.storage.ItemStorageSource
 import org.rsmod.api.player.events.skilling.RunesCraftedEvent
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseRunecraftingLvl
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.ComboruneRecipeRow
 import org.rsmod.api.table.runecrafting.RunecraftingRunesRow
@@ -53,7 +55,11 @@ object RunecraftAction {
             return
         }
 
+        val origin = coords
         preCraft()
+        if (player.pendingLogout || player.loggingOut || player.hitpoints == 0 || coords != origin) {
+            resetAnim(); resetSpotanim(); return
+        }
 
         val validEssence = rune.input.map { it.internalName }.toSet()
         val acceptsDaeyalt = PURE_ESSENCE in validEssence
@@ -197,7 +203,7 @@ object RunecraftAction {
             }
         }
 
-        val output = invAdd(inv, rune.output.internalName, totalRunes)
+        val output = invAdd(inv, rune.output.internalName, totalRunes, incomingSource = ItemStorageSource.Runecrafting)
         advanceRunecraftingXp(xp, xpMods)
         if (output.success && essenceConsumed > 0) {
             publish(RunesCraftedEvent(player, rune.output.internalName, essenceConsumed, baseMultiplier, ouraniaAltar, altar))
@@ -286,7 +292,7 @@ object RunecraftAction {
             val multiplier = getBonusMultiplier(rune.output.internalName, level).toInt()
             val produced = applyBonus(multiplier)
             totalXp += rune.xp * xpMultiplier * multiplier
-            invAdd(inv, rune.output.internalName, produced)
+            invAdd(inv, rune.output.internalName, produced, incomingSource = ItemStorageSource.Runecrafting)
         }
 
         advanceRunecraftingXp(totalXp, xpMods)
@@ -317,7 +323,7 @@ object RunecraftAction {
 
         val multiplier = getBonusMultiplier(rune.output.internalName, level).toInt()
         val produced = applyBonus(CORE_RUNE_MULTIPLIER * multiplier)
-        invAdd(inv, rune.output.internalName, produced)
+        invAdd(inv, rune.output.internalName, produced, incomingSource = ItemStorageSource.Runecrafting)
         advanceRunecraftingXp(rune.xp * CORE_XP_MULTIPLIER.toDouble(), xpMods)
     }
 
@@ -363,7 +369,7 @@ object RunecraftAction {
             totalRunes += runecraftingExtract["obj.scar_extract_scarred"] ?: 0
         }
 
-        invAdd(inv, aetherRune.output.internalName, totalRunes)
+        invAdd(inv, aetherRune.output.internalName, totalRunes, incomingSource = ItemStorageSource.Runecrafting)
         advanceRunecraftingXp(craftCount * aetherRune.xp.toDouble(), xpMods)
     }
 
@@ -443,7 +449,7 @@ object RunecraftAction {
             finalCount += runecraftingExtract["obj.scar_extract_twisted"] ?: 0
         }
 
-        invAdd(inv, output.internalName, finalCount)
+        invAdd(inv, output.internalName, finalCount, incomingSource = ItemStorageSource.Runecrafting)
         advanceRunecraftingXp(finalCount * (xp.toDouble() / 10.0), xpMods)
 
         if (wearingBinding) {

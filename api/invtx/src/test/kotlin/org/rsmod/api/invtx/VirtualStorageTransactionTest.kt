@@ -56,17 +56,18 @@ internal class VirtualStorageTransactionTest {
         assertTrue(f.player.invAdd(f.player.inv, "obj.coal", 2, ignoreVirtualStorage = true).success)
         assertEquals(35, f.hook.stored); assertEquals(2, f.player.inv.physicalCount("obj.coal"))
     }
+
     @Test fun `noted products and invalid counts never enter virtual storage`() {
         val f = Fixture(0)
-        assertTrue(f.player.invAdd(f.player.inv,"obj.coal",2,cert=true).success)
-        assertEquals(0,f.hook.stored)
-        assertEquals(1,f.player.inv.occupiedSpace())
-        val snapshot=f.player.inv.objs.copyOf()
-        for(count in listOf(0,-1)) {
-            f.player.invAdd(f.player.inv,"obj.coal",count)
-            f.player.invDel(f.player.inv,"obj.coal",count)
-            assertEquals(0,f.hook.stored)
-            assertArrayEquals(snapshot,f.player.inv.objs)
+        assertTrue(f.player.invAdd(f.player.inv, "obj.coal", 2, cert = true).success)
+        assertEquals(0, f.hook.stored)
+        assertEquals(1, f.player.inv.occupiedSpace())
+        val snapshot = f.player.inv.objs.copyOf()
+        for (count in listOf(0, -1)) {
+            f.player.invAdd(f.player.inv, "obj.coal", count)
+            f.player.invDel(f.player.inv, "obj.coal", count)
+            assertEquals(0, f.hook.stored)
+            assertArrayEquals(snapshot, f.player.inv.objs)
         }
     }
     private class Fixture(count: Int) {

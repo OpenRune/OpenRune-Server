@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
+import org.rsmod.api.inv.storage.ItemStorageSource
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.hook.PlayerObjTakeStorageHook
 import org.rsmod.api.player.hook.PlayerObjTakeValidator
@@ -64,7 +65,7 @@ constructor(
         if (denial != null) { mes(denial); return }
         val hook = storageHooks.firstOrNull { it.inventory(this, obj, type) != null }
         val inventory = hook?.inventory(this, obj, type) ?: inv
-        val take = invAdd(inventory, RSCM.getReverseMapping(RSCMType.OBJ, obj.type), obj.count, autoCommit = false)
+        val take = invAdd(inventory, RSCM.getReverseMapping(RSCMType.OBJ, obj.type), obj.count, autoCommit = false, incomingSource = ItemStorageSource.GroundPickup)
         // Recheck after the pickup delay. Removing the ground item first loses it if space changed.
         if (take.failure) { mes(Constants.dm_take_invspace); return }
         val removed = repo.del(obj)
@@ -79,6 +80,6 @@ constructor(
     private fun Player.hasInvSpace(obj: Obj): Boolean {
         val type = ServerCacheManager.getItem(obj.type) ?: return false
         val inventory = storageHooks.firstNotNullOfOrNull { it.inventory(this, obj, type) } ?: inv
-        return invAdd(inventory, RSCM.getReverseMapping(RSCMType.OBJ, obj.type), obj.count, autoCommit = false).success
+        return invAdd(inventory, RSCM.getReverseMapping(RSCMType.OBJ, obj.type), obj.count, autoCommit = false, incomingSource = ItemStorageSource.GroundPickup).success
     }
 }

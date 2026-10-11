@@ -1,5 +1,6 @@
 package org.rsmod.api.invtx
 
+import org.rsmod.api.inv.storage.ItemStorageSource
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.inv.storage.VirtualItemConsumePolicy
 import org.rsmod.game.entity.Player
@@ -75,6 +76,7 @@ internal fun Player.invAddWithVirtualStorage(
     uncert: Boolean,
     autoCommit: Boolean,
     ignoreVirtualStorage: Boolean,
+    incomingSource: ItemStorageSource,
     raw: (
         inv: Inventory,
         type: String,
@@ -88,11 +90,11 @@ internal fun Player.invAddWithVirtualStorage(
     ) -> TransactionResultList<InvObj>,
 ): TransactionResultList<InvObj> {
     val storage = cachedPlayerItemStorage
-    if (count <= 0 || cert || vars != 0 || ignoreVirtualStorage || (inv.type.protect && isAccessProtected) || !storage.isManaged(this, inv, type)) {
+    if (count <= 0 || cert || vars != 0 || ignoreVirtualStorage || (inv.type.protect && isAccessProtected) || !storage.isManaged(this, inv, type, incomingSource, count)) {
         return raw(inv, type, count, vars, slot, strict, cert, uncert, autoCommit)
     }
 
-    val transfer = storage.planTransfer(this, inv, type, count, incoming = true)
+    val transfer = storage.planTransfer(this, inv, type, count, incoming = true, source = incomingSource)
     val toInv = count - transfer.amount
     val physicalResult = if (toInv > 0) raw(inv, type, toInv, vars, slot, strict, cert, uncert, false) else virtualOnlyTransactionResult(count, false)
     if (physicalResult.failure) return physicalResult

@@ -344,3 +344,18 @@ fairy-ring tests pass, including native loc/IF3 denial, selective virtual
 unlocks, first-visit and late permission loss. Great Conch/Grimstone first-visit
 producer integration is still open with Sailing. Source:
 [Fairy ring requirements and codes](https://oldschool.runescape.wiki/w/Fairy_ring).
+
+### Rune-pouch automatic pickup and Runecrafting
+
+Native Settings row 306 (`varbit.take_runes_toggle`, 5698) explicitly describes
+pickup and Runecrafting only. A source on incoming inventory transactions lets
+these actual producers offer complete matching stacks to the pouch; ordinary
+awards, withdrawals and bank deposits keep their existing rules. Missing stacks
+and insufficient pouch capacity take the ordinary inventory path. Storage
+previews are pure and stale toggle/capacity changes reject commits. No additional
+virtual rune counts are exposed to combat, avoiding duplicate accounting with
+the existing MagicRuneManager. Native altar actions also cancel on movement,
+death and logout before consuming essence or awarding XP. Six producer tests
+and all 21 pouch, 51 container and six atomic transaction tests pass. Rune
+loadouts and full death/UI acceptance remain open. Source:
+[Rune pouch interface](https://oldschool.runescape.wiki/w/Rune_pouch#Interface).
