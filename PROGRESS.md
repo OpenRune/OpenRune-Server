@@ -25,16 +25,17 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Chugging barrel | Five families, 100 doses each, native controls/animation, four bank loadouts, bank and potion storage transfers, ghost death storage | Seven missing potion effects, verified barrel sound and visuals |
 | Potion storage | All 112 native families, permanent counters, dose sizes/favourites/vials, real bank input, barrel transfers | Native visual acceptance; members-world policy when such a mode exists |
 | Mixology container rewards | Native Supervisor shop; exact Mox/Aga/Lye costs, reagent pouch/barrel purchases and potion-storage unlock | Natural supervisor placement and visuals; Mixology activity is not implemented |
-| Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Dizana’s quiver, bolt pouch, collection bag, coal/essence baseline audit and final consumer review |
+| Dizana’s quiver | Native ammo slot, compatible combat selection/bonuses, Sunfire charges/progress, native Fill/Swap/Remove, Ava and Ralos, exact item-vars account loading | Bank charge configuration, Minimus/max-cape conversion, quiver death/Trouver and native visuals |
+| Bolt pouch | Four native slots, caps/grapple, actual held/UI/drag/equipment transfers, Hirko purchase, PvM ghost storage/PvP spill | Final native visuals and actual Destroy input review |
+| Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Collection bag, coal/essence baseline audit and final consumer review |
 
-Latest validation: **142 Containers, 35 Pouches, six inventory-transaction and
-12 network tests pass** (195 total across module runs). Nineteen new potion
-storage/shop tests cover actual IF3/IFScriptTrigger/NPC inputs, bank source
-selection, caps, stale/lifecycle inputs, full inventories, UIM, permanent-field
-restore and death preservation. Bank/Omnishop compile; their test tasks have no
-sources. Scoped formatting and progress generator checks pass. The broader
-first run exposed one test-fixture toggle error; after correcting it, the full
-142-test Containers suite passed. Fourteen unrelated accepted files retain
+Latest validation: **161 Containers, 35 Pouches, two combat-commons, one combat
+formula and 12 network tests pass** (211 in the latest module run). Nineteen
+new ammo-container tests use actual held/NPC/object/IF3/drag/equipment producers,
+real combat consumption, unsigned item-vars account loading, capacity rollback,
+interruption and pure death previews followed by actual native drops. Early
+compile/fixture failures were corrected before the complete passing run.
+Bank/Omnishop and combat manager test tasks have no sources. Fourteen unrelated accepted files retain
 recorded SHA-256 values. Native visual tests and a new isolated runtime package
 remain pending; the feature branch is not merged or installed.
 

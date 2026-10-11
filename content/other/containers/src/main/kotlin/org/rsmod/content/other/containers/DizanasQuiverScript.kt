@@ -1,0 +1,131 @@
+package org.rsmod.content.other.containers
+
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.types.aconverted.interf.IfButtonOp
+import dev.openrune.util.Wearpos
+import jakarta.inject.Inject
+import org.rsmod.api.config.refs.params
+import org.rsmod.api.invtx.*
+import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.baseRangedLvl
+import org.rsmod.api.player.ui.ifSetEvents
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.player.worn.DizanasQuiver
+import org.rsmod.api.script.*
+import org.rsmod.api.script.advanced.onDestroyHeld
+import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.game.inv.Inventory
+import org.rsmod.plugin.scripts.PluginScript
+import org.rsmod.plugin.scripts.ScriptContext
+
+internal class DizanasQuiverScript @Inject constructor() : PluginScript() {
+    override fun ScriptContext.startup() {
+        for (symbol in DizanasQuiver.usable) {
+            onOpHeld2(symbol) { if (active()) open(inv, it.slot) }
+            onOpHeld3(symbol) { if (active()) { if (DizanasQuiver.pairs.any { pair -> pair.first == symbol }) uncharge(inv, it.slot) else AmmoContainers.emptyQuiver(player) } }
+            if (DizanasQuiver.pairs.any { it.first == symbol }) {
+                onOpHeld4(symbol) { if (active()) AmmoContainers.emptyQuiver(player) }
+                onOpWorn2(symbol) { if (active()) check(worn, it.slot) }
+            }
+            onOpHeldU(symbol) {
+                if (!active() || inv[it.firstSlot]?.id != symbol.asRSCM() || inv[it.secondSlot]?.id != it.second.id) return@onOpHeldU
+                if (it.second.id == SPLINTER.asRSCM()) charge(it.firstSlot, it.secondSlot) else {
+                    val moved = AmmoContainers.fillQuiver(player, inv, it.secondSlot)
+                    mes(if (moved > 0) "You add $moved ammunition to your quiver." else "You must empty your quiver before storing a different ammunition type.")
+                }
+            }
+            for (shrine in listOf("loc.ralos_shrine", "loc.ralos_shrine_taur01")) onOpLocU(shrine, symbol) { bless(it.invSlot) }
+        }
+        onIfModalButton(AMMO_COMPONENT) {
+            if (active() && player.ui.containsModal(MAIN) && it.op == IfButtonOp.Op1 && it.comsub in -1..0 && it.obj?.id?.let { id -> id == DizanasQuiver.stored(player)?.id } != false) AmmoContainers.emptyQuiver(player)
+        }
+        onIfOpen("interface.wornitems") {
+            player.ifSetEvents(EXTRA, -1..0, IfEvent.Op1, IfEvent.Op2, IfEvent.Op10)
+            player.ifSetEvents("component.wornitems:extra_ammo_slot", -1..1, IfEvent.Op1)
+        }
+        onIfOverlayButton(EXTRA) {
+            if (!active() || it.comsub !in -1..0 || it.obj?.id?.let { id -> id == DizanasQuiver.stored(player)?.id } == false) return@onIfOverlayButton
+            when (it.op) {
+                IfButtonOp.Op1 -> AmmoContainers.emptyQuiver(player)
+                IfButtonOp.Op2 -> {
+                    if (!DizanasQuiver.recognises(worn[Wearpos.Back.slot]) || player.baseRangedLvl < 75) { mes("You must wear Dizana's quiver to use its extra ammo slot."); return@onIfOverlayButton }
+                    if (DizanasQuiver.stored(player) == null) {
+                        if (AmmoContainers.fillQuiver(player, worn, Wearpos.Quiver.slot) == 0) mes("You have nothing in your worn quiver to fill your Dizana's quiver with.")
+                    } else AmmoContainers.swap(player, DizanasQuiver.stored(player)) { old -> DizanasQuiver.store(player, old) }
+                }
+                IfButtonOp.Op10 -> DizanasQuiver.stored(player)?.let { ammo -> mes(ServerCacheManager.getItem(ammo.id)!!.examine) }
+                else -> Unit
+            }
+        }
+        onDestroyHeld { if (DizanasQuiver.usable.any { it.asRSCM() == type.asRSCM() } && !DizanasQuiver.owns(player) && player.invMap["inv.bank"]?.any(DizanasQuiver::recognises) != true) DizanasQuiver.store(player, null) }
+        onOpNpc4("npc.anma_assistant") {
+            val origin = coords
+            if (menu("Ava's devices", "Upgrade my Dizana's quiver", "Cancel") == 0 && coords == origin) upgradeRecovery()
+        }
+        for (symbol in DizanasQuiver.usable) onOpNpcU(
+            ServerCacheManager.getNpc("npc.anma_assistant".asRSCM())!!,
+            ServerCacheManager.getItem(symbol.asRSCM())!!,
+        ) { upgradeRecovery() }
+    }
+    private fun ProtectedAccess.active() = AmmoContainers.active(player) && DizanasQuiver.owns(player)
+    private fun ProtectedAccess.open(inventory: Inventory, slot: Int) {
+        if (!DizanasQuiver.recognises(inventory[slot])) return
+        ifOpenMainModal(MAIN); ifSetEvents(AMMO_COMPONENT, -1..0, IfEvent.Op1)
+        val item = inventory[slot]; val charges = DizanasQuiver.charges(item)
+        ifSetText("component.dizanas_quiver:charges_text", if (DizanasQuiver.blessed(item)) "Blessed: unlimited charges" else "Charges: ${charges.count}<br>Blessing: ${charges.progress / 1500}%")
+    }
+    private fun ProtectedAccess.check(inventory: Inventory, slot: Int) {
+        val item = inventory[slot]; if (!DizanasQuiver.recognises(item)) return
+        val charges = DizanasQuiver.charges(item)
+        mes(if (DizanasQuiver.blessed(item)) "Your blessed quiver has unlimited charges." else "Your quiver has ${charges.count} charges and ${charges.progress / 1500}% progress towards blessing.")
+    }
+    private suspend fun ProtectedAccess.charge(quiverSlot: Int, sourceSlot: Int) {
+        val item = inv[quiverSlot] ?: return
+        if (DizanasQuiver.pairs.none { item.id == it.first.asRSCM() || item.id == it.second.asRSCM() }) return
+        val input = inv[sourceSlot]?.takeIf { it.id == SPLINTER.asRSCM() && it.vars == 0 } ?: return
+        val before = DizanasQuiver.charges(item)
+        val maximum = minOf(input.count, DizanasQuiver.MAX_CHARGES - before.count)
+        if (maximum <= 0) { mes("Dizana's quiver is already fully charged."); return }
+        val origin = coords; val requested = countDialog("How many charges do you wish to add? (0 - $maximum)")
+        if (!active() || coords != origin || inv[quiverSlot] !== item || inv[sourceSlot] !== input) return
+        val moved = minOf(requested, maximum)
+        if (moved <= 0 || player.invDel(inv, input.id, moved, slot = sourceSlot).failure) return
+        inv[quiverSlot] = DizanasQuiver.withCharges(item, before.copy(count = before.count + moved, progress = minOf(DizanasQuiver.BLESSING, before.progress + moved)))
+        check(inv, quiverSlot)
+    }
+    private fun ProtectedAccess.upgradeRecovery() {
+        if (!active()) return
+        if (!QuestRequirements.hasCompleted(player, "quest_animalmagnetism")) { mes("Complete Animal Magnetism before upgrading your quiver."); return }
+        val recovery = (inv.asSequence() + worn.asSequence()).filterNotNull().maxOfOrNull { ServerCacheManager.getItem(it.id)!!.paramOrNull(params.ammo_recovery_rate) ?: 0 } ?: 0
+        val level = if (recovery >= 80) 2 else if (recovery >= 72) 1 else 0
+        if (level == 0) { mes("Bring an Ava's accumulator, assembler or equivalent cape with your quiver."); return }
+        val before = player.vars["varbit.dizanas_quiver_ammo_save"]
+        if (level > before) { VarPlayerIntMapSetter.set(player, "varbit.dizanas_quiver_ammo_save", level); mes("Ava upgrades all your quivers without consuming your device.") } else mes("Your quivers already have this ammunition-saving effect.")
+    }
+    private suspend fun ProtectedAccess.uncharge(inventory: Inventory, slot: Int) {
+        val item = inventory[slot] ?: return; val origin = coords
+        if (!choice2("Yes", true, "No", false, title = "Uncharge? This resets progress towards blessing.")) return
+        if (!active() || inventory[slot] !== item || coords != origin) return
+        val count = DizanasQuiver.charges(item).count
+        if (count > 0 && player.invAdd(inv, SPLINTER.asRSCM(), count).failure) { mes("You need more inventory space."); return }
+        inventory[slot] = DizanasQuiver.withCharges(item, DizanasQuiver.Charges(0, 0))
+    }
+    private suspend fun ProtectedAccess.bless(slot: Int) {
+        val item = inv[slot]?.takeIf { q -> DizanasQuiver.pairs.any { q.id == it.first.asRSCM() || q.id == it.second.asRSCM() } } ?: return
+        val origin = coords; val fee = DizanasQuiver.BLESSING - DizanasQuiver.charges(item).progress
+        if (!choice2("Bless my quiver", true, "Cancel", false, title = "Bless for $fee sunfire splinters?")) return
+        if (!active() || inv[slot] !== item || coords != origin) return
+        val locked = item.id == DizanasQuiver.pairs[1].first.asRSCM() || item.id == DizanasQuiver.pairs[1].second.asRSCM()
+        val output = if (locked) "obj.dizanas_quiver_infinite_trouver" else "obj.dizanas_quiver_infinite"
+        val result = player.invTransaction(inv) { val i = select(inv); delete(i, item.id, 1, slot = slot); if (fee > 0) delete(i, SPLINTER.asRSCM(), fee); add(i, output.asRSCM(), 1, slot = slot) }
+        mes(if (result.success) "Ralos blesses your quiver with permanent Sunfire." else "You do not have enough sunfire splinters.")
+    }
+    companion object {
+        const val MAIN = "interface.dizanas_quiver"
+        const val AMMO_COMPONENT = "component.dizanas_quiver:ammo_obj"
+        const val EXTRA = "component.wornitems:extra_quiver_ammo"
+        const val SPLINTER = "obj.sunfiresplinter"
+    }
+}

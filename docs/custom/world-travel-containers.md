@@ -686,3 +686,56 @@ Containers tests after one fixture correction. The broader module run also
 passed 35 Pouches, six inventory-transaction and 12 network tests. Nineteen
 new tests cover the storage/shop integration; native death coverage confirms
 storage survives. Scoped formatter passes. Client acceptance is pending.
+
+## Native ammo containers and combat selection
+
+Dizana's shared extra ammo uses permanent native varps 4142/4141. Ordinary
+compatible worn ammo has priority; the extra slot becomes a combat source only
+while a usable quiver is worn with 75 base Ranged. Native required-ammo,
+bone-weapon and level rules also select the extra source. Arrows, bolts,
+antler bolts, bolt racks and a grapple are accepted; notes, darts and javelins
+are rejected. Real ammo depletion changes the selected counter, retaining an
+ordinary blessing. Worn bonuses use the actual extra ammo and retain blessing
+prayer. Sunfire adds +10 accuracy/+1 strength for suitable arrow/bolt combat and
+rolls charge consumption at 1/3 independently of Ava; Venator does not consume
+quiver charges.
+
+Individual quiver charges and blessing progress fit exactly in the existing
+unsigned 32-bit item vars: spent charges × 20001 + current charges, bounded
+below 2^32. The signed Int storage preserves the same bits through native
+inventory account loading. Natural depletion preserves progress; manual
+uncharge warns and resets it. Actual splinter item-use accepts a requested
+count with stale-reference/lifecycle checks. Ralos uses exact accumulated
+progress and atomically blesses normal/locked forms. Ava permanently upgrades
+all future quivers without consuming the accumulator/assembler or equivalent
+device. The accepted fork quest policy governs Animal Magnetism.
+
+The native quiver and worn widgets implement Open, Check, Empty, Fill, Swap,
+Remove and Examine with native clickmasks. A full inventory rolls back any
+swap that needs to return a blessing or unsupported ammo. The bolt pouch uses
+native enum 336 and four permanent type/count fields, up to 10000 bolts each
+or one grapple. Native drag, Remove and equipment extra-slot operations verify
+actual IDs and ownership; a carried Dizana quiver blocks worn swaps. Hirko's
+actual Talk-to menu purchases one pouch for 1500 coins with atomic output and
+duplicate-ownership checks.
+
+Bolt pouch is excluded before death protection slots are allocated. PvM/UIM
+retrieval or replacement preserves its ghost ammo; PvP destroys the carried
+pouch and spills all four counters once. Bank-only ownership is untouched.
+The death extension defaults to no exclusion for every other content module;
+previews remain pure and cleanup occurs after actual drop application.
+
+Sources: [Dizana's quiver](https://oldschool.runescape.wiki/w/Dizana%27s_quiver),
+[Bolt pouch](https://oldschool.runescape.wiki/w/Bolt_pouch), native revision-240
+item definitions, IF592/433/387 and CS2 5023/5025/5026/4045. Local/upstream
+searches at `bbc78dfc259c988a77d5c840196946c72de862e9` and all-state PR searches
+found no runtime ammo-container implementation to reuse. No revision upgrade
+or quiver cache patch is required. Bank quiver charge configuration,
+Minimus/max-cape conversion, quiver death/Trouver and final native visuals remain
+open. This chunk does not claim Fortis Colosseum or Barbarian Assault complete.
+
+Validation: `ammo-container-final-validation-1.log` passes 161 Containers,
+35 Pouches, two combat-commons, one combat-formula and 12 network tests (211).
+Nineteen new tests cover the described native producers/consumers and negative
+cases. Early binding/import/name failures were corrected before the complete
+passing run. Fourteen unrelated accepted-file SHA-256 checks pass.

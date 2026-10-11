@@ -50,7 +50,9 @@ public var Player.feet: InvObj? by WornDelegate(Wearpos.Feet)
 public var Player.ring: InvObj? by WornDelegate(Wearpos.Ring)
 
 /** When using as a setter, be sure to read warning in [WornDelegate]. */
-public var Player.quiver: InvObj? by WornDelegate(Wearpos.Quiver)
+public var Player.quiver: InvObj?
+    get() = org.rsmod.api.player.worn.DizanasQuiver.selected(this)
+    set(value) { worn[Wearpos.Quiver.slot] = value; rebuildAppearance() }
 
 /**
  * Delegate for managing worn equipment slots.

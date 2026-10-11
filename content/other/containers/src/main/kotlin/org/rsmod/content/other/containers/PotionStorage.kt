@@ -19,7 +19,7 @@ internal object PotionStorageCatalog {
         val id = doses.getValue(maximum)
         fun dose(id: Int) = doses.entries.firstOrNull { it.value == id && it.key > 0 }?.key ?: 0
     }
-    val all: List<Family> by lazy { javaClass.getResourceAsStream("/potion-storage.tsv")!!.bufferedReader().useLines { lines -> lines.drop(1).map { line -> val v = line.split('\t'); val enum = ServerCacheManager.getEnum(v[0].toInt())!!; Family(enum.id, v[1], v[2], v[3].takeIf { it.isNotBlank() }, enum.values.mapValues { (it.value as Number).toInt() }.filter { it.key > 0 && it.value >= 0 }) }.toList() } }
+    val all: List<Family> by lazy { javaClass.getResourceAsStream("/potion-storage.tsv")!!.bufferedReader().useLines { lines -> lines.drop(1).map { line -> val v = line.split('\t'); val enum = ServerCacheManager.getEnum(v[0].toInt())!!; Family(enum.id, v[1], v[2], v[3].takeIf { it != "-" && it.isNotBlank() }, enum.values.mapValues { (it.value as Number).toInt() }.filter { it.key > 0 && it.value >= 0 }) }.toList() } }
     fun byItem(id: Int) = all.firstOrNull { it.dose(id) > 0 }
 }
 

@@ -91,23 +91,23 @@ enum	group	counter	dose
 752	potion	varp.potionstore_antipoison_super_mix	varbit.potionstore_vile_size_antipoison_super_mix
 763	potion	varp.potionstore_zamorak_mix	varbit.potionstore_vile_size_zamorak_mix
 1020	potion	varp.potionstore_relicyms_mix	varbit.potionstore_vile_size_relicyms_mix
-5504	unfinished	varp.potionstore_avantoevial	
-5507	unfinished	varp.potionstore_cadantinevial	
-5511	unfinished	varp.potionstore_cadantine_bloodvial	
-5509	unfinished	varp.potionstore_dwarfweedvial	
-4837	unfinished	varp.potionstore_guamvial	
-4841	unfinished	varp.potionstore_harralandervial	
-5589	unfinished	varp.potionstore_huascavial	
-5503	unfinished	varp.potionstore_iritvial	
-5505	unfinished	varp.potionstore_kwuarmvial	
-5508	unfinished	varp.potionstore_lantadymevial	
-4838	unfinished	varp.potionstore_marrentillvial	
-5501	unfinished	varp.potionstore_ranarrvial	
-5506	unfinished	varp.potionstore_snapdragonvial	
-4840	unfinished	varp.potionstore_tarrominvial	
-5502	unfinished	varp.potionstore_toadflaxvial	
-5510	unfinished	varp.potionstore_torstolvial	
-5764	unfinished	varp.potionstore_elkhornvial	
-5765	unfinished	varp.potionstore_pillarvial	
-5766	unfinished	varp.potionstore_umbralvial	
-5767	unfinished	varp.potionstore_haemostatic_poultice	
+5504	unfinished	varp.potionstore_avantoevial	-
+5507	unfinished	varp.potionstore_cadantinevial	-
+5511	unfinished	varp.potionstore_cadantine_bloodvial	-
+5509	unfinished	varp.potionstore_dwarfweedvial	-
+4837	unfinished	varp.potionstore_guamvial	-
+4841	unfinished	varp.potionstore_harralandervial	-
+5589	unfinished	varp.potionstore_huascavial	-
+5503	unfinished	varp.potionstore_iritvial	-
+5505	unfinished	varp.potionstore_kwuarmvial	-
+5508	unfinished	varp.potionstore_lantadymevial	-
+4838	unfinished	varp.potionstore_marrentillvial	-
+5501	unfinished	varp.potionstore_ranarrvial	-
+5506	unfinished	varp.potionstore_snapdragonvial	-
+4840	unfinished	varp.potionstore_tarrominvial	-
+5502	unfinished	varp.potionstore_toadflaxvial	-
+5510	unfinished	varp.potionstore_torstolvial	-
+5764	unfinished	varp.potionstore_elkhornvial	-
+5765	unfinished	varp.potionstore_pillarvial	-
+5766	unfinished	varp.potionstore_umbralvial	-
+5767	unfinished	varp.potionstore_haemostatic_poultice	-

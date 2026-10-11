@@ -15,6 +15,8 @@ dependencies {
     implementation(projects.content.interfaces.bank)
     implementation(projects.content.interfaces.omnishop)
     implementation(projects.content.other.consumables)
+    implementation(projects.content.quest)
+    testImplementation(projects.api.combat.combatManager)
     testImplementation(projects.content.skills.woodcutting)
     testImplementation(projects.content.skills.thieving)
     testImplementation(projects.api.account)

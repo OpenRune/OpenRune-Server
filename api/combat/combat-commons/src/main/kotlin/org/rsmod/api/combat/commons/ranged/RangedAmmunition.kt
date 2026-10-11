@@ -9,6 +9,7 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.back
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.torso
+import org.rsmod.api.player.worn.DizanasQuiver
 import org.rsmod.api.player.worn.WornUnequipOp
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.obj.ObjRepository
@@ -117,6 +118,10 @@ public object RangedAmmunition {
     public fun conserveAmmo(player: Player, random: GameRandom): Boolean {
         val cape = getOrNull(player.back)
         if (cape != null) {
+            if (DizanasQuiver.recognises(player.back)) {
+                val recovery = when (player.vars["varbit.dizanas_quiver_ammo_save"]) { 1 -> 72; 2, 3 -> 80; else -> 0 }
+                return recovery > random.of(maxExclusive = 100)
+            }
             val recoveryRate = cape.paramOrNull(params.ammo_recovery_rate) ?: return false
 
             val body = getOrNull(player.torso)
@@ -136,6 +141,12 @@ public object RangedAmmunition {
         detract: Int,
         eventBus: EventBus,
     ) {
+        if (wearpos == Wearpos.Quiver && DizanasQuiver.usingExtra(player)) {
+            val item = requireNotNull(DizanasQuiver.stored(player))
+            check(item.id == wornType.id && item.count >= detract)
+            DizanasQuiver.store(player, if (item.count == detract) null else item.copy(count = item.count - detract))
+            return
+        }
         val startObj = player.worn[wearpos.slot]
         check(startObj.isType(wornType)) {
             "Expected worn obj to match `wornType`: wearpos=$wearpos, obj=$startObj, type=$wornType"

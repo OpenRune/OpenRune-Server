@@ -10,6 +10,7 @@ import org.rsmod.api.player.legs
 import org.rsmod.api.player.righthand
 import org.rsmod.api.player.torso
 import org.rsmod.api.player.worn.BlowpipeCharges
+import org.rsmod.api.player.worn.DizanasQuiver
 import org.rsmod.api.player.worn.DragonfireShields
 import org.rsmod.api.player.worn.EquipmentChecks
 import org.rsmod.game.entity.Player
@@ -138,7 +139,7 @@ public class WornBonuses {
             offSlash += type.param(params.attack_slash)
             offCrush += type.param(params.attack_crush)
             offMagic += type.param(params.attack_magic)
-            offRange += type.param(params.attack_ranged)
+            if (wearpos != Wearpos.Quiver || !DizanasQuiver.usingExtra(player)) offRange += type.param(params.attack_ranged)
             defStab += type.param(params.defence_stab)
             defSlash += type.param(params.defence_slash)
             defCrush += type.param(params.defence_crush)
@@ -150,8 +151,10 @@ public class WornBonuses {
             defCrush += shieldCharges
             defRange += shieldCharges
             meleeStr += type.param(params.melee_strength)
-            rangedStr += type.param(params.ranged_strength)
-            rangedStr += type.param(params.additive_ranged_strength)
+            if (wearpos != Wearpos.Quiver || !DizanasQuiver.usingExtra(player)) {
+                rangedStr += type.param(params.ranged_strength)
+                rangedStr += type.param(params.additive_ranged_strength)
+            }
             magicDmg += type.param(params.magic_damage)
             prayer += type.param(params.item_prayer_bonus)
             undead += type.param(params.bonus_undead_buff)
@@ -206,9 +209,12 @@ public class WornBonuses {
             magicDmg += 50
         }
 
-        // TODO: +10 off ranged and +1 ranged str with dizana's quiver.
-        //  Verify if this is visible in equipment bonus interface. If it's not then it can be
-        //  handled purely in combat formulae and not here.
+        if (!ignoreQuiverBonuses && DizanasQuiver.usingExtra(player)) {
+            val ammo = getOrNull(DizanasQuiver.stored(player))!!
+            offRange += ammo.param(params.attack_ranged)
+            rangedStr += ammo.param(params.ranged_strength) + ammo.param(params.additive_ranged_strength)
+        }
+        if (DizanasQuiver.sunfire(player)) { offRange += 10; rangedStr += 1 }
 
         return Bonuses(
             offStab = offStab,

@@ -4,10 +4,13 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.ranged.RangedAmmunition
+import org.rsmod.api.player.righthand
+import org.rsmod.api.player.worn.DizanasQuiver
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.isType
 import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.collision.CollisionFlagMap
@@ -131,6 +134,9 @@ constructor(
         dropChance: Int,
         dropDuration: Int,
     ) {
+        if (ammoWearpos == Wearpos.Quiver && !player.righthand.isType("obj.venator_bow")) {
+            repeat(ammoCount) { if (DizanasQuiver.sunfire(player) && random.randomBoolean(3)) DizanasQuiver.consumeCharge(player) }
+        }
         val conserve = RangedAmmunition.conserveAmmo(player, random)
         if (!conserve) {
             RangedAmmunition.detractAmmo(player, ammoWearpos, ammoType, ammoCount, eventBus)
