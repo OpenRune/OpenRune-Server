@@ -114,7 +114,7 @@ class AkkhaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             anim(if (magic) AkkhaSeqs.MAGIC else AkkhaSeqs.RANGED),
             projectile(
                 spotanim = if (magic) AkkhaSpots.MAGIC_TRAVEL else AkkhaSpots.RANGED_TRAVEL,
-                config = PROJECTILE,
+                config = if (magic) MAGIC_PROJECTILE else RANGED_PROJECTILE,
                 resolveOnImpact = true,
                 impactRounding = ImpactRounding.Up,
                 hit =
@@ -154,16 +154,25 @@ class AkkhaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         const val RANGED_MAGIC_PENETRATION = 15
         const val MAGIC_IMPACT_HEIGHT = 124
 
-        val PROJECTILE =
+        const val MIN_FLIGHT = 30
+        const val RANGED_FLIGHT_PER_TILE = 6
+        const val MAGIC_FLIGHT_PER_TILE = 10
+
+        private fun flightConfig(perTile: Int) =
             ProjectileConfig(
                 startHeight = 404,
                 endHeight = 138,
                 startDelay = 0,
-                travelTime = 30,
+                travelTime = 0,
                 angle = 12,
                 progress = 32,
-                stepMultiplier = 5,
+                stepMultiplier = perTile,
+                minFlight = MIN_FLIGHT,
+                originDistance = true,
             )
+
+        val RANGED_PROJECTILE = flightConfig(RANGED_FLIGHT_PER_TILE)
+        val MAGIC_PROJECTILE = flightConfig(MAGIC_FLIGHT_PER_TILE)
 
         val fighting = roomCondition<AkkhaEncounter> { room, npc -> room.fighting(npc) }
         val specialDue = roomCondition<AkkhaEncounter> { room, npc ->
