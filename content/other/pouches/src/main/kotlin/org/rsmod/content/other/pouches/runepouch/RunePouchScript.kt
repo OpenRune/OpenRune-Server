@@ -253,6 +253,7 @@ constructor(private val objRepo: ObjRepository, private val protectedAccess: Pro
     private suspend fun ProtectedAccess.upgrade(pouchSlot: Int, threadSlot: Int) {
         val pouch = inv[pouchSlot] ?: return
         val thread = inv[threadSlot] ?: return
+        if (pouch.id == RunePouches.REGULAR_LOCKED.asRSCM()) { mes("Ask Perdu to remove the lock before upgrading this pouch."); return }
         val result = when (pouch.id) { RunePouches.REGULAR.asRSCM() -> RunePouches.DIVINE; RunePouches.REGULAR_LOCKED.asRSCM() -> RunePouches.DIVINE_LOCKED; else -> return }
         if (thread.id != "obj.thread_of_elidinis".asRSCM())return
         fun ready() = player.craftingLvl >= 75 && ("obj.needle" in inv || "obj.costumeneedle" in inv)

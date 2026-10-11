@@ -156,6 +156,27 @@ internal class PouchDeathIntegrationTest {
             assertEquals(if (coords.z == 3525) 1 else 0, f.ground.size, "$coords")
         }
     }
+
+    @Test fun `all native rune pouch forms keep paid PvP protection but lose runes and never reward a pouch to the killer`() {
+        for (symbol in RunePouches.ALL) for (level in listOf(-1, 20, 21, 55)) {
+            val f = Fixture(); f.player.inv[0] = InvObj(symbol)
+            val c = RunePouchContents.empty(f.player.runePouchSlots()!!); c.add(RunePouchRunes.byObj("obj.airrune".asRSCM())!!.compactId, 50); f.player.writeRunePouch(c)
+            val ctx = f.context(true, level >= 0).copy(wildernessLevel = level); val result = f.preview(ctx)
+            val locked = f.player.inv[0]!!.id in RunePouches.lockedIds
+            repeat(2) { assertEquals(result, f.preview(ctx)); assertEquals(50, f.player.readRunePouch(4).counts[0]) }
+            assertEquals(locked, result.kept.any { it.id in RunePouches.ids }); assertTrue((result.lostTradeable + result.lostUntradeable + result.supplyPile).none { it.id in RunePouches.ids })
+            val complete = f.drops.prepareCompletion(ctx); f.drops.applyDrops(f.player, result, f.handling(ctx), ctx.coords); complete(); complete()
+            assertEquals(locked, f.player.runePouchSlots() != null); assertTrue(f.player.readRunePouch(4).isEmpty()); assertEquals(50, f.ground.single { it.type == "obj.airrune".asRSCM() }.count)
+        }
+    }
+
+    @Test fun `candidate PvM metadata keeps locked pouches slotlessly and sends unlocked pouches to the grave`() {
+        for (symbol in RunePouches.ALL) {
+            val f = Fixture(); f.player.inv[0] = InvObj(symbol); for ((i, weapon) in listOf("obj.abyssal_whip", "obj.dragon_warhammer", "obj.rune_longsword").withIndex()) f.player.inv[i + 1] = InvObj(weapon)
+            val ctx = f.context(false); val result = f.preview(ctx); val locked = f.player.inv[0]!!.id in RunePouches.lockedIds
+            assertEquals(if (locked) 4 else 3, result.kept.size); assertEquals(if (locked) 0 else 1, result.lostUntradeable.size); f.apply(ctx, result); assertEquals(locked, f.player.runePouchSlots() != null)
+        }
+    }
     private class Fixture {
         val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); observerUUID = 1001; coords = CoordGrid(3100, 3600); currentMapClock = 100; processedMapClock = 100; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
         val ground = mutableListOf<Obj>(); val bus = EventBus(); val hook = PouchDeathHook()
@@ -164,6 +185,7 @@ internal class PouchDeathIntegrationTest {
         val drops = PlayerDeathDrops(MapClock(100), repo, prices, GroundItemDropResolver(emptySet()), setOf(hook))
         val launcher: ProtectedAccessLauncher; val held: HeldInteractions
         init {
+            for (symbol in RunePouches.ALL) { val type = dev.openrune.ServerCacheManager.getItem(symbol.asRSCM())!!; type.tradeable = false; type.paramsRaw = (type.paramsRaw.orEmpty() + ("param.death_always_kept".asRSCM() to if (type.id in RunePouches.lockedIds) 1 else 0)).toMutableMap(); type.paramMap = dev.openrune.ParamMap(type.paramsRaw!!) }
             val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
             with(InvTransactionsScript(PlayerItemStorage(emptySet()))) { scripts.startup() }
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getAlignment = { TextAlignment() }, getCollision = { org.rsmod.routefinder.collision.CollisionFlagMap().apply { allocateIfAbsent(3222, 3218, 0) } }))

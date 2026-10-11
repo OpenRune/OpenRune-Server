@@ -17,7 +17,7 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Spider Cave | Surface Enter/Exit, real routing and cancellation; 29 Araxxor tests | Client acceptance |
 | Fairy rings | 64 code rows, 54 fixed destinations, native dials/favourites/Last-destination, permission, ten quest gates and observed island first visits; 18 tests | Construction-owned DIQ house prerequisite and native visual acceptance |
 | Agility shortcuts | 525 links, actual option-producer traversal for every owned route, native landings, grapple loss/equipment, permanent Observatory setup, bridge/God Wars pieces and cancellation; 26 tests | Detailed animation/failure review and native route acceptance |
-| Rune/looting pouches | Native storage, pickup/altar producers, Divine crafting/revert, bank Configure and ten loadouts, death/Destroy with stale-item guards, legacy save migration, real Deposit/pickups and Ferox/ditch rules; 53 tests | Trouver compatibility and UI acceptance |
+| Rune/looting pouches | Native storage, pickup/altar producers, Divine crafting/revert, bank Configure and ten loadouts, death/Destroy with stale-item guards, legacy save migration, real Deposit/pickups and Ferox/ditch rules, native Perdu lock/unlock, persistent paid locks and protected-pouch death; 60 tests | Native UI/death acceptance |
 | Generic containers | 56 forms in 17 families plus 57 fruit/vegetable item states; limits, pure previews, persistence, death and bank transfers | Family consumers and final UI/death acceptance |
 | Crafting | Gem, Hunter and silklined sack recipes, coffin locks, harness/clothes pouch, fish crates | Unstarted activity reward producers remain separate |
 | Forestry kit/basket | Native interfaces/equipment, Woodcutting storage, cape/clothes bonuses and rations | Remaining consumables and bird-nest effects |
@@ -28,10 +28,21 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Dizana’s quiver | Native ammo/combat, Sunfire charges, Ava/Ralos, max-cape conversion, bank Configure, Minimus, Perdu lock/unlock/repair, permanent paid locks and PvM/PvP death handling | Native visuals; knife separation and exact Mac returns now pass five input tests |
 | Bolt pouch | Four native slots, caps/grapple, actual held/UI/drag/equipment transfers, Hirko purchase, PvM ghost storage/PvP spill | Final native visuals; confirmed Destroy and stale-item input tests pass |
 | Collection bags | All five native tiers; 2/4/6/7/8 eggs, shared temporary contents, Look-in/Empty/item-use and deferred death cleanup | Collector auto-pickup/calls/hopper require the unstarted Barbarian Assault activity; native visuals |
-| Coal bag / essence pouches | Native held operations, physical-first coal consumption, independent essence decay, capacity clamp, non-destructive repair, atomic colossal crafting loss cleanup and native bank coal Fill/Empty | Native Percy acquisition review, Cordelia dialogue acceptance, pouch acquisition review and native visuals |
+| Coal bag / essence pouches | Native held operations, physical-first coal consumption, independent essence decay, capacity clamp, non-destructive repair, atomic colossal crafting loss cleanup and native bank coal Fill/Empty | Native Percy acquisition review, Cordelia dialogue acceptance, pouch-note redemption and native visuals |
 | Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Native bank/deposit-box extra options and collective Empty containers work; final consumer review |
 
-Latest combined validation: **397 tests pass**: 214 Containers, 53 Pouches,
+Latest affected-module validation: **288 tests pass** (217 Containers, 60 Pouches,
+11 InvTx). Native Perdu locks/unlocks both pouch types with atomic inventory/bank
+fees and unchanged runes; locked upgrades require removing the lock. Four native
+server-only pouch metadata records round-trip while 34,602 other item files and
+all original reference IDs remain unchanged. Unlocked PvP pouches are destroyed,
+locked bodies remain, and the contained runes still drop. Yanni sells replacement
+key rings for 500 coins after native quest completion (including both lamps) or
+the fork's accepted virtual quest policy. Purchases reject duplicates, capacity
+failure and stale dialog completion. Pouch-note redemption is the next acquisition
+interaction; native visual acceptance remains pending.
+
+Earlier combined validation: **397 tests pass**: 214 Containers, 53 Pouches,
 10 Fishing, 13 Runecrafting, eight Smithing, 11 inventory transaction,
 three combat, 26 shortcut, 18 fairy-ring, 29 Araxxor and 12 network tests.
 Both native Empty containers buttons dispatch to the existing bank storage API.

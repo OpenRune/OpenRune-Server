@@ -18,7 +18,7 @@ internal class QuiverPerduScript @Inject constructor() : PluginScript() {
         onIfClose("interface.bankside") { QuiverLocks.restore(player) }
         onDestroyHeld { if (QuiverForms.family(obj) != null) QuiverLocks.rememberRemoved(player, obj.copy(count = 1)) }
         for (npc in NPCS) {
-            onOpNpc1(npc) { mes("Use your quiver on me to lock, unlock or repair it.") }
+            onOpNpc1(npc) { mes("Use your quiver or rune pouch on me to manage its Trouver protection.") }
             for (symbol in QuiverForms.symbols) onOpNpcU(ServerCacheManager.getNpc(npc.asRSCM())!!, ServerCacheManager.getItem(symbol.asRSCM())!!) { manage(it.invSlot) }
         }
     }

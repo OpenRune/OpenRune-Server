@@ -11,5 +11,6 @@ class PouchesModule : PluginModule() {
         addSetBinding<org.rsmod.api.inv.storage.PlayerItemStorageHook>(org.rsmod.content.other.pouches.runepouch.RunePouchIncomingHook::class.java)
         addSetBinding<PlayerDeathDropHook>(PouchDeathHook::class.java)
         addSetBinding<PlayerObjTakeStorageHook>(LootingBagTakeHook::class.java)
+        addSetBinding<PlayerObjTakeStorageHook>(org.rsmod.content.other.pouches.runepouch.RunePouchPickupLocks::class.java)
     }
 }

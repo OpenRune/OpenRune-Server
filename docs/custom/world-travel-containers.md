@@ -1120,3 +1120,44 @@ failure was repaired before this complete passing run. Both native collective
 buttons and looting-bag bank-panel input are tested through If3ButtonHandler.
 Fourteen accepted file hashes and the accepted server JAR remain unchanged.
 Native visual acceptance and an isolated runtime package are still pending.
+
+### Native pouch Perdu and key-ring reacquisition
+
+The three existing Perdu variants accept regular/divine rune pouches: parchment
+plus 500,000 coins locks one copy, and unlocking refunds the parchment and
+475,000 coins. Inventory/bank payment and output are atomic, retain native rune
+vars and reject cancellation, movement, stale item references, death/logout or
+full refund inventory. Paid copies persist without giving duplicates a free lock;
+confirmed Destroy and actual ground pickup exercise restoration. Locked regular
+pouches must be unlocked before a native needle/thread Divine upgrade.
+
+Four source-pack server-only item records set native pouches untradeable and
+usable locked bodies always kept on PvM death. The isolated native codec patch
+verifies exactly those four records, 34,602 unchanged item records, identical
+native file roster and preserved config references. The preview hook removes
+unlocked PvP bodies, keeps locked bodies and still drops rune contents. Completion
+is idempotent. Revision 240 has only four usable pouch models; no unverified
+broken/mangled models or automatic repair-coin rewards are invented. Native
+client death acceptance remains open. Sources: [Rune pouch](https://oldschool.runescape.wiki/w/Rune_pouch),
+[Divine rune pouch](https://oldschool.runescape.wiki/w/Divine_rune_pouch),
+[Trouver parchment](https://oldschool.runescape.wiki/w/Trouver_parchment),
+[Perdu](https://oldschool.runescape.wiki/w/Perdu). Current raw source copies are
+retained; older search-cache death descriptions are not treated as current rules.
+
+Yanni `npc.shiloantiques` has native Talk-to. He sells a replacement key ring for
+500 coins only without a carried/banked ring. The quest row's actual completed
+state is 285; the primary walkthrough confirms that state follows both lamps.
+The fork's virtual quest policy is respected; no real quest/lamp progress is
+written. New rings cannot recover keys from orphaned storage. Native NPC input
+checks the completion policy, payment/capacity, cancel and late ownership/lifecycle.
+Sources: [Steel key ring](https://oldschool.runescape.wiki/w/Steel_key_ring),
+[Yanni Salika](https://oldschool.runescape.wiki/w/Yanni_Salika),
+[One Small Favour](https://oldschool.runescape.wiki/w/One_Small_Favour).
+
+`world-container-perdu-yanni-final-validation.log` passes **288 tests**: all 217
+Containers, 60 Pouches and 11 InvTx. Ten new tests cover actual Perdu item-use,
+Destroy/pickup, locked upgrade denial, native death selection/application and
+Yanni Talk-to. Scoped formatting passes. Early failures were an omitted test
+InternalApi opt-in and a test pickup attempted before closing its destroy chat;
+the input fixture now closes the modal and verifies that protected launch succeeds.
+Fourteen accepted file hashes and the accepted JAR remain unchanged.

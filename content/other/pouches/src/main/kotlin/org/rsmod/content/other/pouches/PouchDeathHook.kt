@@ -14,6 +14,7 @@ import org.rsmod.game.type.getInvObj
 /** Preview selection is pure; stored contents are cleared only after an actual death. */
 @OptIn(UncheckedType::class)
 class PouchDeathHook @Inject constructor() : PlayerDeathDropHook {
+    override fun neverProtected(item: InvObj): Boolean = item.id in RunePouches.ids && item.id !in RunePouches.lockedIds
     override fun resolve(context: PlayerDeathContext, result: DeathDropResult): DeathDropResult {
         val player = context.player
         val bag = if (player.hasLootingBag()) player.lootingBag.objs.filterNotNull() else emptyList()
@@ -26,9 +27,10 @@ class PouchDeathHook @Inject constructor() : PlayerDeathDropHook {
             }
         }.orEmpty() else emptyList()
         val destroyBag = context.isPvpDeath || context.inWilderness
-        fun List<InvObj>.retained() = if (destroyBag) filterNot { it.id in LootingBags.ids } else this
+        val returned = if (context.isPvpDeath) (result.supplyPile + result.lostTradeable + result.lostUntradeable).filter { it.id in RunePouches.lockedIds } else emptyList()
+        fun List<InvObj>.retained() = filterNot { destroyBag && it.id in LootingBags.ids || context.isPvpDeath && it.id in RunePouches.ids }
         return result.copy(
-            kept = result.kept.retained(),
+            kept = result.kept.filterNot { destroyBag && it.id in LootingBags.ids || context.isPvpDeath && it.id in RunePouches.ids && it.id !in RunePouches.lockedIds } + returned,
             supplyPile = result.supplyPile.retained(),
             lostTradeable = result.lostTradeable.retained() + bagDrops + runes,
             lostUntradeable = result.lostUntradeable.retained(),
@@ -41,8 +43,13 @@ class PouchDeathHook @Inject constructor() : PlayerDeathDropHook {
     override fun prepareCompletion(context: PlayerDeathContext): () -> Unit {
         val player = context.player
         val hadBag = player.hasLootingBag()
+        val locks = RunePouchLocks.remembered(player)
+        var completed = false
         val runeSlots = if (emptyRunes(context)) player.runePouchSlots() else null
-        return {
+        return completion@{
+            if (completed) return@completion
+            completed = true
+            if (locks.values.any { it > 0 }) player.attr[RunePouchLocks.KEY] = locks
             if (hadBag) { player.lootingBag.fillNulls(); player.saveLootingBag() }
             if (runeSlots != null) {
                 val contents = player.readRunePouch(RunePouches.DIVINE_SLOTS)

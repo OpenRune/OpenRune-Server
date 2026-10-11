@@ -1,0 +1,33 @@
+# Native pouches are untradeable; locked forms remain with the player on PvM death.
+
+[[item]]
+isServerOnly = true
+id = "obj.bh_rune_pouch"
+inherit = "obj.bh_rune_pouch"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.bh_rune_pouch_trouver"
+inherit = "obj.bh_rune_pouch_trouver"
+tradeable = false
+[item.params]
+"param.death_always_kept" = true
+
+[[item]]
+isServerOnly = true
+id = "obj.divine_rune_pouch"
+inherit = "obj.divine_rune_pouch"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.divine_rune_pouch_trouver"
+inherit = "obj.divine_rune_pouch_trouver"
+tradeable = false
+[item.params]
+"param.death_always_kept" = true

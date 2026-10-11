@@ -20,6 +20,9 @@ object RunePouches {
     const val DIVINE_SLOTS = 4
 
     val ids: Set<Int> by lazy { ALL.map { it.asRSCM(RSCMType.OBJ) }.toSet() }
+    val lockedIds: Set<Int> by lazy { setOf(REGULAR_LOCKED.asRSCM(), DIVINE_LOCKED.asRSCM()) }
+    fun unlocked(id: Int): String? = when (id) { REGULAR.asRSCM(), REGULAR_LOCKED.asRSCM() -> REGULAR; DIVINE.asRSCM(), DIVINE_LOCKED.asRSCM() -> DIVINE; else -> null }
+    fun locked(symbol: String): String? = when (symbol) { REGULAR -> REGULAR_LOCKED; DIVINE -> DIVINE_LOCKED; else -> null }
     val divineIds: Set<Int> by lazy {
         setOf(DIVINE.asRSCM(RSCMType.OBJ), DIVINE_LOCKED.asRSCM(RSCMType.OBJ))
     }
