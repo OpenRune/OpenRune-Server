@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ItemServerType
 import dev.openrune.types.StatType
 import jakarta.inject.Inject
 import org.rsmod.annotations.InternalApi
@@ -246,4 +247,20 @@ internal fun ProtectedAccessLauncher.teleNamed(cheat: Cheat): Boolean {
     }
     devTeleport(cheat.player, location.coords, "${location.name} (${location.coords})")
     return true
+}
+
+/**
+ * Finds an obj by display name for `::item` (e.g. `torva platelegs` -> `obj.torva_legs`),
+ * skipping noted and placeholder variants. Returns the lowest id when several share a name.
+ */
+internal fun findItemByName(input: String): ItemServerType? {
+    val name = input.replace('_', ' ')
+    return ServerCacheManager.getItems()
+        .values
+        .filter { it.name.equals(name, ignoreCase = true) }
+        .filterNot {
+            val symbol = RSCM.getReverseMapping(RSCMType.OBJ, it.id)
+            symbol.startsWith("obj.cert_") || symbol.startsWith("obj.placeholder_")
+        }
+        .minByOrNull { it.id }
 }

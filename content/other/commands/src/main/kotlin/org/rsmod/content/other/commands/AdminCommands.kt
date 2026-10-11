@@ -1071,7 +1071,11 @@ constructor(
         if (id != null) {
             return ServerCacheManager.getItem(id)
         }
-        return ServerCacheManager.getItem("obj.$input".asRSCM(RSCMType.OBJ))
+        val exact = runCatching { "obj.$input".asRSCM(RSCMType.OBJ) }.getOrNull()
+        if (exact != null) {
+            return ServerCacheManager.getItem(exact)
+        }
+        return findItemByName(input)
     }
 
     private fun List<String>.asTypeName(): String = joinToString("_")
