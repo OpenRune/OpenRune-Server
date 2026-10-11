@@ -378,6 +378,8 @@ Edit source/configuration, then run `node tools/progress/content-progress.mjs`.
 | [content/other/commands](content/other/commands) |
 | [content/other/commands/pack](content/other/commands/pack) |
 | [content/other/consumables](content/other/consumables) |
+| [content/other/containers](content/other/containers) |
+| [content/other/containers/pack](content/other/containers/pack) |
 | [content/other/dave/pack](content/other/dave/pack) |
 | [content/other/discord](content/other/discord) |
 | [content/other/home-teleporter](content/other/home-teleporter) |
@@ -391,6 +393,7 @@ Edit source/configuration, then run `node tools/progress/content-progress.mjs`.
 | [content/other/npc-animations/pack](content/other/npc-animations/pack) |
 | [content/other/pets](content/other/pets) |
 | [content/other/pets/pack](content/other/pets/pack) |
+| [content/other/pouches](content/other/pouches) |
 | [content/other/sandstorm](content/other/sandstorm) |
 | [content/other/spawn](content/other/spawn) |
 | [content/other/spawn/pack](content/other/spawn/pack) |
@@ -405,7 +408,10 @@ Edit source/configuration, then run `node tools/progress/content-progress.mjs`.
 | [content/quest](content/quest) |
 | [content/quest/pack](content/quest/pack) |
 | [content/skills/utils](content/skills/utils) |
+| [content/travel/agility-shortcuts](content/travel/agility-shortcuts) |
+| [content/travel/agility-shortcuts/pack](content/travel/agility-shortcuts/pack) |
 | [content/travel/canoe](content/travel/canoe) |
+| [content/travel/fairy-rings](content/travel/fairy-rings) |
 
 </details>
 

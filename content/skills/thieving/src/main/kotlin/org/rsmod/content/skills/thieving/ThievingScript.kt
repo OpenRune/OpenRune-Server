@@ -8,6 +8,7 @@ import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onOpHeld1
@@ -121,13 +122,14 @@ constructor(
             mes("You need to empty your coin pouches before you can continue pickpocketing.")
             return
         }
-        if (inv.isFull() && (pouch == null || inv.count(pouch.obj) == 0)) {
+        if (inv.isFull() && (pouch == null || inv.count(pouch.obj) == 0) && target.loot?.canReceive(player, inv) != true) {
             mes("You don't have enough inventory space.")
             return
         }
         faceEntitySquare(npc)
         mes("You attempt to pick $owner's pocket.", ChatType.Spam)
         delay(1)
+        if (player.hitpoints <= 0 || player.pendingLogout || player.loggingOut) return
         if (!statRandom(THIEVING, target.lowChance, target.highChance, invisibleBoost = 0)) {
             failPickpocket(npc, target, owner)
             return

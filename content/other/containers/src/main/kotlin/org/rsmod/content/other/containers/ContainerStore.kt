@@ -1,6 +1,7 @@
 package org.rsmod.content.other.containers
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.invtx.invAdd
@@ -12,7 +13,7 @@ import org.rsmod.game.inv.Inventory
 
 @Singleton
 internal class ContainerStore @Inject constructor() {
-    fun owns(player: Player, spec: ContainerSpec): Boolean = (player.inv.asSequence() + player.worn.asSequence()).any { item -> item?.id == spec.id || item != null && ForestryContainers.ownsFamily(item.id, spec) }
+    fun owns(player: Player, spec: ContainerSpec): Boolean = (player.inv.asSequence() + player.worn.asSequence()).any { item -> item?.id == spec.id || item != null && (ForestryContainers.ownsFamily(item.id, spec) || spec.family == "seed_box" && !spec.opened && item.id == "obj.seed_box_open".asRSCM()) }
     fun inventoryName(spec: ContainerSpec): String? = when (spec.family) { "tackle_box" -> "inv.tackle_box"; "huntsman_kit" -> "inv.huntsmans_kit"; else -> null }
     fun storedObjects(player: Player, spec: ContainerSpec): List<InvObj> = inventoryName(spec)?.let { player.invMap[it]?.filterNotNull()?.map { it.copy() } }.orEmpty()
     fun contents(player: Player, spec: ContainerSpec): Map<String, Int> {

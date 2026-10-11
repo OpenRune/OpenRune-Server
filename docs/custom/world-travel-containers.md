@@ -542,3 +542,56 @@ Sources: [Forestry kit](https://oldschool.runescape.wiki/w/Forestry_kit),
 The native UI/equipment visuals still need client acceptance. Bird-nest/cape and
 other consumable effects remain open; the base Woodcutting bird-nest producer is
 not present. This chunk does not implement the separate Forestry event activity.
+
+
+### Seed box, patch input and automatic pickup
+
+The two native forms share permanent contents for six types with a per-type
+maximum of 2,147,483,647. Native mushroom/seaweed spores and the three coral
+frags are included; unrelated bone fragments and seventh types are rejected.
+Check uses the existing interface 128 and temporary display inventory 573.
+The native seed layer is component 11 (component 12 is its tooltip). No native
+initializer exists in the 9,924 decoded revision-240 scripts, so the isolated
+CS2 initializer 45551 reuses that frame, title, Fill/Empty and close controls.
+It compiles to 1,263 bytes without importing or replacing native CS2 libraries.
+Fixed/resizable visuals still need client acceptance and the script has not
+been installed into the live cache.
+
+Native IF3 inputs provide 1/5/10/X/All, Examine and permanent Move-first ordering.
+Farming owns a small seed-container provider interface. Actual item-on-patch
+input chooses the first ordered seed suitable for the patch, retaining native
+tools, levels, patch state, three-tick animation, XP and completion events.
+It checks item reference and lifecycle again after the animation. Ordinary
+physical seed planting remains independent of box contents. Both closed and
+open forms can be planted from; automatic collection requires the open form.
+
+The actual ground-pickup producer commits storage only after successful removal
+of the ground stack. Native Master Farmer pickpocket previews check capacity
+without changing seeds or consuming random rolls; the successful single-loot
+transaction then uses the storage-aware insertion API. Full inventories and
+existing physical stacks remain usable. XP/completion follow committed loot.
+Citizen/elf multi-reward transactions and coin-pouch behavior are preserved.
+
+Death previews remain pure. The native empty-on-death setting 15314, PvP or a
+lost box can spill contents; captured completion clears storage after drops
+are applied. Above 20 Wilderness a lost box is destroyed: ordinary PvM ghost
+contents survive for a replacement, while UIM contents spill. The native
+current death setting explicitly empties in PvP, so the historical 2019
+bank-transfer rule is not substituted for it. Confirmed last-box Destroy
+clears contents and order; another carried, worn or banked form preserves them.
+
+Source: [Seed box](https://oldschool.runescape.wiki/w/Seed_box) (current Wiki API
+text includes the June 2026 box-on-patch/reordering update), and the accepted
+revision-240 settings description. Upstream name, `seed_box` and
+`hosidius_seedbox` searches returned no implementation hits at
+`bbc78dfc259c988a77d5c840196946c72de862e9`; the all-state PR search also returned
+no matching result. Existing Farming, Thieving, inventory and death producers
+are extended rather than duplicating their handlers.
+
+`seed-box-final-validation.log`: 102 Containers, 12 Farming, nine Thieving and
+16 affected clue tests pass. Seventeen added input tests include both forms,
+Move-first/save restore, full/partial stacks, seven-type rejection, ground
+pickup, NPC pickpocket, patch planting, delayed inputs, real death coroutine,
+previews, UIM/ghost recovery and actual Destroy confirmation. The native clue
+Thieving fixture now includes normal player Hitpoints for the new death guard.
+Tithe Farm and Sailing activity producers remain outside this container chunk.

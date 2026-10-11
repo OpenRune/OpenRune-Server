@@ -9,6 +9,7 @@ import org.rsmod.api.invtx.*
 import org.rsmod.api.player.events.skilling.FarmingSeedPlantedEvent
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.farmingLvl
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.script.onOpLoc1
@@ -18,13 +19,14 @@ import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.InvObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class FarmingScript
 @Inject
-constructor(private val xpMods: XpModifiers, private val random: GameRandom, private val clock: FarmingClock) : PluginScript() {
+constructor(private val xpMods: XpModifiers, private val random: GameRandom, private val clock: FarmingClock, private val seedContainers: Set<FarmingSeedContainer> = emptySet()) : PluginScript() {
     private val transmitVarbits = HashMap<String, String>()
 
     override fun ScriptContext.startup() {
@@ -34,7 +36,7 @@ constructor(private val xpMods: XpModifiers, private val random: GameRandom, pri
             onOpLoc2(patch.loc) { if (atPatch(patch, it.loc.coords)) inspect(patch) }
             onOpLocU(patch.loc) {
                 if (atPatch(patch, it.loc.coords) && inv[it.invSlot]?.id == it.objType.id) {
-                    useItem(patch, it.objType.id, it.loc.coords)
+                    useItem(patch, it.objType.id, it.loc.coords, it.invSlot)
                 }
             }
         }
@@ -108,7 +110,7 @@ constructor(private val xpMods: XpModifiers, private val random: GameRandom, pri
         val start = player.coords
         delay(ticks)
         player.growPatches()
-        if (player.coords != start || !atPatch(patch, start) || player.state(patch) != state) {
+        if (player.hitpoints <= 0 || player.pendingLogout || player.loggingOut || player.coords != start || !atPatch(patch, start) || player.state(patch) != state) {
             resetAnim()
             return false
         }
@@ -228,10 +230,17 @@ constructor(private val xpMods: XpModifiers, private val random: GameRandom, pri
         mes("You clear the patch.")
     }
 
-    private suspend fun ProtectedAccess.useItem(patch: PatchDef, obj: Int, coords: CoordGrid) {
+    private suspend fun ProtectedAccess.useItem(patch: PatchDef, obj: Int, coords: CoordGrid, slot: Int) {
+        if (player.hitpoints <= 0 || player.pendingLogout || player.loggingOut) return
         player.growPatches()
         val state = player.state(patch)
+        val container = seedContainers.firstOrNull { it.recognises(obj) }
         when {
+            container != null -> {
+                val crop = container.seeds(player).asSequence().mapNotNull { FarmingCrops.bySeed(it) }.firstOrNull { it.kind == patch.kind }
+                if (crop == null) mes("The seed box has no suitable seeds for this patch.")
+                else plant(patch, state, crop, coords, SeedBoxInput(container, slot, inv[slot]!!))
+            }
             obj == SPADE.asRSCM() -> clear(patch)
             obj == PLANT_CURE.asRSCM() -> {
                 val crop = state.crop
@@ -248,7 +257,7 @@ constructor(private val xpMods: XpModifiers, private val random: GameRandom, pri
         }
     }
 
-    private suspend fun ProtectedAccess.plant(patch: PatchDef, state: PatchState, crop: Crop, coords: CoordGrid) {
+    private suspend fun ProtectedAccess.plant(patch: PatchDef, state: PatchState, crop: Crop, coords: CoordGrid, box: SeedBoxInput? = null) {
         if (crop.kind != patch.kind) {
             mes("You can't plant ${crop.name} seeds in this patch.")
             return
@@ -269,17 +278,18 @@ constructor(private val xpMods: XpModifiers, private val random: GameRandom, pri
             mes("You need a seed dibber to plant seeds.")
             return
         }
-        if (inv.count(crop.seed) < crop.seedsPerPlant) {
+        if ((box?.container?.count(player, crop.seed.asRSCM()) ?: inv.physicalCount(crop.seed)) < crop.seedsPerPlant) {
             mes("You need ${crop.seedsPerPlant} ${crop.name} seeds to plant this patch.")
             return
         }
 
         anim(ANIM_PLANT)
         if (!waitUnchanged(patch, state, PLANT_TICKS)) return
-        if (!inv.contains(DIBBER) || player.farmingLvl < crop.level) { resetAnim(); return }
-        if (player.invTransaction(inv) {
-                delete(select(inv), crop.seed.asRSCM(), crop.seedsPerPlant)
-            }.failure) {
+        if (!inv.contains(DIBBER) || player.farmingLvl < crop.level || box != null && inv[box.slot] !== box.reference) { resetAnim(); return }
+        val consumed = if (box != null) box.container.consume(player, crop.seed.asRSCM(), crop.seedsPerPlant) else player.invTransaction(inv) {
+            delete(select(inv), crop.seed.asRSCM(), crop.seedsPerPlant)
+        }.success
+        if (!consumed) {
             resetAnim()
             return
         }
@@ -354,6 +364,8 @@ constructor(private val xpMods: XpModifiers, private val random: GameRandom, pri
             }
         }
     }
+
+    private data class SeedBoxInput(val container: FarmingSeedContainer, val slot: Int, val reference: InvObj)
 
     private companion object {
         const val VARP_CLOCK = "varp.farming_clock"

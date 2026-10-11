@@ -1,11 +1,18 @@
 package org.rsmod.content.skills.thieving
 
+import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.random.GameRandom
+import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.Inventory
 
 internal data class Loot(val obj: String, val min: Int = 1, val max: Int = min)
 
 internal class LootTable(private val entries: List<Pair<Int, Loot>>) {
     private val total = entries.sumOf { it.first }
+
+    fun canReceive(player: Player, inventory: Inventory): Boolean = entries.any { (_, loot) ->
+        player.invAdd(inventory, loot.obj, loot.min, autoCommit = false).success
+    }
 
     fun roll(random: GameRandom): Loot {
         var pick = random.of(0, total - 1)

@@ -24,7 +24,10 @@ internal fun ProtectedAccess.awardPickpocketLoot(target: Pickpocket, npcType: In
         loot to if (doubleLoot) count * 2 else count
     }
     if (rewards.isEmpty()) return null
-    val result = player.invTransaction(inv) {
+    val result = if (pouch == null && rewards.size == 1) {
+        val (loot, count) = rewards.single()
+        player.invAdd(inv, loot.obj, count)
+    } else player.invTransaction(inv) {
         val inventory = select(inv)
         for ((loot, count) in rewards) add(inventory, loot.obj.asRSCM(), count)
     }

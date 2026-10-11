@@ -1,0 +1,54 @@
+[clientscript,seed_box_draw]()
+if_setsize(400, 260, ^setsize_abs, ^setsize_abs, hosidius_seedbox:universe);
+~thinbox(hosidius_seedbox:universe, 0);
+if_setposition(8, 40, ^setpos_abs_left, ^setpos_abs_top, hosidius_seedbox:content_layer);
+if_setsize(384, 210, ^setsize_abs, ^setsize_abs, hosidius_seedbox:content_layer);
+if_setposition(0, 0, ^setpos_abs_left, ^setpos_abs_top, hosidius_seedbox:seed_layer);
+if_setsize(384, 136, ^setsize_abs, ^setsize_abs, hosidius_seedbox:seed_layer);
+cc_deleteall(hosidius_seedbox:seed_layer);
+def_int $slot = 0;
+def_int $id = 0;
+def_int $x = 0;
+def_int $y = 0;
+def_int $part = 0;
+def_obj $obj = null;
+while ($slot < 6) {
+    $id = calc($slot * 3);
+    $x = calc($slot % 3 * 128);
+    $y = calc($slot / 3 * 68);
+    $obj = inv_getobj(seed_box, $slot);
+    cc_create(hosidius_seedbox:seed_layer, ^iftype_rectangle, $id);
+    cc_setposition($x, $y, ^setpos_abs_left, ^setpos_abs_top);
+    cc_setsize(124, 64, ^setsize_abs, ^setsize_abs);
+    cc_setcolour(0x332b20);
+    cc_setfill(true);
+    cc_create(hosidius_seedbox:seed_layer, ^iftype_graphic, calc($id + 1));
+    cc_setposition(calc($x + 4), calc($y + 3), ^setpos_abs_left, ^setpos_abs_top);
+    cc_setsize(36, 36, ^setsize_abs, ^setsize_abs);
+    if ($obj ! null) {
+        cc_setobject($obj, inv_getnum(seed_box, $slot));
+        cc_setoutline(1);
+    }
+    cc_create(hosidius_seedbox:seed_layer, ^iftype_text, calc($id + 2));
+    cc_setposition(calc($x + 3), calc($y + 38), ^setpos_abs_left, ^setpos_abs_top);
+    cc_setsize(118, 24, ^setsize_abs, ^setsize_abs);
+    cc_settextfont(p11_full);
+    cc_setcolour(0xff981f);
+    cc_settextalign(^settextalign_centre, ^settextalign_centre, 0);
+    if ($obj ! null) { cc_settext(oc_name($obj)); } else { cc_settext("Empty"); }
+    $part = 1;
+    while ($part <= 2) {
+        if (cc_find(hosidius_seedbox:seed_layer, calc($id + $part)) = true & $obj ! null) {
+            cc_setop(1, "Withdraw-1");
+            cc_setop(2, "Withdraw-5");
+            cc_setop(3, "Withdraw-10");
+            cc_setop(4, "Withdraw-X");
+            cc_setop(5, "Withdraw-All");
+            cc_setop(6, "Move-first");
+            cc_setop(10, "Examine");
+            cc_setopbase(oc_name($obj));
+        }
+        $part = calc($part + 1);
+    }
+    $slot = calc($slot + 1);
+}

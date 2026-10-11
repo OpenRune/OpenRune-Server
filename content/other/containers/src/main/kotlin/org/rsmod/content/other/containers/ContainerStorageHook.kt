@@ -9,10 +9,12 @@ internal class ContainersModule : PluginModule() {
     override fun bind() {
         addSetBinding<org.rsmod.content.skills.crafting.CraftingRecipeProvider>(ContainerCraftingScript::class.java)
         addSetBinding<org.rsmod.content.skills.crafting.CraftingRecipeProvider>(ForestryCraftingProvider::class.java)
+        addSetBinding<org.rsmod.content.skills.farming.FarmingSeedContainer>(SeedBox::class.java)
         addSetBinding<org.rsmod.api.stats.xpmod.XpMod>(ForestryOutfitXpMod::class.java)
         addSetBinding<PlayerItemStorageHook>(ContainerStorageHook::class.java)
         addSetBinding<PlayerItemStorageHook>(BowStringSpoolStorageHook::class.java)
         addSetBinding<org.rsmod.api.death.PlayerDeathDropHook>(ContainerDeathHook::class.java)
+        addSetBinding<org.rsmod.api.death.PlayerDeathDropHook>(SeedBoxDeathHook::class.java)
     }
 }
 
@@ -39,5 +41,5 @@ internal class ContainerStorageHook @Inject constructor(private val store: Conta
         if (moved > 0) store.update(ctx.player, s, ctx.itemInternal.asRSCM(), moved)
         return moved
     }
-    private companion object { val CONSUMABLE = setOf("plank_sack", "seed_box", "reagent_pouch") }
+    private companion object { val CONSUMABLE = setOf("plank_sack", "reagent_pouch") }
 }

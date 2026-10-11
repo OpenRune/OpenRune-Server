@@ -112,6 +112,14 @@ persistence, rollback and native interaction validation is still in progress.
   supports alternate looting storage and cancels on death/logout. Atomic API
   tests pass; Smithing/Runecrafting compile (their test tasks have no sources).
 
+- Seed box: six ordered types, Fill/Empty, native Check with Withdraw-X and
+  Move-first, both item forms, direct patch planting, automatic ground pickup
+  and Master Farmer loot are implemented. Death settings, high-Wilderness ghost
+  storage/UIM, confirmed Destroy and banked duplicates are covered by native
+  inputs. All **102 Containers**, **12 Farming**, **nine Thieving** and **16
+  affected clue tests** pass. The accepted cache needs the isolated seed-window
+  initializer before client acceptance; remaining specialised containers are open.
+
 ## 🟢 Complete: Edgeville home teleporter and Emblem trader
 
 Owner-selected home: **Edgeville**. Public `::home` arrives near the bank;

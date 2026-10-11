@@ -166,6 +166,8 @@ class TrailElfPickpocketTest {
             worn = Inventory(ServerCacheManager.getInventory("inv.worn".asRSCM())!!, arrayOfNulls(14))
             statMap.setBaseLevel("stat.thieving", 99.toByte())
             statMap.setCurrentLevel("stat.thieving", 99)
+            statMap.setBaseLevel("stat.hitpoints", 99.toByte())
+            statMap.setCurrentLevel("stat.hitpoints", 99)
         }
         val random = object : GameRandom {
             override fun of(maxExclusive: Int) = if (maxExclusive in setOf(1024, 35)) 1 else 0
