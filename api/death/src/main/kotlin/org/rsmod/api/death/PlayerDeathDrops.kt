@@ -244,6 +244,7 @@ constructor(
     public fun isNeverKept(obj: InvObj, rules: DeathDropRules): Boolean = isNeverKeptInternal(obj, rules)
 
     private fun isNeverKeptInternal(obj: InvObj, rules: DeathDropRules): Boolean {
+        if (dropHooks.any { it.neverProtected(obj) }) return true
         val type = getInvObj(obj)
         if (type.param(params.death_never_kept)) return true
         if (rules.isPvpDeath && isRunePouch(type.internalName)) return true

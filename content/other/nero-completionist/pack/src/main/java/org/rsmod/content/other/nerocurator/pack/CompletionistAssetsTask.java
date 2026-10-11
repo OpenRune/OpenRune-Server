@@ -60,19 +60,36 @@ public final class CompletionistAssetsTask extends CacheTask {
             if (pass.equals("server")) {
                 var nativeItem = serverCodec.loadData(source,base);var original = serverCodec.loadData(target,bytes);
                 var item = original;
-                desired = boost(nativeItem.getParamsRaw(), additions);item.setParamsRaw(desired);
-                if (target == 63000 || target == 63001) item.setInterfaceOptions(nativeItem.getInterfaceOptions());
+                desired = boost((target == 63000 || target == 63001 ? serverCodec.loadData(13342,cache.data(2,59,13342,null)) : nativeItem).getParamsRaw(), additions);if (target >= 63100) desired.put(params.get("param.death_pvp_coin_value"),569250);if (target >= 63128) desired.put(params.get("param.death_always_kept"),1);if (target == 63000 || target == 63001) desired.put(params.get("param.ammo_recovery_rate"),72);item.setParamsRaw(desired);
+                item.setInterfaceOptions(nativeItem.getInterfaceOptions());
                 if (target == 63126 || target == 63142) item.setInterfaceOptions(Arrays.asList(null,"Wear","Check","Empty","Destroy"));
                 bytes = serverCodec.encodeToBuffer(item);
                 if (!desired.equals(serverCodec.loadData(target,bytes).getParamsRaw())) throw new IllegalStateException("Server stats roundtrip");
             } else {
-                desired = boost(clientCodec.loadData(source,base).getParams(), additions);
+                desired = boost(clientCodec.loadData(target == 63000 || target == 63001 ? 13342 : source,target == 63000 || target == 63001 ? cache.data(2,10,13342,null) : base).getParams(), additions);if (target >= 63100) desired.put(params.get("param.death_pvp_coin_value"),569250);if (target >= 63128) desired.put(params.get("param.death_always_kept"),1);if (target == 63000 || target == 63001) desired.put(params.get("param.ammo_recovery_rate"),72);
                 bytes = appendParams(bytes,desired);
-                if (target == 63000 || target == 63001) bytes = appendOps(bytes,clientCodec.loadData(source,base).getInterfaceOptions());
+                bytes = appendOps(bytes,clientCodec.loadData(source,base).getInterfaceOptions());
                 if (target == 63126 || target == 63142) bytes = appendOps(bytes,Arrays.asList(null,"Wear","Check","Empty","Destroy"));
                 if (!desired.equals(clientCodec.loadData(target,bytes).getParams())) throw new IllegalStateException("Client stats roundtrip");
             }
             writes.put(key,bytes);
+        }
+        // Non-wearable repair states keep the custom inventory model; bonuses and equip requirements are cleared.
+        int[] originals = {63112,63100,63120,63114,63116,63118,63124,63126};
+        for (int family=0;family<originals.length;family++) for (int state=0;state<3;state++) {
+            int target=63200+family*3+state, group=pass.equals("server")?59:10;
+            byte[] original=writes.get(pass+"/2/"+group+"/"+originals[family]);
+            Map<Integer,Object> brokenParams=new LinkedHashMap<>();brokenParams.put(params.get("param.death_pvp_coin_value"),569250);
+            String suffix=state==0?" (broken)":state==1?" (l) (broken)":" (l) (mangled)";
+            byte[] bytes;
+            if (pass.equals("server")) {
+                var item=serverCodec.loadData(target,original);item.setId(target);item.setName(item.getName()+suffix);item.setWearpos1(-1);item.setWearpos2(-1);item.setWearpos3(-1);item.setParamsRaw(brokenParams);item.setInterfaceOptions(Arrays.asList(null,null,null,null,"Drop"));item.setExamine("Use this damaged Completionist cape on Perdu to repair it.");bytes=serverCodec.encodeToBuffer(item);
+            } else {
+                String name=clientCodec.loadData(originals[family],original).getName()+suffix;
+                bytes=appendParams(original,brokenParams);bytes=appendOps(bytes,Arrays.asList(null,null,null,null,"Drop"));
+                var buffer=Unpooled.buffer().writeBytes(bytes,0,bytes.length-1).writeByte(2);buffer.writeBytes(name.getBytes(java.nio.charset.Charset.forName("windows-1252"))).writeByte(0).writeByte(0);bytes=new byte[buffer.readableBytes()];buffer.readBytes(bytes);buffer.release();
+            }
+            writes.put(pass+"/2/"+group+"/"+target,bytes);
         }
         Path marker = root.resolve(".data/nero-completionist-source-owned.json");var owned = new LinkedHashMap<String,String>();
         for (Path path : List.of(root.resolve(".data/nero-completionist-installed.json"),marker)) if (Files.isRegularFile(path)) {

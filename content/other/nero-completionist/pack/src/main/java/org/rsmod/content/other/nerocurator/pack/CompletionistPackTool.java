@@ -38,7 +38,7 @@ public final class CompletionistPackTool {
         var result = new LinkedHashMap<String,String>();
         for (int group : cache.archives(2)) {
             for (int id : cache.files(2,group)) {
-                if ((group==10||group==59) && (id>=63000&&id<=63003 || id>=63100&&id<=63143)) continue;
+                if ((group==10||group==59) && (id>=63000&&id<=63003 || id>=63100&&id<=63143 || id>=63200&&id<=63223)) continue;
                 if ((group==9||group==58) && id==63010) continue;
                 if (group==67 && id>=63300&&id<=63341) continue;
                 byte[] bytes=cache.data(2,group,id,null);

@@ -6,6 +6,7 @@ import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.cookingLvl
+import org.rsmod.api.player.worn.hasMaxCapePerks
 import org.rsmod.api.script.onOpContentLoc1
 import org.rsmod.api.script.onOpContentMixedLocU
 import org.rsmod.api.script.onOpLoc1
@@ -109,7 +110,7 @@ class CookingEvents @Inject constructor(
 
     private fun ProtectedAccess.hasCookingCape(): Boolean {
         return "obj.skillcape_cooking" in player.worn ||
-            "obj.skillcape_cooking_trimmed" in player.worn
+            "obj.skillcape_cooking_trimmed" in player.worn || player.hasMaxCapePerks()
     }
 
     private fun cookAnim(surface: CookingSurface) =

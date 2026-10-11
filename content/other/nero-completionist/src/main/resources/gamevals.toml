@@ -48,6 +48,31 @@ nero_completionist_hood_masori_assembler_locked = 63141
 nero_completionist_dizana_locked = 63142
 nero_completionist_hood_dizana_locked = 63143
 
+nero_completionist_infernal_broken = 63200
+nero_completionist_infernal_locked_broken = 63201
+nero_completionist_infernal_locked_mangled = 63202
+nero_completionist_fire_broken = 63203
+nero_completionist_fire_locked_broken = 63204
+nero_completionist_fire_locked_mangled = 63205
+nero_completionist_assembler_broken = 63206
+nero_completionist_assembler_locked_broken = 63207
+nero_completionist_assembler_locked_mangled = 63208
+nero_completionist_imbued_saradomin_broken = 63209
+nero_completionist_imbued_saradomin_locked_broken = 63210
+nero_completionist_imbued_saradomin_locked_mangled = 63211
+nero_completionist_imbued_zamorak_broken = 63212
+nero_completionist_imbued_zamorak_locked_broken = 63213
+nero_completionist_imbued_zamorak_locked_mangled = 63214
+nero_completionist_imbued_guthix_broken = 63215
+nero_completionist_imbued_guthix_locked_broken = 63216
+nero_completionist_imbued_guthix_locked_mangled = 63217
+nero_completionist_masori_assembler_broken = 63218
+nero_completionist_masori_assembler_locked_broken = 63219
+nero_completionist_masori_assembler_locked_mangled = 63220
+nero_completionist_dizana_broken = 63221
+nero_completionist_dizana_locked_broken = 63222
+nero_completionist_dizana_locked_mangled = 63223
+
 [gamevals.npc]
 nero_curator = 63010
 
