@@ -25,15 +25,21 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Chugging barrel | Five families, 100 doses each, native controls/animation, four bank loadouts, bank and potion storage transfers, ghost death storage | Seven missing potion effects, verified barrel sound and visuals |
 | Potion storage | All 112 native families, permanent counters, dose sizes/favourites/vials, real bank input, barrel transfers | Native visual acceptance; members-world policy when such a mode exists |
 | Mixology container rewards | Native Supervisor shop; exact Mox/Aga/Lye costs, reagent pouch/barrel purchases and potion-storage unlock | Natural supervisor placement and visuals; Mixology activity is not implemented |
-| Dizana’s quiver | Native ammo slot/combat, Sunfire charges, held/worn actions, Ava/Ralos, max-cape/hood conversion, native bank Configure-Charges and Minimus exchange | Quiver death/Trouver and native visuals |
+| Dizana’s quiver | Native ammo/combat, Sunfire charges, Ava/Ralos, max-cape conversion, bank Configure, Minimus, Perdu lock/unlock/repair, permanent paid locks and PvM/PvP death handling | Max-cape knife/Mac returns and native visuals |
 | Bolt pouch | Four native slots, caps/grapple, actual held/UI/drag/equipment transfers, Hirko purchase, PvM ghost storage/PvP spill | Final native visuals and actual Destroy input review |
 | Collection bags | All five native tiers; 2/4/6/7/8 eggs, shared temporary contents, Look-in/Empty/item-use and deferred death cleanup | Collector auto-pickup/calls/hopper require the unstarted Barbarian Assault activity; native visuals |
 | Coal bag / essence pouches | Native held operations, physical-first coal consumption, independent essence decay, capacity clamp, non-destructive repair, atomic colossal crafting and loss cleanup; 19 tests | Coal bank/reward producers, Cordelia dialogue acceptance, pouch acquisition review and native visuals |
 | Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Final consumer review |
 
-Latest combined validation: **252 tests pass**: 184 Containers, 35 Pouches,
+Latest combined validation: **267 tests pass**: 199 Containers, 35 Pouches,
 12 Runecrafting, seven Smithing, 11 inventory transaction and three combat tests.
-New tests include seven native bank configuration, six Minimus and five unsigned
+Latest fifteen tests cover native Perdu item-use, exact fees/refunds and rollback,
+pure death previews followed by real drop application, persistent paid locks,
+PvM equipped retention, all broken/mangled forms and charged ground pickups.
+The native five-argument ground constructor and normal coin stacking are preserved.
+Seventeen server-only quiver metadata candidates round-trip in the isolated cache;
+34,589 unrelated native item files and original reference IDs remain unchanged.
+Earlier tests include seven native bank configuration, six Minimus and five unsigned
 transaction regressions, preserving charge states during bank/equipment moves
 and preventing charged items merging with plain stacks. Earlier ammo-container
 tests use actual native equipment and item-use.

@@ -161,7 +161,8 @@ internal class AmmoContainerInteractionTest {
     @Test fun `native shrine item use blesses only after confirmation and credits exact spent charge progress`() {
         val f = Fixture(); f.player.inv[0] = DizanasQuiver.withCharges(InvObj(DizanasQuiver.pairs[0].second), DizanasQuiver.Charges(1, 100001)); f.put(1, DizanasQuiverScript.SPLINTER, 49999); f.useLoc("loc.ralos_shrine", 0); f.yes()
         assertEquals("obj.dizanas_quiver_infinite".asRSCM(), f.player.inv[0]!!.id); assertEquals(0, f.player.inv.count(DizanasQuiverScript.SPLINTER))
-        val g = Fixture(); g.put(0, DizanasQuiver.pairs[1].second); g.put(1, DizanasQuiverScript.SPLINTER, 150000); g.useLoc("loc.ralos_shrine_taur01", 0); g.player.pendingLogout = true; g.yes(); assertEquals(DizanasQuiver.pairs[1].second.asRSCM(), g.player.inv[0]!!.id); assertEquals(150000, g.player.inv[1]!!.count)
+        val g = Fixture(); g.put(0, DizanasQuiver.pairs[0].second); g.put(1, DizanasQuiverScript.SPLINTER, 150000); g.useLoc("loc.ralos_shrine_taur01", 0); g.player.pendingLogout = true; g.yes(); assertEquals(DizanasQuiver.pairs[0].second.asRSCM(), g.player.inv[0]!!.id); assertEquals(150000, g.player.inv[1]!!.count)
+        val h = Fixture(); h.put(0, DizanasQuiver.pairs[1].second); h.put(1, DizanasQuiverScript.SPLINTER, 150000); h.useLoc("loc.ralos_shrine", 0); assertEquals(DizanasQuiver.pairs[1].second.asRSCM(), h.player.inv[0]!!.id); assertEquals(150000, h.player.inv[1]!!.count)
     }
 
     @Test fun `all native quiver forms Wear with the actual equipment producer and clear charged flag on Remove`() {

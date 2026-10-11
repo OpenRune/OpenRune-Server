@@ -25,5 +25,6 @@ dependencies {
     testImplementation(libs.rsprot.api)
     testImplementation(libs.fastutil)
     testImplementation(projects.api.objPlugin)
+    testImplementation(projects.api.registry)
     testImplementation("org.mockito:mockito-core:5.14.2")
 }

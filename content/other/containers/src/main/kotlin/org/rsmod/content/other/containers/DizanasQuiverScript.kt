@@ -188,6 +188,7 @@ internal class DizanasQuiverScript @Inject constructor() : PluginScript() {
     }
     private suspend fun ProtectedAccess.bless(slot: Int) {
         val item = inv[slot]?.takeIf { q -> DizanasQuiver.pairs.any { q.id == it.first.asRSCM() || q.id == it.second.asRSCM() } } ?: return
+        if (QuiverForms.family(item)?.locked(item) == true) { mes("Ask Perdu to unlock this quiver before blessing it."); return }
         val origin = coords; val fee = DizanasQuiver.BLESSING - DizanasQuiver.charges(item).progress
         if (!choice2("Bless my quiver", true, "Cancel", false, title = "Bless for $fee sunfire splinters?")) return
         if (!active() || inv[slot] !== item || coords != origin) return

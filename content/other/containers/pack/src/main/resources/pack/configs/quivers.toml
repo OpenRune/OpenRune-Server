@@ -1,0 +1,137 @@
+# Native quiver forms are untradeable. Locked usable forms are kept on PvM death.
+
+[[item]]
+isServerOnly = true
+id = "obj.dizanas_quiver_uncharged"
+inherit = "obj.dizanas_quiver_uncharged"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.dizanas_quiver_uncharged_trouver"
+inherit = "obj.dizanas_quiver_uncharged_trouver"
+tradeable = false
+[item.params]
+"param.death_always_kept" = true
+
+[[item]]
+isServerOnly = true
+id = "obj.dizanas_quiver_charged"
+inherit = "obj.dizanas_quiver_charged"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.dizanas_quiver_charged_trouver"
+inherit = "obj.dizanas_quiver_charged_trouver"
+tradeable = false
+[item.params]
+"param.death_always_kept" = true
+
+[[item]]
+isServerOnly = true
+id = "obj.dizanas_quiver_broken"
+inherit = "obj.dizanas_quiver_broken"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.dizanas_quiver_trouver_broken"
+inherit = "obj.dizanas_quiver_trouver_broken"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.dizanas_quiver_trouver_mangled"
+inherit = "obj.dizanas_quiver_trouver_mangled"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.dizanas_quiver_infinite"
+inherit = "obj.dizanas_quiver_infinite"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.dizanas_quiver_infinite_trouver"
+inherit = "obj.dizanas_quiver_infinite_trouver"
+tradeable = false
+[item.params]
+"param.death_always_kept" = true
+
+[[item]]
+isServerOnly = true
+id = "obj.dizanas_quiver_infinite_broken"
+inherit = "obj.dizanas_quiver_infinite_broken"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.dizanas_quiver_infinite_trouver_broken"
+inherit = "obj.dizanas_quiver_infinite_trouver_broken"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.dizanas_quiver_infinite_trouver_mangled"
+inherit = "obj.dizanas_quiver_infinite_trouver_mangled"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.skillcape_max_dizanas"
+inherit = "obj.skillcape_max_dizanas"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.skillcape_max_dizanas_trouver"
+inherit = "obj.skillcape_max_dizanas_trouver"
+tradeable = false
+[item.params]
+"param.death_always_kept" = true
+
+[[item]]
+isServerOnly = true
+id = "obj.skillcape_max_dizanas_broken"
+inherit = "obj.skillcape_max_dizanas_broken"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.skillcape_max_dizanas_trouver_broken"
+inherit = "obj.skillcape_max_dizanas_trouver_broken"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false
+
+[[item]]
+isServerOnly = true
+id = "obj.skillcape_max_dizanas_trouver_mangled"
+inherit = "obj.skillcape_max_dizanas_trouver_mangled"
+tradeable = false
+[item.params]
+"param.death_always_kept" = false

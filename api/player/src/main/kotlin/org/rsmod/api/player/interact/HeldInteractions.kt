@@ -35,8 +35,6 @@ import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
 import org.rsmod.game.obj.Obj
-import org.rsmod.game.obj.ObjEntity
-import org.rsmod.game.obj.ObjScope
 import org.rsmod.game.type.getInvObj
 import org.rsmod.game.type.hasInvOp
 import org.rsmod.map.CoordGrid
@@ -382,7 +380,7 @@ constructor(
             val event = HeldDropEvents.Release(player, dropSlot, obj, internal)
             eventBus.publish(event)
 
-            val type = ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ))?: return
+            val type = ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ)) ?: return
 
             val message = type.paramOrNull(params.release_note_message)
             message?.let(player::mes)
@@ -506,10 +504,7 @@ constructor(
                 reveal = reveal,
             )
 
-        val observer = observerUUID ?: error("`observerUUID` not set for player: $this")
-        val entity =
-            ObjEntity(id = invObj.id, count = transaction.completed(), scope = ObjScope.Private.id)
-        val obj = Obj(coords, entity, currentMapClock, observer, ownerId = observer)
+        val obj = Obj.fromOwner(this, coords, invObj.copy(count = transaction.completed()))
         val dropped = repo.add(obj, dropParams.duration, dropParams.reveal)
         if (!dropped) {
             return false

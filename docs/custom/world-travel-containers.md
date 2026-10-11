@@ -893,3 +893,73 @@ The following complete regression run (`quiver-bank-exchange-full-validation-2.l
 passes **252 tests**: 184 Containers, 35 Pouches, 12 Runecrafting, seven Smithing,
 11 InvTx, two combat-commons and one combat-formula test. All 14 recorded
 accepted-file hashes and the accepted server JAR SHA-256 are unchanged.
+
+### Quiver Perdu, death and charged ground objects
+
+Native Perdu variants `lost_property_merchant_model`, `standard` and `combatty`
+already have world placements, including Edgeville. Item-use now reaches a
+confirmed transaction for all seventeen existing quiver forms. Locking consumes
+one Trouver parchment and 500,000 coins; unlocking refunds the parchment and
+475,000 coins. Broken basic quivers cost 270,000 to repair, blessed/max forms
+400,000 and mangled forms 500,000. Inventory and bank payment commit together;
+cancelled, stale, moved, dead/logout and insufficient-space inputs retain all
+ingredients, money and paid-lock state. Blessing requires unlocking first.
+
+Permanent locks are counted per quiver family in a serialized account attribute;
+the native cache exposes no permanent paid-lock field. Destroying/exchanging
+and reacquiring an item retains its paid lock without locking extra unpaid copies.
+Login, bank close, equipment changes and actual ground pickup reconcile these
+counts. Native worn and banked locked copies count towards existing locks.
+
+The pure death hook transforms lost quivers without mutating account storage.
+Actual completion clears spilled shared ammo exactly once. Unprotected usable
+quivers below/at level 20 become broken; locked copies above 20 become mangled.
+Unlocked deep-Wilderness copies are destroyed. Already broken locked copies
+cannot repeatedly create repair-fee coins; unlocked broken deep-Wilderness
+copies are consumed by their coin conversion. Current max-cape conversion uses
+569,250 coins, replacing the obsolete 11,880 value documented before June 2019.
+Basic conversion is 9,600; blessed conversion uses 12% of its native 100,000
+value (12,000), consistent with the basic conversion rule. The blessed page does
+not independently state that exact deep-Wilderness amount; this is an inference.
+PvM locked usable quivers remain equipped and retain their charges/extra ammo;
+ordinary broken forms still follow the native gravestone route. Charged display
+state follows the retained worn cape, with no mutation during a preview.
+
+Server ground objects now retain item vars through manual drop, PvM/PvP/NPC
+factories, registry splitting, snapshots and actual pickup. This fixes loss of
+unsigned 150,000 blessing-progress values during a death pile round trip.
+Stateful ground objects never merge; ordinary native coin stacks still merge.
+Wire `ObjEntity` packing and the original five-argument JVM constructor remain
+unchanged. Ownership survives split copies. This bounded core correction is
+necessary because content hooks cannot reconstruct erased item-specific vars.
+
+Source pack `quivers.toml` marks these existing native items untradeable and
+four usable locked forms always-kept in PvM. No new item IDs, client models or
+client-cache files are introduced. The reviewed TOML plan round-trips through
+the actual `ItemServerCodec` in isolated SERVER archive 2/59, preserving every
+other item file (34,589) and original config reference IDs. The first audit used
+the wrong archive and stopped before any write; the corrected audit passes.
+Full source-cache packaging and client acceptance remain separate.
+
+Sources: [(l)](https://oldschool.runescape.wiki/w/(l)),
+[Trouver parchment](https://oldschool.runescape.wiki/w/Trouver_parchment),
+[Perdu](https://oldschool.runescape.wiki/w/Perdu),
+[Dizana's quiver](https://oldschool.runescape.wiki/w/Dizana%27s_quiver),
+[Dizana's max cape](https://oldschool.runescape.wiki/w/Dizana%27s_max_cape)
+and [Max cape](https://oldschool.runescape.wiki/w/Max_cape).
+Official Wiki API copies/hashes are recorded in `quiver-death-sources.json`,
+`quiver-exchange-sources.json` and `world-edge-sources.json`. Existing/upstream
+searches retain the previously pinned commit; no matching upstream quiver handler
+was found. Native definitions and actual Perdu spawns were checked separately.
+
+Validation: `quiver-perdu-ground-validation-3.log` passes **49 focused tests**;
+`quiver-perdu-ground-full-validation.log` passes **267 combined tests**
+(199 Containers, 35 Pouches, 12 Runecrafting, seven Smithing, 11 InvTx and three
+combat tests). Fifteen new tests use native NPCU and ground interaction producers,
+real strict transactions, death selection/application and registry/repository
+pickups, including full inventory, repeated pickup/completion, all three Perdu
+variants, all native broken/mangled forms and account-lock persistence. Initial
+fixture opt-in/modal-close errors were corrected before the complete passing run.
+Scoped formatting of all fourteen changed Kotlin files passes. All fourteen
+accepted source-file hashes and the accepted runtime JAR SHA-256 remain unchanged.
+`quiver-ground-network-validation.log` also passes all **12 network tests**.

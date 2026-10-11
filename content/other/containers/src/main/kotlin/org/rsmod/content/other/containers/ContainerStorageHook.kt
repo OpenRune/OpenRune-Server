@@ -18,6 +18,8 @@ internal class ContainersModule : PluginModule() {
         addSetBinding<org.rsmod.api.death.PlayerDeathDropHook>(ContainerDeathHook::class.java)
         addSetBinding<org.rsmod.api.death.PlayerDeathDropHook>(SeedBoxDeathHook::class.java)
         addSetBinding<org.rsmod.api.death.PlayerDeathDropHook>(BoltPouchDeathHook::class.java)
+        addSetBinding<org.rsmod.api.death.PlayerDeathDropHook>(QuiverDeathHook::class.java)
+        addSetBinding<org.rsmod.api.player.hook.PlayerObjTakeStorageHook>(QuiverPickupLocks::class.java)
     }
 }
 

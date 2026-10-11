@@ -63,6 +63,7 @@ internal class QuiverExchangeScript @Inject constructor(
             if (!gamble) add(inventory, DizanasQuiverScript.SPLINTER.asRSCM(), 4000)
         }
         if (result.failure) { mes("You need more inventory space to exchange your quiver."); return }
+        QuiverLocks.rememberRemoved(player, original.copy(count = 1))
         if (!gamble) mes("You exchange your quiver for 4,000 sunfire splinters.")
         else if (this@QuiverExchangeScript.random.of(200) == 0) rewards.give(player, PET, source = "Fortis Colosseum")
         else mes("Smol Heredit doesn't want to follow you this time.")
