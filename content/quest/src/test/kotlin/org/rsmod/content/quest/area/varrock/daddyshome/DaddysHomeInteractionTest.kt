@@ -566,6 +566,11 @@ class DaddysHomeInteractionTest {
                             )
                         player.ui.containsModal("interface.objectbox") ->
                             ResumePauseButtonInput("component.objectbox:universe", -1)
+                        player.ui.containsModal(DaddysHomeFurniture.BUILD_MENU) ->
+                            ResumePauseButtonInput(
+                                DaddysHomeFurniture.BUILD_MENU_CONTENTS,
+                                DaddysHomeFurniture.BUILD_MENU_SLOT,
+                            )
                         else -> {
                             val parent =
                                 listOf("chat_left", "chat_right", "messagebox").firstOrNull {

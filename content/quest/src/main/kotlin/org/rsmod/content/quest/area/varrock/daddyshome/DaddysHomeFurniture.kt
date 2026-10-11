@@ -2,6 +2,7 @@ package org.rsmod.content.quest.area.varrock.daddyshome
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.VarBitType
+import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
@@ -73,14 +74,18 @@ internal val DaddysHomeFurnitureRow.varbitType: VarBitType
 internal fun DaddysHomeFurnitureRow.isSameFurniture(other: DaddysHomeFurnitureRow): Boolean =
     rowId == other.rowId
 
-private val DaddysHomeFurnitureRow.menuLabel: String
+private val clothType: ItemServerType
+    get() = checkNotNull(ServerCacheManager.getItem(DaddysHomeFurniture.CLOTH.asRSCM(RSCMType.OBJ)))
+
+private val DaddysHomeFurnitureRow.menuText: String
     get() {
         val materials = buildList {
-            if (planks > 0) add("$planks $plankName${if (planks == 1) "" else "s"}")
-            if (nails > 0) add("$nails nails")
-            if (cloth > 0) add("$cloth ${if (cloth == 1) "bolt" else "bolts"} of cloth")
+            if (planks > 0) add("${plank.name}: $planks")
+            if (nails > 0) add("${DaddysHomeFurniture.NAILS_LABEL}: $nails")
+            if (cloth > 0) add("${clothType.name}: $cloth")
         }
-        return "${label.replaceFirstChar { it.uppercase() }} (${materials.joinToString(", ")})"
+        val lines = materials + List(DaddysHomeFurniture.MENU_LINES - materials.size) { "" }
+        return "${menuObj.name}|${lines.joinToString("<br>")}"
     }
 
 class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHomeQuest) :
@@ -114,8 +119,8 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
 
     private suspend fun ProtectedAccess.demolish(furniture: DaddysHomeFurnitureRow) {
         if (daddysHome.stage(player) < DaddysHomeQuest.REMOVING) return
-        anim(BUILD_SEQ)
-        delay(BUILD_DELAY)
+        anim(DEMOLISH_SEQ)
+        delay(DEMOLISH_DELAY)
         if (daddysHome.furnitureState(player, furniture) != Furniture.BROKEN) return
         daddysHome.setFurnitureState(player, furniture, Furniture.CLEARED)
         if (
@@ -136,16 +141,11 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
             mes(missingToolsMessage())
             return
         }
+        if (!chooseFromBuildMenu(furniture)) return
         missingMaterials(furniture)?.let {
             mes(it)
             return
         }
-        var confirmed = false
-        startDialogue {
-            confirmed =
-                choice2(furniture.menuLabel, true, "Cancel.", false, title = BUILD_MENU_TITLE)
-        }
-        if (!confirmed) return
         anim(BUILD_SEQ)
         delay(BUILD_DELAY)
         if (daddysHome.furnitureState(player, furniture) != Furniture.CLEARED) return
@@ -156,6 +156,27 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         daddysHome.setFurnitureState(player, furniture, Furniture.BUILT)
         statAdvance("stat.construction", furniture.xp.toDouble())
         mes("You build the ${furniture.label}.")
+    }
+
+    private suspend fun ProtectedAccess.chooseFromBuildMenu(
+        furniture: DaddysHomeFurnitureRow
+    ): Boolean {
+        ifOpenMainModal(BUILD_MENU)
+        val canBuild = missingMaterials(furniture) == null
+        runClientScript(
+            BUILD_MENU_ENTRY_SCRIPT.asRSCM(RSCMType.CLIENTSCRIPT),
+            BUILD_MENU_SLOT,
+            furniture.menuObj.id,
+            furniture.level,
+            furniture.menuText,
+            if (canBuild) 1 else 0,
+        )
+        runClientScript(BUILD_MENU_LAYOUT_SCRIPT.asRSCM(RSCMType.CLIENTSCRIPT), BUILD_MENU_SLOT, 0)
+        ifSetEvents(BUILD_MENU_ENTRY, -1..-1, IfEvent.Op1, IfEvent.Op10)
+        ifSetEvents(BUILD_MENU_CONTENTS, BUILD_MENU_SLOT..BUILD_MENU_SLOT, IfEvent.PauseButton)
+        val input = pauseButton()
+        ifClose()
+        return input.isComponentType(BUILD_MENU_CONTENTS) && input.isSubcomponent(BUILD_MENU_SLOT)
     }
 
     private fun ProtectedAccess.hasHammer(): Boolean =
@@ -278,7 +299,16 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
     internal companion object {
         const val BUILD_SEQ = "seq.human_poh_build"
         const val BUILD_DELAY = 3
-        const val BUILD_MENU_TITLE = "Furniture Creation Menu"
+        const val DEMOLISH_SEQ = "seq.human_throw_away"
+        const val DEMOLISH_DELAY = 2
+        const val BUILD_MENU = "interface.poh_furniture_creation"
+        const val BUILD_MENU_CONTENTS = "component.poh_furniture_creation:contents"
+        const val BUILD_MENU_ENTRY = "component.poh_furniture_creation:01"
+        const val BUILD_MENU_ENTRY_SCRIPT = "clientscript.poh_furniture_creation_entry_old"
+        const val BUILD_MENU_LAYOUT_SCRIPT = "clientscript.[clientscript,script1406]"
+        const val BUILD_MENU_SLOT = 1
+        const val MENU_LINES = 4
+        const val NAILS_LABEL = "Nails"
         const val WAXWOOD_LOG_COUNT = 3
         const val CLOTH = "obj.cloth"
         const val FIFTH_OP = 5

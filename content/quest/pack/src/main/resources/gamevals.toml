@@ -123,3 +123,6 @@ daddys_home_hammers = 65460
 daddys_home_saws = 65461
 daddys_home_nails = 65462
 daddys_home_house_cities = 65463
+
+[gamevals.clientscript]
+poh_furniture_creation_entry_old = 7988

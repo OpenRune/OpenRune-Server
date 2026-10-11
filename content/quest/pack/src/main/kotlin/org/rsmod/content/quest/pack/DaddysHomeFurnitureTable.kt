@@ -16,9 +16,17 @@ object DaddysHomeFurnitureTable {
     const val CLOTH = 9
     const val XP = 10
     const val OP = 11
+    const val MENU_OBJ = 12
+    const val LEVEL = 13
 
     private const val PLAIN_PLANK = "obj.woodplank"
     private const val WAXWOOD_PLANK = "obj.daddyshome_waxwood_plank"
+    private const val MENU_LEVEL = 1
+    private const val MENU_STOOL = "obj.beta_elder_wand"
+    private const val MENU_CHAIR = "obj.cert_beta_elder_wand"
+    private const val MENU_TABLE = "obj.beta_elder_maul"
+    private const val MENU_BED = "obj.cert_beta_elder_maul"
+    private const val MENU_CARPET = "obj.placeholder_beta_elder_maul"
 
     fun daddysHomeFurniture() =
         dbTable("dbtable.daddys_home_furniture", serverOnly = true) {
@@ -34,6 +42,8 @@ object DaddysHomeFurnitureTable {
             column("cloth", CLOTH, VarType.INT)
             column("xp", XP, VarType.INT)
             column("op", OP, VarType.INT)
+            column("menu_obj", MENU_OBJ, VarType.OBJ)
+            column("level", LEVEL, VarType.INT)
 
             fun furniture(
                 name: String,
@@ -47,6 +57,7 @@ object DaddysHomeFurnitureTable {
                 nails: Int,
                 cloth: Int,
                 xp: Int,
+                menuObj: String,
                 op: Int = 1,
             ) {
                 row("dbrow.daddys_home_furniture_$name") {
@@ -62,6 +73,8 @@ object DaddysHomeFurnitureTable {
                     column(CLOTH, cloth)
                     column(XP, xp)
                     column(OP, op)
+                    columnRSCM(MENU_OBJ, menuObj)
+                    column(LEVEL, MENU_LEVEL)
                 }
             }
 
@@ -77,6 +90,7 @@ object DaddysHomeFurnitureTable {
                 nails = 2,
                 cloth = 0,
                 xp = 29,
+                menuObj = MENU_STOOL,
             )
             furniture(
                 "bedroom_stool",
@@ -90,6 +104,7 @@ object DaddysHomeFurnitureTable {
                 nails = 2,
                 cloth = 0,
                 xp = 29,
+                menuObj = MENU_STOOL,
             )
             furniture(
                 "chair",
@@ -103,6 +118,7 @@ object DaddysHomeFurnitureTable {
                 nails = 2,
                 cloth = 0,
                 xp = 58,
+                menuObj = MENU_CHAIR,
             )
             furniture(
                 "kitchen_table",
@@ -116,6 +132,7 @@ object DaddysHomeFurnitureTable {
                 nails = 4,
                 cloth = 0,
                 xp = 87,
+                menuObj = MENU_TABLE,
             )
             furniture(
                 "bedroom_table",
@@ -129,6 +146,7 @@ object DaddysHomeFurnitureTable {
                 nails = 4,
                 cloth = 0,
                 xp = 87,
+                menuObj = MENU_TABLE,
             )
             furniture(
                 "bed",
@@ -142,6 +160,7 @@ object DaddysHomeFurnitureTable {
                 nails = 0,
                 cloth = 2,
                 xp = 207,
+                menuObj = MENU_BED,
             )
             furniture(
                 "carpet",
@@ -155,6 +174,7 @@ object DaddysHomeFurnitureTable {
                 nails = 0,
                 cloth = 3,
                 xp = 45,
+                menuObj = MENU_CARPET,
                 op = 5,
             )
         }
