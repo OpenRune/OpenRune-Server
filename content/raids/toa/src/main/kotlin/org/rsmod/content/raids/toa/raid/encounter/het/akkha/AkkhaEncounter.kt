@@ -83,7 +83,7 @@ class AkkhaEncounter(
             death =
                 ToaDeath(
                     anim = AkkhaSeqs.DEATH,
-                    dead = AkkhaNpcs.ENRAGE_DUMMY,
+                    dead = null,
                     modelDelay = DEATH_MODEL_DELAY,
                 ),
         )
@@ -129,6 +129,7 @@ class AkkhaEncounter(
 
     internal fun akkhaHit(boss: Npc, hit: Hit) {
         if (stage != ToaStage.STARTED || boss !== akkha) return
+        if (hit.isFromPlayer) shadows.disrupt()
         combatantOf(boss)?.holdDefenceFloor()
         hpBar?.update()
         if (capped) {
@@ -147,10 +148,7 @@ class AkkhaEncounter(
     }
 
     override fun validateAttack(player: Player, npc: Npc): NpcAttackValidateResult {
-        if (npc === akkha) {
-            shadows.disrupt()
-            lastAttacked = deps.mapClock.cycle
-        }
+        if (npc === akkha) lastAttacked = deps.mapClock.cycle
         return NpcAttackValidateResult.Pass
     }
 
