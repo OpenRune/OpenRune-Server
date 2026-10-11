@@ -7,7 +7,7 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.api.invStorage)
     implementation(projects.api.death)
-    testImplementation(projects.content.interfaces.bank)
+    implementation(projects.content.interfaces.bank)
     testImplementation(projects.api.net)
     testImplementation(libs.rsprot.api)
     testImplementation(libs.fastutil)

@@ -14,8 +14,6 @@ import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.script.*
 import org.rsmod.api.script.advanced.onDestroyHeld
 import org.rsmod.content.interfaces.bank.scripts.BankInvScript
-import org.rsmod.game.inv.InvObj
-import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -73,11 +71,7 @@ internal class ContainerScript @Inject constructor(private val store: ContainerS
             }
             return moved
         }
-        // A temporary stack retains native bank capacity, tabs and placeholder handling.
-        val source = Inventory.create("inv.bank")
-        source[0] = InvObj(ServerCacheManager.getItem(id)!!, count)
-        with(bankScript) { invDeposit(0, count, source) }
-        val moved = count - (source[0]?.count ?: 0)
+        val moved = with(bankScript) { depositStoredStack(id, count) }
         if (moved > 0) store.update(player, spec, id, -moved)
         return moved
     }

@@ -221,6 +221,15 @@ constructor(
         invDeposit(slot, count, inv)
     }
 
+    /** Deposits virtual-container contents through the same rules as a physical bank deposit. */
+    public fun ProtectedAccess.depositStoredStack(item: Int, count: Int): Int {
+        if (count <= 0) return 0
+        val source = Inventory.create("inv.bank")
+        source[0] = InvObj(ServerCacheManager.getItem(item) ?: return 0, count)
+        invDeposit(0, count, source)
+        return count - (source[0]?.count ?: 0)
+    }
+
     public fun ProtectedAccess.invDeposit(slot: Int, count: Int, inventory: Inventory): Boolean {
         val obj = inventory[slot]
         if (obj == null) {

@@ -93,7 +93,7 @@ persistence, rollback and native interaction validation is still in progress.
   available in this fork; visual acceptance remains open.
 - Fish barrels: native Fill/Open/Close, worn sack controls, combination/dismantling,
   direct fishing storage and bank-side Empty pass **seven native input tests**.
-  Full-bank failures retain contents; PvP previews protect the barrel without
+  Configured bank capacity is enforced through the native deposit service; the seven Fishing tests and four container-bank regressions pass. Full-bank failures retain contents; PvP previews protect the barrel without
   changing storage. Deposit-box/UIM handling and final client checks remain open.
 - Shared storage safety: dry runs no longer mutate virtual contents; physical
   inventory and storage commit together. Bank inventories cannot consume held

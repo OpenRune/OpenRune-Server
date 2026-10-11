@@ -447,5 +447,7 @@ amount. Native equipment-kit inventories retain their object vars. Stale IF3
 item data and pending logout/death are rejected. Four actual IF3 input tests
 cover filling, banking, configured capacity despite free backing slots, partial
 maximum stacks, placeholders, selected tab sizes and stale/lifecycle inputs.
-All 65 Containers and 28 Pouches tests pass. Fish barrel has a separate consumer
-and requires the same native-bank review.
+All 65 Containers and 28 Pouches tests pass. Fish barrel now uses the same native deposit helper through a protected
+bank-side consumer. Its seven real-input Fishing tests and the four generic
+container-bank regressions pass. The full-bank fixture now tests configured
+capacity rather than filling the entire oversized native backing inventory.

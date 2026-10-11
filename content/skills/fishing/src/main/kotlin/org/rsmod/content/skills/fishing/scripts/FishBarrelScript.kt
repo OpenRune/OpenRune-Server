@@ -7,14 +7,15 @@ import org.rsmod.api.invtx.*
 import org.rsmod.api.player.events.interact.*
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.script.*
+import org.rsmod.content.interfaces.bank.scripts.BankInvScript
 import org.rsmod.content.skills.fishing.FishBarrelContents
-import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class FishBarrelScript @Inject constructor() : PluginScript() {
+class FishBarrelScript @Inject constructor(private val bankScript: BankInvScript) : PluginScript() {
     override fun ScriptContext.startup() {
         for (symbol in FishBarrelContents.forms) {
             val type = ServerCacheManager.getItem(symbol.asRSCM())!!
@@ -28,7 +29,7 @@ class FishBarrelScript @Inject constructor() : PluginScript() {
                     4 -> onOpHeld4(symbol) { dispatch(symbol, it.slot, action!!) }
                 }
             }
-            onEvent<HeldBanksideEvents.Type>(type.id) { if (player.inv[slot]?.id == type.id) emptyIntoBank(player) }
+            onProtectedEvent<HeldBanksideEvents.Operate>(type.id) { if (player.hitpoints > 0 && !player.pendingLogout && !player.loggingOut && inv[it.slot]?.id == type.id) emptyIntoBank() }
         }
         for (symbol in listOf(SACK_CLOSED, SACK_OPEN)) {
             onOpWorn2(symbol) { checkContents() }
@@ -81,15 +82,13 @@ class FishBarrelScript @Inject constructor() : PluginScript() {
         val tx = player.invTransaction(inv, autoCommit = false) { val i = select(inv); delete(i, symbol.asRSCM(), 1, slot = slot); add(i, barrel.asRSCM(), 1, slot = slot); add(i, FISH_SACK.asRSCM(), 1) }
         if (tx.failure) { mes("You need one free inventory slot."); return }; tx.commitAll()
     }
-    private fun emptyIntoBank(player: Player) {
-        val bank = player.invMap.getOrPut("inv.bank")
+    private fun ProtectedAccess.emptyIntoBank() {
         var moved = 0
-        for ((item, n)in FishBarrelContents.contents(player).toMap()) {
-            val tx = player.invAdd(bank, item.asRSCM(), n, strict = false, autoCommit = false)
-            if (tx.failure)continue
-            val actual = tx.completed(); tx.commitAll(); FishBarrelContents.update(player, item, -actual); moved += actual
+        for ((item, n) in FishBarrelContents.contents(player).toMap()) {
+            val actual = with(bankScript) { depositStoredStack(item.asRSCM(), n) }
+            if (actual > 0) { FishBarrelContents.update(player, item, -actual); moved += actual }
         }
-        player.mes(if (moved > 0)"You empty fish from the barrel into your bank."else "Your bank has no room, or the barrel is empty.")
+        mes(if (moved > 0) "You empty fish from the barrel into your bank." else "Your bank has no room, or the barrel is empty.")
     }
     private companion object {
         const val BARREL_CLOSED = "obj.fish_barrel_closed"; const val BARREL_OPEN = "obj.fish_barrel_open"

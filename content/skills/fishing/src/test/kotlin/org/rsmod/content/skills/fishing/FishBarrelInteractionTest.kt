@@ -23,6 +23,7 @@ import org.rsmod.api.player.interact.*
 import org.rsmod.api.player.protect.*
 import org.rsmod.api.player.skilling.*
 import org.rsmod.api.player.ui.ifClose
+import org.rsmod.content.interfaces.bank.bankCapacity
 import org.rsmod.content.interfaces.bank.scripts.BankInvScript
 import org.rsmod.content.skills.fishing.scripts.FishBarrelScript
 import org.rsmod.events.EventBus
@@ -68,7 +69,7 @@ internal class FishBarrelInteractionTest {
     @Test fun `actual native bank button preserves all fish on full bank and empties only after successful insertion`() {
         for (symbol in listOf("obj.fish_barrel_open", "obj.fish_sack_barrel_open")) {
             val f = Fixture(); f.put(0, symbol); FishBarrelContents.update(f.player, "obj.raw_lobster", 10)
-            val bank = f.player.invMap.getOrPut("inv.bank"); for (i in bank.indices)bank[i] = InvObj("obj.lobster", 1)
+            val bank = f.player.invMap.getOrPut("inv.bank"); f.player.bankCapacity = 2; for (i in 0..1)bank[i] = InvObj("obj.lobster", 1)
             f.bankClick(); assertEquals(10, FishBarrelContents.total(f.player))
             bank[0] = null; f.bankClick(); assertEquals(0, FishBarrelContents.total(f.player)); assertEquals(10, bank.physicalCount("obj.raw_lobster"))
             assertEquals(symbol.asRSCM(), f.player.inv[0]!!.id)
@@ -103,13 +104,14 @@ internal class FishBarrelInteractionTest {
     }
     private class Fixture {
         val bus = EventBus(); val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
-        val player = Player(client).apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); currentMapClock = 100; processedMapClock = 100 }
+        val player = Player(client).apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); currentMapClock = 100; processedMapClock = 100; bankCapacity = 800; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
         val context = ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getAlignment = { TextAlignment() })
         val launcher: ProtectedAccessLauncher; val held: HeldInteractions
         init {
             with(InvTransactionsScript(PlayerItemStorage(setOf(FishBarrelStorageHook())))) { scripts.startup() }
-            with(FishBarrelScript()) { scripts.startup() }
-            with(BankInvScript(bus, mock(org.rsmod.api.player.bonus.WornBonuses::class.java), mock(org.rsmod.api.combat.weapon.WeaponSpeeds::class.java))) { scripts.startup() }
+            val bankScript = BankInvScript(bus, mock(org.rsmod.api.player.bonus.WornBonuses::class.java), mock(org.rsmod.api.combat.weapon.WeaponSpeeds::class.java))
+            with(FishBarrelScript(bankScript)) { scripts.startup() }
+            with(bankScript) { scripts.startup() }
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(context); launcher = ProtectedAccessLauncher(factory)
             val c = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }
             held = c.newInstance(*c.parameterTypes.map { if (it == EventBus::class.java)bus else mock(it) }.toTypedArray())as HeldInteractions
