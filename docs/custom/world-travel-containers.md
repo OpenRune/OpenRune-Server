@@ -539,9 +539,9 @@ Sources: [Forestry kit](https://oldschool.runescape.wiki/w/Forestry_kit),
 
 `forestry-final-validation.log` records 85 Containers, 16 Crafting, seven Fishing,
 15 max-cape and 12 network tests passing, including 15 real-input Forestry tests.
-The native UI/equipment visuals still need client acceptance. Bird-nest/cape and
-other consumable effects remain open; the base Woodcutting bird-nest producer is
-not present. This chunk does not implement the separate Forestry event activity.
+At this checkpoint, native UI/equipment visuals and bird-nest/cape/other effects
+were still open; the nest/cape continuation below supplies the ordinary producer.
+This earlier chunk does not implement the separate Forestry event activity.
 
 
 ### Seed box, patch input and automatic pickup
@@ -1209,8 +1209,8 @@ Sources: [Nature offerings](https://oldschool.runescape.wiki/w/Nature_offerings)
 [Leaves](https://oldschool.runescape.wiki/w/Leaves),
 [Forestry kit](https://oldschool.runescape.wiki/w/Forestry_kit).
 Primary raw copies and source hashes are retained in the isolated review folder.
-The base Woodcutting bird-nest producer/cape effect and event-owned Forestry
-mechanics remain separate open work; this chunk does not claim their completion.
+At this harvest checkpoint, the ordinary nest/cape effect and event-owned
+Forestry mechanics were still open; see the nest continuation below.
 
 The owner requested parking the remaining world-travel/container work after this
 Forestry chunk and switching to the Nero completionist-cape handoff. The branch
@@ -1224,3 +1224,60 @@ passes. A network metadata failure was avoided by using already cached Gradle
 dependencies offline. The first native leaf test exposed the kit's non-openable
 catalogue form; collection now handles only its eligible automatic resources.
 Fourteen accepted source hashes and the accepted server JAR remain unchanged.
+
+### Forestry nest and cape-pouch continuation
+
+The owner resumed the world/container branch on 2026-10-12. The accepted Forestry
+checkpoint is retained. A new preparation-event consumer connects the actual
+Woodcutting producer to ordinary ground nests on normal, oak, willow, teak,
+mahogany, maple, yew and magic trees. A successful nest replaces the original
+log and its XP; it does not spend a ration, offering or secateurs attachment.
+Bonus products cannot roll again. Native owned ground objects expire after
+200 ticks; failed ground registration leaves the original harvest available.
+
+The regular/trimmed Woodcutting cape and native regular max cape use denominator
+230 instead of 256. An actual Woodcutting cape stored with a cape pouch grants
+the same effect only while the kit/basket is equipped. Carried/banked kits and
+missing upgrades/capes do not. Worn rabbit foot uses the sourced 95-slot
+selection instead of 100: red/blue/green eggs at 0/1/2, rings at 3–34, seeds
+otherwise. These changes do not alter the clue-nest rate.
+
+Held Search uses the native first option for all three egg nests, ring nests,
+modern seed nests and the older pre-2019 seed form. The current seed table has
+1011 weighted slots; the old table retains its 1000 slots without the three
+2019 seeds. Ring weights are 35/40/15/9/1. Removing the selected nest, adding
+its empty form and awarding the contents is atomic. Existing storage hooks plan
+and revalidate open seed-box output before either physical or stored commit;
+closed, full, seventh-type and bank-only boxes cannot absorb the reward.
+
+Reviewed upstream remains `bbc78dfc259c988a77d5c840196946c72de862e9`:
+[Woodcutting](https://github.com/OpenRune/OpenRune-Server/blob/bbc78dfc259c988a77d5c840196946c72de862e9/content/skills/woodcutting/src/main/kotlin/org/rsmod/content/skills/woodcutting/scripts/Woodcutting.kt)
+still lists bird nests as a TODO. Code searches found only mappings/drop tables/
+Herblore references; all-state nest PR search found merged Herblore PR23, which
+does not provide this producer. The required kit/nest consumer is implemented
+within the existing container owner without importing a branch or changing core.
+Sources: [Bird nest](https://oldschool.runescape.wiki/w/Bird_nest),
+[Woodcutting cape](https://oldschool.runescape.wiki/w/Woodcutting_cape),
+[Strung rabbit foot](https://oldschool.runescape.wiki/w/Strung_rabbit_foot),
+[Seed nest](https://oldschool.runescape.wiki/w/Bird_nest_(seeds)) and
+[Ring nest](https://oldschool.runescape.wiki/w/Bird_nest_(ring)). Raw copies and
+SHA-256 records are retained in the isolated review folder.
+
+Validation: `world-forestry-nest-candidate-validation.log` passes **309 tests**:
+233 Containers (including all 31 Forestry inputs), 65 Pouches and 11 InvTx.
+The tests use the preserved `work/home-runtime-stage` candidate, with its
+`ISOLATED-CANDIDATE` marker. `WorldContainerTests.init.gradle` selects that root
+and tracks its LIVE/SERVER, mappings and binary gamevals as test inputs.
+The first broad run used the old checkout cache, producing eight failures due
+to missing Revenant vars and the unpatched native equipment inventories. No
+runtime fallback or source guard was weakened to hide those cache differences.
+The correct candidate run has zero failures; early native-slot and Mockito
+fixture errors were corrected before it. Exact-file ktlint 1.5.0 passes, as
+does the generated inventory check. All 14 accepted source hashes and the live
+server JAR remain unchanged. This chunk changes no cache files and is not installed.
+
+Twitcher's preferences, clue nests, other tree species, exact chirping sound,
+additional nest reward variants and Forestry event activity remain separate
+open checks. This chunk does not claim complete Forestry or visual acceptance.
+The Nero cape integration remains on its preserved branch; combined cape/world
+rollout still requires reconciliation of shared quiver UI ownership and perks.

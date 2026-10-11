@@ -15,8 +15,10 @@ import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.net.rsprot.handlers.If3ButtonHandler
 import org.rsmod.api.net.rsprot.handlers.IfSubOpHandler
+import org.rsmod.api.obj.plugin.ObjTakePlugin
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.dialogue.align.TextAlignment
+import org.rsmod.api.player.hook.PlayerObjTakeValidator
 import org.rsmod.api.player.input.ResumePCountDialogInput
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.*
@@ -25,6 +27,7 @@ import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.controller.ControllerRepository
 import org.rsmod.api.repo.loc.LocRepository
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.player.PlayerRepository
 import org.rsmod.api.route.BoundValidator
 import org.rsmod.api.script.onIfOverlaySubOpMenu
@@ -43,6 +46,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.*
 import org.rsmod.game.inv.*
 import org.rsmod.game.loc.*
+import org.rsmod.game.obj.Obj
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
@@ -198,9 +202,102 @@ internal class ForestryInteractionTest {
         val f = Fixture(); f.put(0, ForestryContainers.OPEN); f.player.worn[3] = InvObj("obj.rune_axe"); for (slot in 1..27) f.put(slot, "obj.lobster"); f.store.update(f.player, ForestryContainers.kit, "obj.leaves_oak".asRSCM(), Int.MAX_VALUE); f.store.update(f.player, ForestryContainers.kit, "obj.forestry_secateurs_attachment".asRSCM(), 5); f.cut("obj.oak_logs")
         assertEquals(1, f.store.count(f.player, ForestryContainers.logs, "obj.oak_logs".asRSCM())); assertEquals(Int.MAX_VALUE, f.store.count(f.player, ForestryContainers.kit, "obj.leaves_oak".asRSCM())); assertEquals(5, f.store.count(f.player, ForestryContainers.kit, "obj.forestry_secateurs_attachment".asRSCM())); assertEquals(37, f.player.statMap.getXP("stat.woodcutting"))
     }
-    private class Fixture {
+
+    @Test fun `native tree harvest drops private egg ring or modern seed nests instead of a log or XP`() {
+        for ((roll, nest) in listOf(0 to "obj.bird_nest_egg_red", 1 to "obj.bird_nest_egg_blue", 2 to "obj.bird_nest_egg_green", 3 to BirdNestSearchScript.RING, 34 to BirdNestSearchScript.RING, 35 to BirdNestSearchScript.SEEDS, 99 to BirdNestSearchScript.SEEDS)) {
+            val f = Fixture(nests = true); f.player.worn[3] = InvObj("obj.rune_axe"); f.put(0, ForestryContainers.OPEN)
+            f.store.update(f.player, ForestryContainers.kit, "obj.nature_offerings".asRSCM(), 5)
+            f.store.update(f.player, ForestryContainers.kit, "obj.forestry_secateurs_attachment".asRSCM(), 5)
+            `when`(f.random.of(100)).thenReturn(roll); f.cut("obj.oak_logs")
+            val dropped = f.ground.single(); assertEquals(nest.asRSCM(), dropped.type); assertEquals(f.player.coords, dropped.coords)
+            assertEquals(f.player.observerUUID, dropped.receiverId); assertEquals(0, f.player.statMap.getXP("stat.woodcutting")); assertEquals(0, f.store.count(f.player, ForestryContainers.logs, "obj.oak_logs".asRSCM()))
+            assertEquals(5, f.store.count(f.player, ForestryContainers.kit, "obj.nature_offerings".asRSCM())); assertEquals(5, f.store.count(f.player, ForestryContainers.kit, "obj.forestry_secateurs_attachment".asRSCM()))
+            verify(f.objs).add(dropped, 200, Int.MAX_VALUE)
+        }
+    }
+
+    @Test fun `stored cape effect requires an equipped kit with both cape pouch and actual cape`() {
+        for (form in listOf(ForestryContainers.KIT, ForestryContainers.OPEN, ForestryContainers.CLOSED)) for (mode in 0..3) {
+            val f = Fixture(nests = true); f.player.worn[3] = InvObj("obj.rune_axe"); f.put(0, form)
+            if (mode != 1) f.store.update(f.player, ForestryContainers.kit, "obj.forestry_cape_pouch".asRSCM(), 1)
+            if (mode != 2) f.store.update(f.player, ForestryContainers.kit, "obj.skillcape_woodcutting_trimmed".asRSCM(), 1)
+            if (mode != 3) { f.player.inv[0] = null; f.player.worn[1] = InvObj(form) }
+            f.cut(); verify(f.random).of(if (mode == 0)230 else 256)
+        }
+        for (cape in listOf("obj.skillcape_woodcutting", "obj.skillcape_woodcutting_trimmed", "obj.skillcape_max", "obj.skillcape_max_worn")) {
+            val f = Fixture(nests = true); f.player.worn[3] = InvObj("obj.rune_axe"); f.player.worn[1] = InvObj(cape); f.cut(); verify(f.random).of(230)
+        }
+    }
+
+    @Test fun `worn rabbit foot changes only nest selection table and not the base chance`() {
+        for (worn in listOf(false, true)) {
+            val f = Fixture(nests = true); f.player.worn[3] = InvObj("obj.rune_axe"); f.put(0, "obj.hunting_strung_rabbit_foot"); if (worn) f.player.worn[2] = InvObj("obj.hunting_strung_rabbit_foot")
+            `when`(f.random.of(if (worn)95 else 100)).thenReturn(if (worn)94 else 99); f.cut()
+            verify(f.random).of(256); verify(f.random).of(if (worn)95 else 100); assertEquals(BirdNestSearchScript.SEEDS.asRSCM(), f.ground.single().type)
+        }
+    }
+
+    @Test fun `full physical inventory can receive a ground nest through open basket capacity and actual pickup is guarded`() {
+        val f = Fixture(nests = true); f.put(0, ForestryContainers.OPEN); f.player.worn[3] = InvObj("obj.rune_axe"); for (slot in 1..27) f.put(slot, "obj.lobster"); f.cut()
+        val nest = f.ground.single(); `when`(f.objs.del(nest)).thenReturn(true)
+        f.pick(nest); verify(f.objs, never()).del(nest); assertEquals(28, f.player.inv.occupiedSpace())
+        f.player.inv[27] = null; f.pick(nest); verify(f.objs).del(nest); assertEquals(1, f.player.inv.physicalCount("obj.bird_nest_egg_red")); assertEquals(0, f.logs())
+        val slot = f.player.inv.indices.first { f.player.inv[it]?.id == nest.type }; f.op(slot, HeldOp.Op1)
+        assertEquals(1, f.player.inv.physicalCount("obj.bird_nest_egg_red")); assertEquals(0, f.player.inv.physicalCount("obj.bird_nest_empty"))
+        f.player.inv[26] = null; f.op(slot, HeldOp.Op1); assertEquals(0, f.player.inv.physicalCount("obj.bird_nest_egg_red")); assertEquals(1, f.player.inv.physicalCount("obj.bird_nest_empty")); assertEquals(1, f.player.inv.physicalCount("obj.bird_egg_red"))
+    }
+
+    @Test fun `death logout full log capacity and excluded redwood cannot create ordinary nests`() {
+        for (mode in 0..4) {
+            val f = Fixture(nests = true); f.player.worn[3] = InvObj("obj.rune_axe"); f.put(0, ForestryContainers.OPEN)
+            when (mode) { 0 -> f.player.statMap.setCurrentLevel("stat.hitpoints", 0); 1 -> f.player.pendingLogout = true; 2 -> f.player.loggingOut = true; 3 -> { for (slot in 1..27)f.put(slot, "obj.lobster"); f.store.update(f.player, ForestryContainers.logs, "obj.logs".asRSCM(), 28) } }
+            f.cut(if (mode == 4)"obj.redwood_logs" else "obj.logs"); assertTrue(f.ground.isEmpty()); verify(f.random, never()).of(256)
+        }
+    }
+
+    @Test fun `ground registration failure keeps original harvest and nature bonus never rolls a second nest`() {
+        val failed = Fixture(nests = true, spawnAccepted = false); failed.player.worn[3] = InvObj("obj.rune_axe"); failed.cut(); assertEquals(1, failed.player.inv.physicalCount("obj.logs")); assertEquals(25, failed.player.statMap.getXP("stat.woodcutting"))
+        val f = Fixture(nests = true); f.put(0, ForestryContainers.OPEN); f.player.worn[3] = InvObj("obj.rune_axe"); f.store.update(f.player, ForestryContainers.kit, "obj.nature_offerings".asRSCM(), 5); `when`(f.random.of(256)).thenReturn(1); f.cut()
+        assertTrue(f.ground.isEmpty()); assertEquals(2, f.logs()); verify(f.random, times(1)).of(256); assertEquals(25, f.player.statMap.getXP("stat.woodcutting")); assertEquals(4, f.store.count(f.player, ForestryContainers.kit, "obj.nature_offerings".asRSCM()))
+    }
+
+    @Test fun `native search opens all egg colours and every ring and seed weight boundary once`() {
+        assertEquals(100, BirdNestSearchScript.rings.sumOf { it.second }); assertEquals(1011, BirdNestSearchScript.seeds.sumOf { it.second }); assertEquals(1000, BirdNestSearchScript.seeds.take(16).sumOf { it.second })
+        for ((nest, egg) in BirdNestSearchScript.eggs) { val f = Fixture(nests = true); f.put(0, nest); f.op(0, HeldOp.Op1); assertEquals(1, f.player.inv.physicalCount(egg)); assertEquals(1, f.player.inv.physicalCount("obj.bird_nest_empty")); f.op(0, HeldOp.Op1); assertEquals(1, f.player.inv.physicalCount(egg)) }
+        for ((nest, table) in listOf(BirdNestSearchScript.RING to BirdNestSearchScript.rings, BirdNestSearchScript.SEEDS to BirdNestSearchScript.seeds, BirdNestSearchScript.OLD_SEEDS to BirdNestSearchScript.seeds.take(16))) {
+            var start = 0; for ((item, weight) in table) { for (roll in listOf(start, start + weight - 1)) { val f = Fixture(nests = true); f.put(0, nest); `when`(f.random.of(table.sumOf { it.second })).thenReturn(roll); f.op(0, HeldOp.Op1); assertEquals(1, f.player.inv.physicalCount(item), "$nest roll=$roll"); assertEquals(0, f.player.inv.physicalCount(nest)); assertEquals(1, f.player.inv.physicalCount("obj.bird_nest_empty")) }; start += weight }
+        }
+    }
+
+    @Test fun `search retains nest on full inventory and death or logout without rewards`() {
+        for (mode in 0..3) { val f = Fixture(nests = true); f.put(0, BirdNestSearchScript.SEEDS); when (mode) { 0 -> for (slot in 1..27)f.put(slot, "obj.lobster"); 1 -> f.player.statMap.setCurrentLevel("stat.hitpoints", 0); 2 -> f.player.pendingLogout = true; 3 -> f.player.loggingOut = true }; f.op(0, HeldOp.Op1); assertEquals(1, f.player.inv.physicalCount(BirdNestSearchScript.SEEDS)); assertEquals(0, f.player.inv.physicalCount("obj.acorn")); assertEquals(0, f.player.inv.physicalCount("obj.bird_nest_empty")) }
+    }
+
+    @Test fun `native Search fills only carried open seed box and preserves full rejected storage with nest intact`() {
+        for (mode in 0..4) {
+            val f = Fixture(nests = true); f.put(0, BirdNestSearchScript.SEEDS); f.put(1, if (mode == 1)"obj.seed_box" else "obj.seed_box_open"); for (slot in 2..27)f.put(slot, "obj.lobster")
+            val box = ContainerCatalog.byId["obj.seed_box_open".asRSCM()]!!
+            if (mode == 2) for (seed in listOf("obj.potato_seed", "obj.watermelon_seed", "obj.guam_seed", "obj.ranarr_seed", "obj.mushroom_seed", "obj.seaweed_seed")) f.store.update(f.player, box, seed.asRSCM(), 1)
+            if (mode == 3) f.store.update(f.player, box, "obj.acorn".asRSCM(), Int.MAX_VALUE)
+            if (mode == 4) { f.bank[0] = f.player.inv[1]; f.put(1, "obj.lobster") }
+            f.op(0, HeldOp.Op1)
+            assertEquals(if (mode == 0)0 else 1, f.player.inv.physicalCount(BirdNestSearchScript.SEEDS))
+            assertEquals(if (mode == 0)1 else 0, f.player.inv.physicalCount("obj.bird_nest_empty")); assertEquals(0, f.player.inv.physicalCount("obj.acorn"))
+            assertEquals(if (mode == 0)1 else if (mode == 3)Int.MAX_VALUE else 0, f.store.count(f.player, box, "obj.acorn".asRSCM()))
+        }
+    }
+
+    private class Fixture(nests: Boolean = false, spawnAccepted: Boolean = true) {
         val bus = EventBus(); val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache()); val store = ContainerStore(); val map = forestryTestCollision; val clock = MapClock(); val random = mock(GameRandom::class.java); val players = mock(PlayerRepository::class.java); val choppers = mutableListOf<Player>()
-        val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); coords = CoordGrid(3000, 3000); currentMapClock = 100; processedMapClock = 100; bankCapacity = 800; for (stat in listOf("hitpoints", "woodcutting", "smithing", "crafting")) { statMap.setBaseLevel("stat.$stat", 99); statMap.setCurrentLevel("stat.$stat", 99) } }
+        val player = Player().apply { observerUUID = 42; inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); coords = CoordGrid(3000, 3000); currentMapClock = 100; processedMapClock = 100; bankCapacity = 800; for (stat in listOf("hitpoints", "woodcutting", "smithing", "crafting")) { statMap.setBaseLevel("stat.$stat", 99); statMap.setCurrentLevel("stat.$stat", 99) } }
+        val ground = mutableListOf<Obj>()
+        val storage = PlayerItemStorage(setOf(ContainerStorageHook(store)))
+        val objs = mock(ObjRepository::class.java) { call ->
+            if (call.method.name == "add" && call.arguments.firstOrNull() is Obj) {
+                if (spawnAccepted) ground.add(call.getArgument(0))
+                spawnAccepted
+            } else RETURNS_DEFAULTS.answer(call)
+        }
         var legacySubmenuCalls = 0
         val bank = player.invMap.getOrPut("inv.bank"); val launcher: ProtectedAccessLauncher; val held: HeldInteractions; val locs = LocInteractions(BoundValidator(map), bus)
         init {
@@ -209,7 +306,12 @@ internal class ForestryInteractionTest {
             val context = ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getAlignment = { TextAlignment() }, getRandom = { random }, getLocInteractions = { locs }, getCollision = { map })
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(context); launcher = ProtectedAccessLauncher(factory)
             val bankScript = BankInvScript(bus, mock(WornBonuses::class.java), mock(WeaponSpeeds::class.java))
-            with(InvTransactionsScript(PlayerItemStorage(setOf(ContainerStorageHook(store))))) { scripts.startup() }; with(bankScript) { scripts.startup() }; with(ContainerScript(store, bankScript)) { scripts.startup() }; with(ForestryKitScript(store)) { scripts.startup() }; with(ForestryBasketScript(store, bankScript, ForestryKitScript(store))) { scripts.startup() }
+            with(InvTransactionsScript(storage)) { scripts.startup() }; with(bankScript) { scripts.startup() }; with(ContainerScript(store, bankScript)) { scripts.startup() }; with(ForestryKitScript(store)) { scripts.startup() }; with(ForestryBasketScript(store, bankScript, ForestryKitScript(store))) { scripts.startup() }
+            if (nests) {
+                with(ForestryBirdNestScript(store, random, objs)) { scripts.startup() }
+                with(BirdNestSearchScript(storage)) { scripts.startup() }
+                with(ObjTakePlugin(objs, PlayerObjTakeValidator(emptySet()), emptySet())) { scripts.startup() }
+            }
             with(scripts) { onIfOverlaySubOpMenu(dev.openrune.rscm.RSCM.getReverseMapping(dev.openrune.rscm.RSCMType.COMPONENT, org.rsmod.api.enums.EquipmentEnums.equipment_tab_to_slots_map[1]!!.packed)) { legacySubmenuCalls++ } }
             with(HeldCraftingScript(setOf(ContainerCraftingScript(store, XpModifiers(emptySet())), ForestryCraftingProvider(XpModifiers(emptySet()))))) { scripts.startup() }
             with(ForestryRationsScript(store, random)) { scripts.startup() }; with(ForestryHarvestScript(store, random, players, bus)) { scripts.startup() }; with(Woodcutting(mock(LocRepository::class.java), mock(ControllerRepository::class.java), mock(PlayerRepository::class.java), XpModifiers(emptySet()), InvisibleLevels(emptySet()), clock)) { scripts.startup() }
@@ -218,6 +320,7 @@ internal class ForestryInteractionTest {
         fun put(slot: Int, name: String, amount: Int = 1) { player.inv[slot] = InvObj(name, amount) }
         fun run(block: suspend ProtectedAccess.() -> Unit) { player.ifClose(bus); launcher.launch(player, block = block) }
         fun op(slot: Int, op: HeldOp) = run { held.interact(this, inv, slot, op) }
+        fun pick(obj: Obj) { val producer = ObjInteractions(bus); producer.interact(player, obj, InteractionOp.Op3); run { assertTrue(bus.publish(this, producer.opTrigger(obj, InteractionOp.Op3)!!)) } }
         fun use(first: Int, second: Int) = run { HeldUInteractions(bus).interact(this, inv, ServerCacheManager.getItem(inv[first]!!.id)!!, first, ServerCacheManager.getItem(inv[second]!!.id)!!, second) }
         fun choose(index: Int) { player.activeCoroutine!!.resumeWith(ResumePauseButtonInput("component.chatmenu:options", index)) }
         fun advance() { repeat(3) { player.currentMapClock++; player.processedMapClock = player.currentMapClock; player.activeCoroutine?.advance() } }

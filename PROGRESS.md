@@ -1,6 +1,6 @@
 # Project overview
 
-Reviewed **2026-10-11**. This is the source for current status and priorities.
+Reviewed **2026-10-12**. This is the source for current status and priorities.
 Implementation details: [custom documentation](docs/custom/README.md).
 Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
@@ -10,8 +10,9 @@ Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
 Owner scope: all revision-240 shortcuts, all 39 Wiki container categories, the
 fairy-ring network and surface Spider Cave access. Accepted combat/cache remain
-preserved. **Parked at the owner's request after the Forestry harvest chunk;
-next active work is the Nero completionist-cape handoff.** [Implementation, sources and tests](docs/custom/world-travel-containers.md).
+preserved. **Resumed on 2026-10-12 after the Nero completionist-cape handoff.**
+The cape test package remains isolated and ready; its visual gameplay/HD
+acceptance is pending. [Implementation, sources and tests](docs/custom/world-travel-containers.md).
 
 | Area | Verified implementation | Remaining |
 |---|---|---|
@@ -21,7 +22,7 @@ next active work is the Nero completionist-cape handoff.** [Implementation, sour
 | Rune/looting pouches | Native storage, pickup/altar producers, Divine crafting/revert, bank Configure and ten loadouts, death/Destroy with stale-item guards, legacy save migration, real Deposit/pickups and Ferox/ditch rules, native Perdu lock/unlock, persistent paid locks and protected-pouch death and bank redemption of both notes; 65 tests | Native UI/death acceptance |
 | Generic containers | 56 forms in 17 families plus 57 fruit/vegetable item states; limits, pure previews, persistence, death and bank transfers | Family consumers and final UI/death acceptance |
 | Crafting | Gem, Hunter and silklined sack recipes, coffin locks, harness/clothes pouch, fish crates | Unstarted activity reward producers remain separate |
-| Forestry kit/basket | Native interfaces/equipment, Woodcutting storage, clothes bonuses, rations, nature offerings and secateurs/leaf harvest consumers | Bird-nest producer/cape effect and Forestry event consumers |
+| Forestry kit/basket | Native interfaces/equipment, Woodcutting storage, clothes bonuses, rations, nature offerings, leaves, ordinary nest drops, worn/stored cape perk and native nest Search with seed-box output | Twitcher's/clue nests, other tree species, chirping sound, Forestry events and client acceptance |
 | Seed box | Six ordered seed types, native UI, Farming/ground pickup/Master Farmer, bank/death/Destroy and persistence | Install isolated CS2 candidate and client acceptance |
 | Chugging barrel | Five families, 100 doses each, native controls/animation, four bank loadouts, bank and potion storage transfers, ghost death storage | Seven missing potion effects, verified barrel sound and visuals |
 | Potion storage | All 112 native families, permanent counters, dose sizes/favourites/vials, real bank input, barrel transfers | Native visual acceptance; members-world policy when such a mode exists |
@@ -32,12 +33,17 @@ next active work is the Nero completionist-cape handoff.** [Implementation, sour
 | Coal bag / essence pouches | Native held operations, physical-first coal consumption, independent essence decay, capacity clamp, non-destructive repair, atomic colossal crafting loss cleanup and native bank coal Fill/Empty | Native Percy acquisition review, Cordelia dialogue acceptance, pouch-note redemption works; native visuals |
 | Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Native bank/deposit-box extra options and collective Empty containers work; final consumer review |
 
-Latest Forestry validation: the full Containers/Pouches/InvTx run passes;
-**22 native Forestry input tests** also pass after adding leaf withdrawal and
-full-output checks. Offerings consume once per successful original cut, with
-60-80% grouped bonus chance and no bonus XP. Attachments consume only after
-successful species-leaf output; full storage retains them. Accepted source
-hashes and the server JAR remain unchanged. Remaining work is parked.
+Forestry continuation: ordinary nests replace the original log/XP roll on eight
+standard tree species. The skill/max cape perk and an actual cape in an equipped
+expanded kit/basket reduce the denominator; merely carrying the kit does not.
+Rabbit foot changes only the nest selection table. Native Search returns an
+empty nest and sourced seed/ring/egg reward atomically, including open seed-box
+storage. The earlier harvest, leaf withdrawal and full-output checks are retained.
+**309 tests pass** against the preserved, marked native candidate: 233 Containers
+(including **31 Forestry input tests**), 65 Pouches and 11 InvTx. Exact-file
+formatting and generated-inventory checks pass. Fourteen accepted source hashes
+and the accepted live JAR are unchanged. The new code is committed locally;
+the world runtime package and native acceptance remain pending.
 
 Earlier affected-module validation: **293 tests pass** (217 Containers, 65 Pouches,
 11 InvTx). Native Perdu locks/unlocks both pouch types with atomic inventory/bank
