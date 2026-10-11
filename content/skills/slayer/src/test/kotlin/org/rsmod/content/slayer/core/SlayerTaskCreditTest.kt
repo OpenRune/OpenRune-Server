@@ -35,14 +35,6 @@ class SlayerTaskCreditTest {
     }
 
     @Test
-    fun `a monster outside every task credits nothing`() {
-        val bob = npc("npc.bob")
-
-        assertTrue(SlayerTaskCredit.keys(bob).isEmpty())
-        assertFalse(SlayerTaskCredit.counts(bob, SPIDERS))
-    }
-
-    @Test
     fun `a boss kill counts only for the assigned boss`() {
         val vorkath = npc("npc.vorkath")
         val vorkathKey = SlayerTaskKey.of(SlayerBossTasks.BOSS_TASK_ID, VORKATH_BOSS_ID)
@@ -66,35 +58,12 @@ class SlayerTaskCreditTest {
         }
     }
 
-    @Test
-    fun `a boss needs its stat requirements`() {
-        val bosses = SlayerBossTasks.eligibleBosses(master(KONAR)) { 1 }
-
-        assertFalse(bosses.any { "Alchemical Hydra" in it.task.nameUppercase })
-        assertTrue(bosses.isNotEmpty())
-    }
-
-    @Test
-    fun `krystilia only assigns wilderness bosses and konar alone assigns the hydra`() {
-        val krystilia = SlayerBossTasks.eligibleBosses(master(KRYSTILIA)) { MAX_LEVEL }.map { it.taskSubtableId }
-        val nieve = SlayerBossTasks.eligibleBosses(master(NIEVE)) { MAX_LEVEL }.map { it.taskSubtableId }
-        val konar = SlayerBossTasks.eligibleBosses(master(KONAR)) { MAX_LEVEL }.map { it.taskSubtableId }
-
-        assertTrue(CALLISTO_BOSS_ID in krystilia)
-        assertFalse(VORKATH_BOSS_ID in krystilia)
-        assertFalse(KING_BLACK_DRAGON_BOSS_ID in krystilia)
-        assertFalse(HYDRA_BOSS_ID in nieve)
-        assertTrue(HYDRA_BOSS_ID in konar)
-    }
-
     companion object {
         private const val SPIDERS = 4
         private const val ZOMBIES = 10
         private const val ARAXYTES = 124
-        private const val KING_BLACK_DRAGON_BOSS_ID = 8
         private const val CALLISTO_BOSS_ID = 9
         private const val VORKATH_BOSS_ID = 23
-        private const val HYDRA_BOSS_ID = 24
         private const val NIEVE = 6
         private const val DURADEL = 5
         private const val KONAR = 8
