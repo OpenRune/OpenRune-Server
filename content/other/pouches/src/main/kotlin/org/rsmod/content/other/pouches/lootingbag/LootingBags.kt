@@ -32,7 +32,7 @@ object LootingBags {
 
 /**
  * The bag contents live in the cache's `inv.looting_bag`, which is a temporary inv, so they are
- * mirrored into this persistent attribute (flat `[obj id, count, obj id, count, ...]`) whenever
+ * mirrored into this persistent attribute (versioned `[id, count, vars, ...]` (legacy pairs are still read)) whenever
  * they change and restored on login.
  */
 val LOOTING_BAG_ATTR: AttributeKey<MutableList<Int>> = AttributeKey(persistenceKey = "looting_bag")
@@ -63,32 +63,30 @@ fun Player.restoreLootingBag() {
 }
 
 object LootingBagCodec {
+    private const val MARKER = -1
+    private const val VERSION = 1
     fun encode(objs: Array<InvObj?>): MutableList<Int> {
-        val encoded = ArrayList<Int>()
-        for (obj in objs) {
-            if (obj == null) {
-                continue
-            }
-            encoded.add(obj.id)
-            encoded.add(obj.count)
-        }
+        val items = objs.filterNotNull()
+        if (items.isEmpty()) return mutableListOf()
+        val encoded = arrayListOf(MARKER, VERSION)
+        for (obj in items) { encoded.add(obj.id); encoded.add(obj.count); encoded.add(obj.vars) }
         return encoded
     }
 
-    /** Fills the slots in order, skipping malformed pairs; anything past [size] is dropped. */
+    /** Preserve legacy player saves and signed/unsigned item state without merging different copies. */
     @OptIn(UncheckedType::class)
     fun decode(encoded: List<Int>, size: Int): Array<InvObj?> {
         val objs = arrayOfNulls<InvObj>(size)
+        val versioned = encoded.firstOrNull() == MARKER
+        if (versioned && encoded.getOrNull(1) != VERSION) return objs
+        val stride = if (versioned) 3 else 2
+        var index = if (versioned) 2 else 0
         var slot = 0
-        var index = 0
-        while (index + 1 < encoded.size && slot < size) {
-            val id = encoded[index]
-            val count = encoded[index + 1]
-            index += 2
-            if (id <= 0 || count <= 0) {
-                continue
-            }
-            objs[slot++] = InvObj(id, count)
+        while (index + stride <= encoded.size && slot < size) {
+            val id = encoded[index]; val count = encoded[index + 1]; val vars = if (versioned) encoded[index + 2] else 0
+            index += stride
+            if (id <= 0 || count <= 0) continue
+            objs[slot++] = InvObj(id, count, vars)
         }
         return objs
     }

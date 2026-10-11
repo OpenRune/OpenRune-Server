@@ -17,7 +17,7 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Spider Cave | Surface Enter/Exit, real routing and cancellation; 29 Araxxor tests | Client acceptance |
 | Fairy rings | 64 code rows, 54 fixed destinations, native dials/favourites/Last-destination, permission, ten quest gates and observed island first visits; 18 tests | Construction-owned DIQ house prerequisite and native visual acceptance |
 | Agility shortcuts | 525 links, actual option-producer traversal for every owned route, native landings, grapple loss/equipment, permanent Observatory setup, bridge/God Wars pieces and cancellation; 26 tests | Detailed animation/failure review and native route acceptance |
-| Rune/looting pouches | Native storage, pickup/altar producers, Divine crafting/revert, bank Configure and ten loadouts, death/Destroy; 35 tests | Trouver and looting input review, UI acceptance |
+| Rune/looting pouches | Native storage, pickup/altar producers, Divine crafting/revert, bank Configure and ten loadouts, death/Destroy with stale-item guards, legacy save migration and real pickups; 43 tests | Trouver/Ferox review, UI acceptance |
 | Generic containers | 56 forms in 17 families plus 57 fruit/vegetable item states; limits, pure previews, persistence, death and bank transfers | Family consumers and final UI/death acceptance |
 | Crafting | Gem, Hunter and silklined sack recipes, coffin locks, harness/clothes pouch, fish crates | Unstarted activity reward producers remain separate |
 | Forestry kit/basket | Native interfaces/equipment, Woodcutting storage, cape/clothes bonuses and rations | Remaining consumables and bird-nest effects |
@@ -26,16 +26,17 @@ preserved. [Implementation, sources and tests](docs/custom/world-travel-containe
 | Potion storage | All 112 native families, permanent counters, dose sizes/favourites/vials, real bank input, barrel transfers | Native visual acceptance; members-world policy when such a mode exists |
 | Mixology container rewards | Native Supervisor shop; exact Mox/Aga/Lye costs, reagent pouch/barrel purchases and potion-storage unlock | Natural supervisor placement and visuals; Mixology activity is not implemented |
 | Dizana’s quiver | Native ammo/combat, Sunfire charges, Ava/Ralos, max-cape conversion, bank Configure, Minimus, Perdu lock/unlock/repair, permanent paid locks and PvM/PvP death handling | Native visuals; knife separation and exact Mac returns now pass five input tests |
-| Bolt pouch | Four native slots, caps/grapple, actual held/UI/drag/equipment transfers, Hirko purchase, PvM ghost storage/PvP spill | Final native visuals and actual Destroy input review |
+| Bolt pouch | Four native slots, caps/grapple, actual held/UI/drag/equipment transfers, Hirko purchase, PvM ghost storage/PvP spill | Final native visuals; confirmed Destroy and stale-item input tests pass |
 | Collection bags | All five native tiers; 2/4/6/7/8 eggs, shared temporary contents, Look-in/Empty/item-use and deferred death cleanup | Collector auto-pickup/calls/hopper require the unstarted Barbarian Assault activity; native visuals |
 | Coal bag / essence pouches | Native held operations, physical-first coal consumption, independent essence decay, capacity clamp, non-destructive repair, atomic colossal crafting and loss cleanup; 19 tests | Coal bank/reward producers, Cordelia dialogue acceptance, pouch acquisition review and native visuals |
 | Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Final consumer review |
 
-Latest combined validation: **267 tests pass**: 199 Containers, 35 Pouches,
-12 Runecrafting, seven Smithing, 11 inventory transaction and three combat tests.
-Latest fifteen tests cover native Perdu item-use, exact fees/refunds and rollback,
-pure death previews followed by real drop application, persistent paid locks,
-PvM equipped retention, all broken/mangled forms and charged ground pickups.
+Latest combined validation: **354 tests pass**: 205 Containers, 43 Pouches,
+12 Runecrafting, seven Smithing, 11 inventory transaction, three combat,
+26 shortcut, 18 fairy-ring and 29 Araxxor tests. The pouch chunk checks actual
+Destroy confirmation/cancellation, replacement/movement/death/logout guards,
+duplicate pouch retention and ground pickup capacity/fallback/save-load.
+Looting-bag persistence now retains opaque item state and reads existing pair-based saves.
 The native five-argument ground constructor and normal coin stacking are preserved.
 Seventeen server-only quiver metadata candidates round-trip in the isolated cache;
 34,589 unrelated native item files and original reference IDs remain unchanged.

@@ -225,6 +225,19 @@ internal class AmmoContainerInteractionTest {
             assertEquals(mode != 0, DizanasQuiver.stored(f.player) != null)
         }
     }
+
+    @Test fun `actual bolt pouch Destroy checks original item and lifecycle and retains shared contents for banked copies`() {
+        for (mode in 0..7) {
+            val f = Fixture(); f.put(0, BoltPouch.ITEM); BoltPouch.write(f.player, 1, InvObj(type("Bronze bolts"), 100))
+            f.op(0, HeldOp.Op5)
+            when (mode) { 2 -> f.put(0, BoltPouch.ITEM); 3 -> f.player.pendingLogout = true; 4 -> f.player.coords = f.player.coords.translateX(1); 5 -> f.player.statMap.setCurrentLevel("stat.hitpoints", 0); 6 -> f.player.invMap.getOrPut("inv.bank")[0] = InvObj(BoltPouch.ITEM); 7 -> f.put(1, BoltPouch.ITEM) }
+            f.destroy(mode != 1)
+            val consumed = mode in listOf(0, 6, 7)
+            assertEquals(if (consumed) 0 else 1, f.player.inv[0]?.count ?: 0)
+            assertEquals(if (mode == 0) 0 else 100, BoltPouch.contents(f.player, 1)?.count ?: 0)
+        }
+    }
+
     private class Fixture {
         val bus = EventBus(); val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
         val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); coords = CoordGrid(3000, 3000); currentMapClock = 100; processedMapClock = 100; for (stat in listOf("hitpoints", "ranged")) { statMap.setBaseLevel("stat.$stat", 99); statMap.setCurrentLevel("stat.$stat", 99) } }

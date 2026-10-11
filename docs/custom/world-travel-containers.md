@@ -1025,3 +1025,25 @@ Official source hashes are in `world-shortcut-edge-sources.json` and
 `world-edge-sources.json`. All fourteen accepted source hashes and the accepted
 runtime JAR remain unchanged. Source-cache packaging and native acceptance are
 still separate; this chunk does not install or merge the feature.
+
+### Pouch destruction and looting-bag item state
+
+Native held Op5 now captures the exact rune/looting/bolt pouch reference before
+confirmation and rechecks it, location and lifecycle before deletion. Existing
+Destroy consumers retain shared contents when another carried/banked pouch
+remains. Cancel, replaced items, movement, death and logout inputs cannot delete
+or spill contents. Confirmed rune-pouch destruction spills each stack once.
+
+Looting-bag persistence retains `[id,count,vars]` records behind a version header;
+existing positive-ID pair saves continue to load. The real ground-pickup hook
+passes state through its capacity preview and committed transaction. Four pickup
+producer tests cover capacity fallback, separate state copies, account reload,
+closed/absent bags, outside-Wilderness pickup and lifecycle/duplicate guards.
+Boundary-state fixtures use uncertifiable coins: assigning invented nonzero
+state to a certifiable whip is correctly rejected by the inventory transaction.
+
+Validation: `world-full-route-container-validation-3.log` succeeds with 354 tests
+(205 Containers, 43 Pouches, 12 Runecrafting, seven Smithing, 11 inventory
+transaction, three combat, 26 Shortcuts, 18 Fairy rings, 29 Araxxor). Earlier
+fixture/configuration failures were corrected before this complete run. Native
+visual acceptance, Ferox rules and parchment compatibility remain to review.

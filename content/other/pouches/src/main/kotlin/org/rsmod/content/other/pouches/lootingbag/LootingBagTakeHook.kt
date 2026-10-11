@@ -23,10 +23,10 @@ class LootingBagTakeHook @Inject constructor() : PlayerObjTakeStorageHook {
         if (player.vars["varbit.inside_wilderness"] != 1) {
             return null
         }
-        if (LootingBags.rejection(InvObj(obj.type, obj.count), objType) != null) {
+        if (LootingBags.rejection(InvObj(obj.type, obj.count, obj.vars), objType) != null) {
             return null
         }
-        return player.lootingBag.takeIf { player.invAdd(it, obj.type, obj.count, autoCommit = false).success }
+        return player.lootingBag.takeIf { player.invAdd(it, obj.type, obj.count, vars = obj.vars, autoCommit = false).success }
     }
 
     override fun committed(player: Player, obj: Obj, objType: ItemServerType) {

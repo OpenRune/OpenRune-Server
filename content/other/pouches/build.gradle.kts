@@ -10,6 +10,7 @@ dependencies {
     implementation(projects.api.market)
     testImplementation(projects.api.net)
     testImplementation(projects.api.objPlugin)
+    testImplementation(projects.api.registry)
     testImplementation(projects.content.skills.runecrafting)
     testImplementation(libs.rsprot.api)
     testImplementation(libs.fastutil)

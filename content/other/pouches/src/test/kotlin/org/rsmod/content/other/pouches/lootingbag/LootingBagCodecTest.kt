@@ -4,6 +4,7 @@ import dev.openrune.types.util.UncheckedType
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.rsmod.game.inv.InvObj
 
@@ -19,12 +20,24 @@ class LootingBagCodecTest {
         val encoded = LootingBagCodec.encode(objs)
         val decoded = LootingBagCodec.decode(encoded, 28)
 
-        assertEquals(listOf(995, 12_345, 4151, 1, 560, 300), encoded)
+        assertEquals(listOf(-1, 1, 995, 12_345, 0, 4151, 1, 0, 560, 300, 0), encoded)
         assertEquals(InvObj(995, 12_345), decoded[0])
         assertEquals(InvObj(4151, 1), decoded[1])
         // Gaps are compacted away: the bag never has holes after a bank withdrawal either.
         assertEquals(InvObj(560, 300), decoded[2])
         assertNull(decoded[3])
+    }
+
+    @Test fun `legacy saves migrate without losing quantities and signed item state survives the new format`() {
+        val legacy = LootingBagCodec.decode(listOf(995, 12345, 4151, 1), 28)
+        assertEquals(InvObj(995, 12345), legacy[0]); assertEquals(InvObj(4151, 1), legacy[1])
+        legacy[1] = legacy[1]!!.copy(vars = Int.MIN_VALUE); legacy[2] = InvObj(4151, 1, Int.MAX_VALUE)
+        val restored = LootingBagCodec.decode(LootingBagCodec.encode(legacy), 28)
+        assertEquals(legacy[0], restored[0]); assertEquals(legacy[1], restored[1]); assertEquals(legacy[2], restored[2])
+        val unknown = LootingBagCodec.decode(listOf(-1, 2, 995, 12345, 0), 28)
+        assertTrue(unknown.all { it == null })
+        val partial = LootingBagCodec.decode(listOf(-1, 1, 995, 12345, 7, 4151, 1), 28)
+        assertEquals(InvObj(995, 12345, 7), partial[0]); assertNull(partial[1])
     }
 
     @Test

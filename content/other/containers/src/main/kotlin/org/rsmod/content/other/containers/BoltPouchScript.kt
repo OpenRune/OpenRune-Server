@@ -5,7 +5,9 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
+import org.rsmod.api.config.refs.params
 import org.rsmod.api.invtx.*
+import org.rsmod.api.player.events.interact.HeldDropEvents
 import org.rsmod.api.player.interact.WornInteractions
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.ifSetEvents
@@ -42,6 +44,13 @@ internal class BoltPouchScript @Inject constructor(private val equipment: WornIn
         }
         onIfOverlayButton("component.wornitems:extra_ammo_slot") {
             if (valid() && it.op == IfButtonOp.Op1 && it.comsub in -1..1 && !DizanasQuiver.owns(player) && it.obj?.id?.let { id -> id == BoltPouch.contents(player, 4)?.id } != false) BoltPouch.toWorn(player, 4)
+        }
+        onOpHeld5(BoltPouch.ITEM) {
+            if (!valid()) return@onOpHeld5
+            val original = inv[it.slot] ?: return@onOpHeld5; val origin = coords
+            if (!confirmDestroy(BoltPouch.ITEM, original.count, it.type.param(params.destroy_note_title), it.type.param(params.destroy_note_desc))) return@onOpHeld5
+            if (!valid() || coords != origin || inv[it.slot] !== original) return@onOpHeld5
+            if (player.invDel(inv, original.id, original.count, slot = it.slot).success) publish(HeldDropEvents.Destroy(player, it.slot, original, BoltPouch.ITEM))
         }
         onDestroyHeld { if (type.asRSCM() == BoltPouch.ITEM.asRSCM() && !BoltPouch.owned(player) && player.invMap["inv.bank"]?.any { it?.id == BoltPouch.ITEM.asRSCM() } != true) BoltPouch.clear(player) }
         onOpNpc1("npc.xbows_sales_dwarf_keldegrim") {

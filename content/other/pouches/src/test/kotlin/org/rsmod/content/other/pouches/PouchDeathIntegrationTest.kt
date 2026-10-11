@@ -115,6 +115,39 @@ internal class PouchDeathIntegrationTest {
         }
     }
 
+    @Test fun `all rune and looting bag Destroy inputs reject stale items departure death logout and cancellation`() {
+        for (symbol in RunePouches.ALL + LootingBags.ALL) for (mode in 0..5) {
+            val f = Fixture(); f.player.inv[0] = InvObj(symbol)
+            val contents = RunePouchContents.empty(4); contents.add(RunePouchRunes.byObj("obj.airrune".asRSCM())!!.compactId, 55); f.player.writeRunePouch(contents)
+            f.player.lootingBag[0] = InvObj("obj.coins", 77); f.player.saveLootingBag()
+            f.beginDestroy()
+            when (mode) { 1 -> f.player.inv[0] = InvObj(symbol); 2 -> f.player.coords = f.player.coords.translateX(1); 3 -> f.player.pendingLogout = true; 4 -> f.player.statMap.setCurrentLevel("stat.hitpoints", 0); 5 -> f.player.loggingOut = true }
+            f.confirmDestroy(mode != 0)
+            assertEquals(1, f.player.inv[0]?.count); assertEquals(55, f.player.readRunePouch(4).counts[0]); assertEquals(77, f.player.lootingBag[0]?.count); assertTrue(f.ground.isEmpty())
+        }
+    }
+
+    @Test fun `all rune pouch variants spill exactly once through native confirmation and banked copies keep contents`() {
+        for (symbol in RunePouches.ALL) for (duplicate in 0..2) {
+            val f = Fixture(); f.player.inv[0] = InvObj(symbol)
+            if (duplicate == 1) f.player.inv[1] = InvObj(symbol)
+            if (duplicate == 2) f.player.invMap.getOrPut("inv.bank")[0] = InvObj(symbol)
+            val contents = RunePouchContents.empty(4); for ((i, rune) in listOf("obj.airrune", "obj.waterrune", "obj.earthrune", "obj.firerune").withIndex()) contents.add(RunePouchRunes.byObj(rune.asRSCM())!!.compactId, 10 + i); f.player.writeRunePouch(contents)
+            f.destroy(true); f.confirmDestroy(true)
+            assertTrue(f.player.inv[0] == null); assertEquals(if (duplicate == 0) 4 else 0, f.ground.size)
+            assertEquals(duplicate == 0, f.player.readRunePouch(4).isEmpty())
+            if (duplicate == 0) for ((i, rune) in listOf("obj.airrune", "obj.waterrune", "obj.earthrune", "obj.firerune").withIndex()) assertEquals(10 + i, f.ground.single { it.type == rune.asRSCM() }.count)
+        }
+    }
+
+    @Test fun `looting bag account save and native destroy preserve item vars and clear saved contents once`() {
+        val f = Fixture(); f.player.inv[0] = InvObj(LootingBags.OPEN); val item = InvObj("obj.abyssal_whip", 1, Int.MIN_VALUE)
+        f.player.lootingBag[0] = item; f.player.saveLootingBag()
+        val g = Fixture(); g.player.inv[0] = InvObj(LootingBags.OPEN); g.player.attr.putAllFromPersistence(f.player.attr.toPersistentMap()); g.player.restoreLootingBag(); assertEquals(item, g.player.lootingBag[0])
+        VarPlayerIntMapSetter.set(g.player, "varbit.inside_wilderness", 1); g.destroy(true); g.confirmDestroy(true)
+        assertEquals(1, g.ground.size); assertEquals(item.vars, g.ground.single().vars); assertTrue(g.player.lootingBag.isEmpty()); assertTrue(g.player.attr[LOOTING_BAG_ATTR] == null)
+    }
+
     private class Fixture {
         val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); observerUUID = 1001; coords = CoordGrid(3100, 3600); currentMapClock = 100; processedMapClock = 100; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
         val ground = mutableListOf<Obj>(); val bus = EventBus(); val hook = PouchDeathHook()
@@ -127,7 +160,10 @@ internal class PouchDeathIntegrationTest {
             with(InvTransactionsScript(PlayerItemStorage(emptySet()))) { scripts.startup() }
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getAlignment = { TextAlignment() }, getCollision = { org.rsmod.routefinder.collision.CollisionFlagMap().apply { allocateIfAbsent(3222, 3218, 0) } }))
             launcher = ProtectedAccessLauncher(factory)
-            with(LootingBagScript(repo, BankInvScript(bus, mock(WornBonuses::class.java), mock(WeaponSpeeds::class.java)), prices)) { scripts.startup() }
+            val bankScript = BankInvScript(bus, mock(WornBonuses::class.java), mock(WeaponSpeeds::class.java))
+            with(LootingBagScript(repo, bankScript, prices)) { scripts.startup() }
+            with(RunePouchScript(repo, launcher, bankScript)) { scripts.startup() }
+            with(PouchDestroyScript()) { scripts.startup() }
             val c = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }
             val dropCtor = c.parameterTypes[2].declaredConstructors.single().apply { isAccessible = true }
             val drop = dropCtor.newInstance(*dropCtor.parameterTypes.map { if (it == EventBus::class.java) bus else mock(it) }.toTypedArray())
@@ -137,7 +173,9 @@ internal class PouchDeathIntegrationTest {
         fun handling(ctx: PlayerDeathContext) = PlayerDeathHandling(3, ctx.killer ?: player, 6000, 0, false, UntradeableHandling.DROP)
         fun preview(ctx: PlayerDeathContext) = drops.selectDrops(player, ctx, handling(ctx))
         fun apply(ctx: PlayerDeathContext, result: PlayerDeathDrops.DeathDropResult) { val complete = drops.prepareCompletion(ctx); drops.applyDrops(player, result, handling(ctx), ctx.coords); complete() }
-        fun destroy(confirm: Boolean) { player.ifClose(bus); launcher.launch(player) { held.interact(this, inv, 0, HeldOp.Op5) }; player.activeCoroutine!!.resumeWith(ResumePauseButtonInput("component.confirmdestroy:universe", if (confirm) 1 else 0)) }
+        fun beginDestroy() { player.ifClose(bus); launcher.launch(player) { held.interact(this, inv, 0, HeldOp.Op5) } }
+        fun confirmDestroy(confirm: Boolean) { player.activeCoroutine?.takeIf { it.isAwaiting(ResumePauseButtonInput::class) }?.resumeWith(ResumePauseButtonInput("component.confirmdestroy:universe", if (confirm) 1 else 0)) }
+        fun destroy(confirm: Boolean) { beginDestroy(); confirmDestroy(confirm) }
     }
     companion object { @JvmStatic @BeforeAll fun cache() { ServerCacheManager.init(240).close() } }
 }
