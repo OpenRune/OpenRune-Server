@@ -7,8 +7,12 @@ import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import net.rsprot.protocol.game.incoming.buttons.IfSubOp
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.config.refs.params
+import org.rsmod.api.enums.EquipmentEnums.equipment_stats_to_slots_map
+import org.rsmod.api.enums.EquipmentEnums.equipment_tab_to_slots_map
 import org.rsmod.api.net.rsprot.player.InterfaceEvents
 import org.rsmod.api.player.events.interact.HeldSubOpEvent
+import org.rsmod.api.player.events.interact.WornSubOpEvent
 import org.rsmod.api.player.output.UpdateInventory.resendSlot
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.IfModalSubOpMenu
@@ -68,6 +72,11 @@ class IfSubOpHandler
         val invObj = if (tryHeld) inventory[comsub] else null
 
         if (player.ui.containsOverlay(interfaceType) || player.ui.containsTopLevel(interfaceType)) {
+            val worn = wornEvent(player, componentType.packed, packetObjType, buttonOp, subop)
+            if (worn != null) {
+                protectedAccess.launch(player) { clearPendingAction(); eventBus.publish(this, worn) }
+                return
+            }
             val scriptedOverlay = eventBus.suspend[IfOverlaySubOpMenu::class.java, componentType.packed] != null
             if (!scriptedOverlay && tryHeld && invObj != null) {
                 if (!verifyHeldSubOp(player, inventory, invObj, packetObjType, heldOp)) {
@@ -99,6 +108,11 @@ class IfSubOpHandler
             if (player.isModalButtonProtected) {
                 return
             }
+            val worn = wornEvent(player, componentType.packed, packetObjType, buttonOp, subop)
+            if (worn != null) {
+                protectedAccess.launchLenient(player) { eventBus.publish(this, worn) }
+                return
+            }
             val scriptedModal = eventBus.suspend[IfModalSubOpMenu::class.java, componentType.packed] != null
             if (!scriptedModal && tryHeld && invObj != null) {
                 if (!verifyHeldSubOp(player, inventory, invObj, packetObjType, heldOp)) {
@@ -114,6 +128,19 @@ class IfSubOpHandler
                 protectedAccess.launchLenient(player) { eventBus.publish(this, event) }
             }
         }
+    }
+
+    private fun wornEvent(player: Player, component: Int, packetType: ItemServerType?, op: IfButtonOp, subop: Int): WornSubOpEvent? {
+        if (packetType == null || player.isDelayed || subop < 0) return null
+        val slot = (equipment_tab_to_slots_map.firstOrNull { it.value?.packed == component } ?: equipment_stats_to_slots_map.firstOrNull { it.value?.packed == component })?.key ?: return null
+        val item = player.worn[slot] ?: return null
+        if (!item.isType(packetType)) return null
+        val type = getInvObj(item)
+        if (eventBus.suspend[WornSubOpEvent::class.java, type.id] == null) return null
+        val wearOps = listOf(params.wear_op1, params.wear_op2, params.wear_op3, params.wear_op4, params.wear_op5, params.wear_op6, params.wear_op7, params.wear_op8)
+        val param = wearOps.getOrNull(op.ordinal - 1) ?: return null
+        if (type.paramOrNull(param) == null) return null
+        return WornSubOpEvent(slot, item, type, op, subop)
     }
 
     private fun verifyHeldSubOp(

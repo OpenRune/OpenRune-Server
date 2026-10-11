@@ -12,6 +12,7 @@ dependencies {
     implementation(projects.content.skills.crafting)
     implementation(projects.content.skills.utils)
     implementation(projects.content.interfaces.bank)
+    testImplementation(projects.content.skills.woodcutting)
     testImplementation(projects.api.account)
     testImplementation(projects.api.net)
     testImplementation(libs.rsprot.api)

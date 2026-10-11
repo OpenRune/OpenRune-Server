@@ -13,6 +13,7 @@ import org.rsmod.api.config.locXpParam
 import org.rsmod.api.config.objParam
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.controller.vars.intVarCon
+import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.events.skilling.SkillingProduct
 import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.output.ClientScripts
@@ -21,6 +22,7 @@ import org.rsmod.api.player.righthand
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.firemakingLvl
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.woodcuttingLvl
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.controller.ControllerRepository
@@ -65,12 +67,13 @@ constructor(
     }
 
     private fun ProtectedAccess.attempt(tree: BoundLocInfo, type: ObjectServerType) {
+        if (player.hitpoints <= 0 || player.pendingLogout || player.loggingOut) return
         if (player.woodcuttingLvl < type.treeLevelReq) {
             mes("You need a Woodcutting level of ${type.treeLevelReq} to chop down this tree.")
             return
         }
 
-        if (inv.isFull()) {
+        if (player.invAdd(inv, RSCM.getReverseMapping(RSCMType.OBJ, type.treeLogs.id), 1, autoCommit = false).failure) {
             val product = type.treeLogs
             mes("Your inventory is too full to hold any more ${product.name.lowercase()}.")
             soundSynth("synth.pillory_wrong")
@@ -94,6 +97,7 @@ constructor(
     }
 
     private fun ProtectedAccess.cut(tree: BoundLocInfo, type: ObjectServerType) {
+        if (player.hitpoints <= 0 || player.pendingLogout || player.loggingOut) return
         val axe = findAxe(player, type)
         if (axe == null) {
             mesAxeMissing()
@@ -105,7 +109,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (player.invAdd(inv, RSCM.getReverseMapping(RSCMType.OBJ, type.treeLogs.id), 1, autoCommit = false).failure) {
             val product = type.treeLogs
             mes("Your inventory is too full to hold any more ${product.name.lowercase()}.")
             soundSynth("synth.pillory_wrong")

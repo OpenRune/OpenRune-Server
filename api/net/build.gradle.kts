@@ -32,6 +32,7 @@ dependencies {
     implementation(projects.api.cache)
     implementation(projects.api.core)
     implementation(projects.api.gameProcess)
+    implementation(projects.api.generated)
     implementation(projects.api.market)
     implementation(projects.api.npc)
     implementation(projects.api.player)

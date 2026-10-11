@@ -95,6 +95,17 @@ persistence, rollback and native interaction validation is still in progress.
   direct fishing storage and bank-side Empty pass **seven native input tests**.
   Configured bank capacity is enforced through the native deposit service; the seven Fishing tests and four container-bank regressions pass. Full-bank failures retain contents; PvP previews protect the barrel without
   changing storage. Deposit-box/UIM handling and final client checks remain open.
+- Forestry kit/basket: native main/side interface, all twenty display rows,
+  inventory/equipment submenus, separate shared kit/log storage, dismantling and
+  direct Woodcutting collection pass **15 native input tests**. Sturdy-harness
+  and clothes-pouch crafting enforce both skills; permanent clothes/cape
+  attachments preserve their storage. Stored/worn Lumberjack pieces grant the
+  correct combined 2.5% without stacking; rations consume only after a successful
+  cut. Full inventory, bank capacity, stale inputs, movement, death/logout and
+  saved attributes are covered. All **85 Containers**, **16 Crafting**, **seven
+  Fishing**, **15 max-cape** and **12 network** tests pass after item-specific
+  equipment-submenu dispatch. Native visual acceptance and the remaining
+  Forestry consumable/bird-nest effects are open; Forestry events are not added.
 - Shared storage safety: dry runs no longer mutate virtual contents; physical
   inventory and storage commit together. Bank inventories cannot consume held
   coal/essence. Pickup rechecks capacity and permissions before ground deletion,

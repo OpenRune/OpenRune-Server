@@ -494,3 +494,51 @@ the bank only for a still-valid session. All 35 Pouches, 70 Containers and seven
 Fishing tests pass, including actual quantity/name inputs, all ten loadouts,
 save/restore, full banks, missing supply and partial maximum stacks. Final client
 acceptance remains open.
+
+
+### Forestry basket, native kit and equipment submenus
+
+The accepted kit interface is main 823/side 822 with temporary display inventory
+814. Native CS2 316/1764 and enum 817 create twenty rows, twelve dynamic children
+per row. The inventory is a display snapshot; permanent account attributes own
+the contents. Native quantity/selection vars drive Select, 1/5/X/All, Fill and
+Empty. Pending inputs recheck ownership, origin, item reference and lifecycle.
+
+Combining the kit, either log-basket form and a sturdy harness preserves both
+shared stores. Native inventory and equipment submenus reach Fill kit/logs,
+View kit/Empty logs, Open/Close and transactional Dismantle. Bank-side Use first
+deposits logs, then leaves; an empty basket withdraws leaves via the native bank
+service. Opening changes only automatic log collection. Real Woodcutting now
+uses the storage-aware pure capacity preview, including a physically full
+inventory. The accepted native equipment component also hosts max-cape menus;
+item-specific WornSubOpEvent dispatch preserves that legacy callback for other
+items rather than registering a conflicting component consumer.
+
+Harness creation requires 75 Smithing/Woodcutting, log brace, two ropes, three
+adamantite bars and 45 steel nails, with no XP. Clothes-pouch creation requires
+50 Crafting/Woodcutting, blueprint, leather and needle/thread (costume needles
+need no thread), three ticks and 47 Crafting XP. Cape attachment requires 99
+Woodcutting. Single irreversible upgrades gate outfit/cape storage. Replacement
+kits preserve attached clothing and bark; other ordinary contents are lost on
+last-kit destruction. Stored and worn Lumberjack pieces count once per slot,
+respect conflicting outfit slots and total 2.5% for all four. The generic worn
+modifier misinterprets these native tenths-of-percent values; the Forestry
+modifier corrects only these four pieces. Rations roll 30% after a successful
+cut below 90% run energy, consuming one for 20% restoration.
+
+Upstream reviewed at `bbc78dfc259c988a77d5c840196946c72de862e9`: Forestry
+searches and [PR #240](https://github.com/OpenRune/OpenRune-Server/pull/240)
+provide the Draynor forester/shop integration; [PR #185](https://github.com/OpenRune/OpenRune-Server/pull/185)
+discusses deferred offerings. Native CS2 is reused; no branch/cache/UI upgrade
+is imported. Existing Forestry-related shops, Firemaking and pets are preserved.
+Sources: [Forestry kit](https://oldschool.runescape.wiki/w/Forestry_kit),
+[Forestry basket](https://oldschool.runescape.wiki/w/Forestry_basket),
+[Sturdy harness](https://oldschool.runescape.wiki/w/Sturdy_harness),
+[Clothes pouch](https://oldschool.runescape.wiki/w/Clothes_pouch), and
+[Cape pouch](https://oldschool.runescape.wiki/w/Cape_pouch).
+
+`forestry-final-validation.log` records 85 Containers, 16 Crafting, seven Fishing,
+15 max-cape and 12 network tests passing, including 15 real-input Forestry tests.
+The native UI/equipment visuals still need client acceptance. Bird-nest/cape and
+other consumable effects remain open; the base Woodcutting bird-nest producer is
+not present. This chunk does not implement the separate Forestry event activity.

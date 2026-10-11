@@ -12,7 +12,7 @@ import org.rsmod.game.inv.Inventory
 
 @Singleton
 internal class ContainerStore @Inject constructor() {
-    fun owns(player: Player, spec: ContainerSpec): Boolean = player.inv.any { it?.id == spec.id } || player.worn.any { it?.id == spec.id }
+    fun owns(player: Player, spec: ContainerSpec): Boolean = (player.inv.asSequence() + player.worn.asSequence()).any { item -> item?.id == spec.id || item != null && ForestryContainers.ownsFamily(item.id, spec) }
     fun inventoryName(spec: ContainerSpec): String? = when (spec.family) { "tackle_box" -> "inv.tackle_box"; "huntsman_kit" -> "inv.huntsmans_kit"; else -> null }
     fun storedObjects(player: Player, spec: ContainerSpec): List<InvObj> = inventoryName(spec)?.let { player.invMap[it]?.filterNotNull()?.map { it.copy() } }.orEmpty()
     fun contents(player: Player, spec: ContainerSpec): Map<String, Int> {
@@ -21,7 +21,11 @@ internal class ContainerStore @Inject constructor() {
     }
     fun clear(player: Player, spec: ContainerSpec) { inventoryName(spec)?.let { player.invMap[it]?.fillNulls() }; player.attr.remove(spec.stateKey) }
     fun count(player: Player, spec: ContainerSpec, item: Int): Int = contents(player, spec)[item.toString()] ?: 0
-    fun room(player: Player, spec: ContainerSpec, item: Int): Int = ContainerCapacity.remaining(spec, contents(player, spec), item)
+    fun room(player: Player, spec: ContainerSpec, item: Int): Int {
+        if (spec.family == "forestry_kit" && !ForestryContainers.accepts(player, this, item)) return 0
+        val remaining = ContainerCapacity.remaining(spec, contents(player, spec), item)
+        return if (spec.family == "forestry_kit" && item in ForestryContainers.singleItems) minOf(remaining, (1 - count(player, spec, item)).coerceAtLeast(0)) else remaining
+    }
     fun update(player: Player, spec: ContainerSpec, item: Int, delta: Int) {
         if (delta == 0) return
         val copy = contents(player, spec).toMutableMap()
@@ -56,6 +60,7 @@ internal class ContainerStore @Inject constructor() {
     }
     fun withdraw(player: Player, spec: ContainerSpec, item: Int, requested: Int, target: Inventory): Int {
         if (!owns(player, spec) || requested <= 0) return 0
+        if (spec.family == "forestry_kit" && item in ForestryContainers.attachedItems) return 0
         val native = inventoryName(spec)
         if (native != null) {
             val stored = player.invMap[native] ?: return 0
