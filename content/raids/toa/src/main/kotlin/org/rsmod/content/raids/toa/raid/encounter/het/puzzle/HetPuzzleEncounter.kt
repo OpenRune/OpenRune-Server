@@ -2,6 +2,7 @@ package org.rsmod.content.raids.toa.raid.encounter.het.puzzle
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import java.awt.Color
 import kotlin.math.min
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.player.output.CamShakeAxis
@@ -56,6 +57,7 @@ class HetPuzzleEncounter(
         ToaHpBar(
             this,
             completion = ToaHpBar.Completion.Fade(BAR_FADE_DELAY, BAR_CLEAR_DELAY),
+            remainingOnClose = BAR_REMAINING_DEFAULT,
             currentHp = { sealHp },
             maxHp = { sealMax },
         ) {
@@ -283,6 +285,7 @@ class HetPuzzleEncounter(
         private const val BEAM_SPREAD = 2
         private const val BAR_FADE_DELAY = 5
         private const val BAR_CLEAR_DELAY = 9
+        private val BAR_REMAINING_DEFAULT = Color(0x00CC00)
         private const val STRUCK_MESSAGE = "<col=185820>The statue has been struck! The seal weakens!</col>"
         private const val SHAKE_MESSAGE = "The room begins to shake violently!"
 
