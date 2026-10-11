@@ -100,8 +100,8 @@ constructor(
         onCommand("master", "Max out all stats", ::master)
         onCommand("reset", "Reset all stats", ::reset)
         onCommand("mypos", "Get current coordinates", ::mypos)
-        onCommand("tele", "Teleport to coordgrid", ::tele) {
-            invalidArgs = "Usage: ::tele mx mz [level](e.g. ::tele 3200 3200 0)"
+        onCommand("tele", "Teleport to coordgrid or named location", ::tele) {
+            invalidArgs = "Usage: ::tele name or ::tele mx mz [level] (e.g. ::tele varrock)"
         }
         onCommand("telezone", "Teleport to zone key", ::teleZone) {
             invalidArgs = "Use as ::telezone zoneX zoneY level (ex: 400 400 0)"
@@ -397,15 +397,15 @@ constructor(
 
     private fun tele(cheat: Cheat) =
         with(cheat) {
+            if (protectedAccess.teleNamed(cheat)) {
+                return@with
+            }
             val args = if (args.size == 1) args[0].split(",") else args
             val x = args[0].toInt()
             val y = args[1].toInt()
             val level = args.getOrNull(2)?.toInt() ?: 0
             val coords = CoordGrid(x, y, level)
-            protectedAccess.launch(player) {
-                player.mes("Teleported to $coords.")
-                telejump(coords, TeleportType.Exempt)
-            }
+            protectedAccess.devTeleport(player, coords, "$coords")
         }
 
     private fun teleZone(cheat: Cheat) =
