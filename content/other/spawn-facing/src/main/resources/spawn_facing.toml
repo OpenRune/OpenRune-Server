@@ -1,5 +1,7 @@
-# Bankers face the bank booth next to them (booth placements from
-# https://github.com/mejrs/data_osrs/tree/6a3ca6f/locations).
+# Spawn directions for map npcs (map spawns carry none; see SpawnFacingScript).
+# Booth and counter placements: https://github.com/mejrs/data_osrs/tree/6a3ca6f/locations
+
+# Bankers face the bank booth beside them.
 
 [[facing]]
 npc = "npc.banker1"
@@ -765,3 +767,1074 @@ dir = "west"
 npc = "npc.deadman_banker_grey_west"
 coords = "0_40_48_55_22"
 dir = "west"
+
+# Shopkeepers and bartenders face the counter, bar or stall beside them.
+
+[[facing]]
+npc = "npc.mm_solihib"
+coords = "0_43_43_17_37"
+dir = "west"
+
+[[facing]]
+npc = "npc.mm_hamab"
+coords = "0_43_43_29_41"
+dir = "north"
+
+[[facing]]
+npc = "npc.mm_ifaba"
+coords = "0_43_43_2_23"
+dir = "west"
+
+[[facing]]
+npc = "npc.mm_tutab"
+coords = "0_43_43_5_18"
+dir = "south"
+
+[[facing]]
+npc = "npc.mm_daga"
+coords = "0_43_43_7_23"
+dir = "south"
+
+[[facing]]
+npc = "npc.death_barman"
+coords = "0_45_55_26_17"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_shopkeeper"
+coords = "0_45_55_48_26"
+dir = "west"
+
+[[facing]]
+npc = "npc.harry"
+coords = "0_44_53_18_53"
+dir = "south"
+
+[[facing]]
+npc = "npc.hickton"
+coords = "0_44_53_6_50"
+dir = "north"
+
+[[facing]]
+npc = "npc.farming_shopkeeper_2"
+coords = "0_44_54_4_7"
+dir = "south"
+
+[[facing]]
+npc = "npc.lathas_shopkeeper"
+coords = "0_39_52_18_57"
+dir = "south"
+
+[[facing]]
+npc = "npc.dorgesh_male_leather_seller"
+coords = "0_42_83_34_1"
+dir = "north"
+
+[[facing]]
+npc = "npc.dorgesh_female_lamp_seller"
+coords = "0_42_83_35_9"
+dir = "south"
+
+[[facing]]
+npc = "npc.rag_wine_merchant"
+coords = "0_48_50_13_51"
+dir = "west"
+
+[[facing]]
+npc = "npc.aprilfoolshorsesalesman"
+coords = "0_48_50_9_47"
+dir = "west"
+
+[[facing]]
+npc = "npc.wom_fakeplayer5"
+coords = "0_48_50_9_53"
+dir = "west"
+
+[[facing]]
+npc = "npc.baker_merchant_ardougne"
+coords = "0_41_51_30_47"
+dir = "east"
+
+[[facing]]
+npc = "npc.spice_merchant_ardougne"
+coords = "0_41_51_34_32"
+dir = "north"
+
+[[facing]]
+npc = "npc.silver_merchant_ardougne"
+coords = "0_41_51_34_52"
+dir = "south"
+
+[[facing]]
+npc = "npc.fur_merchant_ardougne"
+coords = "0_41_51_42_31"
+dir = "north"
+
+[[facing]]
+npc = "npc.gem_merchant_ardougne"
+coords = "0_41_51_45_39"
+dir = "west"
+
+[[facing]]
+npc = "npc.baker_merchant_ardougne2"
+coords = "0_41_51_45_46"
+dir = "west"
+
+[[facing]]
+npc = "npc.falseogretrader"
+coords = "0_39_47_29_35"
+dir = "west"
+
+[[facing]]
+npc = "npc.ogre_merchant"
+coords = "0_39_47_32_40"
+dir = "south"
+
+[[facing]]
+npc = "npc.misc_fish_monger"
+coords = "0_39_60_22_26"
+dir = "east"
+
+[[facing]]
+npc = "npc.etc_veg_monger"
+coords = "0_40_60_42_36"
+dir = "west"
+
+[[facing]]
+npc = "npc.etc_fish_monger"
+coords = "0_40_60_45_36"
+dir = "east"
+
+[[facing]]
+npc = "npc.viking_longhall_barkeep"
+coords = "0_41_57_38_25"
+dir = "west"
+
+[[facing]]
+npc = "npc.generalassistant7"
+coords = "0_45_49_22_14"
+dir = "east"
+
+[[facing]]
+npc = "npc.zembo"
+coords = "0_45_49_47_9"
+dir = "south"
+
+[[facing]]
+npc = "npc.dwarf_city_barman_rich"
+coords = "0_44_159_25_21"
+dir = "north"
+
+[[facing]]
+npc = "npc.dwarf_city_shop_bakery"
+coords = "0_45_159_12_36"
+dir = "south"
+
+[[facing]]
+npc = "npc.xbows_sales_dwarf_keldegrim"
+coords = "0_45_159_5_26"
+dir = "east"
+
+[[facing]]
+npc = "npc.dwarf_city_shop_craft"
+coords = "0_45_159_5_31"
+dir = "east"
+
+[[facing]]
+npc = "npc.dwarf_city_shop_gems"
+coords = "0_45_159_8_36"
+dir = "south"
+
+[[facing]]
+npc = "npc.gem_trader"
+coords = "0_51_50_24_12"
+dir = "west"
+
+[[facing]]
+npc = "npc.feud_marketseller"
+coords = "0_52_46_31_43"
+dir = "north"
+
+[[facing]]
+npc = "npc.elid_shield_seller"
+coords = "0_53_45_15_45"
+dir = "south"
+
+[[facing]]
+npc = "npc.elid_choc_ice_seller"
+coords = "0_53_45_38_34"
+dir = "south"
+
+[[facing]]
+npc = "npc.khazard_shopkeeper"
+coords = "0_41_49_31_16"
+dir = "south"
+
+[[facing]]
+npc = "npc.farming_shopkeeper_3"
+coords = "0_41_52_22_36"
+dir = "west"
+
+[[facing]]
+npc = "npc.peksa"
+coords = "0_48_53_4_37"
+dir = "north"
+
+[[facing]]
+npc = "npc.kebos_farming_store"
+coords = "0_19_58_35_22"
+dir = "north"
+
+[[facing]]
+npc = "npc.wcguild_axeseller"
+coords = "0_25_54_54_45"
+dir = "west"
+
+[[facing]]
+npc = "npc.gem_merchant"
+coords = "0_25_57_33_36"
+dir = "east"
+
+[[facing]]
+npc = "npc.baker_merchant"
+coords = "0_25_57_40_36"
+dir = "west"
+
+[[facing]]
+npc = "npc.hosidius_bartender_2"
+coords = "0_27_56_13_28"
+dir = "north"
+
+[[facing]]
+npc = "npc.hosidius_bartender_1"
+coords = "0_27_56_15_28"
+dir = "north"
+
+[[facing]]
+npc = "npc.hosidius_farmingstore"
+coords = "0_27_56_35_9"
+dir = "north"
+
+[[facing]]
+npc = "npc.hosidius_foodstore"
+coords = "0_27_56_40_14"
+dir = "west"
+
+[[facing]]
+npc = "npc.generalshopkeeper1"
+coords = "0_50_50_9_47"
+dir = "east"
+
+[[facing]]
+npc = "npc.burgh_general_store_owner"
+coords = "0_54_50_61_41"
+dir = "west"
+
+[[facing]]
+npc = "npc.werewolfinnkeeper"
+coords = "0_54_54_37_15"
+dir = "south"
+
+[[facing]]
+npc = "npc.darkm_trader_food"
+coords = "0_56_52_35_59"
+dir = "west"
+
+[[facing]]
+npc = "npc.darkm_trader_general"
+coords = "0_56_52_57_8"
+dir = "east"
+
+[[facing]]
+npc = "npc.darkm_trader_candles"
+coords = "0_56_52_61_31"
+dir = "west"
+
+[[facing]]
+npc = "npc.farming_shopkeeper_4"
+coords = "0_56_55_43_6"
+dir = "east"
+
+[[facing]]
+npc = "npc.prif_staffstore"
+coords = "0_50_95_17_9"
+dir = "east"
+
+[[facing]]
+npc = "npc.prif_runestore"
+coords = "0_50_95_21_36"
+dir = "south"
+
+[[facing]]
+npc = "npc.prif_macestore"
+coords = "0_50_95_55_46"
+dir = "north"
+
+[[facing]]
+npc = "npc.prif_spice"
+coords = "0_51_95_13_13"
+dir = "north"
+
+[[facing]]
+npc = "npc.prif_gem"
+coords = "0_51_95_13_21"
+dir = "west"
+
+[[facing]]
+npc = "npc.prif_silver"
+coords = "0_51_95_18_19"
+dir = "south"
+
+[[facing]]
+npc = "npc.ranging_guild_bow_salesman"
+coords = "0_41_53_49_42"
+dir = "west"
+
+[[facing]]
+npc = "npc.generalshopkeeper6"
+coords = "0_46_50_3_17"
+dir = "south"
+
+[[facing]]
+npc = "npc.generalassistant6"
+coords = "0_46_50_4_17"
+dir = "south"
+
+[[facing]]
+npc = "npc.wydin"
+coords = "0_47_50_6_4"
+dir = "north"
+
+[[facing]]
+npc = "npc.farming_shopkeeper_1"
+coords = "0_47_51_30_28"
+dir = "west"
+
+[[facing]]
+npc = "npc.warrens_barman"
+coords = "0_27_158_33_19"
+dir = "east"
+
+[[facing]]
+npc = "npc.warrens_fishmonger"
+coords = "0_27_158_33_33"
+dir = "east"
+
+[[facing]]
+npc = "npc.royal_generalstore_owner"
+coords = "0_39_160_12_20"
+dir = "south"
+
+[[facing]]
+npc = "npc.royal_foodshop_owner"
+coords = "0_39_160_25_11"
+dir = "west"
+
+[[facing]]
+npc = "npc.tzhaar_merchant_cityoreandgem"
+coords = "0_39_79_27_19"
+dir = "west"
+
+[[facing]]
+npc = "npc.fortis_shop_silk"
+coords = "0_26_48_12_41"
+dir = "north"
+
+[[facing]]
+npc = "npc.fortis_shop_spices"
+coords = "0_26_48_22_28"
+dir = "south"
+
+[[facing]]
+npc = "npc.fortis_shop_baker"
+coords = "0_26_48_24_38"
+dir = "north"
+
+[[facing]]
+npc = "npc.tea_seller"
+coords = "0_51_53_7_19"
+dir = "west"
+
+[[facing]]
+npc = "npc.pest_squire_storemaster"
+coords = "0_41_41_24_41"
+dir = "east"
+
+[[facing]]
+npc = "npc.pest_squire_runeshop"
+coords = "0_41_41_34_28"
+dir = "north"
+
+[[facing]]
+npc = "npc.pest_squire_rangeshop"
+coords = "0_41_41_43_36"
+dir = "west"
+
+[[facing]]
+npc = "npc.chadwell"
+coords = "0_38_51_32_23"
+dir = "east"
+
+[[facing]]
+npc = "npc.hunting_shop_owner_yanille"
+coords = "0_40_48_8_10"
+dir = "west"
+
+[[facing]]
+npc = "npc.irksol"
+coords = "0_38_69_47_53"
+dir = "north"
+
+# From Reign's spawn data (rev 240) where it gives a non-south direction for
+# the same npc on the same tile. Where Reign and the booth/counter placements
+# both give a non-south direction they agree (66 of 66).
+
+[[facing]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_11_17"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_11_19"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_ig_solider_sitting1"
+coords = "0_45_55_12_12"
+dir = "east"
+
+[[facing]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_12_17"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_12_19"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_13_17"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_13_19"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_ig_solider_sitting3"
+coords = "0_45_55_14_12"
+dir = "west"
+
+[[facing]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_14_17"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_14_19"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_15_17"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_ig_solider_drilling"
+coords = "0_45_55_15_19"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_ig_solider_training"
+coords = "0_45_55_20_11"
+dir = "east"
+
+[[facing]]
+npc = "npc.death_ig_solider_training"
+coords = "0_45_55_20_13"
+dir = "east"
+
+[[facing]]
+npc = "npc.slayer_master_7"
+coords = "0_48_54_37_60"
+dir = "east"
+
+[[facing]]
+npc = "npc.rd_teleporter_guy"
+coords = "0_46_52_53_45"
+dir = "north"
+
+[[facing]]
+npc = "npc.vikingexile_brundt_island_multi"
+coords = "0_38_62_34_42"
+dir = "west"
+
+[[facing]]
+npc = "npc.haskell_stone"
+coords = "0_38_62_39_27"
+dir = "west"
+
+[[facing]]
+npc = "npc.fourdiamonds_sword_bandit_1"
+coords = "0_49_46_22_43"
+dir = "north"
+
+[[facing]]
+npc = "npc.fourdiamonds_sword_bandit_1"
+coords = "0_49_46_23_35"
+dir = "north"
+
+[[facing]]
+npc = "npc.fourdiamonds_sword_bandit_free"
+coords = "0_49_46_39_30"
+dir = "north"
+
+[[facing]]
+npc = "npc.uncerter_bandit"
+coords = "0_49_46_42_42"
+dir = "east"
+
+[[facing]]
+npc = "npc.feud_ali_m"
+coords = "0_51_50_40_11"
+dir = "east"
+
+[[facing]]
+npc = "npc.0_23_53_saltfish"
+coords = "0_23_53_13_39"
+dir = "north"
+
+[[facing]]
+npc = "npc.0_23_53_saltfish"
+coords = "0_23_53_13_40"
+dir = "north"
+
+[[facing]]
+npc = "npc.0_23_53_saltfish"
+coords = "0_23_53_22_51"
+dir = "north"
+
+[[facing]]
+npc = "npc.kw_artist"
+coords = "0_23_53_57_30"
+dir = "north"
+
+[[facing]]
+npc = "npc.wint_wcguild_rep"
+coords = "0_25_61_29_35"
+dir = "east"
+
+[[facing]]
+npc = "npc.wint_pisc_navigator"
+coords = "0_25_61_33_35"
+dir = "west"
+
+[[facing]]
+npc = "npc.tribes_boatman_island"
+coords = "0_27_53_51_26"
+dir = "west"
+
+[[facing]]
+npc = "npc.tribes_boatman"
+coords = "0_27_54_54_2"
+dir = "north"
+
+[[facing]]
+npc = "npc.myreque_pt3_female_huddled2"
+coords = "0_56_50_53_32"
+dir = "northwest"
+
+[[facing]]
+npc = "npc.myq4_harpert"
+coords = "0_56_50_60_11"
+dir = "east"
+
+[[facing]]
+npc = "npc.tob_female_orator"
+coords = "0_57_50_14_13"
+dir = "north"
+
+[[facing]]
+npc = "npc.myq4_garth"
+coords = "0_57_50_21_15"
+dir = "north"
+
+[[facing]]
+npc = "npc.tob_stranger"
+coords = "0_57_50_25_23"
+dir = "west"
+
+[[facing]]
+npc = "npc.snakeboss_fisherman"
+coords = "0_34_47_13_61"
+dir = "north"
+
+[[facing]]
+npc = "npc.snakeboss_highpriest"
+coords = "0_34_47_16_47"
+dir = "east"
+
+[[facing]]
+npc = "npc.farming_tools_leprechaun"
+coords = "0_47_51_45_41"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_ig_solider_wounded"
+coords = "0_44_56_24_5"
+dir = "west"
+
+[[facing]]
+npc = "npc.death_troll_thrower5"
+coords = "0_44_56_35_14"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_troll_thrower1"
+coords = "0_44_56_38_16"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_troll_thrower2"
+coords = "0_44_56_43_16"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_troll_cook1"
+coords = "0_44_56_46_4"
+dir = "west"
+
+[[facing]]
+npc = "npc.death_troll_thrower3"
+coords = "0_44_56_47_16"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_troll_cook2"
+coords = "0_44_56_48_4"
+dir = "east"
+
+[[facing]]
+npc = "npc.death_troll_thrower4"
+coords = "0_44_56_51_16"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_troll_guard1"
+coords = "0_44_56_56_14"
+dir = "north"
+
+[[facing]]
+npc = "npc.death_troll_guard2"
+coords = "0_44_56_59_14"
+dir = "north"
+
+[[facing]]
+npc = "npc.gim_tutor_shared_storage"
+coords = "0_48_47_24_19"
+dir = "east"
+
+[[facing]]
+npc = "npc.tzhaar_ket7"
+coords = "0_38_79_48_28"
+dir = "north"
+
+[[facing]]
+npc = "npc.hosdun_druid"
+coords = "0_28_155_10_17"
+dir = "north"
+
+[[facing]]
+npc = "npc.hosdun_druid"
+coords = "0_28_155_16_50"
+dir = "north"
+
+[[facing]]
+npc = "npc.hosdun_druid"
+coords = "0_28_155_20_47"
+dir = "north"
+
+[[facing]]
+npc = "npc.hosdun_spider"
+coords = "0_28_155_45_32"
+dir = "north"
+
+[[facing]]
+npc = "npc.hosdun_spider"
+coords = "0_28_155_48_31"
+dir = "north"
+
+[[facing]]
+npc = "npc.basilisk_knight"
+coords = "0_38_162_0_24"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_162_14_62"
+dir = "west"
+
+[[facing]]
+npc = "npc.basilisk_knight"
+coords = "0_38_162_18_12"
+dir = "west"
+
+[[facing]]
+npc = "npc.basilisk_knight"
+coords = "0_38_162_18_21"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_162_1_49"
+dir = "west"
+
+[[facing]]
+npc = "npc.basilisk_knight"
+coords = "0_38_162_21_16"
+dir = "west"
+
+[[facing]]
+npc = "npc.basilisk_knight"
+coords = "0_38_162_23_10"
+dir = "west"
+
+[[facing]]
+npc = "npc.basilisk_knight"
+coords = "0_38_162_23_22"
+dir = "west"
+
+[[facing]]
+npc = "npc.basilisk_knight"
+coords = "0_38_162_27_14"
+dir = "west"
+
+[[facing]]
+npc = "npc.slayer_basilisk"
+coords = "0_38_162_27_30"
+dir = "west"
+
+[[facing]]
+npc = "npc.slayer_basilisk"
+coords = "0_38_162_27_35"
+dir = "west"
+
+[[facing]]
+npc = "npc.basilisk_knight"
+coords = "0_38_162_28_20"
+dir = "west"
+
+[[facing]]
+npc = "npc.slayer_basilisk"
+coords = "0_38_162_29_39"
+dir = "west"
+
+[[facing]]
+npc = "npc.basilisk_knight"
+coords = "0_38_162_2_19"
+dir = "west"
+
+[[facing]]
+npc = "npc.slayer_basilisk"
+coords = "0_38_162_31_31"
+dir = "west"
+
+[[facing]]
+npc = "npc.slayer_basilisk"
+coords = "0_38_162_32_35"
+dir = "west"
+
+[[facing]]
+npc = "npc.slayer_basilisk"
+coords = "0_38_162_35_30"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_162_3_46"
+dir = "west"
+
+[[facing]]
+npc = "npc.slayer_basilisk"
+coords = "0_38_162_43_35"
+dir = "west"
+
+[[facing]]
+npc = "npc.slayer_basilisk"
+coords = "0_38_162_46_40"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_162_47_62"
+dir = "west"
+
+[[facing]]
+npc = "npc.slayer_basilisk"
+coords = "0_38_162_48_33"
+dir = "west"
+
+[[facing]]
+npc = "npc.slayer_basilisk"
+coords = "0_38_162_49_37"
+dir = "west"
+
+[[facing]]
+npc = "npc.slayer_basilisk"
+coords = "0_38_162_50_42"
+dir = "west"
+
+[[facing]]
+npc = "npc.slayer_basilisk"
+coords = "0_38_162_53_38"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_10_14"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_11_4"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_12_10"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_14_29"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_14_5"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_15_13"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_15_25"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_17_23"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_18_4"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_19_18"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_19_26"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_20_0"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_20_15"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_20_21"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_23_6"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_24_10"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_2_14"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_37_16"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_40_4"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_41_21"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_42_13"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_42_17"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_43_1"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_45_22"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_46_12"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_46_5"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_47_16"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_48_20"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_49_1"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_49_4"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_49_8"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_4_15"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_4_19"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_52_11"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_55_1"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth2"
+coords = "0_38_163_6_12"
+dir = "west"
+
+[[facing]]
+npc = "npc.kourend_dagannoth1"
+coords = "0_38_163_8_6"
+dir = "west"
+
+[[facing]]
+npc = "npc.tzhaar_ket6"
+coords = "0_38_80_59_53"
+dir = "west"
+
+[[facing]]
+npc = "npc.tzhaar_xil6"
+coords = "0_39_79_19_27"
+dir = "west"
+
+[[facing]]
+npc = "npc.tzhaar_hur_city1"
+coords = "0_39_79_20_59"
+dir = "north"
+
+[[facing]]
+npc = "npc.tzhaar_ket_strong"
+coords = "0_39_79_9_17"
+dir = "north"
+
+[[facing]]
+npc = "npc.vm_museum_guard"
+coords = "0_50_53_60_55"
+dir = "east"
+
+[[facing]]
+npc = "npc.bioguard1"
+coords = "0_50_53_63_15"
+dir = "west"
+
+[[facing]]
+npc = "npc.romeo_juliet_pew_sleeping_man"
+coords = "0_50_54_53_21"
+dir = "north"
+
+[[facing]]
+npc = "npc.romeo_juliet_pew_sleeping_woman"
+coords = "0_50_54_56_25"
+dir = "north"
+
+[[facing]]
+npc = "npc.vm_archaeologist6_npc_dummy"
+coords = "0_51_53_3_52"
+dir = "north"
+
+[[facing]]
+npc = "npc.pest_squire_lander_2"
+coords = "0_41_41_20_17"
+dir = "north"
+
+[[facing]]
+npc = "npc.pest_squire_lander"
+coords = "0_41_41_33_13"
+dir = "north"
+
+[[facing]]
+npc = "npc.wilderness_resource_guardian"
+coords = "0_49_61_47_41"
+dir = "north"
