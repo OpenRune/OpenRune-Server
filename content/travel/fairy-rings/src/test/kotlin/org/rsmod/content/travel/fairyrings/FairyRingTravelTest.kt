@@ -25,6 +25,7 @@ import org.rsmod.api.player.protect.*
 import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.player.vars.*
 import org.rsmod.api.route.BoundValidator
+import org.rsmod.content.quest.manager.*
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
@@ -41,7 +42,55 @@ import org.rsmod.routefinder.collision.CollisionFlagMap
 import org.rsmod.routefinder.flag.CollisionFlag
 
 @ResourceLock("ServerCacheManager")
+@ResourceLock("QuestRequirements")
 internal class FairyRingTravelTest {
+    private val previousPolicy = QuestRequirements.activePolicy()
+
+    @AfterEach fun restorePolicy() = QuestRequirements.install(previousPolicy)
+
+    @Test fun `native permission allows partial quest use and is revalidated before arrival`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
+        val f = Fixture(); f.open()
+        assertFalse(f.player.ui.containsModal("interface.fairyrings"))
+        VarPlayerIntMapSetter.set(f.player, "varbit.fairyring_permission", 1)
+        f.open(); assertTrue(f.player.ui.containsModal("interface.fairyrings"))
+        val target = rings.byCode("AIQ")!!
+        f.setCode(target); f.click("component.fairyrings:confirm")
+        VarPlayerIntMapSetter.set(f.player, "varbit.fairyring_permission", 0)
+        f.finish(); assertEquals(HUB, f.player.coords); assertEquals(0, f.player.vars[target.visitedVarBit!!])
+        VarPlayerIntMapSetter.set(f.player, "varbit.fairyring_permission", 1)
+        f.open(); f.setCode(target); f.click("component.fairyrings:confirm"); f.finish()
+        assertEquals(target.destination, f.player.coords)
+    }
+
+    @Test fun `quest gates deny each native destination and virtual completion unlocks only selected quests`() {
+        val gated = mapOf("AJQ" to "quest_deathtothedorgeshuun", "BJR" to "quest_holygrail", "BJS" to "quest_regicide", "BLQ" to "quest_landofthegoblins", "CIP" to "quest_fremenniktrials", "CLR" to "quest_monkeymadness1", "DLS" to "quest_insearchofthemyreque")
+        for ((code, quest) in gated) {
+            QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
+            val f = Fixture(); VarPlayerIntMapSetter.set(f.player, "varbit.fairyring_permission", 1)
+            val target = rings.byCode(code)!!
+            f.open(); f.setCode(target); f.click("component.fairyrings:confirm"); f.finish()
+            assertEquals(HUB, f.player.coords, code); assertEquals(0, f.player.vars[target.visitedVarBit!!], code)
+            QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.VirtualCompletions, setOf(quest)))
+            f.open(); f.setCode(target); f.click("component.fairyrings:confirm"); f.finish()
+            assertEquals(target.destination, f.player.coords, code)
+        }
+    }
+
+    @Test fun `Varlamore requires its native first visit without changing quest progress`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.VirtualCompletions, setOf("quest_fairytale2", "quest_childrenofthesun")))
+        for (code in listOf("AIS", "AJP", "CKQ")) {
+            val f = Fixture(); val target = rings.byCode(code)!!
+            f.open(); f.setCode(target); f.click("component.fairyrings:confirm"); f.finish()
+            assertEquals(HUB, f.player.coords, code)
+            VarPlayerIntMapSetter.set(f.player, "varbit.varlamore_visited", 1)
+            f.open(); f.setCode(target); f.click("component.fairyrings:confirm"); f.finish()
+            assertEquals(target.destination, f.player.coords, code)
+            assertEquals(0, f.player.vars["varbit.fairy2_queencure_quest"])
+            assertEquals(0, f.player.vars["varbit.fairyring_permission"])
+        }
+    }
+
     @Test fun `authoritative native centre landings have a walkable exit`() {
         val blocked = rings.all.filter { it.destination?.let { tile ->
             listOf(tile.translate(1, 0), tile.translate(-1, 0), tile.translate(0, 1), tile.translate(0, -1)).none { next -> map[next.x, next.z, next.level] and BLOCKED == 0 }

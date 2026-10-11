@@ -112,6 +112,7 @@ constructor(
     }
 
     private fun ProtectedAccess.configure() {
+        if (!hasPermission()) return
         if (!hasFairyMagic()) {
             mes(NO_FAIRY_MAGIC)
             return
@@ -130,6 +131,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.favourites() {
+        if (!hasPermission()) return
         if (!hasFairyMagic()) {
             mes(NO_FAIRY_MAGIC)
             return
@@ -256,7 +258,21 @@ constructor(
     private fun ProtectedAccess.canEnterHideout(): Boolean =
         QuestRequirements.hasCompleted(player, "quest_fairytale2") || inv.contains("obj.fairytale2_nuffs_certificate")
 
+    private fun ProtectedAccess.hasPermission(): Boolean {
+        if (FairyRingRequirements.permission(player)) return true
+        mes("You need the Fairy Godfather's permission to use the fairy rings.")
+        return false
+    }
+
+    private fun ProtectedAccess.canTravel(ring: FairyRing): Boolean {
+        if (!hasPermission()) return false
+        val denial = FairyRingRequirements.destinationDenial(player, ring.code) ?: return true
+        mes(denial)
+        return false
+    }
+
     private suspend fun ProtectedAccess.travel(ring: FairyRing, override: CoordGrid? = null): Boolean {
+        if (!canTravel(ring)) return false
         if (!hasFairyMagic()) {
             mes(NO_FAIRY_MAGIC)
             return false
@@ -273,6 +289,7 @@ constructor(
         if (ring.code == "DIQ") { mes("You need a built fairy ring in your own house to use this code."); return false }
         val progress = player.attr[HIDEOUT_PROGRESS] ?: 0
         val hideout = override == HIDEOUT || (ring.code == "AJS" && progress == 3 && canEnterHideout())
+        if (hideout && !canEnterHideout()) { mes("You need Nuff's certificate to reach the Fairy Resistance Hideout."); return false }
         val destination = if (hideout) HIDEOUT else ring.destination
         if (destination != null && !validArrival(destination)) {
             mes("That fairy ring is currently unavailable.")
@@ -290,6 +307,8 @@ constructor(
         try {
             delay(VANISH_DELAY)
             if (player.pendingLogout || player.loggingOut || player.hitpoints == 0 || coords != origin || !hasFairyMagic()) return false
+            if (!canTravel(ring)) return false
+            if (hideout && !canEnterHideout()) return false
             val lateDenial = teleportValidator.validate(player, TeleportType.Standard, areaChecker)
             if (lateDenial != null) { mes(lateDenial); return false }
             resetAnim()

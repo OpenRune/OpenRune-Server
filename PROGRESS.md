@@ -21,11 +21,14 @@ persistence, rollback and native interaction validation is still in progress.
   All **29 Araxxor module tests** pass; client acceptance is still pending.
 - Fairy rings: **64 native code rows**, **54 fixed destinations** and native
   loc-to-IF3 travel, favourites/Last-destination and cancellation checks pass
-  (**13 tests**). Native centres have walkable exits. The AIR/DLR/DJQ/AJS
+  (**16 tests**). Native centres have walkable exits. The AIR/DLR/DJQ/AJS
   hideout sequence and all six rotation buttons pass; Last-destination uses the
   separate set bit, never the overlapping op-visibility mask. POH DIQ requires
   a built house ring (Construction is not implemented); remaining prerequisite
-  checks and client acceptance remain open.
+  and first-visit checks for the Sailing islands, plus client acceptance, remain open.
+  Native Fairy Godfather permission and ten destination quest gates are enforced
+  under the existing quest policy, including late permission/certificate loss.
+  Virtual completion keeps the fork's accepted free-travel behaviour.
 - Agility: **518 candidate links** compared with native definitions, map placements
   and the current Wiki/Shortest Path sources. Native option/animation registration
   and walkable landings pass. **Fourteen tests** also exercise bridge repair, rope setup

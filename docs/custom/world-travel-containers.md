@@ -328,3 +328,19 @@ clears keys unless a duplicate remains carried or banked. A pure native death
 hook always retains rings and does not change stored keys during previews.
 Seven input tests and all 51 Containers module tests pass. Door-specific key consumers and visual interface
 acceptance remain open. Source: [Steel key ring](https://oldschool.runescape.wiki/w/Steel_key_ring).
+
+### Fairy-ring permission and destination requirements
+
+Native `varbit.fairyring_permission` permits partial Fairytale II access; no
+guessed quest-stage threshold is used. The existing assume-completed/virtual/
+respect-progress policy controls completed quest requirements. Ten destination
+gates cover Children of the Sun, Death to the Dorgeshuun, Holy Grail, Regicide,
+Land of the Goblins, Fremennik Trials, Monkey Madness I and In Search of the
+Myreque. Holy Grail and Land of the Goblins also accept real in-progress quests.
+Varlamore first-visit uses its native bit outside assume-completed mode. Native
+quest progress remains untouched. Permission, destination requirements and
+hideout certificate are checked again after the outgoing animation. Sixteen
+fairy-ring tests pass, including native loc/IF3 denial, selective virtual
+unlocks, first-visit and late permission loss. Great Conch/Grimstone first-visit
+producer integration is still open with Sailing. Source:
+[Fairy ring requirements and codes](https://oldschool.runescape.wiki/w/Fairy_ring).
