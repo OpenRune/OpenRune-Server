@@ -41,12 +41,12 @@ persistence, rollback and native interaction validation is still in progress.
   quest progress. Distant-click slide bumps and the bush repeat cooldown remain
   to be verified.
 - Containers: all **39 Wiki categories** inventoried against native items.
-  Rune/looting pouch baselines adapted. **22 pouch tests** cover codecs, storage
+  Rune/looting pouch baselines adapted. **28 pouch tests** cover codecs, storage
   rules, native rune insertion/withdrawal, interrupted Divine crafting and atomic
   revert with thread return and fourth-slot warning. The real ground-pickup and native altar producers now honour the native
   Rune-picking setting: complete matching stacks only, with ordinary inventory
   fallback and late cancellation. Six new tests cover these producers and pure
-  capacity previews. Native bank-side Configure now opens all four pouch forms without an invalid-op exception; bank regression compilation and 22 pouch tests pass. Loadouts, looting-bag native/death validation and final UI
+  capacity previews. Native bank-side Configure now opens all four pouch forms without an invalid-op exception; bank regression compilation and 28 pouch tests pass. Native death sequence and Destroy confirmation now honour the rune-empty-on-death toggle and clear bag contents even while the death/dialogue lock is active. Wilderness bag destruction immediately exposes non-supplies; duplicates retain shared storage. Loadouts, Trouver protection review, remaining looting-bag input validation and final UI
   acceptance remain open. Initial storage operations for **51
   native forms in 16 families**, plus **57 native fruit basket/vegetable sack
   forms**, pass **18 interaction/pickup/death tests**.

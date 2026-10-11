@@ -8,6 +8,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.invtx.*
 import org.rsmod.api.market.MarketPrices
+import org.rsmod.api.player.SupplyItems
 import org.rsmod.api.player.events.interact.HeldBanksideEvents
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -81,8 +82,9 @@ constructor(
         onIfClose("interface.bankside") { player.onBankClose() }
 
         onDestroyHeld {
-            if (type in LootingBags.ALL) {
-                player.destroyBag()
+            if (obj.id in LootingBags.ids) {
+                val another = player.inv.objs.any { it != null && it.id in LootingBags.ids } || player.invMap.getOrPut("inv.bank").objs.any { it != null && it.id in LootingBags.ids }
+                if (!another) player.destroyBag()
             }
         }
     }
@@ -372,13 +374,12 @@ constructor(
         }
         if (insideWilderness) {
             for (obj in bag.objs) {
-                if (obj == null) {
-                    continue
-                }
-                objRepo.add(Obj.fromOwner(this, coords, obj), SPILL_DURATION)
+                if (obj == null || SupplyItems.isFoodOrPotion(getInvObj(obj))) continue
+                objRepo.add(Obj.fromServer(org.rsmod.game.MapClock(currentMapClock), coords, obj), SPILL_DURATION, 0)
             }
         }
-        invClear(bag)
+        // The confirmed destroy event owns this cleanup; a dialogue may still hold the player lock.
+        bag.fillNulls()
         saveLootingBag()
     }
 

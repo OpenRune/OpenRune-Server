@@ -370,3 +370,26 @@ rune pouch interface for each of its four forms. Late logout refuses the action.
 The native IF3 producer test passes; all 22 pouch tests pass and Bank compiles
 (its own test task has no sources). Ten-loadout controls still require a
 compatible interface implementation, rather than assigning nonexistent widgets.
+
+### Pouch death and actual destruction
+
+The real PlayerDeath coroutine, native drop selection/application and native
+HeldDestroy confirmation now pass six additional tests (28 pouch tests total).
+The native `emptyondeath_runepouch` toggle adds all stored runes to the death
+outputs and clears them only at completion. Ordinary PvM death otherwise retains
+their native vars for reclamation. PvP always spills runes. Looting bag contents
+include food/potions on PvM death, excluding them from the PvP killer's output.
+
+Actual Destroy revealed that `invClear` could refuse the protected looting
+inventory while its own confirmation dialogue still held the player's lock.
+The confirmed item event and death-completion callback now own their cleanup,
+without calling the user-action permission guard again. Wilderness destruction
+spills non-supplies publicly with no reveal delay; outside it contents disappear.
+A surviving carried/banked duplicate retains the account's shared bag storage.
+
+The current Wiki Trouver rules include changes newer than this cache's item
+variants. Protection/repair behaviour is still a separate compatibility review,
+not assumed complete from generic PvP rune-spill tests. Primary sources:
+[Rune pouch](https://oldschool.runescape.wiki/w/Rune_pouch),
+[Looting bag](https://oldschool.runescape.wiki/w/Looting_bag), and
+[Trouver parchment](https://oldschool.runescape.wiki/w/Trouver_parchment).

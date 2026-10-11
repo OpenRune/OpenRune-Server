@@ -5,7 +5,6 @@ import jakarta.inject.Inject
 import org.rsmod.api.death.PlayerDeathContext
 import org.rsmod.api.death.PlayerDeathDropHook
 import org.rsmod.api.death.PlayerDeathDrops.DeathDropResult
-import org.rsmod.api.invtx.invClear
 import org.rsmod.api.player.SupplyItems
 import org.rsmod.content.other.pouches.lootingbag.*
 import org.rsmod.content.other.pouches.runepouch.*
@@ -19,7 +18,7 @@ class PouchDeathHook @Inject constructor() : PlayerDeathDropHook {
         val player = context.player
         val bag = if (player.hasLootingBag()) player.lootingBag.objs.filterNotNull() else emptyList()
         val bagDrops = bag.filter { !context.isPvpDeath || !SupplyItems.isFoodOrPotion(getInvObj(it)) }
-        val runes = if (context.isPvpDeath) player.runePouchSlots()?.let { slots ->
+        val runes = if (emptyRunes(context)) player.runePouchSlots()?.let { slots ->
             val contents = player.readRunePouch(slots)
             (0 until slots).mapNotNull { slot ->
                 val rune = RunePouchRunes.byCompact(contents.types[slot])
@@ -36,14 +35,17 @@ class PouchDeathHook @Inject constructor() : PlayerDeathDropHook {
         )
     }
 
+    private fun emptyRunes(context: PlayerDeathContext): Boolean =
+        context.isPvpDeath || context.player.vars["varbit.emptyondeath_runepouch"] > 0
+
     override fun prepareCompletion(context: PlayerDeathContext): () -> Unit {
         val player = context.player
         val hadBag = player.hasLootingBag()
-        val runeSlots = if (context.isPvpDeath) player.runePouchSlots() else null
+        val runeSlots = if (emptyRunes(context)) player.runePouchSlots() else null
         return {
-            if (hadBag) { player.invClear(player.lootingBag); player.saveLootingBag() }
+            if (hadBag) { player.lootingBag.fillNulls(); player.saveLootingBag() }
             if (runeSlots != null) {
-                val contents = player.readRunePouch(runeSlots)
+                val contents = player.readRunePouch(RunePouches.DIVINE_SLOTS)
                 contents.clear()
                 player.writeRunePouch(contents)
             }

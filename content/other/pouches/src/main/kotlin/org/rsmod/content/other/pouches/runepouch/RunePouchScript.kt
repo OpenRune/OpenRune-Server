@@ -76,7 +76,7 @@ constructor(private val objRepo: ObjRepository, private val protectedAccess: Pro
         onIfModalButton(COMPONENT_QUANTITY_ALL) { player.quantityMode = RunePouchQuantity.MODE_ALL }
 
         onDestroyHeld {
-            if (type in RunePouches.ALL && player.runePouchSlots() == null) {
+            if (obj.id in RunePouches.ids && player.runePouchSlots() == null) {
                 spillRunes(player)
             }
         }
