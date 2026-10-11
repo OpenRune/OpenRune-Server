@@ -6,7 +6,17 @@ Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
 **Status:** 🟢 Complete · 🟡 Started · 🔴 Not started
 
-## 🟡 Started: Edgeville home teleporter and Emblem trader
+## 🟡 Started: world shortcuts, containers and fairy rings
+
+Owner-requested scope: every revision-240 Agility shortcut, all container items
+in the Wiki list, the full fairy-ring network, and the missing surface Spider
+Cave entrance/exit for araxytes and Araxxor. Work uses existing native mechanics
+and separate reviewable chunks. Upstream #227/#216 and the current Wiki lists
+are being compared with the fork; content presence is not completion evidence.
+Existing accepted Araxxor combat and travel remain intact. Full route, storage,
+persistence, rollback and native interaction validation is still in progress.
+
+## 🟢 Complete: Edgeville home teleporter and Emblem trader
 
 Owner-selected home: **Edgeville**. Public `::home` arrives near the bank;
 Talk-to the Teleport wizard or use `::teleports` to open the native catalogue.
@@ -30,12 +40,12 @@ formatter, runtime JAR, preservation of existing cache archives/file IDs and
 initialisation and isolated rev240/Nero boot. The final runtime verifies **85
 walkable tiles** and all **45 menu components**. Guarded package:
 `outputs/home-teleporter-20261011/INSTALLEREN.cmd` with checkpoint and rollback.
-Fixed/resizable client layout, animation timing and in-game end acceptance remain
-open. [Implementation, sources and manual tests](docs/custom/home-teleporter.md).
+Owner accepted the result on **2026-10-11**. [PR #37](https://github.com/EvolvedMind/OpenRune-Server/pull/37)
+is merged as `98822c1ef`; its tree matches tested head `40224c542`. [Implementation, sources and manual tests](docs/custom/home-teleporter.md).
 
-## 🟡 Started: Revenant Caves
+## 🟢 Complete: Revenant Caves
 
-Implementation ready for client acceptance: three entrances, two exits, five
+Owner accepted the implementation on **2026-10-11**: three entrances, two exits, five
 boostable Agility shortcuts, 100,000-coin admission/death risk, singles-plus,
 30 ordinary spawns across all eleven species, healing/prayer adaptation,
 ethereum/weapon charges, ancient artefacts and Maledictus with its specials,
@@ -45,10 +55,10 @@ administrator test commands are connected. Existing rev240 content is retained.
 **46 new feature tests; 206 selected tests in total**, scoped format checks,
 the runtime JAR and bounded cache/mapping/login checks pass. All 117,585 LIVE
 archives, unrelated SERVER files and 220,158 existing mappings are preserved;
-six new server vars are added. In-game visuals, route feel and multiplayer
-acceptance remain open. [Sources, configured differences and tests](docs/custom/revenant-caves.md).
+six new server vars are added. The accepted test result is retained; no new multiplayer test is claimed. [Sources, configured differences and tests](docs/custom/revenant-caves.md).
 
-[Draft PR #36](https://github.com/EvolvedMind/OpenRune-Server/pull/36).
+[PR #36](https://github.com/EvolvedMind/OpenRune-Server/pull/36) merged as `7f0fdc01f`;
+the tested content is unchanged in the final main tree.
 Guarded test package: `outputs/revenants-entrance-fix-20261011/INSTALLEREN.cmd`.
 
 Entrance fix: remove the silent account-membership gate on this members world.
