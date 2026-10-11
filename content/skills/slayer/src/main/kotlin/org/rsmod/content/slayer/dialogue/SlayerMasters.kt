@@ -2,8 +2,8 @@ package org.rsmod.content.slayer.dialogue
 
 import dev.openrune.rscm.RSCM.asRSCM
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.content.slayer.slayerDuradelNotesReceived
 import org.rsmod.content.slayer.dialogue.StandardSlayerDialogue.openMain
+import org.rsmod.content.slayer.slayerDuradelNotesReceived
 
 object SlayerMasters {
 
@@ -89,7 +89,7 @@ object SlayerMasters {
             return
         }
         val npcId =
-            if (npc?.id == Npc.spria) Npc.spria else Npc.spriaActive
+            if (npc?.let { access.npcVisType(it).id } == Npc.spria) Npc.spria else Npc.spriaActive
         openMain(npcId, extras = extraMenuOptions(this, npcId))
     }
 
