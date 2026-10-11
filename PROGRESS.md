@@ -42,13 +42,22 @@ generic/specialist containers, seed box, chugging barrel, all **112 potion
 storage families**, quiver/bolt pouch controls, native bank/death interactions,
 crafting and Forestry kit/basket harvest consumers.
 
-The latest Forestry chunk passes **22 native input tests**, with full
-Containers/Pouches/InvTx regression checks passing. Previous recorded route
-checks include 26 shortcut, 18 fairy-ring and 29 Araxxor tests.
-Next: finish remaining specialist consumers and Forestry bird-nest/cape effects,
+Latest local continuation `0bb3fbfa0` connects ordinary Woodcutting nest drops,
+the equipped cape-pouch perk, rabbit-foot selection and atomic native Search.
+Seed rewards also enter an owned open seed box safely. The complete candidate
+run passes **309 tests**: 233 Containers (including **31 Forestry inputs**),
+65 Pouches and 11 InvTx. Exact-file formatting and generated inventory checks
+pass; all 14 accepted source hashes and the accepted live JAR remain unchanged.
+The tests use the preserved candidate cache; the old checkout cache lacks
+earlier packed definitions and is not the runtime candidate.
+
+Previous route checks include 26 shortcut, 18 fairy-ring and 29 Araxxor tests.
+Next: remaining specialist/potion consumers, Twitcher's and clue-nest effects,
 then final route/animation, native interface/death acceptance and a guarded
-world-content test package. Forestry events, Barbarian Assault and Construction
-ownership dependencies remain open. This branch is not merged or installed.
+world-content runtime package. Forestry events, Barbarian Assault and
+Construction ownership dependencies remain open. Cape/world integration must
+reconcile shared quiver UI/perks before combined rollout. This world-content
+branch is committed locally; it is not merged or installed.
 
 ## 🟢 Complete: Edgeville home teleporter and Emblem trader
 
