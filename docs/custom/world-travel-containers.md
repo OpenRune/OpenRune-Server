@@ -451,3 +451,26 @@ All 65 Containers and 28 Pouches tests pass. Fish barrel now uses the same nativ
 bank-side consumer. Its seven real-input Fishing tests and the four generic
 container-bank regressions pass. The full-bank fixture now tests configured
 capacity rather than filling the entire oversized native backing inventory.
+
+
+### Shade coffins and worn container controls
+
+The five lock tiers attach to a broken coffin through native Dampe NPC inputs.
+The resolved cache places Locks at op three despite the compact Wiki options
+list; registrations use that native option. Dampe refuses a duplicate coffin
+including banked and worn ownership. Players cannot attach locks themselves.
+Held and worn Fill/Configure/Open/Close/Empty keep their native option numbers.
+Empty withdraws highest-tier remains first. Confirmed Remove lock atomically
+returns the broken coffin and lock, then clears remains; full inventory, stale
+object replacement, death, logout and cancel preserve the original state.
+Generic container worn operations now bind from native wear-op parameters and
+preserve the default Remove handler. Changing the worn form rebuilds appearance.
+Five producer/consumer tests pass, and all 70 Containers tests pass. Sources:
+[Dampe](https://oldschool.runescape.wiki/w/Dampe),
+[Dampe transcript](https://oldschool.runescape.wiki/w/Transcript:Dampe),
+[Broken coffin](https://oldschool.runescape.wiki/w/Broken_coffin),
+[Bronze coffin](https://oldschool.runescape.wiki/w/Bronze_coffin),
+[Gold coffin](https://oldschool.runescape.wiki/w/Gold_coffin), and
+[Gold locks](https://oldschool.runescape.wiki/w/Gold_locks).
+No direct pyre consumption is added: the documented mechanic requires removing
+remains before constructing a pyre. The unstarted Shades activity is preserved.

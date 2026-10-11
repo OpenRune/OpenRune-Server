@@ -58,7 +58,7 @@ persistence, rollback and native interaction validation is still in progress.
 - Tackle box / huntsman's kit: native main/side screens, Fill/Empty, quantity
   controls, partial transfers and 35/32-type limits pass **eight tests**. Existing
   tackle contents and charged-tool vars are preserved. Native account loading and
-  confirmed last-kit destruction are covered; all **65 container module tests**
+  confirmed last-kit destruction are covered; all **70 container module tests**
   pass. Visual UI acceptance and final bank/death integration remain open.
 - Bow string spool: six native capacity tiers (250 to 100,000), notes, account
   storage and all twelve ordinary bow-stringing routes pass **six tests**,
@@ -84,12 +84,12 @@ persistence, rollback and native interaction validation is still in progress.
   open source forms, correct XP, full inventories and overflowing shared storage.
   Silklined herb-sack creation preserves herbs and the open state; late movement,
   death, logout and stale silk cancel without consumption. Existing Crafting
-  item-use registrations remain compatible through one shared recipe provider. Native clothing and pouch choices are both reachable for shared furs. Hunter upgrades preserve stored fur/meat, use three ticks and the native five-crafts-per-thread charge; fur Empty is bank-only. All 61 Containers and 16 Crafting tests pass; the additional fur Empty interaction test also passes. Coffin upgrades and specialised container creation still need completion.
+  item-use registrations remain compatible through one shared recipe provider. Native clothing and pouch choices are both reachable for shared furs. Hunter upgrades preserve stored fur/meat, use three ticks and the native five-crafts-per-thread charge; fur Empty is bank-only. All 61 Containers and 16 Crafting tests pass; the additional fur Empty interaction test also passes. Coffins now have native Dampe Talk-to/Locks/item-use, five lock tiers, held/worn controls, highest-first Empty and transactional Remove lock; five new input tests and all 70 Containers tests pass. Further specialised container creation remains in progress.
 - Fish crates: all six deep-sea species, cooled-crate creation and camphor
   crafting pass **seven native input tests**. Real bank IF3 Empty returns the
   camphor crate; ordinary Empty discards it. Partial contents survive native
   account loading, and full-inventory/lifecycle failures preserve materials.
-  All **65 Containers module tests** pass. Sailing net/cargo producers are not
+  All **70 Containers module tests** pass. Sailing net/cargo producers are not
   available in this fork; visual acceptance remains open.
 - Fish barrels: native Fill/Open/Close, worn sack controls, combination/dismantling,
   direct fishing storage and bank-side Empty pass **seven native input tests**.
