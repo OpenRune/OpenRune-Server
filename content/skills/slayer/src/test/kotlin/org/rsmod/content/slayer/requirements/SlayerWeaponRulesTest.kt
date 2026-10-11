@@ -15,7 +15,8 @@ import org.rsmod.game.hit.HitType
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class SlayerWeaponRulesTest {
-    private val rule = SlayerMonsters.find("npc.slayer_kursk_1".asRSCM(RSCMType.NPC))!!.weaponRule!!
+    private val rule =
+        SlayerRules.weaponRule(ServerCacheManager.getNpc("npc.slayer_kursk_1".asRSCM(RSCMType.NPC))!!)!!
 
     private fun obj(symbol: String): Int = symbol.asRSCM(RSCMType.OBJ)
 

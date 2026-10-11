@@ -19,7 +19,7 @@ import org.rsmod.api.table.slayer.SlayerGearRow
 @ResourceLock("ServerCacheManager")
 class SlayerGearTest {
     private fun gear(symbol: String): SlayerGearRow =
-        SlayerMonsters.find(symbol.asRSCM(RSCMType.NPC))!!.gear!!
+        SlayerRules.gear(ServerCacheManager.getNpc(symbol.asRSCM(RSCMType.NPC))!!)!!
 
     private fun drains(gear: SlayerGearRow, level: Int): Map<String, Int> =
         SlayerGear.drainAmounts(gear) { level }.toMap()

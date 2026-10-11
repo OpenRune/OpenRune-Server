@@ -110,6 +110,8 @@ object BaseParams {
     val slayer_task_id: ParamInt = param("slayer_task_id")
     val slayer_task_ids: ParamStr = param("slayer_task_ids")
     val slayer_task_tip: ParamStr = param("slayer_task_tip")
+    val slayer_variant: ParamInt = param("slayer_variant")
+    val slayer_level: ParamInt = param("slayer_level")
     val slayer_superior: ParamNpc = param("slayer_superior")
     val available_in_wilderness: ParamBool = param("available_in_wilderness")
     val magic_defence_uses_defence_level: ParamBool = param("magic_defence_uses_defence_level")

@@ -15,8 +15,6 @@ import org.rsmod.api.script.onApNpcU
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.api.table.slayer.SlayerFinishersRow
-import org.rsmod.api.table.slayer.SlayerMonstersRow
-import org.rsmod.api.table.slayer.SlayerUnlockRow
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -34,16 +32,21 @@ object SlayerFinishers {
     fun canFinish(finisher: SlayerFinishersRow, hitpoints: Int): Boolean =
         hitpoints in 1..finisher.threshold
 
-    fun usableItems(finisher: SlayerFinishersRow): List<ItemServerType> =
-        finisher.items + finisher.charges.dropLast(1)
+    private val itemsByRow: Map<Int, Map<ItemServerType, ItemServerType?>> =
+        SlayerFinishersRow.all().associate { it.rowId to it.items.backing }
 
-    fun finishingItemIds(finisher: SlayerFinishersRow): Set<Int> =
-        (finisher.items + finisher.charges).mapTo(HashSet()) { it.id }
+    private fun items(finisher: SlayerFinishersRow): Map<ItemServerType, ItemServerType?> =
+        itemsByRow.getValue(finisher.rowId)
 
-    fun nextCharge(finisher: SlayerFinishersRow, itemId: Int): ItemServerType? {
-        val index = finisher.charges.indexOfFirst { it.id == itemId }
-        return if (index >= 0) finisher.charges.getOrNull(index + 1) else null
+    fun usableItems(finisher: SlayerFinishersRow): Set<ItemServerType> = items(finisher).keys
+
+    fun finishingItemIds(finisher: SlayerFinishersRow): Set<Int> {
+        val items = items(finisher)
+        return (items.keys + items.values.filterNotNull()).mapTo(HashSet()) { it.id }
     }
+
+    fun nextCharge(finisher: SlayerFinishersRow, itemId: Int): ItemServerType? =
+        items(finisher).entries.firstOrNull { it.key.id == itemId }?.value?.takeIf { it.id != itemId }
 
     fun floor(finishingBlow: Boolean, ignoresFloor: Boolean): Int =
         if (finishingBlow || ignoresFloor) 0 else 1
@@ -56,14 +59,8 @@ object SlayerFinishers {
     fun wears(worn: Array<InvObj?>, item: ItemServerType?): Boolean =
         item != null && worn.any { it != null && it.id == item.id }
 
-    private val unlockBits: Map<String, Int> by lazy {
-        SlayerUnlockRow.all().associate { it.name to it.bit }
-    }
-
-    fun unlockBit(finisher: SlayerFinishersRow): Int = unlockBits.getValue(finisher.unlock)
-
     fun hasUnlock(player: Player, finisher: SlayerFinishersRow): Boolean =
-        SlayerTaskManager.hasUnlockedReward(player, unlockBit(finisher))
+        SlayerTaskManager.hasUnlockedReward(player, finisher.unlockBit)
 
     fun autoChoice(player: Player, finisher: SlayerFinishersRow): AutoChoice? {
         if (wears(player.worn.objs, finisher.autoWorn)) {
@@ -123,7 +120,7 @@ object SlayerFinishers {
 internal class SlayerFinisherFloor @Inject constructor(private val players: PlayerList) :
     NpcHitpointsFloorHook {
     override fun floor(npc: Npc, hit: Hit): Int {
-        val finisher = SlayerMonsters.find(npc)?.finisher ?: return 0
+        val finisher = SlayerRules.finisher(npc) ?: return 0
         val sabre =
             hit.isFromPlayer &&
                 hit.resolvePlayerSource(players)?.let {
@@ -138,9 +135,8 @@ class SlayerFinisherScript
 constructor(private val players: PlayerList, private val hitModifier: NpcHitModifier) :
     PluginScript() {
     override fun ScriptContext.startup() {
-        for (monster in SlayerMonstersRow.all()) {
-            val finisher = monster.finisher ?: continue
-            for (npc in monster.npcs) {
+        for (finisher in SlayerFinishersRow.all()) {
+            for (npc in finisher.npcs) {
                 for (item in SlayerFinishers.usableItems(finisher)) {
                     onOpNpcU(npc, item) { use(it.npc, it.invSlot, it.objType, finisher) }
                     if (item.id == finisher.thrown?.id) {

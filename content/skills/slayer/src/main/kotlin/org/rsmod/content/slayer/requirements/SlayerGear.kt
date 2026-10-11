@@ -12,18 +12,25 @@ import org.rsmod.api.table.slayer.SlayerGearRow
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
+import org.rsmod.game.type.getOrNull
 
 internal object SlayerGear {
     const val ENGAGEMENT_RESET_TICKS = 20
 
-    private val acceptedItems: Map<Int, Set<Int>> by lazy {
-        SlayerGearRow.all().associate { row -> row.rowId to row.items.mapTo(HashSet()) { it.id } }
-    }
+    private val drains: Map<Int, List<Pair<String, Int>>> =
+        SlayerGearRow.all().associate { row ->
+            val percents = row.drains?.backing.orEmpty()
+            row.rowId to
+                percents.mapNotNull { (stat, percent) ->
+                    percent?.let { stat.internalName to it }
+                }
+        }
 
-    fun isProtected(worn: Array<InvObj?>, gear: SlayerGearRow): Boolean {
-        val accepted = acceptedItems.getValue(gear.rowId)
-        return worn.any { it != null && it.id in accepted }
-    }
+    fun isProtected(worn: Array<InvObj?>, gear: SlayerGearRow): Boolean =
+        worn.any { obj ->
+            val type = getOrNull(obj) ?: return@any false
+            type.id == gear.item?.id || (gear.group != null && type.contentGroup == gear.group)
+        }
 
     fun startsEngagement(
         lastTargetUid: Int,
@@ -33,8 +40,8 @@ internal object SlayerGear {
     ): Boolean = lastTargetUid != targetUid || clock - lastAttackClock > ENGAGEMENT_RESET_TICKS
 
     fun drainAmounts(gear: SlayerGearRow, currentLevel: (String) -> Int): List<Pair<String, Int>> =
-        gear.drains.map { (stat, percent) ->
-            stat.internalName to currentLevel(stat.internalName) * percent / PERCENT
+        drains.getValue(gear.rowId).map { (stat, percent) ->
+            stat to currentLevel(stat) * percent / PERCENT
         }
 
     fun attack(
@@ -67,7 +74,7 @@ internal object SlayerGear {
 
 internal class SlayerGearAttackHook @Inject constructor() : NpcAttackOverrideHook {
     override fun override(npc: Npc, target: Player): NpcAttackOverride? {
-        val gear = SlayerMonsters.find(npc)?.gear ?: return null
+        val gear = SlayerRules.gear(npc) ?: return null
         val protected = SlayerGear.isProtected(target.worn.objs, gear)
         val engagementStart = gear.firstHitOnly == true && beginsEngagement(npc, target)
         if (!protected) {

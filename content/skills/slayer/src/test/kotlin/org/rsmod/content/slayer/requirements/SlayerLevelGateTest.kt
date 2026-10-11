@@ -14,24 +14,26 @@ import org.rsmod.api.death.NpcAttackValidateResult
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class SlayerLevelGateTest {
-    private fun monster(symbol: String) = SlayerMonsters.find(symbol.asRSCM(RSCMType.NPC))
+    private fun required(symbol: String) =
+        SlayerLevelGate.required(ServerCacheManager.getNpc(symbol.asRSCM(RSCMType.NPC))!!)
 
     @Test
-    fun `a player below the required level is refused with the wound message`() {
-        val gargoyle = monster("npc.slayer_gargoyle_1")
-
-        assertEquals(
-            NpcAttackValidateResult.Deny(SlayerLevelGate.MESSAGE),
-            SlayerLevelGate.verdict(74, gargoyle),
-        )
+    fun `the level comes from the task the npc is credited with`() {
+        assertEquals(75, required("npc.slayer_gargoyle_1"))
     }
 
     @Test
-    fun `a boosted level meets the requirement`() {
-        val gargoyle = monster("npc.slayer_gargoyle_1")
+    fun `an npc level override beats its task`() {
+        assertEquals(60, required("npc.basilisk_knight"))
+    }
 
-        assertEquals(NpcAttackValidateResult.Pass, SlayerLevelGate.verdict(75, gargoyle))
-        assertEquals(NpcAttackValidateResult.Pass, SlayerLevelGate.verdict(80, gargoyle))
+    @Test
+    fun `a player below the required level is refused with the wound message`() {
+        assertEquals(
+            NpcAttackValidateResult.Deny(SlayerLevelGate.MESSAGE),
+            SlayerLevelGate.verdict(74, 75),
+        )
+        assertEquals(NpcAttackValidateResult.Pass, SlayerLevelGate.verdict(75, 75))
     }
 
     companion object {

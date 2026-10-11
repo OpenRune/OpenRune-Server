@@ -17,7 +17,7 @@ import org.rsmod.api.table.slayer.SlayerFinishersRow
 @ResourceLock("ServerCacheManager")
 class SlayerFinishersTest {
     private fun finisher(symbol: String): SlayerFinishersRow =
-        SlayerMonsters.find(symbol.asRSCM(RSCMType.NPC))!!.finisher!!
+        SlayerRules.finisher(ServerCacheManager.getNpc(symbol.asRSCM(RSCMType.NPC))!!)!!
 
     private fun obj(symbol: String): Int = symbol.asRSCM(RSCMType.OBJ)
 
