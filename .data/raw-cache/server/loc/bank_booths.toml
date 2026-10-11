@@ -1,0 +1,9 @@
+[[object]]
+id = "loc.bankbooth_end_left"
+inherit = "loc.bankbooth_end_left"
+contentGroup = "content.bank_booth"
+
+[[object]]
+id = "loc.bankbooth_end_right"
+inherit = "loc.bankbooth_end_right"
+contentGroup = "content.bank_booth"
