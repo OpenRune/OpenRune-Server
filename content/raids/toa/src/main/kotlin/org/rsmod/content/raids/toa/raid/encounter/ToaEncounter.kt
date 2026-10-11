@@ -395,6 +395,11 @@ open class ToaEncounter(
         const val ROOM_POINTS_CAP = 20_000
         const val WARDENS_POINTS_CAP = 60_000
         val PUZZLE_POINTS =
-            mapOf(ToaPath.SCABARAS to 300, ToaPath.APMEKEN to 450, ToaPath.CRONDIS to 400)
+            mapOf(
+                ToaPath.SCABARAS to 300,
+                ToaPath.APMEKEN to 450,
+                ToaPath.CRONDIS to 400,
+                ToaPath.HET to 350,
+            )
     }
 }

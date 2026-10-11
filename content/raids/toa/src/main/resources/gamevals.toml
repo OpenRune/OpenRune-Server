@@ -74,6 +74,7 @@ toa_invocation_name = 1160
 toa_invocation_category = 1161
 toa_invocation_level_modifier = 1162
 toa_invocation_prerequisite = 1346
+min_defence = 65560
 
 [gamevals.queue]
 toa_death = 61
@@ -132,6 +133,8 @@ toa_rooms = 64100
 toa_room_exclusions = 64101
 toa_paths = 64102
 toa_pickaxes = 64103
+toa_het_layouts = 64104
+toa_het_seal = 64105
 
 [gamevals.dbrow]
 toa_room_main_hall = 57000
@@ -167,3 +170,15 @@ toa_pickaxe_infernal_pickaxe_empty = 57051
 toa_pickaxe_3a_pickaxe = 57052
 toa_pickaxe_crystal_pickaxe = 57053
 toa_pickaxe_crystal_pickaxe_inactive = 57054
+toa_het_layout_0 = 57060
+toa_het_layout_1 = 57061
+toa_het_layout_2 = 57062
+toa_het_layout_3 = 57063
+toa_het_seal_1 = 57070
+toa_het_seal_2 = 57071
+toa_het_seal_3 = 57072
+toa_het_seal_4 = 57073
+toa_het_seal_5 = 57074
+toa_het_seal_6 = 57075
+toa_het_seal_7 = 57076
+toa_het_seal_8 = 57077

@@ -30,6 +30,12 @@ defaultInt = 0
 isMembers = true
 
 [[params]]
+id = "param.min_defence"
+type = "INT"
+defaultInt = 0
+isMembers = true
+
+[[params]]
 id = "param.xerician"
 type = "INT"
 defaultInt = 0
