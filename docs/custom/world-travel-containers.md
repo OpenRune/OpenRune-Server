@@ -731,7 +731,7 @@ item definitions, IF592/433/387 and CS2 5023/5025/5026/4045. Local/upstream
 searches at `bbc78dfc259c988a77d5c840196946c72de862e9` and all-state PR searches
 found no runtime ammo-container implementation to reuse. No revision upgrade
 or quiver cache patch is required. Bank quiver charge configuration,
-Minimus/max-cape conversion, quiver death/Trouver and final native visuals remain
+Minimus, quiver death/Trouver and final native visuals remain
 open. This chunk does not claim Fortis Colosseum or Barbarian Assault complete.
 
 Validation: `ammo-container-final-validation-1.log` passes 161 Containers,
@@ -816,3 +816,28 @@ binding and fixture owner/XP expectations were corrected before the passing run.
 Coal bank/reward producers, complete Cordelia conversation acceptance and
 pouch acquisition rules remain separate checks; no full activity implementation
 is inferred from these container tests.
+
+### Quiver native option correction and max-cape conversion
+
+Revision-240 cache audits confirm Wear is held Op2, Open Op3, charged Uncharge
+Op4/Empty Op5 and uncharged or infinite Empty Op4/Destroy Op5. The earlier Open
+binding incorrectly intercepted Wear; real equip/unequip now runs through the
+native producers. The charged visual varbit follows the actual Back slot on
+equipment changes and login. Destroy uses native confirmation and revalidates
+identity, movement and lifecycle, clearing the shared ammo only when no carried
+or banked quiver remains.
+
+Both native item-use orders combine an unlocked blessed quiver, either normal
+max-cape form and a max hood atomically into Dizana's max cape and hood. Missing,
+unblessed or locked ingredients are rejected. Confirmation is followed by fresh
+ingredient-reference and lifecycle checks. The existing shared ammo and Ava
+upgrade remain intact. Source: [Dizana's max cape](https://oldschool.runescape.wiki/w/Dizana%27s_max_cape)
+and cache audit `quiver-charged-native-ops.log`; current primary Wiki API sources
+are recorded in `quiver-exchange-sources.json`.
+
+Validation: all **171 Containers tests** pass
+(`quiver-native-menu-full-validation.log`), including 21 ammo-container tests.
+Five new tests cover actual native Wear/Remove, all eight forms, insufficient
+Ranged, exact Empty/Uncharge operations, both conversion orders, a full inventory,
+late mutation/death/logout/movement and actual Destroy/cancel/banked duplicates.
+Scoped formatting and all 14 accepted-file preservation checks pass.

@@ -8,6 +8,7 @@ import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.invtx.*
+import org.rsmod.api.player.events.interact.HeldDropEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseRangedLvl
 import org.rsmod.api.player.ui.ifSetEvents
@@ -15,6 +16,7 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.worn.DizanasQuiver
 import org.rsmod.api.script.*
 import org.rsmod.api.script.advanced.onDestroyHeld
+import org.rsmod.api.script.advanced.onWearposChange
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
@@ -22,15 +24,32 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 internal class DizanasQuiverScript @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
+        onWearposChange { if (wearpos == Wearpos.Back) syncChargedFlag(player) }
+        onPlayerLogin { syncChargedFlag(player) }
         for (symbol in DizanasQuiver.usable) {
-            onOpHeld2(symbol) { if (active()) open(inv, it.slot) }
-            onOpHeld3(symbol) { if (active()) { if (DizanasQuiver.pairs.any { pair -> pair.first == symbol }) uncharge(inv, it.slot) else AmmoContainers.emptyQuiver(player) } }
+            onOpHeld3(symbol) { if (active()) open(inv, it.slot) }
             if (DizanasQuiver.pairs.any { it.first == symbol }) {
-                onOpHeld4(symbol) { if (active()) AmmoContainers.emptyQuiver(player) }
+                onOpHeld4(symbol) { if (active()) uncharge(inv, it.slot) }
+                onOpHeld5(symbol) { if (active()) AmmoContainers.emptyQuiver(player) }
                 onOpWorn2(symbol) { if (active()) check(worn, it.slot) }
+            } else {
+                onOpHeld4(symbol) { if (active()) AmmoContainers.emptyQuiver(player) }
+                onOpHeld5(symbol) {
+                    if (!active()) return@onOpHeld5
+                    val original = inv[it.slot]; val origin = coords
+                    val confirmed = confirmDestroy(symbol, 1, it.type.param(params.destroy_note_title), it.type.param(params.destroy_note_desc))
+                    if (confirmed && active() && coords == origin && inv[it.slot] === original && player.invDel(inv, it.obj.id, 1, slot = it.slot).success) {
+                        publish(HeldDropEvents.Destroy(player, it.slot, it.obj, symbol))
+                    }
+                }
             }
             onOpHeldU(symbol) {
                 if (!active() || inv[it.firstSlot]?.id != symbol.asRSCM() || inv[it.secondSlot]?.id != it.second.id) return@onOpHeldU
+                if (MAX_CAPES.any { cape -> it.second.id == cape.asRSCM() }) {
+                    if (symbol == "obj.dizanas_quiver_infinite") combineMaxCape(it.firstSlot, it.secondSlot)
+                    else mes("Use an unlocked blessed Dizana's quiver to create Dizana's max cape.")
+                    return@onOpHeldU
+                }
                 if (it.second.id == SPLINTER.asRSCM()) charge(it.firstSlot, it.secondSlot) else {
                     val moved = AmmoContainers.fillQuiver(player, inv, it.secondSlot)
                     mes(if (moved > 0) "You add $moved ammunition to your quiver." else "You must empty your quiver before storing a different ammunition type.")
@@ -38,6 +57,7 @@ internal class DizanasQuiverScript @Inject constructor() : PluginScript() {
             }
             for (shrine in listOf("loc.ralos_shrine", "loc.ralos_shrine_taur01")) onOpLocU(shrine, symbol) { bless(it.invSlot) }
         }
+        for (cape in MAX_CAPES) onOpHeldU(cape, "obj.dizanas_quiver_infinite") { combineMaxCape(it.secondSlot, it.firstSlot) }
         onIfModalButton(AMMO_COMPONENT) {
             if (active() && player.ui.containsModal(MAIN) && it.op == IfButtonOp.Op1 && it.comsub in -1..0 && it.obj?.id?.let { id -> id == DizanasQuiver.stored(player)?.id } != false) AmmoContainers.emptyQuiver(player)
         }
@@ -68,6 +88,28 @@ internal class DizanasQuiverScript @Inject constructor() : PluginScript() {
             ServerCacheManager.getNpc("npc.anma_assistant".asRSCM())!!,
             ServerCacheManager.getItem(symbol.asRSCM())!!,
         ) { upgradeRecovery() }
+    }
+    private fun syncChargedFlag(player: org.rsmod.game.entity.Player) {
+        val cape = player.worn[Wearpos.Back.slot]
+        val charged = DizanasQuiver.recognises(cape) && (DizanasQuiver.blessed(cape) || DizanasQuiver.charges(cape).count > 0)
+        VarPlayerIntMapSetter.set(player, "varbit.worn_items_dizanas_quiver_charged", if (charged)1 else 0)
+    }
+    private suspend fun ProtectedAccess.combineMaxCape(quiverSlot: Int, capeSlot: Int) {
+        if (!active()) return
+        val quiver = inv[quiverSlot]?.takeIf { it.id == "obj.dizanas_quiver_infinite".asRSCM() } ?: return
+        val cape = inv[capeSlot]?.takeIf { item -> MAX_CAPES.any { item.id == it.asRSCM() } } ?: return
+        val hoodSlot = inv.indexOfFirst { it?.id == "obj.skillcape_max_hood".asRSCM() }
+        if (hoodSlot < 0) { mes("You also need a max hood in your inventory."); return }
+        val hood = inv[hoodSlot] ?: return
+        val origin = coords
+        if (!choice2("Combine", true, "Cancel", false, title = "Create Dizana's max cape and hood?")) return
+        if (!active() || coords != origin || inv[quiverSlot] !== quiver || inv[capeSlot] !== cape || inv[hoodSlot] !== hood) return
+        val result = player.invTransaction(inv) {
+            val i = select(inv)
+            delete(i, quiver.id, 1, slot = quiverSlot); delete(i, cape.id, 1, slot = capeSlot); delete(i, hood.id, 1, slot = hoodSlot)
+            add(i, "obj.skillcape_max_dizanas".asRSCM(), 1); add(i, "obj.skillcape_max_hood_dizanas".asRSCM(), 1)
+        }
+        mes(if (result.success) "You create Dizana's max cape and hood." else "The capes could not be combined.")
     }
     private fun ProtectedAccess.active() = AmmoContainers.active(player) && DizanasQuiver.owns(player)
     private fun ProtectedAccess.open(inventory: Inventory, slot: Int) {
@@ -127,5 +169,6 @@ internal class DizanasQuiverScript @Inject constructor() : PluginScript() {
         const val AMMO_COMPONENT = "component.dizanas_quiver:ammo_obj"
         const val EXTRA = "component.wornitems:extra_quiver_ammo"
         const val SPLINTER = "obj.sunfiresplinter"
+        private val MAX_CAPES = listOf("obj.skillcape_max", "obj.skillcape_max_worn")
     }
 }

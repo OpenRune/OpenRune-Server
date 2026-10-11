@@ -5,6 +5,7 @@ package org.rsmod.content.other.containers
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import dev.openrune.util.Wearpos
 import net.rsprot.protocol.game.incoming.buttons.If3Button
 import net.rsprot.protocol.game.incoming.buttons.IfButtonD
@@ -31,6 +32,8 @@ import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.worn.DizanasQuiver
+import org.rsmod.api.player.worn.HeldEquipOp
+import org.rsmod.api.player.worn.WornUnequipOp
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.events.EventBus
@@ -65,7 +68,7 @@ internal class AmmoContainerInteractionTest {
     }
 
     @Test fun `actual native Open and Remove retain ammo on full inventory and reject stale ammo ids`() {
-        val f = Fixture(); f.put(0, DizanasQuiver.pairs[0].second); f.put(1, "obj.rune_arrow", 100); f.use(0, 1); f.op(0, HeldOp.Op2)
+        val f = Fixture(); f.put(0, DizanasQuiver.pairs[0].second); f.put(1, "obj.rune_arrow", 100); f.use(0, 1); f.op(0, HeldOp.Op3)
         assertTrue(f.player.ui.containsModal(DizanasQuiverScript.MAIN)); for (slot in 1..27) f.put(slot, "obj.lobster")
         f.ui(DizanasQuiverScript.AMMO_COMPONENT, 0, 1, "obj.rune_arrow".asRSCM()); assertEquals(100, DizanasQuiver.stored(f.player)!!.count)
         f.player.inv[1] = null; f.ui(DizanasQuiverScript.AMMO_COMPONENT, 0, 1, "obj.dragon_arrow".asRSCM()); assertEquals(100, DizanasQuiver.stored(f.player)!!.count)
@@ -160,6 +163,67 @@ internal class AmmoContainerInteractionTest {
         assertEquals("obj.dizanas_quiver_infinite".asRSCM(), f.player.inv[0]!!.id); assertEquals(0, f.player.inv.count(DizanasQuiverScript.SPLINTER))
         val g = Fixture(); g.put(0, DizanasQuiver.pairs[1].second); g.put(1, DizanasQuiverScript.SPLINTER, 150000); g.useLoc("loc.ralos_shrine_taur01", 0); g.player.pendingLogout = true; g.yes(); assertEquals(DizanasQuiver.pairs[1].second.asRSCM(), g.player.inv[0]!!.id); assertEquals(150000, g.player.inv[1]!!.count)
     }
+
+    @Test fun `all native quiver forms Wear with the actual equipment producer and clear charged flag on Remove`() {
+        for (symbol in DizanasQuiver.usable) {
+            val f = Fixture(); val charged = DizanasQuiver.pairs.any { it.first == symbol }
+            f.player.inv[0] = if (charged) DizanasQuiver.withCharges(InvObj(symbol), DizanasQuiver.Charges(10, 10)) else InvObj(symbol)
+            assertEquals("Wear", ServerCacheManager.getItem(symbol.asRSCM())!!.interfaceOptions[1])
+            assertEquals("Open", ServerCacheManager.getItem(symbol.asRSCM())!!.interfaceOptions[2])
+            f.op(0, HeldOp.Op2)
+            assertNull(f.player.inv[0]); assertEquals(symbol.asRSCM(), f.player.worn[Wearpos.Back.slot]!!.id)
+            assertEquals(if (charged || DizanasQuiver.blessed(f.player.worn[1])) 1 else 0, f.player.vars["varbit.worn_items_dizanas_quiver_charged"])
+            f.removeCape(); assertNull(f.player.worn[1]); assertEquals(symbol.asRSCM(), f.player.inv[0]!!.id)
+            assertEquals(0, f.player.vars["varbit.worn_items_dizanas_quiver_charged"])
+        }
+        val g = Fixture(); g.put(0, "obj.dizanas_quiver_charged"); g.player.statMap.setBaseLevel("stat.ranged", 74); g.op(0, HeldOp.Op2)
+        assertNull(g.player.worn[1]); assertNotNull(g.player.inv[0]); assertEquals(0, g.player.vars["varbit.worn_items_dizanas_quiver_charged"])
+    }
+
+    @Test fun `native Empty and Uncharge use their exact held menu options and preserve interrupted charges`() {
+        val f = Fixture(); f.player.inv[0] = DizanasQuiver.withCharges(InvObj(DizanasQuiver.pairs[0].second), DizanasQuiver.Charges(7, 90000)); DizanasQuiver.store(f.player, InvObj("obj.rune_arrow", 50))
+        f.op(0, HeldOp.Op5); assertNull(DizanasQuiver.stored(f.player)); assertEquals(7, DizanasQuiver.charges(f.player.inv[0]).count)
+        f.op(0, HeldOp.Op4); f.yes(); assertEquals(DizanasQuiver.Charges(0, 0), DizanasQuiver.charges(f.player.inv[0])); assertEquals(7, f.player.inv.count(DizanasQuiverScript.SPLINTER))
+        DizanasQuiver.store(f.player, InvObj("obj.rune_arrow", 25)); f.op(0, HeldOp.Op4); assertNull(DizanasQuiver.stored(f.player)); assertEquals(75, f.player.inv.count("obj.rune_arrow"))
+        val g = Fixture(); g.player.inv[0] = DizanasQuiver.withCharges(InvObj(DizanasQuiver.pairs[0].second), DizanasQuiver.Charges(7, 90000)); g.op(0, HeldOp.Op4); g.player.pendingLogout = true; g.yes()
+        assertEquals(DizanasQuiver.Charges(7, 90000), DizanasQuiver.charges(g.player.inv[0])); assertEquals(0, g.player.inv.count(DizanasQuiverScript.SPLINTER))
+    }
+
+    @Test fun `both native item use orders combine blessed quiver max cape and hood atomically even with full inventory`() {
+        for (cape in listOf("obj.skillcape_max", "obj.skillcape_max_worn")) for (reverse in listOf(false, true)) {
+            val f = Fixture(); f.put(0, "obj.dizanas_quiver_infinite"); f.put(1, cape); f.put(2, "obj.skillcape_max_hood"); for (slot in 3..27) f.put(slot, "obj.lobster")
+            DizanasQuiver.store(f.player, InvObj("obj.rune_arrow", 200)); VarPlayerIntMapSetter.set(f.player, "varbit.dizanas_quiver_ammo_save", 2)
+            f.use(if (reverse) 1 else 0, if (reverse) 0 else 1); assertNotNull(f.player.activeCoroutine); f.yes()
+            assertEquals(1, f.player.inv.count("obj.skillcape_max_dizanas")); assertEquals(1, f.player.inv.count("obj.skillcape_max_hood_dizanas"))
+            assertEquals(0, f.player.inv.count(cape)); assertEquals(0, f.player.inv.count("obj.skillcape_max_hood")); assertEquals(0, f.player.inv.count("obj.dizanas_quiver_infinite"))
+            assertEquals(200, DizanasQuiver.stored(f.player)!!.count); assertEquals(2, f.player.vars["varbit.dizanas_quiver_ammo_save"])
+        }
+    }
+
+    @Test fun `quiver max conversion rejects missing hood unblessed inputs cancellation and late mutation or departure`() {
+        val missing = Fixture(); missing.put(0, "obj.dizanas_quiver_infinite"); missing.put(1, "obj.skillcape_max"); missing.use(0, 1)
+        assertEquals(1, missing.player.inv.count("obj.dizanas_quiver_infinite")); assertEquals(0, missing.player.inv.count("obj.skillcape_max_dizanas"))
+        for (symbol in listOf("obj.dizanas_quiver_uncharged", "obj.dizanas_quiver_charged", "obj.dizanas_quiver_infinite_trouver")) {
+            val g = Fixture(); g.put(0, symbol); g.put(1, "obj.skillcape_max"); g.put(2, "obj.skillcape_max_hood"); g.use(0, 1)
+            assertEquals(1, g.player.inv.count(symbol)); assertEquals(0, g.player.inv.count("obj.skillcape_max_dizanas"))
+        }
+        for (mode in 0..5) {
+            val f = Fixture(); f.put(0, "obj.dizanas_quiver_infinite"); f.put(1, "obj.skillcape_max"); f.put(2, "obj.skillcape_max_hood"); f.use(0, 1)
+            when (mode) { 1 -> f.player.inv[2] = null; 2 -> f.put(2, "obj.skillcape_max_hood"); 3 -> f.player.pendingLogout = true; 4 -> f.player.statMap.setCurrentLevel("stat.hitpoints", 0); 5 -> f.player.coords = f.player.coords.translateX(1) }
+            if (mode == 0) f.choose(2) else f.yes()
+            assertEquals(1, f.player.inv.count("obj.dizanas_quiver_infinite")); assertEquals(1, f.player.inv.count("obj.skillcape_max")); assertEquals(0, f.player.inv.count("obj.skillcape_max_dizanas"))
+        }
+    }
+
+    @Test fun `actual native quiver Destroy cancels and revalidates item identity lifecycle and duplicate bank ownership`() {
+        for (mode in 0..6) {
+            val f = Fixture(); f.put(0, "obj.dizanas_quiver_uncharged"); DizanasQuiver.store(f.player, InvObj("obj.rune_arrow", 80)); f.op(0, HeldOp.Op5)
+            when (mode) { 2 -> f.put(0, "obj.dizanas_quiver_uncharged"); 3 -> f.player.pendingLogout = true; 4 -> f.player.coords = f.player.coords.translateX(1); 5 -> f.player.invMap["inv.bank"] = Inventory.create("inv.bank").apply { this[0] = InvObj("obj.dizanas_quiver_infinite") }; 6 -> f.player.statMap.setCurrentLevel("stat.hitpoints", 0) }
+            f.destroy(mode != 1)
+            assertEquals(mode in listOf(0, 5), f.player.inv[0] == null)
+            assertEquals(mode != 0, DizanasQuiver.stored(f.player) != null)
+        }
+    }
     private class Fixture {
         val bus = EventBus(); val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
         val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); coords = CoordGrid(3000, 3000); currentMapClock = 100; processedMapClock = 100; for (stat in listOf("hitpoints", "ranged")) { statMap.setBaseLevel("stat.$stat", 99); statMap.setCurrentLevel("stat.$stat", 99) } }
@@ -167,7 +231,7 @@ internal class AmmoContainerInteractionTest {
         init {
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getAlignment = { TextAlignment() })); launcher = ProtectedAccessLauncher(factory)
             with(InvTransactionsScript(PlayerItemStorage(emptySet()))) { scripts.startup() }; with(BoltPouchScript(mock(WornInteractions::class.java))) { scripts.startup() }; with(DizanasQuiverScript()) { scripts.startup() }
-            val ctor = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }; val dropCtor = ctor.parameterTypes[2].declaredConstructors.single().apply { isAccessible = true }; val drop = dropCtor.newInstance(*dropCtor.parameterTypes.map { if (it == EventBus::class.java) bus else mock(it) }.toTypedArray()); held = ctor.newInstance(bus, mock(ctor.parameterTypes[1]), drop, mock(ctor.parameterTypes[3])) as HeldInteractions
+            val ctor = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }; val dropCtor = ctor.parameterTypes[2].declaredConstructors.single().apply { isAccessible = true }; val drop = dropCtor.newInstance(*dropCtor.parameterTypes.map { if (it == EventBus::class.java) bus else mock(it) }.toTypedArray()); held = ctor.newInstance(bus, mock(ctor.parameterTypes[1]), drop, HeldEquipOp(bus)) as HeldInteractions
         }
         fun put(slot: Int, symbol: String, count: Int = 1) { player.inv[slot] = InvObj(symbol, count) }
         fun weapon(name: String) { player.worn[Wearpos.RightHand.slot] = InvObj(type(name)) }
@@ -182,6 +246,8 @@ internal class AmmoContainerInteractionTest {
         fun useLoc(symbol: String, slot: Int) { val type = ServerCacheManager.getObject(symbol.asRSCM())!!; val loc = BoundLocInfo(LocInfo(2, player.coords.translateX(1), LocEntity(type.id, 10, 0)), type); val ctor = LocUInteractions::class.java.getDeclaredConstructor(EventBus::class.java).apply { isAccessible = true }; val producer = ctor.newInstance(bus); run { producer.interactOp(this, loc, loc, type, ServerCacheManager.getItem(inv[slot]!!.id)!!, inv, slot) } }
         fun choose(index: Int) { player.activeCoroutine!!.resumeWith(ResumePauseButtonInput("component.chatmenu:options", index)) }
         fun yes() { player.activeCoroutine!!.resumeWith(ResumePauseButtonInput("component.chatmenu:options", 1)) }
+        fun destroy(yes: Boolean) { player.activeCoroutine!!.resumeWith(ResumePauseButtonInput("component.confirmdestroy:universe", if (yes) 1 else 0)) }
+        fun removeCape() = run { WornInteractions(bus, WornUnequipOp(bus), mock(org.rsmod.api.market.MarketPrices::class.java)).interact(this, worn, Wearpos.Back.slot, IfButtonOp.Op1) }
         fun ui(component: String, slot: Int = -1, op: Int = 1, obj: Int = -1) { val ctor = If3Button::class.java.declaredConstructors.single { it.parameterCount == 5 }; If3ButtonHandler(bus, launcher).handle(player, ctor.newInstance(component.asRSCM(), slot, obj, op, null) as If3Button) }
         fun drag(source: Int, target: Int) { val from = if (source == 0) player.worn[13] else BoltPouch.contents(player, source); val to = if (target == 0) player.worn[13] else BoltPouch.contents(player, target); val ctor = IfButtonD::class.java.declaredConstructors.single { it.parameterCount == 6 && it.parameterTypes.all { t -> t == Int::class.javaPrimitiveType } }.apply { isAccessible = true }; IfButtonDHandler(bus, launcher).handle(player, ctor.newInstance(BoltPouch.components[source].asRSCM(), 0, from?.id ?: 6512, BoltPouch.components[target].asRSCM(), 0, to?.id ?: 6512) as IfButtonD) }
     }
