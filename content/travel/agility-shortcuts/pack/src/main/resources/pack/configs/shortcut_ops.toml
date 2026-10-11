@@ -1,0 +1,12 @@
+# Virtual quest policy must expose the native objects without mutating real quest progress.
+[[object]]
+id = "loc.voros_rockslide02_shortcut_up_noop"
+inherit = "loc.voros_rockslide02_shortcut_up_noop"
+[object.actions]
+ops = [{ text = "Climb" }]
+
+[[object]]
+id = "loc.vampyrium_stepping_stone_shortcut_pillar_noop"
+inherit = "loc.vampyrium_stepping_stone_shortcut_pillar_noop"
+[object.actions]
+ops = [{ text = "Jump-to" }]

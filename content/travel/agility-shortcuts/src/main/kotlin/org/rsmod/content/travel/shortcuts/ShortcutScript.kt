@@ -3,7 +3,9 @@ package org.rsmod.content.travel.shortcuts
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import jakarta.inject.Inject
+import java.time.Instant
 import kotlin.math.atan2
+import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.*
@@ -28,6 +30,10 @@ internal class ShortcutScript @Inject constructor(private val collision: Collisi
         }.groupBy({ it.first }, { it.second })
         for ((key, routes) in bindings) {
             val symbol = dev.openrune.rscm.RSCM.getReverseMapping(dev.openrune.rscm.RSCMType.LOC, key.first)
+            if (routes.any { it.loc == "loc.vampyrium_stepping_stone_shortcut_pillar" }) {
+                onApLoc1(symbol) { if (isWithinApRange(it.loc, 4)) cross(it.loc, routes) }
+                continue
+            }
             when (key.second) {
                 1 -> onOpLoc1(symbol) { cross(it.loc, routes) }
                 2 -> onOpLoc2(symbol) { cross(it.loc, routes) }
@@ -80,7 +86,14 @@ internal class ShortcutScript @Inject constructor(private val collision: Collisi
             if (!samePlane) teleport(route.destination, TeleportType.Exempt)
             if (coords != route.destination) return
             arrived = true
-            statAdvance("stat.agility", route.xp * xp.get(player, "stat.agility"))
+            val award = if (route.loc.startsWith("loc.voros_rockslide02_shortcut")) {
+                val now = Instant.now().epochSecond.toInt()
+                val previous = player.attr[VAMPYRIUM_LAST_SLIDE]
+                val bonus = previous == null || now.toLong() - previous >= 450
+                player.attr[VAMPYRIUM_LAST_SLIDE] = now
+                if (route.option == "Descend" && bonus) 550.0 else route.xp
+            } else route.xp
+            statAdvance("stat.agility", award * xp.get(player, "stat.agility"))
         } finally {
             resetAnim()
             if (!arrived && !failed && player.hitpoints > 0 && !player.pendingLogout && !player.loggingOut && coords == route.destination) {
@@ -138,7 +151,7 @@ internal class ShortcutScript @Inject constructor(private val collision: Collisi
                 mes("You need climbing boots to use this shortcut."); return false
             }
         }
-        if (r.quest != null && !QuestRequirements.hasCompleted(player, r.quest)) { mes("You must complete the required quest first."); return false }
+        if (r.quest != null && !shortcutQuestCompleted(player, r.quest)) { mes("You must complete the required quest first."); return false }
         if (r.gate != null) {
             val value = player.vars[r.gate]
             if (if (r.gateExact) value != r.gateValue else value < r.gateValue) { mes("You haven't unlocked this shortcut yet."); return false }
@@ -146,5 +159,11 @@ internal class ShortcutScript @Inject constructor(private val collision: Collisi
         return true
     }
 
-    private companion object { const val BLOCKED = CollisionFlag.LOC or CollisionFlag.GROUND_DECOR or CollisionFlag.BLOCK_WALK }
+    internal companion object {
+        const val BLOCKED = CollisionFlag.LOC or CollisionFlag.GROUND_DECOR or CollisionFlag.BLOCK_WALK
+        val VAMPYRIUM_LAST_SLIDE = AttributeKey<Int>(persistenceKey = "vampyrium_last_slide_seconds")
+    }
 }
+
+internal fun shortcutQuestCompleted(player: org.rsmod.game.entity.Player, quest: String): Boolean =
+    QuestRequirements.hasCompleted(player, quest) || quest == "quest_bloodmoonrises" && player.vars["varbit.myq6"] == 200

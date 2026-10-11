@@ -9,6 +9,8 @@ internal data class ShortcutRoute(
     val gateExact: Boolean, val bareLevel: Int, val failure: String, val stages: List<CoordGrid>,
 ) {
     val animation: String get() = when {
+        loc == "loc.voros_rockslide02_shortcut_down_big" -> "seq.human_myq6_agility_hillslide_f"
+        loc == "loc.voros_rockslide02_shortcut_down" -> "seq.human_myq6_agility_slide_f"
         loc.contains("railing") && option.startsWith("Squeeze", true) -> "seq.railing_squeeze"
         loc.contains("pipe") -> "seq.human_pipesqueeze"
         loc.contains("zqrockjump") || loc.contains("stepping") || loc.contains("stepstone") -> "seq.human_steppingstonejump"

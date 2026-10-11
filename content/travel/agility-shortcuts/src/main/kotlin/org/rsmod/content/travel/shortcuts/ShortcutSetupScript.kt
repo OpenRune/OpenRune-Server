@@ -40,9 +40,11 @@ internal class ShortcutSetupScript @Inject constructor(private val storage: Play
         onOpLocU("loc.viyeldi_shortcut_rock_ropeless", "obj.long_rope") { attachViyeldi(it.invSlot) }
         onOpLoc1("loc.myq5_wall_cave_shortcut_6_child_blocked") { clearRock("varbit.myq5_lab_sc_unlocked", 78, null) }
         onOpLoc1("loc.wyrmscraig_cliff_shortcut_blockage_vis") { clearRock("varbit.wyrmscraig_cliff_shortcut", 1, "quest_fallenfromgrace") }
+        onOpLoc1("loc.vampyrium_stepping_stone_nocleared") { clearRock("varbit.vampyrium_traversal_rock_mined", 1, "quest_bloodmoonrises") }
         for (item in dev.openrune.ServerCacheManager.getItemTypes().filter { it.isContentType("content.mining_pickaxe") }) {
             onOpLocU("loc.myq5_wall_cave_shortcut_6_child_blocked", item.internalName) { clearRock("varbit.myq5_lab_sc_unlocked", 78, null) }
             onOpLocU("loc.wyrmscraig_cliff_shortcut_blockage_vis", item.internalName) { clearRock("varbit.wyrmscraig_cliff_shortcut", 1, "quest_fallenfromgrace") }
+            onOpLocU("loc.vampyrium_stepping_stone_nocleared", item.internalName) { clearRock("varbit.vampyrium_traversal_rock_mined", 1, "quest_bloodmoonrises") }
         }
     }
     private suspend fun ProtectedAccess.attachViyeldi(slot: Int) {
@@ -57,12 +59,12 @@ internal class ShortcutSetupScript @Inject constructor(private val storage: Play
     private suspend fun ProtectedAccess.clearRock(gate: String, level: Int, quest: String?) {
         if (vars[gate] != 0)return
         if (player.miningLvl < level) { mes("You need Mining $level to clear this shortcut."); return }
-        if (quest != null && !QuestRequirements.hasCompleted(player, quest)) { mes("You haven't unlocked access to these rocks yet."); return }
+        if (quest != null && !shortcutQuestCompleted(player, quest)) { mes("You haven't unlocked access to these rocks yet."); return }
         val pick = Mining.findPickaxe(player) ?: run { mes("You need a usable pickaxe to clear these rocks."); return }
         val origin = coords; anim(RSCM.getReverseMapping(RSCMType.SEQ, getInvObj(pick).pickaxeAnim.id))
         try {
             delay(3)
-            if (!active(origin) || vars[gate] != 0 || player.miningLvl < level || Mining.findPickaxe(player) == null || quest != null && !QuestRequirements.hasCompleted(player, quest))return
+            if (!active(origin) || vars[gate] != 0 || player.miningLvl < level || Mining.findPickaxe(player) == null || quest != null && !shortcutQuestCompleted(player, quest))return
             vars[gate] = 1; mes("You clear the rocks and permanently unlock the shortcut.")
         } finally { resetAnim() }
     }

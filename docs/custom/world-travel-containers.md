@@ -285,3 +285,30 @@ remains unavailable rather than being represented by a fake trawling event.
 Sources: [Fish crate (giant krill)](https://oldschool.runescape.wiki/w/Fish_crate_(giant_krill)),
 [Fish crate (marlin)](https://oldschool.runescape.wiki/w/Fish_crate_(marlin)),
 [Camphor crate](https://oldschool.runescape.wiki/w/Camphor_crate).
+
+### Vampyrium shortcut links and native quest options
+
+Ten native links bring the candidate catalogue to 518. Native map collision
+checks pass for every final landing. Two-direction rocks/rockslide requirements
+are 78 descending and 61 climbing; their successful traversals share a
+persistent UTC timestamp so ordinary relogging does not reset the 7.5-minute
+550-XP bonus. Climbing awards no XP. The two bushes require Agility 64.
+Pillars require Agility 73 and permanent native rubble mining; approach events
+allow safe jumps to the blocked pillar tiles, with three staged jumps in each
+direction and 1.9 XP per pillar. Mining uses the existing pickaxe animations
+and revalidates the native quest policy, gear and lifecycle before unlock.
+
+The two native quest-hidden variants receive only their Climb/Jump-to options
+in a scoped pack. Server requirement checks still respect real native quest
+progress when requested; virtual completion never sets `varbit.myq6` to 200.
+The isolated SERVER stage changes only object definitions 60923 and 61118 in
+config group 55, preserving the other 62,523 objects and reference metadata.
+The final pack must also update their LIVE/native client options. Fourteen
+shortcut tests pass, including real native op/approach producers, quest denial,
+rubble gates, both directions and lifecycle cancellation. Distant-click slide
+bumps and the precise bush repeat cooldown remain verification points; no
+claim of full gameplay acceptance is made for those details. Sources:
+[Rocks (Vampyrium)](https://oldschool.runescape.wiki/w/Rocks_(Vampyrium)),
+[Rockslide (Vampyrium)](https://oldschool.runescape.wiki/w/Rockslide_(Vampyrium)),
+[Bush (Vampyrium)](https://oldschool.runescape.wiki/w/Bush_(Vampyrium)),
+[Pillar (Vampyrium)](https://oldschool.runescape.wiki/w/Pillar_(Vampyrium)).

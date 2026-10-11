@@ -26,14 +26,17 @@ persistence, rollback and native interaction validation is still in progress.
   separate set bit, never the overlapping op-visibility mask. POH DIQ requires
   a built house ring (Construction is not implemented); remaining prerequisite
   checks and client acceptance remain open.
-- Agility: **508 candidate links** compared with native definitions, map placements
+- Agility: **518 candidate links** compared with native definitions, map placements
   and the current Wiki/Shortest Path sources. Native option/animation registration
-  and walkable landings pass. **Ten tests** also exercise bridge repair, rope setup
+  and walkable landings pass. **Fourteen tests** also exercise bridge repair, rope setup
   and interrupted travel through real loc inputs. Remaining Wiki routes, grapples,
   detailed animations/failures and full route acceptance are still in progress.
   Native Stronghold tunnel pieces work from both shores. Waterbirth and the dense
   essence mine retain their one-way rules; spiritual fairy-tree Ring options
-  use their distinct native numbering.
+  use their distinct native numbering. Vampyrium includes rubble mining, staged
+  pillars and the shared 7.5-minute slide XP cooldown without altering native
+  quest progress. Distant-click slide bumps and the bush repeat cooldown remain
+  to be verified.
 - Containers: all **39 Wiki categories** inventoried against native items.
   Rune/looting pouch baselines adapted. **15 pouch tests** cover codecs, storage
   rules, native rune insertion/withdrawal, interrupted Divine crafting and atomic

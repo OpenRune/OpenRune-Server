@@ -4,6 +4,7 @@ plugins {
 }
 dependencies {
     implementation(projects.api.pluginCommons)
+    implementation(projects.api.attr)
     implementation(projects.api.invStorage)
     implementation(projects.api.stats.xpmod)
     implementation(projects.content.quest)

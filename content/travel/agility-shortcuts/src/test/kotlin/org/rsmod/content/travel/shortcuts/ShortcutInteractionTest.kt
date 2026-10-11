@@ -135,6 +135,63 @@ internal class ShortcutInteractionTest {
         assertEquals(CoordGrid(1863, 4406, 1), f.player.coords); assertEquals(10, f.player.statMap.getXP("stat.agility"))
         f.op("loc.dagannoth_crevice", CoordGrid(1861, 4406, 1)); f.finish(); assertEquals(CoordGrid(1863, 4406, 1), f.player.coords); assertEquals(10, f.player.statMap.getXP("stat.agility"))
     }
+
+    @Test fun `native Vampyrium rubble must be mined before either direction of pillar traversal`() {
+        val f = Fixture(CoordGrid(2571, 7790))
+        f.ap("loc.vampyrium_stepping_stone_shortcut_pillar", CoordGrid(2571, 7794)); f.finish()
+        assertEquals(CoordGrid(2571, 7790), f.player.coords)
+        f.player.inv[0] = InvObj("obj.rune_pickaxe")
+        f.op("loc.vampyrium_stepping_shortcut_ending", CoordGrid(2571, 7791)); f.finish()
+        assertEquals(1, f.player.vars["varbit.vampyrium_traversal_rock_mined"]); assertEquals(0, f.player.vars["varbit.myq6"])
+        f.ap("loc.vampyrium_stepping_stone_shortcut_pillar", CoordGrid(2571, 7794)); f.finish()
+        assertEquals(CoordGrid(2575, 7802), f.player.coords); assertEquals(5, f.player.statMap.getXP("stat.agility"))
+        f.ap("loc.vampyrium_stepping_stone_shortcut_pillar", CoordGrid(2571, 7800)); f.finish()
+        assertEquals(CoordGrid(2571, 7790), f.player.coords); assertEquals(11, f.player.statMap.getXP("stat.agility"))
+    }
+
+    @Test fun `Vampyrium slide cooldown is shared by both native rock shortcuts and persists in account attributes`() {
+        val f = Fixture(CoordGrid(2573, 7767))
+        f.op("loc.voros_rockslide02_shortcut_down_big", CoordGrid(2574, 7767)); f.finish()
+        assertEquals(550, f.player.statMap.getXP("stat.agility")); assertTrue(f.player.attr[ShortcutScript.VAMPYRIUM_LAST_SLIDE] != null)
+        f.op("loc.voros_rockslide02_shortcut_up_big", CoordGrid(2579, 7767)); f.finish()
+        assertEquals(550, f.player.statMap.getXP("stat.agility"))
+        f.player.coords = CoordGrid(2553, 7823)
+        f.op("loc.voros_rockslide02_shortcut_down", CoordGrid(2554, 7822)); f.finish()
+        assertEquals(577, f.player.statMap.getXP("stat.agility"))
+        f.player.attr[ShortcutScript.VAMPYRIUM_LAST_SLIDE] = java.time.Instant.now().epochSecond.toInt() - 451
+        f.player.coords = CoordGrid(2573, 7767)
+        f.op("loc.voros_rockslide02_shortcut_down_big", CoordGrid(2574, 7767)); f.finish()
+        assertEquals(1127, f.player.statMap.getXP("stat.agility"))
+        val old = f.player.attr[ShortcutScript.VAMPYRIUM_LAST_SLIDE]
+        f.player.coords = CoordGrid(2573, 7767); f.op("loc.voros_rockslide02_shortcut_down_big", CoordGrid(2574, 7767)); f.player.pendingLogout = true; f.finish()
+        assertEquals(old, f.player.attr[ShortcutScript.VAMPYRIUM_LAST_SLIDE]); assertEquals(1127, f.player.statMap.getXP("stat.agility"))
+    }
+
+    @Test fun `Vampyrium route levels differ by direction and both native bushes cross in both directions`() {
+        val f = Fixture(CoordGrid(2573, 7767)); f.player.statMap.setCurrentLevel("stat.agility", 77)
+        f.op("loc.voros_rockslide02_shortcut_down_big", CoordGrid(2574, 7767)); f.finish(); assertEquals(CoordGrid(2573, 7767), f.player.coords)
+        f.player.coords = CoordGrid(2580, 7767); f.player.statMap.setCurrentLevel("stat.agility", 61)
+        f.op("loc.voros_rockslide02_shortcut_up_big", CoordGrid(2579, 7767)); f.finish(); assertEquals(CoordGrid(2573, 7767), f.player.coords)
+        for ((from, loc, to) in listOf(Triple(CoordGrid(2656, 7816), CoordGrid(2657, 7816), CoordGrid(2658, 7816)), Triple(CoordGrid(2666, 7837), CoordGrid(2667, 7837), CoordGrid(2668, 7837)))) {
+            val g = Fixture(from); g.player.statMap.setCurrentLevel("stat.agility", 63)
+            g.op("loc.bush_shortcut", loc); g.finish(); assertEquals(from, g.player.coords)
+            g.player.statMap.setCurrentLevel("stat.agility", 64)
+            g.op("loc.bush_shortcut", loc); g.finish(); assertEquals(to, g.player.coords)
+            g.op("loc.bush_shortcut", loc); g.finish(); assertEquals(from, g.player.coords); assertEquals(4, g.player.statMap.getXP("stat.agility"))
+        }
+    }
+
+    @Test fun `virtual quest options never overwrite native Blood Moon progress and RespectProgress still denies access`() {
+        val old = org.rsmod.content.quest.manager.QuestRequirements.activePolicy()
+        try {
+            org.rsmod.content.quest.manager.QuestRequirements.install(org.rsmod.content.quest.manager.QuestRequirementPolicy(org.rsmod.content.quest.manager.QuestRequirementMode.RespectProgress))
+            val f = Fixture(CoordGrid(2559, 7820))
+            f.op("loc.voros_rockslide02_shortcut_up", CoordGrid(2557, 7819)); f.finish(); assertEquals(CoordGrid(2559, 7820), f.player.coords); assertEquals(0, f.player.vars["varbit.myq6"])
+            f.set("varbit.myq6", 200)
+            f.op("loc.voros_rockslide02_shortcut_up", CoordGrid(2557, 7819)); f.finish(); assertEquals(CoordGrid(2553, 7823), f.player.coords); assertEquals(200, f.player.vars["varbit.myq6"])
+        } finally { org.rsmod.content.quest.manager.QuestRequirements.install(old) }
+    }
+
     private class Fixture(origin: CoordGrid) {
         val bus = EventBus(); val ctx = ScriptContext(bus, CheatCommandMap(), EngineQueueCache()); val map = shortcutTestCollision
         val player = Player(client).apply {
