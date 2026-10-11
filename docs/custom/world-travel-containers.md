@@ -841,3 +841,55 @@ Five new tests cover actual native Wear/Remove, all eight forms, insufficient
 Ranged, exact Empty/Uncharge operations, both conversion orders, a full inventory,
 late mutation/death/logout/movement and actual Destroy/cancel/banked duplicates.
 Scoped formatting and all 14 accepted-file preservation checks pass.
+
+### Quiver bank configuration, Minimus and unsigned inventory vars
+
+Native bank CS2 `script669` exposes item Op9 Configure-Charges when
+`varbit.bank_bankops_toggle_on` is enabled and native param 2257 points to a
+charge dbrow. The bank setting button now toggles this existing preference.
+The two charged quiver forms publish a typed bank event; unsupported configured
+items do not accidentally withdraw. Ordinary disabled-setting withdrawal remains
+unchanged. The Native dbrow param has no RSCM alias, as verified in
+`bank-charges-native-audit.log`; its documented constant is not a guessed script.
+
+Charge input revalidates the original bank item, source stack, location, bank
+window and lifecycle after each suspension. Source withdrawal preserves native
+placeholders and tabs. Uncharge refunds all splinters and resets the cape's vars
+inside the same strict bank transaction, so a full bank/stack leaves both intact.
+Malformed charged multi-item stacks cannot multiply charges. Menus have explicit
+titles; their displayed choice order matches the actual selected action.
+
+Minimus uses native outside NPC `colosseum_master_outside` at (1805,9508,0),
+with owned-spawn cleanup. Native Talk-to/item-use accepts only uncharged quivers.
+After two confirmation stages, one quiver is atomically exchanged for 4,000
+sunfire splinters or a 1/200 Smol Heredit roll. Gambling is hidden when the pet
+is in the inventory, bank or following the player, and this condition is checked
+again after confirmation. Pet wins use the existing PetRewards service. The
+inside Colosseum wave NPC and unstarted encounter are not changed.
+Sources: [Minimus](https://oldschool.runescape.wiki/w/Minimus),
+[Transcript:Minimus](https://oldschool.runescape.wiki/w/Transcript:Minimus),
+[Dizana's quiver](https://oldschool.runescape.wiki/w/Dizana%27s_quiver),
+and pinned upstream `bbc78dfc259c988a77d5c840196946c72de862e9` with the recorded
+all-state quiver PR search (zero matches).
+
+Quiver blessing progress can encode an unsigned value above Int.MAX_VALUE.
+The native transaction engine previously treated negative vars as absent, risking
+charge loss or stacking during bank moves. Nonzero vars now count as item state
+in insert, multi-transfer, swap and dump. Plain stacks skip existing charged
+instances rather than overwriting their vars. This core correction is required
+for the quiver's complete 150,000 blessing-progress range; it does not change
+cache definitions or the accepted runtime JAR.
+
+Focused validation: `quiver-bank-exchange-validation-6.log` passes **45 tests**
+(21 ammo-container, seven actual bank IF3, six native Minimus and 11 InvTx).
+New InvTx regressions cover identical/different unsigned banked charge states,
+withdraw-all/placeholder, mixed plain/charged insertion, actual equipment swap,
+deposit-all and full-bank rollback. Bank fixtures use the real opening/settings
+scripts and the native incoming IF3 handler. Minimus fixtures use native NPC
+interaction producers and verify RNG/PetRewards calls. Native visual acceptance
+and spawn boot checks remain separate. Scoped formatting passes.
+
+The following complete regression run (`quiver-bank-exchange-full-validation-2.log`)
+passes **252 tests**: 184 Containers, 35 Pouches, 12 Runecrafting, seven Smithing,
+11 InvTx, two combat-commons and one combat-formula test. All 14 recorded
+accepted-file hashes and the accepted server JAR SHA-256 are unchanged.

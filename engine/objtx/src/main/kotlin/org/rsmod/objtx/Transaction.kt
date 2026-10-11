@@ -167,10 +167,10 @@ public class Transaction<T>(
             capacity: Int,
         ): TransactionResult {
             val template = this@Transaction.certTemplate(obj)
-            if (template != null && vars > 0) {
+            if (template != null && vars != 0) {
                 return TransactionResult.VarObjIncorrectlyHasCert
             }
-            if (vars > 0) {
+            if (vars != 0) {
                 return insertIndividual(obj, count, capacity)
             }
             if (template != null && template.isCert) {
@@ -215,7 +215,7 @@ public class Transaction<T>(
                 this[placeholderSlot] = TransactionObj(obj, count)
                 return TransactionResult.Ok(requested = count, completed = count)
             }
-            val previousSlot = indexOf(obj)
+            val previousSlot = image.indexOfFirst { it?.id == obj && !it.hasVars }.takeIf { it >= 0 }
             if (previousSlot != null) {
                 val prevCount = this[previousSlot]?.count ?: 0
                 val sumCount = count.toLong() + prevCount

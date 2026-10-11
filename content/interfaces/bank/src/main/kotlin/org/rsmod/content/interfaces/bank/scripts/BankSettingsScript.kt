@@ -3,6 +3,7 @@ package org.rsmod.content.interfaces.bank.scripts
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.content.interfaces.bank.BankFillerMode
 import org.rsmod.content.interfaces.bank.QuantityMode
@@ -41,6 +42,9 @@ class BankSettingsScript @Inject constructor(private val bankScript: BankInvScri
         onIfModalButton("component.bankmain:incinerator_toggle") { incinerator = !incinerator }
         onIfModalButton("component.bankmain:banktut_toggle") { tutorialButton = !tutorialButton }
         onIfModalButton("component.bankmain:sideops_toggle") { toggleInvItemOptions() }
+        onIfModalButton("component.bankmain:bankops_toggle") {
+            if (it.op == IfButtonOp.Op1) VarPlayerIntMapSetter.set(player, "varbit.bank_bankops_toggle_on", 1 - player.vars["varbit.bank_bankops_toggle_on"])
+        }
         onIfModalButton("component.bankmain:depositinv_toggle") { depositInvButton = !depositInvButton }
         onIfModalButton("component.bankmain:depositworn_toggle") { depositWornButton = !depositWornButton }
         onIfModalButton("component.bankmain:release_placeholders") { selectReleasePlaceholders() }

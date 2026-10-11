@@ -6,5 +6,5 @@ public data class TransactionObj(
     public val vars: Int = 0,
 ) {
     public val hasVars: Boolean
-        get() = vars > 0
+        get() = vars != 0
 }

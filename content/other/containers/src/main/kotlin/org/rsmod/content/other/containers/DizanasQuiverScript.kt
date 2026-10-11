@@ -17,6 +17,7 @@ import org.rsmod.api.player.worn.DizanasQuiver
 import org.rsmod.api.script.*
 import org.rsmod.api.script.advanced.onDestroyHeld
 import org.rsmod.api.script.advanced.onWearposChange
+import org.rsmod.content.interfaces.bank.BankChargeConfigure
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
@@ -26,6 +27,7 @@ internal class DizanasQuiverScript @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onWearposChange { if (wearpos == Wearpos.Back) syncChargedFlag(player) }
         onPlayerLogin { syncChargedFlag(player) }
+        for ((charged, _) in DizanasQuiver.pairs) onProtectedEvent<BankChargeConfigure>(charged.asRSCM()) { configureBank(it) }
         for (symbol in DizanasQuiver.usable) {
             onOpHeld3(symbol) { if (active()) open(inv, it.slot) }
             if (DizanasQuiver.pairs.any { it.first == symbol }) {
@@ -93,6 +95,36 @@ internal class DizanasQuiverScript @Inject constructor() : PluginScript() {
         val cape = player.worn[Wearpos.Back.slot]
         val charged = DizanasQuiver.recognises(cape) && (DizanasQuiver.blessed(cape) || DizanasQuiver.charges(cape).count > 0)
         VarPlayerIntMapSetter.set(player, "varbit.worn_items_dizanas_quiver_charged", if (charged)1 else 0)
+    }
+    private suspend fun ProtectedAccess.configureBank(event: BankChargeConfigure) {
+        fun valid(open: Boolean = true) = AmmoContainers.active(player) && (!open || player.ui.containsModal("interface.bankmain")) && player.vars["varbit.bank_bankops_toggle_on"] == 1 && bank[event.slot] === event.item
+        if (!valid()) return
+        if (event.item.count != 1) { mes("Withdraw one quiver before configuring its charges."); return }
+        val origin = coords; val before = DizanasQuiver.charges(event.item)
+        val selected = menu("Configure Dizana's quiver", "Add charges from bank", "Uncharge and reset blessing progress", "Cancel")
+        if (selected !in 0..1 || !valid(false) || coords != origin) return
+        ifOpenMainSidePair("interface.bankmain", "interface.bankside")
+        when (selected) {
+            0 -> {
+                val sourceSlot = bank.indexOfFirst { it?.id == SPLINTER.asRSCM() && it.vars == 0 }
+                val source = if (sourceSlot >= 0) bank[sourceSlot] else null
+                val maximum = minOf(source?.count ?: 0, DizanasQuiver.MAX_CHARGES - before.count)
+                if (maximum <= 0) { mes("Your quiver is full or you have no sunfire splinters in your bank."); return }
+                val requested = countDialog("How many charges? (0 - $maximum)")
+                if (!valid() || coords != origin || bank[sourceSlot] !== source) return
+                val amount = minOf(requested, maximum); if (amount <= 0) return
+                val replacement = DizanasQuiver.withCharges(event.item, before.copy(count = before.count + amount, progress = minOf(DizanasQuiver.BLESSING, before.progress + amount)))
+                with(event.script) { if (consumeChargeStack(event.slot, replacement, SPLINTER.asRSCM(), amount)) mes("You add $amount charges to your banked quiver.") }
+            }
+            1 -> {
+                if (!choice2("Uncharge", true, "Cancel", false, title = "Return charges to your bank and reset blessing progress?")) return
+                if (!valid(false) || coords != origin) return
+                ifOpenMainSidePair("interface.bankmain", "interface.bankside")
+                val replacement = DizanasQuiver.withCharges(event.item, DizanasQuiver.Charges(0, 0))
+                if (!with(event.script) { refundChargeStack(event.slot, replacement, SPLINTER.asRSCM(), before.count) }) { mes("Your bank has no space for all the returned splinters."); return }
+                mes("Your quiver is uncharged; its blessing progress is reset.")
+            }
+        }
     }
     private suspend fun ProtectedAccess.combineMaxCape(quiverSlot: Int, capeSlot: Int) {
         if (!active()) return

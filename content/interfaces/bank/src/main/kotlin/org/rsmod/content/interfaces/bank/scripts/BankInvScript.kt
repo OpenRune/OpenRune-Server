@@ -30,6 +30,7 @@ import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onIfModalDrag
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerQueue
+import org.rsmod.content.interfaces.bank.BankChargeConfigure
 import org.rsmod.content.interfaces.bank.BankTab
 import org.rsmod.content.interfaces.bank.QuantityMode
 import org.rsmod.content.interfaces.bank.alwaysPlacehold
@@ -59,6 +60,7 @@ import org.rsmod.game.type.getOrNull
 import org.rsmod.game.type.placeholder
 import org.rsmod.game.type.uncert
 import org.rsmod.game.type.untransform
+import org.rsmod.objtx.TransactionObj
 import org.rsmod.objtx.TransactionResult
 import org.rsmod.objtx.isOk
 import org.rsmod.plugin.scripts.PluginScript
@@ -91,7 +93,10 @@ constructor(
             if (it.op == IfButtonOp.Op9 && it.obj?.id != inv[it.comsub]?.id) return@onIfModalButton
             sideInvOp(it.comsub, it.op)
         }
-        onIfModalButton("component.bankmain:items") { mainInvOp(it.comsub, it.op) }
+        onIfModalButton("component.bankmain:items") {
+            if (it.op == IfButtonOp.Op9 && it.obj?.id != bank[it.comsub]?.id) return@onIfModalButton
+            mainInvOp(it.comsub, it.op)
+        }
         onIfModalButton("component.bankside:wornops") { wornInvOp(it.comsub, it.op) }
         onIfModalButton("component.bankmain:depositinv") { depositInv() }
         onIfModalButton("component.bankmain:depositworn") { depositWorn() }
@@ -112,6 +117,12 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.mainInvOp(slot: Int, op: IfButtonOp) {
+        val item = bank[slot]
+        val type = getOrNull(item)
+        if (op == IfButtonOp.Op9 && player.vars["varbit.bank_bankops_toggle_on"] == 1 && type?.paramsRaw?.containsKey(BankChargeConfigure.NATIVE_CHARGE_DBROW_PARAM) == true) {
+            if (!eventBus.publish(this, BankChargeConfigure(slot, checkNotNull(item), type, this@BankInvScript))) mes("This item has no implemented charge configuration.")
+            return
+        }
         if (op == IfButtonOp.Op10) {
             objExamine(bank, slot)
             return
@@ -223,11 +234,11 @@ constructor(
     }
 
     /** Deposits virtual-container contents through the same rules as a physical bank deposit. */
-    public fun ProtectedAccess.depositStoredStack(item: Int, count: Int): Int {
+    public fun ProtectedAccess.depositStoredStack(item: Int, count: Int, strict: Boolean = false): Int {
         if (count <= 0) return 0
         val source = Inventory.create("inv.bank")
         source[0] = InvObj(ServerCacheManager.getItem(item) ?: return 0, count)
-        invDeposit(0, count, source)
+        invDeposit(0, count, source, strict)
         return count - (source[0]?.count ?: 0)
     }
 
@@ -247,7 +258,30 @@ constructor(
         return target.physicalCount(dev.openrune.rscm.RSCM.getReverseMapping(dev.openrune.rscm.RSCMType.OBJ, item))
     }
 
-    public fun ProtectedAccess.invDeposit(slot: Int, count: Int, inventory: Inventory): Boolean {
+    /** Charge output is written before bank gap compaction can move its slot. No suspension occurs. */
+    public fun ProtectedAccess.consumeChargeStack(chargeSlot: Int, replacement: InvObj, item: Int, count: Int): Boolean {
+        val sourceSlot = bank.indexOfFirst { it?.id == item && it.vars == 0 }
+        if (sourceSlot < 0 || chargeSlot == sourceSlot || bank[chargeSlot] == null || count <= 0) return false
+        val target = Inventory.create("inv.bank")
+        if (!invMoveFromSlot(from = bank, into = target, fromSlot = sourceSlot, count = count, strict = true, placehold = alwaysPlacehold).success) return false
+        bank[chargeSlot] = replacement
+        if (bank[sourceSlot] == null) notifySlotUpdate(sourceSlot)
+        setBanksideExtraOps()
+        return true
+    }
+
+    /** Refund and charge reset share the bank transaction, including tab movement and rollback. */
+    public fun ProtectedAccess.refundChargeStack(chargeSlot: Int, replacement: InvObj, item: Int, count: Int): Boolean {
+        if (count == 0) { bank[chargeSlot] = replacement; return true }
+        if (count < 0) return false
+        val source = Inventory.create("inv.bank")
+        source[0] = InvObj(ServerCacheManager.getItem(item) ?: return false, count)
+        return deposit(0, count, source, strict = true, chargeReplacement = chargeSlot to replacement)
+    }
+
+    public fun ProtectedAccess.invDeposit(slot: Int, count: Int, inventory: Inventory, strict: Boolean = false): Boolean = deposit(slot, count, inventory, strict)
+
+    private fun ProtectedAccess.deposit(slot: Int, count: Int, inventory: Inventory, strict: Boolean, chargeReplacement: Pair<Int, InvObj>? = null): Boolean {
         val obj = inventory[slot]
         if (obj == null) {
             resendSlot(inventory, 0)
@@ -292,6 +326,10 @@ constructor(
             player.invTransaction(inventory, bank) {
                 val fromInv = select(inventory)
                 val bankInv = select(bank)
+                chargeReplacement?.let { (chargeSlot, replacement) ->
+                    bankInv.image[chargeSlot] = TransactionObj(replacement.id, replacement.count, replacement.vars)
+                    bankInv.modifiedSlots?.set(chargeSlot)
+                }
                 if (prioritySlot == null && !tab.isMainTab) {
                     rightShift {
                         this.from = bankInv
@@ -307,7 +345,7 @@ constructor(
                     this.intoCapacity = bankCapacity
                     this.count = count
                     this.uncert = true
-                    this.strict = false
+                    this.strict = strict
                 }
             }
         val result = insertQuery.results.last()
