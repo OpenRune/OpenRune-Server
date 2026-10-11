@@ -159,9 +159,14 @@ internal class AkkhaShadows(private val room: AkkhaEncounter) {
     private fun syncBossTint() {
         val boss = room.akkha ?: return
         val shielded = shielded(boss)
-        if (shielded == (tintedBoss === boss)) return
-        tintedBoss = if (shielded) boss else null
-        boss.tint(if (shielded) IMMUNE_TINT else CLEAR_TINT)
+        if (shielded) {
+            tintedBoss = boss
+            boss.tint(IMMUNE_TINT)
+        } else if (tintedBoss === boss) {
+            tintedBoss = null
+            boss.tint(CLEAR_TINT)
+        }
+        for (slot in slots.values) if (slot.alive && slot.immune) slot.shadow?.tint(IMMUNE_TINT)
     }
 
     private fun wipe(slot: Slot) {
