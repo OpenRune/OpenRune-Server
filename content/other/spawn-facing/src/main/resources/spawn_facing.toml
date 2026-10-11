@@ -1,0 +1,767 @@
+# Bankers face the bank booth next to them (booth placements from
+# https://github.com/mejrs/data_osrs/tree/6a3ca6f/locations).
+
+[[facing]]
+npc = "npc.banker1"
+coords = "0_43_53_55_51"
+dir = "south"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_43_53_57_51"
+dir = "south"
+
+[[facing]]
+npc = "npc.deadman_banker_grey_south"
+coords = "0_43_53_58_51"
+dir = "south"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_43_53_59_51"
+dir = "south"
+
+[[facing]]
+npc = "npc.dorgesh_male_banker"
+coords = "0_42_83_11_36"
+dir = "east"
+
+[[facing]]
+npc = "npc.dorgesh_female_banker"
+coords = "0_42_83_11_37"
+dir = "east"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_48_50_18_42"
+dir = "east"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_48_50_18_43"
+dir = "east"
+
+[[facing]]
+npc = "npc.banker1"
+coords = "0_48_50_18_45"
+dir = "east"
+
+[[facing]]
+npc = "npc.deadman_banker_grey_north"
+coords = "0_40_52_55_2"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_40_52_58_2"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_40_52_59_2"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_41_51_33_16"
+dir = "west"
+
+[[facing]]
+npc = "npc.deadman_banker_grey_west"
+coords = "0_41_51_33_19"
+dir = "west"
+
+[[facing]]
+npc = "npc.banker1"
+coords = "0_41_51_33_22"
+dir = "west"
+
+[[facing]]
+npc = "npc.banker1"
+coords = "0_48_54_24_33"
+dir = "west"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_48_54_24_35"
+dir = "west"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_48_54_24_36"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker1"
+coords = "0_48_54_26_36"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_46_52_1_38"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_46_52_2_38"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_46_52_3_38"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_46_52_4_38"
+dir = "north"
+
+[[facing]]
+npc = "npc.deadman_banker_grey_north"
+coords = "0_46_52_5_38"
+dir = "north"
+
+[[facing]]
+npc = "npc.falador_banker"
+coords = "0_47_52_2_25"
+dir = "north"
+
+[[facing]]
+npc = "npc.falador_banker"
+coords = "0_47_52_3_25"
+dir = "north"
+
+[[facing]]
+npc = "npc.falador_banker"
+coords = "0_47_52_4_25"
+dir = "north"
+
+[[facing]]
+npc = "npc.falador_banker"
+coords = "0_47_52_5_25"
+dir = "north"
+
+[[facing]]
+npc = "npc.falador_banker"
+coords = "0_47_52_6_25"
+dir = "north"
+
+[[facing]]
+npc = "npc.deadman_banker_grey_north"
+coords = "0_47_52_7_25"
+dir = "north"
+
+[[facing]]
+npc = "npc.corscurs_banker_multi"
+coords = "0_40_44_9_50"
+dir = "south"
+
+[[facing]]
+npc = "npc.dwarf_city_banker1"
+coords = "0_44_159_20_29"
+dir = "north"
+
+[[facing]]
+npc = "npc.dwarf_city_banker2"
+coords = "0_44_159_22_29"
+dir = "north"
+
+[[facing]]
+npc = "npc.kharidbanker1"
+coords = "0_51_49_3_28"
+dir = "east"
+
+[[facing]]
+npc = "npc.kharidbanker2"
+coords = "0_51_49_3_30"
+dir = "east"
+
+[[facing]]
+npc = "npc.kharidbanker1"
+coords = "0_51_49_3_31"
+dir = "east"
+
+[[facing]]
+npc = "npc.kharidbanker2"
+coords = "0_51_49_3_32"
+dir = "east"
+
+[[facing]]
+npc = "npc.kharidbanker1"
+coords = "0_51_49_3_33"
+dir = "east"
+
+[[facing]]
+npc = "npc.elid_banker"
+coords = "0_53_45_33_11"
+dir = "east"
+
+[[facing]]
+npc = "npc.elid_banker"
+coords = "0_53_45_33_13"
+dir = "east"
+
+[[facing]]
+npc = "npc.elid_banker"
+coords = "0_53_45_33_14"
+dir = "east"
+
+[[facing]]
+npc = "npc.elid_banker"
+coords = "0_53_45_33_9"
+dir = "east"
+
+[[facing]]
+npc = "npc.banker1"
+coords = "0_40_53_24_26"
+dir = "east"
+
+[[facing]]
+npc = "npc.banker1"
+coords = "0_40_53_24_27"
+dir = "east"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_40_53_24_29"
+dir = "east"
+
+[[facing]]
+npc = "npc.banker1"
+coords = "0_40_53_24_30"
+dir = "east"
+
+[[facing]]
+npc = "npc.farming_guild_banker1"
+coords = "0_19_58_32_48"
+dir = "south"
+
+[[facing]]
+npc = "npc.farming_guild_banker2"
+coords = "0_19_58_33_48"
+dir = "south"
+
+[[facing]]
+npc = "npc.lovakengj_banker_f_east"
+coords = "0_22_59_26_46"
+dir = "east"
+
+[[facing]]
+npc = "npc.lovakengj_banker_m_east"
+coords = "0_22_59_26_48"
+dir = "east"
+
+[[facing]]
+npc = "npc.lovakengj_banker_f_east"
+coords = "0_22_59_26_56"
+dir = "east"
+
+[[facing]]
+npc = "npc.lovakengj_banker_m_east"
+coords = "0_22_59_26_58"
+dir = "east"
+
+[[facing]]
+npc = "npc.lovakengj_banker_f_west"
+coords = "0_22_59_32_46"
+dir = "west"
+
+[[facing]]
+npc = "npc.lovakengj_banker_f_west"
+coords = "0_22_59_32_52"
+dir = "west"
+
+[[facing]]
+npc = "npc.lovakengj_banker_f_west"
+coords = "0_22_59_32_58"
+dir = "west"
+
+[[facing]]
+npc = "npc.shayzien_banker_m_east"
+coords = "0_23_56_14_7"
+dir = "east"
+
+[[facing]]
+npc = "npc.shayzien_banker_f_east"
+coords = "0_23_56_14_8"
+dir = "east"
+
+[[facing]]
+npc = "npc.shayzien_banker_m_east"
+coords = "0_23_56_14_9"
+dir = "east"
+
+[[facing]]
+npc = "npc.lovakengj_banker_f_south"
+coords = "0_23_58_48_30"
+dir = "south"
+
+[[facing]]
+npc = "npc.lovakengj_banker_f_north"
+coords = "0_23_58_50_24"
+dir = "north"
+
+[[facing]]
+npc = "npc.lovakengj_banker_m_south"
+coords = "0_23_58_50_30"
+dir = "south"
+
+[[facing]]
+npc = "npc.lovakengj_banker_f_south"
+coords = "0_23_58_52_30"
+dir = "south"
+
+[[facing]]
+npc = "npc.lovakengj_banker_m_south"
+coords = "0_23_58_54_30"
+dir = "south"
+
+[[facing]]
+npc = "npc.lovakengj_banker_f_south"
+coords = "0_23_58_56_30"
+dir = "south"
+
+[[facing]]
+npc = "npc.lovakengj_banker_f_north"
+coords = "0_23_58_58_24"
+dir = "north"
+
+[[facing]]
+npc = "npc.lovakengj_banker_m_south"
+coords = "0_23_58_58_30"
+dir = "south"
+
+[[facing]]
+npc = "npc.arceuus_banker_2_east"
+coords = "0_25_58_22_28"
+dir = "east"
+
+[[facing]]
+npc = "npc.arceuus_banker_1_east"
+coords = "0_25_58_22_31"
+dir = "east"
+
+[[facing]]
+npc = "npc.arceuus_banker_2_east"
+coords = "0_25_58_22_34"
+dir = "east"
+
+[[facing]]
+npc = "npc.arceuus_banker_1_east"
+coords = "0_25_58_22_37"
+dir = "east"
+
+[[facing]]
+npc = "npc.arceuus_banker_2_west"
+coords = "0_25_58_37_28"
+dir = "west"
+
+[[facing]]
+npc = "npc.arceuus_banker_1_west"
+coords = "0_25_58_37_31"
+dir = "west"
+
+[[facing]]
+npc = "npc.arceuus_banker_2_west"
+coords = "0_25_58_37_34"
+dir = "west"
+
+[[facing]]
+npc = "npc.arceuus_banker_1_west"
+coords = "0_25_58_37_37"
+dir = "west"
+
+[[facing]]
+npc = "npc.hosidius_banker_f_east"
+coords = "0_27_56_18_14"
+dir = "east"
+
+[[facing]]
+npc = "npc.hosidius_banker_m_east"
+coords = "0_27_56_18_15"
+dir = "east"
+
+[[facing]]
+npc = "npc.hosidius_banker_f_east"
+coords = "0_27_56_18_16"
+dir = "east"
+
+[[facing]]
+npc = "npc.piscarilius_banker_1"
+coords = "0_28_59_12_16"
+dir = "south"
+
+[[facing]]
+npc = "npc.piscarilius_banker_2"
+coords = "0_28_59_16_16"
+dir = "south"
+
+[[facing]]
+npc = "npc.piscarilius_banker_1"
+coords = "0_28_59_4_16"
+dir = "south"
+
+[[facing]]
+npc = "npc.piscarilius_banker_2"
+coords = "0_28_59_8_16"
+dir = "south"
+
+[[facing]]
+npc = "npc.deadman_banker_grey_north"
+coords = "2_25_57_11_31"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker1"
+coords = "2_25_57_12_31"
+dir = "north"
+
+[[facing]]
+npc = "npc.aide_tutor_banker"
+coords = "2_50_50_8_22"
+dir = "south"
+
+[[facing]]
+npc = "npc.deadman_banker_blue_south"
+coords = "2_50_50_9_22"
+dir = "south"
+
+[[facing]]
+npc = "npc.burgh_actual_bank_teller_multinpc"
+coords = "0_54_50_37_11"
+dir = "east"
+
+[[facing]]
+npc = "npc.werewolfbanker"
+coords = "0_54_54_58_23"
+dir = "west"
+
+[[facing]]
+npc = "npc.werewolfbanker"
+coords = "0_54_54_58_25"
+dir = "west"
+
+[[facing]]
+npc = "npc.darkm_banker_male"
+coords = "0_56_52_19_41"
+dir = "south"
+
+[[facing]]
+npc = "npc.darkm_banker_female"
+coords = "0_56_52_20_41"
+dir = "south"
+
+[[facing]]
+npc = "npc.darkm_banker_male"
+coords = "0_56_52_21_41"
+dir = "south"
+
+[[facing]]
+npc = "npc.darkm_banker_female"
+coords = "0_56_52_23_41"
+dir = "south"
+
+[[facing]]
+npc = "npc.vampyre_banker_male"
+coords = "0_57_50_1_6"
+dir = "north"
+
+[[facing]]
+npc = "npc.vampyre_banker_female"
+coords = "0_57_50_3_6"
+dir = "north"
+
+[[facing]]
+npc = "npc.vampyre_banker_male"
+coords = "0_57_50_4_6"
+dir = "north"
+
+[[facing]]
+npc = "npc.ahoy_ghost_banker"
+coords = "0_57_54_39_8"
+dir = "north"
+
+[[facing]]
+npc = "npc.ahoy_ghost_banker"
+coords = "0_57_54_40_8"
+dir = "north"
+
+[[facing]]
+npc = "npc.deadman_banker_ahoy_north"
+coords = "0_57_54_42_8"
+dir = "north"
+
+[[facing]]
+npc = "npc.ahoy_ghost_banker"
+coords = "0_57_54_43_8"
+dir = "north"
+
+[[facing]]
+npc = "npc.fever_banker_01"
+coords = "0_57_46_34_37"
+dir = "west"
+
+[[facing]]
+npc = "npc.fever_banker_02"
+coords = "0_57_46_34_38"
+dir = "west"
+
+[[facing]]
+npc = "npc.fever_banker_01"
+coords = "0_57_46_34_39"
+dir = "west"
+
+[[facing]]
+npc = "npc.prif_bankerf2"
+coords = "0_50_95_55_23"
+dir = "north"
+
+[[facing]]
+npc = "npc.prif_bankerm4"
+coords = "0_50_95_56_23"
+dir = "north"
+
+[[facing]]
+npc = "npc.prif_bankerm2"
+coords = "0_50_95_56_31"
+dir = "south"
+
+[[facing]]
+npc = "npc.prif_bankerm4"
+coords = "0_50_95_58_23"
+dir = "north"
+
+[[facing]]
+npc = "npc.prif_bankerm3"
+coords = "0_50_95_58_31"
+dir = "south"
+
+[[facing]]
+npc = "npc.prif_bankerf1"
+coords = "0_51_94_33_42"
+dir = "west"
+
+[[facing]]
+npc = "npc.prif_bankerm1"
+coords = "0_51_94_33_43"
+dir = "west"
+
+[[facing]]
+npc = "npc.prif_bankerf1"
+coords = "0_51_94_33_44"
+dir = "west"
+
+[[facing]]
+npc = "npc.banker1"
+coords = "0_42_54_33_39"
+dir = "south"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_42_54_34_39"
+dir = "south"
+
+[[facing]]
+npc = "npc.banker1"
+coords = "0_42_54_36_39"
+dir = "south"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_42_54_39_39"
+dir = "south"
+
+[[facing]]
+npc = "npc.deadman_banker_grey_south"
+coords = "0_42_54_40_39"
+dir = "south"
+
+[[facing]]
+npc = "npc.banker1"
+coords = "0_42_54_41_39"
+dir = "south"
+
+[[facing]]
+npc = "npc.contact_banker_male"
+coords = "0_43_80_46_51"
+dir = "south"
+
+[[facing]]
+npc = "npc.contact_banker_female"
+coords = "0_43_80_47_51"
+dir = "south"
+
+[[facing]]
+npc = "npc.contact_banker_female"
+coords = "0_43_80_48_51"
+dir = "south"
+
+[[facing]]
+npc = "npc.contact_banker_deadman"
+coords = "0_43_80_49_51"
+dir = "south"
+
+[[facing]]
+npc = "npc.deadman_banker_gnome_east"
+coords = "1_38_53_11_32"
+dir = "east"
+
+[[facing]]
+npc = "npc.gnomebanker"
+coords = "1_38_53_11_33"
+dir = "east"
+
+[[facing]]
+npc = "npc.gnomebanker"
+coords = "1_38_53_16_32"
+dir = "west"
+
+[[facing]]
+npc = "npc.gnomebanker"
+coords = "1_38_53_16_35"
+dir = "west"
+
+[[facing]]
+npc = "npc.gnomebanker"
+coords = "1_38_54_16_24"
+dir = "north"
+
+[[facing]]
+npc = "npc.deadman_banker_gnome_north"
+coords = "1_38_54_18_24"
+dir = "north"
+
+[[facing]]
+npc = "npc.deadman_banker_gnome_east"
+coords = "1_38_54_8_32"
+dir = "east"
+
+[[facing]]
+npc = "npc.warguild_banker"
+coords = "0_44_55_25_23"
+dir = "east"
+
+[[facing]]
+npc = "npc.noobbanker"
+coords = "0_48_48_48_53"
+dir = "south"
+
+[[facing]]
+npc = "npc.noobbanker"
+coords = "0_48_48_50_53"
+dir = "south"
+
+[[facing]]
+npc = "npc.tut2_bank_tutor"
+coords = "0_26_95_48_53"
+dir = "south"
+
+[[facing]]
+npc = "npc.tut2_bank_tutor"
+coords = "0_26_95_50_53"
+dir = "south"
+
+[[facing]]
+npc = "npc.gnomebanker"
+coords = "1_36_84_16_24"
+dir = "north"
+
+[[facing]]
+npc = "npc.gnomebanker"
+coords = "1_36_84_18_24"
+dir = "north"
+
+[[facing]]
+npc = "npc.gnomebanker"
+coords = "1_36_84_8_32"
+dir = "east"
+
+[[facing]]
+npc = "npc.banker1_new"
+coords = "0_49_53_11_56"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker2_new"
+coords = "0_49_53_12_56"
+dir = "north"
+
+[[facing]]
+npc = "npc.deadman_banker_blue_west"
+coords = "0_49_53_51_44"
+dir = "west"
+
+[[facing]]
+npc = "npc.banker2_new"
+coords = "0_49_53_51_46"
+dir = "west"
+
+[[facing]]
+npc = "npc.banker1_new"
+coords = "0_49_53_51_48"
+dir = "west"
+
+[[facing]]
+npc = "npc.banker2_new"
+coords = "0_49_53_51_50"
+dir = "west"
+
+[[facing]]
+npc = "npc.banker1_new"
+coords = "0_49_53_51_52"
+dir = "west"
+
+[[facing]]
+npc = "npc.deadman_banker_blue_north"
+coords = "0_50_53_51_26"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker1_new"
+coords = "0_50_53_52_26"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker1_new"
+coords = "0_50_53_53_26"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker2_new"
+coords = "0_50_53_54_26"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker2_new"
+coords = "0_50_53_55_26"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker2_new"
+coords = "0_50_53_56_26"
+dir = "north"
+
+[[facing]]
+npc = "npc.deadman_banker_pest_north"
+coords = "0_41_41_42_27"
+dir = "north"
+
+[[facing]]
+npc = "npc.pest_squire_bank_2"
+coords = "0_41_41_44_27"
+dir = "north"
+
+[[facing]]
+npc = "npc.banker2"
+coords = "0_40_48_55_19"
+dir = "west"
+
+[[facing]]
+npc = "npc.banker1"
+coords = "0_40_48_55_20"
+dir = "west"
+
+[[facing]]
+npc = "npc.deadman_banker_grey_west"
+coords = "0_40_48_55_22"
+dir = "west"
