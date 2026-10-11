@@ -162,3 +162,35 @@ moveRestrict = "PassThru"
 blockWalk = "None"
 timer = 1
 regenRate = 0
+
+[[npc]]
+id = "npc.toa_het_goal"
+inherit = "npc.toa_het_goal"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "South"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 132
+"param.boss_hp_bar_colour_sliding" = 623
+"param.boss_hp_bar_colour_remaining" = 853
+
+[[npc]]
+id = "npc.toa_het_goal_vulnerable"
+inherit = "npc.toa_het_goal_vulnerable"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "South"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 132
+"param.boss_hp_bar_colour_sliding" = 623
+"param.boss_hp_bar_colour_remaining" = 853
+
+[[npc]]
+id = "npc.toa_het_orb"
+inherit = "npc.toa_het_orb"
+defaultMode = "None"
+moveRestrict = "PassThru"
+blockWalk = "None"
+regenRate = 0
