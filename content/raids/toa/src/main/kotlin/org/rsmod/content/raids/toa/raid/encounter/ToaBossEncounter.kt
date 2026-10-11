@@ -113,7 +113,9 @@ open class ToaBossEncounter(
         for ((part, npc) in parts) npc?.anim(part.anim)
         death.shake?.let(::shakeCameras)
         schedule(death.modelDelay) {
-            if (boss.isSlotAssigned) boss.transmog(npcType(death.dead), Int.MAX_VALUE)
+            if (boss.isSlotAssigned) {
+                if (death.dead == null) despawn(boss) else boss.transmog(npcType(death.dead), Int.MAX_VALUE)
+            }
             for ((part, npc) in parts) {
                 if (npc == null || !npc.isSlotAssigned) continue
                 npc.transmog(npcType(part.dead), Int.MAX_VALUE)
