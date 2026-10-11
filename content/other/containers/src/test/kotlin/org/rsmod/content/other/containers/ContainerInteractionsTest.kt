@@ -10,7 +10,6 @@ import org.mockito.Mockito.mock
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.invtx.invAdd
-import org.rsmod.api.player.events.interact.HeldBanksideEvents
 import org.rsmod.api.player.interact.HeldInteractions
 import org.rsmod.api.player.interact.HeldUInteractions
 import org.rsmod.api.player.protect.*
@@ -147,19 +146,6 @@ internal class ContainerInteractionsTest {
         }
     }
 
-    @Test fun `native bank-side use fills tackle box and alternates plank filling with banking`() {
-        val f = Fixture(); val tackle = f.spec("obj.tackle_box"); f.put(0, tackle.symbol); f.put(1, "obj.feather")
-        f.bus.publish(HeldBanksideEvents.Type(f.player, 0, ServerCacheManager.getItem(tackle.id)!!))
-        assertEquals(1, f.store.count(f.player, tackle, "obj.feather".asRSCM()))
-        assertTrue(f.player.inv[1] == null)
-        val plank = f.spec("obj.plank_sack"); f.put(0, plank.symbol); f.put(1, "obj.plank_teak")
-        f.bus.publish(HeldBanksideEvents.Type(f.player, 0, ServerCacheManager.getItem(plank.id)!!))
-        assertEquals(1, f.store.count(f.player, plank, "obj.plank_teak".asRSCM()))
-        f.bus.publish(HeldBanksideEvents.Type(f.player, 0, ServerCacheManager.getItem(plank.id)!!))
-        assertEquals(0, f.store.count(f.player, plank, "obj.plank_teak".asRSCM()))
-        assertEquals(1, f.player.invMap.getOrPut("inv.bank").physicalCount("obj.plank_teak"))
-    }
-
     private class Fixture {
         val bus = EventBus(); val store = ContainerStore()
         val player = Player(client).apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); currentMapClock = 100; processedMapClock = 100 }
@@ -168,7 +154,7 @@ internal class ContainerInteractionsTest {
         init {
             val script = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
             with(InvTransactionsScript(PlayerItemStorage(setOf(ContainerStorageHook(store))))) { script.startup() }
-            with(ContainerScript(store)) { script.startup() }
+            with(ContainerScript(store, mock(org.rsmod.content.interfaces.bank.scripts.BankInvScript::class.java))) { script.startup() }
             with(ProduceContainerScript()) { script.startup() }
             val constructor = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }
             producer = constructor.newInstance(*constructor.parameterTypes.map { if (it == EventBus::class.java)bus else mock(it) }.toTypedArray()) as HeldInteractions

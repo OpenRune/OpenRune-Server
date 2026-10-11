@@ -11,7 +11,7 @@ dependencies {
     implementation(projects.content.skills.magic.spellTeleports)
     implementation(projects.content.skills.crafting)
     implementation(projects.content.skills.utils)
-    testImplementation(projects.content.interfaces.bank)
+    implementation(projects.content.interfaces.bank)
     testImplementation(projects.api.account)
     testImplementation(projects.api.net)
     testImplementation(libs.rsprot.api)

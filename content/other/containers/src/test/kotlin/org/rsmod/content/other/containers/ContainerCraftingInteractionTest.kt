@@ -142,7 +142,7 @@ internal class ContainerCraftingInteractionTest {
             with(InvTransactionsScript(PlayerItemStorage(emptySet()))) { scripts.startup() }
             // Register the existing native Crafting producer as well to catch conflicting item-use pairs.
             with(HeldCraftingScript(setOf(ContainerCraftingScript(store, XpModifiers(emptySet()))))) { scripts.startup() }
-            with(ContainerScript(store)) { scripts.startup() }
+            with(ContainerScript(store, mock(org.rsmod.content.interfaces.bank.scripts.BankInvScript::class.java))) { scripts.startup() }
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getAlignment = { org.rsmod.api.player.dialogue.align.TextAlignment() })); launcher = ProtectedAccessLauncher(factory)
         }
         fun seed(p: CraftingProduct): Int { player.inv[0] = InvObj(p.tools.single()); var slot = 1; for (m in p.inputs) { if (ServerCacheManager.getItem(m.internal.asRSCM())!!.stackable) player.inv[slot++] = InvObj(m.internal, m.count) else repeat(m.count) { player.inv[slot++] = InvObj(m.internal) } }; if (p.consumesThread && p.tools.single() == "obj.needle") player.inv[slot++] = InvObj("obj.thread"); return slot }

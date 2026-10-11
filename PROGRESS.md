@@ -51,15 +51,14 @@ persistence, rollback and native interaction validation is still in progress.
   native forms in 16 families**, plus **57 native fruit basket/vegetable sack
   forms**, pass **18 interaction/pickup/death tests**.
   Whitelists reject quest herbs, unsupported kit items, notes and over-capacity
-  inserts; save/load and full-inventory withdrawals are covered. Family-specific
-  interfaces, remaining crafting and specialised containers are in progress.
+  inserts; save/load and full-inventory withdrawals are covered. Real bank-side input now uses the native bank deposit service for stored contents, enforcing configured capacity, selected tabs, placeholders and partial stack limits. Four new native-input tests pass; all 65 Containers and 28 Pouches tests pass. Family-specific interfaces, remaining crafting and specialised containers are in progress.
   Basket/sack contents stay in their individual native item states. Generic
   storage has pure death previews, deferred PvP/Flamtaer cleanup, last-container
   destroy cleanup and family-specific bank-side filling/emptying.
 - Tackle box / huntsman's kit: native main/side screens, Fill/Empty, quantity
   controls, partial transfers and 35/32-type limits pass **eight tests**. Existing
   tackle contents and charged-tool vars are preserved. Native account loading and
-  confirmed last-kit destruction are covered; all **61 container module tests**
+  confirmed last-kit destruction are covered; all **65 container module tests**
   pass. Visual UI acceptance and final bank/death integration remain open.
 - Bow string spool: six native capacity tiers (250 to 100,000), notes, account
   storage and all twelve ordinary bow-stringing routes pass **six tests**,
@@ -90,7 +89,7 @@ persistence, rollback and native interaction validation is still in progress.
   crafting pass **seven native input tests**. Real bank IF3 Empty returns the
   camphor crate; ordinary Empty discards it. Partial contents survive native
   account loading, and full-inventory/lifecycle failures preserve materials.
-  All **61 Containers module tests** pass. Sailing net/cargo producers are not
+  All **65 Containers module tests** pass. Sailing net/cargo producers are not
   available in this fork; visual acceptance remains open.
 - Fish barrels: native Fill/Open/Close, worn sack controls, combination/dismantling,
   direct fishing storage and bank-side Empty pass **seven native input tests**.

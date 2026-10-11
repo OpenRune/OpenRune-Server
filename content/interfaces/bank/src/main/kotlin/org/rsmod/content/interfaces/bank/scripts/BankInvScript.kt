@@ -86,7 +86,10 @@ constructor(
     override fun ScriptContext.startup() {
         onPlayerLogin { player.setDefaultCapacity() }
 
-        onIfModalButton("component.bankside:items") { sideInvOp(it.comsub, it.op) }
+        onIfModalButton("component.bankside:items") {
+            if (it.op == IfButtonOp.Op9 && it.obj?.id != inv[it.comsub]?.id) return@onIfModalButton
+            sideInvOp(it.comsub, it.op)
+        }
         onIfModalButton("component.bankmain:items") { mainInvOp(it.comsub, it.op) }
         onIfModalButton("component.bankside:wornops") { wornInvOp(it.comsub, it.op) }
         onIfModalButton("component.bankmain:depositinv") { depositInv() }
@@ -1108,6 +1111,8 @@ constructor(
     private suspend fun ProtectedAccess.clickBanksideExtraOp(slot: Int) {
         val obj = inv[slot] ?: return resendSlot(inv, 0)
         val type = getInvObj(obj)
+
+        if (eventBus.publish(this, HeldBanksideEvents.Operate(slot, type))) return
 
         // Native explicit actions (e.g. a fish sack barrel's Empty) precede the wearable fallback.
         if (type.param(params.bankside_extraop).isNotBlank() && eventBus.publish(HeldBanksideEvents.Type(player, slot, type))) return

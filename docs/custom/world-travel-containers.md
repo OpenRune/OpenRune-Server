@@ -434,3 +434,18 @@ after that full-suite run. Primary sources: [Small fur pouch](https://oldschool.
 [Medium fur pouch](https://oldschool.runescape.wiki/w/Medium_fur_pouch),
 [Large fur pouch](https://oldschool.runescape.wiki/w/Large_fur_pouch), and
 [Large meat pouch](https://oldschool.runescape.wiki/w/Large_meat_pouch).
+
+
+### Native bank capacity and container Empty
+
+Generic bank-side storage previously inserted items into the bank backing
+inventory directly. This bypassed the player's configured capacity, selected
+tab and placeholder handling. A protected bank-side Operate event now reaches
+the container consumer before wearable fallback. Stored stacks move through
+`BankInvScript.invDeposit`; the account storage decreases only by the committed
+amount. Native equipment-kit inventories retain their object vars. Stale IF3
+item data and pending logout/death are rejected. Four actual IF3 input tests
+cover filling, banking, configured capacity despite free backing slots, partial
+maximum stacks, placeholders, selected tab sizes and stale/lifecycle inputs.
+All 65 Containers and 28 Pouches tests pass. Fish barrel has a separate consumer
+and requires the same native-bank review.

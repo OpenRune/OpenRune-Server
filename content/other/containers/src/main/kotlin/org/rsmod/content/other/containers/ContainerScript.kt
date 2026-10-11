@@ -10,12 +10,16 @@ import org.rsmod.api.invtx.select
 import org.rsmod.api.player.events.interact.HeldBanksideEvents
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.script.*
 import org.rsmod.api.script.advanced.onDestroyHeld
+import org.rsmod.content.interfaces.bank.scripts.BankInvScript
+import org.rsmod.game.inv.InvObj
+import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-internal class ContainerScript @Inject constructor(private val store: ContainerStore) : PluginScript() {
+internal class ContainerScript @Inject constructor(private val store: ContainerStore, private val bankScript: BankInvScript) : PluginScript() {
     override fun ScriptContext.startup() {
         onDestroyHeld {
             val spec = ContainerCatalog.byId[type.asRSCM()] ?: return@onDestroyHeld
@@ -40,21 +44,42 @@ internal class ContainerScript @Inject constructor(private val store: ContainerS
                 val moved = store.store(player, spec, it.second.id, Int.MAX_VALUE)
                 mes(if (moved > 0) "You store $moved items." else "That item doesn't fit in this container.")
             }
-            onEvent<HeldBanksideEvents.Type>(spec.id) {
-                if (!store.owns(player, spec)) return@onEvent
-                val fill = spec.family in setOf("tackle_box", "huntsman_kit") || spec.family == "plank_sack" && player.inv.objs.any { it != null && it.id in spec.accepted }
+            onProtectedEvent<HeldBanksideEvents.Operate>(spec.id) {
+                if (player.pendingLogout || player.loggingOut || player.hitpoints <= 0 || inv[it.slot]?.id != spec.id || !store.owns(player, spec)) return@onProtectedEvent
+                val fill = spec.family in setOf("tackle_box", "huntsman_kit") || spec.family == "plank_sack" && inv.objs.any { obj -> obj != null && obj.id in spec.accepted }
                 if (fill) {
                     var moved = 0L
-                    for (obj in player.inv.objs.filterNotNull().toList()) moved += store.store(player, spec, obj.id, obj.count)
-                    player.mes(if (moved > 0) "You store $moved items." else "No suitable items could be stored.")
-                    return@onEvent
+                    for (obj in inv.objs.filterNotNull().toList()) moved += store.store(player, spec, obj.id, obj.count)
+                    mes(if (moved > 0) "You store $moved items." else "No suitable items could be stored.")
+                } else {
+                    var moved = 0L
+                    for ((id, count) in store.contents(player, spec).toMap()) {
+                        moved += if (spec.family in setOf("forestry_kit", "satchel", "shade_coffin", "flamtaer_bag")) store.withdraw(player, spec, id.toInt(), count, inv) else bankContents(spec, id.toInt(), count)
+                    }
+                    mes(if (moved > 0) "You withdraw $moved stored items." else "No stored items could be withdrawn.")
                 }
-                val target = if (spec.family in setOf("forestry_kit", "satchel", "shade_coffin", "flamtaer_bag")) player.inv else player.invMap.getOrPut("inv.bank")
-                var moved = 0L
-                for ((id, count) in store.contents(player, spec).toMap()) moved += store.withdraw(player, spec, id.toInt(), count, target)
-                player.mes(if (moved > 0) "You withdraw $moved stored items." else "No stored items could be withdrawn.")
             }
         }
+    }
+    private fun ProtectedAccess.bankContents(spec: ContainerSpec, id: Int, count: Int): Int {
+        val name = store.inventoryName(spec)
+        if (name != null) {
+            val storage = player.invMap[name] ?: return 0
+            var moved = 0
+            for (slot in storage.indices) {
+                val item = storage[slot]?.takeIf { it.id == id } ?: continue
+                with(bankScript) { invDeposit(slot, item.count, storage) }
+                moved += item.count - (storage[slot]?.count ?: 0)
+            }
+            return moved
+        }
+        // A temporary stack retains native bank capacity, tabs and placeholder handling.
+        val source = Inventory.create("inv.bank")
+        source[0] = InvObj(ServerCacheManager.getItem(id)!!, count)
+        with(bankScript) { invDeposit(0, count, source) }
+        val moved = count - (source[0]?.count ?: 0)
+        if (moved > 0) store.update(player, spec, id, -moved)
+        return moved
     }
     private suspend fun ProtectedAccess.operate(spec: ContainerSpec, slot: Int, action: String) {
         if (inv[slot]?.id != spec.id) return

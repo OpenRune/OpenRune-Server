@@ -16,6 +16,9 @@ import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 
 public class HeldBanksideEvents {
+    public class Operate(public val slot: Int, public val type: ItemServerType) : SuspendEvent<ProtectedAccess> {
+        override val id: Long = type.id.toLong()
+    }
     public class Configure(public val slot: Int, public val type: ItemServerType) : SuspendEvent<ProtectedAccess> {
         override val id: Long = type.id.toLong()
     }

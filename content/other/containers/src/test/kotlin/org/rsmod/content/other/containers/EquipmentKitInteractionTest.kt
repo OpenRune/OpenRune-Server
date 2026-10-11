@@ -128,7 +128,7 @@ internal class EquipmentKitInteractionTest {
             val context = ProtectedAccessContextFactory.empty().copy(getEventBus = { bus })
             val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(context); launcher = ProtectedAccessLauncher(factory)
             with(InvTransactionsScript(PlayerItemStorage(setOf(ContainerStorageHook(store))))) { scripts.startup() }
-            with(ContainerScript(store)) { scripts.startup() }; with(EquipmentKitScript(store)) { scripts.startup() }
+            with(ContainerScript(store, mock(org.rsmod.content.interfaces.bank.scripts.BankInvScript::class.java))) { scripts.startup() }; with(EquipmentKitScript(store)) { scripts.startup() }
             val ctor = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }
             val dropCtor = ctor.parameterTypes[2].declaredConstructors.single().apply { isAccessible = true }
             val drop = dropCtor.newInstance(*dropCtor.parameterTypes.map { if (it == EventBus::class.java) bus else mock(it) }.toTypedArray())
