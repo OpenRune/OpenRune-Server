@@ -3,7 +3,7 @@ package org.rsmod.content.slayer.dialogue
 data class HighCombatRedirect(
     val minimumCombat: Int,
     val suggestedMaster: String,
-    val location: String,
+    val place: String,
 )
 
 enum class ActiveTaskMessageStyle {
@@ -24,55 +24,55 @@ data class SlayerMasterProfile(
     val npcId: Int,
     val supportsCape: Boolean = false,
     val supportsTaskSkip: Boolean = false,
-    val highCombatRedirect: HighCombatRedirect? = null,
+    val highCombatRedirects: List<HighCombatRedirect> = emptyList(),
     val activeTaskStyle: ActiveTaskMessageStyle = ActiveTaskMessageStyle.Short,
     val nearContactMessage: String? = null,
 )
 
 object SlayerMasterProfiles {
-    private val chaeldarRedirect = HighCombatRedirect(minimumCombat = 70, suggestedMaster = "Chaeldar", location = "Zanaris")
+    private val mazchnaRedirect = HighCombatRedirect(20, "Mazchna", "in Morytania")
 
-    private val vannakaRedirect = HighCombatRedirect(minimumCombat = 40, suggestedMaster = "Vannaka", location = "Edgeville")
+    private val vannakaRedirect = HighCombatRedirect(40, "Vannaka", "under Edgeville")
+
+    private val chaeldarRedirect = HighCombatRedirect(70, "Chaeldar", "in Zanaris")
 
     private val profilesByNpcId: Map<Int, SlayerMasterProfile> =
         mapOf(SlayerMasters.Npc.turael to
                 SlayerMasterProfile(
                     npcId = SlayerMasters.Npc.turael,
                     supportsTaskSkip = true,
-                    highCombatRedirect = chaeldarRedirect,
+                    highCombatRedirects = listOf(chaeldarRedirect),
                     activeTaskStyle = ActiveTaskMessageStyle.Short,
                 ),
             SlayerMasters.Npc.aya to
                 SlayerMasterProfile(
                     npcId = SlayerMasters.Npc.aya,
                     supportsTaskSkip = true,
-                    highCombatRedirect = chaeldarRedirect,
+                    highCombatRedirects = listOf(chaeldarRedirect),
                     activeTaskStyle = ActiveTaskMessageStyle.Short,
                 ),
             SlayerMasters.Npc.spriaActive to
                 SlayerMasterProfile(
                     npcId = SlayerMasters.Npc.spriaActive,
-                    supportsTaskSkip = true,
-                    highCombatRedirect = chaeldarRedirect,
+                    highCombatRedirects = listOf(mazchnaRedirect, vannakaRedirect, chaeldarRedirect),
                     activeTaskStyle = ActiveTaskMessageStyle.Short,
                 ),
             SlayerMasters.Npc.spria to
                 SlayerMasterProfile(
                     npcId = SlayerMasters.Npc.spria,
-                    supportsTaskSkip = true,
-                    highCombatRedirect = chaeldarRedirect,
+                    highCombatRedirects = listOf(mazchnaRedirect, vannakaRedirect, chaeldarRedirect),
                     activeTaskStyle = ActiveTaskMessageStyle.Short,
                 ),
             SlayerMasters.Npc.mazchna to
                 SlayerMasterProfile(
                     npcId = SlayerMasters.Npc.mazchna,
-                    highCombatRedirect = chaeldarRedirect,
+                    highCombatRedirects = listOf(chaeldarRedirect),
                     activeTaskStyle = ActiveTaskMessageStyle.WithComebackComma,
                 ),
             SlayerMasters.Npc.achtryn to
                 SlayerMasterProfile(
                     npcId = SlayerMasters.Npc.achtryn,
-                    highCombatRedirect = vannakaRedirect,
+                    highCombatRedirects = listOf(vannakaRedirect),
                     activeTaskStyle = ActiveTaskMessageStyle.WithComebackComma,
                 ),
             SlayerMasters.Npc.vannaka to

@@ -2,13 +2,13 @@ package org.rsmod.content.slayer.dialogue
 
 import dev.openrune.rscm.RSCM.asRSCM
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.content.slayer.slayerDuradelNotesReceived
 import org.rsmod.content.slayer.dialogue.StandardSlayerDialogue.openMain
+import org.rsmod.content.slayer.slayerDuradelNotesReceived
 
 object SlayerMasters {
 
     private const val PORCINE_OF_INTEREST_COMPLETE = true
-    private const val WHILE_GUTHIX_SLEEPS_ACTIVE = true
+    private const val WHILE_GUTHIX_SLEEPS_ACTIVE = false
     private const val WHILE_GUTHIX_SLEEPS_COMPLETE = true
     private const val AYA_TURAEL_PASSED_AWAY = true
     private const val MONKEY_MADNESS_II_COMPLETE = true
@@ -46,7 +46,9 @@ object SlayerMasters {
                 Npc.achtryn ->
                     add("So you're filling in for Mazchna?" to { dialogue.achtrynFiller() })
                 Npc.aya -> {
-                    add("So you're filling in for Turael?" to { dialogue.ayaFiller() })
+                    if (WHILE_GUTHIX_SLEEPS_ACTIVE) {
+                        add("So you're filling in for Turael?" to { dialogue.ayaFiller() })
+                    }
                     if (AYA_TURAEL_PASSED_AWAY) {
                         add("About Turael..." to { dialogue.ayaAboutTurael() })
                     }
@@ -60,11 +62,6 @@ object SlayerMasters {
                     if (WHILE_GUTHIX_SLEEPS_ACTIVE) {
                         add("So you're filling in for Duradel?" to { dialogue.kuradalFillingIn() })
                     }
-                    if (WHILE_GUTHIX_SLEEPS_COMPLETE) {
-                        add("About Duradel..." to { dialogue.aboutDuradel() })
-                    }
-                }
-                Npc.duradel -> {
                     if (WHILE_GUTHIX_SLEEPS_COMPLETE) {
                         add("About Duradel..." to { dialogue.aboutDuradel() })
                     }
@@ -89,7 +86,7 @@ object SlayerMasters {
             return
         }
         val npcId =
-            if (npc?.id == Npc.spria) Npc.spria else Npc.spriaActive
+            if (npc?.let { access.npcVisType(it).id } == Npc.spria) Npc.spria else Npc.spriaActive
         openMain(npcId, extras = extraMenuOptions(this, npcId))
     }
 

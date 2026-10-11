@@ -50,6 +50,7 @@ import dev.openrune.tables.skills.Mining
 import dev.openrune.tables.skills.Motherlode
 import dev.openrune.tables.skills.Runecrafting
 import dev.openrune.tables.skills.Slayer
+import dev.openrune.tables.skills.SlayerRequirements
 import dev.openrune.tables.skills.Smithing
 import dev.openrune.tables.skills.prayer.EctofuntusBonemeal
 import dev.openrune.tables.skills.prayer.PrayerBlessedBone
@@ -215,6 +216,11 @@ fun tablesToPack(): List<DBTable> = listOf(
     Smithing.dragonForge(),
     Smithing.crystalSinging(),
     Slayer.masters(),
+    Slayer.streakBonuses(),
+    SlayerRequirements.monsters(),
+    SlayerRequirements.gear(),
+    SlayerRequirements.finishers(),
+    SlayerRequirements.weaponRules(),
     Runecrafting.altars(),
     Runecrafting.runes(),
     Runecrafting.tiara(),

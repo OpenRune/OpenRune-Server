@@ -18,8 +18,8 @@ object GenericDialogue {
             "I have quite a few rewards you can earn, and a wide variety of Slayer equipment for sale.",
         )
         when (choice3("Look at rewards.", 1, "Look at shop.", 2, "Cancel.", 3)) {
-            1 -> SlayerInterfaces.openInterface(access,npc!!.visType.internalName)
-            2 -> SlayerInterfaces.openInterface(access,npc!!.visType.internalName)
+            1 -> SlayerInterfaces.openInterface(access, access.npcVisType(npc!!).internalName)
+            2 -> SlayerInterfaces.openInterface(access, access.npcVisType(npc!!).internalName)
         }
     }
 
@@ -65,21 +65,29 @@ object GenericDialogue {
             )
             return
         }
+        val wilderness = assigned?.let(SlayerTaskManager::isWildernessMaster) == true
         val streak = SlayerTaskManager.slayerStreak(access)
         val wildyStreak = SlayerTaskManager.slayerWildyStreak(access)
         chatNpc(
             neutral,
             "Although, it's not an assignment that I'd normally give... I guess I could give you a new assignment, if you'd like.",
         )
-        chatNpc(
-            neutral,
-            "If you do get a new one, you will reset your standard task streak of $streak. Is that okay? It won't affect your Wilderness task streak of $wildyStreak.",
-        )
+        if (wilderness) {
+            chatNpc(
+                neutral,
+                "If you do get a new one, you will reset your Wilderness task streak of $wildyStreak. Is that okay? It won't affect your standard task streak of $streak.",
+            )
+        } else {
+            chatNpc(
+                neutral,
+                "If you do get a new one, you will reset your standard task streak of $streak. Is that okay? It won't affect your Wilderness task streak of $wildyStreak.",
+            )
+        }
         when (choice2("Yes, please.", 1, "No, thanks.", 2)) {
             1 -> {
                 chatPlayer(neutral, "Yes, please.")
-                assignNewTask(npc!!.visType.internalName) { taskName, count ->
-                    SlayerTaskManager.setSlayerStreak(access, 0)
+                assignNewTask(access.npcVisType(npc!!).internalName) { taskName, count ->
+                    SlayerTaskManager.resetStreak(access, wilderness)
                     chatNpc(neutral, "Your new task is to kill $count $taskName.")
                 }
             }

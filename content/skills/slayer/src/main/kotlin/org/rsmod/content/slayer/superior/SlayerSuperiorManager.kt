@@ -8,6 +8,7 @@ import jakarta.inject.Singleton
 import kotlin.random.Random
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.area.checker.isInWilderness
+import org.rsmod.api.config.SlayerTaskCredit
 import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.npc.owner.assignSpawnOwner
 import org.rsmod.api.npc.owner.clearSpawnOwner
@@ -42,7 +43,7 @@ constructor(
         if (!isSuperiorEnabled(player)) return
         if (player.vars["varp.slayer_target"] == 0) return
 
-        if (!SlayerTaskManager.isTaskNpc(killed, player.vars["varp.slayer_target"])) return
+        if (!SlayerTaskManager.isTaskNpc(killed, SlayerTaskCredit.taskKey(player))) return
 
         val killedType = killed.visType
         if (!killedType.hasParam(BaseParams.slayer_superior)) return

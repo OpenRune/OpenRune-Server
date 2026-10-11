@@ -89,6 +89,11 @@ type = "STRING"
 isMembers = true
 
 [[params]]
+id = "param.slayer_task_ids"
+type = "STRING"
+isMembers = true
+
+[[params]]
 id = "param.slayer_superior"
 type = "NPC"
 isMembers = true

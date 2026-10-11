@@ -6,33 +6,33 @@ import dev.openrune.definition.opcode.OpcodeList
 import dev.openrune.definition.opcode.OpcodeType
 import dev.openrune.definition.opcode.OpcodeType.BOOLEAN.enumType
 import dev.openrune.definition.opcode.impl.DefinitionOpcodeEntityOps
-import dev.openrune.definition.opcode.impl.DefinitionOpcodeParams
 import dev.openrune.definition.opcode.impl.DefinitionOpcodeTransforms
 import dev.openrune.definition.type.NpcType
-import dev.openrune.revision
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.tools.SlayerSuperiorMonsterLoader
 import dev.openrune.types.MoveRestrict
 import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
+import dev.openrune.types.SlayerTaskKey
 import dev.openrune.util.BlockWalk
 import dev.openrune.util.Coord
 import dev.openrune.util.DefinitionOpcodeParamMap
-import dev.openrune.tools.SlayerSuperiorMonsterLoader
 import dev.openrune.util.NpcPatrol
 import dev.openrune.util.NpcPatrolWaypoint
 import org.rsmod.game.map.Direction
 
 class NpcServerCodec(
-    val rev : Int,
+    val rev: Int,
     val npcs: Map<Int, NpcType>? = null,
     val custom: Map<Int, NpcServerType>? = emptyMap(),
     val examines: Map<Int, String> = emptyMap(),
-    val slayerTaskByNpcId: Map<Int, Int> = emptyMap(),
+    val slayerTaskKeysByNpcId: Map<Int, List<Int>> = emptyMap(),
     val slayerTaskTipByNpcId: Map<Int, String> = emptyMap(),
     val slayerSuperiorByNpcId: Map<Int, SlayerSuperiorMonsterLoader.SuperiorNpcParam> = emptyMap(),
 ) : OpcodeDefinitionCodec<NpcServerType>() {
 
     private val slayerTaskParamId = "param.slayer_task_id".asRSCM()
+    private val slayerTaskIdsParamId = "param.slayer_task_ids".asRSCM()
     private val slayerTaskTipParamId = "param.slayer_task_tip".asRSCM()
     private val slayerSuperiorParamId = "param.slayer_superior".asRSCM()
     private val slayerSuperiorWildernessOnlyParamId = "param.available_in_wilderness".asRSCM()
@@ -189,7 +189,12 @@ class NpcServerCodec(
             waypoints = customData.waypoints
         }
 
-        slayerTaskByNpcId[id]?.let { taskId -> paramsRaw?.set(slayerTaskParamId, taskId) }
+        slayerTaskKeysByNpcId[id]?.let { keys ->
+            val primary = keys.firstOrNull { !SlayerTaskKey.isBoss(it) }
+            if (primary != null) paramsRaw?.set(slayerTaskParamId, primary)
+            val extras = keys.filter { it != primary }
+            if (extras.isNotEmpty()) paramsRaw?.set(slayerTaskIdsParamId, SlayerTaskKey.encode(extras))
+        }
         slayerTaskTipByNpcId[id]?.let { tip -> paramsRaw?.set(slayerTaskTipParamId, tip) }
         slayerSuperiorByNpcId[id]?.let { superior ->
             paramsRaw?.set(slayerSuperiorParamId, superior.superiorNpcId)

@@ -108,6 +108,7 @@ object BaseParams {
     val freeze_resistance: ParamInt = param("freeze_resistance")
     val slayer_experience: ParamInt = param("slayer_experience")
     val slayer_task_id: ParamInt = param("slayer_task_id")
+    val slayer_task_ids: ParamStr = param("slayer_task_ids")
     val slayer_task_tip: ParamStr = param("slayer_task_tip")
     val slayer_superior: ParamNpc = param("slayer_superior")
     val available_in_wilderness: ParamBool = param("available_in_wilderness")
