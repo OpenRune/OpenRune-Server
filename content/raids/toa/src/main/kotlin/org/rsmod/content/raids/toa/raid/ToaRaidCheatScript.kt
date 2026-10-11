@@ -2,12 +2,14 @@ package org.rsmod.content.raids.toa.raid
 
 import dev.or2.central.account.Rights
 import jakarta.inject.Inject
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.script.onCommand
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.cheat.Cheat
+import org.rsmod.game.map.Direction
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -25,10 +27,26 @@ class ToaRaidCheatScript @Inject constructor(private val launcher: ProtectedAcce
             desc = "Move on to the next Tombs of Amascut room"
             cheat { nextRoom() }
         }
+        onCommand("toalobby") {
+            requiredRights = Rights.ADMINISTRATOR
+            desc = "Teleport to the Tombs of Amascut lobby"
+            cheat { toLobby() }
+        }
         onCommand("toapoints") {
             requiredRights = Rights.ADMINISTRATOR
             desc = "Show your Tombs of Amascut reward points"
             cheat { showPoints() }
+        }
+    }
+
+    private fun Cheat.toLobby() {
+        launcher.launch(player, busyText = "Close your dialog first.") {
+            if (player.currentRaid != null) {
+                exitRaid()
+            } else {
+                telejump(TOA_OUTSIDE, TeleportType.Exempt)
+                faceDirection(Direction.North)
+            }
         }
     }
 

@@ -48,6 +48,8 @@ open class ToaBossEncounter(
 
     protected open fun onFightComplete() {}
 
+    protected open fun canEngage(boss: Npc): Boolean = true
+
     internal fun bossAlive(npc: Npc): Boolean =
         stage == ToaStage.STARTED && npc === fight?.boss?.invoke() && npc.hitpoints > 0
 
@@ -88,7 +90,7 @@ open class ToaBossEncounter(
     }
 
     private fun engage(boss: Npc, targets: List<Player>) {
-        if (boss.hitpoints <= 0) return
+        if (boss.hitpoints <= 0 || !canEngage(boss)) return
         if (targets.isEmpty()) {
             if (boss.interaction != null) boss.noneMode()
             return

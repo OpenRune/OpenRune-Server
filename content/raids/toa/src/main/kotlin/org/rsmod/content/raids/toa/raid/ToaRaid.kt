@@ -25,6 +25,7 @@ import org.rsmod.content.raids.toa.raid.encounter.WardensFirstEncounter
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle.CrondisPuzzleEncounter
 import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakEncounter
+import org.rsmod.content.raids.toa.raid.encounter.het.akkha.AkkhaEncounter
 import org.rsmod.content.raids.toa.raid.supplies.ToaSupplies
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
@@ -206,6 +207,7 @@ class ToaRaid(
             room == ToaRoom.CRONDIS_PUZZLE ->
                 CrondisPuzzleEncounter(this, room, session, controllerId)
             room == ToaRoom.CRONDIS_BOSS -> ZebakEncounter(this, room, session, controllerId)
+            room == ToaRoom.HET_BOSS -> AkkhaEncounter(this, room, session, controllerId)
             room.kind == ToaRoom.Kind.BOSS -> ToaBossEncounter(this, room, session, controllerId)
 
             else -> ToaEncounter(this, room, session, controllerId)
