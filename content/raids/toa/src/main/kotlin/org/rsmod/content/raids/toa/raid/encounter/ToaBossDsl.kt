@@ -27,8 +27,10 @@ internal const val ADOPT_SUMMON = "toa.adopt_summon"
 
 internal class RoomSummon(val onSummon: String?, val params: Any?)
 
-internal val challengePlayers: TargetExpr.Multi =
-    playersIn(area(challengeCorner(ToaRoom::challengeMin), challengeCorner(ToaRoom::challengeMax)))
+internal val challengeArea =
+    area(challengeCorner(ToaRoom::challengeMin), challengeCorner(ToaRoom::challengeMax))
+
+internal val challengePlayers: TargetExpr.Multi = playersIn(challengeArea)
 
 private val isTarget = targetCondition<ToaEncounter> { room, target -> target in room.targets() }
 

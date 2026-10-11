@@ -88,6 +88,7 @@ class ToaRoom private constructor(private val row: ToaRoomsRow) {
         val CRONDIS_BOSS by lazy { of("dbrow.toa_room_crondis_boss") }
         val HET_PUZZLE by lazy { of("dbrow.toa_room_het_puzzle") }
         val HET_BOSS by lazy { of("dbrow.toa_room_het_boss") }
+        val SCABARAS_BOSS by lazy { of("dbrow.toa_room_scabaras_boss") }
 
         private fun CoordGrid.inside(min: CoordGrid, max: CoordGrid): Boolean =
             x in min.x..max.x && z in min.z..max.z

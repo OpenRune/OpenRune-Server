@@ -38,6 +38,11 @@ internal class ToaHpBar(
         for (player in room.players) push(player, npc)
     }
 
+    fun recolour() {
+        val npc = subject() ?: return
+        for (player in room.players) bossHpBar.onRecolour(player, npc)
+    }
+
     fun point() {
         val npc = subject() ?: return
         for (player in room.players) player.barNpc = npc.visType.id

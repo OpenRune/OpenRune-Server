@@ -29,11 +29,11 @@ internal class ToaCombatant(private val room: ToaEncounter, val npc: Npc, privat
     private val random
         get() = room.raid.deps.random
 
-    fun scale(partySize: Int) {
+    fun scale(partySize: Int, baseHitpoints: Int = npc.type.hitpoints) {
         val raidLevel = room.raid.settings.raidLevel
         val pathLevel = if (spec.pathScaled) room.pathLevel.coerceIn(0, MAX_PATH_LEVEL) else 0
 
-        val hp = scaledHitpoints(npc.type.hitpoints, raidLevel, pathLevel, partySize)
+        val hp = scaledHitpoints(baseHitpoints, raidLevel, pathLevel, partySize)
         npc.baseHitpointsLvl = hp
         npc.hitpoints = hp
 
