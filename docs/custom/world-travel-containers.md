@@ -642,9 +642,47 @@ new tests cover native held/item-use, IF3, drag, full and partial inventories,
 bank caps/rollback, loadout menus and native permanent fields, exact potion
 ordering, divine effects, interruptions, Destroy, nearby native banker/chest
 checks, account restore and real death coroutine/drops. Scoped format passes.
-Remaining integration: potion storage source selection, Mixology reward
-purchase, native visual acceptance and the barrel-specific sound. Seven native
+Potion storage source selection and native Mixology reward purchases are now
+connected. Native visual acceptance and the barrel-specific sound remain open. Seven native
 families lack a PotionRow in this fork: magic essence and its mix, Castle Wars
 brew, blighted overload, goading, surge and haemostatic dressing. Their doses
 remain stored rather than being consumed without an effect. Existing absent
 Castle Wars/Deadman activities are not marked implemented by storage support.
+
+## Potion storage and native Mixology purchases
+
+The existing bank CS2 uses all 92 potion/mix and 20 unfinished-potion families
+from native enums 4826/4829 in their original order. Permanent native varps own
+doses, vials and favourites; native size varbits own withdrawal sizes. Inventory
+and noted deposits use the native bank producer, enforcing unlock, configured
+deposit mode, live UI and lifecycle. Partial transfers preserve excess input;
+withdrawals deduct only successfully created bottles and available vials.
+Quest no-bank exclusions remain native. The empty native storage instruction
+view has no vial link; this existing display limitation is not hidden by a CS2
+replacement. Bulk deposits exclude only leftover accepted storage inputs from
+ordinary banking. Barrel loadouts follow the open storage priority and the
+native only-current-storage toggle; direct dose transfer never creates vials.
+
+A small bank deposit provider and Omnishop purchase provider extend their
+existing producers without circular dependencies or duplicate handlers. The
+actual native Supervisor opens the existing Mixology shop. All three resin
+prices come from its native DB rows: reagent pouch 13800/11200/15100,
+barrel 17250/14000/18600 and potion storage 7750/6300/8950 (Mox/Aga/Lye).
+Physical output commits before point deduction. Storage is a permanent unlock,
+not a fake inventory item, cannot be purchased twice and denies UIM. Tests use
+the native NPC and decoded IfScriptTrigger producers, including closed/stale
+UI, full inventory, quantities, exact three-currency deductions and cancellation.
+
+Sources: [Potion storage](https://oldschool.runescape.wiki/w/Potion_storage),
+[Chugging barrel](https://oldschool.runescape.wiki/w/Chugging_barrel), accepted
+revision-240 definitions and CS2. Earlier upstream all-state searches at
+`bbc78dfc259c988a77d5c840196946c72de862e9` found no storage implementation.
+No live cache changes are needed. Members-only deposit world policy awaits a
+real world-mode API; the account members flag is not treated as world type.
+Mixology activity and natural Supervisor placement are not claimed complete.
+
+Validation: `potion-storage-final-container-validation.log` passes all 142
+Containers tests after one fixture correction. The broader module run also
+passed 35 Pouches, six inventory-transaction and 12 network tests. Nineteen
+new tests cover the storage/shop integration; native death coverage confirms
+storage survives. Scoped formatter passes. Client acceptance is pending.

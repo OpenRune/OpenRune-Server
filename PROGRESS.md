@@ -8,125 +8,35 @@ Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
 ## 🟡 Started: world shortcuts, containers and fairy rings
 
-Owner-requested scope: every revision-240 Agility shortcut, all container items
-in the Wiki list, the full fairy-ring network, and the missing surface Spider
-Cave entrance/exit for araxytes and Araxxor. Work uses existing native mechanics
-and separate reviewable chunks. Upstream #227/#216 and the current Wiki lists
-are being compared with the fork; content presence is not completion evidence.
-Existing accepted Araxxor combat and travel remain intact. Full route, storage,
-persistence, rollback and native interaction validation is still in progress.
+Owner scope: all revision-240 shortcuts, all 39 Wiki container categories, the
+fairy-ring network and surface Spider Cave access. Accepted combat/cache remain
+preserved. [Implementation, sources and tests](docs/custom/world-travel-containers.md).
 
-- Surface Spider Cave: native Enter/Exit handlers and free landing tiles added;
-  real loc interaction/routing and death/logout/movement cancellation pass.
-  All **29 Araxxor module tests** pass; client acceptance is still pending.
-- Fairy rings: **64 native code rows**, **54 fixed destinations** and native
-  loc-to-IF3 travel, favourites/Last-destination and cancellation checks pass
-  (**16 tests**). Native centres have walkable exits. The AIR/DLR/DJQ/AJS
-  hideout sequence and all six rotation buttons pass; Last-destination uses the
-  separate set bit, never the overlapping op-visibility mask. POH DIQ requires
-  a built house ring (Construction is not implemented); remaining prerequisite
-  and first-visit checks for the Sailing islands, plus client acceptance, remain open.
-  Native Fairy Godfather permission and ten destination quest gates are enforced
-  under the existing quest policy, including late permission/certificate loss.
-  Virtual completion keeps the fork's accepted free-travel behaviour.
-- Agility: **518 candidate links** compared with native definitions, map placements
-  and the current Wiki/Shortest Path sources. Native option/animation registration
-  and walkable landings pass. **Fourteen tests** also exercise bridge repair, rope setup
-  and interrupted travel through real loc inputs. Remaining Wiki routes, grapples,
-  detailed animations/failures and full route acceptance are still in progress.
-  Native Stronghold tunnel pieces work from both shores. Waterbirth and the dense
-  essence mine retain their one-way rules; spiritual fairy-tree Ring options
-  use their distinct native numbering. Vampyrium includes rubble mining, staged
-  pillars and the shared 7.5-minute slide XP cooldown without altering native
-  quest progress. Distant-click slide bumps and the bush repeat cooldown remain
-  to be verified.
-- Containers: all **39 Wiki categories** inventoried against native items.
-  Rune/looting pouch baselines adapted. **35 pouch tests** cover codecs, storage
-  rules, native rune insertion/withdrawal, interrupted Divine crafting and atomic
-  revert with thread return and fourth-slot warning. The real ground-pickup and native altar producers now honour the native
-  Rune-picking setting: complete matching stacks only, with ordinary inventory
-  fallback and late cancellation. Six new tests cover these producers and pure
-  capacity previews. Native bank-side Configure now opens all four pouch forms without an invalid-op exception; bank regression compilation and 35 pouch tests pass. Native death sequence and Destroy confirmation now honour the rune-empty-on-death toggle and clear bag contents even while the death/dialogue lock is active. Wilderness bag destruction immediately exposes non-supplies; duplicates retain shared storage. All ten native loadouts support save/load, quantity edits, names and clearing through the bank Configure menu. Native bank withdrawals preserve tabs/placeholders, partial deposits retain excess runes, and loading validates the carried pouch after interrupted menus. Trouver protection review, remaining looting-bag input validation and final UI
-  acceptance remain open. Initial storage operations for **51
-  native forms in 16 families**, plus **57 native fruit basket/vegetable sack
-  forms**, pass **18 interaction/pickup/death tests**.
-  Whitelists reject quest herbs, unsupported kit items, notes and over-capacity
-  inserts; save/load and full-inventory withdrawals are covered. Real bank-side input now uses the native bank deposit service for stored contents, enforcing configured capacity, selected tabs, placeholders and partial stack limits. Four new native-input tests pass; all 65 Containers and 35 Pouches tests pass. Family-specific interfaces, remaining crafting and specialised containers are in progress.
-  Basket/sack contents stay in their individual native item states. Generic
-  storage has pure death previews, deferred PvP/Flamtaer cleanup, last-container
-  destroy cleanup and family-specific bank-side filling/emptying.
-- Tackle box / huntsman's kit: native main/side screens, Fill/Empty, quantity
-  controls, partial transfers and 35/32-type limits pass **eight tests**. Existing
-  tackle contents and charged-tool vars are preserved. Native account loading and
-  confirmed last-kit destruction are covered; all **70 container module tests**
-  pass. Visual UI acceptance and final bank/death integration remain open.
-- Bow string spool: six native capacity tiers (250 to 100,000), notes, account
-  storage and all twelve ordinary bow-stringing routes pass **six tests**,
-  including 27 bows per inventory and actual spinning output. Interrupted actions
-  preserve charges and XP; visual native input acceptance remains pending.
-- Gnomish firelighter: per-item storage for all five colours, 1,000-charge limit,
-  native Check/Uncharge and actual Firemaking queues pass **five tests**. A fire
-  consumes one charge and grants the normal-log XP plus 10; late item loss,
-  movement, death/logout and full-inventory refunds preserve charges and XP.
-  Visual and final death-path acceptance remain open.
-- Master scroll book: all **20 native scroll types** store up to 1,000 each, use
-  the native UI and support default selection/withdrawal. **Five tests** cover
-  native item/IF3 producers, every teleport, Revenant entrance/warning selection,
-  full inventory and deferred arrival/late cancellation. The existing standalone
-  scroll suite also passes after sharing its travel service. Client labels and
-  visual acceptance remain open.
-- Steel key ring: all thirteen reusable keys, the native Check-keys/IF1
-  interface, removal, drop warning and banked-duplicate protection pass **seven
-  tests**. Keys restore from permanent account attributes and stay kept on PvM/
-  PvP death. Door-specific consumer validation and client acceptance remain open.
-- Container crafting: native gem pouch/satchel/tote/sack recipes, direct tote
-  creation, all five Hunter pouch recipes and regular/costume needles pass **ten input tests**, including all
-  open source forms, correct XP, full inventories and overflowing shared storage.
-  Silklined herb-sack creation preserves herbs and the open state; late movement,
-  death, logout and stale silk cancel without consumption. Existing Crafting
-  item-use registrations remain compatible through one shared recipe provider. Native clothing and pouch choices are both reachable for shared furs. Hunter upgrades preserve stored fur/meat, use three ticks and the native five-crafts-per-thread charge; fur Empty is bank-only. All 61 Containers and 16 Crafting tests pass; the additional fur Empty interaction test also passes. Coffins now have native Dampe Talk-to/Locks/item-use, five lock tiers, held/worn controls, highest-first Empty and transactional Remove lock; five new input tests and all 70 Containers tests pass. Further specialised container creation remains in progress.
-- Fish crates: all six deep-sea species, cooled-crate creation and camphor
-  crafting pass **seven native input tests**. Real bank IF3 Empty returns the
-  camphor crate; ordinary Empty discards it. Partial contents survive native
-  account loading, and full-inventory/lifecycle failures preserve materials.
-  All **70 Containers module tests** pass. Sailing net/cargo producers are not
-  available in this fork; visual acceptance remains open.
-- Fish barrels: native Fill/Open/Close, worn sack controls, combination/dismantling,
-  direct fishing storage and bank-side Empty pass **seven native input tests**.
-  Configured bank capacity is enforced through the native deposit service; the seven Fishing tests and four container-bank regressions pass. Full-bank failures retain contents; PvP previews protect the barrel without
-  changing storage. Deposit-box/UIM handling and final client checks remain open.
-- Forestry kit/basket: native main/side interface, all twenty display rows,
-  inventory/equipment submenus, separate shared kit/log storage, dismantling and
-  direct Woodcutting collection pass **15 native input tests**. Sturdy-harness
-  and clothes-pouch crafting enforce both skills; permanent clothes/cape
-  attachments preserve their storage. Stored/worn Lumberjack pieces grant the
-  correct combined 2.5% without stacking; rations consume only after a successful
-  cut. Full inventory, bank capacity, stale inputs, movement, death/logout and
-  saved attributes are covered. All **85 Containers**, **16 Crafting**, **seven
-  Fishing**, **15 max-cape** and **12 network** tests pass after item-specific
-  equipment-submenu dispatch. Native visual acceptance and the remaining
-  Forestry consumable/bird-nest effects are open; Forestry events are not added.
-- Shared storage safety: dry runs no longer mutate virtual contents; physical
-  inventory and storage commit together. Bank inventories cannot consume held
-  coal/essence. Pickup rechecks capacity and permissions before ground deletion,
-  supports alternate looting storage and cancels on death/logout. Atomic API
-  tests pass; Smithing/Runecrafting compile (their test tasks have no sources).
+| Area | Verified implementation | Remaining |
+|---|---|---|
+| Spider Cave | Surface Enter/Exit, real routing and cancellation; 29 Araxxor tests | Client acceptance |
+| Fairy rings | 64 code rows, 54 fixed destinations, native dials/favourites/Last-destination, permission and ten quest gates; 16 tests | Sailing first visits, DIQ house prerequisite, native visual acceptance |
+| Agility shortcuts | 518 candidate links, native options/landings, repair/setup, Vampyrium stages and slide cooldown; 14 tests | Remaining Wiki routes, grapple rules, detailed animations/failures and route acceptance |
+| Rune/looting pouches | Native storage, pickup/altar producers, Divine crafting/revert, bank Configure and ten loadouts, death/Destroy; 35 tests | Trouver and looting input review, UI acceptance |
+| Generic containers | 51 forms in 16 families plus 57 fruit/vegetable item states; limits, pure previews, persistence, death and bank transfers | Family consumers and final UI/death acceptance |
+| Crafting | Gem, Hunter and silklined sack recipes, coffin locks, harness/clothes pouch, fish crates | Unstarted activity reward producers remain separate |
+| Forestry kit/basket | Native interfaces/equipment, Woodcutting storage, cape/clothes bonuses and rations | Remaining consumables and bird-nest effects |
+| Seed box | Six ordered seed types, native UI, Farming/ground pickup/Master Farmer, bank/death/Destroy and persistence | Install isolated CS2 candidate and client acceptance |
+| Chugging barrel | Five families, 100 doses each, native controls/animation, four bank loadouts, bank and potion storage transfers, ghost death storage | Seven missing potion effects, verified barrel sound and visuals |
+| Potion storage | All 112 native families, permanent counters, dose sizes/favourites/vials, real bank input, barrel transfers | Native visual acceptance; members-world policy when such a mode exists |
+| Mixology container rewards | Native Supervisor shop; exact Mox/Aga/Lye costs, reagent pouch/barrel purchases and potion-storage unlock | Natural supervisor placement and visuals; Mixology activity is not implemented |
+| Other specialist containers | Fish barrels/crates, tackle/huntsman kits, master scroll book, spool, firelighter and steel key ring use native controls and applicable skill/bank producers | Dizana’s quiver, bolt pouch, collection bag, coal/essence baseline audit and final consumer review |
 
-- Seed box: six ordered types, Fill/Empty, native Check with Withdraw-X and
-  Move-first, both item forms, direct patch planting, automatic ground pickup
-  and Master Farmer loot are implemented. Death settings, high-Wilderness ghost
-  storage/UIM, confirmed Destroy and banked duplicates are covered by native
-  inputs. All **102 Containers**, **12 Farming**, **nine Thieving** and **16
-  affected clue tests** pass. The accepted cache needs the isolated seed-window
-  initializer before client acceptance; remaining specialised containers are open.
-- Chugging barrel: native Assemble/Open/Drink/Dismantle/Destroy, five ordered
-  potion families of 100 doses, four permanent bank loadouts, exact-dose filling,
-  partial-bottle retention and bank rollback are implemented. Native held/item-use,
-  IF3, drag, bank Configure, stale inputs, full inventories/banks and actual death
-  validate ghost storage. **Twenty-one new tests** and all **123 Containers tests**
-  pass. The native full-barrel animation is used. Potion storage integration,
-  seven unmapped potion-effect families, the specific drink sound and native visual
-  acceptance remain open; the whole container scope stays Started.
+Latest validation: **142 Containers, 35 Pouches, six inventory-transaction and
+12 network tests pass** (195 total across module runs). Nineteen new potion
+storage/shop tests cover actual IF3/IFScriptTrigger/NPC inputs, bank source
+selection, caps, stale/lifecycle inputs, full inventories, UIM, permanent-field
+restore and death preservation. Bank/Omnishop compile; their test tasks have no
+sources. Scoped formatting and progress generator checks pass. The broader
+first run exposed one test-fixture toggle error; after correcting it, the full
+142-test Containers suite passed. Fourteen unrelated accepted files retain
+recorded SHA-256 values. Native visual tests and a new isolated runtime package
+remain pending; the feature branch is not merged or installed.
 
 ## 🟢 Complete: Edgeville home teleporter and Emblem trader
 

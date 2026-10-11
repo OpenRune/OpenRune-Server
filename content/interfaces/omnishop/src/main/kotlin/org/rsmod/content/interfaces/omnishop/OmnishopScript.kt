@@ -5,14 +5,16 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
+import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.ui.IfScriptArgs
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onIfScriptTrigger
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class OmnishopScript : PluginScript() {
+class OmnishopScript @Inject constructor(private val purchases: Set<OmnishopPurchase> = emptySet()) : PluginScript() {
     override fun ScriptContext.startup() {
         onIfScriptTrigger<InfoArgs>("component.omnishop_main:trigger_request_info") {
             sendInfo(it.shop, it.index)
@@ -44,10 +46,11 @@ class OmnishopScript : PluginScript() {
     }
 
     private fun ProtectedAccess.buy(shop: Int, index: Int, option: Int) {
-        if (shop != player.omnishopLastShop) return
+        if (shop != player.omnishopLastShop || !player.ui.containsModal("interface.omnishop_main") || player.hitpoints <= 0 || player.pendingLogout || player.loggingOut) return
         val stock = OmnishopStock.find(shop, index) ?: return
         if (!stock.buyable) return
         var quantity = BUY_QUANTITIES.getOrNull(option - 1) ?: return
+        purchases.firstOrNull { it.handles(shop, stock.row) }?.let { it.buy(this, stock.row, quantity); return }
         val costs = stock.buyCosts()
         for ((currency, price) in costs) {
             if (price == 0) continue

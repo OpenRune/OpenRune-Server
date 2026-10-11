@@ -82,6 +82,7 @@ constructor(
     private val eventBus: EventBus,
     private val wornBonuses: WornBonuses,
     private val weaponSpeeds: WeaponSpeeds,
+    private val depositStores: Set<org.rsmod.content.interfaces.bank.BankDepositStorage> = emptySet(),
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onPlayerLogin { player.setDefaultCapacity() }
@@ -260,6 +261,10 @@ constructor(
             return false
         }
 
+        depositStores.firstOrNull { it.accepts(this, inventory, slot) }?.let {
+            return it.deposit(this, inventory, slot, count) > 0
+        }
+
         val tab = selectedTab
 
         val placeholder = placeholder(objType)
@@ -389,6 +394,13 @@ constructor(
     }
 
     private fun ProtectedAccess.depositInventory(from: Inventory) {
+        val storageSlots = mutableSetOf<Int>()
+        for (slot in from.indices) {
+            val obj = from[slot] ?: continue
+            val storage = depositStores.firstOrNull { it.accepts(this, from, slot) } ?: continue
+            storageSlots += slot
+            storage.deposit(this, from, slot, obj.count)
+        }
         val unbankableSlots =
             from.indices
                 .filter {
@@ -396,6 +408,7 @@ constructor(
                     obj != null && getInvObj(obj).param(params.no_bank) != 0
                 }
                 .toHashSet()
+                .apply { addAll(storageSlots.filter { from[it] != null }) }
 
         val tab = selectedTab
         if (tab.isMainTab) {
@@ -441,7 +454,8 @@ constructor(
         val containedBankObjs = bank.mapNotNull { it?.id }.toHashSet()
 
         val uniqueInvObjs = mutableSetOf<Int>()
-        for (invObj in from) {
+        for ((slot, invObj) in from.withIndex()) {
+            if (slot in unbankableSlots) continue
             val type = getOrNull(invObj) ?: continue
             val uncert = uncert(type)
             if (uncert.param(params.no_bank) != 0) {

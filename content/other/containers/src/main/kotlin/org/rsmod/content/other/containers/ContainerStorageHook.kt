@@ -13,6 +13,8 @@ internal class ContainersModule : PluginModule() {
         addSetBinding<org.rsmod.api.stats.xpmod.XpMod>(ForestryOutfitXpMod::class.java)
         addSetBinding<PlayerItemStorageHook>(ContainerStorageHook::class.java)
         addSetBinding<PlayerItemStorageHook>(BowStringSpoolStorageHook::class.java)
+        addSetBinding<org.rsmod.content.interfaces.omnishop.OmnishopPurchase>(MixologyContainerRewards::class.java)
+        addSetBinding<org.rsmod.content.interfaces.bank.BankDepositStorage>(PotionStorage::class.java)
         addSetBinding<org.rsmod.api.death.PlayerDeathDropHook>(ContainerDeathHook::class.java)
         addSetBinding<org.rsmod.api.death.PlayerDeathDropHook>(SeedBoxDeathHook::class.java)
     }

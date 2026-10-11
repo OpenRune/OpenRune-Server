@@ -58,7 +58,7 @@ public fun ProtectedAccess.openOmnishop(shopRow: String) {
  * Reads omnishop rows straight from the raw column values: several stock columns are typed
  * `namedobj` in the cache, which the generated table classes reject as a literal mismatch.
  */
-internal class RawDbRow(id: Int) {
+internal class RawDbRow(val id: Int) {
     private val helper = DbHelper.row(id)
 
     fun ints(column: String): List<Int> =
@@ -85,6 +85,7 @@ internal class OmnishopCurrency(val row: Int) {
 }
 
 internal class OmnishopStock(private val shop: RawDbRow, private val stock: RawDbRow) {
+    val row: Int get() = stock.id
     val obj: ItemServerType =
         ServerCacheManager.getItem(stock.int(STOCK_OBJ) ?: -1) ?: error("Omnishop stock has no obj")
 

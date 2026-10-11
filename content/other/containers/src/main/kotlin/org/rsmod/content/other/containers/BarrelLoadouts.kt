@@ -28,9 +28,17 @@ internal object BarrelLoadoutCodec {
     }
 }
 
-internal class BarrelLoadouts @Inject constructor(private val barrel: ChuggingBarrel, private val bankScript: BankInvScript) {
+internal class BarrelLoadouts @Inject constructor(private val barrel: ChuggingBarrel, private val bankScript: BankInvScript, private val potionStorage: PotionStorage = PotionStorage()) {
+    private fun bankSource(player: Player) = player.vars["varbit.bank_chugging_fill_open"] == 0 || player.vars["varbit.bank_currenttab"] != 15 || !potionStorage.unlocked(player)
+    private fun potionSource(player: Player) = potionStorage.unlocked(player) && (player.vars["varbit.bank_chugging_fill_open"] == 0 || player.vars["varbit.bank_currenttab"] == 15)
+    private fun returnToPotions(player: Player) = potionStorage.unlocked(player) && (player.vars["varbit.bank_currenttab"] == 15 || player.vars["varbit.bank_depositpotion"] != 0)
     fun ProtectedAccess.deposit(slot: Int, requested: Int): Int {
         if (!barrel.owns(player) || requested <= 0 || slot !in 0..4) return 0
+        val stored = barrel.contents(player)[slot] ?: return 0
+        if (returnToPotions(player) && PotionStorageCatalog.byItem(stored.id) != null) {
+            val moved = potionStorage.putDoses(player, stored.id, minOf(requested, stored.count))
+            if (moved > 0) { val items = barrel.contents(player).toMutableList(); items[slot] = if (stored.count == moved)null else stored.copy(count = stored.count - moved); barrel.write(player, items) }; return moved
+        }
         var remaining = requested; var moved = 0
         while (remaining > 0) {
             val items = barrel.contents(player).toMutableList(); val item = items[slot] ?: break
@@ -51,6 +59,13 @@ internal class BarrelLoadouts @Inject constructor(private val barrel: ChuggingBa
         val source = inv.indexOfFirst { it != null && family.dose(it.id) > 0 }
         var moved = if (source >= 0) with(barrel) { store(source, Int.MAX_VALUE, true, minOf(requested, 100 - original.count)) } else 0
         var remaining = minOf(requested - moved, 100 - original.count - moved)
+        fun pullPotions() {
+            if (remaining <= 0 || !potionSource(player))return
+            val added = potionStorage.takeDoses(player, family.id, remaining)
+            if (added > 0) { val items = barrel.contents(player).toMutableList(); items[slot] = items[slot]!!.copy(count = items[slot]!!.count + added); barrel.write(player, items); remaining -= added; moved += added }
+        }
+        if (player.vars["varbit.bank_currenttab"] == 15)pullPotions()
+        if (bankSource(player)) {
         for (dose in family.maximum downTo 1) {
             val id = family.doses.getValue(dose)
             while (remaining > 0) {
@@ -66,6 +81,8 @@ internal class BarrelLoadouts @Inject constructor(private val barrel: ChuggingBa
                 moved += take; remaining -= take
             }
         }
+        }
+        pullPotions()
         return moved
     }
     fun ProtectedAccess.load(index: Int) {
@@ -87,6 +104,11 @@ internal class BarrelLoadouts @Inject constructor(private val barrel: ChuggingBa
             if (items[slot] == null) {
                 // Install the first dose only after a real bank withdrawal succeeds.
                 val family = PotionFamilies.byId(wanted.id)!!
+                if (player.vars["varbit.bank_currenttab"] == 15 && potionSource(player)) {
+                    val added = potionStorage.takeDoses(player, wanted.id, wanted.count)
+                    if (added > 0) { items[slot] = ChuggingBarrel.Slot(wanted.id, added); barrel.write(player, items) }
+                }
+                if (items[slot] == null && bankSource(player)) {
                 for (dose in family.maximum downTo 1) {
                     val take = minOf(dose, wanted.count)
                     if (with(bankScript) { withdrawStoredStack(family.doses.getValue(dose), 1) } == 0) continue
@@ -94,6 +116,11 @@ internal class BarrelLoadouts @Inject constructor(private val barrel: ChuggingBa
                         check(with(bankScript) { depositStoredStack(family.doses.getValue(dose), 1) } == 1); continue
                     }
                     items[slot] = ChuggingBarrel.Slot(wanted.id, take); barrel.write(player, items); break
+                }
+                }
+                if (items[slot] == null && potionSource(player)) {
+                    val added = potionStorage.takeDoses(player, wanted.id, wanted.count)
+                    if (added > 0) { items[slot] = ChuggingBarrel.Slot(wanted.id, added); barrel.write(player, items) }
                 }
             }
             val count = barrel.contents(player)[slot]?.takeIf { it.id == wanted.id }?.count ?: continue

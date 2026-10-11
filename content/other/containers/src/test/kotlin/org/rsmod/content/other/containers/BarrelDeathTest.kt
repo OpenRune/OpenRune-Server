@@ -38,13 +38,14 @@ internal class BarrelDeathTest {
         val death = PlayerDeath(MapClock(100), f.drops, PlayerDeathHandlingResolver(emptySet()), emptySet(), setOf(object : PlayerRespawnHook { override fun respawnCoords(player: Player) = respawn }), mock(org.rsmod.api.area.checker.AreaChecker::class.java))
         ProtectedAccessLauncher(factory).launch(f.player) { death.death(this) }; repeat(9) { f.player.currentMapClock++; f.player.processedMapClock = f.player.currentMapClock; f.player.activeCoroutine?.advance() }
         assertEquals(respawn, f.player.coords); assertEquals(12, f.contents()[0]!!.count)
+        val storage = PotionStorage(); assertEquals(9, storage.count(f.player, PotionStorageInteractionTest.family())); assertEquals(3, storage.vials(f.player)); assertTrue(storage.unlocked(f.player))
     }
     private class Fixture {
         val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); inv[0] = InvObj(ChuggingBarrel.ITEM); observerUUID = 1001; coords = CoordGrid(3100, 3600); currentMapClock = 100; processedMapClock = 100; statMap.setBaseLevel("stat.hitpoints", 99); statMap.setCurrentLevel("stat.hitpoints", 99) }
         val barrel = ChuggingBarrel(); val family = ChuggingBarrelInteractionTest.family("super_attack"); val ground = mutableListOf<Obj>()
         val repo = mock(ObjRepository::class.java) { if (it.method.name.startsWith("add") && it.arguments.firstOrNull() is Obj)ground.add(it.arguments[0] as Obj); RETURNS_DEFAULTS.answer(it) }
         val drops = PlayerDeathDrops(MapClock(100), repo, mock(MarketPrices::class.java), GroundItemDropResolver(emptySet()), setOf(ContainerDeathHook(ContainerStore())))
-        init { barrel.write(player, listOf(ChuggingBarrel.Slot(family.id, 12)) + List(4) { null }) }
+        init { barrel.write(player, listOf(ChuggingBarrel.Slot(family.id, 12)) + List(4) { null }); org.rsmod.api.player.vars.VarPlayerIntMapSetter.set(player, PotionStorage.UNLOCKED, 1); org.rsmod.api.player.vars.VarPlayerIntMapSetter.set(player, PotionStorage.VIALS, 3); org.rsmod.api.player.vars.VarPlayerIntMapSetter.set(player, PotionStorageInteractionTest.family().counter, 9) }
         fun contents() = barrel.contents(player)
     }
     companion object { @JvmStatic @BeforeAll fun cache() { ServerCacheManager.init(240).close() } }
