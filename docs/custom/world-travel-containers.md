@@ -413,3 +413,24 @@ interrupted silk upgrades. Source pages: [Gem pouch](https://oldschool.runescape
 [Gem tote](https://oldschool.runescape.wiki/w/Gem_tote),
 [Gem sack](https://oldschool.runescape.wiki/w/Gem_sack), and
 [Silklined herb sack](https://oldschool.runescape.wiki/w/Silklined_herb_sack).
+
+
+### Hunter pouch creation and native Crafting choices
+
+Small/medium/large fur pouches and small/large meat pouches have their native
+level, materials, XP and three-tick leather animation. Upgrades retain shared
+storage; regular needles use the native `crafting_thread_uses` counter (one reel
+per five crafts), while costume needles consume no thread. Fur pouches refuse
+Empty outside the bank. Late tool/material loss, movement, death and logout
+cancel without output, XP or thread charges.
+
+Initial independent handlers collided with the native mixedhide clothing
+recipes. A set-injected `CraftingRecipeProvider` now extends the existing held
+Crafting registry. When shared materials offer different sections, the native
+choice menu exposes clothing and containers separately; cancel consumes nothing.
+Ten container crafting input tests, all 61 container module tests and all 16
+existing Crafting tests pass. The added bank-only fur Empty test also passes
+after that full-suite run. Primary sources: [Small fur pouch](https://oldschool.runescape.wiki/w/Small_fur_pouch),
+[Medium fur pouch](https://oldschool.runescape.wiki/w/Medium_fur_pouch),
+[Large fur pouch](https://oldschool.runescape.wiki/w/Large_fur_pouch), and
+[Large meat pouch](https://oldschool.runescape.wiki/w/Large_meat_pouch).

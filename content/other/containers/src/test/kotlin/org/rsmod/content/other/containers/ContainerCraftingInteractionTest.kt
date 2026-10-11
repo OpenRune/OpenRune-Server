@@ -25,13 +25,58 @@ import org.rsmod.plugin.scripts.ScriptContext
 @ResourceLock("ServerCacheManager")
 internal class ContainerCraftingInteractionTest {
     @Test fun `all native gem recipes work with regular and costume needles including open source forms`() {
-        for (p in ContainerCraftingScript.recipes) {
+        for (p in ContainerCraftingScript.recipes.filter { it.output.startsWith("obj.gem_") }) {
             val f = Fixture(); f.seed(p)
             f.use(0, 1)
             assertEquals(1, f.player.inv.physicalCount(p.output), p.toString())
             for (m in p.inputs) assertEquals(0, f.player.inv.physicalCount(m.internal), m.internal)
             assertEquals((p.xp / 10).toInt(), f.player.statMap.getXP("stat.crafting"), p.toString())
             assertEquals(1, f.player.inv.physicalCount(p.tools.single()), "The needle must survive.")
+        }
+    }
+
+    @Test fun `all five Hunter pouch recipes accept both needles and retain stored fur or meat on upgrade`() {
+        for (p in ContainerCraftingScript.recipes.filter { it.output.startsWith("obj.hg_") }) {
+            val f = Fixture(); f.seed(p)
+            val source = p.inputs.mapNotNull { ContainerCatalog.byId[it.internal.asRSCM()] }.firstOrNull()
+            val target = ContainerCatalog.byId[p.output.asRSCM()]!!
+            val content = if (target.family == "fur_pouch") "obj.hunting_antelopemoon_fur" else "obj.hunting_antelopemoon_meat"
+            if (source != null) f.store.update(f.player, source, content.asRSCM(), 14)
+            f.use(0, 1); assertEquals(0, f.player.inv.physicalCount(p.output)); f.finish()
+            assertEquals(1, f.player.inv.physicalCount(p.output), p.toString()); assertEquals((p.xp / 10).toInt(), f.player.statMap.getXP("stat.crafting")); assertEquals(if (source == null) 0 else 14, f.store.count(f.player, target, content.asRSCM()))
+            assertEquals(if (p.tools.single() == "obj.needle") 1 else 0, f.player.inv.physicalCount("obj.thread")); assertEquals(if (p.tools.single() == "obj.needle") 4 else 0, f.player.vars["varbit.crafting_thread_uses"])
+        }
+    }
+
+    @Test fun `five Hunter crafts consume one native thread reel and award XP only after each three-tick output`() {
+        val f = Fixture(); f.player.inv[0] = InvObj("obj.needle"); f.player.inv[27] = InvObj("obj.thread")
+        for (i in 1..20) f.player.inv[i] = InvObj("obj.hunting_fur_jaguar_perfect")
+        repeat(5) { cycle ->
+            val slot = f.player.inv.indices.first { f.player.inv[it]?.id == "obj.hunting_fur_jaguar_perfect".asRSCM() }
+            f.use(0, slot); f.finish(); assertEquals(cycle + 1, f.player.inv.physicalCount("obj.hg_furpouch_small")); assertEquals((cycle + 1) * 20, f.player.statMap.getXP("stat.crafting"))
+            assertEquals(if (cycle == 4) 0 else 1, f.player.inv.physicalCount("obj.thread")); assertEquals(if (cycle == 4) 5 else 4 - cycle, f.player.vars["varbit.crafting_thread_uses"])
+        }
+    }
+
+    @Test fun `Hunter crafting cancels on stale ingredient tool loss death logout or displacement without spending thread`() {
+        val p = ContainerCraftingScript.recipes.first { it.output == "obj.hg_meatpouch_large" && it.tools == listOf("obj.needle") }
+        for (mode in 0..4) {
+            val f = Fixture(); f.seed(p); f.use(0, 1)
+            when (mode) { 0 -> f.player.inv[1] = InvObj("obj.hg_meatpouch_small"); 1 -> f.player.inv[0] = null; 2 -> f.player.statMap.setCurrentLevel("stat.hitpoints", 0); 3 -> f.player.pendingLogout = true; 4 -> f.player.coords = f.player.coords.translateX(1) }
+            f.finish(); assertEquals(0, f.player.inv.physicalCount(p.output)); assertEquals(1, f.player.inv.physicalCount("obj.hg_meatpouch_small")); assertEquals(3, f.player.inv.physicalCount("obj.hunting_antelopesun_fur")); assertEquals(1, f.player.inv.physicalCount("obj.thread")); assertEquals(0, f.player.vars["varbit.crafting_thread_uses"]); assertEquals(0, f.player.statMap.getXP("stat.crafting"))
+        }
+    }
+
+    @Test fun `mixed hide clothing and container crafting share one native item-use producer with explicit choice and cancel`() {
+        val p = ContainerCraftingScript.recipes.first { it.output == "obj.hg_meatpouch_small" && it.tools == listOf("obj.costumeneedle") }
+        for (choice in 0..2) {
+            val f = Fixture(); f.seed(p); f.player.inv[7] = InvObj("obj.hg_mixedhide_base")
+            val before = f.player.inv.objs.map { it?.copy() }; f.use(0, 1)
+            assertTrue(f.player.activeCoroutine!!.isAwaiting(org.rsmod.api.player.input.ResumePauseButtonInput::class))
+            f.player.activeCoroutine!!.resumeWith(org.rsmod.api.player.input.ResumePauseButtonInput("component.chatmenu:options", choice))
+            if (choice == 0) { assertTrue(f.player.ui.containsModal("interface.skillmulti")); assertEquals(before, f.player.inv.objs.toList()) }
+            if (choice == 1) { f.finish(); assertEquals(1, f.player.inv.physicalCount(p.output)); assertEquals(1, f.player.inv.physicalCount("obj.hg_mixedhide_base")); assertEquals(30, f.player.statMap.getXP("stat.crafting")) }
+            if (choice == 2) { assertEquals(before, f.player.inv.objs.toList()); assertEquals(0, f.player.statMap.getXP("stat.crafting")) }
         }
     }
 
@@ -96,12 +141,11 @@ internal class ContainerCraftingInteractionTest {
             val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
             with(InvTransactionsScript(PlayerItemStorage(emptySet()))) { scripts.startup() }
             // Register the existing native Crafting producer as well to catch conflicting item-use pairs.
-            with(HeldCraftingScript()) { scripts.startup() }
+            with(HeldCraftingScript(setOf(ContainerCraftingScript(store, XpModifiers(emptySet()))))) { scripts.startup() }
             with(ContainerScript(store)) { scripts.startup() }
-            with(ContainerCraftingScript(store, XpModifiers(emptySet()))) { scripts.startup() }
-            val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(ProtectedAccessContextFactory.empty().copy(getEventBus = { bus })); launcher = ProtectedAccessLauncher(factory)
+            val factory = mock(ProtectedAccessContextFactory::class.java); `when`(factory.create()).thenReturn(ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getAlignment = { org.rsmod.api.player.dialogue.align.TextAlignment() })); launcher = ProtectedAccessLauncher(factory)
         }
-        fun seed(p: CraftingProduct): Int { player.inv[0] = InvObj(p.tools.single()); var slot = 1; for (m in p.inputs) { if (ServerCacheManager.getItem(m.internal.asRSCM())!!.stackable) player.inv[slot++] = InvObj(m.internal, m.count) else repeat(m.count) { player.inv[slot++] = InvObj(m.internal) } }; return slot }
+        fun seed(p: CraftingProduct): Int { player.inv[0] = InvObj(p.tools.single()); var slot = 1; for (m in p.inputs) { if (ServerCacheManager.getItem(m.internal.asRSCM())!!.stackable) player.inv[slot++] = InvObj(m.internal, m.count) else repeat(m.count) { player.inv[slot++] = InvObj(m.internal) } }; if (p.consumesThread && p.tools.single() == "obj.needle") player.inv[slot++] = InvObj("obj.thread"); return slot }
         fun use(first: Int, second: Int) { player.ifClose(bus); launcher.launch(player) { HeldUInteractions(bus).interact(this, inv, ServerCacheManager.getItem(inv[first]!!.id)!!, first, ServerCacheManager.getItem(inv[second]!!.id)!!, second) } }
         fun finish() { repeat(3) { player.currentMapClock++; player.processedMapClock = player.currentMapClock; player.activeCoroutine?.advance() } }
     }

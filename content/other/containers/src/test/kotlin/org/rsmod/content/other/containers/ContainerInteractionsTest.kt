@@ -29,6 +29,14 @@ import org.rsmod.plugin.scripts.ScriptContext
 internal class ContainerInteractionsTest {
     @BeforeEach fun cache() { ServerCacheManager.init(240).close() }
 
+    @Test fun `every fur pouch rejects emptying away from a bank without losing its stored contents`() {
+        for (s in ContainerCatalog.all.filter { it.family == "fur_pouch" }) {
+            val f = Fixture(); f.put(0, s.symbol); val fur = "obj.hunting_antelopemoon_fur".asRSCM(); f.store.update(f.player, s, fur, 14)
+            f.operate(0, HeldOp.Op2)
+            assertEquals(14, f.store.count(f.player, s, fur), s.symbol); assertEquals(0, f.player.inv.physicalCount("obj.hunting_antelopemoon_fur")); assertTrue(s.bankOnly)
+        }
+    }
+
     @Test fun `every native form has real definitions and consumers register without duplicate ops`() {
         val f = Fixture()
         for (s in ContainerCatalog.all) {

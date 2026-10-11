@@ -109,6 +109,14 @@ private suspend fun ProtectedAccess.craftFromClick(
         return
     }
 
+    val available = unlocked.filter { hasCraftingMaterials(it) }.distinctBy { it.output }
+    if (available.size > 1 && available.map { it.section }.distinct().size > 1) {
+        val selected = menu("Choose an item to craft", hotkeys = true, choices = available.map { dev.openrune.ServerCacheManager.getItem(dev.openrune.rscm.RSCM.getRSCM(it.output))?.name ?: it.output } + "Cancel")
+        val product = available.getOrNull(selected) ?: return
+        craftFromClick(listOf(product), combine)
+        return
+    }
+
     val product = unlocked.singleOrNull()
         ?: unlocked.firstOrNull { hasCraftingMaterials(it) }
         ?: unlocked.first()
