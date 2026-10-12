@@ -18,8 +18,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 // https://oldschool.runescape.wiki/w/Transcript:Ifaba
 // https://oldschool.runescape.wiki/w/Transcript:Solihib
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [system:monkey_disguise] guards are called on a player in human form
-// TODO(content): [quest:monkey_madness_ii] humans may trade without a disguise after the quest
+// TODO(content): [system:monkey_disguise] guards are called on a player in human form until
+// Monkey Madness II is complete (QuestRequirements, "quest_monkeymadness2")
 class MarimShops
 @Inject
 constructor(private val shops: Shops, private val objRepo: ObjRepository) : PluginScript() {

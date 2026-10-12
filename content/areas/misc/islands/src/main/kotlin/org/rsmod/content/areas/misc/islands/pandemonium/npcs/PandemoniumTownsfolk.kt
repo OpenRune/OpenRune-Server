@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -88,8 +89,7 @@ class PandemoniumTownsfolk @Inject constructor(private val shops: Shops) : Plugi
         chatNpcSpecific("Captain Dawson", "npc.pandemonium_dawson", neutral, text)
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Kebba (before Troubled Tortugans)
-    // TODO(content): [quest:troubled_tortugans] closing lines after the quest
+    // https://oldschool.runescape.wiki/w/Transcript:Kebba
     private suspend fun Dialogue.kebba() {
         chatNpc(
             happy,
@@ -102,6 +102,15 @@ class PandemoniumTownsfolk @Inject constructor(private val shops: Shops) : Plugi
                 "much of a goal in mind to be honest. I decided to just explore the world. I " +
                 "started swimming and ended up here!",
         )
+        if (QuestRequirements.hasCompleted(player, TROUBLED_TORTUGANS)) {
+            chatNpc(
+                happy,
+                "Anyway, even if you did just wash up here, I'm sure you'll find something to " +
+                    "keep you around. There's all sorts of opportunities here on the " +
+                    "Pandemonium. On that note, I won't keep you. See you later!",
+            )
+            return
+        }
         chatPlayer(quiz, "The Great Conch?")
         chatNpc(
             neutral,
@@ -174,6 +183,7 @@ class PandemoniumTownsfolk @Inject constructor(private val shops: Shops) : Plugi
     }
 
     private companion object {
+        const val TROUBLED_TORTUGANS = "quest_troubledtortugans"
         const val HENDERSON = "npc.pandemonium_fishmonger"
 
         val POLLY_LINES =

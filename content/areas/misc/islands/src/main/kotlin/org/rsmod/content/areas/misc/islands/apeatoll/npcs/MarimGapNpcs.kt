@@ -1,22 +1,27 @@
 package org.rsmod.content.areas.misc.islands.apeatoll.npcs
 
+import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
+import org.rsmod.api.shops.Shops
 import org.rsmod.content.interfaces.bank.tryOpenBank
+import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 // TODO(content): [system:monkey_disguise] Monkey language for a player without an M'speak amulet
-class MarimGapNpcs : PluginScript() {
+class MarimGapNpcs @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.hundred_ilm_iwazaru") { startDialogue(it.npc) { threeMonkeys() } }
         onOpNpc1("npc.hundred_ilm_kikazaru") { startDialogue(it.npc) { threeMonkeys() } }
         onOpNpc1("npc.hundred_ilm_mizaru") { startDialogue(it.npc) { threeMonkeys() } }
-        onOpNpc1("npc.mm2_javelinstoreowner") { startDialogue(it.npc) { oobapohk() } }
+        onOpNpc1(OOBAPOHK) { startDialogue(it.npc) { oobapohk(it.npc) } }
+        onOpNpc3(OOBAPOHK) { oobapohkTrade(it.npc) }
         onOpNpc1(JUMAANE) { startDialogue(it.npc) { jumaane() } }
         onOpNpc3(JUMAANE) { tryOpenBank() }
         onOpNpc4(JUMAANE) { openCollectionBox() }
@@ -43,9 +48,50 @@ class MarimGapNpcs : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Oobapohk (before Monkey Madness II)
-    // TODO(content): [quest:monkey_madness_ii] javelin store and dialogue after the quest
-    private suspend fun Dialogue.oobapohk() {
+    // https://oldschool.runescape.wiki/w/Transcript:Oobapohk
+    private suspend fun Dialogue.oobapohk(npc: Npc) {
+        if (!QuestRequirements.hasCompleted(player, MONKEY_MADNESS_II)) {
+            oobapohkOutOfStock()
+            return
+        }
+        chatNpc(happy, "Would you like to buy or sell any javelins?")
+        val option =
+            choice3(
+                "Yes, please.",
+                1,
+                "No, thanks.",
+                2,
+                "Could you sell me some dragon javelins?",
+                3,
+            )
+        when (option) {
+            1 -> {
+                chatPlayer(happy, "Yes, please.")
+                shops.open(player, npc, JAVELIN_SHOP, JAVELIN_INV)
+            }
+            2 -> chatPlayer(neutral, "No, thanks.")
+            3 -> {
+                chatPlayer(quiz, "Could you sell me some dragon javelins?")
+                chatNpc(
+                    laugh,
+                    "Dragon javelins? Haha, you'll be a chief advisor to the King before you " +
+                        "ever hold a dragon javelin!",
+                )
+            }
+        }
+    }
+
+    // TODO(content): [verify:in_game] the Trade option before Monkey Madness II; the transcript
+    // only gives the Talk-to lines
+    private suspend fun ProtectedAccess.oobapohkTrade(npc: Npc) {
+        if (!QuestRequirements.hasCompleted(player, MONKEY_MADNESS_II)) {
+            startDialogue(npc) { oobapohkOutOfStock() }
+            return
+        }
+        shops.open(player, npc, JAVELIN_SHOP, JAVELIN_INV)
+    }
+
+    private suspend fun Dialogue.oobapohkOutOfStock() {
         chatPlayer(quiz, "May I browse your store?")
         chatNpc(sad, "Sorry, I'm currently out of javelins.")
     }
@@ -140,5 +186,9 @@ class MarimGapNpcs : PluginScript() {
 
     private companion object {
         const val JUMAANE = "npc.mm2_monkey_banker_model"
+        const val OOBAPOHK = "npc.mm2_javelinstoreowner"
+        const val JAVELIN_SHOP = "Oobapohk's Javelin Store"
+        const val JAVELIN_INV = "inv.mm2_javelin_store"
+        const val MONKEY_MADNESS_II = "quest_monkeymadness2"
     }
 }

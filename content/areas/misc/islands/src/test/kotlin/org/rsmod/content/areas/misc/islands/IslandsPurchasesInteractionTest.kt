@@ -6,10 +6,12 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
@@ -19,6 +21,7 @@ import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.events.interact.NpcEvents
+import org.rsmod.api.player.events.interact.NpcUDefaultEvents
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -34,6 +37,9 @@ import org.rsmod.content.areas.misc.islands.entrana.npcs.FritzTheGlassblower
 import org.rsmod.content.areas.misc.islands.harmony.npcs.HarmonyIsland
 import org.rsmod.content.areas.misc.islands.mosleharmless.npcs.shops.PirateShops
 import org.rsmod.content.areas.misc.islands.waterbirth.npcs.WaterbirthIsland
+import org.rsmod.content.quest.manager.QuestRequirementMode
+import org.rsmod.content.quest.manager.QuestRequirementPolicy
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -51,6 +57,19 @@ import org.rsmod.plugin.scripts.ScriptContext
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class IslandsPurchasesInteractionTest {
+    private lateinit var questPolicy: QuestRequirementPolicy
+
+    @BeforeEach
+    fun respectQuestProgress() {
+        questPolicy = QuestRequirements.activePolicy()
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
+    }
+
+    @AfterEach
+    fun restoreQuestPolicy() {
+        QuestRequirements.install(questPolicy)
+    }
+
     @Test fun `Fritz hands over one bucket while explaining glassmaking`() {
         val f = Fixture()
         f.talkTo(FRITZ)
@@ -268,6 +287,107 @@ class IslandsPurchasesInteractionTest {
         assertEquals(500, f.player.inv.count(COINS))
     }
 
+    @Test fun `Brother Tranquility on Mos Le'Harmless hands over an anchor only after the quest`() {
+        val before = Fixture()
+        before.talkTo(TRANQUILITY_MOS)
+        before.finish(emptyList())
+        assertEquals(0, before.player.inv.count(BROKEN_ANCHOR))
+
+        completed("quest_greatbrainrobbery")
+        val after = Fixture()
+        after.talkTo(TRANQUILITY_MOS)
+        after.finish(emptyList())
+        assertEquals(1, after.player.inv.count(BROKEN_ANCHOR))
+    }
+
+    @Test fun `Askeladden buys every keg for 700 coins each after The Fremennik Trials`() {
+        completed(FREMENNIK_TRIALS)
+        val f = Fixture()
+        for (slot in 0 until 3) f.player.inv[slot] = InvObj(KEG_OF_BEER, 1)
+        f.talkTo(ASKELADDEN)
+        f.finish(listOf(1, 1, 1))
+        assertEquals(0, f.player.inv.count(KEG_OF_BEER))
+        assertEquals(2_100, f.player.inv.count(COINS))
+    }
+
+    @Test fun `Askeladden buys kegs one at a time for 700 coins after The Fremennik Trials`() {
+        completed(FREMENNIK_TRIALS)
+        val f = Fixture()
+        for (slot in 0 until 3) f.player.inv[slot] = InvObj(KEG_OF_BEER, 1)
+        f.talkTo(ASKELADDEN)
+        f.finish(listOf(1, 1, 2, 1, 2))
+        assertEquals(1, f.player.inv.count(KEG_OF_BEER))
+        assertEquals(1_400, f.player.inv.count(COINS))
+    }
+
+    @Test fun `Askeladden hands over a pet rock after The Fremennik Trials`() {
+        completed(FREMENNIK_TRIALS)
+        val f = Fixture()
+        f.talkTo(ASKELADDEN)
+        f.finish(listOf(2))
+        assertEquals(1, f.player.inv.count(PET_ROCK))
+    }
+
+    @Test fun `a full pack gets no pet rock from Askeladden`() {
+        completed(FREMENNIK_TRIALS)
+        val f = Fixture()
+        f.fillInventory()
+        f.talkTo(ASKELADDEN)
+        f.finish(listOf(2))
+        assertEquals(0, f.player.inv.count(PET_ROCK))
+        assertEquals(0, f.groundCount(PET_ROCK))
+    }
+
+    @Test fun `Bardur trades a shark for each Fremennik piece after The Fremennik Trials`() {
+        completed(FREMENNIK_TRIALS)
+        for (piece in FREMENNIK_PIECES) {
+            val f = Fixture()
+            f.player.inv[0] = InvObj(piece, 1)
+            f.useOn(BARDUR, piece)
+            f.finish(listOf(1))
+            assertEquals(0, f.player.inv.count(piece), piece)
+            assertEquals(1, f.player.inv.count(SHARK), piece)
+        }
+    }
+
+    @Test fun `declining Bardur's trade keeps the Fremennik piece`() {
+        completed(FREMENNIK_TRIALS)
+        val f = Fixture()
+        f.player.inv[0] = InvObj(FREMENNIK_BLADE, 1)
+        f.useOn(BARDUR, FREMENNIK_BLADE)
+        f.finish(listOf(2))
+        assertEquals(1, f.player.inv.count(FREMENNIK_BLADE))
+        assertEquals(0, f.player.inv.count(SHARK))
+    }
+
+    @Test fun `Bardur takes nothing before The Fremennik Trials`() {
+        val f = Fixture()
+        f.player.inv[0] = InvObj(FREMENNIK_BLADE, 1)
+        f.useOn(BARDUR, FREMENNIK_BLADE)
+        f.finish(listOf(1))
+        assertEquals(1, f.player.inv.count(FREMENNIK_BLADE))
+        assertEquals(0, f.player.inv.count(SHARK))
+    }
+
+    @Test fun `Bardur takes nothing that isn't Fremennik equipment`() {
+        completed(FREMENNIK_TRIALS)
+        val f = Fixture()
+        f.player.inv[0] = InvObj(KEG_OF_BEER, 1)
+        f.useOn(BARDUR, KEG_OF_BEER)
+        f.finish(listOf(1))
+        assertEquals(1, f.player.inv.count(KEG_OF_BEER))
+        assertEquals(0, f.player.inv.count(SHARK))
+    }
+
+    private fun completed(vararg quests: String) {
+        QuestRequirements.install(
+            QuestRequirementPolicy(
+                QuestRequirementMode.VirtualCompletions,
+                virtualCompletions = quests.toSet(),
+            )
+        )
+    }
+
     private class Fixture {
         private val events = EventBus()
         private val client = RecordingClient()
@@ -353,6 +473,34 @@ class IslandsPurchasesInteractionTest {
             result?.getOrThrow()
         }
 
+        fun useOn(npc: String, obj: String) {
+            player.clearPendingAction(events)
+            result = null
+            player.activeCoroutine = coroutine
+            val target = Npc(npc, player.coords.translateZ(1))
+            val slot = (0 until player.inv.size).first { player.inv[it]?.id == obj.asRSCM() }
+            val type = checkNotNull(ServerCacheManager.getItem(obj.asRSCM()))
+            val body: suspend () -> Unit = {
+                val access = ProtectedAccess(player, coroutine, context)
+                assertTrue(
+                    events.publish(
+                        access,
+                        NpcUDefaultEvents.OpType(target, slot, type, target.visType),
+                    )
+                )
+            }
+            body.startCoroutine(
+                object : Continuation<Unit> {
+                    override val context = EmptyCoroutineContext
+
+                    override fun resumeWith(result: Result<Unit>) {
+                        this@Fixture.result = result
+                    }
+                }
+            )
+            result?.getOrThrow()
+        }
+
         fun finish(options: List<Int>) {
             val selections = options.iterator()
             repeat(200) {
@@ -422,6 +570,14 @@ class IslandsPurchasesInteractionTest {
         private const val BROKEN_ANCHOR = "obj.brain_broken_anchor"
         private const val ANCHOR = "obj.brain_anchor"
         private const val TRANQUILITY = "npc.brain_island_tranquility"
+        private const val TRANQUILITY_MOS = "npc.brain_tranquility"
+        private const val FREMENNIK_TRIALS = "quest_fremenniktrials"
+        private const val PET_ROCK = "obj.vt_useless_rock"
+        private const val BARDUR = "npc.jb_viking_dude"
+        private const val SHARK = "obj.shark"
+        private const val FREMENNIK_BLADE = "obj.viking_sword"
+        private val FREMENNIK_PIECES =
+            listOf(FREMENNIK_BLADE, "obj.viking_helmet", "obj.viking_shield")
         private const val ASKELADDEN = "npc.viking_askelapen_dagganoth_mountain"
         private const val KEG_OF_BEER = "obj.keg_of_beer"
         private val BLADES =

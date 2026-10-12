@@ -8,6 +8,7 @@ dependencies {
     implementation(projects.api.repo)
     implementation(projects.api.shops)
     implementation(projects.content.interfaces.bank)
+    implementation(projects.content.quest)
     testImplementation(projects.api.invPlugin)
     testImplementation(projects.api.gameProcess)
     testImplementation(projects.api.invStorage)

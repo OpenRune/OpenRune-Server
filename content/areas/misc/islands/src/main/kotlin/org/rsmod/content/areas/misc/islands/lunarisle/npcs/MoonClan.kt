@@ -3,6 +3,7 @@ package org.rsmod.content.areas.misc.islands.lunarisle.npcs
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -119,19 +120,52 @@ class MoonClan : PluginScript() {
     // https://oldschool.runescape.wiki/w/Transcript:Oneiromancer
     // TODO(content): [system:lunar_equipment_replacement] replacing a lost lunar staff (30,000
     // coins) or other lost lunar equipment after "The state of the island."
-    // TODO(content): [quest:dream_mentor] the "Cyrisus." option
-    // TODO(content): [quest:while_guthix_sleeps] Cyrisus' fate in the "Cyrisus." option
+    // TODO(content): [quest:while_guthix_sleeps] the "Cyrisus." option switches at a certain
+    // event during the quest, not at its completion
     private suspend fun Dialogue.oneiromancer() {
         chatNpc(happy, "Hello there. What do you want to talk about?")
-        if (choice2("The state of the island.", true, "Nothing.", false)) {
-            chatPlayer(quiz, "Hi, how are things going?")
-            chatNpc(
-                happy,
-                "Well hopefully a lot better now that you've initiated the calm between the Moon " +
-                    "Clan and the Fremenniks. Remember, if you want to use our Lunar Spells at " +
-                    "any time, pray at the altar beside me and you can modify",
-            )
-            chatNpc(happy, "your knowledge!")
+        val option =
+            if (QuestRequirements.hasCompleted(player, DREAM_MENTOR)) {
+                choice3("The state of the island.", 1, "Cyrisus.", 2, "Nothing.", 3)
+            } else {
+                choice2("The state of the island.", 1, "Nothing.", 3)
+            }
+        when (option) {
+            1 -> {
+                chatPlayer(quiz, "Hi, how are things going?")
+                chatNpc(
+                    happy,
+                    "Well hopefully a lot better now that you've initiated the calm between the " +
+                        "Moon Clan and the Fremenniks. Remember, if you want to use our Lunar " +
+                        "Spells at any time, pray at the altar beside me and you can modify",
+                )
+                chatNpc(happy, "your knowledge!")
+            }
+            2 -> cyrisus()
         }
+    }
+
+    private suspend fun Dialogue.cyrisus() {
+        if (QuestRequirements.hasCompleted(player, WHILE_GUTHIX_SLEEPS)) {
+            chatPlayer(happy, "Hi.")
+            chatNpc(sad, "Hello there. I hear that Cyrisus is no longer with us.")
+            chatPlayer(
+                sad,
+                "He died fighting for a good cause. He'll be remembered as a great hero.",
+            )
+            chatNpc(sad, "I suppose the good do die young.")
+            return
+        }
+        chatPlayer(quiz, "Hello again. Seen Cyrisus recently?")
+        chatNpc(neutral, "As you mention it, yes. He wanted to create more astral runes.")
+        chatPlayer(neutral, "Interesting.")
+        chatNpc(neutral, "He said something about fighting kalphites, whatever they are.")
+        chatPlayer(happy, "Sounds like his fear of combat really is a problem of the past!")
+        chatNpc(happy, "You've done well. Very well.")
+    }
+
+    private companion object {
+        const val DREAM_MENTOR = "quest_dreammentor"
+        const val WHILE_GUTHIX_SLEEPS = "quest_whileguthixsleeps"
     }
 }
