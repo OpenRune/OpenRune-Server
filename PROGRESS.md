@@ -61,7 +61,10 @@ rasterizer renders the 14 untextured inventory models offline; Fire/Infernal
 geometry/materials are checked separately. **25 runtime and 14 plugin classes**
 are built from source; all 34 accepted client/API/HD fingerprints are unchanged.
 The bounded pack again verifies **454 writes** and preserves **538,211 existing
-config definitions**. Runtime JAR build succeeds.
+config definitions**. Runtime JAR build succeeds. Local source checkpoint: `eb79b2458`.
+Final isolated rev240 protocol/appearance checks and Check/Install/Rollback on
+an owned server copy pass. The paired client initializes in 3.98 seconds with
+particle-preview readiness; no in-game visual acceptance is inferred from startup.
 
 Test entry: `outputs/nero-completionist-visual-fix-v2-20261012/TESTEN.cmd`.
 Only marked test sessions receive temporary administrator rights through
