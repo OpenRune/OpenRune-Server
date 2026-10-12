@@ -2,13 +2,14 @@ package org.rsmod.content.areas.city.seersvillage.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class SeersGapNpcs : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1("npc.bob_sinclair") { startDialogue(it.npc) { mesbox("He is ignoring you.") } }
+        onOpNpc1("npc.bob_sinclair") { startDialogue(it.npc) { bob() } }
         onOpNpc1("npc.pierre_the_family_dog_handler") { startDialogue(it.npc) { pierre() } }
         onOpNpc1("npc.stanford_the_gardener") { startDialogue(it.npc) { stanford() } }
         onOpNpc1("npc.gossipy_man") { startDialogue(it.npc) { gossip() } }
@@ -17,21 +18,55 @@ class SeersGapNpcs : PluginScript() {
         onOpNpc1("npc.vt_council_workmen") { startDialogue(it.npc) { councilWorkman() } }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Pierre (before Murder Mystery)
-    // TODO(content): [quest:murder_mystery] in-quest and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Murder_Mystery
+    // TODO(content): [quest:murder_mystery] in-quest dialogue
+    private suspend fun Dialogue.bob() {
+        if (QuestRequirements.hasCompleted(player, MURDER_MYSTERY)) {
+            chatNpc(angry, "Apparently you aren't as stupid as you look.")
+            return
+        }
+        mesbox("He is ignoring you.")
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Pierre
+    // TODO(content): [quest:murder_mystery] in-quest dialogue
     private suspend fun Dialogue.pierre() {
+        if (QuestRequirements.hasCompleted(player, MURDER_MYSTERY)) {
+            chatNpc(happy, "Thank you for all your help in solving the murder.")
+            return
+        }
         chatNpc(neutral, "The guards told me not to talk to anyone.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Stanford (before Murder Mystery)
-    // TODO(content): [quest:murder_mystery] in-quest and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Stanford
+    // TODO(content): [quest:murder_mystery] in-quest dialogue
     private suspend fun Dialogue.stanford() {
+        if (QuestRequirements.hasCompleted(player, MURDER_MYSTERY)) {
+            chatNpc(happy, "Thank you for all your help in solving the murder.")
+            return
+        }
         chatNpc(angry, "Have you no shame? We are all grieving at the moment.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Gossip (before Murder Mystery)
-    // TODO(content): [quest:kings_ransom] after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Gossip
+    // TODO(content): [quest:murder_mystery] in-quest dialogue
+    // TODO(content): [verify:in_game] the transcript has no dialogue between Murder Mystery and
+    //  King's Ransom; the before-quest line is used
     private suspend fun Dialogue.gossip() {
+        if (QuestRequirements.hasCompleted(player, KINGS_RANSOM)) {
+            chatNpc(
+                happy,
+                "Well, this has certainly been exciting! The Sinclairs under house arrest, " +
+                    "Morgan Le Faye attempting yet again to interfere with King Arthur and " +
+                    "Merlin, and even the Black Knights sticking their noses into it.",
+            )
+            chatPlayer(
+                quiz,
+                "How do you know all that? It only just happened, and you weren't there!",
+            )
+            chatNpc(happy, "I have my sources. No secret is safe as long as I'm around!")
+            return
+        }
         chatNpc(
             neutral,
             "There's some kind of commotion up at the Sinclair place I hear. Not surprising all " +
@@ -105,5 +140,10 @@ class SeersGapNpcs : PluginScript() {
             "Just make sure yer don't get me none of that non alcoholic rubbish from that poison " +
                 "salesman guy at the tavern!",
         )
+    }
+
+    private companion object {
+        const val MURDER_MYSTERY = "quest_murdermystery"
+        const val KINGS_RANSOM = "quest_kingsransom"
     }
 }
