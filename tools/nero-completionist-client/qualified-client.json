@@ -68,12 +68,20 @@
     "lwjgl-opengl-3.3.2-natives-windows.jar",
     "runelite-api-1.12.39-runtime-1791676556260-patched.jar"
   ],
-  "packageVersion": "Nero completionist v0.11",
+  "packageVersion": "Nero completionist v0.12 visual fixes",
   "bundleHashes": {
     "client/javconfig-template.ws": "624e1f3e752aa989bc453ea5157097717263291d38770f6af5526e620271d2cc",
-    "client-plugin/Nero-Particle-Preview.jar": "b2339e6ad531f2d464d854bcb61cd91cb33cfa1e0596c59baf125ababc6eced2",
+    "client-plugin/Nero-Particle-Preview.jar": "12dafce42f9103bdf3cab279e2b9d8fc27b2af60025f96930d60ce1f0a298277",
     "NativeClientCopy.java": "f45cda9972ca99081b44736b8d3a0275f03e800c44d3b756e67aeea48fea1772",
-    "runtime-current.txt": "b3e04cd5e8af5f1a79fd111a9f185c72a423f0275aa7609053c98f277d8325e4",
+    "runtime-current.txt": "578851d5f04d89e76b53b2139d7d9eb73ae70307e62ed43671786b099a69e8b6",
+    "runtime-v012-visual-final/ASM-LICENSE.txt": "337e92fd361effe495d03978a34a3cd44681a63b8329adfd99c8996b306b2a8c",
+    "runtime-v012-visual-final/bindings.properties": "367e0ce3cc9c54315dbee09accbd21e0bb9311618fb9c59999a19e17730d1a68",
+    "runtime-v012-visual-final/definitions.json": "c946fbb32b03bf04b2610246ea1dfbc83e94412bb53c6d5198bf832840e27a4e",
+    "runtime-v012-visual-final/nero-compatibility-bridge.jar": "b506c5837282bc3183ab64b23a9f6160f5959bc49d7d15833aee241d17364636",
+    "runtime-v012-visual-final/nero-compatibility-runtime.jar": "ed10cbd66d09a1a43e3b3f57bf8547f957317d85a0ddb6d031a071c060ace0c9",
+    "runtime-v012-visual-final/runtime-240.properties": "4ad388dcb1843eacc3417a693385d4488fb1656361abfc142e820a0ebddb1f1e"
+  },
+  "buildBootstrapHashes": {
     "runtime-v011-final/ASM-LICENSE.txt": "337e92fd361effe495d03978a34a3cd44681a63b8329adfd99c8996b306b2a8c",
     "runtime-v011-final/bindings.properties": "5137ab11fba60ec9d20d85526a4a81a21fbb069c23bd725b4352122217ccb8d5",
     "runtime-v011-final/definitions.json": "c946fbb32b03bf04b2610246ea1dfbc83e94412bb53c6d5198bf832840e27a4e",

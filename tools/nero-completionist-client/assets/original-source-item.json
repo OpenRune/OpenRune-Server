@@ -1,0 +1,56 @@
+{
+  "value": 5000000,
+  "members": true,
+  "inventoryModel": 65270,
+  "offsetXRaw": 65535,
+  "offsetYRaw": 24,
+  "zoom": 1316,
+  "rotationY": 1020,
+  "rotationX": 252,
+  "action36": "Wear",
+  "action37": "Customise",
+  "action38": "Features",
+  "action39": "Destroy",
+  "maleModel": 65297,
+  "femaleModel": 65316,
+  "recolors": [
+    [
+      65214,
+      65214
+    ],
+    [
+      65200,
+      65200
+    ],
+    [
+      65186,
+      65186
+    ],
+    [
+      62995,
+      62995
+    ]
+  ],
+  "retextures": [
+    [
+      359,
+      256
+    ]
+  ],
+  "name": "Completionist cape",
+  "params": {
+    "528": "Kandarin Monastery",
+    "529": "Ardougne Farm",
+    "530": "Summoning-restore",
+    "531": "Customise",
+    "258": 1
+  },
+  "unknown129": [
+    1,
+    51
+  ],
+  "unknown127": [
+    2,
+    45
+  ]
+}

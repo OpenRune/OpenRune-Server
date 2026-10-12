@@ -81,8 +81,10 @@ def main():
     install = dict(serverRoot=str(target), allowedRoots=[str(target)], files=files,
                    prerequisites=[dict(target=str(target/file["relative"]), sha256=file["sha256"]) for file in base_files if file["relative"] not in {e["relative"] for e in files}])
     (output/"install-manifest.json").write_text(json.dumps(install, indent=2))
-    client = output/"client"
-    shutil.copytree(TOOLS, client, ignore=shutil.ignore_patterns("__pycache__", "classes", "build", "build_test_package.py", "Test-Completionist.ps1"))
+    client_meta=json.loads((TOOLS/"qualified-client.json").read_text(encoding="utf-8"))
+    for name in ["qualified-client.json","client_profile.py","TestServerMain.java","IsolatedAccessScript.java",*client_meta["bundleHashes"]]:
+        destination=output/"client"/name;destination.parent.mkdir(parents=True,exist_ok=True)
+        shutil.copyfile(TOOLS/name,destination)
     shutil.copyfile(TOOLS/"Test-Completionist.ps1", output/"TESTEN.ps1")
     text = args.installer_template.read_text(encoding="utf-8-sig").replace("Interface- en lootupdate geinstalleerd", "Completionist-update geinstalleerd")
     first_end = text.index("\n") + 1
@@ -92,7 +94,7 @@ def main():
     text = text[:start] + (TOOLS/"installer_process_guard.ps1").read_text() + "\n" + text[end:]
     (output/"INSTALLEREN.ps1").write_text(text, encoding="utf-8")
     (output/"TESTEN.cmd").write_text('@echo off\r\n"%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "%~dp0TESTEN.ps1"\r\npause\r\n')
-    (output/"LEESMIJ.md").write_text("""# Completionist cape v0.11 testpakket
+    (output/"LEESMIJ.md").write_text("""# Completionist cape v0.12 visuele correcties
 
 Start `TESTEN.cmd` of voer `TESTEN.ps1` uit. Het pakket maakt een eigen testserver,
 database en clientprofiel. De bestaande installatie blijft behouden.
@@ -112,8 +114,11 @@ staande cape/hood-preview, preview Particles On/Off, Done/Cancel en opnieuw inlo
 lopen, idle en emote. Controleer Ardougne/Mythical teleports, Ava Commune en
 Dizana Check/Empty/ammunition. Gebruik capes op Perdu voor lock/repair/unlock.
 Nieuwe broken/mangled states zijn niet draagbaar.
-Controleer Fire/Infernal: de sierranden gebruiken echte geanimeerde OSRS-texturen;
-de stof blijft in de vaste variantkleur. Testcommands vereisen administratorrechten.
+Controleer Fire/Infernal: de grote stofpanelen gebruiken de echte geanimeerde
+OSRS-texturen 40/59, zoals in de referentie. De geborduurde middenvlakken en
+sierranden behouden hun kleuren. Alle varianten gebruiken weer de originele
+gevouwen inventory-vorm. Controleer de achterzijde en cape-wissels eerst in
+software mode en daarna in HD. Testcommands vereisen administratorrechten.
 
 Stop de aparte testserver met `TESTEN.ps1 -Action Stop` en sluit het testclientvenster.
 `-Action Prepare` bereidt alleen voor; `-NoClient` start alleen de testserver.

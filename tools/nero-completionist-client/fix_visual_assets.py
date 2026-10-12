@@ -1,0 +1,143 @@
+"""Build reviewed cape meshes from an immutable v0.11 baseline, never a live cache."""
+import argparse,base64,copy,hashlib,json,math,struct
+from pathlib import Path
+from model_codec import decode,encode
+
+ROOT=Path(__file__).resolve().parent
+RAW=ROOT.parents[1]/'content/other/nero-completionist/pack/src/main/resources/pack/raw'
+PALETTE=[65214,65200,65186,62995]
+
+
+def independent_back(mesh,front_count=None):
+    """Separate back normals and give the cloth a subpixel thickness.
+
+    Existing face order/labels remain: emitters, recolours, UVs and animations
+    still address the same faces. Reverse vertices inherit the source skins.
+    """
+    nf=len(mesh['faces']);alpha=mesh['alphas'] or [0]*nf
+    if front_count is None:
+        front_count=nf
+        for f in range(nf):
+            if alpha[f]==255:continue
+            for key in ['colors','alphas','facePriorities','faceSkins','faceModes','sourceMaterials','sourceTextureCoords']:
+                values=mesh.get(key)
+                if values is not None:values.append(values[f])
+            a,b,c=mesh['faces'][f];mesh['faces'].append([a,c,b])
+        nf=len(mesh['faces']);alpha=mesh['alphas'] or [0]*nf
+    reverse_end=front_count+sum(a!=255 for a in alpha[:front_count])
+    if reverse_end>nf:raise ValueError('Invalid reverse topology')
+    reverse=set(v for face in mesh['faces'][front_count:reverse_end] for v in face)
+    normal={v:[0.,0.,0.] for v in reverse}
+    for face in mesh['faces'][front_count:reverse_end]:
+        a,b,c=[mesh['vertices'][v] for v in face];u=[b[i]-a[i] for i in range(3)];w=[c[i]-a[i] for i in range(3)]
+        n=[u[1]*w[2]-u[2]*w[1],u[2]*w[0]-u[0]*w[2],u[0]*w[1]-u[1]*w[0]]
+        length=math.sqrt(sum(x*x for x in n))
+        if length:
+            for v in face:
+                for i in range(3):normal[v][i]+=n[i]/length
+    mapping={}
+    for v in sorted(reverse):
+        n=normal[v];length=math.sqrt(sum(x*x for x in n)) or 1
+        mapping[v]=len(mesh['vertices'])
+        mesh['vertices'].append([mesh['vertices'][v][i]+round(2*n[i]/length) for i in range(3)])
+        if mesh['vertexSkins'] is not None:mesh['vertexSkins'].append(mesh['vertexSkins'][v])
+    for f in range(front_count,reverse_end):mesh['faces'][f]=[mapping[v] for v in mesh['faces'][f]]
+    modes=mesh.get('faceModes') or [0]*nf
+    for f in range(reverse_end):modes[f]=2 if alpha[f]==255 else 0
+    mesh['faceModes']=modes
+    return reverse_end
+
+
+def texture_panels(mesh,front_count,channels,texture):
+    # The reference textures the broad cloth panels; raised edges and the
+    # central embroidered pattern retain their family colours.
+    nf=len(mesh['faces']);mesh['sourceMaterials']=[-1]*nf;mesh['sourceTextureCoords']=[-1]*nf
+    mask=set(channels);alpha=mesh['alphas'] or [0]*nf
+    reverse=front_count
+    for f in range(front_count):
+        if f in mask:mesh['sourceMaterials'][f]=texture;mesh['sourceTextureCoords'][f]=0
+        if alpha[f]!=255:
+            if f in mask:mesh['sourceMaterials'][reverse]=texture;mesh['sourceTextureCoords'][reverse]=0
+            reverse+=1
+    used={v for f in mask for v in mesh['faces'][f]}
+    lo=[min(mesh['vertices'][v][i] for v in used) for i in range(3)]
+    hi=[max(mesh['vertices'][v][i] for v in used) for i in range(3)]
+    base=len(mesh['vertices']);z=round((lo[2]+hi[2])/2)
+    mesh['vertices'].extend([[lo[0],lo[1],z],[hi[0],lo[1],z],[lo[0],hi[1],z]])
+    if mesh['vertexSkins'] is not None:mesh['vertexSkins'].extend([255]*3)
+    mesh['planes']=[[base,base+1,base+2]]
+    for f,t in enumerate(mesh['sourceMaterials']):
+        if t>=0:mesh['colors'][f]=127
+
+
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--baseline',type=Path,required=True);parser.add_argument('--runtime',default='runtime-v012-visual');args=parser.parse_args()
+    source=args.baseline.resolve(strict=True)
+    if source==RAW.resolve() or '.data' in source.parts:raise ValueError('Use immutable source assets outside the checkout/cache')
+    manifest=json.loads((source/'cache-manifest.json').read_text(encoding='utf-8'))
+    for row in manifest['writes']:
+        if hashlib.sha256((source/row['file']).read_bytes()).hexdigest()!=row['sha256']:raise ValueError('Changed baseline '+row['key'])
+    variants=json.loads((source/'variants.json').read_text(encoding='utf-8'))
+    inventory=json.loads((ROOT/'assets/original-inventory.source.json').read_text(encoding='utf-8'))
+    base_layers=json.loads((ROOT/'assets/cape-layers.json').read_text(encoding='utf-8'))
+    male=decode((source/'cache/live/7/62101/0.dat').read_bytes())
+    cloth=[f for f,c in enumerate(male['colors'][:792]) if c in (PALETTE[1],PALETTE[3])]
+    models={62100:(None,PALETTE),62103:(None,[65214,65200,65186,62995])}
+    for row in variants:models.setdefault(row['modelIds'][0],(row['key'],row['colours']))
+    runtime=ROOT/args.runtime;runtime.mkdir(exist_ok=True)
+    previous=ROOT/'runtime-v011-final'
+    for f in ['definitions.json','runtime-240.properties','ASM-LICENSE.txt']:
+        if not (runtime/f).exists():(runtime/f).write_bytes((previous/f).read_bytes())
+    old_bindings={}
+    for line in (previous/'bindings.properties').read_text(encoding='utf-8').splitlines():
+        if '=' in line:key,value=line.split('=',1);old_bindings[key]=value
+    new=['schemaVersion=1'];report=[]
+    for p in sorted((source/'cache/live/7').glob('*/0.dat')):
+        model_id=int(p.parent.name);old=p.read_bytes();old_hash=hashlib.sha256(old).hexdigest();mesh=decode(old)
+        if model_id in models:
+            key,colours=models[model_id]
+            mesh=copy.deepcopy(json.loads((ROOT/'assets/trimmed-inventory.source.json').read_text(encoding='utf-8')) if model_id==62103 else inventory);nf=len(mesh['faces'])
+            mesh.update(planes=[],trailer=b'\0',sourceMaterials=[-1]*nf,sourceTextureCoords=[-1]*nf)
+            mesh['priority']=255;mesh['facePriorities']=[0]*nf;mesh['alphas']=[0]*nf
+            mesh['faceModes']=[0]*nf;mesh['faceSkins']=None
+            channels=[f for f,c in enumerate(mesh['colors']) if c in (PALETTE[1],PALETTE[3])]
+            mesh['colors']=[colours[PALETTE.index(c)] if c in PALETTE else c for c in mesh['colors']]
+            independent_back(mesh)
+            if key in ('fire','infernal'):texture_panels(mesh,nf,channels,40 if key=='fire' else 59)
+            layers=[0]*len(mesh['faces'])
+        elif len(mesh['faces'])>=1577:
+            independent_back(mesh,792)
+            key=next((r['key'] for r in variants if model_id in r['modelIds'][1:3]),None)
+            if key in ('fire','infernal'):texture_panels(mesh,792,cloth,40 if key=='fire' else 59)
+            layers=base_layers+ [base_layers[f] for f in range(792) if (mesh['alphas'][f]&255)!=255]
+            layers.extend([0]*(len(mesh['faces'])-len(layers)))
+        else:
+            # Fixed hoods use the same smooth renderer; their native topology is retained.
+            layers=[0]*len(mesh['faces'])
+        data=encode(mesh);digest=hashlib.sha256(data).hexdigest()
+        (RAW/p.relative_to(source)).write_bytes(data)
+        new.append(f'model.{digest}.scale=0.25')
+        new.append(f'model.{digest}.layers='+base64.b64encode(bytes(layers)).decode('ascii'))
+        for suffix in ['emitters','palette']:
+            value=old_bindings.get(f'model.{old_hash}.{suffix}')
+            if model_id in models and suffix=='palette':
+                value=','.join(f'{f}:{PALETTE.index(c)}' for f,c in enumerate(mesh['colors']) if c in PALETTE) if model_id==62100 else None
+            if value:new.append(f'model.{digest}.{suffix}={value}')
+        report.append(dict(model=model_id,vertices=len(mesh['vertices']),faces=len(mesh['faces']),textured=sum(t>=0 for t in mesh['sourceMaterials']),sha256=digest))
+    # Restore the original folded icon's exact projection on every cape variant.
+    # Server definitions retain their gameplay fields; client opcodes are native rev240.
+    ids=[63000,63001]+[r['capeId'] for r in variants]
+    projection=b''.join(bytes([op])+struct.pack('>H',value) for op,value in [(4,1316),(5,252),(6,1020),(7,65535),(8,24),(95,0)])+b'\0'
+    for item in ids:
+        p=source/f'cache/live/2/10/{item}.dat';data=p.read_bytes()
+        if data[-1]!=0:raise ValueError('Invalid client item trailer')
+        (RAW/p.relative_to(source)).write_bytes(data[:-1]+projection)
+    for row in manifest['writes']:row['sha256']=hashlib.sha256((RAW/row['file']).read_bytes()).hexdigest()
+    (RAW/'cache-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8',newline='\n')
+    (runtime/'bindings.properties').write_text('\n'.join(new)+'\n',encoding='utf-8',newline='\n')
+    (ROOT/'runtime-current.txt').write_text(args.runtime+'\n',encoding='utf-8',newline='\n')
+    (ROOT/'assets/visual-assets.json').write_text(json.dumps({'revision':240,'inventoryProjection':{'zoom':1316,'pitch':252,'yaw':1020,'x':-1,'y':24},'models':report},indent=2)+'\n',encoding='utf-8',newline='\n')
+    print(json.dumps({'models':len(report),'foldedInventoryModels':len(models),'textured':[(r['model'],r['textured']) for r in report if r['textured']],'runtime':args.runtime}))
+
+
+if __name__=='__main__':main()

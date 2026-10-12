@@ -86,19 +86,25 @@ public final class NeroParticlePlugin extends Plugin {
  private void sample(Object actor,List<AttachmentRegistry.Triangle> triangles) {
   if(!(actor instanceof Actor))return;
   Actor player=(Actor)actor;LocalPoint local=player.getLocalLocation();
-  if(local==null||triangles.isEmpty())return;
+  if(local==null||triangles.isEmpty()){actors.remove(player);return;}
   if(!actors.containsKey(player)&&actors.size()>=16)return;
   ActorParticles current=actors.computeIfAbsent(player,k->new ActorParticles());
   CapeStyles.Style style=styles.style(actor);
   boolean fixed=true;for(var triangle:triangles){var def=definitions.get(triangle.definitionId);fixed &= def!=null&&def.fixedStyle;}
   String key=fixed?"fixed:"+triangles.get(0).definitionId:style.key();if(!key.equals(current.styleKey)){current.system.clear();current.styleKey=key;current.defs.clear();}
   current.seen=System.nanoTime();
+  current.triangles=List.copyOf(triangles);
+  current.emitters=project(player,current);
+ }
+ private List<ParticleSystem.Emitter> project(Actor player,ActorParticles current) {
+  LocalPoint local=player.getLocalLocation();if(local==null)return Collections.emptyList();
   float height=Perspective.getTileHeight(client,local,client.getPlane());
   double angle=player.getOrientation()*Math.PI/1024,cos=Math.cos(angle),sin=Math.sin(angle);
   List<ParticleSystem.Emitter> result=new ArrayList<>();
-  for(var t:triangles) {
+  for(var t:current.triangles) {
    ParticleSystem.Definition source=definitions.get(t.definitionId);if(source==null)continue;
-   ParticleSystem.Definition d=current.defs.computeIfAbsent(t.definitionId,k->styles.customize(source,style));
+   ParticleSystem.Definition d=current.defs.get(t.definitionId);
+   if(d==null){d=styles.customize(source,styles.style(player));current.defs.put(t.definitionId,d);}
    float[] xyz=t.xyz.clone();for(int i=0;i<9;i+=3) {
     float x=xyz[i],z=xyz[i+2];xyz[i]=(float)(x*cos+z*sin)+local.getX();
     // Negative model Y is up: lift only the animated emitter anchors to the cape hem.
@@ -106,7 +112,7 @@ public final class NeroParticlePlugin extends Plugin {
    }
    result.add(new ParticleSystem.Emitter(t.faceId,xyz,d));
   }
-  current.emitters=result;
+  return result;
  }
  private void draw() throws Exception {
   if(client.getGameState()!=GameState.LOGGED_IN){system.clear();actors.clear();emitters=Collections.emptyList();lastFrame=0;return;}
@@ -127,7 +133,7 @@ public final class NeroParticlePlugin extends Plugin {
   }
   projected.sort((a,b)->Float.compare(b.z,a.z));int drawn=0;
   for(var p:projected)drawn+=frame.softParticle(p.x,p.y,p.radius,surface.depth(p.z),p.colour,vx,vy,vw,vh);
-  if(++frames%100==0)ModelProbe.event("particle-frame","emitters="+emitters.size()+" particles="+system.particles().size()+" blendedPixels="+drawn);
+  if(++frames%100==0)ModelProbe.event("particle-frame","actors="+actors.size()+" particles="+particles.size()+" blendedPixels="+drawn);
   // An actor not rendered in the next scene must not keep emitting from a stale model.
   emitters=Collections.emptyList();
  }
@@ -139,16 +145,32 @@ public final class NeroParticlePlugin extends Plugin {
  }
  private List<ParticleSystem.Particle> stepActors(double units) {
   List<ParticleSystem.Particle> result=new ArrayList<>();long now=System.nanoTime();
-  for(Iterator<ActorParticles> i=actors.values().iterator();i.hasNext();) {
-   ActorParticles a=i.next();if(now-a.seen>5_000_000_000L){i.remove();continue;}
-   a.system.step(a.emitters,units);a.emitters=Collections.emptyList();
+  for(Iterator<Map.Entry<Actor,ActorParticles>> i=actors.entrySet().iterator();i.hasNext();) {
+   var entry=i.next();Actor actor=entry.getKey();ActorParticles a=entry.getValue();
+   if(now-a.seen>1_200_000_000L || !emitting(actor)){i.remove();continue;}
+   // A cached actor model can miss a render callback. Keep a bounded lease,
+   // reprojecting its animated anchors at the actor's current position.
+   a.emitters=project(actor,a);a.system.step(a.emitters,units);
    for(var particle:a.system.particles())if(result.size()<ParticleSystem.LIMIT)result.add(particle);
   }
   return result;
  }
+ private boolean emitting(Actor actor) {
+  if(actor instanceof Player) {
+   PlayerComposition appearance=((Player)actor).getPlayerComposition();
+   if(appearance==null)return false;
+   int cape=appearance.getEquipmentId(net.runelite.api.kit.KitType.CAPE);
+   return CapeItemStats.custom(cape);
+  }
+  return actor instanceof NPC && ((NPC)actor).getId()==63010;
+ }
+ @net.runelite.client.eventbus.Subscribe public void onPlayerDespawned(net.runelite.api.events.PlayerDespawned event){actors.remove(event.getPlayer());}
+ @net.runelite.client.eventbus.Subscribe public void onNpcDespawned(net.runelite.api.events.NpcDespawned event){actors.remove(event.getNpc());}
+ @net.runelite.client.eventbus.Subscribe public void onGameStateChanged(net.runelite.api.events.GameStateChanged event){if(event.getGameState()!=GameState.LOGGED_IN){actors.clear();lastFrame=0;}}
  private static final class ActorParticles {
   final ParticleSystem system=new ParticleSystem(646);long seen;String styleKey;
   List<ParticleSystem.Emitter> emitters=Collections.emptyList();
+  List<AttachmentRegistry.Triangle> triangles=Collections.emptyList();
   final Map<Integer,ParticleSystem.Definition> defs=new HashMap<>();
  }
  private static final class Projected {

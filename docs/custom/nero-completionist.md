@@ -155,6 +155,9 @@ subsequent owner acceptance.
 
 ## v0.11 asset/client update
 
+This section records the superseded v0.11 checkpoint. Current visual corrections
+are described below; the supplied v0.11 rendering was rejected in-game.
+
 The native module remains `nero-completionist`; the supplied second module and
 its unbound startup/feed callbacks are not added. Existing near-player/modal,
 movement/death/logout/stale-input protections, permanent styles, native perks,
@@ -214,3 +217,62 @@ and approximate simulation; real trim textures do not establish original RS2
 particle material 744 or exact engine parity. Full fresh-cache compilation still
 has the previously recorded unrelated CS2 symbol failures. No live installation
 or feature merge is performed by this update.
+
+## v0.12 visual corrections (2026-10-12)
+
+Owner evidence: `ScreenRecording_10-12-2026 13-17-29_1.mov` specifies the moving
+Fire/Infernal panel coverage. `20261012-1508-32.4237241.mp4` demonstrates the
+rejected v0.11 worn models and inventory icons. The owner requested the original
+Completionist inventory shape in every variant, rather than upright worn meshes.
+
+The actual dedicated-client log records `Unexpected Completionist reverse
+topology` after changing capes in HD. That alpha-dependent face recount disabled
+the entire model/particle observer. Exact SHA-bound per-face layers now propagate
+through native decode, merge, shallow/shared-sequence copies and lighting. Layer
+application does not infer topology from animated alpha. Hidden emitter faces
+also use native hidden render mode, retaining the seven attachment coordinates.
+
+The 785 added reverse faces previously used flat shading and shared front
+vertices. Their vertices/normals are now independent, smooth, and displaced by
+up to half an OSRS unit to prevent coincident surfaces. Face ordering, source
+labels, palette bindings and the native Dizana quiver remain. A second reproduced
+native failure after lighting was the use of `er.ba` (face-alpha groups) to
+recover vertex skins. The qualified native vertex groups are `er.bu`; the merge
+now restores those labels with explicit vertex bounds checks.
+
+Fire/Infernal map native animated materials 40/59 to the two broad cloth channels
+seen in the reference, using one continuous planar mapping. Each worn model has
+508 textured front/back faces. Embroidery and raised edges retain their colours.
+The original RS2 inventory meshes are restored: 16 unique regular/trimmed/family
+models serve all 24 cape items, including locked aliases. Native projection is
+zoom 1316, pitch 252, yaw 1020, offsets (-1,24). Hood icons are retained.
+
+Particles retain a bounded 1.2-second model lease, reprojected at the actor's
+current position. Empty/ordinary model samples, cape removal, despawn, logout
+and expiry clear old state. This prevents cached frame gaps from starving an
+emitter, without emitting indefinitely from removed equipment. Diagnostic counts
+now report actual per-actor particles rather than the unused global simulator.
+
+`runtime-v012-visual-final` is the paired opt-in runtime. All 34 accepted client
+library/API/HD fingerprints remain unchanged; 25 runtime and 14 plugin classes
+are built from the reviewed sources. `fix_visual_assets.py` reads an immutable
+asset baseline and `model_codec.py` rejects unsupported encodings. The original
+owner mesh and layer inputs are retained under `tools/nero-completionist-client/assets`.
+
+Executed native checks: all 96 assets; 32 smooth double-sided worn meshes;
+16 folded icons; six native texture assets; exact coordinates and emitter
+merge/copy/light/shared-sequence propagation; the HD animated-alpha regression;
+movement/unequip/ordinary-model/expiry/despawn particle producer-consumer tests;
+20 stable preview frames; 48 stats conversions. The real game `drawFrustum`
+rasterizer renders 14 untextured inventory models offline using inert headless
+client state. It does not start the applet, login, or network. Fire/Infernal
+geometry/material mappings are verified separately; their animated scene
+appearance still requires the owner's software/HD check.
+
+The bounded cache pack again verifies all 454 writes and preserves 538,211
+unrelated config definitions. All 26 native cape and 15 max-cape tests are rerun.
+Test entry: `outputs/nero-completionist-visual-fix-final-20261012/TESTEN.cmd`.
+Existing accepted sources, live JAR/cache/RSA/playerdata, and earlier packages
+are retained. Final rear/side, male/female, walking/emote, texture and HD visual
+acceptance is still open; this update does not claim exact RS2 particle material
+744/simulation parity or a live installation.

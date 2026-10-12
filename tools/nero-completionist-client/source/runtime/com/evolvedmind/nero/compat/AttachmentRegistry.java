@@ -22,10 +22,12 @@ public final class AttachmentRegistry {
     private static final Map<String,Float> scales = new HashMap<>();
     private static final Map<int[],Boolean> precise = new WeakHashMap<>();
     private static final Map<int[],PaletteBinding> palettes = new WeakHashMap<>();
+    private static final Map<String,byte[]> layerTemplates = new HashMap<>();
+    private static final Map<int[],LayerBinding> layerBindings = new WeakHashMap<>();
     private static boolean enabled;
 
     public static synchronized void configure(String path) throws Exception {
-        templates.clear();
+        templates.clear();layerTemplates.clear();layerBindings.clear();
         bindings.clear();
         paletteTemplates.clear();palettes.clear();
         scales.clear();
@@ -36,6 +38,14 @@ public final class AttachmentRegistry {
         try (var input = Files.newInputStream(Path.of(path))) { profile.load(input); }
         if (!"1".equals(profile.getProperty("schemaVersion"))) throw new IllegalArgumentException("Unknown bindings schema");
         for (String key : profile.stringPropertyNames()) {
+            if(key.startsWith("model.") && key.endsWith(".layers")) {
+                String hash=key.substring(6,key.length()-7);
+                byte[] layers=java.util.Base64.getDecoder().decode(profile.getProperty(key));
+                if(!hash.matches("[a-f0-9]{64}")||layers.length==0||layers.length>65535)throw new IllegalArgumentException("Invalid model layers");
+                for(byte layer:layers)if(layer<0||layer>3)throw new IllegalArgumentException("Invalid face layer");
+                layerTemplates.put(hash,layers);continue;
+            }
+
             if(key.startsWith("model.") && key.endsWith(".scale")) {
                 String hash=key.substring(6,key.length()-6);
                 float scale=Float.parseFloat(profile.getProperty(key));
@@ -101,6 +111,8 @@ public final class AttachmentRegistry {
                 }
                 synchronized(AttachmentRegistry.class){precise.put(indices(model,1),true);}
             }
+            byte[] layers=layerTemplates.get(hash.toString());
+            if(layers!=null)registerLayers(model,layers);
             List<Emitter> emitters = templates.get(hash.toString());
             if (emitters != null && !emitters.isEmpty()) register(model,emitters);
             List<PaletteFace> palette=paletteTemplates.get(hash.toString());
@@ -113,37 +125,33 @@ public final class AttachmentRegistry {
      * Only a bound, assembled player model is affected; source/cache models stay intact.
      */
     public static void normalizeAvatarPriorities(Object model) throws Exception {
-        if(model==null || find(model).isEmpty() || faceCount(model)<=792)return;
-        Class<?> type=model.getClass();
+        byte[] layers=layers(model);if(layers==null)return;
+        Class<?> type=model.getClass();int count=faceCount(model);
         byte[] priorities=(byte[])type.getMethod("getFaceRenderPriorities").invoke(model);
-        if(priorities==null)return;
         byte[] alpha=(byte[])type.getMethod("getFaceTransparencies").invoke(model);
-        int count=faceCount(model);
-        if(priorities.length<count || (alpha!=null && alpha.length<count))throw new IllegalArgumentException("Invalid avatar face arrays");
-        for(int i=0;i<count;i++)if(alpha==null || alpha[i]==0)priorities[i]=0;
-        // The source uses priority 5 for details laid over priority 4 cloth.
-        // The zone renderer uses native face bias instead of painter priorities.
-        // Restore only those layers in SHA-bound Completionist topology; retain
-        // all ordinary equipment bias and exclude the hidden emitter triangles.
+        if(priorities!=null)for(int f=0;f<count;f++)if(alpha==null||alpha[f]==0)priorities[f]=0;
         byte[] bias=(byte[])type.getMethod("getFaceBias").invoke(model);
-        if(bias==null)bias=new byte[count];else if(bias.length<count)throw new IllegalArgumentException("Invalid face bias");
-        boolean changed=false;
-        for(Emitter emitter:find(model)) {
-            int start=emitter.faceId-782;if(start<0||start+1577>count||bias[start+782]==126)continue;
-            // Only the first of the seven consecutive emitter faces identifies
-            // the start. The others are already marked by this iteration.
-            if(alpha==null||alpha[start+782]!=(byte)255||alpha[start+788]!=(byte)255)continue;
-            byte[] layers=java.util.Base64.getDecoder().decode("AAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQMDAwMDAwMDAwMDAwMDAwMDAwICAgICAwMDAwMDAwMDAwMDAwMDAwICAgICAgICAgICAgICAAAAAAMDAwMDAwMDAwMDAwMBAQEBAwMDAwMDAwEBAAAAAQEBAQEBAQEBAQEBAQEAAAEBAQEBAQEBAQEBAQEBAAABAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAEBAQEAAQEAAAAAAAABAQEBAQAAAQEBAAABAQAAAAABAQAAAQEBAAABAQEBAQAAAAAAAQEAAAEBAAAAAQEBAQEBAQAAAAAAAAABAQEBAAAAAAAAAAAAAQEAAQAAAgIDAwEAAAEBAAAAAAAAAAABAQEAAAAAAAEBAAAAAgICAgICAgICAgIDAwICAwMCAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAAEBAAACAgMDAwMDAwMDAwMDAwMDAgICAwMDAwICAAEBAAABAQEAAAAAAgIDAwMCAwMDAwMDAwEBAQEBAAEDAwMDAwMDAwMDAwICAwMDAwEBAQEBAQEBAAABAwMCAAABAQECAgIDAwMDAQEBAQEBAQEAAAABAQAAAQEBAQMDAgICAgMDAgIAAAECAQEAAAABAQEAAAAAAgICAwMDAgAAAAAAAAAAAAIDAwMDAwICAgIDAQEBAwMDAwMDAwMDAwICAgICAgICAgMDAwMDAwMDAwAAAgICAgICAwMDAwMDAwMDAgICAwMDAgICAgICAgICAQEDAwMBAQMDAQEBAQAAAAEBAQEAAAMDAwMDAwMDAwMDAwMDAwEDAwMDAwMDAwMDAwEBAQAAAAAAAAAAAQEBAQAAAgIAAAAAAAAAAAAAAAAAAQEBAQAAAQEBAAAAAAAAAAABAQEBAAEBAQEBAQEBAQEBAQEAAAEBAQEBAQEBAAABAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAABAQEBAgICAgACAgEAAAAAAQEAAQEBAQAAAQEAAAAAAQEBAQECAgIAAAACAgAAAgICAAAAAAAAAAAAAAAA");
-            int reverse=start+792;
-            for(int f=0;f<792;f++) {
-                bias[start+f]=layers[f];
-                if(alpha[start+f]!=(byte)255)bias[reverse++]=layers[f];
-            }
-            if(reverse!=start+1577)throw new IllegalArgumentException("Unexpected Completionist reverse topology");
-            bias[start+782]=126;changed=true;
-        }
-        if(changed){java.lang.reflect.Field field=type.getDeclaredField("cl");field.setAccessible(true);field.set(model,bias);}
+        if(bias==null)bias=new byte[count];else bias=bias.clone();
+        for(int f=0;f<count;f++)if(layers[f]>=0)bias[f]=layers[f];
+        java.lang.reflect.Field field=type.getDeclaredField("cl");field.setAccessible(true);field.set(model,bias);
+    }
 
+    private static synchronized byte[] layers(Object model)throws Exception {
+        if(!enabled||model==null)return null;
+        LayerBinding binding=layerBindings.get(indices(model,1));
+        if(binding==null||binding.second.get()!=indices(model,2)||binding.third.get()!=indices(model,3))return null;
+        return binding.layers;
+    }
+
+    private static synchronized void registerLayers(Object model,byte[] layers)throws Exception {
+        if(layers.length!=faceCount(model))throw new IllegalArgumentException("Layer face count mismatch");
+        if(layerBindings.size()>4096)throw new IllegalStateException("Live layer bindings limit exceeded");
+        layerBindings.put(indices(model,1),new LayerBinding(indices(model,2),indices(model,3),layers.clone()));
+    }
+
+    private static final class LayerBinding {
+        final WeakReference<int[]> second,third;final byte[] layers;
+        LayerBinding(int[] second,int[] third,byte[] layers){this.second=new WeakReference<>(second);this.third=new WeakReference<>(third);this.layers=layers;}
     }
 
     public static void merged(Object model,Object parts,int count) {
@@ -151,6 +159,9 @@ public final class AttachmentRegistry {
         try {
             if (count < 0 || count > Array.getLength(parts)) throw new IllegalArgumentException("Invalid merge count");
             preserveMergePrecision(model,parts,count);
+            byte[] mergedLayers=new byte[faceCount(model)];Arrays.fill(mergedLayers,(byte)-1);int layerOffset=0;boolean hasLayers=false;
+            for(int i=0;i<count;i++){Object part=Array.get(parts,i);if(part==null)continue;byte[] source=layers(part);if(source!=null){System.arraycopy(source,0,mergedLayers,layerOffset,source.length);hasLayers=true;}layerOffset+=faceCount(part);}
+            if(hasLayers)registerLayers(model,mergedLayers);
             List<Emitter> result = new ArrayList<>();
             List<PaletteFace> palette=new ArrayList<>();
             int offset = 0;
@@ -174,11 +185,13 @@ public final class AttachmentRegistry {
         try {
             List<Emitter> emitters = find(source);
             List<PaletteFace> palette=palette(source);
-            if (emitters.isEmpty() && palette.isEmpty()) return;
+            byte[] sourceLayers=layers(source);
+            if (emitters.isEmpty() && palette.isEmpty() && sourceLayers==null) return;
             if (faceCount(source) != faceCount(result)) return;
             for (int i = 1; i <= 3; i++) {
                 if (!Arrays.equals(indices(source,i),indices(result,i))) return;
             }
+            if(sourceLayers!=null)registerLayers(result,sourceLayers);
             if(!emitters.isEmpty())register(result,emitters);
             if(!palette.isEmpty())registerPalette(result,palette);
             synchronized(AttachmentRegistry.class){if(precise.containsKey(indices(source,1)))precise.put(indices(result,1),true);}
@@ -208,9 +221,14 @@ public final class AttachmentRegistry {
                 int[] sourceSkins=(int[])skinField.get(part);
                 if(sourceSkins!=null)System.arraycopy(sourceSkins,0,skins,vertexOffset,vertices);
                 else {
-                    java.lang.reflect.Field groupsField=type.getDeclaredField("ba");groupsField.setAccessible(true);int[][] groups=(int[][])groupsField.get(part);
+                    // In the qualified er class, bu is vertex labels; ba is
+                    // face-alpha labels. Lighting consumes the raw skin array.
+                    java.lang.reflect.Field groupsField=type.getDeclaredField("bu");groupsField.setAccessible(true);int[][] groups=(int[][])groupsField.get(part);
                     Arrays.fill(skins,vertexOffset,vertexOffset+vertices,255);
-                    if(groups!=null)for(int g=0;g<groups.length;g++)if(groups[g]!=null)for(int v:groups[g])skins[vertexOffset+v]=g;
+                    if(groups!=null)for(int g=0;g<groups.length;g++)if(groups[g]!=null)for(int v:groups[g]) {
+                        if(v<0||v>=vertices)throw new IllegalArgumentException("Invalid native vertex label");
+                        skins[vertexOffset+v]=g;
+                    }
                 }
                 // Our precision assets use legacy vertex labels, not Animaya weights.
                 for(String name:new String[]{"bg","bj"}){java.lang.reflect.Field field=type.getDeclaredField(name);field.setAccessible(true);if(field.get(part)!=null)throw new IllegalArgumentException("Weighted precision part unsupported");}
@@ -327,7 +345,8 @@ public final class AttachmentRegistry {
         enabled = false;
         bindings.clear();
         palettes.clear();
-        ModelProbe.event("attachments-disabled",error.getClass().getSimpleName());
+        ModelProbe.event("attachments-disabled",error.toString());
+        if(Boolean.getBoolean("nero.compat.diagnostic.stack"))error.printStackTrace();
     }
 
     public static final class Emitter {
