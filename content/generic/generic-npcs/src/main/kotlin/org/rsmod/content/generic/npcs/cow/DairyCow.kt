@@ -45,8 +45,9 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
     }
 
     private fun ProtectedAccess.milkCow() {
-        // UNVERIFIED: a bottomless milk bucket fills before any empty bucket.
-        val bottomless = roomySlots().firstOrNull()
+        // Empty buckets fill first, then a bottomless milk bucket, all from the one click (live
+        // capture, rev 241, 20261012T233700-df49f48).
+        val bottomless = if ("obj.bucket_empty" in inv) null else roomySlots().firstOrNull()
         if (bottomless != null) {
             if (charges.addCharges(inv, bottomless, 1, BOTTOMLESS_USES, BOTTOMLESS_MAX).isFailure()) {
                 return
