@@ -8,10 +8,17 @@ import javax.inject.Inject;
 import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.client.plugins.*;
+import net.runelite.client.ui.overlay.OverlayManager;
 
 @PluginDescriptor(name="Nero Completionist Particles",description="Completionist appearance and particles with native scene depth",enabledByDefault=true)
 public final class NeroParticlePlugin extends Plugin {
  @Inject private Client client;
+ @Inject private OverlayManager overlays;
+ @Inject private net.runelite.client.game.ItemManager itemManager;
+ @Inject private net.runelite.client.ui.overlay.tooltip.TooltipManager tooltips;
+ @Inject private net.runelite.client.config.ConfigManager configManager;
+ private CapeItemStats itemStats;
+ private NativeCapePreview preview;
  private NativeDepthSurface surface;
  private final ParticleSystem system=new ParticleSystem(646);
  private final Map<Integer,ParticleSystem.Definition> definitions=new HashMap<>();
@@ -52,11 +59,16 @@ public final class NeroParticlePlugin extends Plugin {
       ()->{try{draw();}catch(Exception e){throw new IllegalStateException(e);}});
   ParticleRuntime.installHd(renderer->{try{drawHd(renderer);}catch(Exception e){throw new IllegalStateException(e);}});
   ParticleRuntime.installAppearance(styles::apply);
+  preview=new NativeCapePreview(client,styles,definitions);overlays.add(preview);
+  itemStats=new CapeItemStats(client,itemManager,tooltips);overlays.add(itemStats);itemStats.refresh();
+  configManager.setConfiguration("itemstats","alwaysShowBaseStats",true);
   ModelProbe.event("particle-preview-ready","softwareDepth=true sourceMaterial744=false globalEffector6=true timeUnitMs=20 exact646Simulation=false");
  }
  @Override protected void shutDown() {
   ParticleRuntime.clear();system.clear();emitters=Collections.emptyList();
   actors.clear();if(styles!=null)styles.close();
+  if(preview!=null){overlays.remove(preview);preview=null;}
+  if(itemStats!=null){overlays.remove(itemStats);itemStats.close();itemStats=null;}
   if(surface!=null && !client.isGpu() && client.getDrawCallbacks()==null)
       try{surface.selectDepthRasterizer(false);}catch(Exception ignored){}
  }
@@ -70,6 +82,7 @@ public final class NeroParticlePlugin extends Plugin {
   }
   surface.selectDepthRasterizer(true);
  }
+ @net.runelite.client.eventbus.Subscribe public void onGameTick(net.runelite.api.events.GameTick event){if(itemStats!=null)itemStats.refresh();}
  private void sample(Object actor,List<AttachmentRegistry.Triangle> triangles) {
   if(!(actor instanceof Actor))return;
   Actor player=(Actor)actor;LocalPoint local=player.getLocalLocation();

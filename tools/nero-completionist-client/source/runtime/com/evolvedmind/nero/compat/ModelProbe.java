@@ -73,7 +73,9 @@ public final class ModelProbe {
     }
 
     public static void sample(Object model, Object player) {
-        if(enabled && Boolean.getBoolean("nero.compat.isolated"))
+        // The runtime itself requires explicit opt-in. All bound, assembled avatars
+        // need this correction, including clients launched by the integration starter.
+        if(enabled)
             try{AttachmentRegistry.normalizeAvatarPriorities(model);}catch(Exception e){disable("Avatar priority normalization: "+e);}
         if(enabled) ParticleRuntime.sample(model,player);
         if (!enabled || model == null || samples >= 400) return;

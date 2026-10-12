@@ -1,16 +1,13 @@
 package org.rsmod.content.other.nerocurator
 
 import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import java.awt.Color
-import net.rsprot.protocol.game.outgoing.interfaces.IfSetAngle
 import org.rsmod.api.player.dialogue.mesanims
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.ui.ifOpenMainModal
-import org.rsmod.api.player.ui.ifSetObj
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.ui.setColour
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -88,9 +85,9 @@ class CuratorPlugin @Inject constructor(private val npcs: NpcRepository, private
         onIfModalButton(component("hex")) {
             if (canEdit(player)) {
                 val channel = get(player, 35).coerceIn(0, 4)
-                val editor = get(player, 37)
+                val editor = get(player, 38)
                 val input = stringDialog("Enter a colour as #RRGGBB:").trim().removePrefix("#")
-                if (canEdit(player) && get(player, 37) == editor && input.matches(Regex("[0-9a-fA-F]{6}"))) {
+                if (canEdit(player) && get(player, 38) == editor && input.matches(Regex("[0-9a-fA-F]{6}"))) {
                     val rgb = input.toInt(16)
                     set(player, 28 + channel, if (channel == 4) rgb else toHsl(rgb))
                     update(player)
@@ -126,10 +123,11 @@ class CuratorPlugin @Inject constructor(private val npcs: NpcRepository, private
         onIfModalButton(component("preview_mode")) {
             if (canEdit(player)) {
                 set(player, 36, 1 - get(player, 36).coerceIn(0, 1))
-                player.ifSetObj(component("preview"), items[get(player, 36)], 1)
-                previewAngle(player)
                 update(player)
             }
+        }
+        onIfModalButton(component("preview_particles")) {
+            if (canEdit(player)) { set(player, 37, 1 - get(player, 37).coerceIn(0, 1)); update(player) }
         }
         onIfModalButton(component("done")) {
             if (canEdit(player)) {
@@ -141,28 +139,31 @@ class CuratorPlugin @Inject constructor(private val npcs: NpcRepository, private
         }
         onIfModalButton(component("cancel")) { set(player, 34, 0); publish(player); ifClose() }
         onCommand("curator") {
+            completionistTestAccess()
             desc = "Visit The Curator in Edgeville."
             cheat {
                 launcher.launch(player) { teleport(CoordGrid(x = 3087, z = 3493)) }
             }
         }
         onCommand("compcapes") {
-            desc = "Test Completionist capes: regular, trimmed, all, <variant>, recipe <variant>, list."
+            completionistTestAccess()
+            desc = "Test Completionist capes: regular, trimmed, all, hoods, <variant>, recipe <variant>, list."
             cheat {
                 val key = args.getOrNull(0)?.lowercase(java.util.Locale.ROOT) ?: "regular"
-                val requested = if (key == "recipe") args.getOrNull(1) else key
+                val requested = if (key == "recipe") args.getOrNull(1)?.lowercase(java.util.Locale.ROOT) else key
                 val recipe = CompletionistRecipes.all.firstOrNull { it.cape.removePrefix("obj.nero_completionist_") == requested }
                 val regular = listOf("obj.nero_completionist_2011", "obj.nero_completionist_hood")
                 val items = when {
                     key == "regular" -> regular
                     key == "trimmed" -> listOf("obj.nero_completionist_2011_trimmed", "obj.nero_completionist_hood_trimmed")
                     key == "all" -> regular + CompletionistRecipes.all.map { it.cape }
+                    key == "hoods" -> listOf("obj.nero_completionist_hood", "obj.nero_completionist_hood_trimmed") + CompletionistRecipes.all.map { it.hood }
                     key == "recipe" && recipe != null -> regular + recipe.input
                     recipe != null -> listOf(recipe.cape, recipe.hood)
                     else -> emptyList()
                 }
                 if (items.isEmpty()) {
-                    player.mes("Use ::compcapes, ::compcapes all, ::compcapes <variant> or ::compcapes recipe <variant>.")
+                    player.mes("Use ::compcapes, ::compcapes all, ::compcapes hoods, ::compcapes <variant> or ::compcapes recipe <variant>.")
                     for (group in CompletionistRecipes.all.map { it.cape.removePrefix("obj.nero_completionist_") }.chunked(4))player.mes(group.joinToString(", "))
                 } else {
                     val success = CompletionistTestItems.grant(player, player.inv, items)
@@ -207,17 +208,12 @@ class CuratorPlugin @Inject constructor(private val npcs: NpcRepository, private
         initialise(player)
         for (c in 0..5) set(player, 28 + c, get(player, c))
         ifOpenMainModal(INTERFACE)
-        set(player, 34, 1); set(player, 35, 0); set(player, 36, 0); set(player, 37, (get(player, 37) + 1).coerceAtLeast(1))
-        previewAngle(player)
+        set(player, 34, 1); set(player, 35, 0); set(player, 36, 0); set(player, 37, 1); set(player, 38, (get(player, 38) + 1).coerceAtLeast(1))
         update(player)
     }
 
     private fun initialise(player: Player) {
         CuratorStyle.initialise(original, { get(player, it) }, { n, value -> set(player, n, value) })
-    }
-
-    private fun previewAngle(player: Player) {
-        player.client.write(IfSetAngle(component("preview").asRSCM(RSCMType.COMPONENT), 150, 0, 500))
     }
 
     private fun alive(player: Player) = player.hitpoints > 0 && !player.pendingLogout && !player.loggingOut
@@ -231,13 +227,14 @@ class CuratorPlugin @Inject constructor(private val npcs: NpcRepository, private
         val selected = get(player, 35).coerceIn(0, 4)
         player.ifSetText(component("selected"), labels[selected])
         player.ifSetText(component("status"), message)
+        player.ifSetText(component("preview_particles"), "Particles: ${if (get(player, 37) == 1) "On" else "Off"}")
         for (n in 0..2) player.ifSetText(component("preset_label$n"), "Preset ${n + 1}${if (get(player,13 + n * 7) == 1) " *" else ""}")
         publish(player)
     }
 
     private fun publish(player: Player) {
         val base = if (get(player, 34) == 1) 28 else 0
-        appearance.publish(key(player), mapOf("colours" to (0..3).map { get(player, base + it).coerceIn(0, 65535) }, "particleColour" to get(player, base + 4).coerceIn(0, 0xffffff), "size" to get(player, base + 5).coerceIn(25, 300), "editing" to (base == 28)))
+        appearance.publish(key(player), mapOf("colours" to (0..3).map { get(player, base + it).coerceIn(0, 65535) }, "particleColour" to get(player, base + 4).coerceIn(0, 0xffffff), "size" to get(player, base + 5).coerceIn(25, 300), "editing" to (base == 28), "previewHood" to (get(player, 36) == 1), "previewParticles" to (get(player, 37) == 1)))
     }
     private fun key(player: Player) = player.displayName.lowercase(java.util.Locale.ROOT).replace(' ', '_').replace('\u00a0', '_')
     private fun get(player: Player, n: Int) = player.vars["varp.nero_style_$n"]

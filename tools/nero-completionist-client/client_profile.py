@@ -14,6 +14,12 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 ROOT = Path(__file__).resolve().parent
 
+def selected_runtime():
+    name = (ROOT/"runtime-current.txt").read_text().strip()
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", name):
+        raise RuntimeError("Invalid paired runtime directory")
+    return ROOT/name
+
 def sha(path):
     with path.open("rb") as stream:
         return hashlib.file_digest(stream, "sha256").hexdigest()
@@ -45,6 +51,7 @@ def main():
         file = (ROOT/name).resolve()
         if not file.is_relative_to(ROOT): raise RuntimeError("Artifact outside bundle")
         require_hash(file, expected)
+    runtime = selected_runtime()
     for name, expected in meta["clientLibraries"].items():
         require_hash(args.libraries/name, expected)
     version = subprocess.run([str(args.java),"-version"], capture_output=True, text=True, check=True)
@@ -73,7 +80,7 @@ def main():
     helper.mkdir(exist_ok=True)
     compiler = args.java.with_name("javac.exe")
     if not compiler.is_file(): raise RuntimeError("The dedicated copy helper requires the qualified Java 11 JDK")
-    subprocess.run([str(compiler),"--release","11","-cp",str(ROOT/"runtime/nero-compatibility-runtime.jar"),"-d",str(helper),str(ROOT/"NativeClientCopy.java")],check=True)
+    subprocess.run([str(compiler),"--release","11","-cp",str(runtime/"nero-compatibility-runtime.jar"),"-d",str(helper),str(ROOT/"NativeClientCopy.java")],check=True)
     repo = home/".runelite/repository2"
     repo.mkdir(parents=True, exist_ok=True)
     for name in meta["clientLibraries"]: checked_copy(args.libraries/name,repo/name)
@@ -86,7 +93,7 @@ def main():
         if info["input"] != fingerprint: raise RuntimeError("Public key/port changed; stage a fresh profile")
         require_hash(gamepack,info["sha256"])
     else:
-        subprocess.run([str(args.java),"-cp",str(helper)+";"+str(ROOT/"runtime/nero-compatibility-runtime.jar"),"NativeClientCopy",str(repo/injected),str(gamepack),str(key),str(port)],check=True)
+        subprocess.run([str(args.java),"-cp",str(helper)+";"+str(runtime/"nero-compatibility-runtime.jar"),"NativeClientCopy",str(repo/injected),str(gamepack),str(key),str(port)],check=True)
         marker.write_text(json.dumps({"input":fingerprint,"sha256":sha(gamepack)}))
     plugin_dir = home/".rlcustom/sideloaded-plugins"
     checked_copy(ROOT/"client-plugin/Nero-Particle-Preview.jar",plugin_dir/"Nero-Particle-Preview.jar")
@@ -112,8 +119,8 @@ def main():
     temp = profile/"tmp";temp.mkdir(exist_ok=True)
     libs = [repo/("nero-completionist-gamepack.jar" if name==injected else name) for name in meta["classpath"]]
     command = [str(args.java),f"-Duser.home={home}",f"-Djava.io.tmpdir={temp}","-Xmx768m","-Xss2m",
-        f"-javaagent:{ROOT/'runtime/nero-compatibility-runtime.jar'}",f"-Dnero.compat.profile={ROOT/'runtime/runtime-240.properties'}",
-        f"-Dnero.compat.bindings={ROOT/'runtime/bindings.properties'}",f"-Dnero.compat.definitions={ROOT/'runtime/definitions.json'}",
+        f"-javaagent:{runtime/'nero-compatibility-runtime.jar'}",f"-Dnero.compat.profile={runtime/'runtime-240.properties'}",
+        f"-Dnero.compat.bindings={runtime/'bindings.properties'}",f"-Dnero.compat.definitions={runtime/'definitions.json'}",
         f"-Dnero.compat.log={profile/'runtime.jsonl'}","-Dnero.compat.enabled=true",f"-Dnero.compat.appearance.url=http://127.0.0.1:{args.appearance_port}/appearance",
         "-cp",";".join(map(str,libs)),"net.runelite.client.RuneLite","--developer-mode","--disable-telemetry",f"--jav_config=http://127.0.0.1:{args.config_port}/javconfig.ws"]
     environment = dict(os.environ)

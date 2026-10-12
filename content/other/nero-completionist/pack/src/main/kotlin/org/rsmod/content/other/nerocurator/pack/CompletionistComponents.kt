@@ -13,7 +13,7 @@ fun refreshCompletionistComponents(root: Path, cache: Cache) {
     val interfaces = GameValHandler.readGameVal(GameValGroupTypes.IFTYPES, cache, 240)
     val custom = interfaces.mapNotNull { it.elementAs<Interface>() }
         .single { it.name == "nero_cape_customiser" }
-    require(custom.components.size == 82)
+    require(custom.components.size == 84)
     val path = root.resolve(".data/gamevals/component.rscm")
     val previous = if (Files.isRegularFile(path)) Files.readAllLines(path) else emptyList()
     val lines = previous.filterNot { it.startsWith("nero_cape_customiser:") } +

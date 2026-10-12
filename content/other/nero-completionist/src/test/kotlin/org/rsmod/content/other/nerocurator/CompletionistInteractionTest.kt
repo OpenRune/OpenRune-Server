@@ -6,6 +6,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.varp.VarpLifetime
 import dev.openrune.util.Wearpos
+import dev.or2.central.account.Rights
 import net.rsprot.protocol.game.incoming.buttons.If3Button
 import net.rsprot.protocol.game.incoming.resumed.ResumePauseButton
 import net.rsprot.protocol.util.CombinedId
@@ -140,6 +141,59 @@ class CompletionistInteractionTest {
         assertEquals(24, before.count { it != null })
     }
 
+    @Test fun `native admin command grants every matching hood atomically and refuses ordinary players`() {
+        val f = Fixture(); f.player.modLevel = Rights.NONE
+        val origin = f.player.coords
+        assertTrue(f.commands.execute(f.player, "curator", emptyList())); assertEquals(origin, f.player.coords)
+        assertTrue(f.commands.execute(f.player, "compcapes", listOf("hoods"))); assertTrue(f.player.inv.objs.all { it == null })
+        f.player.modLevel = Rights.ADMINISTRATOR
+        assertTrue(f.commands.execute(f.player, "compcapes", listOf("hoods")))
+        val hoods = listOf(HOOD, "obj.nero_completionist_hood_trimmed") + CompletionistRecipes.all.map { it.hood }
+        assertEquals(24, hoods.distinct().size)
+        for (hood in hoods) assertEquals(1, f.player.inv.physicalCount(hood), hood)
+        val before = f.player.inv.objs.copyOf()
+        assertTrue(f.commands.execute(f.player, "compcapes", listOf("hoods"))); assertArrayEquals(before, f.player.inv.objs)
+    }
+
+    @Test fun `all forty eight cape and hood swaps return the previous item with a full inventory`() {
+        val items = listOf(CAPE, HOOD, "obj.nero_completionist_2011_trimmed", "obj.nero_completionist_hood_trimmed") + CompletionistRecipes.all.flatMap { listOf(it.cape, it.hood) }
+        for (symbol in items) {
+            val f = Fixture()
+            val type = ServerCacheManager.getItem(symbol.asRSCM())!!
+            val previous = if (type.wearpos1 == Wearpos.Back.slot) {
+                if (symbol == CAPE) "obj.nero_completionist_2011_trimmed" else CAPE
+            } else {
+                if (symbol == HOOD) "obj.nero_completionist_hood_trimmed" else HOOD
+            }
+            val oldType = ServerCacheManager.getItem(previous.asRSCM())!!
+            f.player.inv[0] = InvObj(previous)
+            f.held(0, HeldOp.entries[oldType.interfaceOptions.indexOf("Wear")])
+            for (slot in 0..27) f.player.inv[slot] = InvObj("obj.shark")
+            f.player.inv[0] = InvObj(symbol)
+            f.held(0, HeldOp.entries[type.interfaceOptions.indexOf("Wear")])
+            assertEquals(symbol.asRSCM(), f.player.worn[type.wearpos1]!!.id, symbol)
+            assertEquals(previous.asRSCM(), f.player.inv[0]!!.id, symbol)
+            f.held(0, HeldOp.entries[oldType.interfaceOptions.indexOf("Wear")])
+            assertEquals(previous.asRSCM(), f.player.worn[type.wearpos1]!!.id, symbol)
+            assertEquals(symbol.asRSCM(), f.player.inv[0]!!.id, symbol)
+            assertEquals(27, f.player.inv.physicalCount("obj.shark"), symbol)
+        }
+    }
+
+    @Test fun `actual preview buttons publish hood and particle settings without changing equipped particles`() {
+        val f = Fixture(); f.npc(InteractionOp.Op3)
+        val session = f.value(38)
+        assertEquals(true, f.feed.snapshot()["cape_tester"]!!["previewParticles"])
+        f.click("preview_mode"); f.click("preview_particles")
+        assertEquals(true, f.feed.snapshot()["cape_tester"]!!["previewHood"])
+        assertEquals(false, f.feed.snapshot()["cape_tester"]!!["previewParticles"])
+        assertEquals(100, f.value(5)); assertEquals(session, f.value(38))
+        f.click("cancel"); f.npc(InteractionOp.Op3)
+        assertEquals(false, f.feed.snapshot()["cape_tester"]!!["previewHood"])
+        assertEquals(true, f.feed.snapshot()["cape_tester"]!!["previewParticles"])
+        assertTrue(f.value(38) > session)
+    }
+
     @Test fun `all cape and hood Wear options use actual held interactions and populate the correct worn slots`() {
         for (symbol in listOf(CAPE, HOOD, "obj.nero_completionist_2011_trimmed", "obj.nero_completionist_hood_trimmed") + CompletionistRecipes.all.flatMap { listOf(it.cape, it.hood) }) {
             val f = Fixture(); f.player.inv[0] = InvObj(symbol)
@@ -205,7 +259,7 @@ class CompletionistInteractionTest {
 
     private class Fixture {
         val bus = EventBus(); val commands = CheatCommandMap(); val feed = CompletionistAppearanceFeed()
-        val player = Player().apply { inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); coords = CoordGrid(3087, 3493); currentMapClock = 100; processedMapClock = 100; displayName = "Cape Tester"; for (stat in listOf("hitpoints", "defence", "attack", "strength", "ranged", "magic", "prayer")) { statMap.setBaseLevel("stat.$stat", 99); statMap.setCurrentLevel("stat.$stat", 99) } }
+        val player = Player().apply { modLevel = Rights.ADMINISTRATOR; inv = Inventory.create("inv.inv"); worn = Inventory.create("inv.worn"); coords = CoordGrid(3087, 3493); currentMapClock = 100; processedMapClock = 100; displayName = "Cape Tester"; for (stat in listOf("hitpoints", "defence", "attack", "strength", "ranged", "magic", "prayer")) { statMap.setBaseLevel("stat.$stat", 99); statMap.setCurrentLevel("stat.$stat", 99) } }
         val npc = Npc("npc.nero_curator", CoordGrid(3088, 3493)).apply { slotId = 2; assignUid() }
         val heldProducer = HeldInteractions::class.java.declaredConstructors.single().apply { isAccessible = true }.let { it.newInstance(bus, mock(it.parameterTypes[1]), mock(it.parameterTypes[2]), HeldEquipOp(bus)) as HeldInteractions }
         val context = ProtectedAccessContextFactory.empty().copy(getEventBus = { bus }, getAlignment = { TextAlignment() }, getHeldInteractions = { heldProducer })

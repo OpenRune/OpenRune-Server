@@ -100,7 +100,7 @@ if ($null -eq (OwnedProcess)) {
     foreach ($port in @($ports.game,$ports.http,$ports.link,$ports.appearance,$ports.config,$ports.bridge)) { if (Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue) { throw "Testpoort $port is al in gebruik." } }
     Remove-Item -LiteralPath (Join-Path $root 'STOP-TEST') -Force -ErrorAction SilentlyContinue
     $classes = Join-Path $root 'test-classes'; New-Item -ItemType Directory -Path $classes -Force | Out-Null
-    & ($java21.Replace('java.exe','javac.exe')) -cp (Join-Path $root 'server.jar') -d $classes (Join-Path $package 'client\TestServerMain.java')
+    & ($java21.Replace('java.exe','javac.exe')) -cp (Join-Path $root 'server.jar') -d $classes (Join-Path $package 'client\TestServerMain.java') (Join-Path $package 'client\IsolatedAccessScript.java')
     if ($LASTEXITCODE -ne 0) { throw 'Teststarter kon niet worden gebouwd.' }
     $taskEnvironment = @{}
     $names = @('OPENRUNE_JDBC_URL','OPENRUNE_DB_USER','OPENRUNE_DB_PASSWORD','OPENRUNE_CENTRAL_HOST','OPENRUNE_CENTRAL_PORT','OPENRUNE_WORLD_KEY','JAVA_TOOL_OPTIONS','_JAVA_OPTIONS','JDK_JAVA_OPTIONS','NERO_COMPLETIONIST_TEST_ROOT','NERO_STUDIO_BRIDGE_PORT','NERO_STUDIO_SESSION_TOKEN','NERO_LOCAL_DEV_OFFLINE_BADWORDS')

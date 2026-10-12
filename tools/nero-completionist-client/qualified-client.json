@@ -68,15 +68,23 @@
     "lwjgl-opengl-3.3.2-natives-windows.jar",
     "runelite-api-1.12.39-runtime-1791676556260-patched.jar"
   ],
-  "packageVersion": "Nero completionist v0.7",
+  "packageVersion": "Nero completionist v0.11",
   "bundleHashes": {
     "client/javconfig-template.ws": "624e1f3e752aa989bc453ea5157097717263291d38770f6af5526e620271d2cc",
-    "client-plugin/Nero-Particle-Preview.jar": "69a0c3ffad693bff7ed537d2539e85be5b17da5d95f8448139ff5298a0388ab1",
-    "runtime/bindings.properties": "cf38bd599d948822cbe2fc35b199f6a442b74e82746216809aa26912611ba224",
-    "runtime/definitions.json": "c946fbb32b03bf04b2610246ea1dfbc83e94412bb53c6d5198bf832840e27a4e",
-    "runtime/nero-compatibility-bridge.jar": "56583cb86f445756246143b726b8887d51e45df34ff6d0f78753020b1fb01414",
-    "runtime/nero-compatibility-runtime.jar": "5bc911842c9117b9070237bb19636c0d98eee7f7a4589288b1c93b554d143db7",
-    "runtime/runtime-240.properties": "4ad388dcb1843eacc3417a693385d4488fb1656361abfc142e820a0ebddb1f1e",
-    "NativeClientCopy.java": "f45cda9972ca99081b44736b8d3a0275f03e800c44d3b756e67aeea48fea1772"
+    "client-plugin/Nero-Particle-Preview.jar": "b2339e6ad531f2d464d854bcb61cd91cb33cfa1e0596c59baf125ababc6eced2",
+    "NativeClientCopy.java": "f45cda9972ca99081b44736b8d3a0275f03e800c44d3b756e67aeea48fea1772",
+    "runtime-current.txt": "b3e04cd5e8af5f1a79fd111a9f185c72a423f0275aa7609053c98f277d8325e4",
+    "runtime-v011-final/ASM-LICENSE.txt": "337e92fd361effe495d03978a34a3cd44681a63b8329adfd99c8996b306b2a8c",
+    "runtime-v011-final/bindings.properties": "5137ab11fba60ec9d20d85526a4a81a21fbb069c23bd725b4352122217ccb8d5",
+    "runtime-v011-final/definitions.json": "c946fbb32b03bf04b2610246ea1dfbc83e94412bb53c6d5198bf832840e27a4e",
+    "runtime-v011-final/nero-compatibility-bridge.jar": "c9721988687748bf522ed1283d32402c3d435b957b8e90309d7b438643db90f0",
+    "runtime-v011-final/nero-compatibility-runtime.jar": "08197728dd11703c02729e50ed56ba56b45f5aea96d91fc06646eacfe3459136",
+    "runtime-v011-final/runtime-240.properties": "4ad388dcb1843eacc3417a693385d4488fb1656361abfc142e820a0ebddb1f1e",
+    "runtime-v011-final/models/3fc55548c22aaeda7d8f918b4d7eb1064d650ccda8701674097e8337de86d335.dat": "3fc55548c22aaeda7d8f918b4d7eb1064d650ccda8701674097e8337de86d335",
+    "runtime-v011-final/models/59dcdd541949a740a44671caf1b17307282b3bb19c4ddf1dba005984a5af18e6.dat": "59dcdd541949a740a44671caf1b17307282b3bb19c4ddf1dba005984a5af18e6",
+    "runtime-v011-final/models/8736569aedb94530b5abf182d8f8fba275f966e1fcc2af551dce8a59d2e9a852.dat": "8736569aedb94530b5abf182d8f8fba275f966e1fcc2af551dce8a59d2e9a852",
+    "runtime-v011-final/models/8ec77c911f0f78babfbf7ef64de490e71518b77a5dcbe4a5e58da813d7ff34cf.dat": "8ec77c911f0f78babfbf7ef64de490e71518b77a5dcbe4a5e58da813d7ff34cf",
+    "runtime-v011-final/models/bc57289d103ec7ca9e5fdf91c3cb008b99553718a5f5cfaf14f046c8961eda3a.dat": "bc57289d103ec7ca9e5fdf91c3cb008b99553718a5f5cfaf14f046c8961eda3a",
+    "runtime-v011-final/models/c2c9837cc3ee072a04ea9d4a365a1a76dc7aa51dcbb712d74f89fe535b7bf97b.dat": "c2c9837cc3ee072a04ea9d4a365a1a76dc7aa51dcbb712d74f89fe535b7bf97b"
   }
 }

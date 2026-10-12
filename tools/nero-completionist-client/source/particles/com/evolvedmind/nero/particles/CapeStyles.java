@@ -38,7 +38,7 @@ final class CapeStyles implements AutoCloseable {
      if(colours.size()!=4)continue;int[] hsl=new int[4];boolean valid=true;
      for(int n=0;n<4;n++){hsl[n]=colours.get(n).getAsInt();valid &= hsl[n]>=0&&hsl[n]<=65535;}
      int rgb=j.get("particleColour").getAsInt(),size=j.get("size").getAsInt();
-     if(valid&&rgb>=0&&rgb<=0xffffff&&size>=25&&size<=300)result.put(entry.getKey(),new Style(hsl,rgb,size,j.get("editing").getAsBoolean()));
+     if(valid&&rgb>=0&&rgb<=0xffffff&&size>=25&&size<=300)result.put(entry.getKey(),new Style(hsl,rgb,size,j.get("editing").getAsBoolean(),j.has("previewHood")&&j.get("previewHood").getAsBoolean(),!j.has("previewParticles")||j.get("previewParticles").getAsBoolean()));
     }
     profiles=Collections.unmodifiableMap(result);
    } finally {c.disconnect();}
@@ -89,8 +89,9 @@ final class CapeStyles implements AutoCloseable {
   d.angles=source.angles;d.globalDirectionRaw=source.globalDirectionRaw;d.globalConstantSpeed=source.globalConstantSpeed;d.validate();return d;
  }
  static final class Style {
-  final int[] hsl;final int particleColour,size;final boolean editing;
-  Style(int[] hsl,int rgb,int size,boolean editing){this.hsl=hsl.clone();this.particleColour=rgb;this.size=size;this.editing=editing;}
+  final int[] hsl;final int particleColour,size;final boolean editing,previewHood,previewParticles;
+  Style(int[] hsl,int rgb,int size,boolean editing){this(hsl,rgb,size,editing,false,true);}
+  Style(int[] hsl,int rgb,int size,boolean editing,boolean hood,boolean particles){this.hsl=hsl.clone();this.particleColour=rgb;this.size=size;this.editing=editing;this.previewHood=hood;this.previewParticles=particles;}
   String key(){return Arrays.toString(hsl)+":"+particleColour+":"+size;}
  }
  private static final class Colours {

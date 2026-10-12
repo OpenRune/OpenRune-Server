@@ -8,37 +8,63 @@ Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
 ## 🟡 Started: Nero completionist cape, customiser and particles
 
-Owner requested the v0.7 handoff integration after the Forestry chunk. Work is
-isolated on `feature/nero-completionist`, based on accepted Home/Revenants
-`44f15a55f`; existing live JAR/cache/RSA/playerdata remain unchanged.
+Updated locally to the owner-supplied **v0.11** assets/client on
+`feature/nero-completionist`. The prior native purchase/fusion, cape perks,
+Dizana ammunition, eight lock/repair families and PostgreSQL persistence remain.
 
-Validated local chunk: Curator purchase/fusion/customiser, 22 recipes, all 48
-Wear options, 24 matching max-variant bonuses (+2, magic raw +20), native worn
-menus, variant teleports/Ava, guild/pouch exceptions, Dizana ammo/combat and all
-eight custom lock/repair families. **23 new native integration tests and 15
-existing max-cape tests pass**, including actual PostgreSQL account save/load
-and native death selection/application/ground loot. The bounded pack preserves
-**538,211 existing config definitions** and signed varp IDs. Style vars move to
-**63300-63341**; supplied item/model/NPC/interface IDs stay. New non-wearable
-repair states use free item IDs **63200-63223**.
+The update adds double-sided precision models, real Dizana quiver meshes,
+matching fixed hoods, `::compcapes hoods`, an upright live customiser preview
+with its own particle toggle, native Item Stats and Fire/Infernal animated
+trim textures (40/59). Cloth remains in the fixed family colours. Existing
+item/model/NPC/interface IDs and style vars **63300–63341** are retained.
 
-The opt-in particles client retains revision/API/HD guards; all 34 pinned local
-libraries and native runtime hook linkage qualify. Packaged JAR boot, actual client startup and installer/rollback rehearsal
-pass; the [local test package](../../outputs/nero-completionist-v07-20261012/LEESMIJ.md)
-is ready. Native visual gameplay and HD acceptance remain open. Full
-cache building has unrelated existing CS2 failures; the bounded pack route is
-qualified. Purchases follow v0.7 (10m cape / 5m hood); the older completion
-eligibility design remains a separate owner decision.
-See [integration evidence](docs/custom/nero-completionist.md).
+**26 cape integration tests and 15 existing max-cape tests pass**. Native
+client checks decode all **96 models**, preserve emitters through merge/copy/
+lighting/shared sequence models, verify six textured assets and four depth
+layers, and check stable preview frames plus 48 item-stat conversions.
+All **38 compiled runtime/plugin classes** match the supplied JARs exactly.
+The bounded pack verifies **454 owned assets** after reopening while preserving
+**538,211 existing config definitions**. Build, isolated server/protocol/feed,
+dedicated client startup and install/rollback on a separate copy pass.
 
-## 🟡 Parked: world shortcuts, containers and fairy rings
+Test entry point: `outputs/nero-completionist-v011-final-20261012/TESTEN.cmd`.
+New test sessions receive administrator rights only through the separate
+marked test helper; that helper is outside the installable server JAR.
+Native visual/HD acceptance remains pending. Original RS2 particle material/
+simulation parity and a full fresh-cache build remain open as previously
+recorded. Completion eligibility stays a separate owner decision.
+Cape code is local; it is not pushed, merged or installed. Accepted live
+JAR/cache/RSA/playerdata and the parked world-content checkpoint are preserved.
 
-Parked at the owner's request after Forestry checkpoint `84b002717` on
-`feature/shortcuts-containers-fairy-rings`. Forestry harvest/consumable and leaf
-storage work has **22 native integration tests**, with container/pouch/InvTx
-regressions passing. Existing accepted source/JAR were preserved. Remaining
-Forestry events/cape/nest effects and the wider route/container/fairy-ring
-acceptance stay on that branch; this cape branch does not claim their rollout.
+## 🟡 Started: world shortcuts, containers and fairy rings
+
+Resumed on **2026-10-12** at the owner's request, retaining Forestry checkpoint
+`84b002717` on `feature/shortcuts-containers-fairy-rings`. Scope remains all
+revision-240 shortcuts, all 39 Wiki container categories, fairy rings and
+surface Spider Cave access. Existing upstream review and accepted combat remain.
+
+Implemented locally: **525 shortcut links**, all **64 fairy-ring code rows**
+with **54 fixed destinations**, Spider Cave access, rune/looting pouches,
+generic/specialist containers, seed box, chugging barrel, all **112 potion
+storage families**, quiver/bolt pouch controls, native bank/death interactions,
+crafting and Forestry kit/basket harvest consumers.
+
+Latest local continuation `0bb3fbfa0` connects ordinary Woodcutting nest drops,
+the equipped cape-pouch perk, rabbit-foot selection and atomic native Search.
+Seed rewards also enter an owned open seed box safely. The complete candidate
+run passes **309 tests**: 233 Containers (including **31 Forestry inputs**),
+65 Pouches and 11 InvTx. Exact-file formatting and generated inventory checks
+pass; all 14 accepted source hashes and the accepted live JAR remain unchanged.
+The tests use the preserved candidate cache; the old checkout cache lacks
+earlier packed definitions and is not the runtime candidate.
+
+Previous route checks include 26 shortcut, 18 fairy-ring and 29 Araxxor tests.
+Next: remaining specialist/potion consumers, Twitcher's and clue-nest effects,
+then final route/animation, native interface/death acceptance and a guarded
+world-content runtime package. Forestry events, Barbarian Assault and
+Construction ownership dependencies remain open. Cape/world integration must
+reconcile shared quiver UI/perks before combined rollout. This world-content
+branch is committed locally; it is not merged or installed.
 
 ## 🟢 Complete: Edgeville home teleporter and Emblem trader
 
@@ -434,7 +460,7 @@ Scope: XS = tiny, S = small, M = medium, L = large, XL = very large, XXL = multi
 | 🔴 | Combat Tasks | XXL |
 | 🔴 | Leagues | XXL |
 | 🔴 | Sailing Skill | XXL |
-| 🟡 | Completionist Cape + Particles | TBD |
+| 🔴 | Completionist eligibility | TBD |
 | 🔴 | Hooded Slayer Helmets + Variants | TBD |
 
 ### Parked

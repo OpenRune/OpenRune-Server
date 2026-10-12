@@ -27,7 +27,16 @@ public final class CompletionistPackTool {
                 cache = Cache.Companion.load(root.resolve(".data/cache/"+pass.toUpperCase()));
                 var after = snapshot(cache,serverPass);
                 for (var entry : before.entrySet()) if (!entry.getValue().equals(after.get(entry.getKey()))) throw new IllegalStateException("Existing cache definition changed: " + pass + "/" + entry.getKey());
-                report.put(pass,Map.of("unchangedNativeDefinitions",before.size(),"varpSentinelPreserved",!before.containsKey("2/67/-1") || after.containsKey("2/67/-1")));
+                var owned = com.google.gson.JsonParser.parseString(Files.readString(root.resolve(".data/nero-completionist-source-owned.json"))).getAsJsonObject();
+                int verified = 0;
+                for (var entry : owned.entrySet()) {
+                    String[] key = entry.getKey().split("/");
+                    if (!key[0].equals(pass)) continue;
+                    byte[] bytes = cache.data(Integer.parseInt(key[1]), Integer.parseInt(key[2]), Integer.parseInt(key[3]), null);
+                    if (bytes == null || !HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes)).equals(entry.getValue().getAsString())) throw new IllegalStateException("Written asset differs after reopening: " + entry.getKey());
+                    verified++;
+                }
+                report.put(pass,Map.of("unchangedNativeDefinitions",before.size(),"verifiedOwnedAssets",verified,"varpSentinelPreserved",!before.containsKey("2/67/-1") || after.containsKey("2/67/-1")));
             } finally { cache.close(); }
         }
         report.put("passed",true);report.put("revision",240);report.put("varpStart",63300);

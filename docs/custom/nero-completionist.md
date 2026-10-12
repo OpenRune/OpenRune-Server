@@ -1,8 +1,8 @@
 # Nero Completionist integration
 
-The owner requested the v0.7 completionist-cape handoff integration after parking
-world shortcuts/containers/fairy rings. The preserved Forestry checkpoint is
-`84b002717` on `feature/shortcuts-containers-fairy-rings`. This checkout starts at
+The owner requested the v0.7 integration, then supplied the v0.11 update.
+World shortcuts/containers/fairy rings are preserved separately at Forestry
+checkpoint `0bb3fbfa0` on `feature/shortcuts-containers-fairy-rings`. This checkout starts at
 accepted Revenant/Home commit `44f15a55f` and retains the fourteen accepted local
 source changes separately. No parked container or shortcut rollout is implied.
 
@@ -13,6 +13,11 @@ The original handoff ZIP SHA256 is
 All seven outer-manifest hashes match. Documents describe the prototype and its
 limits; the owner's direct request controls implementation. Sources/assets are
 retained from the handoff; this is not a universal revision compatibility claim.
+The v0.11 ZIP SHA256 is
+`3906c37ac4f8c878bda87506a7a092cd27e7aa6f33a6cfce810e951050e5510f`.
+All 468 supplied source fingerprints match. Only the reviewed feature assets
+and client sources/artifacts were imported; the complete source archive was
+not applied over the fork.
 
 The handoff targets the older `workspace/OpenRune-Server` JAR (`fc1b3698...`).
 The accepted launcher release uses `release/workspace/OpenRune-Server`, whose
@@ -56,7 +61,7 @@ handles the revision-240 signed varp sentinel explicitly; a Displee rewrite
 otherwise moves existing varp file IDs by 32768. The failed candidate was
 replaced with an untouched accepted cache copy before qualification.
 
-**23 Curator/cape integration tests + 15 existing max-cape tests pass**. The
+**26 Curator/cape integration tests + 15 existing max-cape tests pass**. The
 actual NPC, held-item, pause-dialog and IF3 input paths cover purchases, all 22
 recipes in both directions/full inventory, all 48 Wear options, editor
 save/cancel/close/presets/migration, 24 worn-bonus calculations and Dizana
@@ -147,3 +152,65 @@ Original render proof is reference evidence; startup does not prove appearance.
 The older full-completion eligibility proposal is not part of v0.7 purchase
 behavior and awaits an owner decision. Actual live installation/merge awaits
 subsequent owner acceptance.
+
+## v0.11 asset/client update
+
+The native module remains `nero-completionist`; the supplied second module and
+its unbound startup/feed callbacks are not added. Existing near-player/modal,
+movement/death/logout/stale-input protections, permanent styles, native perks,
+Dizana ammo and all repair/death routes remain the tested implementation.
+
+The pack now owns 406 raw assets plus 48 derived repair representations.
+Each of the 454 resulting assets is SHA-verified after cache reopening, with
+538,211 unrelated config definitions preserved. The 42 style IDs remain
+63300-63341, rather than adopting the archive's 63227 range. All item/model/
+NPC/interface IDs remain unchanged; component metadata grows from 82 to 84.
+New regular preview mode/particle controls are temporary, and the stale-editor
+session counter moves from temporary style 37 to otherwise-unused style 38.
+No permanent style or preset migration is needed for this UI change.
+
+V0.11 provides double-sided, quarter-unit cape/hood geometry, gradient family
+palettes and real male/female Dizana quiver meshes. Fire/Infernal use native
+OSRS textures 40/59 on 60 original trim faces and their 60 reverse faces.
+Cloth is not texture-replaced. Native depth bias separates four cloth/detail
+layers; hidden hem emitters and ordinary-equipment bias are preserved.
+
+`runtime-current.txt` selects `runtime-v011-final`; the test client follows it
+and validates all runtime model-replacement files as well as JARs. All 34 local
+client-library fingerprints are unchanged. Compilation with Java 21/release 11
+produces 24 runtime and 14 plugin classes byte-identical to the supplied JARs.
+The supplied ASM licence and API/revision/HD fingerprint guards are preserved.
+`verify_client.py` exercises the actual qualified revision-240 decoder offline,
+exact scaled coordinates for 96 assets, native emitter merge/copy/light/shared
+sequence propagation, six trim-textured assets, four depth layers, twenty
+stable upright preview frames and 48 native ItemStats conversions.
+
+Only regular cape/hood follow freely edited colours. Each fixed/locked variant
+keeps its matching hood and family palette. `::compcapes hoods` grants all 24
+hoods atomically; it requires 24 empty slots and never clears inventory.
+The two test commands use the native administrator guard. Actual held actions
+round-trip all 48 capes/hoods through a full inventory without losing the old
+item. The server extensions now use the native zero absence sentinel, preserving
+normal native transforms instead of registering item -1 as a real output.
+
+The separate test helper grants session-only administrator rights on native
+PrepareLogin/Login events after checking its exact marked test root. It is
+compiled outside the server JAR, is not installed live, and rejects unmarked
+roots. Purchases and all normal-player runtime rules remain unchanged.
+
+Qualified package: `outputs/nero-completionist-v011-final-20261012/TESTEN.cmd`.
+Its 32 payload files preserve nine exact accepted private Studio JAR entries.
+A separate server/database boots; rev240 JS5 handshake, appearance schema/feed,
+client startup/particle readiness and installer Check/Install/Rollback on an
+owned server copy are validated. Fourteen accepted source hashes and the live
+JAR remain unchanged. All test processes are stopped after validation. Shutdown repeats the already
+tracked database connection-close warning; no clean shutdown-warning-free result
+is claimed. No user/player save was exercised by this boot-only test.
+
+The delivered report's in-game screenshots are external evidence, not a new
+local visual acceptance test. Final male/female idle/walk/emote/camera and HD
+checks remain for the owner. Particles still use the provided soft-disc sprite
+and approximate simulation; real trim textures do not establish original RS2
+particle material 744 or exact engine parity. Full fresh-cache compilation still
+has the previously recorded unrelated CS2 symbol failures. No live installation
+or feature merge is performed by this update.

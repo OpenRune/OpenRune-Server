@@ -663,13 +663,12 @@
       "size": "XXL"
     },
     {
-      "title": "Completionist Cape + Particles",
-      "status": "started",
+      "title": "Completionist eligibility",
+      "status": "not_added",
       "category": "other",
       "size": "TBD",
-      "summary": "Nero v0.7 cape/hood variants, native Curator/customiser and opt-in revision-240 particles; local integration in progress.",
+      "summary": "Future skill/XP, achievement and Collection Log requirements; separate from the active Nero cape/customiser/particles implementation.",
       "details": [
-        "Current v0.7 integration and qualification: docs/custom/nero-completionist.md. Older full-completion eligibility remains a separate owner decision; it is not silently waived.",
         "Requirements, appearance, client constraints and acceptance scope: docs/custom/completion-rewards.md#completionist-cape.",
         "Working target: level 99 and 200m XP per required skill, all required achievements and all required Collection Log entries; every condition must pass.",
         "Depends on the real achievement framework, legitimately obtainable required content and confirmed revision-240 client/cache particle support. Estimate after those checks.",
