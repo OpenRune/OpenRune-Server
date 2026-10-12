@@ -110,10 +110,16 @@ class MouldJigScript @Inject constructor() : PluginScript() {
             mes("The preform is still molten! You need to cool it down.")
             return
         }
+        val water = hot && !hasIceGloves()
         anim(LIFT_SEQ)
         delay(1)
         if (!equipPreform()) {
             return
+        }
+        if (water) {
+            // sigmazx's Sleeping Giants video (youtube.com/watch?v=WnGuNtTJW0M).
+            invReplace(inv, BUCKET_WATER, 1, BUCKET_EMPTY)
+            mes("You throw the water over the preform.")
         }
         if (player.makingQuestSword()) {
             player.advanceTutorial(SleepingGiants.TUTORIAL_PREFORM_TAKEN)
@@ -124,10 +130,12 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         player.mouldTip = 0
     }
 
-    private fun ProtectedAccess.canHandleHotMetal(): Boolean {
+    private fun ProtectedAccess.canHandleHotMetal(): Boolean =
+        inv.contains(BUCKET_WATER) || hasIceGloves()
+
+    private fun ProtectedAccess.hasIceGloves(): Boolean {
         val hands = player.worn[Wearpos.Hands.slot]
-        return inv.contains("obj.bucket_water") ||
-            hands?.isType("obj.ice_gloves") == true ||
+        return hands?.isType("obj.ice_gloves") == true ||
             hands?.isType("obj.smithing_uniform_gloves_ice") == true
     }
 
@@ -146,5 +154,7 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         const val JIG_FILLED = "loc.giants_foundry_jig_mould_filled"
         const val JIG_COOLED = "loc.giants_foundry_jig_mould_cooled"
         const val LIFT_SEQ = "seq.human_preform_lift"
+        const val BUCKET_WATER = "obj.bucket_water"
+        const val BUCKET_EMPTY = "obj.bucket_empty"
     }
 }

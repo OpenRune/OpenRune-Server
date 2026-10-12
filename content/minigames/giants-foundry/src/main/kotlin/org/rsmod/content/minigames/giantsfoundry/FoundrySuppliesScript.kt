@@ -25,8 +25,8 @@ class FoundrySuppliesScript @Inject constructor() : PluginScript() {
         }
         anim(TAKE_SEQ)
         invAdd(inv, BUCKET_EMPTY, 1)
-        // UNVERIFIED: the wiki gives no message for taking a bucket.
-        mes("You take a bucket from the pile.", ChatType.Spam)
+        // Slayermusiq1's Sleeping Giants video (youtube.com/watch?v=io6mQxi1ddI, 3:50).
+        mes("You take an empty bucket.")
     }
 
     /** Same as other water sources (`WaterSourceScript`); the waterfall isn't one in the cache. */

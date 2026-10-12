@@ -70,7 +70,9 @@ constructor(
 
     private fun ProtectedAccess.canWork(): Boolean {
         if (!player.holdsPreform()) {
-            mes("You need to be holding a preform to do that.")
+            // sigmazx's Sleeping Giants video (youtube.com/watch?v=WnGuNtTJW0M), using a tool.
+            // UNVERIFIED: that the lava pool and waterfall say the same.
+            mes("You need a giant sword preform equipped to use this tool.")
             return false
         }
         if (player.preformQuality == 0) {
