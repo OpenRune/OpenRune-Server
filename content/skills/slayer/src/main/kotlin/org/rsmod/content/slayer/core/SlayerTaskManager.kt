@@ -27,14 +27,14 @@ import org.rsmod.game.entity.Player
 
 object SlayerTaskManager {
 
-    val tasks: Map<SlayerMastersRow, List<SlayerMasterTaskRow>> = run {
+    val tasks: Map<SlayerMastersRow, List<SlayerMasterTaskRow>> by lazy {
         val tasksByMaster = SlayerMasterTaskRow.all().groupBy(SlayerMasterTaskRow::masterId)
         SlayerMastersRow.all().associateWith { tasksByMaster[it.masterId].orEmpty() }
     }
 
-    val slayerTargets = SlayerTaskRow.all()
+    val slayerTargets by lazy { SlayerTaskRow.all() }
 
-    val slayerMasterNpcs = tasks.keys.flatMap { it.npcIds }
+    val slayerMasterNpcs by lazy { tasks.keys.flatMap { it.npcIds } }
 
     fun getCurrentSlayerTask(access: ProtectedAccess): SlayerTaskRow? {
         val targetId = access.vars["varp.slayer_target"]

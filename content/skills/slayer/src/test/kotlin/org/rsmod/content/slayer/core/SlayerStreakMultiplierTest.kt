@@ -1,12 +1,10 @@
 package org.rsmod.content.slayer.core
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 
-@Disabled("SlayerTaskManager init reads the cache (SlayerMasterTaskRow.all), so not unit-testable")
 class SlayerStreakMultiplierTest {
     @ParameterizedTest(name = "streak {0} multiplies points by {1}")
     @CsvSource(
