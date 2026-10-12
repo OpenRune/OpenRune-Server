@@ -344,3 +344,60 @@ actual idle/walk/emote, all family swaps, moving materials and HD still require
 owner visual acceptance. Earlier packages, 14 accepted checkout source hashes,
 the accepted live server JAR and live cache/RSA/playerdata remain preserved.
 No live install, cape-code push or merge is performed by this fix.
+
+## v0.14 complete-avatar occlusion correction (2026-10-12)
+
+Owner evidence: `20261012-1846-41.4909015.mp4`, with chat annotations that the
+quiver is barely visible and that the cape clips over the player. The owner
+describes the current result as nearly perfect. The log continues rendering
+particles, including HD submissions, without observer errors.
+
+The v0.13 standalone cape check missed a complete-avatar interaction. A
+read-only export of actual native male/female bodykits is merged using the
+qualified gamepack's ModelData constructor. Its real `drawFrustum` reproduces
+the lining drawn over the torso and the partially hidden quiver. Native quiver
+item 28955 resolves to models 50822/51022. The custom quiver's 344 faces already
+have the correct native scale/coordinates, so it is not enlarged or shifted.
+
+`model.<sha>.opaqueDepth=true` is emitted only for the 32 worn custom cape
+models. A weak, topology-bound flag propagates through native merge, copy,
+lighting and shared sequence paths. Before drawing a flagged model, opaque
+faces on that rendered avatar copy share depth group 0. The qualified
+`fx.cb` priority field is verified by the real client's API/bytecode; an array
+clone is installed only when changes are needed. Shared cached/native equipment
+priority arrays are never mutated. Already-normalized copies allocate nothing.
+Transparent/hidden priorities, source alpha and existing native body bias stay
+unchanged. No layer bindings or synthetic bias are emitted, and no generated
+reverse faces return. Unbound ordinary avatars, inventory models and native
+max capes retain their original ordering.
+
+The new `NativeAvatarCheck` exercises 28 actual body + cape merges across both
+genders. It checks the front torso against an ordinary native body control,
+preserves source arrays across shared sequence copies, and proves ordinary
+avatars remain unchanged. Dizana's legitimate native shoulder strap is excluded
+from the cape-only torso comparison. A separately decoded model with only its
+344 quiver faces hidden supplies the rear visibility control: 2,175 male and
+1,610 female pixels expose the native quiver after the correction. The 96-model,
+1,536 worn-render, 14 inventory-render, source-alpha, emitter, producer-consumer
+particle lifecycle and stats checks also pass.
+
+`verification/cache/NativeAvatarReference.java` is a bounded read-only fixture
+exporter; export paths inside the source cache are rejected. It handles native
+kit model-ID opcodes 5 and 70..79, without changing the older server kit codec.
+Compile against the existing server JAR with Java 21, export to a separate
+fixture directory, then run `verify_client.py --avatar-fixtures <directory>`
+alongside its existing Java/assets/output arguments. Ordinary native model
+files are not bundled as new custom content or committed as fixtures.
+
+Selected bundle: `runtime-v014-avatar-final`, 26 runtime and 14 plugin classes.
+All 34 client/API/HD dependency fingerprints remain unchanged. This is a client
+fix: the cape mesh/cache assets, gameplay source and server JAR are unchanged
+from v0.13. Its 26 cape + 15 max-cape tests and 454-write cache preservation
+proof remain prior evidence, not newly rerun gameplay claims. The new isolated
+server accepts rev240 JS5 and appearance schema 1 with zero player sessions;
+Check/Install/Rollback passes on an owned copy.
+
+Test entry: `outputs/nero-completionist-avatar-fix-v014-20261012/TESTEN.cmd`.
+Earlier packages and the live installation are retained. Real idle/walk/emote,
+software/HD and all style swaps still require owner confirmation. No live
+installation or cape-code push/merge is performed.
