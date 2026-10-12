@@ -5,6 +5,7 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.content.areas.city.varlamore.npcs.isWounded
 import org.rsmod.content.areas.city.varlamore.npcs.ralosHeal
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -213,8 +214,18 @@ class CivitasTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Warden_(Civitas_illa_Fortis)
-    // TODO(content): [quest:the_final_dawn] the after-quest lines about the newest guest
     private suspend fun Dialogue.warden() {
+        if (QuestRequirements.hasCompleted(player, FINAL_DAWN)) {
+            chatNpc(
+                neutral,
+                "Adventurer. If you're here to speak with our newest guest, I wouldn't waste " +
+                    "your time.",
+            )
+            chatPlayer(quiz, "Why not?")
+            chatNpc(neutral, "Because she hasn't said a word since she arrived.")
+            chatPlayer(neutral, "Ah, I see. Fair enough.")
+            return
+        }
         chatNpc(neutral, "Yes? Do you have business with one of the prisoners?")
         chatPlayer(quiz, "I don't think so. What are they in for?")
         chatNpc(neutral, "Does it matter? They are criminals.")
@@ -227,10 +238,18 @@ class CivitasTownsfolk : PluginScript() {
         chatPlayer(neutral, "Fair enough.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Helvia (before The Final Dawn)
-    // TODO(content): [quest:the_final_dawn] the after-quest line about speaking with the Queen
+    // https://oldschool.runescape.wiki/w/Transcript:Helvia
     private suspend fun Dialogue.helvia() {
         chatPlayer(happy, "Hello!")
+        if (QuestRequirements.hasCompleted(player, FINAL_DAWN)) {
+            chatNpc(
+                neutral,
+                "If you wish to speak with the Queen, please be quick. She is very busy and does " +
+                    "not need you taking up too much of her time.",
+            )
+            chatPlayer(neutral, "Okay...")
+            return
+        }
         chatNpc(neutral, "You do not have an appointment.")
         chatPlayer(confused, "Sorry, what?")
         chatNpc(neutral, "You do not have an appointment.")
@@ -251,15 +270,23 @@ class CivitasTownsfolk : PluginScript() {
         chatNpc(neutral, "Now, if there's nothing else, please move along.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Atza (before At First Light)
-    // TODO(content): [quest:at_first_light] the after-quest lines about Fox's material
+    // https://oldschool.runescape.wiki/w/Transcript:Atza
     private suspend fun Dialogue.atza() {
+        if (QuestRequirements.hasCompleted(player, AT_FIRST_LIGHT)) {
+            chatNpc(happy, "Hello again. Was Fox happy with the material?")
+            chatPlayer(happy, "He was. You found the perfect match.")
+            chatNpc(happy, "Wonderful!")
+            return
+        }
         chatNpc(happy, "Hey there. How's it going?")
         chatPlayer(happy, "Good thanks.")
         chatNpc(happy, "Glad to hear it.")
     }
 
     private companion object {
+        const val FINAL_DAWN = "quest_finaldawn"
+        const val AT_FIRST_LIGHT = "quest_atfirstlight"
+
         val ACADEMICS =
             listOf(
                 "npc.fortis_academic_01",
