@@ -30,6 +30,7 @@ import org.rsmod.plugin.scripts.ScriptContext
  *
  * OpenRune always treats the world as members, so F2P shop refusals are skipped.
  */
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class DusuriScript
 @Inject
 constructor(
