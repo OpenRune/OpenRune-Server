@@ -1,5 +1,6 @@
 package org.rsmod.content.minigames.giantsfoundry
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
@@ -62,22 +63,50 @@ constructor(private val random: GameRandom, private val worldRepo: WorldReposito
         val metal =
             if (usable.size == 1) usable.single()
             else usable[choiceIndex(usable.map { METALS[it].replaceFirstChar(Char::uppercase) })]
-        // UNVERIFIED: the metal choice and amount prompts; the wiki only says the X amount is
-        // remembered.
+        // UNVERIFIED: the prompts. The live game opens a make-X box, "What metal would you like
+        // to add?", with all six bars and 1/5/X/All (Sleeping Giants videos, below); OpenRune's
+        // `SkillingMenu` can't set that title or show bars the player lacks yet.
         // TODO: destroying excess metal on overfill (with its warning) instead of only taking
         // what fits.
         val requested = countDialog("How many bars' worth?")
         val added = addMetal(metal, minOf(requested, space))
-        if (added <= 0) {
+        if (added.isEmpty()) {
             return
         }
-        player.setFoundryVar(metalVarbit(METALS[metal]), counts[metal] + added)
-        val total = counts.sum() + added
+        val worth = added.sumOf { it.worth }
+        player.setFoundryVar(metalVarbit(METALS[metal]), counts[metal] + worth)
+        val total = counts.sum() + worth
         player.crucibleState = if (total >= FoundryFormulas.CRUCIBLE_CAPACITY) 2 else 1
         if (player.crucibleState == 2 && player.makingQuestSword()) {
             player.advanceTutorial(SleepingGiants.TUTORIAL_CRUCIBLE_FULL)
         }
-        mes("You add $added bars' worth of ${METALS[metal]} to the crucible.")
+        for (part in added) {
+            mesbox(part.message(METALS[metal].replaceFirstChar(Char::uppercase)))
+        }
+        if (total < FoundryFormulas.CRUCIBLE_CAPACITY) {
+            mes(
+                "You need to add ${FoundryFormulas.CRUCIBLE_CAPACITY - total} more metal bars worth " +
+                    "of material to pour the crucible into the mould jig."
+            )
+        }
+    }
+
+    /**
+     * One kind of metal added: bars, or smithed items with their worth. The texts are from
+     * Sleeping Giants videos (Slayermusiq1, youtube.com/watch?v=io6mQxi1ddI 4:10-4:33; sigmazx,
+     * youtube.com/watch?v=WnGuNtTJW0M), shown as message boxes, e.g. "You add 8 Bronze bars to
+     * the crucible." and "You add 2 Bronze battleaxes to the crucible, worth 4 Bronze bars.".
+     */
+    private class Added(val name: String, val count: Int, val worth: Int, val isBar: Boolean) {
+        fun message(metal: String): String {
+            val bars = if (worth == 1) "bar" else "bars"
+            return if (isBar) {
+                "You add $count $metal $bars to the crucible."
+            } else {
+                val items = if (count == 1 || name.endsWith("s")) name else "${name}s"
+                "You add $count $items to the crucible, worth $worth $metal $bars."
+            }
+        }
     }
 
     /** Bars' worth of [metal] in the inventory: bars plus melt-down value of smithed items. */
@@ -92,13 +121,15 @@ constructor(private val random: GameRandom, private val worldRepo: WorldReposito
     }
 
     /** Takes up to [limit] bars' worth of [metal], bars first, then the biggest items that fit. */
-    private fun ProtectedAccess.addMetal(metal: Int, limit: Int): Int {
+    private fun ProtectedAccess.addMetal(metal: Int, limit: Int): List<Added> {
+        val parts = mutableListOf<Added>()
         var added = 0
         val bar = FoundryData.bars[metal].output.internalName
         val bars = minOf(inv.count(bar), limit)
         if (bars > 0) {
             invDel(inv, bar, bars)
             added += bars
+            parts += Added(FoundryData.bars[metal].output.name, bars, bars, isBar = true)
         }
         val items =
             inv.filterNotNull()
@@ -107,12 +138,18 @@ constructor(private val random: GameRandom, private val worldRepo: WorldReposito
                 .sortedByDescending { it.second }
         for ((id, worth) in items) {
             val name = RSCM.getReverseMapping(RSCMType.OBJ, id)
+            var count = 0
             while (added + worth <= limit && inv.count(name) > 0) {
                 invDel(inv, name, 1)
                 added += worth
+                count++
+            }
+            if (count > 0) {
+                val display = ServerCacheManager.getItem(id)?.name ?: name
+                parts += Added(display, count, count * worth, isBar = false)
             }
         }
-        return added
+        return parts
     }
 
     private suspend fun ProtectedAccess.choiceIndex(names: List<String>): Int {
