@@ -17,5 +17,9 @@ public data class NpcDeathKillContext(
  * on the kill rather than on a specific ground drop.
  */
 public fun interface NpcDeathKillHook {
+    /** Hooks with a higher priority run first, so their chat messages come first. */
+    public val priority: Int
+        get() = 0
+
     public fun onKill(context: NpcDeathKillContext)
 }
