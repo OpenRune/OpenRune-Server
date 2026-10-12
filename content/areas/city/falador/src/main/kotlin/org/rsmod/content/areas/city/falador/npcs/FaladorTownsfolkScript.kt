@@ -12,6 +12,7 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /** Talk-to dialogue for Falador's non-shop NPCs, taken from the wiki's standard transcripts. */
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjRepository) :
     PluginScript() {
     override fun ScriptContext.startup() {
@@ -32,6 +33,10 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Sir_Tiffy_Cashien
+    // TODO(content): [quest:recruitment_drive] after-quest greeting, Initiate armoury and respawns
+    // TODO(content): [quest:wanted] after-quest greeting and jobs
+    // TODO(content): [quest:the_slug_menace] Proselyte armoury and lost CommOrb
     private suspend fun Dialogue.sirTiffy() {
         val greeting =
             if (player.appearance.bodyType == Constants.bodytype_a) "What ho, sir." else "What ho, milady."
@@ -45,6 +50,8 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         chatPlayer(confused, "Erm... goodbye.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Party_Pete
+    // TODO(content): [system:treasure_trails] medium clue step
     private suspend fun Dialogue.partyPete(npc: Npc) {
         chatNpc(happy, "Hi! I'm Party Pete. Welcome to the Party Room!")
         when (
@@ -130,6 +137,9 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Sir_Vyvin (unranked)
+    // TODO(content): [quest:wanted] White Knight rank replies and the White Knight Armoury
+    // TODO(content): [system:treasure_trails] hard and master clue steps
     private suspend fun Dialogue.sirVyvin() {
         chatPlayer(happy, "Hello.")
         chatNpc(neutral, "Greetings traveller.")
@@ -177,6 +187,8 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Sir_Rebral
+    // TODO(content): [diary:falador] "Can I have another shield?" and claiming the rewards
     private suspend fun Dialogue.sirRebral() {
         chatNpc(happy, "Hello!")
         while (true) {
@@ -203,7 +215,6 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
                 2 -> {
                     chatPlayer(quiz, "I have a question about my Achievement diary.")
                     if (!diaryQuestions()) {
-                        rebralGoodbye()
                         return
                     }
                 }
@@ -215,7 +226,7 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         }
     }
 
-    /** @return `false` if the player chose to say goodbye. */
+    /** @return `false` if the conversation ended. */
     private suspend fun Dialogue.diaryQuestions(): Boolean {
         when (
             choice4(
@@ -233,7 +244,10 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
                 chatPlayer(quiz, "What is the Achievement Diary?")
                 explainDiary()
             }
-            2 -> diaryRewards()
+            2 -> {
+                diaryRewards()
+                return false
+            }
             3 -> {
                 chatPlayer(quiz, "How do I claim the rewards?")
                 chatNpc(
@@ -242,7 +256,10 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
                         "speak to me for your rewards.",
                 )
             }
-            else -> return false
+            else -> {
+                rebralGoodbye()
+                return false
+            }
         }
         return true
     }
@@ -255,6 +272,8 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
                 "enough exploration, the inhabitants will",
         )
         chatNpc(happy, "reward you.")
+        // TODO(content): [diary:falador] open the Achievement Diary interface
+        chatNpc(happy, "You can see the list of tasks on the side-panel.")
     }
 
     private suspend fun Dialogue.diaryRewards() {
@@ -321,6 +340,9 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         chatNpc(happy, "See you later.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Wyson_the_gardener
+    // TODO(content): [boss:giant_mole] trading mole parts for bird nests
+    // TODO(content): [system:treasure_trails] elite clue step
     private suspend fun Dialogue.wyson() {
         chatNpc(
             neutral,
@@ -434,6 +456,7 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         chatPlayer(neutral, "Right, I'll bear it in mind.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Town_Crier
     private suspend fun Dialogue.townCrier() {
         chatNpc(happy, "Hello citizen!")
         if (choice2("What do you do around here?", true, "See you later.", false)) {
@@ -450,6 +473,8 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         chatNpc(happy, "Until next time.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Ambassador_Spanfipple
+    // TODO(content): [system:gnome_restaurant] food deliveries
     private suspend fun Dialogue.spanfipple() {
         chatNpc(neutral, "It's all very bright round here, isn't it?")
         chatPlayer(neutral, "Well, it is the White Knights' Castle.")
@@ -466,6 +491,8 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         chatNpc(angry, "Bah, humans have no sense of style...")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Norman
+    // TODO(content): [system:mahogany_homes] contract dialogue
     private suspend fun Dialogue.norman() {
         chatPlayer(happy, "Hello.")
         chatNpc(worried, "Quickly, tell me - is it still there?")
@@ -517,6 +544,8 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         chatPlayer(bored, "Sheesh...")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Drunken_man
+    // TODO(content): [system:party_room] valuable drop chest and lever pulled dialogue
     private suspend fun Dialogue.drunkenMan() {
         chatPlayer(happy, "Hello.")
         chatNpc(drunk, "... whassup?")
@@ -528,10 +557,19 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         chatNpc(drunk, "... giant hairy cabbages...")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Cecilia (members)
+    // TODO(content): [system:treasure_trails] music clue step
     private suspend fun Dialogue.cecilia() {
+        chatNpc(quiz, "Have you come to play music to me?")
+        if (choice2("Yes, I have.", true, "No, I'm not interested in that.", false)) {
+            chatPlayer(happy, "Yes, I have.")
+            chatNpc(happy, "Select the song I asked you to play, and speak to me again.")
+            return
+        }
+        chatPlayer(neutral, "No, I'm not interested in that.")
         chatNpc(
             happy,
-            "Greetings! Have you come to gaze in rapture at the natural beauty of Falador's parkland?",
+            "Then you must have come to gaze in rapture at the natural beauty of Falador's parkland!",
         )
         chatPlayer(neutral, "Um, yes, very nice. Lots of... trees and stuff.")
         chatNpc(laugh, "Trees! I do so love trees! And flowers! And squirrels!")
@@ -540,6 +578,7 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         chatPlayer(bored, "...")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Workman
     private suspend fun Dialogue.workman() {
         chatPlayer(happy, "Hiya.")
         chatNpc(angry, "What do you want? I've got work to do!")
@@ -550,6 +589,7 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Apprentice_workman
     private suspend fun Dialogue.apprenticeWorkman() {
         chatPlayer(happy, "Hiya.")
         chatNpc(
@@ -569,6 +609,9 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         chatPlayer(neutral, "Ok, bye.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Tau
+    // https://oldschool.runescape.wiki/w/Transcript:Larry_(Mahogany_Homes)
+    // TODO(content): [system:mahogany_homes] contract dialogue
     private suspend fun Dialogue.mahoganyHomesClient() {
         chatNpc(neutral, "Please excuse me, I'm rather busy.")
     }

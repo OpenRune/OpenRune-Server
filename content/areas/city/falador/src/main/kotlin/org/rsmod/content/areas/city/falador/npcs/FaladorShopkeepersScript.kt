@@ -26,6 +26,7 @@ private enum class FaladorShop(
     Garden("Garden Centre", "inv.poh_garden_centre", 100.0, 40.0, 3.0),
 }
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class FaladorShopkeepersScript @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
         onCounterTalk("npc.cassie") { startDialogue(it) { cassie() } }
@@ -49,6 +50,8 @@ class FaladorShopkeepersScript @Inject constructor(private val shops: Shops) : P
         onCounterTrade("npc.poh_garden_supplier") { player.openShop(FaladorShop.Garden) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Cassie
+    // TODO(content): [system:treasure_trails] easy clue step
     private suspend fun Dialogue.cassie() {
         chatNpc(happy, "I buy and sell shields, do you want to trade?")
         if (choice2("Yes please.", true, "No thank you.", false)) {
@@ -58,6 +61,7 @@ class FaladorShopkeepersScript @Inject constructor(private val shops: Shops) : P
         chatPlayer(neutral, "No thank you.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Flynn
     private suspend fun Dialogue.flynn() {
         chatNpc(happy, "Hello. Do you want to buy or sell any maces?")
         if (choice2("No thanks.", false, "Well, I'll have a look, at least.", true)) {
@@ -67,6 +71,8 @@ class FaladorShopkeepersScript @Inject constructor(private val shops: Shops) : P
         chatPlayer(neutral, "No thanks.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Wayne
+    // TODO(content): [system:treasure_trails] easy clue step
     private suspend fun Dialogue.wayne() {
         chatNpc(happy, "Welcome to Wayne's Chains. Do you wanna buy or sell some chain mail?")
         if (choice2("Yes please.", true, "No thanks.", false)) {
@@ -76,6 +82,8 @@ class FaladorShopkeepersScript @Inject constructor(private val shops: Shops) : P
         chatPlayer(neutral, "No thanks.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Herquin
+    // TODO(content): [system:treasure_trails] easy clue step
     private suspend fun Dialogue.herquin() {
         val trade =
             choice2(
@@ -94,6 +102,7 @@ class FaladorShopkeepersScript @Inject constructor(private val shops: Shops) : P
         chatNpc(angry, "Huh! Charming!")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Shop_keeper_(Falador)
     private suspend fun Dialogue.generalStore() {
         chatNpc(happy, "Can I help you at all?")
         if (choice2("Yes please. What are you selling?", true, "No thanks.", false)) {
@@ -103,6 +112,7 @@ class FaladorShopkeepersScript @Inject constructor(private val shops: Shops) : P
         chatPlayer(neutral, "No thanks.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Garden_supplier
     private suspend fun Dialogue.gardenSupplier(
         greeting: String = "Do you want to buy some garden plants?"
     ) {

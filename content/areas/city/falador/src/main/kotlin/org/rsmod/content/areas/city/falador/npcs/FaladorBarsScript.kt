@@ -13,6 +13,7 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /** The Rising Sun Inn barmaids and the Party Room's bar staff. */
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class FaladorBarsScript @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         for ((npc, name) in RISING_SUN_BARMAIDS) {
@@ -23,6 +24,11 @@ class FaladorBarsScript @Inject constructor(private val objRepo: ObjRepository) 
         onCounterTalk("npc.partyroom_barmaid2") { startDialogue(it) { lucy() } }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Emily
+    // https://oldschool.runescape.wiki/w/Transcript:Kaylee
+    // https://oldschool.runescape.wiki/w/Transcript:Tina
+    // TODO(content): [system:party_room] "What's this about the party room?"
+    // TODO(content): [system:treasure_trails] Kaylee's medium challenge scroll
     private suspend fun Dialogue.risingSunBarmaid(name: String) {
         chatNpc(happy, "Heya! What can I get you?")
         val glasses = player.inv.count(BEER_GLASS)
@@ -83,6 +89,7 @@ class FaladorBarsScript @Inject constructor(private val objRepo: ObjRepository) 
         chatPlayer(happy, "Thanks, $name.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Megan
     private suspend fun Dialogue.megan(npc: Npc) {
         chatNpc(happy, "Hi! I'm Megan. Welcome to the Party Room!")
         when (
@@ -118,6 +125,8 @@ class FaladorBarsScript @Inject constructor(private val objRepo: ObjRepository) 
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Lucy
+    // TODO(content): [system:treasure_trails] easy clue step
     private suspend fun Dialogue.lucy() {
         chatNpc(happy, "Hi! I'm Lucy. Welcome to the Party Room!")
         chatPlayer(happy, "One beer please Lucy!")

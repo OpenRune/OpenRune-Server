@@ -46,6 +46,7 @@ private enum class MakeoverType(
     ),
 }
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class HairdresserScript : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(HAIRDRESSER) { startDialogue(it.npc) { hairdresser() } }
@@ -59,6 +60,8 @@ class HairdresserScript : PluginScript() {
         onIfClose("interface.makeover") { player.revertUnappliedStyle() }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Hairdresser
+    // TODO(content): [system:treasure_trails] beginner and easy clue steps
     private suspend fun Dialogue.hairdresser() {
         chatNpc(
             happy,
