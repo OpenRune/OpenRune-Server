@@ -663,11 +663,11 @@
       "size": "XXL"
     },
     {
-      "title": "Completionist Cape + Particles",
+      "title": "Completionist eligibility",
       "status": "not_added",
       "category": "other",
       "size": "TBD",
-      "summary": "Custom cape for full skill/XP, achievement and Collection Log completion, with an original particle effect.",
+      "summary": "Future skill/XP, achievement and Collection Log requirements; separate from the active Nero cape/customiser/particles implementation.",
       "details": [
         "Requirements, appearance, client constraints and acceptance scope: docs/custom/completion-rewards.md#completionist-cape.",
         "Working target: level 99 and 200m XP per required skill, all required achievements and all required Collection Log entries; every condition must pass.",
