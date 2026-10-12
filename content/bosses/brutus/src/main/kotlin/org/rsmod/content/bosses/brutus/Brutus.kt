@@ -516,16 +516,19 @@ constructor(
         }
 
         /**
-         * The tiles under Brutus next to the slammed ones, which the slam also hits
-         * (https://oldschool.runescape.wiki/w/Brutus/Strategies). UNVERIFIED: exactly which tiles.
+         * The tiles under Brutus that a slam also hits: those on its side of his centre tile, but
+         * never the centre. A side slam hits the edge row under him and both ends of the middle
+         * row; a corner slam the three tiles round that corner. Live capture, rev 241,
+         * 20261012T222638-df49f48@1194-3242: all 34 slams, 17 with the player under him.
          */
         fun beneathTiles(sw: CoordGrid, cx: Int, cz: Int): List<CoordGrid> {
             val max = BRUTUS_SIZE - 1
+            val mid = max / 2
             val inX = if (cx < 0) 0 else max
             val inZ = if (cz < 0) 0 else max
             return when {
-                cx == 0 -> (0..max).map { sw.translate(it, inZ) }
-                cz == 0 -> (0..max).map { sw.translate(inX, it) }
+                cx == 0 -> (0..max).map { sw.translate(it, inZ) } + listOf(sw.translate(0, mid), sw.translate(max, mid))
+                cz == 0 -> (0..max).map { sw.translate(inX, it) } + listOf(sw.translate(mid, 0), sw.translate(mid, max))
                 else -> listOf(sw.translate(inX, inZ), sw.translate(inX - cx, inZ), sw.translate(inX, inZ - cz))
             }
         }
