@@ -1,0 +1,36 @@
+[gamevals.varp]
+giants_foundry_commission_start = 64400
+giants_foundry_best_quality = 64401
+giants_foundry_best_time = 64402
+giants_foundry_swords_made = 64403
+giants_foundry_sweetspots = 64404
+
+[gamevals.timer]
+giants_foundry_preform_cooling = 4440
+giants_foundry_work = 4441
+
+[gamevals.enum]
+giants_foundry_commission_words = 4372
+giants_foundry_moulds_forte = 4373
+giants_foundry_moulds_blade = 4374
+giants_foundry_moulds_tip = 4375
+giants_foundry_reward_shop_items = 4379
+
+[gamevals.param]
+giants_foundry_mould_name = 1621
+giants_foundry_mould_level = 1622
+giants_foundry_mould_broad_narrow = 1625
+giants_foundry_mould_heavy_light = 1626
+giants_foundry_mould_spiked_flat = 1627
+giants_foundry_shop_obj = 1636
+giants_foundry_shop_mould = 1637
+giants_foundry_shop_cost = 1638
+
+[gamevals.queue]
+giants_foundry_quest_prompt = 64400
+
+[gamevals.synth]
+sg_grindstone_repair = 5606
+
+[gamevals.droptrigger]
+sleeping_giants_room = 64400
