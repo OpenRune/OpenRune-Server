@@ -179,7 +179,6 @@ constructor(private val random: GameRandom, private val worldRepo: WorldReposito
         rollSeeds(metalScore)
         player.sweetSpots = 0
         player.mouldState = 2
-        softTimer(JIG_COOLING_TIMER, JIG_COOLING_TICKS)
         mes("You pour the molten metal into the mould jig.")
     }
 
@@ -220,11 +219,9 @@ constructor(private val random: GameRandom, private val worldRepo: WorldReposito
         const val POUR_DELAY = 3
         const val MAX_QUALITY = 255
 
-        // UNVERIFIED: starting heat isn't published; the release notes say to cool the preform
-        // before the trip hammer, so it starts at the top of the gauge.
-        const val START_TEMPERATURE = 1000
-
-        // UNVERIFIED: ticks until a poured preform has cooled in the jig (a guess).
-        const val JIG_COOLING_TICKS = 10
+        // UNVERIFIED: not published. The preform starts cold: the Sleeping Giants walkthrough
+        // heats it "to maximum" at the lava pool right after pick-up, and Quest Helper waits for
+        // a dunk to 720+ (varbit 13948) before the trip hammer.
+        const val START_TEMPERATURE = 0
     }
 }

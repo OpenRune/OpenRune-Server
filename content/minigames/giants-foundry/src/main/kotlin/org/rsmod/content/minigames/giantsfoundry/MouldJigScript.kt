@@ -7,7 +7,6 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.IfModalButton
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpLoc1
-import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.game.inv.isType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -22,18 +21,11 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         onOpLoc1(JIG_EMPTY) { setup() }
         onOpLoc1(JIG_MOULD) { checkMoulds() }
         onOpLoc1(JIG_FILLED) { pickUp(hot = true) }
-        onOpLoc1(JIG_COOLING) { pickUp(hot = true) }
         onOpLoc1(JIG_COOLED) { pickUp(hot = false) }
         onIfModalButton(SIDE_MENU) { selectTab(it) }
         onIfModalButton(CONTENT) { selectMould(it) }
         onIfModalButton(SET_BUTTON) { setMoulds() }
         onIfModalButton(RESET_BUTTON) { resetMoulds() }
-        onPlayerSoftTimer(JIG_COOLING_TIMER) {
-            if (player.mouldState == 2) {
-                player.mouldState = 3
-            }
-            player.clearSoftTimer(JIG_COOLING_TIMER)
-        }
     }
 
     private fun ProtectedAccess.setup() {
@@ -106,12 +98,13 @@ class MouldJigScript @Inject constructor() : PluginScript() {
     }
 
     /**
-     * Freshly poured metal needs a bucket of water, ice gloves or smiths gloves (i) to pick up.
-     * https://oldschool.runescape.wiki/w/Giants%27_Foundry#Pouring_the_metal
+     * Poured metal stays molten in the jig (the jig's varbit has no cooling state) until it's
+     * picked up with a bucket of water, ice gloves or smiths gloves (i).
+     * https://oldschool.runescape.wiki/w/Transcript:Sleeping_Giants
      */
     private suspend fun ProtectedAccess.pickUp(hot: Boolean) {
         if (hot && !canHandleHotMetal()) {
-            mes("The preform is too hot to pick up. You need a bucket of water or ice gloves.")
+            mes("The preform is still molten! You need to cool it down.")
             return
         }
         anim(LIFT_SEQ)
@@ -123,7 +116,6 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         player.mouldForte = 0
         player.mouldBlade = 0
         player.mouldTip = 0
-        player.clearSoftTimer(JIG_COOLING_TIMER)
     }
 
     private fun ProtectedAccess.canHandleHotMetal(): Boolean {
@@ -146,7 +138,6 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         const val JIG_EMPTY = "loc.giants_foundry_jig_empty"
         const val JIG_MOULD = "loc.giants_foundry_jig_mould"
         const val JIG_FILLED = "loc.giants_foundry_jig_mould_filled"
-        const val JIG_COOLING = "loc.giants_foundry_jig_mould_cooling"
         const val JIG_COOLED = "loc.giants_foundry_jig_mould_cooled"
         const val LIFT_SEQ = "seq.human_preform_lift"
     }
