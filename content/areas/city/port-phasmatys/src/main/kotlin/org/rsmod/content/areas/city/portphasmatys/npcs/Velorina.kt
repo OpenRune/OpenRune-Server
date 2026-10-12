@@ -1,15 +1,19 @@
 package org.rsmod.content.areas.city.portphasmatys.npcs
 
+import jakarta.inject.Inject
+import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Ghosts_Ahoy (starting off)
 // https://oldschool.runescape.wiki/w/Transcript:Velorina
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:ghosts_ahoy] quest stages and the after-quest Ectophial
-class Velorina : PluginScript() {
+// TODO(content): [quest:ghosts_ahoy] quest stages
+class Velorina @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.ahoy_velorina") { startDialogue(it.npc) { velorina() } }
     }
@@ -17,6 +21,9 @@ class Velorina : PluginScript() {
     private suspend fun Dialogue.velorina() {
         if (!player.understandsGhosts()) {
             return wail()
+        }
+        if (QuestRequirements.hasCompleted(player, GHOSTS_AHOY)) {
+            return afterQuest()
         }
         chatNpc(
             sad,
@@ -59,5 +66,52 @@ class Velorina : PluginScript() {
         }
         chatNpc(quiz, "Would you help us obtain our release into the next world?")
         // TODO(content): [quest:ghosts_ahoy] "Start the Ghosts Ahoy quest?" Yes/No choice
+    }
+
+    private suspend fun Dialogue.afterQuest() {
+        val option =
+            choice2(
+                "I thought you were going to pass over to the next world.",
+                1,
+                "Can I have another Ectophial?",
+                2,
+            )
+        if (option == 1) {
+            chatPlayer(quiz, "I thought you were going to pass over to the next world.")
+            chatNpc(
+                happy,
+                "All in good time, ${player.displayName}. We stand forever in your debt, and " +
+                    "will certainly put in a good word for you when we pass over.",
+            )
+            return
+        }
+        chatPlayer(quiz, "Can I have another Ectophial?")
+        // TODO(content): [verify:in_game] whether an Ectophial in the bank counts as having one
+        if (ECTOPHIAL in player.inv || ECTOPHIAL_EMPTY in player.inv) {
+            chatNpc(quiz, "Really? You've already got an Ectophial.")
+            val again =
+                choice2(
+                    "I know, but can I have another one anyway?",
+                    1,
+                    "Have I? Okay, forget it.",
+                    2,
+                )
+            if (again == 2) {
+                chatPlayer(confused, "Have I? Okay, forget it.")
+                return
+            }
+            chatPlayer(neutral, "I know, but can I have another one anyway?")
+        }
+        chatNpc(
+            happy,
+            "Of course you can, you have helped us more than we could ever have hoped.",
+        )
+        player.invAddOrDrop(objRepo, ECTOPHIAL)
+    }
+
+    private companion object {
+        const val GHOSTS_AHOY = "quest_ghostsahoy"
+        const val ECTOPHIAL = "obj.ectophial"
+        const val ECTOPHIAL_EMPTY = "obj.ectophial_empty"
     }
 }
