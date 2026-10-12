@@ -1,8 +1,11 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 dependencies {
+    testImplementation(projects.api.invPlugin)
+    testImplementation(projects.api.invStorage)
     implementation(projects.api.areaChecker)
     implementation(projects.api.bosses)
     implementation(projects.api.bossHpBarPlugin)
