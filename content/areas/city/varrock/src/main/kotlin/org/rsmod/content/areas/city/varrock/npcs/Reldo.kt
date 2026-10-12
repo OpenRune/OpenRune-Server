@@ -21,6 +21,7 @@ class Reldo @Inject constructor(private val knightsSword: KnightsSwordQuest) : P
     // TODO(content): [quest:dragon_slayer_ii] Tristan Corvo and the census records
     // TODO(content): [system:wise_old_man_tasks] delivering the Wise Old Man's message
     // TODO(content): [system:treasure_trails] beginner hot and cold clue
+    // First-meeting mesanims: live capture, rev 241, 20261012T145648-df49f48@5773-5778.
     private suspend fun Dialogue.reldo() {
         val soaStarted =
             !QuestRequirements.hasNotCompleted(player, SHIELD_OF_ARRAV) ||
@@ -29,18 +30,18 @@ class Reldo @Inject constructor(private val knightsSword: KnightsSwordQuest) : P
             vars[RELDO_MET] = 1
             chatNpc(neutral, "Hello, stranger.")
             chatPlayer(
-                happy,
+                quiz,
                 "Hello there! The name's ${player.displayName}. Who are you?",
             )
-            chatNpc(happy, "My name is Reldo. I'm the palace librarian.")
-            chatPlayer(happy, "Ah, that explains why you're in the library then.")
+            chatNpc(neutral, "My name is Reldo. I'm the palace librarian.")
+            chatPlayer(neutral, "Ah, that explains why you're in the library then.")
             chatNpc(
-                happy,
+                neutral,
                 "Well, truth be told, I would probably be here even if it wasn't where I " +
                     "worked. I very much like reading, not to mention sharing what I learn with " +
                     "all who are interested.",
             )
-            chatPlayer(happy, "Sounds like a very noble goal!")
+            chatPlayer(neutral, "Sounds like a very noble goal!")
         } else {
             chatNpc(happy, "Hello there, ${player.displayName}.")
         }
