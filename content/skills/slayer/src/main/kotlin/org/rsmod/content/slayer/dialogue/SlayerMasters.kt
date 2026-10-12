@@ -5,6 +5,11 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.content.slayer.dialogue.StandardSlayerDialogue.openMain
 import org.rsmod.content.slayer.slayerDuradelNotesReceived
 
+// https://oldschool.runescape.wiki/w/Transcript:Kuradal
+// https://oldschool.runescape.wiki/w/Transcript:Steve
+// https://oldschool.runescape.wiki/w/Transcript:Aya
+// https://oldschool.runescape.wiki/w/Transcript:Achtryn
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 object SlayerMasters {
 
     private const val PORCINE_OF_INTEREST_COMPLETE = true
@@ -40,6 +45,8 @@ object SlayerMasters {
         val mortimer = "npc.slayer_master_mortimer_vis".asRSCM()
     }
 
+    // TODO(content): [quest:animal_magnetism] Turael's and Aya's "I'm here about blessed axes again."
+    // TODO(content): [quest:while_guthix_sleeps] Mazchna's "About Lucien..." option.
     fun extraMenuOptions(dialogue: Dialogue, npcId: Int): List<Pair<String, SlayerMenuOption>> {
         return buildList {
             when (npcId) {
@@ -241,6 +248,8 @@ object SlayerMasters {
             chatPlayer(neutral, "Those sound interesting. May I see them?")
             chatNpc(neutral, "Of course. If we expect to defeat Lucien, we must work together.")
             access.player.slayerDuradelNotesReceived = true
+            // TODO(content): [quest:while_guthix_sleeps] Hand over Duradel's notes; the misplaced
+            // branch below should key on owning the notes, not on free inventory space.
             mesbox("Kuradal hands you an old notebook.")
             return
         }

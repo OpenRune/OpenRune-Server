@@ -9,6 +9,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class WizardsTowerNpcs : PluginScript() {
     private var Player.rickOpenedShop by intVarBit("varbit.rick_has_opened_shop")
 
@@ -21,13 +22,15 @@ class WizardsTowerNpcs : PluginScript() {
         onOpNpc1("npc.aluft_gnome_mage") { startDialogue(it.npc) { onglewip() } }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Wizard_Traiborn
+    // TODO(content): [quest:demon_slayer] "Talk about Demon Slayer." option and Silverlight key
+    // TODO(content): [system:treasure_trails] medium clue challenge scroll dialogue
     private suspend fun Dialogue.traiborn() {
         chatNpc(confused, "Ello young thingummywut.")
         val topic =
             menu(
                 "What's a thingummywut?" to 0,
                 "Teach me to be a mighty and powerful wizard." to 1,
-                "I'd better go." to 2,
             )
         when (topic) {
             0 -> {
@@ -75,7 +78,7 @@ class WizardsTowerNpcs : PluginScript() {
                     )
                 }
             }
-            1 -> {
+            else -> {
                 chatPlayer(quiz, "Teach me to be a mighty and powerful wizard.")
                 chatNpc(
                     neutral,
@@ -94,13 +97,10 @@ class WizardsTowerNpcs : PluginScript() {
                     chatNpc(happy, "Cheerio then. It was nice chatting to you.")
                 }
             }
-            else -> {
-                chatPlayer(confused, "I'd better go.")
-                chatNpc(happy, "Cheerio then.")
-            }
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Wizard_Jalarast
     private suspend fun Dialogue.jalarast() {
         chatNpc(happy, "Hello there, can I help you?")
         val topic =
@@ -208,17 +208,30 @@ class WizardsTowerNpcs : PluginScript() {
         chatNpc(happy, "There you go, enjoy your new armour!")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Rick_(Wizards%27_Tower)
+    // TODO(content): [event:halloween_2020] greeting and options after the 2020 Halloween event
+    // TODO(content): [verify:in_game] the transcript lists six first options; which show before
+    // and after Rick opens his shop
     private suspend fun Dialogue.rick() {
         chatPlayer(neutral, "Hey there.")
         chatNpc(neutral, "Hello.")
         var topic =
-            menu(
-                "Who are you?" to RickTopic.Who,
-                "Can I buy a Escape crystal?" to RickTopic.Buy,
-                "Which places can the Escape crystal teleport me out of?" to RickTopic.Where,
-                "What are you doing here?" to RickTopic.Doing,
-                "Goodbye." to RickTopic.Bye,
-            )
+            if (player.rickOpenedShop == 1) {
+                menu(
+                    "Who are you?" to RickTopic.Who,
+                    "Can I buy an Escape crystal?" to RickTopic.Buy,
+                    "Which places can the Escape crystal teleport me out of?" to RickTopic.Where,
+                    "What are you doing here?" to RickTopic.Doing,
+                    "Goodbye." to RickTopic.Bye,
+                )
+            } else {
+                menu(
+                    "Who are you?" to RickTopic.Who,
+                    "What are you doing here?" to RickTopic.Doing,
+                    "Do you have anything to sell?" to RickTopic.Sell,
+                    "Goodbye." to RickTopic.Bye,
+                )
+            }
         while (true) {
             topic =
                 when (topic) {
@@ -406,6 +419,8 @@ class WizardsTowerNpcs : PluginScript() {
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Professor_Onglewip
+    // TODO(content): [system:gnome_restaurant] delivery dialogue
     private suspend fun Dialogue.onglewip() {
         chatPlayer(quiz, "Do you live here too?")
         chatNpc(

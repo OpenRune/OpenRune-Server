@@ -25,16 +25,34 @@ internal class MisthalinManor(
     fun register(ctx: ScriptContext): Unit =
         with(ctx) {
             onOpLoc1("loc.mistmyst_stairs_up") {
-                mes("The staircase looks too rickety to climb.")
+                mes("Those stairs don't look so safe...")
             }
             onOpLoc1("loc.mistmyst_empty_bucket") {
-                takeTool("obj.bucket_empty", PickupFloor, "You take the bucket.")
+                takeTool(
+                    "obj.bucket_empty",
+                    PickupFloor,
+                    "You take the bucket.",
+                    "a bucket",
+                    "the bucket",
+                )
             }
             onOpLoc1("loc.mistmyst_table_knife") {
-                takeTool("obj.knife", PickupTable, "You take the knife from the table.")
+                takeTool(
+                    "obj.knife",
+                    PickupTable,
+                    "You take the knife from the table.",
+                    "a knife",
+                    "the knife",
+                )
             }
             onOpLoc1("loc.mistmyst_shelves_tinderbox") {
-                takeTool("obj.tinderbox", PickupTable, "You take a tinderbox from the shelves.")
+                takeTool(
+                    "obj.tinderbox",
+                    PickupTable,
+                    "You take a tinderbox from the shelves.",
+                    "a tinderbox",
+                    "a tinderbox",
+                )
             }
 
             onOpLoc1("loc.mistmyst_barrel") { searchBarrel() }
@@ -55,9 +73,12 @@ internal class MisthalinManor(
                     revealedAt = MisthalinStage.PaintingSlashed,
                     key = "obj.mistmyst_ruby_key",
                     text = "You find a key hidden inside the slashed painting.",
+                    keyName = "ruby key",
                 )
             }
 
+            // TODO(content): [verify:in_game] Unbound: a wrong key on a coloured door ("The key
+            //  doesn't fit.") and a knife on the other paintings ("Nope, nothing here...").
             onOpLoc1("loc.mistmyst_door_ruby") { rubyDoor(it.loc) }
             for ((index, candle) in CandleLocs.withIndex()) {
                 onOpLocU(candle, "obj.tinderbox") { lightCandle(index) }
@@ -75,6 +96,7 @@ internal class MisthalinManor(
                     revealedAt = MisthalinStage.PianoSolved,
                     key = "obj.mistmyst_emerald_key",
                     text = "You find a key hidden inside the piano's compartment.",
+                    keyName = "emerald key",
                 )
             }
             onOpLoc1("loc.mistmyst_door_emerald") {
@@ -100,8 +122,21 @@ internal class MisthalinManor(
             }
         }
 
-    private fun ProtectedAccess.takeTool(obj: String, seq: String, text: String) {
+    // https://oldschool.runescape.wiki/w/Transcript:Misthalin_Mystery
+    // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+    private suspend fun ProtectedAccess.takeTool(
+        obj: String,
+        seq: String,
+        text: String,
+        held: String,
+        taken: String,
+    ) {
+        if (invTotal(inv, obj) > 0) {
+            mesbox("You already have $held.")
+            return
+        }
         if (invAdd(inv, obj, 1).failure) {
+            mesbox("You need space in your inventory to take $taken.")
             return
         }
         anim(seq)
@@ -126,6 +161,7 @@ internal class MisthalinManor(
                     revealedAt = MisthalinStage.BucketFilled,
                     key = "obj.mistmyst_frontdoor_key",
                     text = "You find a key at the bottom of the barrel.",
+                    keyName = "manor key",
                 )
             else -> mes(constants.dm_default)
         }
@@ -160,7 +196,8 @@ internal class MisthalinManor(
         val stage = quest.getQuestStage(player)
         if (stage < MisthalinStage.InsideManor) {
             if (invTotal(inv, ManorKey) <= 0) {
-                mes("The door is locked.")
+                mesbox("The door is securely locked.")
+                startDialogue { chatPlayer(neutral, "I'll have to find the key...") }
                 return
             }
             if (invDel(inv, ManorKey, 1).failure) {
@@ -269,15 +306,20 @@ internal class MisthalinManor(
             cutscenes.lacey(this)
             return
         }
+        if (quest.getQuestStage(player) > MisthalinStage.WallBlown) {
+            mes("There doesn't seem to be anything to observe past the trees.")
+            return
+        }
         mes(constants.dm_default)
     }
 
     private suspend fun ProtectedAccess.takeNote(obj: String) {
         if (invTotal(inv, obj) > 0) {
-            mes(constants.dm_default)
+            mesbox("You have already taken a copy of the note.")
             return
         }
         if (invAdd(inv, obj, 1).failure) {
+            mesbox("You need space in your inventory to take the note.")
             return
         }
         objbox(obj, "You take a copy of the note.")
@@ -336,7 +378,21 @@ internal class MisthalinManor(
     }
 
     private suspend fun ProtectedAccess.lightFuse() {
-        if (quest.getQuestStage(player) != MisthalinStage.CandlesLit) {
+        val stage = quest.getQuestStage(player)
+        if (stage == MisthalinStage.RubyRoomOpen) {
+            startDialogue { chatPlayer(neutral, "The fuse is too damp to light...") }
+            return
+        }
+        if (stage == MisthalinStage.FuseLit) {
+            startDialogue {
+                chatPlayer(
+                    worried,
+                    "The fuse is already lit! I need to get out of here before it blows!",
+                )
+            }
+            return
+        }
+        if (stage != MisthalinStage.CandlesLit) {
             mes(constants.dm_default)
             return
         }
@@ -395,6 +451,7 @@ internal class MisthalinManor(
                     revealedAt = MisthalinStage.GemPanelSolved,
                     key = "obj.mistmyst_sapphire_key",
                     text = "You find a key hidden inside the fireplace.",
+                    keyName = "sapphire key",
                 )
             else -> mes(constants.dm_default)
         }
@@ -404,16 +461,18 @@ internal class MisthalinManor(
         revealedAt: Int,
         key: String,
         text: String,
+        keyName: String,
     ) {
         if (quest.getQuestStage(player) < revealedAt) {
             mes(constants.dm_default)
             return
         }
         if (invTotal(inv, key) > 0) {
-            mes(constants.dm_default)
+            mesbox("You have already found the $keyName.")
             return
         }
         if (invAdd(inv, key, 1).failure) {
+            mesbox("You don't have enough space in your inventory.")
             return
         }
         anim(PickupTable)

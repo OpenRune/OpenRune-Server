@@ -9,20 +9,25 @@ import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.script.onOpNpc5
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// TODO(content): [quest:pandemonium] Sailing, port tasks, boats and the after-quest dialogue
 class PortSarimDocksScript @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.klarense") { startDialogue(it.npc) { klarense() } }
-        onOpNpc1("npc.port_task_master_port_sarim") { startDialogue(it.npc) { portMaster() } }
+        onOpNpc1(PORT_MASTER) { startDialogue(it.npc) { portMaster() } }
+        onOpNpc3(PORT_MASTER) { startDialogue(it.npc) { comeBackLater() } }
+        onOpNpc4(PORT_MASTER) { startDialogue(it.npc) { comeBackLater() } }
         onOpNpc1("npc.vc_face") { startDialogue(it.npc) { theFace() } }
 
         onTalkAcross(SHIPWRIGHT) { startDialogue(it) { shipwrightSam() } }
-        onOpNpc3(SHIPWRIGHT) { startDialogue { mesbox(SAILING_LOCKED) } }
-        onOpNpc4(SHIPWRIGHT) { startDialogue { mesbox(SAILING_LOCKED) } }
-        onOpNpc5(SHIPWRIGHT) { startDialogue { mesbox(SAILING_LOCKED) } }
+        onOpNpc3(SHIPWRIGHT) { startDialogue(it.npc) { comeBackLater() } }
+        onOpNpc4(SHIPWRIGHT) { startDialogue(it.npc) { comeBackLater() } }
+        onOpNpc5(SHIPWRIGHT) { startDialogue(it.npc) { comeBackLater() } }
 
         onOpNpc1("npc.sailing_intro_anne_sarim") { startDialogue(it.npc) { sailingRecruiters() } }
         onOpNpc1("npc.sailing_intro_will_sarim") { startDialogue(it.npc) { sailingRecruiters() } }
@@ -39,7 +44,14 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops) : Plugi
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Klarense
+    // TODO(content): [quest:dragon_slayer_i] "I'd like to buy her." during the quest
+    // TODO(content): [verify:in_game] the wiki has no dialogue before Dragon Slayer I; this uses
+    // the in-quest greeting without the purchase option
     private suspend fun Dialogue.klarense() {
+        if (!QuestRequirements.hasCompleted(player, DRAGON_SLAYER)) {
+            return klarenseBeforeQuest()
+        }
         chatPlayer(quiz, "Hey, that's my ship!")
         chatNpc(
             neutral,
@@ -57,6 +69,39 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops) : Plugi
         chatPlayer(angry, "Argh!")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Klarense (Dragon Slayer I)
+    private suspend fun Dialogue.klarenseBeforeQuest() {
+        chatNpc(
+            happy,
+            "Hello there! Interested in buying this fine ship? I'm sure I can offer her to you " +
+                "for a much better price than any of those shipwrights ask for!",
+        )
+        chatPlayer(quiz, "A much better price? What's the catch?")
+        chatNpc(shifty, "Well, she's not quite seaworthy right now...")
+        chatPlayer(confused, "Not seaworthy? Why would I want to buy her then?")
+        chatNpc(
+            happy,
+            "Because this isn't just any ship! This is the Lady Lumbridge, one of the last " +
+                "Crandorian ships! Despite her size, she's one of the most agile ship around!",
+        )
+        chatPlayer(neutral, "Except she's not seaworthy...")
+        chatNpc(happy, "No, but a bit of work will quickly sort that out!")
+        while (true) {
+            if (!choice2("Why is she damaged?", true, "I think I'll pass.", false)) {
+                chatPlayer(neutral, "I think I'll pass.")
+                return
+            }
+            chatPlayer(quiz, "Why is she damaged?")
+            chatNpc(
+                neutral,
+                "Oh, there was no particular accident, just years of wear and tear. It's been a " +
+                    "long time since Crandor was destroyed and she's had several owners since " +
+                    "then. Unfortunately, not all of them looked after her.",
+            )
+        }
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Port_master
     private suspend fun Dialogue.portMaster() {
         chatPlayer(neutral, "Hello.")
         chatNpc(neutral, "Hi there. How can I help you?")
@@ -86,8 +131,15 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops) : Plugi
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:The_Face
+    // TODO(content): [quest:ratcatchers] quest stages
     private suspend fun Dialogue.theFace() {
         chatPlayer(neutral, "Hello.")
+        if (!QuestRequirements.hasCompleted(player, RATCATCHERS)) {
+            chatNpc(neutral, "...")
+            chatPlayer(neutral, "Never mind!")
+            return
+        }
         chatNpc(neutral, "Oh. It's you again.")
         chatNpc(
             neutral,
@@ -97,6 +149,7 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops) : Plugi
         chatNpc(angry, "And it had better stay that way!")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Shipwright_Sam
     private suspend fun Dialogue.shipwrightSam() {
         chatNpc(happy, "Greetings! What can I do for you?")
         chatPlayer(quiz, "Hello there. What do you do around here?")
@@ -115,6 +168,15 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops) : Plugi
         mesbox(SAILING_LOCKED)
     }
 
+    private suspend fun Dialogue.comeBackLater() {
+        chatNpc(
+            neutral,
+            "I'm afraid I can't help you with that at the moment. You'll have to come back later.",
+        )
+        mesbox(SAILING_LOCKED)
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Pandemonium
     private suspend fun Dialogue.sailingRecruiters() {
         chatNpcSpecific(
             ANNE_NAME,
@@ -138,7 +200,6 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops) : Plugi
             "Well, let's not waste any more time! Stranger, are you ready for your interview?",
         )
         if (choice2("Yes.", true, "No.", false, title = "Start the Pandemonium quest?")) {
-            mesbox(SAILING_LOCKED)
             return
         }
         chatPlayer(
@@ -154,16 +215,19 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops) : Plugi
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Trader_Crewmember
+    // https://oldschool.runescape.wiki/w/Transcript:Trader_Stan
+    // TODO(content): [skill:sailing] Trader Stan's "Do you have any paints for sale?"
+    // TODO(content): [system:charter_ships] charter destinations, fares and the bedsheet and rum
+    // checks
     private suspend fun Dialogue.traderCrewmember(isStan: Boolean) {
         chatNpc(quiz, "Can I help you?")
         val topic =
-            choice4(
+            choice3(
                 "Yes, who are you?",
                 CrewTopic.Who,
                 "Yes, I would like to charter a ship.",
                 CrewTopic.Charter,
-                "Yes, let's see what you're trading.",
-                CrewTopic.Trade,
                 "No thanks.",
                 CrewTopic.Leave,
             )
@@ -295,8 +359,11 @@ class PortSarimDocksScript @Inject constructor(private val shops: Shops) : Plugi
         const val ANNE_NAME = "Anne"
         const val WILL = "npc.sailing_intro_will_sarim"
         const val WILL_NAME = "Will"
+        const val PORT_MASTER = "npc.port_task_master_port_sarim"
+        const val DRAGON_SLAYER = "quest_dragonslayer1"
+        const val RATCATCHERS = "quest_ratcatchers"
         const val SAILING_LOCKED =
-            "You need to complete the Pandemonium quest to access the Sailing skill."
+            "You need to complete the Pandemonium quest to fully access the Sailing skill."
         const val CHARTER_UNAVAILABLE = "Charter ships aren't available yet."
 
         val TRADER_CREW =

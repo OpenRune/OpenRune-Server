@@ -8,6 +8,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class MercyScript : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(MERCY) { talk(it.npc) }
@@ -15,6 +16,7 @@ class MercyScript : PluginScript() {
 
     private suspend fun ProtectedAccess.talk(npc: Npc) = startDialogue(npc) { greeting() }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Mercy
     private suspend fun Dialogue.greeting() {
         if (!player.hasUpperLevel) {
             chatNpc(neutral, "You shouldn't be up here!")

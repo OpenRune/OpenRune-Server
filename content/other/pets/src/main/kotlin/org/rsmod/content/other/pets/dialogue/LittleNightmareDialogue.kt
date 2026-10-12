@@ -7,12 +7,14 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class LittleNightmareDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NIGHTMARE, "Talk-to") { talkNightmare(it) }
         onPetOp(PARASITE, "Talk-to") { talkParasite(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Little_Nightmare
     private suspend fun ProtectedAccess.talkNightmare(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(2)) {
@@ -32,6 +34,7 @@ class LittleNightmareDialogue @Inject constructor() : PluginScript() {
             }
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Little_Nightmare
     private suspend fun ProtectedAccess.talkParasite(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(happy, "What's up b?")

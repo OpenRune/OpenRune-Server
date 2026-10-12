@@ -8,6 +8,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Barfy_Bill
 class BarfyBill : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.canoeing_bill") { startDialogue(it.npc) }
@@ -29,7 +30,7 @@ class BarfyBill : PluginScript() {
         if (selection == 1) {
             whoAreYou()
         } else if (selection == 2) {
-            askAboutCanoeing()
+            askAboutCanoeing("Can you teach me about canoes?")
         }
     }
 
@@ -64,16 +65,16 @@ class BarfyBill : PluginScript() {
         chatNpc(happy, "I don't get river sick!")
         chatNpc(quiz, "Would you like to know how to make a canoe?")
 
-        val askAboutCanoeing = choice2("Yes.", true, "No.", false)
+        val askAboutCanoeing = choice2("Yes", true, "No", false)
         if (askAboutCanoeing) {
-            askAboutCanoeing()
+            askAboutCanoeing("Could you teach me about canoes?")
         } else {
             chatPlayer(neutral, "No thanks, not right now.")
         }
     }
 
-    private suspend fun Dialogue.askAboutCanoeing() {
-        chatPlayer(quiz, "Could you teach me about canoes?")
+    private suspend fun Dialogue.askAboutCanoeing(question: String) {
+        chatPlayer(quiz, question)
 
         val woodcuttingLevel = player.woodcuttingLvl
         if (woodcuttingLevel < 12) {

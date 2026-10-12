@@ -38,6 +38,7 @@ constructor(private val followers: PetFollowers, private val morphs: PetMorphs) 
         }
     }
 
+    // TODO(content): [verify:in_game] Phoenix and no-other-forms message wording.
     private suspend fun ProtectedAccess.metamorphose(npc: Npc, pet: Pet, current: PetForm) {
         if (!followers.requireOwned(this, npc)) {
             return
@@ -69,6 +70,7 @@ constructor(private val followers: PetFollowers, private val morphs: PetMorphs) 
         return null
     }
 
+    // TODO(content): [verify:in_game] Gold chinchompa warning title and options.
     private suspend fun ProtectedAccess.metamorphoseChinchompa(npc: Npc, pet: Pet, current: PetForm) {
         if (!followers.requireOwned(this, npc)) {
             return
@@ -92,6 +94,7 @@ constructor(private val followers: PetFollowers, private val morphs: PetMorphs) 
         followers.spawn(player, colours[(colours.indexOf(current) + 1) % colours.size])
     }
 
+    // TODO(content): [verify:in_game] Rift guardian Locking message wording.
     private fun ProtectedAccess.toggleRiftGuardianLock(npc: Npc) {
         if (!followers.requireOwned(this, npc)) {
             return

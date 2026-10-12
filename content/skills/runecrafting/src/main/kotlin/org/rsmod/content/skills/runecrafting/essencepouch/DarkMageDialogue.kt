@@ -4,6 +4,9 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.game.entity.Npc
 
+// https://oldschool.runescape.wiki/w/Transcript:Dark_Mage_(Abyss)
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// TODO(content): [system:treasure_trails] Hard challenge scroll: "Ah! Here you go!"
 object DarkMageDialogue {
     suspend fun ProtectedAccess.talkToDarkMage(npc: Npc) {
         startDialogue(npc) {
@@ -93,6 +96,10 @@ object DarkMageDialogue {
     private suspend fun Dialogue.helpMenu() {
         chatPlayer(neutral, "I need your help with something.")
         chatNpc(neutral, "What? Oh... very well. What did you want?")
+        helpChoices()
+    }
+
+    private suspend fun Dialogue.helpChoices() {
         when (
             choice4(
                 "Can I have another Abyssal book?",
@@ -126,7 +133,7 @@ object DarkMageDialogue {
 
         chatNpc(neutral, "Here, take it. It is important to pool our research.")
         access.mes("You have been given a book.")
-        helpMenu()
+        helpChoices()
     }
 
     private suspend fun Dialogue.giveEssencePouch() {
@@ -153,11 +160,12 @@ object DarkMageDialogue {
 
         chatNpc(neutral, "Here. Be more careful with your belongings in future.")
         access.mes("You have been given a pouch.")
-        helpMenu()
+        helpChoices()
     }
 
     private suspend fun Dialogue.repairPouchesFromDialogue() {
         chatPlayer(neutral, "Can you repair my pouches?")
+        // TODO(content): [verify:in_game] His reply when no pouch needs repair.
         if (!EssencePouch.hasPouchesNeedingRepair(access, includeColossal = false)) {
             chatNpc(angry, "You don't seem to have any pouches in need of repair. Leave me alone!")
             return
@@ -167,7 +175,7 @@ object DarkMageDialogue {
         EssencePouch.repairPouches(access, includeColossal = false)
         chatPlayer(happy, "Thanks.")
         chatNpc(angry, "Now can you leave me alone? I can't keep affording these distractions!")
-        helpMenu()
+        helpChoices()
     }
 
     private suspend fun Dialogue.declineHelp() {

@@ -4,15 +4,22 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc5
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Emblem_Trader (outside Daimon's Crater)
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// TODO(content): [system:bounty_hunter] the Daimon's Crater dialogue and the reward shop
 class EmblemTraderScript @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1("npc.emblem_trader") { startDialogue(it.npc) }
-        onOpNpc5("npc.emblem_trader") { startDialogue(it.npc) { requestPkSkull() } }
+        for (trader in listOf("npc.emblem_trader", "npc.wild_cave_trader")) {
+            onOpNpc1(trader) { startDialogue(it.npc) }
+            onOpNpc3(trader) { startDialogue(it.npc) { rewardsElsewhere() } }
+            onOpNpc5(trader) { startDialogue(it.npc) { requestPkSkull() } }
+        }
     }
 
     private suspend fun ProtectedAccess.startDialogue(npc: Npc) {
@@ -75,14 +82,25 @@ class EmblemTraderScript @Inject constructor() : PluginScript() {
 
     private suspend fun Dialogue.tradeRewards() {
         chatPlayer(neutral, "Let's trade for rewards.")
+        rewardsElsewhere()
+    }
+
+    private suspend fun Dialogue.rewardsElsewhere() {
         chatNpc(neutral, "I don't carry rewards out here, it is far too dangerous.")
         chatNpc(neutral, "Meet me in Daimon's Crater if you would like to buy rewards.")
     }
 
     private suspend fun Dialogue.requestPkSkull() {
         chatPlayer(neutral, "Can I have a PK skull, please?")
-        mesbox("A PK skull means you drop ALL your items on death.")
-        when (choice2("Give me a PK skull.", 1, "Cancel.", 2)) {
+        val option =
+            choice2(
+                "Give me a PK skull.",
+                1,
+                "Cancel.",
+                2,
+                title = "A PK skull means you drop ALL your items on death.",
+            )
+        when (option) {
             1 -> {
                 player.applyVoluntarySkull()
                 access.mes("You are now skulled.")
@@ -92,10 +110,15 @@ class EmblemTraderScript @Inject constructor() : PluginScript() {
 
     private suspend fun Dialogue.extendPkSkull() {
         chatPlayer(neutral, "Can you make my PK skull last longer?")
+        if (!player.canExtendEmblemTraderSkull()) {
+            chatNpc(neutral, "Sorry, I can't extend your PK skull beyond its existing duration.")
+            return
+        }
+        if (choice2("Yes", 1, "No", 2, title = "Extend your PK skull duration?") != 1) {
+            return
+        }
         if (player.extendEmblemTraderSkull()) {
             access.mes("Your PK skull will now last for the full 20 minutes.")
-        } else {
-            chatNpc(neutral, "Sorry, I can't extend your PK skull beyond its existing duration.")
         }
     }
 }

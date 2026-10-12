@@ -211,12 +211,47 @@ class MisthalinManorInteractionTest {
             f.player.coords = CoordGrid(1633, 4829)
             val start = f.player.coords
             f.stairs()
-            assertTrue(f.output().contains("The staircase looks too rickety to climb."))
+            assertTrue(f.output().contains("Those stairs don't look so safe..."))
             assertEquals(start, f.player.coords)
             assertEquals(stage, f.quest.getQuestStage(f.player))
             assertEquals(EntitySeq.NULL, f.player.pendingSequence)
             assertTrue(f.coroutine.isIdle)
         }
+    }
+
+    @Test fun `taking the table knife while holding one does not add a second knife`() {
+        val f = Fixture(MisthalinStage.InsideManor)
+        f.opLoc("loc.mistmyst_table_knife")
+        assertEquals(1, f.player.inv.count("obj.knife"))
+        assertTrue(f.output().replace("<br>", " ").contains("You already have a knife."), f.output())
+    }
+
+    @Test fun `taking the table knife with a full pack keeps the inventory unchanged`() {
+        val f = Fixture(MisthalinStage.InsideManor)
+        for (slot in 0 until 28) f.player.inv[slot] = InvObj("obj.bucket_empty", 1)
+        f.opLoc("loc.mistmyst_table_knife")
+        assertEquals(0, f.player.inv.count("obj.knife"))
+        assertEquals(28, f.player.inv.count("obj.bucket_empty"))
+        assertTrue(f.output().replace("<br>", " ")
+            .contains("You need space in your inventory to take the knife."), f.output())
+    }
+
+    @Test fun `drained barrel with the key already held gives no second key`() {
+        val f = Fixture(MisthalinStage.BucketFilled)
+        f.player.inv[1] = InvObj("obj.mistmyst_frontdoor_key", 1)
+        f.searchBarrel()
+        assertEquals(1, f.player.inv.count("obj.mistmyst_frontdoor_key"))
+        assertTrue(f.output().replace("<br>", " ").contains("You have already found the manor key."), f.output())
+    }
+
+    @Test fun `Mandy withholds the three gem rewards until three slots are free`() {
+        assertEquals(3, mistmystRewardSpaceShortfall(0))
+        assertEquals(1, mistmystRewardSpaceShortfall(2))
+        assertEquals(0, mistmystRewardSpaceShortfall(3))
+        assertEquals(0, mistmystRewardSpaceShortfall(28))
+        assertTrue(mistmystRewardSpaceText(3).contains("You need 3 more spaces in your inventory"))
+        assertTrue(mistmystRewardSpaceText(2).contains("You need 2 more spaces in your inventory"))
+        assertTrue(mistmystRewardSpaceText(1).contains("You need another space in your inventory"))
     }
 
     @Test fun `native quest progress updates preserve the adjacent puzzle flags`() {
@@ -513,6 +548,12 @@ class MisthalinManorInteractionTest {
                 } else tick()
             }
             fail<Unit>("Scene did not finish")
+        }
+
+        fun opLoc(symbol: String) {
+            val loc = loc(symbol, player.coords, shape = 10)
+            dispatch(checkNotNull(LocInteractions(BoundValidator(collision), events)
+                .opTrigger(player, loc, InteractionOp.Op1)))
         }
 
         fun stairs() {

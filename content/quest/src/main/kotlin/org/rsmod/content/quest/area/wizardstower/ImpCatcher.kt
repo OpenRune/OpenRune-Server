@@ -82,6 +82,10 @@ class ImpCatcher @Inject constructor(private val worldRepo: WorldRepository) :
             )
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Imp_Catcher
+    // https://oldschool.runescape.wiki/w/Transcript:Wizard_Mizgog
+    // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+    // TODO(content): [system:treasure_trails] Hard clue step ("You have done well, [player name]!").
     private suspend fun ProtectedAccess.startMizgog(npc: Npc) {
         startDialogue(npc) { mizgogDialogue(npc) }
     }
@@ -171,6 +175,9 @@ class ImpCatcher @Inject constructor(private val worldRepo: WorldRepository) :
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Wizard_Grayzag
+    // TODO(content): [event:20th_anniversary] Follow-up lines after the 20th Anniversary event.
+    // TODO(content): [event:25th_anniversary] Follow-up lines after the 25th Anniversary event.
     private suspend fun Dialogue.grayzagDialogue() {
         when {
             quest.isQuestCompleted(player) -> {
@@ -210,7 +217,7 @@ class ImpCatcher @Inject constructor(private val worldRepo: WorldRepository) :
         when (choice) {
             2 -> {
                 chatPlayer(angry, "Give me a quest or else!")
-                chatNpc(happy, "Or else what? You'll attack me? ")
+                chatNpc(happy, "Or else what? You'll attack me?")
                 chatNpc(laugh, "Hahaha!")
                 return false
             }
@@ -269,6 +276,8 @@ class ImpCatcher @Inject constructor(private val worldRepo: WorldRepository) :
 
             delay(1)
             npc.anim(EnchantSeq)
+            // TODO(content): [verify:in_game] When this message box appears during the cutscene.
+            mesboxNp("Wizard Mizgog places the four beads on the table and casts a spell on them.")
             access.soundSynth("synth.mizgog_placebeads")
 
             delay(2)

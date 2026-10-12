@@ -53,7 +53,7 @@ suspend fun Dialogue.teleportToRuneEssenceMine() {
     val npc = checkNotNull(npc) { "Rune essence mine teleport requires an npc dialogue context." }
     val dest = EssencePortals.randomEssenceMineDest(access)
 
-    npc.say("Seventior Disthine Molenko!")
+    npc.say("Senventior Disthine Molenko!")
     npc.spotanim("spotanim.curse_casting", height = 92)
     player.soundSynth("synth.curse_cast_and_fire")
     delay(1)

@@ -7,11 +7,13 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class SmolHereditDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NPC, "Talk-to") { talk(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Smol_Heredit
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             if (access.random.of(RARE_CHANCE) == 0) {

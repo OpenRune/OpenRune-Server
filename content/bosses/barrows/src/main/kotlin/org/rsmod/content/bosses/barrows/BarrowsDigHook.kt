@@ -17,6 +17,7 @@ internal class BarrowsDigHook : SpadeDigHook {
         if (!hfsInterruptsDig()) {
             return true
         }
+        // TODO(content): [verify:in_game] This interrupt line is not in the wiki transcript.
         startDialogue {
             chatNpcSpecific(
                 "Strange Old Man",

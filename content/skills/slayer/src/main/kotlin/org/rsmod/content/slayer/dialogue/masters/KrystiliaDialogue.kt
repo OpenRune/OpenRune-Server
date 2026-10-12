@@ -1,16 +1,19 @@
 package org.rsmod.content.slayer.dialogue.masters
 
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnActive
-import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnUnlocked
-import org.rsmod.content.slayer.slayerWildernessAssignmentBriefed
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.content.slayer.core.SlayerTaskManager
-import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
 import org.rsmod.content.slayer.dialogue.GenericDialogue.ineligibleForTask
 import org.rsmod.content.slayer.dialogue.GenericDialogue.offerCancelTask
 import org.rsmod.content.slayer.dialogue.GenericDialogue.rewardsOrShopDialogue
+import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
+import org.rsmod.content.slayer.dialogue.SlayerTaskTips
+import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnActive
+import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnUnlocked
+import org.rsmod.content.slayer.slayerWildernessAssignmentBriefed
 
+// https://oldschool.runescape.wiki/w/Transcript:Krystilia
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 object KrystiliaDialogue {
 
     private const val EDGE_SPAWN_COST = 5_000_000
@@ -86,16 +89,17 @@ object KrystiliaDialogue {
         when {
             currentTask != null && assignedMaster != null && SlayerTaskManager.isWildernessMaster(assignedMaster) -> {
                 val count = access.slayerCount()
-                chatNpc(
-                    neutral,
-                    "You're still meant to be slaying ${currentTask.nameUppercase} in the Wilderness; you have $count to go.",
-                )
                 if (ineligibleForTask()) {
                     chatNpc(
                         neutral,
                         "You're still hunting ${currentTask.nameUppercase}, with $count to go.",
                     )
                     offerCancelTask()
+                } else {
+                    chatNpc(
+                        neutral,
+                        "You're still meant to be slaying ${currentTask.nameUppercase} in the Wilderness; you have $count to go. Come back when you've finished your task.",
+                    )
                 }
             }
             currentTask != null -> {
@@ -159,7 +163,9 @@ object KrystiliaDialogue {
     private suspend fun Dialogue.krystiliaSlayerTip() {
         chatPlayer(quiz, "Got any tips for me?")
         SlayerTaskManager.getCurrentSlayerTask(access)?.let { task ->
-            chatNpc(neutral, "You'll need to hunt ${task.nameUppercase} in the Wilderness.")
+            for (tip in SlayerTaskTips.tipsFor(task, access.player)) {
+                chatNpc(neutral, tip)
+            }
         }
         chatNpc(neutral, "You've got to do the task in the Wilderness.")
         chatPlayer(happy, "Great, thanks!")
@@ -223,7 +229,7 @@ object KrystiliaDialogue {
                 2,
             )
         ) {
-            1 -> switchRespawnToEdgeville(paidPreviously = true)
+            1 -> switchRespawnToEdgeville()
             2 -> {
                 chatPlayer(neutral, "No, I don't want to respawn in Edgeville.")
                 chatNpc(neutral, "Boring!")
@@ -266,10 +272,7 @@ object KrystiliaDialogue {
             chatNpc(neutral, "Scared of dropping it? Hah!")
             return
         }
-        when (choice2("Okay, switch my spawn to Edgeville.", 1, "Er... Nothing...", 2)) {
-            1 -> purchaseEdgevilleSpawn()
-            2 -> chatPlayer(neutral, "Er... Nothing...")
-        }
+        purchaseEdgevilleSpawn()
     }
 
     private suspend fun Dialogue.purchaseEdgevilleSpawn() {
@@ -283,23 +286,22 @@ object KrystiliaDialogue {
         }
         access.player.slayerKrystiliaEdgevilleSpawnUnlocked = true
         access.player.slayerKrystiliaEdgevilleSpawnActive = true
+        // TODO(content): [verify:in_game] Whether a message box confirms the new respawn point.
         mesbox("Your respawn point has been set to Edgeville.")
     }
 
-    private suspend fun Dialogue.switchRespawnToEdgeville(paidPreviously: Boolean) {
+    // TODO(content): [system:ferox_respawn] With a Ferox Enclave respawn: "Couldn't handle Ferox
+    // Enclave? Do you really think you could handle Edgeville?"
+    private suspend fun Dialogue.switchRespawnToEdgeville() {
         chatPlayer(neutral, "Please switch my respawn back to Edgeville.")
-        if (!paidPreviously) {
-            chatNpc(neutral, "Sounds like you're looking for some fun! Are you sure you can handle it?")
-            when (choice2("Yes, switch my respawn to Edgeville.", 1, "No, maybe another time.", 2)) {
-                1 -> confirmEdgevilleRespawn()
-                2 -> {
-                    chatPlayer(neutral, "No, maybe another time.")
-                    chatNpc(neutral, "Boring!")
-                }
+        chatNpc(neutral, "Sounds like you're looking for some fun! Are you sure you can handle it?")
+        when (choice2("Yes, switch my respawn to Edgeville.", 1, "No, maybe another time.", 2)) {
+            1 -> confirmEdgevilleRespawn()
+            2 -> {
+                chatPlayer(neutral, "No, maybe another time.")
+                chatNpc(neutral, "Boring!")
             }
-            return
         }
-        confirmEdgevilleRespawn()
     }
 
     private suspend fun Dialogue.confirmEdgevilleRespawn() {

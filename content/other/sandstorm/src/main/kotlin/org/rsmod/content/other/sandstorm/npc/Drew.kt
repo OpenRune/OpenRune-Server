@@ -25,6 +25,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class Drew : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.grinder_drew") { talkTo(it.npc) }
@@ -34,6 +35,7 @@ class Drew : PluginScript() {
         onOpNpcU("npc.grinder_drew") { useObjOnDrew(it.npc, it.objType) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Drew
     private suspend fun ProtectedAccess.talkTo(npc: Npc) {
         startDialogue(npc) {
             chatNpc(happy, "Hey there, what can I do for ya?")
@@ -116,6 +118,7 @@ class Drew : PluginScript() {
             return
         }
 
+        // TODO(content): [verify:in_game] The wiki transcript is missing the deposit lines.
         val requested = access.countDialog("How many buckets do you wish to deposit?")
         access.storeBuckets(requested)
 
@@ -142,6 +145,7 @@ class Drew : PluginScript() {
             return
         }
 
+        // TODO(content): [verify:in_game] The wiki transcript is missing the withdraw lines.
         val requested =
             access.countDialog("How many buckets of sand do ya want? ($SAND_PRICE coins each)")
         if (access.withdrawSand(requested) <= 0) {
@@ -157,10 +161,6 @@ class Drew : PluginScript() {
                 "ground enough sandstone for " +
                 "${player.sandstormBucketsSand.formatAmount} buckets of sand.",
         )
-        chatNpc(quiz, "Would ya like to purchase some buckets of sand?")
-        if (choice2("Yes.", true, "No.", false, title = "Select an Option")) {
-            claimSand()
-        }
     }
 
     private suspend fun Dialogue.nothing() {

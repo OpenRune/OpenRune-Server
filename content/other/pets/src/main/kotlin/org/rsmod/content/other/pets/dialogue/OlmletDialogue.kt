@@ -7,6 +7,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class OlmletDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(OLMLET, "Talk-to") { talkOlmlet(it) }
@@ -19,6 +20,7 @@ class OlmletDialogue @Inject constructor() : PluginScript() {
         onPetOp(FLYING_VESPINA, "Talk-to") { talkVespina(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Olmlet
     private suspend fun ProtectedAccess.talkOlmlet(npc: Npc) =
         startDialogue(npc) {
             chatNpc(happy, "Hee hee! What shall we talk about, human?")

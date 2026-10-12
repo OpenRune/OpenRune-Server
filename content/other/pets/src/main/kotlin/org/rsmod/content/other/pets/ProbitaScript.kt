@@ -32,6 +32,8 @@ constructor(private val rewards: PetRewards, private val insurance: PetInsurance
         }
     }
 
+    // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+    // https://oldschool.runescape.wiki/w/Transcript:Probita
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             insurance.insureOwned(player)
@@ -99,9 +101,10 @@ constructor(private val rewards: PetRewards, private val insurance: PetInsurance
         chatNpc(
             neutral,
             "If you lose a pet somehow, you can come here and reclaim them. It used to cost reclaim " +
-                "tokens, although we're now subsidised by the Grand Exchange and the service is free.",
+                "tokens, although we're now subsidised by the Grand Exchange and the service is " +
+                "free. If you have any reclaim tokens left, let",
         )
-        chatNpc(neutral, "If you have any reclaim tokens left, let us know and we will buy them back.")
+        chatNpc(neutral, "us know and we will buy them back.")
         mainMenu()
     }
 

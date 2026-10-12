@@ -31,7 +31,7 @@ private constructor(
     private val spaceShop: BankSpaceShop,
     private val tutorial: BankTutorialScript,
 ) : PluginScript() {
-    // TODO(content): Bank Tutor dialogue variation when player has a bank PIN set up.
+    // TODO(content): [system:bank_pin] Bank tutor dialogue variation when a bank PIN is set.
 
     override fun ScriptContext.startup() {
         onApContentNpc4("content.banker") { apOpenCollectionBox(it.npc) }
@@ -87,6 +87,7 @@ private constructor(
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Banker
     private suspend fun Dialogue.talkToBanker() {
         chatNpc(quiz, "Good day, how may I help you?")
 
@@ -141,6 +142,8 @@ private constructor(
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Banker_tutor
+    // TODO(content): [verify:in_game] The tutor lines differ from the (older) wiki transcript.
     private suspend fun Dialogue.talkToBankerTutor() {
         chatNpc(quiz, "Good day, how may I help you?")
 
@@ -265,14 +268,6 @@ private constructor(
                     "you happy to proceed?",
             )
 
-            if (access.invCoinTotal() < cost) {
-                chatPlayer(
-                    confused,
-                    "Oh... I don't seem to have enough money for that. Never mind.",
-                )
-                return
-            }
-
             val confirmation =
                 choice2(
                     "Yes.",
@@ -284,6 +279,15 @@ private constructor(
 
             if (!confirmation) {
                 chatPlayer(confused, "Actually, I've changed my mind.")
+                return
+            }
+
+            // TODO(content): [system:bank_coin_payment] The wiki lets coins in the bank pay too.
+            if (access.invCoinTotal() < cost) {
+                chatPlayer(
+                    confused,
+                    "Oh... I don't seem to have enough money for that. Never mind.",
+                )
                 return
             }
 
@@ -315,6 +319,7 @@ private constructor(
 
         if (selection == otherOptionsSelection) {
             chatPlayer(quiz, "Do I have any other options for extra bank space?")
+            // TODO(content): [system:account_security] Reply depends on PIN/2FA/Jagex Account.
             chatNpc(
                 shifty,
                 "I'm not supposed to tell you this, but you can obtain " +
@@ -425,7 +430,7 @@ private constructor(
         doubleobjbox(
             "obj.shrimp",
             400,
-            RSCM.getReverseMapping(RSCMType.OBJ,ocCert("obj.shrimp").id),
+            RSCM.getReverseMapping(RSCMType.OBJ, ocCert("obj.shrimp").id),
             400,
             "A noted item looks like a piece of paper with the image " +
                 "of the actual item on top of it.",

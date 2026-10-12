@@ -54,11 +54,11 @@ constructor(private val care: CatCare, private val gertrudesCat: GertrudesCatQue
         }
 
     private suspend fun Dialogue.finishQuest() {
-        chatPlayer(happy, "Hello Gertrude. Fluffs has run off home with her kitten.")
+        chatPlayer(happy, "Hello Gertrude. Fluffs ran off with her kitten.")
         chatNpc(
             happy,
-            "You're back! Thank you! Thank you! Fluffs just came home! I think she was just upset " +
-                "because she couldn't find her kitten.",
+            "You're back! Thank you! Thank you! Fluffs just came back! I think she was just upset as " +
+                "she couldn't find her kitten.",
         )
         if (access.inv.freeSpace() < REWARD_SLOTS) {
             chatNpc(
@@ -68,24 +68,24 @@ constructor(private val care: CatCare, private val gertrudesCat: GertrudesCatQue
             )
             return
         }
-        mesbox("Gertrude gives you a hug.")
+        mesbox("Gertrude gives you a hug")
         chatNpc(happy, "If you hadn't found her kitten it would have died out there!")
         chatPlayer(happy, "That's okay, I like to do my bit.")
         chatNpc(
             neutral,
             "I don't know how to thank you. I have no real material possessions. I do have " +
-                "kittens, though! I can only really look after one.",
+                "kittens! I can only really look after one.",
         )
-        chatPlayer(happy, "Well, if it needs a home...")
+        chatPlayer(happy, "Well, if it needs a home.")
         chatNpc(
             neutral,
             "I would sell it to my cousin in West Ardougne. I hear there's a rat epidemic there. " +
                 "But it's too far.",
         )
-        chatNpc(happy, "Here you go. Look after her, and thank you again!")
+        chatNpc(happy, "Here you go, look after her and thank you again!")
         chatNpc(
             neutral,
-            "Oh, by the way: the kitten can live in your backpack, but to make it grow you must " +
+            "Oh by the way, the kitten can live in your backpack, but to make it grow you must " +
                 "take it out and feed and stroke it often.",
         )
         val colour = if (wearingCharos(player)) pickColour() ?: access.randomColour() else access.randomColour()

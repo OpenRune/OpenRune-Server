@@ -9,6 +9,8 @@ import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.content.slayer.core.SlayerTaskManager.tasks
 import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
 
+// https://oldschool.runescape.wiki/w/Transcript:Duradel
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 object GenericDialogue {
 
     suspend fun Dialogue.rewardsOrShopDialogue() {
@@ -17,6 +19,7 @@ object GenericDialogue {
             neutral,
             "I have quite a few rewards you can earn, and a wide variety of Slayer equipment for sale.",
         )
+        // TODO(content): [system:slayer_shop] "Look at shop." should open the Slayer Equipment shop.
         when (choice3("Look at rewards.", 1, "Look at shop.", 2, "Cancel.", 3)) {
             1 -> SlayerInterfaces.openInterface(access, access.npcVisType(npc!!).internalName)
             2 -> SlayerInterfaces.openInterface(access, access.npcVisType(npc!!).internalName)
@@ -78,6 +81,7 @@ object GenericDialogue {
         when (choice2("Yes, please.", 1, "No, thanks.", 2)) {
             1 -> {
                 chatPlayer(neutral, "Yes, please.")
+                // TODO(content): [verify:in_game] The reroll lines (missing from the transcripts).
                 assignNewTask(access.npcVisType(npc!!).internalName) { taskName, count ->
                     SlayerTaskManager.setSlayerStreak(access, 0)
                     chatNpc(neutral, "Your new task is to kill $count $taskName.")
@@ -105,7 +109,7 @@ object GenericDialogue {
         chatNpc(neutral, "That will be $SLAYER_CAPE_PRICE coins, please.")
         when (choice2("I've changed my mind, I don't want it.", 1, "Great; I've always wanted one!", 2)) {
             1 -> {
-                chatPlayer(neutral, "I've changed my mind, I don't want it.")
+                chatPlayer(neutral, "I've changed my mind; I don't want it.")
                 chatNpc(neutral, "Okay. Well, if you change it back again, I will be waiting.")
             }
             2 -> handleCapePurchase()
@@ -113,7 +117,7 @@ object GenericDialogue {
     }
 
     private suspend fun Dialogue.handleCapePurchase() {
-        chatPlayer(happy, "Great; I've always wanted one!")
+        chatPlayer(happy, "Great, I've always wanted one!")
         val coins = access.inv.count("obj.coins")
         when {
             coins < SLAYER_CAPE_PRICE -> {

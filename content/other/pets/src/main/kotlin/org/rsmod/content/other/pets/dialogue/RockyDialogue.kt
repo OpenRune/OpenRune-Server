@@ -7,6 +7,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class RockyDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(ROCKY, "Talk-to") { talkRocky(it) }
@@ -14,6 +15,7 @@ class RockyDialogue @Inject constructor() : PluginScript() {
         onPetOp(TANUKI, "Talk-to") { talkZiggy(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Rocky
     private suspend fun ProtectedAccess.talkRocky(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(4)) {
@@ -56,6 +58,7 @@ class RockyDialogue @Inject constructor() : PluginScript() {
             }
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Rocky
     private suspend fun ProtectedAccess.talkZiggy(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(3)) {
@@ -94,6 +97,7 @@ class RockyDialogue @Inject constructor() : PluginScript() {
             }
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Rocky
     private suspend fun ProtectedAccess.talkRed(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(3)) {

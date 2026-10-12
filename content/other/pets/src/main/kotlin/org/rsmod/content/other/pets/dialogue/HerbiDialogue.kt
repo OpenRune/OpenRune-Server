@@ -9,12 +9,14 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class HerbiDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NPC, "Talk-to") { talk(it) }
         onPetOpU(NPC) { useItem(it.npc, it.objType) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Herbi
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(5)) {
@@ -78,6 +80,7 @@ class HerbiDialogue @Inject constructor() : PluginScript() {
             }
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Herbi
     private suspend fun ProtectedAccess.useItem(npc: Npc, obj: ItemServerType) {
         val name = obj.name
         when {

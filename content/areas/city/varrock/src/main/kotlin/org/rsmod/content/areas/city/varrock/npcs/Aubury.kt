@@ -17,6 +17,9 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Aubury
+// TODO(content): [system:adventure_path] combat path voucher reward
+// TODO(content): [system:skillcapes] "Can you tell me about your cape?" at 99 Runecrafting
 class Aubury @Inject constructor(
     private val shops: Shops,
     private val runeMysteries: RuneMysteriesQuest,
@@ -59,7 +62,6 @@ class Aubury @Inject constructor(
             )
         ) {
             1 -> {
-                chatPlayer(happy, "Yes please!")
                 player.openAuburyShop(npc)
             }
             2 -> {
@@ -175,7 +177,6 @@ class Aubury @Inject constructor(
                 )
             ) {
                 1 -> {
-                    chatPlayer(happy, "Yes please!")
                     player.openAuburyShop(npc)
                 }
                 2 -> {
@@ -193,18 +194,17 @@ class Aubury @Inject constructor(
                 choice3(
                     "Yes please!",
                     1,
-                    "No thank you.",
+                    "Oh, it's a rune shop. No thank you, then.",
                     2,
                     "Can you teleport me to the Rune Essence?",
                     3,
                 )
             ) {
                 1 -> {
-                    chatPlayer(happy, "Yes please!")
                     player.openAuburyShop(npc)
                 }
                 2 -> {
-                    chatPlayer(quiz, "No thank you.")
+                    chatPlayer(bored, "Oh, it's a rune shop. No thank you, then.")
                     chatNpc(sad, "Well, if you find someone who does want runes, please send them my way.")
                 }
                 3 -> {
@@ -227,7 +227,6 @@ class Aubury @Inject constructor(
                 )
             ) {
                 1 -> {
-                    chatPlayer(happy, "Yes please!")
                     player.openAuburyShop(npc)
                 }
                 2 -> {

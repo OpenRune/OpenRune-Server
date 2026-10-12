@@ -7,10 +7,13 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.MesAnimType
 import dev.openrune.types.NpcServerType
 import jakarta.inject.Inject
+import org.rsmod.api.invtx.invAddOrDrop
+import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.random.GameRandom
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onAiTimer
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onNpcQueue
@@ -31,7 +34,9 @@ import org.rsmod.plugin.scripts.ScriptContext
  * The Makeover Mage south-west of Falador. The interface only moves its highlights client-side, so
  * the server keeps its own copy of each pick and applies them on Apply or Confirm.
  */
-class MakeoverMageScript @Inject constructor(private val random: GameRandom) : PluginScript() {
+class MakeoverMageScript
+@Inject
+constructor(private val random: GameRandom, private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         for ((index, mage) in MAGES.withIndex()) {
             onOpNpc1(mage) {
@@ -89,6 +94,10 @@ class MakeoverMageScript @Inject constructor(private val random: GameRandom) : P
     private fun npcType(internal: String): NpcServerType =
         ServerCacheManager.getNpc(internal.asRSCM(RSCMType.NPC)) ?: error("Missing npc: $internal")
 
+    // https://oldschool.runescape.wiki/w/Transcript:Makeover_Mage
+    // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+    // TODO(content): [skill:farming] refuse a makeover while wearing the farmer's outfit
+    // TODO(content): [system:demonic_skin] "Ask about Demonic Skin." with the contract
     private suspend fun Dialogue.makeoverMage() {
         chatNpc(
             happy,
@@ -106,7 +115,7 @@ class MakeoverMageScript @Inject constructor(private val random: GameRandom) : P
     private suspend fun Dialogue.makeoverOptions() {
         val option =
             choice4(
-                "Tell me more about this 'makeover'.",
+                "Tell me more about this 'make-over'.",
                 Option.TellMore,
                 "Sure, I'll have a makeover.",
                 Option.Makeover,
@@ -178,9 +187,10 @@ class MakeoverMageScript @Inject constructor(private val random: GameRandom) : P
             }
             choice2("Sure, here you go.", true, "No way! That's far too expensive.", false) -> {
                 chatPlayer(happy, "Sure, here you go.")
-                access.invDel(access.inv, "obj.coins", AMULET_PRICE)
-                access.invAdd(access.inv, AMULET, 1)
-                objbox(AMULET, "You receive an amulet in exchange for 100 coins.")
+                if (player.invTakeFee(AMULET_PRICE)) {
+                    player.invAddOrDrop(objRepo, AMULET)
+                    objbox(AMULET, "You receive an amulet in exchange for 100 coins.")
+                }
             }
             else -> chatPlayer(neutral, "I don't have room to hold it. Maybe another time.")
         }

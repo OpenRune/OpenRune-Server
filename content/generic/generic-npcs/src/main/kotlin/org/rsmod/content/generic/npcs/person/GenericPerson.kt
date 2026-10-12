@@ -5,16 +5,17 @@ import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpContentNpc1
-import org.rsmod.api.script.onOpNpc1
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class GenericPerson : PluginScript() {
     override fun ScriptContext.startup() {
         onOpContentNpc1("content.person") { personDialogue(it.npc) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Man
     private suspend fun ProtectedAccess.personDialogue(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(happy, "Hello, how's it going?")
@@ -69,7 +70,7 @@ class GenericPerson : PluginScript() {
         chatNpc(neutral, "How can I help you?")
         val choice =
             choice3(
-                "Do you wish to trade?",
+                "Do you want to trade?",
                 1,
                 "I'm in search of a quest.",
                 2,
@@ -114,18 +115,15 @@ class GenericPerson : PluginScript() {
     }
 
     private suspend fun Dialogue.randomGenericDialogue10() {
-        chatNpc(happy, "Hello, how's it going?")
         searchingEnemiesDialogue()
     }
 
     private suspend fun Dialogue.randomGenericDialogue11() {
-        chatNpc(happy, "Hello, how's it going?")
         chatPlayer(happy, "I'm in search of a quest.")
         chatNpc(neutral, "I'm sorry I can't help you there.")
     }
 
     private suspend fun Dialogue.randomGenericDialogue12() {
-        chatNpc(happy, "Hello, how's it going?")
         chatPlayer(neutral, "Do you wish to trade?")
         chatNpc(
             neutral,
@@ -181,7 +179,7 @@ class GenericPerson : PluginScript() {
     }
 
     private suspend fun Dialogue.tradeDialogue() {
-        chatPlayer(neutral, "Do you wish to trade?")
+        chatPlayer(neutral, "Do you want to trade?")
         chatNpc(
             neutral,
             "No, I have nothing I wish to get rid of. If you want to " +

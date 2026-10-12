@@ -7,6 +7,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class VetionJrDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         for (npc in FORMS) {
@@ -14,6 +15,7 @@ class VetionJrDialogue @Inject constructor() : PluginScript() {
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Vet'ion_Jr.
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(quiz, "Who is the true lord and king of the lands?")

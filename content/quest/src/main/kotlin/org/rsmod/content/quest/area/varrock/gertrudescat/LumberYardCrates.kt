@@ -32,6 +32,9 @@ constructor(
         worldRepo.soundArea(this, MEW_SOUND, radius = MEW_RADIUS)
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Gertrude%27s_Cat
+    // TODO(content): [verify:in_game] The transcript has a "Fluffs' kitten: Mew!" chat for the
+    //  crates whose trigger it doesn't say; the empty-crate and full-pack messages are guesses.
     private suspend fun ProtectedAccess.searchCrate(npc: Npc) {
         arriveDelay()
         faceEntitySquare(npc)
@@ -52,7 +55,7 @@ constructor(
         }
         npc.say("Mew!")
         soundSynth(MEW_SOUND)
-        mes("You find a kitten! You carefully place it in your backpack.")
+        startDialogue { mesbox("You find a kitten! You carefully place it in your backpack.") }
     }
 
     private fun crateIndex(npc: Npc): Int =

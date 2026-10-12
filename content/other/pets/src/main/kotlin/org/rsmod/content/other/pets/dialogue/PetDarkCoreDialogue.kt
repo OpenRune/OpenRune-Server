@@ -7,12 +7,14 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class PetDarkCoreDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(DARK_CORE, "Talk-to") { talkDarkCore(it) }
         onPetOp(CORPOREAL_CRITTER, "Talk-to") { talkCorporealCritter(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Pet_dark_core
     private suspend fun ProtectedAccess.talkDarkCore(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(quiz, "Got any sigils for me?")
@@ -21,6 +23,7 @@ class PetDarkCoreDialogue @Inject constructor() : PluginScript() {
             chatPlayer(happy, "Let's bounce!")
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Pet_dark_core
     private suspend fun ProtectedAccess.talkCorporealCritter(npc: Npc) =
         startDialogue(npc) {
             chatNpc(sad, "I'm hungry!")

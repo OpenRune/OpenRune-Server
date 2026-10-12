@@ -144,6 +144,9 @@ class XMarksTheSpotQuest @Inject constructor(private val objRepo: ObjRepository)
         }
     }
 
+    // TODO(content): [verify:in_game] The clue dig messages, the orb messages and the casket
+    // re-dig message are not on the wiki; only the casket dig text is.
+    // https://oldschool.runescape.wiki/w/Transcript:X_Marks_the_Spot
     override suspend fun ProtectedAccess.dig() {
         when (stage(player)) {
             STAGE_BOBS_CLUE ->
@@ -183,14 +186,14 @@ class XMarksTheSpotQuest @Inject constructor(private val objRepo: ObjRepository)
         startDialogue {
             objbox(
                 CASKET,
-                "You dig up an ancient casket. As you do, you hear a faint whispering, but you " +
-                    "can't make out the words...",
+                "You dig up an Ancient Casket. As you do, you hear a faint whispering. You can't " +
+                    "make out what it says though...",
             )
             chatPlayer(confused, "Hmmmm... Must have been the wind.")
             chatPlayer(
                 neutral,
-                "Anyway, this must be the treasure Veos is after. I should take it to him. If I " +
-                    "remember right, his ship is docked at the northernmost pier in Port Sarim.",
+                "Anyway, this must be the treasure that Veos is after. I should take it to " +
+                    "him. If I remember right, he's docked at the northernmost pier in Port Sarim.",
             )
         }
     }
@@ -290,14 +293,14 @@ class XMarksTheSpotQuest @Inject constructor(private val objRepo: ObjRepository)
             )
 
         private const val BOBS_CLUE_TEXT =
-            "A man named Bob lives in the town of Lumbridge. Leaving his house by the door, he " +
-                "walks 1 step east, 7 steps north, 5 steps west and 1 step south. There he digs " +
-                "a hole and buries his treasure."
+            "Within the town of Lumbridge lives a man named Bob. He walks out of his door and " +
+                "takes 1 step east, 7 steps north, 5 steps west and 1 step south. Once he " +
+                "arrives, he digs a hole and buries his treasure."
 
         private const val CIPHER_CLUE_TEXT = "ESBZOPS QJH QFO"
 
         private const val CASKET_WARNING =
-            "I don't think Veos would want me opening his treasure. I should take it to him. If " +
-                "I remember right, his ship is docked at the northernmost pier in Port Sarim."
+            "I don't think Veos would want me to open his treasure. I should take it to him. If " +
+                "I remember right, it's docked at the northernmost pier in Port Sarim."
     }
 }

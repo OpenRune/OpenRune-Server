@@ -14,6 +14,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Sbott
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class SbottScript : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(TANNER_SBOTT) { greet(it.npc) }

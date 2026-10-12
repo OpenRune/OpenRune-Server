@@ -12,10 +12,12 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Thakkrad_Sigmundson
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class ThakkradScript : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1(CraftingConstants.YAK_CURER) { serviceMenu(it.npc, greet = true) }
-        onOpNpc3(CraftingConstants.YAK_CURER) { serviceMenu(it.npc, greet = false) }
+        onOpNpc1(CraftingConstants.YAK_CURER) { serviceMenu(it.npc) }
+        onOpNpc3(CraftingConstants.YAK_CURER) { serviceMenu(it.npc) }
         onOpNpcU(CraftingConstants.YAK_CURER) { event ->
             val row = yakRow() ?: return@onOpNpcU
             if (event.objType.internalName == row.input) {
@@ -24,12 +26,11 @@ class ThakkradScript : PluginScript() {
         }
     }
 
-    private suspend fun ProtectedAccess.serviceMenu(npc: Npc, greet: Boolean) {
+    // TODO(content): [quest:the_fremennik_isles] Talk-to after the quest: "Thank you for leading
+    // the Burgher's militia against the Troll King." (four lines), and his quest dialogue.
+    private suspend fun ProtectedAccess.serviceMenu(npc: Npc) {
         val row = yakRow() ?: return
         startDialogue(npc) {
-            if (greet) {
-                chatNpc(happy, "What can I help you with?")
-            }
             val cure = choice2(
                 "Cure my yak-hide, please.", true,
                 "Nothing, thanks.", false,

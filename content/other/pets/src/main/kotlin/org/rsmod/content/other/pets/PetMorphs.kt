@@ -54,6 +54,7 @@ class PetMorphs @Inject constructor(private val followers: PetFollowers) {
         return true
     }
 
+    // TODO(content): [verify:in_game] Locked, already unlocked and too few items messages.
     private suspend fun ProtectedAccess.apply(pet: Pet, morph: ItemMorph, deliver: ProtectedAccess.(PetForm) -> Unit) {
         if (pet.key == PHOENIX) {
             applyPhoenix(morph)
@@ -86,6 +87,7 @@ class PetMorphs @Inject constructor(private val followers: PetFollowers) {
         }
     }
 
+    // TODO(content): [verify:in_game] Phoenix recolour message wording.
     private suspend fun ProtectedAccess.applyPhoenix(morph: ItemMorph) {
         val colour = morph.label ?: return
         val varbit = morph.unlocks.single()

@@ -7,6 +7,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Jal-Nib-Rek
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class JalNibRekDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NIB, "Talk-to") { talkNib(it) }

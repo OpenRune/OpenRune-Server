@@ -12,4 +12,5 @@ dependencies {
     testImplementation(libs.rsprot.api)
     testImplementation(projects.content.generic.genericLocs)
     implementation(projects.api.pluginCommons)
+    implementation(projects.content.quest)
 }

@@ -99,6 +99,7 @@ class ImpCatcherInteractionTest {
         f.talk()
         f.finish()
         f.assertReward()
+        assertTrue(f.output().contains("Wizard Mizgog places the four beads on the table"))
         assertTrue(f.player.ui.containsModal("interface.questscroll"))
         f.talk()
         f.finish(listOf(1))

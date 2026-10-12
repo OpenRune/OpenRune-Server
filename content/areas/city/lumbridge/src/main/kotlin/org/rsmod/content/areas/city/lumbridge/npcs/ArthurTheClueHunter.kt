@@ -13,6 +13,7 @@ import org.rsmod.game.map.Direction
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Arthur_the_Clue_Hunter
 class ArthurTheClueHunter @Inject constructor(private val random: GameRandom) : PluginScript() {
 
     internal var Player.clueScrollDisableVessels by boolVarBit("varbit.vesseled_clues_disabled")
@@ -196,7 +197,7 @@ class ArthurTheClueHunter @Inject constructor(private val random: GameRandom) : 
             neutral,
             "You will see a couple of words that may or may not " +
                 "make sense together. You will have to rearrange the " +
-                "letters to make the name of the person you need to talk " +
+                "letter to make the name of the person you need to talk " +
                 "to.",
         )
     }
@@ -219,7 +220,7 @@ class ArthurTheClueHunter @Inject constructor(private val random: GameRandom) : 
     private suspend fun Dialogue.cipherExplanation() {
         chatNpc(
             neutral,
-            "This type of clues has you talk to someone around " +
+            "This type of clue has you talk to someone around " +
                 "Gielinor. Although the clue does not tell you exactly who " +
                 "to talk to. This type of challenge only appears in clue " +
                 "tiers medium, hard and elite.",
@@ -276,7 +277,7 @@ class ArthurTheClueHunter @Inject constructor(private val random: GameRandom) : 
         chatNpc(
             neutral,
             "This type of clue can be as simple as talk to the " +
-                "specified person or searching a crate in specified " +
+                "specified person or searching a crate in a specified " +
                 "location.",
         )
         chatNpc(
@@ -370,7 +371,7 @@ class ArthurTheClueHunter @Inject constructor(private val random: GameRandom) : 
         chatNpc(neutral, "This type of clue will show you a map of an area.")
         chatNpc(
             neutral,
-            "The map will show you where you will need to dig, or " +
+            "This map will show you where you will need to dig, or " +
                 "what you will need to search to get the next clue.",
         )
         clueTypesPg3()
@@ -384,7 +385,7 @@ class ArthurTheClueHunter @Inject constructor(private val random: GameRandom) : 
         )
         chatNpc(
             neutral,
-            "You will then need to use the numbers to figure out " +
+            "You will then need to use the numbers to figure our " +
                 "where you will need to dig after arriving to your " +
                 "destination.",
         )
@@ -409,7 +410,7 @@ class ArthurTheClueHunter @Inject constructor(private val random: GameRandom) : 
         )
         val confirm =
             choice2(
-                "Yes please, I want to start receiving vesseled containers.",
+                "Yes please, I want to start receiving vesseled containers",
                 true,
                 "Nevermind.",
                 false,

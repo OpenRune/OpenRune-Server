@@ -52,6 +52,10 @@ private interface DialogueFlow {
     suspend fun greet(access: ProtectedAccess, npc: Npc, prices: TannerPrices)
 }
 
+// https://oldschool.runescape.wiki/w/Transcript:Ellis
+// https://oldschool.runescape.wiki/w/Transcript:Tanner_(Crafting_Guild)
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// TODO(content): [miniquest:rogue_trader] Ellis's "What can you tell me about Ali Morrisane?" option.
 private object LeatherManufacturerFlow : DialogueFlow {
     override suspend fun greet(access: ProtectedAccess, npc: Npc, prices: TannerPrices) {
         access.startDialogue(npc) {
@@ -103,6 +107,7 @@ private object LeatherManufacturerFlow : DialogueFlow {
     }
 }
 
+// https://oldschool.runescape.wiki/w/Transcript:Chouani
 private object ChouaniFlow : DialogueFlow {
     override suspend fun greet(access: ProtectedAccess, npc: Npc, prices: TannerPrices) {
         access.startDialogue(npc) {
@@ -133,7 +138,7 @@ private suspend fun Dialogue.offerTanning(hides: Int, prices: TannerPrices) {
     } else {
         chatNpc(quiz, "I see you have brought me some hides. Would you like me to tan them for you?")
     }
-    if (choice2("Yes please.", true, "No thanks.", false)) {
+    if (choice2("Yes please.", true, "No thanks.", false, title = "What would you like to say?")) {
         chatPlayer(happy, "Yes please.")
         access.openTanner(prices)
     } else {

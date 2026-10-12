@@ -10,6 +10,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Phoenix
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class PhoenixDialogue @Inject constructor(private val morphs: PetMorphs) : PluginScript() {
     override fun ScriptContext.startup() {
         for (npc in NPCS) {

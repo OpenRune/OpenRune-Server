@@ -10,6 +10,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class SrarachaDialogue @Inject constructor(private val morphs: PetMorphs) : PluginScript() {
     override fun ScriptContext.startup() {
         for (npc in FORMS) {
@@ -18,6 +19,9 @@ class SrarachaDialogue @Inject constructor(private val morphs: PetMorphs) : Plug
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Sraracha
+    // TODO(content): [system:pet_item_on_npc] Using the Sraracha item on Brother Aimeri
+    //  (npc.hosdun_aimeri) starts a short dialogue with him.
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(quiz, "So what kind of spider are you...?")

@@ -6,6 +6,8 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.content.skills.runecrafting.cordeliaPouchRepairUnlocked
 import org.rsmod.game.entity.Npc
 
+// https://oldschool.runescape.wiki/w/Transcript:Apprentice_Cordelia
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 object CordeliaDialogue {
     suspend fun ProtectedAccess.talkToCordelia(npc: Npc) {
         startDialogue(npc) {
@@ -34,10 +36,11 @@ object CordeliaDialogue {
 
         when (
             choice2(
-                "Pay ${25} abyssal pearls to unlock the pouch repair?",
+                "Yes",
                 1,
                 "Cancel",
                 2,
+                title = "Pay ${25} abyssal pearls to unlock the pouch repair?",
             )
         ) {
             1 -> confirmUnlock()

@@ -50,6 +50,7 @@ class CooksAssistant : QuestScript(
         legacyGivenFlour.clear(player)
     }
 
+    // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
     private suspend fun ProtectedAccess.startCookDialogue(npc: Npc) {
         startDialogue(npc) { cookDialogue(npc) }
     }
@@ -91,74 +92,78 @@ class CooksAssistant : QuestScript(
         line("As a reward he now lets me use his high-quality range whenever I wish to cook there.")
     }
 
-    private fun hasMilk(player: Player): Boolean =
-        player.inv.count("obj.bucket_milk") > 0 || player.givenMilk
-
-    private fun hasEgg(player: Player): Boolean =
-        player.inv.count("obj.egg") > 0 || player.givenEgg
-
-    private fun hasFlour(player: Player): Boolean =
-        player.inv.count(potFlour) > 0 || player.givenFlour
-
     private fun allItemsDelivered(player: Player): Boolean =
         player.givenMilk && player.givenEgg && player.givenFlour
 
     private suspend fun Dialogue.deliverItem(
         item: String,
+        given: Boolean,
         message: String,
         flag: () -> Unit,
     ) {
-        if (player.inv.count(item) > 0) {
+        if (!given && player.inv.count(item) > 0) {
             access.invDel(access.inv, item)
             flag()
             chatPlayer(happy, message)
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Cook%27s_Assistant
     private suspend fun Dialogue.dialogDuringCook(npc: Npc) {
         chatNpc(worried, "How are you getting on with finding the ingredients?")
 
-        if (!hasMilk(player) && !hasEgg(player) && !hasFlour(player)) {
+        // TODO(content): [verify:in_game] Whether ingredients handed in earlier count as "obtained"
+        // here; this branch is taken when the player carries none of the ingredients still needed.
+        if (!carriesNeededIngredient(player)) {
             chatPlayer(sad, "I haven't got any of them yet, I'm still looking.")
-            chatNpc(verymad, "Please get the ingredients quickly. I'm running out of time! The Duke will throw me into the streets!")
-
-            when (
-                choice2(
-                    "I'll get right on it.",
-                    1,
-                    "Can you remind me how to find these things again?",
-                    2,
-                )
-            ) {
-                1 -> chatPlayer(happy, "I'll get right on it.")
-                2 -> showIngredientHelp(npc)
-            }
+            chatNpc(verymad, "Please get the ingredients quickly - I'm running out of time! The Duke will throw me into the streets!")
+            mesbox(stillNeededText(player))
+            remindChoice(npc)
             return
         }
 
-        deliverItem("obj.bucket_milk", "Here's a bucket of milk.") { player.givenMilk = true }
-        deliverItem("obj.egg", "Here's a fresh egg.") { player.givenEgg = true }
-        deliverItem(potFlour, "Here's a pot of flour.") { player.givenFlour = true }
+        deliverItem("obj.bucket_milk", player.givenMilk, "Here's a bucket of milk.") { player.givenMilk = true }
+        deliverItem(potFlour, player.givenFlour, "Here's a pot of flour.") { player.givenFlour = true }
+        deliverItem("obj.egg", player.givenEgg, "Here's a fresh egg.") { player.givenEgg = true }
 
         if (allItemsDelivered(player)) {
             questFinishing(npc)
         } else {
             chatNpc(happy, "Thanks for the ingredients you have got so far. Please get the rest quickly - I'm running out of time! The Duke will throw me into the streets!")
-            when (
-                choice2(
-                    "I'll get right on it.",
-                    1,
-                    "Can you remind me how to find these things again?",
-                    2,
-                )
-            ) {
-                1 -> chatPlayer(happy, "I'll get right on it.")
-                2 -> showIngredientHelp(npc)
+            remindChoice(npc)
+        }
+    }
+
+    private fun carriesNeededIngredient(player: Player): Boolean =
+        (!player.givenMilk && player.inv.count("obj.bucket_milk") > 0) ||
+            (!player.givenFlour && player.inv.count(potFlour) > 0) ||
+            (!player.givenEgg && player.inv.count("obj.egg") > 0)
+
+    private fun stillNeededText(player: Player): String = buildString {
+        append("You still need to get:")
+        if (!player.givenMilk) append("<br>A bucket of milk")
+        if (!player.givenFlour) append("<br>A pot of flour")
+        if (!player.givenEgg) append("<br>An egg")
+    }
+
+    private suspend fun Dialogue.remindChoice(npc: Npc) {
+        when (
+            choice2(
+                "I'll get right on it.",
+                1,
+                "Can you remind me how to find these things again?",
+                2,
+            )
+        ) {
+            1 -> Unit
+            2 -> {
+                chatPlayer(quiz, "So where do I find these ingredients then?")
+                showIngredientHelp(npc, firstTime = true)
             }
         }
     }
 
-    private suspend fun Dialogue.showIngredientHelp(npc: Npc) {
+    private suspend fun Dialogue.showIngredientHelp(npc: Npc, firstTime: Boolean = false) {
         when (
             choice4(
                 "Where do I find some flour?",
@@ -167,11 +172,16 @@ class CooksAssistant : QuestScript(
                 2,
                 "And eggs? Where are they found?",
                 3,
-                "I've got all the information I need. Thanks.",
+                if (firstTime) {
+                    "Actually, I know where to find this stuff."
+                } else {
+                    "I've got all the information I need. Thanks."
+                },
                 4,
             )
         ) {
             1 -> {
+                chatNpc(happy, "There is a Mill fairly close, go North and then West. Mill Lane Mill is just off the road to Draynor. I usually get my flour from there.")
                 if (player.inv.count("obj.pot_empty") > 0) {
                     chatNpc(
                         happy,
@@ -186,6 +196,8 @@ class CooksAssistant : QuestScript(
                 showIngredientHelp(npc)
             }
             2 -> {
+                chatNpc(happy, "There is a cattle field on the other side of the river, just across the road from the Groats' Farm.")
+                chatNpc(happy, "Talk to Gillie Groats, she looks after the Dairy cows - she'll tell you everything you need to know about milking cows!")
                 if (player.inv.count("obj.bucket_empty") > 0) {
                     chatNpc(
                         happy,
@@ -204,7 +216,12 @@ class CooksAssistant : QuestScript(
                 chatNpc(happy, "But any chicken should lay eggs.")
                 showIngredientHelp(npc)
             }
-            4 -> chatPlayer(happy, "I've got all the information I need. Thanks.")
+            4 ->
+                if (firstTime) {
+                    chatPlayer(happy, "Actually, I know where to find this stuff.")
+                } else {
+                    chatPlayer(happy, "I've got all the information I need. Thanks.")
+                }
         }
     }
 
@@ -217,6 +234,9 @@ class CooksAssistant : QuestScript(
         quest.advanceQuestStage(access)
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Cook_(Lumbridge)
+    // TODO(content): [quest:recipe_for_disaster] Post-RFD greeting and the members' "other quests"
+    // branch into Another Cook's Quest; the free-to-play reply is used until RFD exists.
     private suspend fun Dialogue.dialogAfterCook(npc: Npc) {
         chatNpc(happy, "How is the adventuring going, my friend?")
 
@@ -244,7 +264,7 @@ class CooksAssistant : QuestScript(
             4 -> {
                 chatPlayer(quiz, "Can I use your range?")
                 chatNpc(happy, "Go ahead - it's a very good range. It's easier to use than most other ranges.")
-                chatNpc(happy, "It's called the Cook-o-matic 100. It uses a combination of state-of-the-art temperature regulation and magic.")
+                chatNpc(happy, "Its called the Cook-o-matic 100. It uses a combination of state of the art temperature regulation and magic.")
                 chatPlayer(quiz, "Will it mean my food will burn less often?")
                 chatNpc(shifty, "Well, that's what the salesman told us anyway...")
                 chatPlayer(confused, "Thanks?")
@@ -252,6 +272,7 @@ class CooksAssistant : QuestScript(
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Cook%27s_Assistant
     private suspend fun Dialogue.dialogQuestNotStarted(npc: Npc) {
         chatNpc(worried, "What am I to do?")
 
@@ -259,7 +280,7 @@ class CooksAssistant : QuestScript(
             choice4(
                 "What's wrong?",
                 1,
-                "Can you make me a cake?",
+                "You're a cook, why don't you bake me a cake?",
                 2,
                 "You don't look very happy.",
                 3,
@@ -276,13 +297,26 @@ class CooksAssistant : QuestScript(
             3 -> {
                 chatPlayer(worried, "You don't look very happy.")
                 chatNpc(sad, "No, I'm not. The world is caving in around me - I am overcome by dark feelings of impending doom.")
-                cooksWhatsWrong(npc)
+                when (choice2("What's wrong?", 1, "I'd take the rest of the day off if I were you.", 2)) {
+                    1 -> cooksWhatsWrong(npc)
+                    2 -> {
+                        chatPlayer(neutral, "I'd take the rest of the day off if I were you.")
+                        chatNpc(worried, "No, that's the worst thing I could do. I'd get in terrible trouble.")
+                        chatPlayer(neutral, "Well maybe you need to take a holiday...")
+                        chatNpc(sad, "That would be nice, but the Duke doesn't allow holidays for core staff.")
+                        chatPlayer(quiz, "Hmm, why not run away to the sea and start a new life as a Pirate?")
+                        chatNpc(sad, "My wife gets sea sick, and I have an irrational fear of eyepatches. I don't see it working myself.")
+                        chatPlayer(sad, "I'm afraid I've run out of ideas.")
+                        chatNpc(sad, "I know I'm doomed.")
+                        cooksWhatsWrong(npc)
+                    }
+                }
             }
             4 -> {
                 chatPlayer(happy, "Nice hat!")
-                chatNpc(confused, "Err thank you. It's a pretty ordinary cook's hat really.")
+                chatNpc(confused, "Err thank you. It's a pretty ordinary cooks hat really.")
                 chatPlayer(happy, "Still, suits you. The trousers are pretty special too.")
-                chatNpc(bored, "It's all standard cook's issue uniform...")
+                chatNpc(bored, "Its all standard cook's issue uniform...")
                 chatPlayer(laugh, "The whole hat, apron, stripey trousers ensemble - it works. It make you looks like a real cook.")
                 chatNpc(angry, "I am a real cook! I haven't got time to be chatting about Culinary Fashion. I am in desperate need of help!")
                 cooksWhatsWrong(npc)
@@ -292,7 +326,7 @@ class CooksAssistant : QuestScript(
 
     private suspend fun Dialogue.cooksWhatsWrong(npc: Npc) {
         chatPlayer(worried, "What's wrong?")
-        chatNpc(verymad, "Oh dear, oh dear, oh dear, I'm in a terrible terrible mess! It's the Duke's birthday and I should be making him a lovely big birthday cake.")
+        chatNpc(verymad, "Oh dear, oh dear, oh dear, I'm in a terrible terrible mess! It's the Duke's birthday today, and I should be making him a lovely big birthday cake.")
         chatNpc(
             sad,
             "I've forgotten to buy the ingredients. I'll never get them in time now. He'll sack me! What will I do? I have four children and a goat to look after. Would you help me? Please?",
@@ -302,6 +336,7 @@ class CooksAssistant : QuestScript(
             1 -> {
                 chatPlayer(happy, "Yes, I'll help you.")
                 quest.advanceQuestStage(access)
+                chatNpc(happy, "Oh thank you, thank you. I need milk, an egg and flour. I'd be very grateful if you can get them for me.")
                 if (
                     player.inv.count("obj.bucket_milk") > 0 &&
                     player.inv.count("obj.egg") > 0 &&
@@ -320,10 +355,13 @@ class CooksAssistant : QuestScript(
                     player.givenEgg = true
                     player.givenMilk = true
 
+                    doubleobjbox(potFlour, "obj.bucket_milk", "You hand the cook all of the ingredients.")
+
                     questFinishing(npc)
                     return
                 }
-                chatNpc(happy, "Oh thank you, thank you. I need milk, an egg and flour. I'd be very grateful if you can get them for me.")
+                chatPlayer(quiz, "So where do I find these ingredients then?")
+                showIngredientHelp(npc, firstTime = true)
             }
             2 -> {
                 chatPlayer(sad, "No, I don't feel like it. Maybe later.")

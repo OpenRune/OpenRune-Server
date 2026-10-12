@@ -11,6 +11,9 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Lowe
+// TODO(content): [system:adventure_path] combat path voucher reward
+// TODO(content): [system:treasure_trails] medium clue reward
 class ArcheryShop @Inject constructor(private val shops: Shops) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -29,7 +32,7 @@ class ArcheryShop @Inject constructor(private val shops: Shops) : PluginScript()
         chatNpc(happy, "Welcome to Lowe's Archery Emporium. Do you want to see my wares?")
 
         val choice = choice2(
-            "Yes please!", 1,
+            "Yes, please.", 1,
             "No, I prefer to bash things close up.", 2,
         )
 
@@ -41,5 +44,4 @@ class ArcheryShop @Inject constructor(private val shops: Shops) : PluginScript()
             }
         }
     }
-
 }

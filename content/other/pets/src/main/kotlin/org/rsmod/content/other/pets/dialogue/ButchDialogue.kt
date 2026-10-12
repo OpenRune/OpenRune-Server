@@ -7,11 +7,13 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class ButchDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NPC, "Talk-to") { talk(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Butch
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(2)) {
@@ -26,9 +28,9 @@ class ButchDialogue @Inject constructor() : PluginScript() {
                 }
                 else -> {
                     chatPlayer(quiz, "Can you speak?")
-                    chatNpcNoAnim("Yes...")
+                    access.chatNpcNoAnim(npc, "Yes...", title = "Mysterious Voice")
                     chatPlayer(confused, "Er... Who's speaking? Is this Butch, or something else?")
-                    chatNpcNoAnim("Yes...")
+                    access.chatNpcNoAnim(npc, "Yes...", title = "Mysterious Voice")
                     chatPlayer(worried, "That's unsettling.")
                 }
             }

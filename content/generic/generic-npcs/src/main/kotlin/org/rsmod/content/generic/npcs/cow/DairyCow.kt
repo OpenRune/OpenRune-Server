@@ -5,8 +5,6 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpContentLoc1
 import org.rsmod.api.script.onOpContentLoc2
 import org.rsmod.api.script.onOpContentLocU
-import org.rsmod.api.script.onOpLoc2
-import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onPlayerQueue
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.map.CoordGrid
@@ -48,6 +46,7 @@ class DairyCow : PluginScript() {
         weakQueue("queue.milk_cow", 8)
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Gillie_Groats
     private suspend fun Dialogue.noBucket() {
         chatNpcSpecific(
             "Gillie Groats the Milkmaid",
@@ -74,7 +73,7 @@ class DairyCow : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.stealCowbell(loc: BoundLocInfo) {
-        // TODO(content): Should be different actions based on cold war quest progress.
+        // TODO(content): [quest:cold_war] Stealing the cowbell depends on Cold War progress.
         arriveDelay()
         faceSquare(loc.coords)
         mesbox("You need to have started the Cold War quest to attempt this.")

@@ -8,6 +8,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class GadrinScript : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.mguild_capeseller") { talk(it.npc) }
@@ -15,6 +16,7 @@ class GadrinScript : PluginScript() {
 
     private suspend fun ProtectedAccess.talk(npc: Npc) = startDialogue(npc) { greeting() }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Gadrin
     private suspend fun Dialogue.greeting() {
         chatNpc(
             happy,

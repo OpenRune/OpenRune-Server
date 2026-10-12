@@ -7,12 +7,14 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class LilCreatorDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(CREATOR, "Talk-to") { talkCreator(it) }
         onPetOp(DESTRUCTOR, "Talk-to") { talkDestructor(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Lil%27_Creator
     private suspend fun ProtectedAccess.talkCreator(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(
@@ -24,6 +26,7 @@ class LilCreatorDialogue @Inject constructor() : PluginScript() {
             chatPlayer(neutral, "Yeah, I'm the puny one.")
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Lil%27_Creator
     private suspend fun ProtectedAccess.talkDestructor(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(quiz, "Don't you get hot standing around pools of lava all day?")

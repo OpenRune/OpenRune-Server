@@ -199,8 +199,11 @@ constructor(
             )
             .joinToString("\n")
 
+    // https://oldschool.runescape.wiki/w/Transcript:Misthalin_Mystery
+    // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
     private suspend fun Dialogue.shore() {
         if (quest.isQuestCompleted(player)) {
+            // TODO(content): [verify:in_game] Post-quest shore line is not in the transcript.
             abigale(sad, "Thank you for what you did on that island.")
             return
         }
@@ -208,7 +211,11 @@ constructor(
         val stage = quest.getQuestStage(player)
 
         if (stage >= MisthalinStage.Briefed) {
-            abigale(sad, "That psycho is still out there, you have to bring them to justice.")
+            abigale(
+                sad,
+                "Please, you need to make sure they don't get away with this! You can use the " +
+                    "boat over there to get to the island we escaped from.",
+            )
             return
         }
 
@@ -222,6 +229,7 @@ constructor(
         val start =
             choice2("Yes.", true, "No.", false, title = "Start the Misthalin Mystery quest?")
         if (!start) {
+            chatPlayer(angry, "I'm not getting involved in this!")
             return
         }
 
@@ -269,7 +277,13 @@ constructor(
 
     private suspend fun ProtectedAccess.rowToIsland() {
         if (quest.isQuestNotStarted(player)) {
-            mes("I have no reason to go out to that island.")
+            startDialogue {
+                chatPlayer(
+                    neutral,
+                    "I should probably talk to whoever left this boat here before rowing off in " +
+                        "it...",
+                )
+            }
             return
         }
         row(MisthalinCoords.IslandLanding, "You row through the fog to the nearby island.")
@@ -335,6 +349,11 @@ constructor(
         chatPlayer(happy, "Hi Mandy. How are you feeling now?")
         chatNpc(happy, "Much better thanks, and lucky to be alive, thanks to you in no small part.")
         chatPlayer(happy, "Well we saved the day as a team, so thank you too.")
+        val missing = mistmystRewardSpaceShortfall(player.inv.freeSpace())
+        if (missing > 0) {
+            chatNpc(neutral, mistmystRewardSpaceText(missing))
+            return
+        }
         chatNpc(
             happy,
             "Here, I found these in the wardrobe when I was seeing to my wound. I don't want them " +
@@ -359,6 +378,21 @@ constructor(
 
         private val GodswordProp = CoordGrid(1626, 4843, 0)
     }
+}
+
+internal const val MistmystRewardSlots = 3
+
+internal fun mistmystRewardSpaceShortfall(freeSlots: Int): Int =
+    (MistmystRewardSlots - freeSlots).coerceAtLeast(0)
+
+internal fun mistmystRewardSpaceText(missing: Int): String {
+    val spaces =
+        when (missing) {
+            1 -> "another space"
+            else -> "$missing more spaces"
+        }
+    return "I found some stuff in the wardrobe when I was seeing to my wound. You need $spaces " +
+        "in your inventory to take it all."
 }
 
 internal fun CoordGrid.isOnMisthalinIsland(): Boolean =

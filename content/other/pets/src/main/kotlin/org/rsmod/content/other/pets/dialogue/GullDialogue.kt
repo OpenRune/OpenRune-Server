@@ -13,6 +13,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class GullDialogue @Inject constructor(private val followers: PetFollowers) : PluginScript() {
     private var cachedRawFish: Set<String>? = null
 
@@ -23,12 +24,14 @@ class GullDialogue @Inject constructor(private val followers: PetFollowers) : Pl
         onPetOpU(GULLIVER) { feedGulliver(it.npc, it.objType) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Gull_(pet)
     private suspend fun ProtectedAccess.talkGull(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(happy, "What a pretty bird you are!")
             chatNpc(happy, "Chirp chirp!")
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Gull_(pet)
     private suspend fun ProtectedAccess.talkGulliver(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(2)) {
@@ -61,6 +64,9 @@ class GullDialogue @Inject constructor(private val followers: PetFollowers) : Pl
             }
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Gull_(pet)
+    // TODO(content): [verify:in_game] The Gull (pet) page says raw or cooked fish count; only raw
+    // fish are accepted here.
     private suspend fun ProtectedAccess.feedGull(npc: Npc, obj: ItemServerType) {
         if (obj.internalName !in rawFish()) {
             startDialogue(npc) {
@@ -80,7 +86,7 @@ class GullDialogue @Inject constructor(private val followers: PetFollowers) : Pl
             chatNpc(happy, "Chirp! chirp!")
             if (fed >= FISH_TO_GROW) {
                 mesbox("Your pet grows up before your very eyes!")
-                chatNpc(happy, "Caw! That hit the spot.")
+                chatNpcSpecific("Gulliver", GULLIVER, happy, "Caw! That hit the spot.")
             }
         }
         if (fed >= FISH_TO_GROW) {
@@ -89,6 +95,7 @@ class GullDialogue @Inject constructor(private val followers: PetFollowers) : Pl
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Gull_(pet)
     private suspend fun ProtectedAccess.feedGulliver(npc: Npc, obj: ItemServerType) {
         if (obj.internalName !in rawFish()) {
             startDialogue(npc) { chatNpc(angry, "Caw!") }

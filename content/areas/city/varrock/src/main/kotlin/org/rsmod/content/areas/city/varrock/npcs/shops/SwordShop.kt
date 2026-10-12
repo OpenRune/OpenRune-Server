@@ -11,6 +11,8 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Shop_keeper_(Varrock_Swordshop)
+// TODO(content): [system:adventure_path] combat path voucher reward
 class SwordShop @Inject constructor(private val shops: Shops) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -31,7 +33,7 @@ class SwordShop @Inject constructor(private val shops: Shops) : PluginScript() {
         chatNpc(happy, "Hello, bold adventurer! Can I interest you in some swords?")
 
         val choice = choice2(
-            "Yes please!", 1,
+            "Yes, please!", 1,
             "No, I'm okay for swords right now.", 2,
         )
 
@@ -43,5 +45,4 @@ class SwordShop @Inject constructor(private val shops: Shops) : PluginScript() {
             }
         }
     }
-
 }

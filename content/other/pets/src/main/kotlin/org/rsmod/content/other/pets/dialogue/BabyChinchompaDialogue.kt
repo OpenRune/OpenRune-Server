@@ -7,6 +7,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class BabyChinchompaDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         for (npc in STANDARD_FORMS) {
@@ -15,9 +16,11 @@ class BabyChinchompaDialogue @Inject constructor() : PluginScript() {
         onPetOp(GOLD, "Talk-to") { talkGold(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Baby_chinchompa
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) { chatNpc(happy, "Squeak squeak!") }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Baby_chinchompa
     private suspend fun ProtectedAccess.talkGold(npc: Npc) =
         startDialogue(npc) { chatNpc(happy, "Squeaka squeaka!") }
 

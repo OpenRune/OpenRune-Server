@@ -22,6 +22,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class ChildrenOfTheSun
 internal constructor(private val scenes: CotsScenes, private val tails: CotsTails) :
     QuestScript(
@@ -200,6 +201,7 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         startDialogue(npc) { alinaConversation() }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Children_of_the_Sun
     internal suspend fun Dialogue.alinaConversation() {
         when (stage(player)) {
             CotsStage.NotStarted -> beforeQuest()
@@ -585,6 +587,7 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         quest.completeQuest(access)
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Sergeant_Tobyn
     private suspend fun Dialogue.afterQuest() {
         tobyn(
             happy,
@@ -595,8 +598,8 @@ internal constructor(private val scenes: CotsScenes, private val tails: CotsTail
         chatPlayer(neutral, "Not yet.")
         tobyn(
             neutral,
-            "Prince Itzla said one of his people would meet you just outside the eastern gates. " +
-                "It might be worth heading over there.",
+            "Prince Itzla said that one of his people would meet you just outside the eastern " +
+                "gates. Might be worth heading over there.",
         )
         chatPlayer(happy, "I might just do that. Thanks!")
     }

@@ -25,7 +25,12 @@ internal class MisthalinPuzzles(private val quest: Quest) {
             }
         }
 
-    private fun ProtectedAccess.openPiano() {
+    // https://oldschool.runescape.wiki/w/Transcript:Misthalin_Mystery
+    private suspend fun ProtectedAccess.openPiano() {
+        if (quest.getQuestStage(player) < MisthalinStage.LaceyDead) {
+            startDialogue { chatPlayer(neutral, "There is no time to be playing around!") }
+            return
+        }
         ifOpenMainModal("interface.mistmyst_piano")
     }
 
@@ -63,7 +68,7 @@ internal class MisthalinPuzzles(private val quest: Quest) {
         startDialogue {
             chatPlayer(
                 neutral,
-                "I don't think that's right.. Perhaps the clue the killer left behind could help?",
+                "I don't think that's right... Perhaps the clue the killer left behind could help?",
             )
         }
         clearPianoBits()

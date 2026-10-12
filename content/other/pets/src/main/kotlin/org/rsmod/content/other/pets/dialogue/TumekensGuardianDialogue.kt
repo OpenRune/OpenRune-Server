@@ -10,6 +10,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class TumekensGuardianDialogue @Inject constructor(private val morphs: PetMorphs) : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(TUMEKEN, "Talk-to") { talkTumeken(it) }
@@ -23,6 +24,7 @@ class TumekensGuardianDialogue @Inject constructor(private val morphs: PetMorphs
         onPetOpU(ZEBO) { useItemZebo(it.npc, it.objType) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Tumeken%27s_guardian
     private suspend fun ProtectedAccess.talkTumeken(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(quiz, "So how are you doing?")
@@ -35,6 +37,7 @@ class TumekensGuardianDialogue @Inject constructor(private val morphs: PetMorphs
             chatPlayer(confused, "Okay... never mind.")
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Tumeken%27s_guardian
     private suspend fun ProtectedAccess.talkTumekenDamaged(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(quiz, "So how are you doing?")
@@ -45,6 +48,7 @@ class TumekensGuardianDialogue @Inject constructor(private val morphs: PetMorphs
             chatNpc(confused, "Malfunction... ERROR... Malfunction...")
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Tumeken%27s_guardian
     private suspend fun ProtectedAccess.talkElidinis(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(quiz, "So how are you doing?")
@@ -57,6 +61,7 @@ class TumekensGuardianDialogue @Inject constructor(private val morphs: PetMorphs
             chatPlayer(confused, "Okay... never mind.")
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Tumeken%27s_guardian
     private suspend fun ProtectedAccess.talkElidinisDamaged(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(quiz, "So how are you doing?")
@@ -67,6 +72,7 @@ class TumekensGuardianDialogue @Inject constructor(private val morphs: PetMorphs
             chatNpc(confused, "Instructions... unclear... ERROR... stuck...")
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Tumeken%27s_guardian
     private suspend fun ProtectedAccess.talkAkkhito(npc: Npc) =
         startDialogue(npc) {
             chatNpc(angry, "May shadows be your grave!")
@@ -77,6 +83,7 @@ class TumekensGuardianDialogue @Inject constructor(private val morphs: PetMorphs
             chatPlayer(bored, "Alright then.")
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Tumeken%27s_guardian
     private suspend fun ProtectedAccess.talkBabi(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(quiz, "What's life like as an baboon?")
@@ -109,6 +116,7 @@ class TumekensGuardianDialogue @Inject constructor(private val morphs: PetMorphs
             }
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Tumeken%27s_guardian
     private suspend fun ProtectedAccess.talkKephriti(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(happy, "Hello, little one.")
@@ -126,6 +134,7 @@ class TumekensGuardianDialogue @Inject constructor(private val morphs: PetMorphs
             chatNpc(silent, "...")
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Tumeken%27s_guardian
     private suspend fun ProtectedAccess.talkZebo(npc: Npc) =
         startDialogue(npc) {
             chatNpc(angry, "Feed me.")
@@ -137,6 +146,7 @@ class TumekensGuardianDialogue @Inject constructor(private val morphs: PetMorphs
             chatNpc(angry, "Hungry.")
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Tumeken%27s_guardian
     private suspend fun ProtectedAccess.useItemZebo(npc: Npc, obj: ItemServerType) {
         if (morphs.tryUse(this, npc, obj)) {
             return

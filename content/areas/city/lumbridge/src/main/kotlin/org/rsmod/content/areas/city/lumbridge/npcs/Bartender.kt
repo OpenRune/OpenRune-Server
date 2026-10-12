@@ -14,6 +14,7 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Bartender_(The_Sheared_Ram)
 class Bartender @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onApNpc1("npc.ram_bartender") { apDialogue(it.npc) }
@@ -50,7 +51,6 @@ class Bartender @Inject constructor(private val objRepo: ObjRepository) : Plugin
             when (option) {
                 1 -> requestBeer()
                 2 -> requestRumour()
-                3 -> nothing()
             }
         }
 
@@ -72,10 +72,6 @@ class Bartender @Inject constructor(private val objRepo: ObjRepository) : Plugin
             "One of the patrons here is looking for treasure " +
                 "apparently. A chap by the name of Veos.",
         )
-    }
-
-    private suspend fun Dialogue.nothing() {
-        chatPlayer(neutral, "Nothing, I'm fine.")
     }
 
     private fun ProtectedAccess.shouldPathToCounter(): Boolean =

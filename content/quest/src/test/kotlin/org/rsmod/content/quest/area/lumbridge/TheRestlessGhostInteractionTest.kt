@@ -120,6 +120,14 @@ class TheRestlessGhostInteractionTest {
         assertTrue(f.output().contains("What are you talking about?"))
     }
 
+    @Test fun `the ghost before the quest only points the player to Aereck`() {
+        val f = Fixture()
+        f.talk("npc.ghostx")
+        f.finish()
+        assertTrue(f.output().contains("Father Aereck will be able to help."), f.output())
+        assertTrue(f.quest.isQuestNotStarted(f.player))
+    }
+
     @Test fun `the ghost cannot explain the skull without a worn amulet`() {
         val f = Fixture(TheRestlessGhostStage.HasAmulet)
         f.player.inv[0] = InvObj("obj.amulet_of_ghostspeak", 1)

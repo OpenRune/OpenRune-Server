@@ -40,6 +40,8 @@ internal class MisthalinCutscenes(
         regionRepo.unprotect(region)
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Misthalin_Mystery
+    // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
     suspend fun sid(access: ProtectedAccess) {
         lateinit var killer: Npc
         lateinit var sid: Npc
@@ -260,6 +262,31 @@ internal class MisthalinCutscenes(
                     angry,
                     "This game didn't involve you ${player.displayName}! Now her death is on " +
                         "you! Her blood is on your hands you fool!",
+                )
+            } else {
+                laceySays(lacey, happy, "Oh yes, yes, I know it! Count Draynor!")
+                laceySays(lacey, laugh, "Ha, in your face you masked freak!")
+                abigaleKiller(
+                    killer,
+                    neutral,
+                    "Oh Lacey, Lacey, Lacey. I did tell you to think hard about your answer.",
+                )
+                abigaleKiller(
+                    killer,
+                    neutral,
+                    "Count Draynor is in fact a vampyre, and he does reside in his manor in " +
+                        "Misthalin.",
+                )
+                abigaleKiller(
+                    killer,
+                    laugh,
+                    "But that manor is in WEST Misthalin! I was talking about Count Check! Thanks " +
+                        "for playing!",
+                )
+                laceySays(
+                    lacey,
+                    scared,
+                    "No, no you tricked me! This isn't fair, ask me another...",
                 )
             }
 

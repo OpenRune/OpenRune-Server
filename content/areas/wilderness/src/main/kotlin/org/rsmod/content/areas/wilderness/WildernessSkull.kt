@@ -79,11 +79,11 @@ internal fun Player.applyVoluntarySkull() {
     applySkull(SkullSource.VOLUNTARY)
 }
 
+internal fun Player.canExtendEmblemTraderSkull(): Boolean =
+    !isSkullEquipLocked() && isSkulled() && skullTimerRemaining() < EMBLEM_EXTEND_TICKS
+
 internal fun Player.extendEmblemTraderSkull(): Boolean {
-    if (isSkullEquipLocked() || !isSkulled()) {
-        return false
-    }
-    if (skullTimerRemaining() >= EMBLEM_EXTEND_TICKS) {
+    if (!canExtendEmblemTraderSkull()) {
         return false
     }
     attr[SKULL_SOURCE] = SkullSource.VOLUNTARY
@@ -165,7 +165,6 @@ internal fun Player.refreshSkullIcon() {
         cappedKeyCount > 0 -> constants.skullicon_loot_key_1 + (cappedKeyCount - 1)
         else -> baseIcon
     }
-
 }
 
 internal fun Player.refreshSkullIconIfLootKeysChanged() {

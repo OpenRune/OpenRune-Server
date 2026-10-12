@@ -12,6 +12,8 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Monk_of_Entrana
+// TODO(content): [system:entrana_search] the Saradomin item, impling jar and supply crate refusals
 class EntranaFerryScript : PluginScript() {
     override fun ScriptContext.startup() {
         for (monk in SARIM_MONKS) {

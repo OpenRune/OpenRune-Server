@@ -10,6 +10,9 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Head_chef
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// TODO(content): [system:treasure_trails] Hard clue step: "You have done well, [player name]!"
 class CookingGuildHeadChef @Inject constructor() : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -43,7 +46,7 @@ class CookingGuildHeadChef @Inject constructor() : PluginScript() {
             )
         ) {
             1 -> {
-                chatPlayer(happy, "Nice cape you're wearing!")
+                chatPlayer(happy, "Nice cape, you're wearing!")
                 chatNpc(
                     happy,
                     "Thank you! It's my most prized possession, it's a Skillcape of Cooking; it shows that I've " +
@@ -51,7 +54,7 @@ class CookingGuildHeadChef @Inject constructor() : PluginScript() {
                 )
                 chatNpc(
                     happy,
-                    "If you ever achieve level 99 Cooking you'll get to wear one too and doing so means you'll never " +
+                    "If you ever achieve level 99 cooking you'll get to wear one too and doing so means you'll never " +
                         "burn any food!",
                 )
             }
@@ -162,6 +165,7 @@ class CookingGuildHeadChef @Inject constructor() : PluginScript() {
     private suspend fun Dialogue.offerFreeHood() {
         chatPlayer(quiz, "May I have another hood for my cape, please?")
         chatNpc(happy, "Most certainly, and free of charge!")
+        // TODO(content): [verify:in_game] The hood line with a full inventory.
         if (access.inv.freeSpace() < 1) {
             chatNpc(neutral, "You'll need a free inventory slot before I can hand you the hood.")
             return

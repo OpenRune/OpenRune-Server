@@ -8,6 +8,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Ikkle_Hydra
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class IkkleHydraDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(SERPENTINE, "Talk-to") { talkSerpentine(it) }

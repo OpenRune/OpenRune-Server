@@ -22,7 +22,7 @@ class CookingGuildDoor @Inject constructor(
                     denyEntry {
                         chatNpcSpecific(
                             title = "Head chef",
-                            type = "npc.cook",
+                            type = "npc.head_chef",
                             mesanim = neutral,
                             text = "You can't come in here unless you're wearing a chef's hat, or something like that.",
                         )
@@ -32,7 +32,7 @@ class CookingGuildDoor @Inject constructor(
                     denyEntry {
                         chatNpcSpecific(
                             title = "Head chef",
-                            type = "npc.cook",
+                            type = "npc.head_chef",
                             mesanim = neutral,
                             text =
                                 "Sorry. Only the finest chefs are allowed in here. Get your cooking level up to 32 " +
@@ -44,7 +44,7 @@ class CookingGuildDoor @Inject constructor(
                     denyEntry {
                         chatNpcSpecific(
                             title = "Head chef",
-                            type = "npc.cook",
+                            type = "npc.head_chef",
                             mesanim = neutral,
                             text =
                                 "Sorry. Only the finest chefs are allowed in here. Get your cooking level up to 32.",

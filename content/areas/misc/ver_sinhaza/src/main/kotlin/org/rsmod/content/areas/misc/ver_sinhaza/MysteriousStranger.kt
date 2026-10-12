@@ -2,9 +2,11 @@ package org.rsmod.content.areas.misc.ver_sinhaza
 
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
+import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.content.other.pets.PetFollowers
@@ -19,7 +21,11 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class MysteriousStranger
 @Inject
-constructor(private val care: DogCare, private val followers: PetFollowers) : PluginScript() {
+constructor(
+    private val care: DogCare,
+    private val followers: PetFollowers,
+    private val objRepo: ObjRepository,
+) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(STRANGER) { talk(it.npc) }
         onOpNpcU(STRANGER) { useItem(it.npc, it.objType) }
@@ -95,7 +101,7 @@ constructor(private val care: DogCare, private val followers: PetFollowers) : Pl
         if (!access.takeDog(dog)) {
             return
         }
-        access.invAdd(access.inv, BLOOD_RUNE, runes)
+        player.invAddOrDrop(objRepo, BLOOD_RUNE, runes)
         objbox(dog.obj, "You exchange your $name for $runes blood runes.")
         chatNpc(
             happy,
