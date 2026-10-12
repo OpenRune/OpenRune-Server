@@ -8,12 +8,12 @@ Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
 ## Delivery status
 
-`███████████████░░░░░` **10/13 recorded delivery packages accepted (77%)**.
+`██████████████░░░░░░` **10/14 recorded delivery packages accepted (71%)**.
 
 This bar counts the dated Complete/Started/Parked packages below equally.
 Older accepted baseline content is listed separately. It is not a percentage
 of all OSRS content or an estimate of engineering time.
-The remaining roadmap contains **55 entries: 3 Started and 52 Not started**;
+The remaining roadmap contains **54 entries: 3 Started and 51 Not started**;
 none of those remaining entries is marked Complete. Treasure Trails appears
 in both the delivery detail and the parked roadmap and is counted once in
 each view, not presented as an additional implemented feature.
@@ -25,11 +25,12 @@ each view, not presented as an additional implemented feature.
 | 🟢 Accepted | Prayer unlocks, free spellbook travel, teleport scroll/animation fixes, gorilla hole/rope and combat corrections | CoX/Royal Titans scroll-drop sources remain future encounter work. |
 | 🟢 Accepted | Pet gallery/categories, examine/prices/chat news, collection log rewards, Mokhaiotl waystone, max-gear command updates | Preserve the individually agreed/accepted scope in the details below. |
 | 🟡 Test package | Completionist purchase/fusion/perks/ammunition/repair/persistence; v0.16 native max-hood head, software depth reset, outward quiver and original-shape Dizana inventory icon | Owner confirmation of reported hood/head and OG map glitches, both genders, movement, Fire/Infernal and software/HD visual acceptance; feature is local and not installed/merged. |
+| 🟡 Test package | Normal/Corrupted Gauntlet preparation, owned rooms/timer, Hunllef, native recipes, escrow and chest/log/completion handling | Owner checks of complete runs, native interfaces, floor/tornado/animation timing; scoreboard/time records and exact probability parity remain open. Local; not merged or installed. |
 | 🟡 Local implementation | Shortcuts, containers, fairy rings and Spider Cave access | Remaining consumers/dependencies, Forestry events, final native route/UI/death acceptance and combined cape/quiver integration. |
 | 🟡 Parked | Treasure Trails: accepted 60/60 skill-task checkpoint and existing trail flow | Full step/puzzle/catalogue/loot parity and Mimic remain unfinished. |
 | 🟡 Partial | NPC animations: 97.15% technical attack/block/death coverage | 341 action slots across 149 types, secondary styles, specials/phases and native visual checks. |
 | 🟡 Follow-ups | Existing interfaces and native boss-item recipes | Remaining visual/interaction acceptance and persistence warning follow-up are detailed below. |
-| 🔴 Future scope | 52 Not-started roadmap entries | Bosses, activities and systems are enumerated in the backlog; module/model presence does not mark them playable. |
+| 🔴 Future scope | 51 Not-started roadmap entries | Bosses, activities and systems are enumerated in the backlog; module/model presence does not mark them playable. |
 
 ## 🟡 Started: Nero completionist cape, customiser and particles
 
@@ -69,6 +70,35 @@ Offline checks are not in-game animation or HD shader acceptance.
 Exact RS2 particle simulation/material parity, unrelated fresh-cache CS2 failures
 and future eligibility rules remain open. Cape code is local, not pushed, merged
 or installed. [Implementation and evidence](docs/custom/nero-completionist.md).
+
+## 🟡 Started: The Gauntlet and Corrupted Gauntlet
+
+Reviewed and ported the scoped Gauntlet implementation from upstream
+[PR #302](https://github.com/OpenRune/OpenRune-Server/pull/302), source head
+`bedaf18fe06d345d84afd62632f7b69fcde3cec3`, into this fork's native Boss DSL,
+instances, inventory transactions, deaths, Collection Log and home catalogue.
+Unrelated changes in the upstream PR are excluded.
+
+Implemented locally on `feature/gauntlet-integration`: both modes, 7x7 rooms,
+resources/recipes/cooking/Egniol, preparation timer, Hunllef attack/prayer cycles,
+stomp, prayer disable, tornadoes and floor stages. Gear escrow and pending chest
+state are permanent. Failed-run loot uses real Hunllef damage; the sixth
+off-prayer hit lands before protection changes. Testloot preserves an active
+run, escrow, pending chest and completion count.
+
+Validation: **154 executed tests**, including **42 Gauntlet tests**, the full
+runtime JAR, over **538,000 unrelated cache definitions preserved**, isolated
+rev240 boot/JS5 and appearance service. The fourteen accepted source hashes,
+accepted live JAR/cache/RSA/playerdata and earlier test packages remain intact.
+New combined package: `outputs/gauntlet-cape-v016-20261013-final/TESTEN.cmd`.
+Commands: `::testgauntlet`, `::gauntletkit`, `::gauntletkithm`,
+`::testloot gauntlet [count]` and `::testloot cg [count]`.
+
+**Owner acceptance is pending** for complete preparation-to-reward runs, native
+maps/interfaces, attacks, floor/tornado timing and interruption recovery in the
+actual client. Personal scoreboard/time records, exact probability parity and
+global Combat Achievements are not completed. The implementation is local,
+not pushed/merged/installed. [Scope, deliberate policies and test routes](docs/custom/gauntlet.md).
 
 ## 🟡 Started: world shortcuts, containers and fairy rings
 
@@ -479,7 +509,6 @@ Scope: XS = tiny, S = small, M = medium, L = large, XL = very large, XXL = multi
 | 🔴 | Guardians of the Rift | XL |
 | 🔴 | The Inferno | XL–XXL |
 | 🔴 | Fortis Colosseum | XL–XXL |
-| 🔴 | The Gauntlet | XL–XXL |
 
 ### Other systems
 
