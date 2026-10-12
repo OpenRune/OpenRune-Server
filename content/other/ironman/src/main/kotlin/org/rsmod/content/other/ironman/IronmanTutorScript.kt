@@ -1,8 +1,11 @@
 package org.rsmod.content.other.ironman
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.attr.AttributeKey
-import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.api.player.ironman.isAnyIronman
@@ -13,6 +16,7 @@ import org.rsmod.api.script.onOpNpc4
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 public class IronmanTutorScript @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(NPC) { startDialogue(it.npc) { talk() } }
@@ -20,6 +24,7 @@ public class IronmanTutorScript @Inject constructor() : PluginScript() {
         onOpNpc4(NPC) { ifOpenMainModal(SETUP) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Ironman_tutor
     private suspend fun Dialogue.talk() {
         when {
             player.attr[MET] != true -> {
@@ -29,7 +34,7 @@ public class IronmanTutorScript @Inject constructor() : PluginScript() {
             }
             player.isAnyIronman -> {
                 chatPlayer(happy, "Hey there Adam.")
-                chatNpc(happy, "Hail, Iron$iw!")
+                chatNpc(happy, "Hail, Iron$iw! What can I do for you?")
                 menu(iron = true)
             }
             else -> {
@@ -220,15 +225,26 @@ public class IronmanTutorScript @Inject constructor() : PluginScript() {
             return
         }
         val pieces = armourFor(player.gamemode)
+        // TODO(content): [verify:in_game] The wiki transcript has no already-owned reply.
         if (pieces.any { it in player.inv || it in player.worn }) {
             chatNpc(happy, "I think you've already got some. Wear it with pride.")
             return
         }
-        for (piece in pieces) {
-            if (!player.invAdd(player.inv, piece).success) {
-                chatNpc(sad, "I'd give you some armour but you don't have enough room in your inventory.")
-                return
+        val added =
+            player.invTransaction(player.inv) {
+                val inv = select(player.inv)
+                for (piece in pieces) {
+                    insert {
+                        into = inv
+                        obj = piece.asRSCM(RSCMType.OBJ)
+                        strictCount = 1
+                    }
+                }
             }
+        if (added.failure) {
+            // TODO(content): [verify:in_game] The wiki transcript has no full-inventory reply.
+            chatNpc(sad, "I'd give you some armour but you don't have enough room in your inventory.")
+            return
         }
         chatNpc(happy, "There you go. Wear it with pride.")
     }
