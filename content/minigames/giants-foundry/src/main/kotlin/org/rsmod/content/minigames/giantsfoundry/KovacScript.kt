@@ -18,7 +18,7 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
         onOpNpc1(KOVAC) { talk(it.npc) }
         onOpNpc3(KOVAC) { handIn(it.npc) }
         onOpNpc4(KOVAC) { commission(it.npc) }
-        // TODO: op5 "Shop" (reward shop) and using reward items on Kovac to sell them back.
+        // TODO: using reward items on Kovac to sell them back (80% of their cost).
     }
 
     /** Dialogue from https://oldschool.runescape.wiki/w/Transcript:Kovac */
@@ -90,7 +90,7 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
     private suspend fun Dialogue.openShop() {
         chatPlayer(neutral, "I'd like to buy something.")
         chatNpc(neutral, "Here's what Kovac have.")
-        // TODO: open the Giants' Foundry reward shop.
+        access.openRewardShop()
     }
 
     private suspend fun Dialogue.help() {
