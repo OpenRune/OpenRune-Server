@@ -10,7 +10,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Donie
 // https://oldschool.runescape.wiki/w/Transcript:Gee
-// TODO(content): [quest:the_lost_tribe] "Do you know what happened in the castle cellar?"
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class DonieAndGee : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.lumbridge_guide2_man") { startDialogue(it.npc) }
@@ -20,6 +20,10 @@ class DonieAndGee : PluginScript() {
     private suspend fun ProtectedAccess.startDialogue(npc: Npc) =
         startDialogue(npc) {
             chatNpc(happy, "Hello there, can I help you?")
+            if (QuestRequirements.isOnQuest(player, LOST_TRIBE)) {
+                lostTribeDialogue()
+                return@startDialogue
+            }
             when (random.of(maxExclusive = 4)) {
                 0 -> randomDialogue1()
                 1 -> randomDialogue2()
@@ -27,6 +31,24 @@ class DonieAndGee : PluginScript() {
                 3 -> randomDialogue5()
             }
         }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Donie (during The Lost Tribe)
+    private suspend fun Dialogue.lostTribeDialogue() {
+        val nextDialogue =
+            choice5(
+                "Where am I?",
+                ::whereAmI,
+                "How are you today?",
+                ::howAreYouToday,
+                "Are there any quests I can do here?",
+                ::questsToDo,
+                "Your shoe lace is untied.",
+                ::untiedShoeLace,
+                "Do you know what happened in the castle cellar?",
+                ::castleCellar,
+            )
+        nextDialogue()
+    }
 
     private suspend fun Dialogue.randomDialogue1() {
         val nextDialogue =
@@ -83,9 +105,22 @@ class DonieAndGee : PluginScript() {
             )
         nextDialogue()
     }
+
+    private companion object {
+        const val LOST_TRIBE = "quest_losttribe"
+    }
 }
 
 /* NOTE: any "extra" whitespaces in dialogues below are "correct." */
+
+private suspend fun Dialogue.castleCellar() {
+    chatPlayer(quiz, "Do you know what happened in the castle cellar?")
+    chatNpc(
+        neutral,
+        "I heard the wall collapsed or something. I don't know why. Perhaps you could get to the " +
+            "bottom of this mystery!",
+    )
+}
 
 private suspend fun Dialogue.whatsUp() {
     chatPlayer(quiz, "What's up?")
