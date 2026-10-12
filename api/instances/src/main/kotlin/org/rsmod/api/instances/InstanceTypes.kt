@@ -208,6 +208,8 @@ public data class InstanceSpec(
     val timeLimitTicks: Int? = null,
     val spawnOnFirstJoin: Boolean = false,
     val recordsKillTime: (Player) -> Boolean = { true },
+    /** A varp that keeps each player's best kill time in ticks; null keeps it for the session. */
+    val bestTimeVarp: String? = null,
 )
 
 public sealed interface InstanceAccess {

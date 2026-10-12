@@ -8,6 +8,7 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import java.util.concurrent.atomic.AtomicLong
 import org.rsmod.api.instances.events.InstanceEndedEvent
+import org.rsmod.api.instances.events.InstanceKillTimeEvent
 import org.rsmod.api.instances.events.InstancePlayerJoinEvent
 import org.rsmod.api.instances.events.InstancePlayerJoinUnboundEvent
 import org.rsmod.api.instances.events.InstancePlayerLeaveEvent
@@ -493,7 +494,8 @@ constructor(
         for (player in InstanceTiming.playersIn(session, playerList)) {
             if (session.damageContributions.damageBy(player) <= 0) continue
             if (!session.spec.recordsKillTime(player)) continue
-            InstanceKillTimer.reportKillTime(player, session.key, elapsed)
+            val best = InstanceKillTimer.reportKillTime(player, session, elapsed)
+            publish(InstanceKillTimeEvent(player, session.key, elapsed, best))
         }
     }
 

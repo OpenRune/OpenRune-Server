@@ -60,6 +60,9 @@ public abstract class InstanceScript(
     /** Whether [player]'s kill of the boss reports a fight duration and personal best. */
     protected open fun recordsKillTime(player: Player): Boolean = true
 
+    /** A varp to keep each player's best kill time in (ticks, 0 for none), so it survives logout. */
+    protected open fun bestTimeVarp(): String? = null
+
     /**
      * True when this result starts the session's npcs from scratch: a new instance, or a join of an
      * empty one (the manager resets its npcs, deleting any boss spawned by the previous run).
@@ -88,7 +91,7 @@ public abstract class InstanceScript(
         }
         return resolved
             .withArea(area.withDbCoords(rowData), rowData.rowId)
-            .copy(recordsKillTime = ::recordsKillTime)
+            .copy(recordsKillTime = ::recordsKillTime, bestTimeVarp = bestTimeVarp())
     }
 
     protected fun onEnterObject(action: suspend ProtectedAccess.() -> Unit) {
