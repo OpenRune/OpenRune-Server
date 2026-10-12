@@ -29,8 +29,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 // The cow pen behind Gillie Groats. Live capture, rev 241, 20261012T180256-df49f48@1156-1169
 // (quest) and @1549-1561, @1971-1977 (after the quest).
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [boss:brutus] kill count, fight duration, scoreboard and the cowbell amulet's
-// faster respawn for the repeatable fight.
 class BrutusInstance
 @Inject
 constructor(
@@ -53,6 +51,8 @@ constructor(
     // live capture, rev 241, 20261012T180256-df49f48@1236: the quest kill reports no duration.
     override fun recordsKillTime(player: Player): Boolean =
         idesOfMilk.stage(player) >= IdesOfMilkQuest.STAGE_COMPLETE
+
+    override fun bestTimeVarp(): String = BrutusScoreboard.BEST_TIME
 
     override fun ScriptContext.configure() {
         onEnterPrelude { result, enter ->
@@ -145,6 +145,10 @@ constructor(
         val npc = Npc(type, coords)
         deps.npcRepo.add(npc, Int.MAX_VALUE)
         npc.respawns = idesOfMilk.stage(player) >= IdesOfMilkQuest.STAGE_COMPLETE
+        // live capture, rev 241, 20261012T180256-df49f48@1236, @1610: the quest kill isn't counted.
+        if (!npc.respawns) {
+            npc.vars["varn.skip_killcount"] = 1
+        }
         manager.registerSessionNpc(player, npc)
         bossHpBar.onOpen(player, npc)
         arrive(npc, player)

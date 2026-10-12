@@ -12,6 +12,7 @@ import org.rsmod.api.death.UntradeableHandling
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
@@ -22,6 +23,7 @@ class BrutusModule : PluginModule() {
         addSetBinding<PlayerDeathHook>(BrutusSafeDeath::class.java)
         addSetBinding<NpcDeathDropHook>(BrutusQuestDrops::class.java)
         addSetBinding<NpcDeathKillHook>(BrutusQuestKill::class.java)
+        addSetBinding<NpcDeathKillHook>(BrutusKillTally::class.java)
     }
 }
 
@@ -34,17 +36,29 @@ private fun IdesOfMilkQuest.onQuest(player: Player): Boolean =
     stage(player) < IdesOfMilkQuest.STAGE_COMPLETE
 
 /**
- * Keeps every item on a death in the field.
+ * Keeps every item on a death in the field, and counts the death for the scoreboard.
  *
  * TODO(content): [system:graves] Live moves unprotected items to a grave outside the field
  * (https://oldschool.runescape.wiki/w/Brutus); this keeps them until graves exist.
  */
-class BrutusSafeDeath @Inject constructor(private val manager: InstanceManager) : PlayerDeathHook {
+class BrutusSafeDeath
+@Inject
+constructor(
+    private val manager: InstanceManager,
+    private val idesOfMilk: IdesOfMilkQuest,
+    private val worldStats: BrutusWorldStats,
+) : PlayerDeathHook {
     override val priority: Int = 10
 
     override fun handleDeath(context: PlayerDeathContext): PlayerDeathHandling? {
-        if (!context.inInstance || !manager.inBrutusField(context.player)) {
+        val player = context.player
+        if (!context.inInstance || !manager.inBrutusField(player)) {
             return null
+        }
+        // UNVERIFIED: whether deaths in the quest fight count on the scoreboard (kills don't).
+        if (!idesOfMilk.onQuest(player)) {
+            VarPlayerIntMapSetter.set(player, BrutusScoreboard.DEATHS, player.vars[BrutusScoreboard.DEATHS] + 1)
+            worldStats.addDeath()
         }
         return PlayerDeathHandling(
             keepCount = Int.MAX_VALUE,
