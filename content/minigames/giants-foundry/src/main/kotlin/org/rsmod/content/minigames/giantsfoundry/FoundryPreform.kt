@@ -5,7 +5,6 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
-import org.rsmod.api.invtx.invTransfer
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.game.entity.Player
@@ -14,7 +13,6 @@ import org.rsmod.game.inv.isType
 internal const val PREFORM = "obj.giants_foundry_preform"
 internal const val HUD = "interface.giants_foundry_hud"
 internal const val PREFORM_COOLING_TIMER = "timer.giants_foundry_preform_cooling"
-internal const val JIG_COOLING_TIMER = "timer.giants_foundry_jig_cooling"
 
 private const val HUD_RESCALE = "clientscript.[clientscript,giants_foundry_hud_rescale]"
 
@@ -31,18 +29,14 @@ internal fun Player.holdsPreform(): Boolean =
 internal fun Player.hasSwordInProgress(): Boolean =
     holdsPreform() || preformStored || mouldState >= 2
 
-/** Puts the preform in the weapon slot, moving anything held into the inventory. */
+/**
+ * Puts the preform in the weapon slot; both hands must be free.
+ * https://oldschool.runescape.wiki/w/Transcript:Sleeping_Giants
+ */
 internal fun ProtectedAccess.equipPreform(): Boolean {
-    val held =
-        listOf(Wearpos.RightHand.slot, Wearpos.LeftHand.slot).mapNotNull { slot ->
-            player.worn[slot]?.let { slot to it }
-        }
-    if (inv.freeSpace() < held.size) {
-        mes("You need to free up some inventory space to hold the preform.")
+    if (player.worn[Wearpos.RightHand.slot] != null || player.worn[Wearpos.LeftHand.slot] != null) {
+        mes("You must free your hands so you can hold the preform.")
         return false
-    }
-    for ((slot, obj) in held) {
-        player.invTransfer(from = player.worn, fromSlot = slot, into = player.inv, count = obj.count, untransform = true)
     }
     player.invAdd(player.worn, PREFORM, 1, slot = Wearpos.RightHand.slot)
     player.rebuildAppearance()

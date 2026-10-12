@@ -68,16 +68,10 @@ internal object FoundryFormulas {
     /**
      * Heat added per tick at the lava pool (or removed at the waterfall) after [ticks] ticks of
      * the same action; "dunk"/"quench" start 10 steps in. Measured from the heat varbit by the
-     * Easy Giants' Foundry RuneLite plugin (`HeatActionSolver.DX_1`, commit 9324c7f); the step
-     * keeps growing past the logged values.
+     * Easy Giants' Foundry RuneLite plugin (`HeatActionSolver.DX_1`, commit 9324c7f). The table
+     * covers the whole 0..1000 gauge from either end, so later steps only ever hit the clamp.
      */
-    // UNVERIFIED: steps past the last logged value grow by 6 (an extrapolation).
-    fun heatStep(ticks: Int): Int =
-        if (ticks < HEAT_STEPS.size) {
-            HEAT_STEPS[ticks]
-        } else {
-            HEAT_STEPS.last() + (ticks - HEAT_STEPS.lastIndex) * 6
-        }
+    fun heatStep(ticks: Int): Int = HEAT_STEPS[ticks.coerceAtMost(HEAT_STEPS.lastIndex)]
 
     const val FAST_HEAT_OFFSET = 10
 

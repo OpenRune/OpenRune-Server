@@ -75,10 +75,6 @@ class FoundryAccessScript @Inject constructor() : PluginScript() {
         if (QuestRequirements.hasCompleted(player, SLEEPING_GIANTS) && player.sleepingGiants < QUEST_COMPLETE) {
             player.sleepingGiants = QUEST_COMPLETE
         }
-        // The jig's cooling timer doesn't survive logging out; the metal has cooled since.
-        if (player.mouldState == 2) {
-            player.mouldState = 3
-        }
         if (player.preformStored) {
             player.mes("You notice your current commission is being kept warm in the preform storage.")
         }
@@ -101,7 +97,8 @@ class FoundryAccessScript @Inject constructor() : PluginScript() {
         const val STORAGE_EMPTY = "loc.giants_foundry_preform_storage_empty"
         const val STORAGE_FULL = "loc.giants_foundry_preform_storage_full"
 
-        // UNVERIFIED: arrival tiles beside the exit (loc at 3364,11482) and the cave (3359,3150).
+        // UNVERIFIED: no transport data has these. Inside matches the Sleeping Giants instance's
+        // arrival (MRobertEvers/oldschool-clientc notes); outside is the Minigame Teleport tile.
         val INSIDE = CoordGrid(3366, 11484, 0)
         val OUTSIDE = CoordGrid(3361, 3149, 0)
     }
