@@ -15,12 +15,14 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class Chase @Inject constructor(private val care: DogCare) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(CHASE) { talk(it.npc) }
         onPetOpIfPresent(CHASE, ADOPT_OP) { adopt(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Chase
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             if (CAT_EARS in player.worn) {
@@ -32,6 +34,7 @@ class Chase @Inject constructor(private val care: DogCare) : PluginScript() {
                 }
             }
             if (!questComplete(player)) {
+                // TODO(content): [verify:in_game] Pre-quest lines are not in the transcript.
                 chatPlayer(quiz, "Do you have any dogs up for adoption?")
                 chatNpc(neutral, "Best to speak with Talia.")
                 return@startDialogue

@@ -20,6 +20,7 @@ class LostDogs : PluginScript() {
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Husky_(wandering)
     private suspend fun ProtectedAccess.rescue(npc: Npc, breed: DogBreed) {
         if (!QuestRequirements.hasCompleted(player, QUEST)) {
             mes("You have nowhere to send this lost dog...")
