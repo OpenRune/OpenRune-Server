@@ -208,7 +208,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         when {
             QuestRequirements.hasCompleted(player, SleepingGiants.QUEST) ||
                 stage >= SleepingGiants.REPAIRED -> enterFoundry()
-            stage >= SleepingGiants.STARTED -> enterRoom(intro = stage == SleepingGiants.STARTED)
+            stage >= SleepingGiants.STARTED -> enterRoom(intro = stage < SleepingGiants.REPAIRING)
             else ->
                 startDialogue {
                     chatPlayer(worried, "I don't think I want to disturb a cave of giants right now...")
@@ -225,9 +225,19 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             mes("The foundry is too busy right now. Try again in a moment.")
             return
         }
-        if (intro && stage(player) == SleepingGiants.ENTERED) {
-            val kovac = room.kovacOf(player) ?: return
+        if (!intro) {
+            return
+        }
+        val kovac = room.kovacOf(player) ?: return
+        var ended = false
+        try {
             startDialogue(kovac) { insideIntro() }
+            room.endIntro(this)
+            ended = true
+        } finally {
+            if (!ended) {
+                room.endIntroNow(this)
+            }
         }
     }
 
