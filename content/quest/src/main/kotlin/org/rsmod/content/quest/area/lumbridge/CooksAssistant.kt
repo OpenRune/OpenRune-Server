@@ -1,10 +1,12 @@
 package org.rsmod.content.quest.area.lumbridge
 
+import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerLogin
+import org.rsmod.content.generic.npcs.cow.BottomlessMilkBucket
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestProgressState
 import org.rsmod.content.quest.manager.QuestRequirements
@@ -31,6 +33,7 @@ class CooksAssistant : QuestScript(
     private val legacyGivenFlour = quest.attribute(name = "GIVEN_FLOUR", default = false)
 
     private val potFlour = "obj.pot_flour"
+    private val charges = ObjChargeManager()
 
     override fun ScriptContext.init() {
         check(quest.maxSteps == COMPLETE_STAGE) {
@@ -96,6 +99,18 @@ class CooksAssistant : QuestScript(
     private fun allItemsDelivered(player: Player): Boolean =
         player.givenMilk && player.givenEgg && player.givenFlour
 
+    // A bottomless milk bucket counts as a bucket of milk and gives up one use (live capture,
+    // rev 241, 20261013T013733-df49f48@1506). UNVERIFIED: a bucket of milk goes first.
+    private fun hasMilk(player: Player): Boolean =
+        "obj.bucket_milk" in player.inv || BottomlessMilkBucket.milkSlot(player.inv, charges) != null
+
+    private fun Dialogue.takeMilk(): Boolean =
+        if ("obj.bucket_milk" in player.inv) {
+            access.invDel(access.inv, "obj.bucket_milk").success
+        } else {
+            BottomlessMilkBucket.pourMilk(player.inv, charges)
+        }
+
     private suspend fun Dialogue.deliverItem(
         item: String,
         given: Boolean,
@@ -123,7 +138,10 @@ class CooksAssistant : QuestScript(
             return
         }
 
-        deliverItem("obj.bucket_milk", player.givenMilk, "Here's a bucket of milk.") { player.givenMilk = true }
+        if (!player.givenMilk && takeMilk()) {
+            player.givenMilk = true
+            chatPlayer(happy, "Here's a bucket of milk.")
+        }
         deliverItem(potFlour, player.givenFlour, "Here's a pot of flour.") { player.givenFlour = true }
         deliverItem("obj.egg", player.givenEgg, "Here's a fresh egg.") { player.givenEgg = true }
 
@@ -136,7 +154,7 @@ class CooksAssistant : QuestScript(
     }
 
     private fun carriesNeededIngredient(player: Player): Boolean =
-        (!player.givenMilk && player.inv.count("obj.bucket_milk") > 0) ||
+        (!player.givenMilk && hasMilk(player)) ||
             (!player.givenFlour && player.inv.count(potFlour) > 0) ||
             (!player.givenEgg && player.inv.count("obj.egg") > 0)
 
@@ -348,7 +366,7 @@ class CooksAssistant : QuestScript(
                 quest.advanceQuestStage(access)
                 chatNpc(happy, "Oh thank you, thank you. I need milk, an egg and flour. I'd be very grateful if you can get them for me.")
                 if (
-                    player.inv.count("obj.bucket_milk") > 0 &&
+                    hasMilk(player) &&
                     player.inv.count("obj.egg") > 0 &&
                     player.inv.count(potFlour) > 0
                 ) {
@@ -357,7 +375,7 @@ class CooksAssistant : QuestScript(
                     chatPlayer(shifty, "Not exactly. I just had an odd feeling you might be needing these ingredients. If I see a cook, I presume there's food of some kind! Lucky guess I suppose.")
                     chatNpc(happy, "Well thank you! Hand them over, please.")
 
-                    access.invDel(access.inv, "obj.bucket_milk")
+                    takeMilk()
                     access.invDel(access.inv, "obj.egg")
                     access.invDel(access.inv, potFlour)
 

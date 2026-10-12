@@ -1,5 +1,8 @@
 package org.rsmod.content.generic.npcs.cow
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import kotlin.math.min
 import org.rsmod.api.obj.charges.ObjChargeManager
@@ -10,9 +13,11 @@ import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpHeld5
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.game.inv.InvObj
+import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.utils.bits.withBits
 
 /**
  * The bottomless milk bucket holds up to 10,000 uses of milk, filled from buckets of milk (noted
@@ -185,6 +190,31 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
         private const val BUCKET_NOTE = "obj.cert_bucket_empty"
 
         private fun emptyOf(milk: String): String = if (milk == MILK) BUCKET else BUCKET_NOTE
+
+        /** The slot of a bottomless milk bucket in [inv] holding regular milk, or null. */
+        fun milkSlot(inv: Inventory, charges: ObjChargeManager): Int? =
+            inv.indices.firstOrNull { inv[it].isType(FILLED) && charges.getCharges(inv[it], USES) > 0 }
+
+        /**
+         * Pours one use from a bottomless milk bucket in [inv] where a quest takes a bucket of milk;
+         * the last use leaves the bucket empty (live capture, rev 241, 20261013T013733-df49f48@1506
+         * and @1532).
+         */
+        fun pourMilk(inv: Inventory, charges: ObjChargeManager): Boolean {
+            val slot = milkSlot(inv, charges) ?: return false
+            val bucket = inv[slot] ?: return false
+            val left = charges.getCharges(bucket, USES) - 1
+            if (left == 0) {
+                charges.removeAllCharges(inv, slot, USES)
+            } else {
+                inv[slot] = bucket.copy(vars = bucket.vars.withBits(usesBits, left))
+            }
+            return true
+        }
+
+        private val usesBits by lazy {
+            checkNotNull(ServerCacheManager.getVarObj(USES.asRSCM(RSCMType.VAROBJ))).bits
+        }
 
         // UNVERIFIED: thousands separators above 999 (the captures stay below).
         fun number(count: Int): String = "%,d".format(count)
