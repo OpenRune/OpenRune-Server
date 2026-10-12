@@ -317,12 +317,18 @@ constructor(
             return wall or CollisionFlag.BLOCK_WALK
         }
 
-        private fun inLane(start: CoordGrid, dest: CoordGrid, tile: CoordGrid): Boolean {
+        /**
+         * Whether [tile] lies in the lane Brutus sweeps from [start] to [dest]. The tiles he starts
+         * on don't count: a player who walks under him avoids the charge
+         * (https://oldschool.runescape.wiki/w/Brutus/Strategies).
+         */
+        fun inLane(start: CoordGrid, dest: CoordGrid, tile: CoordGrid): Boolean {
             val minX = min(start.x, dest.x)
             val minZ = min(start.z, dest.z)
             val maxX = max(start.x, dest.x) + BRUTUS_SIZE - 1
             val maxZ = max(start.z, dest.z) + BRUTUS_SIZE - 1
-            return tile.level == start.level && tile.x in minX..maxX && tile.z in minZ..maxZ
+            val underStart = tile.x - start.x in 0 until BRUTUS_SIZE && tile.z - start.z in 0 until BRUTUS_SIZE
+            return tile.level == start.level && tile.x in minX..maxX && tile.z in minZ..maxZ && !underStart
         }
 
         /**

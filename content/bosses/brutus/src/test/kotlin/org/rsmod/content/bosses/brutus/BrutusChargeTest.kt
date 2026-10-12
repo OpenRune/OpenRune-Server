@@ -50,4 +50,13 @@ class BrutusChargeTest {
         assertEquals(-1 to 0, Brutus.chargeDirection(sw, CoordGrid(3250, 3289)))
         assertEquals(0 to 1, Brutus.chargeDirection(sw, CoordGrid(3258, 3295)))
     }
+
+    @Test
+    fun `the lane covers the swept tiles but not the tiles he starts on`() {
+        val dest = sw.translate(-5, 0)
+        assertEquals(true, Brutus.inLane(sw, dest, sw.translate(-1, 1)))
+        assertEquals(true, Brutus.inLane(sw, dest, dest))
+        assertEquals(false, Brutus.inLane(sw, dest, sw.translate(2, 2)))
+        assertEquals(false, Brutus.inLane(sw, dest, sw.translate(-1, 3)))
+    }
 }
