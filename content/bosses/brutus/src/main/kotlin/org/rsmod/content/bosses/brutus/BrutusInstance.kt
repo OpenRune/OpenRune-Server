@@ -48,6 +48,10 @@ constructor(
 
     override fun runsPreludeOnFreshRun(): Boolean = true
 
+    // live capture, rev 241, 20261012T180256-df49f48@1236: the quest kill reports no duration.
+    override fun recordsKillTime(player: Player): Boolean =
+        idesOfMilk.stage(player) >= IdesOfMilkQuest.STAGE_COMPLETE
+
     override fun ScriptContext.configure() {
         onEnterPrelude { result, enter ->
             val session =
@@ -150,7 +154,10 @@ constructor(
         // live capture, rev 241, 20261012T180256-df49f48@1165: Brutus is added at (3261, 3287).
         private val SPAWN = CoordGrid(3261, 3287)
 
-        private val AREA = InstanceArea.copyRegions(centerRegionId = 12851)
+        // The field's east fence is on the edge of 12851, so the view also reaches 13107 to the
+        // east and 12850 and 13106 to the south.
+        private val AREA =
+            InstanceArea.copyRegions(regionIds = listOf(12850, 12851, 13106, 13107))
 
         private val GATE_SWAPS =
             listOf(
