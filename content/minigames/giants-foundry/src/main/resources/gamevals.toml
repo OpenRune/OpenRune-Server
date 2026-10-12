@@ -28,3 +28,6 @@ giants_foundry_shop_cost = 1638
 
 [gamevals.queue]
 giants_foundry_quest_prompt = 64400
+
+[gamevals.synth]
+sg_grindstone_repair = 5606
