@@ -39,7 +39,7 @@ public final class NativeAssetCheck {
             }
             short[] textures=data.getFaceTextures();int count=0,id=-1;
             if(textures!=null)for(int f=0;f<data.getFaceCount();f++)if(textures[f]>=0){count++;if(id==-1)id=textures[f];require(textures[f]==id,"single trim material "+p);require(data.getFaceColors()[f]==127,"native textured color "+p);}
-            if(count>0 && (id==40||id==59)) {require(count==20||count==508,"panel coverage "+p+" "+count);textured++;}
+            if(count>0 && (id==40||id==59)) {require(count==140||count==508,"panel coverage "+p+" "+count);textured++;}
             Model lighting=data.light(64,850,-30,-50,-30);
             int modelId=Integer.parseInt(p.getParent().getFileName().toString());
             if(modelId==62100||modelId==62103||modelId>=62200&&(modelId-62200)%6==0){folded++;require(data.getVerticesCount()<400&&data.getFaceCount()<600,"folded inventory mesh "+p);}

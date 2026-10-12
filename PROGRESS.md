@@ -49,7 +49,7 @@ Implemented and technically verified:
   cleanup on cape removal, ordinary model samples, expiry, despawn/logout.
 - Real animated Fire/Infernal materials **40/59** on the reference's broad
   cloth panels (**508 worn faces per model**); embroidery/edges retain colour.
-- Original folded inventory geometry and projection on all **24 cape items**,
+- Original folded inventory geometry, complete shaded family palettes and projection on all **24 cape items**,
   including locked aliases (**16 unique inventory models**). Hood icons remain.
 
 **26 cape integration tests and 15 existing max-cape tests are rerun and pass**.
@@ -63,7 +63,7 @@ are built from source; all 34 accepted client/API/HD fingerprints are unchanged.
 The bounded pack again verifies **454 writes** and preserves **538,211 existing
 config definitions**. Runtime JAR build succeeds.
 
-Test entry: `outputs/nero-completionist-visual-fix-final-20261012/TESTEN.cmd`.
+Test entry: `outputs/nero-completionist-visual-fix-v2-20261012/TESTEN.cmd`.
 Only marked test sessions receive temporary administrator rights through
 the helper outside the installable JAR. Earlier packages and the accepted
 live JAR/cache/RSA/playerdata are preserved.

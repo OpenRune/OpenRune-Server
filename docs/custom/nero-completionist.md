@@ -253,7 +253,7 @@ and expiry clear old state. This prevents cached frame gaps from starving an
 emitter, without emitting indefinitely from removed equipment. Diagnostic counts
 now report actual per-actor particles rather than the unused global simulator.
 
-`runtime-v012-visual-final` is the paired opt-in runtime. All 34 accepted client
+`runtime-v012-inventory-final` is the paired opt-in runtime. All 34 accepted client
 library/API/HD fingerprints remain unchanged; 25 runtime and 14 plugin classes
 are built from the reviewed sources. `fix_visual_assets.py` reads an immutable
 asset baseline and `model_codec.py` rejects unsupported encodings. The original
@@ -275,9 +275,15 @@ direction 1/speed 1. Both original indexed images exist in cache index 8, as
 used by the qualified client loader. No substitute texture is injected.
 SHA-bound runtime/pack inputs explicitly disable Git newline conversion.
 
+The original inventory mesh contains pre-shaded channel-3 luminances. Every
+one of those shades is included in the palette conversion/binding, preserving
+the folded mesh but correcting each family colour and the regular customiser.
+The 14 native untextured renders produce 12 distinct family palettes; Fire/
+Infernal inventory meshes each have 140 genuinely textured panel faces.
+
 The bounded cache pack again verifies all 454 writes and preserves 538,211
 unrelated config definitions. All 26 native cape and 15 max-cape tests are rerun.
-Test entry: `outputs/nero-completionist-visual-fix-final-20261012/TESTEN.cmd`.
+Test entry: `outputs/nero-completionist-visual-fix-v2-20261012/TESTEN.cmd`.
 Existing accepted sources, live JAR/cache/RSA/playerdata, and earlier packages
 are retained. Final rear/side, male/female, walking/emote, texture and HD visual
 acceptance is still open; this update does not claim exact RS2 particle material

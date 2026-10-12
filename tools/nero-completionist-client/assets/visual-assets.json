@@ -96,8 +96,8 @@
       "model": 62200,
       "vertices": 285,
       "faces": 396,
-      "textured": 20,
-      "sha256": "fd034897f7043356e3c7a542f1d006e03b0f019be6134033f6f850fda32a1fdd"
+      "textured": 140,
+      "sha256": "f907f546b9925bc1d232c1bbdc8996e921a07b913f7d65f03083e433d9615a0f"
     },
     {
       "model": 62201,
@@ -139,7 +139,7 @@
       "vertices": 282,
       "faces": 396,
       "textured": 0,
-      "sha256": "61cf4880e13aa362b88970dffa8c4ae02461f8bc9683d114a445b9c9db8cdaae"
+      "sha256": "169b26c0b82f18e2723792dcf118210cb661bd819fb25d95d0f49f1e4ec7a46d"
     },
     {
       "model": 62207,
@@ -181,7 +181,7 @@
       "vertices": 282,
       "faces": 396,
       "textured": 0,
-      "sha256": "aad69a1ea2f8bbbb9fc913855c7bf1eaa12bce32fae62e036dfe4c76edab805d"
+      "sha256": "ba2578d8149398a8398aa2262c3055b7d37911c7cd6b391e26161f2cc69c9226"
     },
     {
       "model": 62213,
@@ -223,7 +223,7 @@
       "vertices": 282,
       "faces": 396,
       "textured": 0,
-      "sha256": "0579b5671b43dce3d1d505dbf9be660342c3048784e8c5297db5a106b7cc469f"
+      "sha256": "39d6aef3456e779cc5bde1ec70c2f141d01008e74cd980510d525c575ad92b42"
     },
     {
       "model": 62219,
@@ -265,7 +265,7 @@
       "vertices": 282,
       "faces": 396,
       "textured": 0,
-      "sha256": "aad69a1ea2f8bbbb9fc913855c7bf1eaa12bce32fae62e036dfe4c76edab805d"
+      "sha256": "ba2578d8149398a8398aa2262c3055b7d37911c7cd6b391e26161f2cc69c9226"
     },
     {
       "model": 62225,
@@ -307,7 +307,7 @@
       "vertices": 282,
       "faces": 396,
       "textured": 0,
-      "sha256": "aad69a1ea2f8bbbb9fc913855c7bf1eaa12bce32fae62e036dfe4c76edab805d"
+      "sha256": "ba2578d8149398a8398aa2262c3055b7d37911c7cd6b391e26161f2cc69c9226"
     },
     {
       "model": 62231,
@@ -348,8 +348,8 @@
       "model": 62236,
       "vertices": 285,
       "faces": 396,
-      "textured": 20,
-      "sha256": "2763ff0de44ff0978d9017b84f1b3d60954fa077b9852af943a49f2329041907"
+      "textured": 140,
+      "sha256": "37dae8e173cd3b3c0225a748d903e8dba618c778068fe57ed29cbfbfd306b3ac"
     },
     {
       "model": 62237,
@@ -391,7 +391,7 @@
       "vertices": 282,
       "faces": 396,
       "textured": 0,
-      "sha256": "f7b01555e3db8f597f0be026b1bdfab840da67228aba342ac78fc5698446057a"
+      "sha256": "3d2dc88e6c1de865b156fd07815f8a8d4f53bfc6e26c1322fff2d8c4b4f153a9"
     },
     {
       "model": 62243,
@@ -433,7 +433,7 @@
       "vertices": 282,
       "faces": 396,
       "textured": 0,
-      "sha256": "6337aba4f0525d7dcf7d46c30bc547a395d22a5924d3cb48b1dfff6aaee06a7f"
+      "sha256": "d5e5bddda4e9f9168073928bbe8d5a14918b788bf53719e8187b3db2f3dd0f21"
     },
     {
       "model": 62249,
@@ -475,7 +475,7 @@
       "vertices": 282,
       "faces": 396,
       "textured": 0,
-      "sha256": "3d04f1f45c605c37a874e2f256ff3112a0d992e4ceabcd697d93b224f27acd13"
+      "sha256": "3a96c14e624350ac9f820dd9674c75bd155c8514e3f62f484bdbad37fdd6a81a"
     },
     {
       "model": 62255,
@@ -517,7 +517,7 @@
       "vertices": 282,
       "faces": 396,
       "textured": 0,
-      "sha256": "2cbb021097dce7ca8d016ca13acbded9f7536ce0567270283f9dd13c4aa195b4"
+      "sha256": "10b8731b2ae7bc8472c2e0e9a6984e19ffe11dbb42147d576b20b04734cb1dea"
     },
     {
       "model": 62261,
@@ -559,7 +559,7 @@
       "vertices": 282,
       "faces": 396,
       "textured": 0,
-      "sha256": "07caa2901717d6aa6dd013c257f6c971d03b6a07822e4827d91efae6507c81fe"
+      "sha256": "a6bf052525f37827297dd523442c1d17e71525b316d3b131e8df7fd10b6e1318"
     },
     {
       "model": 62267,
@@ -601,7 +601,7 @@
       "vertices": 282,
       "faces": 396,
       "textured": 0,
-      "sha256": "2f6592f75e370d0a2d174eeffe1c9f8c78222712258c909516e0ec91c128c452"
+      "sha256": "afb23655979b5b50b23a007e171b733f1c401fd61c5cb3eb8c2440b78a4f7f73"
     },
     {
       "model": 62273,
@@ -643,7 +643,7 @@
       "vertices": 282,
       "faces": 396,
       "textured": 0,
-      "sha256": "743d1ed18772aa43a2604d8af999499fa183d2bebd08e1c3e3845810338919bb"
+      "sha256": "3b950e7e32d83a54ad167b2155165a5c6ee4850fda230b9b63c128101f222936"
     },
     {
       "model": 62279,

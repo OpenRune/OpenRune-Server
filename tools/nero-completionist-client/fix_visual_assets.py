@@ -8,6 +8,22 @@ RAW=ROOT.parents[1]/'content/other/nero-completionist/pack/src/main/resources/pa
 PALETTE=[65214,65200,65186,62995]
 
 
+def inventory_channel(colour):
+    if colour in PALETTE:return PALETTE.index(colour)
+    # The original folded mesh bakes several luminances of channel 3.
+    if colour&65408==PALETTE[3]&65408:return 3
+    return None
+
+
+def inventory_colour(colour,palette):
+    channel=inventory_channel(colour)
+    if channel is None:return colour
+    source=PALETTE[channel];target=palette[channel]
+    if target==source:return colour
+    light=max(2,min(126,round((colour&127)*(target&127)/max(1,source&127))))
+    return (target&65408)|light
+
+
 def independent_back(mesh,front_count=None):
     """Separate back normals and give the cloth a subpixel thickness.
 
@@ -100,8 +116,8 @@ def main():
             mesh.update(planes=[],trailer=b'\0',sourceMaterials=[-1]*nf,sourceTextureCoords=[-1]*nf)
             mesh['priority']=255;mesh['facePriorities']=[0]*nf;mesh['alphas']=[0]*nf
             mesh['faceModes']=[0]*nf;mesh['faceSkins']=None
-            channels=[f for f,c in enumerate(mesh['colors']) if c in (PALETTE[1],PALETTE[3])]
-            mesh['colors']=[colours[PALETTE.index(c)] if c in PALETTE else c for c in mesh['colors']]
+            channels=[f for f,c in enumerate(mesh['colors']) if inventory_channel(c) in (1,3)]
+            mesh['colors']=[inventory_colour(c,colours) for c in mesh['colors']]
             independent_back(mesh)
             if key in ('fire','infernal'):texture_panels(mesh,nf,channels,40 if key=='fire' else 59)
             layers=[0]*len(mesh['faces'])
@@ -121,7 +137,7 @@ def main():
         for suffix in ['emitters','palette']:
             value=old_bindings.get(f'model.{old_hash}.{suffix}')
             if model_id in models and suffix=='palette':
-                value=','.join(f'{f}:{PALETTE.index(c)}' for f,c in enumerate(mesh['colors']) if c in PALETTE) if model_id==62100 else None
+                value=','.join(f'{f}:{inventory_channel(c)}' for f,c in enumerate(mesh['colors']) if inventory_channel(c) is not None) if model_id==62100 else None
             if value:new.append(f'model.{digest}.{suffix}={value}')
         report.append(dict(model=model_id,vertices=len(mesh['vertices']),faces=len(mesh['faces']),textured=sum(t>=0 for t in mesh['sourceMaterials']),sha256=digest))
     # Restore the original folded icon's exact projection on every cape variant.
