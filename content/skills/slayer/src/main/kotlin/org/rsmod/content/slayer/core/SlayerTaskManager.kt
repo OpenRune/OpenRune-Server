@@ -166,7 +166,7 @@ object SlayerTaskManager {
         clearAssignedTask(player)
     }
 
-    private fun streakForMilestoneMultiplier(streak: Int): Int =
+    internal fun streakForMilestoneMultiplier(streak: Int): Int =
         if (streak > STREAK_MILESTONE_WRAP_THRESHOLD) {
             val remainder = streak % MILESTONE_CYCLE
             if (remainder == 0) MILESTONE_CYCLE else remainder
@@ -174,7 +174,7 @@ object SlayerTaskManager {
             streak
         }
 
-    private fun streakPointMultiplier(streak: Int): Int {
+    internal fun streakPointMultiplier(streak: Int): Int {
         val milestone = streakForMilestoneMultiplier(streak)
         return when {
             milestone > 0 && milestone % 1000 == 0 -> 50
