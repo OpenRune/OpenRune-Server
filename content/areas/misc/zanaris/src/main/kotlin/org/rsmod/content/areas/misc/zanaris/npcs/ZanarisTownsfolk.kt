@@ -2,6 +2,7 @@ package org.rsmod.content.areas.misc.zanaris.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -116,31 +117,63 @@ class ZanarisTownsfolk : PluginScript() {
         )
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Fairy_Fixit (before Fairytale II)
-    // TODO(content): [quest:fairytale_ii_cure_a_queen] "What have you got for me?" and the Fairy
-    //  Enchantment shop after the quest
+    // https://oldschool.runescape.wiki/w/Transcript:Fairy_Fixit
     private suspend fun Dialogue.fairyFixit() {
+        if (QuestRequirements.hasCompleted(player, FAIRYTALE_II)) {
+            fairyFixitAfterQuest()
+            return
+        }
         chatNpc(neutral, "What is it, human? Busy busy busy!")
         when (choice2("Why are you carrying that toolbox?", 1, "I'm okay, thanks.", 2)) {
-            1 -> {
-                chatPlayer(quiz, "Why are you carrying that toolbox?")
-                chatNpc(angry, "It's the fizgog! It's picking up cable again!")
-                chatPlayer(confused, "Uh, right. So is it safe to use the fairy rings then?")
-                chatNpc(
-                    neutral,
-                    "Sure, as long as you have been given permission to use them. You should " +
-                        "just be aware that using the fairy rings sometimes has strange results, " +
-                        "the locations that you have been to may affect the locations you are",
-                )
-                chatNpc(
-                    neutral,
-                    "trying to reach. I could fix it by replacing the fizgog and the " +
-                        "whosprangit, I've put in a request for some new parts but they're " +
-                        "pretty hard to get hold of, it seems.",
-                )
-            }
+            1 -> fizgog()
             2 -> chatPlayer(neutral, "I'm okay, thanks.")
         }
+    }
+
+    // TODO(content): [system:fairy_enchantment_shop] Fairy Fixit's Fairy Enchantment after "What
+    //  have you got for me?"; the cache has no shop inv for it
+    private suspend fun Dialogue.fairyFixitAfterQuest() {
+        chatNpc(shifty, "Pssst! Human! I've got something for you.")
+        val option =
+            choice3(
+                "What have you got for me?",
+                1,
+                "Why are you carrying that toolbox?",
+                2,
+                "Not interested, thanks.",
+                3,
+            )
+        when (option) {
+            1 -> {
+                chatPlayer(quiz, "What have you got for me?")
+                chatNpc(
+                    happy,
+                    "They said you'd helped cure our Queen. I haven't got a lot of rewards to " +
+                        "offer, but my enchantment scrolls might help if you're working with " +
+                        "fairy rings in your home.",
+                )
+            }
+            2 -> fizgog()
+            3 -> chatPlayer(neutral, "Not interested, thanks.")
+        }
+    }
+
+    private suspend fun Dialogue.fizgog() {
+        chatPlayer(quiz, "Why are you carrying that toolbox?")
+        chatNpc(angry, "It's the fizgog! It's picking up cable again!")
+        chatPlayer(confused, "Uh, right. So is it safe to use the fairy rings then?")
+        chatNpc(
+            neutral,
+            "Sure, as long as you have been given permission to use them. You should " +
+                "just be aware that using the fairy rings sometimes has strange results, " +
+                "the locations that you have been to may affect the locations you are",
+        )
+        chatNpc(
+            neutral,
+            "trying to reach. I could fix it by replacing the fizgog and the " +
+                "whosprangit, I've put in a request for some new parts but they're " +
+                "pretty hard to get hold of, it seems.",
+        )
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Slim_Louie
@@ -167,10 +200,21 @@ class ZanarisTownsfolk : PluginScript() {
         chatNpc(happy, "No, fortunately for me I inherited my good looks from my mother.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Fairy_Queen (before Fairytale I)
-    // TODO(content): [quest:fairytale_i_growing_pains] quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Fairy_Queen
+    // TODO(content): [quest:fairytale_i_growing_pains] quest stages, and the Queen's state between
+    //  the two quests
     // TODO(content): [system:treasure_trails] hard clue puzzle box
     private suspend fun Dialogue.fairyQueen() {
+        if (QuestRequirements.hasCompleted(player, FAIRYTALE_II)) {
+            chatPlayer(quiz, "Have you managed to work out a plan yet?")
+            chatNpc(
+                neutral,
+                "Not yet, ${player.displayName}, but it looks like we'll need to ask you for " +
+                    "your help again, I'm afraid. I'll be able to tell you more once we have " +
+                    "finished making our battle plans.",
+            )
+            return
+        }
         val option =
             choice2(
                 "How do crops and such survive down here?",
@@ -201,11 +245,26 @@ class ZanarisTownsfolk : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Fairy_Nuff (initial, before Fairytale I)
+    // https://oldschool.runescape.wiki/w/Transcript:Fairy_Nuff
     // TODO(content): [system:met_flags] the later-visit greeting and paying gems to be healed
-    // TODO(content): [quest:fairytale_i_growing_pains] after-quest dialogue
-    // TODO(content): [quest:fairytale_ii_cure_a_queen] after-quest dialogue
     private suspend fun Dialogue.fairyNuff() {
+        if (QuestRequirements.hasCompleted(player, FAIRYTALE_II)) {
+            chatPlayer(
+                quiz,
+                "Why aren't you in the war room with the Fairy Queen and her advisors?",
+            )
+            chatNpc(
+                angry,
+                "I don't like war! I don't believe that violence is ever justified, that's why I " +
+                    "became a healer.",
+            )
+            return
+        }
+        if (QuestRequirements.hasCompleted(player, FAIRYTALE_I)) {
+            chatPlayer(quiz, "How is the Fairy Queen doing?")
+            chatNpc(sad, "Not too well; the Godfather hasn't given me those secateurs yet.")
+            return
+        }
         chatPlayer(quiz, "What do you do around here?")
         chatNpc(
             happy,
@@ -304,5 +363,10 @@ class ZanarisTownsfolk : PluginScript() {
             }
             2 -> chatPlayer(happy, "Yes, I'm ready to leave.")
         }
+    }
+
+    private companion object {
+        const val FAIRYTALE_I = "quest_fairytale1"
+        const val FAIRYTALE_II = "quest_fairytale2"
     }
 }
