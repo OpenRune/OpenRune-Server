@@ -1,17 +1,22 @@
 package org.rsmod.content.areas.misc.guilds.champions
 
 import jakarta.inject.Inject
+import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-class ChampionsGuild @Inject constructor(private val shops: Shops) : PluginScript() {
+class ChampionsGuild
+@Inject
+constructor(private val shops: Shops, private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.guildmaster") { startDialogue(it.npc) { guildmaster() } }
         onOpNpc1("npc.champions_doorman") { startDialogue(it.npc) { larxus() } }
@@ -31,10 +36,15 @@ class ChampionsGuild @Inject constructor(private val shops: Shops) : PluginScrip
 
     // https://oldschool.runescape.wiki/w/Transcript:Guildmaster
     // https://oldschool.runescape.wiki/w/Transcript:Dragon_Slayer_I (not started)
-    // TODO(content): [quest:dragon_slayer_i] quest start, progress and the maze key option
+    // TODO(content): [quest:dragon_slayer_i] quest start, progress and the maze key option during
+    //  the quest
     // TODO(content): [system:champions_challenge] "I've been given a challenge. What now?"
     private suspend fun Dialogue.guildmaster() {
         chatNpc(happy, "Greetings!")
+        if (QuestRequirements.hasCompleted(player, DRAGON_SLAYER_I)) {
+            guildmasterAfterQuest()
+            return
+        }
         when (choice2("What is this place?", 1, "Can I have a quest?", 2)) {
             1 -> {
                 chatPlayer(quiz, "What is this place?")
@@ -55,6 +65,30 @@ class ChampionsGuild @Inject constructor(private val shops: Shops) : PluginScrip
                 )
             }
         }
+    }
+
+    private suspend fun Dialogue.guildmasterAfterQuest() {
+        val option =
+            choice2("What is this place?", 1, "Can I have another key to Melzar's Maze?", 2)
+        if (option == 1) {
+            chatPlayer(quiz, "What is this place?")
+            chatNpc(
+                neutral,
+                "This is the Champions' Guild. Only adventurers who have proved themselves " +
+                    "worthy by gaining influence from quests are allowed in here.",
+            )
+            return
+        }
+        chatPlayer(quiz, "Can I have another key to Melzar's Maze?")
+        // TODO(content): [system:key_ring] "I think you've already got a key. Maybe you should
+        //  check your key ring."
+        if (MAZE_KEY in player.inv || access.bank.count(MAZE_KEY) > 0) {
+            chatNpc(neutral, "I think you've already got a key somewhere.")
+            return
+        }
+        chatNpc(happy, "Of course! Here you go.")
+        player.invAddOrDrop(objRepo, MAZE_KEY)
+        mesbox("You receive a maze key.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Larxus
@@ -128,5 +162,10 @@ class ChampionsGuild @Inject constructor(private val shops: Shops) : PluginScrip
             1 -> player.openChampionShop(npc)
             2 -> chatPlayer(neutral, "No thank you.")
         }
+    }
+
+    private companion object {
+        const val DRAGON_SLAYER_I = "quest_dragonslayer1"
+        const val MAZE_KEY = "obj.melzarkey"
     }
 }

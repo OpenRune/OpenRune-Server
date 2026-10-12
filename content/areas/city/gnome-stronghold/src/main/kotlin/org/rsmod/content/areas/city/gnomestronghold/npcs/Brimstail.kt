@@ -1,23 +1,27 @@
 package org.rsmod.content.areas.city.gnomestronghold.npcs
 
 import jakarta.inject.Inject
+import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.content.quest.area.lumbridge.RuneMysteriesQuest
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.runecrafting.essence.teleportToRuneEssenceMine
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Brimstail
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:the_eyes_of_glouphrie] start offer, quest stages and the after-quest
-//  "Hello, just wanted a chat." with the crystal saw seed
+// TODO(content): [quest:the_eyes_of_glouphrie] quest start and quest stages
 // TODO(content): [system:gnome_restaurant] delivery hand-in dialogue
 // TODO(content): [system:treasure_trails] medium clue step
 // TODO(content): [verify:in_game] the essence mine option before Rune Mysteries (the Teleport op
 //  only appears after it)
-class Brimstail @Inject constructor(private val runeMysteries: RuneMysteriesQuest) :
+class Brimstail
+@Inject
+constructor(private val runeMysteries: RuneMysteriesQuest, private val objRepo: ObjRepository) :
     PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(BRIMSTAIL) { startDialogue(it.npc) { brimstail() } }
@@ -26,21 +30,59 @@ class Brimstail @Inject constructor(private val runeMysteries: RuneMysteriesQues
 
     private suspend fun Dialogue.brimstail() {
         chatNpc(happy, "Hello adventurer, what can I do for you?")
+        val questDone = QuestRequirements.hasCompleted(player, EYES_OF_GLOUPHRIE)
+        val chatOption =
+            if (questDone) {
+                "Hello, just wanted a chat."
+            } else {
+                "What's that cute creature wandering around?"
+            }
         val teleport =
             runeMysteries.quest.isQuestCompleted(player) &&
-                choice2(
-                    "What's that cute creature wandering around?",
-                    false,
-                    "Can you teleport me to the Rune Essence Mine?",
-                    true,
-                )
+                choice2(chatOption, false, "Can you teleport me to the Rune Essence Mine?", true)
         if (teleport) {
             chatPlayer(quiz, "Can you teleport me to the Rune Essence?")
             chatNpc(happy, "Okay. Hold onto your hat!")
             teleportToRuneEssenceMine()
             return
         }
-        cuteCreature()
+        if (questDone) {
+            justAChat()
+        } else {
+            cuteCreature()
+        }
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Brimstail
+    // TODO(content): [verify:in_game] the "What's this seed do?" and "What's this crystal saw
+    //  do?" branches; the transcript doesn't say how they rank against "How are your researches
+    //  going?"
+    private suspend fun Dialogue.justAChat() {
+        chatPlayer(happy, "Hello, just wanted a chat..")
+        chatNpc(
+            happy,
+            "It's always a pleasure to catch up with an another mage! Especially one who has " +
+                "helped me so much!",
+        )
+        if (access.playerContainsAnyObj(CRYSTAL_SAW, CRYSTAL_SAW_SEED)) {
+            chatNpc(quiz, "How are your researches going?")
+            chatPlayer(
+                neutral,
+                "Oh, not so bad. I'll let you know if I find anything I think you'll find " +
+                    "interesting...",
+            )
+            chatNpc(happy, "Thanks! I'd appreciate that.")
+            return
+        }
+        chatNpc(
+            neutral,
+            "Oh, by the way, I found this odd thing lying around, does it belong to you?",
+        )
+        objbox(CRYSTAL_SAW_SEED, "Brimstail shows you a small crystal seed.")
+        chatPlayer(happy, "Oh, yes - I was wondering where that had gone...")
+        chatNpc(neutral, "You should look after your things more carefully you know...")
+        player.invAddOrDrop(objRepo, CRYSTAL_SAW_SEED)
+        chatPlayer(happy, "Thanks!")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:The_Eyes_of_Glouphrie (getting started)
@@ -186,5 +228,8 @@ class Brimstail @Inject constructor(private val runeMysteries: RuneMysteriesQues
 
     private companion object {
         const val BRIMSTAIL = "npc.gnome_brimstail"
+        const val EYES_OF_GLOUPHRIE = "quest_eyesofglouphrie"
+        const val CRYSTAL_SAW = "obj.eyeglo_crystal_saw"
+        const val CRYSTAL_SAW_SEED = "obj.crystal_seed_old_small"
     }
 }

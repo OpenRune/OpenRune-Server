@@ -2,6 +2,7 @@ package org.rsmod.content.areas.zeah.arceuus.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -16,7 +17,6 @@ class HistoricalArchive : PluginScript() {
 
     // https://oldschool.runescape.wiki/w/Transcript:Imerominia
     // TODO(content): [quest:dragon_slayer_ii] "Have you ever heard of Camorra?"
-    // TODO(content): [quest:a_kingdom_divided] Rose's Accord answer after the quest
     private suspend fun Dialogue.imerominia() {
         chatPlayer(quiz, "Hello. What do you do here?")
         chatNpc(happy, "Hello. My name is Imerominia and I'm the library horologist.")
@@ -95,6 +95,32 @@ class HistoricalArchive : PluginScript() {
             "The Accord declared that each house will, in turn, rule the Kingdom of Great " +
                 "Kourend for one decade in rotation, based on lots drawn.",
         )
+        if (QuestRequirements.hasCompleted(player, KINGDOM_DIVIDED)) {
+            chatNpc(
+                neutral,
+                "The Royal Accord of Twill no longer plays much part in the rulership of " +
+                    "Kourend. It was breached in the 13th decade when King Shayzien III seized " +
+                    "control of the kingdom. It hasn't been honoured since.",
+            )
+            chatNpc(
+                neutral,
+                "That said, it was the basis for Rose's Accord, which sets out how the kingdom " +
+                    "is currently ruled today. As decreed in Rose's Accord, the Hosidius family " +
+                    "are now the royal family of Kourend.",
+            )
+            chatNpc(
+                neutral,
+                "We have the original Royal Accord of Twill safely stored here. Although it's " +
+                    "not available for public viewing, there are copies available within the " +
+                    "Grand Library. Is there anything else I can help you with?",
+            )
+            if (choice2("So what is today's date?", true, "No thanks.", false)) {
+                todaysDate()
+            } else {
+                chatPlayer(neutral, "No thanks.")
+            }
+            return
+        }
         chatNpc(
             neutral,
             "You may find a book in the Grand Library with further information. Is there " +
@@ -426,7 +452,6 @@ class HistoricalArchive : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Ektheme
-    // TODO(content): [quest:tale_of_the_righteous] the lizardmen and Xeric's fate after the quest
     private suspend fun Dialogue.ektheme() {
         chatPlayer(quiz, "Hello. Who are you?")
         chatNpc(happy, "Hi there. I'm Ektheme, an expert on the Xerician era.")
@@ -515,18 +540,29 @@ class HistoricalArchive : PluginScript() {
             "Xeric drew much of his power from the Dark Altar, but he asserted his authority as " +
                 "ruler through his personal army of creatures, the lizardmen.",
         )
-        chatPlayer(shocked, "Xeric created the lizardmen!?")
-        chatNpc(
-            sad,
-            "Sadly so, though we're not exactly sure how he did so. Xeric used the citizens of " +
-                "Kourend for many experiments, as well as for his own sadistic pleasures.",
-        )
-        chatNpc(
-            neutral,
-            "We have little written record of the experiments, but we believe they might have " +
-                "led to the creation of the lizardmen.",
-        )
-        chatPlayer(quiz, "Do you know why he created the lizardmen?")
+        if (QuestRequirements.hasCompleted(player, TALE_OF_THE_RIGHTEOUS)) {
+            chatNpc(
+                neutral,
+                "Originally, we believed that Xeric created the lizardmen. However, recent " +
+                    "discovieres suggest they were actually created during the time of King " +
+                    "Shayzien VII.",
+            )
+            chatPlayer(quiz, "Do you know why Xeric needed the lizardmen?")
+        } else {
+            chatPlayer(shocked, "Xeric created the lizardmen!?")
+            chatNpc(
+                sad,
+                "Sadly so, though we're not exactly sure how he did so. Xeric used the " +
+                    "citizens of Kourend for many experiments, as well as for his own sadistic " +
+                    "pleasures.",
+            )
+            chatNpc(
+                neutral,
+                "We have little written record of the experiments, but we believe they might " +
+                    "have led to the creation of the lizardmen.",
+            )
+            chatPlayer(quiz, "Do you know why he created the lizardmen?")
+        }
         chatNpc(
             neutral,
             "Xeric was undoubtedly powerful, but he couldn't rule the people singlehandedly, nor " +
@@ -647,13 +683,30 @@ class HistoricalArchive : PluginScript() {
                 "remains being discovered.",
         )
         chatPlayer(quiz, "So no one knows what really happened to him?")
-        chatNpc(
-            neutral,
-            "Xeric was incredibly powerful but we can reasonably assume that he soon perished. " +
-                "Without the power of the Dark Altar, Xeric would have become mortal.",
-        )
-        chatPlayer(happy, "Good riddance by the sounds of it.")
-        chatNpc(neutral, "Indeed. Is there anything else I can help you with?")
+        if (QuestRequirements.hasCompleted(player, TALE_OF_THE_RIGHTEOUS)) {
+            chatNpc(
+                neutral,
+                "Xeric was incredibly powerful, but without the Dark Altar, he would have soon " +
+                    "become mortal and perished.",
+            )
+            chatNpc(
+                neutral,
+                "However, recent discoveries suggest that he may have found a way to amplify the " +
+                    "power of the altar. This may have allowed him to live far longer than " +
+                    "previously believed.",
+            )
+            chatPlayer(confused, "Hmmm, interesting.")
+            chatNpc(neutral, "Is there anything else I can help you with?")
+        } else {
+            chatNpc(
+                neutral,
+                "Xeric was incredibly powerful but we can reasonably assume that he soon " +
+                    "perished. Without the power of the Dark Altar, Xeric would have become " +
+                    "mortal.",
+            )
+            chatPlayer(happy, "Good riddance by the sounds of it.")
+            chatNpc(neutral, "Indeed. Is there anything else I can help you with?")
+        }
         val option =
             choice3(
                 "What happened to the lizardmen after Xeric's reign?",
@@ -674,5 +727,10 @@ class HistoricalArchive : PluginScript() {
                 false
             }
         }
+    }
+
+    private companion object {
+        const val KINGDOM_DIVIDED = "quest_kingdomdivided"
+        const val TALE_OF_THE_RIGHTEOUS = "quest_taleoftherighteous"
     }
 }

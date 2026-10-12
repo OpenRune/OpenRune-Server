@@ -2,9 +2,11 @@ package org.rsmod.content.areas.city.rellekka.jatizso.npcs
 
 import dev.openrune.types.MesAnimType
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.content.areas.city.rellekka.fremennikName
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -15,19 +17,30 @@ class JatizsoTownsfolk : PluginScript() {
         onOpNpc1("npc.fris_mine_guard") { startDialogue(it.npc) { gruvaPatrull() } }
         onOpNpc1("npc.frisd_village_miner") { startDialogue(it.npc) { miner() } }
         onOpNpc1("npc.frisd_village_miner2") { startDialogue(it.npc) { miner() } }
-        onOpNpc1("npc.fris_r_guardizso") { startDialogue(it.npc) { throneRoomGuard() } }
+        onOpNpc1("npc.fris_r_guardizso") {
+            if (isIslesDone()) startDialogue(it.npc) { throneRoomGuard() }
+        }
         onOpNpc1("npc.fris_r_guardizso2") { startDialogue(it.npc) { gateGuards() } }
         onOpNpc1("npc.frisd_izso_viking_shouter") { startDialogue(it.npc) { watchtowerGuard() } }
         onOpNpc1("npc.fris_r_kingscat") { startDialogue(it.npc) { hrafn() } }
         onOpNpcU("npc.fris_r_kingscat") { startDialogue(it.npc) { hrafnGift() } }
-        onOpNpc1("npc.fris_r_chancellor") { startDialogue(it.npc) { thorkel() } }
+        onOpNpc1("npc.fris_r_chancellor") {
+            if (isIslesDone()) startDialogue(it.npc) { thorkel() }
+        }
         onOpNpcU("npc.fris_r_chancellor") { startDialogue(it.npc) { thorkelGift() } }
-        onOpNpc1("npc.fris_red_axe_secretary") { startDialogue(it.npc) { brendt() } }
-        onOpNpc1("npc.fris_red_axe_trader") { startDialogue(it.npc) { grundt() } }
+        onOpNpc1("npc.fris_red_axe_secretary") {
+            if (isIslesDone()) startDialogue(it.npc) { brendt() }
+        }
+        onOpNpc1("npc.fris_red_axe_trader") {
+            if (isIslesDone()) startDialogue(it.npc) { grundt() }
+        }
         onOpNpc1("npc.frisd_izso_viking_woman1") { startDialogue(it.npc) { citizen() } }
         onOpNpc1("npc.frisd_izso_viking_woman2") { startDialogue(it.npc) { citizen() } }
         onOpNpc1("npc.frisd_izso_viking_woman4") { startDialogue(it.npc) { citizen() } }
     }
+
+    private fun ProtectedAccess.isIslesDone(): Boolean =
+        QuestRequirements.hasCompleted(player, FREMENNIK_ISLES)
 
     // https://oldschool.runescape.wiki/w/Transcript:Eric_(Jatizso)
     // TODO(content): [quest:the_fremennik_isles] window and beard tax collecting (beard tax gives
@@ -279,6 +292,7 @@ class JatizsoTownsfolk : PluginScript() {
     }
 
     private companion object {
+        const val FREMENNIK_ISLES = "quest_fremennikisles"
         const val CATSPEAK_AMULET = "obj.ics_little_amulet_of_catspeak"
         const val VANLIGGA_TITLE = "Vanligga Gastfrihet"
         const val VANLIGGA = "npc.frisd_izso_landlady"

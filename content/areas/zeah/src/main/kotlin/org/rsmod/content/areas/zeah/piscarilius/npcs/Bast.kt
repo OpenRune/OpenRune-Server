@@ -4,6 +4,7 @@ import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.areas.zeah.kourend.kourendRumour
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -45,13 +46,7 @@ class Bast : PluginScript() {
             }
             3 -> {
                 chatPlayer(quiz, "Have you heard any rumours here?")
-                // TODO(content): [quest:client_of_kourend] later rumours once Client of Kourend
-                //  has started (see The Golden Field)
-                chatNpc(
-                    neutral,
-                    "Apparently Veos is looking for some help with something. He hangs around " +
-                        "the docks of Port Piscarilius.",
-                )
+                kourendRumour()
             }
             4 -> afraidNot()
         }

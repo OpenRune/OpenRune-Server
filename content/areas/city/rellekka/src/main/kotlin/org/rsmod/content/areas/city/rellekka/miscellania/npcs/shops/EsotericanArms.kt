@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -12,8 +13,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Runa
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:royal_trouble] the dwarf who only bought one pint, while the quest is in
-// progress
 class EsotericanArms @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(RUNA) { startDialogue(it.npc) { runa(it.npc) } }
@@ -45,6 +44,16 @@ class EsotericanArms @Inject constructor(private val shops: Shops) : PluginScrip
             2 -> chatPlayer(neutral, "No, thank you.")
             3 -> {
                 chatPlayer(quiz, "What's it like living down here?")
+                if (QuestRequirements.isOnQuest(player, ROYAL_TROUBLE)) {
+                    chatNpc(
+                        neutral,
+                        "The dwarves living down here spend a lot of time and money in my inn.",
+                    )
+                    chatNpc(sad, "One of them's been in here all day, and only bought one pint.")
+                    chatNpc(quiz, "Could you ask him to at least order another drink?")
+                    chatPlayer(neutral, "I'll see what I can do.")
+                    return
+                }
                 chatNpc(happy, "Business is booming!")
                 chatNpc(
                     sad,
@@ -55,6 +64,7 @@ class EsotericanArms @Inject constructor(private val shops: Shops) : PluginScrip
     }
 
     private companion object {
+        const val ROYAL_TROUBLE = "quest_royaltrouble"
         const val RUNA = "npc.royal_barmaid"
     }
 }

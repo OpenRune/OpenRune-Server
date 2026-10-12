@@ -1,13 +1,14 @@
 package org.rsmod.content.areas.city.desert.pollnivneach.npcs
 
+import dev.openrune.types.MesAnimType
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-// https://oldschool.runescape.wiki/w/Transcript:Ali_the_Camel_Man (before The Feud)
+// https://oldschool.runescape.wiki/w/Transcript:Ali_the_Camel_Man
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:the_feud] Sami's dialogue after the quest
 // TODO(content): [verify:in_game] what Trade does; no shop inv exists for the camel store
 class AliTheCamelMan : PluginScript() {
     override fun ScriptContext.startup() {
@@ -15,6 +16,10 @@ class AliTheCamelMan : PluginScript() {
     }
 
     private suspend fun Dialogue.camelMan() {
+        if (QuestRequirements.hasCompleted(player, THE_FEUD)) {
+            samiAfterFeud()
+            return
+        }
         chatNpc(happy, "Welcome to my discount camel store. Can I help you with anything?")
         while (true) {
             val option =
@@ -49,6 +54,33 @@ class AliTheCamelMan : PluginScript() {
             }
         }
     }
+
+    private suspend fun Dialogue.samiAfterFeud() {
+        chatSami(
+            happy,
+            "Hello! Welcome back to my discount camel store. How are those camels getting along?",
+        )
+        chatPlayer(happy, "Hey Sami!")
+        chatSami(happy, "Hello adventurer.")
+        chatPlayer(quiz, "Any news?")
+        chatSami(
+            happy,
+            "Not much really, I just want to thank you for what you have done for this town. I " +
+                "might even stick around now that business is better!",
+        )
+        chatPlayer(quiz, "Any grand plans?")
+        chatSami(
+            neutral,
+            "Well I've been debating whether I should diversify into camel rental, too. Although " +
+                "I do have all these cages lying around... do you think there's a market for " +
+                "discount jackals?",
+        )
+        chatPlayer(happy, "Maybe! Best of luck, in any case.")
+        chatSami(happy, "Thank you.")
+    }
+
+    private suspend fun Dialogue.chatSami(mesanim: MesAnimType, text: String) =
+        chatNpcSpecific(SAMI_NAME, SAMI, mesanim, text)
 
     private suspend fun Dialogue.discountStore(): Boolean {
         chatPlayer(quiz, "A discount camel store?")
@@ -248,5 +280,8 @@ class AliTheCamelMan : PluginScript() {
 
     private companion object {
         const val CAMEL_MAN = "npc.feud_ali_the_discount_camel_seller_multi"
+        const val SAMI = "npc.feud_ali_the_discount_camel_seller_postquest"
+        const val SAMI_NAME = "Sami the Camel Man"
+        const val THE_FEUD = "quest_feud"
     }
 }

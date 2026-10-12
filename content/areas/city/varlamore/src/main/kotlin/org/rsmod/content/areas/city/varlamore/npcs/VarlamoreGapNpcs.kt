@@ -6,6 +6,7 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -254,9 +255,26 @@ class VarlamoreGapNpcs @Inject constructor(private val shops: Shops) : PluginScr
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Captain_Vibia
-    // TODO(content): [quest:the_final_dawn] dialogue after the quest
     private suspend fun Dialogue.captainVibia() {
         chatPlayer(happy, "Hello there.")
+        if (QuestRequirements.hasCompleted(player, FINAL_DAWN)) {
+            chatNpc(happy, "Good day to you, adventurer. Do you need something?")
+            chatPlayer(neutral, "No. Just thought I'd come and see how things are going.")
+            chatNpc(
+                neutral,
+                "Things are very well thank you. Prince Itzla has tasked me with keeping an eye " +
+                    "on the remaining Emissaries.",
+            )
+            chatNpc(
+                neutral,
+                "Swift justice must be dealt if they try anything, but until then, the Prince " +
+                    "would prefer we not stir the pot. They no longer pose a real threat now " +
+                    "their leaders have gone.",
+            )
+            chatPlayer(happy, "Well, I'm glad to hear all is well. Until next time.")
+            chatNpc(happy, "Indeed. May the sun light your way, adventurer.")
+            return
+        }
         chatNpc(neutral, "Do you need something?")
         chatPlayer(neutral, "Not that I know of.")
         chatNpc(bored, "Move along then. I have a lot of work to be doing.")
@@ -334,7 +352,6 @@ class VarlamoreGapNpcs @Inject constructor(private val shops: Shops) : PluginScr
 
     // https://oldschool.runescape.wiki/w/Transcript:Taala (initial dialogue)
     // TODO(content): [system:met_flags] subsequent dialogue and the chain warning before talking
-    // TODO(content): [quest:perilous_moons] greeting for players who finished the quest
     private suspend fun Dialogue.taala() {
         chatPlayer(quiz, "Hello! Are you the leader of this expedition?")
         chatNpc(neutral, "Indeed I am, human! What's on your mind?")
@@ -387,11 +404,19 @@ class VarlamoreGapNpcs @Inject constructor(private val shops: Shops) : PluginScr
             "Unfortunately, that means recruiting all the help we can get, even from you humans...",
         )
         chatPlayer(quiz, "How can I help?")
-        chatNpc(
-            neutral,
-            "Well, despite what some of us may think of your kind, we need all the help we can " +
-                "get.",
-        )
+        if (QuestRequirements.hasCompleted(player, PERILOUS_MOONS)) {
+            chatNpc(
+                happy,
+                "Well, as you've already proven yourself useful to Cam Torum, I'd be glad to " +
+                    "have you help here!",
+            )
+        } else {
+            chatNpc(
+                neutral,
+                "Well, despite what some of us may think of your kind, we need all the help we " +
+                    "can get.",
+            )
+        }
         if (player.combatLevel < HUEYCOATL_COMBAT) {
             chatNpc(
                 neutral,
@@ -437,6 +462,8 @@ class VarlamoreGapNpcs @Inject constructor(private val shops: Shops) : PluginScr
     }
 
     private companion object {
+        const val FINAL_DAWN = "quest_finaldawn"
+        const val PERILOUS_MOONS = "quest_perilousmoons"
         const val METLA = "npc.stonecutter_stonemason"
         const val ARCUANI = "npc.tal_teklan_archery_trader"
         const val XOCHITL = "npc.tal_teklan_dye_trader"

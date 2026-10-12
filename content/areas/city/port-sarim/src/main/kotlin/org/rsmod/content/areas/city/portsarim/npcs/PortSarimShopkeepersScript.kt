@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.portsarim.npcs
 
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
@@ -25,6 +26,8 @@ private enum class PortSarimShop(
     Magic("npc.betty", "Betty's Magic Emporium.", "inv.magicshop", 100.0, 60.0, 0.1),
     Battleaxes("npc.brian", "Brian's Battleaxe Bazaar.", "inv.battleaxeshop", 100.0, 55.0, 1.0),
 }
+
+private var Player.bettyToldAboutNote: Boolean by boolVarBit("varbit.eaa_betty_told_about_note")
 
 class PortSarimShopkeepersScript @Inject constructor(private val shops: Shops) :
     PluginScript() {
@@ -106,33 +109,36 @@ class PortSarimShopkeepersScript @Inject constructor(private val shops: Shops) :
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Betty
-    // TODO(content): [quest:ethically_acquired_antiquities] "I managed to decipher those notes."
     private suspend fun Dialogue.betty() {
         chatNpc(quiz, "Hello again. What can I do for you?")
-        val sellsDye = QuestRequirements.hasCompleted(player, HAND_IN_THE_SAND)
-        val topic =
-            if (sellsDye) {
-                choice3(
-                    "Can I see your wares?",
-                    BettyTopic.Wares,
-                    "Could I buy some more pink dye?",
-                    BettyTopic.Dye,
-                    "I'm good, thanks.",
-                    BettyTopic.Leave,
-                )
-            } else {
-                choice2(
-                    "Can I see your wares?",
-                    BettyTopic.Wares,
-                    "I'm good, thanks.",
-                    BettyTopic.Leave,
-                )
+        val options = buildList {
+            add("Can I see your wares?" to BettyTopic.Wares)
+            if (
+                QuestRequirements.hasCompleted(player, ETHICALLY_ACQUIRED_ANTIQUITIES) &&
+                    !player.bettyToldAboutNote
+            ) {
+                add("I managed to decipher those notes." to BettyTopic.Notes)
             }
-        when (topic) {
+            if (QuestRequirements.hasCompleted(player, HAND_IN_THE_SAND)) {
+                add("Could I buy some more pink dye?" to BettyTopic.Dye)
+            }
+            add("I'm good, thanks." to BettyTopic.Leave)
+        }
+        when (menu(options)) {
             BettyTopic.Wares -> {
                 chatPlayer(quiz, "Can I see your wares?")
                 chatNpc(happy, "Of course.")
                 player.openShop(PortSarimShop.Magic)
+            }
+            BettyTopic.Notes -> {
+                chatPlayer(happy, "I managed to decipher those notes.")
+                player.bettyToldAboutNote = true
+                chatNpc(happy, "Oh really? Please do tell. It's been driving me crazy!")
+                chatPlayer(
+                    neutral,
+                    "It seems like he was trying to find the runes for the Varrock teleport spell.",
+                )
+                chatNpc(happy, "Ah, of course. I'm not sure how I didn't figure that out!")
             }
             BettyTopic.Dye -> buyPinkDye()
             BettyTopic.Leave -> chatPlayer(neutral, "I'm good, thanks.")
@@ -193,12 +199,14 @@ class PortSarimShopkeepersScript @Inject constructor(private val shops: Shops) :
 
     private enum class BettyTopic {
         Wares,
+        Notes,
         Dye,
         Leave,
     }
 
     private companion object {
         const val HAND_IN_THE_SAND = "quest_handinthesand"
+        const val ETHICALLY_ACQUIRED_ANTIQUITIES = "quest_ethicallyacquiredantiquities"
         const val PINK_DYE = "obj.handsand_pink_dye"
         const val PINK_DYE_PRICE = 20
     }

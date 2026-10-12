@@ -6,6 +6,8 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.areas.city.varlamore.sunsetcoast.npcs.fremennikName
+import org.rsmod.content.areas.city.varlamore.sunsetcoast.npcs.isFremennik
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -86,14 +88,16 @@ class SunsetCoastShops @Inject constructor(private val shops: Shops) : PluginScr
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Thurid (before The Fremennik Trials)
-    // TODO(content): [quest:the_fremennik_trials] the greeting with the player's Fremennik name
+    // https://oldschool.runescape.wiki/w/Transcript:Thurid
     private suspend fun Dialogue.thurid(npc: Npc) {
-        chatNpc(
-            happy,
+        val greeting =
             "Looking to protect that nice brain of yours? Then you'll be wanting one of my " +
-                "helmets.",
-        )
+                "helmets."
+        if (isFremennik) {
+            chatNpc(happy, "${fremennikName()}! $greeting")
+        } else {
+            chatNpc(happy, greeting)
+        }
         when (choice2("I'll have a look.", 1, "I'm good.", 2)) {
             1 -> {
                 chatPlayer(happy, "I'll have a look.")

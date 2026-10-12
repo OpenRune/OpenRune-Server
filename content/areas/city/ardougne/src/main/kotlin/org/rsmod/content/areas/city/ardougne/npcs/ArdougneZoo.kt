@@ -1,13 +1,18 @@
 package org.rsmod.content.areas.city.ardougne.npcs
 
+import jakarta.inject.Inject
+import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.stat.statBase
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-class ArdougneZoo : PluginScript() {
+class ArdougneZoo @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.zoo_keeper") { startDialogue(it.npc) { zooKeeper() } }
         onOpNpc1("npc.eadgar_zoo_keeper_aviary") { startDialogue(it.npc) { parrotyPete() } }
@@ -95,10 +100,19 @@ class ArdougneZoo : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Eagles%27_Peak (before starting)
-    // TODO(content): [quest:eagles_peak] start offer, quest stages and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Charlie
+    // TODO(content): [quest:eagles_peak] start offer and quest stages
     // TODO(content): [verify:in_game] Charlie's "Where did you get the animals from?" lines
     private suspend fun Dialogue.charlie() {
+        if (QuestRequirements.hasCompleted(player, EAGLES_PEAK)) {
+            chatPlayer(quiz, "Hi, how are you getting on with that ferret?")
+            chatNpc(
+                happy,
+                "Well he seems to be just as vicious as the one we lost, but we're still very " +
+                    "grateful for your help in acquiring him.",
+            )
+            return
+        }
         chatPlayer(happy, "Hi!")
         chatNpc(
             neutral,
@@ -155,9 +169,13 @@ class ArdougneZoo : PluginScript() {
         )
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Larry (Ardougne Zoo, before Cold War)
-    // TODO(content): [quest:cold_war] start offer, quest stages and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Larry (Ardougne Zoo)
+    // TODO(content): [quest:cold_war] start offer and quest stages
     private suspend fun Dialogue.larry() {
+        if (QuestRequirements.hasCompleted(player, COLD_WAR)) {
+            larryAfterColdWar()
+            return
+        }
         chatPlayer(quiz, "Hello. Do you need any help? I'm looking for a quest.")
         if (player.statBase("stat.construction") < COLD_WAR_CONSTRUCTION) {
             chatNpc(
@@ -187,6 +205,68 @@ class ArdougneZoo : PluginScript() {
                 "an extra pair of eyes, you know, for, uh, observing...Penguins.",
         )
         chatNpc(quiz, "So, are you up for it?")
+    }
+
+    private suspend fun Dialogue.larryAfterColdWar() {
+        val lostBook = !player.ownsClockworkBook()
+        val myArm = QuestRequirements.hasCompleted(player, MAKING_FRIENDS_WITH_MY_ARM)
+        val option =
+            when {
+                lostBook && myArm ->
+                    choice3(
+                        "What are we going to do about the penguins?",
+                        1,
+                        "I've lost the clockwork book, could I have another?",
+                        2,
+                        "Thanks for helping My Arm earlier.",
+                        3,
+                    )
+                lostBook ->
+                    choice2(
+                        "What are we going to do about the penguins?",
+                        1,
+                        "I've lost the clockwork book, could I have another?",
+                        2,
+                    )
+                myArm ->
+                    choice2(
+                        "What are we going to do about the penguins?",
+                        1,
+                        "Thanks for helping My Arm earlier.",
+                        3,
+                    )
+                else -> 1
+            }
+        when (option) {
+            1 -> {
+                chatPlayer(quiz, "What are we going to do about the penguins?")
+                chatNpc(
+                    neutral,
+                    "I can't speak right now. I have too much to do. I will contact you when the " +
+                        "time is right.",
+                )
+            }
+            2 -> {
+                chatPlayer(sad, "I've lost the clockwork book, could I have another?")
+                chatNpc(
+                    neutral,
+                    "Well, lucky for you I did make another copy. But be more careful!",
+                )
+                player.invAddOrDrop(objRepo, CLOCKWORK_BOOK)
+            }
+            3 -> {
+                chatPlayer(happy, "Thanks for helping My Arm earlier.")
+                chatNpc(angry, "Never speak to me about that again.")
+            }
+        }
+    }
+
+    private fun Player.ownsClockworkBook(): Boolean {
+        if (CLOCKWORK_BOOK in inv) {
+            return true
+        }
+        val bank = invMap["inv.bank"]
+        return bank != null && CLOCKWORK_BOOK in bank
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Monkey_minder
@@ -238,5 +318,10 @@ class ArdougneZoo : PluginScript() {
     private companion object {
         const val EAGLES_PEAK_HUNTER = 27
         const val COLD_WAR_CONSTRUCTION = 34
+
+        const val EAGLES_PEAK = "quest_eaglespeak"
+        const val COLD_WAR = "quest_coldwar"
+        const val MAKING_FRIENDS_WITH_MY_ARM = "quest_makingfriendswithmyarm"
+        const val CLOCKWORK_BOOK = "obj.peng_book"
     }
 }

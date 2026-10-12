@@ -5,19 +5,27 @@ import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Chancellor_Hassan
 // https://oldschool.runescape.wiki/w/Transcript:Prince_Ali_Rescue
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:prince_ali_rescue] quest start, in-progress and post-quest dialogue
+// TODO(content): [quest:prince_ali_rescue] quest start and in-progress dialogue
 class ChancellorHassan @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.hassan") { startDialogue(it.npc) { hassan() } }
     }
 
     private suspend fun Dialogue.hassan() {
+        if (QuestRequirements.hasCompleted(player, PRINCE_ALI_RESCUE)) {
+            chatNpc(
+                happy,
+                "Thank you for being a friend to Al Kharid. You are always welcome here.",
+            )
+            return
+        }
         chatNpc(happy, "Greetings! I am Hassan, Chancellor to the Emir of Al Kharid.")
         while (true) {
             val option =
@@ -63,5 +71,9 @@ class ChancellorHassan @Inject constructor(private val objRepo: ObjRepository) :
                 }
             }
         }
+    }
+
+    private companion object {
+        const val PRINCE_ALI_RESCUE = "quest_princealirescue"
     }
 }

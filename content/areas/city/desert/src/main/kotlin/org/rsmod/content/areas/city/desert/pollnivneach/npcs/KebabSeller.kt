@@ -12,7 +12,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 // https://oldschool.runescape.wiki/w/Transcript:Ali_the_Kebab_seller
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 // TODO(content): [system:treasure_trails] medium cipher clue and challenge scroll
-// TODO(content): [quest:the_feud] Isma'il's name after the quest
 class KebabSeller @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(KEBAB_SELLER) { startDialogue(it.npc) { kebabSeller() } }

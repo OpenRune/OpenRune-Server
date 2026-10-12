@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.ardougne.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -54,12 +55,11 @@ class EastArdougneGapNpcs : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Bones_(kitten)
-    // TODO(content): [quest:dragon_slayer_ii] the cat also talks to players who finished the quest
     private suspend fun Dialogue.bones() {
         chatPlayer(happy, "Who's a cute little kitty?")
         val catspeak =
             CATSPEAK_AMULETS.any { player.inv.count(it) > 0 || player.worn.count(it) > 0 }
-        if (catspeak) {
+        if (catspeak || QuestRequirements.hasCompleted(player, DRAGON_SLAYER_II)) {
             chatNpc(neutral, "Jimmy doesn't like me talking to strangers.")
         } else {
             chatNpc(neutral, "Miaow!")
@@ -67,6 +67,8 @@ class EastArdougneGapNpcs : PluginScript() {
     }
 
     private companion object {
+        const val DRAGON_SLAYER_II = "quest_dragonslayer2"
+
         val KNIGHT_ARMOUR =
             listOf(
                 "obj.ardougne_knight_helm",

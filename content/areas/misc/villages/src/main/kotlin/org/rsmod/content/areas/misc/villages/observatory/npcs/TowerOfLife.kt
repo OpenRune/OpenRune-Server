@@ -1,13 +1,16 @@
 package org.rsmod.content.areas.misc.villages.observatory.npcs
 
+import jakarta.inject.Inject
+import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:tower_of_life] start offer, quest stages and after-quest dialogue
-class TowerOfLife : PluginScript() {
+class TowerOfLife @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.tol_npc_efergy01_multi") { startDialogue(it.npc) { effigy() } }
         onOpNpc1("npc.tol_npc_barry01") { startDialogue(it.npc) { bonafido() } }
@@ -20,6 +23,8 @@ class TowerOfLife : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Effigy (starting the quest)
+    // TODO(content): [quest:tower_of_life] quest start, quest stages and after-quest dialogue
+    //  (the transcript has only the start)
     private suspend fun Dialogue.effigy() {
         chatPlayer(happy, "Hi. Interesting building you have here.")
         chatPlayer(quiz, "What's it for?")
@@ -58,8 +63,18 @@ class TowerOfLife : PluginScript() {
         chatNpc(happy, "Come on! This is the chance of a lifetime!")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Bonafido (before Tower of Life)
+    // https://oldschool.runescape.wiki/w/Transcript:Bonafido
     private suspend fun Dialogue.bonafido() {
+        if (QuestRequirements.hasCompleted(player, TOWER_OF_LIFE)) {
+            chatPlayer(quiz, "You still hangin' around the tower?")
+            chatNpc(
+                neutral,
+                "Yeah, we need another job. But til then, we figured we may as well wait ta see " +
+                    "what else would turns up.",
+            )
+            chatPlayer(neutral, "Fair enough.")
+            return
+        }
         chatPlayer(happy, "Hi there.")
         chatNpc(happy, "A'up, mate, how's it gowin'?")
         chatPlayer(happy, "Not bad, thank you. ")
@@ -73,8 +88,12 @@ class TowerOfLife : PluginScript() {
         chatPlayer(neutral, "Oh, okay.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:%27Black-eye%27 (before Tower of Life)
+    // https://oldschool.runescape.wiki/w/Transcript:%27Black-eye%27
     private suspend fun Dialogue.blackEye() {
+        if (QuestRequirements.hasCompleted(player, TOWER_OF_LIFE)) {
+            blackEyeHelmet()
+            return
+        }
         chatPlayer(quiz, "What's going on?")
         chatNpc(happy, "Ah, we be building this 'ere tower. Lookin' good ain't it?")
         chatPlayer(
@@ -89,8 +108,119 @@ class TowerOfLife : PluginScript() {
         chatPlayer(worried, "Erm...yeah...no...sorry...gotta go.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:%27No_fingers%27 (before Tower of Life)
+    // https://oldschool.runescape.wiki/w/Transcript:%27Black-eye%27 (after Tower of Life)
+    // TODO(content): [verify:in_game] order of the quiz options
+    private suspend fun Dialogue.blackEyeHelmet() {
+        chatPlayer(happy, "Say, that's a nice helmet.")
+        if (HARD_HAT in player.inv) {
+            chatNpc(happy, "Yes - just as nice as the one you're carrying I'd say.")
+            return
+        }
+        val bank = player.invMap["inv.bank"]
+        if (bank != null && HARD_HAT in bank) {
+            chatNpc(happy, "Thank you - just as nice as the one in your bank!")
+            return
+        }
+        chatNpc(happy, "Why, thanks.")
+        chatPlayer(quiz, "I was just wondering if you might be able to help me out with one?")
+        chatNpc(
+            happy,
+            "Always glad to help a budding builder. But first, prove your Construction knowledge " +
+                "by answering some questions.",
+        )
+        chatNpc(quiz, "How many nails does it take to make a rocking chair?")
+        when (choice3("One", 1, "Five", 2, "Three", 3)) {
+            1 -> {
+                chatPlayer(quiz, "One?")
+                chatNpc(laugh, "One? How do you suppose you'd use a single nail?")
+                return
+            }
+            2 -> {
+                chatPlayer(quiz, "Five?")
+                chatNpc(neutral, "Nope. Keep guessing!")
+                return
+            }
+        }
+        chatPlayer(quiz, "Three?")
+        chatNpc(
+            quiz,
+            "Bingo! Okay, now what takes 3 planks, 3 cloths and 3 nails to make, and helps " +
+                "remove light from a room?",
+        )
+        when (choice3("Torn curtains", 1, "A brown rug", 2, "Opulent curtains", 3)) {
+            2 -> {
+                chatPlayer(quiz, "A brown rug?")
+                chatNpc(
+                    laugh,
+                    "Of course, because that's what everyone needs - a rug up at their window.",
+                )
+                return
+            }
+            3 -> {
+                chatPlayer(quiz, "Opulent curtains?")
+                chatNpc(
+                    neutral,
+                    "Those curtains are not going to be in any way opulent, matey.",
+                )
+                return
+            }
+        }
+        chatPlayer(quiz, "Torn curtains?")
+        chatNpc(
+            quiz,
+            "Nice one. Last question: I like fish and I want to put some in my garden, but I " +
+                "need a special water feature. What materials would I require?",
+        )
+        val answer =
+            choice3(
+                "8 clay pieces and 3 limestone bricks",
+                1,
+                "10 clay pieces",
+                2,
+                "10 limestone bricks",
+                3,
+            )
+        when (answer) {
+            1 -> {
+                chatPlayer(quiz, "8 clay pieces and 3 limestone bricks?")
+                chatNpc(sad, "Oh, and you were so close!")
+                return
+            }
+            3 -> {
+                chatPlayer(quiz, "10 limestone bricks?")
+                chatNpc(neutral, "Guess again.")
+                return
+            }
+        }
+        chatPlayer(quiz, "10 clay pieces?")
+        chatNpc(
+            happy,
+            "That's it! You seem to know your stuff. I got a spare helmet from a builder that " +
+                "died on... I mean, err, had to leave the job for greener pastures.",
+        )
+        chatPlayer(confused, "Greener pastures?")
+        chatPlayer(neutral, "Fair enough.")
+        player.invAddOrDrop(objRepo, HARD_HAT)
+        chatPlayer(shocked, "Wait a minute! Is there blood on this helmet?")
+        chatNpc(shifty, "Erm, no, that's just, erm, paint. Yes, paint! That's what it is!")
+        chatPlayer(happy, "Oh, okay. Thanks. Bye.")
+        chatNpc(laugh, "Ha, gullible fool.")
+        chatPlayer(confused, "What?")
+        chatNpc(neutral, "Nothing.")
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:%27No_fingers%27
     private suspend fun Dialogue.noFingers() {
+        if (QuestRequirements.hasCompleted(player, TOWER_OF_LIFE)) {
+            chatPlayer(happy, "Hi.")
+            chatNpc(
+                quiz,
+                "Don't suppose you've seen any boots around here? Size nine, steel toed, brown " +
+                    "leather...",
+            )
+            chatPlayer(shifty, "Nope, not at all. I'd best be going. Have a nice day. Bye!")
+            return
+        }
         chatPlayer(neutral, "You seem to like playing with danger, there.")
         chatNpc(laugh, "They don't call me 'No-fingers' for nothing!")
         chatPlayer(
@@ -110,8 +240,18 @@ class TowerOfLife : PluginScript() {
         chatPlayer(worried, "Yes, well I think I'd better be going now.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:%27Gummy%27 (before Tower of Life)
+    // https://oldschool.runescape.wiki/w/Transcript:%27Gummy%27
     private suspend fun Dialogue.gummy() {
+        if (QuestRequirements.hasCompleted(player, TOWER_OF_LIFE)) {
+            chatPlayer(quiz, "You winning?")
+            chatNpc(
+                neutral,
+                "It's a draw at the moment. First it was best of three, then it was best of five.",
+            )
+            chatPlayer(quiz, "And now?")
+            chatNpc(happy, "Best of a hundred and one.")
+            return
+        }
         chatPlayer(quiz, "What are you up to?")
         chatNpc(neutral, "Rock, Paper, Scissors. Can't you tell?")
         chatPlayer(neutral, "It was more of a rhetorical question.")
@@ -120,9 +260,22 @@ class TowerOfLife : PluginScript() {
         chatNpc(happy, "We are. It's team building.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:%27The_Guns%27 (before Tower of Life)
+    // https://oldschool.runescape.wiki/w/Transcript:%27The_Guns%27
     // TODO(content): [system:npc_overhead] 'The Guns' overhead counting
     private suspend fun Dialogue.theGuns() {
+        if (QuestRequirements.hasCompleted(player, TOWER_OF_LIFE)) {
+            chatPlayer(quiz, "What do you do when you're not lifting logs above your head?")
+            chatNpc(quiz, "In my free time?")
+            chatPlayer(neutral, "Yes.")
+            chatNpc(
+                happy,
+                "All sorts. I like...hummff...a good kebab and a cold beer down...urrghh...the " +
+                    "pub. And for those quiet evenings...hurrr...",
+            )
+            chatNpc(happy, "A bit of needlepoint is always welcome.")
+            chatPlayer(neutral, "I can honestly say you're a very original guy.")
+            return
+        }
         chatPlayer(shocked, "Wow, that looks pretty heavy.")
         chatNpc(worried, "Umpf! Yeah, mate...argghh...this is...umpf...hard work...")
         chatPlayer(shifty, "What would happen if I were to say...")
@@ -155,5 +308,10 @@ class TowerOfLife : PluginScript() {
         chatPlayer(neutral, "I bet they love you for that.")
         chatNpc(happy, "Everyone loves someone that can create money.")
         chatPlayer(angry, "I don't.")
+    }
+
+    private companion object {
+        const val TOWER_OF_LIFE = "quest_toweroflife"
+        const val HARD_HAT = "obj.tol_player_construction_hardhat"
     }
 }

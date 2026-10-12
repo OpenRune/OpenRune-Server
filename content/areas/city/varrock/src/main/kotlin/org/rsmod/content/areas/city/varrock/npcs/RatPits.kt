@@ -8,6 +8,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -317,9 +318,12 @@ class RatPits @Inject constructor(private val objRepo: ObjRepository) : PluginSc
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Grimesquit (before Ratcatchers)
-    // TODO(content): [quest:ratcatchers] after-quest dialogue and rat pole replacement
+    // https://oldschool.runescape.wiki/w/Transcript:Grimesquit
     private suspend fun Dialogue.sistersGrime(talkedTo: String) {
+        if (QuestRequirements.hasCompleted(player, RATCATCHERS)) {
+            sistersGrimeAfterQuest(talkedTo)
+            return
+        }
         sister(talkedTo, GRIMESQUIT, happy, "'Ello 'Ello!")
         sister(talkedTo, PHINGSPET, confused, "Who's this then?")
         sister(talkedTo, GRIMESQUIT, confused, "I don't know any more than you do!")
@@ -327,6 +331,74 @@ class RatPits @Inject constructor(private val objRepo: ObjRepository) : PluginSc
         sister(talkedTo, GRIMESQUIT, neutral, "You ask them!")
         sister(talkedTo, PHINGSPET, angry, "No! I'm not talking to some stranger in a sewer.")
         sister(talkedTo, GRIMESQUIT, angry, "Go away, weirdo! We're busy!")
+    }
+
+    private suspend fun Dialogue.sistersGrimeAfterQuest(talkedTo: String) {
+        val name = player.displayName
+        sister(talkedTo, GRIMESQUIT, happy, "Would you look at that!")
+        if (RAT_POLES.any { it in player.inv || it in player.worn || it in access.bank }) {
+            chatPlayer(confused, "At what?")
+            sister(talkedTo, GRIMESQUIT, happy, "It's $name again!")
+            chatPlayer(quiz, "What do you want?")
+        } else {
+            sister(talkedTo, PHINGSPET, confused, "At what?")
+            sister(talkedTo, GRIMESQUIT, happy, "It's $name again!")
+            sister(talkedTo, PHINGSPET, quiz, "What do you want?")
+            chatPlayer(quiz, "Can I have another rat pole please?")
+            // TODO(content): [verify:in_game] full-inventory behaviour (drops the pole)
+            player.invAddOrDrop(objRepo, RAT_POLE)
+            sister(talkedTo, GRIMESQUIT, happy, "Here you go.")
+            sister(talkedTo, GRIMESQUIT, laugh, "Stick the ratsies your cat splats on it!")
+            chatPlayer(confused, "Er... will do.")
+            sister(talkedTo, PHINGSPET, quiz, "Anything else?")
+        }
+        val option =
+            choice5(
+                "Jimmy Dazzler",
+                1,
+                "Hooknosed Jack",
+                2,
+                "Smokin' Joe",
+                3,
+                "The Face",
+                4,
+                "Felkrash",
+                5,
+            )
+        when (option) {
+            1 -> {
+                chatPlayer(quiz, "Where can I find Jimmy Dazzler again?")
+                sister(talkedTo, GRIMESQUIT, confused, "Didn't you find him in Ardougne?")
+                sister(talkedTo, PHINGSPET, neutral, "He's normally in the Flying Horse Inn.")
+                sister(talkedTo, GRIMESQUIT, laugh, "Give him a kiss from me!")
+                sister(talkedTo, PHINGSPET, angry, "I will absolutely not be doing that.")
+            }
+            2 -> {
+                chatPlayer(quiz, "Can you tell me where I can find Hooknosed Jack?")
+                sister(talkedTo, GRIMESQUIT, happy, "He's here in Varrock!")
+                sister(talkedTo, PHINGSPET, laugh, "Who 'nose' where, though!")
+                sister(talkedTo, GRIMESQUIT, laugh, "Ha! I'm sure you can 'scent' him out, $name")
+                chatNpcSpecific("The Sisters Grime", GRIMESQUIT, laugh, "Hahahaha!")
+                sister(talkedTo, PHINGSPET, neutral, "Come on, it's not that funny.")
+                sister(talkedTo, GRIMESQUIT, quiz, "You think our nose jokes are bad? Well...")
+                sister(talkedTo, PHINGSPET, laugh, "Our eye jokes are even cornea!")
+            }
+            3 -> {
+                chatPlayer(quiz, "Can you tell me where I can find Smokin' Joe?")
+                sister(talkedTo, GRIMESQUIT, neutral, "Last we heard he was in Keldagrim.")
+            }
+            4 -> {
+                chatPlayer(quiz, "Can you tell me where I can find the Face?")
+                sister(talkedTo, GRIMESQUIT, neutral, "She was in Port Sarim last we heard.")
+                sister(talkedTo, PHINGSPET, laugh, "You can't miss her!")
+            }
+            5 -> {
+                chatPlayer(quiz, "Can you tell me where I can find Felkrash?")
+                sister(talkedTo, GRIMESQUIT, worried, "We shouldn't say, but-")
+                sister(talkedTo, PHINGSPET, happy, "She's got a secret den in Port Sarim!")
+                sister(talkedTo, GRIMESQUIT, angry, "Not secret now, is it?!")
+            }
+        }
     }
 
     private suspend fun Dialogue.sister(
@@ -458,6 +530,9 @@ class RatPits @Inject constructor(private val objRepo: ObjRepository) : PluginSc
     private companion object {
         const val GRIMESQUIT = "npc.vc_grimesquit"
         const val PHINGSPET = "npc.vc_phingspet"
+        const val RATCATCHERS = "quest_ratcatchers"
+        const val RAT_POLE = "obj.vc_rat_pole"
+        val RAT_POLES = listOf(RAT_POLE) + (1..6).map { "obj.vc_rat_pole_$it" }
         const val COINS = "obj.coins"
         const val BEER = "obj.beer"
         const val STEW = "obj.stew"

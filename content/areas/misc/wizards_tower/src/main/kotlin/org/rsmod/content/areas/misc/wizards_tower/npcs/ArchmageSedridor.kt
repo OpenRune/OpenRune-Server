@@ -3,6 +3,7 @@ package org.rsmod.content.areas.misc.wizards_tower.npcs
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.content.quest.area.lumbridge.RuneMysteriesQuest
@@ -13,6 +14,8 @@ import org.rsmod.content.quest.area.lumbridge.rmNotesGiven
 import org.rsmod.content.quest.area.lumbridge.rmOwedTalisman
 import org.rsmod.content.quest.area.lumbridge.rmPackage
 import org.rsmod.content.quest.area.lumbridge.rmTalismanGiven
+import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.content.quest.manager.menu
 import org.rsmod.content.skills.runecrafting.essence.teleportToRuneEssenceMine
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -24,6 +27,9 @@ import org.rsmod.plugin.scripts.ScriptContext
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 // TODO(content): [system:treasure_trails] beginner clue "Well done." dialogue
 class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMysteriesQuest) : PluginScript() {
+
+    private var Player.toldOfPersten by boolVarBit("varbit.dt2_sedridor_persten_dialogue")
+    private var Player.toldOfStoneOfJas by boolVarBit("varbit.dt2_sedridor_stone_dialogue")
 
     private val quest
         get() = runeMysteries.quest
@@ -443,9 +449,6 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
         sedridorTopics(GET_GOING)
     }
 
-    // TODO(content): [quest:desert_treasure_ii] "I have news on Persten." and the Stone of Jas
-    // lines
-    // TODO(content): [quest:temple_of_the_eye] "How are things at the Temple of the Eye?"
     // TODO(content): [miniquest:enter_the_abyss] "I've heard a different take on how the tower
     // burnt down." after the old tower story
     private suspend fun Dialogue.sedridorAfterQuest(npc: Npc) {
@@ -476,25 +479,37 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
         chatNpc(happy, "There you are. I'm sure you will find it useful.")
     }
 
+    // TODO(content): [verify:in_game] the menu while both the Persten and Temple of the Eye
+    //  options show; a chatmenu holds five options, so "Who else knows..." is left out then
     private suspend fun Dialogue.sedridorTopics(farewell: String) {
-        when (
-            choice4(
-                "Can you teleport me to the Rune Essence Mine?",
-                1,
-                "Who else knows the teleport to the Rune Essence Mine?",
-                2,
-                "Could you tell me about the old Wizards' Tower?",
-                3,
-                farewell,
-                4,
+        val persten =
+            QuestRequirements.hasCompleted(player, DESERT_TREASURE_II) && !player.toldOfPersten
+        val templeOfTheEye = QuestRequirements.hasCompleted(player, TEMPLE_OF_THE_EYE)
+        val option =
+            menu(
+                buildList {
+                    add("Can you teleport me to the Rune Essence Mine?" to 1)
+                    if (persten) add("I have news on Persten." to 5)
+                    if (templeOfTheEye) add("How are things at the Temple of the Eye?" to 6)
+                    if (!persten || !templeOfTheEye) {
+                        add("Who else knows the teleport to the Rune Essence Mine?" to 2)
+                    }
+                    add("Could you tell me about the old Wizards' Tower?" to 3)
+                    add(farewell to 4)
+                }
             )
-        ) {
+        when (option) {
             1 -> sedridorTeleport()
             2 -> sedridorWhoElseKnows(farewell)
             3 -> {
                 sedridorOldTower()
                 sedridorTopics(farewell)
             }
+            5 -> {
+                sedridorPersten()
+                sedridorTopics(farewell)
+            }
+            6 -> sedridorTempleOfTheEye()
             4 -> {
                 chatPlayer(quiz, farewell)
                 if (farewell == LOOKING_AROUND) {
@@ -505,6 +520,95 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
                     )
                 }
             }
+        }
+    }
+
+    private suspend fun Dialogue.sedridorPersten() {
+        chatPlayer(neutral, "I have news on Persten.")
+        chatNpc(quiz, "Yes?")
+        chatPlayer(sad, "I'm sorry, but she's gone.")
+        chatNpc(sad, "I see. It was always unlikely that she'd survive the Abyss.")
+        chatPlayer(
+            neutral,
+            "It wasn't the Abyss. I think she might have been dead long before then. The Persten " +
+                "we spoke to was an imposter.",
+        )
+        chatNpc(shocked, "An imposter? What do you mean?")
+        chatPlayer(neutral, "A Mahjarrat called Sliske was disguised as her.")
+        chatNpc(shocked, "I can't believe it. Persten and I had our differences, but this...")
+        chatNpc(sad, "I'd better share this news with the others. Thank you for bringing it to me.")
+        player.toldOfPersten = true
+    }
+
+    private suspend fun Dialogue.sedridorTempleOfTheEye() {
+        chatPlayer(quiz, "How are things at the Temple of the Eye?")
+        chatNpc(
+            neutral,
+            "Between the Guardians of the Rift and ourselves, we are managing to keep the Abyss " +
+                "at bay.",
+        )
+        chatNpc(
+            sad,
+            "However, despite all our research, we are no closer to working out how to close " +
+                "the rift permanently.",
+        )
+        if (player.toldOfStoneOfJas) {
+            chatPlayer(quiz, "Were you able to find any information on the Stone of Jas?")
+            chatNpc(
+                sad,
+                "Not yet. So far we've still only been able to find a few small mentions of it, " +
+                    "but they all call it the Eye.",
+            )
+            chatNpc(
+                angry,
+                "I'm sure the wizards of the first tower had plenty of research that could have " +
+                    "helped. All that knowledge lost because of those accursed Zamorakians!",
+            )
+        } else if (QuestRequirements.hasCompleted(player, DESERT_TREASURE_II)) {
+            chatPlayer(
+                neutral,
+                "I don't know if it will be much help, but I found out its real name. It's " +
+                    "called the Stone of Jas.",
+            )
+            chatNpc(
+                happy,
+                "Hmm... That could be useful. I'll have a dig around and see if we can find any " +
+                    "mention of it.",
+            )
+            player.toldOfStoneOfJas = true
+        } else {
+            chatNpc(
+                neutral,
+                "Gaining a better understanding of the artefact that was once there is key, but " +
+                    "we have found little mention of this 'Eye'.",
+            )
+            chatNpc(
+                neutral,
+                "I'm sure the wizards of the first tower had plenty of research on it. After all, " +
+                    "they knew enough about it to use its symbol as the symbol for our order.",
+            )
+            chatNpc(angry, "All that knowledge lost because of those accursed Zamorakians!")
+        }
+        chatNpc(
+            happy,
+            "Anyway, if you wish to help defend the temple, just head through the portal.",
+        )
+        when (
+            choice3(
+                "Can you teleport me to the Rune Essence Mine?",
+                1,
+                "Could you tell me about the old Wizards' Tower?",
+                2,
+                "I might do that, thanks.",
+                3,
+            )
+        ) {
+            1 -> sedridorTeleport()
+            2 -> {
+                sedridorOldTower()
+                sedridorTopics(LOOKING_AROUND)
+            }
+            else -> chatPlayer(happy, "I might do that, thanks.")
         }
     }
 
@@ -591,5 +695,7 @@ class ArchmageSedridor @Inject constructor(private val runeMysteries: RuneMyster
     private companion object {
         const val LOOKING_AROUND = "Nothing thanks, I'm just looking around."
         const val GET_GOING = "I'd better get going."
+        const val DESERT_TREASURE_II = "quest_deserttreasure2"
+        const val TEMPLE_OF_THE_EYE = "quest_templeoftheeye"
     }
 }

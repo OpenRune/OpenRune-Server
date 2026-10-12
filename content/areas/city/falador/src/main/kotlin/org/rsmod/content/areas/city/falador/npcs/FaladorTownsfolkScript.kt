@@ -1,7 +1,6 @@
 package org.rsmod.content.areas.city.falador.npcs
 
 import jakarta.inject.Inject
-import org.rsmod.api.config.Constants
 import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
@@ -16,7 +15,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjRepository) :
     PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1("npc.rd_teleporter_guy") { startDialogue(it.npc) { sirTiffy() } }
         onOpNpc1("npc.partyroom_pete") { startDialogue(it.npc) { partyPete(it.npc) } }
         onOpNpc1("npc.sir_vyvin") { startDialogue(it.npc) { sirVyvin() } }
         onOpNpc1("npc.white_knight_diary") { startDialogue(it.npc) { sirRebral() } }
@@ -31,23 +29,6 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         for (client in MAHOGANY_HOMES_CLIENTS) {
             onOpNpc1(client) { startDialogue(it.npc) { mahoganyHomesClient() } }
         }
-    }
-
-    // https://oldschool.runescape.wiki/w/Transcript:Sir_Tiffy_Cashien
-    // TODO(content): [quest:recruitment_drive] after-quest greeting, Initiate armoury and respawns
-    // TODO(content): [quest:wanted] after-quest greeting and jobs
-    // TODO(content): [quest:the_slug_menace] Proselyte armoury and lost CommOrb
-    private suspend fun Dialogue.sirTiffy() {
-        val greeting =
-            if (player.appearance.bodyType == Constants.bodytype_a) "What ho, sir." else "What ho, milady."
-        chatPlayer(happy, "Hello.")
-        chatNpc(happy, "$greeting Spiffing day for a walk in the park, what?")
-        chatPlayer(confused, "...spiffing?")
-        chatNpc(
-            laugh,
-            "Absolutely, top-hole! Well, can't stay and chat all day, dontchaknow! Ta-ta for now!",
-        )
-        chatPlayer(confused, "Erm... goodbye.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Party_Pete
@@ -138,7 +119,8 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Sir_Vyvin (unranked)
-    // TODO(content): [quest:wanted] White Knight rank replies and the White Knight Armoury
+    // TODO(content): [system:white_knight_rank] rank replies and the White Knight Armoury (needs
+    //  the Black/White Knight kill reputation, not a quest state)
     // TODO(content): [system:treasure_trails] hard and master clue steps
     private suspend fun Dialogue.sirVyvin() {
         chatPlayer(happy, "Hello.")

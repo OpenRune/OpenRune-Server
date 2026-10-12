@@ -4,6 +4,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.other.pets.cats.CatDialogue
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -19,9 +20,12 @@ class EastVarrock @Inject constructor(private val cats: CatDialogue) : PluginScr
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Dimintheis (before Family Crest)
-    // TODO(content): [quest:family_crest] after-quest dialogue and gauntlets
     // TODO(content): [miniquest:family_pest] after-miniquest dialogue and steel gauntlets
     private suspend fun Dialogue.dimintheis() {
+        if (QuestRequirements.hasCompleted(player, FAMILY_CREST)) {
+            dimintheisAfterQuest()
+            return
+        }
         chatNpc(neutral, "Hello. My name is Dimintheis, of the noble family Fitzharmon.")
         val option =
             choice3(
@@ -98,6 +102,77 @@ class EastVarrock @Inject constructor(private val cats: CatDialogue) : PluginScr
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Dimintheis (after Family Crest)
+    private suspend fun Dialogue.dimintheisAfterQuest() {
+        if (choice2("Have you got any quests for me?", 1, "Other", 2) == 1) {
+            chatPlayer(
+                happy,
+                "Do you have any quests for me? I really want one. I really want to help out!",
+            )
+            mesbox(
+                "You murmur under your breath something about how great the rewards were last " +
+                    "time you did a quest for Dimintheis."
+            )
+            chatNpc(
+                neutral,
+                "My family consider what you did for us a great service. We couldn't possibly " +
+                    "trouble you further.",
+            )
+            chatPlayer(
+                quiz,
+                "There must be SOMETHING you need help with. I am a great adventurer after all.",
+            )
+            chatNpc(happy, "There really isn't anything, I am very content with life right now.")
+            val option =
+                choice2(
+                    "I guess money does buy happiness.",
+                    1,
+                    "Oh come on, however menial, I want to help!",
+                    2,
+                )
+            if (option == 1) {
+                chatPlayer(shifty, "I guess money really does buy happiness.")
+                chatNpc(confused, "What was that? I didn't quite catch that.")
+                chatPlayer(neutral, "Nothing...")
+                return
+            }
+            chatPlayer(
+                quiz,
+                "Oh come on, surely there's something I can help out with! I want to help, " +
+                    "however menial it is.",
+            )
+            chatNpc(
+                neutral,
+                "Okay okay. Fine then. Whilst I don't have anything for you, how about you try " +
+                    "my sons, they are always wanting something done.",
+            )
+            chatPlayer(happy, "Fantastic! I'll get straight to it!")
+            mesbox("You smell the sweet smell of the great rewards that may soon come.")
+            return
+        }
+        if (QuestRequirements.hasCompleted(player, DEFENDER_OF_VARROCK)) {
+            chatNpc(
+                happy,
+                "Hello again, adventurer. I hope that Shield of Arrav business marks the start " +
+                    "of something big for my family. Maybe it will help me finally get out of " +
+                    "this hole!",
+            )
+        } else {
+            chatNpc(
+                happy,
+                "You have my eternal gratitude for all you have done in saving my family's " +
+                    "honour, adventurer. Perhaps some day my sons will overcome their differences.",
+            )
+        }
+        chatPlayer(quiz, "Do you have any gauntlets for me?")
+        if (FAMILY_GAUNTLETS.any { it in player.inv || it in player.worn || it in access.bank }) {
+            chatNpc(neutral, "No, I don't think so. You must have them yourself somewhere.")
+            return
+        }
+        // TODO(content): [quest:family_crest] returning lost gauntlets needs the player's
+        //  gauntlet type from the quest state
+    }
+
     private suspend fun Dialogue.crestHistory() {
         chatNpc(
             neutral,
@@ -152,8 +227,14 @@ class EastVarrock @Inject constructor(private val cats: CatDialogue) : PluginScr
 
     // https://oldschool.runescape.wiki/w/Transcript:Guidor
     // TODO(content): [verify:in_game] members line before Biohazard (the transcript only has the F2P line)
-    // TODO(content): [quest:biohazard] quest and after-quest dialogue
+    // TODO(content): [quest:biohazard] quest dialogue
     private suspend fun Dialogue.guidor() {
+        if (QuestRequirements.hasCompleted(player, BIOHAZARD)) {
+            chatPlayer(happy, "Hello again Guidor. How are you doing?")
+            chatNpc(neutral, "I'm hanging in there.")
+            chatPlayer(happy, "Good for you.")
+            return
+        }
         chatNpc(neutral, "I don't really want any visitors just now.")
     }
 
@@ -163,12 +244,22 @@ class EastVarrock @Inject constructor(private val cats: CatDialogue) : PluginScr
         chatNpc(worried, "Oh dear! Oh dear! I don't have time to chat!")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Pox (before Ratcatchers)
-    // TODO(content): [quest:ratcatchers] poisoned and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Pox
+    // TODO(content): [quest:ratcatchers] "The cat is too sick to respond." while Pox is poisoned
     private suspend fun Dialogue.pox() {
         chatPlayer(happy, "Hi cat!")
         if (!cats.catspeak(player)) {
             chatNpc(happy, "Miaooow!")
+            return
+        }
+        if (QuestRequirements.hasCompleted(player, RATCATCHERS)) {
+            chatNpc(happy, "Hello ${player.displayName}.")
+            chatPlayer(quiz, "How are you feeling now?")
+            chatNpc(
+                sad,
+                "Still a bit below purrrr. Thank you for fetching the medicine for me.",
+            )
+            chatPlayer(happy, "No problem, I hope you get better soon.")
             return
         }
         chatNpc(happy, "Hello.")
@@ -190,5 +281,19 @@ class EastVarrock @Inject constructor(private val cats: CatDialogue) : PluginScr
         chatNpc(bored, "Oh, what do you want? Can't you see I'm trying to nap?")
         chatPlayer(quiz, "Shouldn't you be catching rats?")
         chatNpc(happy, "Oh my, no. I have humans for that.")
+    }
+
+    private companion object {
+        const val FAMILY_CREST = "quest_familycrest"
+        const val DEFENDER_OF_VARROCK = "quest_defenderofvarrock"
+        const val BIOHAZARD = "quest_biohazard"
+        const val RATCATCHERS = "quest_ratcatchers"
+        val FAMILY_GAUNTLETS =
+            listOf(
+                "obj.steel_gauntlets",
+                "obj.gauntlets_of_goldsmithing",
+                "obj.gauntlets_of_cooking",
+                "obj.gauntlets_of_chaos",
+            )
     }
 }

@@ -1,7 +1,13 @@
 package org.rsmod.content.areas.misc.islands.corsaircove.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onOpNpc3
+import org.rsmod.api.script.onOpNpc4
+import org.rsmod.content.interfaces.bank.tryOpenBank
+import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -17,7 +23,9 @@ class CorsairCoveTownsfolk : PluginScript() {
         onOpNpc1("npc.ogress_tess") { startDialogue(it.npc) { chiefTess() } }
         onOpNpc1("npc.corscurs_lord_marshal") { startDialogue(it.npc) { lordMarshalBrogan() } }
         onOpNpc1("npc.corscurs_spa_owner") { startDialogue(it.npc) { madameCaldarium() } }
-        onOpNpc1("npc.corscurs_banker_multi") { startDialogue(it.npc) { yusuf() } }
+        onOpNpc1(YUSUF) { startDialogue(it.npc) { yusuf() } }
+        onOpNpc3(YUSUF) { yusufService(it.npc) { tryOpenBank() } }
+        onOpNpc4(YUSUF) { yusufService(it.npc) { ifOpenMainModal("interface.ge_collect") } }
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Arsen_the_Thief (before The Corsair Curse)
@@ -39,8 +47,6 @@ class CorsairCoveTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Haris
-    // TODO(content): [quest:dragon_slayer_i] the tale of Elvarg that grants entry to the resource
-    // area after the quest
     private suspend fun Dialogue.haris() {
         chatNpc(happy, "Welcome, Effendi!")
         chatPlayer(happy, "Hello!")
@@ -83,6 +89,19 @@ class CorsairCoveTownsfolk : PluginScript() {
         )
         if (vars[RESOURCE_ENTRY] != 0) {
             chatNpc(happy, "Of course Effendi! You have proved yourself worthy!")
+            return
+        }
+        if (QuestRequirements.hasCompleted(player, DRAGON_SLAYER_I)) {
+            mesbox("You tell the tale of how you bested the legendary dragon Elvarg in combat.")
+            chatPlayer(
+                happy,
+                "...And then I cut her head off, so as to make sure she was dead!",
+            )
+            chatNpc(
+                happy,
+                "Amazing! A story well worth telling! Please Effendi, enter at your leisure.",
+            )
+            vars[RESOURCE_ENTRY] = 1
             return
         }
         mesbox(
@@ -206,14 +225,74 @@ class CorsairCoveTownsfolk : PluginScript() {
         chatNpc(shifty, "We'll see...")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Yusuf (before The Corsair Curse)
-    // TODO(content): [quest:the_corsair_curse] the bank, PIN and collection options after the
-    // quest
+    // https://oldschool.runescape.wiki/w/Transcript:Yusuf
     private suspend fun Dialogue.yusuf() {
-        chatNpc(angry, "Bank's closed. Go away.")
+        if (!QuestRequirements.hasCompleted(player, CORSAIR_CURSE)) {
+            chatNpc(angry, "Bank's closed. Go away.")
+            return
+        }
+        chatNpc(neutral, "I've agreed to let you use the bank. What do you want today?")
+        while (true) {
+            val option =
+                choice5(
+                    "This is an odd-looking bank.",
+                    1,
+                    "I'd like to access my bank account, please.",
+                    2,
+                    "I'd like to check my PIN settings.",
+                    3,
+                    "I'd like to collect items.",
+                    4,
+                    "I want nothing.",
+                    5,
+                )
+            when (option) {
+                1 -> {
+                    chatPlayer(quiz, "This is an odd-looking bank.")
+                    chatNpc(
+                        neutral,
+                        "It's an odd-looking town. Those Corsairs are basically no better than " +
+                            "pirates, you know, and the adventurers they bring in are worse. " +
+                            "That's why I keep a cannon for protection.",
+                    )
+                    chatNpc(neutral, "Anyway, did you want something?")
+                }
+                2 -> {
+                    access.tryOpenBank()
+                    return
+                }
+                3 -> {
+                    access.ifOpenMainModal("interface.bankpin_settings")
+                    return
+                }
+                4 -> {
+                    access.ifOpenMainModal("interface.ge_collect")
+                    return
+                }
+                else -> {
+                    chatPlayer(neutral, "I want nothing.")
+                    chatNpc(neutral, "Then you shall get it.")
+                    return
+                }
+            }
+        }
+    }
+
+    private suspend fun ProtectedAccess.yusufService(
+        npc: Npc,
+        service: suspend ProtectedAccess.() -> Unit,
+    ) {
+        if (!QuestRequirements.hasCompleted(player, CORSAIR_CURSE)) {
+            startDialogue(npc) { chatNpc(angry, "Bank's closed. Go away.") }
+            return
+        }
+        service()
     }
 
     private companion object {
         const val RESOURCE_ENTRY = "varbit.corsair_cove_resource_entry"
+        const val YUSUF = "npc.corscurs_banker_multi"
+        const val CORSAIR_CURSE = "quest_corsaircurse"
+        const val DRAGON_SLAYER_I = "quest_dragonslayer1"
     }
 }

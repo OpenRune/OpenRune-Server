@@ -2,19 +2,66 @@ package org.rsmod.content.areas.zeah.piscarilius.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-// https://oldschool.runescape.wiki/w/Transcript:Tomas_Lawry (before The Queen of Thieves)
+// https://oldschool.runescape.wiki/w/Transcript:Tomas_Lawry
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 // TODO(content): [quest:the_queen_of_thieves] "Absolutely."/"Nah." start offer, the quest's
-//  requirement check on "I'm looking for a quest.", and the during/after-quest dialogue
+//  requirement check on "I'm looking for a quest.", and the during-quest dialogue
 class TomasLawry : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.piscquest_official") { startDialogue(it.npc) { tomasLawry() } }
     }
 
     private suspend fun Dialogue.tomasLawry() {
+        when {
+            QuestRequirements.hasCompleted(player, KINGDOM_DIVIDED) -> afterKingdomDivided()
+            QuestRequirements.hasCompleted(player, QUEEN_OF_THIEVES) -> afterQueenOfThieves()
+            else -> beforeQueenOfThieves()
+        }
+    }
+
+    private suspend fun Dialogue.afterQueenOfThieves() {
+        chatPlayer(happy, "Hello Tomas. How's things?")
+        chatNpc(
+            happy,
+            "Very well thank you. My work in bringing down Councillor Hughes means that I'm " +
+                "finally starting to get the recognition that I deserve.",
+        )
+        chatPlayer(angry, "But that was my work!")
+        chatNpc(
+            neutral,
+            "Yes, yes, very good job. I'll make sure to mention you in my acceptance speech when " +
+                "I'm voted in as her replacement.",
+        )
+    }
+
+    private suspend fun Dialogue.afterKingdomDivided() {
+        chatPlayer(happy, "Hello Tomas.")
+        chatNpc(sad, "Oh... Hello there.")
+        chatPlayer(quiz, "Something wrong?")
+        chatNpc(
+            sad,
+            "I'm ruined. Everything was perfect under the Council, but now I'm right back in the " +
+                "dirt again.",
+        )
+        chatPlayer(
+            neutral,
+            "You were very close to the Council. You should be glad you got to keep your job at " +
+                "all.",
+        )
+        chatNpc(
+            sad,
+            "But I didn't keep my job. Now I spend every day doing boring administrative work. " +
+                "It's a nightmare.",
+        )
+        chatPlayer(happy, "Come now Tomas, it can't be all bad. Show a little enthusiasm.")
+        chatNpc(sad, "Eugh.")
+    }
+
+    private suspend fun Dialogue.beforeQueenOfThieves() {
         chatPlayer(happy, "Hello.")
         chatNpc(neutral, "Greetings. What can I do for you?")
         val option =
@@ -156,5 +203,10 @@ class TomasLawry : PluginScript() {
                 "find the Queen of Thieves, apprehend her and then bring her to me.",
         )
         chatNpc(quiz, "So are you up for it?")
+    }
+
+    private companion object {
+        const val QUEEN_OF_THIEVES = "quest_queenofthieves"
+        const val KINGDOM_DIVIDED = "quest_kingdomdivided"
     }
 }

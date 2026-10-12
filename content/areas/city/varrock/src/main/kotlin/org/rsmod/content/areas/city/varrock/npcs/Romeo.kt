@@ -2,12 +2,14 @@ package org.rsmod.content.areas.city.varrock.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Romeo_%26_Juliet (before starting the quest)
+// https://oldschool.runescape.wiki/w/Transcript:Romeo (after the quest)
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:romeo_and_juliet] start offer, quest stages and after-quest dialogue
+// TODO(content): [quest:romeo_and_juliet] start offer and quest stages
 // TODO(content): [quest:romeo_and_juliet] "Romeo approaches you..." when the player is nearby
 class Romeo : PluginScript() {
     override fun ScriptContext.startup() {
@@ -15,6 +17,11 @@ class Romeo : PluginScript() {
     }
 
     private suspend fun Dialogue.romeo() {
+        if (QuestRequirements.hasCompleted(player, ROMEO_AND_JULIET)) {
+            chatNpc(sad, "I heard Juliet had died. Terrible business.")
+            chatNpc(happy, "Her cousin and I are getting on well though. Thanks for your help.")
+            return
+        }
         chatNpc(sad, GREETINGS[access.random.of(GREETINGS.size)])
         val option =
             choice3(
@@ -115,6 +122,7 @@ class Romeo : PluginScript() {
     }
 
     private companion object {
+        const val ROMEO_AND_JULIET = "quest_romeoandjuliet"
         val GREETINGS =
             listOf(
                 "Blub! Blub...where is my Juliet? Have you seen her?",

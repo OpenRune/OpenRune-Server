@@ -3,14 +3,13 @@ package org.rsmod.content.areas.city.burthorpe.npcs
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Austri
 // https://oldschool.runescape.wiki/w/Transcript:Vestri
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:fishing_contest] the quest start offer, and "Welcome, oh great Fishing
-// Champion!" after the quest
 class WhiteWolfMountainDwarves : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.tunnel_dwarf") { startDialogue(it.npc) { tunnelDwarf() } }
@@ -18,6 +17,15 @@ class WhiteWolfMountainDwarves : PluginScript() {
     }
 
     private suspend fun Dialogue.tunnelDwarf() {
+        if (QuestRequirements.hasCompleted(player, FISHING_CONTEST)) {
+            chatNpc(
+                happy,
+                "Welcome, oh great Fishing Champion! Feel free to pop by and use our tunnel any " +
+                    "time.",
+            )
+            chatPlayer(happy, "Thank you, I think I'll stop by for a beer one day.")
+            return
+        }
         chatNpc(angry, "Hmmph. What do you want?")
         while (true) {
             val option =
@@ -134,11 +142,15 @@ class WhiteWolfMountainDwarves : PluginScript() {
                     return
                 }
                 chatNpc(neutral, "I don't make friends easily. People need to earn my trust first.")
+                // TODO(content): [quest:fishing_contest] "Start the Fishing Contest quest?" offer
+                //  and start
             }
         }
     }
 
     private companion object {
+        const val FISHING_CONTEST = "quest_fishingcontest"
+
         // https://oldschool.runescape.wiki/w/Fishing_Contest: 10 Fishing
         const val FISHING_CONTEST_LEVEL = 10
     }

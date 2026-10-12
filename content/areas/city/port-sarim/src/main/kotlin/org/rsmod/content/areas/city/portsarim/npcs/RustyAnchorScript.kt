@@ -24,7 +24,6 @@ class RustyAnchorScript @Inject constructor(private val objRepo: ObjRepository) 
     // https://oldschool.runescape.wiki/w/Transcript:Redbeard_Frank
     // TODO(content): [quest:pirates_treasure] "Start the Pirate's Treasure quest?" offer and the
     // quest stages
-    // TODO(content): [quest:rum_deal] "Would some Braindeath 'Rum' do?"
     private suspend fun Dialogue.redbeardFrank() {
         chatNpc(laugh, "Arr, Matey!")
         while (true) {
@@ -61,6 +60,11 @@ class RustyAnchorScript @Inject constructor(private val objRepo: ObjRepository) 
             "Well for example if you can get me a bottle of rum... Not just any rum mind...",
         )
         chatNpc(happy, "I'd like some rum made on Karamja Island. There's no rum like Karamja Rum!")
+        if (QuestRequirements.hasCompleted(player, RUM_DEAL)) {
+            chatPlayer(quiz, "Would some Braindeath 'Rum' do?")
+            chatNpc(angry, "Gadzooks, that swill! Not a chance!")
+            chatNpc(neutral, "It's Karamja Rum or no deal.")
+        }
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Ahab
@@ -311,6 +315,7 @@ class RustyAnchorScript @Inject constructor(private val objRepo: ObjRepository) 
         const val LONGBOW_BEN_NAME = "Longbow Ben"
         const val BEER_PRICE = 2
         const val PIRATES_TREASURE = "quest_piratestreasure"
+        const val RUM_DEAL = "quest_rumdeal"
         const val GOBLIN_DIPLOMACY = "quest_goblindiplomacy"
         const val DRAGON_SLAYER = "quest_dragonslayer1"
         const val CUSTOMS_REPLY =

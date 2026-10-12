@@ -312,7 +312,7 @@ constructor(private val objRepo: ObjRepository, private val npcRepo: NpcReposito
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Da_Vinci
-    // TODO(content): [quest:biohazard] the quest dialogue and moving to Varrock after it
+    // TODO(content): [quest:biohazard] the quest dialogue
     private suspend fun Dialogue.daVinci() {
         chatNpc(
             angry,
@@ -322,7 +322,7 @@ constructor(private val objRepo: ObjRepository, private val npcRepo: NpcReposito
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Chancy (Rimmington, members world)
-    // TODO(content): [quest:biohazard] the quest dialogue and moving to Varrock after it
+    // TODO(content): [quest:biohazard] the quest dialogue
     private suspend fun Dialogue.chancy() {
         chatPlayer(happy, "Hello! Playing solitaire?")
         chatNpc(
@@ -332,7 +332,7 @@ constructor(private val objRepo: ObjRepository, private val npcRepo: NpcReposito
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Biohazard (Hops in Rimmington)
-    // TODO(content): [quest:biohazard] the quest dialogue and moving to Varrock after it
+    // TODO(content): [quest:biohazard] the quest dialogue
     private suspend fun Dialogue.hops() {
         chatNpc(drunk, "Hops don't wanna talk now.")
     }

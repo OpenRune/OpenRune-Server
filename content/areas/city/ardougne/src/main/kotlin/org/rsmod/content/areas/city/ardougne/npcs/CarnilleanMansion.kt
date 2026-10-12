@@ -2,11 +2,13 @@ package org.rsmod.content.areas.city.ardougne.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 // TODO(content): [quest:hazeel_cult] quest stages and the after-quest dialogue for either side
+//  (Ceril, Henryeta, Claus and the guard; the side is part of the quest progress)
 class CarnilleanMansion : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.sir_ceril_carnillean") { startDialogue(it.npc) { ceril() } }
@@ -104,6 +106,27 @@ class CarnilleanMansion : PluginScript() {
     // https://oldschool.runescape.wiki/w/Transcript:Butler_Jones
     private suspend fun Dialogue.butlerJones() {
         chatPlayer(happy, "Hello there.")
+        if (QuestRequirements.hasCompleted(player, HAZEEL_CULT)) {
+            chatNpc(
+                happy,
+                "It's an honour to be in your presence again, adventurer. I hope things are well?",
+            )
+            chatPlayer(happy, "Not bad, thanks. Yourself?")
+            chatNpc(
+                neutral,
+                "Unfortunately, I am still forced to deal with this insufferable family. Many " +
+                    "generations have passed, but they are still the enemy. As such, they must " +
+                    "be kept a close eye on.",
+            )
+            chatNpc(
+                neutral,
+                "Still, I have no doubt that the time will soon come for me to leave this place. " +
+                    "Our lord will certainly have need of me elsewhere once his current work is " +
+                    "complete.",
+            )
+            chatPlayer(happy, "I see. Well good luck with it all.")
+            return
+        }
         chatNpc(happy, "Hello. How are you today?")
         chatPlayer(happy, "Good thank you, and yourself?")
         chatNpc(happy, "Very well, thank you.")
@@ -139,5 +162,9 @@ class CarnilleanMansion : PluginScript() {
         )
         chatPlayer(neutral, "Well, I wasn't actually planning on doing anything like that...")
         chatNpc(neutral, "Glad to hear it.")
+    }
+
+    private companion object {
+        const val HAZEEL_CULT = "quest_hazeelcult"
     }
 }

@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -12,8 +13,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Rokuh
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:spirits_of_the_elid] curse question during the quest and "How's business,
-//  now that the curse has gone?" after it
 class RoksChocsBox @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(ROKUH) { startDialogue(it.npc) { rokuh(it.npc) } }
@@ -32,15 +31,58 @@ class RoksChocsBox @Inject constructor(private val shops: Shops) : PluginScript(
                 "making choc ices which I'm selling too.",
         )
         val option =
-            choice3(
-                "Cool I'd like to buy some.",
-                1,
-                "No thanks, I'm not interested.",
-                2,
-                "How do you stop your icy snacks melting?",
-                3,
-            )
+            when {
+                QuestRequirements.hasCompleted(player, SPIRITS_OF_THE_ELID) ->
+                    choice4(
+                        "Cool I'd like to buy some.",
+                        1,
+                        "No thanks, I'm not interested.",
+                        2,
+                        "How do you stop your icy snacks melting?",
+                        3,
+                        "How's business, now that the curse has gone?",
+                        4,
+                    )
+                // https://oldschool.runescape.wiki/w/Transcript:Spirits_of_the_Elid
+                QuestRequirements.isOnQuest(player, SPIRITS_OF_THE_ELID) ->
+                    choice4(
+                        "Cool I'd like to buy some.",
+                        1,
+                        "No thanks, I'm not interested.",
+                        2,
+                        "How do you stop your icy snacks melting?",
+                        3,
+                        "I am trying to find out the cause of this town's curse.",
+                        5,
+                    )
+                else ->
+                    choice3(
+                        "Cool I'd like to buy some.",
+                        1,
+                        "No thanks, I'm not interested.",
+                        2,
+                        "How do you stop your icy snacks melting?",
+                        3,
+                    )
+            }
         when (option) {
+            4 -> {
+                chatPlayer(quiz, "How's business, now that the curse has gone?")
+                chatNpc(
+                    happy,
+                    "Ohh as good as ever. The people of Nardah seem to have taken well to the " +
+                        "taste of chocolate and iced cream combined and, with the curse gone, all " +
+                        "my friends are much happier too, so it's all good.",
+                )
+            }
+            5 -> {
+                chatPlayer(quiz, "I am trying to find out the cause of this town's curse.")
+                chatNpc(
+                    sad,
+                    "I really have no idea. It's most regrettable. Fortunately my innovation with " +
+                        "my choc ice invention is helping people stay at least slightly cool.",
+                )
+            }
             1 -> player.openStore(npc)
             2 -> chatPlayer(neutral, "No thanks, I'm not interested.")
             3 -> {
@@ -68,5 +110,6 @@ class RoksChocsBox @Inject constructor(private val shops: Shops) : PluginScript(
 
     private companion object {
         const val ROKUH = "npc.elid_choc_ice_seller"
+        const val SPIRITS_OF_THE_ELID = "quest_spiritsoftheelid"
     }
 }

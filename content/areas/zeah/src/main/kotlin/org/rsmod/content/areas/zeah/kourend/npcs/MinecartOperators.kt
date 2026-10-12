@@ -2,13 +2,13 @@ package org.rsmod.content.areas.zeah.kourend.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Elnes (the same for every operator)
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 // TODO(content): [system:lovakengj_minecart] the network interface, Travel op and fee refund
-// TODO(content): [quest:the_forsaken_tower] free rides after the quest
 class MinecartOperators : PluginScript() {
     override fun ScriptContext.startup() {
         for (type in OPERATORS) {
@@ -30,7 +30,8 @@ class MinecartOperators : PluginScript() {
             return
         }
         chatPlayer(quiz, "Can I go for a ride?")
-        if (player.inv.count(COINS) < FARE) {
+        val freeRides = QuestRequirements.hasCompleted(player, FORSAKEN_TOWER)
+        if (!freeRides && player.inv.count(COINS) < FARE) {
             chatNpc(neutral, "Minecart rides are 20 coins.")
             return
         }
@@ -40,6 +41,7 @@ class MinecartOperators : PluginScript() {
     private companion object {
         const val COINS = "obj.coins"
         const val FARE = 20
+        const val FORSAKEN_TOWER = "quest_forsakentower"
         val OPERATORS =
             listOf(
                 "npc.lovakengj_minecart_lovakengj",

@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.content.areas.city.rellekka.fremennikName
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -14,7 +15,11 @@ import org.rsmod.plugin.scripts.ScriptContext
 // TODO(content): [quest:the_fremennik_isles] pre-quest and in-quest dialogue
 class KingGjukiSorvott : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1("npc.fris_r_king") { startDialogue(it.npc) { postQuest() } }
+        onOpNpc1("npc.fris_r_king") {
+            if (QuestRequirements.hasCompleted(player, FREMENNIK_ISLES)) {
+                startDialogue(it.npc) { postQuest() }
+            }
+        }
         onOpNpcU("npc.fris_r_king") { startDialogue(it.npc) { itemUsed() } }
     }
 
@@ -59,4 +64,8 @@ class KingGjukiSorvott : PluginScript() {
 
     private suspend fun Dialogue.thorkel(mesanim: MesAnimType, text: String) =
         chatNpcSpecific("Thorkel Silkbeard", "npc.fris_r_chancellor", mesanim, text)
+
+    private companion object {
+        const val FREMENNIK_ISLES = "quest_fremennikisles"
+    }
 }

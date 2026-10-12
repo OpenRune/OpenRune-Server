@@ -7,6 +7,7 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestProgressState
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.QuestScript
 import org.rsmod.content.quest.manager.rewards
 import org.rsmod.game.entity.Npc
@@ -235,10 +236,19 @@ class CooksAssistant : QuestScript(
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Cook_(Lumbridge)
-    // TODO(content): [quest:recipe_for_disaster] Post-RFD greeting and the members' "other quests"
-    // branch into Another Cook's Quest; the free-to-play reply is used until RFD exists.
+    // TODO(content): [quest:recipe_for_disaster] the members' "other quests" branch into Another
+    // Cook's Quest; the free-to-play reply is used until RFD exists.
     private suspend fun Dialogue.dialogAfterCook(npc: Npc) {
-        chatNpc(happy, "How is the adventuring going, my friend?")
+        if (QuestRequirements.hasCompleted(player, RECIPE_FOR_DISASTER)) {
+            chatNpc(
+                happy,
+                "You were seriously great when you defeated the Culinaromancer! I can't believe " +
+                    "I nearly caused all of those people to be killed! So how is the adventuring " +
+                    "going now?",
+            )
+        } else {
+            chatNpc(happy, "How is the adventuring going, my friend?")
+        }
 
         when (
             choice4(
@@ -372,5 +382,6 @@ class CooksAssistant : QuestScript(
 
     private companion object {
         const val COMPLETE_STAGE = 2
+        const val RECIPE_FOR_DISASTER = "quest_recipefordisaster"
     }
 }

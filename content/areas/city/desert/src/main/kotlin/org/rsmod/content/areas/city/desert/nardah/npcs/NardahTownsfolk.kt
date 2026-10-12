@@ -3,6 +3,7 @@ package org.rsmod.content.areas.city.desert.nardah.npcs
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -26,9 +27,12 @@ class NardahTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Spirits_of_the_Elid
-    // TODO(content): [quest:spirits_of_the_elid] quest start, in-progress dialogue and
-    //  https://oldschool.runescape.wiki/w/Transcript:Awusah_the_Mayor after the quest
+    // TODO(content): [quest:spirits_of_the_elid] quest start and in-progress dialogue
     private suspend fun Dialogue.awusah() {
+        if (QuestRequirements.hasCompleted(player, SPIRITS_OF_THE_ELID)) {
+            awusahAfterQuest()
+            return
+        }
         chatNpc(happy, "Many salutations to you. What brings you to our little town?")
         val option =
             choice3(
@@ -57,6 +61,22 @@ class NardahTownsfolk : PluginScript() {
                 chatPlayer(neutral, "Thanks for the warning, but I might go and investigate anyway.")
             }
         }
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Awusah_the_Mayor
+    private suspend fun Dialogue.awusahAfterQuest() {
+        val title = if (player.appearance.bodyType == Constants.bodytype_a) "sir" else "madam"
+        chatNpc(
+            happy,
+            "Thank you kind $title. The town is saved and the water is flowing freely.",
+        )
+        chatPlayer(happy, "You're welcome.")
+        chatNpc(
+            happy,
+            "What's more when we now pray at the shrine we now feel rejuvenated and healthier " +
+                "than ever!",
+        )
+        chatPlayer(neutral, "That's interesting to know.")
     }
 
     private suspend fun Dialogue.awusahCurse() {
@@ -129,12 +149,16 @@ class NardahTownsfolk : PluginScript() {
 
     // https://oldschool.runescape.wiki/w/Transcript:Spirits_of_the_Elid
     // TODO(content): [quest:spirits_of_the_elid] curse question and the ballad of Jareesh during
-    //  the quest, and https://oldschool.runescape.wiki/w/Transcript:Ghaslor_the_Elder after it
+    //  the quest
     // TODO(content): [verify:in_game] whether "How are things?" is still a one-option menu before
     //  the quest starts
     private suspend fun Dialogue.ghaslor() {
         val title = if (player.appearance.bodyType == Constants.bodytype_a) "man" else "lady"
         chatNpc(neutral, "Good day to you young $title.")
+        if (QuestRequirements.hasCompleted(player, SPIRITS_OF_THE_ELID)) {
+            ghaslorAfterQuest()
+            return
+        }
         chatPlayer(quiz, "How are things?")
         chatNpc(
             angry,
@@ -145,9 +169,35 @@ class NardahTownsfolk : PluginScript() {
         chatPlayer(neutral, "Well I hope things pick up for you.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Ghaslor_the_Elder
+    private suspend fun Dialogue.ghaslorAfterQuest() {
+        chatNpc(happy, "I'm happy that we have our water back, thanks for your help.")
+        chatPlayer(happy, "Well it's good to see you happy.")
+        chatNpc(
+            angry,
+            "Mostly happy, but young people have no respect for their elders, theres too many " +
+                "confusing newfangled magic carpets and snake charmers around these days. I " +
+                "remember when this used to be fields.",
+        )
+        chatPlayer(confused, "It used to be fields?")
+        chatNpc(
+            neutral,
+            "Well no admittedly it used to be sand, just like it is now, but let an old man have " +
+                "his grumble.",
+        )
+    }
+
     // https://oldschool.runescape.wiki/w/Transcript:Shiratti_the_Custodian
-    // TODO(content): [quest:spirits_of_the_elid] quest and after-quest dialogue
+    // TODO(content): [quest:spirits_of_the_elid] dialogue during the quest
     private suspend fun Dialogue.shiratti() {
+        if (QuestRequirements.hasCompleted(player, SPIRITS_OF_THE_ELID)) {
+            chatNpc(
+                happy,
+                "Thanks for returning the statuette. You have freed us of our curse. May you " +
+                    "forever be considered a friend of Elidinis and her followers.",
+            )
+            return
+        }
         if (choice2("Good day to you.", true, "What is this building?", false)) {
             chatPlayer(happy, "Good day to you.")
             chatNpc(
@@ -186,31 +236,100 @@ class NardahTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Usi
-    // TODO(content): [quest:spirits_of_the_elid] quest and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Spirits_of_the_Elid (during the quest)
     private suspend fun Dialogue.usi() {
+        if (QuestRequirements.hasCompleted(player, SPIRITS_OF_THE_ELID)) {
+            chatNpc(
+                happy,
+                "The curse has been removed. Word around the town is that you were the one who " +
+                    "helped remove it.",
+            )
+            chatPlayer(
+                happy,
+                "Yes that is correct. The spirits of the Elid cursed the town for throwing away a " +
+                    "statue to Elidinis. I got it back",
+            )
+            chatNpc(happy, "Well we thank you. You're pretty much a local hero now.")
+            return
+        }
+        if (QuestRequirements.isOnQuest(player, SPIRITS_OF_THE_ELID)) {
+            askAboutCurse()
+            chatNpc(neutral, "Well I think that's what everyone wants to know.")
+            return
+        }
         chatPlayer(happy, "Good day to you.")
         chatNpc(sad, "It's not that good, it's a bit warm.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Nkuku
-    // TODO(content): [quest:spirits_of_the_elid] quest and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Spirits_of_the_Elid (during the quest)
     private suspend fun Dialogue.nkuku() {
+        if (QuestRequirements.hasCompleted(player, SPIRITS_OF_THE_ELID)) {
+            chatNpc(
+                sad,
+                "It still shocks me that the spirits of the river would put such a nasty curse on " +
+                    "us for something so small.",
+            )
+            chatPlayer(neutral, "Well strange are the ways of ancient beings such as them.")
+            return
+        }
+        if (QuestRequirements.isOnQuest(player, SPIRITS_OF_THE_ELID)) {
+            askAboutCurse()
+            chatNpc(
+                sad,
+                "It's terrible isn't it. Surely it is because we let the holy Saradominist priest " +
+                    "die.",
+            )
+            return
+        }
         chatPlayer(happy, "Good day to you.")
         chatNpc(happy, "May Saradomin be with you.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Garai
-    // TODO(content): [quest:spirits_of_the_elid] quest and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Spirits_of_the_Elid (during the quest)
     private suspend fun Dialogue.garai() {
+        if (QuestRequirements.hasCompleted(player, SPIRITS_OF_THE_ELID)) {
+            chatPlayer(quiz, "How's life now the curse has been lifted?")
+            chatNpc(
+                laugh,
+                "It's been lifted? I hadn't realised. I've still been buying water from Ali the " +
+                    "Carter!",
+            )
+            return
+        }
+        if (QuestRequirements.isOnQuest(player, SPIRITS_OF_THE_ELID)) {
+            askAboutCurse()
+            chatNpc(confused, "What curse is that?")
+            chatPlayer(
+                confused,
+                "Don't you know? The curse that has stopped your fountain working and made all " +
+                    "the water dry up when you bring it back from the river?",
+            )
+            chatNpc(confused, "Ohh that's because of a curse? I didn't think of that.")
+            chatPlayer(quiz, "So any ideas about the cause of the curse?")
+            chatNpc(neutral, "Absolutely none.")
+            return
+        }
         chatPlayer(happy, "Good day to you.")
         chatNpc(happy, "And a good day to you too.")
+    }
+
+    private suspend fun Dialogue.askAboutCurse() {
+        chatPlayer(quiz, "Hi, I am trying to find the cause of the curse on your town.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Habibah
     // https://oldschool.runescape.wiki/w/Transcript:Meskhenet
     // https://oldschool.runescape.wiki/w/Transcript:Zahra
-    // TODO(content): [quest:spirits_of_the_elid] quest and after-quest dialogue
+    // TODO(content): [quest:spirits_of_the_elid] dialogue during the quest, before and after
+    //  talking to Nirrie and Hallak
     private suspend fun Dialogue.notHappy(greet: Boolean) {
+        if (QuestRequirements.hasCompleted(player, SPIRITS_OF_THE_ELID)) {
+            chatPlayer(quiz, "How's life now the curse has been lifted?")
+            chatNpc(happy, "Much better thanks to you. We're all very impressed.")
+            return
+        }
         if (greet) {
             chatPlayer(happy, "Good day to you.")
         }
@@ -419,5 +538,9 @@ class NardahTownsfolk : PluginScript() {
                 "amazing ${player.displayName}!",
         )
         chatNpc(sad, "I wish I had a drink to celebrate, but this desert is bone dry.")
+    }
+
+    private companion object {
+        const val SPIRITS_OF_THE_ELID = "quest_spiritsoftheelid"
     }
 }

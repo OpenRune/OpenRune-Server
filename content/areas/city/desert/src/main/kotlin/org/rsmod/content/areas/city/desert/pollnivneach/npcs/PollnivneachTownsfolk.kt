@@ -1,8 +1,10 @@
 package org.rsmod.content.areas.city.desert.pollnivneach.npcs
 
+import dev.openrune.types.MesAnimType
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -23,8 +25,11 @@ class PollnivneachTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Ali_the_Hag
-    // TODO(content): [quest:the_feud] Alisha's dialogue after the quest
     private suspend fun Dialogue.hag() {
+        if (QuestRequirements.hasCompleted(player, THE_FEUD)) {
+            hagAfterFeud()
+            return
+        }
         chatPlayer(happy, "Good day old hag.")
         chatNpc(angry, "Old hag indeed! I have a name you know!")
         chatPlayer(quiz, "Does it happen to be... Ali?")
@@ -53,9 +58,32 @@ class PollnivneachTownsfolk : PluginScript() {
         chatPlayer(worried, "Sorry! I won't let it happen again.")
     }
 
+    private suspend fun Dialogue.hagAfterFeud() {
+        chatPlayer(happy, "Good day, Hag.")
+        chatAlisha(neutral, "Good day to you too, Blockhead.")
+        chatAlisha(quiz, "Have you good reason to disturb me again?")
+        chatPlayer(happy, "Nope!")
+        chatAlisha(
+            angry,
+            "I warned you about needlessly bothering me. That's it! I'm turning you into a frog!",
+        )
+        chatPlayer(laugh, "Ribbit, ribbit!")
+        chatAlisha(
+            angry,
+            "Don't taunt me, fool! Once I find a spare minute you'll be ribbiting on the other " +
+                "side of your face, you mark my words!",
+        )
+    }
+
+    private suspend fun Dialogue.chatAlisha(mesanim: MesAnimType, text: String) =
+        chatNpcSpecific(ALISHA_NAME, ALISHA, mesanim, text)
+
     // https://oldschool.runescape.wiki/w/Transcript:Ali_the_Mayor
-    // TODO(content): [quest:the_feud] Hakeem's dialogue after the quest
     private suspend fun Dialogue.mayor() {
+        if (QuestRequirements.hasCompleted(player, THE_FEUD)) {
+            mayorAfterFeud()
+            return
+        }
         chatNpc(
             happy,
             "Welcome, adventurer, to the town of Pollnivneach, the gateway to Menaphos and Al " +
@@ -76,6 +104,28 @@ class PollnivneachTownsfolk : PluginScript() {
         )
     }
 
+    private suspend fun Dialogue.mayorAfterFeud() {
+        chatHakeem(happy, "Thank you once again. Have you spoken to Ali Morrisane yet?")
+        chatPlayer(
+            laugh,
+            "Yes, I spoke to him already. He really had me going with his little 'tourism' trick!",
+        )
+        chatHakeem(happy, "Well, not to be immodest, but it was all my idea.")
+        chatHakeem(
+            neutral,
+            "Our little town needed help, and I knew it'd take the greatest salesman in Gielinor " +
+                "to attract an adventurer strong enough to help us out.",
+        )
+        chatHakeem(
+            neutral,
+            "In any case, I have my mayoral duties to attend to. I have lots of new citizens to " +
+                "register!",
+        )
+    }
+
+    private suspend fun Dialogue.chatHakeem(mesanim: MesAnimType, text: String) =
+        chatNpcSpecific(HAKEEM_NAME, HAKEEM, mesanim, text)
+
     // https://oldschool.runescape.wiki/w/Transcript:Ali_the_Snake_Charmer
     // TODO(content): [system:money_pot] coin on the money pot gives the snake charming flute and
     //  basket
@@ -86,8 +136,7 @@ class PollnivneachTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Ali_the_Camel
-    // TODO(content): [quest:the_feud] camel dung with red hot sauce, and the camels' names after
-    //  the quest
+    // TODO(content): [quest:the_feud] camel dung with red hot sauce during the quest
     private suspend fun Dialogue.camel() {
         when (access.random.of(0, 3)) {
             0 -> {
@@ -127,9 +176,17 @@ class PollnivneachTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Drunken_Ali
-    // TODO(content): [quest:the_feud] beers bought for Drunken Ali, and Jalal's line after the
-    //  quest
+    // TODO(content): [quest:the_feud] beers bought for Drunken Ali during the quest
     private suspend fun Dialogue.drunkenAli() {
+        if (QuestRequirements.hasCompleted(player, THE_FEUD)) {
+            chatNpcSpecific(
+                JALAL_NAME,
+                JALAL,
+                drunk,
+                "What were we talking about again? Yes yes, when I was a boy... no, that's not it.",
+            )
+            return
+        }
         chatNpc(
             drunk,
             "Ahh, a kind stranger. Get this old man another drink so that he may wet his throat " +
@@ -138,13 +195,139 @@ class PollnivneachTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Aristarchus
-    // TODO(content): [quest:enakhras_lament] history dialogue after the quest
     private suspend fun Dialogue.aristarchus() {
+        if (QuestRequirements.hasCompleted(player, ENAKHRAS_LAMENT)) {
+            aristarchusHistory()
+            return
+        }
         chatNpc(
             neutral,
             "I'm sorry, but I'm currently doing some research. Could you talk to me later, please?",
         )
         chatPlayer(neutral, "Okay then.")
+    }
+
+    private suspend fun Dialogue.aristarchusHistory() {
+        val title = if (access.isBodyTypeA()) "sir" else "madam"
+        chatNpc(happy, "Good day, $title. Are you interested in the history of this area?")
+        var topic =
+            choice4(
+                "Tell me about yourself.",
+                1,
+                "Tell me about Enakhra.",
+                2,
+                "Tell me about Akthanakos.",
+                3,
+                "I'm good.",
+                4,
+            )
+        while (true) {
+            topic =
+                when (topic) {
+                    1 -> {
+                        chatPlayer(quiz, "Tell me about yourself.")
+                        chatNpc(
+                            neutral,
+                            "I am a librarian from the great library of Menaphos. I left to " +
+                                "travel the desert and learn more of its history.",
+                        )
+                        val next =
+                            choice3(
+                                "Tell me about Enakhra.",
+                                2,
+                                "Tell me about Akthanakos.",
+                                3,
+                                "I'd better be off.",
+                                5,
+                            )
+                        if (next == 5) {
+                            chatPlayer(neutral, "I'd better be off.")
+                            return
+                        }
+                        next
+                    }
+                    2 -> {
+                        chatPlayer(quiz, "Tell me about Enakhra.")
+                        chatNpc(
+                            neutral,
+                            "Enakhra? I have read only a little about her. She was one of the " +
+                                "Mahjarrat who arrived in Gielinor many thousands of years ago.",
+                        )
+                        chatNpc(
+                            neutral,
+                            "She supported Zamorak when he tried to gain power, and she " +
+                                "apparently built a great temple in his honour somewhere in the " +
+                                "desert.",
+                        )
+                        chatNpc(
+                            neutral,
+                            "However, it is said that when she showed it to him, he was not " +
+                                "impressed, and told her that he would rather have a weapon that " +
+                                "could slay gods.",
+                        )
+                        chatNpc(
+                            neutral,
+                            "That is the last anyone knows of what happened to her, and it took " +
+                                "place several thousand years ago.",
+                        )
+                        choice3(
+                            "Tell me about yourself.",
+                            1,
+                            "Tell me about Akthanakos.",
+                            3,
+                            "Interesting. Thanks for the information.",
+                            6,
+                        )
+                    }
+                    3 -> {
+                        chatPlayer(quiz, "Tell me about Akthanakos.")
+                        chatNpc(
+                            neutral,
+                            "An interesting choice of topic. Akthanakos is a Mahjarrat who was " +
+                                "apparently worshipped as a god for a while in these parts. That " +
+                                "was a long time ago, of course.",
+                        )
+                        chatNpc(
+                            neutral,
+                            "Unlike many of his kin, he was against Zamorak's rise to power. " +
+                                "Perhaps that's why he ended up out here. Zamorak has little " +
+                                "sway in the desert.",
+                        )
+                        chatNpc(
+                            neutral,
+                            "Whatever his reasons, he clearly took a liking to living here. He " +
+                                "took on the head of a camel and even made an amulet that would " +
+                                "allow him to understand their kind.",
+                        )
+                        chatNpc(
+                            neutral,
+                            "Using it, he even trained some of the native camels to fight for " +
+                                "him. Their name, 'Ugthanki', is derived from his.",
+                        )
+                        chatNpc(
+                            neutral,
+                            "Since he disappeared, however, it is said that the Ugthanki became " +
+                                "more violent and started attacking travellers.",
+                        )
+                        choice3(
+                            "Tell me about yourself.",
+                            1,
+                            "Tell me about Enakhra.",
+                            2,
+                            "Interesting. Thanks for the information.",
+                            6,
+                        )
+                    }
+                    4 -> {
+                        chatPlayer(happy, "I'm good.")
+                        return
+                    }
+                    else -> {
+                        chatPlayer(happy, "Interesting. Thanks for the information.")
+                        return
+                    }
+                }
+        }
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Banknote_Exchange_Merchant
@@ -258,5 +441,16 @@ class PollnivneachTownsfolk : PluginScript() {
             "The desert just outside of town is full of wolves, snakes, and even wild Ugthanki. " +
                 "Try there.",
         )
+    }
+
+    private companion object {
+        const val THE_FEUD = "quest_feud"
+        const val ENAKHRAS_LAMENT = "quest_enakhraslament"
+        const val ALISHA = "npc.feud_hag_postquest"
+        const val ALISHA_NAME = "Alisha the Hag"
+        const val HAKEEM = "npc.feud_mayor_geom_postquest"
+        const val HAKEEM_NAME = "Hakeem the Mayor"
+        const val JALAL = "npc.feud_drunken_ali_postquest"
+        const val JALAL_NAME = "Jalal the Drunk"
     }
 }

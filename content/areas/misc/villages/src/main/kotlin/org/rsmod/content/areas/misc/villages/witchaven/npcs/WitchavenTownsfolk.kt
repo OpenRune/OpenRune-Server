@@ -2,6 +2,7 @@ package org.rsmod.content.areas.misc.villages.witchaven.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -19,10 +20,20 @@ class WitchavenTownsfolk : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Caroline (before Sea Slug)
-    // TODO(content): [quest:sea_slug] start offer, quest stages and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Caroline
     // TODO(content): [system:treasure_trails] medium clue dialogue
     private suspend fun Dialogue.caroline() {
+        if (QuestRequirements.hasCompleted(player, SEA_SLUG)) {
+            chatPlayer(happy, "Hello again.")
+            chatNpc(happy, "Hello traveller, how are you?")
+            chatPlayer(happy, "Not bad thanks, yourself?")
+            chatNpc(
+                happy,
+                "I'm good. Busy as always looking after Kent and Kennith but no complaints.",
+            )
+            return
+        }
+        // TODO(content): [quest:sea_slug] quest start and quest stages
         chatPlayer(happy, "Hello there.")
         chatNpc(worried, "Is there any chance you could help me?")
         chatPlayer(quiz, "What's wrong?")
@@ -48,10 +59,16 @@ class WitchavenTownsfolk : PluginScript() {
         )
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Holgart (before starting Sea Slug)
-    // TODO(content): [quest:sea_slug] quest stages and travel to the Fishing Platform
-    // TODO(content): [quest:the_slug_menace] "I don't know what to do without my boat."
+    // https://oldschool.runescape.wiki/w/Transcript:Holgart
     private suspend fun Dialogue.holgart() {
+        if (
+            QuestRequirements.isOnQuest(player, SLUG_MENACE) ||
+                QuestRequirements.hasCompleted(player, SLUG_MENACE)
+        ) {
+            chatNpc(sad, "I don't know what to do without my boat.")
+            return
+        }
+        // TODO(content): [quest:sea_slug] quest stages and travel to the Fishing Platform
         chatPlayer(happy, "Hello there.")
         chatNpc(happy, "Well hello. Beautiful day isn't it.")
         chatPlayer(neutral, "Not bad I suppose.")
@@ -97,10 +114,13 @@ class WitchavenTownsfolk : PluginScript() {
         chatNpc(happy, "You too, ${player.displayName}. Goodbye.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Witchaven_villager (pre-quest)
-    // TODO(content): [quest:the_slug_menace] possessed villagers after the quest
+    // https://oldschool.runescape.wiki/w/Transcript:Witchaven_villager
     // TODO(content): [verify:in_game] fifth greeting (a fishing song) is not included
     private suspend fun Dialogue.villager() {
+        if (QuestRequirements.hasCompleted(player, SLUG_MENACE)) {
+            possessedVillager()
+            return
+        }
         when (access.random.of(4)) {
             0 -> {
                 chatPlayer(happy, "Hello there.")
@@ -141,7 +161,52 @@ class WitchavenTownsfolk : PluginScript() {
         }
     }
 
+    private suspend fun Dialogue.possessedVillager() {
+        chatPlayer(happy, "Hello there.")
+        mesbox("Their eyes are staring vacantly into space.")
+        when (access.random.of(5)) {
+            0 -> {
+                chatNpc(neutral, "Ye mariners all, as ye pass by,")
+                chatNpc(neutral, "Come in and drink if you are dry,")
+                chatNpc(neutral, "Come spend, me lads, your money brisk,")
+                chatNpc(neutral, "And pop your nose in a jug of this.")
+                chatPlayer(neutral, "You're not fooling anyone you know.")
+                chatNpc(neutral, "We fooled you easily enough.")
+            }
+            1 -> {
+                chatNpc(neutral, "Free. She is free...")
+                chatPlayer(confused, "What?")
+                chatNpc(neutral, "The mother is free.")
+            }
+            2 -> {
+                chatNpc(angry, "You! You did it!")
+                chatPlayer(worried, "I didn't mean to!")
+                chatNpc(angry, "You killed him!")
+                chatPlayer(confused, "It was an accide... Killed who?")
+                chatNpc(angry, "Our Prince, you killed our Prince.")
+                chatPlayer(neutral, "Oh that, yes I did.")
+                chatNpc(angry, "Leave us alone.")
+            }
+            3 -> {
+                chatNpc(neutral, "Soon now... So soon...")
+                chatNpc(neutral, "The stars are almost right.")
+                chatPlayer(quiz, "For what?")
+                chatNpc(neutral, ". . .")
+            }
+            else -> {
+                chatNpc(neutral, "Ahh, our saviour.")
+                chatPlayer(sad, "Please don't remind me.")
+                chatNpc(neutral, "Do not worry, soon your regret will be gone.")
+                chatPlayer(angry, "If you think you will get to me...")
+                chatNpc(neutral, "All in good time.")
+            }
+        }
+    }
+
     private companion object {
+        const val SEA_SLUG = "quest_seaslug"
+        const val SLUG_MENACE = "quest_slugmenace"
+
         val VILLAGERS =
             listOf(
                 "npc.slug2_villager1_stage1_multi",

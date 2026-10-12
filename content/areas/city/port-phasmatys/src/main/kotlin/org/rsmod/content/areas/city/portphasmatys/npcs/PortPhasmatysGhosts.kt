@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.portphasmatys.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -33,12 +34,22 @@ class PortPhasmatysGhosts : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Gravingas (before Ghosts Ahoy)
-    // TODO(content): [quest:ghosts_ahoy] the petition and the after-quest answer
+    // https://oldschool.runescape.wiki/w/Transcript:Gravingas
+    // TODO(content): [quest:ghosts_ahoy] the petition while collecting signatures
     // TODO(content): [system:npc_overhead] the "Down with Necrovarus!!" protest shouts
     private suspend fun Dialogue.gravingas() {
         if (!player.understandsGhosts()) {
             return wail()
+        }
+        if (QuestRequirements.hasCompleted(player, GHOSTS_AHOY)) {
+            chatPlayer(
+                angry,
+                "Why are you still protesting? I have commanded Necrovarus to let you and your " +
+                    "friends do as you like! There's no need for this anymore!",
+            )
+            chatNpc(neutral, "There's always a need for a healthy interest in politics.")
+            chatPlayer(neutral, "Okay, suit yourself then.")
+            return
         }
         chatNpc(
             angry,
@@ -82,12 +93,28 @@ class PortPhasmatysGhosts : PluginScript() {
         )
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Necrovarus (before Ghosts Ahoy)
+    // https://oldschool.runescape.wiki/w/Transcript:Necrovarus
     // https://oldschool.runescape.wiki/w/Transcript:Ghosts_Ahoy
-    // TODO(content): [quest:ghosts_ahoy] quest and after-quest dialogue
+    // TODO(content): [quest:ghosts_ahoy] the in-quest dialogue
     private suspend fun Dialogue.necrovarus() {
         if (!player.understandsGhosts()) {
             return wail()
+        }
+        if (QuestRequirements.hasCompleted(player, GHOSTS_AHOY)) {
+            chatPlayer(
+                neutral,
+                "Told you I'd defeat you, Necrovarus. My advice to you is to pass over to the " +
+                    "next world yourself with everybody else.",
+            )
+            chatNpc(angry, "I should fry you for what you have done...")
+            chatPlayer(
+                angry,
+                "Quiet, evil priest!! If you try anything I will command you again, but this " +
+                    "time it will be throw yourself into the Endless Void for the rest of " +
+                    "eternity.",
+            )
+            chatNpc(worried, "Please no! I will do whatever you say!!")
+            return
         }
         val option =
             choice3(
@@ -112,11 +139,18 @@ class PortPhasmatysGhosts : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Droalak (Making History not started)
-    // TODO(content): [quest:making_history] quest and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Droalak
+    // TODO(content): [quest:making_history] the in-quest dialogue
     private suspend fun Dialogue.droalak() {
         if (!player.understandsGhosts()) {
             return wail(text = "wooo wooo", cannotUnderstand = false)
+        }
+        if (QuestRequirements.hasCompleted(player, MAKING_HISTORY)) {
+            chatPlayer(happy, "I have delivered the scroll, you can rest in peace now.")
+            chatNpc(happy, "Thanks for telling me! I've been waiting for ages!")
+            chatPlayer(neutral, "Good bye.")
+            chatNpc(happy, "Bye!")
+            return
         }
         chatNpc(sad, "Please, leave me alone.")
         chatPlayer(neutral, "Your loss!")
@@ -130,5 +164,10 @@ class PortPhasmatysGhosts : PluginScript() {
             return wail(cannotUnderstand = false)
         }
         chatNpc(sad, "Leave me be.")
+    }
+
+    private companion object {
+        const val GHOSTS_AHOY = "quest_ghostsahoy"
+        const val MAKING_HISTORY = "quest_makinghistory"
     }
 }

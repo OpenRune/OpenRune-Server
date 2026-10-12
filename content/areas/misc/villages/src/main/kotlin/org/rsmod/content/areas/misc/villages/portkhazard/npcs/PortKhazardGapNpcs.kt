@@ -2,6 +2,7 @@ package org.rsmod.content.areas.misc.villages.portkhazard.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -12,9 +13,14 @@ class PortKhazardGapNpcs : PluginScript() {
         onOpNpc1("npc.fightslave_kelvin") { startDialogue(it.npc) { kelvin() } }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Khazard_Launderer (before While Guthix Sleeps)
-    // TODO(content): [quest:while_guthix_sleeps] after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Khazard_Launderer
     private suspend fun Dialogue.launderer() {
+        if (QuestRequirements.hasCompleted(player, WHILE_GUTHIX_SLEEPS)) {
+            chatNpc(happy, "Hello again. Do you need anything?")
+            chatPlayer(happy, "I'm good, thanks.")
+            chatNpc(happy, "Well in that case, all the best.")
+            return
+        }
         chatNpc(happy, "Hello there. What can I do for you?")
         chatPlayer(quiz, "What do you do here?")
         chatNpc(
@@ -54,5 +60,9 @@ class PortKhazardGapNpcs : PluginScript() {
                 )
             else -> chatNpc(worried, "You're not safe here, traveller. Leave while you still can.")
         }
+    }
+
+    private companion object {
+        const val WHILE_GUTHIX_SLEEPS = "quest_whileguthixsleeps"
     }
 }

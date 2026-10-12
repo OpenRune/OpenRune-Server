@@ -820,11 +820,14 @@ constructor(private val shops: Shops, private val objRepo: ObjRepository) : Plug
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Fortunato
-    // TODO(content): [quest:rag_and_bone_man_i] Vinegar dialogue and the vinegar stock
+    // TODO(content): [quest:rag_and_bone_man_i] the vinegar dialogue and stock during the quest
     // TODO(content): [skill:thieving] "You're the thief who stole from me!" after a stall theft
     // TODO(content): [system:item_on_npc] Buying back empty wine bottles for 2 coins each
     private suspend fun Dialogue.fortunato() {
         chatNpc(neutral, "Can I help you at all?")
+        if (QuestRequirements.hasCompleted(player, RAG_AND_BONE_MAN_I)) {
+            return fortunatoAfterRagAndBone()
+        }
         if (menu("Yes, what are you selling?" to true, "Not at the moment" to false)) {
             chatPlayer(neutral, "Yes, what are you selling?")
             access.openWineShop()
@@ -832,6 +835,23 @@ constructor(private val shops: Shops, private val objRepo: ObjRepository) : Plug
             chatPlayer(neutral, "Not at the moment.")
             chatNpc(angry, "Then move along, you filthy ragamuffin, I have customers to serve!")
         }
+    }
+
+    private suspend fun Dialogue.fortunatoAfterRagAndBone() {
+        chatNpc(worried, "Oh...you've come back.")
+        chatNpc(worried, "Please...I havent got any more vinegar. Give me some time I beg you.")
+        chatPlayer(neutral, "I wasn't after vinegar today.")
+        chatNpc(happy, "Oh, wonderful.")
+        chatNpc(neutral, "I will have some in soon, if he needs it.")
+        chatNpc(neutral, "In the meantime, can I interest you in something?")
+        if (menu("Yes." to true, "No." to false)) {
+            chatPlayer(neutral, "Yes, what are you selling?")
+            access.openWineShop()
+            return
+        }
+        chatPlayer(neutral, "No.")
+        chatNpc(neutral, "Well, I'll put something special to one side for you.")
+        chatPlayer(happy, "Thanks.")
     }
 
     private fun ProtectedAccess.openWineShop() {
@@ -1090,12 +1110,35 @@ constructor(private val shops: Shops, private val objRepo: ObjRepository) : Plug
     // https://oldschool.runescape.wiki/w/Transcript:Martin_the_Master_Gardener
     // https://oldschool.runescape.wiki/w/Transcript:Fairytale_I_-_Growing_Pains
     // TODO(content): [quest:fairytale_i_growing_pains] Start offer and quest dialogue
-    // TODO(content): [quest:fairytale_ii_cure_a_queen] Quest dialogue
+    // TODO(content): [quest:fairytale_ii_cure_a_queen] in-quest dialogue
     // TODO(content): [skill:thieving] Greeting after the player pickpocketed him
     // TODO(content): [system:skillcapes] Trimmed cape when the player has another 99
     private suspend fun Dialogue.martin() {
         val quest =
             menu("Ask about the Skillcape of Farming." to false, "Ask about the quest." to true)
+        if (quest && QuestRequirements.hasCompleted(player, FAIRYTALE_II)) {
+            chatPlayer(
+                happy,
+                "Okay, this time I've really solved your problems! I've woken up the Fairy Queen!",
+            )
+            chatNpc(
+                neutral,
+                "Hmm, right. You'll forgive me if I reserve judgement on this until I actually " +
+                    "have some crops grow.",
+            )
+            chatPlayer(
+                neutral,
+                "Of course. The problem was the Godfather, he wanted to take control of Zanaris " +
+                    "himself, so he didn't give Fairy Nuff the Queen's secateurs!",
+            )
+            chatNpc(
+                angry,
+                "Godfather...Fairy Nuff...the Queen, I don't know what you're talking about and " +
+                    "I don't care. I just want my crops to start growing again. Come back and " +
+                    "claim your reward once they've had a chance to grow.",
+            )
+            return
+        }
         if (quest) {
             chatPlayer(neutral, "Hello.")
             chatNpc(worried, "I can't chat now, I have too many things to worry about.")
@@ -1253,6 +1296,8 @@ constructor(private val shops: Shops, private val objRepo: ObjRepository) : Plug
         const val DRAGON_SLAYER = "quest_dragonslayer1"
         const val PRINCE_ALI_RESCUE = "quest_princealirescue"
         const val FREMENNIK_ISLES = "quest_fremennikisles"
+        const val RAG_AND_BONE_MAN_I = "quest_ragandboneman1"
+        const val FAIRYTALE_II = "quest_fairytale2"
 
         const val COINS = "obj.coins"
         const val COINS_ICON = "obj.coins_25"

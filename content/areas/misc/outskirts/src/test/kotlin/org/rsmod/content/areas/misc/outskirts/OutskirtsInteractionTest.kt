@@ -6,10 +6,12 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
@@ -27,7 +29,11 @@ import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.content.areas.misc.outskirts.digsite.npcs.DigsiteNpcs
 import org.rsmod.content.areas.misc.outskirts.monastery.npcs.EdgevilleMonastery
+import org.rsmod.content.quest.manager.QuestRequirementMode
+import org.rsmod.content.quest.manager.QuestRequirementPolicy
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -45,6 +51,64 @@ import org.rsmod.plugin.scripts.ScriptContext
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class OutskirtsInteractionTest {
+    private lateinit var questPolicy: QuestRequirementPolicy
+
+    @BeforeEach
+    fun respectQuestProgress() {
+        questPolicy = QuestRequirements.activePolicy()
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
+    }
+
+    @AfterEach
+    fun restoreQuestPolicy() {
+        QuestRequirements.install(questPolicy)
+    }
+
+    @Test fun `Examiner replaces a lost trowel after The Dig Site`() {
+        digSiteCompleted()
+        val f = Fixture()
+        f.talkTo(EXAMINER)
+        f.finish(listOf(2))
+        assertEquals(1, f.player.inv.count(TROWEL))
+    }
+
+    @Test fun `Examiner drops the replacement trowel when the pack is full`() {
+        digSiteCompleted()
+        val f = Fixture()
+        f.fillInventory()
+        f.talkTo(EXAMINER)
+        f.finish(listOf(2))
+        assertEquals(0, f.player.inv.count(TROWEL))
+        assertEquals(1, f.groundCount(TROWEL))
+    }
+
+    @Test fun `Examiner gives no trowel when one is in the pack`() {
+        digSiteCompleted()
+        val f = Fixture()
+        f.player.inv[0] = InvObj(TROWEL, 1)
+        f.talkTo(EXAMINER)
+        f.finish(listOf(2))
+        assertEquals(1, f.player.inv.count(TROWEL))
+        assertEquals(0, f.groundCount(TROWEL))
+    }
+
+    @Test fun `Examiner gives no trowel before The Dig Site`() {
+        val f = Fixture()
+        f.talkTo(EXAMINER)
+        f.finish(listOf(2))
+        assertEquals(0, f.player.inv.count(TROWEL))
+        assertEquals(0, f.groundCount(TROWEL))
+    }
+
+    private fun digSiteCompleted() {
+        QuestRequirements.install(
+            QuestRequirementPolicy(
+                QuestRequirementMode.VirtualCompletions,
+                virtualCompletions = setOf("quest_digsite"),
+            )
+        )
+    }
+
     @Test fun `Brother Jered blesses one unblessed symbol`() {
         val f = Fixture()
         f.player.inv[0] = InvObj(UNBLESSED_SYMBOL, 1)
@@ -126,6 +190,7 @@ class OutskirtsInteractionTest {
             val scripts = ScriptContext(events, CheatCommandMap(), EngineQueueCache())
             val objRepo = ObjRepository(clock, objRegistry)
             with(EdgevilleMonastery()) { scripts.startup() }
+            with(DigsiteNpcs(objRepo)) { scripts.startup() }
         }
 
         fun fillInventory() {
@@ -211,6 +276,8 @@ class OutskirtsInteractionTest {
 
     companion object {
         private const val JERED = "npc.brother_jered"
+        private const val EXAMINER = "npc.examiner"
+        private const val TROWEL = "obj.trowel"
         private const val UNBLESSED_SYMBOL = "obj.stringstar"
         private const val HOLY_SYMBOL = "obj.blessedstar"
         private val CONTINUE_COMPONENTS =

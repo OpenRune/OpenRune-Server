@@ -2,6 +2,8 @@ package org.rsmod.content.areas.city.varrock.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.content.quest.manager.menu
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -201,24 +203,54 @@ class VarrockMuseum : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Curator_Haig_Halen
-    // TODO(content): [quest:bone_voyage] "Talk about Fossil Island." and after-quest news
     // TODO(content): [quest:below_ice_mountain] Camdozaal relic hand-in
     // TODO(content): [system:shipwreck_salvaging] salvaging relic hand-ins
     // TODO(content): [system:museum_digsite_certificates] showing digsite certificates
     private suspend fun Dialogue.curator() {
         chatNpc(happy, "Welcome to the museum of Varrock.")
+        val boneVoyage = QuestRequirements.hasCompleted(player, BONE_VOYAGE)
         val option =
-            choice3(
-                "Have you any interesting news?",
-                1,
-                "Do you know where I could find any treasure?",
-                2,
-                "How do I get a medallion?",
-                3,
+            menu(
+                buildList {
+                    if (boneVoyage) add("Talk about Fossil Island." to 4)
+                    add("Have you any interesting news?" to 1)
+                    add("Do you know where I could find any treasure?" to 2)
+                    add("How do I get a medallion?" to 3)
+                }
             )
         when (option) {
+            4 -> {
+                chatPlayer(quiz, "I've got some questions regarding Fossil Island.")
+                chatNpc(happy, "Ah, how can I help?")
+                val question =
+                    choice2(
+                        "What can I do with fossils I find on Fossil Island?",
+                        true,
+                        "Nevermind.",
+                        false,
+                    )
+                if (question) {
+                    chatPlayer(quiz, "What can I do with fossils I find on Fossil Island?")
+                    chatNpc(neutral, "I'm not entirely sure just yet.")
+                } else {
+                    chatPlayer(neutral, "Nevermind.")
+                }
+            }
             1 -> {
                 chatPlayer(quiz, "Have you any interesting news?")
+                if (boneVoyage) {
+                    chatNpc(
+                        happy,
+                        "We've seen some incredible specimens come back from Fossil Island!",
+                    )
+                    chatNpc(
+                        happy,
+                        "Be sure to bring anything you find back for examination - we've got a " +
+                            "brand new Palaeontology room downstairs dedicated to finds from the " +
+                            "island.",
+                    )
+                    return
+                }
                 chatNpc(
                     happy,
                     "Yes, we found a rather interesting island to the North of Morytania. We " +
@@ -497,13 +529,23 @@ class VarrockMuseum : PluginScript() {
                         "Level 3 Earth Science exams. You can take them over at the Exam Centre " +
                             "on the Dig Site.",
                     )
-                    // TODO(content): [quest:the_dig_site] working towards / passed the exams
-                    chatPlayer(sad, "Oh, I don't have those.")
-                    chatNpc(
-                        happy,
-                        "I'm sure you can get them easily enough. Just pop over to the Exam " +
-                            "Centre on the Dig Site and speak to one of the examiners there.",
-                    )
+                    // TODO(content): [quest:the_dig_site] "Oh, I'm already working towards
+                    //  those!" before the exams and "I already have those!" after them
+                    if (QuestRequirements.hasCompleted(player, DIG_SITE)) {
+                        chatPlayer(happy, "Oh, I already have those!")
+                        chatNpc(
+                            happy,
+                            "That's excellent. If you feel like helping us out, pop downstairs " +
+                                "and clean up some finds for us.",
+                        )
+                    } else {
+                        chatPlayer(sad, "Oh, I don't have those.")
+                        chatNpc(
+                            happy,
+                            "I'm sure you can get them easily enough. Just pop over to the Exam " +
+                                "Centre on the Dig Site and speak to one of the examiners there.",
+                        )
+                    }
                 }
                 else -> {
                     chatPlayer(quiz, "Tell me about the Timeline exhibit.")
@@ -568,14 +610,30 @@ class VarrockMuseum : PluginScript() {
                         "Of course. The Dig Site exhibit has several display cases of finds " +
                             "discovered on the Dig Site to the east of Varrock.",
                     )
-                    // TODO(content): [quest:the_dig_site] passed exams / exhibit progress lines
-                    chatNpc(
-                        neutral,
-                        "Unfortunately, you haven't passed your Earth Science exams, so you " +
-                            "aren't qualified to help us on the dig. If you're interested, visit " +
-                            "the Education Centre on the Dig Site to the east and talk to the " +
-                            "examiners there.",
-                    )
+                    if (QuestRequirements.hasCompleted(player, DIG_SITE)) {
+                        // TODO(content): [system:museum_digsite_exhibit] the lines once the
+                        //  player has partly or fully filled the exhibit
+                        chatNpc(
+                            happy,
+                            "As you've passed your Earth Science exams at the Dig Site, you can " +
+                                "go through into the cleaning area and clean off some finds. " +
+                                "This will help our Dig Site display floor to give a more " +
+                                "accurate view of life back in the",
+                        )
+                        chatNpc(
+                            happy,
+                            "3rd and 4th Ages, as well as earning you Kudos. If you'd like to " +
+                                "know more about cleaning finds, just ask the archaeologists.",
+                        )
+                    } else {
+                        chatNpc(
+                            neutral,
+                            "Unfortunately, you haven't passed your Earth Science exams, so you " +
+                                "aren't qualified to help us on the dig. If you're interested, " +
+                                "visit the Education Centre on the Dig Site to the east and talk " +
+                                "to the examiners there.",
+                        )
+                    }
                 }
                 3 -> {
                     chatPlayer(quiz, "Could you tell me about the Timeline exhibit please?")
@@ -768,7 +826,16 @@ class VarrockMuseum : PluginScript() {
                 chatNpc(happy, "Hello!")
                 chatPlayer(quiz, "Hi, have you seen the Dig Site displays?")
                 chatNpc(happy, "Yes, good aren't they! Have you done the quest?")
-                // TODO(content): [quest:the_dig_site] "Yes, I did it all." after the quest
+                if (QuestRequirements.hasCompleted(player, DIG_SITE)) {
+                    chatPlayer(happy, "Yes, I did it all.")
+                    chatNpc(
+                        happy,
+                        "Did you know after the quest you can get the teddy bear back by " +
+                            "stealing it from the female student?",
+                    )
+                    chatPlayer(happy, "I shall have to try that sometime.")
+                    return
+                }
                 chatPlayer(neutral, "Not yet.")
                 chatNpc(
                     happy,
@@ -838,9 +905,25 @@ class VarrockMuseum : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Museum_guard (museum gate, cleaning area)
-    // TODO(content): [quest:the_dig_site] gate prompt into the cleaning area after the quest
+    // TODO(content): [verify:in_game] the prompt after the first talk since login
     private suspend fun Dialogue.cleaningAreaGuard() {
-        chatNpc(neutral, "You're not permitted in this area.")
+        if (!QuestRequirements.hasCompleted(player, DIG_SITE)) {
+            chatNpc(neutral, "You're not permitted in this area.")
+            return
+        }
+        chatNpc(happy, "Welcome! Would you like to go into the Dig Site archaeology cleaning area?")
+        val enter =
+            choice2(
+                "Yes, I'll go in!",
+                true,
+                "No thanks, I'll take a look around out here.",
+                false,
+            )
+        if (enter) {
+            // TODO(content): [system:museum_cleaning_area] let the player through the gate
+            return
+        }
+        chatPlayer(neutral, "No thanks, I'll take a look around out here.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Museum_guard (Dig Site gate)
@@ -855,7 +938,6 @@ class VarrockMuseum : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Museum_guard (museum doors)
-    // TODO(content): [quest:the_dig_site] after-quest "you can go through if you want" lines
     private suspend fun Dialogue.workmansEntranceGuard() {
         chatNpc(happy, "Hello there. Come to see the new museum?")
         chatPlayer(quiz, "Yes, how do I get in?")
@@ -865,6 +947,15 @@ class VarrockMuseum : PluginScript() {
                 "you can't miss it!",
         )
         chatPlayer(quiz, "What about these doors?")
+        if (QuestRequirements.hasCompleted(player, DIG_SITE)) {
+            chatNpc(
+                happy,
+                "They're primarily for the workmen bringing finds from the Dig Site, but you can " +
+                    "go through if you want.",
+            )
+            chatPlayer(happy, "Okay, thanks.")
+            return
+        }
         chatNpc(
             neutral,
             "They're for the workmen bringing finds from the Dig Site; sorry, but you can't go " +
@@ -1090,6 +1181,8 @@ class VarrockMuseum : PluginScript() {
     }
 
     private companion object {
+        const val DIG_SITE = "quest_digsite"
+        const val BONE_VOYAGE = "quest_bonevoyage"
         const val TEACHER = "Teacher"
         const val PUPIL = "Pupil"
         const val FEMALE_TEACHER = "npc.vm_female_school_teacher_dummy"

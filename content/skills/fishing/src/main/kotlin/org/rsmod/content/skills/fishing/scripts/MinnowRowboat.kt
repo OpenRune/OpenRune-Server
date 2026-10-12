@@ -1,7 +1,6 @@
 package org.rsmod.content.skills.fishing.scripts
 
 import dev.openrune.util.Wearpos
-import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.fishingLvl
 import org.rsmod.api.script.onOpContentLoc1
@@ -31,10 +30,19 @@ class MinnowRowboat : PluginScript() {
             }
             return
         }
-        // TODO(content): [quest:fishing_contest] Boarding needs varbit.minnow_access = 2 from Kylie,
-        // with her "I don't think I have given you access" line; the angler check stands in for it.
-        if (!hasFullAngler()) {
-            mes("You must be wearing a full angler's outfit before Kylie will let you onto the island.")
+        // Kylie grants the access (level 82, angler's outfit, Fishing Contest) in KylieMinnow.
+        // https://oldschool.runescape.wiki/w/Transcript:Kylie_Minnow
+        if (player.vars[ACCESS_VARBIT] != ACCESS_GRANTED) {
+            startDialogue {
+                chatNpcSpecific(
+                    title = "Kylie Minnow",
+                    type = "npc.minnow_fisherman_unlocked",
+                    mesanim = neutral,
+                    text =
+                        "I don't think I have given you access to my fishing platform. Come and " +
+                            "speak to me if you would like to get access.",
+                )
+            }
             return
         }
         arriveDelay()
@@ -49,6 +57,8 @@ class MinnowRowboat : PluginScript() {
     private companion object {
         private val ISLAND = CoordGrid(2614, 3411, 0)
         private val GUILD = CoordGrid(2599, 3424, 0)
+        private const val ACCESS_VARBIT = "varbit.minnow_access"
+        private const val ACCESS_GRANTED = 2
     }
 }
 

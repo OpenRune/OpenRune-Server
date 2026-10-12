@@ -6,6 +6,7 @@ import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -328,9 +329,19 @@ class Taverns @Inject constructor(private val objRepo: ObjRepository) : PluginSc
         }
     }
 
-    // TODO(content): [quest:forgettable_tale] "I thought you would know plenty!" after completion
     private suspend fun Dialogue.kjutDrunkenDwarf() {
         chatPlayer(quiz, "I'm looking for a drunken dwarf.")
+        if (QuestRequirements.hasCompleted(player, FORGETTABLE_TALE)) {
+            chatNpc(laugh, "I thought you would know plenty!")
+            chatPlayer(quiz, "How do you mean?")
+            chatNpc(
+                laugh,
+                "Oh come on! You in the Laughing Miner? The whole city knows about you and your " +
+                    "dwarven drinking buddies!",
+            )
+            chatPlayer(neutral, "Right, right.")
+            return
+        }
         chatNpc(laugh, "Just go out in the streets, they can't be hard to find!")
         chatPlayer(neutral, "No, a specific drunken dwarf, he keeps harassing me.")
         chatNpc(
@@ -365,6 +376,7 @@ class Taverns @Inject constructor(private val objRepo: ObjRepository) : PluginSc
     }
 
     private companion object {
+        const val FORGETTABLE_TALE = "quest_forgettabletale"
         const val COINS = "obj.coins"
         const val BEER = "obj.beer"
         const val POT = "obj.pot_empty"

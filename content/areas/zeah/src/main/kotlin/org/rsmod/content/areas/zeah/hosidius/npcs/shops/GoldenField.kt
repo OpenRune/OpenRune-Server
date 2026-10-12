@@ -2,6 +2,7 @@ package org.rsmod.content.areas.zeah.hosidius.npcs.shops
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.areas.zeah.kourend.kourendRumour
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -100,15 +101,8 @@ class GoldenField : PluginScript() {
         // TODO(content): [system:shops] opens The Golden Field
     }
 
-    // TODO(content): [quest:client_of_kourend] later rumours (The Queen of Thieves, The Depths
-    //  of Despair, Tale of the Righteous, The Forsaken Tower, The Ascent of Arceuus, A Kingdom
-    //  Divided, then "No, it hasn't been very busy lately.") once Client of Kourend has started
     private suspend fun Dialogue.rumours() {
         chatPlayer(quiz, "Have you heard any rumours here?")
-        chatNpc(
-            neutral,
-            "Apparently Veos is looking for some help with something. He hangs around the docks " +
-                "of Port Piscarilius.",
-        )
+        kourendRumour()
     }
 }

@@ -14,4 +14,5 @@ dependencies {
     implementation(projects.api.script)
     implementation(projects.engine.game)
     implementation(projects.engine.map)
+    implementation(projects.content.quest)
 }

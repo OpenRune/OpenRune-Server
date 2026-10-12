@@ -1,44 +1,302 @@
 package org.rsmod.content.areas.city.edgeville.npcs
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import jakarta.inject.Inject
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.baseSmithingLvl
 import org.rsmod.api.player.stat.woodcuttingLvl
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-class EdgevilleTownsfolk : PluginScript() {
+class EdgevilleTownsfolk @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1("npc.oziach") { startDialogue(it.npc) { oziach() } }
-        onOpNpc3("npc.oziach") { startDialogue(it.npc) { oziachTrade() } }
+        onOpNpc1("npc.oziach") { startDialogue(it.npc) { oziach(it.npc) } }
+        onOpNpc3("npc.oziach") { oziachTrade(it.npc) }
         onOpNpc1("npc.hundred_dave_mum") { startDialogue(it.npc) { doris() } }
         onOpNpc1("npc.canoeing_hari") { startDialogue(it.npc) { hari() } }
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Oziach (before Dragon Slayer I)
-    // TODO(content): [quest:dragon_slayer_i] rune platebody shop, Melzar's Maze key and DFS options
-    private suspend fun Dialogue.oziach() {
+    // TODO(content): [quest:dragon_slayer_i] quest dialogue while on the quest
+    private suspend fun Dialogue.oziach(npc: Npc) {
+        if (QuestRequirements.hasCompleted(player, DRAGON_SLAYER_I)) {
+            oziachAfterQuest(npc)
+            return
+        }
         chatNpc(happy, "Aye, 'tis a fair day my friend.")
         when (choice2("I'm not your friend.", 1, "Yes, it's a very nice day.", 2)) {
-            1 -> {
-                chatPlayer(angry, "I'm not your friend.")
-                chatNpc(
-                    angry,
-                    "I'm surprised if you're anyone's friend with those kind of manners.",
+            1 -> oziachNotYourFriend()
+            2 -> oziachNiceDay()
+        }
+    }
+
+    private suspend fun Dialogue.oziachNotYourFriend() {
+        chatPlayer(angry, "I'm not your friend.")
+        chatNpc(angry, "I'm surprised if you're anyone's friend with those kind of manners.")
+    }
+
+    private suspend fun Dialogue.oziachNiceDay() {
+        chatPlayer(happy, "Yes, it's a very nice day.")
+        chatNpc(neutral, "Aye, may the gods walk by yer side. Now leave me alone.")
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Oziach (after Dragon Slayer I)
+    // TODO(content): [system:skeletal_visage] dragonfire ward dialogue (not in the transcript)
+    private suspend fun Dialogue.oziachAfterQuest(npc: Npc) {
+        chatNpc(happy, "Aye, 'tis a fair day, my mighty dragon-slaying friend.")
+        val hasVisage = player.inv.contains(DRACONIC_VISAGE)
+        val hasShield =
+            player.inv.contains(ANTI_DRAGON_SHIELD) || player.worn.contains(ANTI_DRAGON_SHIELD)
+        if (!hasVisage && hasShield) {
+            chatNpc(
+                neutral,
+                "I see ye've got one of them anti-dragon shields there. I've got an idea about " +
+                    "them things.",
+            )
+        }
+        val extra =
+            when {
+                hasVisage -> "Look at this visage."
+                hasShield -> "What's your idea about anti-dragon shields?"
+                else -> null
+            }
+        val option =
+            if (extra == null) {
+                choice4(
+                    "Can I buy a rune platebody now, please?",
+                    1,
+                    "I'm not your friend.",
+                    2,
+                    "Yes, it's a very nice day.",
+                    3,
+                    "Can I have another key to Melzar's Maze?",
+                    4,
+                )
+            } else {
+                choice5(
+                    "Can I buy a rune platebody now, please?",
+                    1,
+                    "I'm not your friend.",
+                    2,
+                    "Yes, it's a very nice day.",
+                    3,
+                    "Can I have another key to Melzar's Maze?",
+                    4,
+                    extra,
+                    5,
                 )
             }
-            2 -> {
-                chatPlayer(happy, "Yes, it's a very nice day.")
-                chatNpc(neutral, "Aye, may the gods walk by yer side. Now leave me alone.")
+        when (option) {
+            1 -> oziachBuyPlatebody(npc)
+            2 -> oziachNotYourFriend()
+            3 -> oziachNiceDay()
+            4 -> {
+                chatPlayer(quiz, "Can I have another key to Melzar's Maze?")
+                chatNpc(
+                    neutral,
+                    "It's the Guildmaster in the Champions' Guild who hands those keys out now. " +
+                        "Go talk to him. No need to bother me if you don't need armour.",
+                )
+            }
+            // TODO(content): [verify:in_game] whether a worn anti-dragon shield counts for forging
+            5 -> {
+                if (hasVisage) {
+                    oziachVisage(player.inv.contains(ANTI_DRAGON_SHIELD))
+                } else {
+                    oziachShieldIdea(npc)
+                }
             }
         }
     }
 
+    private suspend fun Dialogue.oziachBuyPlatebody(npc: Npc) {
+        chatPlayer(quiz, "Can I buy a rune platebody now please?")
+        openOziachShop(npc)
+    }
+
+    private fun Dialogue.openOziachShop(npc: Npc) {
+        shops.open(player, npc, "Oziach's Armour", "inv.runeplateshop")
+    }
+
+    private suspend fun Dialogue.oziachShieldIdea(npc: Npc) {
+        chatPlayer(quiz, "What's your idea about anti-dragon shields?")
+        chatNpc(
+            neutral,
+            "See, when ye uses them to fight a dragon, they absorb the fire. The shield must be " +
+                "storing the dragonfire, and just letting it radiate away.",
+        )
+        chatNpc(neutral, "Now, if there was only a way to get the dragonfire out again...")
+        while (true) {
+            val use =
+                choice2(
+                    "What use would that be?",
+                    1,
+                    "Can I buy a rune platebody now, please?",
+                    2,
+                )
+            if (use == 2) {
+                oziachBuyPlatebody(npc)
+                return
+            }
+            chatPlayer(quiz, "What use would that be?")
+            chatNpc(
+                happy,
+                "Why, ain't it obvious? Ye could project blasts of dragonfire from yer shield!",
+            )
+            chatNpc(neutral, "Ye know, I think there might be a way.")
+            val way = choice2("What way?", 1, "Can I buy a rune platebody now, please?", 2)
+            if (way == 2) {
+                oziachBuyPlatebody(npc)
+                return
+            }
+            chatPlayer(quiz, "What way?")
+            chatNpc(
+                neutral,
+                "I've heard legends of a thing called a 'draconic visage'. It was made by the " +
+                    "dragonkin themselves apparently.",
+            )
+            chatNpc(
+                neutral,
+                "This 'draconic visage' had the power to channel dragonfire. Now, if I could " +
+                    "attach the visage to the front of this shield...",
+            )
+            val next =
+                choice3(
+                    "What use would that be?",
+                    1,
+                    "I will look for this draconic visage!",
+                    2,
+                    "Can I buy a rune platebody now, please?",
+                    3,
+                )
+            when (next) {
+                1 -> continue
+                2 -> {
+                    chatPlayer(happy, "I will look for this draconic visage!")
+                    chatNpc(
+                        neutral,
+                        "Good luck wi' that. They're mighty rare, so yer quest will take some " +
+                            "time. If any monsters have them, it'll be the dragons.",
+                    )
+                }
+                3 -> oziachBuyPlatebody(npc)
+            }
+            return
+        }
+    }
+
+    private suspend fun Dialogue.oziachVisage(hasShield: Boolean) {
+        chatPlayer(happy, "Look at this visage.")
+        chatNpc(happy, "Amazin'! Ye can almost feel it pulsing with draconic power!")
+        if (!hasShield) {
+            chatNpc(
+                neutral,
+                "Now, if ye bring me this and the anti-dragonbreath shield, I reckon I could " +
+                    "combine them into something pretty special!",
+            )
+            return
+        }
+        chatNpc(
+            neutral,
+            "Now, if ye want me to, I could attach this to yer anti-dragonbreath shield and make " +
+                "something pretty special.",
+        )
+        chatNpc(neutral, "I'll charge 1,250,000 coins to construct it. What d'ye say?")
+        while (true) {
+            val option =
+                choice3("Yes, please!", 1, "No, thanks.", 2, "That's a bit expensive!", 3)
+            when (option) {
+                1 -> {
+                    chatPlayer(happy, "Yes please!")
+                    if (!forgeDragonfireShield()) {
+                        // TODO(content): [verify:in_game] reply when the coins, visage or shield
+                        //  are missing at the moment of forging (not in the transcript).
+                        return
+                    }
+                    mesbox("Oziach skillfully forges the shield and visage into a new shield.")
+                    chatNpc(
+                        happy,
+                        "There ye go. Now, the more dragonfire the shield absorbs, the more " +
+                            "powerful it'll become.",
+                    )
+                    return
+                }
+                2 -> {
+                    chatPlayer(neutral, "No, thanks.")
+                    chatNpc(neutral, "Suit yerself.")
+                    return
+                }
+                3 -> {
+                    chatPlayer(worried, "That's a bit expensive!")
+                    chatNpc(
+                        neutral,
+                        "Yes it is. But I'm a master smith so I reckon I can charge what I like. " +
+                            "Unless ye've got level 90 Smithing too, which I doubt!",
+                    )
+                    if (player.baseSmithingLvl >= DFS_SMITHING_LEVEL) {
+                        chatPlayer(happy, "Actually, I have got level 90 Smithing.")
+                        chatNpc(neutral, "Oh! Well, I suppose ye don't need me for this then.")
+                        return
+                    }
+                    chatPlayer(sad, "No, I don't have level 90 Smithing.")
+                    chatNpc(
+                        neutral,
+                        "I thought not. I'm the master smith of Misthalin! So, shall I construct " +
+                            "the shield for you?",
+                    )
+                }
+            }
+        }
+    }
+
+    private fun Dialogue.forgeDragonfireShield(): Boolean {
+        val result =
+            player.invTransaction(player.inv) {
+                val inv = select(player.inv)
+                delete {
+                    from = inv
+                    obj = COINS.asRSCM(RSCMType.OBJ)
+                    strictCount = DFS_FEE
+                }
+                delete {
+                    from = inv
+                    obj = DRACONIC_VISAGE.asRSCM(RSCMType.OBJ)
+                    strictCount = 1
+                }
+                delete {
+                    from = inv
+                    obj = ANTI_DRAGON_SHIELD.asRSCM(RSCMType.OBJ)
+                    strictCount = 1
+                }
+                insert {
+                    into = inv
+                    obj = DRAGONFIRE_SHIELD.asRSCM(RSCMType.OBJ)
+                    strictCount = 1
+                }
+            }
+        return result.success
+    }
+
     // https://oldschool.runescape.wiki/w/Transcript:Oziach (trying to trade)
-    // TODO(content): [quest:dragon_slayer_i] open inv.runeplateshop after the quest
-    private suspend fun Dialogue.oziachTrade() {
-        chatNpc(angry, "I ain't got nothing to sell ye, adventurer. Leave me be!")
+    // https://oldschool.runescape.wiki/w/Oziach_(shop) (needs Dragon Slayer I)
+    private suspend fun ProtectedAccess.oziachTrade(npc: Npc) {
+        if (QuestRequirements.hasCompleted(player, DRAGON_SLAYER_I)) {
+            shops.open(player, npc, "Oziach's Armour", "inv.runeplateshop")
+            return
+        }
+        startDialogue(npc) {
+            chatNpc(angry, "I ain't got nothing to sell ye, adventurer. Leave me be!")
+        }
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Doris
@@ -246,6 +504,13 @@ class EdgevilleTownsfolk : PluginScript() {
     }
 
     private companion object {
+        const val DRAGON_SLAYER_I = "quest_dragonslayer1"
+        const val COINS = "obj.coins"
+        const val ANTI_DRAGON_SHIELD = "obj.antidragonbreathshield"
+        const val DRACONIC_VISAGE = "obj.dragonfire_visage"
+        const val DRAGONFIRE_SHIELD = "obj.dragonfire_shield_uncharged"
+        const val DFS_FEE = 1_250_000
+        const val DFS_SMITHING_LEVEL = 90
         const val LOG_CANOE_LEVEL = 12
         const val DUGOUT_LEVEL = 27
         const val STABLE_DUGOUT_LEVEL = 42

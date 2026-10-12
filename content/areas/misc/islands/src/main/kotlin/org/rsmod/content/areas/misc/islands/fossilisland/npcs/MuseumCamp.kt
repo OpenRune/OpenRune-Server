@@ -2,6 +2,7 @@ package org.rsmod.content.areas.misc.islands.fossilisland.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -346,9 +347,12 @@ class MuseumCamp : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Jardric (before Dragon Slayer II)
-    // TODO(content): [quest:dragon_slayer_ii] travel to Lithkren after the quest
+    // https://oldschool.runescape.wiki/w/Transcript:Jardric
     private suspend fun Dialogue.jardric() {
+        if (QuestRequirements.hasCompleted(player, DRAGON_SLAYER_II)) {
+            jardricAfterQuest()
+            return
+        }
         chatNpc(happy, "Hello there.")
         chatPlayer(quiz, "Who are you?")
         chatNpc(
@@ -368,7 +372,40 @@ class MuseumCamp : PluginScript() {
         chatNpc(happy, "Goodbye for now.")
     }
 
+    // TODO(content): [system:lithkren_boat] the boat to Lithkren on "Yes please." and the
+    // Travel option
+    private suspend fun Dialogue.jardricAfterQuest() {
+        chatNpc(happy, "Hello. Wanting to go to Lithkren?")
+        val option =
+            choice3(
+                "Yes please.",
+                1,
+                "How are things with you?",
+                2,
+                "No thank you.",
+                3,
+                title = "Select an Option",
+            )
+        when (option) {
+            1 -> chatPlayer(happy, "Yes please.")
+            2 -> {
+                chatNpc(
+                    happy,
+                    "Not too bad. I've been working with the museum to investigate the " +
+                        "dragonkin. After what happened they now consider me an expert.",
+                )
+                chatNpc(
+                    happy,
+                    "Don't worry though. I've still got enough time to look after this boat for " +
+                        "you.",
+                )
+            }
+            3 -> chatPlayer(neutral, "No thank you.")
+        }
+    }
+
     private companion object {
         const val COOKING_POT = "varbit.fossil_range"
+        const val DRAGON_SLAYER_II = "quest_dragonslayer2"
     }
 }

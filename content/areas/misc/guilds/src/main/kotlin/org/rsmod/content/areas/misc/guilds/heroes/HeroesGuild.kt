@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -22,11 +23,13 @@ class HeroesGuild @Inject constructor(private val shops: Shops) : PluginScript()
         shops.open(this, npc, "Happy Heroes' H'emporium.", "inv.dragonaxeshop")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Achietties (before Heroes' Quest)
-    // TODO(content): [quest:heroes_quest] quest start for eligible players, quest progress and
-    //  the after-quest greeting
+    // https://oldschool.runescape.wiki/w/Transcript:Achietties
+    // TODO(content): [quest:heroes_quest] quest start for eligible players and quest progress
     private suspend fun Dialogue.achietties() {
         chatNpc(neutral, "Greetings. Welcome to the Heroes' Guild.")
+        if (QuestRequirements.hasCompleted(player, HEROES_QUEST)) {
+            return
+        }
         chatNpc(neutral, "Only the greatest heroes of this land may gain entrance to this guild.")
         val option =
             choice2(
@@ -76,5 +79,9 @@ class HeroesGuild @Inject constructor(private val shops: Shops) : PluginScript()
                 )
             }
         }
+    }
+
+    private companion object {
+        const val HEROES_QUEST = "quest_heroes"
     }
 }

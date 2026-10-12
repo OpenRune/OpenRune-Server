@@ -6,7 +6,7 @@ import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
-import org.rsmod.content.quest.area.lumbridge.RuneMysteriesQuest
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.runecrafting.essence.teleportToRuneEssenceMine
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
@@ -15,10 +15,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class YanilleTownsfolk
 @Inject
-constructor(
-    private val aiPlayerInteractions: AiPlayerInteractions,
-    private val runeMysteries: RuneMysteriesQuest,
-) : PluginScript() {
+constructor(private val aiPlayerInteractions: AiPlayerInteractions) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.handsand_bert") { startDialogue(it.npc) { bert() } }
         onOpNpc1("npc.colonel_radick") { startDialogue(it.npc) { colonelRadick(it.npc) } }
@@ -134,9 +131,13 @@ constructor(
         chatNpc(angry, "We are the tower guards - our business is our own!")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Watchtower_Wizard (before Watchtower)
-    // TODO(content): [quest:watchtower] start offer, quest stages and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Watchtower_Wizard
+    // TODO(content): [quest:watchtower] start offer and quest stages
     private suspend fun Dialogue.watchtowerWizard() {
+        if (QuestRequirements.hasCompleted(player, WATCHTOWER)) {
+            watchtowerWizardAfterQuest()
+            return
+        }
         chatNpc(quiz, "Who are you? Are you one of the new guards?")
         chatPlayer(neutral, "No, I'm an adventurer.")
         chatNpc(quiz, "Well what are you doing here?")
@@ -170,6 +171,24 @@ constructor(
         }
     }
 
+    // TODO(content): [quest:watchtower] "I lost the scroll you gave me." for a player who has not
+    //  read the spell scroll
+    private suspend fun Dialogue.watchtowerWizardAfterQuest() {
+        chatNpc(happy, "Greetings, friend. I trust all is well with you? Yanille is safe at last!")
+        val moreQuests =
+            choice2("Do you have any more quests for me?", true, "That's okay.", false)
+        if (moreQuests) {
+            chatPlayer(quiz, "Do you have any more quests for me?")
+            chatNpc(
+                happy,
+                "More quests? No, indeed, adventurer. You have done us a great service, already.",
+            )
+            return
+        }
+        chatPlayer(happy, "That's okay.")
+        chatNpc(happy, "We are always in your debt; do come and visit us again.")
+    }
+
     private suspend fun Dialogue.watchtowerTrouble() {
         chatPlayer(quiz, "What's the matter?")
         chatNpc(sad, "Oh dear, oh dear. Darn and drat!")
@@ -195,27 +214,44 @@ constructor(
         chatNpc(angry, "Yes, yes! Do I have to repeat myself?")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Wizard_(Watchtower) (before Watchtower)
-    // TODO(content): [quest:watchtower] quest stages and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Wizard_(Watchtower)
+    // TODO(content): [quest:watchtower] quest stages
     private suspend fun Dialogue.watchtowerWizards() {
+        if (QuestRequirements.hasCompleted(player, WATCHTOWER)) {
+            chatNpc(happy, "All's well that ends well.")
+            return
+        }
         chatPlayer(quiz, "What's going on here?")
         chatNpc(neutral, "You'll have to speak with the Watchtower Wizard about that.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Zavistic_Rarve
-    // TODO(content): [quest:the_hand_in_the_sand] quest stages and after-quest greeting
+    // TODO(content): [quest:the_hand_in_the_sand] quest stages
     // TODO(content): [quest:zogre_flesh_eaters] quest stages and selling the black prism
     // TODO(content): [system:wizards_guild_bell] Zavistic answering the bell outside the guild
     private suspend fun Dialogue.zavisticRarve() {
-        chatNpc(
-            angry,
-            "What are you doing bothering me? Don't you think some of us have work to do?",
-        )
-        chatPlayer(confused, "I thought you were here to help?")
-        chatNpc(
-            neutral,
-            "Well... I am, I suppose, anyway... we're very busy here, hurry up, what do you want?",
-        )
+        if (QuestRequirements.hasCompleted(player, HAND_IN_THE_SAND)) {
+            chatNpc(
+                happy,
+                "What are you doing...Oh, it's you...sorry...didn't realise...what can I do for " +
+                    "you?",
+            )
+            chatNpc(
+                happy,
+                "Thank you so much for helping to lay Clarence to rest and lock up his murderer!",
+            )
+        } else {
+            chatNpc(
+                angry,
+                "What are you doing bothering me? Don't you think some of us have work to do?",
+            )
+            chatPlayer(confused, "I thought you were here to help?")
+            chatNpc(
+                neutral,
+                "Well... I am, I suppose, anyway... we're very busy here, hurry up, what do you " +
+                    "want?",
+            )
+        }
         while (true) {
             val option =
                 choice4(
@@ -270,7 +306,6 @@ constructor(
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Professor_Imblewyn
-    // TODO(content): [quest:a_tail_of_two_cats] "Hey! Some of my best friends are cats!"
     // TODO(content): [system:gnome_restaurant] food deliveries
     private suspend fun Dialogue.imblewyn() {
         val title = if (access.isBodyTypeA()) "lad" else "lass"
@@ -282,16 +317,28 @@ constructor(
             "We have a saying, 'Curiosity killed the cat'. But cats aren't clever enough to " +
                 "understand what they find. Gnomes are.",
         )
+        if (QuestRequirements.hasCompleted(player, A_TAIL_OF_TWO_CATS)) {
+            chatPlayer(angry, "Hey! Some of my best friends are cats!")
+            chatNpc(neutral, "I think that says more about you than cats.")
+        }
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Wizard_Frumscone
-    // TODO(content): [quest:swan_song] after-quest dialogue about the necromancer
     private suspend fun Dialogue.frumscone() {
         chatNpc(
             happy,
             "Do you like my magic Zombies? Feel free to kill them, there's plenty more where " +
                 "these came from!",
         )
+        if (QuestRequirements.hasCompleted(player, SWAN_SONG)) {
+            chatPlayer(neutral, "I spoke to the necromancer like you suggested...")
+            chatNpc(
+                worried,
+                "Please - let's not talk about it. Distentor and Zavistic would get very annoyed " +
+                    "if they found I'd sent you to a necromancer.",
+            )
+            chatPlayer(neutral, "Ok, fair enough.")
+        }
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Wizard_Distentor
@@ -301,7 +348,7 @@ constructor(
         chatPlayer(happy, "Hello there.")
         chatNpc(happy, "What can I do for you?")
         val teleport =
-            runeMysteries.quest.isQuestCompleted(player) &&
+            QuestRequirements.hasCompleted(player, RUNE_MYSTERIES) &&
                 choice2(
                     "Nothing thanks, I'm just looking around.",
                     false,
@@ -319,6 +366,11 @@ constructor(
 
     private companion object {
         const val DISTENTOR = "npc.guild_wizard"
+        const val RUNE_MYSTERIES = "quest_runemysteries"
+        const val WATCHTOWER = "quest_watchtower"
+        const val HAND_IN_THE_SAND = "quest_handinthesand"
+        const val A_TAIL_OF_TWO_CATS = "quest_tailoftwocats"
+        const val SWAN_SONG = "quest_swansong"
         val WATCHTOWER_WIZARDS =
             listOf(
                 "npc.qip_watchtower_wizard_02",

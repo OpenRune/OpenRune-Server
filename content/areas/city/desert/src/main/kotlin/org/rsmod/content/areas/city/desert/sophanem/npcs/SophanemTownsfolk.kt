@@ -1,17 +1,30 @@
 package org.rsmod.content.areas.city.desert.sophanem.npcs
 
+import jakarta.inject.Inject
+import org.rsmod.api.invtx.invAddOrDrop
+import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.output.mes
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onOpNpc3
+import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:icthlarins_little_helper] Sophanem is entered during the quest; every
-//  townsperson below uses the after-quest dialogue, the quest and pre-quest variants are missing
+// TODO(content): [quest:icthlarins_little_helper] Sophanem is first entered during the quest; the
+//  townsfolk's dialogue during the quest is missing (Siamun, the Carpenter, the High Priest)
 // TODO(content): [system:acne_potion] potion used on the Sophanites
-class SophanemTownsfolk : PluginScript() {
+class SophanemTownsfolk
+@Inject
+constructor(private val shops: Shops, private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1("npc.ics_little_embalmer") { startDialogue(it.npc) { embalmer() } }
+        onOpNpc1(EMBALMER) { startDialogue(it.npc) { embalmer(it.npc) } }
+        onOpNpc3(EMBALMER) { player.tradeEmbalmer(it.npc) }
         onOpNpc1("npc.ics_little_linen2") { startDialogue(it.npc) { siamun() } }
         onOpNpc1("npc.ics_little_carpenter") { startDialogue(it.npc) { carpenter() } }
         onOpNpc1("npc.ics_little_priest") { startDialogue(it.npc) { templePriest() } }
@@ -27,13 +40,32 @@ class SophanemTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Embalmer
-    // TODO(content): [quest:contact] "Could I buy something?" and the Trade option opening
-    //  "The Spice Is Right" after the quest
-    private suspend fun Dialogue.embalmer() {
+    private suspend fun Dialogue.embalmer(npc: Npc) {
         chatPlayer(happy, "Hi.")
         chatNpc(neutral, "Hello again. Do you need something?")
+        if (QuestRequirements.hasCompleted(player, CONTACT)) {
+            if (choice2("Could I buy something?", true, "No thanks.", false)) {
+                chatPlayer(quiz, "Could I buy something?")
+                chatNpc(happy, "Of course.")
+                player.openSpiceShop(npc)
+                return
+            }
+        }
         chatPlayer(neutral, "No thanks.")
         chatNpc(neutral, "Well I'm afraid I can't stop to talk right now. Lots to do.")
+    }
+
+    // https://oldschool.runescape.wiki/w/The_Spice_Is_Right.
+    private fun Player.tradeEmbalmer(npc: Npc) {
+        if (!QuestRequirements.hasCompleted(this, CONTACT)) {
+            mes("Nothing interesting happens.")
+            return
+        }
+        openSpiceShop(npc)
+    }
+
+    private fun Player.openSpiceShop(npc: Npc) {
+        shops.open(this, npc, "The Spice Is Right.", "inv.contact_embalmer")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Siamun
@@ -45,11 +77,24 @@ class SophanemTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Carpenter
-    // TODO(content): [quest:contact] balm dialogue after the quest
-    // TODO(content): [quest:beneath_cursed_sands] dialogue after the quest
     private suspend fun Dialogue.carpenter() {
         chatPlayer(quiz, "Hey there. How're you holding up?")
+        if (QuestRequirements.hasCompleted(player, BENEATH_CURSED_SANDS)) {
+            chatNpc(happy, "Much better now that we've finally got rid of those spots.")
+            chatPlayer(happy, "That's great to hear! All the best.")
+            return
+        }
         chatNpc(neutral, "Not too bad. Still, I hope we can get rid of these spots soon.")
+        if (!QuestRequirements.hasCompleted(player, CONTACT)) {
+            return
+        }
+        chatNpc(
+            neutral,
+            "The embalmer has been importing a soothing balm from a merchant called Ali M. It's " +
+                "meant to stop the itching.",
+        )
+        chatPlayer(quiz, "Does it work?")
+        chatNpc(laugh, "Not even remotely, but it sure does keep the flies away.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Priest_(Sophanem)
@@ -104,9 +149,12 @@ class SophanemTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Worker_(Sophanem)
-    // TODO(content): [quest:contact] back-to-work dialogue after the quest
     private suspend fun Dialogue.worker() {
         chatPlayer(happy, "Hello.")
+        if (QuestRequirements.hasCompleted(player, CONTACT)) {
+            workerBackToWork()
+            return
+        }
         chatNpc(happy, "Hey there!")
         chatPlayer(
             confused,
@@ -128,10 +176,37 @@ class SophanemTownsfolk : PluginScript() {
         chatPlayer(confused, "Right... Okay then...")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Contact!
-    // TODO(content): [quest:contact] requirement check, start offer and the rest of the quest;
-    //  https://oldschool.runescape.wiki/w/Transcript:High_Priest_(Sophanem) after it
+    private suspend fun Dialogue.workerBackToWork() {
+        chatNpc(sad, "Hey.")
+        chatPlayer(quiz, "What's wrong?")
+        if (QuestRequirements.hasCompleted(player, BENEATH_CURSED_SANDS)) {
+            chatNpc(sad, "Now that all the plagues have been cured, we've had to go back to work.")
+        } else {
+            chatNpc(
+                sad,
+                "The High Priest has determined that these spots aren't contagious. He's opened " +
+                    "the city up again, which means we have to go back to work.",
+            )
+        }
+        chatPlayer(happy, "Cheer up! Work can't be that bad.")
+        chatNpc(sad, "You have no idea...")
+    }
+
     private suspend fun Dialogue.highPriest() {
+        if (QuestRequirements.hasCompleted(player, BENEATH_CURSED_SANDS)) {
+            highPriestAfterCursedSands()
+            return
+        }
+        if (QuestRequirements.hasCompleted(player, CONTACT)) {
+            highPriestAfterContact()
+            return
+        }
+        highPriestContactStart()
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Contact!
+    // TODO(content): [quest:contact] requirement check, start offer and the rest of the quest
+    private suspend fun Dialogue.highPriestContactStart() {
         chatNpc(neutral, "Good day.")
         chatPlayer(happy, "Hello there. How goes things?")
         chatNpc(
@@ -171,6 +246,106 @@ class SophanemTownsfolk : PluginScript() {
                 "willing to kill if it helps keep their city isolated.",
         )
         chatPlayer(neutral, "Hmm... Perhaps I could help?")
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:High_Priest_(Sophanem)
+    private suspend fun Dialogue.highPriestAfterContact() {
+        chatNpc(happy, "Hello again. How can I help you?")
+        chatPlayer(quiz, "How are things going here?")
+        chatNpc(
+            neutral,
+            "Things are slowly coming back to life in our city of the dead. The bank under the " +
+                "Temple of the Lesser Gods has been restored, and a number of our merchants have " +
+                "reopened their stalls.",
+        )
+        chatPlayer(quiz, "What about the plagues?")
+        chatNpc(
+            neutral,
+            "We're making progress on them. With our citizens back, we had enough people to " +
+                "finally deal with the frogs and locusts that were filling the town up.",
+        )
+        chatNpc(
+            neutral,
+            "We worried they'd just come back, but perhaps we have managed to appease whichever " +
+                "god sent them.",
+        )
+        chatNpc(
+            neutral,
+            "The infected cows have been handled as well. The only plague left now is this " +
+                "infuriating pox. Still, at least it isn't contagious.",
+        )
+        chatPlayer(quiz, "Any sign of Menaphos opening up again?")
+        chatNpc(
+            sad,
+            "They are adamant that their city must remain closed until all the plagues have " +
+                "gone. Until we can get rid of the pox, I can't see their gates opening to us, or " +
+                "to anyone else.",
+        )
+        chatPlayer(happy, "Well at least things are moving in the right direction.")
+        chatNpc(neutral, "Indeed. Now, is there anything else I can do for you?")
+        if (choice2("Could I have another lamp?", true, "No. I should get going.", false)) {
+            chatPlayer(quiz, "Could I have another lamp?")
+            chatNpc(neutral, "I'm afraid I only had the one.")
+        } else {
+            chatPlayer(neutral, "No. I should get going.")
+        }
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:High_Priest_(Sophanem)
+    private suspend fun Dialogue.highPriestAfterCursedSands() {
+        chatNpc(happy, "Hello again.")
+        while (true) {
+            val option =
+                choice3(
+                    "How are things going here?",
+                    1,
+                    "Could I have another circlet?",
+                    2,
+                    "I should get going.",
+                    3,
+                )
+            when (option) {
+                1 -> {
+                    chatPlayer(quiz, "How are things going here?")
+                    chatNpc(
+                        happy,
+                        "Wonderful! The city of the dead has fully come back to life, and it's " +
+                            "all thanks to you!",
+                    )
+                    chatPlayer(happy, "Well I'm happy to have helped. Any news from Menaphos?")
+                    chatNpc(
+                        neutral,
+                        "They are continuing their preparations. It will take some time, but the " +
+                            "city will soon be open once more.",
+                    )
+                    chatPlayer(happy, "Great!")
+                }
+                2 -> anotherCirclet()
+                else -> {
+                    chatPlayer(neutral, "I should get going.")
+                    chatNpc(neutral, "Until next time.")
+                    return
+                }
+            }
+        }
+    }
+
+    private suspend fun Dialogue.anotherCirclet() {
+        chatPlayer(quiz, "Could I have another circlet?")
+        chatNpc(neutral, "Certainly, though it will cost you 10,000 coins.")
+        if (!choice2("Here you go.", true, "That's too much.", false)) {
+            chatPlayer(neutral, "That's too much.")
+            chatNpc(neutral, "Fair enough. Let me know if you change your mind.")
+            return
+        }
+        chatPlayer(happy, "Here you go.")
+        if (!player.invTakeFee(CIRCLET_PRICE)) {
+            chatNpc(neutral, "You don't seem to have enough money for it.")
+            chatPlayer(sad, "Oh...")
+            return
+        }
+        player.invAddOrDrop(objRepo, CIRCLET)
+        objbox(CIRCLET, "The High Priest hands you a Circlet of Water in exchange for 10,000 coins.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Sphinx
@@ -226,7 +401,8 @@ class SophanemTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Jex
-    // TODO(content): [quest:contact] quest dialogue and the cellar ladder
+    // TODO(content): [quest:contact] quest dialogue, and Jex stopping the player at the cellar
+    //  ladder before the quest
     private suspend fun Dialogue.jex() {
         chatPlayer(happy, "Hello.")
         chatNpc(happy, "Hello there. Welcome to the Temple of the Lesser Gods.")
@@ -477,5 +653,13 @@ class SophanemTownsfolk : PluginScript() {
                 "existed without my help.",
         )
         chatPlayer(shifty, "I'll think about it...")
+    }
+
+    private companion object {
+        const val CONTACT = "quest_contact"
+        const val BENEATH_CURSED_SANDS = "quest_beneathcursedsands"
+        const val EMBALMER = "npc.ics_little_embalmer"
+        const val CIRCLET = "obj.water_circlet"
+        const val CIRCLET_PRICE = 10_000
     }
 }

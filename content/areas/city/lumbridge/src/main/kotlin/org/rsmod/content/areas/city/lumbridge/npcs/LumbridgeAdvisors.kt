@@ -5,6 +5,7 @@ import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerLogin
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
@@ -14,6 +15,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 private var Player.countCheckTeleport by boolVarBit("varbit.count_check_stronghold_teleport")
 private var Player.adventurePaths by intVarBit("varbit.adventurepath_player_participating")
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 /** The Doomsayer, Count Check, Nigel and Adventurer Jon, all north of Lumbridge Castle. */
 class LumbridgeAdvisors : PluginScript() {
     override fun ScriptContext.startup() {
@@ -73,23 +75,25 @@ class LumbridgeAdvisors : PluginScript() {
 
     // https://oldschool.runescape.wiki/w/Transcript:Count_Check
     // TODO(content): [system:bank_pin] pass the check (and the first-time lamp) with a Bank PIN
-    // TODO(content): [quest:priest_in_peril] "If you're a vampyre, how did you cross the Salve?"
     private suspend fun Dialogue.countCheck() {
         chatNpc(
             happy,
             "Ahahahaha! I am Count Check, the renowned security expert. Would you like me to check " +
                 "your account to see if it is secure?",
         )
+        var next: Int? = null
         while (true) {
-            when (
-                menu(
-                    "Check my account, Count Check!" to 1,
-                    "Can you give me any advice?" to 2,
-                    "Where can I learn more about security?" to 3,
-                    "Who are you?" to 4,
-                    "I'll see you another time." to 5,
-                )
-            ) {
+            val option =
+                next
+                    ?: menu(
+                        "Check my account, Count Check!" to 1,
+                        "Can you give me any advice?" to 2,
+                        "Where can I learn more about security?" to 3,
+                        "Who are you?" to 4,
+                        "I'll see you another time." to 5,
+                    )
+            next = null
+            when (option) {
                 1 -> {
                     chatPlayer(happy, "Check my account, Count Check!")
                     // TODO(content): [verify:in_game] the wiki has no line for a Jagex Account
@@ -103,7 +107,12 @@ class LumbridgeAdvisors : PluginScript() {
                 }
                 2 -> countAdvice()
                 3 -> if (strongholdOffer()) return
-                4 -> whoAreYou()
+                4 -> {
+                    whoAreYou()
+                    if (QuestRequirements.hasCompleted(player, PRIEST_IN_PERIL)) {
+                        next = salveMenu()
+                    }
+                }
                 else -> {
                     chatPlayer(bored, "I'll see you another time.")
                     return
@@ -196,6 +205,36 @@ class LumbridgeAdvisors : PluginScript() {
             "In return for my dedication, I have been blessed with the ability to check if adventurers " +
                 "are ready to defend themselves against these account thieves.",
         )
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Count_Check (after Priest in Peril)
+    private suspend fun Dialogue.salveMenu(): Int {
+        while (true) {
+            val option =
+                menu(
+                    "If you're a vampyre, how did you cross the Salve?" to 0,
+                    "Check my account, Count Check!" to 1,
+                    "Can you give me any advice?" to 2,
+                    "Where can I learn more about security?" to 3,
+                    "I'll see you another time." to 5,
+                )
+            if (option != 0) {
+                return option
+            }
+            chatPlayer(quiz, "If you're a vampyre, how did you cross the Salve?")
+            chatNpc(
+                angry,
+                "What do you mean? 'If' I am a vampyre? Of course I am a vampyre! See my pale " +
+                    "complexion, my teeth, my outfit - how could anyone doubt I am a true vampyre?",
+            )
+            chatNpc(
+                angry,
+                "I used to stalk the night drinking blood like vampyres do, and I am certainly " +
+                    "not just a role-playing enthusiast in a costume! Never question that!",
+            )
+            chatPlayer(neutral, "Right.")
+            chatNpc(happy, "So may I check your account for you?")
+        }
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Nigel
@@ -469,6 +508,7 @@ class LumbridgeAdvisors : PluginScript() {
     }
 
     private companion object {
+        const val PRIEST_IN_PERIL = "quest_priestinperil"
         const val ADVENTURE_PATHS_UNSET = 0
         const val ADVENTURE_PATHS_PARTICIPATING = 1
         const val ADVENTURE_PATHS_OPTED_OUT = 2

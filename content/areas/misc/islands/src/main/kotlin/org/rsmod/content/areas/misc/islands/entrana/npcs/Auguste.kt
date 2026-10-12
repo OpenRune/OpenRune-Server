@@ -3,19 +3,22 @@ package org.rsmod.content.areas.misc.islands.entrana.npcs
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-// https://oldschool.runescape.wiki/w/Transcript:Auguste (before Enlightened Journey)
+// https://oldschool.runescape.wiki/w/Transcript:Auguste
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:enlightened_journey] the quest itself, the balloon after the quest, the
-// origami balloon, replacing the bomber jacket and cap and combining the cap with gnome goggles
 class Auguste : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.zep_piccard") { startDialogue(it.npc) { auguste() } }
     }
 
     private suspend fun Dialogue.auguste() {
+        if (QuestRequirements.hasCompleted(player, ENLIGHTENED_JOURNEY)) {
+            afterQuest()
+            return
+        }
         if (!meetsRequirements()) {
             chatNpc(happy, "Greetings!")
             chatPlayer(quiz, "What are you doing?")
@@ -53,10 +56,60 @@ class Auguste : PluginScript() {
         chatNpc(quiz, "Are you an experienced adventurer willing to help me?")
         if (choice2("Yes.", true, "No.", false, title = START_TITLE)) {
             chatPlayer(happy, "Yes! Sign me up.")
+            // TODO(content): [quest:enlightened_journey] quest start: "Wonderful! Let's get
+            // started." and the balloon construction diagram
             return
         }
         chatPlayer(neutral, "I don't think so.")
         chatNpc(sad, "Oh, never mind then.")
+    }
+
+    // TODO(content): [system:balloon_transport] the initial after-quest introduction to the
+    // balloon network, and the balloon transport interface on "Yes."
+    // TODO(content): [system:item_reclaim] "Could you replace some items for me?" (bomber jacket
+    // and cap) and "Could you combine my cap and goggles?"
+    private suspend fun Dialogue.afterQuest() {
+        chatNpc(
+            neutral,
+            "Do you want to use the balloon? Just so you know, some locations require special " +
+                "logs and high Firemaking skills.",
+        )
+        val option =
+            choice3(
+                "Yes.",
+                1,
+                "No.",
+                2,
+                "Could you tell me how to make an origami balloon?",
+                3,
+                title = "Select an Option",
+            )
+        when (option) {
+            2 -> chatPlayer(neutral, "No.")
+            3 -> {
+                chatPlayer(quiz, "Could you tell me how to make an origami balloon?")
+                chatNpc(
+                    neutral,
+                    "First, use the papyrus on the ball of wool. The papyrus is folded into an " +
+                        "origami box and the yarn will support the heat source.",
+                )
+                chatNpc(
+                    neutral,
+                    "Next, add the unlit candle to the balloon structure. It will act as the " +
+                        "heat source.",
+                )
+                chatNpc(happy, "Now you have an origami balloon!")
+                chatNpc(
+                    neutral,
+                    "If you use your origami balloon with any dye, you can change the colour.",
+                )
+                chatNpc(
+                    neutral,
+                    "You can release the balloon and watch it float in the air, just use a " +
+                        "tinderbox on it.",
+                )
+            }
+        }
     }
 
     private fun Dialogue.meetsRequirements(): Boolean =
@@ -67,6 +120,7 @@ class Auguste : PluginScript() {
 
     private companion object {
         const val QUEST_POINTS = "varp.qp"
+        const val ENLIGHTENED_JOURNEY = "quest_enlightenedjourney"
         const val START_TITLE = "Start the Enlightened Journey quest?"
     }
 }

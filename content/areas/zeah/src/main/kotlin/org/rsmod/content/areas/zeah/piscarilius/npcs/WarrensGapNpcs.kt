@@ -4,6 +4,7 @@ import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -44,14 +45,19 @@ class WarrensGapNpcs : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Devan_Rutter
-    // TODO(content): [quest:the_queen_of_thieves] the wiki only has the after-quest line
     private suspend fun Dialogue.devanRutter() {
+        if (!QuestRequirements.hasCompleted(player, QUEEN_OF_THIEVES)) {
+            // TODO(content): [quest:the_queen_of_thieves] his dialogue before and during the
+            //  quest (not on the wiki)
+            return
+        }
         chatPlayer(quiz, "So can I go in now?")
         chatNpc(angry, "Yes! Now get out of my sight!")
     }
 
     internal companion object {
         const val BARTENDER = "npc.warrens_barman"
+        const val QUEEN_OF_THIEVES = "quest_queenofthieves"
         const val COINS = "obj.coins"
         const val BEER = "obj.beer"
         const val BEER_PRICE = 2

@@ -3,17 +3,28 @@ package org.rsmod.content.areas.city.rellekka.neitiznot.npcs
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.areas.city.rellekka.fremennikName
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Honour_guard
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:the_fremennik_isles] "Can't talk now, I'm on duty." during the quest
 class HonourGuards : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1("npc.frisb_n_brg_grd_inside") { startDialogue(it.npc) { inTown() } }
-        onOpNpc1("npc.frisb_n_brg_grd_troll") { startDialogue(it.npc) { onWalls() } }
-        onOpNpc1("npc.frisb_n_brg_grd_outside") { startDialogue(it.npc) { outsideTown() } }
+        onOpNpc1("npc.frisb_n_brg_grd_inside") { startDialogue(it.npc) { guard { inTown() } } }
+        onOpNpc1("npc.frisb_n_brg_grd_troll") { startDialogue(it.npc) { guard { onWalls() } } }
+        onOpNpc1("npc.frisb_n_brg_grd_outside") {
+            startDialogue(it.npc) { guard { outsideTown() } }
+        }
+    }
+
+    private suspend fun Dialogue.guard(standard: suspend Dialogue.() -> Unit) {
+        if (QuestRequirements.isOnQuest(player, FREMENNIK_ISLES)) {
+            chatPlayer(happy, "Good day!")
+            chatNpc(neutral, "Can't talk now, I'm on duty.")
+            return
+        }
+        standard()
     }
 
     // TODO(content): [verify:in_game] whether the jester lines need all four costume pieces worn
@@ -77,5 +88,9 @@ class HonourGuards : PluginScript() {
             "No. I only use old, recycled jokes. It's better for the environment.",
         )
         chatNpc(laugh, reply)
+    }
+
+    private companion object {
+        const val FREMENNIK_ISLES = "quest_fremennikisles"
     }
 }

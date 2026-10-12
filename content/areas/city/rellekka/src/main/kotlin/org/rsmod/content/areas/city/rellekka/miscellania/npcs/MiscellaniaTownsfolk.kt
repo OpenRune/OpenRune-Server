@@ -4,11 +4,11 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.content.areas.city.rellekka.fremennikName
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:throne_of_miscellania] "Your Royal Highness" variants after the quest
 // TODO(content): [system:managing_miscellania] approval percentage after Throne of Miscellania
 // and "The storerooms are full" lines
 class MiscellaniaTownsfolk : PluginScript() {
@@ -32,18 +32,30 @@ class MiscellaniaTownsfolk : PluginScript() {
     // Thorhild, Valgerd and Skraeling (Miscellania))
     private suspend fun Dialogue.subject() {
         chatPlayer(happy, "Hello.")
-        chatNpc(happy, "Good day.")
+        if (isRegent()) {
+            chatNpc(happy, "Good day, Your Royal Highness.")
+        } else {
+            chatNpc(happy, "Good day.")
+        }
     }
+
+    private fun Dialogue.isRegent(): Boolean =
+        QuestRequirements.hasCompleted(player, THRONE_OF_MISCELLANIA)
 
     // https://oldschool.runescape.wiki/w/Transcript:Derrik
     // TODO(content): [quest:throne_of_miscellania] giant nib for King Vargas's pen
     private suspend fun Dialogue.derrik() {
-        val title = if (access.isBodyTypeA()) "Sir" else "Madam"
-        chatNpc(happy, "Good day, $title. Can I help you with anything?")
+        val regent = isRegent()
+        if (regent) {
+            chatNpc(happy, "Good day, Your Highness. Can I help you with anything?")
+        } else {
+            val title = if (access.isBodyTypeA()) "Sir" else "Madam"
+            chatNpc(happy, "Good day, $title. Can I help you with anything?")
+        }
         when (choice2("Can I use your anvil?", 1, "Nothing, thanks.", 2)) {
             1 -> {
                 chatPlayer(quiz, "Can I use your anvil?")
-                chatNpc(happy, "You may.")
+                chatNpc(happy, if (regent) "Of course, Your Royal Highness." else "You may.")
             }
             2 -> chatPlayer(neutral, "Nothing, thanks.")
         }
@@ -61,21 +73,23 @@ class MiscellaniaTownsfolk : PluginScript() {
 
     // https://oldschool.runescape.wiki/w/Transcript:Lumberjack_Leif
     private suspend fun Dialogue.lumberjackLeif() {
-        chatNpc(happy, "Hello.")
+        val regent = isRegent()
+        chatNpc(happy, if (regent) "Good day, Your Royal Highness." else "Hello.")
         chatPlayer(quiz, "Good day. What are you doing?")
         chatNpc(neutral, "I'm cutting down maple trees for their wood. It's a living.")
         chatPlayer(happy, "Good luck with that.")
-        chatNpc(happy, "Thanks.")
+        chatNpc(happy, if (regent) "Thank you, Your Royal Highness." else "Thanks.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Miner_Magnus
     // TODO(content): [system:treasure_trails] hard challenge scroll
     private suspend fun Dialogue.minerMagnus() {
-        chatNpc(happy, "Hello.")
+        val regent = isRegent()
+        chatNpc(happy, if (regent) "Good day, Your Royal Highness." else "Hello.")
         chatPlayer(quiz, "Good day. What are you doing?")
         chatNpc(neutral, "I'm mining coal. It's pretty tough going.")
         chatPlayer(happy, "Good luck with that.")
-        chatNpc(happy, "Thanks.")
+        chatNpc(happy, if (regent) "Thank you, Your Royal Highness." else "Thanks.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Lumberjack_Leif (Check-Approval)
@@ -86,17 +100,25 @@ class MiscellaniaTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Throne_of_Miscellania (Guard at the door)
-    // TODO(content): [quest:heroes_quest] "I am a member of the Heroes' Guild; does that not
-    // show my worth?" and "Then you may pass." for Heroes' Guild members
-    // TODO(content): [quest:throne_of_miscellania] "Welcome back, Sir/Madam." once
-    // varbit.misc_grantedaudience is set
+    // TODO(content): [quest:throne_of_miscellania] "Welcome back, Sir/Madam." also before the
+    // quest is done, once varbit.misc_grantedaudience is set
     private suspend fun Dialogue.throneRoomGuard() {
+        if (isRegent()) {
+            val title = if (access.isBodyTypeA()) "Sir" else "Madam"
+            chatNpc(neutral, "Welcome back, $title.")
+            return
+        }
         chatNpc(angry, "Halt! Who goes there?")
         chatPlayer(quiz, "My name is ${fremennikName()}, will you not let me through?")
         chatNpc(
             neutral,
             "I'm afraid the King won't give an audience to anyone except a worthy hero.",
         )
+        if (QuestRequirements.hasCompleted(player, HEROES_QUEST)) {
+            chatPlayer(quiz, "I am a member of the Heroes' Guild; does that not show my worth?")
+            chatNpc(neutral, "Then you may pass.")
+            return
+        }
         chatNpc(
             neutral,
             "If you become a member of the Heroes' Guild, he will definitely grant you an " +
@@ -105,14 +127,21 @@ class MiscellaniaTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Guard_(Miscellania)
-    // TODO(content): [quest:royal_trouble] "You're free to go into the dungeons, your Highness."
-    // after the quest
     private suspend fun Dialogue.dungeonGuard() {
+        if (QuestRequirements.hasCompleted(player, ROYAL_TROUBLE)) {
+            chatNpc(happy, "You're free to go into the dungeons, your Highness.")
+            chatNpc(neutral, "Try not to get eaten by those monsters.")
+            return
+        }
         chatNpc(neutral, "Sorry, but nobody's allowed down there by order of the King.")
         chatPlayer(neutral, "Oh, okay.")
     }
 
     private companion object {
+        const val THRONE_OF_MISCELLANIA = "quest_throneofmiscellania"
+        const val ROYAL_TROUBLE = "quest_royaltrouble"
+        const val HEROES_QUEST = "quest_heroes"
+
         val SUBJECTS =
             listOf(
                 "npc.misc_man_1",

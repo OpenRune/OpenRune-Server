@@ -3,6 +3,7 @@ package org.rsmod.content.areas.zeah.quidamortem.npcs
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -41,9 +42,31 @@ class QuidamortemTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Gnosi
-    // TODO(content): [quest:tale_of_the_righteous] "Hello. How's it going?" greeting and the
-    //  altar answer after the quest
     private suspend fun Dialogue.gnosi() {
+        if (QuestRequirements.hasCompleted(player, TALE_OF_THE_RIGHTEOUS)) {
+            chatPlayer(happy, "Hello. How's it going?")
+            chatNpc(
+                happy,
+                "The discovery of this cave could change everything. We might finally be able to " +
+                    "discover the link between the lizardmen, the Chambers of Xeric and Xeric " +
+                    "himself.",
+            )
+        } else {
+            gnosiIntro()
+        }
+        val topic =
+            choice3(
+                "Who is Xeric?",
+                GnosiTopic.Xeric,
+                "What are the Chambers of Xeric?",
+                GnosiTopic.Chambers,
+                "Goodbye.",
+                GnosiTopic.Goodbye,
+            )
+        gnosiTopics(topic)
+    }
+
+    private suspend fun Dialogue.gnosiIntro() {
         chatPlayer(quiz, "Hello. What do you do here?")
         chatNpc(
             neutral,
@@ -69,15 +92,10 @@ class QuidamortemTownsfolk : PluginScript() {
             "But now that the Shayzien Army have cleared the path and discovered the Chambers of " +
                 "Xeric in the process, there is much to explore!",
         )
-        var topic =
-            choice3(
-                "Who is Xeric?",
-                GnosiTopic.Xeric,
-                "What are the Chambers of Xeric?",
-                GnosiTopic.Chambers,
-                "Goodbye.",
-                GnosiTopic.Goodbye,
-            )
+    }
+
+    private suspend fun Dialogue.gnosiTopics(first: GnosiTopic) {
+        var topic = first
         while (true) {
             topic =
                 when (topic) {
@@ -156,6 +174,19 @@ class QuidamortemTownsfolk : PluginScript() {
                 "power drawn from the Dark Altar. After he was overthrown, he would have needed " +
                 "a new source of power.",
         )
+        if (QuestRequirements.hasCompleted(player, TALE_OF_THE_RIGHTEOUS)) {
+            chatNpc(
+                neutral,
+                "We believe this altar is that source. It seems to act as an amplifier for the " +
+                    "Dark Altar.",
+            )
+            chatNpc(
+                neutral,
+                "As for what he used the Chambers for, that we still don't know. There's a lot " +
+                    "of creatures in the Chambers. Maybe he used them in his experiments.",
+            )
+            return
+        }
         chatNpc(
             neutral,
             "We believe he came here to seek it. Xeric would also have required a source of many " +
@@ -175,8 +206,16 @@ class QuidamortemTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Historian_Duffy
-    // TODO(content): [quest:tale_of_the_righteous] "How are things going?" after the quest
     private suspend fun Dialogue.historianDuffy() {
+        if (QuestRequirements.hasCompleted(player, TALE_OF_THE_RIGHTEOUS)) {
+            chatPlayer(quiz, "How are things going?")
+            chatNpc(
+                happy,
+                "Good thanks. Now that we've found this cave, we're learning more about the " +
+                    "lizardmen than ever before.",
+            )
+            return
+        }
         chatPlayer(quiz, "Hello. What are you doing here?")
         chatNpc(
             neutral,
@@ -321,6 +360,7 @@ class QuidamortemTownsfolk : PluginScript() {
     }
 
     private companion object {
+        const val TALE_OF_THE_RIGHTEOUS = "quest_taleoftherighteous"
         val MOUNTAIN_GUIDES =
             listOf(
                 "npc.raids_mountainguide_temple_multi",

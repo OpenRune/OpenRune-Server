@@ -12,7 +12,7 @@ class LumbridgeTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Sigmund (before Rune Mysteries)
-    // TODO(content): [quest:the_lost_tribe] quest and after-quest dialogue
+    // TODO(content): [quest:the_lost_tribe] quest dialogue (afterwards he is in the H.A.M. Hideout)
     // TODO(content): [verify:in_game] the wiki only gives the before-Rune Mysteries greeting
     private suspend fun Dialogue.sigmund() {
         chatNpc(neutral, "Can I help you?")

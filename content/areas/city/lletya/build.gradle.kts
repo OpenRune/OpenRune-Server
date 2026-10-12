@@ -6,4 +6,5 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.api.shops)
     implementation(projects.engine.game)
+    implementation(projects.content.quest)
 }

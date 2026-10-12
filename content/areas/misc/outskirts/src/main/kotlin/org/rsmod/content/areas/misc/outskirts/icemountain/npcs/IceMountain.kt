@@ -26,7 +26,8 @@ class IceMountain : PluginScript() {
 
     // https://oldschool.runescape.wiki/w/Transcript:Below_Ice_Mountain
     // TODO(content): [quest:below_ice_mountain] the 16 quest point check ("You do not meet all
-    // of the requirements..."), the quest start, and the in-progress and after-quest dialogue
+    // of the requirements..."), the quest start and the in-progress dialogue (after the quest
+    // Willow has left Ice Mountain)
     private suspend fun Dialogue.willow() {
         chatPlayer(quiz, "Hello there. What are you doing all the way out here?")
         chatNpc(shifty, "Just... looking around.")

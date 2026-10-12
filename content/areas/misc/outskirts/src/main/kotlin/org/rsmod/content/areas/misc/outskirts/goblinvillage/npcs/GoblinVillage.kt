@@ -3,18 +3,18 @@ package org.rsmod.content.areas.misc.outskirts.goblinvillage.npcs
 import dev.openrune.types.MesAnimType
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Goblin_Diplomacy
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:goblin_diplomacy] quest start, armour hand-ins, cutscenes and the
-// after-quest dialogue (https://oldschool.runescape.wiki/w/Transcript:General_Wartface)
+// TODO(content): [quest:goblin_diplomacy] quest start, armour hand-ins and cutscenes
 class GoblinVillage : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(BENTNOZE) { startDialogue(it.npc) { generals() } }
         onOpNpc1(WARTFACE) { startDialogue(it.npc) { generals() } }
-        onOpNpc1("npc.catwalk_goblin") { startDialogue(it.npc) { grubfoot() } }
+        onOpNpc1(GRUBFOOT) { startDialogue(it.npc) { grubfoot() } }
         for (soldier in RED_SOLDIERS) {
             onOpNpc1(soldier) { startDialogue(it.npc) { villageGoblin(red = true) } }
         }
@@ -29,7 +29,14 @@ class GoblinVillage : PluginScript() {
     private suspend fun Dialogue.wartface(mesanim: MesAnimType, text: String) =
         chatNpcSpecific("General Wartface", WARTFACE, mesanim, text)
 
+    private suspend fun Dialogue.grubfootSays(mesanim: MesAnimType, text: String) =
+        chatNpcSpecific("Grubfoot", GRUBFOOT, mesanim, text)
+
     private suspend fun Dialogue.generals() {
+        if (QuestRequirements.hasCompleted(player, GOBLIN_DIPLOMACY)) {
+            generalsAfterQuest()
+            return
+        }
         when (access.random.of(5)) {
             0 -> {
                 bentnoze(angry, "All goblins should wear red armour!")
@@ -92,6 +99,98 @@ class GoblinVillage : PluginScript() {
             }
         }
         generalsTopics()
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:General_Wartface
+    // TODO(content): [system:line_of_sight] "Where's Bentnoze gone now?" when Wartface has no line
+    //  of sight to Bentnoze
+    private suspend fun Dialogue.generalsAfterQuest() {
+        val dialogues = if (QuestRequirements.hasCompleted(player, ANOTHER_SLICE_OF_HAM)) 8 else 5
+        when (access.random.of(dialogues)) {
+            0 -> {
+                bentnoze(angry, "Shut up Grubfoot!")
+                grubfootSays(confused, "But me not say anything!")
+                wartface(angry, "Shut up Grubfoot!")
+                bentnoze(angry, "Shut up Wartface!")
+                wartface(angry, "Shut up Bentnoze!")
+                grubfootSays(angry, "Shut up generals!")
+                bentnoze(angry, "Shut up Grubfoot!")
+                wartface(angry, "Shut up Grubfoot!")
+                chatPlayer(angry, "Shut up goblins!")
+            }
+            1 -> {
+                bentnoze(quiz, "What we do now Wartface?")
+                wartface(confused, "Me dunno... maybe we change armour colour again.")
+                bentnoze(quiz, "Human, what colour you think best?")
+                chatPlayer(neutral, "What about brown?")
+                wartface(happy, "Yeah brown is nice.")
+                bentnoze(happy, "Thanks human.")
+            }
+            2 -> {
+                bentnoze(neutral, "Our soldiers need better weapons. We give them all warhammers!")
+                wartface(angry, "No no give them battleaxes!")
+                bentnoze(angry, "Axes stupid! They things you cut wood with!")
+                wartface(
+                    angry,
+                    "But hammers things you put nails in wood with! At least axes sharp!",
+                )
+                bentnoze(
+                    angry,
+                    "You not need sharp when you have strong goblin swinging big lump of iron!",
+                )
+                chatPlayer(quiz, "Do you want me to...")
+                wartface(angry, "Shut up human, we sort this one out ourselves!")
+            }
+            3 -> {
+                wartface(neutral, "Me tell Mudknuckles make worm stew for dinner.")
+                bentnoze(angry, "Me not like worm stew! Tell him make beetle pie!")
+                wartface(angry, "Beetle pie give you wind! You smell bad enough already!")
+            }
+            4 -> {
+                wartface(
+                    neutral,
+                    "Now you've solved our argument, we gotta think of something else to do.",
+                )
+                bentnoze(sad, "Yep, we bored now.")
+            }
+            5 -> {
+                bentnoze(quiz, "When Chosen Commander come to speak to us again?")
+                chatPlayer(
+                    neutral,
+                    "I don't know. I don't think she was making any progress when she spoke to " +
+                        "you before.",
+                )
+                wartface(happy, "We listen to whatever she say!")
+                bentnoze(neutral, "Yeah, as long as she agree with truths of Big High War God!")
+                wartface(happy, "Goblins mighty, war good, Big High War God greatest god!")
+                chatPlayer(neutral, "I don't think Zanik is likely to say any of that.")
+                bentnoze(angry, "Then she not come here again!")
+            }
+            6 -> {
+                wartface(quiz, "Human! Did you save chosen commander from horrible fate?")
+                chatPlayer(happy, "Yes! She's fine now!")
+                bentnoze(
+                    happy,
+                    "That good. Big High War God smile on you now. You honourary goblin!",
+                )
+            }
+            else -> {
+                wartface(
+                    happy,
+                    "Last night I have vision of chosen commander. She say me biggest general, " +
+                        "so me lead village.",
+                )
+                bentnoze(angry, "You not have vision! You make that up!")
+                wartface(
+                    neutral,
+                    "In my vision, chosen commander say you say that. So now I know it true.",
+                )
+                bentnoze(neutral, "Well... I have vision too. Chosen commander say me big general!")
+                wartface(angry, "That not fair! Me have vision first!")
+                bentnoze(laugh, "Chosen commander also say you fat and stupid.")
+                wartface(verymad, "Shut up!")
+            }
+        }
     }
 
     private suspend fun Dialogue.generalsTopics() {
@@ -282,6 +381,9 @@ class GoblinVillage : PluginScript() {
     private companion object {
         const val BENTNOZE = "npc.general_bentnoze_red"
         const val WARTFACE = "npc.general_wartface_green"
+        const val GRUBFOOT = "npc.catwalk_goblin"
+        const val GOBLIN_DIPLOMACY = "quest_goblindiplomacy"
+        const val ANOTHER_SLICE_OF_HAM = "quest_anothersliceofham"
         val MAIN_MENU = listOf(Topic.Arguing, Topic.Peace, Topic.PickColour, Topic.Leave)
         val ARGUING_MENU = listOf(Topic.NewCentury, Topic.Peace, Topic.PickColour, Topic.Leave)
         val COLOUR_MENU = listOf(Topic.Red, Topic.Green, Topic.Different, Topic.Leave)

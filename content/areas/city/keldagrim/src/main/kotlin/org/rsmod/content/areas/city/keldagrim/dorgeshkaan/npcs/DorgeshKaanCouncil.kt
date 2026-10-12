@@ -3,6 +3,7 @@ package org.rsmod.content.areas.city.keldagrim.dorgeshkaan.npcs
 import dev.openrune.types.MesAnimType
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -20,9 +21,12 @@ class DorgeshKaanCouncil : PluginScript() {
         onOpNpc1("npc.dorgesh_male_council_2") { startDialogue(it.npc) { urVass() } }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Ur-tag (before Another Slice of H.A.M.)
-    // TODO(content): [quest:another_slice_of_ham] after-quest greeting and options
+    // https://oldschool.runescape.wiki/w/Transcript:Ur-tag
     private suspend fun Dialogue.urTag() {
+        if (QuestRequirements.hasCompleted(player, ANOTHER_SLICE_OF_HAM)) {
+            urTagAfterQuest()
+            return
+        }
         trainLinkArgument(UR_TAG)
         while (true) {
             val option =
@@ -39,39 +43,101 @@ class DorgeshKaanCouncil : PluginScript() {
                     trainLink(UR_TAG)
                     return
                 }
-                2 -> {
-                    chatPlayer(quiz, "What can I do in the city?")
-                    chatNpc(
-                        happy,
-                        "Why don't you visit the market? I hear there is quite a craze for " +
-                            "surface foods at the moment, so you might be able to sell something " +
-                            "there.",
-                    )
-                    chatNpc(
-                        neutral,
-                        "You might also want to visit the caves to the south of the city. There " +
-                            "are many monsters to fight there, and Zanik apparently found ways " +
-                            "to cross over their heads!",
-                    )
-                }
-                else -> {
-                    chatPlayer(quiz, "Why did you decide to open the city?")
-                    chatNpc(
-                        happy,
-                        "For trade, and for fostering goodwill between races! I am sure that it " +
-                            "will benefit both our races.",
-                    )
-                }
+                2 -> whatCanIDo()
+                else -> whyOpenTheCity()
             }
             trainLinkArgument(UR_TAG)
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Ambassador_Alvijar (before the quest)
-    // TODO(content): [quest:another_slice_of_ham] random lines after the quest
+    // TODO(content): [verify:in_game] whether the options repeat after an answer
+    private suspend fun Dialogue.urTagAfterQuest() {
+        chatNpc(happy, "Greetings, surface-dweller. Welcome to Dorgesh-Kaan.")
+        val option =
+            choice2("What can I do in the city?", 1, "Why did you decide to open the city?", 2)
+        if (option == 1) whatCanIDo() else whyOpenTheCity()
+    }
+
+    private suspend fun Dialogue.whatCanIDo() {
+        chatPlayer(quiz, "What can I do in the city?")
+        chatNpc(
+            happy,
+            "Why don't you visit the market? I hear there is quite a craze for surface foods at " +
+                "the moment, so you might be able to sell something there.",
+        )
+        chatNpc(
+            neutral,
+            "You might also want to visit the caves to the south of the city. There are many " +
+                "monsters to fight there, and Zanik apparently found ways to cross over their " +
+                "heads!",
+        )
+    }
+
+    private suspend fun Dialogue.whyOpenTheCity() {
+        chatPlayer(quiz, "Why did you decide to open the city?")
+        chatNpc(
+            happy,
+            "For trade, and for fostering goodwill between races! I am sure that it will benefit " +
+                "both our races.",
+        )
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Ambassador_Alvijar
     private suspend fun Dialogue.alvijar() {
+        if (QuestRequirements.hasCompleted(player, ANOTHER_SLICE_OF_HAM)) {
+            alvijarAfterQuest()
+            return
+        }
         trainLinkArgument(ALVIJAR)
         trainLink(ALVIJAR)
+    }
+
+    private suspend fun Dialogue.alvijarAfterQuest() {
+        when (access.random.of(5)) {
+            0 -> {
+                chatNpc(
+                    neutral,
+                    "It's funny... whenever we dwarves have ventured onto the surface, we've " +
+                        "found ourselves at war with the goblins there.",
+                )
+                chatNpc(
+                    neutral,
+                    "But now we meet these goblins underground, and they're no threat at all. " +
+                        "Maybe this will herald a change in our relations with the surface " +
+                        "goblins as well.",
+                )
+            }
+            1 ->
+                chatNpc(
+                    angry,
+                    "I can't stand these goblins sometimes! I come up with suggestions to make " +
+                        "their city more efficient, and they just say it would spoil their " +
+                        "precious way of life!",
+                )
+            2 ->
+                chatNpc(
+                    happy,
+                    "Trade with the goblins is going well at the moment. It's a pity they don't " +
+                        "seem as interested in our beer as in your food, though!",
+                )
+            3 -> {
+                chatNpc(
+                    happy,
+                    "Thank you again for helping us complete the train link. Further delays " +
+                        "would have cost the Consortium a lot of money.",
+                )
+                chatNpc(
+                    happy,
+                    "Oh, and I hear you saved someone's life as well. Well done on that count too.",
+                )
+            }
+            else ->
+                chatNpc(
+                    sad,
+                    "I miss Keldagrim. This city is all very well, but no one makes an " +
+                        "underground city like the dwarves!",
+                )
+        }
     }
 
     private suspend fun Dialogue.trainLinkArgument(talkedTo: String) {
@@ -92,7 +158,7 @@ class DorgeshKaanCouncil : PluginScript() {
         )
     }
 
-    // TODO(content): [quest:another_slice_of_ham] requirements check and the quest start offer
+    // TODO(content): [quest:another_slice_of_ham] quest start (requirements check and the offer)
     private suspend fun Dialogue.trainLink(talkedTo: String) {
         chatPlayer(quiz, "What are you talking about?")
         speak(
@@ -442,6 +508,7 @@ class DorgeshKaanCouncil : PluginScript() {
     }
 
     private companion object {
+        const val ANOTHER_SLICE_OF_HAM = "quest_anothersliceofham"
         const val UR_TAG = "npc.dorgesh_urtaq"
         const val ALVIJAR = "npc.slice_dwarf_alvijar_there"
         const val UR_LUN = "npc.dorgesh_female_council_3"

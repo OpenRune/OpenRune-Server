@@ -8,6 +8,7 @@ import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
 import org.rsmod.content.areas.misc.islands.lunarisle.npcs.hasSealOfPassage
 import org.rsmod.content.areas.misc.islands.lunarisle.npcs.refuseWithoutSeal
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -39,16 +40,21 @@ class MoonClanShops @Inject constructor(private val shops: Shops) : PluginScript
         shops.open(player, npc, title, inv)
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Baba_Yaga (after Lunar Diplomacy)
-    // TODO(content): [quest:lunar_diplomacy] "Ah, a stranger to our island. How can I help?" and
-    // the pre-quest stock (inv.lunar_runeshop) before the quest is complete
+    // https://oldschool.runescape.wiki/w/Transcript:Baba_Yaga
+    // TODO(content): [quest:lunar_diplomacy] the pre-quest stock before the quest is complete;
+    // the server data for inv.lunar_runeshop holds a crossbow shop's stock, not runes
     private suspend fun Dialogue.babaYaga(npc: Npc) {
         chatPlayer(happy, "Hello there.")
-        chatNpc(
-            happy,
-            "Ah! ${player.displayName}, I'm glad to see you've returned. How can I help?",
-        )
-        val canLearnOurania = vars[OURANIA_TELEPORT] == 0
+        val questDone = QuestRequirements.hasCompleted(player, LUNAR_DIPLOMACY)
+        if (questDone) {
+            chatNpc(
+                happy,
+                "Ah! ${player.displayName}, I'm glad to see you've returned. How can I help?",
+            )
+        } else {
+            chatNpc(happy, "Ah, a stranger to our island. How can I help?")
+        }
+        val canLearnOurania = questDone && vars[OURANIA_TELEPORT] == 0
         val option =
             if (canLearnOurania) {
                 choice4(
@@ -337,5 +343,6 @@ class MoonClanShops @Inject constructor(private val shops: Shops) : PluginScript
         const val GENERAL_STORE = "Moon Clan General Store."
         const val GENERAL_INV = "inv.lunar_general"
         const val OURANIA_TELEPORT = "varbit.rc_zmi_lunar_spell"
+        const val LUNAR_DIPLOMACY = "quest_lunardiplomacy"
     }
 }

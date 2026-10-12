@@ -10,6 +10,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -23,8 +24,7 @@ class GreenGhost @Inject constructor(private val objRepo: ObjRepository) : Plugi
         onOpNpc1(BILL_TEACH) { startDialogue(it.npc) { billTeach() } }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Ghost_innkeeper (before Ghosts Ahoy)
-    // TODO(content): [quest:ghosts_ahoy] the after-quest greeting
+    // https://oldschool.runescape.wiki/w/Transcript:Ghost_innkeeper
     // TODO(content): [verify:in_game] his reply without a ghostspeak amulet, and whether
     //  "Do you have any jobs I can do?" is offered before Ghosts Ahoy
     private suspend fun Dialogue.innkeeper() {
@@ -32,10 +32,17 @@ class GreenGhost @Inject constructor(private val objRepo: ObjRepository) : Plugi
             return wail()
         }
         chatPlayer(happy, "Hello there!")
-        chatNpc(
-            neutral,
-            "Greetings, traveller. Welcome to 'The Green Ghost' Tavern. What can I do you for?",
-        )
+        if (QuestRequirements.hasCompleted(player, GHOSTS_AHOY)) {
+            chatNpc(
+                happy,
+                "Welcome, my friend! Be welcome in 'The Green Ghost' for as long as you live!",
+            )
+        } else {
+            chatNpc(
+                neutral,
+                "Greetings, traveller. Welcome to 'The Green Ghost' Tavern. What can I do you for?",
+            )
+        }
         val option =
             choice5(
                 "Can I buy a beer?",
@@ -107,10 +114,16 @@ class GreenGhost @Inject constructor(private val objRepo: ObjRepository) : Plugi
         player.invAddOrDrop(objRepo, BEDSHEET)
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Robin (before Ghosts Ahoy)
-    // TODO(content): [quest:ghosts_ahoy] signing the oak longbow and the after-quest Runedraw line
+    // https://oldschool.runescape.wiki/w/Transcript:Robin
+    // TODO(content): [quest:ghosts_ahoy] signing the oak longbow and the Runedraw game
     // TODO(content): [system:treasure_trails] master clue step reward
     private suspend fun Dialogue.robin() {
+        if (QuestRequirements.hasCompleted(player, GHOSTS_AHOY)) {
+            chatPlayer(neutral, "So, still here then?")
+            chatNpc(quiz, "Do you want another game of Runedraw?")
+            chatPlayer(angry, "No!")
+            return
+        }
         if (BEDSHEET in player.inv) {
             chatPlayer(happy, "I've brought you a clean bedsheet, Robin.")
             chatNpc(neutral, "Well it's about time. Run along now, I need some Robin time.")
@@ -273,10 +286,16 @@ class GreenGhost @Inject constructor(private val objRepo: ObjRepository) : Plugi
         return bought.success
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Bill_Teach (before Cabin Fever)
-    // TODO(content): [quest:cabin_fever] "Yes, I've always wanted to be a pirate!" starts the
-    //  quest; the after-quest lift between Port Phasmatys and Mos Le'Harmless
+    // https://oldschool.runescape.wiki/w/Transcript:Bill_Teach
     private suspend fun Dialogue.billTeach() {
+        if (QuestRequirements.hasCompleted(player, CABIN_FEVER)) {
+            // The lift itself is offered by Bill Teach on board The Adventurous.
+            chatNpc(
+                neutral,
+                "If yer after a lift go to the ship and I'll take ye where ye want to go.",
+            )
+            return
+        }
         chatNpc(angry, "Mumblelandlubbermumblemumble...")
         chatPlayer(happy, "Hello!")
         chatNpc(angry, "What right have ye to be so happy, landlubber?")
@@ -294,6 +313,19 @@ class GreenGhost @Inject constructor(private val objRepo: ObjRepository) : Plugi
             "Well, ye look like ye might have the right stuff, tell me would ye like te be a " +
                 "pirate?",
         )
+        val option =
+            choice2(
+                "Yes, I've always wanted to be a pirate!",
+                1,
+                "No thanks, it sounds quite dangerous.",
+                2,
+            )
+        if (option == 1) {
+            // TODO(content): [quest:cabin_fever] quest start
+            return
+        }
+        chatPlayer(worried, "No thanks, it sounds quite dangerous.")
+        chatNpc(neutral, "Aye, that it be. Come back when yer liver ain't so lily-like, $lad.")
     }
 
     private val Dialogue.lad: String
@@ -309,5 +341,7 @@ class GreenGhost @Inject constructor(private val objRepo: ObjRepository) : Plugi
         const val ECTOTOKEN = "obj.ectotoken"
         const val ALE_YEAST = "obj.ale_yeast"
         const val YEAST_PRICE = 5
+        const val GHOSTS_AHOY = "quest_ghostsahoy"
+        const val CABIN_FEVER = "quest_cabinfever"
     }
 }

@@ -6,6 +6,7 @@ import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -18,8 +19,6 @@ class UndergroundPassDwarves @Inject constructor(private val objRepo: ObjReposit
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Niloof
-    // TODO(content): [quest:song_of_the_elves] "Lord Iorwerth is no longer an issue" after the
-    // quest
     private suspend fun Dialogue.niloof() {
         chatPlayer(happy, "Hi Niloof.")
         chatNpc(
@@ -30,11 +29,21 @@ class UndergroundPassDwarves @Inject constructor(private val objRepo: ObjReposit
             happy,
             "I've still a few years in me yet. So what are you still doing down here?",
         )
-        chatNpc(
-            neutral,
-            "Well with Iban and his lot gone, we've been left with a great cavern filled with " +
-                "resources. We thought we'd actually do what we came here for and get mining.",
-        )
+        if (QuestRequirements.hasCompleted(player, SONG_OF_THE_ELVES)) {
+            chatNpc(
+                neutral,
+                "Well Iban and his lot are gone and Lord Iorwerth is no longer an issue. That " +
+                    "means we've been left with a great cavern filled with resources. We thought " +
+                    "we'd actually do what we came here for and get mining.",
+            )
+        } else {
+            chatNpc(
+                neutral,
+                "Well with Iban and his lot gone, we've been left with a great cavern filled " +
+                    "with resources. We thought we'd actually do what we came here for and get " +
+                    "mining.",
+            )
+        }
         chatPlayer(happy, "Fair enough. Well you take care of yourselves.")
         chatNpc(happy, "And you.")
     }
@@ -81,5 +90,6 @@ class UndergroundPassDwarves @Inject constructor(private val objRepo: ObjReposit
     private companion object {
         const val GAUNTLETS = "obj.klanks_gauntlets"
         const val GAUNTLETS_PRICE = 5_000
+        const val SONG_OF_THE_ELVES = "quest_songoftheelves"
     }
 }

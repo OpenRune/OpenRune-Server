@@ -5,6 +5,7 @@ import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -18,11 +19,16 @@ class HarmonyIsland @Inject constructor(private val objRepo: ObjRepository) : Pl
         onOpNpc1("npc.brain_island_fenkenstrain") { startDialogue(it.npc) { fenkenstrain() } }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Brother_Tranquility (before The Great Brain
-    // Robbery, without the requirements)
-    // TODO(content): [quest:the_great_brain_robbery] starting the quest with the requirements, and
-    // the after-quest dialogue and transport to Harmony Island
+    // https://oldschool.runescape.wiki/w/Transcript:Brother_Tranquility
+    // TODO(content): [system:harmony_transport] "Would you like me to take you to Harmony?" and
+    // the Transport option after the quest
     private suspend fun Dialogue.tranquilityOnMos() {
+        if (QuestRequirements.hasCompleted(player, GREAT_BRAIN_ROBBERY)) {
+            tranquilityAfterQuest()
+            return
+        }
+        // TODO(content): [quest:the_great_brain_robbery] quest start for a player with the
+        // requirements
         chatNpc(neutral, "Excuse me...")
         chatPlayer(quiz, "Yes? Can I help you?")
         chatNpc(
@@ -36,6 +42,10 @@ class HarmonyIsland @Inject constructor(private val objRepo: ObjRepository) : Pl
     // TODO(content): [system:harmony_transport] "Do you want me to take you back to Mos
     // Le'Harmless?" and the Transport option
     private suspend fun Dialogue.tranquilityOnHarmony() {
+        tranquilityAfterQuest()
+    }
+
+    private suspend fun Dialogue.tranquilityAfterQuest() {
         chatPlayer(quiz, "How's your head feeling?")
         chatNpc(happy, "A lot better, thanks. Can I help you with anything?")
         if (!access.playerContainsAnyObj(BROKEN_ANCHOR, ANCHOR)) {
@@ -84,5 +94,6 @@ class HarmonyIsland @Inject constructor(private val objRepo: ObjRepository) : Pl
     private companion object {
         const val BROKEN_ANCHOR = "obj.brain_broken_anchor"
         const val ANCHOR = "obj.brain_anchor"
+        const val GREAT_BRAIN_ROBBERY = "quest_greatbrainrobbery"
     }
 }

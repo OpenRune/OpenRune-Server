@@ -6,11 +6,13 @@ import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:fight_arena] Khazard armour disguise, prison and after-quest variants
+// TODO(content): [quest:fight_arena] the Head Guard's disguise and Khali brew stages and the
+//  prison guards
 class FightArena @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.khazard_barman") { startDialogue(it.npc) { barman() } }
@@ -81,9 +83,24 @@ class FightArena @Inject constructor(private val objRepo: ObjRepository) : Plugi
         objbox(BEER, "The barman gives you a beer in exchange for two coins.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Door_Guard (before starting Fight Arena)
+    // https://oldschool.runescape.wiki/w/Transcript:Door_Guard
     private suspend fun Dialogue.doorGuard() {
         chatPlayer(happy, "Hello.")
+        if (QuestRequirements.hasCompleted(player, FIGHT_ARENA)) {
+            val pronoun = if (access.isBodyTypeA()) "him" else "her"
+            chatNpc(
+                angry,
+                "You're $pronoun! The one who murdered the General's pet. Leave this place at " +
+                    "once!",
+            )
+            return
+        }
+        if (isDisguised()) {
+            chatNpc(quiz, "Are you new? I've never seen you around here before.")
+            chatPlayer(happy, "You could say that. Long live General Khazard!")
+            chatNpc(confused, "Er... yeah...")
+            return
+        }
         chatNpc(angry, "What do you want?")
         chatPlayer(quiz, "Can I go in there?")
         chatNpc(
@@ -94,8 +111,23 @@ class FightArena @Inject constructor(private val objRepo: ObjRepository) : Plugi
 
     // https://oldschool.runescape.wiki/w/Transcript:Khazard_Guard
     // TODO(content): [verify:in_game] which guards are prison guards ("Leave at once!")
+    // TODO(content): [verify:in_game] whether the guard attacks after "Die you monster!"
     private suspend fun Dialogue.khazardGuard() {
         chatPlayer(happy, "Hello.")
+        if (QuestRequirements.hasCompleted(player, FIGHT_ARENA)) {
+            chatNpc(angry, "You! You're the one who killed Bouncer.")
+            chatNpc(angry, "Die you monster!")
+            return
+        }
+        if (isDisguised()) {
+            when (access.random.of(4)) {
+                0 -> chatNpc(happy, "There should be some good fights today.")
+                1 -> chatNpc(neutral, "I think I'll head to the bar on my next break.")
+                2 -> chatNpc(neutral, "Keep an eye out for anything suspicious.")
+                else -> chatNpc(angry, "Don't bother me while I'm on duty.")
+            }
+            return
+        }
         chatNpc(angry, "I don't know you, stranger. Get off our land.")
     }
 
@@ -115,9 +147,24 @@ class FightArena @Inject constructor(private val objRepo: ObjRepository) : Plugi
         chatNpc(angry, "This area is restricted. Leave now!")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Hengrad (without a disguise)
+    // https://oldschool.runescape.wiki/w/Transcript:Hengrad
+    // TODO(content): [quest:fight_arena] "So Khazard got his hands on you too?" while captured
     private suspend fun Dialogue.hengrad() {
+        if (QuestRequirements.hasCompleted(player, FIGHT_ARENA)) {
+            chatPlayer(happy, "Hello again.")
+            chatNpc(
+                neutral,
+                "I don't know how you managed to escape, but you may not be as lucky next time. " +
+                    "Get out of here while you can.",
+            )
+            return
+        }
         chatPlayer(happy, "Hello there.")
+        if (isDisguised()) {
+            chatNpc(quiz, "Hmm... You don't seem like a real guard to me. Who are you?")
+            chatPlayer(neutral, "No one important.")
+            return
+        }
         chatNpc(quiz, "You're not a guard. What are you doing in here?")
         chatPlayer(neutral, "Nothing important.")
         chatNpc(neutral, "If you say so.")
@@ -133,7 +180,14 @@ class FightArena @Inject constructor(private val objRepo: ObjRepository) : Plugi
         )
     }
 
+    // TODO(content): [verify:in_game] which Khazard armour pieces count as a disguise
+    private fun Dialogue.isDisguised(): Boolean =
+        KHAZARD_HELMET in player.worn && KHAZARD_PLATEMAIL in player.worn
+
     private companion object {
+        const val FIGHT_ARENA = "quest_fightarena"
+        const val KHAZARD_HELMET = "obj.khazard_helmet"
+        const val KHAZARD_PLATEMAIL = "obj.khazard_platemail"
         const val COINS = "obj.coins"
         const val BEER = "obj.beer"
         const val BEER_PRICE = 2

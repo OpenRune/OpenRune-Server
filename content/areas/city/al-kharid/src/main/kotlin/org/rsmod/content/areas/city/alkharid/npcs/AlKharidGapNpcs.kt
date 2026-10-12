@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.alkharid.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -12,11 +13,15 @@ class AlKharidGapNpcs : PluginScript() {
         onOpNpc1("npc.tempoross_pass_guard") { startDialogue(it.npc) { shantayGateGuard() } }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Border_Guard (before Prince Ali Rescue)
-    // TODO(content): [system:toll_gate] paying 10 coins and walking through the gate
-    // TODO(content): [quest:prince_ali_rescue] free passage after the quest
+    // https://oldschool.runescape.wiki/w/Transcript:Border_Guard
+    // TODO(content): [system:toll_gate] paying 10 coins and walking through the gate, free after
+    //  Prince Ali Rescue
     private suspend fun Dialogue.borderGuard() {
         chatPlayer(quiz, "Can I come through this gate?")
+        if (QuestRequirements.hasCompleted(player, PRINCE_ALI_RESCUE)) {
+            chatNpc(happy, "You may pass for free, you are a friend of Al-Kharid.")
+            return
+        }
         chatNpc(neutral, "You must pay a toll of 10 gold coins to pass.")
         val option =
             choice3(
@@ -66,5 +71,6 @@ class AlKharidGapNpcs : PluginScript() {
 
     private companion object {
         const val TOLL = 10
+        const val PRINCE_ALI_RESCUE = "quest_princealirescue"
     }
 }

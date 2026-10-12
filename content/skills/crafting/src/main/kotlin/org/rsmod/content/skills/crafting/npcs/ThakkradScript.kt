@@ -5,6 +5,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpcU
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.crafting.interfaces.TanningRecipe
 import org.rsmod.content.skills.crafting.interfaces.tanningRecipes
 import org.rsmod.content.skills.crafting.util.CraftingConstants
@@ -16,7 +17,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class ThakkradScript : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1(CraftingConstants.YAK_CURER) { serviceMenu(it.npc) }
+        onOpNpc1(CraftingConstants.YAK_CURER) { talkTo(it.npc) }
         onOpNpc3(CraftingConstants.YAK_CURER) { serviceMenu(it.npc) }
         onOpNpcU(CraftingConstants.YAK_CURER) { event ->
             val row = yakRow() ?: return@onOpNpcU
@@ -26,8 +27,27 @@ class ThakkradScript : PluginScript() {
         }
     }
 
-    // TODO(content): [quest:the_fremennik_isles] Talk-to after the quest: "Thank you for leading
-    // the Burgher's militia against the Troll King." (four lines), and his quest dialogue.
+    // TODO(content): [quest:the_fremennik_isles] his dialogue during the quest
+    private suspend fun ProtectedAccess.talkTo(npc: Npc) {
+        if (!QuestRequirements.hasCompleted(player, FREMENNIK_ISLES)) {
+            serviceMenu(npc)
+            return
+        }
+        startDialogue(npc) {
+            chatNpc(happy, "Thank you for leading the Burgher's militia against the Troll King.")
+            chatNpc(
+                neutral,
+                "Now that the trolls are leaderless I have repaired the bridge to the central " +
+                    "isle for you as best I can.",
+            )
+            chatPlayer(
+                quiz,
+                "Thanks Thakkrad. Does that mean I have access to the runite ores on that island?",
+            )
+            chatNpc(neutral, "Yes, you should be able to mine runite there if you wish.")
+        }
+    }
+
     private suspend fun ProtectedAccess.serviceMenu(npc: Npc) {
         val row = yakRow() ?: return
         startDialogue(npc) {
@@ -120,4 +140,8 @@ class ThakkradScript : PluginScript() {
     private fun yakRow(): TanningRecipe? = tanningRecipes.firstOrNull { it.output == "obj.yak_hide_cured" }
 
     private enum class CureChoice { All, One, None, OtherLeather }
+
+    private companion object {
+        const val FREMENNIK_ISLES = "quest_fremennikisles"
+    }
 }

@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.varlamore.aldarin.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -45,8 +46,7 @@ class AldarinTownsfolk : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Well-dressed_man (before Death on the Isle)
-    // TODO(content): [quest:death_on_the_isle] the after-quest lines about the villa
+    // https://oldschool.runescape.wiki/w/Transcript:Well-dressed_man
     private suspend fun Dialogue.wellDressedMan() {
         val variant = access.random.of(3)
         chatNpc(shifty, "Three stories... Multiple entries... Numerous butlers...")
@@ -71,16 +71,25 @@ class AldarinTownsfolk : PluginScript() {
                         "to... elimitate distractions.",
                 )
         }
-        chatPlayer(happy, "Okay! I'll be going then!")
+        if (QuestRequirements.hasCompleted(player, DEATH_ON_THE_ISLE)) {
+            chatPlayer(
+                neutral,
+                "I'm not sure what you're up to, but if it's got anything to do with that villa, " +
+                    "then I think someone might've beaten you to it...",
+            )
+            chatNpc(shifty, "Then it seems I now have a gap in my schedule...")
+            chatPlayer(happy, "Well you enjoy it!")
+        } else {
+            chatPlayer(happy, "Okay! I'll be going then!")
+        }
         if (variant != 0) {
             chatPlayer(happy, "Well you enjoy it!")
         }
         chatPlayer(happy, "What a nice man.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Overseer_Khougo (before Perilous Moons)
+    // https://oldschool.runescape.wiki/w/Transcript:Overseer_Khougo
     // TODO(content): [system:met_flags] the "You seem to have returned." greeting on later visits
-    // TODO(content): [quest:perilous_moons] the after-quest conversation and its options
     private suspend fun Dialogue.overseerKhougo() {
         chatNpc(
             angry,
@@ -97,8 +106,98 @@ class AldarinTownsfolk : PluginScript() {
             angry,
             "Hmph! I can't stop you being here, but I don't have to enjoy your presence.",
         )
-        chatPlayer(quiz, "Is there anything that I can do to change that?")
-        chatNpc(angry, "No. Now if this conversation is over, I'm going to have a drink.")
+        if (!QuestRequirements.hasCompleted(player, PERILOUS_MOONS)) {
+            chatPlayer(quiz, "Is there anything that I can do to change that?")
+            chatNpc(angry, "No. Now if this conversation is over, I'm going to have a drink.")
+            return
+        }
+        chatPlayer(
+            quiz,
+            "Is there anything that I can do to change that? I've already been quite helpful " +
+                "over in Cam Torum.",
+        )
+        chatNpc(angry, "One act of charity will not excuse years of subjugation.")
+        chatPlayer(confused, "Subjugation? That seems like a bit of an over-exaggeration.")
+        chatNpc(
+            angry,
+            "Call it what you will. The end result is the same. Your kind prosper at the expense " +
+                "of ours, and you act like it's not even happening.",
+        )
+        chatPlayer(neutral, "I've seen Cam Torum. You don't seem to be doing too badly.")
+        chatNpc(
+            angry,
+            "And here you prove my point. One city! One! You see that one city and consider it " +
+                "somehow equal to your many.",
+        )
+        chatPlayer(quiz, "Well what about this place?")
+        chatNpc(
+            neutral,
+            "A mere mining outpost. It hardly compares to those villas elsewhere on the island.",
+        )
+        chatPlayer(
+            neutral,
+            "Not all humans are the same though. It's not just Cam Torum. I've actually worked " +
+                "with your kind a few times.",
+        )
+        chatNpc(quiz, "Such as?")
+        chatPlayer(
+            neutral,
+            "Well there was this one time when I helped the dwarves of Keldagrim with a bit of a " +
+                "statue issue. Another time I worked with one of the last surviving Imcando " +
+                "dwarves to create a blurite sword.",
+        )
+        chatNpc(shocked, "Imcando?")
+        chatPlayer(happy, "Yes! You know about them?")
+        chatNpc(
+            angry,
+            "Of course I know about them! The Imcando were our ancestors, but I thought they " +
+                "were long dead.",
+        )
+        chatPlayer(neutral, "Not quite.")
+        chatNpc(angry, "Hmph! It's still going to take more than that to get me to like you.")
+        chatPlayer(quiz, "Well if liking is out of the question, how about tolerate?")
+        chatNpc(neutral, "Fine. Consider yourself tolerated. Now, did you actually want something?")
+        khougoOptions()
+    }
+
+    // TODO(content): [verify:in_game] whether the options come back after the first two answers
+    private suspend fun Dialogue.khougoOptions() {
+        val option =
+            choice3(
+                "What do you do here?",
+                1,
+                "You said the Imcando were your ancestors?",
+                2,
+                "Not really.",
+                3,
+                title = "Select an Option",
+            )
+        when (option) {
+            1 -> {
+                chatPlayer(quiz, "What do you do here?")
+                chatNpc(
+                    neutral,
+                    "I'm the overseer for Mistrock. I make sure everything around here is " +
+                        "running as it should be.",
+                )
+                chatPlayer(quiz, "And you do that from the pub?")
+                chatNpc(angry, "Am I not allowed a break from time to time?")
+                chatPlayer(neutral, "I suppose.")
+                chatNpc(angry, "Hmph!")
+            }
+            2 -> {
+                chatPlayer(quiz, "You said the Imcando were your ancestors?")
+                chatNpc(
+                    neutral,
+                    "That's right. The Lovakengj dwarves were born from the Imcando and we were " +
+                        "born from the Lovakengj. If you want to know more, find a historian.",
+                )
+            }
+            3 -> {
+                chatPlayer(neutral, "Not really.")
+                chatNpc(angry, "Then be on your way so that I can have a drink.")
+            }
+        }
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Citizen_(Mistrock)
@@ -155,6 +254,9 @@ class AldarinTownsfolk : PluginScript() {
     }
 
     private companion object {
+        const val DEATH_ON_THE_ISLE = "quest_deathontheisle"
+        const val PERILOUS_MOONS = "quest_perilousmoons"
+
         val CITIZENS =
             listOf(
                 "npc.aldarin_citizen_poor_m_1",

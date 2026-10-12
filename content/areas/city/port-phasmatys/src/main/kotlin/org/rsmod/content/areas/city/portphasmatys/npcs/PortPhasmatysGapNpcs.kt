@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -27,10 +28,16 @@ class PortPhasmatysGapNpcs @Inject constructor(private val shops: Shops) : Plugi
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Alice
-    // TODO(content): [quest:animal_magnetism] the greeting after the quest: "Hello, friend, and
-    //  thanks for allowing me to talk to my husband Malcolm. How can I help you?"
     private suspend fun Dialogue.alice(npc: Npc) {
-        chatNpc(happy, "Hello. How can I help you?")
+        if (QuestRequirements.hasCompleted(player, ANIMAL_MAGNETISM)) {
+            chatNpc(
+                happy,
+                "Hello, friend, and thanks for allowing me to talk to my husband Malcolm. How " +
+                    "can I help you?",
+            )
+        } else {
+            chatNpc(happy, "Hello. How can I help you?")
+        }
         val option =
             choice3(
                 "What are you selling?",
@@ -51,9 +58,13 @@ class PortPhasmatysGapNpcs @Inject constructor(private val shops: Shops) : Plugi
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Old_man
-    // TODO(content): [quest:ghosts_ahoy] the in-quest dialogue, and after the quest: "How is it
-    //  going?" / "Wonderful, wonderful! Mother's coming to get me!"
+    // TODO(content): [quest:ghosts_ahoy] the in-quest dialogue
     private suspend fun Dialogue.oldMan() {
+        if (QuestRequirements.hasCompleted(player, GHOSTS_AHOY)) {
+            chatPlayer(quiz, "How is it going?")
+            chatNpc(happy, "Wonderful, wonderful! Mother's coming to get me!")
+            return
+        }
         chatPlayer(quiz, "What are you doing on this shipwreck?")
         chatNpc(shocked, "Shipwreck?!? Not shipwreck, surely not! Just in port, that's all!")
         chatPlayer(confused, "Don't be silly - half the ship's missing!")
@@ -66,13 +77,19 @@ class PortPhasmatysGapNpcs @Inject constructor(private val shops: Shops) : Plugi
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Sarah_(Port_Phasmatys)
-    // TODO(content): [quest:ghosts_ahoy] after the quest: "You're the one who stopped Necrovarus.
-    //  Our people are forever grateful to you, even if we don't always show it."
     // TODO(content): [quest:dragon_slayer_ii] the in-quest dialogue
     // TODO(content): [verify:in_game] whether Sarah needs a ghostspeak amulet like the other ghosts
     private suspend fun Dialogue.sarah() {
         if (!player.understandsGhosts()) {
             return wail()
+        }
+        if (QuestRequirements.hasCompleted(player, GHOSTS_AHOY)) {
+            chatNpc(
+                happy,
+                "You're the one who stopped Necrovarus. Our people are forever grateful to you, " +
+                    "even if we don't always show it.",
+            )
+            return
         }
         chatNpc(neutral, "What do you want, mortal?")
         chatPlayer(confused, "I'm not sure - what can you offer?")
@@ -83,5 +100,7 @@ class PortPhasmatysGapNpcs @Inject constructor(private val shops: Shops) : Plugi
     private companion object {
         const val ALICE = "npc.farming_shopkeeper_4"
         const val AK_HARANU = "npc.ahoy_akharanu"
+        const val ANIMAL_MAGNETISM = "quest_animalmagnetism"
+        const val GHOSTS_AHOY = "quest_ghostsahoy"
     }
 }

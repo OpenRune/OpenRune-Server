@@ -5,13 +5,14 @@ import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [system:monkey_disguise] monkeys call the guards on a player in human form, and
-// speak Monkey language to a player without an M'speak amulet
-// TODO(content): [quest:monkey_madness_ii] humans are tolerated after the quest
+// TODO(content): [system:monkey_disguise] monkeys call the guards on a player in human form until
+// Monkey Madness II is complete (QuestRequirements, "quest_monkeymadness2"), and speak Monkey
+// language to a player without an M'speak amulet
 class MarimMonkeys @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.mm_aberab") { startDialogue(it.npc) { getOutOfMyWay() } }
@@ -131,8 +132,8 @@ class MarimMonkeys @Inject constructor(private val objRepo: ObjRepository) : Plu
     // https://oldschool.runescape.wiki/w/Transcript:Bobawu (without a greegree)
     // TODO(content): [system:monkey_disguise] "Hey there, how do you do my fellow monkey?" with a
     // greegree equipped
-    // TODO(content): [quest:monkey_madness_ii] the lap count, the Lap-count option and the monkey
-    // transformation rewards
+    // TODO(content): [system:agility_lap_count] the Ape Atoll lap count after Monkey Madness II,
+    // the Lap-count option and the monkey transformation rewards
     private suspend fun Dialogue.bobawu() {
         chatPlayer(happy, "Hello, how are you doing?")
         chatNpc(happy, "I'm good thank you, how can I help you today?")
@@ -163,21 +164,51 @@ class MarimMonkeys @Inject constructor(private val objRepo: ObjRepository) : Plu
                 )
                 chatPlayer(happy, "Oh great, thank you.")
                 chatPlayer(quiz, "Are there any rewards you can offer me?")
-                noRewards()
+                offers()
             }
             2 -> {
                 chatPlayer(quiz, "Could you tell me how many laps I've completed?")
-                noRewards()
+                if (!QuestRequirements.hasCompleted(player, MONKEY_MADNESS_II)) {
+                    noRewards()
+                }
             }
             3 -> {
                 chatPlayer(quiz, "What can you offer me?")
-                noRewards()
+                offers()
             }
             4 -> {
                 chatPlayer(neutral, "On second thought, never mind.")
                 chatNpc(happy, "That's okay my friend, come back anytime.")
             }
         }
+    }
+
+    private suspend fun Dialogue.offers() {
+        if (QuestRequirements.hasCompleted(player, MONKEY_MADNESS_II)) {
+            transformations()
+        } else {
+            noRewards()
+        }
+    }
+
+    private suspend fun Dialogue.transformations() {
+        chatNpc(
+            happy,
+            "I see you have your own monkey friend, by completing laps here you can transform " +
+                "him into different monkeys!",
+        )
+        chatPlayer(quiz, "That's neat, what can he turn into?")
+        chatNpc(happy, "I've got the list here!")
+        mesbox("Bobawu pulls out a tattered piece of paper from his ninja costume.")
+        chatNpc(happy, "Ahem, here we are, At 100 you'll unlock a Karamjan Monkey transformation.")
+        chatNpc(happy, "After completing 250 laps, you'll unlock a scary zombie monkey.")
+        chatNpc(happy, "With 500 laps finished, you'll get a maniacal monkey.")
+        chatNpc(happy, "At 1000 laps, you'll be able transform him into a spooky skeleton monkey,")
+        chatNpc(happy, "1500 laps for a little Kruk Jr monkey,")
+        chatNpc(
+            happy,
+            "Finally at 2000 laps, he can transform to look like our King Awowogei.",
+        )
     }
 
     private suspend fun Dialogue.noRewards() {
@@ -194,5 +225,6 @@ class MarimMonkeys @Inject constructor(private val objRepo: ObjRepository) : Plu
 
     private companion object {
         const val MONKEY_TALISMAN = "obj.mm_monkey_talisman"
+        const val MONKEY_MADNESS_II = "quest_monkeymadness2"
     }
 }

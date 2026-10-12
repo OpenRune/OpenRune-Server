@@ -2,6 +2,7 @@ package org.rsmod.content.slayer.dialogue
 
 import dev.openrune.rscm.RSCM.asRSCM
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.slayer.dialogue.StandardSlayerDialogue.openMain
 import org.rsmod.content.slayer.slayerDuradelNotesReceived
 
@@ -9,14 +10,13 @@ import org.rsmod.content.slayer.slayerDuradelNotesReceived
 // https://oldschool.runescape.wiki/w/Transcript:Steve
 // https://oldschool.runescape.wiki/w/Transcript:Aya
 // https://oldschool.runescape.wiki/w/Transcript:Achtryn
+// https://oldschool.runescape.wiki/w/Transcript:Mazchna
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 object SlayerMasters {
 
-    private const val PORCINE_OF_INTEREST_COMPLETE = true
-    private const val WHILE_GUTHIX_SLEEPS_ACTIVE = true
-    private const val WHILE_GUTHIX_SLEEPS_COMPLETE = true
-    private const val AYA_TURAEL_PASSED_AWAY = true
-    private const val MONKEY_MADNESS_II_COMPLETE = true
+    private const val PORCINE_OF_INTEREST = "quest_porcineofinterest"
+    private const val WHILE_GUTHIX_SLEEPS = "quest_whileguthixsleeps"
+    private const val MONKEY_MADNESS_II = "quest_monkeymadness2"
 
     const val TASK_TURAEL = 1
     const val TASK_MAZCHNA = 2
@@ -46,38 +46,45 @@ object SlayerMasters {
     }
 
     // TODO(content): [quest:animal_magnetism] Turael's and Aya's "I'm here about blessed axes again."
-    // TODO(content): [quest:while_guthix_sleeps] Mazchna's "About Lucien..." option.
     fun extraMenuOptions(dialogue: Dialogue, npcId: Int): List<Pair<String, SlayerMenuOption>> {
+        val player = dialogue.player
+        // Turael and Duradel die during While Guthix Sleeps.
+        val guthixSleepsDone = QuestRequirements.hasCompleted(player, WHILE_GUTHIX_SLEEPS)
         return buildList {
             when (npcId) {
                 Npc.achtryn ->
                     add("So you're filling in for Mazchna?" to { dialogue.achtrynFiller() })
+                Npc.mazchna -> {
+                    if (guthixSleepsDone) {
+                        add("About Lucien..." to { dialogue.mazchnaAboutLucien() })
+                    }
+                }
                 Npc.aya -> {
                     add("So you're filling in for Turael?" to { dialogue.ayaFiller() })
-                    if (AYA_TURAEL_PASSED_AWAY) {
+                    if (guthixSleepsDone) {
                         add("About Turael..." to { dialogue.ayaAboutTurael() })
                     }
                 }
                 Npc.spria, Npc.spriaActive -> {
-                    if (WHILE_GUTHIX_SLEEPS_COMPLETE) {
+                    if (guthixSleepsDone) {
                         add("About Turael..." to { dialogue.spriaAboutTurael() })
                     }
                 }
                 Npc.kuradal -> {
-                    if (WHILE_GUTHIX_SLEEPS_ACTIVE) {
+                    if (QuestRequirements.isOnQuest(player, WHILE_GUTHIX_SLEEPS)) {
                         add("So you're filling in for Duradel?" to { dialogue.kuradalFillingIn() })
                     }
-                    if (WHILE_GUTHIX_SLEEPS_COMPLETE) {
+                    if (guthixSleepsDone) {
                         add("About Duradel..." to { dialogue.aboutDuradel() })
                     }
                 }
                 Npc.duradel -> {
-                    if (WHILE_GUTHIX_SLEEPS_COMPLETE) {
+                    if (guthixSleepsDone) {
                         add("About Duradel..." to { dialogue.aboutDuradel() })
                     }
                 }
                 Npc.steve -> {
-                    if (MONKEY_MADNESS_II_COMPLETE) {
+                    if (QuestRequirements.hasCompleted(player, MONKEY_MADNESS_II)) {
                         add("I see you're the new Slayer Master here." to { dialogue.steveNewMaster() })
                     }
                 }
@@ -85,7 +92,8 @@ object SlayerMasters {
         }
     }
 
-    fun isSpriaUnlocked(dialogue: Dialogue): Boolean = PORCINE_OF_INTEREST_COMPLETE
+    fun isSpriaUnlocked(dialogue: Dialogue): Boolean =
+        QuestRequirements.hasCompleted(dialogue.player, PORCINE_OF_INTEREST)
 
     suspend fun Dialogue.spriaStart() {
         if (!isSpriaUnlocked(this)) {
@@ -101,7 +109,7 @@ object SlayerMasters {
     }
 
     suspend fun Dialogue.steveStart() {
-        if (!MONKEY_MADNESS_II_COMPLETE) {
+        if (!QuestRequirements.hasCompleted(player, MONKEY_MADNESS_II)) {
             steveWyvernIntro()
             return
         }
@@ -204,6 +212,19 @@ object SlayerMasters {
         chatNpc(
             neutral,
             "Don't be. He died doing what he loved, and he died a hero. He wouldn't have had it any other way.",
+        )
+    }
+
+    private suspend fun Dialogue.mazchnaAboutLucien() {
+        chatPlayer(neutral, "About Lucien...")
+        chatNpc(
+            angry,
+            "He will be made to pay, my friend, and I assure you, when the day of his reckoning comes, I will be there.",
+        )
+        chatPlayer(neutral, "So will I, Mazchna.")
+        chatNpc(
+            angry,
+            "Then we will fight, side by side, my friend. We will fight in honour of Turael and Duradel, and we will see them avenged!",
         )
     }
 

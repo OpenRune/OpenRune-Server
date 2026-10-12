@@ -3,6 +3,7 @@ package org.rsmod.content.areas.city.draynor.npcs
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -71,8 +72,14 @@ class DraynorManorNpcs : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Witch
-    // TODO(content): [quest:animal_magnetism] Quest and post-quest dialogue
+    // TODO(content): [quest:animal_magnetism] the in-quest dialogue
     private suspend fun Dialogue.witch() {
+        if (QuestRequirements.hasCompleted(player, ANIMAL_MAGNETISM)) {
+            chatNpc(angry, "Hello my ickle...oh, it's you. What do you want?")
+            chatPlayer(neutral, "I wondered whether you had anything interesting to say.")
+            chatNpc(angry, "Clearly not.")
+            return
+        }
         chatNpc(happy, "Hello deary. Don't worry, I'm friendly.")
         chatPlayer(
             confused,
@@ -98,5 +105,9 @@ class DraynorManorNpcs : PluginScript() {
                 "use it these days of course.",
         )
         chatPlayer(neutral, "I have to go now.")
+    }
+
+    private companion object {
+        const val ANIMAL_MAGNETISM = "quest_animalmagnetism"
     }
 }

@@ -12,7 +12,7 @@ class ZanarisCowGapNpc : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Cow
-    // TODO(content): [quest:a_fairy_tale_part_ii] using Nuff's certificate on the cow
+    // TODO(content): [quest:fairytale_ii_cure_a_queen] using Nuff's certificate on the cow
     private suspend fun Dialogue.zanarisCow() {
         chatNpc(
             neutral,

@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.taverley.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -27,9 +28,14 @@ class TaverleyGapNpcs : PluginScript() {
         chatNpc(angry, "Then begone knave, before I have my Knights put you to the sword!")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Miazrqa (before Grim Tales)
-    // TODO(content): [quest:grim_tales] after talking to Rupert, and after the quest
+    // https://oldschool.runescape.wiki/w/Transcript:Miazrqa
+    // TODO(content): [quest:grim_tales] after talking to Rupert the Beard
     private suspend fun Dialogue.miazrqa() {
+        if (QuestRequirements.hasCompleted(player, GRIM_TALES)) {
+            chatNpc(happy, "Thanks again for finding my pendant. I felt so lost without it.")
+            chatPlayer(happy, "You're welcome. Goodbye.")
+            return
+        }
         chatPlayer(happy, "Hello!")
         chatNpc(
             neutral,
@@ -37,5 +43,9 @@ class TaverleyGapNpcs : PluginScript() {
                 "Come back some other time please.",
         )
         chatPlayer(neutral, "Ok, sorry.")
+    }
+
+    private companion object {
+        const val GRIM_TALES = "quest_grimtales"
     }
 }

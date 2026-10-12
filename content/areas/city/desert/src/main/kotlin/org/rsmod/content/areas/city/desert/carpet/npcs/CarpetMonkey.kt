@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.desert.carpet.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -12,11 +13,12 @@ class CarpetMonkey : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Monkey_(magic_carpet)
-    // TODO(content): [quest:monkey_madness_ii] understanding monkeys without the amulet after
-    // Monkey Madness II
     private suspend fun Dialogue.monkey() {
         chatPlayer(happy, "Who's a cute little monkey?")
-        if (MONKEYSPEAK_AMULET !in player.worn) {
+        val understands =
+            MONKEYSPEAK_AMULET in player.worn ||
+                QuestRequirements.hasCompleted(player, MONKEY_MADNESS_II)
+        if (!understands) {
             chatNpc(happy, "Ukkuk oook! Eeek aka, ahh aka gonk.")
             return
         }
@@ -54,5 +56,6 @@ class CarpetMonkey : PluginScript() {
     private companion object {
         const val MONKEYSPEAK_AMULET = "obj.mm_amulet_of_monkey_speak"
         const val BANANA = "obj.banana"
+        const val MONKEY_MADNESS_II = "quest_monkeymadness2"
     }
 }

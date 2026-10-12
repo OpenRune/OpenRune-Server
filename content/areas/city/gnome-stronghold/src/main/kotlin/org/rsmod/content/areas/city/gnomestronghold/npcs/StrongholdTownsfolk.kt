@@ -3,6 +3,7 @@ package org.rsmod.content.areas.city.gnomestronghold.npcs
 import dev.openrune.types.MesAnimType
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -366,7 +367,8 @@ class StrongholdTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Glough
-    // TODO(content): [quest:the_grand_tree] quest stages and after-quest dialogue
+    // TODO(content): [quest:the_grand_tree] quest stages; the transcript has no after-quest
+    //  dialogue
     private suspend fun Dialogue.glough() {
         chatPlayer(happy, "Hello there!")
         chatNpc(angry, "You shouldn't be here human!")
@@ -379,15 +381,81 @@ class StrongholdTownsfolk : PluginScript() {
 
     // https://oldschool.runescape.wiki/w/Transcript:Anita
     // TODO(content): [quest:the_grand_tree] Glough's key during the quest
-    // TODO(content): [quest:monkey_madness_ii] after-quest dialogue about Glough
     private suspend fun Dialogue.anita() {
+        if (QuestRequirements.hasCompleted(player, MONKEY_MADNESS_II)) {
+            chatPlayer(happy, "Hi Anita.")
+            chatPlayer(sad, "I'm sorry about what happened to Glough, Anita.")
+            chatNpc(
+                sad,
+                "Glough was deeply troubled, ${player.displayName}. Fortunately Carado has " +
+                    "helped me move on.",
+            )
+            return
+        }
         mesbox("Anita is busy cleaning.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Daero
-    // TODO(content): [quest:monkey_madness_i] quest stages, training programme and Crash Island
+    // TODO(content): [quest:monkey_madness_i] quest stages
     private suspend fun Dialogue.daero() {
+        if (QuestRequirements.hasCompleted(player, MONKEY_MADNESS_I)) {
+            daeroAfterQuest()
+            return
+        }
         mesbox("Daero seems like he is enjoying himself too much to talk.")
+    }
+
+    // TODO(content): [system:crash_island_travel] the fade and the trip to the secret hangar
+    //  after "You know the routine..."
+    private suspend fun Dialogue.daeroAfterQuest() {
+        val option =
+            choice2(
+                "I want to sign up for the training programme.",
+                1,
+                "I need to return to Crash Island.",
+                2,
+                title = "Select an option",
+            )
+        if (option == 2) {
+            chatPlayer(neutral, "I need to return to Crash Island.")
+            chatNpc(neutral, "You know the routine...")
+            mesbox("You wear the blindfold Daero hands you.")
+            return
+        }
+        chatPlayer(happy, "Good day, High Tree Guardian.")
+        chatNpc(neutral, "Hello there. I hear your mission is complete.")
+        chatPlayer(
+            neutral,
+            "News travels quickly on this tree. I expect you also know that I am to be enrolled " +
+                "in the Royal Guard training programme.",
+        )
+        chatNpc(neutral, "Indeed I do.")
+        chatPlayer(quiz, "How long does it take?")
+        chatNpc(neutral, "For you, it should hardly take any time at all.")
+        chatPlayer(happy, "Then let us begin.")
+        chatNpc(
+            happy,
+            "Enthusiasm. I like that. We will first begin with a series of exercises designed to " +
+                "increase your strength and stamina.",
+        )
+        chatNpc(
+            neutral,
+            "We then will follow these up by improving your attack and defence techniques.",
+        )
+        chatNpc(
+            neutral,
+            "You will improve your strength, stamina, attack and defence, but you may choose " +
+                "what you want to focus on.",
+        )
+        choice2(
+            "Focus on increasing strength and stamina...",
+            1,
+            "Focus on improving attack and defence techniques...",
+            2,
+            title = "Select an option",
+        )
+        // TODO(content): [quest:monkey_madness_i] the training programme's experience reward
+        //  and its "Several hours later..." fade
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Assistant_Le_Smith
@@ -436,5 +504,7 @@ class StrongholdTownsfolk : PluginScript() {
     private companion object {
         const val DALILA = "npc.aluft_gnome_customer_two"
         const val PERRDUR = "npc.aluft_gnome_customer_one"
+        const val MONKEY_MADNESS_I = "quest_monkeymadness1"
+        const val MONKEY_MADNESS_II = "quest_monkeymadness2"
     }
 }

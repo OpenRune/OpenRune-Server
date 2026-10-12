@@ -4,6 +4,7 @@ import org.rsmod.api.config.Constants
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -17,10 +18,28 @@ class PortPhasmatysTownsfolk : PluginScript() {
         onOpNpc1(PIRATE_PETE) { startDialogue(it.npc) { piratePete() } }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Ghost_guard (before Ghosts Ahoy)
-    // TODO(content): [quest:ghosts_ahoy] the free after-quest passage
-    // TODO(content): [system:phasmatys_barrier] paying 2 ectotokens and passing the barrier
+    // https://oldschool.runescape.wiki/w/Transcript:Ghost_guard
+    // TODO(content): [system:phasmatys_barrier] paying 2 ectotokens and passing the barrier, free
+    //  after Ghosts Ahoy
     private suspend fun Dialogue.ghostGuard() {
+        val questDone = QuestRequirements.hasCompleted(player, GHOSTS_AHOY)
+        if (!player.understandsGhosts() && questDone) {
+            mesbox(
+                "The ghostly guards wail at you incomprehensibly, and though you cannot " +
+                    "understand their exact words you understand their meaning - you may pass " +
+                    "the barriers of Port Phasmatys without charge."
+            )
+            return
+        }
+        if (questDone) {
+            chatNpc(
+                happy,
+                "All visitors to Port Phasmatys must pay a toll charge of 2 Ectotokens. " +
+                    "However, you have done the ghosts of our town a service that surpasses all " +
+                    "value, so you may pass without charge.",
+            )
+            return
+        }
         if (!player.understandsGhosts()) {
             mesbox(
                 "The ghostly guards wail at you incomprehensibly, and though you cannot " +
@@ -318,5 +337,6 @@ class PortPhasmatysTownsfolk : PluginScript() {
         const val PERMANENT_FARE = 1_000_000
         const val DRAGONTOOTH_MX = 59
         const val DRAGONTOOTH_MZ = 55
+        const val GHOSTS_AHOY = "quest_ghostsahoy"
     }
 }

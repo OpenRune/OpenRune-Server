@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -31,10 +32,12 @@ class LegendsGuild @Inject constructor(private val shops: Shops) : PluginScript(
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Legends'_Quest (not started)
-    // TODO(content): [quest:legends_quest] quest start, progress, after-quest dialogue
-    //  (https://oldschool.runescape.wiki/w/Transcript:Radimus_Erkle) and the Dark dagger
-    //  collection
+    // TODO(content): [quest:legends_quest] quest start and progress
     private suspend fun Dialogue.radimus() {
+        if (QuestRequirements.hasCompleted(player, LEGENDS_QUEST)) {
+            radimusAfterQuest()
+            return
+        }
         chatNpc(
             happy,
             "Good day to you, adventurer! No doubt you are keen to become a member of the " +
@@ -66,6 +69,47 @@ class LegendsGuild @Inject constructor(private val shops: Shops) : PluginScript(
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Radimus_Erkle
+    // TODO(content): [system:item_reclaim] the antique lamps he hands out to players who haven't
+    //  claimed them all
+    private suspend fun Dialogue.radimusAfterQuest() {
+        chatNpc(happy, "Hello there! How are you enjoying the Legends Guild?")
+        val option =
+            choice4(
+                "It's legendary.",
+                1,
+                "It's okay.",
+                2,
+                "It's lame.",
+                3,
+                "Have you got anything for me?",
+                4,
+            )
+        when (option) {
+            1 -> chatPlayer(happy, "It's legendary.")
+            2 -> chatPlayer(neutral, "It's okay.")
+            3 -> chatPlayer(bored, "It's lame.")
+            else -> {
+                chatPlayer(quiz, "Have you got anything for me?")
+                chatNpc(
+                    neutral,
+                    "One of our other members visited the Kharazi Jungle, following in your " +
+                        "illustrious footsteps, and they found some weird daggers. Would you " +
+                        "like one?",
+                )
+                mesbox("Radimus shows you a familiar-looking dagger.")
+                // TODO(content): [system:dark_dagger_collection] the Dark Dagger collection
+                //  interface and the daggers it hands out
+                return
+            }
+        }
+        chatNpc(
+            neutral,
+            "That's nice. Excuse me now, I have other matters to attend to. Please feel free to " +
+                "explore the rest of the building.",
+        )
+    }
+
     private suspend fun Dialogue.radimusQuestOffer() {
         chatPlayer(quiz, "Yes actually, what's involved?")
         chatNpc(
@@ -89,11 +133,15 @@ class LegendsGuild @Inject constructor(private val shops: Shops) : PluginScript(
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Legends'_Quest (not started)
-    // TODO(content): [quest:legends_quest] the eligibility check (quests and quest points), the
-    //  in-quest and member greetings (https://oldschool.runescape.wiki/w/Transcript:Legends'_Guard)
+    // TODO(content): [quest:legends_quest] the eligibility check (quests and quest points) and
+    //  the in-quest greeting
     // TODO(content): [verify:in_game] which options each menu shows; the transcript only lists
     //  them as "(Same as above)"
     private suspend fun Dialogue.legendsGuard() {
+        if (QuestRequirements.hasCompleted(player, LEGENDS_QUEST)) {
+            legendsGuardMember()
+            return
+        }
         mesbox("You approach a nearby guard...")
         chatNpc(neutral, "Yes, how can I help you?")
         val option =
@@ -110,6 +158,17 @@ class LegendsGuild @Inject constructor(private val shops: Shops) : PluginScript(
             2 -> guardHowDoIGetIn()
             3 -> guardSomeoneInCharge()
         }
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Legends'_Guard
+    // TODO(content): [verify:in_game] whether the repeated lines come from the other guard
+    private suspend fun Dialogue.legendsGuardMember() {
+        chatNpc(neutral, "! ! ! Attention ! ! !")
+        chatNpc(neutral, "! ! ! Attention ! ! !")
+        chatNpc(neutral, "Legends' Guild Member Approaching!")
+        chatNpc(neutral, "Legends' Guild Member Approaching!")
+        val welcome = if (access.isBodyTypeA()) "Welcome Sir" else "Welcome Madam"
+        chatNpc(happy, "$welcome! I hope you enjoy your time in the Legends' Guild.")
     }
 
     private suspend fun Dialogue.guardWhatIsThisPlace() {
@@ -227,5 +286,9 @@ class LegendsGuild @Inject constructor(private val shops: Shops) : PluginScript(
                 }
             }
         }
+    }
+
+    private companion object {
+        const val LEGENDS_QUEST = "quest_legends"
     }
 }

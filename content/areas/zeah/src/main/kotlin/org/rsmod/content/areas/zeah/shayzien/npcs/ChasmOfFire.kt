@@ -2,6 +2,7 @@ package org.rsmod.content.areas.zeah.shayzien.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -84,9 +85,11 @@ class ChasmOfFire : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Voice_of_Yama
-    // TODO(content): [quest:a_kingdom_divided] the first and later talks after the quest, and the
-    // trip to Yama's domain
     private suspend fun Dialogue.voiceOfYama() {
+        if (QuestRequirements.hasCompleted(player, KINGDOM_DIVIDED)) {
+            voiceOfYamaAfterQuest()
+            return
+        }
         chatNpc(angry, "What is it, human? Speak and begone, your presence disgusts me!")
         chatPlayer(worried, "Oh, uh, I'm sorry.")
         chatNpc(angry, "Stop your muttering and get to the point!")
@@ -103,5 +106,42 @@ class ChasmOfFire : PluginScript() {
         chatPlayer(worried, "I'll be leaving now.")
         chatNpc(angry, "I suspect you should.")
         mesbox("You must complete <col=000080>A Kingdom Divided</col> to access Yama's domain.")
+    }
+
+    // TODO(content): [system:met_flags] "Proceed or begone, human. I will not bear your foul
+    //  presence any longer than is necessary." on later talks
+    private suspend fun Dialogue.voiceOfYamaAfterQuest() {
+        chatNpc(angry, "The arrogant human finally arrives...")
+        chatPlayer(shifty, "Upset that I disrupted your plans?")
+        chatNpc(
+            angry,
+            "Disgusting. My master, the great demon Yama, wishes to speak with you.",
+        )
+        chatPlayer(
+            confused,
+            "Yama wants to speak with me? How do you know that? You shouldn't even be able to " +
+                "talk to him.",
+        )
+        chatNpc(
+            angry,
+            "My master wishes to have the satisfaction of explaining that to you himself. For " +
+                "this, I envy him. I will make do with the idiotic expression you wear presently.",
+        )
+        chatPlayer(angry, "I planted the device! Your connection should be severed!")
+        chatNpc(
+            angry,
+            "Silence, human! You will make no demands of me. Proceed to my master's domain and " +
+                "speak with him yourself if you desire an answer.",
+        )
+        if (choice2("Enter Yama's domain.", true, "Stay.", false)) {
+            // TODO(content): [boss:yama] transport the player to Yama's Domain
+            return
+        }
+        chatPlayer(worried, "I think I'd rather stay here.")
+        chatNpc(angry, "Weakness! Cowardice! Disgusting. Begone, human!")
+    }
+
+    private companion object {
+        const val KINGDOM_DIVIDED = "quest_kingdomdivided"
     }
 }

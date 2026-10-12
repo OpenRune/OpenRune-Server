@@ -2,18 +2,23 @@ package org.rsmod.content.areas.city.falador.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:The_Knight%27s_Sword (before the quest)
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:the_knights_sword] quest start and every later stage
+// TODO(content): [quest:the_knights_sword] in-progress stages
 class Squire : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.squire") { startDialogue(it.npc) { squire() } }
     }
 
     private suspend fun Dialogue.squire() {
+        if (QuestRequirements.hasCompleted(player, THE_KNIGHTS_SWORD)) {
+            squireAfterQuest()
+            return
+        }
         chatNpc(neutral, "Hello. I am the squire to Sir Vyvin.")
         val life =
             choice2(
@@ -172,6 +177,16 @@ class Squire : PluginScript() {
         // TODO(content): [quest:the_knights_sword] "Start The Knight's Sword quest?" offer
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Squire
+    private suspend fun Dialogue.squireAfterQuest() {
+        chatNpc(
+            happy,
+            "Hello friend! Many thanks for all of your help! Vyvin never even realised it was a " +
+                "different sword, and I still have my job!",
+        )
+        chatPlayer(happy, "I'm glad the new sword worked out alright.")
+    }
+
     private suspend fun Dialogue.hopeYouFindIt() {
         chatPlayer(neutral, "Well, I hope you find it soon.")
         chatNpc(
@@ -182,6 +197,7 @@ class Squire : PluginScript() {
     }
 
     private companion object {
+        const val THE_KNIGHTS_SWORD = "quest_knightssword"
         const val LOST_IT = 1
         const val MAKE = 2
         const val KINGDOM = 3

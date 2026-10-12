@@ -3,6 +3,7 @@ package org.rsmod.content.areas.zeah.molch.npcs
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -37,8 +38,15 @@ class MolchTownsfolk : PluginScript() {
     // https://oldschool.runescape.wiki/w/Transcript:Getting_Ahead
     // TODO(content): [system:met_flags] "Hello again. How are things?" on later visits
     // TODO(content): [quest:getting_ahead] start the quest after the offer, and the in-progress
-    //  and after-quest dialogue (3,000 coin reward)
+    //  dialogue
     private suspend fun Dialogue.gordon() {
+        if (QuestRequirements.hasCompleted(player, GETTING_AHEAD)) {
+            // TODO(content): [quest:getting_ahead] "As promised, here's your reward." and the
+            //  3,000 coins for players who didn't receive them from the quest
+            chatNpc(happy, "Hello again. Thank you for dealing with that beast.")
+            chatPlayer(happy, "It's my pleasure.")
+            return
+        }
         chatPlayer(quiz, "Hello. Who are you?")
         chatNpc(happy, "The name's Gordon. Good day to you.")
         chatPlayer(happy, "It's a nice farm you've got here.")
@@ -183,6 +191,7 @@ class MolchTownsfolk : PluginScript() {
     }
 
     private companion object {
+        const val GETTING_AHEAD = "quest_gettingahead"
         const val GETTING_AHEAD_CRAFTING = 30
         const val GETTING_AHEAD_CONSTRUCTION = 26
     }

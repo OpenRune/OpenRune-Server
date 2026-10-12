@@ -21,5 +21,6 @@ dependencies {
     implementation(projects.api.shops)
     implementation(projects.engine.game)
     implementation(projects.api.invtx)
+    implementation(projects.content.quest)
     implementation(projects.content.skills.utils)
 }

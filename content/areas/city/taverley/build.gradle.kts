@@ -7,6 +7,7 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.api.dropTable)
     implementation(projects.api.dropTablePlugin)
+    implementation(projects.content.quest)
     testImplementation(projects.api.invPlugin)
     testImplementation(projects.api.gameProcess)
     testImplementation(projects.api.invStorage)

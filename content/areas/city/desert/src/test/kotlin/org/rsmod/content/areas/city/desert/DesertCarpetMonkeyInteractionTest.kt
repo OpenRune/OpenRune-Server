@@ -6,6 +6,7 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
@@ -25,6 +26,9 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.content.areas.city.desert.carpet.npcs.CarpetMonkey
+import org.rsmod.content.quest.manager.QuestRequirementMode
+import org.rsmod.content.quest.manager.QuestRequirementPolicy
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
@@ -41,6 +45,13 @@ import org.rsmod.plugin.scripts.ScriptContext
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class DesertCarpetMonkeyInteractionTest {
+    private val previousPolicy = QuestRequirements.activePolicy()
+
+    @AfterEach
+    fun restorePolicy() {
+        QuestRequirements.install(previousPolicy)
+    }
+
     @Test
     fun `the carpet monkey eats exactly one banana`() {
         val f = Fixture()
@@ -65,11 +76,22 @@ class DesertCarpetMonkeyInteractionTest {
 
     @Test
     fun `the carpet monkey takes nothing without the amulet`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
         val f = Fixture()
         f.player.inv[0] = InvObj(BANANA, 1)
         f.talkTo(MONKEY)
         f.finish(listOf(1))
         assertEquals(1, f.player.inv.count(BANANA))
+    }
+
+    @Test
+    fun `after Monkey Madness II the carpet monkey is understood without the amulet`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+        val f = Fixture()
+        f.player.inv[0] = InvObj(BANANA, 1)
+        f.talkTo(MONKEY)
+        f.finish(listOf(1))
+        assertEquals(0, f.player.inv.count(BANANA))
     }
 
     @Test

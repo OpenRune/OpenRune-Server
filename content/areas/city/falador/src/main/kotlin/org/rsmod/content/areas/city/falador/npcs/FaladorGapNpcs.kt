@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.falador.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -77,9 +78,15 @@ class FaladorGapNpcs : PluginScript() {
         chatNpc(neutral, "Oh, forget it.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Rolad (before Between a Rock...)
-    // TODO(content): [quest:between_a_rock] "Can you leave me alone please?" once started
+    // https://oldschool.runescape.wiki/w/Transcript:Rolad
     private suspend fun Dialogue.rolad() {
+        if (
+            QuestRequirements.isOnQuest(player, BETWEEN_A_ROCK) ||
+                QuestRequirements.hasCompleted(player, BETWEEN_A_ROCK)
+        ) {
+            chatNpc(neutral, "Can you leave me alone please? I'm trying to study.")
+            return
+        }
         chatNpc(quiz, "Oh, hello... do I know you?")
         chatPlayer(
             neutral,
@@ -109,9 +116,15 @@ class FaladorGapNpcs : PluginScript() {
         mesbox("You think it best not to persue that line of questioning.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Doric (before Doric's Quest)
-    // TODO(content): [quest:dorics_quest] quest start, in-progress and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Doric
+    // TODO(content): [quest:dorics_quest] in-progress dialogue
     private suspend fun Dialogue.doric() {
+        if (QuestRequirements.hasCompleted(player, DORICS_QUEST)) {
+            chatNpc(happy, "Hello traveller, how is your metalworking coming along?")
+            chatPlayer(happy, "Not too bad, Doric.")
+            chatNpc(happy, "Good, the love of metal is a thing close to my heart.")
+            return
+        }
         chatNpc(happy, "Hello traveller, what brings you to my humble smithy?")
         val choice =
             choice5(
@@ -202,5 +215,10 @@ class FaladorGapNpcs : PluginScript() {
         }
         chatPlayer(neutral, "No, hitting rocks is for the boring people, sorry.")
         chatNpc(neutral, "That is your choice. Nice to meet you anyway.")
+    }
+
+    private companion object {
+        const val BETWEEN_A_ROCK = "quest_betweenarock"
+        const val DORICS_QUEST = "quest_dorics"
     }
 }

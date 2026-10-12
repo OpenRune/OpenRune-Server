@@ -2,6 +2,7 @@ package org.rsmod.content.areas.zeah.wintertodt.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -252,8 +253,7 @@ class WintertodtCamp : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Undor
-    // TODO(content): [quest:the_forsaken_tower] "I'm just here to keep an eye on things." after
-    //  the quest, and his quest dialogue
+    // TODO(content): [quest:the_forsaken_tower] his quest dialogue
     private suspend fun Dialogue.undor() {
         val title = if (access.isBodyTypeA()) "laddie" else "lass"
         chatNpc(happy, "Hello there $title.")
@@ -304,13 +304,22 @@ class WintertodtCamp : PluginScript() {
                     )
                     chatNpc(neutral, "One day I hope to be as good as the legendary Dinh himself.")
                     chatPlayer(quiz, "What are you doing here?")
-                    chatNpc(
-                        neutral,
-                        "They say the doors are failing and the Wintertodt is trying to escape. " +
-                            "I'm here to prove to them that the Doors are fine.",
-                    )
-                    chatPlayer(quiz, "And are they?")
-                    chatNpc(angry, "Of course they are! They were made by Dinh himself.")
+                    if (QuestRequirements.hasCompleted(player, FORSAKEN_TOWER)) {
+                        chatNpc(
+                            neutral,
+                            "I'm just here to keep an eye on things. Even though the Doors are " +
+                                "fixed now, it will take many years for things to get back to " +
+                                "normal.",
+                        )
+                    } else {
+                        chatNpc(
+                            neutral,
+                            "They say the doors are failing and the Wintertodt is trying to " +
+                                "escape. I'm here to prove to them that the Doors are fine.",
+                        )
+                        chatPlayer(quiz, "And are they?")
+                        chatNpc(angry, "Of course they are! They were made by Dinh himself.")
+                    }
                 }
                 else -> {
                     chatPlayer(neutral, "Goodbye.")
@@ -441,6 +450,7 @@ class WintertodtCamp : PluginScript() {
 
     private companion object {
         const val RAEDWALD_HELM = "obj.raedwald_helm"
+        const val FORSAKEN_TOWER = "quest_forsakentower"
         const val MYRE_SNELM = "obj.snelm_round_swamp"
     }
 }
