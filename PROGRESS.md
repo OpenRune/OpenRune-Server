@@ -8,26 +8,33 @@ Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
 ## 🟡 Started: Nero completionist cape, customiser and particles
 
-The v0.7 handoff is implemented locally on `feature/nero-completionist`,
-in three reviewable commits (`a6a558393`, `34cb51b9f`, `03c5b74ee`).
-Curator purchase/fusion/customiser, 22 fusion recipes, 48 Wear options,
-24 max-variant bonuses, native menus/teleports/Ava, Dizana ammo/combat,
-eight lock/repair families and permanent appearance persistence are connected.
+Updated locally to the owner-supplied **v0.11** assets/client at
+`0c1156492` on `feature/nero-completionist`. The prior native purchase/fusion, cape perks,
+Dizana ammunition, eight lock/repair families and PostgreSQL persistence remain.
 
-**23 new integration tests and 15 existing max-cape tests pass**, including
-real PostgreSQL save/load and native death/drop application. The bounded pack
-preserves **538,211 existing config definitions**. Supplied item/model/NPC/
-interface IDs remain; style varps use **63300–63341** and new non-wearable repair
-states use **63200–63223**. The runtime JAR, isolated server boot, guarded client
-startup and installer/rollback rehearsal pass.
+The update adds double-sided precision models, real Dizana quiver meshes,
+matching fixed hoods, `::compcapes hoods`, an upright live customiser preview
+with its own particle toggle, native Item Stats and Fire/Infernal animated
+trim textures (40/59). Cloth remains in the fixed family colours. Existing
+item/model/NPC/interface IDs and style vars **63300–63341** are retained.
 
-Local test entry point:
-`outputs/nero-completionist-v07-20261012/TESTEN.cmd`.
-Native visual gameplay/HD acceptance is pending. Particle rendering is still
-a guarded preview approximation; exact source-engine material/simulation parity
-is not certified. Full cache building has existing unrelated CS2 errors;
-the bounded pack is validated. This branch is not pushed, merged or installed.
-The accepted live JAR/cache/RSA/playerdata remain unchanged.
+**26 cape integration tests and 15 existing max-cape tests pass**. Native
+client checks decode all **96 models**, preserve emitters through merge/copy/
+lighting/shared sequence models, verify six textured assets and four depth
+layers, and check stable preview frames plus 48 item-stat conversions.
+All **38 compiled runtime/plugin classes** match the supplied JARs exactly.
+The bounded pack verifies **454 owned assets** after reopening while preserving
+**538,211 existing config definitions**. Build, isolated server/protocol/feed,
+dedicated client startup and install/rollback on a separate copy pass.
+
+Test entry point: `outputs/nero-completionist-v011-final-20261012/TESTEN.cmd`.
+New test sessions receive administrator rights only through the separate
+marked test helper; that helper is outside the installable server JAR.
+Native visual/HD acceptance remains pending. Original RS2 particle material/
+simulation parity and a full fresh-cache build remain open as previously
+recorded. Completion eligibility stays a separate owner decision.
+Cape code is local; it is not pushed, merged or installed. Accepted live
+JAR/cache/RSA/playerdata and the parked world-content checkpoint are preserved.
 
 ## 🟡 Started: world shortcuts, containers and fairy rings
 
@@ -453,7 +460,7 @@ Scope: XS = tiny, S = small, M = medium, L = large, XL = very large, XXL = multi
 | 🔴 | Combat Tasks | XXL |
 | 🔴 | Leagues | XXL |
 | 🔴 | Sailing Skill | XXL |
-| 🔴 | Completionist Cape + Particles | TBD |
+| 🔴 | Completionist eligibility | TBD |
 | 🔴 | Hooded Slayer Helmets + Variants | TBD |
 
 ### Parked
