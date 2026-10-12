@@ -114,10 +114,13 @@ constructor(
         delay(ARRIVE_DELAY)
         resetAnim()
         mooAtArrival()
-        when (left) {
-            0 -> mes("@mes_hl_red@Your amulet has run out of charges.</col>")
-            // UNVERIFIED: the capture only saw warnings at 5 and 1 charges left.
-            5, 1 -> mes("@mes_hl_blu@Your amulet has ${plural(left)} left.</col>")
+        // live capture, rev 241, 20261012T200152-df49f48@196-261 (5 and 1 left) and
+        // 20261012T222638-df49f48@591 (950 left, none from 999 to 951).
+        // UNVERIFIED: warnings at other counts below 50.
+        when {
+            left == 0 -> mes("@mes_hl_red@Your amulet has run out of charges.</col>")
+            left % WARN_EVERY == 0 || left == 5 || left == 1 ->
+                mes("@mes_hl_blu@Your amulet has ${plural(left)} left.</col>")
         }
     }
 
@@ -131,8 +134,9 @@ constructor(
         return false
     }
 
-    // live capture, rev 241, 20261012T200152-df49f48@196-261: ten arrivals, all within one tile of
-    // (3259, 3276). UNVERIFIED: the wiki gives (3259, 3277) with a radius of 2.
+    // live capture, rev 241, 20261012T200152-df49f48@196-261 and 20261012T222638-df49f48@246-595:
+    // 69 arrivals, on every tile within one of (3259, 3276) and never further. The wiki gives
+    // (3259, 3277) with a radius of 2.
     private fun destination(): CoordGrid =
         DESTINATION.translate(
             random.of(-ARRIVAL_RADIUS, ARRIVAL_RADIUS),
@@ -171,6 +175,7 @@ constructor(
         const val TELEPORT_DELAY = 3
         const val ARRIVE_DELAY = 2
         const val ARRIVAL_RADIUS = 1
+        const val WARN_EVERY = 50
         const val MOO_RANGE = 3
 
         val DESTINATION = CoordGrid(3259, 3276)

@@ -5,6 +5,8 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
+import java.text.NumberFormat
+import java.util.Locale
 import kotlin.math.min
 import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.obj.charges.ObjChargeManager.Companion.isFailure
@@ -47,8 +49,8 @@ class CowbellAmuletCharging @Inject constructor(private val charges: ObjChargeMa
         }
         val room = MAX_CHARGES - charges.getCharges(inv[slot], CHARGES)
         if (room <= 0) {
-            // UNVERIFIED: dialogue type (wiki transcript gives only the text).
-            mesbox("The amulet is already fully charged.")
+            // live capture, rev 241, 20261012T222638-df49f48@209
+            mes("The amulet is already fully charged.")
             return
         }
         val max = min(runes, room)
@@ -72,7 +74,7 @@ class CowbellAmuletCharging @Inject constructor(private val charges: ObjChargeMa
         objbox(
             CHARGED,
             zoom = 400,
-            "You add $requested air ${runeWord(requested)} to your amulet. It now has " +
+            "You add ${number(requested)} air ${runeWord(requested)} to your amulet. It now has " +
                 "${plural(total)}.",
         )
     }
@@ -93,7 +95,7 @@ class CowbellAmuletCharging @Inject constructor(private val charges: ObjChargeMa
         doubleobjbox(
             EMPTY,
             AIR_RUNE,
-            "You uncharge your amulet by removing $count air ${runeWord(count)} from it.",
+            "You uncharge your amulet by removing ${number(count)} air ${runeWord(count)} from it.",
         )
     }
 
@@ -114,7 +116,10 @@ class CowbellAmuletCharging @Inject constructor(private val charges: ObjChargeMa
         fun afterTeleport(amulet: InvObj, left: Int): InvObj =
             if (left <= 0) InvObj(EMPTY) else amulet.copy(vars = amulet.vars.withBits(chargeBits, left))
 
-        fun plural(count: Int): String = if (count == 1) "1 charge" else "$count charges"
+        // live capture, rev 241, 20261012T222638-df49f48@181-591: counts have thousands separators.
+        fun plural(count: Int): String = if (count == 1) "1 charge" else "${number(count)} charges"
+
+        fun number(count: Int): String = NumberFormat.getIntegerInstance(Locale.UK).format(count)
 
         private fun runeWord(count: Int): String = if (count == 1) "rune" else "runes"
     }
