@@ -384,3 +384,29 @@ id = "varbit.gravestone_layout_obj_41"
 varp = "varp.gravestone_layout_20"
 startBit = 16
 endBit = 31
+
+[[inventory]]
+isServerOnly = true
+id = "inv.death_permanent"
+inherit = "inv.death_permanent"
+
+scope = "Perm"
+stack = "Always"
+protect = false
+
+[[enum]]
+isServerOnly = true
+id = "enum.gravestone_resources"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.stafforb" = 1
+"obj.blankrune_high" = 1
+"obj.woodplank" = 1
+"obj.plank_oak" = 1
+"obj.plank_teak" = 1
+"obj.plank_mahogany" = 1
+"obj.plank_camphor" = 1
+"obj.plank_ironwood" = 1
+"obj.plank_rosewood" = 1

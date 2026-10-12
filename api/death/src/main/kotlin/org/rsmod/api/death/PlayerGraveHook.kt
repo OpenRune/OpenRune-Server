@@ -13,7 +13,8 @@ public data class DeathGrave(val coords: CoordGrid? = null)
 public interface PlayerGraveHook {
     /**
      * Takes [items], lost on a death at [deathCoords], into [player]'s grave and returns those it
-     * could not hold. Called before the death clears the player's inventory and equipment.
+     * could not hold. Called before the death clears the player's inventory and equipment, and
+     * also when nothing was lost, since a death changes an existing grave either way.
      */
     public fun store(
         player: Player,

@@ -5,6 +5,7 @@ import jakarta.inject.Singleton
 import org.rsmod.api.death.DeathGrave
 import org.rsmod.api.death.PlayerGraveHook
 import org.rsmod.api.market.MarketPrices
+import org.rsmod.api.player.SupplyItems
 import org.rsmod.api.player.ironman.isAnyIronman
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
@@ -15,6 +16,7 @@ import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.typeCoordVarp
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
@@ -23,6 +25,7 @@ import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.map.collision.get
+import org.rsmod.game.obj.Obj
 import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.game.type.getInvObj
 import org.rsmod.map.CoordGrid
@@ -33,6 +36,10 @@ private const val NPC_VARP = "varp.gravestone_npc"
 
 val Player.grave: Inventory
     get() = invMap.getOrPut("inv.gravestone")
+
+/** Death's Office Item Retrieval (live capture, rev 240, 20260811T152500-59bcb26@24). */
+val Player.deathOffice: Inventory
+    get() = invMap.getOrPut("inv.death_permanent")
 
 var Player.graveCoords: CoordGrid?
     get() = vars[COORD_VARP].takeIf { it != 0 && it != CoordGrid.NULL.packed }?.let(::CoordGrid)
@@ -61,6 +68,7 @@ class Gravestones
 @Inject
 constructor(
     private val npcRepo: NpcRepository,
+    private val objRepo: ObjRepository,
     private val npcList: NpcList,
     private val worldQueues: WorldQueueList,
     private val collision: CollisionFlagMap,
@@ -73,16 +81,28 @@ constructor(
     // TODO: Graves only start after the first visit to Death's Office, a PvP world's grave can
     // only be looted on one, and a grave on Entrana moves to the new death tile
     // (https://oldschool.runescape.wiki/w/Grave).
-    // TODO: On a second death live first sends unstackables past 28 and resources to Death's
-    // Office and drops food and potions under the grave (https://oldschool.runescape.wiki/w/Grave).
     override fun store(
         player: Player,
         deathCoords: CoordGrid,
         grave: DeathGrave,
         items: List<InvObj>,
     ): List<InvObj> {
-        close(player)
         val existing = player.graveCoords != null
+        if (!existing && items.isEmpty()) {
+            return items
+        }
+        close(player)
+        if (existing) {
+            prune(player)
+            // "If a grave only contains resources and supplies, and dying sends nothing new to the
+            // grave, then the grave disappears" (https://oldschool.runescape.wiki/w/Grave).
+            if (items.isEmpty()) {
+                if (player.grave.isEmpty()) {
+                    remove(player)
+                }
+                return items
+            }
+        }
         // UNVERIFIED: live sends what doesn't fit to Death's Office; this drops it on the floor.
         val unheld = storeInGrave(player.grave, items, ::value)
         // UNVERIFIED: a second death replaces the layout remembered from the first.
@@ -105,6 +125,69 @@ constructor(
         }
         player.softTimer(TIMER, TIMER_INTERVAL)
         return unheld
+    }
+
+    /**
+     * Before a death adds to an existing grave, the grave sends its resources and any unstackable
+     * past [MAX_UNSTACKABLE] to Death's Office and drops its food and potions beneath it, so a
+     * grave can't stockpile them (https://oldschool.runescape.wiki/w/Grave).
+     */
+    private fun prune(player: Player) {
+        val grave = player.grave
+        val coords = player.graveCoords ?: return
+        val toOffice = mutableListOf<InvObj>()
+        for (slot in grave.indices) {
+            val obj = grave[slot] ?: continue
+            val type = getInvObj(obj)
+            when {
+                SupplyItems.isFoodOrPotion(type) -> {
+                    grave[slot] = null
+                    // The pile "will despawn after one hour" (https://oldschool.runescape.wiki/w/Grave).
+                    // UNVERIFIED: that only the owner sees it, as with their other death drops.
+                    objRepo.add(Obj.fromOwner(player, coords, obj), SUPPLY_DURATION)
+                }
+                GraveResources.isResource(type) -> {
+                    grave[slot] = null
+                    toOffice += obj
+                }
+                !type.isStackable && obj.count > MAX_UNSTACKABLE -> {
+                    grave[slot] = obj.copy(count = MAX_UNSTACKABLE)
+                    toOffice += obj.copy(count = obj.count - MAX_UNSTACKABLE)
+                }
+            }
+        }
+        storeInGrave(grave, emptyList(), ::value)
+        if (toOffice.isNotEmpty()) {
+            sendToOffice(player, toOffice)
+            // https://oldschool.runescape.wiki/w/Grave: before "Oh dear, you are dead!".
+            player.mes(PRUNED_MESSAGE)
+        }
+    }
+
+    /**
+     * The grave collapses and its contents go to Death's Office, as when the timer runs out or
+     * Death collects them early (live capture, rev 240, 20260811T152500-59bcb26@24).
+     */
+    fun expire(player: Player) {
+        if (player.graveCoords == null) {
+            return
+        }
+        close(player)
+        player.mes(EXPIRED_MESSAGE)
+        val items = player.grave.filterNotNull { true }
+        player.grave.fillNulls()
+        sendToOffice(player, items)
+        remove(player)
+    }
+
+    /**
+     * Death's Office holds 120 slots; "items from an expired gravestone [are] deleted when the
+     * limit is reached" (https://oldschool.runescape.wiki/w/Death%27s_Office).
+     */
+    private fun sendToOffice(player: Player, items: List<InvObj>) {
+        // UNVERIFIED: that the office sorts by value like the grave, and which items go first
+        // when it's full (the least valuable are deleted here).
+        storeInGrave(player.deathOffice, items, ::value)
     }
 
     fun spawn(player: Player) {
@@ -165,10 +248,7 @@ constructor(
         // live capture, rev 241, 20261012T233700-df49f48@962: 3 off every 3 ticks.
         player.graveDuration = (player.graveDuration - TIMER_INTERVAL).coerceAtLeast(0)
         if (player.graveDuration == 0) {
-            // TODO: Live sends the items to Death's Office with "Your gravestone has expired."
-            // (live capture, rev 240, 20260811T152500-59bcb26@24). Until the office exists the
-            // grave stays, so nothing is lost.
-            player.clearSoftTimer(TIMER)
+            expire(player)
         }
     }
 
@@ -253,5 +333,16 @@ constructor(
             "Some of your dropped items are being held in a gravestone, near where you died."
         private const val MERGED_MESSAGE =
             "Some of your items have been added to your previous gravestone."
+        private const val PRUNED_MESSAGE =
+            "Some items have been moved to Death's Office from your gravestone."
+
+        // live capture, rev 240, 20260811T152500-59bcb26@24.
+        private const val EXPIRED_MESSAGE =
+            "<col=ef1020>Your gravestone has expired.</col> Items held there can now be reclaimed " +
+                "at <col=ef1020>Death's Office</col>, accessed from near the respawn points."
+
+        // https://oldschool.runescape.wiki/w/Grave: unstackables "cannot be stockpiled up to 56".
+        const val MAX_UNSTACKABLE = 28
+        private const val SUPPLY_DURATION = 6000
     }
 }

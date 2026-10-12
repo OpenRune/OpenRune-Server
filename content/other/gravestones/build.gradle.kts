@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.generated)
     implementation(projects.api.pluginCommons)
     integrationImplementation(projects.api.pluginCommons)
     integrationImplementation(projects.api.deathPlugin)

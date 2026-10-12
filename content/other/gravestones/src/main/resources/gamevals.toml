@@ -1,6 +1,9 @@
 [gamevals.timer]
 gravestone = 4442
 
+[gamevals.enum]
+gravestone_resources = 64420
+
 [gamevals.varp]
 gravestone_coord = 64420
 gravestone_state = 64421

@@ -21,6 +21,7 @@ import org.rsmod.api.death.UntradeableHandling
 import org.rsmod.api.death.plugin.StandardPvmDeathHook
 import org.rsmod.api.player.SupplyItems
 import org.rsmod.api.player.ui.ifSetEvents
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.scope.GameTestScope
 import org.rsmod.game.inv.InvObj
@@ -280,6 +281,68 @@ class GravestonesTest {
         }
 
     @Test
+    fun GameTestState.`an expired grave moves everything to Death's Office`() =
+        runGraveTest { deps ->
+            val lost = listOf(InvObj(pricey, 1), InvObj(cheap, 1), InvObj(stack, 40))
+            deps.graves.store(player, DEATH, DeathGrave(), lost)
+
+            deps.graves.expire(player)
+
+            assertTrue(player.grave.isEmpty())
+            assertEquals(lost.toSet(), player.deathOffice.filterNotNull { true }.toSet())
+            assertNull(player.graveCoords)
+            assertEquals(0, player.graveDuration)
+        }
+
+    @Test
+    fun GameTestState.`the grave expires when its timer runs out`() =
+        runGraveTest { deps ->
+            deps.graves.store(player, DEATH, DeathGrave(), listOf(InvObj(cheap, 1)))
+            player.graveDuration = Gravestones.TIMER_INTERVAL
+
+            advance(ticks = Gravestones.TIMER_INTERVAL * 2)
+
+            assertNull(player.graveCoords)
+            assertEquals(1, player.deathOffice.count(cheap.internalName))
+        }
+
+    @Test
+    fun GameTestState.`a second death prunes resources, extra unstackables and supplies`() =
+        runGraveTest { deps ->
+            val first =
+                listOf(
+                    InvObj(pricey, 1),
+                    InvObj("obj.bones", 3),
+                    InvObj(cheap, 35),
+                    InvObj(food, 2),
+                )
+            deps.graves.store(player, DEATH, DeathGrave(), first)
+            val graveTile = checkNotNull(player.graveCoords)
+
+            deps.graves.store(player, DEATH, DeathGrave(), listOf(InvObj(cheap, 2)))
+
+            assertEquals(30, player.grave.count(cheap.internalName))
+            assertEquals(1, player.grave.count(pricey.internalName))
+            assertEquals(0, player.grave.count("obj.bones"))
+            assertEquals(0, player.grave.count(food.internalName))
+            assertEquals(3, player.deathOffice.count("obj.bones"))
+            assertEquals(7, player.deathOffice.count(cheap.internalName))
+            val floor = deps.objs.findAll(graveTile).filter { it.type == food.id }.sumOf { it.count }
+            assertEquals(2, floor)
+        }
+
+    @Test
+    fun GameTestState.`a grave of only resources and supplies disappears on an empty death`() =
+        runGraveTest { deps ->
+            deps.graves.store(player, DEATH, DeathGrave(), listOf(InvObj("obj.bones", 1), InvObj(food, 1)))
+
+            deps.graves.store(player, DEATH, DeathGrave(), emptyList())
+
+            assertNull(player.graveCoords)
+            assertEquals(1, player.deathOffice.count("obj.bones"))
+        }
+
+    @Test
     fun GameTestState.`the grave's op opens it for its owner`() =
         runGraveTest { deps ->
             deps.graves.store(player, DEATH, DeathGrave(), listOf(InvObj(cheap, 1)))
@@ -295,7 +358,7 @@ class GravestonesTest {
 
     class Deps
     @Inject
-    constructor(val graves: Gravestones, val drops: PlayerDeathDrops)
+    constructor(val graves: Gravestones, val drops: PlayerDeathDrops, val objs: ObjRepository)
 
     private class GraveHookModule : AbstractModule() {
         override fun configure() {
@@ -309,6 +372,8 @@ class GravestonesTest {
         runInjectedGameTest(Deps::class, GraveHookModule(), GravestoneScript::class) { deps ->
             player.placeAt(DEATH)
             player.clearAllInvs()
+            // Owner-only floor drops need it; test players don't log in.
+            player.observerUUID = 1L
             body(deps)
         }
 

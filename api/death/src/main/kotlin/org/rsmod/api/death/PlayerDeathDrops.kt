@@ -173,9 +173,7 @@ constructor(
     ): List<InvObj> {
         val grave = handling.grave ?: return lost
         val hook = graveHooks.firstOrNull() ?: return lost
-        if (lost.isEmpty()) {
-            return lost
-        }
+        // Called with nothing lost too: a death still prunes an existing grave.
         return hook.store(player, coords, grave, lost)
     }
 
