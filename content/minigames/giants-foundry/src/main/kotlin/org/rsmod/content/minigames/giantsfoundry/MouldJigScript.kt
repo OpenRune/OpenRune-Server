@@ -89,6 +89,9 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         }
         ifCloseSub(INTERFACE)
         player.mouldState = 1
+        if (player.makingQuestSword()) {
+            player.advanceTutorial(SleepingGiants.TUTORIAL_MOULD_SET)
+        }
     }
 
     private fun ProtectedAccess.resetMoulds() {
@@ -111,6 +114,9 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         delay(1)
         if (!equipPreform()) {
             return
+        }
+        if (player.makingQuestSword()) {
+            player.advanceTutorial(SleepingGiants.TUTORIAL_PREFORM_TAKEN)
         }
         player.mouldState = 0
         player.mouldForte = 0

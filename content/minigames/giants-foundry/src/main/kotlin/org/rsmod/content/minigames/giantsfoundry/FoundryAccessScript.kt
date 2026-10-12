@@ -14,10 +14,16 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// UNVERIFIED: no transport data has the arrival tile; MRobertEvers/oldschool-clientc's notes
+// give it for the Sleeping Giants instance.
+internal val FOUNDRY_INSIDE = CoordGrid(3366, 11484, 0)
+
+internal fun ProtectedAccess.enterFoundry() = telejump(FOUNDRY_INSIDE)
+
 /** Getting in and out of the foundry, its bank chest and the preform storage. */
-class FoundryAccessScript @Inject constructor() : PluginScript() {
+class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRoom) :
+    PluginScript() {
     override fun ScriptContext.startup() {
-        onOpLoc1(ENTRANCE) { enter() }
         onOpLoc1(EXIT) { leave() }
         onOpLoc1(BANK_CHEST) { tryOpenBank() }
         onOpLoc1(STORAGE_EMPTY) { store() }
@@ -27,20 +33,14 @@ class FoundryAccessScript @Inject constructor() : PluginScript() {
         onPlayerLogout { autoStore(player) }
     }
 
-    private fun ProtectedAccess.enter() {
-        if (!QuestRequirements.hasCompleted(player, SLEEPING_GIANTS)) {
-            mes("You need to complete Sleeping Giants to enter the foundry.")
-            return
-        }
-        telejump(INSIDE)
-    }
-
+    /** The cave entrance is handled by [SleepingGiantsQuest], which routes by quest stage. */
     private fun ProtectedAccess.leave() {
         if (player.holdsPreform()) {
             stashPreform()
             mes("You leave your preform in the preform storage.")
         }
         telejump(OUTSIDE)
+        room.left(player)
     }
 
     private fun ProtectedAccess.store() {
@@ -91,15 +91,12 @@ class FoundryAccessScript @Inject constructor() : PluginScript() {
     private companion object {
         const val SLEEPING_GIANTS = "quest_sleepinggiants"
         const val QUEST_COMPLETE = 30
-        const val ENTRANCE = "loc.giants_foundry_entrance"
         const val EXIT = "loc.giants_foundry_exit"
         const val BANK_CHEST = "loc.giants_foundry_chest"
         const val STORAGE_EMPTY = "loc.giants_foundry_preform_storage_empty"
         const val STORAGE_FULL = "loc.giants_foundry_preform_storage_full"
 
-        // UNVERIFIED: no transport data has these. Inside matches the Sleeping Giants instance's
-        // arrival (MRobertEvers/oldschool-clientc notes); outside is the Minigame Teleport tile.
-        val INSIDE = CoordGrid(3366, 11484, 0)
+        // UNVERIFIED: no transport data has this; it's the Minigame Teleport tile.
         val OUTSIDE = CoordGrid(3361, 3149, 0)
     }
 }
