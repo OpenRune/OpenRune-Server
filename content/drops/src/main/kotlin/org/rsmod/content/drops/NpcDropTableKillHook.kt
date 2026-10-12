@@ -16,6 +16,7 @@ import org.rsmod.api.death.NpcDeathDropContext
 import org.rsmod.api.death.NpcDeathDropHook
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
+import org.rsmod.api.death.NpcDropReceiveHook
 import org.rsmod.api.death.NpcLootQuantityHook
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.DropTableRegistry
@@ -39,6 +40,7 @@ constructor(
     private val objRepo: ObjRepository,
     private val random: GameRandom,
     private val deathDropHooks: Set<NpcDeathDropHook>,
+    private val receiveHooks: Set<@JvmSuppressWildcards NpcDropReceiveHook> = emptySet(),
     private val quantityHooks: Set<@JvmSuppressWildcards NpcLootQuantityHook> = emptySet(),
 ) : NpcDeathKillHook {
 
@@ -110,7 +112,7 @@ constructor(
         val definition = checkNotNull(ServerCacheManager.getItem(obj.asRSCM()))
         var remaining = count
         for (hook in quantityHooks) remaining = hook.remaining(receiver, npc, definition, remaining).coerceIn(0, remaining)
-        val consumed = remaining > 0 && consumedByHook(obj, remaining, coords, duration, receiver)
+        val consumed = remaining > 0 && (receiveHooks.any { it.tryReceive(receiver, obj, remaining) } || consumedByHook(obj, remaining, coords, duration, receiver))
         if (remaining > 0 && !consumed) objRepo.add(obj, coords, duration, receiver, remaining)
         if (!consumed) ClientScripts.lootTrackerAddLoot(receiver, npc.id, eventId, definition.id, count)
         for (bonus in drop.bonusDrops) {

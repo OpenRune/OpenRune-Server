@@ -1,0 +1,117 @@
+[[item]]
+id = "obj.gauntlet_axe_hm"
+inherit = "obj.gauntlet_axe_hm"
+weaponCategory="Axe"
+contentGroup = "content.woodcutting_axe"
+tradeable = false
+[item.params]
+"param.levelrequire"=1
+"param.skill_anim"="seq.human_woodcutting_gauntlet_axe_hm"
+"param.equipment_sound"=2229
+"param.attack_anim_stance1"="seq.human_axe_hack"
+"param.attack_sound_stance1"=2498
+"param.attack_anim_stance2"="seq.human_axe_hack"
+"param.attack_sound_stance2"=2498
+"param.attack_anim_stance3"="seq.human_blunt_pound"
+"param.attack_sound_stance3"=2497
+"param.attack_anim_stance4"="seq.human_axe_hack"
+"param.attack_sound_stance4"=2498
+"param.defend_anim"="seq.human_axe_block"
+"param.attackrate"=5
+
+[[item]]
+id = "obj.gauntlet_pickaxe_hm"
+inherit = "obj.gauntlet_pickaxe_hm"
+weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
+tradeable = false
+[item.params]
+"param.levelrequire"=1
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_gauntlet_pickaxe_hm"
+"param.equipment_sound"=2229
+"param.attack_anim_stance1"="seq.human_blunt_pound"
+"param.attack_sound_stance1"=2498
+"param.attack_anim_stance2"="seq.human_blunt_pound"
+"param.attack_sound_stance2"=2498
+"param.attack_anim_stance3"="seq.human_blunt_spike"
+"param.attack_sound_stance3"=2497
+"param.attack_anim_stance4"="seq.human_blunt_pound"
+"param.attack_sound_stance4"=2498
+"param.defend_anim"="seq.human_axe_block"
+"param.attackrate"=5
+
+[[item]]
+id = "obj.gauntlet_axe"
+inherit = "obj.gauntlet_axe"
+weaponCategory="Axe"
+contentGroup = "content.woodcutting_axe"
+tradeable = false
+[item.params]
+"param.levelrequire"=1
+"param.skill_anim"="seq.human_woodcutting_crystal_axe"
+"param.equipment_sound"=2229
+"param.attack_anim_stance1"="seq.human_axe_hack"
+"param.attack_sound_stance1"=2498
+"param.attack_anim_stance2"="seq.human_axe_hack"
+"param.attack_sound_stance2"=2498
+"param.attack_anim_stance3"="seq.human_blunt_pound"
+"param.attack_sound_stance3"=2497
+"param.attack_anim_stance4"="seq.human_axe_hack"
+"param.attack_sound_stance4"=2498
+"param.defend_anim"="seq.human_axe_block"
+"param.attackrate"=5
+
+[[item]]
+id = "obj.gauntlet_pickaxe"
+inherit = "obj.gauntlet_pickaxe"
+weaponCategory="Pickaxe"
+contentGroup = "content.mining_pickaxe"
+tradeable = false
+[item.params]
+"param.levelrequire"=1
+"param.skill_action_delay"=3
+"param.skill_anim"="seq.human_mining_crystal_pickaxe"
+"param.equipment_sound"=2229
+"param.attack_anim_stance1"="seq.human_blunt_pound"
+"param.attack_sound_stance1"=2498
+"param.attack_anim_stance2"="seq.human_blunt_pound"
+"param.attack_sound_stance2"=2498
+"param.attack_anim_stance3"="seq.human_blunt_spike"
+"param.attack_sound_stance3"=2497
+"param.attack_anim_stance4"="seq.human_blunt_pound"
+"param.attack_sound_stance4"=2498
+"param.defend_anim"="seq.human_axe_block"
+"param.attackrate"=5
+
+[[item]]
+id = "obj.gauntlet_sceptre_hm"
+inherit = "obj.gauntlet_sceptre_hm"
+weaponCategory="Blunt"
+tradeable = false
+[item.params]
+"param.equipment_sound"=2233
+"param.attack_anim_stance1"="seq.human_blunt_pound"
+"param.attack_sound_stance1"=2567
+"param.attack_anim_stance2"="seq.human_blunt_pound"
+"param.attack_sound_stance2"=2567
+"param.attack_anim_stance4"="seq.human_blunt_pound"
+"param.attack_sound_stance4"=2567
+"param.defend_anim"="seq.human_blunt_block"
+"param.attackrate"=5
+
+[[item]]
+id = "obj.gauntlet_sceptre"
+inherit = "obj.gauntlet_sceptre"
+weaponCategory="Blunt"
+tradeable = false
+[item.params]
+"param.equipment_sound"=2233
+"param.attack_anim_stance1"="seq.human_blunt_pound"
+"param.attack_sound_stance1"=2567
+"param.attack_anim_stance2"="seq.human_blunt_pound"
+"param.attack_sound_stance2"=2567
+"param.attack_anim_stance4"="seq.human_blunt_pound"
+"param.attack_sound_stance4"=2567
+"param.defend_anim"="seq.human_blunt_block"
+"param.attackrate"=5

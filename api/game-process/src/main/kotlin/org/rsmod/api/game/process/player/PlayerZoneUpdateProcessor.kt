@@ -45,6 +45,12 @@ constructor(
     }
 
     private fun Player.processZoneUpdates() {
+        if (regionRebuildPending) {
+            regionRebuildPending = false
+            visibleZoneKeys.clear()
+            lastProcessedZone = ZoneKey.NULL
+        }
+
         val currZone = ZoneKey.from(coords)
         val visibleZones = visibleZoneKeys
         val prevZone = lastProcessedZone

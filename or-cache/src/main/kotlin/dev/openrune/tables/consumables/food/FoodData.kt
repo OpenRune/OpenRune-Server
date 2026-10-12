@@ -1608,6 +1608,11 @@ internal enum class FoodData(
         eatDelay = listOf(3),
         combatDelay = listOf(2),
     ),
+    PADDLEFISH(
+        row = "dbrow.paddlefish",
+        items = listOf("obj.gauntlet_food"),
+        heal = 20,
+    ),
     CRYSTAL_PADDLEFISH(
         row = "dbrow.crystal_paddlefish",
         items = listOf("obj.gauntlet_combo_food"),
@@ -1807,5 +1812,5 @@ internal enum class FoodData(
         combo = true,
         eatDelay = listOf(3),
         combatDelay = listOf(2),
-    );
+    )
 }

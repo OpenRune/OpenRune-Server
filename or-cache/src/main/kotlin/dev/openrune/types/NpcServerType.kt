@@ -30,7 +30,7 @@ data class NpcServerType(
     var rotateBackAnim: Int = -1,
     var walkLeftAnim: Int = -1,
     var walkRightAnim: Int = -1,
-    var actions: EntityOpsDefinition = EntityOpsDefinition(),
+    var actions: EntityOpsDefinition = EntityOpsDefinition.EMPTY,
     var multiVarBit: Int = -1,
     var multiDefault: Int = -1,
     var multiVarp: Int = -1,
@@ -72,7 +72,7 @@ data class NpcServerType(
     var huntRange: Int = 5,
     var huntMode: Int? = null,
     var giveChase: Boolean = true,
-    @param:TomlField(["params"],serializer = ParamSerializer::class)
+    @param:TomlField(["params"], serializer = ParamSerializer::class)
     var paramsRaw: MutableMap<Int, Any>? = null,
 ) : Definition {
 

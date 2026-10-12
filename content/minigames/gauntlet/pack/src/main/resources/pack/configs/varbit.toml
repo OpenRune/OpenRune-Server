@@ -1,0 +1,20 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.gauntlet_spoken_to_bryn"
+varp = "varp.gauntlet_flags"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.gauntlet_holding"
+varp = "varp.gauntlet_flags"
+startBit = 1
+endBit = 1
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.gauntlet_reward_pending"
+varp = "varp.gauntlet_flags"
+startBit = 2
+endBit = 2

@@ -58,7 +58,11 @@ class PackServerConfig(
     private val extraDirectories: List<File> = emptyList(),
     private val tokenizedReplacements: Map<String, String> = emptyMap(),
     private val tokenizedFile: Path? = null,
+    private val targetIdsByTable: Map<String, Set<Int>>? = null,
 ) : CacheTask(serverTaskOnly = true) {
+
+    private fun selectedIds(table: String, ids: Collection<Int>): List<Int> =
+        ids.filter { targetIdsByTable == null || it in targetIdsByTable[table].orEmpty() }.sorted()
 
     private val npcParameterPatches = mutableMapOf<Int, Map<Int, Any>>()
 
@@ -347,6 +351,7 @@ class PackServerConfig(
         // One incremental unit per type. The engine draws the progress bar itself, so it only ever counts
         // the types that are actually being repacked; an unchanged build shows nothing here.
         for (packType in packTypes.values) {
+            if (targetIdsByTable != null && packType.table !in targetIdsByTable) continue
             // Merged types are rebuilt over the client archive they overlay, so its checksum is part of
             // the fingerprint: repacking an npc on the live side changes the server npc rows too.
             val baseArchive = library.index(CONFIGS).archives().firstOrNull { it.id == packType.archive }
@@ -391,7 +396,7 @@ class PackServerConfig(
         ) {
             registerPackType<T>(table, decoder.getArchive(0), tomlMapper) { cache, _, _ ->
                 val defs = baseDefinitions()
-                packDefs(cache, decoder.getArchive(0), defs.keys.sorted(), create, codec(defs))
+                packDefs(cache, decoder.getArchive(0), selectedIds(table, defs.keys), create, codec(defs))
             }
         }
 
@@ -413,7 +418,7 @@ class PackServerConfig(
             registerPackType<T>(table, decoder.getArchive(0), tomlMapper) { cache, parsed, _ ->
                 val base = mutableMapOf<Int, B>().apply { loadBaseInto(cache, this) }
                 val overlay = parsedById<T>(parsed, table)
-                val ids = (base.keys + overlay.keys).distinct().sorted()
+                val ids = selectedIds(table, (base.keys + overlay.keys).distinct())
                 packDefs(cache, decoder.getArchive(0), ids, create, codec(base, overlay))
             }
         }
@@ -431,7 +436,7 @@ class PackServerConfig(
                 packDefs(
                     cache,
                     decoder.getArchive(0),
-                    overlay.keys.sorted(),
+                    selectedIds(table, overlay.keys),
                     create,
                     codec(overlay),
                 )

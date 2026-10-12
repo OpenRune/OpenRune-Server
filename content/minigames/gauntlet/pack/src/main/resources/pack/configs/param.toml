@@ -1,0 +1,6 @@
+[[params]]
+id = "param.woodcutting_fixed_yields"
+isServerOnly = true
+type = "INT"
+defaultInt = 0
+isMembers = true

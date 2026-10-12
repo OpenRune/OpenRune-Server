@@ -3,10 +3,32 @@ npcs = ["npc.crystal_spider"]
 
 [[guaranteed]]
 obj = "obj.gauntlet_crystal_shard"
-count = "10..30"
+count = "20..30"
 
+[main]
+total = 24
+name = "Crystalline Spider Drops"
 
-# Unknown wiki drop rate: Raw paddlefish [main/Materials/Common]
-# Unknown wiki drop rate: Grym leaf [main/Materials/Common]
-# Unknown wiki drop rate: Weapon frame [main/Materials/Common]
-# Unknown wiki drop rate: Teleport crystal (The Gauntlet) [main/Other/Uncommon]
+[[main.entries]]
+weight = 9
+nothing = true
+
+[[main.entries]]
+weight = 9
+obj = "obj.gauntlet_crystal_shard"
+count = "3..7"
+
+[[main.entries]]
+weight = 3
+obj = "obj.gauntlet_raw_food"
+count = "1..3"
+
+[[main.entries]]
+weight = 2
+obj = "obj.gauntlet_herb"
+count = 1
+
+[[main.entries]]
+weight = 1
+obj = "obj.gauntlet_teleport_crystal"
+count = 1

@@ -26,14 +26,14 @@ def main():
     parser.add_argument("--installer-template", type=Path, required=True)
     args = parser.parse_args()
     checkout = args.checkout.resolve(strict=True); target = args.target.resolve(strict=True)
-    output = args.output.resolve(); baseline = json.loads(args.baseline.read_text())
+    output = args.output.resolve(); baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
     if output.exists(): raise RuntimeError("Use a new empty output directory")
     if output == target or target in output.parents or checkout in output.parents: raise RuntimeError("Package must be outside checkout and live installation")
     original = target/"server/app/build/libs/server.jar"
     if sha(original) != baseline["acceptedServerSha256"]: raise RuntimeError("Accepted server changed")
     for relative, expected in baseline["acceptedSources"].items():
         if sha(checkout/relative) != expected: raise RuntimeError("Accepted source changed: " + relative)
-    proof = json.loads((checkout/".data/nero-completionist-pack-proof.json").read_text())
+    proof = json.loads((checkout/".data/nero-completionist-pack-proof.json").read_text(encoding="utf-8"))
     if proof.get("passed") is not True or proof.get("revision") != 240: raise RuntimeError("Native cache proof required")
     output.mkdir(parents=True)
     payload = output/"payload"; payload.mkdir()
@@ -77,10 +77,10 @@ def main():
     server_sha = next(file["afterSha256"] for file in files if file["testRelative"] == "server.jar")
     manifest = dict(serverRoot=str(target), serverSha256=server_sha, files=files, baseFiles=base_files,
                     cacheProof=proof, preservedNeroEntries=preserved, rawCandidateSha256=sha(candidate))
-    (output/"test-package.json").write_text(json.dumps(manifest, indent=2))
+    (output/"test-package.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     install = dict(serverRoot=str(target), allowedRoots=[str(target)], files=files,
                    prerequisites=[dict(target=str(target/file["relative"]), sha256=file["sha256"]) for file in base_files if file["relative"] not in {e["relative"] for e in files}])
-    (output/"install-manifest.json").write_text(json.dumps(install, indent=2))
+    (output/"install-manifest.json").write_text(json.dumps(install, indent=2), encoding="utf-8")
     client_meta=json.loads((TOOLS/"qualified-client.json").read_text(encoding="utf-8"))
     for name in ["qualified-client.json","client_profile.py","TestServerMain.java","IsolatedAccessScript.java",*client_meta["bundleHashes"]]:
         destination=output/"client"/name;destination.parent.mkdir(parents=True,exist_ok=True)
@@ -88,10 +88,11 @@ def main():
     shutil.copyfile(TOOLS/"Test-Completionist.ps1", output/"TESTEN.ps1")
     text = args.installer_template.read_text(encoding="utf-8-sig").replace("Interface- en lootupdate geinstalleerd", "Completionist-update geinstalleerd")
     first_end = text.index("\n") + 1
-    text = text[:first_end] + 'Import-Module (Join-Path $PSHOME "Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1")\n' + text[first_end:]
+    if "Import-Module (Join-Path $PSHOME" not in text:
+        text = text[:first_end] + 'Import-Module (Join-Path $PSHOME "Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1")\n' + text[first_end:]
     start = text.index("$running = @(")
     end = text.index("Assert-RegularPath $backupRoot", start)
-    text = text[:start] + (TOOLS/"installer_process_guard.ps1").read_text() + "\n" + text[end:]
+    text = text[:start] + (TOOLS/"installer_process_guard.ps1").read_text(encoding="utf-8") + "\n" + text[end:]
     (output/"INSTALLEREN.ps1").write_text(text, encoding="utf-8")
     (output/"TESTEN.cmd").write_text('@echo off\r\n"%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "%~dp0TESTEN.ps1"\r\npause\r\n')
     (output/"LEESMIJ.md").write_text("""# Completionist cape v0.16 native hoofd en Dizana icon

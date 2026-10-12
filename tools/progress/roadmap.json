@@ -525,19 +525,6 @@
       "size": "XL–XXL"
     },
     {
-      "title": "The Gauntlet",
-      "status": "not_added",
-      "summary": "Build The Gauntlet into a complete preparation-and-boss minigame.",
-      "details": [
-        "Implement preparation phase, resource gathering, room generation/flow and timer handling.",
-        "Implement Crystalline Hunllef and Corrupted Hunllef encounters with full mechanics.",
-        "Integrate rewards, Collection Log, completion state and mode-specific handling.",
-        "Add regression tests and in-game acceptance checks before marking added."
-      ],
-      "category": "minigames",
-      "size": "XL–XXL"
-    },
-    {
       "title": "Warriors' Guild Cyclopes & Defenders",
       "status": "not_added",
       "summary": "Build Warriors' Guild cyclopes and the full defender progression.",

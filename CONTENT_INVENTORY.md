@@ -105,10 +105,10 @@ Edit source/configuration, then run `node tools/progress/content-progress.mjs`.
 | [Chaos Elemental](https://oldschool.runescape.wiki/w/Chaos_Elemental) | Drop table only | [chaos_elemental.toml](content/drops/src/main/resources/drops/tables/monsters/chaos_elemental.toml) |
 | [Chaos Fanatic](https://oldschool.runescape.wiki/w/Chaos_Fanatic) | Drop table only | [ChaosFanaticDropTable.kt](content/drops/src/main/kotlin/org/rsmod/content/drops/tables/monsters/ChaosFanaticDropTable.kt) |
 | [Chronozon](https://oldschool.runescape.wiki/w/Chronozon) | Drop table only | [chronozon.toml](content/drops/src/main/resources/drops/tables/monsters/chronozon.toml) |
-| [Corrupted Hunllef](https://oldschool.runescape.wiki/w/Corrupted_Hunllef) | Not detected | — |
+| [Corrupted Hunllef](https://oldschool.runescape.wiki/w/Corrupted_Hunllef) | References only | [Hunllef.kt](content/minigames/gauntlet/src/main/kotlin/org/rsmod/content/minigames/gauntlet/hunllef/Hunllef.kt) |
 | [Count Draynor](https://oldschool.runescape.wiki/w/Count_Draynor) | Not detected | — |
 | [Crazy archaeologist](https://oldschool.runescape.wiki/w/Crazy_archaeologist) | Drop table only | [CrazyArchaeologistDropTable.kt](content/drops/src/main/kotlin/org/rsmod/content/drops/tables/monsters/CrazyArchaeologistDropTable.kt) |
-| [Crystalline Hunllef](https://oldschool.runescape.wiki/w/Crystalline_Hunllef) | Not detected | — |
+| [Crystalline Hunllef](https://oldschool.runescape.wiki/w/Crystalline_Hunllef) | References only | [Hunllef.kt](content/minigames/gauntlet/src/main/kotlin/org/rsmod/content/minigames/gauntlet/hunllef/Hunllef.kt); [HunllefSpecs.kt](content/minigames/gauntlet/src/main/kotlin/org/rsmod/content/minigames/gauntlet/hunllef/HunllefSpecs.kt) |
 | [Culinaromancer](https://oldschool.runescape.wiki/w/Culinaromancer) | Drop table only | [culinaromancer.toml](content/drops/src/main/resources/drops/tables/monsters/culinaromancer.toml) |
 | [Dad](https://oldschool.runescape.wiki/w/Dad) | Drop table only | [dad.toml](content/drops/src/main/resources/drops/tables/monsters/dad.toml) |
 | [Dagannoth Prime](https://oldschool.runescape.wiki/w/Dagannoth_Prime) | Drop table only | [dagannoth_prime.toml](content/drops/src/main/resources/drops/tables/monsters/dagannoth_prime.toml) |
@@ -243,8 +243,12 @@ Edit source/configuration, then run `node tools/progress/content-progress.mjs`.
 
 ## Minigames
 
+| Feature | Evidence | Source |
+|---|---|---|
+| [The Gauntlet](https://oldschool.runescape.wiki/w/The_Gauntlet) | Module | [content/minigames/gauntlet](content/minigames/gauntlet) |
+
 <details>
-<summary>Other catalog entries (51)</summary>
+<summary>Other catalog entries (50)</summary>
 
 | Feature | Evidence | Source |
 |---|---|---|
@@ -291,7 +295,6 @@ Edit source/configuration, then run `node tools/progress/content-progress.mjs`.
 | [Tai Bwo Wannai Cleanup](https://oldschool.runescape.wiki/w/Tai_Bwo_Wannai_Cleanup) | Not detected | — |
 | [Tears of Guthix (minigame)](https://oldschool.runescape.wiki/w/Tears_of_Guthix_(minigame)) | Not detected | — |
 | [Temple Trekking](https://oldschool.runescape.wiki/w/Temple_Trekking) | Not detected | — |
-| [The Gauntlet](https://oldschool.runescape.wiki/w/The_Gauntlet) | Not detected | — |
 | [Tithe Farm](https://oldschool.runescape.wiki/w/Tithe_Farm) | Not detected | — |
 | [Trouble Brewing](https://oldschool.runescape.wiki/w/Trouble_Brewing) | Not detected | — |
 | [TzHaar Fight Cave](https://oldschool.runescape.wiki/w/TzHaar_Fight_Cave) | Not detected | — |
@@ -345,7 +348,6 @@ Edit source/configuration, then run `node tools/progress/content-progress.mjs`.
 | [content/bosses/lizardman-shaman/pack](content/bosses/lizardman-shaman/pack) |
 | [content/bosses/tormented-demon](content/bosses/tormented-demon) |
 | [content/bosses/tormented-demon/pack](content/bosses/tormented-demon/pack) |
-| [content/devtools/nero-studio/pack](content/devtools/nero-studio/pack) |
 | [content/drops](content/drops) |
 | [content/events/shooting-stars](content/events/shooting-stars) |
 | [content/events/shooting-stars/pack](content/events/shooting-stars/pack) |

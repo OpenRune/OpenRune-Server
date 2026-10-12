@@ -187,7 +187,12 @@ class RspCycle(
             infos.updateRootBuildArea(area)
         }
 
-        if (!recalcBuildArea) {
+        val forceRegionRebuild = regionRebuildPending && regionUid != null && knownBuildArea != CoordGrid.NULL
+        if (forceRegionRebuild) {
+            knownRegionUid = null
+            cachedRegionZoneProvider = null
+        }
+        if (!recalcBuildArea && !forceRegionRebuild) {
             return
         }
 
