@@ -408,6 +408,45 @@ constructor(
         captureClient.queue(opNpcHandler, message)
     }
 
+    /**
+     * Clicks the first op of the obj in [invSlot], exactly as the client sends it: an `If3Button`
+     * on `component.inventory:items`. Opens the inventory overlay first if needed.
+     *
+     * The test must bind `HeldOpScript` (routes the button to `onOpHeldN`) and `InvOpenScript`
+     * (enables the inventory ops) next to the script under test.
+     */
+    public fun Player.opHeld1(invSlot: Int) {
+        opHeld(invSlot, IfButtonOp.Op2)
+    }
+
+    /** @see opHeld1 */
+    public fun Player.opHeld2(invSlot: Int) {
+        opHeld(invSlot, IfButtonOp.Op3)
+    }
+
+    /** @see opHeld1 */
+    public fun Player.opHeld3(invSlot: Int) {
+        opHeld(invSlot, IfButtonOp.Op4)
+    }
+
+    /** @see opHeld1 */
+    public fun Player.opHeld4(invSlot: Int) {
+        opHeld(invSlot, IfButtonOp.Op6)
+    }
+
+    /** @see opHeld1 */
+    public fun Player.opHeld5(invSlot: Int) {
+        opHeld(invSlot, IfButtonOp.Op7)
+    }
+
+    private fun Player.opHeld(invSlot: Int, op: IfButtonOp) {
+        if (!ui.containsOverlay(INVENTORY_INTERFACE)) {
+            ifOpenSub(INVENTORY_INTERFACE, INVENTORY_TARGET, IfSubType.Overlay, eventBus)
+        }
+        val items = ServerCacheManager.fromComponent(INVENTORY_ITEMS)
+        ifButton(items, comsub = invSlot, op = op, obj = inv[invSlot]?.id)
+    }
+
     public fun Player.ifOpenMain(interf: String) {
         ifOpenMain(interf, eventBus)
     }
@@ -1061,3 +1100,7 @@ constructor(
         }
     }
 }
+
+private const val INVENTORY_INTERFACE = "interface.inventory"
+private const val INVENTORY_TARGET = "component.toplevel_osrs_stretch:side3"
+private const val INVENTORY_ITEMS = "component.inventory:items"
