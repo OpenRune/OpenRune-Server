@@ -9,12 +9,13 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.content.other.pets.cats.CatCare
 import org.rsmod.content.other.pets.cats.Cats
-import org.rsmod.content.other.pets.storesAnyObj
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Civilian
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class Civilian @Inject constructor(private val care: CatCare) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(BLONDE) { talk(it.npc) { blonde() } }
@@ -119,7 +120,7 @@ class Civilian @Inject constructor(private val care: CatCare) : PluginScript() {
 
     private fun hasAdultCat(player: Player): Boolean {
         val following = care.following(player)
-        return following?.isKitten == false || player.storesAnyObj(Cats.adultObjs())
+        return following?.isKitten == false || Cats.adultObjs().any { it in player.inv }
     }
 
     private fun runes(player: Player): Int = if (player.ardougneEasyDiary) DIARY_RUNES else RUNES
