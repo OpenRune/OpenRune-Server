@@ -59,6 +59,7 @@ constructor(private val followers: PetFollowers, private val care: DogCare) : Pl
         invAdd(inv, dog.obj, 1)
     }
 
+    // TODO(content): [verify:in_game] Pet overhead text and message; the wiki has no dog transcript.
     private fun ProtectedAccess.pet(npc: Npc, dog: DogForm) {
         if (!followers.requireOwned(this, npc)) {
             return
@@ -78,6 +79,7 @@ constructor(private val followers: PetFollowers, private val care: DogCare) : Pl
         }
     }
 
+    // TODO(content): [verify:in_game] Guess age wording; the wiki has no puppy transcript.
     private suspend fun ProtectedAccess.guessAge(npc: Npc) {
         val age = care.ageTicks(player).ticksToMinutes()
         val left = care.ticksUntilAdult(player).ticksToMinutes()

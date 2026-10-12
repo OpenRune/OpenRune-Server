@@ -7,6 +7,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class YoungllefDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         for (npc in FORMS) {
@@ -14,6 +15,7 @@ class YoungllefDialogue @Inject constructor() : PluginScript() {
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Youngllef
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(2)) {

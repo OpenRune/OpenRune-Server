@@ -7,6 +7,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Nid
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class NidDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NID, "Talk-to") { talk(it) }

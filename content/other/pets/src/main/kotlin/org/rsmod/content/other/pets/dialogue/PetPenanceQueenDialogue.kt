@@ -7,11 +7,13 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class PetPenanceQueenDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NPC, "Talk-to") { talk(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Penance_Pet
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(sad, "Of all the high gamble rewards I could have won, I won you...")

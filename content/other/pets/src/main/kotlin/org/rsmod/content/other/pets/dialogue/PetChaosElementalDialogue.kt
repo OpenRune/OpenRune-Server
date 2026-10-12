@@ -7,11 +7,13 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class PetChaosElementalDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NPC, "Talk-to") { talk(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Chaos_Elemental_Jr.
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(quiz, "Is it true a level 3 skiller caught one of your siblings?")

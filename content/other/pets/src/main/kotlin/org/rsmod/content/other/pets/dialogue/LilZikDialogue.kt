@@ -7,6 +7,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class LilZikDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(ZIK, "Talk-to") { talkZik(it) }
@@ -17,6 +18,7 @@ class LilZikDialogue @Inject constructor() : PluginScript() {
         onPetOp(XARP, "Talk-to") { talkXarp(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Lil%27_Zik
     private suspend fun ProtectedAccess.talkZik(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(4)) {
@@ -54,6 +56,7 @@ class LilZikDialogue @Inject constructor() : PluginScript() {
             }
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Lil%27_Zik
     private suspend fun ProtectedAccess.talkMaiden(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(2)) {
@@ -73,6 +76,7 @@ class LilZikDialogue @Inject constructor() : PluginScript() {
             }
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Lil%27_Zik
     private suspend fun ProtectedAccess.talkBloat(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(3)) {
@@ -102,6 +106,7 @@ class LilZikDialogue @Inject constructor() : PluginScript() {
             }
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Lil%27_Zik
     private suspend fun ProtectedAccess.talkNylo(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(happy, "How are you doing little guy?")
@@ -110,6 +115,7 @@ class LilZikDialogue @Inject constructor() : PluginScript() {
             chatNpc(happy, "Chitter-chitter!")
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Lil%27_Zik
     private suspend fun ProtectedAccess.talkSot(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(2)) {
@@ -133,6 +139,7 @@ class LilZikDialogue @Inject constructor() : PluginScript() {
             }
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Lil%27_Zik
     private suspend fun ProtectedAccess.talkXarp(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(neutral, "We're not in the Theatre anymore, so no poisoning anyone, got that?")

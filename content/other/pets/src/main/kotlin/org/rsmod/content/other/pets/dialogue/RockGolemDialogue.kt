@@ -7,6 +7,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class RockGolemDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(DEFAULT, "Talk-to") { talkDefault(it) }
@@ -30,6 +31,7 @@ class RockGolemDialogue @Inject constructor() : PluginScript() {
         onPetOp(NICKEL, "Talk-to") { talkNickel(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Rock_Golem
     private suspend fun ProtectedAccess.talkDefault(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(quiz, "So you're made entirely of rocks?")

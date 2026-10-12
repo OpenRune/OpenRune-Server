@@ -10,6 +10,9 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// TODO(content): [system:pet_metamorphosis] Funky shaped log, fox whistle and golden pheasant egg
+//  dialogue from the transcript; PetMorphs only sends game messages.
 class BeaverDialogue @Inject constructor(private val morphs: PetMorphs) : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NORMAL, "Talk-to") { talkNormal(it) }
@@ -35,6 +38,7 @@ class BeaverDialogue @Inject constructor(private val morphs: PetMorphs) : Plugin
         onPetOpU(PHEASANT) { useItemPheasant(it.npc, it.objType) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Beaver
     private suspend fun ProtectedAccess.talkNormal(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(
@@ -127,6 +131,8 @@ class BeaverDialogue @Inject constructor(private val morphs: PetMorphs) : Plugin
             )
         }
 
+    // TODO(content): [verify:in_game] With the pheasant costume worn: mesbox "You shake your tail
+    //  feathers." then Fox "You look rather delicious today..." (worn-item check not mapped yet).
     private suspend fun ProtectedAccess.talkFox(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(3)) {
@@ -230,6 +236,9 @@ class BeaverDialogue @Inject constructor(private val morphs: PetMorphs) : Plugin
         }
     }
 
+    // TODO(content): [system:pet_feeding] The chicken/redberries should be consumed, and other food
+    //  gets "While I appreciate the offer, I won't eat any old thing!" (fox) or "Bwak! I am not
+    //  some common fowl that will eat anything, I have standards!" (pheasant).
     private suspend fun ProtectedAccess.useItemFox(npc: Npc, obj: ItemServerType) {
         if (morphs.tryUse(this, npc, obj)) {
             return
@@ -239,6 +248,7 @@ class BeaverDialogue @Inject constructor(private val morphs: PetMorphs) : Plugin
                 startDialogue(npc) {
                     chatNpc(happy, "Ooh, don't mind if I do!")
                     mesbox("You feed the chicken to your fox.")
+                    chatNpc(happy, "*chomp* Delicious!")
                 }
         }
     }
@@ -252,6 +262,7 @@ class BeaverDialogue @Inject constructor(private val morphs: PetMorphs) : Plugin
                 startDialogue(npc) {
                     chatNpc(happy, "Redberries! Please and thank you!")
                     mesbox("You feed the berries to your pheasant.")
+                    chatNpc(happy, "*chomp* Scrummy!")
                 }
         }
     }

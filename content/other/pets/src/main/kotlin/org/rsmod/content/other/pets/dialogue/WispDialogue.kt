@@ -7,11 +7,15 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class WispDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NPC, "Talk-to") { talk(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Wisp
+    // TODO(content): [system:pet_location_dialogue] Location variants: dialogue 4 (fortress
+    //  below Trollweiss, unconfirmed) and dialogue 5 (Shadow Realm in the Lassar Undercity).
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(3)) {

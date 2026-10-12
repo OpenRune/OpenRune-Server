@@ -8,6 +8,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class RiftGuardianDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         for (npc in RIFT_FORMS) {
@@ -16,6 +17,7 @@ class RiftGuardianDialogue @Inject constructor() : PluginScript() {
         onPetOp(GREATISH, "Talk-to") { talkGreatish(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Rift_guardian
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             val choice =
@@ -60,6 +62,7 @@ class RiftGuardianDialogue @Inject constructor() : PluginScript() {
             }
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Rift_guardian
     private suspend fun ProtectedAccess.talkGreatish(npc: Npc) =
         startDialogue(npc) {
             val choice =
@@ -91,6 +94,8 @@ class RiftGuardianDialogue @Inject constructor() : PluginScript() {
             }
         }
 
+    // TODO(content): [system:rift_guardian_colour_lock] When the colour is locked the wiki has
+    // "Even if you bind essence..." with the reversed options; only the unlocked branch exists.
     private suspend fun Dialogue.colourChanging() {
         chatPlayer(quiz, "About your colour-changing...")
         chatNpc(

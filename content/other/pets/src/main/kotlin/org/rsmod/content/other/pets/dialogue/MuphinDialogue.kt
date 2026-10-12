@@ -7,6 +7,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class MuphinDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(RANGED, "Talk-to") { talk(it) }
@@ -14,6 +15,7 @@ class MuphinDialogue @Inject constructor() : PluginScript() {
         onPetOp(SHIELDED, "Talk-to") { talk(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Muphin
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(3)) {

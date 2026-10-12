@@ -11,6 +11,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Giant_Squirrel
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class GiantSquirrelDialogue @Inject constructor(private val morphs: PetMorphs) : PluginScript() {
     override fun ScriptContext.startup() {
         for (npc in FORMS) {

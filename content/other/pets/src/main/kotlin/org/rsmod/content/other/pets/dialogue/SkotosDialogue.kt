@@ -9,6 +9,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Skotos
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class SkotosDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NPC, "Talk-to") { talk(it) }
@@ -19,7 +21,6 @@ class SkotosDialogue @Inject constructor() : PluginScript() {
         startDialogue(npc) {
             when (choice3("You look cute.", 1, "Where did you come from?", 2, "What can you do for me?", 3)) {
                 1 -> {
-                    chatPlayer(happy, "You look cute.")
                     chatNpc(
                         angry,
                         "I do not thinke thou understand the depths of the darkness you have " +
@@ -32,7 +33,6 @@ class SkotosDialogue @Inject constructor() : PluginScript() {
                     chatNpc(bored, "*Sighs* Nae. But thine is well and truly cooked.")
                 }
                 2 -> {
-                    chatPlayer(quiz, "Where did you come from?")
                     chatNpc(
                         neutral,
                         "I am spawned of darkness. I am filled with darkness. I am darkness " +
@@ -50,7 +50,6 @@ class SkotosDialogue @Inject constructor() : PluginScript() {
                     chatNpc(bored, "*Sighs* The darkness giveth, and the darkness taketh.")
                 }
                 else -> {
-                    chatPlayer(quiz, "What can you do for me?")
                     chatNpc(
                         neutral,
                         "Nothing. Ye are already tainted in my sight by the acts of light. However " +

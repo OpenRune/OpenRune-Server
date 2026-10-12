@@ -9,12 +9,15 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class BloodhoundDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NPC, "Talk-to") { talk(it) }
         onPetOpU(NPC) { useItem(it.npc, it.objType) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Bloodhound
+    // TODO(content): [system:treasure_trails] Right-click "Dig" op from the transcript.
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(5)) {
@@ -46,6 +49,7 @@ class BloodhoundDialogue @Inject constructor() : PluginScript() {
             }
         }
 
+    // TODO(content): [verify:in_game] Bone use message; the transcript doesn't list it.
     private fun ProtectedAccess.useItem(npc: Npc, obj: ItemServerType) {
         if (obj.name.contains("bones", ignoreCase = true)) {
             mes("You give the dog the bone - it eats it.")

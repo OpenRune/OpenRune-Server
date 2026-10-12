@@ -10,6 +10,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class SoupDialogue @Inject constructor() : PluginScript() {
     private var cachedRawFish: Set<String>? = null
 
@@ -18,6 +19,7 @@ class SoupDialogue @Inject constructor() : PluginScript() {
         onPetOpU(NPC) { useItem(it.npc, it.objType) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Soup
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             when (access.random.of(3)) {
@@ -46,6 +48,7 @@ class SoupDialogue @Inject constructor() : PluginScript() {
             }
         }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Soup
     private suspend fun ProtectedAccess.useItem(npc: Npc, obj: ItemServerType) {
         val name = obj.name
         when {
@@ -68,7 +71,7 @@ class SoupDialogue @Inject constructor() : PluginScript() {
             isSoupItem(obj) ->
                 startDialogue(npc) {
                     chatNpc(quiz, "Can we make this into soup?")
-                    if (invTotal(inv, HOT_WATER) > 0) {
+                    if (access.invTotal(inv, HOT_WATER) > 0) {
                         chatPlayer(happy, "Yes, I have some hot water here.")
                         invDel(inv, HOT_WATER, 1)
                         invDel(inv, obj.internalName, 1)
@@ -98,7 +101,7 @@ class SoupDialogue @Inject constructor() : PluginScript() {
 
     private companion object {
         const val NPC = "npc.skillpet_sailing"
-        const val HOT_WATER = "obj.bowl_water"
+        const val HOT_WATER = "obj.bowl_hot_water"
         val VEGETABLES = setOf("Cabbage", "Onion", "Potato", "Tomato", "Sweetcorn", "Cooked sweetcorn")
     }
 }

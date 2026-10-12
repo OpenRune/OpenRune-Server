@@ -7,6 +7,9 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Bran
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// TODO(content): [verify:in_game] "No, this feel like home." near Brimhaven vines/Frozen Throne
 class BranDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(BRAN, "Talk-to") { talkBran(it) }

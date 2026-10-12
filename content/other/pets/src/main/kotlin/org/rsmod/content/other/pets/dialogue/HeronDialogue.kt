@@ -1,5 +1,8 @@
 package org.rsmod.content.other.pets.dialogue
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -13,6 +16,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// https://oldschool.runescape.wiki/w/Transcript:Heron
 class HeronDialogue @Inject constructor(private val followers: PetFollowers) : PluginScript() {
     private var cachedCookedFish: Set<String>? = null
     private var cachedRawFish: Set<String>? = null
@@ -26,6 +31,9 @@ class HeronDialogue @Inject constructor(private val followers: PetFollowers) : P
         onPetOpU(GREAT_BLUE_NPC) { refuseOffering(it.npc, it.objType) }
     }
 
+    // TODO(content): [system:pet_metamorphosis] Metamorphosis should open the "Transmogrify your
+    //  Heron?" menu (Great blue heron - 1 x Spirit flakes, Heron - 1 x Raw fish, Not right now)
+    //  once the blue form is unlocked; there is no unlock varbit yet, so every swap costs 3000.
     private suspend fun ProtectedAccess.unlockPrompt(npc: Npc) {
         mesbox("You can unlock the pet Heron transmogrification for $FLAKES_REQUIRED x Spirit flakes.")
         if (invTotal(inv, SPIRIT_FLAKES) < FLAKES_REQUIRED) {
@@ -46,6 +54,18 @@ class HeronDialogue @Inject constructor(private val followers: PetFollowers) : P
     private suspend fun ProtectedAccess.refuseOffering(npc: Npc, offering: ItemServerType) {
         val name = offering.internalName
         when {
+            // TODO(content): [verify:in_game] The offered Spirit flake should be consumed.
+            name == SPIRIT_FLAKES ->
+                startDialogue(npc) {
+                    mesbox("You offer your pet Heron a Spirit flake, which it quickly gobbles up.")
+                    chatPlayer(
+                        quiz,
+                        "Oops! That was a mistake, you're already blue. " +
+                            "If you give it back, I'll give you a raw fish?",
+                    )
+                    chatNpc(neutral, "Sorry, no can do. They're just too tasty. You should try one sometime!")
+                    chatPlayer(neutral, "I'll pass.")
+                }
             name == EEL_SUSHI ->
                 startDialogue(npc) {
                     chatNpc(angry, "Sushi? Do I look like a commoner to you?")
@@ -56,7 +76,7 @@ class HeronDialogue @Inject constructor(private val followers: PetFollowers) : P
             offering.name.contains("burnt") ->
                 startDialogue(npc) {
                     chatNpc(angry, "What is wrong with you?")
-                    chatPlayer(neutral, "I'm giving you some fish.")
+                    chatPlayer(neutral, "I'm giving you some fish..")
                     chatNpc(angry, "And you think that I can do anything with something charred to the bone?")
                     chatPlayer(neutral, "In my culture, these well-cooked fish are considered pretty valuable.")
                     chatNpc(angry, "It's burnt, you dancing donkey!")
@@ -84,6 +104,9 @@ class HeronDialogue @Inject constructor(private val followers: PetFollowers) : P
                 .mapTo(HashSet()) { it.output.internalName }
                 .also { cachedCookedFish = it }
 
+    // TODO(content): [system:pet_metamorphosis] With the blue form unlocked, 10% chance of the
+    //  "Got any Spirit flakes?" variant instead; using raw fish on the white Heron then gives the
+    //  "I'm craving a Spirit flake right now." dialogue.
     private suspend fun ProtectedAccess.talkToHeron(npc: Npc): Unit =
         startDialogue(npc) {
             chatNpc(neutral, "Hop inside my mouth if you want to live!")
@@ -122,9 +145,24 @@ class HeronDialogue @Inject constructor(private val followers: PetFollowers) : P
                     chatNpc(neutral, "Touché.")
                 }
             else -> {
+                val confirmed =
+                    choice2(
+                        "Yes, it could use a nice snack.",
+                        true,
+                        "No, I'm not shelling that out for a snack.",
+                        false,
+                        title = "Give your pet Heron $FLAKES_REQUIRED x Spirit flakes to unlock its blue form?",
+                    )
+                if (!confirmed || invTotal(inv, SPIRIT_FLAKES) < FLAKES_REQUIRED) {
+                    return
+                }
                 invDel(inv, SPIRIT_FLAKES, FLAKES_REQUIRED)
                 morph(GREAT_BLUE_OBJ)
                 startDialogue(npc) {
+                    mesbox(
+                        "In a remarkable display of gluttony, your pet Heron consumes " +
+                            "$FLAKES_REQUIRED Spirit flakes. It turns blue in front of your very eyes.",
+                    )
                     chatNpc(
                         happy,
                         "That really hit the spot! Though I feel a little blue " +
@@ -138,24 +176,17 @@ class HeronDialogue @Inject constructor(private val followers: PetFollowers) : P
     private suspend fun ProtectedAccess.becomeHeron(npc: Npc) {
         val fish = rawFishInInventory()
         if (fish == null) {
-            if (invTotal(inv, SPIRIT_FLAKES) > 0) {
-                startDialogue(npc) {
-                    chatPlayer(
-                        quiz,
-                        "Oops! That was a mistake, you're already blue. " +
-                            "If you give it back, I'll give you a raw fish?",
-                    )
-                    chatNpc(neutral, "Sorry, no can do. They're just too tasty. You should try one sometime!")
-                    chatPlayer(neutral, "I'll pass.")
-                }
-                return
-            }
             startDialogue(npc) { chatNpc(angry, "Where's the fish? You don't have any!") }
             return
         }
+        val fishName = checkNotNull(ServerCacheManager.getItem(fish.asRSCM(RSCMType.OBJ))).name
         invDel(inv, fish, 1)
         morph(PET_OBJ)
-        startDialogue(npc) { chatNpc(happy, "Delicious. Back to white for me, then.") }
+        // TODO(content): [verify:in_game] Using raw fish also shows "The Great blue heron turns back
+        //  into a white Heron." (chatbox or mesbox).
+        startDialogue(npc) {
+            mesbox("Your pet Heron gobbles up your $fishName and turns a magnificent white.")
+        }
     }
 
     /**

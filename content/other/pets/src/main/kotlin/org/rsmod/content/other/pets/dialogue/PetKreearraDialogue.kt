@@ -7,11 +7,13 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class PetKreearraDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NPC, "Talk-to") { talk(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Kree'arra_Jr.
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(confused, "Huh... that's odd... I thought that would be big news.")
@@ -23,7 +25,7 @@ class PetKreearraDialogue @Inject constructor() : PluginScript() {
             )
             chatNpc(confused, "What are you talking about?")
             chatPlayer(shifty, "Oh have you not heard? It was my understanding that everyone had heard....")
-            chatNpc(shocked, "Heard wha...... OH NO!!!!?!?!!?!?")
+            chatNpc(shocked, "Heard wha...... OH NO!!!!?!?!!?!")
             chatPlayer(
                 happy,
                 "OH WELL THE BIRD, BIRD, BIRD, BIRD BIRD IS THE WORD. OH WELL THE BIRD, BIRD, BIRD, " +

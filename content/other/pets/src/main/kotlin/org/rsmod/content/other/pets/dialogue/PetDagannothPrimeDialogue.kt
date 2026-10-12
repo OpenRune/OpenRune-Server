@@ -8,11 +8,13 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class PetDagannothPrimeDialogue @Inject constructor(private val followers: PetFollowers) : PluginScript() {
     override fun ScriptContext.startup() {
         onPetOp(NPC, "Talk-to") { talk(it) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Dagannoth_Prime_Jr.
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(quiz, "So despite there being three kings, you're clearly the leader, right?")

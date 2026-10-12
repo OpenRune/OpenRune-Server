@@ -7,6 +7,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class PetSnakelingDialogue @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         for (npc in NPCS) {
@@ -14,6 +15,7 @@ class PetSnakelingDialogue @Inject constructor() : PluginScript() {
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Snakeling
     private suspend fun ProtectedAccess.talk(npc: Npc) =
         startDialogue(npc) {
             chatPlayer(happy, "Hey little snake!")

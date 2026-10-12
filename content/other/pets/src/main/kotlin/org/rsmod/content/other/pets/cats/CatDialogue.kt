@@ -10,6 +10,13 @@ import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// https://oldschool.runescape.wiki/w/Transcript:Kitten
+// https://oldschool.runescape.wiki/w/Transcript:Cat
+// https://oldschool.runescape.wiki/w/Transcript:Overgrown_cat
+// https://oldschool.runescape.wiki/w/Transcript:Wily_cat
+// https://oldschool.runescape.wiki/w/Transcript:Lazy_cat
+// https://oldschool.runescape.wiki/w/Transcript:Hellcat
 @Singleton
 class CatDialogue @Inject constructor(private val care: CatCare) {
     fun catspeak(player: Player): Boolean =
@@ -77,7 +84,11 @@ class CatDialogue @Inject constructor(private val care: CatCare) {
                 when {
                     care.isVeryHungry(player) -> chatNpc(sad, "I'm really hungry, do you have any fish, meeaow?")
                     care.isLonely(player) ->
-                        chatNpc(sad, "You don't think I'm cute and cuddly any more, do you?")
+                        chatNpc(
+                            sad,
+                            "You don't think I'm cute and cuddly any more, do you? Is there another " +
+                                "cat you like?",
+                        )
                     else -> chatNpc(happy, "Meeow I'm happy.")
                 }
             }
@@ -88,6 +99,8 @@ class CatDialogue @Inject constructor(private val care: CatCare) {
             }
             3 -> {
                 chatPlayer(quiz, "Where do you want to go?")
+                // TODO(content): [system:pet_location] In the Ardougne rat pits or Varrock Sewers
+                //  the kitten adds the "Let's stay here..." / "Can we stay here in the sewers..." lines.
                 when (access.random.of(3)) {
                     0 -> chatNpc(happy, "Can we go visit Gertrude, I'd like to see her again, she's very nice.")
                     1 -> chatNpc(happy, "Let's go to the ratpits in Ardougne. I think I fancy a fight!")
@@ -181,6 +194,8 @@ class CatDialogue @Inject constructor(private val care: CatCare) {
             }
             3 -> {
                 chatPlayer(quiz, "Where do you want to go?")
+                // TODO(content): [system:pet_location] In Varrock Sewers: "Here's as good a spot as any
+                //  for some hunting."
                 chatNpc(happy, "Can we go to Varrock sewers and chase some rats?")
             }
             4 -> {
@@ -315,6 +330,8 @@ class CatDialogue @Inject constructor(private val care: CatCare) {
         }
     }
 
+    // TODO(content): [system:cat_mood] Only the content mood is implemented; add the happy and
+    //  unhappy dialogue from the transcript.
     private suspend fun Dialogue.wilyCat(option: Int) {
         when (option) {
             1 -> {
@@ -328,6 +345,8 @@ class CatDialogue @Inject constructor(private val care: CatCare) {
             }
             3 -> {
                 chatPlayer(quiz, "Where do you want to go?")
+                // TODO(content): [system:pet_location] Port Sarim rat pits, Lumbridge and Ardougne
+                //  variants of this line.
                 chatNpc(happy, "Let's go hunting in Lumbridge.")
             }
             4 -> {
@@ -339,6 +358,8 @@ class CatDialogue @Inject constructor(private val care: CatCare) {
         }
     }
 
+    // TODO(content): [system:cat_mood] Only the content mood is implemented; add the happy and
+    //  unhappy dialogue from the transcript.
     private suspend fun Dialogue.wilyHellCat(option: Int) {
         when (option) {
             1 -> {
@@ -355,6 +376,7 @@ class CatDialogue @Inject constructor(private val care: CatCare) {
             }
             3 -> {
                 chatPlayer(quiz, "Where do you want to go?")
+                // TODO(content): [system:pet_location] Varrock Sewers and Ardougne variants of this line.
                 chatNpc(happy, "Let's go to the sewers of Varrock.")
             }
             4 -> {
@@ -366,6 +388,8 @@ class CatDialogue @Inject constructor(private val care: CatCare) {
         }
     }
 
+    // TODO(content): [system:cat_mood] Only the content mood is implemented; add the happy and
+    //  unhappy dialogue from the transcript.
     private suspend fun Dialogue.lazyCat(option: Int) {
         when (option) {
             1 -> {
@@ -425,6 +449,8 @@ class CatDialogue @Inject constructor(private val care: CatCare) {
         }
     }
 
+    // TODO(content): [system:cat_mood] Only the content mood is implemented; add the happy and
+    //  unhappy dialogue from the transcript.
     private suspend fun Dialogue.lazyHellCat(option: Int) {
         when (option) {
             1 -> {
@@ -594,7 +620,16 @@ class CatDialogue @Inject constructor(private val care: CatCare) {
                         chatNpc(angry, "Pah! You were no fun anyway.")
                     }
                 CatStage.Lazy ->
-                    if (!cat.isHell) {
+                    if (cat.isHell) {
+                        chatPlayer(
+                            angry,
+                            "Hit the road cat. And don't you come back no more no more no more no more!",
+                        )
+                        chatNpc(
+                            angry,
+                            "You're the meanest old adventurer I've ever met - and your singing is terrible!",
+                        )
+                    } else {
                         chatPlayer(angry, "That's it, scram, go away and don't come back, you big sack of laziness.")
                         chatNpc(
                             angry,
@@ -652,7 +687,21 @@ class CatDialogue @Inject constructor(private val care: CatCare) {
                     )
                     chatPlayer(bored, "Pah you're just a big scardy cat.")
                 }
-                CatStage.Cat, CatStage.Wily -> {
+                CatStage.Wily -> {
+                    chatPlayer(happy, "Go on get that nasty rodent.")
+                    chatNpc(bored, "I don't want to.")
+                    chatPlayer(laugh, "Scardy cat.")
+                    chatNpc(angry, "I'm not, now if you don't stop right now you'll be sorry.")
+                    chatPlayer(laugh, "Cowardly custard.")
+                    chatNpc(angry, "Watch it, be careful what you say now!")
+                    chatPlayer(laugh, "Cowardly, cowardly, cowardly custard!")
+                    chatNpc(angry, "Hiss!")
+                    // TODO(content): [system:cat_crypt_rat_hit] The cat attacks the player and deals
+                    //  3 damage here.
+                    chatPlayer(shocked, "Ow! What did you do that for, you crazy cat?")
+                    chatNpc(angry, "I warned you! I did, but would you listen? Would you my tail!")
+                }
+                CatStage.Cat -> {
                     chatPlayer(happy, "Go on get that nasty rodent.")
                     chatNpc(
                         angry,
