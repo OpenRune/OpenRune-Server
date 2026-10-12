@@ -66,15 +66,24 @@ constructor(
 
             access.fadeOut()
             if (intro) {
-                access.telejump(region.normal[INTRO_PLAYER_TILE])
-                access.lookOver(region)
-                access.faceSquare(region.normal[INTRO_LOOK_AT])
+                access.closeTopLevelTabsLenient()
+                access.minimapHideMap()
+                access.telejump(region.normal[INTRO_ENTRANCE_TILE])
+                kovac.faceSquare(region.normal[INTRO_ENTRANCE_TILE])
+                access.camera(region, INTRO_ENTRANCE_CAMERA)
+                access.fadeIn()
+                access.walk(region.normal[INTRO_PLAYER_TILE])
+                access.delay(INTRO_WALK_TICKS)
                 kovac.faceSquare(region.normal[INTRO_PLAYER_TILE])
+                access.camera(region, INTRO_SHOULDER_CAMERA)
+                access.delay(INTRO_SHOT_TICKS)
+                access.camera(region, INTRO_PAN_CAMERA)
+                access.delay(INTRO_SHOT_TICKS)
             } else {
                 access.telejump(region.normal[ARRIVAL])
                 kovac.faceSquare(region.normal[ARRIVAL])
+                access.fadeIn()
             }
-            access.fadeIn()
         } finally {
             regionRepo.unprotect(region)
         }
@@ -86,7 +95,7 @@ constructor(
         val room = rooms[access.player] ?: return
         access.fadeOut()
         swapToQuest(room, access.player)
-        access.camReset()
+        access.restoreView()
         access.fadeIn()
     }
 
@@ -94,7 +103,7 @@ constructor(
     fun endIntroNow(access: ProtectedAccess) {
         val room = rooms[access.player] ?: return
         swapToQuest(room, access.player)
-        access.camReset()
+        access.restoreView()
         access.closeFadeOverlayNow()
     }
 
@@ -217,17 +226,24 @@ constructor(
         closeFadeOverlayNow()
     }
 
-    /**
-     * The cutscene's last frame (wiki File:Sleeping Giants - entering the Giants' Foundry.png):
-     * Kovac just inside the cave entrance, the player mid-floor, and a high camera looking
-     * across the lava toward the waterfall and the broken tools.
-     */
-    // UNVERIFIED: one screenshot is the only source; the camera path and these tiles are read
-    // off it.
-    private fun ProtectedAccess.lookOver(region: Region) {
-        camMoveToV3(region.normal[INTRO_EYE], height = INTRO_EYE_HEIGHT, rate = CAM_SNAP, rate2 = CAM_SNAP)
-        camLookAtV3(region.normal[INTRO_LOOK_AT], height = 0, rate = CAM_SNAP, rate2 = CAM_SNAP)
+    private fun ProtectedAccess.restoreView() {
+        camReset()
+        minimapReset()
+        openTopLevelTabs()
     }
+
+    private fun ProtectedAccess.camera(region: Region, shot: Shot) {
+        camMoveToV3(region.normal[shot.eye], height = shot.eyeHeight, rate = shot.rate, rate2 = shot.rate)
+        camLookAtV3(region.normal[shot.lookAt], height = shot.lookAtHeight, rate = shot.rate, rate2 = shot.rate)
+    }
+
+    private class Shot(
+        val eye: CoordGrid,
+        val eyeHeight: Int,
+        val lookAt: CoordGrid,
+        val lookAtHeight: Int,
+        val rate: Int,
+    )
 
     private class LocSwap(
         val real: String,
@@ -291,10 +307,26 @@ constructor(
         const val FADE_TICKS = 2
         const val CAM_SNAP = 232
 
-        val INTRO_KOVAC_TILE = CoordGrid(3365, 11484, 0)
-        val INTRO_PLAYER_TILE = CoordGrid(3367, 11489, 0)
-        val INTRO_EYE = CoordGrid(3377, 11493, 0)
-        const val INTRO_EYE_HEIGHT = 1200
-        val INTRO_LOOK_AT = CoordGrid(3360, 11488, 0)
+        /*
+         * The intro cutscene, from Slayermusiq1's Sleeping Giants video
+         * (youtube.com/watch?v=io6mQxi1ddI, 1:12-1:40): a fade to black with the side tabs and
+         * minimap blanked; a low camera facing the cave entrance, Kovac already inside on the
+         * left by the crate, and the player walking in; then the camera behind Kovac's shoulder,
+         * then a pan across the lava and crucible before the dialogue.
+         */
+        // UNVERIFIED: the tiles, camera heights and timings are read off sparse video frames.
+        val INTRO_KOVAC_TILE = CoordGrid(3369, 11484, 0)
+        val INTRO_ENTRANCE_TILE = CoordGrid(3365, 11483, 0)
+        val INTRO_PLAYER_TILE = CoordGrid(3367, 11487, 0)
+        const val INTRO_WALK_TICKS = 4
+        const val INTRO_SHOT_TICKS = 4
+        const val CAM_PAN = 4
+
+        val INTRO_ENTRANCE_CAMERA =
+            Shot(CoordGrid(3366, 11489, 0), 300, CoordGrid(3365, 11482, 0), 100, CAM_SNAP)
+        val INTRO_SHOULDER_CAMERA =
+            Shot(CoordGrid(3370, 11482, 0), 400, CoordGrid(3371, 11493, 0), 100, CAM_SNAP)
+        val INTRO_PAN_CAMERA =
+            Shot(CoordGrid(3375, 11487, 0), 600, CoordGrid(3373, 11497, 0), 0, CAM_PAN)
     }
 }
