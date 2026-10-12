@@ -15,6 +15,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class BelonaScript
 @Inject
 constructor(private val shops: Shops, private val shopOps: ShopOperationMap) : PluginScript() {
@@ -29,6 +30,7 @@ constructor(private val shops: Shops, private val shopOps: ShopOperationMap) : P
         onOpNpc4(BELONA) { startDialogue(it.npc) { toggleMinerals(withPlayerLine = false) } }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Belona
     private suspend fun Dialogue.greeting() {
         chatNpc(neutral, "Hello human.")
         chatPlayer(quiz, "What do you do here?")

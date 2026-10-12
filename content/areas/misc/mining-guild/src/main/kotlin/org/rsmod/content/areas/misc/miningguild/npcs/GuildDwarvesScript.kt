@@ -7,6 +7,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class GuildDwarvesScript : PluginScript() {
     override fun ScriptContext.startup() {
         for (entranceDwarf in ENTRANCE_DWARVES) {
@@ -21,11 +22,13 @@ class GuildDwarvesScript : PluginScript() {
     private suspend fun ProtectedAccess.talk(npc: Npc, conversation: suspend Dialogue.() -> Unit) =
         startDialogue(npc) { conversation() }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Dwarf_(Mining_Guild)
     private suspend fun Dialogue.entranceGreeting() {
         chatNpc(happy, "Welcome to the Mining Guild. Can I help you with anything?")
         guildQuestions()
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Dwarf_(Motherlode_Mine)
     private suspend fun Dialogue.tunnelGuardTalk() {
         chatNpc(neutral, "Hello there. Do you need anything?")
         chatPlayer(quiz, "What's through this cave?")
@@ -65,6 +68,7 @@ class GuildDwarvesScript : PluginScript() {
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Dwarf_(Mining_Guild)
     private suspend fun Dialogue.doorGuardTalk() {
         chatPlayer(quiz, "What's through this door?")
         chatNpc(

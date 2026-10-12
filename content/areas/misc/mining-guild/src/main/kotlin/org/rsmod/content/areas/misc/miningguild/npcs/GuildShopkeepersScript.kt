@@ -11,6 +11,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class GuildShopkeepersScript @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(HENDOR) { talk(it.npc) { hendor() } }
@@ -23,6 +24,7 @@ class GuildShopkeepersScript @Inject constructor(private val shops: Shops) : Plu
     private suspend fun ProtectedAccess.talk(npc: Npc, conversation: suspend Dialogue.() -> Unit) =
         startDialogue(npc) { conversation() }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Hendor
     private suspend fun Dialogue.hendor() {
         chatNpc(happy, "Hello there! If you have any ores to trade I'm always buying.")
         while (true) {
@@ -54,6 +56,7 @@ class GuildShopkeepersScript @Inject constructor(private val shops: Shops) : Plu
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Yarsul
     private suspend fun Dialogue.yarsul() {
         chatNpc(
             happy,

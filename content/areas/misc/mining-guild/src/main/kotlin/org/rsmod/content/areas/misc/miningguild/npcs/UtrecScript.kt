@@ -8,6 +8,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class UtrecScript : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.mguild_amethystminer") { talk(it.npc) }
@@ -15,6 +16,7 @@ class UtrecScript : PluginScript() {
 
     private suspend fun ProtectedAccess.talk(npc: Npc) = startDialogue(npc) { conversation() }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Utrec
     private suspend fun Dialogue.conversation() {
         chatNpc(neutral, "All this mining is tiring work.")
         chatPlayer(quiz, "But you're not even mining at the moment.")
