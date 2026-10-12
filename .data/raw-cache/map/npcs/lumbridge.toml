@@ -1252,6 +1252,10 @@ coords = "0_50_51_54_8"
 npc = "npc.gillie_the_milkmaid"
 coords = "0_50_51_54_10"
 
+[[spawn]]
+npc = "npc.cowboss_mapped"
+coords = "0_50_51_62_32"
+
 ## Lumbridge pasture
 
 [[spawn]]
