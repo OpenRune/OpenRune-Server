@@ -184,6 +184,7 @@ class TrollCountryGapNpcs @Inject constructor(private val objRepo: ObjRepository
     private companion object {
         const val DEATH_PLATEAU = "quest_deathplateau"
         const val TROLL_ROMANCE = "quest_trollromance"
+
         // https://oldschool.runescape.wiki/w/Transcript:Tenzing: 12 gold
         const val CLIMBING_BOOTS_PRICE = 12
         const val CLIMBING_BOOTS = "obj.death_climbingboots"
