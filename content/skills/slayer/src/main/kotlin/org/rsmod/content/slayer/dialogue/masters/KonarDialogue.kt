@@ -11,8 +11,11 @@ import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.RemoteMaster
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.chatMaster
 import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
+import org.rsmod.content.slayer.dialogue.SlayerTaskTips
 import org.rsmod.content.slayer.rewards.SlayerRewardsPoints
 
+// https://oldschool.runescape.wiki/w/Transcript:Konar_quo_Maten
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 object KonarDialogue {
 
     private const val COMBAT_LEVEL_REQ = 75
@@ -30,7 +33,7 @@ object KonarDialogue {
     }
 
     suspend fun Dialogue.npcContactMenu() {
-        chatNpc(neutral, "'Ello, can I help you?")
+        chatNpc(neutral, "A bringer of death calls from afar. What do you desire?")
         when (
             choice3(
                 "I need another assignment.",
@@ -227,8 +230,7 @@ object KonarDialogue {
     }
 
     private suspend fun Dialogue.konarTips(task: SlayerTaskRow, area: SlayerAreaRow?) {
-        val monster = KonarSlayerDialogueHelpers.monsterName(task)
-        chatNpc(neutral, "You must bring balance to $monster.")
+        chatNpc(neutral, SlayerTaskTips.tipsFor(task, access.player).first())
         konarWhereIsArea(area)
     }
 
@@ -241,8 +243,7 @@ object KonarDialogue {
     }
 
     private suspend fun Dialogue.konarTips(remote: RemoteMaster, task: SlayerTaskRow, area: SlayerAreaRow?) {
-        val monster = KonarSlayerDialogueHelpers.monsterName(task)
-        chatMaster(remote, neutral, "You must bring balance to $monster.")
+        chatMaster(remote, neutral, SlayerTaskTips.tipsFor(task, access.player).first())
         konarWhereIsArea(remote, area)
     }
 
@@ -262,6 +263,7 @@ object KonarDialogue {
             chatPlayer(happy, "Okay, great!")
             chatNpc(neutral, "Once the balance has been served, return to me.")
         } else {
+            // TODO(content): [verify:in_game] Konar's reply without 30 points (missing from the transcript).
             chatNpc(
                 neutral,
                 "You do not have enough Slayer reward points. You need at least $CANCEL_TASK_COST points to cancel a task.",
@@ -275,6 +277,7 @@ object KonarDialogue {
             neutral,
             "Those who serve the balance are always rewarded. I can grant these rewards. I can also grant you the equipment needed to serve the balance, for a price of course.",
         )
+        // TODO(content): [system:slayer_shop] "Look at shop." should open the Slayer Equipment shop.
         when (choice3("Look at rewards.", 1, "Look at shop.", 2, "Cancel.", 3)) {
             1 -> SlayerInterfaces.openInterface(access, "npc.slayer_master_8")
             2 -> SlayerInterfaces.openInterface(access, "npc.slayer_master_8")

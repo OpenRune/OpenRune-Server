@@ -13,6 +13,10 @@ import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
 
 typealias SlayerMenuOption = suspend Dialogue.() -> Unit
 
+// https://oldschool.runescape.wiki/w/Transcript:Vannaka
+// https://oldschool.runescape.wiki/w/Transcript:Turael
+// https://oldschool.runescape.wiki/w/Transcript:Spria
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 object StandardSlayerDialogue {
 
     suspend fun Dialogue.openMain(
@@ -164,13 +168,12 @@ object StandardSlayerDialogue {
     }
 
     private suspend fun Dialogue.maybeHighCombatRedirect(profile: SlayerMasterProfile): Boolean {
-        val redirect = profile.highCombatRedirect ?: return false
-        if (player.combatLevel < redirect.minimumCombat) {
-            return false
-        }
+        val redirect =
+            profile.highCombatRedirects.lastOrNull { player.combatLevel >= it.minimumCombat }
+                ?: return false
         chatNpc(
             neutral,
-            "You're actually very strong, are you sure you don't want ${redirect.suggestedMaster} in ${redirect.location} to assign you a task?",
+            "You're actually very strong, are you sure you don't want ${redirect.suggestedMaster} ${redirect.location} to assign you a task?",
         )
         when (
             choice2(
@@ -193,6 +196,9 @@ object StandardSlayerDialogue {
         return true
     }
 
+    // TODO(content): [verify:in_game] Below a master's combat requirement: "Your cape attests that
+    // you are experienced enough to be taught by me. I will overlook your lack of experience in
+    // combat." with a Slayer cape, and the refusal without one (missing from the transcripts).
     private suspend fun Dialogue.handleAssignment(npcId: Int, profile: SlayerMasterProfile) {
         if (SlayerTaskManager.hasPendingMortimerChoice(access)) {
             chatNpc(
@@ -204,7 +210,17 @@ object StandardSlayerDialogue {
 
         val currentTask = SlayerTaskManager.getCurrentSlayerTask(access)
         if (currentTask == null) {
-            assignNewTask(access.npcVisType(npc!!).internalName)
+            val master = access.npcVisType(npc!!).internalName
+            if (profile.offersTips) {
+                assignNewTask(master)
+            } else {
+                assignNewTask(master) { taskName, count ->
+                    chatNpc(
+                        neutral,
+                        "Excellent, you're doing great. Your new task is to kill $count $taskName.",
+                    )
+                }
+            }
             return
         }
 

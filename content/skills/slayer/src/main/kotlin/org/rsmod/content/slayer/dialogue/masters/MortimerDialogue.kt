@@ -3,12 +3,13 @@ package org.rsmod.content.slayer.dialogue.masters
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.content.slayer.SlayerTaskChoiceInterface
 import org.rsmod.content.slayer.core.MortimerAssignment
-import org.rsmod.content.slayer.core.MortimerModifiers
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.content.slayer.core.SlayerTaskManager.AssignPreviousResult
 import org.rsmod.content.slayer.dialogue.GenericDialogue.rewardsOrShopDialogue
 import org.rsmod.content.slayer.slayerMortimerIntroComplete
 
+// https://oldschool.runescape.wiki/w/Transcript:Mortimer
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 object MortimerDialogue {
 
     suspend fun Dialogue.npcContactMenu() {
@@ -97,10 +98,6 @@ object MortimerDialogue {
                 neutral,
                 "You're still hunting ${currentTask.nameUppercase}; you have $count to go. Come back when you've finished your task.",
             )
-            val modifier = MortimerAssignment.activeModifier(access.player)
-            if (modifier != null) {
-                chatNpc(neutral, "Your assignment's mortifier: ${MortimerModifiers.label(modifier)}.")
-            }
             return
         }
 
@@ -174,6 +171,9 @@ object MortimerDialogue {
         }
 
         MortimerAssignment.storeOffers(access, offers)
+        // TODO(content): [system:mortimer_task_choice] The interface opens without this line; after
+        // a pick Mortimer says "Your new task is to kill [amount] [monster]." plus the mortifier
+        // sentence, then offers tips, "Can I cancel that task? (100 Points)" and "Okay, great!".
         chatNpc(neutral, "Take your pick. Which of these appeals to you?")
         SlayerTaskChoiceInterface.openAndAwait(access)
     }
@@ -269,12 +269,12 @@ object MortimerDialogue {
         )
         chatNpc(
             neutral,
-            "At 25 assignments, I'll offer tasks against creatures which are more likely to attract the attention of a superior creature upon their death.",
+            "At 25 assignments, any superior creatures you slay will become more likely to drop their special loot.",
         )
         chatNpc(neutral, "As long as you're up for the challenge of fighting them of course!")
         chatNpc(
             neutral,
-            "Then at 40 assignments, I'll offer tasks against creatures which are more insightful to fight against and help advance your slayer training at an expedited rate.",
+            "Then at 40 assignments, I'll offer tasks against creatures which are more educational to fight against, to help advance your slayer training at an expedited rate.",
         )
         chatNpc(
             neutral,
@@ -283,17 +283,10 @@ object MortimerDialogue {
         chatPlayer(quiz, "So, how many of your tasks have I completed so far?")
         val count = MortimerAssignment.tasksCompleted(access.player)
         val message =
-            when {
-                count >= 50 ->
-                    "By my records, I count $count, so you've already proven yourself more than capable of handling all my mortifiers!"
-                count >= 40 ->
-                    "By my records, I count $count. Keep at it and you'll unlock the third task choice."
-                count >= 25 ->
-                    "By my records, I count $count. You're making good progress."
-                count >= 15 ->
-                    "By my records, I count $count. You're starting to prove yourself."
-                else ->
-                    "By my records, I count $count. You've got a ways to go. Better get slayin'!"
+            if (count >= 50) {
+                "By my records, I count $count, so you've already proven yourself more than capable of handling all my mortifiers!"
+            } else {
+                "By my records, I count $count. You've got a ways to go. Better get slayin'!"
             }
         chatNpc(neutral, message)
     }

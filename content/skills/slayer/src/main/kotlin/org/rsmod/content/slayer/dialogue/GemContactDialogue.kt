@@ -8,6 +8,10 @@ import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
 import org.rsmod.content.slayer.rewards.SlayerRewardsPoints
 import org.rsmod.game.entity.Player
 
+// https://oldschool.runescape.wiki/w/Transcript:Krystilia
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// TODO(content): [verify:in_game] Gem replies for masters other than Konar (no transcript):
+// greetings, "Who are you?", "Where are you?" and the no-task line.
 /** Enchanted-gem remote contact for standard (non-Konar) Slayer masters. */
 object GemContactDialogue {
 
@@ -87,14 +91,17 @@ object GemContactDialogue {
             when (masterId) {
                 SlayerMasters.TASK_KONAR -> {
                     val area = KonarSlayerDialogueHelpers.currentArea(access.player)
-                    val monster = KonarSlayerDialogueHelpers.monsterName(task)
-                    chatMaster(remote, neutral, "You must bring balance to $monster.")
+                    chatMaster(remote, neutral, SlayerTaskTips.tipsFor(task, access.player).first())
                     if (area != null) {
                         chatMaster(remote, neutral, KonarSlayerDialogueHelpers.areaDescription(area))
                     }
                 }
-                SlayerMasters.TASK_WILDERNESS ->
+                SlayerMasters.TASK_WILDERNESS -> {
+                    for (tip in SlayerTaskTips.tipsFor(task, access.player)) {
+                        chatMaster(remote, neutral, tip)
+                    }
                     chatMaster(remote, neutral, "You've got to do the task in the Wilderness.")
+                }
                 else -> {
                     for (tip in SlayerTaskTips.tipsFor(task, access.player)) {
                         chatMaster(remote, neutral, tip)

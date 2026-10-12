@@ -5,6 +5,8 @@ import org.rsmod.api.table.slayer.SlayerMasterTaskRow
 import org.rsmod.api.table.slayer.SlayerTaskRow
 import org.rsmod.content.slayer.core.SlayerBossTasks
 import org.rsmod.content.slayer.core.SlayerTaskManager
+// TODO(content): [verify:in_game] Boss task lines; https://oldschool.runescape.wiki/w/Boss_Slayer
+// only says the master asks how many to kill.
 object SlayerBossDialogue {
 
     suspend fun Dialogue.offerBossTaskAssignment(

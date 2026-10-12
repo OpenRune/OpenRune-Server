@@ -7,6 +7,8 @@ import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
 import org.rsmod.content.slayer.dialogue.StandardSlayerDialogue.openMain
 import org.rsmod.content.slayer.slayerTuraelIntroComplete
 
+// https://oldschool.runescape.wiki/w/Transcript:Turael
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 object TuradelDialogue {
 
     val turaelNpcId = org.rsmod.content.slayer.dialogue.SlayerMasters.Npc.turael
@@ -35,15 +37,19 @@ object TuradelDialogue {
                     "I suppose I'll have to educate you then. A slayer is someone who is trained to fight specific creatures. They know these creatures' every weakness and strength. As you can guess it makes killing them a lot easier.",
                 )
                 startLearning()
-                access.player.slayerTuraelIntroComplete = true
             }
-            2 -> startLearning()
+            2 -> {
+                chatPlayer(neutral, "Never heard of you...")
+                chatNpc(
+                    neutral,
+                    "That's because my foe never lives to tell of me. We slayers are a dangerous bunch.",
+                )
+                startLearning()
+            }
         }
     }
 
     private suspend fun Dialogue.startLearning() {
-        chatPlayer(neutral, "Never heard of you...")
-        chatNpc(neutral, "That's because my foe never lives to tell of me. We slayers are a dangerous bunch.")
         when (choice2("Wow, can you teach me?", 1, "Sounds useless to me.", 2)) {
             1 -> {
                 chatPlayer(happy, "Wow, can you teach me?")
@@ -54,6 +60,7 @@ object TuradelDialogue {
                     "Oh okay then, you twisted my arm. You'll have to train against specific groups of creatures.",
                 )
                 chatPlayer(quiz, "Okay, what's first?")
+                access.player.slayerTuraelIntroComplete = true
                 assignNewTask(access.npcVisType(npc!!).internalName) { taskName, count ->
                     chatNpc(
                         neutral,
@@ -64,6 +71,7 @@ object TuradelDialogue {
                         "You'll also need this enchanted gem, it allows Slayer Masters like myself to contact you and update you on your progress. Don't worry if you lose it, you can buy another from any Slayer Master.",
                     )
                     val gemAdd = access.invAdd(access.inv, "obj.slayer_gem", 1)
+                    // TODO(content): [verify:in_game] Turael's line when the gem doesn't fit.
                     if (gemAdd.failure) {
                         chatNpc(
                             neutral,
