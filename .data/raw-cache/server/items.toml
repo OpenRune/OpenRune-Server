@@ -52894,3 +52894,15 @@ id = "obj.cowbell_amulet_empty"
 inherit = "obj.cowbell_amulet_empty"
 [item.params]
 "param.charged_variant"="obj.cowbell_amulet"
+
+[[item]]
+id = "obj.bottomless_milk_bucket_filled"
+inherit = "obj.bottomless_milk_bucket_filled"
+[item.params]
+"param.uncharged_variant"="obj.bottomless_milk_bucket"
+
+[[item]]
+id = "obj.bottomless_milk_bucket"
+inherit = "obj.bottomless_milk_bucket"
+[item.params]
+"param.charged_variant"="obj.bottomless_milk_bucket_filled"
