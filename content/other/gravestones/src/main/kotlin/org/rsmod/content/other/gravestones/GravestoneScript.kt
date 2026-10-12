@@ -10,6 +10,8 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
 import org.rsmod.api.player.ui.IfOverlayButton
 import org.rsmod.api.player.worn.HeldEquipResult
+import org.rsmod.api.script.onApNpc1
+import org.rsmod.api.script.onApNpc3
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onOpNpc1
@@ -27,12 +29,14 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class GravestoneScript @Inject constructor(private val graves: Gravestones) : PluginScript() {
     override fun ScriptContext.startup() {
-        // TODO: Live opens a grave from up to 7 tiles away with line of sight
-        // (https://oldschool.runescape.wiki/w/Grave); this walks up to it.
+        // A grave opens from up to 7 tiles away with line of sight
+        // (https://oldschool.runescape.wiki/w/Grave).
         for (style in GRAVE_STYLES) {
             onOpNpc1(style) { if (owns(it.npc)) openGrave() }
+            onApNpc1(style) { approach(it.npc) { openGrave() } }
             // UNVERIFIED: Loot takes what Take-All in the free section would.
             onOpNpc3(style) { if (owns(it.npc)) take(freeSlots()) }
+            onApNpc3(style) { approach(it.npc) { take(freeSlots()) } }
         }
         onPlayerLogin {
             if (player.graveCoords != null) {
@@ -54,6 +58,17 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
         onIfOverlayButton(FREE_BUTTON) { take(freeSlots()) }
         onIfOverlayButton(PAY_BUTTON) { if (graves.fee(player) > 0) pay() else take(paySlots()) }
         onIfOverlayButton(CLOSE_BUTTON) { graves.close(player) }
+    }
+
+    private suspend fun ProtectedAccess.approach(npc: Npc, action: suspend ProtectedAccess.() -> Unit) {
+        if (!owns(npc)) {
+            return
+        }
+        if (!isWithinDistance(npc, ACCESS_RANGE)) {
+            apRange(ACCESS_RANGE)
+            return
+        }
+        action()
     }
 
     private fun ProtectedAccess.owns(npc: Npc): Boolean =
@@ -194,6 +209,8 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
     }
 
     private companion object {
+        const val ACCESS_RANGE = 7
+
         val GRAVE_STYLES = listOf("npc.gravestone_default", "npc.gravestone_angel")
         val ITEM_SLOTS = 0 until 120
 

@@ -416,6 +416,22 @@ class GravestonesTest {
             assertTrue(player.ui.containsOverlay(Gravestones.INTERFACE))
         }
 
+    @Test
+    fun GameTestState.`the grave opens from five tiles away without walking up`() =
+        runGraveTest { deps ->
+            deps.graves.store(player, DEATH, DeathGrave(), listOf(InvObj(cheap, 1)))
+            val grave = checkNotNull(player.graveCoords)
+            val start = grave.translateX(5)
+            player.teleport(start)
+            val npc = checkNotNull(npcRepo.findAll(grave).firstOrNull())
+
+            player.opNpc1(npc)
+            advance(ticks = 3)
+
+            assertTrue(player.ui.containsOverlay(Gravestones.INTERFACE))
+            assertEquals(start, player.coords)
+        }
+
     class Deps
     @Inject
     constructor(val graves: Gravestones, val drops: PlayerDeathDrops, val objs: ObjRepository)
