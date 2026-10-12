@@ -11,6 +11,12 @@ import org.rsmod.api.death.PlayerDeathDrops.Companion.wildernessKeepCount
 import org.rsmod.api.death.PlayerDeathHandling
 import org.rsmod.api.death.PlayerDeathHook
 import org.rsmod.api.death.UntradeableHandling
+import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.game.entity.Player
+
+// Settings > Gameplay "Food/Potions can form supply piles on death": the checkbox is inverted
+// (struct 2861 param settings_setting_toggle_inversed = 1), so piles form while this is 0.
+private val Player.supplyPilesDisabled by boolVarBit("varbit.gravestone_supplypiles_disabled")
 
 public class StandardPvmDeathHook @Inject constructor() : PlayerDeathHook {
     override fun handleDeath(context: PlayerDeathContext): PlayerDeathHandling? {
@@ -26,7 +32,7 @@ public class StandardPvmDeathHook @Inject constructor() : PlayerDeathHook {
             dropReceiver = context.player,
             dropDuration = DROP_DURATION_STANDARD,
             revealDelay = PVP_REVEAL_DELAY,
-            supplyPile = true,
+            supplyPile = !context.player.supplyPilesDisabled,
             untradeableHandling = UntradeableHandling.DROP,
             grave = DeathGrave(),
         )

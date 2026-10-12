@@ -13,10 +13,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.rsmod.api.death.DeathGrave
+import org.rsmod.api.death.PlayerDeathContext
 import org.rsmod.api.death.PlayerDeathDrops
 import org.rsmod.api.death.PlayerDeathHandling
 import org.rsmod.api.death.PlayerGraveHook
 import org.rsmod.api.death.UntradeableHandling
+import org.rsmod.api.death.plugin.StandardPvmDeathHook
+import org.rsmod.api.player.SupplyItems
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.scope.GameTestScope
@@ -243,6 +246,22 @@ class GravestonesTest {
         }
 
     @Test
+    fun GameTestState.`food forms a supply pile while the setting is on`() =
+        runGraveTest { deps ->
+            val held = standardDeath(deps, supplyPilesDisabled = false)
+
+            assertEquals(setOf(InvObj(pricey, 1), InvObj(cheap, 1)), held.toSet())
+        }
+
+    @Test
+    fun GameTestState.`food goes to the grave while the setting is off`() =
+        runGraveTest { deps ->
+            val held = standardDeath(deps, supplyPilesDisabled = true)
+
+            assertEquals(setOf(InvObj(pricey, 1), InvObj(cheap, 1), InvObj(food, 1)), held.toSet())
+        }
+
+    @Test
     fun GameTestState.`the grave's op opens it for its owner`() =
         runGraveTest { deps ->
             deps.graves.store(player, DEATH, DeathGrave(), listOf(InvObj(cheap, 1)))
@@ -275,6 +294,32 @@ class GravestonesTest {
             body(deps)
         }
 
+    /** Dies with a pricey obj, a cheap obj and a food; returns what the inv and grave hold. */
+    private fun GameTestScope.standardDeath(deps: Deps, supplyPilesDisabled: Boolean): List<InvObj> {
+        player.setVarBit("varbit.gravestone_supplypiles_disabled", if (supplyPilesDisabled) 1 else 0)
+        player.inv[0] = InvObj(pricey, 1)
+        player.inv[1] = InvObj(cheap, 1)
+        player.inv[2] = InvObj(food, 1)
+        val context =
+            PlayerDeathContext(
+                player = player,
+                coords = DEATH,
+                inWilderness = false,
+                wildernessLevel = 0,
+                inRevenantCaves = false,
+                inInstance = false,
+                isSkulled = false,
+                hasProtectItem = false,
+                recentPvpDamage = false,
+                gamemode = 0,
+                killer = null,
+            )
+        val handling = checkNotNull(StandardPvmDeathHook().handleDeath(context)).copy(keepCount = 1)
+        val result = deps.drops.selectDrops(player, context, handling)
+        deps.drops.applyDrops(player, result, handling, DEATH)
+        return player.inv.filterNotNull { true } + player.grave.filterNotNull { true }
+    }
+
     private fun GameTestScope.openGrave() {
         player.ifOpenOverlay(Gravestones.INTERFACE, "component.toplevel_osrs_stretch:floater")
         player.ifSetEvents(FREE_ITEMS, 0 until GRAVE_SIZE, IfEvent.Op1, IfEvent.Op10)
@@ -289,6 +334,9 @@ class GravestonesTest {
 
     private val GameTestScope.pricey: ItemServerType
         get() = firstObjType { !it.isStackable && it.cost in 200_000 until 900_000 }
+
+    private val GameTestScope.food: ItemServerType
+        get() = firstObjType { !it.isStackable && it.cost in 1 until 1000 && SupplyItems.isFoodOrPotion(it) }
 
     private val GameTestScope.stack: ItemServerType
         get() = firstObjType { it.isStackable && it.cost in 1 until 100 }
