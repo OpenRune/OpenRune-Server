@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.areas.zeah.kourend.kourendRumour
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -13,8 +14,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 // https://oldschool.runescape.wiki/w/Transcript:Oswald
 // https://oldschool.runescape.wiki/w/Transcript:Sheryl
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:client_of_kourend] later rumours once Client of Kourend has started (see
-//  The Golden Field)
 class CloakAndStagger @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
         for (type in BAR_STAFF) {
@@ -92,11 +91,7 @@ class CloakAndStagger @Inject constructor(private val shops: Shops) : PluginScri
                 }
                 4 -> {
                     chatPlayer(quiz, "Have you heard any rumours here?")
-                    chatNpc(
-                        neutral,
-                        "Apparently Veos is looking for some help with something. He hangs " +
-                            "around the docks of Port Piscarilius.",
-                    )
+                    kourendRumour()
                     return
                 }
                 else -> {

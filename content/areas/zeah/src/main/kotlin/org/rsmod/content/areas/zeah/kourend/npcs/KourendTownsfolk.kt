@@ -3,6 +3,7 @@ package org.rsmod.content.areas.zeah.kourend.npcs
 import dev.openrune.types.MesAnimType
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -10,6 +11,10 @@ import org.rsmod.plugin.scripts.ScriptContext
 class KourendTownsfolk : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.zeah_head_councillor") { startDialogue(it.npc) { councillorAndrews() } }
+        onOpNpc1("npc.akd_councillor_andrews_jailed") {
+            startDialogue(it.npc) { davidAndrewsJailed() }
+        }
+        onOpNpc1("npc.akd_martin_holt_castle") { startDialogue(it.npc) { martinHoltCastle() } }
         onOpNpc1("npc.varlamore_sun_knight_parent") { startDialogue(it.npc) { sunKnight() } }
         onOpNpc1("npc.akd_martin_holt_kingstown") { startDialogue(it.npc) { martinHolt() } }
         onOpNpc1("npc.kourend_wayfarer1") { startDialogue(it.npc) { reshi() } }
@@ -19,8 +24,6 @@ class KourendTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Councillor_Andrews
-    // TODO(content): [quest:the_queen_of_thieves] vacant fourth seat after the quest
-    // TODO(content): [quest:a_kingdom_divided] jailed dialogue after the quest
     private suspend fun Dialogue.councillorAndrews() {
         chatPlayer(happy, "Hi there.")
         chatNpc(neutral, "Good day to you.")
@@ -79,10 +82,20 @@ class KourendTownsfolk : PluginScript() {
             "One of the councillors holds the position of Head Councillor and this rotates every " +
                 "year. I am the current Head Councillor.",
         )
-        chatNpc(
-            neutral,
-            "The other councillors are Councillor Hughes, Councillor Unkar and Councillor Orson.",
-        )
+        if (QuestRequirements.hasCompleted(player, QUEEN_OF_THIEVES)) {
+            chatNpc(
+                neutral,
+                "The other councillors are Councillor Unkar and Councillor Orson. The fourth " +
+                    "seat on the Council is currently vacent after the recent arrest of " +
+                    "Councillor Hughes.",
+            )
+        } else {
+            chatNpc(
+                neutral,
+                "The other councillors are Councillor Hughes, Councillor Unkar and Councillor " +
+                    "Orson.",
+            )
+        }
         chatPlayer(quiz, "So where do the five houses fit in?")
         chatNpc(
             neutral,
@@ -92,6 +105,25 @@ class KourendTownsfolk : PluginScript() {
         )
         chatNpc(happy, "I hope that helps.")
         chatPlayer(happy, "Yes, thank you.")
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Councillor_Andrews (After completing A Kingdom
+    //  Divided; the jailed npc only appears after the quest)
+    private suspend fun Dialogue.davidAndrewsJailed() {
+        chatNpc(angry, "Come to gloat?")
+        chatPlayer(neutral, "Well I do enjoy it when people get what they deserve.")
+        chatNpc(
+            angry,
+            "You'll never know what it's like to be on top of the world. The power I had was " +
+                "unconquerable. I'd do it all again without hesitation.",
+        )
+        chatPlayer(
+            angry,
+            "You never had any power. You were just a puppet. You've always been nothing, and " +
+                "that's all you'll ever be.",
+        )
+        chatNpc(angry, "That's not true!")
+        chatPlayer(neutral, "Enjoy your cell, puppet. Won't be seeing you.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Knight_of_Varlamore_(Kourend_Castle)
@@ -147,8 +179,8 @@ class KourendTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Martin_Holt
-    // TODO(content): [quest:a_kingdom_divided] start offer for players who meet the requirements,
-    //  his quest locations and the after-quest dialogue
+    // TODO(content): [quest:a_kingdom_divided] start offer for players who meet the requirements
+    //  and his quest locations
     // TODO(content): [system:npc_overhead] protest chants
     private suspend fun Dialogue.martinHolt() {
         chatPlayer(quiz, "What's all this about?")
@@ -187,6 +219,61 @@ class KourendTownsfolk : PluginScript() {
         chatNpc(quiz, "Indeed it is. So, do you want to join our protest?")
         chatPlayer(neutral, "Not right now. But thanks for the information.")
         mesbox("You do not meet all of the requirements to start the A Kingdom Divided quest.")
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Martin_Holt (After A Kingdom Divided)
+    private suspend fun Dialogue.martinHoltCastle() {
+        if (!QuestRequirements.hasCompleted(player, KINGDOM_DIVIDED)) {
+            // TODO(content): [quest:a_kingdom_divided] his dialogue in the castle during the quest
+            return
+        }
+        chatNpc(happy, "Good to see you friend.")
+        chatPlayer(
+            happy,
+            "Hello Martin. Now here's somewhere I wouldn't have expected to find you.",
+        )
+        chatNpc(neutral, "Indeed. I never thought I'd be back here.")
+        chatPlayer(quiz, "So why are you here?")
+        chatNpc(
+            happy,
+            "We won! The Council are out, and we have what Kourend really needed. We have a king!",
+        )
+        chatNpc(
+            neutral,
+            "Of course, King Artur ended up taking the throne from his father a little faster " +
+                "than anyone expected, so he needs plenty of guidance. That's where I come in!",
+        )
+        chatPlayer(quiz, "So you're helping to advise the King?")
+        chatNpc(
+            neutral,
+            "Exactly! When the people voted on Rose's Accord, they voted for the Hosidius family " +
+                "to become the new royal family. From a technical standpoint that means they " +
+                "voted for King Artur.",
+        )
+        chatPlayer(neutral, "But in reality it was his father they expected to rule.")
+        chatNpc(
+            neutral,
+            "Precisely. My job is to advise King Artur and ensure his actions have a positive " +
+                "impact on the people that he now rules.",
+        )
+        chatPlayer(quiz, "And how's that going?")
+        chatNpc(
+            neutral,
+            "Not too bad. While he lacks experience, the King has a good heart. He wants to do " +
+                "the right thing, and he has the support needed to do it.",
+        )
+        chatNpc(
+            shifty,
+            "Mind you, he could do with listening to his mother less. She's always whispering " +
+                "things in his ear. She forgets that he's the one in charge, not her.",
+        )
+        chatNpc(
+            happy,
+            "Still, I'm sure he just needs time to adjust. I have no doubt that under King " +
+                "Artur, Kourend will prosper like never before.",
+        )
+        chatPlayer(happy, "I'm sure you're right. See you around Martin.")
+        chatNpc(happy, "Until next time.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Reshi
@@ -345,5 +432,7 @@ class KourendTownsfolk : PluginScript() {
 
     private companion object {
         const val THOMDRIL = "npc.kourend_wayfarer2"
+        const val QUEEN_OF_THIEVES = "quest_queenofthieves"
+        const val KINGDOM_DIVIDED = "quest_kingdomdivided"
     }
 }

@@ -3,6 +3,7 @@ package org.rsmod.content.areas.zeah.wintertodt.npcs
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -10,8 +11,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 // TODO(content): [system:met_flags] "Welcome back, [brother/sister]. How may I be of
 //  assistance?" on later visits
-// TODO(content): [quest:the_forsaken_tower] "The Wintertodt is no longer growing in strength..."
-//  after the quest
 // TODO(content): [boss:wintertodt] the Exchange op
 // TODO(content): [verify:in_game] when Ignisia says "my child" instead of brother or sister
 class Ignisia : PluginScript() {
@@ -153,12 +152,21 @@ class Ignisia : PluginScript() {
             mesbox("You require at least 50 Firemaking to take on the Wintertodt.")
             return
         }
-        chatNpc(
-            neutral,
-            "We must hold back the Wintertodt until we can find a way to defeat it. Head into " +
-                "the prison and keep the holy fires lit so that our order may keep the evil at " +
-                "bay.",
-        )
+        if (QuestRequirements.hasCompleted(player, FORSAKEN_TOWER)) {
+            chatNpc(
+                neutral,
+                "The Wintertodt is no longer growing in strength but it still needs to be held " +
+                    "back. Head into the prison and keep the holy fires lit so that our order " +
+                    "may keep the evil at bay.",
+            )
+        } else {
+            chatNpc(
+                neutral,
+                "We must hold back the Wintertodt until we can find a way to defeat it. Head " +
+                    "into the prison and keep the holy fires lit so that our order may keep the " +
+                    "evil at bay.",
+            )
+        }
         sacredFlame()
     }
 
@@ -180,5 +188,6 @@ class Ignisia : PluginScript() {
 
     private companion object {
         const val WINTERTODT_FIREMAKING = 50
+        const val FORSAKEN_TOWER = "quest_forsakentower"
     }
 }

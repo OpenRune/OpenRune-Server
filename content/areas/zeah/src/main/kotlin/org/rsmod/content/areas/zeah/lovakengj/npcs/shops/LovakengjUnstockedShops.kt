@@ -2,6 +2,7 @@ package org.rsmod.content.areas.zeah.lovakengj.npcs.shops
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.areas.zeah.kourend.kourendRumour
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -90,8 +91,6 @@ class LovakengjUnstockedShops : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Fuggy
-    // TODO(content): [quest:client_of_kourend] later rumours once Client of Kourend has started
-    //  (see The Golden Field)
     private suspend fun Dialogue.fuggy() {
         chatNpc(happy, "What can I do for you, traveller?")
         val option =
@@ -122,11 +121,7 @@ class LovakengjUnstockedShops : PluginScript() {
             }
             3 -> {
                 chatPlayer(quiz, "Have you heard any rumours here?")
-                chatNpc(
-                    neutral,
-                    "Apparently Veos is looking for some help with something. He hangs around " +
-                        "the docks of Port Piscarilius.",
-                )
+                kourendRumour()
             }
             else -> chatPlayer(neutral, "I'm alright, thank you.")
         }

@@ -3,6 +3,7 @@ package org.rsmod.content.areas.zeah.lovakengj.npcs
 import dev.openrune.types.MesAnimType
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -28,8 +29,14 @@ class LovakengjTownsfolk : PluginScript() {
 
     // https://oldschool.runescape.wiki/w/Transcript:Lady_Vulcana_Lovakengj
     // TODO(content): [quest:the_forsaken_tower] start offer for players who meet the
-    //  requirements, the after-quest dialogue and Councillor Unkar
+    //  requirements
+    // TODO(content): [quest:a_kingdom_divided] "Apparently you need a reward or something? Here you
+    //  go." for players who lost the memoir page
     private suspend fun Dialogue.ladyVulcana() {
+        if (QuestRequirements.hasCompleted(player, FORSAKEN_TOWER)) {
+            ladyVulcanaAfterQuest()
+            return
+        }
         unkar(neutral, "...and he says that it's of the greatest urgency.")
         chatNpc(
             angry,
@@ -44,6 +51,66 @@ class LovakengjTownsfolk : PluginScript() {
             "Sorry human. We're currently engaging in important official business. You'll need " +
                 "to come back another time.",
         )
+    }
+
+    private suspend fun Dialogue.ladyVulcanaAfterQuest() {
+        chatNpc(happy, "Oh look, it's the human. Hello human.")
+        while (true) {
+            val option =
+                choice4(
+                    "Tell me about yourself.",
+                    1,
+                    "Tell me about Lovakengj.",
+                    2,
+                    "Tell me about your plans.",
+                    3,
+                    "Goodbye.",
+                    4,
+                )
+            when (option) {
+                1 -> {
+                    chatPlayer(quiz, "Tell me about yourself.")
+                    chatNpc(confused, "Myself? Oh.")
+                    chatNpc(
+                        neutral,
+                        "Well I'm Vulcana Lovakengj, the head of Lovakengj House. I rule the " +
+                            "city of Lovakengj.",
+                    )
+                    chatPlayer(happy, "Cool.")
+                    chatPlayer(neutral, "...")
+                    chatPlayer(quiz, "Anything else?")
+                    chatNpc(confused, "Oh... No I don't think so.")
+                    chatPlayer(confused, "Huh, fair enough.")
+                }
+                2 -> {
+                    chatPlayer(quiz, "Tell me about Lovakengj.")
+                    chatNpc(confused, "Lovakengj?")
+                    chatNpc(happy, "Yes! I know a lot about Lovakengj!")
+                    chatNpc(
+                        neutral,
+                        "Lovakengj is a city of dwarves. It's the only non-human city in Kourend.",
+                    )
+                    chatNpc(
+                        neutral,
+                        "Lovakengj is very important you know. The resources mined here are used " +
+                            "throughout the kingdom. Weapons, armour, tools, buildings...",
+                    )
+                    chatNpc(neutral, "All sorts of things come out of Lovakengj.")
+                }
+                3 -> {
+                    chatPlayer(quiz, "Tell me about your plans.")
+                    chatNpc(confused, "My plans? Hmm let me see now...")
+                    chatNpc(happy, "Ah, I know. I'll have a sherry.")
+                    chatNpc(neutral, "Jorra! Bring me a sherry.")
+                    chatNpcSpecific("Jorra", JORRA, neutral, "Yes Lady Lovakengj.")
+                }
+                else -> {
+                    chatPlayer(neutral, "Goodbye.")
+                    chatNpc(neutral, "Goodbye human.")
+                    return
+                }
+            }
+        }
     }
 
     private suspend fun Dialogue.unkar(mesanim: MesAnimType, text: String) {
@@ -327,6 +394,8 @@ class LovakengjTownsfolk : PluginScript() {
 
     private companion object {
         const val UNKAR = "npc.councillor_unkar"
+        const val JORRA = "npc.lovakengj_assistant"
+        const val FORSAKEN_TOWER = "quest_forsakentower"
         val DEEPER_LODE_LISTENERS =
             listOf(
                 "npc.lovakengj_drunkard_sub_1",

@@ -2,6 +2,8 @@ package org.rsmod.content.areas.zeah.arceuus.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.areas.zeah.kourend.kourendRumour
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -62,8 +64,14 @@ class ArceuusTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Tower_Mage
-    // TODO(content): [quest:the_ascent_of_arceuus] permission to enter after the quest
     private suspend fun Dialogue.towerGuardian() {
+        if (QuestRequirements.hasCompleted(player, ASCENT_OF_ARCEUUS)) {
+            chatNpc(
+                neutral,
+                "You have been granted permission to enter the Tower of Magic. Move along.",
+            )
+            return
+        }
         chatNpc(
             neutral,
             "The Tower of Magic is off limits. Lord Arceuus does not wish his experiments to be " +
@@ -521,13 +529,7 @@ class ArceuusTownsfolk : PluginScript() {
                 }
                 3 -> {
                     chatPlayer(quiz, "Have you heard any rumours here?")
-                    // TODO(content): [quest:client_of_kourend] later rumours once Client of
-                    //  Kourend has started (see The Golden Field)
-                    chatNpc(
-                        neutral,
-                        "Apparently Veos is looking for some help with something. He hangs " +
-                            "around the docks of Port Piscarilius.",
-                    )
+                    kourendRumour()
                     return
                 }
                 else -> {
@@ -541,7 +543,8 @@ class ArceuusTownsfolk : PluginScript() {
     // https://oldschool.runescape.wiki/w/Transcript:Lord_Trobin_Arceuus
     // TODO(content): [quest:the_ascent_of_arceuus] he is only reachable in the Tower of Magic
     //  after the quest
-    // TODO(content): [quest:a_kingdom_divided] after-quest plans and the lost memoir page reward
+    // TODO(content): [quest:a_kingdom_divided] "Thank you for helping our people. Please accept
+    //  these gifts" for players who lost the memoir page
     private suspend fun Dialogue.lordTrobin() {
         chatNpc(neutral, "Good day friend.")
         while (true) {
@@ -562,29 +565,7 @@ class ArceuusTownsfolk : PluginScript() {
                 1 -> trobinHimself()
                 2 -> trobinArceuus()
                 3 -> trobinAscent()
-                4 -> {
-                    chatPlayer(quiz, "Tell me about your plans.")
-                    chatNpc(
-                        neutral,
-                        "I had one of my people recover the remains of that device. The one that " +
-                            "was absorbing the Dark Altars power.",
-                    )
-                    chatNpc(
-                        neutral,
-                        "We're performing tests to see if we can learn more about it. We haven't " +
-                            "made any meaningful progress yet though.",
-                    )
-                    chatNpc(
-                        neutral,
-                        "Once we've learnt more about it, we'll be in a better position to " +
-                            "determine our next move.",
-                    )
-                    chatNpc(
-                        worried,
-                        "I admit, the idea of someone sabotaging the Altar is more than a bit " +
-                            "concerning. I hope we can make some progress soon.",
-                    )
-                }
+                4 -> trobinPlans()
                 else -> {
                     chatPlayer(neutral, "Goodbye.")
                     chatNpc(neutral, "Farewell.")
@@ -592,6 +573,57 @@ class ArceuusTownsfolk : PluginScript() {
                 }
             }
         }
+    }
+
+    private suspend fun Dialogue.trobinPlans() {
+        chatPlayer(quiz, "Tell me about your plans.")
+        if (QuestRequirements.hasCompleted(player, KINGDOM_DIVIDED)) {
+            chatNpc(
+                neutral,
+                "Now that we know Xamphur was responsible for the device that was absorbing " +
+                    "power from the Dark Altar, we're hoping we can use it to help locate him.",
+            )
+            chatNpc(
+                sad,
+                "Alas, so far we've had no luck. We're also scanning for energy that matches " +
+                    "what we observed during that earthquake he caused, but again, nothing has " +
+                    "been discovered so far.",
+            )
+            chatNpc(
+                neutral,
+                "It seems this work will take time. I assure you though, we will find him and " +
+                    "his master.",
+            )
+            chatPlayer(quiz, "What about that Pyromancer?")
+            chatNpc(
+                neutral,
+                "We've begun an investigation into their order, but we have little to go on. " +
+                    "Hopefully we find a good lead soon.",
+            )
+            chatPlayer(neutral, "Well just let me know if you need my help.")
+            chatNpc(happy, "I will, thank you.")
+            return
+        }
+        chatNpc(
+            neutral,
+            "I had one of my people recover the remains of that device. The one that was " +
+                "absorbing the Dark Altars power.",
+        )
+        chatNpc(
+            neutral,
+            "We're performing tests to see if we can learn more about it. We haven't made any " +
+                "meaningful progress yet though.",
+        )
+        chatNpc(
+            neutral,
+            "Once we've learnt more about it, we'll be in a better position to determine our " +
+                "next move.",
+        )
+        chatNpc(
+            worried,
+            "I admit, the idea of someone sabotaging the Altar is more than a bit concerning. I " +
+                "hope we can make some progress soon.",
+        )
     }
 
     private suspend fun Dialogue.trobinHimself() {
@@ -694,6 +726,8 @@ class ArceuusTownsfolk : PluginScript() {
     }
 
     private companion object {
+        const val ASCENT_OF_ARCEUUS = "quest_ascentofarceuus"
+        const val KINGDOM_DIVIDED = "quest_kingdomdivided"
         val TOWER_MAGES =
             listOf(
                 "npc.arcquest_towermage1",

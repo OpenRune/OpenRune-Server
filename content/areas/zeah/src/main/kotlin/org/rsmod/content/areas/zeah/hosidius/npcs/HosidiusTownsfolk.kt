@@ -3,6 +3,7 @@ package org.rsmod.content.areas.zeah.hosidius.npcs
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -226,7 +227,6 @@ class HosidiusTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Gallow
-    // TODO(content): [quest:a_kingdom_divided] after-quest "What do you do?" reply
     // TODO(content): [system:treasure_trails] medium challenge scroll
     private suspend fun Dialogue.gallow() {
         chatNpc(happy, "Welcome to the vinery. Can I help you?")
@@ -268,18 +268,33 @@ class HosidiusTownsfolk : PluginScript() {
                 }
                 2 -> {
                     chatPlayer(quiz, "What do you do?")
-                    chatNpc(
-                        neutral,
-                        "I'm the vintner. I helped Lord Hosidius to develop this land as a " +
-                            "vinery, and now it's complete he's put me in charge of production " +
-                            "while he works on a new project.",
-                    )
-                    chatNpc(
-                        neutral,
-                        "His son, young Pandur, works here too. Pandur checks the wine I " +
-                            "produce. But if you've got any questions about the farming, don't " +
-                            "ask Pandur. Ask me instead. He checks the wine too much.",
-                    )
+                    if (QuestRequirements.hasCompleted(player, KINGDOM_DIVIDED)) {
+                        chatNpc(
+                            neutral,
+                            "I'm the vintner. I helped the late Lord Hosidius develop this land " +
+                                "as a vinery. He put me in charge of production once it was " +
+                                "completed.",
+                        )
+                        chatNpc(
+                            neutral,
+                            "The new Lord Hosidius used to work here as well. He has new duties " +
+                                "of course, but that hasn't stopped him coming down to check the " +
+                                "wine I produce.",
+                        )
+                    } else {
+                        chatNpc(
+                            neutral,
+                            "I'm the vintner. I helped Lord Hosidius to develop this land as a " +
+                                "vinery, and now it's complete he's put me in charge of " +
+                                "production while he works on a new project.",
+                        )
+                        chatNpc(
+                            neutral,
+                            "His son, young Pandur, works here too. Pandur checks the wine I " +
+                                "produce. But if you've got any questions about the farming, " +
+                                "don't ask Pandur. Ask me instead. He checks the wine too much.",
+                        )
+                    }
                     chatNpc(quiz, "So can I help you with anything?")
                 }
                 3 -> {
@@ -364,6 +379,7 @@ class HosidiusTownsfolk : PluginScript() {
 
     private companion object {
         const val MESS_COOKING_LEVEL = 20
+        const val KINGDOM_DIVIDED = "quest_kingdomdivided"
         val GOLDEN_FIELD_STORYTELLERS =
             listOf("npc.hosidius_drunken_farmer_boss_1", "npc.hosidius_drunken_farmer_boss_2")
         val GOLDEN_FIELD_LISTENERS =
