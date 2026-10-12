@@ -8,6 +8,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class DwarvenMineNpcsScript : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.boot_the_dwarf") { startDialogue(it.npc) { boot() } }
@@ -20,6 +21,7 @@ class DwarvenMineNpcsScript : PluginScript() {
         onOpNpc3(CART_CONDUCTOR) { startDialogue(it.npc) { conductorTickets() } }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Cart_conductor_(Dwarven_Mine)
     private suspend fun Dialogue.conductor() {
         while (true) {
             when (
@@ -126,6 +128,7 @@ class DwarvenMineNpcsScript : PluginScript() {
     private fun Player.hasStartedGiantDwarf(): Boolean =
         QuestRequirements.isOnQuest(this, GIANT_DWARF) || QuestRequirements.hasCompleted(this, GIANT_DWARF)
 
+    // https://oldschool.runescape.wiki/w/Transcript:Boot
     private suspend fun Dialogue.boot() {
         chatNpc(neutral, "Hello tall person.")
         while (true) {
@@ -144,10 +147,12 @@ class DwarvenMineNpcsScript : PluginScript() {
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Hammerspike_Stoutbeard
     private suspend fun Dialogue.hammerspike() {
         chatNpc(angry, "You looking at me? I don't see nobody else here!")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Dwarf_gang_member
     private suspend fun Dialogue.gangMember() {
         chatNpc(angry, "Yeah...whada you want?")
         while (true) {
@@ -195,6 +200,7 @@ class DwarvenMineNpcsScript : PluginScript() {
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Guard_(Motherlode_Mine)
     private suspend fun Dialogue.motherlodeGuard() {
         chatNpc(angry, "Halt! Are you here to sabotage the Motherlode Mine?")
         when (
