@@ -8,6 +8,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
+import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
@@ -55,6 +56,17 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         onOpLoc1(HAMMER_BROKEN) { repair(RepairTool.Hammer) }
         onOpLoc1(GRINDSTONE_BROKEN) { repair(RepairTool.Grindstone) }
         onOpLoc1(POLISHING_WHEEL_BROKEN) { repair(RepairTool.PolishingWheel) }
+        val brokenTools =
+            listOf(
+                HAMMER_BROKEN to RepairTool.Hammer,
+                GRINDSTONE_BROKEN to RepairTool.Grindstone,
+                POLISHING_WHEEL_BROKEN to RepairTool.PolishingWheel,
+            )
+        for ((loc, tool) in brokenTools) {
+            for (obj in REPAIR_MATERIALS) {
+                onOpLocU(loc, obj) { repair(tool) }
+            }
+        }
         onOpLoc1(HAMMER_REPAIRED) { inspectRepaired(RepairTool.Hammer) }
         onOpLoc1(GRINDSTONE_REPAIRED) { inspectRepaired(RepairTool.Grindstone) }
         onOpLoc1(POLISHING_WHEEL_REPAIRED) { inspectRepaired(RepairTool.PolishingWheel) }
@@ -400,6 +412,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                 return@startDialogue
             }
             access.takeMaterials(tool)
+            access.repairAnim(tool)
             player.setFoundryVar(tool.varbit, SleepingGiants.REPAIR_DONE)
             repaired(tool)
         }
@@ -441,8 +454,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
     }
 
-    // TODO: the repair animations; the transcript only says "The player begins to fix the
-    // grindstone."
     private suspend fun Dialogue.repaired(tool: RepairTool) {
         when (tool) {
             RepairTool.Hammer -> {
@@ -510,6 +521,21 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                 RepairTool.PolishingWheel -> polishingWheelExplained()
             }
         }
+    }
+
+    /**
+     * The grindstone has its own repair animation and sound in the cache (`sg_grindstone_repair`,
+     * chisel in hand); the transcript's "The player begins to fix the grindstone." plays here.
+     */
+    // TODO: the trip hammer and polishing wheel repairs; the cache has no repair animation named
+    // for them.
+    private suspend fun ProtectedAccess.repairAnim(tool: RepairTool) {
+        if (tool != RepairTool.Grindstone) {
+            return
+        }
+        anim(GRINDSTONE_REPAIR_SEQ)
+        soundSynth(GRINDSTONE_REPAIR_SYNTH)
+        delay(GRINDSTONE_REPAIR_TICKS)
     }
 
     private fun ProtectedAccess.hasHammer(): Boolean =
@@ -939,6 +965,11 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     private companion object {
         const val ENTRANCE = "loc.giants_foundry_entrance"
+        const val GRINDSTONE_REPAIR_SEQ = "seq.sg_grindstone_repair"
+        const val GRINDSTONE_REPAIR_SYNTH = "synth.sg_grindstone_repair"
+
+        /** `sg_grindstone_repair` is 191 client cycles (6.4 ticks) in the cache. */
+        const val GRINDSTONE_REPAIR_TICKS = 7
         const val KOVAC_NAME = "Kovac"
         const val KOVAC_STRIKE = "npc.giants_foundry_kovac_fake_attack"
         const val KOVAC_OUTSIDE = "npc.giants_foundry_kovac_quest"
@@ -973,6 +1004,16 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
         // UNVERIFIED: the wiki says "10 nails" and Quest Helper checks bronze nails; whether
         // other nails work isn't documented. `obj.nails` is steel nails.
+        /**
+         * Using a material on a broken tool starts its repair too: a June 2022 hotfix stopped
+         * "using items on the Polishing Wheel" from fixing the trip hammer.
+         * https://oldschool.runescape.wiki/w/Giants%27_Foundry (Changes)
+         */
+        // UNVERIFIED: that it plays the same dialogue as the Repair op.
+        val REPAIR_MATERIALS by lazy {
+            listOf(OAK_LOGS, WOOL, CHISEL, HAMMER, IMCANDO_HAMMER) + NAILS
+        }
+
         val NAILS =
             listOf(
                 "obj.nails_bronze",
