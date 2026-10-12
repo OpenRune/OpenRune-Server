@@ -37,6 +37,8 @@ open class ToaBossEncounter(
     protected open val osmumtenDelay: Int
         get() = fight?.death?.modelDelay ?: 0
 
+    protected open val rewardNpc: String = OSMUMTEN
+
     protected open val loot: ToaBossLoot? = null
 
     protected open val lootSource: Npc?
@@ -96,8 +98,11 @@ open class ToaBossEncounter(
         }
         val current = (boss.interaction as? InteractionPlayer)?.target
         if (current != null && current in targets) return
-        boss.apPlayer2(targets[deps.random.of(0, targets.lastIndex)], deps.aiInteractions)
+        boss.apPlayer2(pickTarget(boss, targets), deps.aiInteractions)
     }
+
+    protected open fun pickTarget(boss: Npc, targets: List<Player>): Player =
+        targets[deps.random.of(0, targets.lastIndex)]
 
     private fun playDeath(fight: ToaFight) {
         val death = fight.death ?: return
@@ -142,7 +147,7 @@ open class ToaBossEncounter(
         val tile = room.osmumtenTile ?: return
         val challengeSpawn = room.challengeSpawn ?: return
         val facing = if (challengeSpawn.x > tile.x) Direction.East else Direction.West
-        val npc = spawn(OSMUMTEN, coords(tile), facing)
+        val npc = spawn(rewardNpc, coords(tile), facing)
         npc.noneMode()
         npc.anim(OSMUMTEN_SPAWN_ANIM)
         for (player in players) {

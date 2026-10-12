@@ -219,3 +219,33 @@ id = "varn.slayer_engaged_clock"
 
 [[varn]]
 id = "varn.slayer_finishing_until"
+
+[[varn]]
+id = "varn.toa_baba_rolls"
+
+[[varn]]
+id = "varn.toa_baba_rows"
+
+[[varn]]
+id = "varn.toa_baba_roll_exit"
+
+[[varn]]
+id = "varn.toa_baba_weak_lane"
+
+[[varn]]
+id = "varn.toa_baba_autos"
+
+[[varn]]
+id = "varn.toa_baba_throw_at"
+
+[[varn]]
+id = "varn.toa_baba_rockfall_ready"
+
+[[varn]]
+id = "varn.toa_baba_last_special"
+
+[[varn]]
+id = "varn.toa_baba_under"
+
+[[varn]]
+id = "varn.toa_baba_stomp_ready"

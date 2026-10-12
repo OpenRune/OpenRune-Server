@@ -356,9 +356,13 @@ open class ToaEncounter(
         return deps.random.shuffled(tiles)
     }
 
-    internal fun hazardDamage(player: Player, base: Int, spread: Int) {
+    internal fun hazardRoll(base: Int, spread: Int): Int {
         val min = floor(base * raid.damageMultiplier).toInt()
-        player.hitTypeless(deps.random.of(min, min + spread))
+        return deps.random.of(min, min + spread)
+    }
+
+    internal fun hazardDamage(player: Player, base: Int, spread: Int) {
+        player.hitTypeless(hazardRoll(base, spread))
     }
 
     fun schedule(ticks: Int, action: () -> Unit) {
