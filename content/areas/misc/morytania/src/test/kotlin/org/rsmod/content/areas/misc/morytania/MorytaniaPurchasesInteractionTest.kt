@@ -192,6 +192,16 @@ class MorytaniaPurchasesInteractionTest {
     }
 
     @Test
+    fun `Hameln hands over no parchment after Sins of the Father`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+        val f = Fixture()
+        f.talkTo(HAMELN)
+        f.finish(listOf(1, 1))
+        assertEquals(0, f.player.inv.count(PARCHMENT))
+        assertEquals(0, f.groundCount(PARCHMENT))
+    }
+
+    @Test
     fun `Despoina sells a blood pint for 2 coins after The Blood Moon Rises`() {
         bloodMoonRisen()
         val f = Fixture()
