@@ -3,6 +3,7 @@ package org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri
 import jakarta.inject.Inject
 import org.rsmod.api.bosses.dsl.Centre
 import org.rsmod.api.bosses.dsl.CurrentTarget
+import org.rsmod.api.bosses.dsl.CurrentTile
 import org.rsmod.api.bosses.dsl.CurrentTargetTile
 import org.rsmod.api.bosses.dsl.Magic
 import org.rsmod.api.bosses.dsl.BossSpecBuilder
@@ -14,10 +15,12 @@ import org.rsmod.api.bosses.dsl.external
 import org.rsmod.api.bosses.dsl.hit
 import org.rsmod.api.bosses.dsl.mapSpotanim
 import org.rsmod.api.bosses.dsl.message
+import org.rsmod.api.bosses.dsl.nearestFreeTiles
 import org.rsmod.api.bosses.dsl.nextAttackIn
 import org.rsmod.api.bosses.dsl.offset
 import org.rsmod.api.bosses.dsl.onEach
 import org.rsmod.api.bosses.dsl.oneOf
+import org.rsmod.api.bosses.dsl.onTiles
 import org.rsmod.api.bosses.dsl.playersOn
 import org.rsmod.api.bosses.dsl.projectile
 import org.rsmod.api.bosses.dsl.run
@@ -38,6 +41,7 @@ import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.bosses.spec.TargetExpr
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
+import org.rsmod.content.raids.toa.raid.encounter.challengeArea
 import org.rsmod.content.raids.toa.raid.encounter.challengePlayers
 import org.rsmod.content.raids.toa.raid.encounter.onRoomExternal
 import org.rsmod.content.raids.toa.raid.encounter.raidAccuracy
@@ -182,7 +186,6 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             BOMB,
             CurrentTargetTile,
             sequence(
-                external(SHADOW, SHADOWS[0], at = tile(BOMB)),
                 projectile(
                     spotanim = KephriSpots.BOMB,
                     from = nearestCorner,
@@ -206,12 +209,20 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             ),
         )
 
-    private fun blast(centre: TargetExpr.Single): Effect {
-        val tiles = area(centre).map { blastAt(it) }
-        return whenever(aerial, sequence(*tiles.toTypedArray()), blastAt(centre))
-    }
+    private fun blast(centre: TargetExpr.Single): Effect =
+        whenever(
+            aerial,
+            sequence(
+                blastAt(centre, AERIAL_MAX_HIT),
+                onTiles(
+                    nearestFreeTiles(surround(centre), challengeArea, 0),
+                    blastAt(CurrentTile, AERIAL_MAX_HIT),
+                ),
+            ),
+            blastAt(centre, MAX_HIT),
+        )
 
-    private fun blastAt(at: TargetExpr.Single): Effect =
+    private fun blastAt(at: TargetExpr.Single, maxHit: Int): Effect =
         sequence(
             oneOf(
                 KephriSpots.EXPLOSIONS.map {
@@ -221,14 +232,17 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             hit {
                 target = playersOn(at)
                 delay = 1
-                damage(raidAccuracy(MAX_HIT, Magic))
+                damage(raidAccuracy(maxHit, Magic))
                 type(Magic)
                 penetration(PRAYER_PENETRATION)
             },
         )
 
-    private fun area(centre: TargetExpr.Single): List<TargetExpr.Single> =
-        (-1..1).flatMap { dx -> (-1..1).map { dz -> offset(centre, dx, dz) } }
+    private fun surround(centre: TargetExpr.Single): List<TargetExpr.Single> =
+        (-1..1)
+            .flatMap { dx -> (-1..1).map { dz -> dx to dz } }
+            .filter { it != 0 to 0 }
+            .map { (dx, dz) -> offset(centre, dx, dz) }
 
     private companion object {
         const val PICK_DUNG = "kephri.pick_dung"
@@ -247,6 +261,7 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         const val BOMB = "bomb"
 
         const val MAX_HIT = 24
+        const val AERIAL_MAX_HIT = 30
         const val PRAYER_PENETRATION = 33
         const val SHADOW = "kephri.shadow"
         val SHADOWS =
