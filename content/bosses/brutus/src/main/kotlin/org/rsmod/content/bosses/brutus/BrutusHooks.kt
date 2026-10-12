@@ -1,6 +1,7 @@
 package org.rsmod.content.bosses.brutus
 
 import jakarta.inject.Inject
+import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.death.NpcDeathDropContext
 import org.rsmod.api.death.NpcDeathDropHook
 import org.rsmod.api.death.NpcDeathKillContext
@@ -26,6 +27,7 @@ class BrutusModule : PluginModule() {
         addSetBinding<NpcDeathKillHook>(BrutusKillTally::class.java)
     }
 }
+        addSetBinding<NpcAttackValidateHook>(BrutusPenAttack::class.java)
 
 private const val INSTANCE_KEY = "cowboss"
 
