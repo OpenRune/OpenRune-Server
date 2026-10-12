@@ -195,3 +195,9 @@ id = "varn.hunllef_off_prayer"
 
 [[varn]]
 id = "varn.disguise_idle"
+
+[[varn]]
+id = "varn.brutus_next_special"
+
+[[varn]]
+id = "varn.brutus_aim"

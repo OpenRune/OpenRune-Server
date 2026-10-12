@@ -18,9 +18,11 @@ import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.repo.loc.LocRepository
+import org.rsmod.api.script.onEvent
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -69,6 +71,7 @@ constructor(
                 spawnBrutus(player, session)
             }
         }
+        onEvent<NpcStateEvents.Respawn> { if (npc.isType(Brutus.BRUTUS)) arrive(npc, fieldPlayer(npc)) }
         onEnterObject { openGate() }
         onExitObject { leaveGate() }
     }
@@ -143,10 +146,30 @@ constructor(
         deps.npcRepo.add(npc, Int.MAX_VALUE)
         npc.respawns = idesOfMilk.stage(player) >= IdesOfMilkQuest.STAGE_COMPLETE
         manager.registerSessionNpc(player, npc)
-        npc.anim("seq.cow_boss_spawn")
-        npc.facePlayer(player)
         bossHpBar.onOpen(player, npc)
-        npc.apPlayer2(player, aiPlayerInteractions)
+        arrive(npc, player)
+    }
+
+    /**
+     * Brutus stands still after (re)spawning, moos, then goes for the player. Live capture, rev 241,
+     * 20261012T180256-df49f48@1557-1567, @1632-1638 and 20261012T200152-df49f48@723-732.
+     */
+    private fun arrive(npc: Npc, player: Player?) {
+        npc.anim("seq.cow_boss_spawn")
+        npc.delay = deps.mapClock.cycle + ARRIVE_ATTACK_DELAY
+        if (player == null) {
+            return
+        }
+        npc.facePlayer(player)
+        deps.worldQueues.add(ARRIVE_MOO_DELAY) { if (npc.isSlotAssigned) npc.say("Moo") }
+        deps.worldQueues.add(ARRIVE_ATTACK_DELAY) {
+            if (npc.isSlotAssigned) npc.apPlayer2(player, aiPlayerInteractions)
+        }
+    }
+
+    private fun fieldPlayer(npc: Npc): Player? {
+        val session = manager.instanceForNpc(npc)?.let(manager::sessionForId) ?: return null
+        return session.occupants.firstNotNullOfOrNull { uuid -> deps.playerList.firstOrNull { it.uuid == uuid } }
     }
 
     private companion object {
@@ -154,6 +177,8 @@ constructor(
 
         // live capture, rev 241, 20261012T180256-df49f48@1165: Brutus is added at (3261, 3287).
         private val SPAWN = CoordGrid(3261, 3287)
+        private const val ARRIVE_MOO_DELAY = 5
+        private const val ARRIVE_ATTACK_DELAY = 5
 
         // The field sits on the edge of 12851, and the client's scene reaches 52 tiles past the
         // player on every side, so the neighbouring regions are copied too.
