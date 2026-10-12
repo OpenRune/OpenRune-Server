@@ -15,6 +15,7 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.bottomless.milk.MilkSources
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.obj.charges.ObjChargeManager
@@ -173,7 +174,7 @@ class BottomlessMilkBucketTest {
     fun `a quest takes one use of milk from the bucket`() {
         val f = Fixture()
         f.player.inv[0] = f.filled(28)
-        assertTrue(BottomlessMilkBucket.pourMilk(f.player.inv, ObjChargeManager()))
+        assertTrue(MilkSources.pour(f.player.inv))
         assertEquals(27, f.uses(0))
         assertTrue(f.player.inv[0].isType(FILLED))
     }
@@ -182,10 +183,10 @@ class BottomlessMilkBucketTest {
     fun `the last use empties the bucket and an empty one gives nothing`() {
         val f = Fixture()
         f.player.inv[0] = f.filled(1)
-        assertTrue(BottomlessMilkBucket.pourMilk(f.player.inv, ObjChargeManager()))
+        assertTrue(MilkSources.pour(f.player.inv))
         assertTrue(f.player.inv[0].isType(EMPTY))
         assertEquals(0, f.uses(0))
-        assertEquals(false, BottomlessMilkBucket.pourMilk(f.player.inv, ObjChargeManager()))
+        assertEquals(false, MilkSources.pour(f.player.inv))
     }
 
     private class Fixture {

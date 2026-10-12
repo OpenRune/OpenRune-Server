@@ -5,14 +5,14 @@ plugins {
 
 dependencies {
     testImplementation(projects.api.invPlugin)
+    testImplementation(projects.api.objCharges)
     testImplementation(projects.api.gameProcess)
     testImplementation(projects.api.invStorage)
     testImplementation(projects.api.registry)
     testImplementation(libs.fastutil)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.attr)
-    implementation(projects.api.objCharges)
-    implementation(projects.content.generic.genericNpcs)
+    implementation(projects.api.bottomlessMilk)
     implementation(projects.api.serverConfig)
     implementation(libs.rsprot.api)
 }

@@ -1,10 +1,8 @@
 package org.rsmod.content.generic.npcs.cow
 
-import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import kotlin.math.min
+import org.rsmod.api.bottomless.milk.MilkSources
 import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.obj.charges.ObjChargeManager.Companion.isFailure
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -13,11 +11,9 @@ import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpHeld5
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
-import org.rsmod.utils.bits.withBits
 
 // https://oldschool.runescape.wiki/w/Bottomless_milk_bucket; dialogue types, prompts and their
 // order: live capture, rev 241.
@@ -173,36 +169,16 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
     private fun InvObj?.isBucket(): Boolean = isType(EMPTY) || isType(FILLED)
 
     companion object {
-        const val EMPTY = "obj.bottomless_milk_bucket"
-        const val FILLED = "obj.bottomless_milk_bucket_filled"
-        const val USES = "varobj.charges_16383"
-        const val MAX_USES = 10_000
-        private const val MILK = "obj.bucket_milk"
+        const val EMPTY = MilkSources.BUCKET_EMPTY
+        const val FILLED = MilkSources.BUCKET_FILLED
+        const val USES = MilkSources.USES
+        const val MAX_USES = MilkSources.MAX_USES
+        private const val MILK = MilkSources.MILK
         private const val MILK_NOTE = "obj.cert_bucket_milk"
         private const val BUCKET = "obj.bucket_empty"
         private const val BUCKET_NOTE = "obj.cert_bucket_empty"
 
         private fun emptyOf(milk: String): String = if (milk == MILK) BUCKET else BUCKET_NOTE
-
-        fun milkSlot(inv: Inventory, charges: ObjChargeManager): Int? =
-            inv.indices.firstOrNull { inv[it].isType(FILLED) && charges.getCharges(inv[it], USES) > 0 }
-
-        // A quest that takes a bucket of milk takes one use instead (live capture, rev 241).
-        fun pourMilk(inv: Inventory, charges: ObjChargeManager): Boolean {
-            val slot = milkSlot(inv, charges) ?: return false
-            val bucket = inv[slot] ?: return false
-            val left = charges.getCharges(bucket, USES) - 1
-            if (left == 0) {
-                charges.removeAllCharges(inv, slot, USES)
-            } else {
-                inv[slot] = bucket.copy(vars = bucket.vars.withBits(usesBits, left))
-            }
-            return true
-        }
-
-        private val usesBits by lazy {
-            checkNotNull(ServerCacheManager.getVarObj(USES.asRSCM(RSCMType.VAROBJ))).bits
-        }
 
         // UNVERIFIED: thousands separators above 999 (the captures stay below).
         fun number(count: Int): String = "%,d".format(count)
