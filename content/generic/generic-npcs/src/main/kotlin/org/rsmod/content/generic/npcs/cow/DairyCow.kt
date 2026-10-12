@@ -5,8 +5,6 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpContentLoc1
 import org.rsmod.api.script.onOpContentLoc2
 import org.rsmod.api.script.onOpContentLocU
-import org.rsmod.api.script.onOpLoc2
-import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onPlayerQueue
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.map.CoordGrid

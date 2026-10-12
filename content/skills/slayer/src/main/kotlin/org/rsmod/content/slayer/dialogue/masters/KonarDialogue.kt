@@ -1,18 +1,18 @@
 package org.rsmod.content.slayer.dialogue.masters
 
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.content.slayer.slayerKonarIntroComplete
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.table.slayer.SlayerAreaRow
 import org.rsmod.api.table.slayer.SlayerTaskRow
-import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
 import org.rsmod.content.slayer.SlayerInterfaces
 import org.rsmod.content.slayer.core.SlayerTaskManager
+import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
+import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.RemoteMaster
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.chatMaster
-import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
 import org.rsmod.content.slayer.dialogue.SlayerTaskTips
 import org.rsmod.content.slayer.rewards.SlayerRewardsPoints
+import org.rsmod.content.slayer.slayerKonarIntroComplete
 
 // https://oldschool.runescape.wiki/w/Transcript:Konar_quo_Maten
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.

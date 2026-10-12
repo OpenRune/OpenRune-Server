@@ -74,6 +74,7 @@ class MadEadgar : PluginScript() {
     private companion object {
         const val LOGS = "obj.logs"
         const val HITPOINTS = "stat.hitpoints"
+
         // https://oldschool.runescape.wiki/w/Eadgar: "The mountain goat stew heals 20 Hitpoints"
         const val STEW_HEAL = 20
         val WELCOMES =

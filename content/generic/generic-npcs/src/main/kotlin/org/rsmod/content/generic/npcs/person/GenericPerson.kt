@@ -5,7 +5,6 @@ import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpContentNpc1
-import org.rsmod.api.script.onOpNpc1
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext

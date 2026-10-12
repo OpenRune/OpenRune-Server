@@ -21,10 +21,10 @@ import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.events.interact.NpcEvents
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.NpcInteractions
+import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.clearPendingAction
-import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap

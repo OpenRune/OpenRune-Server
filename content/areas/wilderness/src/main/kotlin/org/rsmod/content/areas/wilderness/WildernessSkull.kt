@@ -165,7 +165,6 @@ internal fun Player.refreshSkullIcon() {
         cappedKeyCount > 0 -> constants.skullicon_loot_key_1 + (cappedKeyCount - 1)
         else -> baseIcon
     }
-
 }
 
 internal fun Player.refreshSkullIconIfLootKeysChanged() {

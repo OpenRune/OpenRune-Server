@@ -62,4 +62,3 @@ internal fun ProtectedAccess.hasFullAngler(): Boolean {
         (legs?.isType("obj.trawler_reward_legs") == true || legs?.isType("obj.spirit_angler_legs") == true) &&
         (boots?.isType("obj.trawler_reward_boots") == true || boots?.isType("obj.spirit_angler_boots") == true)
 }
-

@@ -1,8 +1,8 @@
 package org.rsmod.content.areas.zeah.hosidius.npcs
 
 import org.rsmod.api.invtx.invTakeFee
-import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3

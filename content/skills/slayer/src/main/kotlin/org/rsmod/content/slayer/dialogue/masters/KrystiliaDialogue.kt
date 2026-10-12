@@ -1,16 +1,16 @@
 package org.rsmod.content.slayer.dialogue.masters
 
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnActive
-import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnUnlocked
-import org.rsmod.content.slayer.slayerWildernessAssignmentBriefed
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.content.slayer.core.SlayerTaskManager
-import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
 import org.rsmod.content.slayer.dialogue.GenericDialogue.ineligibleForTask
 import org.rsmod.content.slayer.dialogue.GenericDialogue.offerCancelTask
 import org.rsmod.content.slayer.dialogue.GenericDialogue.rewardsOrShopDialogue
+import org.rsmod.content.slayer.dialogue.SlayerAssignmentDialogue.assignNewTask
 import org.rsmod.content.slayer.dialogue.SlayerTaskTips
+import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnActive
+import org.rsmod.content.slayer.slayerKrystiliaEdgevilleSpawnUnlocked
+import org.rsmod.content.slayer.slayerWildernessAssignmentBriefed
 
 // https://oldschool.runescape.wiki/w/Transcript:Krystilia
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.

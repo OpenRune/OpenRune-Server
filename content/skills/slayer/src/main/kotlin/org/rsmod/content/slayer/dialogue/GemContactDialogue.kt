@@ -2,9 +2,9 @@ package org.rsmod.content.slayer.dialogue
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.content.slayer.core.SlayerTaskManager
+import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.RemoteMaster
 import org.rsmod.content.slayer.dialogue.SlayerMasterDialogue.chatMaster
-import org.rsmod.content.slayer.dialogue.KonarSlayerDialogueHelpers
 import org.rsmod.content.slayer.rewards.SlayerRewardsPoints
 import org.rsmod.game.entity.Player
 

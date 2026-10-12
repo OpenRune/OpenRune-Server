@@ -221,7 +221,6 @@ class KaramjaPurchasesInteractionTest {
                     )
             }
 
-
         init {
             val scripts = ScriptContext(events, CheatCommandMap(), EngineQueueCache())
             val objRepo = ObjRepository(clock, objRegistry)
