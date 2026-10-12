@@ -13,6 +13,8 @@ import org.rsmod.game.inv.isType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Virilis
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class Virilis : PluginScript() {
 
     private val blessableBones = PrayerBlessedBoneRow.all().map { it.input.internalName }.toSet()

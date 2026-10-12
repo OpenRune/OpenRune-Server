@@ -13,6 +13,8 @@ import org.rsmod.game.inv.isType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Elder_Chaos_druid_(NPC)
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class ElderChaosDruid : PluginScript() {
 
     private val sacrificeableBones = PrayerBuryEvents.Companion.bones.filterNot { it.ashes }.map { it.item.internalName }.toSet()

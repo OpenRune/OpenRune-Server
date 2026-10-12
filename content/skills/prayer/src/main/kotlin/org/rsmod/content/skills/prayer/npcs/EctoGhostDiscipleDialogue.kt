@@ -10,6 +10,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Ghost_disciple
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class EctoGhostDiscipleDialogue : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.ahoy_disciple") { startDiscipleDialogue(it.npc) }
@@ -28,9 +30,24 @@ class EctoGhostDiscipleDialogue : PluginScript() {
     private fun ProtectedAccess.canUnderstandGhostDisciple(): Boolean =
         worn.any { ITEM_GHOSTSPEAK_AMULET.contains(it?.id ?: -1) }
 
+    // TODO(content): [diary:morytania_hard] "Can I have another bonecrusher, please?" option.
     private suspend fun Dialogue.mainMenu() {
-        when (choice5(
-                "What is this strange fountain?",
+        if (access.ectoTokens > 0) {
+            claimTokens()
+            return
+        }
+        chatPlayer(quiz, "What is this strange fountain?")
+        chatNpc(
+            neutral,
+            "This is the Ectofuntus, the most marvellous creation of Necrovarus, our glorious leader.",
+        )
+        questionMenu()
+    }
+
+    private suspend fun Dialogue.questionMenu() {
+        when (
+            choice5(
+                "What is the Ectofuntus for?",
                 1,
                 "Where do I get ectoplasm from?",
                 2,
@@ -38,59 +55,40 @@ class EctoGhostDiscipleDialogue : PluginScript() {
                 3,
                 "How do I receive Ectotokens?",
                 4,
-                "Can I have the tokens I have earned?",
-                5
-            )) {
+                "Thanks for your time.",
+                5,
+            )
+        ) {
             1 -> explainFountain()
             2 -> explainEctoplasm()
             3 -> explainGrinding()
             4 -> explainReceivingEctotokens()
-            5 -> claimTokens()
+            5 -> chatPlayer(neutral, "Thanks for your time.")
         }
     }
 
     private suspend fun Dialogue.explainFountain() {
-        chatPlayer(quiz, "What is this strange fountain?")
+        chatPlayer(quiz, "What is the Ectofuntus for?")
         chatNpc(
             neutral,
-            "This is the Ectofuntus, the most marvellous creation of Necrovarus, our glorious leader.",
+            "It provides the power to keep us ghosts from passing over into the next plane of existence.",
         )
-        explainFountainMenu()
-    }
-
-    private suspend fun Dialogue.explainFountainMenu() {
-        when (
-            choice2(
-                "What is the Ectofuntus for?",
-                1,
-                "Back.",
-                2,
-            )
-        ) {
-            1 -> {
-                chatPlayer(quiz, "What is the Ectofuntus for?")
-                chatNpc(
-                    neutral,
-                    "It provides the power to keep us ghosts from passing over into the next plane of existence.",
-                )
-                chatPlayer(quiz, "And how does it work?")
-                chatNpc(
-                    neutral,
-                    "You have to pour a bucket of ectoplasm into the fountain, a pot of ground bones, and then worship at the Ectofuntus. A unit of unholy power will then be created.",
-                )
-                chatPlayer(quiz, "Can you do it yourself?")
-                chatNpc(
-                    neutral,
-                    "No, we must rely upon the living, as the worship of the undead no longer holds any inherent power.",
-                )
-                chatPlayer(quiz, "Why would people waste their time helping you out?")
-                chatNpc(
-                    happy,
-                    "For every unit of power produced we will give you five Ectotokens. These tokens can be used in Port Phasmatys to purchase various services, not least of which includes access through the main toll gates.",
-                )
-            }
-        }
-        mainMenu()
+        chatPlayer(quiz, "And how does it work?")
+        chatNpc(
+            neutral,
+            "You have to pour a bucket of ectoplasm into the fountain, a pot of ground bones, and then worship at the Ectofuntus. A unit of unholy power will then be created.",
+        )
+        chatPlayer(quiz, "Can you do it yourself?")
+        chatNpc(
+            neutral,
+            "No, we must rely upon the living, as the worship of the undead no longer holds any inherent power.",
+        )
+        chatPlayer(quiz, "Why would people waste their time helping you out?")
+        chatNpc(
+            happy,
+            "For every unit of power produced we will give you five Ectotokens. These tokens can be used in Port Phasmatys to purchase various services, not least of which includes access through the main toll gates.",
+        )
+        questionMenu()
     }
 
     private suspend fun Dialogue.explainEctoplasm() {
@@ -99,7 +97,7 @@ class EctoGhostDiscipleDialogue : PluginScript() {
             neutral,
             "Necrovarus sensed the power bubbling beneath our feet, and we delved long and deep beneath Port Phasmatys, until we found a pool of natural ectoplasm. You may find it by using the trapdoor over there.",
         )
-        mainMenu()
+        questionMenu()
     }
 
     private suspend fun Dialogue.explainGrinding() {
@@ -108,7 +106,7 @@ class EctoGhostDiscipleDialogue : PluginScript() {
             neutral,
             "There is a bone grinding machine upstairs. Put bones of any type into the machine's hopper, and then turn the handle to grind them. You will need a pot to empty the machine of ground up bones.",
         )
-        mainMenu()
+        questionMenu()
     }
 
     private suspend fun Dialogue.explainReceivingEctotokens() {
@@ -122,18 +120,13 @@ class EctoGhostDiscipleDialogue : PluginScript() {
             neutral,
             "You have to pour a bucket of ectoplasm into the fountain and then worship at the Ectofuntus with a pot of ground bones. This will create a unit of unholy power.",
         )
-        mainMenu()
+        questionMenu()
     }
 
     private suspend fun Dialogue.claimTokens() {
         chatPlayer(quiz, "Can I have the tokens I have earned?")
 
         val earned = access.ectoTokens
-        if (earned <= 0) {
-            chatNpc(neutral, "You have not earned any Ectotokens yet, mortal.")
-            return
-        }
-
         val add = access.invAdd(access.inv, "obj.ectotoken", earned)
         if (add.failure) {
             chatNpc(
@@ -145,7 +138,6 @@ class EctoGhostDiscipleDialogue : PluginScript() {
 
         access.ectoTokens = 0
         chatNpc(happy, "Certainly, mortal. Here's $earned ectotokens.")
-        mainMenu()
     }
 
     private companion object {
