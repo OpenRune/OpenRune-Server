@@ -10,13 +10,17 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.stat.baseThievingLvl
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.area.falador.knightssword.KnightsSwordQuest
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-class VarrockPalace @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
+class VarrockPalace
+@Inject
+constructor(private val objRepo: ObjRepository, private val knightsSword: KnightsSwordQuest) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.myq3_aeonisig_roalds_advisor") { startDialogue(it.npc) { aeonisig() } }
         onOpNpc1("npc.aluft_gnome_diplomat_varrock") { startDialogue(it.npc) { ferrnook() } }
@@ -578,6 +582,7 @@ class VarrockPalace @Inject constructor(private val objRepo: ObjRepository) : Pl
 
     // https://oldschool.runescape.wiki/w/Transcript:Reldo
     // (during The Knight's Sword or The Giant Dwarf)
+    // Mesanims and the stage change: live capture, rev 241, 20261012T145648-df49f48@5781-5786.
     private suspend fun Dialogue.reldoImcando() {
         chatPlayer(quiz, "What do you know about the Imcando dwarves?")
         chatNpc(neutral, "The Imcando dwarves, you say? Let's see...")
@@ -587,7 +592,7 @@ class VarrockPalace @Inject constructor(private val objRepo: ObjRepository) : Pl
                 "They used secret smithing knowledge passed down from generation to generation.",
         )
         chatNpc(
-            sad,
+            neutral,
             "Unfortunately, about a century ago, the once thriving group was wiped out during " +
                 "the barbarian invasions of that time.",
         )
@@ -598,11 +603,12 @@ class VarrockPalace @Inject constructor(private val objRepo: ObjRepository) : Pl
                 "to themselves.",
         )
         chatNpc(
-            neutral,
+            shifty,
             "However, I have heard tales of their love for redberry pie. Perhaps one of those " +
                 "could convince one to reveal their true heritage.",
         )
-        chatPlayer(confused, "So I just go around offering random dwarves redberry pie?")
+        chatPlayer(quiz, "So I just go around offering random dwarves redberry pie?")
+        with(knightsSword) { access.learnAboutImcando() }
         chatNpc(
             neutral,
             "Well, not totally random. Apparently some of the surviving Imcando made a home for " +

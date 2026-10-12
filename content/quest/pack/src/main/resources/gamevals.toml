@@ -83,6 +83,7 @@ gertrudes_cat_progress = 63711
 gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
 gertrudes_cat_told_sardines = 63714
+knights_sword_progress = 64400
 
 [gamevals.models]
 misthalin_gem_diamond = 32333

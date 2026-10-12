@@ -1,15 +1,17 @@
 package org.rsmod.content.areas.city.falador.npcs
 
+import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.area.falador.knightssword.KnightsSwordQuest
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:The_Knight%27s_Sword (before the quest)
+// Mesanims of the branches taken in live capture, rev 241, 20261012T145648-df49f48@5538-5556.
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:the_knights_sword] in-progress stages
-class Squire : PluginScript() {
+class Squire @Inject constructor(private val knightsSword: KnightsSwordQuest) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.squire") { startDialogue(it.npc) { squire() } }
     }
@@ -17,6 +19,9 @@ class Squire : PluginScript() {
     private suspend fun Dialogue.squire() {
         if (QuestRequirements.hasCompleted(player, THE_KNIGHTS_SWORD)) {
             squireAfterQuest()
+            return
+        }
+        if (with(knightsSword) { squireDialogue() }) {
             return
         }
         chatNpc(neutral, "Hello. I am the squire to Sir Vyvin.")
@@ -129,7 +134,7 @@ class Squire : PluginScript() {
 
     private suspend fun Dialogue.makeSword() {
         chatPlayer(neutral, "I can make a new sword if you like...")
-        chatNpc(neutral, "Thanks for the offer. I'd be surprised if you could though.")
+        chatNpc(sad, "Thanks for the offer. I'd be surprised if you could though.")
         heirloom()
     }
 
@@ -141,13 +146,13 @@ class Squire : PluginScript() {
 
     private suspend fun Dialogue.heirloom() {
         chatNpc(
-            neutral,
+            sad,
             "The thing is, this sword is a family heirloom. It has been passed down through " +
                 "Vyvin's family for five generations! It was originally made by the Imcando " +
                 "dwarves, who were",
         )
         chatNpc(
-            neutral,
+            sad,
             "a particularly skilled tribe of dwarven smiths. I doubt anyone could make it in the " +
                 "style they do.",
         )
@@ -164,7 +169,7 @@ class Squire : PluginScript() {
         }
         chatPlayer(quiz, "So would these dwarves make another one?")
         chatNpc(
-            neutral,
+            sad,
             "I'm not a hundred percent sure the Imcando tribe exists anymore. I should " +
                 "think Reldo, the palace librarian in Varrock, will know; he has done a lot of " +
                 "research on the races of Gielinor.",
@@ -174,7 +179,7 @@ class Squire : PluginScript() {
             "I don't suppose you could try and track down the Imcando dwarves for me? I've got " +
                 "so much work to do...",
         )
-        // TODO(content): [quest:the_knights_sword] "Start The Knight's Sword quest?" offer
+        with(knightsSword) { squireStartOffer() }
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Squire

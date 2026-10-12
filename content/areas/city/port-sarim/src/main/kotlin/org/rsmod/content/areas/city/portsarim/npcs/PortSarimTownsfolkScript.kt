@@ -6,13 +6,17 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseSmithingLvl
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.other.pets.cats.CatDialogue
+import org.rsmod.content.quest.area.falador.knightssword.KnightsSwordQuest
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-class PortSarimTownsfolkScript @Inject constructor(private val cats: CatDialogue) : PluginScript() {
+class PortSarimTownsfolkScript
+@Inject
+constructor(private val cats: CatDialogue, private val knightsSword: KnightsSwordQuest) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.thurgo") { startDialogue(it.npc) { thurgo() } }
         onTalkAcross("npc.macro_pirate") { startDialogue(it) { capnHand() } }
@@ -115,11 +119,13 @@ class PortSarimTownsfolkScript @Inject constructor(private val cats: CatDialogue
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Thurgo
-    // TODO(content): [quest:the_knights_sword] quest stages
     // TODO(content): [quest:below_ice_mountain] "I've met another Imcando dwarf."
     // TODO(content): [quest:prying_times] "Can you help me make another crowbar?"
     // TODO(content): [system:wise_old_man_tasks] the Wise Old Man's letter
     private suspend fun Dialogue.thurgo() {
+        if (with(knightsSword) { thurgoDialogue(pie = { thurgoPie() }, cape = { thurgoCape() }) }) {
+            return
+        }
         if (!QuestRequirements.hasCompleted(player, KNIGHTS_SWORD)) {
             thurgoCape()
             return
