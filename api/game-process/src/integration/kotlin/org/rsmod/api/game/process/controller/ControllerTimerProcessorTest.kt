@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test
 import org.rsmod.api.controller.access.StandardConAccess
 import org.rsmod.api.script.onConTimer
 import org.rsmod.api.testing.GameTestState
-import org.rsmod.api.testing.factory.controllerTypeFactory
-import org.rsmod.api.testing.factory.timerTypeFactory
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -63,8 +61,8 @@ class ControllerTimerProcessorTest {
     )
 
     private companion object {
-        val CONTROLLER = controllerTypeFactory.create(id = 1)
-        val TIMER_1 = timerTypeFactory.create(id = 1)
-        val TIMER_2 = timerTypeFactory.create(id = 2)
+        const val CONTROLLER = "controller.firemaking_campfire"
+        const val TIMER_1 = "timer.potion_toa_silk_dressing"
+        const val TIMER_2 = "timer.potion_toa_blessed_crystal_scarab"
     }
 }

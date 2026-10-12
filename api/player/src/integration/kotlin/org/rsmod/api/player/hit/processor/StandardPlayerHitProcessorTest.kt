@@ -1,7 +1,9 @@
 package org.rsmod.api.player.hit.processor
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.junit.jupiter.api.Test
-import org.rsmod.api.config.refs.stats
 import org.rsmod.api.hit.plugin.PlayerHitScript
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.stat.hitpoints
@@ -23,7 +25,7 @@ class StandardPlayerHitProcessorTest {
     fun GameTestState.`invalidate melee hits when npc source is dead`() =
         runGameTest(PlayerHitScript::class) {
             val npc = spawnNpc(CoordGrid(0, 0, 50, 50, 0), npcTypeFactory.create())
-            player.stats[stats.hitpoints] = 99
+            player.stats[hitpointsStat()] = 99
 
             player.queueHit(npc, delay = 1, HitType.Melee, damage = 1)
 
@@ -32,7 +34,7 @@ class StandardPlayerHitProcessorTest {
             check(player.hitpoints == 98) { "Unexpected player hitpoints: ${player.hitpoints}" }
 
             // Reset state and queue a new hit.
-            player.stats[stats.hitpoints] = 99
+            player.stats[hitpointsStat()] = 99
             player.queueHit(npc, delay = 1, HitType.Melee, damage = 1)
 
             // Set npc to 0 hitpoints, mimicking its death.
@@ -42,4 +44,7 @@ class StandardPlayerHitProcessorTest {
             advance(ticks = 1)
             assertEquals(99, player.hitpoints)
         }
+
+    private fun hitpointsStat() =
+        checkNotNull(ServerCacheManager.getStats("stat.hitpoints".asRSCM(RSCMType.STAT)))
 }

@@ -1,8 +1,10 @@
 package org.rsmod.api.invtx
 
-import dev.openrune.types.ItemServerType
-import dev.openrune.types.obj.Dummyitem
-import dev.openrune.types.obj.Wearpos
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.util.Dummyitem
+import dev.openrune.util.Wearpos
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -11,7 +13,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
-import org.rsmod.api.config.refs.invs
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.assertions.assertNotNullContract
 import org.rsmod.api.testing.assertions.assertTrueContract
@@ -35,8 +36,8 @@ class InvTransactionsTest {
         withPlayerInit {
             check(inv.isEmpty())
             invAdd(inv, "obj.abyssal_whip", count = 2, slot = 3)
-            assertEquals("obj.abyssal_whip".id, inv[3]?.id)
-            assertEquals("obj.abyssal_whip".id, inv[4]?.id)
+            assertEquals("obj.abyssal_whip".asRSCM(RSCMType.OBJ), inv[3]?.id)
+            assertEquals("obj.abyssal_whip".asRSCM(RSCMType.OBJ), inv[4]?.id)
             assertEquals(2, inv.occupiedSpace())
         }
     }
@@ -75,7 +76,7 @@ class InvTransactionsTest {
     fun GameTestState.`insert obj into bank`() = runBasicGameTest {
         withPlayerInit {
             check(inv.isEmpty())
-            val bank = invMap.getOrPut(cacheTypes.invs[invs.bank])
+            val bank = invMap.getOrPut("inv.bank")
             inv[0] = InvObj("obj.abyssal_whip")
             inv[1] = InvObj("obj.abyssal_whip")
             val transaction = invTransfer(inv, fromSlot = 0, count = 2, into = bank).single()
@@ -93,8 +94,8 @@ class InvTransactionsTest {
     fun GameTestState.`withdraw obj from bank with placeholder`() = runBasicGameTest {
         withPlayerInit {
             check(inv.isEmpty())
-            val placeholder = cacheTypes.objs["obj.abyssal_whip"].placeholderlink
-            val bank = invMap.getOrPut(cacheTypes.invs[invs.bank])
+            val placeholder = ServerCacheManager.getItem("obj.abyssal_whip".asRSCM(RSCMType.OBJ))!!.placeholderLink
+            val bank = invMap.getOrPut("inv.bank")
             bank[0] = InvObj("obj.rune_arrow", 500)
             bank[1] = InvObj("obj.abyssal_whip")
             val transaction =
@@ -159,12 +160,12 @@ class InvTransactionsTest {
     @Test
     fun GameTestState.`fail to add GraphicOnly dummyitem`() = runGameTest {
         val graphicOnly =
-            objTypes.values.firstOrNull { it.resolvedDummyitem == Dummyitem.GraphicOnly }
+            ServerCacheManager.getItems().values.firstOrNull { it.resolvedDummyitem == Dummyitem.GraphicOnly }
         checkNotNull(graphicOnly) { "Cannot find valid `GraphicOnly` dummyitem." }
 
         player.clearAllInvs()
 
-        val transaction = player.invAdd(player.inv, graphicOnly)
+        val transaction = player.invAdd(player.inv, graphicOnly.id, 1)
         assertInstanceOf<TransactionResult.RestrictedDummyitem>(transaction.err)
         assertEquals(0, player.inv.occupiedSpace())
     }
@@ -172,7 +173,7 @@ class InvTransactionsTest {
     @TestWithArgs(WearposProvider::class)
     fun `equip obj in wearpos`(
         wearpos: Wearpos,
-        type: ItemServerType,
+        type: String,
         count: Int,
         test: GameTestState,
     ) =
@@ -196,7 +197,7 @@ class InvTransactionsTest {
                 assertTrue(transaction.fullSuccess)
                 assertEquals(0, inv.occupiedSpace())
                 assertEquals(1, worn.occupiedSpace())
-                assertEquals(type.id, worn[wearpos.slot]?.id)
+                assertEquals(type.asRSCM(RSCMType.OBJ), worn[wearpos.slot]?.id)
                 assertEquals(count, worn[wearpos.slot]?.count)
             }
         }

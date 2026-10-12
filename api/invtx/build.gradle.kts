@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("integration-test-suite")
 
 }
 
@@ -19,4 +20,5 @@ dependencies {
     implementation(projects.engine.map)
     implementation(projects.engine.objtx)
     implementation(projects.engine.plugin)
+    integrationImplementation(projects.engine.objtx)
 }

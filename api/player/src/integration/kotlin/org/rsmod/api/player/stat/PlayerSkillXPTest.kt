@@ -1,8 +1,6 @@
 package org.rsmod.api.player.stat
 
-import dev.openrune.types.stat.StatType
 import org.junit.jupiter.api.Test
-import org.rsmod.api.config.refs.stats
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.params.TestArgs
 import org.rsmod.api.testing.params.TestArgsProvider
@@ -12,7 +10,7 @@ import org.rsmod.game.stat.PlayerStatMap
 class PlayerSkillXPTest {
     @Test
     fun GameTestState.`add over max xp`() = runGameTest {
-        val stat = stats.attack
+        val stat = "stat.attack"
         check(player.statMap.getBaseLevel(stat).toInt() == 1)
 
         val addXp = 500_000_000.0
@@ -27,7 +25,7 @@ class PlayerSkillXPTest {
         xp: Double,
         xpRate: Double,
         expectedLvl: Int,
-        stat: StatType,
+        stat: String,
         state: GameTestState,
     ) {
         state.runGameTest {
@@ -45,11 +43,11 @@ class PlayerSkillXPTest {
     private object StatXPProvider : TestArgsProvider {
         override fun args(): List<TestArgs> =
             listOf(
-                TestArgs(80.0, 1.0, 1, stats.attack),
-                TestArgs(50_000.0, 1.0, 42, stats.defence),
-                TestArgs(50_000.0, 5.0, 59, stats.defence),
-                TestArgs(6_750_000.0, 1.0, 92, stats.strength),
-                TestArgs(200_000_000, 1.0, 99, stats.attack),
+                TestArgs(80.0, 1.0, 1, "stat.attack"),
+                TestArgs(50_000.0, 1.0, 42, "stat.defence"),
+                TestArgs(50_000.0, 5.0, 59, "stat.defence"),
+                TestArgs(6_750_000.0, 1.0, 92, "stat.strength"),
+                TestArgs(200_000_000, 1.0, 99, "stat.attack"),
             )
     }
 }

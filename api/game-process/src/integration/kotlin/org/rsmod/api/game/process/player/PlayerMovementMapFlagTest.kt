@@ -1,6 +1,6 @@
 package org.rsmod.api.game.process.player
 
-import net.rsprot.protocol.game.outgoing.misc.player.SetMapFlag
+import net.rsprot.protocol.game.outgoing.misc.player.SetMapFlagV2
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -33,8 +33,8 @@ class PlayerMovementMapFlagTest {
         player.move(player.coords)
         process()
 
-        assertEquals(1, captured.countOf<SetMapFlag>())
-        assertTrue(captured.allOf(SetMapFlag::isReset))
+        assertEquals(1, captured.countOf<SetMapFlagV2>())
+        assertTrue(captured.allOf(SetMapFlagV2::isReset))
     }
 
     @Test
@@ -67,9 +67,9 @@ class PlayerMovementMapFlagTest {
             process()
 
             assertEquals(expectedDestination, coords)
-            assertEquals(2, captured.countOf<SetMapFlag>())
-            assertTrue(captured.anyOf(SetMapFlag::isNotReset))
-            assertTrue(captured.anyOf(SetMapFlag::isReset))
+            assertEquals(2, captured.countOf<SetMapFlagV2>())
+            assertTrue(captured.anyOf(SetMapFlagV2::isNotReset))
+            assertTrue(captured.anyOf(SetMapFlagV2::isReset))
 
             // Run to destination.
             coords = startCoords
@@ -80,9 +80,9 @@ class PlayerMovementMapFlagTest {
             process()
 
             assertEquals(expectedDestination, coords)
-            assertEquals(2, captured.countOf<SetMapFlag>())
-            assertTrue(captured.anyOf(SetMapFlag::isNotReset))
-            assertTrue(captured.anyOf(SetMapFlag::isReset))
+            assertEquals(2, captured.countOf<SetMapFlagV2>())
+            assertTrue(captured.anyOf(SetMapFlagV2::isNotReset))
+            assertTrue(captured.anyOf(SetMapFlagV2::isReset))
         }
 
         // Move 2 tile norths.
@@ -108,14 +108,14 @@ class PlayerMovementMapFlagTest {
             process()
 
             assertEquals(startCoords.translateZ(1), coords)
-            assertEquals(1, captured.countOf<SetMapFlag>())
-            assertTrue(captured.singlePredicate(SetMapFlag::isNotReset))
+            assertEquals(1, captured.countOf<SetMapFlagV2>())
+            assertTrue(captured.singlePredicate(SetMapFlagV2::isNotReset))
 
             process()
 
             assertEquals(expectedDestination, coords)
-            assertEquals(1, captured.countOf<SetMapFlag>())
-            assertTrue(captured.singlePredicate(SetMapFlag::isReset))
+            assertEquals(1, captured.countOf<SetMapFlagV2>())
+            assertTrue(captured.singlePredicate(SetMapFlagV2::isReset))
 
             // Run to destination.
             coords = startCoords
@@ -126,9 +126,9 @@ class PlayerMovementMapFlagTest {
             process()
 
             assertEquals(expectedDestination, coords)
-            assertEquals(2, captured.countOf<SetMapFlag>())
-            assertTrue(captured.anyOf(SetMapFlag::isNotReset))
-            assertTrue(captured.anyOf(SetMapFlag::isReset))
+            assertEquals(2, captured.countOf<SetMapFlagV2>())
+            assertTrue(captured.anyOf(SetMapFlagV2::isNotReset))
+            assertTrue(captured.anyOf(SetMapFlagV2::isReset))
         }
 
         // Move 3 tile norths.
@@ -154,20 +154,20 @@ class PlayerMovementMapFlagTest {
             process()
 
             assertEquals(startCoords.translateZ(1), coords)
-            assertEquals(1, captured.countOf<SetMapFlag>())
-            assertTrue(captured.singlePredicate(SetMapFlag::isNotReset))
+            assertEquals(1, captured.countOf<SetMapFlagV2>())
+            assertTrue(captured.singlePredicate(SetMapFlagV2::isNotReset))
 
             process()
 
             // No set map flag message is sent in this step.
             assertEquals(startCoords.translateZ(2), coords)
-            assertEquals(0, captured.countOf<SetMapFlag>())
+            assertEquals(0, captured.countOf<SetMapFlagV2>())
 
             process()
 
             assertEquals(expectedDestination, coords)
-            assertEquals(1, captured.countOf<SetMapFlag>())
-            assertTrue(captured.singlePredicate(SetMapFlag::isReset))
+            assertEquals(1, captured.countOf<SetMapFlagV2>())
+            assertTrue(captured.singlePredicate(SetMapFlagV2::isReset))
 
             // Run to destination.
             coords = startCoords
@@ -178,14 +178,14 @@ class PlayerMovementMapFlagTest {
             process()
 
             assertEquals(startCoords.translateZ(2), coords)
-            assertEquals(1, captured.countOf<SetMapFlag>())
-            assertTrue(captured.singlePredicate(SetMapFlag::isNotReset))
+            assertEquals(1, captured.countOf<SetMapFlagV2>())
+            assertTrue(captured.singlePredicate(SetMapFlagV2::isNotReset))
 
             process()
 
             assertEquals(expectedDestination, coords)
-            assertEquals(1, captured.countOf<SetMapFlag>())
-            assertTrue(captured.singlePredicate(SetMapFlag::isReset))
+            assertEquals(1, captured.countOf<SetMapFlagV2>())
+            assertTrue(captured.singlePredicate(SetMapFlagV2::isReset))
         }
 
         // Move 4 tile norths.
@@ -211,26 +211,26 @@ class PlayerMovementMapFlagTest {
             process()
 
             assertEquals(startCoords.translateZ(1), coords)
-            assertEquals(1, captured.countOf<SetMapFlag>())
-            assertTrue(captured.singlePredicate(SetMapFlag::isNotReset))
+            assertEquals(1, captured.countOf<SetMapFlagV2>())
+            assertTrue(captured.singlePredicate(SetMapFlagV2::isNotReset))
 
             process()
 
             // No set map flag message is sent in this step.
             assertEquals(startCoords.translateZ(2), coords)
-            assertEquals(0, captured.countOf<SetMapFlag>())
+            assertEquals(0, captured.countOf<SetMapFlagV2>())
 
             process()
 
             // No set map flag message is sent in this step.
             assertEquals(startCoords.translateZ(3), coords)
-            assertEquals(0, captured.countOf<SetMapFlag>())
+            assertEquals(0, captured.countOf<SetMapFlagV2>())
 
             process()
 
             assertEquals(expectedDestination, coords)
-            assertEquals(1, captured.countOf<SetMapFlag>())
-            assertTrue(captured.singlePredicate(SetMapFlag::isReset))
+            assertEquals(1, captured.countOf<SetMapFlagV2>())
+            assertTrue(captured.singlePredicate(SetMapFlagV2::isReset))
 
             // Run to destination.
             coords = startCoords
@@ -241,14 +241,14 @@ class PlayerMovementMapFlagTest {
             process()
 
             assertEquals(startCoords.translateZ(2), coords)
-            assertEquals(1, captured.countOf<SetMapFlag>())
-            assertTrue(captured.singlePredicate(SetMapFlag::isNotReset))
+            assertEquals(1, captured.countOf<SetMapFlagV2>())
+            assertTrue(captured.singlePredicate(SetMapFlagV2::isNotReset))
 
             process()
 
             assertEquals(expectedDestination, coords)
-            assertEquals(1, captured.countOf<SetMapFlag>())
-            assertTrue(captured.singlePredicate(SetMapFlag::isReset))
+            assertEquals(1, captured.countOf<SetMapFlagV2>())
+            assertTrue(captured.singlePredicate(SetMapFlagV2::isReset))
         }
     }
 
@@ -283,8 +283,8 @@ class PlayerMovementMapFlagTest {
             movement.process(player)
         }
 
-        fun SetMapFlag.isExpectedDestination(): Boolean {
-            return xInBuildArea == 47 && zInBuildArea == 43
+        fun SetMapFlagV2.isExpectedDestination(): Boolean {
+            return x == expectedCoordinates.last().x && z == expectedCoordinates.last().z
         }
 
         // Route player to destination.
@@ -293,21 +293,21 @@ class PlayerMovementMapFlagTest {
         // Ensure the map flag is set on the first process.
         process()
         assertEquals(expectedCoordinates[1], player.coords)
-        assertEquals(1, captured.countOf<SetMapFlag>())
-        assertTrue(captured.allOf(SetMapFlag::isExpectedDestination))
+        assertEquals(1, captured.countOf<SetMapFlagV2>())
+        assertTrue(captured.allOf(SetMapFlagV2::isExpectedDestination))
 
         // None of these coordinates should transmit a map flag message.
         for (i in 2 until expectedCoordinates.size - 1) {
             process()
             assertEquals(expectedCoordinates[i], player.coords)
-            assertEquals(0, captured.countOf<SetMapFlag>())
+            assertEquals(0, captured.countOf<SetMapFlagV2>())
         }
 
         // The map flag should be reset once the last step has been consumed.
         process()
         assertEquals(expectedCoordinates.last(), player.coords)
-        assertEquals(1, captured.countOf<SetMapFlag>())
-        assertTrue(captured.allOf(SetMapFlag::isReset))
+        assertEquals(1, captured.countOf<SetMapFlagV2>())
+        assertTrue(captured.allOf(SetMapFlagV2::isReset))
     }
 
     private fun createMovementProcessor(): PlayerMovementProcessor {
@@ -319,6 +319,6 @@ class PlayerMovementMapFlagTest {
     }
 }
 
-private fun SetMapFlag.isNotReset(): Boolean = !isReset()
+private fun SetMapFlagV2.isNotReset(): Boolean = !isReset()
 
-private fun SetMapFlag.isReset(): Boolean = xInBuildArea == 255 && zInBuildArea == 255
+private fun SetMapFlagV2.isReset(): Boolean = this == SetMapFlagV2.RESET

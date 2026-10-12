@@ -1,12 +1,13 @@
 package org.rsmod.api.player.ui
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
 import net.rsprot.protocol.game.incoming.resumed.ResumePCountDialog
 import net.rsprot.protocol.game.incoming.resumed.ResumePauseButton
 import net.rsprot.protocol.game.outgoing.misc.player.TriggerOnDialogAbort
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.rsmod.api.config.refs.mesanims
 import org.rsmod.api.net.rsprot.handlers.ResumePCountDialogHandler
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.events.EventBus
@@ -33,7 +34,7 @@ class IfCloseTest {
         assertNull(input)
 
         val resume = ResumePCountDialog(5)
-        val handler = ResumePCountDialogHandler()
+        val handler = ResumePCountDialogHandler(EventBus())
         handler.handle(player, resume)
 
         assertNull(player.activeCoroutine)
@@ -48,7 +49,7 @@ class IfCloseTest {
     fun GameTestState.`call during standard dialog script`() = runGameTest {
         var unreachable = true
         player.withProtectedAccess {
-            chatPlayer(mesanims.angry, "Test")
+            chatPlayer(ServerCacheManager.getMesAnim("mesanim.angry".asRSCM()), "Test")
             unreachable = false
         }
         checkNotNull(player.activeCoroutine)

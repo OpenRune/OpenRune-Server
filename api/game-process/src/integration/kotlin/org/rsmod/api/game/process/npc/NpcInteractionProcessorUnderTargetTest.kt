@@ -1,6 +1,6 @@
 package org.rsmod.api.game.process.npc
 
-import dev.openrune.util.Direction
+import dev.openrune.definition.EntityOpsBuilder
 import jakarta.inject.Inject
 import org.junit.jupiter.api.Test
 import org.rsmod.api.player.output.mes
@@ -12,6 +12,7 @@ import org.rsmod.api.testing.factory.locTypeFactory
 import org.rsmod.api.testing.factory.npcTypeFactory
 import org.rsmod.api.testing.random.FixedRandom
 import org.rsmod.game.entity.Player
+import org.rsmod.game.map.Direction
 import org.rsmod.game.map.translate
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -184,7 +185,7 @@ class NpcInteractionProcessorUnderTargetTest {
         private val man =
             npcTypeFactory.create {
                 name = "Man"
-                op[1] = "Attack"
+                actions = EntityOpsBuilder().op(1, "Attack").build()
                 size = 1
                 maxRange = 100
             }
@@ -192,7 +193,7 @@ class NpcInteractionProcessorUnderTargetTest {
         private val crate =
             locTypeFactory.create {
                 name = "Crate"
-                op[0] = "Search"
+                actions = EntityOpsBuilder().op(0, "Search").build()
                 width = 1
                 length = 1
                 blockWalk = 1

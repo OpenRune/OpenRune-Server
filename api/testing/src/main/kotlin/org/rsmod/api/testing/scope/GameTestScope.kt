@@ -34,6 +34,12 @@ import org.rsmod.api.account.character.CharacterDataStage
 import org.rsmod.api.db.Database
 import org.rsmod.api.db.DatabaseConfig
 import org.rsmod.api.db.DatabaseConnection
+import org.rsmod.api.death.NpcDeathDropHook
+import org.rsmod.api.death.NpcDeathKillHook
+import org.rsmod.api.death.NpcDropReceiveHook
+import org.rsmod.api.death.PlayerDeathCleanupHook
+import org.rsmod.api.death.PlayerDeathHook
+import org.rsmod.api.death.PlayerRespawnHook
 import org.rsmod.api.game.process.GameCycle
 import org.rsmod.api.inv.map.InvMapInit
 import org.rsmod.api.market.DefaultMarketPrices
@@ -57,6 +63,7 @@ import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.modifier.StandardPlayerHitModifier
 import org.rsmod.api.player.hit.processor.DamageOnlyPlayerHitProcessor
 import org.rsmod.api.player.hit.processor.InstantPlayerHitProcessor
+import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.hook.PlayerGroundItemDropHook
 import org.rsmod.api.player.hook.PlayerInvUpdateHook
 import org.rsmod.api.player.hook.PlayerObjTakeValidateHook
@@ -181,6 +188,7 @@ constructor(
     private val opNpcHandler: OpNpcHandler,
     private val aiPlayerInteractions: AiPlayerInteractions,
     private val npcHitModifier: NpcHitModifier,
+    private val playerHitModifier: PlayerHitModifier,
     private val regionRegistry: RegionRegistry,
     private val regionRepo: RegionRepository,
 ) {
@@ -240,6 +248,7 @@ constructor(
         player.worldType = WorldType.DEFAULT
         player.accountHash = resolvedUuid
         player.userId = resolvedUuid
+        player.observerUUID = resolvedUuid
         player.runEnergy = Int.MAX_VALUE
         player.assignUid()
         players[slot] = player
@@ -493,6 +502,10 @@ constructor(
         queueHit(source, delay, type, damage, npcHitModifier)
     }
 
+    public fun Player.queueHit(source: Npc, delay: Int, type: HitType, damage: Int) {
+        queueHit(source, delay, type, damage, playerHitModifier)
+    }
+
     public fun Inventory.count(obj: ItemServerType): Int = count(obj.internalName)
 
     public fun allocZoneCollision(coord: CoordGrid) {
@@ -666,6 +679,14 @@ constructor(
     }
 
     public fun assertDoesNotContain(inv: Inventory, obj: ItemServerType) {
+        Assertions.assertFalse(obj in inv) { "Obj found. (obj=$obj) | (inv=$inv)" }
+    }
+
+    public fun assertContains(inv: Inventory, obj: String) {
+        Assertions.assertTrue(obj in inv) { "Obj not found. (obj=$obj) | (inv=$inv)" }
+    }
+
+    public fun assertDoesNotContain(inv: Inventory, obj: String) {
         Assertions.assertFalse(obj in inv) { "Obj found. (obj=$obj) | (inv=$inv)" }
     }
 
@@ -911,6 +932,12 @@ constructor(
             Multibinder.newSetBinder(binder(), PlayerGroundItemDropHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerObjTakeValidateHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerTeleportValidateHook::class.java)
+            Multibinder.newSetBinder(binder(), NpcDeathDropHook::class.java)
+            Multibinder.newSetBinder(binder(), NpcDeathKillHook::class.java)
+            Multibinder.newSetBinder(binder(), PlayerDeathCleanupHook::class.java)
+            Multibinder.newSetBinder(binder(), PlayerDeathHook::class.java)
+            Multibinder.newSetBinder(binder(), PlayerRespawnHook::class.java)
+            Multibinder.newSetBinder(binder(), NpcDropReceiveHook::class.java)
             bind(NpcHitModifier::class.java).to(StandardNpcHitModifier::class.java)
             bind(PlayerHitModifier::class.java).to(StandardPlayerHitModifier::class.java)
             bind(NpcHitProcessor::class.java).to(StandardNpcHitProcessor::class.java)

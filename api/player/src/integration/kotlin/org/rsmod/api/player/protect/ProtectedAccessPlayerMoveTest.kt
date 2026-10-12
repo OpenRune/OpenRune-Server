@@ -1,10 +1,13 @@
 package org.rsmod.api.player.protect
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.types.NpcMode
+import dev.openrune.types.NpcServerType
 import org.junit.jupiter.api.Test
-import org.rsmod.api.config.refs.interfaces
-import org.rsmod.api.script.onApNpc1
+import org.rsmod.api.player.events.interact.NpcEvents
+import org.rsmod.api.script.onProtectedEvent
 import org.rsmod.api.testing.GameTestState
-import org.rsmod.api.testing.factory.npcTypeFactory
 import org.rsmod.game.entity.Npc
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -21,7 +24,7 @@ class ProtectedAccessPlayerMoveTest {
             player.opNpc1(npc)
 
             advance(ticks = 1)
-            assertModalNotOpen(interfaces.chat_left)
+            assertModalNotOpen("interface.chat_left")
 
             advance(ticks = 1)
             val expectedPath = start.translate(3, -1)
@@ -29,7 +32,7 @@ class ProtectedAccessPlayerMoveTest {
                 "Unexpected player coords after test script 1-cycle delay: " +
                     "expected=$expectedPath, actual=${player.coords}"
             }
-            assertModalOpen(interfaces.chat_left)
+            assertModalOpen("interface.chat_left")
 
             advance(ticks = 1)
             val expectedDest = start.translate(4, -1)
@@ -49,7 +52,7 @@ class ProtectedAccessPlayerMoveTest {
                 check(player.coords == expected) {
                     "Unexpected player coords: expected=$expected, actual=${player.coords}"
                 }
-                assertModalNotOpen(interfaces.chat_left)
+                assertModalNotOpen("interface.chat_left")
             }
 
             // This portion happens while player does not have LOS to npc, which means the ap
@@ -68,7 +71,7 @@ class ProtectedAccessPlayerMoveTest {
 
             advance(ticks = 1)
             assertEquals(start.translate(4, -1), player.coords)
-            assertModalOpen(interfaces.chat_left)
+            assertModalOpen("interface.chat_left")
         }
 
     @Test
@@ -81,7 +84,7 @@ class ProtectedAccessPlayerMoveTest {
             player.opNpc1(npc)
 
             advance(ticks = 1)
-            assertModalNotOpen(interfaces.chat_left)
+            assertModalNotOpen("interface.chat_left")
 
             advance(ticks = 1)
             val expectedPath = start.translate(1, 0)
@@ -89,11 +92,11 @@ class ProtectedAccessPlayerMoveTest {
                 "Unexpected player coords after test script 1-cycle delay: " +
                     "expected=$expectedPath, actual=${player.coords}"
             }
-            assertModalNotOpen(interfaces.chat_left)
+            assertModalNotOpen("interface.chat_left")
 
             advance(ticks = 1)
             assertEquals(expectedPath, player.coords)
-            assertModalOpen(interfaces.chat_left)
+            assertModalOpen("interface.chat_left")
         }
 
     @Test
@@ -106,11 +109,11 @@ class ProtectedAccessPlayerMoveTest {
             player.opNpc1(npc)
 
             advance(ticks = 1)
-            assertModalNotOpen(interfaces.chat_left)
+            assertModalNotOpen("interface.chat_left")
 
             advance(ticks = 1)
             assertEquals(start, player.coords)
-            assertModalOpen(interfaces.chat_left)
+            assertModalOpen("interface.chat_left")
         }
 
     @Test
@@ -123,22 +126,22 @@ class ProtectedAccessPlayerMoveTest {
             player.opNpc1(npc)
 
             advance(ticks = 1)
-            assertModalNotOpen(interfaces.chat_left)
+            assertModalNotOpen("interface.chat_left")
 
             advance(ticks = 1)
             check(player.coords == start) {
                 "Unexpected player coords: expected=$start, actual=${player.coords}"
             }
-            assertModalNotOpen(interfaces.chat_left)
+            assertModalNotOpen("interface.chat_left")
 
             advance(ticks = 1)
             assertEquals(start, player.coords)
-            assertModalOpen(interfaces.chat_left)
+            assertModalOpen("interface.chat_left")
         }
 
     private class BartenderTestScript : PluginScript() {
         override fun ScriptContext.startup() {
-            onApNpc1(bartender) { apDialogue(it.npc) }
+            onProtectedEvent<NpcEvents.Ap1>(bartender.id) { apDialogue(it.npc) }
         }
 
         private suspend fun ProtectedAccess.apDialogue(npc: Npc) {
@@ -161,11 +164,9 @@ class ProtectedAccessPlayerMoveTest {
     }
 
     private companion object {
-        private val bartender =
-            npcTypeFactory.create {
-                name = "Bartender"
-                op[0] = "Talk-to"
-                size = 1
-            }
+        private val bartender: NpcServerType by lazy {
+            val type = checkNotNull(ServerCacheManager.getNpc("npc.arceuus_bartender".asRSCM()))
+            type.copy(defaultMode = NpcMode.None, wanderRange = 0)
+        }
     }
 }

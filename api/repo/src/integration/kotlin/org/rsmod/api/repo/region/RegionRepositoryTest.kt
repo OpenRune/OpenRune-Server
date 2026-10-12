@@ -67,7 +67,6 @@ class RegionRepositoryTest {
         private val man =
             npcTypeFactory.create {
                 name = "Man"
-                op[1] = "Attack"
                 size = 1
                 hitpoints = 10
                 wanderRange = 0

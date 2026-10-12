@@ -1,14 +1,15 @@
 package org.rsmod.api.game.process.player
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.EntityOpsBuilder
 import org.junit.jupiter.api.Test
 import org.rsmod.api.config.constants
-import org.rsmod.api.config.refs.interfaces
+import org.rsmod.api.player.events.interact.LocEvents
+import org.rsmod.api.player.events.interact.NpcEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.player.vars.varMoveSpeed
-import org.rsmod.api.script.onApLoc1
-import org.rsmod.api.script.onApNpc2
-import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.script.onProtectedEvent
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.factory.locTypeFactory
 import org.rsmod.api.testing.factory.npcTypeFactory
@@ -22,7 +23,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 class PlayerInteractionProcessorTest {
     @Test
     fun GameTestState.`cancel interaction due to verification condition`() = runGameTest {
-        val loc = placeMapLoc(CoordGrid(0, 50, 50, 22, 43), locTypes.getValue(1276))
+        val loc = placeMapLoc(CoordGrid(0, 50, 50, 22, 43), checkNotNull(ServerCacheManager.getObject(1276)))
 
         val route = player.routeDestination
         player.moveSpeed = MoveSpeed.Walk
@@ -35,7 +36,7 @@ class PlayerInteractionProcessorTest {
         checkNotNull(player.interaction)
 
         // Replace original loc.
-        placeMapLoc(CoordGrid(0, 50, 50, 22, 43), locTypes.getValue(1274))
+        placeMapLoc(CoordGrid(0, 50, 50, 22, 43), checkNotNull(ServerCacheManager.getObject(1274)))
 
         advance(ticks = 1)
         assertTrue(route.isEmpty())
@@ -168,7 +169,7 @@ class PlayerInteractionProcessorTest {
      */
     @Test
     fun GameTestState.`skip interaction verification while player isBusy`() = runGameTest {
-        val loc = placeMapLoc(CoordGrid(0, 50, 50, 22, 43), locTypes.getValue(1276))
+        val loc = placeMapLoc(CoordGrid(0, 50, 50, 22, 43), checkNotNull(ServerCacheManager.getObject(1276)))
 
         val route = player.routeDestination
         player.moveSpeed = MoveSpeed.Walk
@@ -181,11 +182,11 @@ class PlayerInteractionProcessorTest {
         checkNotNull(player.interaction)
 
         // Open a modal for `player.isBusy` condition to return true.
-        player.ifOpenMain(interfaces.hpbar_hud)
+        player.ifOpenMain("interface.hpbar_hud")
 
         // Replace original loc. This would normally cancel the interaction and movement, however,
         // this won't be the case while the player is busy.
-        placeMapLoc(CoordGrid(0, 50, 50, 22, 43), locTypes.getValue(1274))
+        placeMapLoc(CoordGrid(0, 50, 50, 22, 43), checkNotNull(ServerCacheManager.getObject(1274)))
 
         advance(ticks = 1)
         // Ensure route is still ongoing and interaction has not been cancelled.
@@ -274,8 +275,8 @@ class PlayerInteractionProcessorTest {
 
     private class ApTestScript : PluginScript() {
         override fun ScriptContext.startup() {
-            onApLoc1(signpost) { apReadSignpost(it.loc) }
-            onOpLoc1(signpost) { readSignpost() }
+            onProtectedEvent<LocEvents.Ap1>(signpost.id) { apReadSignpost(it.loc) }
+            onProtectedEvent<LocEvents.Op1>(signpost.id) { readSignpost() }
         }
 
         private fun ProtectedAccess.apReadSignpost(loc: BoundLocInfo) {
@@ -373,7 +374,7 @@ class PlayerInteractionProcessorTest {
 
     private class ApRerouteTestScript : PluginScript() {
         override fun ScriptContext.startup() {
-            onApNpc2(man) { combatAp(it.npc) }
+            onProtectedEvent<NpcEvents.Ap2>(man.id) { combatAp(it.npc) }
         }
 
         private fun ProtectedAccess.combatAp(target: Npc) {
@@ -388,7 +389,7 @@ class PlayerInteractionProcessorTest {
         private val signpost =
             locTypeFactory.create {
                 name = "Signpost"
-                op[0] = "Read"
+                actions = EntityOpsBuilder().op(0, "Read").build()
                 width = 2
                 length = 2
             }
@@ -396,14 +397,14 @@ class PlayerInteractionProcessorTest {
         private val sheep =
             npcTypeFactory.create {
                 name = "Sheep"
-                op[0] = "Shear"
+                actions = EntityOpsBuilder().op(0, "Shear").build()
                 size = 1
             }
 
         private val man =
             npcTypeFactory.create {
                 name = "Man"
-                op[1] = "Attack"
+                actions = EntityOpsBuilder().op(1, "Attack").build()
                 size = 1
                 maxRange = 100
             }
@@ -411,7 +412,7 @@ class PlayerInteractionProcessorTest {
         private val dummy =
             npcTypeFactory.create {
                 name = "Dummy"
-                op[0] = "Talk-to"
+                actions = EntityOpsBuilder().op(0, "Talk-to").build()
                 size = 1
                 wanderRange = 0
             }
@@ -419,7 +420,7 @@ class PlayerInteractionProcessorTest {
         private val crate =
             locTypeFactory.create {
                 name = "Crate"
-                op[0] = "Search"
+                actions = EntityOpsBuilder().op(0, "Search").build()
                 width = 1
                 length = 1
             }

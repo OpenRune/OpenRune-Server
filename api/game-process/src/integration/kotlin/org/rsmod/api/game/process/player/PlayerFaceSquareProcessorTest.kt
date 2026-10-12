@@ -1,6 +1,5 @@
 package org.rsmod.api.game.process.player
 
-import dev.openrune.util.Direction
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
@@ -9,6 +8,7 @@ import org.rsmod.api.testing.params.TestArgs
 import org.rsmod.api.testing.params.TestArgsProvider
 import org.rsmod.api.testing.params.TestWithArgs
 import org.rsmod.game.entity.util.EntityFaceAngle
+import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.square.MapSquareKey
 

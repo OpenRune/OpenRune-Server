@@ -1,12 +1,15 @@
 package org.rsmod.api.player.protect
 
+import dev.openrune.definition.EntityOpsBuilder
+import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import org.junit.jupiter.api.Test
+import org.rsmod.api.player.events.interact.LocEvents
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.obj.ObjRepository
-import org.rsmod.api.script.onOpLoc2
+import org.rsmod.api.script.onProtectedEvent
 import org.rsmod.api.testing.GameTestState
-import org.rsmod.api.testing.factory.locTypeFactory
+import org.rsmod.api.testing.factory.TestCacheTypes
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -97,7 +100,7 @@ class ProtectedAccessPlayerMoveWithMinDelayTest {
     constructor(private val locRepo: LocRepository, private val objRepo: ObjRepository) :
         PluginScript() {
         override fun ScriptContext.startup() {
-            onOpLoc2(wheat) { pickCrop(it.loc) }
+            onProtectedEvent<LocEvents.Op2>(wheat.id) { pickCrop(it.loc) }
         }
 
         private suspend fun ProtectedAccess.pickCrop(loc: BoundLocInfo) {
@@ -121,14 +124,20 @@ class ProtectedAccessPlayerMoveWithMinDelayTest {
     }
 
     private companion object {
-        private val wheat =
-            locTypeFactory.create {
-                name = "Wheat"
-                op[1] = "Pick"
-                width = 1
-                length = 1
-                blockWalk = 0
-                blockRange = false
-            }
+        private val wheat: ObjectServerType by lazy {
+            val id = TestCacheTypes.objects.nextId()
+            val type =
+                ObjectServerType(
+                    id = id,
+                    name = "Wheat",
+                    width = 1,
+                    length = 1,
+                    blockWalk = 0,
+                    blockRange = false,
+                    actions = EntityOpsBuilder().op(1, "Pick").build(),
+                )
+            TestCacheTypes.objects.register(id, type)
+            type
+        }
     }
 }

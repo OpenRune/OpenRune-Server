@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("integration-test-suite")
     id("game-cache-test-conventions")
 }
 
@@ -41,4 +42,14 @@ dependencies {
     testImplementation(projects.api.areaChecker)
     testImplementation(projects.api.market)
     testImplementation(projects.engine.coroutine)
+    integrationImplementation(libs.fastutil)
+    integrationImplementation(libs.rsprot.api)
+    integrationImplementation(projects.api.combat.combatCommons)
+    integrationImplementation(projects.api.deathPlugin)
+    integrationImplementation(projects.api.hitPlugin)
+    integrationImplementation(projects.api.player)
+    integrationImplementation(projects.api.random)
+    integrationImplementation(projects.api.registry)
+    integrationImplementation(projects.api.utils.utilsZone)
+    integrationImplementation(projects.engine.coroutine)
 }

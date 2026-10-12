@@ -1,6 +1,7 @@
 package org.rsmod.api.testing.factory
 
 import org.rsmod.api.testing.factory.entity.TestPathingEntityFactory
+import org.rsmod.api.testing.factory.loc.TestLocTypeFactory
 import org.rsmod.api.testing.factory.map.TestCollisionFactory
 import org.rsmod.api.testing.factory.npc.TestNpcFactory
 import org.rsmod.api.testing.factory.npc.TestNpcTypeFactory
@@ -13,6 +14,10 @@ public val entityFactory: TestPathingEntityFactory
 /* Map factory properties */
 public val collisionFactory: TestCollisionFactory
     get() = TestCollisionFactory()
+
+/* Loc factory properties */
+public val locTypeFactory: TestLocTypeFactory
+    get() = TestLocTypeFactory()
 
 /* Npc factory properties */
 public val npcFactory: TestNpcFactory

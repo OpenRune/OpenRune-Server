@@ -7,13 +7,17 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.factory.entityFactory
-import org.rsmod.api.testing.factory.locFactory
 import org.rsmod.api.testing.factory.locTypeFactory
+import org.rsmod.game.loc.LocAngle
+import org.rsmod.game.loc.LocEntity
+import org.rsmod.game.loc.LocInfo
+import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.collision.addLoc
 import org.rsmod.game.movement.RouteRequestCoord
 import org.rsmod.game.movement.RouteRequestLoc
 import org.rsmod.game.movement.RouteRequestPathingEntity
 import org.rsmod.map.CoordGrid
+import org.rsmod.routefinder.loc.LocLayerConstants
 
 class PlayerRouteRequestTest {
     @Test
@@ -65,12 +69,14 @@ class PlayerRouteRequestTest {
     fun GameTestState.`reach loc target route destination`() = runBasicGameTest {
         val start = CoordGrid(3200, 3200)
         val dest = CoordGrid(3203, 3205)
-        val target = locFactory.create(dest)
+        val shape = LocShape.CentrepieceStraight
         val type =
-            locTypeFactory.create(target) {
+            locTypeFactory.create {
                 width = 2
                 length = 2
             }
+        val target =
+            LocInfo(LocLayerConstants.of(shape.id), dest, LocEntity(type.id, shape.id, LocAngle.West.id))
         withCollisionState {
             val movement =
                 PlayerMovementProcessor(it.collision, it.routeFactory, it.stepFactory, eventBus)
