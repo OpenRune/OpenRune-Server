@@ -69,6 +69,22 @@ class DeathsCofferTest {
             assertEquals(0, player.deathCoffer)
         }
 
+    @Test
+    fun GameTestState.`an untradeable obj is refused and kept`() =
+        runCofferTest {
+            val staff = checkNotNull(ServerCacheManager.getItem("obj.ibanstaff".asRSCM(RSCMType.OBJ)))
+            player.inv[0] = InvObj(staff, 1)
+            openCoffer()
+
+            player.ifButton(component(SIDE_ITEMS), comsub = 0)
+            advance()
+            player.ifButton(component(CONFIRM))
+            advance()
+
+            assertEquals(1, player.inv.count(staff.internalName))
+            assertEquals(0, player.deathCoffer)
+        }
+
     private fun GameTestState.runCofferTest(body: GameTestScope.() -> Unit) =
         runGameTest(DeathsCofferScript::class) {
             player.placeAt(CoordGrid(3179, 5728))
