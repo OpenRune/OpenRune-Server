@@ -15985,6 +15985,8 @@ inherit = "npc.league_6_gg_dawn_alive"
 id = "npc.cowboss"
 inherit = "npc.cowboss"
 [npc.params]
+"param.death_anim"="seq.cow_boss_death"
+"param.boss_hp_bar_mode"=2
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=25
 
@@ -15992,6 +15994,8 @@ inherit = "npc.cowboss"
 id = "npc.cowboss_routefind"
 inherit = "npc.cowboss_routefind"
 [npc.params]
+"param.death_anim"="seq.cow_boss_death"
+"param.boss_hp_bar_mode"=2
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=25
 
