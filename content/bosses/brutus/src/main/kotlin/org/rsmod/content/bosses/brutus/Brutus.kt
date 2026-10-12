@@ -20,9 +20,14 @@ import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.stat.baseHitpointsLvl
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.repo.loc.LocRepository
+import org.rsmod.api.route.RouteFactory
+import org.rsmod.api.route.walkTo
+import org.rsmod.api.script.onEvent
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.npc.NpcStateEvents
+import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.LocShape
 import org.rsmod.map.CoordGrid
@@ -40,15 +45,21 @@ constructor(
     private val idesOfMilk: IdesOfMilkQuest,
     private val locRepo: LocRepository,
     private val aiPlayerInteractions: AiPlayerInteractions,
+    private val routeFactory: RouteFactory,
 ) : BossPluginScript(deps) {
 
     override fun ScriptContext.startup() {
         // live capture, rev 241, 20261012T180256-df49f48@1232: the death line on the killing hit.
-        BossCombat.register(this, spec, deps, onLethal = { npc -> npc.say(DEATH_SAY) })
+        // live capture, rev 241, 20261012T180256-df49f48@1232-1943: "m-moo..." comes with the death
+        // animation, so it waits for the killing hit to land rather than for it to be dealt.
+        BossCombat.register(this, spec, deps, onHit = { if (npc.hitpoints == 0) moo(npc) })
+        onEvent<NpcStateEvents.Respawn> { if (npc.isType(BRUTUS)) npc.vars[DEATH_SAID] = 0 }
         deps.extensionRegistry.register(CHARGE_AIM) { ctx -> aimCharge(ctx.npc, ctx.target) }
         deps.extensionRegistry.register(CHARGE_LAND) { ctx -> landCharge(ctx.npc, ctx.target) }
         deps.extensionRegistry.register(STOMP_AIM) { ctx -> aimStomp(ctx.npc, ctx.target) }
         deps.extensionRegistry.register(STOMP_LAND) { ctx -> landStomp(ctx.npc, ctx.target) }
+        deps.extensionRegistry.register(REACH) { ctx -> countUnreached(ctx.npc, ctx.target) }
+        deps.extensionRegistry.register(HUFF) { ctx -> huff(ctx.npc, ctx.target) }
     }
 
     private fun onQuest(player: Player): Boolean =
@@ -86,6 +97,13 @@ constructor(
                     MIN_CHARGE_ROOM
         }
 
+    private val chargeHasRoom =
+        Condition.Custom { npc, target ->
+            target != null &&
+                chargeRoom(npc.coords, chargeDirection(npc.coords, target.coords), deps.collision, ::diagonalWall) >=
+                    MIN_CHARGE_ROOM
+        }
+
     override val spec =
         boss(BRUTUS) {
             stats(attackRate = ATTACK_RATE)
@@ -101,11 +119,15 @@ constructor(
 
             val charge =
                 ability("charge") {
+                    // live capture, rev 241, 20261012T180256-df49f48@1796-1802: he stands still
+                    // through the windup and walks again once he has landed.
+                    lockMovement()
                     say("*growls*")
                     anim("seq.cow_boss_charge", delay = CHARGE_ANIM_DELAY)
                     include(external(CHARGE_AIM))
                     wait(CHARGE_WINDUP)
                     include(external(CHARGE_LAND))
+                    unlockMovement()
                     wait(CHARGE_RECOVERY)
                 }
 
@@ -119,7 +141,14 @@ constructor(
                     wait(STOMP_GAP - STOMP_WINDUP),
                 )
 
-            val stomp = ability("stomp") { include(repeat(STOMP_SLAMS, effect = slam)) }
+            // live capture, rev 241, 20261012T180256-df49f48@1892-1914: he doesn't move between
+            // the first slam and the end of the last.
+            val stomp =
+                ability("stomp") {
+                    lockMovement()
+                    include(repeat(STOMP_SLAMS, effect = slam))
+                    unlockMovement()
+                }
 
             val pickSpecial =
                 sequence(
@@ -137,10 +166,26 @@ constructor(
 
             // live capture, rev 241, 20261012T180256-df49f48@1567-1943: two basic attacks open the
             // fight, then a special after every four basic attacks.
-            // TODO(content): [verify:in_game] out of reach for 15 ticks: a charge through obstacles,
-            // or "*huff*" (seq.cow_boss_heavy_breath) and a walk round them
+            // Out of reach for 15 ticks, he charges through the obstacle or huffs and walks round it
             // (https://oldschool.runescape.wiki/w/Brutus/Strategies; live capture, rev 241,
             // 20261012T200152-df49f48@764, @819, @918).
+            // UNVERIFIED: when he charges rather than huffs (the captures only saw huffs, each with a
+            // fence in the way, so this charges whenever a charge has room).
+            every(
+                1,
+                sequence(
+                    external(REACH),
+                    whenever(
+                        varnAtLeast(UNREACHED, OUT_OF_REACH_TICKS),
+                        sequence(
+                            setVarn(UNREACHED, 0),
+                            whenever(chargeHasRoom, forceNext(charge), external(HUFF)),
+                        ),
+                    ),
+                ),
+                skipWhileBusy = true,
+            )
+
             phase("fight") {
                 rotationSelector {
                     +then(melee)
@@ -153,9 +198,22 @@ constructor(
         }
 
     /** Faces the tile five past his centre towards [target] and remembers the direction. */
+    private fun moo(npc: Npc) {
+        if (npc.vars[DEATH_SAID] == 0) {
+            npc.vars[DEATH_SAID] = 1
+            npc.say(DEATH_SAY)
+        }
+    }
+
+    /**
+     * Live sends only the tile to face during the windup, resets the facing as he lands and faces
+     * the target again two ticks later (live capture, rev 241, 20261012T180256-df49f48@1796-1802),
+     * so he never turns towards a player who sidestepped.
+     */
     private fun aimCharge(npc: Npc, target: Player) {
         val (dx, dz) = chargeDirection(npc.coords, target.coords)
         npc.vars[AIM] = encodeAim(dx, dz)
+        npc.resetFaceEntity()
         npc.faceSquare(centre(npc.coords).translate(dx * AIM_DISTANCE, dz * AIM_DISTANCE))
     }
 
@@ -183,17 +241,45 @@ constructor(
                 modifier = deps.playerHitModifier,
             )
         }
-        npc.telejump(deps.collision, dest)
-        // The jump clears his interaction; he goes straight back for the target.
-        npc.apPlayer2(target, aiPlayerInteractions)
+        // live capture, rev 241, 20261012T180256-df49f48@1800: a teleport with an exact move from
+        // the start over 60 client cycles, so the client draws the dash.
+        PathingEntityCommon.exactMove(
+            npc,
+            start,
+            dest,
+            delay1 = 0,
+            delay2 = CHARGE_CLIENT_CYCLES,
+            dir = facingAngle(dx, dz),
+            collision = deps.collision,
+        )
+        npc.resetFaceEntity()
+        deps.worldQueues.add(CHARGE_REENGAGE_DELAY) {
+            if (npc.isSlotAssigned && npc.hitpoints > 0) npc.apPlayer2(target, aiPlayerInteractions)
+        }
     }
 
     private fun diagonalWall(tile: CoordGrid): Boolean =
         locRepo.findAll(tile).any { it.shape == LocShape.WallDiagonal }
 
+    private fun countUnreached(npc: Npc, target: Player) {
+        npc.vars[UNREACHED] = if (inReach(npc.coords, target.coords)) 0 else npc.vars[UNREACHED] + 1
+    }
+
+    /** "*huff*", then a real route round whatever kept him from the target. */
+    private fun huff(npc: Npc, target: Player) {
+        npc.say("*huff*")
+        npc.anim("seq.cow_boss_heavy_breath")
+        npc.walkTo(routeFactory, target.coords) { npc.apPlayer2(target, aiPlayerInteractions) }
+    }
+
+    /**
+     * Each slam faces its own side, not the target, until two ticks after it lands (live capture,
+     * rev 241, 20261012T180256-df49f48@1892-1906 and 20261012T200152-df49f48@926-932).
+     */
     private fun aimStomp(npc: Npc, target: Player) {
         val (cx, cz) = stompAim(npc.coords, target.coords)
         npc.vars[AIM] = encodeAim(cx, cz)
+        npc.resetFaceEntity()
         npc.faceSquare(centre(npc.coords).translate(cx * AIM_DISTANCE, cz * AIM_DISTANCE))
     }
 
@@ -213,6 +299,9 @@ constructor(
                 modifier = deps.playerHitModifier,
             )
         }
+        deps.worldQueues.add(FACE_AGAIN_DELAY) {
+            if (npc.isSlotAssigned && npc.hitpoints > 0) npc.facePlayer(target)
+        }
     }
 
     companion object {
@@ -221,6 +310,10 @@ constructor(
 
         private const val NEXT_SPECIAL = "varn.brutus_next_special"
         private const val AIM = "varn.brutus_aim"
+        private const val UNREACHED = "varn.brutus_unreached"
+        private const val REACH = "brutus.reach"
+        private const val HUFF = "brutus.huff"
+        private const val OUT_OF_REACH_TICKS = 15
         private const val CHARGE_TURN = 1
         private const val STOMP_TURN = 2
 
@@ -236,8 +329,16 @@ constructor(
         private const val CHARGE_WINDUP = 4
         private const val CHARGE_RECOVERY = 4
         private const val CHARGE_MIN = 4
+        private const val CHARGE_CLIENT_CYCLES = 60
+        private const val CHARGE_REENGAGE_DELAY = 2
+        private const val FACE_AGAIN_DELAY = 2
+        private const val DEATH_SAID = "varn.brutus_death_said"
         private const val CHARGE_MAX = 7
         private const val MIN_CHARGE_ROOM = 3
+        private const val ANGLE_SOUTH = 0
+        private const val ANGLE_WEST = 512
+        private const val ANGLE_NORTH = 1024
+        private const val ANGLE_EAST = 1536
         private const val STOMP_ANIM_DELAY = 30
         private const val STOMP_WINDUP = 4
         private const val STOMP_GAP = 8
@@ -252,6 +353,25 @@ constructor(
         }
 
         private fun centre(sw: CoordGrid): CoordGrid = sw.translate(BRUTUS_SIZE / 2, BRUTUS_SIZE / 2)
+
+        /** Whether [player] stands where Brutus at [sw] can hit with his melee attack. */
+        fun inReach(sw: CoordGrid, player: CoordGrid): Boolean {
+            val dx = player.x - sw.x
+            val dz = player.z - sw.z
+            val besideX = dx == -1 || dx == BRUTUS_SIZE
+            val besideZ = dz == -1 || dz == BRUTUS_SIZE
+            val alongX = dx in 0 until BRUTUS_SIZE
+            val alongZ = dz in 0 until BRUTUS_SIZE
+            return (besideX && alongZ) || (besideZ && alongX)
+        }
+
+        private fun facingAngle(dx: Int, dz: Int): Int =
+            when {
+                dx < 0 -> ANGLE_WEST
+                dx > 0 -> ANGLE_EAST
+                dz > 0 -> ANGLE_NORTH
+                else -> ANGLE_SOUTH
+            }
 
         private fun encodeAim(dx: Int, dz: Int): Int = (dx + 1) * 3 + (dz + 1)
 

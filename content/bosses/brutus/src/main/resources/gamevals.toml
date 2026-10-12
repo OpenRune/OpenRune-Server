@@ -1,3 +1,5 @@
 [gamevals.varn]
 brutus_next_special = 64400
 brutus_aim = 64401
+brutus_unreached = 64402
+brutus_death_said = 64403
