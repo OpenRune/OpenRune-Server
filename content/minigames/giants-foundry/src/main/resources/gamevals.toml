@@ -6,8 +6,8 @@ giants_foundry_swords_made = 64403
 giants_foundry_sweetspots = 64404
 
 [gamevals.timer]
-giants_foundry_preform_cooling = 64400
-giants_foundry_jig_cooling = 64401
+giants_foundry_preform_cooling = 4440
+giants_foundry_jig_cooling = 4441
 
 [gamevals.enum]
 giants_foundry_commission_words = 4372

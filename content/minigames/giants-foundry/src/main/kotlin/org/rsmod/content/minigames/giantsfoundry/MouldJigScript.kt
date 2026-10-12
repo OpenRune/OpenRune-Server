@@ -130,7 +130,7 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         val hands = player.worn[Wearpos.Hands.slot]
         return inv.contains("obj.bucket_water") ||
             hands?.isType("obj.ice_gloves") == true ||
-            hands?.isType("obj.smiths_gloves_i") == true
+            hands?.isType("obj.smithing_uniform_gloves_ice") == true
     }
 
     private companion object {

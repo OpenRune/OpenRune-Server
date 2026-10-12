@@ -74,12 +74,14 @@ constructor(
         if (!canWork()) {
             return
         }
-        if (player.preformCompletion >= FoundryFormulas.SCALE) {
-            mes("The sword is finished. Hand it to Kovac.")
-            return
-        }
         val state = state()
         val clicked = !state.continuing
+        if (player.preformCompletion >= FoundryFormulas.SCALE) {
+            if (clicked) {
+                mes("The sword is finished. Hand it to Kovac.")
+            }
+            return
+        }
         state.continuing = false
         if (state.station != tool.loc) {
             state.station = tool.loc
@@ -261,10 +263,10 @@ constructor(
 
         val UNIFORM =
             listOf(
-                Wearpos.Torso to listOf("obj.smiths_tunic"),
-                Wearpos.Legs to listOf("obj.smiths_trousers"),
-                Wearpos.Feet to listOf("obj.smiths_boots"),
-                Wearpos.Hands to listOf("obj.smiths_gloves", "obj.smiths_gloves_i"),
+                Wearpos.Torso to listOf("obj.smithing_uniform_torso"),
+                Wearpos.Legs to listOf("obj.smithing_uniform_legs"),
+                Wearpos.Feet to listOf("obj.smithing_uniform_boots"),
+                Wearpos.Hands to listOf("obj.smithing_uniform_gloves", "obj.smithing_uniform_gloves_ice"),
             )
     }
 }

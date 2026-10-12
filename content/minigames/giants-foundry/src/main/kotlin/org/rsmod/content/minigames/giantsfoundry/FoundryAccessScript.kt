@@ -75,6 +75,10 @@ class FoundryAccessScript @Inject constructor() : PluginScript() {
         if (QuestRequirements.hasCompleted(player, SLEEPING_GIANTS) && player.sleepingGiants < QUEST_COMPLETE) {
             player.sleepingGiants = QUEST_COMPLETE
         }
+        // The jig's cooling timer doesn't survive logging out; the metal has cooled since.
+        if (player.mouldState == 2) {
+            player.mouldState = 3
+        }
         if (player.preformStored) {
             player.mes("You notice your current commission is being kept warm in the preform storage.")
         }

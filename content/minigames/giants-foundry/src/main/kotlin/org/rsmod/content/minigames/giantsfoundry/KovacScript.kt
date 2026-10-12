@@ -211,7 +211,8 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
     private suspend fun Dialogue.reward(quality: Int) {
         val xp = FoundryFormulas.handInXp(quality)
         val coins = xp * 2
-        val seconds = (System.currentTimeMillis() / 1000).toInt() - player.commissionStart
+        val start = player.commissionStart
+        val seconds = if (start == 0) 0 else (System.currentTimeMillis() / 1000).toInt() - start
 
         player.removePreform()
         access.closeHud()
@@ -226,7 +227,12 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
         player.runEnergy = (player.runEnergy + RUN_ENERGY_MAX / 2).coerceAtMost(RUN_ENERGY_MAX)
         UpdateRun.energy(player, player.runEnergy)
 
-        if (quality > player.bestQuality || (quality == player.bestQuality && seconds < player.bestTime)) {
+        val firstSword = player.swordsMade == 1
+        if (
+            firstSword ||
+                quality > player.bestQuality ||
+                (quality == player.bestQuality && seconds < player.bestTime)
+        ) {
             player.bestQuality = quality
             player.bestTime = seconds
         }
@@ -238,6 +244,7 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
         )
     }
 
+    // UNVERIFIED: the transcript shows only "[time]"; minutes:seconds is a guess.
     private fun formatTime(seconds: Int): String = "%d:%02d".format(seconds / 60, seconds % 60)
 
     private companion object {
