@@ -97,6 +97,7 @@ internal class KephriGuardians(private val room: KephriEncounter) {
             }
         val tile = room.coords(SPAWN_TILES.getValue(kind))
         val npc = room.spawn(type, tile)
+        if (kind == Kind.ARCANE) npc.ignoreCombatInteractions = true
         npc.anim(if (kind == Kind.ARCANE) KephriSeqs.FLYING_SPAWN else KephriSeqs.SCARAB_SPAWN)
         val cycle = deps.mapClock.cycle
         val guardian = Guardian(npc, kind, cycle)
