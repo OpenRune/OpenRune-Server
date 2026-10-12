@@ -52882,3 +52882,15 @@ contentGroup = "content.max_cape"
 id = "obj.skillcape_max_mythical"
 inherit = "obj.skillcape_max_mythical"
 contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.cowbell_amulet"
+inherit = "obj.cowbell_amulet"
+[item.params]
+"param.uncharged_variant"="obj.cowbell_amulet_empty"
+
+[[item]]
+id = "obj.cowbell_amulet_empty"
+inherit = "obj.cowbell_amulet_empty"
+[item.params]
+"param.charged_variant"="obj.cowbell_amulet"
