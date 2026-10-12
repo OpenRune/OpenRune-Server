@@ -269,6 +269,12 @@ client state. It does not start the applet, login, or network. Fire/Infernal
 geometry/material mappings are verified separately; their animated scene
 appearance still requires the owner's software/HD check.
 
+The actual rev240 texture codec also verifies the retained native materials:
+Fire 40 uses image 485, direction 1/speed 2; Infernal 59 uses image 318,
+direction 1/speed 1. Both original indexed images exist in cache index 8, as
+used by the qualified client loader. No substitute texture is injected.
+SHA-bound runtime/pack inputs explicitly disable Git newline conversion.
+
 The bounded cache pack again verifies all 454 writes and preserves 538,211
 unrelated config definitions. All 26 native cape and 15 max-cape tests are rerun.
 Test entry: `outputs/nero-completionist-visual-fix-final-20261012/TESTEN.cmd`.

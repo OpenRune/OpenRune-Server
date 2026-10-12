@@ -22,7 +22,7 @@ public final class NativeCacheMaterial {
                 // The qualified client's um.ao is index 8; its texture provider
                 // receives hc.hv as the image archive (also shared with sprites).
                 byte[] pixels=cache.data(8,image,0,null);
-                if(pixels==null)throw new IllegalStateException("Missing native PNG texture image "+image);
+                if(pixels==null)throw new IllegalStateException("Missing native indexed texture image "+image);
                 System.out.println("PASS_NATIVE_ANIMATED_TEXTURE id="+id+" direction="+direction+" speed="+speed+" image="+image+" imageBytes="+pixels.length+" imageHeader="+HexFormat.of().formatHex(Arrays.copyOf(pixels,Math.min(8,pixels.length)))+" sha256="+HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes)));
             }
         } finally {cache.close();}
