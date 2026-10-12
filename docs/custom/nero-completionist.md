@@ -401,3 +401,64 @@ Test entry: `outputs/nero-completionist-avatar-fix-v014-20261012/TESTEN.cmd`.
 Earlier packages and the live installation are retained. Real idle/walk/emote,
 software/HD and all style swaps still require owner confirmation. No live
 installation or cape-code push/merge is performed.
+
+## v0.15 hood/head and quiver correction (2026-10-12)
+
+Owner recordings `20261012-2037-19.6401824.mp4` and
+`20261012-2039-04.7109490.mp4` report corrupted hood/head rendering in both
+software and HD, black software map patches and a quiver sitting inside the
+cape. The v0.14 cape-only avatar checks did not cover complete equipped heads.
+Its hood rendering is not accepted. Existing cape cloth, inventory projection,
+texture coverage, gameplay and particle scale are retained.
+
+The immutable source's worn hood contains 564 male / 675 female authored
+faces, followed by an exact reversed, flat-shaded copy of every face. The
+427 cloth faces match the hood inventory topology; remaining source faces
+provide its own head. `original_hood` removes the coincident copies while
+retaining that original head, colours, bone groups 1/2/3 and native slots
+0/8/11 masking hair and jaw. Removing the entire source head would leave
+an empty face after the normal equipment masks. Inventory hoods are unchanged.
+Only 32 worn hood assets and two quiver cape models change. SHA-bound hood
+depth metadata also carries precision through copied/merged fixed variants.
+
+`quiver_clearance` verifies the native 344-face quiver part has no shared cloth
+vertices, then offsets only those vertices +32 quarter units on model Z
+(eight OSRS units outward/back). Both genders retain native scale and bone
+labels; locked Dizana items share the same corrected models. Native rear
+visibility changes 2,804 male / 2,572 female pixels versus the same avatar with
+only quiver faces hidden, compared with 2,175 / 1,610 at v0.14.
+
+The software fallback previously selected depth rendering without explicitly
+resetting its reused viewport depth at scene entry. Its hook now passes the
+actual scene to the consumer. Before a logged-in main software scene with a
+valid viewport, only viewport Z values are reset to the native empty value 0.
+RGB remains owned by the game; GPU and nested WorldView depth are untouched.
+This prevents prior camera occluders from participating in the new view. The
+owner's actual map/shader symptom still requires an in-game retest; no full
+world-scene reproduction or new HD acceptance is claimed.
+
+`NativeDepthCheck` exercises the actual native buffer and scene consumer with
+stale/NaN depths, repeated frames, viewport bounds, RGB ownership and GPU/nested
+guards. `NativeHoodCheck` uses native bodykits without the masked hair/jaw,
+merges each of 32 hoods with a cape, applies real native head-bone rotations,
+and performs 768 software painter/depth renders across both genders. It
+checks single authored triangles, finite bounded vertices/depth and subsequent
+native geometry. These controlled bone poses are not the actual idle/walk
+sequence or an HD GPU test. Existing 96 decodes, 1,536 cape renders, 14 native
+icons/12 palettes, 28 complete cape avatars, emitter lifecycle, animated alpha
+and 48 native stats checks pass with `-Xverify:all`.
+
+Bundle `runtime-v015-hood-depth-final` builds 26 runtime / 14 plugin classes;
+all 34 accepted client/API/HD libraries remain unchanged. The bounded pack
+again verifies 454 writes and preserves 538,211 unrelated definitions after
+reopening the cache. The final server JAR rebuild succeeds with the corrected
+assets. The 26 cape + 15 max-cape gameplay tests remain earlier evidence;
+gameplay Kotlin is unchanged. The packaged JAR preserves nine private Studio
+entries. Own-copy installer Check/Install/Rollback succeeds; the new isolated
+server accepts JS5 rev240 and appearance schema 1 with zero player sessions.
+
+Test entry: `outputs/nero-completionist-hood-fix-v015-20261012/TESTEN.cmd`.
+Retest hood on/off, head turns, walking and camera movement in software and
+HD, plus Dizana's offset and both genders. Earlier packages, the live
+installation and fourteen accepted source hashes are preserved. Cape code
+remains local; no live installation or feature push/merge is performed.
