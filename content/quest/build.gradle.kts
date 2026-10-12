@@ -11,6 +11,8 @@ dependencies {
     testImplementation(libs.fastutil)
     implementation(projects.api.pluginCommons)
     implementation(projects.api.attr)
+    implementation(projects.api.objCharges)
+    implementation(projects.content.generic.genericNpcs)
     implementation(projects.api.serverConfig)
     implementation(libs.rsprot.api)
 }
