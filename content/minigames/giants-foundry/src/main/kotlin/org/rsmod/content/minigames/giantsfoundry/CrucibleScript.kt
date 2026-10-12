@@ -1,5 +1,7 @@
 package org.rsmod.content.minigames.giantsfoundry
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.random.GameRandom
@@ -37,40 +39,68 @@ constructor(private val random: GameRandom, private val worldRepo: WorldReposito
             mes("The crucible is full.")
             return
         }
-        val smithing = stat("stat.smithing")
-        val available =
-            FoundryData.bars.withIndex().filter { (_, bar) -> inv.count(bar.output.internalName) > 0 }
+        val available = METALS.indices.filter { metalWorth(it) > 0 }
         if (available.isEmpty()) {
             mes("You don't have any metal the crucible can use.")
             return
         }
-        val usable = available.filter { (_, bar) -> smithing >= FoundryData.barLevel(bar) }
+        val smithing = stat("stat.smithing")
+        val usable = available.filter { smithing >= FoundryData.barLevel(FoundryData.bars[it]) }
         if (usable.isEmpty()) {
-            val (_, bar) = available.first()
-            mes("You need a Smithing level of ${FoundryData.barLevel(bar)} to use that metal.")
+            mes("You need a Smithing level of ${FoundryData.barLevel(FoundryData.bars[available.first()])} to use that metal.")
             return
         }
-        val (metal, bar) =
-            if (usable.size == 1) {
-                usable.single()
-            } else {
-                val names = usable.map { it.value.output.name }
-                usable[choiceIndex(names)]
-            }
+        val metal =
+            if (usable.size == 1) usable.single()
+            else usable[choiceIndex(usable.map { METALS[it].replaceFirstChar(Char::uppercase) })]
         // UNVERIFIED: the metal choice and amount prompts; the wiki only says the X amount is
         // remembered.
-        // TODO: smithed items (worth bars - 1), and destroying excess metal on overfill (with
-        // its warning) instead of only taking what fits.
-        val requested = countDialog("How many bars?")
-        val amount = minOf(requested, inv.count(bar.output.internalName), space)
-        if (amount <= 0) {
+        // TODO: destroying excess metal on overfill (with its warning) instead of only taking
+        // what fits.
+        val requested = countDialog("How many bars' worth?")
+        val added = addMetal(metal, minOf(requested, space))
+        if (added <= 0) {
             return
         }
-        invDel(inv, bar.output.internalName, amount)
-        player.setFoundryVar(metalVarbit(METALS[metal]), counts[metal] + amount)
-        val total = counts.sum() + amount
+        player.setFoundryVar(metalVarbit(METALS[metal]), counts[metal] + added)
+        val total = counts.sum() + added
         player.crucibleState = if (total >= FoundryFormulas.CRUCIBLE_CAPACITY) 2 else 1
-        mes("You add $amount ${bar.output.name.lowercase()}${if (amount == 1) "" else "s"} to the crucible.")
+        mes("You add $added bars' worth of ${METALS[metal]} to the crucible.")
+    }
+
+    /** Bars' worth of [metal] in the inventory: bars plus melt-down value of smithed items. */
+    private fun ProtectedAccess.metalWorth(metal: Int): Int {
+        val bars = inv.count(FoundryData.bars[metal].output.internalName)
+        val items =
+            inv.filterNotNull().sumOf { obj ->
+                val (itemMetal, worth) = FoundryData.smithedItems[obj.id] ?: return@sumOf 0
+                if (itemMetal == metal) worth * obj.count else 0
+            }
+        return bars + items
+    }
+
+    /** Takes up to [limit] bars' worth of [metal], bars first, then the biggest items that fit. */
+    private fun ProtectedAccess.addMetal(metal: Int, limit: Int): Int {
+        var added = 0
+        val bar = FoundryData.bars[metal].output.internalName
+        val bars = minOf(inv.count(bar), limit)
+        if (bars > 0) {
+            invDel(inv, bar, bars)
+            added += bars
+        }
+        val items =
+            inv.filterNotNull()
+                .mapNotNull { obj -> FoundryData.smithedItems[obj.id]?.takeIf { it.first == metal }?.let { obj.id to it.second } }
+                .distinct()
+                .sortedByDescending { it.second }
+        for ((id, worth) in items) {
+            val name = RSCM.getReverseMapping(RSCMType.OBJ, id)
+            while (added + worth <= limit && inv.count(name) > 0) {
+                invDel(inv, name, 1)
+                added += worth
+            }
+        }
+        return added
     }
 
     private suspend fun ProtectedAccess.choiceIndex(names: List<String>): Int {

@@ -3,6 +3,7 @@ package org.rsmod.content.minigames.giantsfoundry
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import org.rsmod.api.enums.SmithingProductToEnums
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.table.smithing.SmithingBarsRow
 import org.rsmod.game.entity.Player
@@ -134,6 +135,21 @@ internal object FoundryData {
             SmithingBarsRow.all().firstOrNull { it.prefix.equals(metal, ignoreCase = true) }
                 ?: error("No smithing_bars row for $metal")
         }
+    }
+
+    /**
+     * Smithed items the crucible melts down: item id to (metal index, bars worth). An item is
+     * worth one bar less than it takes to smith (from the cache's
+     * `smithing_product_to_bars_required`), so one-bar items are refused.
+     * https://oldschool.runescape.wiki/w/Crucible
+     */
+    val smithedItems: Map<Int, Pair<Int, Int>> by lazy {
+        SmithingProductToEnums.smithing_product_to_bars_required
+            .mapNotNull { (item, bars) ->
+                val metal = METALS.indexOfFirst { item.name.startsWith("$it ", ignoreCase = true) }
+                if (metal < 0 || bars == null || bars <= 1) null else item.id to (metal to bars - 1)
+            }
+            .toMap()
     }
 
     /** Smithing level to add [bar]: its smelting level, at least the foundry's 15. */
