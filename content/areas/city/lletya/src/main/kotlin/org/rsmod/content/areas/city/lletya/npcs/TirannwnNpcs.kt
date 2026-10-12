@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -49,9 +50,9 @@ class TirannwnNpcs @Inject constructor(private val shops: Shops) : PluginScript(
         shops.open(this, npc, "Quartermaster's Stores", "inv.regicide_general_shop")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Quartermaster (before finishing Regicide)
-    // TODO(content): [quest:regicide] "We have a new stock of dragon halberds." after the quest;
-    // dragon halberds should only be in stock after Regicide
+    // https://oldschool.runescape.wiki/w/Transcript:Quartermaster
+    // TODO(content): [system:shop_stock_conditions] dragon halberds should only be in stock after
+    // Regicide (QuestRequirements, "quest_regicide")
     private suspend fun Dialogue.quartermaster(npc: Npc) {
         val title = if (access.isBodyTypeA()) "sir" else "miss"
         chatNpc(
@@ -59,10 +60,17 @@ class TirannwnNpcs @Inject constructor(private val shops: Shops) : PluginScript(
             "Good day $title. I'm the quartermaster for this camp. We have a little we could " +
                 "trade here.",
         )
-        chatNpc(
-            happy,
-            "We should be getting a new stock soon. Would you like a look at what we do have?",
-        )
+        if (QuestRequirements.hasCompleted(player, REGICIDE)) {
+            chatNpc(
+                happy,
+                "We have a new stock of dragon halberds. Would you like a look at what we have?",
+            )
+        } else {
+            chatNpc(
+                happy,
+                "We should be getting a new stock soon. Would you like a look at what we do have?",
+            )
+        }
         when (choice2("Yes please. What are you selling?", 1, "No thanks.", 2)) {
             1 -> {
                 chatPlayer(quiz, "Yes please. What are you selling?")
@@ -74,5 +82,6 @@ class TirannwnNpcs @Inject constructor(private val shops: Shops) : PluginScript(
 
     private companion object {
         const val QUARTERMASTER = "npc.regicidegeneralshopkeeper"
+        const val REGICIDE = "quest_regicide"
     }
 }
