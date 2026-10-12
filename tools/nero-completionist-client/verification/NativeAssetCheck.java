@@ -42,7 +42,12 @@ public final class NativeAssetCheck {
             if(count>0 && (id==40||id==59)) {require(count==70||count==254,"single shell panel coverage "+p+" "+count);textured++;}
             Model lighting=data.light(64,850,-30,-50,-30);
             int modelId=Integer.parseInt(p.getParent().getFileName().toString());
-            if(modelId==62100||modelId==62103||modelId>=62200&&(modelId-62200)%6==0){folded++;require(data.getVerticesCount()<400&&data.getFaceCount()<600,"folded inventory mesh "+p);}
+            if(modelId==62100||modelId==62103||modelId>=62200&&(modelId-62200)%6==0){folded++;require(data.getVerticesCount()<(modelId==62278?500:400)&&data.getFaceCount()<600,"folded inventory mesh with optional quiver "+p);if(modelId==62278)require(data.getFaceCount()==530,"198 original folded cloth + 332 native quiver faces");}
+            if(modelId==62278) {
+                ModelData cloth=(ModelData)decode.newInstance((Object)Files.readAllBytes(raw.resolve("cache/live/7/62100/0.dat")));
+                for(int v=0;v<cloth.getVerticesCount();v++)require(data.getVerticesX()[v]==cloth.getVerticesX()[v]&&data.getVerticesY()[v]==cloth.getVerticesY()[v]&&data.getVerticesZ()[v]==cloth.getVerticesZ()[v],"original folded cape vertex "+v);
+                for(int f=0;f<cloth.getFaceCount();f++)require(face[0][f]==cloth.getFaceIndices1()[f]&&face[1][f]==cloth.getFaceIndices2()[f]&&face[2][f]==cloth.getFaceIndices3()[f],"original folded cape winding "+f);
+            }
             if(modelId==62101||modelId==62102||modelId==62104||modelId==62105||modelId>=62200&&((modelId-62200)%6==1||(modelId-62200)%6==2)) {
                 smooth++;
                 require(data.getFaceCount()>=792&&data.getFaceCount()<1577,"authored shell with optional native quiver "+p);

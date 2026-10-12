@@ -94,7 +94,7 @@ def main():
     text = text[:start] + (TOOLS/"installer_process_guard.ps1").read_text() + "\n" + text[end:]
     (output/"INSTALLEREN.ps1").write_text(text, encoding="utf-8")
     (output/"TESTEN.cmd").write_text('@echo off\r\n"%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "%~dp0TESTEN.ps1"\r\npause\r\n')
-    (output/"LEESMIJ.md").write_text("""# Completionist cape v0.15 hood en quiver
+    (output/"LEESMIJ.md").write_text("""# Completionist cape v0.16 native hoofd en Dizana icon
 
 Start `TESTEN.cmd` of voer `TESTEN.ps1` uit. Het pakket maakt een eigen testserver,
 database en clientprofiel. De bestaande installatie blijft behouden.
@@ -118,14 +118,15 @@ De extra omgekeerde huid is verwijderd: het bronmodel bevat al buitenstof,
 voering en sierranden. De oorspronkelijke cache-prioriteiten worden behouden.
 Alleen de renderkopie van een avatar met deze cape krijgt een gezamenlijke
 opaque dieptevolgorde, zonder kunstmatige bias. Dit voorkomt cape-voering voor
-de borst. De hood behoudt zijn oorspronkelijke hoofd en native hair/jaw-maskering,
-zonder de coincidente omgekeerde kopie. Dizana's quiver staat acht native units
+de borst. De hood gebruikt nu het echte rev240 max-hood hoofd met native hair/jaw-maskering;
+de oude RS2 face/jaw is vervangen. Dizana's quiver staat acht native units
 verder naar buiten. De software-particle-renderer wist oude viewport-diepte
 voor de nieuwe cameraweergave; GPU en geneste scenes behouden hun eigen buffer.
 Controleer Fire/Infernal: de grote stofpanelen gebruiken de echte geanimeerde
 OSRS-texturen 40/59, zoals in de referentie. De geborduurde middenvlakken en
-sierranden behouden hun kleuren. Alle varianten gebruiken weer de originele
-gevouwen inventory-vorm. Controleer de achterzijde en cape-wissels eerst in
+sierranden behouden hun kleuren. Dizana en de locked variant behouden dezelfde originele gevouwen cape-vorm,
+met de quiver bovenop. De cloth-vertices en oorspronkelijke projectie zijn
+ongewijzigd voor alle capes. Controleer de achterzijde en cape-wissels eerst in
 software mode en daarna in HD. Testcommands vereisen administratorrechten.
 
 Stop de aparte testserver met `TESTEN.ps1 -Action Stop` en sluit het testclientvenster.

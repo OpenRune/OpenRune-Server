@@ -20,6 +20,8 @@ final class NativeHoodCheck {
   int checked=0,renders=0;
   try {
    for(int gender=0;gender<2;gender++) {
+    ModelData reference=(ModelData)decode.newInstance((Object)Files.readAllBytes(fixtures.resolve(gender==0?"native-max-hood-male.dat":"native-max-hood-female.dat")));
+    int firstHeadFace=gender==0?416:366;
     List<Path> bodies=new ArrayList<>();
     try(var paths=Files.list(fixtures)){final int sex=gender;paths.filter(p->{String n=p.getFileName().toString();if(!n.matches("kit-\\d+-.*\\.dat"))return false;int part=Integer.parseInt(n.split("-")[1]);return sex==0?part>=2&&part<=6:part>=9&&part<=13;}).sorted().forEach(bodies::add);}
     require(bodies.size()==5,"body fixtures without masked hair/jaw");
@@ -28,9 +30,24 @@ final class NativeHoodCheck {
     for(int id:ids) {
      Path hood=raw.resolve("cache/live/7/"+id+"/0.dat");
      ModelData source=(ModelData)decode.newInstance((Object)Files.readAllBytes(hood));
-     require(source.getFaceCount()==(gender==0?564:675),"one authored hood/head "+id);
+     require(source.getFaceCount()==427+(gender==0?88:111),"authored hood with native max-hood head "+id);
+     for(int f=427;f<source.getFaceCount();f++)require(source.getFaceColors()[f]==4550||source.getFaceColors()[f]==0,"native face/eye colours outside cape palette "+id);
      Set<String> triangles=new HashSet<>();
-     for(int f=0;f<source.getFaceCount();f++){int[] v={source.getFaceIndices1()[f],source.getFaceIndices2()[f],source.getFaceIndices3()[f]};Arrays.sort(v);require(triangles.add(Arrays.toString(v)),"coincident hood face "+id);}
+     for(int f=0;f<427;f++){int[] v={source.getFaceIndices1()[f],source.getFaceIndices2()[f],source.getFaceIndices3()[f]};Arrays.sort(v);require(triangles.add(Arrays.toString(v)),"coincident authored cloth face "+id);}
+     // The native female head includes two intentionally sided triangles.
+     // Preserve the native head's winding, coordinates and bone labels exactly.
+     Field skins=dataType.getDeclaredField("bk");skins.setAccessible(true);
+     int[] sourceSkins=(int[])skins.get(source),referenceSkins=(int[])skins.get(reference);
+     int[][] sourceFaces={source.getFaceIndices1(),source.getFaceIndices2(),source.getFaceIndices3()},referenceFaces={reference.getFaceIndices1(),reference.getFaceIndices2(),reference.getFaceIndices3()};
+     for(int f=427;f<source.getFaceCount();f++) {
+      int original=firstHeadFace+f-427;
+      require(source.getFaceColors()[f]==reference.getFaceColors()[original],"native skin recolour base "+id);
+      for(int corner=0;corner<3;corner++) {
+       int v=sourceFaces[corner][f],r=referenceFaces[corner][original];
+       require(source.getVerticesX()[v]==reference.getVerticesX()[r]&&source.getVerticesY()[v]==reference.getVerticesY()[r]&&source.getVerticesZ()[v]==reference.getVerticesZ()[r],"native head coordinates and winding "+id);
+       require(sourceSkins[v]==referenceSkins[r],"native head bone labels "+id);
+      }
+     }
      int cape=gender==0?62101:62102;
      if(id==62282||id==62283)cape=gender==0?62279:62280;
      for(int turn:new int[]{-8,0,8}) {
@@ -63,7 +80,7 @@ final class NativeHoodCheck {
     }
    }
   }finally{depthRaster.invoke(null,false);singleton.set(null,previous);}
-  System.out.println("PASS_NATIVE_HOODS models="+checked+" renders="+renders+" nativeHeadBoneTransforms=true maskedHairJaw=true singleAuthoredHead=true finiteSoftwareDepth=true");
+  System.out.println("PASS_NATIVE_HOODS models="+checked+" renders="+renders+" nativeHeadBoneTransforms=true nativeHeadGeometry=true nativeSkinBase=true maskedHairJaw=true singleAuthoredHead=true finiteSoftwareDepth=true");
  }
  static void require(boolean test,String message){if(!test)throw new AssertionError(message);}
 }

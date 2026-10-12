@@ -26,10 +26,19 @@ final class NativeIconCheck {
             ModelData data=(ModelData)decode.newInstance((Object)Files.readAllBytes(raw.resolve("cache/live/7/"+model+"/0.dat")));
             Model lit=data.light(64,768,-50,-10,-50);lit.calculateBoundsCylinder();
             int[] pixels=new int[36*32];buffer.invoke(null,pixels,36,32,null);clip.invoke(null);origin.invoke(null,16,16);
-            int zoom=1316,pitch=252,yaw=1020;
+            int zoom=1316,pitch=252,yaw=1020,xOffset=-1,yOffset=24;
             int y=(int)(Math.sin(pitch*Math.PI/1024)*65536)*zoom>>16;
             int z=(int)(Math.cos(pitch*Math.PI/1024)*65536)*zoom>>16;
-            lit.drawFrustum(0,yaw,0,pitch,-1,lit.getModelHeight()/2+y+24,z+24);
+            lit.drawFrustum(0,yaw,0,pitch,xOffset,lit.getModelHeight()/2+y+yOffset,z+yOffset);
+            if(model==62278) {
+                Model without=((ModelData)decode.newInstance((Object)Files.readAllBytes(raw.resolve("cache/live/7/"+model+"/0.dat")))).light(64,768,-50,-10,-50);without.calculateBoundsCylinder();
+                Arrays.fill(without.getFaceColors3(),198,530,-2);
+                int[] control=new int[36*32];buffer.invoke(null,control,36,32,null);clip.invoke(null);origin.invoke(null,16,16);
+                without.drawFrustum(0,yaw,0,pitch,xOffset,without.getModelHeight()/2+y+yOffset,z+yOffset);
+                int changed=0;for(int p=0;p<pixels.length;p++)if(pixels[p]!=control[p])changed++;
+                if(changed<25)throw new AssertionError("Inventory quiver hidden: "+changed);
+                System.out.println("PASS_NATIVE_QUIVER_ICON changedPixels="+changed+" originalFoldedShape=true lockedSharedModel=true");
+            }
             if(Arrays.stream(pixels).noneMatch(p->p!=0)) {
                 Method draw=lit.getClass().getDeclaredMethod("fv",boolean.class,boolean.class,boolean.class,long.class);draw.setAccessible(true);draw.invoke(lit,false,false,false,0L);
             }
@@ -41,7 +50,7 @@ final class NativeIconCheck {
             javax.imageio.ImageIO.write(image,"png",output.resolve("icon-"+model+".png").toFile());total++;
         }
         if(signatures.size()<8)throw new AssertionError("Inventory family palettes indistinct: "+signatures.size());
-        System.out.println("PASS_NATIVE_ICONS foldedModels="+total+" distinctPalettes="+signatures.size()+" actualDrawFrustum=true projection=1316,252,1020,-1,24");
+        System.out.println("PASS_NATIVE_ICONS inventoryModels="+total+" distinctPalettes="+signatures.size()+" actualDrawFrustum=true originalFoldedProjection=true originalClothGeometry=true");
         nativeClient.set(null,previousClient);
     }
 }

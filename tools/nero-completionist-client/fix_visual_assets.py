@@ -48,18 +48,28 @@ def original_shell(mesh):
 
 
 def original_hood(mesh):
-    """The worn source includes its own head; retain that head exactly once.
+    """Retain the 427 authored hood faces with the actual rev240 max-hood head.
 
-    All 564 male / 675 female authored faces were followed by coincident,
-    flat-shaded reversed copies. They fight the original hood and face in both
-    renderers. Hair and jaw are already masked by the native equipment slots.
+    The handed-off RS2 face/jaw topology is incompatible with this character's
+    head. Native hair/jaw masking remains; replace its embedded head rather
+    than exposing a second player head or keeping coincident reverse faces.
     """
     count=len(mesh['faces'])//2
     if count not in (564,675) or any(mesh['faces'][f+count]!=list(reversed(mesh['faces'][f])) for f in range(count)):
         raise ValueError('Unexpected worn hood topology')
     for key in ['faces','colors','faceModes','facePriorities','faceSkins','alphas','sourceMaterials','sourceTextureCoords']:
-        if mesh.get(key) is not None:mesh[key]=mesh[key][:count]
-    return {f:f for f in range(count)}
+        if mesh.get(key) is not None:mesh[key]=mesh[key][:427]
+    used=sorted({v for face in mesh['faces'] for v in face});mapping={v:i for i,v in enumerate(used)}
+    mesh['faces']=[[mapping[v] for v in face] for face in mesh['faces']]
+    mesh['vertices']=[mesh['vertices'][v] for v in used]
+    mesh['vertexSkins']=[mesh['vertexSkins'][v] for v in used]
+    head=json.loads((ROOT/'assets/native-hood-heads.json').read_text(encoding='utf-8'))['heads']['male' if count==564 else 'female']
+    offset=len(mesh['vertices']);mesh['vertices'].extend(head['vertices']);mesh['vertexSkins'].extend(head['vertexSkins'])
+    mesh['faces'].extend([[offset+v for v in face] for face in head['faces']]);mesh['colors'].extend(head['colors'])
+    additions={'faceModes':0,'facePriorities':0,'faceSkins':0,'alphas':0,'sourceMaterials':-1,'sourceTextureCoords':-1}
+    for key,value in additions.items():
+        if mesh.get(key) is not None:mesh[key].extend([value]*len(head['faces']))
+    return {f:f for f in range(427)}
 
 
 def quiver_clearance(mesh):
@@ -69,6 +79,18 @@ def quiver_clearance(mesh):
     quiver={v for face in mesh['faces'][792:] for v in face}
     if len(mesh['faces'])!=1136 or cloth&quiver:raise ValueError('Unexpected quiver attachment')
     for v in quiver:mesh['vertices'][v][2]+=32
+
+
+def quiver_inventory(mesh):
+    """Preserve the original folded cape shape with the quiver on top."""
+    quiver=json.loads((ROOT/'assets/native-quiver-inventory.json').read_text(encoding='utf-8'))
+    if len(quiver['faces'])!=332:raise ValueError('Unexpected native quiver inventory')
+    base=len(mesh['vertices']);count=len(quiver['faces'])
+    mesh['vertices'].extend([[round(x*.85)-16,round(y*.85)-24,round(z*.85)-64] for x,y,z in quiver['vertices']])
+    mesh['faces'].extend([[base+v for v in face] for face in quiver['faces']]);mesh['colors'].extend(quiver['colors'])
+    for key,value in [('faceModes',0),('sourceMaterials',-1),('sourceTextureCoords',-1)]:mesh[key].extend([value]*count)
+    mesh['alphas'].extend(quiver['alphas'] or [0]*count)
+    mesh['facePriorities']=[0]*len(mesh['faces'])
 
 
 def texture_panels(mesh,front_count,channels,texture):
@@ -121,6 +143,7 @@ def main():
             channels=[f for f,c in enumerate(mesh['colors']) if inventory_channel(c) in (1,3)]
             mesh['colors']=[inventory_colour(c,colours) for c in mesh['colors']]
             if key in ('fire','infernal'):texture_panels(mesh,nf,channels,40 if key=='fire' else 59)
+            if key in ('dizana','dizana_locked'):quiver_inventory(mesh)
         elif len(mesh['faces'])>=1577:
             face_remap=original_shell(mesh)
             opaque_depth=True
