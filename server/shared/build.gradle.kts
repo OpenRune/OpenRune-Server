@@ -25,4 +25,6 @@ fun findValidApiSubProjects(): List<Project> =
     project(":api").subprojects.filter { it.buildFile.exists() && !filteredApiSubProject(it) }
 
 fun filteredApiSubProject(project: Project): Boolean =
-    project.name == "testing" || project.parent?.name == "testing"
+    project.name == "testing" ||
+        project.name.startsWith("testing-") ||
+        project.parent?.name == "testing"

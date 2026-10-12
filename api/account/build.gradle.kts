@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("persistence-test-suite")
 }
 
 kotlin {

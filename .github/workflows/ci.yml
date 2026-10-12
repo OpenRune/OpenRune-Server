@@ -69,7 +69,7 @@ jobs:
           ./gradlew generateRsa
 
       - name: Compile and run tests
-        run: ./gradlew assemble test integration
+        run: ./gradlew assemble test integration persistence
 
       # Config errors in a data-driven server surface at boot (unmapped
       # gamevals throw by design), so start the server and require the

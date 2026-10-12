@@ -27,6 +27,7 @@ shadow = "8.3.7"
 spotless = "7.0.4"
 postgresql-jdbc = "42.7.5"
 embedded-postgres = "2.2.2"
+embedded-postgres-binaries = "14.22.0"
 or2 = "3.0.4"
 openruneCentral = "2.0.2"
 or2ServerUtils = "0.8"
@@ -67,6 +68,7 @@ simmetrics-core = { module = "com.github.mpkorstanje:simmetrics-core", version.r
 spotless-gradle-plugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql-jdbc" }
 embedded-postgres = { module = "io.zonky.test:embedded-postgres", version.ref = "embedded-postgres" }
+embedded-postgres-binaries-darwin-arm64v8 = { module = "io.zonky.test.postgres:embedded-postgres-binaries-darwin-arm64v8", version.ref = "embedded-postgres-binaries" }
 
 or2-all-cache = { group = "dev.or2", name = "all", version.ref = "or2" }
 or2-tools = { group = "dev.or2", name = "tools", version.ref = "or2" }

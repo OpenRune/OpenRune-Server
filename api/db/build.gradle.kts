@@ -10,6 +10,7 @@ dependencies {
     implementation(libs.embedded.postgres)
     implementation(libs.openrune.central.common)
     implementation(libs.kotlin.inline.logger)
+    runtimeOnly(libs.embedded.postgres.binaries.darwin.arm64v8)
     runtimeOnly(libs.logback.classic)
     implementation(libs.guice)
     implementation(libs.kotlin.coroutines.core)
