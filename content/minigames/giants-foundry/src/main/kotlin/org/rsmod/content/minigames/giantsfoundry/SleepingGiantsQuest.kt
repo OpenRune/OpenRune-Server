@@ -4,8 +4,11 @@ import dev.openrune.types.MesAnimType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.events.interact.HeldDropEvents
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.script.onDropTrigger
+import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLocU
@@ -91,6 +94,17 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
         onPlayerLogin { syncCompleted(player) }
         onPlayerLogout { room.logout(player) }
+        onDropTrigger(DROP_TRIGGER) {
+            if (room.onDropAttempt(player)) {
+                // UNVERIFIED: the update gives no wording for the warning.
+                player.mes(
+                    "<col=ef1020>Anything you drop here will be lost when you leave. Drop it " +
+                        "again if you're sure.</col>"
+                )
+                player.dropTrigger(DROP_TRIGGER)
+            }
+        }
+        onEvent<HeldDropEvents.Drop> { room.onDropped(player) }
     }
 
     override fun subTitle(): String =

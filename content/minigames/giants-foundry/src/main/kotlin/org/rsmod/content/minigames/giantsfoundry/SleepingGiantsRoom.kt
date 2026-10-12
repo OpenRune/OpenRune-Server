@@ -15,6 +15,8 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 
+internal const val DROP_TRIGGER = "droptrigger.sleeping_giants_room"
+
 /**
  * The foundry as Sleeping Giants first shows it: a private copy of the real foundry (region
  * 52_179) with the stations swapped for their `_quest` versions (broken tools, and inspect-only
@@ -60,6 +62,7 @@ constructor(
                 if (intro) spawnKovac(region, KOVAC_CUTSCENE, INTRO_KOVAC_TILE)
                 else spawnKovac(region, KOVAC, KOVAC_TILE)
             rooms[player] = Room(region, kovac)
+            armDropWarning(player)
 
             access.fadeOut()
             if (intro) {
@@ -147,6 +150,42 @@ constructor(
 
     private fun discard(player: Player, room: Room) {
         npcRepo.del(room.kovac, Int.MAX_VALUE)
+        if (player.dropTrigger == DROP_TRIGGER) {
+            player.clearDropTrigger(DROP_TRIGGER)
+        }
+        warned.remove(player)
+    }
+
+    /*
+     * Dropping in the room: since 25 September 2024 the quest warns about dropping items in the
+     * foundry, because the room's floor items are lost once the player leaves it.
+     * https://oldschool.runescape.wiki/w/Update:Varlamore:_The_Rising_Darkness_is_OUT_NOW
+     * The first drop only warns (the trigger re-arms, which blocks it); dropping again goes
+     * through, and the trigger re-arms for the next item.
+     */
+
+    private val warned = HashSet<Player>()
+
+    fun armDropWarning(player: Player) {
+        if (player.dropTrigger == null) {
+            player.dropTrigger(DROP_TRIGGER)
+        }
+    }
+
+    /** Handles the drop trigger; true when the drop should be blocked. */
+    fun onDropAttempt(player: Player): Boolean {
+        if (player in warned) {
+            warned.remove(player)
+            return false
+        }
+        warned += player
+        return true
+    }
+
+    fun onDropped(player: Player) {
+        if (isInside(player)) {
+            armDropWarning(player)
+        }
     }
 
     private fun Room.realCoords(coords: CoordGrid): CoordGrid =

@@ -31,3 +31,6 @@ giants_foundry_quest_prompt = 64400
 
 [gamevals.synth]
 sg_grindstone_repair = 5606
+
+[gamevals.droptrigger]
+sleeping_giants_room = 64400
