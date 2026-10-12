@@ -31,7 +31,7 @@ class GroatsFamily @Inject constructor(private val idesOfMilk: IdesOfMilkQuest) 
         chatNpc(happy, "Hello, I'm Gillie the Milkmaid. What can I do for you?")
         val choice =
             if (idesOfMilk.canAskGillieAboutCows(player)) {
-                // live capture, rev 241, 20261012T180256-df49f48@687-690
+                // live capture, rev 241
                 choice4(
                     "Who are you?",
                     1,

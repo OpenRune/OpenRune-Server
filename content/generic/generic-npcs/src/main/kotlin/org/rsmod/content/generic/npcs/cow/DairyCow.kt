@@ -45,8 +45,8 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
     }
 
     private fun ProtectedAccess.milkCow() {
-        // Empty buckets fill first, then a bottomless milk bucket, all from the one click (live
-        // capture, rev 241, 20261012T233700-df49f48).
+        // Empty buckets fill first, then a bottomless milk bucket, from the one click (live
+        // capture, rev 241).
         val bottomless = if ("obj.bucket_empty" in inv) null else roomySlots().firstOrNull()
         if (bottomless != null) {
             if (charges.addCharges(inv, bottomless, 1, BOTTOMLESS_USES, BOTTOMLESS_MAX).isFailure()) {
@@ -68,7 +68,6 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
     private fun ProtectedAccess.bottomlessSlots(): List<Int> =
         inv.indices.filter { inv[it]?.let { obj -> obj.isType(BOTTOMLESS_EMPTY) || obj.isType(BOTTOMLESS_FILLED) } == true }
 
-    /** Bottomless milk buckets with room for more regular milk. */
     private fun ProtectedAccess.roomySlots(): List<Int> =
         bottomlessSlots().filter { charges.getCharges(inv[it], BOTTOMLESS_USES) < BOTTOMLESS_MAX }
 
@@ -113,9 +112,8 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
     }
 
     private companion object {
-        // A milking every 7 ticks (live capture, rev 241, 20261012T222638-df49f48@1720-1778), 6
-        // with the cowbell amulet worn (https://oldschool.runescape.wiki/w/Cowbell_amulet). The
-        // queue runs a tick before its delay is up.
+        // A milking every 7 ticks (live capture, rev 241), 6 with the cowbell amulet worn
+        // (https://oldschool.runescape.wiki/w/Cowbell_amulet). The queue runs a tick early.
         const val MILK_DELAY = 8
         const val COWBELL_MILK_DELAY = 7
 

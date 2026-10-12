@@ -14,15 +14,10 @@ import org.rsmod.game.inv.isType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The bottomless milk bucket holds up to 10,000 uses of milk, filled from buckets of milk (noted
- * or not) or straight from a dairy cow (https://oldschool.runescape.wiki/w/Bottomless_milk_bucket
- * and its transcript). Dialogue types, prompts and order: live capture, rev 241,
- * 20261012T222638-df49f48@1536-1781.
- *
- * TODO(content): [system:bottomless_milk] Chocolatey milk, milky mixture and hangover cure, and
- * using a charge for quests, churns and cats.
- */
+// https://oldschool.runescape.wiki/w/Bottomless_milk_bucket; dialogue types, prompts and their
+// order: live capture, rev 241.
+// TODO(content): [system:bottomless_milk] Chocolatey milk, milky mixture and hangover cure, and
+// using a charge for quests, churns and cats.
 class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeManager) :
     PluginScript() {
     override fun ScriptContext.startup() {
@@ -57,13 +52,12 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
         )
     }
 
-    /** Fills the bucket in [slot], from [preferred] milk first and then the other form. */
     internal suspend fun ProtectedAccess.fill(slot: Int, preferred: String) {
         val bucket = inv[slot]?.takeIf { it.isBucket() } ?: return
         val uses = charges.getCharges(bucket, USES)
         val held = inv.count(MILK) + inv.count(MILK_NOTE)
         if (held == 0) {
-            // live capture, rev 241, 20261012T222638-df49f48@1613
+            // live capture, rev 241
             mes("You don't have any milk to fill your bottomless milk bucket with.")
             return
         }
@@ -104,7 +98,7 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
             return
         }
         if (inv.count(BUCKET_NOTE) > 0 && (preferred == MILK_NOTE || fromOther > 0)) {
-            // live capture, rev 241, 20261012T222638-df49f48@1603
+            // live capture, rev 241
             mes(
                 "As you deposit noted buckets of milk into your bottomless milk bucket, you " +
                     "mysteriously receive noted empty buckets back."
@@ -119,7 +113,7 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
         )
     }
 
-    /** Live asks after the amount, and only for an empty bucket. */
+    // Live asks after the amount, and only for an empty bucket.
     private suspend fun ProtectedAccess.confirmFirstFill(): Boolean {
         objbox(
             EMPTY,
@@ -134,7 +128,6 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
         return proceed
     }
 
-    /** Swaps [count] of [milk] for empty buckets of the same form, all or nothing. */
     private fun ProtectedAccess.pour(milk: String, count: Int): Boolean =
         count == 0 || invReplace(inv, milk, count, emptyOf(milk)).success
 

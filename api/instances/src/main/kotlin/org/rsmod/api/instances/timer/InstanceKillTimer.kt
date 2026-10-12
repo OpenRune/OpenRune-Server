@@ -20,8 +20,8 @@ internal object InstanceKillTimer {
         session.spec.maxPlayers <= INSTANCE_KILL_TIMER_MAX_PLAYERS
 
     /**
-     * Jagex's timer format: `m:ss.hh` with the precise timing setting on, `m:ss` without.
-     * Live capture, rev 241, 20261012T180256-df49f48@1610-1947 (precise timing on).
+     * Jagex's timer format: `m:ss.hh` with the precise timing setting on, `m:ss` without (live
+     * capture, rev 241).
      */
     fun formatDuration(ticks: Int, precise: Boolean): String {
         val centis = ticks * TICK_CENTIS
@@ -35,7 +35,6 @@ internal object InstanceKillTimer {
         }
     }
 
-    /** Reports [elapsedTicks] to [player] and returns whether it is a new personal best. */
     fun reportKillTime(player: Player, session: InstanceSession, elapsedTicks: Int): Boolean {
         val precise = player.vars["varbit.option_precise_timing"] != 0
         val duration = formatDuration(elapsedTicks, precise)
@@ -61,7 +60,7 @@ internal object InstanceKillTimer {
         val bestTicks = if (varp == null) player.instanceKillBest(session.key) else player.vars[varp]
         val best = bestTicks?.let { formatDuration(it, precise) }
 
-        // live capture, rev 241, 20261012T180256-df49f48@1610 (new best) and @1745
+        // live capture, rev 241
         val message =
             when {
                 improved -> "Fight duration: <col=ff0000>$duration</col> (new personal best)"

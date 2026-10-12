@@ -35,9 +35,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
 import org.rsmod.routefinder.flag.CollisionFlag
 
-// https://oldschool.runescape.wiki/w/Brutus and https://oldschool.runescape.wiki/w/Brutus/Strategies
-// Timings, sequences and tile patterns: live capture, rev 241, 20261012T180256-df49f48@1165-1980
-// (the quest kill and five post-quest kills) and 20261012T200152-df49f48@723-943 (three more).
+// https://oldschool.runescape.wiki/w/Brutus/Strategies; timings and tile patterns: live capture,
+// rev 241.
 class Brutus
 @Inject
 constructor(
@@ -49,9 +48,8 @@ constructor(
 ) : BossPluginScript(deps) {
 
     override fun ScriptContext.startup() {
-        // live capture, rev 241, 20261012T180256-df49f48@1232: the death line on the killing hit.
-        // live capture, rev 241, 20261012T180256-df49f48@1232-1943: "m-moo..." comes with the death
-        // animation, so it waits for the killing hit to land rather than for it to be dealt.
+        // "m-moo..." comes with the death animation, so it waits for the killing hit to land
+        // (live capture, rev 241).
         BossCombat.register(this, spec, deps, onHit = { if (npc.hitpoints == 0) moo(npc) })
         onEvent<NpcStateEvents.Respawn> { if (npc.isType(BRUTUS)) npc.vars[DEATH_SAID] = 0 }
         deps.extensionRegistry.register(CHARGE_AIM) { ctx -> aimCharge(ctx.npc, ctx.target) }
@@ -65,18 +63,15 @@ constructor(
     private fun onQuest(player: Player): Boolean =
         idesOfMilk.stage(player) < IdesOfMilkQuest.STAGE_COMPLETE
 
-    /**
-     * Basic attacks can't kill during the quest
-     * (https://oldschool.runescape.wiki/w/The_Ides_of_Milk#Grabbing_the_bull_by_its_horns).
-     */
+    // Basic attacks can't kill during the quest
+    // (https://oldschool.runescape.wiki/w/The_Ides_of_Milk#Grabbing_the_bull_by_its_horns).
     private val meleeCap =
         DamageExpr.Custom { _, target ->
             if (onQuest(target)) max(target.hitpoints - 1, 0) else Int.MAX_VALUE
         }
 
-    // UNVERIFIED: special damage scaling. The wiki gives 15-19 and "scales with Hitpoints"; the
-    // captures show 11-13 against 55 Hitpoints (live capture, rev 241,
-    // 20261012T180256-df49f48@1740-1904, 20261012T200152-df49f48@837).
+    // UNVERIFIED: special damage scaling. The wiki gives 15-19 and "scales with Hitpoints"; live
+    // captures show 11-13 against 55 Hitpoints.
     private fun specialDamage(target: Player): Int {
         val level = target.baseHitpointsLvl
         val low = level * SPECIAL_LOW_PERCENT / 100
@@ -84,11 +79,8 @@ constructor(
         return deps.random.of(low, high).coerceIn(1, SPECIAL_MAX_HIT)
     }
 
-    /**
-     * The first special is random, then charge and stomp alternate; a charge that would run him
-     * straight into a wall is a stomp instead
-     * (https://oldschool.runescape.wiki/w/Brutus/Strategies).
-     */
+    // The first special is random, then they alternate; a charge with no room is a stomp
+    // (https://oldschool.runescape.wiki/w/Brutus/Strategies).
     private val chargeAllowed =
         Condition.Custom { npc, target ->
             target != null &&
@@ -119,8 +111,7 @@ constructor(
 
             val charge =
                 ability("charge") {
-                    // live capture, rev 241, 20261012T180256-df49f48@1796-1802: he stands still
-                    // through the windup and walks again once he has landed.
+                    // He stands still through the windup (live capture, rev 241).
                     lockMovement()
                     say("*growls*")
                     anim("seq.cow_boss_charge", delay = CHARGE_ANIM_DELAY)
@@ -141,8 +132,7 @@ constructor(
                     wait(STOMP_GAP - STOMP_WINDUP),
                 )
 
-            // live capture, rev 241, 20261012T180256-df49f48@1892-1914: he doesn't move between
-            // the first slam and the end of the last.
+            // He doesn't move from the first slam to the end of the last (live capture, rev 241).
             val stomp =
                 ability("stomp") {
                     lockMovement()
@@ -164,13 +154,9 @@ constructor(
                 )
             val special = ability("special") { include(pickSpecial) }
 
-            // live capture, rev 241, 20261012T180256-df49f48@1567-1943: two basic attacks open the
-            // fight, then a special after every four basic attacks.
-            // Still out of reach 21 ticks after his last attack or spawn, he charges at the target
-            // when the lane has room and otherwise huffs and walks round the fence
-            // (https://oldschool.runescape.wiki/w/Brutus/Strategies; live capture, rev 241,
-            // 20261012T200152-df49f48@764, @819, @918 (huffs, fence in the way) and
-            // 20261012T222638-df49f48@2447, @3049 (charges), @3209 (huff)).
+            // Two basic attacks, then a special after every four (live capture, rev 241). Still out
+            // of reach 21 ticks after his last attack or spawn, he charges if the lane has room,
+            // otherwise huffs (live capture, rev 241).
             every(
                 1,
                 sequence(
@@ -197,7 +183,6 @@ constructor(
             }
         }
 
-    /** Faces the tile five past his centre towards [target] and remembers the direction. */
     private fun moo(npc: Npc) {
         if (npc.vars[DEATH_SAID] == 0) {
             npc.vars[DEATH_SAID] = 1
@@ -205,21 +190,13 @@ constructor(
         }
     }
 
-    /**
-     * Live sends only the tile to face during the windup, resets the facing as he lands and faces
-     * the target again two ticks later (live capture, rev 241, 20261012T180256-df49f48@1796-1802),
-     * so the facing is locked and he never turns towards a player who sidestepped.
-     */
+    // Locked so he never turns towards a player who sidestepped (live capture, rev 241).
     private fun aimCharge(npc: Npc, target: Player) {
         val (dx, dz) = chargeDirection(npc.coords, target.coords)
         npc.vars[AIM] = encodeAim(dx, dz)
         npc.lockFacing(centre(npc.coords).translate(dx * AIM_DISTANCE, dz * AIM_DISTANCE))
     }
 
-    /**
-     * The charge lands four ticks after the windup: Brutus jumps a few tiles in the aimed
-     * direction, stopped only by walls, and hits a target standing anywhere in the swept lane.
-     */
     private fun landCharge(npc: Npc, target: Player) {
         npc.clearFacingLock()
         val (dx, dz) = decodeAim(npc.vars[AIM])
@@ -241,8 +218,8 @@ constructor(
                 modifier = deps.playerHitModifier,
             )
         }
-        // live capture, rev 241, 20261012T180256-df49f48@1800: a teleport with an exact move from
-        // the start over 60 client cycles, so the client draws the dash.
+        // A teleport plus an exact move over 60 client cycles draws the dash (live capture,
+        // rev 241).
         PathingEntityCommon.exactMove(
             npc,
             start,
@@ -270,7 +247,6 @@ constructor(
         npc.vars[UNREACHED] = if (idle >= OUT_OF_REACH_TICKS && !inReach(npc.coords, target.coords)) 1 else 0
     }
 
-    /** "*huff*", then a real route round whatever kept him from the target. */
     private fun huff(npc: Npc, target: Player) {
         deps.encounterRegistry.of(npc).lastAbilityTick = deps.mapClock.cycle
         npc.say("*huff*")
@@ -278,10 +254,7 @@ constructor(
         npc.walkTo(routeFactory, target.coords) { npc.apPlayer2(target, aiPlayerInteractions) }
     }
 
-    /**
-     * Each slam faces its own side, not the target, until two ticks after it lands (live capture,
-     * rev 241, 20261012T180256-df49f48@1892-1906 and 20261012T200152-df49f48@926-932).
-     */
+    // Each slam faces its own side until two ticks after it lands (live capture, rev 241).
     private fun aimStomp(npc: Npc, target: Player) {
         val (cx, cz) = stompAim(npc.coords, target.coords)
         npc.vars[AIM] = encodeAim(cx, cz)
@@ -360,7 +333,6 @@ constructor(
 
         private fun centre(sw: CoordGrid): CoordGrid = sw.translate(BRUTUS_SIZE / 2, BRUTUS_SIZE / 2)
 
-        /** Whether [player] stands where Brutus at [sw] can hit with his melee attack. */
         fun inReach(sw: CoordGrid, player: CoordGrid): Boolean {
             val dx = player.x - sw.x
             val dz = player.z - sw.z
@@ -383,7 +355,6 @@ constructor(
 
         private fun decodeAim(code: Int): Pair<Int, Int> = code / 3 - 1 to code % 3 - 1
 
-        /** The cardinal direction from Brutus at [sw] towards [player], along the longer axis. */
         fun chargeDirection(sw: CoordGrid, player: CoordGrid): Pair<Int, Int> {
             val centre = centre(sw)
             val dx = player.x - centre.x
@@ -391,11 +362,8 @@ constructor(
             return if (abs(dx) >= abs(dz)) dx.sign to 0 else 0 to dz.sign
         }
 
-        /**
-         * How many tiles Brutus at [sw] can move in [direction] before a wall or fence stops him.
-         * Scenery doesn't: he charges through plants and the sign
-         * (https://oldschool.runescape.wiki/w/Brutus/Strategies).
-         */
+        // Walls and fences stop a charge, scenery doesn't
+        // (https://oldschool.runescape.wiki/w/Brutus/Strategies).
         fun chargeRoom(
             sw: CoordGrid,
             direction: Pair<Int, Int>,
@@ -443,11 +411,8 @@ constructor(
             return wall or CollisionFlag.BLOCK_WALK
         }
 
-        /**
-         * Whether [tile] lies in the lane Brutus sweeps from [start] to [dest]. The tiles he starts
-         * on don't count: a player who walks under him avoids the charge
-         * (https://oldschool.runescape.wiki/w/Brutus/Strategies).
-         */
+        // The tiles he starts on don't count: a player under him avoids the charge
+        // (https://oldschool.runescape.wiki/w/Brutus/Strategies).
         fun inLane(start: CoordGrid, dest: CoordGrid, tile: CoordGrid): Boolean {
             val minX = min(start.x, dest.x)
             val minZ = min(start.z, dest.z)
@@ -458,8 +423,8 @@ constructor(
         }
 
         /**
-         * Which way Brutus at [sw] stomps for a player at [player]: a side (one of the pair is 0)
-         * when the player is level with its middle tile, otherwise the corner nearest the player.
+         * A side (one of the pair is 0) when level with its middle tile, otherwise the nearest
+         * corner.
          */
         fun stompAim(sw: CoordGrid, player: CoordGrid): Pair<Int, Int> {
             val max = BRUTUS_SIZE - 1
@@ -487,10 +452,7 @@ constructor(
         }
 
         /**
-         * The stomp's tiles around a [BRUTUS_SIZE] boss at [sw] for a player at [player]: the three
-         * tiles along the side the player faces from its middle, or an L of five round the corner
-         * nearest the player (the corner plus two tiles along each side). Live capture, rev 241,
-         * 20261012T180256-df49f48@1740, @1828 (rows) and @1896, @1912 (L shapes).
+         * A side's three tiles, or an L of five round the nearest corner (live capture, rev 241).
          */
         fun stompTiles(sw: CoordGrid, player: CoordGrid): List<CoordGrid> {
             val (cx, cz) = stompAim(sw, player)
@@ -522,10 +484,8 @@ constructor(
         }
 
         /**
-         * The tiles under Brutus that a slam also hits: those on its side of his centre tile, but
-         * never the centre. A side slam hits the edge row under him and both ends of the middle
-         * row; a corner slam the three tiles round that corner. Live capture, rev 241,
-         * 20261012T222638-df49f48@1194-3242: all 34 slams, 17 with the player under him.
+         * The tiles under him a slam also hits: its side of his centre tile, never the centre (live
+         * capture, rev 241).
          */
         fun beneathTiles(sw: CoordGrid, cx: Int, cz: Int): List<CoordGrid> {
             val max = BRUTUS_SIZE - 1

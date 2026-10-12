@@ -60,7 +60,7 @@ public abstract class InstanceScript(
     /** Whether [player]'s kill of the boss reports a fight duration and personal best. */
     protected open fun recordsKillTime(player: Player): Boolean = true
 
-    /** A varp to keep each player's best kill time in (ticks, 0 for none), so it survives logout. */
+    /** A varp keeping each player's best kill time in ticks (0 for none), across logouts. */
     protected open fun bestTimeVarp(): String? = null
 
     /**

@@ -21,11 +21,7 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.utils.bits.withBits
 
-/**
- * Charging, uncharging and checking the cowbell amulet with air runes, one charge per rune
- * (https://oldschool.runescape.wiki/w/Cowbell_amulet and its transcript). Dialogue types: live
- * capture, rev 241, 20261012T200152-df49f48@50-187, @498.
- */
+// https://oldschool.runescape.wiki/w/Cowbell_amulet; dialogue types: live capture, rev 241.
 class CowbellAmuletCharging @Inject constructor(private val charges: ObjChargeManager) :
     PluginScript() {
     override fun ScriptContext.startup() {
@@ -49,7 +45,7 @@ class CowbellAmuletCharging @Inject constructor(private val charges: ObjChargeMa
         }
         val room = MAX_CHARGES - charges.getCharges(inv[slot], CHARGES)
         if (room <= 0) {
-            // live capture, rev 241, 20261012T222638-df49f48@209
+            // live capture, rev 241
             mes("The amulet is already fully charged.")
             return
         }
@@ -90,7 +86,7 @@ class CowbellAmuletCharging @Inject constructor(private val charges: ObjChargeMa
             return
         }
         charges.removeAllCharges(inv, slot, CHARGES)
-        // live capture, rev 241, 20261012T200152-df49f48@498
+        // live capture, rev 241
         soundSynth(UNCHARGE_SYNTH)
         doubleobjbox(
             EMPTY,
@@ -112,11 +108,10 @@ class CowbellAmuletCharging @Inject constructor(private val charges: ObjChargeMa
             checkNotNull(ServerCacheManager.getVarObj(CHARGES.asRSCM(RSCMType.VAROBJ))).bits
         }
 
-        /** The amulet after a teleport left it [left] charges; at none it turns back empty. */
         fun afterTeleport(amulet: InvObj, left: Int): InvObj =
             if (left <= 0) InvObj(EMPTY) else amulet.copy(vars = amulet.vars.withBits(chargeBits, left))
 
-        // live capture, rev 241, 20261012T222638-df49f48@181-591: counts have thousands separators.
+        // Counts have thousands separators (live capture, rev 241).
         fun plural(count: Int): String = if (count == 1) "1 charge" else "${number(count)} charges"
 
         fun number(count: Int): String = NumberFormat.getIntegerInstance(Locale.UK).format(count)

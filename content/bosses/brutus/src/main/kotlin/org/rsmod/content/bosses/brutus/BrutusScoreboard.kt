@@ -15,10 +15,7 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The scoreboard by the cow pen (https://oldschool.runescape.wiki/w/Brutus). Interface, components
- * and number formats: live capture, rev 241, 20261012T200152-df49f48@709 and @802.
- */
+// Interface, components and number formats: live capture, rev 241.
 class BrutusScoreboard @Inject constructor(private val worldStats: BrutusWorldStats) :
     PluginScript() {
     override fun ScriptContext.startup() {
@@ -59,10 +56,6 @@ class BrutusScoreboard @Inject constructor(private val worldStats: BrutusWorldSt
     }
 }
 
-/**
- * Counts each kill after the quest towards the server-wide total and shows the player the
- * scoreboard. Live capture, rev 241, 20261012T180256-df49f48@1610.
- */
 class BrutusKillTally @Inject constructor(private val worldStats: BrutusWorldStats) :
     NpcDeathKillHook {
     override fun onKill(context: NpcDeathKillContext) {

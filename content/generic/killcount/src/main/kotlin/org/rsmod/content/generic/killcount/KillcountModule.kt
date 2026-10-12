@@ -18,8 +18,7 @@ public class KillcountModule : PluginModule() {
  * Increments the player's killcount varp for the killed npc.
  */
 public class KillcountNpcKillHook @Inject constructor() : NpcDeathKillHook {
-    // live capture, rev 241, 20261012T180256-df49f48@1610: the kill count comes before the fight
-    // duration.
+    // The kill count comes before the fight duration (live capture, rev 241).
     override val priority: Int = 10
 
     override fun onKill(context: NpcDeathKillContext) {
@@ -29,7 +28,7 @@ public class KillcountNpcKillHook @Inject constructor() : NpcDeathKillHook {
         val count = context.hero.vars[varp] + 1
         VarPlayerIntMapSetter.set(context.hero, varp, count)
         if (notify) {
-            // live capture, rev 241, 20261012T180256-df49f48@1610: the message ends with a full stop.
+            // live capture, rev 241
             context.hero.mes("Your ${context.npc.name} kill count is: <col=ff0000>$count</col>.")
         }
     }

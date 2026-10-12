@@ -8,10 +8,7 @@ import org.rsmod.api.db.gateway.GameDbManager
 import org.rsmod.api.db.gateway.model.GameDbResult
 import org.rsmod.api.db.gateway.model.isOk
 
-/**
- * The scoreboard's server-wide kills, deaths and best time. They are kept in the database so they
- * survive restarts; each write returns the stored totals, which replace the cached copy.
- */
+/** The scoreboard's server-wide totals, kept in the database so they survive restarts. */
 @Singleton
 class BrutusWorldStats @Inject constructor(private val db: GameDbManager) {
     private val logger = InlineLogger()
@@ -22,7 +19,6 @@ class BrutusWorldStats @Inject constructor(private val db: GameDbManager) {
     var deaths: Long = 0
         private set
 
-    /** The fastest kill in ticks, or 0 before any timed kill. */
     var bestTicks: Int = 0
         private set
 

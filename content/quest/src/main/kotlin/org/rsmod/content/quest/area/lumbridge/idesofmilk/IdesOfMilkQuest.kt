@@ -24,9 +24,8 @@ import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/The_Ides_of_Milk
-// Text, mesanims, stage changes and the journal follow live capture, rev 241,
-// 20261012T180256-df49f48@546-1561. Branches it didn't take come from
-// https://oldschool.runescape.wiki/w/Transcript:The_Ides_of_Milk
+// Dialogue, mesanims and stage changes: live capture, rev 241; branches it didn't take come
+// from https://oldschool.runescape.wiki/w/Transcript:The_Ides_of_Milk
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class IdesOfMilkQuest
 @Inject
@@ -38,7 +37,7 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
             extra("Access to Brutus' Field")
             extra("Gillie's Cowbell Supply")
         },
-        // live capture, rev 241, 20261012T180256-df49f48@1392: cowquest_milk_sample_2, zoom 400
+        // live capture, rev 241
         ItemRewardDisplay(MILK_SAMPLE_2, zoom = 400),
         questVarbit = "varbit.cowquest",
     ) {
@@ -64,7 +63,7 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         "talking to <col=800000>Cassius</col> south of the <col=800000>Lumbridge " +
             "Windmill</col>."
 
-    // live capture, rev 241, 20261012T180256-df49f48@612-1403 (quest journal opened at each stage)
+    // Journal text: live capture, rev 241.
     override fun questLog(player: ProtectedAccess) =
         questJournal(player) {
             val stage = stage(player.player)
@@ -346,7 +345,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         quest.setQuestStage(access, STAGE_COMPLETE)
     }
 
-    /** Gillie's extra menu option while the research step runs. */
     fun canAskGillieAboutCows(player: Player): Boolean =
         stage(player) in STAGE_RESEARCH..STAGE_RESEARCHED && !player.gillieInformation
 
@@ -393,7 +391,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         )
     }
 
-    /** Returns `false` when Gillie has nothing quest-related to say. */
     suspend fun Dialogue.gillieDialogue(): Boolean {
         when (stage(player)) {
             STAGE_DUKE_SPOKEN -> gillieSample()
@@ -547,8 +544,8 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
                 happy,
                 "This is for helping out with that bull. Our cows are much happier these days.",
             )
-            // live capture, rev 241, 20261012T180256-df49f48@1510: the empty amulet goes in the
-            // inventory, the objbox shows the full one.
+            // The empty amulet goes in the inventory, the objbox shows the full one (live capture,
+            // rev 241).
             if (access.invAdd(access.inv, COWBELL_AMULET_EMPTY).failure) {
                 return true
             }
@@ -592,7 +589,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
     // TODO(content): [verify:in_game] whether the bank counts as having the lamp.
     private fun hasLamp(player: Player): Boolean = player.inv.count(LAMP) > 0
 
-    /** Returns `false` when Seth has nothing quest-related to say. */
     suspend fun Dialogue.sethDialogue(): Boolean {
         if (stage(player) !in STAGE_RESEARCH..STAGE_RESEARCHED) {
             return false
@@ -656,7 +652,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         }
     }
 
-    /** Returns `false` when the Duke has nothing quest-related to say. */
     suspend fun Dialogue.dukeDialogue(): Boolean {
         when (stage(player)) {
             STAGE_SECOND_SAMPLE -> dukePermit()
@@ -735,12 +730,12 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         if (invAdd(inv, BOOK).failure) {
             return
         }
-        // live capture, rev 241, 20261012T180256-df49f48@773-775
+        // live capture, rev 241
         soundSynth("synth.pick2")
         objbox(BOOK, "You find Seth's book of principles on the shelf.")
     }
 
-    // live capture, rev 241, 20261012T180256-df49f48@886-891
+    // live capture, rev 241
     // TODO(content): the drink sound (live capture synth 2401 has no gameval name).
     internal suspend fun ProtectedAccess.drinkFirstSample() {
         if (stage(player) != STAGE_FIRST_SAMPLE) {
@@ -803,7 +798,7 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
             it.isType(GILLIE) && it.coords.chebyshevDistance(player.coords) <= GILLIE_RANGE
         }
 
-    // live capture, rev 241, 20261012T180256-df49f48@1530-1543
+    // live capture, rev 241
     internal suspend fun ProtectedAccess.rubLamp() {
         var chosen: Pair<String, String>? = null
         startDialogue { chosen = chooseCombatSkill() }
@@ -901,7 +896,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
                 "Farmer Fred's farm in Lumbridge. Cassius has offered me the chance to share the " +
                 "profits of his upcoming milk business, in exchange for a bit of help setting it up."
 
-        /** Struck paragraphs, keyed by the stage they first appear at. */
         private val JOURNAL_DONE =
             linkedMapOf(
                 STAGE_BOOK_GIVEN to
@@ -935,7 +929,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
                     "want to see my face again.",
             )
 
-        /** The blue current-step paragraph, keyed by the first stage it shows at. */
         private val JOURNAL_CURRENT =
             linkedMapOf(
                 STAGE_STARTED to

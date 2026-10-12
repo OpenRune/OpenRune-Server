@@ -13,11 +13,8 @@ import org.rsmod.game.obj.Obj
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Bull bones can't be taken, only buried where they lie, after a prompt that giant bones share
- * (https://oldschool.runescape.wiki/w/Bull_bones; live capture, rev 241,
- * 20261012T200152-df49f48@852-858).
- */
+// Buried where they lie, after the giant bones prompt
+// (https://oldschool.runescape.wiki/w/Bull_bones).
 class BullBones @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     private var Player.skipBuryWarning by boolVarBit("varbit.giant_bone_bury_warning_disable")
 

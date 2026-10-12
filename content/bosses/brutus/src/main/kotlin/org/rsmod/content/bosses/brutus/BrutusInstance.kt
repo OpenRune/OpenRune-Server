@@ -26,8 +26,7 @@ import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
-// The cow pen behind Gillie Groats. Live capture, rev 241, 20261012T180256-df49f48@1156-1169
-// (quest) and @1549-1561, @1971-1977 (after the quest).
+// The cow pen behind Gillie Groats (live capture, rev 241).
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class BrutusInstance
 @Inject
@@ -48,7 +47,7 @@ constructor(
 
     override fun runsPreludeOnFreshRun(): Boolean = true
 
-    // live capture, rev 241, 20261012T180256-df49f48@1236: the quest kill reports no duration.
+    // The quest kill reports no duration (live capture, rev 241).
     override fun recordsKillTime(player: Player): Boolean =
         idesOfMilk.stage(player) >= IdesOfMilkQuest.STAGE_COMPLETE
 
@@ -73,11 +72,7 @@ constructor(
         onExitObject { leaveGate() }
     }
 
-    /**
-     * Fade to black, enter with Brutus already in place, turn the camera south and fade back in.
-     * Live capture, rev 241, 20261012T180256-df49f48@1555-1561, @1163-1169 and
-     * 20261012T200152-df49f48@721-727.
-     */
+    // live capture, rev 241
     private suspend fun ProtectedAccess.fieldEntry(enter: InstanceEnterAction, spawn: () -> Unit) {
         fadeOverlay(0, FADE_CLEAR, 0, FADE_BLACK, FADE_CLIENT_CYCLES)
         delay(1)
@@ -146,10 +141,8 @@ constructor(
         telejump(outside, TeleportType.Exempt)
     }
 
-    /**
-     * Inside the field the release gate does nothing and the pen's west gate leads out. Live
-     * capture, rev 241, 20261012T180256-df49f48@1165.
-     */
+    // Inside the field the release gate does nothing and the pen's west gate leads out (live
+    // capture, rev 241).
     private fun swapGates(session: InstanceSession) {
         for ((static, from, into) in GATE_SWAPS) {
             val coords = manager.resolveCoord(session, static) ?: continue
@@ -166,22 +159,18 @@ constructor(
         val npc = Npc(type, coords)
         deps.npcRepo.add(npc, Int.MAX_VALUE)
         npc.respawns = idesOfMilk.stage(player) >= IdesOfMilkQuest.STAGE_COMPLETE
-        // live capture, rev 241, 20261012T180256-df49f48@1236, @1610: the quest kill isn't counted.
+        // The quest kill isn't counted (live capture, rev 241).
         if (!npc.respawns) {
             npc.vars["varn.skip_killcount"] = 1
         }
         manager.registerSessionNpc(player, npc)
-        // live capture, rev 241, 20261012T180256-df49f48@1561: once the screen has cleared.
+        // Once the screen has cleared (live capture, rev 241).
         deps.worldQueues.add(HP_BAR_DELAY) { if (npc.isSlotAssigned) bossHpBar.onOpen(player, npc) }
         arrive(npc, player)
     }
 
-    /**
-     * Brutus stands still after (re)spawning, moos, then goes for the player. He can be attacked
-     * from the start, so this holds his own attack and movement rather than delaying the npc,
-     * which would drop the player's clicks on him. Live capture, rev 241,
-     * 20261012T180256-df49f48@1557-1567, @1632-1638 and 20261012T200152-df49f48@723-732.
-     */
+    // He can be attacked from the start, so this holds his own attack and movement: npc.delay
+    // would drop the player's clicks on him (live capture, rev 241).
     private fun arrive(npc: Npc, player: Player?) {
         npc.anim("seq.cow_boss_spawn")
         val encounter = deps.encounterRegistry.of(npc)
@@ -207,10 +196,10 @@ constructor(
     private companion object {
         private val BRUTUS_ID = Brutus.BRUTUS.asRSCM(RSCMType.NPC)
 
-        // live capture, rev 241, 20261012T180256-df49f48@1165: Brutus is added at (3261, 3287).
+        // live capture, rev 241
         private val SPAWN = CoordGrid(3261, 3287)
 
-        // live capture, rev 241, 20261012T180256-df49f48@1977: out through the west gate.
+        // Out through the west gate (live capture, rev 241).
         private const val EXIT_GATE_OUTSIDE_X = 3252
         private val EXIT_GATE_Z = 3266..3267
 

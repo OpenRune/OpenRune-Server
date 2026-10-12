@@ -32,12 +32,8 @@ import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * https://oldschool.runescape.wiki/w/Cowbell_amulet and its transcript. Animations, sounds,
- * dialogue types and timings: live capture, rev 241, 20261012T200152-df49f48@30-263.
- *
- * The charges live on the amulet itself, so each amulet keeps its own and charged ones don't stack.
- */
+// https://oldschool.runescape.wiki/w/Cowbell_amulet; animations, sounds and timings: live capture,
+// rev 241.
 class CowbellAmulet
 @Inject
 constructor(
@@ -71,12 +67,7 @@ constructor(
         objbox(CHARGED, zoom = 400, text)
     }
 
-    /**
-     * Whether ringing brings Brutus back, or null outside his field. Ringing while he is dead
-     * brings him back [RING_RESPAWN_DELAY] ticks later, even when his natural respawn was due
-     * sooner (https://oldschool.runescape.wiki/w/Cowbell_amulet); ringing again before he is back
-     * does nothing (live capture, rev 241, 20261012T200152-df49f48@786-798).
-     */
+    // Ringing again before he is back does nothing (live capture, rev 241).
     private fun ProtectedAccess.fieldBrutusDead(): Boolean? {
         val session = manager.sessionForPlayer(player) ?: return null
         if (session.key != BRUTUS_FIELD) {
@@ -114,8 +105,7 @@ constructor(
         delay(ARRIVE_DELAY)
         resetAnim()
         mooAtArrival()
-        // live capture, rev 241, 20261012T200152-df49f48@196-261 (5 and 1 left) and
-        // 20261012T222638-df49f48@591 (950 left, none from 999 to 951).
+        // At 950 and at 5 and 1 left (live capture, rev 241).
         // UNVERIFIED: warnings at other counts below 50.
         when {
             left == 0 -> mes("@mes_hl_red@Your amulet has run out of charges.</col>")
@@ -134,9 +124,8 @@ constructor(
         return false
     }
 
-    // live capture, rev 241, 20261012T200152-df49f48@196-261 and 20261012T222638-df49f48@246-595:
-    // 69 arrivals, on every tile within one of (3259, 3276) and never further. The wiki gives
-    // (3259, 3277) with a radius of 2.
+    // live capture, rev 241: always within one tile of (3259, 3276). The wiki gives (3259, 3277)
+    // with a radius of 2.
     private fun destination(): CoordGrid =
         DESTINATION.translate(
             random.of(-ARRIVAL_RADIUS, ARRIVAL_RADIUS),
@@ -162,8 +151,7 @@ constructor(
         const val RING_SOUNDS = 3
         const val RING_SOUND_GAP = 8
 
-        // live capture, rev 241, 20261012T180256-df49f48@1620-1632, @1680-1692 and
-        // 20261012T200152-df49f48@786-798; the wiki says 13.
+        // live capture, rev 241; the wiki says 13.
         const val RING_RESPAWN_DELAY = 12
         const val BELL_RUNG = "varn.brutus_bell_rung"
 
