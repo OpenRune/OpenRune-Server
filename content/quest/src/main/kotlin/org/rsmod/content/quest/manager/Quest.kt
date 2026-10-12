@@ -229,9 +229,7 @@ data class Quest(
             rewardLines.add(rewards.itemLabels[item] ?: "$amount x ${type.name}")
         }
 
-        rewards.extraText?.let {
-            rewardLines.add(it)
-        }
+        rewardLines += rewards.extraLines
 
         val linesToShow = rewardLines.take(6)
 
