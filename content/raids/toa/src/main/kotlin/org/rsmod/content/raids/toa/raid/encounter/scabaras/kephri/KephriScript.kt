@@ -10,7 +10,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 class KephriScript : PluginScript() {
     override fun ScriptContext.startup() {
         for (name in listOf(KephriNpcs.SHIELDED, KephriNpcs.WEAK, KephriNpcs.ENRAGE)) {
-            onRoomNpcHit<KephriEncounter>(name) { npc, hit -> kephriHit(npc, hit) }
+            onRoomNpcHit<KephriEncounter>(name) { npc, _ -> kephriHit(npc) }
             onRoomNpcQueue<KephriEncounter>(name, DEATH) { kephriDeath(it) }
         }
 

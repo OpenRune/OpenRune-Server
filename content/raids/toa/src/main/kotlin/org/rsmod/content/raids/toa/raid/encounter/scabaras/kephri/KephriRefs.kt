@@ -1,5 +1,9 @@
 package org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import org.rsmod.game.entity.Npc
+import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 
 internal object KephriNpcs {
@@ -59,7 +63,7 @@ internal object KephriSpots {
     const val MELEE_HEAL = "spotanim.toa_kephri_melee_heal"
     const val MAGE_CHARGE = "spotanim.toa_kephri_mage_charge"
     const val THROWN_PLAYER = "spotanim.stunned_thieving"
-    const val SHIELD_DEATH ="spotanim.kephri_shield_death"
+    const val SHIELD_DEATH = "spotanim.kephri_shield_death"
     const val BOMB = "spotanim.kephri_kamikaze_scarab"
     const val BOMB_EXPLODE = "spotanim.kephri_kamikaze_scarab_explode"
     const val SHIELD_REFORM = "spotanim.kephri_shield_reform"
@@ -81,7 +85,61 @@ internal object KephriCoords {
 }
 
 internal object KephriAbilities {
+    const val AUTO = "auto"
+    const val SPECIAL = "special"
+    const val EGGS = "eggs"
     const val DUNG = "dung"
     const val FINAL_DUNG = "final_dung"
     const val BOMBS = "bombs"
 }
+
+internal object KephriPhases {
+    const val OPENING = "opening"
+    const val STUN_1 = "stun_1"
+    const val SHIELD_2 = "shield_2"
+    const val STUN_2 = "stun_2"
+    const val SHIELD_3 = "shield_3"
+    const val FINAL = "final"
+
+    val STUNS = listOf(STUN_1, STUN_2)
+
+    val AFTER_BREAK = mapOf(OPENING to STUN_1, SHIELD_2 to STUN_2, SHIELD_3 to FINAL)
+
+    val AFTER_STUN = mapOf(STUN_1 to SHIELD_2, STUN_2 to SHIELD_3)
+}
+
+internal object KephriVarns {
+    const val EGGS_NEXT = "varn.toa_kephri_eggs_next"
+}
+
+internal object KephriMidis {
+    const val FIGHT = "midi.toa_boss_kephri"
+}
+
+internal val Npc.kephriCentre: CoordGrid
+    get() = coords.translate(KephriCoords.CENTRE_OFFSET, KephriCoords.CENTRE_OFFSET)
+
+internal fun projAnim(
+    spot: String,
+    from: CoordGrid,
+    to: CoordGrid,
+    startHeight: Int,
+    endHeight: Int,
+    startTime: Int,
+    endTime: Int,
+    angle: Int,
+    progress: Int,
+): ProjAnim =
+    ProjAnim(
+        spotanim = spot.asRSCM(RSCMType.SPOTANIM),
+        startHeight = startHeight,
+        endHeight = endHeight,
+        startTime = startTime,
+        endTime = endTime,
+        angle = angle,
+        progress = progress,
+        sourceIndex = 0,
+        targetIndex = 0,
+        startCoord = from,
+        endCoord = to,
+    )

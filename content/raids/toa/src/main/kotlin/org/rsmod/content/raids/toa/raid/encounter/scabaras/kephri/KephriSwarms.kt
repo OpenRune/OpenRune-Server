@@ -41,7 +41,7 @@ internal class KephriSwarms(private val room: KephriEncounter) {
         if (room.stage != ToaStage.STARTED) return
         medicTick()
         val boss = room.kephri ?: return
-        val centre = boss.coords.translate(KephriCoords.CENTRE_OFFSET, KephriCoords.CENTRE_OFFSET)
+        val centre = boss.kephriCentre
         for (swarm in swarms.toList()) {
             val npc = swarm.npc
             if (!npc.isSlotAssigned || npc.hitpoints <= 0) {
@@ -69,7 +69,7 @@ internal class KephriSwarms(private val room: KephriEncounter) {
         val cycle = deps.mapClock.cycle
         if (nextMedic == NEVER || cycle < nextMedic) return
         nextMedic += MEDIC_INTERVAL
-        if (room.phase != KephriEncounter.Phase.STUNNED) spawn(false, medic = true)
+        if (!room.isStunned) spawn(false, medic = true)
     }
 
     fun clear() {
@@ -82,7 +82,7 @@ internal class KephriSwarms(private val room: KephriEncounter) {
     fun spawnMedic() = spawn(false, medic = true)
 
     private fun spawn(triple: Boolean, medic: Boolean = false) {
-        if (!medic && room.phase != KephriEncounter.Phase.STUNNED) return
+        if (!medic && !room.isStunned) return
         val span = ANCHORS[anchor]
         anchor = (anchor + deps.random.of(1, 2)) % ANCHORS.size
         val tiles =
@@ -146,7 +146,6 @@ internal class KephriSwarms(private val room: KephriEncounter) {
         val SHIELD_RANGE = 95..105
         val MEDIC_RANGE = 180..200
         const val PER_MILLE = 1000
-        const val HEAL_CAP_PERCENT = 115
 
         val ANCHORS =
             listOf(
