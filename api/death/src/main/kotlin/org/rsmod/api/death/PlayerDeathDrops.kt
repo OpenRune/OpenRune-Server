@@ -57,7 +57,7 @@ constructor(
         }
 
         val keptNormal = normal.take(handling.keepCount)
-        val lost = normal.drop(handling.keepCount)
+        val lost = normal.drop(handling.keepCount).filterNot { handling.deleteSupplies && isDeletedSupply(it) }
 
         val (supply, lostRemainder) = if (handling.supplyPile) {
             lost.partition { isSupplyPileItem(it) }
@@ -248,6 +248,13 @@ constructor(
         internalName.startsWith("rune_pouch") || internalName.startsWith("bh_rune_pouch") ||
             internalName.startsWith("divine_rune_pouch")
 
+    // https://oldschool.runescape.wiki/w/Grave: in the Wilderness and on PvP worlds "food, potions,
+    // and phoenix necklaces cannot be sent to a grave or dropped, and are instead deleted".
+    private fun isDeletedSupply(obj: InvObj): Boolean {
+        val type = getInvObj(obj)
+        return SupplyItems.isFoodOrPotion(type) || type.isType(PHOENIX_NECKLACE)
+    }
+
     private fun isSupplyPileItem(obj: InvObj): Boolean {
         return SupplyItems.isFoodOrPotion(getInvObj(obj))
     }
@@ -282,6 +289,7 @@ constructor(
         public const val PVP_REVEAL_DELAY: Int = 100
 
         private const val COINS_OBJ = "obj.coins"
+        private const val PHOENIX_NECKLACE = "obj.jewl_necklace_of_phoenix"
         private const val BONES_OBJ = "obj.bones"
 
         public fun standardKeepCount(hasProtectItem: Boolean): Int = if (hasProtectItem) 4 else 3

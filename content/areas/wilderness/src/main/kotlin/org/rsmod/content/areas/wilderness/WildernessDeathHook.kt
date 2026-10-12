@@ -34,17 +34,20 @@ public class WildernessDeathHook @Inject constructor() : PlayerDeathHook {
         )
     }
 
-    // TODO: Food, potions and phoenix necklaces are deleted instead, and a grave outside the
-    // Wilderness moves to the death tile (https://oldschool.runescape.wiki/w/Grave).
+    // https://oldschool.runescape.wiki/w/Grave: food, potions and phoenix necklaces are deleted,
+    // and an existing grave moves to the new death tile.
+    // UNVERIFIED: whether that move needs level 20+ (a 26 June 2020 hotfix said so; the current
+    // Grave page says any Wilderness PvM death).
     private fun wildernessPvmDeath(context: PlayerDeathContext): PlayerDeathHandling =
         PlayerDeathHandling(
             keepCount = standardKeepCount(context.hasProtectItem),
             dropReceiver = context.player,
             dropDuration = DROP_DURATION_STANDARD,
             revealDelay = PVP_REVEAL_DELAY,
-            supplyPile = true,
+            supplyPile = false,
             untradeableHandling = UntradeableHandling.DROP,
-            grave = DeathGrave(),
+            grave = DeathGrave(relocate = true),
+            deleteSupplies = true,
         )
 
     private fun revenantCaves(context: PlayerDeathContext): PlayerDeathHandling =

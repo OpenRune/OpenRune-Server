@@ -38,6 +38,8 @@ public data class PlayerDeathHandling(
     val supplyPile: Boolean,
     val untradeableHandling: UntradeableHandling,
     val grave: DeathGrave? = null,
+    /** Food, potions and phoenix necklaces that would be lost are deleted instead. */
+    val deleteSupplies: Boolean = false,
 )
 
 public enum class UntradeableHandling {

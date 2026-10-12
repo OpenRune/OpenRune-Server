@@ -360,6 +360,49 @@ class GravestonesTest {
         }
 
     @Test
+    fun GameTestState.`a Wilderness PvM death deletes food instead of keeping it`() =
+        runGraveTest { deps ->
+            player.inv[0] = InvObj(pricey, 1)
+            player.inv[1] = InvObj(cheap, 1)
+            player.inv[2] = InvObj(food, 1)
+            val handling =
+                PlayerDeathHandling(
+                    keepCount = 1,
+                    dropReceiver = player,
+                    dropDuration = PlayerDeathDrops.DROP_DURATION_STANDARD,
+                    revealDelay = PlayerDeathDrops.PVP_REVEAL_DELAY,
+                    supplyPile = false,
+                    untradeableHandling = UntradeableHandling.DROP,
+                    grave = DeathGrave(relocate = true),
+                    deleteSupplies = true,
+                )
+            val result =
+                deps.drops.selectDrops(
+                    carried = player.inv.filterNotNull { true },
+                    rules = PlayerDeathDrops.DeathDropRules(),
+                    handling = handling,
+                )
+            deps.drops.applyDrops(player, result, handling, DEATH)
+
+            val held = player.inv.filterNotNull { true } + player.grave.filterNotNull { true }
+            assertEquals(setOf(InvObj(pricey, 1), InvObj(cheap, 1)), held.toSet())
+            assertEquals(0, deps.objs.findAll(DEATH).count { it.type == food.id })
+        }
+
+    @Test
+    fun GameTestState.`a relocating death moves the existing grave`() =
+        runGraveTest { deps ->
+            deps.graves.store(player, DEATH, DeathGrave(), listOf(InvObj(cheap, 1)))
+            val moved = DEATH.translate(10, 10)
+
+            deps.graves.store(player, moved, DeathGrave(relocate = true), listOf(InvObj(stack, 3)))
+
+            assertEquals(moved, player.graveCoords)
+            assertEquals(1, player.grave.count(cheap.internalName))
+            assertEquals(3, player.grave.count(stack.internalName))
+        }
+
+    @Test
     fun GameTestState.`the grave's op opens it for its owner`() =
         runGraveTest { deps ->
             deps.graves.store(player, DEATH, DeathGrave(), listOf(InvObj(cheap, 1)))

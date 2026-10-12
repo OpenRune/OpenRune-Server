@@ -79,8 +79,8 @@ constructor(
     private val visibleSlots = HashMap<Int, Npc>()
 
     // TODO: Graves only start after the first visit to Death's Office, a PvP world's grave can
-    // only be looted on one, and a grave on Entrana moves to the new death tile
-    // (https://oldschool.runescape.wiki/w/Grave).
+    // only be looted on one, and a grave on Entrana moves to the new death tile like a Wilderness
+    // PvM death's (https://oldschool.runescape.wiki/w/Grave).
     override fun store(
         player: Player,
         deathCoords: CoordGrid,
@@ -109,6 +109,12 @@ constructor(
         GraveLayout.record(player)
         player.graveDuration = DURATION
         player.feePaid = false
+        if (existing && grave.relocate) {
+            val worldCoords = grave.coords ?: deathCoords
+            player.creationDeathCoord = worldCoords
+            player.graveCoords = graveTile(worldCoords)
+            spawn(player)
+        }
         if (existing) {
             player.hasMerged = true
             // https://oldschool.runescape.wiki/w/Grave lists it after "Oh dear, you are dead!".
