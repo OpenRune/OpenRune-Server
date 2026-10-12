@@ -18,7 +18,6 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
         onOpNpc1(KOVAC) { talk(it.npc) }
         onOpNpc3(KOVAC) { handIn(it.npc) }
         onOpNpc4(KOVAC) { commission(it.npc) }
-        // TODO: using reward items on Kovac to sell them back (80% of their cost).
     }
 
     /** Dialogue from https://oldschool.runescape.wiki/w/Transcript:Kovac */
