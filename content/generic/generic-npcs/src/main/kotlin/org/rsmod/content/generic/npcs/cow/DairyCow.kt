@@ -8,6 +8,9 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpContentLoc1
 import org.rsmod.api.script.onOpContentLoc2
 import org.rsmod.api.script.onOpContentLocU
+import org.rsmod.api.script.onOpLoc2
+import org.rsmod.api.script.onOpLoc4
+import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onPlayerQueue
 import org.rsmod.game.inv.isType
 import org.rsmod.game.loc.BoundLocInfo
@@ -21,6 +24,14 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
         onOpContentLoc2("content.dairy_cow") { stealCowbell(it.loc) }
         onOpContentLocU("content.dairy_cow") { mes("The cow doesn't want that.") }
         onOpContentLocU("content.dairy_cow", "obj.bucket_empty") { attemptMilkingCow(it.loc) }
+
+        // The Zanaris dairy cow puts Milk second and Steal-cowbell fourth
+        // (https://oldschool.runescape.wiki/w/Dairy_cow).
+        // TODO(content): its Talk-to option.
+        onOpLoc2(ZANARIS_COW) { attemptMilkingCow(it.loc) }
+        onOpLoc4(ZANARIS_COW) { stealCowbell(it.loc) }
+        onOpLocU(ZANARIS_COW) { mes("The cow doesn't want that.") }
+        onOpLocU(ZANARIS_COW, "obj.bucket_empty") { attemptMilkingCow(it.loc) }
 
         onPlayerQueue("queue.milk_cow") { milkCow() }
     }
@@ -114,6 +125,8 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
     }
 
     private companion object {
+        const val ZANARIS_COW = "loc.fairy_fat_cow"
+
         // A milking every 7 ticks (live capture, rev 241, 20261012T222638-df49f48@1720-1778), 6
         // with the cowbell amulet worn (https://oldschool.runescape.wiki/w/Cowbell_amulet). The
         // queue runs a tick before its delay is up.
