@@ -2,13 +2,12 @@ package org.rsmod.content.slayer.guardians
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:monkey_madness_ii] Hieve and Breive name Nieve before the quest; like
-// SlayerMasters, the quest is treated as completed
 class SlayerAreaGuardians : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.wyvern_cave_pieve") { startDialogue(it.npc) { pieve() } }
@@ -92,12 +91,21 @@ class SlayerAreaGuardians : PluginScript() {
                             "found they're a bit tough, though, even with all this kit I've got, " +
                             "but I'll slay them one day.",
                     )
-                    chatNpc(
-                        angry,
-                        "My little brother became a Slayer Master recently. That job should " +
-                            "have been mine - he's just a little brat! But one day I'll be a " +
-                            "mighty dragon-slayer, and they'll give me a job like that too.",
-                    )
+                    if (QuestRequirements.hasCompleted(player, MONKEY_MADNESS_II)) {
+                        chatNpc(
+                            angry,
+                            "My little brother became a Slayer Master recently. That job should " +
+                                "have been mine - he's just a little brat! But one day I'll be a " +
+                                "mighty dragon-slayer, and they'll give me a job like that too.",
+                        )
+                    } else {
+                        chatNpc(
+                            neutral,
+                            "My little cousin is a Slayer Master, lucky girl. But one day I'll " +
+                                "be a mighty dragon-slayer, and they'll give me a job like that " +
+                                "too.",
+                        )
+                    }
                 }
                 2 -> {
                     chatPlayer(quiz, "Can I kill the dragons in here?")
@@ -139,9 +147,15 @@ class SlayerAreaGuardians : PluginScript() {
                     neutral,
                     "Smoke dungeon. *wheeze* Got smoke devils in it. For killing. *splutter*",
                 )
+                val relative =
+                    if (QuestRequirements.hasCompleted(player, MONKEY_MADNESS_II)) {
+                        "My nephew Steve"
+                    } else {
+                        "My niece Nieve"
+                    }
                 chatNpc(
                     neutral,
-                    "My nephew Steve *hack hack* is one of those Slayer Masters. You know, they " +
+                    "$relative *hack hack* is one of those Slayer Masters. You know, they " +
                         "tell people what to go kill. *cough* I look after this cave for people " +
                         "on assignments like that.",
                 )
@@ -496,6 +510,7 @@ class SlayerAreaGuardians : PluginScript() {
     private companion object {
         const val TENTACLES_STORED = "varbit.kraken_cove_tentaclesstored"
         const val TENTACLES_NEEDED = 10
+        const val MONKEY_MADNESS_II = "quest_monkeymadness2"
 
         // Bronze, iron and steel dragons in `dbtable.slayer_task`.
         val METAL_DRAGON_TASKS = setOf(58, 59, 60)
