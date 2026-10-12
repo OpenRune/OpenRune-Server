@@ -18,6 +18,9 @@ import org.rsmod.utils.bits.withBits
  * (https://oldschool.runescape.wiki/w/Bottomless_milk_bucket).
  *
  * A bucket holds one type of milk at a time, from `enum.bottomless_milk_types`.
+ *
+ * UNVERIFIED: that a bucket of another milk doesn't count as a bucket of milk for quests and cats
+ * (the wiki lists those uses without saying which milk).
  */
 public object MilkSources {
     public const val BUCKET_EMPTY: String = "obj.bottomless_milk_bucket"

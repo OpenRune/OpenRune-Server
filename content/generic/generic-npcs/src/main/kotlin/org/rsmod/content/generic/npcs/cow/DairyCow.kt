@@ -80,7 +80,7 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
     private fun ProtectedAccess.bottomlessSlots(): List<Int> =
         inv.indices.filter { inv[it]?.let { obj -> obj.isType(BOTTOMLESS_EMPTY) || obj.isType(BOTTOMLESS_FILLED) } == true }
 
-    /** Bottomless milk buckets with room for more regular milk. */
+    // UNVERIFIED: a bucket holding another milk can't be milked into, and what live says then.
     private fun ProtectedAccess.roomySlots(): List<Int> =
         bottomlessSlots().filter {
             charges.getCharges(inv[it], BOTTOMLESS_USES) < BOTTOMLESS_MAX &&
