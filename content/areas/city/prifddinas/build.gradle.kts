@@ -17,4 +17,5 @@ dependencies {
     implementation(projects.content.interfaces.collectionLog)
     implementation(projects.engine.game)
     implementation(projects.engine.map)
+    implementation(projects.content.quest)
 }
