@@ -59,4 +59,14 @@ class BrutusChargeTest {
         assertEquals(false, Brutus.inLane(sw, dest, sw.translate(2, 2)))
         assertEquals(false, Brutus.inLane(sw, dest, sw.translate(-1, 3)))
     }
+
+    @Test
+    fun `he reaches tiles beside his sides but not his corners or further away`() {
+        assertEquals(true, Brutus.inReach(sw, sw.translate(-1, 1)))
+        assertEquals(true, Brutus.inReach(sw, sw.translate(2, 3)))
+        assertEquals(false, Brutus.inReach(sw, sw.translate(-1, -1)))
+        assertEquals(false, Brutus.inReach(sw, sw.translate(3, 3)))
+        assertEquals(false, Brutus.inReach(sw, sw.translate(1, 4)))
+        assertEquals(false, Brutus.inReach(sw, sw.translate(1, 1)))
+    }
 }

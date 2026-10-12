@@ -201,3 +201,12 @@ id = "varn.brutus_next_special"
 
 [[varn]]
 id = "varn.brutus_aim"
+
+[[varn]]
+id = "varn.brutus_unreached"
+
+[[varn]]
+id = "varn.brutus_death_said"
+
+[[varn]]
+id = "varn.brutus_bell_rung"

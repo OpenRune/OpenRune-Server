@@ -13,6 +13,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpWorn2
@@ -23,6 +24,7 @@ import org.rsmod.content.bosses.brutus.CowbellAmuletCharging.Companion.EMPTY
 import org.rsmod.content.bosses.brutus.CowbellAmuletCharging.Companion.plural
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
 import org.rsmod.map.CoordGrid
@@ -54,6 +56,7 @@ constructor(
 
         onOpWorn2(CHARGED) { ring() }
         onOpWorn2(EMPTY) { ring() }
+        onEvent<NpcStateEvents.Respawn> { if (npc.isType(Brutus.BRUTUS)) npc.vars[BELL_RUNG] = 0 }
         onOpWorn3(CHARGED) { teleport(player.worn, Wearpos.Front.slot) }
     }
 
@@ -69,9 +72,10 @@ constructor(
     }
 
     /**
-     * Whether Brutus is waiting to respawn in the player's field, or null outside it. Ringing
-     * while he is dead brings him back [RING_RESPAWN_DELAY] ticks later, even when his natural
-     * respawn was due sooner (https://oldschool.runescape.wiki/w/Cowbell_amulet).
+     * Whether ringing brings Brutus back, or null outside his field. Ringing while he is dead
+     * brings him back [RING_RESPAWN_DELAY] ticks later, even when his natural respawn was due
+     * sooner (https://oldschool.runescape.wiki/w/Cowbell_amulet); ringing again before he is back
+     * does nothing (live capture, rev 241, 20261012T200152-df49f48@786-798).
      */
     private fun ProtectedAccess.fieldBrutusDead(): Boolean? {
         val session = manager.sessionForPlayer(player) ?: return null
@@ -81,9 +85,11 @@ constructor(
         val brutus =
             manager.npcsForInstance(session.id).firstOrNull { it.isType(Brutus.BRUTUS) }
                 ?: return false
-        if (!brutus.respawns || brutus.lifecycleRespawnCycle <= clock.cycle) {
+        val dead = brutus.respawns && brutus.lifecycleRespawnCycle > clock.cycle
+        if (!dead || brutus.vars[BELL_RUNG] != 0) {
             return false
         }
+        brutus.vars[BELL_RUNG] = 1
         brutus.lifecycleRespawnCycle = clock.cycle + RING_RESPAWN_DELAY
         return true
     }
@@ -145,13 +151,17 @@ constructor(
 
     private fun Npc.isAnyOf(types: List<String>): Boolean = types.any { isType(it) }
 
-    private companion object {
+    companion object {
         const val BRUTUS_FIELD = "cowboss"
 
         const val RING_SYNTH = "synth.cowbell_amulet_ring"
         const val RING_SOUNDS = 3
         const val RING_SOUND_GAP = 8
-        const val RING_RESPAWN_DELAY = 13
+
+        // live capture, rev 241, 20261012T180256-df49f48@1620-1632, @1680-1692 and
+        // 20261012T200152-df49f48@786-798; the wiki says 13.
+        const val RING_RESPAWN_DELAY = 12
+        const val BELL_RUNG = "varn.brutus_bell_rung"
 
         const val TELEPORT_SPOTANIM = "spotanim.vfx_human_cowboss_teleport01"
         const val TELEPORT_SYNTH = "synth.cowbell_amulet_teleport"
