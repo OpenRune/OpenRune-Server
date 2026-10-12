@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -12,7 +13,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Halla
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:royal_trouble] monster rumours while the quest is in progress
 class MiscellanianClothesShop @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(HALLA) { startDialogue(it.npc) { halla(it.npc) } }
@@ -47,6 +47,24 @@ class MiscellanianClothesShop @Inject constructor(private val shops: Shops) : Pl
             2 -> chatPlayer(neutral, "No thank you, I'm fine.")
             3 -> {
                 chatPlayer(quiz, "What's it like living down here?")
+                if (QuestRequirements.isOnQuest(player, ROYAL_TROUBLE)) {
+                    chatNpc(
+                        happy,
+                        "It's very spacious. One of the dwarves said that the caves go on for " +
+                            "miles!",
+                    )
+                    chatNpc(
+                        worried,
+                        "I don't like these rumours I've heard about the other caves, though.",
+                    )
+                    chatPlayer(quiz, "What rumours?")
+                    chatNpc(
+                        worried,
+                        "They say there might be monsters in there. You'd best talk to the " +
+                            "dwarves who are excavating - they'd know about these stories.",
+                    )
+                    return
+                }
                 chatNpc(
                     happy,
                     "It's very spacious down here. One of the dwarves said that the caves go on " +
@@ -62,6 +80,7 @@ class MiscellanianClothesShop @Inject constructor(private val shops: Shops) : Pl
     }
 
     private companion object {
+        const val ROYAL_TROUBLE = "quest_royaltrouble"
         const val HALLA = "npc.royal_clotheshop_owner"
     }
 }

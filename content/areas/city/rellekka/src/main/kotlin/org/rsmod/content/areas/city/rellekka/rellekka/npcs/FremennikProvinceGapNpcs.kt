@@ -1,21 +1,36 @@
 package org.rsmod.content.areas.city.rellekka.rellekka.npcs
 
+import jakarta.inject.Inject
+import org.rsmod.api.invtx.invAddOrDrop
+import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-class FremennikProvinceGapNpcs : PluginScript() {
+class FremennikProvinceGapNpcs @Inject constructor(private val objRepo: ObjRepository) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.mdaughter_svidi") { startDialogue(it.npc) { svidi() } }
         onOpNpc1("npc.viking_lalli_troll") { startDialogue(it.npc) { lalli() } }
         onOpNpc1("npc.aluft_gnome_explorer_mountain") { startDialogue(it.npc) { brambickle() } }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Svidi (before Mountain Daughter)
-    // TODO(content): [quest:mountain_daughter] after-quest liaison dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Svidi
     private suspend fun Dialogue.svidi() {
+        if (QuestRequirements.hasCompleted(player, MOUNTAIN_DAUGHTER)) {
+            chatPlayer(quiz, "Why are you still wandering around here?")
+            chatNpc(
+                neutral,
+                "I'm now the official liaison between Rellekka and our camp. It involves a fair " +
+                    "bit of walking around, you know.",
+            )
+            chatPlayer(neutral, "I can imagine.")
+            return
+        }
         chatPlayer(quiz, "Hello. Where are you going?")
         chatNpc(angry, "None of your business! Leave me alone!")
         chatPlayer(neutral, "It just seemed as if you were walking in circles.")
@@ -23,15 +38,55 @@ class FremennikProvinceGapNpcs : PluginScript() {
         chatPlayer(worried, "Okay, okay.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Lalli (before The Fremennik Trials)
-    // TODO(content): [quest:the_fremennik_trials] stone soup and the golden wool sale after it
+    // https://oldschool.runescape.wiki/w/Transcript:Lalli
+    // TODO(content): [quest:the_fremennik_trials] stone soup during the Trials
     private suspend fun Dialogue.lalli() {
+        if (QuestRequirements.hasCompleted(player, FREMENNIK_TRIALS)) {
+            goldenWool()
+            return
+        }
         chatPlayer(happy, "Hello there.")
         chatNpc(
             angry,
             "Bah! Puny humans always try steal Lallis' golden apples! You go away now!",
         )
         chatPlayer(confused, "Uh.... okay...")
+    }
+
+    private suspend fun Dialogue.goldenWool() {
+        chatPlayer(happy, "Hello there.")
+        chatNpc(
+            laugh,
+            "Ha! Stupid human! You no get any golden apples! Even though me much like stone soup!",
+        )
+        chatPlayer(quiz, "Can I please have some more golden wool?")
+        chatNpc(
+            neutral,
+            "Me will sell you some golden wool, but me not sell you any golden apples!",
+        )
+        chatPlayer(quiz, "How much for the golden wool?")
+        chatNpc(angry, "Me want 1000 coins! You pay or go!")
+        if (!choice2("Pay", true, "Don't pay", false)) {
+            chatNpc(angry, "You no pay, then you go! You no get any golden apples!")
+            return
+        }
+        if (access.invTotal(player.inv, COINS) < GOLDEN_WOOL_PRICE) {
+            chatPlayer(sad, "I don't have that much cash on me...")
+            chatNpc(
+                angry,
+                "Well stupid bad trade human don't get no wool then! Or any golden apples!",
+            )
+            return
+        }
+        chatPlayer(happy, "Is that all? Here you go!")
+        if (!player.invTakeFee(GOLDEN_WOOL_PRICE)) {
+            return
+        }
+        player.invAddOrDrop(objRepo, GOLDEN_FLEECE)
+        chatNpc(
+            laugh,
+            "Ha! Stupid human think he buy golden apples, but actually get stupid wool! Hahaha!",
+        )
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Brambickle
@@ -141,5 +196,13 @@ class FremennikProvinceGapNpcs : PluginScript() {
                 chatPlayer(happy, "Wow, that's very interesting. Thanks.")
             }
         }
+    }
+
+    private companion object {
+        const val FREMENNIK_TRIALS = "quest_fremenniktrials"
+        const val MOUNTAIN_DAUGHTER = "quest_mountaindaughter"
+        const val COINS = "obj.coins"
+        const val GOLDEN_FLEECE = "obj.viking_golden_fleece"
+        const val GOLDEN_WOOL_PRICE = 1000
     }
 }

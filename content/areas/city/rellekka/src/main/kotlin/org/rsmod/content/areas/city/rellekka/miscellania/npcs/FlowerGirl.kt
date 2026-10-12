@@ -6,13 +6,12 @@ import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Flower_Girl
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:throne_of_miscellania] "Good day, Your Royal Highness." and "Would you
-// like some, Your Highness?" after the quest
 // TODO(content): [verify:in_game] one mixed flowers for 15 coins although she says "15gp for
 // three" (https://oldschool.runescape.wiki/w/Mixed_flowers lists her price as 15 each)
 class FlowerGirl @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
@@ -21,9 +20,18 @@ class FlowerGirl @Inject constructor(private val objRepo: ObjRepository) : Plugi
     }
 
     private suspend fun Dialogue.flowerGirl() {
-        chatNpc(happy, "Hello.")
-        chatPlayer(quiz, "Good day. What are you doing?")
-        chatNpc(happy, "I'm selling flowers, 15gp for three. Would you like some?")
+        if (QuestRequirements.hasCompleted(player, THRONE_OF_MISCELLANIA)) {
+            chatNpc(happy, "Good day, Your Royal Highness.")
+            chatPlayer(quiz, "Good day. What are you doing?")
+            chatNpc(
+                happy,
+                "I'm selling flowers, 15gp for three. Would you like some, Your Highness?",
+            )
+        } else {
+            chatNpc(happy, "Hello.")
+            chatPlayer(quiz, "Good day. What are you doing?")
+            chatNpc(happy, "I'm selling flowers, 15gp for three. Would you like some?")
+        }
         if (player.inv.count("obj.coins") < PRICE) {
             chatPlayer(sad, "I don't have enough money.")
             return
@@ -43,5 +51,6 @@ class FlowerGirl @Inject constructor(private val objRepo: ObjRepository) : Plugi
 
     private companion object {
         const val PRICE = 15
+        const val THRONE_OF_MISCELLANIA = "quest_throneofmiscellania"
     }
 }

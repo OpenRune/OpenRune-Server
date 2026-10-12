@@ -2,6 +2,10 @@ package org.rsmod.content.areas.city.rellekka.rellekka.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onOpNpc3
+import org.rsmod.content.areas.city.rellekka.fremennikGreeting
+import org.rsmod.content.areas.city.rellekka.fremennikName
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -17,6 +21,7 @@ class RellekkaTownsfolk : PluginScript() {
         onOpNpc1("npc.viking_woman4") { startDialogue(it.npc) { fremennikCitizen() } }
         onOpNpc1("npc.handsand_reeso") { startDialogue(it.npc) { fremennikCitizen() } }
         onOpNpc1("npc.viking_askelapen") { startDialogue(it.npc) { askeladden() } }
+        onOpNpc3("npc.viking_askelladen_rockop") { startDialogue(it.npc) { petRock() } }
         onOpNpc1("npc.makinghistory_blanin") { startDialogue(it.npc) { blanin() } }
         onOpNpc1("npc.makinghistory_dron") { startDialogue(it.npc) { dron() } }
         onOpNpc1("npc.olaf_ingrid") { startDialogue(it.npc) { ingridHradson() } }
@@ -32,15 +37,21 @@ class RellekkaTownsfolk : PluginScript() {
     // https://oldschool.runescape.wiki/w/Transcript:Jennella
     // https://oldschool.runescape.wiki/w/Transcript:Sassilik
     // https://oldschool.runescape.wiki/w/Transcript:Reeso
-    // TODO(content): [quest:the_fremennik_trials] eight random greetings using the Fremennik name
     // TODO(content): [quest:the_fremennik_exiles] Freygerd and Reeso during the quest
     private suspend fun Dialogue.fremennikCitizen() {
-        chatNpc(angry, "I cannot speak to you outerlander! Talk to Brundt, the Chieftain!")
+        if (QuestRequirements.hasCompleted(player, FREMENNIK_TRIALS)) {
+            fremennikGreeting()
+        } else {
+            chatNpc(angry, "I cannot speak to you outerlander! Talk to Brundt, the Chieftain!")
+        }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Askeladden (before The Fremennik Trials)
-    // TODO(content): [quest:the_fremennik_trials] Larravak dialogue and the pet rock
+    // https://oldschool.runescape.wiki/w/Transcript:Askeladden
     private suspend fun Dialogue.askeladden() {
+        if (QuestRequirements.hasCompleted(player, FREMENNIK_TRIALS)) {
+            larravak()
+            return
+        }
         chatPlayer(happy, "Hello there.")
         chatNpc(
             happy,
@@ -68,36 +79,116 @@ class RellekkaTownsfolk : PluginScript() {
         chatNpc(laugh, "Nah, nah, nah... He just wears an eyepatch! Well, see ya around buddy!")
     }
 
+    private suspend fun Dialogue.larravak() {
+        chatPlayer(happy, "Hello again Askeladden.")
+        chatNpc(
+            happy,
+            "Hey buddy! That ain't my name no more! My new Fremennik name is Larravak! What's " +
+                "yours?",
+        )
+        chatPlayer(happy, "My Fremennik name is ${fremennikName()}.")
+        chatNpc(laugh, "Ha! Ain't as good as my name buddy! So what can I do ya for?")
+        val thingsToDo =
+            choice2("Ask about things to do", true, "Ask for a new pet rock", false)
+        if (!thingsToDo) {
+            chatPlayer(quiz, "Can I have another pet rock?")
+            petRock()
+            return
+        }
+        chatPlayer(
+            quiz,
+            "So, Askeladd- sorry, Larravak; What is there to do around here now that we are " +
+                "both Fremenniks?",
+        )
+        chatNpc(
+            happy,
+            "I guess you could do a bit of shopping. We got fresh fish at the docks, and some " +
+                "armour and weapons at Skulgrimen's place.",
+        )
+        chatPlayer(happy, "Okay, thanks.")
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Askeladden (after The Fremennik Trials)
+    private suspend fun Dialogue.petRock() {
+        if (!player.inv.hasFreeSpace()) {
+            chatNpc(neutral, "Sure thing, but you'd better free up some space first.")
+            return
+        }
+        val hadOne = access.playerContainsObj(PET_ROCK)
+        if (!access.invAdd(player.inv, PET_ROCK).success) {
+            return
+        }
+        if (hadOne) {
+            chatNpc(happy, "Sure, have as many as you like. I've plenty more!")
+        } else {
+            chatNpc(
+                happy,
+                "Sure thing buddy! I'd say take better care of this one, but it's just a rock! I " +
+                    "have hundreds of them! Go wild!",
+            )
+        }
+    }
+
     // https://oldschool.runescape.wiki/w/Transcript:Blanin
-    // TODO(content): [quest:making_history] quest and after-quest dialogue
+    // TODO(content): [quest:making_history] dialogue during the quest
     private suspend fun Dialogue.blanin() {
+        if (QuestRequirements.hasCompleted(player, MAKING_HISTORY)) {
+            chatPlayer(happy, "That's one less thing to worry about.")
+            chatNpc(happy, "Glad I could help.")
+            return
+        }
         chatPlayer(happy, "Good day.")
         val title = if (access.isBodyTypeA()) "sir" else "ma'am"
         chatNpc(happy, "Good day to you $title.")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Dron
-    // TODO(content): [quest:making_history] quest and after-quest dialogue
+    // TODO(content): [quest:making_history] dialogue during the quest
     private suspend fun Dialogue.dron() {
+        if (QuestRequirements.hasCompleted(player, MAKING_HISTORY)) {
+            chatNpc(angry, "You have your answers, now go away!")
+            return
+        }
         chatPlayer(quiz, "Excuse me..")
         chatNpc(angry, "Leave me or I'll destroy you!")
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Ingrid_Hradson
-    // TODO(content): [quest:the_fremennik_trials] "Good afternoon! How do you like our village?"
-    // TODO(content): [quest:olafs_quest] "Hello again! Have you any word from my husband?"
     private suspend fun Dialogue.ingridHradson() {
-        chatNpc(
-            angry,
-            "Outlander, I have work to be getting on with... Please stop bothering me.",
-        )
+        if (QuestRequirements.hasCompleted(player, OLAFS_QUEST)) {
+            chatNpc(happy, "Hello again! Have you any word from my husband?")
+            chatPlayer(
+                neutral,
+                "Err, no, not yet. It takes a while for the messages to reach me, you know.",
+            )
+            chatNpc(
+                happy,
+                "Well, when you do, tell him we'll be more than happy to see him again.",
+            )
+        } else if (QuestRequirements.hasCompleted(player, FREMENNIK_TRIALS)) {
+            chatNpc(happy, "Good afternoon! How do you like our village?")
+            chatPlayer(happy, "It's lovely. You have a fine collection of goats.")
+            chatNpc(happy, "We polish them every day to get them nice and clean.")
+        } else {
+            chatNpc(
+                angry,
+                "Outlander, I have work to be getting on with... Please stop bothering me.",
+            )
+        }
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Volf_Olafson
-    // TODO(content): [quest:the_fremennik_trials] "Hello there. Enjoying the view?"
-    // TODO(content): [quest:olafs_quest] "Hello again! Does my father send any word...?"
     private suspend fun Dialogue.volfOlafson() {
-        chatNpc(neutral, "Sorry, outlander, but I have things to be doing.")
+        if (QuestRequirements.hasCompleted(player, OLAFS_QUEST)) {
+            chatNpc(happy, "Hello again! Does my father send any word...or treasures like before?")
+            chatPlayer(neutral, "Not today, but if he does, you will be the first to know.")
+        } else if (QuestRequirements.hasCompleted(player, FREMENNIK_TRIALS)) {
+            chatNpc(happy, "Hello there. Enjoying the view?")
+            chatPlayer(happy, "Yes I am. You have a lovely yurt.")
+            chatNpc(happy, "Thanks! I exercise it regularly.")
+        } else {
+            chatNpc(neutral, "Sorry, outlander, but I have things to be doing.")
+        }
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Thorodin
@@ -257,5 +348,12 @@ class RellekkaTownsfolk : PluginScript() {
             }
         }
         chatPlayer(happy, "Thanks!")
+    }
+
+    private companion object {
+        const val FREMENNIK_TRIALS = "quest_fremenniktrials"
+        const val MAKING_HISTORY = "quest_makinghistory"
+        const val OLAFS_QUEST = "quest_olafs"
+        const val PET_ROCK = "obj.vt_useless_rock"
     }
 }

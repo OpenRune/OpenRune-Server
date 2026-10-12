@@ -7,14 +7,13 @@ import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.shops.Shops
 import org.rsmod.content.areas.city.rellekka.fremennikName
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:throne_of_miscellania] "Your Royal Highness" greetings at the
-// Miscellania stalls after the quest
 // TODO(content): [system:managing_miscellania] approval percentage after Royal Trouble
 // TODO(content): [skill:thieving] Skraeling overhead line after failing to steal from a stall
 class MarketStalls @Inject constructor(private val shops: Shops) : PluginScript() {
@@ -47,16 +46,28 @@ class MarketStalls @Inject constructor(private val shops: Shops) : PluginScript(
         shops.open(this, npc, "Island Greengrocer", "inv.etc_greengrocer")
     }
 
+    private fun Dialogue.isRegent(): Boolean =
+        QuestRequirements.hasCompleted(player, THRONE_OF_MISCELLANIA)
+
     // https://oldschool.runescape.wiki/w/Transcript:Fishmonger
     private suspend fun Dialogue.miscellaniaFishmonger(npc: Npc) {
-        chatNpc(happy, "Greetings. Get your fresh fish here!")
+        if (isRegent()) {
+            chatNpc(happy, "Greetings, Your Royal Highness. Get your fresh fish here!")
+        } else {
+            chatNpc(happy, "Greetings. Get your fresh fish here!")
+        }
         chatNpc(shifty, "I've heard that the Etceterian fish is stored in a cow shed.")
         player.openIslandFishmonger(npc)
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Greengrocer
     private suspend fun Dialogue.miscellaniaGreengrocer(npc: Npc) {
-        val title = if (access.isBodyTypeA()) "Sir" else "Madam"
+        val title =
+            when {
+                isRegent() -> "Your Royal Highness"
+                access.isBodyTypeA() -> "Sir"
+                else -> "Madam"
+            }
         chatNpc(happy, "Welcome, $title. I sell only the finest and freshest vegetables!")
         player.openGreengrocerOfMiscellania(npc)
     }
@@ -80,6 +91,7 @@ class MarketStalls @Inject constructor(private val shops: Shops) : PluginScript(
     }
 
     private companion object {
+        const val THRONE_OF_MISCELLANIA = "quest_throneofmiscellania"
         const val MISC_FISH = "npc.misc_fish_monger"
         const val MISC_VEG = "npc.misc_veg_monger"
         const val ETC_FISH = "npc.etc_fish_monger"

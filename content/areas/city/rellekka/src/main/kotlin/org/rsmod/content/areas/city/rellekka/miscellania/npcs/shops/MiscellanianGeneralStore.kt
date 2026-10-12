@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -12,7 +13,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Finn
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:royal_trouble] monster rumours while the quest is in progress
 class MiscellanianGeneralStore @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(FINN) { startDialogue(it.npc) { finn(it.npc) } }
@@ -42,12 +42,27 @@ class MiscellanianGeneralStore @Inject constructor(private val shops: Shops) : P
             2 -> chatPlayer(neutral, "No thanks.")
             3 -> {
                 chatPlayer(quiz, "What's it like living down here?")
+                if (QuestRequirements.isOnQuest(player, ROYAL_TROUBLE)) {
+                    chatNpc(neutral, "There's no rain or wind down here.")
+                    chatNpc(
+                        worried,
+                        "Some of the dwarves say that there's water in the other caves, and one " +
+                            "of them says he's seen monsters in there.",
+                    )
+                    chatPlayer(quiz, "Monsters? What sort of monsters?")
+                    chatNpc(
+                        neutral,
+                        "I don't know, sorry. You'd better ask one of the dwarves about it.",
+                    )
+                    return
+                }
                 chatNpc(neutral, "A lot drier in the winter than it is above ground.")
             }
         }
     }
 
     private companion object {
+        const val ROYAL_TROUBLE = "quest_royaltrouble"
         const val FINN = "npc.royal_generalstore_owner"
     }
 }

@@ -4,6 +4,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.content.areas.city.rellekka.fremennikName
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -13,12 +14,12 @@ import org.rsmod.plugin.scripts.ScriptContext
 class EtceteriaTownsfolk : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.misc_queen_sigrid") { startDialogue(it.npc) { queenSigrid() } }
-        for (etceterian in ETCETERIANS) {
-            onOpNpc1(etceterian) { startDialogue(it.npc) { etceterian() } }
+        for ((etceterian, belongings) in ETCETERIANS) {
+            onOpNpc1(etceterian) { startDialogue(it.npc) { etceterian(belongings) } }
         }
         onOpNpc1("npc.misc_etc_carpenter") { startDialogue(it.npc) { carpenterKjallak() } }
         onOpNpc1("npc.misc_etc_farmer") { startDialogue(it.npc) { farmerFromund() } }
-        for (worker in ETCETERIANS + KINGDOM_WORKERS) {
+        for (worker in ETCETERIANS.keys + KINGDOM_WORKERS) {
             onOpNpc3(worker) { startDialogue(it.npc) { checkApproval() } }
         }
         onOpNpc1("npc.etc_guard1") { startDialogue(it.npc) { skraeling() } }
@@ -27,9 +28,17 @@ class EtceteriaTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Queen_Sigrid
-    // TODO(content): [quest:throne_of_miscellania] in-quest and after-quest dialogue
-    // TODO(content): [quest:royal_trouble] in-quest and after-quest dialogue
+    // TODO(content): [quest:throne_of_miscellania] in-quest dialogue
+    // TODO(content): [quest:royal_trouble] in-quest dialogue
     private suspend fun Dialogue.queenSigrid() {
+        if (QuestRequirements.isOnQuest(player, THRONE_OF_MISCELLANIA) ||
+            QuestRequirements.isOnQuest(player, ROYAL_TROUBLE)) {
+            return
+        }
+        if (QuestRequirements.hasCompleted(player, THRONE_OF_MISCELLANIA)) {
+            queenSigridBeforeRoyalTrouble()
+            return
+        }
         chatNpc(neutral, "Hello.")
         chatPlayer(worried, "Er...Hello, Your Majesty.")
         chatNpc(
@@ -61,12 +70,33 @@ class EtceteriaTownsfolk : PluginScript() {
         chatPlayer(neutral, "...actually, no.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Queen_Sigrid (before starting Royal Trouble)
+    // TODO(content): [verify:in_game] the wiki has no dialogue after Royal Trouble; this one is
+    //  used then too
+    private suspend fun Dialogue.queenSigridBeforeRoyalTrouble() {
+        chatPlayer(neutral, "Your Majesty...")
+        chatNpc(angry, "Vargas, you irritating fool. 'Warmongering harpy', indeed!")
+        chatPlayer(confused, "Sorry?")
+        chatNpc(neutral, "Oh, I apologise. I was merely thinking out loud.")
+        chatPlayer(quiz, "How is your kingdom faring?")
+        chatNpc(neutral, "It could be better. Now, if you don't mind, I'm rather busy.")
+        chatPlayer(neutral, "Very well, your Majesty.")
+    }
+
     // https://oldschool.runescape.wiki/w/Transcript:Haming (same for Arnor, Ashild, Helga,
     // Matilda and Moldof)
-    // TODO(content): [quest:royal_trouble] "Thank you for finding my ..." after the quest
-    private suspend fun Dialogue.etceterian() {
+    private suspend fun Dialogue.etceterian(belongings: String) {
         chatPlayer(neutral, "Excuse me...")
         chatNpc(neutral, "Can I help you?")
+        if (QuestRequirements.hasCompleted(player, ROYAL_TROUBLE)) {
+            chatNpc(
+                happy,
+                "Thank you for finding my $belongings for me. Did you find everyone's belongings?",
+            )
+            chatPlayer(happy, "I did! Thank you for the reward.")
+            chatNpc(happy, "You're more than welcome to it, for getting our belongings back.")
+            return
+        }
         when (access.random.of(5)) {
             0 -> {
                 chatPlayer(quiz, "Can you tell me anything about the castle?")
@@ -94,9 +124,18 @@ class EtceteriaTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Carpenter_Kjallak
-    // TODO(content): [quest:royal_trouble] "I'm cutting down mahogany and teak trees..." after
-    // the quest
     private suspend fun Dialogue.carpenterKjallak() {
+        if (QuestRequirements.hasCompleted(player, ROYAL_TROUBLE)) {
+            chatPlayer(quiz, "Good day. What are you doing?")
+            chatNpc(
+                neutral,
+                "I'm cutting down mahogany and teak trees to make into furniture. It takes a " +
+                    "while.",
+            )
+            chatPlayer(happy, "Good luck with that.")
+            chatNpc(happy, "Thank you, Your Royal Highness.")
+            return
+        }
         chatNpc(
             angry,
             "Hey! This is the Queen's forest. You'll need her approval to make use of it.",
@@ -145,9 +184,19 @@ class EtceteriaTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Guard_(Etceteria)
-    // TODO(content): [quest:royal_trouble] "I'm surprised you managed to get out of there..."
-    // after the quest
     private suspend fun Dialogue.dungeonGuard() {
+        if (QuestRequirements.hasCompleted(player, ROYAL_TROUBLE)) {
+            chatNpc(
+                neutral,
+                "I'm surprised you managed to get out of there without breaking any bones.",
+            )
+            chatNpc(
+                neutral,
+                "Still, the Queen says it should be safe, and I'm to let you go back down if you " +
+                    "want.",
+            )
+            return
+        }
         chatPlayer(quiz, "What are you guarding here?")
         chatNpc(
             neutral,
@@ -164,14 +213,17 @@ class EtceteriaTownsfolk : PluginScript() {
     }
 
     private companion object {
+        const val THRONE_OF_MISCELLANIA = "quest_throneofmiscellania"
+        const val ROYAL_TROUBLE = "quest_royaltrouble"
+
         val ETCETERIANS =
-            listOf(
-                "npc.misc_etc_man_1",
-                "npc.misc_etc_man_2",
-                "npc.misc_etc_man_3",
-                "npc.misc_etc_woman_1",
-                "npc.misc_etc_woman_2",
-                "npc.misc_etc_woman_3",
+            mapOf(
+                "npc.misc_etc_man_1" to "sword",
+                "npc.misc_etc_man_2" to "plates",
+                "npc.misc_etc_man_3" to "arrows",
+                "npc.misc_etc_woman_1" to "shield",
+                "npc.misc_etc_woman_2" to "hat",
+                "npc.misc_etc_woman_3" to "tools",
             )
         val KINGDOM_WORKERS = listOf("npc.misc_etc_carpenter", "npc.misc_etc_farmer")
     }

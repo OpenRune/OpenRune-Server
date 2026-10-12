@@ -6,10 +6,12 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
@@ -29,6 +31,9 @@ import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.content.areas.city.rellekka.miscellania.npcs.FlowerGirl
 import org.rsmod.content.areas.city.rellekka.miscellania.npcs.GardenerGunnhild
+import org.rsmod.content.quest.manager.QuestRequirementMode
+import org.rsmod.content.quest.manager.QuestRequirementPolicy
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -46,6 +51,18 @@ import org.rsmod.plugin.scripts.ScriptContext
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class MiscellaniaPurchasesInteractionTest {
+    private lateinit var questPolicy: QuestRequirementPolicy
+
+    @BeforeEach
+    fun assumeQuestsCompleted() {
+        questPolicy = QuestRequirements.activePolicy()
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+    }
+
+    @AfterEach
+    fun restoreQuestPolicy() {
+        QuestRequirements.install(questPolicy)
+    }
 
     @Test fun `the Flower Girl and Gunnhild sell their goods for 15 coins`() {
         for ((sale, options) in PURCHASES) {
