@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
+import org.rsmod.api.bottomless.milk.MilkSources
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.npc.NpcRepository
@@ -37,6 +38,7 @@ constructor(
 ) : PluginScript() {
 
     private val milkId = BUCKET_OF_MILK.asRSCM(RSCMType.OBJ)
+    private val bottomlessId = MilkSources.BUCKET_FILLED.asRSCM(RSCMType.OBJ)
     private val sardineId = SEASONED_SARDINE.asRSCM(RSCMType.OBJ)
     private val kittenId = FLUFFS_KITTEN.asRSCM(RSCMType.OBJ)
 
@@ -97,14 +99,15 @@ constructor(
     private suspend fun ProtectedAccess.useItem(npc: Npc, objType: ItemServerType, slot: Int) {
         approach(npc)
         when (objType.id) {
-            milkId -> giveMilk(npc)
+            milkId -> giveMilk(npc, slot)
+            bottomlessId -> giveMilk(npc, slot)
             sardineId -> giveSardine(npc, slot)
             kittenId -> returnKitten(npc, slot)
             else -> mes("Fluffs isn't interested in that.")
         }
     }
 
-    private suspend fun ProtectedAccess.giveMilk(npc: Npc) {
+    private suspend fun ProtectedAccess.giveMilk(npc: Npc, slot: Int) {
         val stage = gertrudesCat.stage(player)
         if (stage < STAGE_STARTED) {
             mes("The cat eyes the bucket suspiciously and backs away.")
@@ -114,7 +117,14 @@ constructor(
             mes("Fluffs has had all the milk she wants.")
             return
         }
-        if (invReplace(inv, BUCKET_OF_MILK, 1, BUCKET_EMPTY).failure) {
+        // A bottomless milk bucket gives one use (https://oldschool.runescape.wiki/w/Bottomless_milk_bucket).
+        val drank =
+            if (inv[slot]?.id == milkId) {
+                invReplace(inv, BUCKET_OF_MILK, 1, BUCKET_EMPTY).success
+            } else {
+                MilkSources.pourFrom(inv, slot)
+            }
+        if (!drank) {
             return
         }
         gertrudesCat.quest.setQuestStage(this, STAGE_GAVE_MILK)

@@ -43,7 +43,15 @@ public object MilkSources {
     /** One use from a bottomless milk bucket; the last use leaves it empty. */
     public fun pour(inv: Inventory, milk: String = MILK): Boolean {
         val slot = bucketSlot(inv, milk) ?: return false
-        val bucket = inv[slot] ?: return false
+        return pourFrom(inv, slot)
+    }
+
+    /** One use from the bottomless milk bucket in [slot], as when it's used on a cat. */
+    public fun pourFrom(inv: Inventory, slot: Int): Boolean {
+        val bucket = inv[slot]?.takeIf { it.isType(BUCKET_FILLED) } ?: return false
+        if (charges.getCharges(bucket, USES) <= 0) {
+            return false
+        }
         val left = charges.getCharges(bucket, USES) - 1
         if (left == 0) {
             charges.removeAllCharges(inv, slot, USES)

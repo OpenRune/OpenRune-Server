@@ -189,6 +189,27 @@ class BottomlessMilkBucketTest {
         assertEquals(false, MilkSources.pour(f.player.inv))
     }
 
+    @Test
+    fun `pouring from a slot takes one use from that bucket only`() {
+        val f = Fixture()
+        f.player.inv[0] = f.filled(5)
+        f.player.inv[1] = f.filled(9)
+        assertTrue(MilkSources.pourFrom(f.player.inv, 1))
+        assertEquals(5, f.uses(0))
+        assertEquals(8, f.uses(1))
+    }
+
+    @Test
+    fun `pouring from a slot without a filled bucket takes nothing`() {
+        val f = Fixture()
+        f.player.inv[0] = InvObj(EMPTY)
+        f.player.inv[1] = InvObj(MILK)
+        assertEquals(false, MilkSources.pourFrom(f.player.inv, 0))
+        assertEquals(false, MilkSources.pourFrom(f.player.inv, 1))
+        assertEquals(false, MilkSources.pourFrom(f.player.inv, 2))
+        assertEquals(1, f.player.inv.count(MILK))
+    }
+
     private class Fixture {
         private val coroutine = GameCoroutine("bottomless-milk-bucket-test")
         private var result: Result<Unit>? = null
