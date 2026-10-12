@@ -24,6 +24,7 @@ constructor(
     private val objRepo: ObjRepository,
     private val marketPrices: MarketPrices,
     private val groundItemDrops: GroundItemDropResolver,
+    private val graveHooks: Set<PlayerGraveHook>,
 ) {
     public fun selectDrops(
         player: Player,
@@ -136,6 +137,13 @@ constructor(
         handling: PlayerDeathHandling,
         coords: CoordGrid,
     ) {
+        val lost =
+            when (handling.untradeableHandling) {
+                UntradeableHandling.DROP -> result.lostTradeable + result.lostUntradeable
+                else -> result.lostTradeable
+            }
+        val dropped = storeInGrave(player, coords, handling, lost)
+
         player.inv.fillNulls()
         player.worn.fillNulls()
 
@@ -147,25 +155,28 @@ constructor(
             dropItem(player, item, coords, handling, receiver = null)
         }
 
-        for (item in result.lostTradeable) {
+        for (item in dropped) {
             dropItem(player, item, coords, handling, handling.dropReceiver)
         }
 
-        when (handling.untradeableHandling) {
-            UntradeableHandling.DROP -> {
-                for (item in result.lostUntradeable) {
-                    dropItem(player, item, coords, handling, handling.dropReceiver)
-                }
-            }
-            UntradeableHandling.COINS -> {
-                if (result.coinsForKiller > 0) {
-                    val count = result.coinsForKiller.coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
-                    dropItem(player, InvObj(COINS_OBJ, count), coords, handling, handling.dropReceiver)
-                }
-            }
-            UntradeableHandling.DESTROY -> Unit
-            UntradeableHandling.KEEP -> Unit
+        if (handling.untradeableHandling == UntradeableHandling.COINS && result.coinsForKiller > 0) {
+            val count = result.coinsForKiller.coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
+            dropItem(player, InvObj(COINS_OBJ, count), coords, handling, handling.dropReceiver)
         }
+    }
+
+    private fun storeInGrave(
+        player: Player,
+        coords: CoordGrid,
+        handling: PlayerDeathHandling,
+        lost: List<InvObj>,
+    ): List<InvObj> {
+        val grave = handling.grave ?: return lost
+        val hook = graveHooks.firstOrNull() ?: return lost
+        if (lost.isEmpty()) {
+            return lost
+        }
+        return hook.store(player, coords, grave, lost)
     }
 
     private fun dropItem(
