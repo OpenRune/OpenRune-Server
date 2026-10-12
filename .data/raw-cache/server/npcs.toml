@@ -15992,6 +15992,7 @@ respawnRate = 36
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=25
 
+"param.killcount_varp"="varp.total_cowboss_kills"
 [[npc]]
 id = "npc.cowboss_routefind"
 inherit = "npc.cowboss_routefind"
