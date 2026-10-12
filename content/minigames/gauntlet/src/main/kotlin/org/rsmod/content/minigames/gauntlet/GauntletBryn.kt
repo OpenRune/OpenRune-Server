@@ -15,8 +15,10 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 internal var Player.gauntletSpokenToBryn by boolVarBit("varbit.gauntlet_spoken_to_bryn")
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 @Singleton
 class GauntletBryn @Inject constructor(private val followers: PetFollowers) {
+    // https://oldschool.runescape.wiki/w/Transcript:Bryn
     suspend fun ProtectedAccess.talk(npc: Npc) {
         startDialogue(npc) {
             chatNpc(neutral, "What are you doing down here?")
@@ -64,9 +66,9 @@ class GauntletBryn @Inject constructor(private val followers: PetFollowers) {
         val explain =
             choice2("What is this place?", true, "Just passing by.", false)
         if (explain) {
-            chatPlayer(quiz, "What is this place?")
             explanation()
             player.gauntletSpokenToBryn = true
+            chatNpc(happy, "You can always come back and ask me to go over things again.")
         } else {
             chatPlayer(neutral, "Just passing by.")
             chatNpc(neutral, "Alright... Well be careful down here. I've got my eye on you.")
@@ -141,7 +143,7 @@ class GauntletBryn @Inject constructor(private val followers: PetFollowers) {
             neutral,
             "Things can be a little unstable down there at times, too... Everything gets " +
                 "corrupted, and it might be a little frightening, but it makes for a good " +
-                "challenge. The Corrupted Gauntlet can be accessed by right-clicking the " +
+                "challenge. The Corrupted Gauntlet can be accessed by rightclicking the " +
                 "entrance.",
         )
         chatNpc(
