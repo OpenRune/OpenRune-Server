@@ -931,9 +931,22 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         chatPlayer(quiz, "Out of curiosity, who is this first blade for?")
         chatNpc(neutral, "Kovac friend...")
         chatNpc(neutral, "Obor.")
-        // TODO(content): [boss:obor] the branch for players with an Obor kill count ("He's just
-        // going to use it to kill me!"); there's no Obor kill count yet.
-        chatPlayer(quiz, "Obor? Can't say I've heard of them.")
+        // Obor's kill count is `total_hillgiant_boss_kills` (the cache's hiscores row for Obor).
+        if (vars[OBOR_KILLS] > 0) {
+            chatPlayer(shocked, "Obor? He's just going to use it to kill me!")
+            chatNpc(
+                neutral,
+                "Obor good friend. Kovac know he only attack if you trespass his cave...",
+            )
+            chatNpc(neutral, "Maybe you should have some manners and knock first.")
+            chatPlayer(
+                neutral,
+                "Well, you're not wrong there... I normally just let myself in.",
+            )
+            chatNpc(neutral, "Yes, manner very important.")
+        } else {
+            chatPlayer(quiz, "Obor? Can't say I've heard of them.")
+        }
         chatNpc(
             neutral,
             "Kovac think Obor show other giants how strong our swords are. Then every giant " +
@@ -965,6 +978,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     private companion object {
         const val ENTRANCE = "loc.giants_foundry_entrance"
+        const val OBOR_KILLS = "varp.total_hillgiant_boss_kills"
         const val GRINDSTONE_REPAIR_SEQ = "seq.sg_grindstone_repair"
         const val GRINDSTONE_REPAIR_SYNTH = "synth.sg_grindstone_repair"
 
