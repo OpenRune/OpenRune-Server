@@ -9,6 +9,8 @@ import org.rsmod.content.skills.crafting.util.CraftingConstants
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Master_Crafter
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class CraftingGuildMasterCrafter : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(MASTER_CRAFTER) { startDialogue(it.npc) { caped() } }
@@ -48,7 +50,7 @@ class CraftingGuildMasterCrafter : PluginScript() {
                 )
                 chatNpc(
                     neutral,
-                    " If you should ever achieve level 99 Crafting come and talk to me and we'll see if " +
+                    "If you should ever achieve level 99 Crafting come and talk to me and we'll see if " +
                         "we can sort you out with one.",
                 )
             }
@@ -68,7 +70,7 @@ class CraftingGuildMasterCrafter : PluginScript() {
             return
         }
         when (choice2("Skillcape", 1, "Hood", 2)) {
-            1 -> chatNpc(neutral, "You've already got a Skillcape of Crafting!")
+            1 -> purchaseSkillcape()
             2 -> offerFreeHood()
         }
     }
@@ -137,6 +139,7 @@ class CraftingGuildMasterCrafter : PluginScript() {
 
     private suspend fun Dialogue.offerFreeHood() {
         chatPlayer(quiz, "May I have another hood for my cape, please?")
+        // TODO(content): [verify:in_game] Replies when a hood is already owned or the pack is full.
         if (player.ownsCraftingHood()) {
             chatNpc(angry, "You've already got one!")
             return

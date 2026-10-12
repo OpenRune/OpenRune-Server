@@ -34,6 +34,7 @@ class CraftingGuildDoor @Inject constructor(private val locRepo: LocRepository) 
                         chatPlayer(neutral, "Err... I haven't got one.")
                     }
 
+                // TODO(content): [verify:in_game] The Master Crafter's line below level 40 Crafting.
                 player.craftingLvl < GUILD_ENTRY_LEVEL ->
                     denyEntry {
                         chatNpcSpecific(

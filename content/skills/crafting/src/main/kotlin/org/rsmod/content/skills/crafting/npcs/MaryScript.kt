@@ -16,6 +16,8 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Mary_(Getting_Ahead)
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class MaryScript : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(TANNER_MARY) { greet(it.npc) }
