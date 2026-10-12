@@ -44,10 +44,10 @@ def main():
     cp=os.pathsep.join(map(str,[target/'nero-compatibility-runtime.jar',*[args.libraries/n for n in meta['classpath']]]))
     subprocess.run([str(javac),'--release','11','-encoding','UTF-8','-cp',cp,'-d',str(plugin_classes),*map(str,sorted((ROOT/'source/particles').rglob('*.java')))],check=True)
     plugin={p.relative_to(plugin_classes).as_posix():p.read_bytes() for p in plugin_classes.rglob('*.class')}
-    jar(ROOT/'client-plugin/Nero-Particle-Preview.jar',plugin,b'Manifest-Version: 1.0\nImplementation-Version: 0.12-visual-fix\n\n')
+    jar(ROOT/'client-plugin/Nero-Particle-Preview.jar',plugin,b'Manifest-Version: 1.0\nImplementation-Version: 0.13-native-cape-faces\n\n')
     for p in [ROOT/'runtime-current.txt',ROOT/'client-plugin/Nero-Particle-Preview.jar',*target.rglob('*')]:
         if p.is_file():meta['bundleHashes'][p.relative_to(ROOT).as_posix()]=digest(p)
-    meta['packageVersion']='Nero completionist v0.12 visual fixes'
+    meta['packageVersion']='Nero completionist v0.13 native cape faces'
     (ROOT/'qualified-client.json').write_text(json.dumps(meta,indent=2)+'\n',encoding='utf-8',newline='\n')
     (build/'source-proof.json').write_text(json.dumps({'runtimeClasses':len(classes),'pluginClasses':len(plugin),'sources':{p.relative_to(ROOT).as_posix():digest(p) for p in (ROOT/'source').rglob('*.java')},'clientFingerprintsUnchanged':True},indent=2)+'\n',encoding='utf-8',newline='\n')
     print(json.dumps({'runtime':name,'runtimeClasses':len(classes),'pluginClasses':len(plugin),'clientFingerprintsUnchanged':True}))

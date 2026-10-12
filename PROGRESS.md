@@ -24,7 +24,7 @@ each view, not presented as an additional implemented feature.
 | 🟢 Accepted | Revenant Caves: access, combat, ether, artefacts, Maledictus; Edgeville home catalogue and Emblem trader | PR #36 is already merged. Its merge tree exactly matches the tested branch; subsequent trader changes are also on main. |
 | 🟢 Accepted | Prayer unlocks, free spellbook travel, teleport scroll/animation fixes, gorilla hole/rope and combat corrections | CoX/Royal Titans scroll-drop sources remain future encounter work. |
 | 🟢 Accepted | Pet gallery/categories, examine/prices/chat news, collection log rewards, Mokhaiotl waystone, max-gear command updates | Preserve the individually agreed/accepted scope in the details below. |
-| 🟡 Test package | Completionist purchase/fusion/perks/ammunition/repair/persistence; v0.12 cape visual corrections | Owner's rear/side, both genders, movement, Fire/Infernal and software/HD visual acceptance; feature is local and not installed/merged. |
+| 🟡 Test package | Completionist purchase/fusion/perks/ammunition/repair/persistence; v0.13 authored cape faces; generated reverse skin removed | Owner's rear/side, both genders, movement, Fire/Infernal and software/HD visual acceptance; feature is local and not installed/merged. |
 | 🟡 Local implementation | Shortcuts, containers, fairy rings and Spider Cave access | Remaining consumers/dependencies, Forestry events, final native route/UI/death acceptance and combined cape/quiver integration. |
 | 🟡 Parked | Treasure Trails: accepted 60/60 skill-task checkpoint and existing trail flow | Full step/puzzle/catalogue/loot parity and Mimic remain unfinished. |
 | 🟡 Partial | NPC animations: 97.15% technical attack/block/death coverage | 341 action slots across 149 types, secondary styles, specials/phases and native visual checks. |
@@ -33,50 +33,45 @@ each view, not presented as an additional implemented feature.
 
 ## 🟡 Started: Nero completionist cape, customiser and particles
 
-Updated locally to **v0.12 visual fixes** on `feature/nero-completionist`,
-following the owner's rejection of the v0.11 worn models/icons. The accepted
-native purchase/fusion, cape perks, Dizana ammunition, eight lock/repair
-families and PostgreSQL persistence remain.
+Updated locally to **v0.13 native cape faces** on `feature/nero-completionist`.
+The owner rejected v0.12's remaining worn-face flicker in
+`20261012-1747-10.7358603.mp4`; its isolated client log keeps rendering
+particles and records no observer failure.
 
-Implemented and technically verified:
+The original cape already has outer cloth, lining and trim. The 785 generated
+reverse faces duplicated those surfaces. Native rev240 model renders reproduce
+the broken overlap. The new meshes retain the **792 authored faces** (including
+seven hidden emitter anchors), plus native Dizana quiver geometry where present,
+and remove the generated skin. Original cloth/trim face priorities **4/5** are
+restored, consistent with native max-cape models **29616/29624**. The selected
+runtime uses **no synthetic face bias or avatar-wide priority rewrite**.
+Native smooth shading, source skin labels, palette bindings and particle anchors
+remain. Original folded inventory meshes use their original faces once, retaining
+all family gradients and the exact item projection.
 
-- Independent smooth front/back normals with a thin rear surface; native
-  hidden render mode for the seven emitter anchors.
-- SHA-bound model layers through decode/merge/light/shared animation copies.
-  This fixes the actual HD `Unexpected Completionist reverse topology`
-  error that disabled particles after a cape change.
-- Bounded particle model leases with current-position reprojection and
-  cleanup on cape removal, ordinary model samples, expiry, despawn/logout.
-- Real animated Fire/Infernal materials **40/59** on the reference's broad
-  cloth panels (**508 worn faces per model**); embroidery/edges retain colour.
-- Original folded inventory geometry, complete shaded family palettes and projection on all **24 cape items**,
-  including locked aliases (**16 unique inventory models**). Hood icons remain.
+The Fire/Infernal panels retain native animated textures **40/59**, now on
+**254 authored worn faces** and **70 inventory faces** per model. Native
+purchase/fusion/perks, Dizana ammunition, lock/repair families, particle lifecycle
+and persistence are unchanged; the previous **26 cape + 15 max-cape integration
+tests** remain the gameplay evidence, rather than being presented as new tests.
 
-**26 cape integration tests and 15 existing max-cape tests are rerun and pass**.
-Executed native checks cover **96 models**, **32 smooth worn meshes**, all
-emitter merge/copy/light/shared-sequence routes, the animated-alpha regression,
-the actual model-to-particle consumer lifecycle, six textured assets, 20 stable
-preview frames and 48 stats conversions. The real rev240 `drawFrustum`
-rasterizer renders the 14 untextured inventory models offline; Fire/Infernal
-geometry/materials are checked separately. **25 runtime and 14 plugin classes**
-are built from source; all 34 accepted client/API/HD fingerprints are unchanged.
-The bounded pack again verifies **454 writes** and preserves **538,211 existing
-config definitions**. Runtime JAR build succeeds. Local source checkpoint: `eb79b2458`.
-Final isolated rev240 protocol/appearance checks and Check/Install/Rollback on
-an owned server copy pass. The paired client initializes in 3.98 seconds with
-particle-preview readiness; no in-game visual acceptance is inferred from startup.
+Executed for this fix: **96 asset decodes**, 32 authored worn meshes, emitter
+merge/copy/light/shared-sequence and animated-alpha checks, real particle
+producer/consumer cleanup, 14 native inventory renders with 12 distinct palettes,
+and **1,536 actual gamepack worn renders** (16 models, eight angles, 12 native
+shared copies each). These renders are deterministic at each fixed pose.
+The bounded pack verifies **454 writes**, preserving **538,211 existing config
+definitions**; the server JAR builds. Own isolated rev240 JS5/appearance checks
+and Check/Install/Rollback on an owned server copy pass. All 34 qualified client
+library/API/HD fingerprints remain unchanged.
 
-Test entry: `outputs/nero-completionist-visual-fix-v2-20261012/TESTEN.cmd`.
-Only marked test sessions receive temporary administrator rights through
-the helper outside the installable JAR. Earlier packages and the accepted
-live JAR/cache/RSA/playerdata are preserved.
-
-Owner visual acceptance is still open: rear/side visibility, both genders,
-idle/walk/emote, all inventory icons and real moving textures/particles in
-software and HD. Exact original RS2 particle material/simulation parity and
-the previously recorded unrelated fresh-cache CS2 failures remain open.
-Completion eligibility remains a separate future scope. Cape code is local;
-it is not pushed, merged or installed. [Implementation and evidence](docs/custom/nero-completionist.md).
+Test entry: `outputs/nero-completionist-native-faces-v013-20261012/TESTEN.cmd`.
+Earlier packages and accepted live JAR/cache/RSA/playerdata are preserved.
+**Owner acceptance during real idle/walk/emote and HD is still open**: offline
+shared copies and fixed-pose renders are not real animation/HD scene acceptance.
+Exact RS2 particle simulation/material parity, unrelated fresh-cache CS2 failures
+and future eligibility rules remain open. Cape code is local, not pushed, merged
+or installed. [Implementation and evidence](docs/custom/nero-completionist.md).
 
 ## 🟡 Started: world shortcuts, containers and fairy rings
 

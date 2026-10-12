@@ -94,7 +94,7 @@ def main():
     text = text[:start] + (TOOLS/"installer_process_guard.ps1").read_text() + "\n" + text[end:]
     (output/"INSTALLEREN.ps1").write_text(text, encoding="utf-8")
     (output/"TESTEN.cmd").write_text('@echo off\r\n"%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "%~dp0TESTEN.ps1"\r\npause\r\n')
-    (output/"LEESMIJ.md").write_text("""# Completionist cape v0.12 visuele correcties
+    (output/"LEESMIJ.md").write_text("""# Completionist cape v0.13 native vlakken
 
 Start `TESTEN.cmd` of voer `TESTEN.ps1` uit. Het pakket maakt een eigen testserver,
 database en clientprofiel. De bestaande installatie blijft behouden.
@@ -114,6 +114,9 @@ staande cape/hood-preview, preview Particles On/Off, Done/Cancel en opnieuw inlo
 lopen, idle en emote. Controleer Ardougne/Mythical teleports, Ava Commune en
 Dizana Check/Empty/ammunition. Gebruik capes op Perdu voor lock/repair/unlock.
 Nieuwe broken/mangled states zijn niet draagbaar.
+De extra omgekeerde huid is verwijderd: het bronmodel bevat al buitenstof,
+voering en sierranden. De oorspronkelijke face-prioriteiten worden behouden,
+zonder avatar-wide priority rewrite of kunstmatige face bias.
 Controleer Fire/Infernal: de grote stofpanelen gebruiken de echte geanimeerde
 OSRS-texturen 40/59, zoals in de referentie. De geborduurde middenvlakken en
 sierranden behouden hun kleuren. Alle varianten gebruiken weer de originele
@@ -123,7 +126,9 @@ software mode en daarna in HD. Testcommands vereisen administratorrechten.
 Stop de aparte testserver met `TESTEN.ps1 -Action Stop` en sluit het testclientvenster.
 `-Action Prepare` bereidt alleen voor; `-NoClient` start alleen de testserver.
 
-De feature is technisch getest. Native visuele acceptatie en HD-rendering moeten
+De gedragen meshes zijn met de echte native rasterizer op acht hoeken en
+herhaalde shared model copies gecontroleerd. Visuele acceptatie tijdens echte
+animaties en HD-rendering moeten
 nog in de client worden beoordeeld. De gewone client toont geen custom particles;
 dit aparte profiel gebruikt de gekwalificeerde opt-in renderer uit het handoffpakket.
 

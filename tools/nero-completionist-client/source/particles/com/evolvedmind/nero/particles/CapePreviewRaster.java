@@ -57,8 +57,8 @@ final class CapePreviewRaster {
   try {graphics.setComposite(java.awt.AlphaComposite.Src);graphics.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION,java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC);graphics.drawImage(samples,0,0,image.getWidth(),image.getHeight(),null);} finally {graphics.dispose();}
  }
  private void triangle(double ax,double ay,double az,double bx,double by,double bz,double cx,double cy,double cz,int ac,int bc,int cc) {
-  // The imported model now has explicit reverse faces. Cull the far side so
-  // coincident front/back triangles cannot produce lighting speckles in the UI.
+  // Use the authored face winding, as the native cape rasterizer does. The
+  // garment already contains its lining; no generated reversed skin is needed.
   double area=(bx-ax)*(cy-ay)-(by-ay)*(cx-ax);if(area<=.0001)return;
   int left=Math.max(0,(int)Math.floor(Math.min(ax,Math.min(bx,cx)))),right=Math.min(width-1,(int)Math.ceil(Math.max(ax,Math.max(bx,cx))));
   int top=Math.max(0,(int)Math.floor(Math.min(ay,Math.min(by,cy)))),bottom=Math.min(height-1,(int)Math.ceil(Math.max(ay,Math.max(by,cy))));

@@ -68,12 +68,12 @@
     "lwjgl-opengl-3.3.2-natives-windows.jar",
     "runelite-api-1.12.39-runtime-1791676556260-patched.jar"
   ],
-  "packageVersion": "Nero completionist v0.12 visual fixes",
+  "packageVersion": "Nero completionist v0.13 native cape faces",
   "bundleHashes": {
     "client/javconfig-template.ws": "624e1f3e752aa989bc453ea5157097717263291d38770f6af5526e620271d2cc",
-    "client-plugin/Nero-Particle-Preview.jar": "12dafce42f9103bdf3cab279e2b9d8fc27b2af60025f96930d60ce1f0a298277",
+    "client-plugin/Nero-Particle-Preview.jar": "21eaf403265010e5bc47d1cf01d12b49c313ad21c3cff3d98a1dba4a979db469",
     "NativeClientCopy.java": "f45cda9972ca99081b44736b8d3a0275f03e800c44d3b756e67aeea48fea1772",
-    "runtime-current.txt": "0082b33c041195b64ba8e5823d3034cc568039b094d009b5b263888bae5f37e3",
+    "runtime-current.txt": "4f5afd46bb97cc0882b5a927b374c6eb4b78ec78a2a8dac2f86452661793645e",
     "runtime-v012-visual-final/ASM-LICENSE.txt": "337e92fd361effe495d03978a34a3cd44681a63b8329adfd99c8996b306b2a8c",
     "runtime-v012-visual-final/bindings.properties": "367e0ce3cc9c54315dbee09accbd21e0bb9311618fb9c59999a19e17730d1a68",
     "runtime-v012-visual-final/definitions.json": "c946fbb32b03bf04b2610246ea1dfbc83e94412bb53c6d5198bf832840e27a4e",
@@ -85,7 +85,13 @@
     "runtime-v012-inventory-final/definitions.json": "c946fbb32b03bf04b2610246ea1dfbc83e94412bb53c6d5198bf832840e27a4e",
     "runtime-v012-inventory-final/nero-compatibility-bridge.jar": "b506c5837282bc3183ab64b23a9f6160f5959bc49d7d15833aee241d17364636",
     "runtime-v012-inventory-final/nero-compatibility-runtime.jar": "ed10cbd66d09a1a43e3b3f57bf8547f957317d85a0ddb6d031a071c060ace0c9",
-    "runtime-v012-inventory-final/runtime-240.properties": "4ad388dcb1843eacc3417a693385d4488fb1656361abfc142e820a0ebddb1f1e"
+    "runtime-v012-inventory-final/runtime-240.properties": "4ad388dcb1843eacc3417a693385d4488fb1656361abfc142e820a0ebddb1f1e",
+    "runtime-v013-native-faces/ASM-LICENSE.txt": "337e92fd361effe495d03978a34a3cd44681a63b8329adfd99c8996b306b2a8c",
+    "runtime-v013-native-faces/bindings.properties": "4bf1b7c6bfd71125c9a6381dabcfcbdea329295e6e7037348e46abf8d5399fe1",
+    "runtime-v013-native-faces/definitions.json": "c946fbb32b03bf04b2610246ea1dfbc83e94412bb53c6d5198bf832840e27a4e",
+    "runtime-v013-native-faces/nero-compatibility-bridge.jar": "289540e987063f87169e3d93f7b8d80036c0c5dee110fd055be73224a153f6ee",
+    "runtime-v013-native-faces/nero-compatibility-runtime.jar": "ee0616abd63763a75c7844a7dd9d609f1c0297dda07f7ab6a9c95604f78929d6",
+    "runtime-v013-native-faces/runtime-240.properties": "4ad388dcb1843eacc3417a693385d4488fb1656361abfc142e820a0ebddb1f1e"
   },
   "buildBootstrapHashes": {
     "runtime-v011-final/ASM-LICENSE.txt": "337e92fd361effe495d03978a34a3cd44681a63b8329adfd99c8996b306b2a8c",

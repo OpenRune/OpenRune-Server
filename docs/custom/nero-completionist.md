@@ -288,3 +288,59 @@ Existing accepted sources, live JAR/cache/RSA/playerdata, and earlier packages
 are retained. Final rear/side, male/female, walking/emote, texture and HD visual
 acceptance is still open; this update does not claim exact RS2 particle material
 744/simulation parity or a live installation.
+
+## v0.13 authored face correction (2026-10-12)
+
+The owner rejected the remaining flicker in `20261012-1747-10.7358603.mp4`.
+The v0.12 log continues emitting particles without observer failures. Its
+technical checks established decoding and lifecycle, but did not establish
+correct worn topology in an animated scene. The v0.12 visual result is superseded.
+
+Read-only native references were resolved through the actual rev240 item codec:
+max cape 13280 uses worn models 29616/29624; Fire cape 6570 uses 9638/9640;
+Infernal cape 21295 uses 33103/33111. Native max cloth/trim uses priority groups
+4/5 (its collar also uses 1). The owner-supplied source already contains both
+outer cloth and an inner lining. Its original worn face priorities are retained
+in `assets/original-worn-priorities.json` and are identical for both genders.
+
+The conversion had appended 785 reversed faces to the 792 authored faces.
+v0.12 separated their normals and displaced them slightly, still rendering a
+second garment over existing cloth/ornament. The real gamepack rasterizer
+reproduces the broken overlapping design. `original_shell` now keeps the authored
+792 faces, including seven hidden particle anchors, plus any native quiver
+faces after the generated block. It removes generated faces and unused vertices,
+preserving positions, skin labels and source face IDs; palette references are
+filtered/remapped. Original priorities 4/5/hidden 10 and native smooth shading
+are restored. No layer bindings are emitted, so the selected runtime never
+rewrites assembled-avatar priorities or synthesizes face bias. Ordinary body
+and equipment rendering stays native.
+
+Folded inventory models also retain the authored faces once, their native
+priorities, complete shaded family palettes, and exact projection. Fire/Infernal
+40/59 coverage is now 254 authored worn faces and 70 folded faces per asset.
+Particle lifecycle, gameplay and persistence are unchanged.
+
+Selected bundle: `runtime-v013-native-faces`. Its native runtime code is unchanged
+from the qualified v0.12 bundle; asset bindings are new. All 34 client dependency
+fingerprints remain unchanged. Native checks pass for 96 assets, 32 authored
+worn models, seven anchors per model, merge/copy/light/shared-sequence inheritance,
+animated alpha without ordering changes, the real model-to-particle lifecycle,
+14 actual inventory renders (12 distinct palettes), and 1,536 actual worn
+`drawFrustum` renders (16 models × eight angles × 12 shared model copies).
+The worn render test checks visibility and repeatability, including lining and
+decorated side. Fire/Infernal material mapping is checked separately; this
+headless test does not implement an HD scene or a real animation sequence.
+
+The bounded pack verifies 454 writes while preserving 538,211 existing config
+definitions, and the server build succeeds. The new marked test server accepts
+rev240 JS5 (00) and appearance schema 1 with zero player sessions. Installer
+Check/Install/Rollback restores all 32 payload files on an owned copy.
+The previous 26 cape and 15 max-cape gameplay tests remain applicable evidence;
+no gameplay implementation changed in this visual fix.
+
+Test entry: `outputs/nero-completionist-native-faces-v013-20261012/TESTEN.cmd`.
+The package includes `VALIDATION.json` and `BOOT-PROOF.json`. Both genders,
+actual idle/walk/emote, all family swaps, moving materials and HD still require
+owner visual acceptance. Earlier packages, 14 accepted checkout source hashes,
+the accepted live server JAR and live cache/RSA/playerdata remain preserved.
+No live install, cape-code push or merge is performed by this fix.
