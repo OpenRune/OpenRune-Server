@@ -1,7 +1,5 @@
 package org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri
 
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import org.rsmod.api.bosses.spec.HitType as BossHitType
 import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
@@ -15,7 +13,6 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitType
-import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 
 internal class KephriGuardians(private val room: KephriEncounter) {
@@ -174,7 +171,7 @@ internal class KephriGuardians(private val room: KephriEncounter) {
         val boss = room.kephri ?: return
         if (boss.hitpoints <= 0) return
         val npc = guardian.npc
-        projectile(KephriSpots.MELEE_HEAL, npc.coords, boss.coords.translate(2, 2), HEAL_HEIGHTS)
+        projectile(KephriSpots.MELEE_HEAL, npc.coords, boss.kephriCentre, HEAL_HEIGHTS)
         val base = boss.baseHitpointsLvl
         val share = npc.hitpoints.toDouble() / npc.baseHitpointsLvl.coerceAtLeast(1)
         val percent = deps.random.of(HEAL_MIN_PERCENT, HEAL_MAX_PERCENT)
@@ -217,18 +214,16 @@ internal class KephriGuardians(private val room: KephriEncounter) {
 
     private fun projectile(spot: String, from: CoordGrid, to: CoordGrid, heights: Heights) {
         deps.worldRepo.projAnim(
-            ProjAnim(
-                spotanim = spot.asRSCM(RSCMType.SPOTANIM),
-                startHeight = heights.start,
-                endHeight = heights.end,
-                startTime = heights.startTime,
-                endTime = heights.flight,
-                angle = heights.angle,
-                progress = heights.progress,
-                sourceIndex = 0,
-                targetIndex = 0,
-                startCoord = from,
-                endCoord = to,
+            projAnim(
+                spot,
+                from,
+                to,
+                heights.start,
+                heights.end,
+                heights.startTime,
+                heights.flight,
+                heights.angle,
+                heights.progress,
             )
         )
     }

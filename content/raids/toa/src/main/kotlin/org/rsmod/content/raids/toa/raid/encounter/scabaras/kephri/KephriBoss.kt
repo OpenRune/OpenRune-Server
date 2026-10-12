@@ -2,19 +2,19 @@ package org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri
 
 import jakarta.inject.Inject
 import org.rsmod.api.bosses.dsl.Centre
+import org.rsmod.api.bosses.dsl.CurrentTarget
 import org.rsmod.api.bosses.dsl.CurrentTargetTile
 import org.rsmod.api.bosses.dsl.Magic
+import org.rsmod.api.bosses.dsl.BossSpecBuilder
 import org.rsmod.api.bosses.dsl.after
 import org.rsmod.api.bosses.dsl.anim
 import org.rsmod.api.bosses.dsl.boss
 import org.rsmod.api.bosses.dsl.customTile
-import org.rsmod.api.bosses.dsl.message
-import org.rsmod.api.bosses.dsl.nextAttackIn
-import org.rsmod.api.bosses.dsl.spotanim
-import org.rsmod.api.bosses.dsl.CurrentTarget
 import org.rsmod.api.bosses.dsl.external
 import org.rsmod.api.bosses.dsl.hit
 import org.rsmod.api.bosses.dsl.mapSpotanim
+import org.rsmod.api.bosses.dsl.message
+import org.rsmod.api.bosses.dsl.nextAttackIn
 import org.rsmod.api.bosses.dsl.offset
 import org.rsmod.api.bosses.dsl.onEach
 import org.rsmod.api.bosses.dsl.oneOf
@@ -22,6 +22,8 @@ import org.rsmod.api.bosses.dsl.playersOn
 import org.rsmod.api.bosses.dsl.projectile
 import org.rsmod.api.bosses.dsl.run
 import org.rsmod.api.bosses.dsl.sequence
+import org.rsmod.api.bosses.dsl.setVarn
+import org.rsmod.api.bosses.dsl.spotanim
 import org.rsmod.api.bosses.dsl.tile
 import org.rsmod.api.bosses.dsl.toward
 import org.rsmod.api.bosses.dsl.whenever
@@ -40,6 +42,18 @@ import org.rsmod.content.raids.toa.raid.encounter.challengePlayers
 import org.rsmod.content.raids.toa.raid.encounter.onRoomExternal
 import org.rsmod.content.raids.toa.raid.encounter.raidAccuracy
 import org.rsmod.content.raids.toa.raid.encounter.roomCondition
+import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriAbilities.AUTO
+import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriAbilities.BOMBS
+import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriAbilities.DUNG
+import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriAbilities.EGGS
+import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriAbilities.FINAL_DUNG
+import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriAbilities.SPECIAL
+import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriPhases.FINAL
+import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriPhases.OPENING
+import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriPhases.SHIELD_2
+import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriPhases.SHIELD_3
+import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriPhases.STUN_1
+import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriPhases.STUN_2
 import org.rsmod.content.raids.toa.raid.encounter.targetCondition
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
@@ -52,8 +66,6 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             deps,
             onModifyHit = { ToaRooms.of<KephriEncounter>(npc)?.modifyKephriHit(npc, hit) },
         )
-        deps.onRoomExternal<KephriEncounter>(COUNT_AUTO) { room, _ -> room.countAuto() }
-        deps.onRoomExternal<KephriEncounter>(PICK_SPECIAL) { room, _ -> room.pickSpecial() }
         deps.onRoomExternal<KephriEncounter>(PICK_DUNG) { room, _ -> room.dung.pick() }
         deps.onRoomExternal<KephriEncounter>(DUNG_PUSH) { room, ext ->
             room.dung.throwBack(ext.npc, ext.target)
@@ -67,26 +79,42 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
     override val spec: BossSpec =
         boss(KephriNpcs.SHIELDED, KephriNpcs.WEAK, KephriNpcs.ENRAGE) {
             ability(AUTO, whenever(fighting, auto()))
+            ability(SPECIAL, whenever(eggsDue, run(EGGS), run(DUNG)))
             ability(
-                SPECIAL,
-                sequence(external(PICK_SPECIAL), whenever(eggsPicked, run(EGGS), run(KephriAbilities.DUNG))),
+                EGGS,
+                sequence(
+                    setVarn(KephriVarns.EGGS_NEXT, 0),
+                    anim(KephriSeqs.THROW),
+                    external(EGGS_START),
+                ),
             )
-            ability(EGGS, sequence(anim(KephriSeqs.THROW), external(EGGS_START)))
-            ability(KephriAbilities.DUNG, dungStrike())
-            ability(KephriAbilities.FINAL_DUNG, throwBack(everyone))
-            ability(KephriAbilities.BOMBS, bombs())
+            ability(DUNG, dungStrike())
+            ability(FINAL_DUNG, throwBack(everyone))
+            ability(BOMBS, bombs())
 
-            every(BOMB_INTERVAL, whenever(bombWindow, run(KephriAbilities.BOMBS)))
+            every(BOMB_INTERVAL, whenever(bombWindow, run(BOMBS)))
 
-            phase(MAIN_PHASE) {
-                forceWhen(specialDue, SPECIAL)
-                rotationSelector { +then(AUTO) }
-            }
+            shielded(OPENING, OPENING_AUTOS)
+            stunned(STUN_1)
+            shielded(SHIELD_2, SHIELDED_AUTOS, KephriNpcs.SHIELDED)
+            stunned(STUN_2)
+            shielded(SHIELD_3, SHIELDED_AUTOS, KephriNpcs.SHIELDED)
+            shielded(FINAL, FINAL_AUTOS, KephriNpcs.ENRAGE)
         }
+
+    private fun BossSpecBuilder.shielded(name: String, autos: IntRange, transmog: String? = null) {
+        phase(name, transmog = transmog) {
+            forceEveryAttacks(autos.first, autos.last, SPECIAL)
+            rotationSelector { +then(AUTO) }
+        }
+    }
+
+    private fun BossSpecBuilder.stunned(name: String) {
+        phase(name, transmog = KephriNpcs.WEAK) {}
+    }
 
     private fun auto(): Effect =
         sequence(
-            external(COUNT_AUTO),
             anim(KephriSeqs.AUTO),
             withTile(
                 APEX,
@@ -104,15 +132,9 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         )
 
     private fun drop(): Effect =
-        whenever(
-            flightSteps(0),
-            dropFlight(0),
-            whenever(
-                flightSteps(1),
-                dropFlight(1),
-                whenever(flightSteps(2), dropFlight(2), dropFlight(3)),
-            ),
-        )
+        (0 until MAX_FLIGHT_STEPS).reversed().fold(dropFlight(MAX_FLIGHT_STEPS)) { rest, steps ->
+            whenever(flightSteps(steps), dropFlight(steps), rest)
+        }
 
     private fun dropFlight(steps: Int): Effect {
         val travel = BASE_FLIGHT - FLIGHT_STEP * steps
@@ -131,6 +153,7 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
     private fun dungStrike(): Effect =
         sequence(
+            setVarn(KephriVarns.EGGS_NEXT, 1),
             external(PICK_DUNG),
             onEach(
                 challengePlayers,
@@ -208,15 +231,13 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         (-1..1).flatMap { dx -> (-1..1).map { dz -> offset(centre, dx, dz) } }
 
     private companion object {
-        const val MAIN_PHASE = "main"
-        const val AUTO = "auto"
-        const val SPECIAL = "special"
-        const val COUNT_AUTO = "kephri.count_auto"
-        const val PICK_SPECIAL = "kephri.pick_special"
         const val PICK_DUNG = "kephri.pick_dung"
         const val DUNG_PUSH = "kephri.dung_push"
         const val EGGS_START = "kephri.eggs_start"
-        const val EGGS = "eggs"
+        
+        val OPENING_AUTOS = 3..3
+        val SHIELDED_AUTOS = 4..5
+        val FINAL_AUTOS = 2..2
         const val THROWN_TEXT = "<col=ff289d>Kephri throws you back!</col>"
         const val INDICATOR_DELAY = 5
         const val DUNG_ATTACK_GAP = 13
@@ -252,18 +273,8 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
         val APEX_CONFIG = ProjectileConfig.fixed(700, 1000, 39, 51, 50)
 
-        val CORNERS =
-            listOf(
-                CoordGrid(3543, 5416, 0),
-                CoordGrid(3559, 5416, 0),
-                CoordGrid(3559, 5400, 0),
-                CoordGrid(3543, 5400, 0),
-            )
-
         val fighting = roomCondition<KephriEncounter> { room, npc -> room.fighting(npc) }
-        val specialDue =
-            roomCondition<KephriEncounter> { room, npc -> room.fighting(npc) && room.specialDue }
-        val eggsPicked = roomCondition<KephriEncounter> { room, _ -> room.eggsPicked }
+        val eggsDue = roomCondition<KephriEncounter> { room, npc -> room.eggsDue(npc) }
         val dungPending = roomCondition<KephriEncounter> { room, _ -> room.dung.pending }
         val dungTarget = targetCondition<KephriEncounter> { room, player -> player in room.dung.targets }
         val everyone = targetCondition<KephriEncounter> { _, _ -> true }
@@ -285,11 +296,20 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         val nearestCorner =
             customTile { npc, target ->
                 val room = ToaRooms.roomOf(npc)
-                room?.let {
-                    CORNERS.map(it::coords).minBy { corner ->
-                        corner.chebyshevDistance(target.coords)
-                    }
-                } ?: npc.coords
+                val min = room?.room?.challengeMin
+                val max = room?.room?.challengeMax
+                if (room == null || min == null || max == null) {
+                    npc.coords
+                } else {
+                    listOf(
+                            CoordGrid(min.x, min.z, min.level),
+                            CoordGrid(max.x, min.z, min.level),
+                            CoordGrid(max.x, max.z, min.level),
+                            CoordGrid(min.x, max.z, min.level),
+                        )
+                        .map(room::coords)
+                        .minBy { corner -> corner.chebyshevDistance(target.coords) }
+                }
             }
     }
 }

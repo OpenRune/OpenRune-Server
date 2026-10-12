@@ -53,7 +53,7 @@ internal class KephriDung(private val room: KephriEncounter) {
 
     @OptIn(InternalApi::class)
     fun throwBack(boss: Npc, player: Player) {
-        val centre = boss.coords.translate(KephriCoords.CENTRE_OFFSET, KephriCoords.CENTRE_OFFSET)
+        val centre = boss.kephriCentre
         val from = player.coords
         val dx = from.x - centre.x
         val dz = from.z - centre.z

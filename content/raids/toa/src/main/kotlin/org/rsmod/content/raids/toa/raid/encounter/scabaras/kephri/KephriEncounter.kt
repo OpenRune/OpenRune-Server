@@ -6,6 +6,9 @@ import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.bosses.runtime.runAbility
 import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.instances.InstanceSession
+import org.rsmod.api.npc.stat.statHeal
+import org.rsmod.api.npc.vars.boolVarn
+import org.rsmod.api.player.midiSong
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
@@ -20,7 +23,6 @@ import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.loc.LocAngle
@@ -35,19 +37,7 @@ class KephriEncounter(
     controllerId: Int,
 ) : ToaBossEncounter(raid, room, session, controllerId) {
 
-    enum class Phase {
-        SHIELDED,
-        STUNNED,
-        FINAL,
-    }
-
     internal var kephri: Npc? = null
-        private set
-
-    internal var phase = Phase.SHIELDED
-        private set
-
-    internal var stunCount = 0
         private set
 
     private var breakPending = false
@@ -59,36 +49,27 @@ class KephriEncounter(
     internal val agile = KephriAgile(this)
     internal val guardians = KephriGuardians(this)
 
-    private var nextSpecialEggs = false
+    private val phaseName: String
+        get() = kephri?.let { deps.bossDeps.encounter(it).currentPhaseName } ?: KephriPhases.OPENING
 
-    private var autosUntilSpecial = FIRST_SPECIAL_AUTOS
+    internal val isStunned: Boolean
+        get() = phaseName in KephriPhases.STUNS
 
-    internal val specialDue: Boolean
-        get() = autosUntilSpecial <= 0
+    private val isFinal: Boolean
+        get() = phaseName == KephriPhases.FINAL
 
     internal fun bombWindow(): Boolean {
-        if (stage != ToaStage.STARTED) return false
-        if (phase == Phase.STUNNED) return true
-        return phase == Phase.SHIELDED && deps.mapClock.cycle - wokeCycle <= BOMB_WAKE_GRACE
+        if (stage != ToaStage.STARTED || isFinal) return false
+        return isStunned || (wokeCycle != NEVER && deps.mapClock.cycle - wokeCycle <= BOMB_WAKE_GRACE)
     }
 
-    internal fun countAuto() {
-        autosUntilSpecial--
-    }
-
-    internal var eggsPicked = false
-        private set
-
-    internal fun pickSpecial() {
-        autosUntilSpecial = nextSpecialGap()
-        eggsPicked = nextSpecialEggs && agile.count <= AGILE_CAP_BASE + teamSize
-        nextSpecialEggs = !nextSpecialEggs
-    }
+    internal fun eggsDue(boss: Npc): Boolean =
+        boss.eggsNext && agile.count <= AGILE_CAP_BASE + teamSize
 
     internal fun startEggs(boss: Npc) = eggs.begin(boss)
 
-    private fun nextSpecialGap(): Int =
-        if (phase == Phase.FINAL) FINAL_SPECIAL_AUTOS else deps.random.of(4, 5)
+    private fun transitionTo(boss: Npc, phase: String) =
+        deps.bossDeps.encounter(boss).transitionTo(phase, deps.mapClock.cycle)
 
     override val fight =
         ToaFight(
@@ -100,7 +81,7 @@ class KephriEncounter(
                     ToaCombatant.Spec(KephriNpcs.GUARDIAN_RANGED, GUARDIAN_POINTS),
                     ToaCombatant.Spec(KephriNpcs.GUARDIAN_MAGE, GUARDIAN_POINTS),
                 ),
-            music = null,
+            music = KephriMidis.FIGHT,
             firstAttackDelay = FIRST_ATTACK_DELAY,
             attackRate = { ATTACK_RATE },
             death =
@@ -134,7 +115,7 @@ class KephriEncounter(
         )
     }
 
-    override fun canEngage(boss: Npc): Boolean = phase != Phase.STUNNED
+    override fun canEngage(boss: Npc): Boolean = !isStunned
 
     override fun onFightTick(boss: Npc, targets: List<Player>) {
         swarms.tick()
@@ -157,7 +138,7 @@ class KephriEncounter(
         val boss = kephri ?: return
         if (boss.hitpoints <= 0) return
         val base = boss.baseHitpointsLvl
-        val cap = if (phase == Phase.FINAL) base else base * OVERHEAL_PERCENT / 100
+        val cap = if (isFinal) base else base * OVERHEAL_PERCENT / 100
         val before = boss.hitpoints
         boss.hitpoints = (before + amount).coerceAtMost(cap)
         val healed = boss.hitpoints - before
@@ -180,21 +161,13 @@ class KephriEncounter(
     }
 
     internal fun modifyKephriHit(boss: Npc, hit: HitBuilder) {
-        if (boss !== kephri || !hit.isFromPlayer) return
-        if (phase != Phase.SHIELDED || hit.damage < boss.hitpoints) return
+        if (boss !== kephri || isStunned || isFinal || hit.damage < boss.hitpoints) return
         hit.damage = (boss.hitpoints - 1).coerceAtLeast(0)
         breakPending = true
     }
 
-    internal fun kephriHit(boss: Npc, @Suppress("UNUSED_PARAMETER") hit: Hit) = afterHit(boss)
-
-    private fun afterHit(boss: Npc) {
+    internal fun kephriHit(boss: Npc) {
         if (stage != ToaStage.STARTED || boss !== kephri) return
-        if (boss.hitpoints <= 0 && phase != Phase.FINAL) {
-            boss.hitpoints = 1
-            boss.clearQueue(DEATH_QUEUE)
-            if (phase == Phase.SHIELDED) breakPending = true
-        }
         hpBar?.update()
         if (!breakPending) return
         breakPending = false
@@ -206,46 +179,44 @@ class KephriEncounter(
     }
 
     private fun breakShield(boss: Npc) {
-        if (stunCount < STUN_TICKS.size) enterStun(boss) else enterFinal(boss)
+        val next = KephriPhases.AFTER_BREAK[phaseName] ?: return
+        if (next == KephriPhases.FINAL) enterFinal(boss) else enterStun(boss, next)
     }
 
-    private fun enterStun(boss: Npc) {
-        val ticks = STUN_TICKS[stunCount]
-        stunCount++
-        phase = Phase.STUNNED
+    private fun enterStun(boss: Npc, phase: String) {
+        val stun = KephriPhases.STUNS.indexOf(phase) + 1
+        transitionTo(boss, phase)
         boss.anim(KephriSeqs.STUNNED)
         boss.spotanim(KephriSpots.SHIELD_DEATH)
-        boss.transmog(npcType(KephriNpcs.WEAK), Int.MAX_VALUE)
         boss.hitpoints = 1
         boss.noneMode()
         deps.bossDeps.encounter(boss).invulnerable = true
         hpBar?.update()
         dung.cancel()
-        swarms.begin(stunCount, ticks)
-        guardians.spawnFor(stunCount)
+        val ticks = STUN_TICKS.getValue(phase)
+        swarms.begin(stun, ticks)
+        guardians.spawnFor(stun)
         schedule(ticks) { wake(boss) }
     }
 
     private fun wake(boss: Npc) {
-        if (phase != Phase.STUNNED || boss !== kephri) return
-        phase = Phase.SHIELDED
+        if (boss !== kephri) return
+        val next = KephriPhases.AFTER_STUN[phaseName] ?: return
+        transitionTo(boss, next)
         boss.anim(KephriSeqs.WAKE)
         boss.spotanim(KephriSpots.SHIELD_REFORM)
-        boss.transmog(npcType(KephriNpcs.SHIELDED), Int.MAX_VALUE)
         deps.bossDeps.encounter(boss).invulnerable = false
         wokeCycle = deps.mapClock.cycle
         deps.bossDeps.suppressAttacks(boss, WAKE_ATTACK_DELAY)
     }
 
     private fun enterFinal(boss: Npc) {
-        phase = Phase.FINAL
-        boss.anim(KephriSeqs.THROW)
+        transitionTo(boss, KephriPhases.FINAL)
         boss.spotanim(KephriSpots.SHIELD_DEATH)
-        boss.transmog(npcType(KephriNpcs.ENRAGE), Int.MAX_VALUE)
         combatantOf(boss)?.scale(teamSize, npcType(KephriNpcs.ENRAGE).hitpoints)
-        autosUntilSpecial = FINAL_SPECIAL_AUTOS
+        boss.statHeal(DEFENCE, 0, FULL_RESTORE)
+        for (player in players) player.midiSong(KephriMidis.FIGHT)
         targets().firstOrNull()?.let { deps.bossDeps.runAbility(boss, it, KephriAbilities.FINAL_DUNG) }
-        deps.bossDeps.encounter(boss).invulnerable = false
         deps.bossDeps.suppressAttacks(boss, ATTACK_RATE)
         hpBar?.update()
         hpBar?.recolour()
@@ -262,26 +233,23 @@ class KephriEncounter(
 
     private fun resetState() {
         wokeCycle = NEVER
-        phase = Phase.SHIELDED
-        stunCount = 0
         breakPending = false
         swarms.clear()
         dung.clear()
         eggs.clear()
         agile.clear()
         guardians.clear()
-        nextSpecialEggs = false
-        autosUntilSpecial = FIRST_SPECIAL_AUTOS
+        kephri?.eggsNext = false
     }
 
     internal fun debugBreak(): String? {
         val boss = kephri
         if (stage != ToaStage.STARTED || boss == null) return NOT_STARTED
-        if (phase == Phase.STUNNED) return "Kephri is already stunned."
-        if (phase == Phase.FINAL) return "Kephri is already in the final phase."
+        if (isStunned) return "Kephri is already stunned."
+        if (isFinal) return "Kephri is already in the final phase."
         boss.hitpoints = 1
         breakPending = true
-        afterHit(boss)
+        kephriHit(boss)
         return null
     }
 
@@ -294,14 +262,14 @@ class KephriEncounter(
                 boss.anim(KephriSeqs.THROW)
                 eggs.begin(boss)
             }
-            "bomb" -> deps.bossDeps.runAbility(boss, player, "bombs")
+            "bomb" -> deps.bossDeps.runAbility(boss, player, KephriAbilities.BOMBS)
             "swarm" -> swarms.spawnMedic()
             "spitting" -> guardians.spawnNow(KephriGuardians.Kind.SPITTING)
             "soldier" -> guardians.spawnNow(KephriGuardians.Kind.SOLDIER)
             "arcane" -> guardians.spawnNow(KephriGuardians.Kind.ARCANE)
             "agile" -> agile.hatch(boss.coords.translate(-2, 2))
             "final" -> {
-                if (phase == Phase.FINAL) return "Kephri is already in the final phase."
+                if (isFinal) return "Kephri is already in the final phase."
                 enterFinal(boss)
             }
             else -> return "Unknown mechanic."
@@ -320,18 +288,19 @@ class KephriEncounter(
     private companion object {
         const val ATTACK_RATE = 6
         const val FIRST_ATTACK_DELAY = 5
-        const val FIRST_SPECIAL_AUTOS = 3
         const val AGILE_CAP_BASE = 4
         const val NEVER = Int.MIN_VALUE
         const val BOMB_WAKE_GRACE = 2
         const val GUARDIAN_POINTS = 0.5
         const val OVERHEAL_PERCENT = 115
-        const val DEATH_QUEUE = "queue.death"
         const val HEAL_HITMARK = "hitmark.alt_charge_tint"
 
-        const val FINAL_SPECIAL_AUTOS = 2
         const val WAKE_ATTACK_DELAY = 7
-        val STUN_TICKS = intArrayOf(54, 51)
+        val STUN_TICKS = mapOf(KephriPhases.STUN_1 to 54, KephriPhases.STUN_2 to 51)
+        const val DEFENCE = "stat.defence"
+        const val FULL_RESTORE = 100
         const val NOT_STARTED = "The fight isn't running."
     }
 }
+
+private var Npc.eggsNext by boolVarn(KephriVarns.EGGS_NEXT)

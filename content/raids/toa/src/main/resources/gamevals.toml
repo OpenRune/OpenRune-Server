@@ -82,6 +82,7 @@ toa_death = 61
 [gamevals.midi]
 toa_ambience = 730
 toa_boss_zebak = 736
+toa_boss_kephri = 737
 toa_boss_baba = 740
 
 [gamevals.synth]
@@ -195,3 +196,4 @@ toa_baba_rockfall_ready = 76
 toa_baba_last_special = 77
 toa_baba_under = 78
 toa_baba_stomp_ready = 79
+toa_kephri_eggs_next = 80

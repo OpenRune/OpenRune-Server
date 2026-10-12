@@ -1,14 +1,11 @@
 package org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri
 
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 
 internal class KephriEggs(private val room: KephriEncounter) {
@@ -19,7 +16,7 @@ internal class KephriEggs(private val room: KephriEncounter) {
     private class Egg(val npc: Npc, val dark: Boolean, val tile: CoordGrid)
 
     fun begin(boss: Npc) {
-        val centre = boss.coords.translate(KephriCoords.CENTRE_OFFSET, KephriCoords.CENTRE_OFFSET)
+        val centre = boss.kephriCentre
         val tiles =
             deps.random.shuffled(
                 EGG_TILES.map(room::coords).filter { room.isOpenFloor(it) && !room.dung.hasPile(it) }
@@ -29,18 +26,16 @@ internal class KephriEggs(private val room: KephriEncounter) {
         for ((index, tile) in tiles.withIndex()) {
             val isDark = index < dark
             deps.worldRepo.projAnim(
-                ProjAnim(
-                    spotanim = (if (isDark) KephriSpots.EGG_DARK else KephriSpots.EGG_SMALL).asRSCM(RSCMType.SPOTANIM),
-                    startHeight = START_HEIGHT,
-                    endHeight = 0,
-                    startTime = START_TIME,
-                    endTime = FLIGHT,
-                    angle = ANGLE,
-                    progress = PROGRESS,
-                    sourceIndex = 0,
-                    targetIndex = 0,
-                    startCoord = centre,
-                    endCoord = tile,
+                projAnim(
+                    if (isDark) KephriSpots.EGG_DARK else KephriSpots.EGG_SMALL,
+                    centre,
+                    tile,
+                    START_HEIGHT,
+                    0,
+                    START_TIME,
+                    FLIGHT,
+                    ANGLE,
+                    PROGRESS,
                 )
             )
             room.schedule(LAND_DELAY) { if (launched == generation) land(tile, isDark, launched) }
