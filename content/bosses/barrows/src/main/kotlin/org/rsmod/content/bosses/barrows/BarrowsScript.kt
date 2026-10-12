@@ -146,6 +146,7 @@ constructor(
     private suspend fun ProtectedAccess.enterTunnel() {
         var enter = false
         startDialogue {
+            // TODO(content): [verify:in_game] The wiki has no text for this prompt or its options.
             mesbox("You've found a hidden tunnel, do you want to enter?")
             enter = choice2("Yes, I'm fearless.", true, "No way, that looks scary!", false)
         }
