@@ -1,6 +1,7 @@
 package org.rsmod.content.areas.wilderness
 
 import jakarta.inject.Inject
+import org.rsmod.api.death.DeathGrave
 import org.rsmod.api.death.PlayerDeathContext
 import org.rsmod.api.death.PlayerDeathDrops.Companion.DROP_DURATION_PVP
 import org.rsmod.api.death.PlayerDeathDrops.Companion.DROP_DURATION_REVENANT
@@ -33,6 +34,8 @@ public class WildernessDeathHook @Inject constructor() : PlayerDeathHook {
         )
     }
 
+    // TODO: Food, potions and phoenix necklaces are deleted instead, and a grave outside the
+    // Wilderness moves to the death tile (https://oldschool.runescape.wiki/w/Grave).
     private fun wildernessPvmDeath(context: PlayerDeathContext): PlayerDeathHandling =
         PlayerDeathHandling(
             keepCount = standardKeepCount(context.hasProtectItem),
@@ -41,6 +44,7 @@ public class WildernessDeathHook @Inject constructor() : PlayerDeathHook {
             revealDelay = PVP_REVEAL_DELAY,
             supplyPile = true,
             untradeableHandling = UntradeableHandling.DROP,
+            grave = DeathGrave(),
         )
 
     private fun revenantCaves(context: PlayerDeathContext): PlayerDeathHandling =
