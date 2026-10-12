@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.canifis.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -41,8 +42,8 @@ class CanifisTownsfolk : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Ulizius (before Nature Spirit)
-    // TODO(content): [quest:nature_spirit] in-progress and after-quest answers and the gate
+    // https://oldschool.runescape.wiki/w/Transcript:Ulizius
+    // TODO(content): [system:mort_myre_gate] opening the gate for the player once he lets them
     // TODO(content): [system:treasure_trails] medium clue step reward
     private suspend fun Dialogue.ulizius() {
         chatPlayer(happy, "Hello there.")
@@ -51,16 +52,33 @@ class CanifisTownsfolk : PluginScript() {
             "What... Oh, don't creep up on me like that... I thought you were a Ghast!",
         )
         chatPlayer(quiz, "Can I go through the gate please?")
+        if (QuestRequirements.hasCompleted(player, NATURE_SPIRIT)) {
+            chatNpc(
+                happy,
+                "Yes of course my friend, you seem to be able to handle yourself with those " +
+                    "ghasts really well.",
+            )
+            return
+        }
         chatNpc(
             angry,
             "Absolutely not! I've been given strict instructions not to let anyone through. It's " +
                 "just too dangerous. No one gets in without Drezels say so!",
         )
+        if (QuestRequirements.isOnQuest(player, NATURE_SPIRIT)) {
+            chatPlayer(neutral, "But I'm doing a quest for Drezel!")
+            chatNpc(neutral, "Ok, on your way then!")
+            return
+        }
         chatPlayer(quiz, "Where is Drezel?")
         chatNpc(
             neutral,
             "Oh, he's in the temple, just go back over the bridge, down the ladder and along the " +
                 "hallway, you can't miss him.",
         )
+    }
+
+    private companion object {
+        const val NATURE_SPIRIT = "quest_naturespirit"
     }
 }

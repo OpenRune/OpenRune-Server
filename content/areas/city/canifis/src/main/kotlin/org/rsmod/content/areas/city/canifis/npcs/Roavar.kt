@@ -9,6 +9,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -166,10 +167,11 @@ class Roavar @Inject constructor(private val objRepo: ObjRepository) : PluginScr
         )
     }
 
-    // TODO(content): [quest:the_blood_moon_rises] after-quest "new overlord" answer
-    // TODO(content): [quest:vampyre_slayer] after-quest "was recently killed by some human" line
     private suspend fun Dialogue.morytania() {
         chatPlayer(quiz, "Tell me about the land of Morytania.")
+        if (QuestRequirements.hasCompleted(player, BLOOD_MOON_RISES)) {
+            return morytaniaAfterBloodMoon()
+        }
         chatNpc(
             neutral,
             "Well, I don't know what to tell you really... This village is called Canifis and " +
@@ -215,17 +217,46 @@ class Roavar @Inject constructor(private val objRepo: ObjRepository) : PluginScr
                 "good side is worth the sacrifice to us. Lucky we're not human really!",
         )
         chatPlayer(quiz, "Why's that?")
-        chatNpc(
-            neutral,
-            "He hates humans! Apparently his brother Draynor is trapped in Misthalin, and " +
-                "adventurous little human wannabe-heroes keep trying to kill him!",
-        )
+        if (QuestRequirements.hasCompleted(player, VAMPYRE_SLAYER)) {
+            chatNpc(
+                neutral,
+                "He hates humans! Apparently long ago his brother Draynor was trapped in " +
+                    "Misthalin and lost much of his powers, and was recently killed by some human!",
+            )
+        } else {
+            chatNpc(
+                neutral,
+                "He hates humans! Apparently his brother Draynor is trapped in Misthalin, and " +
+                    "adventurous little human wannabe-heroes keep trying to kill him!",
+            )
+        }
         chatNpc(
             laugh,
             "Man, I'd hate to be a human around here, that's for sure. Drakan would really enjoy " +
                 "hunting them down and killing them!",
         )
         chatPlayer(worried, "Uh... thanks for the info...")
+    }
+
+    private suspend fun Dialogue.morytaniaAfterBloodMoon() {
+        chatNpc(
+            neutral,
+            "Well, I don't know what to tell you really... This village is called Canifis and " +
+                "lies on the border between Morytania and Misthalin... so we're kind of on the " +
+                "front line if those Saradominists to the west ever decide to",
+        )
+        chatNpc(neutral, "attack us...")
+        chatPlayer(neutral, "That doesn't seem likely...")
+        chatNpc(
+            angry,
+            "No? The Saradominists hate us. It was only thanks to Lord Drakan that these lands " +
+                "were kept safe, but now he's gone and we've got some new overlord who " +
+                "apparently wants us to all be friends! Like that's ever",
+        )
+        chatNpc(angry, "going to happen!")
+        chatPlayer(quiz, "So... Are you going to do something about that?")
+        chatNpc(neutral, "Me? Of course not! Someone really should though...")
+        chatPlayer(neutral, "Okay...")
     }
 
     private suspend fun Dialogue.shopkeepers() {
@@ -382,6 +413,8 @@ class Roavar @Inject constructor(private val objRepo: ObjRepository) : PluginScr
         const val COINS = "obj.coins"
         const val MOONLIGHT_MEAD = "obj.moonlight_mead"
         const val MEAD_PRICE = 5
+        const val BLOOD_MOON_RISES = "quest_bloodmoonrises"
+        const val VAMPYRE_SLAYER = "quest_vampyreslayer"
 
         val STORY =
             listOf(
