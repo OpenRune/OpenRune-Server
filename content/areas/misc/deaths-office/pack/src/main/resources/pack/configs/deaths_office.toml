@@ -1,0 +1,4 @@
+[[varp]]
+id = "varp.death_office_entrance"
+scope = "Perm"
+transmit = "Never"

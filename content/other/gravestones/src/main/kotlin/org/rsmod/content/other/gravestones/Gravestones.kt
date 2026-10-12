@@ -48,7 +48,7 @@ var Player.graveDuration by intVarBit("varbit.gravestone_duration")
 var Player.feePaid by boolVarBit("varbit.gravestone_fee_paid")
 internal val Player.autoEquip by boolVarBit("varbit.settings_gravestone_autoequip")
 private var Player.graveVisible by intVarBit("varbit.gravestone_visible")
-private val Player.graveType by intVarBit("varbit.gravestone_type")
+var Player.graveType by intVarBit("varbit.gravestone_type")
 internal var Player.graveNpc: NpcUid?
     get() = vars[NPC_VARP].takeIf { it != 0 && it != NpcUid.NULL.packed }?.let(::NpcUid)
     set(value) = VarPlayerIntMapSetter.set(this, NPC_VARP, value?.packed ?: 0)
@@ -194,7 +194,7 @@ constructor(
         val coords = player.graveCoords ?: return
         despawn(player)
         val slot = allocateSlot()
-        // UNVERIFIED: that any gravestone_type but 0 is the angel bought at Death's Office.
+        // live capture, rev 241, 20261013T013733-df49f48@410: buying the angel sets it to 1.
         val style = if (player.graveType == 0) "default" else "angel"
         val npc = Npc("npc.gravestone_${style}_%03d".format(slot), coords)
         npcRepo.add(npc, Int.MAX_VALUE)

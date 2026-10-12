@@ -1,0 +1,573 @@
+package org.rsmod.content.areas.misc.deathsoffice
+
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.types.aconverted.interf.IfButtonOp
+import dev.openrune.types.aconverted.interf.IfSubType
+import jakarta.inject.Inject
+import org.rsmod.api.invtx.invDel
+import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.ironman.isAnyIronman
+import org.rsmod.api.player.ironman.isUltimateIronman
+import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stopInvTransmit
+import org.rsmod.api.player.ui.IfModalButton
+import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.script.onIfClose
+import org.rsmod.api.script.onIfModalButton
+import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onOpNpc3
+import org.rsmod.api.table.DeathOfficeEntrancesRow
+import org.rsmod.content.other.gravestones.DeathFeeSource
+import org.rsmod.content.other.gravestones.GraveFees
+import org.rsmod.content.other.gravestones.Gravestones
+import org.rsmod.content.other.gravestones.deathOffice
+import org.rsmod.content.other.gravestones.grave
+import org.rsmod.content.other.gravestones.graveCoords
+import org.rsmod.content.other.gravestones.graveType
+import org.rsmod.content.other.gravestones.payDeathFee
+import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.InvObj
+import org.rsmod.game.inv.Inventory
+import org.rsmod.game.type.getInvObj
+import org.rsmod.map.CoordGrid
+import org.rsmod.plugin.scripts.PluginScript
+import org.rsmod.plugin.scripts.ScriptContext
+
+private var Player.officeEntrance by intVarp("varp.death_office_entrance")
+private var Player.coffer by intVarp("varp.if1")
+private var Player.selectedSlot by intVarp("varp.if2")
+private var Player.selectedFee by intVarp("varp.if3")
+
+/**
+ * Death's Office (https://oldschool.runescape.wiki/w/Death%27s_Office): Death, the item retrieval
+ * interface for expired graves, and the Death's Domain entrances near the respawn points.
+ */
+class DeathsOfficeScript
+@Inject
+constructor(private val graves: Gravestones, private val npcRepo: NpcRepository) : PluginScript() {
+    override fun ScriptContext.startup() {
+        onOpNpc1(DEATH) { startDialogue(it.npc) { death() } }
+        // live capture, rev 241, 20261013T013733-df49f48@384: Collect opens the retrieval
+        // interface, even with nothing stored.
+        // TODO: During the first-death tutorial it answers "Perhaps we should just talk instead."
+        // (live capture, rev 240, 20260811T142735-59bcb26@2121).
+        onOpNpc3(DEATH) { openOffice() }
+        for (row in DeathOfficeEntrancesRow.all()) {
+            onOpLoc1(row.entrance) { enter(row) }
+        }
+        onOpLoc1(EXIT_PORTAL) { leave() }
+        // TODO: Death's Coffer (loc.death_coffer_access, interfaces death_coffer and
+        // death_coffer_side; https://oldschool.runescape.wiki/w/Death%27s_Coffer).
+        onIfModalButton(ITEMS) { selectOrExamine(it) }
+        onIfModalButton(TAKE_1) { takeSelected(1) }
+        onIfModalButton(TAKE_5) { takeSelected(5) }
+        onIfModalButton(TAKE_X) { takeSelected(countDialog()) }
+        onIfModalButton(TAKE_ALL) { takeSelected(Int.MAX_VALUE) }
+        onIfModalButton(TAKE_EVERYTHING) { takeEverything() }
+        onIfClose(INTERFACE) { player.stopInvTransmit(player.deathOffice) }
+    }
+
+    /**
+     * Live capture, rev 241, 20261013T013733-df49f48@166-171: the portal overlay, the teleport two
+     * ticks later, the overlay closing a tick after that, and Death's greeting two ticks later.
+     */
+    private suspend fun ProtectedAccess.enter(row: DeathOfficeEntrancesRow) {
+        player.officeEntrance = row.rowId
+        portal(ARRIVAL)
+        delay(2)
+        val death = npcRepo.findAll(DEATH_TILE).firstOrNull { it.type.isType(DEATH) } ?: return
+        startDialogue(death) { death() }
+    }
+
+    /** Live capture, rev 241, 20261013T013733-df49f48@158-164 and @276-283 (from Ferox Enclave). */
+    private suspend fun ProtectedAccess.leave() {
+        val row = player.officeEntrance.takeIf { it != 0 }?.let(DeathOfficeEntrancesRow::getRow)
+        // TODO: After the first-death tutorial the portal leads to the respawn point.
+        portal(row?.exit ?: LUMBRIDGE_EXIT)
+    }
+
+    private suspend fun ProtectedAccess.portal(dest: CoordGrid) {
+        ifOpenFullOverlay(PORTAL_OVERLAY)
+        delay(2)
+        telejump(dest)
+        delay(1)
+        ifCloseSub(PORTAL_OVERLAY)
+    }
+
+    private suspend fun Dialogue.death() {
+        if (player.isUltimateIronman) {
+            // https://oldschool.runescape.wiki/w/Transcript:Death_(NPC)
+            // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+            chatNpc(
+                bored,
+                "Hello mortal. If you're looking for something you lost when you died, I'm " +
+                    "afraid I don't cater to Ultimate Ironmen. Your items would have fallen on " +
+                    "the ground where you died.",
+            )
+            // UNVERIFIED: a one-option menu, as the wiki lists only "Can I change how I die?".
+            if (choice2("Can I change how I die?", true, "Nothing, thanks.", false)) {
+                changeDeath()
+            }
+            return
+        }
+        if (player.graveCoords != null) {
+            graveGreeting()
+            return
+        }
+        // live capture, rev 241, 20261013T013733-df49f48@43.
+        chatNpc(bored, "Hello mortal. Have you come to retrieve something you lost when you died?")
+        mainOptions()
+    }
+
+    /** Live capture, rev 240, 20260811T152500-59bcb26@11-24. */
+    private suspend fun Dialogue.graveGreeting() {
+        chatNpc(
+            bored,
+            "Hello mortal. I see you have a gravestone, somewhere in the world. Did you want to ask " +
+                "me about it?",
+        )
+        val collect =
+            choice2(
+                "Can I collect the items from that gravestone now?",
+                true,
+                "No, I want to talk about something else.",
+                false,
+            )
+        if (!collect) {
+            // UNVERIFIED: that this leads to the usual options.
+            mainOptions()
+            return
+        }
+        chatPlayer(quiz, "Can I collect the items from that gravestone now?")
+        // Since 10 April 2024 Death states the cost (https://oldschool.runescape.wiki/w/Death).
+        val fee = officeFee(player.grave.filterNotNull { true })
+        val cost =
+            if (fee == 0L) {
+                "I however expect it to be free for this reclaim."
+            } else {
+                // UNVERIFIED: the wording when the reclaim costs something.
+                "I however expect it to cost ${"%,d".format(fee)} coins for this reclaim."
+            }
+        chatNpc(
+            quiz,
+            "If you wish. However, I do charge for returning items here - you would likely pay " +
+                "less if you collect them from the gravestone directly. $cost",
+        )
+        val bring =
+            choice2(
+                "Bring my items here now; I'll pay your fee.",
+                true,
+                "Actually I'll go and collect them at the gravestone.",
+                false,
+            )
+        if (!bring) {
+            // UNVERIFIED: the mesanim; no capture picked this option.
+            chatPlayer(neutral, "Actually I'll go and collect them at the gravestone.")
+            return
+        }
+        chatPlayer(angry, "Bring my items here now; I'll pay your fee.")
+        graves.expire(player)
+        access.openOffice()
+    }
+
+    /** Live capture, rev 241, 20261013T013733-df49f48@45-103. */
+    private suspend fun Dialogue.mainOptions() {
+        when (
+            choice4(
+                "How does that work?",
+                1,
+                "What is this place?",
+                2,
+                "Yes, have you got anything for me?",
+                3,
+                "More options...",
+                4,
+            )
+        ) {
+            1 -> howDoesThatWork()
+            2 -> whatIsThisPlace()
+            3 -> anythingForMe()
+            4 -> moreOptions()
+        }
+    }
+
+    private suspend fun Dialogue.howDoesThatWork() {
+        chatPlayer(quiz, "How does that work?")
+        chatNpc(
+            bored,
+            "When you die, you often drop things you were carrying. In most cases, a gravestone " +
+                "appears near where you died, and your items can be retrieved there.",
+        )
+        chatNpc(
+            shifty,
+            "However, gravestones do not last for long. When your gravestone collapses, your " +
+                "items come here, to me. I can return them to you - though I charge a fee for my " +
+                "services.",
+        )
+        chatNpc(
+            happy,
+            "Aside from that, if you bring me your unwanted possessions, and sacrifice them into " +
+                "my Coffer here, I'll count their value against any future fees I charge you.",
+        )
+        chatNpc(
+            shifty,
+            "I don't accept just any junk, but I'll try to give you a good price for anything " +
+                "decent.",
+        )
+        chatNpc(bored, "So do you need to retrieve something you lost when you died?")
+        when (
+            choice4(
+                "What is this place?",
+                1,
+                "Yes, have you got anything for me?",
+                2,
+                "Can I choose a different-looking gravestone?",
+                3,
+                "Not just now, thanks.",
+                4,
+            )
+        ) {
+            1 -> whatIsThisPlace()
+            2 -> anythingForMe()
+            3 -> chooseGravestone()
+            4 -> notNow()
+        }
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Death_(NPC)
+    // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+    private suspend fun Dialogue.whatIsThisPlace() {
+        chatPlayer(quiz, "What is this place?")
+        chatNpc(
+            neutral,
+            "As you should be able to see, I am Death. The Grim Reaper. The Inexorable One. The " +
+                "Inescapable Grasp of Mortal Destiny. And this is my little office. Nice, isn't it?",
+        )
+        val lovely = choice2("It's lovely.", true, "Your decorations leave a bit to be desired.", false)
+        if (lovely) {
+            chatPlayer(happy, "It's lovely.")
+            chatNpc(
+                happy,
+                "Thank you. I feel the colour scheme suits my style. Now, can I help you retrieve " +
+                    "something you lost when you died?",
+            )
+        } else {
+            chatPlayer(neutral, "Your decorations leave a bit to be desired.")
+            chatNpc(
+                sad,
+                "Sometimes it's hard to care for beauty when one's very existence is just seen as " +
+                    "a curse upon the world. Now, do you actually want to retrieve something from " +
+                    "me?",
+            )
+        }
+        mainOptions()
+    }
+
+    /** Live capture, rev 241, 20261013T013733-df49f48@54-55. */
+    private suspend fun Dialogue.anythingForMe() {
+        chatPlayer(happy, "Yes, have you got anything for me?")
+        access.openOffice()
+    }
+
+    private suspend fun Dialogue.moreOptions() {
+        when (
+            choice4(
+                "Can I choose a different-looking gravestone?",
+                1,
+                "Can I change how I die?",
+                2,
+                "Not just now, thanks.",
+                3,
+                "Previous options...",
+                4,
+            )
+        ) {
+            1 -> chooseGravestone()
+            2 -> changeDeath()
+            3 -> notNow()
+            4 -> mainOptions()
+        }
+    }
+
+    /** Live capture, rev 241, 20261013T013733-df49f48@100-103. */
+    private suspend fun Dialogue.changeDeath() {
+        chatNpc(neutral, "Er... I suppose so.")
+        chatNpc(quiz, "How would you like to... die?")
+        // TODO: Live opens the death animation picker (interface animation_picker, varp
+        // death_anim_toggles) here.
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Death_(NPC)
+    // UNVERIFIED: the mesanims.
+    private suspend fun Dialogue.notNow() {
+        chatPlayer(neutral, "Not just now, thanks.")
+        chatNpc(bored, "Really? There isn't much else for you to do here. But you know your business.")
+    }
+
+    /**
+     * Live capture, rev 241, 20261013T013733-df49f48@71-84 (without the coins) and @396-414
+     * (buying the angel, 200,000 coins from the inventory).
+     */
+    private suspend fun Dialogue.chooseGravestone() {
+        chatPlayer(quiz, "Can I choose a different-looking gravestone?")
+        val angel = access.gravestoneChoice(player.coffer)
+        if (!angel) {
+            // https://oldschool.runescape.wiki/w/Transcript:Death_(NPC)
+            // UNVERIFIED: the mesanims.
+            if (player.graveType == 0) {
+                chatNpc(bored, "You've already got the basic gravestone.")
+                return
+            }
+            chatNpc(
+                quiz,
+                "Do you really want to switch to the basic gravestone? I'm not offering to give " +
+                    "back the fee you paid earlier.",
+            )
+            // UNVERIFIED: the second option; the wiki gives only the first.
+            if (choice2("Yes, I want the basic gravestone.", true, "No, I'll keep the angel.", false)) {
+                setGraveType(0)
+                objbox(BASIC_OBJ, "Your gravestone is now the basic type.")
+            }
+            return
+        }
+        if (player.graveType == 1) {
+            // UNVERIFIED: the wiki gives no line for picking the angel again.
+            chatNpc(bored, "You've already got the Angel of Death.")
+            return
+        }
+        // TODO: Death's Coffer can pay too ("I can take coins from your inventory, or from my
+        // Coffer.").
+        if (access.inv.count(COINS) < ANGEL_PRICE) {
+            chatNpc(
+                bored,
+                "You haven't got 200,000 coins to pay for that. I can take coins from your " +
+                    "inventory, or from my Coffer.",
+            )
+            if (choice2("Can I choose a different-looking gravestone?", true, "Actually, never mind.", false)) {
+                chooseGravestone()
+            } else {
+                chatPlayer(sad, "Actually, never mind.")
+            }
+            return
+        }
+        chatNpc(
+            quiz,
+            "Most people won't see your grave, by the way. It appears to you, but it aims to be " +
+                "invisible to everyone else. Are you sure you want to buy a cosmetic override for it?",
+        )
+        val buy =
+            choice2(
+                "Yes, I understand other people won't often see it.",
+                true,
+                "No thanks, it's not worth it.",
+                false,
+            )
+        if (buy) {
+            chatPlayer(happy, "Yes, I understand other people won't often see it.")
+            if (player.invDel(access.inv, COINS, ANGEL_PRICE).failure) {
+                return
+            }
+            setGraveType(1)
+            objbox(ANGEL_OBJ, "Your gravestone is now the Angel of Death.")
+        } else {
+            // UNVERIFIED: the mesanim; the closing line is the same (wiki transcript).
+            chatPlayer(neutral, "No thanks, it's not worth it.")
+        }
+        chatNpc(bored, "It is not for me to judge how people spend their money.")
+    }
+
+    private fun Dialogue.setGraveType(type: Int) {
+        player.graveType = type
+        if (player.graveCoords != null) {
+            graves.spawn(player)
+        }
+    }
+
+    /**
+     * The `graphical_multi` chatbox (live capture, rev 241, 20261013T013733-df49f48@397): the
+     * Coffer's balance as the title, then the basic and angel gravestones. True picks the angel.
+     */
+    private suspend fun ProtectedAccess.gravestoneChoice(coffer: Int): Boolean {
+        ifSetText(MULTI_TITLE, "Death's Coffer: ${"%,d".format(coffer)} coins")
+        ifSetObj(MULTI_PIC_A, BASIC_OBJ, 0)
+        ifSetObj(MULTI_PIC_B, ANGEL_OBJ, 0)
+        ifSetText(MULTI_A, "<br><br><br><br>Basic: Free")
+        ifSetText(MULTI_B, "<br><br><br><br>Angel: 200k coins")
+        ifOpenSub(GRAPHICAL_MULTI, CHATBOX_MODAL, IfSubType.Modal)
+        val input = pauseButton()
+        return input.isComponentType(MULTI_B)
+    }
+
+    /** Live capture, rev 241, 20261013T013733-df49f48@55 and rev 240, 20260811T152500-59bcb26@24. */
+    private fun ProtectedAccess.openOffice() {
+        player.selectedSlot = -1
+        // TODO: Death's Coffer's balance; there is no coffer yet.
+        player.coffer = 0
+        invTransmit(player.deathOffice)
+        ifOpenMainModal(INTERFACE)
+        ifSetEvents(ITEMS, ITEM_SLOTS, IfEvent.Op1, IfEvent.Op10)
+    }
+
+    /**
+     * Live capture, rev 240, 20260811T152500-59bcb26@28: Select on a free stack took all of it at
+     * once. A paid obj is selected instead, so the client shows its fee (`death_office_redraw`
+     * reads the slot from `if2` and the fee each from `if3`) for the quantity buttons.
+     */
+    private fun ProtectedAccess.selectOrExamine(button: IfModalButton) {
+        val slot = button.comsub
+        val obj = player.deathOffice.objOrNull(slot) ?: return
+        if (button.op == IfButtonOp.Op10) {
+            mes(getInvObj(obj).examine)
+            return
+        }
+        if (button.op != IfButtonOp.Op1) {
+            return
+        }
+        val fee = feeEach(slot)
+        if (fee == 0) {
+            take(slot, obj.count, 0)
+            return
+        }
+        player.selectedSlot = slot
+        player.selectedFee = fee
+    }
+
+    // UNVERIFIED: the quantity buttons take that many of the selected obj and charge for them.
+    private fun ProtectedAccess.takeSelected(count: Int) {
+        val slot = player.selectedSlot
+        val obj = player.deathOffice.objOrNull(slot) ?: return
+        take(slot, count.coerceIn(0, obj.count), feeEach(slot))
+    }
+
+    /**
+     * Live capture, rev 240, 20260811T152500-59bcb26@34 for the empty office.
+     * UNVERIFIED: that Take-All charges for every paid obj in one payment.
+     */
+    private fun ProtectedAccess.takeEverything() {
+        val office = player.deathOffice
+        if (office.isEmpty()) {
+            mes("There's nothing here to take.")
+            return
+        }
+        for (slot in office.indices) {
+            val obj = office[slot] ?: continue
+            if (!take(slot, obj.count, feeEach(slot))) {
+                break
+            }
+        }
+        clearSelection()
+    }
+
+    /** Takes [count] of the obj in [slot], paying [feeEach] for each; false when it can't. */
+    private fun ProtectedAccess.take(slot: Int, count: Int, feeEach: Int): Boolean {
+        if (count <= 0) {
+            return true
+        }
+        val taking = count.coerceAtMost(spaceFor(slot, count))
+        if (taking <= 0) {
+            // UNVERIFIED: the message.
+            mes("You don't have enough inventory space.")
+            return false
+        }
+        if (!charge(feeEach.toLong() * taking)) {
+            return false
+        }
+        val moved =
+            invMoveFromSlot(
+                    from = player.deathOffice,
+                    into = inv,
+                    fromSlot = slot,
+                    count = taking,
+                )
+                .success
+        if (player.deathOffice[slot] == null) {
+            clearSelection()
+        }
+        return moved && taking == count
+    }
+
+    /** How many of the obj in [slot] the inventory has room for, up to [count]. */
+    private fun ProtectedAccess.spaceFor(slot: Int, count: Int): Int {
+        val obj = player.deathOffice[slot] ?: return 0
+        val type = getInvObj(obj)
+        if (type.isStackable) {
+            return if (inv.count(type.internalName) > 0 || inv.freeSpace() > 0) count else 0
+        }
+        return inv.freeSpace().coerceAtMost(count)
+    }
+
+    // UNVERIFIED: the messages; the grave's bank one is from live capture, rev 241,
+    // 20261012T233700-df49f48@1037.
+    private fun ProtectedAccess.charge(fee: Long): Boolean {
+        if (fee <= 0) {
+            return true
+        }
+        val amount = fee.coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
+        when (if (fee > Int.MAX_VALUE) null else payDeathFee(amount)) {
+            null -> {
+                mes("You don't have enough coins with you or in your bank to pay the fee.")
+                return false
+            }
+            DeathFeeSource.Bank ->
+                mes("Payment has been taken from your bank: ${"%,d".format(amount)} x Coins")
+            DeathFeeSource.Inventory ->
+                mes("Payment has been taken from your inventory: ${"%,d".format(amount)} x Coins")
+        }
+        return true
+    }
+
+    private fun Inventory.objOrNull(slot: Int): InvObj? =
+        if (slot in indices) this[slot] else null
+
+    private fun ProtectedAccess.clearSelection() {
+        player.selectedSlot = -1
+        player.selectedFee = 0
+    }
+
+    private fun ProtectedAccess.feeEach(slot: Int): Int {
+        val obj = player.deathOffice[slot] ?: return 0
+        return GraveFees.officeFee(graves.value(obj), player.isAnyIronman)
+    }
+
+    private fun Dialogue.officeFee(items: List<InvObj>): Long =
+        items.sumOf { GraveFees.officeFee(graves.value(it), player.isAnyIronman).toLong() * it.count }
+
+    private companion object {
+        const val DEATH = "npc.death_office_death"
+        const val EXIT_PORTAL = "loc.death_office_exitportal"
+        const val PORTAL_OVERLAY = "interface.overlay_portal"
+        const val INTERFACE = "interface.death_office"
+        const val ITEMS = "component.death_office:items"
+        const val TAKE_1 = "component.death_office:1"
+        const val TAKE_5 = "component.death_office:5"
+        const val TAKE_X = "component.death_office:x"
+        const val TAKE_ALL = "component.death_office:all"
+        const val TAKE_EVERYTHING = "component.death_office:takeall"
+        val ITEM_SLOTS = 0 until 120
+
+        const val CHATBOX_MODAL = "component.chatbox:chatmodal"
+        const val GRAPHICAL_MULTI = "interface.graphical_multi"
+        const val MULTI_TITLE = "component.graphical_multi:graphical_multi_2title"
+        const val MULTI_A = "component.graphical_multi:graphical_multi_2a"
+        const val MULTI_B = "component.graphical_multi:graphical_multi_2b"
+        const val MULTI_PIC_A = "component.graphical_multi:graphical_multi_pic2a"
+        const val MULTI_PIC_B = "component.graphical_multi:graphical_multi_pic2b"
+        const val BASIC_OBJ = "obj.sirens_tome"
+        const val ANGEL_OBJ = "obj.osb7_comb"
+
+        // https://oldschool.runescape.wiki/w/Grave: the angel costs 200,000 coins.
+        const val ANGEL_PRICE = 200_000
+        const val COINS = "obj.coins"
+
+        // live capture, rev 241, 20261013T013733-df49f48@40 and @244.
+        val ARRIVAL = CoordGrid(3171, 5726)
+
+        // live capture, rev 241, 20261013T013733-df49f48@61: Death stands here.
+        val DEATH_TILE = CoordGrid(3179, 5726)
+
+        // live capture, rev 241, 20261013T013733-df49f48@140.
+        val LUMBRIDGE_EXIT = CoordGrid(3238, 3194)
+    }
+}

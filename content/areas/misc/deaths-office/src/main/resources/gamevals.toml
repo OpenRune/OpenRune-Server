@@ -1,0 +1,15 @@
+[gamevals.dbtable]
+death_office_entrances = 64420
+
+[gamevals.dbrow]
+death_office_entrance_lumbridge = 59000
+death_office_entrance_falador = 59001
+death_office_entrance_seers = 59002
+death_office_entrance_edgeville = 59003
+death_office_entrance_ferox = 59004
+death_office_entrance_kourend = 59005
+death_office_entrance_prifddinas = 59006
+death_office_entrance_civitas = 59007
+
+[gamevals.varp]
+death_office_entrance = 64444
