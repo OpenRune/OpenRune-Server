@@ -141,6 +141,7 @@ constructor(
         val type = ServerCacheManager.getNpc(BRUTUS_ID) ?: return
         val npc = Npc(type, coords)
         deps.npcRepo.add(npc, Int.MAX_VALUE)
+        npc.respawns = idesOfMilk.stage(player) >= IdesOfMilkQuest.STAGE_COMPLETE
         manager.registerSessionNpc(player, npc)
         npc.anim("seq.cow_boss_spawn")
         npc.facePlayer(player)
@@ -154,10 +155,9 @@ constructor(
         // live capture, rev 241, 20261012T180256-df49f48@1165: Brutus is added at (3261, 3287).
         private val SPAWN = CoordGrid(3261, 3287)
 
-        // The field's east fence is on the edge of 12851, so the view also reaches 13107 to the
-        // east and 12850 and 13106 to the south.
-        private val AREA =
-            InstanceArea.copyRegions(regionIds = listOf(12850, 12851, 13106, 13107))
+        // The field sits on the edge of 12851, and the client's scene reaches 52 tiles past the
+        // player on every side, so the neighbouring regions are copied too.
+        private val AREA = InstanceArea.copyRegions(centerRegionId = 12851, gridSize = 3)
 
         private val GATE_SWAPS =
             listOf(
