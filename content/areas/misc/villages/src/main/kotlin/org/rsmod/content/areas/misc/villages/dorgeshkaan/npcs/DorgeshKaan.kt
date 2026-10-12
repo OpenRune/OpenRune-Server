@@ -2,6 +2,7 @@ package org.rsmod.content.areas.misc.villages.dorgeshkaan.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -78,8 +79,11 @@ class DorgeshKaan : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Cave_goblin_miner
-    // TODO(content): [quest:the_lost_tribe] "Help! An outsider!" before the quest
     private suspend fun Dialogue.miner() {
+        if (QuestRequirements.hasNotCompleted(player, LOST_TRIBE)) {
+            chatNpc(shocked, "Help! An outsider!")
+            return
+        }
         chatNpc(happy, "Hello.")
         val option =
             choice3(
@@ -154,6 +158,8 @@ class DorgeshKaan : PluginScript() {
     }
 
     private companion object {
+        const val LOST_TRIBE = "quest_losttribe"
+
         val CAVE_GOBLINS =
             listOf(
                 "npc.dorgesh_female_1",

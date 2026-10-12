@@ -6,24 +6,46 @@ import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:observatory_quest] start offer, quest stages and after-quest dialogue
 class Observatory @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(PROFESSOR) { startDialogue(it.npc) { professor() } }
         onOpNpc1(ASSISTANT) { startDialogue(it.npc) { assistant() } }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Observatory_professor (before the quest)
+    // https://oldschool.runescape.wiki/w/Transcript:Observatory_professor
     // TODO(content): [system:met_flags] "I've lost my chart." menu after claiming a chart once
     private suspend fun Dialogue.professor() {
-        chatNpc(happy, "Hello.")
+        val completed = QuestRequirements.hasCompleted(player, OBSERVATORY_QUEST)
+        chatNpc(happy, if (completed) "Welcome back." else "Hello.")
         when (choice2("Talk about the Observatory quest.", 1, "Talk about Treasure Trails.", 2)) {
-            1 -> observatoryQuest()
+            1 -> if (completed) observatoryQuestDone() else observatoryQuest()
             2 -> treasureTrails()
+        }
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Observatory_professor (after the quest)
+    // TODO(content): [system:met_flags] "Is it true your name is Mambo-duna-roona?" once the
+    //  assistant has told the player his name
+    private suspend fun Dialogue.observatoryQuestDone() {
+        chatNpc(happy, "Thanks for all your help with the telescope. What can I do for you?")
+        val moreHelp =
+            choice2(
+                "Do you need any more help with the telescope?",
+                true,
+                "Nothing, thanks.",
+                false,
+            )
+        if (moreHelp) {
+            chatNpc(neutral, "Not right now,")
+            chatNpc(neutral, "but the stars may hold a secret for you.")
+        } else {
+            chatPlayer(neutral, "Nothing, thanks.")
+            chatNpc(happy, "Okay, no problem. See you again.")
         }
     }
 
@@ -106,6 +128,7 @@ class Observatory @Inject constructor(private val objRepo: ObjRepository) : Plug
         chatNpc(neutral, "...")
         chatNpc(neutral, "Although, he has a point. What do you say?")
         chatPlayer(confused, "What, me?")
+        // TODO(content): [quest:observatory_quest] quest start and quest stages
     }
 
     private suspend fun Dialogue.assistantSays(
@@ -164,6 +187,8 @@ class Observatory @Inject constructor(private val objRepo: ObjRepository) : Plug
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Observatory_assistant (before the quest)
+    // TODO(content): [quest:observatory_quest] after-quest dialogue: the wine gift on the first
+    //  talk and "How was the wine?" afterwards need a wine-claimed varbit
     // TODO(content): [system:shooting_stars] board reply for a player who has found a star
     private suspend fun Dialogue.assistant() {
         chatPlayer(quiz, "Hi, are you busy?")
@@ -298,6 +323,7 @@ class Observatory @Inject constructor(private val objRepo: ObjRepository) : Plug
         const val PROFESSOR_HEAD = "npc.observatory_professor"
         const val ASSISTANT = "npc.qip_obs_proffesors_assistant"
         const val CHART = "obj.trail_chart"
+        const val OBSERVATORY_QUEST = "quest_observatory"
         const val WONDERING = 1
         const val LOOKING = 2
         const val TELESCOPE = 3

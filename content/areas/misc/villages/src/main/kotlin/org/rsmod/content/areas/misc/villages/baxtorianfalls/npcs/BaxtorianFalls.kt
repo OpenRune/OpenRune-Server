@@ -1,10 +1,12 @@
 package org.rsmod.content.areas.misc.villages.baxtorianfalls.npcs
 
 import jakarta.inject.Inject
+import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -25,9 +27,22 @@ class BaxtorianFalls @Inject constructor(private val shops: Shops) : PluginScrip
         shops.open(this, npc, "Rasolo the Wandering Merchant", "inv.rasoolshop1")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Almera (before Waterfall Quest)
-    // TODO(content): [quest:waterfall_quest] quest start, in-progress and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Almera
     private suspend fun Dialogue.almera() {
+        if (QuestRequirements.hasCompleted(player, WATERFALL_QUEST)) {
+            chatPlayer(happy, "Hello Almera.")
+            chatNpc(happy, "Hello adventurer, how's your treasure hunt going?")
+            chatPlayer(neutral, "Oh, I'm just sight seeing.")
+            chatNpc(
+                neutral,
+                "No adventurer stays here this long just to sight see. But your business is " +
+                    "yours alone, if you need to use the raft go ahead. But please try not crash " +
+                    "it this time!",
+            )
+            chatPlayer(happy, "Thanks Almera.")
+            return
+        }
+        // TODO(content): [quest:waterfall_quest] quest start and in-progress dialogue
         chatPlayer(happy, "Hello.")
         chatNpc(
             happy,
@@ -41,9 +56,16 @@ class BaxtorianFalls @Inject constructor(private val shops: Shops) : PluginScrip
         chatNpc(sad, "Oh okay, never mind.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Hudon (before Waterfall Quest)
-    // TODO(content): [quest:waterfall_quest] in-progress and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Hudon
     private suspend fun Dialogue.hudon() {
+        if (QuestRequirements.hasCompleted(player, WATERFALL_QUEST)) {
+            chatPlayer(happy, "Hello again.")
+            chatNpc(angry, "You stole my treasure. I saw you!")
+            chatPlayer(neutral, "I'll make sure it goes to a good cause.")
+            chatNpc(angry, "Hmmmm!")
+            return
+        }
+        // TODO(content): [quest:waterfall_quest] in-progress dialogue
         mesbox(
             "Hudon can't hear you because of the noise of the waterfall. Perhaps the acoustics " +
                 "would be better from that island?"
@@ -139,9 +161,12 @@ class BaxtorianFalls @Inject constructor(private val shops: Shops) : PluginScrip
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Rasolo (before Desert Treasure I)
-    // TODO(content): [quest:desert_treasure_i] after-quest greeting and the ring of visibility
+    // https://oldschool.runescape.wiki/w/Transcript:Rasolo
     private suspend fun Dialogue.rasolo(npc: Npc) {
+        if (QuestRequirements.hasCompleted(player, DESERT_TREASURE)) {
+            rasoloAfterQuest(npc)
+            return
+        }
         chatNpc(
             happy,
             "Greetings friend. I am Rasolo, the famous merchant. Would you care to see my wares?",
@@ -152,5 +177,53 @@ class BaxtorianFalls @Inject constructor(private val shops: Shops) : PluginScrip
         }
         chatPlayer(neutral, "No, not really.")
         chatNpc(neutral, "As you wish. I will travel wherever the business takes me.")
+    }
+
+    private suspend fun Dialogue.rasoloAfterQuest(npc: Npc) {
+        chatNpc(
+            happy,
+            "Many thanks for returning my heirloom to me, adventurer. Would you like to buy " +
+                "something?",
+        )
+        when (choice3("Yes", 1, "No", 2, "I lost that ring you gave me...", 3)) {
+            1 -> player.openRasoloShop(npc)
+            2 -> {
+                chatPlayer(neutral, "No, not really.")
+                chatNpc(neutral, "As you wish. I will travel wherever the business takes me.")
+            }
+            3 -> lostRing()
+        }
+    }
+
+    private suspend fun Dialogue.lostRing() {
+        chatPlayer(sad, "I lost that ring you gave me...")
+        val bank = player.invMap["inv.bank"]
+        val hasRing =
+            RING_OF_VISIBILITY in player.inv || (bank != null && RING_OF_VISIBILITY in bank)
+        if (QuestRequirements.hasCompleted(player, DESERT_TREASURE_II) || hasRing) {
+            chatNpc(confused, "Are you sure? I don't have it anymore...")
+            return
+        }
+        if (player.inv.isFull()) {
+            chatNpc(
+                neutral,
+                "Well, should you need a replacement, I suggest you free up some inventory room " +
+                    "first...",
+            )
+            return
+        }
+        chatNpc(
+            happy,
+            "Then by all means, take another. Only a foolish merchant would give away his only " +
+                "stock!",
+        )
+        player.invAdd(player.inv, RING_OF_VISIBILITY)
+    }
+
+    private companion object {
+        const val WATERFALL_QUEST = "quest_waterfall"
+        const val DESERT_TREASURE = "quest_deserttreasure"
+        const val DESERT_TREASURE_II = "quest_deserttreasure2"
+        const val RING_OF_VISIBILITY = "obj.fd_ring_visibility"
     }
 }

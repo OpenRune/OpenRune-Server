@@ -7,8 +7,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Homunculus
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:tower_of_life] the basement opens after the quest, so the after-quest
-// dialogue is the default
+// TODO(content): [quest:tower_of_life] quest-stage dialogue in the basement (the NPC transcript
+//  has only the after-quest dialogue)
 // TODO(content): [system:creature_creation] "You haveee materials need" altar checks
 class TowerOfLifeDungeon : PluginScript() {
     override fun ScriptContext.startup() {

@@ -6,6 +6,7 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
@@ -31,6 +32,7 @@ import org.rsmod.api.shops.Shops
 import org.rsmod.content.areas.misc.villages.barbarianoutpost.npcs.BarbarianAssaultLobby
 import org.rsmod.content.areas.misc.villages.barbarianoutpost.npcs.BarbarianOutpostTownsfolk
 import org.rsmod.content.areas.misc.villages.barbarianoutpost.npcs.Otto
+import org.rsmod.content.areas.misc.villages.baxtorianfalls.npcs.BaxtorianFalls
 import org.rsmod.content.areas.misc.villages.castlewars.npcs.Lanthus
 import org.rsmod.content.areas.misc.villages.clocktower.npcs.BrotherKojo
 import org.rsmod.content.areas.misc.villages.feldip.npcs.GuTanoth
@@ -48,6 +50,9 @@ import org.rsmod.content.areas.misc.villages.portkhazard.npcs.TindelMarchant
 import org.rsmod.content.areas.misc.villages.portkhazard.npcs.shops.KhazardGeneralStore
 import org.rsmod.content.areas.misc.villages.witchaven.npcs.EzekialLovecraft
 import org.rsmod.content.areas.misc.villages.witchaven.npcs.WitchavenTownsfolk
+import org.rsmod.content.quest.manager.QuestRequirementMode
+import org.rsmod.content.quest.manager.QuestRequirementPolicy
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -64,7 +69,15 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
+@ResourceLock("QuestRequirements")
 class VillagesPurchasesInteractionTest {
+    private val previousPolicy = QuestRequirements.activePolicy()
+
+    @AfterEach
+    fun restorePolicy() {
+        QuestRequirements.install(previousPolicy)
+    }
+
     @Test fun `the Khazard barman sells a beer for 2 coins`() {
         val f = Fixture()
         f.player.inv[0] = InvObj(COINS, 5)
@@ -258,6 +271,86 @@ class VillagesPurchasesInteractionTest {
         assertEquals(0, f.groundCount(CHART))
     }
 
+    @Test fun `Black-eye gives a hard hat for three right answers after Tower of Life`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+        val f = Fixture()
+        f.talkTo(BLACK_EYE)
+        f.finish(listOf(3, 1, 2))
+        assertEquals(1, f.player.inv.count(HARD_HAT))
+    }
+
+    @Test fun `a full pack drops Black-eye's hard hat instead of losing it`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+        val f = Fixture()
+        f.fillInventory()
+        f.talkTo(BLACK_EYE)
+        f.finish(listOf(3, 1, 2))
+        assertEquals(0, f.player.inv.count(HARD_HAT))
+        assertEquals(1, f.groundCount(HARD_HAT))
+    }
+
+    @Test fun `Black-eye gives nothing for a wrong answer`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+        val f = Fixture()
+        f.talkTo(BLACK_EYE)
+        f.finish(listOf(3, 1, 1))
+        assertEquals(0, f.player.inv.count(HARD_HAT))
+    }
+
+    @Test fun `Black-eye gives no second hard hat`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+        val f = Fixture()
+        f.player.inv[0] = InvObj(HARD_HAT, 1)
+        f.talkTo(BLACK_EYE)
+        f.finish(listOf(3, 1, 2))
+        assertEquals(1, f.player.inv.count(HARD_HAT))
+    }
+
+    @Test fun `Black-eye gives no hard hat before Tower of Life`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
+        val f = Fixture()
+        f.talkTo(BLACK_EYE)
+        f.finish(listOf(3, 1, 2))
+        assertEquals(0, f.player.inv.count(HARD_HAT))
+    }
+
+    @Test fun `Rasolo replaces a lost ring of visibility after Desert Treasure I`() {
+        QuestRequirements.install(AFTER_DESERT_TREASURE_I)
+        val f = Fixture()
+        f.talkTo(RASOLO)
+        f.finish(listOf(3))
+        assertEquals(1, f.player.inv.count(RING_OF_VISIBILITY))
+    }
+
+    @Test fun `Rasolo keeps the ring from a full pack`() {
+        QuestRequirements.install(AFTER_DESERT_TREASURE_I)
+        val f = Fixture()
+        f.fillInventory()
+        f.talkTo(RASOLO)
+        f.finish(listOf(3))
+        assertEquals(0, f.player.inv.count(RING_OF_VISIBILITY))
+        assertEquals(0, f.groundCount(RING_OF_VISIBILITY))
+    }
+
+    @Test fun `Rasolo gives no ring to a player with one in the bank`() {
+        QuestRequirements.install(AFTER_DESERT_TREASURE_I)
+        val f = Fixture()
+        val bank = f.bank()
+        bank[0] = InvObj(RING_OF_VISIBILITY, 1)
+        f.talkTo(RASOLO)
+        f.finish(listOf(3))
+        assertEquals(0, f.player.inv.count(RING_OF_VISIBILITY))
+        assertEquals(1, bank.count(RING_OF_VISIBILITY))
+    }
+
+    @Test fun `Rasolo has no ring left after Desert Treasure II`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+        val f = Fixture()
+        f.talkTo(RASOLO)
+        f.finish(listOf(3))
+        assertEquals(0, f.player.inv.count(RING_OF_VISIBILITY))
+    }
+
     private class Fixture {
         private val events = EventBus()
         private val client = RecordingClient()
@@ -320,9 +413,19 @@ class VillagesPurchasesInteractionTest {
             with(HuntingExperts()) { scripts.startup() }
             with(Lanthus(objRepo)) { scripts.startup() }
             with(Observatory(objRepo)) { scripts.startup() }
-            with(TowerOfLife()) { scripts.startup() }
+            with(TowerOfLife(objRepo)) { scripts.startup() }
+            with(BaxtorianFalls(shops)) { scripts.startup() }
             with(BrotherKojo()) { scripts.startup() }
         }
+
+        fun bank(): Inventory =
+            Inventory(
+                    checkNotNull(ServerCacheManager.getInventory("inv.bank".asRSCM())),
+                    arrayOfNulls(
+                        checkNotNull(ServerCacheManager.getInventory("inv.bank".asRSCM())).size
+                    ),
+                )
+                .also { player.invMap["inv.bank"] = it }
 
         fun fillInventory() {
             for (slot in 0 until 28) player.inv[slot] = InvObj("obj.bronze_dagger", 1)
@@ -421,6 +524,15 @@ class VillagesPurchasesInteractionTest {
         private const val OTTO = "npc.brut_otto"
         private const val LANTHUS = "npc.castlewars_judge_model"
         private const val PROFESSOR = "npc.observatory_professor_multi"
+        private const val BLACK_EYE = "npc.tol_npc_builder01"
+        private const val HARD_HAT = "obj.tol_player_construction_hardhat"
+        private const val RASOLO = "npc.shadow_warrior_rasool"
+        private const val RING_OF_VISIBILITY = "obj.fd_ring_visibility"
+        private val AFTER_DESERT_TREASURE_I =
+            QuestRequirementPolicy(
+                QuestRequirementMode.VirtualCompletions,
+                virtualCompletions = setOf("quest_deserttreasure"),
+            )
         private val CONTINUE_COMPONENTS =
             mapOf(
                 "interface.chat_left" to "component.chat_left:continue",
