@@ -516,7 +516,7 @@ internal class MisthalinBossFight(
 
         PathingEntityCommon.telejump(proxy, collision, wardrobe)
 
-        proxy.say(if (reflectionsSoFar(r) % 2 == 0) "Ow!" else "Aaaargh!")
+        proxy.say(if (reflectionsSoFar(r) % 2 == 0) "*ouch*" else "Ouch!")
 
         worldRepo.soundArea(wardrobe, "synth.female_hit_2", radius = 10)
     }
@@ -718,7 +718,6 @@ internal class MisthalinBossFight(
                     "Well not any longer. The show is over, and there will be no curtain call.",
                 )
                 abigaleSays(neutral, "Oh, but there is always a curtain call.")
-                abigaleSays(evilLaugh, "Hahahaha!")
             }
 
             val entering = heweyEnters()
@@ -931,6 +930,15 @@ internal class MisthalinBossFight(
         }
 
         if (invTotal(worn, KillerKnife) <= 0) {
+            if (worn[Wearpos.RightHand.slot] != null) {
+                startDialogue {
+                    chatPlayer(
+                        neutral,
+                        "It would be wiser to use the killer's knife rather than my own weapon...",
+                    )
+                }
+                return
+            }
             startDialogue { chatPlayer(worried, "I'm not going at her empty-handed!") }
             return
         }

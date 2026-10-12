@@ -41,16 +41,18 @@ constructor(
     private val kittenId = FLUFFS_KITTEN.asRSCM(RSCMType.OBJ)
 
     override fun ScriptContext.startup() {
-        onOpNpc1(FLUFFS) { handle(it.npc) }
-        onOpNpc3(FLUFFS) { handle(it.npc) }
+        onOpNpc1(FLUFFS) { handle(it.npc, stroke = false) }
+        onOpNpc3(FLUFFS) { handle(it.npc, stroke = true) }
         onOpNpc4(FLUFFS) { talkTo(it.npc) }
         onOpNpcU(FLUFFS) { useItem(it.npc, it.objType, it.invSlot) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Gertrude%27s_Cat
+    // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
     private suspend fun ProtectedAccess.talkTo(npc: Npc) {
         approach(npc)
-        npc.say("Miaoww")
         soundSynth(MEOW_SOUND)
+        startDialogue(npc) { chatNpc(neutral, "Miaoww") }
     }
 
     private suspend fun ProtectedAccess.approach(npc: Npc) {
@@ -62,7 +64,7 @@ constructor(
         }
     }
 
-    private suspend fun ProtectedAccess.handle(npc: Npc) {
+    private suspend fun ProtectedAccess.handle(npc: Npc, stroke: Boolean) {
         approach(npc)
         val stage = gertrudesCat.stage(player)
         if (stage >= STAGE_KITTEN_RETURNED) {
@@ -73,19 +75,23 @@ constructor(
         }
         anim("seq.human_pickupfloor")
         npc.anim("seq.cat_archback")
-        npc.say("Hisss!")
         soundSynth(HISS_SOUND)
-        delay(1)
-        say("Ouch!")
-        delay(1)
-        mes(
+        // TODO(content): [verify:in_game] The transcript only has Stroke before the milk, and no
+        //  lines before the quest starts.
+        val reply =
             when {
-                stage < STAGE_STARTED -> "The cat doesn't seem to want to be handled."
-                stage < STAGE_GAVE_MILK -> "Maybe the cat is thirsty?"
-                stage < STAGE_GAVE_SARDINE -> "Maybe the cat is hungry?"
-                else -> "The cat seems afraid to leave. In the distance you can hear kittens mewing..."
+                stage < STAGE_STARTED -> "Ouch! The cat doesn't seem to want to be handled."
+                stroke && stage < STAGE_GAVE_MILK -> "Ouch! Perhaps the cat wants something?"
+                stage < STAGE_GAVE_MILK -> "Ouch! Maybe the cat is thirsty?"
+                stage < STAGE_GAVE_SARDINE -> "Ouch! Maybe the cat is hungry?"
+                else ->
+                    "Ouch! The cat seems afraid to leave. In the distance you can hear kittens " +
+                        "mewing..."
             }
-        )
+        startDialogue(npc) {
+            chatNpc(angry, "Hisss!")
+            chatPlayer(sad, reply)
+        }
     }
 
     private suspend fun ProtectedAccess.useItem(npc: Npc, objType: ItemServerType, slot: Int) {
@@ -98,7 +104,7 @@ constructor(
         }
     }
 
-    private fun ProtectedAccess.giveMilk(npc: Npc) {
+    private suspend fun ProtectedAccess.giveMilk(npc: Npc) {
         val stage = gertrudesCat.stage(player)
         if (stage < STAGE_STARTED) {
             mes("The cat eyes the bucket suspiciously and backs away.")
@@ -114,9 +120,8 @@ constructor(
         gertrudesCat.quest.setQuestStage(this, STAGE_GAVE_MILK)
         anim("seq.human_pickupfloor")
         npc.anim("seq.cat_paw")
-        npc.say("Mew!")
         soundSynth(MEW_SOUND)
-        mes("Fluffs laps up the milk.")
+        startDialogue(npc) { chatNpc(happy, "Mew!") }
     }
 
     private suspend fun ProtectedAccess.giveSardine(npc: Npc, slot: Int) {
@@ -136,11 +141,8 @@ constructor(
         gertrudesCat.quest.setQuestStage(this, STAGE_GAVE_SARDINE)
         anim("seq.human_pickupfloor")
         npc.anim("seq.cat_paw")
-        npc.say("Mew!")
         soundSynth(MEW_SOUND)
-        mes("Fluffs gobbles up the sardine.")
-        delay(2)
-        mes("The cat still seems afraid to leave. In the distance you can hear kittens mewing...")
+        startDialogue(npc) { chatNpc(happy, "Mew!") }
     }
 
     private suspend fun ProtectedAccess.returnKitten(npc: Npc, slot: Int) {
@@ -156,15 +158,18 @@ constructor(
         val kitten = Npc(KITTEN, kittenTile(npc))
         npcRepo.add(kitten, KITTEN_VISIBLE_TICKS)
         kitten.facePlayer(player)
-        npc.say("Purr...")
-        kitten.say("Purr...")
         soundSynth(PURR_SOUND)
         try {
-            delay(3)
+            startDialogue(npc) {
+                chatNpc(happy, "Purr...")
+                chatNpcSpecific("Fluffs' kitten", KITTEN, happy, "Purr...")
+            }
             npc.walk(HOME_TILE)
-            kitten.walk(HOME_TILE.translate(-1, 0))
+            if (kitten.isSlotAssigned) {
+                kitten.walk(HOME_TILE.translate(-1, 0))
+            }
             delay(4)
-            mes("Fluffs has run off home with her kitten.")
+            startDialogue { mesbox("Fluffs has run off home with her offsping.") }
         } finally {
             if (kitten.isSlotAssigned) {
                 npcRepo.del(kitten, Int.MAX_VALUE)

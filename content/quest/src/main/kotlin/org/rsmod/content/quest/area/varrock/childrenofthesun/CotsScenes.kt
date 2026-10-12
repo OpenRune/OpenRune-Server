@@ -439,6 +439,8 @@ private fun Player.sendLoc(coords: CoordGrid, loc: String?, shape: Int, angle: I
     }
 }
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// https://oldschool.runescape.wiki/w/Transcript:Children_of_the_Sun
 internal suspend fun Dialogue.delegationArrives() {
     alina(
         happy,

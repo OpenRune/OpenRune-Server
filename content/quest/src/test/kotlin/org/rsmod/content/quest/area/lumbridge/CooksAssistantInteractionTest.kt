@@ -44,7 +44,7 @@ class CooksAssistantInteractionTest {
     @Test fun `accepting stores native progress without the legacy stage attribute`() {
         val f = Fixture()
         f.talk()
-        f.finish(listOf(1, 1))
+        f.finish(listOf(1, 1, 4))
         assertEquals(1, f.script.quest.getQuestStage(f.player))
         assertEquals(1, f.player.vars["varp.cookquest"])
         assertNull(f.player.attr[QUEST_STAGE_MAP_ATTR]?.get("quest_cooksassistant"))
@@ -73,6 +73,31 @@ class CooksAssistantInteractionTest {
         f.talk()
         f.finish()
         f.assertReward()
+    }
+
+    @Test fun `returning without the missing ingredients keeps earlier hand-ins`() {
+        val f = Fixture(stage = 1)
+        VarPlayerIntMapSetter.set(f.player, "varbit.cooks_assistant_milk", 1)
+        f.player.inv[0] = InvObj("obj.bucket_milk", 1)
+        f.talk()
+        f.finish(listOf(2, 1, 4))
+        assertEquals(1, f.player.inv.count("obj.bucket_milk"))
+        assertEquals(1, f.player.vars["varbit.cooks_assistant_milk"])
+        assertEquals(0, f.player.vars["varbit.cooks_assistant_egg"])
+        assertEquals(1, f.script.quest.getQuestStage(f.player))
+    }
+
+    @Test fun `a second copy of a handed-in ingredient is not taken`() {
+        val f = Fixture(stage = 1)
+        VarPlayerIntMapSetter.set(f.player, "varbit.cooks_assistant_milk", 1)
+        f.player.inv[0] = InvObj("obj.bucket_milk", 1)
+        f.player.inv[1] = InvObj("obj.egg", 1)
+        f.talk()
+        f.finish()
+        assertEquals(1, f.player.inv.count("obj.bucket_milk"))
+        assertEquals(0, f.player.inv.count("obj.egg"))
+        assertEquals(1, f.player.vars["varbit.cooks_assistant_egg"])
+        assertEquals(1, f.script.quest.getQuestStage(f.player))
     }
 
     @Test fun `bringing every ingredient before accepting completes the quest`() {
@@ -174,12 +199,14 @@ class CooksAssistantInteractionTest {
 
         private fun advance(options: Iterator<Int>) {
             if (coroutine.isAwaiting(ResumePauseButtonInput::class)) {
-                val parent = listOf("chat_left", "chat_right", "messagebox", "chatmenu")
+                val parent = listOf("chat_left", "chat_right", "messagebox", "objectbox_double", "chatmenu")
                     .firstOrNull { player.ui.containsModal("interface.$it") }
                     ?: error("Unknown dialogue: ${output()}")
-                val input = if (parent == "chatmenu") {
-                    ResumePauseButtonInput("component.chatmenu:options", if (options.hasNext()) options.next() else 1)
-                } else ResumePauseButtonInput("component.$parent:continue", -1)
+                val input = when (parent) {
+                    "chatmenu" -> ResumePauseButtonInput("component.chatmenu:options", if (options.hasNext()) options.next() else 1)
+                    "objectbox_double" -> ResumePauseButtonInput("component.objectbox_double:pausebutton", -1)
+                    else -> ResumePauseButtonInput("component.$parent:continue", -1)
+                }
                 coroutine.resumeWith(input)
             } else {
                 player.currentMapClock++

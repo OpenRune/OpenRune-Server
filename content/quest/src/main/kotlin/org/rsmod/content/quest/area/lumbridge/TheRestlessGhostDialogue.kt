@@ -8,6 +8,8 @@ import org.rsmod.content.quest.manager.Quest
 import org.rsmod.game.inv.isType
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// https://oldschool.runescape.wiki/w/Transcript:The_Restless_Ghost
 internal class TheRestlessGhostDialogue(private val quest: Quest) {
 
     fun ScriptContext.register() {
@@ -310,7 +312,7 @@ internal class TheRestlessGhostDialogue(private val quest: Quest) {
 
         chatNpc(
             angry,
-            "Well, I can't go back and exorcise it. I vowed not to leave this place until I had " +
+            "Well, I can't go back and exorcise it. I vowed not to leave this place. Until I had " +
                 "done a full two years of prayer and meditation.",
         )
         chatNpc(neutral, "Tell you what I can do though; take this amulet.")
@@ -343,6 +345,7 @@ internal class TheRestlessGhostDialogue(private val quest: Quest) {
             return
         }
 
+        // TODO(content): [system:death_storage] Also check Death's Office and item retrieval.
         if (access.bank.contains(Amulet)) {
             chatNpc(
                 angry,
@@ -366,7 +369,7 @@ internal class TheRestlessGhostDialogue(private val quest: Quest) {
             "How careless can you get? Those things aren't easy to come by you know! It's a good " +
                 "job I've got a spare.",
         )
-        giveAmulet("Father Urhney hands you an amulet of ghostspeak.")
+        giveAmulet("Father Urhney hands you an amulet.")
         chatNpc(angry, "Be more careful this time.")
         chatPlayer(neutral, "Okay, I'll try to be.")
     }
@@ -379,7 +382,18 @@ internal class TheRestlessGhostDialogue(private val quest: Quest) {
         mesbox(announcement)
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Restless_ghost
     private suspend fun Dialogue.ghost() {
+        if (quest.isQuestNotStarted(player)) {
+            chatNpc(neutral, "Wooooo! Ooooooh!")
+            chatPlayer(
+                confused,
+                "I can't understand a word you are saying. Maybe Father Aereck will be able to " +
+                    "help.",
+            )
+            return
+        }
+
         chatPlayer(neutral, "Hello ghost, how are you?")
 
         val wearingAmulet = player.worn[Wearpos.Front.slot]?.isType(Amulet) == true
@@ -390,6 +404,7 @@ internal class TheRestlessGhostDialogue(private val quest: Quest) {
 
         when {
             quest.isQuestCompleted(player) -> {
+                // TODO(content): [verify:in_game] Post-quest ghost lines aren't on the wiki.
                 chatNpcSpecific(
                     GhostTitle,
                     Ghost,
@@ -536,7 +551,7 @@ internal class TheRestlessGhostDialogue(private val quest: Quest) {
         chatNpc(
             happy,
             "Hurrah! Now I can stop being a ghost! You just need to put it in my coffin there, " +
-                "and I will be free!",
+                "then I'll be free!",
         )
     }
 

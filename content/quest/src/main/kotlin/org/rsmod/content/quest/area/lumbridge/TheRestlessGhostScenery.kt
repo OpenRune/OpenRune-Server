@@ -150,7 +150,7 @@ internal class TheRestlessGhostScenery(
 
             holdingSkull && stage >= TheRestlessGhostStage.GhostSpoken -> returnSkull(coffin)
 
-            else -> mes("You search the coffin and find some human remains.")
+            else -> mesbox("There's a skeleton without a skull in here.")
         }
     }
 

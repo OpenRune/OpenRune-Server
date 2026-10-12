@@ -20,7 +20,8 @@ class DoogleSardines : PluginScript() {
         onOpLoc1(EMPTY_BARREL) { searchEmpty("barrel") }
     }
 
-    private fun ProtectedAccess.seasonSardine() {
+    // https://oldschool.runescape.wiki/w/Transcript:Gertrude%27s_Cat
+    private suspend fun ProtectedAccess.seasonSardine() {
         val seasoned =
             player.invTransaction(inv) {
                 val inventory = select(inv)
@@ -44,7 +45,7 @@ class DoogleSardines : PluginScript() {
             return
         }
         anim("seq.human_pickuptable")
-        mes("You rub the doogle leaves over the sardine.")
+        startDialogue { mesbox("You rub the doogle leaves all over the sardines.") }
     }
 
     private suspend fun ProtectedAccess.searchEmpty(what: String) {

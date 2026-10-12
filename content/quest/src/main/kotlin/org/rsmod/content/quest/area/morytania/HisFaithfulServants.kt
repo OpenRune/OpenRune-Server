@@ -75,6 +75,8 @@ class HisFaithfulServants :
 
     private fun hasIcon(player: Player): Boolean = "obj.barrows_icon" in player.inv
 
+    // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+    // https://oldschool.runescape.wiki/w/Transcript:His_Faithful_Servants
     private suspend fun Dialogue.oldManDialogue() {
         val stage = stage(player)
         when {
@@ -103,7 +105,7 @@ class HisFaithfulServants :
         chatNpc(happy, "Yes! They guard it for him! That was their purpose, but that time is up now. He wants it back! You can get it! You can dig!")
         chatPlayer(confused, "You want me to bring you something?")
         chatNpc(happy, "The icon! He needs it now! You must dig, dig, dig. Slay the brothers six! It's okay, it won't hurt them... much. The icon will be in the chest!")
-        chatPlayer(confused, "Right... So you want me to go and kill six brothers and bring you back an icon?")
+        chatPlayer(confused, "Right... So you want me to go and kill the six brothers and bring you back an icon?")
         chatNpc(happy, "Yes! Do this! Do this! Maybe little prize for you if you do. But first you must dig! Dig, dig, dig!")
         quest.setQuestStage(access, STAGE_STARTED)
         chatPlayer(confused, "Okay...")
@@ -218,6 +220,7 @@ class HisFaithfulServants :
         val map = mapMissing()
         val needed = listOf(lamp, map).count { it }
         chatNpc(happy, "This is for you. Take it! Take it!")
+        // TODO(content): [verify:in_game] Full-inventory message when reclaiming the lamp or map.
         if (access.inv.freeSpace() < needed) {
             mesbox("You don't have enough inventory space.")
             return
@@ -234,6 +237,8 @@ class HisFaithfulServants :
         questMenu("I'll leave you to it then...")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Strange_Old_Man
+    // TODO(content): [system:treasure_trails] Hard clue challenge scroll step ("Ah! Here you go!").
     private suspend fun Dialogue.standardDialogue() {
         when (Random.nextInt(5)) {
             0 -> secretDialogue()

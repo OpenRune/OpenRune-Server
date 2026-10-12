@@ -122,17 +122,19 @@ class GertrudesCatQuest :
         return true
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Gertrude%27s_Cat
+    // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
     private suspend fun Dialogue.beforeQuest() {
         chatPlayer(quiz, "Hello, are you okay?")
         chatNpc(angry, "Do I look okay? Those kids drive me crazy.")
         chatNpc(sad, "I'm sorry. It's just that I've lost her.")
         chatPlayer(quiz, "Lost who?")
-        chatNpc(sad, "Fluffs. Poor Fluffs. She never hurt anyone.")
+        chatNpc(sad, "Fluffs, poor Fluffs. She never hurt anyone.")
         chatPlayer(quiz, "Who's Fluffs?")
         chatNpc(
             sad,
-            "My beloved feline friend, Fluffs. She's been purring by my side for almost a decade. " +
-                "Please, could you go and search for her while I look after the kids?",
+            "My beloved feline friend Fluffs. She's been purring by my side for almost a decade. " +
+                "Please, could you go search for her while I look over the kids?",
         )
         if (!startQuestPrompt(quest)) {
             chatPlayer(neutral, "Sorry, I'm too busy to play pet rescue.")
@@ -155,38 +157,55 @@ class GertrudesCatQuest :
             sardineAdvice()
             return
         }
+        if (stage(player) == STAGE_PAID_KIDS) {
+            paidKids()
+            return
+        }
         chatPlayer(happy, "Hello Gertrude.")
         chatNpc(quiz, "Have you seen my poor Fluffs?")
         chatPlayer(sad, "I'm afraid not.")
         chatNpc(quiz, "What about Shilop?")
         chatPlayer(neutral, "No sign of him either.")
-        chatNpc(confused, "Hmmm... strange. He should be at the market.")
+        chatNpc(confused, "Hmmm...strange, he should be at the market.")
+    }
+
+    private suspend fun Dialogue.paidKids() {
+        chatPlayer(happy, "Hello Gertrude.")
+        chatNpc(
+            quiz,
+            "Hello again, did you manage to find Shilop? I can't keep an eye on him for the life " +
+                "of me.",
+        )
+        chatPlayer(neutral, "He does seem quite a handful.")
+        chatNpc(quiz, "You have no idea! Did he help at all?")
+        chatPlayer(neutral, "I think so, I'm just going to look now.")
+        chatNpc(happy, "Thanks again, adventurer.")
     }
 
     private suspend fun Dialogue.sardineAdvice() {
         chatPlayer(happy, "Hello again.")
         chatNpc(quiz, "Hello. How's it going? Any luck?")
         chatPlayer(happy, "Yes, I've found Fluffs!")
-        chatNpc(happy, "Well, well, you are clever! Did you bring her back?")
-        chatPlayer(worried, "Well, that's the thing. She refuses to leave.")
+        chatNpc(happy, "Well well, you are clever! Did you bring her back?")
+        chatPlayer(worried, "Well, that's the thing, she refuses to leave.")
         chatNpc(
             worried,
-            "Oh dear, oh dear! Maybe she's just hungry. She loves doogle sardines, but I'm all out.",
+            "Oh dear, oh dear! Maybe she's just hungry. She loves doogle sardines but I'm all out.",
         )
         chatPlayer(quiz, "Doogle sardines?")
         chatNpc(
             neutral,
             "Yes, raw sardines seasoned with doogle leaves. Unfortunately I've used all my doogle " +
-                "leaves, but you may find some in the woods out the back.",
+                "leaves, but you may find some in the woods out back.",
         )
         player.toldAboutSardines = true
     }
 
     private suspend fun Dialogue.afterSardine() {
         chatPlayer(happy, "Hi!")
-        chatNpc(quiz, "Hey, traveller. Did Fluffs eat the sardines?")
+        chatNpc(quiz, "Hey traveller, did Fluffs eat the sardines?")
         chatPlayer(neutral, "Yeah, she loved them, but she still won't leave.")
-        chatNpc(confused, "Well, that is strange. There must be a reason.")
+        chatNpc(confused, "Well that is strange, there must be a reason.")
     }
 
     companion object {

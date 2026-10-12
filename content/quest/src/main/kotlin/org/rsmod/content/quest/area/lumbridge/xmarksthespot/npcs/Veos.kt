@@ -27,6 +27,7 @@ import org.rsmod.content.quest.manager.startQuestPrompt
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class Veos
 @Inject
 constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepository) :
@@ -39,6 +40,7 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
         onOpNpc1("npc.veos_lumbridge") { startDialogue(it.npc) { veosLumbridge() } }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:X_Marks_the_Spot
     private suspend fun Dialogue.veosLumbridge() {
         when (xMarks.stage(player)) {
             STAGE_NOT_STARTED -> beforeQuest()
@@ -48,6 +50,7 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:X_Marks_the_Spot
     /** Port Sarim Veos: returns `false` when he has nothing quest-related to say. */
     suspend fun Dialogue.veosSarimQuest(): Boolean {
         when (xMarks.stage(player)) {
@@ -56,6 +59,8 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
             in STAGE_BOBS_CLUE..STAGE_CIPHER_CLUE -> treasureHuntCheckIn(atSarim = true)
             STAGE_CASKET -> deliverCasket()
             STAGE_DELIVERED -> {
+                // TODO(content): [verify:in_game] Not in the transcript: returning for the reward
+                // after a full inventory blocked it.
                 chatNpc(happy, "Hello again.")
                 rewardAndFarewell()
             }
@@ -70,8 +75,8 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
             chatPlayer(happy, "Hello Veos. What brings you to Lumbridge?")
             chatNpc(
                 neutral,
-                "I'm here on a treasure hunt, of sorts. Back in Kourend I came across a scroll " +
-                    "that I think will lead me to something of great value.",
+                "I'm here on a bit of a treasure hunt. Back in Kourend I came across a scroll. I " +
+                    "believe it will lead me to something of great value.",
             )
             explainBlocker()
             offerHelp()
@@ -82,7 +87,7 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
                 chatPlayer(quiz, "Who are you?")
                 chatNpc(
                     happy,
-                    "The name's Veos. I'm a treasure hunter from the wondrous Kingdom of Great " +
+                    "The name's Veos. I'm a treasure hunter from the wonderous Kingdom of Great " +
                         "Kourend.",
                 )
                 introduceKourend()
@@ -90,8 +95,8 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
             2 -> {
                 chatNpc(
                     neutral,
-                    "Hmmm. Well, now that you mention it, I could use a hand. The name's Veos. " +
-                        "I'm a treasure hunter from the wondrous Kingdom of Great Kourend.",
+                    "Hmmm. Well now that you mention it, I could do with some help. The name's " +
+                        "Veos. I'm a treasure hunter from the wonderous Kingdom of Great Kourend.",
                 )
                 introduceKourend()
             }
@@ -101,12 +106,13 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
 
     private suspend fun Dialogue.introduceKourend() {
         chatPlayer(quiz, "Great Kourend? Where's that?")
-        chatNpc(happy, "Far across the sea to the west. It's a truly magnificent place.")
+        chatNpc(happy, "Across the sea to the far west. It is a truly magnificent place.")
         chatPlayer(quiz, "Interesting. So what brings you to Lumbridge?")
         chatNpc(
             neutral,
-            "I'm on a hunt. A hunt for treasure. Back home in Great Kourend I came across a " +
-                "scroll, and I believe it will lead me to something of great value.",
+            "I'm here on a bit of a hunt. The hunt for treasure. Back in my home of Great " +
+                "Kourend, I came across a scroll. I believe it will lead me to something of " +
+                "great value.",
         )
         explainBlocker()
         offerHelp()
@@ -115,8 +121,8 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
     private suspend fun Dialogue.explainBlocker() {
         chatNpc(
             sad,
-            "Unfortunately I've hit a bit of a wall. The scroll led me here, but I don't know the " +
-                "area at all, so I'm not sure what to do next.",
+            "Alas, I've hit a bit of a blocker. The scroll has led me here but as I don't really " +
+                "know the area, I'm not sure what to do next.",
         )
     }
 
@@ -128,8 +134,8 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
         chatPlayer(quiz, "Can I help?")
         chatNpc(
             neutral,
-            "Hmmm. Maybe you can. You probably know these parts better than I do, so you might " +
-                "be able to make sense of the scroll. I can reward you if you help.",
+            "Hmmm. Maybe you can. You probably know this area better than I do. You might be " +
+                "able to work the scroll out. I'll be able to reward you if you help.",
         )
         if (!startQuestPrompt(quest)) {
             chatPlayer(neutral, "I'm good thanks.")
@@ -151,33 +157,33 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
         if (player.inv.freeSpace() == 0) {
             chatNpc(
                 neutral,
-                "First you'll need to make some room in your inventory. Once you have, you can " +
-                    "take a look at this scroll.",
+                "First you should go and make some room in your inventory. Once you've done " +
+                    "that, you can have a look at this scroll.",
             )
             return
         }
         chatNpc(
             neutral,
-            "Take this scroll. It should lead you to the treasure I'm after. Once you've found " +
-                "it, meet me at my ship. It's docked at the northernmost pier in Port Sarim.",
+            "Take this scroll. It should lead you to the treasure I seek. Once you've found it, " +
+                "meet me at my ship. It's docked at the northernmost pier in Port Sarim.",
         )
         access.invAddOrDrop(objRepo, BOBS_SCROLL)
         with(xMarks) { access.setStage(STAGE_BOBS_CLUE) }
-        objbox(BOBS_SCROLL, "Veos hands you a scroll.")
+        objbox(BOBS_SCROLL, "Veos has given you a scroll.")
         chatPlayer(happy, "Awesome. Anything else I should know?")
-        chatNpc(
-            neutral,
-            "You'll probably want a spade - in my experience they're almost always needed when " +
-                "hunting treasure. The general store should have one if you don't.",
-        )
+        val spade =
+            "You'll probably want a spade, I find they're pretty much always needed when it " +
+                "comes to hunting treasure. Check the general store if you don't have one."
         if (player.metVeosInKourend) {
+            chatNpc(neutral, spade)
             chatNpc(
                 neutral,
-                "I'll be staying here a little longer before I head back to my ship. If you need " +
-                    "a hand with anything, just let me know and I'll see what I can do.",
+                "I'll be sticking around here a little longer before heading back to my ship. If " +
+                    "you need extra guidance with anything, just let me know and I'll see what I " +
+                    "can do.",
             )
         } else {
-            chatNpc(neutral, "If you need any extra help, just let me know.")
+            chatNpc(neutral, "$spade If you need any extra help, just let me know.")
         }
         chatPlayer(happy, "Okay, thanks Veos.")
         chatNpc(happy, "Good luck.")
@@ -204,33 +210,33 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
             STAGE_BOBS_CLUE ->
                 chatNpc(
                     confused,
-                    "This is the scroll I gave you. I'm afraid I don't know how to solve it. " +
-                        "Maybe look for someone called Bob?",
+                    "This is the scroll I gave you. I don't know how to solve it I'm afraid. " +
+                        "Maybe look for someone named Bob?",
                 )
             STAGE_MAP_CLUE ->
-                chatNpc(neutral, "Looks like a map to me. I'd guess the X marks where you need to go.")
+                chatNpc(neutral, "Looks like a map to me. I'd assume the X marks where you need to go.")
             STAGE_ORB_CLUE ->
                 chatNpc(
                     neutral,
-                    "Interesting, these are quite rare. They work using temperature - the closer " +
-                        "you are, the hotter the orb gets.",
+                    "Interesting, these are quite rare. They work using temperature. The closer " +
+                        "you are, the hotter the orb.",
                 )
             else ->
                 chatNpc(
                     neutral,
-                    "Ah, a cipher. I've seen these before. Try shifting the letters to the left " +
-                        "or right - that normally does the trick.",
+                    "Ah a cipher, I've seen these before. Try shifting the letters to the left " +
+                        "or right. That normally works.",
                 )
         }
     }
 
     private suspend fun Dialogue.keepAtIt(atSarim: Boolean) {
         if (atSarim) {
-            chatNpc(neutral, "Well, keep at it. Once you've found the treasure, bring it to me.")
+            chatNpc(neutral, "Well keep at it. Once you've found the treasure, bring it to me.")
         } else {
             chatNpc(
                 neutral,
-                "Well, keep at it. Once you've found the treasure, meet me at my ship. It's " +
+                "Well keep at it. Once you've found the treasure, meet me at my ship. It's " +
                     "docked at the northernmost pier in Port Sarim.",
             )
         }
@@ -244,12 +250,14 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
         val noun = if (clue == ORB) "orb" else "scroll"
         chatNpc(quiz, "I came across this $noun. Did you lose it by any chance?")
         access.invAddOrDrop(objRepo, clue)
-        objbox(clue, "Veos hands you a $noun.")
+        objbox(clue, "Veos has given you a $noun.")
         chatPlayer(happy, "I did, thanks Veos.")
         chatNpc(neutral, "Not to worry. Just try to be careful with it.")
         return true
     }
 
+    // TODO(content): [verify:in_game] Not in the transcript: Lumbridge Veos once the casket is
+    // dug up or delivered.
     private suspend fun Dialogue.sendToShip() {
         chatNpc(happy, "Hello there.")
         chatPlayer(happy, "Hello Veos.")
@@ -273,6 +281,8 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
         chatNpc(happy, "Hello there.")
         chatPlayer(happy, "Hello Veos.")
         chatNpc(quiz, "How's the treasure hunt going?")
+        // TODO(content): [verify:in_game] The no-casket and full-inventory lines are not in the
+        // transcript.
         if (player.inv.count(CASKET) == 0) {
             chatPlayer(sad, "I found the treasure, but I don't seem to have it with me.")
             chatNpc(
@@ -295,21 +305,24 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
             return
         }
         with(xMarks) { access.setStage(STAGE_DELIVERED) }
-        objbox(CASKET, "You give Veos the ancient casket.")
+        objbox(CASKET, "You give Veos the Ancient Casket.")
         chatNpc(
             happy,
-            "Brilliant. This is exactly what I was looking for. Thank you so much for your help.",
+            "Brilliant. This is just what I was looking for. Thank you so much for your help.",
         )
-        chatPlayer(quiz, "No problem. So what is this treasure, anyway?")
+        chatPlayer(quiz, "No problem. So what is this treasure anyway?")
         chatNpc(
             shifty,
-            "Oh, err... nothing important. Just something that might be of use to me back in " +
+            "Oh err... nothing important. Just something that might be of use to me back in " +
                 "Great Kourend.",
         )
         chatPlayer(confused, "If you say so...")
         rewardAndFarewell()
     }
 
+    // TODO(content): [system:quest_completion] The transcript gives the reward ("Anyway, as
+    // promised, a reward for you.") before the farewell lines, but completeQuest closes the
+    // chatbox, so the farewell runs first.
     private suspend fun Dialogue.rewardAndFarewell() {
         if (!hasRewardSpace(freedSlots = 0)) {
             chatNpc(
@@ -321,16 +334,16 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
         }
         chatNpc(
             neutral,
-            "Anyway, I'd best be getting back to Great Kourend soon. I'm sure I'll be back here " +
-                "before long though - there's always more treasure to be found.",
+            "Anyway, I'd best be getting back to Great Kourend. I'm sure I'll be back here " +
+                "before long though, there's always more treasure to be found.",
         )
         chatNpc(
             happy,
-            "If you ever fancy visiting the kingdom, come and find me here. I'll happily take " +
-                "you there - consider it an extra thank you for your help.",
+            "If you ever fancy visiting the kingdom, come find me here. I'm more than happy to " +
+                "take you there. Consider it an extra thank you for your help.",
         )
         chatPlayer(happy, "Sounds great, thanks Veos.")
-        chatNpc(happy, "And as promised, here's your reward.")
+        chatNpc(happy, "Anyway, as promised, a reward for you.")
         if (player.owns(SCROLL_BOX)) {
             player.scrollBoxOwed = true
         } else {
@@ -340,6 +353,8 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
         xMarks.syncVeos(player)
     }
 
+    // TODO(content): [verify:in_game] Reclaiming the lamp or scroll box: the wiki has no transcript
+    // for it.
     private suspend fun Dialogue.reclaimRewards(): Boolean {
         val lamp = !player.lampUsed && !player.owns(LAMP)
         val scrollBox = player.scrollBoxOwed && !player.owns(SCROLL_BOX)
