@@ -462,3 +462,46 @@ Retest hood on/off, head turns, walking and camera movement in software and
 HD, plus Dizana's offset and both genders. Earlier packages, the live
 installation and fourteen accepted source hashes are preserved. Cape code
 remains local; no live installation or feature push/merge is performed.
+
+## v0.16 native head and Dizana inventory icon (2026-10-13)
+
+The latest owner video accepts improved hood cloth but still rejects its head.
+The retained RS2 face/jaw is replaced by the actual rev240 max-hood head
+(item 13281, male model 29614 / female 29623). The bounded asset
+`native-hood-heads.json` records source SHA, vertices, winding, colours and
+bone labels. The head uses the qualified quarter-unit scale. Native skin
+colour 4550 and eyes 0 stay outside cape customisation; slots 0/8/11 still
+mask native hair/jaw. The 427 cloth faces remain: male hoods total 515 faces,
+female 538. The native female head's two intentional sided triangles are
+preserved exactly; duplicated custom cloth is rejected.
+
+`NativeHoodCheck` independently compares head vertices, winding, colours and
+bone labels with read-only native max-hood fixtures before 768 renders.
+These complete masked avatars and controlled turns cover both genders but
+do not establish actual idle/walk or HD acceptance.
+
+The owner clarified the requested inventory SHAPE with the original folded
+Fire-variant icon. Dizana's model 62278 retains all 141 vertices and 198 faces
+of the original folded Completionist cloth unchanged, adding the native
+332-face quiver model (item 28955, model 52244) on top. The separately recorded
+asset has native source SHA and geometry. Only the inventory bag is scaled
+0.85 and placed at quarter-unit offsets -16,-24,-64; worn clearance is unchanged.
+Both Dizana items 63126 and 63142 share this corrected icon. Every cape keeps
+the original projection 1316/252/1020/-1/24. The real 36x32 native rasterizer
+verifies 72 quiver pixels against a separate cape-only control; the mesh test
+compares every original cloth vertex and triangle with model 62100.
+
+Runtime `runtime-v016-native-head-folded` builds 26 runtime / 14 plugin classes
+with the same 34 qualified libraries. Checks cover 96 decodes, 1536 native
+worn renders, 14 icons, 28 complete cape avatars, 32 hoods/768 renders,
+particle lifecycle, viewport reset, shared sequences, alpha and 48 stats.
+The matching server JAR builds; packing verifies 454 writes and preserves
+538211 unrelated native definitions. Gameplay source is unchanged; earlier
+26 cape + 15 max-cape tests are not newly rerun claims.
+
+Test package: `outputs/nero-completionist-head-folded-icon-v016-20261013/TESTEN.cmd`.
+Accepted live files, older profiles and fourteen accepted source hashes are
+preserved. No live installation or feature push/merge is performed. Retest
+the head, Dizana inventory icon/locked alias, equipment changes, software/HD
+and movement. Environment lighting remains parked by owner choice; Gauntlet
+PR #302 integration remains the next content task.
