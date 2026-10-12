@@ -4,6 +4,7 @@ import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import java.util.Locale
 import net.rsprot.protocol.game.outgoing.sound.MidiJingle
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.musicClocks
@@ -226,7 +227,8 @@ data class Quest(
                 ?: error("No stat found for $skill")
 
             access.statAdvance(skill, amount)
-            rewardLines.add("${amount.toInt()} ${stat.displayName} XP")
+            val skillName = stat.displayName.replaceFirstChar { it.uppercase() }
+            rewardLines.add("${"%,d".format(Locale.US, amount.toInt())} $skillName XP")
         }
 
         rewards.items.forEach { (item, amount) ->
