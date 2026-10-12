@@ -3,6 +3,7 @@ package org.rsmod.content.areas.city.varrock.npcs
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpcU
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -182,10 +183,21 @@ class VarrockChurch : PluginScript() {
         chatPlayer(happy, "Thank you. I'll leave you to your knitting now.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Father_Lawrence (Romeo & Juliet not started)
-    // TODO(content): [quest:romeo_and_juliet] quest dialogue and the drunk lines after the potion
+    // https://oldschool.runescape.wiki/w/Transcript:Father_Lawrence
+    // TODO(content): [quest:romeo_and_juliet] quest dialogue until Juliet has the Cadava potion
     // TODO(content): [system:wise_old_man_tasks] delivering the Wise Old Man's letter
     private suspend fun Dialogue.fatherLawrence() {
+        if (QuestRequirements.hasCompleted(player, ROMEO_AND_JULIET)) {
+            chatNpc(drunk, "Oh to be a father in the times of whiskey.")
+            chatNpc(drunk, "I sing and I drink and I wake up in gutters.")
+            if (access.random.of(maxExclusive = 2) == 0) {
+                chatNpc(drunk, "Top of the morning to you.")
+            } else {
+                chatNpc(drunk, "To err is human, to forgive, quite difficult.")
+                chatNpc(drunk, "I need a think I drink.")
+            }
+            return
+        }
         chatNpc(happy, "Hello adventurer, do you seek a quest?")
         while (true) {
             val option =
@@ -240,6 +252,7 @@ class VarrockChurch : PluginScript() {
 
     private companion object {
         const val ELSIE = "npc.varrock_granny_2"
+        const val ROMEO_AND_JULIET = "quest_romeoandjuliet"
         const val TEA = "obj.cup_of_tea"
         const val SAY = "What would you like to say?"
     }

@@ -6,12 +6,12 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.stat.baseSmithingLvl
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Master_smithing_tutor
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:the_knights_sword] skip the squire hint once the quest is started
 // TODO(content): [miniquest:barbarian_training] Otto's tasks line after Barbarian Smithing
 class MasterSmithingTutor @Inject constructor(private val objRepo: ObjRepository) :
     PluginScript() {
@@ -114,6 +114,12 @@ class MasterSmithingTutor @Inject constructor(private val objRepo: ObjRepository
                 "gaining some temporary knowledge in smithing from a boost.",
         )
         chatNpc(happy, "You can buy a Dwarven stout at the Rising Sun Inn in Falador.")
+        val started =
+            !QuestRequirements.hasNotCompleted(player, KNIGHTS_SWORD) ||
+                QuestRequirements.isOnQuest(player, KNIGHTS_SWORD)
+        if (started) {
+            return
+        }
         chatNpc(
             happy,
             "If you are looking for a quest, you should talk to the squire in the courtyard of " +
@@ -191,5 +197,6 @@ class MasterSmithingTutor @Inject constructor(private val objRepo: ObjRepository
 
     private companion object {
         const val HAMMER = "obj.hammer"
+        const val KNIGHTS_SWORD = "quest_knightssword"
     }
 }

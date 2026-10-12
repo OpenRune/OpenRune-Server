@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.varrock.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -243,7 +244,6 @@ class GrandExchange : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Murky_Matt_(runes) (members world)
-    // TODO(content): [quest:lunar_diplomacy] extra "Murky Pat" lines after the quest
     // TODO(content): [system:npc_overhead] random overhead shouts
     private suspend fun Dialogue.murkyMatt() {
         chatNpc(
@@ -288,6 +288,23 @@ class GrandExchange : PluginScript() {
                 "By my wave-battered bones! Not when I can sell to the whole world from this " +
                     "very spot!",
             )
+            if (QuestRequirements.hasCompleted(player, LUNAR_DIPLOMACY)) {
+                chatPlayer(
+                    angry,
+                    "You pirates are nothing but trouble! Why, once I travelled to Lunar Isle " +
+                        "with a bunch of your type, and spent days sailing around in circles!",
+                )
+                chatNpc(happy, "Then ye must know me brother! Murky Pat!")
+                chatPlayer(confused, "Hmmm. Not so sure I remember him.")
+                val type = if (access.isBodyTypeA()) "guy" else "gal"
+                chatNpc(
+                    neutral,
+                    "Well, 'e be on that ship for sure. And I remember 'im tellin' me about some " +
+                        "$type like ye, getting all mixed up with curses and cabin boys.",
+                )
+                chatPlayer(happy, "Yes! That was me!")
+                chatNpc(laugh, "Ye sure be a different character.")
+            }
             when (
                 choice3(
                     "Tell me about the prices of runes.",
@@ -1096,6 +1113,7 @@ class GrandExchange : PluginScript() {
     }
 
     private companion object {
+        const val LUNAR_DIPLOMACY = "quest_lunardiplomacy"
         const val CLAN_MENU_INITIAL = 0
         const val CLAN_MENU_WHO = 1
         const val CLAN_MENU_CLAN = 2
