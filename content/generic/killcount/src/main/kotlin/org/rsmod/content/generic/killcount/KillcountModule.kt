@@ -25,7 +25,8 @@ public class KillcountNpcKillHook @Inject constructor() : NpcDeathKillHook {
         val count = context.hero.vars[varp] + 1
         VarPlayerIntMapSetter.set(context.hero, varp, count)
         if (notify) {
-            context.hero.mes("Your ${context.npc.name} kill count is: <col=ff0000>$count</col>")
+            // live capture, rev 241, 20261012T180256-df49f48@1610: the message ends with a full stop.
+            context.hero.mes("Your ${context.npc.name} kill count is: <col=ff0000>$count</col>.")
         }
     }
 }
