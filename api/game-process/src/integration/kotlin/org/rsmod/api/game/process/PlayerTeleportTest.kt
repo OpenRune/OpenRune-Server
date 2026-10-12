@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.rsmod.api.game.process.player.PlayerMovementProcessor
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.map.CoordGrid
@@ -44,7 +45,7 @@ class PlayerTeleportTest {
             var jumped = false
             withProtectedAccess {
                 jumped = true
-                telejump(dest, collision)
+                telejump(dest, collision, TeleportType.Exempt)
                 assertEquals(dest, coords)
             }
             assertTrue(jumped)
@@ -61,7 +62,7 @@ class PlayerTeleportTest {
             var jumped = false
             withProtectedAccess {
                 jumped = true
-                telejump(dest, collision)
+                telejump(dest, collision, TeleportType.Exempt)
                 assertEquals(dest, coords)
                 assertEquals(MoveSpeed.Stationary, moveSpeed)
             }

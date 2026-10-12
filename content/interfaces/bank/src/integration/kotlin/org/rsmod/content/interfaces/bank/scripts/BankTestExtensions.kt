@@ -1,24 +1,34 @@
 package org.rsmod.content.interfaces.bank.scripts
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.types.aconverted.interf.IfButtonOp
-import org.rsmod.api.config.refs.invs
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.enumVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.content.interfaces.bank.BankTab
-import org.rsmod.content.interfaces.bank.configs.BankComponents
 import org.rsmod.content.interfaces.bank.configs.BankSubComponents
-import org.rsmod.content.interfaces.bank.configs.BankVarBits
 import org.rsmod.content.interfaces.bank.openBank
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 
-typealias bank_components = BankComponents
-
 typealias bank_comsubs = BankSubComponents
 
-typealias bank_varbits = BankVarBits
+object bank_components {
+    val main_inventory by lazy { ServerCacheManager.fromComponent("component.bankmain:items") }
+    val side_inventory by lazy { ServerCacheManager.fromComponent("component.bankside:items") }
+    val deposit_inventory by lazy {
+        ServerCacheManager.fromComponent("component.bankmain:depositinv")
+    }
+    val deposit_worn by lazy { ServerCacheManager.fromComponent("component.bankmain:depositworn") }
+    val tabs by lazy { ServerCacheManager.fromComponent("component.bankmain:tabs") }
+}
+
+object bank_varbits {
+    const val rearrange_mode = "varbit.bank_insertmode"
+    const val withdraw_mode = "varbit.bank_withdrawnotes"
+    const val selected_tab = "varbit.bank_currenttab"
+}
 
 val SIDE_INV_DEPOSIT_1 = IfButtonOp.Op3
 val SIDE_INV_DEPOSIT_5 = IfButtonOp.Op4
@@ -39,8 +49,7 @@ var Player.withdrawCert by boolVarBit(bank_varbits.withdraw_mode)
 var Player.selectedTab by enumVarBit<BankTab>(bank_varbits.selected_tab)
 
 fun GameTestState.bank(player: Player): Inventory {
-    val bankType = cacheTypes.invs[invs.bank]
-    return player.invMap.getOrPut(bankType)
+    return player.invMap.getOrPut("inv.bank")
 }
 
 fun GameTestState.openBank(player: Player): Inventory {

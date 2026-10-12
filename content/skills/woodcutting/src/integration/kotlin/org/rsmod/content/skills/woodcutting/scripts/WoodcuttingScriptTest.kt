@@ -1,11 +1,10 @@
 package org.rsmod.content.skills.woodcutting.scripts
 
 import org.junit.jupiter.api.Test
-import org.rsmod.api.config.refs.content
 import org.rsmod.api.config.refs.params
-import org.rsmod.api.config.refs.stats
 import org.rsmod.api.player.righthand
 import org.rsmod.api.testing.GameTestState
+import org.rsmod.api.testing.scope.GameTestScope
 import org.rsmod.content.skills.woodcutting.scripts.Woodcutting.Companion.treeLevelReq
 import org.rsmod.content.skills.woodcutting.scripts.Woodcutting.Companion.treeLogs
 import org.rsmod.content.skills.woodcutting.scripts.Woodcutting.Companion.treeRespawnTime
@@ -18,13 +17,13 @@ class WoodcuttingScriptTest {
     @Test
     fun GameTestState.`validate axe requirement`() =
         runGameTest(Woodcutting::class) {
-            val type = findLocType(content.tree) { it.treeLevelReq == 1 }
+            val type = findLocType("content.tree") { it.treeLevelReq == 1 }
             val tree = placeMapLoc(CoordGrid(0, 50, 50, 34, 31), type)
             player.teleport(tree.coords.translateX(-1))
             player.clearInv()
 
             player.righthand = InvObj("obj.rune_axe")
-            player.stats[stats.woodcutting] = 1
+            setWoodcuttingLevel(1)
             player.opLoc1(tree)
             advance(ticks = 2)
             assertMessagesSent(
@@ -33,7 +32,7 @@ class WoodcuttingScriptTest {
             )
 
             player.actionDelay = -1 // Reset action delay set by initial axe check.
-            player.stats[stats.woodcutting] = 100
+            setWoodcuttingLevel(100)
             player.opLoc1(tree)
             advance(ticks = 2)
             assertMessageSent("You swing your axe at the tree.")
@@ -42,20 +41,20 @@ class WoodcuttingScriptTest {
     @Test
     fun GameTestState.`validate tree requirement`() =
         runGameTest(Woodcutting::class) {
-            val type = findLocType(content.tree) { it.treeLevelReq > 1 }
+            val type = findLocType("content.tree") { it.treeLevelReq > 1 }
             val tree = placeMapLoc(CoordGrid(0, 50, 50, 34, 31), type)
             player.teleport(tree.coords.translateX(-1))
             player.clearInv()
 
             player.righthand = InvObj("obj.bronze_axe")
-            player.stats[stats.woodcutting] = type.treeLevelReq - 1
+            setWoodcuttingLevel(type.treeLevelReq - 1)
             player.opLoc1(tree)
             advance(ticks = 1)
             assertMessageSent(
                 "You need a Woodcutting level of ${type.treeLevelReq} to chop down this tree."
             )
 
-            player.stats[stats.woodcutting] = type.treeLevelReq
+            setWoodcuttingLevel(type.treeLevelReq)
             player.opLoc1(tree)
             advance(ticks = 2)
             assertMessageSent("You swing your axe at the tree.")
@@ -64,13 +63,13 @@ class WoodcuttingScriptTest {
     @Test
     fun GameTestState.`cut down regular tree`() =
         runGameTest(Woodcutting::class) {
-            val type = findLocType(content.tree) { it.treeLevelReq == 1 }
+            val type = findLocType("content.tree") { it.treeLevelReq == 1 }
             val tree = placeMapLoc(CoordGrid(0, 50, 50, 34, 31), type)
             val logs = type.treeLogs
             player.teleport(tree.coords.translateX(-1))
 
             player.righthand = InvObj("obj.bronze_axe")
-            player.stats[stats.woodcutting] = type.treeLevelReq
+            setWoodcuttingLevel(type.treeLevelReq)
             player.opLoc1(tree)
             advance(ticks = 2)
             assertMessageSent("You swing your axe at the tree.")
@@ -123,13 +122,13 @@ class WoodcuttingScriptTest {
     @Test
     fun GameTestState.`cut down timed-despawn tree`() =
         runGameTest(Woodcutting::class) {
-            val type = findLocType(content.tree) { it.hasParam(params.despawn_time) }
+            val type = findLocType("content.tree") { it.hasParam(params.despawn_time) }
             val tree = placeMapLoc(CoordGrid(0, 50, 50, 34, 31), type)
             val logs = type.treeLogs
             player.teleport(tree.coords.translateX(-1))
 
             player.righthand = InvObj("obj.bronze_axe")
-            player.stats[stats.woodcutting] = type.treeLevelReq
+            setWoodcuttingLevel(type.treeLevelReq)
             player.opLoc1(tree)
             advance(ticks = 3)
 
@@ -163,15 +162,15 @@ class WoodcuttingScriptTest {
     @Test
     fun GameTestState.`spam click tree to cut logs`() =
         runGameTest(Woodcutting::class) {
-            val type = findLocType(content.tree) { it.hasParam(params.skill_productitem) }
+            val type = findLocType("content.tree") { it.hasParam(params.skill_productitem) }
             val tree = placeMapLoc(CoordGrid(0, 50, 50, 34, 31), type)
             val logs = type.treeLogs
-            val logName = objTypes[type.treeLogs].name.lowercase()
+            val logName = type.treeLogs.name.lowercase()
             player.teleport(tree.coords.translateX(-1))
             player.clearInv()
 
             player.righthand = InvObj("obj.bronze_axe")
-            player.stats[stats.woodcutting] = type.treeLevelReq
+            setWoodcuttingLevel(type.treeLevelReq)
             player.opLoc1(tree)
             advance(ticks = 1) // Initial attempt where player action delay is set.
 
@@ -193,4 +192,9 @@ class WoodcuttingScriptTest {
             assertMessageSent("You get some $logName.")
             assertContains(player.inv, logs)
         }
+
+    private fun GameTestScope.setWoodcuttingLevel(level: Int) {
+        player.setBaseLevel("stat.woodcutting", level)
+        player.setCurrentLevel("stat.woodcutting", level)
+    }
 }

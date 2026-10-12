@@ -1,15 +1,17 @@
 package org.rsmod.api.game.process.npc.mode
 
+import dev.openrune.util.Coord
+import dev.openrune.util.NpcPatrol
+import dev.openrune.util.NpcPatrolWaypoint
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.rsmod.api.game.process.npc.NpcMovementProcessor
+import org.rsmod.api.game.process.npc.mode.NpcPatrolModeProcessor.Companion.toCoordGrid
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.factory.npcFactory
 import org.rsmod.api.testing.factory.npcTypeFactory
-import org.rsmod.game.entity.npc.NpcPatrol
-import org.rsmod.game.entity.npc.NpcPatrolWaypoint
 import org.rsmod.game.map.collision.add
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.square.MapSquareKey
@@ -25,11 +27,11 @@ class NpcPatrolModeProcessorTest {
     fun GameTestState.`immediately queue movement after teleport`() = runBasicGameTest {
         withCollisionState {
             val patrol = NpcPatrol(LUMBRIDGE_CASTLE_PATROL)
-            val start = patrol[0].destination.translateX(-2)
+            val start = patrol[0].destination.toCoordGrid().translateX(-2)
             val type = npcTypeFactory.create { this.patrol = patrol }
             val hans = npcFactory.create(type, start) { patrolWaypointIndex = 0 }
             it.allocateCollision(MapSquareKey(50, 50))
-            it.collision.add(patrol[0].destination, CollisionFlag.LOC)
+            it.collision.add(patrol[0].destination.toCoordGrid(), CollisionFlag.LOC)
             withNpc(hans) {
                 val movement = NpcMovementProcessor(it.collision, it.stepFactory, eventBus)
                 val mode = NpcPatrolModeProcessor(it.collision)
@@ -48,17 +50,17 @@ class NpcPatrolModeProcessorTest {
                 repeat(teleDelay) {
                     process()
                     assertEquals(start.translateX(1), coords)
-                    assertEquals(patrol[0].destination, routeDestination.peekLast())
+                    assertEquals(patrol[0].destination.toCoordGrid(), routeDestination.peekLast())
                 }
 
                 // This is the point where the npc will teleport to the waypoint destination, but
                 // should also end up walking one tile towards the following waypoint.
                 process()
-                assertNotEquals(patrol[0].destination, coords)
-                assertEquals(patrol[1].destination, routeDestination.peekLast())
+                assertNotEquals(patrol[0].destination.toCoordGrid(), coords)
+                assertEquals(patrol[1].destination.toCoordGrid(), routeDestination.peekLast())
 
                 // This is where the npc will end up, one tile diagonal of where the waypoint was.
-                val overstep = patrol[0].destination.translate(1, -1)
+                val overstep = patrol[0].destination.toCoordGrid().translate(1, -1)
                 assertEquals(overstep, coords)
             }
         }
@@ -79,8 +81,8 @@ class NpcPatrolModeProcessorTest {
     fun GameTestState.`emulate pause delay timing after teleport`() = runBasicGameTest {
         withCollisionState {
             val patrol = NpcPatrol(LUMBRIDGE_CASTLE_PATROL)
-            val start = patrol[2].destination
-            val blocked = patrol[3].destination.translateZ(4)
+            val start = patrol[2].destination.toCoordGrid()
+            val blocked = patrol[3].destination.toCoordGrid().translateZ(4)
             val type = npcTypeFactory.create { this.patrol = patrol }
             val hans = npcFactory.create(type, start) { patrolWaypointIndex = 2 }
             it.allocateCollision(MapSquareKey(50, 50))
@@ -107,7 +109,7 @@ class NpcPatrolModeProcessorTest {
                 repeat(teleDelay) {
                     process()
                     assertEquals(blocked.translateZ(1), coords)
-                    assertEquals(patrol[3].destination, routeDestination.peekLast())
+                    assertEquals(patrol[3].destination.toCoordGrid(), routeDestination.peekLast())
                     assertEquals(0, patrolPauseCycles)
                 }
 
@@ -115,7 +117,7 @@ class NpcPatrolModeProcessorTest {
                 // is actually teleported.
                 process()
                 // The npc should be on top of the waypoint and not stuck behind the blocked square.
-                assertEquals(patrol[3].destination, coords)
+                assertEquals(patrol[3].destination.toCoordGrid(), coords)
                 // The teleport sequence should have taken `[IDLE_TELE_DELAY] + 2` cycles.
                 assertEquals(IDLE_TELE_DELAY + 2, currentMapClock - startClock)
 
@@ -126,13 +128,13 @@ class NpcPatrolModeProcessorTest {
                 val pauseDelay = patrol[3].pauseDelay
                 repeat(pauseDelay - patrolPauseCycles) {
                     process()
-                    assertEquals(patrol[3].destination, coords)
+                    assertEquals(patrol[3].destination.toCoordGrid(), coords)
                 }
 
                 // On the final pause delay cycle, we should begin to move, as the [patrolPauseTick]
                 // was greater than usual as the pause began.
                 process()
-                assertEquals(patrol[3].destination.translateX(1), coords)
+                assertEquals(patrol[3].destination.toCoordGrid().translateX(1), coords)
 
                 // Given the standard delay values - this entire sequence should have taken 32
                 // cycles for the teleport to move the npc onto the waypoint, and 10 cycles for the
@@ -151,7 +153,7 @@ class NpcPatrolModeProcessorTest {
     fun GameTestState.`emulate pause delay timing`() = runBasicGameTest {
         withCollisionState {
             val patrol = NpcPatrol(LUMBRIDGE_CASTLE_PATROL)
-            val start = patrol[2].destination
+            val start = patrol[2].destination.toCoordGrid()
             val type = npcTypeFactory.create { this.patrol = patrol }
             val hans = npcFactory.create(type, start) { patrolWaypointIndex = 2 }
             it.allocateCollision(MapSquareKey(50, 50))
@@ -174,7 +176,7 @@ class NpcPatrolModeProcessorTest {
                 }
 
                 // Make sure we didn't overstep into said waypoint.
-                assertNotEquals(patrol[3].destination, coords)
+                assertNotEquals(patrol[3].destination.toCoordGrid(), coords)
 
                 // Now step into the waypoint where the npc should now wait for the waypoint's
                 // respective pause delay.
@@ -186,7 +188,7 @@ class NpcPatrolModeProcessorTest {
                 val pauseDelay = patrol[3].pauseDelay
                 repeat(pauseDelay) {
                     process()
-                    assertEquals(patrol[3].destination, coords)
+                    assertEquals(patrol[3].destination.toCoordGrid(), coords)
                     assertTrue(routeDestination.isEmpty())
                 }
 
@@ -195,8 +197,8 @@ class NpcPatrolModeProcessorTest {
                 process()
 
                 // The npc should have the next waypoint set as its destination.
-                assertEquals(patrol[4].destination, routeDestination.peekLast())
-                assertEquals(patrol[3].destination.translateX(1), coords)
+                assertEquals(patrol[4].destination.toCoordGrid(), routeDestination.peekLast())
+                assertEquals(patrol[3].destination.toCoordGrid().translateX(1), coords)
 
                 // The exact time this sequence should have taken is
                 // `[NpcPatrolWaypoint.pauseDelay] + 1.`
@@ -213,7 +215,7 @@ class NpcPatrolModeProcessorTest {
     fun GameTestState.`emulate teleport delay timing`() = runBasicGameTest {
         withCollisionState {
             val patrol = NpcPatrol(LUMBRIDGE_CASTLE_PATROL)
-            val start = patrol[2].destination
+            val start = patrol[2].destination.toCoordGrid()
             val type = npcTypeFactory.create { this.patrol = patrol }
             val hans = npcFactory.create(type, start) { patrolWaypointIndex = 2 }
             it.allocateCollision(MapSquareKey(50, 50))
@@ -232,7 +234,7 @@ class NpcPatrolModeProcessorTest {
                 // Let the npc walk south two tiles up to the loc collision.
                 repeat(2) { process() }
                 assertEquals(start.translateZ(-2), coords)
-                assertEquals(patrol[3].destination, routeDestination.peekLast())
+                assertEquals(patrol[3].destination.toCoordGrid(), routeDestination.peekLast())
 
                 // Start timing from this point when npc is standing still.
                 val startClock = currentMapClock
@@ -242,7 +244,7 @@ class NpcPatrolModeProcessorTest {
                 repeat(teleDelay) {
                     process()
                     assertEquals(start.translateZ(-2), coords)
-                    assertEquals(patrol[3].destination, routeDestination.peekLast())
+                    assertEquals(patrol[3].destination.toCoordGrid(), routeDestination.peekLast())
                 }
 
                 // When the teleport delay hits, there is still a one clock delay before the npc is
@@ -250,7 +252,7 @@ class NpcPatrolModeProcessorTest {
                 process()
 
                 // The npc should have been taken to the teleport location.
-                assertEquals(patrol[3].destination, coords)
+                assertEquals(patrol[3].destination.toCoordGrid(), coords)
 
                 // The exact time this sequence should have taken is `[IDLE_TELE_DELAY] + 2`, or
                 // `teleDelay + 1`.
@@ -265,7 +267,7 @@ class NpcPatrolModeProcessorTest {
             val patrol = NpcPatrol(LUMBRIDGE_CASTLE_PATROL)
             // Start one tile behind the initial patrol waypoint, so we can time a full run
             // from this CoordGrid to this CoordGrid on the next lap.
-            val start = patrol[0].destination.translateX(-1)
+            val start = patrol[0].destination.toCoordGrid().translateX(-1)
             val type = npcTypeFactory.create { this.patrol = patrol }
             val hans = npcFactory.create(type, start)
             it.allocateCollision(MapSquareKey(50, 50))
@@ -284,70 +286,73 @@ class NpcPatrolModeProcessorTest {
                 val startClock = currentMapClock
 
                 repeat(1) { process() }
-                assertEquals(patrol[0].destination, coords)
+                assertEquals(patrol[0].destination.toCoordGrid(), coords)
 
                 repeat(4) { process() }
-                assertEquals(patrol[1].destination, coords)
+                assertEquals(patrol[1].destination.toCoordGrid(), coords)
 
                 repeat(8) { process() }
-                assertEquals(patrol[2].destination, coords)
+                assertEquals(patrol[2].destination.toCoordGrid(), coords)
 
                 repeat(8) { process() }
-                assertEquals(patrol[3].destination, coords)
+                assertEquals(patrol[3].destination.toCoordGrid(), coords)
 
                 // This waypoint has a pause delay of 10 cycles, so for the next 10 processes, hans
                 // should not move.
                 repeat(10) {
                     process()
-                    assertEquals(patrol[3].destination, coords)
+                    assertEquals(patrol[3].destination.toCoordGrid(), coords)
                 }
 
                 // Now we take 2 steps towards the next waypoint.
                 repeat(2) { process() }
-                assertEquals(patrol[4].destination, coords)
+                assertEquals(patrol[4].destination.toCoordGrid(), coords)
 
                 repeat(10) { process() }
-                assertEquals(patrol[5].destination, coords)
+                assertEquals(patrol[5].destination.toCoordGrid(), coords)
 
                 repeat(3) { process() }
-                assertEquals(patrol[6].destination, coords)
+                assertEquals(patrol[6].destination.toCoordGrid(), coords)
 
                 repeat(4) { process() }
-                assertEquals(patrol[7].destination, coords)
+                assertEquals(patrol[7].destination.toCoordGrid(), coords)
 
                 repeat(12) { process() }
-                assertEquals(patrol[8].destination, coords)
+                assertEquals(patrol[8].destination.toCoordGrid(), coords)
 
                 repeat(27) { process() }
-                assertEquals(patrol[9].destination, coords)
+                assertEquals(patrol[9].destination.toCoordGrid(), coords)
 
                 repeat(5) { process() }
-                assertEquals(patrol[0].destination, coords)
+                assertEquals(patrol[0].destination.toCoordGrid(), coords)
 
                 // The entire patrol, uninterrupted, should take 94 cycles.
                 assertEquals(94, currentMapClock - startClock)
 
                 repeat(4) { process() }
-                assertEquals(patrol[1].destination, coords)
+                assertEquals(patrol[1].destination.toCoordGrid(), coords)
             }
         }
     }
 
     private companion object {
+        private fun waypoint(coords: CoordGrid, pauseDelay: Int) =
+            NpcPatrolWaypoint(Coord(coords.x, coords.z, coords.level), pauseDelay)
+
         private const val IDLE_TELE_DELAY = NpcPatrolModeProcessor.IDLE_TELE_DELAY
 
         private val LUMBRIDGE_CASTLE_PATROL =
             listOf(
-                NpcPatrolWaypoint(CoordGrid(0, 50, 50, 7, 33), 0),
-                NpcPatrolWaypoint(CoordGrid(0, 50, 50, 11, 30), 0),
-                NpcPatrolWaypoint(CoordGrid(0, 50, 50, 19, 30), 0),
-                NpcPatrolWaypoint(CoordGrid(0, 50, 50, 19, 22), 10),
-                NpcPatrolWaypoint(CoordGrid(0, 50, 50, 21, 22), 0),
-                NpcPatrolWaypoint(CoordGrid(0, 50, 50, 21, 12), 0),
-                NpcPatrolWaypoint(CoordGrid(0, 50, 50, 18, 9), 0),
-                NpcPatrolWaypoint(CoordGrid(0, 50, 50, 14, 5), 0),
-                NpcPatrolWaypoint(CoordGrid(0, 50, 50, 2, 5), 0),
-                NpcPatrolWaypoint(CoordGrid(0, 50, 50, 2, 32), 0),
+                waypoint(CoordGrid(0, 50, 50, 7, 33), 0),
+                waypoint(CoordGrid(0, 50, 50, 11, 30), 0),
+                waypoint(CoordGrid(0, 50, 50, 19, 30), 0),
+                waypoint(CoordGrid(0, 50, 50, 19, 22), 10),
+                waypoint(CoordGrid(0, 50, 50, 21, 22), 0),
+                waypoint(CoordGrid(0, 50, 50, 21, 12), 0),
+                waypoint(CoordGrid(0, 50, 50, 18, 9), 0),
+                waypoint(CoordGrid(0, 50, 50, 14, 5), 0),
+                waypoint(CoordGrid(0, 50, 50, 2, 5), 0),
+                waypoint(CoordGrid(0, 50, 50, 2, 32), 0),
             )
     }
 }

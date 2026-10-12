@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("integration-test-suite")
 
 }
 
@@ -42,4 +43,7 @@ dependencies {
     implementation(projects.engine.plugin)
     implementation(projects.engine.routefinder)
     implementation(projects.engine.utilsBits)
+    integrationImplementation(projects.api.hitPlugin)
+    integrationImplementation(projects.api.net)
+    integrationImplementation(projects.engine.coroutine)
 }

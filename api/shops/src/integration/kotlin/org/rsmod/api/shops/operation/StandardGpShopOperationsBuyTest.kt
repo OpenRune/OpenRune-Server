@@ -1,20 +1,14 @@
 package org.rsmod.api.shops.operation
 
-import dev.openrune.types.ItemServerType
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfButtonOp
-import dev.openrune.types.inv.InvScope
-import dev.openrune.types.inv.InvStackType
-import dev.openrune.types.inv.InvTypeList
 import org.junit.jupiter.api.Test
-import org.rsmod.api.config.Constants
-import org.rsmod.api.config.refs.currencies
 import org.rsmod.api.shops.ShopScript
 import org.rsmod.api.shops.Shops
-import org.rsmod.api.shops.config.ShopComponents
-import org.rsmod.api.shops.config.ShopInterfaces
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.scope.GameTestScope
-import org.rsmod.api.type.script.dsl.InvPluginBuilder
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.shop.Shop
@@ -31,8 +25,8 @@ class StandardGpShopOperationsBuyTest {
             buyStock(shop, "obj.newcomer_map", OP_BUY1)
 
             assertEquals(4, shop.inv.count("obj.newcomer_map"))
-            assertEquals(1, player.count("obj.newcomer_map"))
-            assertEquals(4, player.count("obj.coins"))
+            assertEquals(1, player.inv.count("obj.newcomer_map"))
+            assertEquals(4, player.inv.count("obj.coins"))
             assertNoMessageSent()
         }
 
@@ -66,7 +60,7 @@ class StandardGpShopOperationsBuyTest {
 
             buyStock(shop, "obj.newcomer_map", OP_BUY5)
 
-            assertEquals(1, player.count("obj.newcomer_map"))
+            assertEquals(1, player.inv.count("obj.newcomer_map"))
             assertEquals(4, shop.inv.count("obj.newcomer_map"))
             assertMessageSent("You don't have enough inventory space.")
         }
@@ -88,7 +82,7 @@ class StandardGpShopOperationsBuyTest {
             buyStock(shop, "obj.newcomer_map", OP_BUY50)
 
             assertEquals(0, shop.inv.count("obj.newcomer_map"))
-            assertEquals(5, player.count("obj.newcomer_map"))
+            assertEquals(5, player.inv.count("obj.newcomer_map"))
             assertNoMessageSent()
         }
 
@@ -104,7 +98,7 @@ class StandardGpShopOperationsBuyTest {
             buyStock(shop, "obj.sos_security_book", OP_BUY50)
 
             assertEquals(4, shop.inv.count("obj.sos_security_book"))
-            assertEquals(1, player.count("obj.sos_security_book"))
+            assertEquals(1, player.inv.count("obj.sos_security_book"))
             assertMessageSent("You don't have enough coins.")
         }
 
@@ -119,62 +113,51 @@ class StandardGpShopOperationsBuyTest {
             buyStock(shop, "obj.newcomer_map", OP_BUY50)
 
             assertEquals(0, shop.inv.count("obj.newcomer_map"))
-            assertEquals(5, player.count("obj.newcomer_map"))
+            assertEquals(5, player.inv.count("obj.newcomer_map"))
             assertNoMessageSent()
         }
 
-    private fun GameTestScope.buyStock(shop: Shop, obj: ItemServerType, op: IfButtonOp) {
-        val slot = shop.inv.indexOfFirst { it?.id == obj.id }
+    private fun GameTestScope.buyStock(shop: Shop, obj: String, op: IfButtonOp) {
+        val objId = obj.asRSCM(RSCMType.OBJ)
+        val slot = shop.inv.indexOfFirst { it?.id == objId }
         check(slot != -1) { "Obj not found in stock: obj=$obj, stock=${shop.inv}" }
 
-        val obj = shop.inv.getValue(slot)
-        player.ifButton(ShopComponents.shop_inv, comsub = slot + 1, obj = obj.id, op = op)
+        val stock = shop.inv.getValue(slot)
+        val shopItems = ServerCacheManager.fromComponent("component.shopmain:items")
+        player.ifButton(shopItems, comsub = slot + 1, obj = stock.id, op = op)
         advance(ticks = 1)
     }
 
     private fun GameTestScope.openGeneralShop(): Shop {
-        val inventory = createShopInv()
-        val invTypes = InvTypeList(mutableMapOf(inventory.type.id to inventory.type))
-        val shops = Shops(invTypes, eventBus)
+        val inventory = Inventory.create(SHOP_INV)
+        inventory.fillNulls()
+        val shops = Shops(eventBus)
 
         shops.open(
             player = player,
             title = "",
             shopInv = inventory,
             sideInv = player.inv,
-            currency = currencies.standard_gp,
+            currency = "currency.standard_gp",
             buyPercentage = 40.0,
             sellPercentage = 130.0,
             changePercentage = 3.0,
             subtext = "",
         )
 
-        // Clear out the player's outgoing messages from opening shop.
         client.clearOutgoing()
 
-        check(player.ui.containsModal(ShopInterfaces.shop_main))
-        check(player.ui.containsModal(ShopInterfaces.shop_side))
+        check(player.ui.containsModal("interface.shopmain"))
+        check(player.ui.containsModal("interface.shopside"))
         val shop = checkNotNull(player.openedShop)
         return shop
     }
 
-    private fun createShopInv(): Inventory {
-        val builder =
-            InvPluginBuilder().apply {
-                internal = "test_shop"
-                scope = InvScope.Shared
-                stack = InvStackType.Always
-                size = Constants.shop_default_size
-                restock = true
-                allStock = true
-            }
-        val type = builder.build(-1)
-        return Inventory.create(type)
-    }
-
     private companion object {
+        private const val SHOP_INV = "inv.generalshop1"
         private val OP_BUY1 = IfButtonOp.Op2
         private val OP_BUY5 = IfButtonOp.Op3
         private val OP_BUY50 = IfButtonOp.Op5
     }
 }
+

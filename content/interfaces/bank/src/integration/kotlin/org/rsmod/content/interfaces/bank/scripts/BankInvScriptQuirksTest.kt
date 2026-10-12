@@ -23,7 +23,7 @@ class BankInvScriptQuirksTest {
     @Test
     fun GameTestState.`withdraw un-certifiable obj as cert message`() =
         runGameTest(BankInvScript::class) {
-            val noCert = firstItemServerType { it.certlink == 0 }
+            val noCert = firstObjType { it.certlink == 0 }
             val bank = openBank(player)
             bank[0] = InvObj(noCert, 100)
             player.bankTabSizeMain = 1
@@ -43,7 +43,7 @@ class BankInvScriptQuirksTest {
     @Test
     fun GameTestState.`withdraw over non-stackable capacity message`() =
         runGameTest(BankInvScript::class) {
-            val noStack = firstItemServerType { !it.isStackable }
+            val noStack = firstObjType { !it.isStackable }
             val bank = openBank(player)
             bank[0] = InvObj(noStack, 100)
             player.bankTabSizeMain = 1
@@ -62,7 +62,7 @@ class BankInvScriptQuirksTest {
     @Test
     fun GameTestState.`withdraw over stackable capacity message`() =
         runGameTest(BankInvScript::class) {
-            val stackable = firstItemServerType { it.isStackable }
+            val stackable = firstObjType { it.isStackable }
             val bank = openBank(player)
             bank[0] = InvObj(stackable, Int.MAX_VALUE)
             player.bankTabSizeMain = 1
@@ -84,7 +84,7 @@ class BankInvScriptQuirksTest {
     fun GameTestState.`deposit over capacity message`() =
         runGameTest(BankInvScript::class) {
             // Cert obj would uncert going from inv -> bank - easy solution is to filter them.
-            val stackable = firstItemServerType { it.isStackable && !it.isCert }
+            val stackable = firstObjType { it.isStackable && !it.isCert }
             val bank = openBank(player)
             bank[0] = InvObj(stackable, 1000)
             player.bankTabSizeMain = 1
@@ -105,7 +105,7 @@ class BankInvScriptQuirksTest {
     @Test
     fun GameTestState.`deposit inv that contains an unbankable obj message`() =
         runGameTest(BankInvScript::class) {
-            val unbankable = firstItemServerType { it.param(params.no_bank) != 0 }
+            val unbankable = firstObjType { it.param(params.no_bank) != 0 }
             openBank(player)
 
             player.fillInv()
@@ -124,7 +124,7 @@ class BankInvScriptQuirksTest {
     @Test
     fun GameTestState.`deposit inv that only has an unbankable obj message`() =
         runGameTest(BankInvScript::class) {
-            val unbankable = firstItemServerType { it.param(params.no_bank) != 0 }
+            val unbankable = firstObjType { it.param(params.no_bank) != 0 }
             openBank(player)
 
             player.clearInv()
@@ -532,7 +532,7 @@ class BankInvScriptQuirksTest {
     @Test
     fun GameTestState.`deposit new obj into focused tab compresses other tabs`() =
         runGameTest(BankInvScript::class) {
-            val nonCert = firstItemServerType { !it.isCert }
+            val nonCert = firstObjType { !it.isCert }
             val bank = openBank(player)
             player.inv[0] = InvObj(nonCert)
 
@@ -578,7 +578,7 @@ class BankInvScriptQuirksTest {
     @Test
     fun GameTestState.`deposit new obj into main tab does not compress other tabs`() =
         runGameTest(BankInvScript::class) {
-            val nonCert = firstItemServerType { !it.isCert }
+            val nonCert = firstObjType { !it.isCert }
             val bank = openBank(player)
             player.inv[0] = InvObj(nonCert)
 

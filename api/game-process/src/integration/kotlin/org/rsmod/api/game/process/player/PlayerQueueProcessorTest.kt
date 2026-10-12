@@ -1,16 +1,16 @@
 package org.rsmod.api.game.process.player
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.types.NpcMode
 import org.junit.jupiter.api.Test
 import org.rsmod.api.combat.commons.npc.queueCombatRetaliate
 import org.rsmod.api.combat.commons.player.queueCombatRetaliate
-import org.rsmod.api.config.refs.stats
 import org.rsmod.api.death.plugin.PlayerDeathScript
 import org.rsmod.api.hit.plugin.PlayerHitScript
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.testing.GameTestState
-import org.rsmod.api.testing.factory.npcTypeFactory
 import org.rsmod.game.hit.HitType
 import org.rsmod.map.CoordGrid
 
@@ -20,7 +20,7 @@ class PlayerQueueProcessorTest {
         runGameTest(PlayerHitScript::class, PlayerDeathScript::class) {
             val npc = spawnNpc(CoordGrid(0, 50, 50, 0, 0), man)
             player.placeAt(npc.coords.translateZ(1))
-            player.setCurrentLevel(stats.hitpoints, 7)
+            player.setCurrentLevel("stat.hitpoints", 7)
 
             player.queueCombatRetaliate(npc, delay = 1)
             player.queueHit(npc, delay = 1, HitType.Typeless, damage = 5)
@@ -39,7 +39,7 @@ class PlayerQueueProcessorTest {
         runGameTest(PlayerHitScript::class, PlayerDeathScript::class) {
             val npc = spawnNpc(CoordGrid(0, 50, 50, 0, 0), man)
             player.placeAt(npc.coords.translateZ(1))
-            player.setCurrentLevel(stats.hitpoints, 7)
+            player.setCurrentLevel("stat.hitpoints", 7)
 
             player.queueCombatRetaliate(npc, delay = 1)
             player.queueHit(npc, delay = 1, HitType.Typeless, damage = 7)
@@ -64,12 +64,7 @@ class PlayerQueueProcessorTest {
 
     private companion object {
         private val man =
-            npcTypeFactory.create {
-                name = "Man"
-                op[1] = "Attack"
-                size = 1
-                hitpoints = 7
-                defaultMode = NpcMode.None
-            }
+            checkNotNull(ServerCacheManager.getNpc("npc.man".asRSCM()))
+                .copy(hitpoints = 7, defaultMode = NpcMode.None, wanderRange = 0)
     }
 }

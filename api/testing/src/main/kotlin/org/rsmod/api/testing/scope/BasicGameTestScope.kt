@@ -1,7 +1,9 @@
 package org.rsmod.api.testing.scope
 
 import dev.openrune.ServerCacheManager
+import java.util.concurrent.atomic.AtomicLong
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContext
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
@@ -26,6 +28,7 @@ import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.game.movement.RouteRequestCoord
 import org.rsmod.game.movement.RouteRequestPathingEntity
+import org.rsmod.game.world.WorldType
 import org.rsmod.map.CoordGrid
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
@@ -43,6 +46,7 @@ public class BasicGameTestScope(private val eventBus: EventBus) {
         player.coords = coords
         player.slotId = slot
         playerList[slot] = player
+        player.assignTestIdentity()
         eventBus.publish(SessionStateEvent.Initialize(player))
         eventBus.publish(SessionStateEvent.Login(player))
         eventBus.publish(SessionStateEvent.EngineLogin(player))
@@ -120,7 +124,7 @@ public class BasicGameTestScope(private val eventBus: EventBus) {
 
     public fun Player.protectedTeleport(collision: CollisionFlagMap, dest: CoordGrid): Boolean =
         withProtectedAccess {
-            teleport(dest, collision)
+            teleport(dest, collision, TeleportType.Exempt)
         }
 
     public fun setMaxLevels(player: Player) {
@@ -129,5 +133,20 @@ public class BasicGameTestScope(private val eventBus: EventBus) {
             player.statMap.setBaseLevel(stat.internalName, stat.maxLevel.toByte())
             player.statMap.setCurrentLevel(stat.internalName, stat.maxLevel.toByte())
         }
+    }
+
+    private fun Player.assignTestIdentity() {
+        if (uuid != null) return
+        val id = nextPlayerId.getAndIncrement()
+        uuid = id
+        accountId = id.toInt()
+        characterId = id.toInt()
+        accountHash = id
+        userId = id
+        worldType = WorldType.DEFAULT
+    }
+
+    private companion object {
+        val nextPlayerId = AtomicLong(1_000_000L)
     }
 }

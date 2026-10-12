@@ -1,6 +1,6 @@
 package org.rsmod.api.player.worn
 
-import dev.openrune.types.obj.Wearpos
+import dev.openrune.util.Wearpos
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
@@ -22,7 +22,7 @@ class WornUnequipOpTest {
             inv[0] = InvObj("obj.beer")
             righthand = InvObj("obj.crystal_axe", vars = Int.MAX_VALUE)
 
-            val operations = WornUnequipOp(cacheTypes.objs, EventBus())
+            val operations = WornUnequipOp(EventBus())
             val result = operations.unequip(this, Wearpos.RightHand.slot, worn, inv)
             assertInstanceOf<WornUnequipResult.Success>(result)
             assertNull(righthand)
@@ -37,7 +37,7 @@ class WornUnequipOpTest {
             repeat(inv.size) { inv[it] = InvObj("obj.beer") }
             righthand = InvObj("obj.crystal_axe")
 
-            val operations = WornUnequipOp(cacheTypes.objs, EventBus())
+            val operations = WornUnequipOp(EventBus())
             val result = operations.unequip(this, Wearpos.RightHand.slot, worn, inv)
             assertInstanceOf<WornUnequipResult.Fail>(result)
             assertEquals(InvObj("obj.crystal_axe"), righthand)
@@ -51,7 +51,7 @@ class WornUnequipOpTest {
             inv[3] = InvObj("obj.rune_arrow", count = Int.MAX_VALUE)
             quiver = InvObj("obj.rune_arrow", count = 50)
 
-            val operations = WornUnequipOp(cacheTypes.objs, EventBus())
+            val operations = WornUnequipOp(EventBus())
             val result = operations.unequip(this, Wearpos.Quiver.slot, worn, inv)
             assertInstanceOf<WornUnequipResult.Fail>(result)
             assertEquals(InvObj("obj.rune_arrow", count = 50), quiver)
@@ -65,7 +65,7 @@ class WornUnequipOpTest {
             inv[3] = InvObj("obj.rune_arrow", count = 50)
             quiver = InvObj("obj.rune_arrow", count = Int.MAX_VALUE)
 
-            val operations = WornUnequipOp(cacheTypes.objs, EventBus())
+            val operations = WornUnequipOp(EventBus())
             val result = operations.unequip(this, Wearpos.Quiver.slot, worn, inv)
             assertInstanceOf<WornUnequipResult.Fail>(result)
             assertEquals(InvObj("obj.rune_arrow", count = Int.MAX_VALUE), quiver)
@@ -81,7 +81,7 @@ class WornUnequipOpTest {
                 inv[3] = InvObj("obj.rune_arrow", count = 50)
                 quiver = InvObj("obj.rune_arrow", count = 50)
 
-                val operations = WornUnequipOp(cacheTypes.objs, EventBus())
+                val operations = WornUnequipOp(EventBus())
                 val result = operations.unequip(this, Wearpos.Quiver.slot, worn, inv)
                 assertInstanceOf<WornUnequipResult.Success>(result)
                 assertEquals(InvObj("obj.rune_arrow", count = 100), inv[3])

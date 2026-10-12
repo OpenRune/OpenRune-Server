@@ -1,5 +1,6 @@
 package org.rsmod.api.game.process.npc
 
+import dev.openrune.definition.EntityOpsBuilder
 import org.junit.jupiter.api.Test
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.player.output.mes
@@ -113,7 +114,7 @@ class NpcInteractionProcessorApRerouteTest {
         private val man =
             npcTypeFactory.create {
                 name = "Man"
-                op[1] = "Attack"
+                actions = EntityOpsBuilder().op(1, "Attack").build()
                 size = 1
                 attackRange = 7
                 maxRange = 100

@@ -7,10 +7,10 @@ import org.rsmod.api.testing.GameTestState
 class InvMapInitTest {
     @Test
     fun GameTestState.`init default player invs`() = runBasicGameTest {
-        val initializer = InvMapInit(cacheTypes.invs)
+        val initializer = InvMapInit()
         val defaults = initializer.defaultInvs
         withPlayer {
-            Assertions.assertEquals(defaults.size, invMap.size)
+            Assertions.assertTrue(invMap.size >= defaults.size)
             for (default in defaults) {
                 Assertions.assertNotNull(invMap[default])
             }

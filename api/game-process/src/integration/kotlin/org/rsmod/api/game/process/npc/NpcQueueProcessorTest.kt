@@ -1,5 +1,6 @@
 package org.rsmod.api.game.process.npc
 
+import dev.openrune.definition.EntityOpsBuilder
 import dev.openrune.types.NpcMode
 import org.junit.jupiter.api.Test
 import org.rsmod.api.combat.commons.npc.queueCombatRetaliate
@@ -66,7 +67,7 @@ class NpcQueueProcessorTest {
         private val man =
             npcTypeFactory.create {
                 name = "Man"
-                op[1] = "Attack"
+                actions = EntityOpsBuilder().op(1, "Attack").build()
                 size = 1
                 hitpoints = 7
                 defaultMode = NpcMode.None

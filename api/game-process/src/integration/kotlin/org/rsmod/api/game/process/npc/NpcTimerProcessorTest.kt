@@ -8,7 +8,6 @@ import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.script.onNpcTimer
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.factory.npcTypeFactory
-import org.rsmod.api.testing.factory.timerTypeFactory
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -63,7 +62,7 @@ class NpcTimerProcessorTest {
     )
 
     companion object {
-        val TIMER_1 = timerTypeFactory.create(id = 1)
-        val TIMER_2 = timerTypeFactory.create(id = 2)
+        const val TIMER_1 = "timer.potion_toa_silk_dressing"
+        const val TIMER_2 = "timer.potion_toa_blessed_crystal_scarab"
     }
 }

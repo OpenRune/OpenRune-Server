@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("integration-test-suite")
 
 }
 
@@ -11,4 +12,5 @@ dependencies {
     implementation(projects.api.specials)
     implementation(projects.api.spells)
     implementation(projects.api.spellsAutocast)
+    integrationImplementation(projects.api.generated)
 }

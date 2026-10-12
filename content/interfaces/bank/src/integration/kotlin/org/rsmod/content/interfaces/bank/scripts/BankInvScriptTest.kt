@@ -1,5 +1,6 @@
 package org.rsmod.content.interfaces.bank.scripts
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.types.util.UncheckedType
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
@@ -49,10 +50,16 @@ class BankInvScriptTest {
     @Test
     fun GameTestState.`withdraw obj with MAX_VALUE count`() =
         runGameTest(BankInvScript::class) {
-            val stackable = objTypes.values.firstOrNull { it.isStackable }
+            val stackable =
+                ServerCacheManager.getItems().values.firstOrNull {
+                    it.isStackable && it.id !in 1..2
+                }
             checkNotNull(stackable) { "Could not find an ItemServerType with `isStackable` flag." }
 
-            val nonStackable = objTypes.values.firstOrNull { !it.isStackable }
+            val nonStackable =
+                ServerCacheManager.getItems().values.firstOrNull {
+                    !it.isStackable && it.id !in 1..2
+                }
             checkNotNull(nonStackable) {
                 "Could not find an ItemServerType without `isStackable` flag."
             }
@@ -93,7 +100,7 @@ class BankInvScriptTest {
     @Test
     fun GameTestState.`withdraw un-certifiable obj as cert`() =
         runGameTest(BankInvScript::class) {
-            val noCert = firstItemServerType { it.certlink == 0 }
+            val noCert = firstObjType { it.certlink == 0 }
             val bank = openBank(player)
             bank[0] = InvObj(noCert, 100)
             player.bankTabSizeMain = 1
@@ -114,7 +121,7 @@ class BankInvScriptTest {
     @Test
     fun GameTestState.`withdraw over non-stackable capacity`() =
         runGameTest(BankInvScript::class) {
-            val noStack = firstItemServerType { !it.isStackable }
+            val noStack = firstObjType { !it.isStackable }
             val bank = openBank(player)
             bank[0] = InvObj(noStack, 100)
             player.bankTabSizeMain = 1
@@ -131,7 +138,7 @@ class BankInvScriptTest {
     @Test
     fun GameTestState.`withdraw over stackable capacity`() =
         runGameTest(BankInvScript::class) {
-            val stackable = firstItemServerType { it.isStackable }
+            val stackable = firstObjType { it.isStackable }
             val bank = openBank(player)
             bank[0] = InvObj(stackable, Int.MAX_VALUE)
             player.bankTabSizeMain = 1
@@ -230,7 +237,8 @@ class BankInvScriptTest {
     @Test
     fun GameTestState.`deposit single unbankable obj`() =
         runGameTest(BankInvScript::class) {
-            val unbankable = objTypes.values.firstOrNull { it.param(params.no_bank) != 0 }
+            val unbankable =
+                ServerCacheManager.getItems().values.firstOrNull { it.param(params.no_bank) != 0 }
             checkNotNull(unbankable) { "Could not find an ItemServerType with `no_bank` param." }
 
             val bank = openBank(player)
@@ -249,7 +257,8 @@ class BankInvScriptTest {
     @Test
     fun GameTestState.`deposit full inv with unbankable obj`() =
         runGameTest(BankInvScript::class) {
-            val unbankable = objTypes.values.firstOrNull { it.param(params.no_bank) != 0 }
+            val unbankable =
+                ServerCacheManager.getItems().values.firstOrNull { it.param(params.no_bank) != 0 }
             checkNotNull(unbankable) { "Could not find an ItemServerType with `no_bank` param." }
 
             val bank = openBank(player)
@@ -543,7 +552,7 @@ class BankInvScriptTest {
             player.ifButtonD(
                 fromComponent = bank_components.main_inventory,
                 fromComsub = 9,
-                fromObj = objTypes[bank[9]?.id],
+                fromObj = bank[9]?.id?.let(ServerCacheManager::getItem),
                 intoComponent = bank_components.tabs,
                 intoComsub = tab1Comsub + 2,
                 intoObj = null,
