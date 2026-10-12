@@ -156,6 +156,24 @@ class GravestonesTest {
         }
 
     @Test
+    fun GameTestState.`paying takes carried coins before the bank`() =
+        runGraveTest { deps ->
+            deps.graves.store(player, DEATH, DeathGrave(), listOf(InvObj(pricey, 1)))
+            val fee = deps.graves.fee(player)
+            val bank = player.invMap.getOrPut("inv.bank")
+            bank[0] = InvObj("obj.coins", fee)
+            player.inv[0] = InvObj("obj.coins", fee + 5)
+            openGrave()
+
+            player.ifButton(component(PAY_BUTTON))
+            advance()
+
+            assertEquals(5, player.inv.count("obj.coins"))
+            assertEquals(fee, bank.count("obj.coins"))
+            assertTrue(player.feePaid)
+        }
+
+    @Test
     fun GameTestState.`paying without the coins changes nothing`() =
         runGraveTest { deps ->
             deps.graves.store(player, DEATH, DeathGrave(), listOf(InvObj(pricey, 1)))
