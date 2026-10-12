@@ -158,14 +158,10 @@ constructor(private val cats: CatDialogue, private val knightsSword: KnightsSwor
             "You want that knight's sword again? I suppose you brought me a lovely pie, so I " +
                 "don't mind. I'll need a blurite ore and two iron bars, like before.",
         )
-        val inv = access.inv
-        if (inv.count(BLURITE_ORE) < 1 || inv.count(IRON_BAR) < 2) {
+        if (!KnightsSwordQuest.makeSword(player)) {
             chatPlayer(happy, "Okay, I'll go and find that.")
             return
         }
-        access.invDel(inv, BLURITE_ORE, 1)
-        access.invDel(inv, IRON_BAR, 2)
-        access.invAdd(inv, BLURITE_SWORD)
         objbox(BLURITE_SWORD, zoom = 400, "Thurgo makes you another sword.")
     }
 
@@ -295,8 +291,6 @@ constructor(private val cats: CatDialogue, private val knightsSword: KnightsSwor
         const val CAPE_PRICE = 99_000
         const val KNIGHTS_SWORD = "quest_knightssword"
         const val REDBERRY_PIE = "obj.redberry_pie"
-        const val BLURITE_ORE = "obj.blurite_ore"
-        const val IRON_BAR = "obj.iron_bar"
         const val BLURITE_SWORD = "obj.faladian_sword"
 
         val SLEEP_TALK =
