@@ -11,6 +11,8 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Peksa
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class HelmetShop @Inject constructor(private val shops: Shops) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -19,14 +21,14 @@ class HelmetShop @Inject constructor(private val shops: Shops) : PluginScript() 
     }
 
     private fun Player.openHelmetShop(npc: Npc) {
-        shops.open(this, npc, "Helmet Shop", "inv.helmetshop")
+        shops.open(this, npc, "Helmet Shop.", "inv.helmetshop")
     }
 
     private suspend fun ProtectedAccess.shopDialogue(npc: Npc) =
         startDialogue(npc) { shopKeeper(npc) }
 
     private suspend fun Dialogue.shopKeeper(npc: Npc) {
-        chatNpc(happy, "Are you intrested in buying or selling a helmet?")
+        chatNpc(happy, "Are you interested in buying or selling a helmet?")
 
         val choice = choice2(
             "I could be, yes.", 1,

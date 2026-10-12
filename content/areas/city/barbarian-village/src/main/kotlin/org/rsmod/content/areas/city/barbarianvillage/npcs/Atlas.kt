@@ -12,6 +12,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 private val Player.workoutCount by intVarBit("varbit.bim_workout_counter")
 
+// https://oldschool.runescape.wiki/w/Transcript:Atlas
 class Atlas : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.bim_atlas") { talk(it.npc) }
@@ -90,6 +91,8 @@ class Atlas : PluginScript() {
             return
         }
         chatNpc(happy, "It's not going to be any easier my friend!")
+        // TODO(content): [quest:below_ice_mountain] take the 25,000 coins, play the training
+        //  session and count the workout
     }
 
     private companion object {
