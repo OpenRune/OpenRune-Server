@@ -6,6 +6,7 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
@@ -28,11 +29,15 @@ import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.areas.city.alkharid.npcs.AlKharidTownsfolk
 import org.rsmod.content.areas.city.alkharid.npcs.AliTheLeafletDropper
 import org.rsmod.content.areas.city.alkharid.npcs.ChancellorHassan
 import org.rsmod.content.areas.city.alkharid.npcs.Karim
 import org.rsmod.content.areas.city.alkharid.npcs.Shantay
 import org.rsmod.content.areas.city.alkharid.npcs.SilkTrader
+import org.rsmod.content.quest.manager.QuestRequirementMode
+import org.rsmod.content.quest.manager.QuestRequirementPolicy
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -50,6 +55,21 @@ import org.rsmod.plugin.scripts.ScriptContext
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class AlKharidPurchasesInteractionTest {
+    private val previousPolicy = QuestRequirements.activePolicy()
+
+    @AfterEach
+    fun restorePolicy() {
+        QuestRequirements.install(previousPolicy)
+    }
+
+    private fun questsNotStarted() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
+    }
+
+    private fun questsCompleted() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+    }
+
     @Test fun `Karim sells a kebab for 1 coin`() {
         val f = Fixture()
         f.player.inv[0] = InvObj(COINS, 5)
@@ -135,6 +155,7 @@ class AlKharidPurchasesInteractionTest {
     }
 
     @Test fun `Hassan hands out a jug of water`() {
+        questsNotStarted()
         val f = Fixture()
         f.talkTo(HASSAN)
         f.finish(listOf(2, 4))
@@ -142,12 +163,73 @@ class AlKharidPurchasesInteractionTest {
     }
 
     @Test fun `a full pack drops Hassan's water instead of losing it`() {
+        questsNotStarted()
         val f = Fixture()
         f.fillInventory()
         f.talkTo(HASSAN)
         f.finish(listOf(2, 4))
         assertEquals(0, f.player.inv.count(JUG_OF_WATER))
         assertEquals(1, f.groundCount(JUG_OF_WATER))
+    }
+
+    @Test fun `Hassan hands out no water after Prince Ali Rescue`() {
+        questsCompleted()
+        val f = Fixture()
+        f.talkTo(HASSAN)
+        f.finish(emptyList())
+        assertEquals(0, f.player.inv.count(JUG_OF_WATER))
+    }
+
+    @Test fun `Osman sells a Keris dagger for 20000 coins`() {
+        questsCompleted()
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 25_000)
+        f.talkTo(OSMAN)
+        f.finish(listOf(1, 1, 1, 4))
+        assertEquals(5_000, f.player.inv.count(COINS))
+        assertEquals(1, f.player.inv.count(KERIS))
+    }
+
+    @Test fun `Osman sells no Keris dagger to a player short of coins`() {
+        questsCompleted()
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 19_999)
+        f.talkTo(OSMAN)
+        f.finish(listOf(1, 1, 1, 4))
+        assertEquals(19_999, f.player.inv.count(COINS))
+        assertEquals(0, f.player.inv.count(KERIS))
+    }
+
+    @Test fun `Osman sells no Keris dagger to a full pack`() {
+        questsCompleted()
+        val f = Fixture()
+        f.fillInventory()
+        f.player.inv[0] = InvObj(COINS, 25_000)
+        f.talkTo(OSMAN)
+        f.finish(listOf(1, 1, 1, 4))
+        assertEquals(25_000, f.player.inv.count(COINS))
+        assertEquals(0, f.player.inv.count(KERIS))
+        assertEquals(0, f.groundCount(KERIS))
+    }
+
+    @Test fun `declining Osman's Keris dagger costs nothing`() {
+        questsCompleted()
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 25_000)
+        f.talkTo(OSMAN)
+        f.finish(listOf(1, 1, 2, 4))
+        assertEquals(25_000, f.player.inv.count(COINS))
+        assertEquals(0, f.player.inv.count(KERIS))
+    }
+
+    @Test fun `Osman has no daggers before Contact`() {
+        questsNotStarted()
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 25_000)
+        f.talkTo(OSMAN)
+        f.finish(listOf(1))
+        assertEquals(25_000, f.player.inv.count(COINS))
+        assertEquals(0, f.player.inv.count(KERIS))
     }
 
     @Test fun `the leaflet dropper hands out one flyer`() {
@@ -247,6 +329,7 @@ class AlKharidPurchasesInteractionTest {
             with(SilkTrader(objRepo)) { scripts.startup() }
             with(ChancellorHassan(objRepo)) { scripts.startup() }
             with(AliTheLeafletDropper()) { scripts.startup() }
+            with(AlKharidTownsfolk()) { scripts.startup() }
             with(Shantay(Shops(events), objRepo)) { scripts.startup() }
         }
 
@@ -298,10 +381,11 @@ class AlKharidPurchasesInteractionTest {
                         )
                     } else {
                         val parent =
-                            listOf("chat_left", "chat_right", "messagebox").firstOrNull {
-                                player.ui.containsModal("interface.$it")
-                            } ?: error("Unknown dialogue: ${client.messages.joinToString("\n")}")
-                        ResumePauseButtonInput("component.$parent:continue", -1)
+                            listOf("chat_left", "chat_right", "messagebox", "objectbox")
+                                .firstOrNull { player.ui.containsModal("interface.$it") }
+                                ?: error("Unknown dialogue: ${client.messages.joinToString("\n")}")
+                        val component = if (parent == "objectbox") "universe" else "continue"
+                        ResumePauseButtonInput("component.$parent:$component", -1)
                     }
                 coroutine.resumeWith(input)
             } else {
@@ -341,6 +425,8 @@ class AlKharidPurchasesInteractionTest {
         private const val KARIM = "npc.kebab_seller"
         private const val SILK_TRADER = "npc.silk_trader"
         private const val HASSAN = "npc.hassan"
+        private const val OSMAN = "npc.osman"
+        private const val KERIS = "obj.contact_keris"
         private const val LEAFLET_DROPPER = "npc.ali_leaflet_dropper"
         private const val SHANTAY = "npc.shantay"
         private val restored = mutableListOf<() -> Unit>()

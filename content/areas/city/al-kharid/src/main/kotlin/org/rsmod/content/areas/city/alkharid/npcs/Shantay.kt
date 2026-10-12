@@ -11,6 +11,7 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -19,7 +20,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 // https://oldschool.runescape.wiki/w/Transcript:Shantay
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 // TODO(content): [system:shantay_pass] first-talk greeting ("I see you're new.") needs a varbit
-// TODO(content): [quest:the_tourist_trap] "Hope the quest is going well friend." once started
 // TODO(content): [system:treasure_trails] beginner clue reward
 class Shantay
 @Inject
@@ -41,11 +41,19 @@ constructor(private val shops: Shops, private val objRepo: ObjRepository) : Plug
                 "Hello again friend. Please read the billboard poster before going into the " +
                     "desert. It'll give yer details on the dangers you can face.",
             )
-            chatNpc(
-                sad,
-                "There is a heartbroken mother just past the gates and in the desert. Her name " +
-                    "is Irena and she mourns her lost daughter. Such a shame.",
-            )
+            if (QuestRequirements.isOnQuest(player, TOURIST_TRAP)) {
+                chatNpc(
+                    happy,
+                    "Hope the quest is going well friend. Irena told me you were looking for Ana. " +
+                        "Very brave of you!",
+                )
+            } else if (QuestRequirements.hasNotCompleted(player, TOURIST_TRAP)) {
+                chatNpc(
+                    sad,
+                    "There is a heartbroken mother just past the gates and in the desert. Her " +
+                        "name is Irena and she mourns her lost daughter. Such a shame.",
+                )
+            }
             mainMenu(npc)
         }
 
@@ -209,5 +217,6 @@ constructor(private val shops: Shops, private val objRepo: ObjRepository) : Plug
         const val SHANTAY = "npc.shantay"
         const val COINS = "obj.coins"
         const val PASS_PRICE = 5
+        const val TOURIST_TRAP = "quest_touristtrap"
     }
 }

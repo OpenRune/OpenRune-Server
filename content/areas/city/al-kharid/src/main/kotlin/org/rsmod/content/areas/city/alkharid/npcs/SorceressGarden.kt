@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.alkharid.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -12,9 +13,15 @@ class SorceressGarden : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Del-Monty
-    // TODO(content): [quest:dragon_slayer_ii] catspeak without the amulet after the enchantment
+    // https://oldschool.runescape.wiki/w/Catspeak_amulet (cats understood without it after
+    // Dragon Slayer II)
+    // TODO(content): [quest:dragon_slayer_ii] catspeak without the amulet from the enchantment
+    //  during the quest
     private suspend fun Dialogue.delMonty() {
-        if (CATSPEAK_AMULETS.none { it in player.worn }) {
+        val understands =
+            CATSPEAK_AMULETS.any { it in player.worn } ||
+                QuestRequirements.hasCompleted(player, DRAGON_SLAYER_II)
+        if (!understands) {
             chatPlayer(happy, "Hey kitty!")
             chatNpc(angry, "Hiss!")
             return
@@ -189,6 +196,8 @@ class SorceressGarden : PluginScript() {
     }
 
     private companion object {
+        const val DRAGON_SLAYER_II = "quest_dragonslayer2"
+
         val CATSPEAK_AMULETS =
             listOf("obj.ics_little_amulet_of_catspeak", "obj.twocats_amuletofcatspeak")
     }

@@ -1,10 +1,13 @@
 package org.rsmod.content.areas.city.alkharid.npcs
 
+import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.stat.fishingLvl
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -27,11 +30,21 @@ class AlKharidTownsfolk : PluginScript() {
         onOpNpc1("npc.tempoross_ferry_to_lobby_npc") { startDialogue(it.npc) { sathwood() } }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Osman (before Prince Ali Rescue)
-    // TODO(content): [quest:prince_ali_rescue] in-progress and post-quest dialogue
-    // TODO(content): [quest:contact] Sophanem and Keris dagger dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Osman
+    // TODO(content): [quest:prince_ali_rescue] in-progress dialogue
     // TODO(content): [system:sorceress_garden] "I'd like to talk about sq'irks."
     private suspend fun Dialogue.osman() {
+        if (QuestRequirements.hasCompleted(player, CONTACT)) {
+            osmanAfterContact()
+            return
+        }
+        if (QuestRequirements.hasCompleted(player, PRINCE_ALI_RESCUE)) {
+            chatNpc(
+                happy,
+                "Well done. A great rescue. I will remember you if I have anything dangerous to do.",
+            )
+            return
+        }
         chatNpc(neutral, "Hello. I am Osman. What can I assist you with?")
         val option =
             choice2(
@@ -55,9 +68,151 @@ class AlKharidTownsfolk : PluginScript() {
         }
     }
 
+    private suspend fun Dialogue.osmanAfterContact() {
+        chatNpc(neutral, "Hello again.")
+        while (true) {
+            val sophanem =
+                choice2(
+                    "I want to talk to you about Sophanem.",
+                    true,
+                    "I need to go.",
+                    false,
+                )
+            if (!sophanem) {
+                chatPlayer(neutral, "I need to go.")
+                chatNpc(neutral, "Until next time.")
+                return
+            }
+            if (!osmanSophanem()) {
+                return
+            }
+        }
+    }
+
+    // TODO(content): [quest:contact] Kaleef's dagger for a player who never took it from the
+    //  scarab
+    private suspend fun Dialogue.osmanSophanem(): Boolean {
+        chatPlayer(quiz, "I want to talk to you about Sophanem.")
+        chatNpc(
+            neutral,
+            "Yes, quite the interesting set of events. I suspect I won't be heading back down " +
+                "there any time soon.",
+        )
+        while (true) {
+            val option =
+                choice4(
+                    "Do you have any more of those daggers?",
+                    1,
+                    "What are your plans for Menaphos now?",
+                    2,
+                    "Let's talk about something else.",
+                    3,
+                    "I should go.",
+                    4,
+                )
+            when (option) {
+                1 -> moreDaggers()
+                2 -> {
+                    chatPlayer(quiz, "What are your plans for Menaphos now?")
+                    chatNpc(neutral, "I think you already know the answer to that.")
+                    chatPlayer(quiz, "I'm not allowed to know, am I?")
+                    chatNpc(neutral, "No.")
+                }
+                3 -> {
+                    chatPlayer(neutral, "Let's talk about something else.")
+                    chatNpc(neutral, "As you wish.")
+                    return true
+                }
+                else -> {
+                    chatPlayer(neutral, "I should go.")
+                    chatNpc(neutral, "Until next time.")
+                    return false
+                }
+            }
+        }
+    }
+
+    private suspend fun Dialogue.moreDaggers() {
+        chatPlayer(quiz, "Do you have any more of those daggers?")
+        chatNpc(
+            neutral,
+            "Of course. They're a standard piece of equipment for us. The enchantments upon them " +
+                "make them very useful against both scarabs and kalphites. If you want, I can " +
+                "sell you another for 20,000 coins?",
+        )
+        if (!choice2("I'll take one.", true, "That's too much.", false)) {
+            chatPlayer(neutral, "That's too much.")
+            chatNpc(neutral, "Well you know where I am if you reconsider.")
+            return
+        }
+        chatPlayer(happy, "I'll take one.")
+        if (access.invTotal(player.inv, COINS) < KERIS_PRICE) {
+            chatPlayer(sad, "Actually, I don't seem to have enough money on me.")
+            return
+        }
+        if (player.inv.isFull()) {
+            chatPlayer(sad, "Actually, I don't seem to have enough room to carry it.")
+            return
+        }
+        if (!player.invTakeFee(KERIS_PRICE)) {
+            return
+        }
+        if (player.invAdd(player.inv, KERIS).failure) {
+            player.invAdd(player.inv, COINS, KERIS_PRICE)
+            return
+        }
+        objbox(KERIS, "Osman hands you a Keris dagger in exchange for 20,000 coins.")
+    }
+
+    // TODO(content): [system:gliders] the glider transport interface
+    private suspend fun Dialogue.captainDalburAfterGrandTree() {
+        val option =
+            choice4(
+                "Can you take me on the glider?",
+                1,
+                "What do you think of Ali Morrisane?",
+                2,
+                "Why are gliders better than other transport?",
+                3,
+                "Sorry, I don't want anything now.",
+                4,
+            )
+        when (option) {
+            1 -> {
+                chatPlayer(quiz, "Can you take me on the glider?")
+                chatNpc(happy, "Of course!")
+            }
+            2 -> {
+                chatPlayer(quiz, "What do you think of Ali Morrisane?")
+                chatNpc(neutral, "Oh, he's always up to something. Like that magic carpet business.")
+                chatPlayer(quiz, "What magic carpet business?")
+                chatNpc(
+                    neutral,
+                    "He said he was planning to set up a magic carpet network, like our gliders.",
+                )
+                chatNpc(
+                    angry,
+                    "If he ever gets it set up, us gnomes won't be happy with him. Especially not " +
+                        "King Narnode!",
+                )
+            }
+            3 -> {
+                chatPlayer(quiz, "Why are gliders better than other transport?")
+                chatNpc(
+                    happy,
+                    "Oh we have a whole network! It's wonderful for getting to hard to reach " +
+                        "places.",
+                )
+                chatNpc(happy, "There are so many places where your teleports cannot reach!")
+                chatPlayer(quiz, "How did you all manage to build such an established network?")
+                chatNpc(laugh, "I think you'll find that is a gnome trade secret!")
+            }
+            4 -> chatPlayer(neutral, "Sorry, I don't want anything now.")
+        }
+    }
+
     // https://oldschool.runescape.wiki/w/Transcript:Sorceress
     // TODO(content): [system:sorceress_garden] teleport the player outside the house when ejected
-    // TODO(content): [quest:beneath_cursed_sands] "Selim." instead of "Osman." after the quest
     private suspend fun Dialogue.sorceress() {
         chatNpc(angry, "Who are you and what do you want?")
         val option =
@@ -88,12 +243,21 @@ class AlKharidTownsfolk : PluginScript() {
                 chatNpc(neutral, "What do you want them for?")
                 chatPlayer(neutral, "Someone asked me to bring them some.")
                 chatNpc(quiz, "Who?")
-                chatPlayer(neutral, "Osman.")
-                chatNpc(
-                    angry,
-                    "In that case I'm sorry, but you can't. I have had a falling out with him " +
-                        "recently and would rather not oblige him.",
-                )
+                if (QuestRequirements.hasCompleted(player, BENEATH_CURSED_SANDS)) {
+                    chatPlayer(neutral, "Selim.")
+                    chatNpc(
+                        angry,
+                        "In that case I'm sorry, but you can't. I have had a falling out with his " +
+                            "master recently and would rather not oblige him.",
+                    )
+                } else {
+                    chatPlayer(neutral, "Osman.")
+                    chatNpc(
+                        angry,
+                        "In that case I'm sorry, but you can't. I have had a falling out with him " +
+                            "recently and would rather not oblige him.",
+                    )
+                }
             }
             4 -> chatPlayer(neutral, "I'm just passing by.")
         }
@@ -419,10 +583,13 @@ class AlKharidTownsfolk : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Captain_Dalbur (before The Grand Tree)
-    // TODO(content): [quest:the_grand_tree] glider travel and post-quest options
+    // https://oldschool.runescape.wiki/w/Transcript:Captain_Dalbur
     // TODO(content): [system:treasure_trails] Crack the Clue II
     private suspend fun Dialogue.captainDalbur() {
+        if (QuestRequirements.hasCompleted(player, THE_GRAND_TREE)) {
+            captainDalburAfterGrandTree()
+            return
+        }
         chatNpc(happy, "Welcome to Gnome Air!")
         while (true) {
             val option =
@@ -518,5 +685,12 @@ class AlKharidTownsfolk : PluginScript() {
 
     private companion object {
         const val TEMPOROSS_FISHING_LEVEL = 35
+        const val PRINCE_ALI_RESCUE = "quest_princealirescue"
+        const val CONTACT = "quest_contact"
+        const val THE_GRAND_TREE = "quest_grandtree"
+        const val BENEATH_CURSED_SANDS = "quest_beneathcursedsands"
+        const val COINS = "obj.coins"
+        const val KERIS = "obj.contact_keris"
+        const val KERIS_PRICE = 20_000
     }
 }
