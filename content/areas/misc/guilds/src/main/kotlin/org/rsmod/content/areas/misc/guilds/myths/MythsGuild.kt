@@ -2,6 +2,7 @@ package org.rsmod.content.areas.misc.guilds.myths
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -16,11 +17,14 @@ class MythsGuild : PluginScript() {
         onOpNpc1("npc.myths_guild_dungeon_guard") { startDialogue(it.npc) { ponts() } }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Alec_Kincade (Dragon Slayer II not started)
-    // TODO(content): [quest:dragon_slayer_ii] quest start, "Let's talk about my quest." and the
-    //  after-quest "Absolutely." answer
+    // https://oldschool.runescape.wiki/w/Transcript:Alec_Kincade
+    // TODO(content): [quest:dragon_slayer_ii] quest start and "Let's talk about my quest."
     private suspend fun Dialogue.alecKincade() {
         chatNpc(happy, "Greetings, adventurer. Welcome to the Myths' Guild.")
+        if (QuestRequirements.hasCompleted(player, DRAGON_SLAYER_II)) {
+            alecAfterQuest()
+            return
+        }
         val option =
             choice3(
                 "Tell me about the guild.",
@@ -75,6 +79,31 @@ class MythsGuild : PluginScript() {
                 chatNpc(neutral, "Farewell, adventurer.")
             }
         }
+    }
+
+    private suspend fun Dialogue.alecAfterQuest() {
+        if (!choice2("Tell me about the guild.", true, "Goodbye.", false)) {
+            chatPlayer(neutral, "Goodbye.")
+            chatNpc(neutral, "Farewell, adventurer.")
+            return
+        }
+        chatPlayer(quiz, "Tell me about the guild.")
+        chatNpc(
+            neutral,
+            "The Myths' Guild is home to those who wish to uncover the lost secrets of this " +
+                "world. We investigate the myths of these lands to see if any facts may be " +
+                "hidden within them.",
+        )
+        chatNpc(
+            neutral,
+            "Here, we discover things that others only dream of. However, the cost of entry is " +
+                "not insignificant. Only the most worthy may share in our secrets.",
+        )
+        chatPlayer(quiz, "Am I worthy?")
+        chatNpc(
+            happy,
+            "Absolutely. You've proven your worth to the guild and may enter whenever you please.",
+        )
     }
 
     private suspend fun Dialogue.dragonsChallenge() {
@@ -364,10 +393,7 @@ class MythsGuild : PluginScript() {
         chatNpc(happy, "Well fear not. I'm working on it!")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Ponts_the_Bridgemaster (Dragon Slayer II not
-    // finished)
-    // TODO(content): [quest:dragon_slayer_ii] "Oh go on then. I suppose you have proven yourself
-    //  worthy." after the quest
+    // https://oldschool.runescape.wiki/w/Transcript:Ponts_the_Bridgemaster
     private suspend fun Dialogue.ponts() {
         chatNpc(
             neutral,
@@ -507,6 +533,10 @@ class MythsGuild : PluginScript() {
     private suspend fun Dialogue.pontsRefusal() {
         chatNpc(neutral, "No.")
         chatPlayer(confused, "Huh?")
+        if (QuestRequirements.hasCompleted(player, DRAGON_SLAYER_II)) {
+            chatNpc(neutral, "Oh go on then. I suppose you have proven yourself worthy.")
+            return
+        }
         chatNpc(
             neutral,
             "Well, perhaps. You should speak to Alec the Guildmaster, he sorts out that kind of " +
@@ -514,5 +544,9 @@ class MythsGuild : PluginScript() {
         )
         chatPlayer(happy, "Oh okay! I'll go do that. Bye.")
         chatNpc(neutral, "Fare thee well.")
+    }
+
+    private companion object {
+        const val DRAGON_SLAYER_II = "quest_dragonslayer2"
     }
 }
