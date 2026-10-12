@@ -122,7 +122,7 @@ class GertrudesCatInteractionTest {
         val f = Fixture(3)
         f.talkToKid("npc.wilough")
         f.finish()
-        assertTrue(f.output().contains("You think you're tough, do you?"), f.output())
+        assertTrue(f.output().contains("You think you're tough do you?"), f.output())
         assertEquals(3, f.stage())
     }
 
