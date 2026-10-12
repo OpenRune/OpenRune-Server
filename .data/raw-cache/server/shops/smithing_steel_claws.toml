@@ -1,0 +1,60 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.smithing_steel_claws"
+name = "Alry the Angler's Angling Accessories"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 1000
+delta = 0
+
+size = 8
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.fishingrod_pearl"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.fishingrod_pearl_fly"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.fish_sack"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.trawler_reward_hat"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.trawler_reward_top"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.trawler_reward_legs"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.trawler_reward_boots"
+count = 1000
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.shark_lure_pack"
+count = 10000
+restockCycles = 1
+

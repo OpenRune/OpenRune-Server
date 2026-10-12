@@ -1,0 +1,120 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_hunting_birds"
+name = "Regath's Wares"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1400
+buyMultiplier = 400
+delta = 10
+
+size = 20
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.vial_water"
+count = 30
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.pack_vial_water"
+count = 25
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.rope"
+count = 10
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.firerune"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.waterrune"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.airrune"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.earthrune"
+count = 500
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.mindrune"
+count = 300
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bodyrune"
+count = 300
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.bloodrune"
+count = 50
+restockCycles = 35
+
+[[inventory.stock]]
+obj = "obj.soulrune"
+count = 50
+restockCycles = 30
+
+[[inventory.stock]]
+obj = "obj.pack_firerune"
+count = 80
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_waterrune"
+count = 80
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_airrune"
+count = 80
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_earthrune"
+count = 80
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_mindrune"
+count = 40
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bluewizhat"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.blackwizhat"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.eye_of_newt"
+count = 300
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.pack_eye_newt"
+count = 60
+restockCycles = 50
+
