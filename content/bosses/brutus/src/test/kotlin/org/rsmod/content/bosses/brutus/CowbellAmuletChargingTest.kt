@@ -214,9 +214,16 @@ class CowbellAmuletChargingTest {
                         coroutine.resumeWith(ResumePCountDialogInput(count))
                     coroutine.isAwaiting(ResumePauseButtonInput::class) -> {
                         val parent =
-                            listOf("messagebox", "objectbox").first { player.ui.containsModal("interface.$it") }
-                        val component = if (parent == "objectbox") "component.objectbox:universe" else "component.messagebox:continue"
-                        coroutine.resumeWith(ResumePauseButtonInput(component, if (parent == "objectbox") 0 else -1))
+                            listOf("messagebox", "objectbox", "objectbox_double").first {
+                                player.ui.containsModal("interface.$it")
+                            }
+                        val input =
+                            when (parent) {
+                                "objectbox" -> ResumePauseButtonInput("component.objectbox:universe", 0)
+                                "objectbox_double" -> ResumePauseButtonInput("component.objectbox_double:pausebutton", -1)
+                                else -> ResumePauseButtonInput("component.messagebox:continue", -1)
+                            }
+                        coroutine.resumeWith(input)
                     }
                     else -> {
                         player.currentMapClock++
