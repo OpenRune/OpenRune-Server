@@ -298,27 +298,51 @@ Default to no comments; the code and its names should carry the meaning.
   says what it is. Rename instead of commenting.
 - Never leave narration comments about a change you just made ("now uses X",
   "fixed the bug where..."); that belongs in the commit message.
+- **Exception — test bodies:** every new test marks its phases with the bare markers
+  `// given`, `// when`, `// then` (or `// when / then`), each on its own line. These
+  markers are the only comments a test body may contain; nothing may follow them on the
+  line, and any other comment in a test still falls under the rules above.
 
-## Unit tests — where they earn their keep
+## Tests
 
-Write tests for two kinds of code, and verify everything else in a live client:
+Three test layers. Use the cheapest layer that can prove the behaviour, and move up only
+when the code needs the running game or a real database.
 
-- **Complex logic and maths**: combat formulas, accuracy/max-hit rolls, drop-rate
+| Layer | Proves | Source set | Gradle task | Harness | Use when |
+|---|---|---|---|---|---|
+| Unit | Logic in isolation | `src/test` | `test` | Plain JUnit 5; never boots the game or loads the cache | Formulas, rolls, state machines, geometry — inputs passed in as parameters |
+| Game integration | Behaviour in the running game | `src/integration` | `integration` | `GameTestState` → `runGameTest(Script::class)` (`runInjectedGameTest` to swap a binding) | Needs cache types or RSCM symbols, scripts, ops, item movement (dupe/loss) |
+| Persistence | Player state survives save → load on real Postgres | `src/persistence` | `persistence` | `PersistenceTestExtension`: zonky PG 14, fresh DB per test, real repository and pipelines, no `GameServer` | Changing what is saved or loaded: pipelines, appliers, repository, schema/world-type isolation, save rollback |
+
+Unit stays cache-free: logic that only reads cache values takes them as parameters. New
+script or content behaviour goes through `runGameTest`, not hand-mocked `ProtectedAccess`/
+`Player`/`ServerCacheManager` fixtures. The `integration` and `persistence` suites only exist
+in modules that apply `id("integration-test-suite")` / `id("persistence-test-suite")`.
+
+What earns a test — write tests for these, and verify everything else in a live client:
+
+- **Complex logic and maths → Unit**: combat formulas, accuracy/max-hit rolls, drop-rate
   and probability maths, XP curves, pathing/geometry, multi-branch state machines —
   anything where an off-by-one or wrong rounding is silent in play.
-- **Anything that moves items** in or out of an inventory, bank, shop, trade,
-  equipment slot or ground stack. Every such flow needs a test proving no item can
-  be duplicated or lost. Cover the dupe paths:
+- **Anything that moves items → Game integration** (a dupe/loss test): in or out of an
+  inventory, bank, shop, trade, equipment slot or ground stack. Every such flow needs a test
+  that drives the real op handler and proves no item can be duplicated or lost. A Unit test
+  of the transaction maths can add to it but never replaces it. Cover the dupe paths:
   - full inventory / no space mid-transaction (the whole action rolls back);
   - stack overflow at `Int.MAX_VALUE`;
   - repeated or same-tick clicks, and the source item vanishing between the
     check and the take (dropped, banked, already consumed);
   - every item taken is accounted for: total count of each obj before and after
     matches what the action is meant to do.
+- **Save/load → Persistence**: anything that changes what a character saves or loads, or
+  how a save commits or rolls back.
 
 Skip tests for straight-line content wiring (dialogue, simple op handlers, NPC
 spawns, interface layout) and for config-matches-cache/wiki checks — the live
 client covers those.
+
+How to write each layer, including the full given/when/then rules: the `unit-test`,
+`game-integration-test` and `persistence-test` skills in `.claude/skills/`.
 
 ## Testing changes in a live client
 
