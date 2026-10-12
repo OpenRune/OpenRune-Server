@@ -22,7 +22,7 @@ import org.rsmod.utils.bits.withBits
 /**
  * Charging, uncharging and checking the cowbell amulet with air runes, one charge per rune
  * (https://oldschool.runescape.wiki/w/Cowbell_amulet and its transcript). Dialogue types: live
- * capture, rev 241, 20261012T200152-df49f48@50-187.
+ * capture, rev 241, 20261012T200152-df49f48@50-187, @498.
  */
 class CowbellAmuletCharging @Inject constructor(private val charges: ObjChargeManager) :
     PluginScript() {
@@ -88,8 +88,13 @@ class CowbellAmuletCharging @Inject constructor(private val charges: ObjChargeMa
             return
         }
         charges.removeAllCharges(inv, slot, CHARGES)
-        // UNVERIFIED: dialogue type (wiki transcript gives only the text).
-        mesbox("You uncharge your amulet by removing $count air ${runeWord(count)} from it.")
+        // live capture, rev 241, 20261012T200152-df49f48@498
+        soundSynth(UNCHARGE_SYNTH)
+        doubleobjbox(
+            EMPTY,
+            AIR_RUNE,
+            "You uncharge your amulet by removing $count air ${runeWord(count)} from it.",
+        )
     }
 
     companion object {
@@ -99,6 +104,7 @@ class CowbellAmuletCharging @Inject constructor(private val charges: ObjChargeMa
         const val CHARGES = "varobj.charges_16383"
         const val MAX_CHARGES = 1_000
         private const val CHARGE_SYNTH = "synth.cowbell_amulet_charge"
+        private const val UNCHARGE_SYNTH = "synth.cowbell_amulet_uncharge"
 
         private val chargeBits by lazy {
             checkNotNull(ServerCacheManager.getVarObj(CHARGES.asRSCM(RSCMType.VAROBJ))).bits
