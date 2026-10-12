@@ -69,10 +69,11 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
         sendFee()
     }
 
-    // TODO: Live pays from Death's Coffer before the bank, and items can be discarded into the
-    // coffer to lower the fee (https://oldschool.runescape.wiki/w/Items_Kept_on_Death).
+    // TODO: Items can be discarded from the grave into the coffer to lower the fee
+    // (https://oldschool.runescape.wiki/w/Items_Kept_on_Death).
     private fun ProtectedAccess.sendFee() {
-        runClientScript(TRANSMIT_DATA.asRSCM(RSCMType.CLIENTSCRIPT), graves.fee(player), 0)
+        val coffer = player.deathCoffer
+        runClientScript(TRANSMIT_DATA.asRSCM(RSCMType.CLIENTSCRIPT), graves.fee(player), coffer)
     }
 
     private fun ProtectedAccess.takeOrExamine(button: IfOverlayButton) {
@@ -101,23 +102,18 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
     private fun ProtectedAccess.paySlots(): List<Int> =
         ITEM_SLOTS.filter { graves.isPaySlot(player, it) }
 
-    /** The bank message is from live capture, rev 241, 20261012T233700-df49f48@1037. */
     private fun ProtectedAccess.pay() {
         val fee = graves.fee(player)
         if (fee <= 0) {
             return
         }
-        when (payDeathFee(fee)) {
-            null -> {
-                // UNVERIFIED: the message when neither can cover the fee.
-                mes("You don't have enough coins with you or in your bank to pay the fee.")
-                return
-            }
-            DeathFeeSource.Bank -> mes("Payment has been taken from your bank: ${"%,d".format(fee)} x Coins")
-            // UNVERIFIED: the message when carried coins pay (the bank one, reworded).
-            DeathFeeSource.Inventory ->
-                mes("Payment has been taken from your inventory: ${"%,d".format(fee)} x Coins")
+        val source = payDeathFee(fee)
+        if (source == null) {
+            // UNVERIFIED: the message when nothing can cover the fee.
+            mes("You don't have enough coins with you or in your bank to pay the fee.")
+            return
         }
+        mes(deathFeeMessage(source, fee))
         player.feePaid = true
         sendFee()
     }

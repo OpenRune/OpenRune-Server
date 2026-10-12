@@ -175,6 +175,23 @@ class GravestonesTest {
         }
 
     @Test
+    fun GameTestState.`Death's Coffer pays before carried coins`() =
+        runGraveTest { deps ->
+            deps.graves.store(player, DEATH, DeathGrave(), listOf(InvObj(pricey, 1)))
+            val fee = deps.graves.fee(player)
+            player.deathCoffer = fee + 3
+            player.inv[0] = InvObj("obj.coins", fee)
+            openGrave()
+
+            player.ifButton(component(PAY_BUTTON))
+            advance()
+
+            assertEquals(3, player.deathCoffer)
+            assertEquals(fee, player.inv.count("obj.coins"))
+            assertTrue(player.feePaid)
+        }
+
+    @Test
     fun GameTestState.`paying without the coins changes nothing`() =
         runGraveTest { deps ->
             deps.graves.store(player, DEATH, DeathGrave(), listOf(InvObj(pricey, 1)))
@@ -374,6 +391,7 @@ class GravestonesTest {
             player.clearAllInvs()
             // Owner-only floor drops need it; test players don't log in.
             player.observerUUID = 1L
+            player.deathCoffer = 0
             body(deps)
         }
 

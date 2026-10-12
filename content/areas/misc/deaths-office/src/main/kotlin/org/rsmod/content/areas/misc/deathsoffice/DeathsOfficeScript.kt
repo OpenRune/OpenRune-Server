@@ -19,9 +19,10 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.table.DeathOfficeEntrancesRow
-import org.rsmod.content.other.gravestones.DeathFeeSource
 import org.rsmod.content.other.gravestones.GraveFees
 import org.rsmod.content.other.gravestones.Gravestones
+import org.rsmod.content.other.gravestones.deathCoffer
+import org.rsmod.content.other.gravestones.deathFeeMessage
 import org.rsmod.content.other.gravestones.deathOffice
 import org.rsmod.content.other.gravestones.grave
 import org.rsmod.content.other.gravestones.graveCoords
@@ -36,7 +37,7 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 private var Player.officeEntrance by intVarp("varp.death_office_entrance")
-private var Player.coffer by intVarp("varp.if1")
+private var Player.cofferShown by intVarp("varp.if1")
 private var Player.selectedSlot by intVarp("varp.if2")
 private var Player.selectedFee by intVarp("varp.if3")
 
@@ -58,8 +59,6 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
             onOpLoc1(row.entrance) { enter(row) }
         }
         onOpLoc1(EXIT_PORTAL) { leave() }
-        // TODO: Death's Coffer (loc.death_coffer_access, interfaces death_coffer and
-        // death_coffer_side; https://oldschool.runescape.wiki/w/Death%27s_Coffer).
         onIfModalButton(ITEMS) { selectOrExamine(it) }
         onIfModalButton(TAKE_1) { takeSelected(1) }
         onIfModalButton(TAKE_5) { takeSelected(5) }
@@ -312,7 +311,7 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
      */
     private suspend fun Dialogue.chooseGravestone() {
         chatPlayer(quiz, "Can I choose a different-looking gravestone?")
-        val angel = access.gravestoneChoice(player.coffer)
+        val angel = access.gravestoneChoice(player.deathCoffer)
         if (!angel) {
             // https://oldschool.runescape.wiki/w/Transcript:Death_(NPC)
             // UNVERIFIED: the mesanims.
@@ -337,9 +336,11 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
             chatNpc(bored, "You've already got the Angel of Death.")
             return
         }
-        // TODO: Death's Coffer can pay too ("I can take coins from your inventory, or from my
-        // Coffer.").
-        if (access.inv.count(COINS) < ANGEL_PRICE) {
+        // "I can take coins from your inventory, or from my Coffer." UNVERIFIED: which goes first
+        // when both could pay (live capture, rev 241, 20261013T013733-df49f48@410 took the
+        // inventory's with 13,351 in the coffer).
+        val fromInv = access.inv.count(COINS) >= ANGEL_PRICE
+        if (!fromInv && player.deathCoffer < ANGEL_PRICE) {
             chatNpc(
                 bored,
                 "You haven't got 200,000 coins to pay for that. I can take coins from your " +
@@ -366,8 +367,12 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
             )
         if (buy) {
             chatPlayer(happy, "Yes, I understand other people won't often see it.")
-            if (player.invDel(access.inv, COINS, ANGEL_PRICE).failure) {
-                return
+            if (fromInv) {
+                if (player.invDel(access.inv, COINS, ANGEL_PRICE).failure) {
+                    return
+                }
+            } else {
+                player.deathCoffer -= ANGEL_PRICE
             }
             setGraveType(1)
             objbox(ANGEL_OBJ, "Your gravestone is now the Angel of Death.")
@@ -403,8 +408,7 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
     /** Live capture, rev 241, 20261013T013733-df49f48@55 and rev 240, 20260811T152500-59bcb26@24. */
     private fun ProtectedAccess.openOffice() {
         player.selectedSlot = -1
-        // TODO: Death's Coffer's balance; there is no coffer yet.
-        player.coffer = 0
+        player.cofferShown = player.deathCoffer
         invTransmit(player.deathOffice)
         ifOpenMainModal(INTERFACE)
         ifSetEvents(ITEMS, ITEM_SLOTS, IfEvent.Op1, IfEvent.Op10)
@@ -498,23 +502,19 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
         return inv.freeSpace().coerceAtMost(count)
     }
 
-    // UNVERIFIED: the messages; the grave's bank one is from live capture, rev 241,
-    // 20261012T233700-df49f48@1037.
+    // UNVERIFIED: the message when nothing covers the fee.
     private fun ProtectedAccess.charge(fee: Long): Boolean {
         if (fee <= 0) {
             return true
         }
         val amount = fee.coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
-        when (if (fee > Int.MAX_VALUE) null else payDeathFee(amount)) {
-            null -> {
-                mes("You don't have enough coins with you or in your bank to pay the fee.")
-                return false
-            }
-            DeathFeeSource.Bank ->
-                mes("Payment has been taken from your bank: ${"%,d".format(amount)} x Coins")
-            DeathFeeSource.Inventory ->
-                mes("Payment has been taken from your inventory: ${"%,d".format(amount)} x Coins")
+        val source = if (fee > Int.MAX_VALUE) null else payDeathFee(amount)
+        if (source == null) {
+            mes("You don't have enough coins with you or in your bank to pay the fee.")
+            return false
         }
+        mes(deathFeeMessage(source, amount))
+        player.cofferShown = player.deathCoffer
         return true
     }
 

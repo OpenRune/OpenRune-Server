@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     implementation(projects.api.generated)
+    implementation(projects.api.market)
     implementation(projects.api.pluginCommons)
     implementation(projects.content.other.gravestones)
     integrationImplementation(projects.api.pluginCommons)

@@ -52882,3 +52882,15 @@ contentGroup = "content.max_cape"
 id = "obj.skillcape_max_mythical"
 inherit = "obj.skillcape_max_mythical"
 contentGroup = "content.max_cape"
+
+[[item]]
+id = "obj.osrs_bond"
+inherit = "obj.osrs_bond"
+[item.params]
+"param.bond_item"=1
+
+[[item]]
+id = "obj.osrs_bond_untradeable"
+inherit = "obj.osrs_bond_untradeable"
+[item.params]
+"param.bond_item"=1
