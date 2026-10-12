@@ -1,13 +1,16 @@
 package org.rsmod.content.areas.city.lumbridge.npcs
 
+import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.stat.woodcuttingLvl
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-class LumbridgeGapNpcs : PluginScript() {
+class LumbridgeGapNpcs @Inject constructor(private val idesOfMilk: IdesOfMilkQuest) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.favour_seth_groats") { startDialogue(it.npc) { sethGroats() } }
         onOpNpc1("npc.canoeing_tarquin") { startDialogue(it.npc) { tarquin() } }
@@ -17,6 +20,9 @@ class LumbridgeGapNpcs : PluginScript() {
 
     // https://oldschool.runescape.wiki/w/Transcript:Seth_Groats
     private suspend fun Dialogue.sethGroats() {
+        if (with(idesOfMilk) { sethDialogue() }) {
+            return
+        }
         chatNpc(happy, "M'arnin'....going to milk me cowsies!")
     }
 
@@ -172,17 +178,35 @@ class LumbridgeGapNpcs : PluginScript() {
     // https://oldschool.runescape.wiki/w/Transcript:Gillie_Groats
     // TODO(content): [verify:in_game] the lost cowbell amulet option and what grants it
     private suspend fun Dialogue.gillieGroats() {
+        if (with(idesOfMilk) { gillieDialogue() }) {
+            return
+        }
         chatNpc(happy, "Hello, I'm Gillie the Milkmaid. What can I do for you?")
         val choice =
-            choice3(
-                "Who are you?",
-                1,
-                "Can you tell me how to milk a cow?",
-                2,
-                "I'm fine, thanks.",
-                3,
-            )
+            if (idesOfMilk.canAskGillieAboutCows(player)) {
+                // live capture, rev 241, 20261012T180256-df49f48@687-690
+                choice4(
+                    "Who are you?",
+                    1,
+                    "Can you tell me how to milk a cow?",
+                    2,
+                    "Can you share what makes your cows so productive?",
+                    4,
+                    "I'm fine, thanks.",
+                    3,
+                )
+            } else {
+                choice3(
+                    "Who are you?",
+                    1,
+                    "Can you tell me how to milk a cow?",
+                    2,
+                    "I'm fine, thanks.",
+                    3,
+                )
+            }
         when (choice) {
+            4 -> with(idesOfMilk) { gillieAboutCows() }
             1 -> {
                 chatNpc(
                     happy,
