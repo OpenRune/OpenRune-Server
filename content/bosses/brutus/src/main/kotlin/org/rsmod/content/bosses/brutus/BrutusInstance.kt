@@ -15,6 +15,7 @@ import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.instances.withInstanceEnterTransition
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.interact.AiPlayerInteractions
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.repo.loc.LocRepository
@@ -120,9 +121,14 @@ constructor(
         startDialogue {
             leave = choice2("Yes.", true, "No.", false, title = "Are you sure you want to leave?")
         }
-        if (leave) {
-            defaultLeaveFlow()
+        if (!leave) {
+            return
         }
+        val session = manager.sessionForPlayer(player) ?: return
+        val world = manager.fieldToWorld(session, player.coords)
+        val outside = CoordGrid(EXIT_GATE_OUTSIDE_X, world.z.coerceIn(EXIT_GATE_Z))
+        manager.leave(player, session, deps.mapClock.cycle)
+        telejump(outside, TeleportType.Exempt)
     }
 
     /**
@@ -185,6 +191,11 @@ constructor(
 
         // live capture, rev 241, 20261012T180256-df49f48@1165: Brutus is added at (3261, 3287).
         private val SPAWN = CoordGrid(3261, 3287)
+
+        // live capture, rev 241, 20261012T180256-df49f48@1977: out through the west gate.
+        private const val EXIT_GATE_OUTSIDE_X = 3252
+        private val EXIT_GATE_Z = 3266..3267
+
         private const val ARRIVE_MOO_DELAY = 5
         private const val ARRIVE_MOVE_DELAY = 5
         private const val ARRIVE_ATTACK_DELAY = 6
