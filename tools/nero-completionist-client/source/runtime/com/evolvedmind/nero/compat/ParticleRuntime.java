@@ -6,7 +6,7 @@ import java.util.function.BiConsumer;
 public final class ParticleRuntime {
  private static volatile BiConsumer<Object,List<AttachmentRegistry.Triangle>> listener;
  private static volatile Runnable renderer;
- private static volatile Runnable begin;
+ private static volatile java.util.function.Consumer<Object> begin;
  private static volatile java.util.function.Consumer<Object> hd;
  private static boolean inspected;
  private static volatile BiConsumer<Object,Object> appearance;
@@ -27,14 +27,14 @@ public final class ParticleRuntime {
   var target=hd;if(target==null)return;
   try{target.accept(renderer);}catch(Throwable e){hd=null;ModelProbe.event("hd-particles-disabled",e.toString());}
  }
- public static synchronized void install(BiConsumer<Object,List<AttachmentRegistry.Triangle>> sample,Runnable before,Runnable draw) {
+ public static synchronized void install(BiConsumer<Object,List<AttachmentRegistry.Triangle>> sample,java.util.function.Consumer<Object> before,Runnable draw) {
   if(!optedIn())throw new IllegalStateException("Compatibility runtime requires explicit opt-in");
   listener=sample;begin=before;renderer=draw;
  }
  public static synchronized void clear(){listener=null;renderer=null;begin=null;hd=null;appearance=null;}
- public static void beginScene() {
-  Runnable target=begin;if(target==null)return;
-  try{target.run();}catch(Throwable e){clear();ModelProbe.event("particles-disabled",e.getClass().getSimpleName());}
+ public static void beginScene(Object scene) {
+  var target=begin;if(target==null)return;
+  try{target.accept(scene);}catch(Throwable e){clear();ModelProbe.event("particles-disabled",e.getClass().getSimpleName());}
  }
  public static void sample(Object model,Object actor) {
   var apply=appearance;

@@ -94,7 +94,7 @@ def main():
     text = text[:start] + (TOOLS/"installer_process_guard.ps1").read_text() + "\n" + text[end:]
     (output/"INSTALLEREN.ps1").write_text(text, encoding="utf-8")
     (output/"TESTEN.cmd").write_text('@echo off\r\n"%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "%~dp0TESTEN.ps1"\r\npause\r\n')
-    (output/"LEESMIJ.md").write_text("""# Completionist cape v0.14 avatar-occlusie
+    (output/"LEESMIJ.md").write_text("""# Completionist cape v0.15 hood en quiver
 
 Start `TESTEN.cmd` of voer `TESTEN.ps1` uit. Het pakket maakt een eigen testserver,
 database en clientprofiel. De bestaande installatie blijft behouden.
@@ -118,7 +118,10 @@ De extra omgekeerde huid is verwijderd: het bronmodel bevat al buitenstof,
 voering en sierranden. De oorspronkelijke cache-prioriteiten worden behouden.
 Alleen de renderkopie van een avatar met deze cape krijgt een gezamenlijke
 opaque dieptevolgorde, zonder kunstmatige bias. Dit voorkomt cape-voering voor
-de borst en maakt de native Dizana-quiver zichtbaar.
+de borst. De hood behoudt zijn oorspronkelijke hoofd en native hair/jaw-maskering,
+zonder de coincidente omgekeerde kopie. Dizana's quiver staat acht native units
+verder naar buiten. De software-particle-renderer wist oude viewport-diepte
+voor de nieuwe cameraweergave; GPU en geneste scenes behouden hun eigen buffer.
 Controleer Fire/Infernal: de grote stofpanelen gebruiken de echte geanimeerde
 OSRS-texturen 40/59, zoals in de referentie. De geborduurde middenvlakken en
 sierranden behouden hun kleuren. Alle varianten gebruiken weer de originele
@@ -129,7 +132,10 @@ Stop de aparte testserver met `TESTEN.ps1 -Action Stop` en sluit het testclientv
 `-Action Prepare` bereidt alleen voor; `-NoClient` start alleen de testserver.
 
 De gedragen meshes zijn met de echte native rasterizer op acht hoeken en
-herhaalde shared model copies gecontroleerd. Visuele acceptatie tijdens echte
+herhaalde shared model copies gecontroleerd. Ook 32 hood-modellen met native
+hoofdbewegingen en softwarediepte zijn gecontroleerd. Controleer bij het
+dragen/afdoen van de hood ook de wereldvloer, camera draaien en software/HD
+wisselen. Visuele acceptatie tijdens echte
 animaties en HD-rendering moeten
 nog in de client worden beoordeeld. De gewone client toont geen custom particles;
 dit aparte profiel gebruikt de gekwalificeerde opt-in renderer uit het handoffpakket.

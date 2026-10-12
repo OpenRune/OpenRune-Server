@@ -36,7 +36,7 @@ final class NativeParticleCheck {
         Method step=NeroParticlePlugin.class.getDeclaredMethod("stepActors",double.class);step.setAccessible(true);
         Field actors=NeroParticlePlugin.class.getDeclaredField("actors");actors.setAccessible(true);
         @SuppressWarnings("unchecked") Map<Actor,Object> states=(Map<Actor,Object>)actors.get(plugin);
-        ParticleRuntime.install((actor,triangles)->{try{sample.invoke(plugin,actor,triangles);}catch(Exception e){throw new IllegalStateException(e);}},()->{},()->{});
+        ParticleRuntime.install((actor,triangles)->{try{sample.invoke(plugin,actor,triangles);}catch(Exception e){throw new IllegalStateException(e);}},scene->{},()->{});
         try {
             ModelProbe.sample(cape,player);require(states.size()==1,"bound decoded model reaches particle listener");
             require(!((List<?>)step.invoke(plugin,1.)).isEmpty(),"native model emits particles");

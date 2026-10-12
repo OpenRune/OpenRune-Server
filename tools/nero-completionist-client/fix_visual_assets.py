@@ -47,6 +47,30 @@ def original_shell(mesh):
     return remap
 
 
+def original_hood(mesh):
+    """The worn source includes its own head; retain that head exactly once.
+
+    All 564 male / 675 female authored faces were followed by coincident,
+    flat-shaded reversed copies. They fight the original hood and face in both
+    renderers. Hair and jaw are already masked by the native equipment slots.
+    """
+    count=len(mesh['faces'])//2
+    if count not in (564,675) or any(mesh['faces'][f+count]!=list(reversed(mesh['faces'][f])) for f in range(count)):
+        raise ValueError('Unexpected worn hood topology')
+    for key in ['faces','colors','faceModes','facePriorities','faceSkins','alphas','sourceMaterials','sourceTextureCoords']:
+        if mesh.get(key) is not None:mesh[key]=mesh[key][:count]
+    return {f:f for f in range(count)}
+
+
+def quiver_clearance(mesh):
+    # Native quiver geometry is a separate part after the 792 authored cloth
+    # faces. Move only that part eight native units towards the outside/back.
+    cloth={v for face in mesh['faces'][:792] for v in face}
+    quiver={v for face in mesh['faces'][792:] for v in face}
+    if len(mesh['faces'])!=1136 or cloth&quiver:raise ValueError('Unexpected quiver attachment')
+    for v in quiver:mesh['vertices'][v][2]+=32
+
+
 def texture_panels(mesh,front_count,channels,texture):
     # The reference textures the broad cloth panels; raised edges and the
     # central embroidered pattern retain their family colours.
@@ -87,7 +111,7 @@ def main():
         if '=' in line:key,value=line.split('=',1);old_bindings[key]=value
     new=['schemaVersion=1'];report=[]
     for p in sorted((source/'cache/live/7').glob('*/0.dat')):
-        model_id=int(p.parent.name);old=p.read_bytes();old_hash=hashlib.sha256(old).hexdigest();mesh=decode(old);face_remap=None
+        model_id=int(p.parent.name);old=p.read_bytes();old_hash=hashlib.sha256(old).hexdigest();mesh=decode(old);face_remap=None;opaque_depth=False
         if model_id in models:
             key,colours=models[model_id]
             mesh=copy.deepcopy(json.loads((ROOT/'assets/trimmed-inventory.source.json').read_text(encoding='utf-8')) if model_id==62103 else inventory);nf=len(mesh['faces'])
@@ -99,12 +123,17 @@ def main():
             if key in ('fire','infernal'):texture_panels(mesh,nf,channels,40 if key=='fire' else 59)
         elif len(mesh['faces'])>=1577:
             face_remap=original_shell(mesh)
+            opaque_depth=True
             key=next((r['key'] for r in variants if model_id in r['modelIds'][1:3]),None)
+            if key=='dizana':quiver_clearance(mesh)
             if key in ('fire','infernal'):texture_panels(mesh,792,cloth,40 if key=='fire' else 59)
+        elif len(mesh['faces']) in (1128,1350):
+            face_remap=original_hood(mesh)
+            opaque_depth=True
         data=encode(mesh);digest=hashlib.sha256(data).hexdigest()
         (RAW/p.relative_to(source)).write_bytes(data)
         new.append(f'model.{digest}.scale=0.25')
-        if face_remap is not None:new.append(f'model.{digest}.opaqueDepth=true')
+        if opaque_depth:new.append(f'model.{digest}.opaqueDepth=true')
         # One opaque depth order for the assembled avatar; no synthetic face
         # bias and no mutation of cached/native equipment priority arrays.
         for suffix in ['emitters','palette']:

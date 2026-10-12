@@ -94,6 +94,7 @@ public final class NativeAssetCheck {
         for(int f=0;f<relit.getFaceCount();f++)require(relit.getFaceRenderPriorities()[f]==(relit.getFaceTransparencies()[f]==0?0:priorities[f]),"transparent/hidden source priorities retained "+f);
         ModelData hoodModel=(ModelData)decode.newInstance((Object)Files.readAllBytes(raw.resolve("cache/live/7/62107/0.dat")));
         NativeParticleCheck.run(regular.light(64,850,-30,-50,-30),hoodModel.light());
+        NativeDepthCheck.run();
         Model preview=regular.light(64,850,-30,-50,-30);CapePreviewRaster raster=new CapePreviewRaster(180,240);int[] first=null;
         for(int n=0;n<20;n++){raster.model(preview,false);int[] pixels=((DataBufferInt)raster.image.getRaster().getDataBuffer()).getData();if(first==null)first=pixels.clone();else require(Arrays.equals(first,pixels),"stable upright preview");}
         require(Arrays.stream(first).anyMatch(x->x!=0),"visible preview");
@@ -111,7 +112,7 @@ public final class NativeAssetCheck {
             raster.model(labelled,false);javax.imageio.ImageIO.write(raster.image,"png",images.resolve("cape-regions.png").toFile());
             NativeIconCheck.run(raw,images.resolve("inventory"));
             NativeWornCheck.run(raw,images.resolve("worn"));
-            if(args.length>2)NativeAvatarCheck.run(Path.of(args[2]),raw,images.resolve("avatars"));
+            if(args.length>2){NativeAvatarCheck.run(Path.of(args[2]),raw,images.resolve("avatars"));NativeHoodCheck.run(Path.of(args[2]),raw,images.resolve("hoods"));}
         }
         // Actual native ItemStats conversion, including magic damage's tenths and no second overlay.
         for(int id=63000;id<=63143;id++)if(CapeItemStats.custom(id)) {

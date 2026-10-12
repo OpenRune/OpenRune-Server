@@ -24,7 +24,7 @@ each view, not presented as an additional implemented feature.
 | 🟢 Accepted | Revenant Caves: access, combat, ether, artefacts, Maledictus; Edgeville home catalogue and Emblem trader | PR #36 is already merged. Its merge tree exactly matches the tested branch; subsequent trader changes are also on main. |
 | 🟢 Accepted | Prayer unlocks, free spellbook travel, teleport scroll/animation fixes, gorilla hole/rope and combat corrections | CoX/Royal Titans scroll-drop sources remain future encounter work. |
 | 🟢 Accepted | Pet gallery/categories, examine/prices/chat news, collection log rewards, Mokhaiotl waystone, max-gear command updates | Preserve the individually agreed/accepted scope in the details below. |
-| 🟡 Test package | Completionist purchase/fusion/perks/ammunition/repair/persistence; v0.14 complete-avatar depth sorting and visible quiver | Owner's rear/side, both genders, movement, Fire/Infernal and software/HD visual acceptance; feature is local and not installed/merged. |
+| 🟡 Test package | Completionist purchase/fusion/perks/ammunition/repair/persistence; v0.15 single hood/head, software depth reset and outward quiver placement | Owner confirmation of reported hood/head and OG map glitches, both genders, movement, Fire/Infernal and software/HD visual acceptance; feature is local and not installed/merged. |
 | 🟡 Local implementation | Shortcuts, containers, fairy rings and Spider Cave access | Remaining consumers/dependencies, Forestry events, final native route/UI/death acceptance and combined cape/quiver integration. |
 | 🟡 Parked | Treasure Trails: accepted 60/60 skill-task checkpoint and existing trail flow | Full step/puzzle/catalogue/loot parity and Mimic remain unfinished. |
 | 🟡 Partial | NPC animations: 97.15% technical attack/block/death coverage | 341 action slots across 149 types, secondary styles, specials/phases and native visual checks. |
@@ -33,41 +33,50 @@ each view, not presented as an additional implemented feature.
 
 ## 🟡 Started: Nero completionist cape, customiser and particles
 
-Updated locally to **v0.14 avatar occlusion correction** on
-`feature/nero-completionist`. The owner describes the v0.13 result as nearly
-perfect in `20261012-1846-41.4909015.mp4`, but demonstrates two remaining
-problems: the quiver is barely visible and the cape lining covers the torso
-when viewed from the front. Particle rendering continues in the client log.
+Updated locally to **v0.15 hood topology and quiver clearance** on
+`feature/nero-completionist`. The owner's `20261012-2037-19.6401824.mp4`
+and `20261012-2039-04.7109490.mp4` reject the hood/head rendering in software
+and HD, show black world patches in software and request a quiver offset.
+The accepted cape cloth shape, inventory projection and Fire/Infernal panels
+are retained; the v0.14 package does not establish hood acceptance.
 
-Both are reproduced with real native male/female bodykit models merged with
-the cape. Only the rendered copy of an avatar containing a SHA-bound custom
-cape now uses one opaque face-depth order. Cached/native source priority arrays
-are unchanged (copy on write); transparent/hidden face priorities and existing
-native body bias remain. Ordinary avatars, inventory models and native max capes
-are unaffected. No reversed skin or synthetic face-bias layers are introduced.
-The Dizana quiver retains its correct native size and position; depth ordering
-makes it visible instead of hiding it behind the cloth.
+All 32 worn hood models now keep their original 564 male / 675 female faces,
+including the source head, exactly once. The coincident flat reversed copies
+are removed. Native hair/jaw masks (slots 0,8,11), head bone labels and source
+face colours remain. SHA-bound hood copies propagate the same opaque avatar
+depth ordering as capes; cached source arrays and ordinary avatars remain intact.
+Only Dizana's separate quiver vertices move eight native units outward; its
+size, cloth vertices and locked aliases are preserved.
 
-Executed checks: **96 asset decodes**, **1,536 native worn renders**, 14 native
-inventory renders with 12 palettes, and **28 complete-avatar renders** across
-both genders with strict front torso coverage, source-array preservation and
-ordinary-avatar scope checks. Quiver visibility is measured at **2,175 male /
-1,610 female changed pixels** in the native rear render. Particle producer /
-consumer cleanup, emitter merge/copy/light/shared sequence, animated alpha and
-48 stats conversions continue to pass. All 34 qualified client dependencies
-remain unchanged. The final bundle is `runtime-v014-avatar-final`.
+The software particle path now clears previous camera depth inside the main
+scene viewport before rendering. It leaves RGB, GPU depth and nested views
+alone, and skips login/loading or empty viewports. Native depth-buffer tests
+verify stale/NaN reset, repeated frames and the real scene consumer guards.
+This is a targeted correction; actual world-scene acceptance of the reported
+black patches still needs the owner's retest.
 
-Server gameplay and cache assets are unchanged from v0.13; no server rebuild
-is needed for this client fix. The earlier **26 cape + 15 max-cape integration
-tests** and **454-write / 538,211-preserved-definition** pack proof remain the
-prior gameplay/cache evidence. The own marked test server accepts rev240 JS5
-and appearance schema 1; Check/Install/Rollback on an owned copy passes.
+Executed checks: **96 asset decodes**, **1,536 native cape renders**, 14 native
+inventory renders with 12 palettes, **28 complete-avatar cape cases**, and
+**32 hood/head cases / 768 renders** with native head-bone turns, equipment
+masks, finite software depth and subsequent geometry. Quiver rear visibility
+increases to **2,804 male / 2,572 female changed pixels**. Particle lifecycle,
+merge/copy/light/shared sequence, animated alpha and 48 stats checks pass.
+All 34 client/API/HD dependencies remain unchanged; the selected runtime is
+`runtime-v015-hood-depth-final`.
 
-Test entry: `outputs/nero-completionist-avatar-fix-v014-20261012/TESTEN.cmd`.
-The new package has its own client profile and server. Accepted live
+The changed assets are repacked: **454 verified writes and 538,211 preserved
+native definitions**. The matching server JAR builds successfully. Gameplay
+source is unchanged; the **26 cape + 15 max-cape integration tests** remain
+prior evidence, not newly rerun tests. The separate server accepts rev240 JS5
+and appearance schema 1 with zero player sessions. Own-copy installer
+Check/Install/Rollback passes.
+
+Test entry: `outputs/nero-completionist-hood-fix-v015-20261012/TESTEN.cmd`.
+The new package has its own client profile/server/database. Accepted live
 JAR/cache/RSA/playerdata, fourteen accepted checkout source hashes and earlier
-packages are preserved. **Owner confirmation in real idle/walk/emote and HD is
-still pending**; fixed-pose native renders are not animation/HD acceptance.
+packages are preserved. **Owner confirmation of hood/head, camera/map, real
+idle/walk/emote and HD is pending**; offline bone/depth checks are not full
+in-game animation or HD shader acceptance.
 Exact RS2 particle simulation/material parity, unrelated fresh-cache CS2 failures
 and future eligibility rules remain open. Cape code is local, not pushed, merged
 or installed. [Implementation and evidence](docs/custom/nero-completionist.md).

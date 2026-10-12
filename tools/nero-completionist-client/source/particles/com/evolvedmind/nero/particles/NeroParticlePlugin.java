@@ -55,7 +55,7 @@ public final class NeroParticlePlugin extends Plugin {
    Object provider=client.getBufferProvider();provider.getClass().getMethod("om",boolean.class).invoke(provider,true);
    provider.getClass().getMethod("rj").invoke(provider);
   }
-  ParticleRuntime.install(this::sample,()->{try{beginScene();}catch(Exception e){throw new IllegalStateException(e);}},
+  ParticleRuntime.install(this::sample,scene->{try{beginScene(scene);}catch(Exception e){throw new IllegalStateException(e);}},
       ()->{try{draw();}catch(Exception e){throw new IllegalStateException(e);}});
   ParticleRuntime.installHd(renderer->{try{drawHd(renderer);}catch(Exception e){throw new IllegalStateException(e);}});
   ParticleRuntime.installAppearance(styles::apply);
@@ -72,14 +72,17 @@ public final class NeroParticlePlugin extends Plugin {
   if(surface!=null && !client.isGpu() && client.getDrawCallbacks()==null)
       try{surface.selectDepthRasterizer(false);}catch(Exception ignored){}
  }
- private void beginScene() throws Exception {
+ private void beginScene(Object scene) throws Exception {
   boolean gpu=client.isGpu();
   if(lastGpu==null || lastGpu!=gpu){system.clear();actors.clear();lastFrame=0;emitters=Collections.emptyList();lastGpu=gpu;}
-  if(gpu || client.getDrawCallbacks()!=null)return;
+  if(gpu || client.getDrawCallbacks()!=null || scene!=client.getScene() || client.getGameState()!=GameState.LOGGED_IN)return;
+  int viewportWidth=client.getViewportWidth(),viewportHeight=client.getViewportHeight();
+  if(viewportWidth<=0||viewportHeight<=0)return;
   if(!surface.hasDepth()) {
    Object provider=client.getBufferProvider();provider.getClass().getMethod("om",boolean.class).invoke(provider,true);
    provider.getClass().getMethod("rj").invoke(provider);
   }
+  surface.clearViewportDepth(client.getViewportXOffset(),client.getViewportYOffset(),viewportWidth,viewportHeight);
   surface.selectDepthRasterizer(true);
  }
  @net.runelite.client.eventbus.Subscribe public void onGameTick(net.runelite.api.events.GameTick event){if(itemStats!=null)itemStats.refresh();}

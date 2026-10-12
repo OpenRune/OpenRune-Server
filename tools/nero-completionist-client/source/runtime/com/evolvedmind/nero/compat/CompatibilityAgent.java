@@ -144,7 +144,8 @@ public final class CompatibilityAgent {
                 return new MethodVisitor(Opcodes.ASM9,delegate) {
                     public void visitCode() {
                         super.visitCode();
-                        super.visitMethodInsn(Opcodes.INVOKESTATIC,"com/evolvedmind/nero/compat/ParticleRuntime","beginScene","()V",false);
+                        super.visitVarInsn(Opcodes.ALOAD,0);
+                        super.visitMethodInsn(Opcodes.INVOKESTATIC,"com/evolvedmind/nero/compat/ParticleRuntime","beginScene","(Ljava/lang/Object;)V",false);
                     }
                     public void visitMethodInsn(int op,String owner,String method,String descriptor,boolean itf) {
                         if(owner.equals("net/runelite/api/hooks/Callbacks")&&method.equals("drawScene")&&descriptor.equals("()V")) {

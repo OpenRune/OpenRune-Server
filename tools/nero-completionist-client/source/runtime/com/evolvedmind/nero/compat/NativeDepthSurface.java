@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.util.Properties;
 
-/** Revision-qualified software framebuffer access. Never changes GPU flags or native depth. */
+/** Revision-qualified software framebuffer access. GPU buffers remain owned by their renderer. */
 public final class NativeDepthSurface {
     private final Field pixels, depth, width, height;
     private final Method encodeDepth;
@@ -35,6 +35,17 @@ public final class NativeDepthSurface {
 
     public boolean hasDepth() throws Exception { return depth.get(null)!=null; }
     public Object projection(Object scene) throws Exception { return sceneProjection.get(scene); }
+
+    /** Start a new software camera view without retaining occluders from the
+     * preceding frame. Clear depth only; native scene/UI colour stays owned by
+     * the game. The caller excludes GPU and nested WorldView scene passes.
+     */
+    public void clearViewportDepth(int x,int y,int w,int h) throws Exception {
+        Surface frame=capture();
+        if(x<0||y<0||w<=0||h<=0||(long)x+w>frame.width||(long)y+h>frame.height)
+            throw new IllegalArgumentException("Invalid scene depth viewport");
+        for(int row=y;row<y+h;row++)java.util.Arrays.fill(frame.depth,row*frame.width+x,row*frame.width+x+w,0f);
+    }
 
     public Surface capture() throws Exception {
         int[] rgb=(int[])pixels.get(null);
