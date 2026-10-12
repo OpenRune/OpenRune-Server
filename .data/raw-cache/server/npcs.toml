@@ -15984,6 +15984,7 @@ inherit = "npc.league_6_gg_dawn_alive"
 [[npc]]
 id = "npc.cowboss"
 inherit = "npc.cowboss"
+respawnRate = 36
 [npc.params]
 "param.death_anim"="seq.cow_boss_death"
 "param.boss_hp_bar_mode"=2
