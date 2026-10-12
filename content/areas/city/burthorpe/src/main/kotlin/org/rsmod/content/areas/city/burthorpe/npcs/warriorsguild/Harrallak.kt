@@ -2,18 +2,22 @@ package org.rsmod.content.areas.city.burthorpe.npcs.warriorsguild
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-// https://oldschool.runescape.wiki/w/Transcript:Harrallak_Menarous (before While Guthix Sleeps)
+// https://oldschool.runescape.wiki/w/Transcript:Harrallak_Menarous
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:while_guthix_sleeps] "How are you, Harrallak?" after-quest dialogue
 class Harrallak : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.warguild_harrallak_npc") { startDialogue(it.npc) { harrallak() } }
     }
 
     private suspend fun Dialogue.harrallak() {
+        if (QuestRequirements.hasCompleted(player, WHILE_GUTHIX_SLEEPS)) {
+            harrallakAfterWhileGuthixSleeps()
+            return
+        }
         chatNpc(happy, "Welcome to my humble guild ${player.displayName}.")
         while (true) {
             val option =
@@ -32,6 +36,61 @@ class Harrallak : PluginScript() {
                     guildTopics()
                 }
                 2 -> sword()
+                3 -> {
+                    chatPlayer(happy, "Bye!")
+                    val farewell = if (isMale()) "brave warrior" else "fair lady"
+                    chatNpc(happy, "Farewell $farewell, I do hope you enjoy my guild.")
+                    return
+                }
+            }
+        }
+    }
+
+    private suspend fun Dialogue.harrallakAfterWhileGuthixSleeps() {
+        chatNpc(happy, "Welcome to my humble Guild ${player.displayName}.")
+        while (true) {
+            val option =
+                choice3(
+                    "How are you, Harrallak?",
+                    1,
+                    "Could you tell me more about the Guild?",
+                    2,
+                    "Bye!",
+                    3,
+                )
+            when (option) {
+                1 -> {
+                    chatPlayer(quiz, "How are you, Harrallak?")
+                    chatNpc(
+                        sad,
+                        "I've lost two of my dear friends, ${player.displayName}. This old place " +
+                            "doesn't seem to be the same since they're gone.",
+                    )
+                    chatPlayer(sad, "I feel responsible.")
+                    chatNpc(
+                        neutral,
+                        "Nonsense, my friend! They both died bravely fighting against a great " +
+                            "evil! There is no blame on you for that.",
+                    )
+                    chatNpc(
+                        neutral,
+                        "Remember them for who they were and what they stood for. Mourn their " +
+                            "loss, but never bear the burden of their death, for that is not " +
+                            "what they would want.",
+                    )
+                    chatPlayer(angry, "And what about vengeance?")
+                    chatNpc(
+                        neutral,
+                        "Ah, now that is a topic we could debate for many moons, my friend. " +
+                            "Still, regardless of the reason, know that when the time comes, I " +
+                            "will fight beside you against Lucien once more.",
+                    )
+                }
+                2 -> {
+                    chatPlayer(quiz, "Could you tell me more about the Guild?")
+                    chatNpc(happy, "Of course. What would you like to know about?")
+                    guildTopics()
+                }
                 3 -> {
                     chatPlayer(happy, "Bye!")
                     val farewell = if (isMale()) "brave warrior" else "fair lady"
@@ -202,5 +261,9 @@ class Harrallak : PluginScript() {
             "have. You might even collect enough tokens to be allowed in to kill the strange " +
                 "beasts from the east!",
         )
+    }
+
+    private companion object {
+        const val WHILE_GUTHIX_SLEEPS = "quest_whileguthixsleeps"
     }
 }
