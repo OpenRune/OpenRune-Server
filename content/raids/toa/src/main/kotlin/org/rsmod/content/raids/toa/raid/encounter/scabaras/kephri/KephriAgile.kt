@@ -1,14 +1,11 @@
 package org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri
 
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import kotlin.math.sign
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
-import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 
 internal class KephriAgile(private val room: KephriEncounter) {
@@ -76,18 +73,16 @@ internal class KephriAgile(private val room: KephriEncounter) {
         scarab.nextAttack = cycle + ATTACK_SPEED
         npc.anim(KephriSeqs.SCARAB_ATTACK)
         deps.worldRepo.projAnim(
-            ProjAnim(
-                spotanim = KephriSpots.SCARAB_SHOT.asRSCM(RSCMType.SPOTANIM),
-                startHeight = START_HEIGHT,
-                endHeight = END_HEIGHT,
-                startTime = START_TIME,
-                endTime = FLIGHT,
-                angle = ANGLE,
-                progress = PROGRESS,
-                sourceIndex = 0,
-                targetIndex = 0,
-                startCoord = npc.coords,
-                endCoord = target.coords,
+            projAnim(
+                KephriSpots.SCARAB_SHOT,
+                npc.coords,
+                target.coords,
+                START_HEIGHT,
+                END_HEIGHT,
+                START_TIME,
+                FLIGHT,
+                ANGLE,
+                PROGRESS,
             )
         )
         room.schedule(HIT_DELAY) {
