@@ -18,6 +18,7 @@ This index contains implementation notes and evidence, not a second status list.
 | Corporeal Beast | `content/bosses/corporeal-beast` | [Encounter](corporeal-beast.md) |
 | Doom of Mokhaiotl | `content/bosses/doom-of-mokhaiotl` and `pack` | [Encounter and rewards](doom-of-mokhaiotl.md) |
 | Barrows reward testing | `content/bosses/barrows` | [Administrator commands](commands.md#barrows-loot-test) |
+| The Gauntlet | `content/minigames/gauntlet` and `pack` | [Reviewed PR #302 port, corrections, policies and test routes](gauntlet.md) |
 | Treasure Trails | `content/other/treasure-trails` | [Implementation](treasure-trails.md), [task coverage](clue-task-coverage.md), [test commands](clue-testing.md), [guardian fix](clue-guardians.md) |
 | Pets and gallery | `content/other/pets` | [Followers, gallery, companion actions and morphs](pets.md) |
 | Commands and loadouts | `content/other/commands`, `content/interfaces/worldmap` | [Commands](commands.md) |
@@ -46,3 +47,5 @@ have [action, source and validation notes](clue-native-tasks.md).
 Current status remains in PROGRESS.md.
 
 The final ten skill-task routes have [native action and scope notes](clue-final-native-tasks.md).
+
+- [Nero completionist cape, customiser and particles](nero-completionist.md) — v0.7 native integration and current qualification limits.
