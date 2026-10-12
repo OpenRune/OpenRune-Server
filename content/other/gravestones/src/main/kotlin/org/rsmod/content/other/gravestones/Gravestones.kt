@@ -47,6 +47,19 @@ var Player.graveCoords: CoordGrid?
     set(value) = VarPlayerIntMapSetter.set(this, COORD_VARP, value?.packed ?: 0)
 var Player.graveDuration by intVarBit("varbit.gravestone_duration")
 var Player.feePaid by boolVarBit("varbit.gravestone_fee_paid")
+
+/**
+ * Set from the first death that loses items until the player leaves Death's Office through the
+ * portal; the grave's timer waits until then (https://oldschool.runescape.wiki/w/Grave).
+ */
+var Player.inDeathTutorial by boolVarBit("varbit.gravestone_death_tutorial")
+
+/**
+ * Whether the player has met Death. UNVERIFIED: that live keys the first-death tutorial on this
+ * (live capture, rev 240, 20260811T142735-59bcb26@2020 sets it on the tutorial's arrival, and it is
+ * sent as 1 on every later login).
+ */
+var Player.metDeath by boolVarBit("varbit.steam_visited_death")
 internal val Player.autoEquip by boolVarBit("varbit.settings_gravestone_autoequip")
 private var Player.graveVisible by intVarBit("varbit.gravestone_visible")
 var Player.graveType by intVarBit("varbit.gravestone_type")
@@ -79,8 +92,7 @@ constructor(
 ) : PlayerGraveHook {
     private val visibleSlots = HashMap<Int, Npc>()
 
-    // TODO: Graves only start after the first visit to Death's Office, a PvP world's grave can
-    // only be looted on one, and a grave on Entrana moves to the new death tile like a Wilderness
+    // TODO: A PvP world's grave can only be looted on one, and a grave on Entrana moves to the new death tile like a Wilderness
     // PvM death's (https://oldschool.runescape.wiki/w/Grave).
     override fun store(
         player: Player,
@@ -126,6 +138,12 @@ constructor(
             player.creationDeathCoord = worldCoords
             player.graveCoords = graveTile(worldCoords)
             player.hasMerged = false
+            if (!player.metDeath) {
+                // live capture, rev 240, 20260811T142735-59bcb26@2019: 1500, then 1501 at once,
+                // which it stays at until the player leaves Death's Office.
+                player.inDeathTutorial = true
+                player.graveDuration = DURATION + 1
+            }
             spawn(player)
             // live capture, rev 241, 20261012T233700-df49f48@960: a tick after the death message.
             worldQueues.add(1) { player.mes(CREATED_MESSAGE) }
@@ -249,6 +267,9 @@ constructor(
         }
         // The timer stops with the grave open or after 10 seconds idle
         // (https://oldschool.runescape.wiki/w/Grave).
+        if (player.inDeathTutorial) {
+            return
+        }
         if (player.ui.containsOverlay(INTERFACE) || PlayerIdle.isIdle(player, IDLE_CYCLES)) {
             return
         }

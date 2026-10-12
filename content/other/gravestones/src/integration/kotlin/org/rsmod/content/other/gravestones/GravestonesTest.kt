@@ -468,6 +468,8 @@ class GravestonesTest {
             // Owner-only floor drops need it; test players don't log in.
             player.observerUUID = 1L
             player.deathCoffer = 0
+            // Past the first-death tutorial, which holds the grave's timer.
+            player.metDeath = true
             body(deps)
         }
 

@@ -13,3 +13,13 @@ death_office_entrance_civitas = 59007
 
 [gamevals.varp]
 death_office_entrance = 64444
+death_office_tutorial = 64446
+
+[gamevals.varbit]
+death_tutorial_heard_gravestones = 64464
+death_tutorial_heard_fees = 64465
+death_tutorial_heard_timer = 64466
+death_tutorial_heard_kept_on_death = 64467
+
+[gamevals.queue]
+death_office_tutorial = 64420

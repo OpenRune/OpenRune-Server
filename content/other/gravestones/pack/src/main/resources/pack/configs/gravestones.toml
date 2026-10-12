@@ -23,6 +23,12 @@ varp = "varp.gravestone_state"
 startBit = 0
 endBit = 0
 
+[[varbit]]
+id = "varbit.gravestone_death_tutorial"
+varp = "varp.gravestone_state"
+startBit = 1
+endBit = 1
+
 [[varp]]
 id = "varp.death_coffer"
 scope = "Perm"

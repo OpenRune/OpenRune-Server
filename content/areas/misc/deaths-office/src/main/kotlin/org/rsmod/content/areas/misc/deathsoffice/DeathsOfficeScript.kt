@@ -18,6 +18,7 @@ import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.api.script.onPlayerQueue
 import org.rsmod.api.table.DeathOfficeEntrancesRow
 import org.rsmod.content.other.gravestones.GraveFees
 import org.rsmod.content.other.gravestones.Gravestones
@@ -27,7 +28,10 @@ import org.rsmod.content.other.gravestones.deathOffice
 import org.rsmod.content.other.gravestones.grave
 import org.rsmod.content.other.gravestones.graveCoords
 import org.rsmod.content.other.gravestones.graveType
+import org.rsmod.content.other.gravestones.inDeathTutorial
+import org.rsmod.content.other.gravestones.metDeath
 import org.rsmod.content.other.gravestones.payDeathFee
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
@@ -49,12 +53,11 @@ class DeathsOfficeScript
 @Inject
 constructor(private val graves: Gravestones, private val npcRepo: NpcRepository) : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpNpc1(DEATH) { startDialogue(it.npc) { death() } }
+        onOpNpc1(DEATH) { talk(it.npc) }
         // live capture, rev 241, 20261013T013733-df49f48@384: Collect opens the retrieval
         // interface, even with nothing stored.
-        // TODO: During the first-death tutorial it answers "Perhaps we should just talk instead."
-        // (live capture, rev 240, 20260811T142735-59bcb26@2121).
-        onOpNpc3(DEATH) { openOffice() }
+        onOpNpc3(DEATH) { collect(it.npc) }
+        onPlayerQueue(DeathTutorial.QUEUE) { tutorialIntroduction() }
         for (row in DeathOfficeEntrancesRow.all()) {
             onOpLoc1(row.entrance) { enter(row) }
         }
@@ -68,12 +71,37 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
         onIfClose(INTERFACE) { player.stopInvTransmit(player.deathOffice) }
     }
 
+    private suspend fun ProtectedAccess.talk(npc: Npc) {
+        if (player.inDeathTutorial) {
+            startDialogue(npc) { with(DeathTutorial) { reminder() } }
+            return
+        }
+        startDialogue(npc) { death() }
+    }
+
+    /** Live capture, rev 240, 20260811T142735-59bcb26@2121, during the first-death tutorial. */
+    private suspend fun ProtectedAccess.collect(npc: Npc) {
+        if (player.inDeathTutorial) {
+            startDialogue(npc) { chatNpc(bored, "Perhaps we should just talk instead.") }
+            return
+        }
+        openOffice()
+    }
+
+    private suspend fun ProtectedAccess.tutorialIntroduction() {
+        val death = npcRepo.findAll(DEATH_TILE).firstOrNull { it.type.isType(DEATH) } ?: return
+        startDialogue(death) { with(DeathTutorial) { introduction() } }
+    }
+
     /**
      * Live capture, rev 241, 20261013T013733-df49f48@166-171: the portal overlay, the teleport two
      * ticks later, the overlay closing a tick after that, and Death's greeting two ticks later.
      */
     private suspend fun ProtectedAccess.enter(row: DeathOfficeEntrancesRow) {
         player.officeEntrance = row.rowId
+        // UNVERIFIED: that walking in also counts as meeting Death, so a later first death skips
+        // the tutorial.
+        player.metDeath = true
         portal(ARRIVAL)
         delay(2)
         val death = npcRepo.findAll(DEATH_TILE).firstOrNull { it.type.isType(DEATH) } ?: return
@@ -82,8 +110,15 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
 
     /** Live capture, rev 241, 20261013T013733-df49f48@158-164 and @276-283 (from Ferox Enclave). */
     private suspend fun ProtectedAccess.leave() {
+        if (player.inDeathTutorial) {
+            // live capture, rev 240, 20260811T142735-59bcb26@2140-2143: after the tutorial the
+            // portal leads to the respawn point, and the grave's timer starts.
+            player.inDeathTutorial = false
+            val respawn = mapFindSquareLineOfWalk(RESPAWN, minRadius = 0, maxRadius = 2) ?: RESPAWN
+            portal(respawn)
+            return
+        }
         val row = player.officeEntrance.takeIf { it != 0 }?.let(DeathOfficeEntrancesRow::getRow)
-        // TODO: After the first-death tutorial the portal leads to the respawn point.
         portal(row?.exit ?: LUMBRIDGE_EXIT)
     }
 
@@ -569,5 +604,9 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
 
         // live capture, rev 241, 20261013T013733-df49f48@140.
         val LUMBRIDGE_EXIT = CoordGrid(3238, 3194)
+
+        // The default respawn point (api/death PlayerDeath), as no respawn points can be chosen.
+        // TODO: The player's chosen respawn point (https://oldschool.runescape.wiki/w/Respawn_point).
+        val RESPAWN = CoordGrid(0, 50, 50, 21, 18)
     }
 }

@@ -33,6 +33,7 @@ gravestone_layout_20 = 64443
 
 [gamevals.varbit]
 gravestone_fee_paid = 64420
+gravestone_death_tutorial = 64463
 gravestone_layout_obj_0 = 64421
 gravestone_layout_obj_1 = 64422
 gravestone_layout_obj_2 = 64423

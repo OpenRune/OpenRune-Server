@@ -4,10 +4,13 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.death)
     implementation(projects.api.generated)
     implementation(projects.api.market)
     implementation(projects.api.pluginCommons)
     implementation(projects.content.other.gravestones)
     integrationImplementation(projects.api.pluginCommons)
     integrationImplementation(projects.content.other.gravestones)
+    integrationImplementation(projects.api.death)
+    integrationImplementation(projects.api.deathPlugin)
 }

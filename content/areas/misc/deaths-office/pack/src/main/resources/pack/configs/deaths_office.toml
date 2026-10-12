@@ -2,3 +2,32 @@
 id = "varp.death_office_entrance"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+id = "varp.death_office_tutorial"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.death_tutorial_heard_gravestones"
+varp = "varp.death_office_tutorial"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+id = "varbit.death_tutorial_heard_fees"
+varp = "varp.death_office_tutorial"
+startBit = 1
+endBit = 1
+
+[[varbit]]
+id = "varbit.death_tutorial_heard_timer"
+varp = "varp.death_office_tutorial"
+startBit = 2
+endBit = 2
+
+[[varbit]]
+id = "varbit.death_tutorial_heard_kept_on_death"
+varp = "varp.death_office_tutorial"
+startBit = 3
+endBit = 3
