@@ -18,6 +18,10 @@ public class KillcountModule : PluginModule() {
  * Increments the player's killcount varp for the killed npc.
  */
 public class KillcountNpcKillHook @Inject constructor() : NpcDeathKillHook {
+    // live capture, rev 241, 20261012T180256-df49f48@1610: the kill count comes before the fight
+    // duration.
+    override val priority: Int = 10
+
     override fun onKill(context: NpcDeathKillContext) {
         if (context.npc.vars["varn.skip_killcount"] == 1) return
         val varp = context.npc.paramOrNull(BaseParams.killcount_varp) ?: return
