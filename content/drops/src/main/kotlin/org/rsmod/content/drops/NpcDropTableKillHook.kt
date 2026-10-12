@@ -42,6 +42,9 @@ constructor(
 
     override fun onKill(context: NpcDeathKillContext) {
         val table = registry.forNpc(context.npc, areaChecker) ?: return
+        if (deathDropHooks.any { it.suppressesDropTable(context) }) {
+            return
+        }
 
         val player = context.hero
         val duration = player.lootDropDuration ?: constants.lootdrop_duration
