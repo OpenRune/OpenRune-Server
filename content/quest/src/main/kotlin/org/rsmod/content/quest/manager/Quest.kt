@@ -152,13 +152,18 @@ data class Quest(
 
     fun setQuestStage(access: ProtectedAccess, newStage: Int): Int {
         require(newStage in 0..maxSteps) { "Quest '$key' stage must be within 0..$maxSteps." }
-        val wasCompleted = getQuestStage(access.player) >= maxSteps
+        val oldStage = getQuestStage(access.player)
+        val wasCompleted = oldStage >= maxSteps
         storeQuestStage(access, newStage)
 
         // Quest varps store the real stage (0..endstate). Multinpc / journal clients depend on
         // endstate (e.g. runemysteries=6) rather than a collapsed 0/1/2 progress flag.
         if (access.player.questState != newStage) {
             access.player.questState = newStage
+        }
+
+        if (oldStage == 0 && newStage > 0) {
+            access.mes("You've started a new quest: @q_mes@$displayName</col>")
         }
 
         if (!wasCompleted && newStage >= maxSteps) {
@@ -199,6 +204,7 @@ data class Quest(
 
         access.player.questPoints += questPoints
         access.player.questsCompleted++
+        access.mes("Congratulations, you've completed a quest: @q_mes@$displayName</col>")
 
         access.player.musicClocks = 0
         access.player.client.write(MidiJingle(QUEST_COMPLETE_JINGLE))
