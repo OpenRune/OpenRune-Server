@@ -2,6 +2,7 @@ package org.rsmod.content.quest.manager
 
 import org.rsmod.api.combat.commons.magic.SpellQuestRequirement
 import org.rsmod.api.player.hook.SpadeDigHook
+import org.rsmod.content.quest.area.falador.knightssword.KnightsSwordQuest
 import org.rsmod.content.quest.area.lumbridge.RuneMysteriesQuest
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest
 import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest
@@ -13,6 +14,7 @@ public class QuestModule : PluginModule() {
         bindInstance<RuneMysteriesQuest>()
         bindInstance<GertrudesCatQuest>()
         bindInstance<XMarksTheSpotQuest>()
+        bindInstance<KnightsSwordQuest>()
         addSetBinding<SpellQuestRequirement>(PolicySpellQuestRequirement::class.java)
         addSetBinding<SpadeDigHook>(XMarksTheSpotQuest::class.java)
     }
