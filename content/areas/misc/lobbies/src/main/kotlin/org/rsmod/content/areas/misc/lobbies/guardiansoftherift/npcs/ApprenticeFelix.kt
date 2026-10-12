@@ -2,6 +2,7 @@ package org.rsmod.content.areas.misc.lobbies.guardiansoftherift.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -12,14 +13,31 @@ import org.rsmod.plugin.scripts.ScriptContext
 //  general items?"
 // TODO(content): [system:guardians_of_the_rift] the dye swap and sale, lost locket and bag, and
 //  selling rewards rift items, offered when the player holds them
-// TODO(content): [quest:desert_treasure_ii] the greeting about Persten after the quest
 class ApprenticeFelix : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.gotr_reward_trader") { startDialogue(it.npc) { felix() } }
     }
 
     private suspend fun Dialogue.felix() {
-        chatNpc(happy, "Hey, ${player.displayName}. Got any abyssal pearls you want to trade?")
+        if (QuestRequirements.hasCompleted(player, DESERT_TREASURE_II)) {
+            chatNpc(sad, "Hey, ${player.displayName}. I heard about Persten. I can't believe it...")
+            chatPlayer(sad, "I know, Felix. I'm sorry.")
+            chatNpc(
+                sad,
+                "I wish I could have met her... The real her I mean. I bet she'd have known how " +
+                    "to properly close this rift.",
+            )
+            chatNpc(
+                neutral,
+                "I guess it's just down to us though. Speaking of which, back to work I guess. " +
+                    "Did you have any abyssal pearls you wanted to trade?",
+            )
+        } else {
+            chatNpc(
+                happy,
+                "Hey, ${player.displayName}. Got any abyssal pearls you want to trade?",
+            )
+        }
         while (true) {
             val option =
                 choice5(
@@ -176,5 +194,6 @@ class ApprenticeFelix : PluginScript() {
     private companion object {
         const val PEARLS = "obj.abyssal_pearl"
         const val LANTERN_PRICE = 1500
+        const val DESERT_TREASURE_II = "quest_deserttreasure2"
     }
 }
