@@ -8,11 +8,10 @@ import org.rsmod.api.bossbar.plugin.BossHpBarScript
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.instances.BossInstanceRegistry
 import org.rsmod.api.instances.InstanceArea
-import org.rsmod.api.instances.InstanceEnterTransition
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.instances.InstanceScript
 import org.rsmod.api.instances.InstanceSession
-import org.rsmod.api.instances.withInstanceEnterTransition
+import org.rsmod.api.instances.hook.InstanceEnterAction
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.hook.TeleportType
@@ -67,14 +66,30 @@ constructor(
             if (result is InstanceManager.Result.Created) {
                 swapGates(session)
             }
-            withInstanceEnterTransition(InstanceEnterTransition(), enter)
-            if (fresh) {
-                spawnBrutus(player, session)
-            }
+            fieldEntry(enter) { if (fresh) spawnBrutus(player, session) }
         }
         onEvent<NpcStateEvents.Respawn> { if (npc.isType(Brutus.BRUTUS)) arrive(npc, fieldPlayer(npc)) }
         onEnterObject { openGate() }
         onExitObject { leaveGate() }
+    }
+
+    /**
+     * Fade to black, enter with Brutus already in place, turn the camera south and fade back in.
+     * Live capture, rev 241, 20261012T180256-df49f48@1555-1561, @1163-1169 and
+     * 20261012T200152-df49f48@721-727.
+     */
+    private suspend fun ProtectedAccess.fieldEntry(enter: InstanceEnterAction, spawn: () -> Unit) {
+        fadeOverlay(0, FADE_CLEAR, 0, FADE_BLACK, FADE_CLIENT_CYCLES)
+        delay(1)
+        minimapHideMap()
+        delay(1)
+        enter()
+        spawn()
+        delay(2)
+        minimapReset()
+        camForceAngle(ENTRY_CAMERA_PITCH, ENTRY_CAMERA_YAW)
+        fadeOverlay(0, FADE_BLACK, 0, FADE_CLEAR, FADE_CLIENT_CYCLES)
+        closeFadeOverlay(cycles = 2)
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:The_Ides_of_Milk#Facing_the_bull
@@ -156,7 +171,8 @@ constructor(
             npc.vars["varn.skip_killcount"] = 1
         }
         manager.registerSessionNpc(player, npc)
-        bossHpBar.onOpen(player, npc)
+        // live capture, rev 241, 20261012T180256-df49f48@1561: once the screen has cleared.
+        deps.worldQueues.add(HP_BAR_DELAY) { if (npc.isSlotAssigned) bossHpBar.onOpen(player, npc) }
         arrive(npc, player)
     }
 
@@ -195,6 +211,13 @@ constructor(
         // live capture, rev 241, 20261012T180256-df49f48@1977: out through the west gate.
         private const val EXIT_GATE_OUTSIDE_X = 3252
         private val EXIT_GATE_Z = 3266..3267
+
+        private const val FADE_CLEAR = 255
+        private const val FADE_BLACK = 0
+        private const val FADE_CLIENT_CYCLES = 50
+        private const val ENTRY_CAMERA_PITCH = 280
+        private const val ENTRY_CAMERA_YAW = 1024
+        private const val HP_BAR_DELAY = 4
 
         private const val ARRIVE_MOO_DELAY = 5
         private const val ARRIVE_MOVE_DELAY = 5
