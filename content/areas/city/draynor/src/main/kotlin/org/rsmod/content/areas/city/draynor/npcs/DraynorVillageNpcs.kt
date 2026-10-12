@@ -2,11 +2,14 @@ package org.rsmod.content.areas.city.draynor.npcs
 
 import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
+import org.rsmod.api.invtx.invAddOrDrop
+import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseFarmingLvl
 import org.rsmod.api.player.stat.baseWoodcuttingLvl
 import org.rsmod.api.player.vars.intVarBit
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
@@ -15,10 +18,14 @@ import org.rsmod.content.interfaces.omnishop.openOmnishop
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.menu
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginScript() {
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+class DraynorVillageNpcs
+@Inject
+constructor(private val shops: Shops, private val objRepo: ObjRepository) : PluginScript() {
     private var Player.morganThanked by intVarBit("varbit.morgan_postquest_dialogue")
     private var Player.metAggie by intVarBit("varbit.gobdip_met_aggie")
     private var Player.bankJob by intVarBit("varbit.wom_bankjob")
@@ -31,6 +38,8 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         onOpNpc1("npc.aggie") { startDialogue(it.npc) { aggie() } }
         onOpNpc3("npc.aggie") { startDialogue(it.npc) { aggieDyes() } }
         onOpNpc1("npc.ned") { startDialogue(it.npc) { ned() } }
+        // TODO(content): [system:shops] Trade opens "Ned's Handmade Rope (100% Wool)"; no inv
+        //  gameval for that shop exists in the cache, so it falls back to the rope dialogue.
         onOpNpc3("npc.ned") { startDialogue(it.npc) { nedRope() } }
         onOpNpc1("npc.leela") { startDialogue(it.npc) { leela() } }
         onOpNpc1("npc.wom_gossip") { startDialogue(it.npc) { missSchism() } }
@@ -48,9 +57,19 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         onOpNpc1("npc.martin_the_master_farmer") { startDialogue(it.npc) { martin() } }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Morgan
+    // https://oldschool.runescape.wiki/w/Transcript:Vampyre_Slayer
+    // TODO(content): [quest:vampyre_slayer] Start offer and in-progress dialogue
     private suspend fun Dialogue.morgan() {
         if (!QuestRequirements.hasCompleted(player, VAMPYRE_SLAYER)) {
-            chatNpc(worried, "Please, please help us, bold adventurer!")
+            chatNpc(worried, "Could it be? A bold adventurer! Please, you must help us!")
+            chatPlayer(quiz, "What is it? What's the problem?")
+            chatNpc(
+                worried,
+                "It's the evil vampyre, Count Draynor! For too long he's terrorised us from his " +
+                    "manor to the north. Someone finally needs to put a stop to him once and for " +
+                    "all!",
+            )
             return
         }
         if (player.morganThanked == 0) {
@@ -68,23 +87,29 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         chatPlayer(happy, "Don't mention it.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Shady_stranger
     private suspend fun Dialogue.shadyStranger() {
         chatPlayer(quiz, "Hello there. What are you doing here?")
         chatNpc(shifty, "Oh, nothing much. I'd just heard Draynor was a nice place to visit.")
         chatPlayer(confused, "Fair enough.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Suspicious_outsider
     private suspend fun Dialogue.suspiciousOutsider() {
         chatPlayer(quiz, "Hello there. What are you doing here?")
         chatNpc(quiz, "That's not really any of your business, is it?")
         chatPlayer(confused, "Fair enough.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Aggie
+    // TODO(content): [quest:prince_ali_rescue] "Can you make skin paste?"
+    // TODO(content): [quest:one_small_favour] Jimmy the Chisel dialogue
+    // TODO(content): [quest:land_of_the_goblins] Black and white dyes
     private suspend fun Dialogue.aggie() {
         chatNpc(happy, "What can I help you with?")
         val dyes =
             if (player.metAggie == 0) "What could you make for me?" to AggieTopic.WhatCanYouMake
-            else "Can you make dyes for me, please?" to AggieTopic.MakeDyes
+            else "Can you make dyes for me please?" to AggieTopic.MakeDyes
         val topic =
             menu(
                 "Cool, do you turn people into frogs?" to AggieTopic.Frogs,
@@ -107,14 +132,14 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
                 player.metAggie = 1
                 chatNpc(
                     neutral,
-                    "I mostly just make what I find pretty. I sometimes make dye for clothes to " +
-                        "brighten the place up. I can make red, yellow and blue dyes. If you'd " +
-                        "like some, just bring me the appropriate ingredients.",
+                    "I mostly just make what I find pretty. I sometimes make dye for the women's " +
+                        "clothes to brighten the place up. I can make red, yellow and blue dyes. " +
+                        "If you'd like some, just bring me the appropriate ingredients.",
                 )
                 dyeMenu(includeDecline = true)
             }
             AggieTopic.MakeDyes -> {
-                chatPlayer(quiz, "Can you make dyes for me, please?")
+                chatPlayer(quiz, "Can you make dyes for me please?")
                 aggieDyes()
             }
             AggieTopic.Insult -> aggieInsult()
@@ -174,7 +199,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
                 )
             }
             DyeChoice.Where -> {
-                chatPlayer(quiz, "Where do I get ${dye.ingredientName}?")
+                if (dye != Dye.Blue) chatPlayer(quiz, "Where do I get ${dye.ingredientName}?")
                 chatNpc(neutral, dye.whereToFind)
                 if (menu("What other colours can you make?" to true, "Thanks" to false)) {
                     otherColours()
@@ -204,9 +229,12 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
             mesbox("You don't have enough coins to pay for the dye.")
             return
         }
-        access.invDel(inv, dye.ingredient, dye.ingredientCount)
-        access.invDel(inv, COINS, DYE_PRICE)
-        access.invAdd(inv, dye.obj)
+        if (!player.invTakeFee(DYE_PRICE)) return
+        if (access.invDel(inv, dye.ingredient, dye.ingredientCount).failure) {
+            player.invAddOrDrop(objRepo, COINS, DYE_PRICE)
+            return
+        }
+        player.invAddOrDrop(objRepo, dye.obj)
         objbox(
             dye.obj,
             "You hand the ${dye.shortName} and payment to Aggie. Aggie takes a ${dye.colour} " +
@@ -254,6 +282,9 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Ned
+    // TODO(content): [quest:prince_ali_rescue] "Could you make other things apart from rope?" (wig)
+    // TODO(content): [quest:dragon_slayer_i] Dialogue while the quest is in progress
     private suspend fun Dialogue.ned() {
         if (!QuestRequirements.hasCompleted(player, DRAGON_SLAYER)) {
             chatNpc(
@@ -262,11 +293,8 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
                     "was a man of the sea, but it's past me now. Could I be making or selling " +
                     "you some rope?",
             )
-            if (menu("Yes, I would like some rope." to true, NED_DECLINE to false)) {
-                nedRope()
-            } else {
-                nedDecline()
-            }
+            // TODO(content): [system:shops] "Yes, I would like some rope." opens Ned's rope shop
+            if (menu("Yes, I would like some rope." to true, NED_DECLINE to false)) nedRope()
             return
         }
         chatNpc(
@@ -314,7 +342,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         chatNpc(
             happy,
             "Well, I can sell you some rope for 15 coins. Or I can be making you some if you gets " +
-                "me four balls of wool. I strands them together I does, makes em strong.",
+                "me 4 balls of wool. I strands them together I does, makes em strong.",
         )
         chatPlayer(quiz, "You make rope from wool?")
         chatNpc(shifty, "Of course you can!")
@@ -344,9 +372,8 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
             RopeTopic.Wool -> {
                 chatPlayer(quiz, "I have some balls of wool. Could you make me some rope?")
                 chatNpc(happy, "Sure I can.")
-                val inv = access.inv
-                if (access.invDel(inv, BALL_OF_WOOL, WOOL_PER_ROPE).failure) return
-                access.invAdd(inv, ROPE)
+                if (access.invDel(access.inv, BALL_OF_WOOL, WOOL_PER_ROPE).failure) return
+                player.invAddOrDrop(objRepo, ROPE)
                 mesbox("You hand over 4 balls of wool. Ned gives you a coil of rope.")
             }
             RopeTopic.GetWool -> {
@@ -360,16 +387,14 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
     }
 
     private suspend fun Dialogue.buyRope() {
-        val inv = access.inv
-        if (inv.count(COINS) < ROPE_PRICE) {
+        if (!player.invTakeFee(ROPE_PRICE)) {
             mesbox("You don't have enough coins to buy any rope!")
             if (QuestRequirements.hasCompleted(player, FREMENNIK_ISLES)) nedConfession()
             return
         }
+        player.invAddOrDrop(objRepo, ROPE)
         chatPlayer(neutral, "Okay, please sell me some rope.")
         chatNpc(happy, "There you go, finest rope in Gielinor.")
-        access.invDel(inv, COINS, ROPE_PRICE)
-        access.invAdd(inv, ROPE)
         access.mes("You hand Ned 15 coins. Ned gives you a coil of rope.")
         mesbox("You hand Ned 15 coins. Ned gives you a coil of rope.")
         if (QuestRequirements.hasCompleted(player, FREMENNIK_ISLES)) nedConfession()
@@ -380,7 +405,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         chatNpc(shifty, "Really?")
         chatPlayer(
             shifty,
-            "Yes, It reminds me of... yaks. I was travelling in the Fremennik Isles recently " +
+            "Yes, It reminds me of...yaks. I was travelling in the Fremennik Isles recently " +
                 "and, do you know what? They made rope out of yak's hair.",
         )
         chatNpc(shifty, "What a coincidence?")
@@ -418,7 +443,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
             "Well, it's always good to keep on the good side of a sailor. Your secret is safe " +
                 "with me.",
         )
-        if (hasSpace) access.invAdd(access.inv, ROPE)
+        if (hasSpace) player.invAddOrDrop(objRepo, ROPE)
         chatNpc(
             happy,
             "Oh, if you're in the Isles again, tell Jofridr that her Neddie will be there soon.",
@@ -435,6 +460,8 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Leela
+    // TODO(content): [quest:prince_ali_rescue] Dialogue while the quest is in progress
     private suspend fun Dialogue.leela() {
         if (!QuestRequirements.hasCompleted(player, PRINCE_ALI_RESCUE)) {
             chatPlayer(quiz, "What are you waiting here for?")
@@ -455,12 +482,14 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         chatPlayer(happy, "Well if you need help, you know where I am. Good luck.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Miss_Schism
+    // TODO(content): [system:cutscenes] Poor and rich Wise Old Man cutscenes
     private suspend fun Dialogue.missSchism() {
         chatNpc(shocked, "Oooh, my dear, have you heard the news?")
         var asked = false
         while (true) {
             val options = buildList {
-                add("Okay, tell me about the news." to SchismTopic.News)
+                add("Ok, tell me about the news." to SchismTopic.News)
                 if (!asked) add("Who are you?" to SchismTopic.Who)
                 add("I'm not talking to you, you horrible woman." to SchismTopic.Rude)
             }
@@ -481,7 +510,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
                         happy,
                         "I also do voluntary work for the Draynor Manor Restoration Fund. We're " +
                             "campaigning to have Draynor Manor turned into a museum before the " +
-                            "wet- rot destroys it completely.",
+                            "wet-rot destroys it completely.",
                     )
                     chatPlayer(neutral, "Right...")
                 }
@@ -495,14 +524,16 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
     }
 
     private suspend fun Dialogue.schismNews() {
-        chatPlayer(bored, "Okay, tell me about the news.")
+        val watched = player.bankJob >= BANKJOB_WATCHED
+        val news = if (watched) "Ok, tell me about the news." else "Okay, tell me about the news."
+        chatPlayer(bored, news)
         chatNpc(shocked, "It's terrible, absolutely terrible! Those poor people!")
-        chatPlayer(bored, "Okay, yeah.")
+        chatPlayer(bored, if (watched) "Ok, yeah." else "Okay, yeah.")
         chatNpc(
             shocked,
             "And who'd have ever thought such a sweet old gentleman would do such a thing?",
         )
-        if (player.bankJob < BANKJOB_WATCHED) {
+        if (!watched) {
             chatPlayer(neutral, "I really don't know what you're talking about.")
             chatNpc(shocked, "Oooh, my dear, had you not heard?")
             chatPlayer(bored, "At this rate I don't think I want to know...")
@@ -597,6 +628,10 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Bank_guard
+    // TODO(content): [system:cutscenes] Bank robbery recording
+    // TODO(content): [system:wise_old_man] "Yes, and he's admitted that he did the robbery!" once
+    //  the player has confronted the Wise Old Man; that state is not tracked yet.
     private suspend fun Dialogue.bankGuard() {
         chatNpc(neutral, "Yes?")
         when {
@@ -745,21 +780,21 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
             1 -> {
                 chatPlayer(quiz, "Can I see that recording again, please?")
                 chatNpc(neutral, "I'd like you to pay me 50 gp first.")
-                if (access.inv.count(COINS) < RECORDING_FEE) {
-                    chatPlayer(sad, "I'm not carrying that much.")
+                if (access.inv.count(COINS) >= RECORDING_FEE) {
+                    payForRecording("Ok, here's 50 gp.", access.inv)
+                    return
+                }
+                chatPlayer(sad, "I'm not carrying that much.")
+                if (access.bank.count(COINS) < RECORDING_FEE) {
                     chatNpc(neutral, "Oh well, maybe another day.")
                     return
                 }
-                val pay =
-                    menu("Ok, here's 50 gp." to true, "Thanks, maybe another day." to false)
-                if (!pay) {
-                    chatPlayer(neutral, "Thanks, maybe another day.")
-                    chatNpc(neutral, "Ok.")
-                    return
-                }
-                chatPlayer(neutral, "Ok, here's 50 gp.")
-                if (access.invDel(access.inv, COINS, RECORDING_FEE).failure) return
-                watchRecording()
+                chatNpc(
+                    neutral,
+                    "As a bank employee, I suppose I could take the money directly from your " +
+                        "bank account.",
+                )
+                payForRecording("Ok, you can take 50 gp from my bank account.", access.bank)
             }
             else -> {
                 chatPlayer(neutral, "Sorry, I don't want anything.")
@@ -768,19 +803,34 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         }
     }
 
+    private suspend fun Dialogue.payForRecording(accept: String, from: Inventory) {
+        if (!menu(accept to true, "Thanks, maybe another day." to false)) {
+            chatPlayer(neutral, "Thanks, maybe another day.")
+            chatNpc(neutral, "Ok.")
+            return
+        }
+        chatPlayer(neutral, accept)
+        if (!player.invTakeFee(RECORDING_FEE, from)) return
+        watchRecording()
+    }
+
     private suspend fun Dialogue.bankGuardLeave() {
         chatPlayer(neutral, GUARD_LEAVE)
         chatNpc(neutral, "Good day, ${if (isLad()) "sir" else "ma'am"}.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Fortunato
+    // TODO(content): [quest:rag_and_bone_man_i] Vinegar dialogue and the vinegar stock
+    // TODO(content): [skill:thieving] "You're the thief who stole from me!" after a stall theft
+    // TODO(content): [system:item_on_npc] Buying back empty wine bottles for 2 coins each
     private suspend fun Dialogue.fortunato() {
         chatNpc(neutral, "Can I help you at all?")
-        chatNpc(happy, "Ah! Good afternoon to you. I take it you have come for a refill?")
-        if (menu("Yes" to true, "Not today" to false)) {
-            chatPlayer(neutral, "Yes.")
+        if (menu("Yes, what are you selling?" to true, "Not at the moment" to false)) {
+            chatPlayer(neutral, "Yes, what are you selling?")
             access.openWineShop()
         } else {
-            chatPlayer(neutral, "Not today.")
+            chatPlayer(neutral, "Not at the moment.")
+            chatNpc(angry, "Then move along, you filthy ragamuffin, I have customers to serve!")
         }
     }
 
@@ -788,13 +838,14 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         shops.open(
             player = player,
             title = "Wine Shop.",
-            shopInv = "inv.wine_vinegar_merchant",
+            shopInv = "inv.wine_merchant",
             buyPercentage = 60.0,
             sellPercentage = 100.0,
             changePercentage = 2.0,
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Town_Crier
     private suspend fun Dialogue.townCrier() {
         chatNpc(happy, "Hello citizen!")
         if (menu("What do you do around here?" to true, "See you later." to false)) {
@@ -811,6 +862,8 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         chatNpc(happy, "Until next time.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Olivia
+    // TODO(content): [skill:thieving] "You're the one who stole something from me!" after a theft
     private suspend fun Dialogue.olivia() {
         chatNpc(happy, "Would you like to trade in seeds?")
         val topic = menu("Yes" to 0, "No" to 1, "Where do I get rarer seeds from?" to 2)
@@ -840,6 +893,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Friendly_Forester
     private suspend fun Dialogue.forester() {
         chatPlayer(neutral, "Hello there.")
         if (player.metForester == 0) {
@@ -934,12 +988,14 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Twiggy_O%27Korn
+    // TODO(content): [diary:all] Achievement diary cape and hood purchase options
     private suspend fun Dialogue.twiggy() {
         chatNpc(happy, "Hey there!")
         if (access.random.of(0, 49) == 0 && !access.inv.isFull()) {
             chatNpc(happy, "Here, have some chocolate!")
             chatPlayer(happy, "Wow, thanks!")
-            access.invAdd(access.inv, CHOCOLATE_BAR)
+            player.invAddOrDrop(objRepo, CHOCOLATE_BAR)
         }
         var askedWho = false
         while (true) {
@@ -976,6 +1032,9 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Diango
+    // TODO(content): [event:banana_hat] Banana hat greeting
+    // TODO(content): [event:mystic_cards] Mystic cards reward
     private suspend fun Dialogue.diango() {
         chatNpc(
             happy,
@@ -1028,17 +1087,20 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Martin_the_Master_Gardener
+    // https://oldschool.runescape.wiki/w/Transcript:Fairytale_I_-_Growing_Pains
+    // TODO(content): [quest:fairytale_i_growing_pains] Start offer and quest dialogue
+    // TODO(content): [quest:fairytale_ii_cure_a_queen] Quest dialogue
+    // TODO(content): [skill:thieving] Greeting after the player pickpocketed him
+    // TODO(content): [system:skillcapes] Trimmed cape when the player has another 99
     private suspend fun Dialogue.martin() {
-        val topic =
-            menu(
-                buildList {
-                    add("Ask about the Skillcape of Farming." to 0)
-                    if (QuestRequirements.hasCompleted(player, FAIRYTALE_II)) {
-                        add("Ask about the quest." to 1)
-                    }
-                }
-            )
-        if (topic == 1) return martinQuest()
+        val quest =
+            menu("Ask about the Skillcape of Farming." to false, "Ask about the quest." to true)
+        if (quest) {
+            chatPlayer(neutral, "Hello.")
+            chatNpc(worried, "I can't chat now, I have too many things to worry about.")
+            return
+        }
         if (player.baseFarmingLvl < MAX_LEVEL) {
             chatPlayer(quiz, "What is that cape you're wearing?")
             chatNpc(
@@ -1051,8 +1113,7 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         val hood = menu("Skillcape" to false, "Hood" to true)
         if (hood) {
             chatPlayer(quiz, "May I have another hood for my cape, please?")
-            if (access.inv.isFull()) return
-            access.invAdd(access.inv, FARMING_HOOD)
+            player.invAddOrDrop(objRepo, FARMING_HOOD)
             objbox(FARMING_HOOD, "Martin hands you another hood for your skillcape.")
             return
         }
@@ -1087,33 +1148,10 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
             )
             return
         }
-        if (access.invDel(inv, COINS, SKILLCAPE_PRICE).failure) return
-        access.invAdd(inv, FARMING_CAPE)
-        access.invAdd(inv, FARMING_HOOD)
+        if (!player.invTakeFee(SKILLCAPE_PRICE)) return
+        player.invAddOrDrop(objRepo, FARMING_CAPE)
+        player.invAddOrDrop(objRepo, FARMING_HOOD)
         chatNpc(happy, "That's true; us Master Farmers are a unique breed.")
-    }
-
-    private suspend fun Dialogue.martinQuest() {
-        chatPlayer(
-            happy,
-            "Okay, this time I've really solved your problems! I've woken up the Fairy Queen!",
-        )
-        chatNpc(
-            neutral,
-            "Hmm, right. You'll forgive me if I reserve judgement on this until I actually have " +
-                "some crops grow.",
-        )
-        chatPlayer(
-            neutral,
-            "Of course. The problem was the Godfather, he wanted to take control of Zanaris " +
-                "himself, so he didn't give Fairy Nuff the Queen's secateurs!",
-        )
-        chatNpc(
-            angry,
-            "Godfather...Fairy Nuff...the Queen, I don't know what you're talking about and I " +
-                "don't care. I just want my crops to start growing again. Come back and claim " +
-                "your reward once they've had a chance to grow.",
-        )
     }
 
     private fun Dialogue.isLad(): Boolean = player.appearance.bodyType == Constants.bodytype_a
@@ -1233,12 +1271,11 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         const val SKILLCAPE_PRICE = 99000
         const val FARMING_CAPE = "obj.skillcape_farming"
         const val FARMING_HOOD = "obj.skillcape_farming_hood"
-        const val FAIRYTALE_II = "quest_fairytale2"
 
         const val BANKJOB_KNOWN = 1
         const val BANKJOB_WATCHED = 2
 
-        const val NED_DECLINE = "No thanks, Ned. I don't need any."
+        const val NED_DECLINE = "No thanks Ned, I don't need any."
         const val GUARD_MENU = "What would you like to say?"
         const val GUARD_LEAVE = "Alright, I'll stop bothering you now."
     }
