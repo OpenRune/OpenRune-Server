@@ -9,6 +9,12 @@ import net.rsprot.protocol.game.incoming.buttons.IfButtonD
 import net.rsprot.protocol.game.incoming.buttons.IfButtonT
 import net.rsprot.protocol.game.incoming.buttons.IfScriptTrigger
 import net.rsprot.protocol.game.incoming.buttons.IfSubOp
+import net.rsprot.protocol.game.incoming.events.EventKeyboard
+import net.rsprot.protocol.game.incoming.events.EventMouseClickV1
+import net.rsprot.protocol.game.incoming.events.EventMouseClickV2
+import net.rsprot.protocol.game.incoming.events.EventMouseMove
+import net.rsprot.protocol.game.incoming.events.EventMouseScroll
+import net.rsprot.protocol.game.incoming.events.EventNativeMouseMove
 import net.rsprot.protocol.game.incoming.locs.OpLoc6
 import net.rsprot.protocol.game.incoming.locs.OpLocT
 import net.rsprot.protocol.game.incoming.locs.OpLocV2
@@ -54,6 +60,7 @@ import org.rsmod.api.net.rsprot.handlers.IfScriptTriggerHandler
 import org.rsmod.api.net.rsprot.handlers.IfSubOpHandler
 import org.rsmod.api.net.rsprot.handlers.IgnoreListAddHandler
 import org.rsmod.api.net.rsprot.handlers.IgnoreListDeleteHandler
+import org.rsmod.api.net.rsprot.handlers.InputEventHandler
 import org.rsmod.api.net.rsprot.handlers.MapBuildCompleteHandler
 import org.rsmod.api.net.rsprot.handlers.MessagePrivateHandler
 import org.rsmod.api.net.rsprot.handlers.MessagePublicHandler
@@ -158,6 +165,12 @@ constructor(
         builder.addListener(IfButtonT::class.java, ifButtonT)
         builder.addListener(MapBuildComplete::class.java, mapBuildComplete)
         builder.addListener(IfScriptTrigger::class.java, scriptTriggerHandler)
+        builder.addListener(EventMouseMove::class.java, InputEventHandler())
+        builder.addListener(EventNativeMouseMove::class.java, InputEventHandler())
+        builder.addListener(EventMouseClickV1::class.java, InputEventHandler())
+        builder.addListener(EventMouseClickV2::class.java, InputEventHandler())
+        builder.addListener(EventMouseScroll::class.java, InputEventHandler())
+        builder.addListener(EventKeyboard::class.java, InputEventHandler())
         return DefaultGameMessageConsumerRepositoryProvider(builder.build())
     }
 }

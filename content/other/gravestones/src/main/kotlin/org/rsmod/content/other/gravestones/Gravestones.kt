@@ -6,6 +6,7 @@ import org.rsmod.api.death.DeathGrave
 import org.rsmod.api.death.PlayerGraveHook
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.player.SupplyItems
+import org.rsmod.api.player.input.PlayerIdle
 import org.rsmod.api.player.ironman.isAnyIronman
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
@@ -246,9 +247,9 @@ constructor(
             player.clearSoftTimer(TIMER)
             return
         }
-        // TODO: The timer also stops while the player is idle for more than 10 seconds
+        // The timer stops with the grave open or after 10 seconds idle
         // (https://oldschool.runescape.wiki/w/Grave).
-        if (player.ui.containsOverlay(INTERFACE)) {
+        if (player.ui.containsOverlay(INTERFACE) || PlayerIdle.isIdle(player, IDLE_CYCLES)) {
             return
         }
         // live capture, rev 241, 20261012T233700-df49f48@962: 3 off every 3 ticks.
@@ -349,6 +350,9 @@ constructor(
 
         // https://oldschool.runescape.wiki/w/Grave: unstackables "cannot be stockpiled up to 56".
         const val MAX_UNSTACKABLE = 28
+
+        // UNVERIFIED: how live rounds 10 seconds (16.7 ticks).
+        const val IDLE_CYCLES = 16
         private const val SUPPLY_DURATION = 6000
     }
 }
