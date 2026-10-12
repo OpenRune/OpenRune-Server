@@ -65,7 +65,7 @@ class CharacterAccountRepositoryTest {
 
 | Need | Use |
 |---|---|
-| A database | `@ExtendWith(PersistenceTestExtension::class)`; a fresh DB cloned from a migrated template for every test method |
+| A database | `@ExtendWith(PersistenceTestExtension::class)`; a DB cloned from a migrated template per test class |
 | The seam | Test parameters: `GameDatabase`, `CharacterAccountRepository`, `Set<CharacterDataStage.Pipeline>` |
 | A transaction | `db.withTransactionBlocking(schema) { connection -> … }` (`schema` = `WorldType.key`) |
 | Save | `repository.save(connection, player, accountId, characterId, gameWorldId)` then each `pipeline.save(connection, player, characterId)` — one transaction, as `AccountSavingService` does |
@@ -104,8 +104,10 @@ save plus the load is when, and then only inspects the loaded `Player` (or table
 
 - `PersistenceTestExtension` (module `api/testing-persistence`) starts one Postgres per test
   JVM (`fsync=off`), migrates a seed DB once through `GameDatabase.connect()`, clones it with
-  `CREATE DATABASE … TEMPLATE` before each test method and drops it after. Tests never share
-  rows, so they need no cleanup and no ordering.
+  `CREATE DATABASE … TEMPLATE` once per test class and drops it after the class. Classes run in
+  parallel on their own clones; methods in a class run sequentially and share the clone, so every
+  test uses its own account name — no cleanup, no ordering. (Per-method clones cost ~0.6–1.5 s
+  each, so they were dropped.)
 - Each test builds its own small state in `// given` and saves it through the real repository
   and pipelines. There is no shared golden fixture.
 - Until the extension ships shared save/load helpers, keep them as private helpers in the test
@@ -118,6 +120,7 @@ save plus the load is when, and then only inspects the loaded `Player` (or table
 
 - **Do** assert Temp varps/invs are *absent* after load when testing a full round trip; they
   are deliberately not saved.
+- **Do** give every test its own account name; methods in a class share a database.
 - **Do** save each world type through its own schema (`WorldType.key`) when testing isolation.
 - **Don't** start `GameTestState` or `GameServer`, or bind `GameDatabaseModule` /
   `AccountSavingModule` — the extension hands you the seam.

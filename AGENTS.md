@@ -312,7 +312,7 @@ when the code needs the running game or a real database.
 |---|---|---|---|---|---|
 | Unit | Logic in isolation | `src/test` | `test` | Plain JUnit 5; never boots the game or loads the cache | Formulas, rolls, state machines, geometry — inputs passed in as parameters |
 | Game integration | Behaviour in the running game | `src/integration` | `integration` | `GameTestState` → `runGameTest(Script::class)` (`runInjectedGameTest` to swap a binding) | Needs cache types or RSCM symbols, scripts, ops, item movement (dupe/loss) |
-| Persistence | Player state survives save → load on real Postgres | `src/persistence` | `persistence` | `PersistenceTestExtension`: zonky PG 14, fresh DB per test, real repository and pipelines, no `GameServer` | Changing what is saved or loaded: pipelines, appliers, repository, schema/world-type isolation, save rollback |
+| Persistence | Player state survives save → load on real Postgres | `src/persistence` | `persistence` | `PersistenceTestExtension`: zonky PG 14, cloned DB per test class, real repository and pipelines, no `GameServer` | Changing what is saved or loaded: pipelines, appliers, repository, schema/world-type isolation, save rollback |
 
 Unit stays cache-free: logic that only reads cache values takes them as parameters. New
 script or content behaviour goes through `runGameTest`, not hand-mocked `ProtectedAccess`/

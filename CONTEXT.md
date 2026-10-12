@@ -17,7 +17,7 @@ _Avoid_: small test
 
 **Persistence**:
 A test that proves player state survives save → load on real Postgres: the real repository
-and pipelines in `src/persistence`, a fresh database per test, no running game.
+and pipelines in `src/persistence`, a cloned database per test class, no running game.
 _Avoid_: DB test, SQL test, DAO test
 
 **Game integration**:
