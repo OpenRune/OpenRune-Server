@@ -5,14 +5,14 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-// https://oldschool.runescape.wiki/w/Transcript:Bolkoy (before Tree Gnome Village)
+// https://oldschool.runescape.wiki/w/Transcript:Bolkoy
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:tree_gnome_village] after-quest greeting
 // TODO(content): [system:treasure_trails] hard challenge scroll
 class VillageShop @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
@@ -25,12 +25,26 @@ class VillageShop @Inject constructor(private val shops: Shops) : PluginScript()
     }
 
     private suspend fun Dialogue.bolkoy(npc: Npc) {
-        chatPlayer(happy, "Hello there.")
-        chatNpc(happy, "Hello stranger, new to these parts?")
-        chatNpc(
-            happy,
-            "I'm Bolkoy by the way. I'm the village shopkeeper. Would you like to buy something?",
-        )
+        if (QuestRequirements.hasCompleted(player, TREE_GNOME_VILLAGE)) {
+            chatPlayer(happy, "Hello.")
+            chatNpc(
+                happy,
+                "Welcome, welcome. It's good to see you again. The village is much safer now you " +
+                    "have returned the orbs.",
+            )
+            chatNpc(
+                happy,
+                "By the way, I'm the village shop keeper. Would you like to buy something?",
+            )
+        } else {
+            chatPlayer(happy, "Hello there.")
+            chatNpc(happy, "Hello stranger, new to these parts?")
+            chatNpc(
+                happy,
+                "I'm Bolkoy by the way. I'm the village shopkeeper. Would you like to buy " +
+                    "something?",
+            )
+        }
         if (choice2("What have you got?", true, "No thank you.", false)) {
             chatPlayer(quiz, "What have you got?")
             chatNpc(happy, "Take a look.")
@@ -43,5 +57,6 @@ class VillageShop @Inject constructor(private val shops: Shops) : PluginScript()
 
     private companion object {
         const val BOLKOY = "npc.treevillage_shopkeeper1"
+        const val TREE_GNOME_VILLAGE = "quest_treegnomevillage"
     }
 }
