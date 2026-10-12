@@ -9,16 +9,14 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Hatius_Cosaintus
+// TODO(content): [diary:lumbridge] "Can I have another ring?" and the tier reward claims
 class HatiusCosaintus : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.hatius_lumbridge_diary") { startDialogue(it.npc) }
     }
 
-    private suspend fun ProtectedAccess.startDialogue(npc: Npc) =
-        startDialogue(npc) {
-            chatNpc(happy, "Good day.")
-            mainMenu()
-        }
+    private suspend fun ProtectedAccess.startDialogue(npc: Npc) = startDialogue(npc) { mainMenu() }
 
     private suspend fun Dialogue.mainMenu() {
         val choice =
@@ -43,9 +41,9 @@ class HatiusCosaintus : PluginScript() {
             "It's a diary that helps you keep track of particular " +
                 "achievements. In the Lumbridge and Draynor area it " +
                 "can help you discover some quite useful things. " +
-                "Eventually, with enough exploration, the inhabitants will " +
-                "reward you",
+                "Eventually, with enough exploration, the inhabitants will",
         )
+        chatNpc(neutral, "reward you.")
         // TODO(content): Open achievement diary overlay
         toplevelSidebuttonSwitch(player, constants.toplevel_details)
         chatNpc(neutral, "You can see the list of tasks on the side-panel.")
@@ -80,9 +78,9 @@ class HatiusCosaintus : PluginScript() {
             "It's a diary that helps you keep track of particular " +
                 "achievements. In the Lumbridge and Draynor area it " +
                 "can help you discover some quite useful things. " +
-                "Eventually, with enough exploration, the inhabitants will " +
-                "reward you.",
+                "Eventually, with enough exploration, the inhabitants will",
         )
+        chatNpc(neutral, "reward you.")
         // TODO(content): Open achievement diary overlay
         toplevelSidebuttonSwitch(player, constants.toplevel_details)
         chatNpc(neutral, "You can see the list of tasks on the side-panel.")
@@ -95,9 +93,9 @@ class HatiusCosaintus : PluginScript() {
             "Well, there are four different Explorer's rings, which " +
                 "match up with the four levels of difficulty. Each has the " +
                 "same rewards as the previous level and some additional " +
-                "benefits too... which tier of rewards would you like to " +
-                "know more about?",
+                "benefits too... which tier of rewards would you like to",
         )
+        chatNpc(happy, "know more about?")
         val choice =
             choice4(
                 "Easy Rewards.",
@@ -159,8 +157,11 @@ class HatiusCosaintus : PluginScript() {
             "In addition to the previous tiers of rewards, you can " +
                 "block an additional slayer target with slayer masters, " +
                 "recharge all of your run energy three times per day " +
-                "and cast high level alchemy thirty times per day. The " +
-                "Culinaromancer's chest is 20% cheaper, you can use " +
+                "and cast high level alchemy thirty times per day. The",
+        )
+        chatNpc(
+            happy,
+            "Culinaromancer's chest is 20% cheaper, you can use " +
                 "Fairy rings without needing a dramen or lunar staff " +
                 "and you'll receive double wire when thieving in " +
                 "Dorgesh-Kaan.",
@@ -182,5 +183,6 @@ class HatiusCosaintus : PluginScript() {
     private suspend fun Dialogue.bye() {
         chatPlayer(happy, "Bye!")
         chatNpc(happy, "Toodles.")
+        mainMenu()
     }
 }

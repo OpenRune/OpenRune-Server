@@ -35,6 +35,10 @@ class LumbridgeAdvisors : PluginScript() {
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Doomsayer
+    // TODO(content): [system:warning_toggles] "Do you need to turn on any warnings right now?" once
+    // warnings can be disabled
+    // TODO(content): [system:treasure_trails] easy and hard clue steps
     private suspend fun Dialogue.doomsayer() {
         chatNpc(scared, "Dooooom!")
         chatPlayer(scared, "Where?")
@@ -49,30 +53,27 @@ class LumbridgeAdvisors : PluginScript() {
         chatNpc(happy, "Yes! I roam the world sensing danger.")
         chatNpc(
             neutral,
-            "If I find a dangerous area, then I put up warning signs that will tell you what is so " +
-                "dangerous about that area.",
+            "If you see the signs often enough, then you can turn them off; by that time you " +
+                "likely know what the area has in store for you.",
         )
         chatNpc(
             neutral,
-            "If you see the signs often enough, then you can turn them off; by that time you likely " +
-                "know what the area has in store for you.",
+            "If I find a dangerous area, then I put up warning signs that will tell you what is " +
+                "so dangerous about that area.",
         )
         chatPlayer(quiz, "But what if I want to see the warnings again?")
         chatNpc(happy, "That's why I'm waiting here!")
         chatNpc(neutral, "If you want to see the warning messages again, I can turn them back on for you.")
-        chatNpc(quiz, "Do you need to turn on any warnings right now?")
-        if (menu("Yes, I do." to true, "Not right now." to false)) {
-            chatPlayer(neutral, "Yes, I do.")
-            return
-        }
-        chatPlayer(neutral, "Not right now.")
-        chatNpc(neutral, "Ok, keep an eye out for the messages though!")
-        chatPlayer(neutral, "I will.")
+        chatPlayer(happy, "Thanks, I'll remember that if I see any warning messages.")
+        chatNpc(happy, "You're welcome!")
     }
 
     private val Dialogue.scared
         get() = mesanim("mesanim.scared")
 
+    // https://oldschool.runescape.wiki/w/Transcript:Count_Check
+    // TODO(content): [system:bank_pin] pass the check (and the first-time lamp) with a Bank PIN
+    // TODO(content): [quest:priest_in_peril] "If you're a vampyre, how did you cross the Salve?"
     private suspend fun Dialogue.countCheck() {
         chatNpc(
             happy,
@@ -91,11 +92,14 @@ class LumbridgeAdvisors : PluginScript() {
             ) {
                 1 -> {
                     chatPlayer(happy, "Check my account, Count Check!")
+                    // TODO(content): [verify:in_game] the wiki has no line for a Jagex Account
+                    // without a Bank PIN; this is the random event's line
                     chatNpc(
                         neutral,
                         "You do not have a Bank PIN, so you fail my checks! Talk to a banker to set a PIN " +
                             "before we meet again.",
                     )
+                    return
                 }
                 2 -> countAdvice()
                 3 -> if (strongholdOffer()) return
@@ -194,23 +198,29 @@ class LumbridgeAdvisors : PluginScript() {
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Nigel
+    // TODO(content): [system:xp_lock] "Could you stop me from gaining XP?"
+    // TODO(content): [system:deadman] Deadman Reward Store, Annihilation access and blueprints
     private suspend fun Dialogue.nigel() {
         chatPlayer(neutral, "Hey, who are you?")
         chatNpc(neutral, "I'm Nigel. It is my job to tell you about Deadman Mode.")
         while (true) {
             when (
                 menu(
-                    "I have a question about Deadman Mode." to 1,
+                    "I have a question about Deadman mode." to 1,
                     "Can I purchase some Deadman rewards?" to 2,
                     "Goodbye." to 3,
                 )
             ) {
                 1 -> {
-                    chatPlayer(neutral, "I have a question about Deadman Mode.")
+                    chatPlayer(neutral, "I have a question about Deadman mode.")
                     chatNpc(quiz, "What would you like to know?")
                     deadmanQuestions()
                 }
-                2 -> chatNpc(neutral, "Unfortunately the store is not currently available.")
+                2 -> {
+                    chatNpc(neutral, "Unfortunately the store is not currently available.")
+                    return
+                }
                 else -> {
                     chatPlayer(neutral, "Goodbye.")
                     return
@@ -223,15 +233,15 @@ class LumbridgeAdvisors : PluginScript() {
         while (true) {
             val topic =
                 menu(
-                    "What is Deadman Mode?" to 1,
-                    "How do I play Deadman Mode?" to 2,
-                    "What happens when I die in Deadman Mode?" to 3,
-                    "What happens when I kill a player in Deadman Mode?" to 4,
+                    "What is Deadman mode?" to 1,
+                    "How do I play Deadman mode?" to 2,
+                    "What happens when I die in Deadman mode?" to 3,
+                    "What happens when I kill a player in Deadman mode?" to 4,
                     "More options..." to 5,
                 )
             when (topic) {
                 1 -> {
-                    chatPlayer(quiz, "What is Deadman Mode?")
+                    chatPlayer(quiz, "What is Deadman mode?")
                     chatNpc(
                         neutral,
                         "Deadman mode is an incredibly dangerous survival game mode. Anyone can attack " +
@@ -255,7 +265,7 @@ class LumbridgeAdvisors : PluginScript() {
                     )
                 }
                 2 -> {
-                    chatPlayer(quiz, "How do I play Deadman Mode?")
+                    chatPlayer(quiz, "How do I play Deadman mode?")
                     chatNpc(
                         neutral,
                         "You can log into Deadman mode by selecting a Deadman mode world from the world list " +
@@ -275,7 +285,7 @@ class LumbridgeAdvisors : PluginScript() {
                     )
                 }
                 3 -> {
-                    chatPlayer(quiz, "What happens when I die in Deadman Mode?")
+                    chatPlayer(quiz, "What happens when I die in Deadman mode?")
                     chatNpc(
                         neutral,
                         "If you die to a player you will lose the 10 most valuable stacks of items from your " +
@@ -296,14 +306,19 @@ class LumbridgeAdvisors : PluginScript() {
                     )
                 }
                 4 -> {
-                    chatPlayer(quiz, "What happens when I kill a player in Deadman Mode?")
+                    chatPlayer(quiz, "What happens when I kill a player in Deadman mode?")
                     chatNpc(
                         neutral,
-                        "When you kill a player you will receive any items they have on their person and you " +
-                            "will also be given a key. You can use this key on Deadman chests found in " +
-                            "various banks across the map. Within the chest you will find the 10 most " +
-                            "valuable stacks of items from the bank of the player you struck down. From here " +
-                            "you will be able to choose the items you would like to keep.",
+                        "When you kill a player you will receive any items they have on their " +
+                            "person and you will also be given a key. You can use this key on " +
+                            "Deadman chests found in various banks across the map. Within the " +
+                            "chest you will",
+                    )
+                    chatNpc(
+                        neutral,
+                        "find the 10 most valuable stacks of items from the bank of the player " +
+                            "you struck down. From here you will be able to choose the items you " +
+                            "would like to keep.",
                     )
                 }
                 else -> if (deadmanMoreOptions()) return
@@ -316,13 +331,14 @@ class LumbridgeAdvisors : PluginScript() {
         while (true) {
             when (
                 menu(
-                    "How can I protect my items in Deadman Mode?" to 1,
-                    "What are safe zones in Deadman Mode?" to 2,
+                    "How can I protect my items in Deadman mode?" to 1,
+                    "How can I protect my stats in Deadman mode?" to 4,
+                    "What are safe zones in Deadman mode?" to 2,
                     "Previous options..." to 3,
                 )
             ) {
                 1 -> {
-                    chatPlayer(quiz, "How can I protect my items in Deadman Mode?")
+                    chatPlayer(quiz, "How can I protect my items in Deadman mode?")
                     chatNpc(
                         neutral,
                         "You can protect up to 10 items by placing them in your safe deposit box. Items in " +
@@ -331,8 +347,27 @@ class LumbridgeAdvisors : PluginScript() {
                             "safe deposit box, no stacks.",
                     )
                 }
+                4 -> {
+                    chatPlayer(quiz, "How can I protect my stats in Deadman mode?")
+                    chatNpc(
+                        neutral,
+                        "You can protect your levels in up to 2 combat skills and 3 non-combat " +
+                            "skills. You can choose which by opening your items lost on death " +
+                            "interface found in your equipment tab. Choose wisely!",
+                    )
+                    chatNpc(
+                        neutral,
+                        "You should be warned however. If you get killed by a guard, you will " +
+                            "lose a tenth of your experience in those skills too!",
+                    )
+                    chatNpc(
+                        neutral,
+                        "Gelin over there also has some deals on insuring your hitpoints, speak " +
+                            "to her to find out more about that.",
+                    )
+                }
                 2 -> {
-                    chatPlayer(quiz, "What are safe zones in Deadman Mode?")
+                    chatPlayer(quiz, "What are safe zones in Deadman mode?")
                     chatNpc(
                         neutral,
                         "Safe zones are areas patrolled by very high level guards which can be found in " +
@@ -347,6 +382,8 @@ class LumbridgeAdvisors : PluginScript() {
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Adventurer_Jon
+    // TODO(content): [system:adventure_paths] starter kits, task rewards and the paths interface
     private suspend fun Dialogue.adventurerJon() {
         if (player.adventurePaths == ADVENTURE_PATHS_OPTED_OUT) {
             chatNpc(neutral, "You are currently not participating in Adventure Paths. Would you like to join back in?")

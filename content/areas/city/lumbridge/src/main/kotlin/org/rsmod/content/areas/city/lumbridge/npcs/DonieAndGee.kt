@@ -3,10 +3,14 @@ package org.rsmod.content.areas.city.lumbridge.npcs
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+// https://oldschool.runescape.wiki/w/Transcript:Donie
+// https://oldschool.runescape.wiki/w/Transcript:Gee
+// TODO(content): [quest:the_lost_tribe] "Do you know what happened in the castle cellar?"
 class DonieAndGee : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.lumbridge_guide2_man") { startDialogue(it.npc) }
@@ -16,12 +20,11 @@ class DonieAndGee : PluginScript() {
     private suspend fun ProtectedAccess.startDialogue(npc: Npc) =
         startDialogue(npc) {
             chatNpc(happy, "Hello there, can I help you?")
-            when (random.of(maxExclusive = 5)) {
+            when (random.of(maxExclusive = 4)) {
                 0 -> randomDialogue1()
                 1 -> randomDialogue2()
-                2 -> randomDialogue3()
-                3 -> randomDialogue4()
-                4 -> randomDialogue5()
+                2 -> randomDialogue4()
+                3 -> randomDialogue5()
             }
         }
 
@@ -47,21 +50,6 @@ class DonieAndGee : PluginScript() {
                 ::questsToDo,
                 "Can I buy your stick?",
                 ::buyStick,
-            )
-        nextDialogue()
-    }
-
-    private suspend fun Dialogue.randomDialogue3() {
-        val nextDialogue =
-            choice4(
-                "What's up?",
-                ::whatsUp,
-                "Are there any quests I can do here?",
-                ::questsToDo,
-                "Can I buy your stick?",
-                ::buyStick,
-                "Your shoe lace is untied.",
-                ::untiedShoeLace,
             )
         nextDialogue()
     }
@@ -170,9 +158,9 @@ private suspend fun Dialogue.questsToDo() {
             ::dangerousQuests,
             "Something easy please, I'm new here.",
             ::easyQuests,
-            "I'm a thinker rather than fighter; anything skill oriented?",
+            "I'm a thinker rather than fighter, anything skill oriented?",
             ::thinkingQuests,
-            "I want to do all kinds of things, do you know anything like that?",
+            "I want to do all kinds of things, do you know of anything like that?",
             ::allQuests,
             "Maybe another time.",
             ::maybeAnotherTime,
@@ -181,7 +169,6 @@ private suspend fun Dialogue.questsToDo() {
 }
 
 private suspend fun Dialogue.dangerousQuests() {
-    chatPlayer(happy, "I fancy a bit of a fight, anything dangerous?")
     chatNpc(quiz, "Hmm.. dangerous you say? What sort of creatures are you looking to fight?")
     val nextDialogue =
         choice4(
@@ -207,9 +194,7 @@ private suspend fun Dialogue.bigScaryDemonQuests() {
             "kind of greater evil.. sounds demon-like if you ask me.",
     )
     chatNpc(quiz, "Perhaps you could check it out if you are as brave as you say?")
-    // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars["varbit.demonslayer_main"]
-    if (progress == 0) {
+    if (!completed("quest_demonslayer")) {
         chatPlayer(happy, "Thanks for the tip, perhaps I will.")
     } else {
         chatPlayer(
@@ -240,9 +225,7 @@ private suspend fun Dialogue.vampyreQuests() {
             "village houses. Perhaps you could see what the matter " +
             "is?",
     )
-    // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars["varp.vampire"]
-    if (progress == 0) {
+    if (!completed("quest_vampyreslayer")) {
         chatPlayer(happy, "Thanks for the tip.")
     } else {
         chatPlayer(
@@ -272,10 +255,8 @@ private suspend fun Dialogue.smallMonsterQuests() {
             "all his beads taken by a gang of mischievous imps.",
     )
     chatNpc(happy, " Sounds like it could be a quest for you?")
-    // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars["varp.imp"]
-    if (progress == 0) {
-        chatPlayer(happy, "Thanks for the help.")
+    if (!completed("quest_impcatcher")) {
+        chatPlayer(happy, "Thanks for your help.")
     } else {
         chatPlayer(
             happy,
@@ -306,6 +287,7 @@ private suspend fun Dialogue.easyQuests() {
             ::romeoQuest,
             "Maybe another time.",
             ::maybeAnotherTime,
+            title = "Tell me about..",
         )
     nextDialogue()
 }
@@ -323,9 +305,7 @@ private suspend fun Dialogue.lumbridgeCookQuest() {
         "Perhaps you could help him? You will probably find him " +
             "in the Lumbridge Castle kitchen.",
     )
-    // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars["varp.cookquest"]
-    if (progress == 0) {
+    if (!completed("quest_cooksassistant")) {
         chatPlayer(happy, "Thank you. I shall go speak with him.")
     } else {
         chatPlayer(happy, "I have already helped the cook in Lumbridge.")
@@ -342,19 +322,11 @@ private suspend fun Dialogue.dukeStrangeTalismanQuest() {
             "could help him? You can probably find him upstairs in " +
             "Lumbridge Castle.",
     )
-    // Note: dialogue should be different when the quest has been started but not completed.
-    // varp.runemysteries uses real stages (endstate=6 when complete).
-    val progress = vars["varp.runemysteries"]
-    when {
-        progress == 0 -> chatPlayer(quiz, "Sounds mysterious. I may just do that. Thanks.")
-        progress >= 6 -> {
-            chatPlayer(happy, "Yes, I have already solved the rune mysteries.")
-            chatNpc(happy, "Ah excellent. Thank you very much adventurer.")
-        }
-        else -> {
-            chatPlayer(happy, "I'm already looking into that for the Duke.")
-            chatNpc(happy, "Good luck with it.")
-        }
+    if (!completed("quest_runemysteries")) {
+        chatPlayer(quiz, "Sounds mysterious. I may just do that. Thanks.")
+    } else {
+        chatPlayer(happy, "Yes, I have already solved the Rune mysteries.")
+        chatNpc(happy, "Ah excellent. Thank you very much adventurer.")
     }
 }
 
@@ -370,9 +342,7 @@ private suspend fun Dialogue.romeoQuest() {
         " Unless of course you manage to find Juliet first in " +
             "which case she has probably lost Romeo.",
     )
-    // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars["varp.rjquest"]
-    if (progress == 0) {
+    if (!completed("quest_romeoandjuliet")) {
         chatPlayer(quiz, "Right, ok. Romeo is in Varrock?")
         chatNpc(happy, "Yes you can't miss him, he's wandering aimlessly in the square.")
     } else {
@@ -419,9 +389,7 @@ private suspend fun Dialogue.fredFarmerQuest() {
         "You can find Fred next to the field of sheep in " +
             "Lumbridge. Perhaps you should go and speak with him.",
     )
-    // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars["varp.sheep"]
-    if (progress == 0) {
+    if (!completed("quest_sheepshearer")) {
         chatPlayer(happy, "Thanks, maybe I will.")
     } else {
         chatPlayer(
@@ -443,9 +411,7 @@ private suspend fun Dialogue.doricDwarfQuest() {
             "be able to help you with smithing. You should speak to " +
             "him. He may let you use his anvils.",
     )
-    // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars["varp.doricquest"]
-    if (progress == 0) {
+    if (!completed("quest_dorics")) {
         chatPlayer(happy, "Thanks for the tip.")
     } else {
         chatPlayer(
@@ -498,9 +464,7 @@ private suspend fun Dialogue.hettyWitchQuest() {
             "Perhaps you could give her a hand? She might be able " +
             "to offer help with your magical abilities.",
     )
-    // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars["varp.hetty"]
-    if (progress == 0) {
+    if (!completed("quest_witchspotion")) {
         chatPlayer(happy, "Ok thanks, let's hope she doesn't turn me into a potato or something..")
     } else {
         chatPlayer(
@@ -520,12 +484,10 @@ private suspend fun Dialogue.pirateTreasureQuest() {
     chatNpc(
         happy,
         "RedBeard Frank in Port Sarim's bar, the Rusty " +
-            "Anchor, might be able to tell you about the rumoured " +
+            "Anchor, might be able to tell you about the rumored " +
             "treasure that is buried somewhere in Gielinor.",
     )
-    // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars["varp.hunt"]
-    if (progress == 0) {
+    if (!completed("quest_piratestreasure")) {
         chatPlayer(happy, "Sounds adventurous, I may have to check that out. Thank you.")
     } else {
         chatPlayer(angry, "Yarr! I already found the booty!")
@@ -547,9 +509,7 @@ private suspend fun Dialogue.ernestChickenQuest() {
             "be able to tell you more.",
     )
     chatNpc(happy, "I suggest you tread carefully in that place; it's haunted.")
-    // Note: dialogue should be different when the quest has been started but not completed.
-    val progress = vars["varp.haunted"]
-    if (progress == 0) {
+    if (!completed("quest_ernestthechicken")) {
         chatPlayer(quiz, "Sounds like fun. I've never been to a Haunted Manor before.")
     } else {
         chatPlayer(
@@ -562,14 +522,17 @@ private suspend fun Dialogue.ernestChickenQuest() {
     }
 }
 
+private fun Dialogue.completed(quest: String): Boolean =
+    QuestRequirements.hasCompleted(player, quest)
+
 private suspend fun Dialogue.maybeAnotherTime() {
     chatPlayer(happy, "Maybe another time.")
 }
 
 private suspend fun Dialogue.untiedShoeLace() {
     chatPlayer(laugh, "Your shoe lace is untied.")
-    chatNpc(angry, "No, it's not!")
-    chatPlayer(laugh, "No, you're right. I have nothing to back that up.")
+    chatNpc(angry, "No it's not!")
+    chatPlayer(laugh, "No you're right. I have nothing to back that up.")
     chatNpc(angry, "Fool! Leave me alone!")
 }
 
