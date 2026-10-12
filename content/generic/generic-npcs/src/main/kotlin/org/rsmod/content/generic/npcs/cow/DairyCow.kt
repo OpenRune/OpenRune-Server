@@ -45,8 +45,12 @@ class DairyCow : PluginScript() {
         spam("You milk the cow.")
         anim("seq.milkit")
         soundSynth("synth.milk_cow")
-        weakQueue("queue.milk_cow", 8)
+        weakQueue("queue.milk_cow", if (wearsCowbellAmulet()) COWBELL_MILK_DELAY else MILK_DELAY)
     }
+
+    // https://oldschool.runescape.wiki/w/Cowbell_amulet: one tick faster while worn.
+    private fun ProtectedAccess.wearsCowbellAmulet(): Boolean =
+        "obj.cowbell_amulet" in player.worn || "obj.cowbell_amulet_empty" in player.worn
 
     private suspend fun Dialogue.noBucket() {
         chatNpcSpecific(
@@ -82,5 +86,10 @@ class DairyCow : PluginScript() {
 
     private fun CoordGrid.isNearGillie(): Boolean {
         return this == CoordGrid(0, 50, 51, 54, 8) || this == CoordGrid(0, 50, 51, 52, 11)
+    }
+
+    private companion object {
+        const val MILK_DELAY = 8
+        const val COWBELL_MILK_DELAY = 7
     }
 }

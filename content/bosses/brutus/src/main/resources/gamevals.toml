@@ -1,3 +1,9 @@
+[gamevals.synth]
+cowbell_amulet_ring = 2192
+cowbell_amulet_charge = 30
+cowbell_amulet_teleport = 1658
+cowbell_amulet_arrive = 11286
+
 [gamevals.varn]
 brutus_next_special = 64400
 brutus_aim = 64401
