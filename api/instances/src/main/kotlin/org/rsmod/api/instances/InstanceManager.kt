@@ -492,6 +492,7 @@ constructor(
         val elapsed = currentTick - startTick
         for (player in InstanceTiming.playersIn(session, playerList)) {
             if (session.damageContributions.damageBy(player) <= 0) continue
+            if (!session.spec.recordsKillTime(player)) continue
             InstanceKillTimer.reportKillTime(player, session.key, elapsed)
         }
     }
