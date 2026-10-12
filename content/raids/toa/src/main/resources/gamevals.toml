@@ -82,6 +82,7 @@ toa_death = 61
 [gamevals.midi]
 toa_ambience = 730
 toa_boss_zebak = 736
+toa_boss_baba = 740
 
 [gamevals.synth]
 toa_crondis_fill_container = 6522
@@ -182,3 +183,15 @@ toa_het_seal_5 = 57074
 toa_het_seal_6 = 57075
 toa_het_seal_7 = 57076
 toa_het_seal_8 = 57077
+
+[gamevals.varn]
+toa_baba_rolls = 70
+toa_baba_rows = 71
+toa_baba_roll_exit = 72
+toa_baba_weak_lane = 73
+toa_baba_autos = 74
+toa_baba_throw_at = 75
+toa_baba_rockfall_ready = 76
+toa_baba_last_special = 77
+toa_baba_under = 78
+toa_baba_stomp_ready = 79

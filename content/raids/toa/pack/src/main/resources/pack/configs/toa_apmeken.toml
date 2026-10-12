@@ -1,0 +1,88 @@
+[[npc]]
+id = "npc.toa_baba"
+inherit = "npc.toa_baba"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 1
+[npc.params]
+"param.amascutnpc" = 1
+"param.min_defence" = 60
+"param.headbar" = "headbar.health_140"
+"param.boss_hp_bar_colour_back" = 13107200
+"param.boss_hp_bar_colour_sliding" = 36864
+"param.boss_hp_bar_colour_remaining" = 51200
+
+[[npc]]
+id = "npc.toa_baba_digging"
+inherit = "npc.toa_baba_digging"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 1
+[npc.params]
+"param.amascutnpc" = 1
+"param.min_defence" = 60
+"param.headbar" = "headbar.health_140"
+"param.boss_hp_bar_colour_back" = 13107200
+"param.boss_hp_bar_colour_sliding" = 36864
+"param.boss_hp_bar_colour_remaining" = 51200
+
+[[npc]]
+id = "npc.toa_baba_coffin"
+inherit = "npc.toa_baba_coffin"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 1
+[npc.params]
+"param.amascutnpc" = 1
+"param.min_defence" = 60
+"param.headbar" = "headbar.health_140"
+"param.boss_hp_bar_colour_back" = 13107200
+"param.boss_hp_bar_colour_sliding" = 36864
+"param.boss_hp_bar_colour_remaining" = 51200
+
+[[npc]]
+id = "npc.toa_baba_boulder"
+inherit = "npc.toa_baba_boulder"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_baba_boulder_weak"
+inherit = "npc.toa_baba_boulder_weak"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_baba_rubble"
+inherit = "npc.toa_baba_rubble"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
+
+
+[[npc]]
+id = "npc.toa_baba_baboon"
+inherit = "npc.toa_baba_baboon"
+defaultMode = "None"
+
+respawnDir = "West"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_baba_sarc_npc"
+inherit = "npc.toa_baba_sarc_npc"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "West"
+regenRate = 0
