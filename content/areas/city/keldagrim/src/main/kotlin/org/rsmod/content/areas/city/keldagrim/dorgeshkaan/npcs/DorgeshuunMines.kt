@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -22,9 +23,12 @@ class DorgeshuunMines @Inject constructor(private val shops: Shops) : PluginScri
         shops.open(this, npc, "Nardok's Bone Weapons", "inv.dorgeshuun_weapon_shop")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Nardok (after The Lost Tribe)
-    // TODO(content): [quest:the_lost_tribe] "You ain't getting nuthin' off me" before the quest
+    // https://oldschool.runescape.wiki/w/Transcript:Nardok
     private suspend fun Dialogue.nardok(npc: Npc) {
+        if (QuestRequirements.hasNotCompleted(player, LOST_TRIBE)) {
+            chatNpc(angry, "You ain't getting nuthin' off me, surface-dweller!")
+            return
+        }
         chatNpc(shifty, "Psst... wanna buy some weapons?")
         val choice =
             choice3("What have you got?", 1, "No thanks.", 2, "Why are you whispering?", 3)
@@ -154,5 +158,9 @@ class DorgeshuunMines @Inject constructor(private val shops: Shops) : PluginScri
             }
             else -> chatPlayer(neutral, "I'm fine, thanks.")
         }
+    }
+
+    private companion object {
+        const val LOST_TRIBE = "quest_losttribe"
     }
 }

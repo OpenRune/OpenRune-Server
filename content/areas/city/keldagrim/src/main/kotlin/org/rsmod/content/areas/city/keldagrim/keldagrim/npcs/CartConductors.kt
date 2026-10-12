@@ -7,12 +7,12 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Cart_conductor
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:fishing_contest] White Wolf Mountain destination and tickets
 class CartConductors @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         for ((conductor, variant) in TICKET_SELLERS) {
@@ -59,6 +59,13 @@ class CartConductors @Inject constructor(private val objRepo: ObjRepository) : P
                         "Let's see, we could let you travel to Ice Mountain, or to the Grand " +
                             "Exchange.",
                     )
+                    if (whiteWolfMountainOpen()) {
+                        chatNpc(
+                            neutral,
+                            "I could also let you go to White Wolf Mountain, since you've " +
+                                "befriended our brothers there.",
+                        )
+                    }
                 }
                 3 -> if (buyTicketFromMenu()) return
                 else -> {
@@ -102,7 +109,20 @@ class CartConductors @Inject constructor(private val objRepo: ObjRepository) : P
         chatPlayer(neutral, "I'd like to buy a ticket.")
         chatNpc(quiz, "And where would you like to go?")
         val destination =
-            choice3("To the Grand Exchange.", 1, "To Ice Mountain.", 2, "Nowhere.", 3)
+            if (whiteWolfMountainOpen()) {
+                choice4(
+                    "To the Grand Exchange.",
+                    1,
+                    "To Ice Mountain.",
+                    2,
+                    "To White Wolf Mountain.",
+                    4,
+                    "Nowhere.",
+                    3,
+                )
+            } else {
+                choice3("To the Grand Exchange.", 1, "To Ice Mountain.", 2, "Nowhere.", 3)
+            }
         when (destination) {
             1 -> {
                 chatPlayer(neutral, "I'd like to buy a ticket to the Grand Exchange.")
@@ -116,6 +136,11 @@ class CartConductors @Inject constructor(private val objRepo: ObjRepository) : P
                 chatPlayer(neutral, "I'd like to buy a ticket to Ice Mountain.")
                 chatNpc(neutral, "That'll be $ICE_MOUNTAIN_PRICE gold coins please.")
                 return iceMountainPurchase()
+            }
+            4 -> {
+                chatPlayer(neutral, "I'd like to buy a ticket to White Wolf Mountain.")
+                chatNpc(neutral, "That'll be $WHITE_WOLF_PRICE gold coins please.")
+                return whiteWolfPurchase()
             }
             else -> return true
         }
@@ -149,17 +174,64 @@ class CartConductors @Inject constructor(private val objRepo: ObjRepository) : P
         return true
     }
 
+    private suspend fun Dialogue.whiteWolfPurchase(): Boolean {
+        val choice =
+            if (wearsCharmedRing()) {
+                choice3("Buy.", 1, "Don't buy.", 2, "[Charm] Only pay half.", 3)
+            } else {
+                choice2("Buy.", 1, "Don't buy.", 2)
+            }
+        when (choice) {
+            1 -> {
+                if (!buyTicket(WHITE_WOLF_PRICE, WHITE_WOLF_TICKET)) return false
+                chatNpc(happy, "Thanks. Go to track 4 for carts heading to White Wolf Mountain.")
+            }
+            2 -> {
+                chatPlayer(neutral, "No thanks, I changed my mind.")
+                return false
+            }
+            else -> {
+                if (!buyTicket(WHITE_WOLF_PRICE / 2, WHITE_WOLF_TICKET)) return false
+                chatNpc(
+                    neutral,
+                    "You're a decent human, I suppose... I can let you go for 50 coins. Go to " +
+                        "track 4 for the carts heading to White Wolf Mountain.",
+                )
+            }
+        }
+        return true
+    }
+
+    // White Wolf Mountain opens once the player has finished Fishing Contest.
+    private fun Dialogue.whiteWolfMountainOpen(): Boolean =
+        QuestRequirements.hasCompleted(player, FISHING_CONTEST)
+
     private suspend fun Dialogue.tickets() {
-        val price = if (wearsCharmedRing()) ICE_MOUNTAIN_PRICE / 2 else ICE_MOUNTAIN_PRICE
+        val divisor = if (wearsCharmedRing()) 2 else 1
+        val price = ICE_MOUNTAIN_PRICE / divisor
+        val whiteWolfPrice = WHITE_WOLF_PRICE / divisor
         val option =
-            choice3(
-                "Grand Exchange (free)",
-                1,
-                "Ice Mountain ($price coins)",
-                2,
-                "Cancel",
-                3,
-            )
+            if (whiteWolfMountainOpen()) {
+                choice4(
+                    "Grand Exchange (free)",
+                    1,
+                    "Ice Mountain ($price coins)",
+                    2,
+                    "White Wolf Mountain ($whiteWolfPrice coins)",
+                    4,
+                    "Cancel",
+                    3,
+                )
+            } else {
+                choice3(
+                    "Grand Exchange (free)",
+                    1,
+                    "Ice Mountain ($price coins)",
+                    2,
+                    "Cancel",
+                    3,
+                )
+            }
         when (option) {
             1 ->
                 chatNpc(
@@ -167,10 +239,14 @@ class CartConductors @Inject constructor(private val objRepo: ObjRepository) : P
                     "That service is free. Just hop on a cart on Track 3, and away you go.",
                 )
             2 -> buyTicket(price)
+            4 -> buyTicket(whiteWolfPrice, WHITE_WOLF_TICKET)
         }
     }
 
-    private suspend fun Dialogue.buyTicket(price: Int): Boolean {
+    private suspend fun Dialogue.buyTicket(
+        price: Int,
+        ticket: String = ICE_MOUNTAIN_TICKET,
+    ): Boolean {
         val coins = player.inv.count(COINS)
         if (coins < price) {
             chatPlayer(sad, "I'm sorry, I've run out of money.")
@@ -184,7 +260,7 @@ class CartConductors @Inject constructor(private val objRepo: ObjRepository) : P
         if (!player.invTakeFee(price)) {
             return false
         }
-        player.invAddOrDrop(objRepo, ICE_MOUNTAIN_TICKET)
+        player.invAddOrDrop(objRepo, ticket)
         return true
     }
 
@@ -265,6 +341,9 @@ class CartConductors @Inject constructor(private val objRepo: ObjRepository) : P
         const val COINS = "obj.coins"
         const val ICE_MOUNTAIN_TICKET = "obj.dwarf_minecart_ticket_kelda_ice"
         const val ICE_MOUNTAIN_PRICE = 150
+        const val WHITE_WOLF_TICKET = "obj.dwarf_minecart_ticket_kelda_whitewolf"
+        const val WHITE_WOLF_PRICE = 100
+        const val FISHING_CONTEST = "quest_fishingcontest"
 
         val TICKET_SELLERS =
             mapOf(

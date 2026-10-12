@@ -3,6 +3,7 @@ package org.rsmod.content.areas.city.keldagrim.keldagrim.npcs
 import dev.openrune.types.MesAnimType
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -43,9 +44,15 @@ class KeldagrimTownsfolk : PluginScript() {
         chatNpc(angry, "I'm saying you're in my way.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Dromund (after The Giant Dwarf)
-    // TODO(content): [quest:the_giant_dwarf] "Get out of my house!" before his boots are stolen
+    // https://oldschool.runescape.wiki/w/Transcript:Dromund
     private suspend fun Dialogue.dromund() {
+        if (QuestRequirements.hasNotCompleted(player, GIANT_DWARF)) {
+            // TODO(content): [quest:the_giant_dwarf] the stolen-boots line once the player has
+            //  taken them during the quest
+            chatNpc(angry, "Get out of my house!")
+            chatPlayer(worried, "Alright, alright, I was just leaving!")
+            return
+        }
         chatNpc(
             sad,
             "Someone stole my beautiful boots... I had to buy some crummy replicas, the real " +
@@ -117,8 +124,7 @@ class KeldagrimTownsfolk : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Myndill (after The Giant Dwarf)
-    // TODO(content): [quest:the_giant_dwarf] news about the fallen statue before completion
+    // https://oldschool.runescape.wiki/w/Transcript:Myndill
     private suspend fun Dialogue.myndill() {
         chatNpc(neutral, "Hello there, human.")
         while (true) {
@@ -134,6 +140,18 @@ class KeldagrimTownsfolk : PluginScript() {
             when (option) {
                 1 -> {
                     chatPlayer(quiz, "Do you have any news?")
+                    if (QuestRequirements.hasNotCompleted(player, GIANT_DWARF)) {
+                        chatNpc(
+                            quiz,
+                            "Well, I heard some human knocked over the statue of King Alvis " +
+                                "recently. You know anything about that?",
+                        )
+                        chatPlayer(
+                            worried,
+                            "Hey, it wasn't my fault! I was just travelling on the boat!",
+                        )
+                        continue
+                    }
                     chatNpc(worried, "The Red Axe has departed the city recently. Ill omens.")
                     chatPlayer(quiz, "How is that? Do you know anything about this?")
                     chatNpc(
@@ -302,8 +320,7 @@ class KeldagrimTownsfolk : PluginScript() {
         )
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Karl (after The Giant Dwarf)
-    // TODO(content): [quest:the_giant_dwarf] "So here I am, helping to rebuild the statue." line
+    // https://oldschool.runescape.wiki/w/Transcript:Karl
     private suspend fun Dialogue.karl() {
         chatNpc(happy, "Hello there, human! Come in, come in!")
         chatPlayer(happy, "Hi, nice to see you!")
@@ -326,11 +343,15 @@ class KeldagrimTownsfolk : PluginScript() {
             "Yes, and they took me to this Veldaban person, who pretended to be really angry " +
                 "but actually he was really nice and he asked me for my help.",
         )
-        chatPlayer(
-            happy,
-            "And after a whole lot of running around, I finally managed to get the statue to " +
-                "be rebuilt.",
-        )
+        if (QuestRequirements.hasCompleted(player, GIANT_DWARF)) {
+            chatPlayer(
+                happy,
+                "And after a whole lot of running around, I finally managed to get the statue to " +
+                    "be rebuilt.",
+            )
+        } else {
+            chatPlayer(neutral, "So here I am, helping to rebuild the statue.")
+        }
         chatNpc(happy, "Such an interesting tale!")
         chatNpc(quiz, "Now how did you come to be in Keldagrim again?")
         chatPlayer(bored, "Never mind.")
@@ -345,9 +366,17 @@ class KeldagrimTownsfolk : PluginScript() {
         chatNpc(neutral, "This is my home. I'm off-duty.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Riki_the_sculptor%27s_model (after quest)
-    // TODO(content): [quest:the_giant_dwarf] "I... am the sculptor's associate." before completion
+    // https://oldschool.runescape.wiki/w/Transcript:Riki_the_sculptor%27s_model
     private suspend fun Dialogue.riki() {
+        if (QuestRequirements.hasNotCompleted(player, GIANT_DWARF)) {
+            chatPlayer(happy, "Hello there, what are you doing here?")
+            chatNpc(neutral, "I... am the sculptor's associate.")
+            chatPlayer(quiz, "His associate? What does that mean?")
+            chatPlayer(confused, "Are you going to say anything meaningful at all?")
+            chatNpc(neutral, "I...-")
+            chatPlayer(bored, "No, apparantly not.")
+            return
+        }
         chatPlayer(happy, "I'm glad I don't have to talk to you anymore!")
         chatNpc(neutral, "Hrm.")
     }
@@ -515,6 +544,7 @@ class KeldagrimTownsfolk : PluginScript() {
     }
 
     private companion object {
+        const val GIANT_DWARF = "quest_giantdwarf"
         const val HAERA = "npc.dwarf_city_old_dwarf2"
         const val HEGIR = "npc.dwarf_city_old_dwarf1"
 

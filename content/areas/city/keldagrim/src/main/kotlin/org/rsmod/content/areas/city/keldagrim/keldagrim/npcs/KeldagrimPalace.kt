@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.keldagrim.keldagrim.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -43,15 +44,24 @@ class KeldagrimPalace : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Supreme_Commander (after The Giant Dwarf)
-    // TODO(content): [quest:the_giant_dwarf] greeting and news before completion
+    // https://oldschool.runescape.wiki/w/Transcript:Supreme_Commander
     private suspend fun Dialogue.supremeCommander() {
-        chatNpc(
-            neutral,
-            "Veldaban told me about your involvement in the rebuilding of the statue. " +
-                "Congratulations.",
-        )
-        chatPlayer(happy, "Thank you!")
+        if (QuestRequirements.hasCompleted(player, GIANT_DWARF)) {
+            chatNpc(
+                neutral,
+                "Veldaban told me about your involvement in the rebuilding of the statue. " +
+                    "Congratulations.",
+            )
+            chatPlayer(happy, "Thank you!")
+        } else {
+            chatNpc(
+                quiz,
+                "I hear you are the human that Veldaban has employed to help rebuild the " +
+                    "statue. How is that going?",
+            )
+            chatPlayer(quiz, "How did you know about that?")
+            chatNpc(neutral, "Veldaban is in my employ.")
+        }
         while (true) {
             when (choice3("Who are you?", 1, "What news have you?", 2, "I must go now.", 3)) {
                 1 -> {
@@ -68,20 +78,16 @@ class KeldagrimPalace : PluginScript() {
                         "But the Black Guard has many regiments across the dwarven realm. All " +
                             "the Commanders of those regiments report to me.",
                     )
-                    // TODO(content): [quest:dwarf_cannon] "I helped Commander Lawgof once" line
+                    if (QuestRequirements.hasCompleted(player, DWARF_CANNON)) {
+                        chatPlayer(
+                            happy,
+                            "Oh yes, I helped Commander Lawgof once, in his fight against the " +
+                                "goblins.",
+                        )
+                        chatNpc(happy, "That's good to hear.")
+                    }
                 }
-                2 -> {
-                    chatPlayer(quiz, "What news have you?")
-                    chatNpc(
-                        neutral,
-                        "The Red Axe has withdrawn from the city to some unknown location. I " +
-                            "believe Commander Veldaban has asked you to assist him in finding " +
-                            "their secret headquarters?",
-                    )
-                    chatPlayer(neutral, "Oh yes, you're right.")
-                    // TODO(content): [quest:forgettable_tale] news after Forgettable Tale...
-                    // TODO(content): [quest:between_a_rock] news after Between a Rock...
-                }
+                2 -> supremeCommanderNews()
                 else -> {
                     chatPlayer(neutral, "I must go now.")
                     chatNpc(neutral, "Then I bid you farewell, human.")
@@ -91,10 +97,78 @@ class KeldagrimPalace : PluginScript() {
         }
     }
 
+    // The transcript marks the Forgettable Tale and Between a Rock news with "(?)".
+    // TODO(content): [verify:in_game] which quests switch the news to each variant
+    // TODO(content): [quest:the_giant_dwarf] the news after Forgettable Tale alone names the
+    //  company the player rebuilt the statue for (needs the joined-company state)
+    private suspend fun Dialogue.supremeCommanderNews() {
+        chatPlayer(quiz, "What news have you?")
+        if (QuestRequirements.hasNotCompleted(player, GIANT_DWARF)) {
+            chatNpc(
+                neutral,
+                "Apart from the statue of King Alvis falling down, you mean? I don't know. There " +
+                    "is something suspicious about the whole case.",
+            )
+            chatPlayer(quiz, "How do you mean?")
+            chatNpc(
+                neutral,
+                "We've had several incidents recently. For a while we even closed off the city. " +
+                    "And now this.",
+            )
+            return
+        }
+        if (
+            QuestRequirements.hasCompleted(player, BETWEEN_A_ROCK) &&
+                QuestRequirements.hasCompleted(player, FORGETTABLE_TALE)
+        ) {
+            chatNpc(
+                neutral,
+                "Well, I heard that you helped Veldaban's father in the mines to the south. " +
+                    "That's caused quite a bit of an upset in the Consortium, so I understand.",
+            )
+            chatPlayer(quiz, "How so?")
+            chatNpc(
+                neutral,
+                "The amount of wealth that goldmine is generating might cause some distortion in " +
+                    "the balance of power in the Consortium. But we'll see.",
+            )
+            chatNpc(
+                neutral,
+                "Apart from that there seems to be some general unrest in the city. Trouble is " +
+                    "brewing in Keldagrim.",
+            )
+            chatNpc(
+                neutral,
+                "But I'm sure Commander Veldaban is on top of it. He's a very capable officer, " +
+                    "and I'm starting to get too old for this sort of thing.",
+            )
+            return
+        }
+        chatNpc(
+            neutral,
+            "The Red Axe has withdrawn from the city to some unknown location. I believe " +
+                "Commander Veldaban has asked you to assist him in finding their secret " +
+                "headquarters?",
+        )
+        chatPlayer(neutral, "Oh yes, you're right.")
+    }
+
     // https://oldschool.runescape.wiki/w/Transcript:Librarian
-    // TODO(content): [quest:between_a_rock] "What do you know about impenetrable rocks?"
     private suspend fun Dialogue.librarian() {
         chatNpc(happy, "Welcome to the Keldagrim library, human traveller!")
+        if (QuestRequirements.hasCompleted(player, BETWEEN_A_ROCK)) {
+            val rocks =
+                choice2(
+                    "Can you tell me more about the library?",
+                    false,
+                    "What do you know about impenetrable rocks?",
+                    true,
+                )
+            if (rocks) {
+                impenetrableRocks()
+                return
+            }
+        }
         chatPlayer(quiz, "Can you tell me more about the library?")
         chatNpc(happy, "Why, certainly, it is one of my favourite subjects!")
         chatNpc(
@@ -125,6 +199,42 @@ class KeldagrimPalace : PluginScript() {
                 "humans.",
         )
         chatPlayer(happy, "Thanks for the information!")
+    }
+
+    private suspend fun Dialogue.impenetrableRocks() {
+        chatPlayer(quiz, "What do you know about impenetrable rocks?")
+        chatNpc(confused, "You're confusing me, what rock exactly are you talking about?")
+        chatPlayer(neutral, "The big one in the mines south of the city. Dondakan's big rock.")
+        chatNpc(neutral, "I see, I see.")
+        chatNpc(neutral, "I heard there was a demon inside there that you banished.")
+        chatPlayer(quiz, "Yes, what exactly does that mean anyway?")
+        chatNpc(
+            neutral,
+            "There are some demons that we cannot see properly as mortals. They also cannot be " +
+                "fought with normal weapons.",
+        )
+        chatNpc(
+            neutral,
+            "But sometimes these creatures manifest themselves in a solid form in our world. " +
+                "Their avatar.",
+        )
+        chatNpc(
+            neutral,
+            "When you defeat an avatar, you defeat the actual demon behind it. But they don't " +
+                "die, they are banished to where they came from originally.",
+        )
+        chatPlayer(quiz, "Does that mean I will have to deal with this demon again some time?")
+        chatNpc(
+            neutral,
+            "Doubtful. He will grow stronger and stronger over time, but that's a process that " +
+                "will take a thousand years at least.",
+        )
+        chatNpc(neutral, "Even dwarves don't live so long.")
+        chatNpc(
+            neutral,
+            "No, we won't see him again and the mines are safe to dig for gold now. Of course, " +
+                "that might lead to other problems eventually...",
+        )
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Assistant
@@ -231,6 +341,10 @@ class KeldagrimPalace : PluginScript() {
     }
 
     private companion object {
+        const val GIANT_DWARF = "quest_giantdwarf"
+        const val DWARF_CANNON = "quest_dwarfcannon"
+        const val BETWEEN_A_ROCK = "quest_betweenarock"
+        const val FORGETTABLE_TALE = "quest_forgettabletale"
         const val MALE_GNOME = "npc.dwarf_city_gnome_male_emissary"
         const val REFEREE = "npc.dwarf_city_trader_referee"
 

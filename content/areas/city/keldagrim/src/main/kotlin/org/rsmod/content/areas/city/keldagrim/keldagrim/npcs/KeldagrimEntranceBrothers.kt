@@ -3,18 +3,19 @@ package org.rsmod.content.areas.city.keldagrim.keldagrim.npcs
 import dev.openrune.types.MesAnimType
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Miodvetnir,_Derni,_and_Dernu
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 // TODO(content): [system:met_flags] "Hello again, [player name]!" greeting after the first talk
-// TODO(content): [quest:the_giant_dwarf] the river and mines lines change once the quest starts,
-// plus the statue options during and after it
-// TODO(content): [quest:fishing_contest] the Fishing Champion lines after the quest
-// TODO(content): [quest:between_a_rock] the rock options during and after the quest
-// TODO(content): [quest:forgettable_tale_of_a_drunken_dwarf] the drunken dwarf options during
-// and after the quest
+// TODO(content): [quest:the_giant_dwarf] the statue options during the quest and the one-time
+//  "I have rebuilt the statue" option after it
+// TODO(content): [quest:between_a_rock] the rock options during the quest and the one-time
+//  "I defeated the spirit of the rock!" option after it
+// TODO(content): [quest:forgettable_tale] the drunken dwarf option during the
+//  quest and the one-time "unforgettable tale" option after it
 class KeldagrimEntranceBrothers : PluginScript() {
     override fun ScriptContext.startup() {
         for (brother in BROTHERS) {
@@ -52,16 +53,27 @@ class KeldagrimEntranceBrothers : PluginScript() {
         derni(happy, "Fire away!")
         while (true) {
             val option =
-                choice4(
-                    "What's down this river?",
-                    1,
-                    "Any good spots to fish around here?",
-                    2,
-                    "What are these mines used for?",
-                    3,
-                    "I must be off now.",
-                    4,
-                )
+                if (beforeGiantDwarf()) {
+                    choice4(
+                        "What's down this river?",
+                        1,
+                        "Any good spots to fish around here?",
+                        2,
+                        "What are these mines used for?",
+                        3,
+                        "I must be off now.",
+                        4,
+                    )
+                } else {
+                    choice3(
+                        "Any good spots to fish around here?",
+                        2,
+                        "What are these mines used for?",
+                        3,
+                        "I must be off now.",
+                        4,
+                    )
+                }
             when (option) {
                 1 -> downTheRiver()
                 2 -> fishingSpots()
@@ -76,6 +88,10 @@ class KeldagrimEntranceBrothers : PluginScript() {
             }
         }
     }
+
+    private fun Dialogue.beforeGiantDwarf(): Boolean =
+        QuestRequirements.hasNotCompleted(player, GIANT_DWARF) &&
+            !QuestRequirements.isOnQuest(player, GIANT_DWARF)
 
     private suspend fun Dialogue.downTheRiver() {
         val he = if (access.isBodyTypeA()) "He" else "She"
@@ -112,14 +128,31 @@ class KeldagrimEntranceBrothers : PluginScript() {
         derni(confused, "Fish?")
         dernu(confused, "What are fish?")
         miodvetnir(neutral, "No fish around here.")
+        val champion = QuestRequirements.hasCompleted(player, FISHING_CONTEST)
+        if (champion) {
+            miodvetnir(quiz, "Say, you're the Fishing Champion, aren't you?")
+            derni(neutral, "That must be why you were talking about fish then...")
+            dernu(confused, "What are fish?")
+        }
         derni(neutral, "But this water here, you see, it comes dripping down from above.")
         miodvetnir(neutral, "Molten snow, you see.")
         dernu(confused, "What are fish?")
         derni(neutral, "Oh, they're these small wriggly things that live in the water.")
         miodvetnir(happy, "But they're not all small! Some can be large!")
         derni(neutral, "And they don't breathe air.")
+        if (champion) {
+            val name = player.displayName
+            val heIs = if (access.isBodyTypeA()) "he's" else "she's"
+            miodvetnir(
+                happy,
+                "But $name could tell you all about it! After all, $heIs the Fishing Champion!",
+            )
+            chatPlayer(neutral, "Maybe later...")
+        }
     }
 
+    // TODO(content): [verify:in_game] whether the answer stops after the Consortium line once The
+    //  Giant Dwarf has started (the transcript only marks the rest "Before The Giant Dwarf")
     private suspend fun Dialogue.mines() {
         val him = if (access.isBodyTypeA()) "him" else "her"
         chatPlayer(quiz, "What are these mines used for?")
@@ -131,6 +164,9 @@ class KeldagrimEntranceBrothers : PluginScript() {
             "These mines are actually the territory of one of the eight major companies of the " +
                 "mining Consortium.",
         )
+        if (!beforeGiantDwarf()) {
+            return
+        }
         chatPlayer(quiz, "Mining companies? Where are they at then?")
         derni(neutral, "Oh, they all have their headquarters in the city.")
         dernu(neutral, "First floor of the palace.")
@@ -153,6 +189,8 @@ class KeldagrimEntranceBrothers : PluginScript() {
         const val MIODVETNIR = "npc.dwarfrock_boatman_bruv1"
         const val DERNU = "npc.dwarfrock_boatman_bruv2"
         const val DERNI = "npc.dwarfrock_boatman_bruv3"
+        const val GIANT_DWARF = "quest_giantdwarf"
+        const val FISHING_CONTEST = "quest_fishingcontest"
         val BROTHERS = listOf(MIODVETNIR, DERNU, DERNI)
     }
 }

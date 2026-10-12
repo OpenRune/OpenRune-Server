@@ -3,6 +3,7 @@ package org.rsmod.content.areas.city.keldagrim.dorgeshkaan.npcs
 import dev.openrune.types.MesAnimType
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -167,10 +168,24 @@ class DorgeshKaanTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Mernik
-    // TODO(content): [quest:another_slice_of_ham] the child asking if you helped Zanik
     // TODO(content): [verify:in_game] which cave goblin child's chathead answers for the class
     private suspend fun Dialogue.mernik() {
         chatNpc(happy, "Oh, hello! Children, say hello to the surface-dweller.")
+        val afterHam = QuestRequirements.hasCompleted(player, ANOTHER_SLICE_OF_HAM)
+        if (afterHam && access.random.of(5) == 0) {
+            val name = player.displayName
+            val pronoun = if (access.isBodyTypeA()) "he's" else "she's"
+            child(quiz, "Are you $name? Did you help Zanik save the city?")
+            chatNpc(
+                neutral,
+                "Just because $pronoun a surface-dweller, doesn't mean $pronoun $name! There " +
+                    "are lots of surface-dwellers!",
+            )
+            chatPlayer(happy, "Actually I am $name.")
+            chatNpc(shocked, "$name? Really?")
+            chatNpc(happy, "Zanik told me about you! I'm so pleased to meet you!")
+            return
+        }
         when (access.random.of(4)) {
             0 -> {
                 child(laugh, "Haha! You look funny!")
@@ -201,8 +216,14 @@ class DorgeshKaanTownsfolk : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Cave_goblin_child
-    // TODO(content): [quest:another_slice_of_ham] "Did you help Zanik save the city?"
     private suspend fun Dialogue.caveGoblinChild() {
+        val afterHam = QuestRequirements.hasCompleted(player, ANOTHER_SLICE_OF_HAM)
+        if (afterHam && access.random.of(5) == 0) {
+            chatNpc(quiz, "Are you ${player.displayName}? Did you help Zanik save the city?")
+            chatPlayer(happy, "Yes, that was me!")
+            chatNpc(happy, "When I'm older I'm going to be an adventurer, just like Zanik!")
+            return
+        }
         when (access.random.of(4)) {
             0 -> {
                 chatNpc(shifty, "Shh! Don't tell anyone!")
@@ -271,6 +292,7 @@ class DorgeshKaanTownsfolk : PluginScript() {
     }
 
     private companion object {
+        const val ANOTHER_SLICE_OF_HAM = "quest_anothersliceofham"
         const val STAND_UP = "Then how do you stand up?"
         const val NEED_BONES = "What do you need bones for?"
         const val KIND_OF_BONES = "What kind of bones do you need?"

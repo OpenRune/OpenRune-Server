@@ -1,6 +1,7 @@
 package org.rsmod.content.areas.city.keldagrim
 
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -8,14 +9,26 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.content.areas.city.keldagrim.keldagrim.npcs.CartConductors
+import org.rsmod.content.areas.city.keldagrim.keldagrim.npcs.KeldagrimCitizens
 import org.rsmod.content.areas.city.keldagrim.keldagrim.npcs.RatPits
 import org.rsmod.content.areas.city.keldagrim.keldagrim.npcs.Taverns
 import org.rsmod.content.areas.city.keldagrim.keldagrim.npcs.shops.CrossbowShop
+import org.rsmod.content.quest.manager.QuestRequirementMode
+import org.rsmod.content.quest.manager.QuestRequirementPolicy
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.inv.InvObj
 
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
+@ResourceLock("QuestRequirements")
 class KeldagrimPurchasesInteractionTest {
+    private val previousPolicy = QuestRequirements.activePolicy()
+
+    @AfterEach
+    fun restorePolicy() {
+        QuestRequirements.install(previousPolicy)
+    }
+
     private fun fixture() =
         InteractionFixture { objRepo, shops ->
             listOf(
@@ -23,6 +36,7 @@ class KeldagrimPurchasesInteractionTest {
                 RatPits(objRepo),
                 CartConductors(objRepo),
                 CrossbowShop(shops, objRepo),
+                KeldagrimCitizens(objRepo),
             )
         }
 
@@ -239,6 +253,90 @@ class KeldagrimPurchasesInteractionTest {
     }
 
     @Test
+    fun `a conductor sells a White Wolf Mountain ticket for 100 coins after Fishing Contest`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+        val f = fixture()
+        f.player.inv[0] = InvObj(COINS, 200)
+        f.talkTo(CONDUCTOR)
+        f.finish(listOf(3, 3, 1))
+        assertEquals(100, f.player.inv.count(COINS))
+        assertEquals(1, f.player.inv.count(WHITE_WOLF_TICKET))
+    }
+
+    @Test
+    fun `the ring of charos halves the White Wolf Mountain price`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+        val f = fixture()
+        f.player.inv[0] = InvObj(COINS, 100)
+        f.player.worn[12] = InvObj(CHAROS, 1)
+        f.talkTo(CONDUCTOR, op = 3)
+        f.finish(listOf(3))
+        assertEquals(50, f.player.inv.count(COINS))
+        assertEquals(1, f.player.inv.count(WHITE_WOLF_TICKET))
+    }
+
+    @Test
+    fun `a conductor sells no White Wolf Mountain ticket to a poor player`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+        val f = fixture()
+        f.player.inv[0] = InvObj(COINS, 99)
+        f.talkTo(CONDUCTOR)
+        f.finish(listOf(3, 3, 1, 4))
+        assertEquals(99, f.player.inv.count(COINS))
+        assertEquals(0, f.player.inv.count(WHITE_WOLF_TICKET))
+    }
+
+    @Test
+    fun `White Wolf Mountain is not offered before Fishing Contest`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
+        val f = fixture()
+        f.player.inv[0] = InvObj(COINS, 200)
+        f.talkTo(CONDUCTOR, op = 3)
+        f.finish(listOf(3))
+        assertEquals(200, f.player.inv.count(COINS))
+        assertEquals(0, f.player.inv.count(WHITE_WOLF_TICKET))
+    }
+
+    @Test
+    fun `Smokin' Joe hands over a rat pits manual after Ratcatchers`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+        val f = fixture()
+        f.talkTo(SMOKIN_JOE)
+        f.finish(listOf(2, 2, 2))
+        assertEquals(1, f.player.inv.count(RATPITS_MANUAL))
+    }
+
+    @Test
+    fun `a full pack drops Smokin' Joe's manual instead of losing it`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+        val f = fixture()
+        f.fillInventory()
+        f.talkTo(SMOKIN_JOE)
+        f.finish(listOf(2, 2, 2))
+        assertEquals(0, f.player.inv.count(RATPITS_MANUAL))
+        assertEquals(1, f.groundCount(RATPITS_MANUAL))
+    }
+
+    @Test
+    fun `Smokin' Joe gives no second manual`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+        val f = fixture()
+        f.player.inv[0] = InvObj(RATPITS_MANUAL, 1)
+        f.talkTo(SMOKIN_JOE)
+        f.finish(listOf(2, 2, 2))
+        assertEquals(1, f.player.inv.count(RATPITS_MANUAL))
+    }
+
+    @Test
+    fun `Smokin' Joe ignores a player before Ratcatchers`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
+        val f = fixture()
+        f.talkTo(SMOKIN_JOE)
+        f.finish(emptyList())
+        assertEquals(0, f.player.inv.count(RATPITS_MANUAL))
+    }
+
+    @Test
     fun `Hirko sells one bolt pouch for 1500 coins`() {
         val f = fixture()
         f.player.inv[0] = InvObj(COINS, 2000)
@@ -297,6 +395,9 @@ class KeldagrimPurchasesInteractionTest {
         private const val TICKET = "obj.dwarf_minecart_ticket_kelda_ice"
         private const val CHAROS = "obj.ring_of_charos_unlocked"
         private const val BOLT_POUCH = "obj.xbows_bolt_pouch"
+        private const val WHITE_WOLF_TICKET = "obj.dwarf_minecart_ticket_kelda_whitewolf"
+        private const val RATPITS_MANUAL = "obj.ratpits_manual"
+        private const val SMOKIN_JOE = "npc.vc_smokin_joe"
 
         private const val KINGS_AXE_BARMAN = "npc.dwarf_city_barman_rich"
         private const val BARMAID = "npc.dwarf_city_barmaid_poor"
