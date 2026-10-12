@@ -1,13 +1,18 @@
 package org.rsmod.content.areas.city.portsarim.npcs
 
+import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
+import org.rsmod.api.invtx.invAddOrDrop
+import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class RustyAnchorScript : PluginScript() {
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+class RustyAnchorScript @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.redbeard_frank") { startDialogue(it.npc) { redbeardFrank() } }
         onOpNpc1("npc.sarim_pub_sitting_patron") { startDialogue(it.npc) { ahab() } }
@@ -16,20 +21,49 @@ class RustyAnchorScript : PluginScript() {
         onOpNpc1(LONGBOW_BEN) { startDialogue(it.npc) { pirateDrinker(LONGBOW_BEN_NAME) } }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Redbeard_Frank
+    // TODO(content): [quest:pirates_treasure] "Start the Pirate's Treasure quest?" offer and the
+    // quest stages
+    // TODO(content): [quest:rum_deal] "Would some Braindeath 'Rum' do?"
     private suspend fun Dialogue.redbeardFrank() {
         chatNpc(laugh, "Arr, Matey!")
         while (true) {
-            if (choice2("Arr!", true, "Do you have anything for trade?", false)) {
-                chatPlayer(laugh, "Arr!")
-                chatNpc(laugh, "Arr!")
-                continue
+            val options = buildList {
+                if (!foundRedbeard()) add("I'm in search of treasure." to RedbeardTopic.Treasure)
+                add("Arr!" to RedbeardTopic.Arr)
+                add("Do you have anything for trade?" to RedbeardTopic.Trade)
             }
-            chatPlayer(quiz, "Do you have anything for trade?")
-            chatNpc(neutral, CUSTOMS_REPLY)
-            return
+            when (menu(options)) {
+                RedbeardTopic.Treasure -> return searchOfTreasure()
+                RedbeardTopic.Arr -> {
+                    chatPlayer(laugh, "Arr!")
+                    chatNpc(laugh, "Arr!")
+                }
+                RedbeardTopic.Trade -> {
+                    chatPlayer(quiz, "Do you have anything for trade?")
+                    chatNpc(neutral, CUSTOMS_REPLY)
+                    return
+                }
+            }
         }
     }
 
+    private suspend fun Dialogue.searchOfTreasure() {
+        chatPlayer(quiz, "I'm in search of treasure.")
+        chatNpc(
+            shifty,
+            "Arr, treasure you be after eh? Well I might be able to tell you where to find " +
+                "some... For a price...",
+        )
+        chatPlayer(quiz, "What sort of price?")
+        chatNpc(
+            neutral,
+            "Well for example if you can get me a bottle of rum... Not just any rum mind...",
+        )
+        chatNpc(happy, "I'd like some rum made on Karamja Island. There's no rum like Karamja Rum!")
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Ahab
     private suspend fun Dialogue.ahab() {
         chatNpc(drunk, "Arrr, matey!")
         while (true) {
@@ -93,20 +127,22 @@ class RustyAnchorScript : PluginScript() {
         chatNpc(sad, "Arrr.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Bartender_(Rusty_Anchor_Inn)
+    // TODO(content): [miniquest:alfred_grimhands_barcrawl] "I'm doing Alfred Grimhand's Barcrawl"
+    // TODO(content): [system:treasure_trails] easy clue step
     private suspend fun Dialogue.bartender() {
         if (choice2("Could I buy a beer please?", true, "Have you heard any rumours here?", false)) {
             chatPlayer(happy, "Could I buy a beer please?")
             chatNpc(happy, "Sure, that will be $BEER_PRICE gold coins please.")
-            val inv = access.inv
-            if (inv.count("obj.coins") < BEER_PRICE) {
+            if (access.inv.count("obj.coins") < BEER_PRICE) {
                 chatPlayer(sad, "I don't have enough coins.")
                 return
             }
             chatPlayer(happy, "Ok, here you go.")
-            if (access.invDel(inv, "obj.coins", BEER_PRICE).failure) {
+            if (!player.invTakeFee(BEER_PRICE)) {
                 return
             }
-            access.invAdd(inv, "obj.beer")
+            player.invAddOrDrop(objRepo, "obj.beer")
             mesbox("You buy a pint of beer!")
             return
         }
@@ -131,6 +167,8 @@ class RustyAnchorScript : PluginScript() {
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Jack_Seagull
+    // https://oldschool.runescape.wiki/w/Transcript:Longbow_Ben
     private suspend fun Dialogue.pirateDrinker(name: String) {
         if (access.random.of(2) == 0) {
             return piratesBicker()
@@ -183,7 +221,7 @@ class RustyAnchorScript : PluginScript() {
         chatNpcSpecific(JACK_SEAGULL_NAME, JACK_SEAGULL, drunk, "Arrr, matey!")
         chatNpcSpecific(LONGBOW_BEN_NAME, LONGBOW_BEN, happy, "Yo ho ho!")
         chatPlayer(happy, "So are you pirates?")
-        chatNpcSpecific(LONGBOW_BEN_NAME, LONGBOW_BEN, happy, "Aye, ${laddie()}, that we are.")
+        chatNpcSpecific(LONGBOW_BEN_NAME, LONGBOW_BEN, happy, "Aye ${laddie()}, that we are.")
         chatNpcSpecific(JACK_SEAGULL_NAME, JACK_SEAGULL, happy, "Aye, that we be.")
         chatNpcSpecific(
             LONGBOW_BEN_NAME,
@@ -245,6 +283,12 @@ class RustyAnchorScript : PluginScript() {
     private fun Dialogue.isLad(): Boolean = player.appearance.bodyType == Constants.bodytype_a
 
     private fun Dialogue.laddie(): String = if (isLad()) "laddie" else "lassie"
+
+    private enum class RedbeardTopic {
+        Treasure,
+        Arr,
+        Trade,
+    }
 
     private enum class AhabTopic {
         Redbeard,

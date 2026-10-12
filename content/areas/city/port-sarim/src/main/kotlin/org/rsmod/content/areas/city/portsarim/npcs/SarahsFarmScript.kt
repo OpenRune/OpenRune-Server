@@ -17,37 +17,34 @@ class SarahsFarmScript @Inject constructor(private val shops: Shops) : PluginScr
         onOpNpc1("npc.dog") { petDog() }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Sarah
+    // TODO(content): [quest:a_porcine_of_interest] "Talk about the bounty."
     private suspend fun Dialogue.sarah() {
         chatNpc(neutral, "Hello. How can I help you?")
-        val topic =
-            choice5(
-                "What are you selling?",
-                SarahTopic.Selling,
-                "Can you give me any Farming advice?",
-                SarahTopic.Advice,
-                "Can you tell me how to use the loom?",
-                SarahTopic.Loom,
-                "That's a nice dog you have. What's its name?",
-                SarahTopic.Dog,
-                "I'm okay, thank you.",
-                SarahTopic.Leave,
-            )
-        when (topic) {
-            SarahTopic.Selling -> {
-                chatPlayer(quiz, "What are you selling?")
-                player.openFarmingShop()
+        while (true) {
+            val topic =
+                choice4(
+                    "What are you selling?",
+                    SarahTopic.Selling,
+                    "Can you give me any Farming advice?",
+                    SarahTopic.Advice,
+                    "Can you tell me how to use the loom?",
+                    SarahTopic.Loom,
+                    "I'm okay, thank you.",
+                    SarahTopic.Leave,
+                )
+            when (topic) {
+                SarahTopic.Selling -> {
+                    chatPlayer(quiz, "What are you selling?")
+                    return player.openFarmingShop()
+                }
+                SarahTopic.Advice -> {
+                    chatPlayer(quiz, "Can you give me any Farming advice?")
+                    chatNpc(neutral, "Yes - ask a gardener.")
+                }
+                SarahTopic.Loom -> return loom()
+                SarahTopic.Leave -> return chatPlayer(neutral, "I'm okay, thank you.")
             }
-            SarahTopic.Advice -> {
-                chatPlayer(quiz, "Can you give me any Farming advice?")
-                chatNpc(neutral, "Yes - ask a gardener.")
-            }
-            SarahTopic.Loom -> loom()
-            SarahTopic.Dog -> {
-                chatPlayer(neutral, "That's a nice dog you have there. What's its name?")
-                chatNpc(happy, "Oh that's Rosie, our resident sheepdog! She sure does like the fire.")
-                chatNpc(neutral, "You can pet her if you like. She's very friendly.")
-            }
-            SarahTopic.Leave -> chatPlayer(neutral, "I'm okay, thank you.")
         }
     }
 
@@ -106,7 +103,7 @@ class SarahsFarmScript @Inject constructor(private val shops: Shops) : PluginScr
         shops.open(
             player = this,
             title = "Sarah's Farming shop.",
-            shopInv = "inv.farming_shop_1",
+            shopInv = "inv.farming_shop_3",
             buyPercentage = 70.0,
             sellPercentage = 100.0,
             changePercentage = 1.0,
@@ -117,7 +114,6 @@ class SarahsFarmScript @Inject constructor(private val shops: Shops) : PluginScr
         Selling,
         Advice,
         Loom,
-        Dog,
         Leave,
     }
 

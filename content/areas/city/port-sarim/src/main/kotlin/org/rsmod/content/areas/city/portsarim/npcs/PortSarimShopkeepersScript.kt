@@ -40,6 +40,7 @@ class PortSarimShopkeepersScript @Inject constructor(private val shops: Shops) :
         onOpNpc1(PortSarimShop.Battleaxes.npc) { startDialogue(it.npc) { brian() } }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Gerrant
     private suspend fun Dialogue.gerrant() {
         chatNpc(
             neutral,
@@ -54,6 +55,8 @@ class PortSarimShopkeepersScript @Inject constructor(private val shops: Shops) :
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Wydin
+    // TODO(content): [quest:pirates_treasure] dialogue after he hires the player
     private suspend fun Dialogue.wydin() {
         chatNpc(happy, "Welcome to my food store! Would you like to buy anything?")
         when (choice3("Yes please.", 1, "No, thank you.", 2, "What can you recommend?", 3)) {
@@ -91,6 +94,7 @@ class PortSarimShopkeepersScript @Inject constructor(private val shops: Shops) :
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Grum
     private suspend fun Dialogue.grum() {
         chatNpc(happy, "Would you like to buy or sell some gold jewellery?")
         if (choice2("Yes please.", true, "No, I'm not that rich.", false)) {
@@ -101,6 +105,8 @@ class PortSarimShopkeepersScript @Inject constructor(private val shops: Shops) :
         chatNpc(angry, "Get out then! We don't want any riff-raff in here.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Betty
+    // TODO(content): [quest:ethically_acquired_antiquities] "I managed to decipher those notes."
     private suspend fun Dialogue.betty() {
         chatNpc(quiz, "Hello again. What can I do for you?")
         val sellsDye = QuestRequirements.hasCompleted(player, HAND_IN_THE_SAND)
@@ -162,6 +168,7 @@ class PortSarimShopkeepersScript @Inject constructor(private val shops: Shops) :
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Brian
     private suspend fun Dialogue.brian() {
         if (choice2("So, are you selling something?", true, "'Ello.", false)) {
             chatPlayer(quiz, "So, are you selling something?")

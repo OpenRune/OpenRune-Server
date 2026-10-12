@@ -48,7 +48,11 @@ class VeosScript @Inject constructor(private val veos: Veos) : PluginScript() {
         onOpLoc1("loc.zeah_travel_kourend_shipplank_off") { disembark(PISCARILIUS_QUAY) }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Veos
     private suspend fun Dialogue.veosAtSarim() {
+        if (!player.metVeosInKourend) {
+            return veosFirstMeeting()
+        }
         chatPlayer(happy, "Hello Veos.")
         chatNpc(quiz, "Hello there. What can I do for you?")
         val topic =
@@ -63,70 +67,151 @@ class VeosScript @Inject constructor(private val veos: Veos) : PluginScript() {
         when (topic) {
             VeosTopic.Travel -> {
                 chatPlayer(quiz, "Can you take me somewhere?")
-                chooseDestination(VeosPort.PortPiscarilius, "As you wish.")
+                chatNpc(quiz, "Where would you like to go?")
+                val dest =
+                    choice3(
+                        "I'd like to travel to Port Piscarilius, please.",
+                        VeosPort.PortPiscarilius,
+                        "I'd like to travel to Land's End, please.",
+                        VeosPort.LandsEnd,
+                        "Actually I'd like to stay here.",
+                        null,
+                    )
+                travelTo(dest)
             }
-            VeosTopic.Kourend -> {
-                chatPlayer(quiz, "Tell me more about Great Kourend.")
-                describeKourend()
-                if (choice2("That's great, can you take me there please?", true, "Goodbye.", false)) {
-                    chatPlayer(quiz, "That's great, can you take me there please?")
-                    chooseDestination(VeosPort.PortPiscarilius, "As you wish.")
-                } else {
-                    chatPlayer(neutral, "Goodbye.")
-                }
-            }
+            VeosTopic.Kourend -> greatKourend()
             else -> chatPlayer(neutral, "Nothing.")
         }
     }
 
-    private suspend fun Dialogue.veosAtPiscarilius() {
-        chatNpc(quiz, "Hello again, ${player.displayName}! What can I do for you?")
-        while (true) {
-            val topic =
-                choice4(
-                    "Where am I exactly?",
-                    VeosTopic.Where,
-                    "Can you take me somewhere?",
-                    VeosTopic.Travel,
-                    "Could you tell me more about Kourend?",
-                    VeosTopic.Kourend,
-                    "Nothing, thanks.",
-                    VeosTopic.Leave,
-                )
-            when (topic) {
-                VeosTopic.Where -> whereAmI()
-                VeosTopic.Travel -> {
-                    chatPlayer(quiz, "Can you take me somewhere?")
-                    return chooseDestination(VeosPort.PortSarim, LONG_VOYAGE)
+    private suspend fun Dialogue.veosFirstMeeting() {
+        chatPlayer(quiz, "Hello, who are you?")
+        chatNpc(
+            neutral,
+            "I am Veos and I've just arrived in Port Sarim from the distant Kingdom of Great " +
+                "Kourend.",
+        )
+        val topic =
+            choice3(
+                "Where's that?",
+                VeosTopic.Where,
+                "That's great, can you take me there please?",
+                VeosTopic.Travel,
+                "Goodbye.",
+                VeosTopic.Leave,
+            )
+        when (topic) {
+            VeosTopic.Where -> {
+                chatPlayer(quiz, "Where's that?")
+                chatNpc(neutral, "Across the sea, to the far west.")
+                val next =
+                    choice3(
+                        "That's great, can you take me there please?",
+                        VeosTopic.Travel,
+                        "Tell me more about Great Kourend.",
+                        VeosTopic.Kourend,
+                        "Goodbye.",
+                        VeosTopic.Leave,
+                    )
+                when (next) {
+                    VeosTopic.Travel -> takeMeThere()
+                    VeosTopic.Kourend -> greatKourend()
+                    else -> chatPlayer(neutral, "Goodbye.")
                 }
-                VeosTopic.Kourend -> {
-                    chatPlayer(quiz, "Could you tell me more about Kourend?")
-                    describeKourend(fromKourend = true)
-                }
-                VeosTopic.Leave -> return chatPlayer(neutral, "Nothing, thanks.")
             }
+            VeosTopic.Travel -> takeMeThere()
+            else -> chatPlayer(neutral, "Goodbye.")
         }
     }
 
-    private suspend fun Dialogue.chooseDestination(mainland: VeosPort, farewell: String) {
-        chatNpc(quiz, "Where would you like to go?")
-        val dest =
-            choice3(
-                "Travel to ${mainland.displayName}.",
-                mainland,
-                "Travel to ${VeosPort.LandsEnd.displayName}.",
-                VeosPort.LandsEnd,
-                "Stay where you are.",
-                null,
-            )
+    private suspend fun Dialogue.greatKourend() {
+        chatPlayer(quiz, "Tell me more about Great Kourend.")
+        describeKourend()
+        if (choice2("That's great, can you take me there please?", true, "Goodbye.", false)) {
+            takeMeThere()
+        } else {
+            chatPlayer(neutral, "Goodbye.")
+        }
+    }
+
+    private suspend fun Dialogue.takeMeThere() {
+        chatPlayer(quiz, "That's great, can you take me there please?")
+        chatNpc(happy, "Certainly! I hope you don't get seasick, it is a long voyage.")
+        player.metVeosInKourend = true
+        access.sail(VeosPort.PortPiscarilius)
+    }
+
+    private suspend fun Dialogue.travelTo(dest: VeosPort?) {
         if (dest == null) {
             chatPlayer(neutral, "Actually I'd like to stay here.")
             chatNpc(neutral, "As you wish.")
             return
         }
         chatPlayer(happy, "I'd like to travel to ${dest.displayName}, please.")
-        chatNpc(happy, farewell)
+        chatNpc(happy, LONG_VOYAGE)
         access.sail(dest)
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Veos
+    // TODO(content): [quest:client_of_kourend] "Let's talk about your client..." and "I've lost
+    // something you've given me."
+    private suspend fun Dialogue.veosAtPiscarilius() {
+        chatNpc(quiz, "Hello again, ${player.displayName}! What can I do for you?")
+        var topic =
+            choice4(
+                "Where am I exactly?",
+                VeosTopic.Where,
+                "Can you take me somewhere?",
+                VeosTopic.Travel,
+                "Could you tell me more about Kourend?",
+                VeosTopic.Kourend,
+                "Nothing, thanks.",
+                VeosTopic.Leave,
+            )
+        while (true) {
+            topic =
+                when (topic) {
+                    VeosTopic.Where -> {
+                        whereAmI()
+                        choice3(
+                            "Can you take me somewhere?",
+                            VeosTopic.Travel,
+                            "Could you tell me more about Kourend?",
+                            VeosTopic.Kourend,
+                            "Goodbye.",
+                            VeosTopic.Goodbye,
+                        )
+                    }
+                    VeosTopic.Travel -> {
+                        chatPlayer(quiz, "Can you take me somewhere?")
+                        chatNpc(quiz, "Where would you like to go?")
+                        val dest =
+                            choice3(
+                                "Travel to Port Sarim.",
+                                VeosPort.PortSarim,
+                                "Travel to Land's End.",
+                                VeosPort.LandsEnd,
+                                "Stay where you are.",
+                                null,
+                            )
+                        return travelTo(dest)
+                    }
+                    VeosTopic.Kourend -> {
+                        chatPlayer(quiz, "Could you tell me more about Kourend?")
+                        describeKourend(fromKourend = true)
+                        choice3(
+                            "Where am I exactly?",
+                            VeosTopic.Where,
+                            "Can you take me somewhere?",
+                            VeosTopic.Travel,
+                            "Goodbye.",
+                            VeosTopic.Goodbye,
+                        )
+                    }
+                    VeosTopic.Goodbye -> return chatPlayer(neutral, "Goodbye.")
+                    VeosTopic.Leave -> return chatPlayer(neutral, "Nothing, thanks.")
+                }
+        }
     }
 
     private suspend fun Dialogue.describeKourend(fromKourend: Boolean = false) {
@@ -191,6 +276,7 @@ class VeosScript @Inject constructor(private val veos: Veos) : PluginScript() {
         Where,
         Travel,
         Kourend,
+        Goodbye,
         Leave,
     }
 
