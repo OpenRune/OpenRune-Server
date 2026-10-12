@@ -1,0 +1,48 @@
+package org.rsmod.content.areas.city.rimmington.npcs
+
+import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.script.onOpNpc1
+import org.rsmod.plugin.scripts.PluginScript
+import org.rsmod.plugin.scripts.ScriptContext
+
+// https://oldschool.runescape.wiki/w/Transcript:Captain_Barnaby (Rimmington dock)
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// TODO(content): [system:ship_travel] taking 30 coins and sailing to Ardougne or Brimhaven
+// TODO(content): [system:ship_travel] Ardougne and Brimhaven quick-travel ops
+// TODO(content): [diary:karamja] free travel with Karamja gloves
+// TODO(content): [quest:ghosts_ahoy] free-travel "[Charm]" option with the ring of charos (a)
+class CaptainBarnaby : PluginScript() {
+    override fun ScriptContext.startup() {
+        onOpNpc1(BARNABY) { startDialogue(it.npc) { barnaby() } }
+    }
+
+    private suspend fun Dialogue.barnaby() {
+        chatNpc(
+            happy,
+            "Hello there. Would you like to travel somewhere? I can take you to Ardougne or " +
+                "Brimhaven for 30 coins.",
+        )
+        val destination =
+            choice3(
+                "I'd like to go to Ardougne.",
+                "Ardougne",
+                "I'd like to go to Brimhaven.",
+                "Brimhaven",
+                "I'm good thanks.",
+                null,
+            )
+        if (destination == null) {
+            chatPlayer(neutral, "I'm good thanks.")
+            return
+        }
+        chatPlayer(happy, "I'd like to go to $destination.")
+        if (access.invTotal(player.inv, "obj.coins") < FARE) {
+            chatNpc(neutral, "Come back when you've got 30 coins for me.")
+        }
+    }
+
+    private companion object {
+        const val BARNABY = "npc.captain_barnaby_rimmington"
+        const val FARE = 30
+    }
+}

@@ -36,8 +36,9 @@ class RimmingtonShopkeepersScript @Inject constructor(private val shops: Shops) 
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Rommik
     private suspend fun Dialogue.rommik() {
-        chatNpc(happy, "Would you like to buy some Crafting equipment?")
+        chatNpc(happy, "Would you like to buy some crafting equipment?")
         shopOffer(
             RimmingtonShop.Crafting,
             decline = "No thanks, I've got all the Crafting equipment I need.",
@@ -45,6 +46,7 @@ class RimmingtonShopkeepersScript @Inject constructor(private val shops: Shops) 
         )
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Brian_(Rimmington)
     private suspend fun Dialogue.brian() {
         chatNpc(happy, "Would you like to buy some archery equipment?")
         shopOffer(
@@ -67,6 +69,7 @@ class RimmingtonShopkeepersScript @Inject constructor(private val shops: Shops) 
         chatNpc(neutral, "Okay. Fare well on your travels.")
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Shop_keeper_(Rimmington)
     private suspend fun Dialogue.generalStore(npc: Npc) {
         chatNpc(happy, "Can I help you at all?")
         if (choice2("Yes please. What are you selling?", true, "No thanks.", false)) {
