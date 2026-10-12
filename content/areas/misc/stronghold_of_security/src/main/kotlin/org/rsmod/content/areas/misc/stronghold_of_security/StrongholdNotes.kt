@@ -13,12 +13,14 @@ import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 private var Player.metSolztun by boolVarBit("varbit.sos_brother_found")
 
+// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class StrongholdNotes @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpLoc1("loc.sos_skelly_bag") { searchExplorer() }
@@ -86,15 +88,19 @@ class StrongholdNotes @Inject constructor(private val objRepo: ObjRepository) : 
         }
     }
 
+    // https://oldschool.runescape.wiki/w/Transcript:Solztun
     private suspend fun Dialogue.solztun() {
         chatNpc(neutral, "Can you hear me?")
+        // TODO(content): [verify:in_game] Order of the ghostspeak and Restless Ghost checks.
         if (player.worn.count(Ghostspeak) > 0) {
             chatPlayer(happy, "Of course! I'm wearing an amulet of ghostspeak.")
-        } else {
+        } else if (QuestRequirements.hasCompleted(player, RestlessGhost)) {
             chatPlayer(
                 worried,
                 "...I can, but I'm not wearing an amulet of ghostspeak... A-am I dead?",
             )
+        } else {
+            chatPlayer(confused, "...I can. Are you a ghost?")
         }
         chatNpc(
             angry,
@@ -102,6 +108,7 @@ class StrongholdNotes @Inject constructor(private val objRepo: ObjRepository) : 
         )
         chatPlayer(confused, "Oh, that's... interesting. Also rather disturbing...")
         chatNpc(neutral, "Try not to think about it.")
+        // TODO(content): [system:skull_sceptre_imbue] "Could you imbue my sceptre?" option.
         while (true) {
             when (
                 choice3(
@@ -199,6 +206,7 @@ class StrongholdNotes @Inject constructor(private val objRepo: ObjRepository) : 
     private companion object {
         const val Notes = "obj.sos_stronghold_book"
         const val Ghostspeak = "obj.amulet_of_ghostspeak"
+        const val RestlessGhost = "quest_restlessghost"
         const val BookInterface = "interface.indexed_book"
         val BookInitScript =
             "clientscript.[clientscript,book_indexed_init]".asRSCM(RSCMType.CLIENTSCRIPT)
