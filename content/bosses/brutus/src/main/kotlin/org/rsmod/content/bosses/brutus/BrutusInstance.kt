@@ -184,7 +184,9 @@ constructor(
      */
     private fun arrive(npc: Npc, player: Player?) {
         npc.anim("seq.cow_boss_spawn")
-        deps.encounterRegistry.of(npc).nextAttackTick = deps.mapClock.cycle + ARRIVE_ATTACK_DELAY
+        val encounter = deps.encounterRegistry.of(npc)
+        encounter.nextAttackTick = deps.mapClock.cycle + ARRIVE_ATTACK_DELAY
+        encounter.lastAbilityTick = deps.mapClock.cycle
         npc.movementLocked = true
         deps.worldQueues.add(ARRIVE_MOVE_DELAY) { npc.movementLocked = false }
         if (player == null) {
