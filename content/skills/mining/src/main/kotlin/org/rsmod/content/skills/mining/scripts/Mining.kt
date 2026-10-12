@@ -173,9 +173,10 @@ constructor(
                 }
                 SkillingAwardResult.Cancelled -> Unit
                 SkillingAwardResult.Success -> {
-                    spam(
-                        "You manage to mine some ${getInvObj(InvObj(product.item)).name.lowercase()}.",
-                    )
+                    // live capture, rev 241, 20261012T145648-df49f48@4602, @4613, @6583:
+                    // "some copper", "some tin", "some blurite"; the obj name without " ore".
+                    val ore = getInvObj(InvObj(product.item)).name.lowercase().removeSuffix(" ore")
+                    spam("You manage to mine some $ore.")
                     soundSynth(ORE_OBTAINED_SOUND)
                 }
             }

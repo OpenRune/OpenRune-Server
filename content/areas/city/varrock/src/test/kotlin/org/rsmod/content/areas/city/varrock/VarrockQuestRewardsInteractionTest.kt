@@ -33,7 +33,6 @@ import org.rsmod.content.areas.city.varrock.npcs.RatPits
 import org.rsmod.content.areas.city.varrock.npcs.VarrockPalace
 import org.rsmod.content.areas.city.varrock.npcs.VarrockTownsfolk
 import org.rsmod.content.areas.city.varrock.npcs.shops.StaffShop
-import org.rsmod.content.quest.area.falador.knightssword.KnightsSwordQuest
 import org.rsmod.content.quest.manager.QuestRequirementMode
 import org.rsmod.content.quest.manager.QuestRequirementPolicy
 import org.rsmod.content.quest.manager.QuestRequirements
@@ -288,7 +287,7 @@ class VarrockQuestRewardsInteractionTest {
             with(Apothecary()) { scripts.startup() }
             with(RatPits(objRepo)) { scripts.startup() }
             with(VarrockTownsfolk(objRepo)) { scripts.startup() }
-            with(VarrockPalace(objRepo, KnightsSwordQuest())) { scripts.startup() }
+            with(VarrockPalace(objRepo)) { scripts.startup() }
         }
 
         fun fillInventory() {
