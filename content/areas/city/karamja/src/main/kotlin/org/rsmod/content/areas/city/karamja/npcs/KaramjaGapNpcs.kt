@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -375,9 +376,12 @@ class KaramjaGapNpcs @Inject constructor(private val shops: Shops) : PluginScrip
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:G.L.O._Caranock
-    // TODO(content): [quest:monkey_madness_i] "Get out of my office!" after the quest
     // TODO(content): [system:gnome_restaurant] delivery dialogue and tips
     private suspend fun Dialogue.caranock() {
+        if (QuestRequirements.hasCompleted(player, MONKEY_MADNESS_I)) {
+            chatNpc(angry, "Get out of my office! We WILL have our revenge, human!")
+            return
+        }
         mesbox("Caranock seems too busy to talk.")
     }
 
@@ -409,11 +413,46 @@ class KaramjaGapNpcs @Inject constructor(private val shops: Shops) : PluginScrip
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Trufitus (before Jungle Potion)
-    // TODO(content): [quest:jungle_potion] start offer, quest dialogue and after-quest lines
-    // TODO(content): [quest:shilo_village] dialogue after Shilo Village
+    // https://oldschool.runescape.wiki/w/Transcript:Trufitus
     // TODO(content): [system:item_on_npc] selling clean jungle herbs
     private suspend fun Dialogue.trufitus() {
+        when {
+            QuestRequirements.hasCompleted(player, SHILO_VILLAGE) -> trufitusAfterShilo()
+            QuestRequirements.hasCompleted(player, JUNGLE_POTION) -> trufitusAfterJunglePotion()
+            else -> trufitusBeforeJunglePotion()
+        }
+    }
+
+    // TODO(content): [quest:shilo_village] quest dialogue
+    private suspend fun Dialogue.trufitusAfterJunglePotion() {
+        chatNpc(happy, "My greatest respects Bwana, I have communed with my gods and the future")
+        chatNpc(
+            happy,
+            "looks good for my people. We are happy now that the gods are not angry with us.",
+        )
+        chatNpc(happy, "With some blessings we will be safe here.")
+        chatNpc(
+            neutral,
+            "You should deliver the good news to Bwana Timfraku, Chief of Tai Bwo Wannai. He " +
+                "lives in a raised hut not far from here.",
+        )
+    }
+
+    // TODO(content): [system:met_flags] the first ("I conclude that you have been successful.")
+    //  and second ("Hello again Bwana!") greetings after Shilo Village
+    private suspend fun Dialogue.trufitusAfterShilo() {
+        chatPlayer(happy, "Hello Bwana!")
+        chatNpc(happy, "Greetings!")
+        chatNpc(
+            neutral,
+            "I hope things are going well for you now. I have no new information since last we " +
+                "spoke. Needless to say, that if something does come up I will certainly get in " +
+                "touch directly.",
+        )
+    }
+
+    // TODO(content): [quest:jungle_potion] quest start and herb stages
+    private suspend fun Dialogue.trufitusBeforeJunglePotion() {
         chatNpc(happy, "Greetings Bwana! I am Trufitus Shakaya of the Tai Bwo Wannai village.")
         chatNpc(happy, "Welcome to our humble village.")
         val option =
@@ -598,6 +637,9 @@ class KaramjaGapNpcs @Inject constructor(private val shops: Shops) : PluginScrip
     private companion object {
         const val JIMINUA = "npc.jiminua"
         const val COINS = "obj.coins"
+        const val JUNGLE_POTION = "quest_junglepotion"
+        const val MONKEY_MADNESS_I = "quest_monkeymadness1"
+        const val SHILO_VILLAGE = "quest_shilovillage"
         const val MINT_CAKE = "obj.aluft_gnome_mint_cake"
         const val SEED_POD = "obj.aluft_seed_pod"
         const val SHIP_TICKET = "obj.shiloshipticket"

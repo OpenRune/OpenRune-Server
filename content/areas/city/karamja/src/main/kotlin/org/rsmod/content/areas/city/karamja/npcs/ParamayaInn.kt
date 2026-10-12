@@ -7,18 +7,21 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Kaleb_Paramaya
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:shilo_village] pre-quest zombie line
 class ParamayaInn @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.shiloinnowner") { startDialogue(it.npc) { kaleb() } }
     }
 
     private suspend fun Dialogue.kaleb() {
+        if (!QuestRequirements.hasCompleted(player, SHILO_VILLAGE)) {
+            chatNpc(sad, "I'm getting out of here Bwana, the place is infested with zombies.")
+        }
         chatNpc(happy, "Hello, Bwana, what can I do for you today?")
         while (true) {
             val option =
@@ -137,6 +140,7 @@ class ParamayaInn @Inject constructor(private val objRepo: ObjRepository) : Plug
     }
 
     private companion object {
+        const val SHILO_VILLAGE = "quest_shilovillage"
         const val WINE_PRICE = 1
         const val BEER_PRICE = 2
         const val TICKET_PRICE = 35

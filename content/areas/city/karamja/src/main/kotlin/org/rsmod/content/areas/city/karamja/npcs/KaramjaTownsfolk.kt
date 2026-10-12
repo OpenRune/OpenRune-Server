@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.karamja.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -92,10 +93,15 @@ class KaramjaTownsfolk : PluginScript() {
         chatNpc(neutral, "Hi. I'm a little busy right now.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Kangai_Mau (before Tribal Totem)
-    // TODO(content): [quest:tribal_totem] start offer, quest dialogue and after-quest greeting
+    // https://oldschool.runescape.wiki/w/Transcript:Kangai_Mau
     // TODO(content): [system:treasure_trails] medium clue reward
     private suspend fun Dialogue.kangaiMau() {
+        if (QuestRequirements.hasCompleted(player, TRIBAL_TOTEM)) {
+            chatNpc(happy, "Many greetings esteemed thief.")
+            chatPlayer(happy, "Hey.")
+            return
+        }
+        // TODO(content): [quest:tribal_totem] quest start and quest dialogue
         chatNpc(happy, "Hello. I Kangai Mau of the Rantuki tribe.")
         val option =
             choice3(
@@ -151,10 +157,17 @@ class KaramjaTownsfolk : PluginScript() {
         )
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Lubufu (before Tai Bwo Wannai Trio)
-    // TODO(content): [quest:tai_bwo_wannai_trio] after-quest line
+    // https://oldschool.runescape.wiki/w/Transcript:Lubufu
     // TODO(content): [system:met_flags] "I said go away!" when spoken to again
     private suspend fun Dialogue.lubufu() {
+        if (QuestRequirements.hasCompleted(player, TAI_BWO_WANNAI_TRIO)) {
+            chatNpc(
+                angry,
+                "You deceived me you confoundering dolt! Because of you, my entire business is " +
+                    "ruined! Get out of my sight!",
+            )
+            return
+        }
         chatNpc(angry, "Watch where you're going, young whippersnapper!")
         val option =
             choice3(
@@ -257,22 +270,54 @@ class KaramjaTownsfolk : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Hajedy (before Shilo Village)
-    // TODO(content): [quest:shilo_village] cart rides to Shilo Village after the quest
+    // https://oldschool.runescape.wiki/w/Transcript:Hajedy
     // TODO(content): [diary:karamja] free rides after the elite diary
     private suspend fun Dialogue.hajedy() {
+        if (!QuestRequirements.hasCompleted(player, SHILO_VILLAGE)) {
+            chatNpc(
+                neutral,
+                "We used to run cart trips down to Shilo Village in south Karamja. Since the " +
+                    "troubles we had we've had to stop them though, too many people got killed.",
+            )
+            return
+        }
+        hajedyCartRide()
+    }
+
+    // TODO(content): [system:cart_travel] taking the fare and the cart ride to Shilo Village
+    // TODO(content): [verify:in_game] fare rounding (wiki: about 5% of carried coins, 10 to 200)
+    private suspend fun Dialogue.hajedyCartRide() {
+        val fare = (access.invTotal(player.inv, COINS) / 20).coerceIn(10, 200)
         chatNpc(
             neutral,
-            "We used to run cart trips down to Shilo Village in south Karamja. Since the " +
-                "troubles we had we've had to stop them though, too many people got killed.",
+            "I am offering a cart ride to Shilo Village, if you're interested. It will cost " +
+                "$fare coins. Is that okay?",
         )
+        val ride =
+            choice2("Yes please, I'd like to go to Shilo Village.", true, "No thanks.", false)
+        if (!ride) {
+            chatPlayer(neutral, "No thanks.")
+            chatNpc(neutral, "Okay, Bwana, let me know if you change your mind.")
+            return
+        }
+        chatPlayer(happy, "Yes please, I'd like to go to Shilo Village.")
+        if (access.invTotal(player.inv, COINS) < fare) {
+            chatNpc(
+                neutral,
+                "Sorry, but it looks as if you don't have enough money. Come and see me when you " +
+                    "have enough for the ride.",
+            )
+        }
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Yohnus
-    // TODO(content): [quest:shilo_village] pre-quest zombie line
     // TODO(content): [system:shilo_furnace_coffer] coffer menu (deposit, empty, cancel)
     // TODO(content): [diary:karamja] free furnace line after the elite diary
     private suspend fun Dialogue.yohnus() {
+        if (!QuestRequirements.hasCompleted(player, SHILO_VILLAGE)) {
+            chatNpc(sad, "I'm getting out of here Bwana, the place is infested with Zombies.")
+            return
+        }
         chatPlayer(neutral, "Hello.")
         chatNpc(
             neutral,
@@ -281,14 +326,55 @@ class KaramjaTownsfolk : PluginScript() {
         )
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Mosol_Rei (before Jungle Potion)
-    // TODO(content): [quest:jungle_potion] dialogue after Jungle Potion
-    // TODO(content): [quest:shilo_village] quest dialogue and entering the village afterwards
+    // https://oldschool.runescape.wiki/w/Transcript:Mosol_Rei
     private suspend fun Dialogue.mosolRei() {
+        if (QuestRequirements.hasCompleted(player, SHILO_VILLAGE)) {
+            mosolReiAfterShilo()
+            return
+        }
+        if (QuestRequirements.hasCompleted(player, JUNGLE_POTION)) {
+            // TODO(content): [quest:shilo_village] quest start and quest dialogue
+            return
+        }
         chatNpc(
             neutral,
             "Sorry Bwana, I cannot help you at this time. Go and talk to Trufitus at Tai Bwo " +
                 "Wannai, I believe he needs some help.",
         )
+    }
+
+    private suspend fun Dialogue.mosolReiAfterShilo() {
+        chatPlayer(happy, "Greetings!")
+        chatNpc(
+            happy,
+            "Greetings Bwana! We've removed the threat of Rashiliyia and though there are still " +
+                "some random outbreaks of undead activity we are more than able to deal with it.",
+        )
+        chatNpc(happy, "You're welcome to enter the village now Bwana, shall I show you the way?")
+        // TODO(content): [verify:in_game] "You can now enter Shilo Village." as the menu title
+        val enter =
+            choice2(
+                "Yes, Ok, I'll go into the village!",
+                true,
+                "I think I'll see it some other time.",
+                false,
+                title = "You can now enter Shilo Village.",
+            )
+        if (!enter) {
+            mesbox("You decide not to visit the village.")
+            return
+        }
+        // TODO(content): [system:shilo_gate] Mosol leading the player through the gate into the
+        //  village ("Mosol leads you
+        //  into the village." / "Mosol leaves you by the gate and walks back out into the
+        //  jungle.")
+    }
+
+    private companion object {
+        const val COINS = "obj.coins"
+        const val JUNGLE_POTION = "quest_junglepotion"
+        const val SHILO_VILLAGE = "quest_shilovillage"
+        const val TAI_BWO_WANNAI_TRIO = "quest_taibwowannaitrio"
+        const val TRIBAL_TOTEM = "quest_tribaltotem"
     }
 }

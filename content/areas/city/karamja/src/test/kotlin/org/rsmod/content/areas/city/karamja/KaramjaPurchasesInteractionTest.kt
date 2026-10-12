@@ -6,10 +6,12 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
@@ -30,6 +32,9 @@ import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.content.areas.city.karamja.npcs.DeadMansChest
 import org.rsmod.content.areas.city.karamja.npcs.ParamayaInn
 import org.rsmod.content.areas.city.karamja.npcs.Seravel
+import org.rsmod.content.quest.manager.QuestRequirementMode
+import org.rsmod.content.quest.manager.QuestRequirementPolicy
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -46,7 +51,19 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
+@ResourceLock("QuestRequirements")
 class KaramjaPurchasesInteractionTest {
+    private val previousPolicy = QuestRequirements.activePolicy()
+
+    @BeforeEach
+    fun assumeQuestsCompleted() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+    }
+
+    @AfterEach
+    fun restorePolicy() {
+        QuestRequirements.install(previousPolicy)
+    }
 
     @Test fun `the Dead Man's Chest bartender sells grog and rum`() {
         for ((options, item) in BAR_PURCHASES) {
@@ -181,6 +198,26 @@ class KaramjaPurchasesInteractionTest {
         f.finish(listOf(1))
         assertEquals(5, f.player.inv.count(COINS))
         assertEquals(1, f.groundCount(SHIP_TICKET))
+    }
+
+    @Test fun `Kaleb still sells before Shilo Village`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 200)
+        f.talkTo(KALEB)
+        f.finish(listOf(2, 3, 5))
+        assertEquals(165, f.player.inv.count(COINS))
+        assertEquals(1, f.player.inv.count(TICKET))
+    }
+
+    @Test fun `Seravel sells no ticket before Shilo Village`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 30)
+        f.talkTo(SERAVEL)
+        f.finish(listOf(1))
+        assertEquals(30, f.player.inv.count(COINS))
+        assertEquals(0, f.player.inv.count(SHIP_TICKET))
     }
 
     private class Fixture {
