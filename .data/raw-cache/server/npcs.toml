@@ -15986,6 +15986,7 @@ id = "npc.cowboss"
 inherit = "npc.cowboss"
 respawnRate = 36
 [npc.params]
+"param.dropped_remains"="obj.bull_bones"
 "param.death_anim"="seq.cow_boss_death"
 "param.boss_hp_bar_mode"=2
 "param.elemental_weakness_type"=2
