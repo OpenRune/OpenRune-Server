@@ -166,17 +166,17 @@ constructor(
 
             // live capture, rev 241, 20261012T180256-df49f48@1567-1943: two basic attacks open the
             // fight, then a special after every four basic attacks.
-            // Out of reach for 15 ticks, he charges through the obstacle or huffs and walks round it
+            // Still out of reach 21 ticks after his last attack or spawn, he charges at the target
+            // when the lane has room and otherwise huffs and walks round the fence
             // (https://oldschool.runescape.wiki/w/Brutus/Strategies; live capture, rev 241,
-            // 20261012T200152-df49f48@764, @819, @918).
-            // UNVERIFIED: when he charges rather than huffs (the captures only saw huffs, each with a
-            // fence in the way, so this charges whenever a charge has room).
+            // 20261012T200152-df49f48@764, @819, @918 (huffs, fence in the way) and
+            // 20261012T222638-df49f48@2447, @3049 (charges), @3209 (huff)).
             every(
                 1,
                 sequence(
                     external(REACH),
                     whenever(
-                        varnAtLeast(UNREACHED, OUT_OF_REACH_TICKS),
+                        varnAtLeast(UNREACHED, 1),
                         sequence(
                             setVarn(UNREACHED, 0),
                             whenever(chargeHasRoom, forceNext(charge), external(HUFF)),
@@ -262,11 +262,17 @@ constructor(
         locRepo.findAll(tile).any { it.shape == LocShape.WallDiagonal }
 
     private fun countUnreached(npc: Npc, target: Player) {
-        npc.vars[UNREACHED] = if (inReach(npc.coords, target.coords)) 0 else npc.vars[UNREACHED] + 1
+        val encounter = deps.encounterRegistry.of(npc)
+        if (encounter.lastAbilityTick == 0) {
+            encounter.lastAbilityTick = deps.mapClock.cycle
+        }
+        val idle = deps.mapClock.cycle - encounter.lastAbilityTick
+        npc.vars[UNREACHED] = if (idle >= OUT_OF_REACH_TICKS && !inReach(npc.coords, target.coords)) 1 else 0
     }
 
     /** "*huff*", then a real route round whatever kept him from the target. */
     private fun huff(npc: Npc, target: Player) {
+        deps.encounterRegistry.of(npc).lastAbilityTick = deps.mapClock.cycle
         npc.say("*huff*")
         npc.anim("seq.cow_boss_heavy_breath")
         npc.walkTo(routeFactory, target.coords) { npc.apPlayer2(target, aiPlayerInteractions) }
@@ -313,7 +319,7 @@ constructor(
         private const val UNREACHED = "varn.brutus_unreached"
         private const val REACH = "brutus.reach"
         private const val HUFF = "brutus.huff"
-        private const val OUT_OF_REACH_TICKS = 15
+        private const val OUT_OF_REACH_TICKS = 21
         private const val CHARGE_TURN = 1
         private const val STOMP_TURN = 2
 
