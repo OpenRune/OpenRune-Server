@@ -2,6 +2,9 @@
 # You want to edit these to fit your game.
 name: "OpenRune"
 game-port: 43594
+# Address the game port binds to; leave empty to bind every address. Set it (e.g. "127.0.0.2") to
+# run several servers on one machine, each on its own loopback address.
+game-host: ""
 revision: 241
 environment: "LIVE"
 world: 255
@@ -34,6 +37,9 @@ gameplay:
 central:
   same-instance: true
   host: "127.0.0.1"
+  # Central's HTTP port (default 8080). Central binds this and link-port on every address, so a
+  # second server on the same machine needs different values for both.
+  # http-port: 8080
   link-port: 9091
   postgres:
     pool-size: 10

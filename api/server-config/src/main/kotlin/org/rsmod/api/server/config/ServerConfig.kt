@@ -71,6 +71,8 @@ public data class QuestRequirementsYaml(
 public data class ServerConfig(
     val name: String,
     @JsonProperty("game-port") val gamePort: Int,
+    /** Address the game port binds to. Empty binds every address. */
+    @JsonProperty("game-host") val gameHost: String = "",
     val revision: Int,
     val environment: String,
     val world: Int,

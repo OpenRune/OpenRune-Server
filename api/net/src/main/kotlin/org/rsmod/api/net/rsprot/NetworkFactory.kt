@@ -41,6 +41,8 @@ constructor(
 
     override val ports: List<Int> = listOf(config.gamePort)
 
+    override val host: String? = config.gameHost.ifEmpty { null }
+
     override val supportedClientTypes: List<OldSchoolClientType> =
         listOf(OldSchoolClientType.DESKTOP)
 
