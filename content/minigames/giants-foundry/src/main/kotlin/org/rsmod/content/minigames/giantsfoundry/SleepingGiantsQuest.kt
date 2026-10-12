@@ -84,7 +84,9 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         onOpLoc1(WATERFALL_QUEST) { inspectWaterfall() }
 
         onOpLoc1(CRATE_FULL) { searchCrate() }
-        onOpLoc1(CRATE_EMPTY) { mes("The crate is empty.") } // UNVERIFIED: not in the transcript.
+        // sigmazx's Sleeping Giants video (youtube.com/watch?v=WnGuNtTJW0M, about 8:44).
+        // UNVERIFIED: that the message comes from searching the crate; the click isn't shown.
+        onOpLoc1(CRATE_EMPTY) { mes("There is nothing in the storage area to take.") }
 
         onPlayerQueueWithArgs<QuestPrompt>(QUEST_PROMPT_QUEUE) {
             when (val prompt = it.args) {
@@ -915,8 +917,11 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         chatNpc(neutral, "Remember, try trip hammer first with hot preform.")
     }
 
-    // UNVERIFIED: whether the quest sword also pays the minigame's hand-in rewards; here the
-    // quest's own reward is the only one.
+    /**
+     * The quest sword pays no foundry rewards: in sigmazx's video
+     * (youtube.com/watch?v=WnGuNtTJW0M) chat goes straight to the quest completion, with no
+     * coins, reputation or hand-in summary, and the XP drop is only the quest's 6,000.
+     */
     private suspend fun Dialogue.handIn() {
         chatPlayer(happy, "Okay Kovac, I think I've finally finished the sword!")
         chatNpc(neutral, "Hmm...")
@@ -1054,26 +1059,18 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             )
 
         /**
-         * 20 items, 30 bars' worth (20 bronze, 10 iron). Filling the crucible from them keeps
-         * the metal score under 20, so the sword has the three sections Kovac describes.
+         * 20 items, exactly 28 bars' worth (16 bronze, 12 iron), as seen in the inventory right
+         * after taking them in two Sleeping Giants videos (Slayermusiq1,
+         * youtube.com/watch?v=io6mQxi1ddI 4:09; sigmazx, youtube.com/watch?v=WnGuNtTJW0M 5:41).
          */
-        // UNVERIFIED: the contents aren't published. The wiki gives 20 inventory slots, "bars
-        // and weapons" with a bronze battleaxe and an iron bar pictured, and Kovac's "bronze
-        // and iron".
         val CRATE_ITEMS =
             listOf(
-                "obj.bronze_bar" to 6,
-                "obj.iron_bar" to 4,
-                "obj.bronze_battleaxe" to 1,
-                "obj.bronze_2h_sword" to 1,
+                "obj.bronze_bar" to 8,
+                "obj.iron_bar" to 6,
+                "obj.bronze_battleaxe" to 2,
+                "obj.iron_longsword" to 2,
                 "obj.bronze_platebody" to 1,
-                "obj.bronze_platelegs" to 1,
-                "obj.bronze_kiteshield" to 1,
-                "obj.bronze_scimitar" to 1,
-                "obj.bronze_longsword" to 1,
-                "obj.iron_battleaxe" to 1,
-                "obj.iron_platelegs" to 1,
-                "obj.iron_kiteshield" to 1,
+                "obj.iron_platebody" to 1,
             )
     }
 }
