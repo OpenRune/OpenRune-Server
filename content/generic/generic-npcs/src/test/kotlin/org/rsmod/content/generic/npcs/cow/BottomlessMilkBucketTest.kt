@@ -210,6 +210,56 @@ class BottomlessMilkBucketTest {
         assertEquals(1, f.player.inv.count(MILK))
     }
 
+    @Test
+    fun `chocolatey milk fills an empty bucket and leaves empty buckets`() {
+        val f = Fixture()
+        f.player.inv[0] = InvObj(EMPTY)
+        f.player.inv[1] = InvObj(CHOCOLATEY)
+        f.run { with(f.script) { fill(0, CHOCOLATEY) } }
+        f.finish(choices = listOf(YES))
+        assertEquals(1, f.uses(0))
+        assertEquals(MilkSources.typeOf(CHOCOLATEY), MilkSources.typeIn(f.player.inv[0]))
+        assertEquals(0, f.player.inv.count(CHOCOLATEY))
+        assertEquals(1, f.player.inv.count(BUCKET))
+    }
+
+    @Test
+    fun `a bucket of regular milk takes no chocolatey milk`() {
+        val f = Fixture()
+        f.player.inv[0] = f.filled(5)
+        f.player.inv[1] = InvObj(CHOCOLATEY)
+        f.run { with(f.script) { fill(0, CHOCOLATEY) } }
+        f.finish()
+        f.run { with(f.script) { fill(0, null) } }
+        f.finish()
+        assertEquals(5, f.uses(0))
+        assertEquals(1, f.player.inv.count(CHOCOLATEY))
+    }
+
+    @Test
+    fun `chocolatey milk in the bucket is no bucket of milk`() {
+        val f = Fixture()
+        f.player.inv[0] = MilkSources.withType(f.filled(5), checkNotNull(MilkSources.typeOf(CHOCOLATEY)))
+        assertEquals(false, MilkSources.has(f.player.inv))
+        assertEquals(false, MilkSources.pour(f.player.inv))
+        assertEquals(false, MilkSources.pourFrom(f.player.inv, 0))
+        assertTrue(MilkSources.pour(f.player.inv, CHOCOLATEY))
+        assertEquals(4, f.uses(0))
+    }
+
+    @Test
+    fun `emptying clears the milk type`() {
+        val f = Fixture()
+        f.player.inv[0] = MilkSources.withType(f.filled(5), checkNotNull(MilkSources.typeOf(CHOCOLATEY)))
+        f.run { with(f.script) { empty(0) } }
+        f.finish(choices = listOf(YES))
+        assertEquals(0, f.player.inv[0]!!.vars)
+        f.player.inv[1] = InvObj(MILK)
+        f.run { with(f.script) { fill(0, MILK) } }
+        f.finish(choices = listOf(YES))
+        assertEquals(MilkSources.typeOf(MILK), MilkSources.typeIn(f.player.inv[0]))
+    }
+
     private class Fixture {
         private val coroutine = GameCoroutine("bottomless-milk-bucket-test")
         private var result: Result<Unit>? = null
@@ -309,6 +359,7 @@ class BottomlessMilkBucketTest {
         private const val MILK_NOTE = "obj.cert_bucket_milk"
         private const val BUCKET = "obj.bucket_empty"
         private const val BUCKET_NOTE = "obj.cert_bucket_empty"
+        private const val CHOCOLATEY = "obj.chocolaty_milk"
         private const val YES = 1
         private const val NO = 2
         private val restored = mutableListOf<() -> Unit>()

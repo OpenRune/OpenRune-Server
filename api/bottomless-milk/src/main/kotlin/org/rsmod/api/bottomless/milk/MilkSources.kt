@@ -1,12 +1,15 @@
 package org.rsmod.api.bottomless.milk
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
+import org.rsmod.utils.bits.getBits
 import org.rsmod.utils.bits.withBits
 
 /**
@@ -14,20 +17,43 @@ import org.rsmod.utils.bits.withBits
  * places live allows call this; others take the item alone
  * (https://oldschool.runescape.wiki/w/Bottomless_milk_bucket).
  *
- * TODO(content): [system:bottomless_milk] Chocolatey milk, milky mixture and hangover cure.
+ * A bucket holds one type of milk at a time, from `enum.bottomless_milk_types`.
  */
 public object MilkSources {
     public const val BUCKET_EMPTY: String = "obj.bottomless_milk_bucket"
     public const val BUCKET_FILLED: String = "obj.bottomless_milk_bucket_filled"
     public const val USES: String = "varobj.charges_16383"
+    public const val TYPE: String = "varobj.bottomless_milk_type"
     public const val MAX_USES: Int = 10_000
     public const val MILK: String = "obj.bucket_milk"
+    private const val TYPES = "enum.bottomless_milk_types"
+    private const val NAMES = "enum.bottomless_milk_names"
 
     private val charges = ObjChargeManager()
 
-    private val usesBits by lazy {
-        checkNotNull(ServerCacheManager.getVarObj(USES.asRSCM(RSCMType.VAROBJ))).bits
+    private val usesBits by lazy { varObjBits(USES) }
+    private val typeBits by lazy { varObjBits(TYPE) }
+
+    /** Each type's milk, as obj names, by type. */
+    public val types: Map<Int, String> by lazy {
+        enumValues(TYPES).mapValues { RSCM.getReverseMapping(RSCMType.OBJ, (it.value as Number).toInt()) }
     }
+
+    private val names: Map<Int, String> by lazy { enumValues(NAMES).mapValues { it.value as String } }
+
+    public fun typeOf(milk: String): Int? = types.entries.firstOrNull { it.value == milk }?.key
+
+    public fun nameOf(type: Int): String = checkNotNull(names[type]) { "No name for milk type $type." }
+
+    public fun uses(bucket: InvObj?): Int = charges.getCharges(bucket, USES)
+
+    /** The type a bucket holds; an empty one holds none. */
+    public fun typeIn(bucket: InvObj?): Int? =
+        if (bucket.isType(BUCKET_FILLED) && uses(bucket) > 0) bucket!!.vars.getBits(typeBits) else null
+
+    /** [bucket] with [type] stored, for filling an empty one. */
+    public fun withType(bucket: InvObj, type: Int): InvObj =
+        bucket.copy(vars = bucket.vars.withBits(typeBits, type))
 
     public fun has(inv: Inventory, milk: String = MILK): Boolean =
         milk in inv || bucketSlot(inv, milk) != null
@@ -40,33 +66,44 @@ public object MilkSources {
             pour(access.inv, milk)
         }
 
-    /** One use from a bottomless milk bucket; the last use leaves it empty. */
+    /** One use of [milk] from a bottomless milk bucket; the last use leaves it empty. */
     public fun pour(inv: Inventory, milk: String = MILK): Boolean {
         val slot = bucketSlot(inv, milk) ?: return false
-        return pourFrom(inv, slot)
+        return pourFrom(inv, slot, milk)
     }
 
-    /** One use from the bottomless milk bucket in [slot], as when it's used on a cat. */
-    public fun pourFrom(inv: Inventory, slot: Int): Boolean {
-        val bucket = inv[slot]?.takeIf { it.isType(BUCKET_FILLED) } ?: return false
-        if (charges.getCharges(bucket, USES) <= 0) {
+    /** One use of [milk] from the bottomless milk bucket in [slot], as when it's used on a cat. */
+    public fun pourFrom(inv: Inventory, slot: Int, milk: String = MILK): Boolean {
+        val bucket = inv[slot] ?: return false
+        if (typeIn(bucket) != typeOf(milk)) {
             return false
         }
-        val left = charges.getCharges(bucket, USES) - 1
+        val left = uses(bucket) - 1
         if (left == 0) {
-            charges.removeAllCharges(inv, slot, USES)
+            empty(inv, slot)
         } else {
             inv[slot] = bucket.copy(vars = bucket.vars.withBits(usesBits, left))
         }
         return true
     }
 
-    private fun bucketSlot(inv: Inventory, milk: String): Int? {
-        if (milk != MILK) {
-            return null
-        }
-        return inv.indices.firstOrNull {
-            inv[it].isType(BUCKET_FILLED) && charges.getCharges(inv[it], USES) > 0
-        }
+    /** Discards the bucket's milk and type. */
+    public fun empty(inv: Inventory, slot: Int) {
+        charges.removeAllCharges(inv, slot, USES)
+        inv[slot] = inv[slot]?.copy(vars = 0)
     }
+
+    private fun bucketSlot(inv: Inventory, milk: String): Int? {
+        val type = typeOf(milk) ?: return null
+        return inv.indices.firstOrNull { typeIn(inv[it]) == type }
+    }
+
+    private fun varObjBits(name: String) =
+        checkNotNull(ServerCacheManager.getVarObj(name.asRSCM(RSCMType.VAROBJ))).bits
+
+    private fun enumValues(name: String): Map<Int, Any> =
+        checkNotNull(ServerCacheManager.getEnum(name.asRSCM(RSCMType.ENUM))) { "Missing $name." }
+            .values
+            .entries
+            .associate { (it.key as Number).toInt() to it.value!! }
 }

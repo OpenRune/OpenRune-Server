@@ -1,6 +1,7 @@
 package org.rsmod.content.generic.npcs.cow
 
 import jakarta.inject.Inject
+import org.rsmod.api.bottomless.milk.MilkSources
 import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.obj.charges.ObjChargeManager.Companion.isFailure
 import org.rsmod.api.player.dialogue.Dialogue
@@ -80,7 +81,10 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
         inv.indices.filter { inv[it]?.let { obj -> obj.isType(BOTTOMLESS_EMPTY) || obj.isType(BOTTOMLESS_FILLED) } == true }
 
     private fun ProtectedAccess.roomySlots(): List<Int> =
-        bottomlessSlots().filter { charges.getCharges(inv[it], BOTTOMLESS_USES) < BOTTOMLESS_MAX }
+        bottomlessSlots().filter {
+            charges.getCharges(inv[it], BOTTOMLESS_USES) < BOTTOMLESS_MAX &&
+                (MilkSources.typeIn(inv[it]) ?: REGULAR_MILK) == REGULAR_MILK
+        }
 
     // https://oldschool.runescape.wiki/w/Cowbell_amulet: one tick faster while worn.
     private fun ProtectedAccess.wearsCowbellAmulet(): Boolean =
@@ -124,6 +128,7 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
 
     private companion object {
         const val ZANARIS_COW = "loc.fairy_fat_cow"
+        val REGULAR_MILK by lazy { checkNotNull(MilkSources.typeOf(MilkSources.MILK)) }
 
         // A milking every 7 ticks (live capture, rev 241), 6 with the cowbell amulet worn
         // (https://oldschool.runescape.wiki/w/Cowbell_amulet). The queue runs a tick early.
