@@ -5,15 +5,19 @@ import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
+import org.rsmod.api.player.dialogue.mesanims
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.IfModalButton
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpNpc5
+import org.rsmod.api.script.onOpNpcU
 import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -28,7 +32,50 @@ class RewardShopScript @Inject constructor() : PluginScript() {
         onOpNpc5(KOVAC) { openRewardShop() }
         onIfModalButton(LIST) { listOp(it) }
         onIfModalButton(BUY_BUTTON) { buy(player.shopSelected, 1) }
+        onOpNpcU(KOVAC) { sellBack(it.npc, it.objType) }
     }
+
+    /**
+     * Using a reward on Kovac sells it back for 80% of its cost; he won't take the grog or the
+     * colossal blade. https://oldschool.runescape.wiki/w/Transcript:Kovac
+     */
+    private suspend fun ProtectedAccess.sellBack(npc: Npc, obj: ItemServerType) {
+        when (obj.internalName) {
+            GROG -> {
+                // TODO: the Ironman follow-up lines ("Can't you make an exception for me?").
+                chatNpc(npc, mesanims.neutral, "No, you keep that or give it to someone else.")
+                return
+            }
+            COLOSSAL_BLADE -> {
+                chatNpc(npc, mesanims.neutral, "Kovac does not want that back. Maybe the smith clothes would be good, if you got any.")
+                return
+            }
+        }
+        val cost = shopCosts()[obj.id]
+        if (cost == null) {
+            chatNpc(npc, mesanims.neutral, "You keep that.")
+            return
+        }
+        val value = cost * SELL_PERCENT / 100
+        objbox(obj.internalName, "${obj.name}: Kovac will give you ${"%,d".format(value)} Foundry Reputation for this.")
+        if (!choice2("Accept", true, "Decline", false)) {
+            return
+        }
+        if (inv.count(obj.internalName) <= 0) {
+            return
+        }
+        invDel(inv, obj.internalName, 1)
+        player.foundryReputation += value
+        objbox(obj.internalName, "${obj.name}: Kovac takes it back. Foundry Reputation: ${"%,d".format(player.foundryReputation)}")
+    }
+
+    /** Obj id to cost for every item (not mould) in the shop catalogue. */
+    private fun shopCosts(): Map<Int, Int> =
+        (1..SHOP_ENTRIES).mapNotNull { entry ->
+            val struct = entryStruct(entry) ?: return@mapNotNull null
+            val obj = struct.params?.get(param("param.giants_foundry_shop_obj")) as? Int ?: return@mapNotNull null
+            obj to struct.getInt(param("param.giants_foundry_shop_cost"))
+        }.toMap()
 
     /**
      * Shop rows are built by `giants_foundry_reward_shop_list_item_setup`, 13 components per entry
@@ -111,6 +158,9 @@ class RewardShopScript @Inject constructor() : PluginScript() {
         const val ROW_CHILDREN = 13
         const val DOUBLE_AMMO_MOULD = "obj.double_ammo_mould"
         const val DWARF_CANNON = "quest_dwarfcannon"
+        const val GROG = "obj.kovacs_grog"
+        const val COLOSSAL_BLADE = "obj.giants_foundry_colossal_blade"
+        const val SELL_PERCENT = 80
     }
 }
 
