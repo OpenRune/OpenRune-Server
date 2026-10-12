@@ -13,7 +13,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 // https://oldschool.runescape.wiki/w/Transcript:Ali_the_Barman
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 // TODO(content): [quest:the_feud] "I'm looking for Traitorous Ali." and "I'm looking for Ali from
-//  Pollnivneach." during the quest, and Faisal's name after it
+//  Pollnivneach." during the quest
 class AspAndSnakeBar @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(BARMAN) { startDialogue(it.npc) { barman(it.npc) } }

@@ -5,6 +5,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -12,8 +13,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Raetul (after Icthlarin's Little Helper)
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:icthlarins_little_helper] dialogue before the quest is finished
-// TODO(content): [quest:contact] inv.sophanem_cloth_store_updated after the quest
+// TODO(content): [quest:icthlarins_little_helper] dialogue during the quest
 // TODO(content): [system:acne_potion] potion used on Raetul
 class RaetulClothStore @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
@@ -21,8 +21,15 @@ class RaetulClothStore @Inject constructor(private val shops: Shops) : PluginScr
         onOpNpc3(RAETUL) { player.openStore(it.npc) }
     }
 
+    // https://oldschool.runescape.wiki/w/Raetul_and_Co%27s_Cloth_Store.
     private fun Player.openStore(npc: Npc) {
-        shops.open(this, npc, "Raetul and Co's Cloth Store", "inv.sophanem_cloth_store")
+        val stock =
+            if (QuestRequirements.hasCompleted(this, CONTACT)) {
+                "inv.sophanem_cloth_store_updated"
+            } else {
+                "inv.sophanem_cloth_store"
+            }
+        shops.open(this, npc, "Raetul and Co's Cloth Store", stock)
     }
 
     private suspend fun Dialogue.raetul(npc: Npc) {
@@ -40,5 +47,6 @@ class RaetulClothStore @Inject constructor(private val shops: Shops) : PluginScr
 
     private companion object {
         const val RAETUL = "npc.ics_little_linen1"
+        const val CONTACT = "quest_contact"
     }
 }

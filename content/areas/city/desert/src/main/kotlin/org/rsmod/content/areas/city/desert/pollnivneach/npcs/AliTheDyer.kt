@@ -11,7 +11,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 // https://oldschool.runescape.wiki/w/Transcript:Ali_the_dyer
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [quest:the_feud] Rana's name after the quest
 class AliTheDyer @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(DYER) { startDialogue(it.npc) { dyer() } }

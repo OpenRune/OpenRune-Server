@@ -3,6 +3,7 @@ package org.rsmod.content.areas.city.desert.carpet.npcs
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -167,7 +168,6 @@ class RugMerchants : PluginScript() {
         chatNpc(neutral, "Fair enough, magic carpet travel isn't for everyone. Enjoy the walk.")
     }
 
-    // TODO(content): [quest:the_feud] the lines after completing The Feud
     private suspend fun Dialogue.aliMorrisane() {
         chatPlayer(quiz, "Tell me about Ali Morrisane.")
         chatNpc(
@@ -175,6 +175,20 @@ class RugMerchants : PluginScript() {
             "What, you haven't heard of Ali M? Possibly the greatest salesman of the Kharidian " +
                 "empire if not all Gielinor?",
         )
+        if (QuestRequirements.hasCompleted(player, THE_FEUD)) {
+            chatPlayer(
+                laugh,
+                "Ah yes I remember him now, I went on a wild goose chase looking for his nephew.",
+            )
+            chatNpc(laugh, "Ha! No doubt old Ali M instigated the whole thing.")
+            chatPlayer(happy, "I had a bit of fun though, The whole job was quite diverting.")
+            chatNpc(
+                happy,
+                "There's never a dull moment around that man, he's always looking for a way to " +
+                    "make a quick coin or two.",
+            )
+            return
+        }
         chatPlayer(
             neutral,
             "I can't say that I have, but he must be the ambitious type to try and set up his " +
@@ -484,6 +498,7 @@ class RugMerchants : PluginScript() {
 
     private companion object {
         const val SELECT = "Select an option"
+        const val THE_FEUD = "quest_feud"
         const val MONKEYSPEAK_AMULET = "obj.mm_amulet_of_monkey_speak"
         const val UZER_MIN_X = 3400
         const val NARDAH_MIN_Z = 2880

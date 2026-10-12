@@ -8,6 +8,7 @@ import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -289,8 +290,21 @@ constructor(private val shops: Shops, private val objRepo: ObjRepository) : Plug
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Cowardly_Bandit
-    // TODO(content): [quest:the_feud] dialogue after The Feud
     private suspend fun Dialogue.cowardlyBandit() {
+        if (QuestRequirements.hasCompleted(player, THE_FEUD)) {
+            chatNpc(
+                angry,
+                "You dog! You killed our champion and for that I hope you die a slow and painful " +
+                    "death.",
+            )
+            chatPlayer(angry, "What was that? Are you looking for a fight?")
+            chatNpc(
+                worried,
+                "Me? No, no, I was just, er, complimenting your, that is - don't kill me, please!",
+            )
+            chatPlayer(neutral, "I wouldn't waste my time.")
+            return
+        }
         chatPlayer(happy, "Hello.")
         chatNpc(angry, "What do you want?")
         chatPlayer(
@@ -584,6 +598,7 @@ constructor(private val shops: Shops, private val objRepo: ObjRepository) : Plug
 
     private companion object {
         const val SIMON = "npc.agility_pyramid_simon"
+        const val THE_FEUD = "quest_feud"
         const val PYRAMID_TOP = "obj.agility_pyramid_gold_pyramid"
         const val COINS = "obj.coins"
         const val TOP_PRICE = 10000

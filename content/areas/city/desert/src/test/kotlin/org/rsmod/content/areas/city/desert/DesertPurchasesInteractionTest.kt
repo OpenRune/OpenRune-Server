@@ -6,6 +6,7 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
+import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.events.interact.NpcEvents
 import org.rsmod.api.player.input.ResumePauseButtonInput
@@ -50,6 +52,9 @@ import org.rsmod.content.areas.city.desert.sophanem.npcs.shops.BladesByUrbi
 import org.rsmod.content.areas.city.desert.sophanem.npcs.shops.JamilasCraftStall
 import org.rsmod.content.areas.city.desert.sophanem.npcs.shops.NathifasBakeStall
 import org.rsmod.content.areas.city.desert.sophanem.npcs.shops.RaetulClothStore
+import org.rsmod.content.quest.manager.QuestRequirementMode
+import org.rsmod.content.quest.manager.QuestRequirementPolicy
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -57,6 +62,7 @@ import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
@@ -67,6 +73,21 @@ import org.rsmod.plugin.scripts.ScriptContext
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class DesertPurchasesInteractionTest {
+    private val previousPolicy = QuestRequirements.activePolicy()
+
+    @AfterEach
+    fun restorePolicy() {
+        QuestRequirements.install(previousPolicy)
+    }
+
+    private fun questsNotStarted() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
+    }
+
+    private fun questsCompleted() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.AssumeCompleted))
+    }
+
     @Test fun `the kebab seller sells a kebab for 3 coins`() {
         val f = Fixture()
         f.player.inv[0] = InvObj(COINS, 10)
@@ -204,6 +225,7 @@ class DesertPurchasesInteractionTest {
     }
 
     @Test fun `Ali the Carter sells a waterskin for 1000 coins`() {
+        questsNotStarted()
         val f = Fixture()
         f.player.inv[0] = InvObj(COINS, 1500)
         f.talkTo(CARTER)
@@ -213,6 +235,7 @@ class DesertPurchasesInteractionTest {
     }
 
     @Test fun `Ali the Carter sells nothing to a player short of coins`() {
+        questsNotStarted()
         val f = Fixture()
         f.player.inv[0] = InvObj(COINS, 999)
         f.talkTo(CARTER)
@@ -222,6 +245,7 @@ class DesertPurchasesInteractionTest {
     }
 
     @Test fun `declining Ali the Carter costs nothing`() {
+        questsNotStarted()
         val f = Fixture()
         f.player.inv[0] = InvObj(COINS, 1000)
         f.talkTo(CARTER)
@@ -231,6 +255,7 @@ class DesertPurchasesInteractionTest {
     }
 
     @Test fun `a full pack drops the waterskin instead of losing it`() {
+        questsNotStarted()
         val f = Fixture()
         f.fillInventory()
         f.player.inv[0] = InvObj(COINS, 1500)
@@ -239,6 +264,78 @@ class DesertPurchasesInteractionTest {
         assertEquals(500, f.player.inv.count(COINS))
         assertEquals(0, f.player.inv.count(WATERSKIN))
         assertEquals(1, f.groundCount(WATERSKIN))
+    }
+
+    @Test fun `Ali the Carter still sells a waterskin after Spirits of the Elid`() {
+        questsCompleted()
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 1500)
+        f.talkTo(CARTER)
+        f.finish(listOf(1))
+        assertEquals(500, f.player.inv.count(COINS))
+        assertEquals(1, f.player.inv.count(WATERSKIN))
+    }
+
+    @Test fun `Ali the Carter sells nothing after the quest to a player short of coins`() {
+        questsCompleted()
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 999)
+        f.talkTo(CARTER)
+        f.finish(listOf(1))
+        assertEquals(999, f.player.inv.count(COINS))
+        assertEquals(0, f.player.inv.count(WATERSKIN))
+    }
+
+    @Test fun `the High Priest sells another circlet for 10000 coins`() {
+        questsCompleted()
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 12_000)
+        f.talkTo(HIGH_PRIEST)
+        f.finish(listOf(2, 1, 3))
+        assertEquals(2_000, f.player.inv.count(COINS))
+        assertEquals(1, f.player.inv.count(CIRCLET))
+    }
+
+    @Test fun `the High Priest sells no circlet to a player short of coins`() {
+        questsCompleted()
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 9_999)
+        f.talkTo(HIGH_PRIEST)
+        f.finish(listOf(2, 1, 3))
+        assertEquals(9_999, f.player.inv.count(COINS))
+        assertEquals(0, f.player.inv.count(CIRCLET))
+    }
+
+    @Test fun `declining the High Priest's circlet costs nothing`() {
+        questsCompleted()
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 12_000)
+        f.talkTo(HIGH_PRIEST)
+        f.finish(listOf(2, 2, 3))
+        assertEquals(12_000, f.player.inv.count(COINS))
+        assertEquals(0, f.player.inv.count(CIRCLET))
+    }
+
+    @Test fun `a full pack drops the circlet instead of losing it`() {
+        questsCompleted()
+        val f = Fixture()
+        f.fillInventory()
+        f.player.inv[0] = InvObj(COINS, 12_000)
+        f.talkTo(HIGH_PRIEST)
+        f.finish(listOf(2, 1, 3))
+        assertEquals(2_000, f.player.inv.count(COINS))
+        assertEquals(0, f.player.inv.count(CIRCLET))
+        assertEquals(1, f.groundCount(CIRCLET))
+    }
+
+    @Test fun `the High Priest has no circlet before Beneath Cursed Sands`() {
+        questsNotStarted()
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 12_000)
+        f.talkTo(HIGH_PRIEST)
+        f.finish(emptyList())
+        assertEquals(12_000, f.player.inv.count(COINS))
+        assertEquals(0, f.player.inv.count(CIRCLET))
     }
 
     private class Fixture {
@@ -291,7 +388,9 @@ class DesertPurchasesInteractionTest {
             with(AliTheCamelMan()) { scripts.startup() }
             with(StreetUrchin()) { scripts.startup() }
             with(PollnivneachTownsfolk()) { scripts.startup() }
-            with(PollnivneachGangs()) { scripts.startup() }
+            with(PollnivneachGangs(AiPlayerInteractions(events, PlayerList()))) {
+                scripts.startup()
+            }
             with(AspAndSnakeBar(shops)) { scripts.startup() }
             with(PollnivneachGeneralStore(shops)) { scripts.startup() }
             with(NardahTownsfolk()) { scripts.startup() }
@@ -302,7 +401,7 @@ class DesertPurchasesInteractionTest {
             with(BedabinTownsfolk()) { scripts.startup() }
             with(BedabinVillageBartering(shops)) { scripts.startup() }
             with(Faaid()) { scripts.startup() }
-            with(SophanemTownsfolk()) { scripts.startup() }
+            with(SophanemTownsfolk(shops, objRepo)) { scripts.startup() }
             with(RaetulClothStore(shops)) { scripts.startup() }
             with(JamilasCraftStall(shops)) { scripts.startup() }
             with(NathifasBakeStall(shops)) { scripts.startup() }
@@ -405,6 +504,8 @@ class DesertPurchasesInteractionTest {
         private const val KEBAB_SELLER = "npc.feud_kebabman_multi"
         private const val DYER = "npc.feud_dye_lady_multi"
         private const val CARTER = "npc.ali_the_carter"
+        private const val HIGH_PRIEST = "npc.ics_little_hipriest_town"
+        private const val CIRCLET = "obj.water_circlet"
         private val CONTINUE_COMPONENTS =
             mapOf(
                 "interface.chat_left" to "component.chat_left:continue",
