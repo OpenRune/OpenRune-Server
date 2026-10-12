@@ -1,15 +1,10 @@
 package org.rsmod.content.bosses.brutus
 
-import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
-import kotlin.math.min
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.obj.charges.ObjChargeManager
-import org.rsmod.api.obj.charges.ObjChargeManager.Companion.isFailure
 import org.rsmod.api.player.hook.PlayerTeleportValidator
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.ChatType
@@ -20,22 +15,20 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld3
-import org.rsmod.api.script.onOpHeld4
-import org.rsmod.api.script.onOpHeld5
-import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpWorn2
 import org.rsmod.api.script.onOpWorn3
-import org.rsmod.api.script.onOpWorn4
+import org.rsmod.content.bosses.brutus.CowbellAmuletCharging.Companion.CHARGED
+import org.rsmod.content.bosses.brutus.CowbellAmuletCharging.Companion.CHARGES
+import org.rsmod.content.bosses.brutus.CowbellAmuletCharging.Companion.EMPTY
+import org.rsmod.content.bosses.brutus.CowbellAmuletCharging.Companion.plural
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.isType
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
-import org.rsmod.utils.bits.withBits
 
 /**
  * https://oldschool.runescape.wiki/w/Cowbell_amulet and its transcript. Animations, sounds,
@@ -58,16 +51,10 @@ constructor(
         onOpHeld1(CHARGED) { teleport(inv, it.slot) }
         onOpHeld3(CHARGED) { ring() }
         onOpHeld3(EMPTY) { ring() }
-        onOpHeld4(CHARGED) { check(inv[it.slot]) }
-        onOpHeld4(EMPTY) { charge(it.slot) }
-        onOpHeld5(CHARGED) { uncharge(it.slot) }
-        onOpHeldU(CHARGED, AIR_RUNE) { charge(it.firstSlot) }
-        onOpHeldU(EMPTY, AIR_RUNE) { charge(it.firstSlot) }
 
         onOpWorn2(CHARGED) { ring() }
         onOpWorn2(EMPTY) { ring() }
         onOpWorn3(CHARGED) { teleport(player.worn, Wearpos.Front.slot) }
-        onOpWorn4(CHARGED) { check(player.worn[Wearpos.Front.slot]) }
     }
 
     private suspend fun ProtectedAccess.ring() {
@@ -101,66 +88,6 @@ constructor(
         return true
     }
 
-    private fun ProtectedAccess.check(obj: InvObj?) {
-        val count = charges.getCharges(obj, CHARGES)
-        mes("The amulet has ${plural(count)}.")
-    }
-
-    private suspend fun ProtectedAccess.charge(slot: Int) {
-        val runes = inv.count(AIR_RUNE)
-        if (runes == 0) {
-            mesbox("You don't have any Air Runes to charge the amulet with.")
-            return
-        }
-        val current = charges.getCharges(inv[slot], CHARGES)
-        val room = MAX_CHARGES - current
-        if (room <= 0) {
-            // UNVERIFIED: dialogue type (wiki transcript gives only the text).
-            mesbox("The amulet is already fully charged.")
-            return
-        }
-        val max = min(runes, room)
-        val requested = min(countDialog("How many charges do you want to apply? (Up to $max)"), max)
-        if (requested == 0) {
-            return
-        }
-        val amulet = inv[slot] ?: return
-        if (!amulet.isType(EMPTY) && !amulet.isType(CHARGED)) {
-            return
-        }
-        if (invDel(inv, AIR_RUNE, requested).failure) {
-            return
-        }
-        val added = charges.addCharges(inv, slot, requested, CHARGES, MAX_CHARGES)
-        if (added.isFailure()) {
-            invAdd(inv, AIR_RUNE, requested)
-            return
-        }
-        val total = charges.getCharges(inv[slot], CHARGES)
-        soundSynth(CHARGE_SYNTH)
-        objbox(
-            CHARGED,
-            zoom = 400,
-            "You add $requested air ${runeWord(requested)} to your amulet. It now has " +
-                "${plural(total)}.",
-        )
-    }
-
-    private suspend fun ProtectedAccess.uncharge(slot: Int) {
-        val count = charges.getCharges(inv[slot], CHARGES)
-        if (count == 0) {
-            return
-        }
-        if (invAdd(inv, AIR_RUNE, count).failure) {
-            // UNVERIFIED: full inventory message.
-            mes("You don't have enough inventory space.")
-            return
-        }
-        charges.removeAllCharges(inv, slot, CHARGES)
-        // UNVERIFIED: dialogue type (wiki transcript gives only the text).
-        mesbox("You uncharge your amulet by removing $count air ${runeWord(count)} from it.")
-    }
-
     private suspend fun ProtectedAccess.teleport(container: Inventory, slot: Int) {
         val amulet = container[slot] ?: return
         if (!amulet.isType(CHARGED) || !canTeleport()) {
@@ -170,12 +97,7 @@ constructor(
         if (left < 0) {
             return
         }
-        container[slot] =
-            if (left == 0) {
-                InvObj(EMPTY)
-            } else {
-                amulet.copy(vars = amulet.vars.withBits(chargeBits, left))
-            }
+        container[slot] = CowbellAmuletCharging.afterTeleport(amulet, left)
         anim("seq.human_cowboss_teleport")
         spotanim(TELEPORT_SPOTANIM, slot = 1)
         soundSynth(TELEPORT_SYNTH, delay = TELEPORT_SYNTH_DELAY)
@@ -223,27 +145,13 @@ constructor(
 
     private fun Npc.isAnyOf(types: List<String>): Boolean = types.any { isType(it) }
 
-    private val chargeBits by lazy {
-        checkNotNull(ServerCacheManager.getVarObj(CHARGES.asRSCM(RSCMType.VAROBJ))).bits
-    }
-
-    private fun plural(count: Int): String = if (count == 1) "1 charge" else "$count charges"
-
-    private fun runeWord(count: Int): String = if (count == 1) "rune" else "runes"
-
     private companion object {
-        const val CHARGED = "obj.cowbell_amulet"
-        const val EMPTY = "obj.cowbell_amulet_empty"
-        const val AIR_RUNE = "obj.airrune"
-        const val CHARGES = "varobj.charges_16383"
-        const val MAX_CHARGES = 1_000
         const val BRUTUS_FIELD = "cowboss"
 
         const val RING_SYNTH = "synth.cowbell_amulet_ring"
         const val RING_SOUNDS = 3
         const val RING_SOUND_GAP = 8
         const val RING_RESPAWN_DELAY = 13
-        const val CHARGE_SYNTH = "synth.cowbell_amulet_charge"
 
         const val TELEPORT_SPOTANIM = "spotanim.vfx_human_cowboss_teleport01"
         const val TELEPORT_SYNTH = "synth.cowbell_amulet_teleport"
