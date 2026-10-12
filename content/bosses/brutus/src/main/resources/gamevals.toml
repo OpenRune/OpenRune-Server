@@ -4,6 +4,7 @@ cowbell_amulet_charge = 30
 cowbell_amulet_teleport = 1658
 cowbell_amulet_arrive = 11286
 cowbell_amulet_uncharge = 2968
+bull_bones_bury = 2738
 
 [gamevals.varn]
 brutus_next_special = 64400
@@ -11,3 +12,7 @@ brutus_aim = 64401
 brutus_unreached = 64402
 brutus_death_said = 64403
 brutus_bell_rung = 64404
+
+[gamevals.varp]
+brutus_deaths = 64410
+brutus_best_time = 64411

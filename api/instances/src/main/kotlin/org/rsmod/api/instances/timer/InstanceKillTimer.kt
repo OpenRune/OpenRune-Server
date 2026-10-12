@@ -7,7 +7,12 @@ import org.rsmod.api.instances.instanceKillBest
 import org.rsmod.api.instances.recordInstanceKillBest
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.game.entity.Player
+
+/** A kill time in Jagex's timer format, as the fight duration message shows it. */
+public fun formatInstanceKillTime(ticks: Int, precise: Boolean): String =
+    InstanceKillTimer.formatDuration(ticks, precise)
 
 internal object InstanceKillTimer {
 
@@ -30,7 +35,8 @@ internal object InstanceKillTimer {
         }
     }
 
-    fun reportKillTime(player: Player, instanceKey: String, elapsedTicks: Int) {
+    /** Reports [elapsedTicks] to [player] and returns whether it is a new personal best. */
+    fun reportKillTime(player: Player, session: InstanceSession, elapsedTicks: Int): Boolean {
         val precise = player.vars["varbit.option_precise_timing"] != 0
         val duration = formatDuration(elapsedTicks, precise)
 
@@ -39,11 +45,21 @@ internal object InstanceKillTimer {
                 "<col=ff0000>Your kill time of $duration was too long to record a personal best.</col>",
                 ChatType.Engine,
             )
-            return
+            return false
         }
 
-        val improved = player.recordInstanceKillBest(instanceKey, elapsedTicks)
-        val best = player.instanceKillBest(instanceKey)?.let { formatDuration(it, precise) }
+        val varp = session.spec.bestTimeVarp
+        val improved =
+            if (varp == null) {
+                player.recordInstanceKillBest(session.key, elapsedTicks)
+            } else {
+                val previous = player.vars[varp]
+                (previous == 0 || elapsedTicks < previous).also {
+                    if (it) VarPlayerIntMapSetter.set(player, varp, elapsedTicks)
+                }
+            }
+        val bestTicks = if (varp == null) player.instanceKillBest(session.key) else player.vars[varp]
+        val best = bestTicks?.let { formatDuration(it, precise) }
 
         // live capture, rev 241, 20261012T180256-df49f48@1610 (new best) and @1745
         val message =
@@ -53,6 +69,7 @@ internal object InstanceKillTimer {
                 else -> "Fight duration: <col=ff0000>$duration</col>."
             }
         player.mes(message, ChatType.Engine)
+        return improved
     }
 
     private const val TICK_CENTIS = 60

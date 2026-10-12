@@ -208,13 +208,12 @@ constructor(
     /**
      * Live sends only the tile to face during the windup, resets the facing as he lands and faces
      * the target again two ticks later (live capture, rev 241, 20261012T180256-df49f48@1796-1802),
-     * so he never turns towards a player who sidestepped.
+     * so the facing is locked and he never turns towards a player who sidestepped.
      */
     private fun aimCharge(npc: Npc, target: Player) {
         val (dx, dz) = chargeDirection(npc.coords, target.coords)
         npc.vars[AIM] = encodeAim(dx, dz)
-        npc.resetFaceEntity()
-        npc.faceSquare(centre(npc.coords).translate(dx * AIM_DISTANCE, dz * AIM_DISTANCE))
+        npc.lockFacing(centre(npc.coords).translate(dx * AIM_DISTANCE, dz * AIM_DISTANCE))
     }
 
     /**
@@ -222,6 +221,7 @@ constructor(
      * direction, stopped only by walls, and hits a target standing anywhere in the swept lane.
      */
     private fun landCharge(npc: Npc, target: Player) {
+        npc.clearFacingLock()
         val (dx, dz) = decodeAim(npc.vars[AIM])
         val room = chargeRoom(npc.coords, dx to dz, deps.collision, ::diagonalWall)
         // UNVERIFIED: the charge length. The wiki says 4 tiles; the captures saw 4, 4, 4 and 5 in
@@ -279,8 +279,7 @@ constructor(
     private fun aimStomp(npc: Npc, target: Player) {
         val (cx, cz) = stompAim(npc.coords, target.coords)
         npc.vars[AIM] = encodeAim(cx, cz)
-        npc.resetFaceEntity()
-        npc.faceSquare(centre(npc.coords).translate(cx * AIM_DISTANCE, cz * AIM_DISTANCE))
+        npc.lockFacing(centre(npc.coords).translate(cx * AIM_DISTANCE, cz * AIM_DISTANCE))
     }
 
     private fun landStomp(npc: Npc, target: Player) {
@@ -300,6 +299,7 @@ constructor(
             )
         }
         deps.worldQueues.add(FACE_AGAIN_DELAY) {
+            npc.clearFacingLock()
             if (npc.isSlotAssigned && npc.hitpoints > 0) npc.facePlayer(target)
         }
     }

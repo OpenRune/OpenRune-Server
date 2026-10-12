@@ -29,8 +29,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 // The cow pen behind Gillie Groats. Live capture, rev 241, 20261012T180256-df49f48@1156-1169
 // (quest) and @1549-1561, @1971-1977 (after the quest).
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-// TODO(content): [boss:brutus] kill count, fight duration, scoreboard and the cowbell amulet's
-// faster respawn for the repeatable fight.
 class BrutusInstance
 @Inject
 constructor(
@@ -53,6 +51,8 @@ constructor(
     // live capture, rev 241, 20261012T180256-df49f48@1236: the quest kill reports no duration.
     override fun recordsKillTime(player: Player): Boolean =
         idesOfMilk.stage(player) >= IdesOfMilkQuest.STAGE_COMPLETE
+
+    override fun bestTimeVarp(): String = BrutusScoreboard.BEST_TIME
 
     override fun ScriptContext.configure() {
         onEnterPrelude { result, enter ->
@@ -145,24 +145,32 @@ constructor(
         val npc = Npc(type, coords)
         deps.npcRepo.add(npc, Int.MAX_VALUE)
         npc.respawns = idesOfMilk.stage(player) >= IdesOfMilkQuest.STAGE_COMPLETE
+        // live capture, rev 241, 20261012T180256-df49f48@1236, @1610: the quest kill isn't counted.
+        if (!npc.respawns) {
+            npc.vars["varn.skip_killcount"] = 1
+        }
         manager.registerSessionNpc(player, npc)
         bossHpBar.onOpen(player, npc)
         arrive(npc, player)
     }
 
     /**
-     * Brutus stands still after (re)spawning, moos, then goes for the player. Live capture, rev 241,
+     * Brutus stands still after (re)spawning, moos, then goes for the player. He can be attacked
+     * from the start, so this holds his own attack and movement rather than delaying the npc,
+     * which would drop the player's clicks on him. Live capture, rev 241,
      * 20261012T180256-df49f48@1557-1567, @1632-1638 and 20261012T200152-df49f48@723-732.
      */
     private fun arrive(npc: Npc, player: Player?) {
         npc.anim("seq.cow_boss_spawn")
-        npc.delay = deps.mapClock.cycle + ARRIVE_ATTACK_DELAY
+        deps.encounterRegistry.of(npc).nextAttackTick = deps.mapClock.cycle + ARRIVE_ATTACK_DELAY
+        npc.movementLocked = true
+        deps.worldQueues.add(ARRIVE_MOVE_DELAY) { npc.movementLocked = false }
         if (player == null) {
             return
         }
         npc.facePlayer(player)
         deps.worldQueues.add(ARRIVE_MOO_DELAY) { if (npc.isSlotAssigned) npc.say("Moo") }
-        deps.worldQueues.add(ARRIVE_ATTACK_DELAY) {
+        deps.worldQueues.add(ARRIVE_MOVE_DELAY) {
             if (npc.isSlotAssigned) npc.apPlayer2(player, aiPlayerInteractions)
         }
     }
@@ -178,7 +186,8 @@ constructor(
         // live capture, rev 241, 20261012T180256-df49f48@1165: Brutus is added at (3261, 3287).
         private val SPAWN = CoordGrid(3261, 3287)
         private const val ARRIVE_MOO_DELAY = 5
-        private const val ARRIVE_ATTACK_DELAY = 5
+        private const val ARRIVE_MOVE_DELAY = 5
+        private const val ARRIVE_ATTACK_DELAY = 6
 
         // The field sits on the edge of 12851, and the client's scene reaches 52 tiles past the
         // player on every side, so the neighbouring regions are copied too.
