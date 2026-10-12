@@ -24,10 +24,13 @@ public final class AttachmentRegistry {
     private static final Map<int[],PaletteBinding> palettes = new WeakHashMap<>();
     private static final Map<String,byte[]> layerTemplates = new HashMap<>();
     private static final Map<int[],LayerBinding> layerBindings = new WeakHashMap<>();
+    private static final Map<String,Boolean> depthTemplates = new HashMap<>();
+    private static final Map<int[],DepthBinding> depthBindings = new WeakHashMap<>();
     private static boolean enabled;
 
     public static synchronized void configure(String path) throws Exception {
         templates.clear();layerTemplates.clear();layerBindings.clear();
+        depthTemplates.clear();depthBindings.clear();
         bindings.clear();
         paletteTemplates.clear();palettes.clear();
         scales.clear();
@@ -38,6 +41,11 @@ public final class AttachmentRegistry {
         try (var input = Files.newInputStream(Path.of(path))) { profile.load(input); }
         if (!"1".equals(profile.getProperty("schemaVersion"))) throw new IllegalArgumentException("Unknown bindings schema");
         for (String key : profile.stringPropertyNames()) {
+            if(key.startsWith("model.")&&key.endsWith(".opaqueDepth")) {
+                String hash=key.substring(6,key.length()-12);
+                if(!hash.matches("[a-f0-9]{64}")||!"true".equals(profile.getProperty(key)))throw new IllegalArgumentException("Invalid opaque-depth binding");
+                depthTemplates.put(hash,true);continue;
+            }
             if(key.startsWith("model.") && key.endsWith(".layers")) {
                 String hash=key.substring(6,key.length()-7);
                 byte[] layers=java.util.Base64.getDecoder().decode(profile.getProperty(key));
@@ -113,6 +121,7 @@ public final class AttachmentRegistry {
             }
             byte[] layers=layerTemplates.get(hash.toString());
             if(layers!=null)registerLayers(model,layers);
+            if(depthTemplates.containsKey(hash.toString()))registerDepth(model);
             List<Emitter> emitters = templates.get(hash.toString());
             if (emitters != null && !emitters.isEmpty()) register(model,emitters);
             List<PaletteFace> palette=paletteTemplates.get(hash.toString());
@@ -125,15 +134,40 @@ public final class AttachmentRegistry {
      * Only a bound, assembled player model is affected; source/cache models stay intact.
      */
     public static void normalizeAvatarPriorities(Object model) throws Exception {
-        byte[] layers=layers(model);if(layers==null)return;
+        byte[] layers=layers(model);boolean nativeDepth=depth(model);if(layers==null&&!nativeDepth)return;
         Class<?> type=model.getClass();int count=faceCount(model);
         byte[] priorities=(byte[])type.getMethod("getFaceRenderPriorities").invoke(model);
         byte[] alpha=(byte[])type.getMethod("getFaceTransparencies").invoke(model);
-        if(priorities!=null)for(int f=0;f<count;f++)if(alpha==null||alpha[f]==0)priorities[f]=0;
+        if(priorities!=null) {
+            byte[] corrected=null;
+            for(int f=0;f<count;f++)if(priorities[f]!=0&&(alpha==null||alpha[f]==0)) {
+                if(corrected==null)corrected=priorities.clone();corrected[f]=0;
+            }
+            // Sequence copies can share the source priority array. Replace only
+            // this rendered avatar's array; never rewrite cached equipment.
+            if(corrected!=null){var field=type.getDeclaredField("cb");field.setAccessible(true);field.set(model,corrected);}
+        }
+        if(layers==null)return; // Native depth sorting needs no synthetic bias.
         byte[] bias=(byte[])type.getMethod("getFaceBias").invoke(model);
         if(bias==null)bias=new byte[count];else bias=bias.clone();
         for(int f=0;f<count;f++)if(layers[f]>=0)bias[f]=layers[f];
         java.lang.reflect.Field field=type.getDeclaredField("cl");field.setAccessible(true);field.set(model,bias);
+    }
+
+    private static synchronized boolean depth(Object model)throws Exception {
+        if(!enabled||model==null)return false;
+        DepthBinding binding=depthBindings.get(indices(model,1));
+        return binding!=null&&binding.second.get()==indices(model,2)&&binding.third.get()==indices(model,3);
+    }
+
+    private static synchronized void registerDepth(Object model)throws Exception {
+        if(depthBindings.size()>4096)throw new IllegalStateException("Live depth bindings limit exceeded");
+        depthBindings.put(indices(model,1),new DepthBinding(indices(model,2),indices(model,3)));
+    }
+
+    private static final class DepthBinding {
+        final WeakReference<int[]> second,third;
+        DepthBinding(int[] second,int[] third){this.second=new WeakReference<>(second);this.third=new WeakReference<>(third);}
     }
 
     private static synchronized byte[] layers(Object model)throws Exception {
@@ -159,6 +193,7 @@ public final class AttachmentRegistry {
         try {
             if (count < 0 || count > Array.getLength(parts)) throw new IllegalArgumentException("Invalid merge count");
             preserveMergePrecision(model,parts,count);
+            for(int i=0;i<count;i++){Object part=Array.get(parts,i);if(part!=null&&depth(part)){registerDepth(model);break;}}
             byte[] mergedLayers=new byte[faceCount(model)];Arrays.fill(mergedLayers,(byte)-1);int layerOffset=0;boolean hasLayers=false;
             for(int i=0;i<count;i++){Object part=Array.get(parts,i);if(part==null)continue;byte[] source=layers(part);if(source!=null){System.arraycopy(source,0,mergedLayers,layerOffset,source.length);hasLayers=true;}layerOffset+=faceCount(part);}
             if(hasLayers)registerLayers(model,mergedLayers);
@@ -186,12 +221,14 @@ public final class AttachmentRegistry {
             List<Emitter> emitters = find(source);
             List<PaletteFace> palette=palette(source);
             byte[] sourceLayers=layers(source);
-            if (emitters.isEmpty() && palette.isEmpty() && sourceLayers==null) return;
+            boolean sourceDepth=depth(source);
+            if (emitters.isEmpty() && palette.isEmpty() && sourceLayers==null&&!sourceDepth) return;
             if (faceCount(source) != faceCount(result)) return;
             for (int i = 1; i <= 3; i++) {
                 if (!Arrays.equals(indices(source,i),indices(result,i))) return;
             }
             if(sourceLayers!=null)registerLayers(result,sourceLayers);
+            if(sourceDepth)registerDepth(result);
             if(!emitters.isEmpty())register(result,emitters);
             if(!palette.isEmpty())registerPalette(result,palette);
             synchronized(AttachmentRegistry.class){if(precise.containsKey(indices(source,1)))precise.put(indices(result,1),true);}

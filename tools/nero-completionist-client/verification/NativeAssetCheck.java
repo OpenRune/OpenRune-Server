@@ -73,13 +73,16 @@ public final class NativeAssetCheck {
         for(int v=0;v<animated.getVerticesCount();v++) animated.getVerticesX()[v]+=17;
         require(snapshot.xyz[0]==saved,"shared sequence immutable emitter snapshot");
         require(Math.abs(AttachmentRegistry.triangles(animated).get(0).xyz[0]-saved-17)<.001,"emitter follows native shared vertices");
-        AttachmentRegistry.normalizeAvatarPriorities(lit);
         byte[] before=lit.getFaceBias(),priorities=lit.getFaceRenderPriorities().clone();
         require(before==null,"native cape has no synthetic face bias");
         Set<Byte> groups=new HashSet<>();for(byte group:priorities)groups.add(group);
         require(groups.equals(Set.of((byte)4,(byte)5,(byte)10)),"authored native-compatible priority groups "+groups);
         AttachmentRegistry.normalizeAvatarPriorities(lit);
-        require(lit.getFaceBias()==null&&Arrays.equals(priorities,lit.getFaceRenderPriorities()),"native priority and bias preserved");
+        require(lit.getFaceBias()==null,"no synthetic bias");
+        for(int f=0;f<lit.getFaceCount();f++)require(lit.getFaceRenderPriorities()[f]==(lit.getFaceTransparencies()[f]==0?0:priorities[f]),"opaque avatar depth order "+f);
+        byte[] corrected=lit.getFaceRenderPriorities();AttachmentRegistry.normalizeAvatarPriorities(lit);
+        require(corrected==lit.getFaceRenderPriorities(),"idempotent depth sort does not allocate per frame");
+        require(Arrays.equals(priorities,merged.light().getFaceRenderPriorities()),"cached source priorities are untouched");
         // This reproduced the owner's HD failure: animation changes alpha, then
         // a new assembled avatar is normalized. Topology comes from SHA-bound
         // metadata, never by recounting opaque faces or guessing emitter offsets.
@@ -87,7 +90,8 @@ public final class NativeAssetCheck {
         relit.getFaceTransparencies()[782]=0;relit.getFaceTransparencies()[788]=(byte)128;
         relit.getFaceTransparencies()[4]=(byte)128;
         AttachmentRegistry.normalizeAvatarPriorities(relit);
-        require(relit.getFaceBias()==null&&Arrays.equals(priorities,relit.getFaceRenderPriorities()),"animated alpha preserves native ordering");
+        require(relit.getFaceBias()==null,"animated alpha does not create a synthetic layer");
+        for(int f=0;f<relit.getFaceCount();f++)require(relit.getFaceRenderPriorities()[f]==(relit.getFaceTransparencies()[f]==0?0:priorities[f]),"transparent/hidden source priorities retained "+f);
         ModelData hoodModel=(ModelData)decode.newInstance((Object)Files.readAllBytes(raw.resolve("cache/live/7/62107/0.dat")));
         NativeParticleCheck.run(regular.light(64,850,-30,-50,-30),hoodModel.light());
         Model preview=regular.light(64,850,-30,-50,-30);CapePreviewRaster raster=new CapePreviewRaster(180,240);int[] first=null;
@@ -107,6 +111,7 @@ public final class NativeAssetCheck {
             raster.model(labelled,false);javax.imageio.ImageIO.write(raster.image,"png",images.resolve("cape-regions.png").toFile());
             NativeIconCheck.run(raw,images.resolve("inventory"));
             NativeWornCheck.run(raw,images.resolve("worn"));
+            if(args.length>2)NativeAvatarCheck.run(Path.of(args[2]),raw,images.resolve("avatars"));
         }
         // Actual native ItemStats conversion, including magic damage's tenths and no second overlay.
         for(int id=63000;id<=63143;id++)if(CapeItemStats.custom(id)) {
@@ -119,7 +124,7 @@ public final class NativeAssetCheck {
             var stats=CapeItemStats.fromCache(item).getEquipment();require(stats.getMdmg()==2f&&stats.getPrayer()==6,"native item stats "+id);
             boolean hood=id==63002||id==63003||id>=63100&&(id-63100)%2==1;require(stats.getSlot()==(hood?0:1),"item slot "+id);
         }
-        System.out.println("PASS_NATIVE_VISUAL_ASSETS models="+files.size()+" folded="+folded+" smooth="+smooth+" emitting="+emitting+" textured="+textured+" exactDecode=true mergeCopyLight=true sharedSequence=true animatedAlpha=true nativePriorities=true generatedReverseFaces=0 stablePreviewFrames=20 itemStats=48");
+        System.out.println("PASS_NATIVE_VISUAL_ASSETS models="+files.size()+" folded="+folded+" smooth="+smooth+" emitting="+emitting+" textured="+textured+" exactDecode=true mergeCopyLight=true sharedSequence=true animatedAlpha=true opaqueDepth=true sourcePrioritiesPreserved=true generatedReverseFaces=0 stablePreviewFrames=20 itemStats=48");
     }
     private static void require(boolean test,String detail){if(!test)throw new AssertionError(detail);}
 }

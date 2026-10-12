@@ -104,8 +104,9 @@ def main():
         data=encode(mesh);digest=hashlib.sha256(data).hexdigest()
         (RAW/p.relative_to(source)).write_bytes(data)
         new.append(f'model.{digest}.scale=0.25')
-        # Native face priorities and depth order: no per-frame avatar priority
-        # rewrite or synthetic face bias. The garment has no generated skin.
+        if face_remap is not None:new.append(f'model.{digest}.opaqueDepth=true')
+        # One opaque depth order for the assembled avatar; no synthetic face
+        # bias and no mutation of cached/native equipment priority arrays.
         for suffix in ['emitters','palette']:
             value=old_bindings.get(f'model.{old_hash}.{suffix}')
             if value and face_remap is not None and suffix=='palette':
