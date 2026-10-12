@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("integration-test-suite")
 }
 
 dependencies {
@@ -9,4 +10,5 @@ dependencies {
     implementation(projects.api.dropTablePlugin)
     implementation(projects.content.quest)
     implementation(projects.content.skills.utils)
+    integrationImplementation(projects.api.generated)
 }
