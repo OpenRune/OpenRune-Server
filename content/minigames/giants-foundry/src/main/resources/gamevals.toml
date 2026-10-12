@@ -25,3 +25,6 @@ giants_foundry_mould_spiked_flat = 1627
 giants_foundry_shop_obj = 1636
 giants_foundry_shop_mould = 1637
 giants_foundry_shop_cost = 1638
+
+[gamevals.queue]
+giants_foundry_quest_prompt = 64400

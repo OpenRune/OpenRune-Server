@@ -33,6 +33,15 @@ constructor(private val random: GameRandom, private val worldRepo: WorldReposito
         IntArray(METALS.size) { player.foundryVar(metalVarbit(METALS[it])) }
 
     private suspend fun ProtectedAccess.fill() {
+        if (
+            player.makingQuestSword() &&
+                player.sleepingGiantsTutorial >= SleepingGiants.TUTORIAL_POURED
+        ) {
+            startDialogue {
+                chatPlayer(neutral, "I should finish helping Kovac before I try making another sword.")
+            }
+            return
+        }
         val counts = counts()
         val space = FoundryFormulas.CRUCIBLE_CAPACITY - counts.sum()
         if (space <= 0) {
@@ -65,6 +74,9 @@ constructor(private val random: GameRandom, private val worldRepo: WorldReposito
         player.setFoundryVar(metalVarbit(METALS[metal]), counts[metal] + added)
         val total = counts.sum() + added
         player.crucibleState = if (total >= FoundryFormulas.CRUCIBLE_CAPACITY) 2 else 1
+        if (player.crucibleState == 2 && player.makingQuestSword()) {
+            player.advanceTutorial(SleepingGiants.TUTORIAL_CRUCIBLE_FULL)
+        }
         mes("You add $added bars' worth of ${METALS[metal]} to the crucible.")
     }
 
@@ -179,6 +191,9 @@ constructor(private val random: GameRandom, private val worldRepo: WorldReposito
         rollSeeds(metalScore)
         player.sweetSpots = 0
         player.mouldState = 2
+        if (player.makingQuestSword()) {
+            player.advanceTutorial(SleepingGiants.TUTORIAL_POURED)
+        }
         mes("You pour the molten metal into the mould jig.")
     }
 
@@ -190,10 +205,34 @@ constructor(private val random: GameRandom, private val worldRepo: WorldReposito
     // UNVERIFIED: sections after the first are uniformly random.
     private fun ProtectedAccess.rollSeeds(difficulty: Int) {
         val sections = FoundryFormulas.sections(difficulty)
+        if (player.makingQuestSword()) {
+            questSeeds(sections)
+            return
+        }
         player.setFoundryVar(seedVarbit(0), FoundryTool.Hammer.seed)
         for (section in 1 until 7) {
             val seed = if (section < sections) random.of(0, FoundryTool.entries.lastIndex) else 0
             player.setFoundryVar(seedVarbit(section), seed)
+        }
+    }
+
+    /**
+     * The quest sword goes trip hammer, grindstone, polishing wheel, as Kovac describes it
+     * (https://oldschool.runescape.wiki/w/Transcript:Sleeping_Giants); Quest Helper waits for
+     * 333 and 666 progress, so three sections.
+     */
+    // UNVERIFIED: if the player's metal gives more than three sections, the middle ones use the
+    // grindstone.
+    private fun ProtectedAccess.questSeeds(sections: Int) {
+        for (section in 0 until 7) {
+            val tool =
+                when {
+                    section >= sections -> null
+                    section == 0 -> FoundryTool.Hammer
+                    section == sections - 1 -> FoundryTool.PolishingWheel
+                    else -> FoundryTool.Grindstone
+                }
+            player.setFoundryVar(seedVarbit(section), tool?.seed ?: 0)
         }
     }
 

@@ -83,12 +83,16 @@ constructor(
     private fun ProtectedAccess.isWorking(state: WorkState, station: String): Boolean =
         state.station == station && state.origin == player.coords
 
-    private fun ProtectedAccess.startTool(tool: FoundryTool, loc: BoundLocInfo) {
+    private suspend fun ProtectedAccess.startTool(tool: FoundryTool, loc: BoundLocInfo) {
         if (!canWork()) {
             return
         }
         if (player.preformCompletion >= FoundryFormulas.SCALE) {
-            mes("The sword is finished. Hand it to Kovac.")
+            if (player.makingQuestSword()) {
+                questSwordFinished()
+            } else {
+                mes("The sword is finished. Hand it to Kovac.")
+            }
             return
         }
         val state = stateOf(player)
@@ -208,7 +212,8 @@ constructor(
         val completion = player.preformCompletion
         val section = FoundryFormulas.section(completion, difficulty)
         val needed = FoundryTool.forSeed(player.foundryVar(seedVarbit(section)))
-        val inZone = player.preformTemperature in FoundryFormulas.window(tool, difficulty)
+        val window = FoundryFormulas.window(tool, difficulty)
+        val inZone = player.preformTemperature in window
 
         var progress = if (state.overworked) 0 else tool.progress + uniformBonus(player)
         state.overworked = false
@@ -217,6 +222,16 @@ constructor(
         if (tool != needed || !inZone) {
             player.preformQuality = (player.preformQuality - MISTAKE_QUALITY).coerceAtLeast(0)
             xpTenths = 0
+            if (player.makingQuestSword()) {
+                val prompt =
+                    when {
+                        tool != needed -> QuestPrompt.wrongTool(needed)
+                        player.preformTemperature < window.first -> QuestPrompt.tooCold(tool)
+                        else -> QuestPrompt.tooHot(tool)
+                    }
+                player.weakQueue(QUEST_PROMPT_QUEUE, 1, prompt)
+                stop(player, state)
+            }
         }
         if (state.sweetSpotArmed) {
             state.sweetSpotArmed = false
@@ -240,7 +255,11 @@ constructor(
         when {
             player.preformQuality == 0 -> player.mes(DAMAGED, ChatType.Engine)
             player.preformCompletion >= FoundryFormulas.SCALE ->
-                player.mes("The sword is finished. Hand it to Kovac.")
+                if (player.makingQuestSword()) {
+                    player.weakQueue(QUEST_PROMPT_QUEUE, 1, QuestPrompt.SwordFinished)
+                } else {
+                    player.mes("The sword is finished. Hand it to Kovac.")
+                }
             else -> maybeOfferSweetSpot(player, state, section)
         }
     }
