@@ -2,7 +2,7 @@ package org.rsmod.content.areas.misc.outskirts.paterdomus.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
-import org.rsmod.content.quest.manager.Quest
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -15,19 +15,28 @@ class Paterdomus : PluginScript() {
 
     // https://oldschool.runescape.wiki/w/Transcript:Drezel (after Priest in Peril)
     // TODO(content): [quest:priest_in_peril] replacing a lost wolfbane dagger or library key
-    // TODO(content): [quest:nature_spirit] quest start and the after-quest line
-    // TODO(content): [quest:darkness_of_hallowvale] after-quest dialogue
-    // TODO(content): [quest:a_taste_of_hope] after-quest dialogue
-    // TODO(content): [quest:sins_of_the_father] after-quest dialogue
-    // TODO(content): [quest:the_blood_moon_rises] after-quest dialogue
     // TODO(content): [system:treasure_trails] medium clue challenge scroll dialogue
     private suspend fun Dialogue.drezel() {
+        when {
+            QuestRequirements.hasCompleted(player, BLOOD_MOON_RISES) -> drezelAfterBloodMoon()
+            QuestRequirements.hasCompleted(player, SINS_OF_THE_FATHER) -> drezelAfterSins()
+            QuestRequirements.hasCompleted(player, TASTE_OF_HOPE) -> drezelAfterTasteOfHope()
+            QuestRequirements.hasCompleted(player, DARKNESS_OF_HALLOWVALE) ->
+                drezelAfterHallowvale()
+            QuestRequirements.hasCompleted(player, NATURE_SPIRIT) -> {
+                chatPlayer(happy, "Hi there! Filliman says I've completed the quest!")
+                chatNpc(happy, "That's fantastic, well done!")
+            }
+            else -> drezelBeforeNatureSpirit()
+        }
+    }
+
+    private suspend fun Dialogue.drezelBeforeNatureSpirit() {
         chatPlayer(
             quiz,
             "Hello again, Drezel. Is there anything that I can help you out with around here?",
         )
-        val restlessGhost = checkNotNull(Quest.get(RESTLESS_GHOST)) { "Missing $RESTLESS_GHOST" }
-        if (!restlessGhost.isQuestCompleted(player)) {
+        if (!QuestRequirements.hasCompleted(player, RESTLESS_GHOST)) {
             chatNpc(neutral, "Well... I don't think so. There's not much to do in that place.")
             mesbox("You do not meet all of the requirements to start the Nature Spirit quest.")
             return
@@ -52,14 +61,122 @@ class Paterdomus : PluginScript() {
                 "in on him?",
         )
         chatNpc(worried, "I must warn you, it could be dangerous. Mort Myre is filled with ghasts!")
+        // TODO(content): [quest:nature_spirit] "Start Nature Spirit quest?" offer and the quest
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Odd_Old_Man (starting Rag and Bone Man I)
-    // TODO(content): [quest:rag_and_bone_man_i] quest start, "I was just passing..." after
-    // declining, and the after-quest dialogue
-    // TODO(content): [quest:rag_and_bone_man_ii] helm and bonesack replacements and swaps
+    private suspend fun Dialogue.drezelAfterHallowvale() {
+        chatNpc(quiz, "Hello, ${player.displayName}. How are things in Morytania?")
+        chatPlayer(
+            sad,
+            "Not as well as I'd hope, Drezel. I'm still working with the Myreque. I just hope " +
+                "that we can find a way to defeat those Drakans.",
+        )
+        chatNpc(
+            neutral,
+            "You can be sure that a great many people hope for exactly the same thing, " +
+                "${player.displayName}. Good luck to you, and Myreque prevail!",
+        )
+        chatPlayer(neutral, "Myreque prevail, Drezel.")
+    }
+
+    private suspend fun Dialogue.drezelAfterTasteOfHope() {
+        chatNpc(quiz, "How's everything going, ${player.displayName}?")
+        chatPlayer(
+            happy,
+            "We've managed to create a new weapon to fight the vampyres with. I used it to kill " +
+                "Ranis Drakan!",
+        )
+        chatNpc(happy, "This is amazing news, ${player.displayName}. Myreque prevail!")
+        chatPlayer(neutral, "Myreque prevail, Drezel.")
+    }
+
+    private suspend fun Dialogue.drezelAfterSins() {
+        chatNpc(quiz, "${player.displayName}. How are things?")
+        chatPlayer(
+            sad,
+            "As well as they could be, everything considered. We lost everything, Drezel.",
+        )
+        chatNpc(
+            neutral,
+            "Not everything. There's still you, me and Ivan. Veliaf is out there somewhere as " +
+                "well. It's not much, but it's something to be thankful for.",
+        )
+        chatPlayer(sad, "I suppose.")
+        chatNpc(
+            neutral,
+            "Morytania has never been darker. Trust in Saradomin, friend. There is still a " +
+                "chance we will live through this darkness.",
+        )
+    }
+
+    private suspend fun Dialogue.drezelAfterBloodMoon() {
+        chatNpc(quiz, "${player.displayName}. How are things?")
+        chatPlayer(happy, "Not too bad, Drezel. How about here?")
+        chatNpc(
+            neutral,
+            "Well, it's nice to not have to worry as much about the vampyres, but I must admit, " +
+                "I'm still not overly comfortable about the fact that we're now all trying to " +
+                "be friends.",
+        )
+        chatPlayer(
+            neutral,
+            "It was that or we try to kill them all, and I'm not totally sure wiping out a whole " +
+                "race would have been the best of ideas either... not that we'd have ever likely " +
+                "been able to.",
+        )
+        chatNpc(
+            neutral,
+            "You make a good point. And I suppose the King is behind it, even if that advisor " +
+                "of his isn't... Even still, I'm glad we have the Salve to stop them if they do " +
+                "try anything.",
+        )
+        chatNpc(
+            happy,
+            "In happier news, Ivan is now able to properly focus on his studying... though he " +
+                "does still sneak off for the odd adventure from time to time.",
+        )
+        chatPlayer(neutral, "Well, I suppose you can't be too picky.")
+        chatNpc(
+            happy,
+            "Indeed. The important part is that he will be a worthy successor. Of that, I can be " +
+                "confident.",
+        )
+        chatPlayer(happy, "I couldn't agree more. Until next time, Drezel.")
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Odd_Old_Man
+    // TODO(content): [quest:rag_and_bone_man_ii] the after-quest dialogue, helm and bonesack
+    // replacements and swaps
+    // TODO(content): [boss:royal_titans] trading in giantsoul amulets for big bones
     // TODO(content): [verify:in_game] the Sack's chathead
     private suspend fun Dialogue.oddOldMan() {
+        if (QuestRequirements.hasCompleted(player, RAG_AND_BONE_MAN_I)) {
+            oddOldManAfterQuest()
+            return
+        }
+        oddOldManQuestStart()
+    }
+
+    private suspend fun Dialogue.oddOldManAfterQuest() {
+        chatPlayer(quiz, "So how is the sorting going?")
+        chatNpc(shifty, "Err...")
+        sack("Mumblemumble")
+        chatNpc(happy, "It's going well, especially now I have all the bones I need.")
+        chatNpc(
+            neutral,
+            "There are still a few bits and pieces I wouldn't mind, but that's the way things go.",
+        )
+        chatPlayer(neutral, "Well if I see any bones I think you might like I'll bring them over.")
+        chatNpc(
+            happy,
+            "Cheers, we, err, that is myself and the museum staff, really appreciate it.",
+        )
+        sack("Snicker.")
+    }
+
+    // TODO(content): [quest:rag_and_bone_man_i] quest start, and "I was just passing..." after
+    // declining
+    private suspend fun Dialogue.oddOldManQuestStart() {
         chatNpc(quiz, "Can I help you with something?")
         chatPlayer(
             confused,
@@ -152,5 +269,11 @@ class Paterdomus : PluginScript() {
     private companion object {
         const val ODD_OLD_MAN = "npc.rag_odd_old_man"
         const val RESTLESS_GHOST = "quest_restlessghost"
+        const val NATURE_SPIRIT = "quest_naturespirit"
+        const val DARKNESS_OF_HALLOWVALE = "quest_darknessofhallowvale"
+        const val TASTE_OF_HOPE = "quest_tasteofhope"
+        const val SINS_OF_THE_FATHER = "quest_sinsofthefather"
+        const val BLOOD_MOON_RISES = "quest_bloodmoonrises"
+        const val RAG_AND_BONE_MAN_I = "quest_ragandboneman1"
     }
 }

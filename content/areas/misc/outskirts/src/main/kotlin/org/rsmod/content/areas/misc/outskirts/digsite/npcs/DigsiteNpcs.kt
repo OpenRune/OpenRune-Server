@@ -1,13 +1,16 @@
 package org.rsmod.content.areas.misc.outskirts.digsite.npcs
 
+import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-class DigsiteNpcs : PluginScript() {
+class DigsiteNpcs @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         for (examiner in EXAMINERS) {
             onOpNpc1(examiner) { startDialogue(it.npc) { examiner() } }
@@ -28,11 +31,47 @@ class DigsiteNpcs : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:The_Dig_Site (starting the quest)
-    // TODO(content): [quest:the_dig_site] quest start, exams and the after-quest dialogue
-    // (https://oldschool.runescape.wiki/w/Transcript:Examiner)
     // TODO(content): [system:treasure_trails] hard clue puzzle box dialogue
     private suspend fun Dialogue.examiner() {
+        if (QuestRequirements.hasCompleted(player, DIG_SITE)) {
+            examinerAfterQuest()
+            return
+        }
+        examinerQuestStart()
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:Examiner
+    private suspend fun Dialogue.examinerAfterQuest() {
+        chatNpc(
+            happy,
+            "Hello there! My colleague tells me you helped to uncover a hidden altar to the god " +
+                "Zaros.",
+        )
+        chatNpc(
+            happy,
+            "A great scholar and archaeologist indeed! Good health and prosperity to you.",
+        )
+        when (choice2("Thanks.", 1, "I have lost my trowel.", 2)) {
+            1 -> chatPlayer(happy, "Thanks.")
+            2 -> {
+                chatPlayer(sad, "I have lost my trowel.")
+                if (TROWEL in player.inv) {
+                    chatNpc(neutral, "Really? Look in your backpack and make sure first.")
+                    return
+                }
+                chatNpc(
+                    happy,
+                    "Deary me... That was a good one as well. It's a good job I have another. " +
+                        "Here you go...",
+                )
+                access.invAddOrDrop(objRepo, TROWEL)
+            }
+        }
+    }
+
+    // https://oldschool.runescape.wiki/w/Transcript:The_Dig_Site (starting the quest)
+    // TODO(content): [quest:the_dig_site] quest start and the exams
+    private suspend fun Dialogue.examinerQuestStart() {
         chatPlayer(happy, "Hello.")
         chatNpc(
             happy,
@@ -65,8 +104,22 @@ class DigsiteNpcs : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Researcher
-    // TODO(content): [quest:the_dig_site] after-quest greeting and the tools options
     private suspend fun Dialogue.researcher() {
+        if (QuestRequirements.hasCompleted(player, DIG_SITE)) {
+            chatNpc(happy, "Hello there! I heard all about your big find; well done!")
+            val option =
+                choice2(
+                    "Can you tell me more about the tools an archaeologist uses?",
+                    1,
+                    "Thank you!",
+                    2,
+                )
+            when (option) {
+                1 -> archaeologistTools(anythingElse = true)
+                2 -> chatPlayer(happy, "Thank you!")
+            }
+            return
+        }
         chatNpc(quiz, "Hello there. What are you doing here?")
         chatPlayer(neutral, "Just looking around at the moment.")
         chatNpc(
@@ -76,10 +129,12 @@ class DigsiteNpcs : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Terry_Balando
-    // TODO(content): [quest:the_dig_site] after-quest dialogue and identifying used items
-    // TODO(content): [quest:desert_treasure_i] after-quest translation line and the ancient staff
-    // dialogue
+    // TODO(content): [quest:the_dig_site] identifying used items
     private suspend fun Dialogue.terryBalando() {
+        if (QuestRequirements.hasCompleted(player, DIG_SITE)) {
+            terryAfterQuest()
+            return
+        }
         chatPlayer(quiz, "Hello. Who are you?")
         chatNpc(
             happy,
@@ -139,6 +194,63 @@ class DigsiteNpcs : PluginScript() {
             }
             4 -> archaeologistTools(anythingElse = false)
         }
+    }
+
+    private suspend fun Dialogue.terryAfterQuest() {
+        if (ANCIENT_STAFF in player.worn) {
+            chatNpc(
+                happy,
+                "That staff is incredible! It's the same symbol that was on that talisman you " +
+                    "found here. Does this mean you've found out more about Zaros?",
+            )
+            chatPlayer(
+                neutral,
+                "I found out that he was banished, and that the people's hero was trapped in a " +
+                    "pyramid and...",
+            )
+            chatNpc(
+                happy,
+                "So you're the one who found out about that. I've heard the story from my " +
+                    "friends in the museum. Well done on being able to wield such an impressive " +
+                    "symbol.",
+            )
+            chatNpc(neutral, "Anyway....")
+            terryDigsiteQuest()
+            return
+        }
+        if (QuestRequirements.hasCompleted(player, DESERT_TREASURE_I)) {
+            val option =
+                choice2(
+                    "Ask about the Desert Treasure I quest.",
+                    1,
+                    "Ask about the Digsite quest.",
+                    2,
+                )
+            if (option == 1) {
+                chatNpc(happy, "Hello again. Was that translation any use to Asgarnia?")
+                chatPlayer(happy, "I think it was, thanks!")
+                return
+            }
+        }
+        terryDigsiteQuest()
+    }
+
+    private suspend fun Dialogue.terryDigsiteQuest() {
+        chatNpc(
+            neutral,
+            "Hello again. I am now studying this mysterious altar and its inhabitants. The " +
+                "markings are strange...",
+        )
+        chatNpc(
+            confused,
+            "It refers to a god I have never heard of before, named Zaros. It must be some pagan " +
+                "superstition.",
+        )
+        chatNpc(
+            happy,
+            "That was a great find; who knows what other secrets lie buried beneath the surface " +
+                "of our land...",
+        )
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Panning_guide
@@ -210,10 +322,13 @@ class DigsiteNpcs : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Digsite_workman
-    // TODO(content): [quest:the_dig_site] after-quest greeting
     // TODO(content): [skill:thieving] Steal-from and the caught dialogue
     private suspend fun Dialogue.digsiteWorkman() {
         chatPlayer(happy, "Hello there.")
+        if (QuestRequirements.hasCompleted(player, DIG_SITE)) {
+            chatNpc(happy, "Ah, it's the great archaeologist! Congratulations on your discovery.")
+            return
+        }
         chatNpc(happy, "Good day; what can I do for you?")
         val option =
             choice3(
@@ -334,8 +449,11 @@ class DigsiteNpcs : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Barge_foreman
-    // TODO(content): [quest:bone_voyage] after-quest line
     private suspend fun Dialogue.bargeForeman() {
+        if (QuestRequirements.hasCompleted(player, BONE_VOYAGE)) {
+            chatNpc(happy, "Thanks for all your help, ${player.displayName}.")
+            return
+        }
         chatPlayer(quiz, "What's going on here?")
         chatNpc(
             neutral,
@@ -356,11 +474,35 @@ class DigsiteNpcs : PluginScript() {
         }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Barge_guard (before Bone Voyage)
-    // TODO(content): [quest:bone_voyage] boarding the barge and Quick-Travel to Fossil Island
+    // https://oldschool.runescape.wiki/w/Transcript:Barge_guard
+    // TODO(content): [quest:bone_voyage] the "On the barge" dialogue and getting off the barge
     private suspend fun Dialogue.bargeGuard() {
         chatPlayer(happy, "Hello.")
         chatNpc(happy, "Hello there, can I help you?")
+        if (QuestRequirements.hasCompleted(player, BONE_VOYAGE)) {
+            val option =
+                choice3(
+                    "Can I go onto the barge?",
+                    1,
+                    "Let's go to Fossil Island!",
+                    2,
+                    "No, thanks.",
+                    3,
+                )
+            when (option) {
+                1 -> {
+                    chatPlayer(quiz, "Can I go onto the barge?")
+                    chatNpc(happy, "Absolutely, the navigators are waiting for you on board!")
+                    // TODO(content): [quest:bone_voyage] "The barge guard helps you board the
+                    // ship." and moving the player onto the barge
+                }
+                // TODO(content): [quest:bone_voyage] "You row to the expedition camp." and the
+                // Quick-Travel to Fossil Island
+                2 -> Unit
+                3 -> chatPlayer(neutral, "No, thanks.")
+            }
+            return
+        }
         when (choice2("Can I go onto the barge?", 1, "No, thanks.", 2)) {
             1 -> {
                 chatPlayer(quiz, "Can I go onto the barge?")
@@ -381,6 +523,11 @@ class DigsiteNpcs : PluginScript() {
     }
 
     private companion object {
+        const val DIG_SITE = "quest_digsite"
+        const val DESERT_TREASURE_I = "quest_deserttreasure"
+        const val BONE_VOYAGE = "quest_bonevoyage"
+        const val TROWEL = "obj.trowel"
+        const val ANCIENT_STAFF = "obj.staff_of_zaros"
         val EXAMINERS =
             listOf("npc.examiner", "npc.qip_digsite_examiner_02", "npc.qip_digsite_examiner_03")
         val DIGSITE_WORKMEN =
