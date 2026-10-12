@@ -5,7 +5,6 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
-import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
@@ -102,40 +101,24 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
     private fun ProtectedAccess.paySlots(): List<Int> =
         ITEM_SLOTS.filter { graves.isPaySlot(player, it) }
 
-    /**
-     * Takes the fee from the coins carried, else from the bank. Death: "Cash is always acceptable.
-     * Also, a gravestone can take it directly from your bank, in case you didn't have enough with
-     * you." (live capture, rev 240, 20260811T142735-59bcb26@2052). The bank message is from live
-     * capture, rev 241, 20261012T233700-df49f48@1037.
-     */
+    /** The bank message is from live capture, rev 241, 20261012T233700-df49f48@1037. */
     private fun ProtectedAccess.pay() {
         val fee = graves.fee(player)
         if (fee <= 0) {
             return
         }
-        // TODO: Death's Coffer pays first (https://oldschool.runescape.wiki/w/Death/Item_Recovery_Fees).
-        // UNVERIFIED: whether carried coins and the bank are combined when neither covers the fee
-        // alone (Death's wording suggests one or the other).
-        val source =
-            when {
-                inv.count(COINS) >= fee -> inv
-                bank.count(COINS) >= fee -> bank
-                else -> {
-                    // UNVERIFIED: the message when neither can cover the fee.
-                    mes("You don't have enough coins with you or in your bank to pay the fee.")
-                    return
-                }
+        when (payDeathFee(fee)) {
+            null -> {
+                // UNVERIFIED: the message when neither can cover the fee.
+                mes("You don't have enough coins with you or in your bank to pay the fee.")
+                return
             }
-        if (player.invDel(source, COINS, fee).failure) {
-            return
+            DeathFeeSource.Bank -> mes("Payment has been taken from your bank: ${"%,d".format(fee)} x Coins")
+            // UNVERIFIED: the message when carried coins pay (the bank one, reworded).
+            DeathFeeSource.Inventory ->
+                mes("Payment has been taken from your inventory: ${"%,d".format(fee)} x Coins")
         }
         player.feePaid = true
-        if (source === bank) {
-            mes("Payment has been taken from your bank: ${"%,d".format(fee)} x Coins")
-        } else {
-            // UNVERIFIED: the message when carried coins pay (the bank one, reworded).
-            mes("Payment has been taken from your inventory: ${"%,d".format(fee)} x Coins")
-        }
         sendFee()
     }
 
@@ -224,6 +207,5 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
         const val PAY_BUTTON = "component.gravestone_generic:paybutton"
         const val CLOSE_BUTTON = "component.gravestone_generic:close"
         const val TRANSMIT_DATA = "clientscript.[clientscript,gravestone_transmit_data]"
-        const val COINS = "obj.coins"
     }
 }
