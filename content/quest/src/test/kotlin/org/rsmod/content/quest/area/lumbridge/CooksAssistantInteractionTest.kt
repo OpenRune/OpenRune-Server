@@ -14,6 +14,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.bottomless.milk.MilkSources
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.obj.charges.ObjChargeManager
@@ -25,7 +26,6 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
-import org.rsmod.content.generic.npcs.cow.BottomlessMilkBucket
 import org.rsmod.content.quest.manager.QUEST_STAGE_MAP_ATTR
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
@@ -82,7 +82,7 @@ class CooksAssistantInteractionTest {
         f.player.inv[0] = bottomless(28)
         f.talk()
         f.finish()
-        assertEquals(27, ObjChargeManager().getCharges(f.player.inv[0], BottomlessMilkBucket.USES))
+        assertEquals(27, ObjChargeManager().getCharges(f.player.inv[0], MilkSources.USES))
         assertEquals(1, f.player.vars["varbit.cooks_assistant_milk"])
     }
 
@@ -93,13 +93,13 @@ class CooksAssistantInteractionTest {
         f.talk()
         f.finish()
         assertEquals(0, f.player.inv.count("obj.bucket_milk"))
-        assertEquals(28, ObjChargeManager().getCharges(f.player.inv[0], BottomlessMilkBucket.USES))
+        assertEquals(28, ObjChargeManager().getCharges(f.player.inv[0], MilkSources.USES))
     }
 
     private fun bottomless(uses: Int): InvObj {
         val inv = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.inv".asRSCM())), arrayOfNulls(28))
-        inv[0] = InvObj(BottomlessMilkBucket.EMPTY)
-        ObjChargeManager().addCharges(inv, 0, uses, BottomlessMilkBucket.USES, BottomlessMilkBucket.MAX_USES)
+        inv[0] = InvObj(MilkSources.BUCKET_EMPTY)
+        ObjChargeManager().addCharges(inv, 0, uses, MilkSources.USES, MilkSources.MAX_USES)
         return checkNotNull(inv[0])
     }
 
