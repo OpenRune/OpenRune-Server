@@ -15,4 +15,7 @@ public data class NpcDeathDropContext(
 
 public fun interface NpcDeathDropHook {
     public fun tryConsume(context: NpcDeathDropContext): Boolean
+
+    /** Whether this kill rolls no drop table at all (e.g. a quest kill that drops nothing). */
+    public fun suppressesDropTable(context: NpcDeathKillContext): Boolean = false
 }

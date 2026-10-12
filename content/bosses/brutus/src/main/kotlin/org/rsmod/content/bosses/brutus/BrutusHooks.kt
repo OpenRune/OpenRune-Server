@@ -63,7 +63,13 @@ class BrutusQuestDrops
 constructor(private val manager: InstanceManager, private val idesOfMilk: IdesOfMilkQuest) :
     NpcDeathDropHook {
     override fun tryConsume(context: NpcDeathDropContext): Boolean =
-        manager.inBrutusField(context.hero) && idesOfMilk.onQuest(context.hero)
+        questKill(context.hero)
+
+    override fun suppressesDropTable(context: NpcDeathKillContext): Boolean =
+        context.npc.isType(Brutus.BRUTUS) && questKill(context.hero)
+
+    private fun questKill(hero: Player): Boolean =
+        manager.inBrutusField(hero) && idesOfMilk.onQuest(hero)
 }
 
 /**
