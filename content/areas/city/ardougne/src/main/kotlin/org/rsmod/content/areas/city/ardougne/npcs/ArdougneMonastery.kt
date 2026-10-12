@@ -2,6 +2,7 @@ package org.rsmod.content.areas.city.ardougne.npcs
 
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -12,10 +13,14 @@ class ArdougneMonastery : PluginScript() {
         onOpNpc1("npc.brother_cedric") { startDialogue(it.npc) { brotherCedric() } }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Brother_Omad (before Monk's Friend)
-    // TODO(content): [quest:monks_friend] in-progress and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Brother_Omad
+    // TODO(content): [quest:monks_friend] in-progress dialogue
     // TODO(content): [system:treasure_trails] hard clue challenge scroll dialogue
     private suspend fun Dialogue.brotherOmad() {
+        if (QuestRequirements.hasCompleted(player, MONKS_FRIEND)) {
+            chatNpc(drunk, "Dum dee do la la! *hiccup* That was some party!")
+            return
+        }
         chatPlayer(quiz, "Hello there, What's wrong?")
         chatNpc(
             sad,
@@ -59,14 +64,26 @@ class ArdougneMonastery : PluginScript() {
         chatPlayer(sad, "I'm sorry to hear that! I hope you find his blanket.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Brother_Cedric (before Monk's Friend)
-    // TODO(content): [quest:monks_friend] in-progress and after-quest dialogue
+    // https://oldschool.runescape.wiki/w/Transcript:Brother_Cedric
+    // TODO(content): [quest:monks_friend] in-progress dialogue
     private suspend fun Dialogue.brotherCedric() {
+        if (QuestRequirements.hasCompleted(player, MONKS_FRIEND)) {
+            chatNpc(
+                drunk,
+                "Brother Omad sends you his thanks! He won't be in a fit state to thank you in " +
+                    "person.",
+            )
+            return
+        }
         chatPlayer(happy, "Hello.")
         chatNpc(drunk, "Honey, money, woman and wine!")
         chatPlayer(quiz, "Are you ok?")
         chatNpc(drunk, "Yesshh...hic up...beautiful!")
         chatPlayer(neutral, "Take care old monk.")
         chatNpc(drunk, "La..di..da..hic..up!")
+    }
+
+    private companion object {
+        const val MONKS_FRIEND = "quest_monksfriend"
     }
 }
