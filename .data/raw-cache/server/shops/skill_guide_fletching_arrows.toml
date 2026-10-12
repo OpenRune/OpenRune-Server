@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_fletching_arrows"
+name = "The Deeper Lode"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1400
+buyMultiplier = 550
+delta = 20
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.beer"
+count = 10
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.dwarven_stout"
+count = 1
+restockCycles = 200
+
+[[inventory.stock]]
+obj = "obj.dragon_bitter"
+count = 3
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.kebab"
+count = 2
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.beer_glass"
+count = 0
+restockCycles = 40
+
