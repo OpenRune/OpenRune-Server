@@ -74,14 +74,21 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
                 // UNVERIFIED: which milk an empty bucket takes when several are held.
                 else -> held.minOrNull()
             }
-        if (type == null || type !in held) {
+        if (used != null && bucketType != null && type != bucketType) {
             // live capture, rev 241
-            mes("You don't have any milk to fill your bottomless milk bucket with.")
+            mes(
+                "Your bottomless milk bucket already contains a different type of milk. You " +
+                    "cannot fill it with ${type(unnoted(used)).name.lowercase()}."
+            )
             return
         }
-        if (bucketType != null && type != bucketType) {
-            // https://oldschool.runescape.wiki/w/Transcript:Bottomless_milk_bucket
-            mes("You don't have any more of this type of milk to fill it with.")
+        if (type == null || type !in held) {
+            // live capture, rev 241
+            if (held.isNotEmpty()) {
+                mes("You don't have any more of this type of milk to fill it with.")
+            } else {
+                mes("You don't have any milk to fill your bottomless milk bucket with.")
+            }
             return
         }
         if (uses >= MAX_USES) {

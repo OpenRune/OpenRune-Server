@@ -237,6 +237,22 @@ class BottomlessMilkBucketTest {
     }
 
     @Test
+    fun `hangover cure and milky mixture fill as their own types`() {
+        val f = Fixture()
+        f.player.inv[0] = InvObj(EMPTY)
+        f.player.inv[1] = InvObj(HANGOVER_CURE)
+        f.run { with(f.script) { fill(0, HANGOVER_CURE) } }
+        f.finish(choices = listOf(YES))
+        assertEquals(MilkSources.typeOf(HANGOVER_CURE), MilkSources.typeIn(f.player.inv[0]))
+        f.player.inv[2] = InvObj(MILKY_MIXTURE)
+        f.run { with(f.script) { fill(0, MILKY_MIXTURE) } }
+        f.finish()
+        assertEquals(1, f.uses(0))
+        assertEquals(1, f.player.inv.count(MILKY_MIXTURE))
+        assertEquals(1, f.player.inv.count(BUCKET))
+    }
+
+    @Test
     fun `chocolatey milk in the bucket is no bucket of milk`() {
         val f = Fixture()
         f.player.inv[0] = MilkSources.withType(f.filled(5), checkNotNull(MilkSources.typeOf(CHOCOLATEY)))
@@ -360,6 +376,8 @@ class BottomlessMilkBucketTest {
         private const val BUCKET = "obj.bucket_empty"
         private const val BUCKET_NOTE = "obj.cert_bucket_empty"
         private const val CHOCOLATEY = "obj.chocolaty_milk"
+        private const val HANGOVER_CURE = "obj.hangover_cure"
+        private const val MILKY_MIXTURE = "obj.chickenquest_milky_mixture"
         private const val YES = 1
         private const val NO = 2
         private val restored = mutableListOf<() -> Unit>()
