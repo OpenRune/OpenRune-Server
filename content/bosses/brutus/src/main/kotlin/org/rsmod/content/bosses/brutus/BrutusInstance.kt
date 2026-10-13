@@ -15,11 +15,13 @@ import org.rsmod.api.instances.hook.InstanceEnterAction
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.hook.TeleportType
+import org.rsmod.api.player.music.MusicPlayer
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onEvent
+import org.rsmod.api.table.MusicRow
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -38,6 +40,7 @@ constructor(
     private val aiPlayerInteractions: AiPlayerInteractions,
     private val idesOfMilk: IdesOfMilkQuest,
     private val locRepo: LocRepository,
+    private val musicPlayer: MusicPlayer,
 ) : InstanceScript(registry) {
 
     private var Player.dontAskAgain by boolVarBit("varbit.cowboss_regular_dontaskagain")
@@ -183,6 +186,7 @@ constructor(
             return
         }
         player.soundSynth("synth.brutus_spawn")
+        musicPlayer.unlockAndPlay(player, MusicRow.getRow(BOSS_MOOSIC))
         npc.facePlayer(player)
         deps.worldQueues.add(ARRIVE_MOO_DELAY) { if (npc.isSlotAssigned) npc.say("Moo") }
         deps.worldQueues.add(ARRIVE_MOVE_DELAY) {
@@ -197,6 +201,9 @@ constructor(
 
     private companion object {
         private val BRUTUS_ID = Brutus.BRUTUS.asRSCM(RSCMType.NPC)
+
+        // Boss Moosic, started with every spawn and unlocked by the first (live capture, rev 241).
+        private const val BOSS_MOOSIC = 8662
 
         // live capture, rev 241
         private val SPAWN = CoordGrid(3261, 3287)
