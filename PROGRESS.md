@@ -8,7 +8,7 @@ Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
 ## Delivery status
 
-`██████████████░░░░░░` **10/14 recorded delivery packages accepted (71%)**.
+`████████████████░░░░` **11/14 recorded delivery packages accepted (79%)**.
 
 This bar counts the dated Complete/Started/Parked packages below equally.
 Older accepted baseline content is listed separately. It is not a percentage
@@ -24,18 +24,20 @@ each view, not presented as an additional implemented feature.
 | 🟢 Accepted | Revenant Caves: access, combat, ether, artefacts, Maledictus; Edgeville home catalogue and Emblem trader | PR #36 is already merged. Its merge tree exactly matches the tested branch; subsequent trader changes are also on main. |
 | 🟢 Accepted | Prayer unlocks, free spellbook travel, teleport scroll/animation fixes, gorilla hole/rope and combat corrections | CoX/Royal Titans scroll-drop sources remain future encounter work. |
 | 🟢 Accepted | Pet gallery/categories, examine/prices/chat news, collection log rewards, Mokhaiotl waystone, max-gear command updates | Preserve the individually agreed/accepted scope in the details below. |
-| 🟡 Test package | Completionist purchase/fusion/perks/ammunition/repair/persistence; v0.17 Dizana inventory colours, native max-hood head, software depth reset, outward quiver and original-shape inventory icon | Owner confirmation of reported hood/head and OG map glitches, both genders, movement, Fire/Infernal and software/HD visual acceptance; feature is local and not installed/merged. |
-| 🟡 Test package | Normal/Corrupted Gauntlet preparation, owned rooms/timer, Hunllef, native recipes, escrow and chest/log/completion handling | Owner checks of complete runs, native interfaces, floor/tornado/animation timing; scoreboard/time records and exact probability parity remain open. Local; not merged or installed. |
+| 🟡 Merged milestone | Completionist purchase/fusion/perks/ammunition/repair/persistence; v0.17 Dizana inventory colours, native max-hood head, software depth reset, outward quiver and original-shape inventory icon | Owner confirmation of reported hood/head and OG map glitches, both genders, movement, Fire/Infernal and software/HD visual acceptance; PR #38 is merged; remaining native coverage is still recorded, and the runtime is not installed. |
+| 🟡 Test package | Normal/Corrupted Gauntlet preparation, owned rooms/timer, Hunllef, native recipes, escrow and chest/log/completion handling | Owner checks of complete runs, native interfaces, floor/tornado/animation timing; scoreboard/time records and exact probability parity remain open. PR #38 is merged; the continuing Gauntlet work is not installed. |
 | 🟡 Local implementation | Shortcuts, containers, fairy rings and Spider Cave access | Remaining consumers/dependencies, Forestry events, final native route/UI/death acceptance and combined cape/quiver integration. |
 | 🟡 Parked | Treasure Trails: accepted 60/60 skill-task checkpoint and existing trail flow | Full step/puzzle/catalogue/loot parity and Mimic remain unfinished. |
 | 🟡 Partial | NPC animations: 97.15% technical attack/block/death coverage | 341 action slots across 149 types, secondary styles, specials/phases and native visual checks. |
 | 🟡 Follow-ups | Existing interfaces and native boss-item recipes | Remaining visual/interaction acceptance and persistence warning follow-up are detailed below. |
 | 🔴 Future scope | 51 Not-started roadmap entries | Bosses, activities and systems are enumerated in the backlog; module/model presence does not mark them playable. |
 
-## 🟡 Started: Nero completionist cape, customiser and particles
+## 🟢 Accepted milestone: Nero completionist cape, customiser and particles
 
-Updated locally to **v0.17 Dizana inventory colours**, retaining the v0.16
-native head and folded shape, on `feature/gauntlet-integration`. The owner's `20261012-2130-23.7606384.mp4`
+The owner approved the **v0.17 Dizana inventory-colour milestone** on 2026-10-13.
+[PR #38](https://github.com/EvolvedMind/OpenRune-Server/pull/38) merged as
+`2ddc3f492`; its tree exactly matches the approved head `65e4bad26` and tested
+checkpoint `15033b587`. The native head and folded shape remain. The owner's `20261012-2130-23.7606384.mp4`
 shows improved hood cloth but rejects the remaining face/jaw. The RS2 head
 is replaced by the exact revision-240 max-hood head: native geometry, winding,
 bone labels and skin recolour base. All 32 hoods keep 427 authored cloth
@@ -67,12 +69,12 @@ preserved native definitions**, including the Gauntlet cache additions. Gameplay
 Test entry: `outputs/gauntlet-cape-v017-dizana-colours-20261013/TESTEN.cmd`.
 The package uses its own client profile/server/database. Accepted live
 JAR/cache/RSA/playerdata, fourteen accepted checkout source hashes and older
-packages are preserved. **Owner confirmation of the remaining head/face,
-Dizana icon, camera/map, actual idle/walk/emote and HD is pending**.
+packages are preserved. The owner approved the current cape milestone.
+Broader actual idle/walk/emote, both-gender and HD coverage remain follow-up checks.
 Offline checks are not in-game animation or HD shader acceptance.
 Exact RS2 particle simulation/material parity, unrelated fresh-cache CS2 failures
-and future eligibility rules remain open. Cape code is local, not pushed, merged
-or installed. [Implementation and evidence](docs/custom/nero-completionist.md).
+and future eligibility rules remain open. Cape code is merged; no live
+installation was performed. [Implementation and evidence](docs/custom/nero-completionist.md).
 
 ## 🟡 Started: The Gauntlet and Corrupted Gauntlet
 
@@ -82,7 +84,7 @@ Reviewed and ported the scoped Gauntlet implementation from upstream
 instances, inventory transactions, deaths, Collection Log and home catalogue.
 Unrelated changes in the upstream PR are excluded.
 
-Implemented locally on `feature/gauntlet-integration`: both modes, 7x7 rooms,
+The tested baseline is merged via PR #38. Continuing on `feature/gauntlet-records`: both modes, 7x7 rooms,
 resources/recipes/cooking/Egniol, preparation timer, Hunllef attack/prayer cycles,
 stomp, prayer disable, tornadoes and floor stages. Gear escrow and pending chest
 state are permanent. Failed-run loot uses real Hunllef damage; the sixth
@@ -102,13 +104,51 @@ Commands: `::testgauntlet`, `::gauntletkit`, `::gauntletkithm`,
 **Owner acceptance is pending** for complete preparation-to-reward runs, native
 maps/interfaces, attacks, floor/tornado timing and interruption recovery in the
 actual client. Personal scoreboard/time records, exact probability parity and
-global Combat Achievements are not completed. The implementation is local,
-not pushed/merged/installed. [Scope, deliberate policies and test routes](docs/custom/gauntlet.md).
+global Combat Achievements are not completed. The baseline is merged; the
+records/scoreboard continuation is in progress. No live installation is performed. [Scope, deliberate policies and test routes](docs/custom/gauntlet.md).
 
 ## 🟡 Started: world shortcuts, containers and fairy rings
 
-Resumed on **2026-10-12** at the owner's request, retaining Forestry checkpoint
-`84b002717` on `feature/shortcuts-containers-fairy-rings`. Scope remains all
+Published branch: **[feature/shortcuts-containers-fairy-rings](https://github.com/EvolvedMind/OpenRune-Server/tree/feature/shortcuts-containers-fairy-rings)**, checkpoint `0bb3fbfa0`.
+
+`█████████████░░░░░░░` **5/8 verification milestones reached (63%)**.
+This counts the checklist below equally; it is not a percentage of every OSRS
+shortcut/container or a time estimate. Native client acceptance is still open.
+
+- [x] Spider Cave entrance/exit mechanics and 29 Araxxor tests.
+- [x] All 525 configured shortcut links exercised through their real input producer.
+- [x] Native fairy-ring dials/favourites/Last-destination and 54 fixed routes.
+- [x] Container storage, persistence and bank/death lifecycle foundations.
+- [x] Current consumer checkpoint: 309 tests, including 31 Forestry input tests.
+- [ ] Remaining consumers: DIQ house ownership, seven potion effects, nest/species
+  effects, Forestry events and activity-owned acquisition/pickup routes.
+- [ ] Reconcile the world branch with merged cape/quiver and Gauntlet consumers.
+- [ ] Guarded combined runtime package and native route/UI/animation/death acceptance.
+
+| Area | Implemented and checked | Still open |
+|---|---|---|
+| Agility shortcuts | 525 links; actual traversal input, landings, grapple/equipment, Observatory setup, cancellation; 26 tests | Detailed animation/failure review and native client route acceptance |
+| Fairy rings | 64 code rows, 54 fixed destinations, native controls/favourites, permission and quest/visit gates; 18 tests | DIQ Construction-owned house prerequisite and client visuals |
+| Containers / Forestry | Native storage/bank/death, 112 potion-storage families, recipes, ammo, kit/basket harvest and ordinary nest Search | Remaining consumers listed above, joint cape/quiver integration and native UI/death acceptance |
+
+Resumed on **2026-10-12** and published on **2026-10-13**, retaining Forestry
+checkpoint `0bb3fbfa0`.
+
+Published branch: [feature/shortcuts-containers-fairy-rings](https://github.com/EvolvedMind/OpenRune-Server/tree/feature/shortcuts-containers-fairy-rings); tested source checkpoint `0bb3fbfa0`.
+
+`█████████████░░░░░░░` **5/8 recorded implementation checkpoints verified (63%)**.
+This counts the eight checks below equally; it is not a percentage of all OSRS
+content, remaining engineering time, or native client acceptance.
+
+- [x] Spider Cave Enter/Exit producers, routing and cancellation.
+- [x] All 525 configured shortcut links exercised through owned option producers.
+- [x] Fairy-ring dials, favourites, Last-destination and 54 fixed destinations.
+- [x] Core container storage, persistence, bank and death routes.
+- [x] Connected skill/pickup consumers through the 309-test Forestry/container checkpoint.
+- [ ] Remaining consumers: DIQ Construction ownership, seven potion effects,
+      Twitcher's/clue nests, other Forestry species/sound/events and activity dependencies.
+- [ ] Reconcile shared cape/quiver integrations with the now-merged cape/Gauntlet code.
+- [ ] Guarded combined runtime package and native route/animation/UI/death acceptance. Scope remains all
 revision-240 shortcuts, all 39 Wiki container categories, fairy rings and
 surface Spider Cave access. Existing upstream review and accepted combat remain.
 
@@ -132,8 +172,8 @@ Next: remaining specialist/potion consumers, Twitcher's and clue-nest effects,
 then final route/animation, native interface/death acceptance and a guarded
 world-content runtime package. Forestry events, Barbarian Assault and
 Construction ownership dependencies remain open. Cape/world integration must
-reconcile shared quiver UI/perks before combined rollout. This world-content
-branch is committed locally; it is not merged or installed.
+reconcile shared quiver UI/perks before combined rollout. The linked world-content
+branch is now published on GitHub; it is not merged or installed.
 
 ## 🟢 Complete: Edgeville home teleporter and Emblem trader
 
