@@ -1,12 +1,15 @@
 package org.rsmod.content.areas.city.lumbridge.npcs
 
+import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerLogin
+import org.rsmod.content.interfaces.journal.tab.openAdventurePaths
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.menu
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -17,7 +20,7 @@ private var Player.adventurePaths by intVarBit("varbit.adventurepath_player_part
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 /** The Doomsayer, Count Check, Nigel and Adventurer Jon, all north of Lumbridge Castle. */
-class LumbridgeAdvisors : PluginScript() {
+class LumbridgeAdvisors @Inject constructor(private val eventBus: EventBus) : PluginScript() {
     override fun ScriptContext.startup() {
         // Adventurer Jon is only visible to players the varbit marks as taking part.
         onPlayerLogin {
@@ -422,7 +425,7 @@ class LumbridgeAdvisors : PluginScript() {
     }
 
     // https://oldschool.runescape.wiki/w/Transcript:Adventurer_Jon
-    // TODO(content): [system:adventure_paths] starter kits, task rewards and the paths interface
+    // TODO(content): [system:adventure_paths] starter kits and task rewards
     private suspend fun Dialogue.adventurerJon() {
         if (player.adventurePaths == ADVENTURE_PATHS_OPTED_OUT) {
             chatNpc(neutral, "You are currently not participating in Adventure Paths. Would you like to join back in?")
@@ -488,6 +491,8 @@ class LumbridgeAdvisors : PluginScript() {
                 4 -> {
                     chatPlayer(quiz, "Can you show me some Adventure Paths?")
                     chatNpc(happy, "Of course, here you go.")
+                    // UNVERIFIED: opens like his "Open Adventure Paths" op (no capture of this branch)
+                    player.openAdventurePaths(eventBus, view = null)
                     return
                 }
                 else -> {
