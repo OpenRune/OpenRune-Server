@@ -143,7 +143,8 @@ constructor(
             random.of(-ARRIVAL_RADIUS, ARRIVAL_RADIUS),
         )
 
-    // UNVERIFIED: which cow answers and how far away it can be (the capture's were within 3 tiles).
+    // Any cow within 3 tiles, not the nearest, and none when no cow is that close (live capture,
+    // rev 241, 20261012T222638-df49f48@246-2981 and 20261012T200152-df49f48@196-958: 61 arrivals).
     private fun ProtectedAccess.mooAtArrival() {
         val cow =
             npcRepo.findAll(ZoneKey.from(player.coords), zoneRadius = 1).filter {
