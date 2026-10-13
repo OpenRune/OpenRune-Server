@@ -372,7 +372,8 @@ constructor(
         // https://oldschool.runescape.wiki/w/Grave: unstackables "cannot be stockpiled up to 56".
         const val MAX_UNSTACKABLE = 28
 
-        // UNVERIFIED: how live rounds 10 seconds (16.7 ticks).
+        // live capture, rev 241, 20261013T215044-234ad72: paused 17 ticks after a click (@808-825)
+        // but still counting 17 after a key press (@1501-1518). UNVERIFIED: 16 or 17.
         const val IDLE_CYCLES = 16
         private const val SUPPLY_DURATION = 6000
     }

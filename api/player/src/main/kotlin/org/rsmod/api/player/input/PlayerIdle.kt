@@ -4,8 +4,9 @@ import org.rsmod.api.attr.AttributeKey
 import org.rsmod.game.entity.Player
 
 /**
- * When the player last moved the mouse, clicked, scrolled or typed, in map clock cycles; unset
- * until the first input after login.
+ * When the player last clicked, scrolled or typed, in map clock cycles; unset until the first input
+ * after login. Moving the mouse doesn't count: live's grave timer stopped 17 ticks after a click
+ * while the mouse kept moving (live capture, rev 241, 20261013T215044-234ad72@808-825).
  */
 private val LAST_INPUT_CYCLE: AttributeKey<Int> = AttributeKey(temp = true)
 

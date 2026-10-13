@@ -12,9 +12,7 @@ import net.rsprot.protocol.game.incoming.buttons.IfSubOp
 import net.rsprot.protocol.game.incoming.events.EventKeyboard
 import net.rsprot.protocol.game.incoming.events.EventMouseClickV1
 import net.rsprot.protocol.game.incoming.events.EventMouseClickV2
-import net.rsprot.protocol.game.incoming.events.EventMouseMove
 import net.rsprot.protocol.game.incoming.events.EventMouseScroll
-import net.rsprot.protocol.game.incoming.events.EventNativeMouseMove
 import net.rsprot.protocol.game.incoming.locs.OpLoc6
 import net.rsprot.protocol.game.incoming.locs.OpLocT
 import net.rsprot.protocol.game.incoming.locs.OpLocV2
@@ -165,8 +163,6 @@ constructor(
         builder.addListener(IfButtonT::class.java, ifButtonT)
         builder.addListener(MapBuildComplete::class.java, mapBuildComplete)
         builder.addListener(IfScriptTrigger::class.java, scriptTriggerHandler)
-        builder.addListener(EventMouseMove::class.java, InputEventHandler())
-        builder.addListener(EventNativeMouseMove::class.java, InputEventHandler())
         builder.addListener(EventMouseClickV1::class.java, InputEventHandler())
         builder.addListener(EventMouseClickV2::class.java, InputEventHandler())
         builder.addListener(EventMouseScroll::class.java, InputEventHandler())
