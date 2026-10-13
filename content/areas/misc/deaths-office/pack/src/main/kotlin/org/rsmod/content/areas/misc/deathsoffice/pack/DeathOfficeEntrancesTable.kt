@@ -25,7 +25,7 @@ object DeathOfficeEntrancesTable {
             }
         }
 
-        // live capture, rev 241, 20261013T013733-df49f48@140 and @282.
+        // live capture, rev 241.
         entrance(
             "dbrow.death_office_entrance_lumbridge",
             "loc.death_office_access_grave",

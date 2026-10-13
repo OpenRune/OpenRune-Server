@@ -41,7 +41,7 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
         }
         onPlayerLogin {
             if (player.graveCoords != null) {
-                // live capture, rev 241, 20261013T184259-df49f48@0.
+                // live capture, rev 241.
                 // UNVERIFIED: whether items in Death's Office alone also warn, and which setting
                 // turns it off.
                 // TODO: Live sends it after the welcome and "Did you know?" messages, which the
@@ -57,7 +57,7 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
         onPlayerSoftTimer(TIMER) { graves.tick(player) }
         onIfClose(INTERFACE) {
             player.stopInvTransmit(player.grave)
-            // live capture, rev 241, 20261012T233700-df49f48@1042.
+            // live capture, rev 241.
             player.runClientScript(TRANSMIT_DATA.asRSCM(RSCMType.CLIENTSCRIPT), -1, -1)
         }
         for (button in TIMER_BUTTONS) {
@@ -84,7 +84,7 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
     private fun ProtectedAccess.owns(npc: Npc): Boolean =
         player.graveNpc == npc.uid
 
-    /** Live capture, rev 241, 20261012T233700-df49f48@1030. */
+    /** Live capture, rev 241. */
     private fun ProtectedAccess.openGrave() {
         graves.sendFeeThresholds(player)
         invTransmit(player.grave)
@@ -147,9 +147,9 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
      * Moves the objs in [slots] out of the grave, equipable ones first ("equipable items are now
      * prioritised", https://oldschool.runescape.wiki/w/Grave, 14 February 2019), each back in the
      * inventory slot it held before the death when that slot is free. With "Auto-equip worn items
-     * from gravestone" on, whatever was worn goes back on (live capture, rev 241,
-     * 20261012T233700-df49f48@1038-1042, which also re-equipped the kept items), first so the kept
-     * items free the inventory slots the grave's objs came from.
+     * from gravestone" on, whatever was worn goes back on (live capture, rev 241, which also
+     * re-equipped the kept items), first so the kept items free the inventory slots the grave's
+     * objs came from.
      */
     private fun ProtectedAccess.take(slots: List<Int>) {
         val grave = player.grave
@@ -171,7 +171,7 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
             mes("You don't have enough inventory space.")
         }
         if (grave.isEmpty()) {
-            // live capture, rev 241, 20261012T233700-df49f48@1042.
+            // live capture, rev 241.
             mes("You successfully retrieved everything from your gravestone.")
             graves.close(player)
             graves.remove(player)
@@ -219,7 +219,7 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
     }
 
     /**
-     * The grave timer on the HUD (live capture, rev 241, 20261013T215044-234ad72@1576): the time
+     * The grave timer on the HUD (live capture, rev 241): the time
      * left is the ticks left in whole seconds.
      */
     private fun ProtectedAccess.timerInfo() {

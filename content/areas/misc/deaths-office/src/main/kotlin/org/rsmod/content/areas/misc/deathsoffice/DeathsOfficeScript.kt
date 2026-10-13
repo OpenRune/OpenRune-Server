@@ -61,7 +61,7 @@ constructor(
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(DEATH) { talk(it.npc) }
-        // live capture, rev 241, 20261013T013733-df49f48@384: Collect opens the retrieval
+        // live capture, rev 241: Collect opens the retrieval
         // interface, even with nothing stored.
         onOpNpc3(DEATH) { collect(it.npc) }
         onPlayerQueue(DeathTutorial.QUEUE) { tutorialIntroduction() }
@@ -77,7 +77,7 @@ constructor(
         onIfModalButton(ITEMS) { selectOrExamine(it) }
         onIfModalButton(TAKE_1) { takeSelected(1) }
         onIfModalButton(TAKE_5) { takeSelected(5) }
-        // live capture, rev 241, 20261013T184317-df49f48@89.
+        // live capture, rev 241.
         onIfModalButton(TAKE_X) { takeSelected(countDialog("How many would you like to take?")) }
         onIfModalButton(TAKE_ALL) { takeSelected(Int.MAX_VALUE) }
         onIfModalButton(TAKE_EVERYTHING) { takeEverything() }
@@ -92,7 +92,7 @@ constructor(
         startDialogue(npc) { death() }
     }
 
-    /** Live capture, rev 240, 20260811T142735-59bcb26@2121, during the first-death tutorial. */
+    /** Live capture, rev 240, during the first-death tutorial. */
     private suspend fun ProtectedAccess.collect(npc: Npc) {
         if (player.inDeathTutorial) {
             startDialogue(npc) { chatNpc(bored, "Perhaps we should just talk instead.") }
@@ -107,10 +107,9 @@ constructor(
     }
 
     /**
-     * Live capture, rev 241, 20261013T184259-df49f48@0-2 and, during the first-death tutorial,
-     * 20261013T214438-234ad72@0-20: logging in inside the office rebuilds a new copy, and Death
-     * speaks two ticks later. UNVERIFIED: live moves the player on the login tick; this waits a
-     * tick, as the client has no map to rebuild from until then.
+     * Live capture, rev 241, also during the first-death tutorial: logging in inside the office
+     * rebuilds a new copy, and Death speaks two ticks later. UNVERIFIED: live moves the player on
+     * the login tick; this waits a tick, as the client has no map to rebuild from until then.
      */
     private suspend fun ProtectedAccess.returnToOffice() {
         if (!offices.enter(player, CoordGrid(player.officeCoord))) {
@@ -132,7 +131,7 @@ constructor(
     }
 
     /**
-     * Live capture, rev 241, 20261013T184317-df49f48@161-177: dropping something in the office asks
+     * Live capture, rev 241: dropping something in the office asks
      * first; once the player puts something down, later drops in that visit don't.
      */
     private fun warnBeforeDrop(player: Player, slot: Int) {
@@ -152,12 +151,12 @@ constructor(
     }
 
     /**
-     * Live capture, rev 241, 20261013T013733-df49f48@166-171: the portal overlay, the teleport two
+     * Live capture, rev 241: the portal overlay, the teleport two
      * ticks later, the overlay closing a tick after that, and Death's greeting two ticks later.
      */
     private suspend fun ProtectedAccess.enter(row: DeathOfficeEntrancesRow) {
-        // Walking in doesn't count as meeting Death (live capture, rev 241,
-        // 20261013T203937-df49f48@84: a new account's `steam_visited_death` stays 0).
+        // Walking in doesn't count as meeting Death (live capture, rev 241: a new account's
+        // `steam_visited_death` stays 0).
         player.officeEntrance = row.rowId
         ifOpenFullOverlay(PORTAL_OVERLAY)
         delay(2)
@@ -171,10 +170,10 @@ constructor(
         greet()
     }
 
-    /** Live capture, rev 241, 20261013T013733-df49f48@158-164 and @276-283 (from Ferox Enclave). */
+    /** Live capture, rev 241 (from Ferox Enclave). */
     private suspend fun ProtectedAccess.leave() {
         if (player.inDeathTutorial) {
-            // live capture, rev 241, 20261013T215044-234ad72@811-814: after the tutorial the portal
+            // live capture, rev 241: after the tutorial the portal
             // leads to the respawn point, and the grave's timer starts on the teleport's tick.
             val respawn = mapFindSquareLineOfWalk(RESPAWN, minRadius = 0, maxRadius = 2) ?: RESPAWN
             portal(respawn) { player.inDeathTutorial = false }
@@ -214,14 +213,13 @@ constructor(
             graveGreeting()
             return
         }
-        // live capture, rev 241, 20261013T013733-df49f48@43.
+        // live capture, rev 241.
         chatNpc(bored, "Hello mortal. Have you come to retrieve something you lost when you died?")
         mainOptions()
     }
 
     /**
-     * Live capture, rev 240, 20260811T152500-59bcb26@11-24 and rev 241,
-     * 20261013T184317-df49f48@15-35.
+     * Live capture, rev 240 and rev 241.
      */
     private suspend fun Dialogue.graveGreeting() {
         chatNpc(
@@ -243,7 +241,7 @@ constructor(
         }
         chatPlayer(quiz, "Can I collect the items from that gravestone now?")
         // Since 10 April 2024 Death states the cost (https://oldschool.runescape.wiki/w/Death).
-        // live capture, rev 241, 20261013T184317-df49f48@21: the office's fee for everything.
+        // live capture, rev 241: the office's fee for everything.
         val fee = officeFee(player.grave.filterNotNull { true })
         val cost =
             if (fee == 0L) {
@@ -274,7 +272,7 @@ constructor(
         access.openOffice()
     }
 
-    /** Live capture, rev 241, 20261013T013733-df49f48@45-103. */
+    /** Live capture, rev 241. */
     private suspend fun Dialogue.mainOptions() {
         when (
             choice4(
@@ -367,7 +365,7 @@ constructor(
         mainOptions()
     }
 
-    /** Live capture, rev 241, 20261013T013733-df49f48@54-55. */
+    /** Live capture, rev 241. */
     private suspend fun Dialogue.anythingForMe() {
         chatPlayer(happy, "Yes, have you got anything for me?")
         access.openOffice()
@@ -393,7 +391,7 @@ constructor(
         }
     }
 
-    /** Live capture, rev 241, 20261013T013733-df49f48@100-103. */
+    /** Live capture, rev 241. */
     private suspend fun Dialogue.changeDeath() {
         chatNpc(neutral, "Er... I suppose so.")
         chatNpc(quiz, "How would you like to... die?")
@@ -409,8 +407,8 @@ constructor(
     }
 
     /**
-     * Live capture, rev 241, 20261013T013733-df49f48@71-84 (without the coins) and @396-414
-     * (buying the angel, 200,000 coins from the inventory).
+     * Live capture, rev 241, without the coins and buying the angel with 200,000 coins from the
+     * inventory.
      */
     private suspend fun Dialogue.chooseGravestone() {
         chatPlayer(quiz, "Can I choose a different-looking gravestone?")
@@ -440,8 +438,8 @@ constructor(
             return
         }
         // "I can take coins from your inventory, or from my Coffer." UNVERIFIED: which goes first
-        // when both could pay (live capture, rev 241, 20261013T013733-df49f48@410 took the
-        // inventory's with 13,351 in the coffer).
+        // when both could pay (a live capture, rev 241, took the inventory's with 13,351 in the
+        // coffer).
         val fromInv = access.inv.count(COINS) >= ANGEL_PRICE
         if (!fromInv && player.deathCoffer < ANGEL_PRICE) {
             chatNpc(
@@ -494,7 +492,7 @@ constructor(
     }
 
     /**
-     * The `graphical_multi` chatbox (live capture, rev 241, 20261013T013733-df49f48@397): the
+     * The `graphical_multi` chatbox (live capture, rev 241): the
      * Coffer's balance as the title, then the basic and angel gravestones. True picks the angel.
      */
     private suspend fun ProtectedAccess.gravestoneChoice(coffer: Int): Boolean {
@@ -508,7 +506,7 @@ constructor(
         return input.isComponentType(MULTI_B)
     }
 
-    /** Live capture, rev 241, 20261013T013733-df49f48@55 and rev 240, 20260811T152500-59bcb26@24. */
+    /** Live capture, rev 241 and rev 240. */
     private fun ProtectedAccess.openOffice() {
         player.selectedSlot = -1
         player.cofferShown = player.deathCoffer
@@ -518,7 +516,7 @@ constructor(
     }
 
     /**
-     * Live capture, rev 240, 20260811T152500-59bcb26@28: Select on a free stack took all of it at
+     * Live capture, rev 240: Select on a free stack took all of it at
      * once. A paid obj is selected instead, so the client shows its fee (`death_office_redraw`
      * reads the slot from `if2` and the fee each from `if3`) for the quantity buttons.
      */
@@ -542,7 +540,7 @@ constructor(
     }
 
     /**
-     * Live capture, rev 241, 20261013T184317-df49f48@76-126: 1, 5, X and All take that many of the
+     * Live capture, rev 241: 1, 5, X and All take that many of the
      * selected obj at once and charge for them, with no confirmation.
      */
     private fun ProtectedAccess.takeSelected(count: Int) {
@@ -552,10 +550,9 @@ constructor(
     }
 
     /**
-     * Live capture, rev 241, 20261013T184317-df49f48@54-209 (rev 240, 20260811T152500-59bcb26@34
-     * for the empty office): Take-All closes the office and asks to pay the fee for every paid obj
-     * stored. Paying takes what fits, in slot order, charges only for the paid objs taken and
-     * reopens the office; Cancel leaves it closed.
+     * Live capture, rev 241 (rev 240 for the empty office): Take-All closes the office and asks to
+     * pay the fee for every paid obj stored. Paying takes what fits, in slot order, charges only
+     * for the paid objs taken and reopens the office; Cancel leaves it closed.
      */
     private suspend fun ProtectedAccess.takeEverything() {
         val office = player.deathOffice
@@ -589,7 +586,7 @@ constructor(
         openOffice()
     }
 
-    /** The slots and counts Take-All moves: each stored obj in turn, as far as the inventory fits. */
+    /** The slots and counts Take-All moves: each stored obj in turn, as far as the inv fits. */
     private fun ProtectedAccess.planTakeAll(): List<Pair<Int, Int>> {
         val office = player.deathOffice
         var free = inv.freeSpace()
@@ -664,8 +661,7 @@ constructor(
     }
 
     /**
-     * Unlike a grave's ("x Coins"), the office's message ends in "coins" (live capture, rev 241,
-     * 20261013T184317-df49f48@76).
+     * Unlike a grave's ("x Coins"), the office's message ends in "coins" (live capture, rev 241).
      */
     private fun officeFeeMessage(source: DeathFeeSource, fee: Int): String {
         val amount = "%,d".format(fee)
@@ -720,17 +716,18 @@ constructor(
         const val ANGEL_PRICE = 200_000
         const val COINS = "obj.coins"
 
-        // live capture, rev 241, 20261013T013733-df49f48@40 and @244.
+        // live capture, rev 241.
         val ARRIVAL = CoordGrid(3171, 5726)
 
         const val RETURN_QUEUE = "queue.death_office_return"
         const val DROP_QUEUE = "queue.death_office_drop"
 
-        // live capture, rev 241, 20261013T013733-df49f48@140.
+        // live capture, rev 241.
         val LUMBRIDGE_EXIT = CoordGrid(3238, 3194)
 
         // The default respawn point (api/death PlayerDeath), as no respawn points can be chosen.
-        // TODO: The player's chosen respawn point (https://oldschool.runescape.wiki/w/Respawn_point).
+        // TODO: The player's chosen respawn point
+        // (https://oldschool.runescape.wiki/w/Respawn_point).
         val RESPAWN = CoordGrid(0, 50, 50, 21, 18)
     }
 }

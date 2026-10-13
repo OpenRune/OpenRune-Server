@@ -31,7 +31,7 @@ private var Player.creditEach by intVarp("varp.if4")
  * Death's Coffer (https://oldschool.runescape.wiki/w/Death%27s_Coffer): items sacrificed here are
  * credited at 105% of their price to [deathCoffer], which pays death fees. The client's
  * `script3483` draws the selection from `if2` (inventory slot), `if3` (quantity) and `if4` (credit
- * per item); live capture, rev 241, 20261013T013733-df49f48@111-365.
+ * per item); live capture, rev 241.
  */
 class DeathsCofferScript @Inject constructor(private val marketPrices: MarketPrices) :
     PluginScript() {
@@ -80,7 +80,7 @@ class DeathsCofferScript @Inject constructor(private val marketPrices: MarketPri
         ifSetObj(DISPLAY, getInvObj(obj).internalName, DISPLAY_ZOOM)
     }
 
-    /** Live capture, rev 241, 20261013T013733-df49f48@114: nothing happens with no selection. */
+    /** Live capture, rev 241: nothing happens with no selection. */
     private fun ProtectedAccess.setCount(count: Int) {
         if (player.selectedSlot < 0) {
             return
@@ -88,7 +88,7 @@ class DeathsCofferScript @Inject constructor(private val marketPrices: MarketPri
         player.selectedCount = count
     }
 
-    /** Live capture, rev 241, 20261013T013733-df49f48@261-264. */
+    /** Live capture, rev 241. */
     private suspend fun ProtectedAccess.countX() {
         if (player.selectedSlot < 0) {
             return
@@ -98,7 +98,7 @@ class DeathsCofferScript @Inject constructor(private val marketPrices: MarketPri
     }
 
     /**
-     * Live capture, rev 241, 20261013T013733-df49f48@360: the credit goes into the coffer, the
+     * Live capture, rev 241: the credit goes into the coffer, the
      * selection clears and the portal plays its shrink animation, then its loop three ticks later.
      */
     private suspend fun ProtectedAccess.confirm() {
@@ -116,7 +116,7 @@ class DeathsCofferScript @Inject constructor(private val marketPrices: MarketPri
         val each = credit(type)
         player.creditEach = each
         if (each < MIN_CREDIT) {
-            // live capture, rev 241, 20261013T013733-df49f48@266.
+            // live capture, rev 241.
             mes(
                 "Death will not accept items worth less than 10,000 coins per " +
                     "<col=ef1020>individual item</col>."
@@ -145,11 +145,12 @@ class DeathsCofferScript @Inject constructor(private val marketPrices: MarketPri
     }
 
     /**
-     * Tradeable objs, but not Old school bonds (https://oldschool.runescape.wiki/w/Death%27s_Coffer).
+     * Tradeable objs, but not Old school bonds
+     * (https://oldschool.runescape.wiki/w/Death%27s_Coffer).
      */
     // UNVERIFIED: the wiki also refuses tradeables off the Grand Exchange, but the cache's
     // stockmarket flag is false for an amulet of glory(2), which live accepted (live capture, rev
-    // 241, 20261013T013733-df49f48@360), so it isn't used here.
+    // 241), so it isn't used here.
     // TODO: The wiki also refuses Leagues and Grid Master rewards, a few named weapons and newly
     // released objs.
     private fun isAccepted(obj: ItemServerType): Boolean {
@@ -158,7 +159,7 @@ class DeathsCofferScript @Inject constructor(private val marketPrices: MarketPri
     }
 
     /**
-     * 105% of the obj's price, rounded down (live capture, rev 241, 20261013T013733-df49f48@358:
+     * 105% of the obj's price, rounded down (live capture, rev 241:
      * an amulet of glory(2) credited 13,351), capped at 2,100,000,000 per obj
      * (https://oldschool.runescape.wiki/w/Death%27s_Coffer).
      */

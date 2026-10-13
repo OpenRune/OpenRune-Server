@@ -23,7 +23,7 @@ enum class DeathFeeSource {
  * "The fee is deducted from Death's Coffer, if available, or else from the bank"
  * (https://oldschool.runescape.wiki/w/Death/Item_Recovery_Fees), and Death: "Cash is always
  * acceptable. Also, a gravestone can take it directly from your bank, in case you didn't have
- * enough with you." (live capture, rev 240, 20260811T142735-59bcb26@2052).
+ * enough with you." (live capture, rev 240).
  */
 fun ProtectedAccess.payDeathFee(fee: Int): DeathFeeSource? {
     // UNVERIFIED: whether the coffer, carried coins and the bank are combined when none covers the
@@ -42,8 +42,7 @@ fun ProtectedAccess.payDeathFee(fee: Int): DeathFeeSource? {
 }
 
 /**
- * The message for a fee taken from [source]. The bank one is from live capture, rev 241,
- * 20261012T233700-df49f48@1037.
+ * The message for a fee taken from [source]. The bank one is from live capture, rev 241.
  */
 fun deathFeeMessage(source: DeathFeeSource, fee: Int): String {
     val amount = "%,d".format(fee)

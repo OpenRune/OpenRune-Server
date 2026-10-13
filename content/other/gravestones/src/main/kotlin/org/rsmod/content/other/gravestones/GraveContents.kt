@@ -5,9 +5,9 @@ import org.rsmod.game.inv.Inventory
 
 /**
  * Adds [items] to [grave] and sorts it by value, most valuable first, the order the client's fee
- * bands expect. The grave stacks everything like a bank (live capture, rev 241,
- * 20261012T233700-df49f48@1030: two 4-dose staminas in one slot). Returns what doesn't fit: the
- * part of a stack past `Int.MAX_VALUE`, and the least valuable slots past the grave's size.
+ * bands expect. The grave stacks everything like a bank (live capture, rev 241: two 4-dose staminas
+ * in one slot). Returns what doesn't fit: the part of a stack past `Int.MAX_VALUE`, and the least
+ * valuable slots past the grave's size.
  */
 internal fun storeInGrave(grave: Inventory, items: List<InvObj>, value: (InvObj) -> Long): List<InvObj> {
     val stacks = mutableListOf<InvObj>()

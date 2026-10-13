@@ -84,7 +84,7 @@ class DeathTutorialTest {
         }
 
     private companion object {
-        // live capture, rev 241, 20261013T013733-df49f48@40.
+        // live capture, rev 241.
         val OFFICE_ARRIVAL = CoordGrid(3171, 5726)
         const val OFFICE_COORD = "varp.death_office_coord"
     }

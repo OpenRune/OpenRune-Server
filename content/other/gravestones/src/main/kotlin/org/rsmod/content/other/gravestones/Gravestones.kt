@@ -38,7 +38,7 @@ private const val NPC_VARP = "varp.gravestone_npc"
 val Player.grave: Inventory
     get() = invMap.getOrPut("inv.gravestone")
 
-/** Death's Office Item Retrieval (live capture, rev 240, 20260811T152500-59bcb26@24). */
+/** Death's Office Item Retrieval (live capture, rev 240). */
 val Player.deathOffice: Inventory
     get() = invMap.getOrPut("inv.death_permanent")
 
@@ -55,8 +55,8 @@ var Player.feePaid by boolVarBit("varbit.gravestone_fee_paid")
 var Player.inDeathTutorial by boolVarBit("varbit.gravestone_death_tutorial")
 
 /**
- * Whether the player has met Death. Live sets it on the tutorial's arrival (live capture, rev 241,
- * 20261013T210450-234ad72@3930), not on walking into the office (20261013T203937-df49f48@84).
+ * Whether the player has met Death. Live sets it on the tutorial's arrival (live capture, rev 241),
+ * not on walking into the office (live capture).
  * UNVERIFIED: that live keys the first-death tutorial on this rather than on a server-only var.
  */
 var Player.metDeath by boolVarBit("varbit.steam_visited_death")
@@ -92,8 +92,8 @@ constructor(
 ) : PlayerGraveHook {
     private val visibleSlots = HashMap<Int, Npc>()
 
-    // TODO: A PvP world's grave can only be looted on one, and a grave on Entrana moves to the new death tile like a Wilderness
-    // PvM death's (https://oldschool.runescape.wiki/w/Grave).
+    // TODO: A PvP world's grave can only be looted on one, and a grave on Entrana moves to the new
+    // death tile like a Wilderness PvM death's (https://oldschool.runescape.wiki/w/Grave).
     override fun store(
         player: Player,
         deathCoords: CoordGrid,
@@ -139,13 +139,13 @@ constructor(
             player.graveCoords = graveTile(worldCoords)
             player.hasMerged = false
             if (!player.metDeath) {
-                // live capture, rev 240, 20260811T142735-59bcb26@2019: 1500, then 1501 at once,
+                // live capture, rev 240: 1500, then 1501 at once,
                 // which it stays at until the player leaves Death's Office.
                 player.inDeathTutorial = true
                 player.graveDuration = DURATION + 1
             }
             spawn(player)
-            // live capture, rev 241, 20261012T233700-df49f48@960: a tick after the death message.
+            // live capture, rev 241: a tick after the death message.
             worldQueues.add(1) { player.mes(CREATED_MESSAGE) }
         }
         player.softTimer(TIMER, TIMER_INTERVAL)
@@ -167,7 +167,8 @@ constructor(
             when {
                 SupplyItems.isFoodOrPotion(type) -> {
                     grave[slot] = null
-                    // The pile "will despawn after one hour" (https://oldschool.runescape.wiki/w/Grave).
+                    // The pile "will despawn after one hour"
+                    // (https://oldschool.runescape.wiki/w/Grave).
                     // UNVERIFIED: that only the owner sees it, as with their other death drops.
                     objRepo.add(Obj.fromOwner(player, coords, obj), SUPPLY_DURATION)
                 }
@@ -191,7 +192,7 @@ constructor(
 
     /**
      * The grave collapses and its contents go to Death's Office, as when the timer runs out or
-     * Death collects them early (live capture, rev 240, 20260811T152500-59bcb26@24).
+     * Death collects them early (live capture, rev 240).
      */
     fun expire(player: Player) {
         if (player.graveCoords == null) {
@@ -219,7 +220,7 @@ constructor(
         val coords = player.graveCoords ?: return
         despawn(player)
         val slot = allocateSlot()
-        // live capture, rev 241, 20261013T013733-df49f48@410: buying the angel sets it to 1.
+        // live capture, rev 241: buying the angel sets it to 1.
         val style = if (player.graveType == 0) "default" else "angel"
         val npc = Npc("npc.gravestone_${style}_%03d".format(slot), coords)
         npcRepo.add(npc, Int.MAX_VALUE)
@@ -229,7 +230,7 @@ constructor(
         visibleSlots[slot] = npc
         player.graveVisible = slot
         player.graveNpc = npc.uid
-        // live capture, rev 241, 20261012T233700-df49f48@1018: a hint arrow on the grave.
+        // live capture, rev 241: a hint arrow on the grave.
         MiscOutput.hintArrowNpc(player, npc.slotId)
     }
 
@@ -247,7 +248,7 @@ constructor(
         player.ifCloseOverlay(INTERFACE, eventBus)
     }
 
-    /** Removes the emptied grave. Live clears the vars a tick after the last take (@1043). */
+    /** Removes the emptied grave. Live clears the vars a tick after the last take. */
     fun remove(player: Player) {
         despawn(player)
         MiscOutput.hintArrowReset(player)
@@ -273,7 +274,7 @@ constructor(
         if (player.ui.containsOverlay(INTERFACE) || PlayerIdle.isIdle(player, IDLE_CYCLES)) {
             return
         }
-        // live capture, rev 241, 20261012T233700-df49f48@962: 3 off every 3 ticks.
+        // live capture, rev 241: 3 off every 3 ticks.
         player.graveDuration = (player.graveDuration - TIMER_INTERVAL).coerceAtLeast(0)
         if (player.graveDuration == 0) {
             expire(player)
@@ -304,7 +305,7 @@ constructor(
     fun sendFeeThresholds(player: Player) {
         val values = player.grave.map { obj -> obj?.let(::value) }
         val (under100k, under1m, under10m) = GraveFees.thresholds(values)
-        // live capture, rev 241, 20261012T233700-df49f48@1030: under100k=7, under1m=1.
+        // live capture, rev 241: under100k=7, under1m=1.
         player.feeUnder100k = under100k
         player.feeUnder1m = under1m
         // UNVERIFIED: live left under10m at 0 with nothing above 1m; the client draws the same.
@@ -319,8 +320,7 @@ constructor(
 
     /**
      * The death tile, or a free tile near it when something stands there. Live put the grave of a
-     * death on Brutus' gate tile (3262, 3294) at (3264, 3291) (live capture, rev 241,
-     * 20261012T233700-df49f48@959, @1018).
+     * death on Brutus' gate tile (3262, 3294) at (3264, 3291) (live capture, rev 241).
      */
     private fun graveTile(coords: CoordGrid): CoordGrid {
         if (collision[coords] == 0) {
@@ -351,7 +351,7 @@ constructor(
         const val TIMER = "timer.gravestone"
         const val TIMER_INTERVAL = 3
 
-        // live capture, rev 241, 20261012T233700-df49f48@959: gravestone_duration=1500.
+        // live capture, rev 241: gravestone_duration=1500.
         const val DURATION = 1500
 
         private const val MAX_VISIBLE_SLOT = 255
@@ -364,7 +364,7 @@ constructor(
         private const val PRUNED_MESSAGE =
             "Some items have been moved to Death's Office from your gravestone."
 
-        // live capture, rev 240, 20260811T152500-59bcb26@24.
+        // live capture, rev 240.
         private const val EXPIRED_MESSAGE =
             "<col=ef1020>Your gravestone has expired.</col> Items held there can now be reclaimed " +
                 "at <col=ef1020>Death's Office</col>, accessed from near the respawn points."
@@ -372,8 +372,8 @@ constructor(
         // https://oldschool.runescape.wiki/w/Grave: unstackables "cannot be stockpiled up to 56".
         const val MAX_UNSTACKABLE = 28
 
-        // live capture, rev 241, 20261013T215044-234ad72: paused 17 ticks after a click (@808-825)
-        // but still counting 17 after a key press (@1501-1518). UNVERIFIED: 16 or 17.
+        // live capture, rev 241: paused 17 ticks after a click, but still counting 17 after a key
+        // press. UNVERIFIED: 16 or 17.
         const val IDLE_CYCLES = 16
         private const val SUPPLY_DURATION = 6000
     }
