@@ -1,6 +1,8 @@
 package org.rsmod.content.areas.misc.deathsoffice
 
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import dev.openrune.types.aconverted.interf.IfSubType
 import jakarta.inject.Inject
@@ -13,6 +15,8 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
 import org.rsmod.api.player.ui.IfModalButton
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.script.onApNpc1
+import org.rsmod.api.script.onApNpc3
 import org.rsmod.api.script.onDropTrigger
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
@@ -61,8 +65,10 @@ constructor(
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(DEATH) { talk(it.npc) }
+        onApNpc1(DEATH) { acrossDesk(it.npc) { talk(it.npc) } }
         // Collect opens the retrieval interface, even with nothing stored.
         onOpNpc3(DEATH) { collect(it.npc) }
+        onApNpc3(DEATH) { acrossDesk(it.npc) { collect(it.npc) } }
         onPlayerQueue(DeathTutorial.QUEUE) { tutorialIntroduction() }
         onPlayerQueue(RETURN_QUEUE) { returnToOffice() }
         onPlayerQueueWithArgs<Int>(DROP_QUEUE) { dropWarning(it.args) }
@@ -80,6 +86,13 @@ constructor(
         onIfModalButton(TAKE_ALL) { takeSelected(Int.MAX_VALUE) }
         onIfModalButton(TAKE_EVERYTHING) { takeEverything() }
         onIfClose(INTERFACE) { player.stopInvTransmit(player.deathOffice) }
+    }
+
+    private suspend fun ProtectedAccess.acrossDesk(
+        npc: Npc,
+        action: suspend ProtectedAccess.() -> Unit,
+    ) {
+        if (isWithinDistance(npc, DESK_RANGE)) action() else apRange(DESK_RANGE)
     }
 
     private suspend fun ProtectedAccess.talk(npc: Npc) {
@@ -104,16 +117,17 @@ constructor(
     }
 
     /**
-     * Logging in inside the office rebuilds a new copy, and Death speaks two ticks later.
-     * UNVERIFIED: live moves the player on the login tick; this waits a tick, as the client has no
-     * map to rebuild from until then.
+     * Logging in inside the office rebuilds a new copy, and Death speaks two ticks after login while
+     * the player walks to his desk. UNVERIFIED: live moves the player on the login tick; this waits
+     * a tick, as the client has no map to rebuild from until then.
      */
     private suspend fun ProtectedAccess.returnToOffice() {
-        if (!offices.enter(player, CoordGrid(player.officeCoord))) {
+        if (!offices.enter(player, DeathsOffices.LOGIN_ARRIVAL)) {
             player.officeCoord = 0
             return
         }
-        delay(2)
+        offices.approachDesk(player)
+        delay(1)
         if (player.inDeathTutorial) {
             val death = offices.death(player) ?: return
             startDialogue(death) { with(DeathTutorial) { resume() } }
@@ -147,23 +161,29 @@ constructor(
         held.drop(this, inv, slot)
     }
 
-    /**
-     * The portal overlay, the teleport two ticks later, the overlay closing a tick after that, and
-     * Death's greeting two ticks later.
-     */
+    /** The player kneels into the portal, then walks up to Death's desk, where he greets them. */
     private suspend fun ProtectedAccess.enter(row: DeathOfficeEntrancesRow) {
         // Walking in doesn't count as meeting Death: a new account's `steam_visited_death` stays 0.
         player.officeEntrance = row.rowId
-        ifOpenFullOverlay(PORTAL_OVERLAY)
-        delay(2)
-        val entered = offices.enter(player, ARRIVAL)
-        delay(1)
-        ifCloseSub(PORTAL_OVERLAY)
+        anim(ENTER_ANIM, delay = ENTER_ANIM_DELAY)
+        var entered = false
+        portal {
+            entered = offices.enter(player, ARRIVAL)
+            if (entered) {
+                resetAnim()
+                offices.approachDesk(player)
+            }
+        }
         if (!entered) {
             return
         }
-        delay(2)
-        greet()
+        repeat(DESK_WALK_TICKS) {
+            if (offices.isAtDesk(player)) {
+                greet()
+                return
+            }
+            delay(1)
+        }
     }
 
     private suspend fun ProtectedAccess.leave() {
@@ -171,19 +191,35 @@ constructor(
             // After the tutorial the portal leads to the respawn point, and the grave's timer
             // starts on the teleport's tick.
             val respawn = mapFindSquareLineOfWalk(RESPAWN, minRadius = 0, maxRadius = 2) ?: RESPAWN
-            portal(respawn) { player.inDeathTutorial = false }
+            portal {
+                telejump(respawn)
+                player.inDeathTutorial = false
+            }
         } else {
             val row = player.officeEntrance.takeIf { it != 0 }?.let(DeathOfficeEntrancesRow::getRow)
-            portal(row?.exit ?: LUMBRIDGE_EXIT)
+            portal { telejump(row?.exit ?: LUMBRIDGE_EXIT) }
         }
         offices.exit(player)
     }
 
-    private suspend fun ProtectedAccess.portal(dest: CoordGrid, onArrive: () -> Unit = {}) {
+    /** The portal overlay and sound, [teleport] two ticks later, then the overlay closing. */
+    private suspend fun ProtectedAccess.portal(teleport: ProtectedAccess.() -> Unit) {
+        val background = PORTAL_BACKGROUND.asRSCM(RSCMType.COMPONENT)
+        val foreground = PORTAL_FOREGROUND.asRSCM(RSCMType.COMPONENT)
         ifOpenFullOverlay(PORTAL_OVERLAY)
+        runClientScript(
+            OVERLAY_PORTAL.asRSCM(RSCMType.CLIENTSCRIPT),
+            background,
+            foreground,
+            PORTAL_MODEL,
+            PORTAL_COLOUR,
+            -1,
+            -1,
+        )
+        soundSynth(PORTAL_SYNTH)
         delay(2)
-        telejump(dest)
-        onArrive()
+        teleport()
+        runClientScript(OVERLAY_PORTAL_REMOVE.asRSCM(RSCMType.CLIENTSCRIPT), background, foreground, -1, -1)
         delay(1)
         ifCloseSub(PORTAL_OVERLAY)
     }
@@ -663,6 +699,19 @@ constructor(
         const val DEATH = DeathsOffices.DEATH
         const val EXIT_PORTAL = "loc.death_office_exitportal"
         const val PORTAL_OVERLAY = "interface.overlay_portal"
+        const val PORTAL_BACKGROUND = "component.overlay_portal:background"
+        const val PORTAL_FOREGROUND = "component.overlay_portal:foreground"
+        const val OVERLAY_PORTAL = "clientscript.[clientscript,overlay_portal]"
+        const val OVERLAY_PORTAL_REMOVE = "clientscript.[clientscript,overlay_portal_remove]"
+
+        // The office portal's model, colour and sound have no gameval names.
+        const val PORTAL_MODEL = 39504
+        const val PORTAL_COLOUR = 4128927
+        const val PORTAL_SYNTH = 3952
+        const val ENTER_ANIM = "seq.human_pickupfloor"
+        const val ENTER_ANIM_DELAY = 20
+        const val DESK_RANGE = 3
+        const val DESK_WALK_TICKS = 6
         const val INTERFACE = "interface.death_office"
         const val ITEMS = "component.death_office:items"
         const val TAKE_1 = "component.death_office:1"

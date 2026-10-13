@@ -13,7 +13,6 @@ import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.content.other.gravestones.inDeathTutorial
 import org.rsmod.content.other.gravestones.metDeath
 import org.rsmod.game.entity.Player
-import org.rsmod.map.CoordGrid
 
 private var Player.heardGravestones by boolVarBit("varbit.death_tutorial_heard_gravestones")
 private var Player.heardFees by boolVarBit("varbit.death_tutorial_heard_fees")
@@ -31,11 +30,12 @@ class DeathTutorialArrival @Inject constructor(private val offices: DeathsOffice
         if (!player.inDeathTutorial || player.metDeath) {
             return
         }
-        if (!offices.enter(player, DeathTutorial.ARRIVAL)) {
+        if (!offices.enter(player, DeathsOffices.LOGIN_ARRIVAL)) {
             // Only with every instance slot taken; the tutorial waits for the next death.
             player.inDeathTutorial = false
             return
         }
+        offices.approachDesk(player)
         player.metDeath = true
         player.queue(DeathTutorial.QUEUE, DeathTutorial.SPEAK_DELAY)
     }
@@ -44,7 +44,6 @@ class DeathTutorialArrival @Inject constructor(private val offices: DeathsOffice
 internal object DeathTutorial {
     const val QUEUE = "queue.death_office_tutorial"
     const val SPEAK_DELAY = 3
-    val ARRIVAL = CoordGrid(3171, 5726)
 
     suspend fun Dialogue.introduction() {
         chatNpc(

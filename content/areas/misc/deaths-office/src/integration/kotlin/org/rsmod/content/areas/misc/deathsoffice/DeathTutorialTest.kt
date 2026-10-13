@@ -84,7 +84,7 @@ class DeathTutorialTest {
         }
 
     private companion object {
-        val OFFICE_ARRIVAL = CoordGrid(3171, 5726)
+        val OFFICE_ARRIVAL = CoordGrid(3173, 5726)
         const val OFFICE_COORD = "varp.death_office_coord"
     }
 
