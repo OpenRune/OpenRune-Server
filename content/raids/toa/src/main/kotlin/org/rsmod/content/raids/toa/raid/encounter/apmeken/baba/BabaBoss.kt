@@ -40,6 +40,7 @@ import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.bosses.spec.TargetExpr
+import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
 import org.rsmod.content.raids.toa.raid.encounter.eachTarget
 import org.rsmod.content.raids.toa.raid.encounter.onRoomExternal
@@ -69,7 +70,7 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             room.rollReset(ext.npc)
         }
         deps.onRoomExternal<BabaEncounter>(BabaExternals.THROW_RESOLVE) { room, ext ->
-            ext.tile?.let { room.rockfall.resolveThrow(ext.target, it) }
+            room.rockfall.resolveThrow(ext.target)
         }
         deps.onRoomExternal<BabaEncounter>(BabaExternals.RUBBLE_SPAWN) { room, ext ->
             ext.tile?.let(room.rockfall::spawnRubble)
@@ -144,16 +145,23 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             transmog(BabaNpcs.DIGGING, Int.MAX_VALUE),
             eachTarget(external(BabaExternals.FLYBACK)),
             wait(FIRST_CAST_DELAY),
-            repeat(
-                BabaRolling.CASTS,
-                BabaRolling.CAST_GAP,
-                sequence(
-                    whenever(hpPinned, setVarn(BabaVarns.ROLL_EXIT, 1)),
-                    whenever(rollOver, Effect.NoOp, cast()),
-                ),
+            whenever(
+                boulderDash,
+                castLoop(BabaRolling.CASTS, BabaRolling.BOULDER_DASH_GAP),
+                castLoop(BabaRolling.CASTS, BabaRolling.CAST_GAP),
             ),
             wait(BabaRolling.CAST_GAP),
             run(BabaAbilities.ROLL_END),
+        )
+
+    private fun castLoop(casts: Int, gap: Int): Effect =
+        repeat(
+            casts,
+            gap,
+            sequence(
+                whenever(hpPinned, setVarn(BabaVarns.ROLL_EXIT, 1)),
+                whenever(rollOver, Effect.NoOp, cast()),
+            ),
         )
 
     private fun cast(): Effect =
@@ -210,6 +218,10 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             }
 
         val rolling = InPhase(BabaPhases.ROLLING)
+        val boulderDash =
+            roomCondition<BabaEncounter> { room, _ ->
+                room.raid.isActive(ToaInvocationKey.Boulderdash)
+            }
         val rollOver = varnIs(BabaVarns.ROLL_EXIT, 1)
         val fighting = roomCondition<BabaEncounter> { room, npc -> room.fighting(npc) }
         val underBoss = roomCondition<BabaEncounter> { room, npc -> room.underBoss(npc) }

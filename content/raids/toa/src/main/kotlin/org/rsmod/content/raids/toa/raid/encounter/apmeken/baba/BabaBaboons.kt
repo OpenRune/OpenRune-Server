@@ -1,6 +1,7 @@
 package org.rsmod.content.raids.toa.raid.encounter.apmeken.baba
 
 import dev.openrune.ServerCacheManager
+import org.rsmod.annotations.InternalApi
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.stat.stat
@@ -28,6 +29,12 @@ internal class BabaBaboons(private val room: BabaEncounter) {
 
     val alive: Int
         get() = baboons.count { it.isSlotAssigned && it.hitpoints > 0 }
+
+    fun coverNear(tile: CoordGrid): Npc? {
+        val alive = baboons.filter { it.isSlotAssigned && it.hitpoints > 0 }
+        val closed = sarcophagi.filter { !it.open && it.npc.isSlotAssigned }.map { it.npc }
+        return (alive + closed).firstOrNull { dist(it.coords, tile) <= 1 }
+    }
 
     fun spawnSarcophagi() {
         clearSarcophagi()
@@ -172,6 +179,7 @@ internal class BabaBaboons(private val room: BabaEncounter) {
         }
     }
 
+    @OptIn(InternalApi::class)
     private fun stepPeels(players: List<Player>) {
         if (peels.isEmpty()) return
         for (player in players) {
@@ -179,6 +187,7 @@ internal class BabaBaboons(private val room: BabaEncounter) {
             deps.locRepo.del(loc, Int.MAX_VALUE)
             player.anim(BabaSeqs.KNOCKDOWN)
             room.hazardDamage(player, BabaApes.PEEL_DAMAGE, 0)
+            deps.launcher.launchLenient(player) { delay(BabaRolling.PEEL_STUN_TICKS) }
         }
     }
 

@@ -75,9 +75,10 @@ regenRate = 0
 id = "npc.toa_baba_baboon"
 inherit = "npc.toa_baba_baboon"
 defaultMode = "None"
-
 respawnDir = "West"
 regenRate = 0
+[npc.params]
+"param.attackable_on_cooldown" = true
 
 [[npc]]
 id = "npc.toa_baba_sarc_npc"

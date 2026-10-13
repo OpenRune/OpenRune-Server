@@ -251,6 +251,7 @@ object ToaRoomsTable {
                         "Ba-Ba",
                     ),
                 osmumten = CoordGrid(3817, 5408, 0),
+                drop = CoordGrid(3817, 5408, 0),
                 next = "dbrow.toa_room_main_hall",
             )
             room(

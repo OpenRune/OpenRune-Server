@@ -4,9 +4,7 @@ import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.bosses.runtime.runAbility
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.npc.apPlayer2
-import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.hitpoints
-import org.rsmod.api.player.vars.intVarp
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.ToaBook
@@ -18,7 +16,6 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaFight
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.HitType
@@ -31,8 +28,6 @@ class BabaEncounter(
     session: InstanceSession,
     controllerId: Int,
 ) : ToaBossEncounter(raid, room, session, controllerId) {
-
-    private var Player.maxHit by intVarp("varp.com_maxhit")
 
     internal var baba: Npc? = null
         private set
@@ -50,6 +45,8 @@ class BabaEncounter(
             attackRate = { ATTACK_RATE },
             death = ToaDeath(anim = BabaSeqs.DEATH, dead = null, modelDelay = DEATH_MODEL_DELAY),
         )
+
+    override val completeMessageDelay = DEATH_MODEL_DELAY
 
     override val rewardNpc = BabaNpcs.FREED_APMEKEN
 
@@ -168,16 +165,9 @@ class BabaEncounter(
     }
 
     internal fun crackedHit(npc: Npc, hit: HitBuilder) {
-        if (!hit.isFromPlayer) return
-        val attacker = hit.sourceUid?.let { PlayerUid(it).resolve(deps.bossDeps.playerList) }
-        if (hit.type != HitType.Ranged) {
-            hit.damage = 0
-            attacker?.mes(BabaRolling.CRACKED_TEXT)
-            return
-        }
-        val maxHit = attacker?.maxHit ?: hit.damage
-        hit.damage = maxHit.coerceAtLeast(hit.damage).coerceAtMost(npc.hitpoints)
-        if (hit.damage >= npc.hitpoints) boulders.killed(npc)
+        if (!hit.isFromPlayer || hit.type != HitType.Ranged) return
+        hit.damage = npc.hitpoints
+        boulders.disarm(npc)
     }
 
     internal fun debugRoll(): String? {

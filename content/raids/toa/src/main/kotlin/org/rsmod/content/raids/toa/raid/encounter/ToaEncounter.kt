@@ -76,6 +76,9 @@ open class ToaEncounter(
 
     internal open val hpBar: ToaHpBar? = null
 
+    protected open val completeMessageDelay: Int
+        get() = 0
+
     internal open val combatantSpecs: List<ToaCombatant.Spec>
         get() = emptyList()
 
@@ -199,15 +202,22 @@ open class ToaEncounter(
             }
         }
 
-        for (player in players) {
-            if (!isEnd) {
-                player.mes(
-                    "Challenge complete: $challengeName. Duration: <col=ef1020>$duration</col>. " +
-                        "Total: <col=ef1020>$total</col>"
-                )
-            } else {
-                sendRaidCompleteMessages(player, duration, total, now)
+        val sendMessages = {
+            for (player in players) {
+                if (!isEnd) {
+                    player.mes(
+                        "Challenge complete: $challengeName. Duration: <col=ef1020>$duration</col>. " +
+                            "Total: <col=ef1020>$total</col>"
+                    )
+                } else {
+                    sendRaidCompleteMessages(player, duration, total, now)
+                }
             }
+        }
+        if (completeMessageDelay > 0) {
+            deps.worldQueues.add(completeMessageDelay) { if (!destroyed) sendMessages() }
+        } else {
+            sendMessages()
         }
 
         recoverPlayers()

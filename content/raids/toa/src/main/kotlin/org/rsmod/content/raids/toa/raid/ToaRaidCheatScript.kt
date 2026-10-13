@@ -6,17 +6,30 @@ import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.script.onCommand
+import org.rsmod.content.raids.toa.party.ToaPartyManager
+import org.rsmod.content.raids.toa.party.ToaPartyManager.currentParty
+import org.rsmod.content.raids.toa.party.ToaPartySettings
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.cheat.Cheat
+import org.rsmod.game.entity.Player
 import org.rsmod.game.map.Direction
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class ToaRaidCheatScript @Inject constructor(private val launcher: ProtectedAccessLauncher) :
-    PluginScript() {
+class ToaRaidCheatScript
+@Inject
+constructor(
+    private val launcher: ProtectedAccessLauncher,
+    private val deps: ToaRaidDeps,
+) : PluginScript() {
 
     override fun ScriptContext.startup() {
+        onCommand("toababa") {
+            requiredRights = Rights.ADMINISTRATOR
+            desc = "Enter Ba-Ba's room, starting a raid if you are not in one"
+            cheat { enterRoom(ToaRoom.APMEKEN_BOSS) }
+        }
         onCommand("toacomplete") {
             requiredRights = Rights.ADMINISTRATOR
             desc = "Complete your current Tombs of Amascut room"
@@ -37,6 +50,31 @@ class ToaRaidCheatScript @Inject constructor(private val launcher: ProtectedAcce
             desc = "Show your Tombs of Amascut reward points"
             cheat { showPoints() }
         }
+    }
+
+    private fun Cheat.enterRoom(room: ToaRoom) {
+        launcher.launch(player, busyText = "Close your dialog first.") {
+            val inside = player.currentRaid
+            val raid = inside ?: startRaid(player)
+            if (raid == null) {
+                mes(TOA_UNAVAILABLE)
+                return@launch
+            }
+            val target = resolveTarget(raid, room, checkLeader = false) ?: return@launch
+            travel(target, fromLobby = inside == null)
+        }
+    }
+
+    private fun startRaid(player: Player): ToaRaid? {
+        val cycle = deps.mapClock.cycle
+        val party =
+            player.currentParty
+                ?: ToaPartyManager.createParty(player, ToaPartySettings(), cycle)
+                ?: return null
+        ToaRaidManager.raidFor(party)?.let { return it }
+        val raid = ToaRaidManager.start(party, deps) ?: return null
+        ToaPartyManager.onRaidStarted(party)
+        return raid
     }
 
     private fun Cheat.toLobby() {

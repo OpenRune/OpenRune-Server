@@ -136,17 +136,10 @@ internal object BabaSpecials {
             eachTarget(
                 sequence(
                     message(BabaRocks.THROW_TEXT),
-                    projectile(
-                        spotanim = BabaSpots.ROCK_TRAVEL,
-                        target = CurrentTargetTile,
-                        config = ROCK_CONFIG,
-                        impact = BabaSpots.ROCK_IMPACT,
-                        onImpact =
-                            whenever(
-                                rolling,
-                                Effect.NoOp,
-                                external(BabaExternals.THROW_RESOLVE, at = ImpactTile),
-                            ),
+                    projectile(spotanim = BabaSpots.ROCK_TRAVEL, config = ROCK_CONFIG),
+                    after(
+                        BabaRocks.THROW_RESOLVE_DELAY,
+                        whenever(rolling, Effect.NoOp, external(BabaExternals.THROW_RESOLVE)),
                     ),
                 )
             ),
