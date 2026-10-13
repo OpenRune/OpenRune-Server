@@ -15,6 +15,7 @@ import org.rsmod.api.instances.hook.InstanceEnterAction
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.hook.TeleportType
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.repo.loc.LocRepository
@@ -181,6 +182,7 @@ constructor(
         if (player == null) {
             return
         }
+        player.soundSynth("synth.brutus_spawn")
         npc.facePlayer(player)
         deps.worldQueues.add(ARRIVE_MOO_DELAY) { if (npc.isSlotAssigned) npc.say("Moo") }
         deps.worldQueues.add(ARRIVE_MOVE_DELAY) {

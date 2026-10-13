@@ -5,6 +5,9 @@ cowbell_amulet_teleport = 1658
 cowbell_amulet_arrive = 11286
 cowbell_amulet_uncharge = 2968
 bull_bones_bury = 2738
+brutus_spawn = 11212
+brutus_charge = 11210
+brutus_stomp = 11213
 
 [gamevals.varn]
 brutus_next_special = 64400
