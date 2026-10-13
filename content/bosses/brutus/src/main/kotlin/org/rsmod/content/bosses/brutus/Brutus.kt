@@ -1,5 +1,6 @@
 package org.rsmod.content.bosses.brutus
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.SpotanimType
@@ -272,11 +273,16 @@ constructor(
         npc.vars[UNREACHED] = if (idle >= OUT_OF_REACH_TICKS && !inReach(npc.coords, target.coords)) 1 else 0
     }
 
-    /** "*huff*", then a real route round whatever kept him from the target. */
+    /**
+     * "*huff*", then a real route round whatever kept him from the target. He walks it as
+     * `cowboss_routefind` for three ticks (live capture, rev 241, 20261012T200152-df49f48@764-767,
+     * @819-822, @918-921 and 20261012T222638-df49f48@3209-3212).
+     */
     private fun huff(npc: Npc, target: Player) {
         deps.encounterRegistry.of(npc).lastAbilityTick = deps.mapClock.cycle
         npc.say("*huff*")
         npc.anim("seq.cow_boss_heavy_breath")
+        npc.transmog(ROUTEFIND_TYPE, ROUTEFIND_TICKS)
         npc.walkTo(routeFactory, target.coords) { npc.apPlayer2(target, aiPlayerInteractions) }
     }
 
@@ -354,6 +360,11 @@ constructor(
         private const val SPECIAL_LOW_PERCENT = 20
         private const val SPECIAL_HIGH_PERCENT = 24
         private const val SPECIAL_MAX_HIT = 19
+
+        private const val ROUTEFIND_TICKS = 3
+        private val ROUTEFIND_TYPE by lazy {
+            checkNotNull(ServerCacheManager.getNpc("npc.cowboss_routefind".asRSCM(RSCMType.NPC)))
+        }
 
         private val STOMP_SELF_SPOTANIM = "spotanim.vfx_cowboss_stomp_impact02"
         private val STOMP_TILE_SPOTANIM by lazy {
