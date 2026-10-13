@@ -17,8 +17,10 @@ is "does it survive save → load" (→ `persistence-test`).
 
 ## Where it goes
 
-- `src/integration/kotlin/<same package as the code under test>/<Subject>Test.kt`
-  (e.g. `FenceCrossingScript` → `FenceCrossingScriptTest`).
+- `src/integration/kotlin/<same package as the code under test>/<Subject>Test.kt`, where
+  `<Subject>` is the class under test's own name (`FenceCrossingScript` →
+  `FenceCrossingScriptTest`, `Mining` → `MiningTest`). Don't add `Script` to match
+  `*ScriptTest` siblings when the class isn't called that.
 - The module's `build.gradle.kts` **must** apply the suite, or the test silently never compiles
   or runs:
   ```kotlin
@@ -27,8 +29,14 @@ is "does it survive save → load" (→ `persistence-test`).
       id("integration-test-suite")
   }
   ```
-  Extra deps go in `integrationImplementation(...)`.
+  The suite already puts `main`'s classes and the `api/testing` harness on the classpath. Add
+  `integrationImplementation(...)` only for what the test itself names that `main` doesn't
+  expose: a script class from another module (`projects.api.invPlugin` for `InvOpenScript`),
+  or generated `*Row`/`*Enums` (`projects.api.generated`).
 - Run: `./gradlew :content:generic:generic-locs:integration` (CI runs `./gradlew integration`).
+- Needs `.data/game.key` and `.data/client.key` (gitignored). A fresh worktree or runner
+  without them fails at boot: run `./gradlew generateRsa` (CI does) or copy them from the
+  main checkout.
 
 ## Template
 
@@ -66,12 +74,23 @@ class FenceCrossingScriptTest {
 | The player / extra players | `player`, `registerPlayer(...)` |
 | World setup | `placeMapLoc(coords, "loc.x")`, `findLocType(content.x) { … }`, `spawnNpc(coords, type)`, `player.teleport`, `player.placeAt`, `allocZoneCollision` |
 | Player setup | `player.stats[stats.x] = n`, `setBaseLevel`/`setCurrentLevel`, `setVarp`/`setVarBit`, `fillInv`, `clearInv`, `player.righthand = InvObj("obj.x")` |
-| Drive input | `opLoc1..5`, `opNpc1..5`, `opHeld1..5`\*, `ifButton`, `ifButtonD`, `resumeCountDialog`, `moveGameClick` |
+| Drive input | `opLoc1..5`, `opNpc1..5`, `ifButton`, `ifButtonD`, `resumeCountDialog`, `moveGameClick` |
+| Held (inventory) ops | `player.opHeld1..5(invSlot)` — also bind `HeldOpScript` and `InvOpenScript` in `runGameTest(...)`, or the op reaches no handler |
 | Pass time | `advance(ticks = n)`, `advanceUntil({ cond })` |
-| Control rolls | `random.next = 0`, `random.nextBoolean = true` (only for code using `GameRandom`, not `Random.Default`) |
+| Control rolls | `random.next = 0`, `random.nextBoolean = true` (only for code using `GameRandom`) |
 | Assert | `assertMessageSent`/`assertMessageNotSent`/`assertMessagesSent`, `assertModalOpen`, `assertContains`/`assertDoesNotContain(inv, obj)`, `player.count(obj)`, `assertExists(loc)`, `player.coords`, `player.assertThrows<T> { … }` |
 
-\* `opHeld1..5` added by "Write the Game integration worked examples".
+### Traps
+
+- **Unseedable rolls.** Code on `Random.Default` ignores `random` — drop tables (`api/drop-table`)
+  and `skillSuccess()`. Pick a case that skips the roll (e.g. a rock with no gem table), assert
+  only what holds for every roll, or test the maths as Unit. Don't fake determinism with retries.
+- **Moves into an unallocated zone.** The scope's `teleport`/`telejump` allocate the
+  destination's collision; a script's own move into a zone nothing has allocated silently does
+  nothing. Call `allocZoneCollision(dest)` in `// given` for every coord the script moves to.
+- **Start on the approach tile.** Place the player on the tile the op is used from (the loc's
+  interaction side), not on or diagonal to the loc — otherwise the test also exercises
+  pathing, takes more ticks and can fail for unrelated reasons.
 
 ## Given / when / then
 
@@ -116,6 +135,8 @@ index list and aren't thread-safe (see `InvTransactionsTest`).
 - **Do** pick types via `findLocType`/RSCM symbols (`"loc.x"`, `"obj.x"`); never raw ids.
 - **Do** use named constants for coords and quantities (`SCREAMING_SNAKE_CASE` in a private
   companion).
+- **Do** compute expected values from the setup (`val expected = player.count(obj) - 1`) in
+  `// given`, before the op; `// then` only compares.
 - **Don't** mock `Player`, `ProtectedAccess` or `ServerCacheManager` (the old
   `*InteractionTest` shape) — use `runGameTest`.
 - **Don't** use `runBasicGameTest` / `runAdvancedGameTest` for new tests.

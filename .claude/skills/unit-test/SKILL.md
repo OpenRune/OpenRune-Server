@@ -17,7 +17,14 @@ Not this layer if: the code needs cache types, RSCM symbols, scripts, ops or mov
 ## Where it goes
 
 - `src/test/kotlin/<same package as the code under test>/<Subject>Test.kt`
-  (e.g. `PlayerSkillXPTable` → `PlayerSkillXPTableTest`).
+  (e.g. `PlayerSkillXPTable` → `PlayerSkillXPTableTest`). Code in the default package (no
+  `package` line, like `MathSkillUtiils.kt`) is tested from the default package too:
+  `src/test/kotlin/ComputeSkillingSuccessTest.kt`.
+- Before writing it, check the **enclosing `object`/class init**, not just the function: a
+  top-level or companion `val` that reads the cache (`SomethingRow.all()`, `"obj.x".asRSCM()`)
+  runs on first access and fails without a loaded cache. Making it `by lazy` is a
+  behaviour-preserving fix but changes production code — ask first; otherwise it's Game
+  integration.
 - No extra plugin: `id("base-conventions")` already brings JUnit 5 (including
   `@ParameterizedTest`) through `test-conventions`.
 - Run: `./gradlew :engine:game:test --tests '*PlayerSkillXPTableTest'` (CI runs
@@ -68,7 +75,9 @@ class PlayerSkillXPTableTest {
 | One case | `@Test` |
 | A table of cases | `@ParameterizedTest(name = …)` + `@CsvSource` (or `@MethodSource` for objects) |
 | Expected failure | `assertThrows<T> { … }` (`org.junit.jupiter.api.assertThrows`) |
-| Assert | `org.junit.jupiter.api.Assertions.*` (`assertEquals`, `assertTrue`, …) |
+| A guard over several bad values | `@ParameterizedTest` + `@CsvSource` (or `@ValueSource`) on a `// when / then` `assertThrows` |
+| Assert | `org.junit.jupiter.api.Assertions.assertEquals` etc., imported one by one — not `kotlin.test` |
+| Compare doubles | `assertEquals(expected, actual, DELTA)` with a named `DELTA` (e.g. `1e-9`); never exact equality |
 | Cache values the logic reads | Pass them in as parameters; if that's impossible, it's Game integration |
 | Deterministic rolls | Pass a `FixedRandom` or `SequenceRandom` (`GameRandom`s from `testImplementation(projects.api.testing.testRandom)`) into the code; never `Random.Default` |
 

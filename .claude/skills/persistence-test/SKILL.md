@@ -42,7 +42,7 @@ class CharacterAccountRepositoryTest {
     ) {
         // given
         val character = createCharacter(db, repository, NAME)
-        val player = Player().apply { coords = SAVED_COORDS }
+        val player = testPlayer { coords = SAVED_COORDS }
 
         // when
         save(db, repository, pipelines, character, player)
@@ -59,7 +59,8 @@ class CharacterAccountRepositoryTest {
 }
 ```
 
-`createCharacter`, `save` and `load` are the helpers under "Fixture and builders".
+`createCharacter`, `testPlayer`, `save` and `load` are the shared helpers under "Fixture and
+builders".
 
 ## Harness cheatsheet
 
@@ -67,11 +68,12 @@ class CharacterAccountRepositoryTest {
 |---|---|
 | A database | `@ExtendWith(PersistenceTestExtension::class)`; a DB cloned from a migrated template per test class |
 | The seam | Test parameters: `GameDatabase`, `CharacterAccountRepository`, `Set<CharacterDataStage.Pipeline>` |
-| A transaction | `db.withTransactionBlocking(schema) { connection -> … }` (`schema` = `WorldType.key`) |
+| A transaction | `db.withTransactionBlocking(schema) { connection -> … }` (`schema` = `WorldType.key`). Use it over `runBlocking { db.withSchemaTransaction(…) }`: same commit/rollback, no coroutine wrapper. Only reach for `runBlocking` when the code under test is itself `suspend` |
 | Save | `repository.save(connection, player, accountId, characterId, gameWorldId)` then each `pipeline.save(connection, player, characterId)` — one transaction, as `AccountSavingService` does |
 | Load | `repository.selectAndCreateMetadataList(connection, name)`, each `pipeline.append(connection, metadata)`, then `metadata.forEach { it.apply(player) }` onto a fresh `Player()` |
-| Rows the code can't produce / can't read back | Raw SQL on the `connection` (e.g. stale rows after an inventory shrinks) |
-| Cache / RSCM symbols | Already loaded by the extension (it reuses `api/testing`'s cache bootstrap) |
+| Rows the code can't produce / can't read back | Raw SQL on the `connection` (e.g. stale rows after an inventory shrinks). Inventory rows: `inventory_objs(character_id, inv, slot, obj, count, vars)`, with `inv` and `obj` as RSCM names (`"inv.inv"`, `"obj.coins"`) |
+| Cache / RSCM symbols | Already loaded by the extension (it reuses `api/testing`'s cache bootstrap) — but only once the test runs; see "Traps" |
+| Varps | `player.setVarp("varp.x", value)` (shared helper). Only varps with a gameval name: a raw id with no symbol throws in `GamePersistenceRscmKeys.encodeVarpKey` on save |
 
 ## Given / when / then
 
@@ -110,11 +112,23 @@ save plus the load is when, and then only inspects the loaded `Player` (or table
   each, so they were dropped.)
 - Each test builds its own small state in `// given` and saves it through the real repository
   and pipelines. There is no shared golden fixture.
-- Until the extension ships shared save/load helpers, keep them as private helpers in the test
-  class, composed only from the calls in the cheatsheet, so the test exercises exactly what
-  `AccountSavingService` and `AccountLoaderService` do.
+- Shared helpers live in `api/account/src/persistence/.../account/PersistenceRoundTrip.kt`:
+  `createCharacter(db, repository, name, vararg worldTypes)`, `testPlayer(worldType) { … }`,
+  `save(…)`, `load(…, worldType)` and `Player.setVarp`. They are composed only from the calls in
+  the cheatsheet, so a test exercises exactly what `AccountSavingService` and
+  `AccountLoaderService` do. Use them; don't copy them into the test class. A new module that
+  applies the suite needs them moved into `api/testing-persistence` first.
+- Build every `Player` through `testPlayer(...)`: `save` picks the schema from
+  `player.worldType`, so a bare `Player()` must still set it.
 - Raw SQL only for rows the code can't produce, or to assert table contents the load path
   doesn't expose.
+
+## Traps
+
+- **Gamevals in companion `val`s.** A companion `val` that resolves a symbol
+  (`"obj.coins".asRSCM(...)`, an `ItemServerType` lookup) runs at class init, before the
+  extension loads the cache, and fails the whole class. Keep symbols as `const val` strings and
+  resolve them inside the test.
 
 ## Do / don't
 
