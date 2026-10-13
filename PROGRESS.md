@@ -25,8 +25,8 @@ each view, not presented as an additional implemented feature.
 | 🟢 Accepted | Prayer unlocks, free spellbook travel, teleport scroll/animation fixes, gorilla hole/rope and combat corrections | CoX/Royal Titans scroll-drop sources remain future encounter work. |
 | 🟢 Accepted | Pet gallery/categories, examine/prices/chat news, collection log rewards, Mokhaiotl waystone, max-gear command updates | Preserve the individually agreed/accepted scope in the details below. |
 | 🟡 Merged milestone | Completionist purchase/fusion/perks/ammunition/repair/persistence; v0.17 Dizana inventory colours, native max-hood head, software depth reset, outward quiver and original-shape inventory icon | Owner confirmation of reported hood/head and OG map glitches, both genders, movement, Fire/Infernal and software/HD visual acceptance; PR #38 is merged; remaining native coverage is still recorded, and the runtime is not installed. |
-| 🟡 Test package | Normal/Corrupted Gauntlet preparation, owned rooms/timer, Hunllef, native recipes, escrow and chest/log/completion handling | Owner checks of complete runs, native interfaces, floor/tornado/animation timing; scoreboard/time records and exact probability parity remain open. PR #38 is merged; the continuing Gauntlet work is not installed. |
-| 🟡 Local implementation | Shortcuts, containers, fairy rings and Spider Cave access | Remaining consumers/dependencies, Forestry events, final native route/UI/death acceptance and combined cape/quiver integration. |
+| 🟡 Test package | Normal/Corrupted Gauntlet preparation, owned rooms/timer, Hunllef, native recipes, escrow and chest/log/completion handling | Owner checks of complete runs, native interfaces, floor/tornado/animation timing; Personal records/scoreboard are in the new test candidate; global aggregates and exact probability parity remain open. PR #38 is merged; the continuing Gauntlet work is not installed. |
+| 🟡 Published branch | Shortcuts, containers, fairy rings and Spider Cave access | Remaining consumers/dependencies, Forestry events, final native route/UI/death acceptance and combined cape/quiver integration. |
 | 🟡 Parked | Treasure Trails: accepted 60/60 skill-task checkpoint and existing trail flow | Full step/puzzle/catalogue/loot parity and Mimic remain unfinished. |
 | 🟡 Partial | NPC animations: 97.15% technical attack/block/death coverage | 341 action slots across 149 types, secondary styles, specials/phases and native visual checks. |
 | 🟡 Follow-ups | Existing interfaces and native boss-item recipes | Remaining visual/interaction acceptance and persistence warning follow-up are detailed below. |
@@ -84,7 +84,10 @@ Reviewed and ported the scoped Gauntlet implementation from upstream
 instances, inventory transactions, deaths, Collection Log and home catalogue.
 Unrelated changes in the upstream PR are excluded.
 
-The tested baseline is merged via PR #38. Continuing on `feature/gauntlet-records`: both modes, 7x7 rooms,
+The tested baseline is merged via PR #38. Personal records continue in
+[draft PR #39](https://github.com/EvolvedMind/OpenRune-Server/pull/39), branch
+`feature/gauntlet-records`, tested gameplay checkpoint `50ee8127b`.
+The baseline includes both modes, 7x7 rooms,
 resources/recipes/cooking/Egniol, preparation timer, Hunllef attack/prayer cycles,
 stomp, prayer disable, tornadoes and floor stages. Gear escrow and pending chest
 state are permanent. Failed-run loot uses real Hunllef damage; the sixth
@@ -95,17 +98,27 @@ Validation: **154 executed tests**, including **42 Gauntlet tests**, the full
 runtime JAR, over **538,000 unrelated cache definitions preserved**, isolated
 rev240 boot/JS5 and appearance service. The fourteen accepted source hashes,
 accepted live JAR/cache/RSA/playerdata and earlier test packages remain intact.
-Current combined package: `outputs/gauntlet-cape-v017-dizana-colours-20261013/TESTEN.cmd`.
-The colour-only update retains the prior Gauntlet implementation and gameplay
-test evidence; those 154 tests were not rerun for this asset correction.
+New records test package: `outputs/gauntlet-records-cape-v017-20261013/TESTEN.cmd`.
+Gauntlet continuation: **51 executed module tests**, including nine new personal
+record/scoreboard cases; bounded permanent vars and runtime build are checked.
+The native object opens normal/corrupted completions, deaths and best total times.
+Total and Hunllef personal bests update independently; testloot/failed runs do
+not create records. Deaths count once via the owned native respawn hook.
+The previous 154-test baseline remains prior evidence; the present extension
+reruns the Gauntlet suite. The accepted cape assets/runtime remain unchanged.
 Commands: `::testgauntlet`, `::gauntletkit`, `::gauntletkithm`,
 `::testloot gauntlet [count]` and `::testloot cg [count]`.
 
 **Owner acceptance is pending** for complete preparation-to-reward runs, native
 maps/interfaces, attacks, floor/tornado timing and interruption recovery in the
-actual client. Personal scoreboard/time records, exact probability parity and
-global Combat Achievements are not completed. The baseline is merged; the
-records/scoreboard continuation is in progress. No live installation is performed. [Scope, deliberate policies and test routes](docs/custom/gauntlet.md).
+actual client. Personal scoreboard/time records are implemented in the current test candidate.
+Persistent global scoreboard totals, exact probability/timing parity and global
+Combat Achievements remain open. The baseline is merged; the
+records/scoreboard continuation is published for owner testing in draft PR #39.
+Isolated rev240 JS5/appearance startup and all 44 payload Check/Install/Rollback
+operations on an owned rehearsal copy pass. No live installation is performed.
+The existing PostgreSQL connection-close warning recurs on shutdown; server
+services stop normally. This is recorded separately from activity acceptance. [Scope, deliberate policies and test routes](docs/custom/gauntlet.md).
 
 ## 🟡 Started: world shortcuts, containers and fairy rings
 
@@ -134,23 +147,9 @@ shortcut/container or a time estimate. Native client acceptance is still open.
 Resumed on **2026-10-12** and published on **2026-10-13**, retaining Forestry
 checkpoint `0bb3fbfa0`.
 
-Published branch: [feature/shortcuts-containers-fairy-rings](https://github.com/EvolvedMind/OpenRune-Server/tree/feature/shortcuts-containers-fairy-rings); tested source checkpoint `0bb3fbfa0`.
-
-`█████████████░░░░░░░` **5/8 recorded implementation checkpoints verified (63%)**.
-This counts the eight checks below equally; it is not a percentage of all OSRS
-content, remaining engineering time, or native client acceptance.
-
-- [x] Spider Cave Enter/Exit producers, routing and cancellation.
-- [x] All 525 configured shortcut links exercised through owned option producers.
-- [x] Fairy-ring dials, favourites, Last-destination and 54 fixed destinations.
-- [x] Core container storage, persistence, bank and death routes.
-- [x] Connected skill/pickup consumers through the 309-test Forestry/container checkpoint.
-- [ ] Remaining consumers: DIQ Construction ownership, seven potion effects,
-      Twitcher's/clue nests, other Forestry species/sound/events and activity dependencies.
-- [ ] Reconcile shared cape/quiver integrations with the now-merged cape/Gauntlet code.
-- [ ] Guarded combined runtime package and native route/animation/UI/death acceptance. Scope remains all
-revision-240 shortcuts, all 39 Wiki container categories, fairy rings and
-surface Spider Cave access. Existing upstream review and accepted combat remain.
+Scope remains all revision-240 shortcuts, all 39 Wiki container categories,
+fairy rings and surface Spider Cave access. Existing upstream review and
+accepted combat remain.
 
 Implemented locally: **525 shortcut links**, all **64 fairy-ring code rows**
 with **54 fixed destinations**, Spider Cave access, rune/looting pouches,
