@@ -136,6 +136,7 @@ internal class BabaBoulders(private val room: BabaEncounter) {
             return
         }
         room.schedule(1) {
+            if (player !in room.targets()) return@schedule
             room.hazardDamage(
                 player,
                 BabaRolling.BOULDER_BASE_DAMAGE,

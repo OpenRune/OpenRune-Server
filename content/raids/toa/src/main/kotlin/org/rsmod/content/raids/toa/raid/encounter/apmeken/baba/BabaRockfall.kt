@@ -22,6 +22,7 @@ internal class BabaRockfall(private val room: BabaEncounter) {
     }
 
     fun resolveThrow(player: Player) {
+        if (player !in room.targets()) return
         val tile = player.coords
         val cover = rubble.keys.firstOrNull { covers(it, tile) } ?: room.baboons.coverNear(tile)
         if (cover == null) {
