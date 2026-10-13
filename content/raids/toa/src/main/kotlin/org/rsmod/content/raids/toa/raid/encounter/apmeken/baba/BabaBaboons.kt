@@ -96,6 +96,11 @@ internal class BabaBaboons(private val room: BabaEncounter) {
         room.schedule(1) { if (npc.isSlotAssigned) room.despawn(npc) }
     }
 
+    fun sarcophagusDied(npc: Npc) {
+        val sarc = sarcophagi.firstOrNull { it.npc === npc && !it.open } ?: return
+        open(sarc, deps.mapClock.cycle)
+    }
+
     fun crush(boulder: Npc) {
         val b = room.staticCoords(boulder.coords)
         for (npc in baboons.toList()) {
