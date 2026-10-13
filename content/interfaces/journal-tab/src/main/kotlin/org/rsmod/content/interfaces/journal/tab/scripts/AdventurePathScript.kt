@@ -1,6 +1,7 @@
 package org.rsmod.content.interfaces.journal.tab.scripts
 
 import jakarta.inject.Inject
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onOpNpc4
@@ -47,11 +48,17 @@ public class AdventurePathScript @Inject constructor(private val eventBus: Event
         onIfModalButton("component.adventurepath:back") {
             player.transmitVar(MAIN_IF_TAB, TAB_PATH_LIST)
         }
-        // UNVERIFIED: no click on it is captured; assumed to act like `back` (guess)
+        // UNVERIFIED: never captured; its clientscript returns to the task list (guess)
         onIfModalButton("component.adventurepath:extra_back_button") {
-            player.transmitVar(MAIN_IF_TAB, TAB_PATH_LIST)
+            player.transmitVar(MAIN_IF_TAB, TAB_PATH_DETAIL)
         }
-        // TODO: task_focus, the path focus op (paths op4) and path_reward need the task system.
+        onIfModalButton("component.adventurepath:task_hint") {
+            if (it.comsub == TASK_HINT_MORE_INFO) {
+                VarPlayerIntMapSetter.set(player, MAIN_IF_TAB, TAB_TASK_VIEW)
+            }
+        }
+        // TODO: task_focus, the path focus op (paths op4), path_reward and the task hint arrow
+        //  (task_hint sub 1) need the task system.
     }
 
     private fun Player.openAdventurePaths() = openAdventurePaths(eventBus)
@@ -81,5 +88,9 @@ public class AdventurePathScript @Inject constructor(private val eventBus: Event
         }
         val task = adventurePathTasks(vars[SELECTED_PATH]).getOrNull(row) ?: return
         transmitVar(SELECTED_TASK, task)
+    }
+
+    private companion object {
+        private const val TASK_HINT_MORE_INFO = 2
     }
 }
