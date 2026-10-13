@@ -19,6 +19,7 @@ internal class BabaBaboons(private val room: BabaEncounter) {
     private val deps = room.raid.deps
     private val sarcophagi = ArrayList<Sarcophagus>()
     private val baboons = HashSet<Npc>()
+    private val attackReady = HashMap<Npc, Int>()
     private val peels = HashMap<CoordGrid, LocInfo>()
 
     private class Sarcophagus(val npc: Npc, val tile: CoordGrid, val south: Boolean) {
@@ -79,6 +80,7 @@ internal class BabaBaboons(private val room: BabaEncounter) {
         for (npc in baboons.toList()) {
             if (!npc.isSlotAssigned) {
                 baboons.remove(npc)
+                attackReady.remove(npc)
                 continue
             }
             act(npc, now, players)
@@ -89,6 +91,7 @@ internal class BabaBaboons(private val room: BabaEncounter) {
 
     fun killed(npc: Npc) {
         if (!baboons.remove(npc)) return
+        attackReady.remove(npc)
         if (room.raid.isActive(ToaInvocationKey.JungleJapes)) dropPeels(npc.coords)
         room.schedule(1) { if (npc.isSlotAssigned) room.despawn(npc) }
     }
@@ -108,6 +111,7 @@ internal class BabaBaboons(private val room: BabaEncounter) {
     fun clear() {
         for (npc in baboons.toList()) if (npc.isSlotAssigned) room.despawn(npc)
         baboons.clear()
+        attackReady.clear()
         for ((tile, loc) in peels) deps.locRepo.del(loc, Int.MAX_VALUE)
         peels.clear()
     }
@@ -127,14 +131,22 @@ internal class BabaBaboons(private val room: BabaEncounter) {
                 npc.walk(target.tile)
                 return
             }
+            if (!startAttack(npc, now)) return
             npc.anim(BabaSeqs.BABOON_MELEE)
             target.npc.hitpoints -= BabaApes.SARC_HIT
             if (target.npc.hitpoints <= 0) open(target, now)
             return
         }
         val victim = players.minByOrNull { dist(npc.coords, it.coords) } ?: return
+        if (!startAttack(npc, now)) return
         npc.anim(BabaSeqs.BABOON_RANGED)
         room.hazardDamage(victim, BabaApes.RANGED_DAMAGE, 0)
+    }
+
+    private fun startAttack(npc: Npc, now: Int): Boolean {
+        if (now < (attackReady[npc] ?: 0)) return false
+        attackReady[npc] = now + BabaApes.BABOON_ATTACK_RATE
+        return true
     }
 
     private fun open(sarc: Sarcophagus, now: Int) {

@@ -23,6 +23,7 @@ internal object BabaLocs {
 internal object BabaApes {
     const val SARCOPHAGUS_HP = 60
     const val BABOON_HP = 10
+    const val BABOON_ATTACK_RATE = 4
     const val SARC_XS_FIRST = 3803
     const val SARC_X_STEP = 5
     const val SARC_COLUMNS = 4
