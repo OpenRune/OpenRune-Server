@@ -3,6 +3,7 @@ package org.rsmod.content.skills.cooking
 import dev.openrune.ServerCacheManager
 import org.rsmod.api.player.back
 import org.rsmod.api.player.hat
+import org.rsmod.api.player.worn.hasMaxCapeMinorPerks
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 
@@ -30,7 +31,7 @@ internal fun Player.wearingChefsHat(): Boolean = "obj.chefs_hat" in worn || "obj
 internal fun Player.hasGuildEntryOutfit(): Boolean {
     if (wearingChefsHat()) return true
     if (cookingOutfits.any { it in worn }) return true
-    if (wearingMaxCapeOrHood()) return true
+    if (wearingMaxCapeOrHood() || hasMaxCapeMinorPerks()) return true
     if (varrockDiaryBody.any { it in worn }) return true
     return false
 }

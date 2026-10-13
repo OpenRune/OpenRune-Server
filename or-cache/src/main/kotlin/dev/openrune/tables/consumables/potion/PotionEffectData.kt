@@ -565,7 +565,13 @@ internal enum class PotionEffectData(
         key = "moonlight_potion",
         kind = "handler",
         handler = "moonlight_potion",
-    );
+    ),
+    GAUNTLET_ENERGY(key = "gauntlet_energy", kind = "run_energy", amount = 40),
+    EGNIOL(
+        key = "egniol", kind = "compound",
+        effects = listOf("dbrow.effect_prayer_restore", "dbrow.effect_gauntlet_energy"),
+        stamina = true, duration = minutes(2),
+    )
 }
 
 private fun seconds(value: Int): Int =

@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.content.minigames.gauntlet)
     implementation(projects.content.bosses.barrows)
     implementation(projects.content.bosses.doomOfMokhaiotl)
     implementation(projects.api.specials)

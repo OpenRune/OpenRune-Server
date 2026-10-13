@@ -6,6 +6,7 @@ import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.cookingLvl
+import org.rsmod.api.player.worn.hasMaxCapePerks
 import org.rsmod.api.script.onOpContentLoc1
 import org.rsmod.api.script.onOpContentMixedLocU
 import org.rsmod.api.script.onOpLoc1
@@ -109,7 +110,7 @@ class CookingEvents @Inject constructor(
 
     private fun ProtectedAccess.hasCookingCape(): Boolean {
         return "obj.skillcape_cooking" in player.worn ||
-            "obj.skillcape_cooking_trimmed" in player.worn
+            "obj.skillcape_cooking_trimmed" in player.worn || player.hasMaxCapePerks()
     }
 
     private fun cookAnim(surface: CookingSurface) =
@@ -177,7 +178,7 @@ class CookingEvents @Inject constructor(
             return
         }
         anim(cookAnim(surface))
-        weakQueue("queue.cooking_cook", 4, CookTask(food, surface, amount, 0))
+        weakQueue("queue.cooking_cook", food.cookTicks ?: DEFAULT_COOK_TICKS, CookTask(food, surface, amount, 0))
     }
 
     private fun ProtectedAccess.processCookTick(task: CookTask) {
@@ -195,7 +196,8 @@ class CookingEvents @Inject constructor(
         val cooked = task.cooked + 1
         if (cooked < task.amount && inv.contains(food.raw.internalName)) {
             anim(cookAnim(task.surface))
-            weakQueue("queue.cooking_cook", 4, CookTask(food, task.surface, task.amount, cooked))
+            val delay = maxOf(food.cookTicks ?: DEFAULT_COOK_TICKS, MIN_REQUEUE_TICKS)
+            weakQueue("queue.cooking_cook", delay, CookTask(food, task.surface, task.amount, cooked))
         }
     }
 
@@ -221,4 +223,11 @@ class CookingEvents @Inject constructor(
         val amount: Int,
         val cooked: Int,
     )
+
+    private companion object {
+        const val DEFAULT_COOK_TICKS = 4
+
+        // A queue added mid-processing is decremented on the same tick, so delay 1 re-fires instantly.
+        const val MIN_REQUEUE_TICKS = 2
+    }
 }

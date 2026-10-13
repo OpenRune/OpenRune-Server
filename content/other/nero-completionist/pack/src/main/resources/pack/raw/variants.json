@@ -1,0 +1,662 @@
+[
+  {
+    "key": "fire",
+    "sourceId": 13329,
+    "sourceSymbol": "obj.skillcape_max_firecape",
+    "name": "Fire Completionist cape",
+    "capeId": 63100,
+    "hoodId": 63101,
+    "capeSymbol": "obj.nero_completionist_fire",
+    "hoodSymbol": "obj.nero_completionist_hood_fire",
+    "inputSymbol": "obj.tzhaar_cape_fire",
+    "inputId": 6570,
+    "colours": [
+      8157,
+      5816,
+      8164,
+      4886
+    ],
+    "particleColour": 16758070,
+    "particleSize": 100,
+    "modelIds": [
+      62200,
+      62201,
+      62202,
+      62203,
+      62204,
+      62205
+    ],
+    "definitionId": 50000,
+    "editable": false
+  },
+  {
+    "key": "saradomin",
+    "sourceId": 13331,
+    "sourceSymbol": "obj.skillcape_max_saradomin",
+    "name": "Saradomin Completionist cape",
+    "capeId": 63102,
+    "hoodId": 63103,
+    "capeSymbol": "obj.nero_completionist_saradomin",
+    "hoodSymbol": "obj.nero_completionist_hood_saradomin",
+    "inputSymbol": "obj.saradomin_cape",
+    "inputId": 2412,
+    "colours": [
+      115,
+      43924,
+      111,
+      43924
+    ],
+    "particleColour": 6065384,
+    "particleSize": 100,
+    "modelIds": [
+      62206,
+      62207,
+      62208,
+      62209,
+      62210,
+      62211
+    ],
+    "definitionId": 50001,
+    "editable": false
+  },
+  {
+    "key": "zamorak",
+    "sourceId": 13333,
+    "sourceSymbol": "obj.skillcape_max_zamorak",
+    "name": "Zamorak Completionist cape",
+    "capeId": 63104,
+    "hoodId": 63105,
+    "capeSymbol": "obj.nero_completionist_zamorak",
+    "hoodSymbol": "obj.nero_completionist_hood_zamorak",
+    "inputSymbol": "obj.zamorak_cape",
+    "inputId": 2414,
+    "colours": [
+      926,
+      12,
+      668,
+      0
+    ],
+    "particleColour": 14299199,
+    "particleSize": 100,
+    "modelIds": [
+      62212,
+      62213,
+      62214,
+      62215,
+      62216,
+      62217
+    ],
+    "definitionId": 50002,
+    "editable": false
+  },
+  {
+    "key": "guthix",
+    "sourceId": 13335,
+    "sourceSymbol": "obj.skillcape_max_guthix",
+    "name": "Guthix Completionist cape",
+    "capeId": 63106,
+    "hoodId": 63107,
+    "capeSymbol": "obj.nero_completionist_guthix",
+    "hoodSymbol": "obj.nero_completionist_hood_guthix",
+    "inputSymbol": "obj.guthix_cape",
+    "inputId": 2413,
+    "colours": [
+      22439,
+      33690,
+      22426,
+      36783
+    ],
+    "particleColour": 4830300,
+    "particleSize": 100,
+    "modelIds": [
+      62218,
+      62219,
+      62220,
+      62221,
+      62222,
+      62223
+    ],
+    "definitionId": 50003,
+    "editable": false
+  },
+  {
+    "key": "accumulator",
+    "sourceId": 13337,
+    "sourceSymbol": "obj.skillcape_max_anma",
+    "name": "Accumulator Completionist cape",
+    "capeId": 63108,
+    "hoodId": 63109,
+    "capeSymbol": "obj.nero_completionist_accumulator",
+    "hoodSymbol": "obj.nero_completionist_hood_accumulator",
+    "inputSymbol": "obj.anma_50_reward",
+    "inputId": 10499,
+    "colours": [
+      10407,
+      16536,
+      103,
+      0
+    ],
+    "particleColour": 8688215,
+    "particleSize": 100,
+    "modelIds": [
+      62224,
+      62225,
+      62226,
+      62227,
+      62228,
+      62229
+    ],
+    "definitionId": 50004,
+    "editable": false
+  },
+  {
+    "key": "ardougne",
+    "sourceId": 20760,
+    "sourceSymbol": "obj.skillcape_max_ardy",
+    "name": "Ardougne Completionist cape",
+    "capeId": 63110,
+    "hoodId": 63111,
+    "capeSymbol": "obj.nero_completionist_ardougne",
+    "hoodSymbol": "obj.nero_completionist_hood_ardougne",
+    "inputSymbol": "obj.ardy_cape_elite",
+    "inputId": 13124,
+    "colours": [
+      43292,
+      47777,
+      47657,
+      0
+    ],
+    "particleColour": 9725912,
+    "particleSize": 100,
+    "modelIds": [
+      62230,
+      62231,
+      62232,
+      62233,
+      62234,
+      62235
+    ],
+    "definitionId": 50005,
+    "editable": false
+  },
+  {
+    "key": "infernal",
+    "sourceId": 21285,
+    "sourceSymbol": "obj.skillcape_max_infernalcape",
+    "name": "Infernal Completionist cape",
+    "capeId": 63112,
+    "hoodId": 63113,
+    "capeSymbol": "obj.nero_completionist_infernal",
+    "hoodSymbol": "obj.nero_completionist_hood_infernal",
+    "inputSymbol": "obj.infernal_cape",
+    "inputId": 21295,
+    "colours": [
+      5070,
+      4236,
+      3898,
+      39174
+    ],
+    "particleColour": 16736284,
+    "particleSize": 100,
+    "modelIds": [
+      62236,
+      62237,
+      62238,
+      62239,
+      62240,
+      62241
+    ],
+    "definitionId": 50006,
+    "editable": false
+  },
+  {
+    "key": "imbued_saradomin",
+    "sourceId": 21776,
+    "sourceSymbol": "obj.skillcape_max_saradomin2",
+    "name": "Imbued Saradomin Completionist cape",
+    "capeId": 63114,
+    "hoodId": 63115,
+    "capeSymbol": "obj.nero_completionist_imbued_saradomin",
+    "hoodSymbol": "obj.nero_completionist_hood_imbued_saradomin",
+    "inputSymbol": "obj.ma2_saradomin_cape",
+    "inputId": 21791,
+    "colours": [
+      43924,
+      115,
+      43924,
+      115
+    ],
+    "particleColour": 8628223,
+    "particleSize": 100,
+    "modelIds": [
+      62242,
+      62243,
+      62244,
+      62245,
+      62246,
+      62247
+    ],
+    "definitionId": 50007,
+    "editable": false
+  },
+  {
+    "key": "imbued_zamorak",
+    "sourceId": 21780,
+    "sourceSymbol": "obj.skillcape_max_zamorak2",
+    "name": "Imbued Zamorak Completionist cape",
+    "capeId": 63116,
+    "hoodId": 63117,
+    "capeSymbol": "obj.nero_completionist_imbued_zamorak",
+    "hoodSymbol": "obj.nero_completionist_hood_imbued_zamorak",
+    "inputSymbol": "obj.ma2_zamorak_cape",
+    "inputId": 21795,
+    "colours": [
+      668,
+      0,
+      668,
+      12
+    ],
+    "particleColour": 12457778,
+    "particleSize": 100,
+    "modelIds": [
+      62248,
+      62249,
+      62250,
+      62251,
+      62252,
+      62253
+    ],
+    "definitionId": 50008,
+    "editable": false
+  },
+  {
+    "key": "imbued_guthix",
+    "sourceId": 21784,
+    "sourceSymbol": "obj.skillcape_max_guthix2",
+    "name": "Imbued Guthix Completionist cape",
+    "capeId": 63118,
+    "hoodId": 63119,
+    "capeSymbol": "obj.nero_completionist_imbued_guthix",
+    "hoodSymbol": "obj.nero_completionist_hood_imbued_guthix",
+    "inputSymbol": "obj.ma2_guthix_cape",
+    "inputId": 21793,
+    "colours": [
+      36783,
+      22426,
+      33690,
+      22426
+    ],
+    "particleColour": 7137924,
+    "particleSize": 100,
+    "modelIds": [
+      62254,
+      62255,
+      62256,
+      62257,
+      62258,
+      62259
+    ],
+    "definitionId": 50009,
+    "editable": false
+  },
+  {
+    "key": "assembler",
+    "sourceId": 21898,
+    "sourceSymbol": "obj.skillcape_max_assembler",
+    "name": "Assembler Completionist cape",
+    "capeId": 63120,
+    "hoodId": 63121,
+    "capeSymbol": "obj.nero_completionist_assembler",
+    "hoodSymbol": "obj.nero_completionist_hood_assembler",
+    "inputSymbol": "obj.avas_assembler",
+    "inputId": 22109,
+    "colours": [
+      35012,
+      32980,
+      16462,
+      35247
+    ],
+    "particleColour": 6933204,
+    "particleSize": 100,
+    "modelIds": [
+      62260,
+      62261,
+      62262,
+      62263,
+      62264,
+      62265
+    ],
+    "definitionId": 50010,
+    "editable": false
+  },
+  {
+    "key": "mythical",
+    "sourceId": 24855,
+    "sourceSymbol": "obj.skillcape_max_mythical",
+    "name": "Mythical Completionist cape",
+    "capeId": 63122,
+    "hoodId": 63123,
+    "capeSymbol": "obj.nero_completionist_mythical",
+    "hoodSymbol": "obj.nero_completionist_hood_mythical",
+    "inputSymbol": "obj.mythical_cape",
+    "inputId": 22114,
+    "colours": [
+      127,
+      76,
+      107,
+      99
+    ],
+    "particleColour": 15528959,
+    "particleSize": 100,
+    "modelIds": [
+      62266,
+      62267,
+      62268,
+      62269,
+      62270,
+      62271
+    ],
+    "definitionId": 50011,
+    "editable": false
+  },
+  {
+    "key": "masori_assembler",
+    "sourceId": 27363,
+    "sourceSymbol": "obj.skillcape_max_assembler_masori",
+    "name": "Masori assembler Completionist cape",
+    "capeId": 63124,
+    "hoodId": 63125,
+    "capeSymbol": "obj.nero_completionist_masori_assembler",
+    "hoodSymbol": "obj.nero_completionist_hood_masori_assembler",
+    "inputSymbol": "obj.avas_assembler_masori",
+    "inputId": 27374,
+    "colours": [
+      6982,
+      38156,
+      6843,
+      32906
+    ],
+    "particleColour": 14796663,
+    "particleSize": 100,
+    "modelIds": [
+      62272,
+      62273,
+      62274,
+      62275,
+      62276,
+      62277
+    ],
+    "definitionId": 50012,
+    "editable": false
+  },
+  {
+    "key": "dizana",
+    "sourceId": 28902,
+    "sourceSymbol": "obj.skillcape_max_dizanas",
+    "name": "Dizana's Completionist cape",
+    "capeId": 63126,
+    "hoodId": 63127,
+    "capeSymbol": "obj.nero_completionist_dizana",
+    "hoodSymbol": "obj.nero_completionist_hood_dizana",
+    "inputSymbol": "obj.dizanas_quiver_infinite",
+    "inputId": 28955,
+    "colours": [
+      6364,
+      6352,
+      6379,
+      64033
+    ],
+    "particleColour": 15243070,
+    "particleSize": 100,
+    "modelIds": [
+      62278,
+      62279,
+      62280,
+      62281,
+      62282,
+      62283
+    ],
+    "definitionId": 50013,
+    "editable": false
+  },
+  {
+    "key": "infernal_locked",
+    "sourceId": 24133,
+    "sourceSymbol": "obj.skillcape_max_infernalcape_trouver",
+    "name": "Infernal Completionist cape (l)",
+    "capeId": 63128,
+    "hoodId": 63129,
+    "capeSymbol": "obj.nero_completionist_infernal_locked",
+    "hoodSymbol": "obj.nero_completionist_hood_infernal_locked",
+    "inputSymbol": "obj.infernal_cape_trouver",
+    "inputId": 24224,
+    "colours": [
+      5070,
+      4236,
+      3898,
+      39174
+    ],
+    "particleColour": 16736284,
+    "particleSize": 100,
+    "modelIds": [
+      62236,
+      62237,
+      62238,
+      62239,
+      62240,
+      62241
+    ],
+    "definitionId": 50006,
+    "editable": false
+  },
+  {
+    "key": "fire_locked",
+    "sourceId": 24134,
+    "sourceSymbol": "obj.skillcape_max_firecape_trouver",
+    "name": "Fire Completionist cape (l)",
+    "capeId": 63130,
+    "hoodId": 63131,
+    "capeSymbol": "obj.nero_completionist_fire_locked",
+    "hoodSymbol": "obj.nero_completionist_hood_fire_locked",
+    "inputSymbol": "obj.tzhaar_cape_fire_trouver",
+    "inputId": 24223,
+    "colours": [
+      8157,
+      5816,
+      8164,
+      4886
+    ],
+    "particleColour": 16758070,
+    "particleSize": 100,
+    "modelIds": [
+      62200,
+      62201,
+      62202,
+      62203,
+      62204,
+      62205
+    ],
+    "definitionId": 50000,
+    "editable": false
+  },
+  {
+    "key": "assembler_locked",
+    "sourceId": 24135,
+    "sourceSymbol": "obj.skillcape_max_assembler_trouver",
+    "name": "Assembler Completionist cape (l)",
+    "capeId": 63132,
+    "hoodId": 63133,
+    "capeSymbol": "obj.nero_completionist_assembler_locked",
+    "hoodSymbol": "obj.nero_completionist_hood_assembler_locked",
+    "inputSymbol": "obj.avas_assembler_trouver",
+    "inputId": 24222,
+    "colours": [
+      35012,
+      32980,
+      16462,
+      35247
+    ],
+    "particleColour": 6933204,
+    "particleSize": 100,
+    "modelIds": [
+      62260,
+      62261,
+      62262,
+      62263,
+      62264,
+      62265
+    ],
+    "definitionId": 50010,
+    "editable": false
+  },
+  {
+    "key": "imbued_saradomin_locked",
+    "sourceId": 24232,
+    "sourceSymbol": "obj.skillcape_max_saradomin2_trouver",
+    "name": "Imbued Saradomin Completionist cape (l)",
+    "capeId": 63134,
+    "hoodId": 63135,
+    "capeSymbol": "obj.nero_completionist_imbued_saradomin_locked",
+    "hoodSymbol": "obj.nero_completionist_hood_imbued_saradomin_locked",
+    "inputSymbol": "obj.ma2_saradomin_cape_trouver",
+    "inputId": 24248,
+    "colours": [
+      43924,
+      115,
+      43924,
+      115
+    ],
+    "particleColour": 8628223,
+    "particleSize": 100,
+    "modelIds": [
+      62242,
+      62243,
+      62244,
+      62245,
+      62246,
+      62247
+    ],
+    "definitionId": 50007,
+    "editable": false
+  },
+  {
+    "key": "imbued_zamorak_locked",
+    "sourceId": 24233,
+    "sourceSymbol": "obj.skillcape_max_zamorak2_trouver",
+    "name": "Imbued Zamorak Completionist cape (l)",
+    "capeId": 63136,
+    "hoodId": 63137,
+    "capeSymbol": "obj.nero_completionist_imbued_zamorak_locked",
+    "hoodSymbol": "obj.nero_completionist_hood_imbued_zamorak_locked",
+    "inputSymbol": "obj.ma2_zamorak_cape_trouver",
+    "inputId": 24250,
+    "colours": [
+      668,
+      0,
+      668,
+      12
+    ],
+    "particleColour": 12457778,
+    "particleSize": 100,
+    "modelIds": [
+      62248,
+      62249,
+      62250,
+      62251,
+      62252,
+      62253
+    ],
+    "definitionId": 50008,
+    "editable": false
+  },
+  {
+    "key": "imbued_guthix_locked",
+    "sourceId": 24234,
+    "sourceSymbol": "obj.skillcape_max_guthix2_trouver",
+    "name": "Imbued Guthix Completionist cape (l)",
+    "capeId": 63138,
+    "hoodId": 63139,
+    "capeSymbol": "obj.nero_completionist_imbued_guthix_locked",
+    "hoodSymbol": "obj.nero_completionist_hood_imbued_guthix_locked",
+    "inputSymbol": "obj.ma2_guthix_cape_trouver",
+    "inputId": 24249,
+    "colours": [
+      36783,
+      22426,
+      33690,
+      22426
+    ],
+    "particleColour": 7137924,
+    "particleSize": 100,
+    "modelIds": [
+      62254,
+      62255,
+      62256,
+      62257,
+      62258,
+      62259
+    ],
+    "definitionId": 50009,
+    "editable": false
+  },
+  {
+    "key": "masori_assembler_locked",
+    "sourceId": 27365,
+    "sourceSymbol": "obj.skillcape_max_assembler_masori_trouver",
+    "name": "Masori assembler Completionist cape (l)",
+    "capeId": 63140,
+    "hoodId": 63141,
+    "capeSymbol": "obj.nero_completionist_masori_assembler_locked",
+    "hoodSymbol": "obj.nero_completionist_hood_masori_assembler_locked",
+    "inputSymbol": "obj.avas_assembler_masori_trouver",
+    "inputId": 27376,
+    "colours": [
+      6982,
+      38156,
+      6843,
+      32906
+    ],
+    "particleColour": 14796663,
+    "particleSize": 100,
+    "modelIds": [
+      62272,
+      62273,
+      62274,
+      62275,
+      62276,
+      62277
+    ],
+    "definitionId": 50012,
+    "editable": false
+  },
+  {
+    "key": "dizana_locked",
+    "sourceId": 28906,
+    "sourceSymbol": "obj.skillcape_max_dizanas_trouver",
+    "name": "Dizana's Completionist cape (l)",
+    "capeId": 63142,
+    "hoodId": 63143,
+    "capeSymbol": "obj.nero_completionist_dizana_locked",
+    "hoodSymbol": "obj.nero_completionist_hood_dizana_locked",
+    "inputSymbol": "obj.dizanas_quiver_infinite_trouver",
+    "inputId": 28957,
+    "colours": [
+      6364,
+      6352,
+      6379,
+      64033
+    ],
+    "particleColour": 15243070,
+    "particleSize": 100,
+    "modelIds": [
+      62278,
+      62279,
+      62280,
+      62281,
+      62282,
+      62283
+    ],
+    "definitionId": 50013,
+    "editable": false
+  }
+]

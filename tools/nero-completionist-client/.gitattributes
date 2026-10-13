@@ -1,0 +1,6 @@
+# These deployed inputs are SHA-bound; Git must preserve their exact bytes.
+/NativeClientCopy.java -text
+/client/javconfig-template.ws -text
+/runtime-current.txt -text
+/runtime-*/** -text
+/client-plugin/*.jar -text

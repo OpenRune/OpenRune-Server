@@ -36,7 +36,15 @@ fun findContentPlugins(): List<Project> =
     project(":content").subprojects.filter { it.name.endsWith("-pack") && it.buildFile.exists() }
 
 tasks {
-    register("buildCache",JavaExec::class) {
+    register<JavaExec>("buildGauntletCache") {
+        group = "cache"
+        description = "Pack only the Gauntlet definitions over this checkout's accepted rev-240 cache"
+        classpath = sourceSets["main"].runtimeClasspath
+        mainClass.set("dev.openrune.tools.GauntletCacheToolKt")
+        workingDir = rootProject.file("or-cache")
+        maxHeapSize = "4g"
+    }
+    register("buildCache", JavaExec::class) {
         group = "cache"
         description = "Build Cache"
         classpath = sourceSets["main"].runtimeClasspath
@@ -44,7 +52,7 @@ tasks {
         args = listOf("BUILD")
     }
 
-    register("freshCache",JavaExec::class) {
+    register("freshCache", JavaExec::class) {
         group = "cache"
         description = "Fresh Install Cache"
 
@@ -72,7 +80,4 @@ tasks {
         workingDir = rootProject.projectDir
         dependsOn("classes")
     }
-
-
-
 }

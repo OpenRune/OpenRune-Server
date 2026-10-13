@@ -59,13 +59,15 @@ class MaxCapeScript @Inject constructor(
                 MaxCapeOptions.held(it.op.ordinal + 1, it.subop, cape == MaxCapeOptions.WORN)?.let { action -> perform(action) }
             }
         }
-        onOpWorn2(MaxCapeOptions.WORN) { perform(CapeAction.Teleport(CapeDestination.Home)) }
-        onOpWorn3(MaxCapeOptions.WORN) { perform(CapeAction.Teleport(CapeDestination.Crafting)) }
-        onOpWorn4(MaxCapeOptions.WORN) { choose(MaxCapeOptions.guilds) }
-        onOpWorn5(MaxCapeOptions.WORN) { choose(MaxCapeOptions.skilling) }
-        onOpWorn6(MaxCapeOptions.WORN) { choose(MaxCapeOptions.portals) }
-        onOpWorn7(MaxCapeOptions.WORN) { choose(MaxCapeOptions.spells) }
-        onOpWorn8(checkNotNull(ServerCacheManager.getItem(MaxCapeOptions.WORN.asRSCM(RSCMType.OBJ)))) { choose(MaxCapeOptions.features) }
+        for (cape in MaxCapeOptions.wornCapes) {
+        onOpWorn2(cape) { perform(CapeAction.Teleport(CapeDestination.Home)) }
+        onOpWorn3(cape) { perform(CapeAction.Teleport(CapeDestination.Crafting)) }
+        onOpWorn4(cape) { choose(MaxCapeOptions.guilds) }
+        onOpWorn5(cape) { choose(MaxCapeOptions.skilling) }
+        onOpWorn6(cape) { choose(MaxCapeOptions.portals) }
+        onOpWorn7(cape) { choose(MaxCapeOptions.spells) }
+        onOpWorn8(checkNotNull(ServerCacheManager.getItem(cape.asRSCM(RSCMType.OBJ)))) { choose(MaxCapeOptions.features) }
+        }
         val side = checkNotNull(equipment_tab_to_slots_map[Wearpos.Back.slot])
         onIfOverlaySubOpMenu(RSCM.getReverseMapping(RSCMType.COMPONENT, side.packed)) {
             wornSubOp(it.obj?.id, it.op, it.subop)
@@ -75,7 +77,7 @@ class MaxCapeScript @Inject constructor(
             wornSubOp(it.obj?.id, it.op, it.subop, modal = true)
         }
         onPlayerHit {
-            if (hit.damage > 0 && player.back.isType(MaxCapeOptions.WORN) && shouldEscape(player)) {
+            if (hit.damage > 0 && MaxCapeOptions.wornCapes.any { player.back.isType(it) } && shouldEscape(player)) {
                 player.capeEscapePending = 1
             }
         }
@@ -83,7 +85,7 @@ class MaxCapeScript @Inject constructor(
 
     private suspend fun ProtectedAccess.wornSubOp(packetItem: Int?, op: IfButtonOp, subop: Int, modal: Boolean = false) {
         val protected = if (modal) player.isModalButtonProtected else player.isAccessProtected
-        if (protected || !player.back.isType(MaxCapeOptions.WORN)) return
+        if (protected || !MaxCapeOptions.wornCapes.any { player.back.isType(it) }) return
         if (packetItem != null && packetItem != player.back?.id) return
         val action = MaxCapeOptions.worn(op.ordinal + 1, subop) ?: return
         clearPendingAction()
@@ -192,7 +194,7 @@ class MaxCapeScript @Inject constructor(
     }
 
     override fun onPostTick(player: Player) {
-        if (!player.back.isType(MaxCapeOptions.WORN) || player.hitpoints <= 0) {
+        if (!MaxCapeOptions.wornCapes.any { player.back.isType(it) } || player.hitpoints <= 0) {
             player.capeEscapePending = 0
             return
         }
@@ -203,7 +205,7 @@ class MaxCapeScript @Inject constructor(
             return
         }
         val launched = launcher.launch(player) {
-            if (!shouldEscape(player) || !player.back.isType(MaxCapeOptions.WORN)) return@launch
+            if (!shouldEscape(player) || !MaxCapeOptions.wornCapes.any { player.back.isType(it) }) return@launch
             clearPendingAction()
             telejump(CapeDestination.Home.coords, TeleportType.MemberLevel30)
             if (coords == CapeDestination.Home.coords) mes("Your max cape's Ring of Life effect brings you to safety.")

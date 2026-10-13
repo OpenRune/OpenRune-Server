@@ -7,6 +7,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.player.worn.hasMaxCapePerks
 import org.rsmod.api.script.advanced.onWearposChange
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpLoc1
@@ -217,7 +218,7 @@ class AltarEvents @Inject constructor(
     private fun ProtectedAccess.playerHasRunecraftCape(): Boolean =
         "obj.skillcape_runecrafting" in player.worn ||
             "obj.skillcape_runecrafting_trimmed" in player.worn ||
-            "obj.skillcape_max" in player.worn
+            player.hasMaxCapePerks()
 
     private fun ProtectedAccess.nearestEntrance(entrances: Map<String, CoordGrid>): CoordGrid? {
         if (entrances.isEmpty()) {

@@ -1,0 +1,2 @@
+# Cache manifest entries are verified byte-for-byte, including small configs.
+/cache/** -text

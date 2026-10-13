@@ -53,6 +53,7 @@ import org.rsmod.api.utils.format.formatAmount
 import org.rsmod.api.utils.system.SafeServiceExit
 import org.rsmod.content.bosses.barrows.BarrowsTestLoot
 import org.rsmod.content.bosses.doom.DoomTestLoot
+import org.rsmod.content.minigames.gauntlet.GauntletTestLoot
 import org.rsmod.game.GameUpdate
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Npc
@@ -680,6 +681,17 @@ constructor(
                 }
                 injector.getInstance(BarrowsTestLoot::class.java).generate(player, count)
                 player.mes("Generated Barrows chest loot x$count (6 brothers, 100% potential). Active run and chest count unchanged.")
+                return
+            }
+            if (args[0].lowercase() in setOf("gauntlet", "cg", "corrupted_gauntlet", "corrupted")) {
+                val count = if (args.size == 1) 100 else args[1].toIntOrNull()
+                if (args.size > 2 || count == null || count !in 1..1000) {
+                    player.mes("Use ::testloot gauntlet|cg [count: 1-1000] (default: 100)")
+                    return
+                }
+                val corrupted = !args[0].equals("gauntlet", ignoreCase = true)
+                injector.getInstance(GauntletTestLoot::class.java).generate(player, count, corrupted)
+                player.mes("Generated ${if (corrupted) "Corrupted " else ""}Gauntlet chest loot x$count. Collection Log updated; active run and pending chest preserved.")
                 return
             }
             val npcName =

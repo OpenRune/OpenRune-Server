@@ -1,0 +1,56 @@
+[gamevals.timer]
+gauntlet_time_limit = 420
+
+[gamevals.dbtable]
+gauntlet_room_slots = 56000
+
+[gamevals.dbrow]
+paddlefish = 63680
+effect_gauntlet_energy = 63681
+effect_egniol = 63682
+egniol_potion = 63683
+cooking_paddlefish = 55517
+mining_gauntlet_rock = 55515
+mining_gauntlet_rock_hm = 55516
+gauntlet_slots_middle_0 = 56001
+gauntlet_slots_middle_1 = 56002
+gauntlet_slots_middle_2 = 56003
+gauntlet_slots_middle_3 = 56004
+gauntlet_slots_edge_0 = 56005
+gauntlet_slots_edge_1 = 56006
+gauntlet_slots_edge_2 = 56007
+gauntlet_slots_edge_3 = 56008
+gauntlet_slots_corner_0 = 56009
+gauntlet_slots_corner_1 = 56010
+gauntlet_slots_corner_2 = 56011
+gauntlet_slots_corner_3 = 56012
+
+[gamevals.varn]
+hunllef_style = 60
+hunllef_cycle = 61
+hunllef_protect = 62
+hunllef_off_prayer = 63
+
+[gamevals.varp]
+gauntlet_reward_tier = 65300
+gauntlet_points = 65301
+gauntlet_flags = 65302
+
+[gamevals.varbit]
+gauntlet_spoken_to_bryn = 64300
+gauntlet_holding = 64301
+gauntlet_reward_pending = 64302
+
+[gamevals.queue]
+gauntlet_gather = 523
+
+[gamevals.param]
+woodcutting_fixed_yields = 65384
+
+[gamevals.enum]
+gauntlet_tree_axes = 65407
+
+[gamevals.projanim]
+crystal_staff = 18
+crystal_dragon_magic = 19
+crystal_dark_beast_ranged = 20

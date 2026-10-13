@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager
 import org.rsmod.api.player.back
 import org.rsmod.api.player.stat.baseCraftingLvl
 import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.player.worn.hasMaxCapeMinorPerks
 import org.rsmod.content.skills.crafting.util.CraftingConstants
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
@@ -27,7 +28,7 @@ internal fun Player.ownsCraftingSkillcape(): Boolean = CraftingConstants.CRAFTIN
 
 internal fun Player.ownsCraftingHood(): Boolean = CraftingConstants.CRAFTING_HOOD in inv || CraftingConstants.CRAFTING_HOOD in worn
 
-internal fun Player.hasGuildEntryOutfit(): Boolean = wearingCraftingApron() || wearingCraftingSkillcape() || wearingMaxCape()
+internal fun Player.hasGuildEntryOutfit(): Boolean = wearingCraftingApron() || wearingCraftingSkillcape() || wearingMaxCape() || hasMaxCapeMinorPerks()
 
 internal fun Player.canUseGuildBank(): Boolean = baseCraftingLvl >= CraftingConstants.MAX_CRAFTING_LEVEL || hasFaladorHardDiary() || hasFaladorEliteDiary()
 

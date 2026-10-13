@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.smithing.smelting
 
+import org.rsmod.api.player.worn.hasMaxCapePerks
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.smithing.SmithingBarsRow
 import org.rsmod.content.skills.smithing.util.SmithingBonuses.hasCoalSmeltBoost
@@ -39,5 +40,5 @@ object SmithingSmeltXp {
         "obj.gauntlets_of_goldsmithing" in worn ||
             "obj.skillcape_smithing" in worn ||
             "obj.skillcape_smithing_trimmed" in worn ||
-            "obj.skillcape_max" in worn
+            hasMaxCapePerks()
 }
