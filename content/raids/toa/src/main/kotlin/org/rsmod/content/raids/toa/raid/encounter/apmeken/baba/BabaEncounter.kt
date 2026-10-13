@@ -123,6 +123,14 @@ class BabaEncounter(
         return coords(CoordGrid(x, z, BabaCoords.BABA.level))
     }
 
+    internal fun repeatRockfall() {
+        val boss = baba ?: return
+        if (stage != ToaStage.STARTED || isRolling(boss)) return
+        if (boss.vars[BabaVarns.THROW_AT] != 0) return
+        val targets = targets().ifEmpty { return }
+        deps.bossDeps.runAbility(boss, lowestHpTarget(boss, targets), BabaAbilities.ROCKFALL)
+    }
+
     internal fun rollReset(boss: Npc) {
         if (boss === baba) rockfall.clear()
     }

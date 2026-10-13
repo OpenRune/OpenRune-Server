@@ -131,6 +131,9 @@ internal object BabaRocks {
     const val CAST_MIN = 2
     const val CAST_MAX = 5
     const val THROW_DAMAGE = 24
+    const val COVER_DAMAGE_RUBBLE = 10
+    const val COVER_DAMAGE_SARCOPHAGUS = 30
+    const val COVER_DAMAGE_BABOON = 12
     const val THROW_TEXT = "<col=ff289d>Ba-Ba throws a large boulder at you.</col>"
 }
 
