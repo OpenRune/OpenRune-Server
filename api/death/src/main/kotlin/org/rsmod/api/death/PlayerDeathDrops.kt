@@ -126,6 +126,18 @@ constructor(
         )
     }
 
+    /** [result] with [items], taken out of storage on death, added to the lost items. */
+    public fun withLost(result: DeathDropResult, items: List<InvObj>): DeathDropResult {
+        if (items.isEmpty()) {
+            return result
+        }
+        val (untradeable, tradeable) = items.partition { isUntradeable(it) }
+        return result.copy(
+            lostTradeable = result.lostTradeable + tradeable,
+            lostUntradeable = result.lostUntradeable + untradeable,
+        )
+    }
+
     public fun spawnRemains(coords: CoordGrid, handling: PlayerDeathHandling) {
         val obj = Obj.fromServer(mapClock, coords, InvObj(BONES_OBJ, 1))
         objRepo.add(obj, handling.dropDuration, handling.revealDelay)

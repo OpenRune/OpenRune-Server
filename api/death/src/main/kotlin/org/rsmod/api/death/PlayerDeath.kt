@@ -30,6 +30,7 @@ constructor(
     private val drops: PlayerDeathDrops,
     private val handlingResolver: PlayerDeathHandlingResolver,
     private val cleanupHooks: Set<PlayerDeathCleanupHook>,
+    private val storageHooks: Set<PlayerDeathStorageHook>,
     private val respawnHooks: Set<PlayerRespawnHook>,
     private val areaChecker: AreaChecker,
 ) {
@@ -94,7 +95,8 @@ constructor(
         val context = buildContext(player, deathCoords, killer)
         val handling = handlingResolver.resolve(context)
 
-        val result = drops.selectDrops(player, context, handling)
+        val emptied = storageHooks.flatMap { it.empty(player, context.isPvpDeath) }
+        val result = drops.withLost(drops.selectDrops(player, context, handling), emptied)
         drops.applyDrops(player, result, handling, deathCoords)
         drops.spawnRemains(deathCoords, handling)
 
