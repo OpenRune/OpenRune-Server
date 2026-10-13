@@ -1,3 +1,6 @@
+[gamevals.area]
+death_office = 32440
+
 [gamevals.dbtable]
 death_office_entrances = 64420
 
@@ -10,6 +13,7 @@ death_office_entrance_ferox = 59004
 death_office_entrance_kourend = 59005
 death_office_entrance_prifddinas = 59006
 death_office_entrance_civitas = 59007
+music_modern_death_office = 59008
 
 [gamevals.varp]
 death_office_entrance = 64444

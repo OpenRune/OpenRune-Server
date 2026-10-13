@@ -1,6 +1,7 @@
 package org.rsmod.content.areas.misc.deathsoffice
 
 import com.google.inject.AbstractModule
+import com.google.inject.Scopes
 import com.google.inject.multibindings.Multibinder
 import dev.openrune.types.ItemServerType
 import org.junit.jupiter.api.Test
@@ -13,6 +14,7 @@ import org.rsmod.api.death.PlayerGraveHook
 import org.rsmod.api.death.PlayerRespawnHook
 import org.rsmod.api.death.plugin.PlayerDeathScript
 import org.rsmod.api.death.plugin.StandardPvmDeathHook
+import org.rsmod.api.music.MusicRepository
 import org.rsmod.api.player.queueDeath
 import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.testing.GameTestState
@@ -71,12 +73,13 @@ class DeathTutorialTest {
 
     private fun GameTestState.runTutorialTest(body: GameTestScope.() -> Unit) =
         runInjectedGameTest(
-            Gravestones::class,
+            MusicRepository::class,
             DeathHooks(),
             PlayerDeathScript::class,
             GravestoneScript::class,
             DeathsOfficeScript::class,
-        ) {
+        ) { music ->
+            music.load()
             player.placeAt(CoordGrid(0, 50, 50, 30, 30))
             player.clearAllInvs()
             player.observerUUID = 1L
@@ -101,6 +104,7 @@ class DeathTutorialTest {
                 .to(DeathTutorialArrival::class.java)
             Multibinder.newSetBinder(binder(), PlayerRespawnHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerDeathStorageHook::class.java)
+            bind(MusicRepository::class.java).`in`(Scopes.SINGLETON)
         }
     }
 }

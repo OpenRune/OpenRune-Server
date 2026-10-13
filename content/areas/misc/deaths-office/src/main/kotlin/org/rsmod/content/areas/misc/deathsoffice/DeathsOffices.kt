@@ -2,6 +2,7 @@ package org.rsmod.content.areas.misc.deathsoffice
 
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.player.music.MusicPlayer
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
@@ -28,6 +29,7 @@ constructor(
     private val regionRepo: RegionRepository,
     private val npcRepo: NpcRepository,
     private val collision: CollisionFlagMap,
+    private val music: MusicPlayer,
 ) {
     private val offices = mutableMapOf<Player, Region>()
 
@@ -45,6 +47,9 @@ constructor(
             player.dropTrigger(DROP_TRIGGER)
         }
         PathingEntityCommon.telejump(player, collision, region.normal[static])
+        // Not an area trigger: those wait until Death's greeting ends, and the track starts on the
+        // tick the player arrives.
+        music.enterArea(player, MUSIC_AREA)
         return true
     }
 
@@ -82,6 +87,7 @@ constructor(
     internal companion object {
         const val DEATH = "npc.death_office_death"
         const val DROP_TRIGGER = "droptrigger.death_office"
+        const val MUSIC_AREA = "area.death_office"
 
         val DEATH_TILE = CoordGrid(3179, 5726)
         val DESK_TILE = CoordGrid(3176, 5726)

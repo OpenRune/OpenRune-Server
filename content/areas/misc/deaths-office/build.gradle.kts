@@ -14,5 +14,6 @@ dependencies {
     integrationImplementation(projects.content.other.gravestones)
     integrationImplementation(projects.api.death)
     integrationImplementation(projects.api.deathPlugin)
+    integrationImplementation(projects.api.music)
     integrationImplementation(projects.api.registry)
 }
