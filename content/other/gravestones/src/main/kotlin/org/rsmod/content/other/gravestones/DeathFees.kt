@@ -8,6 +8,8 @@ import org.rsmod.game.entity.Player
 /** Death's Coffer: coins credited for items sacrificed to Death, spent only on death fees. */
 var Player.deathCoffer by intVarp("varp.death_coffer")
 
+private var Player.coinsLost by intVarp("varp.tracking_coins_lost")
+
 enum class DeathFeeSource {
     Coffer,
     Inventory,
@@ -25,6 +27,8 @@ fun ProtectedAccess.payDeathFee(fee: Int): DeathFeeSource? {
     // fee alone (the wiki's wording suggests one source).
     if (player.deathCoffer >= fee) {
         player.deathCoffer -= fee
+        // UNVERIFIED: that coffer payments count as coins lost, like bank ones.
+        player.coinsLost += fee
         return DeathFeeSource.Coffer
     }
     val (from, source) =
@@ -33,7 +37,11 @@ fun ProtectedAccess.payDeathFee(fee: Int): DeathFeeSource? {
             bank.count(COINS) >= fee -> bank to DeathFeeSource.Bank
             else -> return null
         }
-    return if (player.invDel(from, COINS, fee).success) source else null
+    if (player.invDel(from, COINS, fee).failure) {
+        return null
+    }
+    player.coinsLost += fee
+    return source
 }
 
 fun deathFeeMessage(source: DeathFeeSource, fee: Int): String {

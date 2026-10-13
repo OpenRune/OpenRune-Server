@@ -69,6 +69,9 @@ constructor(
         player.routeRequest = RouteRequestCoord(region.normal[DESK_TILE])
     }
 
+    /** Where [static] lies in [player]'s copy of the office, if they are in one. */
+    fun local(player: Player, static: CoordGrid): CoordGrid? = offices[player]?.normal?.get(static)
+
     fun isAtDesk(player: Player): Boolean = player.coords == offices[player]?.normal?.get(DESK_TILE)
 
     fun death(player: Player): Npc? {

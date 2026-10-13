@@ -10,10 +10,12 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.content.other.gravestones.inDeathTutorial
 import org.rsmod.content.other.gravestones.metDeath
 import org.rsmod.game.entity.Player
 
+private var Player.chatModalUnclamp by intVarBit("varbit.chatmodal_unclamp")
 private var Player.heardGravestones by boolVarBit("varbit.death_tutorial_heard_gravestones")
 private var Player.heardFees by boolVarBit("varbit.death_tutorial_heard_fees")
 private var Player.heardTimer by boolVarBit("varbit.death_tutorial_heard_timer")
@@ -210,6 +212,7 @@ internal object DeathTutorial {
             "There is a menu to predict these things for you. Take a look at your Worn Items " +
                 "side-panel...",
         )
+        access.runClientScript(clientScript(SIDEBUTTON_SWITCH), WORN_TAB)
         access.graphicbox(
             KEPT_ON_DEATH_GRAPHIC,
             KEPT_ON_DEATH_SIZE,
@@ -226,6 +229,7 @@ internal object DeathTutorial {
      */
     private suspend fun ProtectedAccess.graphicbox(graphic: Int, size: Int, text: String) {
         mes(text.replace("<br>", " "), ChatType.Mesbox)
+        player.chatModalUnclamp = 0
         runClientScript(clientScript("clientscript.[clientscript,toplevel_chatbox_resetbackground]"))
         ifOpenSub("interface.graphicbox", "component.chatbox:chatmodal", IfSubType.Modal)
         runClientScript(clientScript("clientscript.[clientscript,graphicbox_setbuttons]"), "Click here to continue")
@@ -236,6 +240,9 @@ internal object DeathTutorial {
     }
 
     private fun clientScript(name: String): Int = name.asRSCM(RSCMType.CLIENTSCRIPT)
+
+    private const val SIDEBUTTON_SWITCH = "clientscript.[clientscript,toplevel_sidebutton_switch]"
+    private const val WORN_TAB = 4
 
     private const val GRAVE_OBJ = "obj.sirens_tome"
 

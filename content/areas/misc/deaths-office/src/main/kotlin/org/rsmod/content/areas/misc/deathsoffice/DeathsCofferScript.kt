@@ -116,6 +116,7 @@ class DeathsCofferScript @Inject constructor(private val marketPrices: MarketPri
                 "Death will not accept items worth less than 10,000 coins per " +
                     "<col=ef1020>individual item</col>."
             )
+            soundSynth(REFUSED_SYNTH)
             return
         }
         val count = player.selectedCount.coerceAtMost(inv.count(type.internalName))
@@ -132,6 +133,8 @@ class DeathsCofferScript @Inject constructor(private val marketPrices: MarketPri
         player.creditEach = 0
         player.selectedCount = 0
         player.selectedSlot = -1
+        soundSynth(SACRIFICE_SYNTH)
+        soundSynth(PAYMENT_SYNTH, delay = PAYMENT_SYNTH_DELAY)
         ifSetAnim(PORTAL, seq(PORTAL_SHRINK))
         ifSetObj(DISPLAY, BLANK_OBJ, DISPLAY_ZOOM)
         delay(3)
@@ -175,6 +178,12 @@ class DeathsCofferScript @Inject constructor(private val marketPrices: MarketPri
         const val DISPLAY_ZOOM = 400
         const val PORTAL_SHRINK = "seq.poh_portal_shrinkunshrinkloop"
         const val PORTAL_LOOP = "seq.poh_portal_loop"
+        const val REFUSED_SYNTH = "synth.pillory_wrong"
+
+        // The sacrifice and payment sounds have no gameval names.
+        const val SACRIFICE_SYNTH = 1595
+        const val PAYMENT_SYNTH = 2115
+        const val PAYMENT_SYNTH_DELAY = 10
 
         const val CREDIT_PERCENT = 105L
         const val MIN_CREDIT = 10_000

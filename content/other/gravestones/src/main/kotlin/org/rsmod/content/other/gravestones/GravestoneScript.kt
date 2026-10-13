@@ -37,8 +37,8 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
             onOpNpc1(style) { if (owns(it.npc)) openGrave() }
             onApNpc1(style) { approach(it.npc) { openGrave() } }
             // UNVERIFIED: Loot takes what Take-All in the free section would.
-            onOpNpc3(style) { if (owns(it.npc)) take(freeSlots()) }
-            onApNpc3(style) { approach(it.npc) { take(freeSlots()) } }
+            onOpNpc3(style) { if (owns(it.npc)) loot() }
+            onApNpc3(style) { approach(it.npc) { loot() } }
         }
         onPlayerLogin {
             if (player.graveCoords != null) {
@@ -99,7 +99,7 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
         runClientScript(TRANSMIT_DATA.asRSCM(RSCMType.CLIENTSCRIPT), graves.fee(player), coffer)
     }
 
-    private fun ProtectedAccess.takeOrExamine(button: IfOverlayButton) {
+    private suspend fun ProtectedAccess.takeOrExamine(button: IfOverlayButton) {
         when (button.op) {
             IfButtonOp.Op1 -> takeSlot(button.comsub)
             IfButtonOp.Op10 -> player.grave[button.comsub]?.let { mes(getInvObj(it).examine) }
@@ -107,7 +107,12 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
         }
     }
 
-    private fun ProtectedAccess.takeSlot(slot: Int) {
+    private suspend fun ProtectedAccess.loot() {
+        graves.sendFeeThresholds(player)
+        take(freeSlots())
+    }
+
+    private suspend fun ProtectedAccess.takeSlot(slot: Int) {
         if (slot !in ITEM_SLOTS || player.grave[slot] == null) {
             return
         }
@@ -147,7 +152,7 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
      * gravestone" on, whatever was worn goes back on (kept items too), first so the kept items free
      * the inventory slots the grave's objs came from.
      */
-    private fun ProtectedAccess.take(slots: List<Int>) {
+    private suspend fun ProtectedAccess.take(slots: List<Int>) {
         val grave = player.grave
         val ordered = slots.sortedByDescending { slot -> grave[slot]?.let { getInvObj(it).isEquipable } }
         if (player.autoEquip) {
@@ -159,9 +164,6 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
                 noSpace = true
             }
         }
-        if (player.autoEquip) {
-            reequipWorn()
-        }
         if (noSpace) {
             // UNVERIFIED: the message when the inventory fills up.
             mes("You don't have enough inventory space.")
@@ -169,8 +171,17 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
         if (grave.isEmpty()) {
             mes("You successfully retrieved everything from your gravestone.")
             graves.close(player)
+            player.runClientScript(TRANSMIT_DATA.asRSCM(RSCMType.CLIENTSCRIPT), -1, -1)
+            // Live re-equips and clears the grave a tick after the last take.
+            delay(1)
+            if (player.autoEquip) {
+                reequipWorn()
+            }
             graves.remove(player)
             return
+        }
+        if (player.autoEquip) {
+            reequipWorn()
         }
         sendFee()
     }

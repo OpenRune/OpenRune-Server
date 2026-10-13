@@ -61,6 +61,8 @@ var Player.inDeathTutorial by boolVarBit("varbit.gravestone_death_tutorial")
 var Player.metDeath by boolVarBit("varbit.steam_visited_death")
 
 /** The map clock of the player's last input; 0 before any since login. */
+private var Player.currentHintArrow by intVarBit("varbit.current_hint_arrow")
+
 internal var Player.lastInput by intVarp("varp.gravestone_last_input")
 
 private fun Player.isIdle(): Boolean =
@@ -233,7 +235,6 @@ constructor(
         visibleSlots[slot] = npc
         player.graveVisible = slot
         player.graveNpc = npc.uid
-        MiscOutput.hintArrowNpc(player, npc.slotId)
     }
 
     fun despawn(player: Player) {
@@ -253,7 +254,6 @@ constructor(
     /** Removes the emptied grave. Live clears the vars a tick after the last take. */
     fun remove(player: Player) {
         despawn(player)
-        MiscOutput.hintArrowReset(player)
         player.clearSoftTimer(TIMER)
         player.graveDuration = 0
         player.graveVisible = 0
@@ -268,6 +268,7 @@ constructor(
             player.clearSoftTimer(TIMER)
             return
         }
+        pointAtGrave(player)
         if (player.inDeathTutorial) {
             return
         }
@@ -278,6 +279,26 @@ constructor(
         if (player.graveDuration == 0) {
             expire(player)
         }
+    }
+
+    /** The hint arrow is resent every timer tick while the player is near the grave. */
+    private fun pointAtGrave(player: Player) {
+        val coords = player.graveCoords ?: return
+        val npc = player.graveNpc?.resolve(npcList) ?: return
+        if (!player.isWithinDistance(coords, HINT_RANGE)) {
+            return
+        }
+        player.currentHintArrow = 0
+        MiscOutput.hintArrowReset(player)
+        player.currentHintArrow = HINT_ARROW_NPC
+        MiscOutput.hintArrowNpc(player, npc.slotId)
+    }
+
+    /** Starts the countdown now, on the tick the first-death tutorial ends. */
+    fun startCountdown(player: Player) {
+        player.inDeathTutorial = false
+        player.graveDuration = (player.graveDuration - TIMER_INTERVAL).coerceAtLeast(0)
+        player.softTimer(TIMER, TIMER_INTERVAL)
     }
 
     fun value(obj: InvObj): Long {
@@ -370,6 +391,10 @@ constructor(
         // Live paused 17 ticks after a click, but kept counting 17 after a key press. UNVERIFIED:
         // 16 or 17.
         const val IDLE_CYCLES = 16
+
+        // UNVERIFIED: live showed the arrow 19 tiles from the grave but not 24.
+        private const val HINT_RANGE = 20
+        private const val HINT_ARROW_NPC = 9
         private const val SUPPLY_DURATION = 6000
     }
 }

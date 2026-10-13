@@ -224,7 +224,7 @@ class GravestonesTest {
             openGrave()
 
             player.ifButton(component(FREE_BUTTON))
-            advance()
+            advance(ticks = 2)
 
             assertEquals(InvObj(cheap, 1), player.inv[5])
             assertEquals(InvObj(wearable, 1), player.worn[wornSlot])

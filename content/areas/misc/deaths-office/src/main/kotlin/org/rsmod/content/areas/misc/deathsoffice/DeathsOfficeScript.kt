@@ -14,6 +14,7 @@ import org.rsmod.api.player.ironman.isUltimateIronman
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
 import org.rsmod.api.player.ui.IfModalButton
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onApNpc1
 import org.rsmod.api.script.onApNpc3
@@ -47,6 +48,7 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+private var Player.chatModalUnclamp by intVarBit("varbit.chatmodal_unclamp")
 private var Player.officeEntrance by intVarp("varp.death_office_entrance")
 private var Player.cofferShown by intVarp("varp.if1")
 private var Player.selectedSlot by intVarp("varp.if2")
@@ -147,6 +149,8 @@ constructor(
      */
     private fun warnBeforeDrop(player: Player, slot: Int) {
         player.dropTrigger(DeathsOffices.DROP_TRIGGER)
+        // Each click replaces the pending warning, so it asks about the latest slot only.
+        player.clearQueue(DROP_QUEUE)
         player.queue(DROP_QUEUE, 1, slot)
     }
 
@@ -193,7 +197,7 @@ constructor(
             val respawn = mapFindSquareLineOfWalk(RESPAWN, minRadius = 0, maxRadius = 2) ?: RESPAWN
             portal {
                 telejump(respawn)
-                player.inDeathTutorial = false
+                graves.startCountdown(player)
             }
         } else {
             val row = player.officeEntrance.takeIf { it != 0 }?.let(DeathOfficeEntrancesRow::getRow)
@@ -293,6 +297,7 @@ constructor(
             return
         }
         chatPlayer(angry, "Bring my items here now; I'll pay your fee.")
+        access.ifCloseSub("interface.chat_right")
         graves.expire(player)
         access.openOffice()
     }
@@ -330,6 +335,8 @@ constructor(
                 "items come here, to me. I can return them to you - though I charge a fee for my " +
                 "services.",
         )
+        offices.local(player, COFFER_CAMERA)?.let { access.camMoveToV3(it, COFFER_CAMERA_HEIGHT, CAMERA_RATE, CAMERA_RATE2) }
+        offices.local(player, COFFER_LOOK_AT)?.let { access.camLookAtV3(it, COFFER_LOOK_HEIGHT, CAMERA_RATE, CAMERA_RATE2) }
         chatNpc(
             happy,
             "Aside from that, if you bring me your unwanted possessions, and sacrifice them into " +
@@ -340,6 +347,7 @@ constructor(
             "I don't accept just any junk, but I'll try to give you a good price for anything " +
                 "decent.",
         )
+        access.camReset()
         chatNpc(bored, "So do you need to retrieve something you lost when you died?")
         when (
             choice4(
@@ -515,13 +523,13 @@ constructor(
         ifSetObj(MULTI_PIC_B, ANGEL_OBJ, 0)
         ifSetText(MULTI_A, "<br><br><br><br>Basic: Free")
         ifSetText(MULTI_B, "<br><br><br><br>Angel: 200k coins")
-        ifOpenSub(GRAPHICAL_MULTI, CHATBOX_MODAL, IfSubType.Modal)
+        openChatModal(GRAPHICAL_MULTI)
         val input = pauseButton()
         return input.isComponentType(MULTI_B)
     }
 
     private fun ProtectedAccess.openOffice() {
-        player.selectedSlot = -1
+        clearSelection()
         player.cofferShown = player.deathCoffer
         invTransmit(player.deathOffice)
         ifOpenMainModal(INTERFACE)
@@ -591,6 +599,9 @@ constructor(
             for ((slot, count) in plan) {
                 invMoveFromSlot(from = office, into = inv, fromSlot = slot, count = count)
             }
+            if (fee > 0) {
+                soundSynth(PAYMENT_SYNTH, delay = PAYMENT_SYNTH_DELAY)
+            }
         }
         clearSelection()
         openOffice()
@@ -638,6 +649,9 @@ constructor(
             return
         }
         invMoveFromSlot(from = player.deathOffice, into = inv, fromSlot = slot, count = taking)
+        if (feeEach > 0) {
+            soundSynth(PAYMENT_SYNTH, delay = PAYMENT_SYNTH_DELAY)
+        }
         if (player.deathOffice[slot] == null) {
             clearSelection()
         }
@@ -683,8 +697,15 @@ constructor(
         if (slot in indices) this[slot] else null
 
     private fun ProtectedAccess.clearSelection() {
-        player.selectedSlot = -1
         player.selectedFee = 0
+        player.selectedSlot = -1
+    }
+
+    /** Opens [interf] in the chatbox the way live does for its own boxes: fixed size, reset art. */
+    private fun ProtectedAccess.openChatModal(interf: String) {
+        player.chatModalUnclamp = 0
+        runClientScript(RESET_BACKGROUND.asRSCM(RSCMType.CLIENTSCRIPT))
+        ifOpenSub(interf, CHATBOX_MODAL, IfSubType.Modal)
     }
 
     private fun ProtectedAccess.feeEach(slot: Int): Int {
@@ -711,6 +732,18 @@ constructor(
         const val ENTER_ANIM = "seq.human_pickupfloor"
         const val ENTER_ANIM_DELAY = 20
         const val DESK_RANGE = 3
+
+        // Where "How does that work?" points the camera at the coffer.
+        val COFFER_CAMERA = CoordGrid(3176, 5727)
+        val COFFER_LOOK_AT = CoordGrid(3180, 5730)
+        const val COFFER_CAMERA_HEIGHT = 550
+        const val COFFER_LOOK_HEIGHT = 50
+        const val CAMERA_RATE = 232
+        const val CAMERA_RATE2 = 100
+
+        // Death's payment sound, with no gameval name.
+        const val PAYMENT_SYNTH = 2115
+        const val PAYMENT_SYNTH_DELAY = 10
         const val DESK_WALK_TICKS = 6
         const val INTERFACE = "interface.death_office"
         const val ITEMS = "component.death_office:items"
@@ -723,6 +756,7 @@ constructor(
 
         const val CHATBOX_MODAL = "component.chatbox:chatmodal"
         const val GRAPHICAL_MULTI = "interface.graphical_multi"
+        const val RESET_BACKGROUND = "clientscript.[clientscript,toplevel_chatbox_resetbackground]"
         const val MULTI_TITLE = "component.graphical_multi:graphical_multi_2title"
         const val MULTI_A = "component.graphical_multi:graphical_multi_2a"
         const val MULTI_B = "component.graphical_multi:graphical_multi_2b"
