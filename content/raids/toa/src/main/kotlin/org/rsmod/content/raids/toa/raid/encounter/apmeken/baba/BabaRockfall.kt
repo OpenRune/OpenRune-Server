@@ -48,7 +48,7 @@ internal class BabaRockfall(private val room: BabaEncounter) {
 
     fun spawnRubble(marker: CoordGrid) {
         val origin = marker.translate(-1, -1)
-        if (rubble.keys.any { it.coords == origin }) return
+        if (rubble.keys.any { it.coords.z == origin.z }) return
         for (player in room.targets()) if (inFootprint(origin, player.coords)) pushOut(player, origin)
         val npc = room.spawn(BabaNpcs.RUBBLE, origin)
         npc.ignoreCombatInteractions = true
