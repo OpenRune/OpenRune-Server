@@ -85,6 +85,38 @@ class DeathsCofferTest {
             assertEquals(0, player.deathCoffer)
         }
 
+    @Test
+    fun GameTestState.`two confirms in a tick credit once`() =
+        runCofferTest {
+            player.inv[0] = InvObj(valuable, 1)
+            openCoffer()
+
+            player.ifButton(component(SIDE_ITEMS), comsub = 0)
+            advance()
+            player.ifButton(component(CONFIRM))
+            player.ifButton(component(CONFIRM))
+            advance()
+
+            assertEquals(0, player.inv.count(valuable.internalName))
+            assertEquals(valuable.cost.toLong() * 105 / 100, player.deathCoffer.toLong())
+        }
+
+    @Test
+    fun GameTestState.`credit past MAX_VALUE is refused and the objs kept`() =
+        runCofferTest {
+            player.inv[0] = InvObj(valuable, 1)
+            player.deathCoffer = Int.MAX_VALUE - 1
+            openCoffer()
+
+            player.ifButton(component(SIDE_ITEMS), comsub = 0)
+            advance()
+            player.ifButton(component(CONFIRM))
+            advance()
+
+            assertEquals(1, player.inv.count(valuable.internalName))
+            assertEquals(Int.MAX_VALUE - 1, player.deathCoffer)
+        }
+
     private fun GameTestState.runCofferTest(body: GameTestScope.() -> Unit) =
         runGameTest(DeathsCofferScript::class) {
             player.placeAt(CoordGrid(3179, 5728))

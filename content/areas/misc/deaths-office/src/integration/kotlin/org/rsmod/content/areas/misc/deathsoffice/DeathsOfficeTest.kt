@@ -122,6 +122,36 @@ class DeathsOfficeTest {
             assertEquals(pricey.cost, player.inv.count("obj.coins"))
         }
 
+    @Test
+    fun GameTestState.`two takes of one slot in a tick move it once`() =
+        runOfficeTest {
+            player.deathOffice[0] = InvObj(stack, 40)
+            openOffice()
+
+            player.ifButton(component(ITEMS), comsub = 0)
+            player.ifButton(component(ITEMS), comsub = 0)
+            advance()
+
+            assertEquals(40, player.inv.count(stack.internalName))
+            assertEquals(0, player.deathOffice.count(stack.internalName))
+        }
+
+    @Test
+    fun GameTestState.`a take past MAX_VALUE moves nothing and loses nothing`() =
+        runOfficeTest {
+            player.inv[0] = InvObj(stack, Int.MAX_VALUE - 10)
+            player.deathOffice[0] = InvObj(stack, 40)
+            openOffice()
+
+            player.ifButton(component(ITEMS), comsub = 0)
+            advance()
+
+            val total = player.inv.count(stack.internalName).toLong() +
+                player.deathOffice.count(stack.internalName)
+            assertEquals(Int.MAX_VALUE - 10L + 40, total)
+            assertTrue(player.inv.count(stack.internalName) <= Int.MAX_VALUE)
+        }
+
     private fun GameTestState.runOfficeTest(body: GameTestScope.() -> Unit) =
         runGameTest(DeathsOfficeScript::class) {
             player.placeAt(CoordGrid(3171, 5726))
