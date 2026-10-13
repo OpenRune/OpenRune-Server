@@ -8,6 +8,11 @@ stack = "Always"
 protect = false
 
 [[varp]]
+id = "varp.gravestone_last_input"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
 id = "varp.gravestone_coord"
 scope = "Perm"
 transmit = "Never"

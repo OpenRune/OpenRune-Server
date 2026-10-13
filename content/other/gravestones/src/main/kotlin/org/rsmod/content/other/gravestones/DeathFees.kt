@@ -11,7 +11,6 @@ import org.rsmod.game.entity.Player
  */
 var Player.deathCoffer by intVarp("varp.death_coffer")
 
-/** Where a death fee (a grave's or Death's Office's) was paid from. */
 enum class DeathFeeSource {
     Coffer,
     Inventory,

@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
+import org.rsmod.api.player.input.PlayerInput
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -13,6 +14,7 @@ import org.rsmod.api.player.ui.IfOverlayButton
 import org.rsmod.api.player.worn.HeldEquipResult
 import org.rsmod.api.script.onApNpc1
 import org.rsmod.api.script.onApNpc3
+import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onOpNpc1
@@ -54,6 +56,7 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
             }
         }
         onPlayerLogout { graves.despawn(player) }
+        onEvent<PlayerInput> { player.lastInput = player.currentMapClock }
         onPlayerSoftTimer(TIMER) { graves.tick(player) }
         onIfClose(INTERFACE) {
             player.stopInvTransmit(player.grave)

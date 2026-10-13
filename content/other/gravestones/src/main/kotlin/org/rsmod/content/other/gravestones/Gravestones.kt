@@ -6,7 +6,6 @@ import org.rsmod.api.death.DeathGrave
 import org.rsmod.api.death.PlayerGraveHook
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.player.SupplyItems
-import org.rsmod.api.player.input.PlayerIdle
 import org.rsmod.api.player.ironman.isAnyIronman
 import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.output.mes
@@ -14,6 +13,7 @@ import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.player.vars.typeCoordVarp
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.npc.NpcRepository
@@ -60,6 +60,13 @@ var Player.inDeathTutorial by boolVarBit("varbit.gravestone_death_tutorial")
  * UNVERIFIED: that live keys the first-death tutorial on this rather than on a server-only var.
  */
 var Player.metDeath by boolVarBit("varbit.steam_visited_death")
+
+/** The map clock of the player's last input; 0 before any since login. */
+internal var Player.lastInput by intVarp("varp.gravestone_last_input")
+
+private fun Player.isIdle(): Boolean =
+    lastInput != 0 && currentMapClock - lastInput > Gravestones.IDLE_CYCLES
+
 internal val Player.autoEquip by boolVarBit("varbit.settings_gravestone_autoequip")
 private var Player.graveVisible by intVarBit("varbit.gravestone_visible")
 var Player.graveType by intVarBit("varbit.gravestone_type")
@@ -271,7 +278,7 @@ constructor(
         if (player.inDeathTutorial) {
             return
         }
-        if (player.ui.containsOverlay(INTERFACE) || PlayerIdle.isIdle(player, IDLE_CYCLES)) {
+        if (player.ui.containsOverlay(INTERFACE) || player.isIdle()) {
             return
         }
         // live capture, rev 241: 3 off every 3 ticks.

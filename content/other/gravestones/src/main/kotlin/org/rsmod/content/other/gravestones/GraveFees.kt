@@ -18,7 +18,6 @@ object GraveFees {
 
     fun isPaid(value: Long): Boolean = value >= FREE_UNDER
 
-    /** The fee for one grave slot of [count] objs worth [value] each. */
     fun slotFee(value: Long, count: Int, ironman: Boolean): Long {
         val each =
             when {

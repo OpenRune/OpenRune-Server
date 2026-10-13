@@ -9,6 +9,7 @@ gravestone_coord = 64420
 gravestone_state = 64421
 gravestone_npc = 64422
 death_coffer = 64445
+gravestone_last_input = 64448
 gravestone_layout_0 = 64423
 gravestone_layout_1 = 64424
 gravestone_layout_2 = 64425

@@ -20,7 +20,7 @@ import org.rsmod.api.death.PlayerGraveHook
 import org.rsmod.api.death.UntradeableHandling
 import org.rsmod.api.death.plugin.StandardPvmDeathHook
 import org.rsmod.api.player.SupplyItems
-import org.rsmod.api.player.input.PlayerIdle
+import org.rsmod.api.player.input.PlayerInput
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.testing.GameTestState
@@ -328,14 +328,14 @@ class GravestonesTest {
     fun GameTestState.`the grave timer pauses while the player is idle`() =
         runGraveTest { deps ->
             deps.graves.store(player, DEATH, DeathGrave(), listOf(InvObj(cheap, 1)))
-            PlayerIdle.recordInput(player)
+            eventBus.publish(PlayerInput(player))
             advance(ticks = Gravestones.IDLE_CYCLES + 1)
             val idleFrom = player.graveDuration
 
             advance(ticks = Gravestones.TIMER_INTERVAL * 3)
             assertEquals(idleFrom, player.graveDuration)
 
-            PlayerIdle.recordInput(player)
+            eventBus.publish(PlayerInput(player))
             advance(ticks = Gravestones.TIMER_INTERVAL * 2)
             assertTrue(player.graveDuration < idleFrom)
         }

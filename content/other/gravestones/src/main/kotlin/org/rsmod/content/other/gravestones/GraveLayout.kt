@@ -30,11 +30,9 @@ internal object GraveLayout {
         }
     }
 
-    /** An empty inventory slot that held [obj] before the death. */
     fun invSlot(player: Player, obj: Int): Int? =
         (0 until INV_SLOTS).firstOrNull { player.inv[it] == null && stored(player, it) == obj + 1 }
 
-    /** An empty worn slot that held [obj] before the death. */
     fun wornSlot(player: Player, obj: Int): Int? =
         (0 until WORN_SLOTS).firstOrNull {
             player.worn[it] == null && stored(player, INV_SLOTS + it) == obj + 1
