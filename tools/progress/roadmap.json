@@ -615,7 +615,8 @@
         "Implement tier progression, point totals, rewards and unlock effects.",
         "Integrate completion chat messages and queued notifications.",
         "Add task-specific regression tests and in-game acceptance checks before marking added.",
-        "Complete tasks require the corresponding playable encounters and real gameplay event hooks; do not mark unavailable-content tasks complete from synthetic events."
+        "Complete tasks require the corresponding playable encounters and real gameplay event hooks; do not mark unavailable-content tasks complete from synthetic events.",
+        "Research and plan reviewed 2026-10-13 on feature/combat-achievements; see docs/custom/combat-achievements.md. Gameplay remains Not started; use a points-based, revision-240 catalogue and audit existing unconditional/disabled perk consumers before implementation."
       ],
       "category": "other",
       "size": "XXL"
