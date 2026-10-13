@@ -65,6 +65,7 @@ class BabaEncounter(
 
     override fun onReset() {
         spawnBaba()
+        baboons.clear()
         baboons.spawnSarcophagi()
     }
 
