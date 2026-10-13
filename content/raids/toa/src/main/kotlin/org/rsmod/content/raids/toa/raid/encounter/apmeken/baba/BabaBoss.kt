@@ -95,7 +95,7 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
 
             every(1, whenever(underBoss and !rolling, addVarn(BabaVarns.UNDER, 1), setVarn(BabaVarns.UNDER, 0)))
 
-            incoming { rule(rolling and hitStyle(Melee) and fromTop) { run(rollFlag) } }
+            incoming { rule(rolling and digging and hitStyle(Melee) and fromTop) { run(rollFlag) } }
 
             triggers {
                 on(HpBelow(FIRST_ROLL_HP) and InPhase(BabaPhases.NORMAL)) runs
@@ -135,6 +135,7 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         sequence(
             interrupt(),
             setVarn(BabaVarns.THROW_AT, 0),
+            setVarn(BabaVarns.ROLL_EXIT, 0),
             external(BabaExternals.ROLL_RESET),
             transitionTo(BabaPhases.ROLLING),
             wait(JUMP_DELAY),
@@ -218,6 +219,7 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             }
 
         val rolling = InPhase(BabaPhases.ROLLING)
+        val digging = Condition.Custom { npc, _ -> npc.isVisType(BabaNpcs.DIGGING) }
         val boulderDash =
             roomCondition<BabaEncounter> { room, _ ->
                 room.raid.isActive(ToaInvocationKey.Boulderdash)
