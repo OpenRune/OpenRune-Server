@@ -61,6 +61,15 @@ internal object DeathTutorial {
         menu()
     }
 
+    /** Live capture, rev 241, 20261013T214438-234ad72@2-20: after logging back in. */
+    suspend fun Dialogue.resume() {
+        chatNpc(
+            angry,
+            "I believe I was explaining gravestones to you. We still have some more topics to cover.",
+        )
+        menu()
+    }
+
     /** Live capture, rev 240, 20260811T142735-59bcb26@2075-2078. */
     suspend fun Dialogue.reminder() {
         chatNpc(quiz, "Would you like me to remind you about gravestones?")

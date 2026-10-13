@@ -107,20 +107,22 @@ constructor(
     }
 
     /**
-     * Live capture, rev 241, 20261013T184259-df49f48@0-2: logging in inside the office rebuilds a
-     * new copy, and Death greets two ticks later. UNVERIFIED: live moves the player on the login
-     * tick; this waits a tick, as the client has no map to rebuild from until then.
+     * Live capture, rev 241, 20261013T184259-df49f48@0-2 and, during the first-death tutorial,
+     * 20261013T214438-234ad72@0-20: logging in inside the office rebuilds a new copy, and Death
+     * speaks two ticks later. UNVERIFIED: live moves the player on the login tick; this waits a
+     * tick, as the client has no map to rebuild from until then.
      */
     private suspend fun ProtectedAccess.returnToOffice() {
         if (!offices.enter(player, CoordGrid(player.officeCoord))) {
             player.officeCoord = 0
             return
         }
-        // UNVERIFIED: that Death doesn't greet again during the first-death tutorial.
+        delay(2)
         if (player.inDeathTutorial) {
+            val death = offices.death(player) ?: return
+            startDialogue(death) { with(DeathTutorial) { resume() } }
             return
         }
-        delay(2)
         greet()
     }
 

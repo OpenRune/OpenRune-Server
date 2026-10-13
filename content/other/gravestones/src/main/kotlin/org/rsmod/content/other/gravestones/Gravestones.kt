@@ -55,9 +55,9 @@ var Player.feePaid by boolVarBit("varbit.gravestone_fee_paid")
 var Player.inDeathTutorial by boolVarBit("varbit.gravestone_death_tutorial")
 
 /**
- * Whether the player has met Death. UNVERIFIED: that live keys the first-death tutorial on this
- * (live capture, rev 240, 20260811T142735-59bcb26@2020 sets it on the tutorial's arrival, and it is
- * sent as 1 on every later login).
+ * Whether the player has met Death. Live sets it on the tutorial's arrival (live capture, rev 241,
+ * 20261013T210450-234ad72@3930), not on walking into the office (20261013T203937-df49f48@84).
+ * UNVERIFIED: that live keys the first-death tutorial on this rather than on a server-only var.
  */
 var Player.metDeath by boolVarBit("varbit.steam_visited_death")
 internal val Player.autoEquip by boolVarBit("varbit.settings_gravestone_autoequip")
