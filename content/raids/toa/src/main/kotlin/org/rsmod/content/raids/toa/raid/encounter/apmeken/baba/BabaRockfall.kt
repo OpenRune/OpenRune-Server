@@ -21,11 +21,12 @@ internal class BabaRockfall(private val room: BabaEncounter) {
         for (npc in rubble.keys.toList()) remove(npc)
     }
 
-    fun resolveThrow(player: Player, tile: CoordGrid) {
-        if (player.coords != tile) return
-        val cover = rubble.keys.firstOrNull { covers(it, tile) }
+    fun resolveThrow(player: Player) {
+        val tile = player.coords
+        val cover = rubble.keys.firstOrNull { covers(it, tile) } ?: room.baboons.coverNear(tile)
         if (cover == null) {
-            room.hazardDamage(player, BabaRocks.THROW_DAMAGE, 0)
+            val sharing = room.targets().count { it.coords.chebyshevDistance(tile) <= 1 }
+            room.hazardDamage(player, BabaRocks.THROW_DAMAGE / sharing.coerceAtLeast(1), 0)
             return
         }
         cover.queueNpcHit(1, HitType.Typeless, BabaRocks.THROW_DAMAGE, NOOP_NPC_MODIFIER)
@@ -33,6 +34,15 @@ internal class BabaRockfall(private val room: BabaEncounter) {
 
     fun died(npc: Npc) {
         if (npc in rubble) remove(npc)
+    }
+
+    fun crush(boulder: Npc) {
+        for (npc in rubble.keys.toList()) {
+            val dx = npc.coords.x - boulder.coords.x
+            val dz = npc.coords.z - boulder.coords.z
+            val reach = -RUBBLE_SIZE + 1 until RUBBLE_SIZE
+            if (dx in reach && dz in reach) remove(npc)
+        }
     }
 
     fun spawnRubble(marker: CoordGrid) {
