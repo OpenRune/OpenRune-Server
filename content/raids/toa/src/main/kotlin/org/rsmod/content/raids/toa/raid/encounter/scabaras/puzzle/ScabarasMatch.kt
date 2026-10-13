@@ -3,7 +3,7 @@ package org.rsmod.content.raids.toa.raid.encounter.scabaras.puzzle
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.game.entity.Player
-import org.rsmod.game.loc.LocShape
+import org.rsmod.game.loc.LocAngle
 import org.rsmod.map.CoordGrid
 
 internal class ScabarasMatch(private val room: ScabarasPuzzleEncounter) {
@@ -74,12 +74,9 @@ internal class ScabarasMatch(private val room: ScabarasPuzzleEncounter) {
         locs.set(
             tile,
             if (open) ScabarasLocs.matchShown(symbol) else ScabarasLocs.matchHidden(symbol),
+            angle = LocAngle.North,
         )
-        if (matched[symbol]) {
-            locs.set(tile, ScabarasLocs.glow(MATCH_GLOW[symbol]), LocShape.CentrepieceStraight)
-        } else {
-            locs.remove(tile, LocShape.CentrepieceStraight)
-        }
+        if (matched[symbol]) locs.glow(tile, MATCH_GLOW[symbol]) else locs.removeOverlay(tile)
     }
 
     private fun plateTile(grid: Int, index: Int): CoordGrid {

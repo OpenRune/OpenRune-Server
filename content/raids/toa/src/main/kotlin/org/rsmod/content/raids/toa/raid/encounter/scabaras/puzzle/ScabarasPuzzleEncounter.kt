@@ -46,7 +46,17 @@ class ScabarasPuzzleEncounter(
     override val combatantSpecs: List<ToaCombatant.Spec>
         get() = listOf(ToaCombatant.Spec(ScabarasNpcs.SCARAB, pointMultiplier = SCARAB_POINTS))
 
-    override fun arrival(): Arrival = Arrival(coords(room.randomSpawn(deps.random)), facing = null)
+    /**
+     * The client's scene is built around wherever the player is when the map loads. OSRS lands the
+     * player on the room's centre for one tick before the real spawn, which fixes the scene base;
+     * RuneLite puzzle solvers locate the plates by those fixed scene coordinates.
+     */
+    override fun arrival(): Arrival =
+        Arrival(
+            coords(room.randomSpawn(deps.random)),
+            facing = null,
+            sceneCentre = coords(ScabarasCoords.SCENE_CENTRE),
+        )
 
     override fun onBuilt() {
         layout = deps.random.shuffled(PuzzleType.entries)

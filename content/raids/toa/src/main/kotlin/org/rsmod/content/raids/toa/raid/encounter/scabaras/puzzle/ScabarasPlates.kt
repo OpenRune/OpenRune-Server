@@ -21,6 +21,18 @@ internal class LocSet(private val room: ScabarasPuzzleEncounter) {
         locs[static to shape] = room.addLoc(static, loc, angle, shape)
     }
 
+    fun overlay(static: CoordGrid, loc: String, angle: LocAngle = LocAngle.West) {
+        set(static, loc, LocShape.CentrepieceStraight, angle)
+    }
+
+    fun glow(static: CoordGrid, index: Int) {
+        overlay(static, ScabarasLocs.glow(index), LocAngle.North)
+    }
+
+    fun removeOverlay(static: CoordGrid) {
+        remove(static, LocShape.CentrepieceStraight)
+    }
+
     fun remove(static: CoordGrid, shape: LocShape = LocShape.GroundDecor) {
         locs.remove(static to shape)?.let(room::delLoc)
     }
@@ -87,19 +99,19 @@ internal class ScabarasMemory(private val room: ScabarasPuzzleEncounter) {
             return room.smallRocks(player)
         }
         player.soundSynth(ScabarasSynths.STEP)
-        locs.set(static, ScabarasLocs.MEMORY_PLAYER)
-        room.schedule(MARK_TICKS) { if (!done) locs.set(static, ScabarasLocs.MEMORY_UP) }
+        locs.overlay(static, ScabarasLocs.MEMORY_PLAYER)
+        room.schedule(MARK_TICKS) { if (!done) locs.removeOverlay(static) }
         stepIndex++
         if (stepIndex < current.size) return
         sequence = null
-        for (tile in plates) locs.set(tile, ScabarasLocs.MEMORY_DOWN)
+        for (tile in plates) locs.overlay(tile, ScabarasLocs.MEMORY_DOWN)
         room.completeSlot(slot)
     }
 
     private fun flash(tile: CoordGrid) {
         if (done) return
-        locs.set(tile, ScabarasLocs.MEMORY_DOWN)
-        room.schedule(1) { if (!done) locs.set(tile, ScabarasLocs.MEMORY_UP) }
+        locs.overlay(tile, ScabarasLocs.MEMORY_DOWN)
+        room.schedule(1) { if (!done) locs.removeOverlay(tile) }
     }
 
     private companion object {
@@ -136,7 +148,9 @@ internal class ScabarasSum(private val room: ScabarasPuzzleEncounter) {
             ScabarasLocs.SUM_TABLET,
             LocShape.CentrepieceStraight,
         )
-        for ((tile, value) in plates) locs.set(tile, ScabarasLocs.sumTile(value))
+        for ((tile, value) in plates) {
+            locs.set(tile, ScabarasLocs.sumTile(value), angle = LocAngle.North)
+        }
     }
 
     fun clear() {
@@ -163,7 +177,7 @@ internal class ScabarasSum(private val room: ScabarasPuzzleEncounter) {
             }
             total > goal -> {
                 total = 0
-                for (tile in plates.keys) locs.remove(tile, LocShape.CentrepieceStraight)
+                for (tile in plates.keys) locs.removeOverlay(tile)
                 room.smallRocks(player)
             }
         }
@@ -174,7 +188,7 @@ internal class ScabarasSum(private val room: ScabarasPuzzleEncounter) {
     }
 
     private fun glow(tile: CoordGrid, value: Int) {
-        locs.set(tile, ScabarasLocs.glow(SUM_GLOW[value]), LocShape.CentrepieceStraight)
+        locs.glow(tile, SUM_GLOW[value])
     }
 
     private companion object {
@@ -242,15 +256,12 @@ internal class ScabarasLights(private val room: ScabarasPuzzleEncounter) {
 
     private fun render(index: Int) {
         val tile = ring[index]
-        if (lit[index]) {
-            locs.set(tile, ScabarasLocs.glow(1), LocShape.CentrepieceStraight)
-        } else {
-            locs.remove(tile, LocShape.CentrepieceStraight)
-        }
+        if (lit[index]) locs.glow(tile, LIT_GLOW) else locs.removeOverlay(tile)
     }
 
     private companion object {
         const val RING_SIZE = 8
+        const val LIT_GLOW = 1
         const val FLIP_TICKS = 4
         const val FLIP_DAMAGE = 20
     }
