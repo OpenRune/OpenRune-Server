@@ -174,11 +174,10 @@ constructor(
     /** Live capture, rev 241, 20261013T013733-df49f48@158-164 and @276-283 (from Ferox Enclave). */
     private suspend fun ProtectedAccess.leave() {
         if (player.inDeathTutorial) {
-            // live capture, rev 240, 20260811T142735-59bcb26@2140-2143: after the tutorial the
-            // portal leads to the respawn point, and the grave's timer starts.
-            player.inDeathTutorial = false
+            // live capture, rev 241, 20261013T215044-234ad72@811-814: after the tutorial the portal
+            // leads to the respawn point, and the grave's timer starts on the teleport's tick.
             val respawn = mapFindSquareLineOfWalk(RESPAWN, minRadius = 0, maxRadius = 2) ?: RESPAWN
-            portal(respawn)
+            portal(respawn) { player.inDeathTutorial = false }
         } else {
             val row = player.officeEntrance.takeIf { it != 0 }?.let(DeathOfficeEntrancesRow::getRow)
             portal(row?.exit ?: LUMBRIDGE_EXIT)
@@ -186,10 +185,11 @@ constructor(
         offices.exit(player)
     }
 
-    private suspend fun ProtectedAccess.portal(dest: CoordGrid) {
+    private suspend fun ProtectedAccess.portal(dest: CoordGrid, onArrive: () -> Unit = {}) {
         ifOpenFullOverlay(PORTAL_OVERLAY)
         delay(2)
         telejump(dest)
+        onArrive()
         delay(1)
         ifCloseSub(PORTAL_OVERLAY)
     }
