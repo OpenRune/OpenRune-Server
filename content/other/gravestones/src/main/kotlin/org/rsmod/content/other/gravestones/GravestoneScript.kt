@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
@@ -40,6 +41,12 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
         }
         onPlayerLogin {
             if (player.graveCoords != null) {
+                // live capture, rev 241, 20261013T184259-df49f48@0.
+                // UNVERIFIED: whether items in Death's Office alone also warn, and which setting
+                // turns it off.
+                // TODO: Live sends it after the welcome and "Did you know?" messages, which the
+                // login module sends later, on `EngineLogin`.
+                player.mes(LOGIN_WARNING)
                 graves.spawn(player)
                 if (player.graveDuration > 0) {
                     player.softTimer(TIMER, TIMER_INTERVAL)
@@ -210,6 +217,10 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
 
     private companion object {
         const val ACCESS_RANGE = 7
+        const val LOGIN_WARNING =
+            "@mes_hl_red@You have items stored in an item retrieval service. Please visit the " +
+                "last location you died. If you die again before retrieving them, they will be " +
+                "lost.</col>"
 
         val GRAVE_STYLES = listOf("npc.gravestone_default", "npc.gravestone_angel")
         val ITEM_SLOTS = 0 until 120
