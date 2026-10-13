@@ -68,9 +68,10 @@ internal object ScabarasMessages {
 
     fun completed(label: Int) = "<col=229628>Puzzle $label has been completed!"
 
-    fun sumGoal(goal: Int) = "The number <col=ff3045>$goal</col> has been hastily chipped into the stone."
+    fun sumGoal(goal: Int) =
+        "The number @mes_hl_red@$goal</col> has been hastily chipped into the stone."
 }
 
-internal val SUM_GLOW = intArrayOf(0, 5, 6, 7, 4, 9, 10, 3, 11, 12)
+internal val SUM_GLOW = intArrayOf(0, 5, 6, 7, 8, 9, 10, 3, 11, 12)
 
 internal val MATCH_GLOW = intArrayOf(0, 5, 6, 3, 8, 9, 4, 10, 11, 12)
