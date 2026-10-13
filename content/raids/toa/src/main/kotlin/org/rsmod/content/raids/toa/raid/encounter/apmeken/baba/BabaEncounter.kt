@@ -49,8 +49,6 @@ class BabaEncounter(
 
     override val completeMessageDelay = DEATH_MODEL_DELAY
 
-    override val rewardNpc = BabaNpcs.FREED_APMEKEN
-
     override val loot =
         ToaBossLoot(
             trackerNpc = BabaNpcs.COFFIN,
