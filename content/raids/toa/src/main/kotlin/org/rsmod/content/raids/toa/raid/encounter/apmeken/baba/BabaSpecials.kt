@@ -187,7 +187,7 @@ internal object BabaSpecials {
     private fun marker(at: TargetExpr.Single, rubble: Boolean): Effect = fallTiers { fall, gfx ->
         val landing =
             after(
-                fall - 1,
+                fall,
                 whenever(
                     rolling,
                     Effect.NoOp,
@@ -228,8 +228,8 @@ internal object BabaSpecials {
                     faceTile(tile(CENTRE)),
                     anim(BabaSeqs.MELEE),
                     *telegraph(reach),
-                    wait(warning - 1),
-                    anim(BabaSeqs.MELEE, delay = BabaShock.HIT_LAG_CYCLES),
+                    wait(warning),
+                    anim(BabaSeqs.MELEE),
                     *impact(reach),
                     wait(BabaShock.ATTACK_PAUSE),
                     unlockMovement(),
@@ -270,7 +270,7 @@ internal object BabaSpecials {
                         mapSpotanim(
                             BabaSpots.SHOCK_IMPACT,
                             CurrentTile,
-                            delay = dist * BabaShock.IMPACT_STEP_CYCLES + BabaShock.HIT_LAG_CYCLES,
+                            delay = dist * BabaShock.IMPACT_STEP_CYCLES,
                         ),
                         hit {
                             target = playersOn(CurrentTile)

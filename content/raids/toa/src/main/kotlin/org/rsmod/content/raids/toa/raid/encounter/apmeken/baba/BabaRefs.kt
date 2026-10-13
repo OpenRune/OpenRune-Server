@@ -146,7 +146,6 @@ internal object BabaShock {
     const val BASE_DAMAGE = 17
     const val DAMAGE_SPREAD = 5
     const val FALLOFF_PERCENT = 10
-    const val HIT_LAG_CYCLES = 30
     const val ATTACK_PAUSE = 3
 }
 
