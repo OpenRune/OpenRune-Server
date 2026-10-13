@@ -86,7 +86,14 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             ability(BabaAbilities.ROCK_THROW, BabaSpecials.rockThrow())
             ability(BabaAbilities.ROLL_ENTRY, rollEntry())
             ability(BabaAbilities.ROLL_END, rollEnd())
-            val rollFlag = ability(BabaAbilities.ROLL_FLAG, setVarn(BabaVarns.ROLL_EXIT, 1))
+            val rollFlag =
+                ability(
+                    BabaAbilities.ROLL_FLAG,
+                    sequence(
+                        setVarn(BabaVarns.ROLL_EXIT, 1),
+                        after(1, run(BabaAbilities.ROLL_END)),
+                    ),
+                )
             ability(BabaAbilities.SPECIAL, BabaSpecials.special())
             ability(BabaAbilities.ROCKFALL, BabaSpecials.rockfall())
             ability(BabaAbilities.SHOCKWAVE, BabaSpecials.shockwave())
