@@ -141,3 +141,32 @@ regenRate = 0
 "param.headbar" = "headbar.health_60"
 "param.death_anim" = "seq.npc_scarab_flying_death02"
 "param.defend_anim" = "seq.npc_scarab_flying_idle"
+
+[[npc]]
+id = "npc.toa_scabaras_scarab"
+inherit = "npc.toa_scabaras_scarab"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 6
+[npc.params]
+"param.amascutnpc" = 1
+"param.death_anim" = "seq.npc_scarab_death"
+"param.defend_anim" = "seq.npc_scarab_idle"
+
+[[npc]]
+id = "npc.toa_scabaras_guesser_obelisk"
+inherit = "npc.toa_scabaras_guesser_obelisk"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "South"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_scabaras_guesser_obelisk_hit"
+inherit = "npc.toa_scabaras_guesser_obelisk_hit"
+defaultMode = "None"
+moveRestrict = "NoMove"
+respawnDir = "South"
+regenRate = 0
