@@ -16,6 +16,7 @@ import org.rsmod.content.interfaces.journal.tab.TAB_TASK_VIEW
 import org.rsmod.content.interfaces.journal.tab.TASK_FIRST
 import org.rsmod.content.interfaces.journal.tab.TASK_ROWS
 import org.rsmod.content.interfaces.journal.tab.TASK_STRIDE
+import org.rsmod.content.interfaces.journal.tab.adventurePathTasks
 import org.rsmod.content.interfaces.journal.tab.openAdventurePaths
 import org.rsmod.content.interfaces.journal.tab.transmitVar
 import org.rsmod.events.EventBus
@@ -34,13 +35,12 @@ public class AdventurePathScript @Inject constructor(private val eventBus: Event
         onIfOverlayButton("component.adventurepath_side:path_name") { player.openAdventurePaths() }
         // UNVERIFIED: live also writes main_if_tab here depending on the focused task (guess)
         onIfOverlayButton("component.adventurepath_side:task_name") { player.openAdventurePaths() }
-        // UNVERIFIED: main_if_tab 2 and the order of writes (rev 240 capture from upstream PR #190)
         onIfOverlayButton("component.adventurepath_side:task_description") {
             player.openAdventurePaths(eventBus, view = TAB_TASK_VIEW)
         }
 
-        onOpNpc4("npc.ap_guide_parent") { player.openAdventurePaths(eventBus, view = null) }
-        onOpNpc4("npc.ap_guide_active") { player.openAdventurePaths(eventBus, view = null) }
+        onOpNpc4("npc.ap_guide_parent") { player.openAdventurePaths(eventBus, resendView = false) }
+        onOpNpc4("npc.ap_guide_active") { player.openAdventurePaths(eventBus, resendView = false) }
 
         onIfModalButton("component.adventurepath:paths") { player.selectPath(it.comsub) }
         onIfModalButton("component.adventurepath:tasks") { player.selectTask(it.comsub) }
@@ -62,8 +62,16 @@ public class AdventurePathScript @Inject constructor(private val eventBus: Event
         if (path >= PATH_ROWS || (offset != 0 && offset != PATH_SELECT_OFFSET)) {
             return
         }
+        val tasks = adventurePathTasks(path)
+        val resetTask = vars[SELECTED_TASK] !in tasks
         transmitVar(SELECTED_PATH, path)
+        if (resetTask) {
+            transmitVar(SELECTED_TASK, 0)
+        }
         transmitVar(MAIN_IF_TAB, TAB_PATH_DETAIL)
+        if (resetTask && tasks.isNotEmpty()) {
+            transmitVar(SELECTED_TASK, tasks.first())
+        }
     }
 
     private fun Player.selectTask(comsub: Int) {
@@ -71,10 +79,7 @@ public class AdventurePathScript @Inject constructor(private val eventBus: Event
         if ((comsub - TASK_FIRST) % TASK_STRIDE != 0 || row !in 0 until TASK_ROWS) {
             return
         }
-        // TODO: other paths number their tasks after the first path's; needs the task table.
-        if (vars[SELECTED_PATH] != 0) {
-            return
-        }
-        transmitVar(SELECTED_TASK, row + 1)
+        val task = adventurePathTasks(vars[SELECTED_PATH]).getOrNull(row) ?: return
+        transmitVar(SELECTED_TASK, task)
     }
 }

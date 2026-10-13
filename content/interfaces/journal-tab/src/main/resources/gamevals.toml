@@ -1,0 +1,5 @@
+[gamevals.enum]
+adventurepath_path_tasks = 2620
+
+[gamevals.param]
+adventurepath_task_id = 806

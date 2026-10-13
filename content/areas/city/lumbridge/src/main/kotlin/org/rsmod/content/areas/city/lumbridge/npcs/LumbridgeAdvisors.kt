@@ -492,7 +492,7 @@ class LumbridgeAdvisors @Inject constructor(private val eventBus: EventBus) : Pl
                     chatPlayer(quiz, "Can you show me some Adventure Paths?")
                     chatNpc(happy, "Of course, here you go.")
                     // UNVERIFIED: opens like his "Open Adventure Paths" op (no capture of this branch)
-                    player.openAdventurePaths(eventBus, view = null)
+                    player.openAdventurePaths(eventBus, resendView = false)
                     return
                 }
                 else -> {

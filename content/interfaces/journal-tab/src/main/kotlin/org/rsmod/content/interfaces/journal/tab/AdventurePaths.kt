@@ -1,6 +1,9 @@
 package org.rsmod.content.interfaces.journal.tab
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.ui.ifOpenMainModal
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -27,17 +30,23 @@ internal const val PATH_SELECT_OFFSET = 10
 internal const val PATH_FOCUS_OFFSET = 38
 
 /**
- * Opens the full-screen Adventure Paths interface on [view]. Adventurer Jon passes `null`, which
- * keeps the view the player last had open.
+ * Opens the full-screen Adventure Paths interface on [view]. The side panel's buttons send the view
+ * even when it is unchanged; Adventurer Jon's op only sends a change.
  */
-public fun Player.openAdventurePaths(eventBus: EventBus, view: Int? = TAB_PATH_LIST) {
-    if (view != null) {
+public fun Player.openAdventurePaths(
+    eventBus: EventBus,
+    view: Int = TAB_PATH_LIST,
+    resendView: Boolean = true,
+) {
+    if (resendView) {
         transmitVar(MAIN_IF_TAB, view)
+    } else {
+        VarPlayerIntMapSetter.set(this, MAIN_IF_TAB, view)
     }
     transmitVar(SELECTED_PATH, 0)
+    // TODO: select the task in focus directly, without the 0 write, once focus is implemented.
     transmitVar(SELECTED_TASK, 0)
-    // TODO: select the first task the player has not completed yet.
-    transmitVar(SELECTED_TASK, 1)
+    transmitVar(SELECTED_TASK, adventurePathTasks(0).first())
 
     val taskFocusMessage = vars[DISABLE_TASK_FOCUS_MESSAGE]
     val pathFocusMessage = vars[DISABLE_PATH_FOCUS_MESSAGE]
@@ -75,4 +84,29 @@ internal fun Player.transmitVar(internal: String, value: Int) {
     } else {
         VarPlayerIntMapSetter.set(this, internal, value)
     }
+}
+
+/** Task ids of [path] in list order, from the path's task structs. */
+internal fun adventurePathTasks(path: Int): List<Int> = PATH_TASKS.getOrElse(path) { emptyList() }
+
+private val PATH_TASKS: List<List<Int>> by lazy {
+    val paths =
+        ServerCacheManager.getEnum("enum.adventurepath_path_tasks".asRSCM(RSCMType.ENUM))
+            ?: error("Missing enum.adventurepath_path_tasks")
+    val taskId = "param.adventurepath_task_id".asRSCM(RSCMType.PARAM)
+    paths.values.entries
+        .sortedBy { (it.key as Number).toInt() }
+        .map { (_, tasksEnum) ->
+            val tasks =
+                ServerCacheManager.getEnum((tasksEnum as Number).toInt())
+                    ?: error("Missing Adventure Path task enum $tasksEnum")
+            tasks.values.entries
+                .sortedBy { (it.key as Number).toInt() }
+                .map { (_, structId) ->
+                    val struct =
+                        ServerCacheManager.getStruct((structId as Number).toInt())
+                            ?: error("Missing Adventure Path task struct $structId")
+                    struct.getInt(taskId)
+                }
+        }
 }
