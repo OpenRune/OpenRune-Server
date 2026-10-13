@@ -38,7 +38,7 @@ enum class ToaStage {
     COMPLETED,
 }
 
-data class Arrival(val coords: CoordGrid, val facing: Direction?)
+data class Arrival(val coords: CoordGrid, val facing: Direction?, val sceneCentre: CoordGrid? = null)
 
 open class ToaEncounter(
     val raid: ToaRaid,

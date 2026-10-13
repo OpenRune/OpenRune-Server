@@ -15,6 +15,8 @@ internal object ScabarasCoords {
     const val SLOT_SIZE = 7
     const val SLOT_COUNT = 4
 
+    val SCENE_CENTRE = CoordGrid(3552, 5280, LEVEL)
+
     val BASES =
         listOf(
             CoordGrid(3539, 5283, LEVEL),

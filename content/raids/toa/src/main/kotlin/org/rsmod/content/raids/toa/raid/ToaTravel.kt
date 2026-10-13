@@ -69,6 +69,10 @@ internal suspend fun ProtectedAccess.travel(target: ToaEncounter, fromLobby: Boo
 
     val arrival = target.arrival()
     ToaRaidManager.moveTo(player, target)
+    if (arrival.sceneCentre != null) {
+        telejump(arrival.sceneCentre, TeleportType.Exempt)
+        delay(1)
+    }
     telejump(arrival.coords, TeleportType.Exempt)
     arrival.facing?.let { faceDirection(it) }
 
