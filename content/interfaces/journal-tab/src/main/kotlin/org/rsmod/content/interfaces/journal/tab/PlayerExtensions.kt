@@ -1,11 +1,13 @@
 package org.rsmod.content.interfaces.journal.tab
 
+import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.ui.ifCloseSub
 import org.rsmod.api.player.ui.ifOpenOverlay
+import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.vars.enumVarBit
 import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.events.EventBus
@@ -18,6 +20,7 @@ internal fun Player.openJournalTab(tab: SideJournalTab, eventBus: EventBus) =
         SideJournalTab.Summary -> openSummaryTab(eventBus)
         SideJournalTab.Quests -> openQuestTab(eventBus)
         SideJournalTab.Tasks -> openTaskTab(eventBus)
+        SideJournalTab.AdventurePaths -> openAdventurePathTab(eventBus)
     }
 
 internal fun Player.openSummaryTab(eventBus: EventBus) {
@@ -54,11 +57,24 @@ internal fun Player.openTaskTab(eventBus: EventBus) {
     ifOpenOverlay("interface.area_task", "component.side_journal:tab_container", eventBus)
 }
 
+internal fun Player.openAdventurePathTab(eventBus: EventBus) {
+    ifOpenOverlay("interface.adventurepath_side", "component.side_journal:tab_container", eventBus)
+    for (n in 0 until SIDE_TOGGLE_ROWS) {
+        val sub = SIDE_TOGGLE_FIRST + (n * SIDE_TOGGLE_STRIDE)
+        ifSetEvents("component.adventurepath_side:toggles", sub..sub, IfEvent.Op1)
+    }
+}
+
+private const val SIDE_TOGGLE_FIRST = 11
+private const val SIDE_TOGGLE_STRIDE = 12
+private const val SIDE_TOGGLE_ROWS = 5
+
 internal fun Player.prepareJournalTab(tab: SideJournalTab) =
     when (tab) {
         SideJournalTab.Summary -> prepareSummaryTab()
         SideJournalTab.Quests -> prepareQuestTab()
         SideJournalTab.Tasks -> {}
+        SideJournalTab.AdventurePaths -> {}
     }
 
 internal fun Player.prepareSummaryTab() {
@@ -86,6 +102,7 @@ internal fun Player.closeJournalTab(tab: SideJournalTab, eventBus: EventBus) =
         SideJournalTab.Summary -> ifCloseSub("interface.account_summary_sidepanel", eventBus)
         SideJournalTab.Quests -> ifCloseSub("interface.questlist", eventBus)
         SideJournalTab.Tasks -> ifCloseSub("interface.area_task", eventBus)
+        SideJournalTab.AdventurePaths -> ifCloseSub("interface.adventurepath_side", eventBus)
     }
 
 internal fun Player.switchJournalTab(open: SideJournalTab, eventBus: EventBus) {

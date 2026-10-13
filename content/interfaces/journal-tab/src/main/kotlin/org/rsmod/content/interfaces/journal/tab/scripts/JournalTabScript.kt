@@ -27,6 +27,10 @@ class JournalTabScript @Inject constructor(private val eventBus: EventBus) : Plu
         onIfOverlayButton("component.side_journal:task_list") {
             player.switchJournalTab(SideJournalTab.Tasks)
         }
+
+        onIfOverlayButton("component.side_journal:adventurepath_list") {
+            player.switchJournalTab(SideJournalTab.AdventurePaths)
+        }
     }
 
     private fun Player.openActiveJournal() = openJournalTab(sideJournalTab, eventBus)

@@ -1,0 +1,80 @@
+package org.rsmod.content.interfaces.journal.tab.scripts
+
+import jakarta.inject.Inject
+import org.rsmod.api.script.onIfModalButton
+import org.rsmod.api.script.onIfOverlayButton
+import org.rsmod.api.script.onOpNpc4
+import org.rsmod.content.interfaces.journal.tab.MAIN_IF_TAB
+import org.rsmod.content.interfaces.journal.tab.PATH_ROWS
+import org.rsmod.content.interfaces.journal.tab.PATH_SELECT_OFFSET
+import org.rsmod.content.interfaces.journal.tab.PATH_STRIDE
+import org.rsmod.content.interfaces.journal.tab.SELECTED_PATH
+import org.rsmod.content.interfaces.journal.tab.SELECTED_TASK
+import org.rsmod.content.interfaces.journal.tab.TAB_PATH_DETAIL
+import org.rsmod.content.interfaces.journal.tab.TAB_PATH_LIST
+import org.rsmod.content.interfaces.journal.tab.TAB_TASK_VIEW
+import org.rsmod.content.interfaces.journal.tab.TASK_FIRST
+import org.rsmod.content.interfaces.journal.tab.TASK_ROWS
+import org.rsmod.content.interfaces.journal.tab.TASK_STRIDE
+import org.rsmod.content.interfaces.journal.tab.openAdventurePaths
+import org.rsmod.content.interfaces.journal.tab.transmitVar
+import org.rsmod.events.EventBus
+import org.rsmod.game.entity.Player
+import org.rsmod.plugin.scripts.PluginScript
+import org.rsmod.plugin.scripts.ScriptContext
+
+public class AdventurePathScript @Inject constructor(private val eventBus: EventBus) :
+    PluginScript() {
+
+    override fun ScriptContext.startup() {
+        onIfOverlayButton("component.adventurepath_side:toggles") { player.openAdventurePaths() }
+        onIfOverlayButton("component.adventurepath_side:open_interface") {
+            player.openAdventurePaths()
+        }
+        onIfOverlayButton("component.adventurepath_side:path_name") { player.openAdventurePaths() }
+        // UNVERIFIED: live also writes main_if_tab here depending on the focused task (guess)
+        onIfOverlayButton("component.adventurepath_side:task_name") { player.openAdventurePaths() }
+        // UNVERIFIED: main_if_tab 2 and the order of writes (rev 240 capture from upstream PR #190)
+        onIfOverlayButton("component.adventurepath_side:task_description") {
+            player.openAdventurePaths(eventBus, view = TAB_TASK_VIEW)
+        }
+
+        onOpNpc4("npc.ap_guide_parent") { player.openAdventurePaths(eventBus, view = null) }
+        onOpNpc4("npc.ap_guide_active") { player.openAdventurePaths(eventBus, view = null) }
+
+        onIfModalButton("component.adventurepath:paths") { player.selectPath(it.comsub) }
+        onIfModalButton("component.adventurepath:tasks") { player.selectTask(it.comsub) }
+        onIfModalButton("component.adventurepath:back") {
+            player.transmitVar(MAIN_IF_TAB, TAB_PATH_LIST)
+        }
+        // UNVERIFIED: no click on it is captured; assumed to act like `back` (guess)
+        onIfModalButton("component.adventurepath:extra_back_button") {
+            player.transmitVar(MAIN_IF_TAB, TAB_PATH_LIST)
+        }
+        // TODO: task_focus, the path focus op (paths op4) and path_reward need the task system.
+    }
+
+    private fun Player.openAdventurePaths() = openAdventurePaths(eventBus)
+
+    private fun Player.selectPath(comsub: Int) {
+        val path = comsub / PATH_STRIDE
+        val offset = comsub % PATH_STRIDE
+        if (path >= PATH_ROWS || (offset != 0 && offset != PATH_SELECT_OFFSET)) {
+            return
+        }
+        transmitVar(SELECTED_PATH, path)
+        transmitVar(MAIN_IF_TAB, TAB_PATH_DETAIL)
+    }
+
+    private fun Player.selectTask(comsub: Int) {
+        val row = (comsub - TASK_FIRST) / TASK_STRIDE
+        if ((comsub - TASK_FIRST) % TASK_STRIDE != 0 || row !in 0 until TASK_ROWS) {
+            return
+        }
+        // TODO: other paths number their tasks after the first path's; needs the task table.
+        if (vars[SELECTED_PATH] != 0) {
+            return
+        }
+        transmitVar(SELECTED_TASK, row + 1)
+    }
+}
