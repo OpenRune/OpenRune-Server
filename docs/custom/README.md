@@ -26,6 +26,7 @@ This index contains implementation notes and evidence, not a second status list.
 | Max cape | Custom native-menu handlers in `content/other/max-cape` | [Menus and perks](../max-cape.md) |
 | Slayer menus and helmet crafting | `content/skills/slayer`, `content/skills/crafting`, native cache/shop data | [Source audit, menu references and conversion rules](slayer.md) |
 | Completionist cape and hooded Slayer helmets | Reward requirements, equipment variants and client/cache visuals | [Design and visual reference](completion-rewards.md) |
+| Combat Achievements | Proposed shared API, content module and boss adapters | [Research and reviewed implementation plan](combat-achievements.md) |
 | Combat, NPC animations, weapons and shields | `content/other/special-attacks`, `content/other/special-weapons`, `api/specials`, `api/combat` | [Combat and NPC animation audit](combat.md) |
 | Boss-item assembly | `content/skills/crafting`, `content/other/special-weapons` | [Recipes and dismantling](boss-item-crafting.md) |
 | Prices, Examine and notifications | `api/market`, `api/player-output`, `content/interfaces/collection-log` | [Four extensions](small-extensions.md) |
