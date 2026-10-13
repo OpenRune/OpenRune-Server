@@ -57,29 +57,6 @@ internal fun Player.openTaskTab(eventBus: EventBus) {
     ifOpenOverlay("interface.area_task", "component.side_journal:tab_container", eventBus)
 }
 
-/**
- * Adventure Paths, captured at tick 96 of `20260822T133202` (lines 2871-2876):
- *
- * ```
- * if_closesub com=side_journal:tab_container (629:43), id=questlist (399)
- * if_opensub  com=side_journal:tab_container (629:43), id=adventurepath_side (644), type=overlay
- * if_setevents_v2 com=adventurepath_side:toggles (644:4), start=11,  end=11,  events=[OP1]
- * if_setevents_v2 com=adventurepath_side:toggles (644:4), start=23,  end=23,  events=[OP1]
- * if_setevents_v2 com=adventurepath_side:toggles (644:4), start=35,  end=35,  events=[OP1]
- * if_setevents_v2 com=adventurepath_side:toggles (644:4), start=47,  end=47,  events=[OP1]
- * if_setevents_v2 com=adventurepath_side:toggles (644:4), start=59,  end=59,  events=[OP1]
- * ```
- *
- * Five rows on the same `11 + 12n` stride the full-screen modal's task list uses, each armed as
- * its own single-subcomponent write rather than a span, exactly as the live server sends them.
- *
- * The panel's other buttons — `task_name` (644:9), `task_description` (644:11),
- * `open_interface` (644:15) and `path_name` (644:16) — are never armed by a packet, so they are
- * armed in the cache and only need handlers; those live in `AdventurePathScript`.
- *
- * Unlike the quest list there is no `playermember` call beforehand, which is why
- * [prepareJournalTab] has nothing to do for this tab.
- */
 internal fun Player.openAdventurePathTab(eventBus: EventBus) {
     ifOpenOverlay("interface.adventurepath_side", "component.side_journal:tab_container", eventBus)
     for (n in 0 until SIDE_TOGGLE_ROWS) {
