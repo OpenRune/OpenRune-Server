@@ -36,6 +36,14 @@ fun findContentPlugins(): List<Project> =
     project(":content").subprojects.filter { it.name.endsWith("-pack") && it.buildFile.exists() }
 
 tasks {
+    register<JavaExec>("buildCombatAchievementsCache") {
+        group = "cache"
+        description = "Add only permanent Combat Achievement counters over revision-240 cache"
+        classpath = sourceSets["main"].runtimeClasspath
+        mainClass.set("dev.openrune.tools.CombatAchievementsCacheToolKt")
+        workingDir = rootProject.file("or-cache")
+        maxHeapSize = "4g"
+    }
     register<JavaExec>("buildGauntletCache") {
         group = "cache"
         description = "Pack only the Gauntlet definitions over this checkout's accepted rev-240 cache"

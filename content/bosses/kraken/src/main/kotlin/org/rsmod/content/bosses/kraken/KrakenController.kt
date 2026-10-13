@@ -34,7 +34,10 @@ internal class KrakenController @Inject constructor(
     private val respawns: BossRespawnTimers,
 ) {
     internal data class Actor(val pool: Npc, val npc: Npc, val kind: KrakenKind, val owner: Player,
-        val centre: Npc, var dying: Boolean = false)
+        val centre: Npc, val achievementEligible: Boolean, var dying: Boolean = false,
+        var achievementKillRecorded: Boolean = false, val initialTentacles: Set<Npc> = emptySet(),
+        val killedTentacles: MutableSet<Npc> = mutableSetOf(), var tentacleDeathAcknowledged: Boolean = false)
+    internal data class AchievementKill(val eligible: Boolean, val allTentaclesKilled: Boolean)
     private val pools = java.util.Collections.newSetFromMap(IdentityHashMap<Npc, Boolean>())
     private val actors = IdentityHashMap<Npc, Actor>()
     private val testers = java.util.Collections.newSetFromMap(IdentityHashMap<Player, Boolean>())
@@ -122,7 +125,12 @@ internal class KrakenController @Inject constructor(
         npc.respawns = false
         npc.movementLocked = true
         npc.apRangeOverride = 10
-        actors[npc] = Actor(pool, npc, kind, player, centre)
+        val tentacles = if (kind == KrakenKind.BOSS)
+            actors.values.filter { it.centre === centre && it.kind == KrakenKind.TENTACLE }
+        else emptyList()
+        actors[npc] = Actor(pool, npc, kind, player, centre, KrakenRules.allowed(player),
+            initialTentacles = tentacles.map { it.npc }.toSet(),
+            killedTentacles = tentacles.filter { it.tentacleDeathAcknowledged }.mapTo(mutableSetOf()) { it.npc })
         npc.anim(kind.spawn)
         deps.encounter(npc).busyUntil = deps.mapClock.cycle + kind.spawnTicks
         npc.movementLocked = true
@@ -167,7 +175,26 @@ internal class KrakenController @Inject constructor(
     }
 
     fun owner(npc: Npc): Player? = actors[npc]?.owner
+
+    /** Snapshot once, before other death hooks can decrement the final Slayer kill. */
+    fun claimAchievementKill(npc: Npc, player: Player): AchievementKill? {
+        val actor = actors[npc] ?: return null
+        if (actor.kind != KrakenKind.BOSS || actor.owner !== player || !actor.dying ||
+            npc.hitpoints > 0 || actor.achievementKillRecorded) return null
+        actor.achievementKillRecorded = true
+        return AchievementKill(
+            eligible = actor.achievementEligible && valid(actor),
+            allTentaclesKilled = actor.initialTentacles.size == 4 &&
+                actor.initialTentacles.all { it in actor.killedTentacles },
+        )
+    }
+
     fun beginDeath(npc: Npc): Actor? = actors[npc]?.also { actor ->
+        if (actor.kind == KrakenKind.TENTACLE && !actor.dying && npc.hitpoints <= 0) {
+            actor.tentacleDeathAcknowledged = true
+            actors.values.firstOrNull { it.kind == KrakenKind.BOSS && it.centre === actor.centre && !it.dying }
+                ?.killedTentacles?.add(npc)
+        }
         actor.dying = true
         if (actor.kind == KrakenKind.BOSS) {
             actors.values.filter { it.centre === actor.centre && it !== actor }.forEach {

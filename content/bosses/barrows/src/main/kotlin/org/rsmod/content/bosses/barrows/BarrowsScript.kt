@@ -12,6 +12,7 @@ import dtx.core.flatten
 import jakarta.inject.Inject
 import kotlin.math.abs
 import kotlin.random.Random
+import org.rsmod.api.combatachievements.CombatAchievements
 import org.rsmod.api.droptable.DropTableRegistry
 import org.rsmod.api.droptable.rollCount
 import org.rsmod.api.invtx.invAdd
@@ -59,6 +60,7 @@ constructor(
     private val spawner: BarrowsNpcSpawner,
     private val doors: BarrowsDoors,
     private val dropRegistry: DropTableRegistry,
+    private val combatAchievements: CombatAchievements,
 ) : PluginScript() {
     private val puzzles = mutableMapOf<Int, BarrowsPuzzle>()
 
@@ -309,6 +311,10 @@ constructor(
             if (drop.isNothing || !drop.condition(player)) continue
             invAdd(rewardInv, drop.transformObj(player) ?: drop.obj, drop.rollCount(random))
         }
+        combatAchievements.recordBarrowsChest(
+            player,
+            allBrothersKilled = player.slainBrothers.size == BarrowsBrother.entries.size,
+        )
         invTransmit(rewardInv)
         player.midiJingle(CHEST_JINGLE)
         ifOpenMain(REWARD_INTERFACE)

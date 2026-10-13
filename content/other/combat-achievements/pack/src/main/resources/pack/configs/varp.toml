@@ -1,0 +1,11 @@
+[[varp]]
+isServerOnly = true
+id = "varp.ca_legitimate_barrows_chests"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.ca_legitimate_kraken_kills"
+scope = "Perm"
+transmit = "Never"

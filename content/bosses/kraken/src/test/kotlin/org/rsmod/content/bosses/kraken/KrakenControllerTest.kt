@@ -13,24 +13,40 @@ import org.rsmod.api.bosses.runtime.*
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.combat.formulas.AccuracyFormulae
 import org.rsmod.api.combat.formulas.MaxHitFormulae
+import org.rsmod.api.combatachievements.CombatAchievementCatalogue
+import org.rsmod.api.combatachievements.CombatAchievements
+import org.rsmod.api.death.NpcDeath
+import org.rsmod.api.death.NpcDeathKillContext
+import org.rsmod.api.death.NpcDeathKillHook
+import org.rsmod.api.game.process.npc.NpcQueueProcessor
+import org.rsmod.api.npc.access.StandardNpcAccessContextFactory
+import org.rsmod.api.npc.access.StandardNpcAccessLauncher
+import org.rsmod.api.npc.hit.modifier.NpcHitModifier
+import org.rsmod.api.npc.hit.processor.NpcHitProcessor
 import org.rsmod.api.npc.interact.AiPlayerInteractions
+import org.rsmod.api.npc.queueDeath
 import org.rsmod.api.npc.respawn.BossRespawnTimers
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.interact.NpcInteractions
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.registry.npc.NpcRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.table.slayer.SlayerTaskRow
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
+import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.entity.*
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.inv.Inventory
+import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.map.CoordGrid
+import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
 
 @ResourceLock("ServerCacheManager")
@@ -47,13 +63,19 @@ class KrakenControllerTest {
     private lateinit var queues: WorldQueueList
     private lateinit var playerInteractions: NpcInteractions
     private lateinit var hitModifier: PlayerHitModifier
+    private lateinit var players: PlayerList
+    private lateinit var bus: EventBus
+    private lateinit var deps: BossDeps
+    private lateinit var respawns: BossRespawnTimers
 
     @BeforeEach fun setup() {
         clock = MapClock(100)
+        bus = EventBus()
         owner = player(1)
+        players = PlayerList().apply { this[1] = owner }
         npcs = NpcList()
         val collision = CollisionFlagMap()
-        repo = NpcRepository(clock, NpcRegistry(npcs, collision, mock(EventBus::class.java)), npcs)
+        repo = NpcRepository(clock, NpcRegistry(npcs, collision, bus), npcs)
         val registry = EncounterRegistry()
         queues = WorldQueueList()
         playerInteractions = mock(NpcInteractions::class.java)
@@ -62,11 +84,12 @@ class KrakenControllerTest {
             val idle = ability("idle", Effect.NoOp)
             phase("combat") { rotationSelector { +then(idle) } }
         })
-        val deps = BossDeps(mock(GameRandom::class.java) { call -> (call.arguments.firstOrNull() as? IntRange)?.last ?: 0 }, mock(WorldRepository::class.java), repo,
-            mock(LocRepository::class.java), PlayerList().apply { this[1] = owner }, clock,
+        deps = BossDeps(mock(GameRandom::class.java) { call -> (call.arguments.firstOrNull() as? IntRange)?.last ?: 0 }, mock(WorldRepository::class.java), repo,
+            mock(LocRepository::class.java), players, clock,
             queues, collision, registry, BossExtensionRegistry(), mock(AccuracyFormulae::class.java) { true },
             mock(MaxHitFormulae::class.java), hitModifier)
-        controller = KrakenController(deps, mock(AiPlayerInteractions::class.java), playerInteractions, BossRespawnTimers(clock))
+        respawns = BossRespawnTimers(clock)
+        controller = KrakenController(deps, mock(AiPlayerInteractions::class.java), playerInteractions, respawns)
         bossPool = pool(KrakenKind.BOSS, CoordGrid(2278, 10034))
         tentacles = listOf(2275 to 10034, 2275 to 10038, 2284 to 10034, 2284 to 10038)
             .map { (x, z) -> pool(KrakenKind.TENTACLE, CoordGrid(x, z)) }
@@ -224,6 +247,158 @@ class KrakenControllerTest {
             assertEquals(0, KrakenRules.damage(kind, HitType.Melee, 70))
             assertEquals(70, KrakenRules.damage(kind, HitType.Magic, 70))
         }
+    }
+
+    @Test fun `native boss death snapshots natural eligibility before the final Slayer kill is decremented`() {
+        val achievements = mock(CombatAchievements::class.java)
+        val decrement = NpcDeathKillHook { owner.vars.backing["varp.slayer_count".asRSCM()] = 0 }
+        val queues = deathProducer(achievements, decrement)
+        owner.vars.backing["varp.slayer_count".asRSCM()] = 1
+        assertTrue(controller.disturb(owner, bossPool, true))
+        finishNativeDeath(active(KrakenKind.BOSS).single(), queues)
+        assertEquals(0, owner.vars["varp.slayer_count"])
+        verify(achievements).recordKrakenKill(owner, true, false)
+        verifyNoMoreInteractions(achievements)
+    }
+
+    @Test fun `native twentieth Kraken death grants the real adept completion bit and three points`() {
+        val achievements = CombatAchievements(CombatAchievementCatalogue())
+        VarPlayerIntMapSetter.set(owner, "varp.ca_legitimate_kraken_kills", 19)
+        val queues = deathProducer(achievements)
+        assertFalse(achievements.isCompleted(owner, 168))
+        assertTrue(controller.disturb(owner, bossPool, true))
+        finishNativeDeath(active(KrakenKind.BOSS).single(), queues)
+
+        assertEquals(20, owner.vars["varp.ca_legitimate_kraken_kills"])
+        assertTrue(achievements.isCompleted(owner, 168))
+        assertFalse(achievements.isCompleted(owner, 169))
+        assertEquals(1 shl (168 % 32), owner.vars["varp.ca_task_completed_${168 / 32}"])
+        assertEquals(3, achievements.points(owner))
+        assertEquals(3, owner.vars["varbit.ca_points"])
+        assertEquals(1, owner.vars["varbit.ca_total_tasks_completed_kraken_boss"])
+    }
+
+    @Test fun `four native tentacle deaths then Kraken death grant the real mechanic completion`() {
+        val achievements = CombatAchievements(CombatAchievementCatalogue())
+        val queues = deathProducer(achievements)
+        assertTrue(controller.disturb(owner, bossPool, true))
+        for (tentacle in active(KrakenKind.TENTACLE)) finishNativeDeath(tentacle, queues)
+        assertFalse(achievements.isCompleted(owner, 169))
+        finishNativeDeath(active(KrakenKind.BOSS).single(), queues)
+
+        assertEquals(1, owner.vars["varp.ca_legitimate_kraken_kills"])
+        assertFalse(achievements.isCompleted(owner, 168))
+        assertTrue(achievements.isCompleted(owner, 169))
+        assertEquals(3, achievements.points(owner))
+        assertEquals(3, owner.vars["varbit.ca_points"])
+    }
+
+    @Test fun `native tentacle deaths satisfy the mechanic while boss cleanup cannot`() {
+        val achievements = mock(CombatAchievements::class.java)
+        val queues = deathProducer(achievements)
+        assertTrue(controller.disturb(owner, bossPool, true))
+        for (tentacle in active(KrakenKind.TENTACLE)) finishNativeDeath(tentacle, queues)
+        verifyNoInteractions(achievements)
+        finishNativeDeath(active(KrakenKind.BOSS).single(), queues)
+        verify(achievements).recordKrakenKill(owner, true, true)
+    }
+
+    @Test fun `a Kraken bypass attempt remains ineligible after the player acquires a real task`() {
+        val achievements = mock(CombatAchievements::class.java)
+        val queues = deathProducer(achievements)
+        owner.modLevel = Rights.ADMINISTRATOR
+        owner.vars.backing["varp.slayer_count".asRSCM()] = 0
+        controller.setTesting(owner, true)
+        assertTrue(controller.disturb(owner, bossPool, true))
+        owner.vars.backing["varp.slayer_count".asRSCM()] = 20
+        finishNativeDeath(active(KrakenKind.BOSS).single(), queues)
+        verify(achievements).recordKrakenKill(owner, false, false)
+    }
+
+    @Test fun `a tentacle killed before surfacing the boss still belongs to the same four tentacles`() {
+        val achievements = mock(CombatAchievements::class.java)
+        val queues = deathProducer(achievements)
+        tentacles.forEach { assertTrue(controller.disturb(owner, it)) }
+        val first = active(KrakenKind.TENTACLE).first()
+        beginNativeDeath(first, queues)
+        assertTrue(controller.disturb(owner, bossPool))
+        finishStartedDeath(first)
+        for (tentacle in active(KrakenKind.TENTACLE)) finishNativeDeath(tentacle, queues)
+        finishNativeDeath(active(KrakenKind.BOSS).single(), queues)
+        verify(achievements).recordKrakenKill(owner, true, true)
+    }
+
+    @Test fun `administrator with natural requirements remains eligible while untracked testloot is ignored`() {
+        val achievements = mock(CombatAchievements::class.java)
+        val queues = deathProducer(achievements)
+        owner.modLevel = Rights.ADMINISTRATOR
+        controller.setTesting(owner, true)
+        val hook = KrakenCombatAchievementHook(controller, achievements)
+        hook.onKill(NpcDeathKillContext(owner, Npc(KrakenKind.BOSS.active, owner.coords), 1))
+        verifyNoInteractions(achievements)
+        assertTrue(controller.disturb(owner, bossPool, true))
+        finishNativeDeath(active(KrakenKind.BOSS).single(), queues)
+        verify(achievements).recordKrakenKill(owner, true, false)
+    }
+
+    @Test fun `prepared kill callback is harmless when replayed and cave krakens cannot grant boss tasks`() {
+        val achievements = mock(CombatAchievements::class.java)
+        assertTrue(controller.disturb(owner, bossPool, true))
+        val boss = active(KrakenKind.BOSS).single()
+        boss.hitpoints = 0
+        controller.beginDeath(boss)
+        val hook = KrakenCombatAchievementHook(controller, achievements)
+        val context = NpcDeathKillContext(owner, boss, 1)
+        val apply = hook.prepare(context)
+        apply()
+        apply()
+        hook.onKill(context)
+        verify(achievements).recordKrakenKill(owner, true, false)
+        val cave = pool(KrakenKind.CAVE, CoordGrid(2270, 10030))
+        assertTrue(controller.disturb(owner, cave))
+        val activeCave = active(KrakenKind.CAVE).single()
+        activeCave.hitpoints = 0
+        controller.beginDeath(activeCave)
+        hook.onKill(NpcDeathKillContext(owner, activeCave, 2))
+        verifyNoMoreInteractions(achievements)
+    }
+
+    private fun deathProducer(achievements: CombatAchievements, extra: NpcDeathKillHook? = null): NpcQueueProcessor {
+        val hooks = linkedSetOf<NpcDeathKillHook>()
+        if (extra != null) hooks += extra
+        hooks += KrakenCombatAchievementHook(controller, achievements)
+        val death = NpcDeath(repo, players, mock(ObjRepository::class.java), emptySet(), hooks, respawns)
+        val scripts = ScriptContext(bus, CheatCommandMap(), EngineQueueCache())
+        with(KrakenScript(deps, controller, death)) { scripts.startup() }
+        val factory = StandardNpcAccessContextFactory(
+            deps.random, mock(NpcHitModifier::class.java), mock(NpcHitProcessor::class.java),
+        )
+        return NpcQueueProcessor(bus, StandardNpcAccessLauncher(factory))
+    }
+
+    private fun finishNativeDeath(npc: Npc, processor: NpcQueueProcessor) {
+        beginNativeDeath(npc, processor)
+        finishStartedDeath(npc)
+    }
+
+    private fun beginNativeDeath(npc: Npc, processor: NpcQueueProcessor) {
+        npc.heroPoints(owner, 1)
+        npc.hitpoints = 0
+        npc.currentMapClock = clock.cycle
+        npc.processedMapClock = clock.cycle
+        npc.queueDeath()
+        processor.process(npc)
+    }
+
+    private fun finishStartedDeath(npc: Npc) {
+        repeat(64) {
+            if (controller.owner(npc) == null) return
+            clock.tick()
+            npc.currentMapClock = clock.cycle
+            npc.processedMapClock = clock.cycle
+            npc.advanceActiveCoroutine()
+        }
+        fail<Unit>("Native Kraken death did not finish")
     }
 
     companion object { @JvmStatic @BeforeAll fun cache() { ServerCacheManager.init(240).close() } }

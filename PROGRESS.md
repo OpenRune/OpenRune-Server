@@ -13,7 +13,7 @@ Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 This bar counts the dated Complete/Started/Parked packages below equally.
 Older accepted baseline content is listed separately. It is not a percentage
 of all OSRS content or an estimate of engineering time.
-The remaining roadmap contains **54 entries: 3 Started and 51 Not started**;
+The remaining roadmap contains **53 entries: 3 Started and 50 Not started**;
 none of those remaining entries is marked Complete. Treasure Trails appears
 in both the delivery detail and the parked roadmap and is counted once in
 each view, not presented as an additional implemented feature.
@@ -27,38 +27,50 @@ each view, not presented as an additional implemented feature.
 | 🟡 Merged milestone | Completionist purchase/fusion/perks/ammunition/repair/persistence; v0.17 Dizana inventory colours, native max-hood head, software depth reset, outward quiver and original-shape inventory icon | Owner confirmation of reported hood/head and OG map glitches, both genders, movement, Fire/Infernal and software/HD visual acceptance; PR #38 is merged; remaining native coverage is still recorded, and the runtime is not installed. |
 | 🟡 Test package | Normal/Corrupted Gauntlet preparation, owned rooms/timer, Hunllef, native recipes, escrow and chest/log/completion handling | Owner checks of complete runs, native interfaces, floor/tornado/animation timing; Personal records/scoreboard are in the new test candidate; global aggregates and exact probability parity remain open. PR #38 is merged; the continuing Gauntlet work is not installed. |
 | 🟡 Published branch | Shortcuts, containers, fairy rings and Spider Cave access | Remaining consumers/dependencies, Forestry events, final native route/UI/death acceptance and combined cape/quiver integration. |
+| 🟡 Active first slice | Combat Achievements: native catalogue, permanent progress/points, four Barrows/Kraken task detectors and native browsing; 65 scoped tests and JAR pass | Native client/relog acceptance, production save/load, reward claims/perks and remaining encounter detectors. This active work is not an additional accepted delivery package. |
 | 🟡 Parked | Treasure Trails: accepted 60/60 skill-task checkpoint and existing trail flow | Full step/puzzle/catalogue/loot parity and Mimic remain unfinished. |
 | 🟡 Partial | NPC animations: 97.15% technical attack/block/death coverage | 341 action slots across 149 types, secondary styles, specials/phases and native visual checks. |
 | 🟡 Follow-ups | Existing interfaces and native boss-item recipes | Remaining visual/interaction acceptance and persistence warning follow-up are detailed below. |
-| 🔴 Future scope | 51 Not-started roadmap entries | Bosses, activities and systems are enumerated in the backlog; module/model presence does not mark them playable. |
+| 🔴 Future scope | 50 Not-started roadmap entries | Bosses, activities and systems are enumerated in the backlog; module/model presence does not mark them playable. |
 
-## 🔴 Planned: Combat Achievements — research and plan reviewed
+## 🟡 Started: Combat Achievements — native framework and first task slice
 
-Research and implementation-plan review completed on **2026-10-13**.
+Research, implementation-plan review and the first implementation slice began on **2026-10-13**.
 Branch: [feature/combat-achievements](https://github.com/EvolvedMind/OpenRune-Server/tree/feature/combat-achievements),
 based on main `219995c52be04acfc02fcaf884dbee3b76a52f11`.
-**Gameplay implementation has not started.** This is the existing Combat Tasks
-roadmap scope, not a second feature or accepted delivery package.
+The former Combat Tasks roadmap item is now active here and removed from the
+backlog source. It remains one feature; this candidate does not add an accepted
+delivery package to the 11/14 package count above.
 
-Direct source review confirms a native overview entry, disabled Elite Slayer
-superior/bracelet benefits, unconditional Easy–Master clue reward checks, and
-existing Barrows offhand perk consumers. These need consistent task,
-persistence, claim and entitlement systems. Upstream searches returned no
-complete CA framework; merged PR #148 supplies already-present UI patterns,
-not task detection. Search coverage is incomplete.
+The available isolated revision-240 preview cache supplies **655 tasks**, stable IDs `0..654`,
+21 permanent native completion words and point thresholds **41 / 169 / 436 /
+1100 / 1965 / 2697**. Native Group Ironman exclusions are retained. The first
+detectors cover Barrows Novice/Champion (`24`, `25`) and Kraken Adept/
+Unnecessary Optimisation (`168`, `169`). New legitimate chest/kill counters
+start from zero; historical and testloot totals do not backfill achievements.
+Native overview/tasks/bosses/rewards browsing and queued notifications are
+connected. Reward claims and perk replacement remain later work.
 
-Reviewed order: source/native catalogue audit → framework/persistence →
-real Barrows/boss task slice → native UI/reward claims → accepted boss tasks →
-perk consumers → activity/group tasks → full native acceptance.
-Use points progression, stable task IDs, encounter-owned evidence, single
-completion/claim transactions and audited historical KC. Unavailable encounters
-cannot grant tasks or silently reduce tier thresholds.
+Isolated bounded cache packing changes only server counter definitions
+`65270`/`65271` and preserves **337,567** existing definitions, including the
+signed native varp sentinel. Java 21/revision 240 and accepted live data remain
+preserved. **65 scoped tests pass**: API 9, network 17, native UI 7, Barrows 12
+and Kraken 20, with no failures or skipped tests. Scoped formatting, generated
+progress checks and the full runtime JAR build pass. The exact JAR also passes
+a bounded Guice/cache/plugin routing smoke; full server boot and native client
+acceptance remain unverified. Existing source-defined cache prerequisites were
+added only to the isolated test fixture; the CA-only cache proof is preserved.
+No live installation is performed.
 
-Open: revision-240 task/threshold/reward data, event/credit/timing contracts,
-placeholder perk migration and historical/testloot provenance.
-Direct Wiki access was blocked; the shipped Jagex points update was verified.
-Only documentation changes; no gameplay test/build or installation is claimed.
-[Research, source decisions, reviewed milestones and validation](docs/custom/combat-achievements.md).
+Open: remaining encounter predicates/timing/group histories, production
+persistence roundtrip, native client/relog checks, exact reward costs/claims,
+placeholder perk migration and catalogue-update requalification. The owner's
+Wiki All_tasks link was robots-blocked and no browser was connected; selected
+task metadata and completion mappings were verified from that preview cache. Its
+fingerprints identify the source snapshot; they do not establish that it is the
+latest accepted runtime cache.
+[Implementation decisions and validation](docs/custom/combat-achievements.md),
+[frozen native catalogue](docs/custom/combat-achievements-catalogue.json).
 
 ## 🟢 Accepted milestone: Nero completionist cape, customiser and particles
 
@@ -592,7 +604,6 @@ Scope: XS = tiny, S = small, M = medium, L = large, XL = very large, XXL = multi
 | 🔴 | Forestry | XL |
 | 🔴 | Own Grand Exchange | XL–XXL |
 | 🔴 | Achievements | XL–XXL |
-| 🔴 | Combat Tasks | XXL |
 | 🔴 | Leagues | XXL |
 | 🔴 | Sailing Skill | XXL |
 | 🔴 | Completionist eligibility | TBD |

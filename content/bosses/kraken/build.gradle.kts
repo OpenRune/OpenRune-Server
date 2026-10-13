@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.api.combatAchievements)
     testImplementation(libs.or2.all.cache)
     testImplementation(libs.fastutil)
     testImplementation(projects.api.registry)

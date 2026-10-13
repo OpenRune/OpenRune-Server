@@ -1,0 +1,17 @@
+[gamevals.enum]
+ca_tasks_easy = 3981
+ca_tasks_medium = 3982
+ca_tasks_hard = 3983
+ca_tasks_elite = 3984
+ca_tasks_master = 3985
+ca_tasks_grandmaster = 3986
+ca_tiers = 3980
+ca_bosses = 3987
+ca_tier_points = 4846
+
+[gamevals.param]
+ca_task_gim_excluded_size = 1425
+
+[gamevals.varp]
+ca_legitimate_barrows_chests = 65270
+ca_legitimate_kraken_kills = 65271

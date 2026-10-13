@@ -377,6 +377,8 @@ Edit source/configuration, then run `node tools/progress/content-progress.mjs`.
 | [content/interfaces/spellbook](content/interfaces/spellbook) |
 | [content/interfaces/worldmap](content/interfaces/worldmap) |
 | [content/interfaces/xp-drops](content/interfaces/xp-drops) |
+| [content/other/combat-achievements](content/other/combat-achievements) |
+| [content/other/combat-achievements/pack](content/other/combat-achievements/pack) |
 | [content/other/commands](content/other/commands) |
 | [content/other/commands/pack](content/other/commands/pack) |
 | [content/other/consumables](content/other/consumables) |
