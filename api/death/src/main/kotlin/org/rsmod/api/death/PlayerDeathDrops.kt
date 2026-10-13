@@ -9,6 +9,7 @@ import org.rsmod.api.player.hook.GroundItemDropContext
 import org.rsmod.api.player.hook.GroundItemDropResolver
 import org.rsmod.api.player.hook.GroundItemDropSource
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
@@ -25,6 +26,7 @@ constructor(
     private val marketPrices: MarketPrices,
     private val groundItemDrops: GroundItemDropResolver,
     private val graveHooks: Set<PlayerGraveHook>,
+    private val config: ServerConfig,
 ) {
     public fun selectDrops(
         player: Player,
@@ -182,6 +184,9 @@ constructor(
         handling: PlayerDeathHandling,
         lost: List<InvObj>,
     ): List<InvObj> {
+        if (!config.gameplay.gravestones.enabled) {
+            return lost
+        }
         val grave = handling.grave ?: return lost
         val hook = graveHooks.firstOrNull() ?: return lost
         // Called with nothing lost too: a death still prunes an existing grave.

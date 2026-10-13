@@ -51,6 +51,12 @@ public data class GameplayConfig(
     val questRequirements: QuestRequirementsYaml = QuestRequirementsYaml(),
     @JsonProperty("drop-rates")
     val dropRates: DropRatesYaml = DropRatesYaml(),
+    val gravestones: GravestonesYaml = GravestonesYaml(),
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public data class GravestonesYaml(
+    val enabled: Boolean = true,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
