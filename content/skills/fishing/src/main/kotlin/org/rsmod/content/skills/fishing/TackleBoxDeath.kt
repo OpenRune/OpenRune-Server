@@ -8,8 +8,8 @@ import org.rsmod.game.inv.InvObj
 private val Player.emptyTackleBoxOnDeath by boolVarBit("varbit.emptyondeath_tacklebox")
 
 /**
- * "Always empty tackle boxes on death" (https://oldschool.runescape.wiki/w/Settings): the box's
- * contents go to the grave even when the box is kept, and always on a PvP death.
+ * "Always empty tackle boxes on death": the box's contents go to the grave even when the box is
+ * kept, and always on a PvP death.
  */
 class TackleBoxDeath : PlayerDeathStorageHook {
     override fun empty(player: Player, isPvpDeath: Boolean): List<InvObj> {

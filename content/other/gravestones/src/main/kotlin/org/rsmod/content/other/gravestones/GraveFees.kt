@@ -1,8 +1,8 @@
 package org.rsmod.content.other.gravestones
 
 /**
- * Grave reclaim fees (https://oldschool.runescape.wiki/w/Grave): free under 100k, then 1,000,
- * 10,000 or 100,000 coins per item depending on its value band, capped at 500,000 in total.
+ * Grave reclaim fees: free under 100k, then 1,000, 10,000 or 100,000 coins per item depending on
+ * its value band, capped at 500,000 in total.
  * Ironmen pay half. The client works out the same numbers in `gravestone_generic_window_set` and
  * `script1797` (osrs-dumps), which this follows, including its integer halving.
  */
@@ -54,14 +54,14 @@ object GraveFees {
 
     /**
      * Death's Office's fee for one obj worth [value]: free under 100k, else 5% of the value;
-     * ironmen pay 2.5% (https://oldschool.runescape.wiki/w/Death%27s_Office).
+     * ironmen pay 2.5%.
      */
     fun officeFee(value: Long, ironman: Boolean): Int {
         if (value < FREE_UNDER) {
             return 0
         }
-        // Rounded down: a 104,545 obj costs 5,227 (live capture, rev 241). UNVERIFIED: that there's
-        // no cap (the wiki states none).
+        // Rounded down: a 104,545 obj costs 5,227. UNVERIFIED: that there's no cap (the wiki states
+        // none).
         val fee = value * OFFICE_PERCENT / 100
         return discount(fee, ironman).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
     }

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 
 class GraveFeesTest {
     @Test
-    fun `six items between 100k and 1m cost 6,000 (live capture, rev 241)`() {
+    fun `six items between 100k and 1m cost 6,000`() {
         val slots = List(6) { 500_000L to 1 } + List(4) { 5_000L to 3 }
         assertEquals(6_000, GraveFees.totalFee(slots, ironman = false))
     }
@@ -34,7 +34,7 @@ class GraveFeesTest {
     }
 
     @Test
-    fun `thresholds point one past the first cheaper slot (live capture, rev 241)`() {
+    fun `thresholds point one past the first cheaper slot`() {
         val values = List(6) { 500_000L } + List(16) { 1_000L }
         val (under100k, under1m, _) = GraveFees.thresholds(values)
         assertEquals(7, under100k)

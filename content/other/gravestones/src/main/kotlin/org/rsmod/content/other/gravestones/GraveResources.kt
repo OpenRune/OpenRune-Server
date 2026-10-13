@@ -8,9 +8,8 @@ import org.rsmod.api.table.mining.MiningRocksRow
 import org.rsmod.api.table.prayer.SkillPrayerRow
 
 /**
- * The resources a grave won't stockpile: "unpowered orb, pure essence, bones, ores, planks"
- * (https://oldschool.runescape.wiki/w/Grave). Bones and ores come from the prayer and mining
- * tables; `enum.gravestone_resources` holds the rest.
+ * The resources a grave won't stockpile: "unpowered orb, pure essence, bones, ores, planks". Bones
+ * and ores come from the prayer and mining tables; `enum.gravestone_resources` holds the rest.
  */
 internal object GraveResources {
     private val ids: Set<Int> by lazy {

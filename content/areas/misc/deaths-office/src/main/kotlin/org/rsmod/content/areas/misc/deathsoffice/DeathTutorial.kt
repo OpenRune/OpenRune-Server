@@ -21,10 +21,9 @@ private var Player.heardTimer by boolVarBit("varbit.death_tutorial_heard_timer")
 private var Player.heardKeptOnDeath by boolVarBit("varbit.death_tutorial_heard_kept_on_death")
 
 /**
- * The first death that loses items sends the player to Death's Office, where Death explains graves
- * (https://oldschool.runescape.wiki/w/Death%27s_Office; live capture, rev 240). It runs after the
- * respawn teleport, on the death's last tick, as live arrives on the tick of "Oh dear, you are
- * dead!".
+ * The first death that loses items sends the player to Death's Office, where Death explains graves.
+ * It runs after the respawn teleport, on the death's last tick, as live arrives on the tick of "Oh
+ * dear, you are dead!".
  */
 class DeathTutorialArrival @Inject constructor(private val offices: DeathsOffices) :
     PlayerDeathCleanupHook {
@@ -37,9 +36,7 @@ class DeathTutorialArrival @Inject constructor(private val offices: DeathsOffice
             player.inDeathTutorial = false
             return
         }
-        // live capture, rev 240.
         player.metDeath = true
-        // live capture, rev 240: Death speaks three ticks later.
         player.queue(DeathTutorial.QUEUE, DeathTutorial.SPEAK_DELAY)
     }
 }
@@ -49,7 +46,6 @@ internal object DeathTutorial {
     const val SPEAK_DELAY = 3
     val ARRIVAL = CoordGrid(3171, 5726)
 
-    /** Live capture, rev 240. */
     suspend fun Dialogue.introduction() {
         chatNpc(
             bored,
@@ -61,16 +57,11 @@ internal object DeathTutorial {
         menu()
     }
 
-    /**
-     * Talking to Death during the tutorial: the reminder once every topic is heard (live capture,
-     * rev 240), else the line he resumes with after a relog too (rev
-     * 241).
-     */
+    /** The reminder once every topic is heard, else the line Death resumes with after a relog. */
     suspend fun Dialogue.talk() {
         if (heardAll()) reminder() else resume()
     }
 
-    /** Live capture, rev 241: after logging back in. */
     suspend fun Dialogue.resume() {
         chatNpc(
             angry,
@@ -79,16 +70,12 @@ internal object DeathTutorial {
         menu()
     }
 
-    /** Live capture, rev 240. */
     private suspend fun Dialogue.reminder() {
         chatNpc(quiz, "Would you like me to remind you about gravestones?")
         menu()
     }
 
-    /**
-     * Live capture, rev 240: options already heard are struck
-     * through, and picking one plays it again.
-     */
+    /** Options already heard are struck through, and picking one plays it again. */
     private suspend fun Dialogue.menu() {
         while (true) {
             when (
@@ -115,7 +102,6 @@ internal object DeathTutorial {
                 5 -> {
                     chatPlayer(bored, "I think I'm done here.")
                     if (!heardAll()) {
-                        // live capture, rev 241.
                         chatNpc(
                             sad,
                             "I'm afraid we have more topics to cover before you leave. Speak to " +
@@ -123,7 +109,6 @@ internal object DeathTutorial {
                         )
                         return
                     }
-                    // The same every time (live capture, rev 241).
                     chatNpc(
                         happy,
                         "Very well. Once you pass through my portal, you will have 15 minutes to " +
@@ -180,7 +165,6 @@ internal object DeathTutorial {
         player.heardGravestones = true
     }
 
-    /** Live capture, rev 240. */
     private suspend fun Dialogue.payingFees() {
         chatPlayer(quiz, "How do I pay a gravestone fee?")
         chatNpc(
@@ -203,7 +187,6 @@ internal object DeathTutorial {
         player.heardFees = true
     }
 
-    /** Live capture, rev 240. */
     private suspend fun Dialogue.howLong() {
         chatPlayer(quiz, "How long do I have to return to my gravestone?")
         objbox(
@@ -221,7 +204,6 @@ internal object DeathTutorial {
         player.heardTimer = true
     }
 
-    /** Live capture, rev 240. */
     private suspend fun Dialogue.keptOnDeath() {
         chatPlayer(quiz, "How do I know what will happen to my items when I die?")
         chatNpc(
@@ -240,8 +222,8 @@ internal object DeathTutorial {
     }
 
     /**
-     * The `graphicbox` chatbox (live capture, rev 240): the game
-     * message, the box with its button, the graphic and the text, then a pause button.
+     * The `graphicbox` chatbox: the game message, the box with its button, the graphic and the
+     * text, then a pause button.
      */
     private suspend fun ProtectedAccess.graphicbox(graphic: Int, size: Int, text: String) {
         mes(text.replace("<br>", " "), ChatType.Mesbox)

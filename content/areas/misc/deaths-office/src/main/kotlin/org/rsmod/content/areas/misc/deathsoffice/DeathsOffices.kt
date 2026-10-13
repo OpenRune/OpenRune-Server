@@ -18,9 +18,8 @@ import org.rsmod.routefinder.collision.CollisionFlagMap
 internal var Player.officeCoord by intVarp("varp.death_office_coord")
 
 /**
- * Every visit to Death's Office is a private copy of it, with its own Death (live capture, rev 241:
- * `rebuild_region` on entry). Logging out inside one brings the player back to the same tile in a
- * new copy (live capture), and dropped objs go when the copy does.
+ * Every visit to Death's Office is a private copy of it, with its own Death. Logging out inside one
+ * brings the player back to the same tile in a new copy, and dropped objs go when the copy does.
  */
 @Singleton
 class DeathsOffices
@@ -75,7 +74,6 @@ constructor(
         const val DEATH = "npc.death_office_death"
         const val DROP_TRIGGER = "droptrigger.death_office"
 
-        // live capture, rev 241: Death stands here.
         val DEATH_TILE = CoordGrid(3179, 5726)
 
         // The office's map square (49, 89), copied whole.

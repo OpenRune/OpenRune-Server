@@ -5,10 +5,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.game.entity.Player
 
-/**
- * Death's Coffer: coins credited for items sacrificed to Death, spent only on death fees
- * (https://oldschool.runescape.wiki/w/Death%27s_Coffer).
- */
+/** Death's Coffer: coins credited for items sacrificed to Death, spent only on death fees. */
 var Player.deathCoffer by intVarp("varp.death_coffer")
 
 enum class DeathFeeSource {
@@ -19,10 +16,9 @@ enum class DeathFeeSource {
 
 /**
  * Takes a death fee of [fee] coins and returns where it came from, or null when nothing covers it.
- * "The fee is deducted from Death's Coffer, if available, or else from the bank"
- * (https://oldschool.runescape.wiki/w/Death/Item_Recovery_Fees), and Death: "Cash is always
- * acceptable. Also, a gravestone can take it directly from your bank, in case you didn't have
- * enough with you." (live capture, rev 240).
+ * "The fee is deducted from Death's Coffer, if available, or else from the bank", and Death: "Cash
+ * is always acceptable. Also, a gravestone can take it directly from your bank, in case you didn't
+ * have enough with you."
  */
 fun ProtectedAccess.payDeathFee(fee: Int): DeathFeeSource? {
     // UNVERIFIED: whether the coffer, carried coins and the bank are combined when none covers the
@@ -40,9 +36,6 @@ fun ProtectedAccess.payDeathFee(fee: Int): DeathFeeSource? {
     return if (player.invDel(from, COINS, fee).success) source else null
 }
 
-/**
- * The message for a fee taken from [source]. The bank one is from live capture, rev 241.
- */
 fun deathFeeMessage(source: DeathFeeSource, fee: Int): String {
     val amount = "%,d".format(fee)
     return when (source) {

@@ -259,8 +259,8 @@ constructor(
         internalName.startsWith("rune_pouch") || internalName.startsWith("bh_rune_pouch") ||
             internalName.startsWith("divine_rune_pouch")
 
-    // https://oldschool.runescape.wiki/w/Grave: in the Wilderness and on PvP worlds "food, potions,
-    // and phoenix necklaces cannot be sent to a grave or dropped, and are instead deleted".
+    // In the Wilderness and on PvP worlds "food, potions, and phoenix necklaces cannot be sent to a
+    // grave or dropped, and are instead deleted".
     private fun isDeletedSupply(obj: InvObj): Boolean {
         val type = getInvObj(obj)
         return SupplyItems.isFoodOrPotion(type) || type.isType(PHOENIX_NECKLACE)

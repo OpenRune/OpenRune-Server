@@ -7,8 +7,7 @@ import org.rsmod.game.inv.InvObj
 /**
  * Where each obj sat in the inventory and equipment when the player died, so looting the grave can
  * put things back ("Looting a gravestone should now automatically sort the inventory to how it was
- * prior to dying", https://oldschool.runescape.wiki/w/Grave, 22 July 2026; live capture, rev 241).
- * One varbit per slot holds the obj id plus one, 0 for empty.
+ * prior to dying", 22 July 2026). One varbit per slot holds the obj id plus one, 0 for empty.
  */
 internal object GraveLayout {
     private const val INV_SLOTS = 28

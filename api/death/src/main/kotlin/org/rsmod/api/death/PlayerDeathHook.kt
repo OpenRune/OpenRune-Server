@@ -49,10 +49,7 @@ public enum class UntradeableHandling {
     KEEP,
 }
 
-/**
- * A death counts as PvP only with player combat in the last 30 seconds (update of 27 May 2026,
- * https://oldschool.runescape.wiki/w/Death).
- */
+/** A death counts as PvP only with player combat in the last 30 seconds (update of 27 May 2026). */
 public const val RECENT_PVP_HIT_TICKS: Int = 50
 
 public interface PlayerDeathHook {

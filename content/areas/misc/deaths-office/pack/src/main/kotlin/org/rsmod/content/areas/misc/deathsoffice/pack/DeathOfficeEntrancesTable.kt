@@ -6,8 +6,7 @@ import dev.openrune.pack.columnCoord
 import org.rsmod.map.CoordGrid
 
 /**
- * The Death's Domain entrances near the respawn points
- * (https://oldschool.runescape.wiki/w/Death%27s_Office) and where the office's exit portal puts a
+ * The Death's Domain entrances near the respawn points and where the office's exit portal puts a
  * player who came in through each.
  */
 object DeathOfficeEntrancesTable {
@@ -25,7 +24,6 @@ object DeathOfficeEntrancesTable {
             }
         }
 
-        // live capture, rev 241.
         entrance(
             "dbrow.death_office_entrance_lumbridge",
             "loc.death_office_access_grave",

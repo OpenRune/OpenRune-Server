@@ -34,8 +34,8 @@ public class WildernessDeathHook @Inject constructor() : PlayerDeathHook {
         )
     }
 
-    // https://oldschool.runescape.wiki/w/Grave: food, potions and phoenix necklaces are deleted,
-    // and an existing grave moves to the new death tile.
+    // Food, potions and phoenix necklaces are deleted, and an existing grave moves to the new death
+    // tile.
     // UNVERIFIED: whether that move needs level 20+ (a 26 June 2020 hotfix said so; the current
     // Grave page says any Wilderness PvM death).
     private fun wildernessPvmDeath(context: PlayerDeathContext): PlayerDeathHandling =
