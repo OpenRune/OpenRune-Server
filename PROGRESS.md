@@ -24,7 +24,7 @@ each view, not presented as an additional implemented feature.
 | 🟢 Accepted | Revenant Caves: access, combat, ether, artefacts, Maledictus; Edgeville home catalogue and Emblem trader | PR #36 is already merged. Its merge tree exactly matches the tested branch; subsequent trader changes are also on main. |
 | 🟢 Accepted | Prayer unlocks, free spellbook travel, teleport scroll/animation fixes, gorilla hole/rope and combat corrections | CoX/Royal Titans scroll-drop sources remain future encounter work. |
 | 🟢 Accepted | Pet gallery/categories, examine/prices/chat news, collection log rewards, Mokhaiotl waystone, max-gear command updates | Preserve the individually agreed/accepted scope in the details below. |
-| 🟡 Test package | Completionist purchase/fusion/perks/ammunition/repair/persistence; v0.16 native max-hood head, software depth reset, outward quiver and original-shape Dizana inventory icon | Owner confirmation of reported hood/head and OG map glitches, both genders, movement, Fire/Infernal and software/HD visual acceptance; feature is local and not installed/merged. |
+| 🟡 Test package | Completionist purchase/fusion/perks/ammunition/repair/persistence; v0.17 Dizana inventory colours, native max-hood head, software depth reset, outward quiver and original-shape inventory icon | Owner confirmation of reported hood/head and OG map glitches, both genders, movement, Fire/Infernal and software/HD visual acceptance; feature is local and not installed/merged. |
 | 🟡 Test package | Normal/Corrupted Gauntlet preparation, owned rooms/timer, Hunllef, native recipes, escrow and chest/log/completion handling | Owner checks of complete runs, native interfaces, floor/tornado/animation timing; scoreboard/time records and exact probability parity remain open. Local; not merged or installed. |
 | 🟡 Local implementation | Shortcuts, containers, fairy rings and Spider Cave access | Remaining consumers/dependencies, Forestry events, final native route/UI/death acceptance and combined cape/quiver integration. |
 | 🟡 Parked | Treasure Trails: accepted 60/60 skill-task checkpoint and existing trail flow | Full step/puzzle/catalogue/loot parity and Mimic remain unfinished. |
@@ -34,8 +34,8 @@ each view, not presented as an additional implemented feature.
 
 ## 🟡 Started: Nero completionist cape, customiser and particles
 
-Updated locally to **v0.16 native head and Dizana inventory icon** on
-`feature/nero-completionist`. The owner's `20261012-2130-23.7606384.mp4`
+Updated locally to **v0.17 Dizana inventory colours**, retaining the v0.16
+native head and folded shape, on `feature/gauntlet-integration`. The owner's `20261012-2130-23.7606384.mp4`
 shows improved hood cloth but rejects the remaining face/jaw. The RS2 head
 is replaced by the exact revision-240 max-hood head: native geometry, winding,
 bone labels and skin recolour base. All 32 hoods keep 427 authored cloth
@@ -45,8 +45,10 @@ remain; no second player head is exposed.
 Dizana and its locked variant retain the **original folded Completionist
 inventory shape with a native quiver on top**, matching the owner's clarified
 Fire-variant icon reference. Every original cloth vertex and face is checked
-against the regular cape. Native 36x32 rendering verifies 72 visible quiver
-pixels against a cape-only control.
+against the regular cape. Its broad icon panels now match the worn Dizana
+tan palette, with light V-details and unchanged native burgundy/gold quiver
+colours. Native 36x32 rendering verifies 73 visible quiver pixels against a
+cape-only control; 70 panel and 22 trim faces pass the native colour check.
 The earlier eight-unit worn-quiver offset, accepted cloth and genuine
 Fire/Infernal animated textures remain. Cape lighting is parked by owner
 choice: finish the head and Gauntlet first.
@@ -56,12 +58,13 @@ inventory renders, **28 complete-avatar cape cases**, and **32 hood/head
 cases / 768 renders**. Head geometry/bone labels match independently exported
 native max-hood fixtures. Particle lifecycle, viewport depth reset, shared
 copies, animated alpha and 48 stats checks pass. The 34 qualified client/API/HD
-dependencies are unchanged; runtime `runtime-v016-native-head-folded`.
-The matching server JAR builds; packing verifies **454 writes and 538,211
-preserved native definitions**. Gameplay source is unchanged; earlier
+dependencies are unchanged; runtime `runtime-v017-dizana-colours`; only model-hash bindings change,
+with identical runtime/plugin bytecode.
+The matching server JAR builds; packing verifies **454 writes and over 538,000
+preserved native definitions**, including the Gauntlet cache additions. Gameplay source is unchanged; earlier
 26 cape + 15 max-cape integration tests remain prior evidence.
 
-Test entry: `outputs/nero-completionist-head-folded-icon-v016-20261013/TESTEN.cmd`.
+Test entry: `outputs/gauntlet-cape-v017-dizana-colours-20261013/TESTEN.cmd`.
 The package uses its own client profile/server/database. Accepted live
 JAR/cache/RSA/playerdata, fourteen accepted checkout source hashes and older
 packages are preserved. **Owner confirmation of the remaining head/face,
@@ -90,7 +93,9 @@ Validation: **154 executed tests**, including **42 Gauntlet tests**, the full
 runtime JAR, over **538,000 unrelated cache definitions preserved**, isolated
 rev240 boot/JS5 and appearance service. The fourteen accepted source hashes,
 accepted live JAR/cache/RSA/playerdata and earlier test packages remain intact.
-New combined package: `outputs/gauntlet-cape-v016-20261013-final/TESTEN.cmd`.
+Current combined package: `outputs/gauntlet-cape-v017-dizana-colours-20261013/TESTEN.cmd`.
+The colour-only update retains the prior Gauntlet implementation and gameplay
+test evidence; those 154 tests were not rerun for this asset correction.
 Commands: `::testgauntlet`, `::gauntletkit`, `::gauntletkithm`,
 `::testloot gauntlet [count]` and `::testloot cg [count]`.
 

@@ -15,8 +15,16 @@ def inventory_channel(colour):
     return None
 
 
-def inventory_colour(colour,palette):
+def inventory_colour(colour,palette,key=None):
     channel=inventory_channel(colour)
+    if key in ('dizana','dizana_locked'):
+        # The folded RS2 icon assigns its broad panels to red channel 3;
+        # the worn Dizana panels use the native tan channel 1. Preserve the
+        # icon's baked light differences, not the quiver's burgundy colour.
+        if channel==3:
+            light=max(2,min(126,(palette[1]&127)+(colour&127)-(PALETTE[3]&127)))
+            return (palette[1]&65408)|light
+        if colour==64639:return palette[2]  # Folded embroidered V, formerly white.
     if channel is None:return colour
     source=PALETTE[channel];target=palette[channel]
     if target==source:return colour
@@ -126,8 +134,9 @@ def main():
     for row in variants:models.setdefault(row['modelIds'][0],(row['key'],row['colours']))
     runtime=ROOT/args.runtime;runtime.mkdir(exist_ok=True)
     previous=ROOT/'runtime-v011-final'
+    current=ROOT/(ROOT/'runtime-current.txt').read_text(encoding='utf-8').strip()
     for f in ['definitions.json','runtime-240.properties','ASM-LICENSE.txt']:
-        if not (runtime/f).exists():(runtime/f).write_bytes((previous/f).read_bytes())
+        if not (runtime/f).exists():(runtime/f).write_bytes((current/f).read_bytes())
     old_bindings={}
     for line in (previous/'bindings.properties').read_text(encoding='utf-8').splitlines():
         if '=' in line:key,value=line.split('=',1);old_bindings[key]=value
@@ -141,7 +150,7 @@ def main():
             mesh['priority']=255;mesh['alphas']=[0]*nf
             mesh['faceModes']=[0]*nf;mesh['faceSkins']=None
             channels=[f for f,c in enumerate(mesh['colors']) if inventory_channel(c) in (1,3)]
-            mesh['colors']=[inventory_colour(c,colours) for c in mesh['colors']]
+            mesh['colors']=[inventory_colour(c,colours,key) for c in mesh['colors']]
             if key in ('fire','infernal'):texture_panels(mesh,nf,channels,40 if key=='fire' else 59)
             if key in ('dizana','dizana_locked'):quiver_inventory(mesh)
         elif len(mesh['faces'])>=1577:

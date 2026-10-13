@@ -95,7 +95,7 @@ def main():
     text = text[:start] + (TOOLS/"installer_process_guard.ps1").read_text(encoding="utf-8") + "\n" + text[end:]
     (output/"INSTALLEREN.ps1").write_text(text, encoding="utf-8")
     (output/"TESTEN.cmd").write_text('@echo off\r\n"%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "%~dp0TESTEN.ps1"\r\npause\r\n')
-    (output/"LEESMIJ.md").write_text("""# Completionist cape v0.16 native hoofd en Dizana icon
+    (output/"LEESMIJ.md").write_text("""# Completionist cape v0.17 Dizana inventory-kleuren
 
 Start `TESTEN.cmd` of voer `TESTEN.ps1` uit. Het pakket maakt een eigen testserver,
 database en clientprofiel. De bestaande installatie blijft behouden.

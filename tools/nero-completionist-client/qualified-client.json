@@ -68,12 +68,12 @@
     "lwjgl-opengl-3.3.2-natives-windows.jar",
     "runelite-api-1.12.39-runtime-1791676556260-patched.jar"
   ],
-  "packageVersion": "Nero completionist v0.16 native head and quiver inventory",
+  "packageVersion": "Nero completionist v0.17 Dizana folded inventory colours",
   "bundleHashes": {
     "client/javconfig-template.ws": "624e1f3e752aa989bc453ea5157097717263291d38770f6af5526e620271d2cc",
     "client-plugin/Nero-Particle-Preview.jar": "f4fce15dc930235fb90f378c7cba63e7172609663fac07ae31d65f7f4f31c044",
     "NativeClientCopy.java": "f45cda9972ca99081b44736b8d3a0275f03e800c44d3b756e67aeea48fea1772",
-    "runtime-current.txt": "e1cd040044d89bd34a951c0cf50926781a6be5d18b99c3c0a1537b63d79960aa",
+    "runtime-current.txt": "f937a81cefb6cad030b3270c126fea83148446a56ee532e95e5b3e6eb72557d8",
     "runtime-v012-visual-final/ASM-LICENSE.txt": "337e92fd361effe495d03978a34a3cd44681a63b8329adfd99c8996b306b2a8c",
     "runtime-v012-visual-final/bindings.properties": "367e0ce3cc9c54315dbee09accbd21e0bb9311618fb9c59999a19e17730d1a68",
     "runtime-v012-visual-final/definitions.json": "c946fbb32b03bf04b2610246ea1dfbc83e94412bb53c6d5198bf832840e27a4e",
@@ -109,7 +109,13 @@
     "runtime-v016-native-head-folded/definitions.json": "c946fbb32b03bf04b2610246ea1dfbc83e94412bb53c6d5198bf832840e27a4e",
     "runtime-v016-native-head-folded/nero-compatibility-bridge.jar": "ab76b76fd131f4d676a71b2047037503addcdbf617164af90f81e11792a5bcae",
     "runtime-v016-native-head-folded/nero-compatibility-runtime.jar": "cb028090761a211a742cb3a80b5c098e844336b0a9f2588cc8258583f7cbb089",
-    "runtime-v016-native-head-folded/runtime-240.properties": "4ad388dcb1843eacc3417a693385d4488fb1656361abfc142e820a0ebddb1f1e"
+    "runtime-v016-native-head-folded/runtime-240.properties": "4ad388dcb1843eacc3417a693385d4488fb1656361abfc142e820a0ebddb1f1e",
+    "runtime-v017-dizana-colours/ASM-LICENSE.txt": "337e92fd361effe495d03978a34a3cd44681a63b8329adfd99c8996b306b2a8c",
+    "runtime-v017-dizana-colours/bindings.properties": "8001c9042ffd0b400a4ed37e79aa6be6b59e35c53740450db4d6f960d23400c0",
+    "runtime-v017-dizana-colours/definitions.json": "c946fbb32b03bf04b2610246ea1dfbc83e94412bb53c6d5198bf832840e27a4e",
+    "runtime-v017-dizana-colours/nero-compatibility-bridge.jar": "ab76b76fd131f4d676a71b2047037503addcdbf617164af90f81e11792a5bcae",
+    "runtime-v017-dizana-colours/nero-compatibility-runtime.jar": "cb028090761a211a742cb3a80b5c098e844336b0a9f2588cc8258583f7cbb089",
+    "runtime-v017-dizana-colours/runtime-240.properties": "4ad388dcb1843eacc3417a693385d4488fb1656361abfc142e820a0ebddb1f1e"
   },
   "buildBootstrapHashes": {
     "runtime-v011-final/ASM-LICENSE.txt": "337e92fd361effe495d03978a34a3cd44681a63b8329adfd99c8996b306b2a8c",

@@ -25,6 +25,26 @@ final class NativeIconCheck {
         for(int model:new int[]{62100,62103,62206,62212,62218,62224,62230,62242,62248,62254,62260,62266,62272,62278}) {
             ModelData data=(ModelData)decode.newInstance((Object)Files.readAllBytes(raw.resolve("cache/live/7/"+model+"/0.dat")));
             Model lit=data.light(64,768,-50,-10,-50);lit.calculateBoundsCylinder();
+            if(model==62278) {
+                ModelData original=(ModelData)decode.newInstance((Object)Files.readAllBytes(raw.resolve("cache/live/7/62100/0.dat")));
+                ModelData worn=(ModelData)decode.newInstance((Object)Files.readAllBytes(raw.resolve("cache/live/7/62279/0.dat")));
+                boolean nativeTan=false,nativeTrim=false;
+                for(short colour:worn.getFaceColors()){nativeTan|=(colour&65535)==6352;nativeTrim|=(colour&65535)==6379;}
+                if(!nativeTan||!nativeTrim)throw new AssertionError("Missing worn Dizana palette reference");
+                int panels=0,trim=0;Set<Integer> shades=new HashSet<>();
+                for(int f=0;f<198;f++) {
+                    int source=original.getFaceColors()[f]&65535,colour=data.getFaceColors()[f]&65535;
+                    if((source&65408)==(62995&65408)) {
+                        if((colour&65408)!=(6352&65408))throw new AssertionError("Dizana folded panel uses quiver red: "+f);
+                        panels++;shades.add(colour&127);
+                    } else if(source==64639) {
+                        if(colour!=6379)throw new AssertionError("Dizana folded V does not match worn trim: "+f);
+                        trim++;
+                    } else if(colour!=source)throw new AssertionError("Unrelated folded ornament recoloured: "+f);
+                }
+                if(panels!=70||trim!=22||shades.size()<8)throw new AssertionError("Dizana panel/trim coverage or baked shades: "+panels+"/"+trim+"/"+shades.size());
+                System.out.println("PASS_NATIVE_DIZANA_COLOURS tanPanels="+panels+" trimFaces="+trim+" distinctClothShades="+shades.size()+" wornPaletteMatched=true");
+            }
             int[] pixels=new int[36*32];buffer.invoke(null,pixels,36,32,null);clip.invoke(null);origin.invoke(null,16,16);
             int zoom=1316,pitch=252,yaw=1020,xOffset=-1,yOffset=24;
             int y=(int)(Math.sin(pitch*Math.PI/1024)*65536)*zoom>>16;

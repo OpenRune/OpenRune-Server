@@ -25,7 +25,7 @@ def main():
     text = launcher.read_text(encoding="utf-8").replace('name: "Completionist cape test"', 'name: "Gauntlet and completionist test"')
     text = text.replace("Gebruik ::curator en ::compcapes.", "Gebruik ::testgauntlet, ::gauntletkit en ::compcapes.")
     launcher.write_text(text, encoding="utf-8", newline="\n")
-    (output / "LEESMIJ.md").write_text("""# Gauntlet en completionist cape v0.16
+    (output / "LEESMIJ.md").write_text("""# Gauntlet en completionist cape v0.17
 
 Start TESTEN.cmd of TESTEN.ps1. Dit pakket gebruikt een eigen testserver,
 database en clientprofiel met revisie 240. De bestaande installatie wordt alleen
@@ -54,7 +54,8 @@ Een pending chest moet ook na logout blijven bestaan en slechts eenmaal belonen.
 
 - ::compcapes hoods - hoods; controleer hoofd/gezicht bij beide genders.
 - ::compcapes dizana / ::compcapes dizana_locked - de originele gevouwen
-  completionist inventory-vorm met de quiver erbovenop.
+  completionist inventory-vorm met de quiver erbovenop. Bruin/beige panelen,
+  lichte Dizana V-details en de oorspronkelijke bordeaux/gouden quiver.
 - ::compcapes fire / ::compcapes infernal - bewegende native textures.
 - ::curator - customiser en particles.
 
