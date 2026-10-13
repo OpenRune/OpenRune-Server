@@ -258,7 +258,7 @@ internal object DeathTutorial {
 
     private const val GRAVE_OBJ = "obj.sirens_tome"
 
-    // The cache names no sprites for gamevals: worldmap_marker,3 and options_icons,18.
+    // RSCM has no sprite table: worldmap_marker,3 and options_icons,18.
     private const val GRAVE_ARROW_GRAPHIC = 2520
     private const val ARROW_SIZE = 52
     private const val KEPT_ON_DEATH_GRAPHIC = 912

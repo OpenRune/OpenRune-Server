@@ -126,7 +126,6 @@ constructor(
         )
     }
 
-    /** [result] with [items], taken out of storage on death, added to the lost items. */
     public fun withLost(result: DeathDropResult, items: List<InvObj>): DeathDropResult {
         if (items.isEmpty()) {
             return result

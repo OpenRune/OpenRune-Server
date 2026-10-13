@@ -614,7 +614,6 @@ constructor(
         return plan
     }
 
-    /** Takes [count] of the obj in [slot], paying [feeEach] for each. */
     private fun ProtectedAccess.take(slot: Int, count: Int, feeEach: Int) {
         if (count <= 0) {
             return
@@ -634,7 +633,6 @@ constructor(
         }
     }
 
-    /** How many of the obj in [slot] the inventory has room for, up to [count]. */
     private fun ProtectedAccess.spaceFor(slot: Int, count: Int): Int {
         val obj = player.deathOffice[slot] ?: return 0
         val type = getInvObj(obj)

@@ -50,7 +50,6 @@ constructor(
         return true
     }
 
-    /** Lets [player]'s copy go, once they have left it. */
     fun exit(player: Player) {
         player.officeCoord = 0
         if (player.dropTrigger == DROP_TRIGGER) {
@@ -67,7 +66,6 @@ constructor(
         regionRepo.unprotect(region)
     }
 
-    /** The Death in [player]'s copy, if they are in one. */
     fun death(player: Player): Npc? {
         val region = offices[player] ?: return null
         return npcRepo.findAll(region.normal[DEATH_TILE]).firstOrNull { it.type.isType(DEATH) }
