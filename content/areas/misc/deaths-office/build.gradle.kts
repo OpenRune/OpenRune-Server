@@ -8,9 +8,11 @@ dependencies {
     implementation(projects.api.generated)
     implementation(projects.api.market)
     implementation(projects.api.pluginCommons)
+    implementation(projects.api.registry)
     implementation(projects.content.other.gravestones)
     integrationImplementation(projects.api.pluginCommons)
     integrationImplementation(projects.content.other.gravestones)
     integrationImplementation(projects.api.death)
     integrationImplementation(projects.api.deathPlugin)
+    integrationImplementation(projects.api.registry)
 }

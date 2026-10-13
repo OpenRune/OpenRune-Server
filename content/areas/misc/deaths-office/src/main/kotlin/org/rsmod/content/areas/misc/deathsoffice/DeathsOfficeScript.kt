@@ -12,12 +12,13 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
 import org.rsmod.api.player.ui.IfModalButton
 import org.rsmod.api.player.vars.intVarp
-import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.api.script.onPlayerLogin
+import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerQueue
 import org.rsmod.api.table.DeathOfficeEntrancesRow
 import org.rsmod.content.other.gravestones.DeathFeeSource
@@ -51,13 +52,19 @@ private var Player.selectedFee by intVarp("varp.if3")
  */
 class DeathsOfficeScript
 @Inject
-constructor(private val graves: Gravestones, private val npcRepo: NpcRepository) : PluginScript() {
+constructor(
+    private val graves: Gravestones,
+    private val offices: DeathsOffices,
+) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(DEATH) { talk(it.npc) }
         // live capture, rev 241, 20261013T013733-df49f48@384: Collect opens the retrieval
         // interface, even with nothing stored.
         onOpNpc3(DEATH) { collect(it.npc) }
         onPlayerQueue(DeathTutorial.QUEUE) { tutorialIntroduction() }
+        onPlayerQueue(RETURN_QUEUE) { returnToOffice() }
+        onPlayerLogin { if (player.officeCoord != 0) player.queue(RETURN_QUEUE, 1) }
+        onPlayerLogout { offices.logout(player) }
         for (row in DeathOfficeEntrancesRow.all()) {
             onOpLoc1(row.entrance) { enter(row) }
         }
@@ -90,8 +97,31 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
     }
 
     private suspend fun ProtectedAccess.tutorialIntroduction() {
-        val death = npcRepo.findAll(DEATH_TILE).firstOrNull { it.type.isType(DEATH) } ?: return
+        val death = offices.death(player) ?: return
         startDialogue(death) { with(DeathTutorial) { introduction() } }
+    }
+
+    /**
+     * Live capture, rev 241, 20261013T184259-df49f48@0-2: logging in inside the office rebuilds a
+     * new copy, and Death greets two ticks later. UNVERIFIED: live moves the player on the login
+     * tick; this waits a tick, as the client has no map to rebuild from until then.
+     */
+    private suspend fun ProtectedAccess.returnToOffice() {
+        if (!offices.enter(player, CoordGrid(player.officeCoord))) {
+            player.officeCoord = 0
+            return
+        }
+        // UNVERIFIED: that Death doesn't greet again during the first-death tutorial.
+        if (player.inDeathTutorial) {
+            return
+        }
+        delay(2)
+        greet()
+    }
+
+    private suspend fun ProtectedAccess.greet() {
+        val death = offices.death(player) ?: return
+        startDialogue(death) { death() }
     }
 
     /**
@@ -103,10 +133,16 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
         // UNVERIFIED: that walking in also counts as meeting Death, so a later first death skips
         // the tutorial.
         player.metDeath = true
-        portal(ARRIVAL)
+        ifOpenFullOverlay(PORTAL_OVERLAY)
         delay(2)
-        val death = npcRepo.findAll(DEATH_TILE).firstOrNull { it.type.isType(DEATH) } ?: return
-        startDialogue(death) { death() }
+        val entered = offices.enter(player, ARRIVAL)
+        delay(1)
+        ifCloseSub(PORTAL_OVERLAY)
+        if (!entered) {
+            return
+        }
+        delay(2)
+        greet()
     }
 
     /** Live capture, rev 241, 20261013T013733-df49f48@158-164 and @276-283 (from Ferox Enclave). */
@@ -117,10 +153,11 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
             player.inDeathTutorial = false
             val respawn = mapFindSquareLineOfWalk(RESPAWN, minRadius = 0, maxRadius = 2) ?: RESPAWN
             portal(respawn)
-            return
+        } else {
+            val row = player.officeEntrance.takeIf { it != 0 }?.let(DeathOfficeEntrancesRow::getRow)
+            portal(row?.exit ?: LUMBRIDGE_EXIT)
         }
-        val row = player.officeEntrance.takeIf { it != 0 }?.let(DeathOfficeEntrancesRow::getRow)
-        portal(row?.exit ?: LUMBRIDGE_EXIT)
+        offices.exit(player)
     }
 
     private suspend fun ProtectedAccess.portal(dest: CoordGrid) {
@@ -631,7 +668,7 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
         items.sumOf { GraveFees.officeFee(graves.value(it), player.isAnyIronman).toLong() * it.count }
 
     private companion object {
-        const val DEATH = "npc.death_office_death"
+        const val DEATH = DeathsOffices.DEATH
         const val EXIT_PORTAL = "loc.death_office_exitportal"
         const val PORTAL_OVERLAY = "interface.overlay_portal"
         const val INTERFACE = "interface.death_office"
@@ -660,8 +697,7 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
         // live capture, rev 241, 20261013T013733-df49f48@40 and @244.
         val ARRIVAL = CoordGrid(3171, 5726)
 
-        // live capture, rev 241, 20261013T013733-df49f48@61: Death stands here.
-        val DEATH_TILE = CoordGrid(3179, 5726)
+        const val RETURN_QUEUE = "queue.death_office_return"
 
         // live capture, rev 241, 20261013T013733-df49f48@140.
         val LUMBRIDGE_EXIT = CoordGrid(3238, 3194)

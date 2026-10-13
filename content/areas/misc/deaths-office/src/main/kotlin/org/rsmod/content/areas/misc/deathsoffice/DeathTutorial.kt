@@ -13,9 +13,7 @@ import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.content.other.gravestones.inDeathTutorial
 import org.rsmod.content.other.gravestones.metDeath
 import org.rsmod.game.entity.Player
-import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.map.CoordGrid
-import org.rsmod.routefinder.collision.CollisionFlagMap
 
 private var Player.heardGravestones by boolVarBit("varbit.death_tutorial_heard_gravestones")
 private var Player.heardFees by boolVarBit("varbit.death_tutorial_heard_fees")
@@ -28,14 +26,17 @@ private var Player.heardKeptOnDeath by boolVarBit("varbit.death_tutorial_heard_k
  * 20260811T142735-59bcb26@2019-2080). It runs after the respawn teleport, on the death's last
  * tick, as live arrives on the tick of "Oh dear, you are dead!".
  */
-class DeathTutorialArrival @Inject constructor(private val collision: CollisionFlagMap) :
+class DeathTutorialArrival @Inject constructor(private val offices: DeathsOffices) :
     PlayerDeathCleanupHook {
     override fun cleanup(player: Player) {
         if (!player.inDeathTutorial || player.metDeath) {
             return
         }
-        // UNVERIFIED: live puts the player in a private copy of the office (3362, 5138, 2).
-        PathingEntityCommon.telejump(player, collision, DeathTutorial.ARRIVAL)
+        if (!offices.enter(player, DeathTutorial.ARRIVAL)) {
+            // Only with every instance slot taken; the tutorial waits for the next death.
+            player.inDeathTutorial = false
+            return
+        }
         // live capture, rev 240, 20260811T142735-59bcb26@2020.
         player.metDeath = true
         // live capture, rev 240, 20260811T142735-59bcb26@2022: Death speaks three ticks later.

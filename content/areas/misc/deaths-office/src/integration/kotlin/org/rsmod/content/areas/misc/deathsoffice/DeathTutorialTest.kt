@@ -13,6 +13,7 @@ import org.rsmod.api.death.PlayerRespawnHook
 import org.rsmod.api.death.plugin.PlayerDeathScript
 import org.rsmod.api.death.plugin.StandardPvmDeathHook
 import org.rsmod.api.player.queueDeath
+import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.scope.GameTestScope
 import org.rsmod.content.other.gravestones.GravestoneScript
@@ -33,7 +34,8 @@ class DeathTutorialTest {
             player.metDeath = false
             dieWithLostItems()
 
-            assertEquals(OFFICE_ARRIVAL, player.coords)
+            assertTrue(player.coords.x >= RegionRegistry.INSTANCE_MIN_X)
+            assertEquals(OFFICE_ARRIVAL.packed, player.vars[OFFICE_COORD])
             assertTrue(player.metDeath)
             assertTrue(player.inDeathTutorial)
             assertNotNull(player.graveCoords)
@@ -50,7 +52,8 @@ class DeathTutorialTest {
             dieWithLostItems()
 
             assertFalse(player.inDeathTutorial)
-            assertTrue(player.coords != OFFICE_ARRIVAL)
+            assertTrue(player.coords.x < RegionRegistry.INSTANCE_MIN_X)
+            assertEquals(0, player.vars[OFFICE_COORD])
             assertTrue(player.graveDuration < Gravestones.DURATION)
         }
 
@@ -82,6 +85,7 @@ class DeathTutorialTest {
     private companion object {
         // live capture, rev 241, 20261013T013733-df49f48@40.
         val OFFICE_ARRIVAL = CoordGrid(3171, 5726)
+        const val OFFICE_COORD = "varp.death_office_coord"
     }
 
     private class DeathHooks : AbstractModule() {

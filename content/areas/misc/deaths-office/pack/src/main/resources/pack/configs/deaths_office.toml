@@ -8,6 +8,11 @@ id = "varp.death_office_tutorial"
 scope = "Perm"
 transmit = "Never"
 
+[[varp]]
+id = "varp.death_office_coord"
+scope = "Perm"
+transmit = "Never"
+
 [[varbit]]
 id = "varbit.death_tutorial_heard_gravestones"
 varp = "varp.death_office_tutorial"
