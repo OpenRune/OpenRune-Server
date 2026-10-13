@@ -109,10 +109,6 @@ npc = "npc.ollie_the_camel"
 coords = "0_51_50_26_9"
 
 [[spawn]]
-npc = "npc.osman"
-coords = "0_51_49_29_44"
-
-[[spawn]]
 npc = "npc.pilot_al_kharid"
 coords = "0_51_50_20_12"
 
