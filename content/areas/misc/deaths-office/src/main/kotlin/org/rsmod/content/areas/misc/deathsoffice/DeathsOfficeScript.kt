@@ -6,12 +6,14 @@ import dev.openrune.types.aconverted.interf.IfSubType
 import jakarta.inject.Inject
 import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.interact.HeldInteractions
 import org.rsmod.api.player.ironman.isAnyIronman
 import org.rsmod.api.player.ironman.isUltimateIronman
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
 import org.rsmod.api.player.ui.IfModalButton
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.script.onDropTrigger
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpLoc1
@@ -20,6 +22,7 @@ import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerQueue
+import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.DeathOfficeEntrancesRow
 import org.rsmod.content.other.gravestones.DeathFeeSource
 import org.rsmod.content.other.gravestones.GraveFees
@@ -55,6 +58,7 @@ class DeathsOfficeScript
 constructor(
     private val graves: Gravestones,
     private val offices: DeathsOffices,
+    private val held: HeldInteractions,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(DEATH) { talk(it.npc) }
@@ -63,6 +67,8 @@ constructor(
         onOpNpc3(DEATH) { collect(it.npc) }
         onPlayerQueue(DeathTutorial.QUEUE) { tutorialIntroduction() }
         onPlayerQueue(RETURN_QUEUE) { returnToOffice() }
+        onPlayerQueueWithArgs<Int>(DROP_QUEUE) { dropWarning(it.args) }
+        onDropTrigger(DeathsOffices.DROP_TRIGGER) { warnBeforeDrop(player, dropSlot) }
         onPlayerLogin { if (player.officeCoord != 0) player.queue(RETURN_QUEUE, 1) }
         onPlayerLogout { offices.logout(player) }
         for (row in DeathOfficeEntrancesRow.all()) {
@@ -122,6 +128,26 @@ constructor(
     private suspend fun ProtectedAccess.greet() {
         val death = offices.death(player) ?: return
         startDialogue(death) { death() }
+    }
+
+    /**
+     * Live capture, rev 241, 20261013T184317-df49f48@161-177: dropping something in the office asks
+     * first; once the player puts something down, later drops in that visit don't.
+     */
+    private fun warnBeforeDrop(player: Player, slot: Int) {
+        player.dropTrigger(DeathsOffices.DROP_TRIGGER)
+        player.queue(DROP_QUEUE, 1, slot)
+    }
+
+    private suspend fun ProtectedAccess.dropWarning(slot: Int) {
+        mesbox("Are you sure you want to put that down here?<br>If you leave, it'll be lost.")
+        if (!choice2("Put it down.", true, "Don't put it down.", false)) {
+            return
+        }
+        if (player.dropTrigger == DeathsOffices.DROP_TRIGGER) {
+            player.clearDropTrigger(DeathsOffices.DROP_TRIGGER)
+        }
+        held.drop(this, inv, slot)
     }
 
     /**
@@ -698,6 +724,7 @@ constructor(
         val ARRIVAL = CoordGrid(3171, 5726)
 
         const val RETURN_QUEUE = "queue.death_office_return"
+        const val DROP_QUEUE = "queue.death_office_drop"
 
         // live capture, rev 241, 20261013T013733-df49f48@140.
         val LUMBRIDGE_EXIT = CoordGrid(3238, 3194)

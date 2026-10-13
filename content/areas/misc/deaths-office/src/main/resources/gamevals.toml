@@ -25,3 +25,7 @@ death_tutorial_heard_kept_on_death = 64467
 [gamevals.queue]
 death_office_tutorial = 64420
 death_office_return = 64421
+death_office_drop = 64422
+
+[gamevals.droptrigger]
+death_office = 64420

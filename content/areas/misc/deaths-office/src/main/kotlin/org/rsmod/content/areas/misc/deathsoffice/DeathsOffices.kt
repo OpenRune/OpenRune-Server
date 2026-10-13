@@ -20,7 +20,8 @@ internal var Player.officeCoord by intVarp("varp.death_office_coord")
 /**
  * Every visit to Death's Office is a private copy of it, with its own Death (live capture, rev 241,
  * 20261013T183517-df49f48@746: `rebuild_region` on entry). Logging out inside one brings the player
- * back to the same tile in a new copy (20261013T184259-df49f48@0).
+ * back to the same tile in a new copy (20261013T184259-df49f48@0), and dropped objs go when the copy
+ * does.
  */
 @Singleton
 class DeathsOffices
@@ -43,6 +44,9 @@ constructor(
         npcRepo.add(Npc(DEATH, region.normal[DEATH_TILE]), Int.MAX_VALUE)
         offices.put(player, region)?.let(regionRepo::unprotect)
         player.officeCoord = static.packed
+        if (player.dropTrigger == null) {
+            player.dropTrigger(DROP_TRIGGER)
+        }
         PathingEntityCommon.telejump(player, collision, region.normal[static])
         return true
     }
@@ -50,6 +54,9 @@ constructor(
     /** Lets [player]'s copy go, once they have left it. */
     fun exit(player: Player) {
         player.officeCoord = 0
+        if (player.dropTrigger == DROP_TRIGGER) {
+            player.clearDropTrigger(DROP_TRIGGER)
+        }
         // The registry reclaims an unprotected copy once nobody is in it.
         offices.remove(player)?.let(regionRepo::unprotect)
     }
@@ -69,6 +76,7 @@ constructor(
 
     internal companion object {
         const val DEATH = "npc.death_office_death"
+        const val DROP_TRIGGER = "droptrigger.death_office"
 
         // live capture, rev 241, 20261013T013733-df49f48@61: Death stands here.
         val DEATH_TILE = CoordGrid(3179, 5726)
