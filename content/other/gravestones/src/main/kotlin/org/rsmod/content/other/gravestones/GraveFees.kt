@@ -61,7 +61,8 @@ object GraveFees {
         if (value < FREE_UNDER) {
             return 0
         }
-        // UNVERIFIED: the rounding (down here), and that there's no cap (the wiki states none).
+        // Rounded down: a 104,545 obj costs 5,227 (live capture, rev 241,
+        // 20261013T184317-df49f48@126). UNVERIFIED: that there's no cap (the wiki states none).
         val fee = value * OFFICE_PERCENT / 100
         return discount(fee, ironman).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
     }

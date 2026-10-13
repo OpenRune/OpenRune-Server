@@ -20,10 +20,10 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onPlayerQueue
 import org.rsmod.api.table.DeathOfficeEntrancesRow
+import org.rsmod.content.other.gravestones.DeathFeeSource
 import org.rsmod.content.other.gravestones.GraveFees
 import org.rsmod.content.other.gravestones.Gravestones
 import org.rsmod.content.other.gravestones.deathCoffer
-import org.rsmod.content.other.gravestones.deathFeeMessage
 import org.rsmod.content.other.gravestones.deathOffice
 import org.rsmod.content.other.gravestones.grave
 import org.rsmod.content.other.gravestones.graveCoords
@@ -65,7 +65,8 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
         onIfModalButton(ITEMS) { selectOrExamine(it) }
         onIfModalButton(TAKE_1) { takeSelected(1) }
         onIfModalButton(TAKE_5) { takeSelected(5) }
-        onIfModalButton(TAKE_X) { takeSelected(countDialog()) }
+        // live capture, rev 241, 20261013T184317-df49f48@89.
+        onIfModalButton(TAKE_X) { takeSelected(countDialog("How many would you like to take?")) }
         onIfModalButton(TAKE_ALL) { takeSelected(Int.MAX_VALUE) }
         onIfModalButton(TAKE_EVERYTHING) { takeEverything() }
         onIfClose(INTERFACE) { player.stopInvTransmit(player.deathOffice) }
@@ -155,7 +156,10 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
         mainOptions()
     }
 
-    /** Live capture, rev 240, 20260811T152500-59bcb26@11-24. */
+    /**
+     * Live capture, rev 240, 20260811T152500-59bcb26@11-24 and rev 241,
+     * 20261013T184317-df49f48@15-35.
+     */
     private suspend fun Dialogue.graveGreeting() {
         chatNpc(
             bored,
@@ -176,13 +180,14 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
         }
         chatPlayer(quiz, "Can I collect the items from that gravestone now?")
         // Since 10 April 2024 Death states the cost (https://oldschool.runescape.wiki/w/Death).
+        // live capture, rev 241, 20261013T184317-df49f48@21: the office's fee for everything.
         val fee = officeFee(player.grave.filterNotNull { true })
         val cost =
             if (fee == 0L) {
+                // UNVERIFIED: the wording for a free reclaim (wiki, Death).
                 "I however expect it to be free for this reclaim."
             } else {
-                // UNVERIFIED: the wording when the reclaim costs something.
-                "I however expect it to cost ${"%,d".format(fee)} coins for this reclaim."
+                "I expect this fee to be about ${"%,d".format(fee)} coins for this reclaim."
             }
         chatNpc(
             quiz,
@@ -473,7 +478,10 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
         player.selectedFee = fee
     }
 
-    // UNVERIFIED: the quantity buttons take that many of the selected obj and charge for them.
+    /**
+     * Live capture, rev 241, 20261013T184317-df49f48@76-126: 1, 5, X and All take that many of the
+     * selected obj at once and charge for them, with no confirmation.
+     */
     private fun ProtectedAccess.takeSelected(count: Int) {
         val slot = player.selectedSlot
         val obj = player.deathOffice.objOrNull(slot) ?: return
@@ -481,50 +489,89 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
     }
 
     /**
-     * Live capture, rev 240, 20260811T152500-59bcb26@34 for the empty office.
-     * UNVERIFIED: that Take-All charges for every paid obj in one payment.
+     * Live capture, rev 241, 20261013T184317-df49f48@54-209 (rev 240, 20260811T152500-59bcb26@34
+     * for the empty office): Take-All closes the office and asks to pay the fee for every paid obj
+     * stored. Paying takes what fits, in slot order, charges only for the paid objs taken and
+     * reopens the office; Cancel leaves it closed.
      */
-    private fun ProtectedAccess.takeEverything() {
+    private suspend fun ProtectedAccess.takeEverything() {
         val office = player.deathOffice
         if (office.isEmpty()) {
             mes("There's nothing here to take.")
             return
         }
-        for (slot in office.indices) {
-            val obj = office[slot] ?: continue
-            if (!take(slot, obj.count, feeEach(slot))) {
-                break
+        val quoted = office.indices.sumOf { slot -> feeEach(slot).toLong() * (office[slot]?.count ?: 0) }
+        // UNVERIFIED: that free objs alone are taken without asking (every capture had paid objs).
+        if (quoted > 0) {
+            ifCloseSub(INTERFACE)
+            val amount = "%,d".format(quoted)
+            val pay = choice2("Pay Death's fee.", true, "Cancel", false, "Death will charge $amount coins.")
+            if (!pay) {
+                return
+            }
+        }
+        val plan = planTakeAll()
+        if (plan.isEmpty()) {
+            mesbox("You don't have enough inventory space.")
+            openOffice()
+            return
+        }
+        val fee = plan.sumOf { (slot, count) -> feeEach(slot).toLong() * count }
+        if (charge(fee)) {
+            for ((slot, count) in plan) {
+                invMoveFromSlot(from = office, into = inv, fromSlot = slot, count = count)
             }
         }
         clearSelection()
+        openOffice()
     }
 
-    /** Takes [count] of the obj in [slot], paying [feeEach] for each; false when it can't. */
-    private fun ProtectedAccess.take(slot: Int, count: Int, feeEach: Int): Boolean {
+    /** The slots and counts Take-All moves: each stored obj in turn, as far as the inventory fits. */
+    private fun ProtectedAccess.planTakeAll(): List<Pair<Int, Int>> {
+        val office = player.deathOffice
+        var free = inv.freeSpace()
+        val stacked = mutableSetOf<String>()
+        val plan = mutableListOf<Pair<Int, Int>>()
+        for (slot in office.indices) {
+            val obj = office[slot] ?: continue
+            val type = getInvObj(obj)
+            if (type.isStackable) {
+                val name = type.internalName
+                if (name !in stacked && inv.count(name) == 0) {
+                    if (free == 0) continue
+                    free--
+                }
+                stacked += name
+                plan += slot to obj.count
+                continue
+            }
+            val taking = obj.count.coerceAtMost(free)
+            if (taking > 0) {
+                free -= taking
+                plan += slot to taking
+            }
+        }
+        return plan
+    }
+
+    /** Takes [count] of the obj in [slot], paying [feeEach] for each. */
+    private fun ProtectedAccess.take(slot: Int, count: Int, feeEach: Int) {
         if (count <= 0) {
-            return true
+            return
         }
         val taking = count.coerceAtMost(spaceFor(slot, count))
         if (taking <= 0) {
-            // UNVERIFIED: the message.
+            // UNVERIFIED: the message here; Take-All shows it in a mesbox.
             mes("You don't have enough inventory space.")
-            return false
+            return
         }
         if (!charge(feeEach.toLong() * taking)) {
-            return false
+            return
         }
-        val moved =
-            invMoveFromSlot(
-                    from = player.deathOffice,
-                    into = inv,
-                    fromSlot = slot,
-                    count = taking,
-                )
-                .success
+        invMoveFromSlot(from = player.deathOffice, into = inv, fromSlot = slot, count = taking)
         if (player.deathOffice[slot] == null) {
             clearSelection()
         }
-        return moved && taking == count
     }
 
     /** How many of the obj in [slot] the inventory has room for, up to [count]. */
@@ -548,9 +595,23 @@ constructor(private val graves: Gravestones, private val npcRepo: NpcRepository)
             mes("You don't have enough coins with you or in your bank to pay the fee.")
             return false
         }
-        mes(deathFeeMessage(source, amount))
+        mes(officeFeeMessage(source, amount))
         player.cofferShown = player.deathCoffer
         return true
+    }
+
+    /**
+     * Unlike a grave's ("x Coins"), the office's message ends in "coins" (live capture, rev 241,
+     * 20261013T184317-df49f48@76).
+     */
+    private fun officeFeeMessage(source: DeathFeeSource, fee: Int): String {
+        val amount = "%,d".format(fee)
+        return when (source) {
+            DeathFeeSource.Bank -> "Payment has been taken from your bank: $amount coins"
+            // UNVERIFIED: the coffer and inventory messages (the bank one, reworded).
+            DeathFeeSource.Inventory -> "Payment has been taken from your inventory: $amount coins"
+            DeathFeeSource.Coffer -> "Payment has been taken from Death's Coffer: $amount coins"
+        }
     }
 
     private fun Inventory.objOrNull(slot: Int): InvObj? =

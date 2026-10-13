@@ -86,6 +86,42 @@ class DeathsOfficeTest {
             assertEquals(3, player.deathOffice.count(cheap.internalName))
         }
 
+    @Test
+    fun GameTestState.`x takes the entered count and charges for each`() =
+        runOfficeTest {
+            player.deathOffice[0] = InvObj(pricey, 3)
+            val fee = pricey.cost * 5 / 100
+            player.inv[27] = InvObj("obj.coins", fee * 3)
+            openOffice()
+
+            player.ifButton(component(ITEMS), comsub = 0)
+            advance()
+            player.ifButton(component(TAKE_X))
+            advance()
+            player.resumeCountDialog(1)
+            advance()
+
+            assertEquals(1, player.inv.count(pricey.internalName))
+            assertEquals(2, player.deathOffice.count(pricey.internalName))
+            assertEquals(fee * 2, player.inv.count("obj.coins"))
+        }
+
+    @Test
+    fun GameTestState.`take-all asks before taking paid objs`() =
+        runOfficeTest {
+            player.deathOffice[0] = InvObj(cheap, 1)
+            player.deathOffice[1] = InvObj(pricey, 1)
+            player.inv[27] = InvObj("obj.coins", pricey.cost)
+            openOffice()
+
+            player.ifButton(component(TAKE_EVERYTHING))
+            advance()
+
+            assertEquals(1, player.deathOffice.count(cheap.internalName))
+            assertEquals(1, player.deathOffice.count(pricey.internalName))
+            assertEquals(pricey.cost, player.inv.count("obj.coins"))
+        }
+
     private fun GameTestState.runOfficeTest(body: GameTestScope.() -> Unit) =
         runGameTest(DeathsOfficeScript::class) {
             player.placeAt(CoordGrid(3171, 5726))
@@ -117,6 +153,7 @@ class DeathsOfficeTest {
     private companion object {
         const val ITEMS = "component.death_office:items"
         const val TAKE_1 = "component.death_office:1"
+        const val TAKE_X = "component.death_office:x"
         const val TAKE_EVERYTHING = "component.death_office:takeall"
     }
 }
