@@ -12,6 +12,7 @@ import org.rsmod.api.bosses.dsl.anim
 import org.rsmod.api.bosses.dsl.boss
 import org.rsmod.api.bosses.dsl.customTile
 import org.rsmod.api.bosses.dsl.external
+import org.rsmod.api.bosses.dsl.faceTile
 import org.rsmod.api.bosses.dsl.hit
 import org.rsmod.api.bosses.dsl.hitStyle
 import org.rsmod.api.bosses.dsl.interrupt
@@ -60,6 +61,7 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         deps.onRoomExternal<BabaEncounter>(BabaExternals.RETARGET) { room, ext ->
             room.retarget(ext.npc)
         }
+        deps.onRoomExternal<BabaEncounter>(BabaExternals.HOLD) { room, ext -> room.hold(ext.npc) }
         deps.onRoomExternal<BabaEncounter>(BabaExternals.FLYBACK) { room, ext ->
             room.boulders.flyback(ext.target)
         }
@@ -146,13 +148,16 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             setVarn(BabaVarns.ROWS, 0),
             external(BabaExternals.ROLL_RESET),
             transitionTo(BabaPhases.ROLLING),
+            external(BabaExternals.HOLD),
             wait(JUMP_DELAY),
             anim(BabaSeqs.JUMP),
             teleport(spawnTile),
+            faceTile(offset(spawnTile, FACE_WEST_DX, FACE_DZ)),
             wait(SCREAM_DELAY),
             eachTarget(message(BabaRolling.SCREAM_TEXT)),
             transmog(BabaNpcs.DIGGING, Int.MAX_VALUE),
             eachTarget(external(BabaExternals.FLYBACK)),
+            after(1, faceTile(offset(spawnTile, FACE_EAST_DX, FACE_DZ))),
             wait(FIRST_CAST_DELAY),
             whenever(
                 boulderDash,
@@ -210,6 +215,9 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         const val END_ATTACK_DELAY = 3
         const val CAST_FROM_DX = 1
         const val CAST_FROM_DZ = 3
+        const val FACE_WEST_DX = -3
+        const val FACE_EAST_DX = 7
+        const val FACE_DZ = 2
 
         val LANE_OFFSETS = listOf(7, 4, 1, -2, -5)
         val BALLS_CONFIG = ProjectileConfig.fixed(200, 20, 30, 60, 35)

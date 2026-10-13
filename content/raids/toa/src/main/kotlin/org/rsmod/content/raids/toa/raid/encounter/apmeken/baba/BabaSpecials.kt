@@ -225,6 +225,7 @@ internal object BabaSpecials {
                 reach,
                 sequence(
                     lockMovement(),
+                    external(BabaExternals.HOLD),
                     faceTile(tile(CENTRE)),
                     anim(BabaSeqs.MELEE),
                     *telegraph(reach),
