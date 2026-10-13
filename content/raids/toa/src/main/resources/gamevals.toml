@@ -84,6 +84,7 @@ toa_ambience = 730
 toa_boss_zebak = 736
 toa_boss_kephri = 737
 toa_boss_baba = 740
+toa_path_scabaras = 738
 
 [gamevals.synth]
 toa_crondis_fill_container = 6522

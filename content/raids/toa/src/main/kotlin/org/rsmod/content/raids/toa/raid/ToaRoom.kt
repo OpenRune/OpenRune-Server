@@ -87,6 +87,7 @@ class ToaRoom private constructor(private val row: ToaRoomsRow) {
         val CRONDIS_PUZZLE by lazy { of("dbrow.toa_room_crondis_puzzle") }
         val CRONDIS_BOSS by lazy { of("dbrow.toa_room_crondis_boss") }
         val HET_PUZZLE by lazy { of("dbrow.toa_room_het_puzzle") }
+        val SCABARAS_PUZZLE by lazy { of("dbrow.toa_room_scabaras_puzzle") }
         val HET_BOSS by lazy { of("dbrow.toa_room_het_boss") }
         val SCABARAS_BOSS by lazy { of("dbrow.toa_room_scabaras_boss") }
         val APMEKEN_BOSS by lazy { of("dbrow.toa_room_apmeken_boss") }
