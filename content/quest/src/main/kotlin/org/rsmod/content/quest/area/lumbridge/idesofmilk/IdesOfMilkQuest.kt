@@ -38,6 +38,8 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         // live capture, rev 241
         ItemRewardDisplay(MILK_SAMPLE_2, zoom = 400),
         questVarbit = "varbit.cowquest",
+        // live capture, rev 241
+        completeJingle = "jingle.high_seas",
     ) {
 
     private var Player.gillieInformation by boolVarBit("varbit.cowquest_gillie_information")
