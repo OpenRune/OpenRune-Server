@@ -143,6 +143,7 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             interrupt(),
             setVarn(BabaVarns.THROW_AT, 0),
             setVarn(BabaVarns.ROLL_EXIT, 0),
+            setVarn(BabaVarns.ROWS, 0),
             external(BabaExternals.ROLL_RESET),
             transitionTo(BabaPhases.ROLLING),
             wait(JUMP_DELAY),
