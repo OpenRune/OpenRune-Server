@@ -1,11 +1,14 @@
 package org.rsmod.content.generic.locs
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.ObjectServerType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc1
@@ -35,16 +38,30 @@ class Pickables @Inject constructor(
                 onOpLoc2(replacement) { emptyPickable(it.loc, row) }
             }
         }
-
-        onOpLoc2("loc.fai_varrock_cadavabush_tailored") {
-            mes("There are no berries on this bush. Maybe you should try another bush.")
-        }
-
     }
 
     private suspend fun ProtectedAccess.emptyPickable(loc: BoundLocInfo, row: PickableObjectsRow) {
         arriveDelay()
+        if (loc.id == TAILORED_CADAVA_BUSH.asRSCM(RSCMType.LOC)) {
+            mes(TAILORED_BUSH_EMPTY)
+            return
+        }
         mes(emptyPickableMessage(row))
+    }
+
+    private suspend fun ProtectedAccess.pickTailoredCadava() {
+        if (player.tailoredCadavaPicks >= TAILORED_BUSH_BERRIES) {
+            mes(TAILORED_BUSH_EMPTY)
+            return
+        }
+        if (inv.isFull()) {
+            mes("You don't have enough inventory space.")
+            return
+        }
+        anim("seq.picking_low")
+        delay(1)
+        player.tailoredCadavaPicks++
+        invAddOrDrop(objRepo, "obj.cadavaberries")
     }
 
     private suspend fun ProtectedAccess.pick(
@@ -53,6 +70,11 @@ class Pickables @Inject constructor(
         row: PickableObjectsRow,
     ) {
         arriveDelay()
+
+        if (loc.id == TAILORED_CADAVA_BUSH.asRSCM(RSCMType.LOC)) {
+            pickTailoredCadava()
+            return
+        }
 
         if (handleNettles(row)) {
             return
@@ -212,6 +234,8 @@ class Pickables @Inject constructor(
         )
     }
 
+    private var Player.tailoredCadavaPicks by intVarBit("varbit.cadavabush")
+
     private fun pickableRespawnDuration(ticks: Int): Int =
         if (ticks == 0) Int.MAX_VALUE else ticks
 
@@ -223,6 +247,13 @@ class Pickables @Inject constructor(
 
     private fun pickMessage(item: ItemServerType): String =
         "You pick some ${item.name.lowercase()}."
+
+    private companion object {
+        const val TAILORED_CADAVA_BUSH = "loc.fai_varrock_cadavabush_tailored"
+        const val TAILORED_BUSH_BERRIES = 2
+        const val TAILORED_BUSH_EMPTY =
+            "There are no berries on this bush. Maybe you should try another bush."
+    }
 
     private fun invFullMessage(item: ItemServerType): String =
         "You can't carry any more ${item.name.lowercase()}."

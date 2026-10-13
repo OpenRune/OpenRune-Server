@@ -259,10 +259,6 @@ npc = "npc.imp"
 coords = "0_50_54_61_58"
 
 [[spawn]]
-npc = "npc.juliet"
-coords = "1_49_53_23_34"
-
-[[spawn]]
 npc = "npc.juliet_multi_visible"
 coords = "1_49_53_22_33"
 
