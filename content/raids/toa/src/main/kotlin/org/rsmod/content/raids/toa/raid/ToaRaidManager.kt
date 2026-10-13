@@ -192,6 +192,7 @@ object ToaRaidManager {
                 "obj.toa_crondis_water_container",
                 "obj.toa_het_mirror",
                 "obj.toa_honey_locust",
+                "obj.toa_path_apmeken_potion",
                 SUPPLY_BAG,
             ) +
                 ToaSupply.ALL_OBJS
