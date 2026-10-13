@@ -61,6 +61,15 @@ internal object DeathTutorial {
         menu()
     }
 
+    /**
+     * Talking to Death during the tutorial: the reminder once every topic is heard (live capture,
+     * rev 240, 20260811T142735-59bcb26@2075), else the line he resumes with after a relog too (rev
+     * 241, 20261013T214438-234ad72@562).
+     */
+    suspend fun Dialogue.talk() {
+        if (heardAll()) reminder() else resume()
+    }
+
     /** Live capture, rev 241, 20261013T214438-234ad72@2-20: after logging back in. */
     suspend fun Dialogue.resume() {
         chatNpc(
@@ -71,7 +80,7 @@ internal object DeathTutorial {
     }
 
     /** Live capture, rev 240, 20260811T142735-59bcb26@2075-2078. */
-    suspend fun Dialogue.reminder() {
+    private suspend fun Dialogue.reminder() {
         chatNpc(quiz, "Would you like me to remind you about gravestones?")
         menu()
     }
@@ -105,7 +114,16 @@ internal object DeathTutorial {
                 4 -> keptOnDeath()
                 5 -> {
                     chatPlayer(bored, "I think I'm done here.")
-                    // UNVERIFIED: the reply the second time (the capture walked away).
+                    if (!heardAll()) {
+                        // live capture, rev 241, 20261013T214438-234ad72@541.
+                        chatNpc(
+                            sad,
+                            "I'm afraid we have more topics to cover before you leave. Speak to " +
+                                "me when you are ready to continue.",
+                        )
+                        return
+                    }
+                    // The same every time (live capture, rev 241, 20261013T215044-234ad72@761, @789).
                     chatNpc(
                         happy,
                         "Very well. Once you pass through my portal, you will have 15 minutes to " +
@@ -117,11 +135,13 @@ internal object DeathTutorial {
         }
     }
 
+    private fun Dialogue.heardAll(): Boolean =
+        player.heardGravestones && player.heardFees && player.heardTimer && player.heardKeptOnDeath
+
     private fun heard(heard: Boolean, option: String): String =
         if (heard) "<str>$option</str>" else option
 
     private suspend fun Dialogue.explainGravestones(again: Boolean) {
-        player.heardGravestones = true
         val lead = if (again) "Gladly..." else "Let me explain..."
         chatNpc(
             if (again) happy else bored,
@@ -157,11 +177,11 @@ internal object DeathTutorial {
                 "charge more for my services. It would be cheaper to retrieve them from the " +
                 "gravestone directly, if you can reach it in time.",
         )
+        player.heardGravestones = true
     }
 
     /** Live capture, rev 240, 20260811T142735-59bcb26@2052-2058. */
     private suspend fun Dialogue.payingFees() {
-        player.heardFees = true
         chatPlayer(quiz, "How do I pay a gravestone fee?")
         chatNpc(
             happy,
@@ -180,11 +200,11 @@ internal object DeathTutorial {
                 "item</col> - Death doesn't want cheap junk! But more valuable items can be " +
                 "sacrificed to pay down future reclamation fees.",
         )
+        player.heardFees = true
     }
 
     /** Live capture, rev 240, 20260811T142735-59bcb26@2060-2063. */
     private suspend fun Dialogue.howLong() {
-        player.heardTimer = true
         chatPlayer(quiz, "How long do I have to return to my gravestone?")
         objbox(
             GRAVE_OBJ,
@@ -198,11 +218,11 @@ internal object DeathTutorial {
             "A timer <col=9f0000>on your head-up display</col> shows the remaining time before " +
                 "your gravestone will collapse.",
         )
+        player.heardTimer = true
     }
 
     /** Live capture, rev 240, 20260811T142735-59bcb26@2065-2068. */
     private suspend fun Dialogue.keptOnDeath() {
-        player.heardKeptOnDeath = true
         chatPlayer(quiz, "How do I know what will happen to my items when I die?")
         chatNpc(
             happy,
@@ -216,6 +236,7 @@ internal object DeathTutorial {
                 "will do when you next die, including<br><col=9f0000>estimating gravestone " +
                 "fees</col>.",
         )
+        player.heardKeptOnDeath = true
     }
 
     /**

@@ -86,7 +86,7 @@ constructor(
 
     private suspend fun ProtectedAccess.talk(npc: Npc) {
         if (player.inDeathTutorial) {
-            startDialogue(npc) { with(DeathTutorial) { reminder() } }
+            startDialogue(npc) { with(DeathTutorial) { talk() } }
             return
         }
         startDialogue(npc) { death() }
