@@ -27,6 +27,7 @@ import org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle.CrondisPuzzleEn
 import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakEncounter
 import org.rsmod.content.raids.toa.raid.encounter.het.akkha.AkkhaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.het.puzzle.HetPuzzleEncounter
+import org.rsmod.content.raids.toa.raid.encounter.scabaras.puzzle.ScabarasPuzzleEncounter
 import org.rsmod.content.raids.toa.raid.encounter.apmeken.baba.BabaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriEncounter
 import org.rsmod.content.raids.toa.raid.supplies.ToaSupplies
@@ -212,6 +213,8 @@ class ToaRaid(
             room == ToaRoom.CRONDIS_BOSS -> ZebakEncounter(this, room, session, controllerId)
             room == ToaRoom.HET_PUZZLE -> HetPuzzleEncounter(this, room, session, controllerId)
             room == ToaRoom.HET_BOSS -> AkkhaEncounter(this, room, session, controllerId)
+            room == ToaRoom.SCABARAS_PUZZLE ->
+                ScabarasPuzzleEncounter(this, room, session, controllerId)
             room == ToaRoom.SCABARAS_BOSS -> KephriEncounter(this, room, session, controllerId)
             room == ToaRoom.APMEKEN_BOSS -> BabaEncounter(this, room, session, controllerId)
             room.kind == ToaRoom.Kind.BOSS -> ToaBossEncounter(this, room, session, controllerId)
