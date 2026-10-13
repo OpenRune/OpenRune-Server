@@ -90,7 +90,9 @@ class EffectInterpreter internal constructor(
             }
             is Effect.SoundTo -> {
                 for (t in resolvePlayers(effect.target)) {
-                    t.soundSynth(effect.synth, effect.loops, effect.delay)
+                    if (t.coords.level == npc.coords.level && t.coords.chebyshevDistance(npc.coords) <= SOUND_TO_RANGE) {
+                        t.soundSynth(effect.synth, effect.loops, effect.delay)
+                    }
                 }
             }
             is Effect.Spotanim -> npc.spotanim(effect.spot, effect.delay, effect.height, effect.slot)
@@ -925,6 +927,12 @@ class EffectInterpreter internal constructor(
         }
 
     private companion object {
+        // A target that died and respawned elsewhere mid-ability no longer hears the boss (live
+        // capture, rev 241, 20261012T233700-df49f48@952-968: Brutus's second slam after the
+        // player's death is heard, nothing once they've respawned).
+        // UNVERIFIED: the range (the client's view distance; live only shows the target leaving).
+        private const val SOUND_TO_RANGE = 15
+
         private val KNOCKBACK_DIRECTIONS =
             listOf(0 to 1, 1 to 0, 0 to -1, -1 to 0, 1 to 1, 1 to -1, -1 to -1, -1 to 1)
     }

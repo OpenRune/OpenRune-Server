@@ -5,9 +5,8 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import java.util.Locale
-import net.rsprot.protocol.game.outgoing.sound.MidiJingle
 import org.rsmod.api.attr.AttributeKey
-import org.rsmod.api.player.musicClocks
+import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.intVarBit
@@ -16,7 +15,9 @@ import org.rsmod.api.table.QuestRow
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
-private const val QUEST_COMPLETE_JINGLE = 153
+// Quests play one of three completion jingles, set per quest; this one is the default (live
+// capture, rev 241: jingles 152, 153 and 154 across six quests).
+const val QUEST_COMPLETE_JINGLE = "jingle.gaol"
 
 internal const val QUEST_DIALOGUE_CLOSE_TIMER = "timer.quest_dialogue_close"
 internal const val QUEST_SCROLL_CLOSE_TIMER = "timer.quest_scroll_close"
@@ -50,6 +51,7 @@ data class Quest(
     val questVarbit: String? = null,
     val closeDialogue: QuestClose = QuestClose.OnFinished,
     val closeScroll: QuestClose = QuestClose.Never,
+    val completeJingle: String = QUEST_COMPLETE_JINGLE,
 ) {
 
     private var Player.questState: Int
@@ -78,6 +80,7 @@ data class Quest(
             varbit: String? = null,
             closeDialogue: QuestClose = QuestClose.OnFinished,
             closeScroll: QuestClose = QuestClose.Never,
+            completeJingle: String = QUEST_COMPLETE_JINGLE,
         ): Quest {
 
             val rowKeyID = "dbrow.${rowKey}".asRSCM()
@@ -97,6 +100,7 @@ data class Quest(
                 rewards = rewards,
                 closeDialogue = closeDialogue,
                 closeScroll = closeScroll,
+                completeJingle = completeJingle,
             )
             questsByKey[rowKey.normalizedQuestKey()] = quest
             return quest
@@ -209,8 +213,7 @@ data class Quest(
         // live capture, rev 241, 20261012T145648-df49f48@5347 and @6819
         access.mes("Congratulations, you've completed a quest: @q_mes@$displayName</col>")
 
-        access.player.musicClocks = 0
-        access.player.client.write(MidiJingle(QUEST_COMPLETE_JINGLE))
+        access.player.midiJingle(completeJingle)
 
         scheduleClose(access, closeDialogue, QUEST_DIALOGUE_CLOSE_TIMER) { ifCloseChat() }
         access.ifOpenMain("interface.questscroll")

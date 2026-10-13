@@ -3,8 +3,6 @@ package org.rsmod.content.quest.area.lumbridge.idesofmilk
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.player.dialogue.Dialogue
-import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
-import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.ironman.isAnyIronman
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.hitpoints
@@ -41,6 +39,8 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         // live capture, rev 241, 20261012T180256-df49f48@1392: cowquest_milk_sample_2, zoom 400
         ItemRewardDisplay(MILK_SAMPLE_2, zoom = 400),
         questVarbit = "varbit.cowquest",
+        // live capture, rev 241, 20261012T180256-df49f48@1392
+        completeJingle = "jingle.high_seas",
     ) {
 
     private var Player.gillieInformation by boolVarBit("varbit.cowquest_gillie_information")
@@ -741,7 +741,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
     }
 
     // live capture, rev 241, 20261012T180256-df49f48@886-891
-    // TODO(content): the drink sound (live capture synth 2401 has no gameval name).
     internal suspend fun ProtectedAccess.drinkFirstSample() {
         if (stage(player) != STAGE_FIRST_SAMPLE) {
             // UNVERIFIED: drinking the first sample outside its stage
@@ -753,21 +752,23 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         }
         quest.setQuestStage(this, STAGE_FIRST_SAMPLE_DRUNK)
         anim("seq.human_eat")
+        soundSynth("synth.bucket_pour")
         startDialogue {
-            chatPlayer(sad, "Oh, that's not good milk.")
+            // Live shows the first line with no continue, coughs and takes the hit three ticks
+            // later without closing it, then shows the second line two ticks after that.
+            access.chatPlayerNoContinue(sad, "Oh, that's not good milk.")
+            access.delay(COUGH_DELAY)
             access.anim("seq.wgs_player_coughs")
-            access.soundSynth("synth.human_hit_4")
             // https://oldschool.runescape.wiki/w/The_Ides_of_Milk: 1 poison damage, never lethal.
-            // A normal queue, so the hit can't close this dialogue the way a strong one would.
             val damage = if (player.hitpoints > 1) 1 else 0
-            player.queueHit(
-                delay = 1,
+            access.takeInstantHit(
                 type = HitType.Typeless,
                 damage = damage,
-                modifier = NoopPlayerHitModifier,
                 hitmark = hitmark_groups.poison_damage,
-                strongQueue = false,
             )
+            // UNVERIFIED: always human_hit_4 (one capture; other hits pick one of four).
+            access.soundSynth("synth.human_hit_4", delay = HIT_SOUND_DELAY)
+            access.delay(SECOND_LINE_DELAY)
             chatPlayer(sad, "That's really not good milk.")
         }
     }
@@ -858,6 +859,10 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
     }
 
     companion object {
+        private const val COUGH_DELAY = 3
+        private const val HIT_SOUND_DELAY = 20
+        private const val SECOND_LINE_DELAY = 2
+
         const val STAGE_STARTED = 1
         const val STAGE_EMPIRE = 2
         const val STAGE_RESEARCH = 3

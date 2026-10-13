@@ -2628,6 +2628,28 @@ public class ProtectedAccess(
         }
     }
 
+    /**
+     * Shows a single page of player chat with no "Click here to continue" and returns at once; the
+     * caller decides how long it stays up.
+     */
+    public fun chatPlayerNoContinue(
+        mesanim: MesAnimType,
+        text: String,
+        title: String = player.displayName,
+    ) {
+        val alignment = context.alignment
+        val page = alignment.generateChatPageList(text).single()
+        val (pgText, lineCount) = page
+        player.ifChatPlayer(
+            title = title,
+            text = pgText,
+            expression = ServerCacheManager.getAnim(mesanim.splitGetAnim(lineCount)),
+            pauseText = "",
+            lineHeight = alignment.chatLineHeight(lineCount),
+            eventBus = context.eventBus,
+        )
+    }
+
     private suspend fun chatPlayerPage(
         text: String,
         chatanim: SequenceServerType?,

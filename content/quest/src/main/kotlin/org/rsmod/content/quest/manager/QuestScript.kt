@@ -80,6 +80,7 @@ abstract class QuestScript(
     val questVarbit: String? = null,
     val closeDialogue: QuestClose = QuestClose.OnFinished,
     val closeScroll: QuestClose = QuestClose.Never,
+    val completeJingle: String = QUEST_COMPLETE_JINGLE,
 ) : PluginScript() {
 
     val quest =
@@ -91,6 +92,7 @@ abstract class QuestScript(
             questVarbit,
             closeDialogue,
             closeScroll,
+            completeJingle,
         )
 
     abstract fun subTitle(): String

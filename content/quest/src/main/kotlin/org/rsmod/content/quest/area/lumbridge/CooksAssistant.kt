@@ -21,6 +21,8 @@ class CooksAssistant : QuestScript(
     rewards { xp("stat.cooking", 300.0) },
     ItemRewardDisplay("obj.cake"),
     questVarbit = "varbit.cooks_assistant_progress",
+    // live capture, rev 241, 20261013T013733-df49f48@1524
+    completeJingle = "jingle.mastermindless",
 ) {
 
     private var Player.givenMilk by boolVarBit("varbit.cooks_assistant_milk")
