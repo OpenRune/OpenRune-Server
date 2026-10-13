@@ -16,6 +16,7 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaFight
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.HitType
@@ -127,10 +128,22 @@ class BabaEncounter(
 
     internal fun modifyBabaHit(boss: Npc, hit: HitBuilder) {
         if (boss !== baba || !hit.isFromPlayer) return
-        val mustSurvive = isRolling(boss) || boss.vars[BabaVarns.ROLLS] < ROLL_PHASES
-        if (mustSurvive && hit.damage >= boss.hitpoints) {
+        if (mustSurvive(boss) && !endsLastRoll(boss, hit) && hit.damage >= boss.hitpoints) {
             hit.damage = (boss.hitpoints - 1).coerceAtLeast(0)
         }
+    }
+
+    private fun mustSurvive(boss: Npc): Boolean =
+        isRolling(boss) || boss.vars[BabaVarns.ROLLS] < ROLL_PHASES
+
+    private fun lastRoll(boss: Npc): Boolean =
+        isRolling(boss) && boss.vars[BabaVarns.ROLLS] == ROLL_PHASES - 1
+
+    private fun endsLastRoll(boss: Npc, hit: HitBuilder): Boolean {
+        if (!lastRoll(boss) || hit.type != HitType.Melee) return false
+        if (!boss.isVisType(BabaNpcs.DIGGING)) return false
+        val attacker = hit.sourceUid?.let { PlayerUid(it).resolve(deps.bossDeps.playerList) }
+        return attacker != null && staticCoords(attacker.coords).x >= BabaRolling.TOP_ZONE_X
     }
 
     internal fun babaHit(boss: Npc, @Suppress("UNUSED_PARAMETER") hit: Hit) {
@@ -138,8 +151,19 @@ class BabaEncounter(
         hpBar?.update()
     }
 
+    /**
+     * The hit clamp only sees her hitpoints when a hit is queued, so two hits in flight together
+     * can still reach zero. She is put back on 1 unless the last roll has been ended by melee.
+     */
     internal fun babaDeath(boss: Npc) {
-        if (boss === baba) complete()
+        if (boss !== baba) return
+        val lastRollEnded = lastRoll(boss) && boss.vars[BabaVarns.ROLL_EXIT] == 1
+        if (mustSurvive(boss) && !lastRollEnded) {
+            boss.hitpoints = 1
+            hpBar?.update()
+            return
+        }
+        complete()
     }
 
     internal fun nextWeakLane(boss: Npc): Int {
