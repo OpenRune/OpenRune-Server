@@ -32,6 +32,34 @@ each view, not presented as an additional implemented feature.
 | 🟡 Follow-ups | Existing interfaces and native boss-item recipes | Remaining visual/interaction acceptance and persistence warning follow-up are detailed below. |
 | 🔴 Future scope | 51 Not-started roadmap entries | Bosses, activities and systems are enumerated in the backlog; module/model presence does not mark them playable. |
 
+## 🔴 Planned: Combat Achievements — research and plan reviewed
+
+Research and implementation-plan review completed on **2026-10-13**.
+Branch: [feature/combat-achievements](https://github.com/EvolvedMind/OpenRune-Server/tree/feature/combat-achievements),
+based on main `219995c52be04acfc02fcaf884dbee3b76a52f11`.
+**Gameplay implementation has not started.** This is the existing Combat Tasks
+roadmap scope, not a second feature or accepted delivery package.
+
+Direct source review confirms a native overview entry, disabled Elite Slayer
+superior/bracelet benefits, unconditional Easy–Master clue reward checks, and
+existing Barrows offhand perk consumers. These need consistent task,
+persistence, claim and entitlement systems. Upstream searches returned no
+complete CA framework; merged PR #148 supplies already-present UI patterns,
+not task detection. Search coverage is incomplete.
+
+Reviewed order: source/native catalogue audit → framework/persistence →
+real Barrows/boss task slice → native UI/reward claims → accepted boss tasks →
+perk consumers → activity/group tasks → full native acceptance.
+Use points progression, stable task IDs, encounter-owned evidence, single
+completion/claim transactions and audited historical KC. Unavailable encounters
+cannot grant tasks or silently reduce tier thresholds.
+
+Open: revision-240 task/threshold/reward data, event/credit/timing contracts,
+placeholder perk migration and historical/testloot provenance.
+Direct Wiki access was blocked; the shipped Jagex points update was verified.
+Only documentation changes; no gameplay test/build or installation is claimed.
+[Research, source decisions, reviewed milestones and validation](docs/custom/combat-achievements.md).
+
 ## 🟢 Accepted milestone: Nero completionist cape, customiser and particles
 
 The owner approved the **v0.17 Dizana inventory-colour milestone** on 2026-10-13.
