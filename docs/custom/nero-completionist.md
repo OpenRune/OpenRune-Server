@@ -505,3 +505,30 @@ preserved. No live installation or feature push/merge is performed. Retest
 the head, Dizana inventory icon/locked alias, equipment changes, software/HD
 and movement. Environment lighting remains parked by owner choice; Gauntlet
 PR #302 integration remains the next content task.
+
+## v0.17 Dizana folded inventory colours (2026-10-13)
+
+The owner also requires Dizana's correct colour family, retaining the folded
+Completionist shape and quiver. The original RS2 inventory mesh stores its
+broad panels in red channel 3, while Dizana's worn panel material is native
+tan channel 1 (6352). Applying the quiver's burgundy 64033 to those folded
+panels made the inventory icon predominantly red. The icon now uses 6352
+for those 70 faces, retaining eleven baked luminance levels. Its 22 formerly
+white V-detail faces use the worn trim 6379. Existing brown/gold ornaments
+and all 332 native quiver faces retain their original colours.
+
+The change is confined to model 62278, shared by the normal, locked and
+damaged Dizana inventory definitions. Worn cape/hood palettes, every vertex,
+triangle, priority, texture, animation label and inventory projection remain
+unchanged. The 96-model manifest changes only that one asset. Runtime v0.17
+has new hash bindings; its runtime, bridge and plugin bytecode are identical
+to v0.16, as are the qualified client dependencies.
+
+The native verifier compares the folded panel/trim hues with the actual worn
+model palette, checks unchanged ornaments and original geometry, then uses
+the real 36x32 game rasterizer. The quiver changes 73 pixels against the
+cape-only control. All existing native asset, hood, depth and particle checks
+pass again. This colour change does not rerun or extend the prior 154 gameplay
+tests. The combined Gauntlet/cape package is
+`outputs/gauntlet-cape-v017-dizana-colours-20261013/TESTEN.cmd`.
+Actual client/HD acceptance remains open; environment lighting is parked.
