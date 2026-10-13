@@ -2,8 +2,10 @@
 
 The owner selected the Gauntlet after the completionist head correction, with
 cape environment lighting explicitly parked. Revision 240 and the accepted
-server/client/cache combination remain the baseline. This is a local test
-candidate, not an installed or accepted 100% OSRS implementation.
+server/client/cache combination remain the baseline. PR #38 merged the tested
+cape/Gauntlet milestone as `2ddc3f492` on 2026-10-13. Its tree matches head
+`65e4bad26` and tested checkpoint `15033b587`. This is not installed or an
+accepted 100% OSRS implementation; continuation uses `feature/gauntlet-records`.
 
 ## Upstream scope
 
@@ -100,7 +102,7 @@ included; v0.17 corrects its icon colours while retaining v0.16 bytecode.
 
 ## Owner test route
 
-Package: `outputs/gauntlet-cape-v017-dizana-colours-20261013/TESTEN.cmd`. It uses a separate
+Current records candidate: `outputs/gauntlet-records-cape-v017-20261013/TESTEN.cmd`. It uses a separate
 database/server/client profile and retains the guarded install/rollback path.
 The package's validation report records exact hashes and isolated boot evidence.
 It is not installed automatically.
@@ -116,5 +118,46 @@ It is not installed automatically.
   safe floor/tornado timing in the actual client before acceptance.
 - Cape checks: `::compcapes hoods`, `::compcapes dizana`, `::compcapes dizana_locked`
   and the Fire/Infernal variants, both genders, movement, software and HD.
+
+## Personal scoreboard and records continuation (2026-10-13)
+
+[Draft PR #39](https://github.com/EvolvedMind/OpenRune-Server/pull/39) contains
+tested gameplay checkpoint `50ee8127b`; the main-history merge changes no
+runtime files. The isolated package passes rev240 JS5/appearance startup and
+44 guarded payload Check/Install/Rollback operations on an owned copy.
+The recorded PostgreSQL connection-close warning recurs at shutdown; the
+game and network services stop normally. No live installation is performed.
+
+The existing revision-240 `loc.gauntlet_scoreboard` (36060) and native
+`interface.gauntlet_scoreboard` (639) are reused without modifying widgets,
+models or CS2. Native object-input tests exercise the registered handler and
+inspect all six real text packets for normal/corrupted completions, deaths and
+best total times. An empty history displays `No record` instead of a false
+zero-second personal best. Global rows are hidden until a persistent world
+aggregate exists; online-only values are not represented as global statistics.
+
+Run entry and the first boss-entry action capture the game clock. Completion
+records total elapsed ticks and the Hunllef fight separately, before the
+boss's six-tick death/exit animation. Normal/corrupted personal bests improve
+independently; a faster fight can improve its own record when the total run
+is slower. Duplicate completion callbacks change neither counts nor records.
+Failed runs, invalid/missing timestamps and testloot cannot create a best.
+
+The native respawn hook records one death per owned unfinished Gauntlet run;
+another instance, logout/leave and an already completed run cannot add deaths.
+Six server-only variables 65303-65308 use `Perm`/`Never`, after a collision
+check against native and custom mappings. The bounded cache task derives its
+owned varp set from the pack instead of a second hardcoded list. It preserves
+the existing cache and signed varp sentinel. Tests verify permanent metadata
+and reloading a native var snapshot into a new player. This is not a newly
+performed live PostgreSQL/account-restart test.
+
+The suite now has 51 tests, including nine new record/UI cases. Other module
+counts from the baseline remain prior evidence. New package:
+`outputs/gauntlet-records-cape-v017-20261013/TESTEN.cmd`.
+Test both kit modes, slower/faster/tied times, an actual death, leaving/logout,
+replay, scoreboard and relog. Native client layouts and complete activity
+acceptance remain owner checks. Persistent global scoreboard statistics,
+exact probability/timing parity and Combat Achievements remain open.
 
 Current status and remaining work belong in [PROGRESS.md](../../PROGRESS.md).
