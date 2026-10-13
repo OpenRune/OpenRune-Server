@@ -17,7 +17,9 @@ class BabaScript : PluginScript() {
         onModifyNpcHit(npcType(BabaNpcs.BOULDER_WEAK)) {
             ToaRooms.of<BabaEncounter>(npc)?.crackedHit(npc, hit)
         }
-        onRoomNpcQueue<BabaEncounter>(BabaNpcs.BOULDER_WEAK, DEATH) { boulders.killed(it) }
+        for (name in listOf(BabaNpcs.BOULDER, BabaNpcs.BOULDER_WEAK)) {
+            onRoomNpcQueue<BabaEncounter>(name, DEATH) { boulders.died(it) }
+        }
         onRoomNpcQueue<BabaEncounter>(BabaNpcs.RUBBLE, DEATH) { rockfall.died(it) }
         onModifyNpcHit(npcType(BabaNpcs.BABOON)) { if (hit.isFromPlayer) hit.damage = npc.hitpoints }
         onRoomNpcQueue<BabaEncounter>(BabaNpcs.BABOON, DEATH) { baboons.killed(it) }

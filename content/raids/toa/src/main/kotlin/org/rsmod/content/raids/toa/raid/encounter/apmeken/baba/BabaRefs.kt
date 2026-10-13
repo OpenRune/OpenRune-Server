@@ -90,7 +90,6 @@ internal object BabaSpots {
     const val ROCK_TRAVEL = "spotanim.toa_baba_ranged_travel"
     const val ENERGY = "spotanim.toa_baba_skull_proj"
     const val SHOCK_IMPACT = "spotanim.darkbow_smoke_arrow_impact"
-    const val ROCK_IMPACT = "spotanim.earthsurge_impact"
 
     val SHOCK_TELEGRAPH =
         listOf(
@@ -125,6 +124,7 @@ internal object BabaRocks {
     const val IMPACT_SPREAD = 5
     const val RUBBLE_HP_PER_PLAYER = 10
     const val THROW_DELAY = 13
+    const val THROW_RESOLVE_DELAY = 6
     const val COOLDOWN = 50
     const val SPECIAL_AUTOS = 5
     const val CAST_MIN = 2
@@ -158,16 +158,20 @@ internal object BabaRolling {
     const val LANE_BASE_Z = 5401
     const val ROW_X = 3813
     const val WALL_X = 3798
-    const val FLYBACK_DISTANCE = 4
+    const val KNOCKBACK_TILES = 4
+    const val KNOCKBACK_IMMUNITY = 2
     const val FLYBACK_CYCLES = 120
     const val FLYBACK_HEIGHT = 124
     const val TOP_ZONE_X = 3815
     const val BOULDER_BASE_DAMAGE = 14
+    const val BOULDER_DASH_GAP = 4
+    const val PEEL_STUN_TICKS = 5
+    val BOULDER_HP_BY_PARTY = intArrayOf(25, 36, 47, 55, 62, 70, 77, 85)
+    val BOULDER_HP_PATH_PERCENT = intArrayOf(100, 110, 125)
     const val BOULDER_DAMAGE_SPREAD = 4
     const val WEAK_LANE_SPREAD = 2
     const val ROW_DELAY = 2
     const val SCREAM_TEXT = "<col=ff289d>Ba-Ba screams and knocks you back!</col>"
-    const val CRACKED_TEXT = "The cracked boulder can only be broken with Ranged."
 }
 
 internal object BabaMidis {
