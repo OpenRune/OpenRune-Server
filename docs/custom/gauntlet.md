@@ -95,12 +95,12 @@ The existing Woodcutting integration directory is not automatically executed.
 
 The runtime JAR builds. Cache packing preserves over 538,000 unrelated config
 definitions. All fourteen accepted checkout source hashes and the accepted live
-JAR remain unchanged. The qualified v0.16 cape runtime and its original folded
-Dizana inventory shape are included in the isolated test package.
+JAR remain unchanged. The qualified cape runtime and original folded Dizana inventory shape are
+included; v0.17 corrects its icon colours while retaining v0.16 bytecode.
 
 ## Owner test route
 
-Package: `outputs/gauntlet-cape-v016-20261013-final/TESTEN.cmd`. It uses a separate
+Package: `outputs/gauntlet-cape-v017-dizana-colours-20261013/TESTEN.cmd`. It uses a separate
 database/server/client profile and retains the guarded install/rollback path.
 The package's validation report records exact hashes and isolated boot evidence.
 It is not installed automatically.
