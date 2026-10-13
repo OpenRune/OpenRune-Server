@@ -24,6 +24,7 @@ internal object BabaApes {
     const val SARCOPHAGUS_HP = 60
     const val BABOON_HP = 10
     const val BABOON_ATTACK_RATE = 4
+    const val BABOON_DEATH_TICKS = 3
     const val SARC_XS_FIRST = 3803
     const val SARC_X_STEP = 5
     const val SARC_COLUMNS = 4
@@ -83,6 +84,7 @@ internal object BabaSeqs {
     const val DISCHARGE = "seq.npc_mandrill_attack_magic"
     const val BABOON_MELEE = "seq.npc_mandrill_attack_melee"
     const val BABOON_RANGED = "seq.npc_mandrill_attack_ranged_02"
+    const val BABOON_DEATH = "seq.npc_mandrill_despawn02"
 }
 
 internal object BabaSpots {
@@ -203,6 +205,7 @@ internal object BabaAbilities {
 
 internal object BabaExternals {
     const val RETARGET = "baba.retarget"
+    const val HOLD = "baba.hold"
     const val FLYBACK = "baba.flyback"
     const val BOULDER_ROW = "baba.boulder_row"
     const val ROLL_RESET = "baba.roll_reset"

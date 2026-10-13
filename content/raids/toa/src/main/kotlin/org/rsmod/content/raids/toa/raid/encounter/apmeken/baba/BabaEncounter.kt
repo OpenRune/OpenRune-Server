@@ -93,6 +93,12 @@ class BabaEncounter(
     override fun pickTarget(boss: Npc, targets: List<Player>): Player =
         lowestHpTarget(boss, targets)
 
+    override fun canEngage(boss: Npc): Boolean = !boss.movementLocked
+
+    internal fun hold(boss: Npc) {
+        if (boss === baba) boss.noneMode()
+    }
+
     internal fun lowestHpTarget(boss: Npc, targets: List<Player>): Player =
         targets.minWith(
             compareBy<Player> { it.hitpoints }.thenBy { it.coords.chebyshevDistance(boss.coords) }
