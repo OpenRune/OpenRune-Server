@@ -1,6 +1,6 @@
 # Project overview
 
-Reviewed **2026-10-12**. This is the source for current status and priorities.
+Reviewed **2026-10-13**. This is the source for current status and priorities.
 Implementation details: [custom documentation](docs/custom/README.md).
 Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
@@ -8,11 +8,49 @@ Detected modules and references: [technical inventory](CONTENT_INVENTORY.md).
 
 ## 🟡 Started: world shortcuts, containers and fairy rings
 
+Published branch: **[feature/shortcuts-containers-fairy-rings](https://github.com/EvolvedMind/OpenRune-Server/tree/feature/shortcuts-containers-fairy-rings)**, checkpoint `0bb3fbfa0`.
+
+`█████████████░░░░░░░` **5/8 verification milestones reached (63%)**.
+This counts the checklist below equally; it is not a percentage of every OSRS
+shortcut/container or a time estimate. Native client acceptance is still open.
+
+- [x] Spider Cave entrance/exit mechanics and 29 Araxxor tests.
+- [x] All 525 configured shortcut links exercised through their real input producer.
+- [x] Native fairy-ring dials/favourites/Last-destination and 54 fixed routes.
+- [x] Container storage, persistence and bank/death lifecycle foundations.
+- [x] Current consumer checkpoint: 309 tests, including 31 Forestry input tests.
+- [ ] Remaining consumers: DIQ house ownership, seven potion effects, nest/species
+  effects, Forestry events and activity-owned acquisition/pickup routes.
+- [ ] Reconcile the world branch with merged cape/quiver and Gauntlet consumers.
+- [ ] Guarded combined runtime package and native route/UI/animation/death acceptance.
+
+| Area | Implemented and checked | Still open |
+|---|---|---|
+| Agility shortcuts | 525 links; actual traversal input, landings, grapple/equipment, Observatory setup, cancellation; 26 tests | Detailed animation/failure review and native client route acceptance |
+| Fairy rings | 64 code rows, 54 fixed destinations, native controls/favourites, permission and quest/visit gates; 18 tests | DIQ Construction-owned house prerequisite and client visuals |
+| Containers / Forestry | Native storage/bank/death, 112 potion-storage families, recipes, ammo, kit/basket harvest and ordinary nest Search | Remaining consumers listed above, joint cape/quiver integration and native UI/death acceptance |
+
+Published branch: [feature/shortcuts-containers-fairy-rings](https://github.com/EvolvedMind/OpenRune-Server/tree/feature/shortcuts-containers-fairy-rings); tested source checkpoint `0bb3fbfa0`.
+
+`█████████████░░░░░░░` **5/8 recorded implementation checkpoints verified (63%)**.
+This counts the eight checks below equally; it is not a percentage of all OSRS
+content, remaining engineering time, or native client acceptance.
+
+- [x] Spider Cave Enter/Exit producers, routing and cancellation.
+- [x] All 525 configured shortcut links exercised through owned option producers.
+- [x] Fairy-ring dials, favourites, Last-destination and 54 fixed destinations.
+- [x] Core container storage, persistence, bank and death routes.
+- [x] Connected skill/pickup consumers through the 309-test Forestry/container checkpoint.
+- [ ] Remaining consumers: DIQ Construction ownership, seven potion effects,
+      Twitcher's/clue nests, other Forestry species/sound/events and activity dependencies.
+- [ ] Reconcile shared cape/quiver integrations with the now-merged cape/Gauntlet code.
+- [ ] Guarded combined runtime package and native route/animation/UI/death acceptance.
+
 Owner scope: all revision-240 shortcuts, all 39 Wiki container categories, the
 fairy-ring network and surface Spider Cave access. Accepted combat/cache remain
 preserved. **Resumed on 2026-10-12 after the Nero completionist-cape handoff.**
-The cape test package remains isolated and ready; its visual gameplay/HD
-acceptance is pending. [Implementation, sources and tests](docs/custom/world-travel-containers.md).
+The accepted cape/Gauntlet milestone is merged in PR #38; the world branch
+remains separate pending its combined runtime/native acceptance. [Implementation, sources and tests](docs/custom/world-travel-containers.md).
 
 | Area | Verified implementation | Remaining |
 |---|---|---|
