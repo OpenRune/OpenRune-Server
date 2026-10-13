@@ -23,6 +23,7 @@ class BabaScript : PluginScript() {
         onRoomNpcQueue<BabaEncounter>(BabaNpcs.RUBBLE, DEATH) { rockfall.died(it) }
         onModifyNpcHit(npcType(BabaNpcs.BABOON)) { if (hit.isFromPlayer) hit.damage = npc.hitpoints }
         onRoomNpcQueue<BabaEncounter>(BabaNpcs.BABOON, DEATH) { baboons.killed(it) }
+        onRoomNpcQueue<BabaEncounter>(BabaNpcs.SARCOPHAGUS, DEATH) { baboons.sarcophagusDied(it) }
     }
 
     private companion object {
