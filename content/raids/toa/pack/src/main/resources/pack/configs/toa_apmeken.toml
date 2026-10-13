@@ -87,3 +87,213 @@ defaultMode = "None"
 moveRestrict = "NoMove"
 respawnDir = "West"
 regenRate = 0
+
+[[npc]]
+id = "npc.toa_path_apmeken_baboon_melee_1"
+inherit = "npc.toa_path_apmeken_baboon_melee_1"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 1
+huntMode = 6
+huntRange = 25
+[npc.params]
+"param.amascutnpc" = 1
+"param.death_anim" = "seq.npc_mandrill_despawn02"
+"param.attack_anim" = "seq.npc_mandrill_attack_melee"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.attackrate" = 4
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+
+[[npc]]
+id = "npc.toa_path_apmeken_baboon_melee_2"
+inherit = "npc.toa_path_apmeken_baboon_melee_2"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 1
+huntMode = 6
+huntRange = 25
+[npc.params]
+"param.amascutnpc" = 1
+"param.death_anim" = "seq.npc_mandrill_despawn02"
+"param.attack_anim" = "seq.npc_mandrill_attack_melee"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.attackrate" = 4
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+
+[[npc]]
+id = "npc.toa_path_apmeken_baboon_ranged_1"
+inherit = "npc.toa_path_apmeken_baboon_ranged_1"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 5
+huntMode = 8
+huntRange = 25
+[npc.params]
+"param.amascutnpc" = 1
+"param.death_anim" = "seq.npc_mandrill_despawn02"
+"param.attack_anim" = "seq.npc_mandrill_attack_ranged_02"
+"param.npc_attack_type" = "category.attacktype_standard"
+"param.attackrate" = 4
+"param.proj_travel" = "spotanim.toa_baboon_ranged_travel_1"
+"param.proj_type" = "projanim.toa_apmeken_thrown"
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+
+[[npc]]
+id = "npc.toa_path_apmeken_baboon_ranged_2"
+inherit = "npc.toa_path_apmeken_baboon_ranged_2"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 5
+huntMode = 8
+huntRange = 25
+[npc.params]
+"param.amascutnpc" = 1
+"param.death_anim" = "seq.npc_mandrill_despawn02"
+"param.attack_anim" = "seq.npc_mandrill_attack_ranged_02"
+"param.npc_attack_type" = "category.attacktype_standard"
+"param.attackrate" = 4
+"param.proj_travel" = "spotanim.toa_baboon_ranged_travel_2"
+"param.proj_type" = "projanim.toa_apmeken_thrown"
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+
+[[npc]]
+id = "npc.toa_path_apmeken_baboon_magic_1"
+inherit = "npc.toa_path_apmeken_baboon_magic_1"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 5
+huntMode = 8
+huntRange = 25
+[npc.params]
+"param.amascutnpc" = 1
+"param.death_anim" = "seq.npc_mandrill_despawn02"
+"param.attack_anim" = "seq.npc_mandrill_attack_magic"
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.attackrate" = 4
+"param.proj_travel" = "spotanim.toa_baboon_magic_travel_1"
+"param.proj_type" = "projanim.toa_apmeken_magic"
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+
+[[npc]]
+id = "npc.toa_path_apmeken_baboon_magic_2"
+inherit = "npc.toa_path_apmeken_baboon_magic_2"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 5
+huntMode = 8
+huntRange = 25
+[npc.params]
+"param.amascutnpc" = 1
+"param.death_anim" = "seq.npc_mandrill_despawn02"
+"param.attack_anim" = "seq.npc_mandrill_attack_magic"
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.attackrate" = 4
+"param.proj_travel" = "spotanim.toa_baboon_magic_travel_1"
+"param.proj_type" = "projanim.toa_apmeken_magic"
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+
+[[npc]]
+id = "npc.toa_path_apmeken_baboon_shaman"
+inherit = "npc.toa_path_apmeken_baboon_shaman"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 10
+huntMode = 8
+huntRange = 25
+[npc.params]
+"param.amascutnpc" = 1
+"param.death_anim" = "seq.npc_mandrill_despawn02"
+"param.attack_anim" = "seq.npc_mandrill_attack_magic"
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.attackrate" = 8
+"param.proj_travel" = "spotanim.toa_baboon_magic_travel_1"
+"param.proj_type" = "projanim.toa_apmeken_magic"
+
+[[npc]]
+id = "npc.toa_path_apmeken_baboon_thrall"
+inherit = "npc.toa_path_apmeken_baboon_thrall"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 1
+huntMode = 6
+huntRange = 25
+[npc.params]
+"param.amascutnpc" = 1
+"param.death_anim" = "seq.npc_mandrill_despawn02"
+"param.attack_anim" = "seq.npc_mandrill_attack_melee"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.attackrate" = 4
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+
+[[npc]]
+id = "npc.toa_path_apmeken_baboon_zombie"
+inherit = "npc.toa_path_apmeken_baboon_zombie"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 1
+[npc.params]
+"param.amascutnpc" = 1
+"param.death_anim" = "seq.npc_mandrill_despawn02"
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+
+[[npc]]
+id = "npc.toa_path_apmeken_baboon_cursed"
+inherit = "npc.toa_path_apmeken_baboon_cursed"
+defaultMode = "None"
+respawnDir = "West"
+regenRate = 0
+maxRange = 40
+attackRange = 0
+[npc.params]
+"param.amascutnpc" = 1
+"param.death_anim" = "seq.npc_mandrill_despawn02"
+"param.poison_immunity" = 1
+"param.venom_immunity" = 1
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_apmeken_thrown"
+startHeight = 68
+endHeight = 146
+delay = 67
+angle = 14
+lengthAdjustment = 4
+progress = 32
+stepMultiplier = 3
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_apmeken_magic"
+startHeight = 80
+endHeight = 136
+delay = 30
+angle = 15
+lengthAdjustment = 7
+progress = 50
+stepMultiplier = 5

@@ -7,6 +7,7 @@ flat_armour=5
 immune_melee=6
 immune_ranged=7
 immune_magic=8
+forced_max_hit_styles=9
 td_shield_up=13
 td_overhead_style=14
 guaranteed_hit=15

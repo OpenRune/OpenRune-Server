@@ -60,6 +60,22 @@ object ToaPathsTable {
             "seq.vfx_pantheon_trapped01",
         )
 
+    private val APMEKEN_PRELOAD_SEQS =
+        listOf(
+            "seq.npc_apmeken_idle01",
+            "seq.npc_apmeken_walk01",
+            "seq.npc_apmeken_trapped01",
+            "seq.vfx_pantheon_trapped01",
+            "seq.spotanim_mandrill_explode",
+            "seq.npc_mandrill_attack_melee",
+            "seq.npc_mandrill_attack_ranged_02",
+            "seq.npc_mandrill_attack_magic",
+            "seq.npc_mandrill_attack_magic_02",
+            "seq.npc_mandrill_despawn02",
+            "seq.npc_mandrill_explode",
+            "seq.npc_baba_attack_melee",
+        )
+
     fun paths(): DBTable =
         dbTable("dbtable.toa_paths", serverOnly = true) {
             column("name", NAME, VarType.STRING)
@@ -139,6 +155,7 @@ object ToaPathsTable {
                 CoordGrid(3561, 5146, 0),
                 2,
                 "West",
+                APMEKEN_PRELOAD_SEQS,
             )
             path(
                 "dbrow.toa_path_crondis",

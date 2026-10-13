@@ -29,6 +29,7 @@ import org.rsmod.content.raids.toa.raid.encounter.het.akkha.AkkhaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.het.puzzle.HetPuzzleEncounter
 import org.rsmod.content.raids.toa.raid.encounter.scabaras.puzzle.ScabarasPuzzleEncounter
 import org.rsmod.content.raids.toa.raid.encounter.apmeken.baba.BabaEncounter
+import org.rsmod.content.raids.toa.raid.encounter.apmeken.puzzle.ApmekenPuzzleEncounter
 import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriEncounter
 import org.rsmod.content.raids.toa.raid.supplies.ToaSupplies
 import org.rsmod.game.entity.Player
@@ -216,6 +217,8 @@ class ToaRaid(
             room == ToaRoom.SCABARAS_PUZZLE ->
                 ScabarasPuzzleEncounter(this, room, session, controllerId)
             room == ToaRoom.SCABARAS_BOSS -> KephriEncounter(this, room, session, controllerId)
+            room == ToaRoom.APMEKEN_PUZZLE ->
+                ApmekenPuzzleEncounter(this, room, session, controllerId)
             room == ToaRoom.APMEKEN_BOSS -> BabaEncounter(this, room, session, controllerId)
             room.kind == ToaRoom.Kind.BOSS -> ToaBossEncounter(this, room, session, controllerId)
 
