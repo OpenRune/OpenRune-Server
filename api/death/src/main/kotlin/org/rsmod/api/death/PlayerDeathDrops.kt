@@ -8,6 +8,7 @@ import org.rsmod.api.player.SupplyItems
 import org.rsmod.api.player.hook.GroundItemDropContext
 import org.rsmod.api.player.hook.GroundItemDropResolver
 import org.rsmod.api.player.hook.GroundItemDropSource
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.game.MapClock
@@ -155,6 +156,9 @@ constructor(
                 UntradeableHandling.DROP -> result.lostTradeable + result.lostUntradeable
                 else -> result.lostTradeable
             }
+        if (result.supplyPile.isNotEmpty()) {
+            player.mes("Some supplies have been dropped where you died.")
+        }
         val dropped = storeInGrave(player, coords, handling, lost)
 
         player.inv.fillNulls()
