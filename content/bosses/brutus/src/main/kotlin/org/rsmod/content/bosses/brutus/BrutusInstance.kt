@@ -97,7 +97,8 @@ constructor(
         when {
             stage < IdesOfMilkQuest.STAGE_BULL_TASK ->
                 startDialogue {
-                    chatPlayer(neutral, "Releasing the bull into the cow pen is a bad idea.")
+                    // "this bull", not the transcript's "the bull" (live capture, rev 241).
+                    chatPlayer(neutral, "Releasing this bull into the cow pen is a bad idea.")
                     mesbox(
                         "You need to have completed The Ides of Milk quest to release this bull."
                     )
