@@ -60,6 +60,9 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
             // live capture, rev 241, 20261012T233700-df49f48@1042.
             player.runClientScript(TRANSMIT_DATA.asRSCM(RSCMType.CLIENTSCRIPT), -1, -1)
         }
+        for (button in TIMER_BUTTONS) {
+            onIfOverlayButton(button) { timerInfo() }
+        }
         onIfOverlayButton(FREE_ITEMS) { takeOrExamine(it) }
         onIfOverlayButton(PAY_ITEMS) { takeOrExamine(it) }
         onIfOverlayButton(FREE_BUTTON) { take(freeSlots()) }
@@ -215,8 +218,37 @@ class GravestoneScript @Inject constructor(private val graves: Gravestones) : Pl
         }
     }
 
+    /**
+     * The grave timer on the HUD (live capture, rev 241, 20261013T215044-234ad72@1576): the time
+     * left is the ticks left in whole seconds.
+     */
+    private fun ProtectedAccess.timerInfo() {
+        if (player.graveCoords == null) {
+            return
+        }
+        mes(
+            "A <col=ef1020>gravestone</col> contains some of your recently dropped items; you can " +
+                "retrieve them by visiting it. The <col=ef1020>World Map</col> will show its " +
+                "location if the area has a map."
+        )
+        val seconds = player.graveDuration * 6 / 10
+        // UNVERIFIED: the singular forms, and the wording under a minute.
+        val left = "${seconds / 60} minutes, ${seconds % 60} seconds"
+        mes(
+            "In <col=ef1020>$left</col> it will expire, after which your items can be retrieved " +
+                "from <col=ef1020>Death's Office</col> instead."
+        )
+    }
+
     private companion object {
         const val ACCESS_RANGE = 7
+        val TIMER_BUTTONS =
+            listOf(
+                "component.toplevel:gravestone",
+                "component.toplevel_osm:gravestone",
+                "component.toplevel_osrs_stretch:gravestone",
+                "component.toplevel_pre_eoc:gravestone",
+            )
         const val LOGIN_WARNING =
             "@mes_hl_red@You have items stored in an item retrieval service. Please visit the " +
                 "last location you died. If you die again before retrieving them, they will be " +
