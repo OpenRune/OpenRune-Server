@@ -18,6 +18,7 @@ import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.events.interact.NpcEvents
+import org.rsmod.api.player.hit.processor.DamageOnlyPlayerHitProcessor
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -50,6 +51,7 @@ import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
@@ -241,6 +243,7 @@ class IdesOfMilkInteractionTest {
             getEventBus = { events }, getAlignment = { TextAlignment() },
             getNpcInteractions = { NpcInteractions(events) },
             getRandom = { DefaultGameRandom(Random(0)) },
+            getInstantHitProcessor = { DamageOnlyPlayerHitProcessor(events, NpcList(), PlayerList()) },
         )
 
         @OptIn(InternalApi::class)
