@@ -72,10 +72,10 @@ constructor(
         onOpNpc3(DEATH) { collect(it.npc) }
         onApNpc3(DEATH) { acrossDesk(it.npc) { collect(it.npc) } }
         onPlayerQueue(DeathTutorial.QUEUE) { tutorialIntroduction() }
-        onPlayerQueue(RETURN_QUEUE) { returnToOffice() }
+        onPlayerQueue(RETURN_QUEUE) { approachAfterLogin() }
         onPlayerQueueWithArgs<Int>(DROP_QUEUE) { dropWarning(it.args) }
         onDropTrigger(DeathsOffices.DROP_TRIGGER) { warnBeforeDrop(player, dropSlot) }
-        onPlayerLogin { if (player.officeCoord != 0) player.queue(RETURN_QUEUE, 1) }
+        onPlayerLogin { returnToOffice(player) }
         onPlayerLogout { offices.logout(player) }
         for (row in DeathOfficeEntrancesRow.all()) {
             onOpLoc1(row.entrance) { enter(row) }
@@ -118,16 +118,21 @@ constructor(
         startDialogue(death) { with(DeathTutorial) { introduction() } }
     }
 
-    /**
-     * Logging in inside the office rebuilds a new copy, and Death speaks two ticks after login while
-     * the player walks to his desk. UNVERIFIED: live moves the player on the login tick; this waits
-     * a tick, as the client has no map to rebuild from until then.
-     */
-    private suspend fun ProtectedAccess.returnToOffice() {
+    /** Logging in inside the office puts the player in a new copy, on the login tick. */
+    private fun returnToOffice(player: Player) {
+        if (player.officeCoord == 0) {
+            return
+        }
         if (!offices.enter(player, DeathsOffices.LOGIN_ARRIVAL)) {
             player.officeCoord = 0
             return
         }
+        // Login runs before queues on its tick, so this starts the walk on the next one.
+        player.queue(RETURN_QUEUE, 2)
+    }
+
+    /** Death speaks as the player reaches his desk, two ticks after login. */
+    private suspend fun ProtectedAccess.approachAfterLogin() {
         offices.approachDesk(player)
         delay(1)
         if (player.inDeathTutorial) {
