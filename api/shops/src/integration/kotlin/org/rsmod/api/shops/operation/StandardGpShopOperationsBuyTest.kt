@@ -160,4 +160,3 @@ class StandardGpShopOperationsBuyTest {
         private val OP_BUY50 = IfButtonOp.Op5
     }
 }
-

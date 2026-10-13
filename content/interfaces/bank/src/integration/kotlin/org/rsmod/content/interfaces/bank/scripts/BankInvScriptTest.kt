@@ -11,13 +11,13 @@ import org.rsmod.content.interfaces.bank.BankTab
 import org.rsmod.game.inv.InvObj
 
 /* Obj transaction system is not thread-safe. */
-@Execution(ExecutionMode.SAME_THREAD)
-@OptIn(UncheckedType::class)
 /*
  * It is important to note that the bank inv type automatically uncertifies banknotes, so you may
  * run into unexpected bank inv results after certain transactions if you are not aware of the
  * objs being used as input.
  */
+@Execution(ExecutionMode.SAME_THREAD)
+@OptIn(UncheckedType::class)
 class BankInvScriptTest {
     @Test
     fun GameTestState.`withdraw single obj`() =

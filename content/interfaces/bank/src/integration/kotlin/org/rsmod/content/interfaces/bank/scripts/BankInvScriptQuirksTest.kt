@@ -11,14 +11,14 @@ import org.rsmod.content.interfaces.bank.BankTab
 import org.rsmod.game.inv.InvObj
 
 /* Obj transaction system is not thread-safe. */
-@Execution(ExecutionMode.SAME_THREAD)
-@OptIn(UncheckedType::class)
 /*
  * These tests are designed to verify that the variety of bank quirks are functioning as expected.
  *
  * Though important for emulation purposes, if bank is ever re-written and purposefully changed,
  * some of these tests may become obsolete.
  */
+@Execution(ExecutionMode.SAME_THREAD)
+@OptIn(UncheckedType::class)
 class BankInvScriptQuirksTest {
     @Test
     fun GameTestState.`withdraw un-certifiable obj as cert message`() =
