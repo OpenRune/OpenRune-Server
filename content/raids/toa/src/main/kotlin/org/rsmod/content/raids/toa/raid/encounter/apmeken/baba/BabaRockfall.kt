@@ -30,11 +30,19 @@ internal class BabaRockfall(private val room: BabaEncounter) {
             room.hazardDamage(player, BabaRocks.THROW_DAMAGE / sharing.coerceAtLeast(1), 0)
             return
         }
-        cover.queueNpcHit(1, HitType.Typeless, BabaRocks.THROW_DAMAGE, NOOP_NPC_MODIFIER)
+        val damage =
+            when {
+                cover in rubble -> BabaRocks.COVER_DAMAGE_RUBBLE
+                cover.isVisType(BabaNpcs.SARCOPHAGUS) -> BabaRocks.COVER_DAMAGE_SARCOPHAGUS
+                else -> BabaRocks.COVER_DAMAGE_BABOON
+            }
+        cover.queueNpcHit(1, HitType.Typeless, damage, NOOP_NPC_MODIFIER)
     }
 
     fun died(npc: Npc) {
-        if (npc in rubble) remove(npc)
+        if (npc !in rubble) return
+        remove(npc)
+        room.repeatRockfall()
     }
 
     fun crush(boulder: Npc) {
