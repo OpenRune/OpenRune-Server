@@ -11,7 +11,6 @@ internal object BabaNpcs {
     const val RUBBLE = "npc.toa_baba_rubble"
     const val BABOON = "npc.toa_baba_baboon"
     const val SARCOPHAGUS = "npc.toa_baba_sarc_npc"
-    const val FREED_APMEKEN = "npc.toa_apmeken_freed"
 }
 
 internal object BabaLocs {
