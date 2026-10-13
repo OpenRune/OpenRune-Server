@@ -33,7 +33,6 @@ import org.rsmod.content.other.gravestones.grave
 import org.rsmod.content.other.gravestones.graveCoords
 import org.rsmod.content.other.gravestones.graveType
 import org.rsmod.content.other.gravestones.inDeathTutorial
-import org.rsmod.content.other.gravestones.metDeath
 import org.rsmod.content.other.gravestones.payDeathFee
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -155,10 +154,9 @@ constructor(
      * ticks later, the overlay closing a tick after that, and Death's greeting two ticks later.
      */
     private suspend fun ProtectedAccess.enter(row: DeathOfficeEntrancesRow) {
+        // Walking in doesn't count as meeting Death (live capture, rev 241,
+        // 20261013T203937-df49f48@84: a new account's `steam_visited_death` stays 0).
         player.officeEntrance = row.rowId
-        // UNVERIFIED: that walking in also counts as meeting Death, so a later first death skips
-        // the tutorial.
-        player.metDeath = true
         ifOpenFullOverlay(PORTAL_OVERLAY)
         delay(2)
         val entered = offices.enter(player, ARRIVAL)
