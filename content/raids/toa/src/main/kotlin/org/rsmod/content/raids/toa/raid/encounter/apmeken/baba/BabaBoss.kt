@@ -156,14 +156,7 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         )
 
     private fun castLoop(casts: Int, gap: Int): Effect =
-        repeat(
-            casts,
-            gap,
-            sequence(
-                whenever(hpPinned, setVarn(BabaVarns.ROLL_EXIT, 1)),
-                whenever(rollOver, Effect.NoOp, cast()),
-            ),
-        )
+        repeat(casts, gap, whenever(rollOver, Effect.NoOp, cast()))
 
     private fun cast(): Effect =
         sequence(
@@ -227,7 +220,6 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         val rollOver = varnIs(BabaVarns.ROLL_EXIT, 1)
         val fighting = roomCondition<BabaEncounter> { room, npc -> room.fighting(npc) }
         val underBoss = roomCondition<BabaEncounter> { room, npc -> room.underBoss(npc) }
-        val hpPinned = Condition.Custom { npc, _ -> npc.hitpoints <= 1 }
         val fromTop =
             targetCondition<BabaEncounter> { room, player ->
                 room.staticCoords(player.coords).x >= BabaRolling.TOP_ZONE_X
