@@ -225,3 +225,6 @@ id = "varn.toa_baba_stomp_ready"
 
 [[varn]]
 id = "varn.toa_kephri_eggs_next"
+
+[[varn]]
+id = "varn.forced_max_hit_styles"

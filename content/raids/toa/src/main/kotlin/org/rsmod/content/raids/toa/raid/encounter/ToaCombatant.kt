@@ -16,6 +16,7 @@ internal class ToaCombatant(private val room: ToaEncounter, val npc: Npc, privat
         val type: String,
         val pointMultiplier: Double = 1.0,
         val pathScaled: Boolean = true,
+        val scaleHitpoints: Boolean = true,
     ) {
         internal val typeId: Int by lazy { type.asRSCM(RSCMType.NPC) }
     }
@@ -33,9 +34,11 @@ internal class ToaCombatant(private val room: ToaEncounter, val npc: Npc, privat
         val raidLevel = room.raid.settings.raidLevel
         val pathLevel = if (spec.pathScaled) room.pathLevel.coerceIn(0, MAX_PATH_LEVEL) else 0
 
-        val hp = scaledHitpoints(baseHitpoints, raidLevel, pathLevel, partySize)
-        npc.baseHitpointsLvl = hp
-        npc.hitpoints = hp
+        if (spec.scaleHitpoints) {
+            val hp = scaledHitpoints(baseHitpoints, raidLevel, pathLevel, partySize)
+            npc.baseHitpointsLvl = hp
+            npc.hitpoints = hp
+        }
 
         val raidFactor = 1.0 + raidLevel * RAID_LEVEL_FACTOR
         val levelFactor =
