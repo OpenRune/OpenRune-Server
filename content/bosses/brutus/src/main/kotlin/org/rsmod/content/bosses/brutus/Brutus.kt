@@ -124,6 +124,7 @@ constructor(
                     lockMovement()
                     say("*growls*")
                     anim("seq.cow_boss_charge", delay = CHARGE_ANIM_DELAY)
+                    soundTo("synth.brutus_charge")
                     include(external(CHARGE_AIM))
                     wait(CHARGE_WINDUP)
                     include(external(CHARGE_LAND))
@@ -135,6 +136,7 @@ constructor(
                 sequence(
                     anim("seq.cow_boss_stomp", delay = STOMP_ANIM_DELAY),
                     say("*snorts*"),
+                    soundTo("synth.brutus_stomp"),
                     external(STOMP_AIM),
                     wait(STOMP_WINDUP),
                     external(STOMP_LAND),
