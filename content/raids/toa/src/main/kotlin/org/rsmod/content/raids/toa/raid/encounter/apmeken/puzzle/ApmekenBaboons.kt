@@ -5,6 +5,7 @@ import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statSub
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
+import org.rsmod.content.raids.toa.raid.encounter.hitVenom
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.game.entity.Npc
@@ -115,6 +116,7 @@ internal class ApmekenBaboons(private val room: ApmekenPuzzleEncounter) {
             if (baboon.kind == Kind.CURSED) {
                 npc.faceDirection(Direction.South)
             } else {
+                if (baboon.kind != Kind.VOLATILE) holdHunt(npc)
                 pickTarget(targets)?.let {
                     baboon.target = it
                     npc.facePlayer(it)
@@ -122,6 +124,11 @@ internal class ApmekenBaboons(private val room: ApmekenPuzzleEncounter) {
             }
             live += baboon
         }
+    }
+
+    private fun holdHunt(npc: Npc) {
+        npc.setHunt(0)
+        room.schedule(SPAWN_IDLE) { if (npc.isSlotAssigned) npc.setHunt(npc.type.huntRange) }
     }
 
     private fun kindOf(type: String): Kind =
@@ -313,7 +320,7 @@ internal class ApmekenBaboons(private val room: ApmekenPuzzleEncounter) {
             if (player.coords !in pools) continue
             player.soundSynth(ApmekenSynths.VENOM_HIT)
             player.mes(ApmekenMessages.VENOMED)
-            player.hitTypeless(room.hazardRoll(POOL_DAMAGE, POOL_SPREAD))
+            player.hitVenom(room.hazardRoll(POOL_DAMAGE, POOL_SPREAD))
         }
     }
 
