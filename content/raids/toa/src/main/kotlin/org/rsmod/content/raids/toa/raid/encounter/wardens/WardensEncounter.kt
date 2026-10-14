@@ -4,6 +4,7 @@ import dev.openrune.types.MoveRestrict
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.instances.InstanceSession
+import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaid
@@ -14,11 +15,13 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaCombatant
 import org.rsmod.content.raids.toa.raid.encounter.ToaFight
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.npcType
+import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.isBeside
 import org.rsmod.content.raids.toa.raid.travel
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitBuilder
+import org.rsmod.game.hit.HitType
 import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 
@@ -41,10 +44,13 @@ class WardensEncounter(
     private var arriveAtGhost = false
     private val blast = WardensObeliskBlast(this)
     private var hudNpc: Npc? = null
+    private var activeWarden: Npc? = null
+    private var activeGod: WardenGod? = null
+    private var wardenReady = false
 
     override val fight =
         ToaFight(
-            boss = { obelisk },
+            boss = { activeWarden ?: obelisk },
             combatants = listOf(ToaCombatant.Spec(OBELISK_INACTIVE)),
             bar = { hudNpc ?: obelisk },
         )
@@ -67,7 +73,44 @@ class WardensEncounter(
         spawnRoom()
     }
 
-    override fun canEngage(boss: Npc): Boolean = false
+    override fun canEngage(boss: Npc): Boolean = wardenReady && boss === activeWarden
+
+    internal fun basicMaxHit(npc: Npc): Int = activeGod?.phaseTwoMaxHit ?: 0
+
+    internal fun canMelee(target: Player): Boolean {
+        val warden = activeWarden ?: return false
+        return activeGod == WardenGod.TUMEKEN && warden.isBeside(target)
+    }
+
+    internal fun modifyWardenHit(npc: Npc, hit: HitBuilder) {
+        if (npc !== activeWarden || !hit.isFromPlayer) return
+        val god = activeGod ?: return
+        if (!wardenReady || hit.type != vulnerableStyle(god, npc)) {
+            hit.damage = 0
+            return
+        }
+        hit.damage = min(hit.damage, npc.hitpoints - 1)
+    }
+
+    internal fun wardenHit(npc: Npc, hit: Hit) {
+        if (npc !== activeWarden || stage != ToaStage.STARTED || !hit.isFromPlayer) return
+        hpBar?.update()
+    }
+
+    private fun vulnerableStyle(god: WardenGod, npc: Npc): HitType {
+        val primary = npc.visType.id == npcType(god.phaseTwo).id
+        if (primary) return god.phaseTwoStyle
+        return if (god.phaseTwoStyle == HitType.Magic) HitType.Ranged else HitType.Magic
+    }
+
+    private fun readyWarden(warden: Npc) {
+        deps.bossDeps.encounterRegistry.remove(warden)
+        deps.bossDeps.encounter(warden).attackRateOverride = wardenAttackRate()
+        wardenReady = true
+    }
+
+    private fun wardenAttackRate(): Int =
+        if (raid.isActive(ToaInvocationKey.Acceleration)) ACCELERATED_ATTACK_RATE else ATTACK_RATE
 
     internal fun warden(god: WardenGod): Npc? = wardens[god]?.takeIf { it.isSlotAssigned }
 
@@ -153,7 +196,10 @@ class WardensEncounter(
                 ToaCombatant(this, it, ToaCombatant.Spec(winner.phaseTwo))
                     .scale(teamSize, SHIELD_BASE_HP)
                 hudNpc = it
+                activeWarden = it
+                activeGod = winner
                 for (player in players) hpBar?.open(player)
+                schedule(READY_DELAY - TRANSITION_DELAY) { readyWarden(it) }
             }
             chargeObelisk(obelisk)
         }
@@ -206,6 +252,9 @@ class WardensEncounter(
         phaseOne = false
         capped = false
         hudNpc = null
+        activeWarden = null
+        activeGod = null
+        wardenReady = false
 
         val ghostTile = room.osmumtenTile
         if (ghostTile != null) {
@@ -236,6 +285,9 @@ class WardensEncounter(
         private const val TRANSITION_DELAY = 2
         private const val SHIELD_BASE_HP = 140
         private const val WALK_DELAY = 15
+        private const val READY_DELAY = 22
+        private const val ATTACK_RATE = 7
+        private const val ACCELERATED_ATTACK_RATE = 6
         private const val CHARGE_INTERVAL = 2
         private val CHARGE_SEQS =
             listOf(

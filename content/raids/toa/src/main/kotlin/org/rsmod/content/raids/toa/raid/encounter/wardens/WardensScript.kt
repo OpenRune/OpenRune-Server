@@ -24,5 +24,11 @@ class WardensScript : PluginScript() {
         onRoomNpcHit<WardensEncounter>(WardensEncounter.OBELISK_P1) { npc, hit ->
             obeliskHit(npc, hit)
         }
+
+        for (god in WardenGod.entries) {
+            for (form in listOf(god.phaseTwo, god.phaseTwoAlt)) {
+                onRoomNpcHit<WardensEncounter>(form) { npc, hit -> wardenHit(npc, hit) }
+            }
+        }
     }
 }

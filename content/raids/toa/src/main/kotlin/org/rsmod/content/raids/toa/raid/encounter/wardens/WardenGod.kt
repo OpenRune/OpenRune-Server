@@ -1,5 +1,6 @@
 package org.rsmod.content.raids.toa.raid.encounter.wardens
 
+import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
@@ -9,6 +10,10 @@ internal enum class WardenGod(
     val inactive: String,
     val active: String,
     val phaseTwo: String,
+    val phaseTwoAlt: String,
+    val phaseTwoExposed: String,
+    val phaseTwoStyle: HitType,
+    val phaseTwoMaxHit: Int,
     val destroyed: String,
     val tile: CoordGrid,
     val facing: Direction,
@@ -26,6 +31,10 @@ internal enum class WardenGod(
         inactive = "npc.toa_warden_elidinis_phase1_inactive",
         active = "npc.toa_warden_elidinis_phase1",
         phaseTwo = "npc.toa_warden_elidinis_phase2_mage",
+        phaseTwoAlt = "npc.toa_warden_elidinis_phase2_range",
+        phaseTwoExposed = "npc.toa_warden_elidinis_phase2_exposed",
+        phaseTwoStyle = HitType.Magic,
+        phaseTwoMaxHit = 20,
         destroyed = "npc.toa_warden_elidinis_phase3_inactive",
         tile = CoordGrid(3792, 5152, 1),
         facing = Direction.East,
@@ -43,6 +52,10 @@ internal enum class WardenGod(
         inactive = "npc.toa_warden_tumeken_phase1_inactive",
         active = "npc.toa_warden_tumeken_phase1",
         phaseTwo = "npc.toa_warden_tumeken_phase2_range",
+        phaseTwoAlt = "npc.toa_warden_tumeken_phase2_mage",
+        phaseTwoExposed = "npc.toa_warden_tumeken_phase2_exposed",
+        phaseTwoStyle = HitType.Ranged,
+        phaseTwoMaxHit = 22,
         destroyed = "npc.toa_warden_tumeken_phase3_inactive",
         tile = CoordGrid(3820, 5152, 1),
         facing = Direction.West,
@@ -64,6 +77,12 @@ internal enum class WardenGod(
 
     val centre: CoordGrid
         get() = tile.translate(WARDEN_RADIUS, WARDEN_RADIUS)
+
+    val bossTypes: List<String>
+        get() = listOf(inactive, active) + phaseTwoForms
+
+    val phaseTwoForms: List<String>
+        get() = listOf(phaseTwo, phaseTwoAlt, phaseTwoExposed)
 
     val pyramids: List<CoordGrid> by lazy {
         buildList {
