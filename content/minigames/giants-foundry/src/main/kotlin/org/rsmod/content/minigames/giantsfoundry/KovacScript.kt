@@ -277,25 +277,36 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
         player.runEnergy = (player.runEnergy + RUN_ENERGY_MAX / 2).coerceAtMost(RUN_ENERGY_MAX)
         UpdateRun.energy(player, player.runEnergy)
 
-        val firstSword = player.swordsMade == 1
+        val timed = start != 0
+        val bestTimed = player.bestTime > 0
         if (
-            firstSword ||
-                quality > player.bestQuality ||
-                (quality == player.bestQuality && seconds < player.bestTime)
+            quality > player.bestQuality ||
+                (quality == player.bestQuality && timed && (!bestTimed || seconds < player.bestTime))
         ) {
             player.bestQuality = quality
-            player.bestTime = seconds
+            // UNVERIFIED: a better sword with no known time clears the best time (guess).
+            player.bestTime = if (timed) seconds else 0
         }
+        // UNVERIFIED: minutes keep counting past 60, and a known time against a record without
+        // one shows the timed lines (guess).
+        val timeLines =
+            if (timed) "Sword completed in: ${formatTime(seconds)} at quality: $quality<br>" else
+                "Sword quality: $quality<br>"
+        val bestLine =
+            if (player.bestTime > 0) {
+                "Best completed in: ${formatTime(player.bestTime)} at quality: ${player.bestQuality}<br>"
+            } else {
+                "Best quality ${player.bestQuality}<br>"
+            }
         mesbox(
-            "Sword completed in: ${formatTime(seconds)} at quality: $quality<br>" +
-                "Best completed in: ${formatTime(player.bestTime)} at quality: ${player.bestQuality}<br>" +
+            timeLines +
+                bestLine +
                 "You're awarded: $xp Smithing XP and ${formatCoins(coins)} coins.<br>" +
                 "Total swords made in the Giants Foundry: ${player.swordsMade}"
         )
         access.mes("Total swords made in the Giants Foundry: ${player.swordsMade}")
     }
 
-    // UNVERIFIED: minutes keep counting past 60 (guess).
     private fun formatTime(seconds: Int): String = "${seconds / 60}m ${seconds % 60}s"
 
     private fun formatCoins(coins: Int): String = String.format(Locale.US, "%,d", coins)

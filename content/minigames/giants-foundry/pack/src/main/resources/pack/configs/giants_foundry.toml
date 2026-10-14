@@ -1,15 +1,15 @@
 [[varp]]
 id = "varp.giants_foundry_commission_start"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.giants_foundry_best_time"
 scope = "Perm"
 transmit = "Never"
 
 [[varp]]
 id = "varp.giants_foundry_best_quality"
-scope = "Perm"
-transmit = "Never"
-
-[[varp]]
-id = "varp.giants_foundry_best_time"
 scope = "Perm"
 transmit = "Never"
 

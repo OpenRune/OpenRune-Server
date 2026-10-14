@@ -1,7 +1,7 @@
 [gamevals.varp]
 giants_foundry_commission_start = 64400
-giants_foundry_best_quality = 64401
 giants_foundry_best_time = 64402
+giants_foundry_best_quality = 64401
 giants_foundry_swords_made = 64403
 giants_foundry_sweetspots = 64404
 giants_foundry_work = 64405

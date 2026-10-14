@@ -34,9 +34,11 @@ internal var Player.preformStored by boolVarBit("varbit.giants_foundry_preform_s
 
 internal var Player.foundryReputation by intVarp("varp.giants_foundry_reward_shop_points")
 
+// UNVERIFIED: that a logout is what loses the time; one sword fits it, and so does a timer that
+// only starts on a commission given after login (plugin measurement).
 internal var Player.commissionStart by intVarp("varp.giants_foundry_commission_start")
-internal var Player.bestQuality by intVarp("varp.giants_foundry_best_quality")
 internal var Player.bestTime by intVarp("varp.giants_foundry_best_time")
+internal var Player.bestQuality by intVarp("varp.giants_foundry_best_quality")
 internal var Player.swordsMade by intVarp("varp.giants_foundry_swords_made")
 
 internal var Player.sweetSpotsOffered by intVarBit("varbit.giants_foundry_sweetspots_offered")
