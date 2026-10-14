@@ -17,7 +17,6 @@ internal const val PREFORM_COOLING_TIMER = "timer.giants_foundry_preform_cooling
 /** `giants_foundry_hud_set_sweetspot(int)`: 0 none, 1 gold, 2 green. */
 private const val HUD_SWEETSPOT = "clientscript.[clientscript,script6122]"
 
-// UNVERIFIED: passive cooling of 1 every 2 ticks (plugin measurement).
 internal const val PREFORM_COOLING_PERIOD = 2
 
 internal fun Player.holdsPreform(): Boolean =

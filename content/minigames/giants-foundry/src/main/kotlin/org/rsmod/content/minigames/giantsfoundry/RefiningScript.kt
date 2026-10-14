@@ -379,7 +379,6 @@ constructor(
         const val FINISH_SEQ = "seq.giants_foundry_finish_sword"
         const val TRIP_HAMMER_SEQ = "seq.giants_foundry_hammer01"
 
-        // UNVERIFIED: the heating and cooling anims (plugin measurement).
         const val HEAT_SEQ = "seq.human_pickupfloor"
         const val COOL_SEQ = "seq.human_pickuptable"
 
