@@ -36,11 +36,14 @@ class WardensEncounter(
     private var phaseOne = false
     private var capped = false
     private var arriveAtGhost = false
+    private val blast = WardensObeliskBlast(this)
+    private var hudNpc: Npc? = null
 
     override val fight =
         ToaFight(
             boss = { obelisk },
             combatants = listOf(ToaCombatant.Spec(OBELISK_INACTIVE)),
+            bar = { hudNpc ?: obelisk },
         )
 
     override fun arrival(): Arrival {
@@ -111,13 +114,16 @@ class WardensEncounter(
 
     private fun beginTransition() {
         phaseOne = false
+        val loser = loser()
+        val winner = loser.other
         charging.stop()
         val obelisk = obelisk ?: return
         obelisk.transmog(npcType(OBELISK_P2), Int.MAX_VALUE)
         obelisk.ignoreCombatInteractions = true
         obelisk.anim("seq.fx_obelisk_wardens01_charge")
-        val loser = loser()
-        val winner = loser.other
+        obelisk.hitpoints = 0
+        hpBar?.update()
+        blast.detonate(loser)
         schedule(TRANSITION_DELAY) {
             for (player in players) {
                 player.mes(
@@ -133,8 +139,11 @@ class WardensEncounter(
             warden(winner)?.let {
                 it.anim("seq.npc_wardens_wake01")
                 it.transmog(npcType(winner.phaseTwo), Int.MAX_VALUE)
+                ToaCombatant(this, it, ToaCombatant.Spec(winner.phaseTwo))
+                    .scale(teamSize, SHIELD_BASE_HP)
+                hudNpc = it
+                for (player in players) hpBar?.open(player)
             }
-            hpBar?.update()
             chargeObelisk(obelisk)
         }
     }
@@ -185,6 +194,7 @@ class WardensEncounter(
         wardens.clear()
         phaseOne = false
         capped = false
+        hudNpc = null
 
         val ghostTile = room.osmumtenTile
         if (ghostTile != null) {
@@ -213,6 +223,7 @@ class WardensEncounter(
         private val GHOST_FRONT = CoordGrid(3808, 5160, 1)
         private const val OSMUMTEN_DESPAWN = 2
         private const val TRANSITION_DELAY = 2
+        private const val SHIELD_BASE_HP = 140
         private const val CHARGE_INTERVAL = 2
         private val CHARGE_SEQS =
             listOf(
