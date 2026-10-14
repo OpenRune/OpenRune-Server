@@ -14,8 +14,6 @@ internal const val PREFORM = "obj.giants_foundry_preform"
 internal const val HUD = "interface.giants_foundry_hud"
 internal const val PREFORM_COOLING_TIMER = "timer.giants_foundry_preform_cooling"
 
-private const val HUD_RESCALE = "clientscript.[clientscript,giants_foundry_hud_rescale]"
-
 /** `giants_foundry_hud_set_sweetspot(int)` in the rev 241 dump: 0 none, 1 gold, 2 green. */
 private const val HUD_SWEETSPOT = "clientscript.[clientscript,script6122]"
 
@@ -33,16 +31,19 @@ internal fun Player.hasSwordInProgress(): Boolean =
  * Puts the preform in the weapon slot; both hands must be free.
  * https://oldschool.runescape.wiki/w/Transcript:Sleeping_Giants
  */
-internal fun ProtectedAccess.equipPreform(): Boolean {
+internal suspend fun ProtectedAccess.handsFreeForPreform(): Boolean {
     if (player.worn[Wearpos.RightHand.slot] != null || player.worn[Wearpos.LeftHand.slot] != null) {
-        mes("You must free your hands so you can hold the preform.")
+        mesbox("You must free your hands so you can hold the preform.")
         return false
     }
+    return true
+}
+
+internal fun ProtectedAccess.equipPreform() {
     player.invAdd(player.worn, PREFORM, 1, slot = Wearpos.RightHand.slot)
     player.rebuildAppearance()
     openHud()
     softTimer(PREFORM_COOLING_TIMER, PREFORM_COOLING_PERIOD)
-    return true
 }
 
 internal fun Player.removePreform() {
@@ -54,7 +55,6 @@ internal fun Player.removePreform() {
 
 internal fun ProtectedAccess.openHud() {
     ifOpenOverlay(HUD)
-    player.runClientScript(HUD_RESCALE.asRSCM(RSCMType.CLIENTSCRIPT))
 }
 
 internal fun ProtectedAccess.closeHud() {

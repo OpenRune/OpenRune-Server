@@ -9,7 +9,6 @@ import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
@@ -28,7 +27,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 class CrucibleScript
 @Inject
 constructor(
-    private val random: GameRandom,
     private val worldRepo: WorldRepository,
     private val alignment: TextAlignment,
 ) : PluginScript() {
@@ -257,7 +255,7 @@ constructor(
         mes("You empty the crucible.")
     }
 
-    /** Pours a full crucible into the set moulds and starts the sword's numbers. */
+    /** Pours a full crucible into the set moulds; the sword's numbers are set at pick-up. */
     private suspend fun ProtectedAccess.pour(crucible: BoundLocInfo) {
         if (player.commissionWord1 == 0) {
             mes("You need a commission from Kovac before you can pour a sword.")
@@ -277,70 +275,23 @@ constructor(
             mes("You need a Smithing level of $level to use those moulds.")
             return
         }
-        val counts = counts()
-        val metalScore = FoundryFormulas.metalScore(counts)
-        val words = listOfNotNull(CommissionWord.forId(player.commissionWord1), CommissionWord.forId(player.commissionWord2))
-        val mouldScore = moulds.sumOf { mould -> words.sumOf { mould.score(it) } }
+        val difficulty =
+            if (player.makingQuestSword()) QUEST_DIFFICULTY
+            else FoundryFormulas.metalScore(counts())
 
+        anim(POUR_PLAYER_SEQ)
+        soundSynth(POUR_SYNTH)
         worldRepo.locAnim(crucible, POUR_SEQ)
-        delay(POUR_DELAY)
-
+        delay(1)
+        player.mouldAlloyDifficulty = difficulty
+        delay(POUR_DELAY - 1)
+        player.mouldState = 2
         for (metal in METALS) {
             player.setFoundryVar(metalVarbit(metal), 0)
         }
         player.crucibleState = 0
-        player.mouldAlloyDifficulty = metalScore
-        player.preformDifficulty = metalScore
-        val quality = (metalScore + mouldScore).coerceAtMost(MAX_QUALITY)
-        player.preformStartQuality = quality
-        player.preformQuality = quality
-        player.preformCompletion = 0
-        player.preformTemperature = START_TEMPERATURE
-        rollSeeds(metalScore)
-        player.sweetSpots = 0
-        player.mouldState = 2
         if (player.makingQuestSword()) {
             player.advanceTutorial(SleepingGiants.TUTORIAL_POURED)
-        }
-        mes("You pour the molten metal into the mould jig.")
-    }
-
-    /**
-     * Which station each progress section needs. The first is always the trip hammer, and the
-     * grindstone and polishing wheel are never first.
-     * https://oldschool.runescape.wiki/w/Giants%27_Foundry#Refining_the_sword
-     */
-    // UNVERIFIED: sections after the first are uniformly random.
-    private fun ProtectedAccess.rollSeeds(difficulty: Int) {
-        val sections = FoundryFormulas.sections(difficulty)
-        if (player.makingQuestSword()) {
-            questSeeds(sections)
-            return
-        }
-        player.setFoundryVar(seedVarbit(0), FoundryTool.Hammer.seed)
-        for (section in 1 until 7) {
-            val seed = if (section < sections) random.of(0, FoundryTool.entries.lastIndex) else 0
-            player.setFoundryVar(seedVarbit(section), seed)
-        }
-    }
-
-    /**
-     * The quest sword goes trip hammer, grindstone, polishing wheel, as Kovac describes it
-     * (https://oldschool.runescape.wiki/w/Transcript:Sleeping_Giants); Quest Helper waits for
-     * 333 and 666 progress, so three sections.
-     */
-    // UNVERIFIED: if the player's metal gives more than three sections, the middle ones use the
-    // grindstone.
-    private fun ProtectedAccess.questSeeds(sections: Int) {
-        for (section in 0 until 7) {
-            val tool =
-                when {
-                    section >= sections -> null
-                    section == 0 -> FoundryTool.Hammer
-                    section == sections - 1 -> FoundryTool.PolishingWheel
-                    else -> FoundryTool.Grindstone
-                }
-            player.setFoundryVar(seedVarbit(section), tool?.seed ?: 0)
         }
     }
 
@@ -363,8 +314,10 @@ constructor(
         const val CRUCIBLE_PARTIAL = "loc.giants_foundry_crucible_partial"
         const val CRUCIBLE_FULL = "loc.giants_foundry_crucible_full"
         const val POUR_SEQ = "seq.giants_foundry_crucible_pour01"
-        const val POUR_DELAY = 3
-        const val MAX_QUALITY = 255
+        const val POUR_PLAYER_SEQ = "seq.human_push"
+        const val POUR_SYNTH = "synth.giants_foundry_crucible_pour"
+        const val POUR_DELAY = 6
+        const val QUEST_DIFFICULTY = 5
         const val COUNT_TITLE = "How many would you like to add?"
         const val MELT_SEQ = "seq.human_elem2_lever_3way_right"
         const val MELT_SYNTH = "synth.furnace"
@@ -375,10 +328,5 @@ constructor(
         const val OBJECTBOX_UNIVERSE = "component.objectbox:universe"
         const val OBJECTBOX_ITEM = "component.objectbox:item"
         const val OBJECTBOX_TEXT = "component.objectbox:text"
-
-        // UNVERIFIED: not published. The preform starts cold: the Sleeping Giants walkthrough
-        // heats it "to maximum" at the lava pool right after pick-up, and Quest Helper waits for
-        // a dunk to 720+ (varbit 13948) before the trip hammer.
-        const val START_TEMPERATURE = 0
     }
 }

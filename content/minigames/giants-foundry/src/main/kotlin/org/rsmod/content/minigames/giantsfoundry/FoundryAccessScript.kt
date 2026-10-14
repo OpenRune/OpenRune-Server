@@ -48,7 +48,14 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
             mes("You don't have a preform to store.")
             return
         }
-        stashPreform()
+        player.preformStored = true
+        mes(
+            "<col=229628>You place the preform in the handy storage area. It should stay nice " +
+                "and warm there."
+        )
+        anim(STORAGE_SEQ)
+        player.removePreform()
+        closeHud()
     }
 
     private fun ProtectedAccess.stashPreform() {
@@ -57,13 +64,14 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
         closeHud()
     }
 
-    private fun ProtectedAccess.take() {
-        if (!player.preformStored) {
+    private suspend fun ProtectedAccess.take() {
+        if (!player.preformStored || !handsFreeForPreform()) {
             return
         }
-        if (equipPreform()) {
-            player.preformStored = false
-        }
+        player.preformStored = false
+        mes("You take the preform from the handy storage area. It will start to get cold now.")
+        anim(STORAGE_SEQ)
+        equipPreform()
     }
 
     /**
@@ -95,6 +103,7 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
         const val BANK_CHEST = "loc.giants_foundry_chest"
         const val STORAGE_EMPTY = "loc.giants_foundry_preform_storage_empty"
         const val STORAGE_FULL = "loc.giants_foundry_preform_storage_full"
+        const val STORAGE_SEQ = "seq.human_furnace"
 
         // UNVERIFIED: no transport data has this; it's the Minigame Teleport tile.
         val OUTSIDE = CoordGrid(3361, 3149, 0)
