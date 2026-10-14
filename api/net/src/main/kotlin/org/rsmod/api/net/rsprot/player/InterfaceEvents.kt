@@ -11,11 +11,7 @@ internal object InterfaceEvents {
         comsub: Int,
         event: IfEvent,
     ): Boolean {
-        val verifyStaticEvents = comsub == -1
-        return if (verifyStaticEvents) {
-            component.hasEvent(event)
-        } else {
-            ui.hasEvent(component, comsub, event)
-        }
+        val staticEnabled = comsub == -1 && component.hasEvent(event)
+        return staticEnabled || ui.hasEvent(component, comsub, event)
     }
 }
