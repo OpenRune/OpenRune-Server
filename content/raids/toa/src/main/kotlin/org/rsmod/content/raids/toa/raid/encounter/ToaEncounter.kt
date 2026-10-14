@@ -169,13 +169,13 @@ open class ToaEncounter(
                 seq.id,
             )
         }
-        if (stage == ToaStage.STARTED) hpBar?.open(player)
-        onEnter(player)
         if (continued) {
             continued = false
             onStart()
             schedule(1) { tick() }
         }
+        if (stage == ToaStage.STARTED) hpBar?.open(player)
+        onEnter(player)
     }
 
     internal fun leave(player: Player) {

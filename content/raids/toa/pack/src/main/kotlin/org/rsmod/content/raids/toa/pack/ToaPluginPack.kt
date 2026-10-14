@@ -12,7 +12,5 @@ class ToaPluginPack : PluginPack() {
             ToaPickaxesTable.pickaxes(),
             HetPuzzleTables.layouts(),
             HetPuzzleTables.seal(),
-            WardensObeliskTables.patterns(),
-            WardensSlamTables.slams(),
-        )
+        ) + WardensTables.all()
 }

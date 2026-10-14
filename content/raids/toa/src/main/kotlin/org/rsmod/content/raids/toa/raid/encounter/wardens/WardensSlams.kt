@@ -52,12 +52,27 @@ internal class WardensSlams(private val room: WardensSecondEncounter) {
         for ((ticks, set) in struck) room.schedule(ticks) { damage(set) }
     }
 
+    fun floorBurst(damage: Int) {
+        val struck = HashMap<Int, MutableSet<CoordGrid>>()
+        for (x in FLOOR_X) {
+            for (z in FLOOR_Z) {
+                val tile = CoordGrid(x, z, ORIGIN.level)
+                val coords = room.coords(tile)
+                val delay = FLOOR_BASE_DELAY + STEP_DELAY * max(abs(x - ORIGIN.x), abs(z - ORIGIN.z))
+                val variant = VARIANTS[deps.random.of(VARIANTS.size)]
+                deps.worldRepo.spotanimMap(spotanim(variant), coords, delay = delay)
+                struck.getOrPut(Math.ceilDiv(delay, CYCLES_PER_TICK)) { HashSet() } += coords
+            }
+        }
+        for ((ticks, set) in struck) room.schedule(ticks) { damage(set, damage, 0) }
+    }
+
     private fun delay(tile: CoordGrid): Int =
         BASE_DELAY + STEP_DELAY * max(abs(tile.x - ORIGIN.x), abs(tile.z - ORIGIN.z))
 
-    private fun damage(tiles: Set<CoordGrid>) {
+    private fun damage(tiles: Set<CoordGrid>, base: Int = DAMAGE, spread: Int = DAMAGE_SPREAD) {
         for (player in room.targets()) {
-            if (player.coords in tiles) room.hazardDamage(player, DAMAGE, DAMAGE_SPREAD)
+            if (player.coords in tiles) room.hazardDamage(player, base, spread)
         }
     }
 
@@ -72,6 +87,9 @@ internal class WardensSlams(private val room: WardensSecondEncounter) {
                 "spotanim.spotanim_wardens01_undertile01_explode04",
             )
 
+        val FLOOR_X = 3926..3946
+        val FLOOR_Z = 5157..5165
+        const val FLOOR_BASE_DELAY = 30
         const val BASE_DELAY = 90
         const val STEP_DELAY = 6
         const val CYCLES_PER_TICK = 30
