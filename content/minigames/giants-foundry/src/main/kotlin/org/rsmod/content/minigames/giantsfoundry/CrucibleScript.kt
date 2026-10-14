@@ -117,7 +117,6 @@ constructor(private val alignment: TextAlignment) : PluginScript() {
         val bar = FoundryData.bars[metal].output
         melt()
         val space = freeSpace() ?: return
-        // UNVERIFIED: bars past the crucible's free space stay in the inventory (guess).
         val count = minOf(amount, inv.count(bar.internalName), space)
         if (count <= 0) {
             return
@@ -128,12 +127,15 @@ constructor(private val alignment: TextAlignment) : PluginScript() {
         afterAdding(total)
     }
 
-    private fun fillMenu(): SkillMultiConfig =
+    private fun ProtectedAccess.fillMenu(): SkillMultiConfig =
         SkillMultiConfig(
             actionType = SkillingActionType.SMELT,
             verb = "add",
             entries = FoundryData.bars.map { SkillMultiEntry(it.output.internalName) },
             titleOverride = "What metal would you like to add?",
+            maxCountProvider = { inv, entry ->
+                minOf(inv.count(entry.internal), FoundryFormulas.CRUCIBLE_CAPACITY - counts().sum())
+            },
             showUnavailable = true,
             eventsEndAtMaxCount = true,
             eventsAfterSetup = true,
