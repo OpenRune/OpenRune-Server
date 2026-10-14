@@ -44,10 +44,10 @@ constructor(
                     refreshFaceEntity()
                     processIfCloseQueue()
                     processIfCloseModal()
+                    processEngineQueues()
                     processQueues()
                     processTimers()
                     processAreas()
-                    processEngineQueues()
                     processInteractions()
                     processIfCloseDisconnect()
                 }
