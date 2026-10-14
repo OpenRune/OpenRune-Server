@@ -1,5 +1,8 @@
 package org.rsmod.content.raids.toa.raid.encounter.wardens
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.MoveRestrict
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
@@ -13,6 +16,7 @@ import org.rsmod.content.raids.toa.raid.encounter.Arrival
 import org.rsmod.content.raids.toa.raid.encounter.ToaBossEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaCombatant
 import org.rsmod.content.raids.toa.raid.encounter.ToaFight
+import org.rsmod.content.raids.toa.raid.encounter.ToaHpBar
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.isBeside
@@ -20,6 +24,7 @@ import org.rsmod.content.raids.toa.raid.travel
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
+import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.map.Direction
@@ -47,6 +52,14 @@ class WardensEncounter(
     private var activeWarden: Npc? = null
     private var activeGod: WardenGod? = null
     private var wardenReady = false
+
+    override val hpBar: ToaHpBar? by lazy {
+        ToaHpBar(
+            this,
+            currentHp = { if (shielded(it)) it.baseHitpointsLvl - it.hitpoints else it.hitpoints },
+            subject = { hudNpc ?: obelisk },
+        )
+    }
 
     override val fight =
         ToaFight(
@@ -95,7 +108,32 @@ class WardensEncounter(
     internal fun wardenHit(npc: Npc, hit: Hit) {
         if (npc !== activeWarden || stage != ToaStage.STARTED || !hit.isFromPlayer) return
         hpBar?.update()
+        showShieldHeadbar(npc, hit)
     }
+
+    private fun showShieldHeadbar(npc: Npc, hit: Hit) {
+        if (!shielded(npc)) return
+        val bar = ServerCacheManager.getHealthBar(SHIELD_HEADBAR.asRSCM(RSCMType.HEADBAR)) ?: return
+        val taken = npc.baseHitpointsLvl - npc.hitpoints
+        val fill = taken * bar.segments / npc.baseHitpointsLvl
+        val mark = hit.hitmark
+        npc.showHeadbar(
+            Headbar.fromPlayerSource(
+                self = bar.id,
+                public = bar.id,
+                startFill = fill,
+                endFill = fill,
+                startTime = mark.delay,
+                endTime = mark.delay,
+                slotId = mark.playerSlot,
+            )
+        )
+    }
+
+    private fun shielded(npc: Npc): Boolean =
+        WardenGod.entries.any {
+            npc.visType.id == npcType(it.phaseTwo).id || npc.visType.id == npcType(it.phaseTwoAlt).id
+        }
 
     private fun vulnerableStyle(god: WardenGod, npc: Npc): HitType {
         val primary = npc.visType.id == npcType(god.phaseTwo).id
@@ -324,6 +362,7 @@ class WardensEncounter(
         private const val TRANSITION_DELAY = 2
         private const val SHIELD_BASE_HP = 140
         private const val WALK_DELAY = 15
+        private const val SHIELD_HEADBAR = "headbar.charge_140"
         private const val READY_DELAY = 22
         private const val ATTACK_RATE = 7
         private const val ACCELERATED_ATTACK_RATE = 6
