@@ -17,6 +17,7 @@ import org.rsmod.api.script.onDropTrigger
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
+import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerLogin
@@ -25,6 +26,7 @@ import org.rsmod.api.table.SleepingGiantsCrateRow
 import org.rsmod.api.table.SleepingGiantsRepairsRow
 import org.rsmod.content.interfaces.bank.tryOpenBank
 import org.rsmod.content.quest.manager.ItemRewardDisplay
+import org.rsmod.content.quest.manager.QuestJournalBuilder
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.QuestScript
 import org.rsmod.content.quest.manager.rewards
@@ -33,7 +35,10 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
 
-// TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+// TODO(content): [verify:in_game] the mesanims of the conversations the live capture doesn't cover:
+// refusing to start, inspecting the crate, crucible, lava pool, mould jig, preform storage and
+// waterfall, Kovac's talks after the metal is taken, while the crucible fills, with the mould
+// jig unset, before the pour and before the preform is picked up, and his stop prompts.
 
 class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRoom) :
     QuestScript(
@@ -45,7 +50,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             extra("Foundry")
             jingle("jingle.high_seas")
         },
-        ItemRewardDisplay(PREFORM, zoom = 400),
+        ItemRewardDisplay(PREFORM, zoom = 400, x = 78, y = 128),
         questVarbit = "varbit.sleeping_giants",
     ) {
 
@@ -74,6 +79,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
         onOpLoc1(CHEST_QUEST) { tryOpenBank() }
         onOpLoc2(CHEST_QUEST) { inspectChest() }
+        onOpLoc3(CHEST_QUEST) { ifOpenMainModal("interface.ge_collect") }
         onOpLoc1(CRATE_QUEST) { inspectCrate() }
         onOpLoc1(CRUCIBLE_QUEST) { inspectCrucible() }
         onOpLoc1(LAVA_POOL_QUEST) { inspectLavaPool() }
@@ -82,8 +88,9 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         onOpLoc1(WATERFALL_QUEST) { inspectWaterfall() }
 
         onOpLoc1(CRATE_FULL) { searchCrate() }
-        // UNVERIFIED: that searching the empty crate gives this message (video frames)
-        onOpLoc1(CRATE_EMPTY) { mes("There is nothing in the storage area to take.") }
+        onOpLoc1(CRATE_EMPTY) {
+            startDialogue { mesbox("You've taken all you can from the crate.") }
+        }
 
         onPlayerQueueWithArgs<QuestPrompt>(QUEST_PROMPT_QUEUE) {
             when (val prompt = it.args) {
@@ -100,7 +107,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
         onDropTrigger(DROP_TRIGGER) {
             if (room.onDropAttempt(player)) {
-                // UNVERIFIED: the drop warning's wording (guess)
+                // UNVERIFIED: the drop warning's wording (no capture)
                 player.mes(
                     "<col=ef1020>Anything you drop here will be lost when you leave. Drop it " +
                         "again if you're sure.</col>"
@@ -111,45 +118,53 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         onEvent<HeldDropEvents.Drop> { room.onDropped(player) }
     }
 
+    override val journalWrapAt: Int? = null
+
     override fun subTitle(): String =
         "investigating the <col=800000>Giants' Plateau<col=000080> east of " +
             "<col=800000>Al Kharid<col=000080>."
 
-    // UNVERIFIED: the journal text (wiki description)
     override fun questLog(player: ProtectedAccess) =
         questJournal(player) {
-            description(
-                "A <red>Hill Giant</red> called <red>Kovac</red> asked me for help. He showed me " +
-                    "an ancient foundry his ancestors built beneath the <red>Giants' Plateau</red>."
-            )
-            objective(
-                "Kovac wants the foundry's tools fixed: the <red>trip hammer</red> (an oak log, " +
-                    "5 nails and a hammer), the <red>grindstone</red> (a chisel) and the " +
-                    "<red>polishing wheel</red> (wool, 2 oak logs, 5 nails and a hammer)."
-            ) {
-                visibleWhen { stage(access.player) >= SleepingGiants.ENTERED }
-                stageAtLeast(SleepingGiants.REPAIRED, "I repaired the foundry's tools.").strike()
+            val stage = stage(player.player)
+            if (stage < SleepingGiants.ENTERED) {
+                journalLines(JOURNAL_MET_KOVAC_STARTED, struck = false)
+                return@questJournal
             }
-            objective(
-                "Kovac wants to make a sword for an old friend. I should talk to him about how " +
-                    "to make it."
-            ) {
-                visibleWhen { stage(access.player) >= SleepingGiants.REPAIRED }
-                stageAtLeast(SleepingGiants.COMPLETE, "I made the sword.").strike()
+            journalLines(JOURNAL_MET_KOVAC, struck = true)
+            when {
+                stage >= SleepingGiants.MAKING_SWORD -> {
+                    journalLines(JOURNAL_REPAIRED_DONE, struck = true)
+                    journalLines(JOURNAL_MAKING_SWORD, struck = false)
+                }
+                RepairTool.entries.all { it.isRepaired(player.player) } ->
+                    journalLines(JOURNAL_REPAIRED, struck = false)
+                else -> {
+                    journalLines(JOURNAL_REPAIRING, struck = false)
+                    for (tool in RepairTool.entries) {
+                        line("")
+                        if (tool.isRepaired(player.player)) {
+                            strike("I've repaired the ${tool.journalName}.")
+                        } else {
+                            line("I still need to repair the <red>${tool.journalName}</red>.")
+                        }
+                    }
+                }
             }
         }
 
     override fun completedLog(player: ProtectedAccess): String =
-        completionJournal(player) {
-            line(
-                "I helped Kovac, a giant who can talk, repair the tools of an ancient foundry " +
-                    "his ancestors built beneath the Giants' Plateau."
-            )
-            line(
-                "Together we made a sword for his old friend Obor. Kovac lets me use the foundry " +
-                    "whenever I want."
-            )
+        questJournal(player) {
+            journalLines(JOURNAL_MET_KOVAC, struck = true)
+            journalLines(JOURNAL_REPAIRED_DONE, struck = true)
+            journalLines(JOURNAL_COMPLETED, struck = true)
+        } + "\n\n<col=ff0000>QUEST COMPLETE!"
+
+    private fun QuestJournalBuilder.journalLines(lines: List<String>, struck: Boolean) {
+        for (text in lines) {
+            if (struck) strike(text.replace(JOURNAL_RED_TAG, "")) else line(text)
         }
+    }
 
     private fun stage(player: Player): Int = quest.getQuestStage(player)
 
@@ -186,32 +201,35 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                 return@startDialogue
             }
             quest.setQuestStage(access, SleepingGiants.STARTED)
-            chatPlayer(
-                quiz,
-                "Okay giant, I'll help you out, but first you need to tell me your name... if " +
-                    "you even have one.",
-            )
-            chatNpcSpecific(KOVAC_NAME, KOVAC_OUTSIDE, neutral, "Kovac.")
-            chatPlayer(
-                quiz,
-                "Kovac... alright then. My name is ${player.displayName}. So, Kovac, what do " +
-                    "you need help with?",
-            )
-            followIn()
+            agreedToHelp()
         }
         if (stage(player) == SleepingGiants.STARTED) {
             enterRoom(intro = true)
         }
     }
 
-    // TODO(content): [verify:in_game] what Kovac says when spoken to after the player agreed
-    // to help but before following him in; this replays his request to follow.
     private suspend fun ProtectedAccess.talkOutside(npc: Npc) {
         if (stage(player) != SleepingGiants.STARTED) {
             return
         }
-        startDialogue(npc) { followIn() }
+        startDialogue(npc) { agreedToHelp() }
         enterRoom(intro = true)
+    }
+
+    /** Where the conversation resumes if it was left after agreeing to help. */
+    private suspend fun Dialogue.agreedToHelp() {
+        chatPlayer(
+            quiz,
+            "Okay giant, I'll help you out, but first you need to tell me your name... if " +
+                "you even have one.",
+        )
+        chatNpcSpecific(KOVAC_NAME, KOVAC_OUTSIDE, neutral, "Kovac.")
+        chatPlayer(
+            quiz,
+            "Kovac... alright then. My name is ${player.displayName}. So, Kovac, what do " +
+                "you need help with?",
+        )
+        followIn()
     }
 
     private suspend fun Dialogue.followIn() {
@@ -219,6 +237,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         chatPlayer(worried, "Hang on... is this a trick? Are you going to cook and eat me?!")
         chatKovacOutside(neutral, "No...<br> ")
         chatNpcSpecificNp(KOVAC_NAME, KOVAC_STRIKE, neutral, "No...<br>follow.")
+        delay(2)
     }
 
     /** The outside Kovac's name only changes once the quest stage has reached the client. */
@@ -268,9 +287,10 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                 SleepingGiants.REPAIRING ->
                     if (RepairTool.entries.all { it.isRepaired(player) }) toolsRepaired()
                     else whatsLeft()
-                SleepingGiants.REPAIRED,
+                SleepingGiants.REPAIRED ->
+                    if (room.isInside(player)) readyToMakeSword() else makeSword(npc)
                 SleepingGiants.MAKING_SWORD ->
-                    if (room.isInside(player)) toolsRepaired() else makeSword(npc)
+                    if (room.isInside(player)) readyToMakeSword() else makeSword(npc)
                 else -> {}
             }
         }
@@ -319,15 +339,13 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         chatNpc(neutral, "We fix tools...")
     }
 
-    // TODO(content): [verify:in_game] whether Kovac names only the tools still broken; the
-    // transcript lists all three.
     private suspend fun Dialogue.whatsLeft() {
         chatPlayer(quiz, "What's left to fix, Kovac?")
         chatNpc(neutral, "Hmm...")
         for (tool in RepairTool.entries.filterNot { it.isRepaired(player) }) {
             chatNpc(neutral, "${tool.row.name}...")
         }
-        chatPlayer(happy, "Thanks!")
+        chatPlayer(neutral, "Thanks!")
     }
 
     private suspend fun Dialogue.toolsRepaired() {
@@ -341,16 +359,30 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         quest.setQuestStage(access, SleepingGiants.REPAIRED)
         chatNpc(neutral, "Kovac agree. Ready to make sword?")
         chatPlayer(happy, "Yes! I'm itching to get started.")
-        lineByLine("Kovac get few things ready first...", "then we can start.") {
-            chatNpc(neutral, it)
-        }
-        quest.setQuestStage(access, SleepingGiants.MAKING_SWORD)
+        sendToFoundry()
     }
 
-    private enum class RepairTool(private val dbrow: String) {
-        Hammer("dbrow.sleeping_giants_repair_hammer"),
-        Grindstone("dbrow.sleeping_giants_repair_grindstone"),
-        PolishingWheel("dbrow.sleeping_giants_repair_polishing_wheel");
+    /** Where the conversation resumes if it was left after the last tool was repaired. */
+    private suspend fun Dialogue.readyToMakeSword() {
+        lineByLine("Okay little one...", "ready to make sword now?") { chatNpc(neutral, it) }
+        chatPlayer(happy, "Yes! I'm itching to get started.")
+        sendToFoundry()
+    }
+
+    private suspend fun Dialogue.sendToFoundry() {
+        lineByLine(
+            "Kovac get few things ready first...",
+            "then we can start.",
+            beforeLast = { quest.setQuestStage(access, SleepingGiants.MAKING_SWORD) },
+        ) {
+            chatNpc(neutral, it)
+        }
+    }
+
+    private enum class RepairTool(private val dbrow: String, val journalName: String) {
+        Hammer("dbrow.sleeping_giants_repair_hammer", "Trip Hammer"),
+        Grindstone("dbrow.sleeping_giants_repair_grindstone", "Grindstone"),
+        PolishingWheel("dbrow.sleeping_giants_repair_polishing_wheel", "Polishing Wheel");
 
         val row: SleepingGiantsRepairsRow by lazy { SleepingGiantsRepairsRow.getRow(dbrow) }
 
@@ -364,10 +396,12 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     private suspend fun ProtectedAccess.repair(tool: RepairTool) {
         startDialogue {
-            // TODO(content): [verify:in_game] whether the opening talk replays on every click;
-            // here it plays until the first answer to the repair prompt.
             if (tool.state(player) == SleepingGiants.REPAIR_BROKEN) {
                 repairIntro(tool)
+            }
+            if (!access.hasMaterials(tool)) {
+                missingMaterials(tool)
+                return@startDialogue
             }
             val title =
                 when (tool) {
@@ -376,27 +410,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                     RepairTool.PolishingWheel -> "Repair the polishing wheel?"
                 }
             if (!choice2("Yes.", true, "No.", false, title = title)) {
-                return@startDialogue
-            }
-            if (!access.hasMaterials(tool)) {
-                when (tool) {
-                    RepairTool.Hammer ->
-                        doubleobjbox(
-                            OAK_LOGS,
-                            nails.first(),
-                            "You will need an oak log, 5 nails and a hammer to repair the trip hammer.",
-                        )
-                    RepairTool.Grindstone ->
-                        // UNVERIFIED: the missing-chisel message (guess)
-                        objbox(CHISEL, "You will need a chisel to repair the grindstone.")
-                    RepairTool.PolishingWheel ->
-                        doubleobjbox(
-                            WOOL,
-                            OAK_LOGS,
-                            "You will need some wool, 2 oak logs, 5 nails and a hammer to repair " +
-                                "the polishing wheel.",
-                        )
-                }
                 return@startDialogue
             }
             access.repairAnim(tool)
@@ -412,6 +425,29 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
     }
 
+    /** The prompt to repair is only offered once the player has what the repair takes. */
+    private suspend fun Dialogue.missingMaterials(tool: RepairTool) {
+        when (tool) {
+            RepairTool.Hammer ->
+                // UNVERIFIED: "fully" in the hammer's and wheel's wording; only the grindstone's
+                // message was seen.
+                doubleobjbox(
+                    OAK_LOGS,
+                    nails.first(),
+                    "You will need an oak log, 5 nails and a hammer to repair the trip hammer.",
+                )
+            RepairTool.Grindstone ->
+                objbox(CHISEL, "You will need a chisel to fully repair the grindstone.")
+            RepairTool.PolishingWheel ->
+                doubleobjbox(
+                    WOOL,
+                    OAK_LOGS,
+                    "You will need some wool, 2 oak logs, 5 nails and a hammer to repair " +
+                        "the polishing wheel.",
+                )
+        }
+    }
+
     private suspend fun Dialogue.repairIntro(tool: RepairTool) {
         when (tool) {
             RepairTool.Hammer -> {
@@ -421,9 +457,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                 chatPlayer(quiz, "Right... and what did it do?")
                 chatKovac(neutral, "Hit things.")
                 chatPlayer(neutral, "Very perceptive, Kovac.")
-                player.setFoundryVar(tool.varbit, SleepingGiants.REPAIR_INSPECTED)
                 chatPlayer(neutral, "Let me take a look and see if I can fix it.")
-                return
             }
             RepairTool.Grindstone -> {
                 chatPlayer(neutral, "What was this meant to be?")
@@ -503,10 +537,9 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         chatPlayer(neutral, "That makes sense.")
     }
 
-    // TODO(content): [verify:in_game] what inspecting a repaired tool says; this replays
-    // Kovac's explanation from its repair.
     private suspend fun ProtectedAccess.inspectRepaired(tool: RepairTool) {
         startDialogue {
+            chatPlayer(quiz, "What did this thing do again?")
             when (tool) {
                 RepairTool.Hammer -> hammerExplained()
                 RepairTool.Grindstone -> grindstoneExplained()
@@ -571,14 +604,14 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     private suspend fun ProtectedAccess.inspectChest() {
         startDialogue {
             chatPlayer(quiz, "Kovac, where did you get this chest from?")
-            chatKovac(neutral, "Hmm...")
-            chatKovac(neutral, "...")
-            chatKovac(neutral, "chest store stuff.")
+            lineByLine("Hmm...", "...", "chest store stuff.") { chatKovac(neutral, it) }
             mesbox("Kovac shrugs...")
             chatPlayer(neutral, "Alright then...")
         }
     }
 
+    // UNVERIFIED: how the inspect lines below group into boxes (the wiki lists one line per
+    // bullet); only the chest's conversation was seen.
     private suspend fun ProtectedAccess.inspectCrate() {
         startDialogue {
             chatPlayer(quiz, "What do you keep in this box?")
@@ -660,6 +693,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                 access.invAdd(access.inv, item.obj.internalName, item.count)
             }
             access.soundSynth(TAKE_SYNTH)
+            access.delay(1)
             doubleobjbox(
                 "obj.bronze_battleaxe",
                 "obj.iron_bar",
@@ -672,27 +706,33 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         val tutorial = player.sleepingGiantsTutorial
         when {
             tutorial < SleepingGiants.TUTORIAL_COMMISSION -> commissionTalk()
-            // TODO(content): [verify:in_game] Kovac's line before the crate is searched; this
-            // repeats where the metal is.
-            tutorial < SleepingGiants.TUTORIAL_CRATE_SEARCHED -> {
-                lineByLine("Kovac has been connecti... collecting metals...", "They're in that box-crate by entry.") {
-                    chatNpc(neutral, it)
-                }
-            }
+            tutorial < SleepingGiants.TUTORIAL_CRATE_SHOWN -> commissionExplained()
+            tutorial < SleepingGiants.TUTORIAL_CRATE_SEARCHED -> beforeCrate()
             tutorial < SleepingGiants.TUTORIAL_METAL_ADDED -> afterCrate()
             tutorial < SleepingGiants.TUTORIAL_CRUCIBLE_FULL -> crucibleNotFull()
             tutorial < SleepingGiants.TUTORIAL_MOULD_EXPLAINED -> crucibleFull()
             tutorial < SleepingGiants.TUTORIAL_MOULD_SET -> mouldHelp()
             tutorial < SleepingGiants.TUTORIAL_POUR_EXPLAINED -> mouldSet()
             // TODO(content): [verify:in_game] Kovac's line before the metal is poured; this
-            // repeats his last instruction.
+            // repeats his last instruction. The capture has no talk between his pour
+            // instruction and the pour.
             tutorial < SleepingGiants.TUTORIAL_POURED -> {
                 lineByLine("Pour the metal from the crucible into the mould...", "then take out the preform.") {
                     chatNpc(neutral, it)
                 }
             }
             tutorial < SleepingGiants.TUTORIAL_PREFORM_TAKEN -> beforePickUp()
-            else -> workingPreform(npc)
+            tutorial < SleepingGiants.TUTORIAL_HANDED_IN -> workingPreform(npc)
+            tutorial < SleepingGiants.TUTORIAL_SWORD_KEPT -> swordHandedIn()
+            tutorial < SleepingGiants.TUTORIAL_COMPLETE -> swordKept()
+        }
+    }
+
+    private suspend fun Dialogue.beforeCrate() {
+        chatPlayer(quiz, "What was I suppose to be doing again?")
+        lineByLine("Hmm...", "You need some metal to make a sword.") { chatNpc(neutral, it) }
+        lineByLine("Look in that box-crate by the entry...", "Take bars and weapons. Crucible can take both.") {
+            chatNpc(neutral, it)
         }
     }
 
@@ -712,6 +752,11 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         player.commissionWord2 = CommissionWord.Broad.id
         player.commissionStart = (System.currentTimeMillis() / 1000).toInt()
         player.advanceTutorial(SleepingGiants.TUTORIAL_COMMISSION)
+        commissionExplained()
+    }
+
+    /** Where the conversation resumes if it was left after the commission was given. */
+    private suspend fun Dialogue.commissionExplained() {
         chatNpc(neutral, "Kovac need a <col=ef1020>Flat Broad</col> sword.")
         chatPlayer(happy, "Great!")
         chatPlayer(confused, "How do I make that?")
@@ -725,9 +770,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         lineByLine("Kovac has been connecti... collecting metals...", "They're in that box-crate by entry.") {
             chatNpc(neutral, it)
         }
-        chatNpc(neutral, "Use bars and weapons...<br> ")
+        lineByLine("Use bars and weapons...", "Crucible can take both.") { chatNpc(neutral, it) }
         player.advanceTutorial(SleepingGiants.TUTORIAL_CRATE_SHOWN)
-        chatNpc(neutral, "Use bars and weapons...<br>Crucible can take both.")
         chatNpc(neutral, "Load metals into crucible until it looks full.")
         lineByLine("While you do that...", "Kovac think about next thing we need to do.") {
             chatNpc(neutral, it)
@@ -763,8 +807,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         chatNpc(neutral, "Remember, we need a <col=ef1020>Flat Broad</col> sword.")
         chatPlayer(quiz, "Okay, so how do I go about setting up a mould?")
         chatNpc(neutral, "Kovac remember being told a sword is made from three<br>parts...<br> ")
-        player.advanceTutorial(SleepingGiants.TUTORIAL_MOULD_EXPLAINED)
         chatNpc(neutral, "Kovac remember being told a sword is made from three<br>parts...<br>a forte, a blade and a tip.")
+        player.advanceTutorial(SleepingGiants.TUTORIAL_MOULD_EXPLAINED)
         lineByLine("Use mould jig behind you...", "You can select part for each selecti... section.") {
             chatNpc(neutral, it)
         }
@@ -803,8 +847,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         lineByLine("Hmm...", "let me look.") { chatNpc(neutral, it) }
         lineByLine("Kovac takes a look at what you've done...", "...") { mesbox(it) }
         chatNpc(neutral, "Yes, all things look correct...<br> ")
-        player.advanceTutorial(SleepingGiants.TUTORIAL_POUR_EXPLAINED)
         chatNpc(neutral, "Yes, all things look correct...<br>Well done little one. We are ready.")
+        player.advanceTutorial(SleepingGiants.TUTORIAL_POUR_EXPLAINED)
         lineByLine("Pour the metal from the crucible into the mould...", "then take out the preform.") {
             chatNpc(neutral, it)
         }
@@ -843,7 +887,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             return
         }
         // TODO(content): [verify:in_game] when the long explanation is given; here it's while
-        // no progress has been made.
+        // no progress has been made. The capture has no talk with the preform in hand before it
+        // was finished.
         if (player.preformCompletion == 0) {
             preformExplained()
             return
@@ -915,18 +960,22 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     private suspend fun Dialogue.handIn() {
         chatPlayer(happy, "Okay Kovac, I think I've finally finished the sword!")
         lineByLine("Hmm...", "let Kovac look.") { chatNpc(neutral, it) }
-        val quality = player.preformQuality
+        player.advanceTutorial(SleepingGiants.TUTORIAL_HANDED_IN)
+        player.clearSwordProgress()
+        access.anim(TAKE_SEQ)
         player.removePreform()
         access.closeHud()
-        player.clearSword()
-        player.advanceTutorial(SleepingGiants.TUTORIAL_HANDED_IN)
-        access.anim(TAKE_SEQ)
         lineByLine("You pass the sword over to Kovac...", "He analyses your work...") { mesbox(it) }
+        swordHandedIn()
+    }
+
+    /** Where the conversation resumes if it was left after the sword was handed over. */
+    private suspend fun Dialogue.swordHandedIn() {
         lineByLine("Hmm...", "Yes...", "Hmm...") { chatNpc(neutral, it) }
         lineByLine("This is defeanin... definitely a sword...", "Well done little one.") {
             chatNpc(neutral, it)
         }
-        if (quality == 0) {
+        if (player.preformQuality == 0) {
             chatPlayer(sad, "Sorry it's not very good. I'm still getting use to everything.")
             chatNpc(neutral, "That is okay. You do better than Kovac could...")
             chatNpc(neutral, "We still leanin... learning.")
@@ -935,6 +984,13 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             chatPlayer(happy, "Great! So what do we do with it now?")
         }
         player.advanceTutorial(SleepingGiants.TUTORIAL_SWORD_KEPT)
+        player.clearSwordQuality()
+        swordKept()
+    }
+
+    // UNVERIFIED: that the conversation resumes at "Kovac take care of it." when left after that
+    // line (no capture of this talk).
+    private suspend fun Dialogue.swordKept() {
         chatNpc(neutral, "Kovac take care of it.")
         chatPlayer(quiz, "Out of curiosity, who is this first blade for?")
         lineByLine("Kovac friend...", "Obor.") { chatNpc(neutral, it) }
@@ -953,7 +1009,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             )
             chatNpc(neutral, "Yes, manner very important.")
         } else {
-            chatPlayer(quiz, "Obor? Can't say I've heard of them.")
+            chatPlayer(confused, "Obor? Can't say I've heard of them.")
         }
         chatNpc(
             neutral,
@@ -962,7 +1018,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         )
         chatPlayer(happy, "That's a pretty clever marketing plan, I must admit.")
         chatNpc(neutral, "Kovac know what he do sometime...<br> <br> ")
-        player.advanceTutorial(SleepingGiants.TUTORIAL_COMPLETE)
         chatNpcSpecificNp(
             KOVAC_NAME,
             KOVAC_FOUNDRY_HEAD,
@@ -970,6 +1025,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             "Kovac know what he do sometime...<br>Thank you for help, ${player.displayName}. You " +
                 "free to use foundry whenever you want.",
         )
+        delay(1)
+        player.advanceTutorial(SleepingGiants.TUTORIAL_COMPLETE)
         quest.completeQuest(access)
     }
 
@@ -1018,6 +1075,63 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         const val CHISEL = "obj.chisel"
         const val BUCKET_WATER = "obj.bucket_water"
 
+        val JOURNAL_RED_TAG = Regex("</?red>")
+
+        val JOURNAL_MET_KOVAC_STARTED =
+            listOf(
+                "While exploring the <red>Giants' Plateau</red> east of <red>Al Kharid</red>, I came",
+                "across a <red>Giant</red> who didn't seem willing to fight. He told me that",
+                "his name was <red>Kovac</red> and that he needed my help. I should see",
+                "what he needs from me.",
+            )
+
+        val JOURNAL_MET_KOVAC =
+            listOf(
+                "While exploring the Giants' Plateau east of Al Kharid, I came",
+                "across a Giant who didn't seem willing to fight. He told me that",
+                "his name was Kovac and that he needed my help. He asked me",
+                "to join him in a nearby Cave.",
+            )
+
+        val JOURNAL_REPAIRING =
+            listOf(
+                "I followed <red>Kovac</red> into the <red>Cave</red> and found that it led to an",
+                "<red>Ancient Foundry</red>. <red>Kovac</red> told me that it was built by his",
+                "ancestors, and that he wants to get it running again. I need to",
+                "help him by repairing three tools.",
+            )
+
+        val JOURNAL_REPAIRED =
+            listOf(
+                "I followed <red>Kovac</red> into the <red>Cave</red> and found that it led to an",
+                "<red>Ancient Foundry</red>. <red>Kovac</red> told me that it was built by his",
+                "ancestors, and that he wants to get it running again. I helped",
+                "him by repairing three tools within the <red>Foundry</red>. I should speak",
+                "to him again to see what I need to do next.",
+            )
+
+        val JOURNAL_REPAIRED_DONE =
+            listOf(
+                "I followed Kovac into the Cave and found that it led to an",
+                "Ancient Foundry. Kovac told me that it was built by his",
+                "ancestors, and that he wanted to get it running again. I",
+                "helped him by repairing three tools within the Foundry.",
+            )
+
+        val JOURNAL_MAKING_SWORD =
+            listOf(
+                "With the <red>Foundry</red> ready to go, <red>Kovac</red> has asked me to help him",
+                "by making the first <red>Sword</red>. I should use the tools in the",
+                "<red>Foundry</red> to do so. If I need help, I should speak to <red>Kovac</red>.",
+            )
+
+        val JOURNAL_COMPLETED =
+            listOf(
+                "Once the Foundry was ready to go, I helped Kovac by making",
+                "the first Sword. He thanked me for my help and invited me to",
+                "come back and use the Foundry at any time.",
+            )
+
         val repairMaterials: List<String> by lazy {
             SleepingGiantsEnums.sleeping_giants_repair_materials.keys.map { it.internalName } +
                 nails
@@ -1054,10 +1168,18 @@ internal sealed interface QuestPrompt {
 
 /**
  * A broken-up line is one box that gains a line per click; each frame is padded with blank
- * lines to the final line count, so the box keeps its size and chathead anim.
+ * lines to the final line count, so the box keeps its size and chathead anim. [beforeLast] runs
+ * just before the final frame is shown.
  */
-private suspend fun lineByLine(vararg lines: String, show: suspend (String) -> Unit) {
+private suspend fun lineByLine(
+    vararg lines: String,
+    beforeLast: () -> Unit = {},
+    show: suspend (String) -> Unit,
+) {
     for (shown in 1..lines.size) {
+        if (shown == lines.size) {
+            beforeLast()
+        }
         val hidden = lines.drop(shown).flatMap { it.split(LINE_BREAK) }.map { " " }
         show((lines.take(shown) + hidden).joinToString(LINE_BREAK))
     }

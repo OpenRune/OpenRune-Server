@@ -11,6 +11,7 @@ data class QuestJournalContent(
     val subTitle: () -> String,
     val questLog: (ProtectedAccess) -> String,
     val completedLog: (ProtectedAccess) -> String,
+    val wrapAt: Int? = 64,
 )
 
 private val ACTIVE_QUEST_JOURNAL_ATTR = AttributeKey<String>("active_quest_journal")
@@ -65,7 +66,7 @@ object QuestJournalRegistry {
     private fun openQuestLog(access: ProtectedAccess, quest: Quest, content: QuestJournalContent) {
         val lines = (if (quest.isQuestCompleted(access.player)) content.completedLog(access) else content.questLog(access))
             .lines()
-            .flatMap { it.toRs(inheritPreviousTags = true, wrapAt = 64).split("<br>") }
+            .flatMap { it.toRs(inheritPreviousTags = true, wrapAt = content.wrapAt).split("<br>") }
 
         access.ifOpenMain("interface.questjournal")
         access.runClientScript(5240)

@@ -105,6 +105,9 @@ abstract class QuestScript(
 
     abstract fun completedLog(player: ProtectedAccess): String
 
+    /** Wrap width of the journal lines; `null` when the quest's lines are already broken up. */
+    protected open val journalWrapAt: Int? = 64
+
     abstract fun ScriptContext.init()
 
     override fun ScriptContext.startup() {
@@ -116,6 +119,7 @@ abstract class QuestScript(
                 subTitle = ::subTitle,
                 questLog = ::questLog,
                 completedLog = ::completedLog,
+                wrapAt = journalWrapAt,
             ),
         )
 
