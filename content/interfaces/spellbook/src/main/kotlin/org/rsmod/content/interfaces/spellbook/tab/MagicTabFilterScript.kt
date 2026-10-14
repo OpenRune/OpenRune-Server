@@ -3,8 +3,8 @@ package org.rsmod.content.interfaces.spellbook.tab
 import dev.openrune.definition.type.widget.IfEvent
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onIfOverlayButton
-import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -12,13 +12,15 @@ import org.rsmod.plugin.scripts.ScriptContext
 class MagicTabFilterScript : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onPlayerLogin {
-            player.ifSetEvents("component.magic_spellbook:filtermenu", 0..7, IfEvent.Op1)
-        }
+        onIfOpen("interface.magic_spellbook") { player.onTabOpen() }
 
         onIfOverlayButton("component.magic_spellbook:filtermenu") {
             player.toggleFilter(it.comsub)
         }
+    }
+
+    private fun Player.onTabOpen() {
+        ifSetEvents("component.magic_spellbook:filtermenu", 0..6, IfEvent.Op1)
     }
 
     private fun Player.toggleFilter(comsub: Int) {
