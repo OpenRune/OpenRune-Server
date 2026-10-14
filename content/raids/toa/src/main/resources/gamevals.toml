@@ -161,6 +161,7 @@ toa_pickaxes = 64103
 toa_het_layouts = 64104
 toa_het_seal = 64105
 toa_wardens_obelisk_patterns = 64106
+toa_wardens_slams = 64107
 
 [gamevals.dbrow]
 toa_room_main_hall = 57000
@@ -215,6 +216,9 @@ toa_wardens_windmill_1 = 57083
 toa_wardens_windmill_2 = 57084
 toa_wardens_windmill_3 = 57085
 toa_wardens_windmill_4 = 57086
+toa_wardens_slam_east = 57087
+toa_wardens_slam_west = 57088
+toa_wardens_slam_both = 57089
 
 [gamevals.varn]
 toa_baba_rolls = 70

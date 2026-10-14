@@ -4,6 +4,7 @@ import org.rsmod.api.script.onModifyNpcHit
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
+import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.encounter.onRoomNpcHit
 import org.rsmod.plugin.scripts.PluginScript
@@ -32,6 +33,7 @@ class WardensScript : PluginScript() {
             for (form in god.phaseTwoForms) {
                 onRoomNpcHit<WardensEncounter>(form) { npc, hit -> wardenHit(npc, hit) }
             }
+            onRoomNpcHit<WardensSecondEncounter>(god.phaseThree) { npc, hit -> wardenHit(npc, hit) }
             onModifyNpcHit(npcType(god.core)) { if (hit.damage == 0) hit.damage = 1 }
             onRoomNpcHit<WardensEncounter>(god.core) { npc, hit -> core.mirror(npc, hit) }
         }

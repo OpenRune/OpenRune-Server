@@ -42,6 +42,12 @@ class WardensCheatScript : PluginScript() {
                     room.core.setRealFraction(percent.coerceIn(0, 100) / PERCENT)
                     null
                 }
+                "p3" -> {
+                    room.raid.wardensRestored =
+                        if (arg?.lowercase() == "elidinis") WardenGod.ELIDINIS else WardenGod.TUMEKEN
+                    room.debugComplete()
+                    null
+                }
                 else -> return player.mes(USAGE)
             }
         player.mes(error ?: "Wardens: $mechanic.")
@@ -50,6 +56,6 @@ class WardensCheatScript : PluginScript() {
     private companion object {
         const val PERCENT = 100.0
         const val USAGE =
-            "Usage: ::wardens divine [melee|ranged|magic] | entomb | special | hp <percent>"
+            "Usage: ::wardens divine [melee|ranged|magic] | entomb | special | hp <percent> | p3 [elidinis|tumeken]"
     }
 }
