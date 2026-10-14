@@ -167,17 +167,12 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     private suspend fun ProtectedAccess.strike(npc: Npc) {
         startDialogue(npc) {
-            chatNpc(neutral, "Wait...")
-            chatNpc(neutral, "Do not attack!")
-            chatPlayer(shocked, "What the... You can talk?!")
-            chatNpc(neutral, "Do...")
-            chatNpc(neutral, "do not...")
-            chatNpc(neutral, "flig... fight.")
-            chatPlayer(confused, "You don't want to fight me?")
-            chatNpc(neutral, "Want...")
-            chatNpc(neutral, "no, need...")
-            chatNpc(neutral, "your help.")
-            chatPlayer(confused, "I must be dreaming. Giants can't talk!")
+            lineByLine("Wait...", "Do not attack!") { chatNpc(neutral, it) }
+            chatPlayer(chatshock, "What the... You can talk?!")
+            lineByLine("Do...", "do not...", "flig... fight.") { chatNpc(neutral, it) }
+            chatPlayer(chatshock, "You don't want to fight me?")
+            lineByLine("Want...", "no, need...", "your help.") { chatNpc(neutral, it) }
+            chatPlayer(quiz, "I must be dreaming. Giants can't talk!")
             chatNpc(neutral, "Please...")
             if (access.statBase(SMITHING) < REQUIRED_SMITHING) {
                 // UNVERIFIED: the transcript has no branch for missing the Smithing requirement.
@@ -190,15 +185,15 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                 chatNpc(neutral, "help.")
                 return@startDialogue
             }
+            quest.setQuestStage(access, SleepingGiants.STARTED)
             chatPlayer(
-                neutral,
+                quiz,
                 "Okay giant, I'll help you out, but first you need to tell me your name... if " +
                     "you even have one.",
             )
-            quest.setQuestStage(access, SleepingGiants.STARTED)
-            chatKovacOutside(neutral, "Kovac.")
+            chatNpcSpecific(KOVAC_NAME, KOVAC_OUTSIDE, neutral, "Kovac.")
             chatPlayer(
-                neutral,
+                quiz,
                 "Kovac... alright then. My name is ${player.displayName}. So, Kovac, what do " +
                     "you need help with?",
             )
@@ -220,16 +215,15 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     }
 
     private suspend fun Dialogue.followIn() {
-        chatKovacOutside(neutral, "Please...")
-        chatKovacOutside(neutral, "follow in.")
+        lineByLine("Please...", "follow in.") { chatKovacOutside(neutral, it) }
         chatPlayer(worried, "Hang on... is this a trick? Are you going to cook and eat me?!")
-        chatKovacOutside(neutral, "No...")
-        chatNpcSpecificNp(KOVAC_NAME, KOVAC_OUTSIDE, neutral, "follow.")
+        chatKovacOutside(neutral, "No...<br> ")
+        chatNpcSpecificNp(KOVAC_NAME, KOVAC_STRIKE, neutral, "No...<br>follow.")
     }
 
     /** The outside Kovac's name only changes once the quest stage has reached the client. */
     private suspend fun Dialogue.chatKovacOutside(mesanim: MesAnimType, text: String) =
-        chatNpcSpecific(KOVAC_NAME, KOVAC_OUTSIDE, mesanim, text)
+        chatNpcSpecific(KOVAC_NAME, KOVAC_STRIKE, mesanim, text)
 
     /**
      * The cave: before the quest the player won't go in; until the tools are repaired it leads
@@ -297,22 +291,17 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     }
 
     private suspend fun Dialogue.insideIntro(cutscene: Boolean) {
-        chatPlayer(shocked, "Woah... What is this place?")
+        chatPlayer(chatshock, "Woah...<br>What is this place?")
         if (cutscene) {
             room.introWalkBack(access)
         }
         chatPlayer(quiz, "Did you build this?")
-        chatNpc(neutral, "No...")
-        chatNpc(neutral, "Kovac...")
-        chatNpc(neutral, "accep... ancestor build.")
-        chatPlayer(quiz, "Giants built this place?")
-        chatNpc(neutral, "Yes...")
-        chatNpc(neutral, "long ago.")
-        chatPlayer(confused, "How? Giants don't build, do they? I thought they were brutes...")
-        chatNpc(neutral, "Before...")
-        chatNpc(neutral, "giants differing.")
-        chatNpc(neutral, "Now...")
-        chatNpc(neutral, "not.")
+        lineByLine("No...", "Kovac...", "accep... ancestor build.") { chatNpc(neutral, it) }
+        chatPlayer(chatshock, "Giants built this place?")
+        lineByLine("Yes...", "long ago.") { chatNpc(neutral, it) }
+        chatPlayer(quiz, "How? Giants don't build, do they? I thought they were brutes...")
+        lineByLine("Before...", "giants differing.") { chatNpc(neutral, it) }
+        lineByLine("Now...", "not.") { chatNpc(sad, it) }
         chatPlayer(confused, "Huh? I don't understand what you mean.")
         chatNpc(neutral, "Look.")
         room.kovacLooksAtTools(player)
@@ -320,24 +309,18 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         chatNpc(neutral, "Help fix.")
         chatPlayer(quiz, "You want me to help you by fixing those tools?")
         chatNpc(neutral, "Yes.")
-        chatPlayer(neutral, "Okay, I'll help, but first you need to tell me what this place was used for?")
-        chatNpc(neutral, "Make...")
-        chatNpc(neutral, "wheelpo... weapons.")
-        chatPlayer(quiz, "Giants made weapons here?")
+        chatPlayer(quiz, "Okay, I'll help, but first you need to tell me what this place was used for?")
+        lineByLine("Make...", "wheelpo... weapons.") { chatNpc(neutral, it) }
+        chatPlayer(chatshock, "Giants made weapons here?")
         chatPlayer(
-            shocked,
+            quiz,
             "That's incredible! But why do you want to make weapons? Most giants I've come " +
                 "across already have weapons?",
         )
-        chatNpc(neutral, "Make...")
-        chatNpc(neutral, "giants...")
-        chatNpc(neutral, "remember.")
+        lineByLine("Make...", "giants...", "remember.") { chatNpc(neutral, it) }
         chatPlayer(quiz, "Remember what?")
-        chatNpc(neutral, "Giants...")
-        chatNpc(neutral, "not just...")
-        chatNpc(neutral, "killers.")
-        chatNpc(neutral, "Kovac want...")
-        chatNpc(neutral, "help giants remember.")
+        lineByLine("Giants...", "not just...", "killers.") { chatNpc(neutral, it) }
+        lineByLine("Kovac want...", "help giants remember.") { chatNpc(neutral, it) }
         chatPlayer(
             neutral,
             "I see. To be honest, if I hadn't seen this place myself, I wouldn't have believed you.",
@@ -360,17 +343,18 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     private suspend fun Dialogue.toolsRepaired() {
         chatPlayer(neutral, "That's all the tools repaired. Well... as best as I can do.")
-        chatNpc(neutral, "Yes...")
-        chatNpc(neutral, "Kovac begin to understand more now.")
+        lineByLine("Yes...", "Kovac begin to understand more now.") { chatNpc(neutral, it) }
         chatPlayer(neutral, "I've noticed your speech has been improving over time as well.")
-        chatNpc(neutral, "Kovac know what say...")
-        chatNpc(neutral, "but sometime hard say proppel... properly.")
-        chatPlayer(happy, "That's alright, we'll figure it out together.")
+        lineByLine("Kovac know what say...", "but sometime hard say proppel... properly.") {
+            chatNpc(neutral, it)
+        }
+        chatPlayer(neutral, "That's alright, we'll figure it out together.")
         quest.setQuestStage(access, SleepingGiants.REPAIRED)
         chatNpc(neutral, "Kovac agree. Ready to make sword?")
         chatPlayer(happy, "Yes! I'm itching to get started.")
-        chatNpc(neutral, "Kovac get few things ready first...")
-        chatNpc(neutral, "then we can start.")
+        lineByLine("Kovac get few things ready first...", "then we can start.") {
+            chatNpc(neutral, it)
+        }
         quest.setQuestStage(access, SleepingGiants.MAKING_SWORD)
     }
 
@@ -457,8 +441,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             RepairTool.Hammer -> {
                 room.kovacToTripHammer(player)
                 chatPlayer(quiz, "I think this has seen better days. What was it?")
-                chatKovac(neutral, "Hmm...")
-                chatKovac(neutral, "big hammer.")
+                lineByLine("Hmm...", "big hammer.") { chatKovac(neutral, it) }
                 chatPlayer(quiz, "Right... and what did it do?")
                 chatKovac(neutral, "Hit things.")
                 chatPlayer(neutral, "Very perceptive, Kovac.")
@@ -467,25 +450,23 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                 return
             }
             RepairTool.Grindstone -> {
-                chatPlayer(quiz, "What was this meant to be?")
-                chatKovac(neutral, "Hmm...")
-                chatKovac(neutral, "Kovac think it was for grinnin... grinding.")
+                chatPlayer(neutral, "What was this meant to be?")
+                lineByLine("Hmm...", "Kovac think it was for grinnin... grinding.") {
+                    chatKovac(neutral, it)
+                }
                 chatPlayer(neutral, "I see. It looks like it's lost its teeth.")
                 chatKovac(neutral, "Kovac conquer.")
                 chatPlayer(confused, "Conquer? It's already broken! Hitting it more won't help.")
-                chatKovac(neutral, "Hmm...")
-                chatKovac(neutral, "Kovac agree.")
+                lineByLine("Hmm...", "Kovac agree.") { chatKovac(neutral, it) }
                 chatPlayer(neutral, "Right... now we're agreed, I'll see what I can do to fix it.")
             }
             RepairTool.PolishingWheel -> {
-                chatPlayer(quiz, "Okay, what is this thing? It just looks like a wheel to me.")
+                chatPlayer(neutral, "Okay, what is this thing? It just looks like a wheel to me.")
                 chatKovac(neutral, "Hmm...")
-                mesbox("Kovac ponders your question...")
-                mesbox("...")
+                lineByLine("Kovac ponders your question...", "...") { mesbox(it) }
                 chatKovac(neutral, "Kovac think he know.")
                 chatPlayer(quiz, "And?")
-                chatKovac(neutral, "This polishing wheel...")
-                chatKovac(neutral, "make thing shiny.")
+                lineByLine("This polishing wheel...", "make thing shiny.") { chatKovac(neutral, it) }
                 chatPlayer(neutral, "Looks like it's lost its soft edge then.")
             }
         }
@@ -496,56 +477,53 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         when (tool) {
             RepairTool.Hammer -> {
                 chatPlayer(neutral, "That looks like it'll do the trick. What do you think?")
-                chatKovac(neutral, "Hmm...")
-                chatKovac(neutral, "that look right.")
+                lineByLine("Hmm...", "that look right.") { chatKovac(neutral, it) }
                 chatPlayer(quiz, "What's it supposed to do?")
                 hammerExplained()
             }
             RepairTool.Grindstone -> {
                 chatPlayer(neutral, "Well that required a bit of elbow grease. It should be good to go now.")
                 chatKovac(neutral, "Thank you small one...")
-                chatPlayer(quiz, "Didn't want to try and help me?")
-                chatKovac(neutral, "Kovac did not know how...")
-                chatKovac(neutral, "Kovac beggin... beginning to understand.")
-                chatPlayer(quiz, "Can you tell me what this is used for then?")
+                chatPlayer(neutral, "Didn't want to try and help me?")
+                lineByLine("Kovac did not know how...", "Kovac beggin... beginning to understand.") {
+                    chatKovac(neutral, it)
+                }
+                chatPlayer(neutral, "Can you tell me what this is used for then?")
                 grindstoneExplained()
             }
             RepairTool.PolishingWheel -> {
                 chatPlayer(neutral, "Not my finest work, but I think it will do.")
-                chatKovac(neutral, "Hmm...")
-                chatKovac(neutral, "Kovac agree.")
-                chatPlayer(quiz, "So when would we use the polishing wheel?")
+                lineByLine("Hmm...", "Kovac agree.") { chatKovac(neutral, it) }
+                chatPlayer(neutral, "So when would we use the polishing wheel?")
                 polishingWheelExplained()
             }
         }
     }
 
     private suspend fun Dialogue.hammerExplained() {
-        mesbox("Kovac takes a long look at the trip hammer...")
-        mesbox("...")
+        lineByLine("Kovac takes a long look at the trip hammer...", "...") { mesbox(it) }
         chatKovac(neutral, "Kovac think Kovac figure it out.")
         chatPlayer(neutral, "Go on.")
-        chatKovac(neutral, "Trip hammer power by water...")
-        chatKovac(neutral, "Water spin wheel and raise hammer.")
+        lineByLine("Trip hammer power by water...", "Water spin wheel and raise hammer.") {
+            chatKovac(neutral, it)
+        }
         chatKovac(neutral, "Hammer fall and crump sword into shape.")
         chatPlayer(neutral, "That makes sense. Quite resourceful for giants to make something water powered.")
         chatKovac(neutral, "Mhm...")
     }
 
     private suspend fun Dialogue.grindstoneExplained() {
-        mesbox("Kovac takes a long look at the grindstone...")
-        mesbox("...")
-        chatKovac(neutral, "Grindstone important...")
-        chatKovac(neutral, "We grind sword against stone...")
-        chatKovac(neutral, "make sword sharp.")
-        chatPlayer(quiz, "So we use it when making swords?")
+        lineByLine("Kovac takes a long look at the grindstone...", "...") { mesbox(it) }
+        lineByLine("Grindstone important...", "We grind sword against stone...", "make sword sharp.") {
+            chatKovac(neutral, it)
+        }
+        chatPlayer(neutral, "So we use it when making swords?")
         chatKovac(neutral, "Yes.")
     }
 
     private suspend fun Dialogue.polishingWheelExplained() {
         chatKovac(neutral, "Polishing sword impotan... important.")
-        chatKovac(neutral, "Create perfect killing edge...")
-        chatKovac(neutral, "very good for sword.")
+        lineByLine("Create perfect killing edge...", "very good for sword.") { chatKovac(neutral, it) }
         chatPlayer(neutral, "That makes sense.")
     }
 
@@ -617,6 +595,10 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     private suspend fun Dialogue.chatKovac(mesanim: MesAnimType, text: String) =
         chatNpcSpecific(KOVAC_NAME, KOVAC_QUEST, mesanim, text)
+
+    // UNVERIFIED: `shocked` for the lines that play chatshock, which no mesanim has (guess)
+    private val Dialogue.chatshock: MesAnimType
+        get() = shocked
 
     private suspend fun ProtectedAccess.inspectChest() {
         startDialogue {
@@ -696,8 +678,9 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     private suspend fun ProtectedAccess.searchCrate() {
         startDialogue {
-            mesbox("You rummage through the box...")
-            mesbox("You find a bunch of metal bars and old weapons!")
+            lineByLine("You rummage through the box...", "You find a bunch of metal bars and old weapons!") {
+                mesbox(it)
+            }
             if (access.inv.freeSpace() < CRATE_ITEMS.sumOf { it.second }) {
                 mesbox("You will need 20 free inventory slots to take the items from the crate.")
                 return@startDialogue
@@ -705,10 +688,12 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             if (!choice2("Yes.", true, "No.", false, title = "Take the items?")) {
                 return@startDialogue
             }
+            player.advanceTutorial(SleepingGiants.TUTORIAL_CRATE_SEARCHED)
+            access.anim(TAKE_SEQ)
             for ((obj, count) in CRATE_ITEMS) {
                 access.invAdd(access.inv, obj, count)
             }
-            player.advanceTutorial(SleepingGiants.TUTORIAL_CRATE_SEARCHED)
+            access.soundSynth(TAKE_SYNTH)
             doubleobjbox(
                 "obj.bronze_battleaxe",
                 "obj.iron_bar",
@@ -724,8 +709,9 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             // TODO(content): [verify:in_game] Kovac's line before the crate is searched; this
             // repeats where the metal is.
             tutorial < SleepingGiants.TUTORIAL_CRATE_SEARCHED -> {
-                chatNpc(neutral, "Kovac has been connecti... collecting metals...")
-                chatNpc(neutral, "They're in that box-crate by entry.")
+                lineByLine("Kovac has been connecti... collecting metals...", "They're in that box-crate by entry.") {
+                    chatNpc(neutral, it)
+                }
             }
             tutorial < SleepingGiants.TUTORIAL_CRUCIBLE_FULL ->
                 if (player.crucibleState == 0) afterCrate() else crucibleNotFull()
@@ -735,8 +721,9 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             // TODO(content): [verify:in_game] Kovac's line before the metal is poured; this
             // repeats his last instruction.
             tutorial < SleepingGiants.TUTORIAL_POURED -> {
-                chatNpc(neutral, "Pour the metal from the crucible into the mould...")
-                chatNpc(neutral, "then take out the preform.")
+                lineByLine("Pour the metal from the crucible into the mould...", "then take out the preform.") {
+                    chatNpc(neutral, it)
+                }
             }
             tutorial < SleepingGiants.TUTORIAL_PREFORM_TAKEN -> beforePickUp()
             else -> workingPreform(npc)
@@ -745,44 +732,47 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     private suspend fun Dialogue.commissionTalk() {
         chatPlayer(neutral, "Okay Kovac, I think I'm ready to make a sword.")
-        chatNpc(neutral, "Hmm...")
-        chatNpc(neutral, "Kovac feel like things look correct...")
-        chatNpc(neutral, "Kovac think you are right.")
+        lineByLine("Hmm...", "Kovac feel like things look correct...", "Kovac think you are right.") {
+            chatNpc(neutral, it)
+        }
         chatPlayer(quiz, "So what do I need to do to make a sword?")
-        chatNpc(neutral, "First...")
-        chatNpc(neutral, "you will need a coliti... commission.")
+        lineByLine("First...", "you will need a coliti... commission.") { chatNpc(neutral, it) }
         chatPlayer(quiz, "Where can I get one of those?")
-        chatNpc(neutral, "Kovac will supply them...")
-        chatNpc(neutral, "Kovac already gotten one from old friend.")
-        chatPlayer(quiz, "Okay, so what do I need to make?")
+        lineByLine("Kovac will supply them...", "Kovac already gotten one from old friend.") {
+            chatNpc(neutral, it)
+        }
+        chatPlayer(neutral, "Okay, so what do I need to make?")
         player.commissionWord1 = CommissionWord.Flat.id
         player.commissionWord2 = CommissionWord.Broad.id
         player.commissionStart = (System.currentTimeMillis() / 1000).toInt()
         player.advanceTutorial(SleepingGiants.TUTORIAL_COMMISSION)
         chatNpc(neutral, "Kovac need a <col=ef1020>Flat Broad</col> sword.")
         chatPlayer(happy, "Great!")
-        chatPlayer(quiz, "How do I make that?")
-        chatNpc(neutral, "Kovac think we need to fill the...")
-        chatNpc(neutral, "how's it called...")
-        chatNpc(neutral, "the big stone bucket...")
+        chatPlayer(confused, "How do I make that?")
+        lineByLine("Kovac think we need to fill the...", "how's it called...", "the big stone bucket...") {
+            chatNpc(neutral, it)
+        }
         chatPlayer(quiz, "Oh, you mean a crucible?")
-        chatNpc(neutral, "Yes, thank you...")
-        chatNpc(neutral, "Kovac think we need to fill the crucible with metal first.")
-        chatNpc(neutral, "Kovac has been connecti... collecting metals...")
-        chatNpc(neutral, "They're in that box-crate by entry.")
-        chatNpc(neutral, "Use bars and weapons...")
-        chatNpc(neutral, "Crucible can take both.")
+        lineByLine("Yes, thank you...", "Kovac think we need to fill the crucible with metal first.") {
+            chatNpc(neutral, it)
+        }
+        lineByLine("Kovac has been connecti... collecting metals...", "They're in that box-crate by entry.") {
+            chatNpc(neutral, it)
+        }
+        lineByLine("Use bars and weapons...", "Crucible can take both.") { chatNpc(neutral, it) }
         chatNpc(neutral, "Load metals into crucible until it looks full.")
-        chatNpc(neutral, "While you do that...")
-        chatNpc(neutral, "Kovac think about next thing we need to do.")
+        lineByLine("While you do that...", "Kovac think about next thing we need to do.") {
+            chatNpc(neutral, it)
+        }
     }
 
     private suspend fun Dialogue.afterCrate() {
         chatPlayer(neutral, "Alright, I've got the metal you said to take from the box. What now?")
-        chatNpc(neutral, "You will need to fill the crucible...")
-        chatNpc(neutral, "Add metals, armour or weapon you find to fill it.")
-        chatNpc(neutral, "We stick to bronze and iron for this sword...")
-        chatNpc(neutral, "We keep the first sword simple.")
+        chatNpc(neutral, "You will need to fill the crucible...<br> <br> ")
+        chatNpc(neutral, "You will need to fill the crucible...<br>Add metals, armour or weapon you find to fill it.")
+        lineByLine("We stick to bronze and iron for this sword...", "We keep the first sword simple.") {
+            chatNpc(neutral, it)
+        }
     }
 
     private suspend fun Dialogue.crucibleNotFull() {
@@ -797,22 +787,30 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     private suspend fun Dialogue.crucibleFull() {
         chatPlayer(quiz, "Right, that's the crucible full. Can I make the sword yet?")
-        chatNpc(neutral, "Kovac think we need to set up a mould.")
+        lineByLine("No, not yet...", "Kovac think we need to set up a mould.") { chatNpc(neutral, it) }
         chatPlayer(quiz, "What's a mould used for?")
-        chatNpc(neutral, "Hmm...")
-        chatNpc(neutral, "Kovac think mould will determine the type of sword to be made.")
+        lineByLine("Hmm...", "Kovac think mould will determine the type of sword to<br>be made.") {
+            chatNpc(neutral, it)
+        }
         chatNpc(neutral, "Remember, we need a <col=ef1020>Flat Broad</col> sword.")
         chatPlayer(quiz, "Okay, so how do I go about setting up a mould?")
-        chatNpc(neutral, "Kovac remember being told a sword is made from three parts...")
-        chatNpc(neutral, "a forte, a blade and a tip.")
-        chatNpc(neutral, "Use mould jig behind you...")
-        chatNpc(neutral, "You can select part for each selecti... section.")
-        chatNpc(neutral, "Each mould part is differing...")
-        chatNpc(neutral, "They will suit different commissions better...")
-        chatNpc(neutral, "Look for parts that match commission.")
-        chatPlayer(neutral, "Right... I think I'm with you.")
-        chatNpc(neutral, "If you are still confused...")
-        chatNpc(neutral, "come back to me.")
+        lineByLine("Kovac remember being told a sword is made from three<br>parts...", "a forte, a blade and a tip.") {
+            chatNpc(neutral, it)
+        }
+        lineByLine("Use mould jig behind you...", "You can select part for each selecti... section.") {
+            chatNpc(neutral, it)
+        }
+        lineByLine(
+            "Each mould part is differing...",
+            "They will suit different commissions better...",
+            "Look for parts that match commission.",
+        ) {
+            chatNpc(neutral, it)
+        }
+        chatPlayer(quiz, "Right... I think I'm with you.")
+        lineByLine("Look at mould jig...", "If you are still confused...", "come back to me.") {
+            chatNpc(neutral, it)
+        }
         player.advanceTutorial(SleepingGiants.TUTORIAL_MOULD_EXPLAINED)
     }
 
@@ -832,19 +830,20 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     private suspend fun Dialogue.mouldSet() {
         chatPlayer(
-            neutral,
+            quiz,
             "Right, the mould is setup and the crucible is full to the brim. We must be ready to pour.",
         )
-        chatNpc(neutral, "Hmm...")
-        chatNpc(neutral, "let me look.")
-        mesbox("Kovac takes a look at what you've done...")
-        mesbox("...")
-        chatNpc(neutral, "Yes, all things look correct...")
-        chatNpc(neutral, "Well done little one. We are ready.")
-        chatNpc(neutral, "Pour the metal from the crucible into the mould...")
-        chatNpc(neutral, "then take out the preform.")
-        chatNpc(neutral, "Once you have done that...")
-        chatNpc(neutral, "Kovac will tell how to work the preform.")
+        lineByLine("Hmm...", "let me look.") { chatNpc(neutral, it) }
+        lineByLine("Kovac takes a look at what you've done...", "...") { mesbox(it) }
+        lineByLine("Yes, all things look correct...", "Well done little one. We are ready.") {
+            chatNpc(neutral, it)
+        }
+        lineByLine("Pour the metal from the crucible into the mould...", "then take out the preform.") {
+            chatNpc(neutral, it)
+        }
+        lineByLine("Once you have done that...", "Kovac will tell how to work the preform.") {
+            chatNpc(neutral, it)
+        }
         player.advanceTutorial(SleepingGiants.TUTORIAL_POUR_EXPLAINED)
     }
 
@@ -953,20 +952,18 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
      */
     private suspend fun Dialogue.handIn() {
         chatPlayer(happy, "Okay Kovac, I think I've finally finished the sword!")
-        chatNpc(neutral, "Hmm...")
-        chatNpc(neutral, "let Kovac look.")
-        mesbox("You pass the sword over to Kovac...")
+        lineByLine("Hmm...", "let Kovac look.") { chatNpc(neutral, it) }
         val quality = player.preformQuality
         player.removePreform()
         access.closeHud()
         player.clearSword()
         player.advanceTutorial(SleepingGiants.TUTORIAL_HANDED_IN)
-        mesbox("He analyses your work...")
-        chatNpc(neutral, "Hmm...")
-        chatNpc(neutral, "Yes...")
-        chatNpc(neutral, "Hmm...")
-        chatNpc(neutral, "This is defeanin... definitely a sword...")
-        chatNpc(happy, "Well done little one.")
+        access.anim(TAKE_SEQ)
+        lineByLine("You pass the sword over to Kovac...", "He analyses your work...") { mesbox(it) }
+        lineByLine("Hmm...", "Yes...", "Hmm...") { chatNpc(neutral, it) }
+        lineByLine("This is defeanin... definitely a sword...", "Well done little one.") {
+            chatNpc(neutral, it)
+        }
         if (quality == 0) {
             chatPlayer(sad, "Sorry it's not very good. I'm still getting use to everything.")
             chatNpc(neutral, "That is okay. You do better than Kovac could...")
@@ -977,18 +974,18 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
         chatNpc(neutral, "Kovac take care of it.")
         chatPlayer(quiz, "Out of curiosity, who is this first blade for?")
-        chatNpc(neutral, "Kovac friend...")
-        chatNpc(neutral, "Obor.")
+        lineByLine("Kovac friend...", "Obor.") { chatNpc(neutral, it) }
         // Obor's kill count is `total_hillgiant_boss_kills` (the cache's hiscores row for Obor).
         if (vars[OBOR_KILLS] > 0) {
-            chatPlayer(shocked, "Obor? He's just going to use it to kill me!")
-            chatNpc(
-                neutral,
-                "Obor good friend. Kovac know he only attack if you trespass his cave...",
-            )
-            chatNpc(neutral, "Maybe you should have some manners and knock first.")
+            chatPlayer(chatshock, "Obor? He's just going to use it to kill me!")
+            lineByLine(
+                "Obor good friend. Kovac know he only attack if you<br>trespass his cave...",
+                "Maybe you should have some manners and knock first.",
+            ) {
+                chatNpc(neutral, it)
+            }
             chatPlayer(
-                neutral,
+                confused,
                 "Well, you're not wrong there... I normally just let myself in.",
             )
             chatNpc(neutral, "Yes, manner very important.")
@@ -1000,10 +997,13 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             "Kovac think Obor show other giants how strong our swords are. Then every giant " +
                 "want one.",
         )
-        chatPlayer(laugh, "That's a pretty clever marketing plan, I must admit.")
-        chatNpc(
-            happy,
-            "Kovac know what he do sometime... Thank you for help, ${player.displayName}. You " +
+        chatPlayer(happy, "That's a pretty clever marketing plan, I must admit.")
+        chatNpc(neutral, "Kovac know what he do sometime...<br> <br> ")
+        chatNpcSpecificNp(
+            KOVAC_NAME,
+            KOVAC_FOUNDRY_HEAD,
+            neutral,
+            "Kovac know what he do sometime...<br>Thank you for help, ${player.displayName}. You " +
                 "free to use foundry whenever you want.",
         )
         quest.completeQuest(access)
@@ -1015,11 +1015,11 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
      */
     private suspend fun ProtectedAccess.kovacStop(stop: QuestPrompt.KovacStop) {
         startDialogue {
-            chatKovac(angry, "Stop!")
+            chatNpcSpecific(KOVAC_NAME, KOVAC_FOUNDRY_HEAD, angry, "Stop!")
             chatPlayer(worried, "What did I do wrong?")
-            chatKovac(angry, "You're damaging the preform!")
+            chatNpcSpecific(KOVAC_NAME, KOVAC_FOUNDRY_HEAD, angry, "You're damaging the preform!")
             chatPlayer(quiz, "How?")
-            chatKovac(neutral, stop.reason)
+            chatNpcSpecific(KOVAC_NAME, KOVAC_FOUNDRY_HEAD, neutral, stop.reason)
             chatPlayer(sad, "Oh, my bad!")
         }
     }
@@ -1032,11 +1032,14 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         const val PLOUGH_FIX_SEQ = "seq.hosidius_plough_fix"
         const val PICKUP_FLOOR_SEQ = "seq.human_pickupfloor"
         const val PUT_DOWN_SYNTH = "synth.put_down"
+        const val TAKE_SEQ = "seq.human_pickuptable"
+        const val TAKE_SYNTH = "synth.pick2"
         const val KOVAC_NAME = "Kovac"
         const val KOVAC_STRIKE = "npc.giants_foundry_kovac_fake_attack"
         const val KOVAC_OUTSIDE = "npc.giants_foundry_kovac_multi_outside"
         const val KOVAC_QUEST = "npc.giants_foundry_kovac_quest"
         const val KOVAC_FOUNDRY = "npc.giants_foundry_kovac_1op"
+        const val KOVAC_FOUNDRY_HEAD = "npc.giants_foundry_kovac_multi"
 
         const val SMITHING = "stat.smithing"
         const val REQUIRED_SMITHING = 15
@@ -1133,6 +1136,19 @@ internal sealed interface QuestPrompt {
             )
     }
 }
+
+/**
+ * A broken-up line is one box that gains a line per click; each frame is padded with blank
+ * lines to the final line count, so the box keeps its size and chathead anim.
+ */
+private suspend fun lineByLine(vararg lines: String, show: suspend (String) -> Unit) {
+    for (shown in 1..lines.size) {
+        val hidden = lines.drop(shown).flatMap { it.split(LINE_BREAK) }.map { " " }
+        show((lines.take(shown) + hidden).joinToString(LINE_BREAK))
+    }
+}
+
+private const val LINE_BREAK = "<br>"
 
 internal const val QUEST_PROMPT_QUEUE = "queue.giants_foundry_quest_prompt"
 
