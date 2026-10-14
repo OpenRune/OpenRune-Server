@@ -58,8 +58,8 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
             stashPreform()
             mes("You leave your preform in the preform storage.")
         }
+        room.leave(player)
         telejump(OUTSIDE)
-        room.left(player)
     }
 
     private fun ProtectedAccess.store() {

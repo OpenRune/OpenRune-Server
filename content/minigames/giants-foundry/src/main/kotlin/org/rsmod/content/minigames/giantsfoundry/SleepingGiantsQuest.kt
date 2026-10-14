@@ -6,6 +6,9 @@ import dev.openrune.types.MesAnimType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.enums.SleepingGiantsEnums
+import org.rsmod.api.instances.events.InstanceEndedEvent
+import org.rsmod.api.instances.events.InstancePlayerLeaveEvent
+import org.rsmod.api.instances.events.instanceEventId
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.events.interact.HeldDropEvents
 import org.rsmod.api.player.output.mes
@@ -17,7 +20,6 @@ import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerLogin
-import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.SleepingGiantsCrateRow
 import org.rsmod.api.table.SleepingGiantsRepairsRow
@@ -94,7 +96,12 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             }
         }
         onPlayerLogin { syncCompleted(player) }
-        onPlayerLogout { room.logout(player) }
+        onEvent<InstancePlayerLeaveEvent>(instanceEventId(ROOM_KEY)) {
+            room.onLeft(player)
+        }
+        onEvent<InstanceEndedEvent>(instanceEventId(ROOM_KEY)) {
+            room.onEnded(instanceId)
+        }
         onDropTrigger(DROP_TRIGGER) {
             if (room.onDropAttempt(player)) {
                 // UNVERIFIED: the drop warning's wording (guess)
@@ -250,11 +257,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                     quest.setQuestStage(this, SleepingGiants.ENTERED)
                 }
             }
-        if (!entered) {
-            mes("The foundry is too busy right now. Try again in a moment.")
-            return
-        }
-        if (!intro) {
+        if (!entered || !intro) {
             return
         }
         val kovac = room.kovacOf(player) ?: return

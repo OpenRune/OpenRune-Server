@@ -5,13 +5,22 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import org.rsmod.api.instances.InstanceAttributes
+import org.rsmod.api.instances.InstanceAccess
+import org.rsmod.api.instances.InstanceArea
+import org.rsmod.api.instances.InstanceId
+import org.rsmod.api.instances.InstanceManager
+import org.rsmod.api.instances.InstanceSession
+import org.rsmod.api.instances.InstanceSpec
+import org.rsmod.api.instances.RegionLocal
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.registry.region.RegionRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
+import org.rsmod.api.repo.region.RegionStaticTemplate
 import org.rsmod.api.repo.region.RegionTemplate
 import org.rsmod.api.table.SleepingGiantsRoomLocsRow
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocAngle
@@ -21,6 +30,8 @@ import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 
 internal const val DROP_TRIGGER = "droptrigger.sleeping_giants_room"
+
+internal const val ROOM_KEY = "sleeping_giants"
 
 /**
  * The foundry as Sleeping Giants first shows it: a private copy of the real foundry (region
@@ -33,20 +44,27 @@ internal const val DROP_TRIGGER = "droptrigger.sleeping_giants_room"
 class SleepingGiantsRoom
 @Inject
 constructor(
+    private val manager: InstanceManager,
+    private val clock: MapClock,
+    private val regions: RegionRegistry,
     private val regionRepo: RegionRepository,
     private val locRepo: LocRepository,
     private val npcRepo: NpcRepository,
 ) {
-    private val rooms = HashMap<Player, Room>()
+    private val rooms = HashMap<InstanceId, Room>()
 
     private class Room(val region: Region) {
         var kovac: Npc? = null
     }
 
-    fun kovacOf(player: Player): Npc? = rooms[player]?.kovac
+    private fun sessionOf(player: Player): InstanceSession? =
+        manager.sessionForPlayer(player)?.takeIf { it.key == ROOM_KEY }
 
-    fun isInside(player: Player): Boolean =
-        rooms[player]?.let { regionRepo.isValid(it.region) && player.coords in it.region } == true
+    private fun roomOf(player: Player): Room? = sessionOf(player)?.let { rooms[it.id] }
+
+    fun kovacOf(player: Player): Npc? = roomOf(player)?.kovac
+
+    fun isInside(player: Player): Boolean = sessionOf(player) != null
 
     /**
      * Builds the room and moves the player in under a fade. With [intro] it opens as the quest's
@@ -55,25 +73,46 @@ constructor(
      */
     suspend fun enter(access: ProtectedAccess, intro: Boolean, onArrival: () -> Unit): Boolean {
         val player = access.player
-        rooms.remove(player)?.let { discard(player, it) }
-        val region = regionRepo.add(TEMPLATE) ?: return false
+        val result = manager.create(player, ROOM_KEY, SPEC, InstanceAccess.Private, clock.cycle)
+        val created =
+            when (result) {
+                is InstanceManager.Result.Created -> result
+                is InstanceManager.Result.Failed -> {
+                    access.mes(result.reason)
+                    return false
+                }
+                is InstanceManager.Result.Joined -> return false
+            }
+        val region = checkNotNull(regions[created.enter]) { "No region at ${created.enter}." }
+        val room = Room(region)
+        rooms[created.session.id] = room
         regionRepo.protect(region)
         try {
-            val room = Room(region)
-            rooms[player] = room
-            armDropWarning(player)
             if (intro) {
-                playIntro(access, room, onArrival)
+                playIntro(access, created, room, onArrival)
             } else {
-                arrive(access, room, onArrival)
+                arrive(access, created, room, onArrival)
             }
         } finally {
             regionRepo.unprotect(region)
+            // Destroys the room if the player never got into it.
+            manager.cancelPendingEntry(player, clock.cycle)
         }
         return true
     }
 
-    private suspend fun arrive(access: ProtectedAccess, room: Room, onArrival: () -> Unit) {
+    private fun ProtectedAccess.moveIn(created: InstanceManager.Result.Created) {
+        telejump(created.enter)
+        manager.finalizeEntry(player, created.session, clock.cycle)
+        armDropWarning(player)
+    }
+
+    private suspend fun arrive(
+        access: ProtectedAccess,
+        created: InstanceManager.Result.Created,
+        room: Room,
+        onArrival: () -> Unit,
+    ) {
         val region = room.region
         for (swap in SleepingGiantsRoomLocsRow.all()) {
             swapLoc(region, swap.coords, swap.real, swap.quest)
@@ -83,12 +122,17 @@ constructor(
         access.fadeOverlay(0, 255, 0, 0, FADE_CYCLES)
         access.delay(2)
         onArrival()
-        access.telejump(region.normal[ARRIVAL])
+        access.moveIn(created)
         access.delay(1)
         access.fadeIn()
     }
 
-    private suspend fun playIntro(access: ProtectedAccess, room: Room, onArrival: () -> Unit) {
+    private suspend fun playIntro(
+        access: ProtectedAccess,
+        created: InstanceManager.Result.Created,
+        room: Room,
+        onArrival: () -> Unit,
+    ) {
         val region = room.region
         try {
             access.mesboxNp(" ")
@@ -102,7 +146,7 @@ constructor(
             access.minimapHideMap()
             access.hideHealthHud()
             access.closeTopLevelTabsLenient()
-            access.telejump(region.normal[INTRO_ENTRANCE_TILE])
+            access.moveIn(created)
             access.delay(1)
             room.kovac = spawnKovac(region, KOVAC_CUTSCENE, KOVAC_TILE, Direction.South)
             for (swap in SleepingGiantsRoomLocsRow.all()) {
@@ -135,7 +179,7 @@ constructor(
 
     /** The player walks back towards Kovac after taking in the room. */
     suspend fun introWalkBack(access: ProtectedAccess) {
-        val region = rooms[access.player]?.region ?: return
+        val region = roomOf(access.player)?.region ?: return
         access.walk(region.normal[INTRO_RETURN_TILE])
         access.camera(region, INTRO_SHOTS[5])
         access.mesboxNp(" ")
@@ -143,12 +187,12 @@ constructor(
     }
 
     fun kovacLooksAtTools(player: Player) {
-        val room = rooms[player] ?: return
+        val room = roomOf(player) ?: return
         room.kovac?.faceSquare(room.region.normal[INTRO_TOOLS_TILE])
     }
 
     fun kovacToTripHammer(player: Player) {
-        val room = rooms[player] ?: return
+        val room = roomOf(player) ?: return
         val kovac = room.kovac ?: return
         val region = room.region
         kovac.walk(KOVAC_TRIP_HAMMER_PATH.map { region.normal[it] }) {
@@ -158,7 +202,7 @@ constructor(
 
     /** Ends the cutscene: the quest's locs and Kovac replace the cutscene ones. */
     suspend fun endIntro(access: ProtectedAccess) {
-        val room = rooms[access.player] ?: return
+        val room = roomOf(access.player) ?: return
         try {
             access.mesboxNp(" ")
             access.fadeOverlay(0, 255, 0, 0, FADE_CYCLES)
@@ -182,7 +226,7 @@ constructor(
 
     /** [endIntro] without the fade, for when the cutscene is cut short. */
     fun endIntroNow(access: ProtectedAccess) {
-        rooms[access.player]?.let { swapToQuest(it) }
+        roomOf(access.player)?.let { swapToQuest(it) }
         access.restoreSceneState()
         access.camReset()
         access.openTopLevelTabs()
@@ -242,16 +286,17 @@ constructor(
      * repaired.
      */
     suspend fun moveToFoundry(access: ProtectedAccess) {
-        val room = rooms[access.player] ?: return
+        val session = sessionOf(access.player) ?: return
+        val room = rooms[session.id] ?: return
         access.mesboxNp(" ")
         access.fadeOverlay(0, 255, 0, 0, FADE_CYCLES)
         access.clearHealthHud()
         access.delay(1)
         access.minimapHideMap()
         access.delay(1)
-        rooms.remove(access.player)
-        access.telejump(room.realCoords(access.player.coords))
-        discard(access.player, room)
+        val target = room.realCoords(access.player.coords)
+        manager.leave(access.player, session, clock.cycle)
+        access.telejump(target)
         access.delay(1)
         access.minimapReset()
         access.fadeOverlay(0, 0, 0, 255, FADE_CYCLES)
@@ -260,26 +305,24 @@ constructor(
         access.closeFadeOverlayNow()
     }
 
-    /** Forgets the room after the player walks out of it. */
-    fun left(player: Player) {
-        rooms.remove(player)?.let { discard(player, it) }
+    /** Takes the player out of the room through its exit; the caller moves them outside. */
+    fun leave(player: Player) {
+        val session = sessionOf(player) ?: return
+        manager.leave(player, session, clock.cycle)
     }
 
-    /** A player who logs out in the room logs back in outside the cave. */
-    fun logout(player: Player) {
-        val room = rooms.remove(player) ?: return
-        if (player.coords in room.region) {
-            player.attr[InstanceAttributes.LOGIN_EXIT_COORD] = OUTSIDE.packed
-        }
-        discard(player, room)
-    }
-
-    private fun discard(player: Player, room: Room) {
-        room.kovac?.let { npcRepo.del(it, Int.MAX_VALUE) }
+    /** Runs for every way out of the room, logout included. */
+    fun onLeft(player: Player) {
         if (player.dropTrigger == DROP_TRIGGER) {
             player.clearDropTrigger(DROP_TRIGGER)
         }
         player.dropWarned = false
+    }
+
+    fun onEnded(instance: InstanceId) {
+        val room = rooms.remove(instance) ?: return
+        room.kovac?.let { npcRepo.del(it, Int.MAX_VALUE) }
+        regionRepo.unprotect(room.region)
     }
 
     /*
@@ -312,16 +355,10 @@ constructor(
         }
     }
 
-    private fun Room.realCoords(coords: CoordGrid): CoordGrid =
-        CoordGrid(
-            coords.x - region.southWest.x - REGION_ZONE_OFFSET * ZONE_LENGTH + COPY_ORIGIN.x,
-            coords.z - region.southWest.z - REGION_ZONE_OFFSET * ZONE_LENGTH + COPY_ORIGIN.z,
-            coords.level,
-        )
-
-    private operator fun Region.contains(coords: CoordGrid): Boolean =
-        coords.x in southWest.x until southWest.x + SMALL_REGION_LENGTH &&
-            coords.z in southWest.z until southWest.z + SMALL_REGION_LENGTH
+    private fun Room.realCoords(coords: CoordGrid): CoordGrid {
+        val origin = region.normal[COPY_ORIGIN]
+        return COPY_ORIGIN.translate(coords.x - origin.x, coords.z - origin.z, coords.level)
+    }
 
     private fun swapLoc(region: Region, tile: CoordGrid, from: String, into: String) {
         val coords = region.normal[tile]
@@ -370,8 +407,6 @@ constructor(
         val KOVAC_TRIP_HAMMER_PATH = listOf(CoordGrid(3368, 11490, 0), CoordGrid(3365, 11493, 0))
         val TRIP_HAMMER_FACE_TILE = CoordGrid(3365, 11497, 0)
 
-        val ARRIVAL = FOUNDRY_INSIDE
-
         // UNVERIFIED: the tile outside the cave exit (guess)
         val OUTSIDE = CoordGrid(3361, 3149, 0)
 
@@ -380,9 +415,8 @@ constructor(
         const val REGION_ZONE_OFFSET = 4
         const val ZONE_LENGTH = 8
         const val SQUARE_ZONES = 8
-        const val SMALL_REGION_LENGTH = 128
 
-        val TEMPLATE: RegionTemplate =
+        val TEMPLATE: RegionStaticTemplate =
             RegionTemplate.create {
                 copyAllLevels(COPY_ORIGIN.x / ZONE_LENGTH, COPY_ORIGIN.z / ZONE_LENGTH) {
                     regionZoneX = REGION_ZONE_OFFSET
@@ -391,6 +425,22 @@ constructor(
                     zoneLength = SQUARE_ZONES
                 }
             }
+
+        val SPEC =
+            InstanceSpec(
+                fee = 0,
+                maxPlayers = 1,
+                reclaimTicks = 0,
+                graceTicks = 0,
+                destroyWhenEmpty = true,
+                area =
+                    InstanceArea.template(
+                        template = TEMPLATE,
+                        enterCoord = FOUNDRY_INSIDE.run { RegionLocal(level, mx, mz, lx, lz) },
+                        exitCoord = OUTSIDE,
+                    ),
+                settingsRowId = 0,
+            )
 
         const val KOVAC_CUTSCENE = "npc.giants_foundry_kovac_quest_cutscene"
         const val EXIT = "loc.giants_foundry_exit"
@@ -414,7 +464,6 @@ constructor(
         const val CAM_SNAP = 232
         const val INTRO_END_CAM_ANGLE = 250
 
-        val INTRO_ENTRANCE_TILE = CoordGrid(3366, 11483, 0)
         val INTRO_PLAYER_TILE = CoordGrid(3367, 11489, 0)
         val INTRO_RETURN_TILE = CoordGrid(3367, 11485, 0)
         val INTRO_TOOLS_TILE = CoordGrid(3362, 11491, 0)
