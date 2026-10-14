@@ -58,6 +58,8 @@ internal var Player.sweetSpotUntil by intVarp("varp.giants_foundry_sweetspot_unt
 
 internal var Player.dropWarned by boolVarBit("varbit.sleeping_giants_drop_warned")
 
+internal var Player.skillmultiPreviousSelection by intVarp("varp.skillmulti_previousselection")
+
 internal val METALS = listOf("bronze", "iron", "steel", "mithril", "adamant", "rune")
 
 internal fun metalVarbit(metal: String): String = "varbit.giants_foundry_${metal}_count"

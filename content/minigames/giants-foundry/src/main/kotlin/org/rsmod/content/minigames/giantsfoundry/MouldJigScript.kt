@@ -25,6 +25,7 @@ class MouldJigScript @Inject constructor() : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.setup() {
+        arriveDelay()
         if (
             player.makingQuestSword() &&
                 player.sleepingGiantsTutorial < SleepingGiants.TUTORIAL_CRUCIBLE_FULL
@@ -41,10 +42,9 @@ class MouldJigScript @Inject constructor() : PluginScript() {
             mesbox("You need a commission before you can set up the mould.")
             return
         }
-        ifOpenMainModal(INTERFACE)
-        ifSetEvents(SIDE_MENU, 0..SIDE_MENU_CHILDREN, IfEvent.Op1)
-        val rows = FoundryData.moulds.values.maxOf { it.size }
-        ifSetEvents(CONTENT, 0..rows * ROW_CHILDREN, IfEvent.Op1)
+        ifOpenMainModal(INTERFACE, transparency = MODAL_TRANSPARENCY)
+        ifSetEvents(SIDE_MENU, 0..SIDE_MENU_END, IfEvent.Op1)
+        ifSetEvents(CONTENT, 0..CONTENT_END, IfEvent.Op1)
     }
 
     private fun ProtectedAccess.checkMoulds() {
@@ -96,11 +96,11 @@ class MouldJigScript @Inject constructor() : PluginScript() {
             mes("You need to choose a forte, a blade and a tip.")
             return
         }
-        ifCloseSub(INTERFACE)
-        player.mouldState = 1
         if (player.makingQuestSword()) {
             player.advanceTutorial(SleepingGiants.TUTORIAL_MOULD_SET)
         }
+        player.mouldState = 1
+        ifCloseSub(INTERFACE)
     }
 
     private fun ProtectedAccess.resetMoulds() {
@@ -111,11 +111,12 @@ class MouldJigScript @Inject constructor() : PluginScript() {
 
     /** The jig's varbit has no cooling state: poured metal stays molten until it's picked up. */
     private suspend fun ProtectedAccess.pickUp(hot: Boolean) {
-        if (hot && !canHandleHotMetal()) {
-            mes("The preform is still molten! You need to cool it down.")
+        arriveDelay()
+        if (!handsFreeForPreform()) {
             return
         }
-        if (!handsFreeForPreform()) {
+        if (hot && !canHandleHotMetal()) {
+            mesbox("The preform is still molten! You need to cool it down.")
             return
         }
         player.mouldState = 3
@@ -123,7 +124,8 @@ class MouldJigScript @Inject constructor() : PluginScript() {
             mes("Your Ice gloves cool the preform as you reach for it.", ChatType.Spam)
         } else if (hot) {
             invReplace(inv, BUCKET_WATER, 1, BUCKET_EMPTY)
-            mes("You throw the water over the preform.")
+            mes("You throw the water over the preform.", ChatType.Spam)
+            anim(THROW_SEQ)
         }
         startSword()
         player.mouldAlloyDifficulty = 0
@@ -133,9 +135,6 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         player.mouldState = 0
         soundSynth(PICKUP_SYNTH)
         equipPreform()
-        if (player.makingQuestSword()) {
-            player.advanceTutorial(SleepingGiants.TUTORIAL_PREFORM_TAKEN)
-        }
     }
 
     /** The sword's numbers are set as the preform leaves the jig. */
@@ -169,8 +168,9 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         for ((section, tool) in layout.withIndex()) {
             player.setFoundryVar(seedVarbit(section), tool.row.seed)
         }
-        // UNVERIFIED: the start heat with a bucket of water instead of ice gloves, taken to be
-        // the same (guess).
+        if (player.makingQuestSword()) {
+            player.advanceTutorial(SleepingGiants.TUTORIAL_PREFORM_TAKEN)
+        }
         player.preformTemperature = random.of(START_TEMPERATURE.first, START_TEMPERATURE.last)
     }
 
@@ -204,7 +204,9 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         const val RESET_BUTTON = "component.giants_foundry_mould:reset_button"
         const val TAB_CHILDREN = 9
         const val ROW_CHILDREN = 17
-        const val SIDE_MENU_CHILDREN = 3 * TAB_CHILDREN
+        const val SIDE_MENU_END = 63
+        const val MODAL_TRANSPARENCY = -3
+        const val CONTENT_END = 544
         const val JIG_EMPTY = "loc.giants_foundry_jig_empty"
         const val JIG_MOULD = "loc.giants_foundry_jig_mould"
         const val JIG_FILLED = "loc.giants_foundry_jig_mould_filled"
@@ -217,5 +219,6 @@ class MouldJigScript @Inject constructor() : PluginScript() {
             listOf(FoundryTool.Hammer, FoundryTool.Grindstone, FoundryTool.PolishingWheel)
         const val BUCKET_WATER = "obj.bucket_water"
         const val BUCKET_EMPTY = "obj.bucket_empty"
+        const val THROW_SEQ = "seq.human_throw_bucket"
     }
 }

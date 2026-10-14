@@ -12,6 +12,7 @@ import org.rsmod.game.inv.isType
 
 internal const val PREFORM = "obj.giants_foundry_preform"
 internal const val HUD = "interface.giants_foundry_hud"
+private const val HUD_TARGET = "component.toplevel_osrs_stretch:overlay_hud"
 internal const val PREFORM_COOLING_TIMER = "timer.giants_foundry_preform_cooling"
 
 /** `giants_foundry_hud_set_sweetspot(int)`: 0 none, 1 gold, 2 green. */
@@ -45,7 +46,7 @@ internal fun Player.removePreform() {
 }
 
 internal fun ProtectedAccess.openHud() {
-    ifOpenOverlay(HUD)
+    ifOpenOverlay(HUD, HUD_TARGET)
 }
 
 internal fun ProtectedAccess.closeHud() {
@@ -59,9 +60,12 @@ internal fun Player.showSweetSpot(state: Int) {
 
 /** The heat and seeds stay until the next pick-up. */
 internal fun Player.clearSword() {
+    clearSwordProgress()
+    clearSwordQuality()
+}
+
+internal fun Player.clearSwordProgress() {
     preformDifficulty = 0
-    preformQuality = 0
-    preformStartQuality = 0
     preformCompletion = 0
     commissionWord1 = 0
     commissionWord2 = 0
@@ -69,4 +73,9 @@ internal fun Player.clearSword() {
     sweetSpotsOffered = 0
     sweetSpotsLastSection = 0
     commissionStart = 0
+}
+
+internal fun Player.clearSwordQuality() {
+    preformQuality = 0
+    preformStartQuality = 0
 }
