@@ -18,6 +18,9 @@ class ApmekenPuzzleScript : PluginScript() {
         onOpLoc1(ApmekenLocs.PILLAR) { repair(it.loc) }
         onOpHeld1(ApmekenObjs.POTION) { pour() }
         onEvent<PlayerHitEvents.Modify> { scaleBaboonHit() }
+        onEvent<PlayerHitEvents.Impact> {
+            ToaRooms.of<ApmekenPuzzleEncounter>(player)?.baboons?.onImpact(player, hit)
+        }
     }
 
     private fun PlayerHitEvents.Modify.scaleBaboonHit() {
