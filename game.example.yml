@@ -24,6 +24,9 @@ gameplay:
     # Server-wide multiplier for drops flagged `boosted` (2.0 turns 1/512 into 1/256). Stacks with
     # each player's own multiplier (varp.drop_rate_multiplier, percent; 0 = unset).
     multiplier: 1.0
+  gravestones:
+    # Lost items go to a gravestone the player can reclaim; false drops them on the floor instead.
+    enabled: true
   quest-requirements:
     # Temporary core-mechanics default. Use "respect-progress" when quest gates should use real
     # quest state, or "virtual-completions" for league-style profiles.

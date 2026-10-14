@@ -9,6 +9,10 @@ import net.rsprot.protocol.game.incoming.buttons.IfButtonD
 import net.rsprot.protocol.game.incoming.buttons.IfButtonT
 import net.rsprot.protocol.game.incoming.buttons.IfScriptTrigger
 import net.rsprot.protocol.game.incoming.buttons.IfSubOp
+import net.rsprot.protocol.game.incoming.events.EventKeyboard
+import net.rsprot.protocol.game.incoming.events.EventMouseClickV1
+import net.rsprot.protocol.game.incoming.events.EventMouseClickV2
+import net.rsprot.protocol.game.incoming.events.EventMouseScroll
 import net.rsprot.protocol.game.incoming.locs.OpLoc6
 import net.rsprot.protocol.game.incoming.locs.OpLocT
 import net.rsprot.protocol.game.incoming.locs.OpLocV2
@@ -54,6 +58,7 @@ import org.rsmod.api.net.rsprot.handlers.IfScriptTriggerHandler
 import org.rsmod.api.net.rsprot.handlers.IfSubOpHandler
 import org.rsmod.api.net.rsprot.handlers.IgnoreListAddHandler
 import org.rsmod.api.net.rsprot.handlers.IgnoreListDeleteHandler
+import org.rsmod.api.net.rsprot.handlers.InputEventHandler
 import org.rsmod.api.net.rsprot.handlers.MapBuildCompleteHandler
 import org.rsmod.api.net.rsprot.handlers.MessagePrivateHandler
 import org.rsmod.api.net.rsprot.handlers.MessagePublicHandler
@@ -77,6 +82,7 @@ import org.rsmod.api.net.rsprot.handlers.ResumePStringDialogHandler
 import org.rsmod.api.net.rsprot.handlers.ResumePauseButtonHandler
 import org.rsmod.api.net.rsprot.handlers.SetChatFilterSettingsHandler
 import org.rsmod.api.net.rsprot.handlers.WindowStatusHandler
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 
 @Singleton
@@ -118,7 +124,8 @@ constructor(
     private val ifButtonD: IfButtonDHandler,
     private val ifButtonT: IfButtonTHandler,
     private val mapBuildComplete: MapBuildCompleteHandler,
-    private val scriptTriggerHandler: IfScriptTriggerHandler
+    private val scriptTriggerHandler: IfScriptTriggerHandler,
+    private val eventBus: EventBus,
 ) {
     fun get(): DefaultGameMessageConsumerRepositoryProvider<Player> {
         val builder = GameMessageConsumerRepositoryBuilder<Player>()
@@ -158,6 +165,10 @@ constructor(
         builder.addListener(IfButtonT::class.java, ifButtonT)
         builder.addListener(MapBuildComplete::class.java, mapBuildComplete)
         builder.addListener(IfScriptTrigger::class.java, scriptTriggerHandler)
+        builder.addListener(EventMouseClickV1::class.java, InputEventHandler(eventBus))
+        builder.addListener(EventMouseClickV2::class.java, InputEventHandler(eventBus))
+        builder.addListener(EventMouseScroll::class.java, InputEventHandler(eventBus))
+        builder.addListener(EventKeyboard::class.java, InputEventHandler(eventBus))
         return DefaultGameMessageConsumerRepositoryProvider(builder.build())
     }
 }

@@ -17086,6 +17086,12 @@ inherit = "npc.crystal_hunllef_crystals_hm"
 "param.dropped_remains"=-1
 
 [[npc]]
+id = "npc.death_office_death"
+inherit = "npc.death_office_death"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
 id = "npc.poh_sawmill_opp"
 inherit = "npc.poh_sawmill_opp"
 wanderRange = 0

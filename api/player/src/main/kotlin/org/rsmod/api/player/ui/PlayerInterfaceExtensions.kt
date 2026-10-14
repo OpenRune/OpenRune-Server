@@ -544,7 +544,7 @@ internal fun Player.ifDoubleobjbox(
     eventBus: EventBus,
 ) {
     mes(text, ChatType.Mesbox)
-    ifOpenChat("interface.objectbox_double", constants.modal_infinitewidthandheight, eventBus)
+    ifOpenChat("interface.objectbox_double", constants.modal_fixedwidthandheight, eventBus)
     ifSetPauseText("component.objectbox_double:pausebutton", pauseText)
     ifSetObj("component.objectbox_double:model1", obj1, zoom1)
     ifSetObj("component.objectbox_double:model2", obj2, zoom2)
