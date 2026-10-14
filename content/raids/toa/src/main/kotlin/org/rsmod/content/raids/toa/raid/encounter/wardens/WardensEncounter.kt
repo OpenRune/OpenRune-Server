@@ -22,6 +22,7 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaCombatant
 import org.rsmod.content.raids.toa.raid.encounter.ToaFight
 import org.rsmod.content.raids.toa.raid.encounter.ToaHpBar
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.isBeside
 import org.rsmod.content.raids.toa.raid.travel
@@ -63,6 +64,7 @@ class WardensEncounter(
     private var lastWasSpecial = false
     internal val entomb = WardensEntomb(this)
     internal val core = WardenCore(this)
+    private val restoration = WardensRestoration(this)
 
     override val hpBar: ToaHpBar? by lazy {
         ToaHpBar(
@@ -141,8 +143,10 @@ class WardensEncounter(
 
     internal fun wardenDefeated(npc: Npc) {
         if (npc !== activeWarden) return
+        val god = activeGod ?: return
+        raid.wardensRestored = god.other
         core.defeated()
-        startFinalPhase()
+        restoration.begin(god, npc, core.coreTile)
     }
 
     internal fun wardenHit(npc: Npc, hit: Hit) {
@@ -175,6 +179,12 @@ class WardensEncounter(
         if (primary) return god.phaseTwoStyle
         return if (god.phaseTwoStyle == HitType.Magic) HitType.Ranged else HitType.Magic
     }
+
+    internal fun p3Hitpoints(): Int =
+        activeWarden
+            ?.let(::combatantOf)
+            ?.scaledRaidHitpoints(WardensSecondEncounter.P3_BASE_HP, teamSize, 1.0)
+            ?: WardensSecondEncounter.P3_BASE_HP
 
     internal fun stopAttacking(warden: Npc) {
         deps.bossDeps.interrupt(warden)
