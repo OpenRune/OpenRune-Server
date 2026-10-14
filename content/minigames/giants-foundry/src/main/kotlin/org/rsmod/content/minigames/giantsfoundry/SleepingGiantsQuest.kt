@@ -36,7 +36,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): [verify:in_game] the mesanims of the conversations the live capture doesn't cover:
-// refusing to start, inspecting the crate, crucible, lava pool, mould jig, preform storage and
+// inspecting the crate, crucible, lava pool, mould jig, preform storage and
 // waterfall, Kovac's talks after the metal is taken, while the crucible fills, with the mould
 // jig unset, before the pour and before the preform is picked up, and his stop prompts.
 
@@ -70,7 +70,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         for (tool in RepairTool.entries) {
             val broken = tool.row.brokenLoc.internalName
             onOpLoc1(broken) { repair(tool) }
-            // UNVERIFIED: that using a material plays the Repair op's dialogue (guess)
+            // UNVERIFIED: that a material used with everything in hand opens the Repair op's
+            // prompt; the missing-material box is the same as the op's (plugin measurement).
             for (obj in repairMaterials) {
                 onOpLocU(broken, obj) { repair(tool) }
             }
@@ -193,8 +194,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             chatPlayer(quiz, "I must be dreaming. Giants can't talk!")
             chatNpc(neutral, "Please...")
             if (!choice2("Yes.", true, "No.", false, title = "Start the Sleeping Giants quest?")) {
-                chatPlayer(angry, "No way! I'm getting out of here. There's no chance I'd trust a giant!")
-                lineByLine("Please...", "help.") { chatNpc(neutral, it) }
+                chatPlayer(neutral, "No way! I'm getting out of here. There's no chance I'd trust a giant!")
+                lineByLine("Please...", "help.") { chatNpc(sad, it) }
                 return@startDialogue
             }
             quest.setQuestStage(access, SleepingGiants.STARTED)
