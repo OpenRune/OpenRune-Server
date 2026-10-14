@@ -11,6 +11,7 @@ import org.rsmod.api.combat.formulas.accuracy.ranged.NvPRangedAccuracy
 import org.rsmod.api.death.PlayerDeathDrops
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.market.MarketPrices
+import org.rsmod.api.npc.interact.AiNpcInteractions
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -40,6 +41,7 @@ constructor(
     val objRepo: ObjRepository,
     val worldRepo: WorldRepository,
     val aiInteractions: AiPlayerInteractions,
+    val aiNpcInteractions: AiNpcInteractions,
     val accuracy: AccuracyFormulae,
     val nvpMeleeAccuracy: NvPMeleeAccuracy,
     val nvpRangedAccuracy: NvPRangedAccuracy,
