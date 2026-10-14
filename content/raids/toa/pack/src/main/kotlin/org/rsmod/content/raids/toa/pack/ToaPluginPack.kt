@@ -13,5 +13,6 @@ class ToaPluginPack : PluginPack() {
             HetPuzzleTables.layouts(),
             HetPuzzleTables.seal(),
             WardensObeliskTables.patterns(),
+            WardensSlamTables.slams(),
         )
 }

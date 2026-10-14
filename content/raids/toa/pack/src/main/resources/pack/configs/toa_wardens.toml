@@ -231,6 +231,7 @@ id = "npc.toa_warden_elidinis_phase3"
 inherit = "npc.toa_warden_elidinis_phase3"
 defaultMode = "None"
 moveRestrict = "NoMove"
+attackRange = 20
 regenRate = 0
 [npc.params]
 "param.headbar" = "headbar.health_140"
@@ -243,6 +244,7 @@ id = "npc.toa_warden_tumeken_phase3"
 inherit = "npc.toa_warden_tumeken_phase3"
 defaultMode = "None"
 moveRestrict = "NoMove"
+attackRange = 20
 regenRate = 0
 [npc.params]
 "param.headbar" = "headbar.health_140"

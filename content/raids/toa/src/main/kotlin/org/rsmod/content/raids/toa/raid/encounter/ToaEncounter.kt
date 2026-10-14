@@ -59,6 +59,8 @@ open class ToaEncounter(
     var destroyed: Boolean = false
         private set
 
+    private var continued = false
+
     var teamSize: Int = 1
         private set
 
@@ -169,6 +171,11 @@ open class ToaEncounter(
         }
         if (stage == ToaStage.STARTED) hpBar?.open(player)
         onEnter(player)
+        if (continued) {
+            continued = false
+            onStart()
+            schedule(1) { tick() }
+        }
     }
 
     internal fun leave(player: Player) {
@@ -177,6 +184,7 @@ open class ToaEncounter(
     }
 
     internal fun continueChallenge(from: ToaEncounter) {
+        continued = true
         stage = ToaStage.STARTED
         startCycle = from.startCycle
         challengeName = from.challengeName
