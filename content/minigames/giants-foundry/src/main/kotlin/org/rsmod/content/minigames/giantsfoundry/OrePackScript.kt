@@ -23,11 +23,16 @@ class OrePackScript @Inject constructor(private val random: GameRandom) : Plugin
         val rolls = IntArray(ORES.size)
         repeat(ORE_COUNT) { rolls[roll()]++ }
         val noted = ORES.map { (ore, _) -> noted(ore) }
-        if (inv.freeSpace() + 1 < noted.indices.count { rolls[it] > 0 }) {
-            mes("You need more inventory space to open the ore pack.")
+        // UNVERIFIED: only the rolled ores the inventory doesn't already hold need a space (guess).
+        val needed = noted.indices.count { rolls[it] > 0 && !inv.contains(noted[it]) }
+        val missing = needed - (inv.freeSpace() + 1)
+        if (missing > 0) {
+            val spaces = if (missing == 1) "free inventory space" else "$missing free inventory spaces"
+            mes("You will need another $spaces to open the pack.")
             return
         }
         invDel(inv, ORE_PACK, 1)
+        mes("You open the pack and find $ORE_COUNT ores.")
         for (i in ORES.indices) {
             if (rolls[i] > 0) {
                 invAdd(inv, noted[i], rolls[i])
@@ -56,8 +61,8 @@ class OrePackScript @Inject constructor(private val random: GameRandom) : Plugin
         const val ORE_PACK = "obj.giants_foundry_ore_pack"
         const val ORE_COUNT = 30
 
-        // UNVERIFIED: weights are the wiki's crowd-sourced counts from opened packs, not the
-        // game's own table.
+        // UNVERIFIED: the ore weights, taken from crowd-sourced counts of opened packs, not the
+        // game's own table (wiki description).
         val ORES =
             listOf(
                 "obj.coal" to 46_854,
