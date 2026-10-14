@@ -2,13 +2,13 @@ package org.rsmod.api.game.process.player
 
 import jakarta.inject.Inject
 import org.rsmod.api.player.forceDisconnect
-import org.rsmod.game.entity.PlayerPersistenceHints
 import org.rsmod.api.player.ui.closeSubs
 import org.rsmod.api.player.ui.ifClose
 import org.rsmod.api.utils.logging.GameExceptionHandler
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.PlayerPersistenceHints
 import org.rsmod.game.entity.util.ShuffledPlayerList
 import org.rsmod.game.ui.Component
 
