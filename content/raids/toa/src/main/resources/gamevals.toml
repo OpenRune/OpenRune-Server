@@ -88,6 +88,8 @@ toa_path_scabaras = 738
 toa_path_apmeken = 741
 
 [gamevals.synth]
+toa_wardens_orb_spawn = 6595
+toa_wardens_obelisk_lane_explode = 6191
 toa_crondis_fill_container = 6522
 toa_crondis_water_empty = 6524
 toa_crondis_water_tree_02 = 6534
