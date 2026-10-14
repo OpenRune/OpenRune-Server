@@ -4,6 +4,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.bosses.dsl.Magic
 import org.rsmod.api.bosses.dsl.Melee
 import org.rsmod.api.bosses.dsl.Ranged
+import org.rsmod.api.bosses.dsl.after
 import org.rsmod.api.bosses.dsl.anim
 import org.rsmod.api.bosses.dsl.boss
 import org.rsmod.api.bosses.dsl.chance
@@ -69,16 +70,19 @@ class WardenBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
     private fun projectileAttack(style: HitType, seq: String, spot: String): Effect =
         sequence(
             anim(seq),
-            projectile(
-                spotanim = spot,
-                config = FLIGHT,
-                resolveOnImpact = true,
-                hit =
-                    hit {
-                        damage(basicDamage(style))
-                        type(style)
-                        penetration(PRAYER_PENETRATION)
-                    },
+            after(
+                PROJECTILE_DELAY,
+                projectile(
+                    spotanim = spot,
+                    config = FLIGHT,
+                    resolveOnImpact = true,
+                    hit =
+                        hit {
+                            damage(basicDamage(style))
+                            type(style)
+                            penetration(PRAYER_PENETRATION)
+                        },
+                ),
             ),
         )
 
@@ -96,6 +100,7 @@ class WardenBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         const val RANGED = "ranged"
         const val MAGIC = "magic"
 
+        const val PROJECTILE_DELAY = 2
         const val MELEE_ODDS = 3
         const val MELEE_HIT_DELAY = 1
         const val PRAYER_PENETRATION = 15
@@ -104,7 +109,7 @@ class WardenBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             ProjectileConfig.fixed(
                 startHeight = 400,
                 endHeight = 100,
-                delay = 60,
+                delay = 0,
                 travel = 90,
                 angle = 12,
                 progress = 128,
