@@ -2,12 +2,15 @@ package org.rsmod.content.minigames.giantsfoundry
 
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
-import org.rsmod.api.player.output.ChatType
+import org.rsmod.api.game.process.GameLifecycle
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.random.GameRandom
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.world.WorldRepository
+import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onPlayerLogout
@@ -15,7 +18,7 @@ import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.isType
-import org.rsmod.game.loc.BoundLocInfo
+import org.rsmod.game.loc.LocShape
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -35,48 +38,75 @@ constructor(
     private val random: GameRandom,
     private val clock: MapClock,
     private val worldRepo: WorldRepository,
+    private val locRepo: LocRepository,
 ) : PluginScript() {
     private val states = HashMap<Player, WorkState>()
 
     override fun ScriptContext.startup() {
         for (tool in FoundryTool.entries) {
-            onOpLoc1(tool.loc) { startTool(tool, it.loc) }
+            onOpLoc1(tool.loc) { startTool(tool) }
         }
-        onOpLoc1(LAVA_POOL) { startHeat(it.loc, sign = 1, fast = false) }
-        onOpLoc2(LAVA_POOL) { startHeat(it.loc, sign = 1, fast = true) }
-        onOpLoc1(WATERFALL) { startHeat(it.loc, sign = -1, fast = false) }
-        onOpLoc2(WATERFALL) { startHeat(it.loc, sign = -1, fast = true) }
+        onOpLoc1(LAVA_POOL) { startHeat(sign = 1, fast = false) }
+        onOpLoc2(LAVA_POOL) { startHeat(sign = 1, fast = true) }
+        onOpLoc1(WATERFALL) { startHeat(sign = -1, fast = false) }
+        onOpLoc2(WATERFALL) { startHeat(sign = -1, fast = true) }
         onPlayerSoftTimer(WORK_TIMER) { tick(player) }
+        onPlayerSoftTimer(SWEETSPOT_TIMER) { sweetSpotTick(player) }
         onPlayerSoftTimer(PREFORM_COOLING_TIMER) { passiveCooling(player) }
         onPlayerLogout { states.remove(player) }
+        onEvent<GameLifecycle.LateCycle> { foundryCycle() }
     }
 
     private class WorkState {
         /** What the player is working at: a tool, or a heat source and op. */
         var station: String? = null
         var tool: FoundryTool? = null
-        var loc: BoundLocInfo? = null
         var origin: CoordGrid? = null
         var heatSign = 0
         var heatFast = false
         var heatTicks = 0
         var nextAction = 0
-        var sweetSpotUntil = -1
+        var sweetSpotUntil = 0
         var sweetSpotArmed = false
+
+        /** Armed by the click that started the work: the first action pays no bonus. */
+        var sweetSpotVoid = false
         var overworked = false
     }
 
     private fun stateOf(player: Player): WorkState = states.getOrPut(player) { WorkState() }
 
+    /**
+     * The trip hammer swings on a world-wide cycle whether anyone works it or not; hammer actions
+     * land on its swings. The foundry's ambient sounds play on their own cycle.
+     */
+    private fun foundryCycle() {
+        if (clock.cycle % AMBIENT_PERIOD == 0) {
+            worldRepo.soundArea(AMBIENT_1_COORD, AMBIENT_1_SYNTH, radius = AMBIENT_RADIUS)
+            worldRepo.soundArea(AMBIENT_2_COORD, AMBIENT_2_SYNTH, radius = AMBIENT_RADIUS)
+        }
+        if (isHammerCycle(clock.cycle)) {
+            for (coords in TRIP_HAMMER_COORDS) {
+                locRepo.findExact(coords, LocShape.CentrepieceStraight)?.let {
+                    worldRepo.locAnim(it, TRIP_HAMMER_SEQ)
+                }
+            }
+            worldRepo.soundArea(TRIP_HAMMER_SOUND_COORD, TRIP_HAMMER_LOOP_SYNTH, radius = 15)
+        }
+    }
+
+    private fun isHammerCycle(cycle: Int): Boolean =
+        cycle % FoundryTool.Hammer.period == HAMMER_PHASE
+
     private fun ProtectedAccess.canWork(): Boolean {
         if (!player.holdsPreform()) {
             // sigmazx's Sleeping Giants video (youtube.com/watch?v=WnGuNtTJW0M), using a tool.
-            // UNVERIFIED: that the lava pool and waterfall say the same.
+            // UNVERIFIED: the lava pool and waterfall give the tools' message (guess).
             mes("You need a giant sword preform equipped to use this tool.")
             return false
         }
         if (player.preformQuality == 0) {
-            mes(DAMAGED, ChatType.Engine)
+            mes(DAMAGED)
             return false
         }
         return true
@@ -85,7 +115,7 @@ constructor(
     private fun ProtectedAccess.isWorking(state: WorkState, station: String): Boolean =
         state.station == station && state.origin == player.coords
 
-    private suspend fun ProtectedAccess.startTool(tool: FoundryTool, loc: BoundLocInfo) {
+    private suspend fun ProtectedAccess.startTool(tool: FoundryTool) {
         if (!canWork()) {
             return
         }
@@ -93,7 +123,8 @@ constructor(
             if (player.makingQuestSword()) {
                 questSwordFinished()
             } else {
-                mes("The sword is finished. Hand it to Kovac.")
+                // UNVERIFIED: the same line when a tool is used on a finished sword (guess).
+                mes(FINISHED)
             }
             return
         }
@@ -102,11 +133,27 @@ constructor(
             onReclick(state)
             return
         }
-        begin(state, tool.loc, loc)
+        begin(state, tool.loc)
         state.tool = tool
-        state.nextAction = clock.cycle + tool.period
+        state.nextAction = firstAction(tool)
         state.overworked = false
-        anim(WORK_SEQ)
+        anim(if (tool == FoundryTool.Hammer) HAMMER_START_SEQ else WORK_START_SEQ)
+        if (state.sweetSpotUntil != 0) {
+            state.sweetSpotArmed = true
+            state.sweetSpotVoid = true
+            player.showSweetSpot(SWEETSPOT_ARMED)
+        }
+    }
+
+    private fun firstAction(tool: FoundryTool): Int {
+        if (tool != FoundryTool.Hammer) {
+            return clock.cycle + FIRST_ACTION_DELAY
+        }
+        var cycle = clock.cycle + 1
+        while (!isHammerCycle(cycle)) {
+            cycle++
+        }
+        return cycle
     }
 
     /**
@@ -114,34 +161,39 @@ constructor(
      * the same option again restarts the ramp ("will reset the speed").
      * https://oldschool.runescape.wiki/w/Giants%27_Foundry/Strategies
      */
-    private fun ProtectedAccess.startHeat(loc: BoundLocInfo, sign: Int, fast: Boolean) {
+    private fun ProtectedAccess.startHeat(sign: Int, fast: Boolean) {
         if (!canWork()) {
             return
         }
         val state = stateOf(player)
-        val station = "${loc.id}:$sign:$fast"
-        if (!isWorking(state, station)) {
-            begin(state, station, loc)
+        val station = "$sign:$fast"
+        val working = isWorking(state, station)
+        if (!working) {
+            begin(state, station)
         }
         state.tool = null
         state.heatSign = sign
         state.heatFast = fast
+        // UNVERIFIED: a re-click restarts the ramp from the next tick (wiki description).
         state.heatTicks = 0
-        anim(if (sign > 0) HEAT_SEQ else COOL_SEQ)
+        if (!working) {
+            heatTick(player, state)
+        }
     }
 
-    private fun ProtectedAccess.begin(state: WorkState, station: String, loc: BoundLocInfo) {
+    private fun ProtectedAccess.begin(state: WorkState, station: String) {
         state.station = station
-        state.loc = loc
         state.origin = player.coords
         softTimer(WORK_TIMER, 1)
     }
 
-    private fun stop(player: Player, state: WorkState) {
+    private fun stop(player: Player, state: WorkState, resetAnim: Boolean = true) {
         state.station = null
         state.tool = null
         player.clearSoftTimer(WORK_TIMER)
-        player.resetAnim()
+        if (resetAnim) {
+            player.resetAnim()
+        }
     }
 
     private fun tick(player: Player) {
@@ -154,25 +206,25 @@ constructor(
         if (tool != null) {
             workTick(player, state, tool)
         } else {
+            player.anim(if (state.heatSign > 0) HEAT_SEQ else COOL_SEQ)
             heatTick(player, state)
         }
     }
 
     private fun workTick(player: Player, state: WorkState, tool: FoundryTool) {
-        if (clock.cycle % WORK_ANIM_PERIOD == 0) {
-            player.anim(WORK_SEQ)
-            val loc = state.loc
-            if (loc != null) {
-                tool.locSeq?.let { worldRepo.locAnim(loc, it) }
-            }
+        player.anim(if (tool == FoundryTool.Hammer) HAMMER_LOOP_SEQ else WORK_LOOP_SEQ)
+        if (clock.cycle < state.nextAction) {
+            return
         }
-        expireSweetSpot(player, state)
-        if (clock.cycle >= state.nextAction) {
-            act(player, tool, state)
-            state.nextAction = clock.cycle + tool.period
-        }
-        if (player.preformQuality == 0 || player.preformCompletion >= FoundryFormulas.SCALE) {
+        state.nextAction = clock.cycle + tool.period
+        if (player.preformQuality == 0) {
+            player.mes(DAMAGED)
             stop(player, state)
+            return
+        }
+        act(player, tool, state)
+        if (player.preformCompletion >= FoundryFormulas.SCALE) {
+            stop(player, state, resetAnim = false)
         }
     }
 
@@ -183,6 +235,7 @@ constructor(
         val temperature =
             (player.preformTemperature + state.heatSign * step).coerceIn(0, FoundryFormulas.SCALE)
         player.preformTemperature = temperature
+        player.soundSynth(if (state.heatSign > 0) LAVA_SYNTH else WATERFALL_SYNTH)
         if (temperature == 0 || temperature == FoundryFormulas.SCALE) {
             stop(player, state)
         }
@@ -190,40 +243,75 @@ constructor(
 
     /**
      * Clicking the station again while it works: during a sweet spot it arms the bonus (green
-     * border); otherwise the next action makes no progress ("overworking").
+     * border); otherwise the next action is missed altogether ("overworking").
      */
     private fun ProtectedAccess.onReclick(state: WorkState) {
-        if (state.sweetSpotUntil >= clock.cycle && !state.sweetSpotArmed) {
+        if (state.sweetSpotArmed) {
+            return
+        }
+        if (state.sweetSpotUntil != 0) {
             state.sweetSpotArmed = true
             player.showSweetSpot(SWEETSPOT_ARMED)
-        } else if (!state.sweetSpotArmed) {
+        } else {
             state.overworked = true
         }
     }
 
-    private fun expireSweetSpot(player: Player, state: WorkState) {
-        if (state.sweetSpotUntil in 0 until clock.cycle && !state.sweetSpotArmed) {
-            state.sweetSpotUntil = -1
+    /**
+     * An offer clears 9 ticks after it shows unless it was armed. An armed one lasts while the
+     * player keeps working and is lost a tick earlier once they walk away.
+     */
+    private fun sweetSpotTick(player: Player) {
+        val state = stateOf(player)
+        if (state.sweetSpotUntil == 0) {
+            player.clearSoftTimer(SWEETSPOT_TIMER)
+            return
+        }
+        val expired =
+            if (state.sweetSpotArmed) {
+                state.tool == null && clock.cycle >= state.sweetSpotUntil
+            } else {
+                clock.cycle > state.sweetSpotUntil
+            }
+        if (expired) {
+            clearSweetSpot(player, state)
             player.showSweetSpot(SWEETSPOT_NONE)
         }
     }
 
+    private fun clearSweetSpot(player: Player, state: WorkState) {
+        state.sweetSpotUntil = 0
+        state.sweetSpotArmed = false
+        state.sweetSpotVoid = false
+        player.clearSoftTimer(SWEETSPOT_TIMER)
+    }
+
     /** One station action: progress, heat, quality and XP. */
     private fun act(player: Player, tool: FoundryTool, state: WorkState) {
+        if (state.overworked) {
+            state.overworked = false
+            player.mes(OVERWORKED)
+            return
+        }
         val difficulty = player.preformDifficulty
         val completion = player.preformCompletion
         val section = FoundryFormulas.section(completion, difficulty)
         val needed = FoundryTool.forSeed(player.foundryVar(seedVarbit(section)))
         val window = FoundryFormulas.window(tool, difficulty)
-        val inZone = player.preformTemperature in window
+        val mistake = tool != needed || player.preformTemperature !in window
 
-        var progress = if (state.overworked) 0 else tool.progress + uniformBonus(player)
-        state.overworked = false
-        var xpTenths = tool.xpTenths
-        // UNVERIFIED: a mistake still makes progress (the wiki only says it "will deal damage").
-        if (tool != needed || !inZone) {
+        val armed = state.sweetSpotArmed
+        val bonus = armed && !state.sweetSpotVoid
+        if (armed) {
+            clearSweetSpot(player, state)
+        }
+        if (bonus) {
+            player.mes(QUICK_REACTIONS)
+        }
+        var progress = 0
+        var xpTenths = 0
+        if (mistake) {
             player.preformQuality = (player.preformQuality - MISTAKE_QUALITY).coerceAtLeast(0)
-            xpTenths = 0
             if (player.makingQuestSword()) {
                 val prompt =
                     when {
@@ -234,19 +322,19 @@ constructor(
                 player.weakQueue(QUEST_PROMPT_QUEUE, 1, prompt)
                 stop(player, state)
             }
-        }
-        if (state.sweetSpotArmed) {
-            state.sweetSpotArmed = false
-            state.sweetSpotUntil = -1
-            player.showSweetSpot(SWEETSPOT_NONE)
-            progress += SWEETSPOT_PROGRESS
-            xpTenths *= 2
-            // Since 7 May 2025 a sweet spot regains "a unit of lost quality" (one mistake's
-            // worth). https://oldschool.runescape.wiki/w/Update:More_Poll_84_%26_Yama_Prep
-            // UNVERIFIED: the update only regains it if clicked "shortly after it appears";
-            // that window isn't published, so any armed sweet spot regains it here.
-            player.preformQuality =
-                (player.preformQuality + MISTAKE_QUALITY).coerceAtMost(player.preformStartQuality)
+        } else {
+            progress = tool.progress + uniformBonus(player)
+            xpTenths = tool.xpTenths
+            if (bonus) {
+                progress += SWEETSPOT_PROGRESS
+                xpTenths *= 2
+                // Since 7 May 2025 a sweet spot regains "a unit of lost quality" (one mistake's
+                // worth). https://oldschool.runescape.wiki/w/Update:More_Poll_84_%26_Yama_Prep
+                // UNVERIFIED: the update only regains it if clicked "shortly after it appears";
+                // that window isn't published, so any armed sweet spot regains it here.
+                player.preformQuality =
+                    (player.preformQuality + MISTAKE_QUALITY).coerceAtMost(player.preformStartQuality)
+            }
         }
         player.preformCompletion = (completion + progress).coerceAtMost(FoundryFormulas.SCALE)
         player.preformTemperature =
@@ -254,16 +342,30 @@ constructor(
         if (xpTenths > 0) {
             player.statAdvance("stat.smithing", xpTenths / 10.0)
         }
-        when {
-            player.preformQuality == 0 -> player.mes(DAMAGED, ChatType.Engine)
-            player.preformCompletion >= FoundryFormulas.SCALE ->
-                if (player.makingQuestSword()) {
-                    player.weakQueue(QUEST_PROMPT_QUEUE, 1, QuestPrompt.SwordFinished)
-                } else {
-                    player.mes("The sword is finished. Hand it to Kovac.")
-                }
-            else -> maybeOfferSweetSpot(player, state, section)
+        if (bonus) {
+            player.soundSynth(SWEETSPOT_SYNTH)
         }
+        when {
+            mistake -> player.soundSynth(MISTAKE_SYNTH)
+            !bonus -> player.soundSynth(tool.synth)
+        }
+        if (armed) {
+            player.showSweetSpot(SWEETSPOT_NONE)
+        }
+        when {
+            player.preformCompletion >= FoundryFormulas.SCALE -> swordFinished(player)
+            !mistake -> maybeOfferSweetSpot(player, state, section)
+        }
+    }
+
+    private fun swordFinished(player: Player) {
+        if (player.makingQuestSword()) {
+            player.weakQueue(QUEST_PROMPT_QUEUE, 1, QuestPrompt.SwordFinished)
+        } else {
+            player.mes(FINISHED)
+        }
+        player.anim(FINISH_SEQ)
+        player.soundSynth(FINISH_SYNTH)
     }
 
     /**
@@ -273,7 +375,7 @@ constructor(
      */
     // UNVERIFIED: which action gets one isn't published; this spreads them evenly at random.
     private fun maybeOfferSweetSpot(player: Player, state: WorkState, section: Int) {
-        if (state.sweetSpotUntil >= clock.cycle) {
+        if (state.sweetSpotUntil != 0) {
             return
         }
         val offered = player.sweetSpots and 0xFF
@@ -288,17 +390,23 @@ constructor(
         }
         player.sweetSpots = ((section + 1) shl 8) or (offered + 1)
         state.sweetSpotUntil = clock.cycle + SWEETSPOT_TICKS
+        player.softTimer(SWEETSPOT_TIMER, 1)
         player.showSweetSpot(SWEETSPOT_OFFERED)
     }
 
     /**
      * Smiths' Uniform: each piece gives a 20% chance per action of +1 progress (+5% hammer,
-     * +10% grindstone and polishing wheel). https://oldschool.runescape.wiki/w/Smiths%27_Uniform
+     * +10% grindstone and polishing wheel), and the full set gives it every action.
+     * https://oldschool.runescape.wiki/w/Smiths%27_Uniform
      */
     private fun uniformBonus(player: Player): Int {
         val pieces =
             UNIFORM.count { (slot, objs) -> objs.any { player.worn[slot.slot]?.isType(it) == true } }
-        return if (pieces > 0 && random.of(1, 5) <= pieces) 1 else 0
+        return when {
+            pieces == UNIFORM.size -> 1
+            pieces > 0 && random.of(1, 5) <= pieces -> 1
+            else -> 0
+        }
     }
 
     private fun passiveCooling(player: Player) {
@@ -311,32 +419,59 @@ constructor(
 
     private companion object {
         const val WORK_TIMER = "timer.giants_foundry_work"
+        const val SWEETSPOT_TIMER = "timer.giants_foundry_sweetspot"
         const val LAVA_POOL = "loc.giants_foundry_lava_pool"
         const val WATERFALL = "loc.giants_foundry_waterfall"
-        const val WORK_SEQ = "seq.giants_foundry_work_preform_loop"
+        const val HAMMER_START_SEQ = "seq.human_preform_lift_start02"
+        const val HAMMER_LOOP_SEQ = "seq.human_preform_lift_loop02"
+        const val WORK_START_SEQ = "seq.human_preform_lift_start"
+        const val WORK_LOOP_SEQ = "seq.human_preform_lift_loop"
+        const val FINISH_SEQ = "seq.giants_foundry_finish_sword"
+        const val TRIP_HAMMER_SEQ = "seq.giants_foundry_hammer01"
 
         /** Heating 827 / cooling 832, as logged by the Easy Giants' Foundry plugin. */
         const val HEAT_SEQ = "seq.human_pickupfloor"
         const val COOL_SEQ = "seq.human_pickuptable"
-        const val WORK_ANIM_PERIOD = 4
 
-        // UNVERIFIED: the wiki said 5 per mistake at launch (8 June 2022 revision, still in its
-        // reputation section); an uncited July 2022 edit changed the mechanic text to 10.
-        const val MISTAKE_QUALITY = 10
+        const val LAVA_SYNTH = "synth.giants_foundry_lava_pool"
+        const val WATERFALL_SYNTH = "synth.giants_foundry_waterfall"
+        const val MISTAKE_SYNTH = "synth.glassblowing"
+        const val SWEETSPOT_SYNTH = "synth.giants_foundry_sweetspot"
+        const val FINISH_SYNTH = "synth.giants_foundry_sword_finished"
+        const val TRIP_HAMMER_LOOP_SYNTH = "synth.giants_foundry_trip_hammer_loop"
+        const val AMBIENT_1_SYNTH = "synth.giants_foundry_ambient_1"
+        const val AMBIENT_2_SYNTH = "synth.giants_foundry_ambient_2"
+        const val AMBIENT_PERIOD = 2
+        const val AMBIENT_RADIUS = 12
 
-        // UNVERIFIED: the wiki gives "around 5%" progress for a sweet spot.
+        const val HAMMER_PHASE = 0
+        const val FIRST_ACTION_DELAY = 3
+
+        const val MISTAKE_QUALITY = 5
         const val SWEETSPOT_PROGRESS = 50
-
-        // UNVERIFIED: the wiki gives "about 10 ticks".
-        const val SWEETSPOT_TICKS = 10
+        const val SWEETSPOT_TICKS = 8
 
         const val SWEETSPOT_NONE = 0
         const val SWEETSPOT_OFFERED = 1
         const val SWEETSPOT_ARMED = 2
 
         const val DAMAGED =
-            "<col=ff0000>This sword is too damaged to keep working. You should give it to Kovac " +
+            "<col=ff3045>This sword is too damaged to keep working. You should give it to Kovac " +
                 "and try again.</col>"
+        const val OVERWORKED =
+            "<col=ff3045>Your attempt to overwork the preform causes you to miss the action " +
+                "altogether."
+        const val QUICK_REACTIONS =
+            "<col=229628>Your quick reactions allow you to find the perfect position to work " +
+                "the preform!"
+        const val FINISHED =
+            "<col=229628>You have successfully finished the sword. You should give it to Kovac " +
+                "for a reward.</col>"
+
+        val TRIP_HAMMER_COORDS = listOf(CoordGrid(3362, 11495, 0), CoordGrid(3363, 11496, 0))
+        val TRIP_HAMMER_SOUND_COORD = CoordGrid(3367, 11497, 0)
+        val AMBIENT_1_COORD = CoordGrid(3363, 11492, 0)
+        val AMBIENT_2_COORD = CoordGrid(3364, 11485, 0)
 
         val UNIFORM =
             listOf(

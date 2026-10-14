@@ -92,12 +92,11 @@ internal enum class FoundryTool(
     /** XP per successful action, in tenths. */
     val xpTenths: Int,
     val loc: String,
-    /** The station's own animation while it works, if it has one. */
-    val locSeq: String?,
+    val synth: String,
 ) {
     // https://oldschool.runescape.wiki/w/Giants%27_Foundry#Refining_the_sword
-    Hammer(0, 5, 20, -25, 45, "loc.giants_foundry_trip_hammer", "seq.giants_foundry_hammer01"),
-    Grindstone(1, 2, 10, 15, 32, "loc.giants_foundry_grindstone", null),
+    Hammer(0, 5, 20, -25, 45, "loc.giants_foundry_trip_hammer", "synth.giants_foundry_trip_hammer"),
+    Grindstone(1, 2, 10, 15, 32, "loc.giants_foundry_grindstone", "synth.giants_foundry_grindstone"),
     PolishingWheel(
         2,
         2,
@@ -105,7 +104,7 @@ internal enum class FoundryTool(
         -17,
         33,
         "loc.giants_foundry_polishing_wheel",
-        "seq.giants_foundry_polishing_wheel_spin",
+        "synth.giants_foundry_polishing_wheel",
     );
 
     companion object {
