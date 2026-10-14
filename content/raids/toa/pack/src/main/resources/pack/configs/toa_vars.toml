@@ -55,6 +55,13 @@ varp = "varp.toa_temp_state"
 startBit = 1
 endBit = 2
 
+[[varbit]]
+isServerOnly = true
+id = "varbit.toa_wardens_entombed"
+varp = "varp.toa_temp_state"
+startBit = 3
+endBit = 3
+
 [[varp]]
 isServerOnly = true
 id = "varp.toa_attempts_entry"

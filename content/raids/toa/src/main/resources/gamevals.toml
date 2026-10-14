@@ -63,6 +63,7 @@ toa_temp_state = 64059
 [gamevals.varbit]
 toa_protect_item_at_death = 64000
 toa_party_tab = 64001
+toa_wardens_entombed = 64002
 
 [gamevals.area]
 toa_lobby = 61
@@ -90,6 +91,8 @@ toa_path_apmeken = 741
 [gamevals.synth]
 toa_wardens_orb_spawn = 6595
 toa_wardens_obelisk_lane_explode = 6191
+toa_wardens_entomb = 4207
+toa_wardens_entomb_end = 2813
 toa_crondis_fill_container = 6522
 toa_crondis_water_empty = 6524
 toa_crondis_water_tree_02 = 6534
