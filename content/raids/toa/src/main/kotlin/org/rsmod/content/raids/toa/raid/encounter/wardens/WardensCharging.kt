@@ -33,7 +33,7 @@ internal class WardensCharging(private val room: WardensEncounter) {
     private class Orb(val npc: Npc, val god: WardenGod, val path: List<CoordGrid>) {
         var step = 0
         var dying = false
-        var blockedAtSpawn = false
+        var ending = false
     }
 
     fun lifetimeCharge(god: WardenGod): Int =
@@ -121,7 +121,7 @@ internal class WardensCharging(private val room: WardensEncounter) {
             val blocker = room.targets().firstOrNull { it.coords in blockTiles }
             if (blocker != null) {
                 blocker.hitTypeless(BLOCK_DAMAGE)
-                orb.blockedAtSpawn = true
+                orb.ending = true
             }
             orbs += orb
         }
@@ -137,7 +137,7 @@ internal class WardensCharging(private val room: WardensEncounter) {
                 iterator.remove()
                 continue
             }
-            if (orb.blockedAtSpawn) {
+            if (orb.ending) {
                 orb.npc.anim("seq.fx_wardens_energy_death01")
                 orb.dying = true
                 continue
@@ -163,16 +163,14 @@ internal class WardensCharging(private val room: WardensEncounter) {
                 block(orb, blocker)
             } else if (orb.step == orb.path.size) {
                 addCharge(orb.god, ORB_CHARGE)
-                orb.npc.anim("seq.fx_wardens_energy_death01")
-                orb.dying = true
+                orb.ending = true
             }
         }
     }
 
     private fun block(orb: Orb, player: Player) {
         player.hitTypeless(BLOCK_DAMAGE)
-        orb.npc.anim("seq.fx_wardens_energy_death01")
-        orb.dying = true
+        orb.ending = true
     }
 
     private fun ufo(god: WardenGod) {
@@ -326,8 +324,8 @@ internal class WardensCharging(private val room: WardensEncounter) {
 
         const val UFO_ADD = 3
         const val UFO_LOAD = 4
-        const val UFO_DAMAGE_FIRST = 5
-        const val UFO_DAMAGE_LAST = 9
+        const val UFO_DAMAGE_FIRST = 6
+        const val UFO_DAMAGE_LAST = 10
         const val UFO_ATTACK_ANIM = 7
         const val UFO_LEAVE_ANIM = 11
         const val UFO_REMOVE = 14
