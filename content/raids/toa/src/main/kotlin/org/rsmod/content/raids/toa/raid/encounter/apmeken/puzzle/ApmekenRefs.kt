@@ -60,6 +60,7 @@ internal object ApmekenSpots {
     const val LOSE_SIGHT = "spotanim.toa_path_apmeken_lose_sight"
     const val WARNING_NORTH = "spotanim.toa_path_apmeken_sight_warning"
     const val WARNING_SOUTH = "spotanim.toa_path_apmeken_sight_warning02"
+    const val CORRUPTED = "spotanim.toa_path_apmeken_gain_cursed"
     const val GAS = "spotanim.toa_path_apmeken_gas"
     const val RUBBLE = "spotanim.toa_path_apmeken_rubble"
     const val RANGED_SMALL = "spotanim.toa_baboon_ranged_travel_1"
@@ -80,6 +81,7 @@ internal object ApmekenSynths {
     const val ROOF_COLLAPSE = 6583
     const val ROOF_COLLAPSE_TAIL = 6573
     const val VENT_FAILURE = 6569
+    const val CORRUPTION_FAILURE = 6570
     const val VENOM_POOL = 3308
     const val VENOM_HIT = 2285
     const val THRALL_APPEAR = 6579
@@ -100,6 +102,14 @@ internal object ApmekenMessages {
     const val ROOF_ISSUE = "<col=a53fff>You sense an issue with the roof supports."
     const val VENT_ISSUE = "<col=a53fff>You sense some strange fumes coming from holes in the floor."
     const val OTHER_ISSUE = "<col=0000b2>You sense an issue somewhere in the room."
+    const val CORRUPTION_ISSUE =
+        "<col=a53fff>You sense Amascut's corruption beginning to take hold."
+    const val CORRUPTION_SUCCESS =
+        "<col=3366ff>Apmeken's Sight guides you into neutralising Amascut's corruption."
+    const val CORRUPTION_FAILURE =
+        "<col=ff3045>Your group is overwhelmed by Amascut's corruption!"
+    const val CORRUPTION_WRONG =
+        "<col=ff3045>As there was nothing to neutralise, you hurt yourself in process."
     const val ROOF_REPAIRED = "<col=229628>You repair the damaged roof support."
     const val VENT_NEUTRALISED = "<col=229628>You neutralise the fumes coming from the hole."
     const val ROOF_SUCCESS = "<col=3366ff>Apmeken's Sight guides you into repairing the roof supports."
@@ -118,4 +128,10 @@ internal object ApmekenMessages {
     const val NO_SPACE = "You need more space in your inventory to do that."
     const val NOTHING_HAPPENS = "You pour the potion on the floor, but nothing happens."
     const val VENOMED = "You have been poisoned by venom!"
+
+    fun sightGrantedTo(name: String) = "<col=3366ff>$name has been granted Apmeken's Sight."
+
+    fun corruptionCured(name: String) = "<col=229628>You neutralise $name's corruption."
+
+    fun corruptionCuredBy(name: String) = "<col=229628>$name has neutralised your corruption."
 }

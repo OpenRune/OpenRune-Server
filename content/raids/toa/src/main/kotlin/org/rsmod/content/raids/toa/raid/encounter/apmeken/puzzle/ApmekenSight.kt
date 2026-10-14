@@ -19,6 +19,7 @@ internal class ApmekenSight(private val room: ApmekenPuzzleEncounter) {
     private enum class Kind {
         ROOF,
         VENTS,
+        CORRUPTION,
     }
 
     private class Issue(val kind: Kind, val deadline: Int, val required: Int) {
@@ -33,6 +34,8 @@ internal class ApmekenSight(private val room: ApmekenPuzzleEncounter) {
     private var grantAt = 0
     private var nextIssueAt = 0
     private var issueCount = 0
+    private var issuesSinceGrant = 0
+    private val corrupted = LinkedHashSet<Player>()
 
     val holderSlot: Int
         get() = holder?.let { room.raid.players.indexOf(it) } ?: -1
@@ -50,6 +53,7 @@ internal class ApmekenSight(private val room: ApmekenPuzzleEncounter) {
         holder = null
         granted = false
         issue = null
+        corrupted.clear()
     }
 
     fun tick(now: Int, targets: List<Player>) {
@@ -62,6 +66,45 @@ internal class ApmekenSight(private val room: ApmekenPuzzleEncounter) {
             if (granted && now >= nextIssueAt) raise(now, targets)
         } else if (now >= active.deadline) {
             resolve(active, now, targets)
+        } else if (active.kind == Kind.CORRUPTION && now % CORRUPTION_MARK_INTERVAL == 0) {
+            markCorrupted(targets)
+        }
+    }
+
+    fun cure(player: Player, target: Player) {
+        val active = issue
+        if (player !== holder || active == null || active.kind != Kind.CORRUPTION) {
+            return wrongCure(player)
+        }
+        if (target !in corrupted) return wrongCure(player)
+        corrupt(active, target, player)
+    }
+
+    fun pourCorruption(player: Player): Boolean {
+        val active = issue
+        if (player !== holder || active == null || active.kind != Kind.CORRUPTION) return false
+        val here = corrupted.filter { it.coords == player.coords }
+        for (target in here) corrupt(active, target, player)
+        return here.isNotEmpty()
+    }
+
+    private fun corrupt(active: Issue, target: Player, holder: Player) {
+        corrupted -= target
+        active.done += room.raid.players.indexOf(target)
+        holder.mes(ApmekenMessages.corruptionCured(target.displayName))
+        if (target !== holder) target.mes(ApmekenMessages.corruptionCuredBy(holder.displayName))
+    }
+
+    private fun wrongCure(player: Player) {
+        player.mes(ApmekenMessages.CORRUPTION_WRONG)
+        player.hitTypeless(room.hazardRoll(FAILURE_DAMAGE, 0))
+    }
+
+    private fun markCorrupted(targets: List<Player>) {
+        val seer = holder ?: return
+        val id = spotanim(ApmekenSpots.CORRUPTED).id
+        for (player in targets) {
+            if (player in corrupted) seer.spotanimMapPrivate(id, player.coords, 0)
         }
     }
 
@@ -102,7 +145,11 @@ internal class ApmekenSight(private val room: ApmekenPuzzleEncounter) {
         holder?.takeIf { it !== player }?.let { setHud(it, 0) }
         holder = player
         granted = true
+        issuesSinceGrant = 0
         player.mes(ApmekenMessages.SIGHT_GRANTED)
+        for (other in room.players) {
+            if (other !== player) other.mes(ApmekenMessages.sightGrantedTo(player.displayName))
+        }
         player.spotanim(ApmekenSpots.GAIN_SIGHT, 0, SIGHT_HEIGHT, SIGHT_SLOT)
         player.soundSynth(ApmekenSynths.SIGHT)
         setHud(player, 1)
@@ -117,14 +164,18 @@ internal class ApmekenSight(private val room: ApmekenPuzzleEncounter) {
     }
 
     private fun raise(now: Int, targets: List<Player>) {
-        val kind = Kind.entries[deps.random.of(maxExclusive = Kind.entries.size)]
-        raiseKind(kind, now, targets)
+        val kinds = if (targets.size > 1) Kind.entries else Kind.entries - Kind.CORRUPTION
+        raiseKind(kinds[deps.random.of(maxExclusive = kinds.size)], now, targets)
     }
 
     private fun raiseKind(kind: Kind, now: Int, targets: List<Player>) {
-        val required = minOf(MAX_REQUIRED, targets.size.coerceAtLeast(1))
-        issue = Issue(kind, now + WINDOW, required)
         val seer = holder
+        corrupted.clear()
+        if (kind == Kind.CORRUPTION) corrupted.addAll(targets.filter { it !== seer })
+        val required =
+            if (kind == Kind.CORRUPTION) corrupted.size
+            else minOf(MAX_REQUIRED, targets.size.coerceAtLeast(1))
+        issue = Issue(kind, now + WINDOW, required)
         for (player in targets) {
             player.soundSynth(ApmekenSynths.SIGHT)
             if (player !== seer) player.mes(ApmekenMessages.OTHER_ISSUE)
@@ -139,6 +190,10 @@ internal class ApmekenSight(private val room: ApmekenPuzzleEncounter) {
                 seer.mes(ApmekenMessages.VENT_ISSUE)
                 markers(seer, ApmekenCoords.VENTS, VENT_MARK_HEIGHT)
             }
+            Kind.CORRUPTION -> {
+                seer.mes(ApmekenMessages.CORRUPTION_ISSUE)
+                markCorrupted(targets)
+            }
         }
     }
 
@@ -152,22 +207,52 @@ internal class ApmekenSight(private val room: ApmekenPuzzleEncounter) {
 
     private fun resolve(active: Issue, now: Int, targets: List<Player>) {
         issue = null
+        corrupted.clear()
         nextIssueAt = now + GAPS[issueCount.coerceAtMost(GAPS.lastIndex)]
         issueCount++
+        issuesSinceGrant++
         val missed = (active.required - active.done.size).coerceAtLeast(0)
         if (missed == 0) {
             val message =
-                if (active.kind == Kind.ROOF) ApmekenMessages.ROOF_SUCCESS
-                else ApmekenMessages.VENT_SUCCESS
+                when (active.kind) {
+                    Kind.ROOF -> ApmekenMessages.ROOF_SUCCESS
+                    Kind.VENTS -> ApmekenMessages.VENT_SUCCESS
+                    Kind.CORRUPTION -> ApmekenMessages.CORRUPTION_SUCCESS
+                }
             for (player in targets) {
                 player.mes(message)
                 player.soundSynth(ApmekenSynths.RESOLVED)
             }
-            return
+        } else {
+            val scaled = ceil(FAILURE_DAMAGE * missed / active.required.toDouble()).toInt()
+            for (player in targets) player.hitTypeless(room.hazardRoll(scaled, 0))
+            when (active.kind) {
+                Kind.ROOF -> roofFailure(targets)
+                Kind.VENTS -> ventFailure(targets)
+                Kind.CORRUPTION -> corruptionFailure(targets)
+            }
         }
-        val scaled = ceil(FAILURE_DAMAGE * missed / active.required.toDouble()).toInt()
-        for (player in targets) player.hitTypeless(room.hazardRoll(scaled, 0))
-        if (active.kind == Kind.ROOF) roofFailure(targets) else ventFailure(targets)
+        rotateHolder(now, targets)
+    }
+
+    private fun rotateHolder(now: Int, targets: List<Player>) {
+        val current = holder ?: return
+        if (targets.size < 2) return
+        val limit = if (targets.size == 2) DUO_ROTATION else GROUP_ROTATION
+        if (issuesSinceGrant < limit) return
+        val others = targets.filter { it !== current }
+        if (others.isEmpty()) return
+        current.mes(ApmekenMessages.SIGHT_LOST)
+        current.spotanim(ApmekenSpots.LOSE_SIGHT, 0, SIGHT_HEIGHT, SIGHT_SLOT)
+        grant(others[deps.random.of(maxExclusive = others.size)])
+        nextIssueAt = maxOf(nextIssueAt, now + ROTATION_WAIT)
+    }
+
+    private fun corruptionFailure(targets: List<Player>) {
+        for (player in targets) {
+            player.mes(ApmekenMessages.CORRUPTION_FAILURE)
+            player.soundSynth(ApmekenSynths.CORRUPTION_FAILURE)
+        }
     }
 
     private fun roofFailure(targets: List<Player>) {
@@ -214,6 +299,10 @@ internal class ApmekenSight(private val room: ApmekenPuzzleEncounter) {
         const val VENT_MARK_HEIGHT = 46
         const val NORTH_Z = 5280
         const val SHAKE_TICKS = 4
+        const val CORRUPTION_MARK_INTERVAL = 2
+        const val DUO_ROTATION = 3
+        const val GROUP_ROTATION = 2
+        const val ROTATION_WAIT = 30
         val GAPS = listOf(30, 26, 26)
     }
 }

@@ -1,12 +1,17 @@
 package org.rsmod.content.raids.toa.raid.encounter.apmeken.puzzle
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.script.onOpPlayerU
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -17,6 +22,9 @@ class ApmekenPuzzleScript : PluginScript() {
         onOpLoc1(ApmekenLocs.POTIONS) { takePotions() }
         onOpLoc1(ApmekenLocs.PILLAR) { repair(it.loc) }
         onOpHeld1(ApmekenObjs.POTION) { pour() }
+        ServerCacheManager.getItem(ApmekenObjs.POTION.asRSCM(RSCMType.OBJ))?.let { potion ->
+            onOpPlayerU(potion) { curePlayer(it.target) }
+        }
         onEvent<PlayerHitEvents.Modify> { scaleBaboonHit() }
         onEvent<PlayerHitEvents.Impact> {
             ToaRooms.of<ApmekenPuzzleEncounter>(player)?.baboons?.onImpact(player, hit)
@@ -72,6 +80,17 @@ class ApmekenPuzzleScript : PluginScript() {
         delay(1)
     }
 
+    private suspend fun ProtectedAccess.curePlayer(target: Player) {
+        val room = room ?: return
+        if (room.stage != ToaStage.STARTED || !room.inChallengeArea(player)) return
+        if (ToaRooms.roomOf(target) !== room) return
+        if (invDel(inv, ApmekenObjs.POTION, 1, strict = false).failure) return
+        anim(ApmekenSeqs.POUR)
+        soundSynth(ApmekenSynths.POUR)
+        room.sight.cure(player, target)
+        delay(1)
+    }
+
     private suspend fun ProtectedAccess.pour() {
         val room = room ?: return
         if (room.stage != ToaStage.STARTED || !room.inChallengeArea(player)) return
@@ -80,7 +99,10 @@ class ApmekenPuzzleScript : PluginScript() {
         soundSynth(ApmekenSynths.POUR)
         soundSynth(ApmekenSynths.POUR_TAIL, delay = POUR_TAIL_DELAY)
         val vent = room.ventIndexAt(player)
-        if (vent < 0) return mes(ApmekenMessages.NOTHING_HAPPENS)
+        if (vent < 0) {
+            if (!room.sight.pourCorruption(player)) mes(ApmekenMessages.NOTHING_HAPPENS)
+            return
+        }
         room.sight.neutralise(player, vent)
         delay(1)
     }
