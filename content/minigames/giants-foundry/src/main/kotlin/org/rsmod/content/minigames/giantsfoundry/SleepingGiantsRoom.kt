@@ -295,7 +295,6 @@ constructor(
         if (player.dropTrigger == DROP_TRIGGER) {
             player.clearDropTrigger(DROP_TRIGGER)
         }
-        player.dropWarned = false
     }
 
     fun onEnded(instance: InstanceId) {
@@ -305,23 +304,14 @@ constructor(
     }
 
     /*
-     * The first drop only warns (the trigger re-arms, which blocks it); dropping again goes
-     * through, and the trigger re-arms for the next item.
+     * Every drop is blocked by re-arming the trigger; the quest's drop prompt performs the drop
+     * once confirmed, and the trigger re-arms for the next item.
      */
 
     fun armDropWarning(player: Player) {
         if (player.dropTrigger == null) {
             player.dropTrigger(DROP_TRIGGER)
         }
-    }
-
-    fun onDropAttempt(player: Player): Boolean {
-        if (player.dropWarned) {
-            player.dropWarned = false
-            return false
-        }
-        player.dropWarned = true
-        return true
     }
 
     fun onDropped(player: Player) {
@@ -381,6 +371,10 @@ constructor(
         val KOVAC_FACE_TILE = CoordGrid(3369, 11487, 0)
         val KOVAC_TRIP_HAMMER_PATH = listOf(CoordGrid(3368, 11490, 0), CoordGrid(3365, 11493, 0))
         val TRIP_HAMMER_FACE_TILE = CoordGrid(3365, 11497, 0)
+
+        // UNVERIFIED: whether logging out in the room always lands here or on the tile the
+        // player entered from (one observation)
+        val LOGIN_TILE = CoordGrid(3363, 3148, 0)
         val COPY_ORIGIN = CoordGrid(3328, 11456, 0)
         const val REGION_ZONE_OFFSET = 4
         const val ZONE_LENGTH = 8
@@ -407,7 +401,7 @@ constructor(
                     InstanceArea.template(
                         template = TEMPLATE,
                         enterCoord = FOUNDRY_INSIDE.run { RegionLocal(level, mx, mz, lx, lz) },
-                        exitCoord = FOUNDRY_OUTSIDE,
+                        exitCoord = LOGIN_TILE,
                     ),
                 settingsRowId = 0,
             )

@@ -85,17 +85,6 @@ id = "varp.giants_foundry_sweetspot_until"
 scope = "Temp"
 transmit = "Never"
 
-[[varp]]
-id = "varp.sleeping_giants_room"
-scope = "Temp"
-transmit = "Never"
-
-[[varbit]]
-id = "varbit.sleeping_giants_drop_warned"
-varp = "varp.sleeping_giants_room"
-startBit = 0
-endBit = 0
-
 [[enum]]
 isServerOnly = true
 id = "enum.giants_foundry_ore_pack_weights"
@@ -142,19 +131,6 @@ valueType = "INT"
 23 = 83
 24 = 89
 25 = 95
-
-[[enum]]
-isServerOnly = true
-id = "enum.sleeping_giants_repair_materials"
-keyType = "OBJ"
-valueType = "INT"
-
-[enum.values]
-"obj.oak_logs" = 1
-"obj.wool" = 1
-"obj.chisel" = 1
-"obj.hammer" = 1
-"obj.imcando_hammer" = 1
 
 [[enum]]
 isServerOnly = true

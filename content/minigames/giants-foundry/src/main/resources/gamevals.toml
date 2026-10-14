@@ -8,7 +8,6 @@ giants_foundry_work = 64405
 giants_foundry_work_origin = 64406
 giants_foundry_work_next_action = 64407
 giants_foundry_sweetspot_until = 64408
-sleeping_giants_room = 64409
 
 [gamevals.varbit]
 giants_foundry_sweetspots_offered = 64400
@@ -18,7 +17,6 @@ giants_foundry_work_heat_ticks = 64403
 giants_foundry_work_sweetspot_armed = 64404
 giants_foundry_work_overworked = 64405
 giants_foundry_work_sweetspot_void = 64406
-sleeping_giants_drop_warned = 64407
 
 [gamevals.timer]
 giants_foundry_preform_cooling = 4440
@@ -33,7 +31,6 @@ giants_foundry_moulds_tip = 4375
 giants_foundry_reward_shop_items = 4379
 giants_foundry_ore_pack_weights = 64430
 giants_foundry_heat_steps = 64431
-sleeping_giants_repair_materials = 64433
 sleeping_giants_nails = 64434
 
 [gamevals.param]

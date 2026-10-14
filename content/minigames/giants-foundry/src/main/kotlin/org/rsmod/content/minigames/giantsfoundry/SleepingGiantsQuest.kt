@@ -5,13 +5,12 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.MesAnimType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
-import org.rsmod.api.enums.SleepingGiantsEnums
+import org.rsmod.api.enums.NamedEnums
 import org.rsmod.api.instances.events.InstanceEndedEvent
 import org.rsmod.api.instances.events.InstancePlayerLeaveEvent
 import org.rsmod.api.instances.events.instanceEventId
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.events.interact.HeldDropEvents
-import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onDropTrigger
 import org.rsmod.api.script.onEvent
@@ -36,9 +35,8 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): [verify:in_game] the mesanims of the conversations the live capture doesn't cover:
-// inspecting the crate, crucible, lava pool, mould jig, preform storage and
-// waterfall, Kovac's talks after the metal is taken, while the crucible fills, with the mould
-// jig unset, before the pour and before the preform is picked up, and his stop prompts.
+// Kovac's talks after the metal is taken, while the crucible fills, with the mould jig unset,
+// before the pour and before the preform is picked up, and his stop prompts.
 
 class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRoom) :
     QuestScript(
@@ -69,11 +67,10 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
         for (tool in RepairTool.entries) {
             val broken = tool.row.brokenLoc.internalName
-            onOpLoc1(broken) { repair(tool) }
-            // UNVERIFIED: that a material used with everything in hand opens the Repair op's
-            // prompt; the missing-material box is the same as the op's (plugin measurement).
-            for (obj in repairMaterials) {
-                onOpLocU(broken, obj) { repair(tool) }
+            onOpLoc1(broken) { repair(tool, intro = true) }
+            // Using a material skips the inspect talk.
+            for (obj in tool.materials) {
+                onOpLocU(broken, obj) { repair(tool, intro = false) }
             }
             onOpLoc1(tool.row.repairedLoc.internalName) { inspectRepaired(tool) }
         }
@@ -96,6 +93,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         onPlayerQueueWithArgs<QuestPrompt>(QUEST_PROMPT_QUEUE) {
             when (val prompt = it.args) {
                 is QuestPrompt.KovacStop -> kovacStop(prompt)
+                is QuestPrompt.DropWarning -> dropWarning(prompt.slot)
                 QuestPrompt.SwordFinished -> questSwordFinished()
             }
         }
@@ -107,14 +105,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             room.onEnded(instanceId)
         }
         onDropTrigger(DROP_TRIGGER) {
-            if (room.onDropAttempt(player)) {
-                // UNVERIFIED: the drop warning's wording (no capture)
-                player.mes(
-                    "<col=ef1020>Anything you drop here will be lost when you leave. Drop it " +
-                        "again if you're sure.</col>"
-                )
-                player.dropTrigger(DROP_TRIGGER)
-            }
+            player.dropTrigger(DROP_TRIGGER)
+            player.weakQueue(QUEST_PROMPT_QUEUE, 1, QuestPrompt.DropWarning(dropSlot))
         }
         onEvent<HeldDropEvents.Drop> { room.onDropped(player) }
     }
@@ -390,11 +382,21 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         fun state(player: Player): Int = player.foundryVar(varbit)
 
         fun isRepaired(player: Player): Boolean = state(player) == SleepingGiants.REPAIR_DONE
+
+        val materials: List<String> by lazy {
+            buildList {
+                if (row.oakLogs > 0) add(OAK_LOGS)
+                if (row.nails > 0) addAll(nails)
+                if (row.wool) add(WOOL)
+                if (row.hammer) addAll(hammers)
+                if (row.chisel) add(CHISEL)
+            }
+        }
     }
 
-    private suspend fun ProtectedAccess.repair(tool: RepairTool) {
+    private suspend fun ProtectedAccess.repair(tool: RepairTool, intro: Boolean) {
         startDialogue {
-            if (tool.state(player) == SleepingGiants.REPAIR_BROKEN) {
+            if (intro && tool.state(player) == SleepingGiants.REPAIR_BROKEN) {
                 repairIntro(tool)
             }
             if (!access.hasMaterials(tool)) {
@@ -606,13 +608,11 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
     }
 
-    // UNVERIFIED: how the inspect lines below group into boxes; only the chest's conversation
-    // was seen, and a run of Kovac lines is shown there as one box gaining a line per click.
     private suspend fun ProtectedAccess.inspectCrate() {
         startDialogue {
-            chatPlayer(quiz, "What do you keep in this box?")
+            chatPlayer(neutral, "What do you keep in this box?")
             lineByLine("Hmm...", "stuff.") { chatKovac(neutral, it) }
-            chatPlayer(bored, "Very insightful...")
+            chatPlayer(neutral, "Very insightful...")
         }
     }
 
@@ -621,15 +621,14 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             chatPlayer(quiz, "What is this, Kovac?")
             lineByLine("Hmm...", "look like big bucket.") { chatKovac(neutral, it) }
             chatPlayer(quiz, "I can see that, but what's it used for?")
-            lineByLine("Hmm...", "maybe we put things in.", "Kovac need think about it more.") {
-                chatKovac(neutral, it)
-            }
+            lineByLine("Hmm...", "maybe we put things in.") { chatKovac(neutral, it) }
+            chatKovac(neutral, "Kovac need think about it more.")
         }
     }
 
     private suspend fun ProtectedAccess.inspectLavaPool() {
         startDialogue {
-            chatPlayer(worried, "Having all this lava here without a barrier is quite dangerous.")
+            chatPlayer(neutral, "Having all this lava here without a barrier is quite dangerous.")
             lineByLine("Hmm...", "Kovac agree.") { chatKovac(neutral, it) }
             chatPlayer(quiz, "Should we try building something to keep us safe?")
             lineByLine("Hmm...", "no.") { chatKovac(neutral, it) }
@@ -641,19 +640,17 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     private suspend fun ProtectedAccess.inspectJig() {
         startDialogue {
             chatPlayer(quiz, "What is this table used for, Kovac?")
-            lineByLine("Hmm...", "look like we put thing on it.", "Kovac not sure what yet.") {
-                chatKovac(neutral, it)
-            }
+            lineByLine("Hmm...", "look like we put thing on it.") { chatKovac(neutral, it) }
+            chatKovac(neutral, "Kovac not sure what yet.")
             lineByLine("Hmm...", "Kovac think about it more.") { chatKovac(neutral, it) }
         }
     }
 
     private suspend fun ProtectedAccess.inspectStorage() {
         startDialogue {
-            chatPlayer(worried, "This looks a little dangerous. Quite a perilous place to store something.")
-            lineByLine("Hmm...", "good place to cook food.", "Hot meat very good.") {
-                chatKovac(neutral, it)
-            }
+            chatPlayer(neutral, "This looks a little dangerous. Quite a perilous place to store something.")
+            lineByLine("Hmm...", "good place to cook food.") { chatKovac(neutral, it) }
+            chatKovac(neutral, "Hot meat very good.")
         }
     }
 
@@ -1033,6 +1030,23 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
     }
 
+    private suspend fun ProtectedAccess.dropWarning(slot: Int) {
+        val dropped = inv[slot]?.id ?: return
+        var confirmed = false
+        startDialogue {
+            mesbox(
+                "Are you sure you want to put that down? It will vanish once Kovac is done " +
+                    "teaching you."
+            )
+            confirmed =
+                choice2("Put it down.", true, "Don't put it down.", false, title = "Select an option")
+        }
+        if (confirmed && room.isInside(player) && inv[slot]?.id == dropped) {
+            player.clearDropTrigger(DROP_TRIGGER)
+            invDrop(slot)
+        }
+    }
+
     private companion object {
         const val ENTRANCE = "loc.giants_foundry_entrance"
         const val OBOR_KILLS = "varp.total_hillgiant_boss_kills"
@@ -1124,13 +1138,10 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                 "come back and use the Foundry at any time.",
             )
 
-        val repairMaterials: List<String> by lazy {
-            SleepingGiantsEnums.sleeping_giants_repair_materials.keys.map { it.internalName } +
-                nails
-        }
+        val hammers = listOf("obj.hammer", "obj.imcando_hammer")
 
         val nails: List<String> by lazy {
-            SleepingGiantsEnums.sleeping_giants_nails.backing.toSortedMap().values.mapNotNull {
+            NamedEnums.sleeping_giants_nails.backing.toSortedMap().values.mapNotNull {
                 it?.internalName
             }
         }
@@ -1139,6 +1150,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
 internal sealed interface QuestPrompt {
     class KovacStop(val reason: String) : QuestPrompt
+
+    class DropWarning(val slot: Int) : QuestPrompt
 
     data object SwordFinished : QuestPrompt
 

@@ -58,8 +58,6 @@ internal var Player.workOrigin by typeCoordVarp("varp.giants_foundry_work_origin
 internal var Player.workNextAction by intVarp("varp.giants_foundry_work_next_action")
 internal var Player.sweetSpotUntil by intVarp("varp.giants_foundry_sweetspot_until")
 
-internal var Player.dropWarned by boolVarBit("varbit.sleeping_giants_drop_warned")
-
 internal var Player.skillmultiPreviousSelection by intVarp("varp.skillmulti_previousselection")
 
 internal val METALS = listOf("bronze", "iron", "steel", "mithril", "adamant", "rune")
