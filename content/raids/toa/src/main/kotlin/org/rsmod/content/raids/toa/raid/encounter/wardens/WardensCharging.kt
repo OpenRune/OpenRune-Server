@@ -12,8 +12,7 @@ import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.EntityExactMove
-import org.rsmod.game.entity.util.EntityFaceAngle
-import org.rsmod.game.entity.util.PathingEntityCommon
+import org.rsmod.map.util.Translation
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
@@ -98,16 +97,20 @@ internal class WardensCharging(private val room: WardensEncounter) {
     private fun spawnPair() {
         val index = spawned++
         room.obelisk?.anim("seq.fx_obelisk_wardens01_cast")
-        for (god in WardenGod.entries) {
-            val spawn = WardenGod.OBELISK_CENTRE.translate(god.orbSide * WardenGod.ORB_SPAWN_OFFSET, 0)
+        for (god in WardenGod.entries.reversed()) {
+            val spawn =WardenGod.OBELISK_CENTRE.translate(god.orbSide * WardenGod.ORB_SPAWN_OFFSET, 0)
             val npc = room.spawn("npc.toa_wardens_energy", room.coords(spawn), god.orbFacing)
+            npc.pendingTelejump = false
             npc.anim("seq.zuk_proj")
-            npc.pendingFaceAngle = EntityFaceAngle(if (god.orbSide < 0) FACE_WEST else FACE_EAST)
+            npc.infoProtocol.setFaceAngle(
+                if (god.orbSide < 0) FACE_WEST else FACE_EAST,
+                instant = false,
+            )
             npc.pendingExactMove =
                 EntityExactMove(
-                    deltaX1 = 0,
+                    deltaX1 = -god.orbSide,
                     deltaZ1 = 0,
-                    deltaX2 = god.orbSide,
+                    deltaX2 = 0,
                     deltaZ2 = 0,
                     clientDelay1 = 0,
                     clientDelay2 = ORB_STEP_CYCLES,
@@ -141,15 +144,19 @@ internal class WardensCharging(private val room: WardensEncounter) {
             }
             val tile = room.coords(orb.path[orb.step++])
             val dir = if (orb.god.orbSide < 0) Constants.em_face_west else Constants.em_face_east
-            PathingEntityCommon.exactMove(
-                orb.npc,
-                orb.npc.coords,
-                tile,
-                0,
-                ORB_STEP_CYCLES,
-                dir,
-                deps.collision,
-            )
+            val from = orb.npc.coords
+            orb.npc.teleport(deps.collision, tile)
+            val delta = Translation.between(from, tile)
+            orb.npc.pendingExactMove =
+                EntityExactMove(
+                    deltaX1 = delta.x,
+                    deltaZ1 = delta.z,
+                    deltaX2 = 0,
+                    deltaZ2 = 0,
+                    clientDelay1 = 0,
+                    clientDelay2 = ORB_STEP_CYCLES,
+                    direction = dir,
+                )
             orb.npc.anim("seq.zuk_proj")
             val blocker = targets.firstOrNull { it.coords == tile }
             if (blocker != null) {
