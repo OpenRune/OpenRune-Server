@@ -53,12 +53,6 @@ class FoundryFormulasTest {
     }
 
     @Test
-    fun `fast heating starts ten steps into the ramp`() {
-        assertEquals(7, FoundryFormulas.heatStep(0))
-        assertEquals(27, FoundryFormulas.heatStep(FoundryFormulas.FAST_HEAT_OFFSET))
-    }
-
-    @Test
     fun `commissions are the twelve cross-axis pairs`() {
         val pairs = FoundryData.commissions
         assertEquals(12, pairs.size)

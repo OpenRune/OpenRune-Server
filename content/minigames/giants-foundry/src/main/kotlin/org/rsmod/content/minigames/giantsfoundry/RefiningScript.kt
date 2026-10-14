@@ -44,7 +44,7 @@ constructor(
 
     override fun ScriptContext.startup() {
         for (tool in FoundryTool.entries) {
-            onOpLoc1(tool.loc) { startTool(tool) }
+            onOpLoc1(tool.row.loc.internalName) { startTool(tool) }
         }
         onOpLoc1(LAVA_POOL) { startHeat(sign = 1, fast = false) }
         onOpLoc2(LAVA_POOL) { startHeat(sign = 1, fast = true) }
@@ -96,7 +96,7 @@ constructor(
     }
 
     private fun isHammerCycle(cycle: Int): Boolean =
-        cycle % FoundryTool.Hammer.period == HAMMER_PHASE
+        cycle % FoundryTool.Hammer.row.period == HAMMER_PHASE
 
     private fun ProtectedAccess.canWork(): Boolean {
         if (!player.holdsPreform()) {
@@ -129,15 +129,15 @@ constructor(
             return
         }
         val state = stateOf(player)
-        if (isWorking(state, tool.loc)) {
+        if (isWorking(state, tool.name)) {
             onReclick(state)
             return
         }
-        begin(state, tool.loc)
+        begin(state, tool.name)
         state.tool = tool
         state.nextAction = firstAction(tool)
         state.overworked = false
-        anim(if (tool == FoundryTool.Hammer) HAMMER_START_SEQ else WORK_START_SEQ)
+        anim(tool.row.startSeq.internalName)
         if (state.sweetSpotUntil != 0) {
             state.sweetSpotArmed = true
             state.sweetSpotVoid = true
@@ -212,11 +212,11 @@ constructor(
     }
 
     private fun workTick(player: Player, state: WorkState, tool: FoundryTool) {
-        player.anim(if (tool == FoundryTool.Hammer) HAMMER_LOOP_SEQ else WORK_LOOP_SEQ)
+        player.anim(tool.row.loopSeq.internalName)
         if (clock.cycle < state.nextAction) {
             return
         }
-        state.nextAction = clock.cycle + tool.period
+        state.nextAction = clock.cycle + tool.row.period
         if (player.preformQuality == 0) {
             player.mes(DAMAGED)
             stop(player, state)
@@ -323,8 +323,8 @@ constructor(
                 stop(player, state)
             }
         } else {
-            progress = tool.progress + uniformBonus(player)
-            xpTenths = tool.xpTenths
+            progress = tool.row.progress + uniformBonus(player)
+            xpTenths = tool.row.xpTenths
             if (bonus) {
                 progress += SWEETSPOT_PROGRESS
                 xpTenths *= 2
@@ -338,7 +338,7 @@ constructor(
         }
         player.preformCompletion = (completion + progress).coerceAtMost(FoundryFormulas.SCALE)
         player.preformTemperature =
-            (player.preformTemperature + tool.heat).coerceIn(0, FoundryFormulas.SCALE)
+            (player.preformTemperature + tool.row.heat).coerceIn(0, FoundryFormulas.SCALE)
         if (xpTenths > 0) {
             player.statAdvance("stat.smithing", xpTenths / 10.0)
         }
@@ -347,7 +347,7 @@ constructor(
         }
         when {
             mistake -> player.soundSynth(MISTAKE_SYNTH)
-            !bonus -> player.soundSynth(tool.synth)
+            !bonus -> player.soundSynth(tool.row.synth)
         }
         if (armed) {
             player.showSweetSpot(SWEETSPOT_NONE)
@@ -422,10 +422,6 @@ constructor(
         const val SWEETSPOT_TIMER = "timer.giants_foundry_sweetspot"
         const val LAVA_POOL = "loc.giants_foundry_lava_pool"
         const val WATERFALL = "loc.giants_foundry_waterfall"
-        const val HAMMER_START_SEQ = "seq.human_preform_lift_start02"
-        const val HAMMER_LOOP_SEQ = "seq.human_preform_lift_loop02"
-        const val WORK_START_SEQ = "seq.human_preform_lift_start"
-        const val WORK_LOOP_SEQ = "seq.human_preform_lift_loop"
         const val FINISH_SEQ = "seq.giants_foundry_finish_sword"
         const val TRIP_HAMMER_SEQ = "seq.giants_foundry_hammer01"
 

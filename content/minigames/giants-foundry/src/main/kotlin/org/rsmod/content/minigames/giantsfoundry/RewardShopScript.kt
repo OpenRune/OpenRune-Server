@@ -8,6 +8,7 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
+import org.rsmod.api.enums.GiantsFoundryEnums
 import org.rsmod.api.player.dialogue.mesanims
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -71,8 +72,8 @@ class RewardShopScript @Inject constructor() : PluginScript() {
 
     /** Obj id to cost for every item (not mould) in the shop catalogue. */
     private fun shopCosts(): Map<Int, Int> =
-        (1..SHOP_ENTRIES).mapNotNull { entry ->
-            val struct = entryStruct(entry) ?: return@mapNotNull null
+        shopItems.values.mapNotNull { structId ->
+            val struct = structId?.let(ServerCacheManager::getStruct) ?: return@mapNotNull null
             val obj = struct.params?.get(param("param.giants_foundry_shop_obj")) as? Int ?: return@mapNotNull null
             obj to struct.getInt(param("param.giants_foundry_shop_cost"))
         }.toMap()
@@ -142,11 +143,7 @@ class RewardShopScript @Inject constructor() : PluginScript() {
         refresh()
     }
 
-    private fun entryStruct(entry: Int) =
-        ServerCacheManager.getEnum(SHOP_ITEMS.asRSCM(RSCMType.ENUM))
-            ?.values
-            ?.get(entry)
-            ?.let { ServerCacheManager.getStruct((it as Number).toInt()) }
+    private fun entryStruct(entry: Int) = shopItems[entry]?.let(ServerCacheManager::getStruct)
 
     private fun param(name: String): Int = name.asRSCM(RSCMType.PARAM)
 
@@ -154,7 +151,6 @@ class RewardShopScript @Inject constructor() : PluginScript() {
         const val KOVAC = "npc.giants_foundry_kovac"
         const val LIST = "component.giants_foundry_reward_shop:list"
         const val BUY_BUTTON = "component.giants_foundry_reward_shop:buy_button"
-        const val SHOP_ITEMS = "enum.giants_foundry_reward_shop_items"
         const val ROW_CHILDREN = 13
         const val DOUBLE_AMMO_MOULD = "obj.double_ammo_mould"
         const val DWARF_CANNON = "quest_dwarfcannon"
@@ -166,9 +162,11 @@ class RewardShopScript @Inject constructor() : PluginScript() {
 
 private var Player.shopSelected by intVarp("varp.giants_foundry_reward_shop_selected_item")
 
+private val shopItems
+    get() = GiantsFoundryEnums.giants_foundry_reward_shop_items
+
 private const val SHOP_INTERFACE = "interface.giants_foundry_reward_shop"
 private const val SHOP_SETUP = "clientscript.[clientscript,giants_foundry_reward_shop_setup]"
-private const val SHOP_ENTRIES = 24
 private const val SHOP_ROW_CHILDREN = 13
 
 /** Opens the reward shop. TODO: the Bank PIN check the shop has had since 13 July 2022. */
@@ -177,7 +175,7 @@ internal fun ProtectedAccess.openRewardShop() {
     player.runClientScript(SHOP_SETUP.asRSCM(RSCMType.CLIENTSCRIPT), 1)
     ifSetEvents(
         "component.giants_foundry_reward_shop:list",
-        0 until SHOP_ENTRIES * SHOP_ROW_CHILDREN,
+        0 until shopItems.backing.size * SHOP_ROW_CHILDREN,
         IfEvent.Op1,
         IfEvent.Op2,
         IfEvent.Op3,

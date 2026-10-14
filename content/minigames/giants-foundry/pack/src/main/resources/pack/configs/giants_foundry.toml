@@ -22,3 +22,78 @@ transmit = "Never"
 id = "varp.giants_foundry_sweetspots"
 scope = "Perm"
 transmit = "Never"
+
+[[enum]]
+isServerOnly = true
+id = "enum.giants_foundry_ore_pack_weights"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.coal" = 46854
+"obj.iron_ore" = 5803
+"obj.mithril_ore" = 3701
+"obj.adamantite_ore" = 870
+"obj.runite_ore" = 162
+
+[[enum]]
+isServerOnly = true
+id = "enum.giants_foundry_heat_steps"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+0 = 7
+1 = 8
+2 = 9
+3 = 11
+4 = 13
+5 = 15
+6 = 17
+7 = 19
+8 = 21
+9 = 24
+10 = 27
+11 = 30
+12 = 33
+13 = 37
+14 = 41
+15 = 45
+16 = 49
+17 = 53
+18 = 57
+19 = 62
+20 = 67
+21 = 72
+22 = 77
+23 = 83
+24 = 89
+25 = 95
+
+[[enum]]
+isServerOnly = true
+id = "enum.sleeping_giants_repair_materials"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.oak_logs" = 1
+"obj.wool" = 1
+"obj.chisel" = 1
+"obj.hammer" = 1
+"obj.imcando_hammer" = 1
+
+[[enum]]
+isServerOnly = true
+id = "enum.sleeping_giants_nails"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.nails_bronze"
+1 = "obj.nails_iron"
+2 = "obj.nails"
+3 = "obj.nails_black"
+4 = "obj.nails_mithril"
+5 = "obj.nails_adamant"
+6 = "obj.nails_rune"

@@ -48,7 +48,8 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         }
         ifOpenMainModal(INTERFACE)
         ifSetEvents(SIDE_MENU, 0..SIDE_MENU_CHILDREN, IfEvent.Op1)
-        ifSetEvents(CONTENT, 0..CONTENT_CHILDREN, IfEvent.Op1)
+        val rows = FoundryData.moulds.values.maxOf { it.size }
+        ifSetEvents(CONTENT, 0..rows * ROW_CHILDREN, IfEvent.Op1)
     }
 
     private fun ProtectedAccess.checkMoulds() {
@@ -177,7 +178,7 @@ class MouldJigScript @Inject constructor() : PluginScript() {
             player.setFoundryVar(seedVarbit(section), 0)
         }
         for ((section, tool) in layout.withIndex()) {
-            player.setFoundryVar(seedVarbit(section), tool.seed)
+            player.setFoundryVar(seedVarbit(section), tool.row.seed)
         }
         // UNVERIFIED: the start heat when a bucket of water cools the preform instead of ice
         // gloves (guess: the same as with gloves).
@@ -219,7 +220,6 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         const val TAB_CHILDREN = 9
         const val ROW_CHILDREN = 17
         const val SIDE_MENU_CHILDREN = 3 * TAB_CHILDREN
-        const val CONTENT_CHILDREN = 11 * ROW_CHILDREN
         const val JIG_EMPTY = "loc.giants_foundry_jig_empty"
         const val JIG_MOULD = "loc.giants_foundry_jig_mould"
         const val JIG_FILLED = "loc.giants_foundry_jig_mould_filled"

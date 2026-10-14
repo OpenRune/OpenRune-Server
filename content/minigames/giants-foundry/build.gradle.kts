@@ -14,5 +14,6 @@ dependencies {
     implementation(projects.api.repo)
     implementation(projects.content.interfaces.bank)
     implementation(projects.content.quest)
+    implementation(projects.content.skills.smithing)
     implementation(projects.content.skills.utils)
 }

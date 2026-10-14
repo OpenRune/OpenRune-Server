@@ -3,9 +3,10 @@ package org.rsmod.content.minigames.giantsfoundry
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import org.rsmod.api.enums.SmithingProductToEnums
+import org.rsmod.api.enums.GiantsFoundryEnums
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.table.smithing.SmithingBarsRow
+import org.rsmod.content.skills.smithing.util.SmithingData
 import org.rsmod.game.entity.Player
 
 internal fun Player.foundryVar(name: String): Int = vars[name]
@@ -49,14 +50,17 @@ internal data class Mould(
     }
 }
 
-/** Values of `giants_foundry_commission_word_*` (enum `giants_foundry_commission_words`). */
-internal enum class CommissionWord(val id: Int, val label: String, val positive: Boolean) {
-    Narrow(1, "Narrow", false),
-    Light(2, "Light", false),
-    Flat(3, "Flat", false),
-    Broad(4, "Broad", true),
-    Heavy(5, "Heavy", true),
-    Spiked(6, "Spiked", true);
+/** Values of `giants_foundry_commission_word_*`, keys of enum `giants_foundry_commission_words`. */
+internal enum class CommissionWord(val id: Int, val positive: Boolean) {
+    Narrow(1, false),
+    Light(2, false),
+    Flat(3, false),
+    Broad(4, true),
+    Heavy(5, true),
+    Spiked(6, true);
+
+    val label: String
+        get() = GiantsFoundryEnums.giants_foundry_commission_words.getValue(id)
 
     /** The style axis (broad/narrow, heavy/light, spiked/flat) this word sits on. */
     val axis: Int
@@ -121,41 +125,40 @@ internal object FoundryData {
 
     private const val BOUGHT_PER_PART = 5
 
-    /** The foundry needs 15 Smithing (Sleeping Giants). */
-    private const val FOUNDRY_LEVEL = 15
-
     private fun param(name: String): Int = name.asRSCM(RSCMType.PARAM)
 
-    /**
-     * The bar for each crucible metal (same order as [METALS]), from the cache's `smithing_bars`
-     * table. https://oldschool.runescape.wiki/w/Crucible
-     */
-    val bars: List<SmithingBarsRow> by lazy {
-        METALS.map { metal ->
-            SmithingBarsRow.all().firstOrNull { it.prefix.equals(metal, ignoreCase = true) }
-                ?: error("No smithing_bars row for $metal")
-        }
-    }
+    /** The bar for each crucible metal, in [METALS] order. */
+    val bars: List<SmithingBarsRow> by lazy { METAL_BARS.map(SmithingBarsRow::getRow) }
+
+    private val METAL_BARS =
+        listOf(
+            "dbrow.bronze",
+            "dbrow.iron",
+            "dbrow.steel",
+            "dbrow.mithril",
+            "dbrow.adamantite",
+            "dbrow.runite",
+        )
 
     /**
      * Smithed items the crucible melts down: item id to (metal index, bars worth). An item is
-     * worth one bar less than it takes to smith (from the cache's
-     * `smithing_product_to_bars_required`), so one-bar items are refused.
-     * https://oldschool.runescape.wiki/w/Crucible
+     * worth one bar less than it takes to smith, so one-bar items are refused.
      */
     val smithedItems: Map<Int, Pair<Int, Int>> by lazy {
-        SmithingProductToEnums.smithing_product_to_bars_required
-            .mapNotNull { (item, bars) ->
-                val metal = METALS.indexOfFirst { item.name.startsWith("$it ", ignoreCase = true) }
-                if (metal < 0 || bars == null || bars <= 1) null else item.id to (metal to bars - 1)
+        val barRows = bars.map { it.rowId }
+        SmithingData.productMeta
+            .mapNotNull { meta ->
+                val metal = barRows.indexOf(meta.bar.rowId)
+                if (metal < 0 || meta.barCount <= 1) null
+                else meta.product.id to (metal to meta.barCount - 1)
             }
             .toMap()
     }
 
-    /** Smithing level to add [bar]: its smelting level, at least the foundry's 15. */
+    /** Smithing level to add [bar]: its smelting level, at least what Sleeping Giants needs. */
     fun barLevel(bar: SmithingBarsRow): Int {
         val smelt = bar.statReq.firstOrNull { it.t0.id == SMITHING.asRSCM(RSCMType.STAT) }?.t1 ?: 1
-        return maxOf(FOUNDRY_LEVEL, smelt)
+        return maxOf(SleepingGiants.requiredSmithing, smelt)
     }
 
     private const val SMITHING = "stat.smithing"

@@ -16,6 +16,10 @@ giants_foundry_moulds_forte = 4373
 giants_foundry_moulds_blade = 4374
 giants_foundry_moulds_tip = 4375
 giants_foundry_reward_shop_items = 4379
+giants_foundry_ore_pack_weights = 64430
+giants_foundry_heat_steps = 64431
+sleeping_giants_repair_materials = 64433
+sleeping_giants_nails = 64434
 
 [gamevals.param]
 giants_foundry_mould_name = 1621
@@ -46,3 +50,33 @@ giants_foundry_waterfall = 1006
 
 [gamevals.droptrigger]
 sleeping_giants_room = 64400
+
+[gamevals.dbtable]
+giants_foundry_tools = 64430
+sleeping_giants_repairs = 64431
+sleeping_giants_room_locs = 64432
+sleeping_giants_crate = 64433
+
+[gamevals.dbrow]
+giants_foundry_tool_hammer = 63700
+giants_foundry_tool_grindstone = 63701
+giants_foundry_tool_polishing_wheel = 63702
+sleeping_giants_repair_hammer = 63710
+sleeping_giants_repair_grindstone = 63711
+sleeping_giants_repair_polishing_wheel = 63712
+sleeping_giants_room_loc_trip_hammer = 63720
+sleeping_giants_room_loc_grindstone = 63721
+sleeping_giants_room_loc_polishing_wheel = 63722
+sleeping_giants_room_loc_crucible = 63723
+sleeping_giants_room_loc_mould_jig = 63724
+sleeping_giants_room_loc_chest = 63725
+sleeping_giants_room_loc_lava_pool = 63726
+sleeping_giants_room_loc_waterfall = 63727
+sleeping_giants_room_loc_preform_storage = 63728
+sleeping_giants_room_loc_supply_box = 63729
+sleeping_giants_crate_bronze_bars = 63730
+sleeping_giants_crate_iron_bars = 63731
+sleeping_giants_crate_bronze_battleaxes = 63732
+sleeping_giants_crate_iron_longswords = 63733
+sleeping_giants_crate_bronze_platebody = 63734
+sleeping_giants_crate_iron_platebody = 63735

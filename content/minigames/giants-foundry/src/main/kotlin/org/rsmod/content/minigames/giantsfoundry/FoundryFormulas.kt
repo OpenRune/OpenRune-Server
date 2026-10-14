@@ -1,5 +1,8 @@
 package org.rsmod.content.minigames.giantsfoundry
 
+import org.rsmod.api.enums.GiantsFoundryEnums
+import org.rsmod.api.table.GiantsFoundryToolsRow
+
 /**
  * Giants' Foundry maths. Temperature and progress are on the client's 0..1000 scale (varbits
  * `giants_foundry_preform_temperature` / `_completion`), quality on 0..255.
@@ -67,47 +70,28 @@ internal object FoundryFormulas {
 
     /**
      * Heat added per tick at the lava pool (or removed at the waterfall) after [ticks] ticks of
-     * the same action; "dunk"/"quench" start 10 steps in. Measured from the heat varbit by the
-     * Easy Giants' Foundry RuneLite plugin (`HeatActionSolver.DX_1`, commit 9324c7f). The table
-     * covers the whole 0..1000 gauge from either end, so later steps only ever hit the clamp.
+     * the same action; "dunk"/"quench" start [FAST_HEAT_OFFSET] steps in. The steps cover the
+     * whole 0..1000 gauge from either end, so later steps only ever hit the clamp.
      */
-    fun heatStep(ticks: Int): Int = HEAT_STEPS[ticks.coerceAtMost(HEAT_STEPS.lastIndex)]
+    fun heatStep(ticks: Int): Int = heatSteps.getValue(ticks.coerceAtMost(lastHeatStep))
 
     const val FAST_HEAT_OFFSET = 10
 
-    private val HEAT_STEPS =
-        intArrayOf(
-            7, 8, 9, 11, 13, 15, 17, 19, 21, 24, 27, 30, 33, 37, 41, 45, 49, 53, 57, 62, 67, 72,
-            77, 83, 89, 95,
-        )
+    private val heatSteps
+        get() = GiantsFoundryEnums.giants_foundry_heat_steps
+
+    private val lastHeatStep by lazy { heatSteps.keys.max() }
 }
 
-/** The three refining stations; [seed] is the `giants_foundry_seed_*` varbit value. */
-internal enum class FoundryTool(
-    val seed: Int,
-    /** Ticks between actions. */
-    val period: Int,
-    val progress: Int,
-    val heat: Int,
-    /** XP per successful action, in tenths. */
-    val xpTenths: Int,
-    val loc: String,
-    val synth: String,
-) {
-    // https://oldschool.runescape.wiki/w/Giants%27_Foundry#Refining_the_sword
-    Hammer(0, 5, 20, -25, 45, "loc.giants_foundry_trip_hammer", "synth.giants_foundry_trip_hammer"),
-    Grindstone(1, 2, 10, 15, 32, "loc.giants_foundry_grindstone", "synth.giants_foundry_grindstone"),
-    PolishingWheel(
-        2,
-        2,
-        10,
-        -17,
-        33,
-        "loc.giants_foundry_polishing_wheel",
-        "synth.giants_foundry_polishing_wheel",
-    );
+/** The three refining stations, by their `giants_foundry_tools` row. */
+internal enum class FoundryTool(private val dbrow: String) {
+    Hammer("dbrow.giants_foundry_tool_hammer"),
+    Grindstone("dbrow.giants_foundry_tool_grindstone"),
+    PolishingWheel("dbrow.giants_foundry_tool_polishing_wheel");
+
+    val row: GiantsFoundryToolsRow by lazy { GiantsFoundryToolsRow.getRow(dbrow) }
 
     companion object {
-        fun forSeed(seed: Int): FoundryTool = entries.first { it.seed == seed }
+        fun forSeed(seed: Int): FoundryTool = entries.first { it.row.seed == seed }
     }
 }

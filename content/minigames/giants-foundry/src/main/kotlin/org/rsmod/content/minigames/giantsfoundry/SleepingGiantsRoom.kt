@@ -2,6 +2,7 @@ package org.rsmod.content.minigames.giantsfoundry
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ObjectServerType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.instances.InstanceAttributes
@@ -10,6 +11,7 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionTemplate
+import org.rsmod.api.table.SleepingGiantsRoomLocsRow
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocAngle
@@ -73,7 +75,7 @@ constructor(
 
     private suspend fun arrive(access: ProtectedAccess, room: Room, onArrival: () -> Unit) {
         val region = room.region
-        for (swap in SWAPS) {
+        for (swap in SleepingGiantsRoomLocsRow.all()) {
             swapLoc(region, swap.coords, swap.real, swap.quest)
         }
         addQuestLocs(region)
@@ -103,7 +105,7 @@ constructor(
             access.telejump(region.normal[INTRO_ENTRANCE_TILE])
             access.delay(1)
             room.kovac = spawnKovac(region, KOVAC_CUTSCENE, KOVAC_TILE, Direction.South)
-            for (swap in SWAPS) {
+            for (swap in SleepingGiantsRoomLocsRow.all()) {
                 swapLoc(region, swap.coords, swap.real, swap.cutscene)
             }
             swapLoc(region, EXIT_TILE, EXIT, EXIT_CUTSCENE)
@@ -200,7 +202,7 @@ constructor(
         if (current != null && current.type.id == KOVAC.asRSCM(RSCMType.NPC)) {
             return
         }
-        for (swap in SWAPS) {
+        for (swap in SleepingGiantsRoomLocsRow.all()) {
             swapLoc(room.region, swap.coords, swap.cutscene, swap.quest)
         }
         swapLoc(room.region, EXIT_TILE, EXIT_CUTSCENE, EXIT)
@@ -330,6 +332,15 @@ constructor(
         locRepo.add(coords, into, Int.MAX_VALUE, loc.angle, loc.shape)
     }
 
+    private fun swapLoc(
+        region: Region,
+        tile: CoordGrid,
+        from: ObjectServerType,
+        into: ObjectServerType,
+    ) {
+        swapLoc(region, tile, from.internalName, into.internalName)
+    }
+
     private fun addLoc(region: Region, tile: CoordGrid, loc: String) {
         locRepo.add(region.normal[tile], loc, Int.MAX_VALUE, LocAngle.West, LocShape.CentrepieceStraight)
     }
@@ -352,13 +363,6 @@ constructor(
         val lookAt: CoordGrid,
         val lookAtHeight: Int,
         val lookAtRate: Int,
-    )
-
-    private class LocSwap(
-        val real: String,
-        val coords: CoordGrid,
-        val cutscene: String,
-        val quest: String,
     )
 
     private companion object {
@@ -396,24 +400,6 @@ constructor(
         val EXIT_TILE = CoordGrid(3364, 11482, 0)
         const val MESSAGEBOX = "interface.messagebox"
         const val THINK_SEQ = "seq.emote_think"
-
-        /**
-         * Real foundry locs (map square 52_179) and the cutscene and quest versions that replace
-         * each.
-         */
-        val SWAPS =
-            listOf(
-                LocSwap("loc.giants_foundry_trip_hammer", CoordGrid(3363, 11496, 0), "loc.giants_foundry_trip_hammer_broken_cutscene", "loc.giants_foundry_trip_hammer_quest_multi"),
-                LocSwap("loc.giants_foundry_grindstone", CoordGrid(3361, 11491, 0), "loc.giants_foundry_grindstone_broken_cutscene", "loc.giants_foundry_grindstone_quest_multi"),
-                LocSwap("loc.giants_foundry_polishing_wheel", CoordGrid(3362, 11484, 0), "loc.giants_foundry_polishing_wheel_broken_cutscene", "loc.giants_foundry_polishing_wheel_quest_multi"),
-                LocSwap("loc.giants_foundry_crucible_multi", CoordGrid(3373, 11488, 0), "loc.giants_foundry_crucible_empty_cutscene", "loc.giants_foundry_crucible_empty_quest"),
-                LocSwap("loc.giants_foundry_mould_jig", CoordGrid(3370, 11488, 0), "loc.giants_foundry_jig_empty_cutscene", "loc.giants_foundry_jig_empty_quest"),
-                LocSwap("loc.giants_foundry_chest", CoordGrid(3375, 11493, 0), "loc.giants_foundry_chest_cutscene", "loc.giants_foundry_chest_quest"),
-                LocSwap("loc.giants_foundry_lava_pool", CoordGrid(3372, 11497, 0), "loc.giants_foundry_lava_pool_cutscene", "loc.giants_foundry_lava_pool_quest"),
-                LocSwap("loc.giants_foundry_waterfall", CoordGrid(3357, 11488, 0), "loc.giants_foundry_waterfall_cutscene", "loc.giants_foundry_waterfall_quest"),
-                LocSwap("loc.giants_foundry_preform_storage", CoordGrid(3369, 11501, 0), "loc.giants_foundry_preform_storage_empty_cutscene", "loc.giants_foundry_preform_storage_empty_quest"),
-                LocSwap("loc.giants_foundry_supply_box_multi", CoordGrid(3370, 11483, 0), "loc.giants_foundry_supply_box_cutscene", "loc.giants_foundry_supply_box_quest"),
-            )
 
         /** Set with the cutscene locs and left in place for the quest. */
         const val POWER_UNIT_QUEST = "loc.giants_foundry_tool_powerunit_quest"

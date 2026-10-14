@@ -1,5 +1,8 @@
 package org.rsmod.content.minigames.giantsfoundry
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import org.rsmod.api.table.QuestRow
 import org.rsmod.game.entity.Player
 
 /**
@@ -11,6 +14,11 @@ import org.rsmod.game.entity.Player
  */
 internal object SleepingGiants {
     const val QUEST = "quest_sleepinggiants"
+
+    val requiredSmithing: Int by lazy {
+        val smithing = "stat.smithing".asRSCM(RSCMType.STAT)
+        QuestRow.getRow("dbrow.$QUEST").requirementStats.first { it.t0.id == smithing }.t1
+    }
 
     const val NOT_STARTED = 0
 

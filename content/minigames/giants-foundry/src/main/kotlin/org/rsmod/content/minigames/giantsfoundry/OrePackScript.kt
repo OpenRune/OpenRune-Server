@@ -1,9 +1,9 @@
 package org.rsmod.content.minigames.giantsfoundry
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
+import org.rsmod.api.enums.GiantsFoundryEnums
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.script.onOpHeld1
@@ -20,9 +20,10 @@ class OrePackScript @Inject constructor(private val random: GameRandom) : Plugin
     }
 
     private fun ProtectedAccess.open() {
-        val rolls = IntArray(ORES.size)
-        repeat(ORE_COUNT) { rolls[roll()]++ }
-        val noted = ORES.map { (ore, _) -> noted(ore) }
+        val ores = ores()
+        val rolls = IntArray(ores.size)
+        repeat(ORE_COUNT) { rolls[roll(ores)]++ }
+        val noted = ores.map { (ore, _) -> noted(ore) }
         // UNVERIFIED: only the rolled ores the inventory doesn't already hold need a space (guess).
         val needed = noted.indices.count { rolls[it] > 0 && !inv.contains(noted[it]) }
         val missing = needed - (inv.freeSpace() + 1)
@@ -33,16 +34,23 @@ class OrePackScript @Inject constructor(private val random: GameRandom) : Plugin
         }
         invDel(inv, ORE_PACK, 1)
         mes("You open the pack and find $ORE_COUNT ores.")
-        for (i in ORES.indices) {
+        for (i in ores.indices) {
             if (rolls[i] > 0) {
                 invAdd(inv, noted[i], rolls[i])
             }
         }
     }
 
-    private fun roll(): Int {
-        var pick = random.of(1, ORES.sumOf { it.second })
-        for ((index, ore) in ORES.withIndex()) {
+    // UNVERIFIED: the weights in `giants_foundry_ore_pack_weights`, taken from crowd-sourced
+    // counts of opened packs, not the game's own table (wiki description).
+    private fun ores(): List<Pair<ItemServerType, Int>> =
+        GiantsFoundryEnums.giants_foundry_ore_pack_weights
+            .mapNotNull { (ore, weight) -> weight?.let { ore to it } }
+            .sortedByDescending { it.second }
+
+    private fun roll(ores: List<Pair<ItemServerType, Int>>): Int {
+        var pick = random.of(1, ores.sumOf { it.second })
+        for ((index, ore) in ores.withIndex()) {
             pick -= ore.second
             if (pick <= 0) {
                 return index
@@ -51,25 +59,15 @@ class OrePackScript @Inject constructor(private val random: GameRandom) : Plugin
         return 0
     }
 
-    private fun noted(ore: String): String {
-        val type = ServerCacheManager.getItem(ore.asRSCM(RSCMType.OBJ)) ?: error("Missing $ore")
-        val cert = ServerCacheManager.getItem(type.certlink) ?: error("No noted form of $ore")
+    private fun noted(ore: ItemServerType): String {
+        val cert =
+            ServerCacheManager.getItem(ore.certlink)
+                ?: error("No noted form of ${ore.internalName}")
         return cert.internalName
     }
 
     private companion object {
         const val ORE_PACK = "obj.giants_foundry_ore_pack"
         const val ORE_COUNT = 30
-
-        // UNVERIFIED: the ore weights, taken from crowd-sourced counts of opened packs, not the
-        // game's own table (wiki description).
-        val ORES =
-            listOf(
-                "obj.coal" to 46_854,
-                "obj.iron_ore" to 5_803,
-                "obj.mithril_ore" to 3_701,
-                "obj.adamantite_ore" to 870,
-                "obj.runite_ore" to 162,
-            )
     }
 }

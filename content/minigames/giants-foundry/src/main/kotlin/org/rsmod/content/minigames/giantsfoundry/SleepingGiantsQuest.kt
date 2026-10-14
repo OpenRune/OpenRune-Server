@@ -1,8 +1,11 @@
 package org.rsmod.content.minigames.giantsfoundry
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.MesAnimType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
+import org.rsmod.api.enums.SleepingGiantsEnums
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.events.interact.HeldDropEvents
 import org.rsmod.api.player.output.mes
@@ -16,6 +19,8 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerQueueWithArgs
+import org.rsmod.api.table.SleepingGiantsCrateRow
+import org.rsmod.api.table.SleepingGiantsRepairsRow
 import org.rsmod.content.interfaces.bank.tryOpenBank
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestRequirements
@@ -58,23 +63,15 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
         onOpNpc1(KOVAC_FOUNDRY) { talkInside(it.npc) }
 
-        onOpLoc1(HAMMER_BROKEN) { repair(RepairTool.Hammer) }
-        onOpLoc1(GRINDSTONE_BROKEN) { repair(RepairTool.Grindstone) }
-        onOpLoc1(POLISHING_WHEEL_BROKEN) { repair(RepairTool.PolishingWheel) }
-        val brokenTools =
-            listOf(
-                HAMMER_BROKEN to RepairTool.Hammer,
-                GRINDSTONE_BROKEN to RepairTool.Grindstone,
-                POLISHING_WHEEL_BROKEN to RepairTool.PolishingWheel,
-            )
-        for ((loc, tool) in brokenTools) {
-            for (obj in REPAIR_MATERIALS) {
-                onOpLocU(loc, obj) { repair(tool) }
+        for (tool in RepairTool.entries) {
+            val broken = tool.row.brokenLoc.internalName
+            onOpLoc1(broken) { repair(tool) }
+            // UNVERIFIED: that using a material plays the Repair op's dialogue (guess)
+            for (obj in repairMaterials) {
+                onOpLocU(broken, obj) { repair(tool) }
             }
+            onOpLoc1(tool.row.repairedLoc.internalName) { inspectRepaired(tool) }
         }
-        onOpLoc1(HAMMER_REPAIRED) { inspectRepaired(RepairTool.Hammer) }
-        onOpLoc1(GRINDSTONE_REPAIRED) { inspectRepaired(RepairTool.Grindstone) }
-        onOpLoc1(POLISHING_WHEEL_REPAIRED) { inspectRepaired(RepairTool.PolishingWheel) }
 
         onOpLoc1(CHEST_QUEST) { tryOpenBank() }
         onOpLoc2(CHEST_QUEST) { inspectChest() }
@@ -174,9 +171,12 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             lineByLine("Want...", "no, need...", "your help.") { chatNpc(neutral, it) }
             chatPlayer(quiz, "I must be dreaming. Giants can't talk!")
             chatNpc(neutral, "Please...")
-            if (access.statBase(SMITHING) < REQUIRED_SMITHING) {
+            if (access.statBase(SMITHING) < SleepingGiants.requiredSmithing) {
                 // UNVERIFIED: the message for missing the Smithing requirement (guess)
-                mesbox("You need a Smithing level of $REQUIRED_SMITHING to start this quest.")
+                mesbox(
+                    "You need a Smithing level of ${SleepingGiants.requiredSmithing} to start " +
+                        "this quest."
+                )
                 return@startDialogue
             }
             if (!choice2("Yes.", true, "No.", false, title = "Start the Sleeping Giants quest?")) {
@@ -336,7 +336,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         chatPlayer(quiz, "What's left to fix, Kovac?")
         chatNpc(neutral, "Hmm...")
         for (tool in RepairTool.entries.filterNot { it.isRepaired(player) }) {
-            chatNpc(neutral, "${tool.title}...")
+            chatNpc(neutral, "${tool.row.name}...")
         }
         chatPlayer(happy, "Thanks!")
     }
@@ -360,26 +360,15 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     /* Repairs */
 
-    private enum class RepairTool(
-        val title: String,
-        val varbit: String,
-        val oakLogs: Int,
-        val nails: Int,
-        val wool: Boolean,
-        val hammer: Boolean,
-        val chisel: Boolean,
-    ) {
-        Hammer("Trip hammer", "varbit.sleeping_giants_repair_hammer", 1, 5, false, true, false),
-        Grindstone("Grindstone", "varbit.sleeping_giants_repair_grind", 0, 0, false, false, true),
-        PolishingWheel(
-            "Polishing wheel",
-            "varbit.sleeping_giants_repair_polish",
-            2,
-            5,
-            true,
-            true,
-            false,
-        );
+    private enum class RepairTool(private val dbrow: String) {
+        Hammer("dbrow.sleeping_giants_repair_hammer"),
+        Grindstone("dbrow.sleeping_giants_repair_grindstone"),
+        PolishingWheel("dbrow.sleeping_giants_repair_polishing_wheel");
+
+        val row: SleepingGiantsRepairsRow by lazy { SleepingGiantsRepairsRow.getRow(dbrow) }
+
+        val varbit: String
+            get() = RSCM.getReverseMapping(RSCMType.VARBIT, row.stateVarbit)
 
         fun state(player: Player): Int = player.foundryVar(varbit)
 
@@ -407,7 +396,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                     RepairTool.Hammer ->
                         doubleobjbox(
                             OAK_LOGS,
-                            NAILS.first(),
+                            nails.first(),
                             "You will need an oak log, 5 nails and a hammer to repair the trip hammer.",
                         )
                     RepairTool.Grindstone ->
@@ -570,23 +559,23 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             player.worn[Wearpos.LeftHand.slot]?.isType(IMCANDO_HAMMER_OFFHAND) == true
 
     private fun ProtectedAccess.nailsType(count: Int): String? =
-        NAILS.firstOrNull { inv.count(it) >= count }
+        nails.firstOrNull { inv.count(it) >= count }
 
     private fun ProtectedAccess.hasMaterials(tool: RepairTool): Boolean =
-        inv.count(OAK_LOGS) >= tool.oakLogs &&
-            (tool.nails == 0 || nailsType(tool.nails) != null) &&
-            (!tool.wool || inv.contains(WOOL)) &&
-            (!tool.hammer || hasHammer()) &&
-            (!tool.chisel || inv.contains(CHISEL))
+        inv.count(OAK_LOGS) >= tool.row.oakLogs &&
+            (tool.row.nails == 0 || nailsType(tool.row.nails) != null) &&
+            (!tool.row.wool || inv.contains(WOOL)) &&
+            (!tool.row.hammer || hasHammer()) &&
+            (!tool.row.chisel || inv.contains(CHISEL))
 
     private fun ProtectedAccess.takeMaterials(tool: RepairTool) {
-        if (tool.oakLogs > 0) {
-            invDel(inv, OAK_LOGS, tool.oakLogs)
+        if (tool.row.oakLogs > 0) {
+            invDel(inv, OAK_LOGS, tool.row.oakLogs)
         }
-        if (tool.nails > 0) {
-            invDel(inv, checkNotNull(nailsType(tool.nails)), tool.nails)
+        if (tool.row.nails > 0) {
+            invDel(inv, checkNotNull(nailsType(tool.row.nails)), tool.row.nails)
         }
-        if (tool.wool) {
+        if (tool.row.wool) {
             invDel(inv, WOOL, 1)
         }
     }
@@ -681,7 +670,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             lineByLine("You rummage through the box...", "You find a bunch of metal bars and old weapons!") {
                 mesbox(it)
             }
-            if (access.inv.freeSpace() < CRATE_ITEMS.sumOf { it.second }) {
+            if (access.inv.freeSpace() < SleepingGiantsCrateRow.all().sumOf { it.count }) {
                 mesbox("You will need 20 free inventory slots to take the items from the crate.")
                 return@startDialogue
             }
@@ -690,8 +679,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             }
             player.advanceTutorial(SleepingGiants.TUTORIAL_CRATE_SEARCHED)
             access.anim(TAKE_SEQ)
-            for ((obj, count) in CRATE_ITEMS) {
-                access.invAdd(access.inv, obj, count)
+            for (item in SleepingGiantsCrateRow.all()) {
+                access.invAdd(access.inv, item.obj.internalName, item.count)
             }
             access.soundSynth(TAKE_SYNTH)
             doubleobjbox(
@@ -1044,14 +1033,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         const val KOVAC_FOUNDRY_HEAD = "npc.giants_foundry_kovac_multi"
 
         const val SMITHING = "stat.smithing"
-        const val REQUIRED_SMITHING = 15
 
-        const val HAMMER_BROKEN = "loc.giants_foundry_trip_hammer_broken_quest"
-        const val GRINDSTONE_BROKEN = "loc.giants_foundry_grindstone_broken_quest"
-        const val POLISHING_WHEEL_BROKEN = "loc.giants_foundry_polishing_wheel_broken_quest"
-        const val HAMMER_REPAIRED = "loc.giants_foundry_trip_hammer_quest"
-        const val GRINDSTONE_REPAIRED = "loc.giants_foundry_grindstone_quest"
-        const val POLISHING_WHEEL_REPAIRED = "loc.giants_foundry_polishing_wheel_quest"
         const val CHEST_QUEST = "loc.giants_foundry_chest_quest"
         const val CRATE_QUEST = "loc.giants_foundry_supply_box_quest"
         const val CRUCIBLE_QUEST = "loc.giants_foundry_crucible_empty_quest"
@@ -1070,42 +1052,17 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         const val IMCANDO_HAMMER_OFFHAND = "obj.imcando_hammer_offhand"
         const val BUCKET_WATER = "obj.bucket_water"
 
-        /**
-         * Using a material on a broken tool starts its repair too: a June 2022 hotfix stopped
-         * "using items on the Polishing Wheel" from fixing the trip hammer.
-         * https://oldschool.runescape.wiki/w/Giants%27_Foundry (Changes)
-         */
-        // UNVERIFIED: that using a material plays the Repair op's dialogue (guess)
-        val REPAIR_MATERIALS by lazy {
-            listOf(OAK_LOGS, WOOL, CHISEL, HAMMER, IMCANDO_HAMMER) + NAILS
+        val repairMaterials: List<String> by lazy {
+            SleepingGiantsEnums.sleeping_giants_repair_materials.keys.map { it.internalName } +
+                nails
         }
 
         // UNVERIFIED: that nails other than steel nails work (wiki description)
-        val NAILS =
-            listOf(
-                "obj.nails_bronze",
-                "obj.nails_iron",
-                "obj.nails",
-                "obj.nails_black",
-                "obj.nails_mithril",
-                "obj.nails_adamant",
-                "obj.nails_rune",
-            )
-
-        /**
-         * 20 items, exactly 28 bars' worth (16 bronze, 12 iron), as seen in the inventory right
-         * after taking them in two Sleeping Giants videos (Slayermusiq1,
-         * youtube.com/watch?v=io6mQxi1ddI 4:09; sigmazx, youtube.com/watch?v=WnGuNtTJW0M 5:41).
-         */
-        val CRATE_ITEMS =
-            listOf(
-                "obj.bronze_bar" to 8,
-                "obj.iron_bar" to 6,
-                "obj.bronze_battleaxe" to 2,
-                "obj.iron_longsword" to 2,
-                "obj.bronze_platebody" to 1,
-                "obj.iron_platebody" to 1,
-            )
+        val nails: List<String> by lazy {
+            SleepingGiantsEnums.sleeping_giants_nails.backing.toSortedMap().values.mapNotNull {
+                it?.internalName
+            }
+        }
     }
 }
 
@@ -1117,24 +1074,17 @@ internal sealed interface QuestPrompt {
     data object SwordFinished : QuestPrompt
 
     companion object {
-        private val NAMES =
-            mapOf(
-                FoundryTool.Hammer to "trip hammer",
-                FoundryTool.Grindstone to "grindstone",
-                FoundryTool.PolishingWheel to "polishing wheel",
-            )
-
         fun wrongTool(needed: FoundryTool) =
-            KovacStop("Using wrong tool. We should be using the ${NAMES.getValue(needed)}.")
+            KovacStop("Using wrong tool. We should be using the ${needed.row.name}.")
 
         fun tooCold(tool: FoundryTool) =
             KovacStop(
-                "The sword is too cold. We need to heat it up to use it on the ${NAMES.getValue(tool)}."
+                "The sword is too cold. We need to heat it up to use it on the ${tool.row.name}."
             )
 
         fun tooHot(tool: FoundryTool) =
             KovacStop(
-                "The sword is too hot. We need to cool it down to use it on the ${NAMES.getValue(tool)}."
+                "The sword is too hot. We need to cool it down to use it on the ${tool.row.name}."
             )
     }
 }
