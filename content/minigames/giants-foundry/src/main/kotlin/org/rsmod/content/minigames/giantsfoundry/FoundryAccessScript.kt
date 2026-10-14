@@ -14,11 +14,30 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-// UNVERIFIED: no transport data has the arrival tile; MRobertEvers/oldschool-clientc's notes
-// give it for the Sleeping Giants instance.
-internal val FOUNDRY_INSIDE = CoordGrid(3366, 11484, 0)
+internal val FOUNDRY_INSIDE = CoordGrid(3366, 11483, 0)
 
-internal fun ProtectedAccess.enterFoundry() = telejump(FOUNDRY_INSIDE)
+private const val ENTER_FADE_CYCLES = 50
+
+internal suspend fun ProtectedAccess.enterFoundry() {
+    fadeOverlay(
+        startColour = 0,
+        startTransparency = 255,
+        endColour = 0,
+        endTransparency = 0,
+        clientDuration = ENTER_FADE_CYCLES,
+    )
+    delay(2)
+    telejump(FOUNDRY_INSIDE)
+    delay(1)
+    fadeOverlay(
+        startColour = 0,
+        startTransparency = 0,
+        endColour = 0,
+        endTransparency = 255,
+        clientDuration = ENTER_FADE_CYCLES,
+    )
+    closeFadeOverlay(cycles = 2)
+}
 
 /** Getting in and out of the foundry, its bank chest and the preform storage. */
 class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRoom) :
@@ -105,7 +124,7 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
         const val STORAGE_FULL = "loc.giants_foundry_preform_storage_full"
         const val STORAGE_SEQ = "seq.human_furnace"
 
-        // UNVERIFIED: no transport data has this; it's the Minigame Teleport tile.
+        // UNVERIFIED: the exit tile, the one in front of the entrance (guess).
         val OUTSIDE = CoordGrid(3361, 3149, 0)
     }
 }
