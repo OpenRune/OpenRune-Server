@@ -1024,7 +1024,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                 nails
         }
 
-        // UNVERIFIED: that nails other than steel nails work (wiki description)
         val nails: List<String> by lazy {
             SleepingGiantsEnums.sleeping_giants_nails.backing.toSortedMap().values.mapNotNull {
                 it?.internalName

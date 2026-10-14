@@ -175,3 +175,10 @@ valueType = "OBJ"
 id = "loc.giants_foundry_waterfall"
 inherit = "loc.giants_foundry_waterfall"
 contentGroup = "content.water_source"
+
+[[mesanim]]
+id = "mesanim.giants_foundry_chatshock"
+len1 = "seq.chatshock1"
+len2 = "seq.chatshock2"
+len3 = "seq.chatshock3"
+len4 = "seq.chatshock4"

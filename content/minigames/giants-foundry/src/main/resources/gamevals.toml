@@ -95,3 +95,6 @@ sleeping_giants_crate_bronze_battleaxes = 63732
 sleeping_giants_crate_iron_longswords = 63733
 sleeping_giants_crate_bronze_platebody = 63734
 sleeping_giants_crate_iron_platebody = 63735
+
+[gamevals.mesanim]
+giants_foundry_chatshock = 64400
