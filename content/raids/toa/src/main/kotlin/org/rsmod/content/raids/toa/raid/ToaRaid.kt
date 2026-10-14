@@ -21,7 +21,7 @@ import org.rsmod.content.raids.toa.raid.encounter.MainHallEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaBossEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
-import org.rsmod.content.raids.toa.raid.encounter.WardensFirstEncounter
+import org.rsmod.content.raids.toa.raid.encounter.wardens.WardensEncounter
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle.CrondisPuzzleEncounter
 import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakEncounter
@@ -206,7 +206,7 @@ class ToaRaid(
         when {
             room == ToaRoom.MAIN_HALL -> MainHallEncounter(this, room, session, controllerId)
             room == ToaRoom.WARDENS_FIRST_ROOM ->
-                WardensFirstEncounter(this, room, session, controllerId)
+                WardensEncounter(this, room, session, controllerId)
             room == ToaRoom.WARDENS_SECOND_ROOM ->
                 WardensSecondEncounter(this, room, session, controllerId)
             room == ToaRoom.CRONDIS_PUZZLE ->

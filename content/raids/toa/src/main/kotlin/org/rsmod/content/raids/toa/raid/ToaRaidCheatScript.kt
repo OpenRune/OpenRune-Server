@@ -10,7 +10,9 @@ import org.rsmod.content.raids.toa.party.ToaPartyManager
 import org.rsmod.content.raids.toa.party.ToaPartyManager.currentParty
 import org.rsmod.content.raids.toa.party.ToaPartySettings
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
+import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
+import org.rsmod.content.raids.toa.raid.encounter.wardens.WardensEncounter
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Player
 import org.rsmod.game.map.Direction
@@ -29,6 +31,15 @@ constructor(
             requiredRights = Rights.ADMINISTRATOR
             desc = "Enter Ba-Ba's room, starting a raid if you are not in one"
             cheat { enterRoom(ToaRoom.APMEKEN_BOSS) }
+        }
+        onCommand("toawardens") {
+            requiredRights = Rights.ADMINISTRATOR
+            desc = "Enter the Wardens room in front of Osmumten, starting a raid if needed"
+            cheat {
+                enterRoom(ToaRoom.WARDENS_FIRST_ROOM) {
+                    (it as? WardensEncounter)?.arriveInFrontOfGhost()
+                }
+            }
         }
         onCommand("toacomplete") {
             requiredRights = Rights.ADMINISTRATOR
@@ -52,7 +63,7 @@ constructor(
         }
     }
 
-    private fun Cheat.enterRoom(room: ToaRoom) {
+    private fun Cheat.enterRoom(room: ToaRoom, prepare: (ToaEncounter) -> Unit = {}) {
         launcher.launch(player, busyText = "Close your dialog first.") {
             val inside = player.currentRaid
             val raid = inside ?: startRaid(player)
@@ -61,6 +72,7 @@ constructor(
                 return@launch
             }
             val target = resolveTarget(raid, room, checkLeader = false) ?: return@launch
+            prepare(target)
             travel(target, fromLobby = inside == null)
         }
     }
