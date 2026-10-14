@@ -95,6 +95,9 @@ internal enum class WardenGod(
         }
     }
 
+    val arenaTile: CoordGrid
+        get() = CoordGrid(if (orbSide < 0) ELIDINIS_ARENA_X else TUMEKEN_ARENA_X, tile.z, tile.level)
+
     val orbBlockTiles: List<CoordGrid>
         get() =
             (ORB_BLOCK_FIRST..ORB_SPAWN_OFFSET).map {
@@ -112,6 +115,8 @@ internal enum class WardenGod(
         const val WARDEN_RADIUS = 2
         const val ORB_SPAWN_OFFSET = 3
         const val ORB_BLOCK_FIRST = 2
+        const val ELIDINIS_ARENA_X = 3797
+        const val TUMEKEN_ARENA_X = 3814
         const val LANE_STEPS = 8
 
         private val OBELISK_PYRAMID = CoordGrid(3807, 5153, 1)

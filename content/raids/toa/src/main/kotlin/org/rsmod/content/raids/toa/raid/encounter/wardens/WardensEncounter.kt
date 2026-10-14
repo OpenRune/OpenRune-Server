@@ -118,12 +118,13 @@ class WardensEncounter(
         val winner = loser.other
         charging.stop()
         val obelisk = obelisk ?: return
+        obelisk.hitpoints = 0
+        hpBar?.update()
         obelisk.transmog(npcType(OBELISK_P2), Int.MAX_VALUE)
         obelisk.ignoreCombatInteractions = true
         obelisk.anim("seq.fx_obelisk_wardens01_charge")
-        obelisk.hitpoints = 0
-        hpBar?.update()
         blast.detonate(loser)
+        schedule(WALK_DELAY) { warden(winner)?.walk(winner.arenaTile.let { coords(it) }) }
         schedule(TRANSITION_DELAY) {
             for (player in players) {
                 player.mes(
@@ -224,6 +225,7 @@ class WardensEncounter(
         private const val OSMUMTEN_DESPAWN = 2
         private const val TRANSITION_DELAY = 2
         private const val SHIELD_BASE_HP = 140
+        private const val WALK_DELAY = 15
         private const val CHARGE_INTERVAL = 2
         private val CHARGE_SEQS =
             listOf(

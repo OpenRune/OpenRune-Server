@@ -97,6 +97,11 @@ internal class WardensCharging(private val room: WardensEncounter) {
     private fun spawnPair() {
         val index = spawned++
         room.obelisk?.anim("seq.fx_obelisk_wardens01_cast")
+        deps.worldRepo.soundArea(
+            room.coords(WardenGod.OBELISK_CENTRE),
+            "synth.toa_wardens_orb_spawn",
+            radius = ORB_SOUND_RADIUS,
+        )
         for (god in WardenGod.entries.reversed()) {
             val spawn =WardenGod.OBELISK_CENTRE.translate(god.orbSide * WardenGod.ORB_SPAWN_OFFSET, 0)
             val npc = room.spawn("npc.toa_wardens_energy", room.coords(spawn), god.orbFacing)
@@ -315,6 +320,7 @@ internal class WardensCharging(private val room: WardensEncounter) {
         const val ORB_CHARGE = 2
         const val BLOCK_DAMAGE = 3
         const val ORB_STEP_CYCLES = 30
+        const val ORB_SOUND_RADIUS = 9
         const val FACE_EAST = 1536
         const val FACE_WEST = 512
         const val ORB_FIRST_TICK = 2

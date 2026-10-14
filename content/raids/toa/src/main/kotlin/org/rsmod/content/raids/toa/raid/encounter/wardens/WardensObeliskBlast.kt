@@ -24,6 +24,15 @@ internal class WardensObeliskBlast(private val room: WardensEncounter) {
                 delay = scarab.delay,
             )
         }
+        for ((x, delay) in SOUND_COLUMNS) {
+            val tile = mirror(CoordGrid(x, MIDDLE_Z, 1), loser)
+            deps.worldRepo.soundArea(
+                room.coords(tile),
+                SOUND,
+                delay = delay,
+                radius = SOUND_RADIUS,
+            )
+        }
         val hit = lane.map { room.coords(mirror(it.first, loser)) }.toSet()
         for (player in room.targets()) {
             if (player.coords in hit) player.hitTypeless(room.hazardRoll(BLAST_DAMAGE, 0))
@@ -46,12 +55,17 @@ internal class WardensObeliskBlast(private val room: WardensEncounter) {
 
     private companion object {
         const val BLAST = "spotanim.obelisk_explode_energy"
+        const val SOUND = "synth.toa_wardens_obelisk_lane_explode"
+        const val SOUND_RADIUS = 15
         const val BLAST_DAMAGE = 11
         const val EDGE_X = 3810
         const val MIDDLE_Z = 5154
         const val LANE_LENGTH = 8
         const val DELAY_PER_TILE = 6
         const val MIRROR_SUM = 7616
+
+        val SOUND_COLUMNS =
+            (3811..3821).map { it to (if (it <= 3814) 0 else if (it <= 3819) 1 else 2) }
 
         val SCARABS =
             listOf(

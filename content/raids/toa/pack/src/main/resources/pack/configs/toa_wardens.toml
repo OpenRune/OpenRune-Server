@@ -66,3 +66,63 @@ inherit = "npc.toa_wardens_energy"
 defaultMode = "None"
 moveRestrict = "NoMove"
 regenRate = 0
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase2_mage"
+inherit = "npc.toa_warden_elidinis_phase2_mage"
+defaultMode = "None"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 5280
+"param.boss_hp_bar_colour_sliding" = 21088
+"param.boss_hp_bar_colour_remaining" = 28480
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase2_range"
+inherit = "npc.toa_warden_elidinis_phase2_range"
+defaultMode = "None"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 5280
+"param.boss_hp_bar_colour_sliding" = 21088
+"param.boss_hp_bar_colour_remaining" = 28480
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase2_exposed"
+inherit = "npc.toa_warden_elidinis_phase2_exposed"
+defaultMode = "None"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 5280
+"param.boss_hp_bar_colour_sliding" = 21088
+"param.boss_hp_bar_colour_remaining" = 28480
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase2_mage"
+inherit = "npc.toa_warden_tumeken_phase2_mage"
+defaultMode = "None"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 5280
+"param.boss_hp_bar_colour_sliding" = 21088
+"param.boss_hp_bar_colour_remaining" = 28480
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase2_range"
+inherit = "npc.toa_warden_tumeken_phase2_range"
+defaultMode = "None"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 5280
+"param.boss_hp_bar_colour_sliding" = 21088
+"param.boss_hp_bar_colour_remaining" = 28480
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase2_exposed"
+inherit = "npc.toa_warden_tumeken_phase2_exposed"
+defaultMode = "None"
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_colour_back" = 5280
+"param.boss_hp_bar_colour_sliding" = 21088
+"param.boss_hp_bar_colour_remaining" = 28480
