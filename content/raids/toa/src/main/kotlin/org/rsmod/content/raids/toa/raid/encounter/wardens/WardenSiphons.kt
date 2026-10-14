@@ -91,17 +91,14 @@ internal class WardenSiphons(private val room: WardensSecondEncounter) {
         }
         if (!succeeded) return
         val source = room.targets().firstOrNull() ?: return
-        room.schedule(REFLECT_DELAY) {
-            if (warden.hitpoints > 0) {
-                warden.queueHit(
-                    source = source,
-                    delay = 0,
-                    type = HitType.Typeless,
-                    damage = reflect(warden),
-                    modifier = NoopModifier,
-                )
-            }
-        }
+        if (warden.hitpoints <= 0) return
+        warden.queueHit(
+            source = source,
+            delay = REFLECT_DELAY,
+            type = HitType.Typeless,
+            damage = reflect(warden),
+            modifier = NoopModifier,
+        )
     }
 
     private fun resolve(success: Boolean) {
