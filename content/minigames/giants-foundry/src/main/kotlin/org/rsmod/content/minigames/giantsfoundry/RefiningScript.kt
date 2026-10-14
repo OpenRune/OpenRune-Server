@@ -292,8 +292,8 @@ constructor(
             if (bonus) {
                 progress += SWEETSPOT_PROGRESS
                 xpTenths *= 2
-                // UNVERIFIED: any armed sweet spot regains one mistake's quality; live only
-                // regains it if the spot is hit shortly after it appears (wiki description).
+                // UNVERIFIED: the amount regained and the "shortly after it appears" limit (wiki
+                // description).
                 player.preformQuality =
                     (player.preformQuality + MISTAKE_QUALITY).coerceAtMost(player.preformStartQuality)
             }
@@ -316,7 +316,7 @@ constructor(
         }
         when {
             player.preformCompletion >= FoundryFormulas.SCALE -> swordFinished(player)
-            !mistake -> maybeOfferSweetSpot(player, section)
+            !mistake -> maybeOfferSweetSpot(player, section, completion)
         }
     }
 
@@ -330,9 +330,10 @@ constructor(
         player.soundSynth(FINISH_SYNTH)
     }
 
-    // UNVERIFIED: which actions offer a sweet spot; this spreads them at random over the
-    // sections still to come, at most one per section (wiki description).
-    private fun maybeOfferSweetSpot(player: Player, section: Int) {
+    // Spots go to distinct random sections, each at a uniform action inside the section's window.
+    // UNVERIFIED: the window's end at three quarters of the section and the slot size, fitted
+    // to observed offers (plugin measurement).
+    private fun maybeOfferSweetSpot(player: Player, section: Int, completion: Int) {
         if (player.sweetSpotUntil != 0) {
             return
         }
@@ -342,8 +343,19 @@ constructor(
         if (offered >= total || section <= lastSection) {
             return
         }
-        val sectionsLeft = FoundryFormulas.sections(player.preformDifficulty) - section
-        if (random.of(1, sectionsLeft) > total - offered) {
+        val sections = FoundryFormulas.sections(player.preformDifficulty)
+        val sectionStart = (section * FoundryFormulas.SCALE + sections - 1) / sections
+        val offset = completion - sectionStart
+        val windowEnd = FoundryFormulas.SCALE / sections * 3 / 4
+        if (offset < SWEETSPOT_WINDOW_START || offset > windowEnd) {
+            return
+        }
+        val needed = total - offered
+        val left = sections - section
+        val slots = (windowEnd - SWEETSPOT_WINDOW_START) / SWEETSPOT_SLOT + 1
+        val passed = (offset - SWEETSPOT_WINDOW_START) / SWEETSPOT_SLOT
+        val odds = (left * slots - passed * needed).coerceAtLeast(needed)
+        if (random.of(1, odds) > needed) {
             return
         }
         player.sweetSpotsLastSection = section + 1
@@ -401,9 +413,13 @@ constructor(
         const val LAVA_STATION = 4
         const val WATERFALL_STATION = 6
 
+        // UNVERIFIED: 5 per mistake on a seasonal world, where the wiki says 10 (plugin
+        // measurement).
         const val MISTAKE_QUALITY = 5
         const val SWEETSPOT_PROGRESS = 50
         const val SWEETSPOT_TICKS = 8
+        const val SWEETSPOT_WINDOW_START = 20
+        const val SWEETSPOT_SLOT = 10
 
         const val SWEETSPOT_NONE = 0
         const val SWEETSPOT_OFFERED = 1
