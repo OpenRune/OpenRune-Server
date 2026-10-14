@@ -95,6 +95,15 @@ internal enum class WardenGod(
         }
     }
 
+    val orbBlockTiles: List<CoordGrid>
+        get() =
+            (ORB_BLOCK_FIRST..ORB_SPAWN_OFFSET).map {
+                OBELISK_CENTRE.translate(orbSide * it, 0)
+            }
+
+    val orbFacing: Direction
+        get() = if (orbSide < 0) Direction.West else Direction.East
+
     val other: WardenGod
         get() = if (this == ELIDINIS) TUMEKEN else ELIDINIS
 
@@ -102,6 +111,7 @@ internal enum class WardenGod(
         val OBELISK_CENTRE = CoordGrid(3808, 5154, 1)
         const val WARDEN_RADIUS = 2
         const val ORB_SPAWN_OFFSET = 3
+        const val ORB_BLOCK_FIRST = 2
         const val LANE_STEPS = 8
 
         private val OBELISK_PYRAMID = CoordGrid(3807, 5153, 1)
