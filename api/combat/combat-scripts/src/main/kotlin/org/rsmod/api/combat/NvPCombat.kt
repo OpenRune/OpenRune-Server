@@ -86,7 +86,7 @@ constructor(
 
     /**
      * Shared attack gating and attack-rate arming. Returns `false` when the npc cannot attack this
-     * cycle (invalid target, still on cooldown, or no longer in combat).
+     * cycle (invalid target, still on cooldown, no longer in combat, or a hook replaced the attack).
      */
     private fun StandardNpcAccess.beginAttack(target: Player): Boolean {
         if (!canAttack(target)) {
@@ -107,7 +107,7 @@ constructor(
         }
 
         actionDelay = mapClock + npc.attackRate()
-        return true
+        return attackHooks.none { it.replacesAttack(npc, target) }
     }
 
     private fun StandardNpcAccess.playAttackFx(target: Player) {

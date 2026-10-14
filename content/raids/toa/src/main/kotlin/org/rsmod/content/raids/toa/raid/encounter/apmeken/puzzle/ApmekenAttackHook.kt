@@ -9,4 +9,7 @@ class ApmekenAttackHook : NpcAttackHook {
     override fun onAttack(npc: Npc, target: Player) {
         ToaRooms.of<ApmekenPuzzleEncounter>(npc)?.baboons?.onAttack(npc, target)
     }
+
+    override fun replacesAttack(npc: Npc, target: Player): Boolean =
+        ToaRooms.of<ApmekenPuzzleEncounter>(npc)?.baboons?.trySummon(npc, target) ?: false
 }
