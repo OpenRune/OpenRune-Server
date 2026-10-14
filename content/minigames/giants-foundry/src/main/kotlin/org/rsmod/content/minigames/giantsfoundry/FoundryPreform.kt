@@ -66,19 +66,15 @@ internal fun Player.showSweetSpot(state: Int) {
     runClientScript(HUD_SWEETSPOT.asRSCM(RSCMType.CLIENTSCRIPT), state)
 }
 
-/** Resets everything about the current sword (after hand-in). */
+/** Resets the current sword after hand-in; the heat and seeds stay until the next pick-up. */
 internal fun Player.clearSword() {
-    commissionWord1 = 0
-    commissionWord2 = 0
     preformDifficulty = 0
     preformQuality = 0
     preformStartQuality = 0
-    preformTemperature = 0
     preformCompletion = 0
+    commissionWord1 = 0
+    commissionWord2 = 0
     preformStored = false
     sweetSpots = 0
     commissionStart = 0
-    for (section in 0..6) {
-        setFoundryVar(seedVarbit(section), 0)
-    }
 }

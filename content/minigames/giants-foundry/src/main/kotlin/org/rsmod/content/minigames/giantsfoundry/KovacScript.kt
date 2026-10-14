@@ -1,6 +1,7 @@
 package org.rsmod.content.minigames.giantsfoundry
 
 import jakarta.inject.Inject
+import java.util.Locale
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -168,8 +169,6 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
         chatNpc(neutral, "Make ${styleText()} sword.")
     }
 
-    // UNVERIFIED: the transcript only gives "[sword style]" in red (#ef1020); the casing and
-    // wording of the two words here are a guess.
     private fun Dialogue.styleText(): String {
         val first = CommissionWord.forId(player.commissionWord1)?.label ?: ""
         val second = CommissionWord.forId(player.commissionWord2)?.label ?: ""
@@ -213,14 +212,18 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
         val start = player.commissionStart
         val seconds = if (start == 0) 0 else (System.currentTimeMillis() / 1000).toInt() - start
 
-        player.removePreform()
-        access.closeHud()
-        player.clearSword()
-
-        access.statAdvance("stat.smithing", xp.toDouble())
-        if (!access.invAdd(access.bank, "obj.coins", coins).success) {
+        val banked = access.invAdd(access.bank, "obj.coins", coins).success
+        if (banked) {
+            access.mes("Kovac deposits ${formatCoins(coins)} coins into your bank as payment.")
+        } else {
+            // UNVERIFIED: no message when the coins go to the inventory instead (guess).
             access.invAdd(access.inv, "obj.coins", coins)
         }
+        player.clearSword()
+        player.removePreform()
+        access.closeHud()
+
+        access.statAdvance("stat.smithing", xp.toDouble())
         player.foundryReputation += quality
         player.swordsMade += 1
         player.runEnergy = (player.runEnergy + RUN_ENERGY_MAX / 2).coerceAtMost(RUN_ENERGY_MAX)
@@ -238,13 +241,16 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
         mesbox(
             "Sword completed in: ${formatTime(seconds)} at quality: $quality<br>" +
                 "Best completed in: ${formatTime(player.bestTime)} at quality: ${player.bestQuality}<br>" +
-                "You're awarded: $xp Smithing XP and $coins coins.<br>" +
+                "You're awarded: $xp Smithing XP and ${formatCoins(coins)} coins.<br>" +
                 "Total swords made in the Giants Foundry: ${player.swordsMade}"
         )
+        access.mes("Total swords made in the Giants Foundry: ${player.swordsMade}")
     }
 
-    // UNVERIFIED: the transcript shows only "[time]"; minutes:seconds is a guess.
-    private fun formatTime(seconds: Int): String = "%d:%02d".format(seconds / 60, seconds % 60)
+    // UNVERIFIED: minutes keep counting past 60 (guess).
+    private fun formatTime(seconds: Int): String = "${seconds / 60}m ${seconds % 60}s"
+
+    private fun formatCoins(coins: Int): String = String.format(Locale.US, "%,d", coins)
 
     private companion object {
         const val KOVAC = "npc.giants_foundry_kovac"
