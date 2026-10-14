@@ -41,6 +41,8 @@ moveRestrict = "NoMove"
 regenRate = 0
 maxRange = 40
 attackRange = 10
+[npc.params]
+"param.hitpoints_locked" = true
 
 [[npc]]
 id = "npc.toa_warden_elidinis_phase1"
@@ -57,6 +59,8 @@ moveRestrict = "NoMove"
 regenRate = 0
 maxRange = 40
 attackRange = 10
+[npc.params]
+"param.hitpoints_locked" = true
 
 [[npc]]
 id = "npc.toa_warden_tumeken_phase1"
@@ -81,6 +85,7 @@ giveChase = true
 maxRange = 40
 attackRange = 10
 [npc.params]
+"param.headbar_inverted" = true
 "param.headbar" = "headbar.charge_140"
 "param.hitmark_lit" = "hitmark.poise_damage_lit"
 "param.hitmark_tint" = "hitmark.poise_damage_tint"
@@ -98,6 +103,7 @@ giveChase = true
 maxRange = 40
 attackRange = 10
 [npc.params]
+"param.headbar_inverted" = true
 "param.headbar" = "headbar.charge_140"
 "param.hitmark_lit" = "hitmark.poise_damage_lit"
 "param.hitmark_tint" = "hitmark.poise_damage_tint"
@@ -132,6 +138,7 @@ giveChase = true
 maxRange = 40
 attackRange = 10
 [npc.params]
+"param.headbar_inverted" = true
 "param.headbar" = "headbar.charge_140"
 "param.hitmark_lit" = "hitmark.poise_damage_lit"
 "param.hitmark_tint" = "hitmark.poise_damage_tint"
@@ -149,6 +156,7 @@ giveChase = true
 maxRange = 40
 attackRange = 10
 [npc.params]
+"param.headbar_inverted" = true
 "param.headbar" = "headbar.charge_140"
 "param.hitmark_lit" = "hitmark.poise_damage_lit"
 "param.hitmark_tint" = "hitmark.poise_damage_tint"
@@ -181,6 +189,7 @@ defaultMode = "None"
 moveRestrict = "NoMove"
 regenRate = 0
 [npc.params]
+"param.headbar_hidden" = true
 "param.hitpoints_locked" = true
 "param.hitmark_lit" = "hitmark.regular_damage_max"
 "param.hitmark_tint" = "hitmark.regular_damage_max"
@@ -193,6 +202,7 @@ defaultMode = "None"
 moveRestrict = "NoMove"
 regenRate = 0
 [npc.params]
+"param.headbar_hidden" = true
 "param.hitpoints_locked" = true
 "param.hitmark_lit" = "hitmark.regular_damage_max"
 "param.hitmark_tint" = "hitmark.regular_damage_max"

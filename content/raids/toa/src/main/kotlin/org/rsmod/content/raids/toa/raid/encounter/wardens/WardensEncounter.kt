@@ -1,8 +1,5 @@
 package org.rsmod.content.raids.toa.raid.encounter.wardens
 
-import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.types.MoveRestrict
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
@@ -29,7 +26,6 @@ import org.rsmod.content.raids.toa.raid.travelInFight
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
-import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.HitBuilder
 import org.rsmod.game.hit.HitType
 import org.rsmod.game.map.Direction
@@ -152,26 +148,7 @@ class WardensEncounter(
     internal fun wardenHit(npc: Npc, hit: Hit) {
         if (npc !== activeWarden || stage != ToaStage.STARTED || !hit.isFromPlayer) return
         hpBar?.update()
-        showShieldHeadbar(npc, hit)
         activeGod?.let { core.afterHit(npc, it) }
-    }
-
-    private fun showShieldHeadbar(npc: Npc, hit: Hit) {
-        if (!core.shielded) return
-        val bar = ServerCacheManager.getHealthBar(SHIELD_HEADBAR.asRSCM(RSCMType.HEADBAR)) ?: return
-        val fill = core.shieldTaken(npc) * bar.segments / npc.baseHitpointsLvl
-        val mark = hit.hitmark
-        npc.showHeadbar(
-            Headbar.fromPlayerSource(
-                self = bar.id,
-                public = bar.id,
-                startFill = fill,
-                endFill = fill,
-                startTime = mark.delay,
-                endTime = mark.delay,
-                slotId = mark.playerSlot,
-            )
-        )
     }
 
     private fun vulnerableStyle(god: WardenGod, npc: Npc): HitType {
@@ -386,7 +363,6 @@ class WardensEncounter(
         private const val TRANSITION_DELAY = 2
         private const val SHIELD_BASE_HP = 140
         private const val WALK_DELAY = 15
-        private const val SHIELD_HEADBAR = "headbar.charge_140"
         private const val ENTOMB_BELOW = 0.55
         private const val SPECIAL_ODDS = 5
         private const val ENTOMBED_ATTACK = "You cannot attack while entombed in stone."
