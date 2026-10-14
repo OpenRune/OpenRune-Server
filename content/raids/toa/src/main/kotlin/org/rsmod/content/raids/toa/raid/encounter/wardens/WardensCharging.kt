@@ -11,6 +11,8 @@ import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.util.EntityExactMove
+import org.rsmod.game.entity.util.EntityFaceAngle
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.loc.LocAngle
@@ -100,6 +102,17 @@ internal class WardensCharging(private val room: WardensEncounter) {
             val spawn = WardenGod.OBELISK_CENTRE.translate(god.orbSide * WardenGod.ORB_SPAWN_OFFSET, 0)
             val npc = room.spawn("npc.toa_wardens_energy", room.coords(spawn), god.orbFacing)
             npc.anim("seq.zuk_proj")
+            npc.pendingFaceAngle = EntityFaceAngle(if (god.orbSide < 0) FACE_WEST else FACE_EAST)
+            npc.pendingExactMove =
+                EntityExactMove(
+                    deltaX1 = 0,
+                    deltaZ1 = 0,
+                    deltaX2 = god.orbSide,
+                    deltaZ2 = 0,
+                    clientDelay1 = 0,
+                    clientDelay2 = ORB_STEP_CYCLES,
+                    direction = if (god.orbSide < 0) Constants.em_face_west else Constants.em_face_east,
+                )
             val orb = Orb(npc, god, god.lane(index))
             val blockTiles = god.orbBlockTiles.map { room.coords(it) }
             val blocker = room.targets().firstOrNull { it.coords in blockTiles }
@@ -297,6 +310,8 @@ internal class WardensCharging(private val room: WardensEncounter) {
         const val ORB_CHARGE = 2
         const val BLOCK_DAMAGE = 3
         const val ORB_STEP_CYCLES = 30
+        const val FACE_EAST = 1536
+        const val FACE_WEST = 512
         const val ORB_FIRST_TICK = 2
         const val ORB_INTERVAL = 2
         const val PLATFORM_STEP = 5
