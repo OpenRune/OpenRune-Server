@@ -3,6 +3,7 @@ package org.rsmod.content.interfaces.prayer.tab.scripts
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import org.rsmod.api.player.output.ClientScripts
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.vars.boolVarBit
@@ -34,20 +35,29 @@ class PrayerTabFilterScript : PluginScript() {
 
     private fun Player.toggleFilter(comsub: Int) {
         when (comsub) {
-            0 -> showLowerTiers = !showLowerTiers
-            1 -> showTiered = !showTiered
-            2 -> showRapidHealing = !showRapidHealing
-            3 -> showWithoutLevel = !showWithoutLevel
-            4 -> showWithoutReq = !showWithoutReq
+            0 -> blockLowTier = !blockLowTier
+            1 -> {
+                if (!blockLowTier) {
+                    mes(COMBINED_TIER_LOCKED)
+                    return
+                }
+                allowCombinedTier = !allowCombinedTier
+            }
+            2 -> blockHealing = !blockHealing
+            3 -> blockLackLevel = !blockLackLevel
+            4 -> blockLocked = !blockLocked
             else -> throw IllegalStateException("Unhandled comsub: $comsub")
         }
     }
 }
 
+private const val COMBINED_TIER_LOCKED =
+    "This option can only be toggled when the \"Show lower tiers of tiered prayers\" is off."
+
 private var Player.hideFilterButton by boolVarBit("varbit.prayer_hidefilterbutton")
 
-private var Player.showLowerTiers by boolVarBit("varbit.prayer_filter_blocklowtier")
-private var Player.showTiered by boolVarBit("varbit.prayer_filter_allowcombinedtier")
-private var Player.showRapidHealing by boolVarBit("varbit.prayer_filter_blockhealing")
-private var Player.showWithoutLevel by boolVarBit("varbit.prayer_filter_blocklacklevel")
-private var Player.showWithoutReq by boolVarBit("varbit.prayer_filter_blocklocked")
+private var Player.blockLowTier by boolVarBit("varbit.prayer_filter_blocklowtier")
+private var Player.allowCombinedTier by boolVarBit("varbit.prayer_filter_allowcombinedtier")
+private var Player.blockHealing by boolVarBit("varbit.prayer_filter_blockhealing")
+private var Player.blockLackLevel by boolVarBit("varbit.prayer_filter_blocklacklevel")
+private var Player.blockLocked by boolVarBit("varbit.prayer_filter_blocklocked")
