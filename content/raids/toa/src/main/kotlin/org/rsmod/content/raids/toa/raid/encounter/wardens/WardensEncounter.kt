@@ -1,5 +1,6 @@
 package org.rsmod.content.raids.toa.raid.encounter.wardens
 
+import dev.openrune.types.MoveRestrict
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.player.output.mes
@@ -124,7 +125,12 @@ class WardensEncounter(
         obelisk.ignoreCombatInteractions = true
         obelisk.anim("seq.fx_obelisk_wardens01_charge")
         blast.detonate(loser)
-        schedule(WALK_DELAY) { warden(winner)?.walk(winner.arenaTile.let { coords(it) }) }
+        schedule(WALK_DELAY) {
+            warden(winner)?.let {
+                it.moveRestrict = MoveRestrict.Normal
+                it.walk(coords(winner.arenaTile))
+            }
+        }
         schedule(TRANSITION_DELAY) {
             for (player in players) {
                 player.mes(
