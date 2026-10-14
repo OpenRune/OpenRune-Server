@@ -7,6 +7,8 @@ import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.ui.ifOpenOverlay
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.isType
 
@@ -35,6 +37,11 @@ internal fun ProtectedAccess.equipPreform() {
     player.invAdd(player.worn, PREFORM, 1, slot = Wearpos.RightHand.slot)
     player.rebuildAppearance()
     openHud()
+    softTimer(PREFORM_COOLING_TIMER, PREFORM_COOLING_PERIOD)
+}
+
+internal fun Player.resumePreform(eventBus: EventBus) {
+    ifOpenOverlay(HUD, HUD_TARGET, eventBus)
     softTimer(PREFORM_COOLING_TIMER, PREFORM_COOLING_PERIOD)
 }
 

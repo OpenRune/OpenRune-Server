@@ -6,9 +6,9 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpWorn1
 import org.rsmod.api.script.onPlayerLogin
-import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.content.interfaces.bank.tryOpenBank
 import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -50,7 +50,9 @@ private suspend fun ProtectedAccess.fadeTeleport(
     closeFadeOverlay(cycles = 2)
 }
 
-class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRoom) :
+class FoundryAccessScript
+@Inject
+constructor(private val room: SleepingGiantsRoom, private val eventBus: EventBus) :
     PluginScript() {
     override fun ScriptContext.startup() {
         onOpLoc1(EXIT) { leave() }
@@ -59,7 +61,6 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
         onOpLoc1(STORAGE_FULL) { take() }
         onOpWorn1(PREFORM) { mes("You can only put the preform down in the preform storage.") }
         onPlayerLogin { login(player) }
-        onPlayerLogout { autoStore(player) }
     }
 
     private suspend fun ProtectedAccess.leave() {
@@ -72,7 +73,7 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
 
     private fun ProtectedAccess.store() {
         if (!player.holdsPreform()) {
-            mes("You don't have a preform to store.")
+            mes("There is nothing in the storage area to take.")
             return
         }
         player.preformStored = true
@@ -116,12 +117,8 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
         if (player.preformStored) {
             player.mes("You notice your current commission is being kept warm in the preform storage.")
         }
-    }
-
-    private fun autoStore(player: Player) {
         if (player.holdsPreform()) {
-            player.removePreform()
-            player.preformStored = true
+            player.resumePreform(eventBus)
         }
     }
 
