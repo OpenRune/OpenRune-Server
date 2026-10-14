@@ -5,6 +5,8 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.aconverted.SpotanimType
+import org.rsmod.api.config.refs.done.hitmark_groups
+import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.game.entity.Player
@@ -17,4 +19,15 @@ internal fun spotanim(name: String): SpotanimType = SpotanimType(name.asRSCM(RSC
 
 internal fun Player.hitTypeless(damage: Int) {
     queueHit(delay = 1, type = HitType.Typeless, damage = damage, modifier = NoopPlayerHitModifier)
+}
+
+internal fun Player.hitVenom(damage: Int) {
+    queueHit(
+        delay = 1,
+        type = HitType.Typeless,
+        damage = damage,
+        hitmark = hitmark_groups.venom,
+        modifier = NoopPlayerHitModifier,
+    )
+    PlayerVenom.tryVenom(this)
 }
