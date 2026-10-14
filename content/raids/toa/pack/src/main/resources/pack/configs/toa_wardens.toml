@@ -261,3 +261,53 @@ inherit = "npc.toa_amascut_p3"
 defaultMode = "None"
 moveRestrict = "NoMove"
 regenRate = 0
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase3_charging"
+inherit = "npc.toa_warden_elidinis_phase3_charging"
+defaultMode = "None"
+moveRestrict = "NoMove"
+attackRange = 20
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_mode" = 2
+"param.headbar" = "headbar.health_140"
+"param.hitmark_lit" = "hitmark.regular_damage_lit"
+"param.hitmark_tint" = "hitmark.regular_damage_tint"
+"param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase3_charging"
+inherit = "npc.toa_warden_tumeken_phase3_charging"
+defaultMode = "None"
+moveRestrict = "NoMove"
+attackRange = 20
+regenRate = 0
+[npc.params]
+"param.boss_hp_bar_mode" = 2
+"param.headbar" = "headbar.health_140"
+"param.hitmark_lit" = "hitmark.regular_damage_lit"
+"param.hitmark_tint" = "hitmark.regular_damage_tint"
+"param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.wardens_p3_orb_blue"
+inherit = "npc.wardens_p3_orb_blue"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.attackable_on_cooldown" = true
+"param.headbar_hidden" = true
+"param.hitpoints_locked" = true
+
+[[npc]]
+id = "npc.wardens_p3_orb_red"
+inherit = "npc.wardens_p3_orb_red"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.attackable_on_cooldown" = true
+"param.headbar_hidden" = true
+"param.hitpoints_locked" = true
