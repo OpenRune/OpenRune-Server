@@ -200,8 +200,11 @@ constructor(
         player.setFoundryVar(metalVarbit(METALS[metal]), counts[metal] + worth)
         val total = counts.sum() + worth
         player.crucibleState = if (total >= FoundryFormulas.CRUCIBLE_CAPACITY) 2 else 1
-        if (player.crucibleState == 2 && player.makingQuestSword()) {
-            player.advanceTutorial(SleepingGiants.TUTORIAL_CRUCIBLE_FULL)
+        if (player.makingQuestSword()) {
+            player.advanceTutorial(
+                if (player.crucibleState == 2) SleepingGiants.TUTORIAL_CRUCIBLE_FULL
+                else SleepingGiants.TUTORIAL_METAL_ADDED
+            )
         }
         return total
     }

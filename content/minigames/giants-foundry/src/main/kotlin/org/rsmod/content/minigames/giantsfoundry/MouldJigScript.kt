@@ -30,6 +30,18 @@ class MouldJigScript @Inject constructor() : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.setup() {
+        if (
+            player.makingQuestSword() &&
+                player.sleepingGiantsTutorial < SleepingGiants.TUTORIAL_CRUCIBLE_FULL
+        ) {
+            startDialogue {
+                chatPlayer(
+                    quiz,
+                    "Maybe I should talk with Kovac first before messing around with anything.",
+                )
+            }
+            return
+        }
         if (player.commissionWord1 == 0) {
             mesbox("You need a commission before you can set up the mould.")
             return
