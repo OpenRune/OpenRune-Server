@@ -1,11 +1,13 @@
 package org.rsmod.content.raids.toa.raid.encounter
 
 import org.rsmod.api.instances.InstanceSession
+import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenGod
+import org.rsmod.content.raids.toa.raid.encounter.wardens.WardensSlams
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.Player
+import org.rsmod.game.hit.Hit
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
@@ -16,19 +18,32 @@ class WardensSecondEncounter(
     room: ToaRoom,
     session: InstanceSession,
     controllerId: Int,
-) : ToaEncounter(raid, room, session, controllerId) {
+) : ToaBossEncounter(raid, room, session, controllerId) {
 
     private var warden: Npc? = null
     private var phantom: Npc? = null
-    private var hudScheduled = false
 
-    private val hud = ToaHpBar(this, subject = { warden })
+    internal val slams = WardensSlams(this)
 
-    override val combatantSpecs: List<ToaCombatant.Spec>
-        get() = WardenGod.entries.map { ToaCombatant.Spec(it.phaseThree, pathScaled = false) }
+    override val fight =
+        ToaFight(
+            boss = { warden },
+            combatants = WardenGod.entries.map { ToaCombatant.Spec(it.phaseThree, pathScaled = false) },
+            firstAttackDelay = FIRST_SLAM_DELAY,
+            attackRate = { slamRate },
+        )
 
-    override val hpBar: ToaHpBar
-        get() = hud
+    internal val slamRate: Int
+        get() =
+            when {
+                raid.isActive(ToaInvocationKey.Insanity) -> INSANITY_SLAM_RATE
+                raid.isActive(ToaInvocationKey.Overclocked2) -> OVERCLOCKED_2_SLAM_RATE
+                raid.isActive(ToaInvocationKey.Overclocked) -> OVERCLOCKED_SLAM_RATE
+                else -> SLAM_RATE
+            }
+
+    internal val fastSlams: Boolean
+        get() = slamRate <= FAST_SLAM_RATE
 
     override fun arrival(): Arrival = Arrival(coords(ARRIVAL_TILE), Direction.South)
 
@@ -40,16 +55,16 @@ class WardensSecondEncounter(
         spawnRoom()
     }
 
-    override fun onEnter(player: Player) {
-        val boss = warden ?: return
-        if (!hudScheduled) {
-            hudScheduled = true
-            combatantOf(boss)?.scale(teamSize, P3_BASE_HP)
-        }
-        schedule(HUD_DELAY) { if (player in players) hud.open(player) }
+    override fun onFightStart(boss: Npc) {
+        combatantOf(boss)?.scale(teamSize, P3_BASE_HP)
     }
 
-    override fun onComplete() {
+    internal fun wardenHit(npc: Npc, hit: Hit) {
+        if (npc !== warden || stage != ToaStage.STARTED || !hit.isFromPlayer) return
+        hpBar?.update()
+    }
+
+    override fun onFightComplete() {
         schedule(CRYSTAL_DELAY) {
             deps.locRepo.add(
                 coords(CRYSTAL_TILE),
@@ -64,7 +79,6 @@ class WardensSecondEncounter(
     private fun spawnRoom() {
         warden?.let(::despawn)
         phantom?.let(::despawn)
-        hudScheduled = false
         val god = raid.wardensRestored ?: WardenGod.TUMEKEN
         warden =
             spawn(god.phaseThree, coords(WARDEN_TILE), Direction.North).also {
@@ -82,6 +96,11 @@ class WardensSecondEncounter(
         private val WARDEN_TILE = CoordGrid(3934, 5152, 1)
         private val PHANTOM_TILE = CoordGrid(3932, 5127, 1)
         private const val CRYSTAL_DELAY = 13
-        private const val HUD_DELAY = 3
+        private const val FIRST_SLAM_DELAY = 6
+        private const val SLAM_RATE = 7
+        private const val OVERCLOCKED_SLAM_RATE = 6
+        private const val OVERCLOCKED_2_SLAM_RATE = 4
+        private const val INSANITY_SLAM_RATE = 3
+        private const val FAST_SLAM_RATE = 4
     }
 }
