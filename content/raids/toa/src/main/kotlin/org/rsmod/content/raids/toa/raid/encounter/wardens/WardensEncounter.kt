@@ -1,6 +1,7 @@
 package org.rsmod.content.raids.toa.raid.encounter.wardens
 
 import dev.openrune.types.MoveRestrict
+import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.player.output.mes
@@ -36,6 +37,7 @@ class WardensEncounter(
     private val charging = WardensCharging(this)
     private var phaseOne = false
     private var capped = false
+    private var obeliskRemaining = 0
     private var arriveAtGhost = false
     private val blast = WardensObeliskBlast(this)
     private var hudNpc: Npc? = null
@@ -81,6 +83,7 @@ class WardensEncounter(
     override fun onFightStart(boss: Npc) {
         capped = false
         phaseOne = true
+        obeliskRemaining = boss.hitpoints
         boss.transmog(npcType(OBELISK_P1), Int.MAX_VALUE)
         for ((god, warden) in wardens) warden.transmog(npcType(god.active), Int.MAX_VALUE)
         osmumten?.let { ghost ->
@@ -98,13 +101,14 @@ class WardensEncounter(
     }
 
     internal fun modifyObeliskHit(npc: Npc, hit: HitBuilder) {
-        if (npc !== obelisk || !phaseOne || !hit.isFromPlayer) return
-        if (capped) {
+        if (npc !== obelisk || !hit.isFromPlayer) return
+        if (!phaseOne || capped) {
             hit.damage = 0
-        } else if (hit.damage >= npc.hitpoints) {
-            hit.damage = npc.hitpoints - 1
-            capped = true
+            return
         }
+        hit.damage = min(hit.damage, obeliskRemaining - 1)
+        obeliskRemaining -= hit.damage
+        if (obeliskRemaining <= 1) capped = true
     }
 
     internal fun obeliskHit(npc: Npc, hit: Hit) {
