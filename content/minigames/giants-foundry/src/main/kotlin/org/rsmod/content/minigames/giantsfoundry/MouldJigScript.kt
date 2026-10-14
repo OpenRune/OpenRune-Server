@@ -153,8 +153,6 @@ class MouldJigScript @Inject constructor() : PluginScript() {
                 FoundryData.mould(MouldPart.Tip, player.mouldTip),
             )
         val mouldScore = moulds.sumOf { mould -> words.sumOf { mould.score(it) } }
-        // UNVERIFIED: the quest sword's quality counts its pinned difficulty as the metal
-        // score (guess).
         val quality = (difficulty + mouldScore).coerceAtMost(MAX_QUALITY)
         player.preformDifficulty = difficulty
         player.preformQuality = quality

@@ -37,8 +37,8 @@ class OrePackScript @Inject constructor(private val random: GameRandom) : Plugin
         }
     }
 
-    // UNVERIFIED: the weights in `giants_foundry_ore_pack_weights`, taken from crowd-sourced
-    // counts of opened packs, not the game's own table (wiki description).
+    // UNVERIFIED: the weights in `giants_foundry_ore_pack_weights` are the wiki's counts from
+    // 1913 opened packs, not the game's own table (wiki description).
     private fun ores(): List<Pair<ItemServerType, Int>> =
         GiantsFoundryEnums.giants_foundry_ore_pack_weights
             .mapNotNull { (ore, weight) -> weight?.let { ore to it } }

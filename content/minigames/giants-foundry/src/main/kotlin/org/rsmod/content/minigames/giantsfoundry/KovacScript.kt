@@ -136,7 +136,7 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
                     chatPlayer(neutral, "That doesn't help me.")
                     chatNpc(neutral, "Hmm... that is true.")
                     mesbox("Progress on your sword can be tracked via the display on screen. You can track which tool you need to use via the completion bar.")
-                    // TODO: the transcript's three tool-icon boxes (trip hammer, grindstone, polishing wheel).
+                    // TODO: the three tool-icon boxes (trip hammer, grindstone, polishing wheel).
                 }
                 else -> {
                     chatPlayer(neutral, "Actually, I'm okay for now.")

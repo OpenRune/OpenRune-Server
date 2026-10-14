@@ -161,7 +161,7 @@ private const val SHOP_INTERFACE = "interface.giants_foundry_reward_shop"
 private const val SHOP_SETUP = "clientscript.[clientscript,giants_foundry_reward_shop_setup]"
 private const val ROW_CHILDREN = 13
 
-// TODO: the Bank PIN check before the shop opens.
+// TODO(content): [system:bank_pin] the Bank PIN check before the shop opens.
 internal fun ProtectedAccess.openRewardShop() {
     ifOpenMainModal(SHOP_INTERFACE)
     player.runClientScript(SHOP_SETUP.asRSCM(RSCMType.CLIENTSCRIPT), 1)
