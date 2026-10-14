@@ -87,7 +87,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
         onOpLoc1(CRATE_FULL) { searchCrate() }
         // sigmazx's Sleeping Giants video (youtube.com/watch?v=WnGuNtTJW0M, about 8:44).
-        // UNVERIFIED: that the message comes from searching the crate; the click isn't shown.
+        // UNVERIFIED: that searching the empty crate gives this message (video frames)
         onOpLoc1(CRATE_EMPTY) { mes("There is nothing in the storage area to take.") }
 
         onPlayerQueueWithArgs<QuestPrompt>(QUEST_PROMPT_QUEUE) {
@@ -100,7 +100,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         onPlayerLogout { room.logout(player) }
         onDropTrigger(DROP_TRIGGER) {
             if (room.onDropAttempt(player)) {
-                // UNVERIFIED: the update gives no wording for the warning.
+                // UNVERIFIED: the drop warning's wording (guess)
                 player.mes(
                     "<col=ef1020>Anything you drop here will be lost when you leave. Drop it " +
                         "again if you're sure.</col>"
@@ -112,10 +112,10 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     }
 
     override fun subTitle(): String =
-        "talking to the <col=800000>Hill Giant</col> by the <col=800000>giant anvil</col> on " +
-            "the <col=800000>Giants' Plateau</col>, east of <col=800000>Al Kharid</col>."
+        "investigating the <col=800000>Giants' Plateau<col=000080> east of " +
+            "<col=800000>Al Kharid<col=000080>."
 
-    // UNVERIFIED: no source transcribes the quest journal; written from the walkthrough.
+    // UNVERIFIED: the journal text (wiki description)
     override fun questLog(player: ProtectedAccess) =
         questJournal(player) {
             description(
@@ -175,7 +175,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             chatPlayer(quiz, "I must be dreaming. Giants can't talk!")
             chatNpc(neutral, "Please...")
             if (access.statBase(SMITHING) < REQUIRED_SMITHING) {
-                // UNVERIFIED: the transcript has no branch for missing the Smithing requirement.
+                // UNVERIFIED: the message for missing the Smithing requirement (guess)
                 mesbox("You need a Smithing level of $REQUIRED_SMITHING to start this quest.")
                 return@startDialogue
             }
