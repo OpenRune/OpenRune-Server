@@ -32,6 +32,7 @@ class WardenBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             spec,
             deps,
             onModifyHit = { ToaRooms.of<WardensEncounter>(npc)?.modifyWardenHit(npc, hit) },
+            onCombatTick = { target -> println("[wardens-debug] combat tick cycle=${deps.mapClock.cycle} target=${target.displayName} vis=${npc.visType.id} phase=${deps.encounterRegistry.of(npc).currentPhaseName}") },
         )
     }
 
