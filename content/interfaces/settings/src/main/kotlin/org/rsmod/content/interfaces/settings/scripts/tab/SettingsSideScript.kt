@@ -22,7 +22,6 @@ class SettingsSideScript @Inject constructor(private val protectedAccess: Protec
         onIfOverlayButton("component.settings_side:settings_tab") { player.panel = Panel.Control }
         onIfOverlayButton("component.settings_side:audio_tab") { player.panel = Panel.Audio }
         onIfOverlayButton("component.settings_side:display_tab") { player.panel = Panel.Display }
-
     }
 
     private fun Player.updateIfEvents() {
@@ -35,7 +34,6 @@ class SettingsSideScript @Inject constructor(private val protectedAccess: Protec
         ifSetEvents("component.settings_side:display_dynamic_setting_1_buttons", 1..3, IfEvent.Op1)
         ifSetEvents("component.settings_side:brightness_bobble_container", 0..21, IfEvent.Op1)
     }
-
 }
 
 private enum class Panel(override val varValue: Int) : VarEnumDelegate {
