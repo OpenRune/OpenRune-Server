@@ -53,8 +53,10 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
         onOpLoc1(ENTRANCE) { enterCave() }
         onOpNpc1(KOVAC_STRIKE) { strike(it.npc) }
-        onOpNpc1(KOVAC_OUTSIDE) { talkOutside(it.npc) }
-        onOpNpc1(KOVAC_INSIDE) { talkInside(it.npc) }
+        onOpNpc1(KOVAC_QUEST) {
+            if (room.isInside(player)) talkInside(it.npc) else talkOutside(it.npc)
+        }
+        onOpNpc1(KOVAC_FOUNDRY) { talkInside(it.npc) }
 
         onOpLoc1(HAMMER_BROKEN) { repair(RepairTool.Hammer) }
         onOpLoc1(GRINDSTONE_BROKEN) { repair(RepairTool.Grindstone) }
@@ -202,7 +204,9 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             )
             followIn()
         }
-        enterRoom(intro = true)
+        if (stage(player) == SleepingGiants.STARTED) {
+            enterRoom(intro = true)
+        }
     }
 
     // TODO(content): [verify:in_game] what Kovac says when spoken to after the player agreed
@@ -220,7 +224,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         chatKovacOutside(neutral, "follow in.")
         chatPlayer(worried, "Hang on... is this a trick? Are you going to cook and eat me?!")
         chatKovacOutside(neutral, "No...")
-        chatKovacOutside(neutral, "follow.")
+        chatNpcSpecificNp(KOVAC_NAME, KOVAC_OUTSIDE, neutral, "follow.")
     }
 
     /** The outside Kovac's name only changes once the quest stage has reached the client. */
@@ -246,10 +250,13 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     /** Kovac's "follow" and the cave both lead into the quest's copy of the foundry. */
     private suspend fun ProtectedAccess.enterRoom(intro: Boolean) {
-        if (stage(player) < SleepingGiants.ENTERED) {
-            quest.setQuestStage(this, SleepingGiants.ENTERED)
-        }
-        if (!room.enter(this, intro)) {
+        val entered =
+            room.enter(this, intro) {
+                if (stage(player) < SleepingGiants.ENTERED) {
+                    quest.setQuestStage(this, SleepingGiants.ENTERED)
+                }
+            }
+        if (!entered) {
             mes("The foundry is too busy right now. Try again in a moment.")
             return
         }
@@ -259,7 +266,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         val kovac = room.kovacOf(player) ?: return
         var ended = false
         try {
-            startDialogue(kovac) { insideIntro() }
+            startDialogue(kovac) { insideIntro(cutscene = true) }
             room.endIntro(this)
             ended = true
         } finally {
@@ -274,22 +281,26 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     private suspend fun ProtectedAccess.talkInside(npc: Npc) {
         startDialogue(npc) {
             when (val stage = stage(player)) {
-                SleepingGiants.ENTERED -> insideIntro()
+                SleepingGiants.ENTERED -> insideIntro(cutscene = false)
                 SleepingGiants.REPAIRING ->
                     if (RepairTool.entries.all { it.isRepaired(player) }) toolsRepaired()
                     else whatsLeft()
                 SleepingGiants.REPAIRED,
-                SleepingGiants.MAKING_SWORD -> makeSword(npc)
+                SleepingGiants.MAKING_SWORD ->
+                    if (room.isInside(player)) toolsRepaired() else makeSword(npc)
                 else -> {}
             }
         }
-        if (stage(player) == SleepingGiants.REPAIRED && room.isInside(player)) {
+        if (stage(player) == SleepingGiants.MAKING_SWORD && room.isInside(player)) {
             room.moveToFoundry(this)
         }
     }
 
-    private suspend fun Dialogue.insideIntro() {
+    private suspend fun Dialogue.insideIntro(cutscene: Boolean) {
         chatPlayer(shocked, "Woah... What is this place?")
+        if (cutscene) {
+            room.introWalkBack(access)
+        }
         chatPlayer(quiz, "Did you build this?")
         chatNpc(neutral, "No...")
         chatNpc(neutral, "Kovac...")
@@ -304,6 +315,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         chatNpc(neutral, "not.")
         chatPlayer(confused, "Huh? I don't understand what you mean.")
         chatNpc(neutral, "Look.")
+        room.kovacLooksAtTools(player)
         mesbox("Kovac looks out to the tools around you.")
         chatNpc(neutral, "Help fix.")
         chatPlayer(quiz, "You want me to help you by fixing those tools?")
@@ -331,8 +343,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             "I see. To be honest, if I hadn't seen this place myself, I wouldn't have believed you.",
         )
         chatPlayer(neutral, "Alright, Kovac, I'll help you out. What do we need to do first?")
-        chatNpc(neutral, "We fix tools...")
         quest.setQuestStage(access, SleepingGiants.REPAIRING)
+        chatNpc(neutral, "We fix tools...")
     }
 
     // TODO(content): [verify:in_game] whether Kovac names only the tools still broken; the
@@ -354,11 +366,12 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         chatNpc(neutral, "Kovac know what say...")
         chatNpc(neutral, "but sometime hard say proppel... properly.")
         chatPlayer(happy, "That's alright, we'll figure it out together.")
+        quest.setQuestStage(access, SleepingGiants.REPAIRED)
         chatNpc(neutral, "Kovac agree. Ready to make sword?")
         chatPlayer(happy, "Yes! I'm itching to get started.")
         chatNpc(neutral, "Kovac get few things ready first...")
         chatNpc(neutral, "then we can start.")
-        quest.setQuestStage(access, SleepingGiants.REPAIRED)
+        quest.setQuestStage(access, SleepingGiants.MAKING_SWORD)
     }
 
     /* Repairs */
@@ -584,7 +597,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     /* Inspecting the room's objects */
 
     private suspend fun Dialogue.chatKovac(mesanim: MesAnimType, text: String) =
-        chatNpcSpecific(KOVAC_NAME, KOVAC_INSIDE, mesanim, text)
+        chatNpcSpecific(KOVAC_NAME, KOVAC_QUEST, mesanim, text)
 
     private suspend fun ProtectedAccess.inspectChest() {
         startDialogue {
@@ -726,9 +739,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         player.commissionWord1 = CommissionWord.Flat.id
         player.commissionWord2 = CommissionWord.Broad.id
         player.commissionStart = (System.currentTimeMillis() / 1000).toInt()
-        if (stage(player) < SleepingGiants.MAKING_SWORD) {
-            quest.setQuestStage(access, SleepingGiants.MAKING_SWORD)
-        }
         player.advanceTutorial(SleepingGiants.TUTORIAL_COMMISSION)
         chatNpc(neutral, "Kovac need a <col=ef1020>Flat Broad</col> sword.")
         chatPlayer(happy, "Great!")
@@ -1005,8 +1015,9 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         const val GRINDSTONE_REPAIR_TICKS = 7
         const val KOVAC_NAME = "Kovac"
         const val KOVAC_STRIKE = "npc.giants_foundry_kovac_fake_attack"
-        const val KOVAC_OUTSIDE = "npc.giants_foundry_kovac_quest"
-        const val KOVAC_INSIDE = "npc.giants_foundry_kovac_1op"
+        const val KOVAC_OUTSIDE = "npc.giants_foundry_kovac_multi_outside"
+        const val KOVAC_QUEST = "npc.giants_foundry_kovac_quest"
+        const val KOVAC_FOUNDRY = "npc.giants_foundry_kovac_1op"
 
         const val SMITHING = "stat.smithing"
         const val REQUIRED_SMITHING = 15
