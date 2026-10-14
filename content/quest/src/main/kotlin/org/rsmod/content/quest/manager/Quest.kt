@@ -5,6 +5,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import java.util.Locale
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetPosition
 import net.rsprot.protocol.game.outgoing.sound.MidiJingle
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.musicClocks
@@ -17,6 +18,8 @@ import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
 private const val QUEST_COMPLETE_JINGLE = 153
+
+private const val REWARD_LINES = 7
 
 internal const val QUEST_DIALOGUE_CLOSE_TIMER = "timer.quest_dialogue_close"
 internal const val QUEST_SCROLL_CLOSE_TIMER = "timer.quest_scroll_close"
@@ -33,7 +36,13 @@ private fun scheduleClose(
 
 val QUEST_STAGE_MAP_ATTR = AttributeKey<MutableMap<String, Int>>("quest_stages")
 
-data class ItemRewardDisplay(val item: String, val zoom: Int = 10)
+/** [x] and [y] move the model on the quest scroll when the cache's default spot doesn't suit it. */
+data class ItemRewardDisplay(
+    val item: String,
+    val zoom: Int = 10,
+    val x: Int? = null,
+    val y: Int? = null,
+)
 
 data class Quest(
     val id: Int,
@@ -153,13 +162,18 @@ data class Quest(
 
     fun setQuestStage(access: ProtectedAccess, newStage: Int): Int {
         require(newStage in 0..maxSteps) { "Quest '$key' stage must be within 0..$maxSteps." }
-        val wasCompleted = getQuestStage(access.player) >= maxSteps
+        val previousStage = getQuestStage(access.player)
+        val wasCompleted = previousStage >= maxSteps
         storeQuestStage(access, newStage)
 
         // Quest varps store the real stage (0..endstate). Multinpc / journal clients depend on
         // endstate (e.g. runemysteries=6) rather than a collapsed 0/1/2 progress flag.
         if (access.player.questState != newStage) {
             access.player.questState = newStage
+        }
+
+        if (previousStage == 0 && newStage in 1 until maxSteps) {
+            access.mes("You've started a new quest: @q_mes@$displayName</col>")
         }
 
         if (!wasCompleted && newStage >= maxSteps) {
@@ -201,21 +215,13 @@ data class Quest(
         access.player.questPoints += questPoints
         access.player.questsCompleted++
 
+        access.mes("Congratulations, you've completed a quest: @q_mes@$displayName</col>")
+
         access.player.musicClocks = 0
         val jingle = rewards.jingle?.asRSCM(RSCMType.JINGLE) ?: QUEST_COMPLETE_JINGLE
         access.player.client.write(MidiJingle(jingle))
 
-        scheduleClose(access, closeDialogue, QUEST_DIALOGUE_CLOSE_TIMER) { ifCloseChat() }
-        access.ifOpenMain("interface.questscroll")
-        scheduleClose(access, closeScroll, QUEST_SCROLL_CLOSE_TIMER) {
-            ifCloseSub("interface.questscroll")
-        }
-        access.ifSetText("component.questscroll:quest_title", "You have completed ${displayName}!")
-        access.ifSetText("component.questscroll:quest_reward1", "$questPoints Quest Point")
-
-        access.ifSetObj("component.questscroll:quest_model", obj = itemDisplay.item, zoom = itemDisplay.zoom)
-
-        val rewardLines = mutableListOf<String>()
+        val rewardLines = mutableListOf("$questPoints Quest Point")
 
         rewards.xp.forEach { (skill, amount) ->
             val stat = ServerCacheManager.getStats(skill.asRSCM(RSCMType.STAT))
@@ -234,12 +240,22 @@ data class Quest(
 
         rewardLines.addAll(rewards.extra)
 
-        val linesToShow = rewardLines.take(6)
-
-        for (i in 0 until 6) {
-            val componentId = "component.questscroll:quest_reward${i + 2}"
-            val text = linesToShow.getOrNull(i) ?: ""
-            access.ifSetText(componentId, text)
+        scheduleClose(access, closeDialogue, QUEST_DIALOGUE_CLOSE_TIMER) { ifCloseChat() }
+        access.ifSetText("component.questscroll:quest_title", "You have completed ${displayName}!")
+        access.ifSetObj("component.questscroll:quest_model", obj = itemDisplay.item, zoom = itemDisplay.zoom)
+        if (itemDisplay.x != null && itemDisplay.y != null) {
+            val model = "component.questscroll:quest_model".asRSCM(RSCMType.COMPONENT)
+            access.player.client.write(IfSetPosition(model, itemDisplay.x, itemDisplay.y))
+        }
+        for (i in 1..REWARD_LINES) {
+            access.ifSetText("component.questscroll:quest_reward$i", "")
+        }
+        rewardLines.take(REWARD_LINES).forEachIndexed { index, text ->
+            access.ifSetText("component.questscroll:quest_reward${index + 1}", text)
+        }
+        access.ifOpenMain("interface.questscroll")
+        scheduleClose(access, closeScroll, QUEST_SCROLL_CLOSE_TIMER) {
+            ifCloseSub("interface.questscroll")
         }
     }
 }
