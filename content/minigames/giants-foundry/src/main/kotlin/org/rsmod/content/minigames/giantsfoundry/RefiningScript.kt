@@ -23,13 +23,9 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /**
- * Working the preform: the trip hammer, grindstone and polishing wheel, the lava pool and the
- * waterfall, sweet spots and passive cooling.
- * https://oldschool.runescape.wiki/w/Giants%27_Foundry#Refining_the_sword
- *
- * Clicking a station starts it; a 1-tick timer then does the work until the player moves or
- * clicks another station. Clicking the same station again is a re-click (sweet spot, overwork,
- * or restarting the lava/waterfall ramp), so the op handler never re-issues itself.
+ * A 1-tick timer does the work until the player moves or clicks another station. Clicking the
+ * same station again is a re-click (sweet spot, overwork, or restarting the lava/waterfall ramp),
+ * so the op handler never re-issues itself.
  */
 class RefiningScript
 @Inject
@@ -77,7 +73,6 @@ constructor(
 
     private fun ProtectedAccess.canWork(): Boolean {
         if (!player.holdsPreform()) {
-            // sigmazx's Sleeping Giants video (youtube.com/watch?v=WnGuNtTJW0M), using a tool.
             // UNVERIFIED: the lava pool and waterfall give the tools' message (guess).
             mes("You need a giant sword preform equipped to use this tool.")
             return false
@@ -135,11 +130,6 @@ constructor(
         return cycle
     }
 
-    /**
-     * Lava pool (+) and waterfall (-); the rate ramps up while the player stays, and clicking
-     * the same option again restarts the ramp ("will reset the speed").
-     * https://oldschool.runescape.wiki/w/Giants%27_Foundry/Strategies
-     */
     private fun ProtectedAccess.startHeat(sign: Int, fast: Boolean) {
         if (!canWork()) {
             return
@@ -221,10 +211,6 @@ constructor(
         }
     }
 
-    /**
-     * Clicking the station again while it works: during a sweet spot it arms the bonus (green
-     * border); otherwise the next action is missed altogether ("overworking").
-     */
     private fun ProtectedAccess.onReclick() {
         if (player.workSweetSpotArmed) {
             return
@@ -265,7 +251,6 @@ constructor(
         player.clearSoftTimer(SWEETSPOT_TIMER)
     }
 
-    /** One station action: progress, heat, quality and XP. */
     private fun act(player: Player, tool: FoundryTool) {
         if (player.workOverworked) {
             player.workOverworked = false
@@ -307,10 +292,8 @@ constructor(
             if (bonus) {
                 progress += SWEETSPOT_PROGRESS
                 xpTenths *= 2
-                // Since 7 May 2025 a sweet spot regains "a unit of lost quality" (one mistake's
-                // worth). https://oldschool.runescape.wiki/w/Update:More_Poll_84_%26_Yama_Prep
-                // UNVERIFIED: the update only regains it if clicked "shortly after it appears";
-                // that window isn't published, so any armed sweet spot regains it here.
+                // UNVERIFIED: any armed sweet spot regains one mistake's quality; live only
+                // regains it if the spot is hit shortly after it appears (wiki description).
                 player.preformQuality =
                     (player.preformQuality + MISTAKE_QUALITY).coerceAtMost(player.preformStartQuality)
             }
@@ -347,12 +330,8 @@ constructor(
         player.soundSynth(FINISH_SYNTH)
     }
 
-    /**
-     * Offers a sweet spot right after an action: 2, or 3 with six or more sections, at most one
-     * per section, spread over the sections still to come ("more evenly distributed" since
-     * 29 June 2022). https://oldschool.runescape.wiki/w/Giants%27_Foundry#Sweet_Spot
-     */
-    // UNVERIFIED: which action gets one isn't published; this spreads them evenly at random.
+    // UNVERIFIED: which actions offer a sweet spot; this spreads them at random over the
+    // sections still to come, at most one per section (wiki description).
     private fun maybeOfferSweetSpot(player: Player, section: Int) {
         if (player.sweetSpotUntil != 0) {
             return
@@ -374,11 +353,6 @@ constructor(
         player.showSweetSpot(SWEETSPOT_OFFERED)
     }
 
-    /**
-     * Smiths' Uniform: each piece gives a 20% chance per action of +1 progress (+5% hammer,
-     * +10% grindstone and polishing wheel), and the full set gives it every action.
-     * https://oldschool.runescape.wiki/w/Smiths%27_Uniform
-     */
     private fun uniformBonus(player: Player): Int {
         val pieces =
             UNIFORM.count { (slot, objs) -> objs.any { player.worn[slot.slot]?.isType(it) == true } }
@@ -405,7 +379,7 @@ constructor(
         const val FINISH_SEQ = "seq.giants_foundry_finish_sword"
         const val TRIP_HAMMER_SEQ = "seq.giants_foundry_hammer01"
 
-        /** Heating 827 / cooling 832, as logged by the Easy Giants' Foundry plugin. */
+        // UNVERIFIED: the heating and cooling anims (plugin measurement).
         const val HEAT_SEQ = "seq.human_pickupfloor"
         const val COOL_SEQ = "seq.human_pickuptable"
 

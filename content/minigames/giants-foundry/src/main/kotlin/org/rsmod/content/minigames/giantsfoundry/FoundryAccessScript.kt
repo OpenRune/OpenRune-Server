@@ -42,7 +42,6 @@ internal suspend fun ProtectedAccess.enterFoundry() {
     closeFadeOverlay(cycles = 2)
 }
 
-/** Getting in and out of the foundry, its bank chest and the preform storage. */
 class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRoom) :
     PluginScript() {
     override fun ScriptContext.startup() {
@@ -55,7 +54,6 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
         onPlayerLogout { autoStore(player) }
     }
 
-    /** The cave entrance is handled by [SleepingGiantsQuest], which routes by quest stage. */
     private fun ProtectedAccess.leave() {
         if (player.holdsPreform()) {
             stashPreform()
@@ -113,7 +111,6 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
         }
     }
 
-    /** A held preform goes back into storage when the player logs out. */
     private fun autoStore(player: Player) {
         if (player.holdsPreform()) {
             player.removePreform()

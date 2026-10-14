@@ -23,7 +23,6 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/** The crucible: metal in, preform out. https://oldschool.runescape.wiki/w/Crucible */
 class CrucibleScript
 @Inject
 constructor(
@@ -117,7 +116,6 @@ constructor(
             showUnavailable = true,
         )
 
-    /** Smithed items used on the crucible melt down for their bars' worth. */
     private suspend fun ProtectedAccess.addItems(obj: ItemServerType) {
         // UNVERIFIED: any other item, bars included, does nothing (guess).
         val (metal, worth) =
@@ -174,7 +172,6 @@ constructor(
         return if (choice == -1) countDialog().coerceAtMost(held) else choice
     }
 
-    /** An objectbox with "No." and "Yes." buttons instead of a continue line. */
     private suspend fun ProtectedAccess.confirmOverflow(obj: String, text: String): Boolean {
         val page = alignment.generateChatPageList(text).first().text
         mes(text, ChatType.Mesbox)
@@ -194,7 +191,6 @@ constructor(
         delay(MELT_DELAY)
     }
 
-    /** Adds [worth] bars of [metal]; returns the crucible's new total. */
     private fun ProtectedAccess.addToCrucible(metal: Int, worth: Int): Int {
         val counts = counts()
         player.setFoundryVar(metalVarbit(METALS[metal]), counts[metal] + worth)
@@ -258,7 +254,6 @@ constructor(
         mes("You empty the crucible.")
     }
 
-    /** Pours a full crucible into the set moulds; the sword's numbers are set at pick-up. */
     private suspend fun ProtectedAccess.pour(crucible: BoundLocInfo) {
         if (player.commissionWord1 == 0) {
             mes("You need a commission from Kovac before you can pour a sword.")

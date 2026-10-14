@@ -10,10 +10,6 @@ import org.rsmod.api.script.onOpHeld1
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Ore pack from Kovac's shop: 30 noted ores, each rolled on its own, mostly coal; Mining level
- * doesn't matter. https://oldschool.runescape.wiki/w/Ore_pack_(Giants%27_Foundry)
- */
 class OrePackScript @Inject constructor(private val random: GameRandom) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpHeld1(ORE_PACK) { open() }

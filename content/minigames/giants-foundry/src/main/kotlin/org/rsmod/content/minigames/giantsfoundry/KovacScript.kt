@@ -15,7 +15,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 internal const val KOVAC = "npc.giants_foundry_kovac"
 
-/** Kovac: commissions and hand-ins. https://oldschool.runescape.wiki/w/Kovac */
 class KovacScript @Inject constructor(private val random: GameRandom) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1(KOVAC) { talk(it.npc) }
@@ -23,7 +22,6 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
         onOpNpc4(KOVAC) { commission(it.npc) }
     }
 
-    /** Dialogue from https://oldschool.runescape.wiki/w/Transcript:Kovac */
     private suspend fun ProtectedAccess.talk(npc: Npc) {
         startDialogue(npc) {
             chatNpc(neutral, "What human need help with?")
@@ -203,11 +201,6 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
         }
     }
 
-    /**
-     * Hand-in rewards: Smithing XP, twice that in coins (to the bank), reputation equal to the
-     * quality, and half the run energy back.
-     * https://oldschool.runescape.wiki/w/Giants%27_Foundry#Rewards
-     */
     private suspend fun Dialogue.reward(quality: Int) {
         val xp = FoundryFormulas.handInXp(quality)
         val coins = xp * 2

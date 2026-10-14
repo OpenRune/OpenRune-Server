@@ -14,17 +14,14 @@ internal fun Player.foundryVar(name: String): Int = vars[name]
 internal fun Player.setFoundryVar(name: String, value: Int) =
     VarPlayerIntMapSetter.set(this, name, value)
 
-/** Sword part a mould shapes; its position in [entries] matches `giants_foundry_mould_current_tab`. */
+/** Position in [entries] matches `giants_foundry_mould_current_tab`. */
 internal enum class MouldPart(val enum: String, val unlockPrefix: String) {
     Forte("enum.giants_foundry_moulds_forte", "ricasso"),
     Blade("enum.giants_foundry_moulds_blade", "blade"),
     Tip("enum.giants_foundry_moulds_tip", "tip"),
 }
 
-/**
- * A mould from the cache: `giants_foundry_moulds_*` map a list position (1-based, as stored in
- * `giants_foundry_mould_selected_*`) to a struct holding its name, level and style scores.
- */
+/** [position] is 1-based, as stored in `giants_foundry_mould_selected_*`. */
 internal data class Mould(
     val part: MouldPart,
     val position: Int,
@@ -35,7 +32,7 @@ internal data class Mould(
     val heavyLight: Int,
     val spikedFlat: Int,
 ) {
-    /** Score for one commission word; mirrors clientscript `script6105`. */
+    /** Mirrors clientscript `script6105`. */
     fun score(word: CommissionWord): Int {
         val value =
             when (word) {
@@ -50,7 +47,7 @@ internal data class Mould(
     }
 }
 
-/** Values of `giants_foundry_commission_word_*`, keys of enum `giants_foundry_commission_words`. */
+/** [id] is the value of `giants_foundry_commission_word_*` and the key in its enum. */
 internal enum class CommissionWord(val id: Int, val positive: Boolean) {
     Narrow(1, false),
     Light(2, false),
@@ -62,7 +59,6 @@ internal enum class CommissionWord(val id: Int, val positive: Boolean) {
     val label: String
         get() = GiantsFoundryEnums.giants_foundry_commission_words.getValue(id)
 
-    /** The style axis (broad/narrow, heavy/light, spiked/flat) this word sits on. */
     val axis: Int
         get() = (id - 1) % 3
 
@@ -72,11 +68,6 @@ internal enum class CommissionWord(val id: Int, val positive: Boolean) {
 }
 
 internal object FoundryData {
-    /**
-     * The 12 commissions: the first word is broad/narrow or heavy/light, the second heavy/light
-     * or spiked/flat, never two words on one axis.
-     * https://oldschool.runescape.wiki/w/Giants%27_Foundry#Commissions
-     */
     val commissions: List<Pair<CommissionWord, CommissionWord>> by lazy {
         val first =
             listOf(CommissionWord.Broad, CommissionWord.Narrow, CommissionWord.Heavy, CommissionWord.Light)
@@ -113,9 +104,8 @@ internal object FoundryData {
     }
 
     /**
-     * Unlock varbit for a bought mould, or null for the default ones. Clientscript
-     * `giants_foundry_mould_is_unlocked` gates each part's five highest struct ids (the bought
-     * moulds) on `giants_foundry_unlocked_mould_<part>_7..11`, in struct order.
+     * Clientscript `giants_foundry_mould_is_unlocked` gates each part's five highest struct ids
+     * (the bought moulds) on `giants_foundry_unlocked_mould_<part>_7..11`, in struct order.
      */
     fun unlockVarbit(mould: Mould): String? {
         val bought = moulds.getValue(mould.part).map { it.struct }.sorted().takeLast(BOUGHT_PER_PART)
@@ -127,7 +117,7 @@ internal object FoundryData {
 
     private fun param(name: String): Int = name.asRSCM(RSCMType.PARAM)
 
-    /** The bar for each crucible metal, in [METALS] order. */
+    /** In [METALS] order. */
     val bars: List<SmithingBarsRow> by lazy { METAL_BARS.map(SmithingBarsRow::getRow) }
 
     private val METAL_BARS =
@@ -140,10 +130,6 @@ internal object FoundryData {
             "dbrow.runite",
         )
 
-    /**
-     * Smithed items the crucible melts down: item id to (metal index, bars worth). An item is
-     * worth one bar less than it takes to smith, so one-bar items are refused.
-     */
     val smithedItems: Map<Int, Pair<Int, Int>> by lazy {
         val barRows = bars.map { it.rowId }
         SmithingData.productMeta
@@ -155,7 +141,6 @@ internal object FoundryData {
             .toMap()
     }
 
-    /** Smithing level to add [bar]: its smelting level, at least what Sleeping Giants needs. */
     fun barLevel(bar: SmithingBarsRow): Int {
         val smelt = bar.statReq.firstOrNull { it.t0.id == SMITHING.asRSCM(RSCMType.STAT) }?.t1 ?: 1
         return maxOf(SleepingGiants.requiredSmithing, smelt)

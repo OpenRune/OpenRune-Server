@@ -33,13 +33,7 @@ internal const val DROP_TRIGGER = "droptrigger.sleeping_giants_room"
 
 internal const val ROOM_KEY = "sleeping_giants"
 
-/**
- * The foundry as Sleeping Giants first shows it: a private copy of the real foundry (region
- * 52_179) with the stations swapped for their `_quest` versions (broken tools, and inspect-only
- * crucible, jig, lava pool, waterfall, storage, crate and chest). The cache places none of the
- * `_quest` locs on any map, so the copy is built per player. The wiki calls it an instance whose
- * dropped items are lost. https://oldschool.runescape.wiki/w/Sleeping_Giants
- */
+/** The cache places none of the `_quest` locs on any map, so the room is built per player. */
 @Singleton
 class SleepingGiantsRoom
 @Inject
@@ -66,11 +60,6 @@ constructor(
 
     fun isInside(player: Player): Boolean = sessionOf(player) != null
 
-    /**
-     * Builds the room and moves the player in under a fade. With [intro] it opens as the quest's
-     * cutscene: the cache's `_cutscene` locs (which have no ops) and Kovac's cutscene npc; [endIntro]
-     * then swaps in the `_quest` locs. [onArrival] runs on the tick the player is moved in.
-     */
     suspend fun enter(access: ProtectedAccess, intro: Boolean, onArrival: () -> Unit): Boolean {
         val player = access.player
         val result = manager.create(player, ROOM_KEY, SPEC, InstanceAccess.Private, clock.cycle)
@@ -177,7 +166,6 @@ constructor(
         }
     }
 
-    /** The player walks back towards Kovac after taking in the room. */
     suspend fun introWalkBack(access: ProtectedAccess) {
         val region = roomOf(access.player)?.region ?: return
         access.walk(region.normal[INTRO_RETURN_TILE])
@@ -200,7 +188,6 @@ constructor(
         }
     }
 
-    /** Ends the cutscene: the quest's locs and Kovac replace the cutscene ones. */
     suspend fun endIntro(access: ProtectedAccess) {
         val room = roomOf(access.player) ?: return
         try {
@@ -224,7 +211,6 @@ constructor(
         }
     }
 
-    /** [endIntro] without the fade, for when the cutscene is cut short. */
     fun endIntroNow(access: ProtectedAccess) {
         roomOf(access.player)?.let { swapToQuest(it) }
         access.restoreSceneState()
@@ -272,7 +258,6 @@ constructor(
         return kovac
     }
 
-    /** Kovac stays put in the room so the player can find him to talk. */
     private fun spawnKovac(region: Region, type: String, tile: CoordGrid, dir: Direction): Npc {
         val kovac = Npc(type, region.normal[tile])
         kovac.respawnDir = dir
@@ -281,10 +266,6 @@ constructor(
         return kovac
     }
 
-    /**
-     * Moves the player from the room to the same tile of the real foundry, once the tools are
-     * repaired.
-     */
     suspend fun moveToFoundry(access: ProtectedAccess) {
         val session = sessionOf(access.player) ?: return
         val room = rooms[session.id] ?: return
@@ -305,13 +286,11 @@ constructor(
         access.closeFadeOverlayNow()
     }
 
-    /** Takes the player out of the room through its exit; the caller moves them outside. */
     fun leave(player: Player) {
         val session = sessionOf(player) ?: return
         manager.leave(player, session, clock.cycle)
     }
 
-    /** Runs for every way out of the room, logout included. */
     fun onLeft(player: Player) {
         if (player.dropTrigger == DROP_TRIGGER) {
             player.clearDropTrigger(DROP_TRIGGER)
@@ -326,9 +305,6 @@ constructor(
     }
 
     /*
-     * Dropping in the room: since 25 September 2024 the quest warns about dropping items in the
-     * foundry, because the room's floor items are lost once the player leaves it.
-     * https://oldschool.runescape.wiki/w/Update:Varlamore:_The_Rising_Darkness_is_OUT_NOW
      * The first drop only warns (the trigger re-arms, which blocks it); dropping again goes
      * through, and the trigger re-arms for the next item.
      */
@@ -339,7 +315,6 @@ constructor(
         }
     }
 
-    /** Handles the drop trigger; true when the drop should be blocked. */
     fun onDropAttempt(player: Player): Boolean {
         if (player.dropWarned) {
             player.dropWarned = false
@@ -406,7 +381,6 @@ constructor(
         val KOVAC_FACE_TILE = CoordGrid(3369, 11487, 0)
         val KOVAC_TRIP_HAMMER_PATH = listOf(CoordGrid(3368, 11490, 0), CoordGrid(3365, 11493, 0))
         val TRIP_HAMMER_FACE_TILE = CoordGrid(3365, 11497, 0)
-        /** South-west corner of map square 52_179, the copied block. */
         val COPY_ORIGIN = CoordGrid(3328, 11456, 0)
         const val REGION_ZONE_OFFSET = 4
         const val ZONE_LENGTH = 8

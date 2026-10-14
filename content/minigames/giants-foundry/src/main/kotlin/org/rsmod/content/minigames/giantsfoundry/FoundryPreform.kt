@@ -14,19 +14,15 @@ internal const val PREFORM = "obj.giants_foundry_preform"
 internal const val HUD = "interface.giants_foundry_hud"
 internal const val PREFORM_COOLING_TIMER = "timer.giants_foundry_preform_cooling"
 
-/** `giants_foundry_hud_set_sweetspot(int)` in the rev 241 dump: 0 none, 1 gold, 2 green. */
+/** `giants_foundry_hud_set_sweetspot(int)`: 0 none, 1 gold, 2 green. */
 private const val HUD_SWEETSPOT = "clientscript.[clientscript,script6122]"
 
-/** Passive cooling: -1 every 2 ticks (Easy Giants' Foundry plugin, which logs the heat varbit). */
+// UNVERIFIED: passive cooling of 1 every 2 ticks (plugin measurement).
 internal const val PREFORM_COOLING_PERIOD = 2
 
 internal fun Player.holdsPreform(): Boolean =
     worn[Wearpos.RightHand.slot]?.isType(PREFORM) == true
 
-/**
- * Puts the preform in the weapon slot; both hands must be free.
- * https://oldschool.runescape.wiki/w/Transcript:Sleeping_Giants
- */
 internal suspend fun ProtectedAccess.handsFreeForPreform(): Boolean {
     if (player.worn[Wearpos.RightHand.slot] != null || player.worn[Wearpos.LeftHand.slot] != null) {
         mesbox("You must free your hands so you can hold the preform.")
@@ -62,7 +58,7 @@ internal fun Player.showSweetSpot(state: Int) {
     runClientScript(HUD_SWEETSPOT.asRSCM(RSCMType.CLIENTSCRIPT), state)
 }
 
-/** Resets the current sword after hand-in; the heat and seeds stay until the next pick-up. */
+/** The heat and seeds stay until the next pick-up. */
 internal fun Player.clearSword() {
     preformDifficulty = 0
     preformQuality = 0

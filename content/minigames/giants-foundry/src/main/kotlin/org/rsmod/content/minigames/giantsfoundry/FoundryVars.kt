@@ -8,7 +8,6 @@ import org.rsmod.game.entity.Player
 
 internal var Player.sleepingGiants by intVarBit("varbit.sleeping_giants")
 
-/** Sleeping Giants' sword-making steps; see [SleepingGiants]. */
 internal var Player.sleepingGiantsTutorial by intVarBit("varbit.sleeping_giants_tutorial")
 
 internal var Player.commissionWord1 by intVarBit("varbit.giants_foundry_commission_word_1")
@@ -33,7 +32,6 @@ internal var Player.preformTemperature by intVarBit("varbit.giants_foundry_prefo
 internal var Player.preformCompletion by intVarBit("varbit.giants_foundry_preform_completion")
 internal var Player.preformStored by boolVarBit("varbit.giants_foundry_preform_stored")
 
-/** Foundry Reputation, shown by the reward shop. */
 internal var Player.foundryReputation by intVarp("varp.giants_foundry_reward_shop_points")
 
 internal var Player.commissionStart by intVarp("varp.giants_foundry_commission_start")

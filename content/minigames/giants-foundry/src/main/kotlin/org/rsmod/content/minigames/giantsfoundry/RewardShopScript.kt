@@ -23,11 +23,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Kovac's reward shop (`giants_foundry_reward_shop`). Its catalogue is the cache enum
- * `giants_foundry_reward_shop_items`: structs with an obj or a mould struct, and a cost in Foundry
- * Reputation. https://oldschool.runescape.wiki/w/Giants%27_Foundry_Reward_Shop
- */
 class RewardShopScript @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc5(KOVAC) { openRewardShop() }
@@ -36,10 +31,6 @@ class RewardShopScript @Inject constructor() : PluginScript() {
         onOpNpcU(KOVAC) { sellBack(it.npc, it.objType) }
     }
 
-    /**
-     * Using a reward on Kovac sells it back for 80% of its cost; he won't take the grog or the
-     * colossal blade. https://oldschool.runescape.wiki/w/Transcript:Kovac
-     */
     private suspend fun ProtectedAccess.sellBack(npc: Npc, obj: ItemServerType) {
         when (obj.internalName) {
             GROG -> {
@@ -70,7 +61,6 @@ class RewardShopScript @Inject constructor() : PluginScript() {
         objbox(obj.internalName, "${obj.name}: Kovac takes it back. Foundry Reputation: ${"%,d".format(player.foundryReputation)}")
     }
 
-    /** Obj id to cost for every item (not mould) in the shop catalogue. */
     private fun shopCosts(): Map<Int, Int> =
         shopItems.values.mapNotNull { structId ->
             val struct = structId?.let(ServerCacheManager::getStruct) ?: return@mapNotNull null
@@ -121,7 +111,6 @@ class RewardShopScript @Inject constructor() : PluginScript() {
         refresh()
     }
 
-    /** Redraws the list, info panel and reputation after a purchase (keeping the scroll). */
     private fun ProtectedAccess.refresh() {
         player.runClientScript(SHOP_SETUP.asRSCM(RSCMType.CLIENTSCRIPT), 0)
     }
@@ -167,7 +156,7 @@ private const val SHOP_INTERFACE = "interface.giants_foundry_reward_shop"
 private const val SHOP_SETUP = "clientscript.[clientscript,giants_foundry_reward_shop_setup]"
 private const val ROW_CHILDREN = 13
 
-/** Opens the reward shop. TODO: the Bank PIN check the shop has had since 13 July 2022. */
+// TODO: the Bank PIN check before the shop opens.
 internal fun ProtectedAccess.openRewardShop() {
     ifOpenMainModal(SHOP_INTERFACE)
     player.runClientScript(SHOP_SETUP.asRSCM(RSCMType.CLIENTSCRIPT), 1)

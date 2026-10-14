@@ -3,7 +3,6 @@ package org.rsmod.content.minigames.giantsfoundry
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-/** Expected values from https://oldschool.runescape.wiki/w/Giants%27_Foundry */
 class FoundryFormulasTest {
     private fun counts(vararg pairs: Pair<Int, Int>): IntArray =
         IntArray(6).also { counts -> pairs.forEach { (metal, n) -> counts[metal] = n } }
@@ -16,7 +15,7 @@ class FoundryFormulasTest {
     }
 
     @Test
-    fun `mixed metals match the wiki examples`() {
+    fun `mixed metals score from the top two tiers`() {
         assertEquals(59, FoundryFormulas.metalScore(counts(2 to 19, 3 to 9)))
         assertEquals(89, FoundryFormulas.metalScore(counts(3 to 18, 4 to 10)))
         assertEquals(118, FoundryFormulas.metalScore(counts(4 to 19, 5 to 9)))
@@ -32,7 +31,7 @@ class FoundryFormulasTest {
     }
 
     @Test
-    fun `hand-in xp matches the wiki at both ends`() {
+    fun `hand-in xp at quality 0 and 199`() {
         assertEquals(30, FoundryFormulas.handInXp(0))
         assertEquals(25_230, FoundryFormulas.handInXp(199))
     }

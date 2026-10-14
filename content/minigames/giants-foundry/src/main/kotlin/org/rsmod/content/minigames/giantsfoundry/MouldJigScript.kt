@@ -12,11 +12,6 @@ import org.rsmod.game.inv.isType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * The mould jig and its setup interface (`giants_foundry_mould`). The interface's clientscripts
- * write the tab and mould selections client-side; the server mirrors them from the button ops.
- * https://oldschool.runescape.wiki/w/Giants%27_Foundry#Mould_setup
- */
 class MouldJigScript @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
         onOpLoc1(JIG_EMPTY) { setup() }
@@ -114,11 +109,7 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         player.mouldTip = 0
     }
 
-    /**
-     * Poured metal stays molten in the jig (the jig's varbit has no cooling state) until it's
-     * picked up with a bucket of water, ice gloves or smiths gloves (i).
-     * https://oldschool.runescape.wiki/w/Transcript:Sleeping_Giants
-     */
+    /** The jig's varbit has no cooling state: poured metal stays molten until it's picked up. */
     private suspend fun ProtectedAccess.pickUp(hot: Boolean) {
         if (hot && !canHandleHotMetal()) {
             mes("The preform is still molten! You need to cool it down.")
@@ -131,7 +122,6 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         if (hasIceGloves()) {
             mes("Your Ice gloves cool the preform as you reach for it.", ChatType.Spam)
         } else if (hot) {
-            // sigmazx's Sleeping Giants video (youtube.com/watch?v=WnGuNtTJW0M).
             invReplace(inv, BUCKET_WATER, 1, BUCKET_EMPTY)
             mes("You throw the water over the preform.")
         }
@@ -181,15 +171,11 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         for ((section, tool) in layout.withIndex()) {
             player.setFoundryVar(seedVarbit(section), tool.row.seed)
         }
-        // UNVERIFIED: the start heat when a bucket of water cools the preform instead of ice
-        // gloves (guess: the same as with gloves).
+        // UNVERIFIED: the start heat with a bucket of water instead of ice gloves, taken to be
+        // the same (guess).
         player.preformTemperature = random.of(START_TEMPERATURE.first, START_TEMPERATURE.last)
     }
 
-    /**
-     * The trip hammer comes first, no two neighbouring sections use the same tool, and every
-     * sword needs all three tools.
-     */
     private fun ProtectedAccess.rollLayout(sections: Int): List<FoundryTool> {
         while (true) {
             val layout = mutableListOf(FoundryTool.Hammer)

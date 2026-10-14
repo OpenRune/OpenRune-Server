@@ -35,19 +35,11 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 
-/**
- * Sleeping Giants: Kovac shows the player the giants' foundry, they repair its tools in a private
- * copy of it, then make a first sword in the real foundry.
- * https://oldschool.runescape.wiki/w/Sleeping_Giants
- * https://oldschool.runescape.wiki/w/Transcript:Sleeping_Giants
- */
 class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRoom) :
     QuestScript(
         SleepingGiants.QUEST,
         "varp.giants_foundry_main",
-        // The quest dbrow's `stat_xp_awarded` is 60000 (tenths); the wiki gives 6,000.
         rewards { xp("stat.smithing", 6000.0) },
-        // The reward scroll shows the preform's model (wiki File:Sleeping Giants reward scroll.png).
         ItemRewardDisplay(PREFORM, zoom = 400),
         questVarbit = "varbit.sleeping_giants",
     ) {
@@ -85,7 +77,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         onOpLoc1(WATERFALL_QUEST) { inspectWaterfall() }
 
         onOpLoc1(CRATE_FULL) { searchCrate() }
-        // sigmazx's Sleeping Giants video (youtube.com/watch?v=WnGuNtTJW0M, about 8:44).
         // UNVERIFIED: that searching the empty crate gives this message (video frames)
         onOpLoc1(CRATE_EMPTY) { mes("There is nothing in the storage area to take.") }
 
@@ -157,7 +148,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     private fun stage(player: Player): Int = quest.getQuestStage(player)
 
-    /** Players who have the quest completed (or treated as completed) see the empty crate. */
     private fun syncCompleted(player: Player) {
         if (
             QuestRequirements.hasCompleted(player, SleepingGiants.QUEST) &&
@@ -166,8 +156,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             player.sleepingGiantsTutorial = SleepingGiants.TUTORIAL_COMPLETE
         }
     }
-
-    /* Starting out */
 
     private suspend fun ProtectedAccess.strike(npc: Npc) {
         startDialogue(npc) {
@@ -232,10 +220,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     private suspend fun Dialogue.chatKovacOutside(mesanim: MesAnimType, text: String) =
         chatNpcSpecific(KOVAC_NAME, KOVAC_STRIKE, mesanim, text)
 
-    /**
-     * The cave: before the quest the player won't go in; until the tools are repaired it leads
-     * to the quest's copy of the foundry, then to the real one.
-     */
     private suspend fun ProtectedAccess.enterCave() {
         val stage = stage(player)
         when {
@@ -249,7 +233,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
     }
 
-    /** Kovac's "follow" and the cave both lead into the quest's copy of the foundry. */
     private suspend fun ProtectedAccess.enterRoom(intro: Boolean) {
         val entered =
             room.enter(this, intro) {
@@ -272,8 +255,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             }
         }
     }
-
-    /* What is this? A workshop for giants? */
 
     private suspend fun ProtectedAccess.talkInside(npc: Npc) {
         startDialogue(npc) {
@@ -360,8 +341,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
         quest.setQuestStage(access, SleepingGiants.MAKING_SWORD)
     }
-
-    /* Repairs */
 
     private enum class RepairTool(private val dbrow: String) {
         Hammer("dbrow.sleeping_giants_repair_hammer"),
@@ -578,8 +557,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
     }
 
-    /* Inspecting the room's objects */
-
     private suspend fun Dialogue.chatKovac(mesanim: MesAnimType, text: String) =
         chatNpcSpecific(KOVAC_NAME, KOVAC_QUEST, mesanim, text)
 
@@ -660,8 +637,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             chatPlayer(neutral, "I agree, it's very important.")
         }
     }
-
-    /* Make-A-Sword */
 
     private suspend fun ProtectedAccess.searchCrate() {
         startDialogue {
@@ -932,11 +907,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         chatNpc(neutral, "Remember, try trip hammer first with hot preform.")
     }
 
-    /**
-     * The quest sword pays no foundry rewards: in sigmazx's video
-     * (youtube.com/watch?v=WnGuNtTJW0M) chat goes straight to the quest completion, with no
-     * coins, reputation or hand-in summary, and the XP drop is only the quest's 6,000.
-     */
+    /** The quest sword pays only the quest's rewards: no coins, reputation or hand-in summary. */
     private suspend fun Dialogue.handIn() {
         chatPlayer(happy, "Okay Kovac, I think I've finally finished the sword!")
         lineByLine("Hmm...", "let Kovac look.") { chatNpc(neutral, it) }
@@ -998,10 +969,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         quest.completeQuest(access)
     }
 
-    /**
-     * Kovac stops the player when a tool is used on the quest sword at the wrong time.
-     * https://oldschool.runescape.wiki/w/Transcript:Sleeping_Giants
-     */
     private suspend fun ProtectedAccess.kovacStop(stop: QuestPrompt.KovacStop) {
         startDialogue {
             chatNpcSpecific(KOVAC_NAME, KOVAC_FOUNDRY_HEAD, angry, "Stop!")
@@ -1061,9 +1028,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     }
 }
 
-/** Something the quest says while the sword is worked, queued from the refining timer. */
 internal sealed interface QuestPrompt {
-    /** Kovac stops the player; [reason] is his line from the transcript. */
     class KovacStop(val reason: String) : QuestPrompt
 
     data object SwordFinished : QuestPrompt
@@ -1099,7 +1064,6 @@ private const val LINE_BREAK = "<br>"
 
 internal const val QUEST_PROMPT_QUEUE = "queue.giants_foundry_quest_prompt"
 
-/** The player's line once the quest sword is done, or a tool is used on it after. */
 internal suspend fun ProtectedAccess.questSwordFinished() {
     startDialogue {
         chatPlayer(neutral, "Looks like the sword is finished. I should take it to Kovac.")
