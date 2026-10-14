@@ -170,6 +170,7 @@ valueType = "OBJ"
 4 = "obj.nails_mithril"
 5 = "obj.nails_adamant"
 6 = "obj.nails_rune"
+7 = "obj.nails_dragon"
 
 [[object]]
 id = "loc.giants_foundry_waterfall"

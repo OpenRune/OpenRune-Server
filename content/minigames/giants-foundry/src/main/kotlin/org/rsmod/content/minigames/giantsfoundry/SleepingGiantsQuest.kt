@@ -565,9 +565,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     private suspend fun Dialogue.chatKovac(mesanim: MesAnimType, text: String) =
         chatNpcSpecific(KOVAC_NAME, KOVAC_QUEST, mesanim, text)
 
-    // UNVERIFIED: `shocked` for the lines that play chatshock, which no mesanim has (guess)
     private val Dialogue.chatshock: MesAnimType
-        get() = shocked
+        get() = mesanim("mesanim.giants_foundry_chatshock")
 
     private suspend fun ProtectedAccess.inspectChest() {
         startDialogue {
