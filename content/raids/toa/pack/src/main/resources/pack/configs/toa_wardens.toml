@@ -13,6 +13,7 @@ moveRestrict = "NoMove"
 regenRate = 0
 [npc.params]
 "param.amascutnpc" = 1
+"param.hitpoints_locked" = true
 
 [[npc]]
 id = "npc.toa_wardens_p1_obelisk_npc"

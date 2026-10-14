@@ -104,6 +104,7 @@ class WardensEncounter(
     }
 
     private fun readyWarden(warden: Npc) {
+        warden.ignoreCombatInteractions = false
         deps.bossDeps.encounterRegistry.remove(warden)
         deps.bossDeps.encounter(warden).attackRateOverride = wardenAttackRate()
         wardenReady = true
@@ -156,6 +157,7 @@ class WardensEncounter(
 
     internal fun obeliskHit(npc: Npc, hit: Hit) {
         if (npc !== obelisk || stage != ToaStage.STARTED || !hit.isFromPlayer) return
+        if (phaseOne) npc.hitpoints = obeliskRemaining
         hpBar?.update()
         if (capped && phaseOne) beginTransition()
     }

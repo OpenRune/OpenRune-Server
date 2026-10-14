@@ -21,6 +21,9 @@ class WardensScript : PluginScript() {
         onModifyNpcHit(npcType(WardensEncounter.OBELISK_P1)) {
             ToaRooms.of<WardensEncounter>(npc)?.modifyObeliskHit(npc, hit)
         }
+        onModifyNpcHit(npcType(WardensEncounter.OBELISK_P2)) {
+            ToaRooms.of<WardensEncounter>(npc)?.modifyObeliskHit(npc, hit)
+        }
         onRoomNpcHit<WardensEncounter>(WardensEncounter.OBELISK_P1) { npc, hit ->
             obeliskHit(npc, hit)
         }
