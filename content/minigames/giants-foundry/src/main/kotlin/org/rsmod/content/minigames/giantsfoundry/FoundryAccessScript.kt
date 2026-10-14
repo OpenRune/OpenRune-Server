@@ -21,12 +21,22 @@ internal val FOUNDRY_OUTSIDE = CoordGrid(3361, 3148, 0)
 private const val ENTER_FADE_CYCLES = 50
 
 internal suspend fun ProtectedAccess.enterFoundry() {
-    fadeTeleport(FOUNDRY_INSIDE)
+    fadeTeleport(
+        FOUNDRY_INSIDE,
+        afterMove = { if (player.preformStored) mes(KEPT_WARM) },
+    )
 }
+
+private const val KEPT_WARM =
+    "<col=ff3045>You notice your current commission is being kept warm in the preform storage."
+private const val PLACED =
+    "<col=229628>You place the preform in the handy storage area. It should stay nice and warm there."
 
 private suspend fun ProtectedAccess.fadeTeleport(
     destination: CoordGrid,
+    atFade: () -> Unit = {},
     beforeMove: () -> Unit = {},
+    afterMove: () -> Unit = {},
 ) {
     arriveDelay()
     fadeOverlay(
@@ -36,10 +46,12 @@ private suspend fun ProtectedAccess.fadeTeleport(
         endTransparency = 0,
         clientDuration = ENTER_FADE_CYCLES,
     )
+    atFade()
     delay(2)
     beforeMove()
     telejump(destination)
     delay(1)
+    afterMove()
     fadeOverlay(
         startColour = 0,
         startTransparency = 0,
@@ -59,16 +71,19 @@ constructor(private val room: SleepingGiantsRoom, private val eventBus: EventBus
         onOpLoc1(BANK_CHEST) { tryOpenBank() }
         onOpLoc1(STORAGE_EMPTY) { store() }
         onOpLoc1(STORAGE_FULL) { take() }
-        onOpWorn1(PREFORM) { mes("You can only put the preform down in the preform storage.") }
+        onOpWorn1(PREFORM) {
+            mes("You should place the preform into the preform storage if you want to unequip it.")
+        }
         onPlayerLogin { login(player) }
     }
 
     private suspend fun ProtectedAccess.leave() {
-        if (player.holdsPreform()) {
-            stashPreform()
-            mes("You leave your preform in the preform storage.")
-        }
-        fadeTeleport(FOUNDRY_OUTSIDE) { room.leave(player) }
+        fadeTeleport(
+            FOUNDRY_OUTSIDE,
+            atFade = { if (player.holdsPreform()) closeHud() },
+            beforeMove = { room.leave(player) },
+            afterMove = { if (player.holdsPreform()) placePreform() },
+        )
     }
 
     private fun ProtectedAccess.store() {
@@ -76,20 +91,15 @@ constructor(private val room: SleepingGiantsRoom, private val eventBus: EventBus
             mes("There is nothing in the storage area to take.")
             return
         }
-        player.preformStored = true
-        mes(
-            "<col=229628>You place the preform in the handy storage area. It should stay nice " +
-                "and warm there."
-        )
+        placePreform()
         anim(STORAGE_SEQ)
-        player.removePreform()
         closeHud()
     }
 
-    private fun ProtectedAccess.stashPreform() {
-        player.removePreform()
+    private fun ProtectedAccess.placePreform() {
         player.preformStored = true
-        closeHud()
+        mes(PLACED)
+        player.removePreform()
     }
 
     private suspend fun ProtectedAccess.take() {
@@ -115,7 +125,8 @@ constructor(private val room: SleepingGiantsRoom, private val eventBus: EventBus
             player.sleepingGiants = SleepingGiants.COMPLETE
         }
         if (player.preformStored) {
-            player.mes("You notice your current commission is being kept warm in the preform storage.")
+            // UNVERIFIED: whether live repeats the entry message at login (guess).
+            player.mes(KEPT_WARM)
         }
         if (player.holdsPreform()) {
             player.resumePreform(eventBus)

@@ -203,7 +203,7 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
             if (player.commissionWord1 == 0) {
                 giveCommission()
             } else {
-                chatNpc(neutral, "Kovac give commission already. Go make me ${styleText()} sword.")
+                chatNpc(neutral, "Kovac give commission already. Go make me ${styleTextSplit()} sword.")
             }
         }
     }
@@ -218,6 +218,12 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
         player.commissionWord2 = second.id
         player.commissionStart = (System.currentTimeMillis() / 1000).toInt()
         chatNpc(neutral, "Make ${styleText()} sword.")
+    }
+
+    private fun Dialogue.styleTextSplit(): String {
+        val first = CommissionWord.forId(player.commissionWord1)?.label ?: ""
+        val second = CommissionWord.forId(player.commissionWord2)?.label ?: ""
+        return "<col=ef1020>$first <col=ef1020>$second</col>"
     }
 
     private fun Dialogue.styleText(): String {
