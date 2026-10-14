@@ -90,6 +90,16 @@ toa_path_apmeken = 741
 
 [gamevals.synth]
 toa_wardens_orb_spawn = 6595
+toa_wardens_charge = 3614
+toa_wardens_siphon_spawn = 6159
+toa_wardens_siphon_beam = 6230
+toa_wardens_siphon_reverse = 6087
+toa_wardens_stagger_1 = 6183
+toa_wardens_stagger_2 = 6038
+toa_wardens_stagger_3 = 6110
+toa_wardens_stagger_4 = 6243
+toa_wardens_stagger_5 = 6215
+toa_wardens_stagger_6 = 6115
 toa_wardens_obelisk_lane_explode = 6191
 toa_wardens_entomb = 4207
 toa_wardens_entomb_end = 2813
@@ -162,6 +172,7 @@ toa_het_layouts = 64104
 toa_het_seal = 64105
 toa_wardens_obelisk_patterns = 64106
 toa_wardens_slams = 64107
+toa_wardens_siphons = 64108
 
 [gamevals.dbrow]
 toa_room_main_hall = 57000
@@ -219,6 +230,14 @@ toa_wardens_windmill_4 = 57086
 toa_wardens_slam_east = 57087
 toa_wardens_slam_west = 57088
 toa_wardens_slam_both = 57089
+toa_wardens_siphon_solo_1 = 57090
+toa_wardens_siphon_solo_2 = 57091
+toa_wardens_siphon_solo_3 = 57092
+toa_wardens_siphon_solo_4 = 57093
+toa_wardens_siphon_group_1 = 57094
+toa_wardens_siphon_group_2 = 57095
+toa_wardens_siphon_group_3 = 57096
+toa_wardens_siphon_group_4 = 57097
 
 [gamevals.varn]
 toa_baba_rolls = 70
