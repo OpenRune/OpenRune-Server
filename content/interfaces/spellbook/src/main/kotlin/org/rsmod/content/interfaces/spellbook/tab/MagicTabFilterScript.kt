@@ -1,6 +1,9 @@
 package org.rsmod.content.interfaces.spellbook.tab
 
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.types.aconverted.interf.IfButtonOp
+import org.rsmod.api.player.output.ClientScripts
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.script.onIfOpen
@@ -17,10 +20,21 @@ class MagicTabFilterScript : PluginScript() {
         onIfOverlayButton("component.magic_spellbook:filtermenu") {
             player.toggleFilter(it.comsub)
         }
+
+        onIfOverlayButton("component.toplevel_osrs_stretch:stone6") { player.selectStoneOp(it.op) }
     }
 
     private fun Player.onTabOpen() {
         ifSetEvents("component.magic_spellbook:filtermenu", 0..6, IfEvent.Op1)
+    }
+
+    private fun Player.selectStoneOp(op: IfButtonOp) {
+        if (op != IfButtonOp.Op2) {
+            return
+        }
+        hideFilterButton = !hideFilterButton
+        ClientScripts.toplevelSidebuttonSwitch(this, 6)
+        soundSynth("synth.interface_select")
     }
 
     private fun Player.toggleFilter(comsub: Int) {
@@ -36,6 +50,8 @@ class MagicTabFilterScript : PluginScript() {
         }
     }
 }
+
+private var Player.hideFilterButton by boolVarBit("varbit.magic_spellbook_hidefilterbutton")
 
 private var Player.showCombatSpells by boolVarBit("varbit.magic_filter_blockcombat")
 private var Player.showTeleportSpells by boolVarBit("varbit.magic_filter_blockteleport")
