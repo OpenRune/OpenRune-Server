@@ -18,6 +18,7 @@ import org.rsmod.api.script.onDialogInput
 import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onPlayerLogin
+import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.api.table.AccountDefaultVarsRow
 import org.rsmod.api.table.SettingsConfigsRow
 import org.rsmod.game.entity.Player
@@ -34,6 +35,7 @@ class AllSettingsScript
 @Inject
 constructor(
     private val protectedAccess: ProtectedAccessLauncher,
+    private val config: ServerConfig,
 ) :
     PluginScript() {
 
@@ -330,6 +332,9 @@ constructor(
         }
         for (row in AccountDefaultVarsRow.all()) {
             VarPlayerIntMapSetter.set(this, row.varValue, row.value)
+        }
+        if (!config.gameplay.levelUpPopups) {
+            VarPlayerIntMapSetter.set(this, "varbit.option_level_up_message_disabled", 1)
         }
     }
 
