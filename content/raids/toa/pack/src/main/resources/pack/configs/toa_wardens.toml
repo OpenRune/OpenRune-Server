@@ -197,3 +197,52 @@ regenRate = 0
 "param.hitmark_lit" = "hitmark.regular_damage_max"
 "param.hitmark_tint" = "hitmark.regular_damage_max"
 "param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase3_inactive"
+inherit = "npc.toa_warden_elidinis_phase3_inactive"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.headbar" = "headbar.health_140"
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase3_inactive"
+inherit = "npc.toa_warden_tumeken_phase3_inactive"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.headbar" = "headbar.health_140"
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase3"
+inherit = "npc.toa_warden_elidinis_phase3"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.headbar" = "headbar.health_140"
+"param.hitmark_lit" = "hitmark.regular_damage_lit"
+"param.hitmark_tint" = "hitmark.regular_damage_tint"
+"param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase3"
+inherit = "npc.toa_warden_tumeken_phase3"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.headbar" = "headbar.health_140"
+"param.hitmark_lit" = "hitmark.regular_damage_lit"
+"param.hitmark_tint" = "hitmark.regular_damage_tint"
+"param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.toa_amascut_p3"
+inherit = "npc.toa_amascut_p3"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0

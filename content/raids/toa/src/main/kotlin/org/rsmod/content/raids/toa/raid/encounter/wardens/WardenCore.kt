@@ -46,6 +46,9 @@ internal class WardenCore(private val room: WardensEncounter) {
     private var blocker: LocInfo? = null
     private var shieldForm: String? = null
 
+    var coreTile: CoordGrid? = null
+        private set
+
     val realFraction: Double
         get() = if (realMax == 0) 1.0 else realHp.toDouble() / realMax
 
@@ -101,7 +104,9 @@ internal class WardenCore(private val room: WardensEncounter) {
     }
 
     fun mirror(coreNpc: Npc, hit: Hit) {
-        if (state != State.DOWN || coreNpc !== core) return
+        if (coreNpc !== core) return
+        coreNpc.removeHeadbar(headbarId(CORE_HEADBAR))
+        if (state != State.DOWN) return
         val warden = room.activeWarden ?: return
         val player = hit.resolvePlayerSource(deps.bossDeps.playerList) ?: return
         val damage = hit.damage * MIRROR_FACTOR
@@ -130,6 +135,7 @@ internal class WardenCore(private val room: WardensEncounter) {
 
     private fun kneel(warden: Npc, god: WardenGod) {
         state = State.KNEELING
+        warden.ignoreCombatInteractions = true
         room.stopAttacking(warden)
         warden.anim(WardenCoreRefs.KNEEL)
         room.hpBar?.update()
@@ -169,7 +175,11 @@ internal class WardenCore(private val room: WardensEncounter) {
     }
 
     private fun spawnCore(god: WardenGod, tile: CoordGrid) {
-        core = room.spawn(god.core, tile, null).also { it.vars[FORCED_MAX_HIT] = FORCED_MELEE }
+        coreTile = tile
+        core = room.spawn(god.core, tile, null).also {
+                it.vars[FORCED_MAX_HIT] = FORCED_MELEE
+                it.ignoreCombatInteractions = true
+            }
         blocker =
             deps.locRepo.add(
                 tile,
@@ -227,6 +237,7 @@ internal class WardenCore(private val room: WardensEncounter) {
         warden.hitpoints = shieldMax
         shieldBroken = false
         state = State.SHIELD
+        warden.ignoreCombatInteractions = false
         warden.removeHeadbar(headbarId(WardenCoreRefs.HEALTH_BAR))
         warden.anim(WardenCoreRefs.STAND_UP)
         warden.transmog(npcType(next), Int.MAX_VALUE)
@@ -269,6 +280,7 @@ internal class WardenCore(private val room: WardensEncounter) {
 
         const val FORCED_MAX_HIT = "varn.forced_max_hit_styles"
         const val FORCED_MELEE = 1
+        const val CORE_HEADBAR = "headbar.health_30"
         const val REAL_BASE_HP = 4500
         const val REAL_RAID_HP_FACTOR = 0.25
         const val MIRROR_FACTOR = 5

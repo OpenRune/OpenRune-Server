@@ -21,6 +21,7 @@ import org.rsmod.content.raids.toa.raid.encounter.MainHallEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaBossEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
+import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenGod
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardensEncounter
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle.CrondisPuzzleEncounter
@@ -54,6 +55,8 @@ class ToaRaid(
 
     var ended = false
         internal set
+
+    internal var wardensRestored: WardenGod? = null
 
     var current: ToaEncounter? = null
         private set
