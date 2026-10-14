@@ -1,15 +1,25 @@
 package org.rsmod.content.minigames.giantsfoundry
 
-import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCMType
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.aconverted.interf.IfSubType
 import jakarta.inject.Inject
+import org.rsmod.api.config.Constants
+import org.rsmod.api.player.dialogue.align.TextAlignment
+import org.rsmod.api.player.output.ChatType
+import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc3
+import org.rsmod.api.script.onOpLocU
+import org.rsmod.content.skills.SkillMultiConfig
+import org.rsmod.content.skills.SkillMultiEntry
+import org.rsmod.content.skills.SkillMultiSelection
+import org.rsmod.content.skills.SkillingActionType
+import org.rsmod.content.skills.openSkillMulti
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -17,8 +27,11 @@ import org.rsmod.plugin.scripts.ScriptContext
 /** The crucible: metal in, preform out. https://oldschool.runescape.wiki/w/Crucible */
 class CrucibleScript
 @Inject
-constructor(private val random: GameRandom, private val worldRepo: WorldRepository) :
-    PluginScript() {
+constructor(
+    private val random: GameRandom,
+    private val worldRepo: WorldRepository,
+    private val alignment: TextAlignment,
+) : PluginScript() {
     override fun ScriptContext.startup() {
         for (loc in listOf(CRUCIBLE_EMPTY, CRUCIBLE_PARTIAL)) {
             onOpLoc1(loc) { fill() }
@@ -28,138 +41,196 @@ constructor(private val random: GameRandom, private val worldRepo: WorldReposito
         onOpLoc1(CRUCIBLE_FULL) { pour(it.loc) }
         onOpLoc2(CRUCIBLE_FULL) { check() }
         onOpLoc3(CRUCIBLE_FULL) { empty() }
+        for (loc in listOf(CRUCIBLE_EMPTY, CRUCIBLE_PARTIAL, CRUCIBLE_FULL)) {
+            onOpLocU(loc) { addItems(it.objType) }
+        }
     }
 
     private fun ProtectedAccess.counts(): IntArray =
         IntArray(METALS.size) { player.foundryVar(metalVarbit(METALS[it])) }
 
-    private suspend fun ProtectedAccess.fill() {
+    private suspend fun ProtectedAccess.questSwordPoured(): Boolean {
         if (
-            player.makingQuestSword() &&
-                player.sleepingGiantsTutorial >= SleepingGiants.TUTORIAL_POURED
+            !player.makingQuestSword() ||
+                player.sleepingGiantsTutorial < SleepingGiants.TUTORIAL_POURED
         ) {
-            startDialogue {
-                chatPlayer(neutral, "I should finish helping Kovac before I try making another sword.")
-            }
-            return
+            return false
         }
-        val counts = counts()
-        val space = FoundryFormulas.CRUCIBLE_CAPACITY - counts.sum()
+        startDialogue {
+            chatPlayer(neutral, "I should finish helping Kovac before I try making another sword.")
+        }
+        return true
+    }
+
+    private fun ProtectedAccess.freeSpace(): Int? {
+        val space = FoundryFormulas.CRUCIBLE_CAPACITY - counts().sum()
         if (space <= 0) {
             mes("The crucible is full.")
+            return null
+        }
+        return space
+    }
+
+    private fun ProtectedAccess.canUse(metal: Int): Boolean {
+        val level = FoundryData.barLevel(FoundryData.bars[metal])
+        if (stat("stat.smithing") < level) {
+            mes("You need a Smithing level of $level to use that metal.")
+            return false
+        }
+        return true
+    }
+
+    private suspend fun ProtectedAccess.fill() {
+        if (questSwordPoured()) {
             return
         }
-        val available = METALS.indices.filter { metalWorth(it) > 0 }
-        if (available.isEmpty()) {
-            mes("You don't have any metal the crucible can use.")
+        freeSpace() ?: return
+        var chosen: SkillMultiSelection? = null
+        openSkillMulti(fillMenu()) { chosen = it }
+        val selection = chosen ?: return
+        val metal = FoundryData.bars.indexOfFirst { it.output.internalName == selection.entry.internal }
+        val bar = FoundryData.bars[metal].output
+        if (inv.count(bar.internalName) == 0) {
+            objbox(bar.internalName, "You have no ${bar.name}s to add to the crucible.")
             return
         }
-        val smithing = stat("stat.smithing")
-        val usable = available.filter { smithing >= FoundryData.barLevel(FoundryData.bars[it]) }
-        if (usable.isEmpty()) {
-            mes("You need a Smithing level of ${FoundryData.barLevel(FoundryData.bars[available.first()])} to use that metal.")
+        if (!canUse(metal)) {
             return
         }
-        val metal =
-            if (usable.size == 1) usable.single()
-            else usable[choiceIndex(usable.map { METALS[it].replaceFirstChar(Char::uppercase) })]
-        // UNVERIFIED: the prompts. The live game opens a make-X box, "What metal would you like
-        // to add?", with all six bars and 1/5/X/All (Sleeping Giants videos, below); OpenRune's
-        // `SkillingMenu` can't set that title or show bars the player lacks yet.
-        // TODO: destroying excess metal on overfill (with its warning) instead of only taking
-        // what fits.
-        val requested = countDialog("How many bars' worth?")
-        val added = addMetal(metal, minOf(requested, space))
-        if (added.isEmpty()) {
+        melt()
+        val space = freeSpace() ?: return
+        // UNVERIFIED: bars past the crucible's free space stay in the inventory (guess).
+        val count = minOf(selection.amount, inv.count(bar.internalName), space)
+        if (count <= 0) {
             return
         }
-        val worth = added.sumOf { it.worth }
+        invDel(inv, bar.internalName, count)
+        val total = addToCrucible(metal, count)
+        objbox(bar.internalName, "You add $count ${barName(bar.name, count)} to the crucible.")
+        afterAdding(total)
+    }
+
+    private fun fillMenu(): SkillMultiConfig =
+        SkillMultiConfig(
+            actionType = SkillingActionType.SMELT,
+            verb = "add",
+            entries = FoundryData.bars.map { SkillMultiEntry(it.output.internalName) },
+            titleOverride = "What metal would you like to add?",
+            showUnavailable = true,
+        )
+
+    /** Smithed items used on the crucible melt down for their bars' worth. */
+    private suspend fun ProtectedAccess.addItems(obj: ItemServerType) {
+        // UNVERIFIED: any other item, bars included, does nothing (guess).
+        val (metal, worth) =
+            FoundryData.smithedItems[obj.id]
+                ?: run {
+                    mes(Constants.dm_default)
+                    return
+                }
+        if (questSwordPoured() || !canUse(metal)) {
+            return
+        }
+        val space = freeSpace() ?: return
+        val held = inv.count(obj.internalName)
+        val chosen = if (held <= 1) held else chooseCount(held)
+        if (chosen <= 0) {
+            return
+        }
+        val metalName = metalName(metal)
+        val excess = chosen * worth - space
+        if (
+            excess > 0 &&
+                !confirmOverflow(
+                    obj.internalName,
+                    "Adding this item will overflow the crucible. You will lose $excess bars " +
+                        "worth of $metalName. Are you sure you want to add it?",
+                )
+        ) {
+            return
+        }
+        melt()
+        val count = minOf(chosen, inv.count(obj.internalName))
+        if (count <= 0) {
+            return
+        }
+        invDel(inv, obj.internalName, count)
+        val added = minOf(count * worth, FoundryFormulas.CRUCIBLE_CAPACITY - counts().sum())
+        val total = addToCrucible(metal, added)
+        val items = if (count == 1) obj.name else "${obj.name}s"
+        doubleobjbox(
+            obj.internalName,
+            FoundryData.bars[metal].output.internalName,
+            "You add $count $items to the crucible, worth $added ${barName(metalName, added)}.",
+        )
+        afterAdding(total)
+    }
+
+    private suspend fun ProtectedAccess.chooseCount(held: Int): Int {
+        val choice =
+            if (held >= 5) {
+                choice4("1", 1, "5", 5, "X", -1, "All", held, title = COUNT_TITLE)
+            } else {
+                choice3("1", 1, "X", -1, "All", held, title = COUNT_TITLE)
+            }
+        return if (choice == -1) countDialog().coerceAtMost(held) else choice
+    }
+
+    /** An objectbox with "No." and "Yes." buttons instead of a continue line. */
+    private suspend fun ProtectedAccess.confirmOverflow(obj: String, text: String): Boolean {
+        val page = alignment.generateChatPageList(text).first().text
+        mes(text, ChatType.Mesbox)
+        vars[CHATBOX_UNCLAMP_VARBIT] = 0
+        ClientScripts.topLevelChatboxResetBackground(player)
+        ifOpenSub(OBJECTBOX, CHATBOX_MODAL, IfSubType.Modal)
+        ClientScripts.objboxSetButtons(player, "No.|Yes.")
+        ifSetEvents(OBJECTBOX_UNIVERSE, 0..1, IfEvent.PauseButton)
+        ifSetObj(OBJECTBOX_ITEM, obj, 400)
+        ifSetText(OBJECTBOX_TEXT, page)
+        return pauseButton().subcomponent == 1
+    }
+
+    private suspend fun ProtectedAccess.melt() {
+        anim(MELT_SEQ)
+        soundSynth(MELT_SYNTH)
+        delay(MELT_DELAY)
+    }
+
+    /** Adds [worth] bars of [metal]; returns the crucible's new total. */
+    private fun ProtectedAccess.addToCrucible(metal: Int, worth: Int): Int {
+        val counts = counts()
         player.setFoundryVar(metalVarbit(METALS[metal]), counts[metal] + worth)
         val total = counts.sum() + worth
         player.crucibleState = if (total >= FoundryFormulas.CRUCIBLE_CAPACITY) 2 else 1
         if (player.crucibleState == 2 && player.makingQuestSword()) {
             player.advanceTutorial(SleepingGiants.TUTORIAL_CRUCIBLE_FULL)
         }
-        for (part in added) {
-            mesbox(part.message(METALS[metal].replaceFirstChar(Char::uppercase)))
-        }
-        if (total < FoundryFormulas.CRUCIBLE_CAPACITY) {
+        return total
+    }
+
+    private suspend fun ProtectedAccess.afterAdding(total: Int) {
+        if (total >= FoundryFormulas.CRUCIBLE_CAPACITY) {
+            mesbox(
+                "The crucible is now full of molten metal, it is ready to be poured into the " +
+                    "mould jig."
+            )
+        } else {
             mes(
-                "You need to add ${FoundryFormulas.CRUCIBLE_CAPACITY - total} more metal bars worth " +
-                    "of material to pour the crucible into the mould jig."
+                "You need to add ${FoundryFormulas.CRUCIBLE_CAPACITY - total} more metal bars " +
+                    "worth of material to pour the crucible into the mould jig.",
+                ChatType.Spam,
             )
         }
     }
 
-    /**
-     * One kind of metal added: bars, or smithed items with their worth. The texts are from
-     * Sleeping Giants videos (Slayermusiq1, youtube.com/watch?v=io6mQxi1ddI 4:10-4:33; sigmazx,
-     * youtube.com/watch?v=WnGuNtTJW0M), shown as message boxes, e.g. "You add 8 Bronze bars to
-     * the crucible." and "You add 2 Bronze battleaxes to the crucible, worth 4 Bronze bars.".
-     */
-    private class Added(val name: String, val count: Int, val worth: Int, val isBar: Boolean) {
-        fun message(metal: String): String {
-            val bars = if (worth == 1) "bar" else "bars"
-            return if (isBar) {
-                "You add $count $metal $bars to the crucible."
-            } else {
-                val items = if (count == 1 || name.endsWith("s")) name else "${name}s"
-                "You add $count $items to the crucible, worth $worth $metal $bars."
-            }
-        }
-    }
+    private fun metalName(metal: Int): String = FoundryData.bars[metal].output.name.removeSuffix(" bar")
 
-    /** Bars' worth of [metal] in the inventory: bars plus melt-down value of smithed items. */
-    private fun ProtectedAccess.metalWorth(metal: Int): Int {
-        val bars = inv.count(FoundryData.bars[metal].output.internalName)
-        val items =
-            inv.filterNotNull().sumOf { obj ->
-                val (itemMetal, worth) = FoundryData.smithedItems[obj.id] ?: return@sumOf 0
-                if (itemMetal == metal) worth * obj.count else 0
-            }
-        return bars + items
-    }
-
-    /** Takes up to [limit] bars' worth of [metal], bars first, then the biggest items that fit. */
-    private fun ProtectedAccess.addMetal(metal: Int, limit: Int): List<Added> {
-        val parts = mutableListOf<Added>()
-        var added = 0
-        val bar = FoundryData.bars[metal].output.internalName
-        val bars = minOf(inv.count(bar), limit)
-        if (bars > 0) {
-            invDel(inv, bar, bars)
-            added += bars
-            parts += Added(FoundryData.bars[metal].output.name, bars, bars, isBar = true)
+    private fun barName(metal: String, count: Int): String =
+        when {
+            metal.endsWith(" bar") -> if (count == 1) metal else "${metal}s"
+            count == 1 -> "$metal bar"
+            else -> "$metal bars"
         }
-        val items =
-            inv.filterNotNull()
-                .mapNotNull { obj -> FoundryData.smithedItems[obj.id]?.takeIf { it.first == metal }?.let { obj.id to it.second } }
-                .distinct()
-                .sortedByDescending { it.second }
-        for ((id, worth) in items) {
-            val name = RSCM.getReverseMapping(RSCMType.OBJ, id)
-            var count = 0
-            while (added + worth <= limit && inv.count(name) > 0) {
-                invDel(inv, name, 1)
-                added += worth
-                count++
-            }
-            if (count > 0) {
-                val display = ServerCacheManager.getItem(id)?.name ?: name
-                parts += Added(display, count, count * worth, isBar = false)
-            }
-        }
-        return parts
-    }
-
-    private suspend fun ProtectedAccess.choiceIndex(names: List<String>): Int {
-        val shown = names.take(4)
-        return when (shown.size) {
-            2 -> choice2(shown[0], 0, shown[1], 1)
-            3 -> choice3(shown[0], 0, shown[1], 1, shown[2], 2)
-            else -> choice4(shown[0], 0, shown[1], 1, shown[2], 2, shown[3], 3)
-        }
-    }
 
     private fun ProtectedAccess.check() {
         val counts = counts()
@@ -294,6 +365,16 @@ constructor(private val random: GameRandom, private val worldRepo: WorldReposito
         const val POUR_SEQ = "seq.giants_foundry_crucible_pour01"
         const val POUR_DELAY = 3
         const val MAX_QUALITY = 255
+        const val COUNT_TITLE = "How many would you like to add?"
+        const val MELT_SEQ = "seq.human_elem2_lever_3way_right"
+        const val MELT_SYNTH = "synth.furnace"
+        const val MELT_DELAY = 3
+        const val CHATBOX_UNCLAMP_VARBIT = "varbit.chatmodal_unclamp"
+        const val CHATBOX_MODAL = "component.chatbox:chatmodal"
+        const val OBJECTBOX = "interface.objectbox"
+        const val OBJECTBOX_UNIVERSE = "component.objectbox:universe"
+        const val OBJECTBOX_ITEM = "component.objectbox:item"
+        const val OBJECTBOX_TEXT = "component.objectbox:text"
 
         // UNVERIFIED: not published. The preform starts cold: the Sleeping Giants walkthrough
         // heats it "to maximum" at the lava pool right after pick-up, and Quest Helper waits for

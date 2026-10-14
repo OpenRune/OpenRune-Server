@@ -53,10 +53,12 @@ data class SkillMultiConfig(
     val entries: List<SkillMultiEntry>,
     val maxCountProvider: ((Inventory, SkillMultiEntry) -> Int)? = null,
     val defaultAmount: Int? = null,
+    val titleOverride: String? = null,
+    val showUnavailable: Boolean = false,
 ) {
 
     val title: String
-        get() = if (entries.size == 1) {
+        get() = titleOverride ?: if (entries.size == 1) {
             "How many would you like to $verb?"
         } else {
             "What would you like to $verb?"
@@ -129,7 +131,7 @@ suspend fun ProtectedAccess.openSkillMulti(
         val amount = config.maxCountProvider?.invoke(inv, entry)
             ?: entry.maxCount(inv)
 
-        if (amount <= 0) {
+        if (amount <= 0 && !config.showUnavailable) {
             null
         } else {
             entry to amount
@@ -173,7 +175,7 @@ suspend fun ProtectedAccess.openSkillMulti(
     }
 
     val (entry, maxAmount) = available[buttonIndex]
-    val selectedAmount = input.subcomponent.coerceIn(1, maxAmount)
+    val selectedAmount = if (maxAmount <= 0) 0 else input.subcomponent.coerceIn(1, maxAmount)
 
     onComplete(
         SkillMultiSelection(
@@ -211,7 +213,8 @@ private fun skillmultiSetupArgs(
     available: List<Pair<SkillMultiEntry, Int>>,
 ): List<Any> {
 
-    val maxCount = available.maxOfOrNull { it.second } ?: 0
+    val maxCount = (available.maxOfOrNull { it.second } ?: 0)
+        .let { if (config.showUnavailable) it.coerceAtLeast(1) else it }
 
     val itemIds = buildList {
         addAll(available.map { it.first.item.id })
