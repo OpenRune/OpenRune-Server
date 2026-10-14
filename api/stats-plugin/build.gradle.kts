@@ -12,6 +12,7 @@ dependencies {
     implementation(projects.api.config)
     implementation(projects.api.generated)
     implementation(projects.api.player)
+    implementation(projects.api.repo)
     implementation(projects.api.script)
     implementation(projects.api.scriptAdvanced)
     implementation(projects.engine.events)
