@@ -87,11 +87,6 @@ internal class WardenCore(private val room: WardensEncounter) {
                 warden.hitpoints -= hit.damage
                 if (warden.hitpoints <= 0) shieldBroken = true
             }
-            State.DOWN -> {
-                hit.damage = if (hit.type == HitType.Typeless) min(hit.damage, warden.hitpoints) else 0
-                warden.hitpoints -= hit.damage
-                realHp = warden.hitpoints
-            }
             else -> hit.damage = 0
         }
     }
@@ -106,8 +101,10 @@ internal class WardenCore(private val room: WardensEncounter) {
         if (state != State.DOWN) return
         val warden = room.activeWarden ?: return
         val player = hit.resolvePlayerSource(deps.bossDeps.playerList) ?: return
-        val damage = hit.damage * MIRROR_FACTOR
+        val damage = min(hit.damage * MIRROR_FACTOR, warden.hitpoints)
         if (damage <= 0) return
+        warden.hitpoints -= damage
+        realHp = warden.hitpoints
         warden.queueHit(
             source = player,
             delay = MIRROR_DELAY,
@@ -125,6 +122,7 @@ internal class WardenCore(private val room: WardensEncounter) {
 
     fun defeated() {
         state = State.DEFEATED
+        room.obeliskCycle.stop()
         core?.let(room::despawn)
         core = null
         removeBlocker()
@@ -132,6 +130,7 @@ internal class WardenCore(private val room: WardensEncounter) {
 
     private fun kneel(warden: Npc, god: WardenGod) {
         state = State.KNEELING
+        room.obeliskCycle.coreOut()
         warden.ignoreCombatInteractions = true
         room.stopAttacking(warden)
         warden.anim(WardenCoreRefs.KNEEL)
@@ -235,6 +234,7 @@ internal class WardenCore(private val room: WardensEncounter) {
         shieldBroken = false
         state = State.SHIELD
         warden.ignoreCombatInteractions = false
+        room.obeliskCycle.coreBack()
         warden.removeHeadbar(headbarId(WardenCoreRefs.HEALTH_BAR))
         warden.anim(WardenCoreRefs.STAND_UP)
         warden.transmog(npcType(next), Int.MAX_VALUE)

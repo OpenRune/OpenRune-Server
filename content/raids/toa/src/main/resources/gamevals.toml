@@ -100,6 +100,12 @@ toa_wardens_obelisk_death = 6195
 toa_wardens_restore_start = 6228
 toa_wardens_restore_loop = 6109
 toa_wardens_restore_end = 6196
+toa_wardens_obelisk_open_1 = 6182
+toa_wardens_obelisk_open_2 = 6256
+toa_wardens_obelisk_open_4 = 6135
+toa_wardens_obelisk_skull = 6260
+toa_wardens_obelisk_skull_impact = 6055
+toa_wardens_obelisk_windmill = 6092
 toa_crondis_fill_container = 6522
 toa_crondis_water_empty = 6524
 toa_crondis_water_tree_02 = 6534
@@ -154,6 +160,7 @@ toa_paths = 64102
 toa_pickaxes = 64103
 toa_het_layouts = 64104
 toa_het_seal = 64105
+toa_wardens_obelisk_patterns = 64106
 
 [gamevals.dbrow]
 toa_room_main_hall = 57000
@@ -201,6 +208,13 @@ toa_het_seal_5 = 57074
 toa_het_seal_6 = 57075
 toa_het_seal_7 = 57076
 toa_het_seal_8 = 57077
+toa_wardens_beam_sweep_a = 57080
+toa_wardens_beam_sweep_b = 57081
+toa_wardens_windmill_0 = 57082
+toa_wardens_windmill_1 = 57083
+toa_wardens_windmill_2 = 57084
+toa_wardens_windmill_3 = 57085
+toa_wardens_windmill_4 = 57086
 
 [gamevals.varn]
 toa_baba_rolls = 70

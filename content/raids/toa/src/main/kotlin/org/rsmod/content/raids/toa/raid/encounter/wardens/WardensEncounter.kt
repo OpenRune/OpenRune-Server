@@ -61,6 +61,7 @@ class WardensEncounter(
     internal val entomb = WardensEntomb(this)
     internal val core = WardenCore(this)
     private val restoration = WardensRestoration(this)
+    internal val obeliskCycle = WardensObelisk(this)
 
     override val hpBar: ToaHpBar? by lazy {
         ToaHpBar(
@@ -211,7 +212,10 @@ class WardensEncounter(
     }
 
     override fun onFightTick(boss: Npc, targets: List<Player>) {
-        if (!phaseOne) return
+        if (!phaseOne) {
+            obeliskCycle.tick()
+            return
+        }
         boss.ignoreCombatInteractions = true
         charging.tick(deps.mapClock.cycle - startCycle)
     }
@@ -276,19 +280,7 @@ class WardensEncounter(
                 for (player in players) hpBar?.open(player)
                 schedule(READY_DELAY - TRANSITION_DELAY) { readyWarden(it) }
             }
-            chargeObelisk(obelisk)
-        }
-    }
-
-    private fun chargeObelisk(obelisk: Npc) {
-        val counts =
-            if (raid.isActive(ToaInvocationKey.Acceleration)) ACCELERATED_CHARGE else ENTRY_CHARGE
-        var delay = 0
-        for ((seq, count) in CHARGE_SEQS.zip(counts)) {
-            repeat(count) {
-                schedule(delay) { if (obelisk.isSlotAssigned) obelisk.anim(seq) }
-                delay += CHARGE_INTERVAL
-            }
+            obeliskCycle.start()
         }
     }
 
@@ -333,6 +325,7 @@ class WardensEncounter(
         lastWasSpecial = false
         entomb.clear()
         core.clear()
+        obeliskCycle.stop()
 
         val ghostTile = room.osmumtenTile
         if (ghostTile != null) {
@@ -369,14 +362,5 @@ class WardensEncounter(
         private const val READY_DELAY = 22
         private const val ATTACK_RATE = 7
         private const val ACCELERATED_ATTACK_RATE = 6
-        private const val CHARGE_INTERVAL = 2
-        private val CHARGE_SEQS =
-            listOf(
-                "seq.fx_obelisk_wardens01_charge_part1",
-                "seq.fx_obelisk_wardens01_charge_part2",
-                "seq.fx_obelisk_wardens01_charge_part3",
-            )
-        private val ENTRY_CHARGE = listOf(5, 9, 5)
-        private val ACCELERATED_CHARGE = listOf(4, 4, 4)
     }
 }
