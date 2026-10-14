@@ -71,10 +71,10 @@ constructor(
     private fun isHammerCycle(cycle: Int): Boolean =
         cycle % FoundryTool.Hammer.row.period == HAMMER_PHASE
 
-    private fun ProtectedAccess.canWork(): Boolean {
+    private suspend fun ProtectedAccess.canWork(): Boolean {
         if (!player.holdsPreform()) {
-            // UNVERIFIED: the lava pool and waterfall give the tools' message (guess).
-            mes("You need a giant sword preform equipped to use this tool.")
+            // UNVERIFIED: the tools show the lava pool's and waterfall's box too (guess).
+            mesbox(NEEDS_PREFORM)
             return false
         }
         if (player.preformQuality == 0) {
@@ -136,15 +136,15 @@ constructor(
             return
         }
         val station = (if (sign > 0) LAVA_STATION else WATERFALL_STATION) + if (fast) 1 else 0
-        val working = isWorking(station)
-        if (!working) {
-            begin(station)
+        if (isWorking(station)) {
+            // UNVERIFIED: live restarts the ramp on the click's own tick about three clicks in
+            // four; here it always restarts on the next tick (live capture).
+            player.workHeatTicks = if (fast) 0 else 1
+            return
         }
-        // UNVERIFIED: a re-click restarts the ramp from the next tick (wiki description).
+        begin(station)
         player.workHeatTicks = 0
-        if (!working) {
-            heatTick(player)
-        }
+        heatTick(player)
     }
 
     private fun ProtectedAccess.begin(station: Int) {
@@ -277,11 +277,12 @@ constructor(
 
         val armed = player.workSweetSpotArmed
         val bonus = armed && !player.workSweetSpotVoid
+        val repairs = bonus && player.preformQuality < player.preformStartQuality
         if (armed) {
             clearSweetSpot(player)
         }
         if (bonus) {
-            player.mes(QUICK_REACTIONS)
+            player.mes(if (repairs) REPAIRED else QUICK_REACTIONS)
         }
         var progress = 0
         var xpTenths = 0
@@ -303,8 +304,8 @@ constructor(
             if (bonus) {
                 progress += SWEETSPOT_PROGRESS
                 xpTenths *= 2
-                // UNVERIFIED: the amount regained and the "shortly after it appears" limit (wiki
-                // description).
+                // UNVERIFIED: the regain is capped at the start quality and the repair message
+                // shows whenever quality is below it; one case seen, 48 to 53 (live capture).
                 player.preformQuality =
                     (player.preformQuality + MISTAKE_QUALITY).coerceAtMost(player.preformStartQuality)
             }
@@ -312,6 +313,9 @@ constructor(
         player.preformCompletion = (completion + progress).coerceAtMost(FoundryFormulas.SCALE)
         val questFinish =
             player.preformCompletion >= FoundryFormulas.SCALE && player.makingQuestSword()
+        if (player.preformCompletion >= FoundryFormulas.SCALE && !questFinish) {
+            player.mes(FINISHED)
+        }
         if (!questFinish) {
             player.preformTemperature =
                 (player.preformTemperature + tool.row.heat).coerceIn(0, FoundryFormulas.SCALE)
@@ -340,7 +344,6 @@ constructor(
             player.weakQueue(QUEST_PROMPT_QUEUE, 1, QuestPrompt.SwordFinished)
             return
         }
-        player.mes(FINISHED)
         player.anim(FINISH_SEQ)
         player.soundSynth(FINISH_SYNTH)
     }
@@ -428,8 +431,6 @@ constructor(
         const val LAVA_STATION = 4
         const val WATERFALL_STATION = 6
 
-        // UNVERIFIED: 5 per mistake on a seasonal world, where the wiki says 10 (plugin
-        // measurement).
         const val MISTAKE_QUALITY = 5
         const val SWEETSPOT_PROGRESS = 50
         const val SWEETSPOT_TICKS = 8
@@ -449,6 +450,10 @@ constructor(
         const val QUICK_REACTIONS =
             "<col=229628>Your quick reactions allow you to find the perfect position to work " +
                 "the preform!"
+        const val REPAIRED =
+            "<col=229628>Your quick reactions allow you to repair some of the quality of your " +
+                "preform!"
+        const val NEEDS_PREFORM = "You need a giant sword preform equipped to use this tool."
         const val FINISHED =
             "<col=229628>You have successfully finished the sword. You should give it to Kovac " +
                 "for a reward.</col>"
