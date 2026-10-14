@@ -101,9 +101,12 @@ constructor(
 
         npc.showHitmark(hit.hitmark)
 
-        val visHeadbar = npc.visHeadbar(params.headbar)
-        val headbar = hit.createHeadbar(npc.hitpoints, npc.baseHitpointsLvl, visHeadbar)
-        npc.showHeadbar(headbar)
+        if (npc.visType.paramOrNull(params.headbar_hidden) != true) {
+            val inverted = npc.visType.paramOrNull(params.headbar_inverted) == true
+            val currHp = if (inverted) npc.baseHitpointsLvl - npc.hitpoints else npc.hitpoints
+            val visHeadbar = npc.visHeadbar(params.headbar)
+            npc.showHeadbar(hit.createHeadbar(currHp, npc.baseHitpointsLvl, visHeadbar))
+        }
 
         npc.publishHitEvent(hit)
     }
