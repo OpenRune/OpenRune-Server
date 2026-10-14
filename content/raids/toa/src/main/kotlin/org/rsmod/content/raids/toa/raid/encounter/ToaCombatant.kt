@@ -71,14 +71,32 @@ internal class ToaCombatant(private val room: ToaEncounter, val npc: Npc, privat
         return AccuracyFormulae.isSuccessfulHit(hitChance, deps.random)
     }
 
+    fun scaledRaidHitpoints(base: Int, partySize: Int, raidHpFactor: Double): Int {
+        val pathLevel = if (spec.pathScaled) room.pathLevel.coerceIn(0, MAX_PATH_LEVEL) else 0
+        return scaledHitpoints(
+            base,
+            room.raid.settings.raidLevel,
+            pathLevel,
+            partySize,
+            raidHpFactor,
+        )
+    }
+
     fun maxHit(base: Int): Int = floor(base * damageFactor).toInt()
 
     fun rollScaled(base: Int): Int = random.of(0, maxHit(base))
 
     fun rollScaled(min: Int, base: Int): Int = random.of(min, maxHit(base).coerceAtLeast(min))
 
-    private fun scaledHitpoints(base: Int, raidLevel: Int, pathLevel: Int, partySize: Int): Int {
-        var hp = base + base * (raidLevel * RAID_HP_PERCENT_PER_10_LEVELS / 10) / 100
+    private fun scaledHitpoints(
+        base: Int,
+        raidLevel: Int,
+        pathLevel: Int,
+        partySize: Int,
+        raidHpFactor: Double = 1.0,
+    ): Int {
+        val raidPercent = (raidLevel * RAID_HP_PERCENT_PER_10_LEVELS / 10 * raidHpFactor).toInt()
+        var hp = base + base * raidPercent / 100
         if (pathLevel > 0) {
             hp = hp * (100 + PATH_HP_PERCENT_BASE + PATH_HP_PERCENT_EACH * pathLevel) / 100
         }

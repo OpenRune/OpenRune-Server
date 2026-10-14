@@ -39,7 +39,7 @@ class WardensCheatScript : PluginScript() {
                 "special" -> room.debugRun(player, WardenAbilities.SPECIAL)
                 "hp" -> {
                     val percent = arg?.toIntOrNull() ?: return player.mes(USAGE)
-                    room.realHpFraction = percent.coerceIn(0, 100) / PERCENT
+                    room.core.setRealFraction(percent.coerceIn(0, 100) / PERCENT)
                     null
                 }
                 else -> return player.mes(USAGE)

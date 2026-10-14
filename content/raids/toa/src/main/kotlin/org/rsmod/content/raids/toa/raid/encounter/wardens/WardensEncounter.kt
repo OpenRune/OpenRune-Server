@@ -8,7 +8,9 @@ import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.bosses.runtime.encounter
+import org.rsmod.api.bosses.runtime.interrupt
 import org.rsmod.api.bosses.runtime.runAbility
+import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
@@ -51,17 +53,21 @@ class WardensEncounter(
     private var arriveAtGhost = false
     private val blast = WardensObeliskBlast(this)
     private var hudNpc: Npc? = null
-    private var activeWarden: Npc? = null
-    private var activeGod: WardenGod? = null
+    internal var activeWarden: Npc? = null
+        private set
+
+    internal var activeGod: WardenGod? = null
+        private set
+
     private var wardenReady = false
     private var lastWasSpecial = false
     internal val entomb = WardensEntomb(this)
-    internal var realHpFraction = 1.0
+    internal val core = WardenCore(this)
 
     override val hpBar: ToaHpBar? by lazy {
         ToaHpBar(
             this,
-            currentHp = { if (shielded(it)) it.baseHitpointsLvl - it.hitpoints else it.hitpoints },
+            currentHp = { core.hudHp(it) },
             subject = { hudNpc ?: obelisk },
         )
     }
@@ -69,7 +75,9 @@ class WardensEncounter(
     override val fight =
         ToaFight(
             boss = { activeWarden ?: obelisk },
-            combatants = listOf(ToaCombatant.Spec(OBELISK_INACTIVE)),
+            combatants =
+                listOf(ToaCombatant.Spec(OBELISK_INACTIVE)) +
+                    WardenGod.entries.map { ToaCombatant.Spec(it.inactive, pathScaled = false) },
             bar = { hudNpc ?: obelisk },
         )
 
@@ -91,10 +99,11 @@ class WardensEncounter(
         spawnRoom()
     }
 
-    override fun canEngage(boss: Npc): Boolean = wardenReady && boss === activeWarden
+    override fun canEngage(boss: Npc): Boolean =
+        wardenReady && boss === activeWarden && core.state == WardenCore.State.SHIELD
 
     internal val entombPhase: Boolean
-        get() = realHpFraction < ENTOMB_BELOW
+        get() = core.realFraction < ENTOMB_BELOW
 
     internal fun rollSpecial(): Boolean {
         val special = !lastWasSpecial && deps.random.of(SPECIAL_ODDS) == 0
@@ -123,24 +132,30 @@ class WardensEncounter(
     internal fun modifyWardenHit(npc: Npc, hit: HitBuilder) {
         if (npc !== activeWarden || !hit.isFromPlayer) return
         val god = activeGod ?: return
-        if (!wardenReady || hit.type != vulnerableStyle(god, npc)) {
+        if (!wardenReady) {
             hit.damage = 0
             return
         }
-        hit.damage = min(hit.damage, npc.hitpoints - 1)
+        core.modify(npc, hit, vulnerableStyle(god, npc))
+    }
+
+    internal fun wardenDefeated(npc: Npc) {
+        if (npc !== activeWarden) return
+        core.defeated()
+        startFinalPhase()
     }
 
     internal fun wardenHit(npc: Npc, hit: Hit) {
         if (npc !== activeWarden || stage != ToaStage.STARTED || !hit.isFromPlayer) return
         hpBar?.update()
         showShieldHeadbar(npc, hit)
+        activeGod?.let { core.afterHit(npc, it) }
     }
 
     private fun showShieldHeadbar(npc: Npc, hit: Hit) {
-        if (!shielded(npc)) return
+        if (!core.shielded) return
         val bar = ServerCacheManager.getHealthBar(SHIELD_HEADBAR.asRSCM(RSCMType.HEADBAR)) ?: return
-        val taken = npc.baseHitpointsLvl - npc.hitpoints
-        val fill = taken * bar.segments / npc.baseHitpointsLvl
+        val fill = core.shieldTaken(npc) * bar.segments / npc.baseHitpointsLvl
         val mark = hit.hitmark
         npc.showHeadbar(
             Headbar.fromPlayerSource(
@@ -155,15 +170,19 @@ class WardensEncounter(
         )
     }
 
-    private fun shielded(npc: Npc): Boolean =
-        WardenGod.entries.any {
-            npc.visType.id == npcType(it.phaseTwo).id || npc.visType.id == npcType(it.phaseTwoAlt).id
-        }
-
     private fun vulnerableStyle(god: WardenGod, npc: Npc): HitType {
         val primary = npc.visType.id == npcType(god.phaseTwo).id
         if (primary) return god.phaseTwoStyle
         return if (god.phaseTwoStyle == HitType.Magic) HitType.Ranged else HitType.Magic
+    }
+
+    internal fun stopAttacking(warden: Npc) {
+        deps.bossDeps.interrupt(warden)
+        warden.noneMode()
+    }
+
+    internal fun resumeAttacking(warden: Npc, delay: Int) {
+        deps.bossDeps.suppressAttacks(warden, delay)
     }
 
     private fun readyWarden(warden: Npc) {
@@ -261,8 +280,9 @@ class WardensEncounter(
             warden(winner)?.let {
                 it.anim("seq.npc_wardens_wake01")
                 it.transmog(npcType(winner.phaseTwo), Int.MAX_VALUE)
-                ToaCombatant(this, it, ToaCombatant.Spec(winner.phaseTwo))
-                    .scale(teamSize, SHIELD_BASE_HP)
+                val combatant = combatantOf(it)
+                combatant?.scale(teamSize, SHIELD_BASE_HP)
+                core.arm(it, combatant, teamSize)
                 hudNpc = it
                 activeWarden = it
                 activeGod = winner
@@ -324,8 +344,8 @@ class WardensEncounter(
         activeGod = null
         wardenReady = false
         lastWasSpecial = false
-        realHpFraction = 1.0
         entomb.clear()
+        core.clear()
 
         val ghostTile = room.osmumtenTile
         if (ghostTile != null) {
