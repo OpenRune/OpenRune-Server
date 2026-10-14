@@ -23,6 +23,7 @@ moveRestrict = "NoMove"
 regenRate = 0
 [npc.params]
 "param.amascutnpc" = 1
+"param.boss_hp_bar_mode" = 2
 
 [[npc]]
 id = "npc.toa_wardens_p2_obelisk_npc"
@@ -234,6 +235,7 @@ moveRestrict = "NoMove"
 attackRange = 20
 regenRate = 0
 [npc.params]
+"param.boss_hp_bar_mode" = 2
 "param.headbar" = "headbar.health_140"
 "param.hitmark_lit" = "hitmark.regular_damage_lit"
 "param.hitmark_tint" = "hitmark.regular_damage_tint"
@@ -247,6 +249,7 @@ moveRestrict = "NoMove"
 attackRange = 20
 regenRate = 0
 [npc.params]
+"param.boss_hp_bar_mode" = 2
 "param.headbar" = "headbar.health_140"
 "param.hitmark_lit" = "hitmark.regular_damage_lit"
 "param.hitmark_tint" = "hitmark.regular_damage_tint"

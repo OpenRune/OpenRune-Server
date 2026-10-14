@@ -7,7 +7,6 @@ import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenGod
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardensSlams
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.hit.Hit
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
@@ -57,11 +56,6 @@ class WardensSecondEncounter(
 
     override fun onFightStart(boss: Npc) {
         combatantOf(boss)?.scale(teamSize, P3_BASE_HP)
-    }
-
-    internal fun wardenHit(npc: Npc, hit: Hit) {
-        if (npc !== warden || stage != ToaStage.STARTED || !hit.isFromPlayer) return
-        hpBar?.update()
     }
 
     override fun onFightComplete() {
