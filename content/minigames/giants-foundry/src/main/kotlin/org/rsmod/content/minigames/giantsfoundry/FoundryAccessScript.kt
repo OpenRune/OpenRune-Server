@@ -16,12 +16,19 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 internal val FOUNDRY_INSIDE = CoordGrid(3366, 11483, 0)
 
-// UNVERIFIED: the exit tile, the one in front of the entrance (guess).
-internal val FOUNDRY_OUTSIDE = CoordGrid(3361, 3149, 0)
+internal val FOUNDRY_OUTSIDE = CoordGrid(3361, 3148, 0)
 
 private const val ENTER_FADE_CYCLES = 50
 
 internal suspend fun ProtectedAccess.enterFoundry() {
+    fadeTeleport(FOUNDRY_INSIDE)
+}
+
+private suspend fun ProtectedAccess.fadeTeleport(
+    destination: CoordGrid,
+    beforeMove: () -> Unit = {},
+) {
+    arriveDelay()
     fadeOverlay(
         startColour = 0,
         startTransparency = 255,
@@ -30,7 +37,8 @@ internal suspend fun ProtectedAccess.enterFoundry() {
         clientDuration = ENTER_FADE_CYCLES,
     )
     delay(2)
-    telejump(FOUNDRY_INSIDE)
+    beforeMove()
+    telejump(destination)
     delay(1)
     fadeOverlay(
         startColour = 0,
@@ -54,13 +62,12 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
         onPlayerLogout { autoStore(player) }
     }
 
-    private fun ProtectedAccess.leave() {
+    private suspend fun ProtectedAccess.leave() {
         if (player.holdsPreform()) {
             stashPreform()
             mes("You leave your preform in the preform storage.")
         }
-        room.leave(player)
-        telejump(FOUNDRY_OUTSIDE)
+        fadeTeleport(FOUNDRY_OUTSIDE) { room.leave(player) }
     }
 
     private fun ProtectedAccess.store() {
