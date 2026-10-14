@@ -32,33 +32,4 @@ object Settings {
 
     fun getSetting(id: Int): Setting =
         allSettings.firstOrNull { it.id == id } ?: error("Setting with struct '$id' does not exist.")
-
-    fun findSettingByStructId(id: Int): Setting =
-        allSettings.firstOrNull { it.structId == id } ?: error("Setting with struct '$id' does not exist.")
-
-    val DEFAULT_KEYBINDS_STRUCTS = mapOf(
-        2739 to "F1",
-        2742 to "F2",
-        2745 to "F3",
-        2751 to "F4",
-        2740 to "F5",
-        2743 to "F6",
-        2747 to "F7",
-        2746 to "F8",
-        2749 to "F9",
-        2741 to "F10",
-        2744 to "F11",
-        2750 to "F12",
-        2752 to "None"
-    )
-
-    fun getDefaultKeybinds(): Map<Setting, Int> {
-        val map = mutableMapOf<Setting, Int>()
-        for ((structId, selection) in DEFAULT_KEYBINDS_STRUCTS) {
-            val setting = findSettingByStructId(structId)
-            val key = setting.dropdownEntries?.firstOrNull { it.value == selection }?.key ?: continue
-            map[setting] = key
-        }
-        return map
-    }
 }

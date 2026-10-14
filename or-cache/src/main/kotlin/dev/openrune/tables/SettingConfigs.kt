@@ -34,6 +34,7 @@ object SettingConfigs {
         row("dbrow.setting_2") {
             column(SETTING_ID, 2)
             columnRSCM(VARBIT_ID, "varbit.side_transparency")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_3") {
@@ -59,6 +60,7 @@ object SettingConfigs {
         row("dbrow.setting_7") {
             column(SETTING_ID, 7)
             columnRSCM(VARBIT_ID, "varbit.option_hide_rooftops")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_8") {
@@ -69,6 +71,7 @@ object SettingConfigs {
         row("dbrow.setting_9") {
             column(SETTING_ID, 9)
             columnRSCM(VARBIT_ID, "varbit.wiki_icon_disabled")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_10") {
@@ -89,78 +92,91 @@ object SettingConfigs {
         row("dbrow.setting_16") {
             column(SETTING_ID, 16)
             columnRSCM(VARBIT_ID, "varbit.stone_combat_key")
+            column(DEFAULT, 1)
             column(DROPDOWN_ENUM, 1161)
         }
 
         row("dbrow.setting_17") {
             column(SETTING_ID, 17)
             columnRSCM(VARBIT_ID, "varbit.stone_prayer_key")
+            column(DEFAULT, 5)
             column(DROPDOWN_ENUM, 1161)
         }
 
         row("dbrow.setting_18") {
             column(SETTING_ID, 18)
             columnRSCM(VARBIT_ID, "varbit.stone_options1_key")
+            column(DEFAULT, 10)
             column(DROPDOWN_ENUM, 1161)
         }
 
         row("dbrow.setting_19") {
             column(SETTING_ID, 19)
             columnRSCM(VARBIT_ID, "varbit.stone_stats_key")
+            column(DEFAULT, 2)
             column(DROPDOWN_ENUM, 1161)
         }
 
         row("dbrow.setting_20") {
             column(SETTING_ID, 20)
             columnRSCM(VARBIT_ID, "varbit.stone_magic_key")
+            column(DEFAULT, 6)
             column(DROPDOWN_ENUM, 1161)
         }
 
         row("dbrow.setting_21") {
             column(SETTING_ID, 21)
             columnRSCM(VARBIT_ID, "varbit.stone_options2_key")
+            column(DEFAULT, 11)
             column(DROPDOWN_ENUM, 1161)
         }
 
         row("dbrow.setting_22") {
             column(SETTING_ID, 22)
             columnRSCM(VARBIT_ID, "varbit.stone_journal_key")
+            column(DEFAULT, 3)
             column(DROPDOWN_ENUM, 1161)
         }
 
         row("dbrow.setting_23") {
             column(SETTING_ID, 23)
             columnRSCM(VARBIT_ID, "varbit.stone_friends_key")
+            column(DEFAULT, 8)
             column(DROPDOWN_ENUM, 1161)
         }
 
         row("dbrow.setting_24") {
             column(SETTING_ID, 24)
             columnRSCM(VARBIT_ID, "varbit.stone_clanchat_key")
+            column(DEFAULT, 7)
             column(DROPDOWN_ENUM, 1161)
         }
 
         row("dbrow.setting_25") {
             column(SETTING_ID, 25)
             columnRSCM(VARBIT_ID, "varbit.stone_inv_key")
+            column(DEFAULT, 13)
             column(DROPDOWN_ENUM, 1161)
         }
 
         row("dbrow.setting_26") {
             column(SETTING_ID, 26)
             columnRSCM(VARBIT_ID, "varbit.stone_account_key")
+            column(DEFAULT, 9)
             column(DROPDOWN_ENUM, 1161)
         }
 
         row("dbrow.setting_27") {
             column(SETTING_ID, 27)
             columnRSCM(VARBIT_ID, "varbit.stone_music_key")
+            column(DEFAULT, 12)
             column(DROPDOWN_ENUM, 1161)
         }
 
         row("dbrow.setting_28") {
             column(SETTING_ID, 28)
             columnRSCM(VARBIT_ID, "varbit.stone_worn_key")
+            column(DEFAULT, 4)
             column(DROPDOWN_ENUM, 1161)
         }
 
@@ -183,6 +199,7 @@ object SettingConfigs {
         row("dbrow.setting_35") {
             column(SETTING_ID, 35)
             columnRSCM(VARP, "varp.option_pm")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_36") {
@@ -198,6 +215,7 @@ object SettingConfigs {
         row("dbrow.setting_38") {
             column(SETTING_ID, 38)
             columnRSCM(VARBIT_ID, "varbit.option_lootnotification_on")
+            column(DEFAULT, 1)
             column(MIN, 0)
             column(MAX, 500000000)
             column(PROMPT, "Set threshold value:")
@@ -207,11 +225,13 @@ object SettingConfigs {
         row("dbrow.setting_39") {
             column(SETTING_ID, 39)
             columnRSCM(VARBIT_ID, "varbit.option_lootnotification_value")
+            column(DEFAULT, 20000)
         }
 
         row("dbrow.setting_40") {
             column(SETTING_ID, 40)
             columnRSCM(VARBIT_ID, "varbit.option_lootnotification_untradeables")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_41") {
@@ -222,11 +242,13 @@ object SettingConfigs {
         row("dbrow.setting_42") {
             column(SETTING_ID, 42)
             columnRSCM(VARBIT_ID, "varbit.option_dropwarning_on")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_43") {
             column(SETTING_ID, 43)
             columnRSCM(VARBIT_ID, "varbit.option_dropwarning_value")
+            column(DEFAULT, 30000)
             column(MIN, 0)
             column(MAX, 500000000)
             column(PROMPT, "Set threshold value:")
@@ -241,6 +263,7 @@ object SettingConfigs {
         row("dbrow.setting_47") {
             column(SETTING_ID, 47)
             columnRSCM(VARBIT_ID, "varbit.tli_storebutton_toggle_mobile")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_48") {
@@ -256,11 +279,13 @@ object SettingConfigs {
         row("dbrow.setting_50") {
             column(SETTING_ID, 50)
             columnRSCM(VARBIT_ID, "varbit.followerops_deprioritised")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_51") {
             column(SETTING_ID, 51)
             columnRSCM(VARBIT_ID, "varbit.desktop_shiftclickdrop_enabled")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_54") {
@@ -271,21 +296,25 @@ object SettingConfigs {
         row("dbrow.setting_55") {
             column(SETTING_ID, 55)
             columnRSCM(VARP, "varp.option_attackpriority")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_56") {
             column(SETTING_ID, 56)
             columnRSCM(VARP, "varp.option_attackpriority_npc")
+            column(DEFAULT, 2)
         }
 
         row("dbrow.setting_57") {
             column(SETTING_ID, 57)
             columnRSCM(VARBIT_ID, "varbit.keybinding_esc_to_close")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_59") {
             column(SETTING_ID, 59)
             columnRSCM(VARBIT_ID, "varbit.option_acceptaid")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_60") {
@@ -296,31 +325,37 @@ object SettingConfigs {
         row("dbrow.setting_61") {
             column(SETTING_ID, 61)
             columnRSCM(VARBIT_ID, "varbit.dareeyak_teleport_warning")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_62") {
             column(SETTING_ID, 62)
             columnRSCM(VARBIT_ID, "varbit.carrallagar_teleport_warning")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_63") {
             column(SETTING_ID, 63)
             columnRSCM(VARBIT_ID, "varbit.annakarl_teleport_warning")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_64") {
             column(SETTING_ID, 64)
             columnRSCM(VARBIT_ID, "varbit.ghorrock_teleport_warning")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_65") {
             column(SETTING_ID, 65)
             columnRSCM(VARBIT_ID, "varbit.alchemy_warning_untradeables")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_66") {
             column(SETTING_ID, 66)
             columnRSCM(VARBIT_ID, "varbit.alchemy_warning_valuethreshold")
+            column(DEFAULT, 30000)
             column(MIN, 0)
             column(MAX, 500000000)
             column(PROMPT, "Set value threshold for alchemy warnings:")
@@ -369,6 +404,7 @@ object SettingConfigs {
         row("dbrow.setting_82") {
             column(SETTING_ID, 82)
             columnRSCM(VARBIT_ID, "varbit.option_precise_timing")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_83") {
@@ -534,6 +570,7 @@ object SettingConfigs {
         row("dbrow.setting_119") {
             column(SETTING_ID, 119)
             columnRSCM(VARBIT_ID, "varbit.settings_chat_timestamps")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_120") {
@@ -684,6 +721,7 @@ object SettingConfigs {
         row("dbrow.setting_150") {
             column(SETTING_ID, 150)
             columnRSCM(VARBIT_ID, "varbit.stat_boosts_hud_num_displays")
+            column(DEFAULT, 5)
         }
 
         row("dbrow.setting_151") {
@@ -749,11 +787,13 @@ object SettingConfigs {
         row("dbrow.setting_164") {
             column(SETTING_ID, 164)
             columnRSCM(VARBIT_ID, "varbit.agility_helper_highlight_obstacles_enabled")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_165") {
             column(SETTING_ID, 165)
             columnRSCM(VARBIT_ID, "varbit.agility_helper_highlight_shortcuts")
+            column(DEFAULT, 2)
         }
 
         row("dbrow.setting_166") {
@@ -769,6 +809,7 @@ object SettingConfigs {
         row("dbrow.setting_171") {
             column(SETTING_ID, 171)
             columnRSCM(VARBIT_ID, "varbit.option_collection_new_item")
+            column(DEFAULT, 3)
         }
 
         row("dbrow.setting_172") {
@@ -819,6 +860,7 @@ object SettingConfigs {
         row("dbrow.setting_181") {
             column(SETTING_ID, 181)
             columnRSCM(VARBIT_ID, "varbit.tli_storebutton_toggle_desktop")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_182") {
@@ -849,11 +891,13 @@ object SettingConfigs {
         row("dbrow.setting_187") {
             column(SETTING_ID, 187)
             columnRSCM(VARBIT_ID, "varbit.ore_respawn_timer")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_188") {
             column(SETTING_ID, 188)
             columnRSCM(VARBIT_ID, "varbit.woodcutting_respawn_timer")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_189") {
@@ -889,6 +933,7 @@ object SettingConfigs {
         row("dbrow.setting_195") {
             column(SETTING_ID, 195)
             columnRSCM(VARBIT_ID, "varbit.option_chatbox_mode_autoset")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_196") {
@@ -944,11 +989,13 @@ object SettingConfigs {
         row("dbrow.setting_206") {
             column(SETTING_ID, 206)
             columnRSCM(VARBIT_ID, "varbit.skull_prevent_enabled")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_207") {
             column(SETTING_ID, 207)
             columnRSCM(VARBIT_ID, "varbit.runinvert_mode")
+            column(DEFAULT, 3)
         }
 
         row("dbrow.setting_208") {
@@ -979,16 +1026,19 @@ object SettingConfigs {
         row("dbrow.setting_214") {
             column(SETTING_ID, 214)
             columnRSCM(VARBIT_ID, "varbit.questlist_sort_type")
+            column(DEFAULT, 11)
         }
 
         row("dbrow.setting_215") {
             column(SETTING_ID, 215)
             columnRSCM(VARBIT_ID, "varbit.questlist_hide_lackreqs")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_216") {
             column(SETTING_ID, 216)
             columnRSCM(VARBIT_ID, "varbit.questlist_hide_lackrecs")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_217") {
@@ -1069,26 +1119,31 @@ object SettingConfigs {
         row("dbrow.setting_233") {
             column(SETTING_ID, 233)
             columnRSCM(VARBIT_ID, "varbit.option_minimenu_long_press_time")
+            column(DEFAULT, 300)
         }
 
         row("dbrow.setting_234") {
             column(SETTING_ID, 234)
             columnRSCM(VARBIT_ID, "varbit.examine_price_ge_enabled")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_235") {
             column(SETTING_ID, 235)
             columnRSCM(VARBIT_ID, "varbit.examine_price_alch_enabled")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_236") {
             column(SETTING_ID, 236)
             columnRSCM(VARBIT_ID, "varbit.antidrag_delay")
+            column(DEFAULT, 25)
         }
 
         row("dbrow.setting_237") {
             column(SETTING_ID, 237)
             columnRSCM(VARBIT_ID, "varbit.antidrag_key")
+            column(DEFAULT, 81)
             column(DROPDOWN_ENUM, 4302)
         }
 
@@ -1146,16 +1201,19 @@ object SettingConfigs {
         row("dbrow.setting_248") {
             column(SETTING_ID, 248)
             columnRSCM(VARBIT_ID, "varbit.cannon_low_notification_enabled")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_249") {
             column(SETTING_ID, 249)
             columnRSCM(VARBIT_ID, "varbit.cannon_low_amount")
+            column(DEFAULT, 10)
         }
 
         row("dbrow.setting_250") {
             column(SETTING_ID, 250)
             columnRSCM(VARBIT_ID, "varbit.cannon_no_ammo_notification_enabled")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_251") {
@@ -1166,6 +1224,7 @@ object SettingConfigs {
         row("dbrow.setting_252") {
             column(SETTING_ID, 252)
             columnRSCM(VARBIT_ID, "varbit.popout_panel_mobile_enabled")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_253") {
@@ -1301,6 +1360,7 @@ object SettingConfigs {
         row("dbrow.setting_280") {
             column(SETTING_ID, 280)
             columnRSCM(VARBIT_ID, "varbit.settings_hitsplat_threshold")
+            column(DEFAULT, 2)
             column(MIN, 2)
             column(MAX, 500)
             column(PROMPT, "Set value threshold for max hits (2-500):")
@@ -1429,11 +1489,13 @@ object SettingConfigs {
         row("dbrow.setting_305") {
             column(SETTING_ID, 305)
             columnRSCM(VARBIT_ID, "varbit.take_ammo_toggle")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_306") {
             column(SETTING_ID, 306)
             columnRSCM(VARBIT_ID, "varbit.take_runes_toggle")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_307") {
@@ -1474,6 +1536,7 @@ object SettingConfigs {
         row("dbrow.setting_316") {
             column(SETTING_ID, 316)
             columnRSCM(VARBIT_ID, "varbit.option_fletch_dart_or_bolt_makex")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_317") {
@@ -1489,6 +1552,7 @@ object SettingConfigs {
         row("dbrow.setting_321") {
             column(SETTING_ID, 321)
             columnRSCM(VARBIT_ID, "varbit.ground_items_enabled")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_322") {
@@ -1524,26 +1588,31 @@ object SettingConfigs {
         row("dbrow.setting_328") {
             column(SETTING_ID, 328)
             columnRSCM(VARP, "varp.ground_items_t5_threshold")
+            column(DEFAULT, 10000000)
         }
 
         row("dbrow.setting_329") {
             column(SETTING_ID, 329)
             columnRSCM(VARP, "varp.ground_items_t4_threshold")
+            column(DEFAULT, 1000000)
         }
 
         row("dbrow.setting_330") {
             column(SETTING_ID, 330)
             columnRSCM(VARP, "varp.ground_items_t3_threshold")
+            column(DEFAULT, 100000)
         }
 
         row("dbrow.setting_331") {
             column(SETTING_ID, 331)
             columnRSCM(VARP, "varp.ground_items_t2_threshold")
+            column(DEFAULT, 20000)
         }
 
         row("dbrow.setting_332") {
             column(SETTING_ID, 332)
             columnRSCM(VARP, "varp.ground_items_t1_threshold")
+            column(DEFAULT, 1000)
         }
 
         row("dbrow.setting_333") {
@@ -1554,6 +1623,7 @@ object SettingConfigs {
         row("dbrow.setting_334") {
             column(SETTING_ID, 334)
             columnRSCM(VARBIT_ID, "varbit.ground_items_despawn_time_enabled_desktop")
+            column(DEFAULT, 2)
         }
 
         row("dbrow.setting_335") {
@@ -1574,6 +1644,7 @@ object SettingConfigs {
         row("dbrow.setting_338") {
             column(SETTING_ID, 338)
             columnRSCM(VARBIT_ID, "varbit.ground_items_edit_mode_enabled_desktop")
+            column(DEFAULT, 2)
         }
 
         row("dbrow.setting_339") {
@@ -1584,6 +1655,7 @@ object SettingConfigs {
         row("dbrow.setting_340") {
             column(SETTING_ID, 340)
             columnRSCM(VARBIT_ID, "varbit.ground_items_modifier_key")
+            column(DEFAULT, 82)
             column(DROPDOWN_ENUM, 4975)
         }
 
@@ -1610,11 +1682,13 @@ object SettingConfigs {
         row("dbrow.setting_348") {
             column(SETTING_ID, 348)
             columnRSCM(VARBIT_ID, "varbit.music_enableloop")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_350") {
             column(SETTING_ID, 350)
             columnRSCM(VARBIT_ID, "varbit.ground_items_max_lines")
+            column(DEFAULT, 5)
         }
 
         row("dbrow.setting_352") {
@@ -1660,6 +1734,7 @@ object SettingConfigs {
         row("dbrow.setting_360") {
             column(SETTING_ID, 360)
             columnRSCM(VARBIT_ID, "varbit.option_skill_guide")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_362") {
@@ -1690,11 +1765,13 @@ object SettingConfigs {
         row("dbrow.setting_367") {
             column(SETTING_ID, 367)
             columnRSCM(VARBIT_ID, "varbit.quest_start_highlight")
+            column(DEFAULT, 2)
         }
 
         row("dbrow.setting_368") {
             column(SETTING_ID, 368)
             columnRSCM(VARBIT_ID, "varbit.quest_start_highlight_filter_requirements")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_369") {
@@ -1710,6 +1787,7 @@ object SettingConfigs {
         row("dbrow.setting_371") {
             column(SETTING_ID, 371)
             columnRSCM(VARBIT_ID, "varbit.settings_gravestone_autoequip")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_372") {
@@ -1800,6 +1878,7 @@ object SettingConfigs {
         row("dbrow.setting_389") {
             column(SETTING_ID, 389)
             columnRSCM(VARBIT_ID, "varbit.runenergy_autoenable")
+            column(DEFAULT, 20)
             column(MIN, 0)
             column(MAX, 100)
             column(PROMPT, "Set energy threshold for auto-enabling run mode:")
@@ -1918,6 +1997,7 @@ object SettingConfigs {
         row("dbrow.setting_417") {
             column(SETTING_ID, 417)
             columnRSCM(VARBIT_ID, "varbit.popout_hiscores_globalclick_enabled")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_418") {
@@ -2058,6 +2138,7 @@ object SettingConfigs {
         row("dbrow.setting_447") {
             column(SETTING_ID, 447)
             columnRSCM(VARBIT_ID, "varbit.settings_mobile_minimenu_icon_enabled")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_448") {
@@ -2068,6 +2149,7 @@ object SettingConfigs {
         row("dbrow.setting_449") {
             column(SETTING_ID, 449)
             columnRSCM(VARP, "varp.settings_birdhouse_seed_warning_value")
+            column(DEFAULT, 1000)
         }
 
         row("dbrow.setting_450") {
@@ -2153,6 +2235,7 @@ object SettingConfigs {
         row("dbrow.setting_466") {
             column(SETTING_ID, 466)
             columnRSCM(VARBIT_ID, "varbit.sailing_show_customisation_material_messages")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_467") {
@@ -2178,11 +2261,13 @@ object SettingConfigs {
         row("dbrow.setting_472") {
             column(SETTING_ID, 472)
             columnRSCM(VARBIT_ID, "varbit.settings_new_menu_interface")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_473") {
             column(SETTING_ID, 473)
             columnRSCM(VARBIT_ID, "varbit.settings_new_menu_transparent_interface_disabled")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_474") {
@@ -2263,6 +2348,7 @@ object SettingConfigs {
         row("dbrow.setting_493") {
             column(SETTING_ID, 493)
             columnRSCM(VARBIT_ID, "varbit.option_level_up_chatbox_list")
+            column(DEFAULT, 1)
         }
 
         row("dbrow.setting_494") {
