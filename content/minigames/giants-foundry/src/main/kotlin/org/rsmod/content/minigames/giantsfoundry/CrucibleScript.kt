@@ -1,6 +1,8 @@
 package org.rsmod.content.minigames.giantsfoundry
 
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfSubType
 import jakarta.inject.Inject
@@ -8,8 +10,8 @@ import org.rsmod.api.config.Constants
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.ClientScripts
+import org.rsmod.api.player.output.locAnimSpecific
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc3
@@ -25,10 +27,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class CrucibleScript
 @Inject
-constructor(
-    private val worldRepo: WorldRepository,
-    private val alignment: TextAlignment,
-) : PluginScript() {
+constructor(private val alignment: TextAlignment) : PluginScript() {
     override fun ScriptContext.startup() {
         for (loc in listOf(CRUCIBLE_EMPTY, CRUCIBLE_PARTIAL)) {
             onOpLoc1(loc) { fill() }
@@ -278,9 +277,15 @@ constructor(
             if (player.makingQuestSword()) QUEST_DIFFICULTY
             else FoundryFormulas.metalScore(counts())
 
+        if (player.makingQuestSword()) {
+            val counts = counts()
+            player.setFoundryVar(metalVarbit("bronze"), maxOf(0, counts[0] - QUEST_POUR_BRONZE))
+            player.setFoundryVar(metalVarbit("iron"), maxOf(0, counts[1] - QUEST_POUR_IRON))
+            player.advanceTutorial(SleepingGiants.TUTORIAL_POURED)
+        }
         anim(POUR_PLAYER_SEQ)
         soundSynth(POUR_SYNTH)
-        worldRepo.locAnim(crucible, POUR_SEQ)
+        player.locAnimSpecific(crucible, POUR_SEQ.asRSCM(RSCMType.SEQ))
         delay(1)
         player.mouldAlloyDifficulty = difficulty
         delay(POUR_DELAY - 1)
@@ -289,9 +294,6 @@ constructor(
             player.setFoundryVar(metalVarbit(metal), 0)
         }
         player.crucibleState = 0
-        if (player.makingQuestSword()) {
-            player.advanceTutorial(SleepingGiants.TUTORIAL_POURED)
-        }
     }
 
     private fun ProtectedAccess.selectedMoulds(): List<Mould>? {
@@ -317,6 +319,8 @@ constructor(
         const val POUR_SYNTH = "synth.giants_foundry_crucible_pour"
         const val POUR_DELAY = 6
         const val QUEST_DIFFICULTY = 5
+        const val QUEST_POUR_BRONZE = 10
+        const val QUEST_POUR_IRON = 8
         const val COUNT_TITLE = "How many would you like to add?"
         const val MELT_SEQ = "seq.human_elem2_lever_3way_right"
         const val MELT_SYNTH = "synth.furnace"
