@@ -101,7 +101,7 @@ public fun Player.statAdd(stat: String, constant: Int, percent: Int) {
 
     statMap.setCurrentLevel(stat, cappedLevel.toByte())
 
-    val statType = ServerCacheManager.getStats(stat.asRSCM(RSCMType.STAT))?: error("No stat found for $stat")
+    val statType = ServerCacheManager.getStats(stat.asRSCM(RSCMType.STAT)) ?: error("No stat found for $stat")
 
     updateStat(stat)
 

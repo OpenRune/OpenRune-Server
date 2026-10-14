@@ -2279,6 +2279,5 @@ object SettingConfigs {
             column(SETTING_ID, 501)
             columnRSCM(VARBIT_ID, "varbit.settings_sailing_wind_on_orb_disabled")
         }
-
     }
 }

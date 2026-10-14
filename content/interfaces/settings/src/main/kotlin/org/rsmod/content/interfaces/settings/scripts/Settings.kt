@@ -1,12 +1,10 @@
 package org.rsmod.content.interfaces.settings.scripts
 
-import com.google.common.collect.ImmutableMap
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.StructType
 import dev.openrune.types.enums.EnumTypeMap
 import java.util.*
 import org.rsmod.api.enums.SettingsEnums
-
 
 object Settings {
 
@@ -38,7 +36,6 @@ object Settings {
     fun findSettingByStructId(id: Int): Setting =
         allSettings.firstOrNull { it.structId == id } ?: error("Setting with struct '$id' does not exist.")
 
-
     val DEFAULT_KEYBINDS_STRUCTS = mapOf(
         2739 to "F1",
         2742 to "F2",
@@ -64,5 +61,4 @@ object Settings {
         }
         return map
     }
-
 }
