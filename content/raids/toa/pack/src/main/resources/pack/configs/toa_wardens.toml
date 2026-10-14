@@ -81,6 +81,10 @@ giveChase = true
 maxRange = 40
 attackRange = 10
 [npc.params]
+"param.headbar" = "headbar.charge_140"
+"param.hitmark_lit" = "hitmark.poise_damage_lit"
+"param.hitmark_tint" = "hitmark.poise_damage_tint"
+"param.hitmark_max" = "hitmark.poise_damage_max"
 "param.boss_hp_bar_colour_back" = 2631680
 "param.boss_hp_bar_colour_sliding" = 10524672
 "param.boss_hp_bar_colour_remaining" = 14209024
@@ -94,6 +98,10 @@ giveChase = true
 maxRange = 40
 attackRange = 10
 [npc.params]
+"param.headbar" = "headbar.charge_140"
+"param.hitmark_lit" = "hitmark.poise_damage_lit"
+"param.hitmark_tint" = "hitmark.poise_damage_tint"
+"param.hitmark_max" = "hitmark.poise_damage_max"
 "param.boss_hp_bar_colour_back" = 2631680
 "param.boss_hp_bar_colour_sliding" = 10524672
 "param.boss_hp_bar_colour_remaining" = 14209024
@@ -120,6 +128,10 @@ giveChase = true
 maxRange = 40
 attackRange = 10
 [npc.params]
+"param.headbar" = "headbar.charge_140"
+"param.hitmark_lit" = "hitmark.poise_damage_lit"
+"param.hitmark_tint" = "hitmark.poise_damage_tint"
+"param.hitmark_max" = "hitmark.poise_damage_max"
 "param.boss_hp_bar_colour_back" = 2631680
 "param.boss_hp_bar_colour_sliding" = 10524672
 "param.boss_hp_bar_colour_remaining" = 14209024
@@ -133,6 +145,10 @@ giveChase = true
 maxRange = 40
 attackRange = 10
 [npc.params]
+"param.headbar" = "headbar.charge_140"
+"param.hitmark_lit" = "hitmark.poise_damage_lit"
+"param.hitmark_tint" = "hitmark.poise_damage_tint"
+"param.hitmark_max" = "hitmark.poise_damage_max"
 "param.boss_hp_bar_colour_back" = 2631680
 "param.boss_hp_bar_colour_sliding" = 10524672
 "param.boss_hp_bar_colour_remaining" = 14209024
