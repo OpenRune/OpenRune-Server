@@ -6,7 +6,6 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfSubType
 import jakarta.inject.Inject
-import org.rsmod.api.config.Constants
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.ClientScripts
@@ -53,15 +52,31 @@ constructor(private val alignment: TextAlignment) : PluginScript() {
             return false
         }
         startDialogue {
-            chatPlayer(neutral, "I should finish helping Kovac before I try making another sword.")
+            chatPlayer(quiz, "I should finish helping Kovac before I try making another sword.")
         }
         return true
     }
 
-    private fun ProtectedAccess.freeSpace(): Int? {
+    private suspend fun ProtectedAccess.talkToKovacFirst(): Boolean {
+        if (
+            !player.makingQuestSword() ||
+                player.sleepingGiantsTutorial >= SleepingGiants.TUTORIAL_CRATE_SEARCHED
+        ) {
+            return false
+        }
+        startDialogue {
+            chatPlayer(
+                quiz,
+                "Maybe I should talk with Kovac first before messing around with anything.",
+            )
+        }
+        return true
+    }
+
+    private suspend fun ProtectedAccess.freeSpace(): Int? {
         val space = FoundryFormulas.CRUCIBLE_CAPACITY - counts().sum()
         if (space <= 0) {
-            mes("The crucible is full.")
+            mesbox("The crucible is full. You can't add any more metal to it.")
             return null
         }
         return space
@@ -77,6 +92,7 @@ constructor(private val alignment: TextAlignment) : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.fill() {
+        arriveDelay()
         if (questSwordPoured()) {
             return
         }
@@ -86,6 +102,7 @@ constructor(private val alignment: TextAlignment) : PluginScript() {
         val selection = chosen ?: return
         val metal = FoundryData.bars.indexOfFirst { it.output.internalName == selection.entry.internal }
         val bar = FoundryData.bars[metal].output
+        player.skillmultiPreviousSelection = metal
         if (inv.count(bar.internalName) == 0) {
             objbox(bar.internalName, "You have no ${bar.name}s to add to the crucible.")
             return
@@ -93,10 +110,15 @@ constructor(private val alignment: TextAlignment) : PluginScript() {
         if (!canUse(metal)) {
             return
         }
+        addBars(metal, selection.amount)
+    }
+
+    private suspend fun ProtectedAccess.addBars(metal: Int, amount: Int) {
+        val bar = FoundryData.bars[metal].output
         melt()
         val space = freeSpace() ?: return
         // UNVERIFIED: bars past the crucible's free space stay in the inventory (guess).
-        val count = minOf(selection.amount, inv.count(bar.internalName), space)
+        val count = minOf(amount, inv.count(bar.internalName), space)
         if (count <= 0) {
             return
         }
@@ -114,20 +136,35 @@ constructor(private val alignment: TextAlignment) : PluginScript() {
             titleOverride = "What metal would you like to add?",
             showUnavailable = true,
             eventsEndAtMaxCount = true,
+            eventsAfterSetup = true,
+            padLabels = true,
         )
 
     private suspend fun ProtectedAccess.addItems(obj: ItemServerType) {
-        // UNVERIFIED: any other item, bars included, does nothing (guess).
-        val (metal, worth) =
-            FoundryData.smithedItems[obj.id]
-                ?: run {
-                    mes(Constants.dm_default)
-                    return
-                }
-        if (questSwordPoured() || !canUse(metal)) {
+        arriveDelay()
+        if (talkToKovacFirst()) {
+            return
+        }
+        val bar = FoundryData.bars.indexOfFirst { it.output.id == obj.id }
+        val smithed = FoundryData.smithedItems[obj.id]
+        if (bar < 0 && smithed == null) {
+            mesbox("You cannot add this item to the crucible.")
+            return
+        }
+        if (questSwordPoured()) {
             return
         }
         val space = freeSpace() ?: return
+        if (smithed == null) {
+            if (canUse(bar)) {
+                addBars(bar, 1)
+            }
+            return
+        }
+        val (metal, worth) = smithed
+        if (!canUse(metal)) {
+            return
+        }
         val held = inv.count(obj.internalName)
         val chosen = if (held <= 1) held else chooseCount(held)
         if (chosen <= 0) {
@@ -229,17 +266,25 @@ constructor(private val alignment: TextAlignment) : PluginScript() {
             else -> "$metal bars"
         }
 
-    private fun ProtectedAccess.check() {
+    private suspend fun ProtectedAccess.check() {
         val counts = counts()
-        if (counts.sum() == 0) {
-            mes("The crucible is empty.")
-            return
-        }
-        val parts = METALS.indices.filter { counts[it] > 0 }.map { "${counts[it]} ${METALS[it]}" }
-        mes("The crucible contains ${parts.joinToString()} (${counts.sum()}/${FoundryFormulas.CRUCIBLE_CAPACITY}).")
+        val names = METALS.map { it.replaceFirstChar(Char::uppercaseChar) }
+        val text =
+            "The crucible currently contains ${counts.sum()} / ${FoundryFormulas.CRUCIBLE_CAPACITY} " +
+                "metals:<br>${counts[0]} x ${names[0]}, ${counts[1]} x ${names[1]}, " +
+                "${counts[2]} x ${names[2]}, <br>${counts[3]} x ${names[3]}, " +
+                "${counts[4]} x ${names[4]}, ${counts[5]} x ${names[5]}."
+        mes(text)
+        mesbox(text)
     }
 
     private suspend fun ProtectedAccess.empty() {
+        if (player.makingQuestSword()) {
+            startDialogue {
+                chatPlayer(neutral, "I don't think Kovac would want me to empty this right now.")
+            }
+            return
+        }
         if (counts().sum() == 0) {
             mes("The crucible is already empty.")
             return
@@ -255,6 +300,7 @@ constructor(private val alignment: TextAlignment) : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.pour(crucible: BoundLocInfo) {
+        arriveDelay()
         if (player.commissionWord1 == 0) {
             mes("You need a commission from Kovac before you can pour a sword.")
             return

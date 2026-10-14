@@ -56,6 +56,8 @@ data class SkillMultiConfig(
     val titleOverride: String? = null,
     val showUnavailable: Boolean = false,
     val eventsEndAtMaxCount: Boolean = false,
+    val eventsAfterSetup: Boolean = false,
+    val padLabels: Boolean = false,
 ) {
 
     val title: String
@@ -156,6 +158,16 @@ suspend fun ProtectedAccess.openSkillMulti(
     val eventsEnd =
         if (config.eventsEndAtMaxCount) skillmultiMaxCount(config, available) else 28
 
+    val setupArgs = skillmultiSetupArgs(
+        actionType = config.actionType,
+        config,
+        available
+    ).toTypedArray()
+
+    if (config.eventsAfterSetup) {
+        runClientScript(SKILLMULTI_SETUP_SCRIPT, *setupArgs)
+    }
+
     for (i in available.indices) {
         ifSetEvents(
             validButtons[i],
@@ -164,11 +176,9 @@ suspend fun ProtectedAccess.openSkillMulti(
         )
     }
 
-    runClientScript(SKILLMULTI_SETUP_SCRIPT, *skillmultiSetupArgs(
-        actionType = config.actionType,
-        config,
-        available
-    ).toTypedArray())
+    if (!config.eventsAfterSetup) {
+        runClientScript(SKILLMULTI_SETUP_SCRIPT, *setupArgs)
+    }
 
     val input = coroutine.pause(ResumePauseButtonInput::class)
 
@@ -241,6 +251,12 @@ private fun skillmultiSetupArgs(
         available.forEach { (entry, _) ->
             append('|')
             append(entry.item.name)
+        }
+
+        if (config.padLabels) {
+            repeat(SKILLMULTI_ITEM_SLOTS - available.size) {
+                append('|')
+            }
         }
     }
 
