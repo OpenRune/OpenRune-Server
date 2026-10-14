@@ -14,6 +14,7 @@ import org.rsmod.api.player.ironman.isAnyIronman
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.IfModalButton
+import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpNpc5
@@ -29,6 +30,7 @@ class RewardShopScript @Inject constructor() : PluginScript() {
         onOpNpc5(KOVAC) { openRewardShop() }
         onIfModalButton(LIST) { listOp(it) }
         onIfModalButton(BUY_BUTTON) { buy(player.shopSelected, 1) }
+        onIfModalButton(DROPDOWN) { filter(it) }
         onOpNpcU(KOVAC) { sellBack(it.npc, it.objType) }
     }
 
@@ -113,11 +115,18 @@ class RewardShopScript @Inject constructor() : PluginScript() {
             return
         }
         player.foundryReputation -= added * cost
-        refresh()
+        mes("Kovac hands you your reward.")
+        soundSynth(PURCHASE_SYNTH)
     }
 
     private fun ProtectedAccess.refresh() {
-        player.runClientScript(SHOP_SETUP.asRSCM(RSCMType.CLIENTSCRIPT), 0)
+        player.runClientScript(SHOP_SETUP.asRSCM(RSCMType.CLIENTSCRIPT), 1)
+    }
+
+    /** The dropdown's options are every other component, starting at 1. */
+    private fun ProtectedAccess.filter(event: IfModalButton) {
+        player.shopFilter = (event.comsub - 1) / 2
+        player.shopSelected = 0
     }
 
     private fun ProtectedAccess.unlockMould(structId: Int, cost: Int) {
@@ -132,8 +141,14 @@ class RewardShopScript @Inject constructor() : PluginScript() {
             mes("You don't have enough Foundry Reputation for that.")
             return
         }
-        player.foundryReputation -= cost
         player.setFoundryVar(unlock, 1)
+        player.shopSelected = 0
+        player.foundryReputation -= cost
+        mes(
+            "Kovac hands you a mould, which you add to the library of moulds you already have " +
+                "stored here."
+        )
+        soundSynth(PURCHASE_SYNTH)
         refresh()
     }
 
@@ -143,6 +158,8 @@ class RewardShopScript @Inject constructor() : PluginScript() {
 
     private companion object {
         const val LIST = "component.giants_foundry_reward_shop:list"
+        const val DROPDOWN = "component.giants_foundry_reward_shop:dropdown_content"
+        const val PURCHASE_SYNTH = "synth.coins_jingle_1"
         const val BUY_BUTTON = "component.giants_foundry_reward_shop:buy_button"
         const val DOUBLE_AMMO_MOULD = "obj.double_ammo_mould"
         const val DWARF_CANNON = "quest_dwarfcannon"
@@ -153,24 +170,33 @@ class RewardShopScript @Inject constructor() : PluginScript() {
 }
 
 private var Player.shopSelected by intVarp("varp.giants_foundry_reward_shop_selected_item")
+private var Player.shopFilter by intVarBit("varbit.giants_foundry_reward_shop_filter")
 
 private val shopItems
     get() = GiantsFoundryEnums.giants_foundry_reward_shop_items
 
 private const val SHOP_INTERFACE = "interface.giants_foundry_reward_shop"
+private const val SHOP_INIT = "clientscript.[clientscript,reward_shop_init]"
 private const val SHOP_SETUP = "clientscript.[clientscript,giants_foundry_reward_shop_setup]"
 private const val ROW_CHILDREN = 13
+private const val DROPDOWN_END = 12
+private const val MODAL_TRANSPARENCY = -3
 
 // TODO(content): [system:bank_pin] the Bank PIN check before the shop opens.
 internal fun ProtectedAccess.openRewardShop() {
-    ifOpenMainModal(SHOP_INTERFACE)
-    player.runClientScript(SHOP_SETUP.asRSCM(RSCMType.CLIENTSCRIPT), 1)
+    ifOpenMainModal(SHOP_INTERFACE, transparency = MODAL_TRANSPARENCY)
+    player.runClientScript(SHOP_INIT.asRSCM(RSCMType.CLIENTSCRIPT))
     ifSetEvents(
         "component.giants_foundry_reward_shop:list",
-        0 until shopItems.backing.size * ROW_CHILDREN,
+        0..shopItems.backing.size * ROW_CHILDREN,
         IfEvent.Op1,
         IfEvent.Op2,
         IfEvent.Op3,
         IfEvent.Op4,
+    )
+    ifSetEvents(
+        "component.giants_foundry_reward_shop:dropdown_content",
+        0..DROPDOWN_END,
+        IfEvent.Op1,
     )
 }

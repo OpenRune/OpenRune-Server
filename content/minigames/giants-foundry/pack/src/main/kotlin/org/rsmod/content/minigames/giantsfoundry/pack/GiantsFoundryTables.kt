@@ -16,6 +16,7 @@ object GiantsFoundryTables {
     const val TOOL_START_SEQ = 7
     const val TOOL_LOOP_SEQ = 8
     const val TOOL_NAME = 9
+    const val TOOL_ICON = 10
 
     fun tools() =
         dbTable("dbtable.giants_foundry_tools", serverOnly = true) {
@@ -29,6 +30,7 @@ object GiantsFoundryTables {
             column("start_seq", TOOL_START_SEQ, VarType.SEQ)
             column("loop_seq", TOOL_LOOP_SEQ, VarType.SEQ)
             column("name", TOOL_NAME, VarType.STRING)
+            column("icon", TOOL_ICON, VarType.INT)
 
             fun tool(
                 row: String,
@@ -42,6 +44,7 @@ object GiantsFoundryTables {
                 startSeq: String,
                 loopSeq: String,
                 name: String,
+                icon: Int,
             ) {
                 row("dbrow.giants_foundry_tool_$row") {
                     column(TOOL_SEED, seed)
@@ -54,6 +57,7 @@ object GiantsFoundryTables {
                     columnRSCM(TOOL_START_SEQ, startSeq)
                     columnRSCM(TOOL_LOOP_SEQ, loopSeq)
                     column(TOOL_NAME, name)
+                    column(TOOL_ICON, icon)
                 }
             }
 
@@ -69,6 +73,7 @@ object GiantsFoundryTables {
                 startSeq = "seq.human_preform_lift_start02",
                 loopSeq = "seq.human_preform_lift_loop02",
                 name = "trip hammer",
+                icon = 4442,
             )
             tool(
                 "grindstone",
@@ -82,6 +87,7 @@ object GiantsFoundryTables {
                 startSeq = "seq.human_preform_lift_start",
                 loopSeq = "seq.human_preform_lift_loop",
                 name = "grindstone",
+                icon = 4443,
             )
             tool(
                 "polishing_wheel",
@@ -95,6 +101,7 @@ object GiantsFoundryTables {
                 startSeq = "seq.human_preform_lift_start",
                 loopSeq = "seq.human_preform_lift_loop",
                 name = "polishing wheel",
+                icon = 4444,
             )
         }
 

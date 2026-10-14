@@ -1,10 +1,18 @@
 package org.rsmod.content.minigames.giantsfoundry
 
+import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.aconverted.interf.IfSubType
 import jakarta.inject.Inject
 import java.util.Locale
+import org.rsmod.api.config.Constants
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.ironman.isUltimateIronman
+import org.rsmod.api.player.output.ChatType
+import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.UpdateRun
+import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.script.onOpNpc1
@@ -97,55 +105,97 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
     private suspend fun Dialogue.help() {
         chatPlayer(neutral, "I'm not sure what something does.")
         chatNpc(neutral, "What do not understand, little one?")
+        var last: HelpTopic? = null
         while (true) {
-            val topic =
-                choice5(
-                    "How do I use the crucible?",
-                    1,
-                    "What does the mould jig do?",
-                    2,
-                    "How do I control the preform's temperature?",
-                    3,
-                    "When should I use a tool?",
-                    4,
-                    "Actually, I'm okay for now.",
-                    5,
-                )
+            val topic = chooseTopic(last) ?: break
+            chatPlayer(neutral, topic.question)
             when (topic) {
-                1 -> {
-                    chatPlayer(neutral, "How do I use the crucible?")
+                HelpTopic.Crucible -> {
                     chatNpc(neutral, "Crucible just a big bucket... We put metal in and it melt it down to make swords.")
                     chatNpc(neutral, "Crucible let us add differing metals... and can store up to 28 metal bar worth, Kovac think.")
-                    chatNpc(neutral, "We can put other metal thing in too, like sword and armour.")
                 }
-                2 -> {
-                    chatPlayer(neutral, "What does the mould jig do?")
+                HelpTopic.MouldJig -> {
                     chatNpc(neutral, "Mould jig very handy... It let us make differing type of sword.")
                     chatNpc(neutral, "We want use mould parts to fit condi... commission... so when setting up mould, find parts that match.")
                     chatNpc(neutral, "Some match commission better than other... so find best one for job.")
                 }
-                3 -> {
-                    chatPlayer(neutral, "How do I control the preform's temperature?")
+                HelpTopic.Temperature -> {
                     chatNpc(neutral, "That very easy... If preform too cold, dunk in lava... If preform too hot, hold to waterfall.")
                     chatNpc(neutral, "Preform need to be right temperature to work with tool.")
                     chatNpc(neutral, "Trip hammer need preform to be hot... Grindstone need preform to be warm... Polishing wheel need preform to be cold.")
                 }
-                4 -> {
-                    chatPlayer(neutral, "When should I use a tool?")
+                HelpTopic.Tool -> {
                     chatNpc(neutral, "Hmm... Kovac think it a gut feeling thing...")
                     chatPlayer(neutral, "That doesn't help me.")
                     chatNpc(neutral, "Hmm... that is true.")
-                    mesbox("Progress on your sword can be tracked via the display on screen. You can track which tool you need to use via the completion bar.")
-                    // TODO: the three tool-icon boxes (trip hammer, grindstone, polishing wheel).
-                }
-                else -> {
-                    chatPlayer(neutral, "Actually, I'm okay for now.")
-                    chatNpc(neutral, "Okay.")
-                    return
+                    mesbox(
+                        "Progress on your sword can be tracked via the display on screen. You can " +
+                            "track which tool you need to use via the completion bar."
+                    )
+                    for (tool in FoundryTool.entries) {
+                        access.graphicbox(
+                            tool.row.icon,
+                            "Use the preform on the ${tool.row.name} when your completion tracker " +
+                                "is over this icon's bar.",
+                        )
+                    }
                 }
             }
+            last = topic
             chatNpc(neutral, "Need help with anything else?")
         }
+        chatPlayer(neutral, "Actually, I'm okay for now.")
+        chatNpc(neutral, "Okay.")
+    }
+
+    /** The topic asked last is left out of the next menu. */
+    private suspend fun Dialogue.chooseTopic(last: HelpTopic?): HelpTopic? {
+        val topics = HelpTopic.entries.filter { it != last }
+        return if (topics.size == HelpTopic.entries.size) {
+            choice5(
+                topics[0].question,
+                topics[0],
+                topics[1].question,
+                topics[1],
+                topics[2].question,
+                topics[2],
+                topics[3].question,
+                topics[3],
+                HELP_DONE,
+                null,
+            )
+        } else {
+            choice4(
+                topics[0].question,
+                topics[0],
+                topics[1].question,
+                topics[1],
+                topics[2].question,
+                topics[2],
+                HELP_DONE,
+                null,
+            )
+        }
+    }
+
+    private suspend fun ProtectedAccess.graphicbox(graphic: Int, text: String) {
+        mes(text, ChatType.Mesbox)
+        vars[CHATBOX_UNCLAMP_VARBIT] = 0
+        ClientScripts.topLevelChatboxResetBackground(player)
+        ifOpenSub(GRAPHICBOX, CHATBOX_MODAL, IfSubType.Modal)
+        player.runClientScript(
+            GRAPHICBOX_SETBUTTONS.asRSCM(RSCMType.CLIENTSCRIPT),
+            Constants.cm_pausebutton,
+        )
+        ifSetEvents(GRAPHICBOX_UNIVERSE, 0..1, IfEvent.PauseButton)
+        player.runClientScript(
+            GRAPHICBOX_SET_GRAPHIC.asRSCM(RSCMType.CLIENTSCRIPT),
+            graphic,
+            GRAPHIC_SIZE,
+            GRAPHIC_SIZE,
+        )
+        ifSetText(GRAPHICBOX_TEXT, text.replaceFirst(" completion", "<br>completion"))
+        pauseButton()
     }
 
     private suspend fun ProtectedAccess.commission(npc: Npc) {
@@ -252,5 +302,21 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
 
     private companion object {
         const val RUN_ENERGY_MAX = 10_000
+        const val HELP_DONE = "Actually, I'm okay for now."
+        const val GRAPHIC_SIZE = 64
+        const val CHATBOX_UNCLAMP_VARBIT = "varbit.chatmodal_unclamp"
+        const val CHATBOX_MODAL = "component.chatbox:chatmodal"
+        const val GRAPHICBOX = "interface.graphicbox"
+        const val GRAPHICBOX_UNIVERSE = "component.graphicbox:universe"
+        const val GRAPHICBOX_TEXT = "component.graphicbox:text"
+        const val GRAPHICBOX_SETBUTTONS = "clientscript.[clientscript,graphicbox_setbuttons]"
+        const val GRAPHICBOX_SET_GRAPHIC = "clientscript.[clientscript,graphicbox_set_graphic]"
     }
+}
+
+private enum class HelpTopic(val question: String) {
+    Crucible("How do I use the crucible?"),
+    MouldJig("What does the mould jig do?"),
+    Temperature("How do I control the preform's temperature?"),
+    Tool("When should I use a tool?"),
 }
