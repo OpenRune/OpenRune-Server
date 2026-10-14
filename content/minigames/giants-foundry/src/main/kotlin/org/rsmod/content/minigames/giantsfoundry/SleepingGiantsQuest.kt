@@ -178,6 +178,12 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     }
 
     private suspend fun ProtectedAccess.strike(npc: Npc) {
+        if (statBase(SMITHING) < SleepingGiants.requiredSmithing) {
+            mesbox("The giant doesn't take any interest in you.")
+            delay(1)
+            mesbox("You do not meet all of the requirements to start the Sleeping Giants quest.")
+            return
+        }
         startDialogue(npc) {
             lineByLine("Wait...", "Do not attack!") { chatNpc(neutral, it) }
             chatPlayer(chatshock, "What the... You can talk?!")
@@ -186,14 +192,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             lineByLine("Want...", "no, need...", "your help.") { chatNpc(neutral, it) }
             chatPlayer(quiz, "I must be dreaming. Giants can't talk!")
             chatNpc(neutral, "Please...")
-            if (access.statBase(SMITHING) < SleepingGiants.requiredSmithing) {
-                // UNVERIFIED: the message for missing the Smithing requirement (guess)
-                mesbox(
-                    "You need a Smithing level of ${SleepingGiants.requiredSmithing} to start " +
-                        "this quest."
-                )
-                return@startDialogue
-            }
             if (!choice2("Yes.", true, "No.", false, title = "Start the Sleeping Giants quest?")) {
                 chatPlayer(angry, "No way! I'm getting out of here. There's no chance I'd trust a giant!")
                 lineByLine("Please...", "help.") { chatNpc(neutral, it) }
@@ -251,7 +249,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             stage >= SleepingGiants.STARTED -> enterRoom(intro = stage < SleepingGiants.REPAIRING)
             else ->
                 startDialogue {
-                    chatPlayer(worried, "I don't think I want to disturb a cave of giants right now...")
+                    chatPlayer(neutral, "I don't think I want to disturb a cave of giants right now...")
                 }
         }
     }
