@@ -38,6 +38,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.queueDeath
 import org.rsmod.api.player.stat.PlayerSkillXP
+import org.rsmod.api.player.stat.XpSource
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.stat.statSub
@@ -756,7 +757,7 @@ constructor(
             }
             val xpDelta = xp - statMap.getXP(statInternal)
             statMap.setCurrentLevel(statInternal, targetLevel.toByte())
-            statAdvance(statInternal, xpDelta.toDouble(), rate = 1.0)
+            statAdvance(statInternal, xpDelta.toDouble(), rate = 1.0, source = XpSource.Manual)
         }
     }
 
