@@ -3,6 +3,7 @@ package org.rsmod.content.minigames.giantsfoundry
 import jakarta.inject.Inject
 import java.util.Locale
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.ironman.isUltimateIronman
 import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.random.GameRandom
@@ -207,11 +208,13 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
         val start = player.commissionStart
         val seconds = if (start == 0) 0 else (System.currentTimeMillis() / 1000).toInt() - start
 
-        val banked = access.invAdd(access.bank, "obj.coins", coins).success
-        if (banked) {
+        if (player.isUltimateIronman) {
+            // UNVERIFIED: no message for the inventory payout (guess).
+            access.invAdd(access.inv, "obj.coins", coins)
+        } else if (access.invAdd(access.bank, "obj.coins", coins).success) {
             access.mes("Kovac deposits ${formatCoins(coins)} coins into your bank as payment.")
         } else {
-            // UNVERIFIED: no message when the coins go to the inventory instead (guess).
+            // UNVERIFIED: a full bank is undocumented; the coins go to the inventory (guess).
             access.invAdd(access.inv, "obj.coins", coins)
         }
         player.clearSword()

@@ -10,6 +10,7 @@ import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.enums.GiantsFoundryEnums
 import org.rsmod.api.player.dialogue.mesanims
+import org.rsmod.api.player.ironman.isAnyIronman
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.IfModalButton
@@ -34,8 +35,12 @@ class RewardShopScript @Inject constructor() : PluginScript() {
     private suspend fun ProtectedAccess.sellBack(npc: Npc, obj: ItemServerType) {
         when (obj.internalName) {
             GROG -> {
-                // TODO: the Ironman follow-up lines ("Can't you make an exception for me?").
                 chatNpc(npc, mesanims.neutral, "No, you keep that or give it to someone else.")
+                if (player.isAnyIronman) {
+                    chatPlayer(mesanims.neutral, "Can't you make an exception for me? I'm an Ironman by the way.")
+                    chatNpc(npc, mesanims.neutral, "You get treated the same anyway.")
+                    chatPlayer(mesanims.neutral, "...")
+                }
                 return
             }
             COLOSSAL_BLADE -> {
