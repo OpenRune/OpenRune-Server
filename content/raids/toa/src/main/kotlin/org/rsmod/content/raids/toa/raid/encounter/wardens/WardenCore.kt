@@ -74,13 +74,7 @@ internal class WardenCore(private val room: WardensEncounter) {
     }
 
     fun hudHp(npc: Npc): Int =
-        when {
-            npc !== room.activeWarden -> npc.hitpoints
-            shielded -> if (shieldBroken) shieldMax else shieldMax - npc.hitpoints
-            else -> npc.hitpoints
-        }
-
-    fun shieldTaken(npc: Npc): Int = if (shieldBroken) shieldMax else shieldMax - npc.hitpoints
+        if (npc === room.activeWarden && shielded) shieldMax - npc.hitpoints else npc.hitpoints
 
     fun modify(warden: Npc, hit: HitBuilder, vulnerable: HitType) {
         when (state) {
@@ -89,23 +83,26 @@ internal class WardenCore(private val room: WardensEncounter) {
                     hit.damage = 0
                     return
                 }
-                hit.damage = min(hit.damage, warden.hitpoints - 1)
-                if (warden.hitpoints - hit.damage <= 1) shieldBroken = true
+                hit.damage = min(hit.damage, warden.hitpoints)
+                warden.hitpoints -= hit.damage
+                if (warden.hitpoints <= 0) shieldBroken = true
             }
-            State.DOWN ->
+            State.DOWN -> {
                 hit.damage = if (hit.type == HitType.Typeless) min(hit.damage, warden.hitpoints) else 0
+                warden.hitpoints -= hit.damage
+                realHp = warden.hitpoints
+            }
             else -> hit.damage = 0
         }
     }
 
     fun afterHit(warden: Npc, god: WardenGod) {
-        if (state == State.DOWN) realHp = warden.hitpoints
+        if (state == State.DOWN && warden.hitpoints <= 0) room.wardenDefeated(warden)
         if (state == State.SHIELD && shieldBroken) kneel(warden, god)
     }
 
     fun mirror(coreNpc: Npc, hit: Hit) {
         if (coreNpc !== core) return
-        coreNpc.removeHeadbar(headbarId(CORE_HEADBAR))
         if (state != State.DOWN) return
         val warden = room.activeWarden ?: return
         val player = hit.resolvePlayerSource(deps.bossDeps.playerList) ?: return
@@ -280,7 +277,6 @@ internal class WardenCore(private val room: WardensEncounter) {
 
         const val FORCED_MAX_HIT = "varn.forced_max_hit_styles"
         const val FORCED_MELEE = 1
-        const val CORE_HEADBAR = "headbar.health_30"
         const val REAL_BASE_HP = 4500
         const val REAL_RAID_HP_FACTOR = 0.25
         const val MIRROR_FACTOR = 5

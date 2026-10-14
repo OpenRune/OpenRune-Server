@@ -915,3 +915,17 @@ isServerOnly = true
 type = "INT"
 defaultInt = 0
 isMembers = true
+
+[[params]]
+id = "param.headbar_hidden"
+isServerOnly = true
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
+
+[[params]]
+id = "param.headbar_inverted"
+isServerOnly = true
+type = "BOOLEAN"
+defaultInt = 0
+isMembers = true
