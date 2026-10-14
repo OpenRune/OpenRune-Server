@@ -98,8 +98,10 @@ internal class ApmekenBaboons(private val room: ApmekenPuzzleEncounter) {
 
     private fun spawnWave() {
         val now = deps.mapClock.cycle
-        val definition = WAVES[wave++]
+        val definition = WAVES[wave]
         val types = ArrayList(definition.fixed)
+        if (room.targets().size > 1) types += GROUP_EXTRA[wave]
+        wave++
         repeat(definition.specials) {
             types += SPECIALS[deps.random.of(maxExclusive = SPECIALS.size)]
         }
@@ -360,6 +362,18 @@ internal class ApmekenBaboons(private val room: ApmekenPuzzleEncounter) {
                 Kind.MAGE to WEAK_RANGED,
                 Kind.SHAMAN to WEAK_RANGED,
                 Kind.CURSED to WEAK_RANGED,
+            )
+
+        val GROUP_EXTRA =
+            listOf(
+                ApmekenNpcs.BRAWLER_SMALL,
+                ApmekenNpcs.BRAWLER_SMALL,
+                ApmekenNpcs.THROWER_SMALL,
+                ApmekenNpcs.BRAWLER_LARGE,
+                ApmekenNpcs.MAGE_LARGE,
+                ApmekenNpcs.THROWER_LARGE,
+                ApmekenNpcs.MAGE_LARGE,
+                ApmekenNpcs.CURSED,
             )
 
         val SPECIALS = listOf(ApmekenNpcs.SHAMAN, ApmekenNpcs.VOLATILE, ApmekenNpcs.CURSED)
