@@ -100,9 +100,29 @@ inherit = "npc.toa_kephri_scarab_rangekite"
 defaultMode = "None"
 respawnDir = "West"
 regenRate = 0
+maxRange = 40
+attackRange = 6
+huntMode = 8
+huntRange = 25
 [npc.params]
 "param.death_anim" = "seq.npc_scarab_flying_death02"
 "param.defend_anim" = "seq.npc_scarab_flying_idle"
+"param.attack_anim" = "seq.npc_scarab_flying_attack"
+"param.npc_attack_type" = "category.attacktype_standard"
+"param.attackrate" = 4
+"param.proj_travel" = "spotanim.toa_scarab_ranged_projectile01"
+"param.proj_type" = "projanim.toa_scarab_ranged"
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_scarab_ranged"
+startHeight = 96
+endHeight = 124
+delay = 36
+angle = 16
+lengthAdjustment = 54
+progress = 64
+stepMultiplier = 0
 
 [[npc]]
 id = "npc.toa_kephri_guardian_melee"
@@ -110,11 +130,18 @@ inherit = "npc.toa_kephri_guardian_melee"
 defaultMode = "None"
 respawnDir = "West"
 regenRate = 0
+maxRange = 40
+attackRange = 1
+huntMode = 8
+huntRange = 25
 [npc.params]
 "param.amascutnpc" = 1
 "param.headbar" = "headbar.health_60"
 "param.death_anim" = "seq.npc_scarab_death"
 "param.defend_anim" = "seq.npc_scarab_idle"
+"param.attack_anim" = "seq.npc_scarab_attack"
+"param.npc_attack_type" = "category.attacktype_slash"
+"param.attackrate" = 7
 
 [[npc]]
 id = "npc.toa_kephri_guardian_ranged"
@@ -150,10 +177,17 @@ respawnDir = "West"
 regenRate = 0
 maxRange = 40
 attackRange = 6
+huntMode = 8
+huntRange = 25
 [npc.params]
 "param.amascutnpc" = 1
 "param.death_anim" = "seq.npc_scarab_death"
 "param.defend_anim" = "seq.npc_scarab_idle"
+"param.attack_anim" = "seq.npc_scarab_ranged_attack"
+"param.npc_attack_type" = "category.attacktype_standard"
+"param.attackrate" = 4
+"param.proj_travel" = "spotanim.toa_scarab_ranged_projectile01"
+"param.proj_type" = "projanim.toa_scarab_ranged"
 
 [[npc]]
 id = "npc.toa_scabaras_guesser_obelisk"

@@ -4,11 +4,14 @@ import dev.openrune.ServerCacheManager
 import org.rsmod.annotations.InternalApi
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import org.rsmod.api.npc.apPlayer2
+import org.rsmod.api.npc.opNpc1
 import org.rsmod.api.player.stat.stat
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
@@ -19,7 +22,9 @@ internal class BabaBaboons(private val room: BabaEncounter) {
     private val deps = room.raid.deps
     private val sarcophagi = ArrayList<Sarcophagus>()
     private val baboons = HashSet<Npc>()
-    private val attackReady = HashMap<Npc, Int>()
+    private val raiding = HashMap<Npc, Sarcophagus>()
+    private val nextBash = HashMap<Npc, Int>()
+    private val nextPick = HashMap<Npc, Int>()
     private val peels = HashMap<CoordGrid, LocInfo>()
 
     private class Sarcophagus(val npc: Npc, val tile: CoordGrid, val south: Boolean) {
@@ -80,10 +85,10 @@ internal class BabaBaboons(private val room: BabaEncounter) {
         for (npc in baboons.toList()) {
             if (!npc.isSlotAssigned) {
                 baboons.remove(npc)
-                attackReady.remove(npc)
+                forget(npc)
                 continue
             }
-            act(npc, now, players)
+            steer(npc, now, players)
         }
         for (sarc in sarcophagi) if (sarc.open) volley(sarc, now, players)
         stepPeels(players)
@@ -91,7 +96,7 @@ internal class BabaBaboons(private val room: BabaEncounter) {
 
     fun killed(npc: Npc) {
         if (!baboons.remove(npc)) return
-        attackReady.remove(npc)
+        forget(npc)
         if (room.raid.isActive(ToaInvocationKey.JungleJapes)) dropPeels(npc.coords)
         npc.anim(BabaSeqs.BABOON_DEATH)
         room.schedule(BabaApes.BABOON_DEATH_TICKS) { if (npc.isSlotAssigned) room.despawn(npc) }
@@ -117,7 +122,9 @@ internal class BabaBaboons(private val room: BabaEncounter) {
     fun clear() {
         for (npc in baboons.toList()) if (npc.isSlotAssigned) room.despawn(npc)
         baboons.clear()
-        attackReady.clear()
+        raiding.clear()
+        nextBash.clear()
+        nextPick.clear()
         for ((tile, loc) in peels) deps.locRepo.del(loc, Int.MAX_VALUE)
         peels.clear()
     }
@@ -130,29 +137,54 @@ internal class BabaBaboons(private val room: BabaEncounter) {
         sarcophagi.clear()
     }
 
-    private fun act(npc: Npc, now: Int, players: List<Player>) {
-        val target = sarcophagi.filter { !it.open }.minByOrNull { dist(npc.coords, it.tile) }
-        if (target != null) {
-            if (dist(npc.coords, target.tile) > 1) {
-                npc.walk(target.tile)
-                return
-            }
-            if (!startAttack(npc, now)) return
-            npc.anim(BabaSeqs.BABOON_MELEE)
-            target.npc.hitpoints -= BabaApes.SARC_HIT
-            if (target.npc.hitpoints <= 0) open(target, now)
-            return
-        }
-        val victim = players.minByOrNull { dist(npc.coords, it.coords) } ?: return
-        if (!startAttack(npc, now)) return
-        npc.anim(BabaSeqs.BABOON_RANGED)
+    fun isRaiding(npc: Npc): Boolean = npc in raiding
+
+    fun shoot(victim: Player) {
         room.hazardDamage(victim, BabaApes.RANGED_DAMAGE, 0)
     }
 
-    private fun startAttack(npc: Npc, now: Int): Boolean {
-        if (now < (attackReady[npc] ?: 0)) return false
-        attackReady[npc] = now + BabaApes.BABOON_ATTACK_RATE
-        return true
+    private fun forget(npc: Npc) {
+        raiding.remove(npc)
+        nextBash.remove(npc)
+        nextPick.remove(npc)
+    }
+
+    private fun steer(npc: Npc, now: Int, players: List<Player>) {
+        val raid = raiding[npc]
+        if (raid != null && (raid.open || !raid.npc.isSlotAssigned)) raiding.remove(npc)
+        val current = raiding[npc]
+        if (current != null) {
+            raid(npc, current, now)
+            return
+        }
+        val closed = sarcophagi.filter { !it.open && it.npc.isSlotAssigned }
+        val rolling = now >= (nextPick[npc] ?: 0)
+        if (rolling) nextPick[npc] = now + BabaApes.BABOON_ATTACK_RATE
+        if (rolling && closed.isNotEmpty() && deps.random.of(0, 99) < BabaApes.SARC_RAID_PERCENT) {
+            val sarc = closed.minBy { dist(npc.coords, it.tile) }
+            raiding[npc] = sarc
+            npc.opNpc1(sarc.npc, deps.aiNpcInteractions)
+            return
+        }
+        if (npc.interaction is InteractionPlayer) return
+        players.minByOrNull { dist(npc.coords, it.coords) }?.let {
+            npc.apPlayer2(it, deps.aiInteractions)
+        }
+    }
+
+    private fun raid(npc: Npc, sarc: Sarcophagus, now: Int) {
+        if (dist(npc.coords, sarc.tile) > 1) return
+        if (now < (nextBash[npc] ?: 0)) return
+        nextBash[npc] = now + BabaApes.BABOON_ATTACK_RATE
+        npc.anim(BabaSeqs.BABOON_MELEE)
+        sarc.npc.hitpoints -= BabaApes.SARC_HIT
+        if (sarc.npc.hitpoints <= 0) {
+            open(sarc, now)
+            raiding.remove(npc)
+        } else if (deps.random.of(0, 99) >= BabaApes.SARC_RAID_PERCENT) {
+            raiding.remove(npc)
+            npc.noneMode()
+        }
     }
 
     private fun open(sarc: Sarcophagus, now: Int) {
