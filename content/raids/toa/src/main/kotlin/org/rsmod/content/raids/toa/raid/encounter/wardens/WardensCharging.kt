@@ -5,11 +5,13 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import kotlin.math.abs
 import kotlin.math.min
+import org.rsmod.api.config.Constants
 import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
@@ -30,6 +32,7 @@ internal class WardensCharging(private val room: WardensEncounter) {
     private class Orb(val npc: Npc, val god: WardenGod, val path: List<CoordGrid>) {
         var step = 0
         var dying = false
+        var blockedAtSpawn = false
     }
 
     fun lifetimeCharge(god: WardenGod): Int =
@@ -95,8 +98,16 @@ internal class WardensCharging(private val room: WardensEncounter) {
         room.obelisk?.anim("seq.fx_obelisk_wardens01_cast")
         for (god in WardenGod.entries) {
             val spawn = WardenGod.OBELISK_CENTRE.translate(god.orbSide * WardenGod.ORB_SPAWN_OFFSET, 0)
-            val npc = room.spawn("npc.toa_wardens_energy", room.coords(spawn))
-            orbs += Orb(npc, god, god.lane(index))
+            val npc = room.spawn("npc.toa_wardens_energy", room.coords(spawn), god.orbFacing)
+            npc.anim("seq.zuk_proj")
+            val orb = Orb(npc, god, god.lane(index))
+            val blockTiles = god.orbBlockTiles.map { room.coords(it) }
+            val blocker = room.targets().firstOrNull { it.coords in blockTiles }
+            if (blocker != null) {
+                blocker.hitTypeless(BLOCK_DAMAGE)
+                orb.blockedAtSpawn = true
+            }
+            orbs += orb
         }
     }
 
@@ -110,15 +121,23 @@ internal class WardensCharging(private val room: WardensEncounter) {
                 iterator.remove()
                 continue
             }
-            if (orb.step == 0) {
-                val spawnBlocker = targets.firstOrNull { it.coords == orb.npc.coords }
-                if (spawnBlocker != null) {
-                    block(orb, spawnBlocker)
-                    continue
-                }
+            if (orb.blockedAtSpawn) {
+                orb.npc.anim("seq.fx_wardens_energy_death01")
+                orb.dying = true
+                continue
             }
             val tile = room.coords(orb.path[orb.step++])
-            orb.npc.teleport(deps.collision, tile)
+            val dir = if (orb.god.orbSide < 0) Constants.em_face_west else Constants.em_face_east
+            PathingEntityCommon.exactMove(
+                orb.npc,
+                orb.npc.coords,
+                tile,
+                0,
+                ORB_STEP_CYCLES,
+                dir,
+                deps.collision,
+            )
+            orb.npc.anim("seq.zuk_proj")
             val blocker = targets.firstOrNull { it.coords == tile }
             if (blocker != null) {
                 block(orb, blocker)
@@ -277,6 +296,7 @@ internal class WardensCharging(private val room: WardensEncounter) {
         const val PASSIVE_ODD = 1
         const val ORB_CHARGE = 2
         const val BLOCK_DAMAGE = 3
+        const val ORB_STEP_CYCLES = 30
         const val ORB_FIRST_TICK = 2
         const val ORB_INTERVAL = 2
         const val PLATFORM_STEP = 5
