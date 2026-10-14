@@ -7,6 +7,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.content.raids.toa.party.ToaPartyManager
 import org.rsmod.content.raids.toa.party.openLobbyHud
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
+import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Player
 import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
@@ -126,6 +127,7 @@ internal suspend fun ProtectedAccess.travelInFight(target: ToaEncounter) {
 
     closeFadeOverlayNow()
     if (raid.isInside(player)) reopenHud(raid)
+    if (target.stage == ToaStage.STARTED) target.hpBar?.open(player)
 }
 
 internal fun ProtectedAccess.reopenHud(raid: ToaRaid) {
