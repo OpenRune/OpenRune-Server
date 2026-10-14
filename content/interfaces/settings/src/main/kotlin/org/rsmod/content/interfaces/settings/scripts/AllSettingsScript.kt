@@ -142,6 +142,7 @@ constructor(
             val setting = Settings.getSetting(player.selectedSetting)
             val dropdownIndex = it.comsub / 3
             SettingUtils.setDropdown(player, dropdownIndex, setting)
+            player.selectedSetting = 0
         }
 
         onIfOverlayButton("component.settings:settings_clickzone") {

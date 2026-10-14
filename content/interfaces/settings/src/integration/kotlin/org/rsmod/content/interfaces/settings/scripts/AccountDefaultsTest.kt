@@ -1,7 +1,9 @@
 package org.rsmod.content.interfaces.settings.scripts
 
+import dev.openrune.ServerCacheManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.rsmod.api.player.ui.ifOpenTop
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.game.entity.Player
@@ -52,10 +54,28 @@ class AccountDefaultsTest {
             assertEquals(0, player.vars[POPUP_LIST])
         }
 
+    @Test
+    fun GameTestState.`picking a dropdown option clears the selected setting`() =
+        runGameTest(AllSettingsScript::class) {
+            player.ifOpenTop(TOPLEVEL)
+            player.ifOpenOverlay("interface.settings", "component.toplevel_osrs_stretch:mainmodal")
+            player.setVarBit(SELECTED_SETTING, SettingUtils.LEVEL_UP_POPUPS_SETTING_ID)
+
+            player.ifButton(ServerCacheManager.fromComponent(DROPDOWN), comsub = DISABLED_COMSUB)
+            advance()
+
+            assertEquals(1, player.vars[MESSAGE_DISABLED])
+            assertEquals(0, player.vars[SELECTED_SETTING])
+        }
+
     private companion object {
         const val NEW_ACCOUNT = "varbit.new_player_account"
         const val ATTACK_PRIORITY = "varp.option_attackpriority"
         const val MESSAGE_DISABLED = "varbit.option_level_up_message_disabled"
         const val POPUP_LIST = "varbit.option_level_up_popup_list"
+        const val TOPLEVEL = "interface.toplevel_osrs_stretch"
+        const val DROPDOWN = "component.settings:dropdown_buttons"
+        const val SELECTED_SETTING = "varbit.settings_selected_setting"
+        const val DISABLED_COMSUB = 2
     }
 }
