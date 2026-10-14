@@ -9,6 +9,7 @@ import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.hit.Hit
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
@@ -150,11 +151,21 @@ internal class ApmekenBaboons(private val room: ApmekenPuzzleEncounter) {
 
     fun onAttack(npc: Npc, target: Player) {
         val baboon = live.firstOrNull { it.npc === npc } ?: return
-        when (baboon.kind) {
-            Kind.SHAMAN -> if (baboon.thralls < baboon.thrallCap) summonThrall(baboon, target)
-            Kind.THRALL -> drainPrayer(target, THRALL_DRAIN)
-            else -> {}
-        }
+        if (baboon.kind == Kind.THRALL) drainPrayer(target, THRALL_DRAIN)
+    }
+
+    fun trySummon(npc: Npc, target: Player): Boolean {
+        val baboon = live.firstOrNull { it.npc === npc } ?: return false
+        if (baboon.kind != Kind.SHAMAN || baboon.thralls >= baboon.thrallCap) return false
+        summonThrall(baboon)
+        return true
+    }
+
+    fun onImpact(player: Player, hit: Hit) {
+        if (!hit.isFromNpc) return
+        val slot = hit.hitmark.npcSlot
+        val baboon = live.firstOrNull { it.npc.slotId == slot } ?: return
+        if (baboon.kind == Kind.SHAMAN) drainPrayer(player, hit.damage)
     }
 
     private fun act(baboon: Baboon, now: Int, targets: List<Player>) {
@@ -181,7 +192,7 @@ internal class ApmekenBaboons(private val room: ApmekenPuzzleEncounter) {
         volatile(baboon, target, distance, now)
     }
 
-    private fun summonThrall(baboon: Baboon, target: Player) {
+    private fun summonThrall(baboon: Baboon) {
         val npc = baboon.npc
         npc.anim(ApmekenSeqs.SUMMON)
         room.schedule(1) {
@@ -227,8 +238,15 @@ internal class ApmekenBaboons(private val room: ApmekenPuzzleEncounter) {
     private fun explode(baboon: Baboon) {
         val npc = baboon.npc
         val tile = npc.coords
+        val health = npc.hitpoints.coerceAtLeast(1)
+        val maxHealth = npc.baseHitpointsLvl.coerceAtLeast(1)
         live.remove(baboon)
         room.despawn(npc)
+        for (other in live) {
+            if (!other.dead && other.npc.coords.chebyshevDistance(tile) <= 1) {
+                other.npc.hitpoints = 0
+            }
+        }
         val carrier = room.spawn(ApmekenNpcs.EXPLOSION, tile.translate(-1, -1))
         carrier.spotanim(ApmekenSpots.EXPLODE_CARRIER)
         carriers += carrier
@@ -239,7 +257,8 @@ internal class ApmekenBaboons(private val room: ApmekenPuzzleEncounter) {
         deps.worldRepo.spotanimMap(spotanim(ApmekenSpots.EXPLODE_GROUND), tile, 0, 0)
         for (player in room.targets()) {
             if (player.coords.chebyshevDistance(tile) <= 1) {
-                player.hitTypeless(room.hazardRoll(EXPLOSION_DAMAGE, EXPLOSION_SPREAD))
+                val roll = room.hazardRoll(EXPLOSION_DAMAGE, EXPLOSION_SPREAD)
+                player.hitTypeless((roll * health + maxHealth - 1) / maxHealth)
             }
         }
     }
