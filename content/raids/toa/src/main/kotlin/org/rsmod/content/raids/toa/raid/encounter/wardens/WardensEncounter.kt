@@ -103,10 +103,42 @@ class WardensEncounter(
         return if (god.phaseTwoStyle == HitType.Magic) HitType.Ranged else HitType.Magic
     }
 
+    private fun debugTick(boss: Npc, targets: List<Player>) {
+        if (deps.mapClock.cycle % 5 != 0) return
+        val enc = deps.bossDeps.encounterRegistry
+        println(
+            "[wardens-debug] tick cycle=${deps.mapClock.cycle} boss=${boss.visType.id} " +
+                "isActive=${boss === activeWarden} ready=$wardenReady hp=${boss.hitpoints} " +
+                "ignoreCombat=${boss.ignoreCombatInteractions} mode=${boss.mode} " +
+                "interaction=${boss.interaction} coords=${boss.coords} " +
+                "attackRange=${boss.attackRange} moveRestrict=${boss.moveRestrict} " +
+                "targets=${targets.size} canEngage=${canEngage(boss)} " +
+                "playerCoords=${targets.map { it.coords }}"
+        )
+        if (boss === activeWarden && wardenReady) {
+            val e = runCatching { enc.of(boss) }.getOrNull()
+            println(
+                "[wardens-debug] encounter=${e != null} phase=${e?.currentPhaseName} " +
+                    "busyUntil=${e?.busyUntil} lastAbility=${e?.lastAbilityTick} " +
+                    "rate=${e?.attackRateOverride} next=${e?.nextAttackTick}"
+            )
+        }
+    }
+
     private fun readyWarden(warden: Npc) {
+        println(
+            "[wardens-debug] readyWarden hp=${warden.hitpoints}/${warden.baseHitpointsLvl} " +
+                "slot=${warden.isSlotAssigned} type=${warden.type.id} vis=${warden.visType.id} " +
+                "active=${warden === activeWarden} stage=$stage"
+        )
         warden.ignoreCombatInteractions = false
         deps.bossDeps.encounterRegistry.remove(warden)
-        deps.bossDeps.encounter(warden).attackRateOverride = wardenAttackRate()
+        val encounter = deps.bossDeps.encounter(warden)
+        encounter.attackRateOverride = wardenAttackRate()
+        println(
+            "[wardens-debug] encounter created phase=${encounter.currentPhaseName} " +
+                "rate=${encounter.attackRateOverride} abilities=${encounter.spec.abilities.keys}"
+        )
         wardenReady = true
     }
 
@@ -127,6 +159,7 @@ class WardensEncounter(
     override fun onFightStart(boss: Npc) {
         capped = false
         phaseOne = true
+        boss.hitpoints = 1 // TEMP: skip the obelisk fight while testing the Wardens
         obeliskRemaining = boss.hitpoints
         boss.transmog(npcType(OBELISK_P1), Int.MAX_VALUE)
         for ((god, warden) in wardens) warden.transmog(npcType(god.active), Int.MAX_VALUE)
@@ -139,7 +172,10 @@ class WardensEncounter(
     }
 
     override fun onFightTick(boss: Npc, targets: List<Player>) {
-        if (!phaseOne) return
+        if (!phaseOne) {
+            debugTick(boss, targets)
+            return
+        }
         boss.ignoreCombatInteractions = true
         charging.tick(deps.mapClock.cycle - startCycle)
     }
@@ -201,6 +237,7 @@ class WardensEncounter(
                 activeWarden = it
                 activeGod = winner
                 for (player in players) hpBar?.open(player)
+                println("[wardens-debug] scheduling ready for ${winner} at cycle ${deps.mapClock.cycle}")
                 schedule(READY_DELAY - TRANSITION_DELAY) { readyWarden(it) }
             }
             chargeObelisk(obelisk)
