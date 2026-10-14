@@ -16,6 +16,9 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 internal val FOUNDRY_INSIDE = CoordGrid(3366, 11483, 0)
 
+// UNVERIFIED: the exit tile, the one in front of the entrance (guess).
+internal val FOUNDRY_OUTSIDE = CoordGrid(3361, 3149, 0)
+
 private const val ENTER_FADE_CYCLES = 50
 
 internal suspend fun ProtectedAccess.enterFoundry() {
@@ -59,7 +62,7 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
             mes("You leave your preform in the preform storage.")
         }
         room.leave(player)
-        telejump(OUTSIDE)
+        telejump(FOUNDRY_OUTSIDE)
     }
 
     private fun ProtectedAccess.store() {
@@ -99,8 +102,11 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
      * 30. With real quest progress the varbit is left to the quest.
      */
     private fun login(player: Player) {
-        if (QuestRequirements.hasCompleted(player, SLEEPING_GIANTS) && player.sleepingGiants < QUEST_COMPLETE) {
-            player.sleepingGiants = QUEST_COMPLETE
+        if (
+            QuestRequirements.hasCompleted(player, SleepingGiants.QUEST) &&
+                player.sleepingGiants < SleepingGiants.COMPLETE
+        ) {
+            player.sleepingGiants = SleepingGiants.COMPLETE
         }
         if (player.preformStored) {
             player.mes("You notice your current commission is being kept warm in the preform storage.")
@@ -116,15 +122,10 @@ class FoundryAccessScript @Inject constructor(private val room: SleepingGiantsRo
     }
 
     private companion object {
-        const val SLEEPING_GIANTS = "quest_sleepinggiants"
-        const val QUEST_COMPLETE = 30
         const val EXIT = "loc.giants_foundry_exit"
         const val BANK_CHEST = "loc.giants_foundry_chest"
         const val STORAGE_EMPTY = "loc.giants_foundry_preform_storage_empty"
         const val STORAGE_FULL = "loc.giants_foundry_preform_storage_full"
         const val STORAGE_SEQ = "seq.human_furnace"
-
-        // UNVERIFIED: the exit tile, the one in front of the entrance (guess).
-        val OUTSIDE = CoordGrid(3361, 3149, 0)
     }
 }

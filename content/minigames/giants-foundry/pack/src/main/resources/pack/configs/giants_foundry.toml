@@ -170,3 +170,8 @@ valueType = "OBJ"
 4 = "obj.nails_mithril"
 5 = "obj.nails_adamant"
 6 = "obj.nails_rune"
+
+[[object]]
+id = "loc.giants_foundry_waterfall"
+inherit = "loc.giants_foundry_waterfall"
+contentGroup = "content.water_source"

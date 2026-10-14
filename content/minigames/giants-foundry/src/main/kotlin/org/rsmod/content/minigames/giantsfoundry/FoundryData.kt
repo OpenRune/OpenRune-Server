@@ -14,11 +14,11 @@ internal fun Player.foundryVar(name: String): Int = vars[name]
 internal fun Player.setFoundryVar(name: String, value: Int) =
     VarPlayerIntMapSetter.set(this, name, value)
 
-/** Sword part a mould shapes; [index] matches `giants_foundry_mould_current_tab`. */
-internal enum class MouldPart(val index: Int, val enum: String, val unlockPrefix: String) {
-    Forte(0, "enum.giants_foundry_moulds_forte", "ricasso"),
-    Blade(1, "enum.giants_foundry_moulds_blade", "blade"),
-    Tip(2, "enum.giants_foundry_moulds_tip", "tip"),
+/** Sword part a mould shapes; its position in [entries] matches `giants_foundry_mould_current_tab`. */
+internal enum class MouldPart(val enum: String, val unlockPrefix: String) {
+    Forte("enum.giants_foundry_moulds_forte", "ricasso"),
+    Blade("enum.giants_foundry_moulds_blade", "blade"),
+    Tip("enum.giants_foundry_moulds_tip", "tip"),
 }
 
 /**

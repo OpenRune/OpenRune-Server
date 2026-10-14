@@ -23,10 +23,6 @@ internal const val PREFORM_COOLING_PERIOD = 2
 internal fun Player.holdsPreform(): Boolean =
     worn[Wearpos.RightHand.slot]?.isType(PREFORM) == true
 
-/** True while a sword is in progress: held, stored, or poured and waiting in the jig. */
-internal fun Player.hasSwordInProgress(): Boolean =
-    holdsPreform() || preformStored || mouldState >= 2
-
 /**
  * Puts the preform in the weapon slot; both hands must be free.
  * https://oldschool.runescape.wiki/w/Transcript:Sleeping_Giants

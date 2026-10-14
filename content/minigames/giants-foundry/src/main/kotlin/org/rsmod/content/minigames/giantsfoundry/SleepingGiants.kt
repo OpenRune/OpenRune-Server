@@ -20,8 +20,6 @@ internal object SleepingGiants {
         QuestRow.getRow("dbrow.$QUEST").requirementStats.first { it.t0.id == smithing }.t1
     }
 
-    const val NOT_STARTED = 0
-
     /** Agreed to help Kovac outside the cave. */
     const val STARTED = 5
 

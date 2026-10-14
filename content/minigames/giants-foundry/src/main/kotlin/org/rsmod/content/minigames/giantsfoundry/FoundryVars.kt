@@ -11,11 +11,6 @@ internal var Player.sleepingGiants by intVarBit("varbit.sleeping_giants")
 /** Sleeping Giants' sword-making steps; see [SleepingGiants]. */
 internal var Player.sleepingGiantsTutorial by intVarBit("varbit.sleeping_giants_tutorial")
 
-/** 0-1 broken, 2 repaired (the `giants_foundry_*_quest_multi` locs). */
-internal var Player.repairedHammer by intVarBit("varbit.sleeping_giants_repair_hammer")
-internal var Player.repairedGrindstone by intVarBit("varbit.sleeping_giants_repair_grind")
-internal var Player.repairedPolishingWheel by intVarBit("varbit.sleeping_giants_repair_polish")
-
 internal var Player.commissionWord1 by intVarBit("varbit.giants_foundry_commission_word_1")
 internal var Player.commissionWord2 by intVarBit("varbit.giants_foundry_commission_word_2")
 

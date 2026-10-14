@@ -13,6 +13,8 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+internal const val KOVAC = "npc.giants_foundry_kovac"
+
 /** Kovac: commissions and hand-ins. https://oldschool.runescape.wiki/w/Kovac */
 class KovacScript @Inject constructor(private val random: GameRandom) : PluginScript() {
     override fun ScriptContext.startup() {
@@ -253,7 +255,6 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
     private fun formatCoins(coins: Int): String = String.format(Locale.US, "%,d", coins)
 
     private companion object {
-        const val KOVAC = "npc.giants_foundry_kovac"
         const val RUN_ENERGY_MAX = 10_000
     }
 }

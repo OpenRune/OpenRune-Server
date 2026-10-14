@@ -148,10 +148,8 @@ class RewardShopScript @Inject constructor() : PluginScript() {
     private fun param(name: String): Int = name.asRSCM(RSCMType.PARAM)
 
     private companion object {
-        const val KOVAC = "npc.giants_foundry_kovac"
         const val LIST = "component.giants_foundry_reward_shop:list"
         const val BUY_BUTTON = "component.giants_foundry_reward_shop:buy_button"
-        const val ROW_CHILDREN = 13
         const val DOUBLE_AMMO_MOULD = "obj.double_ammo_mould"
         const val DWARF_CANNON = "quest_dwarfcannon"
         const val GROG = "obj.kovacs_grog"
@@ -167,7 +165,7 @@ private val shopItems
 
 private const val SHOP_INTERFACE = "interface.giants_foundry_reward_shop"
 private const val SHOP_SETUP = "clientscript.[clientscript,giants_foundry_reward_shop_setup]"
-private const val SHOP_ROW_CHILDREN = 13
+private const val ROW_CHILDREN = 13
 
 /** Opens the reward shop. TODO: the Bank PIN check the shop has had since 13 July 2022. */
 internal fun ProtectedAccess.openRewardShop() {
@@ -175,7 +173,7 @@ internal fun ProtectedAccess.openRewardShop() {
     player.runClientScript(SHOP_SETUP.asRSCM(RSCMType.CLIENTSCRIPT), 1)
     ifSetEvents(
         "component.giants_foundry_reward_shop:list",
-        0 until shopItems.backing.size * SHOP_ROW_CHILDREN,
+        0 until shopItems.backing.size * ROW_CHILDREN,
         IfEvent.Op1,
         IfEvent.Op2,
         IfEvent.Op3,

@@ -243,7 +243,7 @@ constructor(
 
     private fun swapToQuest(room: Room) {
         val current = room.kovac
-        if (current != null && current.type.id == KOVAC.asRSCM(RSCMType.NPC)) {
+        if (current != null && current.type.id == KOVAC_QUEST.asRSCM(RSCMType.NPC)) {
             return
         }
         for (swap in SleepingGiantsRoomLocsRow.all()) {
@@ -267,7 +267,7 @@ constructor(
     }
 
     private fun spawnQuestKovac(region: Region): Npc {
-        val kovac = spawnKovac(region, KOVAC, KOVAC_TILE, Direction.North)
+        val kovac = spawnKovac(region, KOVAC_QUEST, KOVAC_TILE, Direction.North)
         kovac.faceSquare(region.normal[KOVAC_FACE_TILE])
         return kovac
     }
@@ -401,15 +401,11 @@ constructor(
     )
 
     private companion object {
-        const val KOVAC = "npc.giants_foundry_kovac_quest"
+        const val KOVAC_QUEST = "npc.giants_foundry_kovac_quest"
         val KOVAC_TILE = CoordGrid(3368, 11483, 0)
         val KOVAC_FACE_TILE = CoordGrid(3369, 11487, 0)
         val KOVAC_TRIP_HAMMER_PATH = listOf(CoordGrid(3368, 11490, 0), CoordGrid(3365, 11493, 0))
         val TRIP_HAMMER_FACE_TILE = CoordGrid(3365, 11497, 0)
-
-        // UNVERIFIED: the tile outside the cave exit (guess)
-        val OUTSIDE = CoordGrid(3361, 3149, 0)
-
         /** South-west corner of map square 52_179, the copied block. */
         val COPY_ORIGIN = CoordGrid(3328, 11456, 0)
         const val REGION_ZONE_OFFSET = 4
@@ -437,7 +433,7 @@ constructor(
                     InstanceArea.template(
                         template = TEMPLATE,
                         enterCoord = FOUNDRY_INSIDE.run { RegionLocal(level, mx, mz, lx, lz) },
-                        exitCoord = OUTSIDE,
+                        exitCoord = FOUNDRY_OUTSIDE,
                     ),
                 settingsRowId = 0,
             )

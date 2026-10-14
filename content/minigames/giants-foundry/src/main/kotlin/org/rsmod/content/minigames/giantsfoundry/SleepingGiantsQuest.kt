@@ -28,9 +28,9 @@ import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.QuestScript
 import org.rsmod.content.quest.manager.rewards
+import org.rsmod.content.skills.smithing.util.SmithingUtils.hasHammer
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.inv.isType
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
@@ -556,11 +556,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
     }
 
-    private fun ProtectedAccess.hasHammer(): Boolean =
-        inv.contains(HAMMER) ||
-            inv.contains(IMCANDO_HAMMER) ||
-            player.worn[Wearpos.LeftHand.slot]?.isType(IMCANDO_HAMMER_OFFHAND) == true
-
     private fun ProtectedAccess.nailsType(count: Int): String? =
         nails.firstOrNull { inv.count(it) >= count }
 
@@ -1050,9 +1045,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         const val OAK_LOGS = "obj.oak_logs"
         const val WOOL = "obj.wool"
         const val CHISEL = "obj.chisel"
-        const val HAMMER = "obj.hammer"
-        const val IMCANDO_HAMMER = "obj.imcando_hammer"
-        const val IMCANDO_HAMMER_OFFHAND = "obj.imcando_hammer_offhand"
         const val BUCKET_WATER = "obj.bucket_water"
 
         val repairMaterials: List<String> by lazy {
