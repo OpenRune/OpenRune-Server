@@ -1,13 +1,10 @@
 package org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri
 
-import org.rsmod.api.bosses.spec.HitType as BossHitType
-import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
-import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.isBeside
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -29,8 +26,6 @@ internal class KephriGuardians(private val room: KephriEncounter) {
     private class Guardian(val npc: Npc, val kind: Kind, val spawned: Int) {
         var nextAttack = 0
         var nextHeal = 0
-        var target: Player? = null
-        var retarget = 0
         var chargeAt = 0
         var relocation = 0
         var hits = 0
@@ -77,7 +72,7 @@ internal class KephriGuardians(private val room: KephriEncounter) {
             }
             when (guardian.kind) {
                 Kind.SPITTING -> spit(guardian, players, cycle)
-                Kind.SOLDIER -> soldier(guardian, players, cycle)
+                Kind.SOLDIER -> soldier(guardian, cycle)
                 Kind.ARCANE -> arcane(guardian, players, cycle)
             }
         }
@@ -134,36 +129,8 @@ internal class KephriGuardians(private val room: KephriEncounter) {
         }
     }
 
-    private fun soldier(guardian: Guardian, players: List<Player>, cycle: Int) {
-        val npc = guardian.npc
-        if (guardian.target.let { it == null || it !in players } || cycle >= guardian.retarget) {
-            guardian.target = if (players.isEmpty()) null else players[deps.random.of(0, players.lastIndex)]
-            guardian.retarget = cycle + deps.random.of(RETARGET_MIN, RETARGET_MAX)
-        }
-        val target = guardian.target
-        if (target != null) {
-            if (npc.isBeside(target)) {
-                npc.abortRoute()
-                if (cycle >= guardian.nextAttack) meleeHit(guardian, target, cycle)
-            } else {
-                npc.walk(target.coords)
-            }
-        }
+    private fun soldier(guardian: Guardian, cycle: Int) {
         if (cycle >= guardian.nextHeal) heal(guardian, cycle)
-    }
-
-    private fun meleeHit(guardian: Guardian, target: Player, cycle: Int) {
-        val npc = guardian.npc
-        guardian.nextAttack = cycle + SOLDIER_SPEED
-        npc.anim(KephriSeqs.SCARAB_MELEE)
-        val combatant = room.combatantOf(npc) ?: return
-        val damage =
-            if (combatant.rollAccuracy(target, BossHitType.Melee, MeleeAttackType.Slash)) {
-                combatant.rollScaled(SOLDIER_MAX_HIT)
-            } else {
-                0
-            }
-        target.queueImpactHit(npc, 1, HitType.Melee, damage, deps.playerHitModifier)
     }
 
     private fun heal(guardian: Guardian, cycle: Int) {
@@ -250,13 +217,9 @@ internal class KephriGuardians(private val room: KephriEncounter) {
         const val POISON_SEVERITY = 11
         const val POISON_TEXT = "You have been poisoned!"
         const val PRAYER_IGNORED = 100
-        const val SOLDIER_SPEED = 7
-        const val SOLDIER_MAX_HIT = 17
         const val HEAL_SPEED = 5
         const val HEAL_MIN_PERCENT = 5
         const val HEAL_MAX_PERCENT = 7
-        const val RETARGET_MIN = 5
-        const val RETARGET_MAX = 10
         const val BLAST_MAX_HIT = 65
         const val BLAST_HIT_DELAY = 2
         const val MAGIC_PENETRATION = 33

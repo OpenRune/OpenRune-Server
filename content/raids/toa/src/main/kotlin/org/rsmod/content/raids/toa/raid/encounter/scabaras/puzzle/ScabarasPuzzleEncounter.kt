@@ -73,7 +73,7 @@ class ScabarasPuzzleEncounter(
             val coords = player.coords
             if (lastTiles.put(player, coords) != coords) step(player, staticCoords(coords))
         }
-        scarabs.tick(targets)
+        scarabs.tick()
     }
 
     override fun onComplete() {

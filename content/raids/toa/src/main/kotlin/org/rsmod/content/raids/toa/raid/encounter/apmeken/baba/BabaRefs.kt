@@ -35,6 +35,7 @@ internal object BabaApes {
     const val SPAWN_MAX_Z = 5413
     const val SARC_HIT = 20
     const val RANGED_DAMAGE = 12
+    const val SARC_RAID_PERCENT = 40
     const val ENERGY_INTERVAL = 4
     const val ENERGY_LENGTH = 3
     const val ENERGY_START = 2

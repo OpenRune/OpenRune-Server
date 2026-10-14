@@ -133,6 +133,7 @@ toa_zebak_jug_splash = 65531
 toa_zebak_lob_far = 65530
 toa_apmeken_thrown = 65529
 toa_apmeken_magic = 65528
+toa_scarab_ranged = 65527
 
 [gamevals.dbtable]
 toa_rooms = 64100
