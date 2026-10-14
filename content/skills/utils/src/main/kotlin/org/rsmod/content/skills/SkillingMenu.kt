@@ -55,6 +55,7 @@ data class SkillMultiConfig(
     val defaultAmount: Int? = null,
     val titleOverride: String? = null,
     val showUnavailable: Boolean = false,
+    val eventsEndAtMaxCount: Boolean = false,
 ) {
 
     val title: String
@@ -152,10 +153,13 @@ suspend fun ProtectedAccess.openSkillMulti(
         IfSubType.Modal,
     )
 
+    val eventsEnd =
+        if (config.eventsEndAtMaxCount) skillmultiMaxCount(config, available) else 28
+
     for (i in available.indices) {
         ifSetEvents(
             validButtons[i],
-            0..28,
+            0..eventsEnd,
             IfEvent.PauseButton
         )
     }
@@ -207,14 +211,21 @@ val validButtons = listOf(
     "component.skillmulti:x",
 )
 
+private fun skillmultiMaxCount(
+    config: SkillMultiConfig,
+    available: List<Pair<SkillMultiEntry, Int>>,
+): Int =
+    (available.maxOfOrNull { it.second } ?: 0).let {
+        if (config.showUnavailable) it.coerceAtLeast(1) else it
+    }
+
 private fun skillmultiSetupArgs(
     actionType: SkillingActionType,
     config: SkillMultiConfig,
     available: List<Pair<SkillMultiEntry, Int>>,
 ): List<Any> {
 
-    val maxCount = (available.maxOfOrNull { it.second } ?: 0)
-        .let { if (config.showUnavailable) it.coerceAtLeast(1) else it }
+    val maxCount = skillmultiMaxCount(config, available)
 
     val itemIds = buildList {
         addAll(available.map { it.first.item.id })

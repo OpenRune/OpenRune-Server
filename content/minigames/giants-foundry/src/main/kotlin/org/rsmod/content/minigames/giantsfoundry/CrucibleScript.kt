@@ -114,6 +114,7 @@ constructor(
             entries = FoundryData.bars.map { SkillMultiEntry(it.output.internalName) },
             titleOverride = "What metal would you like to add?",
             showUnavailable = true,
+            eventsEndAtMaxCount = true,
         )
 
     private suspend fun ProtectedAccess.addItems(obj: ItemServerType) {
