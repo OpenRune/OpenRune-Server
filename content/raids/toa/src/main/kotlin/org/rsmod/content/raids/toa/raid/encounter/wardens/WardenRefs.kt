@@ -49,3 +49,14 @@ internal object WardenSounds {
     const val ENTOMB_RELEASE = "synth.fireblast_hit"
     const val ENTOMB_END = "synth.toa_wardens_entomb_end"
 }
+
+internal object WardenCoreRefs {
+    const val KNEEL = "seq.npc_wardens_kneel01"
+    const val STAND_UP = "seq.npc_wardens_standup01"
+    const val BLOCKER = "loc.invisible_type8_blocking"
+    const val SHIELD_BAR = "headbar.charge_140"
+    const val HEALTH_BAR = "headbar.health_140"
+    const val SPAWN_SOUND = "synth.toa_wardens_core_spawn"
+    const val REVIVE_SOUND = "synth.toa_wardens_core_revive"
+    const val PUSHED = "You are pushed off the core."
+}

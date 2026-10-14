@@ -6,6 +6,7 @@ import org.rsmod.api.script.onOpNpc3
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
 import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.encounter.onRoomNpcHit
+import org.rsmod.content.raids.toa.raid.encounter.onRoomNpcQueue
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -29,9 +30,16 @@ class WardensScript : PluginScript() {
         }
 
         for (god in WardenGod.entries) {
-            for (form in listOf(god.phaseTwo, god.phaseTwoAlt)) {
+            for (form in god.phaseTwoForms) {
                 onRoomNpcHit<WardensEncounter>(form) { npc, hit -> wardenHit(npc, hit) }
             }
+            onRoomNpcQueue<WardensEncounter>(god.phaseTwoExposed, DEATH) { wardenDefeated(it) }
+            onModifyNpcHit(npcType(god.core)) { if (hit.damage == 0) hit.damage = 1 }
+            onRoomNpcHit<WardensEncounter>(god.core) { npc, hit -> core.mirror(npc, hit) }
         }
+    }
+
+    private companion object {
+        const val DEATH = "queue.death"
     }
 }

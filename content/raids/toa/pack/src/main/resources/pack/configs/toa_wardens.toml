@@ -115,6 +115,10 @@ giveChase = true
 maxRange = 40
 attackRange = 10
 [npc.params]
+"param.headbar" = "headbar.health_140"
+"param.hitmark_lit" = "hitmark.regular_damage_max"
+"param.hitmark_tint" = "hitmark.regular_damage_max"
+"param.hitmark_max" = "hitmark.regular_damage_max"
 "param.boss_hp_bar_colour_back" = 2631680
 "param.boss_hp_bar_colour_sliding" = 10524672
 "param.boss_hp_bar_colour_remaining" = 14209024
@@ -162,6 +166,34 @@ giveChase = true
 maxRange = 40
 attackRange = 10
 [npc.params]
+"param.headbar" = "headbar.health_140"
+"param.hitmark_lit" = "hitmark.regular_damage_max"
+"param.hitmark_tint" = "hitmark.regular_damage_max"
+"param.hitmark_max" = "hitmark.regular_damage_max"
 "param.boss_hp_bar_colour_back" = 2631680
 "param.boss_hp_bar_colour_sliding" = 10524672
 "param.boss_hp_bar_colour_remaining" = 14209024
+
+[[npc]]
+id = "npc.toa_warden_elidinis_core"
+inherit = "npc.toa_warden_elidinis_core"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.hitpoints_locked" = true
+"param.hitmark_lit" = "hitmark.regular_damage_max"
+"param.hitmark_tint" = "hitmark.regular_damage_max"
+"param.hitmark_max" = "hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.toa_warden_tumeken_core"
+inherit = "npc.toa_warden_tumeken_core"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.hitpoints_locked" = true
+"param.hitmark_lit" = "hitmark.regular_damage_max"
+"param.hitmark_tint" = "hitmark.regular_damage_max"
+"param.hitmark_max" = "hitmark.regular_damage_max"
