@@ -157,9 +157,9 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     private fun syncCompleted(player: Player) {
         if (
             QuestRequirements.hasCompleted(player, SleepingGiants.QUEST) &&
-                player.sleepingGiantsTutorial < SleepingGiants.TUTORIAL_HANDED_IN
+                player.sleepingGiantsTutorial < SleepingGiants.TUTORIAL_COMPLETE
         ) {
-            player.sleepingGiantsTutorial = SleepingGiants.TUTORIAL_HANDED_IN
+            player.sleepingGiantsTutorial = SleepingGiants.TUTORIAL_COMPLETE
         }
     }
 
@@ -713,8 +713,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
                     chatNpc(neutral, it)
                 }
             }
-            tutorial < SleepingGiants.TUTORIAL_CRUCIBLE_FULL ->
-                if (player.crucibleState == 0) afterCrate() else crucibleNotFull()
+            tutorial < SleepingGiants.TUTORIAL_METAL_ADDED -> afterCrate()
+            tutorial < SleepingGiants.TUTORIAL_CRUCIBLE_FULL -> crucibleNotFull()
             tutorial < SleepingGiants.TUTORIAL_MOULD_EXPLAINED -> crucibleFull()
             tutorial < SleepingGiants.TUTORIAL_MOULD_SET -> mouldHelp()
             tutorial < SleepingGiants.TUTORIAL_POUR_EXPLAINED -> mouldSet()
@@ -759,7 +759,9 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         lineByLine("Kovac has been connecti... collecting metals...", "They're in that box-crate by entry.") {
             chatNpc(neutral, it)
         }
-        lineByLine("Use bars and weapons...", "Crucible can take both.") { chatNpc(neutral, it) }
+        chatNpc(neutral, "Use bars and weapons...<br> ")
+        player.advanceTutorial(SleepingGiants.TUTORIAL_CRATE_SHOWN)
+        chatNpc(neutral, "Use bars and weapons...<br>Crucible can take both.")
         chatNpc(neutral, "Load metals into crucible until it looks full.")
         lineByLine("While you do that...", "Kovac think about next thing we need to do.") {
             chatNpc(neutral, it)
@@ -794,9 +796,9 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
         chatNpc(neutral, "Remember, we need a <col=ef1020>Flat Broad</col> sword.")
         chatPlayer(quiz, "Okay, so how do I go about setting up a mould?")
-        lineByLine("Kovac remember being told a sword is made from three<br>parts...", "a forte, a blade and a tip.") {
-            chatNpc(neutral, it)
-        }
+        chatNpc(neutral, "Kovac remember being told a sword is made from three<br>parts...<br> ")
+        player.advanceTutorial(SleepingGiants.TUTORIAL_MOULD_EXPLAINED)
+        chatNpc(neutral, "Kovac remember being told a sword is made from three<br>parts...<br>a forte, a blade and a tip.")
         lineByLine("Use mould jig behind you...", "You can select part for each selecti... section.") {
             chatNpc(neutral, it)
         }
@@ -811,7 +813,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         lineByLine("Look at mould jig...", "If you are still confused...", "come back to me.") {
             chatNpc(neutral, it)
         }
-        player.advanceTutorial(SleepingGiants.TUTORIAL_MOULD_EXPLAINED)
     }
 
     private suspend fun Dialogue.mouldHelp() {
@@ -835,16 +836,15 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         )
         lineByLine("Hmm...", "let me look.") { chatNpc(neutral, it) }
         lineByLine("Kovac takes a look at what you've done...", "...") { mesbox(it) }
-        lineByLine("Yes, all things look correct...", "Well done little one. We are ready.") {
-            chatNpc(neutral, it)
-        }
+        chatNpc(neutral, "Yes, all things look correct...<br> ")
+        player.advanceTutorial(SleepingGiants.TUTORIAL_POUR_EXPLAINED)
+        chatNpc(neutral, "Yes, all things look correct...<br>Well done little one. We are ready.")
         lineByLine("Pour the metal from the crucible into the mould...", "then take out the preform.") {
             chatNpc(neutral, it)
         }
         lineByLine("Once you have done that...", "Kovac will tell how to work the preform.") {
             chatNpc(neutral, it)
         }
-        player.advanceTutorial(SleepingGiants.TUTORIAL_POUR_EXPLAINED)
     }
 
     private suspend fun Dialogue.beforePickUp() {
@@ -972,6 +972,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         } else {
             chatPlayer(happy, "Great! So what do we do with it now?")
         }
+        player.advanceTutorial(SleepingGiants.TUTORIAL_SWORD_KEPT)
         chatNpc(neutral, "Kovac take care of it.")
         chatPlayer(quiz, "Out of curiosity, who is this first blade for?")
         lineByLine("Kovac friend...", "Obor.") { chatNpc(neutral, it) }
@@ -999,6 +1000,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         )
         chatPlayer(happy, "That's a pretty clever marketing plan, I must admit.")
         chatNpc(neutral, "Kovac know what he do sometime...<br> <br> ")
+        player.advanceTutorial(SleepingGiants.TUTORIAL_COMPLETE)
         chatNpcSpecificNp(
             KOVAC_NAME,
             KOVAC_FOUNDRY_HEAD,

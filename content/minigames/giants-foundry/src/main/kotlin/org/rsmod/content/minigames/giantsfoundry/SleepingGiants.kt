@@ -31,8 +31,10 @@ internal object SleepingGiants {
 
     const val COMPLETE = 30
 
-    const val TUTORIAL_COMMISSION = 10
+    const val TUTORIAL_COMMISSION = 5
+    const val TUTORIAL_CRATE_SHOWN = 10
     const val TUTORIAL_CRATE_SEARCHED = 15
+    const val TUTORIAL_METAL_ADDED = 20
     const val TUTORIAL_CRUCIBLE_FULL = 25
     const val TUTORIAL_MOULD_EXPLAINED = 30
     const val TUTORIAL_MOULD_SET = 35
@@ -40,6 +42,8 @@ internal object SleepingGiants {
     const val TUTORIAL_POURED = 45
     const val TUTORIAL_PREFORM_TAKEN = 50
     const val TUTORIAL_HANDED_IN = 55
+    const val TUTORIAL_SWORD_KEPT = 60
+    const val TUTORIAL_COMPLETE = 65
 
     const val REPAIR_BROKEN = 0
     const val REPAIR_INSPECTED = 1
