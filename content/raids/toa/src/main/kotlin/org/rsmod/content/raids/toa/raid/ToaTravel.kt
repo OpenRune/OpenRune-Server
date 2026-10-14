@@ -19,6 +19,9 @@ internal const val TOA_UNAVAILABLE =
 private const val TOA_HUD = "interface.toa_hud"
 
 private const val FADE_CYCLES = 50
+private const val IN_FIGHT_FADE_CYCLES = 15
+private const val IN_FIGHT_FADE_TICKS = 3
+private const val IN_FIGHT_ARRIVAL_TICKS = 3
 
 internal suspend fun ProtectedAccess.resolveTarget(
     raid: ToaRaid,
@@ -94,6 +97,32 @@ internal suspend fun ProtectedAccess.travel(target: ToaEncounter, fromLobby: Boo
         fadeIn()
         delay(2)
     }
+
+    closeFadeOverlayNow()
+    if (raid.isInside(player)) reopenHud(raid)
+}
+
+internal suspend fun ProtectedAccess.travelInFight(target: ToaEncounter) {
+    val raid = target.raid
+    fadeOut(IN_FIGHT_FADE_CYCLES)
+    delay(IN_FIGHT_FADE_TICKS)
+
+    if (target.destroyed || player !in raid.players) {
+        closeFadeOverlayNow()
+        if (raid.isInside(player)) reopenHud(raid)
+        return
+    }
+
+    val arrival = target.arrival()
+    ToaRaidManager.moveTo(player, target)
+    if (arrival.sceneCentre != null) {
+        telejump(arrival.sceneCentre, TeleportType.Exempt)
+        delay(1)
+    }
+    telejump(arrival.coords, TeleportType.Exempt)
+    arrival.facing?.let { faceDirection(it) }
+    fadeIn()
+    delay(IN_FIGHT_ARRIVAL_TICKS)
 
     closeFadeOverlayNow()
     if (raid.isInside(player)) reopenHud(raid)
@@ -184,13 +213,13 @@ internal fun Player.objectPronoun(): String =
         else -> "them"
     }
 
-internal fun ProtectedAccess.fadeOut() =
+internal fun ProtectedAccess.fadeOut(cycles: Int = FADE_CYCLES) =
     fadeOverlay(
         startColour = 0,
         startTransparency = 255,
         endColour = 0,
         endTransparency = 0,
-        clientDuration = FADE_CYCLES,
+        clientDuration = cycles,
     )
 
 internal fun ProtectedAccess.fadeIn() =

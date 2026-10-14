@@ -25,7 +25,7 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.isBeside
-import org.rsmod.content.raids.toa.raid.travel
+import org.rsmod.content.raids.toa.raid.travelInFight
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
@@ -337,7 +337,7 @@ class WardensEncounter(
         next.continueChallenge(this)
         stopTasks()
         for (player in players) {
-            deps.launcher.launchLenient(player) { travel(next, fromLobby = false) }
+            deps.launcher.launchLenient(player) { travelInFight(next) }
         }
     }
 
