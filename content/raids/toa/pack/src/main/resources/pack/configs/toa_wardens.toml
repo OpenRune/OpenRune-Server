@@ -1,0 +1,68 @@
+[[npc]]
+id = "npc.toa_osmumten_wardens_vis"
+inherit = "npc.toa_osmumten_wardens_vis"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_wardens_p1_obelisk_npc_inactive"
+inherit = "npc.toa_wardens_p1_obelisk_npc_inactive"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.toa_wardens_p1_obelisk_npc"
+inherit = "npc.toa_wardens_p1_obelisk_npc"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.toa_wardens_p2_obelisk_npc"
+inherit = "npc.toa_wardens_p2_obelisk_npc"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+[npc.params]
+"param.amascutnpc" = 1
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase1_inactive"
+inherit = "npc.toa_warden_elidinis_phase1_inactive"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_warden_elidinis_phase1"
+inherit = "npc.toa_warden_elidinis_phase1"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase1_inactive"
+inherit = "npc.toa_warden_tumeken_phase1_inactive"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_warden_tumeken_phase1"
+inherit = "npc.toa_warden_tumeken_phase1"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_wardens_energy"
+inherit = "npc.toa_wardens_energy"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
