@@ -19,6 +19,7 @@ class BabaBaboonCombat @Inject constructor(deps: BossDeps) : BossPluginScript(de
             this,
             spec,
             deps,
+            onModifyHit = { if (hit.isFromPlayer) hit.damage = npc.hitpoints },
             onCombatTick =
                 deps.roomCombatGate<BabaEncounter> { room, baboon, _ ->
                     !room.baboons.isRaiding(baboon)
