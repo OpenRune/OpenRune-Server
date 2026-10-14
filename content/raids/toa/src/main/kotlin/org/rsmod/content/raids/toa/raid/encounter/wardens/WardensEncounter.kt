@@ -8,6 +8,8 @@ import kotlin.math.min
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.bosses.runtime.encounter
+import org.rsmod.api.bosses.runtime.runAbility
+import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaid
@@ -52,6 +54,9 @@ class WardensEncounter(
     private var activeWarden: Npc? = null
     private var activeGod: WardenGod? = null
     private var wardenReady = false
+    private var lastWasSpecial = false
+    internal val entomb = WardensEntomb(this)
+    internal var realHpFraction = 1.0
 
     override val hpBar: ToaHpBar? by lazy {
         ToaHpBar(
@@ -87,6 +92,26 @@ class WardensEncounter(
     }
 
     override fun canEngage(boss: Npc): Boolean = wardenReady && boss === activeWarden
+
+    internal val entombPhase: Boolean
+        get() = realHpFraction < ENTOMB_BELOW
+
+    internal fun rollSpecial(): Boolean {
+        val special = !lastWasSpecial && deps.random.of(SPECIAL_ODDS) == 0
+        lastWasSpecial = special
+        return special
+    }
+
+    override fun validateAttack(player: Player, npc: Npc): NpcAttackValidateResult {
+        if (entomb.isEntombed(player)) return NpcAttackValidateResult.Deny(ENTOMBED_ATTACK)
+        return NpcAttackValidateResult.Pass
+    }
+
+    internal fun debugRun(player: Player, ability: String): String? {
+        val warden = activeWarden ?: return "No active Warden."
+        deps.bossDeps.runAbility(warden, player, ability)
+        return null
+    }
 
     internal fun basicMaxHit(npc: Npc): Int = activeGod?.phaseTwoMaxHit ?: 0
 
@@ -141,42 +166,12 @@ class WardensEncounter(
         return if (god.phaseTwoStyle == HitType.Magic) HitType.Ranged else HitType.Magic
     }
 
-    private fun debugTick(boss: Npc, targets: List<Player>) {
-        if (deps.mapClock.cycle % 5 != 0) return
-        val enc = deps.bossDeps.encounterRegistry
-        println(
-            "[wardens-debug] tick cycle=${deps.mapClock.cycle} boss=${boss.visType.id} " +
-                "isActive=${boss === activeWarden} ready=$wardenReady hp=${boss.hitpoints} " +
-                "ignoreCombat=${boss.ignoreCombatInteractions} mode=${boss.mode} " +
-                "interaction=${boss.interaction} coords=${boss.coords} " +
-                "attackRange=${boss.attackRange} moveRestrict=${boss.moveRestrict} " +
-                "targets=${targets.size} canEngage=${canEngage(boss)} " +
-                "playerCoords=${targets.map { it.coords }}"
-        )
-        if (boss === activeWarden && wardenReady) {
-            val e = runCatching { enc.of(boss) }.getOrNull()
-            println(
-                "[wardens-debug] encounter=${e != null} phase=${e?.currentPhaseName} " +
-                    "busyUntil=${e?.busyUntil} lastAbility=${e?.lastAbilityTick} " +
-                    "rate=${e?.attackRateOverride} next=${e?.nextAttackTick}"
-            )
-        }
-    }
-
     private fun readyWarden(warden: Npc) {
-        println(
-            "[wardens-debug] readyWarden hp=${warden.hitpoints}/${warden.baseHitpointsLvl} " +
-                "slot=${warden.isSlotAssigned} type=${warden.type.id} vis=${warden.visType.id} " +
-                "active=${warden === activeWarden} stage=$stage"
-        )
         warden.ignoreCombatInteractions = false
         deps.bossDeps.encounterRegistry.remove(warden)
         val encounter = deps.bossDeps.encounter(warden)
         encounter.attackRateOverride = wardenAttackRate()
-        println(
-            "[wardens-debug] encounter created phase=${encounter.currentPhaseName} " +
-                "rate=${encounter.attackRateOverride} abilities=${encounter.spec.abilities.keys}"
-        )
+        lastWasSpecial = false
         wardenReady = true
     }
 
@@ -210,10 +205,7 @@ class WardensEncounter(
     }
 
     override fun onFightTick(boss: Npc, targets: List<Player>) {
-        if (!phaseOne) {
-            debugTick(boss, targets)
-            return
-        }
+        if (!phaseOne) return
         boss.ignoreCombatInteractions = true
         charging.tick(deps.mapClock.cycle - startCycle)
     }
@@ -275,7 +267,6 @@ class WardensEncounter(
                 activeWarden = it
                 activeGod = winner
                 for (player in players) hpBar?.open(player)
-                println("[wardens-debug] scheduling ready for ${winner} at cycle ${deps.mapClock.cycle}")
                 schedule(READY_DELAY - TRANSITION_DELAY) { readyWarden(it) }
             }
             chargeObelisk(obelisk)
@@ -332,6 +323,9 @@ class WardensEncounter(
         activeWarden = null
         activeGod = null
         wardenReady = false
+        lastWasSpecial = false
+        realHpFraction = 1.0
+        entomb.clear()
 
         val ghostTile = room.osmumtenTile
         if (ghostTile != null) {
@@ -363,6 +357,9 @@ class WardensEncounter(
         private const val SHIELD_BASE_HP = 140
         private const val WALK_DELAY = 15
         private const val SHIELD_HEADBAR = "headbar.charge_140"
+        private const val ENTOMB_BELOW = 0.55
+        private const val SPECIAL_ODDS = 5
+        private const val ENTOMBED_ATTACK = "You cannot attack while entombed in stone."
         private const val READY_DELAY = 22
         private const val ATTACK_RATE = 7
         private const val ACCELERATED_ATTACK_RATE = 6
