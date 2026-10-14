@@ -42,9 +42,8 @@ public class ComponentEventMap(
     public data class Event(val component: Int, val start: Int, val end: Int, val events: Long) {
         public companion object {
             public fun from(component: Int, start: Int, end: Int, events: Long): Event {
-                val clampedStart = if (start == -1) 0 else start
                 val clampedEnd = if (end == -1) Int.MAX_VALUE else end
-                return Event(component, clampedStart, clampedEnd, events)
+                return Event(component, start, clampedEnd, events)
             }
         }
     }
