@@ -13,7 +13,6 @@ import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
-import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
@@ -40,8 +39,6 @@ constructor(
     private val worldRepo: WorldRepository,
     private val locRepo: LocRepository,
 ) : PluginScript() {
-    private val states = HashMap<Player, WorkState>()
-
     override fun ScriptContext.startup() {
         for (tool in FoundryTool.entries) {
             onOpLoc1(tool.row.loc.internalName) { startTool(tool) }
@@ -53,28 +50,8 @@ constructor(
         onPlayerSoftTimer(WORK_TIMER) { tick(player) }
         onPlayerSoftTimer(SWEETSPOT_TIMER) { sweetSpotTick(player) }
         onPlayerSoftTimer(PREFORM_COOLING_TIMER) { passiveCooling(player) }
-        onPlayerLogout { states.remove(player) }
         onEvent<GameLifecycle.LateCycle> { foundryCycle() }
     }
-
-    private class WorkState {
-        /** What the player is working at: a tool, or a heat source and op. */
-        var station: String? = null
-        var tool: FoundryTool? = null
-        var origin: CoordGrid? = null
-        var heatSign = 0
-        var heatFast = false
-        var heatTicks = 0
-        var nextAction = 0
-        var sweetSpotUntil = 0
-        var sweetSpotArmed = false
-
-        /** Armed by the click that started the work: the first action pays no bonus. */
-        var sweetSpotVoid = false
-        var overworked = false
-    }
-
-    private fun stateOf(player: Player): WorkState = states.getOrPut(player) { WorkState() }
 
     /**
      * The trip hammer swings on a world-wide cycle whether anyone works it or not; hammer actions
@@ -112,8 +89,11 @@ constructor(
         return true
     }
 
-    private fun ProtectedAccess.isWorking(state: WorkState, station: String): Boolean =
-        state.station == station && state.origin == player.coords
+    private fun ProtectedAccess.isWorking(station: Int): Boolean =
+        player.workStation == station && player.workOrigin == player.coords
+
+    private fun Player.workTool(): FoundryTool? =
+        workStation.takeIf { it in 1 until LAVA_STATION }?.let { FoundryTool.forSeed(it - 1) }
 
     private suspend fun ProtectedAccess.startTool(tool: FoundryTool) {
         if (!canWork()) {
@@ -128,19 +108,18 @@ constructor(
             }
             return
         }
-        val state = stateOf(player)
-        if (isWorking(state, tool.name)) {
-            onReclick(state)
+        val station = tool.row.seed + 1
+        if (isWorking(station)) {
+            onReclick()
             return
         }
-        begin(state, tool.name)
-        state.tool = tool
-        state.nextAction = firstAction(tool)
-        state.overworked = false
+        begin(station)
+        player.workNextAction = firstAction(tool)
+        player.workOverworked = false
         anim(tool.row.startSeq.internalName)
-        if (state.sweetSpotUntil != 0) {
-            state.sweetSpotArmed = true
-            state.sweetSpotVoid = true
+        if (player.sweetSpotUntil != 0) {
+            player.workSweetSpotArmed = true
+            player.workSweetSpotVoid = true
             player.showSweetSpot(SWEETSPOT_ARMED)
         }
     }
@@ -165,31 +144,26 @@ constructor(
         if (!canWork()) {
             return
         }
-        val state = stateOf(player)
-        val station = "$sign:$fast"
-        val working = isWorking(state, station)
+        val station = (if (sign > 0) LAVA_STATION else WATERFALL_STATION) + if (fast) 1 else 0
+        val working = isWorking(station)
         if (!working) {
-            begin(state, station)
+            begin(station)
         }
-        state.tool = null
-        state.heatSign = sign
-        state.heatFast = fast
         // UNVERIFIED: a re-click restarts the ramp from the next tick (wiki description).
-        state.heatTicks = 0
+        player.workHeatTicks = 0
         if (!working) {
-            heatTick(player, state)
+            heatTick(player)
         }
     }
 
-    private fun ProtectedAccess.begin(state: WorkState, station: String) {
-        state.station = station
-        state.origin = player.coords
+    private fun ProtectedAccess.begin(station: Int) {
+        player.workStation = station
+        player.workOrigin = player.coords
         softTimer(WORK_TIMER, 1)
     }
 
-    private fun stop(player: Player, state: WorkState, resetAnim: Boolean = true) {
-        state.station = null
-        state.tool = null
+    private fun stop(player: Player, resetAnim: Boolean = true) {
+        player.workStation = NO_STATION
         player.clearSoftTimer(WORK_TIMER)
         if (resetAnim) {
             player.resetAnim()
@@ -197,47 +171,53 @@ constructor(
     }
 
     private fun tick(player: Player) {
-        val state = stateOf(player)
-        if (state.station == null || state.origin != player.coords || !player.holdsPreform()) {
-            stop(player, state)
+        if (
+            player.workStation == NO_STATION ||
+                player.workOrigin != player.coords ||
+                !player.holdsPreform()
+        ) {
+            stop(player)
             return
         }
-        val tool = state.tool
+        val tool = player.workTool()
         if (tool != null) {
-            workTick(player, state, tool)
+            workTick(player, tool)
         } else {
-            player.anim(if (state.heatSign > 0) HEAT_SEQ else COOL_SEQ)
-            heatTick(player, state)
+            player.anim(if (player.workStation < WATERFALL_STATION) HEAT_SEQ else COOL_SEQ)
+            heatTick(player)
         }
     }
 
-    private fun workTick(player: Player, state: WorkState, tool: FoundryTool) {
+    private fun workTick(player: Player, tool: FoundryTool) {
         player.anim(tool.row.loopSeq.internalName)
-        if (clock.cycle < state.nextAction) {
+        if (clock.cycle < player.workNextAction) {
             return
         }
-        state.nextAction = clock.cycle + tool.row.period
+        player.workNextAction = clock.cycle + tool.row.period
         if (player.preformQuality == 0) {
             player.mes(DAMAGED)
-            stop(player, state)
+            stop(player)
             return
         }
-        act(player, tool, state)
+        act(player, tool)
         if (player.preformCompletion >= FoundryFormulas.SCALE) {
-            stop(player, state, resetAnim = false)
+            stop(player, resetAnim = false)
         }
     }
 
-    private fun heatTick(player: Player, state: WorkState) {
-        val offset = if (state.heatFast) FoundryFormulas.FAST_HEAT_OFFSET else 0
-        val step = FoundryFormulas.heatStep(state.heatTicks + offset)
-        state.heatTicks++
+    private fun heatTick(player: Player) {
+        val heating = player.workStation < WATERFALL_STATION
+        val fast = (player.workStation - LAVA_STATION) % 2 == 1
+        val offset = if (fast) FoundryFormulas.FAST_HEAT_OFFSET else 0
+        val step = FoundryFormulas.heatStep(player.workHeatTicks + offset)
+        player.workHeatTicks = (player.workHeatTicks + 1).coerceAtMost(MAX_HEAT_TICKS)
+        val sign = if (heating) 1 else -1
         val temperature =
-            (player.preformTemperature + state.heatSign * step).coerceIn(0, FoundryFormulas.SCALE)
+            (player.preformTemperature + sign * step).coerceIn(0, FoundryFormulas.SCALE)
         player.preformTemperature = temperature
-        player.soundSynth(if (state.heatSign > 0) LAVA_SYNTH else WATERFALL_SYNTH)
+        player.soundSynth(if (heating) LAVA_SYNTH else WATERFALL_SYNTH)
         if (temperature == 0 || temperature == FoundryFormulas.SCALE) {
-            stop(player, state)
+            stop(player)
         }
     }
 
@@ -245,15 +225,15 @@ constructor(
      * Clicking the station again while it works: during a sweet spot it arms the bonus (green
      * border); otherwise the next action is missed altogether ("overworking").
      */
-    private fun ProtectedAccess.onReclick(state: WorkState) {
-        if (state.sweetSpotArmed) {
+    private fun ProtectedAccess.onReclick() {
+        if (player.workSweetSpotArmed) {
             return
         }
-        if (state.sweetSpotUntil != 0) {
-            state.sweetSpotArmed = true
+        if (player.sweetSpotUntil != 0) {
+            player.workSweetSpotArmed = true
             player.showSweetSpot(SWEETSPOT_ARMED)
         } else {
-            state.overworked = true
+            player.workOverworked = true
         }
     }
 
@@ -262,34 +242,33 @@ constructor(
      * player keeps working and is lost a tick earlier once they walk away.
      */
     private fun sweetSpotTick(player: Player) {
-        val state = stateOf(player)
-        if (state.sweetSpotUntil == 0) {
+        if (player.sweetSpotUntil == 0) {
             player.clearSoftTimer(SWEETSPOT_TIMER)
             return
         }
         val expired =
-            if (state.sweetSpotArmed) {
-                state.tool == null && clock.cycle >= state.sweetSpotUntil
+            if (player.workSweetSpotArmed) {
+                player.workTool() == null && clock.cycle >= player.sweetSpotUntil
             } else {
-                clock.cycle > state.sweetSpotUntil
+                clock.cycle > player.sweetSpotUntil
             }
         if (expired) {
-            clearSweetSpot(player, state)
+            clearSweetSpot(player)
             player.showSweetSpot(SWEETSPOT_NONE)
         }
     }
 
-    private fun clearSweetSpot(player: Player, state: WorkState) {
-        state.sweetSpotUntil = 0
-        state.sweetSpotArmed = false
-        state.sweetSpotVoid = false
+    private fun clearSweetSpot(player: Player) {
+        player.sweetSpotUntil = 0
+        player.workSweetSpotArmed = false
+        player.workSweetSpotVoid = false
         player.clearSoftTimer(SWEETSPOT_TIMER)
     }
 
     /** One station action: progress, heat, quality and XP. */
-    private fun act(player: Player, tool: FoundryTool, state: WorkState) {
-        if (state.overworked) {
-            state.overworked = false
+    private fun act(player: Player, tool: FoundryTool) {
+        if (player.workOverworked) {
+            player.workOverworked = false
             player.mes(OVERWORKED)
             return
         }
@@ -300,10 +279,10 @@ constructor(
         val window = FoundryFormulas.window(tool, difficulty)
         val mistake = tool != needed || player.preformTemperature !in window
 
-        val armed = state.sweetSpotArmed
-        val bonus = armed && !state.sweetSpotVoid
+        val armed = player.workSweetSpotArmed
+        val bonus = armed && !player.workSweetSpotVoid
         if (armed) {
-            clearSweetSpot(player, state)
+            clearSweetSpot(player)
         }
         if (bonus) {
             player.mes(QUICK_REACTIONS)
@@ -320,7 +299,7 @@ constructor(
                         else -> QuestPrompt.tooHot(tool)
                     }
                 player.weakQueue(QUEST_PROMPT_QUEUE, 1, prompt)
-                stop(player, state)
+                stop(player)
             }
         } else {
             progress = tool.row.progress + uniformBonus(player)
@@ -354,7 +333,7 @@ constructor(
         }
         when {
             player.preformCompletion >= FoundryFormulas.SCALE -> swordFinished(player)
-            !mistake -> maybeOfferSweetSpot(player, state, section)
+            !mistake -> maybeOfferSweetSpot(player, section)
         }
     }
 
@@ -374,12 +353,12 @@ constructor(
      * 29 June 2022). https://oldschool.runescape.wiki/w/Giants%27_Foundry#Sweet_Spot
      */
     // UNVERIFIED: which action gets one isn't published; this spreads them evenly at random.
-    private fun maybeOfferSweetSpot(player: Player, state: WorkState, section: Int) {
-        if (state.sweetSpotUntil != 0) {
+    private fun maybeOfferSweetSpot(player: Player, section: Int) {
+        if (player.sweetSpotUntil != 0) {
             return
         }
-        val offered = player.sweetSpots and 0xFF
-        val lastSection = (player.sweetSpots shr 8) - 1
+        val offered = player.sweetSpotsOffered
+        val lastSection = player.sweetSpotsLastSection - 1
         val total = FoundryFormulas.sweetSpots(player.preformDifficulty)
         if (offered >= total || section <= lastSection) {
             return
@@ -388,8 +367,9 @@ constructor(
         if (random.of(1, sectionsLeft) > total - offered) {
             return
         }
-        player.sweetSpots = ((section + 1) shl 8) or (offered + 1)
-        state.sweetSpotUntil = clock.cycle + SWEETSPOT_TICKS
+        player.sweetSpotsLastSection = section + 1
+        player.sweetSpotsOffered = offered + 1
+        player.sweetSpotUntil = clock.cycle + SWEETSPOT_TICKS
         player.softTimer(SWEETSPOT_TIMER, 1)
         player.showSweetSpot(SWEETSPOT_OFFERED)
     }
@@ -442,6 +422,11 @@ constructor(
 
         const val HAMMER_PHASE = 0
         const val FIRST_ACTION_DELAY = 3
+        const val MAX_HEAT_TICKS = 255
+
+        const val NO_STATION = 0
+        const val LAVA_STATION = 4
+        const val WATERFALL_STATION = 6
 
         const val MISTAKE_QUALITY = 5
         const val SWEETSPOT_PROGRESS = 50

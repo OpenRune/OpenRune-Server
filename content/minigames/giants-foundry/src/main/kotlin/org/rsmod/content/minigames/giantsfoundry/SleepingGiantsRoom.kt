@@ -279,7 +279,7 @@ constructor(
         if (player.dropTrigger == DROP_TRIGGER) {
             player.clearDropTrigger(DROP_TRIGGER)
         }
-        warned.remove(player)
+        player.dropWarned = false
     }
 
     /*
@@ -290,8 +290,6 @@ constructor(
      * through, and the trigger re-arms for the next item.
      */
 
-    private val warned = HashSet<Player>()
-
     fun armDropWarning(player: Player) {
         if (player.dropTrigger == null) {
             player.dropTrigger(DROP_TRIGGER)
@@ -300,11 +298,11 @@ constructor(
 
     /** Handles the drop trigger; true when the drop should be blocked. */
     fun onDropAttempt(player: Player): Boolean {
-        if (player in warned) {
-            warned.remove(player)
+        if (player.dropWarned) {
+            player.dropWarned = false
             return false
         }
-        warned += player
+        player.dropWarned = true
         return true
     }
 

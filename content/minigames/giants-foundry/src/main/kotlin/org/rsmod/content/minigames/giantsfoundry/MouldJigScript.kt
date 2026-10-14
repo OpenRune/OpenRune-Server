@@ -170,7 +170,8 @@ class MouldJigScript @Inject constructor() : PluginScript() {
         player.preformQuality = quality
         player.preformStartQuality = quality
         player.preformCompletion = 0
-        player.sweetSpots = 0
+        player.sweetSpotsOffered = 0
+        player.sweetSpotsLastSection = 0
         val layout =
             if (player.makingQuestSword()) QUEST_LAYOUT
             else rollLayout(FoundryFormulas.sections(difficulty))

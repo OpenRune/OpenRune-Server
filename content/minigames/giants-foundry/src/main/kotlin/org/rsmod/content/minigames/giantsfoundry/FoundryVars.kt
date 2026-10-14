@@ -3,6 +3,7 @@ package org.rsmod.content.minigames.giantsfoundry
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.player.vars.typeCoordVarp
 import org.rsmod.game.entity.Player
 
 internal var Player.sleepingGiants by intVarBit("varbit.sleeping_giants")
@@ -45,8 +46,24 @@ internal var Player.bestQuality by intVarp("varp.giants_foundry_best_quality")
 internal var Player.bestTime by intVarp("varp.giants_foundry_best_time")
 internal var Player.swordsMade by intVarp("varp.giants_foundry_swords_made")
 
-/** Low byte: sweet spots offered this sword; next byte: section of the next one (+1, 0 none). */
-internal var Player.sweetSpots by intVarp("varp.giants_foundry_sweetspots")
+internal var Player.sweetSpotsOffered by intVarBit("varbit.giants_foundry_sweetspots_offered")
+
+/** The section of the last sweet spot offered, plus one; 0 none yet. */
+internal var Player.sweetSpotsLastSection by
+    intVarBit("varbit.giants_foundry_sweetspots_last_section")
+
+internal var Player.workStation by intVarBit("varbit.giants_foundry_work_station")
+internal var Player.workHeatTicks by intVarBit("varbit.giants_foundry_work_heat_ticks")
+internal var Player.workSweetSpotArmed by boolVarBit("varbit.giants_foundry_work_sweetspot_armed")
+internal var Player.workOverworked by boolVarBit("varbit.giants_foundry_work_overworked")
+
+/** Armed by the click that started the work: the first action pays no bonus. */
+internal var Player.workSweetSpotVoid by boolVarBit("varbit.giants_foundry_work_sweetspot_void")
+internal var Player.workOrigin by typeCoordVarp("varp.giants_foundry_work_origin")
+internal var Player.workNextAction by intVarp("varp.giants_foundry_work_next_action")
+internal var Player.sweetSpotUntil by intVarp("varp.giants_foundry_sweetspot_until")
+
+internal var Player.dropWarned by boolVarBit("varbit.sleeping_giants_drop_warned")
 
 internal val METALS = listOf("bronze", "iron", "steel", "mithril", "adamant", "rune")
 

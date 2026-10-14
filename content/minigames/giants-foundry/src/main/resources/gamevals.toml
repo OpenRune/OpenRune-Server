@@ -4,6 +4,21 @@ giants_foundry_best_quality = 64401
 giants_foundry_best_time = 64402
 giants_foundry_swords_made = 64403
 giants_foundry_sweetspots = 64404
+giants_foundry_work = 64405
+giants_foundry_work_origin = 64406
+giants_foundry_work_next_action = 64407
+giants_foundry_sweetspot_until = 64408
+sleeping_giants_room = 64409
+
+[gamevals.varbit]
+giants_foundry_sweetspots_offered = 64400
+giants_foundry_sweetspots_last_section = 64401
+giants_foundry_work_station = 64402
+giants_foundry_work_heat_ticks = 64403
+giants_foundry_work_sweetspot_armed = 64404
+giants_foundry_work_overworked = 64405
+giants_foundry_work_sweetspot_void = 64406
+sleeping_giants_drop_warned = 64407
 
 [gamevals.timer]
 giants_foundry_preform_cooling = 4440

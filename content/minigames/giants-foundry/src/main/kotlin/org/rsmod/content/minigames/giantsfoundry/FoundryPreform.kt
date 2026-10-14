@@ -75,6 +75,7 @@ internal fun Player.clearSword() {
     commissionWord1 = 0
     commissionWord2 = 0
     preformStored = false
-    sweetSpots = 0
+    sweetSpotsOffered = 0
+    sweetSpotsLastSection = 0
     commissionStart = 0
 }

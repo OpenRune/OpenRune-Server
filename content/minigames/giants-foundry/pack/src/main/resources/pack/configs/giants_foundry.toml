@@ -23,6 +23,79 @@ id = "varp.giants_foundry_sweetspots"
 scope = "Perm"
 transmit = "Never"
 
+[[varbit]]
+id = "varbit.giants_foundry_sweetspots_offered"
+varp = "varp.giants_foundry_sweetspots"
+startBit = 0
+endBit = 7
+
+[[varbit]]
+id = "varbit.giants_foundry_sweetspots_last_section"
+varp = "varp.giants_foundry_sweetspots"
+startBit = 8
+endBit = 15
+
+[[varp]]
+id = "varp.giants_foundry_work"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.giants_foundry_work_station"
+varp = "varp.giants_foundry_work"
+startBit = 0
+endBit = 3
+
+[[varbit]]
+id = "varbit.giants_foundry_work_heat_ticks"
+varp = "varp.giants_foundry_work"
+startBit = 4
+endBit = 11
+
+[[varbit]]
+id = "varbit.giants_foundry_work_sweetspot_armed"
+varp = "varp.giants_foundry_work"
+startBit = 12
+endBit = 12
+
+[[varbit]]
+id = "varbit.giants_foundry_work_overworked"
+varp = "varp.giants_foundry_work"
+startBit = 13
+endBit = 13
+
+[[varbit]]
+id = "varbit.giants_foundry_work_sweetspot_void"
+varp = "varp.giants_foundry_work"
+startBit = 14
+endBit = 14
+
+[[varp]]
+id = "varp.giants_foundry_work_origin"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.giants_foundry_work_next_action"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.giants_foundry_sweetspot_until"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.sleeping_giants_room"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.sleeping_giants_drop_warned"
+varp = "varp.sleeping_giants_room"
+startBit = 0
+endBit = 0
+
 [[enum]]
 isServerOnly = true
 id = "enum.giants_foundry_ore_pack_weights"
