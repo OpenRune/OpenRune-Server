@@ -6,6 +6,7 @@ import dev.openrune.rscm.RSCMType
 import kotlin.math.ceil
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
+import org.rsmod.api.player.output.spotanimMapPrivate
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
@@ -132,20 +133,20 @@ internal class ApmekenSight(private val room: ApmekenPuzzleEncounter) {
         when (kind) {
             Kind.ROOF -> {
                 seer.mes(ApmekenMessages.ROOF_ISSUE)
-                markers(ApmekenCoords.SUPPORT_FRONTS, ROOF_MARK_HEIGHT)
+                markers(seer, ApmekenCoords.SUPPORT_FRONTS, ROOF_MARK_HEIGHT)
             }
             Kind.VENTS -> {
                 seer.mes(ApmekenMessages.VENT_ISSUE)
-                markers(ApmekenCoords.VENTS, VENT_MARK_HEIGHT)
+                markers(seer, ApmekenCoords.VENTS, VENT_MARK_HEIGHT)
             }
         }
     }
 
-    private fun markers(tiles: List<CoordGrid>, height: Int) {
+    private fun markers(seer: Player, tiles: List<CoordGrid>, height: Int) {
         for (tile in tiles) {
             val north = tile.z > NORTH_Z
             val spot = if (north) ApmekenSpots.WARNING_NORTH else ApmekenSpots.WARNING_SOUTH
-            deps.worldRepo.spotanimMap(spotanim(spot), room.coords(tile), height, 0)
+            seer.spotanimMapPrivate(spotanim(spot).id, room.coords(tile), height)
         }
     }
 
