@@ -130,7 +130,8 @@ constructor(
         return cycle
     }
 
-    private fun ProtectedAccess.startHeat(sign: Int, fast: Boolean) {
+    private suspend fun ProtectedAccess.startHeat(sign: Int, fast: Boolean) {
+        arriveDelay()
         if (!canWork()) {
             return
         }
@@ -173,7 +174,6 @@ constructor(
         if (tool != null) {
             workTick(player, tool)
         } else {
-            player.anim(if (player.workStation < WATERFALL_STATION) HEAT_SEQ else COOL_SEQ)
             heatTick(player)
         }
     }
@@ -195,17 +195,28 @@ constructor(
         }
     }
 
+    /**
+     * The slow ramp plays its anim and sound a tick before its first step; the fast one steps on
+     * its first tick and starts the anim a tick later.
+     */
     private fun heatTick(player: Player) {
         val heating = player.workStation < WATERFALL_STATION
         val fast = (player.workStation - LAVA_STATION) % 2 == 1
-        val offset = if (fast) FoundryFormulas.FAST_HEAT_OFFSET else 0
-        val step = FoundryFormulas.heatStep(player.workHeatTicks + offset)
-        player.workHeatTicks = (player.workHeatTicks + 1).coerceAtMost(MAX_HEAT_TICKS)
+        val ticks = player.workHeatTicks
+        player.workHeatTicks = (ticks + 1).coerceAtMost(MAX_HEAT_TICKS)
+        if (!fast || ticks > 0) {
+            player.anim(if (heating) HEAT_SEQ else COOL_SEQ)
+        }
+        player.soundSynth(if (heating) LAVA_SYNTH else WATERFALL_SYNTH)
+        val index = if (fast) ticks + FoundryFormulas.FAST_HEAT_OFFSET else ticks - 1
+        if (index < 0) {
+            return
+        }
         val sign = if (heating) 1 else -1
         val temperature =
-            (player.preformTemperature + sign * step).coerceIn(0, FoundryFormulas.SCALE)
+            (player.preformTemperature + sign * FoundryFormulas.heatStep(index))
+                .coerceIn(0, FoundryFormulas.SCALE)
         player.preformTemperature = temperature
-        player.soundSynth(if (heating) LAVA_SYNTH else WATERFALL_SYNTH)
         if (temperature == 0 || temperature == FoundryFormulas.SCALE) {
             stop(player)
         }
@@ -299,8 +310,12 @@ constructor(
             }
         }
         player.preformCompletion = (completion + progress).coerceAtMost(FoundryFormulas.SCALE)
-        player.preformTemperature =
-            (player.preformTemperature + tool.row.heat).coerceIn(0, FoundryFormulas.SCALE)
+        val questFinish =
+            player.preformCompletion >= FoundryFormulas.SCALE && player.makingQuestSword()
+        if (!questFinish) {
+            player.preformTemperature =
+                (player.preformTemperature + tool.row.heat).coerceIn(0, FoundryFormulas.SCALE)
+        }
         if (xpTenths > 0) {
             player.statAdvance("stat.smithing", xpTenths / 10.0)
         }
@@ -323,9 +338,9 @@ constructor(
     private fun swordFinished(player: Player) {
         if (player.makingQuestSword()) {
             player.weakQueue(QUEST_PROMPT_QUEUE, 1, QuestPrompt.SwordFinished)
-        } else {
-            player.mes(FINISHED)
+            return
         }
+        player.mes(FINISHED)
         player.anim(FINISH_SEQ)
         player.soundSynth(FINISH_SYNTH)
     }
