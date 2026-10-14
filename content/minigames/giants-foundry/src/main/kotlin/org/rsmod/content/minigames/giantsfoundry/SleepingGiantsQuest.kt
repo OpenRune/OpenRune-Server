@@ -196,8 +196,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             }
             if (!choice2("Yes.", true, "No.", false, title = "Start the Sleeping Giants quest?")) {
                 chatPlayer(angry, "No way! I'm getting out of here. There's no chance I'd trust a giant!")
-                chatNpc(neutral, "Please...")
-                chatNpc(neutral, "help.")
+                lineByLine("Please...", "help.") { chatNpc(neutral, it) }
                 return@startDialogue
             }
             quest.setQuestStage(access, SleepingGiants.STARTED)
@@ -429,8 +428,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     private suspend fun Dialogue.missingMaterials(tool: RepairTool) {
         when (tool) {
             RepairTool.Hammer ->
-                // UNVERIFIED: "fully" in the hammer's and wheel's wording; only the grindstone's
-                // message was seen.
                 doubleobjbox(
                     OAK_LOGS,
                     nails.first(),
@@ -610,13 +607,12 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
     }
 
-    // UNVERIFIED: how the inspect lines below group into boxes (the wiki lists one line per
-    // bullet); only the chest's conversation was seen.
+    // UNVERIFIED: how the inspect lines below group into boxes; only the chest's conversation
+    // was seen, and a run of Kovac lines is shown there as one box gaining a line per click.
     private suspend fun ProtectedAccess.inspectCrate() {
         startDialogue {
             chatPlayer(quiz, "What do you keep in this box?")
-            chatKovac(neutral, "Hmm...")
-            chatKovac(neutral, "stuff.")
+            lineByLine("Hmm...", "stuff.") { chatKovac(neutral, it) }
             chatPlayer(bored, "Very insightful...")
         }
     }
@@ -624,23 +620,20 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     private suspend fun ProtectedAccess.inspectCrucible() {
         startDialogue {
             chatPlayer(quiz, "What is this, Kovac?")
-            chatKovac(neutral, "Hmm...")
-            chatKovac(neutral, "look like big bucket.")
+            lineByLine("Hmm...", "look like big bucket.") { chatKovac(neutral, it) }
             chatPlayer(quiz, "I can see that, but what's it used for?")
-            chatKovac(neutral, "Hmm...")
-            chatKovac(neutral, "maybe we put things in.")
-            chatKovac(neutral, "Kovac need think about it more.")
+            lineByLine("Hmm...", "maybe we put things in.", "Kovac need think about it more.") {
+                chatKovac(neutral, it)
+            }
         }
     }
 
     private suspend fun ProtectedAccess.inspectLavaPool() {
         startDialogue {
             chatPlayer(worried, "Having all this lava here without a barrier is quite dangerous.")
-            chatKovac(neutral, "Hmm...")
-            chatKovac(neutral, "Kovac agree.")
+            lineByLine("Hmm...", "Kovac agree.") { chatKovac(neutral, it) }
             chatPlayer(quiz, "Should we try building something to keep us safe?")
-            chatKovac(neutral, "Hmm...")
-            chatKovac(neutral, "no.")
+            lineByLine("Hmm...", "no.") { chatKovac(neutral, it) }
             chatPlayer(quiz, "Why not?")
             chatKovac(neutral, "Just no swim in the hot juice.")
         }
@@ -649,28 +642,28 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     private suspend fun ProtectedAccess.inspectJig() {
         startDialogue {
             chatPlayer(quiz, "What is this table used for, Kovac?")
-            chatKovac(neutral, "Hmm...")
-            chatKovac(neutral, "look like we put thing on it.")
-            chatKovac(neutral, "Kovac not sure what yet.")
-            chatKovac(neutral, "Hmm...")
-            chatKovac(neutral, "Kovac think about it more.")
+            lineByLine("Hmm...", "look like we put thing on it.", "Kovac not sure what yet.") {
+                chatKovac(neutral, it)
+            }
+            lineByLine("Hmm...", "Kovac think about it more.") { chatKovac(neutral, it) }
         }
     }
 
     private suspend fun ProtectedAccess.inspectStorage() {
         startDialogue {
             chatPlayer(worried, "This looks a little dangerous. Quite a perilous place to store something.")
-            chatKovac(neutral, "Hmm...")
-            chatKovac(neutral, "good place to cook food.")
-            chatKovac(happy, "Hot meat very good.")
+            lineByLine("Hmm...", "good place to cook food.", "Hot meat very good.") {
+                chatKovac(neutral, it)
+            }
         }
     }
 
     private suspend fun ProtectedAccess.inspectWaterfall() {
         startDialogue {
             chatPlayer(neutral, "Not everyday you see a waterfall in a cave.")
-            chatKovac(neutral, "Kovac drink from waterfall...")
-            chatKovac(neutral, "Hydration impote... importent.")
+            lineByLine("Kovac drink from waterfall...", "Hydration impote... importent.") {
+                chatKovac(neutral, it)
+            }
             chatPlayer(neutral, "I agree, it's very important.")
         }
     }

@@ -125,7 +125,6 @@ constructor(private val room: SleepingGiantsRoom, private val eventBus: EventBus
             player.sleepingGiants = SleepingGiants.COMPLETE
         }
         if (player.preformStored) {
-            // UNVERIFIED: whether live repeats the entry message at login (guess).
             player.mes(KEPT_WARM)
         }
         if (player.holdsPreform()) {
