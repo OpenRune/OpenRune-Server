@@ -4,6 +4,7 @@ import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import java.util.Locale
 import net.rsprot.protocol.game.outgoing.sound.MidiJingle
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.musicClocks
@@ -201,7 +202,8 @@ data class Quest(
         access.player.questsCompleted++
 
         access.player.musicClocks = 0
-        access.player.client.write(MidiJingle(QUEST_COMPLETE_JINGLE))
+        val jingle = rewards.jingle?.asRSCM(RSCMType.JINGLE) ?: QUEST_COMPLETE_JINGLE
+        access.player.client.write(MidiJingle(jingle))
 
         scheduleClose(access, closeDialogue, QUEST_DIALOGUE_CLOSE_TIMER) { ifCloseChat() }
         access.ifOpenMain("interface.questscroll")
@@ -220,7 +222,8 @@ data class Quest(
                 ?: error("No stat found for $skill")
 
             access.statAdvance(skill, amount)
-            rewardLines.add("${amount.toInt()} ${stat.displayName} XP")
+            val statName = stat.displayName.replaceFirstChar { it.uppercase() }
+            rewardLines.add("${"%,d".format(Locale.US, amount.toInt())} $statName XP")
         }
 
         rewards.items.forEach { (item, amount) ->
@@ -229,9 +232,7 @@ data class Quest(
             rewardLines.add(rewards.itemLabels[item] ?: "$amount x ${type.name}")
         }
 
-        rewards.extraText?.let {
-            rewardLines.add(it)
-        }
+        rewardLines.addAll(rewards.extra)
 
         val linesToShow = rewardLines.take(6)
 

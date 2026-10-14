@@ -40,8 +40,9 @@ annotation class QuestJournalDsl
 data class QuestReward(
     val xp: Map<String, Double> = emptyMap(),
     val items: List<Pair<String, Int>> = emptyList(),
-    val extraText: String? = null,
-    val itemLabels: Map<String, String> = emptyMap()
+    val extra: List<String> = emptyList(),
+    val itemLabels: Map<String, String> = emptyMap(),
+    val jingle: String? = null,
 )
 
 @QuestJournalDsl
@@ -54,7 +55,8 @@ class QuestRewardBuilder {
     private val _xp = mutableMapOf<String, Double>()
     private val _items = mutableListOf<Pair<String, Int>>()
     private val _itemLabels = mutableMapOf<String, String>()
-    private var _extraText: String? = null
+    private val _extra = mutableListOf<String>()
+    private var _jingle: String? = null
 
     fun xp(skill: String, amount: Double) {
         _xp[skill] = amount
@@ -66,10 +68,14 @@ class QuestRewardBuilder {
     }
 
     fun extra(text: String) {
-        _extraText = text
+        _extra.add(text)
     }
 
-    fun build(): QuestReward = QuestReward(_xp, _items, _extraText, _itemLabels)
+    fun jingle(jingle: String) {
+        _jingle = jingle
+    }
+
+    fun build(): QuestReward = QuestReward(_xp, _items, _extra, _itemLabels, _jingle)
 }
 
 abstract class QuestScript(

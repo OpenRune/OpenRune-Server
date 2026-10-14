@@ -39,7 +39,12 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     QuestScript(
         SleepingGiants.QUEST,
         "varp.giants_foundry_main",
-        rewards { xp("stat.smithing", 6000.0) },
+        rewards {
+            xp("stat.smithing", 6000.0)
+            extra("Access to the Giants'")
+            extra("Foundry")
+            jingle("jingle.high_seas")
+        },
         ItemRewardDisplay(PREFORM, zoom = 400),
         questVarbit = "varbit.sleeping_giants",
     ) {
