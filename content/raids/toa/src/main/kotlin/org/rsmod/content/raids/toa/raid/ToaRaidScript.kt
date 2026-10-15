@@ -273,6 +273,10 @@ constructor(
     private suspend fun ProtectedAccess.osmumten() {
         val raid = player.currentRaid ?: return
         val room = raid.encounterOf(player) ?: return
+        if (room.room.kind == ToaRoom.Kind.REWARD) {
+            exitRaid()
+            return
+        }
         if (room.room.kind != ToaRoom.Kind.BOSS || room.stage != ToaStage.COMPLETED) return
         proceed(raid, ToaRoom.MAIN_HALL, "has returned to the Nexus")
     }
