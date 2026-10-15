@@ -79,6 +79,13 @@ class BabaEncounter(
     override fun onFightTick(boss: Npc, targets: List<Player>) {
         boulders.tick()
         baboons.tick()
+        stompIfDue(boss, targets)
+    }
+
+    private fun stompIfDue(boss: Npc, targets: List<Player>) {
+        if (boss !== baba || targets.isEmpty() || isRolling(boss)) return
+        if (boss.vars[BabaVarns.UNDER] < BabaShock.STOMP_TRIGGER_TICKS) return
+        deps.bossDeps.runAbility(boss, lowestHpTarget(boss, targets), BabaAbilities.STOMP)
     }
 
     override fun onFightComplete() {
