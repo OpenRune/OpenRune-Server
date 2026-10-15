@@ -20,6 +20,7 @@ import org.rsmod.content.raids.toa.party.ToaPartySettings
 import org.rsmod.content.raids.toa.raid.encounter.MainHallEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaBossEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
+import org.rsmod.content.raids.toa.raid.encounter.ToaRewardEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenGod
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardensEncounter
@@ -223,6 +224,7 @@ class ToaRaid(
             room == ToaRoom.APMEKEN_PUZZLE ->
                 ApmekenPuzzleEncounter(this, room, session, controllerId)
             room == ToaRoom.APMEKEN_BOSS -> BabaEncounter(this, room, session, controllerId)
+            room == ToaRoom.REWARD_ROOM -> ToaRewardEncounter(this, room, session, controllerId)
             room.kind == ToaRoom.Kind.BOSS -> ToaBossEncounter(this, room, session, controllerId)
 
             else -> ToaEncounter(this, room, session, controllerId)

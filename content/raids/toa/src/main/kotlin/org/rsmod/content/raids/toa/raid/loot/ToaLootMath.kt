@@ -9,7 +9,6 @@ internal object ToaLootMath {
     const val COMMON_ROLLS = 3
     const val OUT_OF_LEVEL_ODDS = 50
 
-    private const val UNIQUE_CAP = 0.55
     private const val UNIQUE_BASE_DIVISOR = 10_500.0
     private const val UNIQUE_LEVEL_STEP = 20.0
     private const val BOOST_FROM_LEVEL = 300
@@ -36,9 +35,9 @@ internal object ToaLootMath {
             else -> 350 + (raidLevel - 430) / 6.0
         }
 
-    fun uniqueChance(totalPoints: Int, raidLevel: Int): Double {
+    fun uniqueChance(points: Int, raidLevel: Int, boost: Double = 1.0): Double {
         val perPercent = UNIQUE_BASE_DIVISOR - UNIQUE_LEVEL_STEP * uniqueLevel(raidLevel)
-        return min(UNIQUE_CAP, 0.01 * totalPoints / perPercent)
+        return min(1.0, 0.01 * points / perPercent * boost)
     }
 
     fun commonQuantity(points: Int, divisor: Int, raidLevel: Int): Int {
