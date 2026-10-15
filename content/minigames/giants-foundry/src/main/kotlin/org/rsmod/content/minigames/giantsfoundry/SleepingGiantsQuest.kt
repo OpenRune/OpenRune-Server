@@ -35,8 +35,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): [verify:in_game] the mesanims of the conversations the live capture doesn't cover:
-// Kovac's talks after the metal is taken, while the crucible fills, with the mould jig unset,
-// before the pour and before the preform is picked up, and his stop prompts.
+// Kovac's talks while the crucible fills and before the preform is picked up, and his stop prompts.
 
 class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRoom) :
     QuestScript(
@@ -699,13 +698,9 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             tutorial < SleepingGiants.TUTORIAL_MOULD_EXPLAINED -> crucibleFull()
             tutorial < SleepingGiants.TUTORIAL_MOULD_SET -> mouldHelp()
             tutorial < SleepingGiants.TUTORIAL_POUR_EXPLAINED -> mouldSet()
-            // TODO(content): [verify:in_game] Kovac's line before the metal is poured; this
-            // repeats his last instruction. The capture has no talk between his pour
-            // instruction and the pour.
             tutorial < SleepingGiants.TUTORIAL_POURED -> {
-                lineByLine("Pour the metal from the crucible into the mould...", "then take out the preform.") {
-                    chatNpc(neutral, it)
-                }
+                chatPlayer(neutral, "What do I need to do again?")
+                pourExplained()
             }
             tutorial < SleepingGiants.TUTORIAL_PREFORM_TAKEN -> beforePickUp()
             tutorial < SleepingGiants.TUTORIAL_HANDED_IN -> workingPreform(npc)
@@ -835,6 +830,10 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         chatNpc(neutral, "Yes, all things look correct...<br> ")
         chatNpc(neutral, "Yes, all things look correct...<br>Well done little one. We are ready.")
         player.advanceTutorial(SleepingGiants.TUTORIAL_POUR_EXPLAINED)
+        pourExplained()
+    }
+
+    private suspend fun Dialogue.pourExplained() {
         lineByLine("Pour the metal from the crucible into the mould...", "then take out the preform.") {
             chatNpc(neutral, it)
         }
