@@ -38,7 +38,16 @@ internal suspend fun ProtectedAccess.graphicbox(graphic: Int, text: String, hint
         GRAPHIC_SIZE,
     )
     ifSetText(GRAPHICBOX_TEXT, text)
-    pauseButton()
+    try {
+        pauseButton()
+    } catch (t: Throwable) {
+        if (hint != null) {
+            // UNVERIFIED: that leaving the box mid-dialogue clears the arrow (guess).
+            vars[CURRENT_HINT_ARROW] = 0
+            MiscOutput.hintArrowReset(player)
+        }
+        throw t
+    }
     if (hint != null) {
         vars[CURRENT_HINT_ARROW] = 0
     }
