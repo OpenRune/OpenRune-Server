@@ -360,13 +360,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     }
 
     private suspend fun Dialogue.sendToFoundry() {
-        lineByLine(
-            "Kovac get few things ready first...",
-            "then we can start.",
-            beforeLast = { quest.setQuestStage(access, SleepingGiants.MAKING_SWORD) },
-        ) {
-            chatNpc(neutral, it)
-        }
+        lineByLine("Kovac get few things ready first...", "then we can start.") { chatNpc(neutral, it) }
+        quest.setQuestStage(access, SleepingGiants.MAKING_SWORD)
     }
 
     private enum class RepairTool(private val dbrow: String, val journalName: String) {
@@ -396,6 +391,9 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     private suspend fun ProtectedAccess.repair(tool: RepairTool, intro: Boolean) {
         startDialogue {
+            if (tool == RepairTool.Hammer && !tool.isRepaired(player)) {
+                room.kovacToTripHammer(player)
+            }
             if (intro && tool.state(player) == SleepingGiants.REPAIR_BROKEN) {
                 repairIntro(tool)
             }
@@ -449,7 +447,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     private suspend fun Dialogue.repairIntro(tool: RepairTool) {
         when (tool) {
             RepairTool.Hammer -> {
-                room.kovacToTripHammer(player)
                 chatPlayer(quiz, "I think this has seen better days. What was it?")
                 lineByLine("Hmm...", "big hammer.") { chatKovac(neutral, it) }
                 chatPlayer(quiz, "Right... and what did it do?")
@@ -1173,18 +1170,10 @@ internal sealed interface QuestPrompt {
 
 /**
  * A broken-up line is one box that gains a line per click; each frame is padded with blank
- * lines to the final line count, so the box keeps its size and chathead anim. [beforeLast] runs
- * just before the final frame is shown.
+ * lines to the final line count, so the box keeps its size and chathead anim.
  */
-private suspend fun lineByLine(
-    vararg lines: String,
-    beforeLast: () -> Unit = {},
-    show: suspend (String) -> Unit,
-) {
+private suspend fun lineByLine(vararg lines: String, show: suspend (String) -> Unit) {
     for (shown in 1..lines.size) {
-        if (shown == lines.size) {
-            beforeLast()
-        }
         val hidden = lines.drop(shown).flatMap { it.split(LINE_BREAK) }.map { " " }
         show((lines.take(shown) + hidden).joinToString(LINE_BREAK))
     }

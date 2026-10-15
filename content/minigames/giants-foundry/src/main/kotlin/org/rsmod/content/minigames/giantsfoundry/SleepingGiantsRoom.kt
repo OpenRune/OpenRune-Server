@@ -369,7 +369,7 @@ constructor(
         const val KOVAC_QUEST = "npc.giants_foundry_kovac_quest"
         val KOVAC_TILE = CoordGrid(3368, 11483, 0)
         val KOVAC_FACE_TILE = CoordGrid(3369, 11487, 0)
-        val KOVAC_TRIP_HAMMER_PATH = listOf(CoordGrid(3368, 11490, 0), CoordGrid(3365, 11493, 0))
+        val KOVAC_TRIP_HAMMER_PATH = listOf(CoordGrid(3366, 11492, 0), CoordGrid(3365, 11493, 0))
         val TRIP_HAMMER_FACE_TILE = CoordGrid(3365, 11497, 0)
 
         // UNVERIFIED: whether logging out in the room always lands here or on the tile the
