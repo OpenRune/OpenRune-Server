@@ -33,13 +33,6 @@ moveRestrict = "NoMove"
 wanderRange = 0
 
 [[npc]]
-id = "npc.farming_tools_leprechaun"
-inherit = "npc.farming_tools_leprechaun"
-moveRestrict = "NoMove"
-wanderRange = 0
-respawnDir = "West"
-
-[[npc]]
 id = "npc.tempoross_ferry_to_lobby_npc"
 inherit = "npc.tempoross_ferry_to_lobby_npc"
 moveRestrict = "NoMove"
@@ -69,12 +62,6 @@ wanderRange = 3
 [[npc]]
 id = "npc.dommik"
 inherit = "npc.dommik"
-moveRestrict = "Indoors"
-wanderRange = 3
-
-[[npc]]
-id = "npc.ellis_tanner"
-inherit = "npc.ellis_tanner"
 moveRestrict = "Indoors"
 wanderRange = 3
 
