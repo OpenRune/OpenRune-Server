@@ -1,8 +1,13 @@
 package org.rsmod.content.areas.misc.monastery.npcs
 
-import org.rsmod.api.invtx.invAdd
-import org.rsmod.api.invtx.invDel
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.basePrayerLvl
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.plugin.scripts.PluginScript
@@ -28,7 +33,7 @@ class BrotherJered : PluginScript() {
                 player.basePrayerLvl >= MAX_PRAYER -> {
                     if (sellCape()) return
                 }
-                access.inv.count(UNBLESSED) > 0 -> {
+                access.inv.count(UNBLESSED_SYMBOL) > 0 -> {
                     if (blessOrExplain()) return
                 }
                 else -> {
@@ -60,10 +65,9 @@ class BrotherJered : PluginScript() {
     }
 
     private suspend fun Dialogue.bless() {
-        if (access.invDel(access.inv, UNBLESSED, 1).failure) {
+        if (!access.blessHolySymbol()) {
             return
         }
-        access.invAdd(access.inv, BLESSED)
         mesbox(
             "You give Jered the symbol. Jered closes his eyes and places his hand on the symbol. " +
                 "He softly chants. Jered passes you the holy symbol.",
@@ -124,19 +128,19 @@ class BrotherJered : PluginScript() {
         chatNpc(
             neutral,
             "One as pious as you has certainly earned the right to wear one, but the monastery " +
-                "requires a donation of $CAPE_PRICE coins for the privilege.",
+                "requires a donation of $PRAYER_CAPE_PRICE coins for the privilege.",
         )
         if (!choice2("I am always happy to contribute towards the monastery's upkeep.", true, "I'm afraid I can't afford that.", false)) {
             chatPlayer(neutral, "No thanks, I can't afford one of those.")
             return true
         }
         chatPlayer(happy, "I am always happy to contribute towards the monastery's upkeep.")
-        if (access.inv.count(COINS) < CAPE_PRICE) {
+        if (access.inv.count(COINS) < PRAYER_CAPE_PRICE) {
             chatPlayer(sad, "But, unfortunately, I don't have enough money with me.")
             chatNpc(neutral, "Well, come back and see me when you do.")
             return true
         }
-        if (access.inv.freeSpace() < CAPE_SLOTS && access.inv.count(COINS) != CAPE_PRICE) {
+        if (!access.buyPrayerCape()) {
             chatNpc(
                 neutral,
                 "Unfortunately all Skillcapes are only available with a free hood, it's part of a " +
@@ -145,22 +149,36 @@ class BrotherJered : PluginScript() {
             )
             return true
         }
-        if (access.invDel(access.inv, COINS, CAPE_PRICE).failure) {
-            return true
-        }
-        access.invAdd(access.inv, CAPE)
-        access.invAdd(access.inv, HOOD)
         return true
     }
 
     private companion object {
         private const val MAX_PRAYER = 99
-        private const val CAPE_PRICE = 99000
-        private const val CAPE_SLOTS = 2
-        private const val COINS = "obj.coins"
-        private const val CAPE = "obj.skillcape_prayer"
-        private const val HOOD = "obj.skillcape_prayer_hood"
-        private const val UNBLESSED = "obj.stringstar"
-        private const val BLESSED = "obj.blessedstar"
     }
 }
+
+private const val COINS = "obj.coins"
+public const val PRAYER_CAPE_PRICE = 99000
+public const val PRAYER_CAPE = "obj.skillcape_prayer"
+public const val PRAYER_HOOD = "obj.skillcape_prayer_hood"
+public const val UNBLESSED_SYMBOL = "obj.stringstar"
+public const val BLESSED_SYMBOL = "obj.blessedstar"
+
+public fun ProtectedAccess.buyPrayerCape(): Boolean =
+    player
+        .invTransaction(inv) {
+            val target = select(inv)
+            delete(target, COINS.asRSCM(RSCMType.OBJ), PRAYER_CAPE_PRICE)
+            add(target, PRAYER_CAPE.asRSCM(RSCMType.OBJ), count = 1)
+            add(target, PRAYER_HOOD.asRSCM(RSCMType.OBJ), count = 1)
+        }
+        .success
+
+public fun ProtectedAccess.blessHolySymbol(): Boolean =
+    player
+        .invTransaction(inv) {
+            val target = select(inv)
+            delete(target, UNBLESSED_SYMBOL.asRSCM(RSCMType.OBJ), count = 1)
+            add(target, BLESSED_SYMBOL.asRSCM(RSCMType.OBJ), count = 1)
+        }
+        .success
