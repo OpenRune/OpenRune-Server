@@ -38,8 +38,16 @@ internal class WardensSlams(private val room: WardensSecondEncounter) {
 
     private val tiles = HashMap<WardenSlam, List<CoordGrid>>()
     private val variants = HashMap<WardenSlam, List<Int>>()
+    private var cursor = 0
+
+    fun next(): WardenSlam = WardenSlam.entries[cursor]
+
+    fun reset() {
+        cursor = 0
+    }
 
     fun fire(slam: WardenSlam) {
+        cursor = (slam.ordinal + 1) % WardenSlam.entries.size
         val row = tiles.getOrPut(slam) { ToaWardensSlamsRow.getRow(slam.row).tiles }
         val kinds = variants.getOrPut(slam) { ToaWardensSlamsRow.getRow(slam.row).variants }
         val struck = HashMap<Int, MutableSet<CoordGrid>>()
