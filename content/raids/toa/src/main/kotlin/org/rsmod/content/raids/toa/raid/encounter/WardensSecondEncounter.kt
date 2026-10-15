@@ -115,13 +115,12 @@ class WardensSecondEncounter(
     }
 
     internal fun modifyWardenHit(npc: Npc, hit: HitBuilder) {
-        if (npc !== warden || !hit.isFromPlayer) return
+        if (npc !== warden || enrage.active) return
         if (siphons.active) {
             hit.damage = 0
             return
         }
-        if (enrage.active) return
-        val threshold = siphonThreshold(npc) ?: enrageThreshold(npc)
+        val threshold = max(siphonThreshold(npc) ?: enrageThreshold(npc), 1)
         hit.damage = min(hit.damage, max(npc.hitpoints - threshold, 0))
     }
 
