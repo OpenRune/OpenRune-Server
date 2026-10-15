@@ -1,6 +1,7 @@
 package org.rsmod.content.areas.wilderness.locs
 
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.agilityLvl
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -17,6 +18,10 @@ class TightGapShortcut : PluginScript() {
 
     private suspend fun ProtectedAccess.squeeze() {
         arriveDelay()
+        if (player.agilityLvl < GAP_AGILITY) {
+            mes("You need an Agility level of $GAP_AGILITY to negotiate this obstacle.")
+            return
+        }
         val westbound = coords.z < WEST_END.z
         val path = if (westbound) WESTBOUND else EASTBOUND
 
@@ -49,6 +54,7 @@ class TightGapShortcut : PluginScript() {
     }
 
     private companion object {
+        private const val GAP_AGILITY = 14
         private const val ENTER_SEQ = "seq.human_into_sidestepl"
         private const val LEAVE_SEQ = "seq.human_outof_sidestepl"
         private const val SQUEEZE_LOOPS = 3
