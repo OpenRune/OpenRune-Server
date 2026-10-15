@@ -11,7 +11,10 @@ import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
+import org.rsmod.game.map.collision.add as addCollisionFlag
+import org.rsmod.game.map.collision.remove as removeCollisionFlag
 import org.rsmod.map.CoordGrid
+import org.rsmod.routefinder.flag.CollisionFlag
 
 internal class BabaRockfall(private val room: BabaEncounter) {
     private val deps = room.raid.deps
@@ -65,7 +68,14 @@ internal class BabaRockfall(private val room: BabaEncounter) {
         npc.hitpoints = hp
         val shape = LocShape.CentrepieceStraight
         rubble[npc] = deps.locRepo.add(origin, BabaRocks.BLOCKER, Int.MAX_VALUE, LocAngle.West, shape)
+        for (tile in footprint(origin)) {
+            deps.collision.removeCollisionFlag(tile, LOC_MASK)
+            deps.collision.addCollisionFlag(tile, CollisionFlag.BLOCK_PLAYERS)
+        }
     }
+
+    private fun footprint(origin: CoordGrid): List<CoordGrid> =
+        List(RUBBLE_SIZE * RUBBLE_SIZE) { origin.translate(it % RUBBLE_SIZE, it / RUBBLE_SIZE) }
 
     @OptIn(InternalApi::class)
     private fun pushOut(player: Player, origin: CoordGrid) {
@@ -105,7 +115,12 @@ internal class BabaRockfall(private val room: BabaEncounter) {
         rubble.keys.any { inFootprint(it.coords, tile) }
 
     private fun remove(npc: Npc) {
-        rubble.remove(npc)?.let { deps.locRepo.del(it, Int.MAX_VALUE) }
+        rubble.remove(npc)?.let {
+            deps.locRepo.del(it, Int.MAX_VALUE)
+            for (tile in footprint(npc.coords)) {
+                deps.collision.removeCollisionFlag(tile, CollisionFlag.BLOCK_PLAYERS)
+            }
+        }
         if (npc.isSlotAssigned) room.despawn(npc)
     }
 
@@ -118,5 +133,7 @@ internal class BabaRockfall(private val room: BabaEncounter) {
     private companion object {
         const val RUBBLE_SIZE = 3
         const val PUSH_CYCLES = 30
+        const val LOC_MASK =
+            CollisionFlag.LOC or CollisionFlag.LOC_PROJ_BLOCKER or CollisionFlag.LOC_ROUTE_BLOCKER
     }
 }
