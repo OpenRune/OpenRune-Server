@@ -1,0 +1,78 @@
+[[npc]]
+id = "npc.kharidbanker1"
+inherit = "npc.kharidbanker1"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "East"
+
+[[npc]]
+id = "npc.kharidbanker2"
+inherit = "npc.kharidbanker2"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "East"
+
+[[npc]]
+id = "npc.borderguard1"
+inherit = "npc.borderguard1"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "West"
+
+[[npc]]
+id = "npc.borderguard2"
+inherit = "npc.borderguard2"
+moveRestrict = "NoMove"
+wanderRange = 0
+respawnDir = "East"
+
+[[npc]]
+id = "npc.feud_ali_m"
+inherit = "npc.feud_ali_m"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.tempoross_ferry_to_lobby_npc"
+inherit = "npc.tempoross_ferry_to_lobby_npc"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.gem_trader"
+inherit = "npc.gem_trader"
+wanderRange = 2
+
+[[npc]]
+id = "npc.silk_trader"
+inherit = "npc.silk_trader"
+wanderRange = 2
+
+[[npc]]
+id = "npc.kebab_seller"
+inherit = "npc.kebab_seller"
+wanderRange = 1
+
+[[npc]]
+id = "npc.zeke"
+inherit = "npc.zeke"
+moveRestrict = "Indoors"
+wanderRange = 3
+
+[[npc]]
+id = "npc.dommik"
+inherit = "npc.dommik"
+moveRestrict = "Indoors"
+wanderRange = 3
+
+[[npc]]
+id = "npc.louie_legs"
+inherit = "npc.louie_legs"
+moveRestrict = "Indoors"
+wanderRange = 2
+
+[[npc]]
+id = "npc.ranael"
+inherit = "npc.ranael"
+moveRestrict = "Indoors"
+wanderRange = 2
