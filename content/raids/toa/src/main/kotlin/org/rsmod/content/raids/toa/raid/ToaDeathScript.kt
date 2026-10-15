@@ -134,7 +134,7 @@ internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Bo
     raid.revive(player)
     player.toaRestore()
     if (retry) {
-        if (!raid.isActive("dbrow.toa_invocation_on_adiet")) {
+        if (!raid.isActive("dbrow.toa_invocation_on_a_diet")) {
             invAddOrDrop(raid.deps.objRepo, HONEY_LOCUST, room.honeyLocusts())
         }
     } else {

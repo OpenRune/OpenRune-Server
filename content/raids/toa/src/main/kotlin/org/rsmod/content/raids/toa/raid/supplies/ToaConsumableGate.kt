@@ -26,7 +26,7 @@ class ToaConsumableGate : ConsumableActivityGate {
         return when (consumable.type) {
             ConsumableType.FOOD,
             ConsumableType.COMBO_FOOD ->
-                if (raid.isActive("dbrow.toa_invocation_on_adiet")) NO_FOOD else null
+                if (raid.isActive("dbrow.toa_invocation_on_a_diet")) NO_FOOD else null
             ConsumableType.POTION ->
                 if (consumable.restoresHitpoints && raid.isActive("dbrow.toa_invocation_dehydration")) {
                     NO_POTION

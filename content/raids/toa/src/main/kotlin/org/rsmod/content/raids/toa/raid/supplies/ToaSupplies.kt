@@ -92,7 +92,7 @@ class ToaSupplies {
             return if (rolled) amount(1, false) else 0
         }
 
-        val diet = raid.isActive("dbrow.toa_invocation_on_adiet")
+        val diet = raid.isActive("dbrow.toa_invocation_on_a_diet")
         val life =
             listOf(
                 SupplyStack(ToaSupply.NECTAR, amount(5, true)),
