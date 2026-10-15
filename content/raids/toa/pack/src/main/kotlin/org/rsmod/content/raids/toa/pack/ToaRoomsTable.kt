@@ -135,6 +135,7 @@ object ToaRoomsTable {
                         CoordGrid(3947, 5166, 1),
                         "The Wardens",
                     ),
+                drop = CoordGrid(3936, 5154, 1),
                 maxLevel = 1,
                 next = "dbrow.toa_room_reward",
             )

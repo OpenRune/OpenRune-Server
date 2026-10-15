@@ -9,6 +9,7 @@ import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenGod
+import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenPhantoms
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenSiphons
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardensSlams
 import org.rsmod.game.entity.Npc
@@ -33,6 +34,7 @@ class WardensSecondEncounter(
 
     internal val slams = WardensSlams(this)
     internal val siphons = WardenSiphons(this)
+    internal val phantoms = WardenPhantoms(this)
 
     internal var siphonDue = false
         private set
@@ -43,10 +45,24 @@ class WardensSecondEncounter(
     override val fight =
         ToaFight(
             boss = { warden },
-            combatants = WardenGod.entries.map { ToaCombatant.Spec(it.phaseThree, pathScaled = false) },
+            combatants =
+                WardenGod.entries.map { ToaCombatant.Spec(it.phaseThree, pathScaled = false) } +
+                    WardenPhantoms.Kind.entries.map {
+                        ToaCombatant.Spec(it.npc, pathScaled = false, scaleHitpoints = false)
+                    },
             firstAttackDelay = FIRST_SLAM_DELAY,
             attackRate = { slamRate },
+            death = ToaDeath(anim = DEATH_SEQ, dead = null, modelDelay = DEATH_MODEL_DELAY),
         )
+
+    override val loot: ToaBossLoot
+        get() =
+            ToaBossLoot(
+                trackerNpc = god.phaseThree,
+                book = ToaBook("obj.toa_book_wardens", "varbit.toa_book_wardens"),
+            )
+
+    private val deathNpcs = ArrayList<Npc>()
 
     internal val slamRate: Int
         get() =
@@ -75,6 +91,7 @@ class WardensSecondEncounter(
     }
 
     override fun onFightTick(boss: Npc, targets: List<Player>) {
+        if (boss.hitpoints > 0) phantoms.tick(targets)
         if (siphonDue || siphons.active) return
         val threshold = siphonThreshold(boss) ?: return
         if (boss.hitpoints <= threshold) siphonDue = true
@@ -118,6 +135,13 @@ class WardensSecondEncounter(
     }
 
     override fun onFightComplete() {
+        siphons.reset()
+        schedule(DEATH_MODEL_DELAY) { spawnDeathNpcs() }
+        schedule(PHANTOM_CLEAR_DELAY) {
+            phantoms.clear()
+            phantom?.let(::despawn)
+            phantom = null
+        }
         schedule(CRYSTAL_DELAY) {
             deps.locRepo.add(
                 coords(CRYSTAL_TILE),
@@ -129,8 +153,18 @@ class WardensSecondEncounter(
         }
     }
 
+    private fun spawnDeathNpcs() {
+        for ((index, seq) in DEATH_OFFSET_SEQS.withIndex()) {
+            val tile = coords(WARDEN_TILE.translate(0, -index * DEATH_NPC_STEP))
+            deathNpcs += spawn(god.deathNpc, tile, Direction.North).also { it.anim(seq) }
+        }
+    }
+
     private fun spawnRoom() {
         siphons.reset()
+        phantoms.clear()
+        for (npc in deathNpcs) despawn(npc)
+        deathNpcs.clear()
         siphonDue = false
         warden?.let(::despawn)
         phantom?.let(::despawn)
@@ -152,6 +186,11 @@ class WardensSecondEncounter(
         private val SIPHON_THRESHOLDS = listOf(0.8, 0.6, 0.4, 0.2)
         private const val WARDEN_BUSY = "You can't attack the warden right now."
         private const val CRYSTAL_DELAY = 13
+        private const val PHANTOM_CLEAR_DELAY = 3
+        private const val DEATH_MODEL_DELAY = 1
+        private const val DEATH_NPC_STEP = 5
+        private const val DEATH_SEQ = "seq.npc_wardens_death01"
+        private val DEATH_OFFSET_SEQS = (1..5).map { "seq.spotanim_wardens01_death02_offset0$it" }
         private const val FIRST_SLAM_DELAY = 6
         private const val SLAM_RATE = 7
         private const val OVERCLOCKED_SLAM_RATE = 6

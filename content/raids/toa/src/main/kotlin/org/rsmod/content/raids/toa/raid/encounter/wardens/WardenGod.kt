@@ -138,6 +138,9 @@ internal enum class WardenGod(
     val orbFacing: Direction
         get() = if (orbSide < 0) Direction.West else Direction.East
 
+    val deathNpc: String
+        get() = "npc.toa_warden_p3_death_${name.lowercase()}"
+
     val other: WardenGod
         get() = if (this == ELIDINIS) TUMEKEN else ELIDINIS
 
