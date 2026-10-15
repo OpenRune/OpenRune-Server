@@ -7,11 +7,14 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.scope.GameTestScope
 import org.rsmod.game.inv.InvObj
 
 @OptIn(UncheckedType::class)
+@Execution(ExecutionMode.SAME_THREAD)
 class CoinTradesTest {
     @Test
     fun GameTestState.`buying takes the price and gives one item`() =
