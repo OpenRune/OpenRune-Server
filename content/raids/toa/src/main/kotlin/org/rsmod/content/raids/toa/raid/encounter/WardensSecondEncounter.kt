@@ -3,11 +3,15 @@ package org.rsmod.content.raids.toa.raid.encounter
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
+import org.rsmod.api.bosses.runtime.runAbility
 import org.rsmod.api.death.NpcAttackValidateResult
+import org.rsmod.api.player.output.Camera
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
+import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenEnrage
+import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenFinalAbilities
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenGod
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenPhantoms
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenSiphons
@@ -32,9 +36,13 @@ class WardensSecondEncounter(
 
     private var phantom: Npc? = null
 
+    internal val amascut: Npc?
+        get() = phantom
+
     internal val slams = WardensSlams(this)
     internal val siphons = WardenSiphons(this)
     internal val phantoms = WardenPhantoms(this)
+    internal val enrage = WardenEnrage(this)
 
     internal var siphonDue = false
         private set
@@ -92,6 +100,7 @@ class WardensSecondEncounter(
 
     override fun onFightTick(boss: Npc, targets: List<Player>) {
         if (boss.hitpoints > 0) phantoms.tick(targets)
+        checkEnrage(boss)
         if (siphonDue || siphons.active) return
         val threshold = siphonThreshold(boss) ?: return
         if (boss.hitpoints <= threshold) siphonDue = true
@@ -108,9 +117,19 @@ class WardensSecondEncounter(
             hit.damage = 0
             return
         }
-        val threshold = siphonThreshold(npc) ?: return
+        if (enrage.active) return
+        val threshold = siphonThreshold(npc) ?: enrageThreshold(npc)
         hit.damage = min(hit.damage, max(npc.hitpoints - threshold, 0))
     }
+
+    internal fun checkEnrage(npc: Npc) {
+        if (npc !== warden || enrage.active || siphons.active || npc.hitpoints <= 0) return
+        if (siphons.launched < SIPHON_THRESHOLDS.size || npc.hitpoints > enrageThreshold(npc)) return
+        val target = targets().firstOrNull() ?: return
+        deps.bossDeps.runAbility(npc, target, WardenFinalAbilities.ENRAGE)
+    }
+
+    private fun enrageThreshold(boss: Npc): Int = floor(boss.baseHitpointsLvl * ENRAGE_FRACTION).toInt()
 
     internal fun debugSiphon(): String? {
         if (siphons.launched >= SIPHON_THRESHOLDS.size) return "All siphon sets have run."
@@ -136,6 +155,7 @@ class WardensSecondEncounter(
 
     override fun onFightComplete() {
         siphons.reset()
+        schedule(DEATH_MODEL_DELAY) { for (player in players) Camera.camReset(player) }
         schedule(DEATH_MODEL_DELAY) { spawnDeathNpcs() }
         schedule(PHANTOM_CLEAR_DELAY) {
             phantoms.clear()
@@ -162,6 +182,7 @@ class WardensSecondEncounter(
 
     private fun spawnRoom() {
         siphons.reset()
+        enrage.reset()
         phantoms.clear()
         for (npc in deathNpcs) despawn(npc)
         deathNpcs.clear()
@@ -184,6 +205,7 @@ class WardensSecondEncounter(
         private val WARDEN_TILE = CoordGrid(3934, 5152, 1)
         private val PHANTOM_TILE = CoordGrid(3932, 5127, 1)
         private val SIPHON_THRESHOLDS = listOf(0.8, 0.6, 0.4, 0.2)
+        private const val ENRAGE_FRACTION = 0.05
         private const val WARDEN_BUSY = "You can't attack the warden right now."
         private const val CRYSTAL_DELAY = 13
         private const val PHANTOM_CLEAR_DELAY = 3
