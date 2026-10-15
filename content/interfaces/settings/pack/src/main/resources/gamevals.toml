@@ -1,0 +1,43 @@
+[gamevals.dbtable]
+account_default_vars = 64400
+
+[gamevals.dbrow]
+account_default_option_run = 63700
+account_default_com_stance = 63701
+account_default_option_master_volume = 63702
+account_default_option_music = 63703
+account_default_option_sounds = 63704
+account_default_option_areasounds = 63705
+account_default_xpdrops_enabled = 63706
+account_default_xpdrops_size = 63707
+account_default_xpdrops_duration = 63708
+account_default_xpdrops_counter_type = 63709
+account_default_xpdrops_progress_type = 63710
+account_default_resizable_stone_arrangement = 63711
+account_default_osm_fn_mode_button = 63712
+account_default_chat_filter_private = 63713
+account_default_esc_to_close_desktop = 63714
+account_default_settings_disable_tooltip_in_interface = 63715
+account_default_option_settings_declutter = 63716
+account_default_cr_quests_include_members = 63717
+account_default_bank_showincinerator = 63718
+account_default_osm_hotkey_0 = 63719
+account_default_osm_hotkey_1 = 63720
+account_default_osm_hotkey_2 = 63721
+account_default_osm_hotkey_3 = 63722
+account_default_osm_hotkey_4 = 63723
+account_default_osm_hotkey_loadout1_0 = 63724
+account_default_osm_hotkey_loadout1_1 = 63725
+account_default_osm_hotkey_loadout1_2 = 63726
+account_default_osm_hotkey_loadout1_3 = 63727
+account_default_osm_hotkey_loadout1_4 = 63728
+account_default_osm_hotkey_loadout2_0 = 63729
+account_default_osm_hotkey_loadout2_1 = 63730
+account_default_osm_hotkey_loadout2_2 = 63731
+account_default_osm_hotkey_loadout2_3 = 63732
+account_default_osm_hotkey_loadout2_4 = 63733
+account_default_osm_hotkey_loadout3_0 = 63734
+account_default_osm_hotkey_loadout3_1 = 63735
+account_default_osm_hotkey_loadout3_2 = 63736
+account_default_osm_hotkey_loadout3_3 = 63737
+account_default_osm_hotkey_loadout3_4 = 63738

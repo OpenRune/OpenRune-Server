@@ -2,6 +2,7 @@ package org.rsmod.content.other.login
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.StatType
 import jakarta.inject.Inject
@@ -51,6 +52,7 @@ constructor(
     private val statSyncEntries by lazy { statSyncEntries() }
 
     private var Player.chatboxUnlocked: Boolean by boolVarBit("varbit.has_displayname_transmitter")
+    private val Player.newAccount: Boolean by boolVarBit("varbit.new_player_account")
 
     override fun ScriptContext.startup() {
         onEvent<SessionStateEvent.EngineLogin>(0L) { player.engineLogin() }
@@ -134,6 +136,9 @@ constructor(
         runClientScript(828, 1)
         runClientScript(5141)
         runClientScript(626)
+        if (newAccount) {
+            runClientScript(TUTORIAL_DEFAULT_SETTINGS.asRSCM(RSCMType.CLIENTSCRIPT))
+        }
         sendPlayerOps()
         runClientScript(876, mapClock.cycle, 0, displayName, "REGULAR")
         sendStats()
@@ -179,4 +184,8 @@ constructor(
         ServerCacheManager.getStats().values.map { stat ->
             RSCM.getReverseMapping(RSCMType.STAT, stat.id) to stat
         }
+
+    private companion object {
+        const val TUTORIAL_DEFAULT_SETTINGS = "clientscript.[clientscript,tutorial_default_settings]"
+    }
 }
