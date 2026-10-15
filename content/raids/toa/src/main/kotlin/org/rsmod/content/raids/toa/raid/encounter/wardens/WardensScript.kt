@@ -45,6 +45,7 @@ class WardensScript : PluginScript() {
             for (form in listOf(god.phaseThree, god.phaseThreeCharging)) {
                 onRoomNpcQueue<WardensSecondEncounter>(form, DEATH) { if (it === warden) complete() }
             }
+            onRoomNpcHit<WardensSecondEncounter>(god.phaseThree) { npc, _ -> checkEnrage(npc) }
             for (form in god.phaseTwoForms) {
                 onRoomNpcHit<WardensEncounter>(form) { npc, hit -> wardenHit(npc, hit) }
             }

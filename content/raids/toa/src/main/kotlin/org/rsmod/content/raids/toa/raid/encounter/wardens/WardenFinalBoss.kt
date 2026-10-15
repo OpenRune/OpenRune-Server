@@ -24,6 +24,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 internal object WardenFinalAbilities {
     const val SIPHONS = "siphons"
     const val RESOLVE = "resolve"
+    const val ENRAGE = "enrage"
+    const val ENRAGE_START = "wardens.enrage_start"
     const val LAUNCH = "wardens.siphon_launch"
     const val RESOLVED = "wardens.siphon_resolved"
 }
@@ -46,6 +48,9 @@ class WardenFinalBoss @Inject constructor(deps: BossDeps) : BossPluginScript(dep
         }
         deps.onRoomExternal<WardensSecondEncounter>(WardenFinalAbilities.RESOLVED) { room, _ ->
             room.siphons.finish()
+        }
+        deps.onRoomExternal<WardensSecondEncounter>(WardenFinalAbilities.ENRAGE_START) { room, ext ->
+            room.enrage.start(ext.npc)
         }
     }
 
@@ -74,6 +79,15 @@ class WardenFinalBoss @Inject constructor(deps: BossDeps) : BossPluginScript(dep
                 ),
             )
 
+            ability(
+                WardenFinalAbilities.ENRAGE,
+                sequence(
+                    interrupt(),
+                    external(WardenFinalAbilities.ENRAGE_START),
+                    transitionTo(ENRAGED_PHASE),
+                ),
+            )
+
             phase(SLAM_PHASE) {
                 rotationSelector {
                     +then(WardenSlam.EAST.ability)
@@ -83,6 +97,7 @@ class WardenFinalBoss @Inject constructor(deps: BossDeps) : BossPluginScript(dep
                 forceWhen(siphonDue, WardenFinalAbilities.SIPHONS)
             }
             phase(CHARGING_PHASE, lockMovement = true) {}
+            phase(ENRAGED_PHASE, lockMovement = true) {}
         }
 
     private fun slam(slam: WardenSlam): Effect =
@@ -94,6 +109,7 @@ class WardenFinalBoss @Inject constructor(deps: BossDeps) : BossPluginScript(dep
     private companion object {
         const val SLAM_PHASE = "slams"
         const val CHARGING_PHASE = "charging"
+        const val ENRAGED_PHASE = "enraged"
         const val CHARGE_SEQ = "seq.npc_wardens_charge01"
         const val STAGGER_SEQ = "seq.npc_wardens_stagger01"
         const val RESOLVE_DELAY = 1

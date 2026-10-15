@@ -55,8 +55,23 @@ internal class WardenPhantoms(private val room: WardensSecondEncounter) {
         val progress: Int = 0,
     )
 
+    private var enraged = false
+
     private val rate: Int
-        get() = if (room.raid.isActive(ToaInvocationKey.Insanity)) FAST_RATE else RATE
+        get() {
+            val insanity = room.raid.isActive(ToaInvocationKey.Insanity)
+            return when {
+                enraged && insanity -> FAST_ENRAGED_RATE
+                enraged -> ENRAGED_RATE
+                insanity -> FAST_RATE
+                else -> RATE
+            }
+        }
+
+    fun enrage() {
+        enraged = true
+        for (phantom in phantoms) phantom.cooldown = minOf(phantom.cooldown, rate)
+    }
 
     fun summon(set: Int) {
         val kind = kindFor(set) ?: return
@@ -79,6 +94,7 @@ internal class WardenPhantoms(private val room: WardensSecondEncounter) {
     }
 
     fun clear() {
+        enraged = false
         for (phantom in phantoms) room.despawn(phantom.npc)
         phantoms.clear()
     }
@@ -289,6 +305,8 @@ internal class WardenPhantoms(private val room: WardensSecondEncounter) {
         const val FIRST_ATTACK = 8
         const val RATE = 8
         const val FAST_RATE = 6
+        const val ENRAGED_RATE = 5
+        const val FAST_ENRAGED_RATE = 4
         const val CYCLES_PER_TICK = 30
 
         const val ZEBAK_SEQ = "seq.npc_zebak01_attack_ranged_enraged"
