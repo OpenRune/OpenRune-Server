@@ -73,12 +73,21 @@ constructor(
 
     private suspend fun ProtectedAccess.canWork(): Boolean {
         if (!player.holdsPreform()) {
-            // UNVERIFIED: the tools show the lava pool's and waterfall's box too (guess).
+            // UNVERIFIED: the tools show the waterfall's box too (guess).
             mesbox(NEEDS_PREFORM)
             return false
         }
         if (player.preformQuality == 0) {
             mes(DAMAGED)
+            return false
+        }
+        if (player.preformCompletion >= FoundryFormulas.SCALE) {
+            if (player.makingQuestSword()) {
+                questSwordFinished()
+            } else {
+                // UNVERIFIED: a commission sword gives the line shown when it was finished (guess).
+                mes(FINISHED)
+            }
             return false
         }
         return true
@@ -92,15 +101,6 @@ constructor(
 
     private suspend fun ProtectedAccess.startTool(tool: FoundryTool) {
         if (!canWork()) {
-            return
-        }
-        if (player.preformCompletion >= FoundryFormulas.SCALE) {
-            if (player.makingQuestSword()) {
-                questSwordFinished()
-            } else {
-                // UNVERIFIED: the same line when a tool is used on a finished sword (guess).
-                mes(FINISHED)
-            }
             return
         }
         val station = tool.row.seed + 1
