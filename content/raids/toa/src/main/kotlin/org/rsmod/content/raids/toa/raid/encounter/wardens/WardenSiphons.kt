@@ -88,6 +88,7 @@ internal class WardenSiphons(private val room: WardensSecondEncounter) {
         val warden = room.warden ?: return
         active = false
         warden.transmog(npcType(room.god.phaseThree), Int.MAX_VALUE)
+        if (insanity) room.schedule(KEEP_ROTATION_DELAY) { room.keepRotation() }
         for (player in room.targets()) {
             for (synth in SynthRefs.STAGGER) player.soundSynth(synth)
         }
@@ -254,6 +255,7 @@ internal class WardenSiphons(private val room: WardensSecondEncounter) {
         const val SPAWN_DELAY = 6
         const val BEAM_FIRST = 8
         const val PHANTOM_DELAY = 3
+        const val KEEP_ROTATION_DELAY = 1
         const val BEAM_STEP = 2
         const val WINDOW_BASE = 3
         const val WINDOW_STEP = 3

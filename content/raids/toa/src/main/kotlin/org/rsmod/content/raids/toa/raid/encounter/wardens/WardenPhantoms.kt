@@ -8,6 +8,7 @@ import dev.openrune.types.ProjAnimType
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.party.ToaInvocationKey
+import org.rsmod.content.raids.toa.raid.ToaPath
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.apmeken.baba.BabaRocks
 import org.rsmod.content.raids.toa.raid.encounter.apmeken.baba.BabaSeqs
@@ -173,15 +174,16 @@ internal class WardenPhantoms(private val room: WardensSecondEncounter) {
 
     private fun baba(phantom: Phantom, targets: List<Player>) {
         phantom.npc.anim(BabaSeqs.MELEE)
+        val tier = (room.raid.pathLevels[ToaPath.APMEKEN.ordinal] / PATH_LEVELS_PER_TIER).coerceIn(0, BabaSpots.ROCK_FALL.lastIndex)
         val marked = targets.map { it.coords }.toSet()
         for (tile in marked) {
             deps.worldRepo.spotanimMap(
-                spotanim(BabaSpots.ROCK_FALL.first()),
+                spotanim(BabaSpots.ROCK_FALL[tier]),
                 tile,
                 delay = BabaRocks.MARK_DELAY_CYCLES,
             )
         }
-        room.schedule(BABA_FALL_TICKS) {
+        room.schedule(maxOf(BABA_MIN_FALL_TICKS, BABA_FALL_TICKS - BabaRocks.TICKS_PER_TIER * tier)) {
             for (player in room.targets()) {
                 if (player.coords in marked) room.hazardDamage(player, BABA_DAMAGE, BABA_SPREAD)
             }
@@ -319,6 +321,8 @@ internal class WardenPhantoms(private val room: WardensSecondEncounter) {
         const val ZEBAK_SPLIT_SOUND_DELAY = 120
 
         const val BABA_FALL_TICKS = 5
+        const val BABA_MIN_FALL_TICKS = 2
+        const val PATH_LEVELS_PER_TIER = 2
         const val BABA_DAMAGE = 19
         const val BABA_SPREAD = 4
 

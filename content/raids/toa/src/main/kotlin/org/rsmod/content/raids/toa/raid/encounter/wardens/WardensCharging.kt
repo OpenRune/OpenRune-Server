@@ -7,6 +7,7 @@ import kotlin.math.abs
 import kotlin.math.min
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.output.mes
+import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
@@ -21,6 +22,9 @@ import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 
 internal class WardensCharging(private val room: WardensEncounter) {
+    private val orbCharge: Int
+        get() = if (room.raid.isActive(ToaInvocationKey.AncientHaste)) ORB_CHARGE * HASTE_FACTOR else ORB_CHARGE
+
     private val deps = room.raid.deps
     private val orbs = ArrayList<Orb>()
     private val pyramids = WardenGod.entries.associateWith { ArrayList<LocInfo>() }
@@ -167,7 +171,7 @@ internal class WardensCharging(private val room: WardensEncounter) {
             if (blocker != null) {
                 block(orb, blocker)
             } else if (orb.step == orb.path.size) {
-                addCharge(orb.god, ORB_CHARGE)
+                addCharge(orb.god, orbCharge)
                 orb.ending = true
             }
         }
@@ -318,6 +322,7 @@ internal class WardensCharging(private val room: WardensEncounter) {
         const val PASSIVE_EVEN = 2
         const val PASSIVE_ODD = 1
         const val ORB_CHARGE = 2
+        const val HASTE_FACTOR = 2
         const val BLOCK_DAMAGE = 3
         const val ORB_STEP_CYCLES = 30
         const val ORB_SOUND_RADIUS = 9
