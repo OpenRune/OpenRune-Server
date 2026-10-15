@@ -3,6 +3,7 @@ package org.rsmod.content.raids.toa.raid.encounter
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
+import org.rsmod.api.bosses.runtime.forceNext
 import org.rsmod.api.bosses.runtime.runAbility
 import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.player.output.Camera
@@ -122,6 +123,12 @@ class WardensSecondEncounter(
         hit.damage = min(hit.damage, max(npc.hitpoints - threshold, 0))
     }
 
+    internal fun keepRotation() {
+        val boss = warden ?: return
+        if (boss.hitpoints <= 0 || enrage.active) return
+        deps.bossDeps.forceNext(boss, slams.next().ability)
+    }
+
     internal fun checkEnrage(npc: Npc) {
         if (npc !== warden || enrage.active || siphons.active || npc.hitpoints <= 0) return
         if (siphons.launched < SIPHON_THRESHOLDS.size || npc.hitpoints > enrageThreshold(npc)) return
@@ -182,6 +189,7 @@ class WardensSecondEncounter(
 
     private fun spawnRoom() {
         siphons.reset()
+        slams.reset()
         enrage.reset()
         phantoms.clear()
         for (npc in deathNpcs) despawn(npc)
