@@ -11,6 +11,7 @@ import org.rsmod.content.raids.toa.party.ToaPartyManager.currentParty
 import org.rsmod.content.raids.toa.party.ToaPartySettings
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
+import org.rsmod.content.raids.toa.raid.encounter.ToaRewardEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardensEncounter
 import org.rsmod.game.cheat.Cheat
@@ -38,6 +39,19 @@ constructor(
             cheat {
                 enterRoom(ToaRoom.WARDENS_FIRST_ROOM) {
                     (it as? WardensEncounter)?.arriveInFrontOfGhost()
+                }
+            }
+        }
+        onCommand("toareward") {
+            requiredRights = Rights.ADMINISTRATOR
+            desc = "Set your loot points and enter the reward room, starting a raid if needed"
+            invalidArgs = REWARD_USAGE
+            cheat {
+                val loot = args[0].toIntOrNull() ?: return@cheat player.mes(REWARD_USAGE)
+                val force = args.getOrNull(1)?.lowercase() == "unique"
+                enterRoom(ToaRoom.REWARD_ROOM) {
+                    it.raid.points.setLoot(player, loot)
+                    (it as? ToaRewardEncounter)?.forceUnique = force
                 }
             }
         }
@@ -142,5 +156,9 @@ constructor(
         launcher.launch(player, busyText = "Close your dialog first.") {
             proceed(raid, next, "has proceeded to the next challenge")
         }
+    }
+
+    private companion object {
+        const val REWARD_USAGE = "Usage: ::toareward <loot points> [unique]"
     }
 }

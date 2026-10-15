@@ -18,6 +18,10 @@ class ToaPoints(members: List<Player>) {
 
     fun lootPoints(player: Player): Int = (total(player) - START).coerceAtLeast(0)
 
+    fun setLoot(player: Player, loot: Int) {
+        if (player in totals) totals[player] = (START + loot).coerceIn(0, TOTAL_MAX)
+    }
+
     fun addDamage(player: Player, damage: Int, multiplier: Double, roomCap: Int) {
         if (player !in totals || damage <= 0 || multiplier <= 0.0) return
         val earned = floor(damage * multiplier).toInt()

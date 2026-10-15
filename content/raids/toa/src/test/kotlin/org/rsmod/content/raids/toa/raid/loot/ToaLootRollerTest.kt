@@ -16,9 +16,17 @@ class ToaLootRollerTest {
     }
 
     @Test
-    fun `unique chance is one percent per divisor and capped`() {
+    fun `unique chance is one percent per divisor and never exceeds one`() {
         assertEquals(0.01, ToaLootMath.uniqueChance(3_700, 400), 1e-9)
-        assertEquals(0.55, ToaLootMath.uniqueChance(64_000 * 8, 400), 1e-9)
+        assertEquals(0.1, ToaLootMath.uniqueChance(37_000, 400), 1e-9)
+        assertEquals(1.0, ToaLootMath.uniqueChance(64_000 * 8, 400), 1e-9)
+    }
+
+    @Test
+    fun `unique boost multiplies the chance and never exceeds one`() {
+        assertEquals(0.02, ToaLootMath.uniqueChance(3_700, 400, 2.0), 1e-9)
+        assertEquals(0.15, ToaLootMath.uniqueChance(37_000, 400, 1.5), 1e-9)
+        assertEquals(1.0, ToaLootMath.uniqueChance(64_000 * 8, 400, 4.0), 1e-9)
     }
 
     @Test
@@ -63,43 +71,70 @@ class ToaLootRollerTest {
     @Test
     fun `no unique when the chance roll fails`() {
         val roller = roller(doubles = listOf(0.99))
-        assertNull(roller.rollUnique(mapOf("a" to 20_000), 400) { true })
+        assertNull(roller.rollUnique("a", 20_000, 400) { true })
     }
 
     @Test
-    fun `unique winner is picked proportionally to points`() {
-        val points = linkedMapOf("a" to 3_000, "b" to 1_000)
-        val low = roller(doubles = listOf(0.0), ints = listOf(2_999))
-        assertEquals("a", low.rollUnique(points, 400) { true }?.winner)
-        val high = roller(doubles = listOf(0.0), ints = listOf(3_000))
-        assertEquals("b", high.rollUnique(points, 400) { true }?.winner)
+    fun `every player rolls their own unique chance`() {
+        val points = linkedMapOf("a" to 20_000, "b" to 20_000)
+        val roll = roller(doubles = listOf(0.0, 0.99)).rollRaid(points, 400) { true }
+        assertEquals(setOf("a"), roll.uniques.keys)
+        assertEquals(setOf("b"), roll.commons.keys)
+    }
+
+    @Test
+    fun `several players can win a unique in the same raid`() {
+        val points = linkedMapOf("a" to 20_000, "b" to 20_000)
+        val roll = roller(doubles = listOf(0.0, 0.0)).rollRaid(points, 400) { true }
+        assertEquals(setOf("a", "b"), roll.uniques.keys)
+        assertTrue(roll.commons.isEmpty())
+    }
+
+    @Test
+    fun `boost raises the win threshold`() {
+        val boosted = roller(doubles = listOf(0.1), boost = 4.0)
+        assertEquals("a", boosted.rollUnique("a", 20_000, 400) { true }?.winner)
+        val plain = roller(doubles = listOf(0.1))
+        assertNull(plain.rollUnique("a", 20_000, 400) { true })
     }
 
     @Test
     fun `out of level unique is kept only on the one in fifty roll`() {
-        val points = mapOf("a" to 20_000)
-        val kept = roller(doubles = listOf(0.0), ints = listOf(0, 0))
-        assertFalse(requireNotNull(kept.rollUnique(points, 500) { false }).consolation)
-        val lost = roller(doubles = listOf(0.0), ints = listOf(0, 1))
-        assertTrue(requireNotNull(lost.rollUnique(points, 500) { false }).consolation)
+        val kept = roller(doubles = listOf(0.0), ints = listOf(0))
+        assertFalse(requireNotNull(kept.rollUnique("a", 20_000, 500) { false }).consolation)
+        val lost = roller(doubles = listOf(0.0), ints = listOf(1))
+        assertTrue(requireNotNull(lost.rollUnique("a", 20_000, 500) { false }).consolation)
+    }
+
+    @Test
+    fun `consolation winners still get commons`() {
+        val roll =
+            roller(doubles = listOf(0.0), ints = listOf(1))
+                .rollRaid(mapOf("a" to 20_000), 500) { false }
+        assertTrue(requireNotNull(roll.uniques["a"]).consolation)
+        assertEquals(setOf("a"), roll.commons.keys)
     }
 
     @Test
     fun `unique winner gets no commons and low points get dung instead`() {
         val points = linkedMapOf("winner" to 20_000, "dung" to 1_000, "common" to 20_000)
-        val roller = roller(doubles = listOf(0.0), ints = listOf(0))
-        val roll = roller.rollRaid(points, 150) { true }
-        assertEquals("winner", roll.unique?.winner)
+        val roll = roller(doubles = listOf(0.0, 0.99)).rollRaid(points, 150) { true }
+        assertEquals(setOf("winner"), roll.uniques.keys)
         assertEquals(setOf("dung"), roll.dung)
         assertEquals(setOf("common"), roll.commons.keys)
         assertEquals(ToaLootMath.COMMON_ROLLS, roll.commons.getValue("common").size)
     }
 
-    private fun roller(doubles: List<Double> = emptyList(), ints: List<Int> = emptyList()) =
+    private fun roller(
+        doubles: List<Double> = emptyList(),
+        ints: List<Int> = emptyList(),
+        boost: Double = 1.0,
+    ) =
         ToaLootRoller<String>(
             ScriptedRandom(doubles, ints),
             pickCommon = { CommonDrop("coins", 1) },
             pickUnique = { _, _ -> "fang" },
+            uniqueBoost = { boost },
         )
 
     private class ScriptedRandom(doubles: List<Double>, ints: List<Int>) : GameRandom {

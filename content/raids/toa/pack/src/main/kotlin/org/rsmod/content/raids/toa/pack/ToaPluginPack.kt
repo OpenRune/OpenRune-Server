@@ -11,6 +11,7 @@ class ToaPluginPack : PluginPack() {
             ToaPathsTable.paths(),
             ToaPickaxesTable.pickaxes(),
             ToaInvocationsTable.invocations(),
+            ToaVaultDisplayTable.displays(),
             HetPuzzleTables.layouts(),
             HetPuzzleTables.seal(),
         ) + WardensTables.all()

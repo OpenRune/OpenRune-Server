@@ -90,6 +90,13 @@ toa_path_scabaras = 738
 toa_path_apmeken = 741
 
 [gamevals.synth]
+toa_vault_sarcophagus_click = 6051
+toa_vault_sarcophagus_open_a = 5934
+toa_vault_sarcophagus_open_b = 5939
+toa_vault_sarcophagus_open_c = 5930
+toa_vault_loot_appear = 5942
+toa_vault_rare_found = 5925
+toa_vault_chest_open = 52
 toa_wardens_orb_spawn = 6595
 toa_wardens_charge = 3614
 toa_wardens_siphon_spawn = 6159
@@ -176,8 +183,16 @@ toa_wardens_slams = 64107
 toa_wardens_siphons = 64108
 toa_wardens_collapse = 64109
 toa_invocations = 64110
+toa_vault_displays = 64111
 
 [gamevals.dbrow]
+toa_vault_display_lightbearer = 57180
+toa_vault_display_masori_mask = 57181
+toa_vault_display_masori_body = 57182
+toa_vault_display_masori_chaps = 57183
+toa_vault_display_osmumtens_fang = 57184
+toa_vault_display_elidinis_ward = 57185
+toa_vault_display_tumekens_shadow_uncharged = 57186
 toa_room_main_hall = 57000
 toa_room_reward = 57001
 toa_room_wardens_first = 57002

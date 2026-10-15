@@ -29,6 +29,13 @@ inherit = "inv.gravestone"
 scope = "Perm"
 protect = false
 
+[[inventory]]
+isServerOnly = true
+id = "inv.toa_chests"
+inherit = "inv.toa_chests"
+scope = "Perm"
+protect = false
+
 [[varp]]
 isServerOnly = true
 id = "varp.toa_retrieval_locked"
