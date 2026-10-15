@@ -38,6 +38,7 @@ class RewardShopScript @Inject constructor() : PluginScript() {
         when (obj.internalName) {
             GROG -> {
                 chatNpc(npc, mesanims.neutral, "No, you keep that or give it to someone else.")
+                // UNVERIFIED: the mesanims of the Ironman lines (guess).
                 if (player.isAnyIronman) {
                     chatPlayer(mesanims.neutral, "Can't you make an exception for me? I'm an Ironman by the way.")
                     chatNpc(npc, mesanims.neutral, "You get treated the same anyway.")

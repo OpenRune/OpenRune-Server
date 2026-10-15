@@ -124,6 +124,7 @@ constructor(private val room: SleepingGiantsRoom, private val eventBus: EventBus
         ) {
             player.sleepingGiants = SleepingGiants.COMPLETE
         }
+        // UNVERIFIED: that logging in with a stored preform gives the kept-warm line (guess).
         if (player.preformStored) {
             player.mes(KEPT_WARM)
         }
