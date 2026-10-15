@@ -9,6 +9,8 @@ dependencies {
     implementation(projects.api.areaChecker)
     implementation(projects.api.bossHpBarPlugin)
     implementation(projects.api.bosses)
+    implementation(projects.api.dropTable)
+    implementation(projects.api.dropTablePlugin)
     implementation(projects.api.combat.combatFormulas)
     implementation(projects.api.combat.combatCommons)
     implementation(projects.api.instances)
