@@ -7,6 +7,7 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.encounter.onRoomNpcHit
+import org.rsmod.content.raids.toa.raid.encounter.onRoomNpcQueue
 import org.rsmod.game.hit.HitType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -14,6 +15,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 class WardensScript : PluginScript() {
     private companion object {
         const val SIPHON_BLUE = "npc.wardens_p3_orb_blue"
+        const val DEATH = "queue.death"
     }
 
     override fun ScriptContext.startup() {
@@ -40,6 +42,9 @@ class WardensScript : PluginScript() {
         onRoomNpcHit<WardensSecondEncounter>(SIPHON_BLUE) { npc, hit -> siphons.hit(npc, hit) }
 
         for (god in WardenGod.entries) {
+            for (form in listOf(god.phaseThree, god.phaseThreeCharging)) {
+                onRoomNpcQueue<WardensSecondEncounter>(form, DEATH) { if (it === warden) complete() }
+            }
             for (form in god.phaseTwoForms) {
                 onRoomNpcHit<WardensEncounter>(form) { npc, hit -> wardenHit(npc, hit) }
             }
