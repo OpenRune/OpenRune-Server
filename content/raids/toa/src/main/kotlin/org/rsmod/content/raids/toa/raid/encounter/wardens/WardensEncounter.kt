@@ -57,6 +57,8 @@ class WardensEncounter(
         private set
 
     private var wardenReady = false
+    private var lastAttackTick = 0
+    private var attackDueTick = 0
     private var lastWasSpecial = false
     internal val entomb = WardensEntomb(this)
     internal val core = WardenCore(this)
@@ -105,6 +107,8 @@ class WardensEncounter(
         get() = core.realFraction < ENTOMB_BELOW
 
     internal fun rollSpecial(): Boolean {
+        lastAttackTick = deps.mapClock.cycle
+        attackDueTick = lastAttackTick + wardenAttackRate()
         val special = !lastWasSpecial && deps.random.of(SPECIAL_ODDS) == 0
         lastWasSpecial = special
         return special
@@ -179,11 +183,15 @@ class WardensEncounter(
         val encounter = deps.bossDeps.encounter(warden)
         encounter.attackRateOverride = wardenAttackRate()
         lastWasSpecial = false
+        lastAttackTick = Int.MIN_VALUE / 2
+        attackDueTick = deps.mapClock.cycle + FIRST_ATTACK_LEAD
         wardenReady = true
     }
 
-    private fun wardenAttackRate(): Int =
-        if (raid.isActive(ToaInvocationKey.Acceleration)) ACCELERATED_ATTACK_RATE else ATTACK_RATE
+    private fun wardenAttackRate(): Int {
+        val base = if (activeGod == WardenGod.TUMEKEN) TUMEKEN_ATTACK_RATE else ATTACK_RATE
+        return if (raid.isActive(ToaInvocationKey.Acceleration)) base - ACCELERATION_REDUCTION else base
+    }
 
     internal fun warden(god: WardenGod): Npc? = wardens[god]?.takeIf { it.isSlotAssigned }
 
@@ -214,10 +222,20 @@ class WardensEncounter(
     override fun onFightTick(boss: Npc, targets: List<Player>) {
         if (!phaseOne) {
             obeliskCycle.tick()
+            steerChase(boss)
             return
         }
         boss.ignoreCombatInteractions = true
         charging.tick(deps.mapClock.cycle - startCycle)
+    }
+
+    private fun steerChase(boss: Npc) {
+        if (activeGod != WardenGod.TUMEKEN || !wardenReady || boss !== activeWarden) return
+        if (core.state != WardenCore.State.SHIELD) return
+        val interaction = boss.interaction ?: return
+        val now = deps.mapClock.cycle
+        val holding = now < lastAttackTick + CHASE_LOCK || now >= attackDueTick
+        interaction.apRange = if (holding) boss.attackRange else MELEE_AP_RANGE
     }
 
     internal fun modifyObeliskHit(npc: Npc, hit: HitBuilder) {
@@ -360,7 +378,11 @@ class WardensEncounter(
         private const val SPECIAL_ODDS = 5
         private const val ENTOMBED_ATTACK = "You cannot attack while entombed in stone."
         private const val READY_DELAY = 22
+        private const val FIRST_ATTACK_LEAD = 1
+        private const val CHASE_LOCK = 4
+        private const val MELEE_AP_RANGE = 1
         private const val ATTACK_RATE = 7
-        private const val ACCELERATED_ATTACK_RATE = 6
+        private const val TUMEKEN_ATTACK_RATE = 8
+        private const val ACCELERATION_REDUCTION = 1
     }
 }
