@@ -17,6 +17,8 @@ object GiantsFoundryTables {
     const val TOOL_LOOP_SEQ = 8
     const val TOOL_NAME = 9
     const val TOOL_ICON = 10
+    const val TOOL_HINT = 11
+    const val TOOL_HEAT_TIP = 12
 
     fun tools() =
         dbTable("dbtable.giants_foundry_tools", serverOnly = true) {
@@ -31,6 +33,8 @@ object GiantsFoundryTables {
             column("loop_seq", TOOL_LOOP_SEQ, VarType.SEQ)
             column("name", TOOL_NAME, VarType.STRING)
             column("icon", TOOL_ICON, VarType.INT)
+            column("hint", TOOL_HINT, VarType.COORDGRID)
+            column("heat_tip", TOOL_HEAT_TIP, VarType.STRING)
 
             fun tool(
                 row: String,
@@ -45,6 +49,8 @@ object GiantsFoundryTables {
                 loopSeq: String,
                 name: String,
                 icon: Int,
+                hint: CoordGrid,
+                heatTip: String,
             ) {
                 row("dbrow.giants_foundry_tool_$row") {
                     column(TOOL_SEED, seed)
@@ -58,6 +64,8 @@ object GiantsFoundryTables {
                     columnRSCM(TOOL_LOOP_SEQ, loopSeq)
                     column(TOOL_NAME, name)
                     column(TOOL_ICON, icon)
+                    columnCoord(TOOL_HINT, hint)
+                    column(TOOL_HEAT_TIP, heatTip)
                 }
             }
 
@@ -74,6 +82,8 @@ object GiantsFoundryTables {
                 loopSeq = "seq.human_preform_lift_loop02",
                 name = "trip hammer",
                 icon = 4442,
+                hint = CoordGrid(3365, 11497, 0),
+                heatTip = "The trip hammer requires a high temperature to work<br>the preform.",
             )
             tool(
                 "grindstone",
@@ -88,6 +98,8 @@ object GiantsFoundryTables {
                 loopSeq = "seq.human_preform_lift_loop",
                 name = "grindstone",
                 icon = 4443,
+                hint = CoordGrid(3363, 11492, 0),
+                heatTip = "The grindstone requires a medium range temperature<br>to work the preform.",
             )
             tool(
                 "polishing_wheel",
@@ -102,6 +114,9 @@ object GiantsFoundryTables {
                 loopSeq = "seq.human_preform_lift_loop",
                 name = "polishing wheel",
                 icon = 4444,
+                hint = CoordGrid(3364, 11485, 0),
+                heatTip =
+                    "The polishing wheel requires a low temperature range to<br>work the preform.",
             )
         }
 

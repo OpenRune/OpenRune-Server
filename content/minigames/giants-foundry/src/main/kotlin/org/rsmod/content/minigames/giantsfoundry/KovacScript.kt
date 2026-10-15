@@ -1,18 +1,10 @@
 package org.rsmod.content.minigames.giantsfoundry
 
-import dev.openrune.definition.type.widget.IfEvent
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
-import dev.openrune.types.aconverted.interf.IfSubType
 import jakarta.inject.Inject
 import java.util.Locale
-import org.rsmod.api.config.Constants
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.ironman.isUltimateIronman
-import org.rsmod.api.player.output.ChatType
-import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.UpdateRun
-import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.script.onOpNpc1
@@ -135,8 +127,8 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
                     for (tool in FoundryTool.entries) {
                         access.graphicbox(
                             tool.row.icon,
-                            "Use the preform on the ${tool.row.name} when your completion tracker " +
-                                "is over this icon's bar.",
+                            "Use the preform on the ${tool.row.name} when your<br>completion " +
+                                "tracker is over this icon's bar.",
                         )
                     }
                 }
@@ -176,26 +168,6 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
                 null,
             )
         }
-    }
-
-    private suspend fun ProtectedAccess.graphicbox(graphic: Int, text: String) {
-        mes(text, ChatType.Mesbox)
-        vars[CHATBOX_UNCLAMP_VARBIT] = 0
-        ClientScripts.topLevelChatboxResetBackground(player)
-        ifOpenSub(GRAPHICBOX, CHATBOX_MODAL, IfSubType.Modal)
-        player.runClientScript(
-            GRAPHICBOX_SETBUTTONS.asRSCM(RSCMType.CLIENTSCRIPT),
-            Constants.cm_pausebutton,
-        )
-        ifSetEvents(GRAPHICBOX_UNIVERSE, 0..1, IfEvent.PauseButton)
-        player.runClientScript(
-            GRAPHICBOX_SET_GRAPHIC.asRSCM(RSCMType.CLIENTSCRIPT),
-            graphic,
-            GRAPHIC_SIZE,
-            GRAPHIC_SIZE,
-        )
-        ifSetText(GRAPHICBOX_TEXT, text.replaceFirst(" completion", "<br>completion"))
-        pauseButton()
     }
 
     private suspend fun ProtectedAccess.commission(npc: Npc) {
@@ -320,14 +292,6 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
     private companion object {
         const val RUN_ENERGY_MAX = 10_000
         const val HELP_DONE = "Actually, I'm okay for now."
-        const val GRAPHIC_SIZE = 64
-        const val CHATBOX_UNCLAMP_VARBIT = "varbit.chatmodal_unclamp"
-        const val CHATBOX_MODAL = "component.chatbox:chatmodal"
-        const val GRAPHICBOX = "interface.graphicbox"
-        const val GRAPHICBOX_UNIVERSE = "component.graphicbox:universe"
-        const val GRAPHICBOX_TEXT = "component.graphicbox:text"
-        const val GRAPHICBOX_SETBUTTONS = "clientscript.[clientscript,graphicbox_setbuttons]"
-        const val GRAPHICBOX_SET_GRAPHIC = "clientscript.[clientscript,graphicbox_set_graphic]"
     }
 }
 

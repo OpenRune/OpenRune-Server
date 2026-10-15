@@ -11,6 +11,7 @@ import org.rsmod.api.instances.events.InstancePlayerLeaveEvent
 import org.rsmod.api.instances.events.instanceEventId
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.events.interact.HeldDropEvents
+import org.rsmod.api.player.output.MiscOutput
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onDropTrigger
 import org.rsmod.api.script.onEvent
@@ -35,7 +36,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): [verify:in_game] the mesanims of the conversations the live capture doesn't cover:
-// Kovac's talks while the crucible fills and before the preform is picked up, and his stop prompts.
+// Kovac's talks while the crucible fills and before the preform is picked up.
 
 class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRoom) :
     QuestScript(
@@ -871,9 +872,8 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             chatNpc(neutral, "take the preform and put it in your hand. Then come see Kovac for help.")
             return
         }
-        // TODO(content): [verify:in_game] when the long explanation is given; here it's while
-        // no progress has been made. The capture has no talk with the preform in hand before it
-        // was finished.
+        // TODO(content): [verify:in_game] whether the long explanation is still given once the
+        // preform has progress; the capture only has it before any work was done.
         if (player.preformCompletion == 0) {
             preformExplained()
             return
@@ -902,41 +902,69 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     }
 
     private suspend fun Dialogue.preformExplained() {
-        chatPlayer(quiz, "Okay Kovac, I've got this huge burning hot sword. What do I do with it?")
+        chatPlayer(neutral, "Okay Kovac, I've got this huge burning hot sword. What do I do with it?")
         chatNpc(happy, "Now for fun part.")
         chatNpc(neutral, "Use tools around the foundry to reclin... refine the preform.")
         chatPlayer(quiz, "How do I know which tool I need to use?")
-        chatNpc(neutral, "Hmm...")
-        chatNpc(neutral, "Kovac not too sure. Kovac's gut feeling says use trip hammer first.")
+        lineByLine("Hmm...", "Kovac not too sure. Kovac's gut feeling says use trip<br>hammer first.") {
+            chatNpc(neutral, it)
+        }
         mesbox(
             "Progress on your sword can be tracked via the display on screen. You can track " +
                 "which tool you need to use via the completion bar."
         )
-        chatNpc(neutral, "This is very impoten... important...")
-        chatNpc(neutral, "The preform needs to be within a certain heat range to work properly.")
-        chatNpc(neutral, "If you use the wrong tool...")
-        chatNpc(neutral, "or tool at wrong heat, we damage the preform quality.")
-        chatNpc(neutral, "A sword with low quality is bad...")
-        chatNpc(neutral, "Means less giants will want it, so Kovac give less for it.")
-        chatNpc(
-            neutral,
-            "If you damage a preform too much, it will become junk and Kovac will have to throw " +
+        for (tool in FoundryTool.entries) {
+            access.graphicbox(
+                tool.row.icon,
+                "Use the preform on the ${tool.row.name} when your<br>completion tracker is over " +
+                    "this icon's bar.",
+                tool.row.hint,
+            )
+        }
+        MiscOutput.hintArrowReset(player)
+        lineByLine(
+            "This is very impoten... important...",
+            "The preform needs to be within a certain heat range to<br>work properly.",
+        ) {
+            chatNpc(neutral, it)
+        }
+        lineByLine("If you use the wrong tool...", "or tool at wrong heat, we damage the preform quality.") {
+            chatNpc(neutral, it)
+        }
+        lineByLine(
+            "A sword with low quality is bad...",
+            "Means less giants will want it, so Kovac give less for it.",
+        ) {
+            chatNpc(neutral, it)
+        }
+        lineByLine(
+            "If you damage a preform too much, it will become junk<br>and Kovac will have to throw " +
                 "it away...",
-        )
-        chatNpc(neutral, "but this first attent... attempt, so do not worry about quality too much.")
+            "but this first attent... attempt, so do not worry about<br>quality too much.",
+        ) {
+            chatNpc(neutral, it)
+        }
         chatNpc(neutral, "You use trip hammer first. Trip hammer need preform to be quite hot.")
         mesbox("The temperature of the preform is tracked via the temperature bar.")
         mesbox(
             "To work a preform with a tool, the temperature needs to be within the matched " +
                 "temperature range, or you'll damage the preform."
         )
+        for (tool in FoundryTool.entries) {
+            access.graphicbox(tool.row.icon, tool.row.heatTip, tool.row.hint)
+        }
+        MiscOutput.hintArrowReset(player)
         mesbox(
             "Any damage to the preform will lower its quality, tracked via the quality bar. If " +
                 "there's no quality left in the preform it becomes unworkable, and must be throw " +
                 "away."
         )
-        chatNpc(neutral, "If the preform at wrong temperature...")
-        chatNpc(neutral, "You can hot it up by dunking it in lava or cold it by holding it to waterfall.")
+        lineByLine(
+            "If the preform at wrong temperature...",
+            "You can hot it up by dunking it in lava or cold it by<br>holding it to waterfall.",
+        ) {
+            chatNpc(neutral, it)
+        }
         chatPlayer(neutral, "Alright, I'll give it a go.")
         chatNpc(neutral, "Remember, try trip hammer first with hot preform.")
     }
@@ -970,13 +998,12 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
         player.advanceTutorial(SleepingGiants.TUTORIAL_SWORD_KEPT)
         player.clearSwordQuality()
+        chatNpc(neutral, "Kovac take care of it.")
         swordKept()
     }
 
-    // UNVERIFIED: that the conversation resumes at "Kovac take care of it." when left after that
-    // line (no capture of this talk).
+    /** Where the conversation resumes if it was left after "Kovac take care of it.". */
     private suspend fun Dialogue.swordKept() {
-        chatNpc(neutral, "Kovac take care of it.")
         chatPlayer(quiz, "Out of curiosity, who is this first blade for?")
         lineByLine("Kovac friend...", "Obor.") { chatNpc(neutral, it) }
         // Obor's kill count is `total_hillgiant_boss_kills` (the cache's hiscores row for Obor).
@@ -1017,12 +1044,12 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
 
     private suspend fun ProtectedAccess.kovacStop(stop: QuestPrompt.KovacStop) {
         startDialogue {
-            chatNpcSpecific(KOVAC_NAME, KOVAC_FOUNDRY_HEAD, angry, "Stop!")
-            chatPlayer(worried, "What did I do wrong?")
-            chatNpcSpecific(KOVAC_NAME, KOVAC_FOUNDRY_HEAD, angry, "You're damaging the preform!")
-            chatPlayer(quiz, "How?")
-            chatNpcSpecific(KOVAC_NAME, KOVAC_FOUNDRY_HEAD, neutral, stop.reason)
-            chatPlayer(sad, "Oh, my bad!")
+            chatNpcSpecific(KOVAC_NAME, KOVAC_STOP_HEAD, neutral, "Stop!")
+            chatPlayer(chatshock, "What did I do wrong?")
+            chatNpcSpecific(KOVAC_NAME, KOVAC_STOP_HEAD, neutral, "You're damaging the preform!")
+            chatPlayer(neutral, "How?")
+            chatNpcSpecific(KOVAC_NAME, KOVAC_STOP_HEAD, neutral, stop.reason)
+            chatPlayer(neutral, "Oh, my bad!")
         }
     }
 
@@ -1059,6 +1086,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         const val KOVAC_QUEST = "npc.giants_foundry_kovac_quest"
         const val KOVAC_FOUNDRY = "npc.giants_foundry_kovac_1op"
         const val KOVAC_FOUNDRY_HEAD = "npc.giants_foundry_kovac_multi"
+        const val KOVAC_STOP_HEAD = "npc.giants_foundry_kovac"
 
         const val SMITHING = "stat.smithing"
 
