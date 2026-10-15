@@ -59,9 +59,9 @@ class Avan : PluginScript() {
             return
         }
         val next = GAUNTLETS[(GAUNTLETS.indexOf(held) + 1) % GAUNTLETS.size]
-        access.invDel(access.inv, COINS, PRICE)
-        access.invDel(access.inv, held, 1)
-        access.invAdd(access.inv, next)
+        if (!access.swapForCoins(take = held, give = next, price = PRICE)) {
+            return
+        }
         mesbox(
             "Avan takes your gauntlets, takes out a small hammer, and pounds them into a " +
                 "slightly new shape, then hands them back to you.",

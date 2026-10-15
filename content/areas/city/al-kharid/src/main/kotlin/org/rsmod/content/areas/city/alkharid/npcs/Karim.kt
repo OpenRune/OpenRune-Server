@@ -29,8 +29,10 @@ class Karim : PluginScript() {
             chatNpc(neutral, "Come back when you have some.")
             return
         }
-        access.invDel(access.inv, COINS, PRICE)
-        access.invAdd(access.inv, KEBAB)
+        if (!access.buyForCoins(KEBAB, PRICE)) {
+            access.mes("You don't have enough inventory space.")
+            return
+        }
         objbox(KEBAB, "You buy a kebab for $PRICE gold.")
     }
 

@@ -51,8 +51,10 @@ class SilkTrader : PluginScript() {
             chatNpc(angry, "Well, come back when you do have some money!")
             return
         }
-        access.invDel(access.inv, COINS, price)
-        access.invAdd(access.inv, SILK)
+        if (!access.buyForCoins(SILK, price)) {
+            access.mes("You don't have enough inventory space.")
+            return
+        }
         objbox(SILK, "You buy some silk for $price gp.")
     }
 
