@@ -48,7 +48,7 @@ class ChaosTempleLadder : PluginScript() {
     }
 
     private fun ProtectedAccess.wearsZamorakRobes(): Boolean =
-        worn.count(ROBE_TOP) > 0 && worn.count(ROBE_LEGS) > 0
+        ROBE_TOPS.any { worn.count(it) > 0 } && ROBE_BOTTOMS.any { worn.count(it) > 0 }
 
     private fun Player.skillTotal(): Int =
         ServerCacheManager.getStats().values
@@ -59,8 +59,8 @@ class ChaosTempleLadder : PluginScript() {
     private companion object {
         private const val REQUIRED_TOTAL = 500
         private const val MONK = "npc.chaos_temple_monk1"
-        private const val ROBE_TOP = "obj.trail_zamorak_robe_t"
-        private const val ROBE_LEGS = "obj.trail_zamorak_robe_l"
+        private val ROBE_TOPS = listOf("obj.zamrobetop", "obj.trail_zamorak_robe_t")
+        private val ROBE_BOTTOMS = listOf("obj.zamrobebottom", "obj.trail_zamorak_robe_l")
 
         private val UNTRAINABLE = setOf("stat.sailing", "stat.unreleased")
     }
