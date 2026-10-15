@@ -10,7 +10,6 @@ import org.rsmod.api.bosses.runtime.runAbility
 import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.player.output.mes
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.Arrival
@@ -190,7 +189,7 @@ class WardensEncounter(
 
     private fun wardenAttackRate(): Int {
         val base = if (activeGod == WardenGod.TUMEKEN) TUMEKEN_ATTACK_RATE else ATTACK_RATE
-        return if (raid.isActive(ToaInvocationKey.Acceleration)) base - ACCELERATION_REDUCTION else base
+        return if (raid.isActive("dbrow.toa_invocation_acceleration")) base - ACCELERATION_REDUCTION else base
     }
 
     internal fun warden(god: WardenGod): Npc? = wardens[god]?.takeIf { it.isSlotAssigned }

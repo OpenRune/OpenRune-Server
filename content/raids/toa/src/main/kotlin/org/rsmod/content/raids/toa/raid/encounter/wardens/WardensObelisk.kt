@@ -4,7 +4,6 @@ import kotlin.math.abs
 import kotlin.math.max
 import org.rsmod.api.player.lockOverheads
 import org.rsmod.api.player.output.mes
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Player
 import org.rsmod.game.proj.ProjAnim
@@ -36,7 +35,7 @@ internal class WardensObelisk(private val room: WardensEncounter) {
         get() = room.coords(WardenGod.OBELISK_CENTRE)
 
     private val chargePlays: List<Int>
-        get() = if (room.raid.isActive(ToaInvocationKey.Acceleration)) FAST_PLAYS else SLOW_PLAYS
+        get() = if (room.raid.isActive("dbrow.toa_invocation_acceleration")) FAST_PLAYS else SLOW_PLAYS
 
     fun start() {
         epoch++
@@ -275,7 +274,7 @@ internal class WardensObelisk(private val room: WardensEncounter) {
     }
 
     private fun hit(player: Player) {
-        val penetration = room.raid.isActive(ToaInvocationKey.Penetration)
+        val penetration = room.raid.isActive("dbrow.toa_invocation_penetration")
         room.hazardDamage(player, if (penetration) PENETRATION_DAMAGE else DAMAGE, DAMAGE_SPREAD)
         if (penetration) {
             player.lockOverheads(PRAYER_LOCK_TICKS)

@@ -22,7 +22,6 @@ import org.rsmod.api.player.stat.statRestore
 import org.rsmod.api.player.stat.statRestoreAll
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.content.raids.toa.lobby.ToaStats
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.content.raids.toa.raid.ToaRetrieval.protectItemAtDeath
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
@@ -135,7 +134,7 @@ internal suspend fun ProtectedAccess.wipeAftermath(room: ToaEncounter, retry: Bo
     raid.revive(player)
     player.toaRestore()
     if (retry) {
-        if (!raid.isActive(ToaInvocationKey.OnADiet)) {
+        if (!raid.isActive("dbrow.toa_invocation_on_adiet")) {
             invAddOrDrop(raid.deps.objRepo, HONEY_LOCUST, room.honeyLocusts())
         }
     } else {

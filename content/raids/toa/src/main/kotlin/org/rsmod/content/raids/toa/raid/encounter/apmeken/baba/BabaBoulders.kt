@@ -5,7 +5,6 @@ import org.rsmod.api.config.Constants
 import org.rsmod.api.player.clearInteractionRoute
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.stat.hitpoints
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
@@ -24,7 +23,7 @@ internal class BabaBoulders(private val room: BabaEncounter) {
     }
 
     private val mindTheGap: Boolean
-        get() = room.raid.isActive(ToaInvocationKey.MindTheGap)
+        get() = room.raid.isActive("dbrow.toa_invocation_mind_the_gap")
 
     fun spawnRow(crackedLane: Int) {
         val hp = hitpoints()

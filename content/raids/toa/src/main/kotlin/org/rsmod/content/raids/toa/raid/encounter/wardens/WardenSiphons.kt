@@ -7,7 +7,6 @@ import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
@@ -40,7 +39,7 @@ internal class WardenSiphons(private val room: WardensSecondEncounter) {
         private set
 
     private val insanity: Boolean
-        get() = room.raid.isActive(ToaInvocationKey.Insanity)
+        get() = room.raid.isActive("dbrow.toa_invocation_insanity")
 
     fun reset() {
         token++

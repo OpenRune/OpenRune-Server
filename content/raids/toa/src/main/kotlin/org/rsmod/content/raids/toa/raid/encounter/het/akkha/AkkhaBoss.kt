@@ -22,7 +22,6 @@ import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.HitType
 import org.rsmod.api.bosses.spec.ImpactRounding
 import org.rsmod.api.bosses.spec.ProjectileConfig
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
 import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.isBeside
 import org.rsmod.content.raids.toa.raid.encounter.eachTarget
@@ -183,7 +182,7 @@ class AkkhaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         val pickedTrail =
             roomCondition<AkkhaEncounter> { room, _ -> room.picked == AkkhaEncounter.Special.TRAIL }
         val keepBack = roomCondition<AkkhaEncounter> { room, _ ->
-            room.raid.isActive(ToaInvocationKey.KeepBack)
+            room.raid.isActive("dbrow.toa_invocation_keep_back")
         }
         val besideAkkha = targetCondition<AkkhaEncounter> { room, target ->
             room.akkha?.isBeside(target) == true
