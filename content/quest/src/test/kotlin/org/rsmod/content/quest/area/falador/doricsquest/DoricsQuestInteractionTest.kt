@@ -26,8 +26,10 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.clearPendingAction
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.registry.npc.NpcRegistry
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.zone.ZoneUpdateMap
+import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.table.QuestRow
 import org.rsmod.content.quest.manager.QuestRequirementMode
@@ -39,6 +41,7 @@ import org.rsmod.game.MapClock
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.InvVirtualStorageHolder
@@ -49,6 +52,7 @@ import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.routefinder.collision.CollisionFlagMap
 
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
@@ -177,13 +181,13 @@ class DoricsQuestInteractionTest {
     }
 
     @Test
-    fun `the journal strikes each material once the full amount is carried`() {
+    fun `the journal strikes a carried material and says how many more of the rest`() {
         val f = Fixture(stage = StageStarted)
-        f.materials(clay = 5, iron = 0)
+        f.materials(clay = 0, iron = 0)
         val journal = f.script.questLog(f.access())
-        assertTrue(journal.contains("<blue>6 Clay.</blue>"), journal)
+        assertTrue(journal.contains("<red>6 Clay</red> - I need 6 more."), journal)
         assertTrue(journal.contains("<str>4 Copper Ore.</str>"), journal)
-        assertTrue(journal.contains("<blue>2 Iron Ore.</blue>"), journal)
+        assertTrue(journal.contains("<red>2 Iron Ore</red> - I need 2 more."), journal)
     }
 
     @Test
@@ -209,6 +213,20 @@ class DoricsQuestInteractionTest {
             assertFalse(f.anvil(DoricsAnvil, listOf(SorryOption, Yes, Certainly)))
             assertEquals(StageStarted, f.stage())
             assertEquals(1, f.player.inv.count("obj.bronze_pickaxe"))
+        }
+    }
+
+    @Test
+    fun `the anvil mid-quest asks for the materials and Doric hands over`() {
+        withPolicy(QuestRequirementMode.RespectProgress) {
+            val f = Fixture(stage = StageStarted)
+            val doric = f.spawnDoric()
+            f.materials()
+            assertFalse(f.anvil(DoricsAnvil))
+            assertFalse(f.output().contains("Hey, who said you could use that?"), f.output())
+            assertTrue(f.output().contains("Have you got my materials yet"), f.output())
+            assertEquals("seq.dwarf_hand_over".asRSCM(), doric.pendingSequence.id)
+            f.assertReward()
         }
     }
 
@@ -274,7 +292,12 @@ class DoricsQuestInteractionTest {
                 statMap.setCurrentLevel("stat.mining", mining.toByte())
             }
 
-        val script = DoricsQuest(ObjRepository(MapClock(100), ObjRegistry(ZoneUpdateMap())))
+        private val collision = CollisionFlagMap()
+        private val npcs = NpcList()
+        private val npcRepo = NpcRepository(MapClock(100), NpcRegistry(npcs, collision, events), npcs)
+
+        val script =
+            DoricsQuest(ObjRepository(MapClock(100), ObjRegistry(ZoneUpdateMap())), npcRepo)
 
         init {
             with(script) { ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup() }
@@ -295,6 +318,12 @@ class DoricsQuestInteractionTest {
         fun talk() {
             val npc = Npc("npc.doric", player.coords.translateZ(1))
             run { assertTrue(events.publish(access(), NpcEvents.Op1(npc))) }
+        }
+
+        fun spawnDoric(): Npc {
+            val coords = player.coords.translateZ(1)
+            collision.allocateIfAbsent(coords.x, coords.z, coords.level)
+            return Npc("npc.doric", coords).also { npcRepo.add(it, Int.MAX_VALUE) }
         }
 
         fun whetstone() {

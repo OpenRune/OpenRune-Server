@@ -10,6 +10,7 @@ import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseMiningLvl
+import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
@@ -19,11 +20,16 @@ import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.QuestScript
 import org.rsmod.content.quest.manager.recommendedStatsWarning
 import org.rsmod.content.quest.manager.rewards
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
+import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
-class DoricsQuest @Inject constructor(private val objRepo: ObjRepository) :
+class DoricsQuest
+@Inject
+constructor(private val objRepo: ObjRepository, private val npcRepo: NpcRepository) :
     QuestScript(
         "quest_dorics",
         "varp.doricquest",
@@ -55,9 +61,9 @@ class DoricsQuest @Inject constructor(private val objRepo: ObjRepository) :
             strike("I have spoken to <red>Doric</red>.")
             addRawLine("")
             line("I need to collect some items and bring them to <red>Doric</red>.")
-            material(Clay, "6 Clay.")
-            material(CopperOre, "4 Copper Ore.")
-            material(IronOre, "2 Iron Ore.")
+            material(Clay, "Clay")
+            material(CopperOre, "Copper Ore")
+            material(IronOre, "Iron Ore")
         }
 
     override fun completedLog(player: ProtectedAccess): String =
@@ -81,16 +87,25 @@ class DoricsQuest @Inject constructor(private val objRepo: ObjRepository) :
         if (QuestRequirements.hasCompleted(player, quest.key)) {
             return true
         }
-        startDialogue { anvilWarning() }
+        val doric = findDoric(player.coords)
+        if (doric != null) {
+            startDialogue(doric) { anvilDialogue() }
+        } else {
+            startDialogue { anvilDialogue() }
+        }
         return false
     }
 
-    private fun QuestJournalBuilder.material(material: Material, text: String) {
-        if (access.player.inv.count(material.obj) >= material.count) {
-            strike(text)
+    private fun findDoric(near: CoordGrid): Npc? =
+        npcRepo.findAll(ZoneKey.from(near), zoneRadius = 1).firstOrNull { it.isType(DoricNpc) }
+
+    private fun QuestJournalBuilder.material(material: Material, name: String) {
+        val held = access.player.inv.count(material.obj)
+        if (held >= material.count) {
+            strike("${material.count} $name.")
         } else {
-            // UNVERIFIED: colour of a material line the player isn't carrying (guess)
-            line(text)
+            // UNVERIFIED: the count left when some are already carried (guess)
+            line("<red>${material.count} $name</red> - I need ${material.count - held} more.")
         }
     }
 
@@ -205,6 +220,14 @@ class DoricsQuest @Inject constructor(private val objRepo: ObjRepository) :
         }
     }
 
+    private suspend fun Dialogue.anvilDialogue() {
+        if (quest.isQuestInProgress(player)) {
+            duringQuest()
+        } else {
+            anvilWarning()
+        }
+    }
+
     private suspend fun Dialogue.anvilWarning() {
         doricSays(
             angry,
@@ -225,10 +248,6 @@ class DoricsQuest @Inject constructor(private val objRepo: ObjRepository) :
         }
         chatPlayer(quiz, "Sorry, would it be OK if I used your anvils?")
         doricSays(neutral, "If you could get me some more materials then I could let you use them.")
-        // TODO(content): [verify:in_game] What Doric says here once the quest is already started.
-        if (quest.isQuestInProgress(player)) {
-            return
-        }
         val accept =
             choice2(
                 "Yes, I will get you materials.",
@@ -242,7 +261,6 @@ class DoricsQuest @Inject constructor(private val objRepo: ObjRepository) :
     private suspend fun Dialogue.acceptQuest() {
         chatPlayer(happy, "Yes, I will get you the materials.")
         quest.setQuestStage(access, StageStarted)
-        // TODO(content): [verify:in_game] Where the pickaxe goes when the inventory is full.
         access.invAddOrDrop(objRepo, "obj.bronze_pickaxe")
         doricSays(
             neutral,
@@ -279,15 +297,15 @@ class DoricsQuest @Inject constructor(private val objRepo: ObjRepository) :
     }
 
     private suspend fun Dialogue.declineQuest() {
-        chatPlayer(neutral, "No, hitting rocks is for the boring people, sorry.")
-        doricSays(neutral, "That is your choice. Nice to meet you anyway.")
+        chatPlayer(bored, "No, hitting rocks is for the boring people, sorry.")
+        doricSays(confused, "That is your choice. Nice to meet you anyway.")
     }
 
     private suspend fun Dialogue.duringQuest() {
-        chatNpc(quiz, "Have you got my materials yet, traveller?")
+        doricSays(quiz, "Have you got my materials yet, traveller?")
         if (hasMaterials(player)) {
             chatPlayer(happy, "I have everything you need!")
-            chatNpc(
+            doricSays(
                 happy,
                 "Many thanks! Pass them here, please. I can spare you some coins for your " +
                     "trouble, and please use my anvils any time you want.",
@@ -296,7 +314,7 @@ class DoricsQuest @Inject constructor(private val objRepo: ObjRepository) :
             return
         }
         chatPlayer(sad, "Sorry, I don't have them all yet.")
-        chatNpc(
+        doricSays(
             neutral,
             "Not to worry, stick at it. Remember, I need 6 clay, 4 copper ore, and 2 iron ore.",
         )
@@ -311,7 +329,7 @@ class DoricsQuest @Inject constructor(private val objRepo: ObjRepository) :
         }
         chatPlayer(quiz, "Where can I find those?")
         doricSays(
-            neutral,
+            happy,
             "You'll be able to find all those ores in the rocks just inside the Dwarven Mine. " +
                 "Head east from here and you'll find the entrance in the side of Ice Mountain.",
         )
@@ -335,7 +353,6 @@ class DoricsQuest @Inject constructor(private val objRepo: ObjRepository) :
 
     private suspend fun Dialogue.handIn() {
         player.anim("seq.human_dwarf_recieve")
-        // TODO(content): [verify:in_game] Doric's hand-over anim when the anvil starts the quest.
         npc?.anim("seq.dwarf_hand_over")
         objbox(CopperOre.obj, "You hand the clay, copper, and iron to Doric.")
         if (!takeMaterials()) {
@@ -381,6 +398,7 @@ class DoricsQuest @Inject constructor(private val objRepo: ObjRepository) :
         private const val IronOreMiningLevel = 15
 
         private const val DoricsAnvil = "loc.dorics_anvil"
+        private const val DoricNpc = "npc.doric"
 
         private val Clay = Material("obj.clay", 6)
         private val CopperOre = Material("obj.copper_ore", 4)
