@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.api.combat.combatCommons)
     implementation(projects.api.instances)
     implementation(projects.api.registry)
+    implementation(projects.api.specials)
     implementation(projects.api.mechanics.toxins)
     implementation(libs.rsprot.api)
     implementation(projects.content.interfaces.bank)

@@ -35,7 +35,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
     )
 
     fun start() {
-        val active = room.raid.isActive("dbrow.toa_invocation_not_just_ahead")
+        val active = room.raid.isActive("dbrow.toa_invocation_not_just_a_head")
         countdown = if (active) room.attackSpeed * EVERY - 1 else -1
     }
 
