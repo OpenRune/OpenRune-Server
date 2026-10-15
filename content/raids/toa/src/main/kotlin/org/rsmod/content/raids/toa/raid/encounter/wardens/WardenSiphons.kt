@@ -71,6 +71,8 @@ internal class WardenSiphons(private val room: WardensSecondEncounter) {
         after(SPAWN_DELAY, gen) { spawn(tiles) }
         after(SPAWN_DELAY + window(tiles.size), gen) { resolve(success = false) }
         after(BEAM_FIRST, gen) { beams(gen) }
+        val set = launched
+        room.schedule(PHANTOM_DELAY) { room.phantoms.summon(set) }
     }
 
     fun hit(orb: Npc, hit: Hit) {
@@ -251,6 +253,7 @@ internal class WardenSiphons(private val room: WardensSecondEncounter) {
         const val INCOMING_DELAY = 2
         const val SPAWN_DELAY = 6
         const val BEAM_FIRST = 8
+        const val PHANTOM_DELAY = 3
         const val BEAM_STEP = 2
         const val WINDOW_BASE = 3
         const val WINDOW_STEP = 3

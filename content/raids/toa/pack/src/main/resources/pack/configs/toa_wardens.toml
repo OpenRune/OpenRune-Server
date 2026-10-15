@@ -235,6 +235,7 @@ moveRestrict = "NoMove"
 attackRange = 20
 regenRate = 0
 [npc.params]
+"param.dropped_remains" = -1
 "param.boss_hp_bar_mode" = 2
 "param.headbar" = "headbar.health_140"
 "param.hitmark_lit" = "hitmark.regular_damage_lit"
@@ -249,6 +250,7 @@ moveRestrict = "NoMove"
 attackRange = 20
 regenRate = 0
 [npc.params]
+"param.dropped_remains" = -1
 "param.boss_hp_bar_mode" = 2
 "param.headbar" = "headbar.health_140"
 "param.hitmark_lit" = "hitmark.regular_damage_lit"
@@ -270,6 +272,7 @@ moveRestrict = "NoMove"
 attackRange = 20
 regenRate = 0
 [npc.params]
+"param.dropped_remains" = -1
 "param.boss_hp_bar_mode" = 2
 "param.headbar" = "headbar.health_140"
 "param.hitmark_lit" = "hitmark.regular_damage_lit"
@@ -284,6 +287,7 @@ moveRestrict = "NoMove"
 attackRange = 20
 regenRate = 0
 [npc.params]
+"param.dropped_remains" = -1
 "param.boss_hp_bar_mode" = 2
 "param.headbar" = "headbar.health_140"
 "param.hitmark_lit" = "hitmark.regular_damage_lit"
@@ -311,3 +315,45 @@ regenRate = 0
 "param.attackable_on_cooldown" = true
 "param.headbar_hidden" = true
 "param.hitpoints_locked" = true
+
+[[npc]]
+id = "npc.toa_wardens_zebak"
+inherit = "npc.toa_wardens_zebak"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_wardens_baba"
+inherit = "npc.toa_wardens_baba"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_wardens_kephri"
+inherit = "npc.toa_wardens_kephri"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_wardens_akkha"
+inherit = "npc.toa_wardens_akkha"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_warden_p3_death_elidinis"
+inherit = "npc.toa_warden_p3_death_elidinis"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0
+
+[[npc]]
+id = "npc.toa_warden_p3_death_tumeken"
+inherit = "npc.toa_warden_p3_death_tumeken"
+defaultMode = "None"
+moveRestrict = "NoMove"
+regenRate = 0

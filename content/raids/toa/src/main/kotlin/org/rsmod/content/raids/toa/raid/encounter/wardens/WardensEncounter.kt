@@ -295,6 +295,7 @@ class WardensEncounter(
 
     override fun debugComplete() {
         start()
+        hpBar?.complete()
         startFinalPhase()
     }
 
