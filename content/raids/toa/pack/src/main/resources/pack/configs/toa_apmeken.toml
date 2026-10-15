@@ -67,6 +67,7 @@ id = "npc.toa_baba_rubble"
 inherit = "npc.toa_baba_rubble"
 defaultMode = "None"
 moveRestrict = "NoMove"
+blockWalk = "None"
 respawnDir = "West"
 regenRate = 0
 
