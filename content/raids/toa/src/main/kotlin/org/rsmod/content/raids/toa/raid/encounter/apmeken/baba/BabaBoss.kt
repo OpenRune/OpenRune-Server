@@ -41,7 +41,6 @@ import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.bosses.spec.TargetExpr
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
 import org.rsmod.content.raids.toa.raid.encounter.eachTarget
 import org.rsmod.content.raids.toa.raid.encounter.onRoomExternal
@@ -231,7 +230,7 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         val digging = Condition.Custom { npc, _ -> npc.isVisType(BabaNpcs.DIGGING) }
         val boulderDash =
             roomCondition<BabaEncounter> { room, _ ->
-                room.raid.isActive(ToaInvocationKey.Boulderdash)
+                room.raid.isActive("dbrow.toa_invocation_boulderdash")
             }
         val rollOver = varnIs(BabaVarns.ROLL_EXIT, 1)
         val fighting = roomCondition<BabaEncounter> { room, npc -> room.fighting(npc) }

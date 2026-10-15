@@ -39,7 +39,6 @@ import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.bosses.spec.TargetExpr
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
 import org.rsmod.content.raids.toa.raid.encounter.challengeArea
 import org.rsmod.content.raids.toa.raid.encounter.challengePlayers
@@ -296,7 +295,7 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         val bombWindow = roomCondition<KephriEncounter> { room, _ -> room.bombWindow() }
         val aerial =
             roomCondition<KephriEncounter> { room, _ ->
-                room.raid.isActive(ToaInvocationKey.AerialAssault)
+                room.raid.isActive("dbrow.toa_invocation_aerial_assault")
             }
         val firstOnTile =
             targetCondition<KephriEncounter> { room, player ->

@@ -3,7 +3,6 @@ package org.rsmod.content.raids.toa.raid.supplies
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import kotlin.math.floor
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
@@ -79,9 +78,9 @@ class ToaSupplies {
         val random = raid.deps.random
         val factor =
             when {
-                raid.isActive(ToaInvocationKey.NoHelpNeeded) -> 0.10
-                raid.isActive(ToaInvocationKey.NeedLessHelp) -> 0.33
-                raid.isActive(ToaInvocationKey.NeedSomeHelp) -> 0.66
+                raid.isActive("dbrow.toa_invocation_no_help_needed") -> 0.10
+                raid.isActive("dbrow.toa_invocation_need_less_help") -> 0.33
+                raid.isActive("dbrow.toa_invocation_need_some_help") -> 0.66
                 else -> 1.0
             }
         fun amount(base: Int, guaranteed: Boolean): Int {
@@ -93,7 +92,7 @@ class ToaSupplies {
             return if (rolled) amount(1, false) else 0
         }
 
-        val diet = raid.isActive(ToaInvocationKey.OnADiet)
+        val diet = raid.isActive("dbrow.toa_invocation_on_adiet")
         val life =
             listOf(
                 SupplyStack(ToaSupply.NECTAR, amount(5, true)),

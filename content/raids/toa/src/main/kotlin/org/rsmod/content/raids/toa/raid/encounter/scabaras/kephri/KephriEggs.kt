@@ -1,6 +1,5 @@
 package org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri
 
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
@@ -90,7 +89,7 @@ internal class KephriEggs(private val room: KephriEncounter) {
 
     private fun darkCount(): Int {
         val players = room.teamSize
-        if (!room.raid.isActive(ToaInvocationKey.LivelyLarvae)) return DARK_PER_PLAYER * players
+        if (!room.raid.isActive("dbrow.toa_invocation_lively_larvae")) return DARK_PER_PLAYER * players
         return deps.random.of(LIVELY_MIN * players, LIVELY_MAX * players)
     }
 

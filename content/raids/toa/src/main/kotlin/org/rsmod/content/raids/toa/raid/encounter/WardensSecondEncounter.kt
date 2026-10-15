@@ -10,7 +10,6 @@ import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.instances.InstanceSession
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenEnrage
@@ -78,9 +77,9 @@ class WardensSecondEncounter(
     internal val slamRate: Int
         get() =
             when {
-                raid.isActive(ToaInvocationKey.Insanity) -> INSANITY_SLAM_RATE
-                raid.isActive(ToaInvocationKey.Overclocked2) -> OVERCLOCKED_2_SLAM_RATE
-                raid.isActive(ToaInvocationKey.Overclocked) -> OVERCLOCKED_SLAM_RATE
+                raid.isActive("dbrow.toa_invocation_insanity") -> INSANITY_SLAM_RATE
+                raid.isActive("dbrow.toa_invocation_overclocked_2") -> OVERCLOCKED_2_SLAM_RATE
+                raid.isActive("dbrow.toa_invocation_overclocked") -> OVERCLOCKED_SLAM_RATE
                 else -> SLAM_RATE
             }
 

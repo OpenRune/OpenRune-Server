@@ -1,7 +1,6 @@
 package org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri
 
 import kotlin.math.sign
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.map.CoordGrid
@@ -34,7 +33,7 @@ internal class KephriSwarms(private val room: KephriEncounter) {
 
     fun startMedic() {
         nextMedic =
-            if (room.raid.isActive(ToaInvocationKey.Medic)) deps.mapClock.cycle + MEDIC_INTERVAL else NEVER
+            if (room.raid.isActive("dbrow.toa_invocation_medic")) deps.mapClock.cycle + MEDIC_INTERVAL else NEVER
     }
 
     fun tick() {

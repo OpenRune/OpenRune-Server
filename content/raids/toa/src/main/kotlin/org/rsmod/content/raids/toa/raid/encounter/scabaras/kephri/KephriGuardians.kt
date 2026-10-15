@@ -3,7 +3,6 @@ package org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.output.mes
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
@@ -33,7 +32,7 @@ internal class KephriGuardians(private val room: KephriEncounter) {
     }
 
     fun spawnFor(stun: Int) {
-        val overlords = room.raid.isActive(ToaInvocationKey.MoreOverlords)
+        val overlords = room.raid.isActive("dbrow.toa_invocation_more_overlords")
         val kinds =
             if (stun == 1) {
                 listOfNotNull(Kind.SPITTING, Kind.SOLDIER.takeIf { overlords })

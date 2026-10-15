@@ -10,6 +10,7 @@ class ToaPluginPack : PluginPack() {
             ToaRoomsTable.exclusions(),
             ToaPathsTable.paths(),
             ToaPickaxesTable.pickaxes(),
+            ToaInvocationsTable.invocations(),
             HetPuzzleTables.layouts(),
             HetPuzzleTables.seal(),
         ) + WardensTables.all()

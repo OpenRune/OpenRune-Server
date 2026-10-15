@@ -1,7 +1,6 @@
 package org.rsmod.content.raids.toa.raid.encounter.het.akkha
 
 import org.rsmod.api.player.output.mes
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.game.entity.Player
@@ -27,7 +26,7 @@ internal class AkkhaDetonate(private val room: AkkhaEncounter) {
 
     private fun detonate(marked: List<Player>) {
         val diagonal =
-            room.raid.isActive(ToaInvocationKey.FeelingSpecial) && deps.random.of(0, 1) == 0
+            room.raid.isActive("dbrow.toa_invocation_feeling_special") && deps.random.of(0, 1) == 0
         val directions = if (diagonal) DIAGONALS else CARDINALS
         val bystanders = room.targets()
         for (source in marked) {

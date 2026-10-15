@@ -3,7 +3,6 @@ package org.rsmod.content.raids.toa.raid.supplies
 import org.rsmod.content.other.consumables.ActivityConsumable
 import org.rsmod.content.other.consumables.ConsumableActivityGate
 import org.rsmod.content.other.consumables.ConsumableType
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.game.entity.Player
 
@@ -27,9 +26,9 @@ class ToaConsumableGate : ConsumableActivityGate {
         return when (consumable.type) {
             ConsumableType.FOOD,
             ConsumableType.COMBO_FOOD ->
-                if (raid.isActive(ToaInvocationKey.OnADiet)) NO_FOOD else null
+                if (raid.isActive("dbrow.toa_invocation_on_adiet")) NO_FOOD else null
             ConsumableType.POTION ->
-                if (consumable.restoresHitpoints && raid.isActive(ToaInvocationKey.Dehydration)) {
+                if (consumable.restoresHitpoints && raid.isActive("dbrow.toa_invocation_dehydration")) {
                     NO_POTION
                 } else {
                     null

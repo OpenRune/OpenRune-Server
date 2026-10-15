@@ -3,7 +3,6 @@ package org.rsmod.content.raids.toa.raid.encounter.het.akkha
 import kotlin.math.min
 import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.player.output.mes
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
@@ -17,7 +16,7 @@ internal class AkkhaMemory(private val room: AkkhaEncounter) {
 
     fun start(boss: Npc) {
         active = true
-        val feelingSpecial = room.raid.isActive(ToaInvocationKey.FeelingSpecial)
+        val feelingSpecial = room.raid.isActive("dbrow.toa_invocation_feeling_special")
         val iterations = BASE_ITERATIONS + min(MAX_EXTRA_ITERATIONS, room.pathLevel / 2)
         val gap = if (feelingSpecial) FAST_GAP else SLOW_GAP
         val firstBlast =

@@ -43,7 +43,6 @@ import org.rsmod.api.bosses.dsl.withTiles
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.bosses.spec.TargetExpr
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
 import org.rsmod.content.raids.toa.raid.encounter.challengeArea
 import org.rsmod.content.raids.toa.raid.encounter.eachTarget
@@ -70,7 +69,7 @@ internal object BabaSpecials {
     private val deeperPath = roomCondition<BabaEncounter> { room, _ -> room.pathTier >= 2 }
     private val pathStarted = roomCondition<BabaEncounter> { room, _ -> room.pathTier >= 1 }
     private val shaking =
-        roomCondition<BabaEncounter> { room, _ -> room.raid.isActive(ToaInvocationKey.ShakingThingsUp) }
+        roomCondition<BabaEncounter> { room, _ -> room.raid.isActive("dbrow.toa_invocation_shaking_things_up") }
     private val rockfallReady = roomCondition<BabaEncounter> { room, npc -> room.rockfallReady(npc) }
     private val noBaboons = roomCondition<BabaEncounter> { room, _ -> room.baboons.alive == 0 }
 

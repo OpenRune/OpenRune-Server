@@ -1,7 +1,6 @@
 package org.rsmod.content.raids.toa.raid.encounter.het.akkha
 
 import org.rsmod.api.player.output.mes
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
@@ -21,7 +20,7 @@ internal class AkkhaTrail(private val room: AkkhaEncounter) {
     fun start() {
         if (running) return
         running = true
-        feelingSpecial = room.raid.isActive(ToaInvocationKey.FeelingSpecial)
+        feelingSpecial = room.raid.isActive("dbrow.toa_invocation_feeling_special")
         lastTile.clear()
         room.schedule(START_MESSAGE) {
             val text = if (feelingSpecial) AROUND_TEXT else BEHIND_TEXT

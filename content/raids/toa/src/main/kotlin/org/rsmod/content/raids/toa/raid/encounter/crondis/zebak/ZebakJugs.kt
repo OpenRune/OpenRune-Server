@@ -1,7 +1,6 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
 import org.rsmod.api.npc.hit.queueHit as queueNpcHit
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
@@ -107,7 +106,7 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
         remove(jug)
         deps.worldRepo.spotanimMap(spotanim(ZebakSpots.JUG_BREAK), centre)
         deps.worldRepo.soundArea(centre, ZebakSynths.JUG_BREAK, radius = BREAK_SOUND_RADIUS)
-        val range = if (room.raid.isActive(ToaInvocationKey.UpsetStomach)) 1 else 2
+        val range = if (room.raid.isActive("dbrow.toa_invocation_upset_stomach")) 1 else 2
         val cleared = ArrayList<CoordGrid>()
         for (dx in -range..range) {
             for (dz in -range..range) {

@@ -9,7 +9,6 @@ import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.npc.stat.statHeal
 import org.rsmod.api.npc.vars.boolVarn
 import org.rsmod.api.player.midiSong
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.ToaBook
@@ -151,7 +150,7 @@ class KephriEncounter(
 
     internal fun shadow(centre: CoordGrid, spot: String) {
         val tiles =
-            if (raid.isActive(ToaInvocationKey.AerialAssault)) {
+            if (raid.isActive("dbrow.toa_invocation_aerial_assault")) {
                 (-1..1).flatMap { dx -> (-1..1).map { dz -> centre.translate(dx, dz) } }
                     .filter { it == centre || isOpenFloor(it) }
             } else {
