@@ -9,7 +9,6 @@ import org.rsmod.api.bosses.runtime.removeLocs
 import org.rsmod.api.bosses.runtime.spawnOwnedLoc
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.hook.TeleportType
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
@@ -31,7 +30,7 @@ internal class KephriDung(private val room: KephriEncounter) {
     fun pick() {
         val players = room.targets()
         val count =
-            if (room.raid.isActive(ToaInvocationKey.BlowingMud)) minOf(2, players.size) else 1
+            if (room.raid.isActive("dbrow.toa_invocation_blowing_mud")) minOf(2, players.size) else 1
         targets =
             if (players.isEmpty()) {
                 emptyList()

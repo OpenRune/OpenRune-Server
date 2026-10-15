@@ -8,7 +8,6 @@ import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.output.Camera
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.table.ToaWardensCollapseRow
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakSeqs
@@ -38,7 +37,7 @@ internal class WardenEnrage(private val room: WardensSecondEncounter) {
         private set
 
     private val insanity: Boolean
-        get() = room.raid.isActive(ToaInvocationKey.Insanity)
+        get() = room.raid.isActive("dbrow.toa_invocation_insanity")
 
     fun reset() {
         token++

@@ -5,7 +5,6 @@ import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.bosses.runtime.removeOwnedLoc
 import org.rsmod.api.bosses.runtime.spawnOwnedLoc
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -50,7 +49,7 @@ internal class ZebakPoison(private val room: ZebakEncounter) {
         )
         if (!spread) return
 
-        val range = if (room.raid.isActive(ToaInvocationKey.UpsetStomach)) 2 else 1
+        val range = if (room.raid.isActive("dbrow.toa_invocation_upset_stomach")) 2 else 1
         val spreadTo = ArrayList<CoordGrid>()
         for (dx in -range..range) {
             for (dz in -range..range) {

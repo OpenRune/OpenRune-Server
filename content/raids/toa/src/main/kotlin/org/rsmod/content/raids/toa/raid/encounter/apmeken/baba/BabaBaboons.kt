@@ -7,7 +7,6 @@ import dev.openrune.rscm.RSCMType
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.opNpc1
 import org.rsmod.api.player.stat.stat
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -97,7 +96,7 @@ internal class BabaBaboons(private val room: BabaEncounter) {
     fun killed(npc: Npc) {
         if (!baboons.remove(npc)) return
         forget(npc)
-        if (room.raid.isActive(ToaInvocationKey.JungleJapes)) dropPeels(npc.coords)
+        if (room.raid.isActive("dbrow.toa_invocation_jungle_japes")) dropPeels(npc.coords)
         npc.anim(BabaSeqs.BABOON_DEATH)
         room.schedule(BabaApes.BABOON_DEATH_TICKS) { if (npc.isSlotAssigned) room.despawn(npc) }
     }
@@ -209,7 +208,7 @@ internal class BabaBaboons(private val room: BabaEncounter) {
 
     private fun energyHit(player: Player) {
         var base = BabaApes.ENERGY_DAMAGE
-        if (room.raid.isActive(ToaInvocationKey.GottaHaveFaith)) {
+        if (room.raid.isActive("dbrow.toa_invocation_gotta_have_faith")) {
             base += player.stat(BabaApes.PRAYER_STAT) / BabaApes.FAITH_PRAYER_DIVISOR
         }
         room.hazardDamage(player, base, BabaApes.ENERGY_SPREAD)

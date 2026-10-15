@@ -5,7 +5,6 @@ import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.instances.InstanceSession
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.ToaBook
@@ -96,7 +95,7 @@ class AkkhaEncounter(
         )
 
     internal val specialCadence: Int
-        get() = if (raid.isActive(ToaInvocationKey.StayVigilant)) VIGILANT_CADENCE else CADENCE
+        get() = if (raid.isActive("dbrow.toa_invocation_stay_vigilant")) VIGILANT_CADENCE else CADENCE
 
     internal val specialDue: Boolean
         get() = autosSinceSpecial >= specialCadence
@@ -231,7 +230,7 @@ class AkkhaEncounter(
     }
 
     internal fun pickSpecial() {
-        val doubleTrouble = raid.isActive(ToaInvocationKey.DoubleTrouble)
+        val doubleTrouble = raid.isActive("dbrow.toa_invocation_double_trouble")
         var pool = if (doubleTrouble) listOf(Special.MEMORY, Special.DETONATE) else Special.entries
         if (targets().size < 2) pool = pool - Special.DETONATE
         if (pool.size > 1) pool = pool.filter { it != lastSpecial }

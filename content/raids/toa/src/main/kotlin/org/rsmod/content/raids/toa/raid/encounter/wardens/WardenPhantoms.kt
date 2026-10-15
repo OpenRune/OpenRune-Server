@@ -7,7 +7,6 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ProjAnimType
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.output.soundSynth
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
 import org.rsmod.content.raids.toa.raid.ToaPath
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
 import org.rsmod.content.raids.toa.raid.encounter.apmeken.baba.BabaRocks
@@ -60,7 +59,7 @@ internal class WardenPhantoms(private val room: WardensSecondEncounter) {
 
     private val rate: Int
         get() {
-            val insanity = room.raid.isActive(ToaInvocationKey.Insanity)
+            val insanity = room.raid.isActive("dbrow.toa_invocation_insanity")
             return when {
                 enraged && insanity -> FAST_ENRAGED_RATE
                 enraged -> ENRAGED_RATE
@@ -192,7 +191,7 @@ internal class WardenPhantoms(private val room: WardensSecondEncounter) {
 
     private fun akkha(phantom: Phantom, targets: List<Player>) {
         val npc = phantom.npc
-        if (room.raid.isActive(ToaInvocationKey.StayVigilant)) {
+        if (room.raid.isActive("dbrow.toa_invocation_stay_vigilant")) {
             phantom.ranged = deps.random.of(0, 1) == 0
         } else if (phantom.shots >= AKKHA_SHOTS_PER_STYLE) {
             phantom.ranged = !phantom.ranged
@@ -228,7 +227,7 @@ internal class WardenPhantoms(private val room: WardensSecondEncounter) {
             }
         }
         room.schedule(KEPHRI_DROP_DELAY + KEPHRI_BLAST_DELAY) {
-            val blast = if (room.raid.isActive(ToaInvocationKey.AerialAssault)) aimed.flatMap(::area) else aimed
+            val blast = if (room.raid.isActive("dbrow.toa_invocation_aerial_assault")) aimed.flatMap(::area) else aimed
             for (tile in blast) {
                 deps.worldRepo.spotanimMap(spotanim(KEPHRI_EXPLOSION), tile, height = KEPHRI_IMPACT_HEIGHT)
             }

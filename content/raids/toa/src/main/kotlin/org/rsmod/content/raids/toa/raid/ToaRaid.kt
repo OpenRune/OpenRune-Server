@@ -14,7 +14,7 @@ import org.rsmod.api.instances.RegionLocal
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.ui.ifOpenSub
-import org.rsmod.content.raids.toa.party.ToaInvocationKey
+import org.rsmod.content.raids.toa.party.ToaInvocation
 import org.rsmod.content.raids.toa.party.ToaLobbyParty
 import org.rsmod.content.raids.toa.party.ToaPartySettings
 import org.rsmod.content.raids.toa.raid.encounter.MainHallEncounter
@@ -82,19 +82,19 @@ class ToaRaid(
 
     val timeLimitMinutes: Int? =
         when {
-            isActive(ToaInvocationKey.WalkForIt) -> 40
-            isActive(ToaInvocationKey.JogForIt) -> 35
-            isActive(ToaInvocationKey.RunForIt) -> 30
-            isActive(ToaInvocationKey.SprintForIt) -> 25
+            isActive("dbrow.toa_invocation_walk_for_it") -> 40
+            isActive("dbrow.toa_invocation_jog_for_it") -> 35
+            isActive("dbrow.toa_invocation_run_for_it") -> 30
+            isActive("dbrow.toa_invocation_sprint_for_it") -> 25
             else -> null
         }
 
     val permittedTeamDeaths: Int? =
         when {
-            isActive(ToaInvocationKey.TryAgain) -> 10
-            isActive(ToaInvocationKey.Persistence) -> 5
-            isActive(ToaInvocationKey.SoftcoreRun) -> 3
-            isActive(ToaInvocationKey.HardcoreRun) -> 1
+            isActive("dbrow.toa_invocation_try_again") -> 10
+            isActive("dbrow.toa_invocation_persistence") -> 5
+            isActive("dbrow.toa_invocation_softcore_run") -> 3
+            isActive("dbrow.toa_invocation_hardcore_run") -> 1
             else -> null
         }
 
@@ -122,7 +122,7 @@ class ToaRaid(
     val finished: Boolean
         get() = endCycle >= 0
 
-    fun isActive(key: ToaInvocationKey): Boolean = settings.isActive(key.invocation)
+    fun isActive(symbol: String): Boolean = settings.isActive(ToaInvocation.of(symbol))
 
     fun isGhost(player: Player): Boolean = player in ghosts
 
