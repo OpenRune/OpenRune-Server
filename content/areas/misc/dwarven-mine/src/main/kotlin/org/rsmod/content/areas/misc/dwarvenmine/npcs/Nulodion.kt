@@ -1,8 +1,12 @@
 package org.rsmod.content.areas.misc.dwarvenmine.npcs
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
-import org.rsmod.api.invtx.invAdd
-import org.rsmod.api.invtx.invDel
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
@@ -105,7 +109,7 @@ class Nulodion @Inject constructor(private val shops: Shops) : PluginScript() {
         chatPlayer(neutral, "Okay, I'll take a cannon please.")
         val inv = access.inv
         val payingExactly = inv.count(COINS) == CANNON_PRICE
-        val needed = if (payingExactly) FULL_SETUP.size - 1 else FULL_SETUP.size
+        val needed = if (payingExactly) CANNON_SET.size - 1 else CANNON_SET.size
         if (inv.freeSpace() < needed) {
             chatNpc(
                 neutral,
@@ -119,11 +123,9 @@ class Nulodion @Inject constructor(private val shops: Shops) : PluginScript() {
             return
         }
         chatNpc(neutral, "Okay then, but keep it quiet... This thing's top secret!")
-        if (access.invDel(inv, COINS, CANNON_PRICE).failure) {
+        if (!access.buyCannonSet()) {
+            access.mes("You don't have enough inventory space.")
             return
-        }
-        for (part in FULL_SETUP) {
-            access.invAdd(inv, part)
         }
         mesbox(
             "You give the cannon engineer $CANNON_PRICE coins. He gives you the four parts that " +
@@ -174,23 +176,35 @@ class Nulodion @Inject constructor(private val shops: Shops) : PluginScript() {
 
     private companion object {
         private const val DWARF_CANNON = "quest_dwarfcannon"
-        private const val COINS = "obj.coins"
-        private const val CANNON_PRICE = 750000
 
         private const val SHOP_TITLE = "Multicannon parts for sale"
         private const val SHOP_INV = "inv.mcannonshop"
         private const val SHOP_SELL = 107.0
         private const val SHOP_BUY = 40.0
         private const val SHOP_CHANGE = 1.0
-
-        private val FULL_SETUP =
-            listOf(
-                "obj.twpart1",
-                "obj.twpart2",
-                "obj.twpart3",
-                "obj.twpart4",
-                "obj.ammo_mould",
-                "obj.mcannonbook",
-            )
     }
 }
+
+private const val COINS = "obj.coins"
+public const val CANNON_PRICE = 750000
+
+public val CANNON_SET =
+    listOf(
+        "obj.twpart1",
+        "obj.twpart2",
+        "obj.twpart3",
+        "obj.twpart4",
+        "obj.ammo_mould",
+        "obj.mcannonbook",
+    )
+
+public fun ProtectedAccess.buyCannonSet(): Boolean =
+    player
+        .invTransaction(inv) {
+            val target = select(inv)
+            delete(target, COINS.asRSCM(RSCMType.OBJ), CANNON_PRICE)
+            for (part in CANNON_SET) {
+                add(target, part.asRSCM(RSCMType.OBJ), count = 1)
+            }
+        }
+        .success
