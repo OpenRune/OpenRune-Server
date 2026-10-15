@@ -46,13 +46,14 @@ class EdgevilleLocs @Inject constructor(private val locRepo: LocRepository) : Pl
 
     private suspend fun ProtectedAccess.climbDownTrapdoor(trapdoor: BoundLocInfo) {
         arriveDelay()
+        if (trapdoor.coords != TRAPDOOR) {
+            mes("Nothing interesting happens.")
+            return
+        }
         mes("You climb down through the trapdoor...")
         anim("seq.human_pickupfloor")
         delay(1)
-        telejump(
-            if (trapdoor.coords == TRAPDOOR) DUNGEON_LANDING
-            else trapdoor.coords.translateZ(DUNGEON_OFFSET)
-        )
+        telejump(DUNGEON_LANDING)
     }
 
     /**
