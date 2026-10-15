@@ -82,6 +82,7 @@ toa_death = 61
 
 [gamevals.midi]
 toa_ambience = 730
+toa_laid_to_rest = 731
 toa_boss_zebak = 736
 toa_boss_kephri = 737
 toa_boss_baba = 740
