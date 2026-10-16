@@ -3,6 +3,7 @@ package org.rsmod.content.areas.city.falador.npcs
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.shops.Shops
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -18,55 +19,55 @@ private enum class FaladorShop(val title: String, val inv: String) {
 
 class FaladorShopkeepersScript @Inject constructor(private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
-        onCounterTalk("npc.cassie") { startDialogue(it) { cassie() } }
-        onCounterTrade("npc.cassie") { player.openShop(FaladorShop.Shields) }
+        onCounterTalk("npc.cassie") { npc -> startDialogue(npc) { cassie(npc) } }
+        onCounterTrade("npc.cassie") { player.openShop(it, FaladorShop.Shields) }
 
-        onCounterTalk("npc.flynn") { startDialogue(it) { flynn() } }
-        onCounterTrade("npc.flynn") { player.openShop(FaladorShop.Maces) }
+        onCounterTalk("npc.flynn") { npc -> startDialogue(npc) { flynn(npc) } }
+        onCounterTrade("npc.flynn") { player.openShop(it, FaladorShop.Maces) }
 
-        onCounterTalk("npc.wayne") { startDialogue(it) { wayne() } }
-        onCounterTrade("npc.wayne") { player.openShop(FaladorShop.Chainmail) }
+        onCounterTalk("npc.wayne") { npc -> startDialogue(npc) { wayne(npc) } }
+        onCounterTrade("npc.wayne") { player.openShop(it, FaladorShop.Chainmail) }
 
-        onCounterTalk("npc.herquin") { startDialogue(it) { herquin() } }
-        onCounterTrade("npc.herquin") { player.openShop(FaladorShop.Gems) }
+        onCounterTalk("npc.herquin") { npc -> startDialogue(npc) { herquin(npc) } }
+        onCounterTrade("npc.herquin") { player.openShop(it, FaladorShop.Gems) }
 
         for (keeper in GENERAL_STORE_STAFF) {
-            onCounterTalk(keeper) { startDialogue(it) { generalStore() } }
-            onCounterTrade(keeper) { player.openShop(FaladorShop.General) }
+            onCounterTalk(keeper) { npc -> startDialogue(npc) { generalStore(npc) } }
+            onCounterTrade(keeper) { player.openShop(it, FaladorShop.General) }
         }
 
-        onCounterTalk("npc.poh_garden_supplier") { startDialogue(it) { gardenSupplier() } }
-        onCounterTrade("npc.poh_garden_supplier") { player.openShop(FaladorShop.Garden) }
+        onCounterTalk("npc.poh_garden_supplier") { npc -> startDialogue(npc) { gardenSupplier(npc) } }
+        onCounterTrade("npc.poh_garden_supplier") { player.openShop(it, FaladorShop.Garden) }
     }
 
-    private suspend fun Dialogue.cassie() {
+    private suspend fun Dialogue.cassie(npc: Npc) {
         chatNpc(happy, "I buy and sell shields, do you want to trade?")
         if (choice2("Yes please.", true, "No thank you.", false)) {
-            player.openShop(FaladorShop.Shields)
+            player.openShop(npc, FaladorShop.Shields)
             return
         }
         chatPlayer(neutral, "No thank you.")
     }
 
-    private suspend fun Dialogue.flynn() {
+    private suspend fun Dialogue.flynn(npc: Npc) {
         chatNpc(happy, "Hello. Do you want to buy or sell any maces?")
         if (choice2("No thanks.", false, "Well, I'll have a look, at least.", true)) {
-            player.openShop(FaladorShop.Maces)
+            player.openShop(npc, FaladorShop.Maces)
             return
         }
         chatPlayer(neutral, "No thanks.")
     }
 
-    private suspend fun Dialogue.wayne() {
+    private suspend fun Dialogue.wayne(npc: Npc) {
         chatNpc(happy, "Welcome to Wayne's Chains. Do you wanna buy or sell some chain mail?")
         if (choice2("Yes please.", true, "No thanks.", false)) {
-            player.openShop(FaladorShop.Chainmail)
+            player.openShop(npc, FaladorShop.Chainmail)
             return
         }
         chatPlayer(neutral, "No thanks.")
     }
 
-    private suspend fun Dialogue.herquin() {
+    private suspend fun Dialogue.herquin(npc: Npc) {
         val trade =
             choice2(
                 "Do you wish to trade?",
@@ -77,30 +78,31 @@ class FaladorShopkeepersScript @Inject constructor(private val shops: Shops) : P
         if (trade) {
             chatPlayer(quiz, "Do you wish to trade?")
             chatNpc(happy, "Why yes, this a jewel shop after all.")
-            player.openShop(FaladorShop.Gems)
+            player.openShop(npc, FaladorShop.Gems)
             return
         }
         chatPlayer(neutral, "Sorry I don't want to talk to you actually.")
         chatNpc(angry, "Huh! Charming!")
     }
 
-    private suspend fun Dialogue.generalStore() {
+    private suspend fun Dialogue.generalStore(npc: Npc) {
         chatNpc(happy, "Can I help you at all?")
         if (choice2("Yes please. What are you selling?", true, "No thanks.", false)) {
-            player.openShop(FaladorShop.General)
+            player.openShop(npc, FaladorShop.General)
             return
         }
         chatPlayer(neutral, "No thanks.")
     }
 
     private suspend fun Dialogue.gardenSupplier(
+        npc: Npc,
         greeting: String = "Do you want to buy some garden plants?"
     ) {
         chatNpc(quiz, greeting)
         when (choice3("Yes please!", 1, "What are these plants for?", 2, "No thanks", 3)) {
             1 -> {
                 chatPlayer(happy, "Yes please!")
-                player.openShop(FaladorShop.Garden)
+                player.openShop(npc, FaladorShop.Garden)
             }
             2 -> {
                 chatPlayer(quiz, "What are these plants for?")
@@ -112,14 +114,14 @@ class FaladorShopkeepersScript @Inject constructor(private val shops: Shops) : P
                         "you just need to have one of my bagged saplings with you when you build at them.",
                 )
                 chatPlayer(neutral, "Ah, I see.")
-                gardenSupplier("So do you want to look at my stock?")
+                gardenSupplier(npc, "So do you want to look at my stock?")
             }
             else -> chatPlayer(neutral, "No thanks.")
         }
     }
 
-    private fun Player.openShop(shop: FaladorShop) {
-        shops.open(player = this, title = shop.title, shopInv = shop.inv)
+    private fun Player.openShop(npc: Npc, shop: FaladorShop) {
+        shops.open(player = this, activeNpc = npc, title = shop.title, shopInv = shop.inv)
     }
 
     private companion object {

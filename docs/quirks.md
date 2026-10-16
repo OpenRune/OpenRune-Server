@@ -66,25 +66,6 @@ example, if `zone(0, 1, 0)` receives a `soundarea` update first and
 to fixed iteration order; whereas the official game would send `zone(0, 1, 0)`
 first since it was the earliest update.
 
-## Water sources
-
-Shared fountain and sink definitions are tagged with `content.water_source` in
-`content/generic/generic-locs/pack`. The handler fills buckets, jugs, bowls and
-vials. Binding another source requires a cache rebuild; it does not add support
-for other container types or quest-specific water sources.
-
-## Shop prices
-
-The inventory-priced `Shops.open` overloads resolve each price independently:
-an explicit NPC shop parameter overrides the inventory's `sellMultiplier`,
-`buyMultiplier` or `delta`; an unset inventory value (`-1`) uses the parameter
-default. These config values use tenths of a percent, so `1000` means 100%
-and `delta = 1` means a 0.1% stock adjustment. Zero is a configured value,
-not an unset value.
-
-Rebuild the cache after changing these inventory fields. The explicit-percentage
-overloads still use their supplied percentages.
-
 ## Types
 ```
 engine
