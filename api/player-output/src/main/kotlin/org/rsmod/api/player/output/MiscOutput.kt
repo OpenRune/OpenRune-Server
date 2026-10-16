@@ -7,11 +7,17 @@ import net.rsprot.protocol.game.outgoing.misc.client.ServerTickEnd
 import net.rsprot.protocol.game.outgoing.misc.client.UpdateRebootTimerV2
 import net.rsprot.protocol.game.outgoing.misc.player.SetPlayerOp
 import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
 
 public object MiscOutput {
     /** @see [HintArrow] */
     public fun hintArrowNpc(player: Player, npcSlot: Int) {
         player.client.write(HintArrow(HintArrow.NpcHintArrow(npcSlot)))
+    }
+
+    public fun hintArrowTile(player: Player, coords: CoordGrid, height: Int) {
+        val position = HintArrow.TileHintArrow.HintArrowTilePosition.CENTER
+        player.client.write(HintArrow(HintArrow.TileHintArrow(coords.x, coords.z, height, position)))
     }
 
     public fun hintArrowReset(player: Player) {
