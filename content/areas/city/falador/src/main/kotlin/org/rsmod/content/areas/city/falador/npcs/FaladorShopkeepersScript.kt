@@ -22,7 +22,7 @@ private enum class FaladorShop(
     Maces("Flynn's Mace Market.", "inv.maceshop", 100.0, 60.0, 1.0),
     Chainmail("Wayne's Chains! - Chainmail specialist.", "inv.chainmailshop", 100.0, 65.0, 1.0),
     Gems("Herquin's Gems.", "inv.gemshop2", 100.0, 70.0, 3.0),
-    General("Falador General Store", "inv.generalshop7", 130.0, 40.0, 3.0),
+    General("Falador General Store", "inv.generalshop4", 130.0, 40.0, 3.0),
     Garden("Garden Centre", "inv.poh_garden_centre", 100.0, 40.0, 3.0),
 }
 
