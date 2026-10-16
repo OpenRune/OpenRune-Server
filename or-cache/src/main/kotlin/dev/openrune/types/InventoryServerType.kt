@@ -20,6 +20,10 @@ data class InventoryServerType(
             uimBlocked = false,
         ),
     var stock: List<InvStock> = emptyList(),
+    /** Shop prices in tenths of a percent of the obj's cost; -1 when the inv doesn't set one. */
+    var sellMultiplier: Int = -1,
+    var buyMultiplier: Int = -1,
+    var delta: Int = -1,
 ) : Definition {
 
     public val restock: Boolean

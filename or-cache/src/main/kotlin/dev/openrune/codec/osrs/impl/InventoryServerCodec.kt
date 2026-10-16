@@ -45,6 +45,9 @@ class InventoryServerCodec(
                     },
                 )
             )
+            add(DefinitionOpcode(6, OpcodeType.SHORT, InventoryServerType::sellMultiplier))
+            add(DefinitionOpcode(7, OpcodeType.SHORT, InventoryServerType::buyMultiplier))
+            add(DefinitionOpcode(8, OpcodeType.SHORT, InventoryServerType::delta))
         }
 
     override fun InventoryServerType.createData() {
@@ -58,6 +61,9 @@ class InventoryServerCodec(
             stack = customData.stack
             flags = customData.flags
             stock = customData.stock
+            sellMultiplier = customData.sellMultiplier
+            buyMultiplier = customData.buyMultiplier
+            delta = customData.delta
         }
     }
 

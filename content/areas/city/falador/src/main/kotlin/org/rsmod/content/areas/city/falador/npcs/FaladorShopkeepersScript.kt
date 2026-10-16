@@ -7,23 +7,13 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Prices mirror each shop's inv config: `sellMultiplier`, `buyMultiplier` and `delta` are stored in
- * tenths of a percent.
- */
-private enum class FaladorShop(
-    val title: String,
-    val inv: String,
-    val sell: Double,
-    val buy: Double,
-    val change: Double,
-) {
-    Shields("Cassie's Shield Shop.", "inv.shieldshop", 100.0, 60.0, 2.0),
-    Maces("Flynn's Mace Market.", "inv.maceshop", 100.0, 60.0, 1.0),
-    Chainmail("Wayne's Chains! - Chainmail specialist.", "inv.chainmailshop", 100.0, 65.0, 1.0),
-    Gems("Herquin's Gems.", "inv.gemshop2", 100.0, 70.0, 3.0),
-    General("Falador General Store", "inv.generalshop7", 130.0, 40.0, 3.0),
-    Garden("Garden Centre", "inv.poh_garden_centre", 100.0, 40.0, 3.0),
+private enum class FaladorShop(val title: String, val inv: String) {
+    Shields("Cassie's Shield Shop.", "inv.shieldshop"),
+    Maces("Flynn's Mace Market.", "inv.maceshop"),
+    Chainmail("Wayne's Chains! - Chainmail specialist.", "inv.chainmailshop"),
+    Gems("Herquin's Gems.", "inv.gemshop2"),
+    General("Falador General Store", "inv.generalshop7"),
+    Garden("Garden Centre", "inv.poh_garden_centre"),
 }
 
 class FaladorShopkeepersScript @Inject constructor(private val shops: Shops) : PluginScript() {
@@ -129,14 +119,7 @@ class FaladorShopkeepersScript @Inject constructor(private val shops: Shops) : P
     }
 
     private fun Player.openShop(shop: FaladorShop) {
-        shops.open(
-            player = this,
-            title = shop.title,
-            shopInv = shop.inv,
-            buyPercentage = shop.buy,
-            sellPercentage = shop.sell,
-            changePercentage = shop.change,
-        )
+        shops.open(player = this, title = shop.title, shopInv = shop.inv)
     }
 
     private companion object {

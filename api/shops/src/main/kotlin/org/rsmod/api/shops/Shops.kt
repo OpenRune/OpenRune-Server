@@ -7,6 +7,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.InvScope
 import jakarta.inject.Inject
+import org.rsmod.api.config.aliases.ParamInt
 import org.rsmod.api.player.output.ClientScripts.interfaceInvInit
 import org.rsmod.api.player.output.ClientScripts.shopMainInit
 import org.rsmod.api.player.startInvTransmit
@@ -27,21 +28,15 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         activeNpc: Npc,
         currency: String = "currency.standard_gp"
     ) {
-        val buyPercentage = activeNpc.type.param(ShopParams.shop_buy_percentage) / 10.0
-        val sellPercentage = activeNpc.type.param(ShopParams.shop_sell_percentage) / 10.0
-        val changePercentage = activeNpc.type.param(ShopParams.shop_change_percentage) / 10.0
-
         val inventoryID = activeNpc.paramOrNull(ShopParams.shop_invetnory) ?: return
         val title = activeNpc.paramOrNull(ShopParams.shop_name) ?: "${activeNpc.name} Shop"
 
         open(
             player = player,
+            activeNpc = activeNpc,
             title = title,
-            shopInv = RSCM.getReverseMapping(RSCMType.INV,inventoryID),
-            buyPercentage = buyPercentage,
-            sellPercentage = sellPercentage,
-            changePercentage = changePercentage,
-            currency = currency
+            shopInv = RSCM.getReverseMapping(RSCMType.INV, inventoryID),
+            currency = currency,
         )
     }
 
@@ -54,19 +49,49 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         currency: String = "currency.standard_gp",
         subtext: String = DEFAULT_SUBTEXT,
     ) {
-        val buyPercentage = activeNpc.type.param(ShopParams.shop_buy_percentage) / 10.0
-        val sellPercentage = activeNpc.type.param(ShopParams.shop_sell_percentage) / 10.0
-        val changePercentage = activeNpc.type.param(ShopParams.shop_change_percentage) / 10.0
+        openPriced(player, activeNpc, title, shopInv, currency, subtext)
+    }
+
+    public fun open(
+        player: Player,
+        title: String,
+        shopInv: String,
+        currency: String = "currency.standard_gp",
+        subtext: String = DEFAULT_SUBTEXT,
+    ) {
+        openPriced(player, null, title, shopInv, currency, subtext)
+    }
+
+    private fun openPriced(
+        player: Player,
+        npc: Npc?,
+        title: String,
+        shopInv: String,
+        currency: String,
+        subtext: String,
+    ) {
+        val inv =
+            checkNotNull(ServerCacheManager.getInventory(shopInv.asRSCM(RSCMType.INV))) {
+                "Missing shop inventory: $shopInv"
+            }
         open(
             player = player,
             title = title,
             shopInv = shopInv,
-            buyPercentage = buyPercentage,
-            sellPercentage = sellPercentage,
-            changePercentage = changePercentage,
+            buyPercentage = percentage(npc, ShopParams.shop_buy_percentage, inv.buyMultiplier),
+            sellPercentage = percentage(npc, ShopParams.shop_sell_percentage, inv.sellMultiplier),
+            changePercentage = percentage(npc, ShopParams.shop_change_percentage, inv.delta),
             currency = currency,
             subtext = subtext,
         )
+    }
+
+    private fun percentage(npc: Npc?, param: ParamInt, invValue: Int): Double {
+        val tenths =
+            npc?.type?.paramOrNull(param)
+                ?: invValue.takeIf { it >= 0 }
+                ?: param.raw.defaultInt
+        return tenths / 10.0
     }
 
     public fun open(
