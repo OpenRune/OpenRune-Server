@@ -126,3 +126,7 @@ barrows_state=64132
 aggression_tolerance_start=64140
 aggression_tolerance_anchor=64141
 aggression_tolerance_seen=64142
+toa_akkha_freeze_expiry=64060
+toa_akkha_darkness_cooldown=64061
+toa_akkha_burn_cooldown=64062
+toa_akkha_burn_expiry=64063

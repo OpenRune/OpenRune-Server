@@ -392,3 +392,27 @@ isServerOnly = true
 id = "varp.toa_best_overall_expert_8"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.toa_akkha_freeze_expiry"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.toa_akkha_darkness_cooldown"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.toa_akkha_burn_cooldown"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.toa_akkha_burn_expiry"
+scope = "Temp"
+transmit = "Never"
