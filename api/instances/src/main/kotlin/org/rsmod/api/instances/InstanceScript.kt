@@ -57,6 +57,12 @@ public abstract class InstanceScript(
     /** Make the owner's rejoin of an empty instance run the enter prelude, as it does on creation. */
     protected open fun runsPreludeOnFreshRun(): Boolean = false
 
+    /** Whether [player]'s kill of the boss reports a fight duration and personal best. */
+    protected open fun recordsKillTime(player: Player): Boolean = true
+
+    /** A varp keeping each player's best kill time in ticks (0 for none), across logouts. */
+    protected open fun bestTimeVarp(): String? = null
+
     /**
      * True when this result starts the session's npcs from scratch: a new instance, or a join of an
      * empty one (the manager resets its npcs, deleting any boss spawned by the previous run).
@@ -83,7 +89,9 @@ public abstract class InstanceScript(
         if (destroyWhenEmpty()) {
             resolved = resolved.copy(destroyWhenEmpty = true)
         }
-        return resolved.withArea(area.withDbCoords(rowData), rowData.rowId)
+        return resolved
+            .withArea(area.withDbCoords(rowData), rowData.rowId)
+            .copy(recordsKillTime = ::recordsKillTime, bestTimeVarp = bestTimeVarp())
     }
 
     protected fun onEnterObject(action: suspend ProtectedAccess.() -> Unit) {

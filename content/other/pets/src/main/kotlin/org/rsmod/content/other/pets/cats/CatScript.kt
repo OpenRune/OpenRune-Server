@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
+import org.rsmod.api.bottomless.milk.MilkSources
 import org.rsmod.api.death.NpcDeath
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.owner.clearSpawnOwner
@@ -42,7 +43,7 @@ constructor(
             onPetOp(cat.npc, TALK_OP) { talk(it, cat) }
             onPetOpIfPresent(cat.npc, CHASE_OP) { chaseVermin(it, cat) }
             onPetOpIfPresent(cat.npc, INTERACT_OP) { interact(it, cat) }
-            onPetOpU(cat.npc) { useItem(it.npc, cat, it.objType) }
+            onPetOpU(cat.npc) { useItem(it.npc, cat, it.objType, it.invSlot) }
         }
     }
 
@@ -149,7 +150,7 @@ constructor(
         chase.chase(this, npc, cat, rat)
     }
 
-    private suspend fun ProtectedAccess.useItem(npc: Npc, cat: CatForm, obj: ItemServerType) {
+    private suspend fun ProtectedAccess.useItem(npc: Npc, cat: CatForm, obj: ItemServerType, slot: Int) {
         if (!followers.requireOwned(this, npc)) {
             return
         }
@@ -163,8 +164,15 @@ constructor(
                 }
             }
             obj.internalName in MILK -> {
-                if (obj.internalName == BUCKET_OF_MILK) {
-                    invReplace(inv, BUCKET_OF_MILK, 1, EMPTY_BUCKET)
+                // A bottomless milk bucket gives one use (https://oldschool.runescape.wiki/w/Bottomless_milk_bucket).
+                val drank =
+                    if (obj.internalName == BUCKET_OF_MILK) {
+                        invReplace(inv, BUCKET_OF_MILK, 1, EMPTY_BUCKET).success
+                    } else {
+                        MilkSources.pourFrom(inv, slot)
+                    }
+                if (!drank) {
+                    return
                 }
                 mes("The $name laps up the milk.")
                 npc.say("Purpurr")
@@ -196,6 +204,6 @@ constructor(
         const val BALL_OF_WOOL = "obj.ball_of_wool"
         const val BUCKET_OF_MILK = "obj.bucket_milk"
         const val EMPTY_BUCKET = "obj.bucket_empty"
-        val MILK = setOf(BUCKET_OF_MILK, "obj.bottomless_milk_bucket_filled")
+        val MILK = setOf(BUCKET_OF_MILK, MilkSources.BUCKET_FILLED)
     }
 }
