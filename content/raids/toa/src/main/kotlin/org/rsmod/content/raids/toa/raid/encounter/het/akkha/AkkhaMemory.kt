@@ -34,6 +34,11 @@ internal class AkkhaMemory(private val room: AkkhaEncounter) {
         for ((i, safe) in lights.withIndex()) {
             room.schedule(LIGHT_START + LIGHT_GAP * i) { showLight(safe) }
             room.schedule(firstBlast + gap * i) {
+                deps.worldRepo.soundArea(
+                    room.coords(ARENA_CENTRE),
+                    AkkhaSynths.BLAST,
+                    radius = SOUND_RADIUS,
+                )
                 for (quadrant in Quadrant.entries) {
                     if (quadrant != safe) room.quadrants.memoryBlast(quadrant)
                 }
@@ -67,10 +72,12 @@ internal class AkkhaMemory(private val room: AkkhaEncounter) {
         val angle = existing?.angle ?: LocAngle.West
         val shape = existing?.shape ?: LocShape.CentrepieceStraight
         deps.locRepo.add(tile, LIGHT_LOCS.getValue(quadrant), LIGHT_GAP, angle, shape)
+        deps.worldRepo.soundArea(tile, AkkhaSynths.LIGHT, radius = SOUND_RADIUS)
     }
 
     private companion object {
         const val ATTACK_RATE = 6
+        const val SOUND_RADIUS = 14
         const val BASE_ITERATIONS = 4
         const val MAX_EXTRA_ITERATIONS = 2
         const val GLOW_MESSAGE = 2
@@ -82,6 +89,8 @@ internal class AkkhaMemory(private val room: AkkhaEncounter) {
         const val FAST_GAP = 2
         const val RETURN_DELAY = 2
         const val GLOW_TEXT = "Sections of the room start to glow..."
+
+        val ARENA_CENTRE = CoordGrid(3681, 5408, 1)
 
         val LIGHT_TILES =
             mapOf(

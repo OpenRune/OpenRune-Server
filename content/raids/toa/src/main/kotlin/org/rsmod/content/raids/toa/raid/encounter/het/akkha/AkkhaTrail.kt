@@ -82,6 +82,7 @@ internal class AkkhaTrail(private val room: AkkhaEncounter) {
         if (!room.isOpenFloor(tile) || orbs.any { it.tile == tile }) return
         val quadrant = Quadrant.of(static)
         val npc = room.spawn(quadrant.trailOrb, tile)
+        deps.worldRepo.soundArea(tile, AkkhaSynths.ORB, radius = ORB_SOUND_RADIUS)
         orbs += Orb(npc, tile, quadrant, cycle + ORB_LIFETIME)
     }
 
@@ -114,6 +115,7 @@ internal class AkkhaTrail(private val room: AkkhaEncounter) {
 
     private companion object {
         const val START_MESSAGE = 2
+        const val ORB_SOUND_RADIUS = 4
         const val FIRST_SPAWN = 3
         const val LAST_SPAWN = 20
         const val STOP_MESSAGE = 22

@@ -59,6 +59,10 @@ toa_best_overall_expert_6 = 64056
 toa_best_overall_expert_7 = 64057
 toa_best_overall_expert_8 = 64058
 toa_temp_state = 64059
+toa_akkha_freeze_expiry = 64060
+toa_akkha_darkness_cooldown = 64061
+toa_akkha_burn_cooldown = 64062
+toa_akkha_burn_expiry = 64063
 
 [gamevals.varbit]
 toa_protect_item_at_death = 64000
@@ -88,8 +92,14 @@ toa_boss_kephri = 737
 toa_boss_baba = 740
 toa_path_scabaras = 738
 toa_path_apmeken = 741
+toa_boss_akkha = 739
 
 [gamevals.synth]
+toa_akkha_light = 5667
+toa_akkha_blast = 5727
+toa_akkha_orb = 5722
+toa_akkha_burn = 4827
+toa_akkha_style_swap = 5585
 toa_vault_sarcophagus_click = 6051
 toa_vault_sarcophagus_open_a = 5934
 toa_vault_sarcophagus_open_b = 5939

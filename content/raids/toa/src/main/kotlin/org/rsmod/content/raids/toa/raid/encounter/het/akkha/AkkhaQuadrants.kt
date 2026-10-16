@@ -1,9 +1,11 @@
 package org.rsmod.content.raids.toa.raid.encounter.het.akkha
 
 import kotlin.math.abs
-import org.rsmod.api.player.disableOverheadPrayers
+import org.rsmod.api.player.lockOverheads
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.stat.statSub
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
@@ -113,33 +115,47 @@ internal class AkkhaQuadrants(private val room: AkkhaEncounter) {
 
 internal class AkkhaEffects(private val room: AkkhaEncounter) {
     private val deps = room.raid.deps
-    private val cooldownUntil = HashMap<Pair<Quadrant, Player>, Int>()
-    private val burning = HashSet<Player>()
 
     fun apply(quadrant: Quadrant, player: Player) {
         val cycle = deps.mapClock.cycle
-        val key = quadrant to player
-        if ((cooldownUntil[key] ?: 0) > cycle) return
-        cooldownUntil[key] = cycle + cooldown(quadrant)
         when (quadrant) {
-            Quadrant.NE -> darkness(player)
+            Quadrant.NE -> {
+                if (player.darknessCooldown > cycle) return
+                player.darknessCooldown = cycle + DARKNESS_COOLDOWN
+                darkness(player)
+            }
             Quadrant.SE -> lightning(player)
-            Quadrant.SW -> player.mes(FREEZE_MESSAGE)
-            Quadrant.NW -> burn(player)
+            Quadrant.SW -> freeze(player)
+            Quadrant.NW -> {
+                if (player.burnCooldown > cycle) return
+                player.burnCooldown = cycle + BURN_COOLDOWN
+                burn(player)
+            }
         }
     }
+
+    fun isFrozen(player: Player): Boolean = player.freezeExpiry > deps.mapClock.cycle
+
+    private fun isBurning(player: Player): Boolean = player.burnExpiry > deps.mapClock.cycle
 
     fun clear() {
-        cooldownUntil.clear()
-        burning.clear()
+        for (player in room.targets()) {
+            player.freezeExpiry = 0
+            player.darknessCooldown = 0
+            player.burnCooldown = 0
+            player.burnExpiry = 0
+        }
     }
 
-    private fun cooldown(quadrant: Quadrant): Int =
-        when (quadrant) {
-            Quadrant.NE -> DARKNESS_COOLDOWN
-            Quadrant.NW -> BURN_COOLDOWN
-            else -> 0
+    private fun freeze(player: Player) {
+        val alreadyFrozen = isFrozen(player)
+        player.freezeExpiry = deps.mapClock.cycle + FREEZE_TICKS
+        if (alreadyFrozen) return
+        player.mes(FREEZE_MESSAGE)
+        room.schedule(FREEZE_TICKS) {
+            if (player in room.targets() && !isFrozen(player)) player.mes(FREEZE_END_MESSAGE)
         }
+    }
 
     private fun darkness(player: Player) {
         player.mes(DARKNESS_MESSAGE)
@@ -151,20 +167,30 @@ internal class AkkhaEffects(private val room: AkkhaEncounter) {
 
     private fun lightning(player: Player) {
         player.mes(LIGHTNING_MESSAGE)
-        player.disableOverheadPrayers()
+        player.lockOverheads(LIGHTNING_LOCK_TICKS)
     }
 
     private fun burn(player: Player) {
-        if (!burning.add(player)) return
+        if (isBurning(player)) return
+        player.burnExpiry = deps.mapClock.cycle + BURN_HITS * BURN_INTERVAL + 1
         player.mes(BURN_MESSAGE)
         for (i in 1..BURN_HITS) {
             room.schedule(i * BURN_INTERVAL) {
-                if (player in room.targets()) hit(player, BURN_DAMAGE)
-                if (i == BURN_HITS) {
-                    burning -= player
-                    player.mes(BURN_END_MESSAGE)
+                if (player in room.targets()) {
+                    hit(player, BURN_DAMAGE)
+                    player.spotanim(AkkhaSpots.BURN_TICK, BURN_SPOT_DELAY, BURN_SPOT_HEIGHT)
+                    player.soundSynth(AkkhaSynths.BURN)
+                    spreadBurn(player)
                 }
+                if (i == BURN_HITS) player.mes(BURN_END_MESSAGE)
             }
+        }
+    }
+
+    private fun spreadBurn(source: Player) {
+        for (other in room.targets()) {
+            if (other === source || isBurning(other)) continue
+            if (other.coords.chebyshevDistance(source.coords) <= 1) burn(other)
         }
     }
 
@@ -175,16 +201,26 @@ internal class AkkhaEffects(private val room: AkkhaEncounter) {
         const val DARKNESS_DRAIN = 3
         const val DARKNESS_HITS = 5
         const val DARKNESS_DAMAGE = 5
+        const val LIGHTNING_LOCK_TICKS = 8
+        const val FREEZE_TICKS = 25
         const val BURN_COOLDOWN = 30
         const val BURN_HITS = 5
         const val BURN_INTERVAL = 2
         const val BURN_DAMAGE = 5
+        const val BURN_SPOT_DELAY = 30
+        const val BURN_SPOT_HEIGHT = 124
         const val DARKNESS_MESSAGE = "You have been consumed by darkness!"
         const val LIGHTNING_MESSAGE = "You have been struck by lightning and can't use protection prayers!"
         const val FREEZE_MESSAGE = "Your attacks have been slowed by some ice!"
+        const val FREEZE_END_MESSAGE = "The ice around you melts away."
         const val BURN_MESSAGE = "You have been set alight!"
         const val BURN_END_MESSAGE = "The fire around you goes out."
         val COMBAT_STATS =
             listOf("stat.attack", "stat.strength", "stat.defence", "stat.ranged", "stat.magic")
     }
 }
+
+private var Player.freezeExpiry by intVarp("varp.toa_akkha_freeze_expiry")
+private var Player.darknessCooldown by intVarp("varp.toa_akkha_darkness_cooldown")
+private var Player.burnCooldown by intVarp("varp.toa_akkha_burn_cooldown")
+private var Player.burnExpiry by intVarp("varp.toa_akkha_burn_expiry")
