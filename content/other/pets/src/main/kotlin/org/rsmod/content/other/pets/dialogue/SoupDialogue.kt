@@ -98,7 +98,7 @@ class SoupDialogue @Inject constructor() : PluginScript() {
 
     private companion object {
         const val NPC = "npc.skillpet_sailing"
-        const val HOT_WATER = "obj.bowl_water"
+        const val HOT_WATER = "obj.bowl_hot_water"
         val VEGETABLES = setOf("Cabbage", "Onion", "Potato", "Tomato", "Sweetcorn", "Cooked sweetcorn")
     }
 }
