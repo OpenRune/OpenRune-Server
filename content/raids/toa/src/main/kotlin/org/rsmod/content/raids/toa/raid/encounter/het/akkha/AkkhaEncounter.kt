@@ -122,7 +122,7 @@ class AkkhaEncounter(
 
     internal fun beginSpecial(boss: Npc) {
         autosSinceSpecial = 0
-        if (autoSinceLastSpecial) setStyle(boss, style.next())
+        if (autoSinceLastSpecial) swapStyle(boss)
         autoSinceLastSpecial = false
     }
 
@@ -155,12 +155,13 @@ class AkkhaEncounter(
         val cycle = deps.mapClock.cycle
         if (cycle - lastAttacked < IDLE_SWAP_TICKS) return
         lastAttacked = cycle
-        setStyle(boss, style.next())
+        swapStyle(boss)
     }
 
     internal fun modifyAkkhaHit(boss: Npc, hit: HitBuilder) {
         if (boss !== akkha || !hit.isFromPlayer) return
         val attacker = hit.sourceUid?.let { PlayerUid(it).resolve(deps.bossDeps.playerList) }
+        if (attacker != null && effects.isFrozen(attacker)) attacker.actionDelay += 1
         if (shadows.shielded(boss)) {
             hit.damage = 0
             attacker?.mes(SHIELDED_TEXT)
@@ -203,6 +204,11 @@ class AkkhaEncounter(
 
     internal fun akkhaDeath(boss: Npc) {
         if (boss === akkha) complete()
+    }
+
+    private fun swapStyle(boss: Npc) {
+        deps.worldRepo.soundArea(boss.coords, AkkhaSynths.STYLE_SWAP, radius = STYLE_SOUND_RADIUS)
+        setStyle(boss, style.next())
     }
 
     private fun setStyle(boss: Npc, next: Style) {
@@ -323,6 +329,7 @@ class AkkhaEncounter(
 
     private companion object {
         const val ATTACK_RATE = 6
+        const val STYLE_SOUND_RADIUS = 14
         const val IDLE_SWAP_TICKS = 100
         const val DEATH_MODEL_DELAY = 2
         const val CADENCE = 7

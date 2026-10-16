@@ -59,6 +59,7 @@ internal object AkkhaSpots {
     const val FREEZE = "spotanim.akkha_freeze"
     const val BURN = "spotanim.akkha_burn"
     const val ORB_IMPACT = "spotanim.akkha_enrage_orb_impact"
+    const val BURN_TICK = "spotanim.firebolt_impact"
 }
 
 internal object AkkhaHeadbars {
@@ -68,5 +69,13 @@ internal object AkkhaHeadbars {
 }
 
 internal object AkkhaMidis {
-    val FIGHT: String? = null
+    const val FIGHT = "midi.toa_boss_akkha"
+}
+
+internal object AkkhaSynths {
+    const val LIGHT = "synth.toa_akkha_light"
+    const val BLAST = "synth.toa_akkha_blast"
+    const val ORB = "synth.toa_akkha_orb"
+    const val BURN = "synth.toa_akkha_burn"
+    const val STYLE_SWAP = "synth.toa_akkha_style_swap"
 }
