@@ -1,6 +1,7 @@
 package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
 import org.rsmod.api.npc.hit.queueHit as queueNpcHit
+import org.rsmod.api.npc.vars.intVarn
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
@@ -13,19 +14,17 @@ import org.rsmod.map.CoordGrid
 
 internal class ZebakJugs(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
-    private val jugs = HashMap<Npc, Roll>()
-
-    private class Roll(var dx: Int = 0, var dz: Int = 0, var left: Int = 0)
+    private val jugs = HashSet<Npc>()
 
     val npcs: Collection<Npc>
-        get() = jugs.keys
+        get() = jugs
 
     fun land(tiles: List<CoordGrid>, targets: List<Player>) {
         val dust = spotanim(ZebakSpots.DUST)
         for (tile in tiles) {
             val jug = room.spawn(ZebakNpcs.JUG, tile)
             jug.ignoreCombatInteractions = true
-            jugs[jug] = Roll()
+            jugs += jug
             deps.worldRepo.spotanimMap(dust, tile)
             deps.worldRepo.soundArea(tile, ZebakSynths.BOULDER_LAND, radius = LAND_SOUND_RADIUS)
             for (player in targets) {
@@ -36,57 +35,55 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
     }
 
     fun move(player: Player, jug: Npc, push: Boolean) {
-        val roll = jugs[jug] ?: return
-        if (roll.dx != 0 || roll.dz != 0) return
+        if (jug !in jugs || jug.isRolling) return
         val sign = if (push) 1 else -1
         val dx = Integer.signum(jug.coords.x - player.coords.x) * sign
         val dz = Integer.signum(jug.coords.z - player.coords.z) * sign
         if (dx == 0 && dz == 0) return
-        setRolling(jug, roll, dx, dz, ROLL_DISTANCE)
+        setRolling(jug, dx, dz, ROLL_DISTANCE)
         player.anim(ZebakSeqs.PLAYER_MOVE_JUG)
     }
 
     fun roll(jug: Npc, dz: Int) {
-        val roll = jugs[jug] ?: return
-        setRolling(jug, roll, 0, dz, Int.MAX_VALUE)
+        if (jug !in jugs) return
+        setRolling(jug, 0, dz, Int.MAX_VALUE)
     }
 
-    private fun setRolling(jug: Npc, roll: Roll, dx: Int, dz: Int, distance: Int) {
-        if (roll.dx == 0 && roll.dz == 0) {
+    private fun setRolling(jug: Npc, dx: Int, dz: Int, distance: Int) {
+        if (!jug.isRolling) {
             jug.transmog(npcType(ZebakNpcs.JUG_ROLLING), Int.MAX_VALUE)
         }
-        roll.dx = dx
-        roll.dz = dz
-        roll.left = distance
+        jug.rollDx = dx
+        jug.rollDz = dz
+        jug.rollLeft = distance
     }
 
-    private fun stop(jug: Npc, roll: Roll) {
-        roll.dx = 0
-        roll.dz = 0
+    private fun stop(jug: Npc) {
+        jug.rollDx = 0
+        jug.rollDz = 0
         jug.resetTransmog()
     }
 
     fun hit(jug: Npc) {
-        val roll = jugs[jug] ?: return
-        roll.dx = 0
-        roll.dz = 0
+        if (jug !in jugs) return
+        jug.rollDx = 0
+        jug.rollDz = 0
         room.schedule(1) { shatter(jug, jug.coords) }
     }
 
     fun tick(jug: Npc) {
-        val roll = jugs[jug] ?: return
-        if (roll.dx == 0 && roll.dz == 0) return
-        if (roll.left <= 0) {
-            stop(jug, roll)
+        if (jug !in jugs || !jug.isRolling) return
+        if (jug.rollLeft <= 0) {
+            stop(jug)
             return
         }
-        val next = jug.coords.translate(roll.dx, roll.dz)
+        val next = jug.coords.translate(jug.rollDx, jug.rollDz)
         when {
             room.boulders.isBoulder(next) -> shatter(jug, next)
             deps.collision.isWalkBlocked(next) || !onFloor(next) -> splashAway(jug)
             else -> {
                 jug.walk(next)
-                roll.left--
+                jug.rollLeft--
             }
         }
     }
@@ -128,7 +125,7 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
     }
 
     fun roarHit() {
-        for (jug in jugs.keys) {
+        for (jug in jugs) {
             jug.queueNpcHit(ROAR_HIT_DELAY, HitType.Typeless, ROAR_DAMAGE, NOOP_NPC_MODIFIER)
         }
     }
@@ -149,7 +146,7 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
     }
 
     fun clear() {
-        for (jug in jugs.keys.toList()) remove(jug)
+        for (jug in jugs.toList()) remove(jug)
     }
 
     companion object {
@@ -172,3 +169,9 @@ internal class ZebakJugs(private val room: ZebakEncounter) {
         private const val ROLL_DISTANCE = 8
     }
 }
+
+private var Npc.rollDx by intVarn("varn.toa_zebak_jug_dx")
+private var Npc.rollDz by intVarn("varn.toa_zebak_jug_dz")
+private var Npc.rollLeft by intVarn("varn.toa_zebak_jug_left")
+private val Npc.isRolling: Boolean
+    get() = rollDx != 0 || rollDz != 0
