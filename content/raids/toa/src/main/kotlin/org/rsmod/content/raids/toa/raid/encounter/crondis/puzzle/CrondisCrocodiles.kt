@@ -3,6 +3,7 @@ package org.rsmod.content.raids.toa.raid.encounter.crondis.puzzle
 import dev.openrune.types.NpcMode
 import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.npc.opPlayer2
+import org.rsmod.api.npc.vars.intVarn
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.game.entity.Npc
@@ -16,7 +17,6 @@ import org.rsmod.map.util.Bounds
 internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
     private val deps = room.raid.deps
     private val crocodiles = ArrayList<Npc>()
-    private val wakeAt = HashMap<Npc, Int>()
     private var countdown = nextCountdown()
 
     private val targets = HashMap<Npc, Any>()
@@ -65,7 +65,7 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
             croc.defaultMoveSpeed = MoveSpeed.Crawl
             croc.noneMode()
             room.palm?.let { croc.faceSquare(it.coords, it.size, it.size) }
-            wakeAt[croc] = deps.mapClock.cycle + WAKE_TICKS
+            croc.wakeAt = deps.mapClock.cycle + WAKE_TICKS
             crocodiles += croc
         }
     }
@@ -88,7 +88,6 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
     }
 
     private fun forget(croc: Npc) {
-        wakeAt.remove(croc)
         targets.remove(croc)
         attackers.remove(croc)
     }
@@ -104,7 +103,7 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
 
     fun ai(croc: Npc) {
         if (room.stage != ToaStage.STARTED) return
-        if ((wakeAt[croc] ?: 0) > deps.mapClock.cycle) return
+        if (croc.wakeAt > deps.mapClock.cycle) return
         val fightingPlayer = croc.mode == NpcMode.OpPlayer2 || croc.mode == NpcMode.ApPlayer2
 
         when (val target = chooseTarget(croc)) {
@@ -242,3 +241,5 @@ internal class CrondisCrocodiles(private val room: CrondisPuzzleEncounter) {
         const val HAZARD_WINDOW = 50
     }
 }
+
+private var Npc.wakeAt by intVarn("varn.toa_croc_wake_at")
