@@ -206,7 +206,6 @@ class WardensEncounter(
     override fun onFightStart(boss: Npc) {
         capped = false
         phaseOne = true
-        boss.hitpoints = 1 // TEMP: skip the obelisk fight while testing the Wardens
         obeliskRemaining = boss.hitpoints
         boss.transmog(npcType(OBELISK_P1), Int.MAX_VALUE)
         for ((god, warden) in wardens) warden.transmog(npcType(god.active), Int.MAX_VALUE)
