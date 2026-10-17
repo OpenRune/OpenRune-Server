@@ -228,3 +228,42 @@ id = "varn.toa_kephri_eggs_next"
 
 [[varn]]
 id = "varn.forced_max_hit_styles"
+
+[[varn]]
+id = "varn.toa_baba_baboon_next_bash"
+
+[[varn]]
+id = "varn.toa_baba_baboon_next_pick"
+
+[[varn]]
+id = "varn.toa_croc_wake_at"
+
+[[varn]]
+id = "varn.toa_warden_orb_hits"
+
+[[varn]]
+id = "varn.toa_zebak_wave_dz"
+
+[[varn]]
+id = "varn.toa_zebak_wave_ticks"
+
+[[varn]]
+id = "varn.toa_zebak_jug_dx"
+
+[[varn]]
+id = "varn.toa_zebak_jug_dz"
+
+[[varn]]
+id = "varn.toa_zebak_jug_left"
+
+[[varn]]
+id = "varn.toa_zebak_cloud_switch"
+
+[[varn]]
+id = "varn.toa_zebak_cloud_delay"
+
+[[varn]]
+id = "varn.toa_zebak_cloud_last"
+
+[[varn]]
+id = "varn.toa_zebak_cloud_target"
