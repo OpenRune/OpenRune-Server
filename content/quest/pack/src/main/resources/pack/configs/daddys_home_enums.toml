@@ -1,0 +1,52 @@
+[[enum]]
+isServerOnly = true
+id = "enum.daddys_home_hammers"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+1 = "obj.hammer"
+2 = "obj.imcando_hammer"
+
+[[enum]]
+isServerOnly = true
+id = "enum.daddys_home_saws"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+1 = "obj.poh_saw"
+2 = "obj.wearable_saw"
+3 = "obj.eyeglo_crystal_saw"
+
+[[enum]]
+isServerOnly = true
+id = "enum.daddys_home_nails"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+1 = "obj.nails_dragon"
+2 = "obj.nails_rune"
+3 = "obj.nails_adamant"
+4 = "obj.nails_mithril"
+5 = "obj.nails_black"
+6 = "obj.nails"
+7 = "obj.nails_iron"
+8 = "obj.nails_bronze"
+
+[[enum]]
+isServerOnly = true
+id = "enum.daddys_home_house_cities"
+keyType = "INT"
+valueType = "STRING"
+
+[enum.values]
+1 = "Rimmington"
+2 = "Taverley"
+3 = "Pollnivneach"
+4 = "Hosidius"
+5 = "Rellekka"
+6 = "Brimhaven"
+7 = "Yanille"
+8 = "Prifddinas"

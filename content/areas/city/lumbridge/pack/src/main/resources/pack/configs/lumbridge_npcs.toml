@@ -4,3 +4,14 @@ inherit = "npc.ap_guide_parent"
 moveRestrict = "NoMove"
 wanderRange = 0
 respawnDir = "South"
+
+
+[[npc]]
+id = "npc.bob"
+inherit = "npc.bob"
+moveRestrict = "Indoors"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 600
+"param.shop_change_percentage" = 20

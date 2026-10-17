@@ -261,7 +261,7 @@ class XMarksTheSpotQuest @Inject constructor(private val objRepo: ObjRepository)
 
         private const val QUEST_KEY = "quest_xmarksthespot"
 
-        private const val COIN_REWARD = 200
+        internal const val COIN_REWARD = 200
         private const val LAMP_XP = 300.0
 
         private const val VEOS_LUMBRIDGE_VISIBLE = 2
