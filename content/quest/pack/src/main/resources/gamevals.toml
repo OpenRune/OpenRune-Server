@@ -86,7 +86,7 @@ misthalin_puzzle_state = 63702
 cooks_assistant_ingredients = 63705
 gertrudes_cat_state = 63711
 daddyshome_state = 64064
-waterfall_state = 64400
+waterfall_state = 64310
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
@@ -102,10 +102,10 @@ gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
 gertrudes_cat_told_sardines = 63714
 daddyshome_crate_opened = 64064
-waterfall_progress = 64400
-waterfall_heard_of_treasure = 64401
-waterfall_met_golrie = 64402
-waterfall_pillar_runes = 64403
+waterfall_progress = 64310
+waterfall_heard_of_treasure = 64311
+waterfall_met_golrie = 64312
+waterfall_pillar_runes = 64313
 
 [gamevals.models]
 misthalin_gem_diamond = 32333
