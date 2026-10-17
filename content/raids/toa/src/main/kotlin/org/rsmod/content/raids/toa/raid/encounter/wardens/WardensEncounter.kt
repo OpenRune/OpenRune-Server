@@ -249,8 +249,10 @@ class WardensEncounter(
 
     internal fun obeliskHit(npc: Npc, hit: Hit) {
         if (npc !== obelisk || stage != ToaStage.STARTED || !hit.isFromPlayer) return
-        if (phaseOne) npc.hitpoints = obeliskRemaining
-        if (capped && phaseOne) beginTransition()
+        if (!phaseOne) return
+        npc.hitpoints = obeliskRemaining
+        hpBar?.update()
+        if (capped) beginTransition()
     }
 
     private fun beginTransition() {
