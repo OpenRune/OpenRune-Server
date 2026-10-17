@@ -48,6 +48,7 @@ internal object KephriSeqs {
     const val SCARAB_RANGED = "seq.npc_scarab_ranged_attack"
     const val SCARAB_MELEE = "seq.npc_scarab_attack"
     const val FLYING_SPAWN = "seq.npc_scarab_flying_spawn"
+    const val FLYING_VANISH = "seq.npc_scarab_flying_death02"
     const val SWARM_SPAWN = "seq.npc_swarm01_scarab01_spawn01"
     const val SWARM_INTEGRATE = "seq.npc_swarm01_scarab01_integrate01"
     const val SWARM_DEATH = "seq.npc_swarm01_scarab01_death01"
@@ -77,6 +78,25 @@ internal object KephriSpots {
             "spotanim.vfx_scarab_explosion03",
             "spotanim.vfx_scarab_explosion04",
         )
+}
+
+internal object KephriSynths {
+    const val APEX = "synth.toa_wardens_kephri_apex"
+    const val DROP = "synth.toa_zebak_redirected_projectile_02"
+    const val BLAST = "synth.toa_wardens_kephri_blast"
+    const val DEFEND = "synth.toa_kephri_defend_01"
+    const val SCARAB_DEFEND = "synth.toa_kephri_scarab_defend_01"
+    const val DUNG_THROW = "synth.toa_kephri_attack_eggs_01"
+    const val DUNG_TILE = "synth.toa_kephri_special_attack_dung_impact_01"
+    const val DUNG_WARNING = "synth.toa_kephri_dung_warning"
+    const val THROWN = "synth.toa_kephri_thrown_flyback"
+    const val EGG_THROW = "synth.toa_kephri_eggs_spawn_travel_01"
+    const val EGG_LAND = "synth.toa_kephri_egg_land_impact_01"
+    const val EGG_BURST = "synth.toa_kephri_eggs_explode_01"
+    const val SWARM_ABSORB = "synth.toa_kephri_absorb_swarm_01"
+    const val SOLDIER_HEAL = "synth.toa_kephri_melee_scarab_projectile_heal_01"
+    const val ARCANE_CHARGE = "synth.toa_mage_yellow_circle_01"
+    const val ARCANE_TELEPORT = "synth.toa_mage_scarab_teleport_01"
 }
 
 internal object KephriCoords {

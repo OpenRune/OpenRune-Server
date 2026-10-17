@@ -9,6 +9,7 @@ import org.rsmod.api.bosses.runtime.removeLocs
 import org.rsmod.api.bosses.runtime.spawnOwnedLoc
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.hook.TeleportType
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
@@ -72,6 +73,7 @@ internal class KephriDung(private val room: KephriEncounter) {
             landing = next
         }
 
+        player.soundSynth(KephriSynths.THROWN)
         player.anim(KephriSeqs.THROWN_PLAYER)
         player.spotanim(KephriSpots.THROWN_PLAYER, 0, THROWN_HEIGHT, 0)
         if (landing != from) {
@@ -94,6 +96,12 @@ internal class KephriDung(private val room: KephriEncounter) {
         for ((index, tile) in tiles.withIndex()) {
             val delay = DROP_GFX_START_CYCLES + DROP_GFX_STEP_CYCLES * index
             deps.worldRepo.spotanimMap(spotanim(KephriSpots.DUNG_DROP), tile, delay = delay)
+            deps.worldRepo.soundArea(
+                tile,
+                KephriSynths.DUNG_TILE,
+                delay = delay + TILE_SOUND_LAG,
+                radius = TILE_SOUND_RADIUS,
+            )
             val ticks = if (index < FIRST_BATCH) PILE_DELAY else PILE_DELAY + 1
             room.schedule(ticks) {
                 if (boss.isSlotAssigned && room.isOpenFloor(tile)) {
@@ -177,5 +185,7 @@ internal class KephriDung(private val room: KephriEncounter) {
         const val FIRST_BATCH = 3
         const val PILE_DELAY = 4
         const val MAX_ANGLE = 3
+        const val TILE_SOUND_LAG = 17
+        const val TILE_SOUND_RADIUS = 10
     }
 }
