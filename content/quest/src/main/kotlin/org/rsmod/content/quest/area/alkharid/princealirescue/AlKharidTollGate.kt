@@ -18,7 +18,7 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-internal const val TOLL_GATE_OPEN_TICKS = 8
+internal const val TOLL_GATE_OPEN_TICKS = 2
 
 class AlKharidTollGate
 @Inject
@@ -138,19 +138,19 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
         }
         locRepo.add(
             CoordGrid(GATE_X - 1, GATE_MIN_Z, 0),
-            OPEN_LEFT,
+            OPEN_GATE,
             TOLL_GATE_OPEN_TICKS,
             LocAngle.South,
             LocShape.WallStraight,
         )
         locRepo.add(
             CoordGrid(GATE_X - 1, GATE_MAX_Z, 0),
-            OPEN_RIGHT,
+            OPEN_GATE,
             TOLL_GATE_OPEN_TICKS,
             LocAngle.North,
             LocShape.WallStraight,
         )
-        soundSynth("synth.iron_door_open")
+        soundSynth(OPEN_SOUND)
     }
 
     private fun ProtectedAccess.isLeaving(): Boolean = coords.x >= GATE_X
@@ -167,8 +167,8 @@ constructor(private val princeAli: PrinceAliRescueQuest, private val locRepo: Lo
     private companion object {
         const val LEFT_GATE = "loc.kharidmetalgateclosedl"
         const val RIGHT_GATE = "loc.kharidmetalgateclosedr"
-        const val OPEN_LEFT = "loc.inacmetalgateopenl"
-        const val OPEN_RIGHT = "loc.inacmetalgateopenr"
+        const val OPEN_GATE = "loc.inacmetalgateopenl"
+        const val OPEN_SOUND = "synth.kharid_gate_open"
         const val GUARD_1 = "npc.borderguard1"
         const val GUARD_2 = "npc.borderguard2"
 

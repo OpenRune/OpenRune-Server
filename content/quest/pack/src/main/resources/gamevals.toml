@@ -28,6 +28,7 @@ ernest_clunk = 1565
 ernest_sprinkle = 1566
 fish_swim = 2601
 iron_door_open = 71
+kharid_gate_open = 69
 swan_rumble = 1790
 unlock = 2419
 poh_build_furniture = 938
