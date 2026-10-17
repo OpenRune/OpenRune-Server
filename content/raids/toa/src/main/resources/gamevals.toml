@@ -201,6 +201,9 @@ toa_zebak_lob_far = 65530
 toa_apmeken_thrown = 65529
 toa_apmeken_magic = 65528
 toa_scarab_ranged = 65527
+toa_wardens_flight = 65526
+toa_wardens_divine = 65525
+toa_wardens_entomb = 65524
 
 [gamevals.dbtable]
 toa_rooms = 64100
