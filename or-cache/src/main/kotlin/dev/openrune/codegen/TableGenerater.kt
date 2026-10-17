@@ -167,7 +167,7 @@ private fun mergeColumnMetadata(
 private val TableColumn.slots: List<VarType>
     get() = varTypes?.toSortedMap()?.values?.toList().orEmpty()
 
-private fun dominantDbRowTable(
+private fun soleDbRowTable(
     sourceTableId: Int,
     columnId: Int,
     slotTypes: List<VarType>,
@@ -190,8 +190,7 @@ private fun dominantDbRowTable(
                 }
             }
     }
-    val top = counts.values.maxOrNull() ?: return null
-    return counts.filterValues { it == top }.keys.singleOrNull()?.let { tableIdToName[it] }
+    return counts.keys.singleOrNull()?.let { tableIdToName[it] }
 }
 
 // endregion
@@ -272,7 +271,7 @@ fun startGeneration(
                     optional = m.optional,
                     maxValues = maxLen.getValue(c.name),
                     dbRowTargetTable =
-                        dominantDbRowTable(table.id, c.id, slotList, rows, tableIdToName),
+                        soleDbRowTable(table.id, c.id, slotList, rows, tableIdToName),
                     columnId = c.id,
                 )
             }
