@@ -12,16 +12,19 @@ import org.rsmod.api.combat.player.activateRangedSpecial
 import org.rsmod.api.combat.player.activateShieldSpecial
 import org.rsmod.api.combat.player.setPkVars
 import org.rsmod.api.combat.player.specialAttackType
-import org.rsmod.api.death.PvPSkullHook
-import org.rsmod.api.death.PvPSpecialAttackHook
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.death.PvPSkullHook
+import org.rsmod.api.death.PvPSpecialAttackHook
+import org.rsmod.api.mechanics.toxins.EclipseAtlatlBurnEffect
+import org.rsmod.api.mechanics.toxins.WeaponPoisonEffect
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.lefthand
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.quiver
 import org.rsmod.api.player.righthand
+import org.rsmod.api.specials.NextCycleRangedSpecialTiming
 import org.rsmod.api.specials.SpecialAttackRegistry
 import org.rsmod.api.specials.SpecialAttackType
 import org.rsmod.api.specials.energy.SpecialAttackEnergy
@@ -45,6 +48,8 @@ constructor(
     private val spellsReg: SpellAttackRegistry,
     private val skullHooks: Set<PvPSkullHook>,
     private val specialAttackHooks: Set<PvPSpecialAttackHook>,
+    private val weaponPoison: WeaponPoisonEffect,
+    private val eclipseAtlatlBurn: EclipseAtlatlBurnEffect,
 ) {
     suspend fun attack(access: ProtectedAccess, target: Player, attack: CombatAttack.PlayerAttack) {
         when (attack) {
@@ -126,6 +131,7 @@ constructor(
         manager.giveCombatXp(player, target, attack, damage)
         manager.playWeaponFx(player, attack)
         manager.queueMeleeHit(player, target, damage)
+        attack.weapon?.let { weaponPoison.rollOnMeleeHit(player, target, getInvObj(it), damage) }
         manager.continueCombat(player, target)
     }
 
@@ -134,7 +140,21 @@ constructor(
             return
         }
 
-        if (manager.isAttackDelayed(player)) {
+        val timing =
+            NextCycleRangedSpecialTiming.resolve(
+                player = player,
+                weaponId = attack.weapon.id,
+                specialSelected = specialAttackType == SpecialAttackType.Weapon,
+            )
+        if (timing == NextCycleRangedSpecialTiming.Resolution.Wait) {
+            manager.continueCombat(player, target)
+            return
+        }
+
+        if (
+            manager.isAttackDelayed(player) &&
+                timing != NextCycleRangedSpecialTiming.Resolution.BypassAttackDelay
+        ) {
             manager.continueCombat(player, target)
             return
         }
@@ -220,7 +240,7 @@ constructor(
             return
         }
 
-        val projanimType = RSCM.getReverseMapping(RSCMType.PROJANIM,projectileID)
+        val projanimType = RSCM.getReverseMapping(RSCMType.PROJANIM, projectileID)
 
         // All valid ranged weapons require an `attack_anim_stance1` seq type param to be used in
         // combat.
@@ -237,7 +257,7 @@ constructor(
         // has no `proj_launch` param, a "null" (-1) spotanim will still be sent in the same slot
         // and height as usual.
         val launchSpotanim = weaponType.paramOrNull(params.proj_launch)?.id ?: NULL_SPOTANIM_ID
-        player.spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,launchSpotanim), height = 96, slot = constants.spotanim_slot_combat)
+        player.spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM, launchSpotanim), height = 96, slot = constants.spotanim_slot_combat)
 
         val projanim = manager.spawnProjectile(player, target, travelSpotanim, projanimType)
         val (serverDelay, clientDelay) = projanim.durations
@@ -258,6 +278,8 @@ constructor(
 
         val hitAmmoObj = if (usingThrown) null else quiverType
         manager.queueRangedHit(player, target, hitAmmoObj, damage, clientDelay, serverDelay)
+        weaponPoison.rollOnRangedHit(player, target, weaponType, damage)
+        eclipseAtlatlBurn.rollOnHit(player, target, damage)
 
         if (usingThrown && player.righthand == null) {
             mes("That was your last one!")
@@ -283,7 +305,27 @@ constructor(
         val attackRate = MAGIC_SPELL_ATTACK_RATE
         manager.setNextAttackDelay(player, attackRate)
 
-        val spell = spellsReg[RSCM.getReverseMapping(RSCMType.OBJ,attack.spell.obj.id)]
+        // A weapon can be both autocastable and carry its own magic special attack (e.g. the
+        // Nightmare staffs). `resolveCombatAttack` resolves an active autocast to
+        // `CombatAttack.Spell` regardless of the special-attack toggle, so that toggle has to be
+        // handled here too - otherwise activating a special while autocasting just casts the
+        // autocast spell instead, same as it did for the melee/staff resolution paths.
+        if (specialAttackType == SpecialAttackType.Weapon) {
+            specialAttackType = SpecialAttackType.None
+            val weapon = attack.weapon
+            if (weapon != null) {
+                val staffAttack = CombatAttack.Staff(weapon, style = null)
+                val activatedSpec =
+                    activateMagicSpecial(target, staffAttack, specialsReg, specialEnergy)
+                if (activatedSpec) {
+                    applySpecialAttackHooks(target)
+                    applyPkVars(target)
+                    return
+                }
+            }
+        }
+
+        val spell = spellsReg[RSCM.getReverseMapping(RSCMType.OBJ, attack.spell.obj.id)]
         if (spell != null) {
             applyPkVars(target)
             spell.attack(this, target, attack)

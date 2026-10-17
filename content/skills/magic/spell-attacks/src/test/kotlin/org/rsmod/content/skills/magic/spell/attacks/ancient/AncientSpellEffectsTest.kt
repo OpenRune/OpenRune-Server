@@ -79,7 +79,7 @@ internal class AncientSpellEffectsTest {
         fun `poisons players`() {
             val target = player()
             AncientSpellEffects(landing).apply(AncientSpell.SmokeBlitz, player(), target, 5, false)
-            assertEquals(19, target.vars["varp.poison_severity"])
+            assertEquals(20, target.vars["varp.poison_severity"])
         }
     }
 

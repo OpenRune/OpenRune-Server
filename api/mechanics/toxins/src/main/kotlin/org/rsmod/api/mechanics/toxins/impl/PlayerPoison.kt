@@ -146,18 +146,9 @@ public object PlayerPoison {
             if (incomingDamage == currentDamage && storedSeverity <= current) return false
         }
 
+        // No hit on application; the first hit lands one full interval later.
         VarPlayerIntMapSetter.set(player, "varp.poison_severity", storedSeverity)
-        val firstHitDamage =
-            if (initialDamage > 0) initialDamage else damageForSeverity(storedSeverity)
-        queuePoisonHit(player, firstHitDamage)
-
-        val severity = storedSeverity - 1
-        if (severity <= 0) {
-            clear(player)
-        } else {
-            VarPlayerIntMapSetter.set(player, "varp.poison_severity", severity)
-            player.timer("timer.player_poison", TICK_INTERVAL)
-        }
+        player.timer("timer.player_poison", TICK_INTERVAL)
         player.mes("You have been poisoned!", ChatType.Spam)
         Toxin.syncStatusOrbs(player)
         return true

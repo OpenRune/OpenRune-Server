@@ -1,6 +1,5 @@
 package org.rsmod.api.specials.weapon
 
-import dev.openrune.types.ItemServerType
 import org.rsmod.api.enums.SaEnums.sa_descriptions
 import org.rsmod.api.enums.SaEnums.sa_energy_requirements
 import org.rsmod.api.specials.energy.SpecialAttackEnergy
@@ -18,6 +17,14 @@ public class SpecialAttackWeapons() {
      * @see [loadEnergyRequirements]
      */
     public fun getSpecialEnergy(objType: Int): Int? = energyRequirements[objType]
+
+    /**
+     * Returns whether the cache lists [objType] as having a weapon special attack.
+     *
+     * This is intentionally separate from the special-attack registry: a cache-listed weapon can
+     * still be awaiting its server-side combat implementation.
+     */
+    public fun hasSpecialAttack(objType: Int): Boolean = objType in energyRequirements
 
     public fun getSpecialDescription(objType: Int): String? = descriptions[objType]
 

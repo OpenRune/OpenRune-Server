@@ -76,9 +76,18 @@ constructor(
         blockType: MeleeAttackType?,
         specMultiplier: Double,
         random: GameRandom,
+        defenceMultiplier: Double = 1.0,
     ): Boolean {
         val hitChance =
-            getMeleeHitChance(player, target, attackType, attackStyle, blockType, specMultiplier)
+            getMeleeHitChance(
+                player,
+                target,
+                attackType,
+                attackStyle,
+                blockType,
+                specMultiplier,
+                defenceMultiplier,
+            )
         return isSuccessfulHit(hitChance, random)
     }
 
@@ -106,6 +115,7 @@ constructor(
         attackStyle: MeleeAttackStyle?,
         blockType: MeleeAttackType?,
         specMultiplier: Double,
+        defenceMultiplier: Double = 1.0,
     ): Int =
         pvnMeleeAccuracy.getHitChance(
             player = player,
@@ -114,6 +124,7 @@ constructor(
             attackStyle = attackStyle,
             blockType = blockType,
             specialMultiplier = specMultiplier,
+            defenceMultiplier = defenceMultiplier,
         )
 
     /**
@@ -144,9 +155,18 @@ constructor(
         blockType: MeleeAttackType?,
         specMultiplier: Double,
         random: GameRandom,
+        defenceMultiplier: Double = 1.0,
     ): Boolean {
         val hitChance =
-            getMeleeHitChance(player, target, attackType, attackStyle, blockType, specMultiplier)
+            getMeleeHitChance(
+                player,
+                target,
+                attackType,
+                attackStyle,
+                blockType,
+                specMultiplier,
+                defenceMultiplier,
+            )
         return isSuccessfulHit(hitChance, random)
     }
 
@@ -174,6 +194,7 @@ constructor(
         attackStyle: MeleeAttackStyle?,
         blockType: MeleeAttackType?,
         specMultiplier: Double,
+        defenceMultiplier: Double = 1.0,
     ): Int =
         pvpMeleeAccuracy.getHitChance(
             player = player,
@@ -182,6 +203,7 @@ constructor(
             attackStyle = attackStyle,
             blockType = blockType,
             specialMultiplier = specMultiplier,
+            defenceMultiplier = defenceMultiplier,
         )
 
     /**

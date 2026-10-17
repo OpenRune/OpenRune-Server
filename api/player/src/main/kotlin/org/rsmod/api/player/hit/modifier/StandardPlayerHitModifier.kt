@@ -19,6 +19,14 @@ public class StandardPlayerHitModifier @Inject constructor(private val eventBus:
             return
         }
 
+        if (
+            (type == HitType.Melee || type == HitType.Ranged) &&
+                VestaSpearCombatImmunity.isActive(target)
+        ) {
+            damage = 0
+            return
+        }
+
         val protectionPrayer =
             when (type) {
                 HitType.Typeless -> false
@@ -31,6 +39,10 @@ public class StandardPlayerHitModifier @Inject constructor(private val eventBus:
             val baseReduction = if (isFromPlayer) 40 else 100
             val reduction = (baseReduction - penetration).coerceIn(0, 100)
             damage = (damage * (100 - reduction)) / 100
+        }
+
+        if (type == HitType.Melee && PowerOfDeathMeleeProtection.isActive(target)) {
+            damage /= 2
         }
 
         if (isFromNpc) {
