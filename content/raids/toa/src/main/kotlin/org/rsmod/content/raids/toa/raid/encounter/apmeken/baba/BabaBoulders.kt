@@ -5,6 +5,7 @@ import org.rsmod.api.config.Constants
 import org.rsmod.api.player.clearInteractionRoute
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.stat.hitpoints
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
@@ -16,7 +17,6 @@ import org.rsmod.map.CoordGrid
 internal class BabaBoulders(private val room: BabaEncounter) {
     private val deps = room.raid.deps
     private val boulders = ArrayList<Boulder>()
-    private val immuneUntil = HashMap<Player, Int>()
 
     private class Boulder(val npc: Npc, val spawnCycle: Int) {
         var disarmed = false
@@ -80,7 +80,6 @@ internal class BabaBoulders(private val room: BabaEncounter) {
     fun clear() {
         for (boulder in boulders) if (boulder.npc.isSlotAssigned) room.despawn(boulder.npc)
         boulders.clear()
-        immuneUntil.clear()
     }
 
     @OptIn(InternalApi::class)
@@ -114,8 +113,8 @@ internal class BabaBoulders(private val room: BabaEncounter) {
         room.rockfall.crush(npc)
         if (boulder.disarmed) return
         for (player in targets) {
-            if (now <= (immuneUntil[player] ?: -1) || !overlaps(npc, player)) continue
-            immuneUntil[player] = now + BabaRolling.KNOCKBACK_IMMUNITY
+            if (now <= player.boulderImmuneUntil || !overlaps(npc, player)) continue
+            player.boulderImmuneUntil = now + BabaRolling.KNOCKBACK_IMMUNITY
             knockback(player)
         }
     }
@@ -183,3 +182,5 @@ internal class BabaBoulders(private val room: BabaEncounter) {
             )
     }
 }
+
+private var Player.boulderImmuneUntil by intVarp("varp.toa_baba_boulder_immune_until")
