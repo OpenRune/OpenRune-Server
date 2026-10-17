@@ -103,17 +103,17 @@ public class BossHpBarScript @Inject constructor(
 
     public fun onRecolour(player: Player, npc: Npc) {
         if (player.bossHudDisabled) return
-        applyColours(player, npc, DEFAULT_REMAINING_COLOR)
+        applyColours(player, npc)
     }
 
-    private fun applyColours(player: Player, npc: Npc, remainingFallback: Color? = null) {
+    private fun applyColours(player: Player, npc: Npc) {
         val backColour = npc.barColour(params.boss_hp_bar_colour_back) ?: ORIGINAL_COLORS[1]
         val slidingColour = npc.barColour(params.boss_hp_bar_colour_sliding) ?: ORIGINAL_COLORS[2]
+        val remainingColour =
+            npc.barColour(params.boss_hp_bar_colour_remaining) ?: DEFAULT_REMAINING_COLOR
         player.setColour("component.hpbar_hud:health_bar_back", backColour)
         player.setColour("component.hpbar_hud:health_bar_sliding", slidingColour)
-        (npc.barColour(params.boss_hp_bar_colour_remaining) ?: remainingFallback)?.let {
-            player.setColour("component.hpbar_hud:health_bar_remaining", it)
-        }
+        player.setColour("component.hpbar_hud:health_bar_remaining", remainingColour)
     }
 
     @OptIn(InternalApi::class)
@@ -217,7 +217,7 @@ public class BossHpBarScript @Inject constructor(
     )
 
     public companion object {
-        public val ORIGINAL_COLORS: Array<Color> = arrayOf(Color(204, 0, 0), Color(149, 0, 0), Color(0, 245, 0))
+        public val ORIGINAL_COLORS: Array<Color> = arrayOf(Color(204, 0, 0), Color(200, 0, 0), Color(0, 144, 0))
         private val DEFAULT_REMAINING_COLOR = Color(0, 200, 0)
         private const val CLOSE_FADE_TICKS = 2
     }
