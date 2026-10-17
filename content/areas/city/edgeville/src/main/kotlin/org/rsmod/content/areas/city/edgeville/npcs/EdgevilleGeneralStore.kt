@@ -30,7 +30,7 @@ class EdgevilleGeneralStore @Inject constructor(private val shops: Shops) : Plug
     }
 
     private fun Player.openGeneralStore(npc: Npc) {
-        shops.open(this, npc, "Edgeville General Store", "inv.generalshop5")
+        shops.open(this, npc, "Edgeville General Store", "inv.generalshop2")
     }
 
     private companion object {
