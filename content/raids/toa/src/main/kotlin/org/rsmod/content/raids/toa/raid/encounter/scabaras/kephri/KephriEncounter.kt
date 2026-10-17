@@ -40,7 +40,6 @@ class KephriEncounter(
         private set
 
     private var breakPending = false
-
     internal val swarms = KephriSwarms(this)
     private var wokeCycle = NEVER
     internal val dung = KephriDung(this)
@@ -160,13 +159,20 @@ class KephriEncounter(
     }
 
     internal fun modifyKephriHit(boss: Npc, hit: HitBuilder) {
-        if (boss !== kephri || isStunned || isFinal || hit.damage < boss.hitpoints) return
-        hit.damage = (boss.hitpoints - 1).coerceAtLeast(0)
-        breakPending = true
+        if (boss !== kephri || isStunned || isFinal) return
+        if (breakPending) {
+            hit.damage = 0
+        } else if (hit.damage >= boss.hitpoints) {
+            hit.damage = (boss.hitpoints - 1).coerceAtLeast(0)
+            breakPending = true
+        }
     }
 
     internal fun kephriHit(boss: Npc) {
         if (stage != ToaStage.STARTED || boss !== kephri) return
+        if (!isStunned) {
+            deps.worldRepo.soundArea(boss.kephriCentre, KephriSynths.DEFEND, radius = DEFEND_SOUND_RADIUS)
+        }
         hpBar?.update()
         if (!breakPending) return
         breakPending = false
@@ -292,6 +298,7 @@ class KephriEncounter(
         const val BOMB_WAKE_GRACE = 2
         const val GUARDIAN_POINTS = 0.5
         const val OVERHEAL_PERCENT = 115
+        const val DEFEND_SOUND_RADIUS = 9
         const val HEAL_HITMARK = "hitmark.alt_charge_tint"
 
         const val WAKE_ATTACK_DELAY = 7

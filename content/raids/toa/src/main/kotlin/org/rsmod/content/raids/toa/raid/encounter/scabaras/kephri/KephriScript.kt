@@ -21,8 +21,9 @@ class KephriScript : PluginScript() {
             onModifyNpcHit(npcType(egg)) { if (hit.isFromPlayer) hit.damage = npc.hitpoints }
             onRoomNpcQueue<KephriEncounter>(egg, DEATH) { eggs.killed(it) }
         }
-        onRoomNpcHit<KephriEncounter>(KephriNpcs.GUARDIAN_MAGE) { npc, hit ->
-            guardians.arcaneHit(npc, hit)
+        for (guardian in
+            listOf(KephriNpcs.GUARDIAN_MELEE, KephriNpcs.GUARDIAN_RANGED, KephriNpcs.GUARDIAN_MAGE)) {
+            onRoomNpcHit<KephriEncounter>(guardian) { npc, hit -> guardians.hit(npc, hit) }
         }
     }
 

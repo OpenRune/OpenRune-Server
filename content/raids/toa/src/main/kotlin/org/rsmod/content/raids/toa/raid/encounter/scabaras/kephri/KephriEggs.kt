@@ -1,5 +1,6 @@
 package org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri
 
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
@@ -21,6 +22,7 @@ internal class KephriEggs(private val room: KephriEncounter) {
                 EGG_TILES.map(room::coords).filter { room.isOpenFloor(it) && !room.dung.hasPile(it) }
             )
         val launched = generation
+        for (player in room.targets()) player.soundSynth(KephriSynths.EGG_THROW, delay = START_TIME)
         val dark = darkCount().coerceAtMost(tiles.size)
         for ((index, tile) in tiles.withIndex()) {
             val isDark = index < dark
@@ -58,6 +60,7 @@ internal class KephriEggs(private val room: KephriEncounter) {
         if (room.stage != ToaStage.STARTED) return
         val npc = room.spawn(if (dark) KephriNpcs.EGG_HATCH else KephriNpcs.EGG_EXPLODE, tile)
         npc.anim(KephriSeqs.EGG_SPAWN)
+        deps.worldRepo.soundArea(tile, KephriSynths.EGG_LAND, radius = LAND_SOUND_RADIUS)
         val egg = Egg(npc, dark, tile)
         eggs += egg
         for (player in room.targets()) {
@@ -75,6 +78,7 @@ internal class KephriEggs(private val room: KephriEncounter) {
             room.agile.hatch(egg.tile)
             return
         }
+        deps.worldRepo.soundArea(egg.tile, KephriSynths.EGG_BURST, radius = BURST_SOUND_RADIUS)
         for (dx in -1..1) {
             for (dz in -1..1) {
                 val explosion = KephriSpots.EXPLOSIONS[deps.random.of(0, KephriSpots.EXPLOSIONS.lastIndex)]
@@ -107,6 +111,8 @@ internal class KephriEggs(private val room: KephriEncounter) {
         const val PLACED_DAMAGE = 2
         const val EXPLOSION_DAMAGE = 24
         const val IMPACT_HEIGHT = 38
+        const val LAND_SOUND_RADIUS = 7
+        const val BURST_SOUND_RADIUS = 5
 
         val EGG_TILES =
             listOf(

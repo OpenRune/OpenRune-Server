@@ -29,6 +29,8 @@ internal class KephriGuardians(private val room: KephriEncounter) {
         var relocation = 0
         var hits = 0
         var poisonedOnce = false
+        var relocating = false
+        var faced: Player? = null
     }
 
     fun spawnFor(stun: Int) {
@@ -45,9 +47,11 @@ internal class KephriGuardians(private val room: KephriEncounter) {
         }
     }
 
-    fun arcaneHit(npc: Npc, hit: Hit) {
+    fun hit(npc: Npc, hit: Hit) {
         val guardian = guardians.firstOrNull { it.npc === npc } ?: return
         if (!hit.isFromPlayer) return
+        deps.worldRepo.soundArea(centreOf(npc), KephriSynths.SCARAB_DEFEND, radius = DEFEND_SOUND_RADIUS)
+        if (guardian.kind != Kind.ARCANE || guardian.relocating) return
         guardian.hits++
         if (hit.damage >= RELOCATE_DAMAGE || guardian.hits >= RELOCATE_BASE_HITS + room.teamSize) {
             relocate(guardian)
@@ -88,8 +92,9 @@ internal class KephriGuardians(private val room: KephriEncounter) {
             }
         val tile = room.coords(SPAWN_TILES.getValue(kind))
         val npc = room.spawn(type, tile)
-        if (kind == Kind.ARCANE) npc.ignoreCombatInteractions = true
+        if (kind != Kind.SOLDIER) npc.ignoreCombatInteractions = true
         npc.anim(if (kind == Kind.ARCANE) KephriSeqs.FLYING_SPAWN else KephriSeqs.SCARAB_SPAWN)
+        faceKephri(npc)
         val cycle = deps.mapClock.cycle
         val guardian = Guardian(npc, kind, cycle)
         guardian.nextAttack = cycle + FIRST_ATTACK
@@ -99,15 +104,21 @@ internal class KephriGuardians(private val room: KephriEncounter) {
     }
 
     private fun spit(guardian: Guardian, players: List<Player>, cycle: Int) {
-        if (cycle < guardian.nextAttack) return
         val npc = guardian.npc
+        val nearest = players.minByOrNull { it.coords.chebyshevDistance(npc.coords) }
+        if (nearest != null && nearest !== guardian.faced) {
+            guardian.faced = nearest
+            npc.facePlayer(nearest)
+        }
+        if (cycle < guardian.nextAttack) return
         val inRange = players.filter { it.coords.chebyshevDistance(npc.coords) <= SPIT_RANGE }
         if (inRange.isEmpty()) return
         guardian.nextAttack = cycle + SPIT_SPEED
         npc.anim(KephriSeqs.SCARAB_RANGED)
         for (player in inRange) {
-            projectile(KephriSpots.SCARAB_SHOT, npc.coords, player.coords, SPIT_HEIGHTS)
-            room.schedule(SPIT_HIT_DELAY) {
+            val flight = SPIT_FLIGHT_BASE + SPIT_FLIGHT_PER_TILE * player.coords.chebyshevDistance(npc.coords)
+            projectile(KephriSpots.SCARAB_SHOT, npc.coords, player.coords, SPIT_HEIGHTS.flying(flight))
+            room.schedule((flight / CYCLES_PER_TICK).coerceAtLeast(1)) {
                 if (!npc.isSlotAssigned || room.stage != ToaStage.STARTED) return@schedule
                 val damage = room.combatantOf(npc)?.rollScaled(SPIT_MAX_HIT) ?: 0
                 player.queueImpactHit(
@@ -138,6 +149,13 @@ internal class KephriGuardians(private val room: KephriEncounter) {
         if (boss.hitpoints <= 0) return
         val npc = guardian.npc
         projectile(KephriSpots.MELEE_HEAL, npc.coords, boss.kephriCentre, HEAL_HEIGHTS)
+        deps.worldRepo.soundArea(centreOf(npc), KephriSynths.SOLDIER_HEAL, radius = SOUND_RADIUS)
+        deps.worldRepo.soundArea(
+            boss.kephriCentre,
+            KephriSynths.SWARM_ABSORB,
+            delay = HEAL_LAND_CYCLES,
+            radius = SOUND_RADIUS,
+        )
         val base = boss.baseHitpointsLvl
         val share = npc.hitpoints.toDouble() / npc.baseHitpointsLvl.coerceAtLeast(1)
         val percent = deps.random.of(HEAL_MIN_PERCENT, HEAL_MAX_PERCENT)
@@ -146,8 +164,10 @@ internal class KephriGuardians(private val room: KephriEncounter) {
 
     private fun arcane(guardian: Guardian, players: List<Player>, cycle: Int) {
         val npc = guardian.npc
+        if (guardian.relocating) return
         if (cycle == guardian.chargeAt) {
             deps.worldRepo.spotanimMap(spotanim(KephriSpots.MAGE_CHARGE), npc.coords)
+            deps.worldRepo.soundArea(centreOf(npc), KephriSynths.ARCANE_CHARGE, radius = SOUND_RADIUS)
         }
         if (cycle < guardian.chargeAt + CHARGE_TICKS) return
         for (player in players) {
@@ -170,13 +190,35 @@ internal class KephriGuardians(private val room: KephriEncounter) {
     }
 
     private fun relocate(guardian: Guardian) {
+        if (guardian.relocating) return
+        guardian.relocating = true
         val npc = guardian.npc
+        npc.anim(KephriSeqs.FLYING_VANISH)
+        val launched = generation
+        room.schedule(RELOCATE_DELAY) {
+            if (launched == generation && npc.isSlotAssigned && room.stage == ToaStage.STARTED) {
+                arrive(guardian)
+            }
+        }
+    }
+
+    private fun arrive(guardian: Guardian) {
+        val npc = guardian.npc
+        guardian.relocating = false
         guardian.relocation = (guardian.relocation + 1) % ARCANE_TILES.size
         guardian.hits = 0
         guardian.chargeAt = deps.mapClock.cycle + CHARGE_START
-        npc.anim(KephriSeqs.FLYING_SPAWN)
         npc.teleport(deps.collision, room.coords(ARCANE_TILES[guardian.relocation]))
+        npc.anim(KephriSeqs.FLYING_SPAWN)
+        faceKephri(npc)
+        deps.worldRepo.soundArea(centreOf(npc), KephriSynths.ARCANE_TELEPORT, radius = SOUND_RADIUS)
     }
+
+    private fun faceKephri(npc: Npc) {
+        room.kephri?.let { npc.faceSquare(it.kephriCentre) }
+    }
+
+    private fun centreOf(npc: Npc): CoordGrid = npc.coords.translate(1, 1)
 
     private fun projectile(spot: String, from: CoordGrid, to: CoordGrid, heights: Heights) {
         deps.worldRepo.projAnim(
@@ -201,16 +243,24 @@ internal class KephriGuardians(private val room: KephriEncounter) {
         val flight: Int,
         val angle: Int,
         val progress: Int,
-    )
+    ) {
+        fun flying(flight: Int) = Heights(start, end, startTime, flight, angle, progress)
+    }
 
     private companion object {
         const val FIRST_ATTACK = 5
         const val FIRST_HEAL = 7
         const val CHARGE_START = 5
         const val CHARGE_TICKS = 27
-        const val SPIT_RANGE = 8
+        const val SPIT_RANGE = 10
         const val SPIT_SPEED = 3
-        const val SPIT_HIT_DELAY = 2
+        const val SPIT_FLIGHT_BASE = 40
+        const val SPIT_FLIGHT_PER_TILE = 5
+        const val CYCLES_PER_TICK = 30
+        const val RELOCATE_DELAY = 2
+        const val SOUND_RADIUS = 9
+        const val DEFEND_SOUND_RADIUS = 9
+        const val HEAL_LAND_CYCLES = 30
         const val SPIT_MAX_HIT = 10
         const val SPIT_POISON = 6
         const val POISON_SEVERITY = 11

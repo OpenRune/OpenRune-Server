@@ -106,6 +106,7 @@ internal class KephriSwarms(private val room: KephriEncounter) {
     private fun arrive(swarm: Swarm, boss: Npc) {
         swarm.arrived = true
         swarm.npc.anim(KephriSeqs.SWARM_INTEGRATE)
+        deps.worldRepo.soundArea(swarm.npc.coords, KephriSynths.SWARM_ABSORB, radius = ABSORB_SOUND_RADIUS)
         val range = if (swarm.medic) MEDIC_RANGE else SHIELD_RANGE
         room.healKephri(boss.baseHitpointsLvl * deps.random.of(range.first, range.last) / PER_MILLE)
         room.schedule(REMOVE_DELAY) { remove(swarm.npc) }
@@ -136,6 +137,7 @@ internal class KephriSwarms(private val room: KephriEncounter) {
             listOf(6, 10, 14, 18, 21, 24, 27, 30, 32, 34, 36, 38) + (39..50).toList()
 
         const val FADE_BEFORE_WAKE = 3
+        const val ABSORB_SOUND_RADIUS = 8
         const val UNTARGETABLE_TICKS = 4
         const val STEPS_PER_TICK = 2
         const val ARRIVAL_DISTANCE = 3
