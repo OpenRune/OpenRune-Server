@@ -23,6 +23,8 @@ internal object WaterfallCoords {
 
     val DOWNSTREAM = CoordGrid(2527, 3413, 0)
 
+    val ROPE_START = CoordGrid(2512, 3476, 0)
+
     val TREE_ISLAND = CoordGrid(2513, 3468, 0)
 
     val LEDGE = CoordGrid(2511, 3463, 0)

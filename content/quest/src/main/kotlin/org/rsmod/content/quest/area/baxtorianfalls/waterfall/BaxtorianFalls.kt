@@ -9,6 +9,8 @@ import org.rsmod.api.config.constants
 import org.rsmod.api.hunt.NpcSearch
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.repo.loc.LocRepository
+import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onApLoc1
 import org.rsmod.api.script.onApLocT
 import org.rsmod.api.script.onOpLoc1
@@ -22,13 +24,19 @@ import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.hudonFirstMeet
 import org.rsmod.content.quest.util.fadeFromBlack
 import org.rsmod.content.quest.util.fadeToBlack
 import org.rsmod.game.loc.BoundLocInfo
+import org.rsmod.game.loc.LocAngle
+import org.rsmod.game.loc.LocShape
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 class BaxtorianFalls
 @Inject
-constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch) :
-    PluginScript() {
+constructor(
+    private val waterfall: WaterfallQuest,
+    private val search: NpcSearch,
+    private val locRepo: LocRepository,
+    private val worldRepo: WorldRepository,
+) : PluginScript() {
 
     override fun ScriptContext.startup() {
         onOpLoc1(RAFT) { boardRaft() }
@@ -48,12 +56,12 @@ constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch
         onOpLoc1(TREE) { climbWithoutRope() }
         onApLocT(TREE, inventory) {
             if (it.objType?.id == ROPE.asRSCM(RSCMType.OBJ)) {
-                apTree(it.loc) { ropeDown() }
+                apTree(it.loc) { ropeDown(it.loc) }
             } else {
                 apRange(-1)
             }
         }
-        onOpLocU(TREE, ROPE) { ropeDown() }
+        onOpLocU(TREE, ROPE) { ropeDown(it.loc) }
         onOpLoc1(LEDGE_DOOR) { enterFalls() }
         onOpLoc1(BARREL) { rideBarrel() }
     }
@@ -115,22 +123,45 @@ constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch
     }
 
     private suspend fun ProtectedAccess.ropeAcross(rock: BoundLocInfo) {
+        if (player.coords != WaterfallCoords.ROPE_START) {
+            playerWalkWithMinDelay(WaterfallCoords.ROPE_START)
+            if (player.coords != WaterfallCoords.ROPE_START) {
+                return
+            }
+        }
         faceSquare(rock.coords)
         anim(THROW_ROPE_SEQ)
         soundSynth(TIE_ROPE_SOUND)
-        delay(2)
+        spotanimMap(worldRepo, ROPE_PIECE_SPOTANIM, ROPE_PIECE_TILE, delay = ROPE_PIECE_DELAY)
         mes("You tie the rope around the rock and pull yourself through the water towards it.")
-        anim(SWIM_SEQ)
+        delay(1)
+        val pull = WaterfallCoords.ROPE_START.z - rock.coords.z - 1
+        locRepo.change(rock, ROPED_ROCK, pull)
+        for (step in 1..pull) {
+            val tile = WaterfallCoords.ROPE_START.translateZ(-step)
+            locRepo.add(tile, CROSSING_ROPE, step, LocAngle.East, LocShape.CentrepieceStraight)
+        }
         soundSynth(SWIM_SOUND)
-        exactMove(
-            start = player.coords,
-            end = WaterfallCoords.TREE_ISLAND,
-            delay1 = 0,
-            delay2 = SWIM_TICKS * CLIENT_CYCLES_PER_TICK,
-            dir = constants.em_face_south,
-            teleportType = TeleportType.Exempt,
-        )
-        delay(SWIM_TICKS)
+        for (step in 1..pull + 1) {
+            val next =
+                if (step <= pull) {
+                    WaterfallCoords.ROPE_START.translateZ(-step)
+                } else {
+                    WaterfallCoords.TREE_ISLAND
+                }
+            if (step % SWIM_SEQ_TICKS == 1) {
+                anim(SWIM_SEQ)
+            }
+            exactMove(
+                start = player.coords,
+                end = next,
+                delay1 = 0,
+                delay2 = CLIENT_CYCLES_PER_TICK,
+                dir = constants.em_face_south,
+                teleportType = TeleportType.Exempt,
+            )
+            delay(1)
+        }
         resetAnim()
     }
 
@@ -143,9 +174,11 @@ constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch
         geraldGreetsWashedUp(waterfall, search)
     }
 
-    private suspend fun ProtectedAccess.ropeDown() {
+    private suspend fun ProtectedAccess.ropeDown(tree: BoundLocInfo) {
+        faceSquare(tree.coords)
         soundSynth(TIE_ROPE_SOUND)
-        mesbox("You tie the rope to the tree and climb down to the ledge below.")
+        locRepo.change(tree, ROPED_TREE, CLIMB_TICKS + 1)
+        mes("You tie the rope to the tree and climb down to the ledge below.")
         anim(CLIMB_DOWN_SEQ)
         soundSynth(ROPE_CLIMB_SOUND)
         exactMove(
@@ -187,6 +220,12 @@ constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch
         const val RIVER = "loc.waterfall_swim_point"
         const val ROCK = "loc.crossing_rock_waterfall_quest"
         const val TREE = "loc.overhanging_tree1_waterfall_quest"
+        const val ROPED_ROCK = "loc.crossing_rock_roped_waterfall_quest"
+        const val CROSSING_ROPE = "loc.crossing_rope_waterfall_quest"
+        const val ROPED_TREE = "loc.overhanging_tree2_waterfall_quest"
+        const val ROPE_PIECE_SPOTANIM = "spotanim.rope_piece"
+        const val ROPE_PIECE_DELAY = 3
+        val ROPE_PIECE_TILE = WaterfallCoords.ROPE_START.translateZ(-2)
         const val LEDGE_DOOR = "loc.waterfall_ledge_door"
         const val BARREL = "loc.barrel_waterfall_quest"
 
@@ -198,7 +237,7 @@ constructor(private val waterfall: WaterfallQuest, private val search: NpcSearch
         const val THROW_ROPE_SEQ = "seq.human_throwrope"
         const val CLIMB_DOWN_SEQ = "seq.human_climbing_down"
         const val BARREL_SEQ = "seq.human_pickupfloor"
-        const val SWIM_TICKS = 4
+        const val SWIM_SEQ_TICKS = 2
         const val CLIMB_TICKS = 2
         const val CLIENT_CYCLES_PER_TICK = 30
 
