@@ -74,9 +74,9 @@ slayer_mortimer_offers=65488
 slayer_mortimer_last=65487
 
 [gamevals.varn]
-slayer_engaged_target=64400
-slayer_engaged_clock=64401
-slayer_finishing_until=64402
+slayer_engaged_target=64410
+slayer_engaged_clock=64411
+slayer_finishing_until=64412
 
 [gamevals.dbrow]
 turael_aya=65182
