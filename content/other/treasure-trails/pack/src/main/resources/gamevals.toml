@@ -1,5 +1,14 @@
 [gamevals.dbtable]
 trail_clue_obj = 65494
+trail_tier = 65495
+
+[gamevals.varp]
+trail_completed_beginner = 63800
+trail_completed_easy = 63801
+trail_completed_medium = 63802
+trail_completed_hard = 63803
+trail_completed_elite = 63804
+trail_completed_master = 63805
 
 [gamevals.dbrow]
 trail_clue_easy_simple001_step = 54800
@@ -659,3 +668,9 @@ trail_hard_riddle_sail_step = 55453
 trail_hard_sextant_sail_step = 55454
 trail_medium_anagram_sail_step = 55455
 trail_medium_sextant_sail_step = 55456
+trail_tier_beginner = 55457
+trail_tier_easy = 55458
+trail_tier_medium = 55459
+trail_tier_hard = 55460
+trail_tier_elite = 55461
+trail_tier_master = 55462

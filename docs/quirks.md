@@ -73,6 +73,19 @@ it through the interface close hook. Keep cleanup tied to the interface,
 not the suspended dialogue: walking or a hit can cancel that dialogue.
 Disabled popups do not set the flag.
 
+## Treasure Trails
+
+- Clue targets that move with quest progress (`[proc,script6657]`) switch on
+quest completion, not the mid-quest var values the client checks (e.g.
+`%sote >= 192`), because quest progress here lives in the quest stage map
+rather than the Jagex quest varbits. Eluned, Jardric, Radimus Erkle and the
+whirlpool cavern therefore move once the quest is completed (or counted as
+completed by the quest-requirements mode), slightly later than in OSRS.
+- Per-tier completion counts use custom `varp.trail_completed_<tier>`. The
+Jagex `*_clues_completed_deprecated` varbits do not count the tier they are
+named after (packet captures show a medium casket incrementing
+`hard_clues_completed_deprecated`), so they are not reused.
+
 ## Types
 ```
 engine
