@@ -139,7 +139,7 @@ constructor(
 
     private suspend fun ProtectedAccess.attemptCatch(task: FishTask) {
         // The spot can despawn or hop to another tile while the cycle is running.
-        if (task.npc.uid != task.uid) {
+        if (task.npc.uid != task.uid || !isWithinDistance(task.npc, 1)) {
             return
         }
         val attempt = prepare(task.spot, task.method, verbose = false) ?: return
