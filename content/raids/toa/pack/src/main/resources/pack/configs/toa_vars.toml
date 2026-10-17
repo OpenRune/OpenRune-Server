@@ -416,3 +416,15 @@ isServerOnly = true
 id = "varp.toa_akkha_burn_expiry"
 scope = "Temp"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.toa_crondis_hazard_ready"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.toa_baba_boulder_immune_until"
+scope = "Temp"
+transmit = "Never"

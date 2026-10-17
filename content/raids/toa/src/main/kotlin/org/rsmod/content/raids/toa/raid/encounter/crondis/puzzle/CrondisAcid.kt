@@ -16,8 +16,6 @@ internal class CrondisAcid(private val room: CrondisPuzzleEncounter) {
     private val trails = ArrayList<Trail>()
     private var countdown = 0
 
-    private val hitReady = HashMap<Player, Int>()
-
     fun tick(targets: List<Player>) {
         trails.removeIf { it.expire() }
         for (player in targets) {
@@ -33,7 +31,6 @@ internal class CrondisAcid(private val room: CrondisPuzzleEncounter) {
     fun clear() {
         trails.clear()
         countdown = 0
-        hitReady.clear()
     }
 
     private fun spawn(bases: List<CoordGrid>, moveNorth: Boolean) {
@@ -74,7 +71,7 @@ internal class CrondisAcid(private val room: CrondisPuzzleEncounter) {
             val sub = 1 + (abs(dz) - 1) / 3
             val window = TRAIL_TICKS - sub
             if (ticks < window && ticks >= window - 2) {
-                room.hazardHit(player, hitReady, BASE_DAMAGE, HIT_COOLDOWN)
+                room.hazardHit(player, BASE_DAMAGE, HIT_COOLDOWN)
             }
         }
     }

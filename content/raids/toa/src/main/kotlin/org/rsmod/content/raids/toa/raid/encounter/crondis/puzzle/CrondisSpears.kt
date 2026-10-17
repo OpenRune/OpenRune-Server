@@ -10,8 +10,6 @@ internal class CrondisSpears(private val room: CrondisPuzzleEncounter) {
     private val deps = room.raid.deps
     private var elapsed = 0
 
-    private val hitReady = HashMap<Player, Int>()
-
     fun tick(targets: List<Player>) {
         val active = ArrayList<CoordGrid>()
         for (row in CrondisCoords.SPEAR_ROWS.indices) {
@@ -21,7 +19,7 @@ internal class CrondisSpears(private val room: CrondisPuzzleEncounter) {
         for (player in targets) {
             val coords = player.coords
             if (active.any { coords.z == it.z && coords.x in it.x..it.x + 2 }) {
-                room.hazardHit(player, hitReady, BASE_DAMAGE, HIT_COOLDOWN)
+                room.hazardHit(player, BASE_DAMAGE, HIT_COOLDOWN)
             }
         }
         elapsed++
@@ -29,7 +27,6 @@ internal class CrondisSpears(private val room: CrondisPuzzleEncounter) {
 
     fun clear() {
         elapsed = 0
-        hitReady.clear()
     }
 
     fun idle() {
