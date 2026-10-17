@@ -43,6 +43,11 @@ id = "npc.gem_trader"
 inherit = "npc.gem_trader"
 wanderRange = 2
 
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 700
+"param.shop_change_percentage" = 30
+
 [[npc]]
 id = "npc.silk_trader"
 inherit = "npc.silk_trader"
@@ -59,11 +64,21 @@ inherit = "npc.zeke"
 moveRestrict = "Indoors"
 wanderRange = 3
 
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 550
+"param.shop_change_percentage" = 20
+
 [[npc]]
 id = "npc.dommik"
 inherit = "npc.dommik"
 moveRestrict = "Indoors"
 wanderRange = 3
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 650
+"param.shop_change_percentage" = 20
 
 [[npc]]
 id = "npc.louie_legs"
@@ -71,8 +86,18 @@ inherit = "npc.louie_legs"
 moveRestrict = "Indoors"
 wanderRange = 2
 
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 650
+"param.shop_change_percentage" = 10
+
 [[npc]]
 id = "npc.ranael"
 inherit = "npc.ranael"
 moveRestrict = "Indoors"
 wanderRange = 2
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 650
+"param.shop_change_percentage" = 10

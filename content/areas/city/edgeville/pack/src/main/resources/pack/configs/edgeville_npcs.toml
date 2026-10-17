@@ -14,6 +14,11 @@ inherit = "npc.oziach"
 wanderRange = 1
 respawnDir = "North"
 
+[npc.params]
+"param.shop_sell_percentage" = 1300
+"param.shop_buy_percentage" = 400
+"param.shop_change_percentage" = 30
+
 [[npc]]
 id = "npc.generalshopkeeper5"
 inherit = "npc.generalshopkeeper5"
