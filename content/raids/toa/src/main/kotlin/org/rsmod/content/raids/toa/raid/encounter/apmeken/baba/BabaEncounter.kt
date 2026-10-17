@@ -85,6 +85,7 @@ class BabaEncounter(
     private fun stompIfDue(boss: Npc, targets: List<Player>) {
         if (boss !== baba || targets.isEmpty() || isRolling(boss)) return
         if (boss.vars[BabaVarns.UNDER] < BabaShock.STOMP_TRIGGER_TICKS) return
+        if (boss.vars[BabaVarns.STOMP_READY] > deps.mapClock.cycle) return
         deps.bossDeps.runAbility(boss, lowestHpTarget(boss, targets), BabaAbilities.STOMP)
     }
 
@@ -251,6 +252,7 @@ class BabaEncounter(
         boss.vars[BabaVarns.ROCKFALL_READY] = 0
         boss.vars[BabaVarns.LAST_SPECIAL] = 0
         boss.vars[BabaVarns.UNDER] = 0
+        boss.vars[BabaVarns.STOMP_READY] = 0
     }
 
     private fun spawnBaba() {

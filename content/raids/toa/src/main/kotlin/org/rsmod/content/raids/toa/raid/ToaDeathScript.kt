@@ -47,10 +47,17 @@ internal suspend fun ProtectedAccess.raidDeath() {
 private suspend fun ProtectedAccess.dieInRaid(raid: ToaRaid) {
     stopAction()
     combatClearQueue()
+    val intoPit = raid.pitDeaths.remove(player)
     player.trackingDeaths++
-    delay(2)
-    anim("seq.human_death")
-    delay(4)
+    if (intoPit) {
+        delay(1)
+        anim("seq.quest_lunar_falling_on_platform")
+        delay(PIT_FALL_TICKS)
+    } else {
+        delay(2)
+        anim("seq.human_death")
+        delay(4)
+    }
     minimapReset()
     delay(1)
     combatClearQueue()
@@ -65,7 +72,11 @@ private suspend fun ProtectedAccess.dieInRaid(raid: ToaRaid) {
     raid.totalDeaths++
     ToaStats.recordDeath(player, raid.settings.mode)
     raid.points.onDeath(player)
-    mes("You have died. Total deaths: <col=ff0000>${raid.totalDeaths}</col>.")
+    if (intoPit) {
+        mes("<col=ff3045>You're pushed straight into a deep pit! Ouch!</col>")
+    } else {
+        mes("You have died. Total deaths: <col=ff0000>${raid.totalDeaths}</col>.")
+    }
     val othersFighting =
         room.stage == ToaStage.STARTED &&
             room.challengePlayers.any { it !== player && !raid.isGhost(it) }
@@ -194,6 +205,8 @@ private var Player.trackingDeaths by intVarp("varp.tracking_deaths")
 private val ALL_STATS: List<String> by lazy {
     ServerCacheManager.getStats().values.map { RSCM.getReverseMapping(RSCMType.STAT, it.id) }
 }
+
+private const val PIT_FALL_TICKS = 2
 
 private const val HONEY_LOCUST = "obj.toa_honey_locust"
 
