@@ -5,6 +5,7 @@ import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.output.spam
 import org.rsmod.api.player.stat.statSub
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
@@ -203,13 +204,12 @@ class CrondisPuzzleEncounter(
 
     internal fun hazardHit(
         player: Player,
-        ready: MutableMap<Player, Int>,
         baseDamage: Int,
         cooldown: Int,
     ) {
         val now = deps.mapClock.cycle
-        if ((ready[player] ?: 0) > now) return
-        ready[player] = now + cooldown
+        if (player.hazardReady > now) return
+        player.hazardReady = now + cooldown
         crocodiles.onHazardHit(player, now)
 
         spillWater(player)
@@ -281,3 +281,5 @@ class CrondisPuzzleEncounter(
         private val BAR_REMAINING_DEFAULT = Color(0x00CC00)
     }
 }
+
+internal var Player.hazardReady by intVarp("varp.toa_crondis_hazard_ready")
