@@ -5,6 +5,9 @@ import kotlin.math.max
 import org.rsmod.api.combat.commons.player.combatPlayDefendAnim
 import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.hit.queueHit as queueNpcHit
+import org.rsmod.api.npc.vars.intVarn
+import org.rsmod.api.npc.vars.typeCoordVarn
+import org.rsmod.api.npc.vars.typePlayerUidVarn
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
@@ -19,20 +22,13 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
     private var countdown = -1
     private var castRequested = false
-    private val clouds = HashMap<Npc, CloudState>()
+    private val clouds = ArrayList<Npc>()
 
     var nextIsBarrage = false
         private set
 
     var cloudsFromSouth = false
         private set
-
-    private class CloudState(
-        var switchTicks: Int,
-        var startDelay: Int,
-        var last: CoordGrid,
-        var target: Player? = null,
-    )
 
     fun start() {
         val active = room.raid.isActive("dbrow.toa_invocation_not_just_a_head")
@@ -92,32 +88,38 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
     }
 
     fun trackCloud(cloud: Npc) {
-        clouds[cloud] = CloudState(deps.random.of(10, 20), CLOUD_START_DELAY, cloud.coords)
+        cloud.switchTicks = deps.random.of(10, 20)
+        cloud.startDelay = CLOUD_START_DELAY
+        cloud.lastTile = cloud.coords
+        clouds += cloud
     }
 
     fun cloudTick(cloud: Npc) {
         if (room.stage != ToaStage.STARTED) return
         if ((room.zebak?.hitpoints ?: 0) <= 0) return
-        val state = clouds[cloud] ?: return
-        if (state.startDelay > 0) state.startDelay--
+        if (cloud !in clouds) return
+        if (cloud.startDelay > 0) cloud.startDelay--
 
-        val moved = state.last.chebyshevDistance(cloud.coords)
-        state.last = cloud.coords
+        val moved = (cloud.lastTile ?: cloud.coords).chebyshevDistance(cloud.coords)
+        cloud.lastTile = cloud.coords
         if (moved > 0) cloud.queueNpcHit(1, HitType.Typeless, LEECH * moved, NOOP_NPC_MODIFIER)
 
         val targets = room.targets()
-        state.switchTicks = max(0, state.switchTicks - 1)
-        val switch = state.switchTicks == 0 || state.target.let { it == null || it !in targets }
-        if (state.switchTicks == 0) state.switchTicks = deps.random.of(10, 20)
-        if (switch && targets.isNotEmpty()) {
-            state.target = nearestOther(cloud, state.target, targets)
-        }
+        cloud.switchTicks = max(0, cloud.switchTicks - 1)
+        val current = cloud.currentTarget(targets)
+        val switch = cloud.switchTicks == 0 || current == null
+        if (cloud.switchTicks == 0) cloud.switchTicks = deps.random.of(10, 20)
+        val target =
+            if (switch && targets.isNotEmpty()) {
+                nearestOther(cloud, current, targets).also { cloud.chasing = it?.uid }
+            } else {
+                current
+            }
 
-        val target = state.target
         if (target != null) {
             if (cloud.isBeside(target)) cloud.abortRoute() else cloud.walk(cloud.besideTile(target))
         }
-        if (state.startDelay > 0) return
+        if (cloud.startDelay > 0) return
 
         for (player in targets) {
             if (!cloud.isBeside(player)) continue
@@ -140,7 +142,7 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         return best
     }
 
-    fun cloudsAt(tile: CoordGrid): List<Npc> = clouds.keys.filter { it.coords == tile }
+    fun cloudsAt(tile: CoordGrid): List<Npc> = clouds.filter { it.coords == tile }
 
     fun removeCloud(cloud: Npc) {
         clouds.remove(cloud)
@@ -148,13 +150,13 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
     }
 
     fun forget(player: Player) {
-        for (state in clouds.values) {
-            if (state.target === player) state.target = null
+        for (cloud in clouds) {
+            if (cloud.chasing == player.uid) cloud.chasing = null
         }
     }
 
     fun clear() {
-        for (cloud in clouds.keys.toList()) removeCloud(cloud)
+        for (cloud in clouds.toList()) removeCloud(cloud)
         countdown = -1
         castRequested = false
         nextIsBarrage = deps.random.of(0, 1) == 0
@@ -172,3 +174,11 @@ internal class ZebakBloodMagic(private val room: ZebakEncounter) {
         const val PROTECT_FROM_MAGIC = "varbit.prayer_protectfrommagic"
     }
 }
+
+private var Npc.switchTicks by intVarn("varn.toa_zebak_cloud_switch")
+private var Npc.startDelay by intVarn("varn.toa_zebak_cloud_delay")
+private var Npc.lastTile by typeCoordVarn("varn.toa_zebak_cloud_last")
+private var Npc.chasing by typePlayerUidVarn("varn.toa_zebak_cloud_target")
+
+private fun Npc.currentTarget(targets: List<Player>): Player? =
+    chasing?.let { uid -> targets.firstOrNull { it.uid == uid } }

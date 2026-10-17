@@ -2,6 +2,7 @@ package org.rsmod.content.raids.toa.raid.encounter.crondis.zebak
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import org.rsmod.api.npc.vars.intVarn
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.hitTypeless
 import org.rsmod.content.raids.toa.raid.encounter.npcType
@@ -68,30 +69,32 @@ internal class TidalWaves(private val room: ZebakEncounter) {
 
 internal class ZebakWaves(private val room: ZebakEncounter) {
     private val deps = room.raid.deps
-    private val waves = HashMap<Npc, Wave>()
-
-    private class Wave(val dz: Int, var ticksLeft: Int)
+    private val waves = HashSet<Npc>()
 
     var fromSouth = true
 
     fun spawn(tile: CoordGrid, dz: Int) {
         val facing = if (dz > 0) Direction.North else Direction.South
-        waves[room.spawn(ZebakNpcs.WAVE, tile, facing)] = Wave(dz, LIFETIME)
+        val wave = room.spawn(ZebakNpcs.WAVE, tile, facing)
+        wave.waveDz = dz
+        wave.waveTicks = LIFETIME
+        waves += wave
     }
 
     fun tick(npc: Npc) {
-        val wave = waves[npc] ?: return
-        if (room.stage != ToaStage.STARTED || --wave.ticksLeft <= 0) {
+        if (npc !in waves) return
+        if (room.stage != ToaStage.STARTED || --npc.waveTicks <= 0) {
             remove(npc)
             return
         }
         val here = npc.coords
+        val dz = npc.waveDz
         for (player in room.targets()) {
-            if (player.coords == here) wash(player, wave.dz)
+            if (player.coords == here) wash(player, dz)
         }
-        val next = here.translate(0, wave.dz)
-        val ahead = next.translate(0, wave.dz)
-        for (jug in room.jugs.npcs.filter { it.coords == ahead }) room.jugs.roll(jug, wave.dz)
+        val next = here.translate(0, dz)
+        val ahead = next.translate(0, dz)
+        for (jug in room.jugs.npcs.filter { it.coords == ahead }) room.jugs.roll(jug, dz)
         if (here in room.poison && deps.random.of(0, 3) == 0) room.poison.remove(here)
         val clouds = room.bloodMagic.cloudsAt(here)
         for (cloud in clouds) room.bloodMagic.removeCloud(cloud)
@@ -142,7 +145,7 @@ internal class ZebakWaves(private val room: ZebakEncounter) {
     }
 
     fun clear() {
-        for (npc in waves.keys.toList()) remove(npc)
+        for (npc in waves.toList()) remove(npc)
         fromSouth = true
     }
 
@@ -157,3 +160,6 @@ internal class ZebakWaves(private val room: ZebakEncounter) {
         const val MAX_DAMAGE = 10
     }
 }
+
+private var Npc.waveDz by intVarn("varn.toa_zebak_wave_dz")
+private var Npc.waveTicks by intVarn("varn.toa_zebak_wave_ticks")

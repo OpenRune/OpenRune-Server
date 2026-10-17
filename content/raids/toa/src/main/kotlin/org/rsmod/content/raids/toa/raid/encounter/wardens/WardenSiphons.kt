@@ -4,6 +4,7 @@ import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.runtime.runAbility
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
+import org.rsmod.api.npc.vars.intVarn
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
@@ -24,7 +25,6 @@ import org.rsmod.map.CoordGrid
 internal class WardenSiphons(private val room: WardensSecondEncounter) {
     private val deps = room.raid.deps
     private val orbs = ArrayList<Npc>()
-    private val hitsTaken = HashMap<Npc, Int>()
     private val blockers = ArrayList<LocInfo>()
     private var token = 0
     private var hitsPerOrb = 1
@@ -62,7 +62,6 @@ internal class WardenSiphons(private val room: WardensSecondEncounter) {
         launched++
         hitsPerOrb = hitsFor(players)
         unreversed = tiles.size
-        hitsTaken.clear()
 
         warden.transmog(npcType(room.god.phaseThreeCharging), Int.MAX_VALUE)
         deps.worldRepo.soundArea(centre(), SynthRefs.CHARGE, radius = SOUND_RADIUS)
@@ -76,8 +75,8 @@ internal class WardenSiphons(private val room: WardensSecondEncounter) {
 
     fun hit(orb: Npc, hit: Hit) {
         if (!pending || !hit.isFromPlayer || hit.damage <= 0 || orb !in orbs) return
-        val taken = (hitsTaken[orb] ?: 0) + 1
-        hitsTaken[orb] = taken
+        val taken = orb.hitsTaken + 1
+        orb.hitsTaken = taken
         if (taken < hitsPerOrb) return
         orb.transmog(npcType(RED), Int.MAX_VALUE)
         if (--unreversed == 0) resolve(success = true)
@@ -276,3 +275,5 @@ internal class WardenSiphons(private val room: WardensSecondEncounter) {
         const val REFLECT_SLOPE_DEN = 1760
     }
 }
+
+private var Npc.hitsTaken by intVarn("varn.toa_warden_orb_hits")

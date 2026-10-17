@@ -6,6 +6,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.opNpc1
+import org.rsmod.api.npc.vars.intVarn
 import org.rsmod.api.player.stat.stat
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
@@ -22,8 +23,6 @@ internal class BabaBaboons(private val room: BabaEncounter) {
     private val sarcophagi = ArrayList<Sarcophagus>()
     private val baboons = HashSet<Npc>()
     private val raiding = HashMap<Npc, Sarcophagus>()
-    private val nextBash = HashMap<Npc, Int>()
-    private val nextPick = HashMap<Npc, Int>()
     private val peels = HashMap<CoordGrid, LocInfo>()
 
     private class Sarcophagus(val npc: Npc, val tile: CoordGrid, val south: Boolean) {
@@ -123,8 +122,6 @@ internal class BabaBaboons(private val room: BabaEncounter) {
         for (npc in baboons.toList()) if (npc.isSlotAssigned) room.despawn(npc)
         baboons.clear()
         raiding.clear()
-        nextBash.clear()
-        nextPick.clear()
         for ((tile, loc) in peels) deps.locRepo.del(loc, Int.MAX_VALUE)
         peels.clear()
     }
@@ -145,8 +142,6 @@ internal class BabaBaboons(private val room: BabaEncounter) {
 
     private fun forget(npc: Npc) {
         raiding.remove(npc)
-        nextBash.remove(npc)
-        nextPick.remove(npc)
     }
 
     private fun steer(npc: Npc, now: Int, players: List<Player>) {
@@ -158,8 +153,8 @@ internal class BabaBaboons(private val room: BabaEncounter) {
             return
         }
         val closed = sarcophagi.filter { !it.open && it.npc.isSlotAssigned }
-        val rolling = now >= (nextPick[npc] ?: 0)
-        if (rolling) nextPick[npc] = now + BabaApes.BABOON_ATTACK_RATE
+        val rolling = now >= npc.nextPick
+        if (rolling) npc.nextPick = now + BabaApes.BABOON_ATTACK_RATE
         if (rolling && closed.isNotEmpty() && deps.random.of(0, 99) < BabaApes.SARC_RAID_PERCENT) {
             val sarc = closed.minBy { dist(npc.coords, it.tile) }
             raiding[npc] = sarc
@@ -174,8 +169,8 @@ internal class BabaBaboons(private val room: BabaEncounter) {
 
     private fun raid(npc: Npc, sarc: Sarcophagus, now: Int) {
         if (dist(npc.coords, sarc.tile) > 1) return
-        if (now < (nextBash[npc] ?: 0)) return
-        nextBash[npc] = now + BabaApes.BABOON_ATTACK_RATE
+        if (now < npc.nextBash) return
+        npc.nextBash = now + BabaApes.BABOON_ATTACK_RATE
         npc.anim(BabaSeqs.BABOON_MELEE)
         sarc.npc.hitpoints -= BabaApes.SARC_HIT
         if (sarc.npc.hitpoints <= 0) {
@@ -256,3 +251,6 @@ internal class BabaBaboons(private val room: BabaEncounter) {
 
     private fun dist(a: CoordGrid, b: CoordGrid): Int = a.chebyshevDistance(b)
 }
+
+private var Npc.nextBash by intVarn("varn.toa_baba_baboon_next_bash")
+private var Npc.nextPick by intVarn("varn.toa_baba_baboon_next_pick")
