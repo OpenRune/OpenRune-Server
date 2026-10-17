@@ -134,9 +134,22 @@ fun BossDeps.lob(
     }
 }
 
-class OwnedLoc internal constructor(val info: LocInfo, val blockPlayersOnly: Boolean)
+class OwnedLoc
+internal constructor(
+    val info: LocInfo,
+    val blockPlayersOnly: Boolean,
+    internal val placedAt: Int,
+    internal val onStand: ((Player) -> Unit)?,
+)
 
-fun BossDeps.spawnOwnedLoc(npc: Npc, tile: CoordGrid, loc: String, angle: Int, blockPlayersOnly: Boolean) {
+fun BossDeps.spawnOwnedLoc(
+    npc: Npc,
+    tile: CoordGrid,
+    loc: String,
+    angle: Int,
+    blockPlayersOnly: Boolean,
+    onStand: ((Player) -> Unit)? = null,
+) {
     val encounter = encounterRegistry.of(npc)
     if (encounter.ownsLocAt(tile)) return
     val info = locRepo.add(tile, loc, Int.MAX_VALUE, LocAngle[angle], LocShape.CentrepieceStraight)
@@ -144,7 +157,32 @@ fun BossDeps.spawnOwnedLoc(npc: Npc, tile: CoordGrid, loc: String, angle: Int, b
         collision.remove(tile, CollisionFlag.LOC or CollisionFlag.LOC_ROUTE_BLOCKER)
         collision.add(tile, CollisionFlag.BLOCK_PLAYERS)
     }
-    encounter.addOwnedLoc(tile, OwnedLoc(info, blockPlayersOnly))
+    encounter.addOwnedLoc(tile, OwnedLoc(info, blockPlayersOnly, mapClock.cycle, onStand))
+    if (onStand != null && !encounter.standTickRunning) {
+        encounter.standTickRunning = true
+        worldQueues.add(1) { standTick(encounter) }
+    }
+}
+
+private fun BossDeps.standTick(encounter: BossEncounter) {
+    if (!encounterRegistry.isActive(encounter)) return
+    if (!encounter.hasStandLocs()) {
+        encounter.standTickRunning = false
+        return
+    }
+    val now = mapClock.cycle
+    for (player in playerList) {
+        if (player.hitpoints <= 0) continue
+        val loc = encounter.ownedLocAt(player.coords) ?: continue
+        if (now <= loc.placedAt) continue
+        loc.onStand?.invoke(player)
+    }
+    worldQueues.add(1) { standTick(encounter) }
+}
+
+fun BossDeps.removeOwnedLoc(npc: Npc, tile: CoordGrid) {
+    val loc = encounterRegistry.of(npc).releaseOwnedLocAt(tile) ?: return
+    removeLocs(mapOf(tile to loc))
 }
 
 fun BossDeps.removeLocs(locs: Map<CoordGrid, OwnedLoc>, breakSpotanim: String? = null) {

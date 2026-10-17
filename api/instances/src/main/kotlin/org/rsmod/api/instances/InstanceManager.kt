@@ -59,7 +59,7 @@ constructor(
 
     // Keyed by slot, not uid: `changeType`/transmog reassigns an npc's uid, which would
     // otherwise orphan this entry under the pre-transmog uid for the rest of the npc's life.
-    private val npcInstanceIndex = HashMap<Int, InstanceId>()
+    private val npcInstanceIndex = HashMap<Int, Pair<Npc, InstanceId>>()
 
     public sealed interface Result {
         public data class Created(val session: InstanceSession, val enter: CoordGrid) : Result
@@ -218,9 +218,12 @@ constructor(
     public fun contributionsFor(id: InstanceId): DamageContributions? =
         sessionForId(id)?.damageContributions
 
-    public fun instanceForNpc(npc: Npc): InstanceId? = npcInstanceIndex[npc.slotId]
+    public fun instanceForNpc(npc: Npc): InstanceId? =
+        npcInstanceIndex[npc.slotId]?.takeIf { it.first === npc }?.second
 
     public fun npcsForInstance(id: InstanceId): List<Npc> = spawnedNpcs[id] ?: emptyList()
+
+    public fun regionOf(session: InstanceSession): Region? = regions[session.id]
 
     public fun resolveCoord(session: InstanceSession, coord: CoordGrid): CoordGrid? {
         val region = regions[session.id] ?: return null
@@ -237,6 +240,13 @@ constructor(
     public fun attachNpc(instanceId: InstanceId, npc: Npc) {
         spawnedNpcs.getOrPut(instanceId) { mutableListOf() }.add(npc)
         indexNpc(instanceId, npc)
+    }
+
+    public fun detachNpc(npc: Npc) {
+        if (!npc.isSlotAssigned) return
+        val (_, instanceId) = npcInstanceIndex[npc.slotId]?.takeIf { it.first === npc } ?: return
+        npcInstanceIndex.remove(npc.slotId)
+        spawnedNpcs[instanceId]?.remove(npc)
     }
 
     public fun registerSessionNpc(player: Player, npc: Npc): Boolean {
@@ -358,6 +368,11 @@ constructor(
             is InstanceAccess.Friends -> true
             is InstanceAccess.Code -> code != null && code == access.value
         }
+
+    public fun end(session: InstanceSession) {
+        require(session.isServerOwned) { "Instance is not server-owned: ${session.id}" }
+        destroy(session)
+    }
 
     public fun leave(player: Player, session: InstanceSession, currentTick: Int): CoordGrid {
         removeOccupant(player, session, currentTick)
@@ -742,7 +757,7 @@ constructor(
 
     private fun indexNpc(instanceId: InstanceId, npc: Npc) {
         if (!npc.isSlotAssigned) return
-        npcInstanceIndex[npc.slotId] = instanceId
+        npcInstanceIndex[npc.slotId] = npc to instanceId
     }
 
     private fun untagAndDelete(npc: Npc) {

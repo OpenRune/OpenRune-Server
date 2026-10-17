@@ -3,6 +3,7 @@ package org.rsmod.api.bosses.runtime
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.ProjAnimType
 import dev.openrune.types.aconverted.SpotanimType
 import kotlin.math.abs
@@ -15,11 +16,13 @@ import org.rsmod.api.combat.commons.player.combatPlayDefendAnim
 import org.rsmod.api.combat.commons.player.finishNpcHit
 import org.rsmod.api.combat.commons.player.queueCombatRetaliate
 import org.rsmod.api.combat.commons.types.MeleeAttackType
+import org.rsmod.api.mechanics.toxins.impl.PlayerBleed
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.disableOverheadPrayers
 import org.rsmod.api.player.disablePrayers
+import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.modify
 import org.rsmod.api.player.hit.queueHit
@@ -35,6 +38,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.EntityExactMove
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.headbar.Headbar as EngineHeadbar
+import org.rsmod.game.hit.HitType
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
@@ -93,7 +97,16 @@ class EffectInterpreter internal constructor(
                     t.soundSynth(effect.synth, effect.loops, effect.delay)
                 }
             }
-            is Effect.Spotanim -> npc.spotanim(effect.spot, effect.delay, effect.height, effect.slot)
+            is Effect.Spotanim -> {
+                val onTargets = effect.target
+                if (onTargets == null) {
+                    npc.spotanim(effect.spot, effect.delay, effect.height, effect.slot)
+                } else {
+                    for (t in resolvePlayers(onTargets)) {
+                        t.spotanim(effect.spot, delay = effect.delay, height = effect.height)
+                    }
+                }
+            }
             is Effect.MapSpotanim -> {
                 val coord = resolveTile(effect.at)
                 val spot = SpotanimType(effect.spot.asRSCM(RSCMType.SPOTANIM))
@@ -133,6 +146,7 @@ class EffectInterpreter internal constructor(
             is Effect.TileAoE -> applyTileAoE(effect)
             is Effect.Debris -> applyDebris(effect)
             is Effect.Summon -> summon(access, effect)
+            is Effect.Bleed -> applyBleed(access, effect)
             is Effect.Poison -> applyPoison(effect)
             is Effect.Freeze -> applyFreeze(effect)
             is Effect.DisablePrayers ->
@@ -197,7 +211,7 @@ class EffectInterpreter internal constructor(
                 return
             }
             is Effect.Whenever -> {
-                val holds = encounter.evaluate(effect.condition, target, tileScope(target))
+                val holds = encounter.evaluate(effect.condition, target, tileScope(target), random = deps.random)
                 val next = if (holds) effect.then else effect.otherwise
                 run(access, next, onComplete)
                 return
@@ -360,6 +374,30 @@ class EffectInterpreter internal constructor(
                 t.queueHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier)
                 continue
             }
+            if (hit.resolveOnImpact) {
+                t.queueCombatRetaliate(npc, delay)
+                t.queueImpactHit(
+                    npc,
+                    delay,
+                    hit.type.toEngine(),
+                    damage,
+                    impactModifier(access, hit, damage),
+                    penetration = if (hit.penetrationWhen != null) 0 else hit.penetration,
+                )
+                showMissSpotanim(hit, t, damage, clientDelay = 0)
+                continue
+            }
+            if (hit.reactOnLanding) {
+                val landed = t.finishNpcHitOnLanding(npc, delay, hit.type.toEngine(), damage, hit.penetration)
+                scheduleLanding(access, hit, t, damage, landed, delay, clientDelay = 0)
+                continue
+            }
+            if (!hit.react) {
+                val type = hit.type.toEngine()
+                val queued = t.queueHit(npc, delay, type, damage, deps.playerHitModifier, penetration = hit.penetration)
+                scheduleLanding(access, hit, t, damage, queued.damage, delay, clientDelay = 0)
+                continue
+            }
             val landed =
                 t.finishNpcHit(npc, delay, hit.type.toEngine(), damage, deps.playerHitModifier, hit.penetration)
             scheduleLanding(access, hit, t, damage, landed.damage, delay, clientDelay = 0)
@@ -481,9 +519,31 @@ class EffectInterpreter internal constructor(
             return
         }
         val hitType = hit.type.toEngine()
+        if (hit.reactOnLanding) {
+            val landed = player.finishNpcHitOnLanding(npc, ticks, hitType, damage, hit.penetration)
+            scheduleLanding(access, hit, player, damage, landed, ticks, projAnim.clientCycles)
+            return
+        }
         val landed =
             player.finishNpcHit(npc, ticks, hitType, damage, deps.playerHitModifier, hit.penetration).damage
         scheduleLanding(access, hit, player, damage, landed, ticks, projAnim.clientCycles)
+    }
+
+    private fun Player.finishNpcHitOnLanding(
+        source: Npc,
+        delay: Int,
+        type: HitType,
+        damage: Int,
+        penetration: Int,
+    ): Int {
+        queueCombatRetaliate(source, delay)
+        val hit = queueHit(source, delay, type, damage, deps.playerHitModifier, penetration = penetration)
+        if (delay <= 2) {
+            combatPlayDefendAnim()
+        } else {
+            deps.worldQueues.add(delay - 2) { if (isValidTarget()) combatPlayDefendAnim() }
+        }
+        return hit.damage
     }
 
     /** Resolves prayer, penetration, the defend anim and lifesteal/on-hit on the impact tick. */
@@ -559,6 +619,41 @@ class EffectInterpreter internal constructor(
             }
         }
         if (windup > 0) deps.worldQueues.add(windup) { strike() } else strike()
+    }
+
+    private fun applyBleed(access: StandardNpcAccess?, bleed: Effect.Bleed) {
+        PlayerBleed.apply(
+            owner = npc,
+            player = target,
+            duration = bleed.duration,
+            stillInterval = bleed.stillInterval,
+            onApply = { player ->
+                if (npc.isValidTarget()) {
+                    bleed.applyDamage?.let { bleedHit(player, it, bleed.hitmark) }
+                    bleed.onApply?.let { EffectInterpreter(npc, player, spec, encounter, deps).run(access, it) }
+                }
+            },
+            onStill = { player ->
+                if (npc.isValidTarget()) bleed.stillDamage?.let { bleedHit(player, it, bleed.hitmark) }
+            },
+            onMoving = { player ->
+                if (npc.isValidTarget()) {
+                    bleedHit(player, bleed.movingDamage, bleed.hitmark)
+                    bleed.onMovingHit?.let { EffectInterpreter(npc, player, spec, encounter, deps).run(access, it) }
+                }
+            },
+        )
+    }
+
+    private fun bleedHit(player: Player, expr: DamageExpr, hitmark: HitmarkTypeGroup) {
+        val damage = evaluateDamage(expr, BossHitType.Typeless, player)
+        player.queueHit(
+            delay = 1,
+            type = HitType.Typeless,
+            damage = damage,
+            modifier = NoopPlayerHitModifier,
+            hitmark = hitmark,
+        )
     }
 
     private fun applyDebris(effect: Effect.Debris) {

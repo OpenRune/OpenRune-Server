@@ -1,6 +1,8 @@
 package org.rsmod.api.bosses.spec
 
+import dev.openrune.types.HitmarkTypeGroup
 import dev.openrune.types.NpcMode
+import org.rsmod.api.config.refs.done.hitmark_groups
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -49,7 +51,13 @@ sealed interface Effect {
         val loops: Int = 1,
         val delay: Int = 0,
     ) : Effect
-    data class Spotanim(val spot: String, val height: Int = 0, val delay: Int = 0, val slot: Int = 0) : Effect
+    data class Spotanim(
+        val spot: String,
+        val height: Int = 0,
+        val delay: Int = 0,
+        val slot: Int = 0,
+        val target: TargetExpr? = null,
+    ) : Effect
     data class MapSpotanim(val spot: String, val at: TargetExpr.Single, val height: Int = 0, val delay: Int = 0) : Effect
     data class Broadcast(val text: String, val radius: Int = 15) : Effect
 
@@ -102,6 +110,9 @@ sealed interface Effect {
         val penetrationWhen: Condition? = null,
         /** Environmental damage (falling rocks etc.): no retaliation and no defend anim. */
         val hazard: Boolean = false,
+        val resolveOnImpact: Boolean = false,
+        val reactOnLanding: Boolean = false,
+        val react: Boolean = true,
     ) : Effect
 
     data class Projectile(
@@ -153,6 +164,25 @@ sealed interface Effect {
         val count: IntRange = 1..1,
         val center: TargetExpr.Single = TargetExpr.Self,
     ) : Effect
+
+    data class Bleed(
+        val duration: Int,
+        val movingDamage: DamageExpr,
+        val applyDamage: DamageExpr? = null,
+        val stillDamage: DamageExpr? = null,
+        val stillInterval: Int = 0,
+        val hitmark: HitmarkTypeGroup = hitmark_groups.regular_damage,
+        val onApply: Effect? = null,
+        val onMovingHit: Effect? = null,
+    ) : Effect {
+        init {
+            require(duration > 0) { "Bleed duration must be greater than 0." }
+            require(stillInterval >= 0) { "Bleed stillInterval must not be negative." }
+            require((stillInterval > 0) == (stillDamage != null)) {
+                "Bleed stillDamage and stillInterval must be set together."
+            }
+        }
+    }
 
     data class Summon(
         val npc: String,
