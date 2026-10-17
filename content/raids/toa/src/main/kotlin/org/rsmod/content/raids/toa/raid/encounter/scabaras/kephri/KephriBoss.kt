@@ -26,6 +26,8 @@ import org.rsmod.api.bosses.dsl.projectile
 import org.rsmod.api.bosses.dsl.run
 import org.rsmod.api.bosses.dsl.sequence
 import org.rsmod.api.bosses.dsl.setVarn
+import org.rsmod.api.bosses.dsl.sound
+import org.rsmod.api.bosses.dsl.soundTo
 import org.rsmod.api.bosses.dsl.spotanim
 import org.rsmod.api.bosses.dsl.tile
 import org.rsmod.api.bosses.dsl.toward
@@ -119,6 +121,7 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
     private fun auto(): Effect =
         sequence(
             anim(KephriSeqs.AUTO),
+            onEach(challengePlayers, soundTo(KephriSynths.APEX)),
             withTile(
                 APEX,
                 toward(Centre, CurrentTargetTile, 1.0),
@@ -129,7 +132,14 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
                         target = tile(APEX),
                         config = APEX_CONFIG,
                     ),
-                    after(DROP_DELAY, withTile(AIM, CurrentTargetTile, drop())),
+                    after(
+                        DROP_DELAY,
+                        withTile(
+                            AIM,
+                            CurrentTargetTile,
+                            sequence(sound(KephriSynths.DROP, DROP_SOUND_RADIUS, at = Centre), drop()),
+                        ),
+                    ),
                 ),
             ),
         )
@@ -160,7 +170,13 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             external(PICK_DUNG),
             onEach(
                 challengePlayers,
-                whenever(dungTarget, spotanim(KephriSpots.DUNG_INDICATOR, target = CurrentTarget)),
+                whenever(
+                    dungTarget,
+                    sequence(
+                        spotanim(KephriSpots.DUNG_INDICATOR, target = CurrentTarget),
+                        soundTo(KephriSynths.DUNG_WARNING),
+                    ),
+                ),
             ),
             after(INDICATOR_DELAY, whenever(dungPending, throwBack(dungTarget))),
             nextAttackIn(DUNG_ATTACK_GAP),
@@ -169,6 +185,7 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
     private fun throwBack(who: Condition): Effect =
         sequence(
             anim(KephriSeqs.THROW),
+            sound(KephriSynths.DUNG_THROW, DUNG_SOUND_RADIUS, at = Centre),
             onEach(
                 challengePlayers,
                 whenever(
@@ -209,16 +226,19 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         )
 
     private fun blast(centre: TargetExpr.Single): Effect =
-        whenever(
-            aerial,
-            sequence(
-                blastAt(centre, AERIAL_MAX_HIT),
-                onTiles(
-                    nearestFreeTiles(surround(centre), challengeArea, 0),
-                    blastAt(CurrentTile, AERIAL_MAX_HIT),
+        sequence(
+            sound(KephriSynths.BLAST, BLAST_SOUND_RADIUS, at = centre, delay = EXPLOSION_DELAY),
+            whenever(
+                aerial,
+                sequence(
+                    blastAt(centre, AERIAL_MAX_HIT),
+                    onTiles(
+                        nearestFreeTiles(surround(centre), challengeArea, 0),
+                        blastAt(CurrentTile, AERIAL_MAX_HIT),
+                    ),
                 ),
+                blastAt(centre, MAX_HIT),
             ),
-            blastAt(centre, MAX_HIT),
         )
 
     private fun blastAt(at: TargetExpr.Single, maxHit: Int): Effect =
@@ -273,6 +293,9 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         const val CLIENT_CYCLES_PER_TICK = 30
         const val EXPLOSION_DELAY = 30
         const val IMPACT_HEIGHT = 38
+        const val DROP_SOUND_RADIUS = 12
+        const val DUNG_SOUND_RADIUS = 9
+        const val BLAST_SOUND_RADIUS = 6
 
         const val DROP_DELAY = 3
         const val BASE_FLIGHT = 120
