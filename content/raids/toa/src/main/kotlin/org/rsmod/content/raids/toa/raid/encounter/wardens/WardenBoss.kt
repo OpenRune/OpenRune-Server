@@ -28,7 +28,6 @@ import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.HitType
-import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
 import org.rsmod.content.raids.toa.raid.encounter.eachTarget
 import org.rsmod.content.raids.toa.raid.encounter.onRoomExternal
@@ -126,7 +125,7 @@ class WardenBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
                 PROJECTILE_DELAY,
                 projectile(
                     spotanim = spot,
-                    config = FLIGHT,
+                    travel = WardenProjs.FLIGHT,
                     resolveOnImpact = true,
                     hit =
                         hit {
@@ -162,7 +161,7 @@ class WardenBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
                     message(WardenMessages.PRAYERS_DISABLED),
                     projectile(
                         spotanim = travel,
-                        config = DIVINE_FLIGHT,
+                        travel = WardenProjs.DIVINE,
                         impact = impact,
                         resolveOnImpact = true,
                         hit =
@@ -186,7 +185,7 @@ class WardenBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
                         mapSpotanim(WardenSpots.SHADOW, tile(CELL)),
                         projectile(
                             spotanim = WardenSpots.ENTOMB_TRAVEL,
-                            config = ENTOMB_FLIGHT,
+                            travel = WardenProjs.ENTOMB,
                             target = tile(CELL),
                             onImpact = external(ENTOMB_LAND, at = ImpactTile),
                         ),
@@ -213,36 +212,6 @@ class WardenBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         const val PRAYER_PENETRATION = 15
         const val DIVINE_MIN_HIT = 22
         const val DIVINE_MAX_HIT = 32
-
-        val FLIGHT =
-            ProjectileConfig.fixed(
-                startHeight = 400,
-                endHeight = 100,
-                delay = 0,
-                travel = 90,
-                angle = 12,
-                progress = 128,
-            )
-
-        val DIVINE_FLIGHT =
-            ProjectileConfig.fixed(
-                startHeight = 100,
-                endHeight = 25,
-                delay = 0,
-                travel = 120,
-                angle = 12,
-                progress = 64,
-            )
-
-        val ENTOMB_FLIGHT =
-            ProjectileConfig.fixed(
-                startHeight = 400,
-                endHeight = 40,
-                delay = 0,
-                travel = 120,
-                angle = 12,
-                progress = 64,
-            )
 
         val canMelee = targetCondition<WardensEncounter> { room, target -> room.canMelee(target) }
         val specialRoll = roomCondition<WardensEncounter> { room, _ -> room.rollSpecial() }

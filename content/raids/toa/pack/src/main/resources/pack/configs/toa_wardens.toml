@@ -351,3 +351,36 @@ inherit = "npc.toa_warden_p3_death_tumeken"
 defaultMode = "None"
 moveRestrict = "NoMove"
 regenRate = 0
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_wardens_flight"
+startHeight = 400
+endHeight = 100
+delay = 0
+angle = 12
+lengthAdjustment = 90
+progress = 128
+stepMultiplier = 0
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_wardens_divine"
+startHeight = 100
+endHeight = 25
+delay = 0
+angle = 12
+lengthAdjustment = 120
+progress = 64
+stepMultiplier = 0
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.toa_wardens_entomb"
+startHeight = 400
+endHeight = 40
+delay = 0
+angle = 12
+lengthAdjustment = 120
+progress = 64
+stepMultiplier = 0
