@@ -101,6 +101,7 @@ class WardensSecondEncounter(
     }
 
     override fun onFightTick(boss: Npc, targets: List<Player>) {
+        if (!enrage.active && !boss.isFacingLocked) boss.lockFacing(boss.coords.translate(boss.size / 2, boss.size + FACE_NORTH_DISTANCE))
         if (boss.hitpoints > 0) phantoms.tick(targets)
         checkEnrage(boss)
         if (siphonDue || siphons.active) return
@@ -110,6 +111,7 @@ class WardensSecondEncounter(
 
     override fun validateAttack(player: Player, npc: Npc): NpcAttackValidateResult {
         if (npc === warden && siphons.active) return NpcAttackValidateResult.Deny(WARDEN_BUSY)
+        siphons.attacking(player, npc)
         return NpcAttackValidateResult.Pass
     }
 
@@ -216,6 +218,7 @@ class WardensSecondEncounter(
         const val CRYSTAL = "loc.toa_teleport_crystal_continue_wardens"
         const val PHANTOM = "npc.toa_amascut_p3"
         const val P3_BASE_HP = 880
+        private const val FACE_NORTH_DISTANCE = 8
         private val CRYSTAL_TILE = CoordGrid(3936, 5154, 1)
         private val ARRIVAL_TILE = CoordGrid(3936, 5162, 1)
         private val WARDEN_TILE = CoordGrid(3934, 5152, 1)

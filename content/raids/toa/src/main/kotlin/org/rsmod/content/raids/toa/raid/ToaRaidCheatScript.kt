@@ -8,7 +8,6 @@ import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.script.onCommand
 import org.rsmod.content.raids.toa.party.ToaPartyManager
 import org.rsmod.content.raids.toa.party.ToaPartyManager.currentParty
-import org.rsmod.content.raids.toa.party.ToaPartySettings
 import org.rsmod.content.raids.toa.raid.ToaRaidManager.currentRaid
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaRewardEncounter
@@ -95,7 +94,7 @@ constructor(
         val cycle = deps.mapClock.cycle
         val party =
             player.currentParty
-                ?: ToaPartyManager.createParty(player, ToaPartySettings(), cycle)
+                ?: ToaPartyManager.createParty(player, ToaPartyManager.loadPersonalSettings(player), cycle)
                 ?: return null
         ToaRaidManager.raidFor(party)?.let { return it }
         val raid = ToaRaidManager.start(party, deps) ?: return null

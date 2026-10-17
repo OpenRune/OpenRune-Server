@@ -37,9 +37,11 @@ class WardensScript : PluginScript() {
         }
 
         onModifyNpcHit(npcType(SIPHON_BLUE)) {
-            if (hit.type != HitType.Melee) hit.damage = 0 else if (hit.damage == 0) hit.damage = 1
+            hit.damage = if (hit.type == HitType.Melee) 1 else 0
         }
-        onRoomNpcHit<WardensSecondEncounter>(SIPHON_BLUE) { npc, hit -> siphons.hit(npc, hit) }
+        onRoomNpcHit<WardensSecondEncounter>(SIPHON_BLUE) { npc, hit ->
+            siphons.hit(npc, hit)
+        }
 
         for (god in WardenGod.entries) {
             for (form in listOf(god.phaseThree, god.phaseThreeCharging)) {

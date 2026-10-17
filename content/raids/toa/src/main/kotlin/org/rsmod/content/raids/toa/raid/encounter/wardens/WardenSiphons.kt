@@ -16,6 +16,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitType
+import org.rsmod.game.interact.InteractionNpc
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
@@ -80,6 +81,16 @@ internal class WardenSiphons(private val room: WardensSecondEncounter) {
         if (taken < hitsPerOrb) return
         orb.transmog(npcType(RED), Int.MAX_VALUE)
         if (--unreversed == 0) resolve(success = true)
+    }
+
+    fun attacking(player: Player, orb: Npc) {
+        if (orb !in orbs) return
+        val before = player.actionDelay
+        room.schedule(1) {
+            if (player.actionDelay <= before) return@schedule
+            player.actionDelay = before
+            if ((player.interaction as? InteractionNpc)?.target === orb) player.clearInteraction()
+        }
     }
 
     fun finish() {
