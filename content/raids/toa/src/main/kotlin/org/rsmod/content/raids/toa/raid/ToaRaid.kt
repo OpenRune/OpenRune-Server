@@ -109,6 +109,8 @@ class ToaRaid(
 
     private val dying = HashSet<Player>()
 
+    internal val pitDeaths = HashSet<Player>()
+
     val points = ToaPoints(players)
 
     val supplies = ToaSupplies()

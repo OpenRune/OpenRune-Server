@@ -34,6 +34,7 @@ import org.rsmod.api.bosses.dsl.setVarn
 import org.rsmod.api.bosses.dsl.tile
 import org.rsmod.api.bosses.dsl.unlockMovement
 import org.rsmod.api.bosses.dsl.varnAtLeast
+import org.rsmod.api.bosses.dsl.varnExpired
 import org.rsmod.api.bosses.dsl.varnIs
 import org.rsmod.api.bosses.dsl.wait
 import org.rsmod.api.bosses.dsl.weightedRandom
@@ -157,6 +158,7 @@ internal object BabaSpecials {
     fun stomp(): Effect =
         sequence(
             setVarn(BabaVarns.UNDER, 0),
+            setVarn(BabaVarns.STOMP_READY, Now + BabaShock.STOMP_COOLDOWN_TICKS),
             wave(bossCentre, BabaShock.LENGTH_SHAKING, BabaShock.STOMP_WARNING_TICKS),
         )
 
@@ -167,7 +169,9 @@ internal object BabaSpecials {
             external(BabaExternals.BABOONS_SPAWN),
         )
 
-    fun stompDue(): Condition = varnAtLeast(BabaVarns.UNDER, BabaShock.STOMP_TRIGGER_TICKS)
+    fun stompDue(): Condition =
+        varnAtLeast(BabaVarns.UNDER, BabaShock.STOMP_TRIGGER_TICKS) and
+            (varnExpired(BabaVarns.STOMP_READY) or varnIs(BabaVarns.STOMP_READY, 0))
 
     private fun edgeTile(z: Int): TargetExpr.Single =
         customTile { npc, _ -> ToaRooms.of<BabaEncounter>(npc)?.edgeTile(z) ?: npc.coords }

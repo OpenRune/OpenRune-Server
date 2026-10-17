@@ -1,5 +1,7 @@
 package org.rsmod.content.raids.toa.raid.encounter.apmeken.puzzle
 
+import org.rsmod.api.mechanics.toxins.impl.NpcPoison
+import org.rsmod.api.npc.queueDeath
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.stat.stat
@@ -166,6 +168,7 @@ internal class ApmekenBaboons(private val room: ApmekenPuzzleEncounter) {
     fun trySummon(npc: Npc, target: Player): Boolean {
         val baboon = live.firstOrNull { it.npc === npc } ?: return false
         if (baboon.kind != Kind.SHAMAN || baboon.thralls >= baboon.thrallCap) return false
+        if (NpcPoison.isPoisoned(npc)) return false
         summonThrall(baboon)
         return true
     }
@@ -254,6 +257,7 @@ internal class ApmekenBaboons(private val room: ApmekenPuzzleEncounter) {
         for (other in live) {
             if (!other.dead && other.npc.coords.chebyshevDistance(tile) <= 1) {
                 other.npc.hitpoints = 0
+                other.npc.queueDeath()
             }
         }
         val carrier = room.spawn(ApmekenNpcs.EXPLOSION, tile.translate(-1, -1))

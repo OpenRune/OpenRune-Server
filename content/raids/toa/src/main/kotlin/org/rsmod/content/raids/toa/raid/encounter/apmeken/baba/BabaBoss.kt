@@ -160,7 +160,7 @@ class BabaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
             wait(FIRST_CAST_DELAY),
             whenever(
                 boulderDash,
-                castLoop(BabaRolling.CASTS, BabaRolling.BOULDER_DASH_GAP),
+                castLoop(BabaRolling.BOULDER_DASH_CASTS, BabaRolling.BOULDER_DASH_GAP),
                 castLoop(BabaRolling.CASTS, BabaRolling.CAST_GAP),
             ),
             wait(BabaRolling.CAST_GAP),
