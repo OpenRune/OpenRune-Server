@@ -345,10 +345,17 @@ class WeightedRandomBuilder internal constructor() {
         private val weight: Int,
         private val requires: Condition,
         private val cooldown: Int,
+        private val persistCooldown: Boolean,
     ) {
         operator fun unaryPlus() {
             this@WeightedRandomBuilder.entries +=
-                WeightedRef(ability = abilityName, weight = weight, cooldown = cooldown, requires = requires)
+                WeightedRef(
+                    ability = abilityName,
+                    weight = weight,
+                    cooldown = cooldown,
+                    persistCooldown = persistCooldown,
+                    requires = requires,
+                )
         }
     }
 
@@ -357,14 +364,16 @@ class WeightedRandomBuilder internal constructor() {
         weight: Int,
         requires: Condition = Condition.Always,
         cooldown: Int = 0,
-    ): RandomPending = RandomPending(ability.name, weight, requires, cooldown)
+        persistCooldown: Boolean = false,
+    ): RandomPending = RandomPending(ability.name, weight, requires, cooldown, persistCooldown)
 
     fun random(
         ability: String,
         weight: Int,
         requires: Condition = Condition.Always,
         cooldown: Int = 0,
-    ): RandomPending = RandomPending(ability, weight, requires, cooldown)
+        persistCooldown: Boolean = false,
+    ): RandomPending = RandomPending(ability, weight, requires, cooldown, persistCooldown)
 
     internal fun build(): Selector.WeightedRandom = Selector.WeightedRandom(entries)
 }

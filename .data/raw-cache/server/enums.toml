@@ -914,3 +914,13 @@ valueType = "INT"
 "obj.enakh_sandstone_medium" = 4
 "obj.enakh_sandstone_small" = 2
 "obj.enakh_sandstone_tiny" = 1
+
+[[enum]]
+isServerOnly = true
+id = "enum.gauntlet_tree_axes"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.gauntlet_axe" = 16711935
+"obj.gauntlet_axe_hm" = 16711935

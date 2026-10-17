@@ -3,14 +3,11 @@ package org.rsmod.content.generic.locs.ladders
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ObjectServerType
-import dev.openrune.types.SequenceServerType
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpContentLoc1
 import org.rsmod.api.script.onOpContentLoc2
 import org.rsmod.api.script.onOpContentLoc3
-import org.rsmod.api.script.onOpLoc2
-import org.rsmod.api.script.onOpLoc3
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 

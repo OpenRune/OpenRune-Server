@@ -1,0 +1,55 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_agility_courses"
+name = "Grace's Graceful Clothing"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 800
+delta = 0
+
+size = 7
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.graceful_hood"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.graceful_top"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.graceful_legs"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.graceful_gloves"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.graceful_boots"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.graceful_cape"
+count = 100
+restockCycles = 1
+
+[[inventory.stock]]
+obj = "obj.pack_amylase"
+count = 1000
+restockCycles = 1
+

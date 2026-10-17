@@ -6,6 +6,9 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import net.rsprot.protocol.game.outgoing.sound.MidiJingle
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.musicClocks
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -13,6 +16,7 @@ import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.table.QuestRow
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.InvObj
 import org.rsmod.map.CoordGrid
 
 private const val QUEST_COMPLETE_JINGLE = 153
@@ -58,6 +62,7 @@ data class Quest(
     private var Player.questsCompleted by intVarBit("varbit.quests_completed_count")
 
     private val attributeRegistry = mutableMapOf<String, QuestAttribute<*>>()
+    private val itemRewards = rewards.items.map { (item, amount) -> InvObj(item, amount) }
 
     companion object {
         private val logger = InlineLogger()
@@ -132,7 +137,7 @@ data class Quest(
 
     fun isQuestCompleted(player: Player): Boolean = questState(player).isCompleted
 
-    fun advanceQuestStage(access: ProtectedAccess, amount: Int = 1): Int {
+    fun advanceQuestStage(access: ProtectedAccess, amount: Int = 1): Boolean {
         val currentStage = getQuestStage(access.player)
         val attemptedStage = currentStage + amount
 
@@ -148,11 +153,19 @@ data class Quest(
         return setQuestStage(access, attemptedStage.coerceIn(0, maxSteps))
     }
 
-    fun completeQuest(access: ProtectedAccess): Int = setQuestStage(access, maxSteps)
+    fun completeQuest(access: ProtectedAccess, additionalRewards: List<InvObj> = emptyList()): Boolean =
+        setQuestStage(access, maxSteps, additionalRewards)
 
-    fun setQuestStage(access: ProtectedAccess, newStage: Int): Int {
+    fun setQuestStage(
+        access: ProtectedAccess,
+        newStage: Int,
+        additionalRewards: List<InvObj> = emptyList(),
+    ): Boolean {
         require(newStage in 0..maxSteps) { "Quest '$key' stage must be within 0..$maxSteps." }
         val wasCompleted = getQuestStage(access.player) >= maxSteps
+        if (!wasCompleted && newStage == maxSteps && !grantItemRewards(access, additionalRewards)) {
+            return false
+        }
         storeQuestStage(access, newStage)
 
         // Quest varps store the real stage (0..endstate). Multinpc / journal clients depend on
@@ -165,7 +178,23 @@ data class Quest(
             completedQuest(access)
         }
 
-        return newStage
+        return true
+    }
+
+    private fun grantItemRewards(access: ProtectedAccess, additionalRewards: List<InvObj>): Boolean {
+        if (itemRewards.isEmpty() && additionalRewards.isEmpty()) return true
+        val transaction = access.player.invTransaction(access.inv, autoCommit = false) {
+            val inventory = select(access.inv)
+            for (reward in additionalRewards) {
+                add(inventory, reward.id, reward.count, vars = reward.vars)
+            }
+            for (reward in itemRewards) {
+                add(inventory, reward.id, reward.count, vars = reward.vars)
+            }
+        }
+        if (transaction.failure) return false
+        transaction.commitAll()
+        return true
     }
 
     fun <T> attribute(
@@ -224,7 +253,6 @@ data class Quest(
         }
 
         rewards.items.forEach { (item, amount) ->
-            access.invAdd(access.inv, item, amount)
             val type = ServerCacheManager.getItem(item.asRSCM(RSCMType.OBJ)) ?: error("No item found for $item")
             rewardLines.add(rewards.itemLabels[item] ?: "$amount x ${type.name}")
         }

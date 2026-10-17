@@ -35,6 +35,7 @@ import org.rsmod.content.skills.mining.MiningEquipment.wearingChargedGlory
 import org.rsmod.content.skills.mining.configs.MiningParams
 import org.rsmod.content.skills.mining.configs.MiningRocks
 import org.rsmod.content.skills.mining.configs.depleteRange
+import org.rsmod.content.skills.mining.configs.hasBonusRolls
 import org.rsmod.content.skills.mining.configs.hasDepleteRange
 import org.rsmod.content.skills.mining.configs.isGemRock
 import org.rsmod.content.skills.mining.configs.isInfinite
@@ -172,9 +173,8 @@ constructor(
                 }
                 SkillingAwardResult.Cancelled -> Unit
                 SkillingAwardResult.Success -> {
-                    spam(
-                        "You manage to mine some ${getInvObj(InvObj(product.item)).name.lowercase()}.",
-                    )
+                    val ore = getInvObj(InvObj(product.item)).name.lowercase().removeSuffix(" ore")
+                    spam("You manage to mine some $ore.")
                     soundSynth(ORE_OBTAINED_SOUND)
                 }
             }
@@ -190,7 +190,7 @@ constructor(
     }
 
     private fun ProtectedAccess.rollGemPreTable(data: MiningRocksRow): GemPreRoll {
-        if (data.isGemRock || data.oreItem == null || data.isInfinite) {
+        if (data.isGemRock || data.oreItem == null || data.isInfinite || !data.hasBonusRolls) {
             return GemPreRoll.KeepOre
         }
         val table =

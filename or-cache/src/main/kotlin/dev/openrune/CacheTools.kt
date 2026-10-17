@@ -34,6 +34,7 @@ import dev.openrune.map.packing.MapPackers
 import dev.openrune.pack.PluginPacks
 import dev.openrune.tables.CollectionLogCategoriesTable
 import dev.openrune.tables.DidYouKnow
+import dev.openrune.tables.GauntletRoomSlotsTable
 import dev.openrune.tables.InstanceSettingsTable
 import dev.openrune.tables.PickableObjects
 import dev.openrune.tables.SettingConfigs
@@ -224,6 +225,7 @@ fun tablesToPack(): List<DBTable> = listOf(
     SettingConfigs.settings(),
     DidYouKnow.didYouknow(),
     InstanceSettingsTable.instanceSettings(),
+    GauntletRoomSlotsTable.table(),
     CollectionLogCategoriesTable.collectionLogCategories(),
     ShopCurrencyTable.shopCurrencies(),
 )

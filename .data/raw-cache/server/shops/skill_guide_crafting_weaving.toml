@@ -1,0 +1,25 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_crafting_weaving"
+name = "Ned's Handmade Rope (100% Wool)"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 200
+delta = 20
+
+size = 1
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.rope"
+count = 30
+restockCycles = 3
+

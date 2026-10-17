@@ -1,0 +1,15 @@
+[gamevals.dbtable]
+sawmill_planks = 65470
+sawmill_operators = 65471
+
+[gamevals.dbrow]
+sawmill_plank_wood = 63400
+sawmill_plank_oak = 63401
+sawmill_plank_teak = 63402
+sawmill_plank_mahogany = 63403
+sawmill_plank_camphor = 63404
+sawmill_plank_ironwood = 63405
+sawmill_plank_rosewood = 63406
+sawmill_operator_lumber_yard = 63410
+sawmill_operator_prifddinas = 63411
+sawmill_operator_auburnvale = 63412

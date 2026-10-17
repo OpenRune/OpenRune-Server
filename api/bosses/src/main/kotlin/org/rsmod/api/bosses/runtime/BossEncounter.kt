@@ -114,6 +114,7 @@ class BossEncounter(
     internal val firedTriggers = mutableSetOf<Int>()
     internal val firedPhaseEntries = mutableSetOf<String>()
     private val cooldowns = mutableMapOf<String, Int>()
+    private val persistentCooldowns = mutableSetOf<String>()
     private val forcedTickLastFired = mutableMapOf<String, Int>()
     private var rotationCursor = 0
     private var rotationStarted = false
@@ -136,7 +137,7 @@ class BossEncounter(
         phaseEpoch++
         rotationCursor = 0
         rotationStarted = false
-        cooldowns.clear()
+        cooldowns.keys.retainAll(persistentCooldowns)
         forcedTickLastFired.clear()
         basicAttackCount = 0
         forceAttackThreshold = -1
@@ -232,6 +233,7 @@ class BossEncounter(
             roll -= ref.weight
             if (roll < 0) {
                 cooldowns[ref.ability] = tick
+                if (ref.persistCooldown) persistentCooldowns += ref.ability
                 return ref.ability
             }
         }

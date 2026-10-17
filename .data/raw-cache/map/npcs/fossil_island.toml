@@ -63,102 +63,6 @@ npc = "npc.farming_tools_leprechaun"
 coords = "0_58_59_0_63"
 
 [[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_57_60_10_35"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_57_60_59_58"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_57_60_8_38"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_57_60_9_32"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_10_5"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_11_57"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_14_49"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_19_4"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_20_8"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_23_48"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_24_5"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_2_41"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_2_47"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_2_58"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_34_8"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_39_13"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_3_30"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_3_5"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_4_22"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_4_9"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_6_3"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_6_38"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_6_52"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_58_60_8_28"
-
-[[spawn]]
 npc = "npc.fossil_ammonitecrab_inactive"
 coords = "0_57_60_10_35"
 
@@ -1219,22 +1123,6 @@ npc = "npc.crab_1"
 coords = "0_59_58_41_43"
 
 [[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_59_58_24_40"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_59_58_26_44"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_59_58_30_43"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_59_58_41_48"
-
-[[spawn]]
 npc = "npc.fossil_ammonitecrab_inactive"
 coords = "0_59_58_24_40"
 
@@ -1267,34 +1155,6 @@ coords = "0_56_160_48_12"
 [[spawn]]
 npc = "npc.ancient_wyvern"
 coords = "0_56_160_52_6"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_56_160_12_45"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_56_160_19_55"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_56_160_22_53"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_56_160_45_26"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_56_160_53_25"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_56_160_55_28"
-
-[[spawn]]
-npc = "npc.fossil_ammonitecrab"
-coords = "0_56_160_56_23"
 
 [[spawn]]
 npc = "npc.fossil_ammonitecrab_inactive"

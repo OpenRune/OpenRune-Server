@@ -1,0 +1,15 @@
+[[object]]
+id = "loc.mcannondoor"
+inherit = "loc.mcannondoor"
+contentGroup = "content.closed_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.inactivepoordoor"
+
+[[object]]
+id = "loc.inactivepoordoor"
+inherit = "loc.inactivepoordoor"
+contentGroup = "content.opened_single_door"
+
+[object.params]
+"param.next_loc_stage" = "loc.mcannondoor"

@@ -178,6 +178,7 @@ constructor(
     }
 
     private fun pocketOwner(npc: Npc, target: Pickpocket): String {
+        target.pocketName?.let { return it }
         val name = if (target.lowercaseName) npc.visType.name.lowercase() else npc.visType.name
         return if (name.contains(" the ")) name else "the $name"
     }
