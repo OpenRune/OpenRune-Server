@@ -24,6 +24,9 @@ constructor(
 
     private lateinit var connection: Connection
 
+    /** The game thread and the account saver share [connection]; transactions must not overlap. */
+    private val transactionLock = Any()
+
     public fun connect(connector: GameConnection) {
         check(!::connection.isInitialized) { "Connection already initialized." }
         val config = configProvider.get()
@@ -67,19 +70,21 @@ constructor(
         block: (DatabaseConnection) -> T,
     ): T =
         withConnection { connection ->
-            val wrapped = DatabaseConnection(connection)
-            try {
-                applySchemaSearchPath(connection, schema)
-                val result = block(wrapped)
-                connection.commit()
-                result
-            } catch (t: Throwable) {
+            synchronized(transactionLock) {
+                val wrapped = DatabaseConnection(connection)
                 try {
-                    connection.rollback()
-                } catch (rollbackEx: Throwable) {
-                    throw DatabaseRollbackException(t, rollbackEx)
+                    applySchemaSearchPath(connection, schema)
+                    val result = block(wrapped)
+                    connection.commit()
+                    result
+                } catch (t: Throwable) {
+                    try {
+                        connection.rollback()
+                    } catch (rollbackEx: Throwable) {
+                        throw DatabaseRollbackException(t, rollbackEx)
+                    }
+                    throw t
                 }
-                throw t
             }
         }
 
@@ -89,19 +94,21 @@ constructor(
         block: (DatabaseConnection) -> T,
     ): T {
         assertValidConnection()
-        try {
-            val wrapped = DatabaseConnection(connection)
-            applySchemaSearchPath(connection, schema)
-            val result = block(wrapped)
-            connection.commit()
-            return result
-        } catch (t: Throwable) {
+        synchronized(transactionLock) {
             try {
-                connection.rollback()
-            } catch (rollbackEx: Throwable) {
-                throw DatabaseRollbackException(t, rollbackEx)
+                val wrapped = DatabaseConnection(connection)
+                applySchemaSearchPath(connection, schema)
+                val result = block(wrapped)
+                connection.commit()
+                return result
+            } catch (t: Throwable) {
+                try {
+                    connection.rollback()
+                } catch (rollbackEx: Throwable) {
+                    throw DatabaseRollbackException(t, rollbackEx)
+                }
+                throw t
             }
-            throw t
         }
     }
 
