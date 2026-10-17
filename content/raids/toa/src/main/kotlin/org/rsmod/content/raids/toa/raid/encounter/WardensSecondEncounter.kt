@@ -128,7 +128,7 @@ class WardensSecondEncounter(
     internal fun keepRotation() {
         val boss = warden ?: return
         if (boss.hitpoints <= 0 || enrage.active) return
-        deps.bossDeps.forceNext(boss, slams.next().ability)
+        deps.bossDeps.forceNext(boss, WardenFinalAbilities.SLAM)
     }
 
     internal fun checkEnrage(npc: Npc) {

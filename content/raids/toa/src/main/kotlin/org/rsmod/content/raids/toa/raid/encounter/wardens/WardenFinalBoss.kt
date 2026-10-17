@@ -22,6 +22,7 @@ import org.rsmod.content.raids.toa.raid.encounter.roomCondition
 import org.rsmod.plugin.scripts.ScriptContext
 
 internal object WardenFinalAbilities {
+    const val SLAM = "slam"
     const val SIPHONS = "siphons"
     const val RESOLVE = "resolve"
     const val ENRAGE = "enrage"
@@ -56,7 +57,14 @@ class WardenFinalBoss @Inject constructor(deps: BossDeps) : BossPluginScript(dep
 
     override val spec: BossSpec =
         boss(*WardenGod.entries.flatMap { listOf(it.phaseThree, it.phaseThreeCharging) }.toTypedArray()) {
-            for (slam in WardenSlam.entries) ability(slam.ability, slam(slam))
+            ability(
+                WardenFinalAbilities.SLAM,
+                whenever(
+                    nextSlam(WardenSlam.EAST),
+                    slam(WardenSlam.EAST),
+                    whenever(nextSlam(WardenSlam.WEST), slam(WardenSlam.WEST), slam(WardenSlam.BOTH)),
+                ),
+            )
             ability(
                 WardenFinalAbilities.SIPHONS,
                 sequence(
@@ -89,11 +97,7 @@ class WardenFinalBoss @Inject constructor(deps: BossDeps) : BossPluginScript(dep
             )
 
             phase(SLAM_PHASE) {
-                rotationSelector {
-                    +then(WardenSlam.EAST.ability)
-                    +then(WardenSlam.WEST.ability)
-                    +then(WardenSlam.BOTH.ability)
-                }
+                rotationSelector { +then(WardenFinalAbilities.SLAM) }
                 forceWhen(siphonDue, WardenFinalAbilities.SIPHONS)
             }
             phase(CHARGING_PHASE, lockMovement = true) {}
@@ -117,5 +121,8 @@ class WardenFinalBoss @Inject constructor(deps: BossDeps) : BossPluginScript(dep
 
         val siphonDue = roomCondition<WardensSecondEncounter> { room, _ -> room.siphonDue }
         val fastSlams = roomCondition<WardensSecondEncounter> { room, _ -> room.fastSlams }
+
+        fun nextSlam(slam: WardenSlam) =
+            roomCondition<WardensSecondEncounter> { room, _ -> room.slams.next() == slam }
     }
 }

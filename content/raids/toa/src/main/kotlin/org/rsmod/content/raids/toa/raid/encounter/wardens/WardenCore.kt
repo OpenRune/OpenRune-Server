@@ -147,6 +147,7 @@ internal class WardenCore(private val room: WardensEncounter) {
         warden.removeHeadbar(headbarId(WardenCoreRefs.SHIELD_BAR))
         showHealthBar(warden)
         room.hpBar?.update()
+        room.hpBar?.recolour()
 
         val centre = warden.coords.translate(WardenGod.WARDEN_RADIUS, WardenGod.WARDEN_RADIUS)
         val tile = centre.translate(-god.orbSide * CORE_OFFSET, CORE_OFFSET)
@@ -239,6 +240,7 @@ internal class WardenCore(private val room: WardensEncounter) {
         warden.anim(WardenCoreRefs.STAND_UP)
         warden.transmog(npcType(next), Int.MAX_VALUE)
         room.hpBar?.update()
+        room.hpBar?.recolour()
         room.resumeAttacking(warden, FIRST_ATTACK_AFTER_STAND)
     }
 

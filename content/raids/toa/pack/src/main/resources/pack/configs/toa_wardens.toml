@@ -126,9 +126,6 @@ attackRange = 10
 "param.hitmark_lit" = "hitmark.regular_damage_max"
 "param.hitmark_tint" = "hitmark.regular_damage_max"
 "param.hitmark_max" = "hitmark.regular_damage_max"
-"param.boss_hp_bar_colour_back" = 2631680
-"param.boss_hp_bar_colour_sliding" = 10524672
-"param.boss_hp_bar_colour_remaining" = 14209024
 
 [[npc]]
 id = "npc.toa_warden_tumeken_phase2_mage"
@@ -179,9 +176,6 @@ attackRange = 10
 "param.hitmark_lit" = "hitmark.regular_damage_max"
 "param.hitmark_tint" = "hitmark.regular_damage_max"
 "param.hitmark_max" = "hitmark.regular_damage_max"
-"param.boss_hp_bar_colour_back" = 2631680
-"param.boss_hp_bar_colour_sliding" = 10524672
-"param.boss_hp_bar_colour_remaining" = 14209024
 
 [[npc]]
 id = "npc.toa_warden_elidinis_core"
