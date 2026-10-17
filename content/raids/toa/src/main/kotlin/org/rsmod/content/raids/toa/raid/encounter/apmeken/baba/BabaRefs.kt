@@ -68,6 +68,7 @@ internal object BabaVarns {
     const val ROCKFALL_READY = "varn.toa_baba_rockfall_ready"
     const val LAST_SPECIAL = "varn.toa_baba_last_special"
     const val UNDER = "varn.toa_baba_under"
+    const val STOMP_READY = "varn.toa_baba_stomp_ready"
 }
 
 internal object BabaSeqs {
@@ -145,6 +146,7 @@ internal object BabaShock {
     const val TELEGRAPH_TICKS = 5
     const val STOMP_WARNING_TICKS = 2
     const val STOMP_TRIGGER_TICKS = 2
+    const val STOMP_COOLDOWN_TICKS = 6
     const val BOSS_SIZE = 5
     const val BOSS_CENTRE = 2
     const val TELEGRAPH_STEP_CYCLES = 30
@@ -163,13 +165,15 @@ internal object BabaRolling {
     const val LANE_BASE_Z = 5401
     const val ROW_X = 3813
     const val WALL_X = 3798
+    const val PIT_DEPTH = 2
     const val KNOCKBACK_TILES = 4
     const val KNOCKBACK_IMMUNITY = 2
     const val FLYBACK_CYCLES = 120
     const val FLYBACK_HEIGHT = 124
     const val TOP_ZONE_X = 3815
     const val BOULDER_BASE_DAMAGE = 14
-    const val BOULDER_DASH_GAP = 4
+    const val BOULDER_DASH_GAP = 6
+    const val BOULDER_DASH_CASTS = 15
     const val PEEL_STUN_TICKS = 5
     val BOULDER_HP_BY_PARTY = intArrayOf(25, 36, 47, 55, 62, 70, 77, 85)
     val BOULDER_HP_PATH_PERCENT = intArrayOf(100, 110, 125)

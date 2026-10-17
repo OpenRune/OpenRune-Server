@@ -90,11 +90,10 @@ internal class BabaBoulders(private val room: BabaEncounter) {
         player.clearInteractionRoute()
         player.anim(BabaSeqs.FLYBACK)
         player.spotanim(BabaSpots.STUNNED, 0, BabaRolling.FLYBACK_HEIGHT, 0)
-        if (mindTheGap && inPitRows(static)) {
-            room.schedule(BabaRolling.FLYBACK_CYCLES / CYCLES_PER_TICK + 1) { dropInPit(player) }
-        }
-        if (static.x == BabaRolling.WALL_X) return
-        val dest = room.coords(CoordGrid(BabaRolling.WALL_X, static.z, static.level))
+        val intoPit = mindTheGap && inPitRows(static)
+        val destX = if (intoPit) BabaRolling.WALL_X - BabaRolling.PIT_DEPTH else BabaRolling.WALL_X
+        if (static.x == destX) return
+        val dest = room.coords(CoordGrid(destX, static.z, static.level))
         deps.launcher.launchLenient(player) {
             exactMove(
                 from,
@@ -105,6 +104,7 @@ internal class BabaBoulders(private val room: BabaEncounter) {
                 TeleportType.Exempt,
             )
             delay(BabaRolling.FLYBACK_CYCLES / CYCLES_PER_TICK)
+            if (intoPit) dropInPit(player)
         }
     }
 
@@ -124,13 +124,14 @@ internal class BabaBoulders(private val room: BabaEncounter) {
     private fun knockback(player: Player) {
         val static = room.staticCoords(player.coords)
         val landingX = static.x - BabaRolling.KNOCKBACK_TILES
-        val destX = maxOf(BabaRolling.WALL_X, landingX)
-        player.anim(BabaSeqs.KNOCKDOWN, KNOCKDOWN_DELAY)
+        val intoPit = mindTheGap && landingX < BabaRolling.WALL_X && inPitRows(static)
+        val destX = if (intoPit) BabaRolling.WALL_X - 1 else maxOf(BabaRolling.WALL_X, landingX)
+        if (!intoPit) player.anim(BabaSeqs.KNOCKDOWN, KNOCKDOWN_DELAY)
         if (destX != static.x) {
             val dest = room.coords(CoordGrid(destX, static.z, static.level))
             deps.launcher.launchLenient(player) { telejump(dest, TeleportType.Exempt) }
         }
-        if (mindTheGap && landingX < BabaRolling.WALL_X && inPitRows(static)) {
+        if (intoPit) {
             dropInPit(player)
             return
         }
@@ -146,6 +147,7 @@ internal class BabaBoulders(private val room: BabaEncounter) {
 
     private fun dropInPit(player: Player) {
         if (player.hitpoints > 0 && room.inChallengeArea(player)) {
+            room.raid.pitDeaths += player
             player.hitTypeless(player.hitpoints)
         }
     }

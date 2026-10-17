@@ -97,6 +97,7 @@ internal class BabaBaboons(private val room: BabaEncounter) {
         if (!baboons.remove(npc)) return
         forget(npc)
         if (room.raid.isActive("dbrow.toa_invocation_jungle_japes")) dropPeels(npc.coords)
+        npc.noneMode()
         npc.anim(BabaSeqs.BABOON_DEATH)
         room.schedule(BabaApes.BABOON_DEATH_TICKS) { if (npc.isSlotAssigned) room.despawn(npc) }
     }
