@@ -36,6 +36,12 @@ internal object WardenSpots {
     const val SHADOW = "spotanim.gargboss_debris_shadow_120"
 }
 
+internal object WardenProjs {
+    const val FLIGHT = "projanim.toa_wardens_flight"
+    const val DIVINE = "projanim.toa_wardens_divine"
+    const val ENTOMB = "projanim.toa_wardens_entomb"
+}
+
 internal object WardenMessages {
     const val SCIMITAR = "<col=ff3045>The warden throws an arcane scimitar.</col>"
     const val ARROW = "<col=229628>The warden fires an arcane arrow.</col>"
