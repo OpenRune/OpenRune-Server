@@ -62,6 +62,7 @@ public fun Player.statRestoreAll(stats: Iterable<String>) {
  *   convenience - for example, if the caller wants to ignore the player's personal xp rate but
  *   still apply global modifiers like Double XP Weekends. Defaults to the player's
  *   [Player.globalXpRate].
+ * @param source [XpSource.Manual] changes levels without queueing any level-up.
  * @return The total amount of experience successfully added to the player's stat.
  */
 public fun Player.statAdvance(
@@ -69,7 +70,8 @@ public fun Player.statAdvance(
     xp: Double,
     rate: Double = xpRate,
     globalRate: Double = globalXpRate,
-): Int = PlayerSkillXP.internalAddXP(this, stat, xp, rate = rate * globalRate)
+    source: XpSource = XpSource.Natural,
+): Int = PlayerSkillXP.internalAddXP(this, stat, xp, rate = rate * globalRate, source)
 
 /**
  * Increases the player's current [stat] level.
@@ -101,7 +103,7 @@ public fun Player.statAdd(stat: String, constant: Int, percent: Int) {
 
     statMap.setCurrentLevel(stat, cappedLevel.toByte())
 
-    val statType = ServerCacheManager.getStats(stat.asRSCM(RSCMType.STAT))?: error("No stat found for $stat")
+    val statType = ServerCacheManager.getStats(stat.asRSCM(RSCMType.STAT)) ?: error("No stat found for $stat")
 
     updateStat(stat)
 

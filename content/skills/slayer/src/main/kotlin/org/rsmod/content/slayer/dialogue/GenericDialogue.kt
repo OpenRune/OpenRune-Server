@@ -18,8 +18,8 @@ object GenericDialogue {
             "I have quite a few rewards you can earn, and a wide variety of Slayer equipment for sale.",
         )
         when (choice3("Look at rewards.", 1, "Look at shop.", 2, "Cancel.", 3)) {
-            1 -> SlayerInterfaces.openInterface(access,npc!!.visType.internalName)
-            2 -> SlayerInterfaces.openInterface(access,npc!!.visType.internalName)
+            1 -> SlayerInterfaces.openInterface(access, access.npcVisType(npc!!).internalName)
+            2 -> SlayerInterfaces.openInterface(access, access.npcVisType(npc!!).internalName)
         }
     }
 
@@ -78,7 +78,7 @@ object GenericDialogue {
         when (choice2("Yes, please.", 1, "No, thanks.", 2)) {
             1 -> {
                 chatPlayer(neutral, "Yes, please.")
-                assignNewTask(npc!!.visType.internalName) { taskName, count ->
+                assignNewTask(access.npcVisType(npc!!).internalName) { taskName, count ->
                     SlayerTaskManager.setSlayerStreak(access, 0)
                     chatNpc(neutral, "Your new task is to kill $count $taskName.")
                 }

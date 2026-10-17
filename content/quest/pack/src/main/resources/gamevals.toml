@@ -30,6 +30,9 @@ fish_swim = 2601
 iron_door_open = 71
 swan_rumble = 1790
 unlock = 2419
+poh_build_furniture = 938
+poh_remove_furniture = 2097
+poh_remove_furniture_alt = 2098
 
 locked = 2402
 pyramid_block = 1395
@@ -82,6 +85,7 @@ misthalin_mirror_blocker = 63701
 misthalin_puzzle_state = 63702
 cooks_assistant_ingredients = 63705
 gertrudes_cat_state = 63711
+daddyshome_state = 64064
 waterfall_state = 64400
 
 [gamevals.varbit]
@@ -97,6 +101,7 @@ gertrudes_cat_progress = 63711
 gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
 gertrudes_cat_told_sardines = 63714
+daddyshome_crate_opened = 64064
 waterfall_progress = 64400
 waterfall_heard_of_treasure = 64401
 waterfall_met_golrie = 64402
@@ -115,13 +120,38 @@ restless_ghost_coffin_ghost = 123
 restless_skeleton_attack = 124
 
 [gamevals.dbtable]
+daddys_home_furniture = 65472
+daddys_home_crate = 65473
 glarial_restrictions = 65495
 waterfall_pillar_runes = 65494
 
 [gamevals.dbrow]
+daddys_home_furniture_kitchen_stool = 63420
+daddys_home_furniture_bedroom_stool = 63421
+daddys_home_furniture_chair = 63422
+daddys_home_furniture_kitchen_table = 63423
+daddys_home_furniture_bedroom_table = 63424
+daddys_home_furniture_bed = 63425
+daddys_home_furniture_carpet = 63426
+daddys_home_crate_planks = 63430
+daddys_home_crate_nails = 63431
+daddys_home_crate_steel_bars = 63432
+daddys_home_crate_oak_planks = 63433
+daddys_home_crate_cloth = 63434
+daddys_home_crate_house_tablets = 63435
+daddys_home_crate_falador_tablet = 63436
 glarial_forbidden_names = 63685
 glarial_forbidden_parts = 63684
 glarial_allowed_parts = 63679
 waterfall_rune_air = 63678
 waterfall_rune_water = 63677
 waterfall_rune_earth = 63676
+
+[gamevals.enum]
+daddys_home_hammers = 65460
+daddys_home_saws = 65461
+daddys_home_nails = 65462
+daddys_home_house_cities = 65463
+
+[gamevals.clientscript]
+poh_furniture_creation_entry_old = 7988

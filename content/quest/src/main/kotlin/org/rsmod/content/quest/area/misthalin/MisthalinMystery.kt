@@ -335,15 +335,23 @@ constructor(
         chatPlayer(happy, "Hi Mandy. How are you feeling now?")
         chatNpc(happy, "Much better thanks, and lucky to be alive, thanks to you in no small part.")
         chatPlayer(happy, "Well we saved the day as a team, so thank you too.")
+        val missing = mistmystRewardSpaceShortfall(player.inv.freeSpace())
+        if (missing > 0) {
+            chatNpc(neutral, mistmystRewardSpaceText(missing))
+            return
+        }
         chatNpc(
             happy,
             "Here, I found these in the wardrobe when I was seeing to my wound. I don't want them " +
                 "so please, take them...",
         )
 
+        if (!quest.completeQuest(access)) {
+            val missingAtHandover = mistmystRewardSpaceShortfall(player.inv.freeSpace())
+            chatNpc(neutral, mistmystRewardSpaceText(missingAtHandover))
+            return
+        }
         access.mistmystXpAwarded = true
-
-        quest.completeQuest(access)
     }
 
     private companion object {
@@ -359,6 +367,21 @@ constructor(
 
         private val GodswordProp = CoordGrid(1626, 4843, 0)
     }
+}
+
+internal const val MistmystRewardSlots = 3
+
+internal fun mistmystRewardSpaceShortfall(freeSlots: Int): Int =
+    (MistmystRewardSlots - freeSlots).coerceAtLeast(0)
+
+internal fun mistmystRewardSpaceText(missing: Int): String {
+    val spaces =
+        when (missing) {
+            1 -> "another space"
+            else -> "$missing more spaces"
+        }
+    return "I found some stuff in the wardrobe when I was seeing to my wound. You need $spaces " +
+        "in your inventory to take it all."
 }
 
 internal fun CoordGrid.isOnMisthalinIsland(): Boolean =

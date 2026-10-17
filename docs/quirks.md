@@ -66,6 +66,13 @@ example, if `zone(0, 1, 0)` receives a `soundarea` update first and
 to fixed iteration order; whereas the official game would send `zone(0, 1, 0)`
 first since it was the earliest update.
 
+## Level-up popups
+
+`LevelUpScript` sets `varbit.busy` while `levelup_display` is open and clears
+it through the interface close hook. Keep cleanup tied to the interface,
+not the suspended dialogue: walking or a hit can cancel that dialogue.
+Disabled popups do not set the flag.
+
 ## Types
 ```
 engine

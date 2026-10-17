@@ -1515,10 +1515,6 @@ npc = "npc.sos_barb"
 coords = "0_48_53_9_29"
 
 [[spawn]]
-npc = "npc.sos_barb_visible"
-coords = "0_48_53_9_28"
-
-[[spawn]]
 npc = "npc.soulbane_launa_multi"
 coords = "0_51_53_45_61"
 

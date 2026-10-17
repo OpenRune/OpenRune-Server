@@ -8,6 +8,7 @@ import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest.Companion.BOBS_SCROLL
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest.Companion.CASKET
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest.Companion.CLUE_ITEMS
+import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest.Companion.COIN_REWARD
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest.Companion.LAMP
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest.Companion.ORB
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest.Companion.SCROLL_BOX
@@ -24,6 +25,7 @@ import org.rsmod.content.quest.area.lumbridge.xmarksthespot.metVeosInKourend
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.owns
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.scrollBoxOwed
 import org.rsmod.content.quest.manager.startQuestPrompt
+import org.rsmod.game.inv.InvObj
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -311,14 +313,7 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
     }
 
     private suspend fun Dialogue.rewardAndFarewell() {
-        if (!hasRewardSpace(freedSlots = 0)) {
-            chatNpc(
-                neutral,
-                "I've got your reward here, but you'll need to make some room in your inventory " +
-                    "first.",
-            )
-            return
-        }
+        if (!checkRewardSpace()) return
         chatNpc(
             neutral,
             "Anyway, I'd best be getting back to Great Kourend soon. I'm sure I'll be back here " +
@@ -331,13 +326,30 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
         )
         chatPlayer(happy, "Sounds great, thanks Veos.")
         chatNpc(happy, "And as promised, here's your reward.")
-        if (player.owns(SCROLL_BOX)) {
-            player.scrollBoxOwed = true
-        } else {
-            access.invAdd(access.inv, SCROLL_BOX)
+        val ownsScrollBox = player.owns(SCROLL_BOX)
+        val additionalRewards = if (ownsScrollBox) emptyList() else listOf(InvObj(SCROLL_BOX))
+        if (!quest.completeQuest(access, additionalRewards)) {
+            rewardSpaceRefusal()
+            return
         }
-        quest.completeQuest(access)
+        if (ownsScrollBox) {
+            player.scrollBoxOwed = true
+        }
         xMarks.syncVeos(player)
+    }
+
+    private suspend fun Dialogue.checkRewardSpace(): Boolean {
+        if (hasRewardSpace(freedSlots = 0)) return true
+        rewardSpaceRefusal()
+        return false
+    }
+
+    private suspend fun Dialogue.rewardSpaceRefusal() {
+        chatNpc(
+            neutral,
+            "I've got your reward here, but you'll need to make some room in your inventory " +
+                "first.",
+        )
     }
 
     private suspend fun Dialogue.reclaimRewards(): Boolean {
@@ -365,8 +377,10 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
     }
 
     private fun Dialogue.hasRewardSpace(freedSlots: Int): Boolean {
+        val coins = player.inv.count("obj.coins")
+        if (coins > Int.MAX_VALUE - COIN_REWARD) return false
         var needed = 1
-        if (player.inv.count("obj.coins") == 0) needed++
+        if (coins == 0) needed++
         if (!player.owns(SCROLL_BOX)) needed++
         return player.inv.freeSpace() + freedSlots >= needed
     }

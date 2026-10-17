@@ -13,7 +13,7 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class ChestPlugin @Inject constructor(private val locRepo: LocRepository): PluginScript() {
+class ChestPlugin @Inject constructor(private val locRepo: LocRepository) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpContentLoc1("content.empty_chest") { player.search(it.type) }
         onOpContentLoc2("content.empty_chest") { toggleChest(it.loc, it.type) }
@@ -24,7 +24,6 @@ class ChestPlugin @Inject constructor(private val locRepo: LocRepository): Plugi
         val sound = type.param(params.opensound)
         val openedLoc = type.param(params.next_loc_stage)
         soundSynth(sound)
-
 
         locRepo.del(closed, ChestConstants.DURATION)
         locRepo.add(

@@ -101,6 +101,29 @@ hardcode raw numeric ids in content code.
   Working examples: `content/events/shooting-stars`, `content/generic/generic-locs`,
   `content/interfaces/collection-log`.
 
+## Game data lives in the cache
+
+Lookup data (item→value maps, per-tier rates, location lists, recipe tables) belongs
+in the cache as dbtables and enums, read through the generated accessors. Hardcoded
+Kotlin `mapOf`/`listOf` tables, `when` lookups and Kotlin enum classes carrying game
+data are the wrong shape: the cache is the single source of truth, and Jagex's own
+data is already there.
+
+- Search first: Jagex usually ships the table or enum you need
+  (`gameval_search`, osrs-dumps). Use it as-is.
+- New data goes in the module's `-pack`:
+  - dbtables: Kotlin `dbTable("dbtable.x") { ... }` returned from the pack's
+    `dbTables()` — see `content/events/shooting-stars/pack/.../ShootingStarsTable.kt`.
+  - enums: `[[enum]]` TOML under `pack/configs/` — see
+    `content/skills/crafting/pack/.../crafting_enums.toml`.
+  - Register the symbols in `gamevals.toml`, then `buildCache`.
+- Read it through the generated code in `api/generated` (gitignored, rebuilt by
+  `buildCache`): `org.rsmod.api.table.<Name>Row` (`all()`, `getRow(...)`, typed
+  column properties) and `org.rsmod.api.enums.<Group>Enums.<enum_name>`. Use these
+  over raw `ServerCacheManager`/column-index lookups.
+- Kotlin enum classes are for code-side state machines and closed sets of
+  behaviour, not for carrying data tables.
+
 ## Interfaces & CS2 (clientscripts)
 
 How custom interfaces flow through the stack.
@@ -246,7 +269,19 @@ deviations), `external-plugins.md` (loading/hot-loading plugins from outside thi
 
 - ktlint 1.5.0 via Spotless, ratcheted from `origin/main` (only changed files checked).
 - `.editorconfig`: 4-space indent, 100-char lines, LF. Most ktlint standard rules are
-  off; only the auto-correctable hygiene allow-list applies.
+  off; only the auto-correctable hygiene allow-list applies, so wrapping and line
+  breaks are yours — match the surrounding file.
+
+### Naming
+
+- Constants are `SCREAMING_SNAKE_CASE`: every `const val`, and every top-level or
+  `object`/`companion object` `val` holding fixed, immutable data
+  (`private const val MAX_HITS = 3`, `private val SAFE_TILES = setOf(...)`).
+- Everything else follows standard Kotlin casing: `PascalCase` types and enum
+  entries, `camelCase` functions, properties and locals.
+- `api/config/.../Constants.kt` (`dm_default`, ...) is a lowercase legacy holder
+  inherited from RSMod; leave it as is, but give new constants elsewhere constant
+  case.
 
 ### Comments — less is more
 
@@ -263,6 +298,27 @@ Default to no comments; the code and its names should carry the meaning.
   says what it is. Rename instead of commenting.
 - Never leave narration comments about a change you just made ("now uses X",
   "fixed the bug where..."); that belongs in the commit message.
+
+## Unit tests — where they earn their keep
+
+Write tests for two kinds of code, and verify everything else in a live client:
+
+- **Complex logic and maths**: combat formulas, accuracy/max-hit rolls, drop-rate
+  and probability maths, XP curves, pathing/geometry, multi-branch state machines —
+  anything where an off-by-one or wrong rounding is silent in play.
+- **Anything that moves items** in or out of an inventory, bank, shop, trade,
+  equipment slot or ground stack. Every such flow needs a test proving no item can
+  be duplicated or lost. Cover the dupe paths:
+  - full inventory / no space mid-transaction (the whole action rolls back);
+  - stack overflow at `Int.MAX_VALUE`;
+  - repeated or same-tick clicks, and the source item vanishing between the
+    check and the take (dropped, banked, already consumed);
+  - every item taken is accounted for: total count of each obj before and after
+    matches what the action is meant to do.
+
+Skip tests for straight-line content wiring (dialogue, simple op handlers, NPC
+spawns, interface layout) and for config-matches-cache/wiki checks — the live
+client covers those.
 
 ## Testing changes in a live client
 

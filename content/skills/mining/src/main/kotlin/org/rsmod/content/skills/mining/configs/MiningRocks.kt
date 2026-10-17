@@ -13,6 +13,9 @@ val MiningRocksRow.isInfinite: Boolean
 val MiningRocksRow.hasDepleteRange: Boolean
     get() = depleteMechanic == 2
 
+val MiningRocksRow.hasBonusRolls: Boolean
+    get() = clueBaseChance > 0
+
 val MiningRocksRow.isGemRock: Boolean
     get() = oreItem == null
 

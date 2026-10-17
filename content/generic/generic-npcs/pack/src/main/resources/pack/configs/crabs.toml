@@ -1,0 +1,449 @@
+[[npc]]
+isServerOnly = true
+id = "npc.zeah_sandcrab_inactive"
+inherit = "npc.zeah_sandcrab_inactive"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.zeah_sandcrab"
+inherit = "npc.zeah_sandcrab"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.zeah_sandcrab_small_inactive"
+inherit = "npc.zeah_sandcrab_small_inactive"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.zeah_sandcrab_small"
+inherit = "npc.zeah_sandcrab_small"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.horror_rockcrab_inactive"
+inherit = "npc.horror_rockcrab_inactive"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.horror_rockcrab"
+inherit = "npc.horror_rockcrab"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.horror_rockcrab_small_inactive"
+inherit = "npc.horror_rockcrab_small_inactive"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.horror_rockcrab_small"
+inherit = "npc.horror_rockcrab_small"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.giant_rockcrab_hidden"
+inherit = "npc.giant_rockcrab_hidden"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+hitpoints = 180
+attack = 50
+strength = 80
+defence = 200
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+
+[[npc]]
+isServerOnly = true
+id = "npc.giant_rockcrab"
+inherit = "npc.giant_rockcrab"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+
+[[npc]]
+isServerOnly = true
+id = "npc.giant_rockcrab_hidden_deeper"
+inherit = "npc.giant_rockcrab_hidden_deeper"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+hitpoints = 180
+attack = 50
+strength = 80
+defence = 200
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+
+[[npc]]
+isServerOnly = true
+id = "npc.giant_rockcrab_deeper"
+inherit = "npc.giant_rockcrab_deeper"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+
+[[npc]]
+isServerOnly = true
+id = "npc.giant_rockcrab_crypt_of_tonali_hidden"
+inherit = "npc.giant_rockcrab_crypt_of_tonali_hidden"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+hitpoints = 180
+attack = 50
+strength = 80
+defence = 200
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+
+[[npc]]
+isServerOnly = true
+id = "npc.giant_rockcrab_crypt_of_tonali"
+inherit = "npc.giant_rockcrab_crypt_of_tonali"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 20
+
+[[npc]]
+isServerOnly = true
+id = "npc.kourend_rockcrab_inactive"
+inherit = "npc.kourend_rockcrab_inactive"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+hitpoints = 200
+attack = 50
+strength = 50
+defence = 100
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 15
+
+[[npc]]
+isServerOnly = true
+id = "npc.kourend_rockcrab"
+inherit = "npc.kourend_rockcrab"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 15
+
+[[npc]]
+isServerOnly = true
+id = "npc.fossil_ammonitecrab_inactive"
+inherit = "npc.fossil_ammonitecrab_inactive"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 25
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.fossil_ammonitecrab"
+inherit = "npc.fossil_ammonitecrab"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 25
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.swampcrab_inactive"
+inherit = "npc.swampcrab_inactive"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 1
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 35
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.swampcrab"
+inherit = "npc.swampcrab"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 1
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 35
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.frostcrab_inactive"
+inherit = "npc.frostcrab_inactive"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 3
+"param.elemental_weakness_percent" = 100
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.frostcrab"
+inherit = "npc.frostcrab"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 3
+"param.elemental_weakness_percent" = 100
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.frostcrab_small_inactive"
+inherit = "npc.frostcrab_small_inactive"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 3
+"param.elemental_weakness_percent" = 100
+"param.dropped_remains" = -1
+
+[[npc]]
+isServerOnly = true
+id = "npc.frostcrab_small"
+inherit = "npc.frostcrab_small"
+defaultMode = "None"
+wanderRange = 0
+huntRange = 5
+respawnRate = 50
+timer = 1
+[npc.params]
+"param.attack_anim" = "seq.horror_crab_attack"
+"param.defend_anim" = "seq.horror_crab_defend"
+"param.death_anim" = "seq.horror_crab_hide"
+"param.npc_attack_type" = "category.attacktype_crush"
+"param.cannon_immunity" = 1
+"param.elemental_weakness_type" = 3
+"param.elemental_weakness_percent" = 100
+"param.dropped_remains" = -1

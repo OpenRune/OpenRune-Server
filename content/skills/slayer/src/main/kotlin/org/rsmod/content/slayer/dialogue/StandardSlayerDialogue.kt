@@ -204,7 +204,7 @@ object StandardSlayerDialogue {
 
         val currentTask = SlayerTaskManager.getCurrentSlayerTask(access)
         if (currentTask == null) {
-            assignNewTask(npc!!.visType.internalName)
+            assignNewTask(access.npcVisType(npc!!).internalName)
             return
         }
 
