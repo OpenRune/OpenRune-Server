@@ -216,16 +216,17 @@ public fun Player.ifCloseModals(eventBus: EventBus) {
 
 public fun Player.ifSetEvents(internal: String, range: IntRange, vararg event: IfEvent) {
     val packed = event.fold(0L) { sum, element -> sum or element.bitmask }
+    // Permissions use the same canonical component as button handlers, not the wire target.
     ui.events.add(internal, range, packed)
 
-    val target = ServerCacheManager.fromComponent(internal.asRSCM(RSCMType.COMPONENT))
+    val target = ui.translate(Component(internal.asRSCM(RSCMType.COMPONENT)))
 
     val packedHigh = (packed shr 32).toInt()
     val packedLow = packed.toInt()
     val prot =
         IfSetEventsV2(
-            interfaceId = target.interfaceId,
-            componentId = target.component,
+            interfaceId = target.parent,
+            componentId = target.child,
             start = range.first,
             end = range.last,
             events1 = packedLow,
