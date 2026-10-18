@@ -268,11 +268,16 @@ class DaddysHomeFurniture @Inject constructor(private val daddysHome: DaddysHome
         val needsLogs =
             stage in DaddysHomeQuest.BUILDING until DaddysHomeQuest.COMPLETE &&
                 daddysHome.furnitureState(player, Furniture.bed) < Furniture.BUILT
-        if (!needsLogs) {
+        val held =
+            listOf(DaddysHomeQuest.WAXWOOD_LOGS, DaddysHomeQuest.WAXWOOD_PLANK).sumOf {
+                inv.count(it) + bank.count(it)
+            }
+        val missing = WAXWOOD_LOG_COUNT - held
+        if (!needsLogs || missing <= 0) {
             mes("You search the crates but find nothing interesting.")
             return
         }
-        if (invAdd(inv, DaddysHomeQuest.WAXWOOD_LOGS, WAXWOOD_LOG_COUNT).failure) {
+        if (invAdd(inv, DaddysHomeQuest.WAXWOOD_LOGS, missing).failure) {
             mes("You don't have enough inventory space.")
             return
         }
