@@ -1,7 +1,6 @@
 package org.rsmod.content.interfaces.gameframe.script
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -29,7 +28,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-
 var Player.gameframeTopLevel by intVarBit("varbit.gameframe_toplevel")
 private var Player.stoneArrangements by boolVarBit("varbit.resizable_stone_arrangement")
 lateinit var gameframes: Map<Int, Gameframe>
@@ -47,6 +45,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         onPlayerInit { player.openLoginGameframe() }
 
         for ((topLevel, gameframe) in gameframes) {
+            if (!gameframe.isGameplay) continue
             val type = ServerCacheManager.getInterface(topLevel) ?: error("Unable to get Interface")
             onIfMoveTop(type) { player.queueGameframeMove(gameframe) }
         }
@@ -55,7 +54,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
             onIfMoveSub(target) { player.moveSetEvents(event) }
         }
         onIfMoveSub("component.toplevel_osrs_stretch:xp_drops") { player.moveXpDrops() }
-        
+
         onIfMoveSub("component.toplevel_osrs_stretch:tli_listener") { player.moveEhcListener() }
 
         onPlayerSoftQueueWithArgs("queue.client_mode") { player.changeGameframe(args) }
@@ -64,7 +63,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
 
     private fun Player.openLoginGameframe() {
         val gameframe = gameframes[gameframeTopLevel]
-        if (gameframe != null && gameframe.resizable == ui.frameResizable) {
+        if (gameframe != null && gameframe.isGameplay && gameframe.resizable == ui.frameResizable) {
             ifOpenTop(gameframe.topLevel)
             openGameframe(gameframe, eventBus)
             return
@@ -111,14 +110,14 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         }
 
         /*
-        * This is required for emulation purposes and might also be required for an edge case within
-        * the client/cs2. This can be seen when going from a fixed gameframe to a resizable one.
-        * If the `resizable_stone_arrangement` has to be changed to match the target gameframe, the
-        * client will receive two `if_opentop` + `if_movesub` sequences. One going from the current
-        * gameframe toplevel to a gameframe toplevel that matches the current stone arrangement var
-        * and is resizable, followed by a second `if_opentop` + `if_movesub` group going from this
-        * intermediate gameframe to the original target gameframe.
-        */
+         * This is required for emulation purposes and might also be required for an edge case within
+         * the client/cs2. This can be seen when going from a fixed gameframe to a resizable one.
+         * If the `resizable_stone_arrangement` has to be changed to match the target gameframe, the
+         * client will receive two `if_opentop` + `if_movesub` sequences. One going from the current
+         * gameframe toplevel to a gameframe toplevel that matches the current stone arrangement var
+         * and is resizable, followed by a second `if_opentop` + `if_movesub` group going from this
+         * intermediate gameframe to the original target gameframe.
+         */
         private fun Player.resolveIntermediate(from: Gameframe, dest: Gameframe): Gameframe? {
             val requiresIntermediate =
                 dest.resizable && !from.resizable && stoneArrangements != dest.stoneArrangement
@@ -129,9 +128,8 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         }
 
         private fun Gameframe.hasFlags(resizable: Boolean, stoneArrangements: Boolean): Boolean {
-            return this.resizable == resizable && this.stoneArrangement == stoneArrangements
+            return isGameplay && this.resizable == resizable && this.stoneArrangement == stoneArrangements
         }
-
     }
 
     public fun Player.changeGameframe(move: GameframeMove) {
@@ -167,7 +165,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         if (priority != null) {
             return priority
         }
-        return gameframes.values.firstOrNull { it.resizable == resizable }
+        return gameframes.values.firstOrNull { it.isGameplay && it.resizable == resizable }
     }
 
     private fun loadAll() {
