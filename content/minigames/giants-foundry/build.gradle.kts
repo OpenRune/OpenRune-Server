@@ -1,10 +1,12 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 dependencies {
     implementation(projects.api.attr)
     implementation(projects.api.config)
+    implementation(projects.api.death)
     implementation(projects.api.instances)
     implementation(projects.api.invtx)
     implementation(projects.api.player)
@@ -17,4 +19,7 @@ dependencies {
     implementation(projects.content.quest)
     implementation(projects.content.skills.smithing)
     implementation(projects.content.skills.utils)
+    testImplementation(projects.api.gameProcess)
+    testImplementation(projects.api.utils.utilsLogging)
+    testImplementation(libs.mockk)
 }

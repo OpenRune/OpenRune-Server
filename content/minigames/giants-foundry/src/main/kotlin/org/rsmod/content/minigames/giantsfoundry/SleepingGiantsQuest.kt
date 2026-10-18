@@ -162,11 +162,16 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     private fun stage(player: Player): Int = quest.getQuestStage(player)
 
     private fun syncCompleted(player: Player) {
-        if (
-            QuestRequirements.hasCompleted(player, SleepingGiants.QUEST) &&
-                player.sleepingGiantsTutorial < SleepingGiants.TUTORIAL_COMPLETE
-        ) {
+        if (!QuestRequirements.hasCompleted(player, SleepingGiants.QUEST)) {
+            return
+        }
+        if (player.sleepingGiantsTutorial < SleepingGiants.TUTORIAL_COMPLETE) {
             player.sleepingGiantsTutorial = SleepingGiants.TUTORIAL_COMPLETE
+        }
+        for (tool in RepairTool.entries) {
+            if (tool.state(player) < SleepingGiants.REPAIR_DONE) {
+                player.setFoundryVar(tool.varbit, SleepingGiants.REPAIR_DONE)
+            }
         }
     }
 
@@ -346,6 +351,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             chatNpc(neutral, it)
         }
         chatPlayer(neutral, "That's alright, we'll figure it out together.")
+        player.sleepingGiantsTutorial = 0
         quest.setQuestStage(access, SleepingGiants.REPAIRED)
         chatNpc(neutral, "Kovac agree. Ready to make sword?")
         chatPlayer(happy, "Yes! I'm itching to get started.")
@@ -689,6 +695,10 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     }
 
     private suspend fun Dialogue.makeSword(npc: Npc) {
+        // A quest reset can leave the tutorial marked complete by the login policy.
+        if (player.sleepingGiantsTutorial == SleepingGiants.TUTORIAL_COMPLETE) {
+            player.sleepingGiantsTutorial = 0
+        }
         val tutorial = player.sleepingGiantsTutorial
         when {
             tutorial < SleepingGiants.TUTORIAL_COMMISSION -> commissionTalk()

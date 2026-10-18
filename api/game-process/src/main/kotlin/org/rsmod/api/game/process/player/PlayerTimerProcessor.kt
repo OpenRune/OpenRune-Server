@@ -20,7 +20,14 @@ constructor(
             player.processTimers()
         }
         if (player.softTimerMap.isNotEmpty) {
-            player.processSoftTimers()
+            player.processSoftTimers(player.softTimerMap)
+        }
+    }
+
+    public fun processAfterInteractions(player: Player) {
+        val timers = player.postInteractionSoftTimerMap ?: return
+        if (timers.isNotEmpty) {
+            player.processSoftTimers(timers)
         }
     }
 
@@ -48,18 +55,18 @@ constructor(
         }
     }
 
-    private fun Player.processSoftTimers() {
-        val expired = softTimerMap.toExpiredKeys()
+    private fun Player.processSoftTimers(timers: PlayerTimerMap) {
+        val expired = timers.toExpiredKeys()
         for (timerType in expired) {
             val event = PlayerTimerEvent.Soft(this, timerType.toInt())
             eventBus.publish(event)
 
             // `packedValue` holds the packed (expiry << 32 | interval) if the timer is still
             // present. If it's `null` it means the script cleared the timer.
-            val packedValue = softTimerMap[timerType]
+            val packedValue = timers[timerType]
             if (packedValue != null) {
-                val interval = softTimerMap.extractInterval(packedValue)
-                softTimerMap.put(timerType, mapClock = mapClock.cycle, interval = interval)
+                val interval = timers.extractInterval(packedValue)
+                timers.put(timerType, mapClock = mapClock.cycle, interval = interval)
             }
         }
     }

@@ -6,6 +6,7 @@ import org.rsmod.api.game.process.GameLifecycle
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.loc.LocRepository
@@ -23,9 +24,9 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /**
- * A 1-tick timer does the work until the player moves or clicks another station. Clicking the
- * same station again is a re-click (sweet spot, overwork, or restarting the lava/waterfall ramp),
- * so the op handler never re-issues itself.
+ * A post-interaction 1-tick timer does the work until the player moves or clicks another station.
+ * Same-tick re-clicks arm the sweet spot, miss an overworked action, or restart the heat ramp
+ * before that tick's work is consumed.
  */
 class RefiningScript
 @Inject
@@ -34,6 +35,7 @@ constructor(
     private val clock: MapClock,
     private val worldRepo: WorldRepository,
     private val locRepo: LocRepository,
+    private val protectedAccess: ProtectedAccessLauncher,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         for (tool in FoundryTool.entries) {
@@ -137,20 +139,22 @@ constructor(
         }
         val station = (if (sign > 0) LAVA_STATION else WATERFALL_STATION) + if (fast) 1 else 0
         if (isWorking(station)) {
-            // UNVERIFIED: live restarts the ramp on the click's own tick about three clicks in
-            // four; here it always restarts on the next tick (live capture).
+            // The click's own step restarts at seven (slow) or the fast ramp's first step.
+            // Live omits the animation only on this tick, then resumes it on the next step.
             player.workHeatTicks = if (fast) 0 else 1
+            player.workNextAction = clock.cycle
             return
         }
         begin(station)
         player.workHeatTicks = 0
+        player.workNextAction = -1
         heatTick(player)
     }
 
     private fun ProtectedAccess.begin(station: Int) {
         player.workStation = station
         player.workOrigin = player.coords
-        softTimer(WORK_TIMER, 1)
+        softTimer(WORK_TIMER, 1, afterInteractions = true)
     }
 
     private fun stop(player: Player, resetAnim: Boolean = true) {
@@ -204,7 +208,7 @@ constructor(
         val fast = (player.workStation - LAVA_STATION) % 2 == 1
         val ticks = player.workHeatTicks
         player.workHeatTicks = (ticks + 1).coerceAtMost(MAX_HEAT_TICKS)
-        if (!fast || ticks > 0) {
+        if ((!fast || ticks > 0) && player.workNextAction != clock.cycle) {
             player.anim(if (heating) HEAT_SEQ else COOL_SEQ)
         }
         player.soundSynth(if (heating) LAVA_SYNTH else WATERFALL_SYNTH)
@@ -282,6 +286,10 @@ constructor(
             clearSweetSpot(player)
         }
         if (bonus) {
+            if (!mistake) {
+                player.preformQuality =
+                    (player.preformQuality + MISTAKE_QUALITY).coerceAtMost(player.preformStartQuality)
+            }
             player.mes(if (repairs) REPAIRED else QUICK_REACTIONS)
         }
         var progress = 0
@@ -304,10 +312,6 @@ constructor(
             if (bonus) {
                 progress += SWEETSPOT_PROGRESS
                 xpTenths *= 2
-                // UNVERIFIED: the regain is capped at the start quality and the repair message
-                // shows whenever quality is below it; one case seen, 48 to 53 (live capture).
-                player.preformQuality =
-                    (player.preformQuality + MISTAKE_QUALITY).coerceAtMost(player.preformStartQuality)
             }
         }
         player.preformCompletion = (completion + progress).coerceAtMost(FoundryFormulas.SCALE)
@@ -341,7 +345,9 @@ constructor(
 
     private fun swordFinished(player: Player) {
         if (player.makingQuestSword()) {
-            player.weakQueue(QUEST_PROMPT_QUEUE, 1, QuestPrompt.SwordFinished)
+            if (!protectedAccess.launch(player) { questSwordFinished() }) {
+                player.weakQueue(QUEST_PROMPT_QUEUE, 1, QuestPrompt.SwordFinished)
+            }
             return
         }
         player.anim(FINISH_SEQ)

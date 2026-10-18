@@ -55,6 +55,8 @@ internal var Player.workOverworked by boolVarBit("varbit.giants_foundry_work_ove
 /** Armed by the click that started the work: the first action pays no bonus. */
 internal var Player.workSweetSpotVoid by boolVarBit("varbit.giants_foundry_work_sweetspot_void")
 internal var Player.workOrigin by typeCoordVarp("varp.giants_foundry_work_origin")
+
+/** Tool action deadline; while heating, the re-click tick whose animation must be suppressed. */
 internal var Player.workNextAction by intVarp("varp.giants_foundry_work_next_action")
 internal var Player.sweetSpotUntil by intVarp("varp.giants_foundry_sweetspot_until")
 

@@ -159,3 +159,16 @@ len1 = "seq.chatshock1"
 len2 = "seq.chatshock2"
 len3 = "seq.chatshock3"
 len4 = "seq.chatshock4"
+
+[[item]]
+id = "obj.giants_foundry_preform"
+inherit = "obj.giants_foundry_preform"
+
+[item.params]
+"param.bas_readyanim" = "seq.human_elder_maul_ready"
+"param.bas_turnonspot" = "seq.human_turnonspot"
+"param.bas_walk_f" = "seq.human_elder_maul_walk"
+"param.bas_walk_b" = "seq.human_elder_maul_walk"
+"param.bas_walk_l" = "seq.human_elder_maul_walk"
+"param.bas_walk_r" = "seq.human_elder_maul_walk"
+"param.bas_running" = "seq.human_elder_maul_run"

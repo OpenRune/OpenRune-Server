@@ -5,8 +5,10 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.ui.ifCloseSub
 import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
@@ -21,6 +23,9 @@ internal const val PREFORM_COOLING_TIMER = "timer.giants_foundry_preform_cooling
 private const val HUD_SWEETSPOT = "clientscript.[clientscript,script6122]"
 
 internal const val PREFORM_COOLING_PERIOD = 2
+
+internal const val PREFORM_STASHED =
+    "<col=229628>You place the preform in the handy storage area. It should stay nice and warm there."
 
 internal fun Player.holdsPreform(): Boolean =
     worn[Wearpos.RightHand.slot]?.isType(PREFORM) == true
@@ -43,6 +48,25 @@ internal fun ProtectedAccess.equipPreform() {
 internal fun Player.resumePreform(eventBus: EventBus) {
     ifOpenOverlay(HUD, HUD_TARGET, eventBus)
     softTimer(PREFORM_COOLING_TIMER, PREFORM_COOLING_PERIOD)
+}
+
+internal fun Player.stashCarriedPreform(eventBus: EventBus) {
+    val worn = holdsPreform()
+    val pocket = inv.any { it?.isType(PREFORM) == true }
+    if (!worn && !pocket) {
+        return
+    }
+    preformStored = true
+    if (worn) {
+        removePreform()
+    }
+    if (pocket) {
+        invDel(inv, PREFORM, inv.size, strict = false)
+    }
+    ifCloseSub(HUD, eventBus)
+    clearSoftTimer(PREFORM_COOLING_TIMER)
+    mes(PREFORM_STASHED)
+    rebuildAppearance()
 }
 
 internal fun Player.removePreform() {

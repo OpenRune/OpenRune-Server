@@ -29,8 +29,6 @@ internal suspend fun ProtectedAccess.enterFoundry() {
 
 private const val KEPT_WARM =
     "<col=ff3045>You notice your current commission is being kept warm in the preform storage."
-private const val PLACED =
-    "<col=229628>You place the preform in the handy storage area. It should stay nice and warm there."
 
 private suspend fun ProtectedAccess.fadeTeleport(
     destination: CoordGrid,
@@ -98,7 +96,7 @@ constructor(private val room: SleepingGiantsRoom, private val eventBus: EventBus
 
     private fun ProtectedAccess.placePreform() {
         player.preformStored = true
-        mes(PLACED)
+        mes(PREFORM_STASHED)
         player.removePreform()
     }
 
@@ -106,10 +104,13 @@ constructor(private val room: SleepingGiantsRoom, private val eventBus: EventBus
         if (!player.preformStored || !handsFreeForPreform()) {
             return
         }
+        equipPreform()
+        if (!player.holdsPreform()) {
+            return
+        }
         player.preformStored = false
         mes("You take the preform from the handy storage area. It will start to get cold now.")
         anim(STORAGE_SEQ)
-        equipPreform()
     }
 
     /**
@@ -123,6 +124,9 @@ constructor(private val room: SleepingGiantsRoom, private val eventBus: EventBus
                 player.sleepingGiants < SleepingGiants.COMPLETE
         ) {
             player.sleepingGiants = SleepingGiants.COMPLETE
+        }
+        if (player.holdsPreform() && player.preformStored) {
+            player.preformStored = false
         }
         // UNVERIFIED: that logging in with a stored preform gives the kept-warm line (guess).
         if (player.preformStored) {
