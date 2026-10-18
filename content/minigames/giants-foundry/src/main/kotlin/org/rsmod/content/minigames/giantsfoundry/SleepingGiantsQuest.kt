@@ -162,7 +162,7 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
     private fun stage(player: Player): Int = quest.getQuestStage(player)
 
     private fun syncCompleted(player: Player) {
-        if (!QuestRequirements.hasCompleted(player, SleepingGiants.QUEST)) {
+        if (!quest.isQuestCompleted(player)) {
             return
         }
         if (player.sleepingGiantsTutorial < SleepingGiants.TUTORIAL_COMPLETE) {
