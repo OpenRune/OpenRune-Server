@@ -5,6 +5,7 @@ import org.rsmod.api.player.hook.SpadeDigHook
 import org.rsmod.content.quest.area.lumbridge.RuneMysteriesQuest
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest
+import org.rsmod.content.quest.area.varrock.daddyshome.DaddysHomeQuest
 import org.rsmod.content.quest.area.varrock.gertrudescat.GertrudesCatQuest
 import org.rsmod.plugin.module.PluginModule
 
@@ -13,6 +14,7 @@ public class QuestModule : PluginModule() {
         bindInstance<QuestRequirementResolver>()
         bindInstance<RuneMysteriesQuest>()
         bindInstance<GertrudesCatQuest>()
+        bindInstance<DaddysHomeQuest>()
         bindInstance<XMarksTheSpotQuest>()
         bindInstance<IdesOfMilkQuest>()
         addSetBinding<SpellQuestRequirement>(PolicySpellQuestRequirement::class.java)

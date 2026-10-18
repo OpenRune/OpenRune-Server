@@ -1,12 +1,14 @@
 [[npc]]
 id = "npc.0_50_50_freshfish"
 inherit = "npc.0_50_50_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
 moveRestrict = "NoMove"
 wanderRange = 0
 
 [[npc]]
 id = "npc.0_50_49_saltfish"
 inherit = "npc.0_50_49_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
 moveRestrict = "NoMove"
 wanderRange = 0
 respawnRate = 50
@@ -16823,7 +16825,6 @@ timer = 1
 moveRestrict = "NoMove"
 wanderRange = 0
 
-
 [[npc]]
 id = "npc.crystal_rat"
 inherit = "npc.crystal_rat"
@@ -17099,3 +17100,8 @@ id = "npc.crystal_hunllef_crystals_hm"
 inherit = "npc.crystal_hunllef_crystals_hm"
 [npc.params]
 "param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.poh_sawmill_opp"
+inherit = "npc.poh_sawmill_opp"
+wanderRange = 0

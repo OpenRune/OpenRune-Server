@@ -1,0 +1,21 @@
+[[enum]]
+isServerOnly = true
+id = "enum.toplevel_stone_ops"
+keyType = "COMPONENT"
+valueType = "INT"
+
+[enum.values]
+"component.toplevel_osrs_stretch:stone0" = 1
+"component.toplevel_osrs_stretch:stone1" = 1
+"component.toplevel_osrs_stretch:stone2" = 6
+"component.toplevel_osrs_stretch:stone3" = 1
+"component.toplevel_osrs_stretch:stone4" = 1
+"component.toplevel_osrs_stretch:stone5" = 2
+"component.toplevel_osrs_stretch:stone6" = 2
+"component.toplevel_osrs_stretch:stone7" = 6
+"component.toplevel_osrs_stretch:stone8" = 4
+"component.toplevel_osrs_stretch:stone9" = 2
+"component.toplevel_osrs_stretch:stone10" = 2
+"component.toplevel_osrs_stretch:stone11" = 4
+"component.toplevel_osrs_stretch:stone12" = 1
+"component.toplevel_osrs_stretch:stone13" = 1

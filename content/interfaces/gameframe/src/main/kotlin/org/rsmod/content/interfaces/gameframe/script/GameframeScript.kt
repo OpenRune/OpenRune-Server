@@ -32,10 +32,13 @@ var Player.gameframeTopLevel by intVarBit("varbit.gameframe_toplevel")
 private var Player.stoneArrangements by boolVarBit("varbit.resizable_stone_arrangement")
 lateinit var gameframes: Map<Int, Gameframe>
 
+private val STONE_EVENTS = listOf(IfEvent.Op1, IfEvent.Op2, IfEvent.Op3, IfEvent.Op4, IfEvent.Op5, IfEvent.Op6)
+
 class GameframeScript @Inject internal constructor(private val eventBus: EventBus, private val loader: GameframeLoader) :
     PluginScript() {
 
     private lateinit var moveEvents: List<MoveEvent>
+    private lateinit var stoneOps: Map<String, Int>
     private lateinit var default: Gameframe
     private var Player.orbsMinimized by boolVarBit("varbit.minimap_toggle")
 
@@ -51,7 +54,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         }
 
         for ((target, event) in moveEvents) {
-            onIfMoveSub(target) { player.moveSetEvents(event) }
+            onIfMoveSub(target) { player.sendStoneEvents(event) }
         }
         onIfMoveSub("component.toplevel_osrs_stretch:xp_drops") { player.moveXpDrops() }
 
@@ -66,6 +69,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         if (gameframe != null && gameframe.isGameplay && gameframe.resizable == ui.frameResizable) {
             ifOpenTop(gameframe.topLevel)
             openGameframe(gameframe, eventBus)
+            sendAllStoneEvents()
             return
         }
         val fallback = selectFallback(ui.frameResizable, stoneArrangements) ?: default
@@ -74,6 +78,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         stoneArrangements = fallback.stoneArrangement
         ifOpenTop(fallback.topLevel)
         openGameframe(fallback, eventBus)
+        sendAllStoneEvents()
     }
 
     public fun Player.queueGameframeMove(gameframe: Gameframe) {
@@ -90,8 +95,15 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         softQueue("queue.client_mode", queueDelay, gameframeMove)
     }
 
-    private fun Player.moveSetEvents(component: String) {
-        ifSetEvents(component, -1..-1, IfEvent.Op1)
+    private fun Player.sendAllStoneEvents() {
+        for ((_, stone) in moveEvents) {
+            sendStoneEvents(stone)
+        }
+    }
+
+    private fun Player.sendStoneEvents(stone: String) {
+        val ops = stoneOps[stone] ?: error("Missing enum.toplevel_stone_ops entry: $stone")
+        ifSetEvents(stone, -1..-1, *STONE_EVENTS.take(ops).toTypedArray())
     }
 
     private fun Player.moveXpDrops() {
@@ -171,6 +183,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
     private fun loadAll() {
         gameframes = loader.loadGameframes()
         moveEvents = loader.loadMoveEvents().mapMoveEvents()
+        stoneOps = loader.loadStoneOps()
         default = selectDefault(gameframes.values)
     }
 

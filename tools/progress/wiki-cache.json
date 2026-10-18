@@ -124,6 +124,8 @@
         "Activities and locations",
         "Training Magic",
         "Temporary boosts",
+        "Activity boosts",
+        "One-time boosts",
         "Quests",
         "Quests requiring Magic",
         "Quests rewarding Magic experience",
@@ -855,7 +857,7 @@
       "image": "https://oldschool.runescape.wiki/images/thumb/Corporeal_Beast.png/48px-Corporeal_Beast.png?52ebb"
     },
     "Black golem": {
-      "image": "https://oldschool.runescape.wiki/images/thumb/Black_golem.png/48px-Black_golem.png?c78b3"
+      "image": "https://oldschool.runescape.wiki/images/thumb/Black_golem.png/48px-Black_golem.png?18834"
     },
     "Cerberus": {
       "image": "https://oldschool.runescape.wiki/images/thumb/Cerberus.png/48px-Cerberus.png?47f4c"
@@ -1011,7 +1013,7 @@
       "image": "https://oldschool.runescape.wiki/images/thumb/Evil_spirit.png/48px-Evil_spirit.png?40157"
     },
     "Grey golem": {
-      "image": "https://oldschool.runescape.wiki/images/thumb/Grey_golem.png/48px-Grey_golem.png?bf998"
+      "image": "https://oldschool.runescape.wiki/images/thumb/Grey_golem.png/48px-Grey_golem.png?857cb"
     },
     "Great Olm": {
       "image": "https://oldschool.runescape.wiki/images/thumb/Great_Olm.png/48px-Great_Olm.png?f1081"
@@ -1023,7 +1025,7 @@
       "image": "https://oldschool.runescape.wiki/images/thumb/Deranged_archaeologist.png/48px-Deranged_archaeologist.png?32c7e"
     },
     "Grotesque Guardians": {
-      "image": "https://oldschool.runescape.wiki/images/thumb/Dawn.png/48px-Dawn.png?8b8ea"
+      "image": "https://oldschool.runescape.wiki/images/thumb/Fighting_Grotesque_Guardians.png/48px-Fighting_Grotesque_Guardians.png?f7fd9"
     },
     "Dawn": {
       "image": "https://oldschool.runescape.wiki/images/thumb/Dawn.png/48px-Dawn.png?8b8ea"
@@ -1209,7 +1211,7 @@
       "image": "https://oldschool.runescape.wiki/images/thumb/The_Hueycoatl.png/48px-The_Hueycoatl.png?7b216"
     },
     "Royal Titans": {
-      "image": "https://oldschool.runescape.wiki/images/thumb/Eldric_the_Ice_King.png/48px-Eldric_the_Ice_King.png?6bd48"
+      "image": "https://oldschool.runescape.wiki/images/thumb/Fighting_Royal_Titans.png/48px-Fighting_Royal_Titans.png?bfd16"
     },
     "Shellbane gryphon": {
       "image": "https://oldschool.runescape.wiki/images/thumb/Shellbane_gryphon.png/48px-Shellbane_gryphon.png?bc76e"
@@ -1688,5 +1690,5 @@
       "Volcanic Mine"
     ]
   },
-  "fetched": "2026-10-09"
+  "fetched": "2026-10-17"
 }

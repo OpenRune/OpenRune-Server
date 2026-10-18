@@ -15,15 +15,15 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onDialogInput
-import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onPlayerLogin
+import org.rsmod.api.server.config.ServerConfig
+import org.rsmod.api.table.AccountDefaultVarsRow
 import org.rsmod.api.table.SettingsConfigsRow
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
-
 
 val SettingsConfigsRow.varValue: String? get() = varbit?.let {
     RSCM.getReverseMapping(RSCMType.VARBIT, it)
@@ -31,7 +31,12 @@ val SettingsConfigsRow.varValue: String? get() = varbit?.let {
     RSCM.getReverseMapping(RSCMType.VARP, it)
 }
 
-class AllSettingsScript @Inject constructor(private val protectedAccess: ProtectedAccessLauncher) :
+class AllSettingsScript
+@Inject
+constructor(
+    private val protectedAccess: ProtectedAccessLauncher,
+    private val config: ServerConfig,
+) :
     PluginScript() {
 
     data class SettingsClick(
@@ -137,6 +142,7 @@ class AllSettingsScript @Inject constructor(private val protectedAccess: Protect
             val setting = Settings.getSetting(player.selectedSetting)
             val dropdownIndex = it.comsub / 3
             SettingUtils.setDropdown(player, dropdownIndex, setting)
+            player.selectedSetting = 0
         }
 
         onIfOverlayButton("component.settings:settings_clickzone") {
@@ -318,25 +324,25 @@ class AllSettingsScript @Inject constructor(private val protectedAccess: Protect
         )
     }
 
-
     private fun Player.setDefaultOptions() {
         if (!newAccount) return
 
-        resetDefaultKeybinds()
-        resetVolumeSliders()
-
-        VarPlayerIntMapSetter.set(this, "varbit.keybinding_esc_to_close", 1)
-        VarPlayerIntMapSetter.set(this, "varbit.option_collection_new_item", 3)
-        VarPlayerIntMapSetter.set(this, "varp.option_attackpriority", 2)
-        VarPlayerIntMapSetter.set(this, "varp.option_attackpriority_npc", 2)
-        VarPlayerIntMapSetter.set(this, "varbit.bank_hidedepositinv", 1)
-
-        VarPlayerIntMapSetter.set(this, "varbit.bounty_teleport_warning", 1)
-        VarPlayerIntMapSetter.set(this, "varbit.dareeyak_teleport_warning", 1)
-        VarPlayerIntMapSetter.set(this, "varbit.carrallagar_teleport_warning", 1)
-        VarPlayerIntMapSetter.set(this, "varbit.annakarl_teleport_warning", 1)
-        VarPlayerIntMapSetter.set(this, "varbit.ghorrock_teleport_warning", 1)
+        for (row in SettingsConfigsRow.all()) {
+            val default = row.default ?: continue
+            VarPlayerIntMapSetter.set(this, row.varValue ?: continue, default)
+        }
+        for (row in AccountDefaultVarsRow.all()) {
+            VarPlayerIntMapSetter.set(this, row.varValue, row.value)
+        }
+        if (!config.gameplay.levelUpPopups) {
+            VarPlayerIntMapSetter.set(this, "varbit.option_level_up_message_disabled", 1)
+        }
     }
+
+    private val AccountDefaultVarsRow.varValue: String
+        get() =
+            varbit?.let { RSCM.getReverseMapping(RSCMType.VARBIT, it) }
+                ?: RSCM.getReverseMapping(RSCMType.VARP, checkNotNull(varp) { "Row $rowId has no var." })
 
     private fun Player.setVolume(legacy: String, desktop: String, value: Int) {
         VarPlayerIntMapSetter.set(this, legacy, value)
@@ -394,10 +400,9 @@ class AllSettingsScript @Inject constructor(private val protectedAccess: Protect
     }
 
     fun Player.resetDefaultKeybinds() {
-        for (entry in Settings.getDefaultKeybinds()) {
-            val setting: Setting = entry.key
-            val value: Int = entry.value
-            VarPlayerIntMapSetter.set(this, setting.row?.varValue ?: continue, value)
+        for (setting in Settings.settingsByType[SettingType.KEYBIND].orEmpty()) {
+            val row = setting.row ?: continue
+            VarPlayerIntMapSetter.set(this, row.varValue ?: continue, row.default ?: 0)
         }
     }
 

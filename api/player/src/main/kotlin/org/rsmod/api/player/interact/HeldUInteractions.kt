@@ -65,7 +65,7 @@ public class HeldUInteractions @Inject constructor(private val eventBus: EventBu
             return
         }
 
-        mes(constants.dm_default, ChatType.Engine)
+        mes(constants.dm_default, ChatType.GameMessage)
         logger.debug {
             "opHeldU for `${selectedItemServerType.name}` on `${targetItemServerType.name}` is not " +
                 "implemented: selected=$selectedItemServerType, target=$targetItemServerType"
