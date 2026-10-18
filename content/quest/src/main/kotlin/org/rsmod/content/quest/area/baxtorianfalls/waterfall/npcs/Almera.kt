@@ -77,9 +77,9 @@ class Almera @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
     }
 
     private suspend fun Dialogue.notStarted() {
-        chatPlayer(happy, "Hello.")
+        chatPlayer(neutral, "Hello.")
         chatNpc(
-            happy,
+            neutral,
             "Ah, hello there. Nice to see an outsider for a change. Are you busy? I have a " +
                 "problem.",
         )
@@ -96,14 +96,14 @@ class Almera @Inject constructor(private val waterfall: WaterfallQuest) : Plugin
             chatNpc(sad, "Oh okay, never mind.")
             return
         }
-        chatPlayer(quiz, "How can I help?")
+        chatPlayer(neutral, "How can I help?")
         chatNpc(
-            worried,
+            confused,
             "It's my son Hudon, he's always getting into trouble. The boy's convinced there's " +
                 "hidden treasure in the river and I'm a bit worried about his safety, the poor " +
                 "lad can't even swim.",
         )
-        chatPlayer(happy, "I could go and take a look for you if you like?")
+        chatPlayer(confused, "I could go and take a look for you if you like?")
         waterfall.quest.advanceQuestStage(access)
         chatNpc(
             happy,

@@ -69,8 +69,8 @@ private const val LEGEND_LINE =
 private const val GERALD_SEARCH_RADIUS = 8
 
 private suspend fun Dialogue.learnOfHadley() {
-    chatPlayer(quiz, "Interesting, is there somewhere I can learn more about this?")
-    chatNpc(happy, "You could ask Hadley the tourist guide. He'll be in this building just here.")
+    chatPlayer(neutral, "Interesting, is there somewhere I can learn more about this?")
+    chatNpc(neutral, "You could ask Hadley the tourist guide. He'll be in this building just here.")
     player.heardOfTreasure = true
 }
 

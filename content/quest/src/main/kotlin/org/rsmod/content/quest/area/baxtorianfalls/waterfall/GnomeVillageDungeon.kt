@@ -63,11 +63,11 @@ constructor(
             waterfall.isComplete(player) -> mesbox("Golrie has locked himself in.")
             else -> {
                 startDialogue {
-                    chatPlayer(worried, "Hello, are you okay?")
+                    chatPlayer(neutral, "Hello, are you okay?")
                     chatNpcSpecific(
                         GOLRIE_NAME,
                         GOLRIE_NPC,
-                        happy,
+                        neutral,
                         "Oh, don't worry, I'm totally fine. I locked myself in here for " +
                             "protection, but I've left the key somewhere.",
                     )

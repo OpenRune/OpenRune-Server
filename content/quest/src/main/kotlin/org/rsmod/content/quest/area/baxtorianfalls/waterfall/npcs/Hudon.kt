@@ -94,18 +94,18 @@ internal suspend fun Dialogue.hudon(waterfall: WaterfallQuest) {
 }
 
 internal suspend fun Dialogue.hudonFirstMeeting(waterfall: WaterfallQuest) {
-    chatPlayer(worried, "Hello son, are you okay? You need help?")
-    chatNpc(laugh, "It looks like you need the help.")
+    chatPlayer(neutral, "Hello son, are you okay? You need help?")
+    chatNpc(neutral, "It looks like you need the help.")
     chatPlayer(neutral, "Your mum sent me to find you.")
-    chatNpc(angry, "Don't play nice with me, I know you're looking for the treasure too.")
-    chatPlayer(quiz, "Where is this treasure you talk of?")
+    chatNpc(neutral, "Don't play nice with me, I know you're looking for the treasure too.")
+    chatPlayer(neutral, "Where is this treasure you talk of?")
     chatNpc(
-        angry,
+        neutral,
         "Just because I'm small doesn't mean I'm dumb! If I told you, you would take it all " +
             "for yourself.",
     )
-    chatPlayer(happy, "Maybe I could help.")
-    chatNpc(angry, "I'm fine alone.")
-    chatPlayer(confused, "Hmm... I wonder what this treasure is.")
+    chatPlayer(neutral, "Maybe I could help.")
     waterfall.advanceTo(access, MET_HUDON)
+    chatNpc(neutral, "I'm fine alone.")
+    chatPlayer(confused, "Hmm... I wonder what this treasure is.")
 }

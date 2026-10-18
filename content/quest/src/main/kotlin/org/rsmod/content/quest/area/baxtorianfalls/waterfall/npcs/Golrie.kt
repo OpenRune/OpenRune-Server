@@ -53,7 +53,7 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
     }
 
     private suspend fun Dialogue.firstMeeting() {
-        chatPlayer(quiz, "Who are you, and what are you doing here?")
+        chatPlayer(confused, "Who are you, and what are you doing here?")
         chatNpc(
             neutral,
             "I'm Golrie, and this is my home. Thing is, as you can see, I've got a small " +
@@ -62,11 +62,11 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
         )
         chatPlayer(quiz, "Do you need some help?")
         chatNpc(
-            happy,
+            neutral,
             "Oh don't worry, I'm sure I'll work something out. I just need some time to think.",
         )
         chatPlayer(quiz, "In that case, do you mind if I have a look around?")
-        chatNpc(happy, "No, of course not.")
+        chatNpc(neutral, "No, of course not.")
         val handedKey = GOLRIE_KEY in player.inv
         if (!findPebble(takeKey = true)) {
             return
@@ -75,7 +75,7 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
         chatNpc(neutral, "Oh that. Yes, have it. It's just some old elven junk I believe.")
         if (handedKey) {
             mesbox("You give Golrie the key.")
-            chatNpc(happy, "Ah, thanks a lot for the key, traveller.")
+            chatNpc(neutral, "Ah, thanks a lot for the key, traveller.")
         }
         chatPlayer(happy, "No problem. Take care, Golrie.")
     }
