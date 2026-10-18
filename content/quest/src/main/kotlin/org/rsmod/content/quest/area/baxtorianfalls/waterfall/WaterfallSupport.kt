@@ -9,8 +9,8 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.forcedWalk
-import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.player.stat.hitpoints
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.table.GlarialRestrictionsRow
 import org.rsmod.content.generic.locs.doors.DoorTranslations
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.AMULET
