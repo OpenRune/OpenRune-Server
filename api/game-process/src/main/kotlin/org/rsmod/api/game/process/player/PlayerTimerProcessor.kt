@@ -42,7 +42,7 @@ constructor(
             if (isAccessProtected) {
                 break
             }
-            val event = PlayerTimerEvent.Normal(timerType.toInt())
+            val event = PlayerTimerEvent.Normal(timerType.toInt() and 0xFFFF)
             protectedAccess.launch(this) { eventBus.publish(this, event) }
 
             // `packedValue` holds the packed (expiry << 32 | interval) if the timer is still
@@ -58,7 +58,7 @@ constructor(
     private fun Player.processSoftTimers(timers: PlayerTimerMap) {
         val expired = timers.toExpiredKeys()
         for (timerType in expired) {
-            val event = PlayerTimerEvent.Soft(this, timerType.toInt())
+            val event = PlayerTimerEvent.Soft(this, timerType.toInt() and 0xFFFF)
             eventBus.publish(event)
 
             // `packedValue` holds the packed (expiry << 32 | interval) if the timer is still

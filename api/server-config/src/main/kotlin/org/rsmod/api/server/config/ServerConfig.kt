@@ -51,6 +51,8 @@ public data class GameplayConfig(
     val questRequirements: QuestRequirementsYaml = QuestRequirementsYaml(),
     @JsonProperty("drop-rates")
     val dropRates: DropRatesYaml = DropRatesYaml(),
+    @JsonProperty("level-up-popups")
+    val levelUpPopups: Boolean = false,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

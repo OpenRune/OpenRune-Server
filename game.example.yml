@@ -24,6 +24,10 @@ gameplay:
     # Server-wide multiplier for drops flagged `boosted` (2.0 turns 1/512 into 1/256). Stacks with
     # each player's own multiplier (varp.drop_rate_multiplier, percent; 0 = unset).
     multiplier: 1.0
+  # Where new accounts start the "Level-up pop-up notifications" setting. false starts it at
+  # "Disabled": no level-up interface, but the message, fireworks and jingle still play. true starts
+  # it at "Show level only", as on live. Players can change it in the settings either way.
+  level-up-popups: false
   quest-requirements:
     # Use saved quest progress by default. "assume-completed" bypasses quest gates;
     # "virtual-completions" unlocks selected quests for league-style profiles.
