@@ -73,6 +73,7 @@ misthalin_puzzle_state = 63702
 cooks_assistant_ingredients = 63705
 gertrudes_cat_state = 63711
 daddyshome_state = 64064
+sheep_shearer_state = 63712
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
@@ -83,11 +84,15 @@ cooks_assistant_progress = 63704
 cooks_assistant_milk = 63705
 cooks_assistant_egg = 63706
 cooks_assistant_flour = 63707
+witchs_potion_progress = 63718
 gertrudes_cat_progress = 63711
 gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
 gertrudes_cat_told_sardines = 63714
 daddyshome_crate_opened = 64064
+sheep_shearer_progress = 63715
+sheep_shearer_saw_thing = 63716
+romeo_juliet_progress = 63717
 
 [gamevals.models]
 misthalin_gem_diamond = 32333
