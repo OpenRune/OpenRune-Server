@@ -23,9 +23,9 @@ class WaterfallQuest @Inject constructor() :
         rewards {
             xp("stat.strength", COMBAT_XP)
             xp("stat.attack", COMBAT_XP)
-            item("obj.diamond", 2)
-            item("obj.gold_bar", 2)
-            item("obj.mithril_seed", 40)
+            item("obj.diamond", 2, "2 Diamonds")
+            item("obj.gold_bar", 2, "2 Gold Bars")
+            item("obj.mithril_seed", 40, "40 Mithril Seeds")
         },
         ItemRewardDisplay(URN_FULL),
         questVarbit = "varbit.waterfall_progress",
@@ -57,115 +57,95 @@ class WaterfallQuest @Inject constructor() :
 
     override fun questLog(player: ProtectedAccess) =
         questJournal(player) {
-            objective(
-                "<red>Almera</red> is worried about her son <red>Hudon</red>, who has gone " +
-                    "treasure hunting on the river. She said I could take the " +
-                    "<red>log raft</red> behind her house to find him."
-            ) {
-                visibleWhen { stage(access.player) == STARTED }
+            val stage = stage(access.player)
+            if (stage == STARTED) {
+                line(
+                    "I spoke to <red>Almera</red> in her home next to <red>Baxtorian Falls</red>. " +
+                        "She asked me to check on her son, <red>Hudon</red>, who has been " +
+                        "searching for treasure near <red>Baxtorian Falls</red>. I can use the " +
+                        "raft behind <red>Almera's</red> house to get down the river."
+                )
+                return@questJournal
             }
-
-            objective(
-                "I found Hudon on an island in the river, but he would not come home. He " +
-                    "thinks there is treasure hidden in the falls. <red>Hadley</red>, the " +
-                    "tourist guide south of the falls, might know more about it."
-            ) {
-                visibleWhen { stage(access.player) == MET_HUDON }
-                hasItem(
-                        BOOK.removePrefix(OBJ_PREFIX),
-                        "I found a book on Baxtorian in the tourist centre.",
-                    )
-                    .strike()
+            strike(SPOKE_TO_ALMERA)
+            if (stage == MET_HUDON) {
+                line(
+                    "I found <red>Hudon</red> down the river from <red>Almera's</red> house. He " +
+                        "seems to be convinced that there's treasure nearby. Maybe there's " +
+                        "somewhere I can learn more about this supposed treasure."
+                )
+                return@questJournal
             }
-
-            objective(
-                "The book says <red>Glarial's pebble</red> opens her tomb, and that a gnome " +
-                    "family living beneath the <red>Tree Gnome Village</red> may still have it."
-            ) {
-                visibleWhen { stage(access.player) == READ_BOOK }
-                hasItem(PEBBLE.removePrefix(OBJ_PREFIX), "I have Glarial's pebble.").strike()
+            strike(FOUND_HUDON)
+            if (stage == READ_BOOK) {
+                val pebble =
+                    if (access.player.metGolrie) {
+                        " I recovered <red>Glarial's Pebble</red>, the key to her tomb, from " +
+                            "beneath <red>Tree Gnome Village</red>. I should be able to use it " +
+                            "to enter her tomb."
+                    } else {
+                        " Apparently, <red>Glarial's Pebble</red>, the key to her tomb, was " +
+                            "taken by gnomes and hidden beneath <red>Tree Gnome Village</red>."
+                    }
+                line(
+                    "I found a book in the nearby <red>Tourist Office</red>. The book detailed " +
+                        "the sad story of <red>Baxtorian</red> and <red>Glarial</red>, two elves " +
+                        "that once ruled the area around <red>Baxtorian Falls</red>. According " +
+                        "to the book, <red>Baxtorian</red> and <red>Glarial</red> were the only " +
+                        "ones able to enter the waterfall but <red>Baxtorian</red> sealed himself " +
+                        "inside after <red>Glarial's</red> apparent death. The book also " +
+                        "mentioned that <red>Glarial</red> herself is buried near the waterfall." +
+                        pebble
+                )
+                return@questJournal
             }
-
-            objective(
-                "I should use the pebble on <red>Glarial's Tombstone</red> north-west of the " +
-                    "Fishing Guild. Only visitors with peaceful intent may enter, so I must " +
-                    "leave weapons, armour and runes behind."
-            ) {
-                visibleWhen {
-                    stage(access.player) == READ_BOOK && access.player.inv.contains(PEBBLE)
-                }
+            strike(READ_THE_BOOK)
+            if (stage == ENTERED_TOMB) {
+                line(
+                    "I recovered <red>Glarial's Pebble</red> from beneath <red>Tree Gnome " +
+                        "Village</red> and used it to enter her tomb. I should see if there's " +
+                        "anything in the tomb that can help me."
+                )
+                return@questJournal
             }
-
-            objective(
-                "Inside Glarial's tomb I need to find her <red>amulet</red> and her <red>urn</red>."
-            ) {
-                visibleWhen { stage(access.player) == ENTERED_TOMB }
-                custom(access.player.hasAmulet(), "I have Glarial's amulet.").strike()
-                hasItem(URN_FULL.removePrefix(OBJ_PREFIX), "I have Glarial's urn.").strike()
+            strike(ENTERED_THE_TOMB)
+            if (stage == ENTERED_FALLS) {
+                line(
+                    "I found <red>Glarial's Amulet</red> within her tomb and used it to enter " +
+                        "<red>Baxtorian Falls</red>. I should look around and see if I can find " +
+                        "the treasure."
+                )
+                return@questJournal
             }
-
-            objective(
-                "With Glarial's amulet I should be able to enter the waterfall. The book says " +
-                    "Baxtorian used <red>air, water and earth runes</red> to command nature, " +
-                    "so I should bring six of each, and a <red>rope</red> to reach the ledge."
-            ) {
-                visibleWhen {
-                    stage(access.player) == ENTERED_TOMB &&
-                        access.player.hasAmulet() &&
-                        access.player.inv.contains(URN_FULL)
-                }
+            strike(ENTERED_THE_FALLS)
+            if (stage == FOUND_CHALICE) {
+                line(
+                    "I found a <red>Chalice</red> within <red>Baxtorian Falls</red> which looks " +
+                        "like it contains <red>Baxtorian's Treasure</red>. However, it is " +
+                        "floating out of reach. I'll need to work out how to get to it."
+                )
+                return@questJournal
             }
-
-            objective(
-                "I am inside the waterfall. A key somewhere in these caves should open the way " +
-                    "to Baxtorian's tomb."
-            ) {
-                visibleWhen { stage(access.player) == ENTERED_FALLS }
-                hasItem(BAXTORIAN_KEY.removePrefix(OBJ_PREFIX), "I have a key from the caves.")
-                    .strike()
-            }
-
-            objective(
-                "Six small pillars stand before the statues of Baxtorian and Glarial. Each " +
-                    "has a dent shaped for a rune."
-            ) {
-                visibleWhen { stage(access.player) == ENTERED_FALLS }
-                custom(
-                        allRunesPlaced(access.player),
-                        "Every pillar holds an air, water and earth rune.",
-                    )
-                    .strike()
-            }
-
-            objective(
-                "The pillars are charged. I should place <red>Glarial's amulet</red> on her statue."
-            ) {
-                visibleWhen { stage(access.player) == FOUND_CHALICE }
-            }
-
-            objective(
-                "The floor rose up to the <red>chalice</red>. I should lay Glarial to rest " +
-                    "beside Baxtorian by pouring her ashes into it."
-            ) {
-                visibleWhen { stage(access.player) == FLOOR_RISEN }
-            }
+            line(
+                "I found a <red>Chalice</red> within <red>Baxtorian Falls</red> which looks like " +
+                    "it contains <red>Baxtorian's Treasure</red>. The <red>Chalice</red> was " +
+                    "floating out of reach but I worked out how to raise the floor to get to it. " +
+                    "Now I just need to retrieve the treasure from it."
+            )
         }
 
     override fun completedLog(player: ProtectedAccess): String =
         completionJournal(player) {
+            line(SPOKE_TO_ALMERA)
+            line(FOUND_HUDON)
+            line(READ_THE_BOOK)
+            line(ENTERED_THE_TOMB)
+            line(ENTERED_THE_FALLS)
             line(
-                "Almera asked me to look for her son Hudon, who was hunting for treasure on the " +
-                    "river. He would not come home, but he set me on the trail of the elf king " +
-                    "Baxtorian, who sealed himself beneath the falls."
-            )
-            line(
-                "A gnome called Golrie gave me Glarial's pebble. With it I entered her tomb and " +
-                    "took her amulet and the urn holding her ashes."
-            )
-            line(
-                "Inside the waterfall I charged the six pillars with runes, placed the amulet on " +
-                    "Glarial's statue and poured her ashes into the chalice of eternity, uniting " +
-                    "her with Baxtorian. I kept the treasure the chalice held."
+                "I found a Chalice within Baxtorian Falls which contained Baxtorian's Treasure. " +
+                    "The Chalice was floating out of reach but I worked out how to raise the " +
+                    "floor to get to it. I then managed to obtain the treasure by swapping it " +
+                    "for Glarial's Ashes."
             )
         }
 
@@ -187,7 +167,6 @@ class WaterfallQuest @Inject constructor() :
         const val RUNES_PER_PILLAR = 3
         const val ALL_PILLAR_RUNES = (1 shl (PILLAR_COUNT * RUNES_PER_PILLAR)) - 1
 
-        const val OBJ_PREFIX = "obj."
         const val BOOK = "obj.baxtorian_book_waterfall_quest"
         const val GOLRIE_KEY = "obj.golrie_key_waterfall_quest"
         const val PEBBLE = "obj.glarials_pebble_waterfall_quest"
@@ -202,5 +181,25 @@ class WaterfallQuest @Inject constructor() :
         const val GERALD_NPC = "npc.gerald_waterfall_quest"
         const val HADLEY_NPC = "npc.hadley_waterfall_quest"
         const val GOLRIE_NPC = "npc.golrie_waterfall_quest"
+
+        private const val SPOKE_TO_ALMERA =
+            "I spoke to Almera in her home next to Baxtorian Falls. She asked me to check on " +
+                "her son, Hudon, who has been searching for treasure near Baxtorian Falls."
+        private const val FOUND_HUDON =
+            "I found Hudon down the river from Almera's house. He was convinced that there was " +
+                "some treasure hidden nearby."
+        private const val READ_THE_BOOK =
+            "I found a book in the nearby tourist office. The book detailed the sad story of " +
+                "Baxtorian and Glarial, two elves that once ruled the area around Baxtorian " +
+                "Falls. According to the book, Baxtorian and Glarial were the only ones able to " +
+                "enter the waterfall but Baxtorian sealed himself inside after Glarial's apparent " +
+                "death. The book also mentioned that Glarial herself is buried near the " +
+                "waterfall, and that the key to her tomb, Glarial's Pebble, was taken by gnomes " +
+                "and hidden beneath Tree Gnome Village."
+        private const val ENTERED_THE_TOMB =
+            "I recovered Glarial's Pebble from beneath Tree Gnome Village and used it to enter " +
+                "her tomb."
+        private const val ENTERED_THE_FALLS =
+            "I found Glarial's Amulet within her tomb and used it to enter Baxtorian Falls."
     }
 }
