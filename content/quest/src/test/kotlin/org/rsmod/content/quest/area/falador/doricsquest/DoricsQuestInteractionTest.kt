@@ -181,6 +181,33 @@ class DoricsQuestInteractionTest {
     }
 
     @Test
+    fun `coin overflow preserves materials and allows a later hand-in`() {
+        val f = Fixture(stage = StageStarted)
+        f.materials()
+        f.player.inv[27] = InvObj("obj.coins", Int.MAX_VALUE - 179)
+        f.talk()
+        f.finish()
+        assertEquals(StageStarted, f.stage())
+        assertEquals(6, f.player.inv.count("obj.clay"))
+        assertEquals(4, f.player.inv.count("obj.copper_ore"))
+        assertEquals(2, f.player.inv.count("obj.iron_ore"))
+        assertEquals(Int.MAX_VALUE - 179, f.player.inv.count("obj.coins"))
+        assertEquals(0, f.player.vars["varp.qp"])
+        assertEquals(0, f.player.statMap.getXP("stat.mining"))
+
+        f.player.inv[27] = InvObj("obj.coins", Int.MAX_VALUE - 180)
+        f.talk()
+        f.finish()
+        assertEquals(StageComplete, f.stage())
+        assertEquals(0, f.player.inv.count("obj.clay"))
+        assertEquals(0, f.player.inv.count("obj.copper_ore"))
+        assertEquals(0, f.player.inv.count("obj.iron_ore"))
+        assertEquals(Int.MAX_VALUE, f.player.inv.count("obj.coins"))
+        assertEquals(1, f.player.vars["varp.qp"])
+        assertEquals(1300, f.player.statMap.getXP("stat.mining"))
+    }
+
+    @Test
     fun `the journal strikes a carried material and says how many more of the rest`() {
         val f = Fixture(stage = StageStarted)
         f.materials(clay = 0, iron = 0)

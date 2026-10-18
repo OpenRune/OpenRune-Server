@@ -1,0 +1,34 @@
+[[object]]
+id = "loc.fountain"
+inherit = "loc.fountain"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.qip_cook_sink"
+inherit = "loc.qip_cook_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.fai_varrock_central_square01"
+inherit = "loc.fai_varrock_central_square01"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.fai_varrock_small_fountain"
+inherit = "loc.fai_varrock_small_fountain"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.fai_varrock_posh_sink"
+inherit = "loc.fai_varrock_posh_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.fai_varrock_cooking_kitchen_sink"
+inherit = "loc.fai_varrock_cooking_kitchen_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.blast_furnace_sink"
+inherit = "loc.blast_furnace_sink"
+contentGroup = "content.water_source"

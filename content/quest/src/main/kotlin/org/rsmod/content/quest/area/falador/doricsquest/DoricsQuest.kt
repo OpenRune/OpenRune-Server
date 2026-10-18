@@ -355,6 +355,9 @@ constructor(private val objRepo: ObjRepository, private val npcRepo: NpcReposito
         player.anim("seq.human_dwarf_recieve")
         npc?.anim("seq.dwarf_hand_over")
         objbox(CopperOre.obj, "You hand the clay, copper, and iron to Doric.")
+        if (player.inv.count("obj.coins") > Int.MAX_VALUE - CoinReward) {
+            return
+        }
         if (!takeMaterials()) {
             return
         }

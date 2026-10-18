@@ -33,7 +33,8 @@ private data class SettingMapping(
     val max: Int? = null,
 
     val prompt: String? = null,
-    val enable_toggle_setting_id: String? = null
+    val enable_toggle_setting_id: String? = null,
+    val default: Int? = null,
 )
 
 data class SettingOverride(
@@ -41,7 +42,8 @@ data class SettingOverride(
     val min: Int? = null,
     val max: Int? = null,
     val prompt: String? = null,
-    val enable_toggle_setting_id: String? = null
+    val enable_toggle_setting_id: String? = null,
+    val default: Int? = null,
 )
 
 /* ---------------- REGEX ---------------- */
@@ -112,12 +114,21 @@ fun loadOverrides(file: File): Map<Int, SettingOverride> {
 
     fun flush() {
         val id = currentId ?: return
-        result[id] = SettingOverride(
+        val parsed = SettingOverride(
             id = id,
             min = buffer["min"]?.toIntOrNull(),
             max = buffer["max"]?.toIntOrNull(),
             prompt = buffer["prompt"],
-            enable_toggle_setting_id = buffer["enable_toggle_setting_id"]
+            enable_toggle_setting_id = buffer["enable_toggle_setting_id"],
+            default = buffer["default"]?.toIntOrNull(),
+        )
+        val existing = result[id]
+        result[id] = if (existing == null) parsed else existing.copy(
+            min = parsed.min ?: existing.min,
+            max = parsed.max ?: existing.max,
+            prompt = parsed.prompt ?: existing.prompt,
+            enable_toggle_setting_id = parsed.enable_toggle_setting_id ?: existing.enable_toggle_setting_id,
+            default = parsed.default ?: existing.default,
         )
         buffer.clear()
     }
@@ -206,7 +217,8 @@ fun main() {
                 min = o?.min ?: base.min,
                 max = o?.max ?: base.max,
                 prompt = o?.prompt ?: base.prompt,
-                enable_toggle_setting_id = o?.enable_toggle_setting_id ?: base.enable_toggle_setting_id
+                enable_toggle_setting_id = o?.enable_toggle_setting_id ?: base.enable_toggle_setting_id,
+                default = o?.default,
             )
         }
         .sortedBy { it.id }
@@ -269,6 +281,10 @@ fun main() {
 
             if (hasVarp) {
                 appendLine("""            columnRSCM(VARP, "varp.${m.name}")""")
+            }
+
+            m.default?.let {
+                appendLine("""            column(DEFAULT, $it)""")
             }
 
             m.dropdownEnum?.let {
