@@ -68,11 +68,9 @@ splash_and_river = 1308
 roof_collapse = 1384
 big_wooden_door_open = 44
 big_wooden_door_close = 43
-contact_rumble = 1464
+rumbling = 1678
 watersplash = 2496
-vial_pour = 2613
 smokepuff = 1930
-stone_door = 86
 chest_open = 52
 chest_close = 51
 irondoor_locked = 72
@@ -111,6 +109,7 @@ waterfall_pillar_runes = 64313
 waterfall_wading = 1
 waterfall_swimming = 2
 waterfall_drowning = 3
+waterfall_whirlpool = 4
 
 [gamevals.models]
 misthalin_gem_diamond = 32333

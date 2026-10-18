@@ -27,3 +27,13 @@ walkForward = "seq.human_drowning"
 walkBack = "seq.human_drowning"
 walkLeft = "seq.human_drowning"
 walkRight = "seq.human_drowning"
+
+[[bas]]
+isServerOnly = true
+id = "bas.waterfall_whirlpool"
+readyAnim = "seq.human_whirlpool"
+turnOnSpot = "seq.human_whirlpool"
+walkForward = "seq.human_whirlpool"
+walkBack = "seq.human_whirlpool"
+walkLeft = "seq.human_whirlpool"
+walkRight = "seq.human_whirlpool"

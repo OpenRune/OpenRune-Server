@@ -57,16 +57,15 @@ import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Comp
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ENTERED_FALLS
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.ENTERED_TOMB
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.FLOOR_RISEN
+import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.FOUND_CHALICE
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GOLRIE_KEY
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.MET_HUDON
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.PEBBLE
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.READ_BOOK
-import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.RUNES_PLACED
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.STARTED
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.URN_EMPTY
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.URN_FULL
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.Golrie
-import org.rsmod.content.quest.util.QuestDoors
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -227,7 +226,7 @@ class WaterfallInteractionTest {
                     f.loc(CRATE, CRATE_COORDS, angle = LocAngle.North)
                 },
             )
-        val staysBehind = setOf(AMULET, URN_FULL)
+        val staysBehind = setOf(AMULET, URN_FULL, BAXTORIAN_KEY)
         for ((stage, obj, search) in finds) {
             val f = Fixture(stage)
             f.fillInventory()
@@ -284,7 +283,7 @@ class WaterfallInteractionTest {
     }
 
     @Test
-    fun `each pillar takes one rune of each kind and the sixth charge moves the quest on`() {
+    fun `each pillar takes one rune of each kind`() {
         val f = Fixture(ENTERED_FALLS)
         f.player.coords = ROOM_CENTER
         f.give("obj.airrune", 6)
@@ -310,7 +309,7 @@ class WaterfallInteractionTest {
         }
         assertEquals(WaterfallQuest.ALL_PILLAR_RUNES, f.player.pillarRunes)
         assertEquals(0, f.count("obj.airrune") + f.count("obj.waterrune") + f.count("obj.earthrune"))
-        assertEquals(RUNES_PLACED, f.stage())
+        assertEquals(ENTERED_FALLS, f.stage())
     }
 
     @Test
@@ -358,7 +357,7 @@ class WaterfallInteractionTest {
 
     @Test
     fun `the amulet on the statue raises the floor and is taken once`() {
-        val f = Fixture(RUNES_PLACED)
+        val f = Fixture(FOUND_CHALICE)
         f.player.pillarRunes = WaterfallQuest.ALL_PILLAR_RUNES
         f.player.coords = ROOM_CENTER
         f.give(AMULET)
@@ -374,23 +373,23 @@ class WaterfallInteractionTest {
         assertEquals(1, f.total(AMULET))
         assertEquals(FLOOR_RISEN, f.stage())
 
-        val gone = Fixture(RUNES_PLACED)
+        val gone = Fixture(FOUND_CHALICE)
         gone.player.pillarRunes = WaterfallQuest.ALL_PILLAR_RUNES
         gone.player.coords = ROOM_CENTER
         gone.useOnLoc(STATUE, STATUE_COORDS, AMULET, absent = true)
         gone.finish()
-        assertEquals(RUNES_PLACED, gone.stage())
+        assertEquals(FOUND_CHALICE, gone.stage())
         assertEquals(ROOM_CENTER, gone.player.coords)
     }
 
     @Test
     fun `the urn cannot be poured before the floor has risen`() {
-        val f = Fixture(RUNES_PLACED)
+        val f = Fixture(FOUND_CHALICE)
         f.player.coords = ROOM_CENTER
         f.give(URN_FULL)
         f.useOnLoc(CHALICE, CHALICE_COORDS, URN_FULL)
         f.finish()
-        assertEquals(RUNES_PLACED, f.stage())
+        assertEquals(FOUND_CHALICE, f.stage())
         assertEquals(1, f.total(URN_FULL))
     }
 
@@ -552,13 +551,12 @@ class WaterfallInteractionTest {
                 }
             }
             val scripts = ScriptContext(events, CheatCommandMap(), EngineQueueCache())
-            val doors = QuestDoors(locs)
             with(quest) { scripts.startup() }
             with(Golrie(quest, objs)) { scripts.startup() }
             with(BookOnBaxtorian(quest, objs)) { scripts.startup() }
             with(GnomeVillageDungeon(quest, objs, locs)) { scripts.startup() }
             with(GlarialsTomb(quest, locs)) { scripts.startup() }
-            with(WaterfallDungeon(quest, objs, world, doors)) { scripts.startup() }
+            with(WaterfallDungeon(quest, objs, world, locs)) { scripts.startup() }
             stageTo(stage)
         }
 

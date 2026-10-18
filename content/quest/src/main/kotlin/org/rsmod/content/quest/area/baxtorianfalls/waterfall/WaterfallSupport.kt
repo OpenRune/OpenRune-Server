@@ -35,6 +35,8 @@ internal object WaterfallCoords {
 
     val SWIM_END = CoordGrid(2512, 3472, 0)
 
+    val WHIRLPOOL = CoordGrid(2540, 9911, 2)
+
     val FALLS_ENTRY = CoordGrid(2575, 9861, 0)
 
     val TOMB_ENTRY = CoordGrid(2555, 9844, 0)
@@ -104,20 +106,13 @@ internal suspend fun ProtectedAccess.fallIntoRiver(first: String, second: String
     closeFadeOverlayNow()
 }
 
-internal suspend fun ProtectedAccess.washDownstream(ouch: Boolean) {
+internal suspend fun ProtectedAccess.washDownstream() {
     soundSynth(SPLASH_SOUND)
     spotanim(SPLASH_SPOTANIM)
     fadeToBlack()
     telejump(WaterfallCoords.DOWNSTREAM, TeleportType.Exempt)
     delay(1)
     fadeFromBlack()
-    if (ouch) {
-        val damage = FALL_DAMAGE.coerceAtMost(player.hitpoints - 1)
-        if (damage > 0) {
-            queueHit(delay = 1, type = HitType.Typeless, damage = damage)
-        }
-        say("Ouch!")
-    }
 }
 
 internal fun Player.carriesUnpeacefulItem(): Boolean {

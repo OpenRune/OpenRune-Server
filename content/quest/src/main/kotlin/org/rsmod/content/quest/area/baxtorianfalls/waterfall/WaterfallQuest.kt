@@ -21,8 +21,8 @@ class WaterfallQuest @Inject constructor() :
         QUEST_KEY,
         "varp.waterfall_quest",
         rewards {
-            xp("stat.attack", COMBAT_XP)
             xp("stat.strength", COMBAT_XP)
+            xp("stat.attack", COMBAT_XP)
             item("obj.diamond", 2)
             item("obj.gold_bar", 2)
             item("obj.mithril_seed", 40)
@@ -140,7 +140,7 @@ class WaterfallQuest @Inject constructor() :
             objective(
                 "The pillars are charged. I should place <red>Glarial's amulet</red> on her statue."
             ) {
-                visibleWhen { stage(access.player) == RUNES_PLACED }
+                visibleWhen { stage(access.player) == FOUND_CHALICE }
             }
 
             objective(
@@ -177,7 +177,7 @@ class WaterfallQuest @Inject constructor() :
         const val READ_BOOK = 3
         const val ENTERED_TOMB = 4
         const val ENTERED_FALLS = 5
-        const val RUNES_PLACED = 6
+        const val FOUND_CHALICE = 6
         const val FLOOR_RISEN = 8
         const val COMPLETE = 10
 
