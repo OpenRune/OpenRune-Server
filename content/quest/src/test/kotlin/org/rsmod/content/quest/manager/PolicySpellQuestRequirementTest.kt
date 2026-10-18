@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.ResourceLock
-import org.rsmod.game.entity.Player
 import org.rsmod.api.server.config.QuestRequirementsYaml
+import org.rsmod.game.entity.Player
 
 @ResourceLock("QuestRequirements")
 class PolicySpellQuestRequirementTest {

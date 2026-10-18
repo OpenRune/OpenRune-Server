@@ -111,5 +111,4 @@ class SleepingGiantsLoginTest {
     }
     private fun SleepingGiantsRepairsRow.varbit(): String =
         RSCM.getReverseMapping(RSCMType.VARBIT, stateVarbit)
-
 }
