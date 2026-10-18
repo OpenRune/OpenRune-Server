@@ -18,6 +18,7 @@ import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
+import org.rsmod.api.table.TrailEmoteAreaRow
 import org.rsmod.api.table.TrailTierRow
 import org.rsmod.content.other.treasuretrails.TrailFlow.checkSteps
 import org.rsmod.content.other.treasuretrails.TrailFlow.openBox
@@ -100,7 +101,8 @@ constructor(
         val step = TrailFlow.currentStep(player, tier) ?: return
         if (step.kind != ClueKind.Emote || step.emotes != listOf(slot)) return
         val spot = (ClueSteps.target(player, step) as? ClueTarget.Dig)?.row?.coord ?: return
-        if (player.coords.distanceTo(spot) > EMOTE_RADIUS) return
+        val spots = listOf(spot) + emoteAreaCoords(step)
+        if (spots.none { player.coords.distanceTo(it) <= EMOTE_RADIUS }) return
         if (!ClueOutfits.wearing(player, step.outfit)) return
         if (summonedUri(player) != null) return
 
@@ -111,6 +113,9 @@ constructor(
         worldRepo.spotanimMap(SpotanimType("spotanim.smokepuff".asRSCM(RSCMType.SPOTANIM)), coords)
         VarPlayerIntMapSetter.set(player, SUMMONED_NPC, uri.uid.packed)
     }
+
+    private fun emoteAreaCoords(step: ClueStep): List<CoordGrid> =
+        TrailEmoteAreaRow.all().filter { it.step.rowId == step.rowId }.flatMap { it.coords }
 
     private fun summonedUri(player: Player): Npc? {
         val packed = player.vars[SUMMONED_NPC]

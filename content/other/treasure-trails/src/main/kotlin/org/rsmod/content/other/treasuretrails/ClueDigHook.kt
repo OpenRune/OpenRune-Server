@@ -11,14 +11,13 @@ class ClueDigHook : SpadeDigHook {
         if (!TrailFlow.holdsClue(player, tier)) return false
         val step = TrailFlow.currentStep(player, tier) ?: return false
         val spot = (ClueSteps.target(player, step) as? ClueTarget.Dig)?.row?.coord ?: return false
-        return when (step.kind) {
-            ClueKind.Map,
-            ClueKind.Coordinate -> player.coords == spot
-            ClueKind.HotCold ->
-                player.coords.level == spot.level &&
-                    player.coords.chebyshevDistance(spot) <= HOT_COLD_DIG_RADIUS
-            else -> false
-        }
+        val radius =
+            when (step.kind) {
+                ClueKind.Emote -> return false
+                ClueKind.HotCold -> HOT_COLD_DIG_RADIUS
+                else -> DIG_RADIUS
+            }
+        return player.coords.level == spot.level && player.coords.chebyshevDistance(spot) <= radius
     }
 
     override suspend fun ProtectedAccess.dig() {
@@ -30,6 +29,7 @@ class ClueDigHook : SpadeDigHook {
     }
 
     internal companion object {
+        const val DIG_RADIUS = 1
         const val HOT_COLD_DIG_RADIUS = 4
     }
 }

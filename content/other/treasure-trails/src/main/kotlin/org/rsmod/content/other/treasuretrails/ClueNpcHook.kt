@@ -50,7 +50,7 @@ class ClueNpcHook @Inject constructor(private val npcRepo: NpcRepository) : Play
 
     private suspend fun ProtectedAccess.completeTalk(npc: Npc, tier: TrailTierRow) {
         val given = advance(tier) ?: return
-        val name = npc.visType.name
+        val name = npcVisType(npc).name
         val text =
             if (given.id == tier.casketObj.id) {
                 "$name has given you a casket!"
@@ -78,7 +78,7 @@ class ClueNpcHook @Inject constructor(private val npcRepo: NpcRepository) : Play
             mes("You don't have enough inventory space.")
             return
         }
-        startDialogue(npc) { objbox(DEVICE, "${npc.visType.name} gives you a strange device.") }
+        startDialogue(npc) { objbox(DEVICE, "${npcVisType(npc).name} gives you a strange device.") }
     }
 
     private suspend fun ProtectedAccess.talkToUri(npc: Npc, tier: TrailTierRow) {

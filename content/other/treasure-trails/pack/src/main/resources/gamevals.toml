@@ -2,6 +2,7 @@
 trail_tier = 65495
 trail_charlie_task = 65496
 trail_map_interface = 65497
+trail_emote_area = 65494
 
 [gamevals.param]
 trail_clue_step = 623
@@ -55,3 +56,5 @@ trail_map_interface_varrock_east_mine = 55472
 trail_map_interface_draynor_bank = 55473
 trail_map_interface_standing_stones = 55474
 trail_map_interface_wizards_tower = 55475
+trail_emote_area_al_kharid_mine = 55476
+trail_emote_area_ardougne_mill = 55477
