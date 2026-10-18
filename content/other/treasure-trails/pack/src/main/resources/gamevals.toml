@@ -27,6 +27,7 @@ trail_progress_low = 63806
 trail_progress_high = 63807
 trail_beginner_step = 63808
 trail_emote_first = 63809
+trail_puzzle_solved = 63810
 
 [gamevals.varbit]
 trail_beginner_length = 63800
@@ -70,3 +71,15 @@ trail_map_interface_medium_map009 = 55560
 trail_map_interface_medium_map010 = 55561
 trail_map_interface_medium_map011 = 55562
 trail_map_interface_medium_map012 = 55563
+trail_sherlock_task_dragon_scimitar = 55564
+trail_sherlock_task_nature_rune = 55565
+trail_sherlock_task_super_defence = 55566
+trail_sherlock_task_green_dhide_body = 55567
+trail_sherlock_task_yew_longbow = 55568
+trail_sherlock_task_black_warlock = 55569
+trail_sherlock_task_red_chinchompa = 55570
+trail_sherlock_task_mithril_ore = 55571
+trail_sherlock_task_mithril_2h = 55572
+trail_sherlock_task_raw_shark = 55573
+trail_sherlock_task_yew_logs = 55574
+trail_sherlock_task_swordfish = 55575

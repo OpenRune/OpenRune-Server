@@ -7,6 +7,5 @@ import org.rsmod.game.entity.Player
  * box), so drop tables stay free of a dependency on it.
  */
 public object ClueScrollDrops {
-    /** Returns the obj to drop in place of the table's clue scroll, or `null` to keep it. */
     @Volatile public var resolve: (Player, String) -> String? = { _, _ -> null }
 }

@@ -1,15 +1,20 @@
 package org.rsmod.content.other.treasuretrails
 
+import jakarta.inject.Inject
 import org.rsmod.api.player.hook.SpadeDigHook
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.content.other.treasuretrails.TrailFlow.advance
 import org.rsmod.game.entity.Player
 
-class ClueDigHook : SpadeDigHook {
+class ClueDigHook @Inject constructor(private val encounters: ClueEncounters) : SpadeDigHook {
     override fun claims(player: Player): Boolean = digTrail(player) != null
 
     override suspend fun ProtectedAccess.dig() {
         val trail = digTrail(player) ?: return
+        if (trail.step.encounters.isNotEmpty()) {
+            encounters.spawn(player, trail.step)
+            return
+        }
         val given = advance(trail.tier) ?: return
         val casket = given.id == trail.tier.casketObj.id
         val text = if (casket) "You've found a casket!" else "You've found another clue!"

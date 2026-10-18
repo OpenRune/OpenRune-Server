@@ -5,7 +5,6 @@ import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.repo.obj.ObjRepository
 
-/** A key step's npc drops its key for the killer while they hold the clue and lack the key. */
 class ClueKeyDropHook @Inject constructor(private val objRepo: ObjRepository) : NpcDeathKillHook {
     override fun onKill(context: NpcDeathKillContext) {
         val hero = context.hero

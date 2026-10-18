@@ -44,6 +44,5 @@ public fun Player.eliteClueDropDenominator(baseDenominator: Int): Int =
 public fun Player.masterClueDropDenominator(baseDenominator: Int): Int =
     if (hasUnlockedMasterCombat()) combatAchievementClueDenominator(baseDenominator) else baseDenominator
 
-/** For `transformObj` on clue scroll drops; see [ClueScrollDrops]. */
 public fun Player.clueScrollTransformObj(scrollObj: String): String? =
     ClueScrollDrops.resolve(this, scrollObj)

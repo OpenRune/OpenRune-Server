@@ -2,10 +2,11 @@ package org.rsmod.content.other.treasuretrails
 
 import jakarta.inject.Inject
 import org.rsmod.api.enums.TrailEnums
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.music.MusicRepository
 import org.rsmod.api.player.hook.PlayerNpcOpHook
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.table.TrailCharlieTaskRow
 import org.rsmod.api.table.TrailTierRow
@@ -44,6 +45,7 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
                         startDialogue(npc) { mesbox(challenge.text.orEmpty()) }
                     }
                     question != null -> challengeScroll(npc, trail, question)
+                    ClueSteps.isPuzzleBox(step) -> puzzleBox(npc, trail)
                     else -> completeTalk(npc, tier)
                 }
             }
@@ -106,16 +108,40 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
         completeTalk(npc, trail.tier)
     }
 
+    private suspend fun ProtectedAccess.puzzleBox(npc: Npc, trail: HeldTrail) {
+        val held = ClueSlidePuzzle.held(player)
+        if (held == null) {
+            val box = ClueSlidePuzzle.handOut(random)
+            ClueSlidePuzzle.reset(player)
+            if (invAdd(inv, box.symbol(), 1).failure) {
+                mes("You don't have enough inventory space.")
+                return
+            }
+            val name = npcVisType(npc).name
+            startDialogue(npc) { objbox(box.symbol(), "$name has given you a puzzle box!") }
+            return
+        }
+        if (!ClueSlidePuzzle.solved(player)) {
+            startDialogue(npc) { chatNpc(neutral, "You haven't solved the puzzle yet.") }
+            return
+        }
+        if (TrailFlow.currentStep(player, trail.tier)?.rowId != trail.step.rowId) return
+        if (invDel(inv, held.symbol(), 1).failure) return
+        ClueSlidePuzzle.reset(player)
+        completeTalk(npc, trail.tier)
+    }
+
     private suspend fun ProtectedAccess.handInTask(npc: Npc, tier: TrailTierRow, step: ClueStep) {
         val task = TrailCharlieTaskRow.all().firstOrNull { it.step.rowId == step.rowId } ?: return
         val item = task.obj.symbol()
-        if (inv.count(item) == 0) {
+        val worn = RSCM.getReverseMapping(RSCMType.DBROW, step.rowId) == WORN_TASK_STEP
+        val held = if (worn) player.worn.count(item) else inv.count(item)
+        if (held == 0) {
             startDialogue(npc) { mesbox(step.text.orEmpty()) }
             return
         }
-        if (TrailFlow.clueSlot(player, tier) == null || invDel(inv, item, 1).failure) {
-            return
-        }
+        if (TrailFlow.clueSlot(player, tier) == null) return
+        if (!worn && invDel(inv, item, 1).failure) return
         completeTalk(npc, tier)
     }
 
@@ -129,7 +155,7 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
 
     private suspend fun ProtectedAccess.talkToUri(npc: Npc, tier: TrailTierRow) {
         val step = TrailFlow.currentStep(player, tier)
-        val summoned = player.vars[SUMMONED_NPC] == npc.uid.packed
+        val summoned = ClueUri.isSummoned(player, npc)
         val ready =
             summoned &&
                 step?.kind == ClueKind.Emote &&
@@ -142,7 +168,7 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
             return
         }
         val given = advance(tier) ?: return
-        VarPlayerIntMapSetter.set(player, SUMMONED_NPC, NO_NPC)
+        ClueUri.clear(player)
         val phrase = random.pick(TrailEnums.trail_uri_phrases.mapNotNull { it.value })
         val casket = given.id == tier.casketObj.id
         val text = if (casket) "You've been given a casket!" else "You've been given a clue!"
@@ -168,10 +194,9 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
         TrailTierRow.all().firstOrNull { it.uriNpc.id == type.id }
 
     private companion object {
+        const val WORN_TASK_STEP = "dbrow.cluehelper_skillchallenge_elite_0"
         const val DEVICE = "obj.beginner_device"
-        const val SUMMONED_NPC = "varp.cluehelper_npc_id"
         const val CURRENT_TRACK = "varbit.music_curr_id"
-        const val NO_NPC = -1
         const val URI_LEAVE_DELAY = 2
     }
 }

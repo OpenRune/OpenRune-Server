@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
+import org.rsmod.api.table.TrailCharlieTaskRow
 import org.rsmod.api.table.TrailMapInterfaceRow
 import org.rsmod.api.table.TrailTierRow
 import org.rsmod.api.table.cluehelper.CluehelperClueCrypticRow
@@ -44,7 +45,6 @@ object TrailFlow {
         return TrailTiers.objStep(TrailTiers.type(obj.id))?.let(ClueSteps::step)
     }
 
-    /** Every playable tier whose clue is in the inventory, with the step it is on. */
     fun heldTrails(player: Player): List<HeldTrail> =
         TrailTiers.playableTiers().mapNotNull { tier ->
             val slot = clueSlot(player, tier) ?: return@mapNotNull null
@@ -92,7 +92,6 @@ object TrailFlow {
         ifSetText("component.trail_cluetext:text", clueText(step))
     }
 
-    /** A scroll box becomes a fresh clue in one inv transaction; a held clue blocks it. */
     suspend fun ProtectedAccess.openBox(tier: TrailTierRow) {
         if (TrailTiers.ownedClues(player, tier.difficulty) > 0) {
             mes(ClueTakeHook.ALREADY_HAVE_CLUE)
@@ -161,7 +160,6 @@ object TrailFlow {
         return next
     }
 
-    /** Charlie and Sherlock hand out one of their skill challenges in place of the cryptic step. */
     fun skillChallengeFor(
         player: Player,
         step: ClueStep,
@@ -176,6 +174,9 @@ object TrailFlow {
                     val target = ClueSteps.target(player, challenge) as? ClueTarget.TalkTo
                     target?.matches(npc) ?: false
                 }
+                .filter { challenge ->
+                    TrailCharlieTaskRow.all().any { it.step.rowId == challenge.rowId }
+                }
         return random.pickOrNull(challenges)
     }
 
@@ -188,7 +189,6 @@ object TrailFlow {
         return npc.type.id in ids || npc.visType.id in ids
     }
 
-    /** The clue a fresh trail starts on: the tier's single obj, or a random step obj. */
     fun freshClue(tier: TrailTierRow, random: GameRandom): ItemServerType =
         tier.clueObj ?: rollClueObj(tier, random, exclude = null)
 
@@ -243,8 +243,7 @@ object TrailFlow {
     /**
      * Skill challenges are handed out by an npc rather than rolled, and the beginner hot/cold intro
      * cryptic is only the text a hot/cold step reads with. Restricted (league/sailing) steps,
-     * puzzle-box challenges, maps without a known interface and music steps are left out until
-     * supported.
+     * maps without a known interface and music steps are left out until supported.
      */
     private fun rollableSteps(difficulty: Int): List<Int> {
         val hotColdIntro =
@@ -253,10 +252,12 @@ object TrailFlow {
             .asSequence()
             .filter { it.kind != ClueKind.SkillChallenge && it.rowId != hotColdIntro }
             .filterNot { it.restricted }
-            // Music steps need the track unlocked and playing, and music unlocking is not
-            // implemented well enough yet to make them completable.
             .filter { it.kind != ClueKind.Music }
-            .filter { it.challenge == null || ClueSteps.question(it) != null }
+            .filter {
+                it.challenge == null ||
+                    ClueSteps.question(it) != null ||
+                    ClueSteps.isPuzzleBox(it)
+            }
             .filter { it.kind != ClueKind.Map || mapInterface(it) != null }
             .map { it.rowId }
             .toList()

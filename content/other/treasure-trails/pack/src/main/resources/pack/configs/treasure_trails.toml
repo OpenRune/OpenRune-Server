@@ -174,3 +174,135 @@ valueType = "STRING"
 30 = "very hot"
 5 = "incredibly hot"
 0 = "visibly shaking"
+
+[[npc]]
+id = "npc.trail_hard"
+inherit = "npc.trail_hard"
+attackRange = 8
+[npc.params]
+"param.attack_anim"="seq.human_castwave"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.proj_travel"="spotanim.firewave_travel"
+"param.proj_type"="projanim.magic_spell"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.trail_hard2"
+inherit = "npc.trail_hard2"
+attackRange = 8
+[npc.params]
+"param.attack_anim"="seq.human_castwave"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.double_agent_1"
+inherit = "npc.double_agent_1"
+[npc.params]
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.double_agent_2"
+inherit = "npc.double_agent_2"
+[npc.params]
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.double_agent_master"
+inherit = "npc.double_agent_master"
+[npc.params]
+"param.attack_anim"="seq.human_unarmedpunch"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_crush"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.elite_npc_1"
+inherit = "npc.elite_npc_1"
+attackRange = 7
+[npc.params]
+"param.attack_anim"="seq.human_bow"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_standard"
+"param.proj_type"="projanim.arrow"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.elite_npc_2"
+inherit = "npc.elite_npc_2"
+[npc.params]
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_block"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.trail_zaros_wizard"
+inherit = "npc.trail_zaros_wizard"
+attackRange = 8
+[npc.params]
+"param.attack_anim"="seq.human_castwave"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.trail_zaros_range"
+inherit = "npc.trail_zaros_range"
+attackRange = 7
+[npc.params]
+"param.attack_anim"="seq.human_bow"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_standard"
+"param.proj_type"="projanim.arrow"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.trail_zaros_melee"
+inherit = "npc.trail_zaros_melee"
+[npc.params]
+"param.attack_anim"="seq.human_sword_stab"
+"param.defend_anim"="seq.human_sword_block"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_stab"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.trail_cabbage_mage"
+inherit = "npc.trail_cabbage_mage"
+attackRange = 8
+[npc.params]
+"param.attack_anim"="seq.human_castwave"
+"param.defend_anim"="seq.human_unarmedblock"
+"param.death_anim"="seq.human_death"
+"param.npc_attack_type"="category.attacktype_magic"
+"param.dropped_remains"=-1
+
+[[varp]]
+id = "varp.trail_puzzle_solved"
+scope = "Temp"
+transmit = "Never"
+
+[[inventory]]
+isServerOnly = true
+id = "inv.trail_puzzleinv"
+inherit = "inv.trail_puzzleinv"
+scope = "Temp"
+protect = false

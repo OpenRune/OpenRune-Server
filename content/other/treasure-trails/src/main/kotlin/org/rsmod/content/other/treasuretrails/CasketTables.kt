@@ -5,13 +5,14 @@ import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.rsPlayerWeightedTable
 import org.rsmod.game.entity.Player
 
-/** One roll of each tier's reward casket; a casket rolls `reward_rolls_min..max` times. */
 object CasketTables {
     fun forDifficulty(difficulty: Int): RSWeightedTable<Player, DropRollItem>? =
         when (difficulty) {
             0 -> beginner
             1 -> easy
             2 -> medium
+            3 -> HighCasketTables.hard
+            4 -> HighCasketTables.elite
             else -> null
         }
 
@@ -106,7 +107,7 @@ object CasketTables {
             11 weight "obj.cert_herring" count 5..9
         }
 
-    private val blessings =
+    internal val blessings =
         rsPlayerWeightedTable(total = 6) {
             name("Clue blessings")
             1 weight "obj.blessing_saradomin" count 1
@@ -134,14 +135,14 @@ object CasketTables {
             1 weight "obj.teleportscroll_elf" count 5..15
         }
 
-    private val scrollsOrBook =
+    internal val scrollsOrBook =
         rsPlayerWeightedTable(total = 22) {
             name("Clue scrolls or master scroll book")
             21 weight teleportScrolls
             1 weight "obj.bookofscrolls_empty" count 1
         }
 
-    private val prayerPages =
+    internal val prayerPages =
         rsPlayerWeightedTable(total = 24) {
             name("Clue prayer book pages")
             1 weight "obj.holy_book_s_page1" count 1

@@ -64,13 +64,15 @@ constructor(private val objRepo: ObjRepository, private val marketPrices: Market
         table: RSWeightedTable<Player, DropRollItem>,
     ): List<CasketReward> {
         val rolls = random.of(tier.rewardRollsMin, tier.rewardRollsMax)
-        return (0 until rolls).flatMap {
-            when (val result = table.roll(player, ArgMap()).flatten()) {
-                is RollResult.Single -> listOfNotNull(reward(result.result))
-                is RollResult.ListOf -> result.results.mapNotNull { reward(it) }
-                else -> emptyList()
+        return (0 until rolls)
+            .flatMap {
+                when (val result = table.roll(player, ArgMap()).flatten()) {
+                    is RollResult.Single -> listOfNotNull(reward(result.result))
+                    is RollResult.ListOf -> result.results.mapNotNull { reward(it) }
+                    else -> emptyList()
+                }
             }
-        }
+            .flatMap { reward -> listOf(reward) + COMPANIONS[reward.obj].orEmpty() }
     }
 
     /**
@@ -128,5 +130,14 @@ constructor(private val objRepo: ObjRepository, private val marketPrices: Market
         const val REWARD_INV = "inv.trail_rewardinv"
         const val REWARD_INTERFACE = "interface.trail_rewardscreen"
         const val TREASURE_JINGLE = "jingle.yo_ho_ho"
+
+        private val COMPANIONS =
+            mapOf(
+                "obj.cert_4dose2attack" to
+                    listOf(
+                        CasketReward("obj.cert_4dose2strength", 5),
+                        CasketReward("obj.cert_4dose2defense", 5),
+                    )
+            )
     }
 }

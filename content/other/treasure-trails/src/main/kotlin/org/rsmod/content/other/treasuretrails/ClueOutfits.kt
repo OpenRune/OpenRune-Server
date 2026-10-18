@@ -18,7 +18,6 @@ object ClueOutfits {
         return outfit.slots().all { it.wornBy(player.worn) }
     }
 
-    /** One inventory slot per outfit piece, or `null` if any piece is missing from [inv]. */
     fun piecesIn(inv: Inventory, outfit: CluehelperOutfitRow): List<Int>? {
         val taken = mutableSetOf<Int>()
         for (slot in outfit.slots().filterNot { it.empty }) {

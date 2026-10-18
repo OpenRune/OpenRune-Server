@@ -6,7 +6,6 @@ import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Player
 import org.rsmod.game.obj.Obj
 
-/** Enforces one clue scroll per tier, and the shared scroll + scroll box cap once boxes drop. */
 class ClueTakeHook : PlayerObjTakeValidateHook {
     override fun validateTake(player: Player, obj: Obj, objType: ItemServerType): String? {
         val clue = TrailTiers.clueDifficulty(objType)

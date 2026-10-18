@@ -8,7 +8,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.loc.BoundLocInfo
 
-/** Search steps, and key steps whose chest or drawers open with the key a kill dropped. */
 class ClueLocHook : PlayerLocOpHook {
     override fun claims(player: Player, loc: BoundLocInfo, op: InteractionOp): Boolean =
         isSearchOp(loc, op) && searchTrail(player, loc) != null
@@ -46,7 +45,6 @@ class ClueLocHook : PlayerLocOpHook {
             }
         }
 
-    /** Searching takes over the loc's "Search" op, or its first op when it has none. */
     private fun isSearchOp(loc: BoundLocInfo, op: InteractionOp): Boolean {
         val actions = ServerCacheManager.getObject(loc.id)?.actions ?: return false
         val search =

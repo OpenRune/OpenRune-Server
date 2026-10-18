@@ -354,6 +354,63 @@ class TreasureTrailsItemTest {
         assertEquals(before + 1, TrailTiers.capacity(f.player, f.tier))
     }
 
+    @Test
+    fun `hard and elite caskets deliver exactly what the reward screen shows`() {
+        for (difficulty in listOf(HARD, ELITE)) {
+            val f = Fixture(difficulty)
+            repeat(60) {
+                for (slot in 0 until 28) f.player.inv[slot] = null
+                f.player.inv[0] = InvObj(f.tier.casketObj.symbol(), 1)
+                f.openCasket()
+                assertEquals(f.shownRewards(), f.held())
+                assertEquals(0, f.player.inv.count(f.tier.casketObj.symbol()))
+            }
+            assertEquals(60, f.completed())
+        }
+    }
+
+    @Test
+    fun `a puzzle box is handed out once and only a solved one advances the clue`() {
+        val f = Fixture(HARD)
+        val step = ClueSteps.all(HARD).first { ClueSteps.isPuzzleBox(it) }
+        val clue = TrailTiers.clueObjs(HARD).first { TrailTiers.objStep(it) == step.rowId }
+        f.player.inv[0] = InvObj(clue.symbol(), 1)
+        f.state.length = 3
+        f.state.progress = 0
+        val npc = f.npcFor(step)
+
+        f.run { with(f.npcHook) { op(npc, InteractionOp.Op1) } }
+        assertEquals(1, ClueSlidePuzzle.boxes.sumOf { f.player.inv.count(it.symbol()) })
+        f.run { with(f.npcHook) { op(npc, InteractionOp.Op1) } }
+        assertEquals(1, ClueSlidePuzzle.boxes.sumOf { f.player.inv.count(it.symbol()) })
+        assertEquals(1, f.player.inv.count(clue.symbol()))
+        assertEquals(0, f.state.progress)
+
+        VarPlayerIntMapSetter.set(f.player, "varp.trail_puzzle_solved", 1)
+        f.run { with(f.npcHook) { op(npc, InteractionOp.Op1) } }
+        assertEquals(0, ClueSlidePuzzle.boxes.sumOf { f.player.inv.count(it.symbol()) })
+        assertEquals(0, f.player.inv.count(clue.symbol()))
+        assertEquals(1, f.state.progress)
+        assertEquals(1, TrailTiers.ownedClues(f.player, HARD))
+    }
+
+    @Test
+    fun `a solved puzzle box is not taken when the clue left the inventory`() {
+        val f = Fixture(HARD)
+        val step = ClueSteps.all(HARD).first { ClueSteps.isPuzzleBox(it) }
+        val clue = TrailTiers.clueObjs(HARD).first { TrailTiers.objStep(it) == step.rowId }
+        f.player.inv[0] = InvObj(clue.symbol(), 1)
+        f.state.length = 3
+        val npc = f.npcFor(step)
+        f.run { with(f.npcHook) { op(npc, InteractionOp.Op1) } }
+        VarPlayerIntMapSetter.set(f.player, "varp.trail_puzzle_solved", 1)
+        f.player.inv[0] = null
+
+        f.run { with(f.npcHook) { op(npc, InteractionOp.Op1) } }
+        assertEquals(1, ClueSlidePuzzle.boxes.sumOf { f.player.inv.count(it.symbol()) })
+        assertEquals(0, f.state.progress)
+    }
+
     private class Fixture(difficulty: Int = TrailTiers.BEGINNER) {
         val tier: TrailTierRow = TrailTiers.tier(difficulty)
         val clue: String
@@ -430,6 +487,11 @@ class TreasureTrailsItemTest {
             objRegistry.findAll(player.coords).groupBy({ baseObj(it.type) }, { it.count }).mapValues {
                 it.value.sum()
             }
+
+        fun npcFor(step: ClueStep): Npc {
+            val target = ClueSteps.target(player, step) as ClueTarget.TalkTo
+            return Npc(target.row.npc, target.row.coord)
+        }
 
         fun charlie(): Npc {
             val target = ClueSteps.target(player, stepId(CHARLIE_TROUT)) as ClueTarget.TalkTo
@@ -510,6 +572,8 @@ class TreasureTrailsItemTest {
     companion object {
         private const val EASY = 1
         private const val MEDIUM = 2
+        private const val HARD = 3
+        private const val ELITE = 4
         private const val STASH_UNIT = "loc.hh_easy019"
         private const val HANS = "dbrow.cluehelper_cryptic_beginner_hans"
         private const val CHARLIE_TROUT = "dbrow.cluehelper_skillchallenge_beginner_0"

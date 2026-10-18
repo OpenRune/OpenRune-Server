@@ -16,15 +16,13 @@ fun ItemServerType.symbol(): String = RSCM.getReverseMapping(RSCMType.OBJ, id)
 
 object TrailTiers {
     const val BEGINNER = 0
-    const val MEDIUM = 2
+    const val ELITE = 4
 
-    /** Tiers whose every step type is implemented; later tiers' clues stay inert until then. */
-    val PLAYABLE = BEGINNER..MEDIUM
+    val PLAYABLE = BEGINNER..ELITE
 
     private val trail_clue_step = param<DBRowType>("trail_clue_step")
     private val trail_item_group = param<Int>("trail_item_group")
 
-    /** Easy-elite clue objs by difficulty: each obj is one step, read from its `param_623`. */
     private val clueObjDifficulty: Map<Int, Int> by lazy {
         ServerCacheManager.getItems()
             .values
@@ -32,7 +30,6 @@ object TrailTiers {
             .associate { it.id to ClueSteps.step(checkNotNull(objStep(it))).difficulty }
     }
 
-    /** Challenge scrolls share their clue's step but are handed out separately by the npc. */
     private val challengeObjs: Map<Int, ItemServerType> by lazy {
         ServerCacheManager.getItems()
             .values
@@ -48,7 +45,6 @@ object TrailTiers {
 
     fun playableTiers(): List<TrailTierRow> = PLAYABLE.map(::tier)
 
-    /** The clue step an easy-elite clue obj stands for; beginner and master keep it in a varp. */
     fun objStep(type: ItemServerType): Int? = type.paramOrNull(trail_clue_step)?.id
 
     fun itemGroup(type: ItemServerType): Int? = type.paramOrNull(trail_item_group)
@@ -78,7 +74,6 @@ object TrailTiers {
     fun owns(player: Player, type: ItemServerType): Boolean =
         player.trailStorage().any { inv -> inv.countWhere { it.id == type.id } > 0 }
 
-    /** Scroll boxes and scrolls share a per-tier cap that scroll cases raise up to five. */
     fun capacity(player: Player, tier: TrailTierRow): Int =
         BASE_CAPACITY +
             player.vars[varbit(tier.minorCaseVarbit)] +
@@ -124,7 +119,6 @@ class TrailState(private val player: Player, val tier: TrailTierRow) {
         get() = player.vars[progressVarbit]
         set(value) = VarPlayerIntMapSetter.set(player, progressVarbit, value)
 
-    /** The current step of a single-obj tier (beginner, master); `null` when no trail is active. */
     var step: Int?
         get() = stepVarp()?.let { player.vars[it] }?.takeIf { it != NO_STEP }
         set(value) {

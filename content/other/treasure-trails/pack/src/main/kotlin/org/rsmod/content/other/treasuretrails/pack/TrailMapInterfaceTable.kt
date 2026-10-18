@@ -3,7 +3,6 @@ package org.rsmod.content.other.treasuretrails.pack
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
 
-/** The map interface each map step opens when read; beginner maps all share one clue obj. */
 object TrailMapInterfaceTable {
     const val STEP = 0
     const val INTERFACE = 1
