@@ -107,6 +107,9 @@ waterfall_heard_of_treasure = 64311
 waterfall_met_golrie = 64312
 waterfall_pillar_runes = 64313
 
+[gamevals.bas]
+waterfall_wading = 1
+
 [gamevals.models]
 misthalin_gem_diamond = 32333
 misthalin_gem_onyx = 32342

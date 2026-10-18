@@ -5,10 +5,10 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.hunt.HuntVis
 import jakarta.inject.Inject
-import org.rsmod.api.config.constants
 import org.rsmod.api.hunt.NpcSearch
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.protect.forcedWalk
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onApLoc1
@@ -109,9 +109,8 @@ constructor(
         }
         faceSquare(rock.coords)
         anim(THROW_ROPE_SEQ)
-        soundSynth(TIE_ROPE_SOUND)
+        delay(1)
         spotanimMap(worldRepo, ROPE_PIECE_SPOTANIM, ROPE_PIECE_TILE, delay = ROPE_PIECE_DELAY)
-        mes("You tie the rope around the rock and pull yourself through the water towards it.")
         delay(1)
         val pull = WaterfallCoords.ROPE_START.z - rock.coords.z - 1
         locRepo.change(rock, ROPED_ROCK, pull)
@@ -119,28 +118,13 @@ constructor(
             val tile = WaterfallCoords.ROPE_START.translateZ(-step)
             locRepo.add(tile, CROSSING_ROPE, step, LocAngle.East, LocShape.CentrepieceStraight)
         }
-        soundSynth(SWIM_SOUND)
-        for (step in 1..pull + 1) {
-            val next =
-                if (step <= pull) {
-                    WaterfallCoords.ROPE_START.translateZ(-step)
-                } else {
-                    WaterfallCoords.TREE_ISLAND
-                }
-            if (step % SWIM_SEQ_TICKS == 1) {
-                anim(SWIM_SEQ)
-            }
-            exactMove(
-                start = player.coords,
-                end = next,
-                delay1 = 0,
-                delay2 = CLIENT_CYCLES_PER_TICK,
-                dir = constants.em_face_south,
-                teleportType = TeleportType.Exempt,
-            )
-            delay(1)
+        val ropeEnd = WaterfallCoords.ROPE_START.translateZ(-pull)
+        setBas(WADING_BAS)
+        try {
+            forcedWalk(listOf(ropeEnd, WaterfallCoords.TREE_ISLAND), pull + 1)
+        } finally {
+            setBas(null)
         }
-        resetAnim()
     }
 
     private suspend fun ProtectedAccess.rockOp() {
@@ -197,6 +181,7 @@ constructor(
         const val CROSSING_ROPE = "loc.crossing_rope_waterfall_quest"
         const val ROPE_PIECE_SPOTANIM = "spotanim.rope_piece"
         const val ROPE_PIECE_DELAY = 3
+        const val WADING_BAS = "bas.waterfall_wading"
         val ROPE_PIECE_TILE = WaterfallCoords.ROPE_START.translateZ(-2)
         const val LEDGE_DOOR = "loc.waterfall_ledge_door"
         const val BARREL = "loc.barrel_waterfall_quest"
@@ -207,13 +192,9 @@ constructor(
         const val SWIM_SEQ = "seq.human_swim"
         const val THROW_ROPE_SEQ = "seq.human_throwrope"
         const val BARREL_SEQ = "seq.human_pickupfloor"
-        const val SWIM_SEQ_TICKS = 2
-        const val CLIENT_CYCLES_PER_TICK = 30
 
         const val RIVER_SOUND = "synth.splash_and_river"
         const val CRASH_SOUND = "synth.watersplash"
-        const val SWIM_SOUND = "synth.cf_swim"
-        const val TIE_ROPE_SOUND = "synth.cf_tierope"
         const val DOOR_SOUND = "synth.door_open"
     }
 }

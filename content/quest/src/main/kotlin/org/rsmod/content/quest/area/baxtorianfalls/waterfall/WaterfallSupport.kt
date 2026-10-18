@@ -1,5 +1,6 @@
 package org.rsmod.content.quest.area.baxtorianfalls.waterfall
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
@@ -51,6 +52,11 @@ internal fun Player.wearsAmulet(): Boolean = worn.contains(AMULET)
 
 internal fun Player.ownsAnywhere(obj: String): Boolean =
     inv.contains(obj) || worn.contains(obj) || invMap.getOrPut("inv.bank").contains(obj)
+
+internal fun ProtectedAccess.setBas(bas: String?) {
+    player.bas = bas?.let { ServerCacheManager.getBas(it.asRSCM(RSCMType.BAS)) }
+    player.rebuildAppearance()
+}
 
 internal fun ProtectedAccess.fadeOut() {
     fadeOverlay(0, CLEAR, 0, OPAQUE, FADE_CLIENT_CYCLES)

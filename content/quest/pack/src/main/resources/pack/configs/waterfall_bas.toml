@@ -1,0 +1,9 @@
+[[bas]]
+isServerOnly = true
+id = "bas.waterfall_wading"
+readyAnim = "seq.human_wading_ready"
+turnOnSpot = "seq.human_turnonspot"
+walkForward = "seq.human_wading"
+walkBack = "seq.human_walk_b"
+walkLeft = "seq.human_walk_l"
+walkRight = "seq.human_walk_r"
