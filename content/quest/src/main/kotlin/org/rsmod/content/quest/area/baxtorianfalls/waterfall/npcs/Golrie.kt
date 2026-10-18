@@ -67,14 +67,15 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
         )
         chatPlayer(quiz, "In that case, do you mind if I have a look around?")
         chatNpc(neutral, "No, of course not.")
-        val handedKey = GOLRIE_KEY in player.inv
-        if (!findPebble(takeKey = true)) {
+        val hasKey = GOLRIE_KEY in player.inv
+        val keyFirst = hasKey && player.inv.isFull()
+        if (!findPebble(takeKey = keyFirst)) {
             return
         }
         chatPlayer(quiz, "Could I take this old pebble?")
         chatNpc(neutral, "Oh that. Yes, have it. It's just some old elven junk I believe.")
-        if (handedKey) {
-            mesbox("You give Golrie the key.")
+        if (hasKey && (keyFirst || access.invDel(access.inv, GOLRIE_KEY).success)) {
+            objbox(GOLRIE_KEY, "You give Golrie the key.")
             chatNpc(neutral, "Ah, thanks a lot for the key, traveller.")
         }
         chatPlayer(happy, "No problem. Take care, Golrie.")
@@ -94,7 +95,7 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
         }
         access.invAddOrDrop(objRepo, PEBBLE)
         player.metGolrie = true
-        mesbox("You look amongst the junk on the floor and find Glarial's pebble.")
+        objbox(PEBBLE, "You look amongst the junk on the floor and find Glarial's pebble.")
         return true
     }
 }

@@ -8,7 +8,7 @@ import org.rsmod.api.script.onOpLocU
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GOLRIE_KEY
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.GOLRIE_NPC
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.READ_BOOK
-import org.rsmod.content.quest.util.QuestDoors
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -18,7 +18,7 @@ class GnomeVillageDungeon
 constructor(
     private val waterfall: WaterfallQuest,
     private val objRepo: ObjRepository,
-    private val doors: QuestDoors,
+    private val locRepo: LocRepository,
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -28,8 +28,6 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.searchCrate() {
-        anim(SEARCH_SEQ)
-        delay(1)
         if (waterfall.stage(player) < READ_BOOK || GOLRIE_KEY in player.inv) {
             mes("You search the crate but find nothing of interest.")
             return
@@ -48,7 +46,6 @@ constructor(
             unlockGate(gate)
             return
         }
-        soundSynth(LOCKED_SOUND)
         when {
             waterfall.stage(player) == 0 -> {
                 startDialogue {
@@ -77,25 +74,21 @@ constructor(
         }
     }
 
-    private fun ProtectedAccess.unlockGate(gate: BoundLocInfo) {
+    private suspend fun ProtectedAccess.unlockGate(gate: BoundLocInfo) {
         if (gate.playerIsSouth(player.coords)) {
             mes("You use the key to unlock the gate.")
         }
         passThrough(gate)
     }
 
-    private fun ProtectedAccess.passThrough(gate: BoundLocInfo) {
-        val across = gate.tileAcross(player.coords)
-        doors.open(this, gate, GATE, GATE_SOUND)
-        walk(across)
+    private suspend fun ProtectedAccess.passThrough(gate: BoundLocInfo) {
+        passDoor(locRepo, gate, GATE_OPEN)
     }
 
     private companion object {
         const val CRATE = "loc.golrie_crate_waterfall_quest"
         const val GATE = "loc.golrie_gate_waterfall_quest"
         const val GOLRIE_NAME = "Golrie"
-        const val SEARCH_SEQ = "seq.human_pickuptable"
-        const val GATE_SOUND = "synth.door_open"
-        const val LOCKED_SOUND = "synth.irondoor_locked"
+        const val GATE_OPEN = "loc.inactiveprisondoor"
     }
 }

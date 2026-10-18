@@ -8,6 +8,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.table.BooksRow
@@ -25,6 +26,7 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
     override fun ScriptContext.startup() {
         onOpLoc1(BOOKCASE) { searchBookcase() }
         onOpHeld1(BOOK) { readBook() }
+        onIfClose(BOOK_INTERFACE) { player.resetAnim() }
     }
 
     private suspend fun ProtectedAccess.searchBookcase() {
@@ -32,7 +34,6 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
             searchUninterestingBooks()
             return
         }
-        anim(SEARCH_SEQ)
         if (player.inv.contains(BOOK)) {
             mes("You search the bookcase but find nothing of interest")
             return
@@ -44,6 +45,7 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
     private suspend fun ProtectedAccess.readBook() {
         var spread = 0
         openSpread(spread)
+        anim(READ_SEQ)
         if (waterfall.stage(player) == MET_HUDON) {
             waterfall.advanceTo(this, READ_BOOK)
         }
@@ -55,10 +57,18 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
                     PAGE_RIGHT -> spread + 1
                     else -> spread
                 }
-            if (turned in SPREADS.indices) {
-                spread = turned
+            if (turned == spread || turned !in SPREADS.indices) {
+                openSpread(spread)
+                continue
             }
+            val forward = turned > spread
+            spread = turned
             openSpread(spread)
+            anim(if (forward) TURN_RIGHT_SEQ else TURN_LEFT_SEQ)
+            spotanim(
+                if (forward) TURN_RIGHT_SPOTANIM else TURN_LEFT_SPOTANIM,
+                height = TURN_SPOTANIM_HEIGHT,
+            )
         }
     }
 
@@ -77,7 +87,6 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
         ifSetEvents(PAGE_LEFT, -1..-1, IfEvent.PauseButton)
         ifSetEvents(PAGE_RIGHT, -1..-1, IfEvent.PauseButton)
         showSpread(spread)
-        soundSynth(PAGE_SOUND)
     }
 
     private fun ProtectedAccess.showSpread(spread: Int) {
@@ -96,8 +105,12 @@ constructor(private val waterfall: WaterfallQuest, private val objRepo: ObjRepos
         const val BOOKCASE = "loc.bookcase_waterfall_quest"
         const val BOOK_INTERFACE = "interface.book"
         val BOOK_INIT_SCRIPT = "clientscript.[clientscript,book_init]".asRSCM(RSCMType.CLIENTSCRIPT)
-        const val SEARCH_SEQ = "seq.human_pickuptable"
-        const val PAGE_SOUND = "synth.paper_move"
+        const val READ_SEQ = "seq.human_readbook"
+        const val TURN_RIGHT_SEQ = "seq.human_readbook_turnright"
+        const val TURN_LEFT_SEQ = "seq.human_readbook_turnleft"
+        const val TURN_RIGHT_SPOTANIM = "spotanim.readbook_spotanim_turnright"
+        const val TURN_LEFT_SPOTANIM = "spotanim.readbook_spotanim_turnleft"
+        const val TURN_SPOTANIM_HEIGHT = 92
         const val LINES_PER_PAGE = 15
 
         const val PAGE_LEFT = "component.book:page_left_button"

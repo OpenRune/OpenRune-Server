@@ -555,7 +555,7 @@ class WaterfallInteractionTest {
             with(quest) { scripts.startup() }
             with(Golrie(quest, objs)) { scripts.startup() }
             with(BookOnBaxtorian(quest, objs)) { scripts.startup() }
-            with(GnomeVillageDungeon(quest, objs, doors)) { scripts.startup() }
+            with(GnomeVillageDungeon(quest, objs, locs)) { scripts.startup() }
             with(GlarialsTomb(quest, locs, objs)) { scripts.startup() }
             with(WaterfallDungeon(quest, objs, world, doors)) { scripts.startup() }
             stageTo(stage)
