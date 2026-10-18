@@ -45,5 +45,35 @@ object TrailMapInterfaceTable {
                 "dbrow.cluehelper_map_beginner_4",
                 "interface.trail_map11",
             )
+            map(
+                "dbrow.trail_map_interface_easy_map006",
+                "dbrow.cluehelper_map_easy_6",
+                "interface.trail_clue_easy_map006",
+            )
+            map(
+                "dbrow.trail_map_interface_medium_map008",
+                "dbrow.cluehelper_map_medium_6",
+                "interface.trail_clue_medium_map008",
+            )
+            map(
+                "dbrow.trail_map_interface_medium_map009",
+                "dbrow.cluehelper_map_medium_7",
+                "interface.trail_clue_medium_map009",
+            )
+            map(
+                "dbrow.trail_map_interface_medium_map010",
+                "dbrow.cluehelper_map_medium_8",
+                "interface.trail_clue_medium_map010",
+            )
+            map(
+                "dbrow.trail_map_interface_medium_map011",
+                "dbrow.cluehelper_map_medium_9",
+                "interface.trail_clue_medium_map011",
+            )
+            map(
+                "dbrow.trail_map_interface_medium_map012",
+                "dbrow.cluehelper_map_medium_10",
+                "interface.trail_clue_medium_map012",
+            )
         }
 }

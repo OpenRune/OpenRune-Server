@@ -28,6 +28,9 @@ object TrailTierTable {
     const val STEP_VARP = 21
     const val NAME = 22
     const val URI_NPC = 23
+    const val STASH_LEVEL = 24
+    const val STASH_PLANK = 25
+    const val STASH_XP = 26
 
     fun tiers() =
         dbTable("dbtable.trail_tier", serverOnly = true) {
@@ -55,11 +58,17 @@ object TrailTierTable {
             column("step_varp", STEP_VARP, VarType.VARP)
             column("name", NAME, VarType.STRING)
             column("uri_npc", URI_NPC, VarType.NPC)
+            column("stash_level", STASH_LEVEL, VarType.INT)
+            column("stash_plank", STASH_PLANK, VarType.OBJ)
+            column("stash_xp", STASH_XP, VarType.INT)
 
             row("dbrow.trail_tier_beginner") {
                 column(DIFFICULTY, 0)
                 column(NAME, "beginner")
                 columnRSCM(URI_NPC, "npc.trail_beginner_uri")
+                column(STASH_LEVEL, 12)
+                columnRSCM(STASH_PLANK, "obj.woodplank")
+                column(STASH_XP, 150)
                 columnRSCM(CLUE_OBJ, "obj.trail_clue_beginner")
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_beginner")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_beginner")
@@ -83,6 +92,9 @@ object TrailTierTable {
                 column(DIFFICULTY, 1)
                 column(NAME, "easy")
                 columnRSCM(URI_NPC, "npc.trail_easy_uri")
+                column(STASH_LEVEL, 27)
+                columnRSCM(STASH_PLANK, "obj.woodplank")
+                column(STASH_XP, 150)
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_easy")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_easy")
                 column(STEPS_MIN, 2)
@@ -108,6 +120,9 @@ object TrailTierTable {
                 column(DIFFICULTY, 2)
                 column(NAME, "medium")
                 columnRSCM(URI_NPC, "npc.trail_medium_uri")
+                column(STASH_LEVEL, 42)
+                columnRSCM(STASH_PLANK, "obj.plank_oak")
+                column(STASH_XP, 250)
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_medium")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_medium")
                 column(STEPS_MIN, 3)
@@ -133,6 +148,9 @@ object TrailTierTable {
                 column(DIFFICULTY, 3)
                 column(NAME, "hard")
                 columnRSCM(URI_NPC, "npc.trail_hard_uri")
+                column(STASH_LEVEL, 55)
+                columnRSCM(STASH_PLANK, "obj.plank_teak")
+                column(STASH_XP, 400)
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_hard")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_hard")
                 column(STEPS_MIN, 4)
@@ -156,6 +174,9 @@ object TrailTierTable {
                 column(DIFFICULTY, 4)
                 column(NAME, "elite")
                 columnRSCM(URI_NPC, "npc.trail_elite_uri")
+                column(STASH_LEVEL, 77)
+                columnRSCM(STASH_PLANK, "obj.plank_mahogany")
+                column(STASH_XP, 600)
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_elite")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_elite")
                 column(STEPS_MIN, 5)
@@ -181,6 +202,9 @@ object TrailTierTable {
                 column(DIFFICULTY, 5)
                 column(NAME, "master")
                 columnRSCM(URI_NPC, "npc.trail_master_uri")
+                column(STASH_LEVEL, 88)
+                columnRSCM(STASH_PLANK, "obj.plank_mahogany")
+                column(STASH_XP, 1500)
                 columnRSCM(CLUE_OBJ, "obj.trail_clue_master")
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_master")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_master")

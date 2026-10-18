@@ -552,6 +552,11 @@ constructor(
 
     /* Interaction event launch functions */
     public fun triggerOp(player: Player, interaction: InteractionLocOp) {
+        val hook = locInteractions.opHook(player, interaction.target, interaction.op)
+        if (hook != null) {
+            protectedAccess.launch(player) { with(hook) { op(interaction.target, interaction.op) } }
+            return
+        }
         val op = locInteractions.opTrigger(player, interaction.target, interaction.op)
         if (op != null) {
             launchOp(player, interaction, op)

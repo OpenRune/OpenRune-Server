@@ -5,6 +5,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.music.MusicPlayer
 import org.rsmod.api.player.hook.GroundItemDropResolver
 import org.rsmod.api.player.hook.PlayerGroundItemDropHook
+import org.rsmod.api.player.hook.PlayerLocOpHook
 import org.rsmod.api.player.hook.PlayerNpcOpHook
 import org.rsmod.api.player.hook.PlayerObjTakeValidateHook
 import org.rsmod.api.player.hook.PlayerObjTakeValidator
@@ -22,6 +23,7 @@ public object PlayerModule : ExtendedModule() {
         newSetBinding<PlayerGroundItemDropHook>()
         newSetBinding<PlayerObjTakeValidateHook>()
         newSetBinding<PlayerNpcOpHook>()
+        newSetBinding<PlayerLocOpHook>()
         bindInstance<MusicPlayer>()
         bindInstance<ProtectedAccessContextFactory>()
         bindInstance<ProtectedAccessLauncher>()

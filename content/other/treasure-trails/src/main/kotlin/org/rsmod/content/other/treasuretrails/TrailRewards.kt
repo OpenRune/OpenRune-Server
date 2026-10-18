@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ItemServerType
 import dtx.core.ArgMap
 import dtx.core.RollResult
 import dtx.core.flatten
@@ -38,7 +39,7 @@ constructor(private val objRepo: ObjRepository, private val marketPrices: Market
         val completed = player.vars[completedVarp] + 1
         VarPlayerIntMapSetter.set(player, completedVarp, completed)
 
-        val rewards = rollRewards(tier, table) + tertiaryRewards(tier, completed)
+        val rewards = rollRewards(tier, table) + tertiaryRewards(player, tier, completed)
         for (reward in rewards) {
             invAddOrDrop(objRepo, reward.obj, reward.count)
         }
@@ -72,12 +73,32 @@ constructor(private val objRepo: ObjRepository, private val marketPrices: Market
         }
     }
 
-    private fun tertiaryRewards(tier: TrailTierRow, completed: Int): List<CasketReward> =
-        listOfNotNull(
-            tier.minorCaseObj.takeIf { completed == tier.minorCaseAt },
-            tier.majorCaseObj.takeIf { completed == tier.majorCaseAt },
-            tier.milestoneObj?.takeIf { completed == tier.milestoneAt },
-        ).map { CasketReward(it.symbol(), 1) }
+    /**
+     * Scroll cases and milestone objs are given on the threshold completion, or on any later one
+     * when the player has lost the obj (and, for a case, has not opened one).
+     */
+    private fun tertiaryRewards(
+        player: Player,
+        tier: TrailTierRow,
+        completed: Int,
+    ): List<CasketReward> {
+        fun missingCase(obj: ItemServerType, at: Int, varbit: Int): ItemServerType? =
+            obj.takeIf {
+                completed >= at &&
+                    player.vars[TrailTiers.varbit(varbit)] == 0 &&
+                    !TrailTiers.owns(player, it)
+            }
+        val milestone =
+            tier.milestoneObj?.takeIf { obj ->
+                tier.milestoneAt?.let { completed >= it } == true && !TrailTiers.owns(player, obj)
+            }
+        return listOfNotNull(
+                missingCase(tier.minorCaseObj, tier.minorCaseAt, tier.minorCaseVarbit),
+                missingCase(tier.majorCaseObj, tier.majorCaseAt, tier.majorCaseVarbit),
+                milestone,
+            )
+            .map { CasketReward(it.symbol(), 1) }
+    }
 
     private fun ProtectedAccess.reward(drop: DropRollItem): CasketReward? {
         if (drop.isNothing || !drop.condition(player)) return null

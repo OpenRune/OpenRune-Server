@@ -2,12 +2,14 @@ package org.rsmod.content.other.treasuretrails
 
 import jakarta.inject.Inject
 import org.rsmod.api.enums.TrailEnums
+import org.rsmod.api.music.MusicRepository
 import org.rsmod.api.player.hook.PlayerNpcOpHook
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.table.TrailCharlieTaskRow
 import org.rsmod.api.table.TrailTierRow
+import org.rsmod.api.table.Tuple2
 import org.rsmod.api.table.cluehelper.CluehelperClueCrypticRow
 import org.rsmod.content.other.treasuretrails.TrailFlow.advance
 import org.rsmod.content.other.treasuretrails.TrailFlow.matches
@@ -15,37 +17,52 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.InteractionOp
 
-class ClueNpcHook @Inject constructor(private val npcRepo: NpcRepository) : PlayerNpcOpHook {
+class ClueNpcHook
+@Inject
+constructor(private val npcRepo: NpcRepository, private val music: MusicRepository) :
+    PlayerNpcOpHook {
     override fun claims(player: Player, npc: Npc, op: InteractionOp): Boolean {
         if (op != InteractionOp.Op1) return false
         if (npc.uriTier() != null) return true
-        val tier = TrailTiers.tier(TrailTiers.BEGINNER)
-        if (!TrailFlow.holdsClue(player, tier)) return false
-        val step = TrailFlow.currentStep(player, tier) ?: return false
-        if (step.kind == ClueKind.HotCold) {
-            return reldo().matches(npc) && !player.ownsDevice()
-        }
-        val target = ClueSteps.target(player, step) as? ClueTarget.TalkTo ?: return false
-        return target.matches(npc)
+        return talkTrail(player, npc) != null
     }
 
     override suspend fun ProtectedAccess.op(npc: Npc, op: InteractionOp) {
         npc.uriTier()?.let { return talkToUri(npc, it) }
-        val tier = TrailTiers.tier(TrailTiers.BEGINNER)
-        val step = TrailFlow.currentStep(player, tier) ?: return
+        val trail = talkTrail(player, npc) ?: return
+        val tier = trail.tier
+        val step = trail.step
         when (step.kind) {
             ClueKind.HotCold -> giveDevice(npc)
             ClueKind.SkillChallenge -> handInTask(npc, tier, step)
             else -> {
+                val question = ClueSteps.question(step)
                 val challenge = TrailFlow.skillChallengeFor(player, step, npc, random)
-                if (challenge != null) {
-                    TrailFlow.assign(player, tier, challenge)
-                    startDialogue(npc) { mesbox(challenge.text.orEmpty()) }
-                } else {
-                    completeTalk(npc, tier)
+                when {
+                    challenge != null -> {
+                        TrailFlow.assign(player, tier, challenge)
+                        startDialogue(npc) { mesbox(challenge.text.orEmpty()) }
+                    }
+                    question != null -> challengeScroll(npc, trail, question)
+                    else -> completeTalk(npc, tier)
                 }
             }
         }
+    }
+
+    private fun talkTrail(player: Player, npc: Npc): HeldTrail? =
+        TrailFlow.heldTrails(player).firstOrNull { trail ->
+            val step = trail.step
+            if (step.kind == ClueKind.HotCold) {
+                return@firstOrNull reldo().matches(npc) && !player.ownsDevice()
+            }
+            val target = ClueSteps.target(player, step) as? ClueTarget.TalkTo
+            target != null && target.matches(npc) && (step.kind != ClueKind.Music || playing(player, step))
+        }
+
+    private fun playing(player: Player, step: ClueStep): Boolean {
+        val track = step.music?.let(music::forRow) ?: return false
+        return player.vars[CURRENT_TRACK] == track.id
     }
 
     private suspend fun ProtectedAccess.completeTalk(npc: Npc, tier: TrailTierRow) {
@@ -58,6 +75,35 @@ class ClueNpcHook @Inject constructor(private val npcRepo: NpcRepository) : Play
                 "$name has given you another clue scroll!"
             }
         startDialogue(npc) { objbox(given.symbol(), text) }
+    }
+
+    /**
+     * The first talk hands over the challenge scroll; talking again with it asks for the answer.
+     * The scroll is only taken once the answer is right and the clue is still held.
+     */
+    private suspend fun ProtectedAccess.challengeScroll(
+        npc: Npc,
+        trail: HeldTrail,
+        question: Tuple2<String, Int>,
+    ) {
+        val scroll = TrailTiers.challengeObj(trail.step.rowId)?.symbol()
+        if (scroll != null && inv.count(scroll) == 0) {
+            if (invAdd(inv, scroll, 1).failure) {
+                mes("You don't have enough inventory space.")
+                return
+            }
+            val name = npcVisType(npc).name
+            startDialogue(npc) { objbox(scroll, "$name has given you a challenge scroll!") }
+            return
+        }
+        val answer = countDialog(question.t0)
+        if (answer != question.t1) {
+            startDialogue(npc) { chatNpc(neutral, "That isn't right. Try again.") }
+            return
+        }
+        if (TrailFlow.currentStep(player, trail.tier)?.rowId != trail.step.rowId) return
+        if (scroll != null && invDel(inv, scroll, 1).failure) return
+        completeTalk(npc, trail.tier)
     }
 
     private suspend fun ProtectedAccess.handInTask(npc: Npc, tier: TrailTierRow, step: ClueStep) {
@@ -124,6 +170,7 @@ class ClueNpcHook @Inject constructor(private val npcRepo: NpcRepository) : Play
     private companion object {
         const val DEVICE = "obj.beginner_device"
         const val SUMMONED_NPC = "varp.cluehelper_npc_id"
+        const val CURRENT_TRACK = "varbit.music_curr_id"
         const val NO_NPC = -1
         const val URI_LEAVE_DELAY = 2
     }

@@ -2,11 +2,14 @@ package org.rsmod.content.other.treasuretrails
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.util.Wearpos
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
@@ -20,6 +23,8 @@ import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.player.dialogue.align.TextAlignment
+import org.rsmod.api.music.MusicRepository
+import org.rsmod.api.player.input.ResumePCountDialogInput
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -35,7 +40,9 @@ import org.rsmod.api.table.TrailTierRow
 import org.rsmod.api.table.cluehelper.CluehelperClueCrypticRow
 import org.rsmod.api.table.cluehelper.CluehelperClueSkillchallengeRow
 import org.rsmod.content.other.treasuretrails.TrailFlow.advance
+import org.rsmod.content.other.treasuretrails.ClueStash.search
 import org.rsmod.content.other.treasuretrails.TrailFlow.openBox
+import org.rsmod.content.other.treasuretrails.TrailFlow.openScrollCase
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -45,6 +52,7 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.InteractionOp
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
@@ -199,10 +207,160 @@ class TreasureTrailsItemTest {
         }
     }
 
-    private class Fixture {
-        val tier: TrailTierRow = TrailTiers.tier(TrailTiers.BEGINNER)
-        val clue = checkNotNull(tier.clueObj).symbol()
+    @Test
+    fun `an obj-per-step clue is swapped in its own slot with a full inventory`() {
+        val f = Fixture(MEDIUM)
+        val clue = TrailTiers.clueObjs(MEDIUM).first()
+        for (slot in 0 until 28) f.player.inv[slot] = InvObj(FILLER, 1)
+        f.player.inv[4] = InvObj(clue.symbol(), 1)
+        f.state.length = 3
+
+        val given = checkNotNull(f.access().advance(f.tier))
+        assertEquals(given.id, f.player.inv[4]?.id)
+        assertNotEquals(TrailTiers.objStep(clue), TrailTiers.objStep(given))
+        assertEquals(1, TrailTiers.ownedClues(f.player, MEDIUM))
+        assertEquals(27, f.player.inv.count(FILLER))
+        assertEquals(1, f.state.progress)
+    }
+
+    @Test
+    fun `the last obj-per-step clue becomes exactly one casket`() {
+        val f = Fixture(MEDIUM)
+        f.player.inv[2] = InvObj(TrailTiers.clueObjs(MEDIUM).first().symbol(), 1)
+        f.state.length = 1
+
+        val given = f.access().advance(f.tier)
+        assertEquals(f.tier.casketObj.id, given?.id)
+        assertEquals(0, TrailTiers.ownedClues(f.player, MEDIUM))
+        assertEquals(1, f.player.inv.count(f.tier.casketObj.symbol()))
+        assertNull(f.access().advance(f.tier))
+        assertEquals(1, f.player.inv.count(f.tier.casketObj.symbol()))
+    }
+
+    @Test
+    fun `a medium scroll box becomes exactly one medium clue`() {
+        val f = Fixture(MEDIUM)
+        f.player.inv[5] = InvObj(f.box, 2)
+
+        f.run { openBox(f.tier) }
+        assertEquals(1, f.player.inv.count(f.box))
+        assertEquals(1, TrailTiers.ownedClues(f.player, MEDIUM))
+
+        f.run { openBox(f.tier) }
+        assertEquals(1, f.player.inv.count(f.box))
+        assertEquals(1, TrailTiers.ownedClues(f.player, MEDIUM))
+    }
+
+    @Test
+    fun `a challenge scroll is handed out once and only taken for the right answer`() {
+        val f = Fixture(MEDIUM)
+        val clue =
+            TrailTiers.clueObjs(MEDIUM).first { obj ->
+                val step = ClueSteps.step(checkNotNull(TrailTiers.objStep(obj)))
+                ClueSteps.question(step) != null && TrailTiers.challengeObj(step.rowId) != null
+            }
+        val step = ClueSteps.step(checkNotNull(TrailTiers.objStep(clue)))
+        val scroll = checkNotNull(TrailTiers.challengeObj(step.rowId)).symbol()
+        val answer = checkNotNull(ClueSteps.question(step)).t1
+        val target = ClueSteps.target(f.player, step) as ClueTarget.TalkTo
+        val npc = Npc(target.row.npc, target.row.coord)
+        f.player.inv[0] = InvObj(clue.symbol(), 1)
+        f.state.length = 3
+
+        f.run { with(f.npcHook) { op(npc, InteractionOp.Op1) } }
+        assertEquals(1, f.player.inv.count(scroll))
+        assertEquals(0, f.state.progress)
+
+        f.countAnswer = answer + 1
+        f.run { with(f.npcHook) { op(npc, InteractionOp.Op1) } }
+        assertEquals(1, f.player.inv.count(scroll))
+        assertEquals(0, f.state.progress)
+
+        f.countAnswer = answer
+        f.run { with(f.npcHook) { op(npc, InteractionOp.Op1) } }
+        assertEquals(0, f.player.inv.count(scroll))
+        assertEquals(1, f.state.progress)
+        assertEquals(1, TrailTiers.ownedClues(f.player, MEDIUM))
+    }
+
+    @Test
+    fun `a stash unit stores and returns exactly the outfit`() {
+        val f = Fixture(EASY)
+        val unit = checkNotNull(ServerCacheManager.getObject(STASH_UNIT.asRSCM()))
+        val outfit = listOf("obj.plainstaff", "obj.studded_body", "obj.bronze_platelegs")
+        outfit.forEachIndexed { slot, obj -> f.player.inv[slot] = InvObj(obj, 1) }
+        f.player.inv[3] = InvObj(FILLER, 1)
+
+        with(ClueStash) { f.access().search(unit) }
+        assertTrue(ClueStash.filled(f.player, unit))
+        assertTrue(outfit.all { f.player.inv.count(it) == 0 })
+        assertEquals(1, f.player.inv.count(FILLER))
+
+        for (slot in 0 until 28) f.player.inv[slot] = InvObj(FILLER, 1)
+        with(ClueStash) { f.access().search(unit) }
+        assertTrue(ClueStash.filled(f.player, unit))
+        assertEquals(28, f.player.inv.count(FILLER))
+
+        for (slot in 0 until 28) f.player.inv[slot] = null
+        with(ClueStash) { f.access().search(unit) }
+        assertFalse(ClueStash.filled(f.player, unit))
+        assertTrue(outfit.all { f.player.inv.count(it) == 1 })
+    }
+
+    @Test
+    fun `a stash unit takes equipped pieces only when the setting is on and inventory comes first`() {
+        val f = Fixture(EASY)
+        val unit = checkNotNull(ServerCacheManager.getObject(STASH_UNIT.asRSCM()))
+        f.player.inv[0] = InvObj("obj.plainstaff", 1)
+        f.player.worn[Wearpos.Torso.slot] = InvObj("obj.studded_body", 1)
+        f.player.worn[Wearpos.Legs.slot] = InvObj("obj.bronze_platelegs", 1)
+
+        with(ClueStash) { f.access().search(unit) }
+        assertFalse(ClueStash.filled(f.player, unit))
+        assertEquals(1, f.player.inv.count("obj.plainstaff"))
+
+        VarPlayerIntMapSetter.set(f.player, "varbit.option_hidey_holes_equipped", 1)
+        with(ClueStash) { f.access().search(unit) }
+        assertTrue(ClueStash.filled(f.player, unit))
+        assertEquals(0, f.player.inv.count("obj.plainstaff"))
+        assertNull(f.player.worn[Wearpos.Torso.slot])
+        assertNull(f.player.worn[Wearpos.Legs.slot])
+    }
+
+    @Test
+    fun `a stash unit takes nothing from an incomplete outfit`() {
+        val f = Fixture(EASY)
+        val unit = checkNotNull(ServerCacheManager.getObject(STASH_UNIT.asRSCM()))
+        f.player.inv[0] = InvObj("obj.plainstaff", 1)
+        f.player.inv[1] = InvObj("obj.studded_body", 1)
+
+        with(ClueStash) { f.access().search(unit) }
+        assertFalse(ClueStash.filled(f.player, unit))
+        assertEquals(1, f.player.inv.count("obj.plainstaff"))
+        assertEquals(1, f.player.inv.count("obj.studded_body"))
+    }
+
+    @Test
+    fun `a scroll case is used once and raises the cap by one`() {
+        val f = Fixture(MEDIUM)
+        val case = f.tier.minorCaseObj
+        f.player.inv[0] = InvObj(case.symbol(), 1)
+        f.player.inv[1] = InvObj(case.symbol(), 1)
+        val before = TrailTiers.capacity(f.player, f.tier)
+
+        f.access().openScrollCase(f.tier, case, f.tier.minorCaseVarbit)
+        f.access().openScrollCase(f.tier, case, f.tier.minorCaseVarbit)
+        assertEquals(1, f.player.inv.count(case.symbol()))
+        assertEquals(before + 1, TrailTiers.capacity(f.player, f.tier))
+    }
+
+    private class Fixture(difficulty: Int = TrailTiers.BEGINNER) {
+        val tier: TrailTierRow = TrailTiers.tier(difficulty)
+        val clue: String
+            get() = checkNotNull(tier.clueObj).symbol()
+
         val box = tier.boxObj.symbol()
+        var countAnswer = 0
         val random = DefaultGameRandom(seed = 7L)
         private val events = EventBus()
         private val client = RecordingClient()
@@ -243,8 +401,12 @@ class TreasureTrailsItemTest {
         private val npcs = NpcList()
         val npcHook =
             ClueNpcHook(
-                NpcRepository(MapClock(100), NpcRegistry(npcs, CollisionFlagMap(), events), npcs)
+                NpcRepository(MapClock(100), NpcRegistry(npcs, CollisionFlagMap(), events), npcs),
+                MusicRepository(random),
             )
+
+        val state: TrailState
+            get() = TrailState(player, tier)
 
         fun access() = ProtectedAccess(player, coroutine, context)
 
@@ -291,7 +453,9 @@ class TreasureTrailsItemTest {
             result?.getOrThrow()
             repeat(50) {
                 if (coroutine.isIdle) return
-                if (coroutine.isAwaiting(ResumePauseButtonInput::class)) {
+                if (coroutine.isAwaiting(ResumePCountDialogInput::class)) {
+                    coroutine.resumeWith(ResumePCountDialogInput(countAnswer))
+                } else if (coroutine.isAwaiting(ResumePauseButtonInput::class)) {
                     val parent =
                         listOf("objectbox", "chat_left", "chat_right", "messagebox").first {
                             player.ui.containsModal("interface.$it")
@@ -344,6 +508,9 @@ class TreasureTrailsItemTest {
     }
 
     companion object {
+        private const val EASY = 1
+        private const val MEDIUM = 2
+        private const val STASH_UNIT = "loc.hh_easy019"
         private const val HANS = "dbrow.cluehelper_cryptic_beginner_hans"
         private const val CHARLIE_TROUT = "dbrow.cluehelper_skillchallenge_beginner_0"
         private const val TROUT = "obj.trout"

@@ -3,6 +3,7 @@ package org.rsmod.content.other.treasuretrails
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
@@ -11,6 +12,7 @@ import org.rsmod.api.enums.TrailEnums
 import org.rsmod.api.player.events.PlayerEmoteEvent
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onEvent
@@ -18,10 +20,15 @@ import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
+import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.table.TrailEmoteAreaRow
 import org.rsmod.api.table.TrailTierRow
+import org.rsmod.content.other.treasuretrails.ClueStash.build
+import org.rsmod.content.other.treasuretrails.ClueStash.search
 import org.rsmod.content.other.treasuretrails.TrailFlow.checkSteps
 import org.rsmod.content.other.treasuretrails.TrailFlow.openBox
+import org.rsmod.content.other.treasuretrails.TrailFlow.openScrollCase
 import org.rsmod.content.other.treasuretrails.TrailFlow.read
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
@@ -38,18 +45,37 @@ constructor(
     private val npcRepo: NpcRepository,
     private val npcList: NpcList,
     private val worldRepo: WorldRepository,
+    private val random: GameRandom,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         ClueScrollDrops.resolve = ::resolveDrop
 
-        val beginner = TrailTiers.tier(TrailTiers.BEGINNER)
-        val clue = checkNotNull(beginner.clueObj).symbol()
-        onOpHeld1(clue) { read(beginner) }
-        onOpHeld2(clue) { checkSteps(beginner) }
-        onOpHeld1(beginner.boxObj.symbol()) { openBox(beginner) }
-        onOpHeld1(beginner.casketObj.symbol()) { with(rewards) { openCasket(beginner) } }
-        onOpHeld1(DEVICE) { feelDevice(beginner) }
-        onEvent<PlayerEmoteEvent> { summonUri(player, slot, beginner) }
+        for (tier in TrailTiers.playableTiers()) {
+            val clues = tier.clueObj?.let(::listOf) ?: TrailTiers.clueObjs(tier.difficulty)
+            for (clue in clues) {
+                onOpHeld1(clue.symbol()) { read(tier) }
+                onOpHeld2(clue.symbol()) { checkSteps(tier) }
+            }
+            for (scroll in TrailTiers.challengeObjs(tier.difficulty)) {
+                onOpHeld1(scroll.symbol()) { readChallenge(scroll) }
+            }
+            onOpHeld1(tier.boxObj.symbol()) { openBox(tier) }
+            onOpHeld1(tier.casketObj.symbol()) { with(rewards) { openCasket(tier) } }
+        }
+        for (tier in TrailTierRow.all()) {
+            onOpHeld1(tier.minorCaseObj.symbol()) {
+                openScrollCase(tier, tier.minorCaseObj, tier.minorCaseVarbit)
+            }
+            onOpHeld1(tier.majorCaseObj.symbol()) {
+                openScrollCase(tier, tier.majorCaseObj, tier.majorCaseVarbit)
+            }
+        }
+        for (unit in ClueStash.allUnits()) {
+            onOpLoc1(unit) { build(unit) }
+            onOpLoc2(unit) { search(unit) }
+        }
+        onOpHeld1(DEVICE) { feelDevice(TrailTiers.tier(TrailTiers.BEGINNER)) }
+        onEvent<PlayerEmoteEvent> { onEmote(player, slot) }
 
         onIfClose(TrailRewards.REWARD_INTERFACE) { rewards.closeRewards(player) }
         onIfModalButton("component.trail_rewardscreen:items") {
@@ -59,11 +85,21 @@ constructor(
         }
     }
 
+    /** After X Marks the Spot clues drop as scroll boxes; before it, as a random step obj. */
     private fun resolveDrop(player: Player, scroll: String): String? {
-        if (!ClueTakeHook.boxesUnlocked(player)) return null
         val type = ServerCacheManager.getItem(scroll.asRSCM(RSCMType.OBJ)) ?: return null
         val difficulty = TrailTiers.clueDifficulty(type) ?: return null
-        return TrailTiers.tier(difficulty).boxObj.symbol()
+        val tier = TrailTiers.tier(difficulty)
+        if (ClueTakeHook.boxesUnlocked(player)) return tier.boxObj.symbol()
+        if (difficulty !in TrailTiers.PLAYABLE) return null
+        return TrailFlow.freshClue(tier, random).symbol()
+    }
+
+    private fun ProtectedAccess.readChallenge(scroll: ItemServerType) {
+        val step = TrailTiers.objStep(scroll)?.let(ClueSteps::step) ?: return
+        val question = ClueSteps.question(step) ?: return
+        ifOpenMainModal("interface.trail_cluetext")
+        ifSetText("component.trail_cluetext:text", question.t0)
     }
 
     private fun ProtectedAccess.feelDevice(tier: TrailTierRow) {
@@ -96,16 +132,40 @@ constructor(
         mes("The device is $temperature$comparison.")
     }
 
-    private fun summonUri(player: Player, slot: Int, tier: TrailTierRow) {
-        if (!TrailFlow.holdsClue(player, tier)) return
-        val step = TrailFlow.currentStep(player, tier) ?: return
-        if (step.kind != ClueKind.Emote || step.emotes != listOf(slot)) return
-        val spot = (ClueSteps.target(player, step) as? ClueTarget.Dig)?.row?.coord ?: return
-        val spots = listOf(spot) + emoteAreaCoords(step)
-        if (spots.none { player.coords.distanceTo(it) <= EMOTE_RADIUS }) return
-        if (!ClueOutfits.wearing(player, step.outfit)) return
-        if (summonedUri(player) != null) return
+    /**
+     * Emote steps list one or two emotes. The first of a pair is remembered in a temp varp until
+     * the second follows at the same spot; any other emote there starts the pair over.
+     */
+    private fun onEmote(player: Player, slot: Int) {
+        for (trail in TrailFlow.heldTrails(player)) {
+            val step = trail.step
+            if (step.kind != ClueKind.Emote || !atEmoteSpot(player, step)) continue
+            if (!ClueOutfits.wearing(player, step.outfit)) continue
+            val emotes = step.emotes
+            val pending = player.vars[TrailFlow.EMOTE_FIRST] == step.rowId
+            val complete =
+                when {
+                    emotes.size == 1 -> emotes.single() == slot
+                    pending && emotes.getOrNull(1) == slot -> true
+                    else -> {
+                        val first = if (emotes.firstOrNull() == slot) step.rowId else 0
+                        VarPlayerIntMapSetter.set(player, TrailFlow.EMOTE_FIRST, first)
+                        false
+                    }
+                }
+            if (complete) summonUri(player, trail.tier)
+        }
+    }
 
+    private fun atEmoteSpot(player: Player, step: ClueStep): Boolean {
+        val spot = (ClueSteps.target(player, step) as? ClueTarget.Dig)?.row?.coord ?: return false
+        val spots = listOf(spot) + emoteAreaCoords(step)
+        return spots.any { player.coords.distanceTo(it) <= EMOTE_RADIUS }
+    }
+
+    private fun summonUri(player: Player, tier: TrailTierRow) {
+        if (summonedUri(player) != null) return
+        VarPlayerIntMapSetter.set(player, TrailFlow.EMOTE_FIRST, 0)
         val coords = player.coords.translateZ(-1)
         val uri = Npc(tier.uriNpc, coords)
         npcRepo.add(uri, URI_DURATION)

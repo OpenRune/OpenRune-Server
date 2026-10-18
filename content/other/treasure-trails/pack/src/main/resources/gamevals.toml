@@ -6,10 +6,15 @@ trail_emote_area = 65494
 
 [gamevals.param]
 trail_clue_step = 623
+trail_item_group = 258
+
+[gamevals.inv]
+trail_stash = 1120
 
 [gamevals.enum]
 trail_uri_phrases = 65450
 trail_hotcold_temperatures = 65451
+trail_stash_units = 1368
 
 [gamevals.varp]
 trail_completed_beginner = 63800
@@ -21,6 +26,7 @@ trail_completed_master = 63805
 trail_progress_low = 63806
 trail_progress_high = 63807
 trail_beginner_step = 63808
+trail_emote_first = 63809
 
 [gamevals.varbit]
 trail_beginner_length = 63800
@@ -58,3 +64,9 @@ trail_map_interface_standing_stones = 55474
 trail_map_interface_wizards_tower = 55475
 trail_emote_area_al_kharid_mine = 55476
 trail_emote_area_ardougne_mill = 55477
+trail_map_interface_easy_map006 = 55558
+trail_map_interface_medium_map008 = 55559
+trail_map_interface_medium_map009 = 55560
+trail_map_interface_medium_map010 = 55561
+trail_map_interface_medium_map011 = 55562
+trail_map_interface_medium_map012 = 55563

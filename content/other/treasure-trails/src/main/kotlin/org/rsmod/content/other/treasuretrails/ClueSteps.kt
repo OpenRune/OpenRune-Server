@@ -3,7 +3,12 @@ package org.rsmod.content.other.treasuretrails
 import dev.openrune.definition.type.DBRowType
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ObjectServerType
 import dev.openrune.types.dbcol.DbHelper
+import java.util.concurrent.ConcurrentHashMap
+import org.rsmod.api.table.MusicRow
+import org.rsmod.api.table.Tuple2
+import org.rsmod.api.table.cluehelper.CluehelperChallengeQuestionRow
 import org.rsmod.api.table.cluehelper.CluehelperClueAnagramRow
 import org.rsmod.api.table.cluehelper.CluehelperClueCipherRow
 import org.rsmod.api.table.cluehelper.CluehelperClueCoordinateRow
@@ -41,29 +46,69 @@ class ClueStep(
     val targets: List<Int>,
     val emotes: List<Int> = emptyList(),
     val outfit: CluehelperOutfitRow? = null,
+    val challenge: Int? = null,
+    val hideyHole: ObjectServerType? = null,
+    val music: MusicRow? = null,
+    val restricted: Boolean = false,
 )
 
 object ClueSteps {
-    fun step(rowId: Int): ClueStep =
+    private val steps = ConcurrentHashMap<Int, ClueStep>()
+
+    fun step(rowId: Int): ClueStep = steps.getOrPut(rowId) { load(rowId) }
+
+    fun isStep(rowId: Int): Boolean = dbTableOf(rowId) in STEP_TABLES
+
+    private fun load(rowId: Int): ClueStep =
         when (val table = dbTableOf(rowId)) {
             "dbtable.cluehelper_clue_anagram" ->
                 CluehelperClueAnagramRow.getRow(rowId).let {
-                    ClueStep(rowId, ClueKind.Anagram, it.difficulty, it.clueText, it.target.ids())
+                    ClueStep(
+                        rowId,
+                        ClueKind.Anagram,
+                        it.difficulty,
+                        it.clueText,
+                        it.target.ids(),
+                        challenge = it.challenge?.id,
+                        restricted = it.restrictedContent != null,
+                    )
                 }
             "dbtable.cluehelper_clue_cipher" ->
                 CluehelperClueCipherRow.getRow(rowId).let {
-                    ClueStep(rowId, ClueKind.Cipher, it.difficulty, it.clueText, it.target.ids())
+                    ClueStep(
+                        rowId,
+                        ClueKind.Cipher,
+                        it.difficulty,
+                        it.clueText,
+                        it.target.ids(),
+                        challenge = it.challenge?.id,
+                        restricted = it.restrictedContent != null,
+                    )
                 }
             "dbtable.cluehelper_clue_coordinate" ->
                 CluehelperClueCoordinateRow.getRow(rowId).let {
-                    val targets = listOf(it.target.rowId)
-                    ClueStep(rowId, ClueKind.Coordinate, it.difficulty, it.clueText, targets)
+                    ClueStep(
+                        rowId,
+                        ClueKind.Coordinate,
+                        it.difficulty,
+                        it.clueText,
+                        listOf(it.target.rowId),
+                        restricted = it.restrictedContent != null,
+                    )
                 }
             "dbtable.cluehelper_clue_cryptic" ->
                 CluehelperClueCrypticRow.getRow(rowId).let {
-                    val targets = it.target.ids()
-                    val kind = ClueKind.Cryptic
-                    ClueStep(rowId, kind, it.difficulty, it.clueText, targets, outfit = it.outfit)
+                    ClueStep(
+                        rowId,
+                        ClueKind.Cryptic,
+                        it.difficulty,
+                        it.clueText,
+                        it.target.ids(),
+                        outfit = it.outfit,
+                        challenge = it.challenge?.rowId,
+                        hideyHole = it.hideyHoleLoc,
+                        restricted = it.restrictedContent != null,
+                    )
                 }
             "dbtable.cluehelper_clue_emote" ->
                 CluehelperClueEmoteRow.getRow(rowId).let {
@@ -75,6 +120,8 @@ object ClueSteps {
                         listOf(it.target.rowId),
                         emotes = it.emote,
                         outfit = it.outfit.firstOrNull(),
+                        hideyHole = it.hideyHoleLoc,
+                        restricted = it.restrictedContent != null,
                     )
                 }
             "dbtable.cluehelper_clue_fairyring" ->
@@ -97,8 +144,15 @@ object ClueSteps {
                 }
             "dbtable.cluehelper_clue_music" ->
                 CluehelperClueMusicRow.getRow(rowId).let {
-                    val targets = listOf(it.target.rowId)
-                    ClueStep(rowId, ClueKind.Music, it.difficulty, it.unlockText, targets)
+                    ClueStep(
+                        rowId,
+                        ClueKind.Music,
+                        it.difficulty,
+                        it.unlockText,
+                        listOf(it.target.rowId),
+                        music = it.music,
+                        restricted = it.restrictedContent != null,
+                    )
                 }
             "dbtable.cluehelper_clue_skillchallenge" ->
                 CluehelperClueSkillchallengeRow.getRow(rowId).let {
@@ -117,6 +171,13 @@ object ClueSteps {
     }
 
     fun target(player: Player, step: Int): ClueTarget? = target(player, step(step))
+
+    /** The challenge scroll question and its answer, when the step's npc asks one. */
+    fun question(step: ClueStep): Tuple2<String, Int>? {
+        val row = step.challenge ?: return null
+        if (dbTableOf(row) != "dbtable.cluehelper_challenge_question") return null
+        return CluehelperChallengeQuestionRow.getRow(row).question.firstOrNull()
+    }
 
     /** Every step of [difficulty] across the step tables, before any trail-specific filtering. */
     fun all(difficulty: Int): List<ClueStep> =

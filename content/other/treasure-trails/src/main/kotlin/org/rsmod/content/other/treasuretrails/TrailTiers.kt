@@ -16,19 +16,55 @@ fun ItemServerType.symbol(): String = RSCM.getReverseMapping(RSCMType.OBJ, id)
 
 object TrailTiers {
     const val BEGINNER = 0
+    const val MEDIUM = 2
+
+    /** Tiers whose every step type is implemented; later tiers' clues stay inert until then. */
+    val PLAYABLE = BEGINNER..MEDIUM
 
     private val trail_clue_step = param<DBRowType>("trail_clue_step")
+    private val trail_item_group = param<Int>("trail_item_group")
+
+    /** Easy-elite clue objs by difficulty: each obj is one step, read from its `param_623`. */
+    private val clueObjDifficulty: Map<Int, Int> by lazy {
+        ServerCacheManager.getItems()
+            .values
+            .filter(::isStepScroll)
+            .associate { it.id to ClueSteps.step(checkNotNull(objStep(it))).difficulty }
+    }
+
+    /** Challenge scrolls share their clue's step but are handed out separately by the npc. */
+    private val challengeObjs: Map<Int, ItemServerType> by lazy {
+        ServerCacheManager.getItems()
+            .values
+            .filter { obj ->
+                val step = objStep(obj)
+                step != null && ClueSteps.isStep(step) && !isStepScroll(obj) && obj.isChallengeScroll()
+            }
+            .associateBy { checkNotNull(objStep(it)) }
+    }
 
     fun tier(difficulty: Int): TrailTierRow =
         TrailTierRow.all().first { it.difficulty == difficulty }
 
+    fun playableTiers(): List<TrailTierRow> = PLAYABLE.map(::tier)
+
     /** The clue step an easy-elite clue obj stands for; beginner and master keep it in a varp. */
     fun objStep(type: ItemServerType): Int? = type.paramOrNull(trail_clue_step)?.id
 
+    fun itemGroup(type: ItemServerType): Int? = type.paramOrNull(trail_item_group)
+
     fun clueDifficulty(type: ItemServerType): Int? {
         TrailTierRow.all().firstOrNull { it.clueObj?.id == type.id }?.let { return it.difficulty }
-        return objStep(type)?.let { ClueSteps.step(it).difficulty }
+        return clueObjDifficulty[type.id]
     }
+
+    fun clueObjs(difficulty: Int): List<ItemServerType> =
+        clueObjDifficulty.filterValues { it == difficulty }.keys.map(::type)
+
+    fun challengeObj(step: Int): ItemServerType? = challengeObjs[step]
+
+    fun challengeObjs(difficulty: Int): List<ItemServerType> =
+        challengeObjs.filterKeys { ClueSteps.step(it).difficulty == difficulty }.values.toList()
 
     fun boxDifficulty(type: ItemServerType): Int? =
         TrailTierRow.all().firstOrNull { it.boxObj.id == type.id }?.difficulty
@@ -39,6 +75,9 @@ object TrailTiers {
     fun ownedBoxes(player: Player, difficulty: Int): Int =
         player.trailStorage().sumOf { inv -> inv.countWhere { boxDifficulty(it) == difficulty } }
 
+    fun owns(player: Player, type: ItemServerType): Boolean =
+        player.trailStorage().any { inv -> inv.countWhere { it.id == type.id } > 0 }
+
     /** Scroll boxes and scrolls share a per-tier cap that scroll cases raise up to five. */
     fun capacity(player: Player, tier: TrailTierRow): Int =
         BASE_CAPACITY +
@@ -46,18 +85,31 @@ object TrailTiers {
             player.vars[varbit(tier.majorCaseVarbit)] +
             player.vars["varbit.scroll_case_mimic"]
 
+    private fun isStepScroll(type: ItemServerType): Boolean {
+        val step = objStep(type) ?: return false
+        return type.interfaceOptions.getOrNull(1) == CHECK_STEPS_OP && ClueSteps.isStep(step)
+    }
+
+    private fun ItemServerType.isChallengeScroll(): Boolean =
+        interfaceOptions.getOrNull(0) == READ_OP && name.startsWith(CHALLENGE_SCROLL_NAME)
+
     private fun Player.trailStorage(): List<Inventory> = listOfNotNull(inv, invMap["inv.bank"])
 
     private fun Inventory.countWhere(predicate: (ItemServerType) -> Boolean): Int =
         objs.sumOf { obj -> obj?.let { if (predicate(it.type())) it.count else 0 } ?: 0 }
 
-    private fun InvObj.type(): ItemServerType = checkNotNull(ServerCacheManager.getItem(id))
+    private fun InvObj.type(): ItemServerType = type(id)
+
+    internal fun type(id: Int): ItemServerType = checkNotNull(ServerCacheManager.getItem(id))
 
     internal fun varbit(id: Int): String = RSCM.getReverseMapping(RSCMType.VARBIT, id)
 
     internal fun varp(id: Int): String = RSCM.getReverseMapping(RSCMType.VARP, id)
 
     private const val BASE_CAPACITY = 2
+    private const val CHECK_STEPS_OP = "Check steps"
+    private const val READ_OP = "Read"
+    private const val CHALLENGE_SCROLL_NAME = "Challenge scroll"
 }
 
 class TrailState(private val player: Player, val tier: TrailTierRow) {

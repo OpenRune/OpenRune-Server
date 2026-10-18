@@ -12,6 +12,7 @@ import org.rsmod.api.player.events.interact.LocDefaultEvents
 import org.rsmod.api.player.events.interact.LocEvents
 import org.rsmod.api.player.events.interact.LocUnimplementedEvents
 import org.rsmod.api.player.events.interact.OpEvent
+import org.rsmod.api.player.hook.PlayerLocOpHook
 import org.rsmod.api.route.BoundValidator
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
@@ -25,7 +26,11 @@ import org.rsmod.utils.bits.getBits
 
 public class LocInteractions
 @Inject
-constructor(private val boundValidator: BoundValidator, private val eventBus: EventBus) {
+constructor(
+    private val boundValidator: BoundValidator,
+    private val eventBus: EventBus,
+    private val opHooks: Set<@JvmSuppressWildcards PlayerLocOpHook> = emptySet(),
+) {
     public fun interact(
         player: Player,
         loc: BoundLocInfo,
@@ -100,12 +105,15 @@ constructor(private val boundValidator: BoundValidator, private val eventBus: Ev
         return null
     }
 
+    public fun opHook(player: Player, loc: BoundLocInfo, op: InteractionOp): PlayerLocOpHook? =
+        opHooks.firstOrNull { it.claims(player, loc, op) }
+
     public fun hasOpTrigger(
         player: Player,
         loc: BoundLocInfo,
         op: InteractionOp,
         type: ObjectServerType = ServerCacheManager.getObject(loc.id)!!,
-    ): Boolean = opTrigger(player, loc, op, type) != null
+    ): Boolean = opHook(player, loc, op) != null || opTrigger(player, loc, op, type) != null
 
     public fun apTrigger(
         player: Player,

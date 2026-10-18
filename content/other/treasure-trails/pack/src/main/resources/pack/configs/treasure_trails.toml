@@ -34,6 +34,17 @@ scope = "Perm"
 transmit = "Never"
 
 [[varp]]
+id = "varp.trail_emote_first"
+scope = "Temp"
+transmit = "Never"
+
+[[inventory]]
+id = "inv.trail_stash"
+size = 2112
+scope = "Perm"
+protect = false
+
+[[varp]]
 id = "varp.trail_progress_low"
 scope = "Perm"
 transmit = "Never"

@@ -13,43 +13,79 @@ import org.rsmod.api.table.cluehelper.CluehelperClueCrypticRow
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
-/** Trail state for the single-obj tiers, where the current step lives in a varp. */
+class HeldTrail(val tier: TrailTierRow, val slot: Int, val step: ClueStep)
+
+/**
+ * Trail state per tier. Beginner and master hold a single clue obj and keep the step in a varp;
+ * easy-elite clue objs are each one step, so advancing swaps the obj in its slot.
+ */
 object TrailFlow {
     private val pools = ConcurrentHashMap<Int, List<Int>>()
 
     fun clueSlot(player: Player, tier: TrailTierRow): Int? {
-        val clue = tier.clueObj ?: return null
-        return (0 until player.inv.size).firstOrNull { player.inv[it]?.id == clue.id }
+        val clue = tier.clueObj
+        return (0 until player.inv.size).firstOrNull { slot ->
+            val obj = player.inv[slot] ?: return@firstOrNull false
+            if (clue != null) {
+                obj.id == clue.id
+            } else {
+                TrailTiers.clueDifficulty(TrailTiers.type(obj.id)) == tier.difficulty
+            }
+        }
     }
 
     fun holdsClue(player: Player, tier: TrailTierRow): Boolean = clueSlot(player, tier) != null
 
-    fun currentStep(player: Player, tier: TrailTierRow): ClueStep? =
-        TrailState(player, tier).step?.let(ClueSteps::step)
+    fun currentStep(player: Player, tier: TrailTierRow): ClueStep? {
+        if (tier.clueObj != null) {
+            return TrailState(player, tier).step?.let(ClueSteps::step)
+        }
+        val obj = clueSlot(player, tier)?.let { player.inv[it] } ?: return null
+        return TrailTiers.objStep(TrailTiers.type(obj.id))?.let(ClueSteps::step)
+    }
+
+    /** Every playable tier whose clue is in the inventory, with the step it is on. */
+    fun heldTrails(player: Player): List<HeldTrail> =
+        TrailTiers.playableTiers().mapNotNull { tier ->
+            val slot = clueSlot(player, tier) ?: return@mapNotNull null
+            val step = currentStep(player, tier) ?: return@mapNotNull null
+            HeldTrail(tier, slot, step)
+        }
 
     fun startedStep(player: Player, tier: TrailTierRow, random: GameRandom): ClueStep {
         val state = TrailState(player, tier)
+        if (tier.clueObj == null) {
+            start(state, random)
+            val step = checkNotNull(currentStep(player, tier)) { "No ${tier.name} clue held." }
+            VarPlayerIntMapSetter.set(player, INFOBOX, step.rowId)
+            return step
+        }
         state.step?.let { return ClueSteps.step(it) }
-        state.length = random.of(tier.stepsMin, tier.stepsMax)
-        state.progress = 0
+        start(state, random)
         return setStep(player, tier, rollStep(tier, random, exclude = null))
     }
 
     fun resetTrail(player: Player, tier: TrailTierRow) {
         TrailState(player, tier).clear()
-        VarPlayerIntMapSetter.set(player, "varp.cluehelper_infobox_clue", NO_INFOBOX)
+        VarPlayerIntMapSetter.set(player, INFOBOX, NO_INFOBOX)
         VarPlayerIntMapSetter.set(player, "varp.trail_hotcold_last_check_coord", 0)
+        VarPlayerIntMapSetter.set(player, EMOTE_FIRST, 0)
     }
 
     fun ProtectedAccess.read(tier: TrailTierRow) {
         val step = startedStep(player, tier, random)
+        VarPlayerIntMapSetter.set(
+            player,
+            "varbit.cluehelper_hideyhole_filled",
+            if (ClueStash.filled(player, step.hideyHole)) 1 else 0,
+        )
         if (step.kind == ClueKind.Map) {
-            val map = TrailMapInterfaceRow.all().firstOrNull { it.step.rowId == step.rowId }
+            val map = mapInterface(step)
             if (map == null) {
                 mes("Nothing interesting happens.")
                 return
             }
-            ifOpenMainModal(RSCM.getReverseMapping(RSCMType.INTERFACE, map.`interface`))
+            ifOpenMainModal(map)
             return
         }
         ifOpenMainModal("interface.trail_cluetext")
@@ -58,17 +94,31 @@ object TrailFlow {
 
     /** A scroll box becomes a fresh clue in one inv transaction; a held clue blocks it. */
     suspend fun ProtectedAccess.openBox(tier: TrailTierRow) {
-        val clue = checkNotNull(tier.clueObj).symbol()
         if (TrailTiers.ownedClues(player, tier.difficulty) > 0) {
             mes(ClueTakeHook.ALREADY_HAVE_CLUE)
             return
         }
-        if (invReplace(inv, tier.boxObj.symbol(), 1, clue).failure) {
+        val clue = freshClue(tier, random)
+        if (invReplace(inv, tier.boxObj.symbol(), 1, clue.symbol()).failure) {
             mes("You don't have enough inventory space.")
             return
         }
         resetTrail(player, tier)
-        startDialogue { objbox(clue, "You open the clue box and find a clue scroll inside!") }
+        startDialogue {
+            objbox(clue.symbol(), "You open the clue box and find a clue scroll inside!")
+        }
+    }
+
+    fun ProtectedAccess.openScrollCase(tier: TrailTierRow, case: ItemServerType, varbit: Int) {
+        val unlock = TrailTiers.varbit(varbit)
+        if (player.vars[unlock] != 0) {
+            mes("You have already opened a scroll case like this.")
+            return
+        }
+        if (invDel(inv, case.symbol(), 1).failure) return
+        VarPlayerIntMapSetter.set(player, unlock, 1)
+        val capacity = TrailTiers.capacity(player, tier)
+        mes("You can now hold up to $capacity ${tier.name} clue scrolls and scroll boxes.")
     }
 
     fun ProtectedAccess.checkSteps(tier: TrailTierRow) {
@@ -78,13 +128,15 @@ object TrailFlow {
 
     /**
      * Completes the current step. The final step swaps the clue for the tier's casket in one inv
-     * transaction; earlier steps only roll the next step. Returns the obj the player now holds for
-     * the trail, or `null` when the clue is gone and nothing changed.
+     * transaction; earlier steps roll the next step, swapping the clue obj in its slot for the
+     * obj-per-step tiers. Returns the obj the player now holds for the trail, or `null` when the
+     * clue is gone and nothing changed.
      */
     fun ProtectedAccess.advance(tier: TrailTierRow): ItemServerType? {
-        val clue = tier.clueObj ?: return null
         val slot = clueSlot(player, tier) ?: return null
+        val current = currentStep(player, tier) ?: return null
         val state = TrailState(player, tier)
+        start(state, random)
         val progress = state.progress + 1
         if (progress >= state.length) {
             if (invReplace(inv, slot, 1, tier.casketObj).failure) {
@@ -93,9 +145,20 @@ object TrailFlow {
             resetTrail(player, tier)
             return tier.casketObj
         }
+        val clue = tier.clueObj
+        if (clue != null) {
+            state.progress = progress
+            setStep(player, tier, rollStep(tier, random, exclude = state.step))
+            return clue
+        }
+        val next = rollClueObj(tier, random, exclude = current.rowId)
+        if (invReplace(inv, slot, 1, next).failure) {
+            return null
+        }
         state.progress = progress
-        setStep(player, tier, rollStep(tier, random, exclude = state.step))
-        return clue
+        VarPlayerIntMapSetter.set(player, EMOTE_FIRST, 0)
+        VarPlayerIntMapSetter.set(player, INFOBOX, checkNotNull(TrailTiers.objStep(next)))
+        return next
     }
 
     /** Charlie and Sherlock hand out one of their skill challenges in place of the cryptic step. */
@@ -125,18 +188,43 @@ object TrailFlow {
         return npc.type.id in ids || npc.visType.id in ids
     }
 
+    /** The clue a fresh trail starts on: the tier's single obj, or a random step obj. */
+    fun freshClue(tier: TrailTierRow, random: GameRandom): ItemServerType =
+        tier.clueObj ?: rollClueObj(tier, random, exclude = null)
+
+    private fun start(state: TrailState, random: GameRandom) {
+        if (state.length != 0) return
+        state.length = random.of(state.tier.stepsMin, state.tier.stepsMax)
+        state.progress = 0
+    }
+
+    private fun mapInterface(step: ClueStep): String? =
+        TrailMapInterfaceRow.all()
+            .firstOrNull { it.step.rowId == step.rowId }
+            ?.let { RSCM.getReverseMapping(RSCMType.INTERFACE, it.`interface`) }
+
     private fun clueText(step: ClueStep): String =
         when (step.kind) {
             ClueKind.Anagram ->
                 "The anagram reveals who to speak to next:<br>${step.text.orEmpty().uppercase()}"
             ClueKind.HotCold ->
                 CluehelperClueCrypticRow.getRow("dbrow.cluehelper_cryptic_beginner_reldo").clueText
+            ClueKind.Music -> "Cecilia would like to hear ${step.music?.displayname}."
+            ClueKind.Coordinate -> sextantText(step.text.orEmpty())
             else -> step.text.orEmpty()
         }
 
+    private fun sextantText(compact: String): String {
+        val match = SEXTANT_COMPACT.matchEntire(compact) ?: return compact
+        val (latDeg, latMin, ns, longDeg, longMin, ew) = match.destructured
+        val lat = "$latDeg degrees $latMin minutes ${if (ns == "N") "north" else "south"}"
+        val long = "$longDeg degrees $longMin minutes ${if (ew == "E") "east" else "west"}"
+        return "$lat $long"
+    }
+
     private fun setStep(player: Player, tier: TrailTierRow, step: Int): ClueStep {
         TrailState(player, tier).step = step
-        VarPlayerIntMapSetter.set(player, "varp.cluehelper_infobox_clue", step)
+        VarPlayerIntMapSetter.set(player, INFOBOX, step)
         return ClueSteps.step(step)
     }
 
@@ -145,17 +233,37 @@ object TrailFlow {
         return random.pick(pool.filter { it != exclude }.ifEmpty { pool })
     }
 
+    private fun rollClueObj(tier: TrailTierRow, random: GameRandom, exclude: Int?): ItemServerType {
+        val pool = pools.getOrPut(tier.difficulty) { rollableSteps(tier.difficulty) }.toSet()
+        val objs =
+            TrailTiers.clueObjs(tier.difficulty).filter { TrailTiers.objStep(it) in pool }
+        return random.pick(objs.filter { TrailTiers.objStep(it) != exclude }.ifEmpty { objs })
+    }
+
     /**
      * Skill challenges are handed out by an npc rather than rolled, and the beginner hot/cold intro
-     * cryptic is only the text a hot/cold step reads with.
+     * cryptic is only the text a hot/cold step reads with. Restricted (league/sailing) steps,
+     * puzzle-box challenges, maps without a known interface and music steps are left out until
+     * supported.
      */
     private fun rollableSteps(difficulty: Int): List<Int> {
         val hotColdIntro =
             CluehelperClueCrypticRow.getRow("dbrow.cluehelper_cryptic_beginner_reldo").rowId
         return ClueSteps.all(difficulty)
+            .asSequence()
             .filter { it.kind != ClueKind.SkillChallenge && it.rowId != hotColdIntro }
+            .filterNot { it.restricted }
+            // Music steps need the track unlocked and playing, and music unlocking is not
+            // implemented well enough yet to make them completable.
+            .filter { it.kind != ClueKind.Music }
+            .filter { it.challenge == null || ClueSteps.question(it) != null }
+            .filter { it.kind != ClueKind.Map || mapInterface(it) != null }
             .map { it.rowId }
+            .toList()
     }
 
+    internal const val EMOTE_FIRST = "varp.trail_emote_first"
+    private val SEXTANT_COMPACT = Regex("""(\d+)\.(\d+)([NS]) (\d+)\.(\d+)([EW])""")
+    private const val INFOBOX = "varp.cluehelper_infobox_clue"
     private const val NO_INFOBOX = -1
 }
