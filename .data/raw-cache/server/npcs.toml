@@ -1,12 +1,14 @@
 [[npc]]
 id = "npc.0_50_50_freshfish"
 inherit = "npc.0_50_50_freshfish"
+contentGroup = "content.lure_bait_fishing_spot"
 moveRestrict = "NoMove"
 wanderRange = 0
 
 [[npc]]
 id = "npc.0_50_49_saltfish"
 inherit = "npc.0_50_49_saltfish"
+contentGroup = "content.net_bait_fishing_spot"
 moveRestrict = "NoMove"
 wanderRange = 0
 respawnRate = 50
