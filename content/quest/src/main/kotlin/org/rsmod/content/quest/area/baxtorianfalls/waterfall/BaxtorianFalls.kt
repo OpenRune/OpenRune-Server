@@ -42,7 +42,7 @@ constructor(
         onOpLoc1(RAFT) { boardRaft() }
         onOpLoc1(RIVER) { swim() }
         onApLoc1(ROCK) { apRock(it.loc) { swim() } }
-        onOpLoc1(ROCK) { swim() }
+        onOpLoc1(ROCK) { rockOp() }
         val inventory = ServerCacheManager.fromComponent(INVENTORY.asRSCM(RSCMType.COMPONENT))
         onApLocT(ROCK, inventory) {
             if (it.objType?.id == ROPE.asRSCM(RSCMType.OBJ)) {
@@ -52,16 +52,8 @@ constructor(
             }
         }
         onOpLocU(ROCK, ROPE) { ropeAcross(it.loc) }
-        onApLoc1(TREE) { apTree(it.loc) { climbWithoutRope() } }
         onOpLoc1(TREE) { climbWithoutRope() }
-        onApLocT(TREE, inventory) {
-            if (it.objType?.id == ROPE.asRSCM(RSCMType.OBJ)) {
-                apTree(it.loc) { ropeDown(it.loc) }
-            } else {
-                apRange(-1)
-            }
-        }
-        onOpLocU(TREE, ROPE) { ropeDown(it.loc) }
+        onOpLocU(TREE, ROPE) { ropeDown() }
         onOpLoc1(LEDGE_DOOR) { enterFalls() }
         onOpLoc1(BARREL) { rideBarrel() }
     }
@@ -103,20 +95,6 @@ constructor(
             return
         }
         if (!isWithinApRange(rock, ROCK_RANGE)) {
-            return
-        }
-        action()
-    }
-
-    private suspend fun ProtectedAccess.apTree(
-        tree: BoundLocInfo,
-        action: suspend ProtectedAccess.() -> Unit,
-    ) {
-        if (!WaterfallCoords.onTreeIsland(player.coords)) {
-            apRange(-1)
-            return
-        }
-        if (!isWithinApRange(tree, TREE_RANGE)) {
             return
         }
         action()
@@ -165,32 +143,27 @@ constructor(
         resetAnim()
     }
 
+    private suspend fun ProtectedAccess.rockOp() {
+        if (WaterfallCoords.onTreeIsland(player.coords)) {
+            mes("You don't see that being any help.")
+            return
+        }
+        swim()
+    }
+
     private suspend fun ProtectedAccess.climbWithoutRope() {
-        mesbox("You try to use the tree to climb down...")
-        anim(CLIMB_DOWN_SEQ)
-        delay(1)
-        mesbox("...but you slip and fall into the water.")
-        washDownstream(ouch = true)
+        arriveDelay()
+        fallIntoRiver(
+            "You try to use the tree to climb down...",
+            "...but you slip and fall into the water.",
+        )
         geraldGreetsWashedUp(waterfall, search)
     }
 
-    private suspend fun ProtectedAccess.ropeDown(tree: BoundLocInfo) {
-        faceSquare(tree.coords)
-        soundSynth(TIE_ROPE_SOUND)
-        locRepo.change(tree, ROPED_TREE, CLIMB_TICKS + 1)
-        mes("You tie the rope to the tree and climb down to the ledge below.")
-        anim(CLIMB_DOWN_SEQ)
-        soundSynth(ROPE_CLIMB_SOUND)
-        exactMove(
-            start = player.coords,
-            end = WaterfallCoords.LEDGE,
-            delay1 = 0,
-            delay2 = CLIMB_TICKS * CLIENT_CYCLES_PER_TICK,
-            dir = constants.em_face_north,
-            teleportType = TeleportType.Exempt,
-        )
-        delay(CLIMB_TICKS)
-        resetAnim()
+    private suspend fun ProtectedAccess.ropeDown() {
+        arriveDelay()
+        telejump(WaterfallCoords.LEDGE, TeleportType.Exempt)
+        mesbox("You tie the rope to the tree and climb down to the ledge below.")
     }
 
     private suspend fun ProtectedAccess.enterFalls() {
@@ -222,7 +195,6 @@ constructor(
         const val TREE = "loc.overhanging_tree1_waterfall_quest"
         const val ROPED_ROCK = "loc.crossing_rock_roped_waterfall_quest"
         const val CROSSING_ROPE = "loc.crossing_rope_waterfall_quest"
-        const val ROPED_TREE = "loc.overhanging_tree2_waterfall_quest"
         const val ROPE_PIECE_SPOTANIM = "spotanim.rope_piece"
         const val ROPE_PIECE_DELAY = 3
         val ROPE_PIECE_TILE = WaterfallCoords.ROPE_START.translateZ(-2)
@@ -231,21 +203,17 @@ constructor(
 
         const val HUDON_SEARCH_RADIUS = 8
         const val ROCK_RANGE = 10
-        const val TREE_RANGE = 3
 
         const val SWIM_SEQ = "seq.human_swim"
         const val THROW_ROPE_SEQ = "seq.human_throwrope"
-        const val CLIMB_DOWN_SEQ = "seq.human_climbing_down"
         const val BARREL_SEQ = "seq.human_pickupfloor"
         const val SWIM_SEQ_TICKS = 2
-        const val CLIMB_TICKS = 2
         const val CLIENT_CYCLES_PER_TICK = 30
 
         const val RIVER_SOUND = "synth.splash_and_river"
         const val CRASH_SOUND = "synth.watersplash"
         const val SWIM_SOUND = "synth.cf_swim"
         const val TIE_ROPE_SOUND = "synth.cf_tierope"
-        const val ROPE_CLIMB_SOUND = "synth.ropeclimb"
         const val DOOR_SOUND = "synth.door_open"
     }
 }

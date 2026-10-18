@@ -52,6 +52,34 @@ internal fun Player.wearsAmulet(): Boolean = worn.contains(AMULET)
 internal fun Player.ownsAnywhere(obj: String): Boolean =
     inv.contains(obj) || worn.contains(obj) || invMap.getOrPut("inv.bank").contains(obj)
 
+internal fun ProtectedAccess.fadeOut() {
+    fadeOverlay(0, CLEAR, 0, OPAQUE, FADE_CLIENT_CYCLES)
+}
+
+internal fun ProtectedAccess.fadeIn() {
+    fadeOverlay(0, OPAQUE, 0, CLEAR, FADE_CLIENT_CYCLES)
+}
+
+internal suspend fun ProtectedAccess.fallIntoRiver(first: String, second: String) {
+    mesboxNp(first)
+    fadeOut()
+    delay(FALL_TICKS)
+    telejump(WaterfallCoords.DOWNSTREAM, TeleportType.Exempt)
+    soundSynth(WATERSPLASH_SOUND)
+    mesboxNp(second)
+    delay(FALL_TICKS - 1)
+    val damage = FALL_DAMAGE.coerceAtMost(player.hitpoints - 1)
+    if (damage > 0) {
+        queueHit(delay = 1, type = HitType.Typeless, damage = damage)
+    }
+    delay(1)
+    ifCloseChat()
+    say("Ouch!")
+    fadeIn()
+    delay(FADE_CLOSE_TICKS)
+    closeFadeOverlayNow()
+}
+
 internal suspend fun ProtectedAccess.washDownstream(ouch: Boolean) {
     soundSynth(SPLASH_SOUND)
     spotanim(SPLASH_SPOTANIM)
@@ -97,6 +125,12 @@ private fun ItemServerType.isUnpeaceful(): Boolean {
 private const val SPLASH_SOUND = "synth.splash_and_river"
 private const val SPLASH_SPOTANIM = "spotanim.watersplash"
 private const val FALL_DAMAGE = 8
+private const val WATERSPLASH_SOUND = "synth.watersplash"
+private const val OPAQUE = 0
+private const val CLEAR = 255
+private const val FADE_CLIENT_CYCLES = 50
+private const val FALL_TICKS = 3
+private const val FADE_CLOSE_TICKS = 2
 
 private val RUNE_CATEGORY = "category.rune".asRSCM(RSCMType.CATEGORY)
 
