@@ -1072,7 +1072,15 @@ constructor(
         if (id != null) {
             return ServerCacheManager.getItem(id)
         }
-        return ServerCacheManager.getItem("obj.$input".asRSCM(RSCMType.OBJ))
+        val mapped = RSCM.getRSCMOrNull("obj.$input", RSCMType.OBJ)
+        if (mapped != null) {
+            return ServerCacheManager.getItem(mapped)
+        }
+        val name = input.replace('_', ' ')
+        return ServerCacheManager.getItems()
+            .values
+            .filter { it.name.equals(name, ignoreCase = true) && !it.isCert && !it.isPlaceholder }
+            .minByOrNull { it.id }
     }
 
     private fun List<String>.asTypeName(): String = joinToString("_")
