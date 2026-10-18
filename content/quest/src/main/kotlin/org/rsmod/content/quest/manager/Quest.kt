@@ -18,8 +18,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.map.CoordGrid
 
-// Quests play one of three completion jingles, set per quest; this one is the default (live
-// capture, rev 241: jingles 152, 153 and 154 across six quests).
 const val QUEST_COMPLETE_JINGLE = "jingle.gaol"
 
 internal const val QUEST_DIALOGUE_CLOSE_TIMER = "timer.quest_dialogue_close"

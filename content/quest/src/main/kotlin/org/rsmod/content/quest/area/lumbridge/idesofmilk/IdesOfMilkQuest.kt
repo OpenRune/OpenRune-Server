@@ -21,9 +21,6 @@ import org.rsmod.game.hit.HitType
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.ScriptContext
 
-// https://oldschool.runescape.wiki/w/The_Ides_of_Milk
-// Dialogue, mesanims and stage changes: live capture, rev 241; branches it didn't take come
-// from https://oldschool.runescape.wiki/w/Transcript:The_Ides_of_Milk
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class IdesOfMilkQuest
 @Inject
@@ -35,10 +32,8 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
             extra("Access to Brutus' Field")
             extra("Gillie's Cowbell Supply")
         },
-        // live capture, rev 241
         ItemRewardDisplay(MILK_SAMPLE_2, zoom = 400),
         questVarbit = "varbit.cowquest",
-        // live capture, rev 241
         completeJingle = "jingle.high_seas",
     ) {
 
@@ -63,7 +58,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         "talking to <col=800000>Cassius</col> south of the <col=800000>Lumbridge " +
             "Windmill</col>."
 
-    // Journal text: live capture, rev 241.
     override fun questLog(player: ProtectedAccess) =
         questJournal(player) {
             val stage = stage(player.player)
@@ -81,7 +75,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
 
     fun stage(player: Player): Int = quest.getQuestStage(player)
 
-    // https://oldschool.runescape.wiki/w/Transcript:The_Ides_of_Milk#Starting_off
     private suspend fun Dialogue.cassius() {
         when (val stage = stage(player)) {
             0 -> cassiusStart()
@@ -104,7 +97,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
             STAGE_FIRST_SAMPLE_DRUNK -> cassiusPermit()
             in STAGE_SECOND_SAMPLE until STAGE_GILLIE_DRANK -> cassiusAwaitingPermit()
             in STAGE_GILLIE_DRANK until STAGE_GILLIE_TOLD ->
-                // https://oldschool.runescape.wiki/w/Transcript:The_Ides_of_Milk#Talking_to_Cassius
                 {
                     chatNpc(quiz, "Has the Duke given us our permit yet?")
                     chatPlayer(neutral, "It's become rather complicated, but I am working it out!")
@@ -181,7 +173,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         chatPlayer(confused, "Right... I guess I'll go and see the Groatses then.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:The_Ides_of_Milk#Returning_to_Cassius
     private suspend fun Dialogue.cassiusBook() {
         chatNpc(quiz, "So, how did you get on?")
         chatPlayer(
@@ -242,7 +233,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
             chatNpc(quiz, "Have you given that sample a try yet?")
             return
         }
-        // https://oldschool.runescape.wiki/w/Transcript:The_Ides_of_Milk#Reclaiming_the_milk_sample
         chatPlayer(sad, "I've managed to lose that sample of milk...")
         if (player.inv.isFull()) {
             chatNpc(angry, "I'll give you some more once you've got some space.")
@@ -295,7 +285,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         objbox(MILK_SAMPLE_2, "Cassius hands you a milk sample.")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:The_Ides_of_Milk#Talking_to_Cassius_again
     private suspend fun Dialogue.cassiusAwaitingPermit() {
         chatNpc(quiz, "Has the Duke given us our permit yet?")
         if (player.inv.count(MILK_SAMPLE_2) > 0 || stage(player) < STAGE_SECOND_SAMPLE) {
@@ -530,7 +519,6 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
         )
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:The_Ides_of_Milk#Post-quest
     // TODO(content): Gillie's replacement for a lost cowbell amulet (transcript wording not
     // captured; the wiki gives it as a short exchange).
     private suspend fun Dialogue.gillieRewards(): Boolean {
@@ -544,8 +532,7 @@ constructor(private val npcRepo: NpcRepository, private val random: GameRandom) 
                 happy,
                 "This is for helping out with that bull. Our cows are much happier these days.",
             )
-            // The empty amulet goes in the inventory, the objbox shows the full one (live capture,
-            // rev 241).
+            // The objbox shows the full amulet, but the reward is empty.
             if (access.invAdd(access.inv, COWBELL_AMULET_EMPTY).failure) {
                 return true
             }

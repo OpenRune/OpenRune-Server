@@ -8,7 +8,6 @@ import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-// Text and page turns: live capture, rev 241.
 class GroatsPrinciplesBook : PluginScript() {
     private var Player.pagePos by intVarp("varp.pagepos")
 
@@ -16,8 +15,7 @@ class GroatsPrinciplesBook : PluginScript() {
         onOpHeld1(BOOK) { readBook() }
     }
 
-    // The page arrows are pause buttons: the client closes the book on each one and the server
-    // opens it again on the new spread (live capture, rev 241).
+    // Page arrows close the book client-side, so reopen it on the new spread.
     private suspend fun ProtectedAccess.readBook() {
         player.pagePos = 0
         anim("seq.human_readbook")

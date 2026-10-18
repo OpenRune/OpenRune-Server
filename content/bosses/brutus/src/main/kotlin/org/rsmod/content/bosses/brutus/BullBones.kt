@@ -13,8 +13,6 @@ import org.rsmod.game.obj.Obj
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-// Buried where they lie, after the giant bones prompt
-// (https://oldschool.runescape.wiki/w/Bull_bones).
 class BullBones @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     private var Player.skipBuryWarning by boolVarBit("varbit.giant_bone_bury_warning_disable")
 

@@ -39,7 +39,6 @@ class BrutusStompTest {
 
     private fun beneath(cx: Int, cz: Int): Set<CoordGrid> = Brutus.beneathTiles(sw, cx, cz).toSet()
 
-    // live capture, rev 241: (slam side, player tile, hit?)
     @Test
     fun `a slam hits the tiles under him on its side of the centre`() {
         assertEquals(tiles(0 to 2, 1 to 2, 2 to 2, 0 to 1, 2 to 1), beneath(0, 1))

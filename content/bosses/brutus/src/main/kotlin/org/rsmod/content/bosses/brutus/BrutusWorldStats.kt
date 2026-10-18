@@ -8,7 +8,6 @@ import org.rsmod.api.db.gateway.GameDbManager
 import org.rsmod.api.db.gateway.model.GameDbResult
 import org.rsmod.api.db.gateway.model.isOk
 
-/** The scoreboard's server-wide totals, kept in the database so they survive restarts. */
 @Singleton
 class BrutusWorldStats @Inject constructor(private val db: GameDbManager) {
     private val logger = InlineLogger()

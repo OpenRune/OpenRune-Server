@@ -164,7 +164,6 @@ constructor(
                 }
             }
             obj.internalName in MILK -> {
-                // A bottomless milk bucket gives one use (https://oldschool.runescape.wiki/w/Bottomless_milk_bucket).
                 val drank =
                     if (obj.internalName == BUCKET_OF_MILK) {
                         invReplace(inv, BUCKET_OF_MILK, 1, EMPTY_BUCKET).success

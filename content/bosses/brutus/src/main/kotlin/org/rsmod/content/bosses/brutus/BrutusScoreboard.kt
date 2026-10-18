@@ -15,7 +15,6 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-// Interface, components and number formats: live capture, rev 241.
 class BrutusScoreboard @Inject constructor(private val worldStats: BrutusWorldStats) :
     PluginScript() {
     override fun ScriptContext.startup() {

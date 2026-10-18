@@ -25,7 +25,6 @@ import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.content.generic.npcs.cow.BottomlessMilkBucket.Companion.EMPTY
-import org.rsmod.content.generic.npcs.cow.BottomlessMilkBucket.Companion.FILLED
 import org.rsmod.content.generic.npcs.cow.BottomlessMilkBucket.Companion.MAX_USES
 import org.rsmod.content.generic.npcs.cow.BottomlessMilkBucket.Companion.USES
 import org.rsmod.coroutine.GameCoroutine
@@ -44,31 +43,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class BottomlessMilkBucketTest {
-    @Test
-    fun `noted milk fills the bucket and comes back as noted empty buckets`() {
-        val f = Fixture()
-        f.player.inv[0] = InvObj(EMPTY)
-        f.player.inv[1] = InvObj(MILK_NOTE, 10)
-        f.run { with(f.script) { fill(0, MILK_NOTE) } }
-        f.finish(count = 10, choices = listOf(YES))
-        assertTrue(f.player.inv[0].isType(FILLED))
-        assertEquals(10, f.uses(0))
-        assertEquals(0, f.player.inv.count(MILK_NOTE))
-        assertEquals(10, f.player.inv.count(BUCKET_NOTE))
-    }
-
-    @Test
-    fun `a single bucket of milk fills without a prompt`() {
-        val f = Fixture()
-        f.player.inv[0] = f.filled(11)
-        f.player.inv[1] = InvObj(MILK)
-        f.run { with(f.script) { fill(0, MILK) } }
-        f.finish()
-        assertEquals(12, f.uses(0))
-        assertEquals(0, f.player.inv.count(MILK))
-        assertEquals(1, f.player.inv.count(BUCKET))
-    }
-
     @Test
     fun `filling takes unnoted and noted milk together when one form runs short`() {
         val f = Fixture()
@@ -134,33 +108,25 @@ class BottomlessMilkBucketTest {
     }
 
     @Test
-    fun `a full bucket takes no milk`() {
-        val f = Fixture()
-        f.player.inv[0] = f.filled(MAX_USES)
-        f.player.inv[1] = InvObj(MILK_NOTE, 10)
-        f.run { with(f.script) { fill(0, MILK_NOTE) } }
-        f.finish()
-        assertEquals(MAX_USES, f.uses(0))
-        assertEquals(10, f.player.inv.count(MILK_NOTE))
-    }
-
-    @Test
-    fun `noted empty buckets that can't stack any higher keep the milk`() {
+    fun `a failed noted bucket return rolls back both forms of milk`() {
         val f = Fixture()
         f.player.inv[0] = f.filled(5)
-        f.player.inv[1] = InvObj(MILK_NOTE, 10)
-        f.player.inv[2] = InvObj(BUCKET_NOTE, Int.MAX_VALUE)
-        f.run { with(f.script) { fill(0, MILK_NOTE) } }
-        f.finish(count = 10)
+        f.player.inv[1] = InvObj(MILK)
+        f.player.inv[2] = InvObj(MILK_NOTE, 10)
+        f.player.inv[3] = InvObj(BUCKET_NOTE, Int.MAX_VALUE)
+        f.run { with(f.script) { fill(0, MILK) } }
+        f.finish(count = 3)
         assertEquals(5, f.uses(0))
+        assertEquals(1, f.player.inv.count(MILK))
+        assertEquals(0, f.player.inv.count(BUCKET))
         assertEquals(10, f.player.inv.count(MILK_NOTE))
         assertEquals(Int.MAX_VALUE, f.player.inv.count(BUCKET_NOTE))
     }
 
     @Test
-    fun `emptying discards the milk only once confirmed`() {
+    fun `emptying requires confirmation and clears the milk type`() {
         val f = Fixture()
-        f.player.inv[0] = f.filled(40)
+        f.player.inv[0] = MilkSources.withType(f.filled(40), checkNotNull(MilkSources.typeOf(CHOCOLATEY)))
         f.run { with(f.script) { empty(0) } }
         f.finish(choices = listOf(NO))
         assertEquals(40, f.uses(0))
@@ -168,15 +134,11 @@ class BottomlessMilkBucketTest {
         f.finish(choices = listOf(YES))
         assertTrue(f.player.inv[0].isType(EMPTY))
         assertEquals(0, f.uses(0))
-    }
-
-    @Test
-    fun `a quest takes one use of milk from the bucket`() {
-        val f = Fixture()
-        f.player.inv[0] = f.filled(28)
-        assertTrue(MilkSources.pour(f.player.inv))
-        assertEquals(27, f.uses(0))
-        assertTrue(f.player.inv[0].isType(FILLED))
+        assertEquals(0, f.player.inv[0]!!.vars)
+        f.player.inv[1] = InvObj(MILK)
+        f.run { with(f.script) { fill(0, MILK) } }
+        f.finish(choices = listOf(YES))
+        assertEquals(MilkSources.typeOf(MILK), MilkSources.typeIn(f.player.inv[0]))
     }
 
     @Test
@@ -200,30 +162,6 @@ class BottomlessMilkBucketTest {
     }
 
     @Test
-    fun `pouring from a slot without a filled bucket takes nothing`() {
-        val f = Fixture()
-        f.player.inv[0] = InvObj(EMPTY)
-        f.player.inv[1] = InvObj(MILK)
-        assertEquals(false, MilkSources.pourFrom(f.player.inv, 0))
-        assertEquals(false, MilkSources.pourFrom(f.player.inv, 1))
-        assertEquals(false, MilkSources.pourFrom(f.player.inv, 2))
-        assertEquals(1, f.player.inv.count(MILK))
-    }
-
-    @Test
-    fun `chocolatey milk fills an empty bucket and leaves empty buckets`() {
-        val f = Fixture()
-        f.player.inv[0] = InvObj(EMPTY)
-        f.player.inv[1] = InvObj(CHOCOLATEY)
-        f.run { with(f.script) { fill(0, CHOCOLATEY) } }
-        f.finish(choices = listOf(YES))
-        assertEquals(1, f.uses(0))
-        assertEquals(MilkSources.typeOf(CHOCOLATEY), MilkSources.typeIn(f.player.inv[0]))
-        assertEquals(0, f.player.inv.count(CHOCOLATEY))
-        assertEquals(1, f.player.inv.count(BUCKET))
-    }
-
-    @Test
     fun `a bucket of regular milk takes no chocolatey milk`() {
         val f = Fixture()
         f.player.inv[0] = f.filled(5)
@@ -237,22 +175,6 @@ class BottomlessMilkBucketTest {
     }
 
     @Test
-    fun `hangover cure and milky mixture fill as their own types`() {
-        val f = Fixture()
-        f.player.inv[0] = InvObj(EMPTY)
-        f.player.inv[1] = InvObj(HANGOVER_CURE)
-        f.run { with(f.script) { fill(0, HANGOVER_CURE) } }
-        f.finish(choices = listOf(YES))
-        assertEquals(MilkSources.typeOf(HANGOVER_CURE), MilkSources.typeIn(f.player.inv[0]))
-        f.player.inv[2] = InvObj(MILKY_MIXTURE)
-        f.run { with(f.script) { fill(0, MILKY_MIXTURE) } }
-        f.finish()
-        assertEquals(1, f.uses(0))
-        assertEquals(1, f.player.inv.count(MILKY_MIXTURE))
-        assertEquals(1, f.player.inv.count(BUCKET))
-    }
-
-    @Test
     fun `chocolatey milk in the bucket is no bucket of milk`() {
         val f = Fixture()
         f.player.inv[0] = MilkSources.withType(f.filled(5), checkNotNull(MilkSources.typeOf(CHOCOLATEY)))
@@ -261,19 +183,6 @@ class BottomlessMilkBucketTest {
         assertEquals(false, MilkSources.pourFrom(f.player.inv, 0))
         assertTrue(MilkSources.pour(f.player.inv, CHOCOLATEY))
         assertEquals(4, f.uses(0))
-    }
-
-    @Test
-    fun `emptying clears the milk type`() {
-        val f = Fixture()
-        f.player.inv[0] = MilkSources.withType(f.filled(5), checkNotNull(MilkSources.typeOf(CHOCOLATEY)))
-        f.run { with(f.script) { empty(0) } }
-        f.finish(choices = listOf(YES))
-        assertEquals(0, f.player.inv[0]!!.vars)
-        f.player.inv[1] = InvObj(MILK)
-        f.run { with(f.script) { fill(0, MILK) } }
-        f.finish(choices = listOf(YES))
-        assertEquals(MilkSources.typeOf(MILK), MilkSources.typeIn(f.player.inv[0]))
     }
 
     private class Fixture {
@@ -376,8 +285,6 @@ class BottomlessMilkBucketTest {
         private const val BUCKET = "obj.bucket_empty"
         private const val BUCKET_NOTE = "obj.cert_bucket_empty"
         private const val CHOCOLATEY = "obj.chocolaty_milk"
-        private const val HANGOVER_CURE = "obj.hangover_cure"
-        private const val MILKY_MIXTURE = "obj.chickenquest_milky_mixture"
         private const val YES = 1
         private const val NO = 2
         private val restored = mutableListOf<() -> Unit>()

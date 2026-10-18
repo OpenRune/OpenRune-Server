@@ -32,19 +32,12 @@ import org.rsmod.map.CoordGrid
 @ResourceLock("ServerCacheManager")
 class BullBonesTest {
     @Test
-    fun `burying takes the bones off the ground and grants the xp once`() {
+    fun `burying the same bones twice grants the xp once`() {
         val f = Fixture()
         val bones = f.dropBones()
         f.bury(bones, choices = listOf(YES))
         assertEquals(0, f.groundBones())
         assertEquals(PRAYER_XP, f.prayerXp())
-    }
-
-    @Test
-    fun `burying the same bones twice grants the xp once`() {
-        val f = Fixture()
-        val bones = f.dropBones()
-        f.bury(bones, choices = listOf(YES))
         f.bury(bones, choices = listOf(YES))
         assertEquals(0, f.groundBones())
         assertEquals(PRAYER_XP, f.prayerXp())

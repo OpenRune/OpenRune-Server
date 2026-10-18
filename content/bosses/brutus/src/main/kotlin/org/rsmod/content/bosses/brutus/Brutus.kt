@@ -36,8 +36,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
 import org.rsmod.routefinder.flag.CollisionFlag
 
-// https://oldschool.runescape.wiki/w/Brutus/Strategies; timings and tile patterns: live capture,
-// rev 241.
 class Brutus
 @Inject
 constructor(
@@ -49,8 +47,7 @@ constructor(
 ) : BossPluginScript(deps) {
 
     override fun ScriptContext.startup() {
-        // "m-moo..." comes with the death animation, so it waits for the killing hit to land
-        // (live capture, rev 241).
+        // Wait for the killing hit to land before playing the death line.
         BossCombat.register(this, spec, deps, onHit = { if (npc.hitpoints == 0) moo(npc) })
         onEvent<NpcStateEvents.Respawn> { if (npc.isType(BRUTUS)) npc.vars[DEATH_SAID] = 0 }
         deps.extensionRegistry.register(CHARGE_AIM) { ctx -> aimCharge(ctx.npc, ctx.target) }
@@ -64,8 +61,6 @@ constructor(
     private fun onQuest(player: Player): Boolean =
         idesOfMilk.stage(player) < IdesOfMilkQuest.STAGE_COMPLETE
 
-    // Basic attacks can't kill during the quest
-    // (https://oldschool.runescape.wiki/w/The_Ides_of_Milk#Grabbing_the_bull_by_its_horns).
     private val meleeCap =
         DamageExpr.Custom { _, target ->
             if (onQuest(target)) max(target.hitpoints - 1, 0) else Int.MAX_VALUE
@@ -80,8 +75,7 @@ constructor(
         return deps.random.of(low, high).coerceIn(1, SPECIAL_MAX_HIT)
     }
 
-    // The first special is random, then they alternate; a charge with no room is a stomp
-    // (https://oldschool.runescape.wiki/w/Brutus/Strategies).
+    // A charge with no room falls back to a stomp.
     private val chargeAllowed =
         Condition.Custom { npc, target ->
             target != null &&
@@ -112,7 +106,6 @@ constructor(
 
             val charge =
                 ability("charge") {
-                    // He stands still through the windup (live capture, rev 241).
                     lockMovement()
                     say("*growls*")
                     anim("seq.cow_boss_charge", delay = CHARGE_ANIM_DELAY)
@@ -135,7 +128,6 @@ constructor(
                     wait(STOMP_GAP - STOMP_WINDUP),
                 )
 
-            // He doesn't move from the first slam to the end of the last (live capture, rev 241).
             val stomp =
                 ability("stomp") {
                     lockMovement()
@@ -157,9 +149,6 @@ constructor(
                 )
             val special = ability("special") { include(pickSpecial) }
 
-            // Two basic attacks, then a special after every four (live capture, rev 241). Still out
-            // of reach 21 ticks after his last attack or spawn, he charges if the lane has room,
-            // otherwise huffs (live capture, rev 241).
             every(
                 1,
                 sequence(
@@ -193,7 +182,7 @@ constructor(
         }
     }
 
-    // Locked so he never turns towards a player who sidestepped (live capture, rev 241).
+    // Lock facing so he never turns towards a player who sidestepped.
     private fun aimCharge(npc: Npc, target: Player) {
         val (dx, dz) = chargeDirection(npc.coords, target.coords)
         npc.vars[AIM] = encodeAim(dx, dz)
@@ -221,8 +210,7 @@ constructor(
                 modifier = deps.playerHitModifier,
             )
         }
-        // A teleport plus an exact move over 60 client cycles draws the dash (live capture,
-        // rev 241).
+        // Exact movement draws the dash after the server-side teleport.
         PathingEntityCommon.exactMove(
             npc,
             start,

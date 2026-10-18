@@ -12,16 +12,8 @@ import org.rsmod.game.inv.isType
 import org.rsmod.utils.bits.getBits
 import org.rsmod.utils.bits.withBits
 
-/**
- * Milk for anything that also takes it from a bottomless milk bucket, one use at a time. Only the
- * places live allows call this; others take the item alone
- * (https://oldschool.runescape.wiki/w/Bottomless_milk_bucket).
- *
- * A bucket holds one type of milk at a time, from `enum.bottomless_milk_types`.
- *
- * UNVERIFIED: that a bucket of another milk doesn't count as a bucket of milk for quests and cats
- * (the wiki lists those uses without saying which milk).
- */
+// UNVERIFIED: that a bucket of another milk doesn't count as a bucket of milk for quests and cats
+// (the wiki lists those uses without saying which milk).
 public object MilkSources {
     public const val BUCKET_EMPTY: String = "obj.bottomless_milk_bucket"
     public const val BUCKET_FILLED: String = "obj.bottomless_milk_bucket_filled"
@@ -37,7 +29,6 @@ public object MilkSources {
     private val usesBits by lazy { varObjBits(USES) }
     private val typeBits by lazy { varObjBits(TYPE) }
 
-    /** Each type's milk, as obj names, by type. */
     public val types: Map<Int, String> by lazy {
         enumValues(TYPES).mapValues { RSCM.getReverseMapping(RSCMType.OBJ, (it.value as Number).toInt()) }
     }
@@ -50,18 +41,15 @@ public object MilkSources {
 
     public fun uses(bucket: InvObj?): Int = charges.getCharges(bucket, USES)
 
-    /** The type a bucket holds; an empty one holds none. */
     public fun typeIn(bucket: InvObj?): Int? =
         if (bucket.isType(BUCKET_FILLED) && uses(bucket) > 0) bucket!!.vars.getBits(typeBits) else null
 
-    /** [bucket] with [type] stored, for filling an empty one. */
     public fun withType(bucket: InvObj, type: Int): InvObj =
         bucket.copy(vars = bucket.vars.withBits(typeBits, type))
 
     public fun has(inv: Inventory, milk: String = MILK): Boolean =
         milk in inv || bucketSlot(inv, milk) != null
 
-    /** Takes one [milk], from the item first and then from a bottomless milk bucket. */
     public fun take(access: ProtectedAccess, milk: String = MILK): Boolean =
         if (milk in access.inv) {
             access.invDel(access.inv, milk).success
@@ -69,13 +57,11 @@ public object MilkSources {
             pour(access.inv, milk)
         }
 
-    /** One use of [milk] from a bottomless milk bucket; the last use leaves it empty. */
     public fun pour(inv: Inventory, milk: String = MILK): Boolean {
         val slot = bucketSlot(inv, milk) ?: return false
         return pourFrom(inv, slot, milk)
     }
 
-    /** One use of [milk] from the bottomless milk bucket in [slot], as when it's used on a cat. */
     public fun pourFrom(inv: Inventory, slot: Int, milk: String = MILK): Boolean {
         val bucket = inv[slot] ?: return false
         if (typeIn(bucket) != typeOf(milk)) {
@@ -90,7 +76,6 @@ public object MilkSources {
         return true
     }
 
-    /** Discards the bucket's milk and type. */
     public fun empty(inv: Inventory, slot: Int) {
         charges.removeAllCharges(inv, slot, USES)
         inv[slot] = inv[slot]?.copy(vars = 0)

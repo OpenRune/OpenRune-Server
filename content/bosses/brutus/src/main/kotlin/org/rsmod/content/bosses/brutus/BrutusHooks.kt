@@ -36,7 +36,6 @@ private const val INSTANCE_KEY = "cowboss"
 private fun InstanceManager.inBrutusField(player: Player): Boolean =
     sessionForPlayer(player)?.key == INSTANCE_KEY
 
-// Live leaves the player where they stood (live capture, rev 241).
 internal fun InstanceManager.fieldToWorld(session: InstanceSession, coords: CoordGrid): CoordGrid {
     val copy = resolveCoord(session, FIELD_REFERENCE) ?: return session.placement.exitCoord
     return coords.translate(FIELD_REFERENCE.x - copy.x, FIELD_REFERENCE.z - copy.z)
@@ -47,8 +46,7 @@ private val FIELD_REFERENCE = CoordGrid(3261, 3287)
 private fun IdesOfMilkQuest.onQuest(player: Player): Boolean =
     stage(player) < IdesOfMilkQuest.STAGE_COMPLETE
 
-// TODO(content): [system:graves] Live moves unprotected items to a grave outside the field
-// (https://oldschool.runescape.wiki/w/Brutus); this keeps them until graves exist.
+// TODO(content): [system:graves] Move unprotected items to a grave outside the field.
 class BrutusSafeDeath
 @Inject
 constructor(

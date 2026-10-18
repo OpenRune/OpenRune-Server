@@ -14,7 +14,6 @@ class GroatsFamily @Inject constructor(private val idesOfMilk: IdesOfMilkQuest) 
         onOpNpc1("npc.gillie_the_milkmaid") { startDialogue(it.npc) { gillieGroats() } }
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Seth_Groats
     private suspend fun Dialogue.sethGroats() {
         if (with(idesOfMilk) { sethDialogue() }) {
             return
@@ -22,7 +21,6 @@ class GroatsFamily @Inject constructor(private val idesOfMilk: IdesOfMilkQuest) 
         chatNpc(happy, "M'arnin'....going to milk me cowsies!")
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:Gillie_Groats
     // TODO(content): [verify:in_game] the lost cowbell amulet option and what grants it
     private suspend fun Dialogue.gillieGroats() {
         if (with(idesOfMilk) { gillieDialogue() }) {
@@ -31,7 +29,6 @@ class GroatsFamily @Inject constructor(private val idesOfMilk: IdesOfMilkQuest) 
         chatNpc(happy, "Hello, I'm Gillie the Milkmaid. What can I do for you?")
         val choice =
             if (idesOfMilk.canAskGillieAboutCows(player)) {
-                // live capture, rev 241
                 choice4(
                     "Who are you?",
                     1,

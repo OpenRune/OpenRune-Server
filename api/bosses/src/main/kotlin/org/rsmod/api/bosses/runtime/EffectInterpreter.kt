@@ -927,9 +927,6 @@ class EffectInterpreter internal constructor(
         }
 
     private companion object {
-        // A target that died and respawned elsewhere mid-ability no longer hears the boss (live
-        // capture, rev 241: Brutus's second slam after the player's death is heard, nothing once
-        // they've respawned).
         // UNVERIFIED: the range (the client's view distance; live only shows the target leaving).
         private const val SOUND_TO_RANGE = 15
 

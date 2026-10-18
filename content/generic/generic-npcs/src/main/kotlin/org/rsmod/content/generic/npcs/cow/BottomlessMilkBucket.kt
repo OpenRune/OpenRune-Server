@@ -21,8 +21,6 @@ import org.rsmod.game.type.uncert
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-// https://oldschool.runescape.wiki/w/Bottomless_milk_bucket; dialogue types, prompts and their
-// order: live capture, rev 241.
 // TODO(content): [system:bottomless_milk] using a charge for churns and the remaining quests.
 class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeManager) :
     PluginScript() {
@@ -51,7 +49,6 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
             return
         }
         val uses = MilkSources.uses(bucket)
-        // "one use" (live capture, rev 241).
         val count = if (uses == 1) "one use" else "${number(uses)} uses"
         objbox(
             FILLED,
@@ -75,7 +72,6 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
                 else -> held.minOrNull()
             }
         if (used != null && bucketType != null && type != bucketType) {
-            // live capture, rev 241
             mes(
                 "Your bottomless milk bucket already contains a different type of milk. You " +
                     "cannot fill it with ${type(unnoted(used)).name.lowercase()}."
@@ -83,7 +79,6 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
             return
         }
         if (type == null || type !in held) {
-            // live capture, rev 241
             if (held.isNotEmpty()) {
                 mes("You don't have any more of this type of milk to fill it with.")
             } else {
@@ -92,7 +87,6 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
             return
         }
         if (uses >= MAX_USES) {
-            // https://oldschool.runescape.wiki/w/Bottomless_milk_bucket#Trivia
             mes("Your bottomless milk bucket is... full.")
             return
         }
@@ -134,7 +128,6 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
             inv[slot] = MilkSources.withType(checkNotNull(inv[slot]), type)
         }
         if (note != null && inv.count(BUCKET_NOTE) > 0 && (preferred == note || fromOther > 0)) {
-            // live capture, rev 241
             // UNVERIFIED: the wording for milks other than regular milk.
             mes(
                 "As you deposit noted buckets of milk into your bottomless milk bucket, you " +
@@ -180,7 +173,6 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
 
     internal suspend fun ProtectedAccess.empty(slot: Int) {
         val bucket = inv[slot]?.takeIf { it.isType(FILLED) } ?: return
-        // live capture, rev 241
         objbox(
             FILLED,
             zoom = 400,
@@ -202,7 +194,6 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
             return
         }
         MilkSources.empty(inv, slot)
-        // live capture, rev 241
         soundSynth("synth.bottomless_milk_bucket_discard")
         objbox(EMPTY, zoom = 400, "You discard the contents of your bottomless milk bucket.")
     }
@@ -217,7 +208,6 @@ class BottomlessMilkBucket @Inject constructor(private val charges: ObjChargeMan
         private const val BUCKET = "obj.bucket_empty"
         private const val BUCKET_NOTE = "obj.cert_bucket_empty"
 
-        // Each milk leaves an empty bucket (live capture, rev 241).
         private fun emptyOf(milk: String): String = if (isNoted(milk)) BUCKET_NOTE else BUCKET
 
         private fun type(name: String): ItemServerType =

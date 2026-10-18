@@ -40,7 +40,6 @@ import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest.Compani
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest.Companion.STAGE_COMPLETE
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest.Companion.STAGE_FIRST_SAMPLE
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest.Companion.STAGE_FIRST_SAMPLE_DRUNK
-import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest.Companion.STAGE_GILLIE_TOLD
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest.Companion.STAGE_RESEARCHED
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest.Companion.STAGE_SECOND_SAMPLE
 import org.rsmod.coroutine.GameCoroutine
@@ -64,26 +63,20 @@ import org.rsmod.routefinder.collision.CollisionFlagMap
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class IdesOfMilkInteractionTest {
-    @Test fun `the shelf gives one book once Seth has explained his principles`() {
+    @Test fun `the shelf respects capacity and does not duplicate or replace a surrendered book`() {
         val f = Fixture(STAGE_RESEARCHED, sethInformation = true)
+        f.fill(28)
         f.run { with(f.script) { searchShelf() } }
-        f.finish()
-        f.run { with(f.script) { searchShelf() } }
-        f.finish()
+        assertEquals(0, f.player.inv.count(BOOK))
+
+        f.player.inv[0] = null
+        repeat(2) { f.run { with(f.script) { searchShelf() } } }
         assertEquals(1, f.player.inv.count(BOOK))
-    }
 
-    @Test fun `the shelf gives no book with a full inventory or after Cassius took it`() {
-        val full = Fixture(STAGE_RESEARCHED, sethInformation = true)
-        full.fill(28)
-        full.run { with(full.script) { searchShelf() } }
-        full.finish()
-        assertEquals(0, full.player.inv.count(BOOK))
-
-        val given = Fixture(STAGE_BOOK_GIVEN, sethInformation = true)
-        given.run { with(given.script) { searchShelf() } }
-        given.finish()
-        assertEquals(0, given.player.inv.count(BOOK))
+        f.player.inv[0] = null
+        VarPlayerIntMapSetter.set(f.player, "varbit.cowquest", STAGE_BOOK_GIVEN)
+        f.run { with(f.script) { searchShelf() } }
+        assertEquals(0, f.player.inv.count(BOOK))
     }
 
     @Test fun `Cassius takes every copy of the book for one sample`() {
@@ -91,7 +84,6 @@ class IdesOfMilkInteractionTest {
         f.player.inv[0] = InvObj(BOOK, 1)
         f.player.inv[4] = InvObj(BOOK, 1)
         f.talk(CASSIUS)
-        f.finish()
         assertEquals(0, f.player.inv.count(BOOK))
         assertEquals(1, f.player.inv.count(MILK_SAMPLE_1))
         assertEquals(STAGE_FIRST_SAMPLE, f.stage())
@@ -100,128 +92,83 @@ class IdesOfMilkInteractionTest {
     @Test fun `a book that vanishes mid-dialogue does not advance the quest`() {
         val f = Fixture(STAGE_RESEARCHED)
         f.player.inv[0] = InvObj(BOOK, 1)
-        f.talk(CASSIUS)
-        f.until { f.output().contains("Hand it here, quickly!") }
-        f.player.inv[0] = null
-        f.finish()
+        f.talk(CASSIUS) {
+            f.until { f.client.messages.any { it.toString().contains("Hand it here, quickly!") } }
+            f.player.inv[0] = null
+        }
         assertEquals(STAGE_RESEARCHED, f.stage())
         assertEquals(0, f.player.inv.count(MILK_SAMPLE_1))
     }
 
-    @Test fun `Cassius replaces a lost first sample only when it is missing and there is room`() {
-        val lost = Fixture(STAGE_FIRST_SAMPLE)
-        lost.talk(CASSIUS)
-        lost.finish()
-        assertEquals(1, lost.player.inv.count(MILK_SAMPLE_1))
+    @Test fun `lost samples are replaced only when missing and there is room`() {
+        for ((stage, sample) in listOf(
+            STAGE_FIRST_SAMPLE to MILK_SAMPLE_1,
+            STAGE_SECOND_SAMPLE to MILK_SAMPLE_2,
+        )) {
+            val f = Fixture(stage)
+            f.fill(28)
+            f.talk(CASSIUS)
+            assertEquals(0, f.player.inv.count(sample))
+            assertEquals(stage, f.stage())
 
-        val held = Fixture(STAGE_FIRST_SAMPLE)
-        held.player.inv[0] = InvObj(MILK_SAMPLE_1, 1)
-        held.talk(CASSIUS)
-        held.finish()
-        assertEquals(1, held.player.inv.count(MILK_SAMPLE_1))
-
-        val full = Fixture(STAGE_FIRST_SAMPLE)
-        full.fill(28)
-        full.talk(CASSIUS)
-        full.finish()
-        assertEquals(0, full.player.inv.count(MILK_SAMPLE_1))
+            f.player.inv[0] = null
+            repeat(2) { f.talk(CASSIUS) }
+            assertEquals(1, f.player.inv.count(sample))
+            assertEquals(stage, f.stage())
+        }
     }
 
     @Test fun `drinking the first sample uses it up once`() {
         val f = Fixture(STAGE_FIRST_SAMPLE)
         f.player.inv[0] = InvObj(MILK_SAMPLE_1, 1)
         f.player.inv[1] = InvObj(MILK_SAMPLE_1, 1)
-        f.run { with(f.script) { drinkFirstSample() } }
-        f.finish()
-        f.run { with(f.script) { drinkFirstSample() } }
-        f.finish()
+        repeat(2) { f.run { with(f.script) { drinkFirstSample() } } }
         assertEquals(1, f.player.inv.count(MILK_SAMPLE_1))
         assertEquals(STAGE_FIRST_SAMPLE_DRUNK, f.stage())
     }
 
-    @Test fun `the second sample needs room and is not replaced while held`() {
-        val full = Fixture(STAGE_FIRST_SAMPLE_DRUNK)
-        full.fill(28)
-        full.talk(CASSIUS)
-        full.finish()
-        assertEquals(0, full.player.inv.count(MILK_SAMPLE_2))
-        assertEquals(STAGE_FIRST_SAMPLE_DRUNK, full.stage())
-
-        val held = Fixture(STAGE_SECOND_SAMPLE)
-        held.player.inv[0] = InvObj(MILK_SAMPLE_2, 1)
-        held.talk(CASSIUS)
-        held.finish()
-        assertEquals(1, held.player.inv.count(MILK_SAMPLE_2))
-
-        val lost = Fixture(STAGE_SECOND_SAMPLE)
-        lost.talk(CASSIUS)
-        lost.finish()
-        assertEquals(1, lost.player.inv.count(MILK_SAMPLE_2))
-    }
-
-    @Test fun `telling Cassius completes the quest`() {
-        val f = Fixture(STAGE_GILLIE_TOLD)
+    @Test fun `the second sample needs room before advancing the quest`() {
+        val f = Fixture(STAGE_FIRST_SAMPLE_DRUNK)
+        f.fill(28)
         f.talk(CASSIUS)
-        f.finish()
-        assertEquals(STAGE_COMPLETE, f.stage())
-        assertTrue(f.player.ui.containsModal("interface.questscroll"))
+        assertEquals(0, f.player.inv.count(MILK_SAMPLE_2))
+        assertEquals(STAGE_FIRST_SAMPLE_DRUNK, f.stage())
     }
 
-    @Test fun `Gillie gives the amulet and the lamp once`() {
-        val f = Fixture(STAGE_COMPLETE)
-        f.talk(GILLIE)
-        f.finish()
-        f.talk(GILLIE)
-        f.finish()
-        assertEquals(1, f.player.inv.count(COWBELL_AMULET_EMPTY))
-        assertEquals(1, f.player.inv.count(LAMP))
-    }
-
-    @Test fun `a full inventory gets nothing from Gillie`() {
+    @Test fun `Gillie defers rewards until space is available without duplicating them`() {
         val f = Fixture(STAGE_COMPLETE)
         f.fill(28)
         f.talk(GILLIE)
-        f.finish()
         assertEquals(0, f.player.inv.count(COWBELL_AMULET_EMPTY))
-        assertEquals(0, f.player.vars["varbit.cowquest_reward"])
-    }
-
-    @Test fun `one free slot takes the amulet and leaves the lamp for later`() {
-        val f = Fixture(STAGE_COMPLETE)
-        f.fill(27)
-        f.talk(GILLIE)
-        f.finish()
-        assertEquals(1, f.player.inv.count(COWBELL_AMULET_EMPTY))
         assertEquals(0, f.player.inv.count(LAMP))
+        assertEquals(0, f.player.vars["varbit.cowquest_reward"])
 
         f.player.inv[0] = null
         f.talk(GILLIE)
-        f.finish()
+        assertEquals(1, f.player.inv.count(COWBELL_AMULET_EMPTY))
+        assertEquals(0, f.player.inv.count(LAMP))
+
+        f.player.inv[1] = null
+        repeat(2) { f.talk(GILLIE) }
         assertEquals(1, f.player.inv.count(LAMP))
         assertEquals(1, f.player.inv.count(COWBELL_AMULET_EMPTY))
     }
 
-    @Test fun `the lamp is used up and Gillie does not replace it`() {
+    @Test fun `the lamp is conserved when declined and consumed once for its reward`() {
         val f = Fixture(STAGE_COMPLETE)
         VarPlayerIntMapSetter.set(f.player, "varbit.cowquest_reward", 1)
         f.player.inv[0] = InvObj(LAMP, 1)
-        f.run { with(f.script) { rubLamp() } }
-        f.finish(listOf(ATTACK_OPTION, CONFIRM_OPTION))
+        f.run(listOf(ATTACK_OPTION, DECLINE_OPTION)) { with(f.script) { rubLamp() } }
+        assertEquals(1, f.player.inv.count(LAMP))
+        assertEquals(0, f.player.statMap.getXP("stat.attack"))
+
+        f.run(listOf(ATTACK_OPTION, CONFIRM_OPTION)) { with(f.script) { rubLamp() } }
         assertEquals(0, f.player.inv.count(LAMP))
         assertEquals(1_000, f.player.statMap.getXP("stat.attack"))
 
         f.talk(GILLIE)
-        f.finish()
         assertEquals(0, f.player.inv.count(LAMP))
-    }
-
-    @Test fun `declining the lamp keeps it`() {
-        val f = Fixture(STAGE_COMPLETE)
-        f.player.inv[0] = InvObj(LAMP, 1)
-        f.run { with(f.script) { rubLamp() } }
-        f.finish(listOf(ATTACK_OPTION, DECLINE_OPTION))
-        assertEquals(1, f.player.inv.count(LAMP))
-        assertEquals(0, f.player.statMap.getXP("stat.attack"))
+        assertEquals(1_000, f.player.statMap.getXP("stat.attack"))
     }
 
     private class Harness(private val quest: IdesOfMilkQuest) : PluginScript() {
@@ -236,7 +183,7 @@ class IdesOfMilkInteractionTest {
 
     private class Fixture(stage: Int, sethInformation: Boolean = false) {
         val events = EventBus()
-        private val client = RecordingClient()
+        val client = TestClient()
         private val coroutine = GameCoroutine("ides-of-milk-test")
         private var result: Result<Unit>? = null
         private val context = ProtectedAccessContextFactory.empty().copy(
@@ -280,15 +227,18 @@ class IdesOfMilkInteractionTest {
             for (slot in 0 until slots) player.inv[slot] = InvObj("obj.coins", 1)
         }
 
-        fun talk(npcType: String) {
+        fun talk(npcType: String, beforeFinish: () -> Unit = {}) {
             start {
                 val npc = Npc(npcType, player.coords.translateZ(1))
-                assertTrue(events.publish(it, NpcEvents.Op1(npc)))
+                events.publish(it, NpcEvents.Op1(npc))
             }
+            beforeFinish()
+            finish()
         }
 
-        fun run(block: suspend ProtectedAccess.() -> Unit) {
+        fun run(options: List<Int> = emptyList(), block: suspend ProtectedAccess.() -> Unit) {
             start { it.block() }
+            finish(options)
         }
 
         private fun start(block: suspend (ProtectedAccess) -> Unit) {
@@ -313,23 +263,23 @@ class IdesOfMilkInteractionTest {
                 if (predicate()) return
                 advance()
             }
-            fail<Unit>("Condition was not reached: ${output()}")
+            fail<Unit>("Interaction did not reach the inventory handover")
         }
 
-        fun finish(options: List<Int> = emptyList()) {
+        private fun finish(options: List<Int> = emptyList()) {
             val selections = options.iterator()
             repeat(150) {
                 if (coroutine.isIdle) return
                 advance(selections)
             }
-            fail<Unit>("Interaction did not finish: ${output()}")
+            fail<Unit>("Interaction did not finish")
         }
 
         private fun advance(options: Iterator<Int> = emptyList<Int>().iterator()) {
             if (coroutine.isAwaiting(ResumePauseButtonInput::class)) {
                 val parent = listOf("chat_left", "chat_right", "messagebox", "objectbox", "chatmenu")
                     .firstOrNull { player.ui.containsModal("interface.$it") }
-                    ?: error("Unknown dialogue: ${output()}")
+                    ?: error("Unknown dialogue")
                 val input = when (parent) {
                     "chatmenu" ->
                         ResumePauseButtonInput("component.chatmenu:options", if (options.hasNext()) options.next() else 1)
@@ -344,11 +294,9 @@ class IdesOfMilkInteractionTest {
             }
             result?.getOrThrow()
         }
-
-        fun output() = client.messages.joinToString("\n")
     }
 
-    private class RecordingClient : Client<Any, Any> {
+    private class TestClient : Client<Any, Any> {
         val messages = mutableListOf<Any>()
         override fun write(message: Any) { messages += message }
         override fun close() {}

@@ -20,7 +20,6 @@ class CooksAssistant : QuestScript(
     rewards { xp("stat.cooking", 300.0) },
     ItemRewardDisplay("obj.cake"),
     questVarbit = "varbit.cooks_assistant_progress",
-    // live capture, rev 241
     completeJingle = "jingle.mastermindless",
 ) {
 
@@ -96,8 +95,7 @@ class CooksAssistant : QuestScript(
 
     private fun hasMilk(player: Player): Boolean = holdsMilk(player) || player.givenMilk
 
-    // A bottomless milk bucket counts as a bucket of milk and gives up one use (live capture,
-    // rev 241). UNVERIFIED: a bucket of milk goes first.
+    // UNVERIFIED: a bucket of milk goes before bottomless milk.
     private fun holdsMilk(player: Player): Boolean = MilkSources.has(player.inv)
 
     private fun Dialogue.takeMilk(): Boolean = MilkSources.take(access)

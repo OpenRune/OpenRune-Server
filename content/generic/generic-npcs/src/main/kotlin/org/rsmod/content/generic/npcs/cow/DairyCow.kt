@@ -26,8 +26,6 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
         onOpContentLocU("content.dairy_cow") { mes("The cow doesn't want that.") }
         onOpContentLocU("content.dairy_cow", "obj.bucket_empty") { attemptMilkingCow(it.loc) }
 
-        // The Zanaris dairy cow puts Milk second and Steal-cowbell fourth
-        // (https://oldschool.runescape.wiki/w/Dairy_cow).
         // TODO(content): its Talk-to option.
         onOpLoc2(ZANARIS_COW) { attemptMilkingCow(it.loc) }
         onOpLoc4(ZANARIS_COW) { stealCowbell(it.loc) }
@@ -57,8 +55,6 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
     }
 
     private fun ProtectedAccess.milkCow() {
-        // Empty buckets fill first, then a bottomless milk bucket, from the one click (live
-        // capture, rev 241).
         val bottomless = if ("obj.bucket_empty" in inv) null else roomySlots().firstOrNull()
         if (bottomless != null) {
             if (charges.addCharges(inv, bottomless, 1, BOTTOMLESS_USES, BOTTOMLESS_MAX).isFailure()) {
@@ -87,7 +83,6 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
                 (MilkSources.typeIn(inv[it]) ?: REGULAR_MILK) == REGULAR_MILK
         }
 
-    // https://oldschool.runescape.wiki/w/Cowbell_amulet: one tick faster while worn.
     private fun ProtectedAccess.wearsCowbellAmulet(): Boolean =
         "obj.cowbell_amulet" in player.worn || "obj.cowbell_amulet_empty" in player.worn
 
@@ -131,8 +126,7 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
         const val ZANARIS_COW = "loc.fairy_fat_cow"
         val REGULAR_MILK by lazy { checkNotNull(MilkSources.typeOf(MilkSources.MILK)) }
 
-        // A milking every 7 ticks (live capture, rev 241), 6 with the cowbell amulet worn
-        // (https://oldschool.runescape.wiki/w/Cowbell_amulet). The queue runs a tick early.
+        // The queue runs a tick early.
         const val MILK_DELAY = 8
         const val COWBELL_MILK_DELAY = 7
 
@@ -141,7 +135,6 @@ class DairyCow @Inject constructor(private val charges: ObjChargeManager) : Plug
         const val BOTTOMLESS_USES = BottomlessMilkBucket.USES
         const val BOTTOMLESS_MAX = BottomlessMilkBucket.MAX_USES
 
-        // https://oldschool.runescape.wiki/w/Bottomless_milk_bucket#Trivia
         const val BOTTOMLESS_FULL = "Your bottomless milk bucket, surprisingly, is full."
     }
 }

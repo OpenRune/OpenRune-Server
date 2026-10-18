@@ -29,7 +29,6 @@ import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
-// The cow pen behind Gillie Groats (live capture, rev 241).
 // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
 class BrutusInstance
 @Inject
@@ -51,7 +50,6 @@ constructor(
 
     override fun runsPreludeOnFreshRun(): Boolean = true
 
-    // The quest kill reports no duration (live capture, rev 241).
     override fun recordsKillTime(player: Player): Boolean =
         idesOfMilk.stage(player) >= IdesOfMilkQuest.STAGE_COMPLETE
 
@@ -77,7 +75,6 @@ constructor(
         onExitObjectApproach2 { leaveField() }
     }
 
-    // live capture, rev 241
     private suspend fun ProtectedAccess.fieldEntry(enter: InstanceEnterAction, spawn: () -> Unit) {
         fadeOverlay(0, FADE_CLEAR, 0, FADE_BLACK, FADE_CLIENT_CYCLES)
         delay(1)
@@ -92,13 +89,11 @@ constructor(
         closeFadeOverlay(cycles = 2)
     }
 
-    // https://oldschool.runescape.wiki/w/Transcript:The_Ides_of_Milk#Facing_the_bull
     private suspend fun ProtectedAccess.openGate() {
         val stage = idesOfMilk.stage(player)
         when {
             stage < IdesOfMilkQuest.STAGE_BULL_TASK ->
                 startDialogue {
-                    // "this bull", not the transcript's "the bull" (live capture, rev 241).
                     chatPlayer(neutral, "Releasing this bull into the cow pen is a bad idea.")
                     mesbox(
                         "You need to have completed The Ides of Milk quest to release this bull."
@@ -158,8 +153,6 @@ constructor(
         closeFadeOverlay(cycles = 2)
     }
 
-    // Inside the field the release gate does nothing and the pen's west gate leads out (live
-    // capture, rev 241).
     private fun swapGates(session: InstanceSession) {
         for ((static, from, into) in GATE_SWAPS) {
             val coords = manager.resolveCoord(session, static) ?: continue
@@ -176,18 +169,15 @@ constructor(
         val npc = Npc(type, coords)
         deps.npcRepo.add(npc, Int.MAX_VALUE)
         npc.respawns = idesOfMilk.stage(player) >= IdesOfMilkQuest.STAGE_COMPLETE
-        // The quest kill isn't counted (live capture, rev 241).
         if (!npc.respawns) {
             npc.vars["varn.skip_killcount"] = 1
         }
         manager.registerSessionNpc(player, npc)
-        // Once the screen has cleared (live capture, rev 241).
         deps.worldQueues.add(HP_BAR_DELAY) { if (npc.isSlotAssigned) bossHpBar.onOpen(player, npc) }
         arrive(npc, player)
     }
 
-    // He can be attacked from the start, so this holds his own attack and movement: npc.delay
-    // would drop the player's clicks on him (live capture, rev 241).
+    // Hold his attack and movement without npc.delay, which would drop the player's clicks.
     private fun arrive(npc: Npc, player: Player?) {
         npc.anim("seq.cow_boss_spawn")
         val encounter = deps.encounterRegistry.of(npc)
@@ -215,10 +205,8 @@ constructor(
     private companion object {
         private val BRUTUS_ID = Brutus.BRUTUS.asRSCM(RSCMType.NPC)
 
-        // Boss Moosic, started with every spawn and unlocked by the first (live capture, rev 241).
         private const val BOSS_MOOSIC = 8662
 
-        // live capture, rev 241
         private val SPAWN = CoordGrid(3261, 3287)
 
         private val EXIT = CoordGrid(3252, 3267)
