@@ -5,6 +5,7 @@ import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.cinematic.Cinematic
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.runClientScript
@@ -17,6 +18,7 @@ import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.api.script.advanced.onIfMoveSub
 import org.rsmod.api.script.advanced.onIfMoveTop
 import org.rsmod.api.script.onPlayerInit
+import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftQueueWithArgs
 import org.rsmod.content.interfaces.gameframe.Gameframe
 import org.rsmod.content.interfaces.gameframe.GameframeLoader
@@ -46,6 +48,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         loadAll()
 
         onPlayerInit { player.openLoginGameframe() }
+        onPlayerLogout { player.restoreStoneArrangement() }
 
         for ((topLevel, gameframe) in gameframes) {
             val type = ServerCacheManager.getInterface(topLevel) ?: error("Unable to get Interface")
@@ -64,7 +67,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
     }
 
     private fun Player.openLoginGameframe() {
-        val gameframe = gameframes[gameframeTopLevel]
+        val gameframe = gameframes[gameframeTopLevel]?.takeIf { it.isFallbackCandidate() }
         if (gameframe != null && gameframe.resizable == ui.frameResizable) {
             ifOpenTop(gameframe.topLevel)
             openGameframe(gameframe, eventBus)
@@ -135,17 +138,31 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
             if (!requiresIntermediate) {
                 return null
             }
-            return gameframes.values.first { it.hasFlags(resizable = true, stoneArrangements) }
+            return gameframes.values.first {
+                it.isFallbackCandidate() && it.hasFlags(resizable = true, stoneArrangements)
+            }
         }
 
         private fun Gameframe.hasFlags(resizable: Boolean, stoneArrangements: Boolean): Boolean {
             return this.resizable == resizable && this.stoneArrangement == stoneArrangements
         }
+
+        // The fullscreen world map has pre-EoC's flags but is never a frame to fall back to.
+        private fun Gameframe.isFallbackCandidate(): Boolean = topLevel != FULLSCREEN_MAP_TOPLEVEL
+
+        private const val FULLSCREEN_MAP_TOPLEVEL = "interface.toplevel_display"
+
+        private val STONE_BEFORE_FULLSCREEN = AttributeKey<Boolean>()
     }
 
     public fun Player.changeGameframe(move: GameframeMove) {
         val (from, dest, intermediate) = move
-        if (dest.resizable) {
+        if (dest.topLevel == FULLSCREEN_MAP_TOPLEVEL && from.topLevel != FULLSCREEN_MAP_TOPLEVEL) {
+            attr[STONE_BEFORE_FULLSCREEN] = stoneArrangements
+        }
+        if (from.topLevel == FULLSCREEN_MAP_TOPLEVEL && dest.topLevel != FULLSCREEN_MAP_TOPLEVEL) {
+            restoreStoneArrangement()
+        } else if (dest.resizable) {
             stoneArrangements = dest.stoneArrangement
         }
         resyncVar("varp.chat_filter_assist")
@@ -171,12 +188,19 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         Cinematic.syncMinimapState(this)
     }
 
+    private fun Player.restoreStoneArrangement() {
+        val saved = attr[STONE_BEFORE_FULLSCREEN] ?: return
+        attr.remove(STONE_BEFORE_FULLSCREEN)
+        stoneArrangements = saved
+    }
+
     private fun selectFallback(resizable: Boolean, stoneArrangements: Boolean): Gameframe? {
-        val priority = gameframes.values.firstOrNull { it.hasFlags(resizable, stoneArrangements) }
+        val candidates = gameframes.values.filter { it.isFallbackCandidate() }
+        val priority = candidates.firstOrNull { it.hasFlags(resizable, stoneArrangements) }
         if (priority != null) {
             return priority
         }
-        return gameframes.values.firstOrNull { it.resizable == resizable }
+        return candidates.firstOrNull { it.resizable == resizable }
     }
 
     private fun loadAll() {
