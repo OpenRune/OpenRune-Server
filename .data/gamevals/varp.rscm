@@ -141,3 +141,6 @@ trail_completed_medium=63802
 trail_completed_hard=63803
 trail_completed_elite=63804
 trail_completed_master=63805
+trail_progress_low=63806
+trail_progress_high=63807
+trail_beginner_step=63808

@@ -23,6 +23,11 @@ object TrailTierTable {
     const val MILESTONE_OBJ = 16
     const val MILESTONE_AT = 17
     const val WATSON_VARBIT = 18
+    const val LENGTH_VARBIT = 19
+    const val PROGRESS_VARBIT = 20
+    const val STEP_VARP = 21
+    const val NAME = 22
+    const val URI_NPC = 23
 
     fun tiers() =
         dbTable("dbtable.trail_tier", serverOnly = true) {
@@ -45,9 +50,16 @@ object TrailTierTable {
             column("milestone_obj", MILESTONE_OBJ, VarType.OBJ)
             column("milestone_at", MILESTONE_AT, VarType.INT)
             column("watson_varbit", WATSON_VARBIT, VarType.INT)
+            column("length_varbit", LENGTH_VARBIT, VarType.INT)
+            column("progress_varbit", PROGRESS_VARBIT, VarType.INT)
+            column("step_varp", STEP_VARP, VarType.VARP)
+            column("name", NAME, VarType.STRING)
+            column("uri_npc", URI_NPC, VarType.NPC)
 
             row("dbrow.trail_tier_beginner") {
                 column(DIFFICULTY, 0)
+                column(NAME, "beginner")
+                columnRSCM(URI_NPC, "npc.trail_beginner_uri")
                 columnRSCM(CLUE_OBJ, "obj.trail_clue_beginner")
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_beginner")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_beginner")
@@ -62,10 +74,15 @@ object TrailTierTable {
                 columnRSCM(MAJOR_CASE_OBJ, "obj.scroll_case_beginner_major")
                 column(MAJOR_CASE_AT, 100)
                 columnRSCM(MAJOR_CASE_VARBIT, "varbit.scroll_case_beginner_major")
+                columnRSCM(LENGTH_VARBIT, "varbit.trail_beginner_length")
+                columnRSCM(PROGRESS_VARBIT, "varbit.trail_beginner_progress")
+                columnRSCM(STEP_VARP, "varp.trail_beginner_step")
             }
 
             row("dbrow.trail_tier_easy") {
                 column(DIFFICULTY, 1)
+                column(NAME, "easy")
+                columnRSCM(URI_NPC, "npc.trail_easy_uri")
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_easy")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_easy")
                 column(STEPS_MIN, 2)
@@ -83,10 +100,14 @@ object TrailTierTable {
                 columnRSCM(MILESTONE_OBJ, "obj.large_spade")
                 column(MILESTONE_AT, 500)
                 columnRSCM(WATSON_VARBIT, "varbit.trail_watson_easy")
+                columnRSCM(LENGTH_VARBIT, "varbit.trail_easy_length")
+                columnRSCM(PROGRESS_VARBIT, "varbit.trail_easy_progress")
             }
 
             row("dbrow.trail_tier_medium") {
                 column(DIFFICULTY, 2)
+                column(NAME, "medium")
+                columnRSCM(URI_NPC, "npc.trail_medium_uri")
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_medium")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_medium")
                 column(STEPS_MIN, 3)
@@ -104,10 +125,14 @@ object TrailTierTable {
                 columnRSCM(MILESTONE_OBJ, "obj.clueless_scroll")
                 column(MILESTONE_AT, 400)
                 columnRSCM(WATSON_VARBIT, "varbit.trail_watson_medium")
+                columnRSCM(LENGTH_VARBIT, "varbit.trail_medium_length")
+                columnRSCM(PROGRESS_VARBIT, "varbit.trail_medium_progress")
             }
 
             row("dbrow.trail_tier_hard") {
                 column(DIFFICULTY, 3)
+                column(NAME, "hard")
+                columnRSCM(URI_NPC, "npc.trail_hard_uri")
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_hard")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_hard")
                 column(STEPS_MIN, 4)
@@ -123,10 +148,14 @@ object TrailTierTable {
                 column(MAJOR_CASE_AT, 150)
                 columnRSCM(MAJOR_CASE_VARBIT, "varbit.scroll_case_hard_major")
                 columnRSCM(WATSON_VARBIT, "varbit.trail_watson_hard")
+                columnRSCM(LENGTH_VARBIT, "varbit.trail_hard_length")
+                columnRSCM(PROGRESS_VARBIT, "varbit.trail_hard_progress")
             }
 
             row("dbrow.trail_tier_elite") {
                 column(DIFFICULTY, 4)
+                column(NAME, "elite")
+                columnRSCM(URI_NPC, "npc.trail_elite_uri")
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_elite")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_elite")
                 column(STEPS_MIN, 5)
@@ -144,10 +173,14 @@ object TrailTierTable {
                 columnRSCM(MILESTONE_OBJ, "obj.heavy_casket")
                 column(MILESTONE_AT, 200)
                 columnRSCM(WATSON_VARBIT, "varbit.trail_watson_elite")
+                columnRSCM(LENGTH_VARBIT, "varbit.trail_elite_length")
+                columnRSCM(PROGRESS_VARBIT, "varbit.trail_elite_progress")
             }
 
             row("dbrow.trail_tier_master") {
                 column(DIFFICULTY, 5)
+                column(NAME, "master")
+                columnRSCM(URI_NPC, "npc.trail_master_uri")
                 columnRSCM(CLUE_OBJ, "obj.trail_clue_master")
                 columnRSCM(CASKET_OBJ, "obj.trail_reward_casket_master")
                 columnRSCM(BOX_OBJ, "obj.league_clue_box_master")
@@ -164,6 +197,8 @@ object TrailTierTable {
                 columnRSCM(MAJOR_CASE_VARBIT, "varbit.scroll_case_master_major")
                 columnRSCM(MILESTONE_OBJ, "obj.scroll_sack")
                 column(MILESTONE_AT, 100)
+                columnRSCM(LENGTH_VARBIT, "varbit.trail_master_length")
+                columnRSCM(PROGRESS_VARBIT, "varbit.trail_master_progress")
             }
         }
 }

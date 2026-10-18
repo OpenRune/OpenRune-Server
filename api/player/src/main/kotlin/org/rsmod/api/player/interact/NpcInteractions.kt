@@ -11,6 +11,7 @@ import org.rsmod.api.player.events.interact.NpcDefaultEvents
 import org.rsmod.api.player.events.interact.NpcEvents
 import org.rsmod.api.player.events.interact.NpcUnimplementedEvents
 import org.rsmod.api.player.events.interact.OpEvent
+import org.rsmod.api.player.hook.PlayerNpcOpHook
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -20,7 +21,12 @@ import org.rsmod.game.movement.RouteRequestPathingEntity
 import org.rsmod.game.vars.VarPlayerIntMap
 import org.rsmod.utils.bits.getBits
 
-public class NpcInteractions @Inject constructor(private val eventBus: EventBus) {
+public class NpcInteractions
+@Inject
+constructor(
+    private val eventBus: EventBus,
+    private val opHooks: Set<@JvmSuppressWildcards PlayerNpcOpHook> = emptySet(),
+) {
     public fun interact(player: Player, npc: Npc, op: InteractionOp) {
         val opTrigger = hasOpTrigger(player, npc, op)
         val apTrigger = hasApTrigger(player, npc, op)
@@ -74,8 +80,11 @@ public class NpcInteractions @Inject constructor(private val eventBus: EventBus)
         return null
     }
 
+    public fun opHook(player: Player, npc: Npc, op: InteractionOp): PlayerNpcOpHook? =
+        opHooks.firstOrNull { it.claims(player, npc, op) }
+
     public fun hasOpTrigger(player: Player, npc: Npc, op: InteractionOp): Boolean =
-        opTrigger(player, npc, op) != null
+        opHook(player, npc, op) != null || opTrigger(player, npc, op) != null
 
     public fun apTrigger(
         player: Player,

@@ -588,6 +588,11 @@ constructor(
     }
 
     public fun triggerOp(player: Player, interaction: InteractionNpcOp) {
+        val hook = npcInteractions.opHook(player, interaction.target, interaction.op)
+        if (hook != null) {
+            protectedAccess.launch(player) { with(hook) { op(interaction.target, interaction.op) } }
+            return
+        }
         val op = npcInteractions.opTrigger(player, interaction.target, interaction.op)
         if (op != null) {
             launchOp(player, interaction, op)

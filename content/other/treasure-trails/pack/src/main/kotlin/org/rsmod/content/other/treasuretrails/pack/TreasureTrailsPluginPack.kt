@@ -5,5 +5,5 @@ import dev.openrune.pack.PluginPack
 
 class TreasureTrailsPluginPack : PluginPack() {
     override fun dbTables(): List<DBTable> =
-        listOf(TrailClueObjTable.clueObjs(), TrailTierTable.tiers())
+        listOf(TrailTierTable.tiers(), TrailCharlieTaskTable.tasks(), TrailMapInterfaceTable.maps())
 }

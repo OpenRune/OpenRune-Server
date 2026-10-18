@@ -1,21 +1,8 @@
 package org.rsmod.content.drops
 
 import kotlin.math.floor
+import org.rsmod.api.droptable.ClueScrollDrops
 import org.rsmod.game.entity.Player
-
-public const val X_MARKS_THE_SPOT_QUEST: String = "quest_xmarksthespot"
-
-public enum class ClueScrollTier {
-    Beginner,
-    Easy,
-    Medium,
-    Hard,
-    Elite,
-    Master,
-}
-
-/** X Marks the Spot — clue scrolls become scroll boxes after completion. Stub defaults to false. */
-public fun Player.hasCompletedXMarksTheSpot(): Boolean = hasCompletedQuest(X_MARKS_THE_SPOT_QUEST)
 
 /** Easy Combat Achievements reward tier unlocked (improves clue drop rate). Stub defaults to true. */
 public fun Player.hasUnlockedEasyCombat(): Boolean = true
@@ -57,29 +44,6 @@ public fun Player.eliteClueDropDenominator(baseDenominator: Int): Int =
 public fun Player.masterClueDropDenominator(baseDenominator: Int): Int =
     if (hasUnlockedMasterCombat()) combatAchievementClueDenominator(baseDenominator) else baseDenominator
 
-public fun clueScrollTierForObj(obj: String): ClueScrollTier? {
-    val normalized = obj.removePrefix("obj.").lowercase()
-    return when {
-        "beginner" in normalized -> ClueScrollTier.Beginner
-        "easy" in normalized -> ClueScrollTier.Easy
-        "medium" in normalized || normalized.startsWith("trail_medium") -> ClueScrollTier.Medium
-        "hard" in normalized -> ClueScrollTier.Hard
-        "elite" in normalized || normalized.startsWith("trail_elite") -> ClueScrollTier.Elite
-        "master" in normalized -> ClueScrollTier.Master
-        else -> null
-    }
-}
-
-public fun clueScrollBoxObj(tier: ClueScrollTier): String = "obj.league_clue_box_${tier.name.lowercase()}"
-
-/**
- * For [transformObj] on clue scroll drops: returns the scroll box obj when X Marks the Spot is
- * complete, otherwise null to keep the default scroll item.
- */
-public fun Player.clueScrollTransformObj(scrollObj: String): String? {
-    if (!hasCompletedXMarksTheSpot()) {
-        return null
-    }
-    val tier = clueScrollTierForObj(scrollObj) ?: return null
-    return clueScrollBoxObj(tier)
-}
+/** For `transformObj` on clue scroll drops; see [ClueScrollDrops]. */
+public fun Player.clueScrollTransformObj(scrollObj: String): String? =
+    ClueScrollDrops.resolve(this, scrollObj)

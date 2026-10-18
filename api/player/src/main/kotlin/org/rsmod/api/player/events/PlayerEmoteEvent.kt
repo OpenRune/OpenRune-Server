@@ -10,10 +10,12 @@ import org.rsmod.game.entity.player.PlayerEvent
  *
  * @param emote the name shown in the emote tab (`Bow`, `Skill Cape`, ...), the same for an emote's
  *   looping and non-looping variants.
+ * @param slot the emote's index in the emote tab (`enum.emote_names`).
  * @param seq the sequence that was played, which tells variants and skill capes apart.
  */
 public data class PlayerEmoteEvent(
     override val player: Player,
     public val emote: String,
+    public val slot: Int,
     public val seq: SequenceServerType,
 ) : UnboundEvent, PlayerEvent

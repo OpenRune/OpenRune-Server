@@ -397,31 +397,37 @@ object CollectionLogCategoriesTable {
         row("dbrow.collection_log_category_beginner_treasure_trails") {
             column(STRUCT_ID, 593)
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_clues_beginner_completed")
+            columnRSCM(COUNT_VARP_1, "varp.trail_completed_beginner")
         }
 
         row("dbrow.collection_log_category_easy_treasure_trails") {
             column(STRUCT_ID, 508)
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_clues_easy_completed")
+            columnRSCM(COUNT_VARP_1, "varp.trail_completed_easy")
         }
 
         row("dbrow.collection_log_category_medium_treasure_trails") {
             column(STRUCT_ID, 509)
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_clues_medium_completed")
+            columnRSCM(COUNT_VARP_1, "varp.trail_completed_medium")
         }
 
         row("dbrow.collection_log_category_hard_treasure_trails") {
             column(STRUCT_ID, 510)
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_clues_hard_completed")
+            columnRSCM(COUNT_VARP_1, "varp.trail_completed_hard")
         }
 
         row("dbrow.collection_log_category_elite_treasure_trails") {
             column(STRUCT_ID, 511)
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_clues_elite_completed")
+            columnRSCM(COUNT_VARP_1, "varp.trail_completed_elite")
         }
 
         row("dbrow.collection_log_category_master_treasure_trails") {
             column(STRUCT_ID, 512)
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_clues_master_completed")
+            columnRSCM(COUNT_VARP_1, "varp.trail_completed_master")
         }
 
         row("dbrow.collection_log_category_hard_treasure_trails_rare") {

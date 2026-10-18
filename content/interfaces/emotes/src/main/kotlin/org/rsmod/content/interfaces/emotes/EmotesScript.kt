@@ -45,7 +45,7 @@ private constructor(
     private val skillCapeEmotes: SkillCapeEmoteResolver,
 ) : PluginScript() {
     private lateinit var emoteSlotRange: IntRange
-    private val performing = HashMap<Player, String>()
+    private val performing = HashMap<Player, Int>()
 
     override fun ScriptContext.startup() {
         loadEmotesEnum()
@@ -70,11 +70,15 @@ private constructor(
     private fun Player.selectEmote(emoteSlot: Int, op: IfButtonOp) {
         val emote = emote_names.getValue(emoteSlot)
         ifClose(eventBus)
-        protectedAccess.launch(this) { selectTrackedEmote(emote, op) }
+        protectedAccess.launch(this) { selectTrackedEmote(emoteSlot, emote, op) }
     }
 
-    private suspend fun ProtectedAccess.selectTrackedEmote(emote: String, op: IfButtonOp) {
-        performing[player] = emote
+    private suspend fun ProtectedAccess.selectTrackedEmote(
+        slot: Int,
+        emote: String,
+        op: IfButtonOp,
+    ) {
+        performing[player] = slot
         try {
             selectEmote(emote, op)
         } finally {
@@ -581,10 +585,10 @@ private constructor(
     }
 
     private fun ProtectedAccess.publishEmoteEvent(seq: String) {
-        val emote = performing[player] ?: return
+        val slot = performing[player] ?: return
         eventBus.publishIfHeard {
             val type = ServerCacheManager.getAnim(seq.asRSCM(RSCMType.SEQ)) ?: error("Invalid sequence: $seq")
-            PlayerEmoteEvent(player, emote, type)
+            PlayerEmoteEvent(player, emote_names.getValue(slot), slot, type)
         }
     }
 
