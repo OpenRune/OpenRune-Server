@@ -1,9 +1,565 @@
+# Every "Banker" type with the standard ops (Talk-to, Bank, Collect).
+
+[[npc]]
+id = "npc.misc_banker"
+inherit = "npc.misc_banker"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.mourning_elf_bankerm"
+inherit = "npc.mourning_elf_bankerm"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.mourning_elf_bankerf"
+inherit = "npc.mourning_elf_bankerf"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
 [[npc]]
 id = "npc.banker1"
 inherit = "npc.banker1"
 moveRestrict = "NoMove"
+contentGroup = "content.banker"
 
 [[npc]]
 id = "npc.banker2"
 inherit = "npc.banker2"
 moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.banker1_west"
+inherit = "npc.banker1_west"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.banker1_east"
+inherit = "npc.banker1_east"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.wom_banker1"
+inherit = "npc.wom_banker1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.wom_banker2"
+inherit = "npc.wom_banker2"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.wom_banker3"
+inherit = "npc.wom_banker3"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.dorgesh_female_banker"
+inherit = "npc.dorgesh_female_banker"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.dorgesh_male_banker"
+inherit = "npc.dorgesh_male_banker"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.dwarf_city_banker1"
+inherit = "npc.dwarf_city_banker1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.dwarf_city_banker2"
+inherit = "npc.dwarf_city_banker2"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.werewolfbanker"
+inherit = "npc.werewolfbanker"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.banker1_new"
+inherit = "npc.banker1_new"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.banker2_new"
+inherit = "npc.banker2_new"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.banker2_east"
+inherit = "npc.banker2_east"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.fairy_banker"
+inherit = "npc.fairy_banker"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.shilobanker"
+inherit = "npc.shilobanker"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.falador_banker"
+inherit = "npc.falador_banker"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.contact_banker_male"
+inherit = "npc.contact_banker_male"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.contact_banker_female"
+inherit = "npc.contact_banker_female"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.fever_banker_01"
+inherit = "npc.fever_banker_01"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.fever_banker_02"
+inherit = "npc.fever_banker_02"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.shayzien_banker_m_north"
+inherit = "npc.shayzien_banker_m_north"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.shayzien_banker_m_east"
+inherit = "npc.shayzien_banker_m_east"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.shayzien_banker_m_west"
+inherit = "npc.shayzien_banker_m_west"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.shayzien_banker_f_north"
+inherit = "npc.shayzien_banker_f_north"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.shayzien_banker_f_east"
+inherit = "npc.shayzien_banker_f_east"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.shayzien_banker_f_west"
+inherit = "npc.shayzien_banker_f_west"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.hosidius_banker_m_west"
+inherit = "npc.hosidius_banker_m_west"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.hosidius_banker_m_east"
+inherit = "npc.hosidius_banker_m_east"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.hosidius_banker_f_west"
+inherit = "npc.hosidius_banker_f_west"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.hosidius_banker_f_east"
+inherit = "npc.hosidius_banker_f_east"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.piscarilius_banker_1"
+inherit = "npc.piscarilius_banker_1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.piscarilius_banker_2"
+inherit = "npc.piscarilius_banker_2"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.arceuus_banker_1_west"
+inherit = "npc.arceuus_banker_1_west"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.arceuus_banker_1_east"
+inherit = "npc.arceuus_banker_1_east"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.arceuus_banker_2_west"
+inherit = "npc.arceuus_banker_2_west"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.arceuus_banker_2_east"
+inherit = "npc.arceuus_banker_2_east"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.lovakengj_banker_f_west"
+inherit = "npc.lovakengj_banker_f_west"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.lovakengj_banker_f_north"
+inherit = "npc.lovakengj_banker_f_north"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.lovakengj_banker_f_east"
+inherit = "npc.lovakengj_banker_f_east"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.lovakengj_banker_f_south"
+inherit = "npc.lovakengj_banker_f_south"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.lovakengj_banker_m_east"
+inherit = "npc.lovakengj_banker_m_east"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.lovakengj_banker_m_south"
+inherit = "npc.lovakengj_banker_m_south"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.vampyre_banker_female"
+inherit = "npc.vampyre_banker_female"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.vampyre_banker_male"
+inherit = "npc.vampyre_banker_male"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.farming_guild_banker1"
+inherit = "npc.farming_guild_banker1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.farming_guild_banker2"
+inherit = "npc.farming_guild_banker2"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.prif_bankerm1"
+inherit = "npc.prif_bankerm1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.prif_bankerm2"
+inherit = "npc.prif_bankerm2"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.prif_bankerm3"
+inherit = "npc.prif_bankerm3"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.prif_bankerm4"
+inherit = "npc.prif_bankerm4"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.prif_bankerf1"
+inherit = "npc.prif_bankerf1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.prif_bankerf2"
+inherit = "npc.prif_bankerf2"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.darkm_banker_female"
+inherit = "npc.darkm_banker_female"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.darkm_banker_male"
+inherit = "npc.darkm_banker_male"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.wildy_hub_banker"
+inherit = "npc.wildy_hub_banker"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.clan_hall_banker_0"
+inherit = "npc.clan_hall_banker_0"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.clan_hall_banker_1"
+inherit = "npc.clan_hall_banker_1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.clan_hall_banker_2"
+inherit = "npc.clan_hall_banker_2"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.clan_hall_banker_3"
+inherit = "npc.clan_hall_banker_3"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.cam_torum_banker_1"
+inherit = "npc.cam_torum_banker_1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.cam_torum_banker_2"
+inherit = "npc.cam_torum_banker_2"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.cam_torum_banker_3"
+inherit = "npc.cam_torum_banker_3"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.cam_torum_banker_4"
+inherit = "npc.cam_torum_banker_4"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.hg_banker_dwarf"
+inherit = "npc.hg_banker_dwarf"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_s_1"
+inherit = "npc.varlamore_banker_s_1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_s_2"
+inherit = "npc.varlamore_banker_s_2"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_s_3"
+inherit = "npc.varlamore_banker_s_3"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_s_4"
+inherit = "npc.varlamore_banker_s_4"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_n_1"
+inherit = "npc.varlamore_banker_n_1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_n_2"
+inherit = "npc.varlamore_banker_n_2"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_n_3"
+inherit = "npc.varlamore_banker_n_3"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_n_4"
+inherit = "npc.varlamore_banker_n_4"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_e_1"
+inherit = "npc.varlamore_banker_e_1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_e_2"
+inherit = "npc.varlamore_banker_e_2"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_e_3"
+inherit = "npc.varlamore_banker_e_3"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_e_4"
+inherit = "npc.varlamore_banker_e_4"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_w_1"
+inherit = "npc.varlamore_banker_w_1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_w_2"
+inherit = "npc.varlamore_banker_w_2"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_w_3"
+inherit = "npc.varlamore_banker_w_3"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.varlamore_banker_w_4"
+inherit = "npc.varlamore_banker_w_4"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.mistrock_banker_1"
+inherit = "npc.mistrock_banker_1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.mistrock_banker_2"
+inherit = "npc.mistrock_banker_2"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.auburnvale_banker_west_1"
+inherit = "npc.auburnvale_banker_west_1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.auburnvale_banker_east_1"
+inherit = "npc.auburnvale_banker_east_1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.auburnvale_banker_south_1"
+inherit = "npc.auburnvale_banker_south_1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.auburnvale_banker_north_1"
+inherit = "npc.auburnvale_banker_north_1"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.tal_teklan_banker"
+inherit = "npc.tal_teklan_banker"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.tortugan_banker"
+inherit = "npc.tortugan_banker"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
+
+[[npc]]
+id = "npc.sailing_bank_boat_banker"
+inherit = "npc.sailing_bank_boat_banker"
+moveRestrict = "NoMove"
+contentGroup = "content.banker"
