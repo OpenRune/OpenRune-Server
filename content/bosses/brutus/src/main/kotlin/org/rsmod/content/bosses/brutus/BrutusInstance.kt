@@ -74,6 +74,7 @@ constructor(
         onEvent<NpcStateEvents.Respawn> { if (npc.isType(Brutus.BRUTUS)) arrive(npc, fieldPlayer(npc)) }
         onEnterObject { openGate() }
         onExitObject { leaveGate() }
+        onExitObjectApproach2 { leaveField() }
     }
 
     // live capture, rev 241
@@ -139,11 +140,22 @@ constructor(
         if (!leave) {
             return
         }
+        leaveField()
+    }
+
+    private suspend fun ProtectedAccess.leaveField() {
         val session = manager.sessionForPlayer(player) ?: return
-        val world = manager.fieldToWorld(session, player.coords)
-        val outside = CoordGrid(EXIT_GATE_OUTSIDE_X, world.z.coerceIn(EXIT_GATE_Z))
+        bossHpBar.onDeathClose(player)
+        fadeOverlay(0, FADE_CLEAR, 0, FADE_BLACK, FADE_CLIENT_CYCLES)
+        delay(1)
+        minimapHideMap()
+        delay(1)
         manager.leave(player, session, deps.mapClock.cycle)
-        telejump(outside, TeleportType.Exempt)
+        telejump(EXIT, TeleportType.Exempt)
+        delay(2)
+        minimapReset()
+        fadeOverlay(0, FADE_BLACK, 0, FADE_CLEAR, FADE_CLIENT_CYCLES)
+        closeFadeOverlay(cycles = 2)
     }
 
     // Inside the field the release gate does nothing and the pen's west gate leads out (live
@@ -209,9 +221,7 @@ constructor(
         // live capture, rev 241
         private val SPAWN = CoordGrid(3261, 3287)
 
-        // Out through the west gate (live capture, rev 241).
-        private const val EXIT_GATE_OUTSIDE_X = 3252
-        private val EXIT_GATE_Z = 3266..3267
+        private val EXIT = CoordGrid(3252, 3267)
 
         private const val FADE_CLEAR = 255
         private const val FADE_BLACK = 0
