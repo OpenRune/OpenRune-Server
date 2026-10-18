@@ -16,6 +16,16 @@ class GoblinCaveLadders : PluginScript() {
         for (ladder in UP_LADDERS) {
             onOpLoc1(ladder) { climb(SURFACE) }
         }
+        onOpLoc1("loc.goblin_ladder_bottom") { climbInPlace(LOOKOUT_LEVEL) }
+        onOpLoc1("loc.goblin_ladder_top") { climbInPlace(0) }
+    }
+
+    /** The lookout by the south gate: its ladder joins level 0 and level 2 on the same tiles. */
+    private suspend fun ProtectedAccess.climbInPlace(level: Int) {
+        arriveDelay()
+        anim("seq.human_reachforladder")
+        delay(1)
+        telejump(CoordGrid(player.coords.x, player.coords.z, level))
     }
 
     private suspend fun ProtectedAccess.climb(dest: CoordGrid) {
@@ -28,6 +38,7 @@ class GoblinCaveLadders : PluginScript() {
     private companion object {
         private val SURFACE = CoordGrid(2960, 3506, 0)
         private val CAVE = CoordGrid(2981, 9875, 0)
+        private const val LOOKOUT_LEVEL = 2
 
         private val UP_LADDERS =
             listOf("loc.100_goblin_ladder_up", "loc.100_goblin_ladder_up_charred")

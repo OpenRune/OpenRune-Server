@@ -17,6 +17,7 @@ import org.rsmod.api.player.interact.NpcInteractions
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.clearPendingAction
+import org.rsmod.api.random.GameRandom
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.obj.ObjRepository
@@ -44,7 +45,20 @@ class QuestTalkFixture(coords: CoordGrid, script: (ObjRepository) -> PluginScrip
     private val context = ProtectedAccessContextFactory.empty().copy(
         getEventBus = { events }, getAlignment = { TextAlignment() },
         getNpcInteractions = { NpcInteractions(events) },
+        getRandom = { fixedRandom },
     )
+
+    /** What every random roll returns (clamped into its range). */
+    var randomValue: Int = 0
+
+    private val fixedRandom = object : GameRandom {
+        override fun of(maxExclusive: Int): Int = randomValue.coerceIn(0, maxExclusive - 1)
+
+        override fun of(minInclusive: Int, maxInclusive: Int): Int =
+            randomValue.coerceIn(minInclusive, maxInclusive)
+
+        override fun randomDouble(): Double = 0.0
+    }
     val objRepo = ObjRepository(MapClock(100), ObjRegistry(ZoneUpdateMap()))
 
     @OptIn(InternalApi::class)
@@ -77,6 +91,12 @@ class QuestTalkFixture(coords: CoordGrid, script: (ObjRepository) -> PluginScrip
 
     /** Talks to [npc] and walks the whole conversation, answering chatmenus with [options]. */
     fun talk(npc: String, vararg options: Int) {
+        val target = Npc(npc, player.coords.translateZ(1))
+        interact(*options) { assertTrue(events.publish(it, NpcEvents.Op1(target))) }
+    }
+
+    /** Runs [publish] (which should publish one interaction event) and walks the conversation. */
+    fun interact(vararg options: Int, publish: suspend (ProtectedAccess) -> Unit) {
         while (player.isDelayed) {
             player.currentMapClock++
             player.processedMapClock = player.currentMapClock
@@ -85,8 +105,7 @@ class QuestTalkFixture(coords: CoordGrid, script: (ObjRepository) -> PluginScrip
         client.messages.clear()
         result = null
         player.activeCoroutine = coroutine
-        val target = Npc(npc, player.coords.translateZ(1))
-        val block: suspend () -> Unit = { assertTrue(events.publish(access(), NpcEvents.Op1(target))) }
+        val block: suspend () -> Unit = { publish(access()) }
         block.startCoroutine(object : Continuation<Unit> {
             override val context = EmptyCoroutineContext
             override fun resumeWith(result: Result<Unit>) { this@QuestTalkFixture.result = result }
