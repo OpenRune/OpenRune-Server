@@ -4,7 +4,6 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
-import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLocU
@@ -21,7 +20,6 @@ class GlarialsTomb
 constructor(
     private val waterfall: WaterfallQuest,
     private val locRepo: LocRepository,
-    private val objRepo: ObjRepository,
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -33,34 +31,38 @@ constructor(
         onOpLoc1(COFFIN) { searchCoffin() }
     }
 
-    private suspend fun ProtectedAccess.readTombstone() {
-        mesbox(
-            "Here lies Glarial, wife of Baxtorian, true<br>friend of nature in life and death. " +
-                "May she<br>now rest knowing only visitors with peaceful<br>intent can enter."
-        )
+    private fun ProtectedAccess.readTombstone() {
+        ifOpenMainModal(SCROLL)
+        for (line in 1..SCROLL_LINES) {
+            val text = TOMBSTONE_TEXT.getOrElse(line - TOMBSTONE_FIRST_LINE) { "" }
+            ifSetText("$SCROLL_LINE$line", text)
+        }
     }
 
     private suspend fun ProtectedAccess.placePebble() {
+        arriveDelay()
         if (player.carriesUnpeacefulItem()) {
             mesbox("You place the pebble in the gravestone's small indent but nothing happens.")
             return
         }
-        mesbox(
-            "You place the pebble in the gravestone's small indent. The stone slab slides back " +
-                "revealing a ladder. You climb down it."
-        )
-        soundSynth(SLAB_SOUND)
-        anim(CLIMB_SEQ)
-        delay(1)
+        mesboxNp(TOMB_OPENS)
+        fadeOut()
+        delay(CLIMB_TICKS)
         telejump(WaterfallCoords.TOMB_ENTRY, TeleportType.Exempt)
         waterfall.advanceTo(this, ENTERED_TOMB)
+        delay(1)
+        fadeIn()
+        mesbox(TOMB_OPENS)
+        closeFadeOverlayNow()
     }
 
-    private fun ProtectedAccess.openChest(chest: BoundLocInfo) {
+    private suspend fun ProtectedAccess.openChest(chest: BoundLocInfo) {
+        arriveDelay()
         anim(CHEST_SEQ)
         soundSynth(CHEST_OPEN_SOUND)
-        locRepo.del(chest, CHEST_OPEN_TICKS)
-        locRepo.add(chest.coords, CHEST_OPEN, CHEST_OPEN_TICKS, chest.angle, chest.shape)
+        delay(1)
+        locRepo.change(chest, CHEST_OPEN, CHEST_OPEN_TICKS)
+        searchChest()
     }
 
     private fun ProtectedAccess.shutChest(chest: BoundLocInfo) {
@@ -74,18 +76,29 @@ constructor(
             mes("You search the chest but find nothing.")
             return
         }
-        invAddOrDrop(objRepo, AMULET)
+        if (invAdd(inv, AMULET).failure) {
+            objbox(
+                AMULET,
+                "You find a small amulet in the chest but you don't have enough room to take it.",
+            )
+            return
+        }
         objbox(AMULET, "You find a small amulet in the chest.")
     }
 
     private suspend fun ProtectedAccess.searchCoffin() {
-        anim(SEARCH_SEQ)
-        delay(COFFIN_SEARCH_TICKS)
         if (URN_FULL in player.inv) {
             mes("You search the tomb but find nothing.")
             return
         }
-        invAddOrDrop(objRepo, URN_FULL)
+        if (invAdd(inv, URN_FULL).failure) {
+            objbox(
+                URN_FULL,
+                "You find an urn full of ashes in the tomb but you don't have enough room to " +
+                    "take it.",
+            )
+            return
+        }
         objbox(URN_FULL, "You find an urn full of ashes in the tomb.")
     }
 
@@ -95,14 +108,25 @@ constructor(
         const val CHEST_OPEN = "loc.glarials_chest_open_waterfall_quest"
         const val COFFIN = "loc.glarials_tomb_waterfall_quest"
 
-        const val CLIMB_SEQ = "seq.human_reachforladder"
+        const val SCROLL = "interface.messagescroll2"
+        const val SCROLL_LINE = "component.messagescroll2:ms"
+        const val SCROLL_LINES = 12
+        const val TOMBSTONE_FIRST_LINE = 5
+        val TOMBSTONE_TEXT =
+            listOf(
+                "Here lies Glarial, wife of Baxtorian, true",
+                "friend of nature in life and death. May she",
+                "now rest knowing only visitors with peaceful",
+                "intent can enter.",
+            )
+        const val TOMB_OPENS =
+            "You place the pebble in the gravestone's small indent. The stone slab slides back " +
+                "revealing a ladder. You climb down it."
+        const val CLIMB_TICKS = 2
         const val CHEST_SEQ = "seq.human_openchest"
-        const val SEARCH_SEQ = "seq.human_pickuptable"
-        const val SLAB_SOUND = "synth.stone_door"
         const val CHEST_OPEN_SOUND = "synth.chest_open"
         const val CHEST_CLOSE_SOUND = "synth.chest_close"
 
-        const val CHEST_OPEN_TICKS = 100
-        const val COFFIN_SEARCH_TICKS = 3
+        const val CHEST_OPEN_TICKS = 500
     }
 }

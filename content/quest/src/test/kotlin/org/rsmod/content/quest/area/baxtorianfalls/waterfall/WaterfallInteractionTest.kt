@@ -214,7 +214,7 @@ class WaterfallInteractionTest {
     }
 
     @Test
-    fun `quest items found with a full inventory land on the floor instead of vanishing`() {
+    fun `quest items found with a full inventory land on the floor or stay behind`() {
         val finds =
             listOf(
                 Triple(MET_HUDON, BOOK) { f: Fixture -> f.loc(BOOKCASE, BOOKCASE_COORDS) },
@@ -227,13 +227,14 @@ class WaterfallInteractionTest {
                     f.loc(CRATE, CRATE_COORDS, angle = LocAngle.North)
                 },
             )
+        val staysBehind = setOf(AMULET, URN_FULL)
         for ((stage, obj, search) in finds) {
             val f = Fixture(stage)
             f.fillInventory()
             search(f)
             f.finish()
             assertEquals(0, f.count(obj), obj)
-            assertEquals(1, f.ground(obj), obj)
+            assertEquals(if (obj in staysBehind) 0 else 1, f.ground(obj), obj)
         }
     }
 
@@ -556,7 +557,7 @@ class WaterfallInteractionTest {
             with(Golrie(quest, objs)) { scripts.startup() }
             with(BookOnBaxtorian(quest, objs)) { scripts.startup() }
             with(GnomeVillageDungeon(quest, objs, locs)) { scripts.startup() }
-            with(GlarialsTomb(quest, locs, objs)) { scripts.startup() }
+            with(GlarialsTomb(quest, locs)) { scripts.startup() }
             with(WaterfallDungeon(quest, objs, world, doors)) { scripts.startup() }
             stageTo(stage)
         }
