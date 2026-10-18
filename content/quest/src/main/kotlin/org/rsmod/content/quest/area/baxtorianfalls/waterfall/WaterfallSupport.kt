@@ -30,7 +30,9 @@ internal object WaterfallCoords {
 
     val LEDGE = CoordGrid(2511, 3463, 0)
 
-    val FALLS_ENTRY = CoordGrid(2575, 9862, 0)
+    val SWIM_END = CoordGrid(2512, 3472, 0)
+
+    val FALLS_ENTRY = CoordGrid(2575, 9861, 0)
 
     val TOMB_ENTRY = CoordGrid(2555, 9844, 0)
 

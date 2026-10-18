@@ -21,8 +21,6 @@ import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Comp
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.WaterfallQuest.Companion.STARTED
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.geraldGreetsWashedUp
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.npcs.hudonFirstMeeting
-import org.rsmod.content.quest.util.fadeFromBlack
-import org.rsmod.content.quest.util.fadeToBlack
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
@@ -63,27 +61,53 @@ constructor(
             mesbox("You're not sure if the raft is safe to use. Best to leave it alone.")
             return
         }
-        mesbox("You board the small raft and push off down stream...")
-        soundSynth(RIVER_SOUND)
-        fadeToBlack()
+        arriveDelay()
+        mesboxNp("You board the small raft and push off down stream...")
+        fadeOut()
+        delay(RAFT_TICKS)
         telejump(WaterfallCoords.RAFT_CRASH, TeleportType.Exempt)
+        soundSynth(CRASH_SOUND, delay = CRASH_SOUND_DELAY)
         delay(1)
-        fadeFromBlack()
-        soundSynth(CRASH_SOUND)
+        fadeIn()
         mesbox("...you crash into a small island.")
         if (waterfall.stage(player) == STARTED) {
-            val hudon =
-                npcFind(player.coords, HUDON_NPC, HUDON_SEARCH_RADIUS, HuntVis.Off, search) ?: return
-            startDialogue(hudon) { hudonFirstMeeting(waterfall) }
+            val hudon = npcFind(player.coords, HUDON_NPC, HUDON_SEARCH_RADIUS, HuntVis.Off, search)
+            if (hudon != null) {
+                startDialogue(hudon) { hudonFirstMeeting(waterfall) }
+            }
         }
+        closeFadeOverlayNow()
     }
 
     private suspend fun ProtectedAccess.swim() {
-        anim(SWIM_SEQ)
-        mesbox("You swim out into the water...")
-        mesbox("...but the current is too strong, washing you downstream.")
-        washDownstream(ouch = false)
+        arriveDelay()
+        if (player.coords != WaterfallCoords.ROPE_START) {
+            playerWalkWithMinDelay(WaterfallCoords.ROPE_START)
+            if (player.coords != WaterfallCoords.ROPE_START) {
+                return
+            }
+        }
+        delay(1)
+        mesboxNp("You swim out into the water...")
+        soundSynth(SPLASH_SOUND)
+        spotanimMap(worldRepo, SPLASH_SPOTANIM, SPLASH_TILE, delay = SPLASH_DELAY)
+        setBas(SWIMMING_BAS)
+        try {
+            forcedWalk(WaterfallCoords.SWIM_END, SWIM_TILES)
+            setBas(DROWNING_BAS)
+            delay(1)
+            mesboxNp(WASHED_DOWNSTREAM)
+            fadeOut()
+            delay(CARRIED_TICKS)
+            telejump(WaterfallCoords.DOWNSTREAM, TeleportType.Exempt)
+            delay(1)
+        } finally {
+            setBas(null)
+        }
+        fadeIn()
+        mesbox(WASHED_DOWNSTREAM)
         geraldGreetsWashedUp(waterfall, search)
+        closeFadeOverlayNow()
     }
 
     private suspend fun ProtectedAccess.apRock(
@@ -152,23 +176,37 @@ constructor(
 
     private suspend fun ProtectedAccess.enterFalls() {
         if (!waterfall.isComplete(player) && !player.wearsAmulet()) {
-            mesbox("You try to open the door, but the ledge is suddenly flooded with water...")
-            mesbox("...you are pushed over the waterfall and into the river.")
-            washDownstream(ouch = true)
+            soundSynth(DOOR_OPEN_SOUND)
+            fallIntoRiver(
+                "You try to open the door, but the ledge is suddenly flooded with water...",
+                "...you are pushed over the waterfall and into the river.",
+            )
             geraldGreetsWashedUp(waterfall, search)
             return
         }
-        soundSynth(DOOR_SOUND)
+        mesboxNp(ENTER_FALLS)
+        soundSynth(DOOR_OPEN_SOUND)
+        fadeOut()
+        delay(CARRIED_TICKS)
         telejump(WaterfallCoords.FALLS_ENTRY, TeleportType.Exempt)
         waterfall.advanceTo(this, ENTERED_FALLS)
-        mesbox("You enter the waterfall.")
+        delay(1)
+        soundSynth(DOOR_CLOSE_SOUND)
+        fadeIn()
+        mesbox(ENTER_FALLS)
+        closeFadeOverlayNow()
     }
 
     private suspend fun ProtectedAccess.rideBarrel() {
-        mesbox("You climb into the barrel and push off the edge. You are carried down the river.")
-        anim(BARREL_SEQ)
-        washDownstream(ouch = false)
+        mesboxNp(BARREL_RIDE)
+        fadeOut()
+        delay(CARRIED_TICKS)
+        telejump(WaterfallCoords.DOWNSTREAM, TeleportType.Exempt)
+        delay(1)
+        fadeIn()
+        mesbox(BARREL_RIDE)
         geraldGreetsWashedUp(waterfall, search)
+        closeFadeOverlayNow()
     }
 
     private companion object {
@@ -182,6 +220,14 @@ constructor(
         const val ROPE_PIECE_SPOTANIM = "spotanim.rope_piece"
         const val ROPE_PIECE_DELAY = 3
         const val WADING_BAS = "bas.waterfall_wading"
+        const val SWIMMING_BAS = "bas.waterfall_swimming"
+        const val DROWNING_BAS = "bas.waterfall_drowning"
+        const val SPLASH_SPOTANIM = "spotanim.watersplash"
+        const val SPLASH_DELAY = 3
+        val SPLASH_TILE = WaterfallCoords.ROPE_START.translateZ(-1)
+        const val SWIM_TILES = 4
+        const val RAFT_TICKS = 3
+        const val CARRIED_TICKS = 2
         val ROPE_PIECE_TILE = WaterfallCoords.ROPE_START.translateZ(-2)
         const val LEDGE_DOOR = "loc.waterfall_ledge_door"
         const val BARREL = "loc.barrel_waterfall_quest"
@@ -189,12 +235,17 @@ constructor(
         const val HUDON_SEARCH_RADIUS = 8
         const val ROCK_RANGE = 10
 
-        const val SWIM_SEQ = "seq.human_swim"
         const val THROW_ROPE_SEQ = "seq.human_throwrope"
-        const val BARREL_SEQ = "seq.human_pickupfloor"
 
-        const val RIVER_SOUND = "synth.splash_and_river"
-        const val CRASH_SOUND = "synth.watersplash"
-        const val DOOR_SOUND = "synth.door_open"
+        const val CRASH_SOUND = "synth.roof_collapse"
+        const val CRASH_SOUND_DELAY = 10
+        const val SPLASH_SOUND = "synth.watersplash"
+        const val DOOR_OPEN_SOUND = "synth.big_wooden_door_open"
+        const val DOOR_CLOSE_SOUND = "synth.big_wooden_door_close"
+
+        const val WASHED_DOWNSTREAM = "...but the current is too strong, washing you downstream."
+        const val ENTER_FALLS = "You enter the waterfall."
+        const val BARREL_RIDE =
+            "You climb into the barrel and push off the edge. You are carried down the river."
     }
 }

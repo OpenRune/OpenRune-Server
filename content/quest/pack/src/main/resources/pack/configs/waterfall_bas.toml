@@ -7,3 +7,23 @@ walkForward = "seq.human_wading"
 walkBack = "seq.human_walk_b"
 walkLeft = "seq.human_walk_l"
 walkRight = "seq.human_walk_r"
+
+[[bas]]
+isServerOnly = true
+id = "bas.waterfall_swimming"
+readyAnim = "seq.human_swim_ready"
+turnOnSpot = "seq.human_swim"
+walkForward = "seq.human_swim"
+walkBack = "seq.human_swim"
+walkLeft = "seq.human_swim"
+walkRight = "seq.human_swim"
+
+[[bas]]
+isServerOnly = true
+id = "bas.waterfall_drowning"
+readyAnim = "seq.human_drowning"
+turnOnSpot = "seq.human_drowning"
+walkForward = "seq.human_drowning"
+walkBack = "seq.human_drowning"
+walkLeft = "seq.human_drowning"
+walkRight = "seq.human_drowning"

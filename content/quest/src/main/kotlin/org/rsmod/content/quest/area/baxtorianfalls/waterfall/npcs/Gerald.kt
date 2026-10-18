@@ -81,7 +81,6 @@ internal suspend fun ProtectedAccess.geraldGreetsWashedUp(
     if (waterfall.stage(player) != MET_HUDON || player.heardOfTreasure) {
         return
     }
-    delay(1)
     val gerald =
         npcFind(player.coords, GERALD_NPC, GERALD_SEARCH_RADIUS, HuntVis.Off, search) ?: return
     startDialogue(gerald) {
