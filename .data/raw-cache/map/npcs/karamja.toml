@@ -1567,6 +1567,10 @@ npc = "npc.slayer_harpiebugswarm"
 coords = "0_45_48_9_41"
 
 [[spawn]]
+npc = "npc.slayer_master_5"
+coords = "1_44_46_53_38"
+
+[[spawn]]
 npc = "npc.snake"
 coords = "0_42_49_45_29"
 

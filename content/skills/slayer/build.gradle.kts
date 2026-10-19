@@ -1,10 +1,12 @@
 plugins {
     id("base-conventions")
-
+    id("game-cache-test-conventions")
+    id("integration-test-suite")
 }
 
 dependencies {
     implementation(projects.api.attr)
+    implementation(projects.api.combat.combatCommons)
     implementation(projects.api.areaChecker)
     implementation(projects.api.config)
     implementation(projects.api.death)
@@ -22,4 +24,7 @@ dependencies {
     implementation(projects.engine.game)
     implementation(projects.api.invtx)
     implementation(projects.content.skills.utils)
+
+    integrationImplementation(projects.api.generated)
+    integrationImplementation(projects.engine.game)
 }

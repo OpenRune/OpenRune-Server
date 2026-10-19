@@ -1,13 +1,15 @@
 package org.rsmod.content.areas.city.portsarim.npcs
 
+import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.stat.baseSmithingLvl
 import org.rsmod.api.script.onOpNpc1
-import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.content.quest.area.falador.knightssword.KnightsSwordQuest
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class PortSarimTownsfolkScript : PluginScript() {
+class PortSarimTownsfolkScript @Inject constructor(private val knightsSword: KnightsSwordQuest) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.thurgo") { startDialogue(it.npc) { thurgo() } }
         onTalkAcross("npc.macro_pirate") { startDialogue(it) { capnHand() } }
@@ -15,7 +17,10 @@ class PortSarimTownsfolkScript : PluginScript() {
     }
 
     private suspend fun Dialogue.thurgo() {
-        if (!QuestRequirements.hasCompleted(player, KNIGHTS_SWORD)) {
+        if (with(knightsSword) { thurgoDialogue(pie = { thurgoPie() }, cape = { thurgoCape() }) }) {
+            return
+        }
+        if (knightsSword.stage(player) < KnightsSwordQuest.STAGE_COMPLETE) {
             if (player.baseSmithingLvl >= MAX_LEVEL) thurgoSkillcape() else thurgoCape()
             return
         }
@@ -47,14 +52,10 @@ class PortSarimTownsfolkScript : PluginScript() {
             "You want that knight's sword again? I suppose you brought me a lovely pie, so I " +
                 "don't mind. I'll need a blurite ore and two iron bars, like before.",
         )
-        val inv = access.inv
-        if (inv.count(BLURITE_ORE) < 1 || inv.count(IRON_BAR) < 2) {
+        if (!KnightsSwordQuest.makeSword(player)) {
             chatPlayer(happy, "Okay, I'll go and find that.")
             return
         }
-        access.invDel(inv, BLURITE_ORE, 1)
-        access.invDel(inv, IRON_BAR, 2)
-        access.invAdd(inv, BLURITE_SWORD)
         objbox(BLURITE_SWORD, zoom = 400, "Thurgo makes you another sword.")
     }
 
@@ -179,10 +180,7 @@ class PortSarimTownsfolkScript : PluginScript() {
     private companion object {
         const val MAX_LEVEL = 99
         const val CAPE_PRICE = 99_000
-        const val KNIGHTS_SWORD = "quest_knightssword"
         const val REDBERRY_PIE = "obj.redberry_pie"
-        const val BLURITE_ORE = "obj.blurite_ore"
-        const val IRON_BAR = "obj.iron_bar"
         const val BLURITE_SWORD = "obj.faladian_sword"
     }
 }

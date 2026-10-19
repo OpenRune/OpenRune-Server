@@ -40,7 +40,7 @@ annotation class QuestJournalDsl
 data class QuestReward(
     val xp: Map<String, Double> = emptyMap(),
     val items: List<Pair<String, Int>> = emptyList(),
-    val extraText: String? = null,
+    val extraLines: List<String> = emptyList(),
     val itemLabels: Map<String, String> = emptyMap()
 )
 
@@ -54,7 +54,7 @@ class QuestRewardBuilder {
     private val _xp = mutableMapOf<String, Double>()
     private val _items = mutableListOf<Pair<String, Int>>()
     private val _itemLabels = mutableMapOf<String, String>()
-    private var _extraText: String? = null
+    private val _extraLines = mutableListOf<String>()
 
     fun xp(skill: String, amount: Double) {
         _xp[skill] = amount
@@ -66,10 +66,10 @@ class QuestRewardBuilder {
     }
 
     fun extra(text: String) {
-        _extraText = text
+        _extraLines += text
     }
 
-    fun build(): QuestReward = QuestReward(_xp, _items, _extraText, _itemLabels)
+    fun build(): QuestReward = QuestReward(_xp, _items, _extraLines, _itemLabels)
 }
 
 abstract class QuestScript(
@@ -80,6 +80,7 @@ abstract class QuestScript(
     val questVarbit: String? = null,
     val closeDialogue: QuestClose = QuestClose.OnFinished,
     val closeScroll: QuestClose = QuestClose.Never,
+    val completeJingle: String = QUEST_COMPLETE_JINGLE,
 ) : PluginScript() {
 
     val quest =
@@ -91,6 +92,7 @@ abstract class QuestScript(
             questVarbit,
             closeDialogue,
             closeScroll,
+            completeJingle,
         )
 
     abstract fun subTitle(): String

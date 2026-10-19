@@ -14,6 +14,7 @@ public typealias InstanceEnterPrelude =
 internal class InstanceObjectHookRegistry {
     private val enterOverrides = HashMap<String, suspend ProtectedAccess.() -> Unit>()
     private val exitOverrides = HashMap<String, suspend ProtectedAccess.() -> Unit>()
+    private val exitApproach2Overrides = HashMap<String, suspend ProtectedAccess.() -> Unit>()
     private val enterTransitions = HashMap<String, InstanceEnterTransition>()
     private val enterPreludes = HashMap<String, InstanceEnterPrelude>()
 
@@ -23,6 +24,10 @@ internal class InstanceObjectHookRegistry {
 
     fun registerExit(key: String, action: suspend ProtectedAccess.() -> Unit) {
         exitOverrides[key] = action
+    }
+
+    fun registerExitApproach2(key: String, action: suspend ProtectedAccess.() -> Unit) {
+        exitApproach2Overrides[key] = action
     }
 
     fun registerEnterTransition(key: String, transition: InstanceEnterTransition) {
@@ -35,6 +40,8 @@ internal class InstanceObjectHookRegistry {
 
     fun getEnter(key: String): (suspend ProtectedAccess.() -> Unit)? = enterOverrides[key]
     fun getExit(key: String): (suspend ProtectedAccess.() -> Unit)? = exitOverrides[key]
+    fun getExitApproach2(key: String): (suspend ProtectedAccess.() -> Unit)? =
+        exitApproach2Overrides[key]
     fun getEnterTransition(key: String): InstanceEnterTransition? = enterTransitions[key]
     fun getEnterPrelude(key: String): InstanceEnterPrelude? = enterPreludes[key]
 }
