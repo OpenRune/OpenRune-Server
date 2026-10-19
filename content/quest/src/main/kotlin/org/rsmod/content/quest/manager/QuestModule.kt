@@ -4,6 +4,7 @@ import org.rsmod.api.combat.commons.magic.SpellQuestRequirement
 import org.rsmod.api.player.hook.SpadeDigHook
 import org.rsmod.content.generic.locs.bookcases.BookcaseSearchHook
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.TouristCentreBookcases
+import org.rsmod.content.quest.area.falador.knightssword.KnightsSwordQuest
 import org.rsmod.content.quest.area.lumbridge.RuneMysteriesQuest
 import org.rsmod.content.quest.area.lumbridge.idesofmilk.IdesOfMilkQuest
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest
@@ -19,6 +20,7 @@ public class QuestModule : PluginModule() {
         bindInstance<DaddysHomeQuest>()
         bindInstance<XMarksTheSpotQuest>()
         bindInstance<IdesOfMilkQuest>()
+        bindInstance<KnightsSwordQuest>()
         addSetBinding<SpellQuestRequirement>(PolicySpellQuestRequirement::class.java)
         addSetBinding<BookcaseSearchHook>(TouristCentreBookcases::class.java)
         addSetBinding<SpadeDigHook>(XMarksTheSpotQuest::class.java)
