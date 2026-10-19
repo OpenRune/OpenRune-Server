@@ -210,3 +210,12 @@ id = "varn.brutus_death_said"
 
 [[varn]]
 id = "varn.brutus_bell_rung"
+
+[[varn]]
+id = "varn.slayer_engaged_target"
+
+[[varn]]
+id = "varn.slayer_engaged_clock"
+
+[[varn]]
+id = "varn.slayer_finishing_until"
