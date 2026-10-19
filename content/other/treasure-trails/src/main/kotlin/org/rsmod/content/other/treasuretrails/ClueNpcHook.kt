@@ -133,6 +133,15 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
     }
 
     private suspend fun ProtectedAccess.handInTask(npc: Npc, tier: TrailTierRow, step: ClueStep) {
+        if (ClueChallengeTasks.isAction(step)) {
+            if (!ClueChallengeTasks.isDone(player, step)) {
+                startDialogue(npc) { mesbox(step.text.orEmpty()) }
+                return
+            }
+            if (TrailFlow.clueSlot(player, tier) == null) return
+            completeTalk(npc, tier)
+            return
+        }
         val task = TrailCharlieTaskRow.all().firstOrNull { it.step.rowId == step.rowId } ?: return
         val item = task.obj.symbol()
         val worn = RSCM.getReverseMapping(RSCMType.DBROW, step.rowId) == WORN_TASK_STEP

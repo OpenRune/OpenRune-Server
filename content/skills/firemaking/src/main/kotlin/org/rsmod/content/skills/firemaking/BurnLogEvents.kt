@@ -7,6 +7,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
+import org.rsmod.api.player.hook.LogBurnHook
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.firemakingLvl
@@ -36,6 +37,7 @@ public class BurnLogEvents @Inject constructor(
     private val locRepo: LocRepository,
     private val worldClock: MapClock,
     private val xpMods: XpModifiers,
+    private val burnHooks: Set<@JvmSuppressWildcards LogBurnHook>,
 ) : PluginScript() {
 
     private val walkDirections = listOf(
@@ -188,6 +190,7 @@ public class BurnLogEvents @Inject constructor(
             )
         publish(SkillingActionCompleteEvent(player, context))
         mes("The fire catches and the logs begin to burn.")
+        burnHooks.forEach { it.onBurn(player, task.log.input.internalName) }
 
         moveAwayFromFire(fireCoords)
         faceSquare(fireCoords)

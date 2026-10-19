@@ -148,3 +148,4 @@ trail_emote_first=63809
 trail_puzzle_solved=63810
 trail_encounter_defeated=63811
 trail_challenge_step=63812
+trail_challenge_done=63813

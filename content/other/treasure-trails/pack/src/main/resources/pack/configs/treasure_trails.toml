@@ -39,6 +39,11 @@ scope = "Perm"
 transmit = "Never"
 
 [[varp]]
+id = "varp.trail_challenge_done"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
 id = "varp.trail_emote_first"
 scope = "Temp"
 transmit = "Never"

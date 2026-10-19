@@ -72,6 +72,7 @@ object TrailFlow {
     fun resetTrail(player: Player, tier: TrailTierRow) {
         TrailState(player, tier).clear()
         VarPlayerIntMapSetter.set(player, CHALLENGE_STEP, 0)
+        ClueChallengeTasks.clear(player)
         VarPlayerIntMapSetter.set(player, INFOBOX, NO_INFOBOX)
         VarPlayerIntMapSetter.set(player, "varp.trail_hotcold_last_check_coord", 0)
         VarPlayerIntMapSetter.set(player, EMOTE_FIRST, 0)
@@ -168,6 +169,7 @@ object TrailFlow {
         }
         state.progress = progress
         VarPlayerIntMapSetter.set(player, CHALLENGE_STEP, 0)
+        ClueChallengeTasks.clear(player)
         VarPlayerIntMapSetter.set(player, EMOTE_FIRST, 0)
         VarPlayerIntMapSetter.set(player, ENCOUNTER_DEFEATED, 0)
         VarPlayerIntMapSetter.set(player, INFOBOX, checkNotNull(TrailTiers.objStep(next)))
@@ -189,7 +191,8 @@ object TrailFlow {
                     target?.matches(npc) ?: false
                 }
                 .filter { challenge ->
-                    TrailCharlieTaskRow.all().any { it.step.rowId == challenge.rowId }
+                    ClueChallengeTasks.isAction(challenge) ||
+                        TrailCharlieTaskRow.all().any { it.step.rowId == challenge.rowId }
                 }
         return random.pickOrNull(challenges)
     }
