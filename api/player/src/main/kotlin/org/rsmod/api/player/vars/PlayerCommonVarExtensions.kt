@@ -46,6 +46,15 @@ public fun Player.resyncVar(varp: VarpServerType) {
 
 public fun Player.resyncVar(varBit: VarBitType): Unit = resyncVar(varBit.baseVar)
 
+public fun Player.flushVarpsSetBeforeFirstTick() {
+    if (varpsSetBeforeFirstTick.isEmpty()) return
+    for (id in varpsSetBeforeFirstTick) {
+        val varp = ServerCacheManager.getVarp(id) ?: continue
+        resyncVar(varp)
+    }
+    varpsSetBeforeFirstTick.clear()
+}
+
 public fun Player.setActiveMoveSpeed(speed: MoveSpeed) {
     varMoveSpeed = speed
     moveSpeed = varMoveSpeed

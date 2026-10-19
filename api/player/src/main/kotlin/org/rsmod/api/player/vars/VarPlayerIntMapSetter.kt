@@ -56,6 +56,7 @@ public object VarPlayerIntMapSetter {
         }
 
         if (!engineLoggedIn) {
+            if (previous != value) player.varpsSetBeforeFirstTick += varp.id
             return
         }
 

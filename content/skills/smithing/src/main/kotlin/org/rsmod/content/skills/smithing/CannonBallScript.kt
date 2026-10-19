@@ -111,7 +111,7 @@ class CannonBallScript : PluginScript() {
         )
         delay(1)
 
-        mes("You remove the cannonballs from the mould.")
+        spam("You remove the cannonballs from the mould.")
         if (invAdd(inv, ball.output.internalName, ballsPerSmelt).success) {
             statAdvance("stat.smithing", ball.xp * barsPerSmelt.toDouble())
         }

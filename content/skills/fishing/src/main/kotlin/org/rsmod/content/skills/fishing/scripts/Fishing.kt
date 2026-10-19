@@ -279,9 +279,9 @@ constructor(
             return
         }
 
-        val name = type.name.lowercase()
+        val name = type.name.lowercase().removePrefix("raw ")
         val article = if (active.article == "some") "some" else if (name.firstOrNull() in vowels) "an" else "a"
-        spam("You catch $article $name")
+        spam("You catch $article $name.")
         if (infernalHarpoon) {
             cookInfernalCatch(item, product.count)
         }

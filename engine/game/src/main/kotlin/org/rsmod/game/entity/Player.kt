@@ -80,6 +80,9 @@ public class Player(
     public val vars: VarPlayerIntMap = VarPlayerIntMap()
     public val strVars: VarPlayerStrMap = VarPlayerStrMap()
 
+    /** Varp setters do not transmit before the first processed tick; these are sent on it. */
+    public val varpsSetBeforeFirstTick: MutableSet<Int> = HashSet()
+
     public val ui: UserInterfaceMap = UserInterfaceMap()
     public val statMap: PlayerStatMap = PlayerStatMap()
     public val timerMap: PlayerTimerMap = PlayerTimerMap()

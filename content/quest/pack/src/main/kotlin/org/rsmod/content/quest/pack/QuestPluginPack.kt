@@ -5,5 +5,10 @@ import dev.openrune.pack.PluginPack
 
 class QuestPluginPack : PluginPack() {
     override fun dbTables(): List<DBTable> =
-        listOf(DaddysHomeFurnitureTable.daddysHomeFurniture(), DaddysHomeCrateTable.daddysHomeCrate())
+        listOf(
+            DaddysHomeFurnitureTable.daddysHomeFurniture(),
+            DaddysHomeCrateTable.daddysHomeCrate(),
+            GlarialRestrictionsTable.restrictions(),
+            WaterfallPillarRunesTable.runes(),
+        )
 }
