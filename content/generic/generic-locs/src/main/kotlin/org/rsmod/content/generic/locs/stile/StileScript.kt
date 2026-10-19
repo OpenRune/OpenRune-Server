@@ -8,7 +8,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 /**
  * Steps over a fence stile. A stile spans the two tiles of its own footprint, one either side of
- * the fence: the player walks onto the tile on their side, then climbs to the other.
+ * the fence, and climbing it moves the player to whichever of those tiles they are not standing on.
  */
 class StileScript : PluginScript() {
     override fun ScriptContext.startup() {
@@ -17,15 +17,10 @@ class StileScript : PluginScript() {
         }
     }
 
-    private suspend fun ProtectedAccess.climbStile(loc: BoundLocInfo) {
-        val near = loc.coords
-        val far = near.translate(loc.adjustedWidth - 1, loc.adjustedLength - 1)
-        val fromNear = if (far.z != near.z) coords.z <= near.z else coords.x <= near.x
-        val (start, dest) = if (fromNear) near to far else far to near
-        if (coords != start) {
-            playerMove(start)
-            if (coords != start) return
-        }
+    private fun ProtectedAccess.climbStile(loc: BoundLocInfo) {
+        val start = coords
+        val far = loc.coords.translate(loc.adjustedWidth - 1, loc.adjustedLength - 1)
+        val dest = if (start == far) loc.coords else far
         climbOver(start, dest)
     }
 
