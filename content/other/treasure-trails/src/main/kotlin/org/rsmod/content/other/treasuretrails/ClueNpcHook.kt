@@ -13,6 +13,7 @@ import org.rsmod.api.table.TrailTierRow
 import org.rsmod.api.table.Tuple2
 import org.rsmod.api.table.cluehelper.CluehelperClueCrypticRow
 import org.rsmod.content.other.treasuretrails.TrailFlow.advance
+import org.rsmod.content.other.treasuretrails.TrailFlow.assign
 import org.rsmod.content.other.treasuretrails.TrailFlow.matches
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -41,7 +42,7 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
                 val challenge = TrailFlow.skillChallengeFor(player, step, npc, random)
                 when {
                     challenge != null -> {
-                        TrailFlow.assign(player, tier, challenge)
+                        if (!assign(tier, challenge)) return
                         startDialogue(npc) { mesbox(challenge.text.orEmpty()) }
                     }
                     question != null -> challengeScroll(npc, trail, question)

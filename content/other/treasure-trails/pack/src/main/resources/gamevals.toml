@@ -29,6 +29,7 @@ trail_beginner_step = 63808
 trail_emote_first = 63809
 trail_puzzle_solved = 63810
 trail_encounter_defeated = 63811
+trail_challenge_step = 63812
 
 [gamevals.varbit]
 trail_beginner_length = 63800

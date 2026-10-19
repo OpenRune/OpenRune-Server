@@ -15,5 +15,6 @@ class TreasureTrailsModule : PluginModule() {
         addSetBinding<PlayerObjTakeValidateHook>(ClueTakeHook::class.java)
         addSetBinding<NpcDeathKillHook>(ClueKeyDropHook::class.java)
         addSetBinding<NpcDeathKillHook>(ClueEncounterKillHook::class.java)
+        addSetBinding<NpcDeathKillHook>(ClueMonsterKillHook::class.java)
     }
 }

@@ -42,6 +42,10 @@ object TrailFlow {
             return TrailState(player, tier).step?.let(ClueSteps::step)
         }
         val obj = clueSlot(player, tier)?.let { player.inv[it] } ?: return null
+        val challenge = player.vars[CHALLENGE_STEP]
+        if (challenge != 0) {
+            ClueSteps.step(challenge).takeIf { it.difficulty == tier.difficulty }?.let { return it }
+        }
         return TrailTiers.objStep(TrailTiers.type(obj.id))?.let(ClueSteps::step)
     }
 
@@ -67,6 +71,7 @@ object TrailFlow {
 
     fun resetTrail(player: Player, tier: TrailTierRow) {
         TrailState(player, tier).clear()
+        VarPlayerIntMapSetter.set(player, CHALLENGE_STEP, 0)
         VarPlayerIntMapSetter.set(player, INFOBOX, NO_INFOBOX)
         VarPlayerIntMapSetter.set(player, "varp.trail_hotcold_last_check_coord", 0)
         VarPlayerIntMapSetter.set(player, EMOTE_FIRST, 0)
@@ -132,14 +137,19 @@ object TrailFlow {
      * obj-per-step tiers. Returns the obj the player now holds for the trail, or `null` when the
      * clue is gone and nothing changed.
      */
-    fun ProtectedAccess.advance(tier: TrailTierRow): ItemServerType? {
+    fun ProtectedAccess.advance(
+        tier: TrailTierRow,
+        deliver: ProtectedAccess.(slot: Int, obj: ItemServerType) -> Boolean = { slot, obj ->
+            invReplace(inv, slot, 1, obj).success
+        },
+    ): ItemServerType? {
         val slot = clueSlot(player, tier) ?: return null
         val current = currentStep(player, tier) ?: return null
         val state = TrailState(player, tier)
         start(state, random)
         val progress = state.progress + 1
         if (progress >= state.length) {
-            if (invReplace(inv, slot, 1, tier.casketObj).failure) {
+            if (!deliver(slot, tier.casketObj)) {
                 return null
             }
             resetTrail(player, tier)
@@ -153,10 +163,11 @@ object TrailFlow {
             return clue
         }
         val next = rollClueObj(tier, random, exclude = current.rowId)
-        if (invReplace(inv, slot, 1, next).failure) {
+        if (!deliver(slot, next)) {
             return null
         }
         state.progress = progress
+        VarPlayerIntMapSetter.set(player, CHALLENGE_STEP, 0)
         VarPlayerIntMapSetter.set(player, EMOTE_FIRST, 0)
         VarPlayerIntMapSetter.set(player, ENCOUNTER_DEFEATED, 0)
         VarPlayerIntMapSetter.set(player, INFOBOX, checkNotNull(TrailTiers.objStep(next)))
@@ -183,8 +194,15 @@ object TrailFlow {
         return random.pickOrNull(challenges)
     }
 
-    fun assign(player: Player, tier: TrailTierRow, step: ClueStep) {
-        setStep(player, tier, step.rowId)
+    fun ProtectedAccess.assign(tier: TrailTierRow, step: ClueStep): Boolean {
+        if (tier.clueObj != null) {
+            setStep(player, tier, step.rowId)
+            return true
+        }
+        if (!holdsClue(player, tier)) return false
+        VarPlayerIntMapSetter.set(player, CHALLENGE_STEP, step.rowId)
+        VarPlayerIntMapSetter.set(player, INFOBOX, step.rowId)
+        return true
     }
 
     fun ClueTarget.TalkTo.matches(npc: Npc): Boolean {
@@ -269,6 +287,7 @@ object TrailFlow {
     internal const val EMOTE_FIRST = "varp.trail_emote_first"
     internal const val ENCOUNTER_DEFEATED = "varp.trail_encounter_defeated"
     private val SEXTANT_COMPACT = Regex("""(\d+)\.(\d+)([NS]) (\d+)\.(\d+)([EW])""")
-    private const val INFOBOX = "varp.cluehelper_infobox_clue"
+    private const val CHALLENGE_STEP = "varp.trail_challenge_step"
+    private const val INFOBOX ="varp.cluehelper_infobox_clue"
     private const val NO_INFOBOX = -1
 }
