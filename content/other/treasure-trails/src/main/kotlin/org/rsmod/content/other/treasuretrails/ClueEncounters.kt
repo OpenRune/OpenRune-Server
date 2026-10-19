@@ -23,6 +23,7 @@ import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.map.CoordGrid
+import org.rsmod.routefinder.LineValidator
 import org.rsmod.routefinder.collision.CollisionFlagMap
 import org.rsmod.routefinder.flag.CollisionFlag
 
@@ -38,6 +39,8 @@ constructor(
     private val aiPlayerInteractions: AiPlayerInteractions,
     private val random: GameRandom,
 ) {
+    private val lineValidator = LineValidator(collision)
+
     private val encounterNpcIds: Set<Int> by lazy {
         CluehelperCombatEncounterRow.all().flatMap { row -> row.npcs.map { it.id } }.toSet()
     }
@@ -87,13 +90,26 @@ constructor(
     private fun spawnTile(near: CoordGrid): CoordGrid {
         repeat(SPAWN_ATTEMPTS) {
             val candidate = random.of(near, SPAWN_RADIUS)
-            if (candidate != near && isWalkable(candidate)) return candidate
+            if (isValidSpawn(near, candidate)) return candidate
+        }
+        for (dx in -SPAWN_RADIUS..SPAWN_RADIUS) {
+            for (dz in -SPAWN_RADIUS..SPAWN_RADIUS) {
+                val candidate = near.translate(dx, dz)
+                if (isValidSpawn(near, candidate)) return candidate
+            }
         }
         return near
     }
 
+    private fun isValidSpawn(player: CoordGrid, candidate: CoordGrid): Boolean =
+        candidate != player && isWalkable(candidate) && canReach(player, candidate)
+
     private fun isWalkable(coords: CoordGrid): Boolean =
         collision[coords.x, coords.z, coords.level] and BLOCKED_FLAGS == 0
+
+    private fun canReach(from: CoordGrid, to: CoordGrid): Boolean =
+        lineValidator.hasLineOfWalk(from.level, from.x, from.z, to.x, to.z) &&
+            lineValidator.hasLineOfSight(from.level, from.x, from.z, to.x, to.z)
 
     internal companion object {
         const val URI_DURATION = 100
