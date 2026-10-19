@@ -4,6 +4,7 @@ import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import java.util.Locale
 import net.rsprot.protocol.game.outgoing.sound.MidiJingle
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.invtx.add
@@ -162,7 +163,8 @@ data class Quest(
         additionalRewards: List<InvObj> = emptyList(),
     ): Boolean {
         require(newStage in 0..maxSteps) { "Quest '$key' stage must be within 0..$maxSteps." }
-        val wasCompleted = getQuestStage(access.player) >= maxSteps
+        val oldStage = getQuestStage(access.player)
+        val wasCompleted = oldStage >= maxSteps
         if (!wasCompleted && newStage == maxSteps && !grantItemRewards(access, additionalRewards)) {
             return false
         }
@@ -172,6 +174,10 @@ data class Quest(
         // endstate (e.g. runemysteries=6) rather than a collapsed 0/1/2 progress flag.
         if (access.player.questState != newStage) {
             access.player.questState = newStage
+        }
+
+        if (oldStage == 0 && newStage > 0) {
+            access.mes("You've started a new quest: @q_mes@$displayName</col>")
         }
 
         if (!wasCompleted && newStage >= maxSteps) {
@@ -228,6 +234,7 @@ data class Quest(
 
         access.player.questPoints += questPoints
         access.player.questsCompleted++
+        access.mes("Congratulations, you've completed a quest: @q_mes@$displayName</col>")
 
         access.player.musicClocks = 0
         access.player.client.write(MidiJingle(QUEST_COMPLETE_JINGLE))
@@ -249,7 +256,8 @@ data class Quest(
                 ?: error("No stat found for $skill")
 
             access.statAdvance(skill, amount)
-            rewardLines.add("${amount.toInt()} ${stat.displayName} XP")
+            val skillName = stat.displayName.replaceFirstChar { it.uppercase() }
+            rewardLines.add("${"%,d".format(Locale.US, amount.toInt())} $skillName XP")
         }
 
         rewards.items.forEach { (item, amount) ->

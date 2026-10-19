@@ -5466,11 +5466,6 @@ inherit = "npc.sir_amik_varze"
 moveRestrict = "Indoors"
 
 [[npc]]
-id = "npc.sir_vyvin"
-inherit = "npc.sir_vyvin"
-moveRestrict = "Indoors"
-
-[[npc]]
 id = "npc.fai_falador_guard1_variant01"
 inherit = "npc.fai_falador_guard1_variant01"
 moveRestrict = "Outdoors"
