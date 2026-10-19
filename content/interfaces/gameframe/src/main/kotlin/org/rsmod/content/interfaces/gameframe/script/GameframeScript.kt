@@ -5,7 +5,6 @@ import dev.openrune.definition.type.widget.IfEvent
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
-import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.cinematic.Cinematic
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.runClientScript
@@ -32,6 +31,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 var Player.gameframeTopLevel by intVarBit("varbit.gameframe_toplevel")
 private var Player.stoneArrangements by boolVarBit("varbit.resizable_stone_arrangement")
+private var Player.stoneBeforeFullscreen by intVarBit("varbit.gameframe_stone_before_fullscreen")
 lateinit var gameframes: Map<Int, Gameframe>
 
 private val STONE_EVENTS = listOf(IfEvent.Op1, IfEvent.Op2, IfEvent.Op3, IfEvent.Op4, IfEvent.Op5, IfEvent.Op6)
@@ -152,13 +152,15 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
 
         private const val FULLSCREEN_MAP_TOPLEVEL = "interface.toplevel_display"
 
-        private val STONE_BEFORE_FULLSCREEN = AttributeKey<Boolean>()
+        private const val STONE_NOT_SAVED = 0
+        private const val STONE_SAVED_CLASSIC = 1
+        private const val STONE_SAVED_MODERN = 2
     }
 
     public fun Player.changeGameframe(move: GameframeMove) {
         val (from, dest, intermediate) = move
         if (dest.topLevel == FULLSCREEN_MAP_TOPLEVEL && from.topLevel != FULLSCREEN_MAP_TOPLEVEL) {
-            attr[STONE_BEFORE_FULLSCREEN] = stoneArrangements
+            stoneBeforeFullscreen = if (stoneArrangements) STONE_SAVED_MODERN else STONE_SAVED_CLASSIC
         }
         if (from.topLevel == FULLSCREEN_MAP_TOPLEVEL && dest.topLevel != FULLSCREEN_MAP_TOPLEVEL) {
             restoreStoneArrangement()
@@ -189,9 +191,12 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
     }
 
     private fun Player.restoreStoneArrangement() {
-        val saved = attr[STONE_BEFORE_FULLSCREEN] ?: return
-        attr.remove(STONE_BEFORE_FULLSCREEN)
-        stoneArrangements = saved
+        val saved = stoneBeforeFullscreen
+        if (saved == STONE_NOT_SAVED) {
+            return
+        }
+        stoneBeforeFullscreen = STONE_NOT_SAVED
+        stoneArrangements = saved == STONE_SAVED_MODERN
     }
 
     private fun selectFallback(resizable: Boolean, stoneArrangements: Boolean): Gameframe? {
