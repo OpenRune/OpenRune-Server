@@ -139,6 +139,16 @@ class MyBossInstance @Inject constructor(
 
 Don't forget to register the class with Guice in your module's binding file (or let the framework auto-discover it if your project uses classpath scanning).
 
+### Approach exits
+
+`onExitObjectApproach2 { ... }` opts an instance into the second exit-object
+option at the engine's normal approach range. Register it inside `configure`;
+it binds only that instance row's exit objects. It does not replace the
+op-1 `onExitObject` handler or add a second option to other instances.
+
+Brutus uses this for Quick-escape. Both exit options share the fade transition;
+only Leave asks for confirmation.
+
 ---
 
 ## InstanceArea types

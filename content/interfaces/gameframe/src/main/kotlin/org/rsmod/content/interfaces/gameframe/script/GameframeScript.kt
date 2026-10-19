@@ -48,6 +48,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         onPlayerInit { player.openLoginGameframe() }
 
         for ((topLevel, gameframe) in gameframes) {
+            if (!gameframe.isGameplay) continue
             val type = ServerCacheManager.getInterface(topLevel) ?: error("Unable to get Interface")
             onIfMoveTop(type) { player.queueGameframeMove(gameframe) }
         }
@@ -65,7 +66,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
 
     private fun Player.openLoginGameframe() {
         val gameframe = gameframes[gameframeTopLevel]
-        if (gameframe != null && gameframe.resizable == ui.frameResizable) {
+        if (gameframe != null && gameframe.isGameplay && gameframe.resizable == ui.frameResizable) {
             ifOpenTop(gameframe.topLevel)
             openGameframe(gameframe, eventBus)
             sendAllStoneEvents()
@@ -139,7 +140,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         }
 
         private fun Gameframe.hasFlags(resizable: Boolean, stoneArrangements: Boolean): Boolean {
-            return this.resizable == resizable && this.stoneArrangement == stoneArrangements
+            return isGameplay && this.resizable == resizable && this.stoneArrangement == stoneArrangements
         }
     }
 
@@ -176,7 +177,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         if (priority != null) {
             return priority
         }
-        return gameframes.values.firstOrNull { it.resizable == resizable }
+        return gameframes.values.firstOrNull { it.isGameplay && it.resizable == resizable }
     }
 
     private fun loadAll() {

@@ -5,12 +5,11 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import java.util.Locale
-import net.rsprot.protocol.game.outgoing.sound.MidiJingle
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
-import org.rsmod.api.player.musicClocks
+import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.intVarBit
@@ -20,7 +19,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.map.CoordGrid
 
-private const val QUEST_COMPLETE_JINGLE = 153
+const val QUEST_COMPLETE_JINGLE = "jingle.gaol"
 
 internal const val QUEST_DIALOGUE_CLOSE_TIMER = "timer.quest_dialogue_close"
 internal const val QUEST_SCROLL_CLOSE_TIMER = "timer.quest_scroll_close"
@@ -54,6 +53,7 @@ data class Quest(
     val questVarbit: String? = null,
     val closeDialogue: QuestClose = QuestClose.OnFinished,
     val closeScroll: QuestClose = QuestClose.Never,
+    val completeJingle: String = QUEST_COMPLETE_JINGLE,
 ) {
 
     private var Player.questState: Int
@@ -83,6 +83,7 @@ data class Quest(
             varbit: String? = null,
             closeDialogue: QuestClose = QuestClose.OnFinished,
             closeScroll: QuestClose = QuestClose.Never,
+            completeJingle: String = QUEST_COMPLETE_JINGLE,
         ): Quest {
 
             val rowKeyID = "dbrow.${rowKey}".asRSCM()
@@ -102,6 +103,7 @@ data class Quest(
                 rewards = rewards,
                 closeDialogue = closeDialogue,
                 closeScroll = closeScroll,
+                completeJingle = completeJingle,
             )
             questsByKey[rowKey.normalizedQuestKey()] = quest
             return quest
@@ -236,8 +238,7 @@ data class Quest(
         access.player.questsCompleted++
         access.mes("Congratulations, you've completed a quest: @q_mes@$displayName</col>")
 
-        access.player.musicClocks = 0
-        access.player.client.write(MidiJingle(QUEST_COMPLETE_JINGLE))
+        access.player.midiJingle(completeJingle)
 
         scheduleClose(access, closeDialogue, QUEST_DIALOGUE_CLOSE_TIMER) { ifCloseChat() }
         access.ifOpenMain("interface.questscroll")
@@ -265,9 +266,7 @@ data class Quest(
             rewardLines.add(rewards.itemLabels[item] ?: "$amount x ${type.name}")
         }
 
-        rewards.extraText?.let {
-            rewardLines.add(it)
-        }
+        rewardLines += rewards.extraLines
 
         val linesToShow = rewardLines.take(6)
 
