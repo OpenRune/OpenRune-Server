@@ -112,7 +112,7 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
     private suspend fun ProtectedAccess.puzzleBox(npc: Npc, trail: HeldTrail) {
         val held = ClueSlidePuzzle.held(player)
         if (held == null) {
-            val box = ClueSlidePuzzle.handOut(random)
+            val box = ClueSlidePuzzle.handOut(trail.step, random)
             ClueSlidePuzzle.reset(player)
             if (invAdd(inv, box.symbol(), 1).failure) {
                 mes("You don't have enough inventory space.")

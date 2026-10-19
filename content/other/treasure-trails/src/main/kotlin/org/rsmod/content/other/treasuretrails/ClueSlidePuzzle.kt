@@ -2,6 +2,7 @@ package org.rsmod.content.other.treasuretrails
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
@@ -25,6 +26,7 @@ object ClueSlidePuzzle {
     private const val THEME = "varp.if1"
     private const val SOLVED = "varp.trail_puzzle_solved"
     private const val BOX_NAME = "Puzzle box (hard)"
+    private const val BOX_SUFFIX = "_puzzlebox"
     private const val THEMES = 3
 
     private val handOutBoxes =
@@ -43,7 +45,17 @@ object ClueSlidePuzzle {
             obj?.let { TrailTiers.type(it.id) }?.takeIf { it.name == BOX_NAME }
         }
 
-    fun handOut(random: GameRandom): ItemServerType {
+    fun boxFor(step: ClueStep): ItemServerType? =
+        TrailTiers.clueObjs(step.difficulty)
+            .filter { TrailTiers.objStep(it) == step.rowId }
+            .firstNotNullOfOrNull { clue ->
+                RSCM.getRSCMOrNull(clue.symbol() + BOX_SUFFIX, RSCMType.OBJ)
+                    ?.let(ServerCacheManager::getItem)
+                    ?.takeIf { it.name == BOX_NAME }
+            }
+
+    fun handOut(step: ClueStep, random: GameRandom): ItemServerType {
+        boxFor(step)?.let { return it }
         val symbol = random.pick(handOutBoxes)
         return boxes.first { it.symbol() == symbol }
     }

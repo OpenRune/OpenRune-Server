@@ -190,8 +190,11 @@ object ClueSteps {
     }
 
     fun isPuzzleBox(step: ClueStep): Boolean {
-        val row = step.challenge ?: return false
-        return RSCM.getReverseMapping(RSCMType.DBROW, row) == PUZZLE_BOX_ROW
+        val row = step.challenge
+        if (row != null && RSCM.getReverseMapping(RSCMType.DBROW, row) == PUZZLE_BOX_ROW) {
+            return true
+        }
+        return ClueSlidePuzzle.boxFor(step) != null
     }
 
     fun all(difficulty: Int): List<ClueStep> =
