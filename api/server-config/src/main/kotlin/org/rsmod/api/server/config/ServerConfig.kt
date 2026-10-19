@@ -53,6 +53,8 @@ public data class GameplayConfig(
     val dropRates: DropRatesYaml = DropRatesYaml(),
     @JsonProperty("level-up-popups")
     val levelUpPopups: Boolean = false,
+    @JsonProperty("idle-logout")
+    val idleLogout: Boolean = true,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
