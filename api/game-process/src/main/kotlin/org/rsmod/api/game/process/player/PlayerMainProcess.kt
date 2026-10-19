@@ -4,6 +4,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.forceDisconnect
 import org.rsmod.api.player.ui.closeSubs
 import org.rsmod.api.player.ui.ifClose
+import org.rsmod.api.player.vars.flushVarpsSetBeforeFirstTick
 import org.rsmod.api.utils.logging.GameExceptionHandler
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
@@ -37,6 +38,7 @@ constructor(
                 continue
             }
             player.processedMapClock = mapClock.cycle
+            player.flushVarpsSetBeforeFirstTick()
             PlayerPersistenceHints.enter(player)
             try {
                 player.tryOrDisconnect {

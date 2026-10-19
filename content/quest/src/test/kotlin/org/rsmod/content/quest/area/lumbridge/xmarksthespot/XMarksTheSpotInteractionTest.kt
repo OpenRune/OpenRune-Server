@@ -140,6 +140,67 @@ class XMarksTheSpotInteractionTest {
         assertEquals(1, f.player.inv.count(Casket))
     }
 
+    @Test fun `coin overflow must not complete the quest without paying the reward`() {
+        val f = Fixture(6)
+        f.player.inv[0] = InvObj(Casket, 1)
+        f.player.inv[1] = InvObj("obj.coins", Int.MAX_VALUE)
+        f.talkToVeosAtSarim()
+        f.finish()
+        assertEquals(6, f.stage())
+        assertEquals(1, f.player.inv.count(Casket))
+        assertEquals(Int.MAX_VALUE, f.player.inv.count("obj.coins"))
+        assertEquals(0, f.player.inv.count(Lamp))
+        assertEquals(0, f.player.vars["varp.qp"])
+    }
+
+    @Test fun `the coin reward can fill the stack exactly without being paid twice`() {
+        val f = Fixture(6)
+        f.player.inv[0] = InvObj(Casket, 1)
+        f.player.inv[1] = InvObj("obj.coins", Int.MAX_VALUE - XMarksTheSpotQuest.COIN_REWARD)
+        f.talkToVeosAtSarim()
+        f.finish()
+        assertEquals(8, f.stage())
+        assertEquals(Int.MAX_VALUE, f.player.inv.count("obj.coins"))
+        assertEquals(1, f.player.inv.count(Lamp))
+        assertEquals(1, f.player.vars["varp.qp"])
+        f.talkToVeosAtSarim(expectQuestDialogue = false)
+        f.finish()
+        assertEquals(Int.MAX_VALUE, f.player.inv.count("obj.coins"))
+        assertEquals(1, f.player.inv.count(Lamp))
+        assertEquals(1, f.player.vars["varp.qp"])
+    }
+
+    @Test fun `an overflowing reward after casket delivery remains claimable`() {
+        val f = Fixture(7)
+        f.player.inv[0] = InvObj("obj.coins", Int.MAX_VALUE - XMarksTheSpotQuest.COIN_REWARD + 1)
+        f.talkToVeosAtSarim()
+        f.finish()
+        assertEquals(7, f.stage())
+        assertEquals(0, f.player.inv.count(Lamp))
+        assertEquals(0, f.player.vars["varp.qp"])
+        f.player.inv[0] = null
+        f.talkToVeosAtSarim()
+        f.finish()
+        f.assertReward()
+    }
+
+    @Test fun `inventory changes during the farewell defer all rewards until there is room`() {
+        val f = Fixture(7)
+        f.talkToVeosAtSarim()
+        f.until { f.output().contains("And as promised, here's your reward.") }
+        f.fillInventory()
+        f.finish()
+        assertEquals(7, f.stage())
+        assertEquals(0, f.player.vars["varp.qp"])
+        assertEquals(0, f.player.inv.count(Lamp))
+        assertEquals(0, f.player.inv.count("obj.league_clue_box_beginner"))
+        assertEquals(0, f.player.inv.count("obj.coins"))
+        f.player.inv.fillNulls()
+        f.talkToVeosAtSarim()
+        f.finish()
+        f.assertReward()
+    }
+
     @Test fun `the antique lamp grants experience in the chosen skill`() {
         val f = Fixture(8)
         f.player.inv[0] = InvObj(Lamp, 1)
@@ -250,6 +311,15 @@ class XMarksTheSpotInteractionTest {
                 }
             )
             result?.getOrThrow()
+        }
+
+        fun until(predicate: () -> Boolean) {
+            repeat(300) {
+                if (predicate()) return
+                check(!coroutine.isIdle) { "Interaction ended before the checkpoint" }
+                advance(emptyList<Int>().iterator())
+            }
+            error("Interaction did not reach the checkpoint")
         }
 
         fun finish(options: List<Int> = emptyList()) {

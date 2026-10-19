@@ -47,7 +47,8 @@ constructor(private val eventBus: EventBus, private val protectedAccess: Protect
 
     @OptIn(InternalApi::class)
     override fun handle(player: Player, message: If3Button) {
-        val componentType = ServerCacheManager.fromComponent(message.asComponent.packed)
+        val source = player.ui.gameframeSources.getOrNull(message.asComponent) ?: message.asComponent
+        val componentType = ServerCacheManager.fromComponent(source.packed)
         val interfaceType = ServerCacheManager.fromInterface(message.asComponent.packed)
         val comsub = message.sub
         val buttonOp = message.buttonOp

@@ -1,0 +1,42 @@
+[[npc]]
+id = "npc.bim_marley_edge"
+inherit = "npc.bim_marley_edge"
+wanderRange = 2
+
+[[npc]]
+id = "npc.hundred_dave_mum"
+inherit = "npc.hundred_dave_mum"
+wanderRange = 4
+
+[[npc]]
+id = "npc.oziach"
+inherit = "npc.oziach"
+wanderRange = 1
+respawnDir = "North"
+
+[npc.params]
+"param.shop_sell_percentage" = 1300
+"param.shop_buy_percentage" = 400
+"param.shop_change_percentage" = 30
+
+[[npc]]
+id = "npc.generalshopkeeper5"
+inherit = "npc.generalshopkeeper5"
+wanderRange = 4
+
+[[npc]]
+id = "npc.generalassistant5"
+inherit = "npc.generalassistant5"
+wanderRange = 4
+
+[[npc]]
+id = "npc.slayer_master_7"
+inherit = "npc.slayer_master_7"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.emblem_trader"
+inherit = "npc.emblem_trader"
+moveRestrict = "NoMove"
+wanderRange = 0

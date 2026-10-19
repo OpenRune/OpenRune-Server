@@ -98,7 +98,7 @@ constructor(
                 return
             }
             anim(miningAnim(pickaxe, data))
-            spam("You swing your pickaxe at the rock.")
+            spam("You swing your pick at the rock.")
             mine(rock, type)
         }
     }
@@ -173,9 +173,8 @@ constructor(
                 }
                 SkillingAwardResult.Cancelled -> Unit
                 SkillingAwardResult.Success -> {
-                    spam(
-                        "You manage to mine some ${getInvObj(InvObj(product.item)).name.lowercase()}.",
-                    )
+                    val ore = getInvObj(InvObj(product.item)).name.lowercase().removeSuffix(" ore")
+                    spam("You manage to mine some $ore.")
                     soundSynth(ORE_OBTAINED_SOUND)
                 }
             }

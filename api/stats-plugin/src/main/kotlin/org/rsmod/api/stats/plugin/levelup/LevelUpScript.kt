@@ -8,9 +8,12 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.advanced.onAdvanceCombat
 import org.rsmod.api.script.advanced.onAdvanceStat
+import org.rsmod.api.script.onIfClose
+import org.rsmod.api.script.onIfOpen
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -21,6 +24,12 @@ public class LevelUpScript @Inject constructor(private val worldRepo: WorldRepos
     override fun ScriptContext.startup() {
         onAdvanceStat { advanceStat(it.args) }
         onAdvanceCombat { advanceCombat(it.args) }
+        onIfOpen("interface.levelup_display") {
+            VarPlayerIntMapSetter.set(player, "varbit.busy", 1)
+        }
+        onIfClose("interface.levelup_display") {
+            VarPlayerIntMapSetter.set(player, "varbit.busy", 0)
+        }
     }
 
     private suspend fun ProtectedAccess.advanceStat(type: StatType) {

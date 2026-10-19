@@ -1,0 +1,62 @@
+[[npc]]
+id = "npc.aubury"
+inherit = "npc.aubury"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 600
+"param.shop_change_percentage" = 1
+
+[[npc]]
+id = "npc.lowe"
+inherit = "npc.lowe"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 550
+"param.shop_change_percentage" = 10
+
+[[npc]]
+id = "npc.horvik_the_armourer"
+inherit = "npc.horvik_the_armourer"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 600
+"param.shop_change_percentage" = 20
+
+[[npc]]
+id = "npc.tailorp"
+inherit = "npc.tailorp"
+
+[npc.params]
+"param.shop_sell_percentage" = 1300
+"param.shop_buy_percentage" = 400
+"param.shop_change_percentage" = 20
+
+[[npc]]
+id = "npc.thessalia"
+inherit = "npc.thessalia"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 550
+"param.shop_change_percentage" = 10
+
+[[npc]]
+id = "npc.swordshop1"
+inherit = "npc.swordshop1"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 600
+"param.shop_change_percentage" = 20
+
+[[npc]]
+id = "npc.swordshop2"
+inherit = "npc.swordshop2"
+
+[npc.params]
+"param.shop_sell_percentage" = 1000
+"param.shop_buy_percentage" = 600
+"param.shop_change_percentage" = 20
