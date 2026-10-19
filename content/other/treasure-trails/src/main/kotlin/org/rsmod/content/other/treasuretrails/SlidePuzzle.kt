@@ -15,13 +15,11 @@ object SlidePuzzle {
     fun scrambled(random: Random, moves: Int = SCRAMBLE_MOVES): IntArray {
         val board = solved()
         var gap = board.indexOf(EMPTY)
-        var previous = -1
         repeat(moves) {
-            val options = neighbours(gap).filter { it != previous }
+            val options = neighbours(gap)
             val cell = options[random.nextInt(options.size)]
             board[gap] = board[cell]
             board[cell] = EMPTY
-            previous = gap
             gap = cell
         }
         if (isSolved(board)) return scrambled(random, moves)
@@ -47,5 +45,5 @@ object SlidePuzzle {
         }
     }
 
-    private const val SCRAMBLE_MOVES = 200
+    private const val SCRAMBLE_MOVES = 101
 }
