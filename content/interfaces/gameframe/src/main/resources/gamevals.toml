@@ -2,7 +2,7 @@
 toplevel_stone_ops=64440
 
 [gamevals.varp]
-gameframe_state = 65472
+gameframe_state = 65471
 
 [gamevals.varbit]
-gameframe_stone_before_fullscreen = 65449
+gameframe_stone_before_fullscreen = 65447
