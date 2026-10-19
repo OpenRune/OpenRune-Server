@@ -51,6 +51,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         onPlayerLogout { player.restoreStoneArrangement() }
 
         for ((topLevel, gameframe) in gameframes) {
+            if (!gameframe.isGameplay) continue
             val type = ServerCacheManager.getInterface(topLevel) ?: error("Unable to get Interface")
             onIfMoveTop(type) { player.queueGameframeMove(gameframe) }
         }
@@ -67,8 +68,8 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
     }
 
     private fun Player.openLoginGameframe() {
-        val gameframe = gameframes[gameframeTopLevel]?.takeIf { it.isFallbackCandidate() }
-        if (gameframe != null && gameframe.resizable == ui.frameResizable) {
+        val gameframe = gameframes[gameframeTopLevel]
+        if (gameframe != null && gameframe.isGameplay && gameframe.resizable == ui.frameResizable) {
             ifOpenTop(gameframe.topLevel)
             openGameframe(gameframe, eventBus)
             sendAllStoneEvents()
@@ -138,19 +139,12 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
             if (!requiresIntermediate) {
                 return null
             }
-            return gameframes.values.first {
-                it.isFallbackCandidate() && it.hasFlags(resizable = true, stoneArrangements)
-            }
+            return gameframes.values.first { it.hasFlags(resizable = true, stoneArrangements) }
         }
 
         private fun Gameframe.hasFlags(resizable: Boolean, stoneArrangements: Boolean): Boolean {
-            return this.resizable == resizable && this.stoneArrangement == stoneArrangements
+            return isGameplay && this.resizable == resizable && this.stoneArrangement == stoneArrangements
         }
-
-        // The fullscreen world map has pre-EoC's flags but is never a frame to fall back to.
-        private fun Gameframe.isFallbackCandidate(): Boolean = topLevel != FULLSCREEN_MAP_TOPLEVEL
-
-        private const val FULLSCREEN_MAP_TOPLEVEL = "interface.toplevel_display"
 
         private const val STONE_NOT_SAVED = 0
         private const val STONE_SAVED_CLASSIC = 1
@@ -159,10 +153,10 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
 
     public fun Player.changeGameframe(move: GameframeMove) {
         val (from, dest, intermediate) = move
-        if (dest.topLevel == FULLSCREEN_MAP_TOPLEVEL && from.topLevel != FULLSCREEN_MAP_TOPLEVEL) {
+        if (!dest.isGameplay && from.isGameplay) {
             stoneBeforeFullscreen = if (stoneArrangements) STONE_SAVED_MODERN else STONE_SAVED_CLASSIC
         }
-        if (from.topLevel == FULLSCREEN_MAP_TOPLEVEL && dest.topLevel != FULLSCREEN_MAP_TOPLEVEL) {
+        if (!from.isGameplay && dest.isGameplay) {
             restoreStoneArrangement()
         } else if (dest.resizable) {
             stoneArrangements = dest.stoneArrangement
@@ -200,12 +194,11 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
     }
 
     private fun selectFallback(resizable: Boolean, stoneArrangements: Boolean): Gameframe? {
-        val candidates = gameframes.values.filter { it.isFallbackCandidate() }
-        val priority = candidates.firstOrNull { it.hasFlags(resizable, stoneArrangements) }
+        val priority = gameframes.values.firstOrNull { it.hasFlags(resizable, stoneArrangements) }
         if (priority != null) {
             return priority
         }
-        return candidates.firstOrNull { it.resizable == resizable }
+        return gameframes.values.firstOrNull { it.isGameplay && it.resizable == resizable }
     }
 
     private fun loadAll() {

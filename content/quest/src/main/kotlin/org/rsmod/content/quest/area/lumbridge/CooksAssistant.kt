@@ -1,5 +1,6 @@
 package org.rsmod.content.quest.area.lumbridge
 
+import org.rsmod.api.bottomless.milk.MilkSources
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
@@ -19,6 +20,7 @@ class CooksAssistant : QuestScript(
     rewards { xp("stat.cooking", 300.0) },
     ItemRewardDisplay("obj.cake"),
     questVarbit = "varbit.cooks_assistant_progress",
+    completeJingle = "jingle.mastermindless",
 ) {
 
     private var Player.givenMilk by boolVarBit("varbit.cooks_assistant_milk")
@@ -91,8 +93,12 @@ class CooksAssistant : QuestScript(
         line("As a reward he now lets me use his high-quality range whenever I wish to cook there.")
     }
 
-    private fun hasMilk(player: Player): Boolean =
-        player.inv.count("obj.bucket_milk") > 0 || player.givenMilk
+    private fun hasMilk(player: Player): Boolean = holdsMilk(player) || player.givenMilk
+
+    // UNVERIFIED: a bucket of milk goes before bottomless milk.
+    private fun holdsMilk(player: Player): Boolean = MilkSources.has(player.inv)
+
+    private fun Dialogue.takeMilk(): Boolean = MilkSources.take(access)
 
     private fun hasEgg(player: Player): Boolean =
         player.inv.count("obj.egg") > 0 || player.givenEgg
@@ -136,7 +142,10 @@ class CooksAssistant : QuestScript(
             return
         }
 
-        deliverItem("obj.bucket_milk", "Here's a bucket of milk.") { player.givenMilk = true }
+        if (!player.givenMilk && takeMilk()) {
+            player.givenMilk = true
+            chatPlayer(happy, "Here's a bucket of milk.")
+        }
         deliverItem("obj.egg", "Here's a fresh egg.") { player.givenEgg = true }
         deliverItem(potFlour, "Here's a pot of flour.") { player.givenFlour = true }
 
@@ -303,7 +312,7 @@ class CooksAssistant : QuestScript(
                 chatPlayer(happy, "Yes, I'll help you.")
                 quest.advanceQuestStage(access)
                 if (
-                    player.inv.count("obj.bucket_milk") > 0 &&
+                    holdsMilk(player) &&
                     player.inv.count("obj.egg") > 0 &&
                     player.inv.count(potFlour) > 0
                 ) {
@@ -312,7 +321,7 @@ class CooksAssistant : QuestScript(
                     chatPlayer(shifty, "Not exactly. I just had an odd feeling you might be needing these ingredients. If I see a cook, I presume there's food of some kind! Lucky guess I suppose.")
                     chatNpc(happy, "Well thank you! Hand them over, please.")
 
-                    access.invDel(access.inv, "obj.bucket_milk")
+                    takeMilk()
                     access.invDel(access.inv, "obj.egg")
                     access.invDel(access.inv, potFlour)
 

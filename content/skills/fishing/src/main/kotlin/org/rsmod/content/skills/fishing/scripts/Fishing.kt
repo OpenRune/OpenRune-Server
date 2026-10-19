@@ -139,7 +139,7 @@ constructor(
 
     private suspend fun ProtectedAccess.attemptCatch(task: FishTask) {
         // The spot can despawn or hop to another tile while the cycle is running.
-        if (task.npc.uid != task.uid) {
+        if (task.npc.uid != task.uid || !isWithinDistance(task.npc, 1)) {
             return
         }
         val attempt = prepare(task.spot, task.method, verbose = false) ?: return
@@ -279,9 +279,9 @@ constructor(
             return
         }
 
-        val name = type.name.lowercase()
+        val name = type.name.lowercase().removePrefix("raw ")
         val article = if (active.article == "some") "some" else if (name.firstOrNull() in vowels) "an" else "a"
-        spam("You catch $article $name")
+        spam("You catch $article $name.")
         if (infernalHarpoon) {
             cookInfernalCatch(item, product.count)
         }

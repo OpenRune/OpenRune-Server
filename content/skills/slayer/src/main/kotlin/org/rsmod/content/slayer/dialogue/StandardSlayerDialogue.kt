@@ -164,13 +164,13 @@ object StandardSlayerDialogue {
     }
 
     private suspend fun Dialogue.maybeHighCombatRedirect(profile: SlayerMasterProfile): Boolean {
-        val redirect = profile.highCombatRedirect ?: return false
-        if (player.combatLevel < redirect.minimumCombat) {
-            return false
-        }
+        val redirect =
+            profile.highCombatRedirects
+                .filter { player.combatLevel >= it.minimumCombat }
+                .maxByOrNull { it.minimumCombat } ?: return false
         chatNpc(
             neutral,
-            "You're actually very strong, are you sure you don't want ${redirect.suggestedMaster} in ${redirect.location} to assign you a task?",
+            "You're actually very strong, are you sure you don't want ${redirect.suggestedMaster} ${redirect.place} to assign you a task?",
         )
         when (
             choice2(

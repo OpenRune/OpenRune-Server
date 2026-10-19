@@ -10,6 +10,7 @@ internal object CotsStage {
     const val Eavesdropping = 8
     const val ReportToTobyn = 10
     const val Marking = 12
+    const val MarkedAll = 14
     const val OnRoof = 16
     const val Interrogating = 18
     const val Interrogated = 20
