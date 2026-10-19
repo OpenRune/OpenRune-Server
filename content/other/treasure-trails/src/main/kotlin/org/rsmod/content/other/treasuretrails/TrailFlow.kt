@@ -70,6 +70,7 @@ object TrailFlow {
         VarPlayerIntMapSetter.set(player, INFOBOX, NO_INFOBOX)
         VarPlayerIntMapSetter.set(player, "varp.trail_hotcold_last_check_coord", 0)
         VarPlayerIntMapSetter.set(player, EMOTE_FIRST, 0)
+        VarPlayerIntMapSetter.set(player, ENCOUNTER_DEFEATED, 0)
     }
 
     fun ProtectedAccess.read(tier: TrailTierRow) {
@@ -147,6 +148,7 @@ object TrailFlow {
         val clue = tier.clueObj
         if (clue != null) {
             state.progress = progress
+            VarPlayerIntMapSetter.set(player, ENCOUNTER_DEFEATED, 0)
             setStep(player, tier, rollStep(tier, random, exclude = state.step))
             return clue
         }
@@ -156,6 +158,7 @@ object TrailFlow {
         }
         state.progress = progress
         VarPlayerIntMapSetter.set(player, EMOTE_FIRST, 0)
+        VarPlayerIntMapSetter.set(player, ENCOUNTER_DEFEATED, 0)
         VarPlayerIntMapSetter.set(player, INFOBOX, checkNotNull(TrailTiers.objStep(next)))
         return next
     }
@@ -264,6 +267,7 @@ object TrailFlow {
     }
 
     internal const val EMOTE_FIRST = "varp.trail_emote_first"
+    internal const val ENCOUNTER_DEFEATED = "varp.trail_encounter_defeated"
     private val SEXTANT_COMPACT = Regex("""(\d+)\.(\d+)([NS]) (\d+)\.(\d+)([EW])""")
     private const val INFOBOX = "varp.cluehelper_infobox_clue"
     private const val NO_INFOBOX = -1

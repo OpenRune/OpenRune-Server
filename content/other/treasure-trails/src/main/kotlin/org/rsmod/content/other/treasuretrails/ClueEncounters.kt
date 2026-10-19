@@ -60,6 +60,10 @@ constructor(
             val npc = Npc(type, spawnTile(player.coords))
             npc.respawns = false
             npcRepo.add(npc, ENCOUNTER_LIFETIME)
+            worldRepo.spotanimMap(
+                SpotanimType("spotanim.smokepuff_large".asRSCM(RSCMType.SPOTANIM)),
+                npc.coords,
+            )
             npc.assignSpawnOwner(player, mapClock.cycle)
             if (npc.type.id in RANGED_ENCOUNTERS) {
                 npc.apPlayer2(player, aiPlayerInteractions)

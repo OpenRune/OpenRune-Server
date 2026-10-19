@@ -300,6 +300,11 @@ id = "varp.trail_puzzle_solved"
 scope = "Temp"
 transmit = "Never"
 
+[[varp]]
+id = "varp.trail_encounter_defeated"
+scope = "Perm"
+transmit = "Never"
+
 [[inventory]]
 isServerOnly = true
 id = "inv.trail_puzzleinv"

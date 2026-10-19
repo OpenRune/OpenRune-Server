@@ -11,7 +11,8 @@ class ClueDigHook @Inject constructor(private val encounters: ClueEncounters) : 
 
     override suspend fun ProtectedAccess.dig() {
         val trail = digTrail(player) ?: return
-        if (trail.step.encounters.isNotEmpty()) {
+        val defeated = player.vars[TrailFlow.ENCOUNTER_DEFEATED] == trail.step.rowId
+        if (trail.step.encounters.isNotEmpty() && !defeated) {
             encounters.spawn(player, trail.step)
             return
         }

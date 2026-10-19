@@ -3,16 +3,10 @@ package org.rsmod.content.other.treasuretrails
 import jakarta.inject.Inject
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
-import org.rsmod.api.player.protect.ProtectedAccessLauncher
-import org.rsmod.content.other.treasuretrails.TrailFlow.advance
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 
-class ClueEncounterKillHook
-
-@Inject
-constructor(
-    private val encounters: ClueEncounters,
-    private val protectedAccess: ProtectedAccessLauncher,
-) : NpcDeathKillHook {
+class ClueEncounterKillHook @Inject constructor(private val encounters: ClueEncounters) :
+    NpcDeathKillHook {
     override fun onKill(context: NpcDeathKillContext) {
         val hero = context.hero
         val npc = context.npc
@@ -24,11 +18,6 @@ constructor(
             encounters.summonUri(hero, trail.tier)
             return
         }
-        protectedAccess.launch(hero) {
-            val given = advance(trail.tier) ?: return@launch
-            val casket = given.id == trail.tier.casketObj.id
-            val text = if (casket) "You've found a casket!" else "You've found another clue!"
-            startDialogue { objbox(given.symbol(), text) }
-        }
+        VarPlayerIntMapSetter.set(hero, TrailFlow.ENCOUNTER_DEFEATED, trail.step.rowId)
     }
 }
