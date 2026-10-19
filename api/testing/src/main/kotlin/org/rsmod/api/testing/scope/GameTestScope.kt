@@ -46,6 +46,7 @@ import org.rsmod.api.net.rsprot.handlers.OpNpcHandler
 import org.rsmod.api.net.rsprot.handlers.ResumePCountDialogHandler
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.hit.NpcDamageContributor
+import org.rsmod.api.npc.hit.NpcHitpointsFloorHook
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.modifier.StandardNpcHitModifier
 import org.rsmod.api.npc.hit.processor.NpcHitProcessor
@@ -906,6 +907,7 @@ constructor(
                 .`in`(Scopes.SINGLETON)
 
             Multibinder.newSetBinder(binder(), NpcDamageContributor::class.java)
+            Multibinder.newSetBinder(binder(), NpcHitpointsFloorHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerInvUpdateHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerPostTickHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerGroundItemDropHook::class.java)

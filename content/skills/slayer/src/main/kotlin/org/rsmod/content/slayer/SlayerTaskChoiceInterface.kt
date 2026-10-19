@@ -12,42 +12,39 @@ object SlayerTaskChoiceInterface {
     const val INTERFACE = "interface.slayer_task_choice"
     const val CONTENT = "component.slayer_task_choice:content"
     const val CLOSE = "component.slayer_task_choice:close_button"
-    const val UNIVERSE = "component.slayer_task_choice:universe"
 
-    /**
-     * Opens the task-choice modal and waits for a click. Must be called from an active protected
-     * access / dialogue coroutine — the client only sends clicks when [IfEvent.PauseButton] is set.
-     */
+    private const val ROW_CHILDREN = 10
+
     suspend fun openAndAwait(access: ProtectedAccess) {
         access.ifOpenMainModal(INTERFACE)
-        enableClickEvents(access)
+        enableRowClicks(access)
 
         val input = access.pauseButton()
         handleInput(access, input)
-    }
-
-    fun open(access: ProtectedAccess) {
-        access.ifOpenMainModal(INTERFACE)
-        enableClickEvents(access)
-    }
-
-    fun onContentClick(access: ProtectedAccess, comsub: Int) {
-        acceptSlot(access, comsub)
     }
 
     fun onClose(access: ProtectedAccess) {
         access.ifClose()
     }
 
-    private fun enableClickEvents(access: ProtectedAccess) {
-        access.player.ifSetEvents(CONTENT, 0..16, IfEvent.Op1)
+    internal fun resolveSlot(comsub: Int, offerCount: Int): Int? {
+        if (comsub < 0 || comsub % ROW_CHILDREN != 0) return null
+        return (comsub / ROW_CHILDREN).takeIf { it < offerCount }
+    }
+
+    private fun enableRowClicks(access: ProtectedAccess) {
+        val master = SlayerTaskManager.findMasterByNpc(MortimerAssignment.NPC) ?: return
+        val offerCount = MortimerAssignment.readStoredOffers(access, master).size
+        for (slot in 0 until offerCount) {
+            val row = slot * ROW_CHILDREN
+            access.player.ifSetEvents(CONTENT, row..row, IfEvent.PauseButton)
+        }
     }
 
     private fun handleInput(access: ProtectedAccess, input: ResumePauseButtonInput) {
         when {
             input.isComponentType(CLOSE) -> access.ifClose()
-            input.isComponentType(CONTENT) || input.isComponentType(UNIVERSE) -> acceptSlot(access, input.subcomponent)
-            else -> {}
+            input.isComponentType(CONTENT) -> acceptSlot(access, input.subcomponent)
         }
     }
 
@@ -70,11 +67,4 @@ object SlayerTaskChoiceInterface {
             "Your new task is to kill ${offer.amount} ${offer.masterTask.task.nameUppercase}.",
         )
     }
-
-    private fun resolveSlot(comsub: Int, offerCount: Int): Int? =
-        when {
-            comsub in 0 until offerCount -> comsub
-            comsub in 1..offerCount -> comsub - 1
-            else -> null
-        }
 }
