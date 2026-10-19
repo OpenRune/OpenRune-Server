@@ -9,10 +9,13 @@ import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
 import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -138,11 +141,41 @@ class Nulodion @Inject constructor(private val shops: Shops) : PluginScript() {
 
     private suspend fun Dialogue.lostCannon() {
         chatPlayer(sad, "I've lost my cannon.")
-        chatNpc(
-            neutral,
-            "Actually, I'm only allowed to replace cannons that were stolen in action. I'm sorry, " +
-                "but you'll have to buy a new set.",
-        )
+        val setUp = player.cannonStage != 0
+        when {
+            setUp && !player.cannonDecayed -> {
+                chatNpc(
+                    neutral,
+                    "Hmmm. I think you'll find it's still happily parked on the spot where you put it.",
+                )
+                chatPlayer(confused, "Oh, is it still there? I thought I'd lost it.")
+                chatNpc(laugh, "Ha ha ha, what a muddle-headed numpty you are!")
+                chatPlayer(neutral, "...")
+            }
+            setUp -> {
+                if (access.inv.freeSpace() < LOST_CANNON_SLOTS) {
+                    chatNpc(
+                        neutral,
+                        "That's unfortunate! But don't worry, I can sort you out if you free up " +
+                            "some inventory space...",
+                    )
+                    return
+                }
+                chatNpc(neutral, "That's unfortunate! But don't worry, I can sort you out...")
+                if (!access.replaceLostCannon()) {
+                    return
+                }
+                doubleobjbox("obj.twpart3", "obj.twpart4", "The dwarf gives you a new cannon.")
+                chatNpc(neutral, "Keep that quiet or I'll be in real trouble!")
+                chatPlayer(happy, "Thanks a lot.")
+            }
+            else ->
+                chatNpc(
+                    neutral,
+                    "Actually, I'm only allowed to replace cannons that were stolen in action. I'm " +
+                        "sorry, but you'll have to buy a new set.",
+                )
+        }
     }
 
     private suspend fun Dialogue.aboutCannon() {
@@ -182,6 +215,7 @@ class Nulodion @Inject constructor(private val shops: Shops) : PluginScript() {
         private const val SHOP_SELL = 107.0
         private const val SHOP_BUY = 40.0
         private const val SHOP_CHANGE = 1.0
+        private const val LOST_CANNON_SLOTS = 4
     }
 }
 
@@ -197,6 +231,26 @@ public val CANNON_SET =
         "obj.ammo_mould",
         "obj.mcannonbook",
     )
+
+public fun ProtectedAccess.replaceLostCannon(): Boolean {
+    val given =
+        player
+            .invTransaction(inv) {
+                val target = select(inv)
+                for (part in CANNON_SET.take(4)) {
+                    add(target, part.asRSCM(RSCMType.OBJ), count = 1)
+                }
+            }
+            .success
+    if (given) {
+        player.cannonStage = 0
+        player.cannonDecayed = false
+    }
+    return given
+}
+
+private var Player.cannonStage: Int by intVarp("varp.dropcannon")
+private var Player.cannonDecayed: Boolean by boolVarBit("varbit.mcannon_decayed")
 
 public fun ProtectedAccess.buyCannonSet(): Boolean =
     player
