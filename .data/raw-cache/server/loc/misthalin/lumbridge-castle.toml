@@ -1,7 +1,3 @@
-## Doors
-## The map places the Recipe for Disaster (hundred_) variants of the kitchen and dining room
-## doors. They share models with elfdoor and castledoubledoor*, so they open into those.
-
 [[object]]
 id = "loc.hundred_lumbridge_door"
 inherit = "loc.hundred_lumbridge_door"
