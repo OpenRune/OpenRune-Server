@@ -24,7 +24,6 @@ constructor(
 
     private lateinit var connection: Connection
 
-    /** The game thread and the account saver share [connection]; transactions must not overlap. */
     private val transactionLock = Any()
 
     public fun connect(connector: GameConnection) {
