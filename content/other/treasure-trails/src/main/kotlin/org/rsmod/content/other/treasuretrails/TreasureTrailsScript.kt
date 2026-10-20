@@ -192,7 +192,7 @@ constructor(
         for (trail in TrailFlow.heldTrails(player)) {
             val step = trail.step
             if (step.kind != ClueKind.Emote || !atEmoteSpot(player, step)) continue
-            if (!ClueOutfits.wearing(player, step.outfit)) continue
+            if (!ClueOutfits.wearing(player, step)) continue
             val emotes = step.emotes
             val pending = player.vars[TrailFlow.EMOTE_FIRST] == step.rowId
             val complete =
@@ -206,7 +206,8 @@ constructor(
                     }
                 }
             if (!complete) continue
-            if (step.encounters.isEmpty()) {
+            val defeated = player.vars[TrailFlow.ENCOUNTER_DEFEATED] == step.rowId
+            if (step.encounters.isEmpty() || defeated) {
                 encounters.summonUri(player, trail.tier)
             } else {
                 encounters.spawn(player, step)

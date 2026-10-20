@@ -170,7 +170,7 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
             summoned &&
                 step?.kind == ClueKind.Emote &&
                 TrailFlow.holdsClue(player, tier) &&
-                ClueOutfits.wearing(player, step.outfit)
+                ClueOutfits.wearing(player, step)
         if (!ready) {
             startDialogue(npc) {
                 chatNpc(neutral, "I do not believe we have any business, Comrade.")

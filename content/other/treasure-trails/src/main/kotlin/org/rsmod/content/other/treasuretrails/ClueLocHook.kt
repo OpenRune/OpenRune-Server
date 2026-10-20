@@ -17,6 +17,10 @@ class ClueLocHook : PlayerLocOpHook {
         faceLoc(loc)
         val trail = searchTrail(player, loc) ?: return
         val target = ClueSteps.target(player, trail.step)
+        if (!ClueOutfits.wearing(player, trail.step)) {
+            mes("Nothing interesting happens.")
+            return
+        }
         if (target is ClueTarget.OpenWithKey) {
             val key = target.row.key.symbol()
             if (inv.count(key) == 0) {
@@ -37,7 +41,7 @@ class ClueLocHook : PlayerLocOpHook {
         TrailFlow.heldTrails(player).firstOrNull { trail ->
             when (val target = ClueSteps.target(player, trail.step)) {
                 is ClueTarget.Search ->
-                    loc.coords == target.row.coord &&
+                    loc.bounds().asSequence().any { it == target.row.coord } &&
                         loc.id in setOfNotNull(target.row.loc.id, target.row.fallbackLoc?.id)
                 is ClueTarget.OpenWithKey ->
                     loc.coords == target.row.locCoord && loc.id == target.row.loc.id

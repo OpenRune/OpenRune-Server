@@ -13,6 +13,9 @@ import org.rsmod.game.inv.Inventory
  * an item group that any obj with a matching `trail_item_group` param satisfies.
  */
 object ClueOutfits {
+    fun wearing(player: Player, step: ClueStep): Boolean =
+        step.outfits.isEmpty() || step.outfits.any { wearing(player, it) }
+
     fun wearing(player: Player, outfit: CluehelperOutfitRow?): Boolean {
         if (outfit == null) return true
         return outfit.slots().all { it.wornBy(player.worn) }

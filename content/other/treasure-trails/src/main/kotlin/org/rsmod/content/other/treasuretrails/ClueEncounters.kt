@@ -77,7 +77,7 @@ constructor(
     fun summonUri(player: Player, tier: TrailTierRow) {
         if (summonedUri(player) != null) return
         VarPlayerIntMapSetter.set(player, TrailFlow.EMOTE_FIRST, 0)
-        val coords = player.coords.translateZ(-1)
+        val coords = spawnTile(player.coords)
         val uri = Npc(tier.uriNpc, coords)
         npcRepo.add(uri, URI_DURATION)
         uri.facePlayer(player)

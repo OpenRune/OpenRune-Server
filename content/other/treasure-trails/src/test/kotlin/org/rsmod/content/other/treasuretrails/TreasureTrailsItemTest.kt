@@ -34,10 +34,15 @@ import org.rsmod.api.random.DefaultGameRandom
 import org.rsmod.api.registry.npc.NpcRegistry
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.zone.ZoneUpdateMap
+import org.rsmod.api.npc.interact.AiPlayerInteractions
+import org.rsmod.api.repo.world.WorldRepository
+import org.rsmod.game.entity.PlayerList
+import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.table.TrailTierRow
 import org.rsmod.api.table.cluehelper.CluehelperClueCrypticRow
+import org.rsmod.api.table.cluehelper.CluehelperClueEmoteRow
 import org.rsmod.api.table.cluehelper.CluehelperClueSkillchallengeRow
 import org.rsmod.content.other.treasuretrails.TrailFlow.advance
 import org.rsmod.content.other.treasuretrails.ClueStash.search
@@ -394,6 +399,36 @@ class TreasureTrailsItemTest {
     }
 
     @Test
+    fun `killing the master double agent summons uri and remembers the defeat`() {
+        val f = Fixture(MASTER)
+        f.player.inv[0] = InvObj(checkNotNull(f.tier.clueObj).symbol(), 1)
+        f.startTrail("dbrow.cluehelper_emote_master_8", 3)
+        val step = checkNotNull(TrailFlow.currentStep(f.player, f.tier))
+        assertTrue(f.encounters.spawn(f.player, step))
+        val agent = f.encounters.alive(f.player).single()
+
+        agent.hitpoints = 0
+        f.encounterKillHook.onKill(NpcDeathKillContext(f.player, agent, 0))
+
+        assertTrue(ClueUri.summoned(f.player) != null)
+        assertEquals(step.rowId, f.player.vars[TrailFlow.ENCOUNTER_DEFEATED])
+    }
+
+    @Test
+    fun `any full barrows set satisfies the barrows jig outfit`() {
+        val f = Fixture(MASTER)
+        val step = ClueSteps.step(CluehelperClueEmoteRow.getRow("dbrow.cluehelper_emote_master_9").rowId)
+        assertFalse(ClueOutfits.wearing(f.player, step))
+
+        f.player.worn[Wearpos.Hat.slot] = InvObj("obj.barrows_verac_head", 1)
+        f.player.worn[Wearpos.RightHand.slot] = InvObj("obj.barrows_verac_weapon", 1)
+        f.player.worn[Wearpos.Torso.slot] = InvObj("obj.barrows_verac_body", 1)
+        assertFalse(ClueOutfits.wearing(f.player, step))
+        f.player.worn[Wearpos.Legs.slot] = InvObj("obj.barrows_verac_legs", 1)
+        assertTrue(ClueOutfits.wearing(f.player, step))
+    }
+
+    @Test
     fun `a puzzle box is handed out once and only a solved one advances the clue`() {
         val f = Fixture(HARD)
         val step = ClueSteps.all(HARD).first { ClueSteps.isPuzzleBox(it) }
@@ -480,9 +515,22 @@ class TreasureTrailsItemTest {
         }
         private val rewards = TrailRewards(objRepo, noPrices)
         private val npcs = NpcList()
+        private val collision = CollisionFlagMap()
+        private val npcRepo = NpcRepository(MapClock(100), NpcRegistry(npcs, collision, events), npcs)
+        val encounters =
+            ClueEncounters(
+                npcRepo,
+                npcs,
+                WorldRepository(ZoneUpdateMap()),
+                MapClock(100),
+                collision,
+                AiPlayerInteractions(events, PlayerList()),
+                random,
+            )
+        val encounterKillHook = ClueEncounterKillHook(encounters)
         val npcHook =
             ClueNpcHook(
-                NpcRepository(MapClock(100), NpcRegistry(npcs, CollisionFlagMap(), events), npcs),
+                npcRepo,
                 MusicRepository(random),
             )
 
@@ -563,6 +611,7 @@ class TreasureTrailsItemTest {
         private fun stepId(step: String): Int =
             when {
                 step.contains("skillchallenge") -> CluehelperClueSkillchallengeRow.getRow(step).rowId
+                step.contains("emote") -> CluehelperClueEmoteRow.getRow(step).rowId
                 else -> CluehelperClueCrypticRow.getRow(step).rowId
             }
 

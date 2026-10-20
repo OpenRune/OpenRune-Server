@@ -14,10 +14,9 @@ class ClueEncounterKillHook @Inject constructor(private val encounters: ClueEnco
         if (encounters.alive(hero).any { it.uid != npc.uid }) return
         val trail =
             TrailFlow.heldTrails(hero).firstOrNull { encounters.belongsTo(it.step, npc) } ?: return
+        VarPlayerIntMapSetter.set(hero, TrailFlow.ENCOUNTER_DEFEATED, trail.step.rowId)
         if (trail.step.kind == ClueKind.Emote) {
             encounters.summonUri(hero, trail.tier)
-            return
         }
-        VarPlayerIntMapSetter.set(hero, TrailFlow.ENCOUNTER_DEFEATED, trail.step.rowId)
     }
 }
