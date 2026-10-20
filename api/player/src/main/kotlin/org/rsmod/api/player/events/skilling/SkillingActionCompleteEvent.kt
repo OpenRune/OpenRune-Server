@@ -21,6 +21,7 @@ public sealed class SkillingActionContext {
         public val experienceGranted: Double,
         public val source: SkillingProductSource,
         public val isBonus: Boolean = false,
+        public val inputCount: Int = 0,
     ) : SkillingActionContext()
 
     /** Published once the spell's runes are paid for, before its effect happens. */

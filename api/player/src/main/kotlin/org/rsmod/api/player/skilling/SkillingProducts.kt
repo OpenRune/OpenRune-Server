@@ -122,5 +122,6 @@ private fun SkillingProduct.toCompleteEvent(): SkillingActionCompleteEvent =
                 experienceGranted = if (grantsExperience) experience else 0.0,
                 source = source,
                 isBonus = isBonus,
+                inputCount = inputs.sumOf { it.count },
             ),
     )

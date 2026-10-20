@@ -9,6 +9,7 @@ import jakarta.inject.Inject
 import org.rsmod.api.droptable.ClueScrollDrops
 import org.rsmod.api.enums.TrailEnums
 import org.rsmod.api.player.events.PlayerEmoteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
@@ -41,6 +42,8 @@ constructor(
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         ClueScrollDrops.resolve = ::resolveDrop
+
+        onEvent<SkillingActionCompleteEvent> { ClueChallengeTasks.onSkilling(player, context) }
 
         for (tier in TrailTiers.playableTiers()) {
             val clues = tier.clueObj?.let(::listOf) ?: TrailTiers.clueObjs(tier.difficulty)

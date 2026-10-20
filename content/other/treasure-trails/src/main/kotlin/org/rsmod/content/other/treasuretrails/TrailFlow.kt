@@ -276,6 +276,7 @@ object TrailFlow {
             .asSequence()
             .filter { it.kind != ClueKind.SkillChallenge && it.rowId != hotColdIntro }
             .filterNot { it.restricted }
+            // Music steps stay out of the pool until the music system is developed further.
             .filter { it.kind != ClueKind.Music }
             .filter {
                 it.challenge == null ||

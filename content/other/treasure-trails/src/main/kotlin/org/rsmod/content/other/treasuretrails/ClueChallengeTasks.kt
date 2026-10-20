@@ -1,7 +1,11 @@
 package org.rsmod.content.other.treasuretrails
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.hook.LogBurnHook
 import org.rsmod.api.player.hook.PrayerEnableHook
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -15,9 +19,12 @@ object ClueChallengeTasks {
     internal const val BURN_YEW = "dbrow.cluehelper_skillchallenge_elite_18"
     internal const val CHIVALRY = "dbrow.cluehelper_skillchallenge_elite_22"
     internal const val DUST_DEVIL = "dbrow.cluehelper_skillchallenge_elite_10"
+    internal const val COSMIC_RUNES = "dbrow.cluehelper_skillchallenge_elite_20"
+    internal const val SHAYZIEN_PLATEBODY = "dbrow.cluehelper_skillchallenge_elite_23"
+    internal const val NICKEL = "dbrow.cluehelper_skillchallenge_elite_nickel"
 
     private val actionSteps: Set<Int> by lazy {
-        listOf(BURN_YEW, CHIVALRY, DUST_DEVIL)
+        listOf(BURN_YEW, CHIVALRY, DUST_DEVIL, COSMIC_RUNES, SHAYZIEN_PLATEBODY, NICKEL)
             .map { CluehelperClueSkillchallengeRow.getRow(it).rowId }
             .toSet()
     }
@@ -35,9 +42,30 @@ object ClueChallengeTasks {
         }
     }
 
+    fun onSkilling(player: Player, context: SkillingActionContext) {
+        if (context !is SkillingActionContext.Product || context.isBonus) return
+        val name = ServerCacheManager.getItem(context.item.asRSCM(RSCMType.OBJ))?.name
+        when {
+            context.item == NICKEL_ORE -> complete(player, NICKEL)
+            context.item == COSMIC_RUNE && context.count > context.inputCount ->
+                complete(player, COSMIC_RUNES)
+            name != null && isShayzienPlatebody(name) -> complete(player, SHAYZIEN_PLATEBODY)
+        }
+    }
+
+    private fun isShayzienPlatebody(name: String): Boolean {
+        val tier = SHAYZIEN_PLATEBODY_NAME.matchEntire(name)?.groupValues?.get(1)?.toInt()
+        return tier != null && tier >= SHAYZIEN_MIN_TIER
+    }
+
     fun clear(player: Player) {
         VarPlayerIntMapSetter.set(player, DONE, 0)
     }
+
+    private const val NICKEL_ORE = "obj.nickel_ore"
+    private const val COSMIC_RUNE = "obj.cosmicrune"
+    private const val SHAYZIEN_MIN_TIER = 2
+    private val SHAYZIEN_PLATEBODY_NAME = Regex("""Shayzien platebody \((\d)\)""")
 }
 
 class ClueChallengeBurnHook : LogBurnHook {
