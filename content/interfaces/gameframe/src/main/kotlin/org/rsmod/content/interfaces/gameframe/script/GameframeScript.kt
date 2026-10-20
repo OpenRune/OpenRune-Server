@@ -17,7 +17,6 @@ import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.api.script.advanced.onIfMoveSub
 import org.rsmod.api.script.advanced.onIfMoveTop
 import org.rsmod.api.script.onPlayerInit
-import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftQueueWithArgs
 import org.rsmod.content.interfaces.gameframe.Gameframe
 import org.rsmod.content.interfaces.gameframe.GameframeLoader
@@ -31,7 +30,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 var Player.gameframeTopLevel by intVarBit("varbit.gameframe_toplevel")
 private var Player.stoneArrangements by boolVarBit("varbit.resizable_stone_arrangement")
-private var Player.stoneBeforeFullscreen by intVarBit("varbit.gameframe_stone_before_fullscreen")
 lateinit var gameframes: Map<Int, Gameframe>
 
 private val STONE_EVENTS = listOf(IfEvent.Op1, IfEvent.Op2, IfEvent.Op3, IfEvent.Op4, IfEvent.Op5, IfEvent.Op6)
@@ -48,7 +46,6 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         loadAll()
 
         onPlayerInit { player.openLoginGameframe() }
-        onPlayerLogout { player.restoreStoneArrangement() }
 
         for ((topLevel, gameframe) in gameframes) {
             if (!gameframe.isGameplay) continue
@@ -145,20 +142,11 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         private fun Gameframe.hasFlags(resizable: Boolean, stoneArrangements: Boolean): Boolean {
             return isGameplay && this.resizable == resizable && this.stoneArrangement == stoneArrangements
         }
-
-        private const val STONE_NOT_SAVED = 0
-        private const val STONE_SAVED_CLASSIC = 1
-        private const val STONE_SAVED_MODERN = 2
     }
 
     public fun Player.changeGameframe(move: GameframeMove) {
         val (from, dest, intermediate) = move
-        if (!dest.isGameplay && from.isGameplay) {
-            stoneBeforeFullscreen = if (stoneArrangements) STONE_SAVED_MODERN else STONE_SAVED_CLASSIC
-        }
-        if (!from.isGameplay && dest.isGameplay) {
-            restoreStoneArrangement()
-        } else if (dest.resizable) {
+        if (dest.resizable && from.isGameplay && dest.isGameplay) {
             stoneArrangements = dest.stoneArrangement
         }
         resyncVar("varp.chat_filter_assist")
@@ -182,15 +170,6 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
 
         this.ifOpenOverlay(if (orbsMinimized && dest.resizable) "interface.orbs_nomap" else "interface.orbs", "component.toplevel_osrs_stretch:orbs", eventBus)
         Cinematic.syncMinimapState(this)
-    }
-
-    private fun Player.restoreStoneArrangement() {
-        val saved = stoneBeforeFullscreen
-        if (saved == STONE_NOT_SAVED) {
-            return
-        }
-        stoneBeforeFullscreen = STONE_NOT_SAVED
-        stoneArrangements = saved == STONE_SAVED_MODERN
     }
 
     private fun selectFallback(resizable: Boolean, stoneArrangements: Boolean): Gameframe? {
