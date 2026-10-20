@@ -50,7 +50,7 @@ class StileScript : PluginScript() {
     }
 
     private companion object {
-        private const val STEP_ON_TICKS = 2
+        private const val STEP_ON_TICKS = 1
         private val STILES = listOf("loc.fullstyle", "loc.qip_sheep_shearer_fullstyle")
     }
 }

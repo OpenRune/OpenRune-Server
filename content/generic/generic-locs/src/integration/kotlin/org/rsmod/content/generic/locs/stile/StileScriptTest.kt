@@ -57,6 +57,24 @@ class StileScriptTest {
             assertEquals(SOUTH_TILE.translateX(-1), player.coords)
         }
 
+    @Test
+    fun GameTestState.`the climb follows the step on by one tick and the step off by three`() =
+        runGameTest(StileScript::class) {
+            val stile = placeMapLoc(SOUTH_TILE, STILE, angle = LocAngle.West)
+            player.teleport(SOUTH_TILE.translateZ(-1))
+            player.opLoc1(stile)
+            val path = mutableListOf(player.coords)
+            repeat(CROSSING_TICKS) {
+                advance(ticks = 1)
+                path += player.coords
+            }
+            val stepOn = path.indexOf(SOUTH_TILE)
+            val climb = path.indexOf(NORTH_TILE)
+            val stepOff = path.indexOf(NORTH_TILE.translateZ(1))
+            assertEquals(1, climb - stepOn)
+            assertEquals(3, stepOff - climb)
+        }
+
     private companion object {
         const val STILE = "loc.qip_sheep_shearer_fullstyle"
         const val CROSSING_TICKS = 10
