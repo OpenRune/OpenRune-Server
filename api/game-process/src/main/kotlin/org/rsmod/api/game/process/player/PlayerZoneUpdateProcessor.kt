@@ -128,7 +128,7 @@ constructor(
     ) {
         val updates = ArrayList<ZoneProt>()
         for (obj in objs) {
-            val prot = ZoneUpdateTransformer.toPersistentObjAdd(obj, observerId) ?: continue
+            val prot = ZoneUpdateTransformer.toPersistentObjAdd(obj, observerId, currentMapClock) ?: continue
             updates += prot
         }
         if (updates.isNotEmpty()) {
