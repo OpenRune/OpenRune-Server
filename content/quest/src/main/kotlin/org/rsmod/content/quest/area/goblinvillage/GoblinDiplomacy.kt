@@ -90,7 +90,7 @@ class GoblinDiplomacy : QuestScript(
 
     private suspend fun ProtectedAccess.searchCrate(crate: Crate) {
         if (vars[crate.searched] != 0) {
-            mes("You search the crate, but but find nothing of interest.")
+            mes("You search the crate, but find nothing of interest.")
             return
         }
         if (invAdd(inv, GOBLIN_MAIL).failure) {
@@ -98,6 +98,7 @@ class GoblinDiplomacy : QuestScript(
             return
         }
         vars[crate.searched] = 1
+        soundSynth("synth.pick")
         startDialogue { objbox(GOBLIN_MAIL, "You find some goblin mail in the crate.") }
     }
 
@@ -114,6 +115,7 @@ class GoblinDiplomacy : QuestScript(
 
     private fun ProtectedAccess.dyeMail(dye: MailDye, dyeSlot: Int, mailSlot: Int) {
         if (combine(dye.dye, dyeSlot, GOBLIN_MAIL, mailSlot, dye.mail)) {
+            soundSynth("synth.gobdip_dye_goblin_mail")
             mes("You dye the goblin mail ${dye.colour}.")
         }
     }
