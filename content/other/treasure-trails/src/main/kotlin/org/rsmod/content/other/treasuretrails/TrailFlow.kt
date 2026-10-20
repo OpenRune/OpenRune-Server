@@ -275,6 +275,8 @@ object TrailFlow {
         return ClueSteps.all(difficulty)
             .asSequence()
             .filter { it.kind != ClueKind.SkillChallenge && it.rowId != hotColdIntro }
+            .filter { it.kind != ClueKind.FaloBard }
+            .filter { it.kind != ClueKind.HotCold || difficulty != TrailTiers.MASTER }
             .filterNot { it.restricted }
             // Music steps stay out of the pool until the music system is developed further.
             .filter { it.kind != ClueKind.Music }

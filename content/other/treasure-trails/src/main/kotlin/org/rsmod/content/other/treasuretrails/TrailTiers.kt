@@ -17,8 +17,9 @@ fun ItemServerType.symbol(): String = RSCM.getReverseMapping(RSCMType.OBJ, id)
 object TrailTiers {
     const val BEGINNER = 0
     const val ELITE = 4
+    const val MASTER = 5
 
-    val PLAYABLE = BEGINNER..ELITE
+    val PLAYABLE = BEGINNER..MASTER
 
     private val trail_clue_step = param<DBRowType>("trail_clue_step")
     private val trail_item_group = param<Int>("trail_item_group")

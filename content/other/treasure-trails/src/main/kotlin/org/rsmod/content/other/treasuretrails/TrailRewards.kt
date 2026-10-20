@@ -40,7 +40,8 @@ constructor(private val objRepo: ObjRepository, private val marketPrices: Market
         VarPlayerIntMapSetter.set(player, completedVarp, completed)
 
         val rewards = rollRewards(tier, table) + tertiaryRewards(player, tier, completed)
-        for (reward in rewards) {
+        val masterClue = masterClueReward(tier)
+        for (reward in rewards + listOfNotNull(masterClue)) {
             invAddOrDrop(objRepo, reward.obj, reward.count)
         }
         mes("Well done, you've completed the Treasure Trail!")
@@ -50,7 +51,22 @@ constructor(private val objRepo: ObjRepository, private val marketPrices: Market
         }
         val value = rewards.sumOf { it.value() }
         mes("<col=ef1020>Your treasure is worth around ${"%,d".format(value)} coins!</col>")
-        showRewards(rewards)
+        showRewards(rewards + listOfNotNull(masterClue))
+    }
+
+    private fun ProtectedAccess.masterClueReward(tier: TrailTierRow): CasketReward? {
+        val chance = tier.masterClueChance ?: return null
+        if (!random.randomBoolean(chance)) return null
+        val master = TrailTiers.tier(TrailTiers.MASTER)
+        val clues = TrailTiers.ownedClues(player, master.difficulty)
+        if (!ClueTakeHook.boxesUnlocked(player)) {
+            if (clues > 0) return null
+            TrailFlow.resetTrail(player, master)
+            return CasketReward(checkNotNull(master.clueObj).symbol(), 1)
+        }
+        val held = clues + TrailTiers.ownedBoxes(player, master.difficulty)
+        if (held >= TrailTiers.capacity(player, master)) return null
+        return CasketReward(master.boxObj.symbol(), 1)
     }
 
     fun closeRewards(player: Player) {

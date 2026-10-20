@@ -13,6 +13,7 @@ object CasketTables {
             2 -> medium
             3 -> HighCasketTables.hard
             4 -> HighCasketTables.elite
+            5 -> MasterCasketTables.master
             else -> null
         }
 

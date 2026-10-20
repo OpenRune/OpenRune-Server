@@ -223,6 +223,7 @@ object TrailTierTable {
                 column(MILESTONE_AT, 100)
                 columnRSCM(LENGTH_VARBIT, "varbit.trail_master_length")
                 columnRSCM(PROGRESS_VARBIT, "varbit.trail_master_progress")
+                columnRSCM(STEP_VARP, "varp.trail_master_step")
             }
         }
 }

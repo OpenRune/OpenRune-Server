@@ -355,8 +355,8 @@ class TreasureTrailsItemTest {
     }
 
     @Test
-    fun `hard and elite caskets deliver exactly what the reward screen shows`() {
-        for (difficulty in listOf(HARD, ELITE)) {
+    fun `hard, elite and master caskets deliver exactly what the reward screen shows`() {
+        for (difficulty in listOf(HARD, ELITE, MASTER)) {
             val f = Fixture(difficulty)
             repeat(60) {
                 for (slot in 0 until 28) f.player.inv[slot] = null
@@ -366,6 +366,30 @@ class TreasureTrailsItemTest {
                 assertEquals(0, f.player.inv.count(f.tier.casketObj.symbol()))
             }
             assertEquals(60, f.completed())
+        }
+    }
+
+    @Test
+    fun `an elite casket can roll a master scroll box and never past the stack limit`() {
+        val f = Fixture(ELITE)
+        val master = TrailTiers.tier(MASTER)
+        val box = master.boxObj.symbol()
+        var rolled = 0
+        repeat(400) {
+            for (slot in 1 until 28) f.player.inv[slot] = null
+            f.player.inv[0] = InvObj(f.tier.casketObj.symbol(), 1)
+            f.openCasket()
+            val held = f.player.inv.count(box)
+            assertTrue(held <= TrailTiers.capacity(f.player, master))
+            rolled += held
+        }
+        assertTrue(rolled > 0)
+
+        f.player.inv[1] = InvObj(box, TrailTiers.capacity(f.player, master))
+        repeat(200) {
+            f.player.inv[0] = InvObj(f.tier.casketObj.symbol(), 1)
+            f.openCasket()
+            assertEquals(TrailTiers.capacity(f.player, master), f.player.inv.count(box))
         }
     }
 
@@ -574,6 +598,7 @@ class TreasureTrailsItemTest {
         private const val MEDIUM = 2
         private const val HARD = 3
         private const val ELITE = 4
+        private const val MASTER = 5
         private const val STASH_UNIT = "loc.hh_easy019"
         private const val HANS = "dbrow.cluehelper_cryptic_beginner_hans"
         private const val CHARLIE_TROUT = "dbrow.cluehelper_skillchallenge_beginner_0"
