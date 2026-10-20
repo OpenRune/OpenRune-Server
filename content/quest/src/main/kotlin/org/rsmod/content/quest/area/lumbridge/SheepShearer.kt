@@ -27,7 +27,7 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
             xp("stat.crafting", 150.0)
             item("obj.coins", 60, label = "60 Coins")
         },
-        ItemRewardDisplay("obj.ball_of_wool", zoom = 200),
+        ItemRewardDisplay("obj.shears", zoom = 400),
         questVarbit = "varbit.sheep_shearer_progress",
     ) {
 
@@ -118,13 +118,9 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
         chatPlayer(neutral, "I'm looking for a quest.")
         chatNpc(neutral, "You're after a quest, you say? Actually, I could do with a bit of help.")
         chatNpc(neutral, "My sheep are getting mighty woolly. I'd be much obliged if you could shear them. And while you're at it, spin the wool for me too.")
-        chatNpc(neutral, "Yes, that's it. Bring me 20 balls of wool. And I'm sure I could sort out some sort of payment. Of course, there's the small matter of The Thing.")
-        if (ballsOfWool(player) >= BALLS_NEEDED) {
-            alreadyHaveTheWool()
-            return
-        }
+        chatNpc(happy, "Yes, that's it. Bring me 20 balls of wool. And I'm sure I could sort out some sort of payment. Of course, there's the small matter of The Thing.")
         chatPlayer(quiz, "What do you mean, The Thing?")
-        chatNpc(worried, "Well now, no one has ever seen The Thing. That's why we call it The Thing, 'cos we don't know what it is.")
+        chatNpc(shifty, "Well now, no one has ever seen The Thing. That's why we call it The Thing, 'cos we don't know what it is.")
         chatNpc(worried, "Some say it's a black hearted shapeshifter, hungering for the souls of hard working decent folk like me. Others say it's just a sheep.")
         chatNpc(angry, "Well I don't have all day to stand around and gossip. Are you going to shear my sheep or what!")
         if (!startQuestPrompt(quest)) {
@@ -134,6 +130,10 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
         }
         chatPlayer(happy, "Yes, okay. I can do that.")
         quest.advanceQuestStage(access)
+        if (ballsOfWool(player) >= BALLS_NEEDED) {
+            alreadyHaveTheWool()
+            return
+        }
         chatNpc(quiz, "Good! Now one more thing, do you actually know how to shear a sheep?")
         chatPlayer(confused, "Err. No, I don't know actually.")
         howToShear()
@@ -143,14 +143,22 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
     private suspend fun Dialogue.alreadyHaveTheWool() {
         chatPlayer(happy, "In fact Fred, funnily enough, I actually have 20 balls of wool already on me.")
         chatNpc(angry, "Have you been shearing my sheep without permission!?")
-        chatPlayer(shifty, "No! Well, maybe... They just looked a little wooly! Surely you like a shave once in a while, too?")
+        chatPlayer(worried, "No! Well, maybe... They just looked a little woolly! Surely you like a shave once in a while, too?")
         chatNpc(angry, "It's rude to shave another person without permission - don't be coming at me with them shears!")
         chatPlayer(sad, "I'm sorry, I'll ask permission next time.")
         chatNpc(neutral, "I guess no real 'arm was done. Hand the balls over and we can put this whole thing behind us.")
         if (ballsOfWool(player) < BALLS_NEEDED) return
-        access.invDel(access.inv, BALL_OF_WOOL, BALLS_NEEDED)
+        mesbox("You give Fred ${ballsText(BALLS_NEEDED)} of wool.")
+        lastDelivery(BALLS_NEEDED)
+    }
+
+    private suspend fun Dialogue.lastDelivery(balls: Int) {
+        chatPlayer(happy, "That's the last of them.")
+        chatNpc(sad, "I guess I'd better pay you then.")
+        if (ballsOfWool(player) < balls) return
+        access.invDel(access.inv, BALL_OF_WOOL, balls)
         if (!quest.setQuestStage(access, COMPLETE_STAGE)) {
-            access.invAdd(access.inv, BALL_OF_WOOL, BALLS_NEEDED)
+            access.invAdd(access.inv, BALL_OF_WOOL, balls)
             access.mes(NO_ROOM_FOR_REWARD)
         }
     }
@@ -245,17 +253,12 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
     private suspend fun Dialogue.handIn() {
         val given = minOf(ballsOfWool(player), remaining(player))
         if (given <= 0) return
-        access.invDel(access.inv, BALL_OF_WOOL, given)
         val stage = stage(player) + given
         if (stage >= COMPLETE_STAGE) {
-            chatPlayer(happy, "That's the last of them.")
-            chatNpc(happy, "I guess I'd better pay you then.")
-            if (!quest.setQuestStage(access, COMPLETE_STAGE)) {
-                access.invAdd(access.inv, BALL_OF_WOOL, given)
-                access.mes(NO_ROOM_FOR_REWARD)
-            }
+            lastDelivery(given)
             return
         }
+        access.invDel(access.inv, BALL_OF_WOOL, given)
         quest.setQuestStage(access, stage)
         mesbox("You give Fred ${ballsText(given)} of wool.")
         chatPlayer(neutral, "That's all I've got so far.")
