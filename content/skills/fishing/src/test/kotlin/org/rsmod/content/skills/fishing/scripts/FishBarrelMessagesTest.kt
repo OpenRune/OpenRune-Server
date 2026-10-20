@@ -29,11 +29,11 @@ class FishBarrelMessagesTest {
 
     @Test
     fun `more fish types than one box holds continue in a second box`() {
-        val entries = (1..12).map { "Raw fish $it" to 1 }
+        val entries = (1..10).map { "Raw fish $it" to 1 }
         val texts = FishBarrelMessages.checkTexts(entries)
         assertEquals(2, texts.size)
         assertEquals(true, texts[0].startsWith("The barrel contains:<br>1 x Raw fish 1, "))
-        assertEquals("1 x Raw fish 11, 1 x Raw fish 12", texts[1])
+        assertEquals("1 x Raw fish 9, 1 x Raw fish 10", texts[1])
     }
 
     @Test

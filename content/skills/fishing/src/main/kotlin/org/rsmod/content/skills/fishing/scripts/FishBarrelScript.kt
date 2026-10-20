@@ -82,7 +82,7 @@ class FishBarrelScript @Inject constructor() : PluginScript() {
     private suspend fun ProtectedAccess.dispatch(op: Int, barrel: String) {
         when (op) {
             1 -> fill()
-            2 -> check()
+            2 -> check(barrel)
             3 -> toggleOpen()
             4 -> empty()
             else -> {}
@@ -137,14 +137,14 @@ class FishBarrelScript @Inject constructor() : PluginScript() {
         mes("You empty the fish barrel.")
     }
 
-    private suspend fun ProtectedAccess.check() {
+    private suspend fun ProtectedAccess.check(barrel: String) {
         val entries =
             contents().map { (name, count) ->
                 val display = ServerCacheManager.getItem(name.asRSCM(RSCMType.OBJ))?.name ?: name
                 display to count
             }
         for (text in FishBarrelMessages.checkTexts(entries)) {
-            mesbox(text)
+            objbox(barrel, text)
         }
     }
 

@@ -8,12 +8,12 @@ internal object FishBarrelMessages {
     const val DESTROY_EMPTY: String = "You may win another barrel from Tempoross."
 
     /**
-     * Fish per message box. The chatbox message box holds two pages of text; twelve entries such
-     * as `1 x Raw slimy swamp eel` stay within them, so more fish types continue in another box.
+     * Fish per box. The item box (`objectbox`) holds two pages of text; eight entries such as
+     * `28 x Raw slimy swamp eel` stay within them, so more fish types continue in another box.
      */
-    const val ENTRIES_PER_BOX: Int = 10
+    const val ENTRIES_PER_BOX: Int = 8
 
-    /** The message box texts for Check: `The barrel contains:` then `<count> x <name>` entries. */
+    /** The item box texts for Check: `The barrel contains:` then `<count> x <name>` entries. */
     fun checkTexts(entries: List<Pair<String, Int>>): List<String> {
         if (entries.isEmpty()) {
             return listOf(CHECK_EMPTY)
