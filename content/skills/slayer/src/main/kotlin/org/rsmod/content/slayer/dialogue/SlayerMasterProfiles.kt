@@ -3,7 +3,7 @@ package org.rsmod.content.slayer.dialogue
 data class HighCombatRedirect(
     val minimumCombat: Int,
     val suggestedMaster: String,
-    val location: String,
+    val place: String,
 )
 
 enum class ActiveTaskMessageStyle {
@@ -20,90 +20,86 @@ enum class ActiveTaskMessageStyle {
     SemicolonOnly,
 }
 
-data class SlayerMasterProfile(
+class SlayerMasterProfile(
     val npcId: Int,
+    vararg highCombatRedirects: HighCombatRedirect,
     val supportsCape: Boolean = false,
     val supportsTaskSkip: Boolean = false,
-    val highCombatRedirect: HighCombatRedirect? = null,
     val activeTaskStyle: ActiveTaskMessageStyle = ActiveTaskMessageStyle.Short,
     val nearContactMessage: String? = null,
-)
+) {
+    val highCombatRedirects: List<HighCombatRedirect> = highCombatRedirects.toList()
+}
 
 object SlayerMasterProfiles {
-    private val chaeldarRedirect = HighCombatRedirect(minimumCombat = 70, suggestedMaster = "Chaeldar", location = "Zanaris")
+    private val mazchnaRedirect = HighCombatRedirect(20, "Mazchna", "in Morytania")
 
-    private val vannakaRedirect = HighCombatRedirect(minimumCombat = 40, suggestedMaster = "Vannaka", location = "Edgeville")
+    private val vannakaRedirect = HighCombatRedirect(40, "Vannaka", "under Edgeville")
+
+    private val chaeldarRedirect = HighCombatRedirect(70, "Chaeldar", "in Zanaris")
 
     private val profilesByNpcId: Map<Int, SlayerMasterProfile> =
         mapOf(SlayerMasters.Npc.turael to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.turael,
+                    SlayerMasters.Npc.turael, chaeldarRedirect,
                     supportsTaskSkip = true,
-                    highCombatRedirect = chaeldarRedirect,
                     activeTaskStyle = ActiveTaskMessageStyle.Short,
                 ),
             SlayerMasters.Npc.aya to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.aya,
+                    SlayerMasters.Npc.aya, chaeldarRedirect,
                     supportsTaskSkip = true,
-                    highCombatRedirect = chaeldarRedirect,
                     activeTaskStyle = ActiveTaskMessageStyle.Short,
                 ),
             SlayerMasters.Npc.spriaActive to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.spriaActive,
-                    supportsTaskSkip = true,
-                    highCombatRedirect = chaeldarRedirect,
+                    SlayerMasters.Npc.spriaActive, mazchnaRedirect, vannakaRedirect, chaeldarRedirect,
                     activeTaskStyle = ActiveTaskMessageStyle.Short,
                 ),
             SlayerMasters.Npc.spria to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.spria,
-                    supportsTaskSkip = true,
-                    highCombatRedirect = chaeldarRedirect,
+                    SlayerMasters.Npc.spria, mazchnaRedirect, vannakaRedirect, chaeldarRedirect,
                     activeTaskStyle = ActiveTaskMessageStyle.Short,
                 ),
             SlayerMasters.Npc.mazchna to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.mazchna,
-                    highCombatRedirect = chaeldarRedirect,
+                    SlayerMasters.Npc.mazchna, chaeldarRedirect,
                     activeTaskStyle = ActiveTaskMessageStyle.WithComebackComma,
                 ),
             SlayerMasters.Npc.achtryn to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.achtryn,
-                    highCombatRedirect = vannakaRedirect,
+                    SlayerMasters.Npc.achtryn, vannakaRedirect,
                     activeTaskStyle = ActiveTaskMessageStyle.WithComebackComma,
                 ),
             SlayerMasters.Npc.vannaka to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.vannaka,
+                    SlayerMasters.Npc.vannaka,
                     activeTaskStyle = ActiveTaskMessageStyle.WithComebackSemicolon,
                 ),
             SlayerMasters.Npc.chaeldar to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.chaeldar,
+                    SlayerMasters.Npc.chaeldar,
                     activeTaskStyle = ActiveTaskMessageStyle.WithComebackSemicolon,
                 ),
             SlayerMasters.Npc.nieve to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.nieve,
+                    SlayerMasters.Npc.nieve,
                     activeTaskStyle = ActiveTaskMessageStyle.WithComebackSemicolon,
                 ),
             SlayerMasters.Npc.steve to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.steve,
+                    SlayerMasters.Npc.steve,
                     activeTaskStyle = ActiveTaskMessageStyle.SemicolonOnly,
                 ),
             SlayerMasters.Npc.kuradal to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.kuradal,
+                    SlayerMasters.Npc.kuradal,
                     supportsCape = true,
                     activeTaskStyle = ActiveTaskMessageStyle.WithComebackSemicolon,
                 ),
             SlayerMasters.Npc.duradel to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.duradel,
+                    SlayerMasters.Npc.duradel,
                     supportsCape = true,
                     activeTaskStyle = ActiveTaskMessageStyle.WithComebackSemicolon,
                     nearContactMessage =
@@ -111,13 +107,13 @@ object SlayerMasterProfiles {
                 ),
             SlayerMasters.Npc.konar to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.konar,
+                    SlayerMasters.Npc.konar,
                     nearContactMessage =
                         "Bringer of death, why do you insist on using such magic when I'm right next to you? Come and talk to me.",
                 ),
             SlayerMasters.Npc.mortimer to
                 SlayerMasterProfile(
-                    npcId = SlayerMasters.Npc.mortimer,
+                    SlayerMasters.Npc.mortimer,
                     activeTaskStyle = ActiveTaskMessageStyle.WithComebackSemicolon,
                     nearContactMessage =
                         "I may be a skeleton, but I still have feelings! Come talk to me face to... face.",

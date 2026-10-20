@@ -3,6 +3,7 @@ package org.rsmod.api.instances
 import dev.openrune.types.NpcServerType
 import org.rsmod.api.instances.region.regionIdsGrid
 import org.rsmod.api.repo.region.RegionStaticTemplate
+import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
 public const val INSTANCE_TICKS_PER_MINUTE: Int = 100
@@ -206,6 +207,9 @@ public data class InstanceSpec(
     val description: String = "",
     val timeLimitTicks: Int? = null,
     val spawnOnFirstJoin: Boolean = false,
+    val recordsKillTime: (Player) -> Boolean = { true },
+    /** A varp that keeps each player's best kill time in ticks; null keeps it for the session. */
+    val bestTimeVarp: String? = null,
 )
 
 public sealed interface InstanceAccess {

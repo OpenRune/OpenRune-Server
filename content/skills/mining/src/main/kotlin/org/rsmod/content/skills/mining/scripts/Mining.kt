@@ -98,7 +98,7 @@ constructor(
                 return
             }
             anim(miningAnim(pickaxe, data))
-            spam("You swing your pickaxe at the rock.")
+            spam("You swing your pick at the rock.")
             mine(rock, type)
         }
     }

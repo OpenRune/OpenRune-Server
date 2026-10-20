@@ -22,13 +22,6 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Goblin Diplomacy. Progress is `varbit.gobdip_main` (2378, varp 62), as
- * in OSRS and as Quest Helper reads it: 0 not started, 3 started (orange armour wanted), 4 blue
- * wanted, 5 brown wanted, 6 complete. The three armour crates use `gobdip_crate1..3_searched`
- * and Grubfoot's look `gobdip_grubfoot_vis` (0 brown, 1 orange, 2 blue). Dialogue follows the
- * wiki transcript; the Grubfoot try-on cutscenes are dialogue only.
- */
 class GoblinDiplomacy : QuestScript(
     "quest_goblindiplomacy",
     "varp.goblinquest",
@@ -54,8 +47,9 @@ class GoblinDiplomacy : QuestScript(
         for (crate in Crate.entries) {
             onOpLoc1(crate.loc) { searchCrate(crate) }
         }
-        onOpHeldU(ORANGE_DYE, GOBLIN_MAIL) { dyeMail(ORANGE_DYE, it.firstSlot, it.secondSlot) }
-        onOpHeldU(BLUE_DYE, GOBLIN_MAIL) { dyeMail(BLUE_DYE, it.firstSlot, it.secondSlot) }
+        for (dye in MailDye.entries) {
+            onOpHeldU(dye.dye, GOBLIN_MAIL) { dyeMail(dye, it.firstSlot, it.secondSlot) }
+        }
         onOpHeldU(RED_DYE, YELLOW_DYE) { mixDyes(it.firstSlot, it.secondSlot, ORANGE_DYE, "orange") }
         onOpHeldU(YELLOW_DYE, BLUE_DYE) { mixDyes(it.firstSlot, it.secondSlot, GREEN_DYE, "green") }
         onOpHeldU(RED_DYE, BLUE_DYE) { mixDyes(it.firstSlot, it.secondSlot, PURPLE_DYE, "purple") }
@@ -86,7 +80,7 @@ class GoblinDiplomacy : QuestScript(
             )
         }
 
-    fun stage(player: Player): Int = quest.getQuestStage(player)
+    private fun stage(player: Player): Int = quest.getQuestStage(player)
 
     private enum class Crate(val loc: String, val searched: String) {
         North("loc.goblin_outpost_large_crate_armour1", "varbit.gobdip_crate1_searched"),
@@ -107,11 +101,20 @@ class GoblinDiplomacy : QuestScript(
         startDialogue { objbox(GOBLIN_MAIL, "You find some goblin mail in the crate.") }
     }
 
-    private fun ProtectedAccess.dyeMail(dye: String, dyeSlot: Int, mailSlot: Int) {
-        val (result, colour) =
-            if (dye == ORANGE_DYE) ORANGE_MAIL to "orange" else BLUE_MAIL to "blue"
-        if (combine(dye, dyeSlot, GOBLIN_MAIL, mailSlot, result)) {
-            mes("You dye the goblin mail $colour.")
+    private enum class MailDye(val dye: String, val mail: String, val colour: String) {
+        Red(RED_DYE, "obj.goblin_armour_red", "red"),
+        Yellow(YELLOW_DYE, "obj.goblin_armour_yellow", "yellow"),
+        Blue(BLUE_DYE, BLUE_MAIL, "blue"),
+        Orange(ORANGE_DYE, ORANGE_MAIL, "orange"),
+        Green(GREEN_DYE, "obj.goblin_armour_green", "green"),
+        Purple(PURPLE_DYE, "obj.goblin_armour_purple", "purple"),
+        Pink("obj.handsand_pink_dye", "obj.goblin_armour_pink", "pink"),
+        Black("obj.golem_ink", "obj.goblin_armour_black", "black"),
+    }
+
+    private fun ProtectedAccess.dyeMail(dye: MailDye, dyeSlot: Int, mailSlot: Int) {
+        if (combine(dye.dye, dyeSlot, GOBLIN_MAIL, mailSlot, dye.mail)) {
+            mes("You dye the goblin mail ${dye.colour}.")
         }
     }
 
@@ -195,7 +198,6 @@ class GoblinDiplomacy : QuestScript(
         mainMenu()
     }
 
-    /** Returns false when the conversation ends here. */
     private suspend fun Dialogue.fatOpener(): Boolean {
         bentnoze(neutral, "All goblins should wear red armour!")
         wartface(angry, "Not red! Red armour make you look fat.")
@@ -205,7 +207,16 @@ class GoblinDiplomacy : QuestScript(
         wartface(angry, "SHUT UP!")
         bentnoze(quiz, "Even this human think you look fat! Don't you, human?")
         chatPlayer(confused, "Um...")
-        when (choice2("Yes, he looks fat.", 1, "No, he doesn't look fat.", 2)) {
+        when (
+            choice3(
+                "Yes, he looks fat.",
+                1,
+                "No, he doesn't look fat.",
+                2,
+                "I'll leave you to it.",
+                3,
+            )
+        ) {
             1 -> {
                 chatPlayer(laugh, "Yes, he looks fat!")
                 bentnoze(laugh, "Ha ha! See, fatty? Even human think you fat!")
@@ -215,6 +226,10 @@ class GoblinDiplomacy : QuestScript(
                 chatPlayer(neutral, "No, he doesn't look fat.")
                 bentnoze(angry, "Shut up human! Wartface fat and human stupid!")
                 wartface(angry, "Shut up Bentnoze!")
+            }
+            else -> {
+                chatPlayer(neutral, "I'll leave you to it.")
+                return false
             }
         }
         return true
@@ -250,6 +265,7 @@ class GoblinDiplomacy : QuestScript(
     }
 
     private suspend fun Dialogue.mainMenu() {
+        var askedWhy = false
         while (true) {
             val stage = stage(player)
             val wanted = wantedArmour(stage)
@@ -259,14 +275,22 @@ class GoblinDiplomacy : QuestScript(
                 }
             val options =
                 buildList {
-                    add("Why are you arguing about the colour of your armour?" to MenuChoice.Why)
+                    if (askedWhy) {
+                        add("What is the goblin new century?" to MenuChoice.NewCentury)
+                    } else {
+                        add(WHY_ARGUING to MenuChoice.Why)
+                    }
                     add("Wouldn't you prefer peace?" to MenuChoice.Peace)
                     add("Do you want me to pick an armour colour for you?" to MenuChoice.Pick)
                     if (handInText != null) add(handInText to MenuChoice.HandIn)
                     add("I'll leave you to it." to MenuChoice.Leave)
                 }
             when (menu(options)) {
-                MenuChoice.Why -> whyArguing()
+                MenuChoice.Why -> {
+                    whyArguing()
+                    askedWhy = true
+                }
+                MenuChoice.NewCentury -> newCentury()
                 MenuChoice.Peace -> {
                     chatPlayer(quiz, "Wouldn't you prefer peace?")
                     wartface(
@@ -291,6 +315,7 @@ class GoblinDiplomacy : QuestScript(
 
     private enum class MenuChoice {
         Why,
+        NewCentury,
         Peace,
         Pick,
         HandIn,
@@ -326,7 +351,7 @@ class GoblinDiplomacy : QuestScript(
         }
 
     private suspend fun Dialogue.whyArguing() {
-        chatPlayer(quiz, "Why are you arguing about the colour of your armour?")
+        chatPlayer(quiz, WHY_ARGUING)
         bentnoze(
             neutral,
             "We decide to celebrate goblin new century by changing colour of our armour. Brown " +
@@ -343,28 +368,25 @@ class GoblinDiplomacy : QuestScript(
             "Thorobshuun tribe colour is red! Way better than silly green of Garagorshuun tribe.",
         )
         wartface(angry, "Shut up!")
-        when (choice2("What is the goblin new century?", 1, "I'll leave you to it.", 2)) {
-            1 -> {
-                chatPlayer(quiz, "What is the goblin new century?")
-                bentnoze(
-                    neutral,
-                    "Goblin century mark year of battle on Plain of Mud. That when Big High War " +
-                        "God give goblin commandments.",
-                )
-                chatPlayer(quiz, "Big High War God?")
-                wartface(
-                    neutral,
-                    "Big High War God is god for goblins. He take us and make us strong, not " +
-                        "stupid like humans.",
-                )
-                bentnoze(neutral, "Me bet Big High War God would pick red armour.")
-                wartface(angry, "Shut up! Big High War God would hate you!")
-            }
-            2 -> chatPlayer(neutral, "I'll leave you to it.")
-        }
     }
 
-    /** Returns true when the conversation ends. */
+    private suspend fun Dialogue.newCentury() {
+        chatPlayer(quiz, "What is the goblin new century?")
+        bentnoze(
+            neutral,
+            "Goblin century mark year of battle on Plain of Mud. That when Big High War God " +
+                "give goblin commandments.",
+        )
+        chatPlayer(quiz, "Big High War God?")
+        wartface(
+            neutral,
+            "Big High War God is god for goblins. He take us and make us strong, not stupid " +
+                "like humans.",
+        )
+        bentnoze(neutral, "Me bet Big High War God would pick red armour.")
+        wartface(angry, "Shut up! Big High War God would hate you!")
+    }
+
     private suspend fun Dialogue.pickColour(): Boolean {
         chatPlayer(quiz, "Do you want me to pick an armour colour for you?")
         wartface(neutral, "Yes, as long as you pick green.")
@@ -546,7 +568,7 @@ class GoblinDiplomacy : QuestScript(
                 grubfoot(sad, "Makes me feel kind of sad.")
             }
             else ->
-                if (stage(player) in 1 until COMPLETE) {
+                if (stage(player) < COMPLETE) {
                     grubfoot(angry, "Grubfoot wear red armour! Grubfoot wear green armour!")
                     grubfoot(confused, "Why they not make up their minds?")
                 } else {
@@ -597,7 +619,7 @@ class GoblinDiplomacy : QuestScript(
     }
 
     private suspend fun Dialogue.afterQuest() {
-        when (access.random.of(maxExclusive = 4)) {
+        when (access.random.of(maxExclusive = 5)) {
             0 -> {
                 bentnoze(angry, "Shut up Grubfoot!")
                 grubfoot(sad, "But me not say anything!")
@@ -632,10 +654,17 @@ class GoblinDiplomacy : QuestScript(
                 chatPlayer(neutral, "Do you want me to...")
                 wartface(angry, "Shut up human, we sort this one out ourselves!")
             }
-            else -> {
+            3 -> {
                 wartface(neutral, "Me tell Mudknuckles make worm stew for dinner.")
                 bentnoze(neutral, "Me not like worm stew! Tell him make beetle pie!")
                 wartface(happy, "Beetle pie give you wind! You smell bad enough already!")
+            }
+            else -> {
+                wartface(
+                    neutral,
+                    "Now you've solved our argument, we gotta think of something else to do.",
+                )
+                bentnoze(neutral, "Yep, we bored now.")
             }
         }
     }
@@ -656,11 +685,13 @@ class GoblinDiplomacy : QuestScript(
             else -> "npc.catwalk_goblin_brown"
         }
 
-    companion object {
-        const val STARTED = 3
-        const val BLUE_WANTED = 4
-        const val BROWN_WANTED = 5
-        const val COMPLETE = 6
+    private companion object {
+        private const val STARTED = 3
+        private const val BLUE_WANTED = 4
+        private const val BROWN_WANTED = 5
+        private const val COMPLETE = 6
+
+        private const val WHY_ARGUING = "Why are you arguing about the colour of your armour?"
 
         private const val GRUBFOOT_BROWN = 0
         private const val GRUBFOOT_ORANGE = 1
@@ -671,9 +702,9 @@ class GoblinDiplomacy : QuestScript(
         private const val GRUBFOOT_MULTI = "npc.catwalk_goblin"
         private val GENERALS = listOf(BENTNOZE, WARTFACE)
 
-        const val GOBLIN_MAIL = "obj.goblin_armour"
-        const val ORANGE_MAIL = "obj.goblin_armour_orange"
-        const val BLUE_MAIL = "obj.goblin_armour_darkblue"
+        private const val GOBLIN_MAIL = "obj.goblin_armour"
+        private const val ORANGE_MAIL = "obj.goblin_armour_orange"
+        private const val BLUE_MAIL = "obj.goblin_armour_darkblue"
         private val ARMOURS =
             listOf(
                 GOBLIN_MAIL,
@@ -688,16 +719,16 @@ class GoblinDiplomacy : QuestScript(
                 "obj.goblin_armour_yellow",
             )
 
-        const val ORANGE_DYE = "obj.orangedye"
-        const val BLUE_DYE = "obj.bluedye"
-        const val RED_DYE = "obj.reddye"
-        const val YELLOW_DYE = "obj.yellowdye"
+        private const val ORANGE_DYE = "obj.orangedye"
+        private const val BLUE_DYE = "obj.bluedye"
+        private const val RED_DYE = "obj.reddye"
+        private const val YELLOW_DYE = "obj.yellowdye"
         private const val GREEN_DYE = "obj.greendye"
         private const val PURPLE_DYE = "obj.purpledye"
         private const val GOLD_BAR = "obj.gold_bar"
         private const val CRAFTING_XP = 200.0
 
-        fun wantedArmour(stage: Int): String? =
+        private fun wantedArmour(stage: Int): String? =
             when (stage) {
                 STARTED -> ORANGE_MAIL
                 BLUE_WANTED -> BLUE_MAIL
@@ -705,7 +736,7 @@ class GoblinDiplomacy : QuestScript(
                 else -> null
             }
 
-        fun wantedColour(stage: Int): String? =
+        private fun wantedColour(stage: Int): String? =
             when (stage) {
                 STARTED -> "orange"
                 BLUE_WANTED -> "blue"

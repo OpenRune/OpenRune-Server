@@ -1,6 +1,7 @@
 [[npc]]
 id = "npc.kharidbanker1"
 inherit = "npc.kharidbanker1"
+contentGroup = "content.banker"
 moveRestrict = "NoMove"
 wanderRange = 0
 respawnDir = "East"
@@ -8,6 +9,7 @@ respawnDir = "East"
 [[npc]]
 id = "npc.kharidbanker2"
 inherit = "npc.kharidbanker2"
+contentGroup = "content.banker"
 moveRestrict = "NoMove"
 wanderRange = 0
 respawnDir = "East"
