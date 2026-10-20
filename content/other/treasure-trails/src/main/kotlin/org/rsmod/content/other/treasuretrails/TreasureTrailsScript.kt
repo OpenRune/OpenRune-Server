@@ -33,6 +33,60 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+/**
+ * Not linked / not implemented (audit 2026-10-20), none of it checked in client.
+ *
+ * Clue objs left out of the roll pool, all because no `trail_mapNN` interface is identified and the
+ * row is missing from `TrailMapInterfaceTable`:
+ * - Easy maps: `trail_easy_map_exp1`, `trail_clue_easy_map001`..`trail_clue_easy_map005`.
+ * - Medium maps: `trail_clue_medium_map001`..`trail_clue_medium_map007`.
+ * - Hard maps: `trail_clue_hard_map001`..`trail_clue_hard_map007`.
+ * - Elite maps: `trail_elite_map_exp1`..`trail_elite_map_exp6`.
+ *
+ * Music clue objs, filtered in `TrailFlow.rollableSteps` because the music system isn't developed
+ * enough:
+ * - Easy: `trail_clue_easy_music001`..`trail_clue_easy_music006`.
+ * - Medium: `trail_clue_medium_music001`..`trail_clue_medium_music006`.
+ * - Hard: `trail_clue_hard_music001`..`trail_clue_hard_music009`, `trail_hard_music_vm01`.
+ * - Elite: `trail_clue_elite_music001`, `trail_clue_elite_music002`.
+ *
+ * Other clue objs:
+ * - `trail_elite_riddle_puzzlebox`: `ClueSlidePuzzle` only accepts the hard puzzle boxes, so the
+ *   elite step completes with no puzzle.
+ * - `trail_easy_emote_sail`, `trail_elite_emote_sail`, `trail_elite_riddle_sail`,
+ *   `trail_elite_sextant_sail`, `trail_hard_riddle_sail`, `trail_hard_sextant_sail`,
+ *   `trail_medium_anagram_sail`, `trail_medium_sextant_sail`: sailing steps, excluded on purpose.
+ * - `sote_clue1`..`sote_clue4`: Song of the Elves clue objs, no handling found.
+ * - `trail_hard_fairy_vm01` and `trail_clue_hard_fairy001`..`trail_clue_hard_fairy010`: no fairy
+ *   ring code-entry check, the step completes by digging at the coordinate.
+ *
+ * Elite skill challenges with no code (`dbrow.cluehelper_skillchallenge_<name>`):
+ * - `elite_1` enchant dragonstone jewellery: no enchant jewellery spells.
+ * - `elite_3` aerial fishing: no aerial fishing.
+ * - `elite_4` skullball goal: no skullball.
+ * - `elite_5` Ape Atoll agility lap: no agility module.
+ * - `elite_7` steal from the Ardougne Castle chest: thieving only has stalls and pickpocketing.
+ * - `elite_17` fix a magical lamp in Dorgesh-Kaan: no Dorgesh-Kaan content.
+ * - `elite_21` plant a watermelon seed: no farming module.
+ *
+ * Clue drop sources and rewards with no code referencing them:
+ * - `wc_clue_nest_beginner`, `wc_clue_nest_easy`, `wc_clue_nest_medium`, `wc_clue_nest_hard`,
+ *   `wc_clue_nest_elite`: woodcutting does not drop them.
+ * - `fishing_clue_bottle_beginner`, `fishing_clue_bottle_easy`, `fishing_clue_bottle_medium`,
+ *   `fishing_clue_bottle_hard`, `fishing_clue_bottle_elite`: fishing does not drop them.
+ * - `bh_clue_box`: no Bounty Hunter content.
+ * - `clue_hunter_garb`, `clue_hunter_gloves`, `clue_hunter_trousers`, `clue_hunter_boots`,
+ *   `clue_hunter_cloak`: not given anywhere.
+ * - `clueless_scroll`: not given anywhere.
+ * - Bloodhound pet: exists in `content/other/pets`, `TrailRewards` never rolls it.
+ * - Watson clue-box exchange: `WATSON_VARBIT` is unused.
+ * - Kill steps (`ClueMonsterKillHook`) have no location or mirror-shield check.
+ *
+ * Other:
+ * - STASH units take inventory items only, and `inv.hh_inv` isn't populated so the S.t.a.s.h chart
+ *   shows nothing filled.
+ * - A dropped clue keeps the old trail's length and progress when a fresh one is picked up.
+ */
 class TreasureTrailsScript
 @Inject
 constructor(
