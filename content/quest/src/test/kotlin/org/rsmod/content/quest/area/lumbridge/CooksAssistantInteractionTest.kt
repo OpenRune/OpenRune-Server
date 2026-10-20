@@ -14,8 +14,10 @@ import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.bottomless.milk.MilkSources
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
+import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.events.interact.NpcEvents
 import org.rsmod.api.player.input.ResumePauseButtonInput
@@ -73,6 +75,42 @@ class CooksAssistantInteractionTest {
         f.talk()
         f.finish()
         f.assertReward()
+    }
+
+    @Test fun `a bottomless milk bucket gives one use instead of a bucket of milk`() {
+        val f = Fixture(stage = 1)
+        f.player.inv[0] = bottomless(28)
+        f.talk()
+        f.finish()
+        assertEquals(27, ObjChargeManager().getCharges(f.player.inv[0], MilkSources.USES))
+        assertEquals(1, f.player.vars["varbit.cooks_assistant_milk"])
+    }
+
+    @Test fun `a bucket of milk goes before the bottomless milk bucket`() {
+        val f = Fixture(stage = 1)
+        f.player.inv[0] = bottomless(28)
+        f.player.inv[1] = InvObj("obj.bucket_milk", 1)
+        f.talk()
+        f.finish()
+        assertEquals(0, f.player.inv.count("obj.bucket_milk"))
+        assertEquals(28, ObjChargeManager().getCharges(f.player.inv[0], MilkSources.USES))
+    }
+
+    @Test fun `milk already handed in leaves the bottomless milk bucket alone`() {
+        val f = Fixture(stage = 1)
+        VarPlayerIntMapSetter.set(f.player, "varbit.cooks_assistant_milk", 1)
+        f.player.inv[0] = bottomless(28)
+        f.player.inv[1] = InvObj("obj.egg", 1)
+        f.talk()
+        f.finish(listOf(1, 1, 1, 1, 1, 1))
+        assertEquals(28, ObjChargeManager().getCharges(f.player.inv[0], MilkSources.USES))
+    }
+
+    private fun bottomless(uses: Int): InvObj {
+        val inv = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.inv".asRSCM())), arrayOfNulls(28))
+        inv[0] = InvObj(MilkSources.BUCKET_EMPTY)
+        ObjChargeManager().addCharges(inv, 0, uses, MilkSources.USES, MilkSources.MAX_USES)
+        return checkNotNull(inv[0])
     }
 
     @Test fun `bringing every ingredient before accepting completes the quest`() {

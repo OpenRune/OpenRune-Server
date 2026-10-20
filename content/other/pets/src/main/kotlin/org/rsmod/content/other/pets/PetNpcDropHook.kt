@@ -1,6 +1,7 @@
 package org.rsmod.content.other.pets
 
 import jakarta.inject.Inject
+import org.rsmod.api.death.NpcDeathDropHook
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.random.GameRandom
@@ -12,12 +13,19 @@ import org.rsmod.api.table.PetDropsRow
  */
 class PetNpcDropHook
 @Inject
-constructor(private val rewards: PetRewards, private val random: GameRandom) : NpcDeathKillHook {
+constructor(
+    private val rewards: PetRewards,
+    private val random: GameRandom,
+    private val deathDropHooks: Set<NpcDeathDropHook>,
+) : NpcDeathKillHook {
     private val byNpc: Map<Int, Drop> =
         PetDropsRow.all().associate { it.npc.id to Drop(it.pet.internalName, it.rate) }
 
     override fun onKill(context: NpcDeathKillContext) {
         val drop = byNpc[context.npc.id] ?: return
+        if (deathDropHooks.any { it.suppressesDropTable(context) }) {
+            return
+        }
         if (drop.rate <= 0 || random.of(drop.rate) != 0) {
             return
         }

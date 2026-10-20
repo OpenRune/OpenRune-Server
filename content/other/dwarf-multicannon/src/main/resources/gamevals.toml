@@ -1,3 +1,2 @@
 [gamevals.timer]
-mcannon_fire = 431
-mcannon_decay = 432
+mcannon_fire = 65535
