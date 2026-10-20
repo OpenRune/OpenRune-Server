@@ -38,6 +38,7 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
         when (step.kind) {
             ClueKind.HotCold -> giveDevice(npc, tier)
             ClueKind.SkillChallenge -> handInTask(npc, tier, step)
+            ClueKind.FaloBard -> faloSong(npc, tier, step)
             else -> {
                 val question = ClueSteps.question(step)
                 val challenge = TrailFlow.skillChallengeFor(player, step, npc, random)
@@ -154,6 +155,13 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
         }
         if (TrailFlow.clueSlot(player, tier) == null) return
         if (!worn && invDel(inv, item, 1).failure) return
+        completeTalk(npc, tier)
+    }
+
+    private suspend fun ProtectedAccess.faloSong(npc: Npc, tier: TrailTierRow, step: ClueStep) {
+        startDialogue(npc) { chatNpc(neutral, step.text.orEmpty()) }
+        if (!ClueSteps.holdsRequiredItem(player, step)) return
+        if (TrailFlow.currentStep(player, tier)?.rowId != step.rowId) return
         completeTalk(npc, tier)
     }
 

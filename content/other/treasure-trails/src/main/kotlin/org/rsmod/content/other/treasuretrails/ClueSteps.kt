@@ -22,6 +22,8 @@ import org.rsmod.api.table.cluehelper.CluehelperClueMusicRow
 import org.rsmod.api.table.cluehelper.CluehelperClueSkillchallengeRow
 import org.rsmod.api.table.cluehelper.CluehelperCombatEncounterRow
 import org.rsmod.api.table.cluehelper.CluehelperOutfitRow
+import org.rsmod.api.table.cluehelper.CluehelperRequirementObjParamTrailItemRow
+import org.rsmod.api.table.cluehelper.CluehelperRequirementObjRow
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Player
 
@@ -53,6 +55,7 @@ class ClueStep(
     val music: MusicRow? = null,
     val restricted: Boolean = false,
     val encounters: List<CluehelperCombatEncounterRow> = emptyList(),
+    val requirement: Int? = null,
 )
 
 object ClueSteps {
@@ -138,7 +141,15 @@ object ClueSteps {
             "dbtable.cluehelper_clue_falobard" ->
                 CluehelperClueFalobardRow.getRow(rowId).let {
                     val targets = listOf(it.target.rowId)
-                    ClueStep(rowId, ClueKind.FaloBard, it.difficulty, it.clueText, targets)
+                    ClueStep(
+                        rowId,
+                        ClueKind.FaloBard,
+                        it.difficulty,
+                        it.clueText,
+                        targets,
+                        restricted = it.restrictedContent != null,
+                        requirement = it.requirements.id,
+                    )
                 }
             "dbtable.cluehelper_clue_hotcold" ->
                 CluehelperClueHotcoldRow.getRow(rowId).let {
@@ -189,6 +200,20 @@ object ClueSteps {
         val row = step.challenge ?: return null
         if (dbTableOf(row) != "dbtable.cluehelper_challenge_question") return null
         return CluehelperChallengeQuestionRow.getRow(row).question.firstOrNull()
+    }
+
+    fun holdsRequiredItem(player: Player, step: ClueStep): Boolean {
+        val row = step.requirement ?: return true
+        val held = (0 until player.inv.size).mapNotNull { player.inv[it]?.id }
+        return when (dbTableOf(row)) {
+            "dbtable.cluehelper_requirement_obj" ->
+                CluehelperRequirementObjRow.getRow(row).item.any { it.id in held }
+            "dbtable.cluehelper_requirement_obj_param_trail_item" -> {
+                val group = CluehelperRequirementObjParamTrailItemRow.getRow(row).itemGroup
+                held.any { TrailTiers.itemGroup(TrailTiers.type(it)) == group }
+            }
+            else -> error("Row $row is not a known item requirement.")
+        }
     }
 
     fun isPuzzleBox(step: ClueStep): Boolean {
