@@ -6,12 +6,16 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import org.rsmod.api.music.MusicRepository
 import org.rsmod.api.player.hook.PlayerNpcOpHook
+import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.righthand
+import org.rsmod.api.player.worn.EquipmentChecks
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.table.TrailCharlieTaskRow
 import org.rsmod.api.table.TrailTierRow
 import org.rsmod.api.table.Tuple2
 import org.rsmod.api.table.cluehelper.CluehelperClueCrypticRow
+import org.rsmod.api.table.cluehelper.CluehelperTargetNpcRow
 import org.rsmod.content.other.treasuretrails.TrailFlow.advance
 import org.rsmod.content.other.treasuretrails.TrailFlow.assign
 import org.rsmod.content.other.treasuretrails.TrailFlow.matches
@@ -21,7 +25,11 @@ import org.rsmod.game.interact.InteractionOp
 
 class ClueNpcHook
 @Inject
-constructor(private val npcRepo: NpcRepository, private val music: MusicRepository) :
+constructor(
+    private val npcRepo: NpcRepository,
+    private val music: MusicRepository,
+    private val bonuses: WornBonuses,
+) :
     PlayerNpcOpHook {
     override fun claims(player: Player, npc: Npc, op: InteractionOp): Boolean {
         if (op != InteractionOp.Op1) return false
@@ -48,6 +56,7 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
                     }
                     question != null -> challengeScroll(npc, trail, question)
                     ClueSteps.isPuzzleBox(step) -> puzzleBox(npc, trail)
+                    angersAbbot(step) -> completeTalk(npc, tier, epilogue = ABBOT_EPILOGUE)
                     else -> completeTalk(npc, tier)
                 }
             }
@@ -63,24 +72,60 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
                     (master || !player.ownsDevice(TrailTiers.deviceObj(trail.tier.difficulty)))
             }
             val target = ClueSteps.target(player, step) as? ClueTarget.TalkTo
-            target != null && target.matches(npc) && (step.kind != ClueKind.Music || playing(player, step))
+            target != null &&
+                target.matches(npc) &&
+                (step.kind != ClueKind.Music || playing(player, step)) &&
+                ClueOutfits.wearing(player, step) &&
+                (gates[step.targets.firstOrNull()]?.invoke(player) ?: true)
         }
+
+    private val gates: Map<Int, (Player) -> Boolean> by lazy {
+        mapOf(
+            targetRow("abbot_langley_prayer") to { p -> bonuses.prayerBonus(p) < 0 },
+            targetRow("wizard_cromperty") to { p -> baseMagicBonus(p) >= MIN_MAGIC_ATTACK },
+            targetRow("ghommal") to { p -> bonuses.strengthBonus(p) >= MIN_MELEE_STRENGTH },
+            targetRow("robin") to { p -> bonuses.offensiveRangedBonus(p) >= MIN_RANGED_ATTACK },
+        )
+    }
+
+    private fun targetRow(name: String): Int =
+        CluehelperTargetNpcRow.getRow("dbrow.cluehelper_target_npc_$name").rowId
+
+    private fun baseMagicBonus(player: Player): Int {
+        val bonus = bonuses.offensiveMagicBonus(player)
+        return if (EquipmentChecks.isTumekensShadow(player.righthand)) bonus / SHADOW_MULTIPLIER else bonus
+    }
+
+    private fun angersAbbot(step: ClueStep): Boolean =
+        step.targets.firstOrNull() == targetRow("abbot_langley_prayer")
 
     private fun playing(player: Player, step: ClueStep): Boolean {
         val track = step.music?.let(music::forRow) ?: return false
         return player.vars[CURRENT_TRACK] == track.id
     }
 
-    private suspend fun ProtectedAccess.completeTalk(npc: Npc, tier: TrailTierRow) {
+    private suspend fun ProtectedAccess.completeTalk(
+        npc: Npc,
+        tier: TrailTierRow,
+        praise: String? = null,
+        epilogue: String? = null,
+    ) {
         val given = advance(tier) ?: return
         val name = npcVisType(npc).name
+        val casket = given.id == tier.casketObj.id
+        val master = tier.difficulty == TrailTiers.MASTER && !casket
         val text =
-            if (given.id == tier.casketObj.id) {
-                "$name has given you a casket!"
-            } else {
-                "$name has given you another clue scroll!"
+            when {
+                casket -> "$name has given you a casket!"
+                master -> "You are handed a torn part of a clue scroll."
+                else -> "$name has given you another clue scroll!"
             }
-        startDialogue(npc) { objbox(given.symbol(), text) }
+        val intro = praise ?: "Here you go.".takeIf { master }
+        startDialogue(npc) {
+            intro?.let { chatNpc(neutral, it) }
+            objbox(given.symbol(), text)
+            epilogue?.let { chatNpc(neutral, it) }
+        }
     }
 
     /**
@@ -113,26 +158,39 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
     }
 
     private suspend fun ProtectedAccess.puzzleBox(npc: Npc, trail: HeldTrail) {
-        val held = ClueSlidePuzzle.held(player)
+        val held = ClueBoxes.held(player)
         if (held == null) {
-            val box = ClueSlidePuzzle.handOut(trail.step, random)
-            ClueSlidePuzzle.reset(player)
+            val box = ClueBoxes.handOut(trail.step, random)
+            ClueBoxes.reset(player)
             if (invAdd(inv, box.symbol(), 1).failure) {
                 mes("You don't have enough inventory space.")
                 return
             }
             val name = npcVisType(npc).name
-            startDialogue(npc) { objbox(box.symbol(), "$name has given you a puzzle box!") }
+            val master = trail.tier.difficulty == TrailTiers.MASTER
+            val light = box.symbol() == ClueLightBox.BOX
+            val text =
+                when {
+                    light -> "$name hands you a light puzzle box."
+                    master -> "$name hands you a puzzlebox!"
+                    else -> "$name has given you a puzzle box!"
+                }
+            startDialogue(npc) {
+                if (master) chatNpc(neutral, "Here, solve this.")
+                objbox(box.symbol(), text)
+            }
             return
         }
-        if (!ClueSlidePuzzle.solved(player)) {
+        if (!ClueBoxes.solved(player, held)) {
             startDialogue(npc) { chatNpc(neutral, "You haven't solved the puzzle yet.") }
             return
         }
         if (TrailFlow.currentStep(player, trail.tier)?.rowId != trail.step.rowId) return
         if (invDel(inv, held.symbol(), 1).failure) return
-        ClueSlidePuzzle.reset(player)
-        completeTalk(npc, trail.tier)
+        ClueBoxes.reset(player)
+        val master = trail.tier.difficulty == TrailTiers.MASTER
+        val praise = "Well done ${player.displayName}. Here you go.".takeIf { master }
+        completeTalk(npc, trail.tier, praise)
     }
 
     private suspend fun ProtectedAccess.handInTask(npc: Npc, tier: TrailTierRow, step: ClueStep) {
@@ -224,6 +282,11 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
         TrailTierRow.all().firstOrNull { it.uriNpc.id == type.id }
 
     private companion object {
+        const val ABBOT_EPILOGUE = "I must say, I despise the equipment you have chosen to wear."
+        const val MIN_MAGIC_ATTACK = 100
+        const val MIN_MELEE_STRENGTH = 100
+        const val MIN_RANGED_ATTACK = 180
+        const val SHADOW_MULTIPLIER = 3
         const val WORN_TASK_STEP = "dbrow.cluehelper_skillchallenge_elite_0"
         const val CURRENT_TRACK = "varbit.music_curr_id"
         const val URI_LEAVE_DELAY = 2

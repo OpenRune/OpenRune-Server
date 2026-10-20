@@ -46,6 +46,13 @@ object TrailTiers {
 
     fun playableTiers(): List<TrailTierRow> = PLAYABLE.map(::tier)
 
+    fun foundText(tier: TrailTierRow, given: ItemServerType): String =
+        when {
+            given.id == tier.casketObj.id -> "You've found a casket!"
+            tier.difficulty == MASTER -> "You find a torn part of a clue scroll."
+            else -> "You've found another clue!"
+        }
+
     fun deviceObj(difficulty: Int): String =
         if (difficulty == MASTER) "obj.master_device" else "obj.beginner_device"
 

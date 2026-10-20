@@ -39,6 +39,11 @@ scope = "Perm"
 transmit = "Never"
 
 [[varp]]
+id = "varp.trail_lightbox_seed"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
 id = "varp.trail_challenge_step"
 scope = "Perm"
 transmit = "Never"

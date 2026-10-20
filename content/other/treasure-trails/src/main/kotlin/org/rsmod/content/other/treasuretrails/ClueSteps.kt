@@ -221,7 +221,7 @@ object ClueSteps {
         if (row != null && RSCM.getReverseMapping(RSCMType.DBROW, row) == PUZZLE_BOX_ROW) {
             return true
         }
-        return ClueSlidePuzzle.boxFor(step) != null
+        return ClueBoxes.isBoxChallenge(step) || ClueSlidePuzzle.boxFor(step) != null
     }
 
     fun all(difficulty: Int): List<ClueStep> =

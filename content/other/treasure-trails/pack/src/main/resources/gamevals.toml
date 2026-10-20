@@ -32,6 +32,7 @@ trail_encounter_defeated = 63811
 trail_challenge_step = 63812
 trail_challenge_done = 63813
 trail_master_step = 63814
+trail_lightbox_seed = 63815
 
 [gamevals.varbit]
 trail_beginner_length = 63800

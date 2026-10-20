@@ -128,6 +128,10 @@ constructor(
             onOpHeld1(box.symbol()) { with(ClueSlidePuzzle) { open(box) } }
         }
         onIfModalButton(ClueSlidePuzzle.PIECES) { with(ClueSlidePuzzle) { slide(it.comsub) } }
+        onOpHeld1(ClueLightBox.BOX) { with(ClueLightBox) { open() } }
+        for (index in 0 until ClueLightBox.BUTTONS) {
+            onIfModalButton(ClueLightBox.button(index)) { with(ClueLightBox) { press(index) } }
+        }
         for (difficulty in listOf(TrailTiers.BEGINNER, TrailTiers.MASTER)) {
             onOpHeld1(TrailTiers.deviceObj(difficulty)) { feelDevice(TrailTiers.tier(difficulty)) }
         }

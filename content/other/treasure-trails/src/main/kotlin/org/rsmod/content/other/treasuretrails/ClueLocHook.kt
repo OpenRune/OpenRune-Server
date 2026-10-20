@@ -32,8 +32,7 @@ class ClueLocHook : PlayerLocOpHook {
             }
         }
         val given = advance(trail.tier) ?: return
-        val casket = given.id == trail.tier.casketObj.id
-        val text = if (casket) "You've found a casket!" else "You've found another clue!"
+        val text = TrailTiers.foundText(trail.tier, given)
         startDialogue { objbox(given.symbol(), text) }
     }
 

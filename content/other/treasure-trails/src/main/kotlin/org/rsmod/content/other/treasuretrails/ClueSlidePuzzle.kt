@@ -25,9 +25,10 @@ object ClueSlidePuzzle {
     private const val INV = "inv.trail_puzzleinv"
     private const val THEME = "varp.if1"
     private const val SOLVED = "varp.trail_puzzle_solved"
-    private const val BOX_NAME = "Puzzle box (hard)"
+    private const val HARD_BOX_NAME = "Puzzle box (hard)"
     private const val BOX_SUFFIX = "_puzzlebox"
     private const val THEMES = 3
+    private val BOX_NAMES = setOf(HARD_BOX_NAME, "Puzzle box (master)")
 
     private val handOutBoxes =
         listOf(
@@ -36,13 +37,22 @@ object ClueSlidePuzzle {
             "obj.trail_clue_hard_riddle020_puzzlebox",
         )
 
+    private val masterBoxes =
+        listOf(
+            "obj.trail_master_zulrah_puzzlebox",
+            "obj.trail_master_cerberus_puzzlebox",
+            "obj.trail_master_gnomechild_puzzlebox",
+        )
+
+    private val masterThemes = listOf("zulrah", "cerberus", "gnomechild")
+
     val boxes: List<ItemServerType> by lazy {
-        ServerCacheManager.getItems().values.filter { it.name == BOX_NAME }
+        ServerCacheManager.getItems().values.filter { it.name in BOX_NAMES }
     }
 
     fun held(player: Player): ItemServerType? =
         player.inv.objs.firstNotNullOfOrNull { obj ->
-            obj?.let { TrailTiers.type(it.id) }?.takeIf { it.name == BOX_NAME }
+            obj?.let { TrailTiers.type(it.id) }?.takeIf { it.name in BOX_NAMES }
         }
 
     fun boxFor(step: ClueStep): ItemServerType? =
@@ -51,12 +61,13 @@ object ClueSlidePuzzle {
             .firstNotNullOfOrNull { clue ->
                 RSCM.getRSCMOrNull(clue.symbol() + BOX_SUFFIX, RSCMType.OBJ)
                     ?.let(ServerCacheManager::getItem)
-                    ?.takeIf { it.name == BOX_NAME }
+                    ?.takeIf { it.name == HARD_BOX_NAME }
             }
 
     fun handOut(step: ClueStep, random: GameRandom): ItemServerType {
         boxFor(step)?.let { return it }
-        val symbol = random.pick(handOutBoxes)
+        val pool = if (step.difficulty == TrailTiers.MASTER) masterBoxes else handOutBoxes
+        val symbol = random.pick(pool)
         return boxes.first { it.symbol() == symbol }
     }
 
@@ -98,11 +109,22 @@ object ClueSlidePuzzle {
 
     private fun themeOf(box: ItemServerType): Int {
         val canonical = handOutBoxes.indexOf(box.symbol())
-        return if (canonical >= 0) canonical + 1 else box.id % THEMES + 1
+        val master = masterBoxes.indexOf(box.symbol())
+        return when {
+            canonical >= 0 -> canonical + 1
+            master >= 0 -> THEMES + master + 1
+            else -> box.id % THEMES + 1
+        }
     }
 
-    private fun tile(theme: Int, index: Int): String =
-        "obj.trail_slidingpuzzle${THEME_LETTERS[theme - 1]}${"%02d".format(index + 1)}"
+    private fun tile(theme: Int, index: Int): String {
+        val number = "%02d".format(index + 1)
+        return if (theme <= THEMES) {
+            "obj.trail_slidingpuzzle${THEME_LETTERS[theme - 1]}$number"
+        } else {
+            "obj.trail_slidingpuzzle_${masterThemes[theme - THEMES - 1]}_$number"
+        }
+    }
 
     private fun fill(puzzle: org.rsmod.game.inv.Inventory, theme: Int, board: IntArray) {
         for (cell in board.indices) {

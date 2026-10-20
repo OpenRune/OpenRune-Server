@@ -27,6 +27,7 @@ import org.rsmod.api.music.MusicRepository
 import org.rsmod.api.player.input.ResumePCountDialogInput
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.NpcInteractions
+import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.clearPendingAction
@@ -544,6 +545,7 @@ class TreasureTrailsItemTest {
             ClueNpcHook(
                 npcRepo,
                 MusicRepository(random),
+                WornBonuses(),
             )
 
         val state: TrailState
