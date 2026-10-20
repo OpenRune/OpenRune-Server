@@ -12,7 +12,6 @@ import org.rsmod.api.table.TrailCharlieTaskRow
 import org.rsmod.api.table.TrailTierRow
 import org.rsmod.api.table.Tuple2
 import org.rsmod.api.table.cluehelper.CluehelperClueCrypticRow
-import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.other.treasuretrails.TrailFlow.advance
 import org.rsmod.content.other.treasuretrails.TrailFlow.assign
 import org.rsmod.content.other.treasuretrails.TrailFlow.matches
@@ -59,8 +58,9 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
         TrailFlow.heldTrails(player).firstOrNull { trail ->
             val step = trail.step
             if (step.kind == ClueKind.HotCold) {
+                val master = trail.tier.difficulty == TrailTiers.MASTER
                 return@firstOrNull deviceGiver(trail.tier).matches(npc) &&
-                    !player.ownsDevice(TrailTiers.deviceObj(trail.tier.difficulty))
+                    (master || !player.ownsDevice(TrailTiers.deviceObj(trail.tier.difficulty)))
             }
             val target = ClueSteps.target(player, step) as? ClueTarget.TalkTo
             target != null && target.matches(npc) && (step.kind != ClueKind.Music || playing(player, step))
@@ -166,16 +166,10 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
     }
 
     private suspend fun ProtectedAccess.giveDevice(npc: Npc, tier: TrailTierRow) {
-        if (
-            tier.difficulty == TrailTiers.MASTER &&
-                !QuestRequirements.hasCompleted(player, MAKING_HISTORY)
-        ) {
-            startDialogue(npc) {
-                chatNpc(neutral, "I can't help you until you've finished the Making History quest.")
-            }
-            return
-        }
         val device = TrailTiers.deviceObj(tier.difficulty)
+        if (tier.difficulty == TrailTiers.MASTER) {
+            return with(JorralDialogue) { masterDevice(npc) }
+        }
         if (invAdd(inv, device, 1).failure) {
             mes("You don't have enough inventory space.")
             return
@@ -231,7 +225,6 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
 
     private companion object {
         const val WORN_TASK_STEP = "dbrow.cluehelper_skillchallenge_elite_0"
-        const val MAKING_HISTORY = "quest_makinghistory"
         const val CURRENT_TRACK = "varbit.music_curr_id"
         const val URI_LEAVE_DELAY = 2
     }
