@@ -8,13 +8,13 @@ import org.rsmod.api.player.hook.GroundItemDropParams
 class PlayerDropTimersTest {
     @Test
     fun `tradeable drop turns public after 100 ticks and despawns after 300`() {
-        val type = ItemServerType(id = 1351, name = "Bronze axe", tradeable = true)
+        val type = ItemServerType(id = 1351, name = "Bronze axe", stockmarket = true)
         assertEquals(GroundItemDropParams(300, 100), PlayerDropTimers.resolve(type))
     }
 
     @Test
     fun `untradeable drop never turns public and despawns after 300 ticks`() {
-        val type = ItemServerType(id = 676, name = "Trowel", tradeable = false)
+        val type = ItemServerType(id = 676, name = "Trowel", stockmarket = false)
         assertEquals(GroundItemDropParams(300, NEVER), PlayerDropTimers.resolve(type))
     }
 
@@ -34,7 +34,7 @@ class PlayerDropTimersTest {
                 "Mimic",
             )
         for (name in names) {
-            val type = ItemServerType(id = 2677, name = name, tradeable = false)
+            val type = ItemServerType(id = 2677, name = name, stockmarket = false)
             assertEquals(GroundItemDropParams(6100, NEVER), PlayerDropTimers.resolve(type), name)
         }
     }
@@ -42,7 +42,7 @@ class PlayerDropTimersTest {
     @Test
     fun `other scrolls named clue scroll use the untradeable timers`() {
         for (name in listOf("Clue scroll", "Clue scroll (special)", "Scroll box (easy)")) {
-            val type = ItemServerType(id = 713, name = name, tradeable = false)
+            val type = ItemServerType(id = 713, name = name, stockmarket = false)
             assertEquals(GroundItemDropParams(300, NEVER), PlayerDropTimers.resolve(type), name)
         }
     }

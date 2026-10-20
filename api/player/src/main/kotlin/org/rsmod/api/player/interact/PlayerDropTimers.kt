@@ -14,7 +14,7 @@ internal object PlayerDropTimers {
         val uncert = uncert(type)
         return when {
             isClueItem(uncert) -> GroundItemDropParams(CLUE_DESPAWN, NEVER_REVEAL)
-            uncert.tradeable -> GroundItemDropParams(DESPAWN, TRADEABLE_REVEAL)
+            uncert.stockmarket -> GroundItemDropParams(DESPAWN, TRADEABLE_REVEAL)
             else -> GroundItemDropParams(DESPAWN, NEVER_REVEAL)
         }
     }
