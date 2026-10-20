@@ -36,7 +36,7 @@ object ClueStash {
     private val unitSteps: Map<Int, ClueStep> by lazy {
         (TrailTiers.BEGINNER..MASTER)
             .flatMap(ClueSteps::all)
-            .filter { it.hideyHole != null && it.outfit != null }
+            .filter { it.hideyHole != null && it.outfits.isNotEmpty() }
             .associateBy { checkNotNull(it.hideyHole).id }
     }
 
@@ -107,9 +107,11 @@ object ClueStash {
     }
 
     private fun ProtectedAccess.deposit(loc: ObjectServerType) {
-        val outfit = unitSteps[loc.id]?.outfit ?: return
+        val outfits = unitSteps[loc.id]?.outfits ?: return
         val stash = player.invMap.getOrPut(INV)
-        val pieces = ClueOutfits.piecesIn(inv, outfit) ?: takeEquipped(outfit)
+        val pieces =
+            outfits.firstNotNullOfOrNull { ClueOutfits.piecesIn(inv, it) }
+                ?: outfits.firstNotNullOfOrNull { takeEquipped(it) }
         if (pieces == null) {
             mes("You don't have the items needed to fill this STASH unit.")
             return

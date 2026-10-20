@@ -313,6 +313,18 @@ class TreasureTrailsItemTest {
     }
 
     @Test
+    fun `the barrows stash unit stores any one full set`() {
+        val f = Fixture(MASTER)
+        val unit = checkNotNull(ServerCacheManager.getObject("loc.hh_master003".asRSCM()))
+        val set = listOf("barrows_verac_head", "barrows_verac_weapon", "barrows_verac_body", "barrows_verac_legs")
+        set.forEachIndexed { slot, obj -> f.player.inv[slot] = InvObj("obj.$obj", 1) }
+
+        with(ClueStash) { f.access().search(unit) }
+        assertTrue(ClueStash.filled(f.player, unit))
+        assertTrue(set.all { f.player.inv.count("obj.$it") == 0 })
+    }
+
+    @Test
     fun `a stash unit takes equipped pieces only when the setting is on and inventory comes first`() {
         val f = Fixture(EASY)
         val unit = checkNotNull(ServerCacheManager.getObject(STASH_UNIT.asRSCM()))
