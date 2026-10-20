@@ -1,6 +1,5 @@
 package org.rsmod.api.player.output
 
-import net.rsprot.protocol.game.outgoing.logout.Logout
 import net.rsprot.protocol.game.outgoing.logout.LogoutWithReason
 import net.rsprot.protocol.game.outgoing.misc.client.HintArrow
 import net.rsprot.protocol.game.outgoing.misc.client.ServerTickEnd
@@ -41,9 +40,9 @@ public object MiscOutput {
         player.client.write(ServerTickEnd)
     }
 
-    /** @see [Logout] */
+    /** Calls [LogoutWithReason] with an arg of `0` (reason = `Requested`). */
     public fun logout(player: Player) {
-        player.client.write(Logout)
+        player.client.write(LogoutWithReason(reason = 0))
     }
 
     /** Calls [LogoutWithReason] with an arg of `1` (reason = `Kicked`). */
