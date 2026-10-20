@@ -29,6 +29,7 @@ import org.rsmod.content.other.treasuretrails.TrailFlow.openBox
 import org.rsmod.content.other.treasuretrails.TrailFlow.openScrollCase
 import org.rsmod.content.other.treasuretrails.TrailFlow.read
 import org.rsmod.game.entity.Player
+import org.rsmod.game.hit.HitType
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -127,7 +128,9 @@ constructor(
             onOpHeld1(box.symbol()) { with(ClueSlidePuzzle) { open(box) } }
         }
         onIfModalButton(ClueSlidePuzzle.PIECES) { with(ClueSlidePuzzle) { slide(it.comsub) } }
-        onOpHeld1(DEVICE) { feelDevice(TrailTiers.tier(TrailTiers.BEGINNER)) }
+        for (difficulty in listOf(TrailTiers.BEGINNER, TrailTiers.MASTER)) {
+            onOpHeld1(TrailTiers.deviceObj(difficulty)) { feelDevice(TrailTiers.tier(difficulty)) }
+        }
         onEvent<PlayerEmoteEvent> { onEmote(player, slot) }
 
         onIfClose(TrailRewards.REWARD_INTERFACE) { rewards.closeRewards(player) }
@@ -182,6 +185,9 @@ constructor(
                 else -> ", and the same temperature as last time"
             }
         mes("The device is $temperature$comparison.")
+        if (tier.difficulty == TrailTiers.MASTER) {
+            takeInstantHit(HitType.Typeless, random.of(DEVICE_MIN_DAMAGE, DEVICE_MAX_DAMAGE))
+        }
     }
 
     /**
@@ -228,7 +234,8 @@ constructor(
         if (level != other.level) Int.MAX_VALUE else chebyshevDistance(other)
 
     private companion object {
-        const val DEVICE = "obj.beginner_device"
+        const val DEVICE_MIN_DAMAGE = 3
+        const val DEVICE_MAX_DAMAGE = 8
         const val LAST_CHECK = "varp.trail_hotcold_last_check_coord"
         const val EMOTE_RADIUS = 4
     }

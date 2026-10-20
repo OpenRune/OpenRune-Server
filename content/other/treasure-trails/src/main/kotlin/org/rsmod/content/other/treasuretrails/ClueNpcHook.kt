@@ -12,6 +12,7 @@ import org.rsmod.api.table.TrailCharlieTaskRow
 import org.rsmod.api.table.TrailTierRow
 import org.rsmod.api.table.Tuple2
 import org.rsmod.api.table.cluehelper.CluehelperClueCrypticRow
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.other.treasuretrails.TrailFlow.advance
 import org.rsmod.content.other.treasuretrails.TrailFlow.assign
 import org.rsmod.content.other.treasuretrails.TrailFlow.matches
@@ -35,7 +36,7 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
         val tier = trail.tier
         val step = trail.step
         when (step.kind) {
-            ClueKind.HotCold -> giveDevice(npc)
+            ClueKind.HotCold -> giveDevice(npc, tier)
             ClueKind.SkillChallenge -> handInTask(npc, tier, step)
             else -> {
                 val question = ClueSteps.question(step)
@@ -57,7 +58,8 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
         TrailFlow.heldTrails(player).firstOrNull { trail ->
             val step = trail.step
             if (step.kind == ClueKind.HotCold) {
-                return@firstOrNull reldo().matches(npc) && !player.ownsDevice()
+                return@firstOrNull deviceGiver(trail.tier).matches(npc) &&
+                    !player.ownsDevice(TrailTiers.deviceObj(trail.tier.difficulty))
             }
             val target = ClueSteps.target(player, step) as? ClueTarget.TalkTo
             target != null && target.matches(npc) && (step.kind != ClueKind.Music || playing(player, step))
@@ -155,12 +157,22 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
         completeTalk(npc, tier)
     }
 
-    private suspend fun ProtectedAccess.giveDevice(npc: Npc) {
-        if (invAdd(inv, DEVICE, 1).failure) {
+    private suspend fun ProtectedAccess.giveDevice(npc: Npc, tier: TrailTierRow) {
+        if (
+            tier.difficulty == TrailTiers.MASTER &&
+                !QuestRequirements.hasCompleted(player, MAKING_HISTORY)
+        ) {
+            startDialogue(npc) {
+                chatNpc(neutral, "I can't help you until you've finished the Making History quest.")
+            }
+            return
+        }
+        val device = TrailTiers.deviceObj(tier.difficulty)
+        if (invAdd(inv, device, 1).failure) {
             mes("You don't have enough inventory space.")
             return
         }
-        startDialogue(npc) { objbox(DEVICE, "${npcVisType(npc).name} gives you a strange device.") }
+        startDialogue(npc) { objbox(device, "${npcVisType(npc).name} gives you a strange device.") }
     }
 
     private suspend fun ProtectedAccess.talkToUri(npc: Npc, tier: TrailTierRow) {
@@ -192,20 +204,26 @@ constructor(private val npcRepo: NpcRepository, private val music: MusicReposito
         npcRepo.del(npc, Int.MAX_VALUE)
     }
 
-    private fun reldo(): ClueTarget.TalkTo {
-        val intro = CluehelperClueCrypticRow.getRow("dbrow.cluehelper_cryptic_beginner_reldo")
+    private fun deviceGiver(tier: TrailTierRow): ClueTarget.TalkTo {
+        val row =
+            if (tier.difficulty == TrailTiers.MASTER) {
+                "dbrow.cluehelper_cryptic_master_jorral"
+            } else {
+                "dbrow.cluehelper_cryptic_beginner_reldo"
+            }
+        val intro = CluehelperClueCrypticRow.getRow(row)
         return ClueTarget.of(intro.target.first().id) as ClueTarget.TalkTo
     }
 
-    private fun Player.ownsDevice(): Boolean =
-        inv.count(DEVICE) > 0 || (invMap["inv.bank"]?.count(DEVICE) ?: 0) > 0
+    private fun Player.ownsDevice(device: String): Boolean =
+        inv.count(device) > 0 || (invMap["inv.bank"]?.count(device) ?: 0) > 0
 
     private fun Npc.uriTier(): TrailTierRow? =
         TrailTierRow.all().firstOrNull { it.uriNpc.id == type.id }
 
     private companion object {
         const val WORN_TASK_STEP = "dbrow.cluehelper_skillchallenge_elite_0"
-        const val DEVICE = "obj.beginner_device"
+        const val MAKING_HISTORY = "quest_makinghistory"
         const val CURRENT_TRACK = "varbit.music_curr_id"
         const val URI_LEAVE_DELAY = 2
     }

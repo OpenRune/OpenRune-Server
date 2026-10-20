@@ -232,7 +232,14 @@ object TrailFlow {
             ClueKind.Anagram ->
                 "The anagram reveals who to speak to next:<br>${step.text.orEmpty().uppercase()}"
             ClueKind.HotCold ->
-                CluehelperClueCrypticRow.getRow("dbrow.cluehelper_cryptic_beginner_reldo").clueText
+                CluehelperClueCrypticRow.getRow(
+                        if (step.difficulty == TrailTiers.MASTER) {
+                            "dbrow.cluehelper_cryptic_master_jorral"
+                        } else {
+                            "dbrow.cluehelper_cryptic_beginner_reldo"
+                        }
+                    )
+                    .clueText
             ClueKind.Music -> "Cecilia would like to hear ${step.music?.displayname}."
             ClueKind.Coordinate -> sextantText(step.text.orEmpty())
             else -> step.text.orEmpty()
@@ -270,13 +277,13 @@ object TrailFlow {
      * maps without a known interface and music steps are left out until supported.
      */
     private fun rollableSteps(difficulty: Int): List<Int> {
-        val hotColdIntro =
-            CluehelperClueCrypticRow.getRow("dbrow.cluehelper_cryptic_beginner_reldo").rowId
+        val hotColdIntros =
+            listOf("dbrow.cluehelper_cryptic_beginner_reldo", "dbrow.cluehelper_cryptic_master_jorral")
+                .map { CluehelperClueCrypticRow.getRow(it).rowId }
         return ClueSteps.all(difficulty)
             .asSequence()
-            .filter { it.kind != ClueKind.SkillChallenge && it.rowId != hotColdIntro }
+            .filter { it.kind != ClueKind.SkillChallenge && it.rowId !in hotColdIntros }
             .filter { it.kind != ClueKind.FaloBard }
-            .filter { it.kind != ClueKind.HotCold || difficulty != TrailTiers.MASTER }
             .filterNot { it.restricted }
             // Music steps stay out of the pool until the music system is developed further.
             .filter { it.kind != ClueKind.Music }

@@ -46,6 +46,9 @@ object TrailTiers {
 
     fun playableTiers(): List<TrailTierRow> = PLAYABLE.map(::tier)
 
+    fun deviceObj(difficulty: Int): String =
+        if (difficulty == MASTER) "obj.master_device" else "obj.beginner_device"
+
     fun objStep(type: ItemServerType): Int? = type.paramOrNull(trail_clue_step)?.id
 
     fun itemGroup(type: ItemServerType): Int? = type.paramOrNull(trail_item_group)
