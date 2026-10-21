@@ -80,7 +80,6 @@ import org.rsmod.plugin.scripts.ScriptContext
  *   `clue_hunter_cloak`: not given anywhere.
  * - `clueless_scroll`: not given anywhere.
  * - Bloodhound pet: exists in `content/other/pets`, `TrailRewards` never rolls it.
- * - Watson clue-box exchange: `WATSON_VARBIT` is unused.
  * - Kill steps (`ClueMonsterKillHook`) have no location or mirror-shield check.
  *
  * Other:

@@ -483,6 +483,89 @@ class TreasureTrailsItemTest {
         assertEquals(0, f.state.progress)
     }
 
+    @Test
+    fun `talking to watson on the master watson step advances the master step varp once`() {
+        val f = Fixture(TrailTiers.MASTER)
+        val watson = "dbrow.cluehelper_cryptic_master_watson"
+        f.player.inv[0] = InvObj(f.clue, 1)
+        f.startTrail(step = watson, length = 3)
+        val before = checkNotNull(f.state.step)
+
+        f.run { with(f.npcHook) { op(f.npcFor(ClueSteps.step(before)), InteractionOp.Op1) } }
+        assertEquals(1, f.state.progress)
+        assertNotEquals(before, f.state.step)
+        assertEquals(1, f.player.inv.count(f.clue))
+    }
+
+    @Test
+    fun `watson takes each tier once and hands over exactly one master clue`() {
+        val f = Fixture(MEDIUM)
+        val tiers = ClueWatson.tiers()
+        tiers.forEachIndexed { i, tier ->
+            f.player.inv[i] = InvObj(TrailTiers.clueObjs(tier.difficulty).first().symbol(), 1)
+        }
+        f.player.inv[10] = InvObj(TrailTiers.clueObjs(MEDIUM).last().symbol(), 1)
+
+        with(ClueWatson) {
+            for (tier in tiers) assertTrue(f.access().give(tier))
+            assertFalse(f.access().give(tiers[1]))
+            assertEquals(1, tiers.sumOf { TrailTiers.ownedClues(f.player, it.difficulty) })
+            assertEquals(ClueWatson.Redeem.Given, f.access().redeem())
+            assertEquals(ClueWatson.Redeem.Missing, f.access().redeem())
+        }
+        val master = TrailTiers.tier(TrailTiers.MASTER)
+        val received =
+            f.player.inv.count(checkNotNull(master.clueObj).symbol()) +
+                f.player.inv.count(master.boxObj.symbol())
+        assertEquals(1, received)
+        assertTrue(tiers.none { ClueWatson.stored(f.player, it) })
+    }
+
+    @Test
+    fun `watson keeps the four clues while a master clue is held`() {
+        val f = Fixture(MEDIUM)
+        val master = TrailTiers.tier(TrailTiers.MASTER)
+        val tiers = ClueWatson.tiers()
+        tiers.forEachIndexed { i, tier ->
+            f.player.inv[i] = InvObj(TrailTiers.clueObjs(tier.difficulty).first().symbol(), 1)
+        }
+        f.player.inv[10] = InvObj(checkNotNull(master.clueObj).symbol(), 1)
+        f.player.inv[12] = InvObj(master.boxObj.symbol(), 5)
+
+        with(ClueWatson) {
+            for (tier in tiers) assertTrue(f.access().give(tier))
+            assertEquals(ClueWatson.Redeem.MasterHeld, f.access().redeem())
+        }
+        assertTrue(ClueWatson.complete(f.player))
+        assertEquals(1, f.player.inv.count(checkNotNull(master.clueObj).symbol()))
+        assertEquals(5, f.player.inv.count(master.boxObj.symbol()))
+    }
+
+    @Test
+    fun `watson keeps the clues when there is no room for the master clue`() {
+        val f = Fixture(MEDIUM)
+        val tiers = ClueWatson.tiers()
+        tiers.forEachIndexed { i, tier ->
+            f.player.inv[i] = InvObj(TrailTiers.clueObjs(tier.difficulty).first().symbol(), 1)
+        }
+
+        with(ClueWatson) {
+            for (tier in tiers) assertTrue(f.access().give(tier))
+            for (slot in 0 until 28) f.player.inv[slot] = InvObj(FILLER, 1)
+            assertEquals(ClueWatson.Redeem.NoSpace, f.access().redeem())
+        }
+        assertTrue(ClueWatson.complete(f.player))
+        assertEquals(28, f.player.inv.objs.count { it != null })
+    }
+
+    @Test
+    fun `watson does not mark a tier when the clue is gone`() {
+        val f = Fixture(MEDIUM)
+        val tier = TrailTiers.tier(MEDIUM)
+        with(ClueWatson) { assertFalse(f.access().give(tier)) }
+        assertFalse(ClueWatson.stored(f.player, tier))
+    }
+
     private class Fixture(difficulty: Int = TrailTiers.BEGINNER) {
         val tier: TrailTierRow = TrailTiers.tier(difficulty)
         val clue: String
