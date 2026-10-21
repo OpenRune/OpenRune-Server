@@ -81,6 +81,10 @@ class RunePouchScript : PluginScript() {
             objExamine(inv, slot)
             return
         }
+        if (internal in RunePouch.pouches) {
+            mes(DONT_BE_SILLY)
+            return
+        }
         if (!RunePouch.isRune(internal)) {
             mes(NOT_A_RUNE)
             return
@@ -178,6 +182,7 @@ class RunePouchScript : PluginScript() {
         const val CUSTOM_QUANTITY = "varbit.rune_pouch_customquantity"
 
         const val NOT_A_RUNE = "You can only store runes in the rune pouch."
+        const val DONT_BE_SILLY = "Don't be silly."
         const val NO_FREE_SLOT = "Your rune pouch has no room for another type of rune."
         const val FULL = "Your rune pouch cannot hold any more of those runes."
         const val NO_SPACE = "You don't have enough inventory space."
