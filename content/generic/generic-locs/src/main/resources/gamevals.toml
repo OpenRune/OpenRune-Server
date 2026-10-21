@@ -19,10 +19,10 @@ pickable_sweetcorn_2=65348
 wheat=65347
 
 [gamevals.content]
-water_source = 65516
-water_source_well = 64400
-water_source_tap = 64401
-water_source_pump = 64402
+water_source = 62516
+water_source_well = 62400
+water_source_tap = 62401
+water_source_pump = 62402
 
 [gamevals.enum]
 water_container_fills = 64402
