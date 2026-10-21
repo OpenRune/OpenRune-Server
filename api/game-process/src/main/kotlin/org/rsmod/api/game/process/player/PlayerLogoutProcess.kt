@@ -96,6 +96,7 @@ constructor(
         manualLogout = false
 
         if (isLogoutBlocked()) {
+            idleLogout = false
             mes(logoutBlockedMessage(), ChatType.Engine)
             return
         }

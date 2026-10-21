@@ -255,6 +255,7 @@ public class Player(
 
     public var forceDisconnect: Boolean = false
     public var manualLogout: Boolean = false
+    public var idleLogout: Boolean = false
     public var pendingLogout: Boolean = false
     public var loggingOut: Boolean = false
     public var pendingCloseClient: Boolean = false
