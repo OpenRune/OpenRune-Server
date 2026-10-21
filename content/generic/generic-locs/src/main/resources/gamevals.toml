@@ -20,7 +20,17 @@ wheat=65347
 
 [gamevals.content]
 water_source = 65516
+water_source_well = 64400
+water_source_tap = 64401
+water_source_pump = 64402
+
+[gamevals.enum]
+water_container_fills = 64402
 
 [gamevals.synth]
 drawer_open = 64
 fill_container = 2609
+fill_container_well = 2615
+
+[gamevals.queue]
+water_source_fill = 64400
