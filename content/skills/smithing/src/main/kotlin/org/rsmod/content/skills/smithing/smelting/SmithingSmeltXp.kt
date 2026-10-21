@@ -26,7 +26,7 @@ object SmithingSmeltXp {
             else -> bar.xp
         }
 
-        var xp = baseXp.toDouble() * xpMods.get(player, "stat.smithing")
+        var xp = baseXp / 10.0 * xpMods.get(player, "stat.smithing")
 
         if (hasCoalSmeltBoost(player, inventory, bar, regularFurnace)) {
             xp *= 2

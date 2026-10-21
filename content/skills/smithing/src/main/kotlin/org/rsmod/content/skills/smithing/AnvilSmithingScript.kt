@@ -217,8 +217,8 @@ constructor(private val xpMods: XpModifiers, private val dorics: DoricsQuest) : 
 
         if (invAdd(inv, meta.product.internalName, meta.numProduced).success) {
             spam(forgedMessage(meta))
-            val xp = meta.barCount * meta.bar.smithxp * xpMods.get(player, "stat.smithing")
-            statAdvance("stat.smithing", xp.toDouble())
+            val xp = meta.barCount * meta.bar.smithxp / 10.0 * xpMods.get(player, "stat.smithing")
+            statAdvance("stat.smithing", xp)
         }
     }
 
