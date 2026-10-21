@@ -22,6 +22,7 @@ constructor(
     private val accountRegistry: AccountRegistry,
     private val exceptionHandler: GameExceptionHandler,
     private val logoutProcessor: PlayerLogoutProcessor,
+    private val engineQueues: PlayerEngineQueueProcessor,
 ) {
     public fun process() {
         processPendingLogouts()
@@ -122,6 +123,7 @@ constructor(
         }
         ifCloseModals(eventBus)
         forceExitAreas()
+        engineQueues.process(this)
 
         if (isAccessProtected || engineQueueList.isNotEmpty || hasNonDiscardableQueue()) {
             return
