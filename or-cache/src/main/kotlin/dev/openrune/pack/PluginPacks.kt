@@ -68,7 +68,10 @@ class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
 
         tasks += interfaceTasks()
 
-        tasks += UnpackDefaultCs2(DirectoryConstants.CS2_PATH.toFile())
+        // Bundles from 241.2 on write client text tags (`<str_name=...>`) and call a clientscript
+        // as a proc, and 241.4 adds an `interpolate` trigger; Neptune compiles none of them. The
+        // 241.1 scripts still compile against the 241.3 cache that game.example.yml pins.
+        tasks += UnpackDefaultCs2(DirectoryConstants.CS2_PATH.toFile(), subRevisionOverride = 1)
         tasks += PackCs2(DirectoryConstants.CS2_PATH.toFile(), cs2Overrides)
 
         val tables = baseTables + active.flatMap { it.dbTables() }
