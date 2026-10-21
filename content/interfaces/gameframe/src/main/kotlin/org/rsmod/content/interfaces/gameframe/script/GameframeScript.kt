@@ -146,7 +146,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
 
     public fun Player.changeGameframe(move: GameframeMove) {
         val (from, dest, intermediate) = move
-        if (dest.resizable) {
+        if (dest.resizable && from.isGameplay && dest.isGameplay) {
             stoneArrangements = dest.stoneArrangement
         }
         resyncVar("varp.chat_filter_assist")
