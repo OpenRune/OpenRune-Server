@@ -8,6 +8,8 @@ data class ParsedWikiShopInfobox(
 
     val infoboxName: String,
 
+    val generalStore: Boolean = false,
+
 ) {
 
     val displayName: String
@@ -60,6 +62,8 @@ object WikiShopInfoboxParser {
 
             infoboxName = infoboxName,
 
+            generalStore = isGeneralStore(params["special"]),
+
         )
     }
 
@@ -71,6 +75,9 @@ object WikiShopInfoboxParser {
             .map { content -> WikiTemplateParser.parseParams(content)["rs"] }
             .mapNotNull { value -> value?.let(::sanitizeWikiMarkup)?.takeIf { it.isNotBlank() } }
             .firstOrNull()
+
+    fun isGeneralStore(special: String?): Boolean =
+        special?.let(::sanitizeWikiMarkup).equals("General store", ignoreCase = true)
 
     private fun stripInfoboxHeader(block: String): String {
 
