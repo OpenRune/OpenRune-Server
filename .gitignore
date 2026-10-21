@@ -59,3 +59,5 @@ logs/
 .claude/settings.local.json
 .mcp.json
 /bench
+/tools/cache-editor/dist
+/tools/cache-editor/node_modules
