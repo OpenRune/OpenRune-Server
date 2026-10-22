@@ -25,10 +25,10 @@ import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.content.raids.toa.raid.encounter.ToaRooms
 import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.isBeside
 import org.rsmod.content.raids.toa.raid.encounter.eachTarget
-import org.rsmod.content.raids.toa.raid.encounter.targetCondition
 import org.rsmod.content.raids.toa.raid.encounter.onRoomExternal
 import org.rsmod.content.raids.toa.raid.encounter.raidAccuracy
 import org.rsmod.content.raids.toa.raid.encounter.roomCondition
+import org.rsmod.content.raids.toa.raid.encounter.targetCondition
 import org.rsmod.plugin.scripts.ScriptContext
 
 class AkkhaBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {

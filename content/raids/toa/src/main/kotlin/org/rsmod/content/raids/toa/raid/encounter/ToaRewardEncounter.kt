@@ -8,16 +8,16 @@ import org.rsmod.api.droptable.DropRateModifiers
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.midiJingle
-import org.rsmod.api.table.ToaVaultDisplaysRow
 import org.rsmod.api.player.midiSong
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.vars.intVarBit
+import org.rsmod.api.table.ToaVaultDisplaysRow
 import org.rsmod.content.interfaces.collectionlog.CollectionLog
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
-import org.rsmod.content.raids.toa.raid.personalContribution
 import org.rsmod.content.raids.toa.raid.loot.ToaChestTables
 import org.rsmod.content.raids.toa.raid.loot.ToaLootRoller
-import org.rsmod.api.player.output.mes
+import org.rsmod.content.raids.toa.raid.personalContribution
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
@@ -243,7 +243,7 @@ class ToaRewardEncounter(
         private const val UNIQUE_BOOST = 2.0
         private const val FORCED_BOOST = 1_000_000.0
         private const val DUNG = "obj.cert_toa_loot_poo"
-        private const val OSMUMTEN ="npc.toa_osmumten_vis"
+        private const val OSMUMTEN = "npc.toa_osmumten_vis"
         private const val JINGLE = "jingle.in_the_pits"
         private const val MUSIC = "midi.toa_laid_to_rest"
 

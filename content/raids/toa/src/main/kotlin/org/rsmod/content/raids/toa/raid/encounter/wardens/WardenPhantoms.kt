@@ -1,6 +1,7 @@
 package org.rsmod.content.raids.toa.raid.encounter.wardens
 
 import kotlin.math.max
+import org.rsmod.api.bosses.spec.HitType as SpecHit
 import org.rsmod.api.player.hit.queueImpactHit
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.content.raids.toa.raid.ToaPath
@@ -12,14 +13,12 @@ import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakSpots
 import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.ZebakSynths
 import org.rsmod.content.raids.toa.raid.encounter.het.akkha.AkkhaSeqs
 import org.rsmod.content.raids.toa.raid.encounter.het.akkha.AkkhaSpots
-import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriSeqs
 import org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri.KephriSpots
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
-import org.rsmod.api.bosses.spec.HitType as SpecHit
 import org.rsmod.game.map.Direction
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid

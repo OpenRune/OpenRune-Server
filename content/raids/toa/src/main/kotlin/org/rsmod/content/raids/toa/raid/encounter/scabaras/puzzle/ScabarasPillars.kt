@@ -5,7 +5,6 @@ import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.content.raids.toa.raid.shuffled
 import org.rsmod.game.entity.Npc
-import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.Hit
 import org.rsmod.map.CoordGrid
 

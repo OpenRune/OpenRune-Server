@@ -1,12 +1,12 @@
 package org.rsmod.content.raids.toa.raid.encounter.scabaras.kephri
 
 import jakarta.inject.Inject
+import org.rsmod.api.bosses.dsl.BossSpecBuilder
 import org.rsmod.api.bosses.dsl.Centre
 import org.rsmod.api.bosses.dsl.CurrentTarget
-import org.rsmod.api.bosses.dsl.CurrentTile
 import org.rsmod.api.bosses.dsl.CurrentTargetTile
+import org.rsmod.api.bosses.dsl.CurrentTile
 import org.rsmod.api.bosses.dsl.Magic
-import org.rsmod.api.bosses.dsl.BossSpecBuilder
 import org.rsmod.api.bosses.dsl.after
 import org.rsmod.api.bosses.dsl.anim
 import org.rsmod.api.bosses.dsl.boss
@@ -19,8 +19,8 @@ import org.rsmod.api.bosses.dsl.nearestFreeTiles
 import org.rsmod.api.bosses.dsl.nextAttackIn
 import org.rsmod.api.bosses.dsl.offset
 import org.rsmod.api.bosses.dsl.onEach
-import org.rsmod.api.bosses.dsl.oneOf
 import org.rsmod.api.bosses.dsl.onTiles
+import org.rsmod.api.bosses.dsl.oneOf
 import org.rsmod.api.bosses.dsl.playersOn
 import org.rsmod.api.bosses.dsl.projectile
 import org.rsmod.api.bosses.dsl.run
@@ -267,7 +267,7 @@ class KephriBoss @Inject constructor(deps: BossDeps) : BossPluginScript(deps) {
         const val PICK_DUNG = "kephri.pick_dung"
         const val DUNG_PUSH = "kephri.dung_push"
         const val EGGS_START = "kephri.eggs_start"
-        
+
         val OPENING_AUTOS = 3..3
         val SHIELDED_AUTOS = 4..5
         val FINAL_AUTOS = 2..2

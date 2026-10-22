@@ -1,10 +1,10 @@
 package org.rsmod.content.raids.toa.raid.encounter.het.akkha
 
 import org.rsmod.api.bosses.runtime.encounter
-import org.rsmod.api.death.NpcAttackValidateResult
-import org.rsmod.api.player.output.mes
 import org.rsmod.api.bosses.runtime.suppressAttacks
+import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.instances.InstanceSession
+import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.ToaBook
