@@ -14,6 +14,8 @@ internal class AkkhaMemory(private val room: AkkhaEncounter) {
     var active = false
         private set
 
+    private var generation = 0
+
     fun start(boss: Npc) {
         active = true
         val feelingSpecial = room.raid.isActive("dbrow.toa_invocation_feeling_special")
@@ -26,14 +28,14 @@ internal class AkkhaMemory(private val room: AkkhaEncounter) {
         val lights = walk(iterations)
 
         deps.bossDeps.suppressAttacks(boss, returnTick + ATTACK_RATE)
-        room.schedule(GLOW_MESSAGE) {
+        later(GLOW_MESSAGE) {
             for (player in room.targets()) player.mes(GLOW_TEXT)
         }
-        room.schedule(DISAPPEAR_ANIM) { room.akkha?.anim(AkkhaSeqs.DISAPPEAR) }
-        room.schedule(HIDDEN) { room.hideAkkha() }
+        later(DISAPPEAR_ANIM) { room.akkha?.anim(AkkhaSeqs.DISAPPEAR) }
+        later(HIDDEN) { room.hideAkkha() }
         for ((i, safe) in lights.withIndex()) {
-            room.schedule(LIGHT_START + LIGHT_GAP * i) { showLight(safe) }
-            room.schedule(firstBlast + gap * i) {
+            later(LIGHT_START + LIGHT_GAP * i) { showLight(safe) }
+            later(firstBlast + gap * i) {
                 deps.worldRepo.soundArea(
                     room.coords(ARENA_CENTRE),
                     AkkhaSynths.BLAST,
@@ -44,7 +46,7 @@ internal class AkkhaMemory(private val room: AkkhaEncounter) {
                 }
             }
         }
-        room.schedule(returnTick) {
+        later(returnTick) {
             active = false
             room.showAkkha()
         }
@@ -52,6 +54,12 @@ internal class AkkhaMemory(private val room: AkkhaEncounter) {
 
     fun clear() {
         active = false
+        generation++
+    }
+
+    private fun later(ticks: Int, action: () -> Unit) {
+        val scheduled = generation
+        room.schedule(ticks) { if (scheduled == generation) action() }
     }
 
     private fun walk(count: Int): List<Quadrant> {
