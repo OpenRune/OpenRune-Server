@@ -42,10 +42,6 @@ public object ClientScripts {
         count: Int,
     ): Unit = player.runClientScript(LOOTTRACKER_ADD_LOOT_SCRIPT, npcId, eventId, objId, count)
 
-    public fun settingsInterfaceScaling(player: Player, scale: Int) {
-        player.runClientScript(2358, scale)
-    }
-
     public fun buffBarLayoutRedraw(player: Player) {
         player.runClientScript(5937)
     }
