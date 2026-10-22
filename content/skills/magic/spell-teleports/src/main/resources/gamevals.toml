@@ -1,2 +1,5 @@
 [gamevals.queue]
 spell_teleport = 59
+
+[gamevals.synth]
+poh_tablet_break = 965
