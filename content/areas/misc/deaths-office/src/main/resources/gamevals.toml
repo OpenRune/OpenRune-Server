@@ -33,3 +33,6 @@ death_office_drop = 64422
 
 [gamevals.droptrigger]
 death_office = 64420
+
+[gamevals.synth]
+deaths_domain_portal = 3952

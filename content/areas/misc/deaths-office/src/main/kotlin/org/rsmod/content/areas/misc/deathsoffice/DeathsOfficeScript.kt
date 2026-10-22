@@ -730,10 +730,10 @@ constructor(
         const val OVERLAY_PORTAL = "clientscript.[clientscript,overlay_portal]"
         const val OVERLAY_PORTAL_REMOVE = "clientscript.[clientscript,overlay_portal_remove]"
 
-        // The office portal's model, colour and sound have no gameval names.
+        // The office portal's model and colour have no gameval names.
         const val PORTAL_MODEL = 39504
         const val PORTAL_COLOUR = 4128927
-        const val PORTAL_SYNTH = 3952
+        const val PORTAL_SYNTH = "synth.deaths_domain_portal"
         const val ENTER_ANIM = "seq.human_pickupfloor"
         const val ENTER_ANIM_DELAY = 20
         const val DESK_RANGE = 3
