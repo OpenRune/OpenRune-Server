@@ -119,7 +119,11 @@ constructor(
     }
 
     private fun Player.closeClient() {
-        MiscOutput.logout(this)
+        if (idleLogout) {
+            MiscOutput.logoutKicked(this)
+        } else {
+            MiscOutput.logout(this)
+        }
         client.flushHighPriority()
         client.close()
     }
