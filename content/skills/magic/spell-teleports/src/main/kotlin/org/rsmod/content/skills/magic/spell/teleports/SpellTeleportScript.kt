@@ -392,6 +392,8 @@ constructor(
         private const val TeleportSound = "synth.teleport_all"
         private const val TeleportDelay = 4
         private const val TeleportActionDelay = 5
+
+        // UNVERIFIED: radius for Ancient and Arceuus teleports but Paddewwa, Draynor Manor (guess)
         private const val LandingRadius = 2
     }
 }
