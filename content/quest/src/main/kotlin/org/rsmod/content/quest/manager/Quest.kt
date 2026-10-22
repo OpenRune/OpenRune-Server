@@ -6,12 +6,11 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import java.util.Locale
 import net.rsprot.protocol.game.outgoing.interfaces.IfSetPosition
-import net.rsprot.protocol.game.outgoing.sound.MidiJingle
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
-import org.rsmod.api.player.musicClocks
+import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.intVarBit
@@ -21,9 +20,7 @@ import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.map.CoordGrid
 
-private const val QUEST_COMPLETE_JINGLE = 153
-
-private const val REWARD_LINES = 7
+const val QUEST_COMPLETE_JINGLE = "jingle.gaol"
 
 internal const val QUEST_DIALOGUE_CLOSE_TIMER = "timer.quest_dialogue_close"
 internal const val QUEST_SCROLL_CLOSE_TIMER = "timer.quest_scroll_close"
@@ -63,6 +60,7 @@ data class Quest(
     val questVarbit: String? = null,
     val closeDialogue: QuestClose = QuestClose.OnFinished,
     val closeScroll: QuestClose = QuestClose.Never,
+    val completeJingle: String = QUEST_COMPLETE_JINGLE,
 ) {
 
     private var Player.questState: Int
@@ -92,6 +90,7 @@ data class Quest(
             varbit: String? = null,
             closeDialogue: QuestClose = QuestClose.OnFinished,
             closeScroll: QuestClose = QuestClose.Never,
+            completeJingle: String = QUEST_COMPLETE_JINGLE,
         ): Quest {
 
             val rowKeyID = "dbrow.${rowKey}".asRSCM()
@@ -111,6 +110,7 @@ data class Quest(
                 rewards = rewards,
                 closeDialogue = closeDialogue,
                 closeScroll = closeScroll,
+                completeJingle = completeJingle,
             )
             questsByKey[rowKey.normalizedQuestKey()] = quest
             return quest
@@ -172,8 +172,8 @@ data class Quest(
         additionalRewards: List<InvObj> = emptyList(),
     ): Boolean {
         require(newStage in 0..maxSteps) { "Quest '$key' stage must be within 0..$maxSteps." }
-        val previousStage = getQuestStage(access.player)
-        val wasCompleted = previousStage >= maxSteps
+        val oldStage = getQuestStage(access.player)
+        val wasCompleted = oldStage >= maxSteps
         if (!wasCompleted && newStage == maxSteps && !grantItemRewards(access, additionalRewards)) {
             return false
         }
@@ -185,7 +185,7 @@ data class Quest(
             access.player.questState = newStage
         }
 
-        if (previousStage == 0 && newStage in 1 until maxSteps) {
+        if (oldStage == 0 && newStage > 0) {
             access.mes("You've started a new quest: @q_mes@$displayName</col>")
         }
 
@@ -243,22 +243,33 @@ data class Quest(
 
         access.player.questPoints += questPoints
         access.player.questsCompleted++
-
         access.mes("Congratulations, you've completed a quest: @q_mes@$displayName</col>")
 
-        access.player.musicClocks = 0
-        val jingle = rewards.jingle?.asRSCM(RSCMType.JINGLE) ?: QUEST_COMPLETE_JINGLE
-        access.player.client.write(MidiJingle(jingle))
+        access.player.midiJingle(completeJingle)
 
-        val rewardLines = mutableListOf("$questPoints Quest Point")
+        scheduleClose(access, closeDialogue, QUEST_DIALOGUE_CLOSE_TIMER) { ifCloseChat() }
+        access.ifOpenMain("interface.questscroll")
+        scheduleClose(access, closeScroll, QUEST_SCROLL_CLOSE_TIMER) {
+            ifCloseSub("interface.questscroll")
+        }
+        access.ifSetText("component.questscroll:quest_title", "You have completed ${displayName}!")
+        access.ifSetText("component.questscroll:quest_reward1", "$questPoints Quest Point")
+
+        access.ifSetObj("component.questscroll:quest_model", obj = itemDisplay.item, zoom = itemDisplay.zoom)
+        if (itemDisplay.x != null && itemDisplay.y != null) {
+            val model = "component.questscroll:quest_model".asRSCM(RSCMType.COMPONENT)
+            access.player.client.write(IfSetPosition(model, itemDisplay.x, itemDisplay.y))
+        }
+
+        val rewardLines = mutableListOf<String>()
 
         rewards.xp.forEach { (skill, amount) ->
             val stat = ServerCacheManager.getStats(skill.asRSCM(RSCMType.STAT))
                 ?: error("No stat found for $skill")
 
             access.statAdvance(skill, amount)
-            val statName = stat.displayName.replaceFirstChar { it.uppercase() }
-            rewardLines.add("${"%,d".format(Locale.US, amount.toInt())} $statName XP")
+            val skillName = stat.displayName.replaceFirstChar { it.uppercase() }
+            rewardLines.add("${"%,d".format(Locale.US, amount.toInt())} $skillName XP")
         }
 
         rewards.items.forEach { (item, amount) ->
@@ -266,24 +277,14 @@ data class Quest(
             rewardLines.add(rewards.itemLabels[item] ?: "$amount x ${type.name}")
         }
 
-        rewardLines.addAll(rewards.extra)
+        rewardLines += rewards.extraLines
 
-        scheduleClose(access, closeDialogue, QUEST_DIALOGUE_CLOSE_TIMER) { ifCloseChat() }
-        access.ifSetText("component.questscroll:quest_title", "You have completed ${displayName}!")
-        access.ifSetObj("component.questscroll:quest_model", obj = itemDisplay.item, zoom = itemDisplay.zoom)
-        if (itemDisplay.x != null && itemDisplay.y != null) {
-            val model = "component.questscroll:quest_model".asRSCM(RSCMType.COMPONENT)
-            access.player.client.write(IfSetPosition(model, itemDisplay.x, itemDisplay.y))
-        }
-        for (i in 1..REWARD_LINES) {
-            access.ifSetText("component.questscroll:quest_reward$i", "")
-        }
-        rewardLines.take(REWARD_LINES).forEachIndexed { index, text ->
-            access.ifSetText("component.questscroll:quest_reward${index + 1}", text)
-        }
-        access.ifOpenMain("interface.questscroll")
-        scheduleClose(access, closeScroll, QUEST_SCROLL_CLOSE_TIMER) {
-            ifCloseSub("interface.questscroll")
+        val linesToShow = rewardLines.take(6)
+
+        for (i in 0 until 6) {
+            val componentId = "component.questscroll:quest_reward${i + 2}"
+            val text = linesToShow.getOrNull(i) ?: ""
+            access.ifSetText(componentId, text)
         }
     }
 }

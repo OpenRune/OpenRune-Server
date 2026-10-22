@@ -1,9 +1,9 @@
 package org.rsmod.api.player.output
 
-import net.rsprot.protocol.game.outgoing.logout.Logout
 import net.rsprot.protocol.game.outgoing.logout.LogoutWithReason
 import net.rsprot.protocol.game.outgoing.misc.client.HintArrow
 import net.rsprot.protocol.game.outgoing.misc.client.ServerTickEnd
+import net.rsprot.protocol.game.outgoing.misc.client.SetInteractionMode
 import net.rsprot.protocol.game.outgoing.misc.client.UpdateRebootTimerV2
 import net.rsprot.protocol.game.outgoing.misc.player.SetPlayerOp
 import org.rsmod.game.entity.Player
@@ -47,19 +47,32 @@ public object MiscOutput {
         player.client.write(ServerTickEnd)
     }
 
-    /** @see [Logout] */
+    /** Calls [LogoutWithReason] with an arg of `0` (reason = `Requested`). */
     public fun logout(player: Player) {
-        player.client.write(Logout)
+        resetInteractionMode(player)
+        player.client.write(LogoutWithReason(reason = 0))
     }
 
     /** Calls [LogoutWithReason] with an arg of `1` (reason = `Kicked`). */
     public fun logoutKicked(player: Player) {
+        resetInteractionMode(player)
         player.client.write(LogoutWithReason(reason = 1))
     }
 
     /** Calls [LogoutWithReason] with an arg of `2` (reason = `Updating`). */
     public fun logoutUpdating(player: Player) {
+        resetInteractionMode(player)
         player.client.write(LogoutWithReason(reason = 2))
+    }
+
+    private fun resetInteractionMode(player: Player) {
+        player.client.write(
+            SetInteractionMode(
+                worldId = DEFAULT_WORLD_ID,
+                tileInteractionMode = TILE_INTERACTION_WALK,
+                entityInteractionMode = ENTITY_INTERACTION_ALL,
+            )
+        )
     }
 
     /** @see [UpdateRebootTimer] */
@@ -76,4 +89,8 @@ public object MiscOutput {
     public fun clearUpdateRebootTimer(player: Player) {
         updateRebootTimer(player, cycles = 0)
     }
+
+    private const val DEFAULT_WORLD_ID = -2
+    private const val TILE_INTERACTION_WALK = 1
+    private const val ENTITY_INTERACTION_ALL = 1
 }

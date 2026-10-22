@@ -46,10 +46,10 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
             xp("stat.smithing", 6000.0)
             extra("Access to the Giants'")
             extra("Foundry")
-            jingle("jingle.high_seas")
         },
         ItemRewardDisplay(PREFORM, zoom = 400, x = 78, y = 128),
         questVarbit = "varbit.sleeping_giants",
+        completeJingle = "jingle.high_seas",
     ) {
 
     override fun ScriptContext.init() {
@@ -111,8 +111,6 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         onEvent<HeldDropEvents.Drop> { room.onDropped(player) }
     }
 
-    override val journalWrapAt: Int? = null
-
     override fun subTitle(): String =
         "investigating the <col=800000>Giants' Plateau<col=000080> east of " +
             "<col=800000>Al Kharid<col=000080>."
@@ -147,11 +145,11 @@ class SleepingGiantsQuest @Inject constructor(private val room: SleepingGiantsRo
         }
 
     override fun completedLog(player: ProtectedAccess): String =
-        questJournal(player) {
+        completionJournal(player) {
             journalLines(JOURNAL_MET_KOVAC, struck = true)
             journalLines(JOURNAL_REPAIRED_DONE, struck = true)
             journalLines(JOURNAL_COMPLETED, struck = true)
-        } + "\n\n<col=ff0000>QUEST COMPLETE!"
+        }
 
     private fun QuestJournalBuilder.journalLines(lines: List<String>, struck: Boolean) {
         for (text in lines) {

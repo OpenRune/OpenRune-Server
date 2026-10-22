@@ -44,7 +44,7 @@ giants_foundry_shop_mould = 1637
 giants_foundry_shop_cost = 1638
 
 [gamevals.queue]
-giants_foundry_quest_prompt = 64400
+giants_foundry_quest_prompt = 64401
 
 [gamevals.synth]
 giants_foundry_crucible_pour = 5605
@@ -55,7 +55,6 @@ giants_foundry_ambient_2 = 5602
 giants_foundry_trip_hammer_loop = 5603
 giants_foundry_grindstone = 5604
 giants_foundry_polishing_wheel = 5608
-giants_foundry_sweetspot = 2192
 giants_foundry_sword_finished = 2755
 giants_foundry_lava_pool = 1019
 giants_foundry_waterfall = 1006

@@ -1,20 +1,24 @@
 package org.rsmod.content.quest.manager
 
 import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.game.entity.Player
-import toRs
 
 data class QuestJournalContent(
     val subTitle: () -> String,
     val questLog: (ProtectedAccess) -> String,
     val completedLog: (ProtectedAccess) -> String,
-    val wrapAt: Int? = 64,
 )
 
 private val ACTIVE_QUEST_JOURNAL_ATTR = AttributeKey<String>("active_quest_journal")
+
+private var Player.latestQuestJournal by intVarp("varp.latest_quest_journal")
+private var Player.questJournalLines by intVarp("varp.qj_lines")
 
 object QuestJournalRegistry {
     private val journals = mutableMapOf<String, QuestJournalContent>()
@@ -45,6 +49,7 @@ object QuestJournalRegistry {
     }
 
     private fun openJournalOverview(access: ProtectedAccess, quest: Quest, content: QuestJournalContent) {
+        access.ifCloseSub(QUEST_JOURNAL)
         access.ifOpenMain("interface.questjournal_overview")
         access.ifSetText("component.questjournal_overview:title", "<col=7f0000>${quest.displayName}</col>")
 
@@ -64,16 +69,29 @@ object QuestJournalRegistry {
     }
 
     private fun openQuestLog(access: ProtectedAccess, quest: Quest, content: QuestJournalContent) {
-        val lines = (if (quest.isQuestCompleted(access.player)) content.completedLog(access) else content.questLog(access))
-            .lines()
-            .flatMap { it.toRs(inheritPreviousTags = true, wrapAt = content.wrapAt).split("<br>") }
+        val player = access.player
+        val log = if (quest.isQuestCompleted(player)) content.completedLog(access) else content.questLog(access)
+        val lines = journalLines(log)
 
-        access.ifOpenMain("interface.questjournal")
-        access.runClientScript(5240)
+        access.ifClose()
+        player.latestQuestJournal = quest.rowID
+        player.questJournalLines = 0
+        repeat(lines.size) { player.questJournalLines++ }
+
         access.ifSetText("component.questjournal:title", "<col=7f0000>${quest.displayName}</col>")
-
+        access.runClientScript(QUEST_JOURNAL_RESET.asRSCM(RSCMType.CLIENTSCRIPT))
         lines.forEachIndexed { index, line ->
             access.ifSetText("component.questjournal:qj${index + 1}", line)
         }
+        access.ifOpenOverlay(QUEST_JOURNAL)
+        player.runClientScript(
+            QUEST_JOURNAL_LAYOUT.asRSCM(RSCMType.CLIENTSCRIPT),
+            charArrayOf('1', 'i'),
+            listOf(0, lines.size),
+        )
     }
+
+    private const val QUEST_JOURNAL = "interface.questjournal"
+    private const val QUEST_JOURNAL_RESET = "clientscript.[clientscript,quest_journal_reset]"
+    private const val QUEST_JOURNAL_LAYOUT = "clientscript.[clientscript,script2523]"
 }

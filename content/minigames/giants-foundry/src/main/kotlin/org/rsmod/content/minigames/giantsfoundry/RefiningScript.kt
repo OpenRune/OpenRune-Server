@@ -421,7 +421,7 @@ constructor(
         const val LAVA_SYNTH = "synth.giants_foundry_lava_pool"
         const val WATERFALL_SYNTH = "synth.giants_foundry_waterfall"
         const val MISTAKE_SYNTH = "synth.glassblowing"
-        const val SWEETSPOT_SYNTH = "synth.giants_foundry_sweetspot"
+        const val SWEETSPOT_SYNTH = "synth.cowbell_amulet_ring"
         const val FINISH_SYNTH = "synth.giants_foundry_sword_finished"
         const val TRIP_HAMMER_LOOP_SYNTH = "synth.giants_foundry_trip_hammer_loop"
         const val AMBIENT_1_SYNTH = "synth.giants_foundry_ambient_1"

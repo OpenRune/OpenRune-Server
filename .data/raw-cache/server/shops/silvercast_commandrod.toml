@@ -1,0 +1,25 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.silvercast_commandrod"
+name = "Mysterious Stranger"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 750
+buyMultiplier = 100
+delta = 0
+
+size = 1
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.tob_teleport"
+count = 9500
+restockCycles = 1
+

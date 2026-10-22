@@ -40,9 +40,8 @@ annotation class QuestJournalDsl
 data class QuestReward(
     val xp: Map<String, Double> = emptyMap(),
     val items: List<Pair<String, Int>> = emptyList(),
-    val extra: List<String> = emptyList(),
-    val itemLabels: Map<String, String> = emptyMap(),
-    val jingle: String? = null,
+    val extraLines: List<String> = emptyList(),
+    val itemLabels: Map<String, String> = emptyMap()
 )
 
 @QuestJournalDsl
@@ -55,8 +54,7 @@ class QuestRewardBuilder {
     private val _xp = mutableMapOf<String, Double>()
     private val _items = mutableListOf<Pair<String, Int>>()
     private val _itemLabels = mutableMapOf<String, String>()
-    private val _extra = mutableListOf<String>()
-    private var _jingle: String? = null
+    private val _extraLines = mutableListOf<String>()
 
     fun xp(skill: String, amount: Double) {
         _xp[skill] = amount
@@ -68,14 +66,10 @@ class QuestRewardBuilder {
     }
 
     fun extra(text: String) {
-        _extra.add(text)
+        _extraLines += text
     }
 
-    fun jingle(jingle: String) {
-        _jingle = jingle
-    }
-
-    fun build(): QuestReward = QuestReward(_xp, _items, _extra, _itemLabels, _jingle)
+    fun build(): QuestReward = QuestReward(_xp, _items, _extraLines, _itemLabels)
 }
 
 abstract class QuestScript(
@@ -86,6 +80,7 @@ abstract class QuestScript(
     val questVarbit: String? = null,
     val closeDialogue: QuestClose = QuestClose.OnFinished,
     val closeScroll: QuestClose = QuestClose.Never,
+    val completeJingle: String = QUEST_COMPLETE_JINGLE,
 ) : PluginScript() {
 
     val quest =
@@ -97,6 +92,7 @@ abstract class QuestScript(
             questVarbit,
             closeDialogue,
             closeScroll,
+            completeJingle,
         )
 
     abstract fun subTitle(): String
@@ -104,9 +100,6 @@ abstract class QuestScript(
     abstract fun questLog(player: ProtectedAccess): String
 
     abstract fun completedLog(player: ProtectedAccess): String
-
-    /** Wrap width of the journal lines; `null` when the quest's lines are already broken up. */
-    protected open val journalWrapAt: Int? = 64
 
     abstract fun ScriptContext.init()
 
@@ -119,7 +112,6 @@ abstract class QuestScript(
                 subTitle = ::subTitle,
                 questLog = ::questLog,
                 completedLog = ::completedLog,
-                wrapAt = journalWrapAt,
             ),
         )
 
