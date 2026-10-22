@@ -1,0 +1,45 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_smithing_steel"
+name = "Darkmeyer Meat Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 30
+
+size = 5
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.raw_beef"
+count = 15
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_chicken"
+count = 15
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_rat_meat"
+count = 20
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.raw_mystery_meat"
+count = 25
+restockCycles = 80
+
+[[inventory.stock]]
+obj = "obj.raw_bear_meat"
+count = 10
+restockCycles = 120
+
