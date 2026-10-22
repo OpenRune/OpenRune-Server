@@ -94,10 +94,17 @@ constructor(
         if (!canTeleport()) {
             return
         }
-        telejump(CoordGrid(task.destination))
+        telejump(landingSquare(CoordGrid(task.destination), task.teleport.landingRadius))
         val endAnim = task.teleport.style.endAnim
         if (endAnim != null) anim(endAnim) else resetAnim()
         statAdvance("stat.magic", spell.castXp)
+    }
+
+    private fun ProtectedAccess.landingSquare(centre: CoordGrid, radius: Int): CoordGrid {
+        if (radius == 0) {
+            return centre
+        }
+        return mapFindSquareLineOfWalk(centre, minRadius = 0, maxRadius = radius) ?: centre
     }
 
     private fun ProtectedAccess.canTeleport(): Boolean {
@@ -173,14 +180,16 @@ constructor(
         val lockedMessage: String = "You need to complete the required quest to cast this spell.",
         val missingDestinationMessage: String = "That teleport is not implemented yet.",
         val style: TeleportStyle = TeleportStyle.Standard,
+        val landingRadius: Int = LandingRadius,
     ) {
         Home(
             "obj.48_home_teleport",
             CoordGrid(3222, 3222, 0),
+            landingRadius = 0,
         ),
         Varrock(
             "obj.25_varrock_teleport",
-            alternate = TeleportOption(destination = CoordGrid(3164, 3487, 0)),
+            alternate = TeleportOption(destination = CoordGrid(3163, 3478, 0)),
         ),
         Lumbridge(
             "obj.31_lumbridge_teleport",
@@ -199,7 +208,7 @@ constructor(
         ),
         Camelot(
             "obj.45_camelot_teleport",
-            alternate = TeleportOption(destination = CoordGrid(2725, 3485, 0)),
+            alternate = TeleportOption(destination = CoordGrid(2726, 3484, 0)),
         ),
         KourendCastle(
             // Cache name is wrong, but its spell params match Kourend Castle Teleport.
@@ -250,7 +259,12 @@ constructor(
             lockedMessage = "You need to complete Pandemonium to cast this spell.",
             missingDestinationMessage = "Boat teleports need boat-location support before they can be cast.",
         ),
-        EdgevilleHome("obj.01_zaros_home_tele", CoordGrid(3087, 3496, 0), style = TeleportStyle.Ancient),
+        EdgevilleHome(
+            "obj.01_zaros_home_tele",
+            CoordGrid(3087, 3496, 0),
+            style = TeleportStyle.Ancient,
+            landingRadius = 0,
+        ),
         Paddewwa("obj.54_paddewwa_teleport", style = TeleportStyle.Ancient),
         Senntisten("obj.60_senntisten_teleport", style = TeleportStyle.Ancient),
         Kharyrll("obj.66_kharyllyl_teleport", style = TeleportStyle.Ancient),
@@ -263,6 +277,7 @@ constructor(
             "obj.deadman_level99_lamp",
             CoordGrid(1699, 3879, 0),
             style = TeleportStyle.Arceuus,
+            landingRadius = 0,
         ),
         ArceuusLibrary("obj.br_mithril_platebody", style = TeleportStyle.Arceuus),
         DraynorManor("obj.br_mithril_platelegs", style = TeleportStyle.Arceuus),
@@ -377,5 +392,8 @@ constructor(
         private const val TeleportSound = "synth.teleport_all"
         private const val TeleportDelay = 4
         private const val TeleportActionDelay = 5
+
+        // UNVERIFIED: radius for Ancient and Arceuus teleports but Paddewwa, Draynor Manor (guess)
+        private const val LandingRadius = 2
     }
 }
