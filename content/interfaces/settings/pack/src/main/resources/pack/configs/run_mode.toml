@@ -1,0 +1,4 @@
+[[varp]]
+id = "varp.runenergy_autoenable_armed"
+scope = "Perm"
+transmit = "Never"

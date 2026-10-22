@@ -1,0 +1,364 @@
+[[object]]
+id = "loc.fountain"
+inherit = "loc.fountain"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.qip_cook_sink"
+inherit = "loc.qip_cook_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.fai_varrock_central_square01"
+inherit = "loc.fai_varrock_central_square01"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.fai_varrock_small_fountain"
+inherit = "loc.fai_varrock_small_fountain"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.fai_varrock_posh_sink"
+inherit = "loc.fai_varrock_posh_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.fai_varrock_cooking_kitchen_sink"
+inherit = "loc.fai_varrock_cooking_kitchen_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.blast_furnace_sink"
+inherit = "loc.blast_furnace_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.well"
+inherit = "loc.well"
+contentGroup = "content.water_source_well"
+
+[[object]]
+id = "loc.fai_varrock_well"
+inherit = "loc.fai_varrock_well"
+contentGroup = "content.water_source_well"
+
+[[object]]
+id = "loc.desertwell"
+inherit = "loc.desertwell"
+contentGroup = "content.water_source_well"
+
+[[object]]
+id = "loc.fai_falador_well"
+inherit = "loc.fai_falador_well"
+contentGroup = "content.water_source_well"
+
+[[object]]
+id = "loc.dwarf_keldagrim_well"
+inherit = "loc.dwarf_keldagrim_well"
+contentGroup = "content.water_source_well"
+
+[[object]]
+id = "loc.gnome_well"
+inherit = "loc.gnome_well"
+contentGroup = "content.water_source_well"
+
+[[object]]
+id = "loc.fossil_well_built"
+inherit = "loc.fossil_well_built"
+contentGroup = "content.water_source_well"
+
+[[object]]
+id = "loc.elf_village_well"
+inherit = "loc.elf_village_well"
+contentGroup = "content.water_source_well"
+
+[[object]]
+id = "loc.burgh_well"
+inherit = "loc.burgh_well"
+contentGroup = "content.water_source_well"
+
+[[object]]
+id = "loc.well_oasis"
+inherit = "loc.well_oasis"
+contentGroup = "content.water_source_well"
+
+[[object]]
+id = "loc.aldarin_well"
+inherit = "loc.aldarin_well"
+contentGroup = "content.water_source_well"
+
+[[object]]
+id = "loc.rellekka_well"
+inherit = "loc.rellekka_well"
+contentGroup = "content.water_source_well"
+
+[[object]]
+id = "loc.well_drakan01_ruined01"
+inherit = "loc.well_drakan01_ruined01"
+contentGroup = "content.water_source_well"
+
+[[object]]
+id = "loc.kebos_farming_guild_watertap"
+inherit = "loc.kebos_farming_guild_watertap"
+contentGroup = "content.water_source_tap"
+
+[[object]]
+id = "loc.goldfountain"
+inherit = "loc.goldfountain"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.feud_fountain"
+inherit = "loc.feud_fountain"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.draynor_fountain"
+inherit = "loc.draynor_fountain"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.fai_falador_fountain"
+inherit = "loc.fai_falador_fountain"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.dorgesh_fountain"
+inherit = "loc.dorgesh_fountain"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.fai_varrock_fountain_splash"
+inherit = "loc.fai_varrock_fountain_splash"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.hos_fountain"
+inherit = "loc.hos_fountain"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.shayzien_fountain"
+inherit = "loc.shayzien_fountain"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.talkasti01_fountain01_default01"
+inherit = "loc.talkasti01_fountain01_default01"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.civitas_fountain01"
+inherit = "loc.civitas_fountain01"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.myq4_fountain_op"
+inherit = "loc.myq4_fountain_op"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.myq4_fountain_noop"
+inherit = "loc.myq4_fountain_noop"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.deal_sink"
+inherit = "loc.deal_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.darkm_poor_sink"
+inherit = "loc.darkm_poor_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.darkm_middle_sink"
+inherit = "loc.darkm_middle_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.darkm_rich_sink"
+inherit = "loc.darkm_rich_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.dorgesh_sink"
+inherit = "loc.dorgesh_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.100_dave_sink"
+inherit = "loc.100_dave_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.swan_sink1"
+inherit = "loc.swan_sink1"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.kr_sink"
+inherit = "loc.kr_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.contact_sink"
+inherit = "loc.contact_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.farm_sink"
+inherit = "loc.farm_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.sink"
+inherit = "loc.sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.sink2"
+inherit = "loc.sink2"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.fai_varrock_dirty_sink"
+inherit = "loc.fai_varrock_dirty_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.mortton_sink"
+inherit = "loc.mortton_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.qip_sheep_shearer_sink"
+inherit = "loc.qip_sheep_shearer_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.aide_sink"
+inherit = "loc.aide_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.lunar_moonclan_sink_small"
+inherit = "loc.lunar_moonclan_sink_small"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.lunar_moonclan_sink"
+inherit = "loc.lunar_moonclan_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.kr_sin_sink2"
+inherit = "loc.kr_sin_sink2"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.piscarilius_sink_01"
+inherit = "loc.piscarilius_sink_01"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.piscarilius_sink_02"
+inherit = "loc.piscarilius_sink_02"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.lovakengj_sink"
+inherit = "loc.lovakengj_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.con_contract_hosidius_north_sink_fixed"
+inherit = "loc.con_contract_hosidius_north_sink_fixed"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.akd_shayzien_sink"
+inherit = "loc.akd_shayzien_sink"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.myq6_kitchen01_sink01"
+inherit = "loc.myq6_kitchen01_sink01"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.swan_sink2"
+inherit = "loc.swan_sink2"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.slug2_sink2"
+inherit = "loc.slug2_sink2"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.fai_falador_waterpump"
+inherit = "loc.fai_falador_waterpump"
+contentGroup = "content.water_source_pump"
+
+[[object]]
+id = "loc.barrows_waterpump"
+inherit = "loc.barrows_waterpump"
+contentGroup = "content.water_source_pump"
+
+[[object]]
+id = "loc.fortis_water_pump"
+inherit = "loc.fortis_water_pump"
+contentGroup = "content.water_source_pump"
+
+[[object]]
+id = "loc.fai_varrock_waterpump"
+inherit = "loc.fai_varrock_waterpump"
+contentGroup = "content.water_source_pump"
+
+[[object]]
+id = "loc.pandemonium_water_pump"
+inherit = "loc.pandemonium_water_pump"
+contentGroup = "content.water_source_pump"
+
+[[object]]
+id = "loc.sink_lassar01_default01"
+inherit = "loc.sink_lassar01_default01"
+contentGroup = "content.water_source_pump"
+
+[[object]]
+id = "loc.water_barrel1"
+inherit = "loc.water_barrel1"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.water_barrel2"
+inherit = "loc.water_barrel2"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.farm_water_barrel1"
+inherit = "loc.farm_water_barrel1"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.farm_water_barrel2"
+inherit = "loc.farm_water_barrel2"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.gnome_waterbarrel"
+inherit = "loc.gnome_waterbarrel"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.shayzien_barrel_water_dark"
+inherit = "loc.shayzien_barrel_water_dark"
+contentGroup = "content.water_source"
+
+[[object]]
+id = "loc.fris_rock_geyser"
+inherit = "loc.fris_rock_geyser"
+contentGroup = "content.water_source"

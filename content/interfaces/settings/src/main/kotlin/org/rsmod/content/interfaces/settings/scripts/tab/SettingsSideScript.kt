@@ -1,7 +1,10 @@
 package org.rsmod.content.interfaces.settings.scripts.tab
 
 import dev.openrune.definition.type.widget.IfEvent
+import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
+import org.rsmod.api.player.output.ClientScripts
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.ifSetEvents
 import org.rsmod.api.player.vars.enumVarBit
@@ -23,6 +26,7 @@ class SettingsSideScript @Inject constructor(private val protectedAccess: Protec
         onIfOverlayButton("component.settings_side:audio_tab") { player.panel = Panel.Audio }
         onIfOverlayButton("component.settings_side:display_tab") { player.panel = Panel.Display }
 
+        onIfOverlayButton("component.toplevel_osrs_stretch:stone11") { player.selectStoneOp(it.op) }
     }
 
     private fun Player.updateIfEvents() {
@@ -36,6 +40,17 @@ class SettingsSideScript @Inject constructor(private val protectedAccess: Protec
         ifSetEvents("component.settings_side:brightness_bobble_container", 0..21, IfEvent.Op1)
     }
 
+    private fun Player.selectStoneOp(op: IfButtonOp) {
+        panel =
+            when (op) {
+                IfButtonOp.Op2 -> Panel.Control
+                IfButtonOp.Op3 -> Panel.Audio
+                IfButtonOp.Op4 -> Panel.Display
+                else -> return
+            }
+        ClientScripts.toplevelSidebuttonSwitch(this, 11)
+        soundSynth("synth.interface_select")
+    }
 }
 
 private enum class Panel(override val varValue: Int) : VarEnumDelegate {

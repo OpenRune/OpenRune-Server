@@ -217,6 +217,25 @@ class DaddysHomeInteractionTest {
     }
 
     @Test
+    fun `the crates only top up to three waxwood logs counting planks and the bank`() {
+        val f = Fixture(DaddysHomeQuest.BUILDING)
+        f.setAll(Furniture.CLEARED)
+        f.crates()
+        f.crates()
+        assertEquals(3, f.player.inv.count("obj.daddyshome_waxwood_logs"))
+
+        val mixed = Fixture(DaddysHomeQuest.BUILDING)
+        mixed.setAll(Furniture.CLEARED)
+        mixed.give("obj.daddyshome_waxwood_plank" to 1)
+        mixed.player.invMap.getOrPut("inv.bank")[0] = InvObj("obj.daddyshome_waxwood_logs", 1)
+        mixed.crates()
+        assertEquals(1, mixed.player.inv.count("obj.daddyshome_waxwood_logs"))
+        mixed.crates()
+        assertEquals(1, mixed.player.inv.count("obj.daddyshome_waxwood_logs"))
+        assertTrue(mixed.output().contains("find nothing interesting"), mixed.output())
+    }
+
+    @Test
     fun `a full inventory does not lose the logs`() {
         val f = Fixture(DaddysHomeQuest.BUILDING)
         f.setAll(Furniture.CLEARED)

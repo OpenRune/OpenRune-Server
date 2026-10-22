@@ -18,6 +18,7 @@ import net.rsprot.protocol.game.incoming.locs.OpLocT
 import net.rsprot.protocol.game.incoming.locs.OpLocV2
 import net.rsprot.protocol.game.incoming.messaging.MessagePrivate
 import net.rsprot.protocol.game.incoming.messaging.MessagePublic
+import net.rsprot.protocol.game.incoming.misc.client.Idle
 import net.rsprot.protocol.game.incoming.misc.client.MapBuildComplete
 import net.rsprot.protocol.game.incoming.misc.client.WindowStatus
 import net.rsprot.protocol.game.incoming.misc.user.ClickWorldMap
@@ -50,6 +51,7 @@ import org.rsmod.api.net.rsprot.handlers.ClientCheatHandler
 import org.rsmod.api.net.rsprot.handlers.CloseModalHandler
 import org.rsmod.api.net.rsprot.handlers.FriendListAddHandler
 import org.rsmod.api.net.rsprot.handlers.FriendListDeleteHandler
+import org.rsmod.api.net.rsprot.handlers.IdleHandler
 import org.rsmod.api.net.rsprot.handlers.If1ButtonHandler
 import org.rsmod.api.net.rsprot.handlers.If3ButtonHandler
 import org.rsmod.api.net.rsprot.handlers.IfButtonDHandler
@@ -112,6 +114,7 @@ constructor(
     private val if1Button: If1ButtonHandler,
     private val if3Button: If3ButtonHandler,
     private val closeModal: CloseModalHandler,
+    private val idle: IdleHandler,
     private val resumePauseButton: ResumePauseButtonHandler,
     private val opObj: OpObjHandler,
     private val opObj6: OpObj6Handler,
@@ -152,6 +155,7 @@ constructor(
         builder.addListener(If1Button::class.java, if1Button)
         builder.addListener(If3Button::class.java, if3Button)
         builder.addListener(CloseModal::class.java, closeModal)
+        builder.addListener(Idle::class.java, idle)
         builder.addListener(ResumePauseButton::class.java, resumePauseButton)
         builder.addListener(OpObjV2::class.java, opObj)
         builder.addListener(OpObj6::class.java, opObj6)

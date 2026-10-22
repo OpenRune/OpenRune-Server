@@ -32,3 +32,8 @@ endBit = 31
 id = "varobj.venator_bow_charges"
 startBit = 0
 endBit = 15
+
+[[varobj]]
+id = "varobj.bottomless_milk_type"
+startBit = 14
+endBit = 15

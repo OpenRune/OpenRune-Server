@@ -1,11 +1,11 @@
 package org.rsmod.content.interfaces.gameframe
 
-import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.enum
 import dev.openrune.types.dbcol.DbColumnCodec.ComponentTypeCodec
+import dev.openrune.types.dbcol.DbColumnCodec.IntCodec
 import org.rsmod.api.table.GameframeRow
 import org.rsmod.game.ui.Component
 
@@ -59,6 +59,11 @@ internal class GameframeLoader {
             val from = RSCM.getReverseMapping(RSCMType.COMPONENT, it.key.packed)
             val to = RSCM.getReverseMapping(RSCMType.COMPONENT, it.value.packed)
             from to to
+        }
+
+    fun loadStoneOps(): Map<String, Int> =
+        enum("enum.toplevel_stone_ops", ComponentTypeCodec, IntCodec).associate {
+            RSCM.getReverseMapping(RSCMType.COMPONENT, it.key.packed) to it.value
         }
 
     val overlays: List<GameframeOverlay> =

@@ -20,7 +20,7 @@ class GeneralStore @Inject constructor(private val shops: Shops) : PluginScript(
     }
 
     private fun Player.openGeneralStore(npc: Npc) {
-        shops.open(this, npc, "Varrock General Store", "inv.generalshop3")
+        shops.open(this, npc, "Varrock General Store", "inv.generalshop2")
     }
 
     private suspend fun ProtectedAccess.shopDialogue(npc: Npc) =

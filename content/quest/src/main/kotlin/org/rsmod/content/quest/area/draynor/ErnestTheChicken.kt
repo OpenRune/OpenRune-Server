@@ -305,6 +305,9 @@ constructor(
             chatPlayer(happy, "Well a cash reward is always nice...")
             chatNpcSpecific("Ernest", "npc.ernest", happy, "Of course, of course.")
         }
+        if (!quest.isQuestCompleted(player)) {
+            chatNpc(neutral, "Make some room for your reward, then speak to me again.")
+        }
     }
 
     private suspend fun Dialogue.afterQuest() {

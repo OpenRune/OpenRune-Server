@@ -1,16 +1,18 @@
 package org.rsmod.content.other.mapclock
 
 import jakarta.inject.Inject
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 class MapClockScript @Inject constructor(private val clock: MapClock) : PluginScript() {
     private var Player.playtime by intVarp("varp.playtime")
@@ -20,6 +22,7 @@ class MapClockScript @Inject constructor(private val clock: MapClock) : PluginSc
     private var Player.runeday by intVarBit("varbit.current_runeday")
 
     override fun ScriptContext.startup() {
+        onEvent<SessionStateEvent.PrepareLogin> { player.mapClock = clock.cycle }
         onPlayerLogin {
             player.initClockTimer()
             player.runeday = currentRuneday()

@@ -53,5 +53,9 @@ public enum class UntradeableHandling {
 public const val RECENT_PVP_HIT_TICKS: Int = 50
 
 public interface PlayerDeathHook {
+    /** Hooks with a higher priority are asked first; the first non-null handling wins. */
+    public val priority: Int
+        get() = 0
+
     public fun handleDeath(context: PlayerDeathContext): PlayerDeathHandling?
 }

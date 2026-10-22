@@ -1,0 +1,25 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.farming_tools_fairyversion"
+name = "Fairy Fixit's Fairy Enchantment"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1000
+buyMultiplier = 600
+delta = 10
+
+size = 1
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.poh_fairy_enchantment"
+count = 4
+restockCycles = 1
+
