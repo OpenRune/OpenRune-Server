@@ -6,6 +6,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.content.raids.toa.party.ToaPartyManager
 import org.rsmod.content.raids.toa.party.openLobbyHud
+import org.rsmod.content.raids.toa.raid.encounter.Arrival
 import org.rsmod.content.raids.toa.raid.encounter.ToaEncounter
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.game.entity.Player
@@ -114,7 +115,12 @@ internal suspend fun ProtectedAccess.travelInFight(target: ToaEncounter) {
         return
     }
 
-    val arrival = target.arrival()
+    val arrival =
+        if (raid.isGhost(player)) {
+            Arrival(target.coords(target.room.randomSpawn(random)), facing = null)
+        } else {
+            target.arrival()
+        }
     ToaRaidManager.moveTo(player, target)
     if (arrival.sceneCentre != null) {
         telejump(arrival.sceneCentre, TeleportType.Exempt)

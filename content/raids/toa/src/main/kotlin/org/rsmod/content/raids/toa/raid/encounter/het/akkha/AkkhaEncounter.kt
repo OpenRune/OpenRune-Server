@@ -131,6 +131,7 @@ class AkkhaEncounter(
         if (hit.isFromPlayer) shadows.disrupt()
         hpBar?.update()
         if (capped) {
+            memory.clear()
             trail.clear()
             finalStand.begin(boss)
         } else if (boss.hitpoints > 0) {
@@ -283,6 +284,7 @@ class AkkhaEncounter(
         val boss = akkha
         if (stage != ToaStage.STARTED || boss == null) return "The fight isn't running."
         capped = true
+        memory.clear()
         trail.clear()
         finalStand.begin(boss)
         return null
