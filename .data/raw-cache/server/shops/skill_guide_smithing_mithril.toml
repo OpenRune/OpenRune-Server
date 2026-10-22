@@ -1,0 +1,180 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_smithing_mithril"
+name = "Darkmeyer Seamstress"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1300
+buyMultiplier = 400
+delta = 20
+
+size = 32
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.needle"
+count = 8
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.thread"
+count = 50
+restockCycles = 20
+
+[[inventory.stock]]
+obj = "obj.ball_of_wool"
+count = 20
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.silk"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.werewolve_fur"
+count = 3
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_shoes"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_legs"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_torso"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_legs_1"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_legs_5"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_legs_9"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_torso_1"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_torso_5"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_torso_9"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_legs_2"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_legs_6"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_legs_10"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_torso_2"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_torso_6"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_torso_10"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_legs_3"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_legs_7"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_legs_11"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_torso_3"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_torso_7"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_torso_11"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_legs_4"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_legs_8"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_legs_12"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_torso_4"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_torso_8"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.vyrelord_torso_12"
+count = 10
+restockCycles = 100
+
