@@ -5,7 +5,6 @@ import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.game.entity.Player
-import toRs
 
 data class QuestJournalContent(
     val subTitle: () -> String,
@@ -63,9 +62,8 @@ object QuestJournalRegistry {
     }
 
     private fun openQuestLog(access: ProtectedAccess, quest: Quest, content: QuestJournalContent) {
-        val lines = (if (quest.isQuestCompleted(access.player)) content.completedLog(access) else content.questLog(access))
-            .lines()
-            .flatMap { it.toRs(inheritPreviousTags = true, wrapAt = 64).split("<br>") }
+        val log = if (quest.isQuestCompleted(access.player)) content.completedLog(access) else content.questLog(access)
+        val lines = journalLines(log)
 
         access.ifOpenMain("interface.questjournal")
         access.runClientScript(5240)
