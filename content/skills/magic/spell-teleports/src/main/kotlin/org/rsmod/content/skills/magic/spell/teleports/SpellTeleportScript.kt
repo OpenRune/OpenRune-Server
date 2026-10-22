@@ -22,6 +22,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onPlayerQueueWithArgs
+import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.api.utils.time.epochMinute
 import org.rsmod.content.quest.manager.QuestRequirements
@@ -37,6 +38,7 @@ constructor(
     private val runes: MagicRuneManager,
     private val teleportValidator: PlayerTeleportValidator,
     private val areaChecker: AreaChecker,
+    private val config: ServerConfig,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         for (teleport in SpellTeleport.entries) {
@@ -122,7 +124,8 @@ constructor(
             mes("You can't use that teleport at the moment.")
             return
         }
-        val minutesLeft = HomeTeleportCooldown - (epochMinute() - vars[HomeTeleportTimer])
+        val cooldown = config.gameplay.homeTeleportCooldown
+        val minutesLeft = cooldown - (epochMinute() - vars[HomeTeleportTimer])
         if (minutesLeft > 0) {
             // UNVERIFIED: singular "minute" when one is left (guess)
             val unit = if (minutesLeft == 1) "minute" else "minutes"
@@ -486,7 +489,6 @@ constructor(
 
         private const val HomeTeleportQueue = "queue.home_teleport"
         private const val HomeTeleportTimer = "varp.aide_tele_timer"
-        private const val HomeTeleportCooldown = 30
         private const val HomeTeleportLandingTick = 24
 
         // A weak queue added before or during queue processing is decremented on that same tick.
