@@ -84,6 +84,7 @@ cooks_assistant_ingredients = 63705
 gertrudes_cat_state = 63711
 daddyshome_state = 64064
 waterfall_state = 64310
+sheep_shearer_state = 65472
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
@@ -105,6 +106,8 @@ waterfall_progress = 64310
 waterfall_heard_of_treasure = 64311
 waterfall_met_golrie = 64312
 waterfall_pillar_runes = 64313
+sheep_shearer_progress = 65449
+sheep_shearer_saw_thing = 65448
 
 [gamevals.bas]
 waterfall_wading = 1
