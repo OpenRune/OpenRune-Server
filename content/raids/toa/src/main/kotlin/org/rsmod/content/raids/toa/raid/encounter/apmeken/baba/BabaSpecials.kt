@@ -2,10 +2,8 @@ package org.rsmod.content.raids.toa.raid.encounter.apmeken.baba
 
 import kotlin.math.abs
 import kotlin.math.max
-import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.dsl.CurrentTargetTile
 import org.rsmod.api.bosses.dsl.CurrentTile
-import org.rsmod.api.bosses.dsl.ImpactTile
 import org.rsmod.api.bosses.dsl.InPhase
 import org.rsmod.api.bosses.dsl.Now
 import org.rsmod.api.bosses.dsl.Typeless
@@ -23,8 +21,8 @@ import org.rsmod.api.bosses.dsl.mapSpotanim
 import org.rsmod.api.bosses.dsl.message
 import org.rsmod.api.bosses.dsl.not
 import org.rsmod.api.bosses.dsl.offset
-import org.rsmod.api.bosses.dsl.oneOf
 import org.rsmod.api.bosses.dsl.onTiles
+import org.rsmod.api.bosses.dsl.oneOf
 import org.rsmod.api.bosses.dsl.playersOn
 import org.rsmod.api.bosses.dsl.plus
 import org.rsmod.api.bosses.dsl.projectile
@@ -41,6 +39,7 @@ import org.rsmod.api.bosses.dsl.weightedRandom
 import org.rsmod.api.bosses.dsl.whenever
 import org.rsmod.api.bosses.dsl.withTile
 import org.rsmod.api.bosses.dsl.withTiles
+import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.bosses.spec.TargetExpr

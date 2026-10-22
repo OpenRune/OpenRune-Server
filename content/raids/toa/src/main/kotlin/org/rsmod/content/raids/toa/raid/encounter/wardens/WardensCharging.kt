@@ -12,13 +12,13 @@ import org.rsmod.content.raids.toa.raid.encounter.spotanim
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.util.EntityExactMove
-import org.rsmod.map.util.Translation
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
+import org.rsmod.map.util.Translation
 
 internal class WardensCharging(private val room: WardensEncounter) {
     private val orbCharge: Int
@@ -106,7 +106,7 @@ internal class WardensCharging(private val room: WardensEncounter) {
             radius = ORB_SOUND_RADIUS,
         )
         for (god in WardenGod.entries.reversed()) {
-            val spawn =WardenGod.OBELISK_CENTRE.translate(god.orbSide * WardenGod.ORB_SPAWN_OFFSET, 0)
+            val spawn = WardenGod.OBELISK_CENTRE.translate(god.orbSide * WardenGod.ORB_SPAWN_OFFSET, 0)
             val npc = room.spawn("npc.toa_wardens_energy", room.coords(spawn), god.orbFacing)
             npc.pendingTelejump = false
             npc.anim("seq.zuk_proj")

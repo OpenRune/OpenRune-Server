@@ -9,8 +9,8 @@ import org.rsmod.api.player.stat.miningLvl
 import org.rsmod.content.raids.toa.lobby.LobbyCavity
 import org.rsmod.content.raids.toa.lobby.ToaPickaxeStorage
 import org.rsmod.game.entity.Player
-import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.InvObj
+import org.rsmod.game.inv.Inventory
 import org.rsmod.game.type.getInvObj
 
 internal class HetPickaxe(val obj: InvObj, val tier: Int, val animation: String)

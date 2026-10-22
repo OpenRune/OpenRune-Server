@@ -3,12 +3,12 @@ package org.rsmod.content.raids.toa.raid.encounter.wardens
 import dev.openrune.types.MoveRestrict
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
-import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.bosses.runtime.encounter
 import org.rsmod.api.bosses.runtime.interrupt
 import org.rsmod.api.bosses.runtime.runAbility
 import org.rsmod.api.bosses.runtime.suppressAttacks
 import org.rsmod.api.death.NpcAttackValidateResult
+import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.player.output.mes
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
@@ -19,8 +19,8 @@ import org.rsmod.content.raids.toa.raid.encounter.ToaFight
 import org.rsmod.content.raids.toa.raid.encounter.ToaHpBar
 import org.rsmod.content.raids.toa.raid.encounter.ToaStage
 import org.rsmod.content.raids.toa.raid.encounter.WardensSecondEncounter
-import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.encounter.crondis.zebak.isBeside
+import org.rsmod.content.raids.toa.raid.encounter.npcType
 import org.rsmod.content.raids.toa.raid.travelInFight
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player

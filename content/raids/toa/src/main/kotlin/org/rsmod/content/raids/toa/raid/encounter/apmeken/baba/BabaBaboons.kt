@@ -1,9 +1,9 @@
 package org.rsmod.content.raids.toa.raid.encounter.apmeken.baba
 
 import dev.openrune.ServerCacheManager
-import org.rsmod.annotations.InternalApi
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import org.rsmod.annotations.InternalApi
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.opNpc1
 import org.rsmod.api.npc.vars.intVarn

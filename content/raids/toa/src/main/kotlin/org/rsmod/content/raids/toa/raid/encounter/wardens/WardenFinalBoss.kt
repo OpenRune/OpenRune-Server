@@ -1,14 +1,14 @@
 package org.rsmod.content.raids.toa.raid.encounter.wardens
 
 import jakarta.inject.Inject
+import org.rsmod.api.bosses.dsl.after
 import org.rsmod.api.bosses.dsl.anim
 import org.rsmod.api.bosses.dsl.boss
 import org.rsmod.api.bosses.dsl.external
 import org.rsmod.api.bosses.dsl.interrupt
 import org.rsmod.api.bosses.dsl.nextAttackIn
-import org.rsmod.api.bosses.dsl.after
-import org.rsmod.api.bosses.dsl.transitionTo
 import org.rsmod.api.bosses.dsl.sequence
+import org.rsmod.api.bosses.dsl.transitionTo
 import org.rsmod.api.bosses.dsl.whenever
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps

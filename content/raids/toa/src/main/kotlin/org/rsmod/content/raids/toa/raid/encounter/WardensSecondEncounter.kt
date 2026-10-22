@@ -6,10 +6,10 @@ import kotlin.math.min
 import org.rsmod.api.bosses.runtime.forceNext
 import org.rsmod.api.bosses.runtime.runAbility
 import org.rsmod.api.death.NpcAttackValidateResult
+import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.Camera
-import org.rsmod.api.instances.InstanceSession
 import org.rsmod.content.raids.toa.raid.ToaRaid
 import org.rsmod.content.raids.toa.raid.ToaRoom
 import org.rsmod.content.raids.toa.raid.encounter.wardens.WardenEnrage
