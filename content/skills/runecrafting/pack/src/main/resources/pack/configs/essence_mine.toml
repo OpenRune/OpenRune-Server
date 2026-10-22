@@ -1,0 +1,4 @@
+[[varp]]
+id = "varp.essence_mine_teleporter"
+scope = "Perm"
+transmit = "Never"
