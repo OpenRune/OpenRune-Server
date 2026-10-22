@@ -156,13 +156,17 @@ data class Quest(
         return setQuestStage(access, attemptedStage.coerceIn(0, maxSteps))
     }
 
-    fun completeQuest(access: ProtectedAccess, additionalRewards: List<InvObj> = emptyList()): Boolean =
-        setQuestStage(access, maxSteps, additionalRewards)
+    fun completeQuest(
+        access: ProtectedAccess,
+        additionalRewards: List<InvObj> = emptyList(),
+        onCompleted: ProtectedAccess.() -> Unit = {},
+    ): Boolean = setQuestStage(access, maxSteps, additionalRewards, onCompleted)
 
     fun setQuestStage(
         access: ProtectedAccess,
         newStage: Int,
         additionalRewards: List<InvObj> = emptyList(),
+        onCompleted: ProtectedAccess.() -> Unit = {},
     ): Boolean {
         require(newStage in 0..maxSteps) { "Quest '$key' stage must be within 0..$maxSteps." }
         val oldStage = getQuestStage(access.player)
@@ -183,6 +187,7 @@ data class Quest(
         }
 
         if (!wasCompleted && newStage >= maxSteps) {
+            access.onCompleted()
             completedQuest(access)
         }
 

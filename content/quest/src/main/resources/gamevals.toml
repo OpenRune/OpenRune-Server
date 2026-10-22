@@ -5,3 +5,6 @@ quest_available_set = 45550
 quest_scroll_close = 402
 quest_dialogue_close = 403
 cots_tail = 430
+
+[gamevals.queue]
+quest_scroll_continue = 64440
