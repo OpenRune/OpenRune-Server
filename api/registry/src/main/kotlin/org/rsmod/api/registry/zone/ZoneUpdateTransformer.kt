@@ -156,7 +156,7 @@ public object ZoneUpdateTransformer {
     }
 
     private fun Obj.copy(): Obj =
-        Obj(coords, entity, creationCycle, receiverId).also { it.copyTimers(this) }
+        Obj(coords, entity, creationCycle, receiverId, ownerId).also { it.copyTimers(this) }
 
     private const val OWNERSHIP_NONE = 0
     private const val OWNERSHIP_SELF = 1

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.rsmod.api.registry.zone.ZoneUpdateTransformer.ObjPrivateZoneProt
 import org.rsmod.game.obj.Obj
 import org.rsmod.game.obj.ObjEntity
 import org.rsmod.game.obj.ObjScope
@@ -80,6 +81,16 @@ class ObjAddTimersTest {
         assertEquals(0, prot.timeUntilDespawn)
         assertEquals(OWNERSHIP_NONE, prot.ownershipType)
         assertFalse(prot.neverBecomesPublic)
+    }
+
+    @Test
+    fun `private zone prots keep the original owner of the obj`() {
+        val obj = ownedObj(dropCycle = 1000, reveal = 1100, despawn = 1300)
+        val copy = (ZoneUpdateTransformer.toPrivateObjAddProt(obj) as ObjPrivateZoneProt).obj
+        assertEquals(OWNER, copy.ownerId)
+        assertEquals(OWNER, copy.receiverId)
+        assertEquals(1300, copy.despawnCycle)
+        assertTrue(copy.isOriginalOwner(OWNER))
     }
 
     private companion object {

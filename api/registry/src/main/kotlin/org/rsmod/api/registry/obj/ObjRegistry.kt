@@ -111,7 +111,9 @@ public class ObjRegistry @Inject constructor(private val updates: ZoneUpdateMap)
     }
 
     private fun Obj.singleCopy(): Obj =
-        Obj(coords, entity.copy(count = 1), creationCycle, receiverId).also { it.copyTimers(this) }
+        Obj(coords, entity.copy(count = 1), creationCycle, receiverId, ownerId).also {
+            it.copyTimers(this)
+        }
 
     public companion object {
         /**
