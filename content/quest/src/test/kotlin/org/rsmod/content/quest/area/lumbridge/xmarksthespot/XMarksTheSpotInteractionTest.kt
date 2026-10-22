@@ -124,6 +124,10 @@ class XMarksTheSpotInteractionTest {
         f.talkToVeosAtSarim()
         f.finish()
         f.assertReward()
+        assertEquals(
+            listOf(Lamp, ScrollBox, "obj.coins").map { it.asRSCM() },
+            (0 until 3).map { f.player.inv[it]?.id },
+        )
         f.talkToVeosAtSarim(expectQuestDialogue = false)
         f.finish()
         f.assertReward()
@@ -184,10 +188,10 @@ class XMarksTheSpotInteractionTest {
         f.assertReward()
     }
 
-    @Test fun `inventory changes during the farewell defer all rewards until there is room`() {
+    @Test fun `inventory changes before the reward defer all rewards until there is room`() {
         val f = Fixture(7)
         f.talkToVeosAtSarim()
-        f.until { f.output().contains("And as promised, here's your reward.") }
+        f.until { f.output().contains("Anyway, as promised, a reward for you.") }
         f.fillInventory()
         f.finish()
         assertEquals(7, f.stage())
@@ -199,6 +203,29 @@ class XMarksTheSpotInteractionTest {
         f.talkToVeosAtSarim()
         f.finish()
         f.assertReward()
+    }
+
+    @Test fun `an owned scroll box is not given twice but can be claimed once later`() {
+        val f = Fixture(6)
+        f.player.inv[0] = InvObj(Casket, 1)
+        f.player.inv[1] = InvObj(ScrollBox, 1)
+        f.talkToVeosAtSarim()
+        f.finish()
+        assertEquals(8, f.stage())
+        assertEquals(1, f.player.inv.count(ScrollBox))
+        assertEquals(0, f.player.vars["varbit.cluequest_clue_reward"])
+        assertEquals(1, f.player.vars["varbit.cluequest_coin_reward"])
+        f.talkToVeosAtSarim(expectQuestDialogue = false)
+        f.finish()
+        f.player.inv[1] = null
+        f.talkToVeosAtSarim()
+        f.finish()
+        assertEquals(1, f.player.inv.count(ScrollBox))
+        assertEquals(1, f.player.vars["varbit.cluequest_clue_reward"])
+        f.player.inv[1] = null
+        f.talkToVeosAtSarim(expectQuestDialogue = false)
+        f.finish()
+        assertEquals(0, f.player.inv.count(ScrollBox))
     }
 
     @Test fun `the antique lamp grants experience in the chosen skill`() {
@@ -366,8 +393,10 @@ class XMarksTheSpotInteractionTest {
             assertEquals(1, player.vars["varp.qp"])
             assertEquals(200, player.inv.count("obj.coins"))
             assertEquals(1, player.inv.count(Lamp))
-            assertEquals(1, player.inv.count("obj.league_clue_box_beginner"))
+            assertEquals(1, player.inv.count(ScrollBox))
             assertEquals(0, player.inv.count(Casket))
+            assertEquals(1, player.vars["varbit.cluequest_clue_reward"])
+            assertEquals(1, player.vars["varbit.cluequest_coin_reward"])
         }
 
         fun output() = client.messages.joinToString("\n")
@@ -396,6 +425,7 @@ class XMarksTheSpotInteractionTest {
         private const val Orb = "obj.cluequest_clue3"
         private const val Casket = "obj.cluequest_casket"
         private const val Lamp = "obj.cluequest_lamp"
+        private const val ScrollBox = "obj.league_clue_box_beginner"
         private val restored = mutableListOf<() -> Unit>()
 
         @OptIn(InternalApi::class)
