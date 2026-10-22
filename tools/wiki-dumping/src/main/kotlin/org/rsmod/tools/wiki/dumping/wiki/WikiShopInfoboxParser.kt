@@ -1,7 +1,5 @@
 package org.rsmod.tools.wiki.dumping.wiki
 
-
-
 data class ParsedWikiShopInfobox(
 
     val pageTitle: String,
@@ -10,18 +8,16 @@ data class ParsedWikiShopInfobox(
 
     val infoboxName: String,
 
+    val generalStore: Boolean = false,
+
 ) {
 
     val displayName: String
 
         get() = rsName?.takeIf { it.isNotBlank() } ?: infoboxName
 
-
-
     fun slugFromTitle(): String = WikiShopInfoboxParser.wikiSlugFromTitle(pageTitle)
 }
-
-
 
 object WikiShopInfoboxParser {
 
@@ -29,18 +25,13 @@ object WikiShopInfoboxParser {
 
         Regex("""\{\{Infobox\s+Shop\b""", RegexOption.IGNORE_CASE)
 
-
-
     fun pageHasShopInfobox(wikitext: String): Boolean = shopInfoboxStart.containsMatchIn(wikitext)
-
-
 
     fun parseShopInfobox(pageTitle: String, wikitext: String): ParsedWikiShopInfobox? {
 
         val block =
 
             shopInfoboxStart
-
                 .find(wikitext)
 
                 ?.range
@@ -50,8 +41,6 @@ object WikiShopInfoboxParser {
                 ?.let { start -> WikiText.extractBalancedTemplate(wikitext, start) }
 
                 ?: return null
-
-
 
         val params = WikiTemplateParser.parseParams(stripInfoboxHeader(block))
 
@@ -65,8 +54,6 @@ object WikiShopInfoboxParser {
 
                 ?: pageTitle
 
-
-
         return ParsedWikiShopInfobox(
 
             pageTitle = pageTitle,
@@ -75,65 +62,44 @@ object WikiShopInfoboxParser {
 
             infoboxName = infoboxName,
 
+            generalStore = isGeneralStore(params["special"]),
+
         )
-
     }
-
-
 
     fun parseExternalRsName(wikitext: String): String? =
 
         WikiTemplateParser
-
             .extractTemplates(wikitext, "External")
-
             .asSequence()
-
             .map { content -> WikiTemplateParser.parseParams(content)["rs"] }
-
             .mapNotNull { value -> value?.let(::sanitizeWikiMarkup)?.takeIf { it.isNotBlank() } }
-
             .firstOrNull()
 
-
+    fun isGeneralStore(special: String?): Boolean =
+        special?.let(::sanitizeWikiMarkup).equals("General store", ignoreCase = true)
 
     private fun stripInfoboxHeader(block: String): String {
 
         val headerEnd = block.indexOf('\n').takeIf { it >= 0 } ?: block.length
 
         return block.substring(headerEnd).removeSuffix("}}").trim()
-
     }
-
-
 
     private fun sanitizeWikiMarkup(input: String): String =
 
         input
-
             .replace(Regex("""\[\[([^|\]]+)\|([^\]]+)]]"""), "$2")
-
             .replace(Regex("""\[\[([^\]]+)]]"""), "$1")
-
             .replace("'''", "")
-
             .replace("''", "")
-
             .trim()
-
-
 
     fun wikiSlugFromTitle(title: String): String =
 
         title
-
             .lowercase()
-
             .replace(Regex("[''`]"), "")
-
             .replace(Regex("[^a-z0-9]+"), "_")
-
             .trim('_')
-
 }
-
