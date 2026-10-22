@@ -18,7 +18,7 @@ class NardahGeneralStore @Inject constructor(private val shops: Shops) : PluginS
         }
     }
 
-    private fun Player.openGeneralStore(npc: Npc) = shops.open(this, npc, "Nardah General Store.", "inv.generalshopnardah")
+    private fun Player.openGeneralStore(npc: Npc) = shops.open(this, npc, "Nardah General Store", "inv.generalshopnardah")
 
     private suspend fun Dialogue.generalStore(npc: Npc) {
         chatNpc(happy, "Can I help you at all?")
