@@ -12,8 +12,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 public class MusicTimerScript @Inject constructor(private val musicPlayer: MusicPlayer) :
     PluginScript() {
-    private val Player.masterVolume by intVarBit("varbit.option_master_volume_desktop")
-    private val Player.musicVolume by intVarBit("varbit.option_music_desktop")
     private var Player.currMusicId by intVarBit("varbit.music_curr_id")
     private var Player.musicClock by intVarBit("varbit.music_curr_clocks")
     private var Player.musicDuration by intVarBit("varbit.music_curr_duration")
@@ -36,14 +34,14 @@ public class MusicTimerScript @Inject constructor(private val musicPlayer: Music
     }
 
     private fun Player.musicResume() {
-        if (isMusicMuted()) {
+        if (musicPlayer.isMuted(this)) {
             return
         }
         musicPlayer.enable(this)
     }
 
     private fun Player.musicSync() {
-        if (isMusicMuted()) {
+        if (musicPlayer.isMuted(this)) {
             return
         }
 
@@ -62,9 +60,5 @@ public class MusicTimerScript @Inject constructor(private val musicPlayer: Music
             musicPlayer.stop(this)
             return
         }
-    }
-
-    private fun Player.isMusicMuted(): Boolean {
-        return masterVolume == 0 || musicVolume == 0
     }
 }
