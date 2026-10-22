@@ -48,7 +48,7 @@ internal object CrondisSynths {
     const val WATER_PALM = "synth.toa_crondis_water_tree_02"
     const val PALM_GROW = "synth.toa_crondis_tree_grow_02"
     const val PALM_SHRINK = "synth.toa_crondis_water_lost_02"
-    const val SPILL = "synth.liquid"
+    const val SPILL = "synth.bucket_pour"
     const val SPEAR_OUT = "synth.toa_crondis_croc_spear_trap_spear_expand_04"
     const val ACID_ORB = "synth.mory_vanstrom_orb_spawn"
     const val CROC_ATTACK = "synth.crocodile_attack"
