@@ -1,6 +1,9 @@
 package org.rsmod.content.quest.manager
 
 import RsColor
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.FontType
+import java.nio.charset.Charset
 
 internal fun journalLines(text: String): List<String> = text.lines().flatMap(::journalLine)
 
@@ -9,6 +12,7 @@ private class Glyph(
     val colour: String?,
     val base: String?,
     val visible: Boolean = true,
+    val measured: Char = text[0],
 )
 
 private fun journalLine(source: String): List<String> {
@@ -20,13 +24,15 @@ private fun journalLine(source: String): List<String> {
     var index = 0
     while (index < source.length) {
         val tag = TAG.matchAt(source, index)
-        if (tag == null) {
+        val escaped = tag?.let { ESCAPES[it.value] }
+        if (tag == null || escaped != null) {
             if (!started) {
                 base = colours.firstOrNull()
                 started = true
             }
-            segments.last() += Glyph(source[index].toString(), colours.lastOrNull(), base)
-            index++
+            val text = if (tag == null) source[index].toString() else tag.value
+            segments.last() += Glyph(text, colours.lastOrNull(), base, measured = escaped ?: text[0])
+            index += text.length
             continue
         }
         val (closing, name, value) = tag.destructured
@@ -44,23 +50,55 @@ private fun journalLine(source: String): List<String> {
     return segments.flatMap(::wrap).map { render(it, struck) }
 }
 
+// Same break rules as the client's text wrapper: last space (or hyphen) before the width is passed.
 private fun wrap(glyphs: List<Glyph>): List<List<Glyph>> {
+    val font = journalFont
     val lines = mutableListOf<List<Glyph>>()
     var start = 0
-    while (glyphs.subList(start, glyphs.size).count { it.visible } > JOURNAL_WIDTH) {
-        var limit = start
-        var seen = 0
-        while (seen < JOURNAL_WIDTH || !glyphs[limit].visible) {
-            if (glyphs[limit].visible) seen++
-            limit++
+    var lineWidth = 0
+    var breakEnd = -1
+    var breakWidth = 0
+    var breakGap = 0
+    var previous = NONE
+    for ((index, glyph) in glyphs.withIndex()) {
+        if (!glyph.visible) continue
+        val char = glyph.measured
+        lineWidth += font.advance(char) + font.kerning(previous, char)
+        previous = char
+        if (char == ' ') {
+            breakEnd = index + 1
+            breakWidth = lineWidth
+            breakGap = 1
         }
-        val space = (limit downTo start + 1).firstOrNull { glyphs[it].text == " " }
-        val end = space ?: limit
-        lines += glyphs.subList(start, end)
-        start = if (space != null) end + 1 else end
+        if (lineWidth > JOURNAL_LINE_WIDTH && breakEnd >= 0) {
+            lines += glyphs.subList(start, breakEnd - breakGap)
+            start = breakEnd
+            lineWidth -= breakWidth
+            breakEnd = -1
+            previous = NONE
+        }
+        if (char == '-') {
+            breakEnd = index + 1
+            breakWidth = lineWidth
+            breakGap = 0
+        }
     }
     lines += glyphs.subList(start, glyphs.size)
     return lines
+}
+
+private fun glyphIndex(char: Char): Int =
+    when {
+        char == NBSP -> ' '.code
+        char.code < 0x80 || char.code in 0xA0..0xFF -> char.code
+        else -> CP1252_EXTRA[char] ?: '?'.code
+    }
+
+private fun FontType.advance(char: Char): Int = glyphAdvances[glyphIndex(char)]
+
+private fun FontType.kerning(previous: Char, char: Char): Int {
+    if (kerning.isEmpty() || previous == NONE) return 0
+    return kerning[(glyphIndex(previous) shl 8) or glyphIndex(char)].toInt()
 }
 
 private fun render(glyphs: List<Glyph>, struck: Boolean): String {
@@ -90,6 +128,22 @@ private fun render(glyphs: List<Glyph>, struck: Boolean): String {
     return out.toString().trimEnd()
 }
 
-private const val JOURNAL_WIDTH = 64
+private const val JOURNAL_LINE_WIDTH = 350
+
+private const val NONE = 0.toChar()
+private const val NBSP = 160.toChar()
+
+private val ESCAPES = mapOf("<lt>" to '<', "<gt>" to '>')
+
+private val CP1252_EXTRA: Map<Char, Int> =
+    String(ByteArray(32) { (it + 0x80).toByte() }, Charset.forName("windows-1252"))
+        .withIndex()
+        .filter { it.value != '\uFFFD' }
+        .associate { it.value to it.index + 0x80 }
+
+private val journalFont: FontType by lazy {
+    val font = ServerCacheManager.fromComponent("component.questjournal:qj1").textFont
+    checkNotNull(ServerCacheManager.getFont(font)) { "Quest journal font $font is missing from the cache." }
+}
 
 private val TAG = Regex("<(/?)([a-z]+)(?:=([0-9A-Fa-f]{6}))?>")
