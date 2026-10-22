@@ -14,4 +14,6 @@ dependencies {
     implementation(projects.content.quest)
     integrationImplementation(projects.content.quest)
     integrationImplementation(projects.api.spells)
+    integrationImplementation(projects.api.utils.utilsTime)
+    integrationImplementation(projects.api.combat.combatCommons)
 }

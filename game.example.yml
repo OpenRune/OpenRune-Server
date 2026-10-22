@@ -31,6 +31,9 @@ gameplay:
   # Log players out when their client reports them idle (its AFK timer, as on live). false keeps
   # idle players logged in.
   idle-logout: true
+  # Minutes between home teleport casts (Lumbridge, Edgeville, Arceuus), shared by all of them. 30
+  # as on live; 0 removes the cooldown.
+  home-teleport-cooldown: 30
   quest-requirements:
     # Temporary core-mechanics default. Use "respect-progress" when quest gates should use real
     # quest state, or "virtual-completions" for league-style profiles.
