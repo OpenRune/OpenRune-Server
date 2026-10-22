@@ -5,6 +5,7 @@ rune_essence_mine = 57
 runecrafting_runes=65517
 runecrafting_altars=65516
 runecrafting_tiara=65515
+essence_mine_teleporters=63890
 
 [gamevals.dbrow]
 runecrafting_rune_sunfire=65173
@@ -55,6 +56,8 @@ runecrafting_tiara_earth=65129
 runecrafting_tiara_water=65128
 runecrafting_tiara_mind=65127
 runecrafting_tiara_air=65126
+essence_mine_teleporter_aubury=63891
+essence_mine_teleporter_sedridor=63892
 
 [gamevals.varbit]
 blood_essence_charges=65529
@@ -67,6 +70,7 @@ rcu_pouch_essence_type_med=65482
 rcu_pouch_essence_type_large=65483
 rcu_pouch_essence_type_giant=65484
 rcu_pouch_essence_type_colossal=65485
+essence_mine_teleporter=63889
 
 [gamevals.queue]
 runecraft_magic_imbue_expire=65526

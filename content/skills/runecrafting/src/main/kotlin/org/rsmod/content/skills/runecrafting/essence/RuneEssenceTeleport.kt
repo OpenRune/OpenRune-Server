@@ -4,7 +4,10 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.table.EssenceMineTeleportersRow
+import org.rsmod.content.skills.runecrafting.essenceMineTeleporter
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -19,8 +22,7 @@ class EssencePortals : PluginScript() {
         private val RUNE_ESSENCE_MINE = CoordGrid(2910, 4832)
         private const val LANDING_RADIUS = 20
 
-        private val AUBURY = CoordGrid(3253, 3401)
-        private val SEDRIDOR = CoordGrid(3105, 9572)
+        private const val UNRECORDED_TELEPORTER = "dbrow.essence_mine_teleporter_sedridor"
 
         fun randomEssenceMineDest(access: ProtectedAccess): CoordGrid =
             access.mapFindSquareNone(RUNE_ESSENCE_MINE, 0, LANDING_RADIUS) ?: RUNE_ESSENCE_MINE
@@ -35,9 +37,20 @@ class EssencePortals : PluginScript() {
             )
         }
 
-        fun auburyDest(): CoordGrid = randomizeLocation(AUBURY)
+        fun teleporter(npc: Npc): EssenceMineTeleportersRow {
+            val row = EssenceMineTeleportersRow.all().firstOrNull { it.npc.id == npc.type.id }
+            return checkNotNull(row) {
+                "Npc is not a rune essence mine teleporter: ${npc.type.internalName}"
+            }
+        }
 
-        fun sedridorDest(): CoordGrid = randomizeLocation(SEDRIDOR)
+        fun returnTeleporter(player: Player): EssenceMineTeleportersRow {
+            val row = player.essenceMineTeleporter
+            if (row == 0) {
+                return EssenceMineTeleportersRow.getRow(UNRECORDED_TELEPORTER)
+            }
+            return EssenceMineTeleportersRow.getRow(row)
+        }
     }
 }
 
@@ -51,6 +64,7 @@ suspend fun ProtectedAccess.teleportToMainLand() {
 
 suspend fun Dialogue.teleportToRuneEssenceMine() {
     val npc = checkNotNull(npc) { "Rune essence mine teleport requires an npc dialogue context." }
+    val teleporter = EssencePortals.teleporter(npc)
     val dest = EssencePortals.randomEssenceMineDest(access)
 
     npc.say("Seventior Disthine Molenko!")
@@ -63,6 +77,7 @@ suspend fun Dialogue.teleportToRuneEssenceMine() {
     access.spotanim("spotanim.curse_impact", delay = 15, height = 124)
     player.soundSynth("synth.curse_hit", delay = 15)
     delay(1)
+    player.essenceMineTeleporter = teleporter.rowId
     access.telejump(dest)
 }
 
@@ -70,8 +85,6 @@ suspend fun Dialogue.teleportToMainLand() {
     access.spotanim("spotanim.curse_impact", delay = 15, height = 124)
     player.soundSynth("synth.teleport_all", delay = 15)
     delay(1)
-    when (player.vars["varbit.essencemine_portal"]) {
-        0 -> access.telejump(EssencePortals.sedridorDest())
-        1 -> access.telejump(EssencePortals.auburyDest())
-    }
+    val teleporter = EssencePortals.returnTeleporter(player)
+    access.telejump(EssencePortals.randomizeLocation(teleporter.exit))
 }
