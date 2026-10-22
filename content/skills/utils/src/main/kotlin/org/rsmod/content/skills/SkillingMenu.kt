@@ -53,10 +53,15 @@ data class SkillMultiConfig(
     val entries: List<SkillMultiEntry>,
     val maxCountProvider: ((Inventory, SkillMultiEntry) -> Int)? = null,
     val defaultAmount: Int? = null,
+    val titleOverride: String? = null,
+    val showUnavailable: Boolean = false,
+    val eventsEndAtMaxCount: Boolean = false,
+    val eventsAfterSetup: Boolean = false,
+    val padLabels: Boolean = false,
 ) {
 
     val title: String
-        get() = if (entries.size == 1) {
+        get() = titleOverride ?: if (entries.size == 1) {
             "How many would you like to $verb?"
         } else {
             "What would you like to $verb?"
@@ -129,7 +134,7 @@ suspend fun ProtectedAccess.openSkillMulti(
         val amount = config.maxCountProvider?.invoke(inv, entry)
             ?: entry.maxCount(inv)
 
-        if (amount <= 0) {
+        if (amount <= 0 && !config.showUnavailable) {
             null
         } else {
             entry to amount
@@ -150,19 +155,30 @@ suspend fun ProtectedAccess.openSkillMulti(
         IfSubType.Modal,
     )
 
+    val eventsEnd =
+        if (config.eventsEndAtMaxCount) skillmultiMaxCount(config, available) else 28
+
+    val setupArgs = skillmultiSetupArgs(
+        actionType = config.actionType,
+        config,
+        available
+    ).toTypedArray()
+
+    if (config.eventsAfterSetup) {
+        runClientScript(SKILLMULTI_SETUP_SCRIPT, *setupArgs)
+    }
+
     for (i in available.indices) {
         ifSetEvents(
             validButtons[i],
-            0..28,
+            0..eventsEnd,
             IfEvent.PauseButton
         )
     }
 
-    runClientScript(SKILLMULTI_SETUP_SCRIPT, *skillmultiSetupArgs(
-        actionType = config.actionType,
-        config,
-        available
-    ).toTypedArray())
+    if (!config.eventsAfterSetup) {
+        runClientScript(SKILLMULTI_SETUP_SCRIPT, *setupArgs)
+    }
 
     val input = coroutine.pause(ResumePauseButtonInput::class)
 
@@ -173,7 +189,7 @@ suspend fun ProtectedAccess.openSkillMulti(
     }
 
     val (entry, maxAmount) = available[buttonIndex]
-    val selectedAmount = input.subcomponent.coerceIn(1, maxAmount)
+    val selectedAmount = if (maxAmount <= 0) 0 else input.subcomponent.coerceIn(1, maxAmount)
 
     onComplete(
         SkillMultiSelection(
@@ -205,13 +221,21 @@ val validButtons = listOf(
     "component.skillmulti:x",
 )
 
+private fun skillmultiMaxCount(
+    config: SkillMultiConfig,
+    available: List<Pair<SkillMultiEntry, Int>>,
+): Int =
+    (available.maxOfOrNull { it.second } ?: 0).let {
+        if (config.showUnavailable) it.coerceAtLeast(1) else it
+    }
+
 private fun skillmultiSetupArgs(
     actionType: SkillingActionType,
     config: SkillMultiConfig,
     available: List<Pair<SkillMultiEntry, Int>>,
 ): List<Any> {
 
-    val maxCount = available.maxOfOrNull { it.second } ?: 0
+    val maxCount = skillmultiMaxCount(config, available)
 
     val itemIds = buildList {
         addAll(available.map { it.first.item.id })
@@ -227,6 +251,12 @@ private fun skillmultiSetupArgs(
         available.forEach { (entry, _) ->
             append('|')
             append(entry.item.name)
+        }
+
+        if (config.padLabels) {
+            repeat(SKILLMULTI_ITEM_SLOTS - available.size) {
+                append('|')
+            }
         }
     }
 

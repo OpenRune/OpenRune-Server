@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.ResourceLock
+import org.rsmod.api.server.config.QuestRequirementsYaml
 import org.rsmod.game.entity.Player
 
 @ResourceLock("QuestRequirements")
@@ -15,6 +16,18 @@ class PolicySpellQuestRequirementTest {
     @AfterEach
     fun restorePolicy() {
         QuestRequirements.install(previous)
+    }
+
+    @Test
+    fun `new accounts cannot use quest locked spells with omitted policy configuration`() {
+        val policies = listOf(
+            QuestRequirementPolicy(),
+            QuestRequirementPolicy(QuestRequirementMode.parse(QuestRequirementsYaml().mode)),
+        )
+        for (policy in policies) {
+            QuestRequirements.install(policy)
+            assertFalse(requirement.hasCompleted(Player(), DESERT_TREASURE))
+        }
     }
 
     @Test

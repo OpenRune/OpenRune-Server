@@ -35,9 +35,10 @@ gameplay:
   # as on live; 0 removes the cooldown.
   home-teleport-cooldown: 30
   quest-requirements:
-    # Temporary core-mechanics default. Use "respect-progress" when quest gates should use real
-    # quest state, or "virtual-completions" for league-style profiles.
-    mode: "assume-completed"
+    # Use saved quest progress by default. "assume-completed" bypasses quest gates;
+    # "virtual-completions" unlocks selected quests for league-style profiles.
+    # Sleeping Giants persists completion when either bypass policy completes it.
+    mode: "respect-progress"
     virtual-completions: []
     virtual-lines: []
 

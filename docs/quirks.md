@@ -110,4 +110,22 @@ mutable, and nullable.
 - Pros
   - TODO:
 
+## Player timer phases
+
+Soft timers normally run before interactions. `softTimer(..., afterInteractions = true)`
+opts a timer into the pass immediately after player interactions. Foundry work uses this
+phase so a tool re-click can affect the work consumed on that same tick. Rescheduling
+moves a timer between phases; clearing it removes either registration.
+
+## Account save snapshots
+
+`AccountManager.save` requests capture at the end-of-tick gameplay boundary. Persistent
+varps, serialized attributes, inventories, stats, identity and world type are detached
+before background SQL runs. `CharacterDataStage.Pipeline.capture` must return a
+`CharacterDataStage.Save` that consumes captured values, never the live player.
+
+Mutations during an in-flight autosave remain dirty for a subsequent snapshot. Retries
+consume the same snapshot before newer requests. Shutdown drains an interrupted batch
+before queued requests, retaining each request until it succeeds or reports failure.
+
 [magic-numbers]: https://en.wikipedia.org/wiki/Magic_number_(programming)

@@ -5,6 +5,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import java.util.Locale
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetPosition
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.invTransaction
@@ -36,7 +37,13 @@ private fun scheduleClose(
 
 val QUEST_STAGE_MAP_ATTR = AttributeKey<MutableMap<String, Int>>("quest_stages")
 
-data class ItemRewardDisplay(val item: String, val zoom: Int = 10)
+/** [x] and [y] move the model on the quest scroll when the cache's default spot doesn't suit it. */
+data class ItemRewardDisplay(
+    val item: String,
+    val zoom: Int = 10,
+    val x: Int? = null,
+    val y: Int? = null,
+)
 
 data class Quest(
     val id: Int,
@@ -249,6 +256,10 @@ data class Quest(
         access.ifSetText("component.questscroll:quest_reward1", "$questPoints Quest Point")
 
         access.ifSetObj("component.questscroll:quest_model", obj = itemDisplay.item, zoom = itemDisplay.zoom)
+        if (itemDisplay.x != null && itemDisplay.y != null) {
+            val model = "component.questscroll:quest_model".asRSCM(RSCMType.COMPONENT)
+            access.player.client.write(IfSetPosition(model, itemDisplay.x, itemDisplay.y))
+        }
 
         val rewardLines = mutableListOf<String>()
 

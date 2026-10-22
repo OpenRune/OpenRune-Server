@@ -3,7 +3,7 @@ package org.rsmod.content.quest.manager
 import org.rsmod.api.server.config.ServerConfig
 
 public data class QuestRequirementPolicy(
-    public val mode: QuestRequirementMode = QuestRequirementMode.AssumeCompleted,
+    public val mode: QuestRequirementMode = QuestRequirementMode.RespectProgress,
     public val virtualCompletions: Set<String> = emptySet(),
     public val virtualLines: Set<String> = emptySet(),
 ) {
