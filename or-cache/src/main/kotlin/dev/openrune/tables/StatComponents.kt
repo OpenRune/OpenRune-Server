@@ -33,6 +33,7 @@ object StatComponents {
     const val COL_LEVELUP_RULE = 7
     const val COL_LEVELUP_THRESHOLD = 8
     const val COL_LEVELUP_PREFIX = 9
+    const val COL_LEVELUP_LIST = 10
 
     private fun levelUp(
         label: String,
@@ -61,6 +62,7 @@ object StatComponents {
         column("levelup_rule", COL_LEVELUP_RULE, VarType.INT)
         column("levelup_threshold", COL_LEVELUP_THRESHOLD, VarType.INT)
         column("levelup_prefix", COL_LEVELUP_PREFIX, VarType.STRING)
+        column("levelup_list", COL_LEVELUP_LIST, VarType.INT)
 
         val skillsWithBits = listOf(
             StatRow("dbrow.agility_stat", "component.stats:agility", "stat.agility", 8,
@@ -129,7 +131,11 @@ object StatComponents {
                 column(COL_LEVELUP_RULE, levelUp.rule.id)
                 levelUp.threshold?.let { column(COL_LEVELUP_THRESHOLD, it) }
                 levelUp.prefix?.let { column(COL_LEVELUP_PREFIX, it) }
+                columnRSCM(COL_LEVELUP_LIST, levelUpListVarbit(row.rowName))
             }
         }
     }
+
+    private fun levelUpListVarbit(rowName: String) =
+        "varbit.levelup_list_" + rowName.removePrefix("dbrow.").removeSuffix("_stat")
 }

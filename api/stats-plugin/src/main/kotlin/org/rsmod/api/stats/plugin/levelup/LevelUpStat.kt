@@ -1,8 +1,11 @@
 package org.rsmod.api.stats.plugin.levelup
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.VarBitType
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.tables.LevelUpRule
 import dev.openrune.types.StatType
+import org.rsmod.api.enums.SkillGuideEnums
 import org.rsmod.api.table.StatComponentsRow
 
 internal class LevelUpStat(row: StatComponentsRow) {
@@ -10,6 +13,12 @@ internal class LevelUpStat(row: StatComponentsRow) {
     val label: String = row.levelupLabel
     val layer: ComponentType = row.levelupLayer
     val levelPrefix: String = row.levelupPrefix ?: "Your $label level is now"
+    val guide: Int =
+        checkNotNull(SkillGuideEnums.skill_guide_skill_to_id[stat]) { "No skill guide for: $stat" }
+    val listVarbit: VarBitType =
+        checkNotNull(ServerCacheManager.getVarbit(row.levelupList)) {
+            "Missing level-up list varbit: ${row.levelupList}"
+        }
     val jingle: LevelUpJingle =
         LevelUpJingle(
             LevelUpRule.of(row.levelupRule),
