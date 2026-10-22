@@ -5,6 +5,7 @@ import org.rsmod.api.net.rsprot.ext.setFaceTarget
 import org.rsmod.game.entity.npc.NpcInfoProtocol
 import org.rsmod.game.entity.npc.OpVisibility
 import org.rsmod.game.entity.util.EntityFaceTarget
+import org.rsmod.game.entity.util.EntityTinting
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hitmark
 
@@ -87,6 +88,17 @@ class RspNpcInfo(val rspAvatar: NpcAvatar) : NpcInfoProtocol {
 
     override fun setHeadIcon(slot: Int, graphic: Int, index: Int) {
         rspAvatar.extendedInfo.setHeadIconChange(slot, graphic, index)
+    }
+
+    override fun setTinting(tinting: EntityTinting) {
+        rspAvatar.extendedInfo.setTinting(
+            startTime = tinting.startCycle,
+            endTime = tinting.endCycle,
+            hue = tinting.hue and 0xFF,
+            saturation = tinting.saturation and 0xFF,
+            lightness = tinting.lightness and 0xFF,
+            weight = tinting.weight and 0xFF,
+        )
     }
 
     override fun exactMove(

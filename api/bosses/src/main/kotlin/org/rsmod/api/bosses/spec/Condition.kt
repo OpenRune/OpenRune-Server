@@ -36,6 +36,15 @@ sealed interface Condition {
      */
     data class TargetInArc(val bearingVarn: String, val offset: Int, val halfArc: Int) : Condition
     data class Custom(val test: (npc: Npc, target: Player?) -> Boolean) : Condition
+
+    /** Only valid inside a `whenever`. */
+    data class Chance(val chance: Int, val outOf: Int) : Condition {
+        init {
+            require(outOf > 0) { "Chance outOf must be greater than 0." }
+            require(chance in 0..outOf) { "Chance chance must be in 0..$outOf, was $chance." }
+        }
+    }
+
     data object Always : Condition
     data object WithinMeleeRange : Condition
     data class Not(val c: Condition) : Condition

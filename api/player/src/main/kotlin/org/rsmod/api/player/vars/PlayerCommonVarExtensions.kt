@@ -16,6 +16,8 @@ internal var Player.prayerDrainCounter by intVarBit("varbit.prayer_drain_counter
 
 private var Player.varSpeed: MoveSpeed by typeIntVarp("varp.option_run", ::getSpeed, ::getSpeedId)
 
+public var Player.walkOnly: Boolean by boolVarBit("varbit.walk_only")
+
 public var Player.varMoveSpeed: MoveSpeed
     get() = varSpeed
     set(value) {
