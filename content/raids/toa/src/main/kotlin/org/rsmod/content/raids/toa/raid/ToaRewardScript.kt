@@ -168,7 +168,7 @@ class ToaRewardScript : PluginScript() {
         const val CLICK_SOUND = "synth.toa_vault_sarcophagus_click"
         const val CLICK_SOUND_DELAY = 30
         const val STEP_TO_ANIM_TICKS = 2
-        const val CHEST_SOUND = "synth.toa_vault_chest_open"
+        const val CHEST_SOUND = "synth.chest_open"
         const val CHEST_SOUND_DELAY = 20
         const val INTERFACE_SOUND = "synth.found_gem"
         const val INTERFACE = "interface.toa_chests"
