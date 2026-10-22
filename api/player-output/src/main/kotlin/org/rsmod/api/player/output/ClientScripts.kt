@@ -20,6 +20,10 @@ public fun Player.runClientScript(id: Int, args: List<Any>) {
     client.write(RunClientScript(id, args))
 }
 
+public fun Player.runClientScript(id: Int, types: CharArray, args: List<Any>) {
+    client.write(RunClientScript(id, types, args))
+}
+
 public object ClientScripts {
     public fun settingsSetDrawDistance(player: Player): Unit = player.runClientScript("clientscript.[clientscript,settings_set_draw_distance]".asRSCM(RSCMType.CLIENTSCRIPT))
 
