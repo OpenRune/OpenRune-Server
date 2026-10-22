@@ -3,7 +3,6 @@ package org.rsmod.api.player.music
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.aconverted.AreaType
 import jakarta.inject.Inject
 import org.rsmod.api.music.Music
 import org.rsmod.api.music.MusicRepository
@@ -197,7 +196,7 @@ internal constructor(private val random: GameRandom, private val repo: MusicRepo
         if (player.currMusicArea == 0) {
             return
         }
-        val area = RSCM.getReverseMapping(RSCMType.AREA,player.currMusicArea - 1)
+        val area = RSCM.getReverseMapping(RSCMType.AREA, player.currMusicArea - 1)
         when (player.areaMode) {
             MusicAreaMode.Modern -> {
                 val modernMusic = repo.getModernArea(area)
