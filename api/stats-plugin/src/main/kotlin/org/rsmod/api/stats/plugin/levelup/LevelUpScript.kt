@@ -40,6 +40,7 @@ constructor(private val worldRepo: WorldRepository, private val worldQueues: Wor
         onIfClose("interface.levelup_display") {
             VarPlayerIntMapSetter.set(player, "varbit.busy", 0)
         }
+        // UNVERIFIED: login clearing the stats tab flash (guess)
         onPlayerLogin { VarPlayerIntMapSetter.set(player, FLASHSIDE_VARBIT, 0) }
         onIfOverlayButton(STATS_STONE) { VarPlayerIntMapSetter.set(player, FLASHSIDE_VARBIT, 0) }
     }
