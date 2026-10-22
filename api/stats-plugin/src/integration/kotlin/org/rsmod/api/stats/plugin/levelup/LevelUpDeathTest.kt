@@ -5,6 +5,7 @@ import com.google.inject.multibindings.Multibinder
 import org.junit.jupiter.api.Test
 import org.rsmod.api.death.PlayerDeathCleanupHook
 import org.rsmod.api.death.PlayerDeathHook
+import org.rsmod.api.death.PlayerDeathOverrideHook
 import org.rsmod.api.death.PlayerRespawnHook
 import org.rsmod.api.death.plugin.PlayerDeathScript
 import org.rsmod.api.hit.plugin.PlayerHitScript
@@ -67,6 +68,7 @@ class LevelUpDeathTest {
         override fun configure() {
             Multibinder.newSetBinder(binder(), PlayerDeathHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerDeathCleanupHook::class.java)
+            Multibinder.newSetBinder(binder(), PlayerDeathOverrideHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerRespawnHook::class.java)
         }
     }
