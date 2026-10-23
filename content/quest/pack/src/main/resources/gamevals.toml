@@ -73,6 +73,7 @@ smokepuff = 1930
 chest_open = 52
 chest_close = 51
 irondoor_locked = 72
+gobdip_dye_goblin_mail = 2392
 
 [gamevals.varp]
 restless_ghost_rising_tile = 63703
