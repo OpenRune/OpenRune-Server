@@ -147,7 +147,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.buildStages(cannon: Cannon) {
-        while (cannon.stage < 4) {
+        repeat(PARTS.size - cannon.stage) {
             val part = PARTS[cannon.stage]
             if (inv.count(part) == 0) {
                 return

@@ -153,7 +153,7 @@ class Nulodion @Inject constructor(private val shops: Shops) : PluginScript() {
                 chatPlayer(neutral, "...")
             }
             setUp -> {
-                if (access.inv.freeSpace() < LOST_CANNON_SLOTS) {
+                if (access.inv.freeSpace() < player.cannonStage) {
                     chatNpc(
                         neutral,
                         "That's unfortunate! But don't worry, I can sort you out if you free up " +
@@ -215,7 +215,6 @@ class Nulodion @Inject constructor(private val shops: Shops) : PluginScript() {
         private const val SHOP_SELL = 107.0
         private const val SHOP_BUY = 40.0
         private const val SHOP_CHANGE = 1.0
-        private const val LOST_CANNON_SLOTS = 4
     }
 }
 
@@ -233,11 +232,12 @@ public val CANNON_SET =
     )
 
 public fun ProtectedAccess.replaceLostCannon(): Boolean {
+    val parts = CANNON_SET.take(4).take(player.cannonStage)
     val given =
         player
             .invTransaction(inv) {
                 val target = select(inv)
-                for (part in CANNON_SET.take(4)) {
+                for (part in parts) {
                     add(target, part.asRSCM(RSCMType.OBJ), count = 1)
                 }
             }
