@@ -1,9 +1,16 @@
 package org.rsmod.content.skills.farming.pack
 
+import dev.openrune.OsrsCacheProvider
+import dev.openrune.definition.codec.ObjectCodec
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
+import dev.openrune.filesystem.Cache
+import dev.openrune.getCacheLocation
 import dev.openrune.pack.columnCoord
+import dev.openrune.revision
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.tables.production.productionTable
+import java.nio.file.Path
 import org.rsmod.map.CoordGrid
 
 /**
@@ -52,28 +59,45 @@ object FarmingTables {
     private const val FLOWER_MINUTES = 5
     private const val HERB_MINUTES = 20
 
+    private fun snapeGrassTransmit(): List<Int> {
+        val patch = "loc.farming_veg_patch_1"
+        val id = patch.asRSCM()
+        val decoder = OsrsCacheProvider.ObjectDecoder(revision.first)
+        val cache = Cache.load(Path.of(getCacheLocation()))
+        val transforms =
+            try {
+                val data =
+                    checkNotNull(
+                        cache.data(decoder.index, decoder.getArchive(id), decoder.getFile(id)),
+                    ) { "Missing $patch" }
+                checkNotNull(ObjectCodec(revision.first).loadData(id, data).transforms) {
+                    "Missing transforms for $patch"
+                }
+            } finally {
+                cache.close()
+            }
+
+        // Healthy, watered, diseased, dead; edge stages share artwork.
+        return listOf(
+            "seedling", "1", "2", "3", "4", "5", "6", "fullygrown",
+            "seed_watered", "1_watered", "2_watered", "3_watered",
+            "4_watered", "5_watered", "6_watered", "fullygrown",
+            "1_diseased", "1_diseased", "2_diseased", "3_diseased",
+            "4_diseased", "5_diseased", "6_diseased", "6_diseased",
+            "1_dead", "1_dead", "2_dead", "3_dead", "4_dead", "5_dead", "6_dead", "6_dead",
+        ).map { stage ->
+            val symbol = "loc.snapegrass_$stage"
+            // Mature artwork has multiple selectors; use the first.
+            transforms.indexOf(symbol.asRSCM()).also {
+                check(it >= 0) { "$symbol is not a transform of $patch" }
+            }
+        }
+    }
+
     /**
      * Row order is load-bearing: a planted patch persists its crop as a one-based index into this
      * table, packed into seven bits of the patch varp. Append new crops, never insert.
      */
-    /**
-     * Snape grass is the one crop the base-plus-stage arithmetic cannot describe. It was added to
-     * the allotment patch long after the other seven, by which point the loc's four 64-slot banks
-     * were full, so its art sits in whatever slots were spare: the leftovers of potato's diseased
-     * and dead blocks. Healthy runs 128-134 but its grown form is at 138; watered runs 63-69;
-     * diseased and dead each break in half between stage three and four. The values repeat at the
-     * ends the way the cache's own table does, so every state a patch can reach resolves.
-     *
-     * Ordered healthy, watered, diseased, dead, each bank `stages + 1` long and indexed by stage.
-     */
-    private val SNAPE_GRASS_TRANSMIT =
-        listOf(
-            128, 129, 130, 131, 132, 133, 134, 138,
-            63, 64, 65, 66, 67, 68, 69, 138,
-            196, 196, 197, 198, 202, 203, 204, 204,
-            193, 193, 194, 195, 209, 210, 211, 211,
-        )
-
     fun crops() =
         productionTable(
             "dbtable.farming_crop",
@@ -251,7 +275,7 @@ object FarmingTables {
                 stages = 7,
                 saveLow = 148,
                 saveHigh = 195,
-                transmit = SNAPE_GRASS_TRANSMIT,
+                transmit = snapeGrassTransmit(),
             )
 
             flower("marigold", "obj.marigold_seed", "obj.marigold", 2, 8.5, 47.0, 8)
