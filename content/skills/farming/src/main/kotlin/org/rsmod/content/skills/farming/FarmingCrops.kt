@@ -86,7 +86,7 @@ private fun FarmingCropRow.toCrop(indices: Map<Int, Int>): Crop =
 
 object FarmingCrops {
     val all: List<Crop> by lazy {
-        val rows = FarmingCropRow.all()
+        val rows = FarmingCropRow.all().sortedBy(FarmingCropRow::cropIndex)
         val indices = rows.mapIndexed { index, row -> row.rowId to index + 1 }.toMap()
         rows.map { it.toCrop(indices) }
     }

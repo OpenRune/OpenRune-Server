@@ -37,6 +37,7 @@ object FarmingTables {
     const val COL_HARVEST_LEVEL_DIVISOR = 18
     const val COL_WATERED_BASE = 19
     const val COL_DEAD_BASE = 20
+    const val COL_CROP_INDEX = 21
 
     const val COMPOST_KIND = 0
     const val COMPOST_OBJ = 1
@@ -101,8 +102,8 @@ object FarmingTables {
     }
 
     /**
-     * Row order is load-bearing: a planted patch persists its crop as a one-based index into this
-     * table, packed into seven bits of the patch varp. Append new crops, never insert.
+     * Declaration order defines the persisted crop index, packed into seven bits of the patch
+     * varp. Append new crops, never insert.
      */
     fun crops() =
         productionTable(
@@ -123,9 +124,11 @@ object FarmingTables {
                 column("harvest_level_divisor", COL_HARVEST_LEVEL_DIVISOR, VarType.INT)
                 column("watered_base", COL_WATERED_BASE, VarType.INT)
                 column("dead_base", COL_DEAD_BASE, VarType.INT)
+                column("crop_index", COL_CROP_INDEX, VarType.INT)
             },
         ) {
             val transforms = patchTransforms()
+            var cropIndex = 0
 
             fun selector(kind: String, symbol: String): Int =
                 transforms.getValue(kind).indexOf(symbol.asRSCM()).also {
@@ -221,6 +224,7 @@ object FarmingTables {
                     column(COL_HARVEST_LEVEL_DIVISOR, harvestLevelDivisor)
                     column(COL_WATERED_BASE, wateredBase)
                     column(COL_DEAD_BASE, deadBase)
+                    column(COL_CROP_INDEX, ++cropIndex)
                 }
 
             fun allotment(
@@ -326,19 +330,6 @@ object FarmingTables {
                 saveLow = 126,
                 protection = "dbrow.farming_nasturtium",
             )
-            allotment(
-                name = "snape grass",
-                seed = "obj.snape_grass_seed",
-                produce = "obj.snape_grass",
-                level = 61,
-                plantXp = 82.0,
-                harvestXp = 82.0,
-                growLoc = "loc.snapegrass_seedling",
-                stages = 7,
-                saveLow = 148,
-                saveHigh = 195,
-                transmit = snapeGrassTransmit(transforms.getValue(ALLOTMENT)),
-            )
 
             flower("marigold", "obj.marigold_seed", "obj.marigold", 2, 8.5, 47.0, "loc.marigold_seed")
             flower("rosemary", "obj.rosemary_seed", "obj.rosemary", 11, 12.0, 66.5, "loc.rosemary_seed")
@@ -360,6 +351,22 @@ object FarmingTables {
             herb("lantadyme", "obj.lantadyme_seed", "obj.unidentified_lantadyme", 73, 134.5, 151.5, "loc.herb_lantadyme_seed", 64)
             herb("dwarf weed", "obj.dwarf_weed_seed", "obj.unidentified_dwarf_weed", 79, 170.5, 192.0, "loc.herb_dwarf_weed_seed", 67)
             herb("torstol", "obj.torstol_seed", "obj.unidentified_torstol", 85, 199.5, 224.5, "loc.herb_torstol_seed", 71)
+            allotment(
+                name = "snape grass",
+                seed = "obj.snape_grass_seed",
+                produce = "obj.snape_grass",
+                level = 61,
+                plantXp = 82.0,
+                harvestXp = 82.0,
+                growLoc = "loc.snapegrass_seedling",
+                stages = 7,
+                saveLow = 148,
+                saveHigh = 195,
+                transmit = snapeGrassTransmit(transforms.getValue(ALLOTMENT)),
+            )
+
+            herb("huasca", "obj.huasca_seed", "obj.unidentified_huasca", 65, 86.5, 110.0, "loc.herb_huasca_seed", 58)
+            flower("white lily", "obj.white_lily_seed", "obj.whitelilly", 58, 42.0, 250.0, "loc.lily_seed")
         }
 
     fun composts() =

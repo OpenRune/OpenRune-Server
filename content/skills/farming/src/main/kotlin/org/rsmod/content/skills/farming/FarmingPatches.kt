@@ -75,12 +75,16 @@ internal fun FarmingArea.advance(
         for (i in patches.indices) {
             val crop = current[i].crop
             protection[i] =
-                crop != null && crop.protectionIndex != 0 &&
+                crop != null && patches[i].kind == PatchKind.ALLOTMENT &&
                     patches.indices.any { flower ->
                         val state = current[flower]
                         patches[flower].kind == PatchKind.FLOWER &&
-                            state.cropIndex == crop.protectionIndex &&
-                            state.health == Health.HEALTHY && state.crop?.let { state.grown(it) } == true
+                            state.health == Health.HEALTHY &&
+                            state.crop?.let {
+                                state.grown(it) &&
+                                    (state.cropIndex == crop.protectionIndex ||
+                                        it.seed == "obj.white_lily_seed")
+                            } == true
                     }
         }
         for (i in patches.indices) {

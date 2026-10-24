@@ -29,7 +29,7 @@ farming_crop = 65478
 farming_patch = 65479
 farming_compost = 65480
 
-# Crop rows are append-only: a planted patch persists a one-based index into the table's row order.
+# Crop declaration order is append-only; crop_index is persisted in the patch varp.
 [gamevals.dbrow]
 farming_potato = 63846
 farming_onion = 63847
@@ -58,6 +58,8 @@ farming_lantadyme = 63869
 farming_dwarf_weed = 63870
 farming_torstol = 63871
 farming_snape_grass = 63872
+farming_huasca = 63840
+farming_white_lily = 63841
 farming_veg_patch_1 = 63873
 farming_veg_patch_2 = 63874
 farming_flower_patch_1 = 63875

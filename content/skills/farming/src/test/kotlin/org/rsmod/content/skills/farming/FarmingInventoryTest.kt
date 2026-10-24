@@ -44,6 +44,126 @@ import org.rsmod.plugin.scripts.ScriptContext
 @ResourceLock("ServerCacheManager")
 class FarmingInventoryTest {
     @Test
+    fun `saved crop indices retain their plants when lower numbered rows are added`() {
+        val seeds = listOf(
+            "potato", "onion", "cabbage", "tomato", "sweetcorn", "strawberry", "watermelon",
+            "marigold", "rosemary", "nasturtium", "woad", "limpwurt",
+            "guam", "marrentill", "tarromin", "harralander", "ranarr", "toadflax", "irit",
+            "avantoe", "kwuarm", "snapdragon", "cadantine", "lantadyme", "dwarf_weed", "torstol",
+            "snape_grass", "huasca", "white_lily",
+        )
+        for ((index, seed) in seeds.withIndex()) {
+            val saved = PatchState.unpack((3 shl 28) or (index + 1))
+            assertEquals("obj.${seed}_seed", saved.crop?.seed)
+        }
+    }
+
+    @Test
+    fun `huasca requires level 65 and pays planting XP only on its final pick`() {
+        val f = Fixture("huasca")
+        f.state(PatchState().empty())
+        f.give(DIBBER)
+        f.give(f.crop.seed)
+        f.player.statMap.setCurrentLevel(STAT_FARMING, 64)
+        f.use(f.crop.seed)
+        assertEquals(1, f.count(f.crop.seed))
+        assertEquals(0, f.state().cropIndex)
+        f.player.statMap.setCurrentLevel(STAT_FARMING, 65)
+        f.use(f.crop.seed)
+        assertEquals(0, f.count(f.crop.seed))
+        assertEquals(28, f.state().cropIndex)
+        assertEquals(0, f.xp())
+        f.grown(lives = 3)
+        f.op()
+        assertEquals(3, f.count("obj.unidentified_huasca"))
+        assertEquals(4165, f.xp())
+        assertEquals(PatchState().empty(), f.state())
+        f.op()
+        assertEquals(3, f.count("obj.unidentified_huasca"))
+        assertEquals(4165, f.xp())
+    }
+
+    @Test
+    fun `white lily harvest ends protection and pays its completion XP once`() {
+        val f = Fixture("white lily")
+        f.state(PatchState().empty())
+        f.give(DIBBER)
+        f.give(f.crop.seed)
+        f.player.statMap.setCurrentLevel(STAT_FARMING, 57)
+        f.use(f.crop.seed)
+        assertEquals(1, f.count(f.crop.seed))
+        assertEquals(0, f.state().cropIndex)
+        f.player.statMap.setCurrentLevel(STAT_FARMING, 58)
+        f.use(f.crop.seed)
+        assertEquals(0, f.count(f.crop.seed))
+        assertEquals(29, f.state().cropIndex)
+        assertEquals(0, f.xp())
+        val lily = f.grown()
+        val sweetcorn = checkNotNull(FarmingCrops.bySeed("obj.sweetcorn_seed"))
+        val area = FarmingPatches.areas.first()
+        val patches = listOf(
+            area.patches.first { it.kind == PatchKind.ALLOTMENT },
+            area.patches.first { it.kind == PatchKind.FLOWER },
+        )
+        val crop = planted(sweetcorn).copy(minutes = 1)
+        val protected = area.copy(patches = patches).advance(listOf(crop, lily), 1) { true }
+        assertEquals(Health.HEALTHY, protected[0].health)
+        f.op()
+        assertEquals(1, f.count("obj.whitelilly"))
+        assertEquals(2920, f.xp())
+        val exposed = area.copy(patches = patches).advance(listOf(crop, f.state()), 1) { true }
+        assertEquals(Health.DISEASED, exposed[0].health)
+        f.op()
+        assertEquals(1, f.count("obj.whitelilly"))
+        assertEquals(2920, f.xp())
+    }
+
+    @Test
+    fun `white lily protects all allotments but never herbs`() {
+        val lily = checkNotNull(FarmingCrops.bySeed("obj.white_lily_seed"))
+        val huasca = checkNotNull(FarmingCrops.bySeed("obj.huasca_seed"))
+        val area = FarmingPatches.areas.first()
+        val patches = listOf(
+            area.patches.first { it.kind == PatchKind.ALLOTMENT },
+            area.patches.first { it.kind == PatchKind.FLOWER },
+            area.patches.first { it.kind == PatchKind.HERB },
+        )
+        for (crop in FarmingCrops.all.filter { it.kind == PatchKind.ALLOTMENT }) {
+            val states = listOf(
+                planted(crop).copy(minutes = 1), grown(lily), planted(huasca).copy(minutes = 1),
+            )
+            val next = area.copy(patches = patches).advance(states, 1) { true }
+            assertEquals(Health.HEALTHY, next[0].health, crop.name)
+            assertEquals(Health.DISEASED, next[2].health, crop.name)
+        }
+    }
+
+    @Test
+    fun `immature or unhealthy lilies do not protect and cannot protect themselves`() {
+        val lily = checkNotNull(FarmingCrops.bySeed("obj.white_lily_seed"))
+        val sweetcorn = checkNotNull(FarmingCrops.bySeed("obj.sweetcorn_seed"))
+        val area = FarmingPatches.areas.first()
+        val patches = listOf(
+            area.patches.first { it.kind == PatchKind.ALLOTMENT },
+            area.patches.first { it.kind == PatchKind.FLOWER },
+        )
+        for (flower in listOf(
+            planted(lily).copy(stage = 1, minutes = 1),
+            planted(lily).copy(stage = 1, health = Health.DISEASED, minutes = 1),
+            planted(lily).copy(stage = 1, health = Health.DEAD, minutes = 0),
+        )) {
+            val next = area.copy(patches = patches).advance(
+                listOf(planted(sweetcorn).copy(minutes = 1), flower), 1,
+            ) { true }
+            assertEquals(Health.DISEASED, next[0].health)
+            assertEquals(
+                if (flower.health == Health.HEALTHY) Health.DISEASED else Health.DEAD,
+                next[1].health,
+            )
+        }
+    }
+
+    @Test
     fun `full inventory preserves the woad batch and space allows one reward`() {
         val f = Fixture("woad")
         val pending = f.grown()
@@ -467,18 +587,22 @@ class FarmingInventoryTest {
     fun `offline protection starts at flower maturity regardless of patch ordering`() {
         val potato = checkNotNull(FarmingCrops.bySeed("obj.potato_seed"))
         val marigold = checkNotNull(FarmingCrops.byIndex(potato.protectionIndex))
+        val sweetcorn = checkNotNull(FarmingCrops.bySeed("obj.sweetcorn_seed"))
+        val lily = checkNotNull(FarmingCrops.bySeed("obj.white_lily_seed"))
         val area = FarmingPatches.areas.first()
         val allotment = area.patches.first { it.kind == PatchKind.ALLOTMENT }
         val flower = area.patches.first { it.kind == PatchKind.FLOWER }
-        val planted = planted(potato)
-        val almostMature = planted(marigold).copy(stage = marigold.stages - 1, minutes = 11)
-        for (reversed in listOf(false, true)) {
-            val patches = if (reversed) listOf(flower, allotment) else listOf(allotment, flower)
-            val states = if (reversed) listOf(almostMature, planted) else listOf(planted, almostMature)
-            var rolls = 0
-            val next = area.copy(patches = patches).advance(states, 30) { rolls++; false }
-            assertEquals(1, rolls)
-            assertEquals(3, next[if (reversed) 1 else 0].stage)
+        for ((crop, protector) in listOf(potato to marigold, sweetcorn to lily)) {
+            val planted = planted(crop)
+            val almostMature = planted(protector).copy(stage = protector.stages - 1, minutes = 11)
+            for (reversed in listOf(false, true)) {
+                val patches = if (reversed) listOf(flower, allotment) else listOf(allotment, flower)
+                val states = if (reversed) listOf(almostMature, planted) else listOf(planted, almostMature)
+                var rolls = 0
+                val next = area.copy(patches = patches).advance(states, 30) { rolls++; false }
+                assertEquals(1, rolls)
+                assertEquals(3, next[if (reversed) 1 else 0].stage)
+            }
         }
     }
 

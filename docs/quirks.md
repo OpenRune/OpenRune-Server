@@ -78,12 +78,16 @@ Disabled popups do not set the flag.
 Allotment, flower and herb patches are supported at Falador, Catherby, Ardougne,
 Canifis and Hosidius. Crop, patch and compost definitions live in the farming
 pack's cache tables; rebuild the cache after changing them. Artwork bases for all
-27 crops are derived from named locs at pack time. Regular stage arithmetic is
+29 crops are derived from named locs at pack time. Regular stage arithmetic is
 validated against the patch transform tables; snape grass retains explicit
 state banks for its scattered artwork. Duplicate artwork uses the first matching
 selector. Watered and dead bases are cache columns, not runtime offset constants.
 Diseased/dead bases point directly to named stage-one artwork; rendering applies
 the stage-one offset rather than storing a base in the preceding cache slot.
+
+Crop declaration order is stored in `crop_index`, independently of numeric DBROW
+IDs. Indices 1–27 retain their original crops; Huasca and white lily append at
+28 and 29. Add new crop declarations at the end, never between existing entries.
 
 Allotments and herbs track harvest lives, not a fixed item count. Farming level
 and magic secateurs affect whether each pick spends a life. Flowers give one
@@ -91,6 +95,11 @@ batch: woad yields three leaves, while limpwurt quantity depends on Farming leve
 and magic secateurs. Planting XP is paid once on final harvest or dead clearing,
 not when seeds are planted. Harvested patches remain cleared for immediate
 replanting; untended empty patches regrow weeds.
+
+Huasca requires level 65 and grows in four 20-minute stages. White lily requires
+level 58 and grows in four five-minute stages. A mature, healthy white lily
+protects every allotment in its farm, but not herbs or itself. Protection starts
+at maturity, including during offline catch-up, and ends when the lily is picked.
 
 Growth uses saved, minute-resolution per-patch countdowns, including offline
 elapsed time, rather than Jagex's global farming tick alignment. Disease remains
