@@ -510,12 +510,6 @@ class GoblinDiplomacy : QuestScript(
         }
     }
 
-    /**
-     * Takes the armour and writes the progress together, with no dialogue page between the two, so
-     * walking away on any page leaves either both done or neither. Returns false when nothing
-     * changed: the armour is gone, or the brown hand-in has no room for the gold bar (the armour is
-     * given back then).
-     */
     private fun Dialogue.commitHandIn(stage: Int, wanted: String): Boolean {
         if (access.invDel(access.inv, wanted, 1).failure) {
             return false
@@ -544,8 +538,6 @@ class GoblinDiplomacy : QuestScript(
     private suspend fun Dialogue.handIn(stage: Int) {
         val wanted = wantedArmour(stage) ?: return
         chatPlayer(happy, "I have some ${wantedColour(stage)} armour here.")
-        // Orange and blue commit before the generals react; brown commits after the last page,
-        // as the quest completion closes the dialogue.
         if (stage != BROWN_WANTED && !commitHandIn(stage, wanted)) {
             return
         }
@@ -571,7 +563,6 @@ class GoblinDiplomacy : QuestScript(
                 chatPlayer(neutral, "Never mind, anything is worth a try.")
             }
             else -> {
-                // The look is written by the commit below, so the brown head is explicit here.
                 grubfoot(quiz, "What do you think?", GRUBFOOT_BROWN_HEAD)
                 wartface(happy, "That colour quite nice. Me can see myself wearing that.")
                 bentnoze(happy, "It a deal then. Brown armour it is.")
