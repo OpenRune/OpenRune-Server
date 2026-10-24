@@ -510,10 +510,43 @@ class GoblinDiplomacy : QuestScript(
         }
     }
 
+    /**
+     * Takes the armour and writes the progress together, with no dialogue page between the two, so
+     * walking away on any page leaves either both done or neither. Returns false when nothing
+     * changed: the armour is gone, or the brown hand-in has no room for the gold bar (the armour is
+     * given back then).
+     */
+    private fun Dialogue.commitHandIn(stage: Int, wanted: String): Boolean {
+        if (access.invDel(access.inv, wanted, 1).failure) {
+            return false
+        }
+        when (stage) {
+            STARTED -> {
+                player.grubfootLook = GRUBFOOT_ORANGE
+                quest.setQuestStage(access, BLUE_WANTED)
+            }
+            BLUE_WANTED -> {
+                player.grubfootLook = GRUBFOOT_BLUE
+                quest.setQuestStage(access, BROWN_WANTED)
+            }
+            else -> {
+                if (!quest.completeQuest(access)) {
+                    access.invAdd(access.inv, wanted, 1)
+                    access.mes(NO_ROOM_FOR_REWARD)
+                    return false
+                }
+                player.grubfootLook = GRUBFOOT_BROWN
+            }
+        }
+        return true
+    }
+
     private suspend fun Dialogue.handIn(stage: Int) {
         val wanted = wantedArmour(stage) ?: return
         chatPlayer(happy, "I have some ${wantedColour(stage)} armour here.")
-        if (access.invDel(access.inv, wanted, 1).failure) {
+        // Orange and blue commit before the generals react; brown commits after the last page,
+        // as the quest completion closes the dialogue.
+        if (stage != BROWN_WANTED && !commitHandIn(stage, wanted)) {
             return
         }
         wartface(neutral, "Grubfoot!")
@@ -521,8 +554,6 @@ class GoblinDiplomacy : QuestScript(
         wartface(neutral, "Put on this armour!")
         when (stage) {
             STARTED -> {
-                player.grubfootLook = GRUBFOOT_ORANGE
-                quest.setQuestStage(access, BLUE_WANTED)
                 grubfoot(quiz, "What do you think?")
                 wartface(neutral, "No I don't like that much.")
                 bentnoze(neutral, "It clashes with skin colour.")
@@ -531,8 +562,6 @@ class GoblinDiplomacy : QuestScript(
                 wartface(neutral, "Human! Get us blue armour!")
             }
             BLUE_WANTED -> {
-                player.grubfootLook = GRUBFOOT_BLUE
-                quest.setQuestStage(access, BROWN_WANTED)
                 grubfoot(quiz, "What do you think?")
                 bentnoze(neutral, "That not right. Not goblin colour at all.")
                 wartface(neutral, "Goblins wear dark earthy colours like brown.")
@@ -542,13 +571,12 @@ class GoblinDiplomacy : QuestScript(
                 chatPlayer(neutral, "Never mind, anything is worth a try.")
             }
             else -> {
-                player.grubfootLook = GRUBFOOT_BROWN
                 grubfoot(quiz, "What do you think?")
                 wartface(happy, "That colour quite nice. Me can see myself wearing that.")
                 bentnoze(happy, "It a deal then. Brown armour it is.")
                 wartface(happy, "Thank you for sorting out argument, human. You have reward now.")
                 chatPlayer(confused, "Thanks... I think...")
-                quest.completeQuest(access)
+                commitHandIn(stage, wanted)
             }
         }
     }
@@ -729,6 +757,7 @@ class GoblinDiplomacy : QuestScript(
         private const val PURPLE_DYE = "obj.purpledye"
         private const val GOLD_BAR = "obj.gold_bar"
         private const val CRAFTING_XP = 200.0
+        private const val NO_ROOM_FOR_REWARD = "You don't have enough room for the reward."
 
         private fun wantedArmour(stage: Int): String? =
             when (stage) {
