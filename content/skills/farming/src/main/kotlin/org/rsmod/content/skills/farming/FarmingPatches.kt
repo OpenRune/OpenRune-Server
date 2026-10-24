@@ -47,3 +47,48 @@ object FarmingPatches {
                 kotlin.math.abs(it.centre.z - coords.z) <= AREA_RADIUS
         }
 }
+
+/**
+ * Advance the whole farm against the same snapshot. Split at flower maturity so offline time
+ * before that boundary is never protected by a flower which only grows during this update.
+ */
+internal fun FarmingArea.advance(
+    states: List<PatchState>,
+    elapsed: Int,
+    diseaseRoll: (Double) -> Boolean,
+): List<PatchState> {
+    val current = states.toMutableList()
+    val protection = BooleanArray(patches.size)
+    var left = elapsed
+    while (left > 0) {
+        var step = left
+        for (i in patches.indices) {
+            val state = current[i]
+            val crop = state.crop ?: continue
+            if (patches[i].kind == PatchKind.FLOWER && state.health == Health.HEALTHY &&
+                !state.grown(crop)
+            ) {
+                val maturity = state.minutes + (crop.stages - state.stage - 1) * crop.stageMinutes
+                step = minOf(step, maturity.coerceAtLeast(1))
+            }
+        }
+        for (i in patches.indices) {
+            val crop = current[i].crop
+            protection[i] =
+                crop != null && crop.protectionIndex != 0 &&
+                    patches.indices.any { flower ->
+                        val state = current[flower]
+                        patches[flower].kind == PatchKind.FLOWER &&
+                            state.cropIndex == crop.protectionIndex &&
+                            state.health == Health.HEALTHY && state.crop?.let { state.grown(it) } == true
+                    }
+        }
+        for (i in patches.indices) {
+            val state = current[i]
+            current[i] =
+                state.advance(state.crop, step, FarmingComposts.get(state.compost), protection[i], diseaseRoll)
+        }
+        left -= step
+    }
+    return current
+}

@@ -5,5 +5,5 @@ import dev.openrune.pack.PluginPack
 
 class FarmingPluginPack : PluginPack() {
     override fun dbTables(): List<DBTable> =
-        listOf(FarmingTables.crops(), FarmingTables.patches())
+        listOf(FarmingTables.crops(), FarmingTables.patches(), FarmingTables.composts())
 }

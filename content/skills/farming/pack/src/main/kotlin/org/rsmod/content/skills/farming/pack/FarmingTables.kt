@@ -26,6 +26,16 @@ object FarmingTables {
     const val COL_DISEASED_BASE = 12
     const val COL_PROTECTION = 13
     const val COL_TRANSMIT = 14
+    const val COL_SAVE_LOW = 15
+    const val COL_SAVE_HIGH = 16
+    const val COL_HARVEST_AMOUNT = 17
+    const val COL_HARVEST_LEVEL_DIVISOR = 18
+
+    const val COMPOST_KIND = 0
+    const val COMPOST_OBJ = 1
+    const val COMPOST_XP = 2
+    const val COMPOST_HARVEST_LIVES = 3
+    const val COMPOST_DISEASE_CHANCE = 4
 
     const val PATCH_LOC = 0
     const val PATCH_KIND = 1
@@ -77,6 +87,10 @@ object FarmingTables {
                 column("diseased_base", COL_DISEASED_BASE, VarType.INT)
                 column("protection", COL_PROTECTION, VarType.DBROW)
                 column("transmit", COL_TRANSMIT, VarType.INT)
+                column("save_low", COL_SAVE_LOW, VarType.INT)
+                column("save_high", COL_SAVE_HIGH, VarType.INT)
+                column("harvest_amount", COL_HARVEST_AMOUNT, VarType.INT)
+                column("harvest_level_divisor", COL_HARVEST_LEVEL_DIVISOR, VarType.INT)
             },
         ) {
             fun crop(
@@ -94,6 +108,10 @@ object FarmingTables {
                 diseasedBase: Int = -1,
                 protection: String? = null,
                 transmit: List<Int> = emptyList(),
+                saveLow: Int = 0,
+                saveHigh: Int = 0,
+                harvestAmount: Int = 1,
+                harvestLevelDivisor: Int = 0,
             ) =
                 row("dbrow.farming_${name.replace(' ', '_')}") {
                     production {
@@ -113,6 +131,10 @@ object FarmingTables {
                     if (transmit.isNotEmpty()) {
                         column(COL_TRANSMIT, *transmit.toTypedArray())
                     }
+                    column(COL_SAVE_LOW, saveLow)
+                    column(COL_SAVE_HIGH, saveHigh)
+                    column(COL_HARVEST_AMOUNT, harvestAmount)
+                    column(COL_HARVEST_LEVEL_DIVISOR, harvestLevelDivisor)
                 }
 
             fun allotment(
@@ -124,6 +146,8 @@ object FarmingTables {
                 harvestXp: Double,
                 growBase: Int,
                 stages: Int,
+                saveLow: Int,
+                saveHigh: Int = 180,
                 protection: String? = null,
                 transmit: List<Int> = emptyList(),
             ) =
@@ -141,6 +165,8 @@ object FarmingTables {
                     seeds = ALLOTMENT_SEEDS,
                     protection = protection,
                     transmit = transmit,
+                    saveLow = saveLow,
+                    saveHigh = saveHigh,
                 )
 
             fun flower(
@@ -151,6 +177,8 @@ object FarmingTables {
                 plantXp: Double,
                 harvestXp: Double,
                 growBase: Int,
+                harvestAmount: Int = 1,
+                harvestLevelDivisor: Int = 0,
             ) =
                 crop(
                     name = name,
@@ -163,6 +191,8 @@ object FarmingTables {
                     growBase = growBase,
                     stages = 4,
                     stageMinutes = FLOWER_MINUTES,
+                    harvestAmount = harvestAmount,
+                    harvestLevelDivisor = harvestLevelDivisor,
                 )
 
             fun herb(
@@ -174,6 +204,7 @@ object FarmingTables {
                 harvestXp: Double,
                 growBase: Int,
                 diseasedBase: Int,
+                saveLow: Int,
             ) =
                 crop(
                     name = name,
@@ -187,14 +218,16 @@ object FarmingTables {
                     stages = 4,
                     stageMinutes = HERB_MINUTES,
                     diseasedBase = diseasedBase,
+                    saveLow = saveLow,
+                    saveHigh = 80,
                 )
 
-            allotment("potato", "obj.potato_seed", "obj.potato", 1, 8.0, 9.0, 6, 4, "dbrow.farming_marigold")
-            allotment("onion", "obj.onion_seed", "obj.onion", 5, 9.5, 10.5, 13, 4, "dbrow.farming_marigold")
-            allotment("cabbage", "obj.cabbage_seed", "obj.cabbage", 7, 10.0, 11.5, 20, 4, "dbrow.farming_rosemary")
-            allotment("tomato", "obj.tomato_seed", "obj.tomato", 12, 12.5, 14.0, 27, 4, "dbrow.farming_marigold")
-            allotment("sweetcorn", "obj.sweetcorn_seed", "obj.sweetcorn", 20, 17.0, 19.0, 34, 6)
-            allotment("strawberry", "obj.strawberry_seed", "obj.strawberry", 31, 26.0, 29.0, 43, 6)
+            allotment("potato", "obj.potato_seed", "obj.potato", 1, 8.0, 9.0, 6, 4, 101, protection = "dbrow.farming_marigold")
+            allotment("onion", "obj.onion_seed", "obj.onion", 5, 9.5, 10.5, 13, 4, 105, protection = "dbrow.farming_marigold")
+            allotment("cabbage", "obj.cabbage_seed", "obj.cabbage", 7, 10.0, 11.5, 20, 4, 107, protection = "dbrow.farming_rosemary")
+            allotment("tomato", "obj.tomato_seed", "obj.tomato", 12, 12.5, 14.0, 27, 4, 112, protection = "dbrow.farming_marigold")
+            allotment("sweetcorn", "obj.sweetcorn_seed", "obj.sweetcorn", 20, 17.0, 19.0, 34, 6, 88)
+            allotment("strawberry", "obj.strawberry_seed", "obj.strawberry", 31, 26.0, 29.0, 43, 6, 103)
             allotment(
                 name = "watermelon",
                 seed = "obj.watermelon_seed",
@@ -204,6 +237,7 @@ object FarmingTables {
                 harvestXp = 54.5,
                 growBase = 52,
                 stages = 8,
+                saveLow = 126,
                 protection = "dbrow.farming_nasturtium",
             )
             allotment(
@@ -215,29 +249,61 @@ object FarmingTables {
                 harvestXp = 82.0,
                 growBase = 128,
                 stages = 7,
+                saveLow = 148,
+                saveHigh = 195,
                 transmit = SNAPE_GRASS_TRANSMIT,
             )
 
             flower("marigold", "obj.marigold_seed", "obj.marigold", 2, 8.5, 47.0, 8)
             flower("rosemary", "obj.rosemary_seed", "obj.rosemary", 11, 12.0, 66.5, 13)
             flower("nasturtium", "obj.nasturtium_seed", "obj.nasturtium", 24, 19.5, 111.0, 18)
-            flower("woad", "obj.woad_seed", "obj.woadleaf", 25, 20.5, 115.5, 23)
-            flower("limpwurt", "obj.limpwurt_seed", "obj.limpwurt_root", 26, 21.5, 120.0, 28)
+            flower("woad", "obj.woad_seed", "obj.woadleaf", 25, 20.5, 115.5, 23, harvestAmount = 3)
+            flower("limpwurt", "obj.limpwurt_seed", "obj.limpwurt_root", 26, 21.5, 120.0, 28, harvestAmount = 3, harvestLevelDivisor = 10)
 
-            herb("guam", "obj.guam_seed", "obj.unidentified_guam", 9, 11.0, 12.5, 4, 128)
-            herb("marrentill", "obj.marrentill_seed", "obj.unidentified_marentill", 14, 13.5, 15.0, 11, 131)
-            herb("tarromin", "obj.tarromin_seed", "obj.unidentified_tarromin", 19, 16.0, 18.0, 18, 134)
-            herb("harralander", "obj.harralander_seed", "obj.unidentified_harralander", 26, 21.5, 24.0, 25, 137)
-            herb("ranarr", "obj.ranarr_seed", "obj.unidentified_ranarr", 32, 27.0, 30.5, 32, 140)
-            herb("toadflax", "obj.toadflax_seed", "obj.unidentified_toadflax", 38, 34.0, 38.5, 39, 143)
-            herb("irit", "obj.irit_seed", "obj.unidentified_irit", 44, 43.0, 48.5, 46, 146)
-            herb("avantoe", "obj.avantoe_seed", "obj.unidentified_avantoe", 50, 54.5, 61.5, 53, 149)
-            herb("kwuarm", "obj.kwuarm_seed", "obj.unidentified_kwuarm", 56, 69.0, 78.0, 68, 152)
-            herb("snapdragon", "obj.snapdragon_seed", "obj.unidentified_snapdragon", 62, 87.5, 98.5, 75, 155)
-            herb("cadantine", "obj.cadantine_seed", "obj.unidentified_cadantine", 67, 106.5, 120.0, 82, 158)
-            herb("lantadyme", "obj.lantadyme_seed", "obj.unidentified_lantadyme", 73, 134.5, 151.5, 89, 161)
-            herb("dwarf weed", "obj.dwarf_weed_seed", "obj.unidentified_dwarf_weed", 79, 170.5, 192.0, 96, 164)
-            herb("torstol", "obj.torstol_seed", "obj.unidentified_torstol", 85, 199.5, 224.5, 103, 167)
+            herb("guam", "obj.guam_seed", "obj.unidentified_guam", 9, 11.0, 12.5, 4, 128, 25)
+            herb("marrentill", "obj.marrentill_seed", "obj.unidentified_marentill", 14, 13.5, 15.0, 11, 131, 28)
+            herb("tarromin", "obj.tarromin_seed", "obj.unidentified_tarromin", 19, 16.0, 18.0, 18, 134, 31)
+            herb("harralander", "obj.harralander_seed", "obj.unidentified_harralander", 26, 21.5, 24.0, 25, 137, 36)
+            herb("ranarr", "obj.ranarr_seed", "obj.unidentified_ranarr", 32, 27.0, 30.5, 32, 140, 39)
+            herb("toadflax", "obj.toadflax_seed", "obj.unidentified_toadflax", 38, 34.0, 38.5, 39, 143, 43)
+            herb("irit", "obj.irit_seed", "obj.unidentified_irit", 44, 43.0, 48.5, 46, 146, 46)
+            herb("avantoe", "obj.avantoe_seed", "obj.unidentified_avantoe", 50, 54.5, 61.5, 53, 149, 50)
+            herb("kwuarm", "obj.kwuarm_seed", "obj.unidentified_kwuarm", 56, 69.0, 78.0, 68, 152, 54)
+            herb("snapdragon", "obj.snapdragon_seed", "obj.unidentified_snapdragon", 62, 87.5, 98.5, 75, 155, 57)
+            herb("cadantine", "obj.cadantine_seed", "obj.unidentified_cadantine", 67, 106.5, 120.0, 82, 158, 60)
+            herb("lantadyme", "obj.lantadyme_seed", "obj.unidentified_lantadyme", 73, 134.5, 151.5, 89, 161, 64)
+            herb("dwarf weed", "obj.dwarf_weed_seed", "obj.unidentified_dwarf_weed", 79, 170.5, 192.0, 96, 164, 67)
+            herb("torstol", "obj.torstol_seed", "obj.unidentified_torstol", 85, 199.5, 224.5, 103, 167, 71)
+        }
+
+    fun composts() =
+        dbTable("dbtable.farming_compost", serverOnly = true) {
+            column("kind", COMPOST_KIND, VarType.STRING)
+            column("obj", COMPOST_OBJ, VarType.OBJ)
+            column("xp", COMPOST_XP, VarType.INT)
+            column("harvest_lives", COMPOST_HARVEST_LIVES, VarType.INT)
+            column("disease_chance", COMPOST_DISEASE_CHANCE, VarType.INT)
+
+            fun compost(
+                kind: String,
+                obj: String?,
+                xp: Int,
+                harvestLives: Int,
+                diseaseChance: Int,
+            ) =
+                row("dbrow.farming_compost_${kind.lowercase()}") {
+                    column(COMPOST_KIND, kind)
+                    obj?.let { columnRSCM(COMPOST_OBJ, it) }
+                    column(COMPOST_XP, xp)
+                    column(COMPOST_HARVEST_LIVES, harvestLives)
+                    column(COMPOST_DISEASE_CHANCE, diseaseChance)
+                }
+
+            // shortcut: approximate base disease rates; replace when exact crop rates are known.
+            compost("NONE", null, 0, 3, 350)
+            compost("NORMAL", "obj.bucket_compost", 180, 4, 175)
+            compost("SUPER", "obj.bucket_supercompost", 260, 5, 70)
+            compost("ULTRA", "obj.bucket_ultracompost", 360, 6, 35)
         }
 
     /**

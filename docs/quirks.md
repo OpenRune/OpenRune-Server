@@ -73,6 +73,27 @@ it through the interface close hook. Keep cleanup tied to the interface,
 not the suspended dialogue: walking or a hit can cancel that dialogue.
 Disabled popups do not set the flag.
 
+## Farming
+
+Allotment, flower and herb patches are supported at Falador, Catherby, Ardougne,
+Canifis and Hosidius. Crop, patch and compost definitions live in the farming
+pack's cache tables; rebuild the cache after changing them.
+
+Allotments and herbs track harvest lives, not a fixed item count. Farming level
+and magic secateurs affect whether each pick spends a life. Flowers give one
+batch: woad yields three leaves, while limpwurt quantity depends on Farming level
+and magic secateurs. Planting XP is paid once on final harvest or dead clearing,
+not when seeds are planted. Harvested patches remain cleared for immediate
+replanting; untended empty patches regrow weeds.
+
+Growth uses saved, minute-resolution per-patch countdowns, including offline
+elapsed time, rather than Jagex's global farming tick alignment. Disease remains
+an approximation: a 35% base chance is divided across growth stages, compost
+halves it, supercompost reduces it by four-fifths, and ultracompost by nine-tenths.
+Ultracompost does not confer immunity. Watered stages retain the inherited
+disease immunity; mature matching flowers protect their neighbouring allotments.
+Exact crop-specific disease rates and watering effects are not calibrated.
+
 ## Types
 ```
 engine

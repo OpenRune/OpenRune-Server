@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.farming
 
+import org.rsmod.api.table.farming.FarmingCompostRow
 import org.rsmod.api.table.farming.FarmingCropRow
 
 internal const val STAT_FARMING: String = "stat.farming"
@@ -52,9 +53,14 @@ data class Crop(
     val diseasedBase: Int = -1,
     val seedsPerPlant: Int = 1,
     val transmit: List<Int> = emptyList(),
+    val saveLow: Int = 0,
+    val saveHigh: Int = 0,
+    val harvestAmount: Int = 1,
+    val harvestLevelDivisor: Int = 0,
+    val protectionIndex: Int = 0,
 )
 
-private fun FarmingCropRow.toCrop(): Crop =
+private fun FarmingCropRow.toCrop(indices: Map<Int, Int>): Crop =
     Crop(
         kind = PatchKind.of(category),
         name = name,
@@ -69,10 +75,19 @@ private fun FarmingCropRow.toCrop(): Crop =
         diseasedBase = diseasedBase,
         seedsPerPlant = inputAmount,
         transmit = transmit,
+        saveLow = saveLow,
+        saveHigh = saveHigh,
+        harvestAmount = harvestAmount,
+        harvestLevelDivisor = harvestLevelDivisor,
+        protectionIndex = protection?.let { indices.getValue(it.rowId) } ?: 0,
     )
 
 object FarmingCrops {
-    val all: List<Crop> by lazy { FarmingCropRow.all().map(FarmingCropRow::toCrop) }
+    val all: List<Crop> by lazy {
+        val rows = FarmingCropRow.all()
+        val indices = rows.mapIndexed { index, row -> row.rowId to index + 1 }.toMap()
+        rows.map { it.toCrop(indices) }
+    }
 
     private val bySeed: Map<String, Crop> by lazy { all.associateBy(Crop::seed) }
 
@@ -104,9 +119,37 @@ val WATERING_CANS: List<String> =
         "obj.watering_can_8",
     )
 
-enum class Compost(val obj: String, val diseaseChance: Double) {
-    NONE("", 0.35),
-    NORMAL("obj.bucket_compost", 0.22),
-    SUPER("obj.bucket_supercompost", 0.115),
-    ULTRA("obj.bucket_ultracompost", 0.0),
+enum class Compost {
+    NONE,
+    NORMAL,
+    SUPER,
+    ULTRA,
+}
+
+data class CompostDef(
+    val kind: Compost,
+    val obj: String?,
+    val xp: Double,
+    val harvestLives: Int,
+    val diseaseChance: Double,
+)
+
+object FarmingComposts {
+    private val definitions: Map<Compost, CompostDef> by lazy {
+        FarmingCompostRow.all().associate { row ->
+            val kind = Compost.valueOf(row.kind)
+            kind to
+                CompostDef(
+                    kind = kind,
+                    obj = row.obj?.internalName,
+                    xp = row.xp / 10.0,
+                    harvestLives = row.harvestLives,
+                    diseaseChance = row.diseaseChance / 1000.0,
+                )
+        }
+    }
+
+    fun get(kind: Compost): CompostDef = definitions.getValue(kind)
+
+    fun byObj(obj: String): CompostDef? = definitions.values.firstOrNull { it.obj == obj }
 }

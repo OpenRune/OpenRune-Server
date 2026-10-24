@@ -14,6 +14,7 @@ enum class Health {
  * [weeds] counts rake strokes: 0 is fully overgrown and [CLEARED] is ready to plant. [minutes] is
  * how much real time is left before the next growth stage, which is what lets a patch keep growing
  * while its owner is logged out - the elapsed time is handed to [advance] on the next login.
+ * [produce] stores remaining harvest lives, or one pending flower batch.
  */
 data class PatchState(
     val weeds: Int = 0,
@@ -44,10 +45,28 @@ data class PatchState(
      * Runs [elapsed] minutes of growth. A patch that is diseased when its next stage comes due dies
      * instead of advancing, which is the window the player has to cure it.
      */
-    fun advance(crop: Crop?, elapsed: Int, diseaseRoll: (Double) -> Boolean): PatchState {
-        if (crop == null || health == Health.DEAD || grown(crop)) {
-            return this
+    fun advance(
+        crop: Crop?,
+        elapsed: Int,
+        compost: CompostDef,
+        `protected`: Boolean = false,
+        diseaseRoll: (Double) -> Boolean,
+    ): PatchState {
+        if (elapsed <= 0) return this
+        if (crop == null) {
+            var state = this
+            var left = elapsed
+            while (state.weeds > 0) {
+                val remaining = state.minutes.takeIf { it > 0 } ?: WEED_MINUTES
+                if (left < remaining) return state.copy(minutes = remaining - left)
+                left -= remaining
+                state = state.copy(weeds = state.weeds - 1, minutes = 0)
+                if (state.weeds > 0) state = state.copy(minutes = WEED_MINUTES)
+                if (left == 0) return state
+            }
+            return state
         }
+        if (health == Health.DEAD || grown(crop)) return this
 
         var state = this
         var left = elapsed
@@ -62,8 +81,10 @@ data class PatchState(
             }
 
             val diseased =
-                !state.watered &&
+                !`protected` &&
+                    !state.watered &&
                     state.stage + 1 < crop.stages &&
+                    // shortcut: inherited stage/watering model; replace when exact cycle rates are known.
                     diseaseRoll(compost.diseaseChance / crop.stages)
 
             state =
@@ -76,7 +97,11 @@ data class PatchState(
         }
 
         if (state.grown(crop)) {
-            state = state.copy(minutes = 0, produce = harvestsFor(crop))
+            state =
+                state.copy(
+                    minutes = 0,
+                    produce = if (crop.kind == PatchKind.FLOWER) 1 else compost.harvestLives,
+                )
         }
         return state
     }
@@ -113,15 +138,9 @@ data class PatchState(
         }
     }
 
-    private fun harvestsFor(crop: Crop): Int =
-        when (crop.kind) {
-            PatchKind.FLOWER -> 1
-            else -> BASE_HARVESTS + compost.ordinal
-        }
-
     companion object {
         const val CLEARED: Int = 3
-        const val BASE_HARVESTS: Int = 3
+        private const val WEED_MINUTES = 5
 
         private const val WATERED_OFFSET = 64
         private const val DISEASED_OFFSET = 128
@@ -141,3 +160,25 @@ data class PatchState(
             )
     }
 }
+
+fun Crop.saveThreshold(farmingLevel: Int, magicSecateurs: Boolean): Int {
+    val level = farmingLevel.coerceIn(1, 99)
+    val low = if (magicSecateurs) saveLow * 110 / 100 else saveLow
+    val high = if (magicSecateurs) saveHigh * 110 / 100 else saveHigh
+    return 1 + (low * (99 - level) + high * (level - 1) + 49) / 98
+}
+
+fun Crop.harvestAmount(farmingLevel: Int, magicSecateurs: Boolean, roll: (Int) -> Int): Int {
+    if (harvestLevelDivisor == 0) return harvestAmount
+    val level = if (magicSecateurs) farmingLevel * 110 / 100 else farmingLevel
+    return harvestAmount + roll(level.coerceAtLeast(1)) / harvestLevelDivisor
+}
+
+fun PatchState.harvested(saveLife: Boolean): PatchState =
+    when {
+        saveLife -> this
+        produce > 1 -> copy(produce = produce - 1)
+        else -> empty()
+    }
+
+fun PatchState.empty(): PatchState = PatchState(weeds = PatchState.CLEARED, minutes = 5)
