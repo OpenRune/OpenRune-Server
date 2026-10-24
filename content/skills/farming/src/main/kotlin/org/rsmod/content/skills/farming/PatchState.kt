@@ -1,7 +1,5 @@
 package org.rsmod.content.skills.farming
 
-import kotlin.math.min
-
 enum class Health {
     HEALTHY,
     DISEASED,
@@ -122,30 +120,23 @@ data class PatchState(
         return when (crop.kind) {
             PatchKind.HERB ->
                 when (health) {
-                    Health.DEAD -> HERB_DEAD_BASE + min(stage - 1, 2).coerceAtLeast(0)
+                    Health.DEAD -> crop.deadBase + (stage - 1).coerceIn(0, 2)
                     Health.DISEASED -> crop.diseasedBase + (stage - 1).coerceIn(0, 2)
                     Health.HEALTHY -> crop.growBase + stage
                 }
-            else -> {
-                val base = crop.growBase + stage
+            else ->
                 when {
-                    health == Health.DEAD -> base + DEAD_OFFSET
-                    health == Health.DISEASED -> base + DISEASED_OFFSET
-                    watered -> base + WATERED_OFFSET
-                    else -> base
+                    health == Health.DEAD -> crop.deadBase + stage
+                    health == Health.DISEASED -> crop.diseasedBase + stage
+                    watered -> crop.wateredBase + stage
+                    else -> crop.growBase + stage
                 }
-            }
         }
     }
 
     companion object {
         const val CLEARED: Int = 3
         private const val WEED_MINUTES = 5
-
-        private const val WATERED_OFFSET = 64
-        private const val DISEASED_OFFSET = 128
-        private const val DEAD_OFFSET = 192
-        private const val HERB_DEAD_BASE = 170
 
         fun unpack(value: Int): PatchState =
             PatchState(

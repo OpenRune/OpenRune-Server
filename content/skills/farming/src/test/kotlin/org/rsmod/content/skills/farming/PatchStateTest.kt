@@ -19,6 +19,9 @@ class PatchStateTest {
             growBase = 6,
             stages = 4,
             stageMinutes = 10,
+            wateredBase = 23,
+            diseasedBase = 41,
+            deadBase = 62,
         )
 
     private val none = CompostDef(Compost.NONE, null, 0.0, 3, 0.35)
@@ -152,15 +155,25 @@ class PatchStateTest {
     }
 
     @Test
-    fun `fallback transmit distinguishes health and watering`() {
+    fun `regular transmit uses configured bases and health takes precedence over watering`() {
         val growing = planted().copy(stage = 1)
-        assertEquals(crop.growBase + 1, growing.transmit(crop))
-        assertEquals(crop.growBase + 1 + 64, growing.copy(watered = true).transmit(crop))
-        assertEquals(crop.growBase + 1 + 128, growing.copy(health = Health.DISEASED).transmit(crop))
-        assertEquals(crop.growBase + 1 + 192, growing.copy(health = Health.DEAD).transmit(crop))
-        val herb = crop.copy(kind = PatchKind.HERB, diseasedBase = 128)
-        assertEquals(128, growing.copy(health = Health.DISEASED).transmit(herb))
-        assertEquals(170, growing.copy(health = Health.DEAD).transmit(herb))
+        assertEquals(7, growing.transmit(crop))
+        assertEquals(24, growing.copy(watered = true).transmit(crop))
+        assertEquals(42, growing.copy(health = Health.DISEASED, watered = true).transmit(crop))
+        assertEquals(63, growing.copy(health = Health.DEAD, watered = true).transmit(crop))
+    }
+
+    @Test
+    fun `herb disease and death select configured art and clamp the shared stages`() {
+        val herb = crop.copy(kind = PatchKind.HERB, diseasedBase = 81, deadBase = 93)
+        val diseased = listOf(81, 81, 82, 83, 83)
+        val dead = listOf(93, 93, 94, 95, 95)
+        for (stage in 0..herb.stages) {
+            val state = planted().copy(stage = stage, watered = true)
+            assertEquals(herb.growBase + stage, state.transmit(herb))
+            assertEquals(diseased[stage], state.copy(health = Health.DISEASED).transmit(herb))
+            assertEquals(dead[stage], state.copy(health = Health.DEAD).transmit(herb))
+        }
     }
 
     @Test

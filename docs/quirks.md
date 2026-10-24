@@ -77,9 +77,11 @@ Disabled popups do not set the flag.
 
 Allotment, flower and herb patches are supported at Falador, Catherby, Ardougne,
 Canifis and Hosidius. Crop, patch and compost definitions live in the farming
-pack's cache tables; rebuild the cache after changing them. Snape-grass artwork
-selectors are derived at pack time from named locs and the allotment transform
-table. Duplicate artwork uses the first matching selector.
+pack's cache tables; rebuild the cache after changing them. Artwork bases for all
+27 crops are derived from named locs at pack time. Regular stage arithmetic is
+validated against the patch transform tables; snape grass retains explicit
+state banks for its scattered artwork. Duplicate artwork uses the first matching
+selector. Watered and dead bases are cache columns, not runtime offset constants.
 
 Allotments and herbs track harvest lives, not a fixed item count. Farming level
 and magic secateurs affect whether each pick spends a life. Flowers give one

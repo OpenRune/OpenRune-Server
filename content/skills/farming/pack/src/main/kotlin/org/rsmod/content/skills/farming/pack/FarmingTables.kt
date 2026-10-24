@@ -19,10 +19,8 @@ import org.rsmod.map.CoordGrid
  * XP is stored multiplied by ten: two thirds of these values are fractional - a potato plants for
  * 8.5 - and the production xp column is an int. Content divides by ten once, in FarmingCrops.
  *
- * `grow_base` is an index into the patch loc's own transform table: the client renders
- * `transforms[grow_base + stage]`. Allotments and flowers offset that by +64 watered, +128 diseased
- * and +192 dead; herb patches pack their diseased art separately, which is what `diseased_base` is
- * for, and why it is set on herbs alone.
+ * Artwork bases are resolved from named locs at pack time. Regular crops use stage arithmetic
+ * checked against the patch's transform table; snape grass supplies explicit state banks.
  */
 object FarmingTables {
     const val COL_NAME = 7
@@ -37,6 +35,8 @@ object FarmingTables {
     const val COL_SAVE_HIGH = 16
     const val COL_HARVEST_AMOUNT = 17
     const val COL_HARVEST_LEVEL_DIVISOR = 18
+    const val COL_WATERED_BASE = 19
+    const val COL_DEAD_BASE = 20
 
     const val COMPOST_KIND = 0
     const val COMPOST_OBJ = 1
@@ -59,13 +59,16 @@ object FarmingTables {
     private const val FLOWER_MINUTES = 5
     private const val HERB_MINUTES = 20
 
-    private fun snapeGrassTransmit(): List<Int> {
-        val patch = "loc.farming_veg_patch_1"
-        val id = patch.asRSCM()
+    private fun patchTransforms(): Map<String, List<Int>> {
         val decoder = OsrsCacheProvider.ObjectDecoder(revision.first)
         val cache = Cache.load(Path.of(getCacheLocation()))
-        val transforms =
-            try {
+        return try {
+            mapOf(
+                ALLOTMENT to "loc.farming_veg_patch_1",
+                FLOWER to "loc.farming_flower_patch_1",
+                HERB to "loc.farming_herb_patch_1",
+            ).mapValues { (_, patch) ->
+                val id = patch.asRSCM()
                 val data =
                     checkNotNull(
                         cache.data(decoder.index, decoder.getArchive(id), decoder.getFile(id)),
@@ -73,10 +76,13 @@ object FarmingTables {
                 checkNotNull(ObjectCodec(revision.first).loadData(id, data).transforms) {
                     "Missing transforms for $patch"
                 }
-            } finally {
-                cache.close()
             }
+        } finally {
+            cache.close()
+        }
+    }
 
+    private fun snapeGrassTransmit(transforms: List<Int>): List<Int> {
         // Healthy, watered, diseased, dead; edge stages share artwork.
         return listOf(
             "seedling", "1", "2", "3", "4", "5", "6", "fullygrown",
@@ -89,7 +95,7 @@ object FarmingTables {
             val symbol = "loc.snapegrass_$stage"
             // Mature artwork has multiple selectors; use the first.
             transforms.indexOf(symbol.asRSCM()).also {
-                check(it >= 0) { "$symbol is not a transform of $patch" }
+                check(it >= 0) { "Missing snape-grass transform: $symbol" }
             }
         }
     }
@@ -115,8 +121,23 @@ object FarmingTables {
                 column("save_high", COL_SAVE_HIGH, VarType.INT)
                 column("harvest_amount", COL_HARVEST_AMOUNT, VarType.INT)
                 column("harvest_level_divisor", COL_HARVEST_LEVEL_DIVISOR, VarType.INT)
+                column("watered_base", COL_WATERED_BASE, VarType.INT)
+                column("dead_base", COL_DEAD_BASE, VarType.INT)
             },
         ) {
+            val transforms = patchTransforms()
+
+            fun selector(kind: String, symbol: String): Int =
+                transforms.getValue(kind).indexOf(symbol.asRSCM()).also {
+                    check(it >= 0) { "$symbol is not a transform of $kind patches" }
+                }
+
+            fun validateStage(kind: String, base: Int, stage: Int, symbol: String) {
+                check(transforms.getValue(kind).getOrNull(base + stage) == symbol.asRSCM()) {
+                    "$kind selector ${base + stage} does not resolve to $symbol"
+                }
+            }
+
             fun crop(
                 name: String,
                 kind: String,
@@ -125,11 +146,11 @@ object FarmingTables {
                 level: Int,
                 plantXp: Double,
                 harvestXp: Double,
-                growBase: Int,
+                growLoc: String,
                 stages: Int,
                 stageMinutes: Int,
                 seeds: Int = 1,
-                diseasedBase: Int = -1,
+                diseasedLoc: String = "${growLoc.substringBeforeLast('_')}_1_diseased",
                 protection: String? = null,
                 transmit: List<Int> = emptyList(),
                 saveLow: Int = 0,
@@ -138,6 +159,46 @@ object FarmingTables {
                 harvestLevelDivisor: Int = 0,
             ) =
                 row("dbrow.farming_${name.replace(' ', '_')}") {
+                    val prefix = growLoc.substringBeforeLast('_')
+                    val herb = kind == HERB
+                    val growBase = selector(kind, growLoc)
+                    val wateredBase =
+                        if (herb) growBase else selector(kind, "${prefix}_seed_watered")
+                    val diseasedBase = selector(kind, diseasedLoc) - if (herb) 0 else 1
+                    val deadBase =
+                        selector(kind, if (herb) "loc.herb_1_dead" else "${prefix}_1_dead") -
+                            if (herb) 0 else 1
+
+                    if (transmit.isEmpty()) {
+                        for (stage in 0..stages) {
+                            val symbol =
+                                when (stage) {
+                                    0 -> growLoc
+                                    stages -> "${prefix}_fullygrown"
+                                    else -> "${prefix}_$stage"
+                                }
+                            validateStage(kind, growBase, stage, symbol)
+                        }
+                        if (herb) {
+                            val diseasedPrefix = diseasedLoc.substringBeforeLast('_')
+                            for (stage in 1 until stages) {
+                                validateStage(kind, diseasedBase, stage - 1, "${diseasedPrefix}_$stage")
+                                validateStage(kind, deadBase, stage - 1, "loc.herb_${stage}_dead")
+                            }
+                        } else {
+                            for (stage in 0 until stages) {
+                                val watered =
+                                    if (stage == 0) "${prefix}_seed_watered"
+                                    else "${prefix}_${stage}_watered"
+                                validateStage(kind, wateredBase, stage, watered)
+                                if (stage > 0) {
+                                    validateStage(kind, diseasedBase, stage, "${prefix}_${stage}_diseased")
+                                    validateStage(kind, deadBase, stage, "${prefix}_${stage}_dead")
+                                }
+                            }
+                        }
+                    }
+
                     production {
                         input(seed, seeds)
                         statReq("stat.farming", level)
@@ -159,6 +220,8 @@ object FarmingTables {
                     column(COL_SAVE_HIGH, saveHigh)
                     column(COL_HARVEST_AMOUNT, harvestAmount)
                     column(COL_HARVEST_LEVEL_DIVISOR, harvestLevelDivisor)
+                    column(COL_WATERED_BASE, wateredBase)
+                    column(COL_DEAD_BASE, deadBase)
                 }
 
             fun allotment(
@@ -168,7 +231,7 @@ object FarmingTables {
                 level: Int,
                 plantXp: Double,
                 harvestXp: Double,
-                growBase: Int,
+                growLoc: String,
                 stages: Int,
                 saveLow: Int,
                 saveHigh: Int = 180,
@@ -183,7 +246,7 @@ object FarmingTables {
                     level = level,
                     plantXp = plantXp,
                     harvestXp = harvestXp,
-                    growBase = growBase,
+                    growLoc = growLoc,
                     stages = stages,
                     stageMinutes = ALLOTMENT_MINUTES,
                     seeds = ALLOTMENT_SEEDS,
@@ -200,7 +263,7 @@ object FarmingTables {
                 level: Int,
                 plantXp: Double,
                 harvestXp: Double,
-                growBase: Int,
+                growLoc: String,
                 harvestAmount: Int = 1,
                 harvestLevelDivisor: Int = 0,
             ) =
@@ -212,7 +275,7 @@ object FarmingTables {
                     level = level,
                     plantXp = plantXp,
                     harvestXp = harvestXp,
-                    growBase = growBase,
+                    growLoc = growLoc,
                     stages = 4,
                     stageMinutes = FLOWER_MINUTES,
                     harvestAmount = harvestAmount,
@@ -226,9 +289,9 @@ object FarmingTables {
                 level: Int,
                 plantXp: Double,
                 harvestXp: Double,
-                growBase: Int,
-                diseasedBase: Int,
+                growLoc: String,
                 saveLow: Int,
+                diseasedLoc: String = "${growLoc.removeSuffix("_seed")}_diseased_1",
             ) =
                 crop(
                     name = name,
@@ -238,20 +301,20 @@ object FarmingTables {
                     level = level,
                     plantXp = plantXp,
                     harvestXp = harvestXp,
-                    growBase = growBase,
+                    growLoc = growLoc,
                     stages = 4,
                     stageMinutes = HERB_MINUTES,
-                    diseasedBase = diseasedBase,
+                    diseasedLoc = diseasedLoc,
                     saveLow = saveLow,
                     saveHigh = 80,
                 )
 
-            allotment("potato", "obj.potato_seed", "obj.potato", 1, 8.0, 9.0, 6, 4, 101, protection = "dbrow.farming_marigold")
-            allotment("onion", "obj.onion_seed", "obj.onion", 5, 9.5, 10.5, 13, 4, 105, protection = "dbrow.farming_marigold")
-            allotment("cabbage", "obj.cabbage_seed", "obj.cabbage", 7, 10.0, 11.5, 20, 4, 107, protection = "dbrow.farming_rosemary")
-            allotment("tomato", "obj.tomato_seed", "obj.tomato", 12, 12.5, 14.0, 27, 4, 112, protection = "dbrow.farming_marigold")
-            allotment("sweetcorn", "obj.sweetcorn_seed", "obj.sweetcorn", 20, 17.0, 19.0, 34, 6, 88)
-            allotment("strawberry", "obj.strawberry_seed", "obj.strawberry", 31, 26.0, 29.0, 43, 6, 103)
+            allotment("potato", "obj.potato_seed", "obj.potato", 1, 8.0, 9.0, "loc.potato_seed", 4, 101, protection = "dbrow.farming_marigold")
+            allotment("onion", "obj.onion_seed", "obj.onion", 5, 9.5, 10.5, "loc.onion_seed", 4, 105, protection = "dbrow.farming_marigold")
+            allotment("cabbage", "obj.cabbage_seed", "obj.cabbage", 7, 10.0, 11.5, "loc.cabbage_seed", 4, 107, protection = "dbrow.farming_rosemary")
+            allotment("tomato", "obj.tomato_seed", "obj.tomato", 12, 12.5, 14.0, "loc.tomato_seed", 4, 112, protection = "dbrow.farming_marigold")
+            allotment("sweetcorn", "obj.sweetcorn_seed", "obj.sweetcorn", 20, 17.0, 19.0, "loc.sweetcorn_seed", 6, 88)
+            allotment("strawberry", "obj.strawberry_seed", "obj.strawberry", 31, 26.0, 29.0, "loc.strawberry_seed", 6, 103)
             allotment(
                 name = "watermelon",
                 seed = "obj.watermelon_seed",
@@ -259,7 +322,7 @@ object FarmingTables {
                 level = 47,
                 plantXp = 48.5,
                 harvestXp = 54.5,
-                growBase = 52,
+                growLoc = "loc.watermelon_seed",
                 stages = 8,
                 saveLow = 126,
                 protection = "dbrow.farming_nasturtium",
@@ -271,33 +334,33 @@ object FarmingTables {
                 level = 61,
                 plantXp = 82.0,
                 harvestXp = 82.0,
-                growBase = 128,
+                growLoc = "loc.snapegrass_seedling",
                 stages = 7,
                 saveLow = 148,
                 saveHigh = 195,
-                transmit = snapeGrassTransmit(),
+                transmit = snapeGrassTransmit(transforms.getValue(ALLOTMENT)),
             )
 
-            flower("marigold", "obj.marigold_seed", "obj.marigold", 2, 8.5, 47.0, 8)
-            flower("rosemary", "obj.rosemary_seed", "obj.rosemary", 11, 12.0, 66.5, 13)
-            flower("nasturtium", "obj.nasturtium_seed", "obj.nasturtium", 24, 19.5, 111.0, 18)
-            flower("woad", "obj.woad_seed", "obj.woadleaf", 25, 20.5, 115.5, 23, harvestAmount = 3)
-            flower("limpwurt", "obj.limpwurt_seed", "obj.limpwurt_root", 26, 21.5, 120.0, 28, harvestAmount = 3, harvestLevelDivisor = 10)
+            flower("marigold", "obj.marigold_seed", "obj.marigold", 2, 8.5, 47.0, "loc.marigold_seed")
+            flower("rosemary", "obj.rosemary_seed", "obj.rosemary", 11, 12.0, 66.5, "loc.rosemary_seed")
+            flower("nasturtium", "obj.nasturtium_seed", "obj.nasturtium", 24, 19.5, 111.0, "loc.nasturtium_seed")
+            flower("woad", "obj.woad_seed", "obj.woadleaf", 25, 20.5, 115.5, "loc.woad_seed", harvestAmount = 3)
+            flower("limpwurt", "obj.limpwurt_seed", "obj.limpwurt_root", 26, 21.5, 120.0, "loc.limpwurt_seed", harvestAmount = 3, harvestLevelDivisor = 10)
 
-            herb("guam", "obj.guam_seed", "obj.unidentified_guam", 9, 11.0, 12.5, 4, 128, 25)
-            herb("marrentill", "obj.marrentill_seed", "obj.unidentified_marentill", 14, 13.5, 15.0, 11, 131, 28)
-            herb("tarromin", "obj.tarromin_seed", "obj.unidentified_tarromin", 19, 16.0, 18.0, 18, 134, 31)
-            herb("harralander", "obj.harralander_seed", "obj.unidentified_harralander", 26, 21.5, 24.0, 25, 137, 36)
-            herb("ranarr", "obj.ranarr_seed", "obj.unidentified_ranarr", 32, 27.0, 30.5, 32, 140, 39)
-            herb("toadflax", "obj.toadflax_seed", "obj.unidentified_toadflax", 38, 34.0, 38.5, 39, 143, 43)
-            herb("irit", "obj.irit_seed", "obj.unidentified_irit", 44, 43.0, 48.5, 46, 146, 46)
-            herb("avantoe", "obj.avantoe_seed", "obj.unidentified_avantoe", 50, 54.5, 61.5, 53, 149, 50)
-            herb("kwuarm", "obj.kwuarm_seed", "obj.unidentified_kwuarm", 56, 69.0, 78.0, 68, 152, 54)
-            herb("snapdragon", "obj.snapdragon_seed", "obj.unidentified_snapdragon", 62, 87.5, 98.5, 75, 155, 57)
-            herb("cadantine", "obj.cadantine_seed", "obj.unidentified_cadantine", 67, 106.5, 120.0, 82, 158, 60)
-            herb("lantadyme", "obj.lantadyme_seed", "obj.unidentified_lantadyme", 73, 134.5, 151.5, 89, 161, 64)
-            herb("dwarf weed", "obj.dwarf_weed_seed", "obj.unidentified_dwarf_weed", 79, 170.5, 192.0, 96, 164, 67)
-            herb("torstol", "obj.torstol_seed", "obj.unidentified_torstol", 85, 199.5, 224.5, 103, 167, 71)
+            herb("guam", "obj.guam_seed", "obj.unidentified_guam", 9, 11.0, 12.5, "loc.herb_guam_leaf_seed", 25)
+            herb("marrentill", "obj.marrentill_seed", "obj.unidentified_marentill", 14, 13.5, 15.0, "loc.herb_marrentill_seed", 28, diseasedLoc = "loc.herb_marentill_diseased_1")
+            herb("tarromin", "obj.tarromin_seed", "obj.unidentified_tarromin", 19, 16.0, 18.0, "loc.herb_tarromin_seed", 31)
+            herb("harralander", "obj.harralander_seed", "obj.unidentified_harralander", 26, 21.5, 24.0, "loc.herb_harralander_seed", 36)
+            herb("ranarr", "obj.ranarr_seed", "obj.unidentified_ranarr", 32, 27.0, 30.5, "loc.herb_ranarr_weed_seed", 39)
+            herb("toadflax", "obj.toadflax_seed", "obj.unidentified_toadflax", 38, 34.0, 38.5, "loc.herb_toadflax_seed", 43)
+            herb("irit", "obj.irit_seed", "obj.unidentified_irit", 44, 43.0, 48.5, "loc.herb_irit_leaf_seed", 46)
+            herb("avantoe", "obj.avantoe_seed", "obj.unidentified_avantoe", 50, 54.5, 61.5, "loc.herb_avantoe_seed", 50)
+            herb("kwuarm", "obj.kwuarm_seed", "obj.unidentified_kwuarm", 56, 69.0, 78.0, "loc.herb_kwuarm_seed", 54)
+            herb("snapdragon", "obj.snapdragon_seed", "obj.unidentified_snapdragon", 62, 87.5, 98.5, "loc.herb_snapdragon_seed", 57)
+            herb("cadantine", "obj.cadantine_seed", "obj.unidentified_cadantine", 67, 106.5, 120.0, "loc.herb_cadantine_seed", 60)
+            herb("lantadyme", "obj.lantadyme_seed", "obj.unidentified_lantadyme", 73, 134.5, 151.5, "loc.herb_lantadyme_seed", 64)
+            herb("dwarf weed", "obj.dwarf_weed_seed", "obj.unidentified_dwarf_weed", 79, 170.5, 192.0, "loc.herb_dwarf_weed_seed", 67)
+            herb("torstol", "obj.torstol_seed", "obj.unidentified_torstol", 85, 199.5, 224.5, "loc.herb_torstol_seed", 71)
         }
 
     fun composts() =

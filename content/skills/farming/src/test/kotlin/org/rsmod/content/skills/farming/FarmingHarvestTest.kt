@@ -16,6 +16,8 @@ class FarmingHarvestTest {
             growBase = 4,
             stages = 4,
             stageMinutes = 20,
+            wateredBase = 4,
+            deadBase = 90,
             saveLow = 25,
             saveHigh = 80,
         )

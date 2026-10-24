@@ -30,10 +30,8 @@ enum class PatchKind {
 }
 
 /**
- * [growBase] is the index into the patch loc's own transform table: the client renders
- * `transforms[growBase + stage]`. Allotments and flowers offset that by +64 watered, +128 diseased
- * and +192 dead; herb patches pack their diseased art separately, which is what [diseasedBase] is
- * for.
+ * Artwork bases are resolved from named locs during cache packing. Allotments and flowers add
+ * their stage to the selected base; diseased/dead herbs use three shared growth stages.
  *
  * [transmit] is the escape hatch for a crop whose art the cache scattered instead of laying out in
  * one run. When it is set it replaces all of the above: healthy, watered, diseased and dead banks
@@ -50,6 +48,8 @@ data class Crop(
     val growBase: Int,
     val stages: Int,
     val stageMinutes: Int,
+    val wateredBase: Int,
+    val deadBase: Int,
     val diseasedBase: Int = -1,
     val seedsPerPlant: Int = 1,
     val transmit: List<Int> = emptyList(),
@@ -72,6 +72,8 @@ private fun FarmingCropRow.toCrop(indices: Map<Int, Int>): Crop =
         growBase = growBase,
         stages = stages,
         stageMinutes = stageMinutes,
+        wateredBase = wateredBase,
+        deadBase = deadBase,
         diseasedBase = diseasedBase,
         seedsPerPlant = inputAmount,
         transmit = transmit,
