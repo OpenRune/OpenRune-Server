@@ -213,6 +213,7 @@ public class Obj(
             return fromOwner(player, coords, obj.id, count)
         }
 
+
         public fun fromOwner(
             player: Player,
             coords: CoordGrid,

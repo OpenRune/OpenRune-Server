@@ -4,7 +4,6 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
-import java.util.concurrent.ConcurrentLinkedQueue
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.obj.ObjRegistryResult
 import org.rsmod.api.registry.obj.isSuccess
@@ -16,6 +15,7 @@ import org.rsmod.game.obj.ObjScope
 import org.rsmod.game.type.getObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
+import java.util.concurrent.ConcurrentLinkedQueue
 
 public class ObjRepository
 @Inject
