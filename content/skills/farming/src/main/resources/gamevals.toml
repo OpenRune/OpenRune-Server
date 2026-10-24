@@ -22,7 +22,7 @@ farming_patch_19 = 65459
 farming_clock = 65439
 
 [gamevals.timer]
-farming_transmit = 120
+farming_transmit = 4440
 
 [gamevals.dbtable]
 farming_crop = 65478
