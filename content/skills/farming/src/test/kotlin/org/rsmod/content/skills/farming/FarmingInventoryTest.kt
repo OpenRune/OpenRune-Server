@@ -38,11 +38,20 @@ import org.rsmod.game.inv.Inventory
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.queue.EngineQueueCache
+import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class FarmingInventoryTest {
+    @Test
+    fun `approaching Hosidius selects its patch state without an interaction`() {
+        assertEquals(
+            "Hosidius",
+            FarmingPatches.nearest(CoordGrid(1738, 3550, 0))?.name,
+        )
+    }
+
     @Test
     fun `saved crop indices retain their plants when lower numbered rows are added`() {
         val seeds = listOf(

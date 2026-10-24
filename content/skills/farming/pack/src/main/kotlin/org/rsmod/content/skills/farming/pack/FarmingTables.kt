@@ -471,7 +471,7 @@ object FarmingTables {
             )
             area(
                 area = "Hosidius",
-                centre = CoordGrid(1269, 3727, 0),
+                centre = CoordGrid(1738, 3552, 0),
                 first = 16,
                 veg1 = "loc.farming_veg_patch_10",
                 veg2 = "loc.farming_veg_patch_11",
