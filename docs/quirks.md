@@ -82,6 +82,8 @@ pack's cache tables; rebuild the cache after changing them. Artwork bases for al
 validated against the patch transform tables; snape grass retains explicit
 state banks for its scattered artwork. Duplicate artwork uses the first matching
 selector. Watered and dead bases are cache columns, not runtime offset constants.
+Diseased/dead bases point directly to named stage-one artwork; rendering applies
+the stage-one offset rather than storing a base in the preceding cache slot.
 
 Allotments and herbs track harvest lives, not a fixed item count. Farming level
 and magic secateurs affect whether each pick spends a life. Flowers give one

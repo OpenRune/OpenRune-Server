@@ -20,8 +20,8 @@ class PatchStateTest {
             stages = 4,
             stageMinutes = 10,
             wateredBase = 23,
-            diseasedBase = 41,
-            deadBase = 62,
+            diseasedBase = 42,
+            deadBase = 63,
         )
 
     private val none = CompostDef(Compost.NONE, null, 0.0, 3, 0.35)

@@ -164,10 +164,9 @@ object FarmingTables {
                     val growBase = selector(kind, growLoc)
                     val wateredBase =
                         if (herb) growBase else selector(kind, "${prefix}_seed_watered")
-                    val diseasedBase = selector(kind, diseasedLoc) - if (herb) 0 else 1
+                    val diseasedBase = selector(kind, diseasedLoc)
                     val deadBase =
-                        selector(kind, if (herb) "loc.herb_1_dead" else "${prefix}_1_dead") -
-                            if (herb) 0 else 1
+                        selector(kind, if (herb) "loc.herb_1_dead" else "${prefix}_1_dead")
 
                     if (transmit.isEmpty()) {
                         for (stage in 0..stages) {
@@ -192,8 +191,8 @@ object FarmingTables {
                                     else "${prefix}_${stage}_watered"
                                 validateStage(kind, wateredBase, stage, watered)
                                 if (stage > 0) {
-                                    validateStage(kind, diseasedBase, stage, "${prefix}_${stage}_diseased")
-                                    validateStage(kind, deadBase, stage, "${prefix}_${stage}_dead")
+                                    validateStage(kind, diseasedBase, stage - 1, "${prefix}_${stage}_diseased")
+                                    validateStage(kind, deadBase, stage - 1, "${prefix}_${stage}_dead")
                                 }
                             }
                         }

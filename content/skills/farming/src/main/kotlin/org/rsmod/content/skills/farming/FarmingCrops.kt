@@ -30,8 +30,8 @@ enum class PatchKind {
 }
 
 /**
- * Artwork bases are resolved from named locs during cache packing. Allotments and flowers add
- * their stage to the selected base; diseased/dead herbs use three shared growth stages.
+ * Bases resolve named artwork during cache packing: healthy/watered art starts at stage zero,
+ * diseased/dead art at stage one. Herbs clamp damaged states to three artwork stages.
  *
  * [transmit] is the escape hatch for a crop whose art the cache scattered instead of laying out in
  * one run. When it is set it replaces all of the above: healthy, watered, diseased and dead banks

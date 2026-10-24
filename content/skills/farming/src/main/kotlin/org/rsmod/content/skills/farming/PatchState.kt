@@ -126,8 +126,8 @@ data class PatchState(
                 }
             else ->
                 when {
-                    health == Health.DEAD -> crop.deadBase + stage
-                    health == Health.DISEASED -> crop.diseasedBase + stage
+                    health == Health.DEAD -> crop.deadBase + stage - 1
+                    health == Health.DISEASED -> crop.diseasedBase + stage - 1
                     watered -> crop.wateredBase + stage
                     else -> crop.growBase + stage
                 }
