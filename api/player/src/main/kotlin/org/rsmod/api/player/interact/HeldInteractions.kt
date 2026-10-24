@@ -382,7 +382,7 @@ constructor(
             val event = HeldDropEvents.Release(player, dropSlot, obj, internal)
             eventBus.publish(event)
 
-            val type = ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ))?: return
+            val type = ServerCacheManager.getItem(internal.asRSCM(RSCMType.OBJ)) ?: return
 
             val message = type.paramOrNull(params.release_note_message)
             message?.let(player::mes)
