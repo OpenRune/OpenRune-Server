@@ -1,0 +1,8 @@
+[gamevals.dbrow]
+instance_mad_angel = 55479
+
+[gamevals.varp]
+mad_angel_buff = 63601
+
+[gamevals.varbit]
+mad_angel_next_hit = 63601

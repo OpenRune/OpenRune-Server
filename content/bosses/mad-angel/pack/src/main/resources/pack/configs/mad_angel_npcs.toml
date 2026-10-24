@@ -1,0 +1,8 @@
+[[npc]]
+id = "npc.mad_angel"
+inherit = "npc.mad_angel"
+respawnRate = 26
+defaultMode = "None"
+
+[npc.params]
+"param.killcount_varp" = 5712
