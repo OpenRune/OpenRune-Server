@@ -313,5 +313,26 @@ object InstanceSettingsTable {
             columnRSCM(ENTER_OBJECT, "loc.vmq3_ruins_door_multi")
             columnRSCM(EXIT_OBJECT, "loc.amoxliatl_exit")
         }
+
+        row("dbrow.instance_mad_angel") {
+            column(KEY, "mad_angel")
+            columnCoord(EXIT_COORD, CoordGrid(2539, 2216, 0))
+            columnCoord(ENTER_COORD, CoordGrid(2537, 2215, 0))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 1)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.mad_angel", "npc.mad_angel_initial")
+            column(BOSS_NAME, "Mad Angel")
+            column(RECOMMENDED_COMBAT, 90, 99)
+            column(TEAM_SIZE, 1)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(
+                DESCRIPTION,
+                "A shattered angel bound to the Wyrmscraig cathedral, roused from its pew.",
+            )
+            columnRSCM(ENTER_OBJECT, "loc.wyrmscraig_cathedral_pew_broken_climb")
+            columnRSCM(EXIT_OBJECT, "loc.wyrmscraig_cathedral_pew_broken_exit")
+        }
     }
 }
