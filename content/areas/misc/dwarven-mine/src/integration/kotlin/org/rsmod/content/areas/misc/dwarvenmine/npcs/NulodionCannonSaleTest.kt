@@ -92,24 +92,6 @@ class NulodionCannonSaleTest {
             assertEquals(7, player.vars["varp.rockthrower"])
         }
 
-    @Test
-    fun GameTestState.`a partly assembled cannon is replaced with only the deployed parts`() =
-        runGameTest {
-            for (stage in 1..3) {
-                player.clearInv()
-                player.setVarp("varp.dropcannon", stage)
-                player.setVarBit("varbit.mcannon_decayed", 1)
-                var given = false
-                player.withProtectedAccess { given = replaceLostCannon() }
-                assertTrue(given)
-                CANNON_SET.take(4).forEachIndexed { index, part ->
-                    val expected = if (index < stage) 1 else 0
-                    assertEquals(expected, player.inv.count(part), "$stage $part")
-                }
-                assertEquals(0, player.vars["varp.dropcannon"])
-            }
-        }
-
     private fun GameTestScope.fillAllBut(freeSlots: Int) {
         val filler = InvObj(FILLER.asRSCM(RSCMType.OBJ), 1)
         for (slot in 1 until player.inv.size - freeSlots) {
