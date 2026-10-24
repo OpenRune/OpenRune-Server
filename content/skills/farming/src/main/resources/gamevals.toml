@@ -1,0 +1,84 @@
+[gamevals.varp]
+farming_patch_00 = 65440
+farming_patch_01 = 65441
+farming_patch_02 = 65442
+farming_patch_03 = 65443
+farming_patch_04 = 65444
+farming_patch_05 = 65445
+farming_patch_06 = 65446
+farming_patch_07 = 65447
+farming_patch_08 = 65448
+farming_patch_09 = 65449
+farming_patch_10 = 65450
+farming_patch_11 = 65451
+farming_patch_12 = 65452
+farming_patch_13 = 65453
+farming_patch_14 = 65454
+farming_patch_15 = 65455
+farming_patch_16 = 65456
+farming_patch_17 = 65457
+farming_patch_18 = 65458
+farming_patch_19 = 65459
+farming_clock = 65439
+
+[gamevals.timer]
+farming_transmit = 120
+
+[gamevals.dbtable]
+farming_crop = 65478
+farming_patch = 65479
+farming_compost = 65480
+
+# Crop rows are append-only: a planted patch persists a one-based index into the table's row order.
+[gamevals.dbrow]
+farming_potato = 63846
+farming_onion = 63847
+farming_cabbage = 63848
+farming_tomato = 63849
+farming_sweetcorn = 63850
+farming_strawberry = 63851
+farming_watermelon = 63852
+farming_marigold = 63853
+farming_rosemary = 63854
+farming_nasturtium = 63855
+farming_woad = 63856
+farming_limpwurt = 63857
+farming_guam = 63858
+farming_marrentill = 63859
+farming_tarromin = 63860
+farming_harralander = 63861
+farming_ranarr = 63862
+farming_toadflax = 63863
+farming_irit = 63864
+farming_avantoe = 63865
+farming_kwuarm = 63866
+farming_snapdragon = 63867
+farming_cadantine = 63868
+farming_lantadyme = 63869
+farming_dwarf_weed = 63870
+farming_torstol = 63871
+farming_snape_grass = 63872
+farming_veg_patch_1 = 63873
+farming_veg_patch_2 = 63874
+farming_flower_patch_1 = 63875
+farming_herb_patch_1 = 63876
+farming_veg_patch_3 = 63877
+farming_veg_patch_4 = 63878
+farming_flower_patch_2 = 63879
+farming_herb_patch_2 = 63880
+farming_veg_patch_5 = 63881
+farming_veg_patch_6 = 63882
+farming_flower_patch_3 = 63883
+farming_herb_patch_3 = 63884
+farming_veg_patch_7 = 63885
+farming_veg_patch_8 = 63886
+farming_flower_patch_4 = 63887
+farming_herb_patch_4 = 63888
+farming_veg_patch_10 = 63889
+farming_veg_patch_11 = 63890
+farming_flower_patch_5 = 63891
+farming_herb_patch_6 = 63892
+farming_compost_none = 63842
+farming_compost_normal = 63843
+farming_compost_super = 63844
+farming_compost_ultra = 63845
