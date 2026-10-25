@@ -316,7 +316,7 @@ object InstanceSettingsTable {
 
         row("dbrow.instance_mad_angel") {
             column(KEY, "mad_angel")
-            columnCoord(EXIT_COORD, CoordGrid(2539, 2216, 0))
+            columnCoord(EXIT_COORD, CoordGrid(2539, 2215, 0))
             columnCoord(ENTER_COORD, CoordGrid(2537, 2215, 0))
             column(FEE, 0)
             column(MAX_PLAYERS, 1)

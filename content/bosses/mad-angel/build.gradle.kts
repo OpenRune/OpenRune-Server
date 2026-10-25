@@ -6,6 +6,7 @@ dependencies {
     implementation(projects.api.bossHpBarPlugin)
     implementation(projects.api.bosses)
     implementation(projects.api.combat.combatCommons)
+    implementation(projects.api.death)
     implementation(projects.api.instances)
     implementation(projects.api.npc)
     implementation(projects.api.player)

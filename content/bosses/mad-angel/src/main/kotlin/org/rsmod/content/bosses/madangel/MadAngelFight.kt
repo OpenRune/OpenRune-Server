@@ -124,6 +124,7 @@ constructor(
                 )
             } else if (besideNotBehind(centre, front, side, target.coords)) {
                 target.nextHitBuff = NEXT_HIT_ACCURATE
+                npc.vars[GUARANTEED_HIT] = 1
             }
 
             front = faceTarget(npc, target)
@@ -304,6 +305,7 @@ constructor(
                 penetration = PRAYER_PENETRATION,
             )
             target.nextHitBuff = NEXT_HIT_MAX
+            npc.vars[GUARANTEED_HIT] = 1
             return
         }
         val roll = deps.random.of(SMITE_MAX_HIT + 1)
@@ -367,6 +369,8 @@ constructor(
         const val NEXT_HIT_NONE = 0
         const val NEXT_HIT_ACCURATE = 1
         const val NEXT_HIT_MAX = 2
+
+        internal const val GUARANTEED_HIT = "varn.guaranteed_hit"
 
         private const val PRAYER_MELEE = "varbit.prayer_protectfrommelee"
         private const val PRAYER_MAGIC = "varbit.prayer_protectfrommagic"
