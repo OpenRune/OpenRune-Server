@@ -1,2 +1,7 @@
+[gamevals.synth]
+mcannon_fire = 1667
+mcannon_setup = 2876
+mcannon_turn = 2877
+
 [gamevals.timer]
 mcannon_fire = 65535

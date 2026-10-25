@@ -22,13 +22,17 @@ import org.rsmod.api.combat.formulas.attributes.collector.CombatMeleeAttributeCo
 import org.rsmod.api.combat.formulas.attributes.collector.CombatRangedAttributeCollector
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.combat.weapon.types.AttackTypes
+import org.rsmod.api.config.constants
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.npc.isValidTarget
+import org.rsmod.api.npc.vars.intVarn
+import org.rsmod.api.npc.vars.typePlayerUidVarn
 import org.rsmod.api.player.isInPvnCombat
+import org.rsmod.api.player.isInPvpCombat
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statAdvance
@@ -103,6 +107,7 @@ constructor(
         onOpLoc3(CANNON_LOC) { empty(it.loc.coords) }
         onOpLoc4(CANNON_LOC) { loadX(it.loc.coords) }
         onOpLocU(CANNON_LOC, CANNONBALL) { load(it.loc.coords, startFiring = false) }
+        onOpLocU(CANNON_LOC, GRANITE_CANNONBALL) { load(it.loc.coords, startFiring = false) }
         onOpLoc1(BROKEN_LOC) { repair(it.loc.coords) }
         onOpLoc2(BROKEN_LOC) { pickUp(it.loc.coords) }
         onPlayerSoftTimer(FIRE_TIMER) { player.fireTick() }
@@ -134,10 +139,8 @@ constructor(
         val cannon = Cannon(player.key, origin, breakCycle = now + BREAK_CYCLES)
         cannon.owner = player
         cannon.ammo = player.cannonAmmo.coerceIn(0, MAX_AMMO)
+        cannon.ball = BALLS[player.cannonBallType.coerceIn(0, BALLS.size - 1)]
         cannons[player.key] = cannon
-        player.cannonDecayed = false
-        player.cannonCoord = packCoord(origin)
-        player.cannonWorld = worldVarbit(serverConfig.world)
         buildStages(cannon)
     }
 
@@ -161,12 +164,20 @@ constructor(
                 return
             }
             cannon.stage++
+            if (cannon.stage == 1) {
+                player.cannonDecayed = false
+                player.cannonCoord = packCoord(cannon.origin)
+                player.cannonCoordTemp = packCoord(cannon.origin)
+                player.cannonWorld = worldVarbit(serverConfig.world)
+            }
             player.cannonStage = cannon.stage
+            player.cannonSetupTime = gameClock.cycle
             placeLoc(cannon)
-            mes(STAGE_MESSAGES[cannon.stage - 1])
+            spam(STAGE_MESSAGES[cannon.stage - 1])
+            soundArea(worldRepo, player.coords, SETUP_SYNTH, radius = SOUND_RADIUS)
         }
         delay(1)
-        if (cannons[player.key] === cannon && inv.count(CANNONBALL) > 0) {
+        if (cannons[player.key] === cannon && BALLS.any { inv.count(it) > 0 }) {
             loadBalls(cannon, MAX_AMMO)
         }
     }
@@ -188,7 +199,7 @@ constructor(
         val loaded = loadBalls(cannon, MAX_AMMO)
         if (loaded == 0) {
             if (cannon.ammo == 0) {
-                mes(NO_AMMO)
+                mes(if (startFiring) OUT_OF_AMMO else NO_AMMO)
                 return
             }
             if (!startFiring) {
@@ -223,11 +234,14 @@ constructor(
     }
 
     private fun ProtectedAccess.loadBalls(cannon: Cannon, upTo: Int): Int {
+        val ball = if (cannon.ammo > 0) cannon.ball else BALLS.lastOrNull { inv.count(it) > 0 } ?: return 0
         val room = MAX_AMMO - cannon.ammo
-        val loaded = minOf(room, upTo, inv.count(CANNONBALL))
-        if (loaded <= 0 || !invDel(inv, CANNONBALL, loaded).success) {
+        val loaded = minOf(room, upTo, inv.count(ball))
+        if (loaded <= 0 || !invDel(inv, ball, loaded).success) {
             return 0
         }
+        cannon.ball = ball
+        player.cannonBallType = BALLS.indexOf(ball)
         cannon.ammo += loaded
         player.cannonAmmo = cannon.ammo
         mes("You load the cannon with $loaded cannonball${if (loaded == 1) "" else "s"}.")
@@ -240,11 +254,11 @@ constructor(
             mes("Your cannon is empty.")
             return
         }
-        if (!invAdd(inv, CANNONBALL, cannon.ammo).success) {
+        if (!invAdd(inv, cannon.ball, cannon.ammo).success) {
             mes("You don't have enough inventory space to unload the cannon.")
             return
         }
-        mes("You unload your cannon and receive Steel cannonball x ${cannon.ammo}.")
+        mes("You unload your cannon and receive ${BALL_NAMES[BALLS.indexOf(cannon.ball)]} x ${cannon.ammo}.")
         cannon.ammo = 0
         player.cannonAmmo = 0
         stopFiring(player, cannon)
@@ -270,17 +284,19 @@ constructor(
                     add(target, part.asRSCM(RSCMType.OBJ), count = 1)
                 }
                 if (cannon.ammo > 0) {
-                    add(target, CANNONBALL.asRSCM(RSCMType.OBJ), count = cannon.ammo)
+                    add(target, cannon.ball.asRSCM(RSCMType.OBJ), count = cannon.ammo)
                 }
             }
         if (!returned.success) {
             mes("You don't have enough inventory space to pick up the cannon.")
             return
         }
-        anim(SETUP_ANIM)
         removeLoc(cannon)
         clearCannon(player)
-        mes("You pick up the cannon. It's really heavy.")
+        player.cannonCoord = packCoord(player.coords)
+        player.cannonCoordTemp = -1
+        player.cannonSetupTime = 0
+        spam("You pick up the cannon. It's really heavy.")
     }
 
     private fun Player.fireTick() {
@@ -290,25 +306,29 @@ constructor(
             return
         }
         if (cannon.ammo <= 0) {
-            mes("Your cannon is out of ammo!")
+            mes(OUT_OF_AMMO)
             stopFiring(this, cannon)
             return
         }
-        cannon.direction = (cannon.direction + 1) % DIRECTIONS.size
         val loc = cannon.loc ?: return
-        val target = findTarget(this, cannon)
-        if (target == null) {
-            worldRepo.locAnim(loc, "seq.mcannon_${DIRECTIONS[cannon.direction]}_turn")
-            return
-        }
+        findTarget(this, cannon)?.let { shoot(cannon, loc, it) }
+        cannon.direction = (cannon.direction + 1) % DIRECTIONS.size
+        worldRepo.soundArea(cannon.origin, TURN_SYNTH, radius = SOUND_RADIUS)
+        worldRepo.locAnim(loc, "seq.mcannon_${DIRECTIONS[cannon.direction]}_turn")
+    }
+
+    private fun Player.shoot(cannon: Cannon, loc: LocInfo, target: Npc) {
         worldRepo.locAnim(loc, "seq.mcannon_${DIRECTIONS[cannon.direction]}_fire")
+        worldRepo.soundArea(cannon.origin, FIRE_SYNTH, radius = SOUND_RADIUS)
         val center = cannon.center
         val proj = ProjAnim.fromCoordToNpc(center, target, PROJECTILE.asRSCM(RSCMType.SPOTANIM), PROJ_TYPE)
         worldRepo.projAnim(proj)
         cannon.ammo--
         cannonAmmo = cannon.ammo
-        val damage = if (rollHit(this, target)) random.of(0, MAX_HIT) else 0
-        target.queueHit(this, max(1, proj.serverCycles), HitType.Ranged, damage, npcHitModifier)
+        val maxHit = if (cannon.ball == GRANITE_CANNONBALL) GRANITE_MAX_HIT else MAX_HIT
+        val immune = DAMAGE_IMMUNE.any { target.isType(it) }
+        val damage = if (!immune && rollHit(this, target)) random.of(0, maxHit) else 0
+        target.queueHit(this, 1, HitType.Ranged, damage, npcHitModifier)
         val xp = rangedXp(damage, target.hitpoints)
         if (xp > 0) {
             statAdvance("stat.ranged", xp)
@@ -317,19 +337,34 @@ constructor(
 
     fun findTarget(owner: Player, cannon: Cannon): Npc? {
         val center = cannon.center
-        val singleWay = !areas.inArea("area.multiway", center)
-        val attacker = if (singleWay && owner.isInPvnCombat()) owner.aggressiveNpc else null
-        return npcRepo
-            .findAll(ZoneKey.from(center), zoneRadius = 2)
-            .filter { it.coords.level == center.level && it.isValidTarget() && it.isAttackable() }
-            .filter { attacker == null || it.uid == attacker }
-            .filter { npc ->
-                val dx = npc.coords.x - center.x
-                val dz = npc.coords.z - center.z
-                max(abs(dx), abs(dz)) <= RANGE && inTargetRegion(cannon.direction, dx, dz)
-            }
-            .filter { rayCast.hasLineOfSight(cannon.origin, it.coords, srcWidth = SIZE, srcLength = SIZE) }
-            .minByOrNull { max(abs(it.coords.x - center.x), abs(it.coords.z - center.z)) }
+        val candidates =
+            npcRepo
+                .findAll(ZoneKey.from(center), zoneRadius = 3)
+                .filter { it.coords.level == center.level && it.isValidTarget() && it.isAttackable() }
+                .filter { npc -> UNTARGETED.none { npc.isType(it) } && owner.mayShoot(npc) }
+                .toList()
+        return RING_RADII.indices.firstNotNullOfOrNull { ring ->
+            candidates
+                .filter { inTargetRing(cannon.direction, ring, it.coords.x - center.x, it.coords.z - center.z) }
+                .filter { rayCast.hasLineOfSight(center, it.coords) }
+                .minByOrNull { max(abs(it.coords.x - center.x), abs(it.coords.z - center.z)) }
+        }
+    }
+
+    private fun Player.mayShoot(npc: Npc): Boolean {
+        if (areas.inArea("area.multiway", npc.coords)) {
+            return true
+        }
+        if (isInPvpCombat()) {
+            return false
+        }
+        if (isInPvnCombat() && aggressiveNpc != null && aggressiveNpc != npc.uid) {
+            return false
+        }
+        val npcTarget = npc.aggressivePlayer
+        return npc.lastCombat + constants.combat_activecombat_delay <= gameClock.cycle ||
+            npcTarget == null ||
+            npcTarget == uid
     }
 
     private fun Npc.isAttackable(): Boolean =
@@ -439,9 +474,11 @@ constructor(
             cannonStage = cannon.stage
             cannonAmmo = cannon.ammo
             cannonCoord = packCoord(cannon.origin)
+            cannonCoordTemp = packCoord(cannon.origin)
             cannonWorld = worldVarbit(serverConfig.world)
             return
         }
+        cannonCoordTemp = -1
         if (cannonStage != 0 && !cannonDecayed) {
             cannonDecayed = true
         }
@@ -469,7 +506,6 @@ constructor(
         player.cannonFiring = 0
         player.cannonStage = 0
         player.cannonAmmo = 0
-        player.cannonCoord = 0
         player.cannonWorld = 0
     }
 
@@ -514,7 +550,8 @@ constructor(
         var owner: Player? = null
         var stage: Int = 0
         var ammo: Int = 0
-        var direction: Int = DIRECTIONS.size - 1
+        var direction: Int = 0
+        var ball: String = CANNONBALL
         var firing: Boolean = false
         var broken: Boolean = false
         var loc: LocInfo? = null
@@ -529,12 +566,13 @@ constructor(
 
     companion object {
         const val CANNONBALL = "obj.mcannonball"
+        const val GRANITE_CANNONBALL = "obj.granite_cannonball"
         const val CANNON_LOC = "loc.dwarf_multicannon1"
         const val BROKEN_LOC = "loc.dwarf_multicannon1_broken"
         const val FIRE_TIMER = "timer.mcannon_fire"
         const val MAX_AMMO = 30
         const val MAX_HIT = 30
-        const val RANGE = 8
+        const val GRANITE_MAX_HIT = 35
         const val SIZE = 3
         const val XP_PER_DAMAGE = 2.0
 
@@ -551,13 +589,19 @@ constructor(
         const val NO_AMMO = "You don't have any ammo to load into the cannon."
         const val ALREADY_FULL = "Your cannon is already full."
         const val REPAIR_MESSAGE = "You repair your cannon, restoring it to working order."
-        const val DECAYED_MESSAGE = "Your cannon has decayed. Speak to Nulodion to get a new one!"
+        const val DECAYED_MESSAGE =
+            "<col=ef1020>Your cannon has decayed. Speak to Nulodion to get a new one!"
+        const val OUT_OF_AMMO = "<col=ef1020>Your cannon is out of ammo.</col>"
         const val QUEST_REQUIRED_MESSAGE =
             "You need to complete the Dwarf Cannon quest before you can set up a cannon."
 
         private const val SETUP_ANIM = "seq.human_pickupfloor"
         private const val PROJECTILE = "spotanim.cannonball_travel"
-        private const val PROJ_TYPE = "projanim.arrow"
+        private const val PROJ_TYPE = "projanim.mcannon"
+        private const val SETUP_SYNTH = "synth.mcannon_setup"
+        private const val TURN_SYNTH = "synth.mcannon_turn"
+        private const val FIRE_SYNTH = "synth.mcannon_fire"
+        private const val SOUND_RADIUS = 10
 
         val PARTS = listOf("obj.twpart1", "obj.twpart2", "obj.twpart3", "obj.twpart4")
         val STAGE_LOCS =
@@ -567,6 +611,9 @@ constructor(
                 "loc.multicannon_barrels",
                 CANNON_LOC,
             )
+        val BALLS = listOf(CANNONBALL, GRANITE_CANNONBALL)
+        val BALL_NAMES = listOf("Steel cannonball", "Granite cannonball")
+
         val STAGE_MESSAGES =
             listOf(
                 "You place the cannon base on the ground.",
@@ -576,6 +623,37 @@ constructor(
             )
 
         val DIRECTIONS = listOf("n", "ne", "e", "se", "s", "sw", "w", "nw")
+        private val DIRECTION_STEPS =
+            listOf(0 to 1, 1 to 1, 1 to 0, 1 to -1, 0 to -1, -1 to -1, -1 to 0, -1 to 1)
+        private val STRAIGHT_REACH = listOf(3, 7, 14)
+        private val DIAGONAL_REACH = listOf(2, 5, 12)
+        private val RING_RADII = listOf(1, 2, 5)
+        private val UNTARGETED =
+            setOf(
+                "npc.zeah_sandcrab",
+                "npc.zeah_sandcrab_small",
+                "npc.fossil_ammonitecrab",
+                "npc.kolhuman",
+                "npc.kologre",
+                "npc.kolspider",
+                "npc.kolethereal",
+                "npc.koldemon",
+                "npc.zamorak_mage",
+                "npc.saradomin_mage",
+                "npc.guthix_mage",
+            )
+        private val DAMAGE_IMMUNE =
+            setOf(
+                "npc.mm2_demon_gorilla_1_melee",
+                "npc.mm2_demon_gorilla_1_ranged",
+                "npc.mm2_demon_gorilla_1_magic",
+                "npc.mm2_demon_gorilla_2_melee",
+                "npc.mm2_demon_gorilla_2_ranged",
+                "npc.mm2_demon_gorilla_2_magic",
+                "npc.slayer_kursk_1",
+                "npc.slayer_kursk_2",
+                "npc.superior_kurask",
+            )
 
         private class Area(val minX: Int, val minZ: Int, val maxX: Int, val maxZ: Int)
 
@@ -595,25 +673,11 @@ constructor(
             }
         }
 
-        /**
-         * Straight directions cover the 3-wide column beyond the cannon, diagonals the quadrant
-         * beyond its corner; the overlap one tile off the centre lines is the double-hit area.
-         */
-        fun inTargetRegion(direction: Int, dx: Int, dz: Int): Boolean {
-            if (abs(dx) <= 1 && abs(dz) <= 1) {
-                return false
-            }
-            return when (direction) {
-                0 -> dz >= 2 && abs(dx) <= 1
-                1 -> dx >= 1 && dz >= 1
-                2 -> dx >= 2 && abs(dz) <= 1
-                3 -> dx >= 1 && dz <= -1
-                4 -> dz <= -2 && abs(dx) <= 1
-                5 -> dx <= -1 && dz <= -1
-                6 -> dx <= -2 && abs(dz) <= 1
-                7 -> dx <= -1 && dz >= 1
-                else -> false
-            }
+        fun inTargetRing(direction: Int, ring: Int, dx: Int, dz: Int): Boolean {
+            val (stepX, stepZ) = DIRECTION_STEPS[direction]
+            val reach = (if (stepX != 0 && stepZ != 0) DIAGONAL_REACH else STRAIGHT_REACH)[ring]
+            val radius = RING_RADII[ring]
+            return abs(dx - stepX * reach) <= radius && abs(dz - stepZ * reach) <= radius
         }
 
         fun rangedXp(damage: Int, targetHitpoints: Int): Double =
@@ -632,8 +696,13 @@ private val Player.key: Long
 var Player.cannonStage: Int by intVarp("varp.dropcannon")
 var Player.cannonAmmo: Int by intVarp("varp.rockthrower")
 var Player.cannonCoord: Int by intVarp("varp.ownedmcannon")
+var Player.cannonCoordTemp: Int by intVarp("varp.ownedmcannon_temp")
+var Player.cannonSetupTime: Int by intVarBit("varbit.mcannon_setuptime")
+var Player.cannonBallType: Int by intVarBit("varbit.mcannon_last_balltype")
 var Player.cannonFiring: Int by intVarp("varp.mcannonmulti")
 var Player.cannonDecayed: Boolean by boolVarBit("varbit.mcannon_decayed")
 var Player.cannonWorld: Int by intVarBit("varbit.mcannon_world")
 var Player.cannonLoadX: Int by intVarBit("varbit.option_cannonballs_load_x")
 private val Player.aggressiveNpc by typeNpcUidVarp("varp.aggressive_npc")
+private val Npc.lastCombat: Int by intVarn("varn.lastcombat")
+private val Npc.aggressivePlayer by typePlayerUidVarn("varn.aggressive_player")
