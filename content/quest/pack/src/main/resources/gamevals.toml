@@ -64,6 +64,16 @@ grim_piano_g5 = 3705
 grim_piano_a5 = 3693
 grim_piano_b5 = 3695
 
+splash_and_river = 1308
+roof_collapse = 1384
+big_wooden_door_open = 44
+big_wooden_door_close = 43
+watersplash = 2496
+smokepuff = 1930
+chest_open = 52
+chest_close = 51
+irondoor_locked = 72
+
 [gamevals.varp]
 restless_ghost_rising_tile = 63703
 restless_ghost_return_tile = 63704
@@ -73,6 +83,8 @@ misthalin_puzzle_state = 63702
 cooks_assistant_ingredients = 63705
 gertrudes_cat_state = 63711
 daddyshome_state = 64064
+waterfall_state = 64310
+sheep_shearer_state = 65472
 
 [gamevals.varbit]
 restless_ghost_progress = 63702
@@ -88,6 +100,20 @@ gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
 gertrudes_cat_told_sardines = 63714
 daddyshome_crate_opened = 64064
+dorics_quest_progress = 64470
+knights_sword_progress = 64430
+waterfall_progress = 64310
+waterfall_heard_of_treasure = 64311
+waterfall_met_golrie = 64312
+waterfall_pillar_runes = 64313
+sheep_shearer_progress = 65449
+sheep_shearer_saw_thing = 65448
+
+[gamevals.bas]
+waterfall_wading = 1
+waterfall_swimming = 2
+waterfall_drowning = 3
+waterfall_whirlpool = 4
 
 [gamevals.models]
 misthalin_gem_diamond = 32333
@@ -104,6 +130,8 @@ restless_skeleton_attack = 124
 [gamevals.dbtable]
 daddys_home_furniture = 65472
 daddys_home_crate = 65473
+glarial_restrictions = 65495
+waterfall_pillar_runes = 65494
 
 [gamevals.dbrow]
 daddys_home_furniture_kitchen_stool = 63420
@@ -120,6 +148,12 @@ daddys_home_crate_oak_planks = 63433
 daddys_home_crate_cloth = 63434
 daddys_home_crate_house_tablets = 63435
 daddys_home_crate_falador_tablet = 63436
+glarial_forbidden_names = 63685
+glarial_forbidden_parts = 63684
+glarial_allowed_parts = 63679
+waterfall_rune_air = 63678
+waterfall_rune_water = 63677
+waterfall_rune_earth = 63676
 
 [gamevals.enum]
 daddys_home_hammers = 65460

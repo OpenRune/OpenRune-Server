@@ -12,27 +12,32 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class PlainChestScript @Inject constructor(private val locRepo: LocRepository) : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpLoc1(CLOSED) { open(it.loc) }
-        onOpLoc2(OPENED) { mes(ChestConstants.DEFAULT) }
-        onOpLoc3(OPENED) { shut(it.loc) }
+        for ((closed, opened) in CHESTS) {
+            onOpLoc1(closed) { open(it.loc, opened) }
+            onOpLoc2(opened) { mes(ChestConstants.DEFAULT) }
+            onOpLoc3(opened) { shut(it.loc, closed) }
+        }
     }
 
-    private suspend fun ProtectedAccess.open(chest: BoundLocInfo) {
+    private suspend fun ProtectedAccess.open(chest: BoundLocInfo, opened: String) {
         arriveDelay()
         anim("seq.human_openchest")
         soundSynth(OPEN_SOUND)
-        locRepo.change(chest, OPENED, ChestConstants.DURATION)
+        locRepo.change(chest, opened, ChestConstants.DURATION)
     }
 
-    private suspend fun ProtectedAccess.shut(chest: BoundLocInfo) {
+    private suspend fun ProtectedAccess.shut(chest: BoundLocInfo, closed: String) {
         arriveDelay()
         anim("seq.human_openchest")
-        locRepo.change(chest, CLOSED, ChestConstants.DURATION)
+        locRepo.change(chest, closed, ChestConstants.DURATION)
     }
 
     private companion object {
-        const val CLOSED = "loc.chestclosed"
-        const val OPENED = "loc.chestopen"
+        val CHESTS =
+            listOf(
+                "loc.chestclosed" to "loc.chestopen",
+                "loc.kr_camelot_chestclosed" to "loc.kr_camelot_chestopen",
+            )
         const val OPEN_SOUND = 52
     }
 }

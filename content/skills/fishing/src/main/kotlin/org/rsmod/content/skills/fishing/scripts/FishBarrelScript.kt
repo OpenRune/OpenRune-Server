@@ -4,12 +4,13 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import org.rsmod.api.table.fishing.FishingSpotRow
 import jakarta.inject.Inject
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.config.refs.params
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.events.interact.HeldBanksideEvents
+import org.rsmod.api.player.events.interact.HeldObjEvents
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.events.skilling.SkillingProductSource
@@ -22,6 +23,7 @@ import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpHeld5
 import org.rsmod.api.script.onOpHeldU
+import org.rsmod.api.table.fishing.FishingSpotRow
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -39,7 +41,7 @@ class FishBarrelScript @Inject constructor() : PluginScript() {
             onOpHeld2(barrel) { dispatch(2, barrel) }
             onOpHeld3(barrel) { dispatch(3, barrel) }
             onOpHeld4(barrel) { dispatch(4, barrel) }
-            onOpHeld5(barrel) { dispatch(5, barrel) }
+            onOpHeld5(barrel) { destroy(it) }
             onEvent<HeldBanksideEvents.Type>(barrel.asRSCM(RSCMType.OBJ)) { emptyIntoBank(player) }
         }
 
@@ -77,10 +79,10 @@ class FishBarrelScript @Inject constructor() : PluginScript() {
         player.mes("You empty the fish barrel into your bank.")
     }
 
-    private fun ProtectedAccess.dispatch(op: Int, barrel: String) {
+    private suspend fun ProtectedAccess.dispatch(op: Int, barrel: String) {
         when (op) {
             1 -> fill()
-            2 -> check()
+            2 -> check(barrel)
             3 -> toggleOpen()
             4 -> empty()
             else -> {}
@@ -94,6 +96,10 @@ class FishBarrelScript @Inject constructor() : PluginScript() {
 
     private fun ProtectedAccess.fill() {
         val store = contents()
+        if (store.total() >= CAPACITY) {
+            mes(FishBarrelMessages.FULL)
+            return
+        }
         var filled = false
         for (name in rawFish) {
             if (store.total() >= CAPACITY) break
@@ -131,16 +137,38 @@ class FishBarrelScript @Inject constructor() : PluginScript() {
         mes("You empty the fish barrel.")
     }
 
-    private fun ProtectedAccess.check() {
-        val store = contents()
-        if (store.isEmpty()) {
-            mes("The fish barrel is empty.")
+    private suspend fun ProtectedAccess.check(barrel: String) {
+        val entries =
+            contents().map { (name, count) ->
+                val display = ServerCacheManager.getItem(name.asRSCM(RSCMType.OBJ))?.name ?: name
+                display to count
+            }
+        for (text in FishBarrelMessages.checkTexts(entries)) {
+            objbox(barrel, text)
+        }
+    }
+
+    private suspend fun ProtectedAccess.destroy(event: HeldObjEvents.Op5) {
+        val barrel = RSCM.getReverseMapping(RSCMType.OBJ, event.type.id)
+        val type = event.type
+        val header = type.param(params.destroy_note_title)
+        // The fish barrel's note has an empty variant (wiki infobox); the sack barrel's has one.
+        val text =
+            if (contents().isEmpty() && barrel in PLAIN_BARRELS) {
+                FishBarrelMessages.DESTROY_EMPTY
+            } else {
+                type.param(params.destroy_note_desc)
+            }
+        if (!confirmDestroy(barrel, event.obj.count, header, text)) {
             return
         }
-        mes("The fish barrel contains (${store.total()}/$CAPACITY):")
-        for ((name, count) in store) {
-            val display = ServerCacheManager.getItem(name.asRSCM(RSCMType.OBJ))?.name ?: name
-            mes("$display x $count")
+        val result = invDel(event.inventory, barrel, count = event.obj.count, slot = event.slot)
+        if (!result.success) {
+            return
+        }
+        // Barrels share one store; it goes with the last barrel the player holds.
+        if (ALL_BARRELS.none { it in inv || it in worn }) {
+            player.attr.remove(FISH_BARREL_ATTR)
         }
     }
 
@@ -176,6 +204,7 @@ class FishBarrelScript @Inject constructor() : PluginScript() {
         private const val CAPACITY = 28
 
         private val ALL_BARRELS = listOf(BARREL_CLOSED, BARREL_OPEN, SACK_CLOSED, SACK_OPEN)
+        private val PLAIN_BARRELS = setOf(BARREL_CLOSED, BARREL_OPEN)
 
         private val FISH_BARREL_ATTR =
             AttributeKey<MutableMap<String, Int>>(persistenceKey = "fish_barrel")

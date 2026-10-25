@@ -46,6 +46,7 @@ import org.rsmod.game.seq.EntitySeq
 import org.rsmod.game.shop.Shop
 import org.rsmod.game.spot.EntitySpotanim
 import org.rsmod.game.stat.PlayerStatMap
+import org.rsmod.game.stat.StatAdvance
 import org.rsmod.game.timer.PlayerTimerMap
 import org.rsmod.game.ui.UserInterfaceMap
 import org.rsmod.game.vars.VarPlayerIntMap
@@ -79,6 +80,9 @@ public class Player(
 
     public val vars: VarPlayerIntMap = VarPlayerIntMap()
     public val strVars: VarPlayerStrMap = VarPlayerStrMap()
+
+    /** Varp setters do not transmit before the first processed tick; these are sent on it. */
+    public val varpsSetBeforeFirstTick: MutableSet<Int> = HashSet()
 
     public val ui: UserInterfaceMap = UserInterfaceMap()
     public val statMap: PlayerStatMap = PlayerStatMap()
@@ -252,6 +256,7 @@ public class Player(
 
     public var forceDisconnect: Boolean = false
     public var manualLogout: Boolean = false
+    public var idleLogout: Boolean = false
     public var pendingLogout: Boolean = false
     public var loggingOut: Boolean = false
     public var pendingCloseClient: Boolean = false
@@ -437,8 +442,9 @@ public class Player(
     }
 
     @InternalApi
-    public fun engineQueueAdvanceStat(stat: StatType) {
-        engineQueueList.add(EngineQueueType.AdvanceStat, args = stat, label = stat.id)
+    public fun engineQueueAdvanceStat(stat: StatType, previousLevel: Int) {
+        val args = StatAdvance(stat, previousLevel)
+        engineQueueList.add(EngineQueueType.AdvanceStat, args = args, label = stat.id)
     }
 
     @InternalApi

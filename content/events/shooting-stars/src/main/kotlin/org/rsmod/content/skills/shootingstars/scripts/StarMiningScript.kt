@@ -66,7 +66,7 @@ constructor(
         } else {
             val pickaxe = Mining.findPickaxe(player) ?: return
             anim(pickaxeAnim(pickaxe))
-            spam("You swing your pickaxe at the rock.")
+            spam("You swing your pick at the rock.")
             mine(rock)
         }
     }

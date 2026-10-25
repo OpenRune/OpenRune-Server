@@ -1,6 +1,7 @@
 package org.rsmod.content.drops
 
 import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.config.SlayerTaskCredit
 import org.rsmod.content.slayer.core.SlayerTaskManager
 import org.rsmod.content.slayer.dialogue.SlayerMasters
 import org.rsmod.game.entity.Npc
@@ -14,7 +15,7 @@ public fun Player.shouldDropBrimstoneKey(npc: Npc, areaChecker: AreaChecker): Bo
     if (taskId == 0 || vars["varp.slayer_count"] <= 0) {
         return false
     }
-    if (!SlayerTaskManager.countsAsTaskKill(npc, taskId)) {
+    if (!SlayerTaskManager.countsAsTaskKill(npc, SlayerTaskCredit.taskKey(this))) {
         return false
     }
     return SlayerTaskManager.countsKillTowardTask(this, npc, areaChecker)

@@ -133,6 +133,7 @@ import org.rsmod.api.player.ui.ifSetObj
 import org.rsmod.api.player.ui.ifSetPlayerHead
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.VarPlayerIntMapDelegate
+import org.rsmod.api.player.vars.disarmRunAutoEnable
 import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.api.player.vars.setActiveMoveSpeed
 import org.rsmod.api.player.vars.varMoveSpeed
@@ -307,6 +308,7 @@ public class ProtectedAccess(
             return
         }
         val speed = if (player.varMoveSpeed == MoveSpeed.Run) MoveSpeed.Walk else MoveSpeed.Run
+        player.disarmRunAutoEnable()
         player.setActiveMoveSpeed(speed)
     }
 
@@ -2626,6 +2628,28 @@ public class ProtectedAccess(
                 eventBus = context.eventBus,
             )
         }
+    }
+
+    /**
+     * Shows a single page of player chat with no "Click here to continue" and returns at once; the
+     * caller decides how long it stays up.
+     */
+    public fun chatPlayerNoContinue(
+        mesanim: MesAnimType,
+        text: String,
+        title: String = player.displayName,
+    ) {
+        val alignment = context.alignment
+        val page = alignment.generateChatPageList(text).single()
+        val (pgText, lineCount) = page
+        player.ifChatPlayer(
+            title = title,
+            text = pgText,
+            expression = ServerCacheManager.getAnim(mesanim.splitGetAnim(lineCount)),
+            pauseText = "",
+            lineHeight = alignment.chatLineHeight(lineCount),
+            eventBus = context.eventBus,
+        )
     }
 
     private suspend fun chatPlayerPage(

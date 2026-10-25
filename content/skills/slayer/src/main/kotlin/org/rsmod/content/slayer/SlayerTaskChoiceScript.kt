@@ -6,9 +6,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class SlayerTaskChoiceScript : PluginScript() {
     override fun ScriptContext.startup() {
-        onIfModalButton(SlayerTaskChoiceInterface.CONTENT) {
-            SlayerTaskChoiceInterface.onContentClick(this, it.comsub)
-        }
         onIfModalButton(SlayerTaskChoiceInterface.CLOSE) {
             SlayerTaskChoiceInterface.onClose(this)
         }

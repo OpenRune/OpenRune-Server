@@ -213,12 +213,12 @@ class CookingEvents @Inject constructor(
 
         if (burned) {
             invAdd(inv, food.burnt.internalName, 1)
-            mes("You accidentally burn the ${food.raw.name}.")
+            spam("You accidentally burn the ${food.cooked.name.lowercase()}.")
         } else {
             invAdd(inv, food.cooked.internalName, 1)
             val xpModifier = xpMods.get(player, "stat.cooking")
             statAdvance("stat.cooking", food.xp.toDouble() * xpModifier)
-            mes("You successfully cook the ${food.raw.name}.")
+            spam("You successfully cook the ${food.cooked.name.lowercase()}.")
         }
     }
 

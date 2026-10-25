@@ -1,6 +1,7 @@
 package org.rsmod.content.events.randomevents
 
 import dev.openrune.types.NpcMode
+import dev.or2.central.account.Rights
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.config.Constants
@@ -9,6 +10,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpNpc1
@@ -27,18 +29,12 @@ import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
 import org.rsmod.routefinder.flag.CollisionFlag
 
-/**
- * The Genie random event (OSRS Wiki: Random events, Genie, Transcript:Genie). Every 1-2 hours of
- * play a Genie appears beside the player, faces them and calls them by name; Talk-to gives a lamp
- * (10 x the chosen skill's level in XP), Dismiss sends him away, and he leaves after a minute when
- * ignored. RuneLite's Random Events plugin keys on exactly this: a random-event NPC whose
- * interaction target is the local player.
- */
 @Singleton
 class GenieRandomEvent
 @Inject
 constructor(
     private val npcRepo: NpcRepository,
+    private val objRepo: ObjRepository,
     private val collision: CollisionFlagMap,
     private val mapClock: MapClock,
     private val random: GameRandom,
@@ -57,6 +53,7 @@ constructor(
         onOpNpc5(GENIE) { dismiss(it.npc) }
         onOpHeld1(LAMP) { rub() }
         onCommand("randomevent") {
+            requiredRights = Rights.ADMINISTRATOR
             desc = "Spawn the Genie random event beside you"
             cheat(::summon)
         }
@@ -71,7 +68,7 @@ constructor(
         spawn(player)
     }
 
-    fun spawn(player: Player): Npc {
+    private fun spawn(player: Player): Npc {
         val npc = Npc(GENIE, besideTile(player.coords))
         npc.mode = NpcMode.None
         npcRepo.add(npc, Int.MAX_VALUE)
@@ -84,8 +81,6 @@ constructor(
         return npc
     }
 
-    fun genieOf(player: Player): Npc? = genies[player]?.npc
-
     private fun tick(owner: Player) {
         val genie = genies[owner]
         if (genie == null || !genie.npc.isSlotAssigned) {
@@ -93,6 +88,11 @@ constructor(
             return
         }
         val npc = genie.npc
+        if (genie.handedOver) {
+            genies.remove(owner)
+            leave(npc)
+            return
+        }
         if (mapClock.cycle >= genie.leaveCycle) {
             npc.say("Maybe later.")
             genies.remove(owner)
@@ -111,8 +111,8 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.talk(npc: Npc) {
-        val owner = genies.entries.firstOrNull { it.value.npc === npc }?.key
-        if (owner !== player) {
+        val entry = genies.entries.firstOrNull { it.value.npc === npc }
+        if (entry == null || entry.key !== player) {
             startDialogue(npc) {
                 chatNpc(
                     neutral,
@@ -121,7 +121,14 @@ constructor(
             }
             return
         }
-        genies.remove(player)
+        val genie = entry.value
+        if (genie.handedOver) {
+            startDialogue(npc) { chatNpc(happy, "Have a nice day, ${title(player)}.") }
+            return
+        }
+        genie.handedOver = true
+        invAddOrDrop(objRepo, LAMP, 1, inv = inv)
+        mes("Your reward is: <col=ff0000>1</col> x <col=ff0000>Lamp</col>.")
         startDialogue(npc) {
             chatNpc(
                 happy,
@@ -129,12 +136,6 @@ constructor(
                     "summoned me. Please take this lamp and make your wish.",
             )
         }
-        leave(npc)
-        if (inv.isFull()) {
-            mes("You don't have enough inventory space for the lamp.")
-            return
-        }
-        invAdd(inv, LAMP)
     }
 
     private fun ProtectedAccess.dismiss(npc: Npc) {
@@ -151,8 +152,9 @@ constructor(
         val stat = chooseLampSkill("Choose the stat you wish to be advanced!") ?: return
         val xp = statBase(stat) * LAMP_XP_PER_LEVEL
         if (invDel(inv, LAMP).failure) return
-        statAdvance(stat, xp.toDouble())
-        mes("Your wish has been granted!")
+        statAdvance(stat, xp.toDouble(), rate = 1.0, globalRate = 1.0)
+        val skill = stat.substringAfter('.').replaceFirstChar { it.uppercase() }
+        mes("Your wish has been granted! You have been awarded $xp $skill XP!")
     }
 
     private fun leave(npc: Npc) {
@@ -174,15 +176,15 @@ constructor(
 
     private fun nextEventDelay(): Int = random.of(MIN_EVENT_DELAY, MAX_EVENT_DELAY)
 
-    private data class Genie(val npc: Npc, val leaveCycle: Int)
+    private data class Genie(val npc: Npc, val leaveCycle: Int, var handedOver: Boolean = false)
 
     companion object {
         const val GENIE = "npc.macro_geni"
         const val LAMP = "obj.macro_genilamp"
         const val SCHEDULE_TIMER = "timer.random_event"
         const val GENIE_TIMER = "timer.random_event_genie"
-        const val LIFETIME_TICKS = 100
-        const val CALL_INTERVAL = 20
+        private const val LIFETIME_TICKS = 100
+        private const val CALL_INTERVAL = 20
         const val LAMP_XP_PER_LEVEL = 10
         const val MIN_EVENT_DELAY = 6_000
         const val MAX_EVENT_DELAY = 12_000

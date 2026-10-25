@@ -25,6 +25,7 @@ import org.rsmod.content.interfaces.gameframe.moveGameframe
 import org.rsmod.content.interfaces.gameframe.openGameframe
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
+import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -34,8 +35,13 @@ lateinit var gameframes: Map<Int, Gameframe>
 
 private val STONE_EVENTS = listOf(IfEvent.Op1, IfEvent.Op2, IfEvent.Op3, IfEvent.Op4, IfEvent.Op5, IfEvent.Op6)
 
-class GameframeScript @Inject internal constructor(private val eventBus: EventBus, private val loader: GameframeLoader) :
-    PluginScript() {
+class GameframeScript
+@Inject
+internal constructor(
+    private val eventBus: EventBus,
+    private val loader: GameframeLoader,
+    private val worldQueues: WorldQueueList,
+) : PluginScript() {
 
     private lateinit var moveEvents: List<MoveEvent>
     private lateinit var stoneOps: Map<String, Int>
@@ -48,6 +54,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         onPlayerInit { player.openLoginGameframe() }
 
         for ((topLevel, gameframe) in gameframes) {
+            if (!gameframe.isGameplay) continue
             val type = ServerCacheManager.getInterface(topLevel) ?: error("Unable to get Interface")
             onIfMoveTop(type) { player.queueGameframeMove(gameframe) }
         }
@@ -57,7 +64,9 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         }
         onIfMoveSub("component.toplevel_osrs_stretch:xp_drops") { player.moveXpDrops() }
 
-        onIfMoveSub("component.toplevel_osrs_stretch:tli_listener") { player.moveEhcListener() }
+        onIfMoveSub("component.toplevel_osrs_stretch:ui_highlights") {
+            ClientScripts.buffBarLayoutRedraw(player)
+        }
 
         onPlayerSoftQueueWithArgs("queue.client_mode") { player.changeGameframe(args) }
         onPlayerSoftQueueWithArgs("queue.fullscreen_map") { player.changeGameframe(args) }
@@ -65,7 +74,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
 
     private fun Player.openLoginGameframe() {
         val gameframe = gameframes[gameframeTopLevel]
-        if (gameframe != null && gameframe.resizable == ui.frameResizable) {
+        if (gameframe != null && gameframe.isGameplay && gameframe.resizable == ui.frameResizable) {
             ifOpenTop(gameframe.topLevel)
             openGameframe(gameframe, eventBus)
             sendAllStoneEvents()
@@ -109,11 +118,6 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         ifOpenOverlay("interface.orbs", "component.toplevel_osrs_stretch:orbs", eventBus)
     }
 
-    private fun Player.moveEhcListener() {
-        ClientScripts.settingsInterfaceScaling(this, 0)
-        ClientScripts.buffBarLayoutRedraw(this)
-    }
-
     companion object {
         fun Player.resolveGameframeMove(from: Gameframe, dest: Gameframe): GameframeMove {
             val intermediate = resolveIntermediate(from, dest)
@@ -139,13 +143,13 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         }
 
         private fun Gameframe.hasFlags(resizable: Boolean, stoneArrangements: Boolean): Boolean {
-            return this.resizable == resizable && this.stoneArrangement == stoneArrangements
+            return isGameplay && this.resizable == resizable && this.stoneArrangement == stoneArrangements
         }
     }
 
     public fun Player.changeGameframe(move: GameframeMove) {
         val (from, dest, intermediate) = move
-        if (dest.resizable) {
+        if (dest.resizable && from.isGameplay && dest.isGameplay) {
             stoneArrangements = dest.stoneArrangement
         }
         resyncVar("varp.chat_filter_assist")
@@ -159,12 +163,12 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
             } else {
                 moveGameframe(from, dest, eventBus)
             }
-            // TODO(content):
-            //  After 1 cycle, cs2 `settings_interface_scaling` and `buff_bar_layout_redraw` are
-            //  sent. However, I am unsure how it is scheduled. This action does not seem to be
-            //  stalled by modals and does not force-close them. A soft timer seems highly unlikely,
-            //  but it would be the only way to achieve this behavior. We will wait until we have
-            //  more information before adding this.
+            val player = this
+            worldQueues.add(1) {
+                if (player.isSlotAssigned) {
+                    ClientScripts.buffBarLayoutRedraw(player)
+                }
+            }
         }
 
         this.ifOpenOverlay(if (orbsMinimized && dest.resizable) "interface.orbs_nomap" else "interface.orbs", "component.toplevel_osrs_stretch:orbs", eventBus)
@@ -176,7 +180,7 @@ class GameframeScript @Inject internal constructor(private val eventBus: EventBu
         if (priority != null) {
             return priority
         }
-        return gameframes.values.firstOrNull { it.resizable == resizable }
+        return gameframes.values.firstOrNull { it.isGameplay && it.resizable == resizable }
     }
 
     private fun loadAll() {

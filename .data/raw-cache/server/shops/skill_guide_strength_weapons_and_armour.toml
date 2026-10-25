@@ -1,0 +1,55 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_strength_weapons_and_armour"
+name = "Perry's Chop-chop Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 3200
+buyMultiplier = 600
+delta = 10
+
+size = 7
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.bronze_axe"
+count = 4
+restockCycles = 7
+
+[[inventory.stock]]
+obj = "obj.iron_axe"
+count = 3
+restockCycles = 10
+
+[[inventory.stock]]
+obj = "obj.steel_axe"
+count = 2
+restockCycles = 15
+
+[[inventory.stock]]
+obj = "obj.mithril_axe"
+count = 1
+restockCycles = 25
+
+[[inventory.stock]]
+obj = "obj.adamant_axe"
+count = 1
+restockCycles = 40
+
+[[inventory.stock]]
+obj = "obj.rune_axe"
+count = 1
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 2
+restockCycles = 3
+
