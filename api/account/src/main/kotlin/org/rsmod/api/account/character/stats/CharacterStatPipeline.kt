@@ -1,9 +1,9 @@
 package org.rsmod.api.account.character.stats
 
 import dev.openrune.ServerCacheManager
+import dev.or2.sql.OpenRuneSql
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
-import dev.or2.sql.OpenRuneSql
 import jakarta.inject.Inject
 import org.rsmod.api.account.character.CharacterDataStage
 import org.rsmod.api.account.character.CharacterMetadataList
@@ -39,34 +39,23 @@ public class CharacterStatPipeline @Inject constructor(private val applier: Char
         metadata.add(applier, CharacterStatData(stats))
     }
 
-    override fun capture(player: Player): CharacterDataStage.Save {
-        val stats = ServerCacheManager.getStats().values.map { stat ->
-            val statType = RSCM.getReverseMapping(RSCMType.STAT, stat.id)
-            Stat(
-                stat.id,
-                player.statMap.getCurrentLevel(statType).toInt(),
-                player.statMap.getBaseLevel(statType).toInt(),
-                player.statMap.getFineXP(statType),
-            )
-        }
-        return CharacterDataStage.Save { connection, characterId ->
-            save(connection, characterId, stats)
-        }
-    }
-
-    private fun save(connection: DatabaseConnection, characterId: Int, stats: List<Stat>) {
+    override fun save(connection: DatabaseConnection, player: Player, characterId: Int) {
         val upsert =
             connection.prepareStatement(
                 OpenRuneSql.text("game/stats/upsert_stat.sql"),
             )
 
         upsert.use {
-            for (stat in stats) {
+            for (stat in ServerCacheManager.getStats().values) {
+                val statType = RSCM.getReverseMapping(RSCMType.STAT, stat.id)
+                val visLevel = player.statMap.getCurrentLevel(statType).toInt()
+                val baseLevel = player.statMap.getBaseLevel(statType).toInt()
+                val fineXp = player.statMap.getFineXP(statType)
                 it.setInt(1, characterId)
-                it.setInt(2, stat.type)
-                it.setInt(3, stat.vis)
-                it.setInt(4, stat.base)
-                it.setInt(5, stat.fineXp)
+                it.setInt(2, stat.id)
+                it.setInt(3, visLevel)
+                it.setInt(4, baseLevel)
+                it.setInt(5, fineXp)
                 upsert.addBatch()
             }
             upsert.executeBatch()

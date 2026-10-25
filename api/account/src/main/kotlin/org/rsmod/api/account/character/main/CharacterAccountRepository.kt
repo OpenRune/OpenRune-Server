@@ -36,39 +36,6 @@ constructor(
 ) {
     private val maxCharactersPerAccount: Int = 3
 
-    public data class SaveData(
-        val displayName: String,
-        val members: Boolean,
-        val x: Int,
-        val z: Int,
-        val level: Int,
-        val lastLogin: LocalDateTime,
-        val runEnergy: Int,
-        val xpRatePercent: Int,
-        val clearPresence: Boolean,
-        val varps: Map<Int, Int>,
-        val attrsJson: Map<String, String>,
-    )
-
-    public fun capture(player: Player): SaveData =
-        SaveData(
-            displayName = player.displayName,
-            members = player.members,
-            x = player.x,
-            z = player.z,
-            level = player.level,
-            lastLogin = player.lastLogin,
-            runEnergy = player.runEnergy,
-            xpRatePercent = (player.xpRate * 100).roundToInt(),
-            clearPresence = player.pendingLogout,
-            varps = player.vars.backing.filterKeys { id ->
-                ServerCacheManager.getVarp(id)?.scope == VarpLifetime.Perm
-            },
-            attrsJson = player.attr.toPersistentMap().mapValues { (_, value) ->
-                objectMapper.writeValueAsString(value)
-            },
-        )
-
     public fun insertOrSelectAccountId(
         connection: DatabaseConnection,
         accountName: String,
@@ -290,11 +257,12 @@ constructor(
 
     public fun save(
         connection: DatabaseConnection,
-        data: SaveData,
+        player: Player,
+        accountId: Int,
         characterId: Int,
         gameWorldId: Int,
     ) {
-        val clearPresence = data.clearPresence
+        val clearPresence = player.pendingLogout
         val progressSql =
             if (clearPresence) {
                 OpenRuneSql.text("game/character/character_progress_update_clear_presence.sql")
@@ -302,21 +270,28 @@ constructor(
                 OpenRuneSql.text("game/character/character_progress_update_set_presence.sql")
             }
 
+        val persistentVarps =
+            player.vars.backing.filterKeys { id ->
+                ServerCacheManager.getVarp(id)?.scope == VarpLifetime.Perm
+            }
+
+        val persistentAttrs = player.attr.toPersistentMap()
+
         val identitySql = OpenRuneSql.text("game/character/characters_update_identity.sql")
         connection.prepareStatement(identitySql).use {
-            it.setNullableString(1, data.displayName.takeIf(String::isNotBlank))
-            it.setBoolean(2, data.members)
+            it.setNullableString(1, player.displayName.takeIf(String::isNotBlank))
+            it.setBoolean(2, player.members)
             it.setInt(3, characterId)
             it.executeUpdate()
         }
 
         connection.prepareStatement(progressSql).use {
-            it.setInt(1, data.x)
-            it.setInt(2, data.z)
-            it.setInt(3, data.level)
-            it.setTimestamp(4, Timestamp.valueOf(data.lastLogin))
-            it.setInt(5, data.runEnergy)
-            it.setInt(6, data.xpRatePercent)
+            it.setInt(1, player.x)
+            it.setInt(2, player.z)
+            it.setInt(3, player.level)
+            it.setTimestamp(4, Timestamp.valueOf(player.lastLogin))
+            it.setInt(5, player.runEnergy)
+            it.setInt(6, (player.xpRate * 100).roundToInt())
             if (!clearPresence) {
                 it.setInt(7, gameWorldId)
                 it.setInt(8, characterId)
@@ -326,8 +301,8 @@ constructor(
             it.executeUpdate()
         }
 
-        replacePersistentVarps(connection, characterId, data.varps)
-        replacePersistentAttrs(connection, characterId, data.attrsJson)
+        replacePersistentVarps(connection, characterId, persistentVarps)
+        replacePersistentAttrs(connection, characterId, persistentAttrs)
     }
 
     private fun selectPersistentAttrs(
@@ -354,7 +329,7 @@ constructor(
     private fun replacePersistentAttrs(
         connection: DatabaseConnection,
         characterId: Int,
-        persistentAttrs: Map<String, String>,
+        persistentAttrs: Map<String, Any>,
     ) {
         val deleteSql = OpenRuneSql.text("game/character/character_attrs_delete_by_character.sql")
         connection.prepareStatement(deleteSql).use { ps ->
@@ -369,7 +344,7 @@ constructor(
             for ((attrKey, value) in persistentAttrs) {
                 ps.setInt(1, characterId)
                 ps.setString(2, attrKey)
-                ps.setString(3, value)
+                ps.setString(3, objectMapper.writeValueAsString(value))
                 ps.addBatch()
             }
             ps.executeBatch()

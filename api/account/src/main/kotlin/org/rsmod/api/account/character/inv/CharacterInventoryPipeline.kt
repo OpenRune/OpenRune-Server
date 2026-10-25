@@ -8,6 +8,7 @@ import org.rsmod.api.account.character.CharacterMetadataList
 import org.rsmod.api.account.persistence.GamePersistenceRscmKeys
 import org.rsmod.api.db.DatabaseConnection
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.Inventory
 
 private typealias CharacterInventory = CharacterInventoryData.Inventory
 
@@ -16,11 +17,6 @@ private typealias CharacterObj = CharacterInventoryData.Obj
 private data class InventoryParent(
     val characterId: Int,
     val invDbKey: String,
-)
-
-private data class SavedInventory(
-    val internalName: String,
-    val slots: List<CharacterObj?>,
 )
 
 public class CharacterInventoryPipeline
@@ -95,29 +91,8 @@ constructor(private val applier: CharacterInventoryApplier) : CharacterDataStage
         return inventories
     }
 
-    override fun capture(player: Player): CharacterDataStage.Save {
-        val inventories = player.invMap.values
-            .filter { it.type.scope == InvScope.Perm }
-            .map { inventory ->
-                SavedInventory(
-                    inventory.internalName,
-                    inventory.indices.map { slot ->
-                        inventory[slot]?.let {
-                            CharacterObj(GamePersistenceRscmKeys.encodeObjKey(it.id), it.count, it.vars)
-                        }
-                    },
-                )
-            }
-        return CharacterDataStage.Save { connection, characterId ->
-            save(connection, characterId, inventories)
-        }
-    }
-
-    private fun save(
-        connection: DatabaseConnection,
-        characterId: Int,
-        persistentInvs: List<SavedInventory>,
-    ) {
+    override fun save(connection: DatabaseConnection, player: Player, characterId: Int) {
+        val persistentInvs = player.invMap.values.filter { it.type.scope == InvScope.Perm }
         deleteStaleInventories(connection, characterId, persistentInvs)
 
         val delete =
@@ -141,12 +116,12 @@ constructor(private val applier: CharacterInventoryApplier) : CharacterDataStage
                     val parent = ensureInventoryRow(connection, characterId, invTypeKey)
                     if (parent == null) {
                         val message =
-                            "Fatal error fetching inventory row for: ${inventory.internalName}"
+                            "Fatal error fetching inventory row for: ${inventory.type} (player=$player)"
                         throw IllegalStateException(message)
                     }
 
-                    for (i in inventory.slots.indices) {
-                        if (inventory.slots[i] == null) {
+                    for (i in inventory.indices) {
+                        if (inventory[i] == null) {
                             delete.setInt(1, parent.characterId)
                             delete.setString(2, parent.invDbKey)
                             delete.setInt(3, i)
@@ -154,13 +129,13 @@ constructor(private val applier: CharacterInventoryApplier) : CharacterDataStage
                         }
                     }
 
-                    for (i in inventory.slots.indices) {
-                        val obj = inventory.slots[i]
+                    for (i in inventory.indices) {
+                        val obj = inventory[i]
                         if (obj != null) {
                             upsert.setInt(1, parent.characterId)
                             upsert.setString(2, parent.invDbKey)
                             upsert.setInt(3, i)
-                            upsert.setString(4, obj.objKey)
+                            upsert.setString(4, GamePersistenceRscmKeys.encodeObjKey(obj.id))
                             upsert.setInt(5, obj.count)
                             upsert.setInt(6, obj.vars)
                             upsert.addBatch()
@@ -176,7 +151,7 @@ constructor(private val applier: CharacterInventoryApplier) : CharacterDataStage
     private fun deleteStaleInventories(
         connection: DatabaseConnection,
         characterId: Int,
-        inventories: Collection<SavedInventory>,
+        inventories: Collection<Inventory>,
     ) {
         // Important: This function assumes `inventory_objs` references `inventories` with
         // `ON DELETE CASCADE`, so deleting a parent inventory also deletes its associated
