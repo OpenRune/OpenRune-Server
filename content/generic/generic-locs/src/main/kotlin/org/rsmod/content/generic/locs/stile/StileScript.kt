@@ -9,10 +9,8 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /**
- * Steps over a fence stile. A stile's footprint is two tiles, one either side of the fence, and
- * blocks walking. The player walks to the tile just outside the footprint on their side, in line
- * with the crossing, steps onto the near footprint tile, climbs to the far one and steps off it on
- * the other side.
+ * Steps over a fence stile. A stile spans the two tiles of its own footprint, one either side of
+ * the fence, and climbing it moves the player to whichever of those tiles they are not standing on.
  */
 class StileScript : PluginScript() {
     override fun ScriptContext.startup() {
