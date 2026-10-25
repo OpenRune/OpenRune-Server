@@ -38,6 +38,7 @@ data class PhaseSpec(
     val selector: Selector = Selector.WeightedRandom(),
     val forceAbilities: List<ForcedAbility> = emptyList(),
     val timers: List<TimerSpec> = emptyList(),
+    val keepFacingLock: Boolean = false,
 )
 
 /**
@@ -75,6 +76,8 @@ data class ProjectileConfig(
     val angle: Int = 10,
     val progress: Int = 15,
     val stepMultiplier: Int = 5,
+    val minFlight: Int = 0,
+    val originDistance: Boolean = false,
 ) {
     companion object {
         /** Timing that ignores distance: waits [delay] cycles, then flies for [travel]. */
