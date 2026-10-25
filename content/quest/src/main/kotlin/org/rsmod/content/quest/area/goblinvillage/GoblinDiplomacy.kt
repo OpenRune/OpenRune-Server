@@ -8,12 +8,16 @@ import dev.openrune.types.MesAnimType
 import jakarta.inject.Inject
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
+import org.rsmod.api.player.cinematic.CameraMode
+import org.rsmod.api.player.cinematic.Cinematic
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionTemplate
+import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
@@ -28,6 +32,7 @@ import org.rsmod.content.quest.manager.rewards
 import org.rsmod.content.quest.manager.startQuestPrompt
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
@@ -47,7 +52,9 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
 ) {
     private var Player.grubfootLook by intVarBit("varbit.gobdip_grubfoot_vis")
 
-    private val sceneRegions = HashMap<Long, Region>()
+    private class SceneExit(val region: Region?, val returnTo: CoordGrid)
+
+    private val sceneExits = HashMap<Long, SceneExit>()
 
     override fun ScriptContext.init() {
         check(quest.maxSteps == COMPLETE) {
@@ -68,12 +75,24 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
         onOpHeldU(RED_DYE, YELLOW_DYE) { mixDyes(it.firstSlot, it.secondSlot, ORANGE_DYE, "orange") }
         onOpHeldU(YELLOW_DYE, BLUE_DYE) { mixDyes(it.firstSlot, it.secondSlot, GREEN_DYE, "green") }
         onOpHeldU(RED_DYE, BLUE_DYE) { mixDyes(it.firstSlot, it.secondSlot, PURPLE_DYE, "purple") }
-        onPlayerLogin { discardLeakedRegion(player) }
+        onEvent<SessionStateEvent.PrepareLogin> { restoreLeftScene(player) }
+        onPlayerLogin { discardLeftScene(player) }
     }
 
-    private fun discardLeakedRegion(player: Player) {
-        val region = player.uuid?.let(sceneRegions::remove) ?: return
-        regionRepo.unprotect(region)
+    private fun restoreLeftScene(player: Player) {
+        val exit = player.uuid?.let(sceneExits::get) ?: return
+        player.coords = exit.returnTo
+        Cinematic.setHideToplevel(player, hide = false)
+        Cinematic.setHideHealthHud(player, hide = false)
+        Cinematic.setCameraMode(player, CameraMode.Normal)
+        Cinematic.setMaxDrawDistance(player, enabled = false)
+        Cinematic.restoreAcceptAid(player)
+        VarPlayerIntMapSetter.set(player, "varbit.minimap_state", 0)
+    }
+
+    private fun discardLeftScene(player: Player) {
+        val exit = player.uuid?.let(sceneExits::remove) ?: return
+        exit.region?.let(regionRepo::unprotect)
     }
 
     override fun subTitle(): String =
@@ -547,6 +566,7 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
             else -> {
                 if (!quest.completeQuest(access)) {
                     access.invAdd(access.inv, wanted, 1)
+                    player.grubfootLook = GRUBFOOT_BLUE
                     access.mes(NO_ROOM_FOR_REWARD)
                     return false
                 }
@@ -576,9 +596,10 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
         val region = regionRepo.add(HUT)
         region?.let(regionRepo::protect)
         val r = SceneRegion(region)
-        player.uuid?.let { uuid -> region?.let { sceneRegions[uuid] = it } }
+        player.uuid?.let { uuid -> sceneExits[uuid] = SceneExit(region, returnTo) }
         val actors = ArrayList<Npc>()
         var committed = stage == BROWN_WANTED
+        var verdictGiven = false
         lateinit var grubfoot: Npc
         fun spawn(type: String, coords: CoordGrid): Npc {
             val npc = Npc(type, coords)
@@ -599,6 +620,11 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
                     spawn(BENTNOZE, r[BENTNOZE_TILE])
                     grubfoot = spawn(wearing, r[GRUBFOOT_TILE])
                     if (!committed) committed = commitHandIn(stage, wanted)
+                },
+                teardown = {
+                    if (verdictGiven && player.inv.count(wanted) > 0) {
+                        player.grubfootLook = GRUBFOOT_BROWN
+                    }
                 },
             ) {
                 if (!committed) return@lockedScene
@@ -640,12 +666,13 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
                             "Thank you for sorting out argument, human. You have reward now.",
                         )
                         chatPlayer(confused, "Thanks... I think...")
+                        verdictGiven = true
                     }
                 }
             }
         } finally {
             for (npc in actors) if (npc.isSlotAssigned) npcRepo.del(npc, Int.MAX_VALUE)
-            player.uuid?.let(sceneRegions::remove)
+            player.uuid?.let(sceneExits::remove)
             region?.let(regionRepo::unprotect)
         }
         return committed
