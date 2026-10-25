@@ -6,6 +6,8 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
+import org.rsmod.api.script.onApNpc1
+import org.rsmod.api.script.onApNpc3
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.table.hunter.HunterRumourHuntersRow
@@ -14,6 +16,7 @@ import org.rsmod.content.skills.hunter.HunterRumours.Companion.BACK_TO_BACK
 import org.rsmod.content.skills.hunter.HunterRumours.Companion.BACK_TO_BACK_OFF
 import org.rsmod.content.skills.hunter.HunterRumours.Companion.COMPLETED
 import org.rsmod.content.skills.hunter.HunterRumours.Companion.UNLOCKED
+import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -21,11 +24,26 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
     PluginScript() {
     override fun ScriptContext.startup() {
         for (hunter in rumours.hunters) {
-            onOpNpc1(hunter.npc) { startDialogue(it.npc) { talk(hunter) } }
-            onOpNpc3(hunter.npc.internalName) { startDialogue(it.npc) { rumourTalk(hunter, quick = true) } }
+            onNpc(hunter.npc.internalName, { talk(hunter) }, { rumourTalk(hunter, quick = true) })
         }
-        onOpNpc1(VERITY) { startDialogue(it.npc) { verity() } }
-        onOpNpc3(VERITY) { startDialogue(it.npc) { veritySettings() } }
+        onNpc(VERITY, { verity() }, { veritySettings() })
+    }
+
+    private fun ScriptContext.onNpc(
+        npc: String,
+        op1: suspend Dialogue.() -> Unit,
+        op3: suspend Dialogue.() -> Unit,
+    ) {
+        onOpNpc1(npc) { startDialogue(it.npc) { op1() } }
+        onOpNpc3(npc) { startDialogue(it.npc) { op3() } }
+        if (npc in BEHIND_BAR) {
+            onApNpc1(npc) { acrossBar(it.npc, op1) }
+            onApNpc3(npc) { acrossBar(it.npc, op3) }
+        }
+    }
+
+    private suspend fun ProtectedAccess.acrossBar(npc: Npc, dialogue: suspend Dialogue.() -> Unit) {
+        if (isWithinDistance(npc, BAR_RANGE)) startDialogue(npc) { dialogue() } else apRange(BAR_RANGE)
     }
 
     private val HunterRumourHuntersRow.lines: HunterLines
@@ -347,6 +365,8 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
 
     companion object {
         const val VERITY = "npc.hg_verity"
+        const val BAR_RANGE = 3
+        val BEHIND_BAR = setOf("npc.hg_gilman", VERITY)
         const val COINS = "obj.coins"
         const val TIPPLE = "obj.trappers_tipple"
         const val STEW = "obj.stew"

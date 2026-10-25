@@ -13,6 +13,7 @@ import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onOpLoc4
 import org.rsmod.api.script.onOpLocU
+import org.rsmod.api.table.BirdhouseSeedsRow
 import org.rsmod.api.table.BirdhouseTypesRow
 import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.game.cheat.Cheat
@@ -250,27 +251,11 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
 
         val TIERS: List<BirdhouseTypesRow> by lazy { BirdhouseTypesRow.all().sortedBy { it.tier } }
 
-        val SEEDS =
-            listOf(
-                "barley_seed", "jute_seed", "hammerstone_hop_seed", "asgarnian_hop_seed",
-                "yanillian_hop_seed", "krandorian_hop_seed", "wildblood_hop_seed", "potato_seed",
-                "onion_seed", "cabbage_seed", "tomato_seed", "sweetcorn_seed", "strawberry_seed",
-                "watermelon_seed", "snape_grass_seed", "marigold_seed", "rosemary_seed",
-                "nasturtium_seed", "woad_seed", "limpwurt_seed", "white_lily_seed",
-                "redberry_bush_seed", "cadavaberry_bush_seed", "dwellberry_bush_seed",
-                "jangerberry_bush_seed", "whiteberry_bush_seed", "poisonivy_bush_seed",
-                "guam_seed", "marrentill_seed", "tarromin_seed", "harralander_seed",
-                "ranarr_seed", "toadflax_seed", "irit_seed", "avantoe_seed", "kwuarm_seed",
-                "snapdragon_seed", "cadantine_seed", "lantadyme_seed", "dwarf_weed_seed",
-                "torstol_seed",
-            ).map { "obj.$it" }
+        private val SEED_ROW by lazy { BirdhouseSeedsRow.getRow("dbrow.birdhouse_seeds") }
 
-        val HIGH_LEVEL_SEEDS =
-            setOf(
-                "wildblood_hop_seed", "ranarr_seed", "toadflax_seed", "irit_seed", "avantoe_seed",
-                "kwuarm_seed", "snapdragon_seed", "cadantine_seed", "lantadyme_seed", "dwarf_weed_seed",
-                "torstol_seed",
-            ).map { "obj.$it" }.toSet()
+        val SEEDS: List<String> by lazy { SEED_ROW.seeds.map { it.internalName } }
+
+        val HIGH_LEVEL_SEEDS: Set<String> by lazy { SEED_ROW.highLevelSeeds.map { it.internalName }.toSet() }
 
         fun seedWeight(seed: String): Int = if (seed in HIGH_LEVEL_SEEDS) 2 else 1
 

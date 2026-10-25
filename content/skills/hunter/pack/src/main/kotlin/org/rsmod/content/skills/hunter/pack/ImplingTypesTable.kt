@@ -2,6 +2,7 @@ package org.rsmod.content.skills.hunter.pack
 
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
+import org.rsmod.map.CoordGrid
 
 object ImplingTypesTable {
     const val NPC = 0
@@ -130,6 +131,44 @@ object ImplingTypesTable {
                 column(XP_PURO_PURO, 80)
                 column(XP_GIELINOR, 380)
                 column(RESPAWN_TICKS, 7)
+            }
+        }
+}
+
+object CrystalImplingTable {
+    const val NPCS = 0
+    const val SPOTS = 1
+
+    private val NAMES =
+        listOf(
+            "johnny", "junior", "andy", "joey", "trouble", "hingy", "zolty", "neil", "yanny",
+            "matty", "stace", "ian", "jamie", "damo", "xander", "steveo", "stewie",
+        )
+
+    private val SPOT_COORDS =
+        listOf(
+            CoordGrid(3290, 6117, 0),
+            CoordGrid(3307, 6041, 0),
+            CoordGrid(3210, 6110, 0),
+            CoordGrid(3213, 6049, 0),
+            CoordGrid(3237, 6102, 0),
+            CoordGrid(3308, 6117, 0),
+            CoordGrid(3240, 6046, 0),
+            CoordGrid(3214, 6113, 0),
+            CoordGrid(3290, 6049, 0),
+            CoordGrid(3234, 6072, 0),
+            CoordGrid(3240, 6120, 0),
+            CoordGrid(3234, 6129, 0),
+        )
+
+    fun crystalImpling() =
+        dbTable("dbtable.crystal_impling", serverOnly = true) {
+            column("npcs", NPCS, VarType.NPC)
+            column("spots", SPOTS, VarType.COORDGRID)
+
+            row("dbrow.crystal_impling") {
+                columnRSCM(NPCS, NAMES.map { "npc.ii_impling_type_12_$it" })
+                column(SPOTS, SPOT_COORDS.map { it.packed })
             }
         }
 }

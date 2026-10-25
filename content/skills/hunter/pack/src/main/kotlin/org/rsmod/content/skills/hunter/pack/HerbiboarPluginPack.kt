@@ -10,5 +10,6 @@ class HerbiboarPluginPack : PluginPack() {
             HerbiboarSpotsTable.herbiboarSpots(),
             HerbiboarTunnelsTable.herbiboarTunnels(),
             HerbiboarHerbsTable.herbiboarHerbs(),
+            HerbiboarFossilsTable.herbiboarFossils(),
         )
 }

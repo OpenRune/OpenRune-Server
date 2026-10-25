@@ -213,3 +213,38 @@ object HerbiboarHerbsTable {
             }
         }
 }
+
+object HerbiboarFossilsTable {
+    const val FOSSIL = 0
+    const val WEIGHT = 1
+    const val MIN = 2
+    const val MAX = 3
+
+    private data class Fossil(val name: String, val weight: Int, val min: Int, val max: Int)
+
+    private val FOSSILS =
+        listOf(
+            Fossil("numulite", 1260, 5, 24),
+            Fossil("small_unid", 70, 1, 1),
+            Fossil("medium_unid", 35, 1, 1),
+            Fossil("large_unid", 28, 1, 1),
+            Fossil("rare_unid", 7, 1, 1),
+        )
+
+    fun herbiboarFossils() =
+        dbTable("dbtable.herbiboar_fossils", serverOnly = true) {
+            column("fossil", FOSSIL, VarType.OBJ)
+            column("weight", WEIGHT, VarType.INT)
+            column("min", MIN, VarType.INT)
+            column("max", MAX, VarType.INT)
+
+            for (fossil in FOSSILS) {
+                row("dbrow.herbiboar_fossil_${fossil.name}") {
+                    columnRSCM(FOSSIL, "obj.fossil_${fossil.name}")
+                    column(WEIGHT, fossil.weight)
+                    column(MIN, fossil.min)
+                    column(MAX, fossil.max)
+                }
+            }
+        }
+}

@@ -11,6 +11,7 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.table.HerbiboarFossilsRow
 import org.rsmod.api.table.HerbiboarHerbsRow
 import org.rsmod.api.table.HerbiboarLegsRow
 import org.rsmod.api.table.HerbiboarSpotsRow
@@ -141,10 +142,10 @@ constructor(
     private fun ProtectedAccess.rollFossil() {
         val roll = random.of(FOSSIL_ROLL)
         var edge = 0
-        for ((obj, weight, quantity) in FOSSILS) {
-            edge += weight
+        for (fossil in HerbiboarFossilsRow.all()) {
+            edge += fossil.weight
             if (roll < edge) {
-                invAddOrDrop(objRepo, obj, random.of(quantity))
+                invAddOrDrop(objRepo, fossil.fossil.internalName, random.of(fossil.min, fossil.max))
                 return
             }
         }
@@ -238,14 +239,6 @@ constructor(
             )
 
         private const val FOSSIL_ROLL = 3500
-        val FOSSILS =
-            listOf(
-                Triple("obj.fossil_numulite", 1260, 5..24),
-                Triple("obj.fossil_small_unid", 70, 1..1),
-                Triple("obj.fossil_medium_unid", 35, 1..1),
-                Triple("obj.fossil_large_unid", 28, 1..1),
-                Triple("obj.fossil_rare_unid", 7, 1..1),
-            )
 
         fun tunnelXp(level: Int): Int =
             when {

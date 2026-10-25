@@ -62,3 +62,41 @@ object BirdHouseTypesTable {
             }
         }
 }
+
+object BirdHouseSeedsTable {
+    const val SEEDS = 0
+    const val HIGH_LEVEL_SEEDS = 1
+
+    private val SEED_NAMES =
+        listOf(
+            "barley_seed", "jute_seed", "hammerstone_hop_seed", "asgarnian_hop_seed",
+            "yanillian_hop_seed", "krandorian_hop_seed", "wildblood_hop_seed", "potato_seed",
+            "onion_seed", "cabbage_seed", "tomato_seed", "sweetcorn_seed", "strawberry_seed",
+            "watermelon_seed", "snape_grass_seed", "marigold_seed", "rosemary_seed",
+            "nasturtium_seed", "woad_seed", "limpwurt_seed", "white_lily_seed",
+            "redberry_bush_seed", "cadavaberry_bush_seed", "dwellberry_bush_seed",
+            "jangerberry_bush_seed", "whiteberry_bush_seed", "poisonivy_bush_seed",
+            "guam_seed", "marrentill_seed", "tarromin_seed", "harralander_seed",
+            "ranarr_seed", "toadflax_seed", "irit_seed", "avantoe_seed", "kwuarm_seed",
+            "snapdragon_seed", "cadantine_seed", "lantadyme_seed", "dwarf_weed_seed",
+            "torstol_seed",
+        )
+
+    private val HIGH_LEVEL_SEED_NAMES =
+        listOf(
+            "wildblood_hop_seed", "ranarr_seed", "toadflax_seed", "irit_seed", "avantoe_seed",
+            "kwuarm_seed", "snapdragon_seed", "cadantine_seed", "lantadyme_seed", "dwarf_weed_seed",
+            "torstol_seed",
+        )
+
+    fun birdHouseSeeds() =
+        dbTable("dbtable.birdhouse_seeds", serverOnly = true) {
+            column("seeds", SEEDS, VarType.OBJ)
+            column("high_level_seeds", HIGH_LEVEL_SEEDS, VarType.OBJ)
+
+            row("dbrow.birdhouse_seeds") {
+                columnRSCM(SEEDS, SEED_NAMES.map { "obj.$it" })
+                columnRSCM(HIGH_LEVEL_SEEDS, HIGH_LEVEL_SEED_NAMES.map { "obj.$it" })
+            }
+        }
+}

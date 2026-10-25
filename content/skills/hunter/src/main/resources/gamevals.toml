@@ -1,7 +1,10 @@
 [gamevals.dbtable]
 impling_types = 56002
+impling_loot = 65498
+crystal_impling = 65500
 
 birdhouse_types = 56003
+birdhouse_seeds = 65501
 
 hunter_traps = 56004
 hunter_trap_creatures = 56005
@@ -10,6 +13,7 @@ herbiboar_legs = 56006
 herbiboar_spots = 56007
 herbiboar_tunnels = 56008
 herbiboar_herbs = 56009
+herbiboar_fossils = 65499
 
 hunter_butterflies = 56012
 
@@ -164,6 +168,25 @@ hunter_rumour_black_warlock = 60290
 hunter_rumour_sunlight_moth = 60291
 hunter_rumour_moonlight_moth = 60292
 hunter_rumour_embertailed_jerboa = 60293
+
+impling_loot_baby = 63867
+impling_loot_young = 63857
+impling_loot_gourmet = 63861
+impling_loot_earth = 63864
+impling_loot_essence = 63862
+impling_loot_eclectic = 63863
+impling_loot_nature = 63859
+impling_loot_magpie = 63860
+impling_loot_ninja = 63858
+impling_loot_dragon = 63865
+impling_loot_crystal = 63866
+crystal_impling = 63873
+birdhouse_seeds = 63892
+herbiboar_fossil_numulite = 63870
+herbiboar_fossil_small_unid = 63868
+herbiboar_fossil_medium_unid = 63871
+herbiboar_fossil_large_unid = 63872
+herbiboar_fossil_rare_unid = 63869
 
 [gamevals.timer]
 
