@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcMode
 import jakarta.inject.Inject
+import kotlin.math.abs
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.dsl.Melee
 import org.rsmod.api.bosses.dsl.Ranged
@@ -22,18 +23,32 @@ import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.DamageExpr
+import org.rsmod.api.death.NpcDeath
+import org.rsmod.api.instances.InstanceManager
+import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.apPlayer2
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.isValidTarget
+import org.rsmod.api.npc.vars.typePlayerUidVarn
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.midiSong
+import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.player.vars.typeNpcUidVarp
 import org.rsmod.api.script.onEvent
+import org.rsmod.api.script.onNpcQueue
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
+import org.rsmod.game.entity.npc.NpcUid
+import org.rsmod.game.entity.player.PlayerUid
 import org.rsmod.game.map.Direction
+import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
+
+private var Player.madAngelAggressiveNpc: NpcUid? by typeNpcUidVarp("varp.aggressive_npc")
+private var Player.madAngelLastCombat: Int by intVarp("varp.lastcombat")
+private var Npc.madAngelAggressivePlayer: PlayerUid? by typePlayerUidVarn("varn.aggressive_player")
 
 /**
  * The Mad Angel inside the Wyrmscraig cathedral, dormant until a player wakes it off its pew.
@@ -41,8 +56,9 @@ import org.rsmod.plugin.scripts.ScriptContext
  * The angel is spawned as [NPC_MAD_ANGEL] (so its kill count and hp bar params apply)
  * and kept dormant through a [NPC_INITIAL] transmog, whose stand animation is the kneel pose and
  * whose `Wake` option is gated on Fallen From Grace being complete. Waking plays the spawn animation
- * on the anim form, then switches to the fight type and gives it the cathedral to hunt in. The
- * permanent spawn keeps its respawn flag, so the repeatable fight respawns after a kill.
+ * on the anim form, then switches to the fight type and gives it the cathedral to hunt in. A kill
+ * leaves the dead form behind for the respawn wait, then revives the angel in place with `Wake`
+ * available again.
  */
 class MadAngel
 @Inject
@@ -50,6 +66,8 @@ constructor(
     deps: BossDeps,
     private val fight: MadAngelFight,
     private val aiPlayerInteractions: AiPlayerInteractions,
+    private val npcDeath: NpcDeath,
+    private val instances: InstanceManager,
 ) : BossPluginScript(deps) {
 
     override val spec =
@@ -164,11 +182,30 @@ constructor(
         }
 
     override fun ScriptContext.startup() {
-        BossCombat.register(this, spec, deps)
+        BossCombat.register(
+            this,
+            spec,
+            deps,
+            onModifyHit = {
+                if (hit.isFromPlayer) {
+                    val source = hit.sourceUid?.let { PlayerUid(it).resolve(deps.playerList) }
+                    if (source != null && source.nextHitBuff != MadAngelFight.NEXT_HIT_NONE) {
+                        source.nextHitBuff = MadAngelFight.NEXT_HIT_NONE
+                        npc.vars[MadAngelFight.GUARANTEED_HIT] = 0
+                    }
+                }
+            },
+        )
 
         onOpNpc1(NPC_INITIAL) { wake(it.npc, player) }
 
         onEvent<NpcStateEvents.Create> { if (npc.type.id == MAD_ANGEL_ID) dormant(npc) }
+
+        for (id in listOf(MAD_ANGEL_ID, ANIM_ID)) {
+            ServerCacheManager.getNpc(id)?.let { type ->
+                onNpcQueue(type, "queue.death") { madAngelDeath() }
+            }
+        }
 
         deps.extensionRegistry.register(HANDLER_SWEEP) { _, npc, target, params ->
             fight.sweep(npc, target, params as SweepParams)
@@ -179,7 +216,8 @@ constructor(
         deps.extensionRegistry.register(HANDLER_SMITE) { _, npc, target, params ->
             fight.smite(npc, target, params as Boolean)
         }
-        deps.extensionRegistry.register(HANDLER_SPEND_BUFF) { _, _, target, _ ->
+        deps.extensionRegistry.register(HANDLER_SPEND_BUFF) { _, npc, target, _ ->
+            npc.vars[MadAngelFight.GUARANTEED_HIT] = 0
             target.nextHitBuff = MadAngelFight.NEXT_HIT_NONE
         }
     }
@@ -207,11 +245,81 @@ constructor(
         }
     }
 
+    private suspend fun StandardNpcAccess.madAngelDeath() {
+        val respawnRate = ServerCacheManager.getNpc(MAD_ANGEL_ID)?.respawnRate ?: npc.type.respawnRate
+        val deathCoords = npc.coords
+        val deathAngle = npc.deathFacingAngle()
+        walk(coords)
+        noneMode()
+        hideAllOps()
+        arriveDelay()
+
+        val deathAnim = ServerCacheManager.getAnim(DEATH_SEQ_ID) ?: return
+        anim(DEATH_ANIM)
+        delay(deathAnim)
+
+        npcDeath.spawnDrops(this)
+        for (player in deps.playerList) {
+            if (player.madAngelAggressiveNpc?.packed == npc.uid.packed) {
+                player.madAngelAggressiveNpc = null
+                player.madAngelLastCombat = 0
+            }
+        }
+
+        val deadType = ServerCacheManager.getNpc(DEAD_ID) ?: return
+        changeType(deadType, Int.MAX_VALUE)
+        delay(respawnRate.coerceAtLeast(1))
+        deps.worldQueues.add(1) { respawnDormant(npc, deathCoords, deathAngle) }
+    }
+
+    private fun Npc.deathFacingAngle(): Int {
+        if (isFacingLocked) {
+            calculateAngle(faceLockSquare, faceLockWidth, faceLockLength)?.let { return it }
+        }
+        val target = facingTarget(deps.playerList) ?: madAngelAggressivePlayer?.resolve(deps.playerList)
+        if (target != null) {
+            calculateAngle(target.coords, target.size, target.size)?.let { return it }
+        }
+        return respawnDir.angle
+    }
+
+    private fun respawnDormant(npc: Npc, coords: CoordGrid, angle: Int) {
+        if (!npc.isSlotAssigned || npc.visType.id != DEAD_ID) return
+        val instanceId = instances.instanceForNpc(npc) ?: return
+        if (instances.sessionForId(instanceId) == null) return
+        val type = ServerCacheManager.getNpc(MAD_ANGEL_ID) ?: return
+        val revived = Npc(type, coords)
+        revived.respawnDir = directionOf(angle)
+        deps.npcRepo.del(npc, Int.MAX_VALUE)
+        deps.npcRepo.add(revived, Int.MAX_VALUE)
+        instances.attachNpc(instanceId, revived)
+        revived.infoProtocol.setFaceAngle(angle, instant = true)
+    }
+
+    private fun directionOf(angle: Int): Direction =
+        Direction.entries.minBy { direction ->
+            val diff = ((direction.angle - angle + 1024) and 2047) - 1024
+            abs(diff)
+        }
+
     @OptIn(InternalApi::class)
     private fun dormant(npc: Npc) {
         val type = ServerCacheManager.getNpc(INITIAL_ID) ?: return
+        val fightType = ServerCacheManager.getNpc(MAD_ANGEL_ID) ?: return
+        deps.encounterRegistry.remove(npc)
         npc.mode = NpcMode.None
         npc.setHunt(0)
+        npc.apRangeOverride = null
+        npc.apRequiresLineOfSight = true
+        npc.moveRestrict = type.moveRestrict
+        npc.ignoreCombatInteractions = false
+        npc.clearIdleAnim()
+        npc.clearInteraction()
+        npc.clearHeroPoints()
+        npc.queueList.clear()
+        npc.vars["varn.aggressive_player"] = null
+        npc.vars[MadAngelFight.GUARANTEED_HIT] = 0
+        npc.copyStats(fightType)
         npc.transmog(type, Int.MAX_VALUE)
         npc.assignUid()
         npc.hitpoints = npc.baseHitpointsLvl
@@ -219,7 +327,7 @@ constructor(
         npc.clearFacingLock()
         npc.resetAnim()
         npc.respawnDir = Direction.East
-        npc.infoProtocol.setFaceAngle(Direction.East.angle, instant = true)
+        npc.showAllOps()
     }
 
     private fun rollMelee(target: Player): Int {
@@ -238,10 +346,15 @@ constructor(
         private val NPC_MAD_ANGEL = "npc.mad_angel"
         private val NPC_INITIAL = "npc.mad_angel_initial"
         private val NPC_ANIM = "npc.mad_angel_anim"
+        private val NPC_DEAD = "npc.mad_angel_dead"
+
+        private const val DEATH_ANIM = "seq.npc_mad_angel_attack_death"
 
         private val MAD_ANGEL_ID = NPC_MAD_ANGEL.asRSCM(RSCMType.NPC)
         private val INITIAL_ID = NPC_INITIAL.asRSCM(RSCMType.NPC)
         private val ANIM_ID = NPC_ANIM.asRSCM(RSCMType.NPC)
+        private val DEAD_ID = NPC_DEAD.asRSCM(RSCMType.NPC)
+        private val DEATH_SEQ_ID = DEATH_ANIM.asRSCM(RSCMType.SEQ)
 
         private const val HANDLER_SWEEP = "madangel.sweep"
         private const val HANDLER_BLAST = "madangel.blast"

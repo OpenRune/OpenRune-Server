@@ -2,6 +2,7 @@
 id = "npc.mad_angel"
 inherit = "npc.mad_angel"
 respawnRate = 26
+respawnDir = "East"
 defaultMode = "None"
 
 [npc.params]

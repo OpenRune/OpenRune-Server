@@ -3,16 +3,15 @@ package org.rsmod.content.bosses.madangel
 import jakarta.inject.Inject
 import org.rsmod.api.instances.BossInstanceRegistry
 import org.rsmod.api.instances.InstanceArea
-import org.rsmod.api.instances.InstanceEnterTransition
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.instances.InstanceNpc
 import org.rsmod.api.instances.InstanceScript
 import org.rsmod.api.instances.InstanceSession
-import org.rsmod.api.instances.withInstanceEnterTransition
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
+import org.rsmod.game.map.Direction
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -45,12 +44,43 @@ constructor(
                     else -> return@onEnterPrelude
                 }
             assumeFallenFromGraceComplete()
-            withInstanceEnterTransition(InstanceEnterTransition(), enter)
+            mesboxNp(CLIMB_MESSAGE)
+            climbAnimation()
+            fadeOverlay(0, 255, 0, 0, FADE_CLIENT_DURATION)
+            delay(ENTRY_FADE_CYCLES)
+            minimapHideMap()
+            enter()
+            faceDirection(Direction.West)
+            delay(ENTRY_REVEAL_CYCLES)
+            minimapReset()
+            fadeOverlay(0, 0, 0, 255, FADE_CLIENT_DURATION)
             if (result is InstanceManager.Result.Created) placeExitPew(session)
+            mesbox(CLIMB_MESSAGE)
+            closeFadeOverlay()
         }
         onEnterObject { defaultInstanceEntry() }
-        onExitObject { defaultLeaveFlow() }
-        onInstancePlayerLeave { player.nextHitBuff = MadAngelFight.NEXT_HIT_NONE }
+        onExitObject {
+            climbAnimation()
+            fadeOverlay(0, 255, 0, 0, FADE_CLIENT_DURATION)
+            delay(HIDE_DELAY_CYCLES)
+            minimapHideMap()
+            defaultLeaveFlow()
+            delay(REVEAL_DELAY_CYCLES)
+            minimapReset()
+            faceDirection(Direction.East)
+            fadeOverlay(0, 0, 0, 255, FADE_CLIENT_DURATION)
+            closeFadeOverlay()
+        }
+        onInstancePlayerLeave {
+            player.nextHitBuff = MadAngelFight.NEXT_HIT_NONE
+            for (angel in manager.npcsForInstance(instanceId)) {
+                angel.vars[MadAngelFight.GUARANTEED_HIT] = 0
+            }
+        }
+    }
+
+    private fun ProtectedAccess.climbAnimation() {
+        anim(CLIMB_ANIM, delay = CLIMB_ANIM_DELAY)
     }
 
     /**
@@ -72,6 +102,15 @@ constructor(
 
         private const val VARBIT_FFG = "varbit.ffg"
         private const val FFG_QUEST_COMPLETE = 20
+
+        private const val CLIMB_MESSAGE = "You climb over the broken pew..."
+        private const val CLIMB_ANIM = "seq.human_pickuptable"
+        private const val CLIMB_ANIM_DELAY = 30
+        private const val FADE_CLIENT_DURATION = 50
+        private const val ENTRY_FADE_CYCLES = 2
+        private const val ENTRY_REVEAL_CYCLES = 1
+        private const val HIDE_DELAY_CYCLES = 1
+        private const val REVEAL_DELAY_CYCLES = 2
 
         private const val EXIT_PEW = "loc.wyrmscraig_cathedral_pew_broken_exit"
         private const val PEW_ROTATION = 1
