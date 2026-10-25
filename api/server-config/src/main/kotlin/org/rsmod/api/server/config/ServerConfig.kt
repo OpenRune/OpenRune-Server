@@ -59,6 +59,12 @@ public data class GameplayConfig(
     val homeTeleportCooldown: Int = 30,
     @JsonProperty("random-events")
     val randomEvents: Boolean = true,
+    val gravestones: GravestonesYaml = GravestonesYaml(),
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public data class GravestonesYaml(
+    val enabled: Boolean = true,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

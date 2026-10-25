@@ -9,6 +9,5 @@ class QuestPluginPack : PluginPack() {
             DaddysHomeFurnitureTable.daddysHomeFurniture(),
             DaddysHomeCrateTable.daddysHomeCrate(),
             GlarialRestrictionsTable.restrictions(),
-            WaterfallPillarRunesTable.runes(),
         )
 }

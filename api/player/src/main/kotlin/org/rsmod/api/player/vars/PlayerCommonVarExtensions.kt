@@ -6,6 +6,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.varp.VarpServerType
 import dev.openrune.types.varp.baseVar
+import net.rsprot.protocol.game.outgoing.varp.VarpReset
 import org.rsmod.api.player.output.VarpSync
 import org.rsmod.game.entity.Player
 import org.rsmod.game.movement.MoveSpeed
@@ -45,6 +46,22 @@ public fun Player.resyncVar(varp: VarpServerType) {
 }
 
 public fun Player.resyncVar(varBit: VarBitType): Unit = resyncVar(varBit.baseVar)
+
+/**
+ * Resets the client's varps and sends every transmitted var in ascending id order. Writes queued
+ * before the first processed tick are covered by this sync, so they are dropped; writes made after
+ * it are still queued and sent on that tick.
+ */
+public fun Player.resyncAllVars() {
+    client.write(VarpReset)
+    val ids = vars.backing.keys.toIntArray()
+    ids.sort()
+    for (id in ids) {
+        val varp = ServerCacheManager.getVarp(id) ?: continue
+        resyncVar(varp)
+    }
+    varpsSetBeforeFirstTick.clear()
+}
 
 public fun Player.flushVarpsSetBeforeFirstTick() {
     if (varpsSetBeforeFirstTick.isEmpty()) return

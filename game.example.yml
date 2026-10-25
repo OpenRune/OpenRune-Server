@@ -37,6 +37,9 @@ gameplay:
   # Random events (the Genie) appear during play, as on live. false turns the schedule off;
   # `::randomevent` still summons one.
   random-events: true
+  gravestones:
+    # Lost items go to a gravestone the player can reclaim; false drops them on the floor instead.
+    enabled: true
   quest-requirements:
     # Temporary core-mechanics default. Use "respect-progress" when quest gates should use real
     # quest state, or "virtual-completions" for league-style profiles.
