@@ -210,10 +210,13 @@ class RspCycle(
         }
         pendingSceneRebuild = false
 
-        // Skip log-in rebuild as RebuildLogin is already sent.
+        // Skip log-in rebuild as RebuildLogin is already sent, unless a login script moved the
+        // player into a region: the client then needs the region's rebuild on the same tick.
         if (knownBuildArea == CoordGrid.NULL) {
             knownBuildArea = buildArea
-            return
+            if (regionUid == null) {
+                return
+            }
         }
 
         if (regionUid == null) {
