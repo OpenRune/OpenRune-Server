@@ -35,6 +35,9 @@ class ImplingScript @Inject constructor(private val npcRepo: NpcRepository) : Pl
         level: Int,
         jar: String,
         xp: Int,
+        roll: ProtectedAccess.(net: String?) -> Boolean = { net ->
+            random.of(100) < catchChance(stat(HUNTER), bonus = net != NET)
+        },
         onCaught: () -> Unit,
     ) {
         val net = wieldedNet()
@@ -48,14 +51,13 @@ class ImplingScript @Inject constructor(private val npcRepo: NpcRepository) : Pl
             mes("You need an empty impling jar to keep the impling in.")
             return
         }
-        val chance = catchChance(stat(HUNTER), bonus = net != NET)
         repeat(MAX_ATTEMPTS) {
             if (!npc.isCatchable()) return
             faceEntitySquare(npc)
             anim(CATCH_SEQ)
             delay(ATTEMPT_TICKS)
             if (!npc.isCatchable()) return
-            if (random.of(100) >= chance) return@repeat
+            if (!roll(net)) return@repeat
             val slot = (0 until inv.size).firstOrNull { inv[it]?.id == jarId } ?: return
             if (invDel(inv, IMPLING_JAR, slot = slot).failure) return
             invAdd(inv, jar, slot = slot)

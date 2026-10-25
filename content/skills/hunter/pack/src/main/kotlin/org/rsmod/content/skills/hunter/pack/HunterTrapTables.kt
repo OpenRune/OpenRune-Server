@@ -50,6 +50,9 @@ object HunterTrapCreaturesTable {
     const val LOOT = 7
     const val LOOT_MIN = 8
     const val LOOT_MAX = 9
+    const val LOW = 10
+    const val HIGH = 11
+    const val RESPAWN_TICKS = 12
 
     private const val SNARE = 0
     private const val BOX = 1
@@ -66,9 +69,24 @@ object HunterTrapCreaturesTable {
         val loot: String,
         val lootMin: Int,
         val lootMax: Int,
+        val low: Int,
+        val high: Int,
+        val respawnTicks: Int,
     )
 
-    private fun bird(key: String, name: String, npc: String, level: Int, xpTenths: Int, loc: String, feather: String) =
+    private const val UNKNOWN_RESPAWN = 50
+
+    private fun bird(
+        key: String,
+        name: String,
+        npc: String,
+        level: Int,
+        xpTenths: Int,
+        loc: String,
+        feather: String,
+        low: Int,
+        high: Int,
+    ) =
         Row(
             key,
             SNARE,
@@ -81,9 +99,22 @@ object HunterTrapCreaturesTable {
             feather,
             5,
             10,
+            low,
+            high,
+            UNKNOWN_RESPAWN,
         )
 
-    private fun boxed(key: String, name: String, npc: String, level: Int, xpTenths: Int, obj: String) =
+    private fun boxed(
+        key: String,
+        name: String,
+        npc: String,
+        level: Int,
+        xpTenths: Int,
+        obj: String,
+        low: Int,
+        high: Int,
+        respawnTicks: Int,
+    ) =
         Row(
             key,
             BOX,
@@ -96,20 +127,23 @@ object HunterTrapCreaturesTable {
             obj,
             1,
             1,
+            low,
+            high,
+            respawnTicks,
         )
 
     private val ROWS =
         listOf(
-            bird("crimson_swift", "crimson swift", "npc.hunting_bird_jungle", 1, 340, "jungle", "obj.hunting_jungle_feather"),
-            bird("golden_warbler", "golden warbler", "npc.hunting_bird_desert", 5, 470, "desert", "obj.hunting_desert_feather"),
-            bird("copper_longtail", "copper longtail", "npc.hunting_bird_woodland", 9, 612, "woodland", "obj.hunting_woodland_feather"),
-            bird("cerulean_twitch", "cerulean twitch", "npc.hunting_bird_polar", 11, 646, "polar", "obj.hunting_polar_feather"),
-            bird("tropical_wagtail", "tropical wagtail", "npc.multicoloured_bird", 19, 950, "coloured", "obj.hunting_stripy_bird_feather"),
-            boxed("ferret", "ferret", "npc.hunting_ferret", 27, 1150, "obj.hunting_ferret"),
-            boxed("jerboa", "embertailed jerboa", "npc.varlamore_hunterjerboa01", 39, 1370, "obj.hunting_jerboa_tail"),
-            boxed("chinchompa", "chinchompa", "npc.hunting_chinchompa", 53, 1984, "obj.chinchompa_captured"),
-            boxed("chinchompa_big", "carnivorous chinchompa", "npc.hunting_chinchompa_big", 63, 2650, "obj.chinchompa_big_captured"),
-            boxed("chinchompa_black", "black chinchompa", "npc.hunting_chinchompa_black", 73, 3150, "obj.chinchompa_black"),
+            bird("crimson_swift", "crimson swift", "npc.hunting_bird_jungle", 1, 340, "jungle", "obj.hunting_jungle_feather", 100, 420),
+            bird("golden_warbler", "golden warbler", "npc.hunting_bird_desert", 5, 470, "desert", "obj.hunting_desert_feather", 92, 400),
+            bird("copper_longtail", "copper longtail", "npc.hunting_bird_woodland", 9, 612, "woodland", "obj.hunting_woodland_feather", 85, 390),
+            bird("cerulean_twitch", "cerulean twitch", "npc.hunting_bird_polar", 11, 645, "polar", "obj.hunting_polar_feather", 82, 380),
+            bird("tropical_wagtail", "tropical wagtail", "npc.multicoloured_bird", 19, 952, "coloured", "obj.hunting_stripy_bird_feather", 75, 370),
+            boxed("ferret", "ferret", "npc.hunting_ferret", 27, 1152, "obj.hunting_ferret", 15, 335, UNKNOWN_RESPAWN),
+            boxed("jerboa", "embertailed jerboa", "npc.varlamore_hunterjerboa01", 39, 1370, "obj.hunting_jerboa_tail", -24, 296, 7),
+            boxed("chinchompa", "chinchompa", "npc.hunting_chinchompa", 53, 1984, "obj.chinchompa_captured", 6, 268, 7),
+            boxed("chinchompa_big", "carnivorous chinchompa", "npc.hunting_chinchompa_big", 63, 2650, "obj.chinchompa_big_captured", -78, 228, 7),
+            boxed("chinchompa_black", "black chinchompa", "npc.hunting_chinchompa_black", 73, 3150, "obj.chinchompa_black", -78, 228, 7),
         )
 
     fun hunterTrapCreatures() =
@@ -124,6 +158,9 @@ object HunterTrapCreaturesTable {
             column("loot", LOOT, VarType.OBJ)
             column("loot_min", LOOT_MIN, VarType.INT)
             column("loot_max", LOOT_MAX, VarType.INT)
+            column("low", LOW, VarType.INT)
+            column("high", HIGH, VarType.INT)
+            column("respawn_ticks", RESPAWN_TICKS, VarType.INT)
 
             for (r in ROWS) {
                 row("dbrow.hunter_trap_creature_${r.key}") {
@@ -137,6 +174,9 @@ object HunterTrapCreaturesTable {
                     columnRSCM(LOOT, r.loot)
                     column(LOOT_MIN, r.lootMin)
                     column(LOOT_MAX, r.lootMax)
+                    column(LOW, r.low)
+                    column(HIGH, r.high)
+                    column(RESPAWN_TICKS, r.respawnTicks)
                 }
             }
         }

@@ -12,6 +12,7 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.table.hunter.HunterRumourHuntersRow
 import org.rsmod.api.table.hunter.HunterRumoursRow
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Player
 
 @Singleton
@@ -37,7 +38,7 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
         val options =
             rumours.filter {
                 it.hunters and (1 shl hunter.index) != 0 && level >= it.level && it.index !in taken &&
-                    it.index != repeat
+                    it.index != repeat && meetsRequirements(player, it)
             }
         val rumour = forced?.takeIf { it in options } ?: options.randomOrNull() ?: return null
         VarPlayerIntMapSetter.set(player, hunterVarp(hunter), rumour.index)
@@ -45,6 +46,10 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
         VarPlayerIntMapSetter.set(player, PITY, 0)
         return rumour
     }
+
+    fun meetsRequirements(player: Player, rumour: HunterRumoursRow): Boolean =
+        (rumour.quest.isEmpty() || QuestRequirements.hasCompleted(player, rumour.quest)) &&
+            player.statBase(HERBLORE) >= rumour.herbloreLevel
 
     fun resume(player: Player, hunter: HunterRumourHuntersRow) {
         if (rumourOf(player, hunter) == null) return
@@ -91,6 +96,7 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
 
     companion object {
         const val HUNTER = "stat.hunter"
+        const val HERBLORE = "stat.herblore"
         const val CURRENT = "varp.hunter_rumour_current"
         const val PITY = "varp.hunter_rumour_pity"
         const val COMPLETED = "varp.hunter_rumours_completed"

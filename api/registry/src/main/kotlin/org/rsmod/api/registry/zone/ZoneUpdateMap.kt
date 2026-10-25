@@ -66,9 +66,9 @@ public class ZoneUpdateMap {
         updates += prot
     }
 
-    public fun objReveal(obj: Obj) {
+    public fun objReveal(obj: Obj, cycle: Int) {
         val updates = obj.coords.getOrPutUpdateList()
-        val prot = ZoneUpdateTransformer.toObjRevealProt(obj)
+        val prot = ZoneUpdateTransformer.toObjRevealProt(obj, cycle)
         updates += prot
     }
 

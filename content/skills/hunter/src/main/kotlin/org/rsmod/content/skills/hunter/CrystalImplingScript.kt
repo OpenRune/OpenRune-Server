@@ -8,6 +8,7 @@ import jakarta.inject.Singleton
 import java.time.Clock
 import java.time.LocalTime
 import org.rsmod.api.game.process.GameLifecycle
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onEvent
@@ -33,7 +34,7 @@ constructor(
         for (name in NAMES) {
             onOpNpc1(name) {
                 with(implings) {
-                    catch(it.npc, LEVEL, JAR, XP) { remove(it.npc) }
+                    catch(it.npc, LEVEL, JAR, XP, roll = { net -> rollCatch(net) }) { remove(it.npc) }
                 }
             }
         }
@@ -59,6 +60,13 @@ constructor(
         return npc
     }
 
+    private fun ProtectedAccess.rollCatch(net: String?): Boolean {
+        val bonus = net != ImplingScript.NET
+        val low = if (bonus) BONUS_LOW else NET_LOW
+        val high = if (bonus) BONUS_HIGH else NET_HIGH
+        return statRandom(ImplingScript.HUNTER, low, high, invisibleBoost = 0)
+    }
+
     fun current(): Npc? = current?.takeIf { it.isSlotAssigned }
 
     private fun remove(npc: Npc) {
@@ -71,6 +79,11 @@ constructor(
         const val XP = 280
         const val JAR = "obj.ii_captured_impling_12"
         const val VISIBLE_AFTER_MINUTES = 3
+
+        const val NET_LOW = 8
+        const val NET_HIGH = 141
+        const val BONUS_LOW = 28
+        const val BONUS_HIGH = 161
 
         val NAMES =
             listOf(

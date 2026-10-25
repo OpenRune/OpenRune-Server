@@ -38,6 +38,11 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
             return
         }
         for (line in lines.greeting) say(line)
+        options(hunter)
+    }
+
+    private suspend fun Dialogue.options(hunter: HunterRumourHuntersRow) {
+        val lines = hunter.lines
         if (hunter.name == "Gilman") return gilmanMenu(hunter)
         val choice = choice3(lines.chatOption, 1, lines.rumourOption, 2, lines.leaveOption, 3)
         when (choice) {
@@ -54,7 +59,7 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
                 chatPlayer(neutral, lines.rumourOption)
                 rumourTalk(hunter, quick = false)
             }
-            else -> chatPlayer(neutral, lines.leaveOption)
+            else -> chatPlayer(neutral, lines.leaveLine ?: lines.leaveOption)
         }
     }
 
@@ -177,14 +182,14 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
             }
             chatNpc(
                 neutral,
-                "I seem to remember sending you off to hunt ${a(own)} and bring back ${parts(own)}. Would you " +
-                    "prefer that one, or a new one entirely?",
+                "I seem to remember sending you off to hunt ${a(own)} and bring back one of its " +
+                    "${own.partText}. Would you prefer that one, or a new one entirely?",
             )
             val choice = choice3("Yes, go back to his old one.", 1, "Yes, but with a brand new one.", 2, "No.", 3, title)
             when (choice) {
                 1 -> {
                     rumours.resume(player, hunter)
-                    chatNpc(neutral, "That was it. I asked you to hunt ${a(own)} and bring back ${parts(own)}. Best of luck.")
+                    chatNpc(neutral, lines.remember.format(a(own), own.partText))
                 }
                 2 -> newRumour(hunter)
             }
@@ -199,7 +204,7 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
         if (!choice2("Yes.", true, "No.", false, title)) return
         if (own != null) {
             rumours.resume(player, hunter)
-            chatNpc(neutral, lines.remember.format(a(own), parts(own)))
+            chatNpc(neutral, lines.remember.format(a(own), own.partText))
         } else {
             newRumour(hunter)
         }
@@ -212,7 +217,7 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
             return
         }
         val offers = ASSIGN_LINES + hunter.lines.extraAssign
-        chatNpc(neutral, offers[random.of(offers.size)].format(rumour.name, parts(rumour)))
+        chatNpc(neutral, offers[random.of(offers.size)].format(rumour.name, rumour.partText))
     }
 
     private suspend fun Dialogue.handIn(hunter: HunterRumourHuntersRow, quick: Boolean) {
@@ -223,7 +228,7 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
             chatNpc(happy, hunter.lines.done)
             chatNpc(quiz, hunter.lines.another)
         }
-        if (choice2("Yes.", true, "No.", false, "Get another rumour?")) newRumour(hunter)
+        if (choice2("Yes.", true, "No.", false, "Get another rumour?")) newRumour(hunter) else options(hunter)
     }
 
     private suspend fun Dialogue.verity() {
@@ -332,6 +337,7 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
         val chat: List<Line>,
         val rumourOption: String,
         val leaveOption: String,
+        val leaveLine: String? = null,
         val notVerity: String,
         val done: String,
         val another: String,
@@ -356,14 +362,14 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
         val ASSIGN_LINES =
             listOf(
                 "Could you check out the validity of this report for me? Someone thinks they've seen a %1\$s. Once " +
-                    "you find it, bring back %2\$s.",
-                "There's been rumours of a rare %1\$s coming in. Once you find it, bring back %2\$s.",
+                    "you find it, bring back one of its %2\$s.",
+                "There's been rumours of a rare %1\$s coming in. Once you find it, bring back one of its %2\$s.",
                 "We've got reports of a slightly different %1\$s in the local population. Once you find it, bring " +
-                    "back %2\$s.",
+                    "back one of its %2\$s.",
                 "Looks like we need some information on a unique specimen amongst the local %1\$s population. Once " +
-                    "you find it, bring back %2\$s.",
+                    "you find it, bring back some of its %2\$s.",
                 "I've heard rumours of a strange %1\$s that you could check out for me. Once you find it, bring " +
-                    "back %2\$s.",
+                    "back one of its %2\$s.",
             )
 
         val LINES =
@@ -380,7 +386,7 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
                                 "business.",
                         done = "Another one done? You're really doing a lot for the guild.",
                         another = "Are you up for another?",
-                        remember = "That was it. I asked you to hunt %1\$s and bring back %2\$s. Best of luck.",
+                        remember = "That was it. I asked you to hunt %1\$s and bring back one of its %2\$s. Best of luck.",
                     ),
                 "Cervus" to
                     HunterLines(
@@ -406,7 +412,7 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
                         notVerity = NEW_HERE,
                         done = "Excellent! Thanks for getting that done. Here's your reward.",
                         another = "Are you interested in taking on another one for me?",
-                        remember = "Ah, yes. I asked you to hunt %1\$s and bring back %2\$s. Hope it's not too boring for you!",
+                        remember = "Ah, yes. I asked you to hunt %1\$s and bring back some of its %2\$s. Hope it's not too boring for you!",
                     ),
                 "Ornus" to
                     HunterLines(
@@ -431,7 +437,7 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
                         notVerity = NEW_HERE,
                         done = "Verity will be glad to have another one ticked off. Thanks. Here's your reward.",
                         another = "Fancy taking on another?",
-                        remember = "Oh, I remember! I asked you to hunt %1\$s and bring back %2\$s. I hope it's going okay!",
+                        remember = "Oh, I remember! I asked you to hunt %1\$s and bring back its %2\$s. I hope it's going okay!",
                     ),
                 "Aco" to
                     HunterLines(
@@ -460,7 +466,7 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
                         notVerity = NEW_HERE,
                         done = "Thanks for doing that for me. Here's your reward.",
                         another = "Would you like another rumour?",
-                        remember = "Now then... I asked you to hunt %1\$s for me and bring back %2\$s.",
+                        remember = "Now then... I asked you to hunt %1\$s for me and bring back one of its %2\$s.",
                     ),
                 "Teco" to
                     HunterLines(
@@ -487,11 +493,11 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
                         notVerity = NEW_HERE,
                         done = "All done? That's great! I'll make sure the report is submitted. Here's your reward.",
                         another = "Dare to take on another rumour?",
-                        remember = "I asked you to hunt %1\$s for me and bring back %2\$s. Thanks!",
+                        remember = "I asked you to hunt %1\$s for me and bring back some of its %2\$s. Thanks!",
                         extraAssign =
                             listOf(
                                 "We've got rumours circling about an odd %1\$s. You can follow up on that if you'd like? " +
-                                    "Once you find it, bring back %2\$s.",
+                                    "Once you find it, bring back some of its %2\$s.",
                             ),
                     ),
                 "Wolf" to
@@ -506,11 +512,12 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
                                 npc("Oi - don't sell yourself short. More importantly, don't give Fox too much credit."),
                             ),
                         rumourOption = "Can I get a rumour?",
-                        leaveOption = "See you later.",
+                        leaveOption = "Never mind.",
+                        leaveLine = "See you later.",
                         notVerity = NEW_HERE,
                         done = "You're quite the talented hunter! I'll have to keep you around. Here's your reward.",
                         another = "Want to test your skills again?",
-                        remember = "If I'm remembering correctly, I asked you to hunt %1\$s and bring back %2\$s.",
+                        remember = "If I'm remembering correctly, I asked you to hunt %1\$s and bring back some of its %2\$s.",
                     ),
             )
     }

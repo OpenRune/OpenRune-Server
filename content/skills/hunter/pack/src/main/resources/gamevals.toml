@@ -1,4 +1,5 @@
 [gamevals.varp]
+
 birdhouse_seeded_a = 63762
 birdhouse_seeded_b = 63763
 birdhouse_seeded_c = 63764
@@ -7,8 +8,10 @@ birdhouse_seeds_a = 63766
 birdhouse_seeds_b = 63767
 birdhouse_seeds_c = 63768
 birdhouse_seeds_d = 63769
+
 herbiboar_harvested = 63770
 herbiboar_route_length = 63771
+
 hunter_rumour_gilman = 63772
 hunter_rumour_cervus = 63773
 hunter_rumour_ornus = 63774

@@ -11,6 +11,7 @@ import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.table.ImplingTypesRow
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -59,7 +60,13 @@ class ImplingLootScript @Inject constructor() : PluginScript() {
             mes("You need some free inventory space to loot the jar.")
             return
         }
-        val drops = roll(table) { bound -> random.of(bound) }
+        val mm2 = QuestRequirements.hasCompleted(player, MONKEY_MADNESS_II)
+        val held = CLUE_TIERS.filterValues { holdsClue(it) }.keys
+        val skipped = mutableListOf<Int>()
+        val drops =
+            roll(table, mm2Complete = mm2, skipTertiary = { it in held && skipped.add(it) }) { bound ->
+                random.of(bound)
+            }
         if (invDel(inv, jar, slot = slot).failure) return
         if (random.of(JAR_BREAK_DEN) >= JAR_BREAK_NUM) {
             invAdd(inv, ImplingScript.IMPLING_JAR, slot = slot)
@@ -70,6 +77,19 @@ class ImplingLootScript @Inject constructor() : PluginScript() {
                 break
             }
         }
+        for (clue in skipped) {
+            val tier = CLUE_TIERS.getValue(clue)
+            mes("You have a sneaking suspicion that you would have received ${article(tier)} $tier clue scroll.")
+        }
+    }
+
+    fun ProtectedAccess.holdsClue(tier: String): Boolean {
+        val names = setOf("clue scroll ($tier)", "challenge scroll ($tier)")
+        return listOf(inv, inv(BANK)).any { held ->
+            held.objs.any { obj ->
+                obj != null && ServerCacheManager.getItem(obj.id)?.name?.lowercase() in names
+            }
+        }
     }
 
     companion object {
@@ -77,16 +97,30 @@ class ImplingLootScript @Inject constructor() : PluginScript() {
         const val LOOT = "Loot"
         const val JAR_BREAK_NUM = 1
         const val JAR_BREAK_DEN = 10
+        const val BANK = "inv.bank"
+        const val MONKEY_MADNESS_II = "quest_monkeymadness2"
+        const val DRAGON_JAVELIN_TIPS = 19582
 
-        fun roll(table: ImplingLootTable, nextInt: (Int) -> Int): List<ImplingDrop> {
+        val CLUE_TIERS =
+            mapOf(23182 to "beginner", 2677 to "easy", 2801 to "medium", 2722 to "hard", 12073 to "elite")
+
+        fun article(word: String): String = if (word.first() in "aeiou") "an" else "a"
+
+        fun roll(
+            table: ImplingLootTable,
+            mm2Complete: Boolean = true,
+            skipTertiary: (Int) -> Boolean = { false },
+            nextInt: (Int) -> Int,
+        ): List<ImplingDrop> {
             val drops = mutableListOf<ImplingDrop>()
             val pre = table.preRoll.firstOrNull { hits(it, nextInt) }
             if (pre != null) {
                 drops += pre
             } else {
-                pick(table.main, nextInt)?.let { drops += it }
+                val main = if (mm2Complete) table.main else table.main.filter { it.obj != DRAGON_JAVELIN_TIPS }
+                pick(main, nextInt)?.let { drops += it }
             }
-            drops += table.tertiary.filter { hits(it, nextInt) }
+            drops += table.tertiary.filter { hits(it, nextInt) && !skipTertiary(it.obj) }
             return drops.filterNot(ImplingDrop::isNothing)
         }
 

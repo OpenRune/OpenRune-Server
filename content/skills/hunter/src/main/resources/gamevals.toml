@@ -1,15 +1,20 @@
 [gamevals.dbtable]
 impling_types = 56002
+
 birdhouse_types = 56003
+
 hunter_traps = 56004
 hunter_trap_creatures = 56005
+
 herbiboar_legs = 56006
 herbiboar_spots = 56007
 herbiboar_tunnels = 56008
 herbiboar_herbs = 56009
+
+hunter_butterflies = 56012
+
 hunter_rumour_hunters = 56010
 hunter_rumours = 56011
-hunter_butterflies = 56012
 
 [gamevals.dbrow]
 impling_type_baby = 60152
@@ -23,6 +28,7 @@ impling_type_magpie = 60159
 impling_type_ninja = 60160
 impling_type_dragon = 60161
 impling_type_lucky = 60162
+
 birdhouse_type_normal = 60163
 birdhouse_type_oak = 60164
 birdhouse_type_willow = 60165
@@ -32,6 +38,7 @@ birdhouse_type_mahogany = 60168
 birdhouse_type_yew = 60169
 birdhouse_type_magic = 60170
 birdhouse_type_redwood = 60171
+
 hunter_trap_bird_snare = 60172
 hunter_trap_box_trap = 60173
 hunter_trap_creature_crimson_swift = 60174
@@ -44,6 +51,7 @@ hunter_trap_creature_chinchompa = 60180
 hunter_trap_creature_chinchompa_big = 60181
 hunter_trap_creature_chinchompa_black = 60182
 hunter_trap_creature_jerboa = 60183
+
 herbiboar_leg_0 = 60184
 herbiboar_leg_1 = 60185
 herbiboar_leg_2 = 60186
@@ -131,6 +139,15 @@ herbiboar_herb_tarromin = 60267
 herbiboar_herb_harralander = 60268
 herbiboar_herb_marentill = 60269
 herbiboar_herb_guam = 60270
+
+hunter_butterfly_ruby_harvest = 60281
+hunter_butterfly_sapphire_glacialis = 60282
+hunter_butterfly_snowy_knight = 60283
+hunter_butterfly_black_warlock = 60284
+hunter_butterfly_sunlight_moth = 60285
+hunter_butterfly_moonlight_moth = 60286
+hunter_butterfly_moonlight_moth_low_wander = 60287
+
 hunter_rumour_hunter_gilman = 60271
 hunter_rumour_hunter_cervus = 60272
 hunter_rumour_hunter_ornus = 60273
@@ -141,13 +158,6 @@ hunter_rumour_tropical_wagtail = 60277
 hunter_rumour_grey_chinchompa = 60278
 hunter_rumour_carnivorous_chinchompa = 60279
 hunter_rumour_herbiboar = 60280
-hunter_butterfly_ruby_harvest = 60281
-hunter_butterfly_sapphire_glacialis = 60282
-hunter_butterfly_snowy_knight = 60283
-hunter_butterfly_black_warlock = 60284
-hunter_butterfly_sunlight_moth = 60285
-hunter_butterfly_moonlight_moth = 60286
-hunter_butterfly_moonlight_moth_low_wander = 60287
 hunter_rumour_sapphire_glacialis = 60288
 hunter_rumour_snowy_knight = 60289
 hunter_rumour_black_warlock = 60290
@@ -156,4 +166,6 @@ hunter_rumour_moonlight_moth = 60292
 hunter_rumour_embertailed_jerboa = 60293
 
 [gamevals.timer]
+
 hunter_traps = 436
+

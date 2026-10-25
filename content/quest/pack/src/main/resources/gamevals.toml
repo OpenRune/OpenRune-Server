@@ -95,6 +95,7 @@ cooks_assistant_progress = 63704
 cooks_assistant_milk = 63705
 cooks_assistant_egg = 63706
 cooks_assistant_flour = 63707
+witchs_potion_progress = 65447
 gertrudes_cat_progress = 63711
 gertrudes_cat_kitten_crate = 63712
 gertrudes_cat_met_fluffs = 63713
@@ -131,7 +132,6 @@ restless_skeleton_attack = 124
 daddys_home_furniture = 65472
 daddys_home_crate = 65473
 glarial_restrictions = 65495
-waterfall_pillar_runes = 65494
 
 [gamevals.dbrow]
 daddys_home_furniture_kitchen_stool = 63420
@@ -151,9 +151,6 @@ daddys_home_crate_falador_tablet = 63436
 glarial_forbidden_names = 63685
 glarial_forbidden_parts = 63684
 glarial_allowed_parts = 63679
-waterfall_rune_air = 63678
-waterfall_rune_water = 63677
-waterfall_rune_earth = 63676
 
 [gamevals.enum]
 daddys_home_hammers = 65460

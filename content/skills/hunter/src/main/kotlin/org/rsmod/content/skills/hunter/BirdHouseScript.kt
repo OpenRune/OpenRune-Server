@@ -2,6 +2,8 @@ package org.rsmod.content.skills.hunter
 
 import jakarta.inject.Inject
 import java.time.Clock
+import kotlin.math.roundToInt
+import org.rsmod.api.config.constants
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.repo.obj.ObjRepository
@@ -12,6 +14,7 @@ import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onOpLoc4
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.table.BirdhouseTypesRow
+import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -19,7 +22,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class BirdHouseScript
 @Inject
-constructor(private val objRepo: ObjRepository) : PluginScript() {
+constructor(val objRepo: ObjRepository) : PluginScript() {
     var clock: Clock = Clock.systemUTC()
 
     override fun ScriptContext.startup() {
@@ -91,10 +94,11 @@ constructor(private val objRepo: ObjRepository) : PluginScript() {
         val order = listOfNotNull(preferred) + SEEDS
         for (seed in order) {
             if (have >= SEEDS_NEEDED) break
-            val count = minOf(inv.count(seed), SEEDS_NEEDED - have)
+            val weight = seedWeight(seed)
+            val count = minOf(inv.count(seed), (SEEDS_NEEDED - have + weight - 1) / weight)
             if (count <= 0) continue
             if (invDel(inv, seed, count).failure) continue
-            have += count
+            have = minOf(SEEDS_NEEDED, have + count * weight)
         }
         if (have == player.vars[space.seedsVarp]) {
             mes("You need some seeds to put in the bird house.")
@@ -112,13 +116,28 @@ constructor(private val objRepo: ObjRepository) : PluginScript() {
         }
     }
 
-    private fun ProtectedAccess.op3(space: Space) {
+    private suspend fun ProtectedAccess.op3(space: Space) {
         val state = state(player, space)
         when {
             state == 0 -> return
-            state % 3 == 0 -> empty(space)
+            state % 3 == 0 && isFull(player, space) -> empty(space)
+            state % 3 == 0 -> confirmEmptyEarly(space)
             else -> dismantle(space)
         }
+    }
+
+    private suspend fun ProtectedAccess.confirmEmptyEarly(space: Space) {
+        val title = "Empty the bird house? It isn't full yet."
+        if (!choice2("Yes - lose the bird house, its seeds and birds.", true, "No.", false, title)) return
+        emptyEarly(space)
+    }
+
+    fun ProtectedAccess.emptyEarly(space: Space) {
+        val state = state(player, space)
+        if (state == 0 || state % 3 != 0) return
+        clear(player, space)
+        invAddOrDrop(objRepo, CLOCKWORK)
+        mes("You dismantle the bird house.")
     }
 
     private fun ProtectedAccess.dismantle(space: Space) {
@@ -138,7 +157,7 @@ constructor(private val objRepo: ObjRepository) : PluginScript() {
         val loot = rollLoot(tier, stat(HUNTER)) { bound -> random.of(bound) }
         clear(player, space)
         invAddOrDrop(objRepo, CLOCKWORK)
-        invAddOrDrop(objRepo, RAW_BIRD_MEAT, BIRDS)
+        objRepo.add(RAW_BIRD_MEAT, player.coords, constants.lootdrop_duration, receiver = player, count = BIRDS)
         invAddOrDrop(objRepo, FEATHER, loot.feathers)
         for (nest in loot.nests) invAddOrDrop(objRepo, nest)
         statAdvance(HUNTER, tier.hunterXp.toDouble())
@@ -146,10 +165,28 @@ constructor(private val objRepo: ObjRepository) : PluginScript() {
         return true
     }
 
-    private fun ProtectedAccess.reset(space: Space) {
+    suspend fun ProtectedAccess.reset(space: Space) {
         if (!empty(space)) return
-        val tier = TIERS.lastOrNull { it.item.internalName in inv && stat(HUNTER) >= it.hunterLevel }
-        if (tier != null) build(space, tier)
+        delay(1)
+        val carried = TIERS.lastOrNull { it.item.internalName in inv && stat(HUNTER) >= it.hunterLevel }
+        if (carried != null) {
+            build(space, carried)
+            return
+        }
+        val tier = buildableTier() ?: return
+        if (invDel(inv, tier.logs.internalName, 1, CLOCKWORK, 1).failure) return
+        statAdvance(CRAFTING, tier.craftingXp.toDouble())
+        setState(player, space, tier.tier * 3 + 1)
+        VarPlayerIntMapSetter.set(player, space.seedsVarp, 0)
+        VarPlayerIntMapSetter.set(player, space.seededVarp, 0)
+        mes("You place the bird house.")
+    }
+
+    private fun ProtectedAccess.buildableTier(): BirdhouseTypesRow? {
+        if (CLOCKWORK !in inv || HAMMER !in inv || CHISEL !in inv) return null
+        return TIERS.lastOrNull {
+            it.logs.internalName in inv && stat(CRAFTING) >= it.craftingLevel && stat(HUNTER) >= it.hunterLevel
+        }
     }
 
     private fun Cheat.fastForward() {
@@ -187,6 +224,9 @@ constructor(private val objRepo: ObjRepository) : PluginScript() {
 
     companion object {
         const val HUNTER = "stat.hunter"
+        const val CRAFTING = "stat.crafting"
+        const val HAMMER = "obj.hammer"
+        const val CHISEL = "obj.chisel"
         const val CLOCKWORK = "obj.poh_clockwork_mechanism"
         const val RAW_BIRD_MEAT = "obj.spit_raw_bird_meat"
         const val FEATHER = "obj.feather"
@@ -225,8 +265,17 @@ constructor(private val objRepo: ObjRepository) : PluginScript() {
                 "torstol_seed",
             ).map { "obj.$it" }
 
+        val HIGH_LEVEL_SEEDS =
+            setOf(
+                "wildblood_hop_seed", "ranarr_seed", "toadflax_seed", "irit_seed", "avantoe_seed",
+                "kwuarm_seed", "snapdragon_seed", "cadantine_seed", "lantadyme_seed", "dwarf_weed_seed",
+                "torstol_seed",
+            ).map { "obj.$it" }.toSet()
+
+        fun seedWeight(seed: String): Int = if (seed in HIGH_LEVEL_SEEDS) 2 else 1
+
         fun chance(level: Int, low: Int, high: Int): Int =
-            low + (high - low) * (level.coerceIn(1, 99) - 1) / 98
+            (SkillingSuccessRate.successRate(low, high, level.coerceIn(1, 99), 99) * 256).roundToInt()
 
         fun nestChance(level: Int, high: Int): Int = high * (level.coerceIn(50, 99) - 1) / 98
 

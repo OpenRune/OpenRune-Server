@@ -3,6 +3,9 @@ package org.rsmod.content.skills.hunter
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import kotlin.math.min
+import org.rsmod.api.config.constants
+import org.rsmod.api.player.output.UpdateRun
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
 import org.rsmod.api.repo.npc.NpcRepository
@@ -33,6 +36,7 @@ class ButterflyScript @Inject constructor(private val npcRepo: NpcRepository, va
             mes("You manage to catch the ${row.kind}.")
         } else {
             applyEffect(row)
+            if (row.creature.internalName == SUNLIGHT_MOTH) restoreRunEnergy(SUNLIGHT_RUN_PERCENT)
             mes("You catch the ${row.kind} and release it.")
         }
         rumours.onCatch(player, row.creature.internalName)
@@ -69,6 +73,13 @@ class ButterflyScript @Inject constructor(private val npcRepo: NpcRepository, va
         if (row.hitpointsHeal > 0) statHeal(HITPOINTS, row.hitpointsHeal, 0)
     }
 
+    private fun ProtectedAccess.restoreRunEnergy(percent: Int) {
+        val restored = min(constants.run_max_energy, player.runEnergy + percent * constants.run_max_energy / 100)
+        if (restored == player.runEnergy) return
+        player.runEnergy = restored
+        UpdateRun.energy(player, restored)
+    }
+
     private fun Npc.isCatchable(): Boolean = isSlotAssigned && isVisible
 
     private fun ProtectedAccess.wieldedNet(): String? {
@@ -87,6 +98,8 @@ class ButterflyScript @Inject constructor(private val npcRepo: NpcRepository, va
         const val BAREHANDED_EXTRA_LEVELS = 10
         const val ATTEMPT_TICKS = 2
         const val RESPAWN_TICKS = 7
+        const val SUNLIGHT_MOTH = "npc.moth_sunlight"
+        const val SUNLIGHT_RUN_PERCENT = 5
 
         const val EFFECT_BOOST = 0
         const val EFFECT_HEAL = 1
@@ -96,7 +109,7 @@ class ButterflyScript @Inject constructor(private val npcRepo: NpcRepository, va
             listOf(
                 "attack", "defence", "strength", "ranged", "magic", "cooking", "woodcutting", "fletching",
                 "fishing", "firemaking", "crafting", "smithing", "mining", "herblore", "agility", "thieving",
-                "slayer", "farming", "runecrafting", "hunter", "construction", "sailing",
+                "slayer", "farming", "runecrafting", "hunter", "construction",
             ).map { "stat.$it" }
     }
 }

@@ -7,6 +7,10 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.roundToInt
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statAdvance
@@ -22,6 +26,7 @@ import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.table.hunter.HunterTrapCreaturesRow
 import org.rsmod.api.table.hunter.HunterTrapsRow
+import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -85,7 +90,7 @@ constructor(
             return
         }
         val tile = player.coords
-        if (traps.containsKey(tile) || locRepo.findAll(tile).any()) {
+        if (traps.containsKey(tile) || locRepo.findAll(tile).any { it.shape != LocShape.GroundDecor }) {
             mes("You can't lay a trap here.")
             return
         }
@@ -129,23 +134,31 @@ constructor(
         val trap = ownTrap(coords) ?: return false
         val creature = trap.creature
         if (trap.state != TrapState.Full || creature == null) return false
-        if (inv.freeSpace() < creature.loot.size + 1) {
+        val items = listOf(trap.kind.item to 1) + creature.loot.map { it.obj to random.of(it.min, it.max) }
+        if (!canAdd(items)) {
             mes("You don't have enough inventory space.")
             return false
         }
         anim(LAY_SEQ)
         delay(1)
-        if (traps[coords] !== trap) return false
+        if (traps[coords] !== trap || !canAdd(items)) return false
         removeTrap(trap)
-        invAdd(inv, trap.kind.item)
-        for (drop in creature.loot) {
-            invAdd(inv, drop.obj, random.of(drop.min, drop.max))
-        }
+        for ((obj, count) in items) invAdd(inv, obj, count)
         statAdvance(HUNTER, creature.xp)
         val caught = "You've caught ${creature.article} ${creature.name}"
         mes(if (creature.npc == JERBOA) "$caught... or maybe not." else "$caught.")
         rumours.onCatch(player, creature.npc)
         return true
+    }
+
+    private fun ProtectedAccess.canAdd(items: List<Pair<String, Int>>): Boolean {
+        val into = inv
+        return player
+            .invTransaction(into, autoCommit = false) {
+                val target = select(into)
+                for ((obj, count) in items) add(target, obj.asRSCM(RSCMType.OBJ), count)
+            }
+            .success
     }
 
     private suspend fun ProtectedAccess.reset(coords: CoordGrid) {
@@ -188,7 +201,7 @@ constructor(
                     }
                 }
                 TrapState.Trapping -> if (age >= SETTLE_TICKS) setState(trap, TrapState.Full)
-                TrapState.Failing -> if (age >= SETTLE_TICKS) setState(trap, TrapState.Broken)
+                TrapState.Failing -> if (age >= FAIL_TICKS) setState(trap, TrapState.Broken)
                 TrapState.Full,
                 TrapState.Broken -> if (age >= COLLAPSE_TICKS) collapse(trap)
             }
@@ -202,8 +215,8 @@ constructor(
             trap.kind.creatures.filter { level >= it.level }.associateBy { it.npc.asRSCM(RSCMType.NPC) }
         val npc = nearbyCreature(trap.coords, candidates.keys) ?: return
         val creature = candidates.getValue(npc.id)
-        if (random.of(256) < catchChance256(level - creature.level + 1)) {
-            if (npc.respawns) npcRepo.despawn(npc, CREATURE_RESPAWN_TICKS) else npcRepo.del(npc, Int.MAX_VALUE)
+        if (random.of(256) < catchChance256(creature.low, creature.high, level)) {
+            if (npc.respawns) npcRepo.despawn(npc, creature.respawnTicks) else npcRepo.del(npc, Int.MAX_VALUE)
             trap.creature = creature
             setState(trap, TrapState.Trapping)
         } else {
@@ -285,6 +298,9 @@ constructor(
                             trappingLoc = locName(c.trappingLoc.id),
                             fullLoc = locName(c.fullLoc.id),
                             loot = loot,
+                            low = c.low,
+                            high = c.high,
+                            respawnTicks = c.respawnTicks,
                         )
                     },
             )
@@ -321,6 +337,9 @@ constructor(
         val trappingLoc: String,
         val fullLoc: String,
         val loot: List<Drop>,
+        val low: Int,
+        val high: Int,
+        val respawnTicks: Int,
     ) {
         val article: String
             get() = if (name.first() in "aeiou") "an" else "a"
@@ -344,9 +363,9 @@ constructor(
         const val LAY_TICKS = 3
         const val ATTEMPT_TICKS = 3
         const val SETTLE_TICKS = 2
+        const val FAIL_TICKS = 1
         const val RANGE = 2
         const val COLLAPSE_TICKS = 200
-        const val CREATURE_RESPAWN_TICKS = 50
         const val OBJ_DURATION = 200
         const val BIRD_SNARE_INDEX = 0
         const val BONES = "obj.bones"
@@ -354,12 +373,7 @@ constructor(
 
         fun maxTraps(level: Int): Int = 1 + listOf(20, 40, 60, 80).count { level >= it }
 
-        fun catchChance256(effectiveLevel: Int): Int {
-            val l = effectiveLevel.coerceIn(1, 99)
-            return 1 + (LOW * (99 - l) / 98.0 + HIGH * (l - 1) / 98.0 + 0.5).toInt()
-        }
-
-        private const val LOW = 100
-        private const val HIGH = 419
+        fun catchChance256(low: Int, high: Int, level: Int): Int =
+            (SkillingSuccessRate.successRate(low, high, level.coerceIn(1, 99), 99) * 256).roundToInt()
     }
 }

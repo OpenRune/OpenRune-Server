@@ -55,6 +55,8 @@ object HunterRumoursTable {
     const val RATE = 6
     const val PITY = 7
     const val HUNTERS = 8
+    const val QUEST = 9
+    const val HERBLORE_LEVEL = 10
 
     private data class Rumour(
         val key: String,
@@ -66,7 +68,12 @@ object HunterRumoursTable {
         val rate: Int,
         val pity: Int,
         val hunters: Int,
+        val quest: String = "",
+        val herbloreLevel: Int = 0,
     )
+
+    const val EAGLES_PEAK = "quest_eaglespeak"
+    const val BONE_VOYAGE = "quest_bonevoyage"
 
     private const val GILMAN = 1
     private const val CERVUS = 2
@@ -78,7 +85,7 @@ object HunterRumoursTable {
     private val RUMOURS =
         listOf(
             Rumour("tropical_wagtail", "tropical wagtail", "npc.multicoloured_bird", 19, "obj.hg_tailfeather", "tail feathers", 20, 40, GILMAN),
-            Rumour("grey_chinchompa", "grey chinchompa", "npc.hunting_chinchompa", 53, "obj.hg_chinchompatuft", "fur", 50, 100, GILMAN or CERVUS or ACO or TECO),
+            Rumour("grey_chinchompa", "grey chinchompa", "npc.hunting_chinchompa", 53, "obj.hg_chinchompatuft", "fur", 50, 100, GILMAN or CERVUS or ACO or TECO, EAGLES_PEAK),
             Rumour(
                 "carnivorous_chinchompa",
                 "red chinchompa",
@@ -89,13 +96,14 @@ object HunterRumoursTable {
                 50,
                 100,
                 GILMAN or CERVUS or ORNUS or ACO or TECO or WOLF,
+                EAGLES_PEAK,
             ),
-            Rumour("herbiboar", "herbiboar", "npc.fossil_herbiboar_visible", 80, "obj.hg_herbytuft", "fur", 7, 14, GILMAN or TECO or WOLF),
+            Rumour("herbiboar", "herbiboar", "npc.fossil_herbiboar_visible", 80, "obj.hg_herbytuft", "fur", 7, 14, GILMAN or TECO or WOLF, BONE_VOYAGE, 31),
             Rumour("sapphire_glacialis", "sapphire glacialis", "npc.butterfly_glacialis", 25, "obj.hg_butterflywing_blue", "wings", 40, 80, GILMAN),
             Rumour("snowy_knight", "snowy knight", "npc.butterfly_snowy", 35, "obj.hg_butterflywing_white", "wings", 40, 80, GILMAN or ORNUS),
             Rumour("black_warlock", "black warlock", "npc.butterfly_warlock", 45, "obj.hg_butterflywing_black", "wings", 40, 80, GILMAN or CERVUS),
             Rumour("sunlight_moth", "sunlight moth", "npc.moth_sunlight", 75, "obj.hg_mothwing_sun", "wings", 40, 80, GILMAN or CERVUS or TECO),
-            Rumour("embertailed_jerboa", "embertailed jerboa", "npc.varlamore_hunterjerboa01", 39, "obj.hg_jerboatail_large", "tail", 50, 100, GILMAN or ORNUS),
+            Rumour("embertailed_jerboa", "embertailed jerboa", "npc.varlamore_hunterjerboa01", 39, "obj.hg_jerboatail_large", "tail", 50, 100, GILMAN or ORNUS, EAGLES_PEAK),
             Rumour("moonlight_moth", "moonlight moth", "npc.moth_moonlight", 85, "obj.hg_mothwing_moon", "wings", 40, 80, GILMAN or ACO or WOLF),
         )
 
@@ -110,6 +118,8 @@ object HunterRumoursTable {
             column("rate", RATE, VarType.INT)
             column("pity", PITY, VarType.INT)
             column("hunters", HUNTERS, VarType.INT)
+            column("quest", QUEST, VarType.STRING)
+            column("herblore_level", HERBLORE_LEVEL, VarType.INT)
 
             RUMOURS.forEachIndexed { index, rumour ->
                 row("dbrow.hunter_rumour_${rumour.key}") {
@@ -122,6 +132,8 @@ object HunterRumoursTable {
                     column(RATE, rumour.rate)
                     column(PITY, rumour.pity)
                     column(HUNTERS, rumour.hunters)
+                    column(QUEST, rumour.quest)
+                    column(HERBLORE_LEVEL, rumour.herbloreLevel)
                 }
             }
         }
