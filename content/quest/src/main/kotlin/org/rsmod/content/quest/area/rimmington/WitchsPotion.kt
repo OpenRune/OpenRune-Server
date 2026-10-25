@@ -231,7 +231,6 @@ class WitchsPotion : QuestScript(
     }
 }
 
-// A kill hook, not a quest-gated drop: assume-completed mode never passes an in-progress gate.
 class WitchsPotionRatTail @Inject constructor(private val objRepo: ObjRepository) :
     NpcDeathKillHook {
     override fun onKill(context: NpcDeathKillContext) {
