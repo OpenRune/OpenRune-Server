@@ -73,6 +73,7 @@ data class CropSpec(
     val immune: Boolean = false,
     val deathMinutes: Int? = null,
     val held: String? = null,
+    val growthSkipPercent: Int = 0,
 )
 
 data class PatchSpec(val loc: String, val varp: String, val site: String, val coord: CoordGrid)
@@ -128,6 +129,7 @@ object FarmingTables {
     const val COL_DEATH_MINUTES = 35
     const val COL_HELD = 36
     const val COL_HESPORI_SEED_CHANCE = 37
+    const val COL_GROWTH_SKIP_PERCENT = 38
 
     const val COMPOST_KIND = 0
     const val COMPOST_OBJ = 1
@@ -282,6 +284,7 @@ object FarmingTables {
                 column("death_minutes", COL_DEATH_MINUTES, VarType.INT)
                 column("held", COL_HELD, VarType.STRING)
                 column("hespori_seed_chance", COL_HESPORI_SEED_CHANCE, VarType.INT)
+                column("growth_skip_percent", COL_GROWTH_SKIP_PERCENT, VarType.INT)
             },
         ) {
             val transforms = patchTransforms()
@@ -369,6 +372,7 @@ object FarmingTables {
                     column(COL_IMMUNE, spec.immune)
                     spec.deathMinutes?.let { column(COL_DEATH_MINUTES, it) }
                     spec.held?.let { column(COL_HELD, it) }
+                    column(COL_GROWTH_SKIP_PERCENT, spec.growthSkipPercent)
                 }
             }
         }

@@ -17,23 +17,50 @@ internal class FarmingGrowth(
         var minute = fromMinute + 1
         minute += Math.floorMod(-(minute + offset), WEED_MINUTES.toLong())
         val protected = BooleanArray(states.size)
+        val cycles = if (states.any { it.isLiving(KRONOS_SEED) }) IntArray(states.size) else null
         while (minute <= toMinute && states.indices.any {
             active(states[it], !autoWeed && patches[it].kind != PatchKind.GRAPE_VINE)
         }) {
             for (i in states.indices) protected[i] = flowerProtected(states, i)
-            tick(states, minute + offset, protected)
+            tick(states, minute + offset, protected, cycles)
             minute += WEED_MINUTES
         }
     }
 
-    private fun tick(states: Array<PatchState>, time: Long, protected: BooleanArray) {
+    private fun tick(states: Array<PatchState>, time: Long, protected: BooleanArray, cycles: IntArray?) {
         val iasor = patches.indices.any { states[it].isLiving(IASOR_SEED) }
+        val skipPercent = states.firstOrNull { it.isLiving(KRONOS_SEED) }?.crop?.growthSkipPercent ?: 0
         for (i in states.indices) {
+            if (cycles != null) {
+                val cycle = growthCycle(states[i])
+                cycles[i] = if (cycle > 0 && time % cycle == 0L) cycle else 0
+            }
             states[i] = advance(states[i], time, diseaseFree[i] || protected[i], iasor, patches[i].kind != PatchKind.GRAPE_VINE)
+        }
+        if (cycles == null || skipPercent == 0) return
+        for (i in cycles.indices) {
+            val cycle = cycles[i]
+            if (cycle == 0) continue
+            while (states.indices.any { cycles[it] == cycle && growthCycle(states[it]) > 0 } &&
+                random.of(100) < skipPercent
+            ) {
+                for (j in states.indices) {
+                    if (cycles[j] != cycle || growthCycle(states[j]) == 0) continue
+                    states[j] = advance(states[j], time, diseaseFree[j] || protected[j], iasor, false, skipped = true)
+                }
+            }
+            for (j in cycles.indices) if (cycles[j] == cycle) cycles[j] = 0
         }
     }
 
-    private fun advance(state: PatchState, time: Long, immune: Boolean, iasor: Boolean, weedsGrow: Boolean): PatchState {
+    private fun growthCycle(state: PatchState): Int {
+        val crop = state.crop ?: return 0
+        if (state.health != Health.HEALTHY || state.phase == Phase.STUMP || crop.seed == KRONOS_SEED) return 0
+        if (state.grown(crop)) return if (regrows(state, crop)) crop.regrowMinutes else 0
+        return if (state.stage == 0 && crop.firstStageMinutes > 0) crop.firstStageMinutes else crop.cycleMinutes
+    }
+
+    private fun advance(state: PatchState, time: Long, immune: Boolean, iasor: Boolean, weedsGrow: Boolean, skipped: Boolean = false): PatchState {
         val crop = state.crop ?: return if (!autoWeed && weedsGrow && state.weeds > 0) state.copy(weeds = state.weeds - 1) else state
         if (state.health == Health.DEAD || state.phase == Phase.STUMP) return state
         val cycle = crop.cycleMinutes.toLong()
@@ -41,9 +68,9 @@ internal class FarmingGrowth(
             val death = crop.deathMinutes ?: return state
             return if (time % death == 0L) state.copy(health = Health.DEAD, watered = false) else state
         }
-        if (state.grown(crop)) return grown(state, crop, time)
+        if (state.grown(crop)) return grown(state, crop, time, skipped)
         val stageMinutes = if (state.stage == 0 && crop.firstStageMinutes > 0) crop.firstStageMinutes.toLong() else cycle
-        if (time % stageMinutes != 0L) return state
+        if (!skipped && time % stageMinutes != 0L) return state
         if (!immune && diseases(state, crop, iasor)) {
             return state.copy(health = Health.DISEASED, watered = false)
         }
@@ -53,8 +80,8 @@ internal class FarmingGrowth(
         return if (crop.kind == PatchKind.ANIMA) next.copy(health = Health.DEAD) else next.matured(crop)
     }
 
-    private fun grown(state: PatchState, crop: Crop, time: Long): PatchState =
-        if (regrows(state, crop) && time % crop.regrowMinutes == 0L) state.copy(produce = state.produce + 1) else state
+    private fun grown(state: PatchState, crop: Crop, time: Long, skipped: Boolean): PatchState =
+        if (regrows(state, crop) && (skipped || time % crop.regrowMinutes == 0L)) state.copy(produce = state.produce + 1) else state
 
     /** No crop rolls disease in its first stage; gardener protection blocks every roll. */
     private fun diseases(state: PatchState, crop: Crop, iasor: Boolean): Boolean {
@@ -83,6 +110,7 @@ internal class FarmingGrowth(
     companion object {
         const val WEED_MINUTES: Int = 5
         private const val IASOR_SEED = "obj.iasor_seed"
+        private const val KRONOS_SEED = "obj.kronos_seed"
 
         fun active(state: PatchState, weedsGrow: Boolean = true): Boolean {
             val crop = state.crop ?: return weedsGrow && state.weeds > 0

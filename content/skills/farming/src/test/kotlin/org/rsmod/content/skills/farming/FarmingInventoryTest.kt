@@ -490,7 +490,7 @@ class FarmingInventoryTest {
 
     @Test
     fun `unavailable crop content never consumes a seed or mutates saved patch state`() {
-        for (name in listOf("oak tree", "redberry bush", "kronos plant", "iasor plant")) {
+        for (name in listOf("oak tree", "redberry bush", "iasor plant")) {
             val f = Fixture(name)
             f.state(PatchState().empty())
             f.give(f.crop.seed)
@@ -501,6 +501,27 @@ class FarmingInventoryTest {
             assertEquals(PatchState().empty(), f.state())
             assertEquals(0, f.xp())
         }
+    }
+
+    @Test
+    fun `kronos planting in a full inventory consumes one seed and awards planting XP once`() {
+        val f = Fixture("kronos plant")
+        f.state(PatchState().empty())
+        f.give(f.crop.seed, 2)
+        f.give(DIBBER)
+        for (slot in f.player.inv.indices) {
+            if (f.player.inv[slot] == null) f.player.inv[slot] = InvObj(SPADE)
+        }
+        f.use(f.crop.seed)
+        val planted = f.state()
+        assertEquals(f.crop.index, planted.cropIndex)
+        assertEquals(1, f.count(f.crop.seed))
+        assertEquals(1000, f.xp())
+        f.use(f.crop.seed)
+        assertEquals(planted, f.state())
+        assertEquals(1, f.count(f.crop.seed))
+        assertEquals(1000, f.xp())
+        assertEquals(1, f.plants.size)
     }
 
     @Test

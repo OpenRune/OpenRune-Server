@@ -81,12 +81,12 @@ after changing the farming pack. Metadata coverage is not playable-content cover
 | Coverage | Count |
 |---|---:|
 | Permanent crop definitions | 82 |
-| Currently enabled crops | 32 |
+| Currently enabled crops | 33 |
 | Normal-world patches | 99 |
 | Patch sites | 62 |
 
 Enabled crops are the original allotment/flower/herb set plus goutweed, grape vines
-and Attas. Other crop definitions remain addressable for saved state and consumers,
+and Attas/Kronos. Other crop definitions remain addressable for saved state and consumers,
 but planting is unavailable when disease, death, yield or other required rules are
 held. The [Farming tracker](https://github.com/OpenRune/OpenRune-Server/issues/61#issuecomment-6390841276)
 records cutoff-pinned wiki sources, normal-world recording evidence and unresolved
@@ -114,6 +114,22 @@ Growth uses globally aligned minute windows and a saved per-player offset in
 0–31, including offline replay. Long stages no longer depend on the old narrow
 per-patch countdown. Replay computes protection before each growth mutation and
 publishes one final refresh rather than intermediate offline notifications.
+
+Kronos uses an explicitly approximate **15%** skip rate from
+[limited player observations](https://oldschool.runescape.wiki/w/Talk:Kronos_seed#Chance_to_skip_growth_stage),
+not confirmed OSRS odds. The rate is cache-backed in `growth_skip_percent`.
+Each window shares repeated skip rolls across patches on the same growth cycle,
+checking disease at every extra stage and stopping at disease, maturity or full
+produce capacity. Kronos never skips itself. Its effect and flower protection use
+the state at the start of the window, including its final window before death;
+subsequent windows receive no expired-anima effect. Offline replay uses this same
+path. This enables Kronos, not the other held crop families.
+
+A bounded live-client regression covered real seed planting (100 base XP), a
+companion herb's two-stage advance, native growth/withering/dead states, clearing
+without a second XP award, and logout/relog preserving both planted patches,
+offset, inventory and skills. It used saved patch/clock fixtures and the inherited
+150× XP rate, not natural acquisition, elapsed multi-day growth or OSRS packet parity.
 
 Legacy allotments and herbs track harvest lives, not a fixed item count. Farming
 level and eligible equipment affect whether a pick spends a life. Flowers give one
@@ -157,7 +173,7 @@ Assignment is not offered until every crop in that pool is playable, preventing
 uncancellable contracts for held crops. Guild information, seed exchanges and
 ordinary seed-pack handling remain separate.
 
-Other explicit holds include unpublished new-crop disease/yield/Kronos/pruning
+Other explicit holds include unpublished new-crop disease/yield/pruning
 rules, contradictory compost-bin processing rules, empty-basket automatic Fill
 priority, Tithe seed-pack white-lily weights, fresh Bologa unlock predicates,
 Resurrect Crops spell eligibility/restored-stage details, the full Hespori fight

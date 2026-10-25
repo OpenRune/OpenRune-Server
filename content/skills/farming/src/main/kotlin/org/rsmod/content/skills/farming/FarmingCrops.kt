@@ -112,6 +112,7 @@ data class Crop(
     val deathMinutes: Int? = null,
     val held: String? = null,
     val hesporiSeedChance: Int? = null,
+    val growthSkipPercent: Int = 0,
 ) {
     val checksHealth: Boolean
         get() = checkXp > 0.0
@@ -185,6 +186,7 @@ private fun FarmingCropRow.toCrop(indices: Map<Int, Int>): Crop =
         immune = immune,
         deathMinutes = deathMinutes,
         held = held,
+        growthSkipPercent = growthSkipPercent,
     )
 
 object FarmingCrops {

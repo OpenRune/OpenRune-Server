@@ -226,7 +226,9 @@ internal val SPECIAL_CROPS: List<CropSpec> =
                 ),
             harvest = "NONE",
             immune = true,
-            held = "Kronos regrowth-speed odds are unsourced",
+            // UNVERIFIED: 15% Kronos skips (42/287 herb cycles, player-reported).
+            // shortcut: replace the estimate when authoritative odds are available.
+            growthSkipPercent = 15,
             petChance = 0,
         ),
         CropSpec(

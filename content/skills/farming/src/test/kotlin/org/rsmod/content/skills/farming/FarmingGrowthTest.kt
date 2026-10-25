@@ -261,6 +261,118 @@ class FarmingGrowthTest {
         assertTrue(states.contentEquals(arrayOf(grown(potato), grown(potato).copy(health = Health.DEAD), PatchState())))
     }
 
+    @Test
+    fun `kronos shares skips within a cycle but rolls other cycles independently`() {
+        val guam = crop("obj.guam_seed")
+        val bush = crop("obj.redberry_bush_seed")
+        val potato = crop("obj.potato_seed")
+        val kronos = crop("obj.kronos_seed")
+        val crops = listOf(guam, bush, potato, kronos)
+        val states = crops.map(::planted).toTypedArray()
+        FarmingGrowth(crops.map(::patchFor), BooleanArray(4) { true }, KronosRandom(listOf(0, 99, 99)))
+            .replay(states, 19, 20, 0)
+        assertEquals(listOf(2, 2, 1, 0), states.map(PatchState::stage))
+    }
+
+    @Test
+    fun `kronos uses the approved percent boundary and can skip multiple stages without skipping itself`() {
+        val guam = crop("obj.guam_seed")
+        val kronos = crop("obj.kronos_seed")
+        for ((rolls, stage) in listOf(listOf(14, 99) to 2, listOf(15) to 1, listOf(0, 0, 99) to 3)) {
+            val states = arrayOf(planted(guam), planted(kronos))
+            FarmingGrowth(listOf(patchFor(guam), patchFor(kronos)), booleanArrayOf(true, true), KronosRandom(rolls))
+                .replay(states, 639, 640, 0)
+            assertEquals(stage, states[0].stage)
+            assertEquals(1, states[1].stage)
+        }
+    }
+
+    @Test
+    fun `every skipped stage checks disease and pauses at the afflicted stage`() {
+        val maple = crop("obj.plantpot_maple_sapling")
+        val kronos = crop("obj.kronos_seed")
+        val states = arrayOf(planted(maple), planted(kronos))
+        FarmingGrowth(listOf(patchFor(maple), patchFor(kronos)), BooleanArray(2), KronosRandom(listOf(0, 0), listOf(127, 0)))
+            .replay(states, 39, 40, 0)
+        assertEquals(planted(maple).copy(stage = 2, health = Health.DISEASED), states[0])
+        assertEquals(planted(kronos), states[1])
+    }
+
+    @Test
+    fun `skipped stages do not reuse the preceding watered-stage protection`() {
+        val potato = crop("obj.potato_seed")
+        val kronos = crop("obj.kronos_seed")
+        val states = arrayOf(planted(potato).copy(stage = 1, watered = true), planted(kronos))
+        FarmingGrowth(listOf(patchFor(potato), patchFor(kronos)), BooleanArray(2), KronosRandom(listOf(0), doubles = listOf(0.0)))
+            .replay(states, 9, 10, 0)
+        assertEquals(planted(potato).copy(stage = 2, health = Health.DISEASED), states[0])
+    }
+
+    @Test
+    fun `kronos remains active through withering and its final window but not after death`() {
+        val guam = crop("obj.guam_seed")
+        val kronos = crop("obj.kronos_seed")
+        val states = arrayOf(planted(guam), planted(kronos).copy(stage = 7))
+        val growth = FarmingGrowth(listOf(patchFor(guam), patchFor(kronos)), booleanArrayOf(true, true), KronosRandom(listOf(0, 99)))
+        growth.replay(states, 639, 640, 0)
+        assertEquals(2, states[0].stage)
+        assertEquals(planted(kronos).copy(stage = 8, health = Health.DEAD), states[1])
+        growth.replay(states, 640, 660, 0)
+        assertEquals(3, states[0].stage)
+    }
+
+    @Test
+    fun `skips accelerate regrowth without exceeding produce capacity or changing unchecked crops`() {
+        val bush = crop("obj.redberry_bush_seed")
+        val kronos = crop("obj.kronos_seed")
+        val checked = grown(bush).copy(phase = Phase.CHECKED, produce = 0)
+        val unchecked = checked.copy(phase = Phase.GROWING)
+        val states = arrayOf(checked, unchecked, planted(kronos))
+        val minute = bush.regrowMinutes.toLong()
+        FarmingGrowth(listOf(patchFor(bush), patchFor(bush), patchFor(kronos)), BooleanArray(3) { true }, FixedRandom(0))
+            .replay(states, minute - 1, minute, 0)
+        assertEquals(checked.copy(produce = bush.maxProduce), states[0])
+        assertEquals(unchecked, states[1])
+    }
+
+    @Test
+    fun `offline kronos replay agrees with online windows across its expiry`() {
+        val crop = immune(640)
+        val kronos = crop("obj.kronos_seed")
+        val initial = arrayOf(planted(crop), planted(kronos).copy(stage = 7))
+        val offline = initial.copyOf()
+        val online = initial.copyOf()
+        val patches = listOf(patchFor(crop), patchFor(kronos))
+        FarmingGrowth(patches, booleanArrayOf(true, true), KronosRandom(listOf(0, 0, 99)))
+            .replay(offline, 1, 640 * 10L, 7)
+        val growth = FarmingGrowth(patches, booleanArrayOf(true, true), KronosRandom(listOf(0, 0, 99)))
+        for (minute in 2..640 * 10L) growth.replay(online, minute - 1, minute, 7)
+        assertTrue(offline.contentEquals(online))
+        assertEquals(crop.stages, offline[0].stage)
+        assertEquals(Health.DEAD, offline[1].health)
+    }
+
+    private class KronosRandom(
+        skips: List<Int>,
+        disease: List<Int> = emptyList(),
+        doubles: List<Double> = emptyList(),
+    ) : GameRandom {
+        private val skips = skips.iterator()
+        private val disease = disease.iterator()
+        private val doubles = doubles.iterator()
+
+        override fun of(maxExclusive: Int): Int =
+            when (maxExclusive) {
+                100 -> skips.next()
+                128 -> disease.next()
+                else -> error("Unexpected random bound $maxExclusive")
+            }
+
+        override fun of(minInclusive: Int, maxInclusive: Int): Int = error("Unexpected ranged roll")
+
+        override fun randomDouble(): Double = doubles.next()
+    }
+
     private class FixedRandom(private val roll: Int, private val double: Double = 0.999) : GameRandom {
         var rolls = 0
 
