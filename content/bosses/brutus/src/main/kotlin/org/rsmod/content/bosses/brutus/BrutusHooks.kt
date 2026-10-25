@@ -73,6 +73,7 @@ constructor(
             revealDelay = 0,
             supplyPile = false,
             untradeableHandling = UntradeableHandling.KEEP,
+            isSafe = true,
         )
     }
 }

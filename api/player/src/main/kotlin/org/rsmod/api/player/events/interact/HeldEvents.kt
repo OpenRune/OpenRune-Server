@@ -20,11 +20,10 @@ import org.rsmod.game.inv.Inventory
 
 public class HeldBanksideEvents {
     public class Type(
-        public val player: Player,
         public val slot: Int,
         public val type: ItemServerType,
         override val id: Long = type.id.toLong(),
-    ) : KeyedEvent
+    ) : SuspendEvent<ProtectedAccess>
 }
 
 public class HeldDropEvents {

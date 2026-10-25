@@ -2,6 +2,7 @@ package org.rsmod.api.game.process.player
 
 import jakarta.inject.Inject
 import org.rsmod.api.player.events.PlayerMovementEvent
+import org.rsmod.api.player.hook.PlayerStepValidateHook
 import org.rsmod.api.player.output.MapFlag.setMapFlag
 import org.rsmod.api.player.output.clearMapFlag
 import org.rsmod.api.player.vars.varMoveSpeed
@@ -24,6 +25,7 @@ constructor(
     private val routeFactory: RouteFactory,
     private val stepFactory: StepFactory,
     private val eventBus: EventBus,
+    private val stepValidators: Set<PlayerStepValidateHook>,
 ) {
     public fun process(player: Player) {
         player.routeRequest?.let { consumeRequest(player, it) }
@@ -88,6 +90,10 @@ constructor(
 
             val step = validatedStep(current, target)
             if (step == CoordGrid.NULL) {
+                break
+            }
+            if (stepValidators.any { !it.canStep(this, current, step) }) {
+                destination.clear()
                 break
             }
             // Important to set this before `current` is assigned for this iteration. This serves

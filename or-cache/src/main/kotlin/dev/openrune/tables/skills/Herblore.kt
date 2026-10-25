@@ -1,14 +1,20 @@
 package dev.openrune.tables.skills
 
+import dev.openrune.definition.util.VarType
 import dev.openrune.tables.production.productionTable
 
 object Herblore {
+    private const val COL_BREW_TICKS = 7
 
     /**
      * Table for creating unfinished potions (herb + vial of water)
      */
     fun unfinishedPotions() =
-        productionTable("dbtable.herblore_unfinished", serverOnly = true) {
+        productionTable(
+            "dbtable.herblore_unfinished",
+            serverOnly = true,
+            extraColumns = { column("brew_ticks", COL_BREW_TICKS, VarType.INT) },
+        ) {
 
             row("dbrow.herblore_guam_unfinished") {
                 production {
@@ -136,6 +142,16 @@ object Herblore {
                     category("Unfinished Potions")
                 }
             }
+            row("dbrow.herblore_huasca_unfinished") {
+                production {
+                    input("obj.huasca")
+                    statReq("stat.herblore", 58)
+                    xp(0)
+                    output("obj.huascavial")
+                    category("Unfinished Potions")
+                }
+                column(COL_BREW_TICKS, 1, 1)
+            }
 
         }
 
@@ -143,7 +159,11 @@ object Herblore {
      * Table for creating finished potions (unfinished potion + secondary ingredient)
      */
     fun finishedPotions() =
-        productionTable("dbtable.herblore_finished", serverOnly = true) {
+        productionTable(
+            "dbtable.herblore_finished",
+            serverOnly = true,
+            extraColumns = { column("brew_ticks", COL_BREW_TICKS, VarType.INT) },
+        ) {
 
             row("dbrow.herblore_attack_potion") {
                 production {
@@ -184,6 +204,17 @@ object Herblore {
                     output("obj.3dosestatrestore")
                     category("Potions")
                 }
+            }
+            row("dbrow.herblore_compost_potion") {
+                production {
+                    input("obj.harralandervial")
+                    input("obj.fossil_volcanic_ash")
+                    statReq("stat.herblore", 22)
+                    xp(60)
+                    output("obj.supercompost_potion_3")
+                    category("Potions")
+                }
+                column(COL_BREW_TICKS, 2, 2)
             }
             row("dbrow.herblore_energy_potion") {
                 production {
@@ -254,6 +285,17 @@ object Herblore {
                     output("obj.3dose2strength")
                     category("Potions")
                 }
+            }
+            row("dbrow.herblore_prayer_regeneration") {
+                production {
+                    input("obj.huascavial")
+                    input("obj.aldarium")
+                    statReq("stat.herblore", 58)
+                    xp(132)
+                    output("obj.3dose1prayer_regeneration")
+                    category("Potions")
+                }
+                column(COL_BREW_TICKS, 2, 2)
             }
             row("dbrow.herblore_weapon_poison") {
                 production {
@@ -794,6 +836,7 @@ object Herblore {
 
     /**
      * Table for cleaning grimy herbs (unidentified -> clean)
+     * XP is stored in tenths to preserve fractional cleaning rewards.
      */
     fun cleaningHerbs() =
         productionTable("dbtable.herblore_cleaning", serverOnly = true) {
@@ -801,7 +844,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_guam")
                     statReq("stat.herblore", 3)
-                    xp(2)
+                    xp(20)
                     output("obj.guam_leaf")
                     category("Herbs")
                 }
@@ -811,7 +854,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_marentill")
                     statReq("stat.herblore", 5)
-                    xp(3)
+                    xp(30)
                     output("obj.marentill")
                     category("Herbs")
                 }
@@ -821,7 +864,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_tarromin")
                     statReq("stat.herblore", 11)
-                    xp(5)
+                    xp(50)
                     output("obj.tarromin")
                     category("Herbs")
                 }
@@ -831,7 +874,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_harralander")
                     statReq("stat.herblore", 20)
-                    xp(6)
+                    xp(60)
                     output("obj.harralander")
                     category("Herbs")
                 }
@@ -841,7 +884,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_ranarr")
                     statReq("stat.herblore", 25)
-                    xp(8)
+                    xp(80)
                     output("obj.ranarr_weed")
                     category("Herbs")
                 }
@@ -851,7 +894,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_toadflax")
                     statReq("stat.herblore", 30)
-                    xp(8)
+                    xp(80)
                     output("obj.toadflax")
                     category("Herbs")
                 }
@@ -861,7 +904,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_irit")
                     statReq("stat.herblore", 40)
-                    xp(9)
+                    xp(90)
                     output("obj.irit_leaf")
                     category("Herbs")
                 }
@@ -871,7 +914,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_avantoe")
                     statReq("stat.herblore", 48)
-                    xp(10)
+                    xp(100)
                     output("obj.avantoe")
                     category("Herbs")
                 }
@@ -881,7 +924,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_kwuarm")
                     statReq("stat.herblore", 54)
-                    xp(11)
+                    xp(110)
                     output("obj.kwuarm")
                     category("Herbs")
                 }
@@ -891,7 +934,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_snapdragon")
                     statReq("stat.herblore", 59)
-                    xp(12)
+                    xp(120)
                     output("obj.snapdragon")
                     category("Herbs")
                 }
@@ -901,7 +944,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_cadantine")
                     statReq("stat.herblore", 65)
-                    xp(13)
+                    xp(130)
                     output("obj.cadantine")
                     category("Herbs")
                 }
@@ -911,7 +954,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_lantadyme")
                     statReq("stat.herblore", 67)
-                    xp(13)
+                    xp(130)
                     output("obj.lantadyme")
                     category("Herbs")
                 }
@@ -921,7 +964,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_dwarf_weed")
                     statReq("stat.herblore", 70)
-                    xp(13)
+                    xp(130)
                     output("obj.dwarf_weed")
                     category("Herbs")
                 }
@@ -931,8 +974,17 @@ object Herblore {
                 production {
                     input("obj.unidentified_torstol")
                     statReq("stat.herblore", 75)
-                    xp(14)
+                    xp(140)
                     output("obj.torstol")
+                    category("Herbs")
+                }
+            }
+            row("dbrow.herblore_clean_huasca") {
+                production {
+                    input("obj.unidentified_huasca")
+                    statReq("stat.herblore", 58)
+                    xp(118)
+                    output("obj.huasca")
                     category("Herbs")
                 }
             }

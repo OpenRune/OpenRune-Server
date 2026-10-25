@@ -1,5 +1,9 @@
 package org.rsmod.content.skills.herblore
 
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onPlayerQueueWithArgs
@@ -25,11 +29,6 @@ class CleaningHerbsEvents : PluginScript() {
             return
         }
 
-        if (inv.freeSpace() < 1 && !inv.contains(row.output.internalName)) {
-            mes("You don't have enough inventory space.")
-            return
-        }
-
         weakQueue("queue.herblore_clean", 1, CleanHerbTask(row))
     }
 
@@ -40,31 +39,18 @@ class CleaningHerbsEvents : PluginScript() {
             return
         }
 
-        if (
-            !inv.contains(row.input.internalName) ||
-            (inv.freeSpace() < 1 && !inv.contains(row.output.internalName))
-        ) {
-            return
+        val result = player.invTransaction(inv) {
+            val inventory = select(inv)
+            delete(inventory, row.input.id, 1)
+            add(inventory, row.output.id, 1)
         }
-
-        if (invDel(inv, row.input.internalName, 1).failure) {
-            return
-        }
-
-        if (invAdd(inv, row.output.internalName, 1).failure) {
-            invAdd(inv, row.input.internalName, 1)
-            mes("You don't have enough inventory space.")
-            return
-        }
+        if (result.failure) return
 
         if (row.xp > 0) {
-            statAdvance("stat.herblore", row.xp.toDouble())
+            statAdvance("stat.herblore", row.xp / 10.0)
         }
 
-        if (
-            inv.contains(row.input.internalName) &&
-            (inv.freeSpace() >= 1 || inv.contains(row.output.internalName))
-        ) {
+        if (inv.contains(row.input.internalName)) {
             weakQueue("queue.herblore_clean", 2, task)
         }
     }

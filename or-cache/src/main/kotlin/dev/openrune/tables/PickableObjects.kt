@@ -16,6 +16,7 @@ object PickableObjects {
     const val OBJECT_CYCLE = 7
     const val REPLACEMENT_LOC = 8
     const val FORCES_WALK = 9
+    const val SEED_CHANCE = 10
 
     fun pickableObjects() = dbTable("dbtable.pickable_objects", serverOnly = true) {
 
@@ -29,6 +30,7 @@ object PickableObjects {
         column("objectCycle", OBJECT_CYCLE, VarType.BOOLEAN)
         column("replacementLoc", REPLACEMENT_LOC, VarType.LOC)
         column("forcesWalk", FORCES_WALK, VarType.BOOLEAN)
+        column("seedChance", SEED_CHANCE, VarType.INT)
 
         row("dbrow.pickable_flax") {
             columnRSCM(LOCS, "loc.misc_flax_heavyweeds", "loc.flax", "loc.misc_flax_medweeds", "loc.misc_flax_lightweeds", "loc.misc_flax_noweeds")
@@ -56,6 +58,7 @@ object PickableObjects {
             column(COL_ITEM_GIVEN_AMOUNT, 1)
             column(RESPAWN_TICK_TIME, 30)
             columnRSCM(SEED, "obj.cabbage_seed")
+            column(SEED_CHANCE, 3, 103)
             column(OBJECT_CYCLE, false)
             column(FORCES_WALK, true)
         }
@@ -101,6 +104,7 @@ object PickableObjects {
             columnRSCM(LOCS, "loc.onion","loc.avium_onion01","loc.avium_onion02")
             columnRSCM(COL_ITEM_GIVEN, "obj.onion")
             columnRSCM(SEED, "obj.onion_seed")
+            column(SEED_CHANCE, 3, 103)
             column(COL_ITEM_GIVEN_AMOUNT, 1)
             column(RESPAWN_TICK_TIME, 50)
             column(OBJECT_CYCLE, false)
@@ -131,6 +135,7 @@ object PickableObjects {
             columnRSCM(LOCS, "loc.potato")
             columnRSCM(COL_ITEM_GIVEN, "obj.potato")
             columnRSCM(SEED, "obj.potato_seed")
+            column(SEED_CHANCE, 3, 103)
             column(COL_ITEM_GIVEN_AMOUNT, 1)
             column(RESPAWN_TICK_TIME, 50)
             column(OBJECT_CYCLE, false)
@@ -152,6 +157,7 @@ object PickableObjects {
             columnRSCM(REPLACEMENT_LOC, "loc.avium_corn01_picked")
             columnRSCM(COL_ITEM_GIVEN, "obj.sweetcorn")
             columnRSCM(SEED, "obj.sweetcorn_seed")
+            column(SEED_CHANCE, 3, 103)
             column(COL_ITEM_GIVEN_AMOUNT, 1)
             column(RESPAWN_TICK_TIME, 100)
             column(OBJECT_CYCLE, false)
@@ -163,6 +169,7 @@ object PickableObjects {
             columnRSCM(REPLACEMENT_LOC, "loc.avium_corn02_picked")
             columnRSCM(COL_ITEM_GIVEN, "obj.sweetcorn")
             columnRSCM(SEED, "obj.sweetcorn_seed")
+            column(SEED_CHANCE, 3, 103)
             column(COL_ITEM_GIVEN_AMOUNT, 1)
             column(RESPAWN_TICK_TIME, 100)
             column(OBJECT_CYCLE, false)

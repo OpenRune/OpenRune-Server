@@ -4,6 +4,7 @@ import org.rsmod.api.death.NpcDeathDropHook
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.death.NpcDropReceiveHook
 import org.rsmod.api.death.PlayerDeathCleanupHook
+import org.rsmod.api.death.PlayerDeathDropHook
 import org.rsmod.api.death.PlayerDeathHook
 import org.rsmod.api.death.PlayerRespawnHook
 import org.rsmod.api.death.PvPAttackValidateHook
@@ -18,6 +19,7 @@ public class DeathDropHooksModule : PluginModule() {
         newSetBinding<NpcDeathKillHook>()
         newSetBinding<NpcDropReceiveHook>()
         newSetBinding<PlayerDeathCleanupHook>()
+        newSetBinding<PlayerDeathDropHook>()
         newSetBinding<PlayerDeathHook>()
         newSetBinding<PlayerRespawnHook>()
         newSetBinding<PvPAttackValidateHook>()

@@ -14,6 +14,8 @@ import org.rsmod.content.areas.city.draynor.npcs.DiangoHolidayItems.Companion.op
 import org.rsmod.content.interfaces.omnishop.openOmnishop
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.quest.manager.menu
+import org.rsmod.content.skills.farming.FarmingSeedShopAccess
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -38,8 +40,14 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         onOpNpc1("npc.rag_wine_merchant") { startDialogue(it.npc) { fortunato() } }
         onOpNpc3("npc.rag_wine_merchant") { openWineShop() }
         onOpNpc1("npc.pmod_town_crier_draynor") { startDialogue(it.npc) { townCrier() } }
-        onOpNpc1("npc.seed_merchant") { startDialogue(it.npc) { olivia() } }
-        onOpNpc3("npc.seed_merchant") { openSeedShop() }
+        onOpNpc1("npc.seed_merchant") {
+            if (FarmingSeedShopAccess.canTrade(player)) {
+                startDialogue(it.npc) { olivia(it.npc) }
+            } else {
+                it.npc.say("You're the one who stole something from me!")
+            }
+        }
+        onOpNpc3("npc.seed_merchant") { openSeedShop(it.npc) }
         onOpNpc1("npc.forestry_forester") { startDialogue(it.npc) { forester() } }
         onOpNpc3("npc.forestry_forester") { openOmnishop(FORESTRY_SHOP) }
         onOpNpc1("npc.diary_queen") { startDialogue(it.npc) { twiggy() } }
@@ -811,11 +819,11 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         chatNpc(happy, "Until next time.")
     }
 
-    private suspend fun Dialogue.olivia() {
+    private suspend fun Dialogue.olivia(npc: Npc) {
         chatNpc(happy, "Would you like to trade in seeds?")
         val topic = menu("Yes" to 0, "No" to 1, "Where do I get rarer seeds from?" to 2)
         when (topic) {
-            0 -> access.openSeedShop()
+            0 -> access.openSeedShop(npc)
             1 -> chatPlayer(neutral, "No, thanks.")
             else -> {
                 chatPlayer(quiz, "Where do I get rarer seeds from?")
@@ -829,7 +837,11 @@ class DraynorVillageNpcs @Inject constructor(private val shops: Shops) : PluginS
         }
     }
 
-    private fun ProtectedAccess.openSeedShop() {
+    private fun ProtectedAccess.openSeedShop(npc: Npc) {
+        if (!FarmingSeedShopAccess.canTrade(player)) {
+            npc.say("You're the one who stole something from me!")
+            return
+        }
         shops.open(
             player = player,
             title = "Draynor Seed Market",

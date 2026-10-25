@@ -26,7 +26,7 @@ class PlayerFaceSquareProcessorTest {
                 pendingFaceAngle = EntityFaceAngle.NULL
 
                 val move =
-                    PlayerMovementProcessor(it.collision, it.routeFactory, it.stepFactory, eventBus)
+                    PlayerMovementProcessor(it.collision, it.routeFactory, it.stepFactory, eventBus, emptySet())
                 val face = PlayerFaceSquareProcessor()
                 fun process() {
                     previousCoords = coords

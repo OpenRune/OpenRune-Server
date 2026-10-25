@@ -20,6 +20,8 @@ data class InventoryServerType(
             uimBlocked = false,
         ),
     var stock: List<InvStock> = emptyList(),
+    var overstockThreshold: Int = 0,
+    var overstockPercent: Int = 0,
 ) : Definition {
 
     public val restock: Boolean

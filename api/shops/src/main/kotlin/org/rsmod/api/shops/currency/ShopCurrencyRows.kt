@@ -18,6 +18,7 @@ public object ShopCurrencyRows {
                 pluralName = row.string("$COL_PREFIX:plural_name"),
                 obj = row.objOptional("$COL_PREFIX:obj"),
                 varbitId = row.intOptional("$COL_PREFIX:varbit"),
+                omnishopCurrency = row.intOptional("$COL_PREFIX:omnishop_currency"),
             )
         }
 
@@ -57,4 +58,5 @@ public data class ShopCurrencyRow(
     public val pluralName: String,
     public val obj: ItemServerType?,
     public val varbitId: Int?,
+    public val omnishopCurrency: Int? = null,
 )

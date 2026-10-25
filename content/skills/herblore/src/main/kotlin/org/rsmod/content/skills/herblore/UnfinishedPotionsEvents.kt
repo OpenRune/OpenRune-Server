@@ -109,7 +109,7 @@ class UnfinishedPotionsEvents : PluginScript() {
             return
         }
 
-        weakQueue("queue.herblore_unfinished", 1, UnfinishedPotionTask(potion, amount, 0))
+        weakQueue("queue.herblore_unfinished", potion.brewTicks.getOrNull(0) ?: 1, UnfinishedPotionTask(potion, amount, 0))
     }
 
     private suspend fun ProtectedAccess.processUnfinishedTick(task: UnfinishedPotionTask) {
@@ -122,8 +122,7 @@ class UnfinishedPotionsEvents : PluginScript() {
 
         if (
             !inv.contains(potion.herbItem.internalName) ||
-            !inv.contains("obj.vial_water") ||
-            (inv.freeSpace() < 1 && !inv.contains(potion.unfinishedPotion.internalName))
+            !inv.contains("obj.vial_water")
         ) {
             resetAnim()
             return
@@ -131,20 +130,7 @@ class UnfinishedPotionsEvents : PluginScript() {
 
         anim("seq.human_herbing_vial")
 
-        val herbRemoved = invDel(inv, potion.herbItem.internalName, 1).success
-        val vialRemoved = invDel(inv, "obj.vial_water", 1).success
-
-        if (!herbRemoved || !vialRemoved) {
-            if (herbRemoved) invAdd(inv, potion.herbItem.internalName, 1)
-            if (vialRemoved) invAdd(inv, "obj.vial_water", 1)
-            resetAnim()
-            return
-        }
-
-        if (invAdd(inv, potion.unfinishedPotion.internalName, 1).failure) {
-            invAdd(inv, potion.herbItem.internalName, 1)
-            invAdd(inv, "obj.vial_water", 1)
-            mes("You don't have enough inventory space to make this potion.")
+        if (!potion.mix(player)) {
             resetAnim()
             return
         }
@@ -154,7 +140,7 @@ class UnfinishedPotionsEvents : PluginScript() {
 
         val created = task.created + 1
         if (created < task.amount) {
-            weakQueue("queue.herblore_unfinished", 4, UnfinishedPotionTask(potion, task.amount, created))
+            weakQueue("queue.herblore_unfinished", potion.brewTicks.getOrNull(1) ?: 4, UnfinishedPotionTask(potion, task.amount, created))
         } else {
             resetAnim()
         }

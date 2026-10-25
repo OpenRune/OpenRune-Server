@@ -278,7 +278,7 @@ class TheRestlessGhostInteractionTest {
             getTeleportValidator = { PlayerTeleportValidator(emptySet()) },
             getAreaChecker = { AreaChecker(regions, AreaIndex()) },
         )
-        private val movement = PlayerMovementProcessor(collision, RouteFactory(collision), StepFactory(collision), events)
+        private val movement = PlayerMovementProcessor(collision, RouteFactory(collision), StepFactory(collision), events, emptySet())
         private val coroutine = GameCoroutine("restless-ghost-test")
         private var result: Result<Unit>? = null
 

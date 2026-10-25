@@ -75,39 +75,93 @@ Disabled popups do not set the flag.
 
 ## Farming
 
-Allotment, flower and herb patches are supported at Falador, Catherby, Ardougne,
-Canifis and Hosidius. Crop, patch and compost definitions live in the farming
-pack's cache tables; rebuild the cache after changing them. Artwork bases for all
-29 crops are derived from named locs at pack time. Regular stage arithmetic is
-validated against the patch transform tables; snape grass retains explicit
-state banks for its scattered artwork. Duplicate artwork uses the first matching
-selector. Watered and dead bases are cache columns, not runtime offset constants.
-Diseased/dead bases point directly to named stage-one artwork; rendering applies
-the stage-one offset rather than storing a base in the preceding cache slot.
+The full-skill continuation is WIP. Definitions are cache-backed; rebuild the cache
+after changing the farming pack. Metadata coverage is not playable-content coverage:
+
+| Coverage | Count |
+|---|---:|
+| Permanent crop definitions | 82 |
+| Currently enabled crops | 32 |
+| Normal-world patches | 99 |
+| Patch sites | 62 |
+
+Enabled crops are the original allotment/flower/herb set plus goutweed, grape vines
+and Attas. Other crop definitions remain addressable for saved state and consumers,
+but planting is unavailable when disease, death, yield or other required rules are
+held. The [Farming tracker](https://github.com/OpenRune/OpenRune-Server/issues/61#issuecomment-6390841276)
+records cutoff-pinned wiki sources, normal-world recording evidence and unresolved
+rules. Published models are not claims of observed OSRS packet parity.
+
+Artwork uses named locs and native transform tables. Snape grass retains explicit
+state banks for its scattered artwork; grape vines bind all twelve native click
+zones. Duplicate artwork uses the first matching selector. Watered and dead bases
+are cache columns, not runtime offset constants.
 
 Crop declaration order is stored in `crop_index`, independently of numeric DBROW
-IDs. Indices 1–27 retain their original crops; Huasca and white lily append at
-28 and 29. Add new crop declarations at the end, never between existing entries.
+IDs. Indices 1–27 retain their original crops; Huasca and white lily remain at
+28 and 29. New crops append rather than renumbering existing saves. Original patch
+varps and the saved clock are retained. New flags require the version marker;
+legacy countdown bits are not reinterpreted as protection or special-patch flags.
 
-Allotments and herbs track harvest lives, not a fixed item count. Farming level
-and magic secateurs affect whether each pick spends a life. Flowers give one
-batch: woad yields three leaves, while limpwurt quantity depends on Farming level
-and magic secateurs. Planting XP is paid once on final harvest or dead clearing,
-not when seeds are planted. Harvested patches remain cleared for immediate
-replanting; untended empty patches regrow weeds.
+Growth uses globally aligned minute windows and a saved per-player offset in
+0–31, including offline replay. Long stages no longer depend on the old narrow
+per-patch countdown. Replay computes protection before each growth mutation and
+publishes one final refresh rather than intermediate offline notifications.
+
+Legacy allotments and herbs track harvest lives, not a fixed item count. Farming
+level and eligible equipment affect whether a pick spends a life. Flowers give one
+batch: woad yields three leaves, while limpwurt quantity is level/modifier-dependent.
+Legacy planting XP is deferred until final harvest or dead clearing. Ranarr uses
+26.5 planting XP and 30.5 per herb. Produce capacity is checked before reward RNG;
+inventory, patch state and completion rewards must not partially commit.
 
 Huasca requires level 65 and grows in four 20-minute stages. White lily requires
 level 58 and grows in four five-minute stages. A mature, healthy white lily
-protects every allotment in its farm, but not herbs or itself. Protection starts
-at maturity, including during offline catch-up, and ends when the lily is picked.
+protects neighbouring allotments, not herbs or itself, including during offline
+catch-up. Its protection ends when picked. Cleared patches can be replanted
+immediately; otherwise weeds can regrow.
 
-Growth uses saved, minute-resolution per-patch countdowns, including offline
-elapsed time, rather than Jagex's global farming tick alignment. Disease remains
-an approximation: a 35% base chance is divided across growth stages, compost
-halves it, supercompost reduces it by four-fifths, and ultracompost by nine-tenths.
-Ultracompost does not confer immunity. Watered stages retain the inherited
-disease immunity; mature matching flowers protect their neighbouring allotments.
-Exact crop-specific disease rates and watering effects are not calibrated.
+Huasca also uses the existing Herblore production pipeline: level 58 to clean
+([11.8 XP](https://oldschool.runescape.wiki/w/Huasca?oldid=15192709)) or make its
+[unfinished potion](https://oldschool.runescape.wiki/w/Huasca_potion_%28unf%29?oldid=15192710)
+(no XP), then one aldarium for a three-dose
+[prayer regeneration potion](https://oldschool.runescape.wiki/w/Prayer_regeneration_potion?oldid=15324376)
+(132 XP). Cleaning XP is packed in tenths; rebuild cache and deploy its consumers
+together. Cleaning and unfinished mixing use atomic inventory transactions,
+including when the input inventory is full.
+
+The inherited disease model is still an unverified approximation: a 35% base
+chance divided across growth stages, with compost/supercompost/ultracompost
+reductions. Ultracompost does not confer immunity. The inherited watered-stage
+bypass is unchanged WIP, not verified OSRS immunity. Do not extend this model to
+held crop families or infer unpublished odds/timings from a successful local run.
+
+Native Geomancy front/status panels use the real patch IDs, enums and clientscript.
+Crop miniatures and compost-bin status are held rather than substituted with item
+icons. Tool and vault transfers use the shared inventory transaction path.
+Bag-to-bank actions run with protected access through the native bank deposit API,
+preserving tab sizes, placeholders and final-stack withdrawal behavior.
+The current account model has no bank-PIN authority; seed-vault use follows the
+existing no-PIN bank model, not a fabricated successful PIN check. Protected PIN
+access remains unavailable.
+
+Jane's complete native contract pool is retained without filtering or reweighting.
+Assignment is not offered until every crop in that pool is playable, preventing
+uncancellable contracts for held crops. Guild information, seed exchanges and
+ordinary seed-pack handling remain separate.
+
+Other explicit holds include unpublished new-crop disease/yield/Kronos/pruning
+rules, contradictory compost-bin processing rules, empty-basket automatic Fill
+priority, Tithe seed-pack white-lily weights, fresh Bologa unlock predicates,
+Resurrect Crops spell eligibility/restored-stage details, the full Hespori fight
+and death/reclaim flow, and missing raid/quest/kingdom contexts. Reagent-pouch bank
+access covers the sourced supported-chest boundary, not a guessed universal bank
+radius. These are unavailable features, not completed no-op handlers.
+
+The reagent pouch's bankside action uses the native `if4` slot flags: `Fill` when
+compatible carried ingredients are present, otherwise `Empty`. This check ignores
+capacity; a full pouch can offer `Fill` without moving any items. Open/closed
+variants and slot moves refresh the label without changing other bags' actions.
 
 ## Types
 ```

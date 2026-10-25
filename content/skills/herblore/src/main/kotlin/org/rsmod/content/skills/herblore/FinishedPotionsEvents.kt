@@ -8,13 +8,17 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreFinishedRow
+import org.rsmod.content.skills.farming.FarmingBagHerblore
 import org.rsmod.content.skills.SkillMultiConfig
 import org.rsmod.content.skills.SkillMultiEntry
 import org.rsmod.content.skills.openSkillMulti
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) : PluginScript() {
+class FinishedPotionsEvents @Inject constructor(
+    private val random: GameRandom,
+    private val bagHerblore: FarmingBagHerblore,
+) : PluginScript() {
 
     override fun ScriptContext.startup() {
         HerbloreDefinitions.itemToPotions.keys.filter { it !in heldUExclude }.forEach { item ->
@@ -55,7 +59,7 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
         }
 
         val candidatesWithMax = validCandidates
-            .map { potion -> potion to potion.maxProducible(inv) }
+            .map { potion -> potion to potion.maxProducible(inv, bagHerblore.reagents(player)) }
             .filter { (_, max) -> max > 0 }
 
         if (candidatesWithMax.isEmpty()) {
@@ -75,7 +79,7 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
                 maxCountProvider = { inventory, entry ->
                     validCandidates
                         .firstOrNull { it.outputPotion.internalName == entry.internal }
-                        ?.maxProducible(inventory) ?: 0
+                        ?.maxProducible(inventory, bagHerblore.reagents(player)) ?: 0
                 },
             ),
         ) { selection ->
@@ -92,94 +96,37 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
             return
         }
 
-        if (!potion.hasRequiredMaterials(inv)) {
+        if (!potion.hasRequiredMaterials(inv, bagHerblore.reagents(player))) {
             mes(Constants.dm_default)
             return
         }
 
-        weakQueue("queue.herblore_finished", 1, FinishedPotionTask(potion, amount, 0))
+        weakQueue("queue.herblore_finished", potion.brewTicks.getOrNull(0) ?: 1, FinishedPotionTask(potion, amount, 0))
     }
 
     private suspend fun ProtectedAccess.processFinishedTick(task: FinishedPotionTask) {
         val potion = task.potion
-        val brewResult = AmuletOfChemistry.rollBrewOutput(player, random, potion)
-        val output = brewResult.output
 
         if (!meetsStatReqs(potion.statReq)) {
             resetAnim()
             return
         }
 
-        if (!potion.hasRequiredMaterials(inv) || (inv.freeSpace() < 1 && !inv.contains(output))) {
+        val reagents = bagHerblore.reagents(player)
+        if (!potion.hasRequiredMaterials(inv, reagents)) {
             resetAnim()
             return
         }
 
-        anim("seq.human_herbing_vial")
-
+        val brewResult = AmuletOfChemistry.rollBrewOutput(player, random, potion)
         val savedSecondaries = HerbloreGoggles.rollSavedSecondaryCounts(player, random, potion)
-
-        val removed = mutableListOf<Pair<String, Int>>()
-        var allRemoved = true
-
-        val unfinishedRemoved = invDel(inv, potion.unfPot.internalName, 1).success
-        removed += potion.unfPot.internalName to if (unfinishedRemoved) 1 else 0
-        if (!unfinishedRemoved) {
-            allRemoved = false
-        }
-
-        if (potion.secondaries.size == 1) {
-            val secondary = potion.secondaries.first()
-            val count = potion.secondariesAmount ?: 1
-            val toRemove = (count - savedSecondaries.savedAmount(secondary.internalName)).coerceAtLeast(0)
-            val secondaryRemoved =
-                if (toRemove == 0) {
-                    true
-                } else {
-                    invDel(inv, secondary.internalName, toRemove).success
-                }
-            removed += secondary.internalName to if (secondaryRemoved) toRemove else 0
-            if (!secondaryRemoved) {
-                allRemoved = false
-            }
-        } else {
-            for (secondary in potion.secondaries) {
-                val saved = savedSecondaries.savedAmount(secondary.internalName)
-                val toRemove = (1 - saved).coerceAtLeast(0)
-                val secondaryRemoved =
-                    if (toRemove == 0) {
-                        true
-                    } else {
-                        invDel(inv, secondary.internalName, toRemove).success
-                    }
-                removed += secondary.internalName to if (secondaryRemoved) toRemove else 0
-                if (!secondaryRemoved) {
-                    allRemoved = false
-                }
-            }
-        }
-
-        if (!allRemoved) {
-            removed.forEach { (item, amount) ->
-                if (amount > 0) {
-                    invAdd(inv, item, amount)
-                }
-            }
-            mes(Constants.dm_default)
-            resetAnim()
-            return
-        }
-
-        if (invAdd(inv, output, 1).failure) {
-            removed.forEach { (item, amount) ->
-                if (amount > 0) {
-                    invAdd(inv, item, amount)
-                }
-            }
+        if (!potion.brew(player, reagents, brewResult.output, savedSecondaries)) {
             mes("You don't have enough inventory space to make this potion.")
             resetAnim()
             return
         }
+        AmuletOfChemistry.applyBrewOutput(player, brewResult)
+        anim("seq.human_herbing_vial")
 
         if (potion.xp > 0) {
             statAdvance("stat.herblore", potion.xp.toDouble())
@@ -206,7 +153,7 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
 
         val created = task.created + 1
         if (created < task.amount) {
-            weakQueue("queue.herblore_finished", 4, FinishedPotionTask(potion, task.amount, created))
+            weakQueue("queue.herblore_finished", potion.brewTicks.getOrNull(1) ?: 4, FinishedPotionTask(potion, task.amount, created))
         } else {
             resetAnim()
         }

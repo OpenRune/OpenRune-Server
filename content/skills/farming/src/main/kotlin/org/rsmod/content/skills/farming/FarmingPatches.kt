@@ -3,96 +3,83 @@ package org.rsmod.content.skills.farming
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import org.rsmod.api.table.farming.FarmingPatchRow
+import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid
 
-data class PatchDef(val loc: String, val kind: PatchKind, val varp: String)
+/** One patch: its persisted [varp] and every loc that renders it (redwood has 19). */
+data class PatchDef(
+    val varp: String,
+    val kind: PatchKind,
+    val site: String,
+    val locs: List<String>,
+    val coords: List<CoordGrid>,
+)
 
-/**
- * A farm. All five share the same handful of `farming_transmit_*` varbits, so only one area's
- * patches can be described to the client at a time; [centre] is how the nearest one is picked.
- */
-data class FarmingArea(val name: String, val centre: CoordGrid, val patches: List<PatchDef>)
+/** A per-site rule on a varbit or varp; see `SiteRule` in the pack for the value semantics. */
+data class SiteRule(val site: String, val variable: String, val value: Int)
 
 object FarmingPatches {
-    // ponytail: area centres are approximate with a generous radius. They only decide which farm's
-    // state gets described to the client on approach; interacting with a patch transmits its own
-    // area regardless, so a centre being a few tiles out costs nothing.
-    const val AREA_RADIUS: Int = 40
+    private class Kind(
+        val patches: List<PatchDef>,
+        val diseaseFree: List<SiteRule>,
+        val xpBonus: List<SiteRule>,
+        val yieldBonus: List<SiteRule>,
+        val access: Map<String, List<SiteAccess>>,
+    )
 
-    val areas: List<FarmingArea> by lazy {
-        FarmingPatchRow.all().groupBy(FarmingPatchRow::area).map { (name, rows) ->
-            FarmingArea(
-                name = name,
-                centre = rows.first().centre,
-                patches =
-                    rows.map { row ->
+    private val kinds: Map<PatchKind, Kind> by lazy {
+        FarmingPatchRow.all().associate { row ->
+            val kind = PatchKind.of(row.kind)
+            val patches =
+                row.patches
+                    .groupBy { it.t1 }
+                    .map { (varp, parts) ->
                         PatchDef(
-                            loc = RSCM.getReverseMapping(RSCMType.LOC, row.loc.id),
-                            kind = PatchKind.of(row.kind),
-                            varp = RSCM.getReverseMapping(RSCMType.VARP, row.varp),
+                            varp = RSCM.getReverseMapping(RSCMType.VARP, varp),
+                            kind = kind,
+                            site = parts.first().t2,
+                            locs = parts.map { it.t0.internalName },
+                            coords = parts.map { it.t3 },
                         )
-                    },
-            )
-        }
-    }
-
-    val all: List<PatchDef> by lazy { areas.flatMap(FarmingArea::patches) }
-
-    fun areaOf(patch: PatchDef): FarmingArea = areas.first { patch in it.patches }
-
-    fun nearest(coords: CoordGrid): FarmingArea? =
-        areas.firstOrNull {
-            it.centre.level == coords.level &&
-                kotlin.math.abs(it.centre.x - coords.x) <= AREA_RADIUS &&
-                kotlin.math.abs(it.centre.z - coords.z) <= AREA_RADIUS
-        }
-}
-
-/**
- * Advance the whole farm against the same snapshot. Split at flower maturity so offline time
- * before that boundary is never protected by a flower which only grows during this update.
- */
-internal fun FarmingArea.advance(
-    states: List<PatchState>,
-    elapsed: Int,
-    diseaseRoll: (Double) -> Boolean,
-): List<PatchState> {
-    val current = states.toMutableList()
-    val protection = BooleanArray(patches.size)
-    var left = elapsed
-    while (left > 0) {
-        var step = left
-        for (i in patches.indices) {
-            val state = current[i]
-            val crop = state.crop ?: continue
-            if (patches[i].kind == PatchKind.FLOWER && state.health == Health.HEALTHY &&
-                !state.grown(crop)
-            ) {
-                val maturity = state.minutes + (crop.stages - state.stage - 1) * crop.stageMinutes
-                step = minOf(step, maturity.coerceAtLeast(1))
-            }
-        }
-        for (i in patches.indices) {
-            val crop = current[i].crop
-            protection[i] =
-                crop != null && patches[i].kind == PatchKind.ALLOTMENT &&
-                    patches.indices.any { flower ->
-                        val state = current[flower]
-                        patches[flower].kind == PatchKind.FLOWER &&
-                            state.health == Health.HEALTHY &&
-                            state.crop?.let {
-                                state.grown(it) &&
-                                    (state.cropIndex == crop.protectionIndex ||
-                                        it.seed == "obj.white_lily_seed")
-                            } == true
                     }
+            kind to
+                Kind(
+                    patches = patches,
+                    diseaseFree = row.diseaseFree.map { SiteRule(it.t0, it.t1, it.t2) },
+                    xpBonus = row.xpBonus.map { SiteRule(it.t0, it.t1, it.t2) },
+                    yieldBonus = row.yieldBonus.map { SiteRule(it.t0, it.t1, it.t2) },
+                    access = row.access.map { SiteAccess(it.t0, it.t1, it.t2, it.t3, it.t4) }.groupBy(SiteAccess::site),
+                )
         }
-        for (i in patches.indices) {
-            val state = current[i]
-            current[i] =
-                state.advance(state.crop, step, FarmingComposts.get(state.compost), protection[i], diseaseRoll)
-        }
-        left -= step
     }
-    return current
+
+    val all: List<PatchDef> by lazy { kinds.values.flatMap(Kind::patches) }
+
+    private val byLoc: Map<String, PatchDef> by lazy {
+        all.flatMap { patch -> patch.locs.map { it to patch } }.toMap()
+    }
+
+    private val bySite: Map<String, List<PatchDef>> by lazy { all.groupBy(PatchDef::site) }
+
+    fun byLoc(loc: String): PatchDef? = byLoc[loc]
+
+    fun bySite(site: String): List<PatchDef> = bySite[site].orEmpty()
+
+
+    internal fun access(patch: PatchDef): List<SiteAccess> =
+        kinds.getValue(patch.kind).access[patch.site].orEmpty()
+    fun diseaseFree(player: Player, patch: PatchDef): Boolean =
+        kinds.getValue(patch.kind).diseaseFree.any {
+            it.site == patch.site && (it.variable.isEmpty() || player.vars[it.variable] >= it.value)
+        }
+
+    fun xpBonusPercent(player: Player, patch: PatchDef): Int =
+        bonus(player, patch, kinds.getValue(patch.kind).xpBonus)
+
+    fun yieldBonus(player: Player, patch: PatchDef): Int =
+        bonus(player, patch, kinds.getValue(patch.kind).yieldBonus)
+
+    /** Diary tiers stack as alternatives: the best completed tier applies. */
+    private fun bonus(player: Player, patch: PatchDef, rules: List<SiteRule>): Int =
+        rules.filter { it.site == patch.site && player.vars[it.variable] >= 1 }.maxOfOrNull { it.value } ?: 0
 }

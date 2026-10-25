@@ -1,0 +1,9 @@
+[[varp]]
+id = "varp.farming_fertile_soil_warning"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.fossil_perm_transmit"
+scope = "Perm"

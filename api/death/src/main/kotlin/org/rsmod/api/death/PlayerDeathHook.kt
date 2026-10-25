@@ -37,6 +37,7 @@ public data class PlayerDeathHandling(
     val revealDelay: Int,
     val supplyPile: Boolean,
     val untradeableHandling: UntradeableHandling,
+    val isSafe: Boolean = false,
 )
 
 public enum class UntradeableHandling {
@@ -54,4 +55,16 @@ public interface PlayerDeathHook {
         get() = 0
 
     public fun handleDeath(context: PlayerDeathContext): PlayerDeathHandling?
+}
+
+public interface PlayerDeathDropHook {
+    public val priority: Int
+        get() = 0
+
+    /** Runs once on an unsafe death, before inventory clearing; higher priorities run first. */
+    public fun prepare(
+        context: PlayerDeathContext,
+        handling: PlayerDeathHandling,
+        result: PlayerDeathDrops.DeathDropResult,
+    ): PlayerDeathDrops.DeathDropResult
 }

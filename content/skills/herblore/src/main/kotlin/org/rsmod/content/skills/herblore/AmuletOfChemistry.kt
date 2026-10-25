@@ -57,15 +57,13 @@ object AmuletOfChemistry {
             return BrewResult(baseOutput, extraDoseApplied = false, crumbled = false)
         }
 
-        val remaining = player.chemistryCharges - 1
-        player.chemistryCharges = remaining.coerceAtLeast(0)
+        return BrewResult(upgraded, extraDoseApplied = true, crumbled = player.chemistryCharges == 1)
+    }
 
-        val crumbled = remaining <= 0
-        if (crumbled) {
-            player.front = null
-        }
-
-        return BrewResult(upgraded, extraDoseApplied = true, crumbled = crumbled)
+    fun applyBrewOutput(player: Player, result: BrewResult) {
+        if (!result.extraDoseApplied) return
+        player.chemistryCharges = (player.chemistryCharges - 1).coerceAtLeast(0)
+        if (result.crumbled) player.front = null
     }
 
     /** Parses dose count from `obj.Ndose…` or `obj.name+N` potion ids. */

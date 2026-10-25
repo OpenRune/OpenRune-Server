@@ -1,6 +1,7 @@
 plugins {
     id("base-conventions")
     id("integration-test-suite")
+    id("game-cache-test-conventions")
 }
 
 dependencies {
@@ -9,4 +10,5 @@ dependencies {
     integrationImplementation(projects.api.death)
     integrationImplementation(projects.api.deathPlugin)
     integrationImplementation(projects.api.hitPlugin)
+    testImplementation(projects.api.invStorage)
 }

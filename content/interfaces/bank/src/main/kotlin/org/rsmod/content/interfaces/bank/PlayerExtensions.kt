@@ -12,12 +12,16 @@ import org.rsmod.api.player.ui.ifOpenMainSidePair
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.events.EventBus
+import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Player
 import org.rsmod.game.type.getInvObj
 
 private var Player.extraOpsSpecialBits by intVarp("varp.if1")
 private var Player.extraOpsWearBits by intVarp("varp.if2")
 private var Player.extraOpsConsumableBits by intVarp("varp.if3")
+private var Player.extraOpsFillBits by intVarp("varp.if4")
+
+class BanksideExtraOpsEvent(val player: Player, var fillBits: Int = 0) : UnboundEvent
 
 fun Player.openBank(eventBus: EventBus): Boolean {
     if (IronmanRestrictions.blockUimBank(this)) {
@@ -42,7 +46,7 @@ internal fun Player.highlightNoClickClear() {
     runClientScript(3407, "component.bankside:bankside_highlight".asRSCM(RSCMType.COMPONENT))
 }
 
-internal fun Player.setBanksideExtraOps() {
+internal fun Player.setBanksideExtraOps(eventBus: EventBus) {
     var specialBits = 0
     var wearBits = 0
     var consumableBits = 0
@@ -90,6 +94,9 @@ internal fun Player.setBanksideExtraOps() {
     extraOpsSpecialBits = specialBits
     extraOpsWearBits = wearBits
     extraOpsConsumableBits = consumableBits
+    val event = BanksideExtraOpsEvent(this)
+    eventBus.publish(event)
+    extraOpsFillBits = event.fillBits
 }
 
 internal fun Player.setBankWornBonuses(wornBonuses: WornBonuses, weaponSpeeds: WeaponSpeeds) {
