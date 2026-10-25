@@ -560,16 +560,12 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
         val wanted = wantedArmour(stage) ?: return
         val wearing = grubfootHead(player)
         chatPlayer(happy, "I have some ${wantedColour(stage)} armour here.")
-        if (stage != BROWN_WANTED && !commitHandIn(stage, wanted)) {
-            return
-        }
-        tryOn(stage, wearing)
-        if (stage == BROWN_WANTED) {
+        if (tryOn(stage, wanted, wearing) && stage == BROWN_WANTED) {
             commitHandIn(stage, wanted)
         }
     }
 
-    private suspend fun Dialogue.tryOn(stage: Int, wearing: String) {
+    private suspend fun Dialogue.tryOn(stage: Int, wanted: String, wearing: String): Boolean {
         val tryOn =
             when (stage) {
                 STARTED -> GRUBFOOT_ORANGE_HEAD
@@ -582,6 +578,7 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
         val r = SceneRegion(region)
         player.uuid?.let { uuid -> region?.let { sceneRegions[uuid] = it } }
         val actors = ArrayList<Npc>()
+        var committed = stage == BROWN_WANTED
         lateinit var grubfoot: Npc
         fun spawn(type: String, coords: CoordGrid): Npc {
             val npc = Npc(type, coords)
@@ -601,14 +598,16 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
                     spawn(WARTFACE, r[WARTFACE_TILE])
                     spawn(BENTNOZE, r[BENTNOZE_TILE])
                     grubfoot = spawn(wearing, r[GRUBFOOT_TILE])
+                    if (!committed) committed = commitHandIn(stage, wanted)
                 },
             ) {
+                if (!committed) return@lockedScene
                 wartface(neutral, "Grubfoot!")
                 grubfoot(neutral, "Yes General Wartface?", wearing)
                 wartface(neutral, "Put on this armour!")
                 grubfoot.walk(r[CURTAIN_TILE])
                 delay(CHANGE_TICKS)
-                npcRepo.del(grubfoot, Int.MAX_VALUE)
+                if (grubfoot.isSlotAssigned) npcRepo.del(grubfoot, Int.MAX_VALUE)
                 delay(CHANGE_TICKS)
                 grubfoot = spawn(tryOn, r[CURTAIN_TILE])
                 grubfoot.walk(r[GRUBFOOT_TILE])
@@ -649,6 +648,7 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
             player.uuid?.let(sceneRegions::remove)
             region?.let(regionRepo::unprotect)
         }
+        return committed
     }
 
     private suspend fun Dialogue.grubfootDialogue() {
