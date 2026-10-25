@@ -14,6 +14,7 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.intVarBit
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionTemplate
@@ -51,10 +52,9 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
     questVarbit = "varbit.gobdip_main",
 ) {
     private var Player.grubfootLook by intVarBit("varbit.gobdip_grubfoot_vis")
+    private var Player.sceneReturnTile by intVarp("varp.gobdip_return_tile")
 
-    private class SceneExit(val region: Region?, val returnTo: CoordGrid)
-
-    private val sceneExits = HashMap<Long, SceneExit>()
+    private val sceneRegions = HashMap<Long, Region>()
 
     override fun ScriptContext.init() {
         check(quest.maxSteps == COMPLETE) {
@@ -80,8 +80,10 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
     }
 
     private fun restoreLeftScene(player: Player) {
-        val exit = player.uuid?.let(sceneExits::get) ?: return
-        player.coords = exit.returnTo
+        val saved = player.sceneReturnTile
+        if (saved == 0) return
+        player.coords = CoordGrid(saved)
+        player.sceneReturnTile = 0
         Cinematic.setHideToplevel(player, hide = false)
         Cinematic.setHideHealthHud(player, hide = false)
         Cinematic.setCameraMode(player, CameraMode.Normal)
@@ -91,8 +93,8 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
     }
 
     private fun discardLeftScene(player: Player) {
-        val exit = player.uuid?.let(sceneExits::remove) ?: return
-        exit.region?.let(regionRepo::unprotect)
+        val region = player.uuid?.let(sceneRegions::remove) ?: return
+        regionRepo.unprotect(region)
     }
 
     override fun subTitle(): String =
@@ -596,7 +598,8 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
         val region = regionRepo.add(HUT)
         region?.let(regionRepo::protect)
         val r = SceneRegion(region)
-        player.uuid?.let { uuid -> sceneExits[uuid] = SceneExit(region, returnTo) }
+        player.sceneReturnTile = returnTo.packed
+        player.uuid?.let { uuid -> region?.let { sceneRegions[uuid] = it } }
         val actors = ArrayList<Npc>()
         var committed = stage == BROWN_WANTED
         var verdictGiven = false
@@ -670,9 +673,10 @@ constructor(private val regionRepo: RegionRepository, private val npcRepo: NpcRe
                     }
                 }
             }
+            player.sceneReturnTile = 0
         } finally {
             for (npc in actors) if (npc.isSlotAssigned) npcRepo.del(npc, Int.MAX_VALUE)
-            player.uuid?.let(sceneExits::remove)
+            player.uuid?.let(sceneRegions::remove)
             region?.let(regionRepo::unprotect)
         }
         return committed
