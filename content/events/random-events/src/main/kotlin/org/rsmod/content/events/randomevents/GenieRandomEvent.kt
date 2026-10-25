@@ -18,6 +18,7 @@ import org.rsmod.api.script.onOpNpc5
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
+import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.content.quest.manager.chooseLampSkill
 import org.rsmod.game.MapClock
 import org.rsmod.game.cheat.Cheat
@@ -38,16 +39,19 @@ constructor(
     private val collision: CollisionFlagMap,
     private val mapClock: MapClock,
     private val random: GameRandom,
+    private val config: ServerConfig,
 ) : PluginScript() {
     private val genies = HashMap<Player, Genie>()
 
     override fun ScriptContext.startup() {
-        onPlayerLogin { player.softTimer(SCHEDULE_TIMER, nextEventDelay()) }
-        onPlayerLogout { genies.remove(player)?.let { leave(it.npc) } }
-        onPlayerSoftTimer(SCHEDULE_TIMER) {
-            player.softTimer(SCHEDULE_TIMER, nextEventDelay())
-            if (player !in genies) spawn(player)
+        if (config.gameplay.randomEvents) {
+            onPlayerLogin { player.softTimer(SCHEDULE_TIMER, nextEventDelay()) }
+            onPlayerSoftTimer(SCHEDULE_TIMER) {
+                player.softTimer(SCHEDULE_TIMER, nextEventDelay())
+                if (player !in genies) spawn(player)
+            }
         }
+        onPlayerLogout { genies.remove(player)?.let { leave(it.npc) } }
         onPlayerSoftTimer(GENIE_TIMER) { tick(player) }
         onOpNpc1(GENIE) { talk(it.npc) }
         onOpNpc5(GENIE) { dismiss(it.npc) }

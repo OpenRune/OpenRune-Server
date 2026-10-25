@@ -34,6 +34,9 @@ gameplay:
   # Minutes between home teleport casts (Lumbridge, Edgeville, Arceuus), shared by all of them. 30
   # as on live; 0 removes the cooldown.
   home-teleport-cooldown: 30
+  # Random events (the Genie) appear during play, as on live. false turns the schedule off;
+  # `::randomevent` still summons one.
+  random-events: true
   quest-requirements:
     # Temporary core-mechanics default. Use "respect-progress" when quest gates should use real
     # quest state, or "virtual-completions" for league-style profiles.
