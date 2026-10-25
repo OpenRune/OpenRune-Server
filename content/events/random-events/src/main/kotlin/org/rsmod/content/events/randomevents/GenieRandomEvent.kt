@@ -68,7 +68,7 @@ constructor(
         spawn(player)
     }
 
-    fun spawn(player: Player): Npc {
+    private fun spawn(player: Player): Npc {
         val npc = Npc(GENIE, besideTile(player.coords))
         npc.mode = NpcMode.None
         npcRepo.add(npc, Int.MAX_VALUE)
@@ -80,8 +80,6 @@ constructor(
         genies[player] = Genie(npc, mapClock.cycle + LIFETIME_TICKS)
         return npc
     }
-
-    fun genieOf(player: Player): Npc? = genies[player]?.npc
 
     private fun tick(owner: Player) {
         val genie = genies[owner]
@@ -185,8 +183,8 @@ constructor(
         const val LAMP = "obj.macro_genilamp"
         const val SCHEDULE_TIMER = "timer.random_event"
         const val GENIE_TIMER = "timer.random_event_genie"
-        const val LIFETIME_TICKS = 100
-        const val CALL_INTERVAL = 20
+        private const val LIFETIME_TICKS = 100
+        private const val CALL_INTERVAL = 20
         const val LAMP_XP_PER_LEVEL = 10
         const val MIN_EVENT_DELAY = 6_000
         const val MAX_EVENT_DELAY = 12_000
