@@ -31,6 +31,7 @@ constructor(
     private val drops: PlayerDeathDrops,
     private val handlingResolver: PlayerDeathHandlingResolver,
     private val cleanupHooks: Set<PlayerDeathCleanupHook>,
+    private val storageHooks: Set<PlayerDeathStorageHook>,
     private val respawnHooks: Set<PlayerRespawnHook>,
     dropHooks: Set<PlayerDeathDropHook>,
     private val areaChecker: AreaChecker,
@@ -39,6 +40,7 @@ constructor(
 
     private var Player.specialAttackType by intVarp("varp.sa_attack")
     private var Player.inInstance by boolVarBit("varbit.player_in_instance")
+    private var Player.deaths by intVarp("varp.tracking_deaths")
     private var Player.insideWilderness by boolVarBit("varbit.inside_wilderness")
 
     public suspend fun death(access: ProtectedAccess) {
@@ -51,9 +53,9 @@ constructor(
         val randomRespawn =
             if (hooked != null) null else mapFindSquareLineOfWalk(respawn, minRadius = 0, maxRadius = 2)
 
+        player.deaths++
         stopAction()
         delay(2)
-        soundSynth("synth.human_death")
         anim("seq.human_death")
         delay(4)
         combatClearQueue()
@@ -62,9 +64,9 @@ constructor(
         val deathCoords = player.coords
         handleDeathDrops(player, deathCoords)
 
+        mes("Oh dear, you are dead!")
         midiSong("midi.stop_music")
         midiJingle("jingle.air_guitar_jingle")
-        mes("Oh dear, you are dead!")
         telejump(randomRespawn ?: respawn, TeleportType.Exempt)
         resetAnim()
         resetPlayerState()
@@ -98,7 +100,8 @@ constructor(
         val context = buildContext(player, deathCoords, killer)
         val handling = handlingResolver.resolve(context)
 
-        var result = drops.selectDrops(player, context, handling)
+        val emptied = storageHooks.flatMap { it.empty(player, context.isPvpDeath) }
+        var result = drops.withLost(drops.selectDrops(player, context, handling), emptied)
         if (!handling.isSafe && !player.hasSafeDeathMark()) {
             for (hook in dropHooks) {
                 result = hook.prepare(context, handling, result)

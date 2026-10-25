@@ -37,6 +37,9 @@ public data class PlayerDeathHandling(
     val revealDelay: Int,
     val supplyPile: Boolean,
     val untradeableHandling: UntradeableHandling,
+    val grave: DeathGrave? = null,
+    /** Food, potions and phoenix necklaces that would be lost are deleted instead. */
+    val deleteSupplies: Boolean = false,
     val isSafe: Boolean = false,
 )
 
@@ -47,7 +50,8 @@ public enum class UntradeableHandling {
     KEEP,
 }
 
-public const val RECENT_PVP_HIT_TICKS: Int = 600
+/** A death counts as PvP only with player combat in the last 30 seconds (update of 27 May 2026). */
+public const val RECENT_PVP_HIT_TICKS: Int = 50
 
 public interface PlayerDeathHook {
     /** Hooks with a higher priority are asked first; the first non-null handling wins. */

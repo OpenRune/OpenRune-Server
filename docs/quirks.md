@@ -103,6 +103,13 @@ IDs. Indices 1–27 retain their original crops; Huasca and white lily remain at
 varps and the saved clock are retained. New flags require the version marker;
 legacy countdown bits are not reinterpreted as protection or special-patch flags.
 
+The pre-merge WIP build `df7d211e6` used IDs now occupied on main. Additional
+patches 40–42 and 61–65 now use varps 64490–64497; the herb-sack inventory is 64402.
+These preview-save values require explicit migration before reuse. Legacy patch
+IDs are unchanged. The matching herb enum and Tithe timer were also rebound;
+rebuild with `OPENRUNE_FULL_REBUILD=true` after this reassignment. Incremental
+cleanup can otherwise remove cache entries whose old IDs have been reused.
+
 Growth uses globally aligned minute windows and a saved per-player offset in
 0–31, including offline replay. Long stages no longer depend on the old narrow
 per-patch countdown. Replay computes protection before each growth mutation and

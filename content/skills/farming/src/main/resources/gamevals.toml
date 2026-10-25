@@ -39,9 +39,9 @@ farming_patch_36 = 64418
 farming_patch_37 = 64419
 farming_patch_38 = 64421
 farming_patch_39 = 64422
-farming_patch_40 = 64423
-farming_patch_41 = 64424
-farming_patch_42 = 64425
+farming_patch_40 = 64490
+farming_patch_41 = 64491
+farming_patch_42 = 64492
 farming_patch_43 = 64426
 farming_patch_44 = 64427
 farming_patch_45 = 64428
@@ -60,11 +60,11 @@ farming_patch_57 = 64440
 farming_patch_58 = 64441
 farming_patch_59 = 64442
 farming_patch_60 = 64443
-farming_patch_61 = 64444
-farming_patch_62 = 64445
-farming_patch_63 = 64446
-farming_patch_64 = 64447
-farming_patch_65 = 64448
+farming_patch_61 = 64493
+farming_patch_62 = 64494
+farming_patch_63 = 64495
+farming_patch_64 = 64496
+farming_patch_65 = 64497
 farming_patch_66 = 64449
 farming_patch_67 = 64450
 farming_patch_68 = 64451
@@ -113,7 +113,7 @@ farming_sapling_clock = 64499
 [gamevals.timer]
 farming_transmit = 4440
 farming_saplings = 4441
-farming_tithe = 4442
+farming_tithe = 4443
 farming_white_tree = 4444
 
 [gamevals.dbtable]
@@ -244,7 +244,7 @@ farming_guild = 63798
 shop_currency_tithe_points = 63799
 
 [gamevals.enum]
-farming_herb_sack_items = 64420
+farming_herb_sack_items = 64403
 farming_reagent_pouch_items = 64421
 farming_seed_box_items = 64422
 farming_seed_nest_rewards = 64423
@@ -272,7 +272,7 @@ farming_geomancy_crop_names = 1238
 omnishop_buy_quantities = 5844
 
 [gamevals.inv]
-farming_herb_sack = 64400
+farming_herb_sack = 64402
 farming_reagent_pouch = 64401
 
 [gamevals.param]
