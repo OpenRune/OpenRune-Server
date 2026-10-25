@@ -3,6 +3,7 @@ package org.rsmod.content.skills.farming
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -66,6 +67,7 @@ class FarmingNatureAmulet @Inject constructor(private val farming: FarmingServic
         if (!shouldNotify(current, remembered)) return
         if (AMULET in player.inv || AMULET in player.worn) {
             player.mes("A low hum resonates from the Amulet of Nature - it seeks audience with you.")
+            player.midiJingle("jingle.farming_amulet_jingle")
         }
     }
 

@@ -8,9 +8,9 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreFinishedRow
-import org.rsmod.content.skills.farming.FarmingBagHerblore
 import org.rsmod.content.skills.SkillMultiConfig
 import org.rsmod.content.skills.SkillMultiEntry
+import org.rsmod.content.skills.farming.FarmingBagHerblore
 import org.rsmod.content.skills.openSkillMulti
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext

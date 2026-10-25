@@ -4,6 +4,8 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
+import org.rsmod.api.script.onOpHeld3
+import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpHeld5
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.game.inv.InvObj
@@ -13,9 +15,11 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class FarmingCompostScript @Inject constructor(private val compost: FarmingCompostService) : PluginScript() {
     override fun ScriptContext.startup() {
+        onOpHeld1(FarmingBottomlessCompost.EMPTY) { if (inv[it.slot] == it.obj) fill(it.slot, it.obj) }
+        onOpHeld2(FarmingBottomlessCompost.EMPTY) { if (inv[it.slot] == it.obj) check(it.obj) }
+        onOpHeld3(FarmingBottomlessCompost.FILLED) { if (inv[it.slot] == it.obj) fill(it.slot, it.obj) }
+        onOpHeld4(FarmingBottomlessCompost.FILLED) { if (inv[it.slot] == it.obj) check(it.obj) }
         for (obj in listOf(FarmingBottomlessCompost.EMPTY, FarmingBottomlessCompost.FILLED)) {
-            onOpHeld1(obj) { if (inv[it.slot] == it.obj) fill(it.slot, it.obj) }
-            onOpHeld2(obj) { if (inv[it.slot] == it.obj) check(it.obj) }
             for (form in FarmingCompostSupplies.BUCKETS) {
                 onOpHeldU(obj, form.obj) {
                     val bucket = inv[it.firstSlot]?.takeIf { it.isType(obj) } ?: return@onOpHeldU

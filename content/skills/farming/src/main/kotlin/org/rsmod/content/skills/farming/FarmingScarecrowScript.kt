@@ -17,7 +17,14 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class FarmingScarecrowScript @Inject constructor(private val xpMods: XpModifiers) : PluginScript() {
     override fun ScriptContext.startup() {
-        for (hay in listOf("loc.haystack", "loc.haystack2", "loc.haystack3", "loc.haybail", "loc.hay_1", "loc.hay_2", "loc.hay_bale", "loc.hay_bale_stack", "loc.hay_bale_thin", "loc.hay_bale_stack_thin")) {
+        for (hay in listOf(
+            "loc.haystack", "loc.haystack2", "loc.haystack3", "loc.haybail",
+            "loc.hay_1", "loc.hay_2", "loc.hay_bale", "loc.hay_bale_stack",
+            "loc.hay_bale_thin", "loc.hay_bale_stack_thin",
+            "loc.shayzien_agility_haystack01", "loc.shayzien_agility_haystack02",
+            "loc.hw22_bundle_hay01_bale01", "loc.hw22_bundle_hay01_bale02",
+            "loc.hw22_bundle_hay01_stack01",
+        )) {
             onOpLocU(hay, EMPTY_SACK) {
                 if (invReplace(inv, EMPTY_SACK, 1, HAY_SACK).success) {
                     mes("You fill the sack with hay.")

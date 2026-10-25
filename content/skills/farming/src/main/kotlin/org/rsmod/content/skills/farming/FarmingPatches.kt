@@ -65,7 +65,6 @@ object FarmingPatches {
 
     fun bySite(site: String): List<PatchDef> = bySite[site].orEmpty()
 
-
     internal fun access(patch: PatchDef): List<SiteAccess> =
         kinds.getValue(patch.kind).access[patch.site].orEmpty()
     fun diseaseFree(player: Player, patch: PatchDef): Boolean =

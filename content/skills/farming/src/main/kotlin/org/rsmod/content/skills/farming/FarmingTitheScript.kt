@@ -89,7 +89,6 @@ class FarmingTitheScript @Inject constructor(private val tithe: FarmingTithe) : 
         openOmnishop(FarmingTitheRewards.SHOP)
     }
 
-
     private suspend fun ProtectedAccess.refund(obj: Int, slot: Int, points: Int) {
         if (choice2("Exchange the item for $points reward points?", true, "Cancel", false) != true) return
         if (player.vars[FarmingTithe.POINTS] > FarmingTitheData.row.pointsCap - points) {

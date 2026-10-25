@@ -32,8 +32,8 @@ import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.InvVirtualStorageHolder
+import org.rsmod.game.inv.Inventory
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.game.type.placeholder
 import org.rsmod.plugin.scripts.ScriptContext
@@ -334,6 +334,7 @@ class FarmingTitheInventoryTest {
     private class Fixture {
         private val events = EventBus()
         private val banking = BankInvScript(events, WornBonuses(), WeaponSpeeds(AttackStyles()))
+
         @OptIn(InternalApi::class)
         val player = Player().apply {
             client = SilentClient()
@@ -388,6 +389,7 @@ class FarmingTitheInventoryTest {
 
     companion object {
         private val RESTORED = mutableListOf<() -> Unit>()
+
         @OptIn(InternalApi::class)
         @JvmStatic @BeforeAll fun cache() {
             val root = generateSequence(Path.of("").toAbsolutePath()) { it.parent }
@@ -409,6 +411,7 @@ class FarmingTitheInventoryTest {
                 ScriptContext(EventBus(), CheatCommandMap(), EngineQueueCache()).startup()
             }
         }
+
         @JvmStatic @AfterAll fun restore() {
             RESTORED.asReversed().forEach { it() }
             RESTORED.clear()

@@ -244,6 +244,7 @@ class FarmingServicesTest {
         )
         val gardeners = FarmingGardeners(farming)
         var patch = FarmingPatches.all.first { it.kind == PatchKind.ALLOTMENT }
+
         @OptIn(InternalApi::class)
         val player = Player().apply {
             client = SilentClient()
@@ -281,6 +282,7 @@ class FarmingServicesTest {
 
     companion object {
         private val RESTORED = mutableListOf<() -> Unit>()
+
         @OptIn(InternalApi::class)
         @JvmStatic @BeforeAll fun cache() {
             val root = generateSequence(Path.of("").toAbsolutePath()) { it.parent }.first { Files.isRegularFile(it.resolve("game.yml")) }
@@ -300,6 +302,7 @@ class FarmingServicesTest {
                 ScriptContext(EventBus(), CheatCommandMap(), EngineQueueCache()).startup()
             }
         }
+
         @JvmStatic @AfterAll fun restore() {
             RESTORED.asReversed().forEach { it() }
             RESTORED.clear()

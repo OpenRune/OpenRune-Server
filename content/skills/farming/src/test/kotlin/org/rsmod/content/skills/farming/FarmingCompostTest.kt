@@ -96,6 +96,52 @@ class FarmingCompostTest {
     }
 
     @Test
+    fun `maximum noted input fills only capacity and stale repeat cannot debit its remainder`() {
+        for (form in FarmingCompostSupplies.BUCKETS.filter { it.noted }) {
+            val f = Fixture()
+            val empty = InvObj(FarmingBottomlessCompost.EMPTY)
+            f.player.inv[0] = empty
+            val sourceSlot = f.give(form.obj.internalName, Int.MAX_VALUE)
+            val source = checkNotNull(f.player.inv[sourceSlot])
+            val consumed = FarmingBottomlessCompost.capacity / FarmingBottomlessCompost.chargesPerBucket
+            assertEquals(consumed, f.fill(Int.MAX_VALUE))
+            assertEquals(BottomlessCompost(form.kind, 10000), f.contents())
+            assertEquals(Int.MAX_VALUE - consumed, f.count(form.obj.internalName))
+            assertEquals(consumed, f.count(form.empty.internalName))
+            val before = f.player.inv.objs.copyOf()
+            assertEquals(0, f.compost.fill(f.player, 0, empty, sourceSlot, source, form, Int.MAX_VALUE))
+            assertTrue(before.contentEquals(f.player.inv.objs))
+        }
+    }
+
+    @Test
+    fun `same item id with different contents invalidates fill empty and delayed application`() {
+        val f = Fixture()
+        val selected = FarmingBottomlessCompost.bucket(Compost.NORMAL, 2)
+        f.player.inv[0] = selected
+        val sourceSlot = f.give("obj.bucket_compost")
+        val source = checkNotNull(f.player.inv[sourceSlot])
+        val form = checkNotNull(FarmingCompostSupplies.bucket("obj.bucket_compost"))
+        f.start { with(f.compost) { apply(f.patch, FarmingBottomlessCompost.FILLED, 0) } }
+        val replacement = FarmingBottomlessCompost.bucket(Compost.ULTRA, 7)
+        f.player.inv[0] = replacement
+        val before = f.player.inv.objs.copyOf()
+        f.finish()
+        assertEquals(Compost.NONE, f.state().compost)
+        assertEquals(0, f.xp())
+        assertEquals(0, f.compost.fill(f.player, 0, selected, sourceSlot, source, form, 1))
+        assertFalse(f.compost.empty(f.player, 0, selected))
+        assertTrue(before.contentEquals(f.player.inv.objs))
+        f.player.inv[0] = selected
+        f.player.inv[sourceSlot] = null
+        f.give("obj.cert_bucket_compost", 2)
+        assertEquals(0, f.compost.fill(f.player, 0, selected, sourceSlot, source, form, 1))
+        assertEquals(selected, f.player.inv[0])
+        assertEquals(2, f.count("obj.cert_bucket_compost"))
+        assertEquals(0, f.count("obj.bucket_empty"))
+    }
+
+    @Test
     fun `vanished selected bucket or compost never consumes a different slot`() {
         val f = Fixture()
         val empty = InvObj(FarmingBottomlessCompost.EMPTY)
@@ -231,6 +277,48 @@ class FarmingCompostTest {
         assertEquals(InvObj(FarmingBottomlessCompost.EMPTY), f.player.inv[0])
         assertEquals(second, f.player.inv[1])
         assertEquals(0, f.count("obj.bucket_compost"))
+    }
+
+    @Test
+    fun `one physical compost funds exactly two patches across storage then permits a new tier`() {
+        for (form in FarmingCompostSupplies.BUCKETS) {
+            val f = Fixture()
+            f.player.inv[0] = InvObj(FarmingBottomlessCompost.EMPTY)
+            f.give(form.obj.internalName)
+            assertEquals(1, f.fill(1))
+            assertEquals(0, f.count(form.obj.internalName))
+            assertEquals(1, f.count(form.empty.internalName))
+            assertEquals(BottomlessCompost(form.kind, 2), f.contents())
+            assertEquals(1, FarmingLeprechaunStorage.deposit(f.player, 0, 1))
+            assertEquals(null, f.player.inv[0])
+            assertEquals(1, FarmingLeprechaunStorage.withdraw(f.player, "bottomless_bucket", 1))
+            assertEquals(BottomlessCompost(form.kind, 2), f.contents())
+            f.start { with(f.compost) { apply(f.patch, FarmingBottomlessCompost.FILLED, 0) } }
+            f.finish()
+            assertEquals(form.kind, f.state().compost)
+            assertEquals(BottomlessCompost(form.kind, 1), f.contents())
+            val paidXp = f.xp()
+            f.start { with(f.compost) { apply(f.patch, FarmingBottomlessCompost.FILLED, 0) } }
+            f.finish()
+            assertEquals(BottomlessCompost(form.kind, 1), f.contents())
+            assertEquals(paidXp, f.xp())
+            val second = FarmingPatches.all.first { it.kind == PatchKind.HERB && it.varp != f.patch.varp }
+            VarPlayerIntMapSetter.set(f.player, second.varp, PatchState().empty().pack())
+            f.start { with(f.compost) { apply(second, FarmingBottomlessCompost.FILLED, 0) } }
+            f.finish()
+            assertEquals(form.kind, PatchState.unpack(f.player.vars[second.varp]).compost)
+            assertEquals(InvObj(FarmingBottomlessCompost.EMPTY), f.player.inv[0])
+            assertEquals(1, f.count(form.empty.internalName))
+            val next = FarmingCompostSupplies.BUCKETS.first { !it.noted && it.kind != form.kind }
+            f.give(next.obj.internalName)
+            assertEquals(1, f.fill(1))
+            assertEquals(BottomlessCompost(next.kind, 2), f.contents())
+            assertEquals(0, f.count(next.obj.internalName))
+            assertTrue(f.compost.empty(f.player, 0, checkNotNull(f.player.inv[0])))
+            assertEquals(BottomlessCompost(Compost.NONE, 0), f.contents())
+            assertEquals(0, f.count(next.obj.internalName))
+            assertEquals(if (form.noted) 1 else 2, f.count(next.empty.internalName))
+        }
     }
 
     private class Fixture {

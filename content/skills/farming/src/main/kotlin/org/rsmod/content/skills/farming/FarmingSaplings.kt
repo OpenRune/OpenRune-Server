@@ -87,7 +87,6 @@ object FarmingSaplings {
         WateringCans.refill(player, "obj.zeah_wateringcan")
     }
 
-
     fun grow(player: Player, millis: Long = System.currentTimeMillis()) {
         val cycle = FarmingClock.cycle(player, 5, millis).toInt()
         val previous = player.vars[CLOCK]
@@ -114,5 +113,4 @@ object FarmingSaplings {
             BankTransforms.transform(player, bank, slot, chain.sapling)
         }
     }
-
 }

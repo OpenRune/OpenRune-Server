@@ -183,6 +183,60 @@ class FarmingEquipmentTest {
     }
 
     @Test
+    fun `both scarecrow assembly stages require level 23 and only completion awards XP`() {
+        val f = Fixture()
+        val script = FarmingScarecrowScript(XpModifiers(emptySet()))
+        f.fill()
+        f.player.inv[0] = InvObj("obj.scarecrow_torso")
+        f.player.inv[1] = InvObj("obj.bronze_spear")
+        f.player.inv[2] = InvObj("obj.watermelon")
+        val before = f.player.inv.toList()
+        val xp = f.player.statMap.getFineXP(STAT_FARMING)
+        f.player.statMap.setCurrentLevel(STAT_FARMING, 22)
+        f.run { with(script) { assemble("obj.scarecrow_torso", 0, "obj.bronze_spear", 1, "obj.scarecrow_torso_spear", false) } }
+        assertEquals(before, f.player.inv.toList())
+        assertEquals(xp, f.player.statMap.getFineXP(STAT_FARMING))
+        f.player.statMap.setCurrentLevel(STAT_FARMING, 23)
+        f.run { with(script) { assemble("obj.scarecrow_torso", 0, "obj.bronze_spear", 1, "obj.scarecrow_torso_spear", false) } }
+        assertEquals(0, f.player.inv.count("obj.scarecrow_torso"))
+        assertEquals(0, f.player.inv.count("obj.bronze_spear"))
+        assertEquals(1, f.player.inv.count("obj.scarecrow_torso_spear"))
+        assertEquals(1, f.player.inv.count("obj.watermelon"))
+        assertEquals(25, f.player.inv.count(SPADE))
+        assertEquals(xp, f.player.statMap.getFineXP(STAT_FARMING))
+        val torso = f.player.inv.indices.first { f.player.inv[it]?.id == "obj.scarecrow_torso_spear".asRSCM() }
+        val assembled = f.player.inv.toList()
+        f.player.statMap.setCurrentLevel(STAT_FARMING, 22)
+        f.run { with(script) { assemble("obj.scarecrow_torso_spear", torso, "obj.watermelon", 2, FarmingScarecrow.SCARECROW, true) } }
+        assertEquals(assembled, f.player.inv.toList())
+        assertEquals(xp, f.player.statMap.getFineXP(STAT_FARMING))
+        f.player.statMap.setCurrentLevel(STAT_FARMING, 23)
+        f.run { with(script) { assemble("obj.scarecrow_torso_spear", torso, "obj.watermelon", 2, FarmingScarecrow.SCARECROW, true) } }
+        assertEquals(0, f.player.inv.count("obj.scarecrow_torso_spear"))
+        assertEquals(0, f.player.inv.count("obj.watermelon"))
+        assertEquals(1, f.player.inv.count(FarmingScarecrow.SCARECROW))
+        assertEquals(25, f.player.inv.count(SPADE))
+        assertEquals(xp + 250, f.player.statMap.getFineXP(STAT_FARMING))
+    }
+
+    @Test
+    fun `scarecrow torso refuses poisoned noted or stale selected spears without taking another copy`() {
+        val f = Fixture()
+        val script = FarmingScarecrowScript(XpModifiers(emptySet()))
+        val xp = f.player.statMap.getFineXP(STAT_FARMING)
+        for (spear in listOf("obj.bronze_spear_p", "obj.bronze_spear_p+", "obj.bronze_spear_p++", "obj.cert_bronze_spear", SPADE)) {
+            f.fill()
+            f.player.inv[0] = InvObj("obj.scarecrow_torso")
+            f.player.inv[1] = InvObj(spear)
+            f.player.inv[2] = InvObj("obj.bronze_spear")
+            val before = f.player.inv.toList()
+            f.run { with(script) { assemble("obj.scarecrow_torso", 0, "obj.bronze_spear", 1, "obj.scarecrow_torso_spear", false) } }
+            assertEquals(before, f.player.inv.toList(), spear)
+            assertEquals(xp, f.player.statMap.getFineXP(STAT_FARMING), spear)
+        }
+    }
+
+    @Test
     fun `scarecrow assembly consumes both components with full inventory and cannot repeat the reward`() {
         val f = Fixture()
         val script = FarmingScarecrowScript(XpModifiers(emptySet()))
@@ -217,6 +271,34 @@ class FarmingEquipmentTest {
     }
 
     @Test
+    fun `scarecrow placement rejects occupied patches and consumes exactly one on weeded soil`() {
+        val f = Fixture()
+        val patch = FarmingPatches.all.first { it.kind == PatchKind.FLOWER }
+        val service = FarmingService(XpModifiers(emptySet()), f.random, f.events,
+            FarmingRewardTestSupport.rewards(f.random, f.events), f.equipment, farmingSiteAccess())
+        val scarecrow = FarmingScarecrow(service)
+        f.fill()
+        f.player.inv[0] = InvObj(FarmingScarecrow.SCARECROW)
+        val flower = checkNotNull(FarmingCrops.bySeed("obj.marigold_seed"))
+        for (state in listOf(PatchState(weeds = 1), PatchState(weeds = 3, cropIndex = flower.index))) {
+            VarPlayerIntMapSetter.set(f.player, patch.varp, state.pack())
+            f.run { with(scarecrow) { place(patch) } }
+            assertEquals(state, service.stored(f.player, patch))
+            assertEquals(1, f.player.inv.count(FarmingScarecrow.SCARECROW))
+        }
+        val empty = PatchState(weeds = 3, compost = Compost.SUPER)
+        VarPlayerIntMapSetter.set(f.player, patch.varp, empty.pack())
+        repeat(2) { f.run { with(scarecrow) { place(patch) } } }
+        assertEquals(empty.copy(scarecrow = true), service.stored(f.player, patch))
+        assertEquals(0, f.player.inv.count(FarmingScarecrow.SCARECROW))
+        assertEquals(27, f.player.inv.count(SPADE))
+        repeat(2) { f.run { with(scarecrow) { remove(patch) } } }
+        assertEquals(empty, service.stored(f.player, patch))
+        assertEquals(1, f.player.inv.count(FarmingScarecrow.SCARECROW))
+        assertEquals(27, f.player.inv.count(SPADE))
+    }
+
+    @Test
     fun `full inventory cannot remove or duplicate a placed scarecrow and weeds survive removal`() {
         val f = Fixture()
         val patch = FarmingPatches.all.first { it.kind == PatchKind.FLOWER }
@@ -246,6 +328,7 @@ class FarmingEquipmentTest {
         val random = FixedRandom()
         val equipment = FarmingEquipment(random)
         val events = EventBus()
+
         @OptIn(InternalApi::class)
         val player = Player().apply {
             client = object : Client<Any, Any> {
@@ -279,6 +362,7 @@ class FarmingEquipmentTest {
 
     companion object {
         private val RESTORED = mutableListOf<() -> Unit>()
+
         @OptIn(InternalApi::class)
         @JvmStatic @BeforeAll fun cache() {
             val root = generateSequence(Path.of("").toAbsolutePath()) { it.parent }
@@ -300,6 +384,7 @@ class FarmingEquipmentTest {
                 ScriptContext(EventBus(), CheatCommandMap(), EngineQueueCache()).startup()
             }
         }
+
         @JvmStatic @AfterAll fun restore() {
             RESTORED.asReversed().forEach { it() }
             RESTORED.clear()

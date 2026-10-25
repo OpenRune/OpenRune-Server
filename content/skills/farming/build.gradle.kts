@@ -17,4 +17,5 @@ dependencies {
     implementation(projects.content.interfaces.collectionLog)
     testImplementation(projects.api.invStorage)
     testImplementation(libs.fastutil)
+    testImplementation(libs.rsprot.api)
 }

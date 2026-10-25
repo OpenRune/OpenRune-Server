@@ -153,6 +153,26 @@ Huasca also uses the existing Herblore production pipeline: level 58 to clean
 together. Cleaning and unfinished mixing use atomic inventory transactions,
 including when the input inventory is full.
 
+Scarecrows use native hay-source and sack-fill actions, followed by spear/watermelon
+assembly. Placement and removal conserve the scarecrow; protection applies only to
+sweetcorn at the same site. A bounded client regression exercised the Varlamore hay
+source, assembly for 25 base XP, and native flower-patch placement/removal.
+
+The Amulet of Nature persists its bound patch and reports growth, disease, death
+and maturity. Final-state alerts include the native Farming jingle; offline replay
+reports the final status rather than replaying intermediate alerts. The client
+regression observed the hum and MIDI-jingle packet after maturation, no repeated
+alert on Inspect, and the same binding after actual logout/relog.
+
+Bottomless buckets use the filled item's native Fill/Check operations, retain one
+compost type and double each input bucket into two uses, up to 10,000 uses. Patch
+treatment spends one use only when committed. The bounded client check consumed
+two buckets of each tier and returned exactly six empty buckets, rejected mixed
+types, spent no charge on repeated treatment, and preserved three charges through
+leprechaun storage and actual logout/relog. Empty intentionally discards remaining
+uses and resets the type. Capacity/overflow and stale-source boundaries have
+deterministic regression coverage, not a live 10,000-use fill.
+
 The inherited disease model is still an unverified approximation: a 35% base
 chance divided across growth stages, with compost/supercompost/ultracompost
 reductions. Ultracompost does not confer immunity. The inherited watered-stage

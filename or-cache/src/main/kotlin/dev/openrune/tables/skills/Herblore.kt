@@ -152,7 +152,6 @@ object Herblore {
                 }
                 column(COL_BREW_TICKS, 1, 1)
             }
-
         }
 
     /**
@@ -831,7 +830,6 @@ object Herblore {
                     category("Potions")
                 }
             }
-
         }
 
     /**
@@ -989,7 +987,6 @@ object Herblore {
                 }
             }
         }
-
 
     /**
      * Table for creating barbarian mixes (two-dose potion + roe/caviar)
@@ -1197,7 +1194,6 @@ object Herblore {
                     category("Barbarian Mixes")
                 }
             }
-
         }
 
     /**
@@ -1251,7 +1247,6 @@ object Herblore {
                     category("Swamp Tar")
                 }
             }
-
         }
 
     /**

@@ -51,7 +51,6 @@ class FarmingTithe @Inject constructor(
     )
     private val fields = mutableMapOf<InstanceId, Field>()
 
-
     fun enter(player: Player, resume: Boolean = false): Boolean {
         if (!resume) {
             val level = FarmingTitheData.crops.first().level

@@ -290,6 +290,7 @@ class FarmingGuildTest {
                 ScriptContext(EventBus(), CheatCommandMap(), EngineQueueCache()).startup()
             }
         }
+
         @JvmStatic @AfterAll fun restore() {
             RESTORE.asReversed().forEach { it() }
             RESTORE.clear()

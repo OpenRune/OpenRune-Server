@@ -30,8 +30,10 @@ import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
-import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.server.config.ServerConfig
+import org.rsmod.api.stats.xpmod.XpModifiers
+import org.rsmod.content.quest.manager.QuestRequirementResolver
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
@@ -44,8 +46,6 @@ import org.rsmod.game.inv.Inventory
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.queue.EngineQueueCache
-import org.rsmod.content.quest.manager.QuestRequirementResolver
-import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.plugin.scripts.ScriptContext
 
 @Execution(ExecutionMode.SAME_THREAD)

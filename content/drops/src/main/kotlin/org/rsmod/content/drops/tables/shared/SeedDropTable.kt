@@ -3,10 +3,10 @@ package org.rsmod.content.drops.tables.shared
 import dtx.core.singleRollable
 import dtx.rs.RSWeightedTable
 import dtx.rs.rsWeightedTable
+import kotlin.random.Random
 import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.KillRollContext
 import org.rsmod.game.entity.Player
-import kotlin.random.Random
 
 public val generalSeedDropTable: RSWeightedTable<Player, DropRollItem> = rsWeightedTable {
     name("General seed drop table")

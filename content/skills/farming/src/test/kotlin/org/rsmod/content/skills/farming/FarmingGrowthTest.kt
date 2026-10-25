@@ -238,6 +238,30 @@ class FarmingGrowthTest {
     }
 
     @Test
+    fun `saved scarecrow protects both allotments throughout offline replay while weeds regrow`() {
+        val site = FarmingPatches.all.first { flowerSite(it.site) }.site
+        val allotments = FarmingPatches.bySite(site).filter { it.kind == PatchKind.ALLOTMENT }
+        val flower = FarmingPatches.bySite(site).first { it.kind == PatchKind.FLOWER }
+        val sweetcorn = crop("obj.sweetcorn_seed")
+        for (patches in listOf(allotments + flower, listOf(flower) + allotments)) {
+            val states = patches.map {
+                val state = if (it == flower) PatchState(weeds = 3, scarecrow = true)
+                else planted(sweetcorn).copy(stage = 1)
+                PatchState.unpack(state.pack())
+            }.toTypedArray()
+            FarmingGrowth(patches, BooleanArray(patches.size), FixedRandom(0, 0.0))
+                .replay(states, 0, sweetcorn.cycleMinutes.toLong() * (sweetcorn.stages + 10), 0)
+            for (i in patches.indices) {
+                if (patches[i] == flower) assertEquals(PatchState(scarecrow = true), states[i])
+                else {
+                    assertEquals(sweetcorn.stages, states[i].stage)
+                    assertEquals(Health.HEALTHY, states[i].health)
+                }
+            }
+        }
+    }
+
+    @Test
     fun `checked renewables regrow one produce per regrow tick up to the maximum`() {
         val bush = FarmingCrops.all.first { it.kind == PatchKind.BUSH && it.regrowMinutes > 0 }
         val patch = patchFor(bush)

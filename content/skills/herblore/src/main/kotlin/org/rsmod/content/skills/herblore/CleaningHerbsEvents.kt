@@ -56,5 +56,4 @@ class CleaningHerbsEvents : PluginScript() {
     }
 
     private data class CleanHerbTask(val row: HerbloreCleaningRow)
-
 }

@@ -91,6 +91,7 @@ class FarmingSiteAccessTest {
         assertNotNull(access("virtual-completions", setOf("quest_greatbrainrobbery"))
             .denial(player, patch("harmony_island_herb")))
     }
+
     @Test fun `weiss requires built fire independently of quest policy at exact native boundary`() {
         val access = access("assume-completed")
         val player = Player()
@@ -154,6 +155,7 @@ class FarmingSiteAccessTest {
             FarmingRewardTestSupport.rewards(random, events), FarmingEquipment(random), farmingSiteAccess())
         private val coroutine = GameCoroutine("farming-site-access-test")
         private var result: Result<Unit>? = null
+
         @OptIn(InternalApi::class)
         val player = Player().apply {
             client = SilentClient()
@@ -208,6 +210,7 @@ class FarmingSiteAccessTest {
     companion object {
         private val restored = mutableListOf<() -> Unit>()
         private fun set(player: Player, key: String, value: Int) = VarPlayerIntMapSetter.set(player, key, value)
+
         @OptIn(InternalApi::class)
         @JvmStatic @BeforeAll fun cache() {
             val root = generateSequence(Path.of("").toAbsolutePath()) { it.parent }
@@ -229,6 +232,7 @@ class FarmingSiteAccessTest {
                 ScriptContext(EventBus(), CheatCommandMap(), EngineQueueCache()).startup()
             }
         }
+
         @JvmStatic @AfterAll fun restore() { restored.asReversed().forEach { it() }; restored.clear() }
     }
 }

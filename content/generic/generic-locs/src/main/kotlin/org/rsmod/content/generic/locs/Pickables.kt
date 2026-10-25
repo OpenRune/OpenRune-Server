@@ -38,7 +38,6 @@ class Pickables @Inject constructor(
         onOpLoc2("loc.fai_varrock_cadavabush_tailored") {
             mes("There are no berries on this bush. Maybe you should try another bush.")
         }
-
     }
 
     private suspend fun ProtectedAccess.emptyPickable(loc: BoundLocInfo, row: PickableObjectsRow) {

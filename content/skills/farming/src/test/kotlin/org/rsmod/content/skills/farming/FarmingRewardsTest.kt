@@ -121,6 +121,7 @@ class FarmingRewardsTest {
         val insurance = PetInsurance()
         val rewards = FarmingRewardTestSupport.rewards(random, events)
         val crop = FarmingCrops.bySeed("obj.guam_seed")!!
+
         @OptIn(InternalApi::class)
         val player = Player().apply {
             client = SilentClient()

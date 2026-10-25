@@ -6,15 +6,14 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import java.nio.file.Files
 import java.nio.file.Path
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
-import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -22,13 +21,14 @@ import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.shops.currency.VarBitShopCurrency
 import org.rsmod.coroutine.GameCoroutine
-import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.events.EventBus
+import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.InvVirtualStorageHolder
+import org.rsmod.game.inv.Inventory
+import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.plugin.scripts.ScriptContext
 
 @Execution(ExecutionMode.SAME_THREAD)
