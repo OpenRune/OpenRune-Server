@@ -1,12 +1,17 @@
 package org.rsmod.content.quest.area.lumbridge
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.events.interact.NpcUEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.api.script.onOpNpcU
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestScript
 import org.rsmod.content.quest.manager.rewards
@@ -14,12 +19,6 @@ import org.rsmod.content.quest.manager.startQuestPrompt
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Sheep Shearer. Progress is varp 179 (`varp.sheep`), as in OSRS and as
- * Quest Helper reads it: 0 not started, 1 started, 1 + the balls of wool handed in so far, 21
- * complete. Shearing (`Sheep`), spinning (the crafting skill's skillmulti on the castle wheel) and
- * the castle stairs are generic content; this script is Fred, The Thing and the hand-in.
- */
 class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
     QuestScript(
         "quest_sheepshearer",
@@ -28,7 +27,7 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
             xp("stat.crafting", 150.0)
             item("obj.coins", 60, label = "60 Coins")
         },
-        ItemRewardDisplay("obj.ball_of_wool", zoom = 200),
+        ItemRewardDisplay("obj.shears", zoom = 400),
         questVarbit = "varbit.sheep_shearer_progress",
     ) {
 
@@ -42,7 +41,10 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
 
         onOpNpc1("npc.fred_the_farmer") { startDialogue(it.npc) { fredDialogue() } }
         onOpNpc1("npc.sheep_shearer_the_thing") { shearTheThing() }
-        onOpNpc3("npc.sheep_shearer_the_thing") { mes("Baa!") }
+        onNpcUseObj("npc.sheep_shearer_the_thing", SHEARS) { shearTheThing() }
+        onOpNpc3("npc.sheep_shearer_the_thing") {
+            startDialogue(it.npc) { chatPlayer(confused, "That's a sheep...I think. I can't talk to sheep.") }
+        }
     }
 
     override fun subTitle(): String =
@@ -77,12 +79,12 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
 
     private suspend fun ProtectedAccess.shearTheThing() {
         if (SHEARS !in inv) {
-            mes("You need a pair of shears to shear the sheep.")
+            mes("You need a set of shears to do this.")
             return
         }
         anim("seq.human_shearing")
         mes("The... whatever it is... manages to get away from you!")
-        if (quest.isQuestInProgress(player)) player.sawTheThing = true
+        player.sawTheThing = true
     }
 
     private suspend fun Dialogue.fredDialogue() {
@@ -116,9 +118,9 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
         chatPlayer(neutral, "I'm looking for a quest.")
         chatNpc(neutral, "You're after a quest, you say? Actually, I could do with a bit of help.")
         chatNpc(neutral, "My sheep are getting mighty woolly. I'd be much obliged if you could shear them. And while you're at it, spin the wool for me too.")
-        chatNpc(neutral, "Yes, that's it. Bring me 20 balls of wool. And I'm sure I could sort out some sort of payment. Of course, there's the small matter of The Thing.")
+        chatNpc(happy, "Yes, that's it. Bring me 20 balls of wool. And I'm sure I could sort out some sort of payment. Of course, there's the small matter of The Thing.")
         chatPlayer(quiz, "What do you mean, The Thing?")
-        chatNpc(worried, "Well now, no one has ever seen The Thing. That's why we call it The Thing, 'cos we don't know what it is.")
+        chatNpc(shifty, "Well now, no one has ever seen The Thing. That's why we call it The Thing, 'cos we don't know what it is.")
         chatNpc(worried, "Some say it's a black hearted shapeshifter, hungering for the souls of hard working decent folk like me. Others say it's just a sheep.")
         chatNpc(angry, "Well I don't have all day to stand around and gossip. Are you going to shear my sheep or what!")
         if (!startQuestPrompt(quest)) {
@@ -129,19 +131,36 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
         chatPlayer(happy, "Yes, okay. I can do that.")
         quest.advanceQuestStage(access)
         if (ballsOfWool(player) >= BALLS_NEEDED) {
-            chatPlayer(happy, "In fact Fred, funnily enough, I actually have 20 balls of wool already on me.")
-            chatNpc(angry, "Have you been shearing my sheep without permission!?")
-            chatPlayer(shifty, "No! Well, maybe... They just looked a little wooly! Surely you like a shave once in a while, too?")
-            chatNpc(angry, "It's rude to shave another person without permission - don't be coming at me with them shears!")
-            chatPlayer(sad, "I'm sorry, I'll ask permission next time.")
-            chatNpc(neutral, "I guess no real 'arm was done. Hand the balls over and we can put this whole thing behind us.")
-            handIn()
+            alreadyHaveTheWool()
             return
         }
         chatNpc(quiz, "Good! Now one more thing, do you actually know how to shear a sheep?")
         chatPlayer(confused, "Err. No, I don't know actually.")
         howToShear()
         spinningHelp()
+    }
+
+    private suspend fun Dialogue.alreadyHaveTheWool() {
+        chatPlayer(happy, "In fact Fred, funnily enough, I actually have 20 balls of wool already on me.")
+        chatNpc(angry, "Have you been shearing my sheep without permission!?")
+        chatPlayer(worried, "No! Well, maybe... They just looked a little woolly! Surely you like a shave once in a while, too?")
+        chatNpc(angry, "It's rude to shave another person without permission - don't be coming at me with them shears!")
+        chatPlayer(sad, "I'm sorry, I'll ask permission next time.")
+        chatNpc(neutral, "I guess no real 'arm was done. Hand the balls over and we can put this whole thing behind us.")
+        if (ballsOfWool(player) < BALLS_NEEDED) return
+        mesbox("You give Fred ${ballsText(BALLS_NEEDED)} of wool.")
+        lastDelivery(BALLS_NEEDED)
+    }
+
+    private suspend fun Dialogue.lastDelivery(balls: Int) {
+        chatPlayer(happy, "That's the last of them.")
+        chatNpc(sad, "I guess I'd better pay you then.")
+        if (ballsOfWool(player) < balls) return
+        access.invDel(access.inv, BALL_OF_WOOL, balls)
+        if (!quest.setQuestStage(access, COMPLETE_STAGE)) {
+            access.invAdd(access.inv, BALL_OF_WOOL, balls)
+            access.mes(NO_ROOM_FOR_REWARD)
+        }
     }
 
     private suspend fun Dialogue.howToShear() {
@@ -169,7 +188,7 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
         }
         chatNpc(neutral, "The nearest Spinning Wheel can be found on the first floor of Lumbridge Castle.")
         chatNpc(neutral, "To get to Lumbridge Castle just follow the road east.")
-        mesbox("This icon denotes a Spinning Wheel on the world map.")
+        objbox(SPINNING_WHEEL_ICON, "This icon denotes a Spinning Wheel on the world map.")
         chatPlayer(happy, "Thank you!")
     }
 
@@ -231,21 +250,17 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
         }
     }
 
-    /** Takes up to the remaining balls of wool; the last one completes the quest. */
     private suspend fun Dialogue.handIn() {
         val given = minOf(ballsOfWool(player), remaining(player))
         if (given <= 0) return
-        access.invDel(access.inv, BALL_OF_WOOL, given)
         val stage = stage(player) + given
-        mesbox("You give Fred ${ballsText(given)} of wool.")
         if (stage >= COMPLETE_STAGE) {
-            chatPlayer(happy, "That's the last of them.")
-            chatNpc(happy, "I guess I'd better pay you then.")
-            player.sawTheThing = false
-            quest.setQuestStage(access, COMPLETE_STAGE)
+            lastDelivery(given)
             return
         }
+        access.invDel(access.inv, BALL_OF_WOOL, given)
         quest.setQuestStage(access, stage)
+        mesbox("You give Fred ${ballsText(given)} of wool.")
         chatPlayer(neutral, "That's all I've got so far.")
         chatNpc(neutral, "I need ${remaining(player)} more before I can pay you.")
         chatPlayer(neutral, "Ok I'll work on it.")
@@ -268,6 +283,13 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
 
     private suspend fun Dialogue.afterQuest() {
         chatNpc(angry, "What are you doing on my land?")
+        if (!player.sawTheThing) {
+            when (choice2("I'm looking for something to kill.", 1, "I'm lost.", 2)) {
+                1 -> lookingToKill()
+                2 -> lost()
+            }
+            return
+        }
         when (choice3("I'm looking for something to kill.", 1, "I'm lost.", 2, "Fred! Fred! I've seen The Thing!", 3)) {
             1 -> lookingToKill()
             2 -> lost()
@@ -283,5 +305,17 @@ class SheepShearer @Inject constructor(private val objRepo: ObjRepository) :
         const val SHEARS = "obj.shears"
         const val WOOL = "obj.wool"
         const val BALL_OF_WOOL = "obj.ball_of_wool"
+        const val SPINNING_WHEEL_ICON = "obj.crafting_icon_dummy"
+        const val NO_ROOM_FOR_REWARD = "You don't have enough room for the reward."
     }
+}
+
+private fun ScriptContext.onNpcUseObj(
+    npc: String,
+    obj: String,
+    action: suspend ProtectedAccess.(NpcUEvents.Op) -> Unit,
+) {
+    val npcType = checkNotNull(ServerCacheManager.getNpc(npc.asRSCM(RSCMType.NPC))) { npc }
+    val objType = checkNotNull(ServerCacheManager.getItem(obj.asRSCM(RSCMType.OBJ))) { obj }
+    onOpNpcU(npcType, objType, action)
 }

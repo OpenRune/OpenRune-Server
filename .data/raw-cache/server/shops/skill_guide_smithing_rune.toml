@@ -1,0 +1,50 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.skill_guide_smithing_rune"
+name = "Darkmeyer Lantern Shop"
+
+scope = "Shared"
+stack = "Always"
+
+sellMultiplier = 1200
+buyMultiplier = 400
+delta = 30
+
+size = 6
+
+protect = false
+runWeight = false
+restock = true
+allStock = false
+placeholders = false
+
+[[inventory.stock]]
+obj = "obj.tinderbox"
+count = 5
+restockCycles = 50
+
+[[inventory.stock]]
+obj = "obj.unlit_candle"
+count = 20
+restockCycles = 80
+
+[[inventory.stock]]
+obj = "obj.torch_unlit"
+count = 10
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.oil_lamp_empty"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.oil_lantern_empty"
+count = 5
+restockCycles = 100
+
+[[inventory.stock]]
+obj = "obj.bullseye_lantern_empty"
+count = 5
+restockCycles = 100
+

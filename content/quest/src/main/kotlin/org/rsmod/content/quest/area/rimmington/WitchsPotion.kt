@@ -2,10 +2,15 @@ package org.rsmod.content.quest.area.rimmington
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import jakarta.inject.Inject
+import org.rsmod.api.config.constants
+import org.rsmod.api.death.NpcDeathKillContext
+import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.content.quest.manager.ItemRewardDisplay
@@ -15,18 +20,18 @@ import org.rsmod.content.quest.manager.startQuestPrompt
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.ScriptContext
 
-/**
- * Witch's Potion. Progress is varp 67 (`varp.hetty`), as in OSRS and as
- * Quest Helper reads it: 0 not started, 1 started, 2 ingredients given, 3 complete (drunk from the
- * cauldron). Dialogue follows the wiki transcript; the journal text is ours. Rats drop a rat's tail
- * while the quest is in progress (drop table `rat.toml`).
- */
+private const val PROGRESS_VARBIT = "varbit.witchs_potion_progress"
+private const val STARTED = 1
+private const val INGREDIENTS_GIVEN = 2
+private const val COMPLETE = 3
+private const val RATS_TAIL = "obj.rats_tail"
+
 class WitchsPotion : QuestScript(
     "quest_witchspotion",
     "varp.hetty",
     rewards { xp("stat.magic", MAGIC_XP) },
     ItemRewardDisplay(EYE_OF_NEWT, zoom = 250),
-    questVarbit = "varbit.witchs_potion_progress",
+    questVarbit = PROGRESS_VARBIT,
 ) {
 
     override fun ScriptContext.init() {
@@ -73,7 +78,7 @@ class WitchsPotion : QuestScript(
             )
         }
 
-    fun stage(player: Player): Int = quest.getQuestStage(player)
+    private fun stage(player: Player): Int = quest.getQuestStage(player)
 
     private fun has(player: Player, obj: String): Boolean = player.inv.count(obj) > 0
 
@@ -176,8 +181,10 @@ class WitchsPotion : QuestScript(
             return
         }
         quest.setQuestStage(access, INGREDIENTS_GIVEN)
-        mesbox("You pass the ingredients to Hetty and she puts them all into her cauldron.")
-        mesbox("Hetty closes her eyes and begins to chant. The cauldron bubbles mysteriously.")
+        mesbox(
+            "You pass the ingredients to Hetty and she puts them all into her cauldron. Hetty " +
+                "closes her eyes and begins to chant. The cauldron bubbles mysteriously."
+        )
         chatPlayer(quiz, "Well, is it ready?")
         chatNpc(happy, "Ok, now drink from the cauldron.")
     }
@@ -189,26 +196,31 @@ class WitchsPotion : QuestScript(
             }
             return
         }
-        mes("You drink from the cauldron. It tastes horrible! You feel yourself imbued with power.")
+        startDialogue {
+            mesbox(
+                "You drink from the cauldron. It tastes horrible! You feel yourself imbued with " +
+                    "power."
+            )
+        }
         quest.completeQuest(this)
     }
 
-    companion object {
-        const val STARTED = 1
-        const val INGREDIENTS_GIVEN = 2
-        const val COMPLETE = 3
-
+    private companion object {
         private const val HETTY = "npc.hetty"
         private const val CAULDRON = "loc.hettycauldron"
         private const val MAGIC_XP = 325.0
 
-        const val RATS_TAIL = "obj.rats_tail"
         private const val BURNT_MEAT = "obj.burnt_meat"
         private const val ONION = "obj.onion"
         private const val EYE_OF_NEWT = "obj.eye_of_newt"
         private val INGREDIENTS = listOf(EYE_OF_NEWT, RATS_TAIL, ONION, BURNT_MEAT)
 
-        fun ingredientsLine(tail: Boolean, meat: Boolean, onion: Boolean, newt: Boolean): String {
+        private fun ingredientsLine(
+            tail: Boolean,
+            meat: Boolean,
+            onion: Boolean,
+            newt: Boolean,
+        ): String {
             val tailPart = if (tail) "I have the rat's tail (ewww)" else "I don't have a rat's tail"
             val meatPart = if (meat) "I have the burnt meat" else "I don't have any burnt meat"
             val onionPart = if (onion) "I have an onion" else "I don't have an onion"
@@ -216,5 +228,35 @@ class WitchsPotion : QuestScript(
                 if (newt) "I have the eye of newt, yum!" else "I don't have an eye of newt."
             return "$tailPart, $meatPart, $onionPart, and $newtPart"
         }
+    }
+}
+
+class WitchsPotionRatTail @Inject constructor(private val objRepo: ObjRepository) :
+    NpcDeathKillHook {
+    override fun onKill(context: NpcDeathKillContext) {
+        if (RATS.none(context.npc::isType)) return
+        val player = context.hero
+        val stage = player.vars[PROGRESS_VARBIT]
+        if (stage < STARTED || stage >= COMPLETE) return
+        objRepo.add(RATS_TAIL, context.dropCoords, constants.lootdrop_duration, player)
+    }
+
+    private companion object {
+        private val RATS =
+            listOf(
+                "npc.rat",
+                "npc.rat_indoors",
+                "npc.sos_war_rat",
+                "npc.sos_fam_rat",
+                "npc.dungeon_rat",
+                "npc.dungeon_rat2",
+                "npc.dungeon_rat3",
+                "npc.clocktower_rat",
+                "npc.clocktower_rat2",
+                "npc.clocktower_rat3",
+                "npc.sos_fam_giantrat",
+                "npc.sos_fam_giantrat2",
+                "npc.sos_fam_giantrat3",
+            )
     }
 }

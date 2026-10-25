@@ -1,2 +1,13 @@
 [gamevals.varn]
 disguise_idle = 90
+
+[gamevals.enum]
+bottomless_milk_types = 64400
+bottomless_milk_names = 64401
+
+[gamevals.varobj]
+bottomless_milk_type = 64400
+
+[gamevals.synth]
+bucket_pour = 2401
+bottomless_milk_bucket_discard = 4951

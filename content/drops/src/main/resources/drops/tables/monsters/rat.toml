@@ -1,8 +1,0 @@
-id = "Rat Drops"
-npcs = ["npc.rat", "npc.rat_indoors"]
-
-[[guaranteed]]
-obj = "obj.rats_tail"
-count = 1
-quest = "quest_witchspotion"
-quest_mode = "during"

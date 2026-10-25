@@ -911,3 +911,15 @@ isServerOnly = true
 id = "varp.aggression_tolerance_seen"
 scope = "Temp"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.brutus_deaths"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.brutus_best_time"
+scope = "Perm"
+transmit = "Never"

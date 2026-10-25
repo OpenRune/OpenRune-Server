@@ -150,8 +150,8 @@ object InstanceSettingsTable {
 
         row("dbrow.instance_cowboss") {
             column(KEY, "cowboss")
-            columnCoord(EXIT_COORD, CoordGrid(3258, 3289, 0))
-            columnCoord(ENTER_COORD, CoordGrid(0, 50, 51, 58, 28))
+            columnCoord(EXIT_COORD, CoordGrid(3252, 3267, 0))
+            columnCoord(ENTER_COORD, CoordGrid(0, 50, 51, 62, 30))
             column(FEE, 0)
             column(MAX_PLAYERS, 1)
             column(TIME_LIMIT_MINUTES, 0)

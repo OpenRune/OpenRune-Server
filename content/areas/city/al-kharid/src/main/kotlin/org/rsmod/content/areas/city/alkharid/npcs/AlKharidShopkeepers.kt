@@ -28,7 +28,15 @@ class AlKharidShopkeepers @Inject constructor(private val shops: Shops) : Plugin
 
         onOpNpc1("npc.ranael") { startDialogue(it.npc) { ranael(it.npc) } }
         onOpNpc3("npc.ranael") { player.openSkirtShop(it.npc) }
+
+        for (staff in GENERAL_STORE_STAFF) {
+            onOpNpc1(staff) { startDialogue(it.npc) { generalStore(it.npc) } }
+            onOpNpc3(staff) { player.openGeneralStore(it.npc) }
+        }
     }
+
+    private fun Player.openGeneralStore(npc: Npc) =
+        shops.open(this, npc, "Al Kharid General Store", "inv.generalshop3")
 
     private fun Player.openGemShop(npc: Npc) = shops.open(this, npc, "Gem Trader.", "inv.gemshop2")
 
@@ -43,6 +51,15 @@ class AlKharidShopkeepers @Inject constructor(private val shops: Shops) : Plugin
 
     private fun Player.openSkirtShop(npc: Npc) =
         shops.open(this, npc, "Ranael's Super Skirt Store.", "inv.skirtshop")
+
+    private suspend fun Dialogue.generalStore(npc: Npc) {
+        chatNpc(happy, "Can I help you at all?")
+        if (choice2("Yes please. What are you selling?", true, "No thanks.", false)) {
+            access.player.openGeneralStore(npc)
+        } else {
+            chatPlayer(neutral, "No thanks.")
+        }
+    }
 
     private suspend fun Dialogue.gemTrader(npc: Npc) {
         chatNpc(neutral, "Good day to you traveller. Would you be interested in buying some gems?")
@@ -134,5 +151,9 @@ class AlKharidShopkeepers @Inject constructor(private val shops: Shops) : Plugin
         } else {
             chatPlayer(neutral, "No thank you, that's not my scene.")
         }
+    }
+
+    private companion object {
+        val GENERAL_STORE_STAFF = listOf("npc.generalshopkeeper3", "npc.generalassistant3")
     }
 }
