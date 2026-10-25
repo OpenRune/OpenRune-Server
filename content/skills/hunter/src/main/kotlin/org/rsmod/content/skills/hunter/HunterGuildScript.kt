@@ -12,6 +12,7 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.table.hunter.HunterRumourHuntersRow
 import org.rsmod.api.table.hunter.HunterRumoursRow
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.hunter.HunterRumours.Companion.BACK_TO_BACK
 import org.rsmod.content.skills.hunter.HunterRumours.Companion.BACK_TO_BACK_OFF
 import org.rsmod.content.skills.hunter.HunterRumours.Companion.COMPLETED
@@ -146,6 +147,11 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
         if (vars[UNLOCKED] == 0) {
             if (hunter.name == "Wolf") chatNpc(neutral, "My apologies, but I don't have time to chat right now.")
             else chatNpc(neutral, lines.notVerity)
+            return
+        }
+        if (hunter.name == "Wolf" && !QuestRequirements.hasCompleted(player, AT_FIRST_LIGHT)) {
+            chatNpc(neutral, "Sorry, but I don't have permission to share information with you.")
+            mesbox("You need to complete At First Light in order to access Master Tier Hunters' Rumours.")
             return
         }
         if (player.statBase(HunterRumours.HUNTER) < hunter.level) {
@@ -365,7 +371,8 @@ class HunterGuildScript @Inject constructor(private val rumours: HunterRumours, 
 
     companion object {
         const val VERITY = "npc.hg_verity"
-        const val BAR_RANGE = 3
+        const val AT_FIRST_LIGHT = "quest_atfirstlight"
+        const val BAR_RANGE = 2
         val BEHIND_BAR = setOf("npc.hg_gilman", VERITY)
         const val COINS = "obj.coins"
         const val TIPPLE = "obj.trappers_tipple"

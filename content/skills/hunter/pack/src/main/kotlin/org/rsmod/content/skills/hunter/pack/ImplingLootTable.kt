@@ -189,7 +189,7 @@ object ImplingLootTable {
                         drop(MAIN, "obj.mithril_pickaxe", 1, 1, false, 1, 10),
                         drop(MAIN, "obj.curry_leaf", 1, 1, false, 1, 10),
                         drop(MAIN, "obj.snape_grass", 1, 1, false, 1, 10),
-                        drop(MAIN, "obj.airrune", 30, 58, false, 1, 10),
+                        drop(MAIN, "obj.airrune", 30, 60, false, 1, 10),
                         drop(MAIN, "obj.plank_oak", 4, 4, true, 1, 10),
                         drop(MAIN, "obj.candle_lantern_empty", 1, 1, false, 1, 10),
                         drop(MAIN, "obj.gold_ore", 1, 1, false, 1, 10),
