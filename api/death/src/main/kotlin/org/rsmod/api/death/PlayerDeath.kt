@@ -29,12 +29,15 @@ constructor(
     private val mapClock: MapClock,
     private val drops: PlayerDeathDrops,
     private val handlingResolver: PlayerDeathHandlingResolver,
+    private val preDropHooks: Set<PlayerDeathPreDropHook>,
     private val cleanupHooks: Set<PlayerDeathCleanupHook>,
+    private val storageHooks: Set<PlayerDeathStorageHook>,
     private val respawnHooks: Set<PlayerRespawnHook>,
     private val areaChecker: AreaChecker,
 ) {
     private var Player.specialAttackType by intVarp("varp.sa_attack")
     private var Player.inInstance by boolVarBit("varbit.player_in_instance")
+    private var Player.deaths by intVarp("varp.tracking_deaths")
     private var Player.insideWilderness by boolVarBit("varbit.inside_wilderness")
 
     public suspend fun death(access: ProtectedAccess) {
@@ -47,9 +50,9 @@ constructor(
         val randomRespawn =
             if (hooked != null) null else mapFindSquareLineOfWalk(respawn, minRadius = 0, maxRadius = 2)
 
+        player.deaths++
         stopAction()
         delay(2)
-        soundSynth("synth.human_death")
         anim("seq.human_death")
         delay(4)
         combatClearQueue()
@@ -58,9 +61,9 @@ constructor(
         val deathCoords = player.coords
         handleDeathDrops(player, deathCoords)
 
+        mes("Oh dear, you are dead!")
         midiSong("midi.stop_music")
         midiJingle("jingle.air_guitar_jingle")
-        mes("Oh dear, you are dead!")
         telejump(randomRespawn ?: respawn, TeleportType.Exempt)
         resetAnim()
         resetPlayerState()
@@ -82,6 +85,10 @@ constructor(
     }
 
     private fun handleDeathDrops(player: Player, deathCoords: CoordGrid) {
+        for (hook in preDropHooks) {
+            hook.beforeDrops(player)
+        }
+
         val bypassAdmin = player.deathDropsBypassAdmin()
         player.attr.remove(DEATH_DROPS_BYPASS_ADMIN_ATTR)
         if (player.modLevel.isAtLeast(Rights.ADMINISTRATOR) && !bypassAdmin) return
@@ -94,7 +101,8 @@ constructor(
         val context = buildContext(player, deathCoords, killer)
         val handling = handlingResolver.resolve(context)
 
-        val result = drops.selectDrops(player, context, handling)
+        val emptied = storageHooks.flatMap { it.empty(player, context.isPvpDeath) }
+        val result = drops.withLost(drops.selectDrops(player, context, handling), emptied)
         drops.applyDrops(player, result, handling, deathCoords)
         drops.spawnRemains(deathCoords, handling)
 

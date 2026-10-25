@@ -48,7 +48,7 @@ constructor(
         onPlayerSoftTimer(WORK_TIMER) { tick(player) }
         onPlayerSoftTimer(SWEETSPOT_TIMER) { sweetSpotTick(player) }
         onPlayerSoftTimer(PREFORM_COOLING_TIMER) { passiveCooling(player) }
-        onEvent<GameLifecycle.LateCycle> { foundryCycle() }
+        onEvent<GameLifecycle.StartCycle> { foundryCycle() }
     }
 
     /**
@@ -350,6 +350,7 @@ constructor(
             }
             return
         }
+        player.resetAnim()
         player.anim(FINISH_SEQ)
         player.soundSynth(FINISH_SYNTH)
     }

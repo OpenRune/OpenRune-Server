@@ -19,7 +19,13 @@ dependencies {
     implementation(projects.content.quest)
     implementation(projects.content.skills.smithing)
     implementation(projects.content.skills.utils)
+    testImplementation(projects.api.areaChecker)
     testImplementation(projects.api.gameProcess)
+    testImplementation(projects.api.invStorage)
+    testImplementation(projects.api.market)
+    testImplementation(projects.api.serverConfig)
     testImplementation(projects.api.utils.utilsLogging)
+    testImplementation(libs.fastutil)
     testImplementation(libs.mockk)
+    testImplementation(libs.rsprot.api)
 }

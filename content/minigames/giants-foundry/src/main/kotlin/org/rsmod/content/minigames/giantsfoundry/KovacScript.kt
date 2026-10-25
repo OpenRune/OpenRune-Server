@@ -1,7 +1,13 @@
 package org.rsmod.content.minigames.giantsfoundry
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import java.util.Locale
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.ironman.isUltimateIronman
 import org.rsmod.api.player.output.UpdateRun
@@ -11,6 +17,7 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -220,8 +227,9 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
             return
         }
         chatNpc(neutral, if (ruined) "Sword no good. Give it here." else "Hmm... sword look good. Hand over.")
-        reward(if (ruined) 0 else player.preformQuality)
-        offerCommission()
+        if (reward(if (ruined) 0 else player.preformQuality)) {
+            offerCommission()
+        }
     }
 
     private suspend fun Dialogue.offerCommission() {
@@ -230,23 +238,38 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
         }
     }
 
-    private suspend fun Dialogue.reward(quality: Int) {
+    private suspend fun Dialogue.reward(quality: Int): Boolean {
+        if (player.commissionWord1 == 0 || !player.holdsPreform()) {
+            return false
+        }
         val xp = FoundryFormulas.handInXp(quality)
         val coins = xp * 2
         val start = player.commissionStart
         val seconds = if (start == 0) 0 else (System.currentTimeMillis() / 1000).toInt() - start
 
-        if (player.isUltimateIronman) {
-            // UNVERIFIED: no message for the inventory payout (guess).
-            access.invAdd(access.inv, "obj.coins", coins)
-        } else if (access.invAdd(access.bank, "obj.coins", coins).success) {
-            access.mes("Kovac deposits ${formatCoins(coins)} coins into your bank as payment.")
-        } else {
-            // UNVERIFIED: a full bank is undocumented; the coins go to the inventory (guess).
-            access.invAdd(access.inv, "obj.coins", coins)
+        fun pay(into: Inventory): Boolean =
+            player.invTransaction(player.worn, into) {
+                val worn = select(player.worn)
+                val destination = select(into)
+                delete(worn, PREFORM.asRSCM(), 1, slot = Wearpos.RightHand.slot)
+                add(destination, "obj.coins".asRSCM(), coins)
+            }.success
+
+        val paid =
+            if (player.isUltimateIronman) {
+                pay(access.inv)
+            } else if (pay(access.bank)) {
+                access.mes("Kovac deposits ${formatCoins(coins)} coins into your bank as payment.")
+                true
+            } else {
+                pay(access.inv)
+            }
+        if (!paid) {
+            access.mes("You don't have enough room to receive your payment.")
+            return false
         }
         player.clearSword()
-        player.removePreform()
+        player.rebuildAppearance()
         access.closeHud()
 
         access.statAdvance("stat.smithing", xp.toDouble())
@@ -283,6 +306,7 @@ class KovacScript @Inject constructor(private val random: GameRandom) : PluginSc
                 "Total swords made in the Giants Foundry: ${player.swordsMade}"
         )
         access.mes("Total swords made in the Giants Foundry: ${player.swordsMade}")
+        return true
     }
 
     private fun formatTime(seconds: Int): String = "${seconds / 60}m ${seconds % 60}s"

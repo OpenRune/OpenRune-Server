@@ -21,7 +21,7 @@ giants_foundry_work_sweetspot_void = 64406
 [gamevals.timer]
 giants_foundry_preform_cooling = 4440
 giants_foundry_work = 4441
-giants_foundry_sweetspot = 4442
+giants_foundry_sweetspot = 4443
 
 [gamevals.enum]
 giants_foundry_commission_words = 4372

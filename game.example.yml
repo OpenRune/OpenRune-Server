@@ -34,6 +34,9 @@ gameplay:
   # Minutes between home teleport casts (Lumbridge, Edgeville, Arceuus), shared by all of them. 30
   # as on live; 0 removes the cooldown.
   home-teleport-cooldown: 30
+  gravestones:
+    # Lost items go to a gravestone the player can reclaim; false drops them on the floor instead.
+    enabled: true
   quest-requirements:
     # Use saved quest progress by default. "assume-completed" bypasses quest gates;
     # "virtual-completions" unlocks selected quests for league-style profiles.

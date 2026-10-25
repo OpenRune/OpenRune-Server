@@ -2,6 +2,7 @@ package org.rsmod.content.minigames.giantsfoundry
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.util.Wearpos
 import io.mockk.Called
 import io.mockk.every
@@ -10,6 +11,7 @@ import io.mockk.verify
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
+import net.rsprot.protocol.game.outgoing.zone.payload.LocAnim
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -17,6 +19,7 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.game.process.GameCycle
 import org.rsmod.api.game.process.player.PlayerInteractionProcessor
 import org.rsmod.api.game.process.player.PlayerMainProcess
 import org.rsmod.api.game.process.player.PlayerTimerProcessor
@@ -27,6 +30,10 @@ import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.DefaultGameRandom
+import org.rsmod.api.registry.zone.ZoneUpdateMap
+import org.rsmod.api.registry.zone.ZoneUpdateTransformer
+import org.rsmod.api.repo.loc.LocRepository
+import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.utils.logging.GameExceptionHandler
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
@@ -40,6 +47,8 @@ import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocEntity
+import org.rsmod.game.loc.LocInfo
+import org.rsmod.game.loc.LocShape
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
@@ -160,6 +169,60 @@ class RefiningTickOrderTest {
         assertTrue(f.player.ui.containsModal("interface.chat_right"))
     }
 
+    @Test
+    fun `full game tick keeps hammer effects and progress on tick 100 not 99`() {
+        val f = Fixture()
+        f.clock.cycle = 99
+        f.player.apply {
+            workStation = 1
+            preformTemperature = 800
+            VarPlayerIntMapSetter.set(this, seedVarbit(0), 0)
+        }
+
+        f.fullCycle()
+        assertEquals(100, f.clock.cycle)
+        assertEquals(0, f.player.preformCompletion)
+        assertTrue(f.worldEffects().isEmpty())
+
+        f.fullCycle()
+        assertEquals(101, f.clock.cycle)
+        assertEquals(20, f.player.preformCompletion)
+        val effects = f.worldEffects()
+        val hammerSeq = "seq.giants_foundry_hammer01".asRSCM(RSCMType.SEQ)
+        assertEquals(
+            f.hammerLocs.map { ZoneUpdateTransformer.toLocAnim(it, hammerSeq) }.toSet(),
+            effects.filterIsInstance<LocAnim>().toSet(),
+        )
+        assertTrue(effects.contains(
+            ZoneUpdateTransformer.toSoundAreaProt(
+                CoordGrid(3367, 11497, 0),
+                "synth.giants_foundry_trip_hammer_loop".asRSCM(RSCMType.SYNTH),
+                delay = 0, loops = 1, radius = 15, size = 0,
+            )
+        ))
+    }
+
+    @Test
+    fun `regular commission final action replaces the tool loop with finish animation`() {
+        val f = Fixture()
+        f.player.apply {
+            workStation = 3
+            preformCompletion = 990
+            preformTemperature = 42
+        }
+
+        f.fullCycle()
+
+        assertEquals(1000, f.player.preformCompletion)
+        assertEquals(
+            "seq.giants_foundry_finish_sword".asRSCM(RSCMType.SEQ),
+            f.player.pendingSequence.id,
+        )
+        assertEquals(0, f.player.workStation)
+        assertTrue(f.output().contains("You have successfully finished the sword."))
+        assertFalse(f.player.ui.containsModal("interface.chat_right"))
+    }
+
     private class Fixture(scheduleWork: Boolean = true) {
         val clock = MapClock().apply { cycle = 100 }
         private val events = EventBus()
@@ -192,6 +255,31 @@ class RefiningTickOrderTest {
             clock, events, ShuffledPlayerList(players), mockk(relaxed = true), timers,
             mockk(relaxed = true), mockk(relaxed = true), interactions, exceptionHandler,
         )
+        private val gameCycle = GameCycle(
+            eventBus = events,
+            mapClock = clock,
+            worldMain = mockk(relaxed = true),
+            npcPreTick = mockk(relaxed = true),
+            playerShuffle = mockk(relaxed = true),
+            playerInput = mockk(relaxed = true),
+            playerRouteRequest = mockk(relaxed = true),
+            npcMain = mockk(relaxed = true),
+            controllerMain = mockk(relaxed = true),
+            playerMain = process,
+            playerLogout = mockk(relaxed = true),
+            playerLogin = mockk(relaxed = true),
+            worldPostTick = mockk(relaxed = true),
+            playerPostTick = mockk(relaxed = true),
+        )
+        private val zoneUpdates = ZoneUpdateMap()
+        val hammerLocs = listOf(CoordGrid(3362, 11495, 0), CoordGrid(3363, 11496, 0)).map {
+            LocInfo(2, it, LocEntity(FoundryTool.Hammer.row.loc.id, 10, 0))
+        }
+        private val locRepo = mockk<LocRepository> {
+            for (loc in hammerLocs) {
+                every { findExact(loc.coords, LocShape.CentrepieceStraight) } returns loc
+            }
+        }
         private var interaction: () -> Unit = {}
         private val context = ProtectedAccessContextFactory.empty().copy(
             getEventBus = { events },
@@ -202,7 +290,7 @@ class RefiningTickOrderTest {
         }
 
         init {
-            with(RefiningScript(DefaultGameRandom(1), clock, mockk(), mockk(),
+            with(RefiningScript(DefaultGameRandom(1), clock, WorldRepository(zoneUpdates), locRepo,
                 ProtectedAccessLauncher(contextFactory))) {
                 ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup()
             }
@@ -216,6 +304,16 @@ class RefiningTickOrderTest {
             verify { exceptionHandler wasNot Called }
             clock.cycle++
         }
+
+        fun fullCycle(click: () -> Unit = {}) {
+            interaction = click
+            zoneUpdates.clear()
+            player.currentMapClock = clock.cycle
+            gameCycle.tick()
+            verify { exceptionHandler wasNot Called }
+        }
+
+        fun worldEffects() = zoneUpdates.updatedZones.values.flatMap { it.toList() }
 
         fun operate(name: String) {
             val type = checkNotNull(ServerCacheManager.getObject(name.asRSCM()))

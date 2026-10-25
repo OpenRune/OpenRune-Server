@@ -1,10 +1,15 @@
 package org.rsmod.content.minigames.giantsfoundry
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
 import jakarta.inject.Inject
+import org.rsmod.api.player.events.interact.HeldEquipEvents
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpWorn1
+import org.rsmod.api.script.onPlayerCoordsChanged
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.content.interfaces.bank.tryOpenBank
 import org.rsmod.content.quest.manager.QuestRequirements
@@ -32,7 +37,6 @@ private const val KEPT_WARM =
 
 private suspend fun ProtectedAccess.fadeTeleport(
     destination: CoordGrid,
-    atFade: () -> Unit = {},
     beforeMove: () -> Unit = {},
     afterMove: () -> Unit = {},
 ) {
@@ -44,7 +48,6 @@ private suspend fun ProtectedAccess.fadeTeleport(
         endTransparency = 0,
         clientDuration = ENTER_FADE_CYCLES,
     )
-    atFade()
     delay(2)
     beforeMove()
     telejump(destination)
@@ -73,14 +76,23 @@ constructor(private val room: SleepingGiantsRoom, private val eventBus: EventBus
             mes("You should place the preform into the preform storage if you want to unequip it.")
         }
         onPlayerLogin { login(player) }
+        onPlayerCoordsChanged {
+            if (player.coords != lastKnownCoords && (player.pendingTelejump || player.pendingTeleport)) {
+                player.stashCarriedPreform(eventBus)
+            }
+        }
+        val preform = checkNotNull(ServerCacheManager.getItem(PREFORM.asRSCM()))
+        onEvent<HeldEquipEvents.Unequip>(preform.contentGroup) {
+            if (type.id == preform.id) {
+                player.stashCarriedPreform(eventBus)
+            }
+        }
     }
 
     private suspend fun ProtectedAccess.leave() {
         fadeTeleport(
             FOUNDRY_OUTSIDE,
-            atFade = { if (player.holdsPreform()) closeHud() },
             beforeMove = { room.leave(player) },
-            afterMove = { if (player.holdsPreform()) placePreform() },
         )
     }
 

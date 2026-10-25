@@ -1,9 +1,14 @@
 package org.rsmod.content.minigames.giantsfoundry
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.enums.GiantsFoundryEnums
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.script.onOpHeld1
@@ -28,13 +33,20 @@ class OrePackScript @Inject constructor(private val random: GameRandom) : Plugin
             mes("You will need another $spaces to open the pack.")
             return
         }
-        invDel(inv, ORE_PACK, 1)
-        mes("You open the pack and find $ORE_COUNT ores.")
-        for (i in ores.indices) {
-            if (rolls[i] > 0) {
-                invAdd(inv, noted[i], rolls[i])
+        val transaction = player.invTransaction(inv) {
+            val inventory = select(inv)
+            delete(inventory, ORE_PACK.asRSCM(), 1)
+            for (i in ores.indices) {
+                if (rolls[i] > 0) {
+                    add(inventory, noted[i].asRSCM(), rolls[i])
+                }
             }
         }
+        if (!transaction.success) {
+            mes("You don't have enough room to open the pack.")
+            return
+        }
+        mes("You open the pack and find $ORE_COUNT ores.")
     }
 
     // UNVERIFIED: the weights in `giants_foundry_ore_pack_weights` are the wiki's counts from
