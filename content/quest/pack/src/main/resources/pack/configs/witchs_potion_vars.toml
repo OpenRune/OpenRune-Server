@@ -1,0 +1,6 @@
+[[varbit]]
+isServerOnly = true
+id = "varbit.witchs_potion_progress"
+varp = "varp.hetty"
+startBit = 0
+endBit = 1
