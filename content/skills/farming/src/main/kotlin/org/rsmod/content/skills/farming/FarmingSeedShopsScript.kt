@@ -19,6 +19,7 @@ class FarmingSeedShopsScript @Inject constructor(private val shops: Shops) : Plu
         onOpNpc3("npc.kebos_poh_garden_supplier") { openGardenShop() }
         onOpNpc1("npc.farming_guild_anima_gardener") { startDialogue(it.npc) { felfiz() } }
         onOpNpc3("npc.hosidius_farmingstore") { openVannahShop() }
+        onOpNpc3("npc.fortis_shop_farming") { openAgelusShop() }
     }
 
     private suspend fun Dialogue.amelia() {
@@ -121,6 +122,17 @@ class FarmingSeedShopsScript @Inject constructor(private val shops: Shops) : Plu
             player = player,
             title = "Vannah's Farming Stall",
             shopInv = "inv.skill_guide_farming_special",
+            buyPercentage = 70.0,
+            sellPercentage = 100.0,
+            changePercentage = 1.0,
+        )
+    }
+
+    private fun ProtectedAccess.openAgelusShop() {
+        shops.open(
+            player = player,
+            title = "Agelus' Farm Shop",
+            shopInv = "inv.fortis_shop_farming",
             buyPercentage = 70.0,
             sellPercentage = 100.0,
             changePercentage = 1.0,

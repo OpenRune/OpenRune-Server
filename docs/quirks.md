@@ -236,6 +236,16 @@ amounts. Selection preserves the other native preference bits. The obsolete
 instruction-text argument was removed: the current shop interface has native
 value/quantity controls, not the old instruction component.
 
+Agelus' Trade opens the existing 24-row Farm Shop. It charges 100% of base value,
+pays 70%, and uses the native 1% stock adjustment through the shared coin shop.
+
+Celastrus bark uses the existing knife-production engine: current Fletching 40,
+one bark per battlestaff, 80 base Fletching XP and no Crafting XP. Native Fletch
+and knife-on-bark share the quantity flow and commit checks. Ordinary knives take
+four ticks per staff; a carried or offhand fletching knife takes four ticks for
+the first and three thereafter. Tools and current skill requirements are checked
+again before each conversion. This does not enable celastrus growing or harvesting.
+
 Jane's complete native contract pool is retained without filtering or reweighting.
 Assignment is not offered until every crop in that pool is playable, preventing
 uncancellable contracts for held crops. Guild information, seed exchanges and
@@ -263,10 +273,11 @@ Twenty-two sourced Farming diary task flags are cache-backed and follow committe
 actions, including scarecrows, white-tree fruit, protection, Guild entry, Tithe
 Logavano planting, Fertile Soil and Sarah's actual shop inventory. Repeats preserve
 neighbouring flags. Task counters, tier rewards and completion authority remain
-with the broader diary system; these handlers do not manufacture them. Root,
-celastrus-battlestaff and full-kingdom-approval tasks remain held with their missing
-producers. Occupied-slot leprechaun tool replacement and kingdom weed
-regrowth/ownership rules also remain unresolved.
+with the broader diary system; these handlers do not manufacture them. Root and
+full-kingdom-approval tasks remain held with their missing producers. The
+celastrus-battlestaff task remains held until Farming Guild bark provenance is
+established; processing supplied bark does not award it. Occupied-slot leprechaun
+tool replacement and kingdom weed regrowth/ownership rules also remain unresolved.
 
 Other explicit holds include unpublished new-crop disease/yield/pruning
 rules, contradictory compost-bin processing rules, empty-basket automatic Fill
