@@ -118,20 +118,20 @@ constructor(
             onOpHeld1(kit.parts[0]) { setUp(kit) }
             for (stage in 1..3) {
                 onOpLoc1(kit.locs[stage - 1]) { pickUp(it.loc.coords) }
-                for (part in kit.parts) {
-                    onOpLocU(kit.locs[stage - 1], part) { continueSetUp(it.loc.coords) }
+                for (part in kits.flatMap { it.parts }) {
+                    onOpLocU(kit.locs[stage - 1], part) { continueSetUp(it.loc.coords, part) }
                 }
             }
             val cannonLoc = kit.locs[3]
             onOpLoc1(cannonLoc) { fire(it.loc.coords) }
-            onOpLoc2(cannonLoc) { pickUp(it.loc.coords) }
+            onOpLoc2(cannonLoc) { pickUp(it.loc.coords, NOT_YOURS_FULL) }
             onOpLoc3(cannonLoc) { empty(it.loc.coords) }
             onOpLoc4(cannonLoc) { loadX(it.loc.coords) }
             for (ball in BALLS) {
-                onOpLocU(cannonLoc, ball) { load(it.loc.coords, startFiring = false) }
+                onOpLocU(cannonLoc, ball) { load(it.loc.coords, startFiring = false, NOT_YOURS_FULL) }
             }
             onOpLoc1(kit.broken) { repair(it.loc.coords) }
-            onOpLoc2(kit.broken) { pickUp(it.loc.coords) }
+            onOpLoc2(kit.broken) { pickUp(it.loc.coords, NOT_YOURS_FULL) }
         }
         for (i in plainKit.parts.indices) {
             onOpHeldU(ORNAMENT_KIT, plainKit.parts[i]) { applyOrnament(i) }
@@ -143,17 +143,21 @@ constructor(
         onPlayerLogin { player.loginCannon() }
     }
 
+    fun isSetUp(player: Player): Boolean = cannons[player.key]?.destroyed == false
+
     private suspend fun ProtectedAccess.setUp(kit: Kit) {
-        if (!cannons.containsKey(player.key) && player.cannonStage != 0 && player.cannonDecayed) {
-            mes(DECAYED_MESSAGE)
+        if (!QuestRequirements.hasCompleted(player, DWARF_CANNON_QUEST)) {
+            mes("You can't set up this cannon.")
+            mes("You need to complete the Dwarf Cannon quest.")
             return
         }
         if (cannons.containsKey(player.key) || player.cannonStage != 0) {
-            mes("You cannot construct more than one cannon at a time.")
-            return
-        }
-        if (!QuestRequirements.hasCompleted(player, DWARF_CANNON_QUEST)) {
-            mes(QUEST_REQUIRED_MESSAGE)
+            if (!isSetUp(player) && player.cannonDecayed && kit.parts.all { inv.count(it) > 0 }) {
+                mes(DECAYED_MESSAGE)
+                return
+            }
+            mes("You cannot construct more than one Cannon at a time.")
+            mes("If you have lost your Cannon, go and see the Dwarf Cannon engineer.")
             return
         }
         val origin = player.coords.translate(-1, -1)
@@ -174,8 +178,12 @@ constructor(
         buildStages(cannon)
     }
 
-    private suspend fun ProtectedAccess.continueSetUp(coords: CoordGrid) {
+    private suspend fun ProtectedAccess.continueSetUp(coords: CoordGrid, used: String) {
         val cannon = ownCannon(coords) ?: return
+        if (used != cannon.kit.parts[cannon.stage]) {
+            mes("This cannon needs its ${NEXT_PARTS[cannon.stage - 1]}.")
+            return
+        }
         buildStages(cannon)
     }
 
@@ -225,8 +233,8 @@ constructor(
         load(coords, startFiring = true)
     }
 
-    private fun ProtectedAccess.load(coords: CoordGrid, startFiring: Boolean) {
-        val cannon = ownCannon(coords) ?: return
+    private fun ProtectedAccess.load(coords: CoordGrid, startFiring: Boolean, notYours: String = NOT_YOURS) {
+        val cannon = ownCannon(coords, notYours) ?: return
         if (cannon.stage < 4 || cannon.broken) {
             return
         }
@@ -329,13 +337,14 @@ constructor(
         }
         cannon.broken = false
         cannon.breakCycle = gameClock.cycle + BREAK_CYCLES
+        player.cannonDecayed = false
         placeLoc(cannon)
         player.startDecayBuff(cannon)
         mes(REPAIR_MESSAGE)
     }
 
-    private fun ProtectedAccess.pickUp(coords: CoordGrid) {
-        val cannon = ownCannon(coords) ?: return
+    private fun ProtectedAccess.pickUp(coords: CoordGrid, notYours: String = NOT_YOURS) {
+        val cannon = ownCannon(coords, notYours) ?: return
         val returned =
             player.invTransaction(inv) {
                 val target = select(inv)
@@ -347,7 +356,7 @@ constructor(
                 }
             }
         if (!returned.success) {
-            mes("You don't have enough inventory space to pick up the cannon.")
+            mes(PICK_UP_SPACE[cannon.stage - 1])
             return
         }
         removeLoc(cannon)
@@ -579,10 +588,14 @@ constructor(
 
     private fun breakCannon(cannon: Cannon) {
         cannon.broken = true
-        cannon.owner?.let { stopFiring(it, cannon) }
+        cannon.breakCycle = gameClock.cycle
         cannon.firing = false
         placeLoc(cannon)
-        cannon.owner?.mes(BROKEN_MESSAGE)
+        val owner = cannon.owner ?: return
+        stopFiring(owner, cannon)
+        owner.cannonDecayed = true
+        owner.startDecayBuff(cannon)
+        owner.mes(BROKEN_MESSAGE)
     }
 
     private fun decay(cannon: Cannon) {
@@ -617,7 +630,8 @@ constructor(
             cannonCoord = packCoord(cannon.origin)
             cannonCoordTemp = packCoord(cannon.origin)
             cannonWorld = worldVarbit(serverConfig.world)
-            if (cannon.stage == 4 && !cannon.broken) {
+            if (cannon.stage == 4) {
+                cannonDecayed = cannon.broken
                 startDecayBuff(cannon)
             }
             return
@@ -628,10 +642,10 @@ constructor(
         }
     }
 
-    private fun ProtectedAccess.ownCannon(coords: CoordGrid): Cannon? {
+    private fun ProtectedAccess.ownCannon(coords: CoordGrid, notYours: String = NOT_YOURS): Cannon? {
         val cannon = cannons.values.firstOrNull { it.origin == coords } ?: return null
         if (cannon.ownerKey != player.key) {
-            mes("This isn't your cannon!")
+            mes(notYours)
             return null
         }
         cannon.owner = player
@@ -639,6 +653,10 @@ constructor(
     }
 
     private fun Player.startDecayBuff(cannon: Cannon) {
+        if (cannon.broken) {
+            runClientScript(BUFF_BAR_START.asRSCM(RSCMType.CLIENTSCRIPT), BROKEN_BUFF_STRUCT, cannon.breakCycle)
+            return
+        }
         runClientScript(
             BUFF_BAR_START.asRSCM(RSCMType.CLIENTSCRIPT),
             DECAY_BUFF_STRUCT,
@@ -796,6 +814,7 @@ constructor(
         const val DECAY_BUFF_CYCLES = 2490
         const val BUFF_BAR_START = "clientscript.[clientscript,script635]"
         const val DECAY_BUFF_STRUCT = 341
+        const val BROKEN_BUFF_STRUCT = 342
         const val DECAY_AFTER_BREAK_CYCLES = 1000
 
         val SETUP_DELAYS = listOf(2, 2, 3, 3)
@@ -806,14 +825,14 @@ constructor(
 
         const val BROKEN_MESSAGE = "<col=ef1020>Your cannon has broken!"
         const val NO_AMMO = "You don't have any ammo to load into the cannon."
-        const val ALREADY_FULL = "Your cannon is already full."
+        const val ALREADY_FULL = "The cannon is already full of ammo."
         const val REPAIR_MESSAGE = "You repair your cannon, restoring it to working order."
         const val DECAYED_MESSAGE =
             "<col=ef1020>Your cannon has decayed. Speak to Nulodion to get a new one!"
         const val OUT_OF_AMMO = "<col=ef1020>Your cannon is out of ammo.</col>"
         const val RAN_DRY = "<col=ef1020>Your cannon is out of ammo!</col>"
-        const val QUEST_REQUIRED_MESSAGE =
-            "You need to complete the Dwarf Cannon quest before you can set up a cannon."
+        const val NOT_YOURS = "That isn't your cannon!"
+        const val NOT_YOURS_FULL = "This is not your cannon."
 
         private const val SETUP_ANIM = "seq.human_pickupfloor"
         private const val PROJ_TYPE = "projanim.mcannon"
@@ -839,6 +858,16 @@ constructor(
 
         private const val BRUTUS_AREA = "area.mcannon_muddy_instance"
         val BALLS = listOf(CANNONBALL, GRANITE_CANNONBALL)
+
+        val NEXT_PARTS = listOf("stand", "barrels", "furnace")
+
+        val PICK_UP_SPACE =
+            listOf(
+                "You need one free inventory spaces to pick that up.",
+                "You need two free inventory spaces to pick that up.",
+                "You need three free inventory spaces to pick that up.",
+                "You need 4 free inventory spaces to pick that up.",
+            )
 
         val STAGE_MESSAGES =
             listOf(
