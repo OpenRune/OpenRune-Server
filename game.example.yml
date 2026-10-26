@@ -38,10 +38,10 @@ gameplay:
     # Lost items go to a gravestone the player can reclaim; false drops them on the floor instead.
     enabled: true
   quest-requirements:
-    # Use saved quest progress by default. "assume-completed" bypasses quest gates;
-    # "virtual-completions" unlocks selected quests for league-style profiles.
+    # Bypass quest gates by default. Use "respect-progress" for saved quest progress,
+    # or "virtual-completions" to unlock selected quests for league-style profiles.
     # Sleeping Giants persists completion when either bypass policy completes it.
-    mode: "respect-progress"
+    mode: "assume-completed"
     virtual-completions: []
     virtual-lines: []
 

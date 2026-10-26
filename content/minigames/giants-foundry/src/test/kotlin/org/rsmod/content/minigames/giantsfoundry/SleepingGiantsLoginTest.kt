@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.ResourceLock
+import org.rsmod.api.server.config.QuestRequirementsYaml
 import org.rsmod.api.table.SleepingGiantsRepairsRow
 import org.rsmod.content.quest.manager.QuestRequirementMode
 import org.rsmod.content.quest.manager.QuestRequirementPolicy
@@ -31,8 +32,22 @@ class SleepingGiantsLoginTest {
     fun restorePolicy() = QuestRequirements.install(previousPolicy)
 
     @Test
-    fun `default login preserves partial repairs and tutorial progress`() {
-        QuestRequirements.install(QuestRequirementPolicy())
+    fun `omitted quest policy unlocks the foundry on first login`() {
+        val policies = listOf(
+            QuestRequirementPolicy(),
+            QuestRequirementPolicy(QuestRequirementMode.parse(QuestRequirementsYaml().mode)),
+        )
+        for (policy in policies) {
+            QuestRequirements.install(policy)
+            val player = Player()
+            login(player)
+            assertEquals(SleepingGiants.COMPLETE, player.sleepingGiants)
+        }
+    }
+
+    @Test
+    fun `respect progress login preserves partial repairs and tutorial progress`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
         for (stage in listOf(0, SleepingGiants.REPAIRING, SleepingGiants.MAKING_SWORD)) {
             val player = Player().apply {
                 sleepingGiants = stage
@@ -59,15 +74,15 @@ class SleepingGiantsLoginTest {
             repeat(2) { login(player) }
             assertEquals(SleepingGiants.COMPLETE, player.sleepingGiants)
             assertEquals(SleepingGiants.TUTORIAL_COMPLETE, player.sleepingGiantsTutorial)
-            QuestRequirements.install(QuestRequirementPolicy())
+            QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
             login(player)
             assertEquals(SleepingGiants.COMPLETE, player.sleepingGiants)
         }
     }
 
     @Test
-    fun `fresh account retains broken tools and unstarted tutorial`() {
-        QuestRequirements.install(QuestRequirementPolicy())
+    fun `respect progress fresh account retains broken tools and unstarted tutorial`() {
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
         val player = Player()
         login(player)
         assertEquals(0, player.sleepingGiants)
@@ -79,7 +94,7 @@ class SleepingGiantsLoginTest {
 
     @Test
     fun `earned completion restores dependent progress on repeated login`() {
-        QuestRequirements.install(QuestRequirementPolicy())
+        QuestRequirements.install(QuestRequirementPolicy(QuestRequirementMode.RespectProgress))
         val player = Player().apply { sleepingGiants = SleepingGiants.COMPLETE }
         repeat(2) {
             login(player)

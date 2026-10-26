@@ -72,7 +72,7 @@ public data class DropRatesYaml(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public data class QuestRequirementsYaml(
-    val mode: String = "respect-progress",
+    val mode: String = "assume-completed",
     @JsonProperty("virtual-completions")
     val virtualCompletions: Set<String> = emptySet(),
     @JsonProperty("virtual-lines")
