@@ -133,6 +133,7 @@ import org.rsmod.api.player.ui.ifSetObj
 import org.rsmod.api.player.ui.ifSetPlayerHead
 import org.rsmod.api.player.ui.ifSetText
 import org.rsmod.api.player.vars.VarPlayerIntMapDelegate
+import org.rsmod.api.player.vars.disarmRunAutoEnable
 import org.rsmod.api.player.vars.resyncVar
 import org.rsmod.api.player.vars.setActiveMoveSpeed
 import org.rsmod.api.player.vars.varMoveSpeed
@@ -307,6 +308,7 @@ public class ProtectedAccess(
             return
         }
         val speed = if (player.varMoveSpeed == MoveSpeed.Run) MoveSpeed.Walk else MoveSpeed.Run
+        player.disarmRunAutoEnable()
         player.setActiveMoveSpeed(speed)
     }
 
