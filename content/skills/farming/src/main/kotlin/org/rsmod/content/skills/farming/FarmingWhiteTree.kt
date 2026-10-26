@@ -15,6 +15,7 @@ import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.QuestRow
 import org.rsmod.content.quest.manager.QuestRequirementResolver
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -22,7 +23,11 @@ import org.rsmod.plugin.scripts.ScriptContext
 @Singleton
 internal class FarmingWhiteTree
 @Inject
-constructor(private val requirements: QuestRequirementResolver, private val xpMods: XpModifiers) {
+constructor(
+    private val requirements: QuestRequirementResolver,
+    private val xpMods: XpModifiers,
+    private val eventBus: EventBus,
+) {
     private val questEnd by lazy { QuestRow.getRow("dbrow.$QUEST").endstate }
 
     internal fun available(player: Player): Boolean =
@@ -60,6 +65,7 @@ constructor(private val requirements: QuestRequirementResolver, private val xpMo
         VarPlayerIntMapSetter.set(player, TREE, art - 1)
         player.statAdvance(STAT_FARMING, HARVEST_XP * xpMods.get(player, STAT_FARMING))
         player.softTimer(TIMER, FarmingClock.ticksUntilNext(player, REGROW_MINUTES, millis))
+        eventBus.publish(FarmingWhiteTreeHarvestEvent(player))
         return true
     }
 

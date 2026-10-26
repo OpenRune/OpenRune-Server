@@ -6,6 +6,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.startCoroutine
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -19,6 +20,9 @@ import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
+import org.rsmod.api.player.dialogue.align.TextAlignment
+import org.rsmod.api.player.events.interact.NpcEvents
+import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -28,11 +32,13 @@ import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.queue.EngineQueueCache
+import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
 @Execution(ExecutionMode.SAME_THREAD)
@@ -137,6 +143,10 @@ class FarmingEquipmentTest {
         val herb = FarmingCrops.all.first { it.kind == PatchKind.HERB }
         val grape = FarmingCrops.all.first { it.kind == PatchKind.GRAPE_VINE }
         assertTrue(f.equipment.needsDibber(f.player, herb))
+        for (stage in 1..2) {
+            VarPlayerIntMapSetter.set(f.player, "varbit.brut_farming_planting", stage)
+            assertTrue(f.equipment.needsDibber(f.player, herb))
+        }
         VarPlayerIntMapSetter.set(f.player, "varbit.brut_farming_planting", 3)
         assertFalse(f.equipment.needsDibber(f.player, herb))
         assertTrue(f.equipment.needsDibber(f.player, grape))
@@ -159,6 +169,103 @@ class FarmingEquipmentTest {
         VarPlayerIntMapSetter.set(f.player, "varbit.brut_farming_smashing", 3)
         VarPlayerIntMapSetter.set(f.player, "varbit.brut_smash_pots_automatically", 1)
         assertTrue(f.equipment.smashesPlantPot(f.player))
+    }
+
+    @Test
+    fun `Otto refuses untrained planting and nonboostable Farming prerequisite without unlocking pots`() {
+        for (planting in 0..2) {
+            val f = Fixture()
+            VarPlayerIntMapSetter.set(f.player, "varbit.brut_farming_planting", planting)
+            f.startOtto()
+            assertTrue(f.dialogue.isIdle)
+            assertEquals(planting, f.player.vars["varbit.brut_farming_planting"])
+            assertEquals(0, f.player.vars["varbit.brut_farming_smashing"])
+            assertEquals(0, f.player.vars["varbit.brut_smash_pots_automatically"])
+            assertFalse(f.equipment.barehandedPlanting(f.player))
+        }
+        val f = Fixture()
+        VarPlayerIntMapSetter.set(f.player, "varbit.brut_farming_planting", 3)
+        f.player.statMap.setBaseLevel(STAT_FARMING, 14)
+        f.player.statMap.setCurrentLevel(STAT_FARMING, 99)
+        f.startOtto()
+        f.choose(1)
+        assertTrue(f.dialogue.isIdle)
+        assertEquals(0, f.player.vars["varbit.brut_farming_smashing"])
+        assertEquals(0, f.player.vars["varbit.brut_smash_pots_automatically"])
+    }
+
+    @Test
+    fun `leaving or cancelling Otto instruction does not grant the trial`() {
+        val f = Fixture()
+        VarPlayerIntMapSetter.set(f.player, "varbit.brut_farming_planting", 3)
+        f.startOtto()
+        f.choose(2)
+        f.startOtto()
+        f.choose(1)
+        f.choose(2)
+        f.startOtto()
+        f.choose(1)
+        f.select(1)
+        f.dialogue.cancel()
+        assertEquals(0, f.player.vars["varbit.brut_farming_smashing"])
+        assertEquals(0, f.player.vars["varbit.brut_smash_pots_automatically"])
+        assertFalse(f.equipment.smashesPlantPot(f.player))
+    }
+
+    @Test
+    fun `Otto instruction committed sapling reportback and reversible toggle preserve other training`() {
+        val f = Fixture()
+        VarPlayerIntMapSetter.set(f.player, "varbit.brut_farming_planting", 3)
+        VarPlayerIntMapSetter.set(f.player, "varbit.brut_miniquest", 4)
+        VarPlayerIntMapSetter.set(f.player, "varbit.miniquests_completed_count", 7)
+        f.startOtto()
+        f.choose(1)
+        f.choose(1)
+        assertEquals(1, f.player.vars["varbit.brut_farming_smashing"])
+        assertEquals(0, f.player.vars["varbit.brut_smash_pots_automatically"])
+        assertTrue(f.equipment.smashesPlantPot(f.player))
+        f.choose(1)
+        f.choose(1)
+        assertEquals(1, f.player.vars["varbit.brut_farming_smashing"])
+        f.choose(2)
+
+        f.equipment.saplingPlanted(f.player)
+        assertEquals(2, f.player.vars["varbit.brut_farming_smashing"])
+        assertEquals(1, f.player.vars["varbit.brut_smash_pots_automatically"])
+        f.startOtto()
+        f.choose(1)
+        f.select(1)
+        f.dialogue.cancel()
+        assertEquals(2, f.player.vars["varbit.brut_farming_smashing"])
+        f.startOtto()
+        f.choose(1)
+        f.choose(1)
+        assertEquals(3, f.player.vars["varbit.brut_farming_smashing"])
+        f.choose(1)
+        assertFalse(f.equipment.smashesPlantPot(f.player))
+        f.equipment.saplingPlanted(f.player)
+        assertFalse(f.equipment.smashesPlantPot(f.player))
+        f.choose(1)
+        assertTrue(f.equipment.smashesPlantPot(f.player))
+        f.choose(2)
+        f.startOtto()
+        f.choose(2)
+        assertEquals(3, f.player.vars["varbit.brut_farming_smashing"])
+        assertEquals(3, f.player.vars["varbit.brut_farming_planting"])
+        assertEquals(4, f.player.vars["varbit.brut_miniquest"])
+        assertEquals(7, f.player.vars["varbit.miniquests_completed_count"])
+    }
+
+    @Test
+    fun `stale unlocked Otto toggle cannot change a now locked preference`() {
+        val f = Fixture()
+        VarPlayerIntMapSetter.set(f.player, "varbit.brut_farming_planting", 3)
+        VarPlayerIntMapSetter.set(f.player, "varbit.brut_farming_smashing", 3)
+        f.startOtto()
+        VarPlayerIntMapSetter.set(f.player, "varbit.brut_farming_smashing", 1)
+        f.choose(1)
+        assertEquals(1, f.player.vars["varbit.brut_farming_smashing"])
+        assertEquals(0, f.player.vars["varbit.brut_smash_pots_automatically"])
     }
 
     @Test
@@ -277,6 +384,16 @@ class FarmingEquipmentTest {
         val service = FarmingService(XpModifiers(emptySet()), f.random, f.events,
             FarmingRewardTestSupport.rewards(f.random, f.events), f.equipment, farmingSiteAccess())
         val scarecrow = FarmingScarecrow(service)
+        val placements = mutableListOf<FarmingScarecrowPlacedEvent>()
+        val xp = f.player.statMap.getFineXP(STAT_FARMING)
+        f.events.subscribeUnbound(FarmingScarecrowPlacedEvent::class.java) {
+            assertEquals(f.player, player)
+            assertEquals(patch, this.patch)
+            assertTrue(service.stored(player, patch).scarecrow)
+            assertEquals(0, player.inv.count(FarmingScarecrow.SCARECROW))
+            assertEquals(xp, player.statMap.getFineXP(STAT_FARMING))
+            placements += this
+        }
         f.fill()
         f.player.inv[0] = InvObj(FarmingScarecrow.SCARECROW)
         val flower = checkNotNull(FarmingCrops.bySeed("obj.marigold_seed"))
@@ -285,6 +402,7 @@ class FarmingEquipmentTest {
             f.run { with(scarecrow) { place(patch) } }
             assertEquals(state, service.stored(f.player, patch))
             assertEquals(1, f.player.inv.count(FarmingScarecrow.SCARECROW))
+            assertTrue(placements.isEmpty())
         }
         val empty = PatchState(weeds = 3, compost = Compost.SUPER)
         VarPlayerIntMapSetter.set(f.player, patch.varp, empty.pack())
@@ -292,10 +410,19 @@ class FarmingEquipmentTest {
         assertEquals(empty.copy(scarecrow = true), service.stored(f.player, patch))
         assertEquals(0, f.player.inv.count(FarmingScarecrow.SCARECROW))
         assertEquals(27, f.player.inv.count(SPADE))
+        assertEquals(listOf(FarmingScarecrowPlacedEvent(f.player, patch)), placements)
+        f.player.inv[0] = InvObj(FarmingScarecrow.SCARECROW)
+        f.run { with(scarecrow) { place(patch) } }
+        assertEquals(empty.copy(scarecrow = true), service.stored(f.player, patch))
+        assertEquals(1, f.player.inv.count(FarmingScarecrow.SCARECROW))
+        assertEquals(1, placements.size)
+        f.player.inv[1] = null
         repeat(2) { f.run { with(scarecrow) { remove(patch) } } }
         assertEquals(empty, service.stored(f.player, patch))
-        assertEquals(1, f.player.inv.count(FarmingScarecrow.SCARECROW))
-        assertEquals(27, f.player.inv.count(SPADE))
+        assertEquals(2, f.player.inv.count(FarmingScarecrow.SCARECROW))
+        assertEquals(26, f.player.inv.count(SPADE))
+        assertEquals(1, placements.size)
+        assertEquals(xp, f.player.statMap.getFineXP(STAT_FARMING))
     }
 
     @Test
@@ -328,6 +455,8 @@ class FarmingEquipmentTest {
         val random = FixedRandom()
         val equipment = FarmingEquipment(random)
         val events = EventBus()
+        var dialogue = GameCoroutine("farming-otto-test")
+            private set
 
         @OptIn(InternalApi::class)
         val player = Player().apply {
@@ -339,12 +468,62 @@ class FarmingEquipmentTest {
                 override fun flushHighPriority() {}
                 override fun unregister(service: Any, player: Player) {}
             }
+            uuid = 801L
+            slotId = 1
+            assignUid()
             inv = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.inv".asRSCM())), arrayOfNulls(28))
             worn = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.worn".asRSCM())), arrayOfNulls(14))
             statMap.setBaseLevel(STAT_FARMING, 99)
             statMap.setCurrentLevel(STAT_FARMING, 99)
         }
-        init { VarPlayerIntMapSetter.set(player, "varp.farming_clock", Int.MAX_VALUE) }
+        init {
+            VarPlayerIntMapSetter.set(player, "varp.farming_clock", Int.MAX_VALUE)
+            with(FarmingBarbarianTrainingScript()) {
+                ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup()
+            }
+        }
+
+        fun startOtto() {
+            dialogue = GameCoroutine("farming-otto-test")
+            player.activeCoroutine = dialogue
+            val context = ProtectedAccessContextFactory.empty().copy(
+                getEventBus = { events }, getAlignment = { TextAlignment() },
+            )
+            val access = ProtectedAccess(player, dialogue, context)
+            val npc = Npc("npc.brut_otto", CoordGrid(2503, 3487, 0))
+            val body: suspend () -> Unit = { assertTrue(events.publish(access, NpcEvents.Op1(npc))) }
+            body.startCoroutine(object : Continuation<Unit> {
+                override val context = EmptyCoroutineContext
+                override fun resumeWith(result: Result<Unit>) {
+                    if (result.exceptionOrNull() !is CancellationException) result.getOrThrow()
+                }
+            })
+            nextMenu()
+        }
+
+        fun select(option: Int) {
+            assertTrue(player.ui.containsModal("interface.chatmenu"))
+            dialogue.resumeWith(ResumePauseButtonInput("component.chatmenu:options", option))
+        }
+
+        fun choose(option: Int) {
+            select(option)
+            nextMenu()
+        }
+
+        private fun nextMenu() {
+            repeat(40) {
+                if (dialogue.isIdle || player.ui.containsModal("interface.chatmenu")) return
+                assertTrue(dialogue.isAwaiting(ResumePauseButtonInput::class))
+                val component = when {
+                    player.ui.containsModal("interface.chat_left") -> "component.chat_left:continue"
+                    player.ui.containsModal("interface.chat_right") -> "component.chat_right:continue"
+                    else -> "component.messagebox:continue"
+                }
+                dialogue.resumeWith(ResumePauseButtonInput(component, -1))
+            }
+            error("Otto dialogue did not reach a menu or finish")
+        }
         fun fill() { for (slot in player.inv.indices) player.inv[slot] = InvObj(SPADE) }
         fun run(action: suspend ProtectedAccess.() -> Unit) {
             val coroutine = GameCoroutine("farming-equipment-test")

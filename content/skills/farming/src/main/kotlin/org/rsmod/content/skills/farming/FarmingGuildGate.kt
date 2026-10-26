@@ -1,10 +1,11 @@
 package org.rsmod.content.skills.farming
 
-import dev.openrune.map.MapSingletons
 import jakarta.inject.Inject
+import org.rsmod.api.player.hook.PlayerMovementCompleteHook
 import org.rsmod.api.player.hook.PlayerStepValidateHook
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.farmingLvl
+import org.rsmod.api.registry.player.PlayerRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onGameStartup
 import org.rsmod.api.script.onOpLoc1
@@ -12,10 +13,13 @@ import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.table.farming.FarmingGuildRow
 import org.rsmod.content.generic.locs.doors.DoorTranslations
 import org.rsmod.content.interfaces.bank.tryOpenBank
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.square.MapSquareGrid
 import org.rsmod.map.square.MapSquareKey
+import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.module.PluginModule
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -114,24 +118,48 @@ object FarmingGuild {
     internal fun deniedTier(from: CoordGrid, to: CoordGrid, level: Int): Int? =
         GATES.firstOrNull { it.enters(from, to) && level < FarmingContracts.requiredLevel(it.tier) }?.tier
 
+    internal fun entersMain(from: CoordGrid, to: CoordGrid): Boolean =
+        GATES.any { it.tier == 1 && it.enters(from, to) }
+
     internal fun initializeWing(collision: CollisionFlagMap) {
         advancedWing = GuildWing.discover(GATES.single { it.tier == 3 }, collision)
     }
 
-    internal fun logout(player: Player) {
-        if (advancedWing.contains(player.coords)) player.coords = CENTRAL_ARRIVAL
+    // Moves collision via telejump and zone membership via registry so the later registry.del cleans the final tile.
+    internal fun logout(player: Player, collision: CollisionFlagMap, players: PlayerRegistry) {
+        val departure = player.coords
+        if (!advancedWing.contains(departure)) return
+        PathingEntityCommon.telejump(player, collision, CENTRAL_ARRIVAL)
+        players.change(player, ZoneKey.from(departure), ZoneKey.from(CENTRAL_ARRIVAL))
     }
 }
 
-internal class FarmingGuildStepHook : PlayerStepValidateHook {
+internal class FarmingGuildStepHook @Inject constructor(private val events: EventBus) :
+    PlayerStepValidateHook, PlayerMovementCompleteHook {
     override fun canStep(player: Player, from: CoordGrid, to: CoordGrid): Boolean {
         val tier = FarmingGuild.deniedTier(from, to, player.farmingLvl) ?: return true
         player.mes("Hey! You need a Farming level of at least ${FarmingContracts.requiredLevel(tier)} to enter that area of the Farming Guild.")
         return false
     }
+
+    override fun onMove(player: Player, from: CoordGrid, to: CoordGrid) {
+        val entered = when (player.pendingStepCount) {
+            1 -> FarmingGuild.entersMain(from, to)
+            2 -> FarmingGuild.entersMain(from, player.lastProcessedCoord) ||
+                FarmingGuild.entersMain(player.lastProcessedCoord, to)
+            else -> false
+        }
+        if (entered) events.publish(FarmingGuildEntryEvent(player))
+    }
 }
 
-class FarmingGuildGateScript @Inject constructor(private val locs: LocRepository) : PluginScript() {
+class FarmingGuildGateScript
+@Inject
+constructor(
+    private val locs: LocRepository,
+    private val collision: CollisionFlagMap,
+    private val players: PlayerRegistry,
+) : PluginScript() {
     override fun ScriptContext.startup() {
         onGameStartup {
             for (entry in FarmingGuildRow.all().single().entrance) {
@@ -141,9 +169,9 @@ class FarmingGuildGateScript @Inject constructor(private val locs: LocRepository
                     locs.add(opened, entry.t1.internalName, Int.MAX_VALUE, closed.turnAngle(entry.t3), closed.shape)
                 }
             }
-            FarmingGuild.initializeWing(MapSingletons.collision)
+            FarmingGuild.initializeWing(collision)
         }
-        onPlayerLogout { FarmingGuild.logout(player) }
+        onPlayerLogout { FarmingGuild.logout(player, collision, players) }
         onOpLoc1("loc.fairy_chest_bank") { tryOpenBank() }
     }
 }

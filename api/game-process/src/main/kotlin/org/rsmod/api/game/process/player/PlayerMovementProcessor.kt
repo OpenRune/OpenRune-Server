@@ -2,6 +2,7 @@ package org.rsmod.api.game.process.player
 
 import jakarta.inject.Inject
 import org.rsmod.api.player.events.PlayerMovementEvent
+import org.rsmod.api.player.hook.PlayerMovementCompleteHook
 import org.rsmod.api.player.hook.PlayerStepValidateHook
 import org.rsmod.api.player.output.MapFlag.setMapFlag
 import org.rsmod.api.player.output.clearMapFlag
@@ -113,6 +114,11 @@ constructor(
         updateMovementClock(current, start)
         pendingStepCount = stepCount
         coords = current
+        if (stepCount > 0) {
+            for (validator in stepValidators) {
+                if (validator is PlayerMovementCompleteHook) validator.onMove(this, start, current)
+            }
+        }
     }
 
     private fun Player.validatedStep(current: CoordGrid, target: CoordGrid): CoordGrid =

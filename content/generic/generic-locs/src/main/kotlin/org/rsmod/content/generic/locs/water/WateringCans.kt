@@ -23,11 +23,7 @@ object WateringCans {
             can.last().digitToIntOrNull()?.takeIf { it in 0..8 }
         } else null
 
-    fun consume(player: Player, can: String): Boolean {
-        if (!isCan(can)) return false
-        val slot = player.inv.indexOfFirst { it?.id == can.asRSCM() }
-        return slot >= 0 && use(player, can, slot)
-    }
+    fun consume(player: Player, can: String, canSlot: Int): Boolean = use(player, can, canSlot)
 
     fun water(
         player: Player,
@@ -46,8 +42,8 @@ object WateringCans {
         dry: Int = 0,
         wet: Int = 0,
     ): Boolean {
-        if (!isCan(can) || player.inv[canSlot]?.id != can.asRSCM()) return false
-        if (seedlingSlot >= 0 && player.inv[seedlingSlot]?.id != dry) return false
+        if (!isCan(can) || canSlot !in player.inv.indices || player.inv[canSlot]?.id != can.asRSCM()) return false
+        if (seedlingSlot >= 0 && (seedlingSlot !in player.inv.indices || player.inv[seedlingSlot]?.id != dry)) return false
         val doses = doses(can)
         if (can == GRICOLLER) {
             if (player.vars[CHARGES] <= 0) return false

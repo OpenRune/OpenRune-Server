@@ -22,7 +22,7 @@ class FarmingLeprechaunScript : PluginScript() {
         for (npc in LEPRECHAUNS) {
             onOpNpc1(npc) { startDialogue(it.npc) { talk() } }
             onOpNpc3(npc) { openStore() }
-            onOpNpc4(npc) { FarmingLeprechaunStorage.depositAll(player) }
+            onOpNpc4(npc) { depositAll() }
             onOpNpcU(npc) {
                 if (inv[it.invSlot]?.id != it.objType.id) return@onOpNpcU
                 val type = it.objType
@@ -37,6 +37,7 @@ class FarmingLeprechaunScript : PluginScript() {
                 }
                 if (refusal != null) startDialogue(it.npc) { chatNpc(neutral, refusal) }
                 else if (!FarmingLeprechaunStorage.note(player, type.id)) mes("You don't have enough inventory space.")
+                else objbox(type.internalName, "The leprechaun exchanges your items for banknotes.")
             }
         }
         onIfOpen(SIDE) {
@@ -81,7 +82,7 @@ class FarmingLeprechaunScript : PluginScript() {
             }
         }
         onIfModalButton("component.farming_tools:deposit_all") {
-            if (it.op == IfButtonOp.Op1) FarmingLeprechaunStorage.depositAll(player)
+            if (it.op == IfButtonOp.Op1) depositAll()
         }
         onIfModalButton("component.farming_tools:quantity_1") { setQuantity(it.op, 0) }
         onIfModalButton("component.farming_tools:quantity_5") { setQuantity(it.op, 1) }
@@ -91,6 +92,18 @@ class FarmingLeprechaunScript : PluginScript() {
 
     private fun ProtectedAccess.openStore() {
         ifOpenMainSidePair(main = MAIN, side = SIDE, transparency = -1)
+    }
+
+    private fun ProtectedAccess.depositAll() {
+        val moved = FarmingLeprechaunStorage.depositAll(player)
+        val message = when {
+            moved == 0 -> "None of your items could be deposited."
+            inv.indices.any { slot ->
+                inv[slot]?.let { FarmingLeprechaunStorage.tool(getInvObj(it)) != null } == true
+            } -> "Some of your items couldn't be deposited."
+            else -> "You deposit all of your items."
+        }
+        mes(message)
     }
 
     private suspend fun Dialogue.talk() {

@@ -109,7 +109,7 @@ class FarmingScript @Inject constructor(
                 obj == RAKE -> rake(patch)
                 obj == PLANT_CURE -> plantCure(patch)
                 obj == EMPTY_POT -> fillPot(patch)
-                WateringCans.isCan(obj) -> water(patch, obj)
+                WateringCans.isCan(obj) -> water(patch, obj, slot)
                 FarmingCrops.bySeed(obj) != null -> plant(patch, obj)
                 else -> mes(NOTHING)
             }

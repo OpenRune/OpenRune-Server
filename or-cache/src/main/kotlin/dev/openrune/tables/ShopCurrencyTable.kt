@@ -55,5 +55,12 @@ object ShopCurrencyTable {
             columnRSCM(VARBIT, "varbit.hosidius_tithe_rewardpoints")
             columnRSCM(OMNISHOP_CURRENCY, "dbrow.omnishop_currency_tithe_points")
         }
+
+        row("dbrow.shop_currency_mermaid_tears") {
+            column(KEY, "currency.mermaid_tears")
+            column(SINGULAR_NAME, "mermaid tear")
+            column(PLURAL_NAME, "mermaid tears")
+            columnRSCM(OBJ, "obj.fossil_mermaid_tear")
+        }
     }
 }

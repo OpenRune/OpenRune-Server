@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -79,6 +80,9 @@ class FarmingSiteAccessTest {
             "troll_stronghold_herb" to "quest_myarmsbigadventure",
             "coral_nurseries" to "quest_troubledtortugans",
             "locus_oasis_hardwood" to "quest_ribbitingtale",
+            "prifddinas_allotment_flower" to "quest_songoftheelves",
+            "prifddinas_crystal" to "quest_songoftheelves",
+            "summer_shore_calquat" to "quest_troubledtortugans",
         )
         val player = Player()
         for ((site, quest) in cases) {
@@ -104,6 +108,94 @@ class FarmingSiteAccessTest {
         assertNull(access.denial(player, patch))
         set(player, rule.variable, rule.minimum + 1)
         assertNull(access.denial(player, patch))
+    }
+
+    @Test fun `Prifddinas plots use native completion and Summer Shore permits partial progress`() {
+        val cases = listOf(
+            Triple("prifddinas_allotment_flower", "varbit.sote", 200),
+            Triple("prifddinas_crystal", "varbit.sote", 200),
+            Triple("summer_shore_calquat", "varbit.tt", 12),
+        )
+        for ((site, variable, minimum) in cases) {
+            for (patch in FarmingPatches.bySite(site)) {
+                val player = Player()
+                set(player, variable, minimum - 1)
+                assertNotNull(access("respect-progress").denial(player, patch))
+                assertNotNull(access("virtual-completions").denial(player, patch))
+                assertNull(access("assume-completed").denial(player, patch))
+                assertEquals(minimum - 1, player.vars[variable])
+                assertNotNull(access("respect-progress").denial(player, patch))
+                set(player, variable, minimum)
+                assertNull(access("respect-progress").denial(player, patch))
+                assertNull(access("virtual-completions").denial(player, patch))
+                set(player, variable, minimum + 1)
+                assertNull(access("respect-progress").denial(player, patch))
+            }
+        }
+        val player = Player()
+        set(player, "varbit.tt", 12)
+        assertNull(access("respect-progress").denial(player, patch("summer_shore_calquat")))
+        assertNotNull(access("respect-progress").denial(player, patch("coral_nurseries")))
+    }
+
+    @Test fun `Anglers Retreat requires unboosted Sailing but not construction of the shortcut`() {
+        val player = Player()
+        val patch = patch("anglers_retreat_hardwood")
+        player.statMap.setBaseLevel("stat.sailing", 50)
+        player.statMap.setCurrentLevel("stat.sailing", 99)
+        player.statMap.setBaseLevel("stat.construction", 99)
+        set(player, "varbit.amenity_rowboat_anglers", 1)
+        for (mode in listOf("respect-progress", "assume-completed", "virtual-completions")) {
+            assertNotNull(access(mode).denial(player, patch))
+        }
+        player.statMap.setBaseLevel("stat.sailing", 51)
+        player.statMap.setCurrentLevel("stat.sailing", 1)
+        player.statMap.setBaseLevel("stat.construction", 1)
+        set(player, "varbit.amenity_rowboat_anglers", 0)
+        for (mode in listOf("respect-progress", "assume-completed", "virtual-completions")) {
+            assertNull(access(mode).denial(player, patch))
+        }
+    }
+
+    @Test fun `disease immunity does not grant patch access`() {
+        val player = Player()
+        for (site in listOf("harmony_island_herb", "troll_stronghold_herb", "weiss_herb")) {
+            val patch = patch(site)
+            assertTrue(FarmingPatches.diseaseFree(player, patch))
+            assertNotNull(access("respect-progress").denial(player, patch))
+        }
+        set(player, "varbit.kourend_diary_easy_complete", 1)
+        val hosidius = patch("southwest_hosidius")
+        assertTrue(FarmingPatches.diseaseFree(player, hosidius))
+        assertNull(access("respect-progress").denial(player, hosidius))
+        assertFalse(FarmingPatches.diseaseFree(player, patch("prifddinas_allotment_flower")))
+        val crystal = checkNotNull(FarmingCrops.bySeed("obj.plantpot_crystal_tree_sapling"))
+        assertTrue(crystal.immune)
+        assertFalse(crystal.shipped)
+        assertNotNull(access("respect-progress").denial(player, patch("prifddinas_crystal")))
+    }
+
+    @Test fun `native Prifddinas access is checked before and after planting animation`() {
+        access("respect-progress")
+        val denied = Fixture("prifddinas_allotment_flower")
+        set(denied.player, "varbit.sote", 199)
+        denied.startPlant()
+        denied.finish()
+        assertEquals(3, denied.player.inv.count("obj.potato_seed"))
+        assertEquals(PatchState(weeds = 3), denied.state())
+        val allowed = Fixture("prifddinas_allotment_flower")
+        set(allowed.player, "varbit.sote", 200)
+        allowed.startPlant()
+        allowed.finish()
+        assertEquals(0, allowed.player.inv.count("obj.potato_seed"))
+        assertEquals(FarmingCrops.bySeed("obj.potato_seed")!!.index, allowed.state().cropIndex)
+        val revoked = Fixture("prifddinas_allotment_flower")
+        set(revoked.player, "varbit.sote", 200)
+        revoked.startPlant()
+        set(revoked.player, "varbit.sote", 199)
+        revoked.finish()
+        assertEquals(3, revoked.player.inv.count("obj.potato_seed"))
+        assertEquals(PatchState(weeds = 3), revoked.state())
     }
 
     @Test fun `denied allotment planting and protection never charge seeds or payment`() {

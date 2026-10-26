@@ -16,23 +16,50 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.game.process.player.PlayerMovementProcessor
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
+import org.rsmod.api.player.hook.PlayerStepValidateHook
 import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.api.player.stat.baseFarmingLvl
 import org.rsmod.api.player.stat.farmingLvl
 import org.rsmod.api.player.ui.ifCloseModal
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
+import org.rsmod.api.registry.controller.ControllerRegistry
+import org.rsmod.api.registry.loc.LocRegistry
+import org.rsmod.api.registry.loc.LocRegistryNormal
+import org.rsmod.api.registry.loc.LocRegistryRegion
+import org.rsmod.api.registry.npc.NpcRegistry
+import org.rsmod.api.registry.player.PlayerRegistry
+import org.rsmod.api.registry.player.PlayerRegistryResult
+import org.rsmod.api.registry.region.RegionRegistry
+import org.rsmod.api.registry.zone.ZonePlayerActivityBitSet
+import org.rsmod.api.registry.zone.ZoneUpdateMap
+import org.rsmod.api.repo.loc.LocRepository
+import org.rsmod.api.route.RouteFactory
+import org.rsmod.api.route.StepFactory
 import org.rsmod.events.EventBus
+import org.rsmod.game.MapClock
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
+import org.rsmod.game.entity.ControllerList
+import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.PlayerList
+import org.rsmod.game.entity.player.SessionStateEvent
+import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
+import org.rsmod.game.map.LocZoneStorage
+import org.rsmod.game.movement.MoveSpeed
 import org.rsmod.game.queue.EngineQueueCache
+import org.rsmod.game.region.RegionListLarge
+import org.rsmod.game.region.RegionListSmall
+import org.rsmod.game.region.RegionListWorldEntity
 import org.rsmod.map.CoordGrid
+import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
 import org.rsmod.routefinder.flag.CollisionFlag
@@ -54,7 +81,157 @@ class FarmingGuildTest {
     }
 
     @Test
-    fun `advanced logout follows enclosed native geometry including upper platforms only`() {
+    fun `tier entry uses current Farming rather than base level in both directions`() {
+        val f = Fixture()
+        val hook = FarmingGuildStepHook(EventBus())
+        val entrances = listOf(
+            Triple(45, CoordGrid(1248, 3722), CoordGrid(1248, 3723)),
+            Triple(65, CoordGrid(1244, 3729), CoordGrid(1243, 3729)),
+            Triple(85, CoordGrid(1248, 3744), CoordGrid(1248, 3745)),
+        )
+        for ((required, outside, inside) in entrances) {
+            f.player.statMap.setBaseLevel("stat.farming", (required - 1).toByte())
+            f.player.statMap.setCurrentLevel("stat.farming", required.toByte())
+            assertTrue(hook.canStep(f.player, outside, inside))
+            f.player.statMap.setBaseLevel("stat.farming", required.toByte())
+            f.player.statMap.setCurrentLevel("stat.farming", (required - 1).toByte())
+            assertFalse(hook.canStep(f.player, outside, inside))
+            assertTrue(hook.canStep(f.player, inside, outside))
+        }
+    }
+
+    @Test
+    fun `actual boosted main entrance walk emits only after movement commit`() {
+        val f = MovementFixture()
+        val outside = CoordGrid(1248, 3722)
+        val inside = CoordGrid(1248, 3723)
+        f.player.statMap.setBaseLevel("stat.farming", 44)
+        f.player.statMap.setCurrentLevel("stat.farming", 45)
+        f.events.subscribeUnbound(FarmingGuildEntryEvent::class.java) {
+            assertEquals(f.player, player)
+            assertEquals(inside, player.coords)
+            assertEquals(1, player.pendingStepCount)
+        }
+        assertTrue(f.guild.canStep(f.player, outside, inside))
+        assertEquals(0, f.entries)
+        f.move(outside, inside)
+        assertEquals(inside, f.player.coords)
+        assertEquals(1, f.entries)
+        f.movement.process(f.player)
+        assertEquals(1, f.entries)
+    }
+
+    @Test
+    fun `denied collision and later-validator rejected entrances emit nothing`() {
+        val outside = CoordGrid(1248, 3722)
+        val inside = CoordGrid(1248, 3723)
+        val denied = MovementFixture()
+        denied.player.statMap.setCurrentLevel("stat.farming", 44)
+        denied.move(outside, inside)
+        assertEquals(outside, denied.player.coords)
+        assertEquals(0, denied.entries)
+        val blocked = MovementFixture()
+        blocked.collision[inside.x, inside.z, inside.level] = CollisionFlag.LOC
+        blocked.move(outside, inside)
+        assertEquals(outside, blocked.player.coords)
+        assertEquals(0, blocked.entries)
+        val rejected = MovementFixture(PlayerStepValidateHook { _, _, _ -> false })
+        rejected.move(outside, inside)
+        assertEquals(outside, rejected.player.coords)
+        assertEquals(0, rejected.entries)
+    }
+
+    @Test
+    fun `run entry is detected on either committed step and first-only rejection retains entry`() {
+        val first = MovementFixture()
+        first.move(CoordGrid(1248, 3722), CoordGrid(1248, 3724), MoveSpeed.Run)
+        assertEquals(CoordGrid(1248, 3724), first.player.coords)
+        assertEquals(2, first.player.pendingStepCount)
+        assertEquals(1, first.entries)
+        val second = MovementFixture()
+        second.move(CoordGrid(1248, 3721), CoordGrid(1248, 3723), MoveSpeed.Run)
+        assertEquals(CoordGrid(1248, 3723), second.player.coords)
+        assertEquals(2, second.player.pendingStepCount)
+        assertEquals(1, second.entries)
+        val partial = MovementFixture(PlayerStepValidateHook { _, _, to -> to.z < 3724 })
+        partial.move(CoordGrid(1248, 3722), CoordGrid(1248, 3724), MoveSpeed.Run)
+        assertEquals(CoordGrid(1248, 3723), partial.player.coords)
+        assertEquals(1, partial.player.pendingStepCount)
+        assertEquals(1, partial.entries)
+        val rejectedEntry = MovementFixture(PlayerStepValidateHook { _, _, to -> to.z < 3723 })
+        rejectedEntry.move(CoordGrid(1248, 3721), CoordGrid(1248, 3723), MoveSpeed.Run)
+        assertEquals(CoordGrid(1248, 3722), rejectedEntry.player.coords)
+        assertEquals(1, rejectedEntry.player.pendingStepCount)
+        assertEquals(0, rejectedEntry.entries)
+    }
+
+    @Test
+    fun `west and north wing walks allow expired boost exit but reject reentry at both gate tiles`() {
+        val entrances = listOf(
+            Triple(65, CoordGrid(1244, 3729), CoordGrid(1243, 3729)),
+            Triple(65, CoordGrid(1244, 3730), CoordGrid(1243, 3730)),
+            Triple(85, CoordGrid(1248, 3744), CoordGrid(1248, 3745)),
+            Triple(85, CoordGrid(1249, 3744), CoordGrid(1249, 3745)),
+        )
+        for ((required, outside, inside) in entrances) {
+            val f = MovementFixture()
+            val deeper = inside.translate(inside.x - outside.x, inside.z - outside.z)
+            f.player.statMap.setBaseLevel("stat.farming", (required - 1).toByte())
+            f.player.statMap.setCurrentLevel("stat.farming", (required - 1).toByte())
+            f.move(outside, inside)
+            assertEquals(outside, f.player.coords)
+            assertEquals(0, f.player.pendingStepCount)
+
+            f.player.statMap.setCurrentLevel("stat.farming", required.toByte())
+            f.move(outside, inside)
+            assertEquals(inside, f.player.coords)
+            assertEquals(1, f.player.pendingStepCount)
+            f.player.statMap.setCurrentLevel("stat.farming", (required - 1).toByte())
+            f.move(inside, deeper)
+            assertEquals(deeper, f.player.coords)
+            f.move(deeper, inside)
+            assertEquals(inside, f.player.coords)
+            f.move(inside, outside)
+            assertEquals(outside, f.player.coords)
+            f.move(outside, inside)
+            assertEquals(outside, f.player.coords)
+            assertEquals(0, f.player.pendingStepCount)
+            assertEquals(0, f.entries)
+        }
+    }
+
+    @Test
+    fun `outside internal wing and exit movement never emits guild entry`() {
+        val f = MovementFixture()
+        val moves = listOf(
+            CoordGrid(1248, 3720) to CoordGrid(1248, 3721),
+            CoordGrid(1248, 3723) to CoordGrid(1248, 3724),
+            CoordGrid(1248, 3723) to CoordGrid(1248, 3722),
+            CoordGrid(1244, 3729) to CoordGrid(1243, 3729),
+            CoordGrid(1248, 3744) to CoordGrid(1248, 3745),
+        )
+        for ((from, to) in moves) {
+            f.move(from, to)
+            assertEquals(to, f.player.coords)
+            assertEquals(0, f.entries)
+        }
+    }
+
+    @Test
+    fun `login placement and actual telejump across entrance never emits guild entry`() {
+        val f = MovementFixture()
+        f.player.coords = CoordGrid(1248, 3723)
+        f.movement.process(f.player)
+        assertEquals(0, f.entries)
+        f.player.coords = CoordGrid(1248, 3722)
+        PathingEntityCommon.telejump(f.player, f.collision, CoordGrid(1248, 3723))
+        f.movement.process(f.player)
+        assertEquals(CoordGrid(1248, 3723), f.player.coords)
+        assertEquals(0, f.entries)
+    }
+
+    @Test
+    fun `logout dispatcher relocates advanced ground and upper platforms without changing saved state`() {
         val collision = CollisionFlagMap()
         for (x in 1240..1255) {
             for (z in 3744..3751) collision[x, z, 0] = CollisionFlag.LOC
@@ -64,22 +241,105 @@ class FarmingGuildTest {
         }
         collision[1249, 3746, 0] = CollisionFlag.LOC
         collision[1247, 3747, 0] = 0
+        for (z in 3742..3744) collision[1248, z, 0] = 0
+        collision.allocateIfAbsent(FarmingGuild.CENTRAL_ARRIVAL.x, FarmingGuild.CENTRAL_ARRIVAL.z, 0)
         FarmingGuild.initializeWing(collision)
         val f = Fixture()
+        val events = EventBus()
+        val registry = PlayerRegistry(PlayerList(), collision, ZonePlayerActivityBitSet(), events)
+        guildLogoutEvents(collision, events, registry)
+        f.player.slotId = 1
+        f.player.uuid = 1L
+        assertTrue(registry.add(f.player) is PlayerRegistryResult.Add.Success)
+        fun place(to: CoordGrid) {
+            val from = f.player.coords
+            if (from != to) registry.change(f.player, ZoneKey.from(from), ZoneKey.from(to))
+            f.player.coords = to
+        }
         f.player.statMap.setBaseLevel("stat.farming", 85)
         f.player.statMap.setCurrentLevel("stat.farming", 64)
-        f.set(FarmingContracts.COUNT, 7)
+        val contract = mapOf(
+            FarmingContracts.LEVEL to 3,
+            FarmingContracts.TYPE to 32,
+            FarmingContracts.COMPLETE to 1,
+            FarmingContracts.COUNT to 7,
+            FarmingContracts.DISCUSSED to 1,
+        )
+        contract.forEach { (key, value) -> f.set(key, value) }
+        f.player.inv[0] = InvObj("obj.potato_seed", 11)
+        f.player.worn[0] = InvObj("obj.rune_scimitar")
+        f.vault[0] = InvObj("obj.potato_seed", 3)
         for (outside in listOf(CoordGrid(1247, 3746), CoordGrid(1248, 3744), CoordGrid(1300, 3746))) {
-            f.player.coords = outside
-            FarmingGuild.logout(f.player)
+            place(outside)
+            assertTrue(events.publish(SessionStateEvent.Logout(f.player)))
             assertEquals(outside, f.player.coords)
         }
-        f.player.coords = CoordGrid(1249, 3746, 1)
-        FarmingGuild.logout(f.player)
-        assertEquals(FarmingGuild.CENTRAL_ARRIVAL, f.player.coords)
-        assertEquals(85, f.player.baseFarmingLvl)
-        assertEquals(64, f.player.farmingLvl)
-        assertEquals(7, f.player.vars[FarmingContracts.COUNT])
+        for (level in 0..1) for (inside in listOf(CoordGrid(1249, 3746, level), CoordGrid(1247, 3747, level))) {
+            place(inside)
+            assertTrue(events.publish(SessionStateEvent.Logout(f.player)))
+            assertEquals(FarmingGuild.CENTRAL_ARRIVAL, f.player.coords)
+            assertEquals(85, f.player.baseFarmingLvl)
+            assertEquals(64, f.player.farmingLvl)
+            contract.forEach { (key, value) -> assertEquals(value, f.player.vars[key]) }
+            assertEquals(11, f.count(f.player.inv, "obj.potato_seed"))
+            assertEquals(1, f.count(f.player.worn, "obj.rune_scimitar"))
+            assertEquals(3, f.count(f.vault, "obj.potato_seed"))
+            assertTrue(events.publish(SessionStateEvent.Logout(f.player)))
+            assertEquals(FarmingGuild.CENTRAL_ARRIVAL, f.player.coords)
+            contract.forEach { (key, value) -> assertEquals(value, f.player.vars[key]) }
+            assertEquals(11, f.count(f.player.inv, "obj.potato_seed"))
+            assertEquals(1, f.count(f.player.worn, "obj.rune_scimitar"))
+            assertEquals(3, f.count(f.vault, "obj.potato_seed"))
+        }
+    }
+
+    @Test
+    fun `advanced wing logout then registry removal leaves no stale collision or zone entry at departure`() {
+        val collision = CollisionFlagMap()
+        for (x in 1240..1255) for (z in 3744..3751) collision[x, z, 0] = CollisionFlag.LOC
+        for (x in 1248..1250) for (z in 3745..3747) collision[x, z, 0] = 0
+        collision[1249, 3746, 0] = CollisionFlag.LOC
+        collision[1247, 3747, 0] = 0
+        collision.allocateIfAbsent(FarmingGuild.CENTRAL_ARRIVAL.x, FarmingGuild.CENTRAL_ARRIVAL.z, 0)
+        FarmingGuild.initializeWing(collision)
+        val events = EventBus()
+        val registry = PlayerRegistry(PlayerList(), collision, ZonePlayerActivityBitSet(), events)
+        guildLogoutEvents(collision, events, registry)
+        val central = FarmingGuild.CENTRAL_ARRIVAL
+        for (departure in listOf(
+            CoordGrid(1249, 3746, 0), CoordGrid(1249, 3746, 1), CoordGrid(1247, 3747, 0), CoordGrid(1247, 3747, 1),
+        )) {
+            val f = Fixture()
+            f.player.slotId = 1
+            f.player.uuid = 1L
+            f.player.statMap.setBaseLevel("stat.farming", 85)
+            f.player.statMap.setCurrentLevel("stat.farming", 64)
+            f.set(FarmingContracts.COUNT, 7)
+            f.player.inv[0] = InvObj("obj.potato_seed", 11)
+            f.vault[0] = InvObj("obj.potato_seed", 3)
+            f.player.coords = departure
+            f.player.addBlockWalkCollision(collision, departure)
+            assertTrue(registry.add(f.player) is PlayerRegistryResult.Add.Success)
+            registry.change(f.player, ZoneKey.NULL, ZoneKey.from(departure))
+            assertTrue(collision[departure.x, departure.z, departure.level] and CollisionFlag.BLOCK_NPCS != 0)
+
+            // Same order as production: logout event (before the account save), then registry deletion.
+            assertTrue(events.publish(SessionStateEvent.Logout(f.player)))
+            assertEquals(central, f.player.coords)
+            assertTrue(registry.del(f.player) is PlayerRegistryResult.Delete.Success)
+
+            assertEquals(0, collision[departure.x, departure.z, departure.level] and CollisionFlag.BLOCK_NPCS)
+            assertEquals(0, collision[central.x, central.z, central.level] and CollisionFlag.BLOCK_NPCS)
+            assertTrue(registry.findAll(ZoneKey.from(departure)).none())
+            assertTrue(registry.findAll(ZoneKey.from(central)).none())
+            assertNull(registry.playerList[1])
+            assertEquals(85, f.player.baseFarmingLvl)
+            assertEquals(7, f.player.vars[FarmingContracts.COUNT])
+            assertEquals(11, f.count(f.player.inv, "obj.potato_seed"))
+            assertEquals(3, f.count(f.vault, "obj.potato_seed"))
+        }
+        assertEquals(CollisionFlag.LOC, collision[1249, 3746, 0])
+        assertEquals(0, collision[1247, 3747, 0])
     }
 
     @Test
@@ -229,6 +489,59 @@ class FarmingGuildTest {
         assertEquals(7, FarmingSeedVault.withdraw(f.player, slot, stored, 7, false))
         assertEquals(7, f.player.inv.countOf(oakType.id))
         assertEquals(0, f.vault.countOf(oakType.id))
+    }
+
+    private fun guildLogoutEvents(collision: CollisionFlagMap, events: EventBus, players: PlayerRegistry): EventBus {
+        val clock = MapClock()
+        val updates = ZoneUpdateMap()
+        val zones = LocZoneStorage()
+        val normal = LocRegistryNormal(updates, collision, zones)
+        val regions = RegionRegistry(
+            RegionListSmall(), RegionListLarge(), RegionListWorldEntity(), normal, collision, zones,
+            NpcRegistry(NpcList(), collision, events), ControllerRegistry(clock, ControllerList()),
+            ZonePlayerActivityBitSet(),
+        )
+        val locs = LocRepository(clock,
+            LocRegistry(zones, normal, LocRegistryRegion(updates, collision, zones, regions)), regions)
+        with(FarmingGuildGateScript(locs, collision, players)) {
+            ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup()
+        }
+        return events
+    }
+
+    private class MovementFixture(laterValidator: PlayerStepValidateHook? = null) {
+        val events = EventBus()
+        val collision = CollisionFlagMap()
+        val player = Player().apply {
+            client = SilentClient()
+            currentMapClock = 0
+            processedMapClock = 0
+            statMap.setCurrentLevel("stat.farming", 99)
+        }
+        val guild = FarmingGuildStepHook(events)
+        private val validators = linkedSetOf<PlayerStepValidateHook>(guild).apply {
+            if (laterValidator != null) add(laterValidator)
+        }
+        val movement = PlayerMovementProcessor(collision, RouteFactory(collision),
+            StepFactory(collision), events, validators)
+        var entries = 0
+            private set
+
+        init {
+            for (x in 1232..1256 step 8) for (z in 3712..3752 step 8) {
+                collision.allocateIfAbsent(x, z, 0)
+            }
+            events.subscribeUnbound(FarmingGuildEntryEvent::class.java) { entries++ }
+        }
+
+        fun move(from: CoordGrid, to: CoordGrid, speed: MoveSpeed = MoveSpeed.Walk) {
+            player.coords = from
+            player.pendingStepCount = 0
+            player.moveSpeed = speed
+            player.routeDestination.clear()
+            player.routeDestination.add(to)
+            movement.process(player)
+        }
     }
 
     @OptIn(InternalApi::class)

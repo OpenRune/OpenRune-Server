@@ -2,6 +2,8 @@ package org.rsmod.content.skills.farming
 
 import dev.openrune.ParamReferences.param
 import dev.openrune.ServerCacheManager
+import dev.openrune.definition.type.widget.ComponentType
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
@@ -10,6 +12,7 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.ui.ifSetObj
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onIfOpen
 import org.rsmod.api.table.herblore.HerbloreCleaningRow
@@ -20,6 +23,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 @Singleton
 class FarmingGeomancy @Inject constructor(private val farming: FarmingService) {
     private val patchNames by lazy { enum<Int, String>("farming_geomancy_patch_names") }
+    private val pictures by lazy { enum<Int, ComponentType>("farming_geomancy_pictures") }
     private val displayObjects by lazy {
         val cropNames = enum<ItemServerType, String>("farming_geomancy_crop_names")
         val named = cropNames.filterValuesNotNull()
@@ -44,7 +48,9 @@ class FarmingGeomancy @Inject constructor(private val farming: FarmingService) {
                 checkNotNull(ServerCacheManager.getObject(symbol.asRSCM(RSCMType.LOC)))
                     .paramOrNull(PATCH_ID)
             }
-            Panel(patch, checkNotNull(id) { "Missing native Farming id: ${patch.site}" })
+            val panelId = checkNotNull(id) { "Missing native Farming id: ${patch.site}" }
+            val picture = pictures.getValue(panelId)
+            Panel(patch, panelId, RSCM.getReverseMapping(RSCMType.COMPONENT, picture.packed))
         }
     }
 
@@ -74,6 +80,12 @@ class FarmingGeomancy @Inject constructor(private val farming: FarmingService) {
             val maximum = if (crop == null) 0 else crop.stages + 1
             val minimum = farming.minimumYield(player, panel.patch) ?: 0
             val coord = packedProgress(stage, maximum, minimum, state.watered)
+            val picture = when (obj) {
+                "obj.bucket_empty" -> "obj.blankobject"
+                "obj.vodka" -> "obj.spirit_tree_dummy"
+                else -> obj
+            }
+            player.ifSetObj(panel.picture, picture, 400)
             player.runClientScript(
                 SET_PANEL.asRSCM(RSCMType.CLIENTSCRIPT),
                 panel.id, obj.asRSCM(RSCMType.OBJ), coord, flags,
@@ -82,7 +94,7 @@ class FarmingGeomancy @Inject constructor(private val farming: FarmingService) {
         }
     }
 
-    private data class Panel(val patch: PatchDef, val id: Int)
+    private data class Panel(val patch: PatchDef, val id: Int, val picture: String)
 
     internal companion object {
         const val INTERFACE = "interface.farming_view"

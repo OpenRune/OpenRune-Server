@@ -138,11 +138,27 @@ Legacy planting XP is deferred until final harvest or dead clearing. Ranarr uses
 26.5 planting XP and 30.5 per herb. Produce capacity is checked before reward RNG;
 inventory, patch state and completion rewards must not partially commit.
 
+Explicit watering spends a dose from the clicked inventory slot. If that slot no
+longer holds the expected can type after the wait, the action does not substitute
+another matching can, water the patch or award watering XP. Tithe item-use follows
+the same selected-source rule; its ordinary left-click still selects a usable
+carried can automatically.
+
 Huasca requires level 65 and grows in four 20-minute stages. White lily requires
 level 58 and grows in four five-minute stages. A mature, healthy white lily
 protects neighbouring allotments, not herbs or itself, including during offline
 catch-up. Its protection ends when picked. Cleared patches can be replanted
 immediately; otherwise weeds can regrow.
+
+Mature, healthy, checked calquat trees can be cleared with a spade. Clearing
+discards remaining fruit without another harvest or XP award and leaves reusable
+weeded soil. This supports existing saved crops; calquat planting remains held.
+
+Prifddinas allotments, flowers and crystal trees accept native Song of the Elves
+progress or the configured quest policy. Summer Shore calquat access accepts the
+sourced partial Troubled Tortugans stage, not only quest completion. Anglers'
+Retreat hardwood plots require base Sailing 51; temporary boosts and the optional
+Construction/rowboat route do not satisfy or add a plot requirement.
 
 Huasca also uses the existing Herblore production pipeline: level 58 to clean
 ([11.8 XP](https://oldschool.runescape.wiki/w/Huasca?oldid=15192709)) or make its
@@ -180,18 +196,73 @@ bypass is unchanged WIP, not verified OSRS immunity. Do not extend this model to
 held crop families or infer unpublished odds/timings from a successful local run.
 
 Native Geomancy front/status panels use the real patch IDs, enums and clientscript.
-Crop miniatures and compost-bin status are held rather than substituted with item
-icons. Tool and vault transfers use the shared inventory transaction path.
+Crop miniatures use native item models through the cached picture components,
+including cleared-patch and spirit-tree model selection. A seeded client check
+covered growing, dead, diseased and mature crop previews, exact spell payment and
+same-save reopen. This is not normal acquisition/training or packet-parity proof.
+Paid casts use the recorded animation, delayed graphic and area sound, then open
+the interface four game ticks later. Failed rune payment does not play the cast
+or open the interface.
+Compost-bin status remains held without authoritative per-site contents, type and
+processing state; a shared nearby transmit cannot represent all bins independently.
+
+Tool and vault transfers use the shared inventory transaction path.
+Leprechaun Deposit-all reports all, some or none from actual eligible tool
+transfers, not unrelated carried produce. Produce noting commits atomically
+before showing the original produce in the native banknote-exchange objectbox.
 Bag-to-bank actions run with protected access through the native bank deposit API,
 preserving tab sizes, placeholders and final-stack withdrawal behavior.
 The current account model has no bank-PIN authority; seed-vault use follows the
 existing no-PIN bank model, not a fabricated successful PIN check. Protected PIN
 access remains unavailable.
 
+Seed-box withdrawals validate the clicked seed against the stored slot before
+prompting or transferring, then recheck the stored type after a quantity dialog.
+A stale click after a reorder cannot withdraw a different seed.
+
+Vannah's Trade opens the native 17-row Farming Stall with ordinary coin pricing.
+Deepwater Mairin's Trade opens her native six-row market using Mermaid tears,
+not coins. It refuses every buyback, including tradeable spores and tridents.
+This supplies the existing shop consumer, not underwater training or tear
+acquisition.
+
+Shops use the native Value and 1/5/10/50 controls for both Buy and Sell defaults.
+Forced Value does not transfer items; explicit quantity options keep their fixed
+amounts. Selection preserves the other native preference bits. The obsolete
+instruction-text argument was removed: the current shop interface has native
+value/quantity controls, not the old instruction component.
+
 Jane's complete native contract pool is retained without filtering or reweighting.
 Assignment is not offered until every crop in that pool is playable, preventing
 uncancellable contracts for held crops. Guild information, seed exchanges and
 ordinary seed-pack handling remain separate.
+
+Guild tier gates use current, boosted Farming at 45/65/85. Main-door diary credit
+comes only from committed walking/running across the entrance, not validation,
+teleport placement or login. Allanna and the Guild Garden supplier have separate
+native trade bindings; the Guild Garden stock is separate from Falador's Garden
+Centre. Felfiz provides anima information. Advanced-wing logout relocates collision
+and zone membership along with the saved position before registry removal.
+Gardener refusals and payment prompts use unanimated NPC chat with the same
+page/Continue flow as animated dialogue.
+Skills-necklace Guild transport remains held: native options and charge variants
+are sourced, but exact arrival bounds/distribution and its base-versus-current
+Farming threshold are not.
+
+Otto can teach pot smashing after barehand planting is already learned and base
+Farming is at least 15. A committed sapling planting advances the trial; report
+back to finish it and enable the reversible automatic-smashing toggle. This does
+not complete the global Barbarian miniquest. The earlier barehand-learning trial
+remains held rather than inventing its failure odds.
+
+Twenty-two sourced Farming diary task flags are cache-backed and follow committed
+actions, including scarecrows, white-tree fruit, protection, Guild entry, Tithe
+Logavano planting, Fertile Soil and Sarah's actual shop inventory. Repeats preserve
+neighbouring flags. Task counters, tier rewards and completion authority remain
+with the broader diary system; these handlers do not manufacture them. Root,
+celastrus-battlestaff and full-kingdom-approval tasks remain held with their missing
+producers. Occupied-slot leprechaun tool replacement and kingdom weed
+regrowth/ownership rules also remain unresolved.
 
 Other explicit holds include unpublished new-crop disease/yield/pruning
 rules, contradictory compost-bin processing rules, empty-basket automatic Fill

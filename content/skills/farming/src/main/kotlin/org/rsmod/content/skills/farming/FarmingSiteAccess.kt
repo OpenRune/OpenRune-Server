@@ -2,6 +2,7 @@ package org.rsmod.content.skills.farming
 
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.player.stat.statBase
 import org.rsmod.content.quest.manager.QuestRequirementResolver
 import org.rsmod.game.entity.Player
 
@@ -17,7 +18,10 @@ internal data class SiteAccess(
 class FarmingSiteAccess @Inject constructor(private val quests: QuestRequirementResolver) {
     fun denial(player: Player, patch: PatchDef): String? =
         FarmingPatches.access(patch).firstOrNull {
-            (it.quest.isNotEmpty() && !quests.hasCompleted(player, it.quest)) ||
-                (it.variable.isNotEmpty() && player.vars[it.variable] < it.minimum)
+            val nativeAllowed = it.variable.isNotEmpty() &&
+                (if (it.variable.startsWith("stat.")) player.statBase(it.variable)
+                else player.vars[it.variable]) >= it.minimum
+            val questAllowed = it.quest.isNotEmpty() && quests.hasCompleted(player, it.quest)
+            !nativeAllowed && !questAllowed
         }?.message
 }

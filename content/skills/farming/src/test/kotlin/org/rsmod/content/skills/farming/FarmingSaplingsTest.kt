@@ -81,11 +81,15 @@ class FarmingSaplingsTest {
             val player = player()
             player.inv[0] = InvObj("obj.watering_can_$doses")
             player.inv[1] = InvObj("obj.watering_can_8")
-            assertEquals(doses > 0, WateringCans.consume(player, "obj.watering_can_$doses"))
+            assertEquals(doses > 0, WateringCans.consume(player, "obj.watering_can_$doses", 0))
             assertEquals("obj.watering_can_${maxOf(0, doses - 1)}".asRSCM(), player.inv[0]?.id)
             assertEquals("obj.watering_can_8".asRSCM(), player.inv[1]?.id)
         }
-        assertFalse(WateringCans.consume(player(), "obj.cert_watering_can_0"))
+        assertFalse(WateringCans.consume(player(), "obj.cert_watering_can_0", 0))
+        val bad = player()
+        bad.inv[0] = InvObj("obj.watering_can_8")
+        for (slot in listOf(-1, 1, 9999)) assertFalse(WateringCans.consume(bad, "obj.watering_can_8", slot))
+        assertEquals("obj.watering_can_8".asRSCM(), bad.inv[0]?.id)
     }
 
     @Test
@@ -95,8 +99,14 @@ class FarmingSaplingsTest {
         player.inv[1] = InvObj("obj.zeah_wateringcan")
         val otherBits = (1 shl 20) or 1
         set(player, "varp.prayguild", otherBits or (1 shl 1))
-        assertTrue(WateringCans.consume(player, "obj.zeah_wateringcan"))
-        assertFalse(WateringCans.consume(player, "obj.zeah_wateringcan"))
+        assertTrue(WateringCans.consume(player, "obj.zeah_wateringcan", 0))
+        assertFalse(WateringCans.consume(player, "obj.zeah_wateringcan", 1))
+        player.inv[0] = null
+        set(player, "varbit.zeah_wateringcan_charges", 5)
+        assertFalse(WateringCans.consume(player, "obj.zeah_wateringcan", 0))
+        assertEquals(5, player.vars["varbit.zeah_wateringcan_charges"])
+        set(player, "varbit.zeah_wateringcan_charges", 0)
+        player.inv[0] = InvObj("obj.zeah_wateringcan")
         assertEquals(otherBits, player.vars["varp.prayguild"])
         assertTrue(WateringCans.refill(player, "obj.zeah_wateringcan"))
         assertEquals(1000, player.vars["varbit.zeah_wateringcan_charges"])

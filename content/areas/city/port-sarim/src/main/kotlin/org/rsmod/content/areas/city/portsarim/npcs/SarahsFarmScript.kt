@@ -106,7 +106,7 @@ class SarahsFarmScript @Inject constructor(private val shops: Shops) : PluginScr
         shops.open(
             player = this,
             title = "Sarah's Farming shop.",
-            shopInv = "inv.farming_shop_1",
+            shopInv = "inv.farming_shop_3",
             buyPercentage = 70.0,
             sellPercentage = 100.0,
             changePercentage = 1.0,

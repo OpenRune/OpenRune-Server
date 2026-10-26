@@ -32,6 +32,7 @@ import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.square.MapSquareGrid
+import org.rsmod.map.square.MapSquareKey
 
 @Singleton
 class FarmingTithe @Inject constructor(
@@ -167,12 +168,21 @@ class FarmingTithe @Inject constructor(
     }
 
     internal fun plant(player: Player, loc: BoundLocInfo, crop: TitheCrop, slot: Int): Boolean {
-        val field = field(player) ?: return false
+        val session = instances.sessionForPlayer(player)?.takeIf {
+            it.key == KEY && it.owner == player.uuid
+        } ?: return false
+        val owned = fields[session.id] ?: return false
+        if (player.coords.level != owned.entry.level || loc.level != owned.entry.level ||
+            MapSquareKey.from(player.coords) != MapSquareKey.from(owned.entry) ||
+            MapSquareKey.from(loc.coords) != MapSquareKey.from(owned.entry)
+        ) return false
+        val field = owned.plots
         if (loc.coords in field || loc.id != EMPTY.asRSCM(RSCMType.LOC)) return false
         if (player.farmingLvl < crop.level || player.vars[TYPE] != crop.tier) return false
         if (!player.inv.contains(SPADE) ||
             !player.inv.contains(DIBBER) && !equipment.barehandedPlanting(player)
         ) return false
+        if (locs.findExact(loc.coords, loc.shape)?.entity != loc.entity) return false
         val payment = player.invTransaction(player.inv, autoCommit = false) {
             delete(select(player.inv), crop.seed.id, 1, slot)
         }
@@ -181,10 +191,16 @@ class FarmingTithe @Inject constructor(
         if (!show(loc, FarmingTitheData.loc(plant))) return false
         payment.commitAll()
         field[loc.coords] = Plot(loc, plant)
+        events.publish(FarmingTithePlantEvent(player, crop.seed.internalName))
         return true
     }
 
-    fun water(player: Player, loc: BoundLocInfo, can: String? = null): Boolean {
+    fun water(player: Player, loc: BoundLocInfo): Boolean = waterWith(player, loc, null, -1)
+
+    fun water(player: Player, loc: BoundLocInfo, can: String, canSlot: Int): Boolean =
+        waterWith(player, loc, can, canSlot)
+
+    private fun waterWith(player: Player, loc: BoundLocInfo, can: String?, canSlot: Int): Boolean {
         val plot = field(player)?.get(loc.coords) ?: return false
         advance(plot)
         val plant = plot.plant
@@ -195,9 +211,10 @@ class FarmingTithe @Inject constructor(
                 else -> (WateringCans.doses(it) ?: 0) > 0
             }
         } ?: return false
+        val slot = if (can == null) player.inv.indexOfFirst { it?.id == selected.asRSCM() } else canSlot
         val next = plant.copy(watered = true)
         if (!show(loc, FarmingTitheData.loc(next))) return false
-        if (!WateringCans.consume(player, selected)) {
+        if (!WateringCans.consume(player, selected, slot)) {
             check(show(loc, FarmingTitheData.loc(plant)))
             return false
         }

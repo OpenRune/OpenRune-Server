@@ -9,6 +9,7 @@ import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onOpLocT
 import org.rsmod.api.spells.MagicSpellRegistry
@@ -24,6 +25,7 @@ constructor(
     private val runes: MagicRuneManager,
     private val xpMods: XpModifiers,
     private val geomancy: FarmingGeomancy,
+    private val worldRepo: WorldRepository,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpLocT(CURE) {
@@ -67,7 +69,9 @@ constructor(
             if (runes.attemptCast(player, spell).isFailure()) return@onIfOverlayButton
             magicXp(spell)
             anim("seq.lunar_human_magic_geomancy")
-            spotanim("spotanim.quest_lunar_spellbook_geomancy")
+            spotanim("spotanim.quest_lunar_spellbook_geomancy", delay = 30)
+            soundArea(worldRepo, coords, "synth.farming_geomancy", delay = 15, radius = 3)
+            delay(4)
             geomancy.open(this)
         }
     }
@@ -126,6 +130,7 @@ constructor(
             }
         }) {
             TreatResult.TREATED -> {
+                publish(FarmingFertileSoilEvent(player, patch))
                 magicXp(spell)
                 farmingXp(patch, 18.0)
                 anim("seq.quest_lunar_spell_raining_fertile_soil")

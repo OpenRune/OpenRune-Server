@@ -38,6 +38,9 @@ internal val FARMING_PATCH_KINDS: List<PatchKindSpec> =
             access = listOf(
                 SiteAccess("harmony_island_allotment", quest = "quest_greatbrainrobbery",
                     message = "You need to complete The Great Brain Robbery to use this patch."),
+                SiteAccess("prifddinas_allotment_flower", quest = "quest_songoftheelves",
+                    variable = "varbit.sote", minimum = 200,
+                    message = "You need to complete Song of the Elves to use this patch."),
             ),
         ),
         PatchKindSpec(
@@ -63,6 +66,11 @@ internal val FARMING_PATCH_KINDS: List<PatchKindSpec> =
                 listOf(
                     SiteRule("south_falador", "varbit.falador_diary_medium_complete", 10),
                 ),
+            access = listOf(
+                SiteAccess("prifddinas_allotment_flower", quest = "quest_songoftheelves",
+                    variable = "varbit.sote", minimum = 200,
+                    message = "You need to complete Song of the Elves to use this patch."),
+            ),
         ),
         PatchKindSpec(
             kind = "HERB",
@@ -278,6 +286,8 @@ internal val FARMING_PATCH_KINDS: List<PatchKindSpec> =
             access = listOf(
                 SiteAccess("locus_oasis_hardwood", quest = "quest_ribbitingtale",
                     message = "You need to complete The Ribbiting Tale of a Lily Pad Labour Dispute to use this patch."),
+                SiteAccess("anglers_retreat_hardwood", variable = "stat.sailing", minimum = 51,
+                    message = "You need a Sailing level of 51 to use this patch."),
             ),
         ),
         PatchKindSpec(
@@ -289,6 +299,11 @@ internal val FARMING_PATCH_KINDS: List<PatchKindSpec> =
                     PatchSpec("loc.farming_calquat_tree_patch_3", "varp.farming_patch_92", "summer_shore_calquat", CoordGrid(3127, 2404, 0)),
                     PatchSpec("loc.farming_calquat_tree_patch_2", "varp.farming_patch_93", "kastori_calquat", CoordGrid(1366, 3031, 0)),
                 ),
+            access = listOf(
+                SiteAccess("summer_shore_calquat", quest = "quest_troubledtortugans",
+                    variable = "varbit.tt", minimum = 12,
+                    message = "You need to progress further in Troubled Tortugans to use this patch."),
+            ),
         ),
         PatchKindSpec(
             kind = "CRYSTAL_TREE",
@@ -297,6 +312,11 @@ internal val FARMING_PATCH_KINDS: List<PatchKindSpec> =
                 listOf(
                     PatchSpec("loc.farming_crystal_tree_patch_1", "varp.farming_patch_94", "prifddinas_crystal", CoordGrid(3291, 6118, 0)),
                 ),
+            access = listOf(
+                SiteAccess("prifddinas_crystal", quest = "quest_songoftheelves",
+                    variable = "varbit.sote", minimum = 200,
+                    message = "You need to complete Song of the Elves to use this patch."),
+            ),
         ),
         PatchKindSpec(
             kind = "CELASTRUS",

@@ -40,6 +40,10 @@ import org.rsmod.plugin.scripts.ScriptContext
 @ResourceLock("QuestRequirements")
 class FarmingWhiteTreeTest {
     private val previousPolicy = QuestRequirements.activePolicy()
+    private val harvests = mutableListOf<FarmingWhiteTreeHarvestEvent>()
+    private val events = EventBus().apply {
+        subscribeUnbound(FarmingWhiteTreeHarvestEvent::class.java) { harvests += this }
+    }
 
     @AfterEach
     fun restorePolicy() = QuestRequirements.install(previousPolicy)
@@ -50,21 +54,31 @@ class FarmingWhiteTreeTest {
         val player = player()
         complete(player)
         tree.refresh(player, NOW)
+        events.subscribeUnbound(FarmingWhiteTreeHarvestEvent::class.java) {
+            assertEquals(player, this.player)
+            assertEquals(12 - harvests.size, player.vars[FarmingWhiteTree.TREE])
+            assertEquals(harvests.size, player.inv.count(FarmingWhiteTree.FRUIT))
+            assertEquals(120 * harvests.size, player.statMap.getFineXP(STAT_FARMING))
+        }
         for (slot in 0 until 28) player.inv[slot] = InvObj("obj.spade")
         assertFalse(tree.pick(player, NOW))
         assertEquals(12, player.vars[FarmingWhiteTree.TREE])
         assertEquals(0, player.statMap.getFineXP(STAT_FARMING))
+        assertEquals(0, player.inv.count(FarmingWhiteTree.FRUIT))
+        assertTrue(harvests.isEmpty())
         player.inv[0] = null
         assertTrue(tree.pick(player, NOW))
         assertEquals(11, player.vars[FarmingWhiteTree.TREE])
         assertEquals(1, player.inv.count(FarmingWhiteTree.FRUIT))
         assertEquals(120, player.statMap.getFineXP(STAT_FARMING))
+        assertEquals(listOf(FarmingWhiteTreeHarvestEvent(player)), harvests)
         for (slot in 1..3) player.inv[slot] = null
         repeat(3) { assertTrue(tree.pick(player, NOW)) }
         assertFalse(tree.pick(player, NOW))
         assertEquals(8, player.vars[FarmingWhiteTree.TREE])
         assertEquals(4, player.inv.count(FarmingWhiteTree.FRUIT))
         assertEquals(480, player.statMap.getFineXP(STAT_FARMING))
+        assertEquals(List(4) { FarmingWhiteTreeHarvestEvent(player) }, harvests)
     }
 
     @Test
@@ -84,6 +98,7 @@ class FarmingWhiteTreeTest {
         tree.refresh(restored, NOW + 20 * 60_000)
         assertEquals(12, restored.vars[FarmingWhiteTree.TREE])
         assertEquals(0, restored.statMap.getFineXP(STAT_FARMING))
+        assertTrue(harvests.isEmpty())
     }
 
     @Test
@@ -94,12 +109,16 @@ class FarmingWhiteTreeTest {
         assertFalse(tree.pick(player, NOW))
         assertEquals(0, player.vars[FarmingWhiteTree.TREE])
         assertEquals(0, player.vars[FarmingWhiteTree.CLOCK])
+        assertEquals(0, player.inv.count(FarmingWhiteTree.FRUIT))
+        assertEquals(0, player.statMap.getFineXP(STAT_FARMING))
+        assertTrue(harvests.isEmpty())
         complete(player)
         assertTrue(tree.pick(player, NOW))
         assertEquals(QuestRow.getRow("dbrow.${FarmingWhiteTree.QUEST}").endstate,
             player.vars[FarmingWhiteTree.QUEST_PROGRESS])
         assertEquals(11, player.vars[FarmingWhiteTree.TREE])
         assertEquals(1, player.inv.count(FarmingWhiteTree.FRUIT))
+        assertEquals(listOf(FarmingWhiteTreeHarvestEvent(player)), harvests)
     }
 
     @Test
@@ -113,6 +132,7 @@ class FarmingWhiteTreeTest {
             repeat(4) { assertTrue(tree.pick(player, NOW)) }
             tree.refresh(player, NOW)
             assertEquals(8, player.vars[FarmingWhiteTree.TREE])
+            val committed = harvests.toList()
             for (art in 1..7) {
                 val growing = player()
                 set(growing, FarmingWhiteTree.TREE, art)
@@ -120,6 +140,9 @@ class FarmingWhiteTreeTest {
                 assertFalse(tree.pick(growing, NOW))
                 assertEquals(art, growing.vars[FarmingWhiteTree.TREE])
                 assertEquals(0, growing.vars[FarmingWhiteTree.CLOCK])
+                assertEquals(0, growing.inv.count(FarmingWhiteTree.FRUIT))
+                assertEquals(0, growing.statMap.getFineXP(STAT_FARMING))
+                assertEquals(committed, harvests)
             }
         }
         val unlisted = tree("virtual-completions")
@@ -131,7 +154,7 @@ class FarmingWhiteTreeTest {
     private fun tree(mode: String = "respect-progress", completed: Set<String> = emptySet()): FarmingWhiteTree {
         val config = ServerConfig("test", 0, 240, "test", 1,
             gameplay = GameplayConfig(QuestRequirementsYaml(mode, completed)))
-        return FarmingWhiteTree(QuestRequirementResolver(config), XpModifiers(emptySet()))
+        return FarmingWhiteTree(QuestRequirementResolver(config), XpModifiers(emptySet()), events)
     }
 
     private fun player(): Player = Player().apply {

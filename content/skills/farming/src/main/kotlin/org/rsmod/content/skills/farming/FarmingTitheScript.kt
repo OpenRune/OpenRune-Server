@@ -45,7 +45,7 @@ class FarmingTitheScript @Inject constructor(private val tithe: FarmingTithe) : 
                     onOpLocU(loc) {
                         when {
                             WateringCans.isCan(it.objType.internalName) ->
-                                if (!tithe.water(player, it.loc, it.objType.internalName)) mes(NOTHING)
+                                if (!tithe.water(player, it.loc, it.objType.internalName, it.invSlot)) mes(NOTHING)
                             FarmingComposts.byObj(it.objType.internalName) != null ->
                                 mes("Only sulphurous fertiliser is effective on these plants.")
                             else -> mes(NOTHING)

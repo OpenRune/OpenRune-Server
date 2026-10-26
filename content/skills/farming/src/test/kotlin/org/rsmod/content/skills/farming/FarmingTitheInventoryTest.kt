@@ -2,11 +2,16 @@ package org.rsmod.content.skills.farming
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.startCoroutine
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -16,31 +21,122 @@ import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.combat.weapon.WeaponSpeeds
 import org.rsmod.api.combat.weapon.styles.AttackStyles
+import org.rsmod.api.instances.InstanceManager
+import org.rsmod.api.instances.assignInstance
+import org.rsmod.api.instances.region.InstanceAreaResolver
 import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.bonus.WornBonuses
+import org.rsmod.api.player.events.interact.LocEvents
+import org.rsmod.api.player.events.interact.LocUDefaultEvents
 import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.random.DefaultGameRandom
 import org.rsmod.api.random.GameRandom
+import org.rsmod.api.registry.controller.ControllerRegistry
+import org.rsmod.api.registry.loc.LocRegistry
+import org.rsmod.api.registry.loc.LocRegistryNormal
+import org.rsmod.api.registry.loc.LocRegistryRegion
+import org.rsmod.api.registry.npc.NpcRegistry
+import org.rsmod.api.registry.region.RegionRegistry
+import org.rsmod.api.registry.zone.ZonePlayerActivityBitSet
+import org.rsmod.api.registry.zone.ZoneUpdateMap
+import org.rsmod.api.repo.loc.LocRepository
+import org.rsmod.api.repo.npc.NpcRepository
+import org.rsmod.api.repo.region.RegionRepository
+import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.content.interfaces.bank.BankTab
 import org.rsmod.content.interfaces.bank.scripts.BankInvScript
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
+import org.rsmod.events.SuspendEvent
+import org.rsmod.game.MapClock
 import org.rsmod.game.cheat.CheatCommandMap
 import org.rsmod.game.client.Client
+import org.rsmod.game.entity.ControllerList
+import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
+import org.rsmod.game.loc.BoundLocInfo
+import org.rsmod.game.loc.LocEntity
+import org.rsmod.game.loc.LocInfo
+import org.rsmod.game.loc.LocZoneKey
+import org.rsmod.game.map.LocZoneStorage
 import org.rsmod.game.queue.EngineQueueCache
+import org.rsmod.game.region.RegionListLarge
+import org.rsmod.game.region.RegionListSmall
+import org.rsmod.game.region.RegionListWorldEntity
 import org.rsmod.game.type.placeholder
+import org.rsmod.map.CoordGrid
+import org.rsmod.map.square.MapSquareKey
+import org.rsmod.map.zone.ZoneGrid
+import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.routefinder.collision.CollisionFlagMap
 
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class FarmingTitheInventoryTest {
+    @Test
+    fun `owned logavano planting publishes once after seed and plot commit`() {
+        val f = PlantFixture()
+        val seed = f.crop.seed.internalName
+        f.events.subscribeUnbound(FarmingTithePlantEvent::class.java) {
+            assertEquals(f.player, player)
+            assertEquals(seed, this.seed)
+            assertEquals(1, f.player.inv.physicalCount(seed))
+            assertFalse(f.tithe.plant(player, f.plot, f.crop, 0))
+        }
+        assertTrue(f.tithe.plant(f.player, f.plot, f.crop, 0))
+        assertEquals(listOf(seed), f.planted)
+        assertEquals(1, f.player.inv.physicalCount(seed))
+        assertFalse(f.tithe.plant(f.player, f.plot, f.crop, 0))
+        assertEquals(listOf(seed), f.planted)
+    }
+
+    @Test
+    fun `denied stale missing seed and foreign instance plants never publish or spend seeds`() {
+        val f = PlantFixture()
+        val player = f.player
+        player.statMap.setCurrentLevel(STAT_FARMING, (f.crop.level - 1).toByte())
+        assertFalse(f.tithe.plant(player, f.plot, f.crop, 0))
+        player.statMap.setCurrentLevel(STAT_FARMING, 99)
+        VarPlayerIntMapSetter.set(player, FarmingTithe.TYPE, 1)
+        assertFalse(f.tithe.plant(player, f.plot, f.crop, 0))
+        VarPlayerIntMapSetter.set(player, FarmingTithe.TYPE, f.crop.tier)
+        player.inv[0] = null
+        assertFalse(f.tithe.plant(player, f.plot, f.crop, 0))
+        player.inv[0] = InvObj(f.crop.seed, 2)
+        assertFalse(f.tithe.plant(player, f.plot, f.crop, 1))
+        val foreign = BoundLocInfo(CoordGrid(1810, 3502), f.plot.entity, 2, 1, 1, 0)
+        assertFalse(f.tithe.plant(player, foreign, f.crop, 0))
+        val entered = player.coords
+        player.coords = foreign.coords
+        assertFalse(f.tithe.plant(player, f.plot, f.crop, 0))
+        player.coords = entered
+        val session = f.instances.sessionsForKey(FarmingTithe.KEY).single()
+        val intruder = Fixture().player.apply {
+            uuid = checkNotNull(player.uuid) + 1
+            coords = player.coords
+            inv[0] = InvObj(f.crop.seed, 2)
+            inv[1] = InvObj(SPADE)
+            inv[2] = InvObj(DIBBER)
+        }
+        assertFalse(f.tithe.plant(intruder, f.plot, f.crop, 0))
+        intruder.assignInstance(session.id)
+        assertFalse(f.tithe.plant(intruder, f.plot, f.crop, 0))
+        assertTrue(f.locs.del(LocInfo(f.plot.layer, f.plot.coords, f.plot.entity), Int.MAX_VALUE))
+        assertFalse(f.tithe.plant(player, f.plot, f.crop, 0))
+        assertEquals(2, player.inv.physicalCount(f.crop.seed.internalName))
+        assertEquals(2, intruder.inv.physicalCount(f.crop.seed.internalName))
+        assertEquals(emptyList<String>(), f.planted)
+    }
+
     @Test
     fun `seed supply rechecks boosted level, one tier and ten thousand cap`() {
         val f = Fixture()
@@ -324,11 +420,150 @@ class FarmingTitheInventoryTest {
         assertEquals(0, split.count(crop.fruit.internalName))
     }
 
+    @Test
+    fun `native item use waters with exactly the clicked can slot and not an earlier identical can`() {
+        val f = PlantFixture()
+        f.plantAndStock()
+        val dry = f.visible().id
+        val before = f.snapshot()
+        f.useCan("obj.watering_can_8", 4)
+        assertNotEquals(dry, f.visible().id)
+        assertEquals(before.toMutableList().also { it[4] = InvObj("obj.watering_can_7") }, f.snapshot())
+        assertEquals(f.xp0, f.player.statMap.getFineXP(STAT_FARMING))
+        assertEquals(f.points0, f.player.vars[FarmingTithe.POINTS])
+    }
+
+    @Test
+    fun `native item use with a stale vanished or replaced can slot spends no other can and keeps the plot dry`() {
+        val f = PlantFixture()
+        f.plantAndStock()
+        val dry = f.visible().id
+        for (stale in listOf(null, InvObj(SPADE), InvObj("obj.watering_can_7"))) {
+            f.player.inv[4] = stale
+            val before = f.snapshot()
+            f.useCan("obj.watering_can_8", 4)
+            assertEquals(before, f.snapshot())
+            assertEquals(dry, f.visible().id)
+            assertEquals(f.xp0, f.player.statMap.getFineXP(STAT_FARMING))
+            assertEquals(f.points0, f.player.vars[FarmingTithe.POINTS])
+        }
+    }
+
+    @Test
+    fun `native left click still auto selects a usable can past empty and irrelevant entries`() {
+        val f = PlantFixture()
+        f.plantAndStock()
+        f.player.inv[3] = InvObj("obj.watering_can_0")
+        f.player.inv[4] = InvObj(SPADE)
+        f.player.inv[6] = InvObj("obj.watering_can_5")
+        f.player.inv[7] = InvObj("obj.watering_can_8")
+        val dry = f.visible().id
+        val before = f.snapshot()
+        f.leftClick()
+        assertNotEquals(dry, f.visible().id)
+        assertEquals(before.toMutableList().also { it[6] = InvObj("obj.watering_can_4") }, f.snapshot())
+        assertEquals(f.xp0, f.player.statMap.getFineXP(STAT_FARMING))
+        assertEquals(f.points0, f.player.vars[FarmingTithe.POINTS])
+    }
+
     private class CountingRandom(private val highest: Boolean = false) : GameRandom {
         var calls = 0
         override fun of(maxExclusive: Int): Int { calls++; return if (highest) maxExclusive - 1 else 0 }
         override fun of(minInclusive: Int, maxInclusive: Int): Int = minInclusive
         override fun randomDouble(): Double = 0.0
+    }
+    private class PlantFixture {
+        val events = EventBus()
+        private val clock = MapClock().apply { cycle = 100 }
+        private val collision = CollisionFlagMap()
+        private val updates = ZoneUpdateMap()
+        private val zones = LocZoneStorage()
+        private val normal = LocRegistryNormal(updates, collision, zones)
+        private val npcs = NpcList()
+        private val npcRegistry = NpcRegistry(npcs, collision, events)
+        private val regions = RegionRegistry(
+            RegionListSmall(), RegionListLarge(), RegionListWorldEntity(), normal, collision, zones,
+            npcRegistry, ControllerRegistry(clock, ControllerList()), ZonePlayerActivityBitSet(),
+        )
+        val locs = LocRepository(clock,
+            LocRegistry(zones, normal, LocRegistryRegion(updates, collision, zones, regions)), regions)
+        val instances = InstanceManager(RegionRepository(regions),
+            NpcRepository(clock, npcRegistry, npcs), PlayerList(), events, InstanceAreaResolver(),
+            clock, collision)
+        val tithe = FarmingTithe(instances, locs, clock, XpModifiers(emptySet()),
+            FarmerWornSetXpModifiers(), FarmingEquipment(DefaultGameRandom(1)), events)
+        val player = Fixture().player
+        val crop = FarmingTitheData.crops.single { it.tier == 3 }
+        val planted = mutableListOf<String>()
+        val plot: BoundLocInfo
+
+        init {
+            val source = CoordGrid(1810, 3502)
+            val base = MapSquareKey.from(source).toCoords(0)
+            for (level in 0..3) for (x in 0 until 64 step 8) for (z in 0 until 64 step 8) {
+                collision.allocateIfAbsent(base.x + x, base.z + z, level)
+            }
+            val empty = LocEntity(FarmingTithe.EMPTY.asRSCM(RSCMType.LOC), 10, 0)
+            zones.mapLocs[ZoneKey.from(source), LocZoneKey(ZoneGrid.from(source), 2)] = empty
+            for (sack in FarmingTitheData.row.sacks) {
+                zones.mapLocs[ZoneKey.from(sack), LocZoneKey(ZoneGrid.from(sack), 2)] =
+                    LocEntity("loc.tithe_sack_of_fruit_empty".asRSCM(RSCMType.LOC), 10, 0)
+            }
+            player.inv[0] = InvObj(crop.seed, 2)
+            player.inv[1] = InvObj(SPADE)
+            player.inv[2] = InvObj(DIBBER)
+            check(tithe.enter(player))
+            val session = checkNotNull(instances.sessionForPlayer(player))
+            val coords = checkNotNull(instances.resolveCoord(session, source))
+            plot = BoundLocInfo(coords, empty, 2, 1, 1, 0)
+            events.subscribeUnbound(FarmingTithePlantEvent::class.java) { planted += seed }
+        }
+
+        init {
+            with(FarmingTitheScript(tithe)) { ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup() }
+        }
+
+        private var initialXp = 0
+        private var initialPoints = 0
+        val xp0 get() = initialXp
+        val points0 get() = initialPoints
+
+        /** Plants through production, then stocks two identical full cans at slots 3 and 4. */
+        fun plantAndStock() {
+            check(tithe.plant(player, plot, crop, 0))
+            player.inv[3] = InvObj("obj.watering_can_8")
+            player.inv[4] = InvObj("obj.watering_can_8")
+            initialXp = player.statMap.getFineXP(STAT_FARMING)
+            initialPoints = player.vars[FarmingTithe.POINTS]
+        }
+
+        fun snapshot(): List<InvObj?> = player.inv.indices.map { player.inv[it] }
+        fun visible(): LocInfo = checkNotNull(locs.findExact(plot.coords, plot.shape))
+
+        fun useCan(can: String, slot: Int) {
+            val loc = BoundLocInfo(plot.coords, visible().entity, plot.layer, 1, 1, 0)
+            val type = checkNotNull(ServerCacheManager.getObject(loc.id))
+            val obj = checkNotNull(ServerCacheManager.getItem(can.asRSCM()))
+            publish(LocUDefaultEvents.OpType(loc, loc, type, obj, slot))
+        }
+
+        fun leftClick() {
+            val loc = BoundLocInfo(plot.coords, visible().entity, plot.layer, 1, 1, 0)
+            publish(LocEvents.Op1(loc, loc, checkNotNull(ServerCacheManager.getObject(loc.id))))
+        }
+
+        private fun publish(event: SuspendEvent<ProtectedAccess>) {
+            val coroutine = GameCoroutine("tithe-watering-test")
+            player.activeCoroutine = coroutine
+            val access = ProtectedAccess(player, coroutine, ProtectedAccessContextFactory.empty())
+            var outcome: Result<Unit>? = null
+            val action: suspend () -> Unit = { assertTrue(events.publish(access, event)) }
+            action.startCoroutine(object : Continuation<Unit> {
+                override val context = EmptyCoroutineContext
+                override fun resumeWith(result: Result<Unit>) { outcome = result }
+            })
+            try { checkNotNull(outcome).getOrThrow() } finally { player.activeCoroutine = null }
+        }
     }
 
     private class Fixture {

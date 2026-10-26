@@ -1,0 +1,144 @@
+# Native task flags: Quest Helper 47d06cf98887b8771cb4666dd09306214bb02475 (2024-12-12),
+# helpers/achievementdiaries/{ardougne,falador,kandarin,karamja,kourend,lumbridgeanddraynor,morytania,varrock,westernprovinces}.
+# Requirements/actions: OSRS Wiki regional diaries; these tasks predate the 2026-10-20 cutoff.
+# Farming level is checked when planting (boostable), not again at harvest/check-health.
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_diary_actions"
+keyType = "INT"
+valueType = "STRING"
+[enum.values]
+1 = "HARVEST"
+2 = "CHECK_HEALTH"
+3 = "HARVEST"
+4 = "HARVEST"
+5 = "PLANT"
+6 = "HARVEST"
+7 = "HARVEST"
+8 = "HARVEST"
+9 = "HARVEST"
+10 = "HARVEST"
+11 = "CHECK_HEALTH"
+12 = "CHECK_HEALTH"
+13 = "CHECK_HEALTH"
+14 = "CHECK_HEALTH"
+15 = "PLACE_SCARECROW"
+16 = "PLACE_SCARECROW"
+17 = "PICK_WHITE_FRUIT"
+18 = "PROTECT"
+19 = "ENTER_GUILD"
+20 = "PLANT_TITHE"
+21 = "FERTILE_SOIL"
+22 = "BROWSE_SHOP"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_diary_sites"
+keyType = "INT"
+valueType = "STRING"
+[enum.values]
+1 = "north_ardougne"
+2 = "gnome_maze_fruit"
+3 = "south_ardougne_bush"
+4 = "north_ardougne"
+5 = "mcgrubors_wood_hops"
+6 = "north_catherby"
+7 = "north_catherby"
+8 = "draynor_manor_belladonna"
+9 = "harmony_island_allotment"
+10 = "canifis_mushroom"
+11 = "lletya_fruit"
+12 = "brimhaven_fruit"
+13 = "tai_bwo_wannai_calquat"
+14 = "brimhaven_fruit"
+15 = "south_falador"
+16 = "west_port_phasmatys"
+17 = "varrock_palace_white_tree"
+18 = "gnome_stronghold_tree"
+19 = "farming_guild_main_entrance"
+20 = "tithe_farm"
+21 = "west_port_phasmatys"
+22 = 'inv.farming_shop_3'
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_diary_seeds"
+keyType = "INT"
+valueType = "OBJ"
+[enum.values]
+1 = "obj.strawberry_seed"
+2 = "obj.plantpot_palm_sapling"
+3 = "obj.poisonivy_bush_seed"
+4 = "obj.torstol_seed"
+5 = "obj.jute_seed"
+6 = "obj.limpwurt_seed"
+7 = "obj.dwarf_weed_seed"
+8 = "obj.belladonna_seed"
+9 = "obj.watermelon_seed"
+10 = "obj.mushroom_seed"
+11 = "obj.plantpot_palm_sapling"
+12 = "obj.plantpot_palm_sapling"
+13 = "obj.plantpot_calquat_sapling"
+# Karamja medium accepts any healthy fruit tree in the Brimhaven fruit-tree patch.
+18 = "obj.plantpot_magic_tree_sapling"
+20 = "obj.hosidius_tithe_seed_c"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_diary_variables"
+keyType = "INT"
+valueType = "STRING"
+[enum.values]
+# Literal strings preserve varp/varbit names; double quotes resolve them to numeric IDs.
+1 = 'varp.ardounge_achievement_diary'
+2 = 'varp.ardounge_achievement_diary2'
+3 = 'varp.ardounge_achievement_diary2'
+4 = 'varp.ardounge_achievement_diary2'
+5 = 'varp.kandarin_achievement_diary'
+6 = 'varp.kandarin_achievement_diary'
+7 = 'varp.kandarin_achievement_diary2'
+8 = 'varp.lumb_dray_achievement_diary2'
+9 = 'varp.morytania_achievement_diary'
+10 = 'varp.morytania_achievement_diary'
+11 = 'varp.western_achievement_diary2'
+12 = 'varp.atjun_tasks_4'
+13 = 'varp.atjun_tasks_4'
+14 = 'varbit.atjun_med_farming'
+15 = 'varp.falador_achievement_diary'
+16 = 'varp.morytania_achievement_diary'
+17 = 'varp.varrock_achievement_diary'
+18 = 'varp.western_achievement_diary2'
+19 = 'varp.kourend_achievement_diary'
+20 = 'varp.kourend_achievement_diary'
+21 = 'varp.morytania_achievement_diary2'
+22 = 'varp.falador_achievement_diary'
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_diary_masks"
+keyType = "INT"
+valueType = "INT"
+[enum.values]
+1 = 32768
+2 = 1
+3 = 2
+4 = 2048
+5 = 32
+6 = 524288
+7 = 64
+8 = 1
+9 = 33554432
+10 = 536870912
+11 = 1
+12 = 8
+13 = 32
+14 = 1
+15 = 16384
+16 = 256
+17 = 67108864
+18 = 256
+19 = 2097152
+20 = -2147483648
+21 = 32
+22 = 4

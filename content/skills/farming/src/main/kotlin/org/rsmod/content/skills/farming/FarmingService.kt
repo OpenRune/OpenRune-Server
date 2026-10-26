@@ -179,6 +179,7 @@ constructor(
         if (refusal != null) return refusal
         if (!pay()) return ProtectResult.UNPAID
         store(player, patch, state.copy(paid = true))
+        eventBus.publish(FarmingProtectionEvent(player, patch, checkNotNull(crop)))
         return ProtectResult.PROTECTED
     }
 
@@ -321,7 +322,7 @@ constructor(
         eventBus.publish(FarmingPlantEvent(player, patch, crop))
     }
 
-    suspend fun ProtectedAccess.water(patch: PatchDef, can: String) {
+    suspend fun ProtectedAccess.water(patch: PatchDef, can: String, canSlot: Int) {
         val state = state(player, patch)
         val crop = state.crop
         when {
@@ -338,7 +339,7 @@ constructor(
                 if (current.cropIndex != state.cropIndex || current.health != Health.HEALTHY ||
                     current.grown(crop) || current.watered
                 ) return
-                if (!WateringCans.consume(player, can)) {
+                if (!WateringCans.consume(player, can, canSlot)) {
                     mes("Your watering can is empty.")
                     return
                 }
@@ -480,9 +481,9 @@ constructor(
         val crop = state.crop ?: return false
         val dead = state.health == Health.DEAD
         val digUp = state.health == Health.HEALTHY && !state.grown(crop) && multiCrop(patch.kind)
-        val clearCactus = crop.kind == PatchKind.CACTUS && state.health == Health.HEALTHY &&
-            state.grown(crop) && state.phase == Phase.CHECKED
-        if (!dead && !digUp && !clearCactus) return false
+        val clearMature = (crop.kind == PatchKind.CACTUS || crop.kind == PatchKind.CALQUAT) &&
+            state.health == Health.HEALTHY && state.grown(crop) && state.phase == Phase.CHECKED
+        if (!dead && !digUp && !clearMature) return false
         if (!inv.contains(SPADE)) {
             mes("You need a spade to do that.")
             return true

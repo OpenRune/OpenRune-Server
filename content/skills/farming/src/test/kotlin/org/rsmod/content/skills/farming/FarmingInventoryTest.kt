@@ -333,6 +333,57 @@ class FarmingInventoryTest {
     }
 
     @Test
+    fun `watering consumes exactly the selected can when an identical can precedes it`() {
+        val f = Fixture("potato")
+        f.planted()
+        f.player.inv[0] = InvObj(CAN_8)
+        f.player.inv[5] = InvObj(CAN_8)
+        f.startUse(CAN_8, 5)
+        f.finish()
+        assertEquals(CAN_8.asRSCM(RSCMType.OBJ), f.player.inv[0]?.id)
+        assertEquals(CAN_7.asRSCM(RSCMType.OBJ), f.player.inv[5]?.id)
+        assertEquals(1, f.count(CAN_8))
+        assertEquals(1, f.count(CAN_7))
+        assertTrue(f.state().watered)
+        assertEquals(10, f.xp())
+    }
+
+    @Test
+    fun `a selected can removed during the delay is not replaced by an identical can`() {
+        val f = Fixture("potato")
+        val planted = f.planted()
+        f.player.inv[0] = InvObj(CAN_8)
+        f.player.inv[5] = InvObj(CAN_8)
+        f.startUse(CAN_8, 5)
+        f.player.inv[5] = null
+        f.finish()
+        assertEquals(CAN_8.asRSCM(RSCMType.OBJ), f.player.inv[0]?.id)
+        assertEquals(null, f.player.inv[5])
+        assertEquals(1, f.count(CAN_8))
+        assertEquals(0, f.count(CAN_7))
+        assertEquals(planted, f.state())
+        assertEquals(0, f.xp())
+    }
+
+    @Test
+    fun `a selected can slot changed during the delay does not fall back to another can`() {
+        for (replacement in listOf(CAN_7, SPADE)) {
+            val f = Fixture("potato")
+            val planted = f.planted()
+            f.player.inv[0] = InvObj(CAN_8)
+            f.player.inv[5] = InvObj(CAN_8)
+            f.startUse(CAN_8, 5)
+            f.player.inv[5] = InvObj(replacement)
+            f.finish()
+            assertEquals(CAN_8.asRSCM(RSCMType.OBJ), f.player.inv[0]?.id)
+            assertEquals(replacement.asRSCM(RSCMType.OBJ), f.player.inv[5]?.id)
+            assertEquals(1, f.count(CAN_8))
+            assertEquals(planted, f.state())
+            assertEquals(0, f.xp())
+        }
+    }
+
+    @Test
     fun `cure cannot resurrect a crop that dies during its delay`() {
         val f = Fixture("guam")
         val diseased = f.planted().copy(stage = 1, health = Health.DISEASED)
@@ -490,7 +541,7 @@ class FarmingInventoryTest {
 
     @Test
     fun `unavailable crop content never consumes a seed or mutates saved patch state`() {
-        for (name in listOf("oak tree", "redberry bush", "iasor plant")) {
+        for (name in listOf("oak tree", "redberry bush", "iasor plant", "calquat tree")) {
             val f = Fixture(name)
             f.state(PatchState().empty())
             f.give(f.crop.seed)
@@ -646,8 +697,8 @@ class FarmingInventoryTest {
     }
 
     @Test
-    fun `mature cacti clear with produce remaining without repeating check or harvest rewards`() {
-        for (name in listOf("cactus", "potato cactus")) {
+    fun `mature cacti and calquats clear with produce remaining without repeating rewards`() {
+        for (name in listOf("cactus", "potato cactus", "calquat tree")) {
             val f = Fixture(name)
             f.grown()
             f.op()
@@ -675,20 +726,78 @@ class FarmingInventoryTest {
     }
 
     @Test
-    fun `cactus clear preserves a changed crop or a crop whose spade vanished during digging`() {
-        for (replace in listOf(false, true)) {
-            val f = Fixture("potato cactus")
-            val checked = f.grown().copy(phase = Phase.CHECKED, produce = f.crop.maxProduce)
-            f.state(checked)
+    fun `mature clearing preserves a changed crop or a crop whose spade vanished during digging`() {
+        for (name in listOf("potato cactus", "calquat tree")) {
+            for (replace in listOf(false, true)) {
+                val f = Fixture(name)
+                val checked = f.grown().copy(phase = Phase.CHECKED, produce = f.crop.maxProduce)
+                f.state(checked)
+                f.give(SPADE)
+                f.startOp(5)
+                val expected = if (replace) checked.copy(produce = 1) else checked
+                if (replace) f.state(expected) else f.player.inv[0] = null
+                f.finish()
+                assertEquals(expected, f.state())
+                assertEquals(0, f.xp())
+                assertTrue(f.clears.isEmpty())
+                assertEquals(0, f.count(f.crop.produce))
+            }
+        }
+    }
+
+    @Test
+    fun `barren calquat clearing resets soil without duplicating XP or enabling held replanting`() {
+        for (item in listOf(false, true)) {
+            val f = Fixture("calquat tree")
+            f.grown()
+            f.op()
+            val xp = f.xp()
+            assertEquals(122255, xp)
+            val barren = f.state().copy(
+                produce = 0, compost = Compost.ULTRA, paid = true, resurrected = true,
+            )
+            f.state(barren)
             f.give(SPADE)
-            f.startOp(5)
-            val expected = if (replace) checked.copy(produce = 1) else checked
-            if (replace) f.state(expected) else f.player.inv[0] = null
-            f.finish()
-            assertEquals(expected, f.state())
-            assertEquals(0, f.xp())
-            assertTrue(f.clears.isEmpty())
+            f.give(f.crop.seed)
+            val compost = checkNotNull(FarmingComposts.get(Compost.NORMAL).obj)
+            f.give(compost)
+            if (item) f.use(SPADE) else f.op()
+            assertEquals(PatchState(weeds = PatchState.CLEARED), f.state())
+            if (item) f.use(SPADE) else f.op()
+            assertEquals(1, f.clears.size)
+            assertFalse(f.clears.single().dead)
+            assertEquals(1, f.checks.size)
+            assertTrue(f.harvests.isEmpty())
             assertEquals(0, f.count(f.crop.produce))
+            assertEquals(1, f.count(SPADE))
+            assertEquals(xp, f.xp())
+            f.use(compost)
+            val soil = PatchState(weeds = PatchState.CLEARED, compost = Compost.NORMAL)
+            assertEquals(soil, f.state())
+            assertEquals(0, f.count(compost))
+            assertEquals(1, f.count("obj.bucket_empty"))
+            val treatedXp = f.xp()
+            f.use(f.crop.seed)
+            assertEquals(soil, f.state())
+            assertEquals(1, f.count(f.crop.seed))
+            assertEquals(1, f.count(SPADE))
+            assertEquals(treatedXp, f.xp())
+            assertTrue(f.plants.isEmpty())
+        }
+    }
+
+    @Test
+    fun `calquat removal cannot bypass its pending health check or create stump removal`() {
+        val f = Fixture("calquat tree")
+        f.give(SPADE)
+        for (phase in listOf(Phase.GROWING, Phase.STUMP)) {
+            val pending = f.grown(lives = 0).copy(phase = phase)
+            f.state(pending)
+            f.use(SPADE)
+            assertEquals(pending, f.state())
+            assertEquals(0, f.xp())
+            assertEquals(1, f.count(SPADE))
+            assertTrue(f.clears.isEmpty())
         }
     }
 
@@ -1064,6 +1173,27 @@ class FarmingInventoryTest {
         assertTrue(f.clears.isEmpty())
     }
 
+    @Test
+    fun `scarecrow item use refuses missing source and wrong patch without an event`() {
+        val flower = Fixture("marigold")
+        val empty = PatchState().empty()
+        flower.state(empty)
+        repeat(2) { flower.use(FarmingScarecrow.SCARECROW) }
+        assertEquals(empty, flower.state())
+        assertEquals(0, flower.count(FarmingScarecrow.SCARECROW))
+        assertEquals(0, flower.xp())
+        assertTrue(flower.scarecrows.isEmpty())
+
+        val herb = Fixture("guam")
+        herb.state(empty)
+        herb.give(FarmingScarecrow.SCARECROW)
+        repeat(2) { herb.use(FarmingScarecrow.SCARECROW) }
+        assertEquals(empty, herb.state())
+        assertEquals(1, herb.count(FarmingScarecrow.SCARECROW))
+        assertEquals(0, herb.xp())
+        assertTrue(herb.scarecrows.isEmpty())
+    }
+
     private class Fixture(
         name: String, rolls: List<Int> = emptyList(), rewardRolls: List<Int> = emptyList(),
     ) {
@@ -1093,6 +1223,7 @@ class FarmingInventoryTest {
         val clears = mutableListOf<FarmingClearEvent>()
         val refreshes = mutableListOf<FarmingRefreshEvent>()
         val patchChanges = mutableListOf<FarmingPatchChangeEvent>()
+        val scarecrows = mutableListOf<FarmingScarecrowPlacedEvent>()
         var onPatchChange: (FarmingPatchChangeEvent) -> Unit = {}
         var onRefresh: (FarmingRefreshEvent) -> Unit = {}
         var onHarvest: (FarmingHarvestEvent) -> Unit = {}
@@ -1125,6 +1256,7 @@ class FarmingInventoryTest {
             events.subscribeUnbound(FarmingClearEvent::class.java) { clears += this }
             events.subscribeUnbound(FarmingRefreshEvent::class.java) { onRefresh(this); refreshes += this }
             events.subscribeUnbound(FarmingPatchChangeEvent::class.java) { onPatchChange(this); patchChanges += this }
+            events.subscribeUnbound(FarmingScarecrowPlacedEvent::class.java) { scarecrows += this }
             with(script) { ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup() }
         }
 
@@ -1152,9 +1284,9 @@ class FarmingInventoryTest {
             assertTrue(events.publish(this, event))
         }
         fun use(obj: String) { startUse(obj); finish() }
-        fun startUse(obj: String) = start {
+        fun startUse(obj: String, selectedSlot: Int? = null) = start {
             val id = obj.asRSCM(RSCMType.OBJ)
-            val slot = player.inv.indices.firstOrNull { player.inv[it]?.id == id } ?: 0
+            val slot = selectedSlot ?: player.inv.indices.firstOrNull { player.inv[it]?.id == id } ?: 0
             with(script) { useItem(patch, obj, slot) }
         }
         fun inspect() { start { with(service) { inspect(patch) } }; finish() }

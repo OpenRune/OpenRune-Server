@@ -61,6 +61,41 @@ private var Player.emptySeedBox by intVarBit("varbit.emptyondeath_seedbox")
 @ResourceLock("ServerCacheManager")
 class FarmingBagStorageTest {
     @Test
+    fun `bulk tool deposit conserves capacity remainder and can charges across repeat clicks`() {
+        val f = Fixture()
+        val buckets = FarmingLeprechaunStorage.tools.single { it.component == "bucket" }
+        val can = FarmingLeprechaunStorage.tools.single { it.component == "wateringcan" }
+        val trowel = FarmingLeprechaunStorage.tools.single { it.component == "trowel" }
+        val initial = f.give("obj.cert_bucket_empty", buckets.capacity - 10)
+        assertEquals(buckets.capacity - 10, FarmingLeprechaunStorage.deposit(f.player, initial, Int.MAX_VALUE))
+        f.give("obj.cert_bucket_empty", 20)
+        f.give("obj.watering_can_7")
+        f.give("obj.gardening_trowel")
+        f.give("obj.tomato", 25)
+
+        f.depositTools()
+        assertEquals(buckets.capacity, FarmingLeprechaunStorage.stored(f.player, buckets)?.count)
+        assertEquals(10, f.count("obj.cert_bucket_empty"))
+        assertEquals("obj.watering_can_7".asRSCM(), FarmingLeprechaunStorage.stored(f.player, can)?.id)
+        assertEquals(1, FarmingLeprechaunStorage.stored(f.player, trowel)?.count)
+        assertEquals(0, f.count("obj.watering_can_7"))
+        assertEquals(0, f.count("obj.gardening_trowel"))
+        assertEquals(25, f.count("obj.tomato"))
+
+        f.depositTools()
+        assertEquals(buckets.capacity, FarmingLeprechaunStorage.stored(f.player, buckets)?.count)
+        assertEquals(10, f.count("obj.cert_bucket_empty"))
+        f.give("obj.tomato", 2)
+        assertEquals(0, FarmingLeprechaunStorage.withdraw(f.player, "wateringcan", 1))
+        assertEquals("obj.watering_can_7".asRSCM(), FarmingLeprechaunStorage.stored(f.player, can)?.id)
+        f.player.inv[27] = null
+        assertEquals(1, FarmingLeprechaunStorage.withdraw(f.player, "wateringcan", 1))
+        assertEquals(0, FarmingLeprechaunStorage.withdraw(f.player, "wateringcan", 1))
+        assertEquals(1, f.count("obj.watering_can_7"))
+        assertEquals(26, f.count("obj.tomato"))
+    }
+
+    @Test
     fun `herb sack fill stops at 30 per herb and ignores clean and noted herbs`() {
         val f = Fixture()
         val sack = f.give(FarmingBags.HERB_SACK)
@@ -187,6 +222,39 @@ class FarmingBagStorageTest {
         assertEquals(3, f.count("obj.potato_seed"))
         f.withdraw(0, IfButtonOp.Op3)
         assertEquals(3, f.count("obj.potato_seed"))
+    }
+
+    @Test
+    fun `seed box withdraw rejects a stale or missing clicked item before transferring`() {
+        val f = Fixture()
+        f.give(FarmingBags.SEED_BOX)
+        f.store(FarmingBags.seedBox, "obj.onion_seed", 7)
+        val potato = f.type(InvObj("obj.potato_seed"))
+        for (op in listOf(IfButtonOp.Op1, IfButtonOp.Op4, IfButtonOp.Op5)) {
+            for (clicked in listOf(potato, null)) {
+                f.withdrawClicked(0, op, clicked)
+                assertEquals(7, f.stored(FarmingBags.seedBox, "obj.onion_seed"))
+                assertEquals(0, f.count("obj.onion_seed"))
+                assertEquals(0, f.count("obj.potato_seed"))
+            }
+        }
+    }
+
+    @Test
+    fun `seed box withdraw with the matching clicked item conserves exactly and an emptied source adds nothing`() {
+        val f = Fixture()
+        f.give(FarmingBags.SEED_BOX)
+        f.store(FarmingBags.seedBox, "obj.onion_seed", 7)
+        val onion = f.type(InvObj("obj.onion_seed"))
+        f.withdrawClicked(0, IfButtonOp.Op1, onion)
+        assertEquals(1, f.count("obj.onion_seed"))
+        assertEquals(6, f.stored(FarmingBags.seedBox, "obj.onion_seed"))
+        f.withdrawClicked(0, IfButtonOp.Op5, onion)
+        assertEquals(7, f.count("obj.onion_seed"))
+        assertEquals(0, f.stored(FarmingBags.seedBox, "obj.onion_seed"))
+        f.withdrawClicked(0, IfButtonOp.Op5, onion)
+        assertEquals(7, f.count("obj.onion_seed"))
+        assertEquals(0, f.stored(FarmingBags.seedBox, "obj.onion_seed"))
     }
 
     @Test
@@ -481,6 +549,9 @@ class FarmingBagStorageTest {
             with(FarmingBagScript(banking)) {
                 ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup()
             }
+            with(FarmingLeprechaunScript()) {
+                ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup()
+            }
         }
 
         fun type(obj: InvObj) = checkNotNull(ServerCacheManager.getItem(obj.id))
@@ -557,10 +628,17 @@ class FarmingBagStorageTest {
 
         fun use(bag: Int, item: Int) = publish(useEvent(bag, item))
 
-        fun withdraw(slot: Int, op: IfButtonOp) {
+        fun withdraw(slot: Int, op: IfButtonOp) =
+            withdrawClicked(slot, op, FarmingBags.seedBox.store(player)[slot]?.let(::type))
+
+        fun withdrawClicked(slot: Int, op: IfButtonOp, clicked: ItemServerType?) {
             val layer = ServerCacheManager.fromComponent("component.hosidius_seedbox:seed_layer")
-            val obj = FarmingBags.seedBox.store(player)[slot]?.let(::type)
-            publish(IfModalButton(layer, slot, obj, op))
+            publish(IfModalButton(layer, slot, clicked, op))
+        }
+
+        fun depositTools() {
+            val component = ServerCacheManager.fromComponent("component.farming_tools:deposit_all")
+            publish(IfModalButton(component, -1, null, IfButtonOp.Op1))
         }
 
         fun bankside(slot: Int) {

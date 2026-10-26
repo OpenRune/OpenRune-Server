@@ -2697,12 +2697,12 @@ public class ProtectedAccess(
         for (page in pages) {
             val (pgText, lineCount) = page
             val lineHeight = alignment.chatLineHeight(lineCount)
-            val chatanim = mesanim?.splitGetAnim(lineCount) ?: return
+            val chatanim = mesanim?.splitGetAnim(lineCount)
             chatNpcPage(
                 title = title,
                 npc = npc,
                 text = pgText,
-                chatanim = ServerCacheManager.getAnim(chatanim),
+                chatanim = chatanim?.let { ServerCacheManager.getAnim(it) },
                 lineHeight = lineHeight,
                 faceFar = faceFar,
                 pauseText = constants.cm_pausebutton,

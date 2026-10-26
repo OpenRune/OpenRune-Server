@@ -268,6 +268,7 @@ farming_belladonna_gloves = 64441
 farming_leprechaun_capacities = 2193
 farming_leprechaun_watering_cans = 136
 farming_geomancy_patch_names = 1234
+farming_geomancy_pictures = 1236
 farming_geomancy_crop_names = 1238
 omnishop_buy_quantities = 5844
 
@@ -285,3 +286,6 @@ tithe_points = 64400
 
 [gamevals.mesanim]
 farming_spirit_tree = 64400
+
+[gamevals.synth]
+farming_geomancy = 2891

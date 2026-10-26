@@ -16,6 +16,7 @@ class FarmingScarecrow @Inject constructor(private val farming: FarmingService) 
         if (!state.cleared) return mes("This patch needs weeding first.")
         if (invDel(inv, SCARECROW, 1, strict = true).failure) return
         farming.store(player, patch, state.copy(scarecrow = true))
+        publish(FarmingScarecrowPlacedEvent(player, patch))
         mes("You place the scarecrow in the flower patch.")
     }
 

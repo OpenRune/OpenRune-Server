@@ -45,8 +45,11 @@ class FarmingServicesTest {
         assertEquals(0, f.count("obj.cert_bucket_compost"))
         assertEquals(26, f.count("obj.spade"))
         assertTrue(f.state().paid)
+        assertEquals(listOf(FarmingProtectionEvent(f.player, f.patch, checkNotNull(expected.crop))), f.protections)
         assertEquals(ProtectResult.STALE, f.gardeners.protect(f.player, f.patch, expected))
         assertEquals(26, f.count("obj.spade"))
+        assertEquals(ProtectResult.ALREADY, f.gardeners.protect(f.player, f.patch, f.state()))
+        assertEquals(1, f.protections.size)
     }
 
     @Test
@@ -59,11 +62,33 @@ class FarmingServicesTest {
         assertEquals(1, f.count("obj.sack_potato_9"))
         assertEquals(10, f.count("obj.potato"))
         assertEquals(expected, f.state())
+        assertTrue(f.protections.isEmpty())
         f.give("obj.cert_sack_potato_10")
         assertEquals(ProtectResult.PROTECTED, f.gardeners.protect(f.player, f.patch, expected))
         assertEquals(0, f.count("obj.cert_sack_potato_10"))
         assertEquals(1, f.count("obj.sack_potato_9"))
         assertEquals(10, f.count("obj.potato"))
+        assertEquals(listOf(FarmingProtectionEvent(f.player, f.patch, checkNotNull(expected.crop))), f.protections)
+    }
+
+    @Test
+    fun `paid Stronghold magic tree protection publishes its actual crop and patch only once`() {
+        val f = Fixture()
+        f.patch = FarmingPatches.all.single { it.site == "gnome_stronghold_tree" }
+        val expected = f.plant("obj.plantpot_magic_tree_sapling")
+        val crop = checkNotNull(expected.crop)
+        for ((obj, count) in f.gardeners.payment(crop)) {
+            val type = checkNotNull(ServerCacheManager.getItem(obj.asRSCM()))
+            val payment = if (type.canCert) checkNotNull(ServerCacheManager.getItem(type.certlink)) else type
+            f.give(payment.internalName, count)
+        }
+        f.fill()
+        assertEquals(ProtectResult.PROTECTED, f.gardeners.protect(f.player, f.patch, expected))
+        assertEquals(listOf(FarmingProtectionEvent(f.player, f.patch, crop)), f.protections)
+        val paid = f.player.inv.toList()
+        assertEquals(ProtectResult.ALREADY, f.gardeners.protect(f.player, f.patch, f.state()))
+        assertEquals(paid, f.player.inv.toList())
+        assertEquals(1, f.protections.size)
     }
 
     @Test
@@ -73,6 +98,19 @@ class FarmingServicesTest {
         assertFalse(f.gardeners.takePayment(f.player, listOf("obj.bucket_compost" to 2, "obj.jute_fibre" to 1)))
         assertEquals(2, f.count("obj.bucket_compost"))
         assertEquals(0, f.count("obj.jute_fibre"))
+    }
+
+    @Test
+    fun `full inventory with insufficient noted payment emits no protection event`() {
+        val f = Fixture()
+        val expected = f.plant("obj.potato_seed")
+        f.give("obj.cert_bucket_compost")
+        f.fill()
+        assertEquals(ProtectResult.UNPAID, f.gardeners.protect(f.player, f.patch, expected))
+        assertEquals(expected, f.state())
+        assertEquals(1, f.count("obj.cert_bucket_compost"))
+        assertEquals(27, f.count("obj.spade"))
+        assertTrue(f.protections.isEmpty())
     }
 
     @Test
@@ -87,6 +125,7 @@ class FarmingServicesTest {
         f.player.inv.fillNulls()
         assertEquals(ProtectResult.UNPAID, f.gardeners.protect(f.player, f.patch, current))
         assertEquals(current, f.state())
+        assertTrue(f.protections.isEmpty())
     }
 
     @Test
@@ -244,13 +283,30 @@ class FarmingServicesTest {
         )
         val gardeners = FarmingGardeners(farming)
         var patch = FarmingPatches.all.first { it.kind == PatchKind.ALLOTMENT }
+        val protections = mutableListOf<FarmingProtectionEvent>()
 
         @OptIn(InternalApi::class)
         val player = Player().apply {
             client = SilentClient()
             inv = Inventory(checkNotNull(ServerCacheManager.getInventory("inv.inv".asRSCM())), arrayOfNulls(28))
         }
-        init { variable("varp.farming_clock", Int.MAX_VALUE) }
+        init {
+            variable("varp.farming_clock", Int.MAX_VALUE)
+            events.subscribeUnbound(FarmingProtectionEvent::class.java) {
+                assertEquals(this@Fixture.player, player)
+                assertEquals(this@Fixture.patch, patch)
+                assertEquals(state().crop, crop)
+                assertTrue(state().paid)
+                for ((obj, _) in gardeners.payment(crop)) {
+                    assertEquals(0, count(obj))
+                    val type = checkNotNull(ServerCacheManager.getItem(obj.asRSCM()))
+                    if (type.canCert) {
+                        assertEquals(0, count(checkNotNull(ServerCacheManager.getItem(type.certlink)).internalName))
+                    }
+                }
+                protections += this
+            }
+        }
         fun count(obj: String): Int = player.inv.physicalCount(obj)
         fun variable(name: String, value: Int) = VarPlayerIntMapSetter.set(player, name, value)
         fun state(state: PatchState) = variable(patch.varp, state.pack())

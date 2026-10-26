@@ -318,6 +318,7 @@ class FarmingBagScript @Inject constructor(private val banking: BankInvScript) :
         val store = seedBox.store(player)
         if (event.comsub !in store.indices) return
         val obj = store[event.comsub] ?: return
+        if (event.obj?.id != obj.id) return
         val requested =
             when (event.op) {
                 IfButtonOp.Op1 -> 1

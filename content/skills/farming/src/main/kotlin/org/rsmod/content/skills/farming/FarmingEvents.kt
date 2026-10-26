@@ -37,6 +37,19 @@ data class FarmingPatchChangeEvent(
     val after: PatchState,
 ) : UnboundEvent
 
+data class FarmingScarecrowPlacedEvent(val player: Player, val patch: PatchDef) : UnboundEvent
+
+data class FarmingWhiteTreeHarvestEvent(val player: Player) : UnboundEvent
+
+data class FarmingProtectionEvent(val player: Player, val patch: PatchDef, val crop: Crop) :
+    UnboundEvent
+
+data class FarmingTithePlantEvent(val player: Player, val seed: String) : UnboundEvent
+
+data class FarmingFertileSoilEvent(val player: Player, val patch: PatchDef) : UnboundEvent
+
+data class FarmingGuildEntryEvent(val player: Player) : UnboundEvent
+
 enum class CureResult {
     STALE,
     EMPTY,
