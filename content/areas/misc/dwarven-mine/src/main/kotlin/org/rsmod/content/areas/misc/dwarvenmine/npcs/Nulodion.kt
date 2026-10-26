@@ -239,7 +239,7 @@ private fun lostCannonParts(player: Player): List<String> {
     return McannonKitsRow.getRow(kit).parts.map { it.internalName }
 }
 
-public fun ProtectedAccess.replaceLostCannon(): Boolean {
+private fun ProtectedAccess.replaceLostCannon(): Boolean {
     val parts = lostCannonParts(player).take(player.cannonStage)
     val given =
         player

@@ -39,6 +39,7 @@ import org.rsmod.api.npc.vars.typePlayerUidVarn
 import org.rsmod.api.player.isInPvnCombat
 import org.rsmod.api.player.isInPvpCombat
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statAdvance
@@ -142,9 +143,11 @@ constructor(
         onPlayerLogin { player.loginCannon() }
     }
 
-    fun cannonOf(player: Player): Cannon? = cannons[player.key]
-
-    suspend fun ProtectedAccess.setUp(kit: Kit) {
+    private suspend fun ProtectedAccess.setUp(kit: Kit) {
+        if (!cannons.containsKey(player.key) && player.cannonStage != 0 && player.cannonDecayed) {
+            mes(DECAYED_MESSAGE)
+            return
+        }
         if (cannons.containsKey(player.key) || player.cannonStage != 0) {
             mes("You cannot construct more than one cannon at a time.")
             return
@@ -201,6 +204,9 @@ constructor(
             player.cannonStage = cannon.stage
             player.cannonSetupTime = gameClock.cycle
             placeLoc(cannon)
+            if (cannon.stage == 4) {
+                player.startDecayBuff(cannon)
+            }
             spam(STAGE_MESSAGES[cannon.stage - 1])
             soundArea(worldRepo, player.coords, SETUP_SYNTH, radius = SOUND_RADIUS)
         }
@@ -210,7 +216,7 @@ constructor(
         }
     }
 
-    fun ProtectedAccess.fire(coords: CoordGrid) {
+    private fun ProtectedAccess.fire(coords: CoordGrid) {
         val cannon = ownCannon(coords) ?: return
         if (cannon.firing) {
             load(coords, startFiring = false)
@@ -219,7 +225,7 @@ constructor(
         load(coords, startFiring = true)
     }
 
-    fun ProtectedAccess.load(coords: CoordGrid, startFiring: Boolean) {
+    private fun ProtectedAccess.load(coords: CoordGrid, startFiring: Boolean) {
         val cannon = ownCannon(coords) ?: return
         if (cannon.stage < 4 || cannon.broken) {
             return
@@ -266,7 +272,7 @@ constructor(
         player.softTimer(FIRE_TIMER, 1)
     }
 
-    suspend fun ProtectedAccess.loadX(coords: CoordGrid) {
+    private suspend fun ProtectedAccess.loadX(coords: CoordGrid) {
         val cannon = ownCannon(coords) ?: return
         if (cannon.stage < 4 || cannon.broken) {
             return
@@ -300,7 +306,7 @@ constructor(
         return loaded
     }
 
-    fun ProtectedAccess.empty(coords: CoordGrid) {
+    private fun ProtectedAccess.empty(coords: CoordGrid) {
         val cannon = ownCannon(coords) ?: return
         if (cannon.ammo == 0) {
             mes("Your cannon is empty.")
@@ -316,7 +322,7 @@ constructor(
         stopFiring(player, cannon)
     }
 
-    fun ProtectedAccess.repair(coords: CoordGrid) {
+    private fun ProtectedAccess.repair(coords: CoordGrid) {
         val cannon = ownCannon(coords) ?: return
         if (!cannon.broken) {
             return
@@ -324,10 +330,11 @@ constructor(
         cannon.broken = false
         cannon.breakCycle = gameClock.cycle + BREAK_CYCLES
         placeLoc(cannon)
+        player.startDecayBuff(cannon)
         mes(REPAIR_MESSAGE)
     }
 
-    fun ProtectedAccess.pickUp(coords: CoordGrid) {
+    private fun ProtectedAccess.pickUp(coords: CoordGrid) {
         val cannon = ownCannon(coords) ?: return
         val returned =
             player.invTransaction(inv) {
@@ -372,7 +379,7 @@ constructor(
             return
         }
         if (cannon.ammo <= 0) {
-            mes(OUT_OF_AMMO)
+            mes(RAN_DRY)
             stopFiring(this, cannon)
             return
         }
@@ -406,7 +413,7 @@ constructor(
         cannonAmmo = cannon.ammo
         val maxHit = if (granite) GRANITE_MAX_HIT else MAX_HIT
         val immune = target.type.id in damageImmune
-        val damage = if (!immune && rollHit(this, target)) random.of(0, maxHit) else 0
+        val damage = if (immune) 0 else rollDamage(this, target, maxHit)
         target.queueHit(this, 1, HitType.Ranged, damage, npcHitModifier)
         val xp = rangedXp(damage, target.hitpoints)
         if (xp > 0) {
@@ -451,7 +458,7 @@ constructor(
         softTimer(FIRE_TIMER, 1)
     }
 
-    fun findTarget(owner: Player, cannon: Cannon): Npc? {
+    private fun findTarget(owner: Player, cannon: Cannon): Npc? {
         val center = cannon.center
         val candidates =
             npcRepo
@@ -497,12 +504,7 @@ constructor(
     private fun Npc.isAttackable(): Boolean =
         (0 until 5).any { visType.actions.getOpOrNull(it).equals("Attack", ignoreCase = true) }
 
-    /**
-     * The owner's accuracy roll for the current weapon and style (powered staves: the better of
-     * ranged and crush) against the target's heavy ranged defence, without target-dependent
-     * effects such as a slayer helmet on task.
-     */
-    private fun rollHit(player: Player, target: Npc): Boolean {
+    private fun rollDamage(player: Player, target: Npc, maxHit: Int): Int {
         val noTargetEffects = EnumSet.noneOf(CombatNpcAttributes::class.java)
         val attackType = attackTypes.get(player)
         val attackStyle = attackStyles.get(player)
@@ -524,8 +526,12 @@ constructor(
                 blockType = RangedAttackType.Heavy,
                 npcAttributes = noTargetEffects,
             )
-        val hitChance = AccuracyOperations.calculateHitChance(attackRoll, defenceRoll, noTargetEffects)
-        return hitChance > random.of(maxExclusive = HIT_CHANCE_SCALE)
+        val hitChance = AccuracyOperations.calculateHitChance(max(1, attackRoll), defenceRoll, noTargetEffects)
+        return when {
+            hitChance <= random.of(maxExclusive = HIT_CHANCE_SCALE) -> 0
+            attackRoll <= 0 -> 1
+            else -> random.of(0, maxHit)
+        }
     }
 
     private fun rangedAttackRoll(
@@ -587,7 +593,7 @@ constructor(
         owner.mes(DECAYED_MESSAGE)
     }
 
-    fun Player.logoutCannon() {
+    private fun Player.logoutCannon() {
         val cannon = cannons[key]
         if (cannon == null) {
             cannonFiring = 0
@@ -602,7 +608,7 @@ constructor(
         cannon.owner = null
     }
 
-    fun Player.loginCannon() {
+    private fun Player.loginCannon() {
         val cannon = cannons[key]
         if (cannon != null) {
             cannon.owner = this
@@ -611,6 +617,9 @@ constructor(
             cannonCoord = packCoord(cannon.origin)
             cannonCoordTemp = packCoord(cannon.origin)
             cannonWorld = worldVarbit(serverConfig.world)
+            if (cannon.stage == 4 && !cannon.broken) {
+                startDecayBuff(cannon)
+            }
             return
         }
         cannonCoordTemp = -1
@@ -627,6 +636,14 @@ constructor(
         }
         cannon.owner = player
         return cannon
+    }
+
+    private fun Player.startDecayBuff(cannon: Cannon) {
+        runClientScript(
+            BUFF_BAR_START.asRSCM(RSCMType.CLIENTSCRIPT),
+            DECAY_BUFF_STRUCT,
+            cannon.breakCycle - DECAY_BUFF_CYCLES,
+        )
     }
 
     private fun stopFiring(player: Player, cannon: Cannon) {
@@ -687,7 +704,7 @@ constructor(
         }
     }
 
-    class Cannon(val ownerKey: Long, val origin: CoordGrid, val kit: Kit, var breakCycle: Int) {
+    private class Cannon(val ownerKey: Long, val origin: CoordGrid, val kit: Kit, var breakCycle: Int) {
         var owner: Player? = null
         var stage: Int = 0
         var ammo: Int = 0
@@ -709,7 +726,7 @@ constructor(
             get() = origin.translate(1, 1)
     }
 
-    class Kit(row: McannonKitsRow) {
+    private class Kit(row: McannonKitsRow) {
         val parts: List<String> = row.parts.map { it.internalName }
         val locs: List<String> = row.locs.map { it.internalName }
         val broken: String = row.broken.internalName
@@ -765,7 +782,7 @@ constructor(
     private fun objName(obj: String): String =
         checkNotNull(ServerCacheManager.getItem(obj.asRSCM(RSCMType.OBJ))).name
 
-    companion object {
+    private companion object {
         const val CANNONBALL = "obj.mcannonball"
         const val GRANITE_CANNONBALL = "obj.granite_cannonball"
         const val FIRE_TIMER = "timer.mcannon_fire"
@@ -776,6 +793,9 @@ constructor(
         const val XP_PER_DAMAGE = 2.0
 
         const val BREAK_CYCLES = 2500
+        const val DECAY_BUFF_CYCLES = 2490
+        const val BUFF_BAR_START = "clientscript.[clientscript,script635]"
+        const val DECAY_BUFF_STRUCT = 341
         const val DECAY_AFTER_BREAK_CYCLES = 1000
 
         val SETUP_DELAYS = listOf(2, 2, 3, 3)
@@ -791,6 +811,7 @@ constructor(
         const val DECAYED_MESSAGE =
             "<col=ef1020>Your cannon has decayed. Speak to Nulodion to get a new one!"
         const val OUT_OF_AMMO = "<col=ef1020>Your cannon is out of ammo.</col>"
+        const val RAN_DRY = "<col=ef1020>Your cannon is out of ammo!</col>"
         const val QUEST_REQUIRED_MESSAGE =
             "You need to complete the Dwarf Cannon quest before you can set up a cannon."
 
@@ -846,7 +867,6 @@ constructor(
 
         fun packCoord(coords: CoordGrid): Int = (coords.level shl 28) or (coords.x shl 14) or coords.z
 
-        // 7 bits: the client compares it with map_world % 128.
         fun worldVarbit(world: Int): Int = world % 128
     }
 }
@@ -854,17 +874,17 @@ constructor(
 private val Player.key: Long
     get() = uuid ?: slotId.toLong()
 
-var Player.cannonStage: Int by intVarp("varp.dropcannon")
-var Player.cannonAmmo: Int by intVarp("varp.rockthrower")
-var Player.cannonCoord: Int by intVarp("varp.ownedmcannon")
-var Player.cannonCoordTemp: Int by intVarp("varp.ownedmcannon_temp")
-var Player.cannonSetupTime: Int by intVarBit("varbit.mcannon_setuptime")
-var Player.cannonBallType: Int by intVarBit("varbit.mcannon_last_balltype")
-var Player.cannonFiring: Int by intVarp("varp.mcannonmulti")
-var Player.cannonDecayed: Boolean by boolVarBit("varbit.mcannon_decayed")
-var Player.cannonWorld: Int by intVarBit("varbit.mcannon_world")
-var Player.cannonLoadX: Int by intVarBit("varbit.option_cannonballs_load_x")
-var Player.cannonOrnament: Boolean by boolVarp("varp.mcannon_ornament")
+private var Player.cannonStage: Int by intVarp("varp.dropcannon")
+private var Player.cannonAmmo: Int by intVarp("varp.rockthrower")
+private var Player.cannonCoord: Int by intVarp("varp.ownedmcannon")
+private var Player.cannonCoordTemp: Int by intVarp("varp.ownedmcannon_temp")
+private var Player.cannonSetupTime: Int by intVarBit("varbit.mcannon_setuptime")
+private var Player.cannonBallType: Int by intVarBit("varbit.mcannon_last_balltype")
+private var Player.cannonFiring: Int by intVarp("varp.mcannonmulti")
+private var Player.cannonDecayed: Boolean by boolVarBit("varbit.mcannon_decayed")
+private var Player.cannonWorld: Int by intVarBit("varbit.mcannon_world")
+private var Player.cannonLoadX: Int by intVarBit("varbit.option_cannonballs_load_x")
+private var Player.cannonOrnament: Boolean by boolVarp("varp.mcannon_ornament")
 private val Player.inInstance: Boolean by boolVarBit("varbit.player_in_instance")
 private val Player.aggressiveNpc by typeNpcUidVarp("varp.aggressive_npc")
 private val Npc.lastCombat: Int by intVarn("varn.lastcombat")
