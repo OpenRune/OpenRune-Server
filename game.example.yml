@@ -19,6 +19,14 @@ world: 255
 # shattered_relics_league, trailblazer_reloaded_league, raging_echoes_league, gridmaster.
 world-types: ["main"]
 
+# Local-testing-only bridge so a browser webclient (WebSocket-only) can reach game-port above.
+# Plain ws://, no cert needed - a local ClientLabs dev instance serves its page over plain
+# http://, where browsers don't require wss://. Omit this whole block to keep the defaults below.
+#websocket:
+  #enabled: true
+  #port: 8091
+  #host: "0.0.0.0"
+
 gameplay:
   drop-rates:
     # Server-wide multiplier for drops flagged `boosted` (2.0 turns 1/512 into 1/256). Stacks with
