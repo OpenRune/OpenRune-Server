@@ -125,6 +125,9 @@ class FarmingCompostService @Inject constructor(
     }
 
     internal fun empty(player: Player, slot: Int, expected: InvObj): Boolean {
+        if (expected.isType("obj.bucket_compost")) {
+            return replace(player, slot, expected, InvObj("obj.bucket_empty"))
+        }
         val contents = FarmingBottomlessCompost.contents(expected) ?: return false
         if (contents.charges == 0) return false
         return replace(player, slot, expected, InvObj(FarmingBottomlessCompost.EMPTY))

@@ -189,6 +189,11 @@ leprechaun storage and actual logout/relog. Empty intentionally discards remaini
 uses and resets the type. Capacity/overflow and stale-source boundaries have
 deterministic regression coverage, not a live 10,000-use fill.
 
+Ordinary compost's native Empty discards one bucketful and returns an empty bucket
+in the clicked slot, even with a full inventory, without XP. Reference:
+normal rev231 `20250620T124602-163cd92@4612`. The current regression and actual-handler
+smoke cover conservation and stale repeats; no new client run or bin parity is claimed.
+
 The inherited disease model is still an unverified approximation: a 35% base
 chance divided across growth stages, with compost/supercompost/ultracompost
 reductions. Ultracompost does not confer immunity. The inherited watered-stage

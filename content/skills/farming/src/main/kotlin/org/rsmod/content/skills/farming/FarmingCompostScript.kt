@@ -28,6 +28,9 @@ class FarmingCompostScript @Inject constructor(private val compost: FarmingCompo
             }
         }
         onOpHeld5(FarmingBottomlessCompost.FILLED) { compost.empty(player, it.slot, it.obj) }
+        onOpHeld4("obj.bucket_compost") {
+            if (compost.empty(player, it.slot, it.obj)) spam("You empty the bucket of compost.")
+        }
         for (recipe in FarmingCompostSupplies.UPGRADES) {
             onOpHeldU(recipe.bucket, recipe.reagent) {
                 if (inv.physicalCount(recipe.reagent.internalName) < recipe.cost) {

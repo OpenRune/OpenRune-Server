@@ -280,6 +280,42 @@ class FarmingCompostTest {
     }
 
     @Test
+    fun `ordinary emptying replaces only the selected bucket in a full inventory`() {
+        val f = Fixture()
+        val selected = InvObj("obj.bucket_compost")
+        f.player.inv[16] = selected
+        f.player.inv[3] = InvObj("obj.bucket_compost")
+        f.player.inv[1] = InvObj("obj.cert_bucket_empty", Int.MAX_VALUE)
+        f.fillInventory()
+        val expected = f.player.inv.objs.copyOf()
+        expected[16] = InvObj("obj.bucket_empty")
+        assertTrue(f.compost.empty(f.player, 16, selected))
+        assertTrue(expected.contentEquals(f.player.inv.objs))
+        assertFalse(f.compost.empty(f.player, 16, selected))
+        assertTrue(expected.contentEquals(f.player.inv.objs))
+        assertEquals(0, f.xp())
+    }
+
+    @Test
+    fun `ordinary emptying never redirects a vanished or replaced selected bucket`() {
+        val selected = InvObj("obj.bucket_compost")
+        for (replacement in listOf(
+            null,
+            InvObj("obj.spade"),
+            InvObj("obj.bucket_supercompost"),
+            InvObj("obj.cert_bucket_compost", Int.MAX_VALUE),
+        )) {
+            val f = Fixture()
+            f.player.inv[16] = replacement
+            f.player.inv[3] = selected
+            val before = f.player.inv.objs.copyOf()
+            assertFalse(f.compost.empty(f.player, 16, selected))
+            assertTrue(before.contentEquals(f.player.inv.objs))
+            assertEquals(0, f.xp())
+        }
+    }
+
+    @Test
     fun `one physical compost funds exactly two patches across storage then permits a new tier`() {
         for (form in FarmingCompostSupplies.BUCKETS) {
             val f = Fixture()
