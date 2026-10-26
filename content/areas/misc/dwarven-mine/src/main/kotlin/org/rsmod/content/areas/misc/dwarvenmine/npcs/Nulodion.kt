@@ -15,6 +15,7 @@ import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.api.table.McannonKitsRow
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
@@ -163,10 +164,11 @@ class Nulodion @Inject constructor(private val shops: Shops) : PluginScript() {
                     return
                 }
                 chatNpc(neutral, "That's unfortunate! But don't worry, I can sort you out...")
+                val parts = lostCannonParts(player)
                 if (!access.replaceLostCannon()) {
                     return
                 }
-                doubleobjbox("obj.twpart3", "obj.twpart4", "The dwarf gives you a new cannon.")
+                doubleobjbox(parts[2], parts[3], "The dwarf gives you a new cannon.")
                 chatNpc(neutral, "Keep that quiet or I'll be in real trouble!")
                 chatPlayer(happy, "Thanks a lot.")
             }
@@ -232,9 +234,13 @@ public val CANNON_SET =
         "obj.mcannonbook",
     )
 
+private fun lostCannonParts(player: Player): List<String> {
+    val kit = if (player.cannonOrnament) "dbrow.mcannon_kit_league03" else "dbrow.mcannon_kit"
+    return McannonKitsRow.getRow(kit).parts.map { it.internalName }
+}
+
 public fun ProtectedAccess.replaceLostCannon(): Boolean {
-    val set = if (player.cannonOrnament) ORNAMENTED_PARTS else CANNON_SET.take(4)
-    val parts = set.take(player.cannonStage)
+    val parts = lostCannonParts(player).take(player.cannonStage)
     val given =
         player
             .invTransaction(inv) {
@@ -255,14 +261,6 @@ public fun ProtectedAccess.replaceLostCannon(): Boolean {
 private var Player.cannonStage: Int by intVarp("varp.dropcannon")
 private var Player.cannonDecayed: Boolean by boolVarBit("varbit.mcannon_decayed")
 private var Player.cannonOrnament: Boolean by boolVarp("varp.mcannon_ornament")
-
-private val ORNAMENTED_PARTS =
-    listOf(
-        "obj.league_3_multicannon_base",
-        "obj.league_3_multicannon_stand",
-        "obj.league_3_multicannon_barrels",
-        "obj.league_3_multicannon_furnace",
-    )
 
 public fun ProtectedAccess.buyCannonSet(): Boolean =
     player

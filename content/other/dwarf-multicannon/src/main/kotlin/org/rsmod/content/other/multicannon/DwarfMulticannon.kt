@@ -1,5 +1,7 @@
 package org.rsmod.content.other.multicannon
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.SpotanimType
@@ -24,6 +26,7 @@ import org.rsmod.api.combat.formulas.attributes.collector.CombatRangedAttributeC
 import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.combat.weapon.types.AttackTypes
 import org.rsmod.api.config.constants
+import org.rsmod.api.enums.NamedEnums.mcannon_prohibited_areas
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.delete
 import org.rsmod.api.invtx.invTransaction
@@ -36,6 +39,7 @@ import org.rsmod.api.npc.vars.typePlayerUidVarn
 import org.rsmod.api.player.isInPvnCombat
 import org.rsmod.api.player.isInPvpCombat
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.vars.boolVarBit
@@ -61,6 +65,8 @@ import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.server.config.ServerConfig
+import org.rsmod.api.table.McannonKitsRow
+import org.rsmod.api.table.McannonNpcsRow
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
@@ -99,9 +105,15 @@ constructor(
 ) : PluginScript() {
     private val cannons = HashMap<Long, Cannon>()
     private val rayCast by lazy { RayCastValidator(collision) }
+    private val kits by lazy { McannonKitsRow.all().map(::Kit) }
+    private val plainKit by lazy { kits.first { !it.ornamented } }
+    private val ornamentKit by lazy { kits.first { it.ornamented } }
+    private val destroyers by lazy { npcIds("dbrow.mcannon_destroyers") }
+    private val untargeted by lazy { npcIds("dbrow.mcannon_untargeted") }
+    private val damageImmune by lazy { npcIds("dbrow.mcannon_damage_immune") }
 
     override fun ScriptContext.startup() {
-        for (kit in KITS) {
+        for (kit in kits) {
             onOpHeld1(kit.parts[0]) { setUp(kit) }
             for (stage in 1..3) {
                 onOpLoc1(kit.locs[stage - 1]) { pickUp(it.loc.coords) }
@@ -120,9 +132,9 @@ constructor(
             onOpLoc1(kit.broken) { repair(it.loc.coords) }
             onOpLoc2(kit.broken) { pickUp(it.loc.coords) }
         }
-        for (i in PARTS.indices) {
-            onOpHeldU(ORNAMENT_KIT, PARTS[i]) { applyOrnament(i) }
-            onOpHeld4(OR_PARTS[i]) { removeOrnament(i) }
+        for (i in plainKit.parts.indices) {
+            onOpHeldU(ORNAMENT_KIT, plainKit.parts[i]) { applyOrnament(i) }
+            onOpHeld4(ornamentKit.parts[i]) { removeOrnament(i) }
         }
         onPlayerQueueWithArgs<CoordGrid>(PUSH_QUEUE) { push(it.args) }
         onPlayerSoftTimer(FIRE_TIMER) { player.fireTick() }
@@ -184,7 +196,7 @@ constructor(
                 player.cannonCoord = packCoord(cannon.origin)
                 player.cannonCoordTemp = packCoord(cannon.origin)
                 player.cannonWorld = worldVarbit(serverConfig.world)
-                player.cannonOrnament = cannon.kit === ORNAMENT
+                player.cannonOrnament = cannon.kit.ornamented
             }
             player.cannonStage = cannon.stage
             player.cannonSetupTime = gameClock.cycle
@@ -238,14 +250,14 @@ constructor(
         if (cannon.firing || cannon.broken || cannon.loc == null || cannon.ammo == 0) {
             return
         }
-        if (player.coords != loadedAt || player.routeDestination.isNotEmpty()) {
-            playerRun(cannon.origin)
-            arriveDelay()
-            if (cannons[player.key] !== cannon || cannon.firing || cannon.loc == null) {
-                return
-            }
+        if (player.coords == loadedAt && player.routeDestination.isEmpty()) {
+            beginFiring(cannon)
+            return
         }
-        beginFiring(cannon)
+        cannon.firing = true
+        cannon.pushing = true
+        player.softTimer(FIRE_TIMER, 1)
+        playerRun(cannon.origin)
     }
 
     private fun ProtectedAccess.beginFiring(cannon: Cannon) {
@@ -298,7 +310,7 @@ constructor(
             mes("You don't have enough inventory space to unload the cannon.")
             return
         }
-        mes("You unload your cannon and receive ${BALL_NAMES[BALLS.indexOf(cannon.ball)]} x ${cannon.ammo}.")
+        mes("You unload your cannon and receive ${objName(cannon.ball)} x ${cannon.ammo}.")
         cannon.ammo = 0
         player.cannonAmmo = 0
         stopFiring(player, cannon)
@@ -343,12 +355,20 @@ constructor(
     private fun Player.fireTick() {
         val cannon = cannons[key]
         if (cannon != null && cannon.destroyed) {
-            clearSoftTimer(FIRE_TIMER)
-            decay(cannon)
+            cannon.destroyer?.faceSquare(cannon.center)
+            cannon.destroyer = null
+            if (gameClock.cycle - cannon.destroyedAt >= DESTROY_DECAY_DELAY) {
+                clearSoftTimer(FIRE_TIMER)
+                decay(cannon)
+            }
             return
         }
         if (cannon == null || !cannon.firing || cannon.broken || cannon.owner !== this) {
             clearSoftTimer(FIRE_TIMER)
+            return
+        }
+        if (cannon.pushing) {
+            pushTick(cannon)
             return
         }
         if (cannon.ammo <= 0) {
@@ -358,28 +378,41 @@ constructor(
         }
         val loc = cannon.loc ?: return
         findTarget(this, cannon)?.let { shoot(cannon, loc, it) }
-        cannon.direction = (cannon.direction + 1) % DIRECTIONS.size
+        cannon.direction = (cannon.direction + 1) % cannon.kit.turnSeqs.size
         worldRepo.soundArea(cannon.origin, TURN_SYNTH, radius = SOUND_RADIUS)
-        worldRepo.locAnim(loc, cannon.kit.turnSeq.format(DIRECTIONS[cannon.direction]))
+        worldRepo.locAnim(loc, cannon.kit.turnSeqs[cannon.direction])
+    }
+
+    private fun Player.pushTick(cannon: Cannon) {
+        if (coords == cannon.origin) {
+            cannon.pushing = false
+            cannonFiring = FIRING_FLAG
+            return
+        }
+        if (routeDestination.isEmpty() && !hasMovedPreviousCycle) {
+            stopFiring(this, cannon)
+        }
     }
 
     private fun Player.shoot(cannon: Cannon, loc: LocInfo, target: Npc) {
-        worldRepo.locAnim(loc, cannon.kit.fireSeq.format(DIRECTIONS[cannon.direction]))
+        worldRepo.locAnim(loc, cannon.kit.fireSeqs[cannon.direction])
         worldRepo.soundArea(cannon.origin, FIRE_SYNTH, radius = SOUND_RADIUS)
         val center = cannon.center
-        val proj = ProjAnim.fromCoordToNpc(center, target, PROJECTILE.asRSCM(RSCMType.SPOTANIM), PROJ_TYPE)
+        val granite = cannon.ball == GRANITE_CANNONBALL
+        val spotanim = if (granite) cannon.kit.graniteProjectile else cannon.kit.projectile
+        val proj = ProjAnim.fromCoordToNpc(center, target, spotanim, PROJ_TYPE)
         worldRepo.projAnim(proj)
         cannon.ammo--
         cannonAmmo = cannon.ammo
-        val maxHit = if (cannon.ball == GRANITE_CANNONBALL) GRANITE_MAX_HIT else MAX_HIT
-        val immune = DAMAGE_IMMUNE.any { target.isType(it) }
+        val maxHit = if (granite) GRANITE_MAX_HIT else MAX_HIT
+        val immune = target.type.id in damageImmune
         val damage = if (!immune && rollHit(this, target)) random.of(0, maxHit) else 0
         target.queueHit(this, 1, HitType.Ranged, damage, npcHitModifier)
         val xp = rangedXp(damage, target.hitpoints)
         if (xp > 0) {
             statAdvance("stat.ranged", xp)
         }
-        val destroyer = DESTROYERS.any { target.isType(it) } || areas.inArea(GODWARS_DUNGEON, target.coords)
+        val destroyer = target.type.id in destroyers || areas.inArea(GODWARS_DUNGEON, target.coords)
         if (destroyer && random.of(maxExclusive = DESTROY_ROLL) == 0) {
             destroy(cannon, target)
         }
@@ -406,12 +439,16 @@ constructor(
                 )
             )
             worldRepo.spotanimMap(SpotanimType(KQ_IMPACT.asRSCM(RSCMType.SPOTANIM)), cannon.center, 124, 25)
+            soundSynth(KQ_DESTROY_SYNTH)
+            soundSynth(KQ_DESTROY_SYNTH_2)
+            cannon.destroyer = by
         }
         removeLoc(cannon)
         cannon.firing = false
         cannon.destroyed = true
+        cannon.destroyedAt = gameClock.cycle
         mes(DESTROYED_MESSAGE)
-        softTimer(FIRE_TIMER, DESTROY_DECAY_DELAY)
+        softTimer(FIRE_TIMER, 1)
     }
 
     fun findTarget(owner: Player, cannon: Cannon): Npc? {
@@ -420,24 +457,35 @@ constructor(
             npcRepo
                 .findAll(ZoneKey.from(center), zoneRadius = 3)
                 .filter { it.coords.level == center.level && it.isValidTarget() && it.isAttackable() }
-                .filter { npc -> UNTARGETED.none { npc.isType(it) } && owner.mayShoot(npc) }
+                .filter { it.type.id !in untargeted }
                 .toList()
-        return RING_RADII.indices.firstNotNullOfOrNull { ring ->
-            candidates
-                .filter { inTargetRing(cannon.direction, ring, it.coords.x - center.x, it.coords.z - center.z) }
-                .filter { rayCast.hasLineOfSight(center, it.coords) }
-                .minByOrNull { max(abs(it.coords.x - center.x), abs(it.coords.z - center.z)) }
+        val inSight =
+            RING_RADII.indices.map { ring ->
+                candidates
+                    .filter { inTargetRing(cannon.direction, ring, it.coords.x - center.x, it.coords.z - center.z) }
+                    .filter { rayCast.hasLineOfSight(center, it.coords) }
+            }
+        val target =
+            inSight.firstNotNullOfOrNull { ring ->
+                ring
+                    .filter { owner.mayShoot(it) }
+                    .minByOrNull { max(abs(it.coords.x - center.x), abs(it.coords.z - center.z)) }
+            }
+        if (target == null && inSight.any { ring -> ring.any { owner.isUnderAttackFor(it) } }) {
+            owner.mes(UNDER_ATTACK_MESSAGE)
         }
+        return target
     }
+
+    private fun Player.isUnderAttackFor(npc: Npc): Boolean =
+        !areas.inArea("area.multiway", npc.coords) &&
+            (isInPvpCombat() || isInPvnCombat() && aggressiveNpc != null && aggressiveNpc != npc.uid)
 
     private fun Player.mayShoot(npc: Npc): Boolean {
         if (areas.inArea("area.multiway", npc.coords)) {
             return true
         }
-        if (isInPvpCombat()) {
-            return false
-        }
-        if (isInPvnCombat() && aggressiveNpc != null && aggressiveNpc != npc.uid) {
+        if (isUnderAttackFor(npc)) {
             return false
         }
         val npcTarget = npc.aggressivePlayer
@@ -583,6 +631,7 @@ constructor(
 
     private fun stopFiring(player: Player, cannon: Cannon) {
         cannon.firing = false
+        cannon.pushing = false
         player.cannonFiring = 0
         player.clearSoftTimer(FIRE_TIMER)
     }
@@ -627,7 +676,12 @@ constructor(
                 }
             }
         }
-        return cannons.values.none { other ->
+        val center = origin.translate(1, 1)
+        val throughCenter =
+            CROSSINGS.all { (dx, dz) ->
+                rayCast.hasLineOfWalk(center.translate(dx, dz), center.translate(-dx, -dz))
+            }
+        return throughCenter && cannons.values.none { other ->
             abs(other.origin.x - origin.x) < SIZE + 2 && abs(other.origin.z - origin.z) < SIZE + 2 &&
                 other.origin.level == origin.level
         }
@@ -642,6 +696,9 @@ constructor(
         var firing: Boolean = false
         var broken: Boolean = false
         var destroyed: Boolean = false
+        var destroyedAt: Int = 0
+        var destroyer: Npc? = null
+        var pushing: Boolean = false
         var loc: LocInfo? = null
         var token: Int = 0
 
@@ -652,16 +709,19 @@ constructor(
             get() = origin.translate(1, 1)
     }
 
-    class Kit(
-        val parts: List<String>,
-        val locs: List<String>,
-        val broken: String,
-        val fireSeq: String,
-        val turnSeq: String,
-    )
+    class Kit(row: McannonKitsRow) {
+        val parts: List<String> = row.parts.map { it.internalName }
+        val locs: List<String> = row.locs.map { it.internalName }
+        val broken: String = row.broken.internalName
+        val fireSeqs: List<String> = row.fireSeqs.map { it.internalName }
+        val turnSeqs: List<String> = row.turnSeqs.map { it.internalName }
+        val projectile: Int = row.projectile
+        val graniteProjectile: Int = row.graniteProjectile
+        val ornamented: Boolean = row.rowId == ORNAMENT_KIT_ROW.asRSCM(RSCMType.DBROW) and 0xFFFF
+    }
 
     private suspend fun ProtectedAccess.applyOrnament(part: Int) {
-        val name = PART_NAMES[part]
+        val name = objName(plainKit.parts[part])
         val apply =
             choice2("Yes", true, "No", false, title = "Apply Shattered Relics League appearance to the $name?")
         if (!apply) {
@@ -671,11 +731,11 @@ constructor(
             player.invTransaction(inv) {
                 val target = select(inv)
                 delete(target, ORNAMENT_KIT.asRSCM(RSCMType.OBJ), count = 1)
-                delete(target, PARTS[part].asRSCM(RSCMType.OBJ), count = 1)
-                add(target, OR_PARTS[part].asRSCM(RSCMType.OBJ), count = 1)
+                delete(target, plainKit.parts[part].asRSCM(RSCMType.OBJ), count = 1)
+                add(target, ornamentKit.parts[part].asRSCM(RSCMType.OBJ), count = 1)
             }
         if (applied.success) {
-            objbox(OR_PARTS[part], "You apply the Shattered Relics League appearance to the $name.")
+            objbox(ornamentKit.parts[part], "You apply the Shattered Relics League appearance to the $name.")
         }
     }
 
@@ -683,8 +743,8 @@ constructor(
         val removed =
             player.invTransaction(inv) {
                 val target = select(inv)
-                delete(target, OR_PARTS[part].asRSCM(RSCMType.OBJ), count = 1)
-                add(target, PARTS[part].asRSCM(RSCMType.OBJ), count = 1)
+                delete(target, ornamentKit.parts[part].asRSCM(RSCMType.OBJ), count = 1)
+                add(target, plainKit.parts[part].asRSCM(RSCMType.OBJ), count = 1)
                 add(target, ORNAMENT_KIT.asRSCM(RSCMType.OBJ), count = 1)
             }
         if (!removed.success) {
@@ -693,16 +753,21 @@ constructor(
     }
 
     private fun Player.noCannonMessage(): String? =
-        PROHIBITED_AREAS.firstOrNull { (area, _) ->
-                (area != BRUTUS_AREA || inInstance) && areas.inArea(area, coords)
+        mcannon_prohibited_areas.backing.entries
+            .firstOrNull { (area, _) ->
+                val name = RSCM.getReverseMapping(RSCMType.AREA, area.id)
+                (name != BRUTUS_AREA || inInstance) && areas.inArea(name, coords)
             }
-            ?.second
+            ?.value
+
+    private fun npcIds(row: String): Set<Int> = McannonNpcsRow.getRow(row).npcs.map { it.id }.toSet()
+
+    private fun objName(obj: String): String =
+        checkNotNull(ServerCacheManager.getItem(obj.asRSCM(RSCMType.OBJ))).name
 
     companion object {
         const val CANNONBALL = "obj.mcannonball"
         const val GRANITE_CANNONBALL = "obj.granite_cannonball"
-        const val CANNON_LOC = "loc.dwarf_multicannon1"
-        const val BROKEN_LOC = "loc.dwarf_multicannon1_broken"
         const val FIRE_TIMER = "timer.mcannon_fire"
         const val MAX_AMMO = 30
         const val MAX_HIT = 30
@@ -730,7 +795,6 @@ constructor(
             "You need to complete the Dwarf Cannon quest before you can set up a cannon."
 
         private const val SETUP_ANIM = "seq.human_pickupfloor"
-        private const val PROJECTILE = "spotanim.cannonball_travel"
         private const val PROJ_TYPE = "projanim.mcannon"
         private const val SETUP_SYNTH = "synth.mcannon_setup"
         private const val TURN_SYNTH = "synth.mcannon_turn"
@@ -746,90 +810,14 @@ constructor(
         private const val KQ_IMPACT = "spotanim.kalphite_glow_impact"
         private const val DESTROY_ROLL = 4
         private const val DESTROY_DECAY_DELAY = 2
+        private const val KQ_DESTROY_SYNTH = "synth.mcannon_destroyed_kalphite_queen_1"
+        private const val KQ_DESTROY_SYNTH_2 = "synth.mcannon_destroyed_kalphite_queen_2"
+        private const val ORNAMENT_KIT_ROW = "dbrow.mcannon_kit_league03"
+        private const val UNDER_ATTACK_MESSAGE = "I'm currently under attack"
         const val DESTROYED_MESSAGE = "Your cannon has been destroyed!"
 
         private const val BRUTUS_AREA = "area.mcannon_muddy_instance"
-        private val PROHIBITED_AREAS =
-            listOf(
-                "area.mcannon_black_guard" to "It is not permitted to set up a cannon this close to the Dwarf Black Guard.",
-                "area.mcannon_generic" to "You can't set up a cannon here.",
-                "area.mcannon_damp" to "It's far too damp for you to set up a cannon here.",
-                "area.mcannon_strange_force" to "A strange magical force won't let you set up a cannon here.",
-                "area.mcannon_ancient_power" to "An ancient power won't let you set up a cannon here.",
-                "area.mcannon_muddy_instance" to "It's far too muddy for you to set up a cannon here.",
-                "area.mcannon_unsafe" to "It doesn't seem safe to set up a cannon here.",
-                "area.mcannon_melt" to "Your cannon would melt if you set it up here.",
-                "area.mcannon_dwarves" to "The dwarves won't be happy if you set up a cannon here.",
-                "area.mcannon_mysterious_presence" to "A mysterious presence won't let you set up a cannon here.",
-                "area.mcannon_dank" to "The air is too dank for you to set up a cannon here.",
-                "area.mcannon_colourful_force" to "A colourful magical force won't let you set up a cannon here.",
-                "area.mcannon_grand_exchange" to "The Grand Exchange staff prefer not to have heavy artillery operated around their premises.",
-                "area.mcannon_roavar" to "Roavar won't be happy if you set up a cannon here.",
-                "area.mcannon_damp_down_here" to "It's far too damp down here to set up a cannon.",
-                "area.mcannon_ogres" to "The ogres won't be happy if you set up a cannon here.",
-                "area.mcannon_soft_ground" to "The ground is too soft for you to set up a cannon here.",
-                "area.mcannon_cavern_electricity" to "The electricity bursting through this part of the cavern would render the cannon useless.",
-                "area.mcannon_electricity" to "The electricity is too powerful for you to set up a cannon here.",
-                "area.mcannon_ancient_temple" to "This temple is ancient and would probably collapse if you started firing a cannon.",
-                "area.mcannon_marshy" to "The ground is too marshy here.",
-                "area.mcannon_unstable_structure" to "This ancient structure is too unstable to handle the idea of a cannon firing at its walls.",
-                "area.mcannon_little_damp" to "It's just a little too damp for you to set up a cannon here.",
-                "area.mcannon_dominic" to "Dominic won't be happy if you set up a cannon here.",
-                "area.mcannon_eniola" to "Eniola won't be happy if you set up a cannon here.",
-                "area.mcannon_ancient_magic" to "An ancient magical force won't let you set up a cannon here.",
-                "area.mcannon_unstable_ground" to "The ground is too unstable to set up a cannon here.",
-                "area.mcannon_dusty_aliv" to "Dusty Aliv won't be happy if you set up a cannon here.",
-                "area.mcannon_vampyres" to "The vampyres won't be happy if you set up a cannon here.",
-                "area.mcannon_tzhaar" to "The TzHaar won't be happy if you set up a cannon here.",
-                "area.mcannon_intense_cold" to "The intense cold threatens to crack the metal of your cannon. You probably shouldn't put it down here.",
-                "area.mcannon_too_damp_function" to "It is too damp for the cannon to function here.",
-                "area.mcannon_cold" to "It's far too cold for you to set up a cannon here.",
-                "area.mcannon_fungi" to "Fungi start eating into the legs of your cannon; you quickly decide not to set it up here.",
-                "area.mcannon_party_pete" to "Party Pete won't be happy if you set up a cannon here.",
-            )
-
-        private val DESTROYERS =
-            setOf(
-                "npc.king_dragon",
-                KALPHITE_QUEEN,
-                "npc.kalphite_flyingqueen",
-                "npc.smoke_devil_boss",
-                "npc.myarm_giant_roc",
-            )
-
-        val PARTS = listOf("obj.twpart1", "obj.twpart2", "obj.twpart3", "obj.twpart4")
-        val STAGE_LOCS =
-            listOf(
-                "loc.multicannon_base",
-                "loc.multicannon_stand",
-                "loc.multicannon_barrels",
-                CANNON_LOC,
-            )
-        val OR_PARTS =
-            listOf(
-                "obj.league_3_multicannon_base",
-                "obj.league_3_multicannon_stand",
-                "obj.league_3_multicannon_barrels",
-                "obj.league_3_multicannon_furnace",
-            )
-        private val PART_NAMES = listOf("Cannon base", "Cannon stand", "Cannon barrels", "Cannon furnace")
-        val NORMAL = Kit(PARTS, STAGE_LOCS, BROKEN_LOC, "seq.mcannon_%s_fire", "seq.mcannon_%s_turn")
-        val ORNAMENT =
-            Kit(
-                OR_PARTS,
-                listOf(
-                    "loc.league03_multicannon_base",
-                    "loc.league03_multicannon_stand",
-                    "loc.league03_multicannon_barrels",
-                    "loc.league03_multicannon_active",
-                ),
-                "loc.league03_multicannon_broken",
-                "seq.cannon_league03_fire_%s",
-                "seq.cannon_league03_aim_%s",
-            )
-        private val KITS = listOf(NORMAL, ORNAMENT)
         val BALLS = listOf(CANNONBALL, GRANITE_CANNONBALL)
-        val BALL_NAMES = listOf("Steel cannonball", "Granite cannonball")
 
         val STAGE_MESSAGES =
             listOf(
@@ -839,38 +827,12 @@ constructor(
                 "You add the furnace.",
             )
 
-        val DIRECTIONS = listOf("n", "ne", "e", "se", "s", "sw", "w", "nw")
         private val DIRECTION_STEPS =
             listOf(0 to 1, 1 to 1, 1 to 0, 1 to -1, 0 to -1, -1 to -1, -1 to 0, -1 to 1)
         private val STRAIGHT_REACH = listOf(3, 7, 14)
         private val DIAGONAL_REACH = listOf(2, 5, 12)
         private val RING_RADII = listOf(1, 2, 5)
-        private val UNTARGETED =
-            setOf(
-                "npc.zeah_sandcrab",
-                "npc.zeah_sandcrab_small",
-                "npc.fossil_ammonitecrab",
-                "npc.kolhuman",
-                "npc.kologre",
-                "npc.kolspider",
-                "npc.kolethereal",
-                "npc.koldemon",
-                "npc.zamorak_mage",
-                "npc.saradomin_mage",
-                "npc.guthix_mage",
-            )
-        private val DAMAGE_IMMUNE =
-            setOf(
-                "npc.mm2_demon_gorilla_1_melee",
-                "npc.mm2_demon_gorilla_1_ranged",
-                "npc.mm2_demon_gorilla_1_magic",
-                "npc.mm2_demon_gorilla_2_melee",
-                "npc.mm2_demon_gorilla_2_ranged",
-                "npc.mm2_demon_gorilla_2_magic",
-                "npc.slayer_kursk_1",
-                "npc.slayer_kursk_2",
-                "npc.superior_kurask",
-            )
+        private val CROSSINGS = listOf(0 to 1, 1 to 0, 1 to 1, -1 to 1)
 
         fun inTargetRing(direction: Int, ring: Int, dx: Int, dz: Int): Boolean {
             val (stepX, stepZ) = DIRECTION_STEPS[direction]

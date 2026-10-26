@@ -2,6 +2,8 @@
 mcannon_fire = 1667
 mcannon_setup = 2876
 mcannon_turn = 2877
+mcannon_destroyed_kalphite_queen_1 = 573
+mcannon_destroyed_kalphite_queen_2 = 557
 
 [gamevals.timer]
 mcannon_fire = 65535
@@ -11,6 +13,20 @@ mcannon_push = 65513
 
 [gamevals.varp]
 mcannon_ornament = 65470
+
+[gamevals.dbtable]
+mcannon_kits = 65485
+mcannon_npcs = 65484
+
+[gamevals.dbrow]
+mcannon_kit = 63789
+mcannon_kit_league03 = 63788
+mcannon_destroyers = 63787
+mcannon_untargeted = 63786
+mcannon_damage_immune = 63785
+
+[gamevals.enum]
+mcannon_prohibited_areas = 65470
 
 [gamevals.area]
 mcannon_black_guard = 32700
