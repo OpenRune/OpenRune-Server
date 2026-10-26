@@ -8,7 +8,8 @@ var Player.veosLumbridgeVis: Int by intVarBit("varbit.veos_lumbridge_vis")
 var Player.veosSarimVis: Int by intVarBit("varbit.veos_sarim_vis")
 var Player.orbPreviousDistance: Int by intVarBit("varbit.cluequest_prev_distance")
 var Player.lampUsed: Boolean by boolVarBit("varbit.cluequest_lamp_reward")
-var Player.scrollBoxOwed: Boolean by boolVarBit("varbit.cluequest_clue_reward")
+var Player.scrollBoxGiven: Boolean by boolVarBit("varbit.cluequest_clue_reward")
+var Player.coinsGiven: Boolean by boolVarBit("varbit.cluequest_coin_reward")
 var Player.metVeosInKourend: Boolean by boolVarBit("varbit.cluequest_veos_already_met")
 
 fun Player.owns(obj: String): Boolean =

@@ -69,16 +69,13 @@ Sources present in `plugins/` at boot participate exactly like built-in plugins:
 merged into the same `Guice.createInjector(...)` call, and their scripts are constructed and
 started right alongside the built-in ones.
 
-Right after boot fully finishes (once you see `Server ready in ...`), the server automatically
-closes every currently-loaded plugin's classloader — including ones loaded at boot, not just
-hot-loaded ones. This releases the jar file on disk (on Windows, an open `URLClassLoader` locks its
-jar against being overwritten) so you can rebuild and replace *any* plugin's jar at any time
-without first having to `::plugindisable` it. The plugin keeps running unaffected: its classes are
-already loaded and don't need the file handle anymore. The one edge case this doesn't cover is a
-plugin that lazily reaches a helper class it hadn't touched yet *after* this point — that load
-would fail, since a closed classloader can't read new classes from its jar. In practice this is
-rare (a Kotlin lambda's class loads when the lambda literal is evaluated, not when its body later
-runs, so almost everything a script does in `startup()` is already resident by boot's end).
+Each loaded source uses a private snapshot in the operating system's temporary directory.
+Both directory plugins and JARs keep using that snapshot until unload or reload, including
+helper classes and resources first accessed after boot. Rebuilding or replacing the original
+source does not change the running revision or lock the original JAR on Windows.
+
+Reload creates a fresh snapshot. Unload closes the old classloader and removes its snapshot;
+game-service shutdown releases the remaining loaders after gameplay shutdown has finished.
 
 ---
 
@@ -120,12 +117,9 @@ code change to a plugin without restarting the server — rebuild the source (or
 IDE's output directory, for a directory source) and run `::loadplugin name`/`::pluginreload name`
 again.
 
-The old classloader is explicitly closed as part of unload specifically so this works on
-**Windows**: a `URLClassLoader` opened over a jar keeps that file open (and thus locked against
-being overwritten) until it's closed — without this, rebuilding a jar and copying it over an
-already-loaded plugin would fail with `FileSystemException: ... used by another process`, since
-just dropping the reference and waiting on GC doesn't release the OS file handle in any bounded
-time.
+The snapshot's classloader is closed before its files are deleted, including on Windows where
+open JAR handles prevent deletion. An abrupt process kill can leave a snapshot in the operating
+system's temporary directory; it is not treated as an installed plugin on the next boot.
 
 `::plugindisable name` (and the Disable option in the `::plugins` menu) unloads an already-running
 source immediately, the same way, in addition to marking it disabled so it won't load again at the

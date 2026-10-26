@@ -22,7 +22,9 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onPlayerQueueWithArgs
+import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.api.spells.MagicSpellRegistry
+import org.rsmod.api.utils.time.epochMinute
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.inv.isType
 import org.rsmod.map.CoordGrid
@@ -36,6 +38,7 @@ constructor(
     private val runes: MagicRuneManager,
     private val teleportValidator: PlayerTeleportValidator,
     private val areaChecker: AreaChecker,
+    private val config: ServerConfig,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         for (teleport in SpellTeleport.entries) {
@@ -44,6 +47,9 @@ constructor(
         }
         onPlayerQueueWithArgs<PendingSpellTeleport>(TeleportQueue) {
             processQueuedTeleport(it.args)
+        }
+        onPlayerQueueWithArgs<PendingHomeTeleport>(HomeTeleportQueue) {
+            processHomeTeleport(it.args)
         }
     }
 
@@ -76,6 +82,11 @@ constructor(
             return
         }
 
+        if (teleport.homeTeleport) {
+            castHomeTeleport(teleport, destination)
+            return
+        }
+
         if (!consumeRequirements(spell, teleport)) {
             return
         }
@@ -94,10 +105,72 @@ constructor(
         if (!canTeleport()) {
             return
         }
-        telejump(CoordGrid(task.destination))
+        telejump(landingSquare(CoordGrid(task.destination), task.teleport.landingRadius))
         val endAnim = task.teleport.style.endAnim
         if (endAnim != null) anim(endAnim) else resetAnim()
         statAdvance("stat.magic", spell.castXp)
+    }
+
+    private fun ProtectedAccess.landingSquare(centre: CoordGrid, radius: Int): CoordGrid {
+        if (radius == 0) {
+            return centre
+        }
+        return mapFindSquareLineOfWalk(centre, minRadius = 0, maxRadius = radius) ?: centre
+    }
+
+    private fun ProtectedAccess.castHomeTeleport(teleport: SpellTeleport, destination: CoordGrid) {
+        // UNVERIFIED: the in-combat refusal shares the moving refusal's message (wiki description)
+        if (player.routeDestination.isNotEmpty() || isInCombat()) {
+            mes("You can't use that teleport at the moment.")
+            return
+        }
+        val cooldown = config.gameplay.homeTeleportCooldown
+        val minutesLeft = cooldown - (epochMinute() - vars[HomeTeleportTimer])
+        if (minutesLeft > 0) {
+            // UNVERIFIED: singular "minute" when one is left (guess)
+            val unit = if (minutesLeft == 1) "minute" else "minutes"
+            mes("You need to wait another $minutesLeft $unit to cast this spell.")
+            return
+        }
+        player.clearMapFlag()
+        resetAnim()
+        resetSpotanim()
+        walkTrigger(CancelAnimWalkTrigger)
+        clearWeakQueue(HomeTeleportQueue)
+        val first = HomeTeleportStage.DrawCircle
+        weakQueue(
+            HomeTeleportQueue,
+            first.tick + SameTickQueue,
+            PendingHomeTeleport(teleport, destination.packed, stage = first.ordinal),
+        )
+    }
+
+    private suspend fun ProtectedAccess.processHomeTeleport(task: PendingHomeTeleport) {
+        val stage = HomeTeleportStage.entries[task.stage]
+        if (stage.spotanim != null) {
+            spotanim(stage.spotanim, height = stage.spotanimHeight)
+        }
+        anim(stage.anim)
+        val next = HomeTeleportStage.entries.getOrNull(stage.ordinal + 1)
+        if (next != null) {
+            val cycles = next.tick - stage.tick + SameTickQueue
+            weakQueue(HomeTeleportQueue, cycles, task.copy(stage = next.ordinal))
+            return
+        }
+
+        vars[Busy] = 1
+        delay(HomeTeleportLandingTick - stage.tick)
+        player.clearWalkTrigger()
+        val allowed = canTeleport()
+        if (allowed) {
+            vars[HomeTeleportTimer] = epochMinute()
+        }
+        vars[Busy] = 0
+        if (allowed) {
+            telejump(landingSquare(CoordGrid(task.destination), task.teleport.landingRadius))
+        }
+        resetAnim()
+        resetSpotanim()
     }
 
     private fun ProtectedAccess.canTeleport(): Boolean {
@@ -164,6 +237,30 @@ constructor(
         val destination: Int,
     )
 
+    private data class PendingHomeTeleport(
+        val teleport: SpellTeleport,
+        val destination: Int,
+        val stage: Int,
+    )
+
+    private enum class HomeTeleportStage(
+        val anim: String,
+        val spotanim: String?,
+        val tick: Int,
+        val spotanimHeight: Int = 0,
+    ) {
+        DrawCircle("seq.aide_drawing_chalk_circle", "spotanim.aide_chalk_circle", tick = 1),
+        SitDown("seq.aide_sitting_down_crosslegged", spotanim = null, tick = 7),
+        GetBook("seq.aide_player_getting_book", "spotanim.aide_player_book_get", tick = 13),
+        Recite(
+            "seq.aide_reciting_incantation",
+            "spotanim.aide_player_book_portal",
+            tick = 17,
+            spotanimHeight = 65526,
+        ),
+        Teleport("seq.aide_player_teleporting", "spotanim.aide_player_teleport", tick = 21),
+    }
+
     private enum class SpellTeleport(
         val spellObj: String,
         val destination: CoordGrid? = null,
@@ -173,14 +270,18 @@ constructor(
         val lockedMessage: String = "You need to complete the required quest to cast this spell.",
         val missingDestinationMessage: String = "That teleport is not implemented yet.",
         val style: TeleportStyle = TeleportStyle.Standard,
+        val landingRadius: Int = LandingRadius,
+        val homeTeleport: Boolean = false,
     ) {
         Home(
             "obj.48_home_teleport",
-            CoordGrid(3222, 3222, 0),
+            CoordGrid(3221, 3218, 0),
+            landingRadius = 1,
+            homeTeleport = true,
         ),
         Varrock(
             "obj.25_varrock_teleport",
-            alternate = TeleportOption(destination = CoordGrid(3164, 3487, 0)),
+            alternate = TeleportOption(destination = CoordGrid(3163, 3478, 0)),
         ),
         Lumbridge(
             "obj.31_lumbridge_teleport",
@@ -199,7 +300,7 @@ constructor(
         ),
         Camelot(
             "obj.45_camelot_teleport",
-            alternate = TeleportOption(destination = CoordGrid(2725, 3485, 0)),
+            alternate = TeleportOption(destination = CoordGrid(2726, 3484, 0)),
         ),
         KourendCastle(
             // Cache name is wrong, but its spell params match Kourend Castle Teleport.
@@ -250,7 +351,14 @@ constructor(
             lockedMessage = "You need to complete Pandemonium to cast this spell.",
             missingDestinationMessage = "Boat teleports need boat-location support before they can be cast.",
         ),
-        EdgevilleHome("obj.01_zaros_home_tele", CoordGrid(3087, 3496, 0), style = TeleportStyle.Ancient),
+
+        // UNVERIFIED: Edgeville and Arceuus home teleports use the Lumbridge cast (wiki description)
+        EdgevilleHome(
+            "obj.01_zaros_home_tele",
+            CoordGrid(3087, 3496, 0),
+            landingRadius = 0,
+            homeTeleport = true,
+        ),
         Paddewwa("obj.54_paddewwa_teleport", style = TeleportStyle.Ancient),
         Senntisten("obj.60_senntisten_teleport", style = TeleportStyle.Ancient),
         Kharyrll("obj.66_kharyllyl_teleport", style = TeleportStyle.Ancient),
@@ -262,7 +370,8 @@ constructor(
         ArceuusHome(
             "obj.deadman_level99_lamp",
             CoordGrid(1699, 3879, 0),
-            style = TeleportStyle.Arceuus,
+            landingRadius = 0,
+            homeTeleport = true,
         ),
         ArceuusLibrary("obj.br_mithril_platebody", style = TeleportStyle.Arceuus),
         DraynorManor("obj.br_mithril_platelegs", style = TeleportStyle.Arceuus),
@@ -377,5 +486,17 @@ constructor(
         private const val TeleportSound = "synth.teleport_all"
         private const val TeleportDelay = 4
         private const val TeleportActionDelay = 5
+
+        private const val HomeTeleportQueue = "queue.home_teleport"
+        private const val HomeTeleportTimer = "varp.aide_tele_timer"
+        private const val HomeTeleportLandingTick = 24
+
+        // A weak queue added before or during queue processing is decremented on that same tick.
+        private const val SameTickQueue = 1
+        private const val CancelAnimWalkTrigger = "walktrigger.emote_cancelanim"
+        private const val Busy = "varbit.busy"
+
+        // UNVERIFIED: radius for Ancient and Arceuus teleports but Paddewwa, Draynor Manor (guess)
+        private const val LandingRadius = 2
     }
 }

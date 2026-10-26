@@ -87,12 +87,17 @@ class ShopBucketsTest {
     fun `listShops adapts infobox_shop rows`() = runBlocking {
         val b =
             buckets(
-                """{"bucket":[{"page_name":"Bob's Brilliant Axes.","shop_name":"Bob's Brilliant Axes"}]}"""
+                """{"bucket":[
+              {"page_name":"Bob's Brilliant Axes.","shop_name":"Bob's Brilliant Axes","specialty":"Axes"},
+              {"page_name":"Lumbridge General Store","shop_name":"Lumbridge General Store","specialty":"General store"},
+              {"page_name":"General Store (Canifis)","shop_name":"General Store","specialty":"[[General store]]"}
+            ]}"""
             )
         val shops = b.listShops()
-        assertEquals("Bob's Brilliant Axes.", shops.single().pageTitle)
-        assertEquals("Bob's Brilliant Axes", shops.single().infoboxName)
-        assertNull(shops.single().rsName)
+        assertEquals("Bob's Brilliant Axes.", shops[0].pageTitle)
+        assertEquals("Bob's Brilliant Axes", shops[0].infoboxName)
+        assertNull(shops[0].rsName)
+        assertEquals(listOf(false, true, true), shops.map { it.generalStore })
     }
 
     @Test
