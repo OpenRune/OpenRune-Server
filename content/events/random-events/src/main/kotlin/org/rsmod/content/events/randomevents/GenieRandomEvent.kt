@@ -40,6 +40,7 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.routefinder.RouteFinding
 import org.rsmod.routefinder.collision.CollisionFlagMap
 import org.rsmod.routefinder.flag.CollisionFlag
 
@@ -130,9 +131,11 @@ constructor(
         npcRepo.add(npc, Int.MAX_VALUE)
         npc.respawns = false
         npc.assignSpawnOwner(player, mapClock.cycle)
-        if (addTile.x != player.coords.x && addTile.z != player.coords.z) {
-            val steps = listOf(addTile.x - player.coords.x to 0, 0 to addTile.z - player.coords.z)
-            random.pickOrNull(freeTiles(player.coords, steps))?.let(npc::walk)
+        // The engine's follow step: from a diagonal tile, onto the tile north or south of the player.
+        val step =
+            RouteFinding.naiveDestination(addTile.x, addTile.z, 1, 1, player.coords.x, player.coords.z, 1, 1)
+        if (step.x != addTile.x || step.z != addTile.z) {
+            npc.walk(CoordGrid(step.x, step.z, addTile.level))
         }
         player.softTimer(GENIE_TIMER, 1)
         genies[player] = Genie(npc, addTile, underwater)
