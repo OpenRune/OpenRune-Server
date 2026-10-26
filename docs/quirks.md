@@ -220,6 +220,10 @@ Seed-box withdrawals validate the clicked seed against the stored slot before
 prompting or transferring, then recheck the stored type after a quantity dialog.
 A stale click after a reorder cannot withdraw a different seed.
 
+Ordinary-tree gardeners use the recorded animated sapling refusal for an empty
+patch and wait for Continue. Other patch-family refusals are unchanged. This does
+not enable held tree crops or change protection payments or removal rules.
+
 Vannah's Trade opens the native 17-row Farming Stall with ordinary coin pricing.
 Deepwater Mairin's Trade opens her native six-row market using Mermaid tears,
 not coins. It refuses every buyback, including tradeable spores and tridents.

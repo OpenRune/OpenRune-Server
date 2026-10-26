@@ -57,6 +57,12 @@ constructor(private val gardeners: FarmingGardeners, private val farming: Farmin
         val patch = choosePatch(npc, patches)
         val expected = farming.state(player, patch)
         val crop = expected.crop
+        if (crop == null && patch.kind == PatchKind.TREE) {
+            startDialogue(npc) {
+                chatNpc(neutral, "You don't have a sapling planted in that patch. Plant one and I might agree to look after it for you.")
+            }
+            return
+        }
         if (crop != null && expected.health == Health.HEALTHY && expected.grown(crop) && gardeners.removalPrice(patch) != null) {
             removeTree(npc, patch, expected)
             return
