@@ -193,6 +193,9 @@ Ordinary compost's native Empty discards one bucketful and returns an empty buck
 in the clicked slot, even with a full inventory, without XP. Reference:
 normal rev231 `20250620T124602-163cd92@4612`. The current regression and actual-handler
 smoke cover conservation and stale repeats; no new client run or bin parity is claimed.
+Supercompost and ultracompost also expose native Empty, but their Op4 handlers remain
+unimplemented pending verified discard output and messages. Their visible options
+do not imply support for those tiers.
 
 The inherited disease model is still an unverified approximation: a 35% base
 chance divided across growth stages, with compost/supercompost/ultracompost
