@@ -8,6 +8,7 @@ import dev.openrune.types.aconverted.SpotanimType
 import dev.or2.central.account.Rights
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.config.Constants
 import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.npc.owner.assignSpawnOwner
@@ -15,6 +16,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.random.GameRandom
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.world.WorldRepository
@@ -27,11 +29,14 @@ import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.content.quest.manager.chooseLampSkill
+import org.rsmod.content.skills.shootingstars.ShootingStarStages
 import org.rsmod.game.MapClock
 import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.loc.LocInfo
 import org.rsmod.map.CoordGrid
+import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
@@ -46,6 +51,8 @@ class GenieRandomEvent
 constructor(
     private val npcRepo: NpcRepository,
     private val objRepo: ObjRepository,
+    private val locRepo: LocRepository,
+    private val areas: AreaChecker,
     private val worldRepo: WorldRepository,
     private val collision: CollisionFlagMap,
     private val mapClock: MapClock,
@@ -53,16 +60,19 @@ constructor(
     private val config: ServerConfig,
 ) : PluginScript() {
     private val genies = HashMap<Player, Genie>()
+    private val starLocs by lazy { ShootingStarStages.ALL.map { it.loc.asRSCM(RSCMType.LOC) }.toSet() }
 
     override fun ScriptContext.startup() {
         if (config.gameplay.randomEvents) {
             onPlayerLogin { login(player) }
             onPlayerSoftTimer(SCHEDULE_TIMER) { check(player) }
         }
-        onPlayerLogout { genies.remove(player)?.let { leave(it.npc) } }
+        onPlayerLogout { genies.remove(player)?.let(::leave) }
         onPlayerSoftTimer(GENIE_TIMER) { tick(player) }
-        onOpNpc1(GENIE) { talk(it.npc) }
-        onOpNpc5(GENIE) { dismiss(it.npc) }
+        for (genie in listOf(GENIE, GENIE_UNDERWATER)) {
+            onOpNpc1(genie) { talk(it.npc) }
+            onOpNpc5(genie) { dismiss(it.npc) }
+        }
         onOpHeld1(LAMP) { rub() }
         onCommand("randomevent") {
             requiredRights = Rights.ADMINISTRATOR
@@ -93,7 +103,9 @@ constructor(
         }
         player.eventDue = nowMinutes() + eventDelay()
         player.softTimer(SCHEDULE_TIMER, CHECK_INTERVAL)
-        if (player !in genies && player.transmog == null) spawn(player)
+        if (player !in genies && player.transmog == null && eventsAllowed(player.coords)) {
+            spawn(player)
+        }
     }
 
     private fun summon(cheat: Cheat) {
@@ -106,24 +118,30 @@ constructor(
     }
 
     private fun spawn(player: Player): Npc {
-        val npc = Npc(GENIE, besideTile(player.coords))
+        val underwater = areas.inArea(UNDERWATER_AREA, player.coords)
+        val npc = Npc(if (underwater) GENIE_UNDERWATER else GENIE, besideTile(player.coords))
         npc.mode = NpcMode.None
         npcRepo.add(npc, Int.MAX_VALUE)
         npc.respawns = false
         npc.assignSpawnOwner(player, mapClock.cycle)
         player.softTimer(GENIE_TIMER, 1)
-        genies[player] = Genie(npc)
+        genies[player] = Genie(npc, underwater)
         return npc
     }
 
-    private fun greet(owner: Player, npc: Npc) {
+    private fun greet(owner: Player, genie: Genie) {
+        val npc = genie.npc
         npc.facePlayer(owner)
         npc.anim(WAVE)
         npc.say("Greetings, ${title(owner)} ${owner.displayName}!")
-        smokePuff(npc.coords)
-        worldRepo.soundArea(npc.coords, ARRIVE_SOUND, radius = SOUND_RADIUS)
-        smokePuff(npc.coords)
-        worldRepo.soundArea(npc.coords, PUFF_SOUND, radius = SOUND_RADIUS)
+        if (genie.underwater) {
+            bubbles(npc.coords)
+        } else {
+            smokePuff(npc.coords)
+            worldRepo.soundArea(npc.coords, ARRIVE_SOUND, radius = SOUND_RADIUS)
+            smokePuff(npc.coords)
+            worldRepo.soundArea(npc.coords, PUFF_SOUND, radius = SOUND_RADIUS)
+        }
         owner.softTimer(GENIE_TIMER, CALL_INTERVAL - 1)
     }
 
@@ -136,12 +154,12 @@ constructor(
         val npc = genie.npc
         if (genie.handedOver || genie.ignored || owner.transmog != null) {
             genies.remove(owner)
-            leave(npc)
+            leave(genie)
             return
         }
         if (genie.calls == 0) {
             genie.calls = 1
-            greet(owner, npc)
+            greet(owner, genie)
             return
         }
         if (genie.calls == LIFETIME_TICKS / CALL_INTERVAL) {
@@ -176,7 +194,7 @@ constructor(
             return
         }
         val genie = entry.value
-        if (genie.handedOver || genie.ignored) {
+        if (genie.handedOver || genie.ignored || !eventsAllowed(player.coords)) {
             startDialogue(npc) { chatNpc(happy, "Have a nice day, ${title(player)}.") }
             return
         }
@@ -199,8 +217,7 @@ constructor(
             mes("He isn't interested in you.")
             return
         }
-        genies.remove(player)
-        leave(npc)
+        genies.remove(player)?.let(::leave)
     }
 
     private suspend fun ProtectedAccess.rub() {
@@ -216,12 +233,48 @@ constructor(
         mesbox("Your wish has been granted!<br>You have been awarded $xp $skill XP!")
     }
 
-    private fun leave(npc: Npc) {
+    private fun leave(genie: Genie) {
+        val npc = genie.npc
         if (!npc.isSlotAssigned) return
         val coords = npc.coords
         npcRepo.del(npc, Int.MAX_VALUE)
-        smokePuff(coords)
-        worldRepo.soundArea(coords, PUFF_SOUND, radius = SOUND_RADIUS)
+        if (genie.underwater) {
+            bubbles(coords)
+        } else {
+            smokePuff(coords)
+            worldRepo.soundArea(coords, PUFF_SOUND, radius = SOUND_RADIUS)
+        }
+    }
+
+    private fun bubbles(coords: CoordGrid) {
+        worldRepo.spotanimMap(SpotanimType(BUBBLES.asRSCM(RSCMType.SPOTANIM)), coords, SMOKE_HEIGHT)
+        worldRepo.soundArea(coords, UNDERWATER_SOUND, radius = SOUND_RADIUS)
+    }
+
+    private fun eventsAllowed(coords: CoordGrid): Boolean {
+        if (areas.inArea(NO_EVENTS_AREA, coords)) return false
+        val bankAllowed = areas.inArea(BANK_EVENTS_AREA, coords)
+        val zone = ZoneKey.from(coords)
+        for (x in -1..1) {
+            for (z in -1..1) {
+                val locs = locRepo.findAll(zone.translate(x, z))
+                if (locs.any { blocksEvents(it, coords, bankAllowed) }) return false
+            }
+        }
+        return true
+    }
+
+    private fun blocksEvents(loc: LocInfo, coords: CoordGrid, bankAllowed: Boolean): Boolean {
+        val content = ServerCacheManager.getObject(loc.id)?.contentGroup
+        val range =
+            when {
+                loc.id in starLocs -> STAR_RANGE
+                bankAllowed -> return false
+                content == BANK_BOOTH.asRSCM(RSCMType.CONTENT) -> BOOTH_RANGE
+                content == BANK_CHEST.asRSCM(RSCMType.CONTENT) -> CHEST_RANGE
+                else -> return false
+            }
+        return loc.coords.level == coords.level && loc.coords.chebyshevDistance(coords) <= range
     }
 
     private fun smokePuff(coords: CoordGrid) {
@@ -251,6 +304,7 @@ constructor(
 
     private class Genie(
         val npc: Npc,
+        val underwater: Boolean,
         var calls: Int = 0,
         var handedOver: Boolean = false,
         var ignored: Boolean = false,
@@ -258,16 +312,27 @@ constructor(
 
     companion object {
         const val GENIE = "npc.macro_geni"
+        const val GENIE_UNDERWATER = "npc.macro_geni_underwater"
         const val LAMP = "obj.macro_genilamp"
+        const val UNDERWATER_AREA = "area.random_event_underwater"
+        const val NO_EVENTS_AREA = "area.random_event_none"
+        const val BANK_EVENTS_AREA = "area.random_event_bank"
+        const val BANK_BOOTH = "content.bank_booth"
+        const val BANK_CHEST = "content.bank_chest"
         const val SCHEDULE_TIMER = "timer.random_event"
         const val GENIE_TIMER = "timer.random_event_genie"
         const val WAVE = "seq.emote_wave"
         const val SMOKE_PUFF = "spotanim.smokepuff"
+        const val BUBBLES = "spotanim.100_pirate_underwater_bubbles_spotanim"
+        const val UNDERWATER_SOUND = "synth.macro_genie_underwater"
         const val ARRIVE_SOUND = "synth.macro_genie_appear"
         const val PUFF_SOUND = "synth.smokepuff"
         const val WISH_SOUND = "synth.found_gem"
         private const val SMOKE_HEIGHT = 124
         private const val SOUND_RADIUS = 7
+        private const val BOOTH_RANGE = 7
+        private const val CHEST_RANGE = 2
+        private const val STAR_RANGE = 7
         private const val LIFETIME_TICKS = 100
         private const val CALL_INTERVAL = 10
         private const val HAND_OVER_TICKS = 10
