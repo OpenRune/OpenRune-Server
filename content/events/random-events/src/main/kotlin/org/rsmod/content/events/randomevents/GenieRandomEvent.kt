@@ -131,7 +131,6 @@ constructor(
         npcRepo.add(npc, Int.MAX_VALUE)
         npc.respawns = false
         npc.assignSpawnOwner(player, mapClock.cycle)
-        // The engine's follow step: from a diagonal tile, onto the tile north or south of the player.
         val step =
             RouteFinding.naiveDestination(addTile.x, addTile.z, 1, 1, player.coords.x, player.coords.z, 1, 1)
         if (step.x != addTile.x || step.z != addTile.z) {
