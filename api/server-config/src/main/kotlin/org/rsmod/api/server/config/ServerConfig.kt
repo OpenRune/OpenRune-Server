@@ -85,6 +85,20 @@ public data class ServerConfig(
     val central: OpenRuneCentralGameConfig? = null,
     @JsonProperty("login-timing-logs") val loginTimingLogs: Boolean = false,
     @JsonProperty("social-pm-trace-logs") val socialPmTraceLogs: Boolean = false,
+    @JsonProperty("websocket") val webSocket: WebSocketBridgeConfig = WebSocketBridgeConfig(),
+)
+
+/**
+ * Local-testing-only bridge that lets a browser webclient (which only speaks WebSocket) reach this
+ * server's plain-TCP [ServerConfig.gamePort]. See `WebSocketBridgeService` in `api:net` for what
+ * actually listens on [port] — this is just its config. Plain `ws://`, no cert needed: a local
+ * ClientLabs dev instance serves its page over plain `http://`, where browsers don't require `wss://`.
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+public data class WebSocketBridgeConfig(
+    val enabled: Boolean = true,
+    val port: Int = 8091,
+    val host: String = "0.0.0.0",
 )
 
 /** Masks a secret for `toString()`; an empty value stays visible so "unset" is still obvious. */

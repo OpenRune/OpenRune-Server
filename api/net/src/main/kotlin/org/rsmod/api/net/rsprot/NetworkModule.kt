@@ -7,6 +7,7 @@ import jakarta.inject.Inject
 import net.rsprot.protocol.api.NetworkService
 import org.rsmod.api.net.central.embed.CentralEmbeddedLifecycle
 import org.rsmod.api.net.central.logging.CentralActivityLogWriter
+import org.rsmod.api.net.rsprot.websocket.WebSocketBridgeService
 import org.rsmod.game.entity.Player
 import org.rsmod.plugin.module.PluginModule
 import org.rsmod.server.services.Service
@@ -19,6 +20,7 @@ class NetworkModule : PluginModule() {
             .toProvider(NetworkServiceProvider::class.java)
             .`in`(Scopes.SINGLETON)
         addSetBinding<Service>(RspService::class.java)
+        addSetBinding<Service>(WebSocketBridgeService::class.java)
     }
 
     private class NetworkServiceProvider @Inject constructor(private val factory: NetworkFactory) :

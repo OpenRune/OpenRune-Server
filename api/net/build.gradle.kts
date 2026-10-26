@@ -16,6 +16,7 @@ dependencies {
     implementation(libs.kotlin.coroutines.core)
     implementation(libs.netty.buffer)
     implementation(libs.netty.codec)
+    implementation(libs.netty.codec.http)
     implementation(libs.netty.handler)
     implementation(libs.netty.transport)
     implementation(libs.openrs2.cache)
