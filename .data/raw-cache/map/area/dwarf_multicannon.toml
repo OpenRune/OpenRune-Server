@@ -1,0 +1,627 @@
+[[area]]
+name = "Black Knights' Fortress"
+area_id = "area.mcannon_black_guard"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3000, 3500], [3040, 3500], [3040, 3535], [3000, 3535]]
+
+[[area]]
+name = "Abyssal Area"
+area_id = "area.mcannon_generic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3003, 4937], [3080, 4934], [3070, 4804], [3048, 4798], [3042, 4803], [3035, 4804], [3023, 4799], [3011, 4802]]
+
+[[area]]
+name = "Abyssal Nexus"
+area_id = "area.mcannon_generic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2944, 4736], [3007, 4736], [3007, 4800], [3072, 4800], [3072, 4736], [3135, 4736], [3135, 4863], [2944, 4863]]
+
+[[area]]
+name = "Ancient Cavern"
+area_id = "area.mcannon_damp"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1590, 5294], [1806, 5294], [1806, 5389], [1590, 5389]]
+
+[[area]]
+name = "Ancient Guthixian Temple"
+area_id = "area.mcannon_strange_force"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[4096, 4416], [4159, 4416], [4159, 4479], [4096, 4479]]
+
+[[area]]
+name = "Ancient Prison"
+area_id = "area.mcannon_ancient_power"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2880, 5184], [2943, 5184], [2943, 5247], [2880, 5247]]
+
+[[area]]
+name = "Barbarian Assault"
+area_id = "area.mcannon_generic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1856, 5376], [1919, 5376], [1919, 5439], [1856, 5439]]
+
+[[area.polygons]]
+vertices = [[1856, 5440], [1919, 5440], [1919, 5503], [1856, 5503]]
+
+[[area.polygons]]
+vertices = [[2560, 5248], [2623, 5248], [2623, 5311], [2560, 5311]]
+
+[[area]]
+name = "Brutus arena"
+area_id = "area.mcannon_muddy_instance"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3253, 3287], [3273, 3287], [3273, 3307], [3253, 3307]]
+
+[[area]]
+name = "Bryophyta's lair"
+area_id = "area.mcannon_generic"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3200, 9920], [3234, 9920], [3234, 9950], [3200, 9950]]
+
+[[area]]
+name = "Callisto's Den"
+area_id = "area.mcannon_unsafe"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3328, 10304], [3392, 10304], [3392, 10368], [3328, 10368]]
+
+[[area]]
+name = "Catacombs of Kourend"
+area_id = "area.mcannon_ancient_power"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1600, 9984], [1729, 9984], [1729, 10111], [1639, 10111], [1639, 10069], [1628, 10069], [1628, 10066], [1600, 10066]]
+
+[[area]]
+name = "Castle Wars"
+area_id = "area.mcannon_generic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2368, 3072], [2431, 3072], [2431, 3135], [2368, 3135]]
+
+[[area.polygons]]
+vertices = [[2368, 9472], [2431, 9472], [2431, 9535], [2368, 9535]]
+
+[[area]]
+name = "Cerberus' Lair"
+area_id = "area.mcannon_melt"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[1216, 1216], [1279, 1216], [1279, 1279], [1216, 1279]]
+
+[[area.polygons]]
+vertices = [[1280, 1280], [1343, 1280], [1343, 1343], [1280, 1343]]
+
+[[area.polygons]]
+vertices = [[1344, 1216], [1407, 1216], [1407, 1279], [1344, 1279]]
+
+[[area]]
+name = "Chambers of Xeric"
+area_id = "area.mcannon_ancient_power"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3200, 5120], [3391, 5120], [3391, 5759], [3200, 5759]]
+
+[[area]]
+name = "Clan Hall"
+area_id = "area.mcannon_generic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1728, 5632], [1791, 5632], [1791, 5695], [1728, 5695]]
+
+[[area]]
+name = "Dwarven Mine"
+area_id = "area.mcannon_dwarves"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2944, 9804], [3071, 9804], [3071, 9855], [2944, 9855]]
+
+[[area.polygons]]
+vertices = [[2999, 9792], [3071, 9792], [3071, 9804], [2999, 9804]]
+
+[[area.polygons]]
+vertices = [[3008, 9728], [3071, 9728], [3071, 9855], [3008, 9855]]
+
+[[area]]
+name = "Enchanted Valley"
+area_id = "area.mcannon_generic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3008, 4480], [3071, 4480], [3071, 4543], [3008, 4543]]
+
+[[area]]
+name = "Entrana"
+area_id = "area.mcannon_generic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2752, 3328], [2815, 3328], [2815, 3391], [2752, 3391]]
+
+[[area.polygons]]
+vertices = [[2816, 3328], [2879, 3328], [2879, 3391], [2816, 3391]]
+
+[[area]]
+name = "Feldip Hills jungle hunter area"
+area_id = "area.mcannon_generic"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2500, 2880], [2616, 2880], [2616, 2942], [2500, 2942]]
+
+[[area]]
+name = "Fight Arena"
+area_id = "area.mcannon_dwarves"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2581, 3151], [2606, 3151], [2606, 3171], [2581, 3171]]
+
+[[area]]
+name = "Forthos Dungeon"
+area_id = "area.mcannon_mysterious_presence"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1779, 9997], [1869, 9998], [1868, 9871], [1777, 9874]]
+
+[[area]]
+name = "Fossil Island bank chest island"
+area_id = "area.mcannon_generic"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3755, 3888], [3780, 3888], [3780, 3910], [3755, 3910]]
+
+[[area]]
+name = "Fremennik Slayer Dungeon"
+area_id = "area.mcannon_dank"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2686, 9945], [2727, 9945], [2727, 9984], [2815, 9984], [2815, 10047], [2686, 10047]]
+
+[[area]]
+name = "Near Gilbert, south-east of Barbarian Village"
+area_id = "area.mcannon_colourful_force"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3119, 3391], [3135, 3391], [3135, 3407], [3119, 3407]]
+
+[[area]]
+name = "Grand Exchange"
+area_id = "area.mcannon_grand_exchange"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3139, 3463], [3190, 3463], [3190, 3515], [3139, 3515]]
+
+[[area]]
+name = "Hair of the Dog"
+area_id = "area.mcannon_roavar"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3488, 3478], [3488, 3468], [3500, 3468], [3503, 3471], [3505, 3471], [3505, 3480], [3491, 3480], [3491, 3479], [3490, 3478]]
+
+[[area]]
+name = "Hespori"
+area_id = "area.mcannon_damp_down_here"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[1235, 10076], [1259, 10076], [1259, 10099], [1235, 10099]]
+
+[[area]]
+name = "Ice Mountain"
+area_id = "area.mcannon_dwarves"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2979, 3417], [3071, 3417], [3071, 3455], [2979, 3455]]
+
+[[area.polygons]]
+vertices = [[3008, 3456], [3071, 3456], [3071, 3519], [3008, 3519]]
+
+[[area]]
+name = "Jiggig"
+area_id = "area.mcannon_ogres"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2456, 3032], [2495, 3032], [2495, 3055], [2456, 3055]]
+
+[[area]]
+name = "Jiggig Dungeon"
+area_id = "area.mcannon_soft_ground"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2432, 9344], [2495, 9344], [2495, 9407], [2432, 9407]]
+
+[[area.polygons]]
+vertices = [[2432, 9408], [2495, 9408], [2495, 9471], [2432, 9471]]
+
+[[area]]
+name = "Jormungand's Prison basilisk areas"
+area_id = "area.mcannon_soft_ground"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2395, 10365], [2493, 10365], [2493, 10418], [2395, 10418]]
+
+[[area]]
+name = "Karuulm Slayer Dungeon wyrm area"
+area_id = "area.mcannon_cavern_electricity"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[1240, 10136], [1292, 10136], [1292, 10207], [1240, 10207]]
+
+[[area]]
+name = "Karuulm Slayer Dungeon Alchemical Hydra area"
+area_id = "area.mcannon_cavern_electricity"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[1294, 10220], [1343, 10220], [1343, 10283], [1294, 10283]]
+
+[[area.polygons]]
+vertices = [[1344, 10240], [1407, 10240], [1407, 10303], [1344, 10303]]
+
+[[area]]
+name = "Killerwatt Plane"
+area_id = "area.mcannon_electricity"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2624, 5184], [2687, 5184], [2687, 5247], [2624, 5247]]
+
+[[area]]
+name = "Kraken Cove"
+area_id = "area.mcannon_generic"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2235, 9980], [2307, 9980], [2307, 10052], [2235, 10052]]
+
+[[area]]
+name = "Lair of Tarn Razorlor"
+area_id = "area.mcannon_ancient_temple"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3136, 4544], [3199, 4544], [3199, 4663], [3136, 4663]]
+
+[[area]]
+name = "Lizardman Caves"
+area_id = "area.mcannon_marshy"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[1280, 9920], [1343, 9920], [1343, 9983], [1280, 9983]]
+
+[[area]]
+name = "Lizardman Temple"
+area_id = "area.mcannon_unstable_structure"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[1280, 10048], [1343, 10048], [1343, 10111], [1280, 10111]]
+
+[[area]]
+name = "Mogre Camp"
+area_id = "area.mcannon_little_damp"
+levels = [1]
+
+[[area.polygons]]
+vertices = [[2944, 9472], [3007, 9472], [3007, 9535], [2944, 9535]]
+
+[[area]]
+name = "Nightmare Zone"
+area_id = "area.mcannon_dominic"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2598, 3106], [2618, 3106], [2618, 3124], [2598, 3124]]
+
+[[area]]
+name = "Ourania Cave bank area"
+area_id = "area.mcannon_eniola"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3008, 5614], [3024, 5614], [3024, 5631], [3008, 5631]]
+
+[[area]]
+name = "Pest Control"
+area_id = "area.mcannon_generic"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2624, 2560], [2687, 2560], [2687, 2623], [2624, 2623]]
+
+[[area]]
+name = "Red chinchompa hunting ground"
+area_id = "area.mcannon_generic"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2496, 9280], [2559, 9280], [2559, 9343], [2496, 9343]]
+
+[[area]]
+name = "Revenant Caves"
+area_id = "area.mcannon_generic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3136, 10048], [3263, 10048], [3263, 10239], [3136, 10239]]
+
+[[area]]
+name = "Ruins of Tapoyauik"
+area_id = "area.mcannon_ancient_magic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1569, 9667], [1729, 9669], [1727, 9595], [1557, 9600]]
+
+[[area]]
+name = "Scabaras Dungeon"
+area_id = "area.mcannon_generic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3370, 9215], [3445, 9215], [3445, 9282], [3370, 9282]]
+
+[[area]]
+name = "Scurrius' Lair"
+area_id = "area.mcannon_damp"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3284, 9852], [3314, 9852], [3314, 9882], [3284, 9882]]
+
+[[area]]
+name = "Sorceress's Garden"
+area_id = "area.mcannon_generic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2880, 5440], [2943, 5440], [2943, 5503], [2880, 5503]]
+
+[[area]]
+name = "Mort'ton and Shades of Mort'ton"
+area_id = "area.mcannon_generic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3456, 3264], [3519, 3264], [3519, 3327], [3456, 3327]]
+
+[[area]]
+name = "Shellbane Gryphon Cave"
+area_id = "area.mcannon_unstable_ground"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3072, 8832], [3263, 8832], [3263, 8895], [3072, 8895]]
+
+[[area]]
+name = "Silk Chasm"
+area_id = "area.mcannon_unsafe"
+levels = [2]
+
+[[area.polygons]]
+vertices = [[3405, 10178], [3438, 10178], [3438, 10220], [3405, 10220]]
+
+[[area]]
+name = "Slayer Tower"
+area_id = "area.mcannon_strange_force"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3405, 3535], [3409, 3531], [3413, 3531], [3416, 3534], [3419, 3534], [3420, 3533], [3424, 3533], [3426, 3535], [3426, 3536], [3432, 3536], [3432, 3535], [3434, 3533], [3438, 3533], [3439, 3534], [3442, 3534], [3445, 3531], [3449, 3531], [3453, 3535], [3453, 3539], [3449, 3543], [3449, 3547], [3450, 3548], [3450, 3552], [3449, 3553], [3449, 3558], [3450, 3559], [3450, 3563], [3449, 3564], [3449, 3568], [3453, 3572], [3453, 3576], [3449, 3580], [3445, 3580], [3442, 3577], [3439, 3577], [3438, 3578], [3434, 3578], [3433, 3577], [3425, 3577], [3424, 3578], [3420, 3578], [3419, 3577], [3416, 3577], [3413, 3580], [3409, 3580], [3405, 3576], [3405, 3572], [3409, 3568], [3409, 3564], [3408, 3563], [3408, 3559], [3409, 3558], [3409, 3553], [3408, 3552], [3408, 3548], [3409, 3547], [3409, 3543], [3405, 3539]]
+
+[[area.polygons]]
+vertices = [[3396, 9924], [3449, 9924], [3449, 9977], [3396, 9977]]
+
+[[area]]
+name = "Smoke Dungeon task-only area"
+area_id = "area.mcannon_dusty_aliv"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3168, 9348], [3192, 9348], [3192, 9392], [3168, 9392]]
+
+[[area]]
+name = "Theatre of Blood"
+area_id = "area.mcannon_vampyres"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3136, 4288], [3199, 4288], [3199, 4351], [3136, 4351]]
+
+[[area.polygons]]
+vertices = [[3136, 4352], [3199, 4352], [3199, 4415], [3136, 4415]]
+
+[[area.polygons]]
+vertices = [[3136, 4416], [3199, 4416], [3199, 4479], [3136, 4479]]
+
+[[area.polygons]]
+vertices = [[3200, 4288], [3263, 4288], [3263, 4351], [3200, 4351]]
+
+[[area.polygons]]
+vertices = [[3200, 4416], [3263, 4416], [3263, 4479], [3200, 4479]]
+
+[[area.polygons]]
+vertices = [[3264, 4224], [3327, 4224], [3327, 4287], [3264, 4287]]
+
+[[area.polygons]]
+vertices = [[3264, 4288], [3327, 4288], [3327, 4351], [3264, 4351]]
+
+[[area.polygons]]
+vertices = [[3264, 4416], [3327, 4416], [3327, 4479], [3264, 4479]]
+
+[[area.polygons]]
+vertices = [[3328, 4288], [3391, 4288], [3391, 4351], [3328, 4351]]
+
+[[area]]
+name = "Tombs of Amascut"
+area_id = "area.mcannon_ancient_power"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3520, 5120], [3966, 5120], [3966, 5438], [3520, 5438]]
+
+[[area]]
+name = "Tonali Cavern"
+area_id = "area.mcannon_ancient_magic"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[1259, 9538], [1350, 9542], [1350, 9335], [1282, 9339]]
+
+[[area]]
+name = "Mor Ul Rek, TzHaar Fight Cave, TzHaar Fight Pit"
+area_id = "area.mcannon_tzhaar"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2368, 5056], [2559, 5056], [2559, 5183], [2368, 5183]]
+
+[[area.polygons]]
+vertices = [[2243, 5315], [2298, 5315], [2298, 5371], [2243, 5371]]
+
+[[area]]
+name = "Ungael"
+area_id = "area.mcannon_intense_cold"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2240, 4032], [2303, 4032], [2303, 4095], [2240, 4095]]
+
+[[area]]
+name = "Uzer Mastaba"
+area_id = "area.mcannon_ancient_magic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3478, 3009], [3502, 3009], [3502, 3033], [3478, 3033]]
+
+[[area.polygons]]
+vertices = [[3845, 4672], [3903, 4672], [3903, 4735], [3845, 4735]]
+
+[[area]]
+name = "Vet'ion's Rest"
+area_id = "area.mcannon_unsafe"
+levels = [1]
+
+[[area.polygons]]
+vertices = [[3264, 10176], [3328, 10176], [3328, 10240], [3264, 10240]]
+
+[[area]]
+name = "Water mill cellar"
+area_id = "area.mcannon_too_damp_function"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3216, 9672], [3247, 9672], [3247, 9703], [3216, 9703]]
+
+[[area]]
+name = "Warriors' Guild"
+area_id = "area.mcannon_generic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2838, 3556], [2838, 3537], [2849, 3537], [2849, 3534], [2860, 3534], [2860, 3537], [2876, 3537], [2877, 3540], [2877, 3553], [2876, 3556]]
+
+[[area.polygons]]
+vertices = [[2880, 9920], [2943, 9920], [2943, 9983], [2880, 9983]]
+
+[[area]]
+name = "Wintertodt"
+area_id = "area.mcannon_cold"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1600, 3968], [1663, 3968], [1663, 4031], [1600, 4031]]
+
+[[area]]
+name = "Wyvern Cave"
+area_id = "area.mcannon_fungi"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[3584, 10176], [3647, 10176], [3647, 10239], [3584, 10239]]
+
+[[area.polygons]]
+vertices = [[3584, 10240], [3647, 10240], [3647, 10303], [3584, 10303]]
+
+[[area]]
+name = "Zemouregal's Base"
+area_id = "area.mcannon_strange_force"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[3520, 4544], [3583, 4544], [3583, 4607], [3520, 4607]]
+
+[[area.polygons]]
+vertices = [[3584, 4544], [3647, 4544], [3647, 4607], [3584, 4607]]
+
+[[area]]
+name = "Zulrah's Shrine"
+area_id = "area.mcannon_damp"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[2256, 3064], [2301, 3064], [2301, 3100], [2256, 3100]]
+
+[[area]]
+name = "Blast Furnace"
+area_id = "area.mcannon_generic"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [[1920, 4928], [1983, 4928], [1983, 4991], [1920, 4991]]
+
+[[area]]
+name = "Seers' Village Rooftop Course start"
+area_id = "area.mcannon_generic"
+levels = [0]
+
+[[area.polygons]]
+vertices = [[2726, 3486], [2732, 3486], [2732, 3492], [2726, 3492]]
+
+[[area]]
+name = "Falador Party Room"
+area_id = "area.mcannon_party_pete"
+levels = [0, 1]
+
+[[area.polygons]]
+vertices = [[3036, 3371], [3056, 3371], [3056, 3386], [3036, 3386]]
+

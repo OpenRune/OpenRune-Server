@@ -10,6 +10,7 @@ import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.player.vars.boolVarp
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
@@ -232,7 +233,8 @@ public val CANNON_SET =
     )
 
 public fun ProtectedAccess.replaceLostCannon(): Boolean {
-    val parts = CANNON_SET.take(4).take(player.cannonStage)
+    val set = if (player.cannonOrnament) ORNAMENTED_PARTS else CANNON_SET.take(4)
+    val parts = set.take(player.cannonStage)
     val given =
         player
             .invTransaction(inv) {
@@ -245,12 +247,22 @@ public fun ProtectedAccess.replaceLostCannon(): Boolean {
     if (given) {
         player.cannonStage = 0
         player.cannonDecayed = false
+        player.cannonOrnament = false
     }
     return given
 }
 
 private var Player.cannonStage: Int by intVarp("varp.dropcannon")
 private var Player.cannonDecayed: Boolean by boolVarBit("varbit.mcannon_decayed")
+private var Player.cannonOrnament: Boolean by boolVarp("varp.mcannon_ornament")
+
+private val ORNAMENTED_PARTS =
+    listOf(
+        "obj.league_3_multicannon_base",
+        "obj.league_3_multicannon_stand",
+        "obj.league_3_multicannon_barrels",
+        "obj.league_3_multicannon_furnace",
+    )
 
 public fun ProtectedAccess.buyCannonSet(): Boolean =
     player
