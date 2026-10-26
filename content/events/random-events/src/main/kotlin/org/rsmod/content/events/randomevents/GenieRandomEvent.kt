@@ -35,6 +35,7 @@ import org.rsmod.game.cheat.Cheat
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocInfo
+import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
@@ -42,8 +43,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
 import org.rsmod.routefinder.flag.CollisionFlag
 
-// Epoch minutes of the next random event; a real-time clock that also runs while offline.
-private var Player.eventDue by intVarp("varp.random_event_due")
+private var Player.randomEventDueMinute by intVarp("varp.random_event_due")
 
 @Singleton
 class GenieRandomEvent
@@ -58,8 +58,10 @@ constructor(
     private val mapClock: MapClock,
     private val random: GameRandom,
     private val config: ServerConfig,
+    private val worldQueues: WorldQueueList,
 ) : PluginScript() {
     private val genies = HashMap<Player, Genie>()
+    private val summons = HashSet<Player>()
     private val starLocs by lazy { ShootingStarStages.ALL.map { it.loc.asRSCM(RSCMType.LOC) }.toSet() }
 
     override fun ScriptContext.startup() {
@@ -67,7 +69,10 @@ constructor(
             onPlayerLogin { login(player) }
             onPlayerSoftTimer(SCHEDULE_TIMER) { check(player) }
         }
-        onPlayerLogout { genies.remove(player)?.let(::leave) }
+        onPlayerLogout {
+            summons.remove(player)
+            genies.remove(player)?.let(::leave)
+        }
         onPlayerSoftTimer(GENIE_TIMER) { tick(player) }
         for (genie in listOf(GENIE, GENIE_UNDERWATER)) {
             onOpNpc1(genie) { talk(it.npc) }
@@ -83,25 +88,24 @@ constructor(
 
     private fun login(player: Player) {
         val now = nowMinutes()
-        var due = if (player.eventDue == 0) now + eventDelay() else player.eventDue
+        var due = if (player.randomEventDueMinute == 0) now + eventDelay() else player.randomEventDueMinute
         while (due <= now) {
             due += offlineExtension()
         }
-        player.eventDue = due
+        player.randomEventDueMinute = due
         player.softTimer(SCHEDULE_TIMER, CHECK_INTERVAL)
     }
 
     private fun check(player: Player) {
-        if (nowMinutes() < player.eventDue) {
+        if (nowMinutes() < player.randomEventDueMinute) {
             player.softTimer(SCHEDULE_TIMER, CHECK_INTERVAL)
             return
         }
-        // Make-X repeats run as weak queues.
         if (player.ui.modals.isNotEmpty() || player.weakQueueList.isNotEmpty) {
             player.softTimer(SCHEDULE_TIMER, 1)
             return
         }
-        player.eventDue = nowMinutes() + eventDelay()
+        player.randomEventDueMinute = nowMinutes() + eventDelay()
         player.softTimer(SCHEDULE_TIMER, CHECK_INTERVAL)
         if (player !in genies && player.transmog == null && eventsAllowed(player.coords)) {
             spawn(player)
@@ -110,42 +114,52 @@ constructor(
 
     private fun summon(cheat: Cheat) {
         val player = cheat.player
-        if (player in genies) {
+        if (player in genies || player in summons) {
             player.mes("Your Genie is already here.")
             return
         }
-        spawn(player)
+        summons += player
+        player.softTimer(GENIE_TIMER, 1)
     }
 
-    private fun spawn(player: Player): Npc {
+    private fun spawn(player: Player) {
         val underwater = areas.inArea(UNDERWATER_AREA, player.coords)
-        val npc = Npc(if (underwater) GENIE_UNDERWATER else GENIE, besideTile(player.coords))
+        val addTile = random.pickOrNull(freeTiles(player.coords, ADJACENT_OFFSETS)) ?: player.coords
+        val npc = Npc(if (underwater) GENIE_UNDERWATER else GENIE, addTile)
         npc.mode = NpcMode.None
         npcRepo.add(npc, Int.MAX_VALUE)
         npc.respawns = false
         npc.assignSpawnOwner(player, mapClock.cycle)
+        if (addTile.x != player.coords.x && addTile.z != player.coords.z) {
+            val steps = listOf(addTile.x - player.coords.x to 0, 0 to addTile.z - player.coords.z)
+            random.pickOrNull(freeTiles(player.coords, steps))?.let(npc::walk)
+        }
         player.softTimer(GENIE_TIMER, 1)
-        genies[player] = Genie(npc, underwater)
-        return npc
+        genies[player] = Genie(npc, addTile, underwater)
     }
 
     private fun greet(owner: Player, genie: Genie) {
         val npc = genie.npc
+        val tile = genie.addTile
         npc.facePlayer(owner)
         npc.anim(WAVE)
         npc.say("Greetings, ${title(owner)} ${owner.displayName}!")
         if (genie.underwater) {
-            bubbles(npc.coords)
+            bubbles(tile)
         } else {
-            smokePuff(npc.coords)
-            worldRepo.soundArea(npc.coords, ARRIVE_SOUND, radius = SOUND_RADIUS)
-            smokePuff(npc.coords)
-            worldRepo.soundArea(npc.coords, PUFF_SOUND, radius = SOUND_RADIUS)
+            smokePuff(tile)
+            worldRepo.soundArea(tile, ARRIVE_SOUND, radius = SOUND_RADIUS)
+            smokePuff(tile)
+            worldRepo.soundArea(tile, PUFF_SOUND, radius = SOUND_RADIUS)
         }
         owner.softTimer(GENIE_TIMER, CALL_INTERVAL - 1)
     }
 
     private fun tick(owner: Player) {
+        if (summons.remove(owner)) {
+            spawn(owner)
+            return
+        }
         val genie = genies[owner]
         if (genie == null || !genie.npc.isSlotAssigned) {
             genies.remove(owner)
@@ -222,7 +236,7 @@ constructor(
 
     private suspend fun ProtectedAccess.rub() {
         val stat = chooseLampSkill("Choose the stat you wish to be advanced!") ?: return
-        val xp = stat(stat) * LAMP_XP_PER_LEVEL
+        val xp = statBase(stat) * LAMP_XP_PER_LEVEL
         if (invDel(inv, LAMP).failure) return
         statAdvance(stat, xp.toDouble(), rate = 1.0, globalRate = 1.0)
         soundSynth(WISH_SOUND)
@@ -238,11 +252,13 @@ constructor(
         if (!npc.isSlotAssigned) return
         val coords = npc.coords
         npcRepo.del(npc, Int.MAX_VALUE)
-        if (genie.underwater) {
-            bubbles(coords)
-        } else {
-            smokePuff(coords)
-            worldRepo.soundArea(coords, PUFF_SOUND, radius = SOUND_RADIUS)
+        worldQueues.add(1) {
+            if (genie.underwater) {
+                bubbles(coords)
+            } else {
+                smokePuff(coords)
+                worldRepo.soundArea(coords, PUFF_SOUND, radius = SOUND_RADIUS)
+            }
         }
     }
 
@@ -281,15 +297,13 @@ constructor(
         worldRepo.spotanimMap(SpotanimType(SMOKE_PUFF.asRSCM(RSCMType.SPOTANIM)), coords, SMOKE_HEIGHT)
     }
 
-    private fun besideTile(centre: CoordGrid): CoordGrid {
-        for ((x, z) in ADJACENT_OFFSETS) {
-            val candidate = centre.translate(x, z)
-            if (collision[candidate.x, candidate.z, candidate.level] and BLOCKED_FLAGS == 0) {
-                return candidate
-            }
-        }
-        return centre
-    }
+    private fun besideTile(centre: CoordGrid): CoordGrid =
+        freeTiles(centre, ADJACENT_OFFSETS).firstOrNull() ?: centre
+
+    private fun freeTiles(centre: CoordGrid, offsets: List<Pair<Int, Int>>): List<CoordGrid> =
+        offsets
+            .map { (x, z) -> centre.translate(x, z) }
+            .filter { collision[it.x, it.z, it.level] and BLOCKED_FLAGS == 0 }
 
     private fun isMale(player: Player): Boolean =
         player.appearance.bodyType == Constants.bodytype_a
@@ -304,6 +318,7 @@ constructor(
 
     private class Genie(
         val npc: Npc,
+        val addTile: CoordGrid,
         val underwater: Boolean,
         var calls: Int = 0,
         var handedOver: Boolean = false,
