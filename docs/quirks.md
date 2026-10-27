@@ -264,6 +264,39 @@ empty worn inventory and unchanged skills through logout/save/relogin. The fresh
 normal 1× actor used two approved merchant relocations and no skill presets; this
 does not prove normal supply acquisition.
 
+Bird nests now fall from successful non-bonus woodcutting products and can be
+searched through native Search. Ordinary seed, Wyson seed, ring and coloured egg
+nests atomically become one empty nest in the original slot plus their reward.
+Full-inventory and stack-overflow failures leave the nest untouched. Discontinued
+seed variants and clue nests are not handled.
+
+Seed/Wyson/ring weights use the packed, cutoff-pinned wiki Drop Rate Project
+estimates, not developer-exact odds. Woodcutting uses the published 1/256 per-log
+chance, a 10% Woodcutting-cape increase and the strung-rabbit-foot type range.
+Redwood and rosewood are excluded from these non-clue drops. The owned ground
+nest lasts 200 ticks; red chat, sound 1516 and the native notification follow.
+Shared ground-item reveal policy is unchanged: the repository schedules reveal
+after 100 ticks, not the recorded never-public flag. This is not ownership parity.
+Willow's recorded "a willow tree seed" noun is cache-backed: its generic cached
+examine text cannot supply that wording.
+
+Auto-queue reuses the generic pack opener's queue delay of 2 and lowest-slot-first
+selection; the engine can decrement a newly queued entry during the same cycle.
+Exact OSRS cadence/order/interruption and ring/egg wording remain unobserved.
+Adjacent-tile placement excludes blocked tiles, also an unobserved selection rule.
+These labelled shortcuts and Wyson nest-box exchange/Check/Extract need recording
+request `58a3209d-d5a0-44f4-88bc-ee6638cf095e`. Wyson exchange and the wider seed-supply
+tracker row remain incomplete.
+
+The real-cache production smoke reproduces the recorded willow/acorn messages,
+same-slot replacement, queued conservation, rollback and actual repository drops.
+Native evidence is partial/unaccepted: decoded packets show same-slot replacements,
+sound/notification and a forced-drop pickup/Search, but there is no screenshot,
+immediate-walk proof or persistence check. The worker's second disposable actor
+repeated supplies without authorization; that contamination is retained in local
+run `harness-ff2f5b7f-0249-479f-908d-841561b65f2f`, not relabelled as an accepted pass.
+Both runs' resources were released and the forced-drop fixture was removed.
+
 Celastrus bark uses the existing knife-production engine: current Fletching 40,
 one bark per battlestaff, 80 base Fletching XP and no Crafting XP. Native Fletch
 and knife-on-bark share the quantity flow and commit checks. Ordinary knives take

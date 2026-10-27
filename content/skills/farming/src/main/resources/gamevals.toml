@@ -251,6 +251,7 @@ farming_seed_nest_rewards = 64423
 farming_wyson_nest_rewards = 64424
 farming_wyson_seed_counts = 64425
 farming_ring_nest_rewards = 64426
+farming_nest_reward_names = 64461
 farming_hespori_signals = 64427
 farming_spirit_names = 64428
 farming_spirit_arrivals = 64429
@@ -289,3 +290,6 @@ farming_spirit_tree = 64400
 
 [gamevals.synth]
 farming_geomancy = 2891
+
+[gamevals.queue]
+farming_nest_search = 64460

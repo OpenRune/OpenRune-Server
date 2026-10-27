@@ -16,6 +16,7 @@ dependencies {
     implementation(projects.content.interfaces.omnishop)
     implementation(projects.content.interfaces.collectionLog)
     testImplementation(projects.api.invStorage)
+    testImplementation(libs.mockk)
     testImplementation(projects.api.gameProcess)
     testImplementation(projects.api.spellsRunes)
     testImplementation(libs.fastutil)

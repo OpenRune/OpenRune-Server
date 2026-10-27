@@ -85,3 +85,13 @@ valueType = "INT"
 "obj.emerald_ring" = 15
 "obj.ruby_ring" = 9
 "obj.diamond_ring" = 1
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_nest_reward_names"
+keyType = "OBJ"
+valueType = "STRING"
+defaultString = ""
+
+[enum.values]
+"obj.willow_seed" = "a willow tree seed"
