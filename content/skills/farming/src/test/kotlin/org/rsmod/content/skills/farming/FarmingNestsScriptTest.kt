@@ -3,8 +3,6 @@ package org.rsmod.content.skills.farming
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import io.mockk.mockk
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -13,11 +11,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
-import org.rsmod.annotations.InternalApi
 import org.rsmod.api.enums.FarmingWysonEnums.farming_wyson_nest_rewards
 import org.rsmod.api.game.process.player.PlayerQueueProcessor
-import org.rsmod.api.inv.storage.PlayerItemStorage
-import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.events.interact.HeldObjEvents
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
@@ -25,10 +20,8 @@ import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.random.GameRandom
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
-import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.plugin.scripts.ScriptContext
@@ -213,15 +206,6 @@ class FarmingNestsScriptTest {
         }
     }
 
-    private class SilentClient : Client<Any, Any> {
-        override fun write(message: Any) {}
-        override fun close() {}
-        override fun read(player: Player) {}
-        override fun flush() {}
-        override fun flushHighPriority() {}
-        override fun unregister(service: Any, player: Player) {}
-    }
-
     companion object {
         private const val SEEDS = "obj.bird_nest_seeds_jan2019"
         private const val WYSON = "obj.bird_nest_decentseeds_jan2019"
@@ -234,28 +218,11 @@ class FarmingNestsScriptTest {
         private fun totals(vararg entries: Pair<String, Int>): Map<Int, Int> =
             entries.associate { (name, count) -> name.asRSCM() to count }
 
-        @OptIn(InternalApi::class)
         @JvmStatic
         @BeforeAll
         fun cache() {
-            val root = generateSequence(Path.of("").toAbsolutePath()) { it.parent }
-                .first { Files.isRegularFile(it.resolve("game.yml")) }
-            val revision = Files.readAllLines(root.resolve("game.yml"))
-                .first { it.startsWith("revision:") }.substringAfter(':').trim().substringBefore('.').toInt()
-            ServerCacheManager.init(revision).close()
-            for ((owner, name) in listOf(
-                "org.rsmod.api.invtx.InvTransactionsScriptKt" to "cachedInventoryTransactions",
-                "org.rsmod.api.invtx.VirtualInvTransactionsKt" to "cachedPlayerItemStorage",
-            )) {
-                val field = Class.forName(owner).getDeclaredField(name).apply { isAccessible = true }
-                val old = field.get(null)
-                RESTORED += { field.set(null, old) }
-            }
-            val oldStorage = InvVirtualStorageHolder.instance
-            RESTORED += { InvVirtualStorageHolder.instance = oldStorage }
-            with(InvTransactionsScript(PlayerItemStorage(emptySet()))) {
-                ScriptContext(EventBus(), CheatCommandMap(), EngineQueueCache()).startup()
-            }
+            loadFarmingTestCache()
+            installFarmingTestInventory(RESTORED)
         }
 
         @JvmStatic

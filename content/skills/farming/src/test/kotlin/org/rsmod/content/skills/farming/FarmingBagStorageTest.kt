@@ -4,8 +4,6 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
-import java.nio.file.Files
-import java.nio.file.Path
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
@@ -26,8 +24,6 @@ import org.rsmod.api.death.PlayerDeathContext
 import org.rsmod.api.death.PlayerDeathDrops.DeathDropResult
 import org.rsmod.api.death.PlayerDeathHandling
 import org.rsmod.api.death.UntradeableHandling
-import org.rsmod.api.inv.storage.PlayerItemStorage
-import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.events.interact.HeldBanksideEvents
@@ -45,10 +41,8 @@ import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.events.SuspendEvent
 import org.rsmod.game.cheat.CheatCommandMap
-import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.queue.EngineQueueCache
 import org.rsmod.plugin.scripts.ScriptContext
@@ -682,15 +676,6 @@ class FarmingBagStorageTest {
         }
     }
 
-    private class SilentClient : Client<Any, Any> {
-        override fun write(message: Any) {}
-        override fun close() {}
-        override fun read(player: Player) {}
-        override fun flush() {}
-        override fun flushHighPriority() {}
-        override fun unregister(service: Any, player: Player) {}
-    }
-
     companion object {
         private val SIX_SEEDS =
             listOf(
@@ -704,26 +689,9 @@ class FarmingBagStorageTest {
 
         private val restored = mutableListOf<() -> Unit>()
 
-        @OptIn(InternalApi::class)
         @JvmStatic @BeforeAll fun cache() {
-            val root = generateSequence(Path.of("").toAbsolutePath()) { it.parent }
-                .first { Files.isRegularFile(it.resolve("game.yml")) }
-            val revision = Files.readAllLines(root.resolve("game.yml"))
-                .first { it.startsWith("revision:") }.substringAfter(':').trim().substringBefore('.').toInt()
-            ServerCacheManager.init(revision).close()
-            for ((owner, name) in listOf(
-                "org.rsmod.api.invtx.InvTransactionsScriptKt" to "cachedInventoryTransactions",
-                "org.rsmod.api.invtx.VirtualInvTransactionsKt" to "cachedPlayerItemStorage",
-            )) {
-                val field = Class.forName(owner).getDeclaredField(name).apply { isAccessible = true }
-                val old = field.get(null)
-                restored += { field.set(null, old) }
-            }
-            val oldStorage = InvVirtualStorageHolder.instance
-            restored += { InvVirtualStorageHolder.instance = oldStorage }
-            with(InvTransactionsScript(PlayerItemStorage(emptySet()))) {
-                ScriptContext(EventBus(), CheatCommandMap(), EngineQueueCache()).startup()
-            }
+            loadFarmingTestCache()
+            installFarmingTestInventory(restored)
         }
 
         @JvmStatic @AfterAll fun restore() {

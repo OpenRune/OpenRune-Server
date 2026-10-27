@@ -3,8 +3,6 @@ package org.rsmod.content.skills.farming
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import java.nio.file.Files
-import java.nio.file.Path
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
@@ -254,13 +252,8 @@ class FarmingNatureAmuletTest {
         private const val BOUND_PATCH = "varp.farming_nature_patch"
         private const val LAST_STATUS = "varp.farming_nature_status"
 
-        @OptIn(InternalApi::class)
         @JvmStatic @BeforeAll fun cache() {
-            val root = generateSequence(Path.of("").toAbsolutePath()) { it.parent }
-                .first { Files.isRegularFile(it.resolve("game.yml")) }
-            val revision = Files.readAllLines(root.resolve("game.yml"))
-                .first { it.startsWith("revision:") }.substringAfter(':').trim().substringBefore('.').toInt()
-            ServerCacheManager.init(revision).close()
+            loadFarmingTestCache()
         }
     }
 }

@@ -3,8 +3,6 @@ package org.rsmod.content.skills.farming
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
-import java.nio.file.Files
-import java.nio.file.Path
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
@@ -24,8 +22,6 @@ import org.rsmod.api.combat.weapon.styles.AttackStyles
 import org.rsmod.api.instances.InstanceManager
 import org.rsmod.api.instances.assignInstance
 import org.rsmod.api.instances.region.InstanceAreaResolver
-import org.rsmod.api.inv.storage.PlayerItemStorage
-import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.bonus.WornBonuses
 import org.rsmod.api.player.events.interact.LocEvents
 import org.rsmod.api.player.events.interact.LocUDefaultEvents
@@ -54,13 +50,11 @@ import org.rsmod.events.EventBus
 import org.rsmod.events.SuspendEvent
 import org.rsmod.game.MapClock
 import org.rsmod.game.cheat.CheatCommandMap
-import org.rsmod.game.client.Client
 import org.rsmod.game.entity.ControllerList
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocEntity
@@ -613,38 +607,12 @@ class FarmingTitheInventoryTest {
         fun fill() { for (slot in player.inv.indices) if (player.inv[slot] == null) player.inv[slot] = InvObj(SPADE) }
     }
 
-    private class SilentClient : Client<Any, Any> {
-        override fun write(message: Any) {}
-        override fun close() {}
-        override fun read(player: Player) {}
-        override fun flush() {}
-        override fun flushHighPriority() {}
-        override fun unregister(service: Any, player: Player) {}
-    }
-
     companion object {
         private val RESTORED = mutableListOf<() -> Unit>()
 
-        @OptIn(InternalApi::class)
         @JvmStatic @BeforeAll fun cache() {
-            val root = generateSequence(Path.of("").toAbsolutePath()) { it.parent }
-                .first { Files.isRegularFile(it.resolve("game.yml")) }
-            val revision = Files.readAllLines(root.resolve("game.yml"))
-                .first { it.startsWith("revision:") }.substringAfter(':').trim().substringBefore('.').toInt()
-            ServerCacheManager.init(revision).close()
-            for ((owner, name) in listOf(
-                "org.rsmod.api.invtx.InvTransactionsScriptKt" to "cachedInventoryTransactions",
-                "org.rsmod.api.invtx.VirtualInvTransactionsKt" to "cachedPlayerItemStorage",
-            )) {
-                val field = Class.forName(owner).getDeclaredField(name).apply { isAccessible = true }
-                val old = field.get(null)
-                RESTORED += { field.set(null, old) }
-            }
-            val oldStorage = InvVirtualStorageHolder.instance
-            RESTORED += { InvVirtualStorageHolder.instance = oldStorage }
-            with(InvTransactionsScript(PlayerItemStorage(emptySet()))) {
-                ScriptContext(EventBus(), CheatCommandMap(), EngineQueueCache()).startup()
-            }
+            loadFarmingTestCache()
+            installFarmingTestInventory(RESTORED)
         }
 
         @JvmStatic @AfterAll fun restore() {

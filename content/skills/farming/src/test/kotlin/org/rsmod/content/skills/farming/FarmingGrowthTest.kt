@@ -1,8 +1,5 @@
 package org.rsmod.content.skills.farming
 
-import dev.openrune.ServerCacheManager
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
@@ -441,13 +438,7 @@ class FarmingGrowthTest {
         @JvmStatic
         @BeforeAll
         fun cache() {
-            val root =
-                generateSequence(Path.of("").toAbsolutePath()) { it.parent }
-                    .first { Files.isRegularFile(it.resolve("game.yml")) }
-            val revision =
-                Files.readAllLines(root.resolve("game.yml"))
-                    .first { it.startsWith("revision:") }.substringAfter(':').trim().substringBefore('.').toInt()
-            ServerCacheManager.init(revision).close()
+            loadFarmingTestCache()
         }
     }
 }

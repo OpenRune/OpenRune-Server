@@ -2,8 +2,6 @@ package org.rsmod.content.skills.farming
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -14,20 +12,13 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
-import org.rsmod.api.inv.storage.PlayerItemStorage
-import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.events.EventBus
-import org.rsmod.game.cheat.CheatCommandMap
-import org.rsmod.game.client.Client
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.queue.EngineQueueCache
-import org.rsmod.plugin.scripts.ScriptContext
 
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
@@ -307,36 +298,12 @@ class FarmingServicesTest {
         }
     }
 
-    private class SilentClient : Client<Any, Any> {
-        override fun write(message: Any) {}
-        override fun close() {}
-        override fun read(player: Player) {}
-        override fun flush() {}
-        override fun flushHighPriority() {}
-        override fun unregister(service: Any, player: Player) {}
-    }
-
     companion object {
         private val RESTORED = mutableListOf<() -> Unit>()
 
-        @OptIn(InternalApi::class)
         @JvmStatic @BeforeAll fun cache() {
-            val root = generateSequence(Path.of("").toAbsolutePath()) { it.parent }.first { Files.isRegularFile(it.resolve("game.yml")) }
-            val revision = Files.readAllLines(root.resolve("game.yml")).first { it.startsWith("revision:") }.substringAfter(':').trim().substringBefore('.').toInt()
-            ServerCacheManager.init(revision).close()
-            for ((owner, name) in listOf(
-                "org.rsmod.api.invtx.InvTransactionsScriptKt" to "cachedInventoryTransactions",
-                "org.rsmod.api.invtx.VirtualInvTransactionsKt" to "cachedPlayerItemStorage",
-            )) {
-                val field = Class.forName(owner).getDeclaredField(name).apply { isAccessible = true }
-                val old = field.get(null)
-                RESTORED += { field.set(null, old) }
-            }
-            val oldStorage = InvVirtualStorageHolder.instance
-            RESTORED += { InvVirtualStorageHolder.instance = oldStorage }
-            with(InvTransactionsScript(PlayerItemStorage(emptySet()))) {
-                ScriptContext(EventBus(), CheatCommandMap(), EngineQueueCache()).startup()
-            }
+            loadFarmingTestCache()
+            installFarmingTestInventory(RESTORED)
         }
 
         @JvmStatic @AfterAll fun restore() {

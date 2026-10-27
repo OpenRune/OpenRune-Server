@@ -2,8 +2,6 @@ package org.rsmod.content.skills.farming
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -17,8 +15,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.game.process.player.PlayerMovementProcessor
-import org.rsmod.api.inv.storage.PlayerItemStorage
-import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.player.hook.PlayerStepValidateHook
 import org.rsmod.api.player.ironman.PlayerGamemode
 import org.rsmod.api.player.stat.baseFarmingLvl
@@ -42,7 +38,6 @@ import org.rsmod.api.route.StepFactory
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
 import org.rsmod.game.cheat.CheatCommandMap
-import org.rsmod.game.client.Client
 import org.rsmod.game.entity.ControllerList
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
@@ -50,7 +45,6 @@ import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.inv.InvObj
-import org.rsmod.game.inv.InvVirtualStorageHolder
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.map.LocZoneStorage
 import org.rsmod.game.movement.MoveSpeed
@@ -547,15 +541,6 @@ class FarmingGuildTest {
         fun count(inv: Inventory, type: String): Int = inv.countOf(type.asRSCM())
     }
 
-    private class SilentClient : Client<Any, Any> {
-        override fun write(message: Any) {}
-        override fun close() {}
-        override fun read(player: Player) {}
-        override fun flush() {}
-        override fun flushHighPriority() {}
-        override fun unregister(service: Any, player: Player) {}
-    }
-
     companion object {
         private val LOW_RANDOM = object : GameRandom {
             override fun of(maxExclusive: Int): Int = 0
@@ -569,26 +554,9 @@ class FarmingGuildTest {
         }
         private val RESTORE = mutableListOf<() -> Unit>()
 
-        @OptIn(InternalApi::class)
         @JvmStatic @BeforeAll fun cache() {
-            val root = generateSequence(Path.of("").toAbsolutePath()) { it.parent }
-                .first { Files.isRegularFile(it.resolve("game.yml")) }
-            val revision = Files.readAllLines(root.resolve("game.yml"))
-                .first { it.startsWith("revision:") }.substringAfter(':').trim().substringBefore('.').toInt()
-            ServerCacheManager.init(revision).close()
-            for ((owner, name) in listOf(
-                "org.rsmod.api.invtx.InvTransactionsScriptKt" to "cachedInventoryTransactions",
-                "org.rsmod.api.invtx.VirtualInvTransactionsKt" to "cachedPlayerItemStorage",
-            )) {
-                val field = Class.forName(owner).getDeclaredField(name).apply { isAccessible = true }
-                val old = field.get(null)
-                RESTORE += { field.set(null, old) }
-            }
-            val oldStorage = InvVirtualStorageHolder.instance
-            RESTORE += { InvVirtualStorageHolder.instance = oldStorage }
-            with(InvTransactionsScript(PlayerItemStorage(emptySet()))) {
-                ScriptContext(EventBus(), CheatCommandMap(), EngineQueueCache()).startup()
-            }
+            loadFarmingTestCache()
+            installFarmingTestInventory(RESTORE)
         }
 
         @JvmStatic @AfterAll fun restore() {
