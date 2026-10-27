@@ -254,8 +254,6 @@ Baseline numbers, taken from this repo's `SpawnInterface.kt` and the OSRS client
   central-server link (PostgreSQL). `game.example.yml` documents extra keys, e.g.
   `gameplay.quest-requirements.mode` (`assume-completed` / `respect-progress` /
   `virtual-completions`) and remote central config.
-- Quests MUST default to `assume-completed`. Keep quest-gated minigames accessible under
-  that policy; `respect-progress` and `virtual-completions` are explicit overrides, not new defaults.
 
 ## Docs worth reading before touching a system
 
