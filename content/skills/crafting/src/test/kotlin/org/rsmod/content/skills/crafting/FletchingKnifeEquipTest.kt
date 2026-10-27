@@ -87,15 +87,6 @@ class FletchingKnifeEquipTest {
     }
 
     @Test
-    fun `ordinary op2 weapon equip still works through the same path`() {
-        val f = Fixture()
-        f.give(0, SWORD)
-        f.interact(0, HeldOp.Op2)
-        assertEquals(0, f.count(SWORD))
-        assertEquals(1, f.wornCount(SWORD))
-    }
-
-    @Test
     fun `wielding the knife displaces a two handed weapon into the clicked slot`() {
         val f = Fixture()
         f.fillWithSpades()

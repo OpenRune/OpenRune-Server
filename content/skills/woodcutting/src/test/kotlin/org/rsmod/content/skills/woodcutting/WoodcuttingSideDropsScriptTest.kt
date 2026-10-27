@@ -46,16 +46,6 @@ class WoodcuttingSideDropsScriptTest {
     }
 
     @Test
-    fun `a successful log rolls exactly one owned ground nest without changing inventory`() {
-        val f = Fixture()
-        val before = f.player.inv[0]
-        f.publish()
-        f.assertDrop()
-        assertEquals(before, f.player.inv[0])
-        assertEquals(1, f.player.inv.count("obj.bronze_dagger"))
-    }
-
-    @Test
     fun `cape increases chance by ten percent at the exact boundary`() {
         val bare = Fixture(chance = 10)
         bare.publish()
@@ -147,6 +137,8 @@ class WoodcuttingSideDropsScriptTest {
             verify(exactly = 1) {
                 objects.add(nest, player.coords.translate(-1, -1), 200, player, 1, any())
             }
+            assertEquals(InvObj("obj.bronze_dagger"), player.inv[0])
+            assertEquals(1, player.inv.count("obj.bronze_dagger"))
         }
 
         fun assertNoDrop() {

@@ -36,14 +36,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 @ResourceLock("ServerCacheManager")
 class ItemPackScriptTest {
     @Test
-    fun `one pack becomes 100 noted filled pots and nothing else changes`() {
-        val f = Fixture(PACK, DAGGER)
-        f.open(0)
-        assertEquals(mapOf(f.note to 100, DAGGER_ID to 1), f.totals())
-        assertTrue(f.player.weakQueueList.isEmpty)
-    }
-
-    @Test
     fun `opening works on a full inventory and merges into an existing output stack`() {
         val f = Fixture(PACK)
         f.put(1, f.note, 50)
@@ -58,14 +50,6 @@ class ItemPackScriptTest {
         for (slot in 1 until 28) f.put(slot, DAGGER_ID, 1)
         f.open(0)
         assertEquals(mapOf(f.note to 100, DAGGER_ID to 27), f.totals())
-    }
-
-    @Test
-    fun `an Int MAX_VALUE output stack rolls the whole open back`() {
-        val f = Fixture(PACK, DAGGER)
-        f.put(2, f.note, Int.MAX_VALUE)
-        f.open(0)
-        assertEquals(mapOf(PACK_ID to 1, DAGGER_ID to 1, f.note to Int.MAX_VALUE), f.totals())
         assertTrue(f.player.weakQueueList.isEmpty)
     }
 

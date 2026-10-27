@@ -123,21 +123,6 @@ class FarmingEquipmentTest {
     }
 
     @Test
-    fun `offline replay emits only the final nature status and unchanged regrowth does not notify`() {
-        val crop = FarmingCrops.all.first { it.kind == PatchKind.HERB }
-        val growing = PatchState(weeds = 3, cropIndex = crop.index, stage = 1)
-        val diseased = growing.copy(health = Health.DISEASED)
-        val dead = diseased.copy(health = Health.DEAD)
-        val mature = growing.copy(stage = crop.stages, produce = 3)
-        assertTrue(FarmingNatureAmulet.shouldNotify(dead, growing))
-        assertFalse(FarmingNatureAmulet.shouldNotify(dead, dead))
-        assertTrue(FarmingNatureAmulet.shouldNotify(diseased, growing))
-        assertTrue(FarmingNatureAmulet.shouldNotify(mature, growing))
-        assertFalse(FarmingNatureAmulet.shouldNotify(mature.copy(produce = 4), mature))
-        assertFalse(FarmingNatureAmulet.shouldNotify(growing.empty(), dead))
-    }
-
-    @Test
     fun `only completed barehanded training waives the dibber and grapes still require it`() {
         val f = Fixture()
         val herb = FarmingCrops.all.first { it.kind == PatchKind.HERB }

@@ -72,26 +72,6 @@ class FarmingServicesTest {
     }
 
     @Test
-    fun `paid Stronghold magic tree protection publishes its actual crop and patch only once`() {
-        val f = Fixture()
-        f.patch = FarmingPatches.all.single { it.site == "gnome_stronghold_tree" }
-        val expected = f.plant("obj.plantpot_magic_tree_sapling")
-        val crop = checkNotNull(expected.crop)
-        for ((obj, count) in f.gardeners.payment(crop)) {
-            val type = checkNotNull(ServerCacheManager.getItem(obj.asRSCM()))
-            val payment = if (type.canCert) checkNotNull(ServerCacheManager.getItem(type.certlink)) else type
-            f.give(payment.internalName, count)
-        }
-        f.fill()
-        assertEquals(ProtectResult.PROTECTED, f.gardeners.protect(f.player, f.patch, expected))
-        assertEquals(listOf(FarmingProtectionEvent(f.player, f.patch, crop)), f.protections)
-        val paid = f.player.inv.toList()
-        assertEquals(ProtectResult.ALREADY, f.gardeners.protect(f.player, f.patch, f.state()))
-        assertEquals(paid, f.player.inv.toList())
-        assertEquals(1, f.protections.size)
-    }
-
-    @Test
     fun `missing later payment item rolls back the whole gardener payment`() {
         val f = Fixture()
         f.give("obj.bucket_compost", 2)

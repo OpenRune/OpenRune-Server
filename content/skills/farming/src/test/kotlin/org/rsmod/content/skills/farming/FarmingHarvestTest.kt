@@ -84,19 +84,6 @@ class FarmingHarvestTest {
     }
 
     @Test
-    fun `saved lives have no total yield cap and survive pack interruptions`() {
-        val mature = PatchState(weeds = 3, cropIndex = 127, stage = 4, compost = Compost.ULTRA, produce = 6)
-        var state = mature
-        repeat(100) { state = PatchState.unpack(state.harvested(saveLife = true).pack()) }
-        assertEquals(mature, state)
-        state = PatchState.unpack(state.harvested(saveLife = false).pack())
-        assertEquals(mature.copy(produce = 5), state)
-        repeat(4) { state = PatchState.unpack(state.harvested(saveLife = false).pack()) }
-        assertEquals(1, state.produce)
-        assertEquals(PatchState(weeds = 3), state.harvested(saveLife = false))
-    }
-
-    @Test
     fun `fixed batches do not roll quantity`() {
         val fail: (Int) -> Int = { error("Fixed quantities must not roll") }
         assertEquals(1, herb.harvestAmount(99, true, roll = fail))

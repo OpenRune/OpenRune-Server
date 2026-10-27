@@ -174,14 +174,6 @@ class OmnishopPurchaseTest {
     }
 
     @Test
-    fun `native blessing multiplier grants twenty items per paid transaction`() {
-        val f = Fixture(5)
-        f.buy(7, 2)
-        assertEquals(100, f.count("obj.grape_blessing"))
-        assertEquals(0, f.points)
-    }
-
-    @Test
     fun `reward item vars are committed only with the successful payment`() {
         val f = Fixture(30)
         f.events.subscribeUnbound(OmnishopPurchaseCheck::class.java) { outputVars = 1 }

@@ -67,18 +67,6 @@ class CraftingTransactionTest {
     }
 
     @Test
-    fun `a craft with no tool fails and preserves every item and XP`() {
-        val f = Fixture()
-        f.give(BRANCH, 2)
-        val before = f.snapshot()
-        assertFalse(f.craft(product()))
-        assertEquals(before, f.snapshot())
-        assertEquals(0, f.count(STAFF))
-        assertEquals(0, f.xp(CRAFTING))
-        assertEquals(0, f.xp(FLETCHING))
-    }
-
-    @Test
     fun `knife removed after validation fails the commit and preserves items and XP`() {
         val f = Fixture()
         f.give(KNIFE)

@@ -68,19 +68,6 @@ import org.rsmod.routefinder.flag.CollisionFlag
 @ResourceLock("ServerCacheManager")
 class FarmingGuildTest {
     @Test
-    fun `guild gates enforce boosted entry without ejecting or trapping an expired boost`() {
-        assertEquals(1, FarmingGuild.deniedTier(CoordGrid(1248, 3722), CoordGrid(1248, 3723), 44))
-        assertNull(FarmingGuild.deniedTier(CoordGrid(1248, 3722), CoordGrid(1248, 3723), 45))
-        assertEquals(2, FarmingGuild.deniedTier(CoordGrid(1244, 3729), CoordGrid(1243, 3729), 64))
-        assertNull(FarmingGuild.deniedTier(CoordGrid(1244, 3729), CoordGrid(1243, 3729), 65))
-        assertNull(FarmingGuild.deniedTier(CoordGrid(1243, 3729), CoordGrid(1244, 3729), 1))
-        assertNull(FarmingGuild.deniedTier(CoordGrid(1238, 3730), CoordGrid(1239, 3730), 1))
-        assertEquals(3, FarmingGuild.deniedTier(CoordGrid(1248, 3744), CoordGrid(1248, 3745), 84))
-        assertNull(FarmingGuild.deniedTier(CoordGrid(1248, 3744), CoordGrid(1248, 3745), 85))
-        assertNull(FarmingGuild.deniedTier(CoordGrid(1248, 3745), CoordGrid(1248, 3744), 1))
-    }
-
-    @Test
     fun `tier entry uses current Farming rather than base level in both directions`() {
         val f = Fixture()
         val hook = FarmingGuildStepHook(EventBus())

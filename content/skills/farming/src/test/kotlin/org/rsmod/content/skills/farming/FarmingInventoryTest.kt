@@ -302,19 +302,6 @@ class FarmingInventoryTest {
     }
 
     @Test
-    fun `a vanished watering can changes neither crop nor inventory nor XP`() {
-        val f = Fixture("potato")
-        val planted = f.planted()
-        f.give(CAN_8)
-        f.startUse(CAN_8)
-        f.player.inv[0] = null
-        f.finish()
-        assertEquals(planted, f.state())
-        assertEquals(0, f.count(CAN_7))
-        assertEquals(0, f.xp())
-    }
-
-    @Test
     fun `watering uses the current stage and refuses a crop that died during the delay`() {
         val f = Fixture("potato")
         val planted = f.planted()

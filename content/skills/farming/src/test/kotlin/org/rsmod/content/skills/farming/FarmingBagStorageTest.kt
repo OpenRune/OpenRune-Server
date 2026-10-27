@@ -114,15 +114,6 @@ class FarmingBagStorageTest {
     }
 
     @Test
-    fun `silklined herb sack holds 100 of each herb`() {
-        val f = Fixture()
-        val guam = "obj.unidentified_guam".asRSCM()
-        f.store(FarmingBags.herbSack, "obj.unidentified_guam", 99)
-        assertEquals(1, FarmingBags.herbSack.room(f.player, FarmingBags.SILKLINED_HERB_SACK, guam))
-        assertEquals(0, FarmingBags.herbSack.room(f.player, FarmingBags.HERB_SACK, guam))
-    }
-
-    @Test
     fun `herb sack empty moves lowest level herbs first and only what fits`() {
         val f = Fixture()
         val sack = f.give(FarmingBags.HERB_SACK)

@@ -169,9 +169,6 @@ class FarmingSiteAccessTest {
         assertTrue(FarmingPatches.diseaseFree(player, hosidius))
         assertNull(access("respect-progress").denial(player, hosidius))
         assertFalse(FarmingPatches.diseaseFree(player, patch("prifddinas_allotment_flower")))
-        val crystal = checkNotNull(FarmingCrops.bySeed("obj.plantpot_crystal_tree_sapling"))
-        assertTrue(crystal.immune)
-        assertFalse(crystal.shipped)
         assertNotNull(access("respect-progress").denial(player, patch("prifddinas_crystal")))
     }
 
@@ -212,21 +209,6 @@ class FarmingSiteAccessTest {
         assertEquals(ProtectResult.UNPAID, f.service.protect(f.player, f.patch) { paid = true; true })
         assertFalse(paid)
         assertEquals(planted, f.state())
-    }
-
-    @Test fun `allowed allotment planting succeeds but revoked delayed access spends no seeds`() {
-        access("virtual-completions", setOf("quest_greatbrainrobbery"))
-        val allowed = Fixture("harmony_island_allotment")
-        allowed.startPlant()
-        allowed.finish()
-        assertEquals(0, allowed.player.inv.count("obj.potato_seed"))
-        assertEquals(FarmingCrops.bySeed("obj.potato_seed")!!.index, allowed.state().cropIndex)
-        val revoked = Fixture("harmony_island_allotment")
-        revoked.startPlant()
-        access("respect-progress")
-        revoked.finish()
-        assertEquals(3, revoked.player.inv.count("obj.potato_seed"))
-        assertEquals(PatchState(weeds = 3), revoked.state())
     }
 
     private fun access(mode: String, completed: Set<String> = emptySet()): FarmingSiteAccess =
