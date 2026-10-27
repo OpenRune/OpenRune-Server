@@ -247,6 +247,23 @@ value/quantity controls, not the old instruction component.
 Agelus' Trade opens the existing 24-row Farm Shop. It charges 100% of base value,
 pays 70%, and uses the native 1% stock adjustment through the shared coin shop.
 
+Agelus and Vannah also provide their standard Talk-to conversations. Their stock
+choices open the same shops as direct Trade; Vannah's information branch returns
+to the remaining stock/exit choices. Native-client verification covers both complete
+trees, unchanged direct Trade stocks, closing and logout/relogin preservation.
+Production-coroutine smoke also covers Continue suspension, cancellation, reopening
+and stale-modal guards. Dialogue wording comes from the standard-world wiki
+transcripts, not an OSRS packet-parity claim.
+
+Plant-pot packs return 100 noted filled plant pots through the existing generic
+queued pack opener, not empty pots. Deploy the rebuilt cache with this correction.
+Actual pack/queue regressions cover full inventory, overflow rollback, stale input
+and repeated requests without changing the generic opening engine.
+Native verification consumed one approved pack and preserved all 100 filled notes,
+empty worn inventory and unchanged skills through logout/save/relogin. The fresh
+normal 1× actor used two approved merchant relocations and no skill presets; this
+does not prove normal supply acquisition.
+
 Celastrus bark uses the existing knife-production engine: current Fletching 40,
 one bark per battlestaff, 80 base Fletching XP and no Crafting XP. Native Fletch
 and knife-on-bark share the quantity flow and commit checks. Ordinary knives take

@@ -20,6 +20,8 @@ class FarmingSeedShopsScript @Inject constructor(private val shops: Shops) : Plu
         onOpNpc1("npc.farming_guild_anima_gardener") { startDialogue(it.npc) { felfiz() } }
         onOpNpc3("npc.hosidius_farmingstore") { openVannahShop() }
         onOpNpc3("npc.fortis_shop_farming") { openAgelusShop() }
+        onOpNpc1("npc.hosidius_farmingstore") { startDialogue(it.npc) { vannah() } }
+        onOpNpc1("npc.fortis_shop_farming") { startDialogue(it.npc) { agelus() } }
     }
 
     private suspend fun Dialogue.amelia() {
@@ -82,6 +84,54 @@ class FarmingSeedShopsScript @Inject constructor(private val shops: Shops) : Plu
         chatNpc(neutral, "Choose wisely though, as you can only have one of them at a time.")
         chatNpc(neutral, "Eventually, they'll start to wither and die as their impact on the Anima Mundi is limited. You'll have to plant another when they do.")
         chatPlayer(happy, "Awesome! Thanks for the information.")
+    }
+
+    private suspend fun Dialogue.agelus() {
+        chatNpc(
+            neutral,
+            "Nilsal, iknami. Welcome to my farm. Are you in need of some farming supplies?",
+        )
+        if (choice2("Yes please.", true, "No thank you.", false)) {
+            chatPlayer(neutral, "Yes please.")
+            access.openAgelusShop()
+        } else {
+            chatPlayer(neutral, "No thank you.")
+            chatNpc(neutral, "As you wish.")
+        }
+    }
+
+    private suspend fun Dialogue.vannah() {
+        chatNpc(quiz, "Need some farming supplies?")
+        when (
+            choice3(
+                "What is this place?",
+                1,
+                "What have you got?",
+                2,
+                "No, I'm fine.",
+                3,
+            )
+        ) {
+            1 -> {
+                chatPlayer(quiz, "What is this place?")
+                chatNpc(
+                    neutral,
+                    "It's a farming supply stall. Hosidius is farming country, so it's a big business. " +
+                        "Do you need anything now?",
+                )
+                if (choice2("What have you got?", true, "No, I'm fine.", false)) {
+                    chatPlayer(quiz, "What have you got?")
+                    access.openVannahShop()
+                } else {
+                    chatPlayer(neutral, "No, I'm fine.")
+                }
+            }
+            2 -> {
+                chatPlayer(quiz, "What have you got?")
+                access.openVannahShop()
+            }
+            else -> chatPlayer(neutral, "No, I'm fine.")
+        }
     }
 
     private fun ProtectedAccess.openSeedShop() {
