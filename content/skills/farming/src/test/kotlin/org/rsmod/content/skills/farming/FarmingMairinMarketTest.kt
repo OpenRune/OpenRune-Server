@@ -134,12 +134,12 @@ class FarmingMairinMarketTest {
         f.buy()
         assertEquals(overflow, f.player.inv.toList())
         assertEquals(100, f.stock())
-        f.player.inv[1] = null
+        f.player.inv[1] = InvObj("obj.spade")
         f.player.inv[0] = InvObj(TEAR, 100)
         repeat(3) { f.buy() }
         assertEquals(0, f.count(TEAR))
         assertEquals(5, f.count(SPORE))
-        assertEquals(26, f.count("obj.spade"))
+        assertEquals(27, f.count("obj.spade"))
         assertEquals(95, f.stock())
     }
 
