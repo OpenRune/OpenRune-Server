@@ -20,8 +20,10 @@ import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolConfig
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler
+import io.netty.handler.ssl.SslContext
 import io.netty.util.ReferenceCounted
 import jakarta.inject.Inject
+import org.rsmod.api.net.rsprot.websocket.tls.WebSocketTlsManager
 import org.rsmod.api.server.config.ServerConfig
 import org.rsmod.server.services.Service
 
@@ -35,24 +37,38 @@ import org.rsmod.server.services.Service
  * never looks inside the protocol. Mirrors FluxRSv2's `WebSocketRelay` (a Ktor/coroutine version of
  * the same idea), written against plain Netty since that's what this project already depends on.
  *
- * Plain `ws://`, no TLS: ClientLabs' hosted page only requires `wss://` when it is itself served
- * over `https://` (browsers block an HTTPS page from opening an insecure `ws://` connection -
- * "mixed content"). A local ClientLabs dev instance serves the page over plain `http://`, where that
- * restriction doesn't apply, so a local game server never needs a cert at all. If you're pointing a
- * *production* ClientLabs host at this for some reason, put a real TLS-terminating reverse proxy or
- * tunnel in front of this port - this bridge intentionally stays as simple as the thing it's testing.
+ * Plain `ws://` unless `websocket.tls` is configured in game.yml: ClientLabs' hosted page only
+ * requires `wss://` when it is itself served over `https://` (browsers block an HTTPS page from
+ * opening an insecure `ws://` connection - "mixed content"). A local ClientLabs dev instance
+ * serves the page over plain `http://`, where that restriction doesn't apply, so a local game
+ * server never needs a cert. A *production* ClientLabs host does - see `WebSocketTlsConfig` for
+ * the two ways to provide one (automatic via ACME, or your own cert files).
  */
 class WebSocketBridgeService @Inject constructor(private val config: ServerConfig) : Service {
     private val logger = InlineLogger()
     private var bossGroup: NioEventLoopGroup? = null
     private var workerGroup: NioEventLoopGroup? = null
     private var channel: Channel? = null
+    private var tlsManager: WebSocketTlsManager? = null
 
     override suspend fun startup() {
         val bridgeConfig = config.webSocket
         if (!bridgeConfig.enabled) {
             logger.info { "WebSocket bridge disabled (websocket.enabled=false in game.yml)." }
             return
+        }
+
+        val tlsConfig = bridgeConfig.tls
+        var sslContextProvider: (() -> SslContext?)? = null
+        if (tlsConfig != null && tlsConfig.enabled) {
+            // Suspends until a certificate is actually ready - intentional. Binding a "TLS"
+            // listener with nothing to serve would be worse than failing loudly at startup, same
+            // as every other misconfiguration this project treats as a startup failure rather
+            // than a silent fallback.
+            val manager = WebSocketTlsManager(tlsConfig)
+            manager.start()
+            tlsManager = manager
+            sslContextProvider = manager::current
         }
 
         val boss = NioEventLoopGroup(1)
@@ -64,11 +80,12 @@ class WebSocketBridgeService @Inject constructor(private val config: ServerConfi
             ServerBootstrap()
                 .group(boss, worker)
                 .channel(NioServerSocketChannel::class.java)
-                .childHandler(WebSocketBridgeInitializer(config.gamePort, worker))
+                .childHandler(WebSocketBridgeInitializer(config.gamePort, worker, sslContextProvider))
 
         channel = bootstrap.bind(bridgeConfig.host, bridgeConfig.port).sync().channel()
+        val scheme = if (sslContextProvider != null) "wss" else "ws"
         logger.info {
-            "WebSocket bridge listening on ws://${bridgeConfig.host}:${bridgeConfig.port}, relaying to " +
+            "WebSocket bridge listening on $scheme://${bridgeConfig.host}:${bridgeConfig.port}, relaying to " +
                 "loopback game port ${config.gamePort}."
         }
     }
@@ -81,16 +98,24 @@ class WebSocketBridgeService @Inject constructor(private val config: ServerConfi
         }
         bossGroup?.shutdownGracefully()
         workerGroup?.shutdownGracefully()
+        tlsManager?.stop()
     }
 }
 
 private class WebSocketBridgeInitializer(
     private val gamePort: Int,
     private val workerGroup: NioEventLoopGroup,
+    /** Read fresh per connection, not captured once - so a background certificate renewal is picked up by the next connection with no restart. Null means TLS is off entirely. */
+    private val sslContextProvider: (() -> SslContext?)?,
 ) : ChannelInitializer<SocketChannel>() {
     override fun initChannel(ch: SocketChannel) {
         val wsConfig = WebSocketServerProtocolConfig.newBuilder().websocketPath("/").checkStartsWith(true).build()
-        ch.pipeline()
+        val pipeline = ch.pipeline()
+        val sslContext = sslContextProvider?.invoke()
+        if (sslContext != null) {
+            pipeline.addLast(sslContext.newHandler(ch.alloc()))
+        }
+        pipeline
             .addLast(HttpServerCodec())
             .addLast(HttpObjectAggregator(64 * 1024))
             .addLast(WebSocketServerProtocolHandler(wsConfig))

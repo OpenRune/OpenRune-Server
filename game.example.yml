@@ -19,13 +19,29 @@ world: 255
 # shattered_relics_league, trailblazer_reloaded_league, raging_echoes_league, gridmaster.
 world-types: ["main"]
 
-# Local-testing-only bridge so a browser webclient (WebSocket-only) can reach game-port above.
-# Plain ws://, no cert needed - a local ClientLabs dev instance serves its page over plain
-# http://, where browsers don't require wss://. Omit this whole block to keep the defaults below.
+# Bridge so a browser webclient (WebSocket-only) can reach game-port above. Plain ws://, no cert
+# needed, for local dev - a local ClientLabs dev instance serves its page over plain http://,
+# where browsers don't require wss://. Omit this whole block to keep the defaults below.
 #websocket:
   #enabled: true
   #port: 8091
   #host: "0.0.0.0"
+  #
+  # A *production* ClientLabs host requires wss:// (browsers block an https:// page from opening
+  # a plain ws:// connection). Uncomment one of the two tls: blocks below - never both.
+  #
+  # Option A: automatic, via Let's Encrypt. Needs a real domain pointed at this server and port 80
+  # briefly reachable from the public internet (only while a certificate check runs).
+  #tls:
+    #enabled: true
+    #domain: "play.yourserver.com"
+    #email: "admin@yourserver.com"
+  #
+  # Option B: your own certificate (PEM chain + unencrypted PKCS#8 private key).
+  #tls:
+    #enabled: true
+    #cert-path: "/path/to/fullchain.pem"
+    #key-path: "/path/to/privkey.pem"
 
 gameplay:
   drop-rates:

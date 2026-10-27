@@ -5,6 +5,7 @@ plugins {
 }
 
 dependencies {
+    implementation(libs.acme4j.client)
     implementation(libs.openrune.central)
     implementation(libs.openrune.central.common)
     implementation(libs.openrune.central.worldlink)

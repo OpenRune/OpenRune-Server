@@ -1,4 +1,5 @@
 [versions]
+acme4j = "3.5.1"
 apache-commons = "1.18.0"
 bouncycastle = "1.81"
 classgraph = "4.8.180"
@@ -32,6 +33,7 @@ openruneCentral = "2.0.2"
 or2ServerUtils = "0.8"
 
 [libraries]
+acme4j-client = { module = "org.shredzone.acme4j:acme4j-client", version.ref = "acme4j" }
 apache-commons = { module = "commons-codec:commons-codec", version.ref = "apache-commons" }
 bouncycastle-provider = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
