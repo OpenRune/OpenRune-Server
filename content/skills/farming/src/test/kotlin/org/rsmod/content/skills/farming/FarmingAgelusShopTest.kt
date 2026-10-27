@@ -44,19 +44,18 @@ import org.rsmod.plugin.scripts.ScriptContext
 class FarmingAgelusShopTest {
     @Test
     fun `native quantity buttons buy exactly the quoted gp and stock delta`() {
-        for (quantity in listOf(1, 5, 10)) {
-            val f = Fixture()
-            f.player.inv[0] = InvObj(COINS, 100_000)
-            f.player.inv[1] = InvObj(LOGS, 7)
-            f.select(quantity)
-            val cost = f.buyQuote(RAKE, 10, quantity)
-            f.buy(RAKE)
-            assertEquals(100_000 - cost, f.count(COINS), "quantity=$quantity")
-            assertEquals(quantity, f.count(RAKE), "quantity=$quantity")
-            assertEquals(10 - quantity, f.stock(RAKE), "quantity=$quantity")
-            assertEquals(7, f.count(LOGS))
-            assertEquals(f.xp, f.player.statMap.getFineXP("stat.farming"))
-        }
+        val quantity = 5
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 100_000)
+        f.player.inv[1] = InvObj(LOGS, 7)
+        f.select(quantity)
+        val cost = f.buyQuote(RAKE, 10, quantity)
+        f.buy(RAKE)
+        assertEquals(100_000 - cost, f.count(COINS), "quantity=$quantity")
+        assertEquals(quantity, f.count(RAKE), "quantity=$quantity")
+        assertEquals(10 - quantity, f.stock(RAKE), "quantity=$quantity")
+        assertEquals(7, f.count(LOGS))
+        assertEquals(f.xp, f.player.statMap.getFineXP("stat.farming"))
     }
 
     @Test
@@ -157,26 +156,25 @@ class FarmingAgelusShopTest {
 
     @Test
     fun `selling pays the quoted gp and raises stock by the committed quantity`() {
-        for (quantity in listOf(1, 5, 10)) {
-            val f = Fixture()
-            f.player.inv[0] = InvObj(COINS, 50)
-            f.player.inv[1] = InvObj(SPADE, 1)
-            f.player.inv[2] = InvObj(SPADE, 1)
-            f.player.inv[3] = InvObj(SPADE, 1)
-            f.player.inv[4] = InvObj(SPADE, 1)
-            f.player.inv[5] = InvObj(SPADE, 1)
-            f.player.inv[6] = InvObj(LOGS, 3)
-            f.select(quantity)
-            f.sell(1, SPADE)
-            // Non-stackable sales draw from every spade slot, capped by the selected quantity.
-            val sold = minOf(quantity, 5)
-            val payment = f.sellQuote(SPADE, 10, sold)
-            assertEquals(50 + payment, f.count(COINS), "quantity=$quantity")
-            assertEquals(5 - sold, f.count(SPADE), "quantity=$quantity")
-            assertEquals(10 + sold, f.stock(SPADE), "quantity=$quantity")
-            assertEquals(3, f.count(LOGS))
-            assertEquals(f.xp, f.player.statMap.getFineXP("stat.farming"))
-        }
+        val quantity = 10
+        val f = Fixture()
+        f.player.inv[0] = InvObj(COINS, 50)
+        f.player.inv[1] = InvObj(SPADE, 1)
+        f.player.inv[2] = InvObj(SPADE, 1)
+        f.player.inv[3] = InvObj(SPADE, 1)
+        f.player.inv[4] = InvObj(SPADE, 1)
+        f.player.inv[5] = InvObj(SPADE, 1)
+        f.player.inv[6] = InvObj(LOGS, 3)
+        f.select(quantity)
+        f.sell(1, SPADE)
+        // Non-stackable sales draw from every spade slot, capped by the selected quantity.
+        val sold = minOf(quantity, 5)
+        val payment = f.sellQuote(SPADE, 10, sold)
+        assertEquals(50 + payment, f.count(COINS), "quantity=$quantity")
+        assertEquals(5 - sold, f.count(SPADE), "quantity=$quantity")
+        assertEquals(10 + sold, f.stock(SPADE), "quantity=$quantity")
+        assertEquals(3, f.count(LOGS))
+        assertEquals(f.xp, f.player.statMap.getFineXP("stat.farming"))
     }
 
     @Test

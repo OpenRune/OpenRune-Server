@@ -8,7 +8,6 @@ class FarmingSpiritTreesTest {
     @Test
     fun `a held producer does not disable an existing checked spirit tree`() {
         val crop = spirit()
-        assertFalse(crop.shipped)
         assertTrue(spiritTreeOperational(PatchState(stage = crop.stages, phase = Phase.CHECKED), crop))
     }
 

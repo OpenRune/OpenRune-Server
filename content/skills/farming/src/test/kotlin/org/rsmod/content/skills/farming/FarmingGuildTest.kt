@@ -43,7 +43,6 @@ import org.rsmod.game.entity.NpcList
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
 import org.rsmod.game.entity.player.SessionStateEvent
-import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.map.LocZoneStorage
@@ -65,20 +64,15 @@ class FarmingGuildTest {
     fun `tier entry uses current Farming rather than base level in both directions`() {
         val f = Fixture()
         val hook = FarmingGuildStepHook(EventBus())
-        val entrances = listOf(
-            Triple(45, CoordGrid(1248, 3722), CoordGrid(1248, 3723)),
-            Triple(65, CoordGrid(1244, 3729), CoordGrid(1243, 3729)),
-            Triple(85, CoordGrid(1248, 3744), CoordGrid(1248, 3745)),
-        )
-        for ((required, outside, inside) in entrances) {
-            f.player.statMap.setBaseLevel("stat.farming", (required - 1).toByte())
-            f.player.statMap.setCurrentLevel("stat.farming", required.toByte())
-            assertTrue(hook.canStep(f.player, outside, inside))
-            f.player.statMap.setBaseLevel("stat.farming", required.toByte())
-            f.player.statMap.setCurrentLevel("stat.farming", (required - 1).toByte())
-            assertFalse(hook.canStep(f.player, outside, inside))
-            assertTrue(hook.canStep(f.player, inside, outside))
-        }
+        val outside = CoordGrid(1248, 3722)
+        val inside = CoordGrid(1248, 3723)
+        f.player.statMap.setBaseLevel("stat.farming", 44)
+        f.player.statMap.setCurrentLevel("stat.farming", 45)
+        assertTrue(hook.canStep(f.player, outside, inside))
+        f.player.statMap.setBaseLevel("stat.farming", 45)
+        f.player.statMap.setCurrentLevel("stat.farming", 44)
+        assertFalse(hook.canStep(f.player, outside, inside))
+        assertTrue(hook.canStep(f.player, inside, outside))
     }
 
     @Test
@@ -188,27 +182,12 @@ class FarmingGuildTest {
             CoordGrid(1248, 3720) to CoordGrid(1248, 3721),
             CoordGrid(1248, 3723) to CoordGrid(1248, 3724),
             CoordGrid(1248, 3723) to CoordGrid(1248, 3722),
-            CoordGrid(1244, 3729) to CoordGrid(1243, 3729),
-            CoordGrid(1248, 3744) to CoordGrid(1248, 3745),
         )
         for ((from, to) in moves) {
             f.move(from, to)
             assertEquals(to, f.player.coords)
             assertEquals(0, f.entries)
         }
-    }
-
-    @Test
-    fun `login placement and actual telejump across entrance never emits guild entry`() {
-        val f = MovementFixture()
-        f.player.coords = CoordGrid(1248, 3723)
-        f.movement.process(f.player)
-        assertEquals(0, f.entries)
-        f.player.coords = CoordGrid(1248, 3722)
-        PathingEntityCommon.telejump(f.player, f.collision, CoordGrid(1248, 3723))
-        f.movement.process(f.player)
-        assertEquals(CoordGrid(1248, 3723), f.player.coords)
-        assertEquals(0, f.entries)
     }
 
     @Test

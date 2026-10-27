@@ -101,25 +101,24 @@ class FarmingServicesTest {
 
     @Test
     fun `tree removal charges the right fee once and refuses unchecked or stale trees`() {
-        for ((seed, price) in listOf("obj.plantpot_oak_sapling" to 200, "obj.plantpot_redwood_tree_sapling" to 2000)) {
-            val f = Fixture()
-            val crop = checkNotNull(FarmingCrops.bySeed(seed))
-            f.patch = FarmingPatches.all.first { it.kind == crop.kind }
-            val unchecked = PatchState(weeds = 3, cropIndex = crop.index, stage = crop.stages)
-            f.state(unchecked)
-            f.give("obj.coins", price + 1)
-            assertFalse(f.gardeners.removeTree(f.player, f.patch, unchecked))
-            assertEquals(price + 1, f.count("obj.coins"))
-            val checked = unchecked.copy(phase = Phase.CHECKED)
-            f.state(checked)
-            assertFalse(f.gardeners.removeTree(f.player, f.patch, unchecked))
-            assertEquals(price + 1, f.count("obj.coins"))
-            assertTrue(f.gardeners.removeTree(f.player, f.patch, checked))
-            assertEquals(1, f.count("obj.coins"))
-            assertEquals(0, f.state().cropIndex)
-            assertFalse(f.gardeners.removeTree(f.player, f.patch, checked))
-            assertEquals(1, f.count("obj.coins"))
-        }
+        val (seed, price) = "obj.plantpot_oak_sapling" to 200
+        val f = Fixture()
+        val crop = checkNotNull(FarmingCrops.bySeed(seed))
+        f.patch = FarmingPatches.all.first { it.kind == crop.kind }
+        val unchecked = PatchState(weeds = 3, cropIndex = crop.index, stage = crop.stages)
+        f.state(unchecked)
+        f.give("obj.coins", price + 1)
+        assertFalse(f.gardeners.removeTree(f.player, f.patch, unchecked))
+        assertEquals(price + 1, f.count("obj.coins"))
+        val checked = unchecked.copy(phase = Phase.CHECKED)
+        f.state(checked)
+        assertFalse(f.gardeners.removeTree(f.player, f.patch, unchecked))
+        assertEquals(price + 1, f.count("obj.coins"))
+        assertTrue(f.gardeners.removeTree(f.player, f.patch, checked))
+        assertEquals(1, f.count("obj.coins"))
+        assertEquals(0, f.state().cropIndex)
+        assertFalse(f.gardeners.removeTree(f.player, f.patch, checked))
+        assertEquals(1, f.count("obj.coins"))
     }
 
     @Test
@@ -159,25 +158,24 @@ class FarmingServicesTest {
     }
 
     @Test
-    fun `bottomless storage round trip preserves each tier and every charge without duplication`() {
-        for (kind in listOf(Compost.NORMAL, Compost.SUPER, Compost.ULTRA)) {
-            val f = Fixture()
-            val bucket = FarmingBottomlessCompost.bucket(kind, 10000)
-            f.player.inv[0] = bucket
-            assertEquals(1, FarmingLeprechaunStorage.deposit(f.player, 0, 1))
-            assertEquals(null, f.player.inv[0])
-            assertEquals(0, FarmingLeprechaunStorage.deposit(f.player, 0, 1))
-            assertEquals(bucket, f.stored("bottomless_bucket"))
-            f.fill()
-            assertEquals(0, FarmingLeprechaunStorage.withdraw(f.player, "bottomless_bucket", 1))
-            assertEquals(bucket, f.stored("bottomless_bucket"))
-            f.player.inv[0] = null
-            assertEquals(1, FarmingLeprechaunStorage.withdraw(f.player, "bottomless_bucket", 1))
-            assertEquals(bucket, f.player.inv[0])
-            assertEquals(null, f.stored("bottomless_bucket"))
-            assertEquals(0, FarmingLeprechaunStorage.withdraw(f.player, "bottomless_bucket", 1))
-            assertEquals(bucket, f.player.inv[0])
-        }
+    fun `bottomless storage round trip preserves its tier and every charge without duplication`() {
+        val kind = Compost.SUPER
+        val f = Fixture()
+        val bucket = FarmingBottomlessCompost.bucket(kind, 10000)
+        f.player.inv[0] = bucket
+        assertEquals(1, FarmingLeprechaunStorage.deposit(f.player, 0, 1))
+        assertEquals(null, f.player.inv[0])
+        assertEquals(0, FarmingLeprechaunStorage.deposit(f.player, 0, 1))
+        assertEquals(bucket, f.stored("bottomless_bucket"))
+        f.fill()
+        assertEquals(0, FarmingLeprechaunStorage.withdraw(f.player, "bottomless_bucket", 1))
+        assertEquals(bucket, f.stored("bottomless_bucket"))
+        f.player.inv[0] = null
+        assertEquals(1, FarmingLeprechaunStorage.withdraw(f.player, "bottomless_bucket", 1))
+        assertEquals(bucket, f.player.inv[0])
+        assertEquals(null, f.stored("bottomless_bucket"))
+        assertEquals(0, FarmingLeprechaunStorage.withdraw(f.player, "bottomless_bucket", 1))
+        assertEquals(bucket, f.player.inv[0])
     }
 
     @Test

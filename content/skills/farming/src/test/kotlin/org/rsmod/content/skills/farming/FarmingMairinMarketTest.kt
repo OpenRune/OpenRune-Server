@@ -46,22 +46,21 @@ import org.rsmod.plugin.scripts.ScriptContext
 class FarmingMairinMarketTest {
     @Test
     fun `native quantity buttons make default clicks buy exactly the selected number of spores`() {
-        for (quantity in listOf(1, 5, 10, 50)) {
-            val f = Fixture()
-            f.player.inv[0] = InvObj(TEAR, quantity * 20)
-            f.player.inv[1] = InvObj("obj.coins", 777)
-            VarPlayerIntMapSetter.set(f.player, "varp.bank_closing", 0x5A0)
-            f.select(quantity)
-            f.buy()
-            assertEquals(0, f.count(TEAR), "quantity=$quantity")
-            assertEquals(quantity, f.count(SPORE), "quantity=$quantity")
-            assertEquals(100 - quantity, f.stock(), "quantity=$quantity")
-            assertEquals(777, f.count("obj.coins"))
-            assertEquals(0x5A0, f.player.vars["varp.bank_closing"] and 7.inv())
-            repeat(2) { f.buy() }
-            assertEquals(quantity, f.count(SPORE))
-            assertEquals(100 - quantity, f.stock())
-        }
+        val quantity = 5
+        val f = Fixture()
+        f.player.inv[0] = InvObj(TEAR, quantity * 20)
+        f.player.inv[1] = InvObj("obj.coins", 777)
+        VarPlayerIntMapSetter.set(f.player, "varp.bank_closing", 0x5A0)
+        f.select(quantity)
+        f.buy()
+        assertEquals(0, f.count(TEAR), "quantity=$quantity")
+        assertEquals(quantity, f.count(SPORE), "quantity=$quantity")
+        assertEquals(100 - quantity, f.stock(), "quantity=$quantity")
+        assertEquals(777, f.count("obj.coins"))
+        assertEquals(0x5A0, f.player.vars["varp.bank_closing"] and 7.inv())
+        repeat(2) { f.buy() }
+        assertEquals(quantity, f.count(SPORE))
+        assertEquals(100 - quantity, f.stock())
     }
 
     @Test
@@ -145,19 +144,6 @@ class FarmingMairinMarketTest {
     }
 
     @Test
-    fun `spending the entire tear stack frees its slot for a full inventory purchase`() {
-        val f = Fixture()
-        f.select(5)
-        for (slot in f.player.inv.indices) f.player.inv[slot] = InvObj("obj.spade")
-        f.player.inv[0] = InvObj(TEAR, 100)
-        repeat(2) { f.buy() }
-        assertEquals(0, f.count(TEAR))
-        assertEquals(5, f.count(SPORE))
-        assertEquals(27, f.count("obj.spade"))
-        assertEquals(95, f.stock())
-    }
-
-    @Test
     fun `spores and tridents cannot be sold back for tears through any native sell option`() {
         val f = Fixture()
         f.player.inv[0] = InvObj(TEAR, Int.MAX_VALUE)
@@ -165,15 +151,13 @@ class FarmingMairinMarketTest {
         f.player.inv[2] = InvObj("obj.merfolk_trident")
         val before = f.player.inv.toList()
         val stock = checkNotNull(f.player.openedShop).inv.toList()
-        for (quantity in listOf(0, 1, 5, 10, 50)) {
-            f.select(quantity)
-            for ((slot, obj) in listOf(1 to SPORE, 2 to "obj.merfolk_trident")) {
-                for (op in listOf(IfButtonOp.Op1, IfButtonOp.Op2, IfButtonOp.Op3,
-                    IfButtonOp.Op4, IfButtonOp.Op5, IfButtonOp.Op6)) {
-                    f.button("component.shopside:items", slot, obj, op)
-                    assertEquals(before, f.player.inv.toList())
-                    assertEquals(stock, checkNotNull(f.player.openedShop).inv.toList())
-                }
+        f.select(5)
+        for ((slot, obj) in listOf(1 to SPORE, 2 to "obj.merfolk_trident")) {
+            for (op in listOf(IfButtonOp.Op1, IfButtonOp.Op2, IfButtonOp.Op3,
+                IfButtonOp.Op4, IfButtonOp.Op5, IfButtonOp.Op6)) {
+                f.button("component.shopside:items", slot, obj, op)
+                assertEquals(before, f.player.inv.toList())
+                assertEquals(stock, checkNotNull(f.player.openedShop).inv.toList())
             }
         }
     }

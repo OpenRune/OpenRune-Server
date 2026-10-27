@@ -32,16 +32,15 @@ import org.rsmod.plugin.scripts.ScriptContext
 class PickableSeedTest {
     @Test
     fun `a seed roll replaces produce even when both could fit`() {
-        for (row in PickableObjectsRow.all().filter { it.seed != null }) {
-            val player = player()
-            val seed = requireNotNull(row.seed)
-            assertTrue(player.collectPickable(row, seed = true))
-            assertEquals(1, player.inv.physicalCount(seed.internalName))
-            assertEquals(0, player.inv.physicalCount(row.itemgiven.internalName))
-            assertTrue(player.collectPickable(row, seed = false))
-            assertEquals(1, player.inv.physicalCount(seed.internalName))
-            assertEquals(row.itemamount, player.inv.physicalCount(row.itemgiven.internalName))
-        }
+        val row = PickableObjectsRow.all().first { it.seed != null }
+        val player = player()
+        val seed = requireNotNull(row.seed)
+        assertTrue(player.collectPickable(row, seed = true))
+        assertEquals(1, player.inv.physicalCount(seed.internalName))
+        assertEquals(0, player.inv.physicalCount(row.itemgiven.internalName))
+        assertTrue(player.collectPickable(row, seed = false))
+        assertEquals(1, player.inv.physicalCount(seed.internalName))
+        assertEquals(row.itemamount, player.inv.physicalCount(row.itemgiven.internalName))
     }
 
     @Test

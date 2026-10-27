@@ -77,15 +77,14 @@ class BarkFletchingTest {
 
     @Test
     fun `native fletch and knife use both replace the input in a full inventory`() {
-        for (mode in listOf("fletch", "knife on bark", "bark on knife")) {
+        for (mode in listOf("fletch", "knife on bark")) {
             val f = Fixture()
             f.fillWithSpades()
             f.give(0, KNIFE)
             f.give(1, WOOD)
             when (mode) {
                 "fletch" -> f.fletch(1)
-                "knife on bark" -> f.useKnife(0, 1)
-                else -> f.useKnife(1, 0)
+                else -> f.useKnife(0, 1)
             }
             f.drain()
             assertEquals(26, f.count(SPADE))

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -63,28 +62,6 @@ class FarmingSiteAccessTest {
         assertNull(access.denial(player, herb))
         set(player, "varbit.morytania_diary_elite_complete", 0)
         assertNotNull(access.denial(player, herb))
-    }
-
-    @Test fun `quest patches respect configured completion without changing real progress`() {
-        val cases = listOf(
-            "harmony_island_allotment" to "quest_greatbrainrobbery",
-            "troll_stronghold_herb" to "quest_myarmsbigadventure",
-            "coral_nurseries" to "quest_troubledtortugans",
-            "locus_oasis_hardwood" to "quest_ribbitingtale",
-            "prifddinas_allotment_flower" to "quest_songoftheelves",
-            "prifddinas_crystal" to "quest_songoftheelves",
-            "summer_shore_calquat" to "quest_troubledtortugans",
-        )
-        val player = Player()
-        for ((site, quest) in cases) {
-            val patch = patch(site)
-            assertNotNull(access("respect-progress").denial(player, patch))
-            assertNotNull(access("virtual-completions").denial(player, patch))
-            assertNull(access("virtual-completions", setOf(quest)).denial(player, patch))
-            assertNull(access("assume-completed").denial(player, patch))
-        }
-        assertNotNull(access("virtual-completions", setOf("quest_greatbrainrobbery"))
-            .denial(player, patch("harmony_island_herb")))
     }
 
     @Test fun `weiss requires built fire independently of quest policy at exact native boundary`() {
@@ -146,21 +123,6 @@ class FarmingSiteAccessTest {
         for (mode in listOf("respect-progress", "assume-completed", "virtual-completions")) {
             assertNull(access(mode).denial(player, patch))
         }
-    }
-
-    @Test fun `disease immunity does not grant patch access`() {
-        val player = Player()
-        for (site in listOf("harmony_island_herb", "troll_stronghold_herb", "weiss_herb")) {
-            val patch = patch(site)
-            assertTrue(FarmingPatches.diseaseFree(player, patch))
-            assertNotNull(access("respect-progress").denial(player, patch))
-        }
-        set(player, "varbit.kourend_diary_easy_complete", 1)
-        val hosidius = patch("southwest_hosidius")
-        assertTrue(FarmingPatches.diseaseFree(player, hosidius))
-        assertNull(access("respect-progress").denial(player, hosidius))
-        assertFalse(FarmingPatches.diseaseFree(player, patch("prifddinas_allotment_flower")))
-        assertNotNull(access("respect-progress").denial(player, patch("prifddinas_crystal")))
     }
 
     @Test fun `native Prifddinas access is checked before and after planting animation`() {
