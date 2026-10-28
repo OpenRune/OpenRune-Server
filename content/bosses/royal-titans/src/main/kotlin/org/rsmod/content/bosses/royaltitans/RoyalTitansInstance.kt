@@ -1,6 +1,5 @@
 ﻿package org.rsmod.content.bosses.royaltitans
 
-import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
 import org.rsmod.api.instances.BossInstanceRegistry
 import org.rsmod.api.instances.InstanceAccess
@@ -207,7 +206,6 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.quickEscape() {
-        logger.info { "[royal-titans] quick-escape used by ${player.username}" }
         defaultLeaveFlow()
     }
 
@@ -252,8 +250,6 @@ constructor(
 
         private val FIRE_QUEEN = "npc.rt_fire_queen"
         private val ICE_KING = "npc.rt_ice_king"
-
-        private val logger = InlineLogger()
 
         private val NPC_SPAWNS =
             listOf(

@@ -191,7 +191,6 @@ constructor(
                 script.onProtectedEvent<NpcTEvents.Ap>(id) { castAtWall(it.npc, spell) }
             }
         }
-        logger.info { "[royal-titans] wall spell hooks registered=${registered.size}" }
         script.onEvent<NpcStateEvents.Delete> { remove(npc) }
         deps.extensionRegistry.register(CAST_HANDLER) { ctx -> cast(ctx.npc, ctx.params) }
     }
@@ -218,10 +217,6 @@ constructor(
             val proj = fx.playCast(this, npc, getOrNull(attack.weapon))
             val (serverDelay, clientDelay) = proj.durations
             fx.playImpact(this, npc, clientDelay)
-            logger.debug {
-                "[royal-titans] ${wall.element.name.lowercase()} wall cast at " +
-                    "(${wall.tile.x}, ${wall.tile.z}) delay=$serverDelay"
-            }
             deps.worldQueues.add(serverDelay) { douse(npc) }
         }
     }
@@ -262,10 +257,6 @@ constructor(
             pendingRows -= row
             if (!npc.isSlotAssigned || npc.hitpoints <= 0) return@add
             val formed = tiles.count { form(element, npc, it) }
-            logger.debug {
-                "[royal-titans] ${element.name.lowercase()} wall row=$row " +
-                    "tiles=(${tiles.first().x},$row)..(${tiles.last().x},$row) formed=$formed"
-            }
         }
     }
 
@@ -362,10 +353,6 @@ constructor(
                         abs(other.tile.x - wall.tile.x) <= 1
                 }
                 .map { it.key }
-        logger.debug {
-            "[royal-titans] douse ${wall.element.name.lowercase()} wall at " +
-                "(${wall.tile.x}, ${wall.tile.z}) removed=${targets.size}"
-        }
         for (target in targets) {
             despawn(target)
         }
@@ -383,10 +370,6 @@ constructor(
         deps.worldRepo.spotanimMap(spot, wall.tile)
         removeVisual(wall.tile, wall.element)
         deleteNpc(npc)
-        logger.debug {
-            "[royal-titans] ${wall.element.name.lowercase()} wall gone at " +
-                "(${wall.tile.x}, ${wall.tile.z})"
-        }
     }
 
     private fun deleteNpc(npc: Npc): Boolean {

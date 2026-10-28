@@ -1,6 +1,5 @@
 package org.rsmod.content.bosses.royaltitans
 
-import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -41,7 +40,6 @@ constructor(
     private val npcList: NpcList,
     private val playerAttackManager: PlayerAttackManager,
 ) {
-    private val logger = InlineLogger()
     private val active: MutableMap<Npc, TitanElement> = IdentityHashMap()
 
     internal fun isElemental(npc: Npc): Boolean = active.containsKey(npc)
@@ -161,11 +159,7 @@ constructor(
         val element = parsed?.element ?: params as? TitanElement ?: return
         val phaseTwo = parsed?.phaseTwo ?: false
         val tiles = RoyalTitansArena.elementalSummonTiles(spawn, element, phaseTwo) { deps.random.of(it) }
-        logger.debug {
-            "[royal-titans] ${element.name.lowercase()} elemental summon " +
-                "hp=${caster.hitpoints}/${caster.baseHitpointsLvl} " +
-                "column=${tiles.first().x} rows=${tiles.first().z}..${tiles.last().z}"
-        }
+
         deps.worldQueues.add(SUMMON_TICKS) {
             if (!caster.isSlotAssigned || caster.hitpoints <= 0) return@add
             if (!target.isValidTarget()) return@add
@@ -184,7 +178,6 @@ constructor(
         npc.anim(element.minionSpawn)
         npc.spotanim(SPAWN_SPOTS.getValue(element))
         npc.apPlayer2(target, aiPlayerInteractions)
-        logger.debug { "[royal-titans] ${element.name.lowercase()} elemental at (${tile.x}, ${tile.z})" }
         deps.worldQueues.add(EXPLODE_MIN_TICKS + deps.random.of(EXPLODE_TICK_SPREAD)) {
             if (active[npc] == element && npc.isSlotAssigned && npc.hitpoints > 0) {
                 explode(element, npc)

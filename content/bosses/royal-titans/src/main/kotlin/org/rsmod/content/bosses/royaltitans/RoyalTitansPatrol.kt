@@ -57,10 +57,6 @@ constructor(
         state.playableZ = measureStrip(npc)
         npc.moveRestrict = MoveRestrict.Normal
         lockFacing(npc, state)
-        logger.debug {
-            "[royal-titans] engage ${npc.type.internalName} size=${npc.size} " +
-                "typeMoveRestrict=${npc.type.moveRestrict} stripZ=${state.playableZ}"
-        }
         tick(npc)
     }
 
@@ -137,10 +133,6 @@ constructor(
                 when {
                     !busy && waited >= state.dwell -> beginWalk(npc, state, tick)
                     waited >= MAX_STAND_TICKS -> {
-                        logger.debug {
-                            "[royal-titans] patrol forced for ${npc.type.internalName} " +
-                                "after $waited ticks (busyUntil=${deps.encounter(npc).busyUntil})"
-                        }
                         beginWalk(npc, state, tick)
                     }
                 }
@@ -182,10 +174,6 @@ constructor(
         npc.clearInteraction()
         npc.moveRestrict = MoveRestrict.Blocked
         npc.walk(dest) { arrive(npc, state) }
-        logger.debug {
-            "[royal-titans] patrol walk ${npc.type.internalName} " +
-                "(${npc.coords.x}, ${npc.coords.z}) -> (${dest.x}, ${dest.z})"
-        }
     }
 
     /**

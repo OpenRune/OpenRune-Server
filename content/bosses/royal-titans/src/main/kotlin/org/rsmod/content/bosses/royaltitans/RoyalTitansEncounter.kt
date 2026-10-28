@@ -236,10 +236,7 @@ constructor(
         patrol.stop(npc)
         run.pendingEntry -= element
         npc.faceAngleOverride = null
-        logger.info {
-            "[royal-titans] ${element.displayName} defeated " +
-                "(queenDead=${run.queenDead} kingDead=${run.kingDead})"
-        }
+
         if (run.queenDead && run.kingDead) {
             run.survivorElement = null
             clearPulse(run)
@@ -266,10 +263,7 @@ constructor(
     fun onLoot(player: Player, npc: Npc, mode: RoyalTitansLootMode) {
         val run = runOf(npc) ?: return
         val element = TitanElement.of(npc) ?: return
-        logger.info {
-            "[royal-titans] loot request ${element.name} mode=$mode by=${player.username} " +
-                "queenDead=${run.queenDead} kingDead=${run.kingDead}"
-        }
+
         if (!run.queenDead || !run.kingDead) {
             return
         }
@@ -346,12 +340,7 @@ constructor(
             resolveAnchor(run.queen.spawnCoords)
                 ?: resolveAnchor(run.king.spawnCoords)
                 ?: resolveExitAnchor(run.queen.spawnCoords)
-        logger.info {
-            "[royal-titans] phase two begins for instance=${run.session.id} " +
-                "alive=${alive.joinToString { it.type.internalName }} anchor=${run.phaseAnchor}"
-        }
-        // Existing walls and elementals are not removed by the transition in OSRS; walls run
-        // their normal lifetime out and elementals keep attacking until they self-destruct.
+
         patrol.stop(run.queen)
         patrol.stop(run.king)
         run.nextPulse = 0
@@ -593,10 +582,7 @@ constructor(
             encounter.busyUntil = tick
             encounter.nextAttackTick = tick
         }
-        logger.debug {
-            "[royal-titans] pulse safe=(${safe.x}, ${safe.z}) " +
-                "survivor=$survivor alive=${alive.size}"
-        }
+
         return true
     }
 
@@ -724,7 +710,6 @@ constructor(
         deps.worldQueues.add(RESPAWN_DELAY + RESPAWN_STAGGER) {
             spawnTitan(run, TitanElement.Ice, target)
         }
-        logger.info { "[royal-titans] instance=${run.session.id} titans respawning" }
     }
 
     @OptIn(InternalApi::class)
@@ -763,10 +748,6 @@ constructor(
         if (target != null) {
             engage(run, target)
         }
-        logger.info {
-            "[royal-titans] respawned ${element.displayName} at " +
-                "(${npc.coords.x}, ${npc.coords.z})"
-        }
     }
 
     private fun playCorpseDeath(run: Run, npc: Npc) {
@@ -786,7 +767,6 @@ constructor(
         val level = npc.coords.level
         addLoc(run, locs[0], CoordGrid(columns.first, npc.coords.z, level), Int.MAX_VALUE)
         addLoc(run, locs[1], CoordGrid(columns.last, npc.coords.z, level), Int.MAX_VALUE)
-        logger.debug { "[royal-titans] ${element.displayName} corpse fades at (${spawn.x}, ${spawn.z})" }
     }
 
     private fun markSafeTile(run: Run, tile: CoordGrid) {
@@ -827,11 +807,6 @@ constructor(
             for (z in zs) {
                 addLoc(run, BLOCKING_LOC, CoordGrid(x, z, level), Int.MAX_VALUE)
             }
-        }
-        logger.debug {
-            "[royal-titans] phase two locs ${element.name.lowercase()} " +
-                "spawn=(${spawn.x},${spawn.z}) zone=(${xs.first},${zs.first})..(${xs.last},${zs.last}) " +
-                "floors=(${floorWest.x},${floorWest.z})/(${floorEast.x},${floorEast.z})"
         }
     }
 

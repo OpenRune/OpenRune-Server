@@ -1,6 +1,5 @@
 package org.rsmod.content.bosses.royaltitans
 
-import com.github.michaelbull.logging.InlineLogger
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -101,15 +100,12 @@ constructor(
         for (element in TitanElement.entries) {
             for (type in listOf(element.titan, element.inactive)) {
                 onOpNpc1(type) {
-                    LOGGER.debug { "[royal-titans] loot op1 on ${it.npc.type.internalName}" }
                     lootTitan(encounter, it.npc, RoyalTitansLootMode.Loot)
                 }
                 onOpNpc3(type) {
-                    LOGGER.debug { "[royal-titans] loot op3 on ${it.npc.type.internalName}" }
                     lootTitan(encounter, it.npc, RoyalTitansLootMode.Sacrifice)
                 }
                 onOpNpc4(type) {
-                    LOGGER.debug { "[royal-titans] loot op4 on ${it.npc.type.internalName}" }
                     lootTitan(encounter, it.npc, RoyalTitansLootMode.Pages)
                 }
             }
@@ -401,10 +397,6 @@ private fun stompWave(deps: BossDeps, npc: Npc, params: StompParams, spawn: Coor
             deps.worldRepo.spotanimMap(spot, tile, delay = depth * STOMP_ROW_TICKS)
         }
     }
-    LOGGER.debug {
-        "[royal-titans] stomp ${npc.type.internalName} two=${params.phaseTwo} " +
-            "at=(${npc.coords.x}, ${npc.coords.z}) rows=${rows.size}"
-    }
 }
 
 /**
@@ -431,5 +423,3 @@ private const val STOMP_DEPTH = 5
 private const val STOMP_WIDTH = 3
 private const val STOMP_ROW_TICKS = 2
 private const val STOMP_SPOT = "spotanim.vfx_ice_giant_eldric_king_melee01_proj01"
-
-private val LOGGER = InlineLogger()
