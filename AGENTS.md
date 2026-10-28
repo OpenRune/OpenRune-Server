@@ -117,6 +117,12 @@ data is already there.
   - enums: `[[enum]]` TOML under `pack/configs/` — see
     `content/skills/crafting/pack/.../crafting_enums.toml`.
   - Register the symbols in `gamevals.toml`, then `buildCache`.
+- Pick the shape by how much data there is — a dbtable is not the default:
+  - Two fields per entry (a key → value pair): use an enum.
+  - More than two fields per entry across a real set of entries: use a dbtable.
+  - Data that gets looked up a lot (by column value, reverse lookups, filtering) favours
+    a dbtable.
+  - Don't create a dbtable for a pair or a tiny set just to avoid a hardcoded map.
 - Read it through the generated code in `api/generated` (gitignored, rebuilt by
   `buildCache`): `org.rsmod.api.table.<Name>Row` (`all()`, `getRow(...)`, typed
   column properties) and `org.rsmod.api.enums.<Group>Enums.<enum_name>`. Use these

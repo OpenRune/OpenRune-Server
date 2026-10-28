@@ -2,3 +2,13 @@
 id = "varp.essence_mine_teleporter"
 scope = "Perm"
 transmit = "Never"
+
+[[enum]]
+isServerOnly = true
+id = "enum.essence_mine_teleporter_exits"
+keyType = "NPC"
+valueType = "COORDGRID"
+
+[enum.values]
+"npc.aubury" = 53300553
+"npc.head_wizard" = 50881892

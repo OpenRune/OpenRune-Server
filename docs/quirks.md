@@ -121,4 +121,26 @@ Mutations during an in-flight autosave remain dirty for a subsequent snapshot. R
 consume the same snapshot before newer requests. Shutdown drains an interrupted batch
 before queued requests, retaining each request until it succeeds or reports failure.
 
+## Player timer phases
+
+Soft timers normally run before interactions. `softTimer(..., afterInteractions = true)`
+opts a timer into the pass immediately after player interactions. Foundry work uses this
+phase so a tool re-click can affect the work consumed on that same tick. Rescheduling
+moves a timer between phases; clearing it removes either registration.
+
+Global effects tied to player work use `StartCycle`, before the map clock advances,
+so their animations and sounds share the player's work tick.
+
+## Foundry item safety
+
+`PlayerDeathPreDropHook` runs before carried items are captured for death drops,
+including administrator deaths that bypass drops. Foundry stores the preform here,
+before a grave or ground stack can claim it. Equipment replacements store displaced
+preforms after the equipment transaction commits. Teleport validation does not
+store a preform; a successful coordinate change does.
+
+Sword hand-in and ore-pack conversion use all-or-nothing inventory transactions.
+Failed payment leaves the sword, commission and reward state unchanged. Coins go
+to the bank first, then inventory if necessary; Ultimate Ironmen use inventory only.
+
 [magic-numbers]: https://en.wikipedia.org/wiki/Magic_number_(programming)

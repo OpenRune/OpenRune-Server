@@ -1,5 +1,6 @@
 package org.rsmod.content.generic.locs.stile
 
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.map.CoordGrid
 
@@ -14,7 +15,7 @@ private const val FACE_NORTH = 1024
 private const val FACE_EAST = 1536
 
 internal fun ProtectedAccess.climbOver(start: CoordGrid, dest: CoordGrid) {
-    exactMove(start, dest, STEP_DELAY, CROSS_DELAY, facing(start, dest))
+    exactMove(start, dest, STEP_DELAY, CROSS_DELAY, facing(start, dest), TeleportType.Exempt)
     anim("seq.human_walk_style", delay = STEP_DELAY)
 }
 
