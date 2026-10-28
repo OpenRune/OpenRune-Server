@@ -1,6 +1,8 @@
 package org.rsmod.api.player.interact
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ObjectServerType
 import dev.openrune.types.varp.baseVar
 import dev.openrune.types.varp.bits
@@ -14,6 +16,7 @@ import org.rsmod.api.player.events.interact.LocUnimplementedEvents
 import org.rsmod.api.player.events.interact.OpEvent
 import org.rsmod.api.route.BoundValidator
 import org.rsmod.events.EventBus
+import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.InteractionLocOp
 import org.rsmod.game.interact.InteractionOp
@@ -26,6 +29,17 @@ import org.rsmod.utils.bits.getBits
 public class LocInteractions
 @Inject
 constructor(private val boundValidator: BoundValidator, private val eventBus: EventBus) {
+    private val apRanges = hashMapOf<Int, Int>()
+
+    /**
+     * Widens the AP range of [loc] beyond [PathingEntity.DEFAULT_AP_RANGE]. Used for objects that
+     * must be usable from anywhere in a room, such as an emergency exit, where requiring a path
+     * would let the room's own obstacles lock the player in.
+     */
+    public fun setApRange(loc: String, range: Int) {
+        apRanges[loc.asRSCM(RSCMType.LOC)] = range
+    }
+
     public fun interact(
         player: Player,
         loc: BoundLocInfo,
@@ -40,6 +54,7 @@ constructor(private val boundValidator: BoundValidator, private val eventBus: Ev
                 op = op,
                 hasOpTrigger = opTrigger,
                 hasApTrigger = apTrigger,
+                startApRange = apRanges[type.id] ?: PathingEntity.DEFAULT_AP_RANGE,
             )
         player.interaction = interaction
 

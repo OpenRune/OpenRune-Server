@@ -313,5 +313,26 @@ object InstanceSettingsTable {
             columnRSCM(ENTER_OBJECT, "loc.vmq3_ruins_door_multi")
             columnRSCM(EXIT_OBJECT, "loc.amoxliatl_exit")
         }
+
+        row("dbrow.instance_royal_titans") {
+            column(KEY, "royal_titans")
+            columnCoord(EXIT_COORD, CoordGrid(2949, 9574, 0))
+            columnCoord(ENTER_COORD, CoordGrid(2911, 9573, 0))
+            column(FEE, 0)
+            column(MAX_PLAYERS, 2)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            columnRSCM(BOSS_NPC, "npc.rt_fire_queen", "npc.rt_ice_king")
+            column(BOSS_NAME, "Royal Titans")
+            column(RECOMMENDED_COMBAT, 80, 126)
+            column(TEAM_SIZE, 2)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(
+                DESCRIPTION,
+                "Branda the Fire Queen and Eldric the Ice King, twin rulers of the Giants' Plateau.",
+            )
+            columnRSCM(ENTER_OBJECT, "loc.royal_titans_entrance")
+            columnRSCM(EXIT_OBJECT, "loc.royal_titans_exit")
+        }
     }
 }

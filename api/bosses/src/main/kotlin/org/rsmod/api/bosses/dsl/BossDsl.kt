@@ -516,8 +516,9 @@ class AbilityBuilder {
         telegraph: TelegraphSpec? = null,
         damage: DamageExpr,
         type: HitType,
+        penetration: Int = 0,
     ) {
-        effects += Effect.TileAoE(tiles, telegraph, damage, type)
+        effects += Effect.TileAoE(tiles, telegraph, damage, type, penetration)
     }
 
     fun summon(

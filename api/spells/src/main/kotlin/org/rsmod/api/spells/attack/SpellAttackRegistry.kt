@@ -1,6 +1,5 @@
 package org.rsmod.api.spells.attack
 
-import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
@@ -10,6 +9,8 @@ public class SpellAttackRegistry {
     private val attacks = hashMapOf<Int, SpellAttack>()
 
     public operator fun get(spell: String): SpellAttack? = attacks[spell.asRSCM(RSCMType.OBJ)]
+
+    public operator fun get(spell: MagicSpell): SpellAttack? = attacks[spell.obj.id]
 
     public operator fun contains(spell: MagicSpell): Boolean = spell.obj.id in attacks
 

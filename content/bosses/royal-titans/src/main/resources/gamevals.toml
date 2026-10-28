@@ -1,0 +1,10 @@
+[gamevals.dbrow]
+instance_royal_titans = 63890
+
+[gamevals.varp]
+royal_titans_deaths = 64412
+royal_titans_best_time = 64413
+royal_titans_dontaskagain = 64414
+
+[gamevals.headbar]
+royal_titans_area_attack_timer = 78
