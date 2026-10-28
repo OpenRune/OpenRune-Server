@@ -132,4 +132,10 @@ Sword hand-in and ore-pack conversion use all-or-nothing inventory transactions.
 Failed payment leaves the sword, commission and reward state unchanged. Coins go
 to the bank first, then inventory if necessary; Ultimate Ironmen use inventory only.
 
+## Item packs
+
+`obj.pack_plant_pot_compost` opens into 100 noted filled plant pots
+(`obj.plantpot_compost`), not empty pots. The mapping lives in `item_packs.toml`;
+after changing it, rebuild the cache so the packed enum picks it up.
+
 [magic-numbers]: https://en.wikipedia.org/wiki/Magic_number_(programming)
