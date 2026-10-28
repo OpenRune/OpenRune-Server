@@ -80,8 +80,9 @@ matches the clicked op (Op1-Op5); scripted handlers keep precedence. A wrong
 op for an equipable item is not an equip. `ItemServerType.isEquipable` accepts
 `Wield`/`Wear` at any interface option, not only the second.
 
-Bankside extra-op equips (side inventory Op9) dispatch the same cached
-`wear_op_index` op, so op4 items such as the fletching knife equip there too.
+Bankside equips (side inventory Op9 and equipment-tab Op1) and the equipment stats
+side-inventory equip button dispatch the same cached
+`wear_op_index` op, so op4 items such as the fletching knife equip in all three routes.
 
 ## Types
 ```

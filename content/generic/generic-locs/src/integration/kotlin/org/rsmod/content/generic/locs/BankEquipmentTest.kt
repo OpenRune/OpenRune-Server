@@ -26,62 +26,70 @@ import org.rsmod.game.inv.InvObj
 @Execution(ExecutionMode.SAME_THREAD)
 class BankEquipmentTest {
     @Test
-    fun GameTestState.`extra op wields op4 knife into offhand with full inventory`() =
-        runInjectedGameTest(
-            WeaponSpeeds::class, CombatModule(),
-            BankInvScript::class, BankOpenScript::class, WeaponAttackStylesScript::class,
-        ) {
-            player.clearAllInvs()
-            fillWithSpades()
-            player.inv[2] = InvObj(id(KNIFE), 1)
-            player.openBank(eventBus)
-
-            extraOp(2)
-            advance()
-
-            assertNull(player.inv[2])
-            assertEquals(id(KNIFE), player.worn[offhand]?.id)
-            assertEquals(27, player.inv.count(SPADE))
-        }
+    fun GameTestState.`items layout extra op wields op4 knife with full inventory`() =
+        knifeIntoOffhand(Layout.Items)
 
     @Test
-    fun GameTestState.`extra op wield displaces offhand shield into clicked slot`() =
-        runInjectedGameTest(
-            WeaponSpeeds::class, CombatModule(),
-            BankInvScript::class, BankOpenScript::class, WeaponAttackStylesScript::class,
-        ) {
-            player.clearAllInvs()
-            fillWithSpades()
-            player.inv[7] = InvObj(id(KNIFE), 1)
-            player.worn[offhand] = InvObj(id(SHIELD), 1)
-            player.openBank(eventBus)
-
-            extraOp(7)
-            advance()
-
-            assertEquals(id(SHIELD), player.inv[7]?.id)
-            assertEquals(id(KNIFE), player.worn[offhand]?.id)
-            assertEquals(27, player.inv.count(SPADE))
-        }
+    fun GameTestState.`worn layout extra op wields op4 knife with full inventory`() =
+        knifeIntoOffhand(Layout.Worn)
 
     @Test
-    fun GameTestState.`extra op wields shield swapping worn knife and keeps spades`() =
+    fun GameTestState.`items layout extra op displaces offhand shield into clicked slot`() =
+        shieldDisplaced(Layout.Items)
+
+    @Test
+    fun GameTestState.`worn layout extra op displaces offhand shield into clicked slot`() =
+        shieldDisplaced(Layout.Worn)
+
+    @Test
+    fun GameTestState.`items layout extra op wields shield swapping worn knife`() =
+        shieldSwapsKnife(Layout.Items)
+
+    @Test
+    fun GameTestState.`worn layout extra op wields shield swapping worn knife`() =
+        shieldSwapsKnife(Layout.Worn)
+
+    private fun GameTestState.knifeIntoOffhand(layout: Layout) = bankTest {
+        player.inv[2] = InvObj(id(KNIFE), 1)
+        extraOp(layout, 2)
+        advance()
+
+        assertNull(player.inv[2])
+        assertEquals(id(KNIFE), player.worn[offhand]?.id)
+        assertEquals(27, player.inv.count(SPADE))
+    }
+
+    private fun GameTestState.shieldDisplaced(layout: Layout) = bankTest {
+        player.inv[7] = InvObj(id(KNIFE), 1)
+        player.worn[offhand] = InvObj(id(SHIELD), 1)
+        extraOp(layout, 7)
+        advance()
+
+        assertEquals(id(SHIELD), player.inv[7]?.id)
+        assertEquals(id(KNIFE), player.worn[offhand]?.id)
+        assertEquals(27, player.inv.count(SPADE))
+    }
+
+    private fun GameTestState.shieldSwapsKnife(layout: Layout) = bankTest {
+        player.inv[4] = InvObj(id(SHIELD), 1)
+        player.worn[offhand] = InvObj(id(KNIFE), 1)
+        extraOp(layout, 4)
+        advance()
+
+        assertEquals(id(KNIFE), player.inv[4]?.id)
+        assertEquals(id(SHIELD), player.worn[offhand]?.id)
+        assertEquals(27, player.inv.count(SPADE))
+    }
+
+    /** Fresh injected scope per call, so each layout starts from identical state. */
+    private fun GameTestState.bankTest(body: GameTestScope.() -> Unit) =
         runInjectedGameTest(
             WeaponSpeeds::class, CombatModule(),
             BankInvScript::class, BankOpenScript::class, WeaponAttackStylesScript::class,
         ) {
             player.clearAllInvs()
             fillWithSpades()
-            player.inv[4] = InvObj(id(SHIELD), 1)
-            player.worn[offhand] = InvObj(id(KNIFE), 1)
-            player.openBank(eventBus)
-
-            extraOp(4)
-            advance()
-
-            assertEquals(id(KNIFE), player.inv[4]?.id)
-            assertEquals(id(SHIELD), player.worn[offhand]?.id)
-            assertEquals(27, player.inv.count(SPADE))
+            body()
         }
 
     private fun GameTestScope.fillWithSpades() {
@@ -90,9 +98,17 @@ class BankEquipmentTest {
         }
     }
 
-    private fun GameTestScope.extraOp(slot: Int) {
-        val items = ServerCacheManager.fromComponent("component.bankside:items".asRSCM(RSCMType.COMPONENT))
-        player.ifButton(items, comsub = slot, op = IfButtonOp.Op9)
+    private fun GameTestScope.extraOp(layout: Layout, slot: Int) {
+        // BankOpenScript sets events for both bankside components on open; no layout toggle exists.
+        player.openBank(eventBus)
+        val component = ServerCacheManager.fromComponent(layout.component.asRSCM(RSCMType.COMPONENT))
+        player.ifButton(component, comsub = slot, op = layout.extraOp)
+    }
+
+    /** Native extra-op button per layout: inventory view uses Op9, worn-equipment view Op1. */
+    private enum class Layout(val component: String, val extraOp: IfButtonOp) {
+        Items("component.bankside:items", IfButtonOp.Op9),
+        Worn("component.bankside:wornops", IfButtonOp.Op1),
     }
 
     private val GameTestScope.offhand: Int
