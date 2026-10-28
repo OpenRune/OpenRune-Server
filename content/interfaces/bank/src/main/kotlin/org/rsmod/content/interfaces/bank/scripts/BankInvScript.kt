@@ -99,7 +99,7 @@ constructor(
         onIfModalDrag("component.bankside:wornops") { dragSideInv(it) }
         onIfModalDrag("component.bankmain:items", "component.bankmain:tabs") { dragIntoTab(it) }
 
-        val wornComponents = bank_equipment_tab_to_slots_map.filterValuesNotNull().map { it.key to RSCM.getReverseMapping(RSCMType.COMPONENT,it.value.packed) }
+        val wornComponents = bank_equipment_tab_to_slots_map.filterValuesNotNull().map { it.key to RSCM.getReverseMapping(RSCMType.COMPONENT, it.value.packed) }
         for ((slot, component) in wornComponents) {
             onIfModalButton(component) { wornOp(slot, it.op) }
         }
@@ -1109,7 +1109,13 @@ constructor(
             val hasWearOp = type.hasInvOp(wearOpIndex)
             if (hasWearOp) {
                 val previous = worn[type.wearpos1]
-                opHeld2(slot)
+                when (wearOpIndex) {
+                    1 -> opHeld1(slot)
+                    3 -> opHeld3(slot)
+                    4 -> opHeld4(slot)
+                    5 -> opHeld5(slot)
+                    else -> opHeld2(slot)
+                }
                 val replacedPrevious = worn[type.wearpos1] !== previous
                 if (replacedPrevious) {
                     setBanksideExtraOps()
