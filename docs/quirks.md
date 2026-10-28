@@ -123,8 +123,8 @@ so their animations and sounds share the player's work tick.
 ## NPC dialogue without animation
 
 `chatNpc` with a null `mesanim` (including `chatNpcNoAnim`) shows every page and waits
-for Continue on each. It used to return after the first page's animation lookup, so
-later pages were silently dropped.
+for Continue on each. Previously, a missing animation caused it to return before
+showing the first page.
 
 ## Foundry item safety
 
