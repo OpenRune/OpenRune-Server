@@ -133,3 +133,14 @@ Failed payment leaves the sword, commission and reward state unchanged. Coins go
 to the bank first, then inventory if necessary; Ultimate Ironmen use inventory only.
 
 [magic-numbers]: https://en.wikipedia.org/wiki/Magic_number_(programming)
+
+## Watering cans
+
+Water sources refill the clicked can in its own slot, then queue every four ticks
+for other carried cans that are not full; each keeps its own refill output. Full
+cans are skipped, so the queue ends. Gricoller's can stores charges in the native
+`zeah_wateringcan_charges` varbit (tank capacity 1000), refills that varbit rather
+than swapping items, and its Check option reports the remaining charges. Cadence
+and source messages are only as verified as the UNVERIFIED notes in
+`WaterSourceScript`; this is not blanket OSRS parity.
+
