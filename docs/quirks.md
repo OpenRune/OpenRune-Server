@@ -73,6 +73,21 @@ it through the interface close hook. Keep cleanup tied to the interface,
 not the suspended dialogue: walking or a hit can cancel that dialogue.
 Disabled popups do not set the flag.
 
+## Cooking menus
+
+Cooking item-use on `category.cooking_fire` (including `loc.fire_cook` and Ned's
+`loc.fireplace`, 24969) and supported ranges opens the quantity menu. The Cook
+option is bound only to `loc.fire_cook`; Forestry tending options are unchanged.
+Single-food menus display the raw item; multi-food menus display cooked items.
+
+The existing instant cook for exactly one held item is retained; the reference
+capture does not establish whether that shortcut matches live. Queued cooking
+still waits `cookTicks` before the first result instead of live's one tick, and
+the menu defaults to the maximum quantity rather than remembering the last choice.
+
+Reference: live capture, rev 241, `20261029T053301-df49f48@191-206`,
+`@219-223`, `@510`, `@627-637`.
+
 ## Types
 ```
 engine
