@@ -120,12 +120,6 @@ moves a timer between phases; clearing it removes either registration.
 Global effects tied to player work use `StartCycle`, before the map clock advances,
 so their animations and sounds share the player's work tick.
 
-## NPC dialogue without animation
-
-`chatNpc` with a null `mesanim` (including `chatNpcNoAnim`) shows every page and waits
-for Continue on each. Previously, a missing animation caused it to return before
-showing the first page.
-
 ## Foundry item safety
 
 `PlayerDeathPreDropHook` runs before carried items are captured for death drops,
