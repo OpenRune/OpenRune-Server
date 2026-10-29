@@ -255,15 +255,6 @@ Production-coroutine smoke also covers Continue suspension, cancellation, reopen
 and stale-modal guards. Dialogue wording comes from the standard-world wiki
 transcripts, not an OSRS packet-parity claim.
 
-Plant-pot packs return 100 noted filled plant pots through the existing generic
-queued pack opener, not empty pots. Deploy the rebuilt cache with this correction.
-Actual pack/queue regressions cover full inventory, overflow rollback, stale input
-and repeated requests without changing the generic opening engine.
-Native verification consumed one approved pack and preserved all 100 filled notes,
-empty worn inventory and unchanged skills through logout/save/relogin. The fresh
-normal 1× actor used two approved merchant relocations and no skill presets; this
-does not prove normal supply acquisition.
-
 Bird nests now fall from successful non-bonus woodcutting products and can be
 searched through native Search. Ordinary seed, Wyson seed, ring and coloured egg
 nests atomically become one empty nest in the original slot plus their reward.
