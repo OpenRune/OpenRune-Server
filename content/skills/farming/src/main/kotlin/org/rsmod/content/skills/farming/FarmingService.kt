@@ -608,22 +608,6 @@ constructor(
         val RESURRECT_EXCLUDED = setOf(PatchKind.ANIMA, PatchKind.HESPORI, PatchKind.GRAPE_VINE)
         val REMOVABLE_TREES = setOf(PatchKind.TREE, PatchKind.FRUIT_TREE, PatchKind.HARDWOOD_TREE, PatchKind.REDWOOD)
 
-        val PatchKind.label: String
-            get() =
-                when (this) {
-                    PatchKind.ALLOTMENT -> "allotment"
-                    else -> name.lowercase().replace('_', ' ') + " patch"
-                }
-
-        val Compost.label: String
-            get() =
-                when (this) {
-                    Compost.NORMAL -> "compost"
-                    Compost.SUPER -> "supercompost"
-                    Compost.ULTRA -> "ultracompost"
-                    Compost.NONE -> "nothing"
-                }
-
         fun soil(compost: Compost): String =
             if (compost == Compost.NONE) "The soil has not been treated." else "The soil has been treated with ${compost.label}."
 

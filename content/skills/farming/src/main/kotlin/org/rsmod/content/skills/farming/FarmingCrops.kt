@@ -43,7 +43,8 @@ enum class PatchKind {
     REDWOOD,
     CACTUS;
 
-    val label: String = "${name.lowercase().replace('_', ' ')} patch"
+    val label: String
+        get() = if (this == ALLOTMENT) "allotment" else "${name.lowercase().replace('_', ' ')} patch"
 
     /** Only allotment, flower and hops patches can be watered (Farming; Watering can). */
     val waterable: Boolean
