@@ -3,7 +3,6 @@ package org.rsmod.content.interfaces.prayer.tab
 import dev.openrune.definition.type.widget.ComponentType
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
-import dev.openrune.types.ItemServerType
 import dev.openrune.types.enums.EnumTypeMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.rsmod.api.config.refs.params
@@ -105,12 +104,12 @@ class PrayerRepository() {
         return collisions
     }
 
-    private fun load(prayers: Iterable<Prayer>, enumType: EnumTypeMap<ItemServerType, Boolean>): List<Prayer> {
+    private fun load(prayers: Iterable<Prayer>, enumType: EnumTypeMap<Int, Boolean>): List<Prayer> {
         val enum = enumType.filterValuesNotNull()
         val ids = hashSetOf<Int>()
-        for ((item, flag) in enum) {
+        for ((id, flag) in enum) {
             if (flag) {
-                ids += item.id
+                ids += id
             }
         }
         return prayers.filter { it.id in ids }
