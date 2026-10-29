@@ -290,6 +290,9 @@ farming_spirit_tree = 64400
 
 [gamevals.synth]
 farming_geomancy = 2891
+farming_compost = 2427
+farming_seed_dibbing = 2432
+farming_plant_cure = 2438
 
 [gamevals.queue]
 farming_nest_search = 64460

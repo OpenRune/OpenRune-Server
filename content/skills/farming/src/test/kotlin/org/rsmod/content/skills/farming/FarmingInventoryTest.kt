@@ -380,7 +380,7 @@ class FarmingInventoryTest {
     }
 
     @Test
-    fun `cure keeps the current stage and consumes exactly one source`() {
+    fun `cure keeps the current stage and turns exactly one source into a vial`() {
         val f = Fixture("guam")
         val diseased = f.planted().copy(stage = 1, health = Health.DISEASED)
         f.state(diseased)
@@ -389,6 +389,7 @@ class FarmingInventoryTest {
         f.finish()
         assertEquals(diseased.copy(health = Health.HEALTHY), f.state())
         assertEquals(1, f.count(PLANT_CURE))
+        assertEquals(1, f.count("obj.vial_empty"))
         f.use(PLANT_CURE)
         assertEquals(1, f.count(PLANT_CURE))
     }

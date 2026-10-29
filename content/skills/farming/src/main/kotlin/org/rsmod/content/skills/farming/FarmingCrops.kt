@@ -19,6 +19,13 @@ internal const val ANIM_WATER: String = "seq.farming_watering"
 internal const val ANIM_HARVEST: String = "seq.picking_low"
 internal const val ANIM_CURE: String = "seq.farming_plant_cure"
 internal const val ANIM_COMPOST: String = "seq.farming_trowel_digging"
+internal const val ANIM_POUR_COMPOST: String = "seq.farming_pour_water"
+internal const val ANIM_POUR_BOTTOMLESS: String = "seq.farming_pour_water_bottomlessbucket"
+internal const val SOUND_COMPOST: String = "synth.farming_compost"
+internal const val SOUND_PLANT: String = "synth.farming_seed_dibbing"
+internal const val SOUND_CURE: String = "synth.farming_plant_cure"
+internal const val SOUND_DIG: String = "synth.digspade"
+internal const val SOUND_PICK: String = "synth.pick"
 
 enum class PatchKind {
     ALLOTMENT,

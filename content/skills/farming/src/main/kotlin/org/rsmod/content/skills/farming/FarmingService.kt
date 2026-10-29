@@ -283,6 +283,7 @@ constructor(
         patch: PatchDef, crop: Crop, seed: String, tool: String, sapling: Boolean, fromSeedBox: Boolean,
     ) {
         anim(ANIM_PLANT)
+        soundSynth(SOUND_PLANT)
         delay(PLANT_TICKS)
         siteAccess.denial(player, patch)?.let {
             resetAnim()
@@ -306,7 +307,6 @@ constructor(
                 !sapling || equipment.smashesPlantPot(player) -> invDel(inv, seed, count, strict = true).success
                 else -> invReplace(inv, seed, 1, PLANT_POT).success
             }
-        resetAnim()
         if (!paid) return
         if (sapling) equipment.saplingPlanted(player) else equipment.planted(player, crop, count)
         store(player, patch, PatchState(
@@ -356,17 +356,19 @@ constructor(
             mes("You need a plant cure to cure the disease on this patch.")
             return
         }
-        anim(ANIM_CURE)
-        delay(2)
-        resetAnim()
-        when (cure(player, patch) { invDel(inv, PLANT_CURE, 1, strict = true).success }) {
-            CureResult.CURED -> {
-                spam("You treat the ${patch.kind.label} with the plant cure.")
-                spam("It is restored to health.")
-            }
-            CureResult.PRUNE_ONLY, CureResult.UNPAID -> Unit
-            else -> mes("There is nothing on this patch that needs curing.")
+        val before = state(player, patch)
+        // Dry run: UNPAID means the patch can be cured; payment waits until the cure lands.
+        when (cure(player, patch, before) { false }) {
+            CureResult.UNPAID -> Unit
+            CureResult.PRUNE_ONLY -> return
+            else -> return mes("There is nothing on this patch that needs curing.")
         }
+        spam("You treat the ${patch.kind.label} with the plant cure.")
+        anim(ANIM_CURE)
+        soundSynth(SOUND_CURE)
+        delay(3)
+        val paid = cure(player, patch, before) { invReplace(inv, PLANT_CURE, 1, VIAL).success }
+        if (paid == CureResult.CURED) spam("It is restored to health.")
     }
 
     /** Check-health pays check and planting XP, fills renewable produce and makes trees choppable. */
@@ -396,10 +398,12 @@ constructor(
             return true
         }
         if (crop.harvest == HarvestModel.LIVES) spam("You begin to harvest the ${patch.kind.label}.")
+        val recorded = spade || crop.kind == PatchKind.HERB
         while (true) {
             if (!harvestable(state(player, patch), start.cropIndex, crop)) break
-            anim(ANIM_HARVEST)
-            delay(HARVEST_TICKS)
+            anim(if (spade) ANIM_DIG else ANIM_HARVEST)
+            if (spade) soundSynth(SOUND_DIG)
+            delay(if (recorded) 1 else HARVEST_TICKS)
             val current = state(player, patch)
             if (!harvestable(current, start.cropIndex, crop) || (spade && !inv.contains(SPADE))) break
             if (crop.kind == PatchKind.BELLADONNA &&
@@ -430,6 +434,7 @@ constructor(
             val reward = if (final && !crop.checksHealth) rewards.prepare(player, crop) else FarmingRewardRoll.NONE
             transaction.commitAll()
             store(player, patch, next)
+            if (crop.kind == PatchKind.HERB) soundSynth(SOUND_PICK)
             val plantXp = if (final && !crop.checksHealth && crop.kind != PatchKind.ANIMA) crop.plantXp else 0.0
             award(patch, crop.harvestXp + plantXp)
             rewards.complete(player, reward)
@@ -438,8 +443,14 @@ constructor(
                 if (next.cropIndex == 0) mes("The ${patch.kind.label} is now empty.")
                 break
             }
+            if (!recorded) continue
+            if (!FarmingHarvestStorage.prepareHarvest(player, produce, 1).success) {
+                spam("You have run out of inventory space.")
+                break
+            }
+            delay(2)
         }
-        resetAnim()
+        if (!recorded) resetAnim()
         return true
     }
 
@@ -496,9 +507,13 @@ constructor(
             if (!confirmed) return true
         }
         spam("You start digging the farming patch...")
+        // UNVERIFIED: live often digs more 4-tick cycles before clearing, more at low Farming; odds unknown (recording tallies)
         anim(ANIM_DIG)
-        delay(DIG_TICKS)
-        resetAnim()
+        soundSynth(SOUND_DIG)
+        delay(4)
+        anim(ANIM_DIG)
+        soundSynth(SOUND_DIG)
+        delay(2)
         val current = state(player, patch)
         if (current != state || !inv.contains(SPADE)) return true
         store(player, patch, current.empty())
@@ -595,12 +610,12 @@ constructor(
         const val TROWEL = "obj.gardening_trowel"
         const val POTTED_PREFIX = "obj.plantpot_"
         const val ATTAS_SEED = "obj.attas_seed"
+        const val VIAL = "obj.vial_empty"
         const val ANIM_DIG = "seq.human_dig"
         const val TRANSMIT_RADIUS = 52
         const val RAKE_TICKS = 3
         const val PLANT_TICKS = 3
         const val HARVEST_TICKS = 3
-        const val DIG_TICKS = 3
         const val FILL_TICKS = 3
         const val RAKE_XP = 4.0
         const val WATER_XP = 1.0

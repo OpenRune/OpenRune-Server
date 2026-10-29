@@ -29,9 +29,9 @@ class FarmingCompostService @Inject constructor(
             mes("Your compost bucket is currently empty.")
             return
         }
-        anim(ANIM_COMPOST)
+        anim(if (ordinary != null) ANIM_POUR_COMPOST else ANIM_POUR_BOTTOMLESS)
+        soundSynth(SOUND_COMPOST)
         delay(2)
-        resetAnim()
         val result = farming.treat(player, patch, kind) {
             if (inv[slot] != selected) false
             else if (ordinary != null) replace(player, slot, selected, InvObj(ordinary.empty))
