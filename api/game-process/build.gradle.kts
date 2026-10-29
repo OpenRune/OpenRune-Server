@@ -8,6 +8,7 @@ kotlin {
 }
 
 dependencies {
+    testImplementation(libs.mockk)
     implementation(libs.kotlin.inline.logger)
     runtimeOnly(libs.logback.classic)
     implementation(libs.fastutil)
