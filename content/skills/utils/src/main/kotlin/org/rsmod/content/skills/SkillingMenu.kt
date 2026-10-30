@@ -13,6 +13,7 @@ import org.rsmod.game.inv.Inventory
 private const val SKILLMULTI_SETUP_SCRIPT = 2046
 private const val SKILLMULTI_ITEM_SLOTS = 18
 private const val CHATBOX_UNCLAMP_VARBIT = "varbit.chatmodal_unclamp"
+private const val PREVIOUS_SELECTION_VARP = "varp.skillmulti_previousselection"
 
 data class SkillMultiSelection(
     val entry: SkillMultiEntry,
@@ -192,6 +193,10 @@ suspend fun ProtectedAccess.openSkillMulti(
 
     val (entry, maxAmount) = available[buttonIndex]
     val selectedAmount = if (maxAmount <= 0) 0 else input.subcomponent.coerceIn(1, maxAmount)
+
+    if (vars[PREVIOUS_SELECTION_VARP] != buttonIndex) {
+        vars[PREVIOUS_SELECTION_VARP] = buttonIndex
+    }
 
     if (config.quantityVarp != null) {
         // 0 stores "All", so the next menu suggests its own maximum rather than this count.
