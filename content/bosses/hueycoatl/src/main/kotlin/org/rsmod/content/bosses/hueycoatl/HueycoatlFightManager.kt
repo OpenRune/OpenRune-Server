@@ -1,6 +1,5 @@
 package org.rsmod.content.bosses.hueycoatl
 
-import com.github.michaelbull.logging.InlineLogger
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.bossbar.plugin.BossHpBarScript
@@ -25,7 +24,6 @@ constructor(
     private val wornBonuses: WornBonuses,
     private val worldStats: HueycoatlWorldStats,
 ) {
-    private val logger = InlineLogger()
 
     val publicFight: HueycoatlFight =
         HueycoatlFight(
@@ -43,12 +41,6 @@ constructor(
 
     fun initializePublic() {
         publicFight.initialize()
-        logger.info {
-            "Hueycoatl public encounter ready: " +
-                "head=${publicFight.head?.isSlotAssigned == true}, " +
-                "body=${publicFight.bodyParts.count { it.isSlotAssigned }}, " +
-                "seer=${publicFight.seer?.isSlotAssigned == true}"
-        }
     }
 
     fun ensureInstance(session: InstanceSession): HueycoatlFight {
