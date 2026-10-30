@@ -68,6 +68,11 @@ public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUp
         zoneUpdates.mapProjAnim(projAnim)
     }
 
+    public fun projAnimFor(viewer: Player, projAnim: ProjAnim) {
+        val observer = viewer.observerUUID ?: return
+        zoneUpdates.mapProjAnim(projAnim, observer)
+    }
+
     public fun projAnim(
         source: Player,
         target: Npc,

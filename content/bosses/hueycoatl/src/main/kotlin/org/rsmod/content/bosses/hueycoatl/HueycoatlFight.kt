@@ -626,7 +626,8 @@ internal class HueycoatlFight(
     }
 
     private fun attack() {
-        val target = participantsInParticipation().map { it.first }.randomOrNull() ?: return
+        val targets = playersInParticipation()
+        if (targets.isEmpty()) return
         val head = headRef ?: return
         val style = deps.random.of(3)
         val shielded = phase == HueyPhase.Shielded
@@ -660,28 +661,36 @@ internal class HueycoatlFight(
         val impactTicks = travel / 30
         deps.worldQueues.add(4) {
             if (head !== headRef || !head.isSlotAssigned || head.hitpoints <= 0) return@add
-            if (!target.isSlotAssigned) return@add
+            val active = targets.filter { it.isSlotAssigned && it.hitpoints > 0 }
+            if (active.isEmpty()) return@add
             deps.worldRepo.soundArea(head.coords, HueycoatlSounds.HEAD_PROJECTILE, radius = 10)
             val spot = projectile.asRSCM(RSCMType.SPOTANIM)
-            val towardHead = Direction.between(Bounds(target.coords), head.bounds())
-            val src = target.coords.translate(towardHead.xOff, towardHead.zOff)
-            deps.bossProjectile(
-                spotanim = spot,
-                src = src,
-                target = target.coords,
-                startHeight = 900,
-                endHeight = 200,
-                delay = 0,
-                travel = travel,
-                curve = 80,
-                progress = 0,
-                homing = target,
-            )
+            for (target in active) {
+                val towardHead = Direction.between(Bounds(target.coords), head.bounds())
+                val src = target.coords.translate(towardHead.xOff, towardHead.zOff)
+                deps.bossProjectile(
+                    spotanim = spot,
+                    src = src,
+                    target = target.coords,
+                    startHeight = 900,
+                    endHeight = 200,
+                    delay = 0,
+                    travel = travel,
+                    curve = 80,
+                    progress = 0,
+                    homing = target,
+                    viewer = target,
+                )
+            }
             deps.worldQueues.add(impactTicks) {
-                if (!target.isSlotAssigned || target.hitpoints <= 0) return@add
-                if (!playersInParticipation().any { it.uuid == target.uuid }) return@add
-                target.spotanim(impact, slot = 2)
-                damageHeadProjectile(target, style)
+                val participating = playersInParticipation().mapNotNull { it.uuid }.toSet()
+                for (target in active) {
+                    if (!target.isSlotAssigned || target.hitpoints <= 0) continue
+                    val id = target.uuid ?: continue
+                    if (id !in participating) continue
+                    target.spotanim(impact, slot = 2)
+                    damageHeadProjectile(target, style)
+                }
             }
         }
     }

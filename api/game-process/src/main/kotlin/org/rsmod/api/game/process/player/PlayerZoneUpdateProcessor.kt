@@ -210,6 +210,8 @@ constructor(
                 if (isVisibleTo(observerId)) backing else null
             is ZoneUpdateTransformer.ObjReveal ->
                 if (observerId == obj.receiverId) null else backing
+            is ZoneUpdateTransformer.ProjAnimPrivate ->
+                if (observerId == observer) backing else null
             else -> backing
         }
 
