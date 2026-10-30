@@ -102,7 +102,6 @@ constructor(private val alignment: TextAlignment) : PluginScript() {
         val selection = chosen ?: return
         val metal = FoundryData.bars.indexOfFirst { it.output.internalName == selection.entry.internal }
         val bar = FoundryData.bars[metal].output
-        player.skillmultiPreviousSelection = metal
         if (inv.count(bar.internalName) == 0) {
             objbox(bar.internalName, "You have no ${bar.name}s to add to the crucible.")
             return
