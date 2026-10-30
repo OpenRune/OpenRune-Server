@@ -774,7 +774,7 @@ internal class HueycoatlFight(
 
     private fun tailCycle() {
         val tail = tailRef ?: return
-        if (phase == HueyPhase.Shielded) {
+        if (phase == HueyPhase.Shielded || phase == HueyPhase.Final) {
             tail.anim(HueycoatlSeqs.TAIL_DISAPPEAR)
             deps.worldQueues.add(2) { tailShift(tail) }
         } else {
