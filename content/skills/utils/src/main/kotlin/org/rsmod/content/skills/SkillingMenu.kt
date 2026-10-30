@@ -53,6 +53,7 @@ data class SkillMultiConfig(
     val entries: List<SkillMultiEntry>,
     val maxCountProvider: ((Inventory, SkillMultiEntry) -> Int)? = null,
     val defaultAmount: Int? = null,
+    val quantityVarp: String? = null,
     val titleOverride: String? = null,
     val showUnavailable: Boolean = false,
     val eventsEndAtMaxCount: Boolean = false,
@@ -155,13 +156,14 @@ suspend fun ProtectedAccess.openSkillMulti(
         IfSubType.Modal,
     )
 
-    val eventsEnd =
-        if (config.eventsEndAtMaxCount) skillmultiMaxCount(config, available) else 28
+    val maxCount = skillmultiMaxCount(config, available)
+    val eventsEnd = if (config.eventsEndAtMaxCount) maxCount else 28
 
     val setupArgs = skillmultiSetupArgs(
         actionType = config.actionType,
         config,
-        available
+        available,
+        suggestedAmount(config, maxCount),
     ).toTypedArray()
 
     if (config.eventsAfterSetup) {
@@ -190,6 +192,11 @@ suspend fun ProtectedAccess.openSkillMulti(
 
     val (entry, maxAmount) = available[buttonIndex]
     val selectedAmount = if (maxAmount <= 0) 0 else input.subcomponent.coerceIn(1, maxAmount)
+
+    if (config.quantityVarp != null) {
+        // 0 stores "All", so the next menu suggests its own maximum rather than this count.
+        vars[config.quantityVarp] = if (input.subcomponent >= maxCount) 0 else selectedAmount
+    }
 
     onComplete(
         SkillMultiSelection(
@@ -229,10 +236,17 @@ private fun skillmultiMaxCount(
         if (config.showUnavailable) it.coerceAtLeast(1) else it
     }
 
+private fun ProtectedAccess.suggestedAmount(config: SkillMultiConfig, maxCount: Int): Int {
+    val varp = config.quantityVarp ?: return config.defaultAmount ?: maxCount
+    val remembered = vars[varp]
+    return if (remembered == 0) maxCount else remembered.coerceAtMost(maxCount)
+}
+
 private fun skillmultiSetupArgs(
     actionType: SkillingActionType,
     config: SkillMultiConfig,
     available: List<Pair<SkillMultiEntry, Int>>,
+    suggestedAmount: Int,
 ): List<Any> {
 
     val maxCount = skillmultiMaxCount(config, available)
@@ -265,7 +279,7 @@ private fun skillmultiSetupArgs(
         add(labels)
         add(maxCount)
         addAll(itemIds)
-        add(config.defaultAmount ?: maxCount)
+        add(suggestedAmount)
     }
 }
 
