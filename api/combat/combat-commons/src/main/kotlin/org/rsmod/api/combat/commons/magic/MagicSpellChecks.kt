@@ -63,4 +63,18 @@ public object MagicSpellChecks {
             "obj.75_fire_wave",
             "obj.95_fire_surge",
         )
+
+    public fun isWaterBlastOrGreater(spell: ItemServerType): Boolean =
+        spell.isAnyType("obj.47_water_blast", "obj.65_water_wave", "obj.85_water_surge")
+
+    public fun isFireBlastOrGreater(spell: ItemServerType): Boolean =
+        spell.isAnyType("obj.59_fire_blast", "obj.75_fire_wave", "obj.95_fire_surge")
+
+    public fun isIceSpell(spell: ItemServerType): Boolean =
+        spell.isAnyType(
+            "obj.58_ice_rush",
+            "obj.70_ice_burst",
+            "obj.82_ice_blitz",
+            "obj.94_ice_barrage",
+        )
 }

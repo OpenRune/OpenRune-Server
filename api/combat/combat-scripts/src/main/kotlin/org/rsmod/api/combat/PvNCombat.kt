@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
+import org.rsmod.api.combat.commons.NpcRangedAccuracyHook
 import org.rsmod.api.combat.manager.PlayerAttackManager
 import org.rsmod.api.combat.manager.RangedAmmoManager
 import org.rsmod.api.combat.player.activateMagicSpecial
@@ -29,6 +30,7 @@ import org.rsmod.api.spells.attack.attack
 import org.rsmod.api.weapons.WeaponRegistry
 import org.rsmod.api.weapons.attack
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.InteractionOp
 import org.rsmod.game.type.getInvObj
 import org.rsmod.game.type.getOrNull
@@ -44,6 +46,7 @@ constructor(
     private val ammunition: RangedAmmoManager,
     private val spellsReg: SpellAttackRegistry,
     private val attackValidateHooks: Set<NpcAttackValidateHook>,
+    private val rangedAccuracyHooks: Set<NpcRangedAccuracyHook>,
 ) {
     suspend fun attack(access: ProtectedAccess, target: Npc, attack: CombatAttack.PlayerAttack) {
         when (attack) {
@@ -215,7 +218,12 @@ constructor(
             ammunition.useQuiverAmmo(player, quiverType, npc.coords, dropDelay = serverDelay)
         }
 
-        val damage = manager.rollRangedDamage(player, npc, attack)
+        val damage = manager.rollRangedDamage(
+            player,
+            npc,
+            attack,
+            accuracyMultiplier = rangedAccuracyMultiplier(player, npc),
+        )
         manager.giveCombatXp(player, npc, attack, damage)
 
         val hitAmmoObj = if (usingThrown) null else quiverType
@@ -302,6 +310,9 @@ constructor(
         manager.stopCombat(player)
         mes("Your staff fails to respond.")
     }
+
+    private fun rangedAccuracyMultiplier(player: Player, npc: Npc): Double =
+        rangedAccuracyHooks.maxOfOrNull { it.multiplier(player, npc) } ?: 1.0
 
     private fun ProtectedAccess.canAttack(npc: Npc): Boolean {
         for (hook in attackValidateHooks) {

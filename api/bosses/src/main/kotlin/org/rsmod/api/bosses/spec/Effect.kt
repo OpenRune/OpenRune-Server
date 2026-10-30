@@ -134,6 +134,8 @@ sealed interface Effect {
         val telegraph: TelegraphSpec? = null,
         val damage: DamageExpr,
         val type: HitType,
+        /** Percentage (0-100) of a protection prayer's block this hit ignores. */
+        val penetration: Int = 0,
     ) : Effect
 
     /**
