@@ -73,17 +73,6 @@ it through the interface close hook. Keep cleanup tied to the interface,
 not the suspended dialogue: walking or a hit can cancel that dialogue.
 Disabled popups do not set the flag.
 
-## Held equip fallback
-
-Held ops without a scripted handler equip when the cached `wear_op_index`
-matches the clicked op (Op1-Op5); scripted handlers keep precedence. A wrong
-op for an equipable item is not an equip. `ItemServerType.isEquipable` accepts
-`Wield`/`Wear` at any interface option, not only the second.
-
-Bankside equips (side inventory Op9 and equipment-tab Op1) and the equipment stats
-side-inventory equip button dispatch the same cached
-`wear_op_index` op, so op4 items such as the fletching knife equip in all three routes.
-
 ## Types
 ```
 engine
