@@ -132,22 +132,27 @@ internal class HueycoatlInstance @Inject constructor(
                     )
                 completeInstanceEntry(result)
             }
-            3 -> {
-                val joinable =
-                    manager.sessionsForKey(key).firstOrNull { session ->
-                        !session.isFull() &&
-                            session.state !is org.rsmod.api.instances.SessionState.Grace &&
-                            (session.access == InstanceAccess.Public || session.access == InstanceAccess.Friends)
-                    }
-                if (joinable == null) {
-                    mes("There is no public or friends Hueycoatl fight to join.")
-                } else {
-                    completeInstanceEntry(
-                        manager.join(player, joinable, worldClock.cycle, code = null, forceAccess = false),
-                    )
-                }
-            }
+            3 -> joinByName()
         }
+    }
+
+    private suspend fun ProtectedAccess.joinByName() {
+        val name = stringDialog("Enter the player's name:")
+        if (name.isBlank()) {
+            mes("No player name entered.")
+            return
+        }
+        val session = manager.sessionForKeyAndMemberName(key, name.trim())
+        if (
+            session == null ||
+                (session.access !is InstanceAccess.Public && session.access !is InstanceAccess.Friends)
+        ) {
+            mes("There is no public or friends Hueycoatl fight to join for that player.")
+            return
+        }
+        completeInstanceEntry(
+            manager.join(player, session, worldClock.cycle, code = null, forceAccess = false),
+        )
     }
 
     private suspend fun ProtectedAccess.editAccess(session: InstanceSession) {
