@@ -513,6 +513,9 @@ public class Npc(
         transmog = type
         lifecycleChangeCycle = if (duration == Int.MAX_VALUE) -1 else currentMapClock + duration
         infoProtocol.setTransmog(type.id)
+        if (type.combatLevel >= 0) {
+            infoProtocol.setCombatLevel(type.combatLevel)
+        }
     }
 
     public fun resetTransmog() {
@@ -520,6 +523,9 @@ public class Npc(
         transmog = null
         lifecycleChangeCycle = -1
         infoProtocol.resetTransmog(originalType = id)
+        if (type.combatLevel >= 0) {
+            infoProtocol.setCombatLevel(type.combatLevel)
+        }
     }
 
     public fun setBodyModel(model: Int) {

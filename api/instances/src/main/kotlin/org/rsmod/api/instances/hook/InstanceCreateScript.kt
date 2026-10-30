@@ -125,20 +125,23 @@ internal class InstanceCreateScript @Inject constructor(
         val currentLabel = when (val a = session.access) {
             InstanceAccess.Private -> "Private"
             InstanceAccess.Friends -> "Friends"
+            InstanceAccess.Public -> "Public"
             is InstanceAccess.Code -> "Code (${a.value})"
         }
         mes("Current access: $currentLabel")
-        val pick = choice4(
+        val pick = choice5(
             "Private - only you.", 1,
             "Friends - anyone.", 2,
-            "New Code - generate a new join code.", 3,
-            "Cancel.", 4,
+            "Public - anyone on the world.", 3,
+            "New Code - generate a new join code.", 4,
+            "Cancel.", 5,
             title = "Change instance access?",
         )
         val newAccess: InstanceAccess = when (pick) {
             1 -> InstanceAccess.Private
             2 -> InstanceAccess.Friends
-            3 -> InstanceAccess.Code(generateCode())
+            3 -> InstanceAccess.Public
+            4 -> InstanceAccess.Code(generateCode())
             else -> return mes("No changes made.")
         }
         session.access = newAccess

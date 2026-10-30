@@ -2,21 +2,15 @@ package org.rsmod.content.drops.tables.monsters
 
 import dtx.rs.RSDropTable
 import dtx.rs.npcs
-import dtx.rs.areas
-import org.rsmod.api.droptable.rsPlayerGuaranteedTable
+import org.rsmod.api.droptable.DropRollItem
+import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.api.droptable.rsPlayerTertiaryTable
 import org.rsmod.api.droptable.rsPlayerWeightedTable
-import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.content.drops.clueScrollTransformObj
-import org.rsmod.api.droptable.RegisterDropTable
 import org.rsmod.game.entity.Player
 
-@field:RegisterDropTable
-@JvmField
-public val theHueycoatlDropTable: RSDropTable<Player, DropRollItem> = RSDropTable(
-    tableIdentifier = "The Hueycoatl Drops",
-    npcs = npcs("npc.huey_head", "npc.huey_head_defeated", "npc.huey_head_enraged", "npc.huey_head_invulnerable", "npc.huey_head_respawn_placeholder", "npc.huey_tail", "npc.huey_tail_broken"),
-    mainTable = rsPlayerWeightedTable(total = 68) {
+public val hueyMainLoot =
+    rsPlayerWeightedTable(total = 68) {
         name("The Hueycoatl Drops")
         3 weight "obj.cert_rune_mace" count 1..26
         3 weight "obj.cert_rune_scimitar" count 1..20
@@ -44,17 +38,38 @@ public val theHueycoatlDropTable: RSDropTable<Player, DropRollItem> = RSDropTabl
         3 weight "obj.mcannonball" count 60..1200
         2 weight "obj.rune_dart_tip" count 6..120
         2 weight "obj.cert_limpwurt_root" count 10..200
-        1 outOf 105 separate "obj.dragonhunter_wand" count 1
-        11 outOf 315 separate "obj.huey_hide" count 3
-        1 outOf 90 separate "obj.tome_of_earth_uncharged" count 1
-    },
-    tertiaries = rsPlayerTertiaryTable {
-        // Drops Need Manual (rate): Each player has around a 1/75 chance of getting the half of a key, regardless of participation.
-        1 outOf 75 weight "obj.varlamore_key_half_1" count 1
-        // Drops Need Manual (rate): The base rate of 1/400 is scaled by personal contribution to the kill.
-        1 outOf 400 weight "obj.hueypet" count 1
-        1 outOf 47 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
-             player.clueScrollTransformObj("obj.trail_clue_hard_map001")
-        }
-    },
-)
+    }
+
+public val hueyUniqueLoot =
+    rsPlayerWeightedTable(total = 35) {
+        name("The Hueycoatl Uniques")
+        6 weight "obj.dragonhunter_wand" count 1
+        22 weight "obj.huey_hide" count 3
+        7 weight "obj.tome_of_earth_uncharged" count 1
+    }
+
+@field:RegisterDropTable
+@JvmField
+public val theHueycoatlDropTable: RSDropTable<Player, DropRollItem> =
+    RSDropTable(
+        tableIdentifier = "The Hueycoatl Drops",
+        npcs =
+            npcs(
+                "npc.huey_head",
+                "npc.huey_head_defeated",
+                "npc.huey_head_enraged",
+                "npc.huey_head_invulnerable",
+                "npc.huey_head_respawn_placeholder",
+                "npc.huey_tail",
+                "npc.huey_tail_broken",
+            ),
+        mainTable = hueyMainLoot,
+        tertiaries =
+            rsPlayerTertiaryTable {
+                1 outOf 75 weight "obj.varlamore_key_half_1" count 1
+                1 outOf 400 weight "obj.hueypet" count 1
+                1 outOf 50 weight "obj.trail_clue_hard_map001" count 1 transformObj { player ->
+                    player.clueScrollTransformObj("obj.trail_clue_hard_map001")
+                }
+            },
+    )

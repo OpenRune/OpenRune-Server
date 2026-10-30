@@ -240,6 +240,16 @@ constructor(
         indexNpc(instanceId, npc)
     }
 
+    public fun removeNpc(instanceId: InstanceId, npc: Npc) {
+        if (npc.isSlotAssigned) {
+            npcInstanceIndex.remove(npc.slotId)
+        }
+        spawnedNpcs[instanceId]?.remove(npc)
+        if (npc.isSlotAssigned) {
+            npcRepo.del(npc, Int.MAX_VALUE)
+        }
+    }
+
     public fun registerSessionNpc(player: Player, npc: Npc): Boolean {
         val instanceId =
             player.currentInstanceId() ?: playerIndex[player.playerId()] ?: return false
@@ -357,6 +367,7 @@ constructor(
         when (val access = session.access) {
             is InstanceAccess.Private -> playerId == session.owner
             is InstanceAccess.Friends -> true
+            is InstanceAccess.Public -> true
             is InstanceAccess.Code -> code != null && code == access.value
         }
 

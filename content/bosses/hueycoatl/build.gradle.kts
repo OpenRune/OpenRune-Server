@@ -1,0 +1,30 @@
+plugins {
+    id("base-conventions")
+}
+
+dependencies {
+    implementation(projects.api.bossHpBarPlugin)
+    implementation(projects.api.bosses)
+    implementation(projects.api.combat.combatCommons)
+    implementation(projects.api.combat.combatFormulas)
+    implementation(projects.api.config)
+    implementation(projects.api.db)
+    implementation(projects.api.dbGateway)
+    implementation(projects.api.death)
+    implementation(projects.api.dropTable)
+    implementation(projects.api.dropTablePlugin)
+    implementation(projects.api.instances)
+    implementation(projects.api.invtx)
+    implementation(projects.api.market)
+    implementation(projects.api.npc)
+    implementation(projects.api.player)
+    implementation(projects.api.playerOutput)
+    implementation(projects.api.repo)
+    implementation(projects.api.route)
+    implementation(projects.api.script)
+    implementation(projects.api.pluginCommons)
+    implementation(projects.content.drops)
+    implementation(projects.content.interfaces.bank)
+    implementation(projects.content.interfaces.collectionLog)
+    implementation(projects.content.quest)
+}
