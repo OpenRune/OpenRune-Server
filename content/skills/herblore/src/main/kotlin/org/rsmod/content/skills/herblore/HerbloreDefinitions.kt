@@ -1,5 +1,11 @@
 package org.rsmod.content.skills.herblore
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.table.herblore.HerbloreBarbarianMixesRow
 import org.rsmod.api.table.herblore.HerbloreCleaningRow
 import org.rsmod.api.table.herblore.HerbloreCrushingRow
@@ -7,6 +13,7 @@ import org.rsmod.api.table.herblore.HerbloreFinishedRow
 import org.rsmod.api.table.herblore.HerbloreSwampTarRow
 import org.rsmod.api.table.herblore.HerbloreUnfinishedRow
 import org.rsmod.content.skills.Material
+import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 
 private fun amountsFor(count: Int, amounts: List<Int>?): List<Int> =
@@ -23,6 +30,14 @@ private fun HerbloreFinishedRow.resolvedInputAmounts(): List<Int> = amountsFor(i
 val HerbloreUnfinishedRow.herbItem get() = input
 val HerbloreUnfinishedRow.unfinishedPotion get() = output
 val HerbloreUnfinishedRow.level get() = statReq.primaryLevel()
+
+internal fun HerbloreUnfinishedRow.mix(player: Player): Boolean =
+    player.invTransaction(player.inv) {
+        val inventory = select(player.inv)
+        delete(inventory, herbItem.id, 1)
+        delete(inventory, "obj.vial_water".asRSCM(), 1)
+        add(inventory, unfinishedPotion.id, 1)
+    }.success
 
 val HerbloreFinishedRow.unfPot get() = input.first()
 val HerbloreFinishedRow.secondaries get() = input.drop(1)
@@ -70,6 +85,24 @@ fun HerbloreFinishedRow.maxProducible(inventory: Inventory): Int {
         val needed = amounts.getOrNull(index) ?: 1
         inventory.count(input[index].internalName) / needed
     }
+}
+
+internal fun HerbloreFinishedRow.brew(
+    player: Player,
+    output: String,
+    saved: HerbloreGoggles.SavedSecondaries,
+): Boolean {
+    val amounts = resolvedInputAmounts()
+    val ingredients = input
+    return player.invTransaction(player.inv) {
+        val inventory = select(player.inv)
+        ingredients.forEachIndexed { index, item ->
+            val savedAmount = if (index == 0) 0 else saved.savedAmount(item.internalName)
+            val needed = (amounts[index] - savedAmount).coerceAtLeast(0)
+            if (needed > 0) delete(inventory, item.id, needed)
+        }
+        add(inventory, output.asRSCM(RSCMType.OBJ), 1)
+    }.success
 }
 
 object HerbloreDefinitions {
