@@ -94,7 +94,6 @@ private const val VENOM_CHANCE = 1
 private const val VENOM_OUT_OF = 3
 
 private const val CLEAVE_REACH = 5
-private const val CLEAVE_NPC_HIT_TICKS = 1
 private const val CLEAVE_LAND_TICKS = 2
 private const val CLEAVE_LOCK_TICKS = 3
 private const val CLEAVE_AIM = "cleave_aim"
@@ -297,10 +296,10 @@ constructor(
         )
 
     private fun cleaveLanding(northSouth: Boolean): Effect =
-        parallel(
-            after(CLEAVE_NPC_HIT_TICKS, cleaveNpcHits(northSouth)),
-            after(
-                CLEAVE_LAND_TICKS,
+        after(
+            CLEAVE_LAND_TICKS,
+            parallel(
+                cleaveNpcHits(northSouth),
                 whenever(
                     araneaBlocksCleave,
                     cleaveStrike(northSouth, hitsPlayers = false),
