@@ -122,8 +122,7 @@ class UnfinishedPotionsEvents : PluginScript() {
 
         if (
             !inv.contains(potion.herbItem.internalName) ||
-            !inv.contains("obj.vial_water") ||
-            (inv.freeSpace() < 1 && !inv.contains(potion.unfinishedPotion.internalName))
+            !inv.contains("obj.vial_water")
         ) {
             resetAnim()
             return
@@ -131,20 +130,7 @@ class UnfinishedPotionsEvents : PluginScript() {
 
         anim("seq.human_herbing_vial")
 
-        val herbRemoved = invDel(inv, potion.herbItem.internalName, 1).success
-        val vialRemoved = invDel(inv, "obj.vial_water", 1).success
-
-        if (!herbRemoved || !vialRemoved) {
-            if (herbRemoved) invAdd(inv, potion.herbItem.internalName, 1)
-            if (vialRemoved) invAdd(inv, "obj.vial_water", 1)
-            resetAnim()
-            return
-        }
-
-        if (invAdd(inv, potion.unfinishedPotion.internalName, 1).failure) {
-            invAdd(inv, potion.herbItem.internalName, 1)
-            invAdd(inv, "obj.vial_water", 1)
-            mes("You don't have enough inventory space to make this potion.")
+        if (!potion.mix(player)) {
             resetAnim()
             return
         }
