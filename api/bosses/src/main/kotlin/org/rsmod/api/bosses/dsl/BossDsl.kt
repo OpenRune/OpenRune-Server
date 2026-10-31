@@ -648,6 +648,10 @@ class IncomingActionsBuilder internal constructor() {
         actions += IncomingAction.ScalePercent(percent, style)
     }
 
+    fun divideMinOne(divisor: Int, style: HitType? = null) {
+        actions += IncomingAction.DivideMinOne(divisor, style)
+    }
+
     fun floorPercentOfMaxHit(percent: Int, style: HitType) {
         actions += IncomingAction.FloorPercentOfMaxHit(percent, style)
     }

@@ -71,6 +71,12 @@ data class NpcServerType(
     var attackRange: Int = 1,
     var huntRange: Int = 5,
     var huntMode: Int? = null,
+    var attackOverride: Int? = null,
+    var strengthOverride: Int? = null,
+    var defenceOverride: Int? = null,
+    var hitpointsOverride: Int? = null,
+    var rangedOverride: Int? = null,
+    var magicOverride: Int? = null,
     var giveChase: Boolean = true,
     @param:TomlField(["params"],serializer = ParamSerializer::class)
     var paramsRaw: MutableMap<Int, Any>? = null,

@@ -29,7 +29,7 @@ public class KillcountNpcKillHook @Inject constructor() : NpcDeathKillHook {
         VarPlayerIntMapSetter.set(context.hero, varp, count)
         if (notify) {
             // live capture, rev 241
-            context.hero.mes("Your ${context.npc.name} kill count is: <col=ff0000>$count</col>.")
+            context.hero.mes("Your ${context.npc.visType.name} kill count is: <col=ff0000>$count</col>.")
         }
     }
 }

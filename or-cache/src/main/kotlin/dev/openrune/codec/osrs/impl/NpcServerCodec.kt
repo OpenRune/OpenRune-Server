@@ -192,6 +192,12 @@ class NpcServerCodec(
             huntMode = customData.huntMode
             giveChase = customData.giveChase
             waypoints = customData.waypoints
+            customData.attackOverride?.let { attack = it }
+            customData.strengthOverride?.let { strength = it }
+            customData.defenceOverride?.let { defence = it }
+            customData.hitpointsOverride?.let { hitpoints = it }
+            customData.rangedOverride?.let { ranged = it }
+            customData.magicOverride?.let { magic = it }
         }
 
         slayerDataByNpcId[id]?.let { data ->
