@@ -16,6 +16,7 @@ class FarmingServicesPluginPack : PluginPack() {
             column("advice", 4, VarType.STRING)
             column("removal_prices", 5, VarType.STRING, VarType.INT)
             column("cabbage_refusal_coord", 6, VarType.COORDGRID)
+            column("iknami_gardener", 7, VarType.NPC)
 
             val tools = mutableListOf<Any>()
             fun tool(obj: String, component: String, varbits: String) {
@@ -111,6 +112,7 @@ class FarmingServicesPluginPack : PluginPack() {
                 )
                 column(5, "TREE", 200, "FRUIT_TREE", 200, "HARDWOOD_TREE", 200, "REDWOOD", 2000)
                 column(6, org.rsmod.map.CoordGrid(0, 47, 51, 45, 41).packed)
+                column(7, "npc.farming_gardener_tree_7".asRSCM())
             }
         },
     )

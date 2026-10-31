@@ -112,8 +112,12 @@ constructor(private val gardeners: FarmingGardeners, private val farming: Farmin
         when (gardeners.protect(player, patch, expected)) {
             ProtectResult.PROTECTED -> {
                 player.spam("You pay the gardener $cost to protect the patch.")
-                val address = if (access.isBodyTypeA()) "sir" else "madam"
-                // TODO: Varlamore gardeners address the player as "iknami".
+                val address = when {
+                    npc.type.id == FarmingServicesData.row.iknamiGardener.id -> "iknami"
+                    access.isBodyTypeA() -> "sir"
+                    else -> "madam"
+                }
+                // TODO: Ehecatl and Tziuhtla are uncaptured; they may also say "iknami".
                 chatNpc(neutral, "That'll do nicely, $address. Leave it with me - I'll make sure that patch grows for you.")
             }
             ProtectResult.UNPAID -> {
