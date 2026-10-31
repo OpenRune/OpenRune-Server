@@ -1,0 +1,12 @@
+[[varp]]
+isServerOnly = true
+id = "varp.mad_angel_buff"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.mad_angel_next_hit"
+varp = "varp.mad_angel_buff"
+startBit = 0
+endBit = 1

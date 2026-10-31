@@ -229,6 +229,7 @@ object CollectionLogCategoriesTable {
         row("dbrow.collection_log_category_the_mad_angel") {
             column(STRUCT_ID, 1203)
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_bosses_mad_angel_completed")
+            columnRSCM(COUNT_VARP_1, "varp.total_mad_angel_kills")
         }
 
         row("dbrow.collection_log_category_maggot_king") {
