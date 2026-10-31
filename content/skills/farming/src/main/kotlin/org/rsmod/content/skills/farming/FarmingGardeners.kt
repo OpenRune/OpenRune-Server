@@ -38,6 +38,14 @@ class FarmingGardeners @Inject constructor(private val farming: FarmingService) 
         return farming.protect(player, patch, expected = expected) { takePayment(player, payment) }
     }
 
+    internal fun hasPayment(player: Player, payment: List<Pair<String, Int>>): Boolean =
+        payment.all { (obj, amount) ->
+            val type = checkNotNull(ServerCacheManager.getItem(obj.asRSCM()))
+            val cert = if (type.canCert) ServerCacheManager.getItem(type.certlink) else null
+            val noted = cert?.let { player.inv.physicalCount(it.internalName) } ?: 0
+            player.inv.physicalCount(type.internalName) + noted >= amount
+        }
+
     internal fun takePayment(player: Player, payment: List<Pair<String, Int>>): Boolean {
         if (payment.isEmpty()) return false
         return player.invTransaction(player.inv) {

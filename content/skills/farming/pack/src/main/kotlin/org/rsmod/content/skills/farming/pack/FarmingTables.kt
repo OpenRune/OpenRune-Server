@@ -69,6 +69,7 @@ data class CropSpec(
     val roots: String? = null,
     val woodLoc: String? = null,
     val payment: List<Pair<String, Int>> = emptyList(),
+    val paymentText: String? = null,
     val magicSecateurs: Boolean = false,
     val immune: Boolean = false,
     val deathMinutes: Int? = null,
@@ -130,6 +131,7 @@ object FarmingTables {
     const val COL_HELD = 36
     const val COL_HESPORI_SEED_CHANCE = 37
     const val COL_GROWTH_SKIP_PERCENT = 38
+    const val COL_PAYMENT_TEXT = 39
 
     const val COMPOST_KIND = 0
     const val COMPOST_OBJ = 1
@@ -285,6 +287,7 @@ object FarmingTables {
                 column("held", COL_HELD, VarType.STRING)
                 column("hespori_seed_chance", COL_HESPORI_SEED_CHANCE, VarType.INT)
                 column("growth_skip_percent", COL_GROWTH_SKIP_PERCENT, VarType.INT)
+                column("payment_text", COL_PAYMENT_TEXT, VarType.STRING)
             },
         ) {
             val transforms = patchTransforms()
@@ -368,6 +371,7 @@ object FarmingTables {
                         val values = spec.payment.flatMap { (obj, count) -> listOf(obj.asRSCM(), count) }
                         column(COL_PAYMENT, *values.toTypedArray())
                     }
+                    spec.paymentText?.let { column(COL_PAYMENT_TEXT, it) }
                     column(COL_MAGIC_SECATEURS, spec.magicSecateurs)
                     column(COL_IMMUNE, spec.immune)
                     spec.deathMinutes?.let { column(COL_DEATH_MINUTES, it) }

@@ -34,6 +34,7 @@ internal val TREE_CROPS: List<CropSpec> =
             woodLoc = "loc.oaktree",
             petChance = 22483,
             payment = listOf("obj.basket_tomato_5" to 1),
+            paymentText = "one basket of tomatoes",
         ),
         CropSpec(
             key = "willow",
@@ -70,6 +71,7 @@ internal val TREE_CROPS: List<CropSpec> =
             woodLoc = "loc.willowtree",
             petChance = 16059,
             payment = listOf("obj.basket_apple_5" to 1),
+            paymentText = "one basket of apples",
         ),
         CropSpec(
             key = "maple",
@@ -108,6 +110,7 @@ internal val TREE_CROPS: List<CropSpec> =
             woodLoc = "loc.mapletree",
             petChance = 14052,
             payment = listOf("obj.basket_orange_5" to 1),
+            paymentText = "one basket of oranges",
         ),
         CropSpec(
             key = "yew",
@@ -147,6 +150,7 @@ internal val TREE_CROPS: List<CropSpec> =
             woodLoc = "loc.yewtree",
             petChance = 11242,
             payment = listOf("obj.cactus_spine" to 10),
+            paymentText = "ten cactus spines",
         ),
         CropSpec(
             key = "magic",
@@ -189,6 +193,7 @@ internal val TREE_CROPS: List<CropSpec> =
             woodLoc = "loc.magictree",
             petChance = 9368,
             payment = listOf("obj.coconut" to 25),
+            paymentText = "25 coconuts",
         ),
         CropSpec(
             key = "teak",

@@ -72,6 +72,18 @@ class FarmingServicesTest {
     }
 
     @Test
+    fun `payment check agrees with the take for mixed noted and short payments`() {
+        val f = Fixture()
+        val payment = listOf("obj.bucket_compost" to 2)
+        f.give("obj.bucket_compost")
+        assertFalse(f.gardeners.hasPayment(f.player, payment))
+        f.give("obj.cert_bucket_compost")
+        assertTrue(f.gardeners.hasPayment(f.player, payment))
+        assertTrue(f.gardeners.takePayment(f.player, payment))
+        assertEquals(0, f.count("obj.bucket_compost") + f.count("obj.cert_bucket_compost"))
+    }
+
+    @Test
     fun `full inventory with insufficient noted payment emits no protection event`() {
         val f = Fixture()
         val expected = f.plant("obj.potato_seed")

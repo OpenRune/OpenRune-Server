@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import jakarta.inject.Inject
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.output.spam
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
@@ -14,15 +15,17 @@ import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
+private const val NO_CONFIRM = "varbit.settings_warning_confirmation_farming_protection"
+
 class FarmingGardenerScript
 @Inject
 constructor(private val gardeners: FarmingGardeners, private val farming: FarmingService, private val shops: Shops) : PluginScript() {
     override fun ScriptContext.startup() {
         for ((npc, patches) in gardeners.patches) {
             onOpNpc1(npc) { startDialogue(it.npc) { menu(it.npc, patches) } }
-            onOpNpc3(npc) { pay(it.npc, patches.filter { patch -> patch.payOp == 3 }, confirm = false) }
+            onOpNpc3(npc) { startDialogue(it.npc) { pay(it.npc, patches.filter { patch -> patch.payOp == 3 }, talk = false) } }
             if (patches.any { it.payOp == 4 }) {
-                onOpNpc4(npc) { pay(it.npc, patches.filter { patch -> patch.payOp == 4 }, confirm = false) }
+                onOpNpc4(npc) { startDialogue(it.npc) { pay(it.npc, patches.filter { patch -> patch.payOp == 4 }, talk = false) } }
             }
             val type = FarmingServicesData.row.gardeners.first { it.t0.internalName == npc }.t0
             if (type.actions.getOpOrNull(4) == "Trade") onOpNpc5(npc) { openShop(it.npc) }
@@ -43,7 +46,10 @@ constructor(private val gardeners: FarmingGardeners, private val farming: Farmin
             "I'll come back another time.", 4,
         )
         when (option) {
-            1 -> access.pay(npc, patches, confirm = true)
+            1 -> {
+                chatPlayer(quiz, "Would you look after my crops for me?")
+                pay(npc, patches, talk = true)
+            }
             2 -> {
                 val tip = choice4("Tree seeds", 0, "Vegetable sacks", 1, "Fruit baskets", 2, "Plant pots", 3)
                 chatNpc(neutral, FarmingServicesData.row.advice[tip])
@@ -52,19 +58,17 @@ constructor(private val gardeners: FarmingGardeners, private val farming: Farmin
         }
     }
 
-    private suspend fun ProtectedAccess.pay(npc: Npc, patches: List<GardenerPatch>, confirm: Boolean) {
+    private suspend fun Dialogue.pay(npc: Npc, patches: List<GardenerPatch>, talk: Boolean) {
         if (patches.isEmpty()) return
-        val patch = choosePatch(npc, patches)
+        val patch = access.choosePatch(npc, patches)
         val expected = farming.state(player, patch)
         val crop = expected.crop
         if (crop == null && patch.kind == PatchKind.TREE) {
-            startDialogue(npc) {
-                chatNpc(neutral, "You don't have a sapling planted in that patch. Plant one and I might agree to look after it for you.")
-            }
+            chatNpc(neutral, "You don't have a sapling planted in that patch. Plant one and I might agree to look after it for you.")
             return
         }
         if (crop != null && expected.health == Health.HEALTHY && expected.grown(crop) && gardeners.removalPrice(patch) != null) {
-            removeTree(npc, patch, expected)
+            access.removeTree(npc, patch, expected)
             return
         }
         val refusal = when {
@@ -76,33 +80,56 @@ constructor(private val gardeners: FarmingGardeners, private val farming: Farmin
             else -> null
         }
         if (refusal != null) {
-            chatNpcNoAnim(npc, refusal)
+            chatNpcNoAnim(refusal)
             return
         }
         val payment = gardeners.payment(checkNotNull(crop))
         if (payment.isEmpty()) {
-            mes("This crop has no gardener protection service.")
+            access.mes("This crop has no gardener protection service.")
             return
         }
-        if (confirm) {
-            val cost = payment.joinToString(" and ") { (obj, count) ->
-                "$count ${checkNotNull(ServerCacheManager.getItem(obj.asRSCM())).name}"
+        // UNVERIFIED: wording for crops without payment_text (guess)
+        val cost = crop.paymentText ?: payment.joinToString(" and ") { (obj, count) ->
+            "$count ${checkNotNull(ServerCacheManager.getItem(obj.asRSCM())).name}"
+        }
+        if (talk) {
+            chatNpc(neutral, "If you like, but I want $cost for that.")
+            if (!gardeners.hasPayment(player, payment)) {
+                cannotPay()
+                return
             }
-            chatNpcNoAnim(npc, "If you like, but I want $cost for that.")
-            if (!choice2("Okay, it's a deal.", true, "No, that's too much.", false)) return
+        }
+        if (talk || vars[NO_CONFIRM] == 0) {
+            // TODO(content): [verify:in_game] whether Talk still offers these once the setting is on
+            val answer = if (talk) {
+                choice3("Okay, it's a deal.", 1, "No, that's too much.", 2, "Okay, it's a deal and don't ask again.", 3)
+            } else choice3("Yes.", 1, "No.", 2, "Yes, and don't ask again.", 3, title = "Pay $cost?")
+            if (answer == 2) return
+            if (answer == 3) vars[NO_CONFIRM] = 1
+            // TODO(content): [verify:in_game] the player line after "Okay, it's a deal and don't ask again."
+            if (talk) chatPlayer(neutral, if (answer == 3) "Okay, it's a deal and don't ask again." else "Okay, it's a deal.")
         }
         when (gardeners.protect(player, patch, expected)) {
-            ProtectResult.PROTECTED -> chatNpcNoAnim(npc, "Leave it with me - I'll make sure that patch grows for you.")
-            ProtectResult.UNPAID -> {
-                val cost = payment.joinToString(" and ") { (obj, count) ->
-                    "$count ${checkNotNull(ServerCacheManager.getItem(obj.asRSCM())).name}"
-                }
-                chatNpcNoAnim(npc, "I want $cost for that.")
+            ProtectResult.PROTECTED -> {
+                player.spam("You pay the gardener $cost to protect the patch.")
+                val address = if (access.isBodyTypeA()) "sir" else "madam"
+                // TODO: Varlamore gardeners address the player as "iknami".
+                chatNpc(neutral, "That'll do nicely, $address. Leave it with me - I'll make sure that patch grows for you.")
             }
-            ProtectResult.ALREADY -> chatNpcNoAnim(npc, "I'm already looking after that patch for you.")
-            ProtectResult.STALE -> mes("The patch has changed. Please ask again.")
-            else -> mes("The patch can no longer be protected.")
+            ProtectResult.UNPAID -> {
+                // TODO(content): [verify:in_game] the Pay op's reply without the items
+                cannotPay()
+            }
+            ProtectResult.ALREADY -> chatNpcNoAnim("I'm already looking after that patch for you.")
+            ProtectResult.STALE -> access.mes("The patch has changed. Please ask again.")
+            else -> access.mes("The patch can no longer be protected.")
         }
+    }
+
+    // TODO(content): Correct mesanims. The dialogue is from the wiki transcript.
+    private suspend fun Dialogue.cannotPay() {
+        chatPlayer(neutral, "I'm afraid I don't have any of those at the moment.")
+        chatNpc(neutral, "Well, I'm not wasting my time for free.")
     }
 
     private suspend fun ProtectedAccess.choosePatch(npc: Npc, patches: List<GardenerPatch>): PatchDef {
