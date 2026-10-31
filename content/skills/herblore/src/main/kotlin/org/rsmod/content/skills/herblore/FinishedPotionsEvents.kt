@@ -123,7 +123,7 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
         anim("seq.human_herbing_vial")
 
         if (potion.xp > 0) {
-            statAdvance("stat.herblore", potion.xp.toDouble())
+            statAdvance("stat.herblore", potion.xp / 10.0)
         }
 
         val itemForMessage = if (potion.secondaries.size > 1) {
