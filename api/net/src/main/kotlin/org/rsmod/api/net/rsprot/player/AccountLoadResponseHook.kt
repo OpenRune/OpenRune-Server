@@ -29,6 +29,7 @@ import org.rsmod.events.EventBus
 import org.rsmod.game.GameUpdate
 import org.rsmod.game.GameUpdate.Companion.isCountdown
 import org.rsmod.game.GameUpdate.Companion.isUpdating
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.map.CoordGrid
@@ -38,6 +39,7 @@ class AccountLoadResponseHook(
     private val config: RealmConfig,
     private val loginTimingLogs: Boolean,
     private val update: GameUpdate,
+    private val mapClock: MapClock,
     private val eventBus: EventBus,
     private val accountRegistry: AccountRegistry,
     private val playerRegistry: PlayerRegistry,
@@ -432,6 +434,8 @@ class AccountLoadResponseHook(
         }
 
         player.slotId = slotId
+        // Login events schedule timers from this clock, which the game loop hasn't set yet.
+        player.currentMapClock = mapClock.cycle
         val eventsStart = System.nanoTime()
         eventBus.publish(SessionStart(player, session))
         val register = playerRegistry.add(player)
