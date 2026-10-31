@@ -94,7 +94,7 @@ private const val VENOM_CHANCE = 1
 private const val VENOM_OUT_OF = 3
 
 private const val CLEAVE_REACH = 5
-private const val CLEAVE_AIM_TICKS = 1
+private const val CLEAVE_NPC_HIT_TICKS = 1
 private const val CLEAVE_LAND_TICKS = 2
 private const val CLEAVE_LOCK_TICKS = 3
 private const val CLEAVE_AIM = "cleave_aim"
@@ -298,9 +298,9 @@ constructor(
 
     private fun cleaveLanding(northSouth: Boolean): Effect =
         parallel(
-            cleaveNpcHits(northSouth),
+            after(CLEAVE_NPC_HIT_TICKS, cleaveNpcHits(northSouth)),
             after(
-                CLEAVE_LAND_TICKS - CLEAVE_AIM_TICKS,
+                CLEAVE_LAND_TICKS,
                 whenever(
                     araneaBlocksCleave,
                     cleaveStrike(northSouth, hitsPlayers = false),
@@ -314,15 +314,12 @@ constructor(
             anim(CLEAVE_ANIM),
             say("Skree!"),
             lockMovement(),
-            after(
-                CLEAVE_AIM_TICKS,
-                withTile(
-                    CLEAVE_AIM,
-                    CurrentTargetTile,
-                    sequence(
-                        faceTile(tile(CLEAVE_AIM)),
-                        whenever(cleaveIsNorthSouth, cleaveLanding(true), cleaveLanding(false)),
-                    ),
+            withTile(
+                CLEAVE_AIM,
+                CurrentTargetTile,
+                sequence(
+                    faceTile(tile(CLEAVE_AIM)),
+                    whenever(cleaveIsNorthSouth, cleaveLanding(true), cleaveLanding(false)),
                 ),
             ),
             after(CLEAVE_LOCK_TICKS, unlockMovement()),
