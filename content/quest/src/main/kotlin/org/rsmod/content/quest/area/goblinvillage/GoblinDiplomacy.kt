@@ -7,6 +7,7 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.types.MesAnimType
 import dev.openrune.types.hunt.HuntVis
 import jakarta.inject.Inject
+import org.rsmod.api.enums.NamedEnums.gobdip_mail_dyes
 import org.rsmod.api.hunt.NpcSearch
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
@@ -78,9 +79,9 @@ constructor(
         for (crate in Crate.entries) {
             onOpLoc1(crate.loc) { searchCrate(crate) }
         }
-        for (dye in MailDye.entries) {
-            for (mail in ARMOURS - dye.mail) {
-                onOpHeldU(dye.dye, mail) { dyeMail(dye, it.firstSlot, mail, it.secondSlot) }
+        for ((dye, dyed) in gobdip_mail_dyes.filterValuesNotNull()) {
+            for (mail in ARMOURS - dyed.internalName) {
+                onOpHeldU(dye, mail) { dyeMail(dye, it.firstSlot, mail, it.secondSlot, dyed) }
             }
         }
         onOpHeldU(RED_DYE, YELLOW_DYE) { mixDyes(it.firstSlot, it.secondSlot, ORANGE_DYE, "an orange") }
@@ -207,21 +208,16 @@ constructor(
         startDialogue { objbox(GOBLIN_MAIL, "You find some goblin mail in the crate.") }
     }
 
-    private enum class MailDye(val dye: String, val mail: String, val colour: String) {
-        Red(RED_DYE, "obj.goblin_armour_red", "red"),
-        Yellow(YELLOW_DYE, "obj.goblin_armour_yellow", "yellow"),
-        Blue(BLUE_DYE, BLUE_MAIL, "blue"),
-        Orange(ORANGE_DYE, ORANGE_MAIL, "orange"),
-        Green(GREEN_DYE, "obj.goblin_armour_green", "green"),
-        Purple(PURPLE_DYE, "obj.goblin_armour_purple", "purple"),
-        Pink("obj.handsand_pink_dye", "obj.goblin_armour_pink", "pink"),
-        Black("obj.golem_ink", "obj.goblin_armour_black", "black"),
-    }
-
-    private fun ProtectedAccess.dyeMail(dye: MailDye, dyeSlot: Int, mail: String, mailSlot: Int) {
-        if (combine(dye.dye, dyeSlot, mail, mailSlot, dye.mail)) {
+    private fun ProtectedAccess.dyeMail(
+        dye: ItemServerType,
+        dyeSlot: Int,
+        mail: String,
+        mailSlot: Int,
+        dyed: ItemServerType,
+    ) {
+        if (combine(dye.internalName, dyeSlot, mail, mailSlot, dyed.internalName)) {
             soundSynth("synth.gobdip_dye_goblin_mail")
-            mes("You dye the goblin mail ${dye.colour}.")
+            mes("You dye the goblin mail ${dyed.name.substringBefore(' ').lowercase()}.")
         }
     }
 
