@@ -1,0 +1,48 @@
+[gamevals.varp]
+pest_control_points = 64430
+
+[gamevals.synth]
+pest_control_reward = 1374
+
+[gamevals.enum]
+pest_control_reward_objects = 64421
+pest_control_refund_points = 64422
+
+[gamevals.dbtable]
+pest_control_training = 64421
+pest_control_pack_contents = 64422
+
+[gamevals.dbrow]
+pest_control_training_attack = 63740
+pest_control_training_strength = 63741
+pest_control_training_defence = 63742
+pest_control_training_ranged = 63743
+pest_control_training_magic = 63744
+pest_control_training_hitpoints = 63745
+pest_control_training_prayer = 63746
+pest_control_pack_harralander = 63747
+pest_control_pack_ranarr = 63748
+pest_control_pack_toadflax = 63749
+pest_control_pack_irit = 63750
+pest_control_pack_avantoe = 63751
+pest_control_pack_kwuarm = 63752
+pest_control_pack_coal = 63753
+pest_control_pack_iron = 63754
+pest_control_pack_spirit = 63755
+pest_control_pack_magic = 63756
+pest_control_pack_yew = 63757
+pest_control_pack_maple = 63758
+pest_control_pack_willow = 63759
+pest_control_pack_acorn = 63760
+pest_control_pack_ranarr_seed = 63761
+pest_control_pack_sweetcorn = 63762
+pest_control_pack_strawberry = 63763
+pest_control_pack_limpwurt = 63764
+pest_control_pack_watermelon = 63765
+pest_control_pack_tomato = 63766
+pest_control_pack_cabbage = 63767
+pest_control_pack_onion = 63768
+pest_control_pack_potato = 63769
+pest_control_pack_snape_grass = 63770
+pest_control_pack_celastrus = 63771
+pest_control_pack_redwood = 63772
