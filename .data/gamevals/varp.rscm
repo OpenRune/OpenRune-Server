@@ -126,3 +126,6 @@ barrows_state=64132
 aggression_tolerance_start=64140
 aggression_tolerance_anchor=64141
 aggression_tolerance_seen=64142
+agility_course=65478
+agility_course_progress=65477
+agility_mark_clock=65476
