@@ -6,7 +6,6 @@ import dev.openrune.types.InvStackType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.enums.EnumTypeMap
 import org.rsmod.api.enums.FarmingEnums
-import org.rsmod.api.enums.FarmingSeedEnums
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.delete
 import org.rsmod.api.invtx.invTransaction
@@ -144,7 +143,7 @@ object FarmingBags {
             open = listOf(SEED_BOX_OPEN),
             limitOf = { Int.MAX_VALUE },
         ) {
-            FarmingSeedEnums.farming_seed_box_items
+            FarmingEnums.farming_seed_box_items
         }
 
     fun isSilklined(bag: String): Boolean = bag in SILKLINED

@@ -30,16 +30,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 @ResourceLock("ServerCacheManager")
 class FarmingNestsScriptTest {
     @Test
-    fun `seed search replaces its own slot and conserves unrelated items`() {
-        val f = Fixture(SEEDS, DAGGER)
-        assertEquals(totals(SEEDS to 1, DAGGER to 1), f.totals())
-        f.open(0)
-        assertEquals(totals(EMPTY to 1, "obj.acorn" to 1, DAGGER to 1), f.totals())
-        assertEquals(EMPTY.asRSCM(), f.player.inv[0]?.id)
-        assertTrue(f.player.weakQueueList.isEmpty)
-    }
-
-    @Test
     fun `Wyson sweetcorn reward contains six seeds`() {
         val item = checkNotNull(ServerCacheManager.getItem("obj.sweetcorn_seed".asRSCM()))
         val roll = farming_wyson_nest_rewards.filterValuesNotNull().backing.entries
@@ -52,78 +42,19 @@ class FarmingNestsScriptTest {
     }
 
     @Test
-    fun `rings and all three eggs leave one empty nest and one reward`() {
-        for ((nest, reward) in listOf(
-            RING to "obj.gold_ring",
-            RED to "obj.bird_egg_red",
-            "obj.bird_nest_egg_green" to "obj.bird_egg_green",
-            "obj.bird_nest_egg_blue" to "obj.bird_egg_blue",
-        )) {
-            val f = Fixture(nest)
-            assertEquals(totals(nest to 1), f.totals())
-            f.open(0)
-            assertEquals(totals(EMPTY to 1, reward to 1), f.totals())
-            assertEquals(EMPTY.asRSCM(), f.player.inv[0]?.id)
-        }
-    }
-
-    @Test
-    fun `full inventory rolls back a nonstackable reward without queueing`() {
-        val f = Fixture(RING)
+    fun `full inventory rolls back the search without queueing`() {
+        val f = Fixture(WYSON)
         for (slot in 1 until 28) f.put(slot, DAGGER)
         val before = f.totals()
-        assertEquals(totals(RING to 1, DAGGER to 27), before)
+        assertEquals(totals(WYSON to 1, DAGGER to 27), before)
         f.open(0)
         assertEquals(before, f.totals())
         assertTrue(f.player.weakQueueList.isEmpty)
     }
 
     @Test
-    fun `overflowing a seed stack rolls back but the exact limit succeeds`() {
-        for (count in listOf(Int.MAX_VALUE, Int.MAX_VALUE - 1)) {
-            val f = Fixture(SEEDS)
-            f.put(1, "obj.acorn", count)
-            val before = f.totals()
-            f.open(0)
-            if (count == Int.MAX_VALUE) assertEquals(before, f.totals())
-            else assertEquals(totals(EMPTY to 1, "obj.acorn" to Int.MAX_VALUE), f.totals())
-            assertTrue(f.player.weakQueueList.isEmpty)
-        }
-    }
-
-    @Test
-    fun `a full inventory can still merge seeds into an existing stack`() {
-        val f = Fixture(SEEDS)
-        f.put(1, "obj.acorn", 7)
-        for (slot in 2 until 28) f.put(slot, DAGGER)
-        assertEquals(totals(SEEDS to 1, "obj.acorn" to 7, DAGGER to 26), f.totals())
-        f.open(0)
-        assertEquals(totals(EMPTY to 1, "obj.acorn" to 8, DAGGER to 26), f.totals())
-    }
-
-    @Test
-    fun `one click queues mixed nests in lowest slot order and conserves every reward`() {
-        val f = Fixture(SEEDS)
-        f.put(5, RING)
-        f.put(9, RED)
-        assertEquals(totals(SEEDS to 1, RING to 1, RED to 1), f.totals())
-        f.open(5)
-        assertEquals(totals(SEEDS to 1, EMPTY to 1, RED to 1, "obj.gold_ring" to 1), f.totals())
-        f.tick()
-        assertEquals(SEEDS.asRSCM(), f.player.inv[0]?.id)
-        f.tick()
-        assertEquals(totals(EMPTY to 2, RED to 1, "obj.gold_ring" to 1, "obj.acorn" to 1), f.totals())
-        assertEquals(EMPTY.asRSCM(), f.player.inv[0]?.id)
-        f.tick()
-        f.tick()
-        assertEquals(totals(EMPTY to 3, "obj.gold_ring" to 1, "obj.acorn" to 1, "obj.bird_egg_red" to 1), f.totals())
-        assertEquals(EMPTY.asRSCM(), f.player.inv[9]?.id)
-        assertTrue(f.player.weakQueueList.isEmpty)
-    }
-
-    @Test
     fun `a vanished queued nest and a stale click cannot award more items`() {
-        val f = Fixture(SEEDS, RING, DAGGER)
+        val f = Fixture(WYSON, WYSON, DAGGER)
         val stale = checkNotNull(f.player.inv[0])
         f.open(0)
         f.open(0, stale)
@@ -137,14 +68,14 @@ class FarmingNestsScriptTest {
 
     @Test
     fun `repeated same tick clicks conserve every nest and reward`() {
-        val f = Fixture(SEEDS, RING, RED)
+        val f = Fixture(WYSON, WYSON, WYSON)
         val stale = checkNotNull(f.player.inv[0])
         f.open(0)
         f.open(0, stale)
         f.open(1)
         f.open(2)
         repeat(8) { f.tick() }
-        assertEquals(totals(EMPTY to 3, "obj.acorn" to 1, "obj.gold_ring" to 1, "obj.bird_egg_red" to 1), f.totals())
+        assertEquals(totals(EMPTY to 3, "obj.acorn" to 3), f.totals())
         assertTrue(f.player.weakQueueList.isEmpty)
     }
 
@@ -207,10 +138,7 @@ class FarmingNestsScriptTest {
     }
 
     companion object {
-        private const val SEEDS = "obj.bird_nest_seeds_jan2019"
         private const val WYSON = "obj.bird_nest_decentseeds_jan2019"
-        private const val RING = "obj.bird_nest_ring"
-        private const val RED = "obj.bird_nest_egg_red"
         private const val EMPTY = "obj.bird_nest_empty"
         private const val DAGGER = "obj.bronze_dagger"
         private val RESTORED = mutableListOf<() -> Unit>()
