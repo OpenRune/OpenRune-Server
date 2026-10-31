@@ -57,6 +57,10 @@ class Pickables @Inject constructor(
         }
 
         val rolledSeed = rollSeed(row)
+        if (inv.freeSpace() == 0 && !rolledSeed) {
+            mes(invFullMessage(row.itemgiven))
+            return
+        }
 
         anim("seq.human_pickupfloor")
 
