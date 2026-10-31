@@ -1,0 +1,86 @@
+[[enum]]
+isServerOnly = true
+id = "enum.bird_nest_woodcutting_types"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bird_nest_egg_red" = 1
+"obj.bird_nest_egg_blue" = 1
+"obj.bird_nest_egg_green" = 1
+"obj.bird_nest_ring" = 32
+"obj.bird_nest_seeds_jan2019" = 65
+
+[[enum]]
+isServerOnly = true
+id = "enum.bird_nest_woodcutting_types_rabbit_foot"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bird_nest_egg_red" = 1
+"obj.bird_nest_egg_blue" = 1
+"obj.bird_nest_egg_green" = 1
+"obj.bird_nest_ring" = 32
+"obj.bird_nest_seeds_jan2019" = 60
+
+[[enum]]
+isServerOnly = true
+id = "enum.bird_nest_seed_rewards"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.acorn" = 214
+"obj.apple_tree_seed" = 170
+"obj.banana_tree_seed" = 108
+"obj.orange_tree_seed" = 85
+"obj.willow_seed" = 135
+"obj.teak_seed" = 4
+"obj.curry_tree_seed" = 68
+"obj.maple_seed" = 54
+"obj.pineapple_tree_seed" = 42
+"obj.mahogany_seed" = 4
+"obj.papaya_tree_seed" = 34
+"obj.palm_tree_seed" = 22
+"obj.calquat_tree_seed" = 17
+"obj.yew_seed" = 27
+"obj.magic_tree_seed" = 5
+"obj.spirit_tree_seed" = 11
+"obj.celastrus_tree_seed" = 3
+"obj.redwood_tree_seed" = 2
+"obj.dragonfruit_tree_seed" = 6
+
+[[enum]]
+isServerOnly = true
+id = "enum.bird_nest_ring_rewards"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.gold_ring" = 35
+"obj.sapphire_ring" = 40
+"obj.emerald_ring" = 15
+"obj.ruby_ring" = 9
+"obj.diamond_ring" = 1
+
+[[enum]]
+isServerOnly = true
+id = "enum.bird_nest_egg_rewards"
+keyType = "OBJ"
+valueType = "OBJ"
+
+[enum.values]
+"obj.bird_nest_egg_red" = "obj.bird_egg_red"
+"obj.bird_nest_egg_green" = "obj.bird_egg_green"
+"obj.bird_nest_egg_blue" = "obj.bird_egg_blue"
+
+[[enum]]
+isServerOnly = true
+id = "enum.bird_nest_reward_names"
+keyType = "OBJ"
+valueType = "STRING"
+defaultString = ""
+
+[enum.values]
+"obj.willow_seed" = "a willow tree seed"
