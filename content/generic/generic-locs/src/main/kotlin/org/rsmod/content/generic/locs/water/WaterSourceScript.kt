@@ -1,5 +1,7 @@
 package org.rsmod.content.generic.locs.water
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.types.ItemServerType
 import org.rsmod.api.config.constants
 import org.rsmod.api.enums.NamedEnums.water_container_fills
@@ -7,6 +9,7 @@ import org.rsmod.api.player.events.interact.LocUDefaultEvents
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpContentLocU
+import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.plugin.scripts.PluginScript
@@ -17,7 +20,11 @@ class WaterSourceScript : PluginScript() {
 
     override fun ScriptContext.startup() {
         wateringCans = water_container_fills.filterValuesNotNull()
-            .filter { (_, value) -> value.internalName == "obj.watering_can_8" }.map { it.key.id }.toSet()
+            .filter { (_, value) -> value.internalName == "obj.watering_can_8" }.map { it.key.id }.toSet() +
+            "obj.zeah_wateringcan".asRSCM()
+        onOpHeld4("obj.zeah_wateringcan") {
+            mes("Your can has ${vars["varbit.zeah_wateringcan_charges"]} charges remaining.")
+        }
         onOpContentLocU("content.water_source") { fill(it) { true } }
         // UNVERIFIED: other pumps follow Falador's source-free message (live capture).
         onOpContentLocU("content.water_source_pump") { fill(it, sourceSuffix = "") { true } }
@@ -40,39 +47,43 @@ class WaterSourceScript : PluginScript() {
         accepts: (ItemServerType) -> Boolean,
     ) {
         val filled = water_container_fills[event.objType]
-        if (filled == null || !accepts(event.objType)) {
+        if (filled == null && event.objType.id !in wateringCans || !accepts(event.objType)) {
             // UNVERIFIED: unsupported containers get the engine default (guess)
             mes(constants.dm_default, ChatType.Engine)
             return
         }
-        fillContainer(event.invSlot, filled, event.objType, sourceSuffix)
+        if (!fillContainer(event.invSlot, filled, event.objType, sourceSuffix)) return
         if (event.objType.id in wateringCans) {
-            weakQueue("queue.water_source_fill", 4, CanFill(event.objType, sourceSuffix))
+            weakQueue("queue.water_source_fill", 4, CanFill(sourceSuffix))
         }
     }
 
     private fun ProtectedAccess.continueCans(task: CanFill) {
-        val slot = inv.indexOfFirst { it != null && it.id in wateringCans }
+        val slot = inv.indexOfFirst {
+            it != null && it.id in wateringCans &&
+                WateringCans.needsRefill(player, checkNotNull(ServerCacheManager.getItem(it.id)).internalName)
+        }
         if (slot < 0) return
-        val filled = checkNotNull(water_container_fills[task.container])
-        fillContainer(slot, filled, task.container, task.sourceSuffix)
-        weakQueue("queue.water_source_fill", 4, task)
+        val container = checkNotNull(ServerCacheManager.getItem(checkNotNull(inv[slot]).id))
+        if (fillContainer(slot, water_container_fills[container], container, task.sourceSuffix)) {
+            weakQueue("queue.water_source_fill", 4, task)
+        }
     }
 
     private fun ProtectedAccess.fillContainer(
         slot: Int,
-        filled: ItemServerType,
+        filled: ItemServerType?,
         container: ItemServerType,
         sourceSuffix: String,
-    ) {
+    ): Boolean {
         val wateringCan = container.id in wateringCans
-        anim(if (wateringCan) "seq.human_pickuptable" else "seq.human_pickuptable_walkmerge")
         if (wateringCan) {
-            invReplaceSlot(inv, slot, 1, filled)
+            if (!WateringCans.refill(player, container.internalName, slot)) return false
         } else {
             // UNVERIFIED: other ordinary sources follow well/pump slot selection (guess).
-            invReplace(inv, slot, 1, filled)
+            if (invReplace(inv, slot, 1, checkNotNull(filled)).failure) return false
         }
+        anim(if (wateringCan) "seq.human_pickuptable" else "seq.human_pickuptable_walkmerge")
         // UNVERIFIED: tap/washbasin/geyser/barrel messages reuse this template
         // (wiki description).
         mes(
@@ -80,6 +91,7 @@ class WaterSourceScript : PluginScript() {
             ChatType.Spam,
         )
         soundSynth("synth.fill_container")
+        return true
     }
 
     private fun ProtectedAccess.fillWell(event: LocUDefaultEvents.OpContent) {
@@ -110,5 +122,5 @@ class WaterSourceScript : PluginScript() {
     private fun containerNoun(type: ItemServerType): String =
         type.name.removePrefix("Empty ").substringBefore('(').trim().lowercase()
 
-    private data class CanFill(val container: ItemServerType, val sourceSuffix: String)
+    private data class CanFill(val sourceSuffix: String)
 }
