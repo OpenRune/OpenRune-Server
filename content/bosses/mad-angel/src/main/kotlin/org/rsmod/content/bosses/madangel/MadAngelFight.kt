@@ -141,16 +141,12 @@ constructor(
     }
 
     fun blast(npc: Npc, target: Player, enraged: Boolean) {
-        npc.anim(ANIM_BOMB_THROW)
-        npc.spotanim(SPOT_BOMB_THROW, slot = SPECIAL_SLOT)
         throwBall(npc, target, enraged, thrown = 1)
     }
 
     fun smite(npc: Npc, target: Player, enraged: Boolean) {
         deps.suppressAttacks(npc, smiteAttackDelay(enraged))
         npc.movementLocked = true
-        npc.anim(if (enraged) ANIM_SMITE_ENRAGED else ANIM_SMITE)
-        npc.spotanim(if (enraged) SPOT_SMITE_ENRAGED else SPOT_SMITE, slot = SPECIAL_SLOT)
         val strikes = if (enraged) ENRAGED_STRIKE_TICKS else STRIKE_TICKS
         val last = strikes.max()
         val impact = SpotanimType(SPOT_SMITE_IMPACT.asRSCM(RSCMType.SPOTANIM))
@@ -402,7 +398,7 @@ constructor(
         private const val BOUNCE_HEIGHT = 30
         private const val BOUNCE_DELAY = 30
         private const val BOUNCE_SLOT = 11
-        private const val SPECIAL_SLOT = 2
+        internal const val SPECIAL_SLOT = 2
         private const val BOUNCE_DAMAGE_MIN = 18
         private const val BOUNCE_DAMAGE_MAX = 22
         private const val BOUNCE_DAMAGE_TICKS = 2
@@ -426,14 +422,8 @@ constructor(
         private const val SMITE_PROTECTED_PERCENT = 25
         private const val PERFECT_PRAYER_WINDOW = 0
 
-        private const val ANIM_BOMB_THROW = "seq.npc_mad_angel_attack_bomb_throw"
-        private const val SPOT_BOMB_THROW = "spotanim.vfx_mad_angel_attack_bomb_throw"
         private const val SPOT_BOMB_PROJECTILE =
             "spotanim.vfx_mad_angel_attack_bomb_throw_projectile"
-        private const val ANIM_SMITE = "seq.npc_mad_angel_attack_smite"
-        private const val ANIM_SMITE_ENRAGED = "seq.npc_mad_angel_attack_smite_enraged"
-        private const val SPOT_SMITE = "spotanim.vfx_mad_angel_attack_smite"
-        private const val SPOT_SMITE_ENRAGED = "spotanim.vfx_mad_angel_attack_smite_enraged"
         private const val SPOT_SMITE_IMPACT = "spotanim.vfx_mad_angel_attack_smite_impact"
 
         private val STRIKE_TICKS = listOf(5)

@@ -9,6 +9,8 @@ import org.rsmod.api.instances.InstanceScript
 import org.rsmod.api.instances.InstanceSession
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
+import org.rsmod.api.table.QuestRow
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocShape
 import org.rsmod.game.map.Direction
@@ -86,9 +88,11 @@ constructor(
     /**
      * The dormant angel only offers `Wake` once `varbit.ffg` reaches the quest-complete value; the
      * client hides the op while the varbit is in the quest range. The repeatable encounter is
-     * post-quest content, so entering it treats Fallen From Grace as completed.
+     * post-quest content, so entering it treats Fallen From Grace as completed when the active quest
+     * policy does. With real quest progress the varbit is left to the quest.
      */
     private fun ProtectedAccess.assumeFallenFromGraceComplete() {
+        if (!QuestRequirements.hasCompleted(player, QUEST)) return
         if (vars[VARBIT_FFG] < FFG_QUEST_COMPLETE) vars[VARBIT_FFG] = FFG_QUEST_COMPLETE
     }
 
@@ -99,9 +103,10 @@ constructor(
 
     private companion object {
         private val NPC = "npc.mad_angel"
+        private const val QUEST = "quest_fallenfromgrace"
 
         private const val VARBIT_FFG = "varbit.ffg"
-        private const val FFG_QUEST_COMPLETE = 20
+        private val FFG_QUEST_COMPLETE: Int by lazy { QuestRow.getRow("dbrow.$QUEST").endstate }
 
         private const val CLIMB_MESSAGE = "You climb over the broken pew..."
         private const val CLIMB_ANIM = "seq.human_pickuptable"
