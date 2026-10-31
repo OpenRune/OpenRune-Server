@@ -19,6 +19,7 @@ import org.rsmod.api.inv.storage.PlayerItemStorage
 import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.shops.Shops
 import org.rsmod.api.shops.currency.InvObjShopCurrency
 import org.rsmod.api.shops.restock.ShopRestockProcess
 import org.rsmod.api.shops.selectedOperation
@@ -72,6 +73,29 @@ class ShopQuantitySelectionTest {
 
         assertEquals(0, f.player.inv.count("obj.bronze_axe"))
         assertEquals(30, f.shop.inv.count("obj.bronze_axe"))
+    }
+
+    @Test
+    fun `opening a shop resets the selection so left click gives the value`() {
+        val f = Fixture()
+        f.player.inv[0] = InvObj("obj.coins", 1000)
+        f.selectQuantity(4)
+
+        Shops(EventBus())
+            .open(
+                player = f.player,
+                title = "Shop",
+                shopInv = f.shop.inv,
+                sideInv = f.player.inv,
+                buyPercentage = 40.0,
+                sellPercentage = 130.0,
+                changePercentage = 0.0,
+            )
+        val op = checkNotNull(f.player.selectedOperation(IfButtonOp.Op1))
+        f.operations.shopInvOp(f.player, f.player.inv, f.shop, f.slot, op)
+
+        assertEquals(0, f.player.inv.count("obj.bronze_axe"))
+        assertEquals(10, f.shop.inv.count("obj.bronze_axe"))
     }
 
     @Test

@@ -1,13 +1,10 @@
 package org.rsmod.api.shops
 
 import com.github.michaelbull.logging.InlineLogger
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.market.MarketPrices
-import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -55,20 +52,10 @@ constructor(
     }
 
     private fun ProtectedAccess.selectQuantity(mode: Int, op: IfButtonOp, sub: Int) {
-        val shop = player.openedShop ?: return
-        if (op != IfButtonOp.Op1 || sub != -1) {
+        if (player.openedShop == null || op != IfButtonOp.Op1 || sub != -1) {
             return
         }
         VarPlayerIntMapSetter.set(player, "varbit.shop_quantity", mode)
-        player.runClientScript(
-            "clientscript.[clientscript,shop_main_update]".asRSCM(RSCMType.CLIENTSCRIPT),
-            "component.shopmain:items".asRSCM(RSCMType.COMPONENT),
-            shop.inv.size,
-            shop.inv.type.id,
-            -1,
-            0,
-            1,
-        )
         player.initShopSideInv(player.inv)
     }
 

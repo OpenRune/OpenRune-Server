@@ -7,11 +7,13 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.InvScope
 import jakarta.inject.Inject
+import org.rsmod.api.player.output.ClientScripts.interfaceInvInit
 import org.rsmod.api.player.output.ClientScripts.shopMainInit
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.startInvTransmit
 import org.rsmod.api.player.ui.ifOpenMainSidePair
 import org.rsmod.api.player.ui.ifSetEvents
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.shops.config.ShopParams
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
@@ -99,6 +101,7 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         changePercentage: Double,
     ) {
         player.openedShop = Shop(shopInv, currency, buyPercentage, sellPercentage, changePercentage)
+        VarPlayerIntMapSetter.set(player, "varbit.shop_quantity", 0)
 
         player.startInvTransmit(shopInv)
         player.startInvTransmit(sideInv)
@@ -110,12 +113,6 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
             eventBus = eventBus,
         )
         shopMainInit(player, shopInv.type, title)
-        player.ifSetEvents("component.shopmain:value", -1..-1, IfEvent.Op1)
-        player.ifSetEvents("component.shopmain:quantity1", -1..-1, IfEvent.Op1)
-        player.ifSetEvents("component.shopmain:quantity5", -1..-1, IfEvent.Op1)
-        player.ifSetEvents("component.shopmain:quantity10", -1..-1, IfEvent.Op1)
-        player.ifSetEvents("component.shopmain:quantity50", -1..-1, IfEvent.Op1)
-
         player.ifSetEvents(
             "component.shopmain:items",
             1..shopInv.size,
@@ -129,17 +126,6 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         )
 
         player.initShopSideInv(sideInv)
-        player.ifSetEvents(
-            "component.shopside:items",
-            0 until sideInv.size,
-            IfEvent.Op1,
-            IfEvent.Op2,
-            IfEvent.Op3,
-            IfEvent.Op4,
-            IfEvent.Op5,
-            IfEvent.Op6,
-            IfEvent.Op10,
-        )
     }
 
     private fun String.toInventory(observer: Player): Inventory {
@@ -178,8 +164,33 @@ internal fun Player.initShopSideInv(sideInv: Inventory) {
             2 -> "Sell 5"
             3 -> "Sell 10"
             4 -> "Sell 50"
-            else -> "Value"
+            else -> null
         }
+    if (selectedOp == null) {
+        interfaceInvInit(
+            player = this,
+            inv = sideInv,
+            target = "component.shopside:items",
+            objRowCount = 4,
+            objColCount = 7,
+            op1 = "Value<col=ff9040>",
+            op2 = "Sell 1<col=ff9040>",
+            op3 = "Sell 5<col=ff9040>",
+            op4 = "Sell 10<col=ff9040>",
+            op5 = "Sell 50<col=ff9040>",
+        )
+        ifSetEvents(
+            "component.shopside:items",
+            0 until sideInv.size,
+            IfEvent.Op1,
+            IfEvent.Op2,
+            IfEvent.Op3,
+            IfEvent.Op4,
+            IfEvent.Op5,
+            IfEvent.Op10,
+        )
+        return
+    }
     runClientScript(
         "clientscript.[clientscript,interface_inv_init_big]".asRSCM(RSCMType.CLIENTSCRIPT),
         "component.shopside:items".asRSCM(RSCMType.COMPONENT),
@@ -193,9 +204,20 @@ internal fun Player.initShopSideInv(sideInv: Inventory) {
         "Sell 5<col=ff9040>",
         "Sell 10<col=ff9040>",
         "Sell 50<col=ff9040>",
-        if (selectedOp == "Value") "" else "Value<col=ff9040>",
+        "Value<col=ff9040>",
         "",
         "",
         "",
+    )
+    ifSetEvents(
+        "component.shopside:items",
+        0 until sideInv.size,
+        IfEvent.Op1,
+        IfEvent.Op2,
+        IfEvent.Op3,
+        IfEvent.Op4,
+        IfEvent.Op5,
+        IfEvent.Op6,
+        IfEvent.Op10,
     )
 }
