@@ -67,7 +67,8 @@ constructor(
         val interaction = npc.interaction
         var interacted = false
 
-        val isUnderTarget = interaction != null && npc.isUnderTarget(interaction)
+        val isUnderTarget =
+            interaction != null && !npc.interactsWhenUnderTarget && npc.isUnderTarget(interaction)
         if (isUnderTarget) {
             // TODO(engine): Red-X has changed a bit over the past revisions. Exceptions have been
             //  added to the condition; will need to test and investigate further.
@@ -263,7 +264,7 @@ constructor(
         boundValidator.touches(source = avatar, target = interaction.target.avatar)
 
     private fun Npc.isWithinApRange(interaction: InteractionNpc): Boolean {
-        val isUnderTarget = isUnderTarget(interaction)
+        val isUnderTarget = !interactsWhenUnderTarget && isUnderTarget(interaction)
         if (isUnderTarget) {
             return false
         }
@@ -339,7 +340,7 @@ constructor(
         boundValidator.touches(source = avatar, target = interaction.target.avatar)
 
     private fun Npc.isWithinApRange(interaction: InteractionPlayer): Boolean {
-        val isUnderTarget = isUnderTarget(interaction)
+        val isUnderTarget = !interactsWhenUnderTarget && isUnderTarget(interaction)
         if (isUnderTarget) {
             return false
         }

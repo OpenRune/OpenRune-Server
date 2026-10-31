@@ -586,6 +586,7 @@ constructor(
     private fun onSpawn(boss: Npc) {
         boss.vars[SPAWN_TICK_VARN] = deps.mapClock.cycle
         boss.apRangeOverride = ATTACK_AP_RANGE
+        boss.interactsWhenUnderTarget = true
         boss.anim(SPAWN_ANIM, 0, 0)
         deps.worldQueues.add(SPAWN_REVEAL_DELAY) {
             if (!boss.isSlotAssigned) return@add

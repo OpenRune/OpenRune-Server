@@ -100,6 +100,12 @@ public class Npc(
     public var movementLocked: Boolean = false
 
     /**
+     * Whether this Npc keeps interacting (e.g. attacking) with a target standing on top of it,
+     * instead of stepping out from under it and holding its interaction until the overlap clears.
+     */
+    public var interactsWhenUnderTarget: Boolean = false
+
+    /**
      * Used for temporarily overwriting a Npc's ap-range, i.e. the distance at which it can
      * perform a ranged attack.
      */
