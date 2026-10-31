@@ -3,7 +3,6 @@ package dev.openrune.tables
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
 
-
 object PickableObjects {
 
     const val LOCS = 0
@@ -16,6 +15,7 @@ object PickableObjects {
     const val OBJECT_CYCLE = 7
     const val REPLACEMENT_LOC = 8
     const val FORCES_WALK = 9
+    const val SEED_CHANCE = 10
 
     fun pickableObjects() = dbTable("dbtable.pickable_objects", serverOnly = true) {
 
@@ -29,12 +29,13 @@ object PickableObjects {
         column("objectCycle", OBJECT_CYCLE, VarType.BOOLEAN)
         column("replacementLoc", REPLACEMENT_LOC, VarType.LOC)
         column("forcesWalk", FORCES_WALK, VarType.BOOLEAN)
+        column("seedChance", SEED_CHANCE, VarType.INT)
 
         row("dbrow.pickable_flax") {
             columnRSCM(LOCS, "loc.misc_flax_heavyweeds", "loc.flax", "loc.misc_flax_medweeds", "loc.misc_flax_lightweeds", "loc.misc_flax_noweeds")
             columnRSCM(COL_ITEM_GIVEN, "obj.flax")
             column(COL_ITEM_GIVEN_AMOUNT, 1)
-            column(DESPAWN_CHANCE, 3,16)
+            column(DESPAWN_CHANCE, 3, 16)
             column(RESPAWN_TICK_TIME, 10)
             column(OBJECT_CYCLE, false)
             column(FORCES_WALK, false)
@@ -51,17 +52,18 @@ object PickableObjects {
         }
 
         row("dbrow.pickable_cabbage") {
-            columnRSCM(LOCS, "loc.cabbage","loc.brain_farm_cabbage","loc.avium_cabbage01","loc.avium_cabbage02")
+            columnRSCM(LOCS, "loc.cabbage", "loc.brain_farm_cabbage", "loc.avium_cabbage01", "loc.avium_cabbage02")
             columnRSCM(COL_ITEM_GIVEN, "obj.cabbage")
             column(COL_ITEM_GIVEN_AMOUNT, 1)
             column(RESPAWN_TICK_TIME, 30)
             columnRSCM(SEED, "obj.cabbage_seed")
+            column(SEED_CHANCE, 3, 103)
             column(OBJECT_CYCLE, false)
             column(FORCES_WALK, true)
         }
 
         row("dbrow.pickable_cadava_bush") {
-            columnRSCM(LOCS, "loc.fai_varrock_cadavabush_2","loc.fai_varrock_cadavabush_1")
+            columnRSCM(LOCS, "loc.fai_varrock_cadavabush_2", "loc.fai_varrock_cadavabush_1")
             columnRSCM(REPLACEMENT_LOC, "loc.fai_varrock_cadavabush_0")
             columnRSCM(COL_ITEM_GIVEN, "obj.cadavaberries")
             column(COL_ITEM_GIVEN_AMOUNT, 1)
@@ -89,7 +91,7 @@ object PickableObjects {
         }
 
         row("dbrow.pickable_nettles") {
-            columnRSCM(LOCS, "loc.nettles","loc.nettles1","loc.nettles2","loc.nettles3","loc.nettles4","loc.nettles5","loc.nettles6")
+            columnRSCM(LOCS, "loc.nettles", "loc.nettles1", "loc.nettles2", "loc.nettles3", "loc.nettles4", "loc.nettles5", "loc.nettles6")
             columnRSCM(COL_ITEM_GIVEN, "obj.nettles_picked")
             column(COL_ITEM_GIVEN_AMOUNT, 1)
             column(RESPAWN_TICK_TIME, 13)
@@ -98,9 +100,10 @@ object PickableObjects {
         }
 
         row("dbrow.pickable_onion") {
-            columnRSCM(LOCS, "loc.onion","loc.avium_onion01","loc.avium_onion02")
+            columnRSCM(LOCS, "loc.onion", "loc.avium_onion01", "loc.avium_onion02")
             columnRSCM(COL_ITEM_GIVEN, "obj.onion")
             columnRSCM(SEED, "obj.onion_seed")
+            column(SEED_CHANCE, 3, 103)
             column(COL_ITEM_GIVEN_AMOUNT, 1)
             column(RESPAWN_TICK_TIME, 50)
             column(OBJECT_CYCLE, false)
@@ -108,7 +111,7 @@ object PickableObjects {
         }
 
         row("dbrow.pickable_pineapple_brimhaven") {
-            columnRSCM(LOCS, "loc.pineapple_plant","loc.pineapple_plant_four","loc.pineapple_plant_three","loc.pineapple_plant_two","loc.pineapple_plant_one")
+            columnRSCM(LOCS, "loc.pineapple_plant", "loc.pineapple_plant_four", "loc.pineapple_plant_three", "loc.pineapple_plant_two", "loc.pineapple_plant_one")
             columnRSCM(REPLACEMENT_LOC, "loc.pineapple_plant_no_pineapples")
             columnRSCM(COL_ITEM_GIVEN, "obj.pineapple")
             column(COL_ITEM_GIVEN_AMOUNT, 1)
@@ -119,7 +122,7 @@ object PickableObjects {
 
         row("dbrow.pickable_pineapple_ape_atoll") {
             columnRSCM(LOCS, "loc.mm_pineapple_plant_one")
-            columnRSCM(REPLACEMENT_LOC,"loc.pineapple_plant_no_pineapples")
+            columnRSCM(REPLACEMENT_LOC, "loc.pineapple_plant_no_pineapples")
             columnRSCM(COL_ITEM_GIVEN, "obj.pineapple")
             column(COL_ITEM_GIVEN_AMOUNT, 1)
             column(RESPAWN_TICK_TIME, 500)
@@ -131,6 +134,7 @@ object PickableObjects {
             columnRSCM(LOCS, "loc.potato")
             columnRSCM(COL_ITEM_GIVEN, "obj.potato")
             columnRSCM(SEED, "obj.potato_seed")
+            column(SEED_CHANCE, 3, 103)
             column(COL_ITEM_GIVEN_AMOUNT, 1)
             column(RESPAWN_TICK_TIME, 50)
             column(OBJECT_CYCLE, false)
@@ -138,7 +142,7 @@ object PickableObjects {
         }
 
         row("dbrow.pickable_redberry") {
-            columnRSCM(LOCS, "loc.fai_varrock_redberrybush_2","loc.fai_varrock_redberrybush_1")
+            columnRSCM(LOCS, "loc.fai_varrock_redberrybush_2", "loc.fai_varrock_redberrybush_1")
             columnRSCM(REPLACEMENT_LOC, "loc.fai_varrock_redberrybush_0")
             columnRSCM(COL_ITEM_GIVEN, "obj.redberries")
             column(COL_ITEM_GIVEN_AMOUNT, 1)
@@ -152,6 +156,7 @@ object PickableObjects {
             columnRSCM(REPLACEMENT_LOC, "loc.avium_corn01_picked")
             columnRSCM(COL_ITEM_GIVEN, "obj.sweetcorn")
             columnRSCM(SEED, "obj.sweetcorn_seed")
+            column(SEED_CHANCE, 3, 103)
             column(COL_ITEM_GIVEN_AMOUNT, 1)
             column(RESPAWN_TICK_TIME, 100)
             column(OBJECT_CYCLE, false)
@@ -163,12 +168,12 @@ object PickableObjects {
             columnRSCM(REPLACEMENT_LOC, "loc.avium_corn02_picked")
             columnRSCM(COL_ITEM_GIVEN, "obj.sweetcorn")
             columnRSCM(SEED, "obj.sweetcorn_seed")
+            column(SEED_CHANCE, 3, 103)
             column(COL_ITEM_GIVEN_AMOUNT, 1)
             column(RESPAWN_TICK_TIME, 100)
             column(OBJECT_CYCLE, false)
             column(FORCES_WALK, false)
         }
-
 
         row("dbrow.wheat") {
             columnRSCM(LOCS,
@@ -191,6 +196,5 @@ object PickableObjects {
             column(OBJECT_CYCLE, false)
             column(FORCES_WALK, true)
         }
-
     }
 }
