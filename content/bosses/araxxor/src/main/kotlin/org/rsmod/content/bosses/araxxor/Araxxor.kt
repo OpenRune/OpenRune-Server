@@ -133,6 +133,7 @@ constructor(
     private val eggs: AraxxorEggs,
     private val acid: AraxxorAcid,
     private val corpse: AraxxorCorpse,
+    private val maxHits: AraxxorMaxHits,
     private val interactions: AiPlayerInteractions,
     private val death: NpcDeath,
     private val npcList: NpcList,
@@ -540,6 +541,7 @@ constructor(
             deps,
             onModifyHit = {
                 val attacker = attackerOf(hit)
+                if (attacker != null) maxHits.guarantee(npc, hit, attacker)
                 if (
                     attacker != null &&
                         hit.type == EngineHitType.Melee &&
@@ -552,8 +554,12 @@ constructor(
                 }
             },
         )
-        BossCombat.register(this, acidicSpec, deps)
-        BossCombat.register(this, rupturaSpec, deps)
+        BossCombat.register(this, acidicSpec, deps, onModifyHit = guaranteeMaxHit())
+        BossCombat.register(this, rupturaSpec, deps, onModifyHit = guaranteeMaxHit())
+    }
+
+    private fun guaranteeMaxHit(): NpcHitEvents.Modify.() -> Unit = {
+        attackerOf(hit)?.let { maxHits.guarantee(npc, hit, it) }
     }
 
     private fun attackerOf(hit: HitBuilder): Player? =
