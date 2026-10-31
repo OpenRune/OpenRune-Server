@@ -1,5 +1,8 @@
 package org.rsmod.content.skills.farming.pack
 
+/** Diseased trees die on the next slower (80-minute) tick, as diseased herbs do. */
+private const val TREE_DEATH_MINUTES = 80
+
 internal val TREE_CROPS: List<CropSpec> =
     listOf(
         CropSpec(
@@ -106,6 +109,7 @@ internal val TREE_CROPS: List<CropSpec> =
             harvest = "CHOP",
             stump = "loc.maple_tree_stump",
             diseaseMax = 12,
+            deathMinutes = TREE_DEATH_MINUTES,
             roots = "obj.maple_roots",
             woodLoc = "loc.mapletree",
             petChance = 14052,
@@ -188,7 +192,8 @@ internal val TREE_CROPS: List<CropSpec> =
             produceArt = listOf("loc.magic_tree_fullygrown_2"),
             harvest = "CHOP",
             stump = "loc.magic_tree_stump",
-            diseaseMax = null,
+            diseaseMax = 8,
+            deathMinutes = TREE_DEATH_MINUTES,
             roots = "obj.magic_roots",
             woodLoc = "loc.magictree",
             petChance = 9368,

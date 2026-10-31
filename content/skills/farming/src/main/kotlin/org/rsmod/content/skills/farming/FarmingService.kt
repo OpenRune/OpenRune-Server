@@ -487,9 +487,58 @@ constructor(
             state.produce > 0 &&
             (state.phase == Phase.CHECKED || !crop.checksHealth)
 
+    private suspend fun ProtectedAccess.digStump(patch: PatchDef, state: PatchState): Boolean {
+        if (!inv.contains(SPADE)) {
+            mes("You need a spade to do that.")
+            return true
+        }
+        spam("You start digging up the tree stump.")
+        anim(ANIM_DIG)
+        soundSynth(SOUND_DIG)
+        delay(4)
+        resetAnim()
+        if (!inv.contains(SPADE)) return true
+        when (finishStumpDig(player, patch, state, player.farmingLvl)) {
+            StumpDig.DONE -> spam("You dig up the tree stump.")
+            // UNVERIFIED: regrowth-race text (rev 226 capture; wiki says "chop this tree down first")
+            StumpDig.REGROWN -> mes("You are too late - the tree has already regrown.")
+            // UNVERIFIED: stump roots with a full inventory (guess)
+            StumpDig.NO_ROOM -> mes("You don't have enough inventory space to hold the roots.")
+            StumpDig.CHANGED -> Unit
+        }
+        return true
+    }
+
+    /** Roots and the emptied patch commit together, only while the same stump still stands. */
+    internal fun finishStumpDig(
+        player: Player,
+        patch: PatchDef,
+        expected: PatchState,
+        level: Int,
+    ): StumpDig {
+        val current = state(player, patch)
+        if (current != expected) {
+            val regrown = current == expected.copy(phase = Phase.CHECKED)
+            return if (regrown) StumpDig.REGROWN else StumpDig.CHANGED
+        }
+        val crop = checkNotNull(current.crop)
+        // UNVERIFIED: stump clear success rate (wiki description: scales with level, 100% at 99)
+        val rootsObj = checkNotNull(crop.roots)
+        val count = FarmingTreeRoots.count(rootsObj, level)
+        val roots = FarmingHarvestStorage.prepareHarvest(player, rootsObj, count)
+        if (!roots.success) return StumpDig.NO_ROOM
+        roots.commitAll()
+        store(player, patch, current.empty())
+        eventBus.publish(FarmingClearEvent(player, patch, crop, dead = false))
+        return StumpDig.DONE
+    }
+
     suspend fun ProtectedAccess.dig(patch: PatchDef): Boolean {
         val state = state(player, patch)
         val crop = state.crop ?: return false
+        if (state.phase == Phase.STUMP && crop.kind == PatchKind.TREE && crop.roots != null) {
+            return digStump(patch, state)
+        }
         val dead = state.health == Health.DEAD
         val digUp = state.health == Health.HEALTHY && !state.grown(crop) && multiCrop(patch.kind)
         val clearMature = (crop.kind == PatchKind.CACTUS || crop.kind == PatchKind.CALQUAT) &&

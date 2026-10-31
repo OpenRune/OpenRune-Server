@@ -115,6 +115,7 @@ farming_transmit = 4445
 farming_saplings = 4446
 farming_tithe = 4447
 farming_white_tree = 4444
+farming_tree_regrow = 4448
 
 [gamevals.dbtable]
 farming_crop = 65478

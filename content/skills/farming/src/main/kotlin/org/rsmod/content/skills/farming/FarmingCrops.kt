@@ -131,14 +131,15 @@ data class Crop(
 
     /**
      * Whether this crop's harvest is source-backed. Unsourced yields (null save constants on a
-     * lives crop) and Woodcutting-driven chopping stay unshipped.
+     * lives crop) stay unshipped; chopped trees yield through the Woodcutting skill.
      */
     val harvestShipped: Boolean
         get() =
             when (harvest) {
                 HarvestModel.LIVES -> saveLow != null && saveHigh != null && produce != null
                 HarvestModel.BATCH, HarvestModel.PICK -> produce != null
-                HarvestModel.CHOP, HarvestModel.NONE -> false
+                HarvestModel.CHOP -> true
+                HarvestModel.NONE -> false
             }
 
     /**

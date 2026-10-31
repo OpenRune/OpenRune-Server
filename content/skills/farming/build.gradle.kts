@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.content.quest)
     implementation(projects.content.interfaces.omnishop)
     implementation(projects.content.interfaces.collectionLog)
+    implementation(projects.content.skills.woodcutting)
     testImplementation(projects.api.invStorage)
     testImplementation(libs.mockk)
     testImplementation(projects.api.gameProcess)

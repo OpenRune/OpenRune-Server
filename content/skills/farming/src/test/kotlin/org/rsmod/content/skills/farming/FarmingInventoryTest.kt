@@ -3,6 +3,7 @@ package org.rsmod.content.skills.farming
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import io.mockk.mockk
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
@@ -1192,6 +1193,7 @@ class FarmingInventoryTest {
         private val script = FarmingScript(
             service, FarmingCompostService(service, XpModifiers(emptySet())),
             FarmingScarecrow(service), FarmingSpiritTrees(service, quests),
+            mockk<FarmingTreeChop>(),
         )
         private val coroutine = GameCoroutine("farming-inventory-test")
         private var result: Result<Unit>? = null

@@ -15,6 +15,7 @@ import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.content.generic.locs.water.WateringCans
+import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -27,15 +28,16 @@ class FarmingScript @Inject constructor(
     private val compost: FarmingCompostService,
     private val scarecrow: FarmingScarecrow,
     private val spiritTrees: FarmingSpiritTrees,
+    private val treeChop: FarmingTreeChop,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         for (patch in FarmingPatches.all) {
             for (loc in patch.locs) {
-                onOpLoc1(loc) { op(patch, loc, 1) }
-                onOpLoc2(loc) { op(patch, loc, 2) }
-                onOpLoc3(loc) { op(patch, loc, 3) }
-                onOpLoc4(loc) { op(patch, loc, 4) }
-                onOpLoc5(loc) { op(patch, loc, 5) }
+                onOpLoc1(loc) { op(patch, loc, 1, it.loc) }
+                onOpLoc2(loc) { op(patch, loc, 2, it.loc) }
+                onOpLoc3(loc) { op(patch, loc, 3, it.loc) }
+                onOpLoc4(loc) { op(patch, loc, 4, it.loc) }
+                onOpLoc5(loc) { op(patch, loc, 5, it.loc) }
                 onOpLocU(loc) { useItem(patch, it.objType.internalName, it.invSlot) }
             }
         }
@@ -48,7 +50,12 @@ class FarmingScript @Inject constructor(
         onPlayerSoftTimer(TIMER_TRANSMIT) { farming.refresh(player) }
     }
 
-    private suspend fun ProtectedAccess.op(patch: PatchDef, loc: String, op: Int) {
+    private suspend fun ProtectedAccess.op(
+        patch: PatchDef,
+        loc: String,
+        op: Int,
+        bound: BoundLocInfo,
+    ) {
         val state = farming.state(player, patch)
         val parent = ServerCacheManager.getObject(loc.asRSCM(RSCMType.LOC))
         val shown = parent?.multiLoc?.getOrNull(state.transmit(state.crop, patch.kind))
@@ -67,6 +74,8 @@ class FarmingScript @Inject constructor(
                 action == "inspect" -> inspect(patch)
                 action == "cure" -> plantCure(patch)
                 action == "check-health" -> checkHealth(patch)
+                action == "chop down" ->
+                    if (!with(treeChop) { chop(patch, bound, state) }) mes(NOTHING)
                 action == "clear" -> if (!dig(patch)) mes(NOTHING)
                 action in HARVEST_OPS || action?.startsWith("pick") == true ->
                     if (!harvest(patch)) mes(NOTHING)
