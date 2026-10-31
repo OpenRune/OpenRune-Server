@@ -23,6 +23,7 @@ import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.interact.LocUInteractions
 import org.rsmod.api.player.stat.hitpoints
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.testing.GameTestState
 import org.rsmod.api.testing.scope.GameTestScope
 import org.rsmod.game.hit.HitType
@@ -68,22 +69,39 @@ class WaterSourceScriptTest {
         }
 
     @Test
-    fun GameTestState.`watering cans continue every four ticks`() =
+    fun GameTestState.`watering can continuation refills each actual mixed-dose can`() =
         runInjectedGameTest(LocUInteractions::class, null, WaterSourceScript::class) { interactions ->
             player.clearInv()
-            player.inv[7] = InvObj(id("obj.watering_can_0"), 1)
-            player.inv[20] = InvObj(id("obj.watering_can_0"), 1)
+            player.inv[7] = InvObj(id("obj.watering_can_3"), 1)
+            player.inv[20] = InvObj(id("obj.watering_can_7"), 1)
             use(interactions, "loc.fountain", "obj.watering_can_0", 0)
             assertMessageSent("You fill the watering can from the fountain.")
             advance(1)
             assertEquals(id("obj.watering_can_8"), player.inv[0]?.id)
-            assertEquals(id("obj.watering_can_0"), player.inv[7]?.id)
-            assertEquals(id("obj.watering_can_0"), player.inv[20]?.id)
+            assertEquals(id("obj.watering_can_3"), player.inv[7]?.id)
+            assertEquals(id("obj.watering_can_7"), player.inv[20]?.id)
             advance(4)
             assertEquals(id("obj.watering_can_8"), player.inv[7]?.id)
-            assertEquals(id("obj.watering_can_0"), player.inv[20]?.id)
+            assertEquals(id("obj.watering_can_7"), player.inv[20]?.id)
             advance(4)
             assertEquals(id("obj.watering_can_8"), player.inv[20]?.id)
+        }
+
+    @Test
+    fun GameTestState.`well refills shared Gricoller tank and full copies do not keep the refill queue alive`() =
+        runInjectedGameTest(LocUInteractions::class, null, WaterSourceScript::class) { interactions ->
+            player.clearInv()
+            player.inv[12] = InvObj(id("obj.zeah_wateringcan"), 1)
+            VarPlayerIntMapSetter.set(player, "varbit.zeah_wateringcan_charges", 0)
+            use(interactions, "loc.well", "obj.zeah_wateringcan", 6)
+            advance(1)
+            assertEquals(1000, player.vars["varbit.zeah_wateringcan_charges"])
+            assertEquals(id("obj.zeah_wateringcan"), player.inv[6]?.id)
+            assertEquals(id("obj.zeah_wateringcan"), player.inv[12]?.id)
+            advance(5)
+            VarPlayerIntMapSetter.set(player, "varbit.zeah_wateringcan_charges", 999)
+            advance(10)
+            assertEquals(999, player.vars["varbit.zeah_wateringcan_charges"])
         }
 
     @Test
@@ -163,6 +181,17 @@ class WaterSourceScriptTest {
         }
 
     @Test
+    fun GameTestState.`stale clicked slot refills nothing and starts no continuation`() =
+        runInjectedGameTest(LocUInteractions::class, null, WaterSourceScript::class) { interactions ->
+            player.clearInv()
+            player.inv[10] = InvObj(id("obj.watering_can_0"), 1)
+            use(interactions, "loc.well", "obj.watering_can_0", 6, held = "obj.logs")
+            advance(5)
+            assertEquals(id("obj.logs"), player.inv[6]?.id)
+            assertEquals(id("obj.watering_can_0"), player.inv[10]?.id)
+        }
+
+    @Test
     fun GameTestState.`well preserves refused containers with captured punctuation`() =
         runInjectedGameTest(LocUInteractions::class, null, WaterSourceScript::class) { interactions ->
             val refusals =
@@ -220,11 +249,17 @@ class WaterSourceScriptTest {
         }
     }
 
-    private fun GameTestScope.use(interactions: LocUInteractions, source: String, item: String, slot: Int) {
+    private fun GameTestScope.use(
+        interactions: LocUInteractions,
+        source: String,
+        item: String,
+        slot: Int,
+        held: String = item,
+    ) {
         val loc = placeMapLoc(COORDS, source)
         player.teleport(COORDS.translateZ(-1))
         val type = checkNotNull(ServerCacheManager.getItem(id(item)))
-        player.inv[slot] = InvObj(type.id, 1)
+        player.inv[slot] = InvObj(id(held), 1)
         player.withProtectedAccess {
             interactions.interactOp(this, loc, loc, checkNotNull(ServerCacheManager.getObject(loc.id)), type, inv, slot)
         }
