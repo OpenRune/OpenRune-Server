@@ -1,0 +1,194 @@
+[gamevals.dbtable]
+impling_types = 56002
+impling_loot = 65498
+crystal_impling = 65500
+
+birdhouse_types = 56003
+birdhouse_seeds = 65501
+
+hunter_traps = 56004
+hunter_trap_creatures = 56005
+
+herbiboar_legs = 56006
+herbiboar_spots = 56007
+herbiboar_tunnels = 56008
+herbiboar_herbs = 56009
+herbiboar_fossils = 65499
+
+hunter_butterflies = 56012
+
+hunter_rumour_hunters = 56010
+hunter_rumours = 56011
+
+[gamevals.dbrow]
+impling_type_baby = 60152
+impling_type_young = 60153
+impling_type_gourmet = 60154
+impling_type_earth = 60155
+impling_type_essence = 60156
+impling_type_eclectic = 60157
+impling_type_nature = 60158
+impling_type_magpie = 60159
+impling_type_ninja = 60160
+impling_type_dragon = 60161
+impling_type_lucky = 60162
+
+birdhouse_type_normal = 60163
+birdhouse_type_oak = 60164
+birdhouse_type_willow = 60165
+birdhouse_type_teak = 60166
+birdhouse_type_maple = 60167
+birdhouse_type_mahogany = 60168
+birdhouse_type_yew = 60169
+birdhouse_type_magic = 60170
+birdhouse_type_redwood = 60171
+
+hunter_trap_bird_snare = 60172
+hunter_trap_box_trap = 60173
+hunter_trap_creature_crimson_swift = 60174
+hunter_trap_creature_golden_warbler = 60175
+hunter_trap_creature_copper_longtail = 60176
+hunter_trap_creature_cerulean_twitch = 60177
+hunter_trap_creature_tropical_wagtail = 60178
+hunter_trap_creature_ferret = 60179
+hunter_trap_creature_chinchompa = 60180
+hunter_trap_creature_chinchompa_big = 60181
+hunter_trap_creature_chinchompa_black = 60182
+hunter_trap_creature_jerboa = 60183
+
+herbiboar_leg_0 = 60184
+herbiboar_leg_1 = 60185
+herbiboar_leg_2 = 60186
+herbiboar_leg_3 = 60187
+herbiboar_leg_4 = 60188
+herbiboar_leg_5 = 60189
+herbiboar_leg_6 = 60190
+herbiboar_leg_7 = 60191
+herbiboar_leg_8 = 60192
+herbiboar_leg_9 = 60193
+herbiboar_leg_10 = 60194
+herbiboar_leg_11 = 60195
+herbiboar_leg_12 = 60196
+herbiboar_leg_13 = 60197
+herbiboar_leg_14 = 60198
+herbiboar_leg_15 = 60199
+herbiboar_leg_16 = 60200
+herbiboar_leg_17 = 60201
+herbiboar_leg_18 = 60202
+herbiboar_leg_19 = 60203
+herbiboar_leg_20 = 60204
+herbiboar_leg_21 = 60205
+herbiboar_leg_22 = 60206
+herbiboar_leg_23 = 60207
+herbiboar_leg_24 = 60208
+herbiboar_leg_25 = 60209
+herbiboar_leg_26 = 60210
+herbiboar_leg_27 = 60211
+herbiboar_leg_28 = 60212
+herbiboar_leg_29 = 60213
+herbiboar_leg_30 = 60214
+herbiboar_leg_31 = 60215
+herbiboar_leg_32 = 60216
+herbiboar_leg_33 = 60217
+herbiboar_leg_34 = 60218
+herbiboar_leg_35 = 60219
+herbiboar_leg_36 = 60220
+herbiboar_leg_37 = 60221
+herbiboar_leg_38 = 60222
+herbiboar_leg_39 = 60223
+herbiboar_leg_40 = 60224
+herbiboar_leg_41 = 60225
+herbiboar_leg_42 = 60226
+herbiboar_leg_43 = 60227
+herbiboar_leg_44 = 60228
+herbiboar_leg_45 = 60229
+herbiboar_spot_a_mushroom = 60230
+herbiboar_spot_a_patch = 60231
+herbiboar_spot_b_seaweed = 60232
+herbiboar_spot_c_mushroom = 63891
+herbiboar_spot_c_patch = 63890
+herbiboar_spot_d_patch = 63889
+herbiboar_spot_d_seaweed = 63888
+herbiboar_spot_e_mushroom = 63887
+herbiboar_spot_e_patch = 63886
+herbiboar_spot_f_mushroom = 63885
+herbiboar_spot_f_patch = 63884
+herbiboar_spot_g_mushroom = 63883
+herbiboar_spot_g_patch = 63882
+herbiboar_spot_h_seaweed_east = 63881
+herbiboar_spot_h_seaweed_west = 63880
+herbiboar_spot_i_mushroom = 63879
+herbiboar_spot_i_patch = 63878
+herbiboar_spot_j_patch = 63877
+herbiboar_spot_k_patch = 63876
+herbiboar_tunnel_1 = 63875
+herbiboar_tunnel_2 = 63874
+herbiboar_tunnel_3 = 60251
+herbiboar_tunnel_4 = 60252
+herbiboar_tunnel_5 = 60253
+herbiboar_tunnel_6 = 60254
+herbiboar_tunnel_7 = 60255
+herbiboar_tunnel_8 = 60256
+herbiboar_tunnel_9 = 60257
+herbiboar_herb_ranarr = 60258
+herbiboar_herb_torstol = 60259
+herbiboar_herb_snapdragon = 60260
+herbiboar_herb_dwarf_weed = 60261
+herbiboar_herb_lantadyme = 60262
+herbiboar_herb_cadantine = 60263
+herbiboar_herb_kwuarm = 60264
+herbiboar_herb_avantoe = 60265
+herbiboar_herb_irit = 60266
+herbiboar_herb_tarromin = 60267
+herbiboar_herb_harralander = 60268
+herbiboar_herb_marentill = 60269
+herbiboar_herb_guam = 60270
+
+hunter_butterfly_ruby_harvest = 60281
+hunter_butterfly_sapphire_glacialis = 60282
+hunter_butterfly_snowy_knight = 60283
+hunter_butterfly_black_warlock = 60284
+hunter_butterfly_sunlight_moth = 60285
+hunter_butterfly_moonlight_moth = 60286
+hunter_butterfly_moonlight_moth_low_wander = 60287
+
+hunter_rumour_hunter_gilman = 60271
+hunter_rumour_hunter_cervus = 60272
+hunter_rumour_hunter_ornus = 60273
+hunter_rumour_hunter_aco = 60274
+hunter_rumour_hunter_teco = 60275
+hunter_rumour_hunter_wolf = 60276
+hunter_rumour_tropical_wagtail = 60277
+hunter_rumour_grey_chinchompa = 60278
+hunter_rumour_carnivorous_chinchompa = 60279
+hunter_rumour_herbiboar = 60280
+hunter_rumour_sapphire_glacialis = 60288
+hunter_rumour_snowy_knight = 60289
+hunter_rumour_black_warlock = 60290
+hunter_rumour_sunlight_moth = 60291
+hunter_rumour_moonlight_moth = 60292
+hunter_rumour_embertailed_jerboa = 60293
+
+impling_loot_baby = 63867
+impling_loot_young = 63857
+impling_loot_gourmet = 63861
+impling_loot_earth = 63864
+impling_loot_essence = 63862
+impling_loot_eclectic = 63863
+impling_loot_nature = 63859
+impling_loot_magpie = 63860
+impling_loot_ninja = 63858
+impling_loot_dragon = 63865
+impling_loot_crystal = 63866
+crystal_impling = 63873
+birdhouse_seeds = 63892
+herbiboar_fossil_numulite = 63870
+herbiboar_fossil_small_unid = 63868
+herbiboar_fossil_medium_unid = 63871
+herbiboar_fossil_large_unid = 63872
+herbiboar_fossil_rare_unid = 63869
+
+[gamevals.timer]
+
+hunter_traps = 436
+
