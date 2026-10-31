@@ -25,6 +25,7 @@ import org.rsmod.api.totp.laravel.TwoFactorSecretResolver
 import org.rsmod.api.totp.useSecret
 import org.rsmod.events.EventBus
 import org.rsmod.game.GameUpdate
+import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
 
 class ConnectionHandler
@@ -33,6 +34,7 @@ private constructor(
     private val realm: Realm,
     private val config: ServerConfig,
     private val update: GameUpdate,
+    private val mapClock: MapClock,
     private val eventBus: EventBus,
     private val playerReg: PlayerRegistry,
     private val accountReg: AccountRegistry,
@@ -127,6 +129,7 @@ private constructor(
                 config = realmConfig,
                 loginTimingLogs = config.loginTimingLogs,
                 update = update,
+                mapClock = mapClock,
                 eventBus = eventBus,
                 accountRegistry = accountReg,
                 playerRegistry = playerReg,
