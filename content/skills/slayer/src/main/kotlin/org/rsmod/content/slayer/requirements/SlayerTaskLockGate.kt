@@ -16,17 +16,22 @@ internal class SlayerTaskLockAttackHook @Inject constructor() : NpcAttackValidat
         return NpcAttackValidateResult.Deny(MESSAGE)
     }
 
-    private fun isTaskLocked(npc: Npc): Boolean =
-        TASK_LOCKED_PREFIXES.any(npc.visType.internalName::startsWith) &&
-            TENTACLE_MARKER !in npc.visType.internalName
+    private fun isTaskLocked(npc: Npc): Boolean {
+        val name = npc.visType.internalName
+        if (name in TASK_LOCKED_NAMES) return true
+        return TASK_LOCKED_PREFIXES.any(name::startsWith) && TENTACLE_MARKER !in name
+    }
 
     private companion object {
         const val MESSAGE = "You need to have a Slayer task to harm this creature."
         const val TENTACLE_MARKER = "_tentacle"
 
+        val TASK_LOCKED_NAMES = setOf("npc.slayer_kraken")
+
         val TASK_LOCKED_PREFIXES =
             listOf(
                 "npc.slayer_kraken_boss",
+                "npc.slayer_kraken_sub",
                 "npc.smoke_devil",
                 "npc.cerberus",
                 "npc.abyssalsire",

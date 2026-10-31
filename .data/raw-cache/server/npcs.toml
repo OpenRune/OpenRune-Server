@@ -3490,6 +3490,8 @@ inherit = "npc.slayer_kraken_sub"
 [npc.params]
 "param.killcount_varp"="varp.kc_cave_kraken"
 "param.killcount_notify"=false
+"param.death_anim"="seq.swan_queen_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.slayer_kursk_1"
