@@ -59,7 +59,7 @@ valueType = "STRING"
 19 = "farming_guild_main_entrance"
 20 = "tithe_farm"
 21 = "west_port_phasmatys"
-22 = 'inv.farming_shop_3'
+22 = 'inv.farming_shop_1'
 
 [[enum]]
 isServerOnly = true
