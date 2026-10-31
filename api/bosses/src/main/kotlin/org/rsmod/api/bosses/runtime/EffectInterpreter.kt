@@ -896,7 +896,12 @@ class EffectInterpreter internal constructor(
                     expr.range.first + deps.random.of(expr.range.last - expr.range.first + 1)
                 }
             is DamageExpr.Accuracy -> {
-                val landed = rollAccuracy(hitType, t, expr.meleeAttackType)
+                val landed =
+                    if (expr.kind == AccuracyKind.MagicalRanged) {
+                        deps.accuracy.rollMagicalRangedAccuracy(npc, t, deps.random)
+                    } else {
+                        rollAccuracy(hitType, t, expr.meleeAttackType)
+                    }
                 evaluateDamage(if (landed) expr.on else expr.miss, hitType, t)
             }
             is DamageExpr.NpcMaxHit -> {

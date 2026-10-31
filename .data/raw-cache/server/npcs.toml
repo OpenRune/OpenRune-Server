@@ -3460,6 +3460,8 @@ inherit = "npc.slayer_kraken"
 [[npc]]
 id = "npc.slayer_kraken_boss"
 inherit = "npc.slayer_kraken_boss"
+defenceOverride = 1
+magicOverride = 1
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=50
@@ -3468,8 +3470,19 @@ inherit = "npc.slayer_kraken_boss"
 [[npc]]
 id = "npc.slayer_kraken_boss_whirlpool"
 inherit = "npc.slayer_kraken_boss_whirlpool"
+respawnRate = 12
 [npc.params]
 "param.killcount_varp"="varp.total_kraken_boss_kills"
+"param.death_anim"="seq.swan_queen_death"
+"param.dropped_remains"=-1
+
+[[npc]]
+id = "npc.slayer_kraken_boss_tentacle_whirlpool"
+inherit = "npc.slayer_kraken_boss_tentacle_whirlpool"
+respawnRate = 2147483647
+[npc.params]
+"param.death_anim"="seq.tentacle_monster_death"
+"param.dropped_remains"=-1
 
 [[npc]]
 id = "npc.slayer_kraken_sub"
@@ -10287,6 +10300,8 @@ inherit = "npc.dungeonspider"
 [[npc]]
 id = "npc.slayer_kraken_boss_tentacle"
 inherit = "npc.slayer_kraken_boss_tentacle"
+rangedOverride = 150
+magicOverride = 1
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=50
