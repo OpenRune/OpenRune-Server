@@ -3,7 +3,9 @@ package org.rsmod.content.skills.farming
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.random.GameRandom
+import org.rsmod.content.interfaces.collectionlog.CollectionLog
 import org.rsmod.content.other.pets.PetRewards
 import org.rsmod.game.entity.Player
 
@@ -29,7 +31,11 @@ class FarmingRewards @Inject constructor(private val pets: PetRewards, private v
     }
 
     fun complete(player: Player, roll: FarmingRewardRoll) {
-        if (roll.seed) player.invAdd(player.inv, HESPORI_SEED, 1, ignoreVirtualStorage = true)
+        if (roll.seed) {
+            player.invAdd(player.inv, HESPORI_SEED, 1, ignoreVirtualStorage = true)
+            CollectionLog.grant(player, HESPORI_SEED)
+            player.mes("You find a Hespori seed!")
+        }
         if (roll.pet) pets.give(player, TANGLEROOT)
     }
 
