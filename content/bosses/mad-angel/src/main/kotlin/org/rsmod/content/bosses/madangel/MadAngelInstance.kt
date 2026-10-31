@@ -73,6 +73,7 @@ constructor(
             fadeOverlay(0, 0, 0, 255, FADE_CLIENT_DURATION)
             closeFadeOverlay()
         }
+        onExitObjectApproach2 { defaultLeaveFlow() }
         onInstancePlayerLeave {
             player.nextHitBuff = MadAngelFight.NEXT_HIT_NONE
             for (angel in manager.npcsForInstance(instanceId)) {
