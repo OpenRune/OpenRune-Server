@@ -62,9 +62,8 @@ class Kraken @Inject constructor(
             npcDeath.deathWithDrops(this, dropCoords)
         }
 
-        val bossId = bossType.id
         onEvent<NpcStateEvents.Respawn> {
-            if (npc.id == bossId) respawnTentacles(npc)
+            if (npc.id == bossPoolId) respawnTentacles(npc)
             if (npc.id in poolIds) refreshNearby(npc)
         }
         for (poolId in poolIds) {
