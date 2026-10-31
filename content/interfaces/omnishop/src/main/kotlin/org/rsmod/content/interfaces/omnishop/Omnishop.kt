@@ -6,8 +6,11 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.dbcol.DbHelper
+import dev.openrune.types.enums.enum
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.shops.currency.ShopCurrency
+import org.rsmod.api.shops.currency.ShopCurrencyRows
 import org.rsmod.game.entity.Player
 
 internal var Player.omnishopSelectedId by intVarp("varp.omnishop_selected_id")
@@ -19,8 +22,8 @@ public fun ProtectedAccess.openOmnishop(shopRow: String) {
     val row = shopRow.asRSCM(RSCMType.DBROW)
     player.omnishopSelectedSideId = -1
     player.omnishopSelectedId = -1
-    player.omnishopLastShop = row
     ifOpenMainSidePair(main = "interface.omnishop_main", side = "interface.omnishop_side")
+    player.omnishopLastShop = row
     runClientScript("clientscript.[clientscript,omnishop_main_init]".asRSCM(RSCMType.CLIENTSCRIPT), row, -1, -1)
     runClientScript("clientscript.[clientscript,omnishop_side_init]".asRSCM(RSCMType.CLIENTSCRIPT), row)
     ifSetEvents(
@@ -61,11 +64,12 @@ public fun ProtectedAccess.openOmnishop(shopRow: String) {
 internal class RawDbRow(id: Int) {
     private val helper = DbHelper.row(id)
 
-    fun ints(column: String): List<Int> =
-        runCatching { helper.getColumn(column).column.values }
-            .getOrNull()
-            ?.map { (it as Number).toInt() }
-            ?: emptyList()
+    fun ints(column: String): List<Int> {
+        val values = runCatching { helper.getColumn(column).column.values }.getOrNull()
+            ?: ServerCacheManager.getDbtable(helper.tableId)
+                ?.columns?.get(column.asRSCM() and 0xFFFF)?.values
+        return values?.map { (it as Number).toInt() } ?: emptyList()
+    }
 
     fun int(column: String): Int? = ints(column).firstOrNull()
 
@@ -75,6 +79,9 @@ internal class RawDbRow(id: Int) {
 internal class OmnishopCurrency(val row: Int) {
     private val raw = RawDbRow(row)
 
+    val points: ShopCurrency?
+        get() = POINT_CURRENCIES[row]
+
     val objs: List<ItemServerType>
         get() = raw.ints(CURRENCY_OBJ).mapNotNull { ServerCacheManager.getItem(it) }
 
@@ -82,14 +89,28 @@ internal class OmnishopCurrency(val row: Int) {
         get() = runCatching { DbHelper.row(row).getColumn(CURRENCY_PLURAL).column.values }
             .getOrNull()
             ?.firstOrNull() as? String ?: "currency"
+
+    companion object {
+        private val POINT_CURRENCIES by lazy {
+            val rows = ShopCurrencyRows.all().filter { it.omnishopCurrency != null }
+            check(rows.map { it.omnishopCurrency }.distinct().size == rows.size)
+            check(rows.map { it.varbitId }.distinct().size == rows.size)
+            rows.associate { metadata ->
+                check(metadata.varbitId != null && metadata.obj == null)
+                check(RawDbRow(checkNotNull(metadata.omnishopCurrency)).ints(CURRENCY_OBJ)
+                    .none { ServerCacheManager.getItem(it) != null })
+                checkNotNull(metadata.omnishopCurrency) to ShopCurrencyRows.toShopCurrency(metadata)
+            }
+        }
+    }
 }
 
-internal class OmnishopStock(private val shop: RawDbRow, private val stock: RawDbRow) {
+internal class OmnishopStock(val row: Int, private val shop: RawDbRow, private val stock: RawDbRow) {
     val obj: ItemServerType =
         ServerCacheManager.getItem(stock.int(STOCK_OBJ) ?: -1) ?: error("Omnishop stock has no obj")
 
     val multiplier: Int
-        get() = stock.int(STOCK_MULTIPLIER)?.takeIf { it > 0 } ?: 1
+        get() = stock.int(STOCK_MULTIPLIER) ?: 1
 
     val buyable: Boolean
         get() = stock.bool(STOCK_BUYABLE) ?: true
@@ -97,18 +118,31 @@ internal class OmnishopStock(private val shop: RawDbRow, private val stock: RawD
     val sellable: Boolean
         get() = stock.bool(STOCK_SELLABLE) ?: false
 
-    fun buyCosts(): List<Pair<OmnishopCurrency, Int>> =
-        costs(stock.int(STOCK_MOD_BUY) ?: shop.int(SHOP_MOD_BUY) ?: DEFAULT_MOD, minimum = 1)
+    val soldNoted: Boolean
+        get() = stock.bool(STOCK_SOLD_NOTED) ?: false
 
-    fun sellCosts(): List<Pair<OmnishopCurrency, Int>> =
-        costs(stock.int(STOCK_MOD_SELL) ?: shop.int(SHOP_MOD_SELL) ?: DEFAULT_MOD, minimum = 0)
+    fun buyQuantity(option: Int): Int? {
+        if ((1..4).none { shop.int("dbcol.omnishop_shop_data:omnishop_buy_q$it") == option }) return null
+        return enum<Int, Int>("omnishop_buy_quantities")[option]?.takeIf { it > 0 }
+    }
 
-    private fun costs(mod: Int, minimum: Int): List<Pair<OmnishopCurrency, Int>> =
-        stock.ints(STOCK_COST).chunked(2).filter { it.size == 2 }.map { (currency, base) ->
-            val scaled = (base.toLong() * mod.coerceAtLeast(MIN_MOD) / DEFAULT_MOD).toInt()
-            val price = if (base == 0) 0 else scaled.coerceAtLeast(minimum)
-            OmnishopCurrency(currency) to price
-        }
+    fun buyCosts(): List<Pair<OmnishopCurrency, Long>> =
+        costs(stock.int(STOCK_MOD_BUY)?.takeUnless { it == Int.MIN_VALUE }
+            ?: shop.int(SHOP_MOD_BUY) ?: DEFAULT_MOD, minimum = 1)
+
+    fun sellCosts(): List<Pair<OmnishopCurrency, Long>> =
+        costs(stock.int(STOCK_MOD_SELL)?.takeUnless { it == Int.MIN_VALUE }
+            ?: shop.int(SHOP_MOD_SELL) ?: DEFAULT_MOD, minimum = 0)
+
+    private fun costs(mod: Int, minimum: Int): List<Pair<OmnishopCurrency, Long>> {
+        val values = stock.ints(STOCK_COST)
+        check(values.size % 2 == 0 && mod >= 0)
+        return values.chunked(2).groupBy({ it[0] }, { base ->
+            check(base[1] >= 0)
+            val scaled = base[1].toLong() * mod.coerceAtLeast(MIN_MOD) / DEFAULT_MOD
+            if (base[1] == 0) 0L else scaled.coerceAtLeast(minimum.toLong())
+        }).map { (currency, prices) -> OmnishopCurrency(currency) to prices.sum() }
+    }
 
     fun description(): String {
         val param = ServerCacheManager.getParam("param.omnishop_item_info".asRSCM(RSCMType.PARAM))
@@ -120,12 +154,12 @@ internal class OmnishopStock(private val shop: RawDbRow, private val stock: RawD
         fun find(shopRow: Int, index: Int): OmnishopStock? {
             val shop = runCatching { RawDbRow(shopRow) }.getOrNull() ?: return null
             val stockRow = shop.ints(SHOP_STOCK).getOrNull(index) ?: return null
-            return runCatching { OmnishopStock(shop, RawDbRow(stockRow)) }.getOrNull()
+            return runCatching { OmnishopStock(stockRow, shop, RawDbRow(stockRow)) }.getOrNull()
         }
 
         fun all(shopRow: Int): List<OmnishopStock> {
             val shop = runCatching { RawDbRow(shopRow) }.getOrNull() ?: return emptyList()
-            return shop.ints(SHOP_STOCK).mapNotNull { runCatching { OmnishopStock(shop, RawDbRow(it)) }.getOrNull() }
+            return shop.ints(SHOP_STOCK).mapNotNull { runCatching { OmnishopStock(it, shop, RawDbRow(it)) }.getOrNull() }
         }
     }
 }
@@ -146,5 +180,6 @@ private const val STOCK_MOD_SELL = "dbcol.omnishop_stock_data:omnishop_stock_cos
 private const val STOCK_MULTIPLIER = "dbcol.omnishop_stock_data:omnishop_stock_transaction_multiplier"
 private const val STOCK_BUYABLE = "dbcol.omnishop_stock_data:omnishop_stock_buyable"
 private const val STOCK_SELLABLE = "dbcol.omnishop_stock_data:omnishop_stock_sellable"
+private const val STOCK_SOLD_NOTED = "dbcol.omnishop_stock_data:omnishop_stock_sold_noted"
 private const val CURRENCY_OBJ = "dbcol.omnishop_currency_data:omnishop_currency_obj"
 private const val CURRENCY_PLURAL = "dbcol.omnishop_currency_data:omnishop_currency_name_plural"

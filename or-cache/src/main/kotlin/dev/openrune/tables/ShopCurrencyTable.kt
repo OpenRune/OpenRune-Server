@@ -10,6 +10,7 @@ object ShopCurrencyTable {
     const val PLURAL_NAME = 2
     const val OBJ = 3
     const val VARBIT = 4
+    const val OMNISHOP_CURRENCY = 5
 
     fun shopCurrencies() = dbTable("dbtable.shop_currency", serverOnly = true) {
         column("key", KEY, VarType.STRING)
@@ -17,6 +18,7 @@ object ShopCurrencyTable {
         column("plural_name", PLURAL_NAME, VarType.STRING)
         column("obj", OBJ, VarType.OBJ)
         column("varbit", VARBIT, VarType.INT)
+        column("omnishop_currency", OMNISHOP_CURRENCY, VarType.INT)
 
         row("dbrow.shop_currency_standard_gp") {
             column(KEY, "currency.standard_gp")
@@ -44,6 +46,21 @@ object ShopCurrencyTable {
             column(SINGULAR_NAME, "unidentified mineral")
             column(PLURAL_NAME, "unidentified minerals")
             columnRSCM(OBJ, "obj.mguild_minerals")
+        }
+
+        row("dbrow.shop_currency_tithe_points") {
+            column(KEY, "currency.tithe_points")
+            column(SINGULAR_NAME, "Tithe point")
+            column(PLURAL_NAME, "Tithe points")
+            columnRSCM(VARBIT, "varbit.hosidius_tithe_rewardpoints")
+            columnRSCM(OMNISHOP_CURRENCY, "dbrow.omnishop_currency_tithe_points")
+        }
+
+        row("dbrow.shop_currency_mermaid_tears") {
+            column(KEY, "currency.mermaid_tears")
+            column(SINGULAR_NAME, "mermaid tear")
+            column(PLURAL_NAME, "mermaid tears")
+            columnRSCM(OBJ, "obj.fossil_mermaid_tear")
         }
     }
 }

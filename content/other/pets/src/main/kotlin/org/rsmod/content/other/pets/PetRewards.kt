@@ -39,12 +39,17 @@ constructor(
         stat: String,
         baseChance: Int,
         rarityMultiplier: Int = 1,
+    ): Boolean =
+        rollSkillingPetChance(player, stat, baseChance, rarityMultiplier) && give(player, obj)
+
+    fun rollSkillingPetChance(
+        player: Player,
+        stat: String,
+        baseChance: Int,
+        rarityMultiplier: Int = 1,
     ): Boolean {
         val scaled = (baseChance - player.statBase(stat) * 25).coerceAtLeast(1)
-        if (random.of(scaled * rarityMultiplier) != 0) {
-            return false
-        }
-        return give(player, obj)
+        return random.of(scaled * rarityMultiplier) == 0
     }
 
     fun reclaim(player: Player, pet: Pet): Boolean {

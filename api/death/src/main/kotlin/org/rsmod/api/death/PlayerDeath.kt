@@ -15,6 +15,7 @@ import org.rsmod.api.player.deathResetTimers
 import org.rsmod.api.player.disablePrayers
 import org.rsmod.api.player.hasProtectItemPrayer
 import org.rsmod.api.player.hook.TeleportType
+import org.rsmod.api.player.ironman.hasSafeDeathMark
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarp
@@ -33,8 +34,11 @@ constructor(
     private val cleanupHooks: Set<PlayerDeathCleanupHook>,
     private val storageHooks: Set<PlayerDeathStorageHook>,
     private val respawnHooks: Set<PlayerRespawnHook>,
+    dropHooks: Set<PlayerDeathDropHook>,
     private val areaChecker: AreaChecker,
 ) {
+    private val dropHooks = dropHooks.sortedByDescending { it.priority }
+
     private var Player.specialAttackType by intVarp("varp.sa_attack")
     private var Player.inInstance by boolVarBit("varbit.player_in_instance")
     private var Player.deaths by intVarp("varp.tracking_deaths")
@@ -102,7 +106,12 @@ constructor(
         val handling = handlingResolver.resolve(context)
 
         val emptied = storageHooks.flatMap { it.empty(player, context.isPvpDeath) }
-        val result = drops.withLost(drops.selectDrops(player, context, handling), emptied)
+        var result = drops.withLost(drops.selectDrops(player, context, handling), emptied)
+        if (!handling.isSafe && !player.hasSafeDeathMark()) {
+            for (hook in dropHooks) {
+                result = hook.prepare(context, handling, result)
+            }
+        }
         drops.applyDrops(player, result, handling, deathCoords)
         drops.spawnRemains(deathCoords, handling)
 

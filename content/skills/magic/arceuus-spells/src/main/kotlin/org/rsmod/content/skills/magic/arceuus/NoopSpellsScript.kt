@@ -41,12 +41,6 @@ constructor(private val spells: MagicSpellRegistry, private val runes: MagicRune
         val anim: String,
         val spotanim: String,
     ) {
-        ResurrectCrops(
-            obj = "obj.br_swordfish",
-            component = "component.magic_spellbook:resurrect_crops",
-            anim = "seq.res_necromancy_plant_spell",
-            spotanim = "spotanim.arceuus_crop_res_spotanim",
-        ),
         LesserGhost(
             obj = "obj.osb8_monkey_cow",
             component = "component.magic_spellbook:resurrect_lesser_ghost",

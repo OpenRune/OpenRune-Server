@@ -1,8 +1,6 @@
 package org.rsmod.content.skills.woodcutting.scripts
 
 import dev.openrune.ServerCacheManager
-import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.ObjectServerType
 import dev.openrune.types.SequenceServerType
@@ -14,13 +12,9 @@ import org.rsmod.api.config.locXpParam
 import org.rsmod.api.config.objParam
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.controller.vars.intVarCon
-import org.rsmod.api.player.events.skilling.SkillingProduct
-import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
-import org.rsmod.api.player.skilling.SkillingAwardResult
-import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.firemakingLvl
 import org.rsmod.api.player.stat.woodcuttingLvl
 import org.rsmod.api.random.GameRandom
@@ -31,8 +25,6 @@ import org.rsmod.api.script.onAiConTimer
 import org.rsmod.api.script.onOpContentLoc1
 import org.rsmod.api.script.onOpContentLoc3
 import org.rsmod.api.script.onOpContentU
-import org.rsmod.api.stats.levelmod.InvisibleLevels
-import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.woodcutting.configs.WoodcuttingParams
 import org.rsmod.game.MapClock
@@ -54,8 +46,7 @@ constructor(
     private val locRepo: LocRepository,
     private val conRepo: ControllerRepository,
     private val playerRepo: PlayerRepository,
-    private val xpMods: XpModifiers,
-    private val invisibleLvls: InvisibleLevels,
+    private val cutting: TreeCutting,
     private val mapClock: MapClock,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
@@ -66,15 +57,7 @@ constructor(
     }
 
     private fun ProtectedAccess.attempt(tree: BoundLocInfo, type: ObjectServerType) {
-        if (player.woodcuttingLvl < type.treeLevelReq) {
-            mes("You need a Woodcutting level of ${type.treeLevelReq} to chop down this tree.")
-            return
-        }
-
-        if (inv.isFull()) {
-            val product = type.treeLogs
-            mes("Your inventory is too full to hold any more ${product.name.lowercase()}.")
-            soundSynth("synth.pillory_wrong")
+        if (!with(cutting) { canCut(type) }) {
             return
         }
 
@@ -83,89 +66,45 @@ constructor(
             skillAnimDelay = mapClock + 3
             opLoc1(tree)
         } else {
-            val axe = findAxe(player, type)
-            if (axe == null) {
-                mesAxeMissing()
+            if (!with(cutting) { beginSwing(type) }) {
                 return
             }
-            anim(axeAnim(axe))
-            spam("You swing your axe at the tree.")
             cut(tree, type)
         }
     }
 
     private fun ProtectedAccess.cut(tree: BoundLocInfo, type: ObjectServerType) {
-        val axe = findAxe(player, type)
-        if (axe == null) {
-            mesAxeMissing()
-            return
-        }
-
-        if (player.woodcuttingLvl < type.treeLevelReq) {
-            mes("You need a Woodcutting level of ${type.treeLevelReq} to chop down this tree.")
-            return
-        }
-
-        if (inv.isFull()) {
-            val product = type.treeLogs
-            mes("Your inventory is too full to hold any more ${product.name.lowercase()}.")
-            soundSynth("synth.pillory_wrong")
-            return
-        }
-
-        if (skillAnimDelay <= mapClock) {
-            skillAnimDelay = mapClock + 4
-            anim(axeAnim(axe))
-        }
-
-        var cutLogs = false
-        val despawn: Boolean
-
-        if (actionDelay < mapClock) {
-            actionDelay = mapClock + 3
-        } else if (actionDelay == mapClock) {
-            val (low, high) = cutSuccessRates(type, axe)
-            cutLogs = statRandom("stat.woodcutting", low, high, invisibleLvls)
-        }
-
-        if (type.hasDespawnTimer) {
-            treeSwingDespawnTick(tree, type)
-            despawn = cutLogs && isTreeDespawnRequired(tree)
-        } else if (type.treeFixedYields > 0) {
-            despawn = cutLogs && countYield(tree, type.treeFixedYields)
-        } else {
-            despawn = cutLogs && random.of(1, 255) > type.treeDepleteChance
-        }
-
-        if (cutLogs) {
-            val logs = type.treeLogs
-            val xp = type.treeXp * xpMods.get(player, "stat.woodcutting")
-            val product =
-                SkillingProduct(
-                    player = player,
-                    skill = "stat.woodcutting",
-                    item = RSCM.getReverseMapping(RSCMType.OBJ, logs.id),
-                    count = 1,
-                    experience = xp,
-                    grantsExperience = true,
-                    source = SkillingProductSource.Woodcutting(tree, logs),
+        val cut =
+            with(cutting) {
+                cutTick(
+                    tree = tree,
+                    type = type,
+                    depletes = { cutLogs ->
+                        val despawn: Boolean
+                        if (type.hasDespawnTimer) {
+                            treeSwingDespawnTick(tree, type)
+                            despawn = cutLogs && isTreeDespawnRequired(tree)
+                        } else if (type.treeFixedYields > 0) {
+                            despawn = cutLogs && countYield(tree, type.treeFixedYields)
+                        } else {
+                            despawn = cutLogs && random.of(1, 255) > type.treeDepleteChance
+                        }
+                        despawn
+                    },
+                    onDeplete = {
+                        val respawnTime = type.resolveRespawnTime(random)
+                        locRepo.change(tree, type.treeStump, respawnTime)
+                        resetAnim()
+                        soundSynth("synth.tree_fall_sound")
+                        if (respawnTime != Int.MAX_VALUE) {
+                            sendLocalOverlayLoc(tree, type, respawnTime)
+                        }
+                    },
                 )
-            if (awardSkillingProduct(product) == SkillingAwardResult.Success) {
-                spam("You get some ${logs.name.lowercase()}.")
             }
+        if (cut) {
+            opLoc3(tree)
         }
-
-        if (despawn) {
-            val respawnTime = type.resolveRespawnTime(random)
-            locRepo.change(tree, type.treeStump, respawnTime)
-            resetAnim()
-            soundSynth("synth.tree_fall_sound")
-            if (respawnTime != Int.MAX_VALUE) {
-                sendLocalOverlayLoc(tree, type, respawnTime)
-            }
-        }
-
-        opLoc3(tree)
     }
 
     private fun Controller.treeDespawnTick() {
@@ -252,20 +191,6 @@ constructor(
         }
     }
 
-    private fun ProtectedAccess.axeAnim(axe: InvObj): String =
-        RSCM.getReverseMapping(RSCMType.SEQ, getInvObj(axe).axeWoodcuttingAnim.id)
-
-    private fun ProtectedAccess.mesAxeMissing() {
-        mes("You need an axe to chop down this tree.")
-        when {
-            player.hasBlockedInfernalAxe() ->
-                mes("You need a Firemaking level of 85 to use the infernal axe.")
-            player.hasBlockedCrystalAxe() ->
-                mes("You need to complete Song of the Elves to use this axe.")
-            else -> mes("You do not have an axe which you have the woodcutting level to use.")
-        }
-    }
-
     companion object {
         private const val INFERNAL_FIREMAKING_REQ = 85
         private const val SONG_OF_THE_ELVES = "quest_songoftheelves"
@@ -337,10 +262,10 @@ constructor(
             }
         }
 
-        private fun Player.hasBlockedInfernalAxe(): Boolean =
+        internal fun Player.hasBlockedInfernalAxe(): Boolean =
             ownsAxe("obj.infernal_axe") && firemakingLvl < INFERNAL_FIREMAKING_REQ
 
-        private fun Player.hasBlockedCrystalAxe(): Boolean =
+        internal fun Player.hasBlockedCrystalAxe(): Boolean =
             (ownsAxe("obj.crystal_axe") || ownsAxe("obj.crystal_axe_inactive")) &&
                 !QuestRequirements.hasCompleted(this, SONG_OF_THE_ELVES)
 

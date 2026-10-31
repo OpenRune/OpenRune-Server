@@ -45,6 +45,8 @@ class InventoryServerCodec(
                     },
                 )
             )
+            add(DefinitionOpcode(6, OpcodeType.USHORT, InventoryServerType::overstockThreshold))
+            add(DefinitionOpcode(7, OpcodeType.USHORT, InventoryServerType::overstockPercent))
         }
 
     override fun InventoryServerType.createData() {
@@ -58,6 +60,8 @@ class InventoryServerCodec(
             stack = customData.stack
             flags = customData.flags
             stock = customData.stock
+            overstockThreshold = customData.overstockThreshold
+            overstockPercent = customData.overstockPercent
         }
     }
 

@@ -5,15 +5,23 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
+import jakarta.inject.Inject
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.IfScriptArgs
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.script.onIfScriptTrigger
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class OmnishopScript : PluginScript() {
+class OmnishopScript @Inject constructor() : PluginScript() {
     override fun ScriptContext.startup() {
+        onIfClose("interface.omnishop_main") { player.omnishopLastShop = -1 }
         onIfScriptTrigger<InfoArgs>("component.omnishop_main:trigger_request_info") {
             sendInfo(it.shop, it.index)
         }
@@ -38,42 +46,44 @@ class OmnishopScript : PluginScript() {
     }
 
     private fun ProtectedAccess.sendInfo(shop: Int, index: Int) {
+        if (shop != player.omnishopLastShop) return
         val stock = OmnishopStock.find(shop, index) ?: return
         player.omnishopSelectedId = index
         runClientScript(INFO_UPDATE.asRSCM(RSCMType.CLIENTSCRIPT), shop, -1, index, stock.description(), 1, 0, 1)
     }
 
-    private fun ProtectedAccess.buy(shop: Int, index: Int, option: Int) {
+    internal fun ProtectedAccess.buy(shop: Int, index: Int, option: Int) {
         if (shop != player.omnishopLastShop) return
         val stock = OmnishopStock.find(shop, index) ?: return
         if (!stock.buyable) return
-        var quantity = BUY_QUANTITIES.getOrNull(option - 1) ?: return
+        val requested = stock.buyQuantity(option) ?: return
+        val check = OmnishopPurchaseCheck(player, shop, stock.row, stock.obj)
+        publish(check)
+        check.failure?.let { mes(it); return }
+        val maximum = minOf(requested, check.maximum)
+        if (maximum <= 0) return
         val costs = stock.buyCosts()
-        for ((currency, price) in costs) {
-            if (price == 0) continue
-            val affordable = currencyCount(currency) / price
-            if (affordable == 0) {
-                mes("You don't have enough ${currency.pluralName}.")
+        val payments = costs.map { (currency, price) ->
+            OmnishopPayment(currency.objs, currency.points, price)
+        }
+        for ((index, payment) in payments.withIndex()) {
+            if (payment.balance(player) < payment.price) {
+                mes("You don't have enough ${costs[index].first.pluralName}.")
                 return
             }
-            quantity = minOf(quantity, affordable)
         }
-        if (!stock.obj.stackable) {
-            quantity = minOf(quantity, inv.freeSpace() / stock.multiplier)
-        } else if (inv.count(stock.obj.internalName) == 0 && inv.isFull()) {
-            quantity = 0
-        }
-        if (quantity <= 0) {
+        val output = if (stock.multiplier == 0) null else check.output
+        val quantity = buyOmnishopStock(player, payments, output,
+            stock.multiplier, maximum, check.outputVars, cert = stock.soldNoted)
+        if (quantity == 0) {
             mes("You don't have enough inventory space.")
             return
         }
-        for ((currency, price) in costs) {
-            removeCurrency(currency, price * quantity)
-        }
-        invAdd(inv, stock.obj.internalName, quantity * stock.multiplier)
+        publish(OmnishopPurchaseCompleted(player, shop, stock.row, stock.obj, quantity))
+        redraw()
     }
 
-    private fun ProtectedAccess.sell(obj: ItemServerType, requested: Int) {
+    internal fun ProtectedAccess.sell(obj: ItemServerType, requested: Int) {
         val shop = player.omnishopLastShop
         val stock = OmnishopStock.all(shop).firstOrNull { it.obj.id == obj.id }
         if (stock == null || !stock.sellable) {
@@ -82,23 +92,26 @@ class OmnishopScript : PluginScript() {
         }
         val quantity = minOf(requested, inv.count(obj.internalName))
         if (quantity == 0) return
-        if (invDel(inv, obj.internalName, quantity).failure) return
-        for ((currency, price) in stock.sellCosts()) {
-            val currencyObj = currency.objs.firstOrNull() ?: continue
-            if (price > 0) invAdd(inv, currencyObj.internalName, price * quantity)
+        val costs = stock.sellCosts()
+        if (costs.any { (currency, price) -> currency.objs.isEmpty() || price * quantity > Int.MAX_VALUE }) return
+        val result = player.invTransaction(inv, autoCommit = false) {
+            val inventory = select(inv)
+            delete(inventory, obj.id, quantity)
+            for ((currency, price) in costs) {
+                if (price > 0) add(inventory, currency.objs.first().id, (price * quantity).toInt())
+            }
         }
+        if (result.failure) {
+            mes("You don't have enough inventory space.")
+            return
+        }
+        result.commitAll()
+        redraw()
     }
 
-    private fun ProtectedAccess.currencyCount(currency: OmnishopCurrency): Int =
-        currency.objs.sumOf { inv.count(it.internalName) }
-
-    private fun ProtectedAccess.removeCurrency(currency: OmnishopCurrency, amount: Int) {
-        var remaining = amount
-        for (obj in currency.objs) {
-            if (remaining == 0) return
-            val take = minOf(remaining, inv.count(obj.internalName))
-            if (take > 0 && invDel(inv, obj.internalName, take).success) remaining -= take
-        }
+    private fun ProtectedAccess.redraw() {
+        val redraw = "varp.omnishop_redraw"
+        VarPlayerIntMapSetter.set(player, redraw, player.vars[redraw] xor 1)
     }
 
     internal data class InfoArgs(val shop: Int, val index: Int) : IfScriptArgs
@@ -109,6 +122,5 @@ class OmnishopScript : PluginScript() {
 
     private companion object {
         const val INFO_UPDATE = "clientscript.omnishop_info_update"
-        val BUY_QUANTITIES = listOf(1, 5, 10, 50)
     }
 }

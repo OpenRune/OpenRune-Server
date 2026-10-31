@@ -20,12 +20,15 @@ import org.rsmod.content.interfaces.bank.setBanksideExtraOps
 import org.rsmod.content.interfaces.bank.tabDisplayMode
 import org.rsmod.content.interfaces.bank.tutorialButton
 import org.rsmod.content.interfaces.bank.withdrawCert
+import org.rsmod.events.EventBus
 import org.rsmod.game.type.getInvObj
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class BankSettingsScript @Inject constructor(private val bankScript: BankInvScript) :
-    PluginScript() {
+class BankSettingsScript @Inject constructor(
+    private val bankScript: BankInvScript,
+    private val eventBus: EventBus,
+) : PluginScript() {
     override fun ScriptContext.startup() {
 
         onIfModalButton("component.bankmain:swap_insert") { insertMode = !insertMode }
@@ -72,7 +75,7 @@ class BankSettingsScript @Inject constructor(private val bankScript: BankInvScri
 
     private fun ProtectedAccess.toggleInvItemOptions() {
         invItemOptions = !invItemOptions
-        player.setBanksideExtraOps()
+        player.setBanksideExtraOps(eventBus)
     }
 
     private suspend fun ProtectedAccess.selectReleasePlaceholders() {

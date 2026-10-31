@@ -1,9 +1,11 @@
 package org.rsmod.api.obj.plugin
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
 import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.player.hook.PlayerObjTakeReceiver
 import org.rsmod.api.player.hook.PlayerObjTakeValidator
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -21,6 +23,7 @@ public class ObjTakePlugin
 constructor(
     private val repo: ObjRepository,
     private val takeValidator: PlayerObjTakeValidator,
+    private val takeReceiver: PlayerObjTakeReceiver,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onDefaultOpObj3 { triggerTake(it.obj) }
@@ -33,37 +36,41 @@ constructor(
             mes(denial)
             return
         }
-        if (!player.hasInvSpace(obj)) {
+        if (!player.hasInvSpace(obj) && !takeReceiver.canReceive(player, type, obj.count)) {
             player.mes(Constants.dm_take_invspace)
             return
         }
         player.resetAnim()
         if (player.coords != obj.coords) {
-            takeFar(obj)
+            takeFar(obj, type)
         } else {
             soundSynth("synth.pick2")
-            player.takeClose(obj)
+            player.takeClose(obj, type)
         }
     }
 
-    private suspend fun ProtectedAccess.takeFar(obj: Obj) {
+    private suspend fun ProtectedAccess.takeFar(obj: Obj, type: ItemServerType) {
         delay(1)
         anim("seq.human_pickuptable")
         soundSynth("synth.pick2")
-        player.takeClose(obj)
+        player.takeClose(obj, type)
     }
 
-    private fun Player.takeClose(obj: Obj) {
-        val removed = repo.del(obj)
-        if (!removed) {
+    private fun Player.takeClose(obj: Obj, type: ItemServerType) {
+        val received = takeReceiver.canReceive(this, type, obj.count)
+        val take = if (received) null else transaction(obj)
+        if (take != null && take.failure) {
+            mes(Constants.dm_take_invspace)
+            return
+        }
+        if (!repo.del(obj)) {
             mes(Constants.dm_take_taken)
             return
         }
-        val take = transaction(obj)
-        if (take.failure) {
-            mes(Constants.dm_take_invspace)
-        } else {
+        if (take != null) {
             take.commitAll()
+        } else {
+            check(takeReceiver.receive(this, type, obj.count)) { "Receiver refused $obj after accepting it." }
         }
     }
 
