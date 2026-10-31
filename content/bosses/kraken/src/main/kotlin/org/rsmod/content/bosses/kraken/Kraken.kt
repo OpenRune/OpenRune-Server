@@ -13,6 +13,7 @@ import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.death.NpcDeath
 import org.rsmod.api.npc.events.NpcHitEvents
+import org.rsmod.api.npc.queueDeath
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.script.onEvent
@@ -57,7 +58,7 @@ class Kraken @Inject constructor(
         val bossType = ServerCacheManager.getNpc(BOSS.asRSCM(RSCMType.NPC))!!
         onNpcQueue(bossType, "queue.death") {
             val dropCoords = findHero(deps.playerList)?.coords ?: coords
-            despawnTentacles(npc)
+            killTentacles(npc)
             npcDeath.deathWithDrops(this, dropCoords)
         }
 
@@ -97,14 +98,17 @@ class Kraken @Inject constructor(
             .forEach { it.lifecycleRespawnCycle = deps.mapClock.cycle + 1 }
     }
 
-    private fun despawnTentacles(boss: Npc) {
+    private fun killTentacles(boss: Npc) {
         val surfaced =
             deps.npcRepo
                 .findAll(ZoneKey.from(boss.coords), TENTACLE_ZONE_RADIUS)
-                .filter { it.type.id == tentaclePoolId && it.visType.id != tentaclePoolId }
+                .filter {
+                    it.type.id == tentaclePoolId && it.visType.id != tentaclePoolId && it.hitpoints > 0
+                }
                 .toList()
         for (tentacle in surfaced) {
-            deps.npcRepo.despawn(tentacle, tentacle.type.respawnRate)
+            tentacle.hitpoints = 0
+            tentacle.queueDeath()
         }
     }
 

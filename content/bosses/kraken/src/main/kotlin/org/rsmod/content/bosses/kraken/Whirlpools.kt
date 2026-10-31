@@ -58,9 +58,12 @@ internal class Whirlpools(
         watchIdle(pool, whirlpoolSpec, onChange)
     }
 
+    @OptIn(InternalApi::class)
     private fun watchIdle(npc: Npc, whirlpoolSpec: BossSpec, onChange: (Npc) -> Unit) {
         deps.worldQueues.add(IDLE_CHECK_INTERVAL) {
-            if (!npc.isSlotAssigned || isSubmerged(npc)) return@add
+            if (!npc.isSlotAssigned || npc.hidden || npc.hitpoints <= 0 || isSubmerged(npc)) {
+                return@add
+            }
             if (deps.mapClock.cycle - npc.vars[LAST_COMBAT] >= IDLE_RESET_TICKS) {
                 submerge(npc, whirlpoolSpec, onChange)
             } else {
