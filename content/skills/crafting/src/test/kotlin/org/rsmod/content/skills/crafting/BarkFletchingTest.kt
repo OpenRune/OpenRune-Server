@@ -113,6 +113,17 @@ class BarkFletchingTest {
     }
 
     @Test
+    fun `worn special knife alone cannot start fletching`() {
+        val f = Fixture()
+        f.player.worn[SHIELD_SLOT] = InvObj(SPECIAL)
+        f.give(1, WOOD)
+        f.fletch(1)
+        assertTrue(f.pending().isEmpty())
+        assertEquals(1, f.count(WOOD))
+        assertEquals(0, f.count(STAFF))
+    }
+
+    @Test
     fun `losing the only special knife aborts the next cycle without cost`() {
         val before = Fixture()
         before.give(0, SPECIAL)

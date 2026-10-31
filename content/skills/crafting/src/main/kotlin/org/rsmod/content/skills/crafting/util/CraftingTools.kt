@@ -23,7 +23,6 @@ private val TOOL_EQUIVALENTS: Map<String, List<String>> = mapOf(
 private val WORN_TOOLS: Set<String> = setOf(
     CraftingConstants.IMCANDO_HAMMER,
     CraftingConstants.IMCANDO_HAMMER_OFFHAND,
-    CraftingConstants.FLETCHING_KNIFE,
 )
 
 fun toolEquivalents(tool: String): List<String> = TOOL_EQUIVALENTS[tool] ?: listOf(tool)
@@ -36,13 +35,16 @@ fun CraftingProduct.isKnifeFletching(): Boolean =
 
 /** Ticks for [cycle]; knife-fletching uses the first tick entry unless the special knife is held. */
 fun ProtectedAccess.ticksFor(product: CraftingProduct, cycle: Int): Int =
-    if (product.isKnifeFletching() && !holds(CraftingConstants.FLETCHING_KNIFE)) {
+    if (product.isKnifeFletching() && !holdsFletchingKnife()) {
         product.ticks.first()
     } else {
         product.ticksAt(cycle)
     }
 
 fun ProtectedAccess.holdsImcandoHammer(): Boolean = IMCANDO_HAMMERS.any { holds(it) }
+
+private fun ProtectedAccess.holdsFletchingKnife(): Boolean =
+    inv.contains(CraftingConstants.FLETCHING_KNIFE) || CraftingConstants.FLETCHING_KNIFE in player.worn
 
 fun ProtectedAccess.holdsCostumeNeedle(): Boolean = inv.contains(CraftingConstants.COSTUME_NEEDLE)
 
