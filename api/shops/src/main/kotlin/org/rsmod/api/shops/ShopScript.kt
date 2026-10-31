@@ -5,6 +5,7 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.market.MarketPrices
+import org.rsmod.api.player.output.UpdateInventory
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -39,7 +40,6 @@ constructor(
             logger.info { "Registered $registered shop currencies from dbtable.shop_currency" }
         }
 
-        // UNVERIFIED: Value re-inits the side inv like a fresh open (guess)
         onIfModalButton("component.shopmain:value") { selectQuantity(0, it.op, it.comsub) }
         onIfModalButton("component.shopmain:quantity1") { selectQuantity(1, it.op, it.comsub) }
         onIfModalButton("component.shopmain:quantity5") { selectQuantity(2, it.op, it.comsub) }
@@ -53,10 +53,14 @@ constructor(
     }
 
     private fun ProtectedAccess.selectQuantity(mode: Int, op: IfButtonOp, sub: Int) {
-        if (player.openedShop == null || op != IfButtonOp.Op1 || sub != -1) {
+        val shop = player.openedShop
+        if (shop == null || op != IfButtonOp.Op1 || sub != -1) {
             return
         }
         VarPlayerIntMapSetter.set(player, "varbit.shop_quantity", mode)
+        // The client relabels the shop items' ops from the varbit on an inv transmit.
+        UpdateInventory.updateInvPartial(player, shop.inv)
+        UpdateInventory.updateInvFull(player, player.inv)
         player.initShopSideInv(player.inv)
     }
 
