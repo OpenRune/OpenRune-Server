@@ -32,6 +32,7 @@ import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.table.FiremakingLogsRow
 import org.rsmod.api.table.hunter.HunterPitfallsRow
+import org.rsmod.content.skills.hunter.HunterPouch.Companion.pouchHunted
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.catchChance256
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.distance
 import org.rsmod.game.MapClock
@@ -156,7 +157,7 @@ constructor(
         if (vars[pit.varbit] != state) return
         VarPlayerIntMapSetter.set(player, pit.varbit, STATE_EMPTY)
         hunt(player).pits.remove(pit.index)
-        for ((obj, count) in loot) invAdd(inv, obj, count)
+        for ((obj, count) in loot) if (!pouchHunted(obj, count)) invAdd(inv, obj, count)
         statAdvance(HUNTER, creature.xp.toDouble())
         soundSynth(DISMANTLE_SYNTH)
         rumours.onCatch(player, creature.npc)

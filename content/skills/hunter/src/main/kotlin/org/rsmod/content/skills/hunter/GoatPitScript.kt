@@ -1,7 +1,14 @@
 package org.rsmod.content.skills.hunter
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import dev.openrune.types.aconverted.SpotanimType
 import jakarta.inject.Inject
 import kotlin.math.sign
+import org.rsmod.api.combat.commons.magic.MagicSpell
+import org.rsmod.api.combat.manager.MagicRuneManager
+import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -10,16 +17,20 @@ import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.worn.HeldEquipResult
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.route.RouteFactory
 import org.rsmod.api.route.walkTo
+import org.rsmod.api.script.onApNpcT
 import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onOpLoc4
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.spells.MagicSpellRegistry
 import org.rsmod.content.other.pets.PetRewards
 import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.content.skills.hunter.HunterPouch.Companion.pouchHunted
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.map.collision.isWalkBlocked
 import org.rsmod.map.CoordGrid
@@ -36,6 +47,9 @@ constructor(
     private val collision: CollisionFlagMap,
     private val rumours: HunterRumours,
     private val pets: PetRewards,
+    private val spells: MagicSpellRegistry,
+    private val runes: MagicRuneManager,
+    private val worldRepo: WorldRepository,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpLoc1(PIT) { pitOp(it.loc.coords) }
@@ -48,6 +62,12 @@ constructor(
         onOpLoc1(PROD_SUPPLY) { takeProd() }
         onOpHeld2(PROD) { invEquip(it.slot).let { result -> if (result is HeldEquipResult.Fail) result.messages.forEach(::mes) } }
         onOpNpc1(GEOFF) { startDialogue(it.npc) { geoff() } }
+        val goat = checkNotNull(ServerCacheManager.getNpc(GOAT.asRSCM(RSCMType.NPC)))
+        for (lure in Lure.entries) {
+            val component = lure.component.asRSCM(RSCMType.COMPONENT)
+            val spell = spells.allSpells().first { it.component.packed == component }
+            onApNpcT(goat, spell.component) { lure(it.npc, spell, lure) }
+        }
     }
 
     private suspend fun Dialogue.geoff() {
@@ -226,7 +246,7 @@ constructor(
             delay(1)
             if (vars[IN_PIT] <= 0) return
             val loot = if (random.of(4) == 0) FUR else HORN
-            invAdd(inv, loot)
+            if (!pouchHunted(loot)) invAdd(inv, loot)
             statAdvance(HUNTER, harvestXp(stat(HUNTER)).toDouble())
             rumours.onCatch(player, GOAT)
             pets.rollSkillingPet(player, PET, HUNTER, PET_BASE)
@@ -254,10 +274,45 @@ constructor(
         anim(PROD_SEQ)
         val dx = (goat.coords.x - player.coords.x).sign
         val dz = (goat.coords.z - player.coords.z).sign
+        drive(goat, dx, dz, PUSH_TILES, JUMP_SEQ, PROD_XP)
+    }
+
+    private suspend fun ProtectedAccess.lure(goat: Npc, spell: MagicSpell, lure: Lure) {
+        if (!questDone()) return
+        if (stat(HUNTER) < LEVEL) {
+            mes("You need a Hunter level of $LEVEL to herd the goats.")
+            return
+        }
+        if (lure == Lure.DarkLure && vars[DARK_LURE_COOLDOWN] != 0) {
+            mes("You can only cast Dark Lure every 10 seconds.")
+            return
+        }
+        if (runes.attemptCast(player, spell).isFailure()) return
+        faceEntitySquare(goat)
+        anim(lure.castSeq)
+        spotanim(lure.castSpotanim, height = CAST_SPOTANIM_HEIGHT)
+        lure.synth?.let { soundSynth(it) }
+        val proj = worldRepo.projAnim(player, goat, SpotanimType(lure.travel.asRSCM(RSCMType.SPOTANIM)), PROJANIM)
+        statAdvance(MAGIC, spell.castXp)
+        if (lure == Lure.DarkLure) {
+            VarPlayerIntMapSetter.set(player, DARK_LURE_COOLDOWN, 1)
+            clearQueue(DARK_LURE_COOLDOWN_QUEUE)
+            queue(DARK_LURE_COOLDOWN_QUEUE, DARK_LURE_COOLDOWN_TICKS)
+        }
+        delay(maxOf(1, proj.durations.serverDelay))
+        if (!goat.isSlotAssigned) return
+        goat.spotanim(lure.impact, height = lure.impactHeight)
+        val dx = (player.coords.x - goat.coords.x).sign
+        val dz = (player.coords.z - goat.coords.z).sign
+        val tiles = distance(goat.coords, player.coords) - 1
+        drive(goat, dx, dz, tiles, LURE_DEATH_SEQ, LURE_XP)
+    }
+
+    private suspend fun ProtectedAccess.drive(goat: Npc, dx: Int, dz: Int, tiles: Int, jumpSeq: String, xp: Double) {
         if (dx == 0 && dz == 0) return
         var target = goat.coords
         var intoPit = false
-        for (step in 1..PUSH_TILES) {
+        for (step in 1..tiles) {
             val next = goat.coords.translate(dx * step, dz * step)
             if (inPit(next)) {
                 intoPit = true
@@ -270,11 +325,11 @@ constructor(
         if (!intoPit) return
         delay(maxOf(1, distance(goat.coords, target)))
         if (!goat.isSlotAssigned || !canTakeGoat()) return
-        goat.anim(JUMP_SEQ)
+        goat.anim(jumpSeq)
         npcRepo.despawn(goat, GOAT_RESPAWN_TICKS)
         setInPit(vars[IN_PIT] + 1)
         VarPlayerIntMapSetter.set(player, TRAPPED, 1)
-        statAdvance(HUNTER, PROD_XP)
+        statAdvance(HUNTER, xp)
         if (vars[STATE] == FULL) mes("The pit is now filled with goats.", ChatType.Spam)
     }
 
@@ -336,6 +391,14 @@ constructor(
         const val GOAT_RESPAWN_TICKS = 10
         const val PIT_SIZE = 3
         val PIT_SW = CoordGrid(2571, 2194, 0)
+        const val MAGIC = "stat.magic"
+        const val LURE_XP = 10.0
+        const val LURE_DEATH_SEQ = "seq.goat_hunting_telegrab_death"
+        const val PROJANIM = "projanim.magic_spell"
+        const val CAST_SPOTANIM_HEIGHT = 92
+        const val DARK_LURE_COOLDOWN = "varbit.arceuus_dark_lure_cooldown"
+        const val DARK_LURE_COOLDOWN_QUEUE = "queue.dark_lure_cooldown"
+        const val DARK_LURE_COOLDOWN_TICKS = 17
 
         fun capacity(level: Int): Int =
             when {
@@ -350,5 +413,34 @@ constructor(
             val l = level.coerceIn(LEVEL, 99)
             return if (l <= 80) 100 + (l - 60) * 3 else 160 + (l - 80)
         }
+    }
+
+    enum class Lure(
+        val component: String,
+        val castSeq: String,
+        val castSpotanim: String,
+        val travel: String,
+        val impact: String,
+        val impactHeight: Int,
+        val synth: String?,
+    ) {
+        Telegrab(
+            "component.magic_spellbook:telegrab",
+            "seq.human_casttelegrab",
+            "spotanim.telegrab_casting",
+            "spotanim.telegrab_travel",
+            "spotanim.telegrab_impact",
+            0,
+            "synth.telegrab_all",
+        ),
+        DarkLure(
+            "component.magic_spellbook:dark_lure",
+            "seq.human_cast_vicious_strike",
+            "spotanim.dark_lure_cast_spotanim",
+            "spotanim.dark_lure_travel_projanim",
+            "spotanim.dark_lure_hit_spotanim",
+            124,
+            null,
+        ),
     }
 }

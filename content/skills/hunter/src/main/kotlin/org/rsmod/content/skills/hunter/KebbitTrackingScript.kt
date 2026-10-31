@@ -14,6 +14,7 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.table.hunter.HunterTrackingRow
+import org.rsmod.content.skills.hunter.HunterPouch.Companion.pouchHunted
 import org.rsmod.game.entity.Player
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
@@ -123,7 +124,7 @@ constructor(
             return
         }
         anim(area.catchSeq)
-        for (obj in area.loot) invAddOrDrop(objRepo, obj)
+        for (obj in area.loot) if (!pouchHunted(obj)) invAddOrDrop(objRepo, obj)
         statAdvance(HUNTER, area.xp)
         rumours.onCatch(player, area.rumourKey)
         mes("You manage to noose ${HunterRumours.article(area.name)} ${area.name} that is hiding in the ${area.spotNoun}.")

@@ -25,6 +25,7 @@ import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.table.FiremakingLogsRow
 import org.rsmod.api.table.hunter.HunterDeadfallsRow
+import org.rsmod.content.skills.hunter.HunterPouch.Companion.pouchHunted
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.catchChance256
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.distance
 import org.rsmod.game.MapClock
@@ -158,7 +159,7 @@ constructor(
         delay(CHECK_TICKS)
         if (traps[trap.boulder.coords] !== trap || trap.state != State.Full || !canAdd(creature.loot)) return
         clear(trap)
-        for (obj in creature.loot) invAdd(inv, obj)
+        for (obj in creature.loot) if (!pouchHunted(obj)) invAdd(inv, obj)
         statAdvance(HUNTER, creature.xp)
         soundSynth(CHECK_SYNTH)
         rumours.onCatch(player, creature.npc)

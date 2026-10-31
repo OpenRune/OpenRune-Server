@@ -28,6 +28,7 @@ import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.table.hunter.HunterFalconryRow
 import org.rsmod.api.utils.skills.SkillingSuccessRate
+import org.rsmod.content.skills.hunter.HunterPouch.Companion.pouchHunted
 import org.rsmod.content.skills.hunter.HunterTrapScript.Companion.distance
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
@@ -385,7 +386,7 @@ constructor(
         }
         flights.remove(player)
         despawnFalcon(player, falcon)
-        for (obj in flight.kebbit.loot) if (inv.hasFreeSpace() || obj in inv) invAdd(inv, obj)
+        for (obj in flight.kebbit.loot) if (!pouchHunted(obj) && (inv.hasFreeSpace() || obj in inv)) invAdd(inv, obj)
         statAdvance(HUNTER, flight.kebbit.xp.toDouble())
         swapGlove(FALCON_GLOVE)
         rumours.onCatch(player, flight.kebbit.npc)

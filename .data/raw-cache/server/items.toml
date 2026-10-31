@@ -13610,6 +13610,7 @@ id = "obj.hunting_crossbow"
 inherit = "obj.hunting_crossbow"
 weaponCategory="Crossbow"
 [item.params]
+"param.required_ammo"="category.kebbit_bolts"
 "param.proj_type"="projanim.bolt"
 "param.bas_running"="seq.xbows_human_run"
 "param.equipment_sound"=2244
@@ -51549,6 +51550,7 @@ id = "obj.hunting_crossbow_sunlight"
 inherit = "obj.hunting_crossbow_sunlight"
 weaponCategory="Crossbow"
 [item.params]
+"param.required_ammo"="category.hunting_antler_bolts"
 "param.proj_type"="projanim.bolt"
 "param.attack_range"=8
 

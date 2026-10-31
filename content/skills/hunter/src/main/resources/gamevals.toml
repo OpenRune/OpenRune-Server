@@ -1,4 +1,5 @@
 [gamevals.dbtable]
+hunter_custom_furs = 65478
 impling_types = 56002
 impling_loot = 65498
 crystal_impling = 65500
@@ -34,6 +35,26 @@ hunter_rumour_hunters = 56010
 hunter_rumours = 56011
 
 [gamevals.dbrow]
+hunter_custom_fur_polar_top = 63743
+hunter_custom_fur_polar_legs = 63739
+hunter_custom_fur_wood_top = 63699
+hunter_custom_fur_wood_legs = 63698
+hunter_custom_fur_jungle_top = 63697
+hunter_custom_fur_jungle_legs = 63696
+hunter_custom_fur_desert_top = 63695
+hunter_custom_fur_desert_legs = 63694
+hunter_custom_fur_larupia_hat = 63693
+hunter_custom_fur_larupia_top = 63689
+hunter_custom_fur_larupia_legs = 63688
+hunter_custom_fur_graahk_hat = 63687
+hunter_custom_fur_graahk_top = 63686
+hunter_custom_fur_graahk_legs = 63669
+hunter_custom_fur_kyatt_hat = 63668
+hunter_custom_fur_kyatt_top = 63667
+hunter_custom_fur_kyatt_legs = 63666
+hunter_custom_fur_silent_gloves = 63665
+hunter_custom_fur_spotted_cape = 63664
+hunter_custom_fur_spottier_cape = 63663
 hunter_loot_sack_basic = 63783
 hunter_loot_sack_adept = 63782
 hunter_loot_sack_expert = 63781
@@ -303,10 +324,15 @@ molch_pearl = 65532
 
 [gamevals.inv]
 aerial_fishing_pearl_shop = 65535
+hunter_fur_pouch = 65534
+hunter_meat_pouch = 65533
 
 [gamevals.area]
 piscatoris_falconry = 30010
 vampyrium_stymphikes = 32756
+
+[gamevals.category]
+hunting_antler_bolts = 584
 
 [gamevals.synth]
 hunting_lay_box_trap = 2636
@@ -347,3 +373,4 @@ moss_lizard_caught = 606
 birdhouse_place = 2433
 impling_caught = 2623
 hunter_loot_sack_open = 59
+hunter_kit_open = 3616

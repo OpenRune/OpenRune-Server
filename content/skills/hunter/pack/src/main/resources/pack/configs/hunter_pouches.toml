@@ -1,0 +1,17 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.hunter_fur_pouch"
+scope = "Perm"
+stack = "Always"
+protect = false
+runWeight = false
+size = 14
+
+[[inventory]]
+isServerOnly = true
+id = "inv.hunter_meat_pouch"
+scope = "Perm"
+stack = "Always"
+protect = false
+runWeight = false
+size = 9

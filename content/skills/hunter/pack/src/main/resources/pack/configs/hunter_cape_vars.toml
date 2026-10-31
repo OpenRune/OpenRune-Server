@@ -1,0 +1,17 @@
+[[varp]]
+isServerOnly = true
+id = "varp.hunter_cape_teleport_day"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.hunter_cape_guild_teleport"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.hunter_guild_apatura_met"
+scope = "Perm"
+transmit = "Never"
