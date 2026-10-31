@@ -353,15 +353,7 @@ constructor(
 
         if (op == IfButtonOp.Op1) {
             val type = getInvObj(obj)
-            if (type.wearpos1 != -1) {
-                val previous = worn[type.wearpos1]
-                opHeld2(slot)
-                val replacedPrevious = worn[type.wearpos1] !== previous
-                if (replacedPrevious) {
-                    setBanksideExtraOps()
-                    setBankWornBonuses()
-                }
-            }
+            if (type.wearpos1 != -1) equipFromBankside(slot, type)
             return
         }
     }
@@ -1135,23 +1127,32 @@ constructor(
         player.setBankWornBonuses(wornBonuses, weaponSpeeds)
     }
 
+    private suspend fun ProtectedAccess.equipFromBankside(
+        slot: Int,
+        type: dev.openrune.types.ItemServerType,
+    ) {
+        val wearOpIndex = type.param(params.wear_op_index)
+        if (!type.hasInvOp(wearOpIndex)) return
+        val previous = worn[type.wearpos1]
+        when (wearOpIndex) {
+            1 -> opHeld1(slot)
+            3 -> opHeld3(slot)
+            4 -> opHeld4(slot)
+            5 -> opHeld5(slot)
+            else -> opHeld2(slot)
+        }
+        if (worn[type.wearpos1] !== previous) {
+            setBanksideExtraOps()
+            setBankWornBonuses()
+        }
+    }
+
     private suspend fun ProtectedAccess.clickBanksideExtraOp(slot: Int) {
         val obj = inv[slot] ?: return resendSlot(inv, 0)
         val type = getInvObj(obj)
 
-        val isWearable = type.wearpos1 != -1
-        if (isWearable) {
-            val wearOpIndex = type.param(params.wear_op_index)
-            val hasWearOp = type.hasInvOp(wearOpIndex)
-            if (hasWearOp) {
-                val previous = worn[type.wearpos1]
-                opHeld2(slot)
-                val replacedPrevious = worn[type.wearpos1] !== previous
-                if (replacedPrevious) {
-                    setBanksideExtraOps()
-                    setBankWornBonuses()
-                }
-            }
+        if (type.wearpos1 != -1) {
+            equipFromBankside(slot, type)
             return
         }
 

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode
 import org.rsmod.api.death.PlayerDeathCleanupHook
 import org.rsmod.api.death.PlayerDeathDropHook
 import org.rsmod.api.death.PlayerDeathHook
+import org.rsmod.api.death.PlayerDeathPreDropHook
 import org.rsmod.api.death.PlayerDeathStorageHook
 import org.rsmod.api.death.PlayerGraveHook
 import org.rsmod.api.death.PlayerRespawnHook
@@ -181,6 +182,17 @@ class WaterSourceScriptTest {
         }
 
     @Test
+    fun GameTestState.`stale clicked slot refills nothing and starts no continuation`() =
+        runInjectedGameTest(LocUInteractions::class, null, WaterSourceScript::class) { interactions ->
+            player.clearInv()
+            player.inv[10] = InvObj(id("obj.watering_can_0"), 1)
+            use(interactions, "loc.well", "obj.watering_can_0", 6, held = "obj.logs")
+            advance(5)
+            assertEquals(id("obj.logs"), player.inv[6]?.id)
+            assertEquals(id("obj.watering_can_0"), player.inv[10]?.id)
+        }
+
+    @Test
     fun GameTestState.`well preserves refused containers with captured punctuation`() =
         runInjectedGameTest(LocUInteractions::class, null, WaterSourceScript::class) { interactions ->
             val refusals =
@@ -232,17 +244,24 @@ class WaterSourceScriptTest {
             Multibinder.newSetBinder(binder(), PlayerDeathHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerDeathCleanupHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerDeathDropHook::class.java)
+            Multibinder.newSetBinder(binder(), PlayerDeathPreDropHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerRespawnHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerDeathStorageHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerGraveHook::class.java)
         }
     }
 
-    private fun GameTestScope.use(interactions: LocUInteractions, source: String, item: String, slot: Int) {
+    private fun GameTestScope.use(
+        interactions: LocUInteractions,
+        source: String,
+        item: String,
+        slot: Int,
+        held: String = item,
+    ) {
         val loc = placeMapLoc(COORDS, source)
         player.teleport(COORDS.translateZ(-1))
         val type = checkNotNull(ServerCacheManager.getItem(id(item)))
-        player.inv[slot] = InvObj(type.id, 1)
+        player.inv[slot] = InvObj(id(held), 1)
         player.withProtectedAccess {
             interactions.interactOp(this, loc, loc, checkNotNull(ServerCacheManager.getObject(loc.id)), type, inv, slot)
         }

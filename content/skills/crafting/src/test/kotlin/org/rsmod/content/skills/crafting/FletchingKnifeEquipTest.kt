@@ -23,7 +23,6 @@ import org.rsmod.api.player.hook.PlayerGroundItemDropHook
 import org.rsmod.api.player.interact.HeldInteractions
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
-import org.rsmod.content.skills.crafting.util.CraftingConstants
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
 import org.rsmod.game.cheat.CheatCommandMap
@@ -187,7 +186,7 @@ class FletchingKnifeEquipTest {
     }
 
     companion object {
-        private const val KNIFE = CraftingConstants.FLETCHING_KNIFE
+        private const val KNIFE = "obj.fletching_knife"
         private const val SPADE = "obj.spade"
         private const val SHIELD = "obj.iron_kiteshield"
         private const val SWORD = "obj.bronze_sword"

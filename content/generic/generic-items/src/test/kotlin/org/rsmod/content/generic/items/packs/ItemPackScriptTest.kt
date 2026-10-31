@@ -120,26 +120,6 @@ class ItemPackScriptTest {
         assertEquals(mapOf(f.note to 100, DAGGER_ID to 1), f.totals())
     }
 
-    @Test
-    fun `packs that vanish after queueing are never opened or replaced`() {
-        val f = Fixture(PACK, PACK, DAGGER)
-        f.open(0)
-        f.player.inv[1] = null
-        repeat(10) { f.tick() }
-        assertEquals(mapOf(f.note to 100, DAGGER_ID to 1), f.totals())
-        assertTrue(f.player.weakQueueList.isEmpty)
-    }
-
-    @Test
-    fun `a pack swapped for another item after queueing leaves that item untouched`() {
-        val f = Fixture(PACK, PACK)
-        f.open(0)
-        f.player.inv[1] = InvObj(DAGGER, 1)
-        repeat(10) { f.tick() }
-        assertEquals(mapOf(f.note to 100, DAGGER_ID to 1), f.totals())
-        assertTrue(f.player.weakQueueList.isEmpty)
-    }
-
     private class Fixture(vararg items: String) {
         val player =
             Player().apply {

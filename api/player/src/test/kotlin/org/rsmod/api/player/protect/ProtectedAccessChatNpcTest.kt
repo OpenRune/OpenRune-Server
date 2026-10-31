@@ -30,19 +30,19 @@ class ProtectedAccessChatNpcTest {
     fun `NPC dialogue without animation displays each page and waits for Continue`() {
         val client = CaptureClient()
         val coroutine = GameCoroutine("chat-npc-no-animation-test")
-        val player = Player(client = client).apply {
-            uuid = 795L
-            slotId = 1
-            assignUid()
-            coords = CoordGrid(3261, 3291, 0)
-            activeCoroutine = coroutine
-        }
+        val player =
+            Player(client = client).apply {
+                uuid = 795L
+                slotId = 1
+                assignUid()
+                coords = CoordGrid(3261, 3291, 0)
+                activeCoroutine = coroutine
+            }
         val npc = Npc("npc.cook", player.coords.translateZ(1))
         val events = EventBus()
-        val context = ProtectedAccessContextFactory.empty().copy(
-            getEventBus = { events },
-            getAlignment = { TextAlignment() },
-        )
+        val context =
+            ProtectedAccessContextFactory.empty()
+                .copy(getEventBus = { events }, getAlignment = { TextAlignment() })
         val access = ProtectedAccess(player, coroutine, context)
         val firstPage = "First line.<br>Second line.<br>Third line.<br>Fourth line."
         val secondPage = "Last line."
@@ -51,13 +51,15 @@ class ProtectedAccessChatNpcTest {
             access.chatNpcNoAnim(npc, "$firstPage<br>$secondPage")
             completed = true
         }
-        dialogue.startCoroutine(object : Continuation<Unit> {
-            override val context = EmptyCoroutineContext
+        dialogue.startCoroutine(
+            object : Continuation<Unit> {
+                override val context = EmptyCoroutineContext
 
-            override fun resumeWith(result: Result<Unit>) {
-                result.getOrThrow()
+                override fun resumeWith(result: Result<Unit>) {
+                    result.getOrThrow()
+                }
             }
-        })
+        )
 
         assertTrue(player.ui.containsModal("interface.chat_left"))
         assertTrue(client.anyOf<IfSetText> { it.text == firstPage })

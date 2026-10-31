@@ -1806,8 +1806,8 @@ public class ProtectedAccess(
         player.clearTimer(timerType)
     }
 
-    public fun softTimer(timerType: String, cycles: Int) {
-        player.softTimer(timerType, cycles)
+    public fun softTimer(timerType: String, cycles: Int, afterInteractions: Boolean = false) {
+        player.softTimer(timerType, cycles, afterInteractions)
     }
 
     public fun clearSoftTimer(timerType: String) {

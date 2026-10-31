@@ -1455,6 +1455,36 @@
     },
     "Pete Kayer's Challenges": {
       "image": "https://oldschool.runescape.wiki/images/thumb/Pete_Kayer%27s_Challenges.png/48px-Pete_Kayer%27s_Challenges.png?6949d"
+    },
+    "Bork": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Bork.png/48px-Bork.png?67f06"
+    },
+    "Archive Guardian": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Archive_Guardian.png/48px-Archive_Guardian.png?c881d"
+    },
+    "Dagon'hai Elder": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dagon%27hai_Elder.png/48px-Dagon%27hai_Elder.png?bc5b7"
+    },
+    "Dagon'hai Monk": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dagon%27hai_Monk_%28staff%29.png/48px-Dagon%27hai_Monk_%28staff%29.png?bc5b7"
+    },
+    "Ezekiel": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Ezekiel.png/48px-Ezekiel.png?bc5b7"
+    },
+    "Dreadnoth the Jellied": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Dreadnoth_the_Jellied.png/48px-Dreadnoth_the_Jellied.png?bc5b7"
+    },
+    "Moia": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Moia.png/48px-Moia.png?bc5b7"
+    },
+    "The Smorks": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/The_Smorks.png/48px-The_Smorks.png?bc5b7"
+    },
+    "Ocellus": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Ocellus.png/48px-Ocellus.png?6fd2f"
+    },
+    "Xarth": {
+      "image": "https://oldschool.runescape.wiki/images/thumb/Xarth.png/48px-Xarth.png?bc5b7"
     }
   },
   "categories": {
@@ -1467,6 +1497,7 @@
       "Alchemical Hydra",
       "Amoxliatl",
       "Araxxor",
+      "Archive Guardian",
       "Arrg",
       "Artio",
       "Arzinian Avatar of Magic",
@@ -1481,6 +1512,7 @@
       "Black golem",
       "Blood Moon",
       "Blue Moon",
+      "Bork",
       "Bouncer",
       "Bouncer (ghost)",
       "Branda the Fire Queen",
@@ -1504,6 +1536,8 @@
       "Dagannoth Rex",
       "Dagannoth Supreme",
       "Dagannoth mother",
+      "Dagon'hai Elder",
+      "Dagon'hai Monk",
       "Damis",
       "Dawn",
       "Delrith",
@@ -1513,6 +1547,7 @@
       "Dessous",
       "Dharok the Wretched",
       "Doom of Mokhaiotl",
+      "Dreadnoth the Jellied",
       "Duke Sucellus",
       "Dusk",
       "Eclipse Moon",
@@ -1520,6 +1555,7 @@
       "Elidinis' Warden",
       "Elvarg",
       "Evil spirit",
+      "Ezekiel",
       "Fareed",
       "Flambeed",
       "Gadderanks",
@@ -1558,6 +1594,7 @@
       "Maggot King",
       "Me",
       "Melzar the Mad",
+      "Moia",
       "Moons of Peril",
       "Moss Guardian",
       "Muttadile",
@@ -1565,6 +1602,7 @@
       "Nezikchened",
       "Nylocas Vasilias",
       "Obor",
+      "Ocellus",
       "Penance Queen",
       "Pestilent Bloat",
       "Phantom Muspah",
@@ -1599,6 +1637,7 @@
       "The Maiden of Sugadinti",
       "The Mimic",
       "The Nightmare",
+      "The Smorks",
       "The Untouchable",
       "The Whisperer",
       "Thermonuclear smoke devil",
@@ -1624,6 +1663,7 @@
       "Wrathmaw",
       "Xamphur",
       "Xarpus",
+      "Xarth",
       "Yama",
       "Zalcano",
       "Zebak",
@@ -1690,5 +1730,5 @@
       "Volcanic Mine"
     ]
   },
-  "fetched": "2026-10-25"
+  "fetched": "2026-10-29"
 }
