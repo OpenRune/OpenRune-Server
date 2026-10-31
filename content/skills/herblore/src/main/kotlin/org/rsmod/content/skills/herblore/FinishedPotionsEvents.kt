@@ -97,7 +97,7 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
             return
         }
 
-        weakQueue("queue.herblore_finished", 1, FinishedPotionTask(potion, amount, 0))
+        weakQueue("queue.herblore_finished", potion.brewTicks.getOrNull(0) ?: 1, FinishedPotionTask(potion, amount, 0))
     }
 
     private suspend fun ProtectedAccess.processFinishedTick(task: FinishedPotionTask) {
@@ -206,7 +206,7 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
 
         val created = task.created + 1
         if (created < task.amount) {
-            weakQueue("queue.herblore_finished", 4, FinishedPotionTask(potion, task.amount, created))
+            weakQueue("queue.herblore_finished", potion.brewTicks.getOrNull(1) ?: 4, FinishedPotionTask(potion, task.amount, created))
         } else {
             resetAnim()
         }

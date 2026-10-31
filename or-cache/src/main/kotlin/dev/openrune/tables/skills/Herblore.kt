@@ -1,14 +1,20 @@
 package dev.openrune.tables.skills
 
+import dev.openrune.definition.util.VarType
 import dev.openrune.tables.production.productionTable
 
 object Herblore {
+    private const val COL_BREW_TICKS = 7
 
     /**
      * Table for creating unfinished potions (herb + vial of water)
      */
     fun unfinishedPotions() =
-        productionTable("dbtable.herblore_unfinished", serverOnly = true) {
+        productionTable(
+            "dbtable.herblore_unfinished",
+            serverOnly = true,
+            extraColumns = { column("brew_ticks", COL_BREW_TICKS, VarType.INT) },
+        ) {
 
             row("dbrow.herblore_guam_unfinished") {
                 production {
@@ -136,14 +142,27 @@ object Herblore {
                     category("Unfinished Potions")
                 }
             }
-
+            row("dbrow.herblore_huasca_unfinished") {
+                production {
+                    input("obj.huasca")
+                    statReq("stat.herblore", 58)
+                    xp(0)
+                    output("obj.huascavial")
+                    category("Unfinished Potions")
+                }
+                column(COL_BREW_TICKS, 1, 1)
+            }
         }
 
     /**
      * Table for creating finished potions (unfinished potion + secondary ingredient)
      */
     fun finishedPotions() =
-        productionTable("dbtable.herblore_finished", serverOnly = true) {
+        productionTable(
+            "dbtable.herblore_finished",
+            serverOnly = true,
+            extraColumns = { column("brew_ticks", COL_BREW_TICKS, VarType.INT) },
+        ) {
 
             row("dbrow.herblore_attack_potion") {
                 production {
@@ -184,6 +203,17 @@ object Herblore {
                     output("obj.3dosestatrestore")
                     category("Potions")
                 }
+            }
+            row("dbrow.herblore_compost_potion") {
+                production {
+                    input("obj.harralandervial")
+                    input("obj.fossil_volcanic_ash")
+                    statReq("stat.herblore", 22)
+                    xp(60)
+                    output("obj.supercompost_potion_3")
+                    category("Potions")
+                }
+                column(COL_BREW_TICKS, 2, 2)
             }
             row("dbrow.herblore_energy_potion") {
                 production {
@@ -254,6 +284,17 @@ object Herblore {
                     output("obj.3dose2strength")
                     category("Potions")
                 }
+            }
+            row("dbrow.herblore_prayer_regeneration") {
+                production {
+                    input("obj.huascavial")
+                    input("obj.aldarium")
+                    statReq("stat.herblore", 58)
+                    xp(132)
+                    output("obj.3dose1prayer_regeneration")
+                    category("Potions")
+                }
+                column(COL_BREW_TICKS, 2, 2)
             }
             row("dbrow.herblore_weapon_poison") {
                 production {
@@ -789,7 +830,6 @@ object Herblore {
                     category("Potions")
                 }
             }
-
         }
 
     /**
@@ -937,8 +977,16 @@ object Herblore {
                     category("Herbs")
                 }
             }
+            row("dbrow.herblore_clean_huasca") {
+                production {
+                    input("obj.unidentified_huasca")
+                    statReq("stat.herblore", 58)
+                    xp(118)
+                    output("obj.huasca")
+                    category("Herbs")
+                }
+            }
         }
-
 
     /**
      * Table for creating barbarian mixes (two-dose potion + roe/caviar)
@@ -1146,7 +1194,6 @@ object Herblore {
                     category("Barbarian Mixes")
                 }
             }
-
         }
 
     /**
@@ -1200,7 +1247,6 @@ object Herblore {
                     category("Swamp Tar")
                 }
             }
-
         }
 
     /**

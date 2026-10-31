@@ -109,7 +109,7 @@ class UnfinishedPotionsEvents : PluginScript() {
             return
         }
 
-        weakQueue("queue.herblore_unfinished", 1, UnfinishedPotionTask(potion, amount, 0))
+        weakQueue("queue.herblore_unfinished", potion.brewTicks.getOrNull(0) ?: 1, UnfinishedPotionTask(potion, amount, 0))
     }
 
     private suspend fun ProtectedAccess.processUnfinishedTick(task: UnfinishedPotionTask) {
@@ -154,7 +154,7 @@ class UnfinishedPotionsEvents : PluginScript() {
 
         val created = task.created + 1
         if (created < task.amount) {
-            weakQueue("queue.herblore_unfinished", 4, UnfinishedPotionTask(potion, task.amount, created))
+            weakQueue("queue.herblore_unfinished", potion.brewTicks.getOrNull(1) ?: 4, UnfinishedPotionTask(potion, task.amount, created))
         } else {
             resetAnim()
         }
