@@ -120,7 +120,7 @@ class FinishedPotionsEvents @Inject constructor(
 
         val brewResult = AmuletOfChemistry.rollBrewOutput(player, random, potion)
         val savedSecondaries = HerbloreGoggles.rollSavedSecondaryCounts(player, random, potion)
-        if (!potion.brew(player, reagents, brewResult.output, savedSecondaries)) {
+        if (!potion.brew(player, brewResult.output, savedSecondaries, reagents)) {
             mes("You don't have enough inventory space to make this potion.")
             resetAnim()
             return
@@ -129,7 +129,7 @@ class FinishedPotionsEvents @Inject constructor(
         anim("seq.human_herbing_vial")
 
         if (potion.xp > 0) {
-            statAdvance("stat.herblore", potion.xp.toDouble())
+            statAdvance("stat.herblore", potion.xp / 10.0)
         }
 
         val itemForMessage = if (potion.secondaries.size > 1) {

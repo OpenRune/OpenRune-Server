@@ -104,9 +104,9 @@ private fun HerbloreFinishedRow.availableInput(
 
 internal fun HerbloreFinishedRow.brew(
     player: Player,
-    reagents: Inventory?,
     output: String,
     saved: HerbloreGoggles.SavedSecondaries,
+    reagents: Inventory? = null,
 ): Boolean {
     if (!hasRequiredMaterials(player.inv, reagents)) return false
     val amounts = resolvedInputAmounts()

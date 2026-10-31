@@ -156,6 +156,7 @@ object Herblore {
 
     /**
      * Table for creating finished potions (unfinished potion + secondary ingredient)
+     * XP is stored in tenths to preserve fractional potion rewards.
      */
     fun finishedPotions() =
         productionTable(
@@ -169,7 +170,7 @@ object Herblore {
                     input("obj.guamvial")
                     input("obj.eye_of_newt")
                     statReq("stat.herblore", 3)
-                    xp(25)
+                    xp(250)
                     output("obj.3dose1attack")
                     category("Potions")
                 }
@@ -179,7 +180,7 @@ object Herblore {
                     input("obj.marrentillvial")
                     input("obj.unicorn_horn_dust")
                     statReq("stat.herblore", 5)
-                    xp(38)
+                    xp(375)
                     output("obj.3doseantipoison")
                     category("Potions")
                 }
@@ -189,7 +190,7 @@ object Herblore {
                     input("obj.tarrominvial")
                     input("obj.limpwurt_root")
                     statReq("stat.herblore", 12)
-                    xp(50)
+                    xp(500)
                     output("obj.3dose1strength")
                     category("Potions")
                 }
@@ -199,7 +200,7 @@ object Herblore {
                     input("obj.harralandervial")
                     input("obj.red_spiders_eggs")
                     statReq("stat.herblore", 22)
-                    xp(63)
+                    xp(625)
                     output("obj.3dosestatrestore")
                     category("Potions")
                 }
@@ -209,7 +210,7 @@ object Herblore {
                     input("obj.harralandervial")
                     input("obj.fossil_volcanic_ash")
                     statReq("stat.herblore", 22)
-                    xp(60)
+                    xp(600)
                     output("obj.supercompost_potion_3")
                     category("Potions")
                 }
@@ -220,7 +221,7 @@ object Herblore {
                     input("obj.harralandervial")
                     input("obj.chocolate_dust")
                     statReq("stat.herblore", 26)
-                    xp(68)
+                    xp(675)
                     output("obj.3dose1energy")
                     category("Potions")
                 }
@@ -230,7 +231,7 @@ object Herblore {
                     input("obj.ranarrvial")
                     input("obj.snape_grass")
                     statReq("stat.herblore", 38)
-                    xp(88)
+                    xp(875)
                     output("obj.3doseprayerrestore")
                     category("Potions")
                 }
@@ -240,7 +241,7 @@ object Herblore {
                     input("obj.iritvial")
                     input("obj.eye_of_newt")
                     statReq("stat.herblore", 45)
-                    xp(100)
+                    xp(1000)
                     output("obj.3dose2attack")
                     category("Potions")
                 }
@@ -250,7 +251,7 @@ object Herblore {
                     input("obj.iritvial")
                     input("obj.unicorn_horn_dust")
                     statReq("stat.herblore", 48)
-                    xp(105)
+                    xp(1063)
                     output("obj.3dose2antipoison")
                     category("Potions")
                 }
@@ -260,7 +261,7 @@ object Herblore {
                     input("obj.avantoevial")
                     input("obj.snape_grass")
                     statReq("stat.herblore", 50)
-                    xp(113)
+                    xp(1125)
                     output("obj.3dosefisherspotion")
                     category("Potions")
                 }
@@ -270,7 +271,7 @@ object Herblore {
                     input("obj.avantoevial")
                     input("obj.mortmyremushroom")
                     statReq("stat.herblore", 52)
-                    xp(118)
+                    xp(1175)
                     output("obj.3dose2energy")
                     category("Potions")
                 }
@@ -280,7 +281,7 @@ object Herblore {
                     input("obj.kwuarmvial")
                     input("obj.limpwurt_root")
                     statReq("stat.herblore", 55)
-                    xp(125)
+                    xp(1250)
                     output("obj.3dose2strength")
                     category("Potions")
                 }
@@ -290,7 +291,7 @@ object Herblore {
                     input("obj.huascavial")
                     input("obj.aldarium")
                     statReq("stat.herblore", 58)
-                    xp(132)
+                    xp(1320)
                     output("obj.3dose1prayer_regeneration")
                     category("Potions")
                 }
@@ -301,7 +302,7 @@ object Herblore {
                     input("obj.kwuarmvial")
                     input("obj.dragon_scale_dust")
                     statReq("stat.herblore", 60)
-                    xp(138)
+                    xp(1375)
                     output("obj.weapon_poison")
                     category("Potions")
                 }
@@ -311,7 +312,7 @@ object Herblore {
                     input("obj.snapdragonvial")
                     input("obj.red_spiders_eggs")
                     statReq("stat.herblore", 63)
-                    xp(143)
+                    xp(1425)
                     output("obj.3dose2restore")
                     category("Potions")
                 }
@@ -321,7 +322,7 @@ object Herblore {
                     input("obj.cadantinevial")
                     input("obj.white_berries")
                     statReq("stat.herblore", 66)
-                    xp(150)
+                    xp(1500)
                     output("obj.3dose2defense")
                     category("Potions")
                 }
@@ -331,7 +332,7 @@ object Herblore {
                     input("obj.lantadymevial")
                     input("obj.dragon_scale_dust")
                     statReq("stat.herblore", 69)
-                    xp(158)
+                    xp(1575)
                     output("obj.3dose1antidragon")
                     category("Potions")
                 }
@@ -341,7 +342,7 @@ object Herblore {
                     input("obj.lantadymevial")
                     input("obj.crushed_dragon_bones")
                     statReq("stat.herblore", 92)
-                    xp(180)
+                    xp(1300)
                     output("obj.3dose2antidragon")
                     category("Potions")
                 }
@@ -351,7 +352,7 @@ object Herblore {
                     input("obj.dwarfweedvial")
                     input("obj.wine_of_zamorak")
                     statReq("stat.herblore", 72)
-                    xp(163)
+                    xp(1625)
                     output("obj.3doserangerspotion")
                     category("Potions")
                 }
@@ -361,7 +362,7 @@ object Herblore {
                     input("obj.lantadymevial")
                     input("obj.cactus_potato")
                     statReq("stat.herblore", 76)
-                    xp(173)
+                    xp(1725)
                     output("obj.3dose1magic")
                     category("Potions")
                 }
@@ -371,7 +372,7 @@ object Herblore {
                     input("obj.torstolvial")
                     input("obj.jangerberries")
                     statReq("stat.herblore", 78)
-                    xp(175)
+                    xp(1750)
                     output("obj.3dosepotionofzamorak")
                     category("Potions")
                 }
@@ -381,7 +382,7 @@ object Herblore {
                     input("obj.toadflaxvial")
                     input("obj.crushed_bird_nest")
                     statReq("stat.herblore", 81)
-                    xp(180)
+                    xp(1800)
                     output("obj.3dosepotionofsaradomin")
                     category("Potions")
                 }
@@ -391,7 +392,7 @@ object Herblore {
                     input("obj.ranarrvial")
                     input("obj.white_berries")
                     statReq("stat.herblore", 30)
-                    xp(75)
+                    xp(750)
                     output("obj.3dose1defense")
                     category("Potions")
                 }
@@ -401,7 +402,7 @@ object Herblore {
                     input("obj.toadflaxvial")
                     input("obj.toads_legs")
                     statReq("stat.herblore", 34)
-                    xp(80)
+                    xp(800)
                     output("obj.3dose1agility")
                     category("Potions")
                 }
@@ -411,7 +412,7 @@ object Herblore {
                     input("obj.harralandervial")
                     input("obj.ground_desert_goat_horn")
                     statReq("stat.herblore", 36)
-                    xp(84)
+                    xp(840)
                     output("obj.3dosecombat")
                     category("Potions")
                 }
@@ -421,7 +422,7 @@ object Herblore {
                     input("obj.avantoevial")
                     input("obj.huntingbeast_sabreteeth")
                     statReq("stat.herblore", 53)
-                    xp(120)
+                    xp(1200)
                     output("obj.3dosehunting")
                     category("Potions")
                 }
@@ -432,7 +433,7 @@ object Herblore {
                     input("obj.wine_of_zamorak")
                     input("obj.crushed_dragon_bones")
                     statReq("stat.herblore", 80)
-                    xp(155)
+                    xp(1550)
                     output("obj.3dosebastion")
                     category("Potions")
                 }
@@ -443,7 +444,7 @@ object Herblore {
                     input("obj.cactus_potato")
                     input("obj.crushed_dragon_bones")
                     statReq("stat.herblore", 79)
-                    xp(155)
+                    xp(1550)
                     output("obj.3dosebattlemage")
                     category("Potions")
                 }
@@ -455,7 +456,7 @@ object Herblore {
                     input("obj.3dose2strength")
                     input("obj.3dose2defense")
                     statReq("stat.herblore", 90)
-                    xp(150)
+                    xp(1500)
                     output("obj.3dose2combat")
                     category("Potions")
                 }
@@ -465,7 +466,7 @@ object Herblore {
                     input("obj.antivenom+3")
                     input("obj.snakeboss_scale")
                     statReq("stat.herblore", 94)
-                    xp(160)
+                    xp(600)
                     output("obj.extended_antivenom+3")
                     category("Potions")
                 }
@@ -475,7 +476,7 @@ object Herblore {
                     input("obj.1dose2energy")
                     input("obj.amylase")
                     statReq("stat.herblore", 77)
-                    xp(25)
+                    xp(255)
                     output("obj.1dosestamina")
                     category("Potions")
                 }
@@ -485,7 +486,7 @@ object Herblore {
                     input("obj.2dose2energy")
                     input("obj.amylase", 2)
                     statReq("stat.herblore", 77)
-                    xp(51)
+                    xp(510)
                     output("obj.2dosestamina")
                     category("Potions")
                 }
@@ -495,7 +496,7 @@ object Herblore {
                     input("obj.3dose2energy")
                     input("obj.amylase", 3)
                     statReq("stat.herblore", 77)
-                    xp(77)
+                    xp(765)
                     output("obj.3dosestamina")
                     category("Potions")
                 }
@@ -505,7 +506,7 @@ object Herblore {
                     input("obj.4dose2energy")
                     input("obj.amylase", 5)
                     statReq("stat.herblore", 77)
-                    xp(102)
+                    xp(1020)
                     output("obj.4dosestamina")
                     category("Potions")
                 }
