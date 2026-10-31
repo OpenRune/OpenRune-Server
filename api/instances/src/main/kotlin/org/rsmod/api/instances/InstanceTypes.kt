@@ -217,6 +217,8 @@ public sealed interface InstanceAccess {
 
     public data object Friends : InstanceAccess
 
+    public data object Public : InstanceAccess
+
     public data class Code(val value: String) : InstanceAccess
 }
 

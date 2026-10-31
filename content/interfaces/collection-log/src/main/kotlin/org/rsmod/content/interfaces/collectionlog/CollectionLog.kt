@@ -67,13 +67,14 @@ public object CollectionLog {
         }
         val itemName = ServerCacheManager.getItem(objId)?.name ?: return
         if (chatMessageEnabled) {
-            player.mes("New item added to your collection log: $itemName")
+            player.mes("New item added to your collection log: <col=ff0000>$itemName</col>")
         }
         if (popupEnabled) {
             ClientScripts.notificationDisplay(
                 player,
                 "Collection Log",
-                "New item added to your collection log: $itemName",
+                "New item:<br><br><col=ffffff>$itemName</col>",
+                colour = -1,
             )
         }
     }

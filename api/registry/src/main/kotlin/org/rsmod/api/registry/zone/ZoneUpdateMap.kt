@@ -97,6 +97,12 @@ public class ZoneUpdateMap {
         updates += prot
     }
 
+    public fun mapProjAnim(projAnim: ProjAnim, observer: Long) {
+        val updates = projAnim.startCoord.getOrPutUpdateList()
+        val prot = ZoneUpdateTransformer.toMapProjAnimProt(projAnim)
+        updates += ZoneUpdateTransformer.ProjAnimPrivate(observer, prot)
+    }
+
     public operator fun get(zone: Int): ZoneUpdateList? = updatedZones.getOrDefault(zone, null)
 
     public operator fun get(zone: ZoneKey): ZoneUpdateList? =

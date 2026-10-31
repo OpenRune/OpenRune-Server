@@ -15314,6 +15314,15 @@ inherit = "npc.huey_head"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=60
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.freeze_resistance"=100
+"param.boss_hp_bar_mode"=0
+"param.death_anim"="seq.huey_knockout"
+"param.attack_melee"=100
+"param.attack_ranged"=250
+"param.attack_magic"=200
 
 [[npc]]
 id = "npc.huey_head_respawn_placeholder"
@@ -15321,6 +15330,10 @@ inherit = "npc.huey_head_respawn_placeholder"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=60
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.freeze_resistance"=100
 
 [[npc]]
 id = "npc.huey_head_invulnerable"
@@ -15328,6 +15341,15 @@ inherit = "npc.huey_head_invulnerable"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=60
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.freeze_resistance"=100
+"param.boss_hp_bar_mode"=0
+"param.death_anim"="seq.huey_knockout"
+"param.attack_melee"=100
+"param.attack_ranged"=250
+"param.attack_magic"=200
 
 [[npc]]
 id = "npc.huey_head_defeated"
@@ -15335,6 +15357,10 @@ inherit = "npc.huey_head_defeated"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=60
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.freeze_resistance"=100
 
 [[npc]]
 id = "npc.huey_head_enraged"
@@ -15342,6 +15368,66 @@ inherit = "npc.huey_head_enraged"
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=60
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.freeze_resistance"=100
+"param.boss_hp_bar_mode"=0
+"param.death_anim"="seq.huey_knockout"
+"param.attack_melee"=100
+"param.attack_ranged"=250
+"param.attack_magic"=200
+
+[[npc]]
+id = "npc.huey_tail"
+inherit = "npc.huey_tail"
+respawnDir = "West"
+[npc.params]
+"param.elemental_weakness_type"=2
+"param.elemental_weakness_percent"=60
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.freeze_resistance"=100
+"param.hitmark_lit"="hitmark.shield_damage_lit"
+"param.hitmark_tint"="hitmark.shield_damage_tint"
+"param.hitmark_max"="hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.huey_tail_broken"
+inherit = "npc.huey_tail_broken"
+[npc.params]
+"param.elemental_weakness_type"=2
+"param.elemental_weakness_percent"=60
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.freeze_resistance"=100
+"param.hitmark_lit"="hitmark.shield_damage_lit"
+"param.hitmark_tint"="hitmark.shield_damage_tint"
+"param.hitmark_max"="hitmark.regular_damage_max"
+
+[[npc]]
+id = "npc.huey_body_part"
+inherit = "npc.huey_body_part"
+[npc.params]
+"param.elemental_weakness_type"=2
+"param.elemental_weakness_percent"=60
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.freeze_resistance"=100
+
+[[npc]]
+id = "npc.huey_body_part_broken"
+inherit = "npc.huey_body_part_broken"
+[npc.params]
+"param.elemental_weakness_type"=2
+"param.elemental_weakness_percent"=60
+"param.poison_immunity"=1
+"param.venom_immunity"=2
+"param.cannon_immunity"=1
+"param.freeze_resistance"=100
 
 [[npc]]
 id = "npc.superior_cave_crawler_ice"
@@ -17106,3 +17192,38 @@ wanderRange = 0
 id = "npc.poh_sawmill_opp"
 inherit = "npc.poh_sawmill_opp"
 wanderRange = 0
+
+[[npc]]
+id = "npc.huey_seer"
+inherit = "npc.huey_seer"
+respawnDir = "West"
+
+[[npc]]
+id = "npc.huey_lobby_worker_1"
+inherit = "npc.huey_lobby_worker_1"
+respawnDir = "West"
+
+[[npc]]
+id = "npc.huey_lobby_worker_2"
+inherit = "npc.huey_lobby_worker_2"
+respawnDir = "East"
+
+[[npc]]
+id = "npc.huey_lobby_chef_multibase"
+inherit = "npc.huey_lobby_chef_multibase"
+respawnDir = "West"
+
+[[npc]]
+id = "npc.huey_lobby_guard"
+inherit = "npc.huey_lobby_guard"
+respawnDir = "North"
+
+[[npc]]
+id = "npc.huey_lobby_guard_viero_multibase"
+inherit = "npc.huey_lobby_guard_viero_multibase"
+respawnDir = "East"
+
+[[npc]]
+id = "npc.huey_nelta"
+inherit = "npc.huey_nelta"
+respawnDir = "West"

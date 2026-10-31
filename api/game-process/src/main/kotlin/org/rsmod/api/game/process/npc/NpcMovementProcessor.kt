@@ -85,7 +85,12 @@ constructor(
                 }
             }
 
-            val step = stepFactory.validated(this, current, target, collision)
+            val step =
+                if (forcedRoute) {
+                    stepFactory.unvalidated(current, target)
+                } else {
+                    stepFactory.validated(this, current, target, collision)
+                }
             if (step == CoordGrid.NULL) {
                 break
             }

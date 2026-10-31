@@ -18,6 +18,8 @@ public interface NpcInfoProtocol {
 
     public fun resetTransmog(originalType: Int)
 
+    public fun setCombatLevel(level: Int) {}
+
     public fun setBodyModel(model: Int)
 
     public fun setBodyModels(models: List<Int>) {}

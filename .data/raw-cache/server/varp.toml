@@ -923,3 +923,21 @@ isServerOnly = true
 id = "varp.brutus_best_time"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.huey_best_time"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.huey_perfect_streak"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.huey_personal_deaths"
+scope = "Perm"
+transmit = "Never"
