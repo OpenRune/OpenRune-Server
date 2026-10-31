@@ -300,3 +300,15 @@ id = "varn.magic_defence_drain"
 
 [[varn]]
 id = "varn.venom_strikes"
+
+[[varn]]
+id = "varn.araxxor_pattern"
+
+[[varn]]
+id = "varn.araxxor_hatch_in"
+
+[[varn]]
+id = "varn.araxxor_spawn_tick"
+
+[[varn]]
+id = "varn.araxxor_engage_at"

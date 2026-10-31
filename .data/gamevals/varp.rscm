@@ -134,3 +134,6 @@ warguild_keg_tokens_owed=64901
 warguild_progress=64902
 warguild_session=64903
 warguild_dummy_round=64904
+araxxor_state=64480
+araxxor_boots_ranged=64481
+araxxor_boots_cleave=64482

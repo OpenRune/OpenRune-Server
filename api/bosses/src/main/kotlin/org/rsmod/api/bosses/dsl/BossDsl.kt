@@ -414,6 +414,14 @@ class AbilityBuilder {
         effects += Effect.Poison(damage, odds.chance, odds.outOf)
     }
 
+    fun venom(chance: Int = 1, outOf: Int = 1) {
+        effects += Effect.Venom(chance, outOf)
+    }
+
+    fun venom(odds: Odds) {
+        effects += Effect.Venom(odds.chance, odds.outOf)
+    }
+
     fun freeze(ticks: Int, chance: Int = 1, outOf: Int = 1) {
         effects += Effect.Freeze(ticks, chance, outOf)
     }

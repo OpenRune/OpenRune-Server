@@ -1,6 +1,7 @@
 package org.rsmod.api.combat.commons
 
 import org.rsmod.api.mechanics.toxins.impl.PlayerPoison
+import org.rsmod.api.mechanics.toxins.impl.PlayerVenom
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.statSub
@@ -12,6 +13,8 @@ public object CombatEffects {
     public fun poison(target: Player, damage: Int) {
         PlayerPoison.tryPoison(target, initialDamage = damage)
     }
+
+    public fun venom(target: Player): Boolean = PlayerVenom.tryVenom(target)
 
     private const val FREEZE_IMMUNITY_TICKS = 5
 

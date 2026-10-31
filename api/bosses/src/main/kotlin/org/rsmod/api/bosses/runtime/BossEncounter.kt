@@ -63,6 +63,12 @@ class BossEncounter(
         ownedNpcs += npc
     }
 
+    fun hasOwnedNpc(predicate: (Npc) -> Boolean): Boolean = ownedNpcs.any(predicate)
+
+    fun firstOwnedNpc(predicate: (Npc) -> Boolean): Npc? = ownedNpcs.firstOrNull(predicate)
+
+    fun ownedNpcSnapshot(): List<Npc> = ownedNpcs.toList()
+
     fun releaseOwnedNpcs(): List<Npc> {
         val released = ownedNpcs.toList()
         ownedNpcs.clear()

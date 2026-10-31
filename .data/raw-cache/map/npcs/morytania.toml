@@ -3564,12 +3564,6 @@ coords = "0_54_50_4_31"
 npc = "npc.vampire_juve"
 coords = "0_54_50_5_36"
 
-## Araxxor Arena
-
-[[spawn]]
-npc = "npc.araxxor"
-coords = "0_56_153_46_21"
-
 ## Araxyte Spider Caves
 
 [[spawn]]
