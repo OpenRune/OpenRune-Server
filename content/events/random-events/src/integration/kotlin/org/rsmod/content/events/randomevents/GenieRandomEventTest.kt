@@ -50,11 +50,14 @@ class GenieRandomEventTest {
             player.fillInv()
             val filled = player.inv.objs.toList()
 
-            talkToGenie(deps)
+            val genie = talkToGenie(deps)
+            player.ifClose()
+            advance(ticks = 10)
 
             assertEquals(filled, player.inv.objs.toList())
             val lamp = LAMP.asRSCM(RSCMType.OBJ)
             assertEquals(1, deps.objs.findAll(player.coords).count { it.type == lamp })
+            assertFalse(genie.isSlotAssigned)
         }
 
     @Test
