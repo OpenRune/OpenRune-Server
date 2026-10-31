@@ -794,6 +794,7 @@ object Herblore {
 
     /**
      * Table for cleaning grimy herbs (unidentified -> clean)
+     * XP is stored in tenths to preserve fractional cleaning rewards.
      */
     fun cleaningHerbs() =
         productionTable("dbtable.herblore_cleaning", serverOnly = true) {
@@ -801,7 +802,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_guam")
                     statReq("stat.herblore", 3)
-                    xp(2)
+                    xp(25)
                     output("obj.guam_leaf")
                     category("Herbs")
                 }
@@ -811,7 +812,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_marentill")
                     statReq("stat.herblore", 5)
-                    xp(3)
+                    xp(38)
                     output("obj.marentill")
                     category("Herbs")
                 }
@@ -821,7 +822,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_tarromin")
                     statReq("stat.herblore", 11)
-                    xp(5)
+                    xp(50)
                     output("obj.tarromin")
                     category("Herbs")
                 }
@@ -831,7 +832,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_harralander")
                     statReq("stat.herblore", 20)
-                    xp(6)
+                    xp(63)
                     output("obj.harralander")
                     category("Herbs")
                 }
@@ -841,7 +842,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_ranarr")
                     statReq("stat.herblore", 25)
-                    xp(8)
+                    xp(75)
                     output("obj.ranarr_weed")
                     category("Herbs")
                 }
@@ -851,7 +852,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_toadflax")
                     statReq("stat.herblore", 30)
-                    xp(8)
+                    xp(80)
                     output("obj.toadflax")
                     category("Herbs")
                 }
@@ -861,7 +862,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_irit")
                     statReq("stat.herblore", 40)
-                    xp(9)
+                    xp(88)
                     output("obj.irit_leaf")
                     category("Herbs")
                 }
@@ -871,7 +872,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_avantoe")
                     statReq("stat.herblore", 48)
-                    xp(10)
+                    xp(100)
                     output("obj.avantoe")
                     category("Herbs")
                 }
@@ -881,7 +882,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_kwuarm")
                     statReq("stat.herblore", 54)
-                    xp(11)
+                    xp(113)
                     output("obj.kwuarm")
                     category("Herbs")
                 }
@@ -891,7 +892,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_snapdragon")
                     statReq("stat.herblore", 59)
-                    xp(12)
+                    xp(118)
                     output("obj.snapdragon")
                     category("Herbs")
                 }
@@ -901,7 +902,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_cadantine")
                     statReq("stat.herblore", 65)
-                    xp(13)
+                    xp(125)
                     output("obj.cadantine")
                     category("Herbs")
                 }
@@ -911,7 +912,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_lantadyme")
                     statReq("stat.herblore", 67)
-                    xp(13)
+                    xp(131)
                     output("obj.lantadyme")
                     category("Herbs")
                 }
@@ -921,7 +922,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_dwarf_weed")
                     statReq("stat.herblore", 70)
-                    xp(13)
+                    xp(138)
                     output("obj.dwarf_weed")
                     category("Herbs")
                 }
@@ -931,7 +932,7 @@ object Herblore {
                 production {
                     input("obj.unidentified_torstol")
                     statReq("stat.herblore", 75)
-                    xp(14)
+                    xp(150)
                     output("obj.torstol")
                     category("Herbs")
                 }

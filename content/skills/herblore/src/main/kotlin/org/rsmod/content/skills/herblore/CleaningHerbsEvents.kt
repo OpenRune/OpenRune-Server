@@ -58,7 +58,7 @@ class CleaningHerbsEvents : PluginScript() {
         }
 
         if (row.xp > 0) {
-            statAdvance("stat.herblore", row.xp.toDouble())
+            statAdvance("stat.herblore", row.xp / 10.0)
         }
 
         if (
