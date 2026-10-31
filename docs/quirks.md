@@ -133,11 +133,3 @@ Failed payment leaves the sword, commission and reward state unchanged. Coins go
 to the bank first, then inventory if necessary; Ultimate Ironmen use inventory only.
 
 [magic-numbers]: https://en.wikipedia.org/wiki/Magic_number_(programming)
-
-## Celastrus bark fletching
-Celastrus bark uses the existing knife-production engine: Fletching 40, one bark
-per battlestaff, 80 base Fletching XP and no Crafting XP. Native Fletch and
-knife-on-bark share the quantity flow and commit checks. Ordinary knives take four
-ticks per staff; a carried or worn fletching knife takes four for the first and
-three thereafter. Tools, materials and requirements are re-checked before each
-conversion, and stale clicked slots are ignored.
