@@ -18,6 +18,8 @@ import org.rsmod.api.bosses.dsl.rotation
 import org.rsmod.api.bosses.dsl.run
 import org.rsmod.api.bosses.dsl.say
 import org.rsmod.api.bosses.dsl.sequence
+import org.rsmod.api.bosses.dsl.spotanim
+import org.rsmod.api.bosses.dsl.wait
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
@@ -110,12 +112,34 @@ constructor(
             val sweep = ability("sweep") { include(oneOf(sweepRight, sweepLeft)) }
             val sweepEnraged =
                 ability("sweep_enraged") { include(oneOf(sweepRightEnraged, sweepLeftEnraged)) }
-            val blast = ability("blast") { include(external(HANDLER_BLAST, params = false)) }
-            val blastEnraged =
-                ability("blast_enraged") { include(external(HANDLER_BLAST, params = true)) }
-            val smite = ability("smite") { include(external(HANDLER_SMITE, params = false)) }
-            val smiteEnraged =
-                ability("smite_enraged") { include(external(HANDLER_SMITE, params = true)) }
+            val blastEffect =
+                sequence(
+                    anim(ANIM_BOMB_THROW),
+                    spotanim(SPOT_BOMB_THROW, slot = MadAngelFight.SPECIAL_SLOT),
+                    external(HANDLER_BLAST, params = false),
+                )
+            val blast = ability("blast") { include(blastEffect) }
+            val blastEnragedEffect =
+                sequence(
+                    anim(ANIM_BOMB_THROW),
+                    spotanim(SPOT_BOMB_THROW, slot = MadAngelFight.SPECIAL_SLOT),
+                    external(HANDLER_BLAST, params = true),
+                )
+            val blastEnraged = ability("blast_enraged") { include(blastEnragedEffect) }
+            val smiteEffect =
+                sequence(
+                    anim(ANIM_SMITE),
+                    spotanim(SPOT_SMITE, slot = MadAngelFight.SPECIAL_SLOT),
+                    external(HANDLER_SMITE, params = false),
+                )
+            val smite = ability("smite") { include(smiteEffect) }
+            val smiteEnragedEffect =
+                sequence(
+                    anim(ANIM_SMITE_ENRAGED),
+                    spotanim(SPOT_SMITE_ENRAGED, slot = MadAngelFight.SPECIAL_SLOT),
+                    external(HANDLER_SMITE, params = true),
+                )
+            val smiteEnraged = ability("smite_enraged") { include(smiteEnragedEffect) }
 
             val specialBranches =
                 mapOf(
@@ -140,6 +164,39 @@ constructor(
                     )
                 }
 
+            val enragedSpecialBranches =
+                mapOf(
+                    sweepEnraged.name to run(sweepEnraged),
+                    blastEnraged.name to run(blastEnraged),
+                    smiteEnraged.name to run(smiteEnraged),
+                )
+
+            val specialEnraged =
+                ability("special_enraged") {
+                    include(
+                        choose(
+                            selector =
+                                rotation {
+                                    randomStart = true
+                                    +then(sweepEnraged)
+                                    +then(blastEnraged)
+                                    +then(smiteEnraged)
+                                },
+                            branches = enragedSpecialBranches,
+                        )
+                    )
+                }
+
+            val enrageOpeningEffect =
+                sequence(
+                    run(smiteEnraged),
+                    wait(fight.smiteAttackDelay(enraged = true)),
+                    run(sweepEnraged),
+                    wait(fight.sweepAttackDelay(enraged = true)),
+                    run(blastEnraged),
+                )
+            val enrageOpening = ability("enrage_opening") { include(enrageOpeningEffect) }
+
             val spendBuff = ability("spend_buff") { include(external(HANDLER_SPEND_BUFF)) }
 
             val enrage =
@@ -147,6 +204,8 @@ constructor(
                     say(ENRAGE_TEXT)
                     nextAttackIn(ENRAGE_SAY_TICKS)
                     transitionTo(ENRAGED_PHASE)
+                    wait(ENRAGE_SAY_TICKS)
+                    run(enrageOpening)
                 }
 
             phase(COMBAT_PHASE) {
@@ -160,11 +219,8 @@ constructor(
             }
 
             phase(ENRAGED_PHASE) {
-                rotationSelector {
-                    +then(smiteEnraged)
-                    +then(sweepEnraged)
-                    +then(blastEnraged)
-                }
+                weightedSelectorRandom { +random(melee, weight = 1) }
+                forceEveryAttacks(SPECIAL_AFTER_ATTACKS, SPECIAL_AFTER_ATTACKS, specialEnraged)
             }
 
             incoming {
@@ -362,6 +418,12 @@ constructor(
         private const val HANDLER_SPEND_BUFF = "madangel.spend_buff"
 
         private const val ANIM_MELEE = "seq.npc_mad_angel_attack_melee"
+        private const val ANIM_BOMB_THROW = "seq.npc_mad_angel_attack_bomb_throw"
+        private const val SPOT_BOMB_THROW = "spotanim.vfx_mad_angel_attack_bomb_throw"
+        private const val ANIM_SMITE = "seq.npc_mad_angel_attack_smite"
+        private const val ANIM_SMITE_ENRAGED = "seq.npc_mad_angel_attack_smite_enraged"
+        private const val SPOT_SMITE = "spotanim.vfx_mad_angel_attack_smite"
+        private const val SPOT_SMITE_ENRAGED = "spotanim.vfx_mad_angel_attack_smite_enraged"
         private const val ANIM_SPAWN = "seq.npc_mad_angel_spawn"
         private const val SPOT_SPAWN = "spotanim.vfx_mad_angel_spawn"
         private const val FIGHT_MUSIC = 885

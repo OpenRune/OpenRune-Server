@@ -30,8 +30,10 @@ public val madAngelDropTable: RSDropTable<Player, DropRollItem> =
             rsPlayerWeightedTable(total = 150) {
                 name("Mad Angel Drops")
                 1 outOf 25 separate "obj.teleportscroll_ardeaglais" count 2
-                1 outOf 127 separate "obj.hallowfell" count 1
-                1 outOf 1000 separate "obj.jar_of_light" count 1
+                boosted {
+                    1 outOf 127 separate "obj.hallowfell" count 1
+                    1 outOf 1000 separate "obj.jar_of_light" count 1
+                }
                 12 weight "obj.rune_kiteshield" count 1
                 12 weight "obj.rune_full_helm" count 1
                 6 weight "obj.adamant_longsword" count 1

@@ -6,4 +6,4 @@ respawnDir = "East"
 defaultMode = "None"
 
 [npc.params]
-"param.killcount_varp" = 5712
+"param.killcount_varp" = "varp.total_mad_angel_kills"
