@@ -1,0 +1,15 @@
+[gamevals.area]
+random_event_none = 32441
+random_event_bank = 32442
+random_event_underwater = 32443
+
+[gamevals.timer]
+random_event = 433
+random_event_genie = 434
+
+[gamevals.varp]
+random_event_due = 65468
+
+[gamevals.synth]
+macro_genie_appear = 2301
+macro_genie_underwater = 2878
