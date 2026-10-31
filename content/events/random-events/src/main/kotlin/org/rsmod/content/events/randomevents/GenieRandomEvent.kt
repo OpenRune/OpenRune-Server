@@ -215,7 +215,6 @@ constructor(
             return
         }
         genie.handedOver = true
-        player.softTimer(GENIE_TIMER, HAND_OVER_TICKS)
         player.invAddOrDrop(objRepo, LAMP, duration = FULL_INV_DROP_TICKS)
         mes("Your reward is: <col=ff0000>1</col> x <col=ff0000>Lamp</col>.")
         startDialogue(npc) {
@@ -352,7 +351,6 @@ constructor(
         private const val STAR_RANGE = 7
         private const val LIFETIME_TICKS = 100
         private const val CALL_INTERVAL = 10
-        private const val HAND_OVER_TICKS = 10
         private const val IGNORED_LEAVE_TICKS = 3
         private const val CHECK_INTERVAL = 500
         private const val FULL_INV_DROP_TICKS = 18_000
