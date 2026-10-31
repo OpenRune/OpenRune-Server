@@ -1760,6 +1760,7 @@ inherit = "npc.ancient_wyvern"
 id = "npc.araxxor"
 inherit = "npc.araxxor"
 maxRange = 40
+blockWalk = "None"
 [npc.params]
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
