@@ -73,11 +73,13 @@ smokepuff = 1930
 chest_open = 52
 chest_close = 51
 irondoor_locked = 72
+gobdip_dye_goblin_mail = 2392
 
 [gamevals.varp]
 restless_ghost_rising_tile = 63703
 restless_ghost_return_tile = 63704
 misthalin_return_tile = 63700
+gobdip_return_tile = 65471
 misthalin_mirror_blocker = 63701
 misthalin_puzzle_state = 63702
 cooks_assistant_ingredients = 63705
