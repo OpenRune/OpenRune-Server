@@ -46,9 +46,12 @@ constructor(
             if (manager.sessionForPlayer(player) != null) defaultLeaveFlow() else defaultInstanceEntry()
         }
         onExitObject { defaultLeaveFlow() }
+        onInstancePlayerJoin { player.npcViewDistance = NPC_VIEW_DISTANCE }
+        onInstancePlayerLeave { player.npcViewDistance = null }
     }
 
     private companion object {
+        private const val NPC_VIEW_DISTANCE = 40
         private const val ARENA_REGION = 14489
         private const val TUNNEL_REGION = 14745
 
