@@ -13,7 +13,7 @@ public val generalSeedDropTable: RSWeightedTable<Player, DropRollItem> = rsWeigh
     1 weight singleRollable<Player, DropRollItem> {
         selectResult { player, args ->
             val npc = requireNotNull(args[KillRollContext.npc]) { "General seeds need a killed NPC" }
-            val roll = Random.nextInt(Math.multiplyExact(npc.type.combatLevel, 10))
+            val roll = Random.nextInt(Math.multiplyExact(npc.type.combatLevel, 10).coerceAtLeast(1))
             GENERAL_SEED_TABLES[generalSeedTier(roll)].roll(player, args)
         }
     }
