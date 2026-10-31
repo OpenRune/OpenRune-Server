@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import java.nio.file.Files
 import java.nio.file.Path
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
+import org.rsmod.api.player.back
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.events.skilling.SkillingProductSource
@@ -35,14 +37,18 @@ import org.rsmod.routefinder.collision.CollisionFlagMap
 @ResourceLock("ServerCacheManager")
 class WoodcuttingSideDropsScriptTest {
     @Test
-    fun `published type roll boundaries select all five nest categories`() {
-        val expected = mapOf(
-            0 to "obj.bird_nest_egg_red", 1 to "obj.bird_nest_egg_blue",
-            2 to "obj.bird_nest_egg_green", 3 to "obj.bird_nest_ring",
-            34 to "obj.bird_nest_ring", 35 to "obj.bird_nest_seeds_jan2019",
-            99 to "obj.bird_nest_seeds_jan2019",
-        )
-        for ((roll, nest) in expected) assertEquals(nest, WoodcuttingSideDropsScript.nestFor(roll))
+    fun `every type roll maps to the published nest counts`() {
+        for (table in listOf(100, 95)) {
+            val counts = (0 until table).groupingBy { Fixture(type = it).dropped(table) }.eachCount()
+            assertEquals(
+                mapOf(
+                    "obj.bird_nest_egg_red" to 1, "obj.bird_nest_egg_blue" to 1,
+                    "obj.bird_nest_egg_green" to 1, "obj.bird_nest_ring" to 32,
+                    "obj.bird_nest_seeds_jan2019" to table - 35,
+                ),
+                counts,
+            )
+        }
     }
 
     @Test
@@ -60,6 +66,10 @@ class WoodcuttingSideDropsScriptTest {
             miss.publish()
             miss.assertNoDrop()
         }
+        val max = Fixture(chance = 10)
+        max.player.back = InvObj("obj.skillcape_max")
+        max.publish()
+        max.assertDrop()
         val lastBaseHit = Fixture(chance = 9)
         lastBaseHit.publish()
         lastBaseHit.assertDrop()
@@ -85,20 +95,11 @@ class WoodcuttingSideDropsScriptTest {
     }
 
     @Test
-    fun `rabbit foot changes the type roll range but not the nest chance`() {
-        val f = Fixture(type = 94)
-        f.player.worn[0] = InvObj("obj.hunting_strung_rabbit_foot")
-        f.publish()
-        f.assertDrop("obj.bird_nest_seeds_jan2019")
-        assertEquals(listOf(2560, 95, 8), f.random.bounds)
-    }
-
-    @Test
     fun `blocked neighbours fall back to the players tile`() {
         val f = Fixture(blocked = true)
         f.publish()
         verify(exactly = 1) {
-            f.objects.add("obj.bird_nest_egg_red", f.player.coords, 200, f.player, 1, any())
+            f.objects.add(any<String>(), f.player.coords, 200, f.player, 1, any())
         }
     }
 
@@ -133,9 +134,17 @@ class WoodcuttingSideDropsScriptTest {
                 SkillingActionContext.Product(skill, logs, 1, 37.5, source, bonus)))
         }
 
-        fun assertDrop(nest: String = "obj.bird_nest_egg_red") {
+        fun dropped(table: Int): String {
+            if (table == 95) player.worn[0] = InvObj("obj.hunting_strung_rabbit_foot")
+            publish()
+            val nest = slot<String>()
+            verify(exactly = 1) { objects.add(capture(nest), any(), any(), any(), any(), any()) }
+            return nest.captured
+        }
+
+        fun assertDrop() {
             verify(exactly = 1) {
-                objects.add(nest, player.coords.translate(-1, -1), 200, player, 1, any())
+                objects.add(any<String>(), player.coords.translate(-1, -1), 200, player, 1, any())
             }
             assertEquals(InvObj("obj.bronze_dagger"), player.inv[0])
             assertEquals(1, player.inv.count("obj.bronze_dagger"))
