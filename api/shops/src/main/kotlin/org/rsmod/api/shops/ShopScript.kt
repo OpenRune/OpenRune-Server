@@ -39,6 +39,7 @@ constructor(
             logger.info { "Registered $registered shop currencies from dbtable.shop_currency" }
         }
 
+        // UNVERIFIED: Value re-inits the side inv like a fresh open (guess)
         onIfModalButton("component.shopmain:value") { selectQuantity(0, it.op, it.comsub) }
         onIfModalButton("component.shopmain:quantity1") { selectQuantity(1, it.op, it.comsub) }
         onIfModalButton("component.shopmain:quantity5") { selectQuantity(2, it.op, it.comsub) }
