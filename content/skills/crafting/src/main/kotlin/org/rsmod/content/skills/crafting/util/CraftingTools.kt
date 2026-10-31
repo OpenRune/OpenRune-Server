@@ -20,6 +20,7 @@ private val TOOL_EQUIVALENTS: Map<String, List<String>> = mapOf(
     ),
 )
 
+// UNVERIFIED: a worn fletching knife alone can't start bark's native Fletch op (wiki description)
 private val WORN_TOOLS: Set<String> = setOf(
     CraftingConstants.IMCANDO_HAMMER,
     CraftingConstants.IMCANDO_HAMMER_OFFHAND,
