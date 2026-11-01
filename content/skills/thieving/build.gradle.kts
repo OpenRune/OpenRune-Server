@@ -8,4 +8,5 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.content.skills.farming)
     integrationImplementation(projects.api.pluginCommons)
+    integrationImplementation(projects.content.skills.farming)
 }
