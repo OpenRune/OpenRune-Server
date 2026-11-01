@@ -48,9 +48,9 @@ class FancyClothesStore @Inject constructor(private val shops: Shops) : PluginSc
 
         val choice = choice4(
             "Okay, let's see what you've got then.", 1,
+            "I think I might just leave the perusing for now thanks.", 2,
             "Can you make clothing suitable for hunting in?", 3,
             "What sort of unusual materials did you have in mind?", 4,
-            "I think I might just leave the perusing for now thanks.", 2,
         )
 
         when (choice) {
@@ -59,7 +59,7 @@ class FancyClothesStore @Inject constructor(private val shops: Shops) : PluginSc
                 player.openFancyClothesStore(npc)
             }
             2 -> {
-                chatPlayer(neutral, "I think I might just leave the perusing for now thanks.")
+                chatPlayer(neutral, "I think I might just leave the perusing for now, thanks.")
             }
             3 -> {
                 chatPlayer(quiz, "Can you make clothing suitable for hunting?")
