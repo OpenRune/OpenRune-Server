@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.or2.central.account.Rights
+import org.rsmod.api.player.events.NpcKilledEvent
 import org.rsmod.api.invtx.PlayerInvChangedEvent
 import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
@@ -122,6 +123,8 @@ public fun ScriptContext.onPlayerInteraction(action: PlayerInteractionEvent.() -
 public fun ScriptContext.onPlayerInteractionFinished(
     action: PlayerInteractionFinishedEvent.() -> Unit
 ): Unit = onEvent(action)
+
+public fun ScriptContext.onNpcKilled(action: NpcKilledEvent.() -> Unit): Unit = onEvent(action)
 
 public fun ScriptContext.onPlayerInvChanged(action: PlayerInvChangedEvent.() -> Unit): Unit =
     onEvent(action)
