@@ -6,8 +6,10 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.enums.HunterEnums.hunter_pouch_contents
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
+import org.rsmod.api.invtx.invTransfer
 import org.rsmod.api.player.events.interact.HeldBanksideEvents
 import org.rsmod.api.player.events.interact.HeldObjEvents
 import org.rsmod.api.player.output.ChatType
@@ -21,6 +23,8 @@ import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpHeld5
+import org.rsmod.api.table.hunter.HunterPouchesRow
+import org.rsmod.content.skills.hunter.pack.HunterPouchTable
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 import org.rsmod.map.CoordGrid
@@ -28,55 +32,19 @@ import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-enum class HunterPouch(val noun: String, val plural: String, val inv: String, val sizes: List<Size>, val storable: List<String>) {
-    Fur(
-        "fur",
-        "furs",
-        "inv.hunter_fur_pouch",
-        listOf(
-            Size("obj.hg_furpouch_small", "obj.hg_furpouch_small_open", 14),
-            Size("obj.hg_furpouch_med", "obj.hg_furpouch_med_open", 21),
-            Size("obj.hg_furpouch_large", "obj.hg_furpouch_large_open", 28),
-        ),
-        listOf(
-            "obj.hunting_fur_jaguar_perfect",
-            "obj.hunting_fur_leopard_perfect",
-            "obj.hunting_fur_tiger_perfect",
-            "obj.huntingbeast_silent_fur",
-            "obj.huntingbeast_polar_fur",
-            "obj.huntingbeast_jungle_fur",
-            "obj.huntingbeast_woodland_fur",
-            "obj.huntingbeast_speedy_fur",
-            "obj.huntingbeast_desert_fur",
-            "obj.huntingbeast_speedy2_fur",
-            "obj.hunting_fennecfox_fur",
-            "obj.hunting_antelopemoon_fur",
-            "obj.hunting_antelopesun_fur",
-            "obj.goat_pit_fur",
-        ),
-    ),
-    Meat(
-        "meat",
-        "meats",
-        "inv.hunter_meat_pouch",
-        listOf(
-            Size("obj.hg_meatpouch_small", "obj.hg_meatpouch_small_open", 14),
-            Size("obj.hg_meatpouch_large", "obj.hg_meatpouch_large_open", 28),
-        ),
-        listOf(
-            "obj.huntingbeast_wild_meat",
-            "obj.hunting_larupia_meat",
-            "obj.huntingbeast_barbed_meat",
-            "obj.hunting_graahk_meat",
-            "obj.hunting_kyatt_meat",
-            "obj.hunting_fennecfox_meat",
-            "obj.huntingbeast_speedy2_meat",
-            "obj.hunting_antelopesun_meat",
-            "obj.hunting_antelopemoon_meat",
-        ),
-    );
+enum class HunterPouch(val noun: String, val plural: String, val inv: String, val kind: Int) {
+    Fur("fur", "furs", "inv.hunter_fur_pouch", HunterPouchTable.FUR),
+    Meat("meat", "meats", "inv.hunter_meat_pouch", HunterPouchTable.MEAT);
 
     data class Size(val closed: String, val open: String, val capacity: Int)
+
+    val sizes: List<Size> by lazy {
+        HunterPouchesRow.all().filter { it.kind == kind }.map { Size(it.closed.internalName, it.open.internalName, it.capacity) }
+    }
+
+    val storable: List<String> by lazy {
+        hunter_pouch_contents.filter { it.value == kind }.map { it.key.internalName }
+    }
 
     fun store(player: Player): Inventory = player.invMap.getOrPut(inv)
 
@@ -129,10 +97,12 @@ constructor(private val locRepo: LocRepository, private val npcRepo: NpcReposito
         val size = pouch.held(player) ?: return
         var room = size.capacity - pouch.stored(player)
         var moved = 0
-        for (obj in pouch.storable) {
-            val count = minOf(inv.count(obj), room)
-            if (count <= 0 || invDel(inv, obj, count).failure) continue
-            invAdd(pouch.store(player), obj, count)
+        for (slot in inv.indices) {
+            val obj = inv[slot] ?: continue
+            if (room <= 0) break
+            if (RSCM.getReverseMapping(RSCMType.OBJ, obj.id) !in pouch.storable) continue
+            val count = minOf(obj.count, room)
+            if (invMoveFromSlot(inv, pouch.store(player), slot, count).failure) continue
             room -= count
             moved += count
         }
@@ -153,11 +123,9 @@ constructor(private val locRepo: LocRepository, private val npcRepo: NpcReposito
         }
         for (slot in store.indices) {
             val obj = store[slot] ?: continue
-            val name = RSCM.getReverseMapping(RSCMType.OBJ, obj.id)
             val count = minOf(obj.count, inv.freeSpace())
             if (count <= 0) break
-            if (invDel(store, name, count).failure) continue
-            invAdd(inv, name, count)
+            invMoveFromSlot(store, inv, slot, count)
         }
     }
 
@@ -170,8 +138,7 @@ constructor(private val locRepo: LocRepository, private val npcRepo: NpcReposito
         val bank = player.invMap.getOrPut("inv.bank")
         for (slot in store.indices) {
             val obj = store[slot] ?: continue
-            val name = RSCM.getReverseMapping(RSCMType.OBJ, obj.id)
-            if (player.invAdd(bank, name, obj.count).success) player.invDel(store, name, obj.count)
+            player.invTransfer(store, slot, obj.count, bank)
         }
         player.mes("You deposit some ${pouch.noun} into your bank.", ChatType.Spam)
     }

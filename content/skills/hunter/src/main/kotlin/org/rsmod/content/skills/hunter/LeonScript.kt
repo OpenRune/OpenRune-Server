@@ -1,12 +1,19 @@
 package org.rsmod.content.skills.hunter
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpc4
 import org.rsmod.api.shops.Shops
+import org.rsmod.api.table.hunter.HunterLeonBoltsRow
 import org.rsmod.content.skills.openSkillMulti
 import org.rsmod.content.skills.skillMulti
 import org.rsmod.game.entity.Npc
@@ -168,58 +175,44 @@ class LeonScript @Inject constructor(private val shops: Shops) : PluginScript() 
     private suspend fun ProtectedAccess.ammo() {
         val menu = skillMulti {
             verb("make")
-            for (bolt in Bolt.entries) {
-                entry(bolt.bolts) {
-                    material(bolt.spike)
+            for (bolt in HunterLeonBoltsRow.all()) {
+                entry(bolt.bolts.internalName) {
+                    material(bolt.spike.internalName)
                     material(COINS, bolt.fee)
                 }
             }
         }
         val config = menu.copy(maxCountProvider = { inv, entry -> maxOf(1, entry.maxCount(inv)) })
         openSkillMulti(config) { selection ->
-            val bolt = Bolt.entries.first { it.bolts == selection.entry.internal }
+            val bolt = HunterLeonBoltsRow.all().first { it.bolts.internalName == selection.entry.internal }
             make(bolt, selection.amount)
         }
     }
 
-    private suspend fun ProtectedAccess.make(bolt: Bolt, amount: Int) {
-        val count = minOf(amount, inv.count(bolt.spike), inv.count(COINS) / bolt.fee)
+    private suspend fun ProtectedAccess.make(bolt: HunterLeonBoltsRow, amount: Int) {
+        val spike = bolt.spike.name.lowercase()
+        val bolts = bolt.bolts.name.lowercase()
+        val count = minOf(amount, inv.count(bolt.spike.internalName), inv.count(COINS) / bolt.fee)
         if (count <= 0) {
-            mesbox("You need 1 ${bolt.spikeName} and ${bolt.fee} coins to make $BOLTS_PER_SPIKE ${bolt.boltName}.")
+            mesbox("You need 1 $spike and ${bolt.fee} coins to make $BOLTS_PER_SPIKE $bolts.")
             return
         }
-        if (invDel(inv, bolt.spike, count).failure) return
-        if (invDel(inv, COINS, count * bolt.fee).failure) {
-            invAdd(inv, bolt.spike, count)
+        val made =
+            player.invTransaction(inv) {
+                val target = select(inv)
+                delete(target, bolt.spike.id, count)
+                delete(target, COINS.asRSCM(RSCMType.OBJ), count * bolt.fee)
+                add(target, bolt.bolts.id, count * BOLTS_PER_SPIKE)
+            }
+        if (made.failure) {
+            mes("You don't have enough inventory space.")
             return
         }
-        invAdd(inv, bolt.bolts, count * BOLTS_PER_SPIKE)
         objbox(
-            bolt.bolts,
-            "You hand the weapon designer one ${bolt.handed} and ${bolt.fee} coins. In return he presents you with " +
-                "$BOLTS_PER_SPIKE ${bolt.presented}.",
+            bolt.bolts.internalName,
+            "You hand the weapon designer one ${spike.replace("kebbit ", "")} and ${bolt.fee} " +
+                "coins. In return he presents you with $BOLTS_PER_SPIKE ${bolts.replace("kebbit ", "")}.",
         )
-    }
-
-    private enum class Bolt(
-        val spike: String,
-        val bolts: String,
-        val fee: Int,
-        val spikeName: String,
-        val boltName: String,
-        val handed: String,
-        val presented: String,
-    ) {
-        Kebbit("obj.huntingbeast_spike", "obj.huntingbow_bolts", 20, "kebbit spike", "kebbit bolts", "spike", "bolts"),
-        Long(
-            "obj.huntingbeast_bigspike",
-            "obj.huntingbow_bigbolts",
-            40,
-            "long kebbit spike",
-            "long kebbit bolts",
-            "long spike",
-            "long bolts",
-        ),
     }
 
     private companion object {

@@ -1,0 +1,65 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.hunter_fur_pouch"
+scope = "Perm"
+stack = "Always"
+protect = false
+runWeight = false
+size = 14
+
+[[inventory]]
+isServerOnly = true
+id = "inv.hunter_meat_pouch"
+scope = "Perm"
+stack = "Always"
+protect = false
+runWeight = false
+size = 9
+
+[[enum]]
+isServerOnly = true
+id = "enum.hunter_pouch_contents"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.hunting_fur_jaguar_perfect" = 0
+"obj.hunting_fur_leopard_perfect" = 0
+"obj.hunting_fur_tiger_perfect" = 0
+"obj.huntingbeast_silent_fur" = 0
+"obj.huntingbeast_polar_fur" = 0
+"obj.huntingbeast_jungle_fur" = 0
+"obj.huntingbeast_woodland_fur" = 0
+"obj.huntingbeast_speedy_fur" = 0
+"obj.huntingbeast_desert_fur" = 0
+"obj.huntingbeast_speedy2_fur" = 0
+"obj.hunting_fennecfox_fur" = 0
+"obj.hunting_antelopemoon_fur" = 0
+"obj.hunting_antelopesun_fur" = 0
+"obj.goat_pit_fur" = 0
+"obj.huntingbeast_wild_meat" = 1
+"obj.hunting_larupia_meat" = 1
+"obj.huntingbeast_barbed_meat" = 1
+"obj.hunting_graahk_meat" = 1
+"obj.hunting_kyatt_meat" = 1
+"obj.hunting_fennecfox_meat" = 1
+"obj.huntingbeast_speedy2_meat" = 1
+"obj.hunting_antelopesun_meat" = 1
+"obj.hunting_antelopemoon_meat" = 1
+
+[[enum]]
+isServerOnly = true
+id = "enum.hunter_kit_contents"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.noose_wand"
+1 = "obj.hunting_butterfly_net"
+2 = "obj.hunting_ojibway_bird_snare"
+3 = "obj.hunting_snare"
+4 = "obj.hunting_teasing_stick"
+5 = "obj.torch_unlit"
+6 = "obj.ii_impling_jar"
+7 = "obj.hunting_box_trap"
+8 = "obj.net_trap"

@@ -5,6 +5,11 @@ import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
+import org.rsmod.api.enums.HunterEnums.hunter_kit_contents
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onIfOverlayButton
 import org.rsmod.api.script.onOpHeld1
@@ -44,8 +49,13 @@ constructor(private val spells: MagicSpellRegistry, private val runes: MagicRune
             mes("You need ${CONTENTS.size - 1} free inventory spaces to open the kit.")
             return
         }
-        if (invDel(inv, KIT, slot = slot).failure) return
-        for (item in CONTENTS) invAdd(inv, item)
+        val opened =
+            player.invTransaction(inv) {
+                val target = select(inv)
+                delete(target, KIT.asRSCM(RSCMType.OBJ), 1, slot)
+                for (item in CONTENTS) add(target, item.asRSCM(RSCMType.OBJ), 1)
+            }
+        if (opened.failure) return
         soundSynth(OPEN_SYNTH)
     }
 
@@ -58,17 +68,6 @@ constructor(private val spells: MagicSpellRegistry, private val runes: MagicRune
         const val CAST_SPOTANIM_HEIGHT = 92
         const val OPEN_SYNTH = "synth.hunter_kit_open"
         const val CAST_TICKS = 3
-        val CONTENTS =
-            listOf(
-                "obj.noose_wand",
-                "obj.hunting_butterfly_net",
-                "obj.hunting_ojibway_bird_snare",
-                "obj.hunting_snare",
-                "obj.hunting_teasing_stick",
-                "obj.torch_unlit",
-                "obj.ii_impling_jar",
-                "obj.hunting_box_trap",
-                "obj.net_trap",
-            )
+        val CONTENTS by lazy { hunter_kit_contents.values.filterNotNull().map { it.internalName } }
     }
 }

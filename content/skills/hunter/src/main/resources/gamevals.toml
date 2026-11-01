@@ -33,8 +33,17 @@ hunter_butterflies = 56012
 
 hunter_rumour_hunters = 56010
 hunter_rumours = 56011
+hunter_pouches = 65474
+hunter_leon_bolts = 65468
 
 [gamevals.dbrow]
+hunter_pouch_fur_small = 63856
+hunter_pouch_fur_medium = 63661
+hunter_pouch_fur_large = 63660
+hunter_pouch_meat_small = 63659
+hunter_pouch_meat_large = 63658
+hunter_leon_bolts_kebbit = 63657
+hunter_leon_bolts_long = 63656
 hunter_custom_fur_polar_top = 63743
 hunter_custom_fur_polar_legs = 63739
 hunter_custom_fur_wood_top = 63699
@@ -374,3 +383,7 @@ birdhouse_place = 2433
 impling_caught = 2623
 hunter_loot_sack_open = 59
 hunter_kit_open = 3616
+
+[gamevals.enum]
+hunter_pouch_contents = 65467
+hunter_kit_contents = 65466

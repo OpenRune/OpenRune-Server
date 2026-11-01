@@ -217,7 +217,7 @@ object HunterTrapCreaturesTable {
             bird("cerulean_twitch", "cerulean twitch", "npc.hunting_bird_polar", 11, 645, "polar", "obj.hunting_polar_feather", 82, 380),
             bird("tropical_wagtail", "tropical wagtail", "npc.multicoloured_bird", 19, 952, "coloured", "obj.hunting_stripy_bird_feather", 75, 370),
             boxed("ferret", "ferret", "npc.hunting_ferret", 27, 1152, "obj.hunting_ferret", 15, 335, NEXT_TICK, "seq.hunting_ferret_approaching"),
-            boxed("jerboa", "embertailed jerboa", "npc.varlamore_hunterjerboa01", 39, 1370, "obj.hunting_jerboa_tail", -24, 296, 49, "seq.jerboa_approach"),
+            boxed("jerboa", "embertailed jerboa", "npc.varlamore_hunterjerboa01", 39, 1370, "obj.hunting_jerboa_tail", 120, 290, 49, "seq.jerboa_approach"),
             boxed("chinchompa", "chinchompa", "npc.hunting_chinchompa", 53, 1984, "obj.chinchompa_captured", 6, 268, NEXT_TICK, CHINCHOMPA_APPROACH, SPICY_TOMATO, "obj.skillpethunter_grey", 131_395),
             boxed("chinchompa_big", "carnivorous chinchompa", "npc.hunting_chinchompa_big", 63, 2650, "obj.chinchompa_big_captured", -78, 228, NEXT_TICK, CHINCHOMPA_APPROACH, SPICY_MEAT, "obj.skillpethunter_red", 98_373),
             boxed("chinchompa_black", "black chinchompa", "npc.hunting_chinchompa_black", 73, 3150, "obj.chinchompa_black", -78, 228, NEXT_TICK, CHINCHOMPA_APPROACH, SPICY_MEAT, "obj.skillpethunter_black", 82_758, wilderness = true),

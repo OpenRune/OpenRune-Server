@@ -28754,6 +28754,7 @@ inherit = "obj.salamander_tar_black"
 id = "obj.huntingbow_bolts"
 inherit = "obj.huntingbow_bolts"
 [item.params]
+"param.proj_travel"="spotanim.crossbowbolt_travel"
 "param.equipment_sound"=2244
 
 
@@ -28761,6 +28762,23 @@ inherit = "obj.huntingbow_bolts"
 id = "obj.huntingbow_bigbolts"
 inherit = "obj.huntingbow_bigbolts"
 [item.params]
+"param.proj_travel"="spotanim.crossbowbolt_travel"
+"param.equipment_sound"=2244
+
+
+[[item]]
+id = "obj.sunlight_antelope_bolt"
+inherit = "obj.sunlight_antelope_bolt"
+[item.params]
+"param.proj_travel"="spotanim.crossbowbolt_travel"
+"param.equipment_sound"=2244
+
+
+[[item]]
+id = "obj.moonlight_antelope_bolt"
+inherit = "obj.moonlight_antelope_bolt"
+[item.params]
+"param.proj_travel"="spotanim.crossbowbolt_travel"
 "param.equipment_sound"=2244
 
 
