@@ -101,6 +101,7 @@ constructor(
 
         val queueDeath = !locked && npc.hitpoints == 0 && "queue.death" !in npc.queueList
         if (queueDeath) {
+            npc.killingHit = hit
             queueDeath()
         }
 
