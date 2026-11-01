@@ -44,17 +44,6 @@ public class WorldRepository @Inject constructor(private val zoneUpdates: ZoneUp
         soundArea(source.coords, synth, delay, loops, radius, source.size)
     }
 
-    public fun soundArea(
-        source: CoordGrid,
-        synth: Int,
-        delay: Int = 0,
-        loops: Int = 1,
-        radius: Int = 5,
-        size: Int = 0,
-    ) {
-        zoneUpdates.soundArea(source, synth, delay, loops, radius, size)
-    }
-
     public fun spotanimMap(
         spotanim: SpotanimType,
         coord: CoordGrid,

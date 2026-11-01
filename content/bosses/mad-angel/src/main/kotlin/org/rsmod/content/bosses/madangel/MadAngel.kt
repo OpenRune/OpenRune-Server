@@ -426,7 +426,7 @@ constructor(
         private const val SPOT_SMITE_ENRAGED = "spotanim.vfx_mad_angel_attack_smite_enraged"
         private const val ANIM_SPAWN = "seq.npc_mad_angel_spawn"
         private const val SPOT_SPAWN = "spotanim.vfx_mad_angel_spawn"
-        private const val FIGHT_MUSIC = 885
+        private const val FIGHT_MUSIC = "midi.mad_angel_combat"
 
         private const val ENRAGE_HP = 350.0
         private val MAD_ANGEL_HP: Double =
