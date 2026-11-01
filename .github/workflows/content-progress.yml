@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           # Needed so the generator can read per-module last-commit dates, and
           # so the step below can look back to the previous report commit.
