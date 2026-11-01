@@ -119,7 +119,7 @@ See [.github/docs/RELEASE_CI.md](.github/docs/RELEASE_CI.md) for what the workfl
 
 ## 💬 Bug Reports & Support
 - Open an issue on [GitHub](https://github.com/OpenRune/OpenRune-Server/issues) with reproduction details.
-- Reach the team directly in the [Discord server](https://discord.gg/HAwN6N8F).
+- Reach the team directly in the [Discord server](https://discord.gg/v2qcXzBCwf).
 
 ## 🙏 Acknowledgments
 - Cache management powered by [OpenRune-FileStore](https://github.com/OpenRune/OpenRune-FileStore).
