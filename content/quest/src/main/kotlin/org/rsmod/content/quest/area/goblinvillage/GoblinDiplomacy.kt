@@ -1,5 +1,6 @@
 package org.rsmod.content.quest.area.goblinvillage
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -79,9 +80,12 @@ constructor(
         for (crate in Crate.entries) {
             onOpLoc1(crate.loc) { searchCrate(crate) }
         }
+        val mails = ServerCacheManager.getItems().values.filter { it.isCategoryType(GOBLIN_MAILS) }
         for ((dye, dyed) in gobdip_mail_dyes.filterValuesNotNull()) {
-            for (mail in ARMOURS - dyed.internalName) {
-                onOpHeldU(dye, mail) { dyeMail(dye, it.firstSlot, mail, it.secondSlot, dyed) }
+            for (mail in mails.filter { it.id != dyed.id }) {
+                onOpHeldU(dye, mail) {
+                    dyeMail(dye, it.firstSlot, mail.internalName, it.secondSlot, dyed)
+                }
             }
         }
         onOpHeldU(RED_DYE, YELLOW_DYE) { mixDyes(it.firstSlot, it.secondSlot, ORANGE_DYE, "an orange") }
@@ -262,7 +266,7 @@ constructor(
     private suspend fun ProtectedAccess.useOnGeneral(npc: Npc, obj: ItemServerType) {
         val stage = stage(player)
         val wanted = wantedArmour(stage)
-        if (wanted == null || obj.id !in ARMOURS.map { it.asRSCM(RSCMType.OBJ) }) {
+        if (wanted == null || !obj.isCategoryType(GOBLIN_MAILS)) {
             mes("Nothing interesting happens.")
             return
         }
@@ -948,19 +952,7 @@ constructor(
         private const val GOBLIN_MAIL = "obj.goblin_armour"
         private const val ORANGE_MAIL = "obj.goblin_armour_orange"
         private const val BLUE_MAIL = "obj.goblin_armour_darkblue"
-        private val ARMOURS =
-            listOf(
-                GOBLIN_MAIL,
-                ORANGE_MAIL,
-                BLUE_MAIL,
-                "obj.goblin_armour_black",
-                "obj.goblin_armour_green",
-                "obj.goblin_armour_pink",
-                "obj.goblin_armour_purple",
-                "obj.goblin_armour_red",
-                "obj.goblin_armour_white",
-                "obj.goblin_armour_yellow",
-            )
+        private const val GOBLIN_MAILS = "category.goblin_armour"
 
         private const val ORANGE_DYE = "obj.orangedye"
         private const val BLUE_DYE = "obj.bluedye"

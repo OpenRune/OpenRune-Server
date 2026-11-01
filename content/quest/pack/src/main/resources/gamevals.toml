@@ -163,3 +163,6 @@ gobdip_mail_dyes = 65469
 
 [gamevals.clientscript]
 poh_furniture_creation_entry_old = 7988
+
+[gamevals.category]
+goblin_armour = 528
