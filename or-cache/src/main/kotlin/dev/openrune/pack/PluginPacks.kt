@@ -70,6 +70,7 @@ class PluginPacks(val projectRoot: File, val all: List<PluginPack>) {
 
         tasks += UnpackDefaultCs2(DirectoryConstants.CS2_PATH.toFile())
         tasks += PackCs2(DirectoryConstants.CS2_PATH.toFile(), cs2Overrides)
+        tasks += NameCs2Groups(cs2Overrides.symbols["clientscript"].orEmpty())
 
         val tables = baseTables + active.flatMap { it.dbTables() }
         tasks += PackDBTables(tables)
