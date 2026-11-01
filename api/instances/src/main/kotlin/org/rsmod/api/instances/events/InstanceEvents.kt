@@ -5,44 +5,45 @@ import org.rsmod.api.instances.InstanceSpec
 import org.rsmod.events.KeyedEvent
 import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.player.PlayerEvent
 
 public fun instanceEventId(key: String): Long = key.hashCode().toLong()
 
 public data class InstancePlayerJoinEvent(
-    public val player: Player,
+    override val player: Player,
     public val key: String,
     public val instanceId: InstanceId,
     public val ownerId: Long,
     override val id: Long = instanceEventId(key),
-) : KeyedEvent {
+) : KeyedEvent, PlayerEvent {
     public val isOwner: Boolean
         get() = player.uuid == ownerId
 }
 
 public data class InstancePlayerLeaveEvent(
-    public val player: Player,
+    override val player: Player,
     public val key: String,
     public val instanceId: InstanceId,
     public val ownerId: Long,
     override val id: Long = instanceEventId(key),
-) : KeyedEvent {
+) : KeyedEvent, PlayerEvent {
     public val isOwner: Boolean
         get() = player.uuid == ownerId
 }
 
 public data class InstancePlayerJoinUnboundEvent(
-    public val player: Player,
+    override val player: Player,
     public val key: String,
     public val instanceId: InstanceId,
     public val ownerId: Long,
-) : UnboundEvent
+) : UnboundEvent, PlayerEvent
 
 public data class InstancePlayerLeaveUnboundEvent(
-    public val player: Player,
+    override val player: Player,
     public val key: String,
     public val instanceId: InstanceId,
     public val ownerId: Long,
-) : UnboundEvent
+) : UnboundEvent, PlayerEvent
 
 public data class InstanceStartedEvent(
     public val key: String,
@@ -65,12 +66,12 @@ public data class InstanceEndedEvent(
  * A player's boss kill time, after it was reported to them; [personalBest] if it beat their best.
  */
 public data class InstanceKillTimeEvent(
-    public val player: Player,
+    override val player: Player,
     public val key: String,
     public val ticks: Int,
     public val personalBest: Boolean,
     override val id: Long = instanceEventId(key),
-) : KeyedEvent
+) : KeyedEvent, PlayerEvent
 
 public data class InstanceTimeTickEvent(
     public val key: String,
