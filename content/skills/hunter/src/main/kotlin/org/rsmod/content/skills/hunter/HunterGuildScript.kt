@@ -5,6 +5,10 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statBase
@@ -163,14 +167,13 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
     }
 
     fun ProtectedAccess.buy(obj: String, price: Int): Boolean {
-        if (inv.count(COINS) < price) return false
-        if (inv.count(COINS) > price && inv.freeSpace() == 0) return false
-        if (invDel(inv, COINS, price).failure) return false
-        if (invAdd(inv, obj).failure) {
-            invAdd(inv, COINS, price)
-            return false
-        }
-        return true
+        return player
+            .invTransaction(inv) {
+                val target = select(inv)
+                delete(target, COINS.asRSCM(RSCMType.OBJ), price)
+                add(target, obj.asRSCM(RSCMType.OBJ), 1)
+            }
+            .success
     }
 
     private suspend fun Dialogue.rumourTalk(hunter: HunterRumourHuntersRow, quick: Boolean, asked: Boolean = false) {
