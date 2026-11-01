@@ -1,7 +1,12 @@
 package org.rsmod.content.skills.cooking
 
 import jakarta.inject.Inject
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.cookingLvl
 import org.rsmod.api.script.onOpContentLoc1
 import org.rsmod.api.script.onOpContentMixedLocU
@@ -214,15 +219,23 @@ class CookingEvents @Inject constructor(
 
     private fun ProtectedAccess.applyCook(food: CookingFoodsRow, surface: CookingSurface) {
         val burned = isBurned(food, surface)
-        invDel(inv, food.raw.internalName, 1)
 
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.cooking",
+                item = if (burned) food.burnt.internalName else food.cooked.internalName,
+                experience = if (burned) 0.0 else food.xp * xpMods.get(player, "stat.cooking"),
+                grantsExperience = !burned,
+                source = SkillingProductSource.Cooking(food, burned),
+                inputs = listOf(SkillingInput(food.raw.internalName)),
+            )
+        if (awardSkillingProduct(product) != SkillingAwardResult.Success) {
+            return
+        }
         if (burned) {
-            invAdd(inv, food.burnt.internalName, 1)
             spam("You accidentally burn the ${food.cooked.name.lowercase()}.")
         } else {
-            invAdd(inv, food.cooked.internalName, 1)
-            val xpModifier = xpMods.get(player, "stat.cooking")
-            statAdvance("stat.cooking", food.xp.toDouble() * xpModifier)
             spam("You successfully cook the ${food.cooked.name.lowercase()}.")
         }
     }
