@@ -1,7 +1,12 @@
 package org.rsmod.content.skills.smithing
 
 import org.rsmod.api.player.events.interact.LocUCategoryEvents
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLocCategoryU
 import org.rsmod.api.script.onPlayerQueueWithArgs
@@ -97,8 +102,6 @@ class CannonBallScript : PluginScript() {
         anim("seq.human_furnace")
         soundSynth("synth.furnace")
 
-        invDel(inv, ball.input.internalName, barsPerSmelt)
-
         mes("You heat the $barName into a liquid state.")
         delay(2)
 
@@ -112,9 +115,17 @@ class CannonBallScript : PluginScript() {
         delay(1)
 
         spam("You remove the cannonballs from the mould.")
-        if (invAdd(inv, ball.output.internalName, ballsPerSmelt).success) {
-            statAdvance("stat.smithing", ball.xp / 10.0 * barsPerSmelt)
-        }
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.smithing",
+                item = ball.output.internalName,
+                count = ballsPerSmelt,
+                experience = ball.xp / 10.0 * barsPerSmelt,
+                source = SkillingProductSource.CannonballSmelting(ball),
+                inputs = listOf(SkillingInput(ball.input.internalName, barsPerSmelt)),
+            )
+        awardSkillingProduct(product)
     }
 
     private suspend fun ProtectedAccess.canSmelt(ball: SmithingCannonBallsRow): Boolean {
@@ -154,10 +165,21 @@ class CannonBallScript : PluginScript() {
             return
         }
 
-        val removedBalls = invDel(inv, "obj.mcannonball", toCreate).success
-        val removedDust = invDel(inv, "obj.granite_dust", toCreate).success
-
-        if (removedBalls && removedDust && invAdd(inv, "obj.granite_cannonball", toCreate).success) {
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.smithing",
+                item = "obj.granite_cannonball",
+                count = toCreate,
+                grantsExperience = false,
+                source = SkillingProductSource.GraniteCannonballs,
+                inputs =
+                    listOf(
+                        SkillingInput("obj.mcannonball", toCreate),
+                        SkillingInput("obj.granite_dust", toCreate),
+                    ),
+            )
+        if (awardSkillingProduct(product) == SkillingAwardResult.Success) {
             mes("You apply a thick coating of granite dust to your cannonballs.")
         }
     }

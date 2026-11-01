@@ -1,7 +1,12 @@
 package org.rsmod.content.skills.smithing
 
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.craftingLvl
 import org.rsmod.api.player.stat.smithingLvl
 import org.rsmod.api.script.onOpLoc1
@@ -163,17 +168,22 @@ class CrystalSingingScript : PluginScript() {
         anim("seq.prif_crystal_singing")
         soundSynth("synth.toa_wardens_square_thunder3_01")
 
-        val removed = item.input.zip(item.inputAmount).all { (material, amount) ->
-            invDel(inv, material.internalName, amount).success
-        }
-
-        if (!removed) {
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.smithing",
+                item = item.output.internalName,
+                experience = item.xp.toDouble(),
+                source = SkillingProductSource.CrystalSinging(item),
+                inputs =
+                    item.input.zip(item.inputAmount).map { (material, amount) ->
+                        SkillingInput(material.internalName, amount)
+                    },
+            )
+        if (awardSkillingProduct(product) != SkillingAwardResult.Success) {
             return
         }
 
-        invAdd(inv, item.output.internalName, 1)
-
-        statAdvance("stat.smithing", item.xp.toDouble())
         statAdvance("stat.crafting", item.xp.toDouble())
     }
 

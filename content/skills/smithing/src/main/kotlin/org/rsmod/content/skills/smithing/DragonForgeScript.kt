@@ -1,6 +1,11 @@
 package org.rsmod.content.skills.smithing
 
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.smithingLvl
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onPlayerQueueWithArgs
@@ -103,20 +108,22 @@ class DragonForgeScript : PluginScript() {
         soundSynth("synth.furnace")
         delay(2)
 
-        val removed =
-            recipe.input.all { input ->
-                invDel(inv, input.internalName, recipe.inputAmount.first()).success
-            }
-
-        if (!removed) {
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.smithing",
+                item = recipe.output.internalName,
+                count = recipe.outputAmount,
+                experience = recipe.xp.toDouble(),
+                source = SkillingProductSource.DragonForge(recipe),
+                inputs =
+                    recipe.input.map { SkillingInput(it.internalName, recipe.inputAmount.first()) },
+            )
+        if (awardSkillingProduct(product) != SkillingAwardResult.Success) {
             return
         }
-
-        if (invAdd(inv, recipe.output.internalName, recipe.outputAmount).success) {
-            statAdvance("stat.smithing", recipe.xp.toDouble())
-            val inputName = SmithingUtils.itemName(recipe.input.first(), "ore")
-            mes("You smelt the $inputName in the furnace.")
-        }
+        val inputName = SmithingUtils.itemName(recipe.input.first(), "ore")
+        mes("You smelt the $inputName in the furnace.")
     }
 
     private suspend fun ProtectedAccess.canSmelt(recipe: SmithingDragonForgeRow): Boolean {

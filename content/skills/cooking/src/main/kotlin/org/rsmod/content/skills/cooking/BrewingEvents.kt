@@ -1,7 +1,12 @@
 package org.rsmod.content.skills.cooking
 
 import jakarta.inject.Inject
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.cookingLvl
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocU
@@ -309,9 +314,18 @@ class BrewingEvents @Inject constructor() : PluginScript() {
 
         val result = if (mature != null) recipe.matureResult.internalName else recipe.result.internalName
 
-        invDel(inv, "obj.beer_glass", 1)
-        invAdd(inv, result, 1)
-        statAdvance("stat.cooking", recipe.xp.toDouble())
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.cooking",
+                item = result,
+                experience = recipe.xp.toDouble(),
+                source = SkillingProductSource.Brewing(recipe, mature != null),
+                inputs = listOf(SkillingInput("obj.beer_glass")),
+            )
+        if (awardSkillingProduct(product) != SkillingAwardResult.Success) {
+            return
+        }
         vars[brewery.barrelVarbit] = 0
         mes("You collect the ale from the barrel.")
     }
