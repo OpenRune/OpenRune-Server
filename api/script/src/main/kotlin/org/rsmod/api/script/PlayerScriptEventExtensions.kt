@@ -9,6 +9,7 @@ import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
+import org.rsmod.api.player.events.PlayerXpEvents
 import org.rsmod.api.player.events.PlayerTimerEvent
 import org.rsmod.api.player.events.interact.PlayerTEvents
 import org.rsmod.api.player.events.interact.PlayerUContentEvents
@@ -111,6 +112,12 @@ public fun ScriptContext.onPlayerCoordsChanged(
 public fun ScriptContext.onPlayerHitpointsChanged(
     action: PlayerHitpointsChangedEvent.() -> Unit
 ): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerXpModify(action: PlayerXpEvents.Modify.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerXpGain(action: PlayerXpEvents.Gain.() -> Unit): Unit =
+    onEvent(action)
 
 public fun ScriptContext.onPlayerHit(action: PlayerHitEvents.Impact.() -> Unit): Unit =
     onEvent(action)
