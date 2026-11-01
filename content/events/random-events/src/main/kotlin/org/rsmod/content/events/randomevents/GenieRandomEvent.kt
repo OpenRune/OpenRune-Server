@@ -210,7 +210,7 @@ constructor(
             return
         }
         val genie = entry.value
-        if (genie.handedOver || genie.ignored || !eventsAllowed(player.coords)) {
+        if (genie.handedOver || genie.ignored || areas.inArea(NO_EVENTS_AREA, player.coords)) {
             startDialogue(npc) { chatNpc(happy, "Have a nice day, ${title(player)}.") }
             return
         }
