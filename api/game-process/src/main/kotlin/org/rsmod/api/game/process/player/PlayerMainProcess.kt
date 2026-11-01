@@ -51,6 +51,7 @@ constructor(
                     processTimers()
                     processAreas()
                     processInteractions()
+                    timers.processAfterInteractions(this)
                     processIfCloseDisconnect()
                 }
             } finally {

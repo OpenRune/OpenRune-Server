@@ -29,6 +29,7 @@ constructor(
     private val mapClock: MapClock,
     private val drops: PlayerDeathDrops,
     private val handlingResolver: PlayerDeathHandlingResolver,
+    private val preDropHooks: Set<PlayerDeathPreDropHook>,
     private val cleanupHooks: Set<PlayerDeathCleanupHook>,
     private val storageHooks: Set<PlayerDeathStorageHook>,
     private val respawnHooks: Set<PlayerRespawnHook>,
@@ -84,6 +85,10 @@ constructor(
     }
 
     private fun handleDeathDrops(player: Player, deathCoords: CoordGrid) {
+        for (hook in preDropHooks) {
+            hook.beforeDrops(player)
+        }
+
         val bypassAdmin = player.deathDropsBypassAdmin()
         player.attr.remove(DEATH_DROPS_BYPASS_ADMIN_ATTR)
         if (player.modLevel.isAtLeast(Rights.ADMINISTRATOR) && !bypassAdmin) return

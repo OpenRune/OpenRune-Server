@@ -1,8 +1,15 @@
 [gamevals.enum]
 item_pack_contents=65473
+bird_nest_woodcutting_types=64470
+bird_nest_woodcutting_types_rabbit_foot=64471
+bird_nest_seed_rewards=64472
+bird_nest_ring_rewards=64473
+bird_nest_egg_rewards=64474
+bird_nest_reward_names=64475
 
 [gamevals.queue]
 item_pack_open=400
+bird_nest_search=64470
 
 [gamevals.dbtable]
 books = 65492

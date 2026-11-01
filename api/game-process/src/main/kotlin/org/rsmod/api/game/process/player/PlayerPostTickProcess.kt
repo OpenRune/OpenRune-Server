@@ -32,8 +32,10 @@ constructor(
     private val postTickHooks: Set<PlayerPostTickHook>,
 ) {
     public fun process() {
-        computeSharedBuffers()
         updateProtocolInfo()
+        processPlayerHooks()
+        // Freeze zone updates after every player callback, before any observer receives them.
+        computeSharedBuffers()
         processPostTick()
         finalizePostTick()
     }
@@ -54,6 +56,17 @@ constructor(
         eventBus.publish(GameLifecycle.UpdateInfo)
     }
 
+    private fun processPlayerHooks() {
+        for (player in playerList) {
+            PlayerPersistenceHints.enter(player)
+            try {
+                player.tryOrDisconnect { processPostTickHooks() }
+            } finally {
+                PlayerPersistenceHints.leave()
+            }
+        }
+    }
+
     private fun processPostTick() {
         for (player in playerList) {
             PlayerPersistenceHints.enter(player)
@@ -64,7 +77,6 @@ constructor(
                     processInvUpdates()
                     processStatUpdates()
                     processRunUpdates()
-                    processPostTickHooks()
                     processClientCycle()
                     processClientState()
                     cleanUpPendingUpdates()

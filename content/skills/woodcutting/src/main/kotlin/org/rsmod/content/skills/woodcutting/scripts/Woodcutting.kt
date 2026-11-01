@@ -47,7 +47,6 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 // TODO:
-// - bird nests
 // - axe effects/charges
 class Woodcutting
 @Inject

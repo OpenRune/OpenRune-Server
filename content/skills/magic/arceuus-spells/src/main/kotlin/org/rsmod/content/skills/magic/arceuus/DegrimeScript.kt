@@ -67,7 +67,7 @@ constructor(private val spells: MagicSpellRegistry, private val runes: MagicRune
             invAdd(inv, row.input.internalName, count)
             return
         }
-        statAdvance("stat.herblore", row.xp / 2.0 * count)
+        statAdvance("stat.herblore", row.xp / 20.0 * count)
     }
 
     internal companion object {

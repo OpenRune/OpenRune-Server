@@ -9,6 +9,7 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.rsmod.api.death.PlayerDeathCleanupHook
 import org.rsmod.api.death.PlayerDeathHook
+import org.rsmod.api.death.PlayerDeathPreDropHook
 import org.rsmod.api.death.PlayerDeathStorageHook
 import org.rsmod.api.death.PlayerGraveHook
 import org.rsmod.api.death.PlayerRespawnHook
@@ -102,6 +103,7 @@ class DeathTutorialTest {
             Multibinder.newSetBinder(binder(), PlayerDeathCleanupHook::class.java)
                 .addBinding()
                 .to(DeathTutorialArrival::class.java)
+            Multibinder.newSetBinder(binder(), PlayerDeathPreDropHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerRespawnHook::class.java)
             Multibinder.newSetBinder(binder(), PlayerDeathStorageHook::class.java)
             bind(MusicRepository::class.java).`in`(Scopes.SINGLETON)

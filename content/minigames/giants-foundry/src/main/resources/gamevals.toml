@@ -1,0 +1,96 @@
+[gamevals.varp]
+giants_foundry_commission_start = 64400
+giants_foundry_best_time = 64402
+giants_foundry_best_quality = 64401
+giants_foundry_swords_made = 64403
+giants_foundry_sweetspots = 64404
+giants_foundry_work = 64405
+giants_foundry_work_origin = 64406
+giants_foundry_work_next_action = 64407
+giants_foundry_sweetspot_until = 64408
+
+[gamevals.varbit]
+giants_foundry_sweetspots_offered = 64400
+giants_foundry_sweetspots_last_section = 64401
+giants_foundry_work_station = 64402
+giants_foundry_work_heat_ticks = 64403
+giants_foundry_work_sweetspot_armed = 64404
+giants_foundry_work_overworked = 64405
+giants_foundry_work_sweetspot_void = 64406
+
+[gamevals.timer]
+giants_foundry_preform_cooling = 4440
+giants_foundry_work = 4441
+giants_foundry_sweetspot = 4443
+
+[gamevals.enum]
+giants_foundry_commission_words = 4372
+giants_foundry_moulds_forte = 4373
+giants_foundry_moulds_blade = 4374
+giants_foundry_moulds_tip = 4375
+giants_foundry_reward_shop_items = 4379
+giants_foundry_ore_pack_weights = 64430
+giants_foundry_heat_steps = 64431
+sleeping_giants_nails = 64434
+
+[gamevals.param]
+giants_foundry_mould_name = 1621
+giants_foundry_mould_level = 1622
+giants_foundry_mould_broad_narrow = 1625
+giants_foundry_mould_heavy_light = 1626
+giants_foundry_mould_spiked_flat = 1627
+giants_foundry_shop_obj = 1636
+giants_foundry_shop_mould = 1637
+giants_foundry_shop_cost = 1638
+
+[gamevals.queue]
+giants_foundry_quest_prompt = 64401
+
+[gamevals.synth]
+giants_foundry_crucible_pour = 5605
+giants_foundry_preform_pickup = 1051
+giants_foundry_ambient_1 = 5600
+giants_foundry_trip_hammer = 5601
+giants_foundry_ambient_2 = 5602
+giants_foundry_trip_hammer_loop = 5603
+giants_foundry_grindstone = 5604
+giants_foundry_polishing_wheel = 5608
+giants_foundry_sword_finished = 2755
+giants_foundry_lava_pool = 1019
+giants_foundry_waterfall = 1006
+
+[gamevals.droptrigger]
+sleeping_giants_room = 64400
+
+[gamevals.dbtable]
+giants_foundry_tools = 64430
+sleeping_giants_repairs = 64431
+sleeping_giants_room_locs = 64432
+sleeping_giants_crate = 64433
+
+[gamevals.dbrow]
+giants_foundry_tool_hammer = 63740
+giants_foundry_tool_grindstone = 63741
+giants_foundry_tool_polishing_wheel = 63742
+sleeping_giants_repair_hammer = 63750
+sleeping_giants_repair_grindstone = 63751
+sleeping_giants_repair_polishing_wheel = 63752
+sleeping_giants_room_loc_trip_hammer = 63760
+sleeping_giants_room_loc_grindstone = 63761
+sleeping_giants_room_loc_polishing_wheel = 63762
+sleeping_giants_room_loc_crucible = 63763
+sleeping_giants_room_loc_mould_jig = 63764
+sleeping_giants_room_loc_chest = 63765
+sleeping_giants_room_loc_lava_pool = 63766
+sleeping_giants_room_loc_waterfall = 63767
+sleeping_giants_room_loc_preform_storage = 63768
+sleeping_giants_room_loc_supply_box = 63769
+sleeping_giants_crate_bronze_bars = 63770
+sleeping_giants_crate_iron_bars = 63771
+sleeping_giants_crate_bronze_battleaxes = 63772
+sleeping_giants_crate_iron_longswords = 63773
+sleeping_giants_crate_bronze_platebody = 63774
+sleeping_giants_crate_iron_platebody = 63775
+
+[gamevals.mesanim]
+giants_foundry_chatshock = 64400
