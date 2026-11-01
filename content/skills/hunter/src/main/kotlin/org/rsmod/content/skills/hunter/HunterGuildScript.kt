@@ -25,7 +25,7 @@ import org.rsmod.api.table.hunter.HunterRumourHuntersRow
 import org.rsmod.api.table.hunter.HunterRumoursRow
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.hunter.HunterRumours.Companion.BACK_TO_BACK
-import org.rsmod.content.skills.hunter.HunterRumours.Companion.BACK_TO_BACK_OFF
+import org.rsmod.content.skills.hunter.HunterRumours.Companion.BACK_TO_BACK_ON
 import org.rsmod.content.skills.hunter.HunterRumours.Companion.COMPLETED
 import org.rsmod.content.skills.hunter.HunterRumours.Companion.UNLOCKED
 import org.rsmod.game.entity.Npc
@@ -200,7 +200,7 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
         val current = rumours.currentHunter(player)
         val currentRumour = current?.let { rumours.rumourOf(player, it) }
         when {
-            own != null && (current == hunter || currentRumour == null) -> {
+            own != null && current == hunter -> {
                 rumours.resume(player, hunter)
                 if (hunter.name == "Gilman") {
                     chatPlayer(quiz, "Can you remind me which rumour I'm chasing right now?")
@@ -256,12 +256,15 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
             }
             return
         }
+        if (rumours.reshuffled(player)) {
+            chatNpc(neutral, RESHUFFLE_LINES[random.of(RESHUFFLE_LINES.size)])
+            return
+        }
         chatNpc(
             neutral,
             "I hear you're hunting for ${other.name}. Aren't you looking for ${a(otherRumour)} at the moment? " +
                 "You'll need to bring back ${parts(otherRumour)}.",
         )
-        if (rumours.reshuffled(player)) return
         chatNpc(neutral, "Unless you fancy hunting for me instead?")
         if (!choice2("Yes.", true, "No.", false, title)) return
         if (own != null) {
@@ -279,7 +282,8 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
             return
         }
         val offers = ASSIGN_LINES + hunter.lines.extraAssign
-        chatNpc(neutral, offers[random.of(offers.size)].format(rumour.name, rumour.partText))
+        val line = hunter.lines.rumourAssign[rumour.name] ?: offers[random.of(offers.size)]
+        chatNpc(neutral, line.format(rumour.name, rumour.partText))
     }
 
     private suspend fun Dialogue.handIn(hunter: HunterRumourHuntersRow, quick: Boolean) {
@@ -377,7 +381,7 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
     }
 
     private suspend fun Dialogue.veritySettings() {
-        val on = vars[BACK_TO_BACK] != BACK_TO_BACK_OFF
+        val on = vars[BACK_TO_BACK] == BACK_TO_BACK_ON
         val amount = if (on) "more" else "less"
         chatNpc(
             quiz,
@@ -385,7 +389,7 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
         )
         val title = if (on) "Disable back-to-back rumours?" else "Enable back-to-back rumours?"
         if (!choice2("Yes", true, "No", false, title)) return
-        VarPlayerIntMapSetter.set(player, BACK_TO_BACK, if (on) BACK_TO_BACK_OFF else 0)
+        VarPlayerIntMapSetter.set(player, BACK_TO_BACK, if (on) 0 else BACK_TO_BACK_ON)
         mesbox(if (on) "Repeat rumours will no longer be offered." else "Repeat rumours will now be offered.")
     }
 
@@ -422,6 +426,7 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
         val another: String,
         val remember: String,
         val extraAssign: List<String> = emptyList(),
+        val rumourAssign: Map<String, String> = emptyMap(),
     )
 
     companion object {
@@ -453,6 +458,13 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
                     "you find it, bring back %2\$s.",
                 "I've heard rumours of a strange %1\$s that you could check out for me. Once you find it, bring " +
                     "back %2\$s.",
+            )
+
+        val RESHUFFLE_LINES =
+            listOf(
+                "Heard we're having an intel reshuffle. You should probably focus on your current task for now.",
+                "Gilman said that you're doing some work for him right now. I won't interfere with that.",
+                "We're all having a rest, but don't you have something to be getting on with?",
             )
 
         val LINES =
@@ -582,6 +594,12 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
                                 "We've got rumours circling about an odd %1\$s. You can follow up on that if you'd like? " +
                                     "Once you find it, bring back %2\$s.",
                             ),
+                        rumourAssign =
+                            mapOf(
+                                "Wyrmscraig goat" to
+                                    "We've got reports of a slightly different Wyrmscraig goat in the local " +
+                                    "population. Once you find it, bring back one of its hooves.",
+                            ),
                     ),
                 "Wolf" to
                     HunterLines(
@@ -601,6 +619,12 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
                         done = "You're quite the talented hunter! I'll have to keep you around. Here's your reward.",
                         another = "Want to test your skills again?",
                         remember = "If I'm remembering correctly, I asked you to hunt %1\$s and bring back %2\$s.",
+                        rumourAssign =
+                            mapOf(
+                                "moonlight antelope" to
+                                    "Fancy a challenge? Why not hunt some of the moonlight antelope deeper in the " +
+                                    "cavern and bring back one of their hooves.",
+                            ),
                     ),
             )
     }

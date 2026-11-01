@@ -10,6 +10,7 @@ import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.InvObj
 import org.rsmod.map.CoordGrid
 
 @Execution(ExecutionMode.SAME_THREAD)
@@ -32,10 +33,10 @@ class PitfallTest {
     private val pit by lazy { f.field<List<PitfallScript.Pit>>(script, "pits").first { it.kinds.isNotEmpty() } }
     private val creature by lazy { pit.kinds.first() }
 
-    private fun place() {
+    private fun place(caught: PitfallScript.Creature = creature) {
         VarPlayerIntMapSetter.set(f.player, pit.varbit, PitfallScript.STATE_FULL)
         val hunt = PitfallScript.Hunt()
-        hunt.pits[pit.index] = PitfallScript.PitTimer(PitfallScript.PitState.Full, 100, CoordGrid(3223, 3222, 0), creature)
+        hunt.pits[pit.index] = PitfallScript.PitTimer(PitfallScript.PitState.Full, 100, CoordGrid(3223, 3222, 0), caught)
         f.field<HashMap<Player, PitfallScript.Hunt>>(script, "hunts")[f.player] = hunt
     }
 
@@ -67,6 +68,18 @@ class PitfallTest {
         f.fill()
         f.finish()
         assertEquals(0L, loot())
+        assertEquals(PitfallScript.STATE_FULL, f.player.vars[pit.varbit])
+    }
+
+    @Test
+    fun `a splinter stack at max keeps the antelope`() {
+        val antelope = f.field<List<PitfallScript.Creature>>(script, "creatures").first { it.extra != null }
+        val splinter = antelope.extra!!.first
+        place(antelope)
+        f.player.inv[0] = InvObj(splinter, Int.MAX_VALUE)
+        f.run(script, "dismantle", pit)
+        assertEquals(Int.MAX_VALUE.toLong(), f.total(splinter))
+        assertEquals(0L, antelope.loot.distinct().sumOf { f.total(it) })
         assertEquals(PitfallScript.STATE_FULL, f.player.vars[pit.varbit])
     }
 

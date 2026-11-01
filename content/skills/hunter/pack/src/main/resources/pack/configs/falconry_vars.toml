@@ -3,3 +3,9 @@ isServerOnly = true
 id = "varp.falconry_invested"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.ring_of_pursuit_uses"
+scope = "Perm"
+transmit = "Never"

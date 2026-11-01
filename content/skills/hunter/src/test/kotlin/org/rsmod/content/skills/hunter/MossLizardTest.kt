@@ -37,6 +37,24 @@ class MossLizardTest {
         assertEquals(1L, f.total(MossLizardScript.TAIL))
     }
 
+    @Test
+    fun `a full inventory cuts the tail in the lizard's slot`() {
+        f.fill()
+        f.player.inv[5] = InvObj(MossLizardScript.LIZARD, 1)
+        f.call(script, "cutTail")
+        assertEquals(0L, f.total(MossLizardScript.LIZARD))
+        assertEquals(1L, f.total(MossLizardScript.TAIL))
+        assertEquals(27L, f.total("obj.bronze_dagger"))
+    }
+
+    @Test
+    fun `a lizard gone before the cut gives no tail`() {
+        f.player.inv[0] = InvObj(MossLizardScript.KNIFE, 1)
+        f.call(script, "cutTail")
+        assertEquals(0L, f.total(MossLizardScript.TAIL))
+        assertEquals(1L, f.total(MossLizardScript.KNIFE))
+    }
+
     companion object {
         @JvmStatic
         @BeforeAll

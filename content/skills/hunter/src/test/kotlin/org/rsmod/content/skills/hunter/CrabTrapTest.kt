@@ -72,6 +72,25 @@ class CrabTrapTest {
         assertEquals(CrabTrapScript.FULL, f.player.vars[site.varbits.first()])
     }
 
+    @Test
+    fun `an emptied trap re-baits with one bait and none once it is dropped`() {
+        f.player.statMap.setBaseLevel("stat.hunter", 99)
+        f.player.statMap.setCurrentLevel("stat.hunter", 99)
+        f.player.statMap.setBaseLevel(CrabTrapScript.SAILING, 99)
+        f.player.statMap.setCurrentLevel(CrabTrapScript.SAILING, 99)
+        f.player.inv[0] = InvObj(site.bait, 2)
+        VarPlayerIntMapSetter.set(f.player, site.varbits.first(), CrabTrapScript.FULL)
+        f.run(script, "empty", site, 0, loc.coords, loc)
+        assertEquals(1L, f.total(site.bait))
+        assertEquals(CrabTrapScript.ACTIVE, f.player.vars[site.varbits.first()])
+        VarPlayerIntMapSetter.set(f.player, site.varbits.first(), CrabTrapScript.FULL)
+        f.call(script, "empty", site, 0, loc.coords, loc)
+        f.player.inv[0] = null
+        f.finish()
+        assertEquals(2L, site.catches.distinct().sumOf { f.total(it) })
+        assertEquals(CrabTrapScript.BUILT, f.player.vars[site.varbits.first()])
+    }
+
     companion object {
         @JvmStatic
         @BeforeAll

@@ -22,6 +22,7 @@ object HunterTrackingTable {
     const val TUNNELS = 13
     const val SEGMENTS = 14
     const val SPOT_LOC = 15
+    const val NOOSE_FAIL_PERMILLE = 16
 
     private fun node(id: Int): Int = id
 
@@ -47,6 +48,7 @@ object HunterTrackingTable {
             column("tunnels", TUNNELS, VarType.INT, VarType.INT)
             column("segments", SEGMENTS, VarType.STRING, VarType.INT, VarType.INT, VarType.BOOLEAN, VarType.LOC)
             column("spot_loc", SPOT_LOC, VarType.LOC)
+            column("noose_fail_permille", NOOSE_FAIL_PERMILLE, VarType.INT)
 
             row("dbrow.hunter_tracking_polar") {
                 column(NAME, "polar kebbit")
@@ -60,6 +62,7 @@ object HunterTrackingTable {
                 column(USED_VARBIT, "varbit.hunting_trails_used_polar")
                 column(ENDS_VARBIT, "varbit.hunting_trail_ends_polar")
                 column(NMIN, 3)
+                column(NOOSE_FAIL_PERMILLE, 70)
                 columnRSCM(SPOT_LOC, "loc.hunting_trail_end_polar")
                 column(DENS, rows(
                         listOf(node(1), loc("loc.hunting_trail_spawn_polar1")),
@@ -104,6 +107,7 @@ object HunterTrackingTable {
                 column(USED_VARBIT, "varbit.hunting_trails_used35_55")
                 column(ENDS_VARBIT, "varbit.hunting_trail_ends_wood2")
                 column(NMIN, 5)
+                column(NOOSE_FAIL_PERMILLE, 0)
                 columnRSCM(SPOT_LOC, "loc.hunting_trail_end_bush35_55")
                 column(DENS, rows(
                         listOf(node(8), loc("loc.hunting_trail_spawn4")),
@@ -156,6 +160,7 @@ object HunterTrackingTable {
                 column(USED_VARBIT, "varbit.hunting_trails_used")
                 column(ENDS_VARBIT, "varbit.hunting_trail_state2_9")
                 column(NMIN, 5)
+                column(NOOSE_FAIL_PERMILLE, 0)
                 columnRSCM(SPOT_LOC, "loc.hunting_trail_end_bush29")
                 column(DENS, rows(
                         listOf(node(8), loc("loc.hunting_trail_spawn1")),
@@ -210,6 +215,7 @@ object HunterTrackingTable {
                 column(USED_VARBIT, "varbit.hunting_trails_used_jungle")
                 column(ENDS_VARBIT, "varbit.hunting_trail_ends_jungle")
                 column(NMIN, 5)
+                column(NOOSE_FAIL_PERMILLE, 0)
                 columnRSCM(SPOT_LOC, "loc.hunting_trail_end_jungle")
                 column(DENS, rows(
                         listOf(node(6), loc("loc.hunting_trail_spawn_jungle2")),
@@ -257,6 +263,7 @@ object HunterTrackingTable {
                 column(USED_VARBIT, "varbit.hunting_trails_used_desert")
                 column(ENDS_VARBIT, "varbit.hunting_trail_ends_desert")
                 column(NMIN, 5)
+                column(NOOSE_FAIL_PERMILLE, 0)
                 columnRSCM(SPOT_LOC, "loc.hunting_trail_end_desert")
                 column(DENS, rows(
                         listOf(node(6), loc("loc.hunting_trail_spawn_desert2")),

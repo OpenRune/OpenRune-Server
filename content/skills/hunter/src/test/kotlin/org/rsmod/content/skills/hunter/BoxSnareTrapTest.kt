@@ -20,11 +20,12 @@ import org.rsmod.map.CoordGrid
 @ResourceLock("ServerCacheManager")
 class BoxSnareTrapTest {
     private val f = HunterFixture()
+    private val objRepo = ObjRepository(MapClock(100), ObjRegistry(ZoneUpdateMap()))
     private val script =
         HunterTrapScript(
             mockk(relaxed = true),
             mockk(relaxed = true),
-            ObjRepository(MapClock(100), ObjRegistry(ZoneUpdateMap())),
+            objRepo,
             mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
@@ -33,12 +34,14 @@ class BoxSnareTrapTest {
             MapClock(100),
             mockk(relaxed = true),
             mockk(relaxed = true),
+            HunterTrapLimits(),
             mockk(relaxed = true),
         )
     private val traps: HashMap<CoordGrid, HunterTrapScript.Trap> by lazy { f.field(script, "traps") }
     private val kind by lazy {
         f.field<List<HunterTrapScript.TrapKind>>(script, "kinds").first { k -> !k.consumed && k.creatures.any { "chinchompa" in it.name } }
     }
+    private val snare by lazy { f.field<List<HunterTrapScript.TrapKind>>(script, "kinds").first { it.snare } }
     private val chosen by lazy { kind.creatures.first { "chinchompa" in it.name } }
     private val tile = CoordGrid(3223, 3222, 0)
 
@@ -106,6 +109,56 @@ class BoxSnareTrapTest {
         f.finish()
         assertEquals(0L, f.total(kind.item))
         assertEquals(1, traps.size)
+    }
+
+    @Test
+    fun `a full inventory keeps the set trap`() {
+        place(HunterTrapScript.TrapState.Set)
+        f.fill()
+        f.run(script, "dismantle", tile)
+        assertEquals(0L, f.total(kind.item))
+        assertEquals(1, traps.size)
+    }
+
+    @Test
+    fun `a trap stack at the maximum keeps the set trap`() {
+        place(HunterTrapScript.TrapState.Set)
+        f.player.inv[0] = InvObj(kind.item, Int.MAX_VALUE)
+        f.fill()
+        f.run(script, "dismantle", tile)
+        assertEquals(Int.MAX_VALUE.toLong(), f.total(kind.item))
+        assertEquals(1, traps.size)
+    }
+
+    private fun groundTotal() = objRepo.findAll(f.player.coords).filter { it.type == snare.itemType.id }.sumOf { it.count.toLong() }
+
+    private fun layer() {
+        f.player.statMap.setBaseLevel("stat.hunter", 99)
+        f.player.statMap.setCurrentLevel("stat.hunter", 99)
+        f.player.inv[0] = InvObj(snare.item, 1)
+        f.player.inv[1] = InvObj(snare.item, 1)
+    }
+
+    @Test
+    fun `a trap laid twice on one tile is laid once`() {
+        layer()
+        f.run(script, "lay", snare, null)
+        f.run(script, "lay", snare, null)
+        assertEquals(1L, f.total(snare.item))
+        assertEquals(0L, groundTotal())
+        assertEquals(1, traps.size)
+    }
+
+    @Test
+    fun `a laid trap taken from the ground is not set`() {
+        layer()
+        f.call(script, "lay", snare, null)
+        val laid = objRepo.findAll(f.player.coords).single { it.type == snare.itemType.id }
+        objRepo.del(laid, Int.MAX_VALUE)
+        f.finish()
+        assertEquals(1L, f.total(snare.item))
+        assertEquals(0L, groundTotal())
+        assertEquals(0, traps.size)
     }
 
     companion object {

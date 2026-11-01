@@ -1,0 +1,10 @@
+[[enum]]
+isServerOnly = true
+id = "enum.hunter_stymphike_loot"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.bones" = 1
+"obj.stymphike_feather" = 15
+"obj.stymphike_carcass" = 1

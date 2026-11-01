@@ -61,3 +61,9 @@ restockCycles = 1
 obj = "obj.shark_lure_pack"
 count = 10000
 restockCycles = 1
+
+[[varp]]
+isServerOnly = true
+id = "varp.aerial_fishing_offcut_catches"
+scope = "Perm"
+transmit = "Never"

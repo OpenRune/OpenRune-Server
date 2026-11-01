@@ -185,7 +185,7 @@ constructor(
     }
 
     private fun ProtectedAccess.tease(npc: Npc, creature: Creature) {
-        if (TEASING_STICK !in inv && SPEAR !in player.worn) {
+        if (TEASING_STICK !in inv && TEASING_STICK !in player.worn && SPEAR !in player.worn) {
             mes("You need a teasing stick or a hunter's spear to tease this creature.")
             return
         }
@@ -195,7 +195,7 @@ constructor(
             mes("I'm already under attack!")
             return
         }
-        if (hunts.values.any { it !== hunt && it.chase?.npc === npc }) return
+        if (hunts.values.any { (it !== hunt && it.chase?.npc === npc) || it.pits.values.any { pit -> pit.npc === npc } }) return
         faceEntitySquare(npc)
         anim(TEASE_SEQ)
         soundSynth(TEASE_SYNTH)
@@ -227,8 +227,9 @@ constructor(
                 PitState.Falling ->
                     if (age >= FALL_TICKS) {
                         VarPlayerIntMapSetter.set(this, pit.varbit, timer.fullState)
+                        timer.npc?.let { removeFallen(it, timer.caught!!) }
                         worldRepo.soundArea(timer.coords, timer.caught!!.caughtSynth)
-                        hunt.pits[index] = timer.copy(state = PitState.Full, cycle = now)
+                        hunt.pits[index] = timer.copy(state = PitState.Full, cycle = now, npc = null)
                     }
                 PitState.Full ->
                     if (age >= FULL_COLLAPSE_TICKS) {
@@ -306,9 +307,7 @@ constructor(
                 npc.anim(creature.fallSeq)
                 worldRepo.soundArea(pitCoords, FALL_SYNTH)
                 hunt.pits[crossing.pit.index] =
-                    PitTimer(PitState.Falling, now, pitCoords, creature, if (reversed) STATE_FULL_180 else STATE_FULL)
-                npc.defaultMode()
-                npcRepo.despawn(npc, FALL_TICKS + creature.respawnTicks)
+                    PitTimer(PitState.Falling, now, pitCoords, creature, if (reversed) STATE_FULL_180 else STATE_FULL, npc)
                 hunt.chase = null
             }
             CrossStage.Leaping -> {
@@ -336,15 +335,20 @@ constructor(
     }
 
     private fun release(hunt: Hunt) {
+        for (timer in hunt.pits.values) timer.npc?.let { removeFallen(it, timer.caught!!) }
         val chase = hunt.chase ?: return
         hunt.chase = null
         if (chase.npc.isSlotAssigned) chase.npc.defaultMode()
     }
 
-    private fun gearReduction(player: Player, creature: Creature): Int {
-        if (creature.npc !in BIG_CATS) return 0
-        return GEAR_SETS.lastOrNull { (pieces, _) -> pieces.all { it in player.worn } }?.second ?: 0
+    private fun removeFallen(npc: Npc, creature: Creature) {
+        if (!npc.isSlotAssigned) return
+        npc.defaultMode()
+        npcRepo.despawn(npc, creature.respawnTicks)
     }
+
+    private fun gearReduction(player: Player, creature: Creature): Int =
+        creature.gear.filter { (pieces, _) -> pieces.all { it in player.worn } }.maxOfOrNull { it.second } ?: 0
 
     private fun sideTiles(pit: CoordGrid): List<CoordGrid> =
         (0 until PIT_SIZE).flatMap {
@@ -395,6 +399,7 @@ constructor(
         val coords: CoordGrid,
         val caught: Creature? = null,
         val fullState: Int = STATE_FULL,
+        val npc: Npc? = null,
     )
 
     class Crossing(val pit: Pit, val pitCoords: CoordGrid, val dir: Dir, size: Int, var started: Int) {
@@ -445,6 +450,8 @@ constructor(
         val low: Int = row.low
         val high: Int = row.high
         val extra: Triple<String, Int, Int>? = row.extra.firstOrNull()?.let { Triple(it.t0.internalName, it.t1, it.t2) }
+        val gear: List<Pair<List<String>, Int>> =
+            row.gear.map { listOf(it.t0.internalName, it.t1.internalName, it.t2.internalName) to it.t3 }
     }
 
     companion object {
@@ -465,13 +472,6 @@ constructor(
         const val FALL_SYNTH = "synth.hunting_pitfall_collapse"
         const val LEAP_SYNTH = "synth.hunting_pitfall_leap"
         const val COLLAPSE_TEXT = "The pitfall trap that you constructed has collapsed."
-        val BIG_CATS = setOf("npc.hunting_jaguar", "npc.hunting_leopard", "npc.hunting_snow_tiger")
-        val GEAR_SETS =
-            listOf(
-                listOf("obj.hunting_hat_jaguar", "obj.hunting_torso_jaguar", "obj.hunting_trousers_jaguar") to 20,
-                listOf("obj.hunting_hat_leopard", "obj.hunting_torso_leopard", "obj.hunting_trousers_leopard") to 40,
-                listOf("obj.hunting_hat_tiger", "obj.hunting_torso_tiger", "obj.hunting_trousers_tiger") to 60,
-            )
         const val PIT_COUNT = 25
         const val PIT_SIZE = 2
         const val STATE_EMPTY = 0

@@ -8,6 +8,7 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlin.math.abs
 import kotlin.math.max
+import org.rsmod.api.enums.HunterEnums.hunter_pearl_shop_prices
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.delete
 import org.rsmod.api.invtx.invAdd
@@ -38,7 +39,6 @@ import org.rsmod.api.script.onPlayerSoftTimer
 import org.rsmod.api.shops.Shops
 import org.rsmod.api.shops.operation.ShopOperationMap
 import org.rsmod.api.table.hunter.HunterAerialFishRow
-import org.rsmod.api.table.hunter.HunterPearlShopRow
 import org.rsmod.content.other.pets.PetRewards
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
@@ -64,7 +64,7 @@ constructor(
     private val pets: PetRewards,
 ) : PluginScript() {
     private val fishes: List<HunterAerialFishRow> by lazy { HunterAerialFishRow.all().sortedByDescending { it.roll } }
-    private val prices: Map<Int, Int> by lazy { HunterPearlShopRow.all().associate { it.obj.id to it.pearls } }
+    private val prices: Map<Int, Int?> by lazy { hunter_pearl_shop_prices.associate { it.key.id to it.value } }
     private val flights = HashMap<Player, Flight>()
     private val spotTiles = LinkedHashSet<CoordGrid>()
 
@@ -78,8 +78,8 @@ constructor(
             onApNpc1(spot) {
                 if (isWithinDistance(it.npc, RANGE) && lineOfSight(player.coords, it.npc.coords)) send(it.npc) else apRange(RANGE)
             }
-            onNpcTimer(spot.toNpcType(), MOVE_TIMER) { relocate(npc) }
         }
+        onNpcTimer(SPOT.toNpcType(), MOVE_TIMER) { relocate(npc) }
         onEvent<NpcStateEvents.Create> { if (npc.type.internalName == SPOT) startSpot(npc) }
         for (glove in GLOVES) onOpWorn1(glove) { mes("You should speak to Alry to get this removed safely.") }
         for (fish in fishes) onOpHeldU(KNIFE, fish.fish.internalName) { cut(fish) }
@@ -96,7 +96,7 @@ constructor(
 
     private fun relocate(npc: Npc) {
         val free = spotTiles.filter { it != npc.coords }
-        if (free.isNotEmpty()) npc.telejump(collision, free[random.of(free.size)])
+        if (free.isNotEmpty() && npc.transmog == null) npc.telejump(collision, free[random.of(free.size)])
         npc.timer(MOVE_TIMER, random.of(MOVE_MIN, MOVE_MAX))
     }
 
@@ -217,8 +217,13 @@ constructor(
             return
         }
         chatNpc(neutral, "I'll keep an eye on you and make sure you don't have too much trouble with her!")
-        access.invAdd(player.worn, BIRD_GLOVE, slot = Wearpos.RightHand.slot)
-        access.rebuildAppearance()
+        access.takeBird()
+    }
+
+    private fun ProtectedAccess.takeBird() {
+        if (HAND_SLOTS.any { player.worn[it] != null }) return
+        if (invAdd(player.worn, BIRD_GLOVE, slot = Wearpos.RightHand.slot).failure) return
+        rebuildAppearance()
     }
 
     private suspend fun Dialogue.goldenTench() {
@@ -273,11 +278,17 @@ constructor(
                 return
             }
             chatPlayer(neutral, "Here you go.")
-            if (access.invDel(player.inv, PEARL, WHOLE_FISH_COST).failure) return
-            VarPlayerIntMapSetter.set(player, WHOLE_FISH_PAID, 1)
+            if (!access.payWholeFish()) return
         }
         val on = choice2("Yes", true, "No", false, title = "Feed the cormorant whole fish?")
         VarPlayerIntMapSetter.set(player, WHOLE_FISH_TOGGLE, if (on) 1 else 0)
+    }
+
+    private fun ProtectedAccess.payWholeFish(): Boolean {
+        if (vars[WHOLE_FISH_PAID] == 1) return true
+        if (invDel(inv, PEARL, WHOLE_FISH_COST).failure) return false
+        VarPlayerIntMapSetter.set(player, WHOLE_FISH_PAID, 1)
+        return true
     }
 
     private fun ProtectedAccess.returnGlove() {
@@ -289,7 +300,7 @@ constructor(
     private fun ProtectedAccess.send(spot: Npc) {
         if (BIRD_GLOVE !in player.worn || flights.containsKey(player)) return
         if (!spot.isSlotAssigned || !spot.isVisible) return
-        if (BAITS.none { it in inv } && !(vars[WHOLE_FISH_TOGGLE] == 1 && fishes.any { it.fish.internalName in inv })) {
+        if (!hasBait(player)) {
             mes("You need some fish offcuts or king worms to reward your cormorant.")
             return
         }
@@ -298,15 +309,19 @@ constructor(
         spotanim(LAUNCH_SPOTANIM)
         invReplace(player.worn, BIRD_GLOVE, 1, EMPTY_GLOVE)
         rebuildAppearance()
-        val d = distance(player.coords, spot.coords)
-        val ticks = returnTicks(d)
+        val frenzied = spot.isVisType(FRENZIED_SPOT)
+        val ticks = if (frenzied) FRENZY_CATCH_TICKS else returnTicks(distance(player.coords, spot.coords))
         worldRepo.projAnim(
             ProjAnim(TRAVEL_SPOTANIM.asRSCM(RSCMType.SPOTANIM), 150, 0, 0, ticks * 15, 10, 0,
                 -(player.slotId + 1), 0, player.coords, spot.coords)
         )
-        flights[player] = Flight(spot.coords, clock.cycle + ticks)
+        flights[player] = Flight(spot, spot.coords, clock.cycle + ticks, frenzied)
         player.softTimer(TIMER, 1)
     }
+
+    private fun hasBait(player: Player): Boolean =
+        BAITS.any { it in player.inv } ||
+            (player.vars[WHOLE_FISH_TOGGLE] == 1 && fishes.any { it.fish.internalName in player.inv })
 
     private fun returnTicks(distance: Int): Int =
         when {
@@ -324,11 +339,20 @@ constructor(
         }
         if (clock.cycle < flight.returnCycle) return
         flights.remove(this)
+        catchFish(flight.coords)
+        val spot = flight.spot
+        if (flight.frenzied) {
+            if (spot.isSlotAssigned && spot.isVisType(FRENZIED_SPOT) && EMPTY_GLOVE in worn && hasBait(this)) {
+                flights[this] = Flight(spot, flight.coords, clock.cycle + FRENZY_CATCH_TICKS, true)
+                return
+            }
+        } else if (spot.isSlotAssigned && spot.transmog == null && random.of(FRENZY_CHANCE) == 0) {
+            spot.transmog(FRENZIED_SPOT.toNpcType(), FRENZY_TICKS)
+        }
         if (EMPTY_GLOVE in worn) {
             worn[Wearpos.RightHand.slot] = org.rsmod.game.inv.InvObj(BIRD_GLOVE)
             rebuildAppearance()
         }
-        catchFish(flight.spot)
     }
 
     private fun Player.catchFish(spot: CoordGrid) {
@@ -385,9 +409,13 @@ constructor(
         }
         val offcut = OFFCUTS.firstOrNull { it in inv }
         if (offcut != null) {
-            if (random.of(OFFCUT_EVERY_MIN, OFFCUT_EVERY_MAX) == OFFCUT_EVERY_MIN) {
-                invDel(inv, offcut.asRSCM(RSCMType.OBJ), 1)
+            val catches = vars[OFFCUT_CATCHES] + 1
+            if (catches < OFFCUT_EVERY_MAX && (catches < OFFCUT_EVERY_MIN || random.of(2) == 0)) {
+                VarPlayerIntMapSetter.set(this, OFFCUT_CATCHES, catches)
+                return
             }
+            invDel(inv, offcut.asRSCM(RSCMType.OBJ), 1)
+            VarPlayerIntMapSetter.set(this, OFFCUT_CATCHES, 0)
             return
         }
         if (vars[WHOLE_FISH_TOGGLE] == 1) {
@@ -398,14 +426,14 @@ constructor(
 
     private fun ProtectedAccess.cut(fish: HunterAerialFishRow) {
         val name = fish.fish.internalName
-        if (invReplace(inv, name, 1, FISH_CHUNKS).failure) return
+        if (invReplace(inv, name, 1, FISH_OFFCUTS).failure) return
         statAdvance(COOKING, fish.cookingXpTenths / 10.0)
         mes("You cut the fish into offcuts.", ChatType.Spam)
     }
 
     private fun distance(a: CoordGrid, b: CoordGrid): Int = max(abs(a.x - b.x), abs(a.z - b.z))
 
-    class Flight(val spot: CoordGrid, val returnCycle: Int)
+    class Flight(val spot: Npc, val coords: CoordGrid, val returnCycle: Int, val frenzied: Boolean)
 
     companion object {
         const val HUNTER = "stat.hunter"
@@ -413,7 +441,8 @@ constructor(
         const val COOKING = "stat.cooking"
         const val ALRY = "npc.fishing_npc_angler"
         const val SPOT = "npc.fishing_spot_aerial"
-        val SPOTS = listOf(SPOT)
+        const val FRENZIED_SPOT = "npc.fishing_spot_aerial_large"
+        val SPOTS = listOf(SPOT, FRENZIED_SPOT)
         const val SHOP_INV = "inv.aerial_fishing_pearl_shop"
         const val SHOP_TITLE = "Alry the Angler's Angling Accessories"
         const val CURRENCY = "currency.molch_pearl"
@@ -423,8 +452,9 @@ constructor(
         val HAND_SLOTS = listOf(Wearpos.RightHand.slot, Wearpos.LeftHand.slot, Wearpos.Hands.slot)
         const val KNIFE = "obj.knife"
         const val KING_WORM = "obj.king_worm"
-        const val FISH_CHUNKS = "obj.fish_chunks"
-        val OFFCUTS = listOf(FISH_CHUNKS, "obj.sailing_fine_fish_offcuts")
+        const val FISH_OFFCUTS = "obj.brut_fish_cuts"
+        val OFFCUTS = listOf(FISH_OFFCUTS, "obj.sailing_fine_fish_offcuts")
+        const val OFFCUT_CATCHES = "varp.aerial_fishing_offcut_catches"
         val BAITS = listOf(KING_WORM) + OFFCUTS
         const val PEARL = "obj.aerial_fishing_pearl"
         const val GOLDEN_TENCH = "obj.golden_tench"
@@ -444,6 +474,9 @@ constructor(
         const val MOVE_TIMER = "timer.hunter_aerial_spot_move"
         const val MOVE_MIN = 12
         const val MOVE_MAX = 20
+        const val FRENZY_CHANCE = 50
+        const val FRENZY_TICKS = 28
+        const val FRENZY_CATCH_TICKS = 3
         const val RANGE = 8
         const val FISHING_LEVEL = 43
         const val HUNTER_LEVEL = 35

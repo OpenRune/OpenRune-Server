@@ -17,6 +17,7 @@ object HunterTrapsTable {
     const val QUEST = 9
     const val CONSUMED = 10
     const val SMOKE_REFUSAL = 11
+    const val OVERLAY_TIMER = 12
 
     fun hunterTraps() =
         dbTable("dbtable.hunter_traps", serverOnly = true) {
@@ -32,6 +33,7 @@ object HunterTrapsTable {
             column("quest", QUEST, VarType.STRING)
             column("consumed", CONSUMED, VarType.BOOLEAN)
             column("smoke_refusal", SMOKE_REFUSAL, VarType.STRING)
+            column("overlay_timer", OVERLAY_TIMER, VarType.BOOLEAN)
 
             row("dbrow.hunter_trap_bird_snare") {
                 columnRSCM(ITEM, "obj.hunting_ojibway_bird_snare")
@@ -46,6 +48,7 @@ object HunterTrapsTable {
                 column(QUEST, "")
                 column(CONSUMED, false)
                 column(SMOKE_REFUSAL, "")
+                column(OVERLAY_TIMER, false)
             }
             row("dbrow.hunter_trap_box_trap") {
                 columnRSCM(ITEM, "obj.hunting_box_trap")
@@ -60,6 +63,7 @@ object HunterTrapsTable {
                 column(QUEST, "quest_eaglespeak")
                 column(CONSUMED, false)
                 column(SMOKE_REFUSAL, "")
+                column(OVERLAY_TIMER, true)
             }
             row("dbrow.hunter_trap_magic_box") {
                 columnRSCM(ITEM, "obj.magic_imp_box")
@@ -74,6 +78,7 @@ object HunterTrapsTable {
                 column(QUEST, "")
                 column(CONSUMED, true)
                 column(SMOKE_REFUSAL, "Imps steal so many human items, they're unlikely to be worried by human smells.")
+                column(OVERLAY_TIMER, false)
             }
             row("dbrow.hunter_trap_rabbit_snare") {
                 columnRSCM(ITEM, "obj.hunting_snare")
@@ -88,6 +93,7 @@ object HunterTrapsTable {
                 column(QUEST, "quest_eaglespeak")
                 column(CONSUMED, false)
                 column(SMOKE_REFUSAL, "")
+                column(OVERLAY_TIMER, false)
             }
         }
 }
@@ -109,6 +115,7 @@ object HunterTrapCreaturesTable {
     const val PET = 13
     const val PET_BASE = 14
     const val WILDERNESS_TRAP = 15
+    const val BAIT_LEFTOVER = 16
 
     private const val SNARE = 0
     private const val BOX = 1
@@ -131,10 +138,11 @@ object HunterTrapCreaturesTable {
         val high: Int,
         val respawnTicks: Int,
         val approachSeq: String,
-        val bait: String = "",
+        val bait: List<String> = emptyList(),
         val pet: String = "",
         val petBase: Int = 0,
         val wilderness: Boolean = false,
+        val baitLeftover: String = "",
     )
 
     private fun bird(
@@ -199,15 +207,17 @@ object HunterTrapCreaturesTable {
             high = high,
             respawnTicks = respawnTicks,
             approachSeq = approachSeq,
-            bait = bait,
+            bait = if (bait.isEmpty()) emptyList() else listOf(bait),
             pet = pet,
             petBase = petBase,
             wilderness = wilderness,
+            baitLeftover = if (bait.isEmpty()) "" else EMPTY_BOWL,
         )
 
     private const val CHINCHOMPA_APPROACH = "seq.hunting_chinchompa_approaching"
     private const val SPICY_TOMATO = "obj.bowl_spicytomato"
     private const val SPICY_MEAT = "obj.bowl_spicymeat"
+    private const val EMPTY_BOWL = "obj.bowl_empty"
 
     private val ROWS =
         listOf(
@@ -236,6 +246,7 @@ object HunterTrapCreaturesTable {
                 high = 197,
                 respawnTicks = 50,
                 approachSeq = "seq.hunting_imp_caught",
+                bait = listOf("obj.red_bead", "obj.yellow_bead", "obj.black_bead", "obj.white_bead"),
             ),
             Row(
                 key = "white_rabbit",
@@ -272,6 +283,7 @@ object HunterTrapCreaturesTable {
             column("pet", PET, VarType.OBJ)
             column("pet_base", PET_BASE, VarType.INT)
             column("wilderness_trap", WILDERNESS_TRAP, VarType.BOOLEAN)
+            column("bait_leftover", BAIT_LEFTOVER, VarType.OBJ)
 
             for (r in ROWS) {
                 row("dbrow.hunter_trap_creature_${r.key}") {
@@ -290,10 +302,11 @@ object HunterTrapCreaturesTable {
                     column(HIGH, r.high)
                     column(RESPAWN_TICKS, r.respawnTicks)
                     columnRSCM(APPROACH_SEQ, r.approachSeq)
-                    if (r.bait.isNotEmpty()) columnRSCM(BAIT, r.bait)
+                    if (r.bait.isNotEmpty()) column(BAIT, r.bait.map { ConstantProvider.getMapping(it) })
                     if (r.pet.isNotEmpty()) columnRSCM(PET, r.pet)
                     column(PET_BASE, r.petBase)
                     column(WILDERNESS_TRAP, r.wilderness)
+                    if (r.baitLeftover.isNotEmpty()) columnRSCM(BAIT_LEFTOVER, r.baitLeftover)
                 }
             }
         }

@@ -32,7 +32,7 @@ class NetTrapTest {
             f.random,
             MapClock(100),
             mockk(relaxed = true),
-            mockk(relaxed = true),
+            HunterTrapLimits(),
         )
     private val traps: HashMap<CoordGrid, NetTrapScript.NetTrap> by lazy { f.field(script, "traps") }
     private val tree by lazy { f.field<List<NetTrapScript.Tree>>(script, "trees").first() }
@@ -78,6 +78,54 @@ class NetTrapTest {
         f.run(script, "dismantle", trap)
         f.run(script, "dismantle", trap)
         assertEquals(1L, f.total(NetTrapScript.NET_TRAP))
+    }
+
+    @Test
+    fun `a full inventory keeps the catch`() {
+        val trap = place(NetTrapScript.State.Full)
+        f.fill()
+        f.run(script, "check", trap)
+        assertEquals(0L, f.total(NetTrapScript.NET_TRAP))
+        assertEquals(1, traps.size)
+    }
+
+    @Test
+    fun `a net trap stack at max keeps the net and the catch`() {
+        f.player.inv[0] = InvObj(NetTrapScript.NET_TRAP, Int.MAX_VALUE)
+        val full = place(NetTrapScript.State.Full)
+        f.run(script, "check", full)
+        assertEquals(1, traps.size)
+        traps.clear()
+        val set = place(NetTrapScript.State.Set)
+        f.run(script, "dismantle", set)
+        assertEquals(1, traps.size)
+        assertEquals(Int.MAX_VALUE.toLong(), f.total(NetTrapScript.NET_TRAP))
+        assertEquals(27, f.player.inv.freeSpace())
+        assertEquals(0, ground())
+    }
+
+    @Test
+    fun `a net trap dropped while setting lays no trap`() {
+        f.player.statMap.setBaseLevel("stat.hunter", 99)
+        f.player.statMap.setCurrentLevel("stat.hunter", 99)
+        f.player.inv[0] = InvObj(NetTrapScript.NET_TRAP, 1)
+        f.call(script, "set", tree, loc)
+        f.player.inv[0] = null
+        f.finish()
+        assertEquals(0, traps.size)
+        assertEquals(0L, f.total(NetTrapScript.NET_TRAP))
+    }
+
+    @Test
+    fun `a salamander released twice from one slot removes only it`() {
+        val salamander = tree.loot.first().first
+        f.player.inv[0] = InvObj(salamander, 1)
+        f.player.inv[1] = InvObj(salamander, 1)
+        f.call(script, "release", salamander, 0)
+        f.call(script, "release", salamander, 0)
+        assertEquals(1L, f.total(salamander))
+        assertEquals(null, f.player.inv[0])
+        assertEquals(1, f.player.inv[1]?.count)
     }
 
     @Test

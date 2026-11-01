@@ -4,7 +4,6 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.stat.statBase
@@ -73,11 +72,11 @@ constructor(
             val trap = minOf(pair, index)
             VarPlayerIntMapSetter.set(player, TRAP_VARBITS[trap], SET)
             soundSynth(FINISH_SYNTH)
-            mes("You finish setting up the trap.", ChatType.Spam)
+            mes("You finish setting up the trap.")
         }
         halfSet[player] = rock
         soundSynth(HALF_SYNTH)
-        mes("You set up the first half of the trap.", ChatType.Spam)
+        mes("You set up the first half of the trap.")
     }
 
     private fun ProtectedAccess.rustle(bush: CoordGrid) {
@@ -91,7 +90,7 @@ constructor(
         anim(TRAP_SEQ)
         soundSynth(RUSTLE_SYNTH)
         val count = lizards(level)
-        if (count > 1) mes("Your hunting knowledge allows you to spook more lizards!", ChatType.Spam)
+        if (count > 1) mes("Your hunting knowledge allows you to spook more lizards!")
         val exit = site.bushes.first { it != bush }
         val list = runs.getOrPut(player) { mutableListOf() }
         val order = site.traps.indices.toList().let { if (bush == site.bushes[0]) it.reversed() else it }
@@ -160,7 +159,7 @@ constructor(
     private fun ProtectedAccess.cutTail() {
         if (invReplace(inv, LIZARD, 1, TAIL).failure) return
         anim(CUT_SEQ)
-        mes("You cut the tail off the lizard.", ChatType.Spam)
+        mes("You cut the tail off the lizard.")
     }
 
     class Site(val rocks: List<CoordGrid>, val traps: List<CoordGrid>, val bushes: List<CoordGrid>)

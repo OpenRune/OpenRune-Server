@@ -14,11 +14,11 @@ class HunterTrapPluginPack : PluginPack() {
             HunterPitfallTable.pitfalls(),
             HunterTrackingTable.tracking(),
             HunterAerialFishingTable.aerialFishing(),
-            HunterPearlShopTable.pearlShop(),
             HunterCrabTrapTable.crabTraps(),
             HunterMossLizardTable.mossLizards(),
             HunterCustomFurTable.customFurs(),
             HunterPouchTable.pouches(),
             HunterLeonBoltTable.leonBolts(),
+            HunterLeonBoltTable.boltFletching(),
         )
 }

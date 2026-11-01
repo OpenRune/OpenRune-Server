@@ -19,6 +19,7 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.repo.world.WorldRepository
+import org.rsmod.api.script.onOpHeld5
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
@@ -62,6 +63,9 @@ constructor(
     override fun ScriptContext.startup() {
         limits.register { player -> traps.values.count { it.owner == player } }
         onOpHeldU(ROPE, SMALL_NET) { makeNetTrap() }
+        for (obj in trees.flatMap { tree -> tree.loot.map { it.first } }.distinct()) {
+            onOpHeld5(obj) { release(obj, it.slot) }
+        }
         for (tree in trees) {
             onOpLoc1(tree.up) { set(tree, LocInfo(it.loc.layer, it.loc.coords, it.loc.entity)) }
             for (loc in listOf(tree.set, tree.netSet, tree.upReset, tree.netReset)) {
@@ -100,6 +104,11 @@ constructor(
             }
         if (made.failure) return
         mes("You tie the rope to the small fishing net to make a net trap.", ChatType.Spam)
+    }
+
+    private fun ProtectedAccess.release(obj: String, slot: Int) {
+        if (invDel(inv, obj, slot = slot).failure) return
+        mes("You release the salamander and it darts away.", ChatType.Spam)
     }
 
     private fun ProtectedAccess.trapAt(loc: BoundLocInfo): NetTrap? {

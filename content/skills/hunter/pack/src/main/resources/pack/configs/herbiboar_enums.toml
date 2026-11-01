@@ -1,0 +1,77 @@
+[[enum]]
+isServerOnly = true
+id = "enum.herbiboar_spots"
+keyType = "LOC"
+valueType = "INT"
+
+[enum.values]
+"loc.hunting_trail_clue9_1" = 0
+"loc.hunting_trail_clue10_5" = 0
+"loc.hunting_trail_clue9_4" = 1
+"loc.hunting_trail_clue10_4" = 2
+"loc.hunting_trail_clue9_0" = 2
+"loc.hunting_trail_clue9_3" = 3
+"loc.hunting_trail_clue11_0" = 3
+"loc.hunting_trail_clue9_6" = 4
+"loc.hunting_trail_clue10_8" = 4
+"loc.hunting_trail_clue9_2" = 5
+"loc.hunting_trail_clue10_1" = 5
+"loc.hunting_trail_clue9_8" = 6
+"loc.hunting_trail_clue10_0" = 6
+"loc.hunting_trail_clue9_9" = 7
+"loc.hunting_trail_clue10_9" = 7
+"loc.hunting_trail_clue9_7" = 8
+"loc.hunting_trail_clue10_6" = 8
+"loc.hunting_trail_clue10_3" = 9
+"loc.hunting_trail_clue10_2" = 10
+
+[[enum]]
+isServerOnly = true
+id = "enum.herbiboar_tunnels"
+keyType = "INT"
+valueType = "COORDGRID"
+
+[enum.values]
+1 = 60509910
+2 = 60657376
+3 = 60673778
+4 = 60788521
+5 = 60624677
+6 = 60870400
+7 = 61460233
+8 = 60378909
+9 = 60313367
+
+[[enum]]
+isServerOnly = true
+id = "enum.herbiboar_tunnel_xp"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+74 = 1770
+75 = 1800
+76 = 1830
+77 = 1860
+78 = 1890
+79 = 1920
+80 = 1950
+81 = 1980
+82 = 2010
+83 = 2040
+84 = 2070
+85 = 2100
+86 = 2130
+87 = 2160
+88 = 2190
+89 = 2220
+90 = 2250
+91 = 2280
+92 = 2310
+93 = 2340
+94 = 2370
+95 = 2385
+96 = 2404
+97 = 2423
+98 = 2442
+99 = 2461

@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.hunter
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -14,6 +15,7 @@ import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.output.ChatType
+import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statBase
@@ -21,6 +23,7 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.obj.ObjRepository
+import org.rsmod.api.repo.player.PlayerRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.route.RouteFactory
 import org.rsmod.api.route.walkTo
@@ -66,6 +69,7 @@ constructor(
     private val rumours: HunterRumours,
     private val pets: PetRewards,
     private val limits: HunterTrapLimits,
+    private val playerRepo: PlayerRepository,
 ) : PluginScript() {
     private val traps = HashMap<CoordGrid, Trap>()
     private val kinds: List<TrapKind> by lazy { loadKinds() }
@@ -84,8 +88,8 @@ constructor(
                 onOpLoc1(loc) { check(it.loc.coords) }
                 onOpLoc2(loc) { reset(it.loc.coords) }
             }
-            for (bait in kind.creatures.mapNotNull { it.bait }.distinct()) {
-                onOpLocU(kind.setLoc, bait) { bait(it.loc.coords, bait) }
+            for ((bait, leftover) in kind.creatures.flatMap { c -> c.baits.map { it to c.baitLeftover } }.distinct()) {
+                onOpLocU(kind.setLoc, bait) { bait(it.loc.coords, bait, leftover) }
             }
         }
         onPlayerSoftTimer(TIMER) { player.trapTick() }
@@ -110,12 +114,11 @@ constructor(
         }
         if (!limits.canLay(player, areas)) return
         val tile = player.coords
-        if (traps.containsKey(tile) || locRepo.findAll(tile).any { it.shape != LocShape.GroundDecor }) {
-            mes("You can't set up a trap here.")
-            return
-        }
-        val step = stepOffTile(tile)
-        if (step == null) {
+        if (
+            ImplingScript.inPuroPuro(tile) ||
+                traps.containsKey(tile) ||
+                locRepo.findAll(tile).any { it.shape != LocShape.GroundDecor }
+        ) {
             mes("You can't set up a trap here.")
             return
         }
@@ -133,8 +136,9 @@ constructor(
         if (traps.containsKey(tile) || !objRepo.del(laid, Int.MAX_VALUE)) return
         anim(LAY_SEQ)
         val loc = placeLoc(tile, kind.setLoc)
-        traps[tile] = Trap(player, kind, tile, loc, TrapState.Set, null, clock.cycle, smoked = salted)
-        if (player.coords == tile) walk(step)
+        val trap = Trap(player, kind, tile, loc, TrapState.Set, null, clock.cycle, smoked = salted)
+        traps[tile] = trap
+        overlay(trap, SET_COLOUR)
         player.softTimer(TIMER, 1)
     }
 
@@ -151,7 +155,7 @@ constructor(
         if (invAdd(inv, trap.kind.item).failure) return
         removeTrap(trap)
         mes("You dismantle the trap.", ChatType.Spam)
-        worldRepo.soundArea(coords, DISMANTLE_SYNTH)
+        soundSynth(DISMANTLE_SYNTH)
     }
 
     private fun ProtectedAccess.investigate(coords: CoordGrid) {
@@ -178,14 +182,15 @@ constructor(
         mes("You use the smoke from the torch to remove your scent from the trap.", ChatType.Spam)
     }
 
-    private fun ProtectedAccess.bait(coords: CoordGrid, bait: String) {
+    private fun ProtectedAccess.bait(coords: CoordGrid, bait: String, leftover: String?) {
         val trap = ownTrap(coords) ?: return
         if (trap.state != TrapState.Set) return
         if (trap.baited) {
             mes("This trap has already been baited.")
             return
         }
-        if (invReplace(inv, bait, 1, EMPTY_BOWL).failure) return
+        val used = if (leftover != null) invReplace(inv, bait, 1, leftover) else invDel(inv, bait)
+        if (used.failure) return
         anim(BAIT_SEQ)
         trap.baited = true
         mes("You bait the trap.", ChatType.Spam)
@@ -318,7 +323,8 @@ constructor(
             HunterOutfit.applyTo(catchChance256(creature.low, creature.high, level), this) +
                 (if (trap.baited) BAIT_BONUS else 0) +
                 (if (trap.smoked) SMOKE_BONUS else 0)
-        val success = coords != trap.coords && level >= creature.level && random.of(256) < chance
+        val success =
+            playerRepo.findAll(trap.coords).none() && level >= creature.level && random.of(256) < chance
         val synth = if (trap.kind.snare) SNARE_TRAPPING_SYNTH else BOX_TRAPPING_SYNTH
         if (success) {
             val from = npc.coords
@@ -380,6 +386,26 @@ constructor(
         trap.loc = placeLoc(trap.coords, internal)
         trap.state = state
         trap.stateCycle = clock.cycle
+        when (state) {
+            TrapState.Full -> overlay(trap, FULL_COLOUR)
+            TrapState.Broken -> overlay(trap, BROKEN_COLOUR)
+            else -> Unit
+        }
+    }
+
+    private fun overlay(trap: Trap, colour: Int) {
+        if (!trap.kind.overlay) return
+        val type = ServerCacheManager.getObject(trap.loc.id) ?: return
+        ClientScripts.addOverlayTimerLoc(
+            player = trap.owner,
+            coords = trap.coords,
+            loc = type,
+            shape = trap.loc.shape,
+            timer = OVERLAY_TIMER,
+            ticks = OVERLAY_TICKS,
+            colour = colour,
+            isDespawnTimer = true,
+        )
     }
 
     private fun Player.collapse(trap: Trap) {
@@ -424,6 +450,7 @@ constructor(
                 quest = row.quest,
                 consumed = row.consumed,
                 smokeRefusal = row.smokeRefusal,
+                overlay = row.overlayTimer,
                 snare = index == BIRD_SNARE_INDEX,
                 creatures =
                     creatures[index].orEmpty().map { c ->
@@ -439,7 +466,8 @@ constructor(
                             high = c.high,
                             respawnTicks = c.respawnTicks,
                             approachSeq = RSCM.getReverseMapping(RSCMType.SEQ, c.approachSeq.id),
-                            bait = c.bait?.internalName,
+                            baits = c.bait.map { it.internalName },
+                            baitLeftover = c.baitLeftover?.internalName,
                             pet = c.pet?.internalName,
                             petBase = c.petBase,
                         )
@@ -490,7 +518,8 @@ constructor(
         val high: Int,
         val respawnTicks: Int,
         val approachSeq: String,
-        val bait: String?,
+        val baits: List<String>,
+        val baitLeftover: String?,
         val pet: String?,
         val petBase: Int,
     ) {
@@ -528,6 +557,7 @@ constructor(
         val quest: String,
         val consumed: Boolean,
         val smokeRefusal: String,
+        val overlay: Boolean,
         val snare: Boolean,
         val creatures: List<Creature>,
     ) {
@@ -545,7 +575,6 @@ constructor(
         const val BAIT_SEQ = "seq.hunting_baiting_small_traps"
         const val BIRD_LEAVE_SEQ = "seq.bird_leavetrap"
         const val ANTI_ODOUR_SALT = "obj.anti_odour_salt"
-        const val EMPTY_BOWL = "obj.bowl_empty"
         const val DISMANTLE_SYNTH = "synth.hunting_trap_dismantle"
         const val BOX_TRAPPING_SYNTH = "synth.hunting_box_trap_trapping"
         const val BOX_FULL_SYNTH = "synth.hunting_box_trap_full"
@@ -566,6 +595,11 @@ constructor(
         const val BAIT_BONUS = 3
         const val SMOKE_BONUS = 2
         const val BIRD_SNARE_INDEX = 0
+        const val OVERLAY_TIMER = 4
+        const val OVERLAY_TICKS = 101
+        const val SET_COLOUR = 0xffd100
+        const val FULL_COLOUR = 0x1eff43
+        const val BROKEN_COLOUR = 0xff0010
 
         private const val NORTH = 0
         private const val EAST = 1

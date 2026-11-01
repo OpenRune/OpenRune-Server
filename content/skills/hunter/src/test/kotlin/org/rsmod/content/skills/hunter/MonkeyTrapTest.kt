@@ -8,6 +8,9 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.game.MapClock
+import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.InvObj
+import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.map.CoordGrid
@@ -63,6 +66,25 @@ class MonkeyTrapTest {
         f.finish()
         assertEquals(0L, tails())
         assertEquals(1, traps.size)
+    }
+
+    @Test
+    fun `a banana eaten while setting lays no trap, and a second set takes no second banana`() {
+        val bound = BoundLocInfo(boulder.coords, boulder.entity, boulder.layer, 1, 1, 0)
+        f.player.statMap.setBaseLevel("stat.hunter", 99)
+        f.player.statMap.setCurrentLevel("stat.hunter", 99)
+        f.field<HashSet<Player>>(script, "mounted").add(f.player)
+        f.player.inv[0] = InvObj(MonkeyTrapScript.BANANA, 1)
+        f.call(script, "set", bound)
+        f.player.inv[0] = null
+        f.finish()
+        assertEquals(0, traps.size)
+        f.player.inv[0] = InvObj(MonkeyTrapScript.BANANA, 1)
+        f.player.inv[1] = InvObj(MonkeyTrapScript.BANANA, 1)
+        f.run(script, "set", bound)
+        f.run(script, "set", bound)
+        assertEquals(1, traps.size)
+        assertEquals(1L, f.total(MonkeyTrapScript.BANANA))
     }
 
     companion object {

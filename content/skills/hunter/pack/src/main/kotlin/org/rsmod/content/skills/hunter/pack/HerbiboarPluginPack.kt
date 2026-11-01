@@ -7,8 +7,6 @@ class HerbiboarPluginPack : PluginPack() {
     override fun dbTables(): List<DBTable> =
         listOf(
             HerbiboarLegsTable.herbiboarLegs(),
-            HerbiboarSpotsTable.herbiboarSpots(),
-            HerbiboarTunnelsTable.herbiboarTunnels(),
             HerbiboarHerbsTable.herbiboarHerbs(),
             HerbiboarFossilsTable.herbiboarFossils(),
         )

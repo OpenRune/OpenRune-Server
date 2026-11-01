@@ -8,6 +8,8 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.game.MapClock
+import org.rsmod.game.inv.InvObj
+import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.map.CoordGrid
@@ -68,7 +70,26 @@ class DeadfallTest {
         assertEquals(1, traps.size)
     }
 
+    @Test
+    fun `a log dropped while setting lays no trap, and a second set takes no second log`() {
+        val bound = BoundLocInfo(boulder.coords, boulder.entity, boulder.layer, 1, 1, 0)
+        f.player.inv[0] = InvObj(DeadfallScript.KNIVES.first(), 1)
+        f.player.inv[1] = InvObj(LOG, 1)
+        f.call(script, "set", bound)
+        f.player.inv[1] = null
+        f.finish()
+        assertEquals(0, traps.size)
+        f.player.inv[1] = InvObj(LOG, 1)
+        f.run(script, "set", bound)
+        f.run(script, "set", bound)
+        assertEquals(1, traps.size)
+        assertEquals(true, f.total(LOG) <= 1L)
+        assertEquals(1L, f.total(DeadfallScript.KNIVES.first()))
+    }
+
     companion object {
+        const val LOG = "obj.logs"
+
         @JvmStatic
         @BeforeAll
         fun cache() = HunterFixture.cache()

@@ -107,6 +107,40 @@ class BirdHouseTest {
         assertEquals(tier.tier * 3 + 1, state())
     }
 
+    private fun materials() {
+        f.player.inv[0] = InvObj(BirdHouseScript.HAMMER, 1)
+        f.player.inv[1] = InvObj(BirdHouseScript.CHISEL, 1)
+        f.player.inv[2] = InvObj(tier.logs.internalName, 1)
+        f.player.inv[3] = InvObj(tier.logs.internalName, 1)
+        f.player.inv[4] = InvObj(BirdHouseScript.CLOCKWORK, 1)
+    }
+
+    @Test
+    fun `a house built twice from logs in a full inventory takes one log and one clockwork`() {
+        levels()
+        materials()
+        f.fill()
+        f.run(script, "buildFromLogs", space)
+        f.run(script, "buildFromLogs", space)
+        assertEquals(0L, f.total(BirdHouseScript.CLOCKWORK))
+        assertEquals(1L, f.total(tier.logs.internalName))
+        assertEquals(0L, f.total(tier.item.internalName))
+        assertEquals(tier.tier * 3 + 1, state())
+    }
+
+    @Test
+    fun `logs dropped while building keep the clockwork`() {
+        levels()
+        materials()
+        f.player.inv[3] = null
+        f.call(script, "buildFromLogs", space)
+        f.player.inv[2] = null
+        f.finish()
+        assertEquals(1L, f.total(BirdHouseScript.CLOCKWORK))
+        assertEquals(0L, f.total(tier.item.internalName))
+        assertEquals(0, state())
+    }
+
     companion object {
         @JvmStatic
         @BeforeAll

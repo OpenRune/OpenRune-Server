@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpHeld1
@@ -14,6 +15,7 @@ import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.table.ImplingLootRow
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.hunter.HunterClues.clueReward
+import org.rsmod.game.entity.Npc
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -82,13 +84,25 @@ class ImplingLootScript @Inject constructor(private val objRepo: ObjRepository) 
         return roll(table, mm2Complete = mm2) { bound -> random.of(bound) }
     }
 
-    fun ProtectedAccess.give(drops: List<ImplingDrop>) {
+    private var lootTrackerEventId: Int = 0
+
+    fun ProtectedAccess.give(drops: List<ImplingDrop>, from: Npc? = null) {
+        val eventId = from?.let { nextLootTrackerEventId() }
         for (drop in drops) {
             val obj = checkNotNull(drop.obj)
             val given = drop.clueTier?.let { clueReward(it, obj) ?: continue } ?: obj
             val count = if (drop.max > drop.min) random.of(drop.min, drop.max) else drop.min
-            invAddOrDropType(objRepo, if (drop.noted) ocCert(given) else checkNotNull(ServerCacheManager.getItem(given.asRSCM(RSCMType.OBJ))), count)
+            val type = if (drop.noted) ocCert(given) else checkNotNull(ServerCacheManager.getItem(given.asRSCM(RSCMType.OBJ)))
+            invAddOrDropType(objRepo, type, count)
+            if (from != null && eventId != null) {
+                ClientScripts.lootTrackerAddLoot(player, from.visType.id, eventId, type.id, count)
+            }
         }
+    }
+
+    private fun nextLootTrackerEventId(): Int {
+        lootTrackerEventId = if (lootTrackerEventId == Int.MAX_VALUE) 1 else lootTrackerEventId + 1
+        return lootTrackerEventId
     }
 
     companion object {

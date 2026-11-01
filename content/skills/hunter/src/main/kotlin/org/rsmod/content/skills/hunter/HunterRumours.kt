@@ -34,7 +34,7 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
         val level = player.statBase(HUNTER)
         if (level < hunter.level) return null
         val taken = hunters.filter { it != hunter }.mapNotNull { rumourOf(player, it)?.index }.toSet()
-        val repeat = if (player.vars[BACK_TO_BACK] == BACK_TO_BACK_OFF) player.vars[LAST] else -1
+        val repeat = if (player.vars[BACK_TO_BACK] != BACK_TO_BACK_ON) player.vars[LAST] else -1
         val options =
             rumours.filter {
                 it.hunters and (1 shl hunter.index) != 0 && level >= it.level && it.index !in taken &&
@@ -66,7 +66,10 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
     }
 
     fun hasPart(player: Player, hunter: HunterRumourHuntersRow): Boolean =
-        rumourOf(player, hunter)?.let { it.part.internalName in player.inv } ?: false
+        rumourOf(player, hunter)?.let { it.part.internalName in player.inv && partFrom(player, it) } ?: false
+
+    private fun partFrom(player: Player, rumour: HunterRumoursRow): Boolean =
+        rumours.count { it.part.id == rumour.part.id } == 1 || player.vars[PART_SOURCE] == rumour.index
 
     fun onCatch(player: Player, creature: String) {
         val rumour = currentRumour(player) ?: return
@@ -74,11 +77,11 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
         val pity = player.vars[PITY] + 1
         VarPlayerIntMapSetter.set(player, PITY, pity)
         if (rumours.any { it.part.internalName in player.inv || player.bankHas(it.part.internalName) }) return
-        val outfit = HunterOutfit.partBonusPercent(player)
-        val threshold = if (HunterOutfit.wearsFullSet(player)) rumour.pityOutfit else rumour.pity
+        val bonus = HunterOutfit.partBonusPermille(player)
+        val threshold =
+            if (HunterOutfit.wearsFullSet(player)) rumour.pityOutfit else rumour.pity * (PERMILLE - bonus) / PERMILLE
         val pityDrop = pity >= threshold
-        val denominator = (rumour.rate * PERCENT / (PERCENT + outfit)).coerceAtLeast(1)
-        if (!pityDrop && random.of(denominator) != 0) return
+        if (!pityDrop && random.of(rumour.rate * PERMILLE) >= PERMILLE + bonus) return
         val part = rumour.part.internalName
         if (player.inv.freeSpace() == 0 && part !in player.inv) {
             if (pityDrop) return
@@ -88,12 +91,13 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
             player.invAdd(player.inv, part)
             player.mes(FOUND_MESSAGE)
         }
+        VarPlayerIntMapSetter.set(player, PART_SOURCE, rumour.index)
         VarPlayerIntMapSetter.set(player, PITY, 0)
     }
 
     fun turnIn(player: Player, hunter: HunterRumourHuntersRow): Boolean {
         val rumour = rumourOf(player, hunter) ?: return false
-        if (player.invDel(player.inv, rumour.part.id, 1).failure) return false
+        if (!partFrom(player, rumour) || player.invDel(player.inv, rumour.part.id, 1).failure) return false
         VarPlayerIntMapSetter.set(player, hunterVarp(hunter), 0)
         if (player.vars[CURRENT] == hunter.index + 1) VarPlayerIntMapSetter.set(player, CURRENT, 0)
         val completed = player.vars[COMPLETED] + 1
@@ -103,9 +107,7 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
         val noun = if (completed == 1) "rumour" else "rumours"
         player.mes("You have completed <col=ff3045>$completed</col> $noun for the Hunter Guild.")
         player.statAdvance(HUNTER, turnInXp(player.statBase(HUNTER), hunter.modifier).toDouble())
-        if (player.inv.freeSpace() > 0) {
-            player.invAdd(player.inv, hunter.lootSack.internalName)
-        } else {
+        if (player.invAdd(player.inv, hunter.lootSack.internalName).failure) {
             objRepo.add(hunter.lootSack.internalName, player.coords, GROUND_DURATION, receiver = player)
         }
         return true
@@ -132,10 +134,11 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
         const val COMPLETED = "varp.hunter_rumours_completed"
         const val UNLOCKED = "varp.hunter_rumour_unlocked"
         const val BACK_TO_BACK = "varp.hunter_rumour_back_to_back"
-        const val BACK_TO_BACK_OFF = 1
+        const val BACK_TO_BACK_ON = 1
         const val LAST = "varp.hunter_rumour_last"
         const val RESHUFFLED = "varp.hunter_rumour_reshuffled"
-        const val PERCENT = 100
+        const val PART_SOURCE = "varp.hunter_rumour_part_source"
+        const val PERMILLE = 1000
         const val GROUND_DURATION = 200
         const val FOUND_MESSAGE =
             "<col=229628>You find a rare piece of the creature! You should take it back to the Hunter Guild.</col>"
@@ -168,7 +171,7 @@ object HunterOutfit {
         return worn.sumOf { it.second } + set
     }
 
-    fun partBonusPercent(player: Player): Int = catchBonusTenths(player) / 5
+    fun partBonusPermille(player: Player): Int = catchBonusTenths(player) * 2
 
     fun wearsFullSet(player: Player): Boolean = PIECES.all { (obj, _) -> obj in player.worn }
 

@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.hunter
 
+import dev.openrune.util.Wearpos
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -55,16 +56,16 @@ class AerialFishingTest {
         f.call(script, "cut", fish)
         f.call(script, "cut", fish)
         assertEquals(0L, f.total(fish.fish.internalName))
-        assertEquals(1L, f.total(AerialFishingScript.FISH_CHUNKS))
+        assertEquals(1L, f.total(AerialFishingScript.FISH_OFFCUTS))
     }
 
     @Test
     fun `a full offcut stack keeps the fish`() {
         f.player.inv[0] = InvObj(fish.fish.internalName, 1)
-        f.player.inv[1] = InvObj(AerialFishingScript.FISH_CHUNKS, Int.MAX_VALUE)
+        f.player.inv[1] = InvObj(AerialFishingScript.FISH_OFFCUTS, Int.MAX_VALUE)
         f.call(script, "cut", fish)
         assertEquals(1L, f.total(fish.fish.internalName))
-        assertEquals(Int.MAX_VALUE.toLong(), f.total(AerialFishingScript.FISH_CHUNKS))
+        assertEquals(Int.MAX_VALUE.toLong(), f.total(AerialFishingScript.FISH_OFFCUTS))
     }
 
     @Test
@@ -105,6 +106,49 @@ class AerialFishingTest {
         assertEquals(0L, fishes.sumOf { f.total(it) })
         assertTrue(ground().all { it.type == InvObj(AerialFishingScript.PEARL, 1).id || it.type == InvObj(AerialFishingScript.GOLDEN_TENCH, 1).id })
     }
+
+    @Test
+    fun `offcut bait is taken once every three or four catches`() {
+        levels()
+        f.player.inv[0] = InvObj(AerialFishingScript.FISH_OFFCUTS, 100)
+        repeat(24) { catchFish() }
+        val used = 100L - f.total(AerialFishingScript.FISH_OFFCUTS)
+        assertTrue(used in 6L..8L)
+    }
+
+    @Test
+    fun `the whole-fish upgrade paid twice takes twenty pearls once`() {
+        f.player.inv[0] = InvObj(AerialFishingScript.PEARL, AerialFishingScript.WHOLE_FISH_COST * 2)
+        f.call(script, "payWholeFish")
+        f.call(script, "payWholeFish")
+        assertEquals(AerialFishingScript.WHOLE_FISH_COST.toLong(), f.total(AerialFishingScript.PEARL))
+        assertEquals(1, f.player.vars[AerialFishingScript.WHOLE_FISH_PAID])
+    }
+
+    @Test
+    fun `pearls gone before the upgrade is paid unlock nothing`() {
+        f.player.inv[0] = InvObj(AerialFishingScript.PEARL, AerialFishingScript.WHOLE_FISH_COST - 1)
+        f.call(script, "payWholeFish")
+        assertEquals(AerialFishingScript.WHOLE_FISH_COST - 1L, f.total(AerialFishingScript.PEARL))
+        assertEquals(0, f.player.vars[AerialFishingScript.WHOLE_FISH_PAID])
+    }
+
+    @Test
+    fun `a bird taken twice gives one glove`() {
+        f.call(script, "takeBird")
+        f.call(script, "takeBird")
+        assertEquals(1L, gloves())
+    }
+
+    @Test
+    fun `a hand item equipped before the bird is given blocks the glove`() {
+        f.player.worn[Wearpos.LeftHand.slot] = InvObj("obj.bronze_sq_shield", 1)
+        f.call(script, "takeBird")
+        assertEquals(0L, gloves())
+        assertEquals(1L, f.total("obj.bronze_sq_shield"))
+    }
+
+    private fun gloves() = AerialFishingScript.GLOVES.sumOf { f.total(it) }
 
     companion object {
         @JvmStatic

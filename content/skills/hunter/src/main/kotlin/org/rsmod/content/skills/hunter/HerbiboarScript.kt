@@ -2,6 +2,8 @@ package org.rsmod.content.skills.hunter
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.definition.type.VarBitType
+import dev.openrune.types.ObjectServerType
+import dev.openrune.types.enums.enum
 import jakarta.inject.Inject
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -17,11 +19,10 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.table.HerbiboarFossilsRow
 import org.rsmod.api.table.HerbiboarHerbsRow
 import org.rsmod.api.table.HerbiboarLegsRow
-import org.rsmod.api.table.HerbiboarSpotsRow
-import org.rsmod.api.table.HerbiboarTunnelsRow
 import org.rsmod.content.other.pets.PetRewards
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -36,12 +37,9 @@ constructor(
     private val pets: PetRewards,
 ) : PluginScript() {
     private val legs: List<Leg> by lazy { loadLegs() }
-    private val spotGroups: Map<Int, Int> by lazy {
-        HerbiboarSpotsRow.all().associate { it.loc.id to it.group }
-    }
-    private val tunnels: Map<Int, org.rsmod.map.CoordGrid> by lazy {
-        HerbiboarTunnelsRow.all().associate { it.index to it.coords }
-    }
+    private val spots by lazy { enum<ObjectServerType, Int>("herbiboar_spots") }
+    private val spotGroups: Map<Int, Int?> by lazy { spots.backing.mapKeys { it.key.id } }
+    private val tunnels by lazy { enum<Int, CoordGrid>("herbiboar_tunnels") }
     private val trailVarbits: List<VarBitType> by lazy { legs.map { it.trail }.distinctBy { it.id } }
 
     override fun ScriptContext.startup() {
@@ -50,8 +48,8 @@ constructor(
             onOpLoc2(start) { mes("You have harvested ${vars[HARVESTED]} Herbiboars.") }
             onOpLoc3(start) { toggleWarning() }
         }
-        for (row in HerbiboarSpotsRow.all()) {
-            onOpLoc1(row.loc.internalName) { inspectSpot(it.loc.id) }
+        for (spot in spots.keys) {
+            onOpLoc1(spot.internalName) { inspectSpot(it.loc.id) }
         }
         onOpLoc1(TUNNEL) { attackTunnel(it.loc.coords) }
         onOpLoc2(TUNNEL) { attackTunnel(it.loc.coords) }
@@ -100,8 +98,8 @@ constructor(
         if (!continueFrom(player, leg)) confuse()
     }
 
-    suspend fun ProtectedAccess.attackTunnel(coords: org.rsmod.map.CoordGrid) {
-        val index = tunnels.entries.firstOrNull { it.value == coords }?.key ?: return
+    suspend fun ProtectedAccess.attackTunnel(coords: CoordGrid) {
+        val index = tunnels.backing.entries.firstOrNull { it.value == coords }?.key ?: return
         if (vars[ENDS] != index) {
             mes("Nothing seems to be hiding in this tunnel.")
             return
@@ -120,7 +118,7 @@ constructor(
         statAdvance(HUNTER, tunnelXp(statBase(HUNTER)).toDouble())
     }
 
-    private fun herbiboarAt(coords: org.rsmod.map.CoordGrid): Npc? =
+    private fun herbiboarAt(coords: CoordGrid): Npc? =
         npcRepo.findAll(org.rsmod.map.zone.ZoneKey.from(coords), zoneRadius = 1)
             .filter { it.type.internalName.startsWith(HERBIBOAR_PREFIX) }
             .minByOrNull { HunterTrapScript.distance(it.coords, coords) }
@@ -285,17 +283,15 @@ constructor(
                 "Muddy patch" to "You find a partial footprint in the disturbed earth. Something has passed this way.",
                 "Smelly mushroom" to "This mushroom is oozing where it has recently been bitten. Something has passed this way.",
                 "Seaweed" to "Something has disturbed this seaweed recently, it smells.",
-                "Mushroom" to "The mushroom cap looks freshly eaten. Something has passed this way.",
+                "Mushroom" to "This mushroom cap looks freshly eaten. Something has passed this way.",
             )
 
         private const val FOSSIL_ROLL = 3500
 
+        private val TUNNEL_XP by lazy { enum<Int, Int>("herbiboar_tunnel_xp") }
+
         fun tunnelXp(level: Int): Int =
-            when {
-                level < 80 -> 1950
-                level <= 94 -> 1950 + 30 * (level - 80)
-                else -> 2385 + 19 * (level.coerceAtMost(99) - 95)
-            }
+            checkNotNull(TUNNEL_XP[level.coerceIn(TUNNEL_XP.keys.min(), TUNNEL_XP.keys.max())])
 
         fun herbChance(level: Int, low: Int, high: Int): Int =
             (low * (99 - level) / 98 + high * (level - 1) / 98 + 1).coerceIn(0, 256)

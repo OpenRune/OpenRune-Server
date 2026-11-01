@@ -32,8 +32,8 @@ class RumourTurnInTest {
         f.player.inv[0] = InvObj(rumour.part.internalName, 1)
         assertTrue(rumours.turnIn(f.player, hunter))
         assertFalse(rumours.turnIn(f.player, hunter))
-        assertEquals(0L, f.total(rumour.part.internalName))
-        assertEquals(1L, f.total(hunter.lootSack.internalName))
+        assertEquals(0L, parts())
+        assertEquals(1L, sacks())
     }
 
     @Test
@@ -42,8 +42,8 @@ class RumourTurnInTest {
         f.player.inv[0] = InvObj(rumour.part.internalName, 1)
         f.fill()
         assertTrue(rumours.turnIn(f.player, hunter))
-        assertEquals(0L, f.total(rumour.part.internalName))
-        assertEquals(1L, f.total(hunter.lootSack.internalName))
+        assertEquals(0L, parts())
+        assertEquals(1L, sacks())
     }
 
     private fun hunting() {
@@ -52,7 +52,54 @@ class RumourTurnInTest {
         VarPlayerIntMapSetter.set(f.player, HunterRumours.PITY, rumour.pity)
     }
 
-    private fun parts() = f.total(rumour.part.internalName) + registry.findAll(f.player.coords).sumOf { it.count }
+    private fun ground(obj: String) =
+        registry.findAll(f.player.coords).filter { it.type == InvObj(obj, 1).id }.sumOf { it.count.toLong() }
+
+    private fun parts() = f.total(rumour.part.internalName) + ground(rumour.part.internalName)
+
+    private fun sacks() = f.total(hunter.lootSack.internalName) + ground(hunter.lootSack.internalName)
+
+    @Test
+    fun `a full sack stack drops the sack beside the player`() {
+        assign()
+        f.player.inv[0] = InvObj(rumour.part.internalName, 1)
+        f.player.inv[1] = InvObj(hunter.lootSack.internalName, Int.MAX_VALUE)
+        assertTrue(rumours.turnIn(f.player, hunter))
+        assertEquals(0L, parts())
+        assertEquals(Int.MAX_VALUE.toLong(), f.total(hunter.lootSack.internalName))
+        assertEquals(1L, ground(hunter.lootSack.internalName))
+    }
+
+    @Test
+    fun `a part gone before the hand-in gives nothing`() {
+        assign()
+        f.player.inv[0] = InvObj(rumour.part.internalName, 1)
+        assertTrue(rumours.hasPart(f.player, hunter))
+        f.player.inv[0] = null
+        assertFalse(rumours.turnIn(f.player, hunter))
+        assertEquals(0L, sacks())
+        assertEquals(rumour.index, f.player.vars[rumours.hunterVarp(hunter)])
+    }
+
+    @Test
+    fun `a tuft from another kebbit is not handed in`() {
+        val (caught, assigned) =
+            rumours.rumours.filter { it.hunters and (1 shl hunter.index) != 0 }.groupBy { it.part.id }.values.first { it.size > 1 }
+        VarPlayerIntMapSetter.set(f.player, rumours.hunterVarp(hunter), caught.index)
+        rumours.resume(f.player, hunter)
+        VarPlayerIntMapSetter.set(f.player, HunterRumours.PITY, caught.pity)
+        rumours.onCatch(f.player, caught.creature)
+        assertEquals(1L, f.total(caught.part.internalName))
+        VarPlayerIntMapSetter.set(f.player, rumours.hunterVarp(hunter), assigned.index)
+        assertFalse(rumours.hasPart(f.player, hunter))
+        assertFalse(rumours.turnIn(f.player, hunter))
+        assertEquals(1L, f.total(caught.part.internalName))
+        assertEquals(0L, sacks())
+        VarPlayerIntMapSetter.set(f.player, rumours.hunterVarp(hunter), caught.index)
+        assertTrue(rumours.turnIn(f.player, hunter))
+        assertEquals(0L, f.total(caught.part.internalName))
+        assertEquals(1L, sacks())
+    }
 
     @Test
     fun `a rumour creature caught twice gives one part`() {
@@ -77,7 +124,7 @@ class RumourTurnInTest {
     fun `no part gives nothing`() {
         assign()
         assertFalse(rumours.turnIn(f.player, hunter))
-        assertEquals(0L, f.total(hunter.lootSack.internalName))
+        assertEquals(0L, sacks())
     }
 
     companion object {

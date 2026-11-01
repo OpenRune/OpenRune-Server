@@ -42,7 +42,7 @@ class ImplingJarTest {
     fun `stack overflow drops the loot instead of losing it`() {
         val f = HunterFixture()
         f.player.inv[0] = InvObj(COINS, Int.MAX_VALUE)
-        f.call(script, "give", listOf(ImplingDrop(COINS, 5, 5, false, 1, 1, null)))
+        f.call(script, "give", listOf(ImplingDrop(COINS, 5, 5, false, 1, 1, null)), null)
         assertEquals(Int.MAX_VALUE, f.player.inv.count(COINS))
         assertEquals(5, registry.findAll(f.player.coords).sumOf { it.count })
     }

@@ -2,8 +2,6 @@ package org.rsmod.content.skills.hunter.pack
 
 import dev.openrune.definition.dbtables.dbTable
 import dev.openrune.definition.util.VarType
-import dev.openrune.pack.columnCoord
-import org.rsmod.map.CoordGrid
 
 object HerbiboarLegsTable {
     const val FROM_LOC = 0
@@ -73,14 +71,32 @@ object HerbiboarLegsTable {
         )
 
     private val FROM_LOCS =
-        HerbiboarSpotsTable.SPOTS.associate { it.key to it.loc } +
-            mapOf(
-                "start_middle" to "loc.hunting_trail_spawn_fossil1",
-                "start_ghost_mushroom" to "loc.hunting_trail_spawn_fossil2",
-                "start_camp_entrance" to "loc.hunting_trail_spawn_fossil3",
-                "start_leprechaun" to "loc.hunting_trail_spawn_fossil4",
-                "start_driftwood" to "loc.hunting_trail_spawn_fossil5",
-            )
+        mapOf(
+            "a_mushroom" to "loc.hunting_trail_clue9_1",
+            "a_patch" to "loc.hunting_trail_clue10_5",
+            "b_seaweed" to "loc.hunting_trail_clue9_4",
+            "c_mushroom" to "loc.hunting_trail_clue10_4",
+            "c_patch" to "loc.hunting_trail_clue9_0",
+            "d_patch" to "loc.hunting_trail_clue9_3",
+            "d_seaweed" to "loc.hunting_trail_clue11_0",
+            "e_mushroom" to "loc.hunting_trail_clue9_6",
+            "e_patch" to "loc.hunting_trail_clue10_8",
+            "f_mushroom" to "loc.hunting_trail_clue9_2",
+            "f_patch" to "loc.hunting_trail_clue10_1",
+            "g_mushroom" to "loc.hunting_trail_clue9_8",
+            "g_patch" to "loc.hunting_trail_clue10_0",
+            "h_seaweed_east" to "loc.hunting_trail_clue9_9",
+            "h_seaweed_west" to "loc.hunting_trail_clue10_9",
+            "i_mushroom" to "loc.hunting_trail_clue9_7",
+            "i_patch" to "loc.hunting_trail_clue10_6",
+            "j_patch" to "loc.hunting_trail_clue10_3",
+            "k_patch" to "loc.hunting_trail_clue10_2",
+            "start_middle" to "loc.hunting_trail_spawn_fossil1",
+            "start_ghost_mushroom" to "loc.hunting_trail_spawn_fossil2",
+            "start_camp_entrance" to "loc.hunting_trail_spawn_fossil3",
+            "start_leprechaun" to "loc.hunting_trail_spawn_fossil4",
+            "start_driftwood" to "loc.hunting_trail_spawn_fossil5",
+        )
 
     fun herbiboarLegs() =
         dbTable("dbtable.herbiboar_legs", serverOnly = true) {
@@ -97,80 +113,6 @@ object HerbiboarLegsTable {
                     column(DIR, leg.dir)
                     column(TO_GROUP, leg.to?.let { it - 'A' } ?: NO_GROUP)
                     column(END_TUNNEL, leg.endTunnel)
-                }
-            }
-        }
-}
-
-object HerbiboarSpotsTable {
-    const val LOC = 0
-    const val GROUP = 1
-
-    data class Spot(val key: String, val loc: String, val group: Char)
-
-    val SPOTS =
-        listOf(
-            Spot("a_mushroom", "loc.hunting_trail_clue9_1", 'A'),
-            Spot("a_patch", "loc.hunting_trail_clue10_5", 'A'),
-            Spot("b_seaweed", "loc.hunting_trail_clue9_4", 'B'),
-            Spot("c_mushroom", "loc.hunting_trail_clue10_4", 'C'),
-            Spot("c_patch", "loc.hunting_trail_clue9_0", 'C'),
-            Spot("d_patch", "loc.hunting_trail_clue9_3", 'D'),
-            Spot("d_seaweed", "loc.hunting_trail_clue11_0", 'D'),
-            Spot("e_mushroom", "loc.hunting_trail_clue9_6", 'E'),
-            Spot("e_patch", "loc.hunting_trail_clue10_8", 'E'),
-            Spot("f_mushroom", "loc.hunting_trail_clue9_2", 'F'),
-            Spot("f_patch", "loc.hunting_trail_clue10_1", 'F'),
-            Spot("g_mushroom", "loc.hunting_trail_clue9_8", 'G'),
-            Spot("g_patch", "loc.hunting_trail_clue10_0", 'G'),
-            Spot("h_seaweed_east", "loc.hunting_trail_clue9_9", 'H'),
-            Spot("h_seaweed_west", "loc.hunting_trail_clue10_9", 'H'),
-            Spot("i_mushroom", "loc.hunting_trail_clue9_7", 'I'),
-            Spot("i_patch", "loc.hunting_trail_clue10_6", 'I'),
-            Spot("j_patch", "loc.hunting_trail_clue10_3", 'J'),
-            Spot("k_patch", "loc.hunting_trail_clue10_2", 'K'),
-        )
-
-    fun herbiboarSpots() =
-        dbTable("dbtable.herbiboar_spots", serverOnly = true) {
-            column("loc", LOC, VarType.LOC)
-            column("group", GROUP, VarType.INT)
-
-            for (spot in SPOTS) {
-                row("dbrow.herbiboar_spot_${spot.key}") {
-                    columnRSCM(LOC, spot.loc)
-                    column(GROUP, spot.group - 'A')
-                }
-            }
-        }
-}
-
-object HerbiboarTunnelsTable {
-    const val INDEX = 0
-    const val COORDS = 1
-
-    private val TUNNELS =
-        listOf(
-            CoordGrid(3693, 3798, 0),
-            CoordGrid(3702, 3808, 0),
-            CoordGrid(3703, 3826, 0),
-            CoordGrid(3710, 3881, 0),
-            CoordGrid(3700, 3877, 0),
-            CoordGrid(3715, 3840, 0),
-            CoordGrid(3751, 3849, 0),
-            CoordGrid(3685, 3869, 0),
-            CoordGrid(3681, 3863, 0),
-        )
-
-    fun herbiboarTunnels() =
-        dbTable("dbtable.herbiboar_tunnels", serverOnly = true) {
-            column("index", INDEX, VarType.INT)
-            column("coords", COORDS, VarType.COORDGRID)
-
-            TUNNELS.forEachIndexed { i, coords ->
-                row("dbrow.herbiboar_tunnel_${i + 1}") {
-                    column(INDEX, i + 1)
-                    columnCoord(COORDS, coords)
                 }
             }
         }

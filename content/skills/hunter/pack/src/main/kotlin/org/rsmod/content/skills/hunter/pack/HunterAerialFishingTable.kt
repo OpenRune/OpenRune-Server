@@ -54,33 +54,3 @@ object HunterAerialFishingTable {
             }
         }
 }
-
-object HunterPearlShopTable {
-    const val OBJ = 0
-    const val PEARLS = 1
-
-    private val PRICES =
-        listOf(
-            "obj.fishingrod_pearl" to 100,
-            "obj.fishingrod_pearl_fly" to 120,
-            "obj.fishingrod_pearl_brut" to 150,
-            "obj.fish_sack" to 500,
-            "obj.trawler_reward_hat" to 50,
-            "obj.trawler_reward_top" to 50,
-            "obj.trawler_reward_legs" to 50,
-            "obj.trawler_reward_boots" to 50,
-            "obj.shark_lure_pack" to 1,
-        )
-
-    fun pearlShop() =
-        dbTable("dbtable.hunter_pearl_shop", serverOnly = true) {
-            column("obj", OBJ, VarType.OBJ)
-            column("pearls", PEARLS, VarType.INT)
-            PRICES.forEachIndexed { index, (obj, pearls) ->
-                row("dbrow.hunter_pearl_shop_$index") {
-                    columnRSCM(OBJ, obj)
-                    column(PEARLS, pearls)
-                }
-            }
-        }
-}

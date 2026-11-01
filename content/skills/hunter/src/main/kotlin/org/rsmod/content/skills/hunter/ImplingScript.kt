@@ -59,15 +59,12 @@ constructor(
             mes("You need a Hunter level of at least $required to catch this impling$barehanded.")
             return
         }
-        if (!canCatch(jarRequired)) return
-        repeat(MAX_ATTEMPTS) {
-            if (!npc.isCatchable()) return
+        repeat(MAX_ATTEMPTS) { attempt ->
+            if (attempt > 0) delay(ATTEMPT_TICKS)
+            if (!npc.isCatchable() || !canCatch(jarRequired)) return
             faceEntitySquare(npc)
-            anim(CATCH_SEQ)
-            delay(ATTEMPT_TICKS)
-            if (!npc.isCatchable()) return
+            anim(catchSeq(net))
             if (!roll(net)) return@repeat
-            if (!canCatch(jarRequired)) return
             val slot = inv.indexOfFirst { it?.id == jarId }
             val jarred = slot >= 0
             if (jarred) {
@@ -77,7 +74,7 @@ constructor(
                 mes("You manage to catch the impling and acquire some loot.", ChatType.Spam)
             }
             npc.anim(CAUGHT_SEQ)
-            if (!jarred) with(loot) { give(rollJar(jar)) }
+            if (!jarred) with(loot) { give(rollJar(jar), npc) }
             soundSynth(CAUGHT_SYNTH)
             statAdvance(HUNTER, xp.toDouble())
             npc.hideAllOps()
@@ -107,6 +104,13 @@ constructor(
 
     private fun Npc.isCatchable(): Boolean = isSlotAssigned && isVisible && this !in caught
 
+    private fun catchSeq(net: String?): String =
+        when (net) {
+            NET -> NET_CATCH_SEQ
+            MAGIC_NET -> MAGIC_NET_CATCH_SEQ
+            else -> CATCH_SEQ
+        }
+
     private fun ProtectedAccess.wieldedNet(): String? {
         val held = player.righthand ?: return null
         return listOf(NET, MAGIC_NET).firstOrNull { it.asRSCM(RSCMType.OBJ) == held.id }
@@ -130,6 +134,8 @@ constructor(
         const val MAGIC_NET = "obj.ii_magic_butterfly_net"
         const val IMPLING_JAR = "obj.ii_impling_jar"
         const val CATCH_SEQ = "seq.hunting_impling_catch"
+        const val NET_CATCH_SEQ = "seq.ii_human_net_throw_oldnet"
+        const val MAGIC_NET_CATCH_SEQ = "seq.ii_human_net_throw"
         const val CAUGHT_SEQ = "seq.ii_impling_caught"
         const val CAUGHT_SYNTH = "synth.impling_caught"
         const val BAREHANDED_EXTRA_LEVELS = 10

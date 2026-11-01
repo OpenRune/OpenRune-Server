@@ -62,14 +62,7 @@ constructor(
         reveal(player, area, first)
         mes("Closer inspection reveals tracks leading away from the burrow.")
         arrive(track, first)
-        if (RING_OF_PURSUIT in player.worn) {
-            while (track.pending != null) {
-                val next = track.pending!!
-                reveal(player, area, next)
-                arrive(track, next)
-            }
-            VarPlayerIntMapSetter.set(player, area.usedVarbit, 1)
-        }
+        pursue(track)
     }
 
     private suspend fun ProtectedAccess.inspectConnector(area: Area, index: Int) {
@@ -91,6 +84,30 @@ constructor(
             else -> mes("Closer investigation reveals more tracks leading away from here.")
         }
         arrive(track, pending)
+        pursue(track)
+    }
+
+    private fun ProtectedAccess.pursue(track: Track) {
+        if (RING_OF_PURSUIT !in player.worn || track.pending == null) return
+        while (track.pending != null) {
+            val next = track.pending!!
+            reveal(player, track.area, next)
+            arrive(track, next)
+        }
+        VarPlayerIntMapSetter.set(player, track.area.usedVarbit, 1)
+        useRingCharge()
+    }
+
+    private fun ProtectedAccess.useRingCharge() {
+        if (RING_OF_PURSUIT !in player.worn) return
+        val used = vars[PURSUIT_USES] + 1
+        if (used < PURSUIT_CHARGES) {
+            VarPlayerIntMapSetter.set(player, PURSUIT_USES, used)
+            return
+        }
+        if (invDel(player.worn, RING_OF_PURSUIT).failure) return
+        VarPlayerIntMapSetter.set(player, PURSUIT_USES, 0)
+        mes("Your ring of pursuit crumbles to dust.")
     }
 
     private fun ProtectedAccess.search(area: Area, coords: CoordGrid) {
@@ -117,18 +134,35 @@ constructor(
             anim(KICK_SEQ)
             mes("As you kick randomly, a creature scrabbles out from the ${area.spotNoun} and runs off.")
             mes("Maybe you would be better off using a noose wand.")
-            val away = coords.translate(random.of(-FLEE_RANGE, FLEE_RANGE), random.of(-FLEE_RANGE, FLEE_RANGE))
-            worldRepo.projAnim(
-                ProjAnim(area.fleeSpotanim.asRSCM(RSCMType.SPOTANIM), 0, 0, FLEE_START, FLEE_END, 0, 0, 0, 0, coords, away)
-            )
+            flee(area, coords)
+            soundSynth(KICK_SYNTH)
+            soundSynth(FLEE_SYNTH)
             return
         }
         anim(area.catchSeq)
+        if (random.of(PERMILLE) < failPermille(area, stat(HUNTER))) {
+            mes("The ${area.name} scrabbles out from the ${area.spotNoun} and runs off.")
+            flee(area, coords)
+            soundSynth(FLEE_SYNTH)
+            return
+        }
+        mes("You manage to noose ${HunterRumours.article(area.name)} ${area.name} that is hiding in the ${area.spotNoun}.")
         for (obj in area.loot) if (!pouchHunted(obj)) invAddOrDrop(objRepo, obj)
+        soundSynth(NOOSE_SYNTH)
+        soundSynth(CATCH_SYNTH)
         statAdvance(HUNTER, area.xp)
         rumours.onCatch(player, area.rumourKey)
-        mes("You manage to noose ${HunterRumours.article(area.name)} ${area.name} that is hiding in the ${area.spotNoun}.")
     }
+
+    private fun flee(area: Area, coords: CoordGrid) {
+        val away = coords.translate(random.of(-FLEE_RANGE, FLEE_RANGE), random.of(-FLEE_RANGE, FLEE_RANGE))
+        worldRepo.projAnim(
+            ProjAnim(area.fleeSpotanim.asRSCM(RSCMType.SPOTANIM), 0, 0, FLEE_START, FLEE_END, 0, 0, 0, 0, coords, away)
+        )
+    }
+
+    private fun failPermille(area: Area, level: Int): Int =
+        (area.nooseFailPermille * (area.level + FAIL_LEVELS - level) / FAIL_LEVELS).coerceAtLeast(0)
 
     private fun choose(track: Track, node: Int): Step? {
         val options =
@@ -214,6 +248,7 @@ constructor(
         val usedVarbit: String = row.usedVarbit
         val endsVarbit: String = row.endsVarbit
         val nmin: Int = row.nmin
+        val nooseFailPermille: Int = row.nooseFailPermille
         val dens: List<Pair<Int, String>> = row.dens.map { it.t0 to RSCM.getReverseMapping(RSCMType.LOC, it.t1.id) }
         val spotCoords: Map<Int, CoordGrid> = row.spots.associate { it.t0 to it.t1 }
         val spotIndex: Map<Int, Int> = row.spots.associate { it.t0 to it.t2 }
@@ -228,6 +263,14 @@ constructor(
         const val HUNTER = "stat.hunter"
         const val NOOSE_WAND = "obj.noose_wand"
         const val RING_OF_PURSUIT = "obj.ring_of_pursuit"
+        const val PURSUIT_USES = "varp.ring_of_pursuit_uses"
+        const val PURSUIT_CHARGES = 10
+        const val NOOSE_SYNTH = "synth.human_unarmedblock"
+        const val CATCH_SYNTH = "synth.hunting_snare_trapping"
+        const val KICK_SYNTH = "synth.hunting_noose_kick"
+        const val FLEE_SYNTH = "synth.hunting_kebbit_flee"
+        const val PERMILLE = 1000
+        const val FAIL_LEVELS = 2
         const val SEARCH_SEQ = "seq.hunting_searching_bushes"
         const val KICK_SEQ = "seq.human_unarmedkick"
         const val INSPECT_TICKS = 2

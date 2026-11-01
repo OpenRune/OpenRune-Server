@@ -32,12 +32,38 @@ class LeonScript @Inject constructor(private val shops: Shops) : PluginScript() 
     }
 
     private suspend fun Dialogue.leon(npc: Npc) {
-        if (CROSSBOW in player.inv || CROSSBOW in player.worn) {
-            chatNpc(happy, "Oh, hey, you have one of my crossbows! How's it working for you?")
-            chatPlayer(neutral, "It's okay, thanks.")
-        } else {
+        if (CROSSBOW !in player.inv && CROSSBOW !in player.worn) {
             mesbox("Leon is gazing intently at the crossbow in his hands.")
+            menu(npc)
+            return
         }
+        chatNpc(happy, "Oh, hey, you have one of my crossbows! How's it working for you?")
+        val choice =
+            choice5(
+                "It's okay, thanks.",
+                1,
+                "What is this place?",
+                2,
+                "Can you tell me about your crossbow?",
+                3,
+                "Tell me about the ammo for your crossbow.",
+                4,
+                "I'll be off now, excuse me.",
+                5,
+            )
+        when (choice) {
+            1 -> {
+                chatPlayer(neutral, "It's okay, thanks.")
+                menu(npc)
+            }
+            2 -> place(npc)
+            3 -> crossbow(npc)
+            4 -> ammoTalk(npc)
+            else -> leave()
+        }
+    }
+
+    private suspend fun Dialogue.menu(npc: Npc) {
         val choice =
             choice4(
                 "What is this place?",
@@ -64,15 +90,33 @@ class LeonScript @Inject constructor(private val shops: Shops) : PluginScript() 
             "This is Aleck's Hunter Emporium. Basically, it's just a shop with a fancy name; you can buy various " +
                 "weapons and traps here.",
         )
-        chatPlayer(quiz, "Can I buy some equipment from the shop then?")
-        chatNpc(neutral, "Oh, this isn't my shop; the owner is Aleck over there behind the counter.")
-        chatNpc(
-            neutral,
-            "I experiment with weapon designs. I'm here because I've been trying to convince people to back my " +
-                "research and maybe sell some of my products - like this one I'm holding - in their shops.",
-        )
-        chatNpc(neutral, "Aleck doesn't seem to be interested, though.")
-        others(npc)
+        val choice =
+            choice4(
+                "Can I buy some equipment from the shop then?",
+                1,
+                "Can you tell me about your crossbow?",
+                2,
+                "Tell me about the ammo for your crossbow.",
+                3,
+                "I'll be off now, excuse me.",
+                4,
+            )
+        when (choice) {
+            1 -> {
+                chatPlayer(quiz, "Can I buy some equipment from the shop then?")
+                chatNpc(neutral, "Oh, this isn't my shop; the owner is Aleck over there behind the counter.")
+                chatNpc(
+                    neutral,
+                    "I experiment with weapon designs. I'm here because I've been trying to convince people to back " +
+                        "my research and maybe sell some of my products - like this one I'm holding - in their shops.",
+                )
+                chatNpc(neutral, "Aleck doesn't seem to be interested, though.")
+                others(npc)
+            }
+            2 -> crossbow(npc)
+            3 -> ammoTalk(npc)
+            else -> leave()
+        }
     }
 
     private suspend fun Dialogue.others(npc: Npc) {
@@ -103,36 +147,20 @@ class LeonScript @Inject constructor(private val shops: Shops) : PluginScript() 
             "It's a fair bit faster than an ordinary crossbow too; it'll take you far less time to reload between " +
                 "shots.",
         )
-        val choice =
-            choice4(
-                "That's crazy, it'll never work!",
-                1,
-                "That sounds good. Let's trade.",
-                2,
-                "Tell me about the ammo for your crossbow.",
-                3,
-                "I'll be off now, excuse me.",
-                4,
+        if (choice2("That's crazy, it'll never work!", true, "That sounds good. Let's trade.", false)) {
+            chatPlayer(confused, "That's crazy, it'll never work!")
+            chatNpc(neutral, "That's what they said about my wind-powered mouse traps, too.")
+            chatPlayer(quiz, "And did they work?")
+            chatNpc(
+                neutral,
+                "Well, they only ran into problems because people kept insisting on trying to use them indoors.",
             )
-        when (choice) {
-            1 -> {
-                chatPlayer(confused, "That's crazy, it'll never work!")
-                chatNpc(neutral, "That's what they said about my wind-powered mouse traps, too.")
-                chatPlayer(quiz, "And did they work?")
-                chatNpc(
-                    neutral,
-                    "Well, they only ran into problems because people kept insisting on trying to use them indoors.",
-                )
-                chatNpc(neutral, "Anyway, I think my crossbow invention is showing a lot more promise.")
-                others(npc)
-            }
-            2 -> {
-                chatPlayer(happy, "That sounds good. Let's trade.")
-                access.openShop(npc)
-            }
-            3 -> ammoTalk(npc)
-            else -> leave()
+            chatNpc(neutral, "Anyway, I think my crossbow invention is showing a lot more promise.")
+            others(npc)
+            return
         }
+        chatPlayer(happy, "That sounds good. Let's trade.")
+        access.openShop(npc)
     }
 
     private suspend fun Dialogue.ammoTalk(npc: Npc) {
@@ -144,26 +172,20 @@ class LeonScript @Inject constructor(private val shops: Shops) : PluginScript() 
             "I need kebbit spikes, lots of 'em. Not all kebbits have spikes, mind you. You'll be wanting prickly " +
                 "kebbits or, even better, razor-backed kebbits to get material hard enough.",
         )
-        val choice =
-            choice3("Can't I just make my own?", 1, "Okay, can you make ammo for me?", 2, "I'll be off now, excuse me.", 3)
-        when (choice) {
-            1 -> {
-                chatPlayer(quiz, "Can't I just make my own?")
-                chatNpc(neutral, "Yes, I suppose you could, although you'll need a steady hand with a knife and a chisel.")
-                chatNpc(
-                    neutral,
-                    "The bolts have an unusual diameter, but basically you'll just need to be able to carve kebbit " +
-                        "spikes into straight shafts.",
-                )
-                chatNpc(neutral, "Meanwhile, since you're here, I can make some for you if you have the materials.")
-                others(npc)
-            }
-            2 -> {
-                chatPlayer(quiz, "Okay, can you make ammo for me?")
-                access.ammo()
-            }
-            else -> leave()
+        if (choice2("Can't I just make my own?", true, "Okay, can you make ammo for me?", false)) {
+            chatPlayer(quiz, "Can't I just make my own?")
+            chatNpc(neutral, "Yes, I suppose you could, although you'll need a steady hand with a knife and a chisel.")
+            chatNpc(
+                neutral,
+                "The bolts have an unusual diameter, but basically you'll just need to be able to carve kebbit " +
+                    "spikes into straight shafts.",
+            )
+            chatNpc(neutral, "Meanwhile, since you're here, I can make some for you if you have the materials.")
+            others(npc)
+            return
         }
+        chatPlayer(quiz, "Okay, can you make ammo for me?")
+        access.ammo()
     }
 
     private suspend fun Dialogue.leave() {

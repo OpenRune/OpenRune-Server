@@ -57,6 +57,19 @@ class GuildTradeTest {
     }
 
     @Test
+    fun `an outfit piece gone during the prompt gives no sack`() {
+        val f = HunterFixture()
+        val piece = HunterLootSackScript.TRADEABLE.first()
+        val type = checkNotNull(ServerCacheManager.getItem(piece.asRSCM()))
+        f.player.inv[0] = InvObj(piece, 1)
+        f.call(script, "trade", type)
+        f.player.inv[0] = null
+        f.finish()
+        assertEquals(0L, f.total(HunterLootSackScript.SUPPLIES))
+        assertEquals(0, registry.findAll(f.player.coords).sumOf { it.count })
+    }
+
+    @Test
     fun `a stack at the maximum drops the sack to the ground`() {
         val f = HunterFixture()
         val piece = HunterLootSackScript.TRADEABLE.first()

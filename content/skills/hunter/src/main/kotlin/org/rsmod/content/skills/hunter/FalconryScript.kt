@@ -275,7 +275,12 @@ constructor(
             chatPlayer(neutral, "Hmm, that seems a little steep. I'll think on it.")
             return
         }
-        if (access.invDel(player.inv, COINS, INVESTMENT).failure) return
+        access.payInvestment()
+    }
+
+    private fun ProtectedAccess.payInvestment() {
+        if (vars[INVESTED] == 1) return
+        if (invDel(inv, COINS, INVESTMENT).failure) return
         VarPlayerIntMapSetter.set(player, INVESTED, 1)
     }
 
@@ -318,6 +323,7 @@ constructor(
     }
 
     private fun ProtectedAccess.takeFalcon(fee: Int): Boolean {
+        if (wearsGlove(player)) return false
         val slots = HAND_SLOTS.filter { player.worn[it] != null }
         if (inv.freeSpace() < slots.size) return false
         for (slot in slots) wornUnequip(slot)
@@ -382,10 +388,6 @@ constructor(
         val flight = flights[player]
         if (flight == null || flight.falcon !== falcon) {
             mes("This isn't your falcon.")
-            return
-        }
-        if (inv.freeSpace() < flight.kebbit.loot.size) {
-            mes("You don't have enough inventory space.")
             return
         }
         flights.remove(player)

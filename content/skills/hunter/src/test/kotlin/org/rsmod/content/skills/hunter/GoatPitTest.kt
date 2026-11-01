@@ -8,6 +8,7 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.game.inv.InvObj
 
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
@@ -60,6 +61,30 @@ class GoatPitTest {
         f.finish()
         assertEquals(0L, loot())
         assertEquals(3, f.player.vars[GoatPitScript.IN_PIT])
+    }
+
+    @Test
+    fun `spikes are taken only into free slots and every take adds up`() {
+        f.fill()
+        f.run(script, "takeSpikes", 5)
+        assertEquals(0L, f.total(GoatPitScript.SPIKES))
+        f.player.inv.indices.forEach { f.player.inv[it] = null }
+        repeat(2) { f.run(script, "takeSpikes", 5) }
+        assertEquals(10L, f.total(GoatPitScript.SPIKES))
+    }
+
+    @Test
+    fun `a cattleprod is taken once, never onto a full inventory or a worn one`() {
+        f.fill()
+        f.run(script, "takeProd")
+        assertEquals(0L, f.total(GoatPitScript.PROD))
+        f.player.inv.indices.forEach { f.player.inv[it] = null }
+        repeat(2) { f.run(script, "takeProd") }
+        assertEquals(1L, f.total(GoatPitScript.PROD))
+        f.player.inv.indices.forEach { f.player.inv[it] = null }
+        f.player.worn[3] = InvObj(GoatPitScript.PROD, 1)
+        f.run(script, "takeProd")
+        assertEquals(1L, f.total(GoatPitScript.PROD))
     }
 
     companion object {

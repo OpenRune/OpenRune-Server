@@ -6,6 +6,9 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.varp.baseVar
 import dev.openrune.types.varp.bits
 import jakarta.inject.Inject
+import org.rsmod.api.enums.HunterEnums.hunter_stymphike_loot
+import org.rsmod.api.npc.hit.modifier.NpcHitModifier
+import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.VarpSync
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -20,6 +23,7 @@ import org.rsmod.api.table.QuestRow
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.hit.HitType
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
@@ -32,6 +36,7 @@ constructor(
     private val npcRepo: NpcRepository,
     private val objRepo: ObjRepository,
     private val worldRepo: WorldRepository,
+    private val hitModifier: NpcHitModifier,
 ) : PluginScript() {
     private class Bird(val npc: Npc, val tree: Int)
 
@@ -164,15 +169,24 @@ constructor(
         resetAnim()
         if (!bird.npc.isSlotAssigned) return
         if (alerted) {
+            bird.npc.queueHit(player, 1, HitType.Typeless, ALERTED_DAMAGE, hitModifier)
             bird.npc.anim(TAKEOFF_SEQ)
-            npcRepo.del(bird.npc, 1)
             statAdvance(HUNTER, ALERTED_XP)
+            delay(1)
+            if (bird.npc.isSlotAssigned) npcRepo.del(bird.npc, 1)
             return
         }
         bird.npc.anim(DEATH_SEQ)
         npcRepo.del(bird.npc, 2)
         statAdvance(HUNTER, KILL_XP)
-        for ((obj, count) in LOOT) objRepo.add(obj, coords, LOOT_DURATION, receiver = player, count = count)
+        val double = HerbiboarScript.HORN_OF_PLENTY in player.worn && vars[HerbiboarScript.HORN_CHARGES] > 0 &&
+            random.of(HerbiboarScript.HORN_CHANCE) == 0
+        if (double) VarPlayerIntMapSetter.set(player, HerbiboarScript.HORN_CHARGES, vars[HerbiboarScript.HORN_CHARGES] - 1)
+        for ((type, count) in hunter_stymphike_loot) {
+            val obj = type.internalName
+            val total = (count ?: continue) * if (double && obj != BONES) 2 else 1
+            objRepo.add(obj, coords, LOOT_DURATION, receiver = player, count = total)
+        }
     }
 
     companion object {
@@ -205,9 +219,9 @@ constructor(
         const val PEEK_XP = 125.0
         const val KILL_XP = 1350.0
         const val ALERTED_XP = 891.0
+        const val ALERTED_DAMAGE = 6
+        const val BONES = "obj.bones"
         const val LOOT_DURATION = 200
         const val TREE_COUNT = 5
-
-        val LOOT = listOf("obj.bones" to 1, "obj.stymphike_feather" to 15, "obj.stymphike_carcass" to 1)
     }
 }

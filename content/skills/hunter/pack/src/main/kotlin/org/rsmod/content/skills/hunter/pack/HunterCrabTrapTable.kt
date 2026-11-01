@@ -31,9 +31,9 @@ object HunterCrabTrapTable {
 
     private val SITES =
         listOf(
-            Site("pandemonium", "npc.red_crab", listOf("obj.red_crab"), 21, 64, 1, "obj.fish_chunks", 15, "quest_pandemonium"),
-            Site("great_conch_north", "npc.blue_crab", listOf("obj.blue_crab"), 48, 136, 45, "obj.fish_chunks", 15, "quest_troubledtortugans"),
-            Site("great_conch_east", "npc.blue_crab", listOf("obj.blue_crab"), 48, 136, 45, "obj.fish_chunks", 15, "quest_troubledtortugans"),
+            Site("pandemonium", "npc.red_crab", listOf("obj.red_crab"), 21, 64, 1, "obj.brut_fish_cuts", 15, "quest_pandemonium"),
+            Site("great_conch_north", "npc.blue_crab", listOf("obj.blue_crab"), 48, 136, 45, "obj.brut_fish_cuts", 15, "quest_troubledtortugans"),
+            Site("great_conch_east", "npc.blue_crab", listOf("obj.blue_crab"), 48, 136, 45, "obj.brut_fish_cuts", 15, "quest_troubledtortugans"),
             Site(
                 "crown_jewel",
                 "npc.rainbow_crab_a",

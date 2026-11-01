@@ -30,7 +30,7 @@ class ButterflyTest {
     }
 
     @Test
-    fun `one empty jar holds one butterfly however often it is caught`() {
+    fun `one empty jar in a full pack holds one butterfly however often it is caught`() {
         levels()
         val npc =
             mockk<Npc>(relaxed = true) {
@@ -38,6 +38,7 @@ class ButterflyTest {
                 every { isVisible } returns true
             }
         f.player.inv[0] = InvObj(ButterflyScript.BUTTERFLY_JAR, 1)
+        f.fill()
         repeat(50) { f.call(script, "catch", npc, row) }
         assertEquals(1L, f.total(jar))
         assertEquals(0L, f.total(ButterflyScript.BUTTERFLY_JAR))
@@ -63,6 +64,19 @@ class ButterflyTest {
         f.run(script, "mix", row, meat)
         assertEquals(1L, f.total(mix))
         assertEquals(0L, f.total(jar) + f.total(meat))
+    }
+
+    @Test
+    fun `a full pack mixes into the freed slot`() {
+        levels()
+        f.player.inv[0] = InvObj(ButterflyScript.PESTLE, 1)
+        f.player.inv[1] = InvObj(jar, 1)
+        f.player.inv[2] = InvObj(meat, 1)
+        f.fill()
+        f.run(script, "mix", row, meat)
+        assertEquals(1L, f.total(mix))
+        assertEquals(0L, f.total(jar) + f.total(meat))
+        assertEquals(1L, f.total(ButterflyScript.PESTLE))
     }
 
     @Test

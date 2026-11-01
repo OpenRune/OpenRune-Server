@@ -22,6 +22,7 @@ object HunterPitfallTable {
     const val LOW = 14
     const val HIGH = 15
     const val EXTRA = 16
+    const val GEAR = 17
 
     private class Creature(
         val key: String,
@@ -42,10 +43,17 @@ object HunterPitfallTable {
         val low: Int,
         val high: Int,
         val extra: Triple<String, Int, Int>? = null,
+        val gear: List<Pair<List<String>, Int>> = emptyList(),
     )
 
     private const val BIG_CAT_FALL = "seq.hunter_bigcat_fall_in_pit"
     private const val ANTELOPE_FALL = "seq.unicorn_rework_pitfall_death"
+    private val BIG_CAT_GEAR =
+        listOf(
+            listOf("obj.hunting_hat_jaguar", "obj.hunting_torso_jaguar", "obj.hunting_trousers_jaguar") to 20,
+            listOf("obj.hunting_hat_leopard", "obj.hunting_torso_leopard", "obj.hunting_trousers_leopard") to 40,
+            listOf("obj.hunting_hat_tiger", "obj.hunting_torso_tiger", "obj.hunting_trousers_tiger") to 60,
+        )
 
     private val CREATURES =
         listOf(
@@ -56,6 +64,7 @@ object HunterPitfallTable {
                 listOf("obj.hunting_fur_jaguar_perfect", "obj.hunting_fur_jaguar_shabby"),
                 5, "seq.hunter_big_cat_bite", "synth.hunting_kyatt_attack", BIG_CAT_FALL, "synth.hunting_kyatt_caught",
                 listOf("spotanim.hunter_larupia_leaptrap_proj1", "spotanim.hunter_larupia_leaptrap_proj2"), 1, 120, 380,
+                gear = BIG_CAT_GEAR,
             ),
             Creature(
                 "graahk", "horned graahk", "npc.hunting_leopard", 41, 240,
@@ -64,6 +73,7 @@ object HunterPitfallTable {
                 listOf("obj.hunting_fur_leopard_perfect", "obj.hunting_fur_leopard_shabby"),
                 7, "seq.hunter_big_cat_butt", "synth.hunting_graahk_attack", BIG_CAT_FALL, "synth.hunting_graahk_caught",
                 listOf("spotanim.hunter_graahk_leaptrap_proj1", "spotanim.hunter_graahk_leaptrap_proj2"), 1, 100, 380,
+                gear = BIG_CAT_GEAR,
             ),
             Creature(
                 "kyatt", "sabretoothed kyatt", "npc.hunting_snow_tiger", 55, 300,
@@ -72,6 +82,7 @@ object HunterPitfallTable {
                 listOf("obj.hunting_fur_tiger_perfect", "obj.hunting_fur_tiger_shabby"),
                 7, "seq.hunter_big_cat_bite", "synth.hunting_kyatt_attack", BIG_CAT_FALL, "synth.hunting_kyatt_caught",
                 listOf("spotanim.hunter_kyatt_leaptrap_proj1", "spotanim.hunter_kyatt_leaptrap_proj2"), 1, 80, 380,
+                gear = BIG_CAT_GEAR,
             ),
             Creature(
                 "sunlight_antelope", "sunlight antelope", "npc.sunlight_antelope", 72, 380,
@@ -110,6 +121,7 @@ object HunterPitfallTable {
             column("low", LOW, VarType.INT)
             column("high", HIGH, VarType.INT)
             column("extra", EXTRA, VarType.OBJ, VarType.INT, VarType.INT)
+            column("gear", GEAR, VarType.OBJ, VarType.OBJ, VarType.OBJ, VarType.INT)
 
             for (c in CREATURES) {
                 row("dbrow.hunter_pitfall_${c.key}") {
@@ -130,6 +142,9 @@ object HunterPitfallTable {
                     column(LOW, c.low)
                     column(HIGH, c.high)
                     c.extra?.let { (obj, min, max) -> column(EXTRA, listOf(ConstantProvider.getMapping(obj), min, max)) }
+                    if (c.gear.isNotEmpty()) {
+                        column(GEAR, c.gear.flatMap { (pieces, reduction) -> pieces.map { ConstantProvider.getMapping(it) } + reduction })
+                    }
                 }
             }
         }

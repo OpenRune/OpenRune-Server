@@ -19,7 +19,6 @@ import org.rsmod.api.player.stat.statBoost
 import org.rsmod.api.player.stat.statHeal
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.player.PlayerRepository
-import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpHeldU
@@ -39,7 +38,7 @@ class ButterflyScript
 constructor(
     private val npcRepo: NpcRepository,
     private val playerRepo: PlayerRepository,
-    private val worldRepo: WorldRepository,
+    private val spawns: ImplingSpawns,
     private val areas: AreaChecker,
     val rumours: HunterRumours,
 ) : PluginScript() {
@@ -62,7 +61,11 @@ constructor(
         faceEntitySquare(npc)
         anim(CATCH_SEQ)
         if (!rollCatch(row)) return
-        if (npc.respawns) npcRepo.despawn(npc, RESPAWN_TICKS) else npcRepo.del(npc, Int.MAX_VALUE)
+        caught += npc
+        spawns.after(REMOVE_TICKS) {
+            caught -= npc
+            if (npc.respawns) npcRepo.despawn(npc, RESPAWN_TICKS) else npcRepo.del(npc, Int.MAX_VALUE)
+        }
         statAdvance(HUNTER, row.xp.toDouble())
         rumours.onCatch(player, row.creature.internalName)
         if (BUTTERFLY_JAR in inv && invReplace(inv, BUTTERFLY_JAR, 1, row.jar.internalName).success) {
@@ -73,8 +76,8 @@ constructor(
         if (row.creature.internalName == SUNLIGHT_MOTH) restoreRunEnergy(SUNLIGHT_RUN_PERCENT)
         if (row.kind == MOTH) {
             val spot = if (row.creature.internalName == SUNLIGHT_MOTH) SUNLIGHT_OUT else MOONLIGHT_OUT
-            npc.spotanim(spot, RELEASE_DELAY, RELEASE_HEIGHT)
-            worldRepo.soundArea(npc.coords, RELEASE_SYNTH, delay = RELEASE_DELAY)
+            spotanim(spot, RELEASE_DELAY, RELEASE_HEIGHT)
+            soundSynth(RELEASE_SYNTH, delay = RELEASE_DELAY)
         }
         mes("You catch and release the ${row.name}.", ChatType.Spam)
     }
@@ -132,7 +135,7 @@ constructor(
                 add(target, row.mixes[0].id, 1)
             }
         if (mixed.failure) return
-        mes("You mix the ${row.name} with the meat.", ChatType.Spam)
+        mes("You mix the meat into the butterfly jar... Don't think too hard about it.")
     }
 
     private fun ProtectedAccess.drink(row: HunterButterfliesRow, dose: String, next: String?) {
@@ -142,25 +145,25 @@ constructor(
             return
         }
         anim(DRINK_SEQ)
-        player.applyEffect(row)
+        player.applyEffect(row, row.mixEffectConstant)
         if (player.mapMultiway(areas)) {
             playerRepo
                 .findAll(ZoneKey.from(player.coords), zoneRadius = 1)
                 .filter { it !== player && it.acceptsAid() && distance(it.coords, player.coords) <= MIX_SHARE_RANGE }
                 .take(MAX_SHARED)
-                .forEach { it.applyEffect(row) }
+                .forEach { it.applyEffect(row, row.mixEffectConstant) }
         }
         mes("You drink the ${row.name} mix.", ChatType.Spam)
     }
 
     private fun Player.acceptsAid(): Boolean = vars[ACCEPT_AID] == 1
 
-    private fun Player.applyEffect(row: HunterButterfliesRow) {
+    private fun Player.applyEffect(row: HunterButterfliesRow, constant: Int = row.effectConstant) {
         val stat = row.effectStat.internalName
         when (row.effect) {
-            EFFECT_BOOST -> statBoost(stat, row.effectConstant, row.effectPercent)
-            EFFECT_HEAL -> statHeal(stat, row.effectConstant, row.effectPercent)
-            EFFECT_RESTORE -> for (restored in RESTORED_STATS) statHeal(restored, row.effectConstant, row.effectPercent)
+            EFFECT_BOOST -> statBoost(stat, constant, row.effectPercent)
+            EFFECT_HEAL -> statHeal(stat, constant, row.effectPercent)
+            EFFECT_RESTORE -> for (restored in RESTORED_STATS) statHeal(restored, constant, row.effectPercent)
         }
         if (row.hitpointsHeal > 0) statHeal(HITPOINTS, row.hitpointsHeal, 0)
     }
@@ -172,7 +175,9 @@ constructor(
         UpdateRun.energy(player, restored)
     }
 
-    private fun Npc.isCatchable(): Boolean = isSlotAssigned && isVisible
+    private val caught = HashSet<Npc>()
+
+    private fun Npc.isCatchable(): Boolean = isSlotAssigned && isVisible && this !in caught
 
     private fun ProtectedAccess.wieldedNet(): String? {
         val held = player.righthand ?: return null
@@ -200,6 +205,7 @@ constructor(
         const val RELEASE_HEIGHT = 190
         const val BAREHANDED_EXTRA_LEVELS = 10
         const val RESPAWN_TICKS = 7
+        const val REMOVE_TICKS = 1
         const val MIX_TICKS = 3
         const val MAX_SHARED = 3
         const val JAR_SHARE_RANGE = 2

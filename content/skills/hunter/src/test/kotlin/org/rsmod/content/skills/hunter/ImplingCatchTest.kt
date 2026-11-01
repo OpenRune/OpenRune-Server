@@ -64,9 +64,11 @@ class ImplingCatchTest {
     }
 
     @Test
-    fun `an inventory filled during the attempt catches nothing without a jar`() {
+    fun `an inventory filled between attempts catches nothing without a jar`() {
         hunter()
-        catch()
+        var tries = 0
+        val second: ProtectedAccess.(String?) -> Boolean = { tries++ > 0 }
+        f.call(script, "catch", npc, 1, JAR, 20, false, second, {})
         f.fill()
         f.finish()
         assertTrue(f.player.inv.all { it?.id == f.player.inv[0]?.id })

@@ -1,9 +1,15 @@
 package org.rsmod.content.skills.hunter
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import java.time.Clock
 import kotlin.math.roundToInt
 import org.rsmod.api.config.constants
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
@@ -46,11 +52,11 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
     private suspend fun ProtectedAccess.op1(space: Space) {
         if (state(player, space) == 0) {
             val tier = TIERS.lastOrNull { it.item.internalName in inv && stat(HUNTER) >= it.hunterLevel }
-            if (tier == null) {
-                mes("You do not have a birdhouse with the required hunter level to build here.")
-                return
+            when {
+                tier != null -> build(space, tier)
+                !buildFromLogs(space) ->
+                    mes("You do not have a birdhouse with the required hunter level to build here.")
             }
-            build(space, tier)
             return
         }
         if (state(player, space) % 3 != 0) return
@@ -62,7 +68,7 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
                 2,
                 "Dismantle and rebuild my trap.",
                 3,
-                "Do nothing",
+                "Do nothing.",
                 4,
             )
         when (choice) {
@@ -204,23 +210,48 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
 
     suspend fun ProtectedAccess.reset(space: Space) {
         if (!empty(space)) return
-        delay(2)
+        delay(1)
         val carried = TIERS.lastOrNull { it.item.internalName in inv && stat(HUNTER) >= it.hunterLevel }
         if (carried != null) {
+            delay(1)
             build(space, carried)
             return
         }
-        val logs = TIERS.filter { it.logs.internalName in inv }
-        if (logs.isEmpty()) {
+        if (TIERS.none { it.logs.internalName in inv }) {
             mes("You need logs to make a birdhouse.")
             return
         }
-        val buildable = logs.filter { stat(CRAFTING) >= it.craftingLevel && stat(HUNTER) >= it.hunterLevel }
-        if (CLOCKWORK !in inv || HAMMER !in inv || CHISEL !in inv || buildable.isEmpty()) return
-        val tier = if (buildable.size == 1) buildable.single() else chooseLogs(buildable) ?: return
-        if (invDel(inv, tier.logs.internalName, 1, CLOCKWORK, 1).failure) return
-        statAdvance(CRAFTING, tier.craftingXp.toDouble())
-        place(space, tier)
+        buildFromLogs(space)
+    }
+
+    suspend fun ProtectedAccess.buildFromLogs(space: Space): Boolean {
+        val buildable =
+            TIERS.filter {
+                it.logs.internalName in inv && stat(CRAFTING) >= it.craftingLevel && stat(HUNTER) >= it.hunterLevel
+            }
+        if (CLOCKWORK !in inv || HAMMER !in inv || CHISEL !in inv || buildable.isEmpty()) return false
+        val tier = if (buildable.size == 1) buildable.single() else chooseLogs(buildable) ?: return true
+        anim(MAKE_SEQ)
+        soundSynth(MAKE_SYNTH)
+        delay(2)
+        if (!craft(tier)) return true
+        delay(1)
+        build(space, tier)
+        return true
+    }
+
+    fun ProtectedAccess.craft(tier: BirdhouseTypesRow): Boolean {
+        val made =
+            player
+                .invTransaction(inv) {
+                    val target = select(inv)
+                    delete(target, CLOCKWORK.asRSCM(RSCMType.OBJ), 1)
+                    delete(target, tier.logs.internalName.asRSCM(RSCMType.OBJ), 1)
+                    add(target, tier.item.internalName.asRSCM(RSCMType.OBJ), count = 1)
+                }
+                .success
+        if (made) statAdvance(CRAFTING, tier.craftingXp.toDouble())
+        return made
     }
 
     private suspend fun ProtectedAccess.chooseLogs(tiers: List<BirdhouseTypesRow>): BirdhouseTypesRow? {
@@ -289,6 +320,8 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
             listOf("beginner", "easy", "medium", "hard", "elite").associateWith { "obj.wc_clue_nest_$it" }
         const val SEEDS_NEEDED = 10
         const val PICKUP_SEQ = "seq.human_pickupfloor"
+        const val MAKE_SEQ = "seq.birdhouse_make"
+        const val MAKE_SYNTH = "synth.birdhouse_make"
         const val PLACE_SYNTH = "synth.birdhouse_place"
         const val SEEDED_MESSAGE = "Your birdhouse trap is now full of seed and will start to catch birds."
         const val FULL_MINUTES = 50
@@ -316,7 +349,7 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
         fun chance(level: Int, low: Int, high: Int): Int =
             (SkillingSuccessRate.successRate(low, high, level.coerceIn(1, 99), 99) * 256).roundToInt()
 
-        fun nestChance(level: Int, high: Int): Int = high * (level.coerceIn(50, 99) - 1) / 98
+        fun nestChance(level: Int, high: Int): Int = high * (level.coerceAtLeast(50) - 1) / 98
 
         fun rollLoot(
             tier: BirdhouseTypesRow,

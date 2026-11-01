@@ -16,6 +16,15 @@ protect = false
 runWeight = false
 size = 9
 
+[[inventory]]
+isServerOnly = true
+id = "inv.huntsmans_kit"
+inherit = "inv.huntsmans_kit"
+scope = "Perm"
+stack = "Always"
+protect = false
+runWeight = false
+
 [[enum]]
 isServerOnly = true
 id = "enum.hunter_pouch_contents"

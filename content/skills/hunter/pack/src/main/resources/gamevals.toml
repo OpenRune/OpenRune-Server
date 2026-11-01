@@ -1,6 +1,8 @@
 [gamevals.varp]
 
 falconry_invested = 65467
+ring_of_pursuit_uses = 65453
+aerial_fishing_offcut_catches = 65452
 
 goat_pit_trapped = 65464
 
@@ -34,3 +36,4 @@ hunter_rumour_back_to_back = 63782
 hunter_rumour_last = 63783
 hunter_rumour_torn_blueprints = 65466
 hunter_rumour_reshuffled = 65465
+hunter_rumour_part_source = 65451

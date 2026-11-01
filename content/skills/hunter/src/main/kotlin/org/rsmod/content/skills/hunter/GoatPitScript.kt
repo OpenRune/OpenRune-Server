@@ -9,6 +9,7 @@ import kotlin.math.sign
 import org.rsmod.api.combat.commons.magic.MagicSpell
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
+import org.rsmod.api.enums.HunterEnums.hunter_goat_pit_capacity
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -250,7 +251,7 @@ constructor(
                 mes("You don't have enough inventory space.")
                 return
             }
-            statAdvance(HUNTER, harvestXp(stat(HUNTER)).toDouble())
+            statAdvance(HUNTER, harvestXp(statBase(HUNTER)).toDouble())
             rumours.onCatch(player, GOAT)
             pets.rollSkillingPet(player, PET, HUNTER, PET_BASE)
             setInPit(vars[IN_PIT] - 1)
@@ -396,7 +397,7 @@ constructor(
         val PIT_SW = CoordGrid(2571, 2194, 0)
         const val MAGIC = "stat.magic"
         const val LURE_XP = 10.0
-        const val LURE_DEATH_SEQ = "seq.goat_hunting_telegrab_death"
+        const val LURE_DEATH_SEQ = "seq.goat_hunting_telegrab_end"
         const val PROJANIM = "projanim.magic_spell"
         const val CAST_SPOTANIM_HEIGHT = 92
         const val DARK_LURE_COOLDOWN = "varbit.arceuus_dark_lure_cooldown"
@@ -404,13 +405,7 @@ constructor(
         const val DARK_LURE_COOLDOWN_TICKS = 17
 
         fun capacity(level: Int): Int =
-            when {
-                level >= 93 -> 24
-                level >= 85 -> 22
-                level >= 77 -> 20
-                level >= 69 -> 18
-                else -> 16
-            }
+            hunter_goat_pit_capacity.getValue(hunter_goat_pit_capacity.keys.filter { it <= level }.maxOrNull() ?: LEVEL)
 
         fun harvestXp(level: Int): Int {
             val l = level.coerceIn(LEVEL, 99)

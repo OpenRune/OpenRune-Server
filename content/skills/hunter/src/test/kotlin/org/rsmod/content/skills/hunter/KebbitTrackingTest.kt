@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.hunter
 
+import dev.openrune.util.Wearpos
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
@@ -26,6 +27,8 @@ class KebbitTrackingTest {
     private val spot by lazy { area.spotCoords.keys.first() }
 
     private fun tracked() {
+        f.player.statMap.setBaseLevel(KebbitTrackingScript.HUNTER, 99)
+        f.player.statMap.setCurrentLevel(KebbitTrackingScript.HUNTER, 99)
         f.player.worn[3] = InvObj(KebbitTrackingScript.NOOSE_WAND, 1)
         tracks[f.player] = KebbitTrackingScript.Track(area, mutableSetOf(), 0).also { it.target = spot }
     }
@@ -46,6 +49,18 @@ class KebbitTrackingTest {
         f.fill()
         f.call(script, "attack", area, area.spotCoords.getValue(spot))
         assertEquals(area.loot.size.toLong(), loot())
+    }
+
+    @Test
+    fun `a ring of pursuit is deleted once after ten charges`() {
+        f.player.worn[Wearpos.Ring.slot] = InvObj(KebbitTrackingScript.RING_OF_PURSUIT, 1)
+        f.player.inv[0] = InvObj(KebbitTrackingScript.RING_OF_PURSUIT, 1)
+        repeat(KebbitTrackingScript.PURSUIT_CHARGES - 1) { f.call(script, "useRingCharge") }
+        assertEquals(2L, f.total(KebbitTrackingScript.RING_OF_PURSUIT))
+        f.call(script, "useRingCharge")
+        f.call(script, "useRingCharge")
+        assertEquals(1L, f.total(KebbitTrackingScript.RING_OF_PURSUIT))
+        assertEquals(0, f.player.vars[KebbitTrackingScript.PURSUIT_USES])
     }
 
     companion object {

@@ -3,3 +3,16 @@ isServerOnly = true
 id = "varp.goat_pit_trapped"
 scope = "Perm"
 transmit = "Never"
+
+[[enum]]
+isServerOnly = true
+id = "enum.hunter_goat_pit_capacity"
+keyType = "INT"
+valueType = "INT"
+
+[enum.values]
+60 = 16
+69 = 18
+77 = 20
+85 = 22
+93 = 24
