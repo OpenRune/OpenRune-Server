@@ -36,8 +36,8 @@ object FarmingProduceContainerTable {
             )
             family(
                 "obj.basket_empty", "basket", BASKET_CAPACITY,
-                "apple" to "obj.cooking_apple", "banana" to "obj.banana", "orange" to "obj.orange",
-                "strawberry" to "obj.strawberry", "tomato" to "obj.tomato",
+                "strawberry" to "obj.strawberry", "orange" to "obj.orange", "banana" to "obj.banana",
+                "tomato" to "obj.tomato", "apple" to "obj.cooking_apple",
             )
 
             row("dbrow.farming_produce_containers") { column(COL_FORMS, *forms.toTypedArray()) }

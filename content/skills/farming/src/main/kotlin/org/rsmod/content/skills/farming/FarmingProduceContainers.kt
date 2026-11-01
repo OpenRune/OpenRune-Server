@@ -13,9 +13,7 @@ object FarmingProduceContainers {
     }
 
     private val filled by lazy { forms.filter { it.count > 0 }.associateBy { it.obj.id } }
-    internal val sackFillChoices by lazy {
-        forms.filter { it.count == 0 && it.obj.internalName == "obj.sack_empty" }
-    }
+    internal val fillChoices by lazy { forms.filter { it.count == 0 }.groupBy { it.obj.id } }
     private val byContents by lazy { forms.associateBy { it.produce.id to it.count } }
     private val capacities by lazy {
         forms.groupBy { it.produce.id }.mapValues { (_, forms) -> forms.maxOf { it.count } }

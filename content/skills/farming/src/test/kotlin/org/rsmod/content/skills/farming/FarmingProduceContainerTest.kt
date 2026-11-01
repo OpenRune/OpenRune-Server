@@ -126,6 +126,62 @@ class FarmingProduceContainerTest {
     }
 
     @Test
+    fun `empty basket fill prefers fruit by type not inventory slot and never mixes`() {
+        val f = Fixture()
+        f.give("obj.cooking_apple", 2)
+        f.give("obj.tomato", 2)
+        val basket = f.give("obj.basket_empty")
+        f.give("obj.banana", 2)
+        f.give("obj.orange", 2)
+        f.give("obj.strawberry", 2)
+        val expected =
+            listOf(
+                "strawberry" to "obj.strawberry",
+                "orange" to "obj.orange",
+                "banana" to "obj.banana",
+                "tomato" to "obj.tomato",
+                "apple" to "obj.cooking_apple",
+            )
+        for ((index, pair) in expected.withIndex()) {
+            val (name, produce) = pair
+            val target = if (index == 0) basket else f.give("obj.basket_empty")
+            f.op1(target)
+            assertEquals("obj.basket_${name}_2", f.at(target))
+            assertEquals(0, f.count(produce))
+            for ((_, other) in expected.drop(index + 1)) assertEquals(2, f.count(other))
+        }
+    }
+
+    @Test
+    fun `basket fill takes five from the source stack and the clicked slot is the one that changes`() {
+        val f = Fixture()
+        f.give("obj.strawberry", 7)
+        val first = f.give("obj.basket_empty")
+        val second = f.give("obj.basket_empty")
+        f.op1(second)
+        assertEquals("obj.basket_empty", f.at(first))
+        assertEquals("obj.basket_strawberry_5", f.at(second))
+        assertEquals(2, f.count("obj.strawberry"))
+        f.op1(first)
+        assertEquals("obj.basket_strawberry_2", f.at(first))
+        assertEquals("obj.basket_strawberry_5", f.at(second))
+        assertEquals(0, f.count("obj.strawberry"))
+    }
+
+    @Test
+    fun `empty basket fill with no eligible fruit leaves everything unchanged`() {
+        val f = Fixture()
+        val basket = f.give("obj.basket_empty")
+        val potato = f.give("obj.potato", 3)
+        val noted = f.give("obj.cert_potato", 10)
+        f.op1(basket)
+        assertEquals("obj.basket_empty", f.at(basket))
+        assertEquals("obj.potato", f.at(potato))
+        assertEquals(3, f.count("obj.potato"))
+        assertEquals(10, f.count("obj.cert_potato"))
+    }
+
+    @Test
     fun `a vanished selected produce item cannot consume another slot`() {
         val f = Fixture()
         val basket = f.give("obj.basket_empty")

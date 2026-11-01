@@ -16,7 +16,9 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class ProduceContainersScript : PluginScript() {
     override fun ScriptContext.startup() {
-        onOpHeld1("obj.sack_empty") { fillEmpty(it.slot) }
+        for (choices in FarmingProduceContainers.fillChoices.values) {
+            onOpHeld1(choices.first().obj) { fillEmpty(it.slot, choices) }
+        }
         for (form in FarmingProduceContainers.forms) {
             if (form.count > 0) {
                 onOpHeld1(form.obj) { fill(it.slot, form) }
@@ -34,8 +36,8 @@ class ProduceContainersScript : PluginScript() {
         }
     }
 
-    private fun ProtectedAccess.fillEmpty(slot: Int) {
-        val form = FarmingProduceContainers.sackFillChoices.firstOrNull { count(it.produce) > 0 } ?: return
+    private fun ProtectedAccess.fillEmpty(slot: Int, choices: List<ContainerForm>) {
+        val form = choices.firstOrNull { count(it.produce) > 0 } ?: return
         fill(slot, form)
     }
 
