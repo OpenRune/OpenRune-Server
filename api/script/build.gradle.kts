@@ -11,6 +11,7 @@ dependencies {
     implementation(projects.api.controller)
     implementation(projects.api.gameProcess)
     implementation(projects.api.npc)
+    implementation(projects.api.invtx)
     implementation(projects.api.player)
     implementation(projects.api.playerOutput)
     implementation(projects.engine.events)
