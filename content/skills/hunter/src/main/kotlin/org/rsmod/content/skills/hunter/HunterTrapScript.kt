@@ -148,8 +148,8 @@ constructor(
         anim(trap.kind.checkSeq)
         delay(CHECK_TICKS)
         if (traps[coords] !== trap || trap.state == TrapState.Trapping || trap.state == TrapState.Full) return
+        if (invAdd(inv, trap.kind.item).failure) return
         removeTrap(trap)
-        invAdd(inv, trap.kind.item)
         mes("You dismantle the trap.", ChatType.Spam)
         worldRepo.soundArea(coords, DISMANTLE_SYNTH)
     }

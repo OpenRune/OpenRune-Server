@@ -4,6 +4,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
+import java.lang.reflect.Modifier
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
@@ -65,7 +66,8 @@ class HunterFixture(coords: CoordGrid = CoordGrid(3222, 3222, 0)) {
         val method = owner.javaClass.declaredMethods.single { it.name == name || it.name.startsWith("$name-") }
         method.isAccessible = true
         val full = if (method.isSuspend()) arrayOf(access, *args, continuation()) else arrayOf(access, *args)
-        val returned = invoke { method.invoke(owner, *full) }
+        val unboxed = full.mapIndexed { i, arg -> unbox(arg, method.parameterTypes[i]) }.toTypedArray()
+        val returned = invoke { method.invoke(owner, *unboxed) }
         if (returned !== COROUTINE_SUSPENDED) result = Result.success(returned)
         result?.getOrThrow()
     }
@@ -96,6 +98,13 @@ class HunterFixture(coords: CoordGrid = CoordGrid(3222, 3222, 0)) {
         finish()
     }
 
+    @Suppress("UNCHECKED_CAST")
+    fun <T> field(owner: Any, name: String): T {
+        val getter = owner.javaClass.declaredMethods.firstOrNull { it.name == "get${name.replaceFirstChar(Char::uppercase)}" }
+        if (getter != null) return getter.apply { isAccessible = true }.invoke(owner) as T
+        return owner.javaClass.getDeclaredField(name).apply { isAccessible = true }.get(owner) as T
+    }
+
     fun fill(inv: Inventory = player.inv, obj: String = "obj.bronze_dagger") {
         for (slot in inv.indices) if (inv[slot] == null) inv[slot] = InvObj(obj, 1)
     }
@@ -118,6 +127,11 @@ class HunterFixture(coords: CoordGrid = CoordGrid(3222, 3222, 0)) {
                 this@HunterFixture.result = result
             }
         }
+
+    private fun unbox(arg: Any?, type: Class<*>): Any? {
+        if (arg == null || !type.isPrimitive || !arg.javaClass.isAnnotationPresent(JvmInline::class.java)) return arg
+        return arg.javaClass.declaredFields.single { !Modifier.isStatic(it.modifiers) }.apply { isAccessible = true }.get(arg)
+    }
 
     private fun Method.isSuspend(): Boolean = parameterTypes.lastOrNull() == Continuation::class.java
 
