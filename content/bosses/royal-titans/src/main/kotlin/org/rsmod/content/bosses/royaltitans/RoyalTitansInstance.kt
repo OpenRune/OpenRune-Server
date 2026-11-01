@@ -228,11 +228,11 @@ constructor(
         private const val SETTINGS_ROW = "dbrow.instance_royal_titans"
         private const val BEST_TIME_VARP = "varp.royal_titans_best_time"
 
-        // DbRow id of "In the Pits" (dbtable.music). Its cache/midi id is 469, which is a
-        // different row (a giant-lore dbrow); passing that id here throws while loading the
-        // music row and took the server down on entry.
-        private const val MUSIC = 2808
-        private const val CRAWL_SOUND = 2454
+        // The "In the Pits" music row. Its cache/midi id is 469, which is a different row
+        // (a giant-lore dbrow); passing that id here throws while loading the music row and
+        // took the server down on entry.
+        private const val MUSIC = "dbrow.music_in_the_pits"
+        private const val CRAWL_SOUND = "synth.raft_climb"
         private const val FADE_CLEAR = 255
         private const val FADE_BLACK = 0
         private const val FADE_CLIENT_CYCLES = 50

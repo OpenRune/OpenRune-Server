@@ -949,7 +949,7 @@ constructor(
         private const val RANGED_ACCURACY_BOOST = 6.0
         private const val RESPAWN_TICKS = 30
         private const val CORPSE_FADE_LEAD = 5
-        private const val AOE_WAVE_SOUND = 10155
+        private const val AOE_WAVE_SOUND = "synth.royal_titans_aoe_wave"
         private const val AOE_WAVE_SOUND_DELAY = 28
         private const val AOE_WAVE_SOUND_GAP = 60
         private const val KNOCKBACK_MIN_HIT = 15

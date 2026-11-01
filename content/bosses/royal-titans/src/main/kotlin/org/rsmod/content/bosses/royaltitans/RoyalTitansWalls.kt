@@ -408,7 +408,9 @@ constructor(
         private const val FORMATION_MAX_HIT = 12
         private const val HIT_DELAY = 1
 
-        private val FIRE_CAST_SOUNDS = 10147 to 10148
-        private val ICE_CAST_SOUNDS = 10116 to 10118
+        private val FIRE_CAST_SOUNDS =
+            "synth.royal_titans_fire_cast_1" to "synth.royal_titans_fire_cast_2"
+        private val ICE_CAST_SOUNDS =
+            "synth.royal_titans_ice_cast_1" to "synth.royal_titans_ice_cast_2"
     }
 }

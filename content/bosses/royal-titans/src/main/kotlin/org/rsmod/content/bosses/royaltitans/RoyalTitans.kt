@@ -332,8 +332,8 @@ private suspend fun ProtectedAccess.lootTitan(
     soundSynth(if (element == TitanElement.Fire) FIRE_LOOT_SOUND else ICE_LOOT_SOUND)
 }
 
-private const val FIRE_LOOT_SOUND = 10102
-private const val ICE_LOOT_SOUND = 10108
+private const val FIRE_LOOT_SOUND = "synth.royal_titans_fire_loot"
+private const val ICE_LOOT_SOUND = "synth.royal_titans_ice_loot"
 private const val PICKUP_ANIM_PRIORITY = 100
 
 private val TitanElement.meleeSeq: String
