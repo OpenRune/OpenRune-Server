@@ -7,6 +7,10 @@ import org.rsmod.api.config.constants
 import org.rsmod.api.player.events.interact.HeldUContentEvents
 import org.rsmod.api.player.events.interact.HeldUDefaultEvents
 import org.rsmod.api.player.events.interact.HeldUEvents
+import org.rsmod.api.player.events.interact.ObservedAction
+import org.rsmod.api.player.events.interact.ObservedTarget
+import org.rsmod.api.player.events.interact.PlayerInteractionEvent
+import org.rsmod.api.player.events.interact.observeInteraction
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.UpdateInventory.resendSlot
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -18,6 +22,26 @@ import org.rsmod.game.inv.isType
 
 public class HeldUInteractions @Inject constructor(private val eventBus: EventBus) {
     private val logger = InlineLogger()
+
+    private suspend fun observed(
+        access: ProtectedAccess,
+        used: ItemServerType,
+        usedSlot: Int,
+        target: ItemServerType,
+        targetSlot: Int,
+        block: suspend () -> Unit,
+    ) {
+        eventBus.observeInteraction(
+            {
+                PlayerInteractionEvent(
+                    access.player,
+                    ObservedTarget.Held(target, targetSlot),
+                    ObservedAction.Use(used, component = null, comsub = usedSlot),
+                )
+            },
+            block,
+        )
+    }
 
     public suspend fun interact(
         access: ProtectedAccess,
@@ -54,14 +78,30 @@ public class HeldUInteractions @Inject constructor(private val eventBus: EventBu
         val firstCombination =
             opTrigger(selectedItemServerType, selectedSlot, targetItemServerType, targetSlot)
         if (firstCombination != null) {
-            eventBus.publish(this, firstCombination)
+            observed(
+                this,
+                selectedItemServerType,
+                selectedSlot,
+                targetItemServerType,
+                targetSlot,
+            ) {
+                eventBus.publish(this, firstCombination)
+            }
             return
         }
 
         val secondCombination =
             opTrigger(targetItemServerType, targetSlot, selectedItemServerType, selectedSlot)
         if (secondCombination != null) {
-            eventBus.publish(this, secondCombination)
+            observed(
+                this,
+                targetItemServerType,
+                targetSlot,
+                selectedItemServerType,
+                selectedSlot,
+            ) {
+                eventBus.publish(this, secondCombination)
+            }
             return
         }
 

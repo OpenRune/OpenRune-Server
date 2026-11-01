@@ -16,6 +16,10 @@ import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.events.interact.HeldContentEvents
 import org.rsmod.api.player.events.interact.HeldDropEvents
 import org.rsmod.api.player.events.interact.HeldObjEvents
+import org.rsmod.api.player.events.interact.ObservedAction
+import org.rsmod.api.player.events.interact.ObservedTarget
+import org.rsmod.api.player.events.interact.PlayerInteractionEvent
+import org.rsmod.api.player.events.interact.observeInteraction
 import org.rsmod.api.player.hook.GroundItemDropContext
 import org.rsmod.api.player.hook.GroundItemDropResolver
 import org.rsmod.api.player.hook.GroundItemDropSource
@@ -50,6 +54,19 @@ private constructor(
     private val equipOp: HeldEquipOp,
 ) {
     private val logger = InlineLogger()
+
+    private suspend fun observed(
+        access: ProtectedAccess,
+        type: ItemServerType,
+        slot: Int,
+        op: HeldOp,
+        block: suspend () -> Unit,
+    ) {
+        eventBus.observeInteraction(
+            { PlayerInteractionEvent(access.player, ObservedTarget.Held(type, slot), ObservedAction.Option(op.slot)) },
+            block,
+        )
+    }
 
     public suspend fun interact(
         access: ProtectedAccess,
@@ -132,11 +149,11 @@ private constructor(
             return
         }
         when (op) {
-            HeldOp.Op1 -> access.opHeld1(obj, type, inventory, invSlot)
-            HeldOp.Op2 -> access.opHeld2(obj, type, inventory, invSlot)
-            HeldOp.Op3 -> access.opHeld3(obj, type, inventory, invSlot)
-            HeldOp.Op4 -> access.opHeld4(obj, type, inventory, invSlot)
-            HeldOp.Op5 -> access.opHeld5(obj, type, inventory, invSlot)
+            HeldOp.Op1 -> observed(access, type, invSlot, op) { access.opHeld1(obj, type, inventory, invSlot) }
+            HeldOp.Op2 -> observed(access, type, invSlot, op) { access.opHeld2(obj, type, inventory, invSlot) }
+            HeldOp.Op3 -> observed(access, type, invSlot, op) { access.opHeld3(obj, type, inventory, invSlot) }
+            HeldOp.Op4 -> observed(access, type, invSlot, op) { access.opHeld4(obj, type, inventory, invSlot) }
+            HeldOp.Op5 -> observed(access, type, invSlot, op) { access.opHeld5(obj, type, inventory, invSlot) }
         }
     }
 
