@@ -24,7 +24,6 @@ import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeld4
 import org.rsmod.api.script.onOpHeld5
 import org.rsmod.api.table.hunter.HunterPouchesRow
-import org.rsmod.content.skills.hunter.pack.HunterPouchTable
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
 import org.rsmod.map.CoordGrid
@@ -32,18 +31,18 @@ import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-enum class HunterPouch(val noun: String, val plural: String, val inv: String, val kind: Int) {
-    Fur("fur", "furs", "inv.hunter_fur_pouch", HunterPouchTable.FUR),
-    Meat("meat", "meats", "inv.hunter_meat_pouch", HunterPouchTable.MEAT);
+enum class HunterPouch(val noun: String, val plural: String, val inv: String) {
+    Fur("fur", "furs", "inv.hunter_fur_pouch"),
+    Meat("meat", "meats", "inv.hunter_meat_pouch");
 
     data class Size(val closed: String, val open: String, val capacity: Int)
 
     val sizes: List<Size> by lazy {
-        HunterPouchesRow.all().filter { it.kind == kind }.map { Size(it.closed.internalName, it.open.internalName, it.capacity) }
+        HunterPouchesRow.all().filter { it.kind == ordinal }.map { Size(it.closed.internalName, it.open.internalName, it.capacity) }
     }
 
     val storable: List<String> by lazy {
-        hunter_pouch_contents.filter { it.value == kind }.map { it.key.internalName }
+        hunter_pouch_contents.filter { it.value == ordinal }.map { it.key.internalName }
     }
 
     fun store(player: Player): Inventory = player.invMap.getOrPut(inv)
