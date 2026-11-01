@@ -1,7 +1,12 @@
 package org.rsmod.content.skills.herblore
 
 import org.rsmod.api.config.Constants
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreCrushingRow
@@ -54,20 +59,26 @@ class CrushingEvents : PluginScript() {
 
         anim("seq.human_herbing_grind")
 
-        if (invDel(inv, recipe.item.internalName, 1).failure) {
-            resetAnim()
-            return
-        }
-
-        if (invAdd(inv, recipe.crushedItem.internalName, 1).failure) {
-            invAdd(inv, recipe.item.internalName, 1)
-            mes("You don't have enough inventory space.")
-            resetAnim()
-            return
-        }
-
-        if (recipe.xp > 0) {
-            statAdvance("stat.herblore", recipe.xp.toDouble())
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.herblore",
+                item = recipe.crushedItem.internalName,
+                experience = recipe.xp.toDouble(),
+                source = SkillingProductSource.HerbCrushing(recipe),
+                inputs = listOf(SkillingInput(recipe.item.internalName)),
+            )
+        when (awardSkillingProduct(product)) {
+            SkillingAwardResult.Success -> Unit
+            SkillingAwardResult.InventoryFull -> {
+                mes("You don't have enough inventory space.")
+                resetAnim()
+                return
+            }
+            SkillingAwardResult.Cancelled -> {
+                resetAnim()
+                return
+            }
         }
 
         val itemName = recipe.item.name.lowercase()
