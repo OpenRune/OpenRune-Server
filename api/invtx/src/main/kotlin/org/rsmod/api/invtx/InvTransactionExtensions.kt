@@ -576,7 +576,7 @@ public fun Player.invTransaction(
     if (denyProtectedAccess(from) || into != null && denyProtectedAccess(into)) {
         return protectedAccessException()
     }
-    val result = transactions.transaction(autoCommit) { transaction() }
+    val result = transactions.transaction(autoCommit, invChangeInterceptor()) { transaction() }
     return result
 }
 

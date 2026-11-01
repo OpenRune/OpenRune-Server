@@ -10,6 +10,7 @@ import kotlin.contracts.contract
 import org.rsmod.game.inv.InvObj
 import org.rsmod.objtx.Transaction
 import org.rsmod.objtx.TransactionCancellation
+import org.rsmod.objtx.TransactionInventory
 import org.rsmod.objtx.TransactionObj
 import org.rsmod.objtx.TransactionObjTemplate
 import org.rsmod.objtx.TransactionResultList
@@ -23,6 +24,7 @@ public class InvTransactions(
 ) {
     public fun transaction(
         autoCommit: Boolean,
+        commitInterceptor: ((List<TransactionInventory<InvObj>>, () -> Unit) -> Unit)? = null,
         init: Transaction<InvObj>.() -> Unit,
     ): TransactionResultList<InvObj> {
         contract { callsInPlace(init, InvocationKind.AT_MOST_ONCE) }
@@ -40,6 +42,7 @@ public class InvTransactions(
             /* cancellation is normal */
         }
         val results = transaction.results()
+        results.commitInterceptor = commitInterceptor
         if (results.success && transaction.autoCommit) {
             results.commitAll()
         }
