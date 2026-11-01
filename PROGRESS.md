@@ -9,7 +9,7 @@ wiki, only that it exists.
 
 🟢 added · 🔴 not added
 
-Skills **20/23** · Bosses **25/179** · Raids **0/4** · Minigames **2/52**
+Skills **20/23** · Bosses **25/179** · Raids **0/4** · Minigames **2/46**
 
 These counts only cover skills, bosses, raids and minigames. Interfaces, areas,
 quests, drops and travel are real work that no category above points at, so check
@@ -30,10 +30,10 @@ the module table at the bottom before reading a 0 as "nothing exists".
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Slayer_icon.png?cd34f" height="20" alt=""> [Slayer](content/skills/slayer) | 5,973 loc | [wiki](https://oldschool.runescape.wiki/w/Slayer) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Mining_icon.png?00870" height="20" alt=""> [Mining](content/skills/mining) | 1,053 loc | [wiki](https://oldschool.runescape.wiki/w/Mining) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Smithing_icon.png?d26c5" height="20" alt=""> [Smithing](content/skills/smithing) | 2,118 loc | [wiki](https://oldschool.runescape.wiki/w/Smithing) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Woodcutting_icon.png?6ead4" height="20" alt=""> [Woodcutting](content/skills/woodcutting) | 429 loc | [wiki](https://oldschool.runescape.wiki/w/Woodcutting) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Woodcutting_icon.png?6ead4" height="20" alt=""> [Woodcutting](content/skills/woodcutting) | 529 loc | [wiki](https://oldschool.runescape.wiki/w/Woodcutting) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Firemaking_icon.png?45ea0" height="20" alt=""> [Firemaking](content/skills/firemaking) | 589 loc | [wiki](https://oldschool.runescape.wiki/w/Firemaking) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Cooking_icon.png?a0156" height="20" alt=""> [Cooking](content/skills/cooking) | 1,405 loc | [wiki](https://oldschool.runescape.wiki/w/Cooking) |
-| 🟢 | <img src="https://oldschool.runescape.wiki/images/Herblore_icon.png?ffa9e" height="20" alt=""> [Herblore](content/skills/herblore) | 1,246 loc | [wiki](https://oldschool.runescape.wiki/w/Herblore) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Cooking_icon.png?a0156" height="20" alt=""> [Cooking](content/skills/cooking) | 1,408 loc | [wiki](https://oldschool.runescape.wiki/w/Cooking) |
+| 🟢 | <img src="https://oldschool.runescape.wiki/images/Herblore_icon.png?ffa9e" height="20" alt=""> [Herblore](content/skills/herblore) | 1,189 loc | [wiki](https://oldschool.runescape.wiki/w/Herblore) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Fishing_icon.png?15a98" height="20" alt=""> [Fishing](content/skills/fishing) | 1,699 loc | [wiki](https://oldschool.runescape.wiki/w/Fishing) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/Agility_icon.png?389e0" height="20" alt=""> Agility | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Agility) |
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/Thieving_icon.png?973fe" height="20" alt=""> [Thieving](content/skills/thieving) | 419 loc | [wiki](https://oldschool.runescape.wiki/w/Thieving) |
@@ -95,7 +95,7 @@ the module table at the bottom before reading a 0 as "nothing exists".
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/thumb/Theatre_of_Blood_logo.png/48px-Theatre_of_Blood_logo.png?e6e68" height="20" alt=""> Theatre of Blood | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Theatre_of_Blood) |
 | 🔴 | <img src="https://oldschool.runescape.wiki/images/thumb/Tombs_of_Amascut.png/48px-Tombs_of_Amascut.png?f9992" height="20" alt=""> Tombs of Amascut | nothing yet | [wiki](https://oldschool.runescape.wiki/w/Tombs_of_Amascut) |
 
-### Minigames <sup>2/52</sup>
+### Minigames <sup>2/46</sup>
 
 | | Feature | Status | |
 |---|---|---|---|
@@ -103,11 +103,11 @@ the module table at the bottom before reading a 0 as "nothing exists".
 | 🟢 | <img src="https://oldschool.runescape.wiki/images/thumb/The_Gauntlet.png/48px-The_Gauntlet.png?1a926" height="20" alt=""> [The Gauntlet](content/minigames/gauntlet) | 3,514 loc | [wiki](https://oldschool.runescape.wiki/w/The_Gauntlet) |
 
 <details>
-<summary>🔴 <b>50 not started</b></summary>
+<summary>🔴 <b>44 not started</b></summary>
 
-**Nothing yet (50)**
+**Nothing yet (44)**
 
-[Barbarian Assault](https://oldschool.runescape.wiki/w/Barbarian_Assault) · [Blast Furnace](https://oldschool.runescape.wiki/w/Blast_Furnace) · [Bounty Hunter](https://oldschool.runescape.wiki/w/Bounty_Hunter) · [Brimhaven Agility Arena](https://oldschool.runescape.wiki/w/Brimhaven_Agility_Arena) · [Burthorpe Games Room](https://oldschool.runescape.wiki/w/Burthorpe_Games_Room) · [Castle Wars](https://oldschool.runescape.wiki/w/Castle_Wars) · [Chompy bird hunting](https://oldschool.runescape.wiki/w/Chompy_bird_hunting) · [Clan Wars](https://oldschool.runescape.wiki/w/Clan_Wars) · [Dorgesh-Kaan market trading](https://oldschool.runescape.wiki/w/Dorgesh-Kaan_market_trading) · [Duel Arena](https://oldschool.runescape.wiki/w/Duel_Arena) · [Emir's Arena](https://oldschool.runescape.wiki/w/Emir's_Arena) · [Farming contracts](https://oldschool.runescape.wiki/w/Farming_contracts) · [Fishing Trawler](https://oldschool.runescape.wiki/w/Fishing_Trawler) · [Fortis Colosseum](https://oldschool.runescape.wiki/w/Fortis_Colosseum) · [Gnome Ball](https://oldschool.runescape.wiki/w/Gnome_Ball) · [Gnome Restaurant](https://oldschool.runescape.wiki/w/Gnome_Restaurant) · [Golem crafting](https://oldschool.runescape.wiki/w/Golem_crafting) · [Guardians of the Rift](https://oldschool.runescape.wiki/w/Guardians_of_the_Rift) · [Hallowed Sepulchre](https://oldschool.runescape.wiki/w/Hallowed_Sepulchre) · [Impetuous Impulses](https://oldschool.runescape.wiki/w/Impetuous_Impulses) · [Inferno](https://oldschool.runescape.wiki/w/Inferno) · [Intelligence Gathering](https://oldschool.runescape.wiki/w/Intelligence_Gathering) · [Keldagrim tasks](https://oldschool.runescape.wiki/w/Keldagrim_tasks) · [Last Man Standing](https://oldschool.runescape.wiki/w/Last_Man_Standing) · [Mage Arena](https://oldschool.runescape.wiki/w/Mage_Arena) · [Mage Training Arena](https://oldschool.runescape.wiki/w/Mage_Training_Arena) · [Mahogany Homes](https://oldschool.runescape.wiki/w/Mahogany_Homes) · [Mastering Mixology](https://oldschool.runescape.wiki/w/Mastering_Mixology) · [Mess](https://oldschool.runescape.wiki/w/Mess) · [Nightmare Zone](https://oldschool.runescape.wiki/w/Nightmare_Zone) · [Pest Control](https://oldschool.runescape.wiki/w/Pest_Control) · [Pete Kayer's Challenges](https://oldschool.runescape.wiki/w/Pete_Kayer's_Challenges) · [Pyramid Plunder](https://oldschool.runescape.wiki/w/Pyramid_Plunder) · [Rat Pits](https://oldschool.runescape.wiki/w/Rat_Pits) · [Rogues' Den](https://oldschool.runescape.wiki/w/Rogues'_Den) · [Shades of Mort'ton (minigame)](https://oldschool.runescape.wiki/w/Shades_of_Mort'ton_(minigame)) · [Sorceress's Garden](https://oldschool.runescape.wiki/w/Sorceress's_Garden) · [Soul Wars](https://oldschool.runescape.wiki/w/Soul_Wars) · [Stealing artefacts](https://oldschool.runescape.wiki/w/Stealing_artefacts) · [Stealing valuables](https://oldschool.runescape.wiki/w/Stealing_valuables) · [Tai Bwo Wannai Cleanup](https://oldschool.runescape.wiki/w/Tai_Bwo_Wannai_Cleanup) · [Tears of Guthix (minigame)](https://oldschool.runescape.wiki/w/Tears_of_Guthix_(minigame)) · [Temple Trekking](https://oldschool.runescape.wiki/w/Temple_Trekking) · [Tithe Farm](https://oldschool.runescape.wiki/w/Tithe_Farm) · [Trouble Brewing](https://oldschool.runescape.wiki/w/Trouble_Brewing) · [TzHaar Fight Cave](https://oldschool.runescape.wiki/w/TzHaar_Fight_Cave) · [TzHaar Fight Pit](https://oldschool.runescape.wiki/w/TzHaar_Fight_Pit) · [TzHaar-Ket-Rak's Challenges](https://oldschool.runescape.wiki/w/TzHaar-Ket-Rak's_Challenges) · [Vale Totems](https://oldschool.runescape.wiki/w/Vale_Totems) · [Volcanic Mine](https://oldschool.runescape.wiki/w/Volcanic_Mine)
+[Barbarian Assault](https://oldschool.runescape.wiki/w/Barbarian_Assault) · [Barracuda Trials](https://oldschool.runescape.wiki/w/Barracuda_Trials) · [Blast Furnace](https://oldschool.runescape.wiki/w/Blast_Furnace) · [Bounty Hunter](https://oldschool.runescape.wiki/w/Bounty_Hunter) · [Brimhaven Agility Arena](https://oldschool.runescape.wiki/w/Brimhaven_Agility_Arena) · [Burthorpe Games Room](https://oldschool.runescape.wiki/w/Burthorpe_Games_Room) · [Castle Wars](https://oldschool.runescape.wiki/w/Castle_Wars) · [Clan Wars](https://oldschool.runescape.wiki/w/Clan_Wars) · [Duel Arena](https://oldschool.runescape.wiki/w/Duel_Arena) · [Emir's Arena](https://oldschool.runescape.wiki/w/Emir's_Arena) · [Fishing Trawler](https://oldschool.runescape.wiki/w/Fishing_Trawler) · [Fortis Colosseum](https://oldschool.runescape.wiki/w/Fortis_Colosseum) · [Games Zone](https://oldschool.runescape.wiki/w/Games_Zone) · [Gnome Ball](https://oldschool.runescape.wiki/w/Gnome_Ball) · [Gnome Restaurant](https://oldschool.runescape.wiki/w/Gnome_Restaurant) · [Guardians of the Rift](https://oldschool.runescape.wiki/w/Guardians_of_the_Rift) · [Hallowed Sepulchre](https://oldschool.runescape.wiki/w/Hallowed_Sepulchre) · [Impetuous Impulses](https://oldschool.runescape.wiki/w/Impetuous_Impulses) · [Inferno](https://oldschool.runescape.wiki/w/Inferno) · [Intelligence Gathering](https://oldschool.runescape.wiki/w/Intelligence_Gathering) · [Last Man Standing](https://oldschool.runescape.wiki/w/Last_Man_Standing) · [Mage Arena](https://oldschool.runescape.wiki/w/Mage_Arena) · [Mage Training Arena](https://oldschool.runescape.wiki/w/Mage_Training_Arena) · [Mahogany Homes](https://oldschool.runescape.wiki/w/Mahogany_Homes) · [Mastering Mixology](https://oldschool.runescape.wiki/w/Mastering_Mixology) · [Mess](https://oldschool.runescape.wiki/w/Mess) · [Nightmare Zone](https://oldschool.runescape.wiki/w/Nightmare_Zone) · [Pest Control](https://oldschool.runescape.wiki/w/Pest_Control) · [Pyramid Plunder](https://oldschool.runescape.wiki/w/Pyramid_Plunder) · [Rat Pits](https://oldschool.runescape.wiki/w/Rat_Pits) · [Rogues' Den](https://oldschool.runescape.wiki/w/Rogues'_Den) · [Shades of Mort'ton (minigame)](https://oldschool.runescape.wiki/w/Shades_of_Mort'ton_(minigame)) · [Sorceress's Garden](https://oldschool.runescape.wiki/w/Sorceress's_Garden) · [Soul Wars](https://oldschool.runescape.wiki/w/Soul_Wars) · [Tai Bwo Wannai Cleanup](https://oldschool.runescape.wiki/w/Tai_Bwo_Wannai_Cleanup) · [Tears of Guthix (minigame)](https://oldschool.runescape.wiki/w/Tears_of_Guthix_(minigame)) · [Temple Trekking](https://oldschool.runescape.wiki/w/Temple_Trekking) · [Tithe Farm](https://oldschool.runescape.wiki/w/Tithe_Farm) · [Trouble Brewing](https://oldschool.runescape.wiki/w/Trouble_Brewing) · [TzHaar Fight Cave](https://oldschool.runescape.wiki/w/TzHaar_Fight_Cave) · [TzHaar Fight Pit](https://oldschool.runescape.wiki/w/TzHaar_Fight_Pit) · [TzHaar-Ket-Rak's Challenges](https://oldschool.runescape.wiki/w/TzHaar-Ket-Rak's_Challenges) · [Vale Totems](https://oldschool.runescape.wiki/w/Vale_Totems) · [Volcanic Mine](https://oldschool.runescape.wiki/w/Volcanic_Mine)
 
 </details>
 
@@ -281,23 +281,23 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `bosses/vardorvis` | 7 | 1,287 | 0 | 0 | 2026-10-01 |
 | `bosses/whisperer` | 5 | 1,853 | 0 | 0 | 2026-09-30 |
 | `bosses/zilyana` | 2 | 164 | 0 | 0 | 2026-09-30 |
-| `drops` | 253 | 14,174 | 0 | 0 | 2026-10-19 |
+| `drops` | 253 | 14,241 | 1 | 0 | 2026-10-31 |
 | `events/raging-echoes-league` | 2 | 49 | 0 | 0 | 2026-10-06 |
 | `events/shooting-stars` | 9 | 1,261 | 0 | 0 | 2026-10-18 |
 | `events/shooting-stars/pack` | 2 | 440 | 0 | 0 | 2026-08-21 |
-| `generic/generic-items` | 1 | 55 | 0 | 0 | 2026-10-19 |
-| `generic/generic-items/pack` | 2 | 140 | 0 | 0 | 2026-10-19 |
-| `generic/generic-locs` | 31 | 1,638 | 2 | 1 | 2026-10-27 |
+| `generic/generic-items` | 2 | 150 | 2 | 0 | 2026-10-31 |
+| `generic/generic-items/pack` | 2 | 140 | 0 | 0 | 2026-10-31 |
+| `generic/generic-locs` | 32 | 1,693 | 5 | 1 | 2026-10-31 |
 | `generic/generic-locs/pack` | 1 | 6 | 0 | 0 | 2026-10-21 |
 | `generic/generic-npcs` | 10 | 1,672 | 3 | 3 | 2026-10-22 |
 | `generic/generic-npcs/pack` | 1 | 6 | 0 | 0 | 2026-10-22 |
 | `generic/killcount` | 1 | 36 | 0 | 0 | 2026-10-19 |
-| `interfaces/bank` | 15 | 2,313 | 3 | 1 | 2026-08-19 |
+| `interfaces/bank` | 15 | 2,314 | 3 | 1 | 2026-10-31 |
 | `interfaces/collection-log` | 4 | 543 | 0 | 0 | 2026-08-18 |
 | `interfaces/combat-tab` | 1 | 613 | 1 | 0 | 2026-06-21 |
 | `interfaces/deposit-box` | 6 | 459 | 0 | 1 | 2026-08-08 |
 | `interfaces/emotes` | 2 | 637 | 2 | 0 | 2026-10-22 |
-| `interfaces/equipment` | 3 | 682 | 0 | 0 | 2026-09-25 |
+| `interfaces/equipment` | 3 | 689 | 0 | 0 | 2026-10-31 |
 | `interfaces/fade-overlay` | 1 | 20 | 0 | 0 | 2026-05-03 |
 | `interfaces/gameframe` | 7 | 550 | 0 | 0 | 2026-10-22 |
 | `interfaces/gameframe/pack` | 1 | 6 | 0 | 0 | 2026-10-14 |
@@ -338,15 +338,15 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `other/windmill/pack` | 1 | 6 | 0 | 0 | 2026-09-23 |
 | `quest` | 85 | 18,013 | 16 | 4 | 2026-10-27 |
 | `quest/pack` | 4 | 279 | 0 | 0 | 2026-10-25 |
-| `skills/cooking` | 13 | 1,405 | 0 | 0 | 2026-10-19 |
-| `skills/crafting` | 30 | 3,684 | 0 | 0 | 2026-09-23 |
+| `skills/cooking` | 13 | 1,408 | 0 | 0 | 2026-10-30 |
+| `skills/crafting` | 30 | 3,684 | 1 | 0 | 2026-10-31 |
 | `skills/crafting/pack` | 2 | 2,699 | 0 | 0 | 2026-09-22 |
 | `skills/firemaking` | 6 | 589 | 0 | 0 | 2026-08-08 |
 | `skills/fishing` | 15 | 1,493 | 2 | 0 | 2026-10-25 |
 | `skills/fishing/pack` | 3 | 206 | 0 | 0 | 2026-09-25 |
-| `skills/herblore` | 11 | 1,246 | 0 | 0 | 2026-10-05 |
+| `skills/herblore` | 11 | 1,189 | 1 | 0 | 2026-10-31 |
 | `skills/magic/alchemy` | 1 | 253 | 0 | 0 | 2026-06-21 |
-| `skills/magic/arceuus-spells` | 14 | 1,387 | 1 | 1 | 2026-10-04 |
+| `skills/magic/arceuus-spells` | 14 | 1,387 | 1 | 1 | 2026-10-31 |
 | `skills/magic/rune-pouch` | 2 | 299 | 1 | 0 | 2026-10-21 |
 | `skills/magic/spell-attacks` | 8 | 1,505 | 3 | 0 | 2026-10-04 |
 | `skills/magic/spell-teleports` | 2 | 626 | 2 | 1 | 2026-10-22 |
@@ -360,7 +360,7 @@ Found the same way `settings.gradle.kts` finds them: any dir with a `build.gradl
 | `skills/smithing` | 15 | 2,118 | 1 | 1 | 2026-10-21 |
 | `skills/thieving` | 2 | 419 | 0 | 0 | 2026-10-15 |
 | `skills/utils` | 2 | 346 | 0 | 0 | 2026-10-27 |
-| `skills/woodcutting` | 5 | 429 | 2 | 2 | 2026-10-09 |
+| `skills/woodcutting` | 6 | 529 | 3 | 3 | 2026-10-31 |
 | `travel/canoe` | 6 | 1,122 | 1 | 2 | 2026-07-22 |
 
 ---
