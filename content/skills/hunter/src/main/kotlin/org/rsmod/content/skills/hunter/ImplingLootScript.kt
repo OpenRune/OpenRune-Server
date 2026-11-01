@@ -6,6 +6,7 @@ import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeld3
@@ -45,7 +46,7 @@ data class ImplingLootTable(
 }
 
 @Singleton
-class ImplingLootScript @Inject constructor() : PluginScript() {
+class ImplingLootScript @Inject constructor(private val objRepo: ObjRepository) : PluginScript() {
     private val tables: Map<String, ImplingLootTable> by lazy {
         ImplingLootRow.all().associate { it.jar.internalName to table(it) }
     }
@@ -86,9 +87,7 @@ class ImplingLootScript @Inject constructor() : PluginScript() {
             val obj = checkNotNull(drop.obj)
             val given = drop.clueTier?.let { clueReward(it, obj) ?: continue } ?: obj
             val count = if (drop.max > drop.min) random.of(drop.min, drop.max) else drop.min
-            if (invAdd(inv, given, count, cert = drop.noted).failure) {
-                break
-            }
+            invAddOrDropType(objRepo, if (drop.noted) ocCert(given) else checkNotNull(ServerCacheManager.getItem(given.asRSCM(RSCMType.OBJ))), count)
         }
     }
 

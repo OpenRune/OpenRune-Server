@@ -15,6 +15,7 @@ import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
+import org.rsmod.api.random.DefaultGameRandom
 import org.rsmod.coroutine.GameCoroutine
 import org.rsmod.events.EventBus
 import org.rsmod.game.cheat.CheatCommandMap
@@ -29,6 +30,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 @OptIn(InternalApi::class)
 class HunterFixture(coords: CoordGrid = CoordGrid(3222, 3222, 0)) {
     private val client = RecordingClient()
+    val random = DefaultGameRandom(408L)
     val coroutine = GameCoroutine("hunter-test")
     private var result: Result<Any?>? = null
 
@@ -36,6 +38,7 @@ class HunterFixture(coords: CoordGrid = CoordGrid(3222, 3222, 0)) {
         Player().apply {
             this.client = this@HunterFixture.client
             uuid = 408L
+            observerUUID = 408L
             slotId = 1
             assignUid()
             this.coords = coords
@@ -50,7 +53,7 @@ class HunterFixture(coords: CoordGrid = CoordGrid(3222, 3222, 0)) {
         ProtectedAccess(
             player,
             coroutine,
-            ProtectedAccessContextFactory.empty().copy(getEventBus = { EventBus() }, getAlignment = { TextAlignment() }),
+            ProtectedAccessContextFactory.empty().copy(getEventBus = { EventBus() }, getAlignment = { TextAlignment() }, getRandom = { random }),
         )
 
     val bank: Inventory

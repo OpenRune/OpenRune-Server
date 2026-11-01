@@ -1,7 +1,13 @@
 package org.rsmod.content.skills.hunter
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.table.hunter.HunterCustomFursRow
@@ -32,7 +38,7 @@ class HunterFurClothingScript : PluginScript() {
     private fun ProtectedAccess.make(obj: ItemServerType, amount: Int) {
         val garment = garments[obj.id] ?: return
         repeat(amount) { made ->
-            if (!make(garment)) {
+            if (!trade(garment)) {
                 if (made == 0) {
                     mes("You need ${garment.count} ${garment.furs.last().name.lowercase()} and ${garment.fee} coins for that.")
                 }
@@ -41,14 +47,16 @@ class HunterFurClothingScript : PluginScript() {
         }
     }
 
-    private fun ProtectedAccess.make(garment: HunterCustomFursRow): Boolean {
-        val fur = garment.furs.firstOrNull { inv.count(it.internalName) >= garment.count }
-        if (fur == null || inv.count(COINS) < garment.fee) return false
-        val slot = inv.indices.first { inv[it]?.id == fur.id }
-        if (invDel(inv, COINS, garment.fee).failure) return false
-        if (invReplaceSlot(inv, slot, 1, garment.garment).failure) return false
-        if (garment.count > 1) invDel(inv, fur.internalName, garment.count - 1)
-        return true
+    private fun ProtectedAccess.trade(garment: HunterCustomFursRow): Boolean {
+        val fur = garment.furs.firstOrNull { inv.count(it.internalName) >= garment.count } ?: return false
+        return player
+            .invTransaction(inv) {
+                val target = select(inv)
+                delete(target, COINS.asRSCM(RSCMType.OBJ), garment.fee)
+                delete(target, fur.id, garment.count)
+                add(target, garment.garment.id, 1)
+            }
+            .success
     }
 
     private companion object {

@@ -1,5 +1,11 @@
 package org.rsmod.content.skills.hunter
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.fletchingLvl
 import org.rsmod.api.script.onOpHeldU
@@ -29,16 +35,21 @@ class SunlightCrossbowScript : PluginScript() {
                 material(CROSSBOW)
             }
         }
-        openSkillMulti(menu) { selection ->
-            repeat(selection.amount) {
-                if (CHISEL !in inv || invDel(inv, ANTLER).failure) return@openSkillMulti
-                if (invDel(inv, CROSSBOW).failure) {
-                    invAdd(inv, ANTLER)
-                    return@openSkillMulti
+        openSkillMulti(menu) { selection -> create(selection.amount) }
+    }
+
+    private fun ProtectedAccess.create(amount: Int) {
+        repeat(amount) {
+            if (CHISEL !in inv) return
+            val made =
+                player.invTransaction(inv) {
+                    val target = select(inv)
+                    delete(target, ANTLER.asRSCM(RSCMType.OBJ), 1)
+                    delete(target, CROSSBOW.asRSCM(RSCMType.OBJ), 1)
+                    add(target, SUNLIGHT_CROSSBOW.asRSCM(RSCMType.OBJ), 1)
                 }
-                invAdd(inv, SUNLIGHT_CROSSBOW)
-                mes("You create a Sunlight Hunters' Crossbow.")
-            }
+            if (made.failure) return
+            mes("You create a Sunlight Hunters' Crossbow.")
         }
     }
 
