@@ -117,7 +117,7 @@ constructor(
 
     private companion object {
         const val HUD_TARGET = "component.toplevel_osrs_stretch:overlay_hud"
-        const val CRAWL_SOUND = 2454
+        const val CRAWL_SOUND = "synth.raft_climb"
         const val LADDER_CYCLES = 2
         const val MINING_GUILD_LEVEL = 60
     }
