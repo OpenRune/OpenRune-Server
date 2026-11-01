@@ -6,6 +6,10 @@ import jakarta.inject.Inject
 import kotlin.math.min
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.config.constants
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.mapMultiway
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.UpdateRun
@@ -120,8 +124,14 @@ constructor(
         anim(MIX_SEQ)
         delay(MIX_TICKS)
         if (row.jar.internalName !in inv || meat !in inv) return
-        if (invDel(inv, row.jar.internalName, 1, meat, 1).failure) return
-        invAdd(inv, row.mixes[0].internalName)
+        val mixed =
+            player.invTransaction(inv) {
+                val target = select(inv)
+                delete(target, row.jar.id, 1)
+                delete(target, meat.asRSCM(RSCMType.OBJ), 1)
+                add(target, row.mixes[0].id, 1)
+            }
+        if (mixed.failure) return
         mes("You mix the ${row.name} with the meat.", ChatType.Spam)
     }
 

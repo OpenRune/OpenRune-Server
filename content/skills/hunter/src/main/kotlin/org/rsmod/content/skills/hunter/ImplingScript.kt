@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.hunter
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
@@ -67,16 +68,16 @@ constructor(
             if (!npc.isCatchable()) return
             if (!roll(net)) return@repeat
             if (!canCatch(jarRequired)) return
-            val slot = (0 until inv.size).firstOrNull { inv[it]?.id == jarId }
-            if (slot != null) {
+            val slot = inv.indexOfFirst { it?.id == jarId }
+            val jarred = slot >= 0
+            if (jarred) {
                 mes("You manage to catch the impling and squeeze it into a jar.", ChatType.Spam)
-                if (invDel(inv, IMPLING_JAR, slot = slot).failure) return
-                invAdd(inv, jar, slot = slot)
+                if (invReplaceSlot(inv, slot, 1, ServerCacheManager.getItem(jar.asRSCM(RSCMType.OBJ))!!).failure) return
             } else {
                 mes("You manage to catch the impling and acquire some loot.", ChatType.Spam)
             }
             npc.anim(CAUGHT_SEQ)
-            if (slot == null) with(loot) { give(rollJar(jar)) }
+            if (!jarred) with(loot) { give(rollJar(jar)) }
             soundSynth(CAUGHT_SYNTH)
             statAdvance(HUNTER, xp.toDouble())
             npc.hideAllOps()

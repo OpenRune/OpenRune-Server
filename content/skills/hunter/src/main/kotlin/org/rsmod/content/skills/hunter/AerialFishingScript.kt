@@ -8,8 +8,13 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlin.math.abs
 import kotlin.math.max
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
 import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.invtx.invDel
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
@@ -234,10 +239,18 @@ constructor(
             return
         }
         chatPlayer(happy, "It's a deal.")
-        if (access.invReplace(player.inv, GOLDEN_TENCH, 1, PEARL).failure) return
-        access.invAdd(player.inv, PEARL, TENCH_PEARLS - 1)
+        if (!access.sellTench()) return
         chatNpc(happy, "Pleasure doing business with you!")
     }
+
+    private fun ProtectedAccess.sellTench(): Boolean =
+        player
+            .invTransaction(inv) {
+                val target = select(inv)
+                delete(target, GOLDEN_TENCH.asRSCM(RSCMType.OBJ), 1)
+                add(target, PEARL.asRSCM(RSCMType.OBJ), TENCH_PEARLS)
+            }
+            .success
 
     private suspend fun Dialogue.feeding() {
         chatPlayer(quiz, "About feeding the bird... Do I have to cut up the fish for it?")
@@ -334,7 +347,7 @@ constructor(
             addOrGround(GOLDEN_TENCH, 1)
         } else {
             val extra = rollExtra()
-            if (inv.freeSpace() > 0) inv.let { invAddPlayer(fish.fish.internalName, 1 + extra) }
+            if (inv.freeSpace() > 0) invAddPlayer(fish.fish.internalName, minOf(1 + extra, inv.freeSpace()))
         }
         val pearlDenominator = (PEARL_BASE - (x - PEARL_X_OFFSET) * PEARL_SLOPE / PEARL_SLOPE_DIVISOR) / PEARL_BONUS
         if (random.of(max(1.0, pearlDenominator).toInt()) == 0) addOrGround(PEARL, 1)
@@ -362,11 +375,7 @@ constructor(
     }
 
     private fun Player.addOrGround(obj: String, count: Int) {
-        if (inv.freeSpace() > 0 || (obj == PEARL && PEARL in inv)) {
-            invAddPlayer(obj, count)
-        } else {
-            objRepo.add(obj, coords, GROUND_DURATION, receiver = this, count = count)
-        }
+        invAddOrDrop(objRepo, obj, count, GROUND_DURATION)
     }
 
     private fun Player.consumeBait(caught: String) {
@@ -389,8 +398,7 @@ constructor(
 
     private fun ProtectedAccess.cut(fish: HunterAerialFishRow) {
         val name = fish.fish.internalName
-        if (invDel(inv, name).failure) return
-        invAdd(inv, FISH_CHUNKS)
+        if (invReplace(inv, name, 1, FISH_CHUNKS).failure) return
         statAdvance(COOKING, fish.cookingXpTenths / 10.0)
         mes("You cut the fish into offcuts.", ChatType.Spam)
     }

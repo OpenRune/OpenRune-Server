@@ -46,6 +46,33 @@ class RumourTurnInTest {
         assertEquals(1L, f.total(hunter.lootSack.internalName))
     }
 
+    private fun hunting() {
+        assign()
+        rumours.resume(f.player, hunter)
+        VarPlayerIntMapSetter.set(f.player, HunterRumours.PITY, rumour.pity)
+    }
+
+    private fun parts() = f.total(rumour.part.internalName) + registry.findAll(f.player.coords).sumOf { it.count }
+
+    @Test
+    fun `a rumour creature caught twice gives one part`() {
+        hunting()
+        rumours.onCatch(f.player, rumour.creature)
+        rumours.onCatch(f.player, rumour.creature)
+        assertEquals(1L, parts())
+    }
+
+    @Test
+    fun `a full inventory keeps the pity part for the next catch`() {
+        hunting()
+        f.fill()
+        rumours.onCatch(f.player, rumour.creature)
+        assertEquals(0L, parts())
+        f.player.inv[0] = null
+        rumours.onCatch(f.player, rumour.creature)
+        assertEquals(1L, f.total(rumour.part.internalName))
+    }
+
     @Test
     fun `no part gives nothing`() {
         assign()

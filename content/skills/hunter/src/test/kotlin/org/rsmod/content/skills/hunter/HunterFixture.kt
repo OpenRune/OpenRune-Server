@@ -63,7 +63,10 @@ class HunterFixture(coords: CoordGrid = CoordGrid(3222, 3222, 0)) {
     fun call(owner: Any, name: String, vararg args: Any?) {
         result = null
         player.activeCoroutine = coroutine
-        val method = owner.javaClass.declaredMethods.single { it.name == name || it.name.startsWith("$name-") }
+        val method =
+            owner.javaClass.declaredMethods.single {
+                (it.name == name || it.name.startsWith("$name-")) && it.parameterCount == args.size + if (it.isSuspend()) 2 else 1
+            }
         method.isAccessible = true
         val full = if (method.isSuspend()) arrayOf(access, *args, continuation()) else arrayOf(access, *args)
         val unboxed = full.mapIndexed { i, arg -> unbox(arg, method.parameterTypes[i]) }.toTypedArray()
