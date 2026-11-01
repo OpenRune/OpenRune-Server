@@ -5,20 +5,44 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import kotlin.math.min
 import org.rsmod.annotations.InternalApi
+import org.rsmod.api.player.events.PlayerXpEvents
 import org.rsmod.api.player.ui.PlayerInterfaceUpdates
 import org.rsmod.api.utils.skills.CombatLevel
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.stat.PlayerSkillXPTable
 import org.rsmod.game.stat.PlayerStatMap
 
 public object PlayerSkillXP {
+
+    @Volatile public var eventBus: EventBus? = null
+
+    private var publishing = false
+
     public fun internalAddXP(
         player: Player,
         stat: String,
         xp: Double,
         rate: Double,
         source: XpSource = XpSource.Natural,
-    ): Int = player.addXP(stat, xp, rate, source)
+    ): Int {
+        val bus = eventBus
+        if (bus == null || source != XpSource.Natural || publishing) {
+            return player.addXP(stat, xp, rate, source)
+        }
+        publishing = true
+        try {
+            val modify = PlayerXpEvents.Modify(player, stat, xp)
+            bus.publish(modify)
+            val added = player.addXP(stat, modify.xp, rate, source)
+            if (added > 0) {
+                bus.publish(PlayerXpEvents.Gain(player, stat, added))
+            }
+            return added
+        } finally {
+            publishing = false
+        }
+    }
 
     private fun Player.addXP(stat: String, xp: Double, rate: Double, source: XpSource): Int {
         val fineXp = PlayerStatMap.toFineXP(xp * rate)
