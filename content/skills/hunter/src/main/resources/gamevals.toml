@@ -37,7 +37,7 @@ hunter_pouches = 65474
 hunter_leon_bolts = 65468
 
 [gamevals.dbrow]
-hunter_pouch_fur_small = 63856
+hunter_pouch_fur_small = 63655
 hunter_pouch_fur_medium = 63661
 hunter_pouch_fur_large = 63660
 hunter_pouch_meat_small = 63659
