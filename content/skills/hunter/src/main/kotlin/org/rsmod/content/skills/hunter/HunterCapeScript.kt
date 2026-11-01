@@ -9,7 +9,7 @@ import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpWorn2
 import org.rsmod.api.script.onOpWorn3
-import org.rsmod.api.utils.time.runeday
+import org.rsmod.api.utils.time.epochMinute
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -35,10 +35,12 @@ class HunterCapeScript : PluginScript() {
         return false
     }
 
+    private fun utcDay(): Int = epochMinute() / MINUTES_PER_DAY
+
     private suspend fun ProtectedAccess.teleportMenu() {
         if (!isMaster()) return
-        if (vars[TELEPORT_DAY] != runeday()) {
-            VarPlayerIntMapSetter.set(player, TELEPORT_DAY, runeday())
+        if (vars[TELEPORT_DAY] != utcDay()) {
+            VarPlayerIntMapSetter.set(player, TELEPORT_DAY, utcDay())
             VarPlayerIntMapSetter.set(player, TELEPORTS_USED, 0)
         }
         val left = DAILY_TELEPORTS - vars[TELEPORTS_USED]
@@ -140,6 +142,7 @@ class HunterCapeScript : PluginScript() {
         const val GUILD_UNLOCKED = "varp.hunter_cape_guild_teleport"
         const val APATURA_MET = "varp.hunter_guild_apatura_met"
         const val DAILY_TELEPORTS = 5
+        const val MINUTES_PER_DAY = 1440
         const val TELEPORT_SEQ = "seq.human_castteleport"
         const val TELEPORT_SPOTANIM = "spotanim.teleport_casting"
         const val TELEPORT_SPOTANIM_HEIGHT = 92
