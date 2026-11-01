@@ -46,7 +46,7 @@ class CooksAssistantInteractionTest {
     @Test fun `accepting stores native progress without the legacy stage attribute`() {
         val f = Fixture()
         f.talk()
-        f.finish(listOf(1, 1))
+        f.finish(listOf(1, 1, 4))
         assertEquals(1, f.script.quest.getQuestStage(f.player))
         assertEquals(1, f.player.vars["varp.cookquest"])
         assertNull(f.player.attr[QUEST_STAGE_MAP_ATTR]?.get("quest_cooksassistant"))
@@ -121,6 +121,30 @@ class CooksAssistantInteractionTest {
         f.assertReward()
     }
 
+    @Test fun `an ingredient already handed in is not taken again`() {
+        val f = Fixture(stage = 1)
+        VarPlayerIntMapSetter.set(f.player, "varbit.cooks_assistant_egg", 1)
+        f.player.inv[0] = InvObj("obj.egg", 1)
+        f.player.inv[1] = InvObj("obj.pot_flour", 1)
+        f.talk()
+        f.finish()
+        assertEquals(1, f.player.inv.count("obj.egg"))
+        assertEquals(0, f.player.inv.count("obj.pot_flour"))
+        assertEquals(1, f.player.vars["varbit.cooks_assistant_flour"])
+    }
+
+    @Test fun `an ingredient gone before the hand-over box continues takes nothing`() {
+        val f = Fixture()
+        f.ingredients()
+        f.onBox = { f.player.inv[1] = null }
+        f.talk()
+        f.finish(listOf(1, 1))
+        assertEquals(1, f.player.inv.count("obj.bucket_milk"))
+        assertEquals(1, f.player.inv.count("obj.pot_flour"))
+        assertEquals(0, f.player.vars["varp.cooks_assistant_ingredients"])
+        assertEquals(1, f.script.quest.getQuestStage(f.player))
+    }
+
     @Test fun `talking again after completion does not reward twice`() {
         val f = Fixture(stage = 1)
         f.ingredients()
@@ -170,6 +194,7 @@ class CooksAssistantInteractionTest {
         }
 
         val script = CooksAssistant()
+        var onBox: () -> Unit = {}
 
         init {
             with(script) { ScriptContext(events, CheatCommandMap(), EngineQueueCache()).startup() }
@@ -212,11 +237,14 @@ class CooksAssistantInteractionTest {
 
         private fun advance(options: Iterator<Int>) {
             if (coroutine.isAwaiting(ResumePauseButtonInput::class)) {
-                val parent = listOf("chat_left", "chat_right", "messagebox", "chatmenu")
+                val parent = listOf("chat_left", "chat_right", "messagebox", "objectbox_double", "chatmenu")
                     .firstOrNull { player.ui.containsModal("interface.$it") }
                     ?: error("Unknown dialogue: ${output()}")
                 val input = if (parent == "chatmenu") {
                     ResumePauseButtonInput("component.chatmenu:options", if (options.hasNext()) options.next() else 1)
+                } else if (parent == "objectbox_double") {
+                    onBox()
+                    ResumePauseButtonInput("component.objectbox_double:pausebutton", -1)
                 } else ResumePauseButtonInput("component.$parent:continue", -1)
                 coroutine.resumeWith(input)
             } else {
