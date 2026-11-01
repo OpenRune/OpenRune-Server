@@ -26,6 +26,8 @@ import org.rsmod.api.player.events.interact.HeldObjEvents
 import org.rsmod.api.player.front
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.table.herblore.HerbloreFinishedRow
@@ -153,6 +155,14 @@ class HerbloreProductionTest {
     }
 
     private fun prayerPotion() = HerbloreFinishedRow.getRow("dbrow.herblore_prayer_potion")
+
+    private fun HerbloreFinishedRow.brew(
+        player: Player,
+        output: String,
+        saved: HerbloreGoggles.SavedSecondaries,
+    ): Boolean =
+        player.awardSkillingProduct(EventBus(), brewProduct(player, output, saved)) ==
+            SkillingAwardResult.Success
 
     private class Fixture {
         val player = Player().apply {

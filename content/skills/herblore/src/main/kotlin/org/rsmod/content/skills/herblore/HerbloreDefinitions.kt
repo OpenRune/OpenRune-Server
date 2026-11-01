@@ -1,11 +1,13 @@
 package org.rsmod.content.skills.herblore
 
 import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.delete
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.table.herblore.HerbloreBarbarianMixesRow
 import org.rsmod.api.table.herblore.HerbloreCleaningRow
 import org.rsmod.api.table.herblore.HerbloreCrushingRow
@@ -87,22 +89,27 @@ fun HerbloreFinishedRow.maxProducible(inventory: Inventory): Int {
     }
 }
 
-internal fun HerbloreFinishedRow.brew(
+internal fun HerbloreFinishedRow.brewProduct(
     player: Player,
     output: String,
     saved: HerbloreGoggles.SavedSecondaries,
-): Boolean {
+    extraDoseApplied: Boolean = false,
+): SkillingProduct {
     val amounts = resolvedInputAmounts()
-    val ingredients = input
-    return player.invTransaction(player.inv) {
-        val inventory = select(player.inv)
-        ingredients.forEachIndexed { index, item ->
+    val inputs =
+        input.mapIndexedNotNull { index, item ->
             val savedAmount = if (index == 0) 0 else saved.savedAmount(item.internalName)
             val needed = (amounts[index] - savedAmount).coerceAtLeast(0)
-            if (needed > 0) delete(inventory, item.id, needed)
+            if (needed > 0) SkillingInput(item.internalName, needed) else null
         }
-        add(inventory, output.asRSCM(RSCMType.OBJ), 1)
-    }.success
+    return SkillingProduct(
+        player = player,
+        skill = "stat.herblore",
+        item = output,
+        experience = xp / 10.0,
+        source = SkillingProductSource.FinishedPotion(this, extraDoseApplied),
+        inputs = inputs,
+    )
 }
 
 object HerbloreDefinitions {
