@@ -1,7 +1,7 @@
 [[inventory]]
 isServerOnly = true
 id = "inv.viking_furshop"
-name = "Ardougne Fur Stall."
+name = "Fremennik Fur Trader"
 
 scope = "Shared"
 stack = "Always"
