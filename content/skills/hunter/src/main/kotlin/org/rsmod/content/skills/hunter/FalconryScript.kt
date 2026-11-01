@@ -320,9 +320,9 @@ constructor(
     private fun ProtectedAccess.takeFalcon(fee: Int): Boolean {
         val slots = HAND_SLOTS.filter { player.worn[it] != null }
         if (inv.freeSpace() < slots.size) return false
-        if (fee > 0 && invDel(inv, COINS, fee).failure) return false
         for (slot in slots) wornUnequip(slot)
         if (HAND_SLOTS.any { player.worn[it] != null }) return false
+        if (fee > 0 && invDel(inv, COINS, fee).failure) return false
         invAdd(player.worn, FALCON_GLOVE, slot = Wearpos.RightHand.slot)
         rebuildAppearance()
         return true
@@ -384,9 +384,13 @@ constructor(
             mes("This isn't your falcon.")
             return
         }
+        if (inv.freeSpace() < flight.kebbit.loot.size) {
+            mes("You don't have enough inventory space.")
+            return
+        }
         flights.remove(player)
         despawnFalcon(player, falcon)
-        for (obj in flight.kebbit.loot) if (!pouchHunted(obj) && (inv.hasFreeSpace() || obj in inv)) invAdd(inv, obj)
+        for (obj in flight.kebbit.loot) if (!pouchHunted(obj)) invAdd(inv, obj)
         statAdvance(HUNTER, flight.kebbit.xp.toDouble())
         swapGlove(FALCON_GLOVE)
         rumours.onCatch(player, flight.kebbit.npc)

@@ -154,7 +154,7 @@ constructor(
         mes("You dismantle the trap.", ChatType.Spam)
         anim(SET_SEQ)
         delay(1)
-        if (vars[pit.varbit] != state) return
+        if (vars[pit.varbit] != state || !canAdd(loot)) return
         VarPlayerIntMapSetter.set(player, pit.varbit, STATE_EMPTY)
         hunt(player).pits.remove(pit.index)
         for ((obj, count) in loot) if (!pouchHunted(obj, count)) invAdd(inv, obj, count)

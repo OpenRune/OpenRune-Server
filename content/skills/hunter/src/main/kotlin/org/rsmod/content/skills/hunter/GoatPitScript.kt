@@ -246,7 +246,10 @@ constructor(
             delay(1)
             if (vars[IN_PIT] <= 0) return
             val loot = if (random.of(4) == 0) FUR else HORN
-            if (!pouchHunted(loot)) invAdd(inv, loot)
+            if (!pouchHunted(loot) && invAdd(inv, loot).failure) {
+                mes("You don't have enough inventory space.")
+                return
+            }
             statAdvance(HUNTER, harvestXp(stat(HUNTER)).toDouble())
             rumours.onCatch(player, GOAT)
             pets.rollSkillingPet(player, PET, HUNTER, PET_BASE)
