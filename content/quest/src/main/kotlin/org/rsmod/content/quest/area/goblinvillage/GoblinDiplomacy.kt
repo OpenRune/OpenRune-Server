@@ -19,18 +19,19 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.region.RegionRepository
 import org.rsmod.api.repo.region.RegionTemplate
+import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.api.script.onPlayerLogin
-import org.rsmod.content.quest.area.misthalin.SceneCamera
 import org.rsmod.content.quest.area.misthalin.SceneRegion
-import org.rsmod.content.quest.area.misthalin.lockedScene
+import org.rsmod.content.quest.area.misthalin.SceneSnapRate
 import org.rsmod.content.quest.manager.ItemRewardDisplay
 import org.rsmod.content.quest.manager.QuestScript
 import org.rsmod.content.quest.manager.rewards
@@ -38,15 +39,21 @@ import org.rsmod.content.quest.manager.startQuestPrompt
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.player.SessionStateEvent
+import org.rsmod.game.loc.LocAngle
+import org.rsmod.game.loc.LocShape
 import org.rsmod.game.region.Region
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.routefinder.collision.CollisionFlagMap
 
 class GoblinDiplomacy
 @Inject
 constructor(
     private val regionRepo: RegionRepository,
     private val npcRepo: NpcRepository,
+    private val locRepo: LocRepository,
+    private val worldRepo: WorldRepository,
+    private val collision: CollisionFlagMap,
     private val search: NpcSearch,
 ) :
     QuestScript(
@@ -54,9 +61,9 @@ constructor(
     "varp.goblinquest",
     rewards {
         xp("stat.crafting", CRAFTING_XP)
-        item(GOLD_BAR, 1, label = "A gold bar")
+        item(GOLD_BAR, 1, label = "A Gold Bar")
     },
-    ItemRewardDisplay(GOBLIN_MAIL, zoom = 300),
+    ItemRewardDisplay(GOBLIN_MAIL, zoom = 400),
     questVarbit = "varbit.gobdip_main",
 ) {
     private var Player.grubfootLook by intVarBit("varbit.gobdip_grubfoot_vis")
@@ -66,6 +73,8 @@ constructor(
     private val Player.metAggie by intVarBit("varbit.gobdip_met_aggie")
 
     private val sceneRegions = HashMap<Long, Region>()
+
+    private data class SceneLoc(val tile: CoordGrid, val loc: String, val angle: LocAngle, val shape: LocShape)
 
     override fun ScriptContext.init() {
         check(quest.maxSteps == COMPLETE) {
@@ -106,6 +115,8 @@ constructor(
         Cinematic.setMaxDrawDistance(player, enabled = false)
         Cinematic.restoreAcceptAid(player)
         VarPlayerIntMapSetter.set(player, "varbit.minimap_state", 0)
+        VarPlayerIntMapSetter.set(player, "varp.option_areasounds_override", 0)
+        VarPlayerIntMapSetter.set(player, "varp.areasounds_override", 0)
     }
 
     private fun discardLeftScene(player: Player) {
@@ -184,7 +195,7 @@ constructor(
                     "Goblin Mail to try out instead."
             )
             line(
-                "I gave General Wartface and General Bentnoze some of the original Brown Goblin " +
+                "I gave General Wartface and General Bentnoze some of their original Brown Goblin " +
                     "Mail, and it turned out to be their favourite. They're clearly not the " +
                     "smartest, but that's goblins for you."
             )
@@ -308,14 +319,14 @@ constructor(
             1 -> biggerGeneral()
             2 -> stupidGeneral()
             3 -> {
-                wartface(neutral, "Green armour best.")
+                wartface(angry, "Green armour best.")
                 bentnoze(angry, "No no red every time.")
-                wartface(angry, "Go away human, we busy.")
+                wartface(neutral, "Go away human, we busy.")
             }
             else -> {
-                bentnoze(neutral, "Red armour best.")
+                bentnoze(angry, "Red armour best.")
                 wartface(angry, "No it has to be green!")
-                bentnoze(angry, "Go away human, we busy.")
+                bentnoze(neutral, "Go away human, we busy.")
             }
         }
         mainMenu()
@@ -391,18 +402,19 @@ constructor(
         var askedWhy = false
         while (true) {
             val first = if (askedWhy) "What is the goblin new century?" else WHY_ARGUING
-            when (
-                choice4(
-                    first,
-                    1,
-                    "Wouldn't you prefer peace?",
-                    2,
-                    "Do you want me to pick an armour colour for you?",
-                    3,
-                    "I'll leave you to it.",
-                    4,
-                )
-            ) {
+            val stage = stage(player)
+            val handIn = wantedArmour(stage)?.takeIf { player.inv.count(it) > 0 }
+            val pick =
+                if (handIn != null) {
+                    choice4(handInLine(stage), 0, first, 1, PEACE, 2, LEAVE, 4)
+                } else {
+                    choice4(first, 1, PEACE, 2, "Do you want me to pick an armour colour for you?", 3, LEAVE, 4)
+                }
+            when (pick) {
+                0 -> {
+                    handIn(stage)
+                    return
+                }
                 1 ->
                     if (askedWhy) {
                         newCentury()
@@ -411,7 +423,7 @@ constructor(
                         askedWhy = true
                     }
                 2 -> {
-                    chatPlayer(quiz, "Wouldn't you prefer peace?")
+                    chatPlayer(quiz, PEACE)
                     wartface(
                         neutral,
                         "Goblins not so good at peace. Maybe peace be okay though, as long as it " +
@@ -424,12 +436,14 @@ constructor(
                     return
                 }
                 else -> {
-                    chatPlayer(neutral, "I'll leave you to it.")
+                    chatPlayer(neutral, LEAVE)
                     return
                 }
             }
         }
     }
+
+    private fun handInLine(stage: Int): String = "I have some ${wantedColour(stage)} armour here."
 
     private suspend fun Dialogue.whyArguing() {
         chatPlayer(quiz, WHY_ARGUING)
@@ -469,9 +483,9 @@ constructor(
     }
 
     private suspend fun Dialogue.pickColour() {
-        chatPlayer(quiz, "Do you want me to pick an armour colour for you?")
+        chatPlayer(confused, "Do you want me to pick an armour colour for you?")
         wartface(neutral, "Yes, as long as you pick green.")
-        bentnoze(angry, "No you have to pick red!")
+        bentnoze(neutral, "No you have to pick red!")
         while (true) {
             when (
                 choice4(
@@ -518,9 +532,9 @@ constructor(
 
     private suspend fun Dialogue.differentColour() {
         chatPlayer(quiz, "What about a different colour?")
-        bentnoze(neutral, "That would mean me wrong... but at least Wartface not right!")
+        bentnoze(confused, "That would mean me wrong... but at least Wartface not right!")
         wartface(
-            neutral,
+            confused,
             "Well Bentnoze never been right in his life. Still, maybe new colour good, but will " +
                 "have to see armour before decide.",
         )
@@ -529,16 +543,20 @@ constructor(
             wartface(neutral, "Human! Get us ${wantedColour(stage)} armour!")
             return
         }
-        bentnoze(neutral, "Human! You bring us armour in new colour!")
+        bentnoze(happy, "Human! You bring us armour in new colour!")
         if (!startQuestPrompt(quest)) {
             chatPlayer(neutral, "Actually, I think I'll leave you to it.")
             return
         }
         chatPlayer(happy, "I can do that.")
-        quest.setQuestStage(access, STARTED)
         wartface(quiz, "What colour we try?")
         bentnoze(neutral, "Orange armour might be good.")
+        quest.setQuestStage(access, STARTED)
         wartface(neutral, "Yep, bring us orange armour.")
+        if (player.inv.count(ORANGE_MAIL) > 0) {
+            handIn(STARTED)
+            return
+        }
         chatPlayer(quiz, "How am I meant to get orange armour?")
         bentnoze(neutral, "Well first you get goblin armour...")
         wartface(neutral, "...and then you dye it orange!")
@@ -608,122 +626,183 @@ constructor(
                 player.grubfootLook = GRUBFOOT_BLUE
                 quest.setQuestStage(access, BROWN_WANTED)
             }
-            else -> {
-                if (!quest.completeQuest(access)) {
-                    access.invAdd(access.inv, wanted, 1)
-                    player.grubfootLook = GRUBFOOT_BLUE
-                    access.mes(NO_ROOM_FOR_REWARD)
-                    return false
-                }
-                player.grubfootLook = GRUBFOOT_BROWN
-            }
+            else -> player.grubfootLook = GRUBFOOT_BROWN
         }
         return true
     }
 
     private suspend fun Dialogue.handIn(stage: Int) {
         val wanted = wantedArmour(stage) ?: return
-        val wearing = grubfootHead(player)
-        chatPlayer(happy, "I have some ${wantedColour(stage)} armour here.")
-        if (tryOn(stage, wanted, wearing) && stage == BROWN_WANTED) {
-            commitHandIn(stage, wanted)
+        chatPlayer(neutral, handInLine(stage))
+        if (tryOn(stage, wanted) && stage == BROWN_WANTED && !quest.completeQuest(access)) {
+            access.invAdd(access.inv, wanted, 1)
+            player.grubfootLook = GRUBFOOT_BLUE
+            access.mes(NO_ROOM_FOR_REWARD)
         }
     }
 
-    private suspend fun Dialogue.tryOn(stage: Int, wanted: String, wearing: String): Boolean {
+    private suspend fun Dialogue.tryOn(stage: Int, wanted: String): Boolean {
+        val wearing = grubfootNoop(player.grubfootLook)
         val tryOn =
-            when (stage) {
-                STARTED -> GRUBFOOT_ORANGE_HEAD
-                BLUE_WANTED -> GRUBFOOT_BLUE_HEAD
-                else -> GRUBFOOT_BROWN_HEAD
-            }
+            grubfootNoop(
+                when (stage) {
+                    STARTED -> GRUBFOOT_ORANGE
+                    BLUE_WANTED -> GRUBFOOT_BLUE
+                    else -> GRUBFOOT_BROWN
+                }
+            )
         val returnTo = player.coords
+        access.mesboxNp(" ")
+        access.fadeOverlay(0, 255, 0, 0, SCENE_FADE)
+        access.delay(1)
         val region = regionRepo.add(HUT)
         region?.let(regionRepo::protect)
         val r = SceneRegion(region)
         player.sceneReturnTile = returnTo.packed
         player.uuid?.let { uuid -> region?.let { sceneRegions[uuid] = it } }
         val actors = ArrayList<Npc>()
-        var committed = stage == BROWN_WANTED
-        var verdictGiven = false
-        lateinit var grubfoot: Npc
-        fun spawn(type: String, coords: CoordGrid): Npc {
-            val npc = Npc(type, coords)
+        var committed = false
+        var ended = false
+        fun spawn(type: String, coords: CoordGrid, face: CoordGrid): Npc {
+            val npc = Npc(type, r[coords])
             npcRepo.add(npc, SCENE_LIFESPAN)
             npc.noneMode()
-            npc.faceSquare(r[GRUBFOOT_TILE])
+            npc.faceSquare(r[face])
             actors += npc
             return npc
         }
+        fun curtain(seq: String) {
+            locRepo.findExact(r[CURTAIN_TILE], LocShape.WallStraight)?.let { worldRepo.locAnim(it, seq) }
+        }
         try {
-            access.lockedScene(
-                vantage = r[PLAYER_TILE],
-                faceAt = r[GRUBFOOT_TILE],
-                camera = r.map(CAMERA),
-                returnTo = returnTo,
-                underFade = {
-                    spawn(WARTFACE, r[WARTFACE_TILE])
-                    spawn(BENTNOZE, r[BENTNOZE_TILE])
-                    grubfoot = spawn(wearing, r[FETCH_TILE])
-                    if (!committed) committed = commitHandIn(stage, wanted)
-                },
-                teardown = {
-                    if (verdictGiven && player.inv.count(wanted) > 0) {
-                        player.grubfootLook = GRUBFOOT_BROWN
-                    }
-                },
-            ) {
-                if (!committed) return@lockedScene
-                grubfoot.walk(FETCH_PATH.map(r::get))
-                wartface(neutral, "Grubfoot!")
-                grubfoot(neutral, "Yes General Wartface?", wearing)
-                wartface(neutral, "Put on this armour!")
-                grubfoot.walk(r[CURTAIN_TILE])
-                delay(CHANGE_TICKS)
-                if (grubfoot.isSlotAssigned) npcRepo.del(grubfoot, Int.MAX_VALUE)
-                delay(CHANGE_TICKS)
-                grubfoot = spawn(tryOn, r[CURTAIN_TILE])
-                grubfoot.walk(r[GRUBFOOT_TILE])
-                delay(CHANGE_TICKS)
-                grubfoot(quiz, "What do you think?", tryOn)
-                when (stage) {
-                    STARTED -> {
-                        wartface(neutral, "No I don't like that much.")
-                        bentnoze(neutral, "It clashes with skin colour.")
-                        wartface(neutral, "We need darker colour, like blue.")
-                        bentnoze(neutral, "Yeah blue might be good.")
-                        wartface(neutral, "Human! Get us blue armour!")
-                    }
-                    BLUE_WANTED -> {
-                        bentnoze(neutral, "That not right. Not goblin colour at all.")
-                        wartface(neutral, "Goblins wear dark earthy colours like brown.")
-                        bentnoze(neutral, "Yeah brown might be good.")
-                        wartface(neutral, "Human! Get us brown armour!")
-                        chatPlayer(
-                            confused,
-                            "But I thought brown was the armour you were changing from...",
-                        )
-                        chatPlayer(neutral, "Never mind, anything is worth a try.")
-                    }
-                    else -> {
-                        wartface(happy, "That colour quite nice. Me can see myself wearing that.")
-                        bentnoze(happy, "It a deal then. Brown armour it is.")
-                        wartface(
-                            happy,
-                            "Thank you for sorting out argument, human. You have reward now.",
-                        )
-                        chatPlayer(confused, "Thanks... I think...")
-                        verdictGiven = true
-                    }
+            enterScene(r)
+            val bentnoze = spawn(BENTNOZE_NOOP, BENTNOZE_SCENE_TILE, CURTAIN_TILE)
+            val wartface = spawn(WARTFACE_NOOP, WARTFACE_SCENE_TILE, CURTAIN_TILE)
+            val grubfoot = spawn(wearing, CURTAIN_FRONT_TILE, GRUBFOOT_TILE)
+            if (r.instanced) {
+                for ((tile, loc, angle, shape) in SCENE_LOCS) {
+                    locRepo.add(r[tile], loc, SCENE_LIFESPAN, angle, shape)
                 }
             }
-            player.sceneReturnTile = 0
+            access.delay(1)
+            access.camMoveToV3(r[CAMERA_EYE], height = CAMERA_EYE_HEIGHT, rate = SceneSnapRate, rate2 = SceneSnapRate)
+            access.camLookAtV3(r[CAMERA_LOOK], height = CAMERA_LOOK_HEIGHT, rate = SceneSnapRate, rate2 = SceneSnapRate)
+            access.fadeOverlay(0, 0, 0, 255, SCENE_FADE)
+            access.delay(1)
+            wartface(neutral, "Grubfoot!", WARTFACE_NOOP)
+            grubfoot.walk(r[GRUBFOOT_TILE])
+            grubfoot(quiz, "Yes General Wartface?", wearing)
+            wartface(neutral, "Put on this armour!", WARTFACE_NOOP)
+            access.mesboxNp(" ")
+            grubfoot.walk(r[CURTAIN_FRONT_TILE])
+            access.delay(2)
+            grubfoot.faceSquare(r[CURTAIN_TILE])
+            access.delay(1)
+            curtain(CURTAIN_OPEN)
+            access.delay(1)
+            grubfoot.teleport(collision, r[CURTAIN_TILE])
+            access.delay(1)
+            grubfoot.faceSquare(r[CURTAIN_FRONT_TILE])
+            curtain(CURTAIN_CLOSING)
+            access.delay(4)
+            grubfoot.transmog(checkNotNull(ServerCacheManager.getNpc(tryOn.asRSCM(RSCMType.NPC))), Int.MAX_VALUE)
+            curtain(CURTAIN_OPEN)
+            access.delay(1)
+            grubfoot.teleport(collision, r[CURTAIN_FRONT_TILE])
+            access.delay(1)
+            grubfoot.teleport(collision, r[GRUBFOOT_TILE])
+            curtain(CURTAIN_CLOSING)
+            access.delay(1)
+            grubfoot(quiz, "What do you think?", tryOn)
+            fun faceOff() {
+                access.faceSquare(r[WARTFACE_SCENE_TILE])
+                bentnoze.faceSquare(player.coords)
+                wartface.faceSquare(player.coords)
+            }
+            when (stage) {
+                STARTED -> {
+                    wartface(neutral, "No I don't like that much.", WARTFACE_NOOP)
+                    bentnoze(neutral, "It clashes with skin colour.", BENTNOZE_NOOP)
+                    wartface(neutral, "We need darker colour, like blue.", WARTFACE_NOOP)
+                    bentnoze(neutral, "Yeah blue might be good.", BENTNOZE_NOOP)
+                    faceOff()
+                    wartface(neutral, "Human! Get us blue armour!", WARTFACE_NOOP)
+                }
+                BLUE_WANTED -> {
+                    bentnoze(neutral, "That not right. Not goblin colour at all.", BENTNOZE_NOOP)
+                    wartface(neutral, "Goblins wear dark earthy colours like brown.", WARTFACE_NOOP)
+                    bentnoze(neutral, "Yeah brown might be good.", BENTNOZE_NOOP)
+                    faceOff()
+                    wartface(neutral, "Human! Get us brown armour!", WARTFACE_NOOP)
+                    chatPlayer(confused, "But I thought brown was the armour you were changing from...")
+                    chatPlayer(confused, "Never mind, anything is worth a try.")
+                }
+                else -> {
+                    wartface(neutral, "That colour quite nice. Me can see myself wearing that.", WARTFACE_NOOP)
+                    bentnoze(neutral, "It a deal then. Brown armour it is.", BENTNOZE_NOOP)
+                    faceOff()
+                    wartface(neutral, "Thank you for sorting out argument, human. You have reward now.", WARTFACE_NOOP)
+                    chatPlayer(confused, "Thanks... I think...")
+                }
+            }
+            committed = commitHandIn(stage, wanted)
+            access.mesboxNp(" ")
+            access.fadeOverlay(0, 255, 0, 0, SCENE_FADE)
+            access.delay(1)
+            leaveScene(actors, region, returnTo)
+            ended = true
+            access.delay(1)
+            access.fadeOverlay(0, 0, 0, 255, SCENE_FADE)
+            access.ifClose()
         } finally {
-            for (npc in actors) if (npc.isSlotAssigned) npcRepo.del(npc, Int.MAX_VALUE)
-            player.uuid?.let(sceneRegions::remove)
-            region?.let(regionRepo::unprotect)
+            if (!ended) leaveScene(actors, region, returnTo)
         }
         return committed
+    }
+
+    private fun Dialogue.enterScene(r: SceneRegion) {
+        with(access) {
+            hideEntityOps()
+            hideTopLevel()
+            hideHealthHud()
+            clearHealthHud()
+            minimapHideMap()
+            camModeFixed()
+            vars["varp.option_areasounds_override"] = SCENE_AREASOUNDS_VOLUME
+            vars["varp.areasounds_override"] = 1
+            maxDrawDistance(enabled = true)
+            tempDisableAcceptAid()
+            closeTopLevelTabsLenient()
+            syncDrawDistance()
+            camShakeResetAll()
+            telejump(r[PLAYER_TILE])
+            rebuildAppearance()
+            faceSquare(r[PLAYER_FACE_TILE])
+        }
+    }
+
+    private fun Dialogue.leaveScene(actors: List<Npc>, region: Region?, returnTo: CoordGrid) {
+        for (npc in actors) if (npc.isSlotAssigned) npcRepo.del(npc, Int.MAX_VALUE)
+        player.sceneReturnTile = 0
+        with(access) {
+            showEntityOps()
+            restoreLastAcceptAid()
+            maxDrawDistance(enabled = false)
+            minimapReset()
+            camModeReset()
+            vars["varp.option_areasounds_override"] = 0
+            vars["varp.areasounds_override"] = 0
+            showTopLevel()
+            showHealthHud()
+            telejump(returnTo)
+            rebuildAppearance()
+            camUnlock(false)
+            camReset()
+            openTopLevelTabs()
+            syncDrawDistance()
+        }
+        player.uuid?.let(sceneRegions::remove)
+        region?.let(regionRepo::unprotect)
     }
 
     private suspend fun Dialogue.grubfootDialogue() {
@@ -844,17 +923,24 @@ constructor(
         }
     }
 
-    private suspend fun Dialogue.wartface(mesanim: MesAnimType, text: String) =
-        chatNpcSpecific("General Wartface", WARTFACE, mesanim, text)
+    private suspend fun Dialogue.wartface(mesanim: MesAnimType, text: String, head: String = WARTFACE) =
+        chatNpcSpecific("General Wartface", head, mesanim, text)
 
-    private suspend fun Dialogue.bentnoze(mesanim: MesAnimType, text: String) =
-        chatNpcSpecific("General Bentnoze", BENTNOZE, mesanim, text)
+    private suspend fun Dialogue.bentnoze(mesanim: MesAnimType, text: String, head: String = BENTNOZE) =
+        chatNpcSpecific("General Bentnoze", head, mesanim, text)
 
     private suspend fun Dialogue.grubfoot(
         mesanim: MesAnimType,
         text: String,
         head: String = grubfootHead(player),
     ) = chatNpcSpecific("Grubfoot", head, mesanim, text)
+
+    private fun grubfootNoop(look: Int): String =
+        when (look) {
+            GRUBFOOT_ORANGE -> "npc.catwalk_goblin_orange_noop"
+            GRUBFOOT_BLUE -> "npc.catwalk_goblin_blue_noop"
+            else -> "npc.catwalk_goblin_brown_noop"
+        }
 
     private fun grubfootHead(player: Player): String =
         when (player.grubfootLook) {
@@ -870,6 +956,8 @@ constructor(
         private const val COMPLETE = 6
 
         private const val WHY_ARGUING = "Why are you arguing about the colour of your armour?"
+        private const val PEACE = "Wouldn't you prefer peace?"
+        private const val LEAVE = "I'll leave you to it."
 
         private const val GENERALS_HUT =
             "<red>General Wartface</red> and <red>General Bentnoze</red> in <red>Goblin Village</red>"
@@ -922,29 +1010,36 @@ constructor(
                 }
             }
         private const val HUT_ZONE_X = 368
-        private const val HUT_ZONE_Z = 437
+        private const val HUT_ZONE_Z = 438
         private const val HUT_ZONES = 3
         private const val HUT_REGION_ZONE = 6
-        private val PLAYER_TILE = CoordGrid(2958, 3512)
-        private val WARTFACE_TILE = CoordGrid(2958, 3510)
-        private val BENTNOZE_TILE = CoordGrid(2959, 3510)
-        private val GRUBFOOT_TILE = CoordGrid(2955, 3511)
-        private val CURTAIN_TILE = CoordGrid(2954, 3511)
-        private val FETCH_TILE = CoordGrid(2957, 3514)
-        private val FETCH_PATH =
-            listOf(CoordGrid(2956, 3513), CoordGrid(2956, 3511), GRUBFOOT_TILE)
-        private val CAMERA =
-            SceneCamera(
-                eye = CoordGrid(2961, 3511),
-                eyeHeight = 400,
-                lookAt = CoordGrid(2956, 3511),
-                lookAtHeight = 150,
+        private val PLAYER_TILE = CoordGrid(2957, 3513)
+        private val PLAYER_FACE_TILE = CoordGrid(2955, 3511)
+        private val BENTNOZE_SCENE_TILE = CoordGrid(2958, 3512)
+        private val WARTFACE_SCENE_TILE = CoordGrid(2958, 3511)
+        private val GRUBFOOT_TILE = CoordGrid(2956, 3511)
+        private val CURTAIN_FRONT_TILE = CoordGrid(2954, 3511)
+        private val CURTAIN_TILE = CoordGrid(2953, 3511)
+        private val CAMERA_EYE = CoordGrid(2961, 3514)
+        private const val CAMERA_EYE_HEIGHT = 450
+        private val CAMERA_LOOK = CoordGrid(2957, 3512)
+        private const val CAMERA_LOOK_HEIGHT = 150
+        private const val SCENE_FADE = 25
+        private const val SCENE_AREASOUNDS_VOLUME = 25
+        private const val CURTAIN_OPEN = "seq.curtain_open"
+        private const val CURTAIN_CLOSING = "seq.curtain_closing"
+        private val SCENE_LOCS =
+            listOf(
+                SceneLoc(CoordGrid(2957, 3509), "loc.goblin_outpost_poordoor_double_inner_noop", LocAngle.North, LocShape.WallStraight),
+                SceneLoc(CoordGrid(2958, 3509), "loc.goblin_outpost_poordoor_doubler_inner_noop", LocAngle.North, LocShape.WallStraight),
+                SceneLoc(CoordGrid(2947, 3506), "loc.xmas20_goblin_cave_entrance_noop", LocAngle.South, LocShape.CentrepieceStraight),
             )
-        private const val CHANGE_TICKS = 2
         private const val GENERAL_SIGHT = 15
         private const val SCENE_LIFESPAN = 3000
 
         private const val WARTFACE = "npc.general_wartface_green"
+        private const val WARTFACE_NOOP = "npc.general_wartface_green_noop"
+        private const val BENTNOZE_NOOP = "npc.general_bentnoze_red_noop"
         private const val BENTNOZE = "npc.general_bentnoze_red"
         private const val GRUBFOOT_MULTI = "npc.catwalk_goblin"
         private val GENERALS = listOf(BENTNOZE, WARTFACE)

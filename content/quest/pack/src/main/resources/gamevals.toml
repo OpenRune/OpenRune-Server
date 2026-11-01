@@ -74,6 +74,11 @@ chest_open = 52
 chest_close = 51
 irondoor_locked = 72
 gobdip_dye_goblin_mail = 2392
+gobdip_soldier_attack1 = 3514
+gobdip_soldier_attack2 = 3515
+gobdip_soldier_attack3 = 3521
+gobdip_soldier_hit1 = 3517
+gobdip_soldier_hit2 = 472
 
 [gamevals.varp]
 restless_ghost_rising_tile = 63703

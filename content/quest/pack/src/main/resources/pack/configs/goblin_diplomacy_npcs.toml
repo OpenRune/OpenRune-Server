@@ -12,6 +12,9 @@ timer = 8
 id = "npc.goblin_red_soldier_4"
 inherit = "npc.goblin_red_soldier_4"
 timer = 8
+[npc.params]
+"param.attack_sound" = "synth.gobdip_soldier_attack1"
+"param.defend_sound" = "synth.gobdip_soldier_hit1"
 
 [[npc]]
 id = "npc.goblin_red_soldier_5"
@@ -22,6 +25,9 @@ timer = 8
 id = "npc.goblin_red_soldier_6"
 inherit = "npc.goblin_red_soldier_6"
 timer = 8
+[npc.params]
+"param.attack_sound" = "synth.gobdip_soldier_attack2"
+"param.defend_sound" = "synth.gobdip_soldier_hit2"
 
 [[npc]]
 id = "npc.goblin_red_soldier_7"
@@ -37,16 +43,25 @@ timer = 8
 id = "npc.goblin_green_soldier_2"
 inherit = "npc.goblin_green_soldier_2"
 timer = 8
+[npc.params]
+"param.attack_sound" = "synth.gobdip_soldier_attack2"
+"param.defend_sound" = "synth.gobdip_soldier_hit1"
 
 [[npc]]
 id = "npc.goblin_green_soldier_3"
 inherit = "npc.goblin_green_soldier_3"
 timer = 8
+[npc.params]
+"param.attack_sound" = "synth.gobdip_soldier_attack3"
+"param.defend_sound" = "synth.gobdip_soldier_hit2"
 
 [[npc]]
 id = "npc.goblin_green_soldier_4"
 inherit = "npc.goblin_green_soldier_4"
 timer = 8
+[npc.params]
+"param.attack_sound" = "synth.gobdip_soldier_attack1"
+"param.defend_sound" = "synth.gobdip_soldier_hit1"
 
 [[npc]]
 id = "npc.goblin_green_soldier_5"

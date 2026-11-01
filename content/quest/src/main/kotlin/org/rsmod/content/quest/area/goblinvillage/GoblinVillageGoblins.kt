@@ -6,17 +6,22 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcMode
 import dev.openrune.types.hunt.HuntVis
 import jakarta.inject.Inject
+import org.rsmod.api.config.refs.params
 import org.rsmod.api.hunt.NpcSearch
+import org.rsmod.api.npc.hit.modifier.NpcHitModifier
+import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.random.GameRandom
+import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onAiTimer
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
+import org.rsmod.game.hit.HitType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
@@ -27,6 +32,8 @@ constructor(
     private val search: NpcSearch,
     private val npcList: NpcList,
     private val random: GameRandom,
+    private val worldRepo: WorldRepository,
+    private val hitModifier: NpcHitModifier,
 ) : PluginScript() {
 
     override fun ScriptContext.startup() {
@@ -34,31 +41,56 @@ constructor(
             for (red in listOf(true, false)) {
                 val soldier = soldier(red, id)
                 onOpNpc1(soldier) { talk(it.npc, red) }
-                onAiTimer(soldier) { standoff(npc, red) }
+                onAiTimer(soldier) { fight(npc, red) }
             }
         }
     }
 
-    private fun standoff(npc: Npc, red: Boolean) {
+    private fun fight(npc: Npc, red: Boolean) {
         val enemy = enemy(npc, red)
         if (enemy != null) {
             if (enemy(enemy, !red) != npc || random.of(maxExclusive = END_CHANCE) == 0) {
                 npc.defaultMode()
-            } else if (random.of(maxExclusive = SHOUT_CHANCE) == 0) {
-                npc.say(random.pick(if (red) RED_SHOUTS else GREEN_SHOUTS))
+                npc.aiTimer(npc.type.timer)
+                return
             }
+            swing(npc, enemy, red)
             return
         }
         if (!npc.isIdle() || random.of(maxExclusive = START_CHANCE) != 0) return
         val target =
             search
-                .findAllAny(npc.coords, STANDOFF_RANGE, HuntVis.LineOfSight)
+                .findAllAny(npc.coords, FIGHT_RANGE, HuntVis.LineOfSight)
                 .filter { isSoldier(it, !red) && it.isIdle() && it.isValidTarget() }
                 .toList()
                 .let { random.pickOrNull(it) } ?: return
         for ((from, to) in listOf(npc to target, target to npc)) {
             from.noneMode()
             from.faceNpc(to)
+        }
+        target.aiTimer(ATTACK_RATE / 2)
+        swing(npc, target, red)
+    }
+
+    private fun swing(npc: Npc, enemy: Npc, red: Boolean) {
+        npc.aiTimer(ATTACK_RATE)
+        npc.visType.paramOrNull(params.attack_anim)?.let { npc.anim(RSCM.getReverseMapping(RSCMType.SEQ, it.id)) }
+        enemy.visType.paramOrNull(params.defend_anim)?.let { enemy.anim(RSCM.getReverseMapping(RSCMType.SEQ, it.id)) }
+        npc.visType.paramOrNull(params.attack_sound)?.let {
+            worldRepo.soundArea(npc, RSCM.getReverseMapping(RSCMType.SYNTH, it.id), radius = SOUND_RANGE)
+        }
+        enemy.visType.paramOrNull(params.defend_sound)?.let {
+            worldRepo.soundArea(
+                enemy,
+                RSCM.getReverseMapping(RSCMType.SYNTH, it.id),
+                delay = HIT_SOUND_DELAY,
+                radius = SOUND_RANGE,
+            )
+        }
+        val damage = if (enemy.hitpoints > 1) random.of(maxExclusive = 2) else 0
+        enemy.queueHit(npc, delay = 1, type = HitType.Melee, damage = damage, modifier = hitModifier)
+        if (random.of(maxExclusive = SHOUT_CHANCE) < SHOUTS_PER_CHANCE) {
+            npc.say(random.pick(if (red) RED_SHOUTS else GREEN_SHOUTS))
         }
     }
 
@@ -231,10 +263,14 @@ constructor(
     private companion object {
         private const val QUEST_COMPLETE = 6
         private const val GOBLIN = "Goblin"
-        private const val START_CHANCE = 3000
+        private const val START_CHANCE = 300
         private const val END_CHANCE = 600
-        private const val SHOUT_CHANCE = 100
-        private const val STANDOFF_RANGE = 8
+        private const val ATTACK_RATE = 6
+        private const val SHOUT_CHANCE = 10
+        private const val SHOUTS_PER_CHANCE = 6
+        private const val SOUND_RANGE = 10
+        private const val HIT_SOUND_DELAY = 30
+        private const val FIGHT_RANGE = 8
         private val SOLDIERS = 2..8
         private val RED_SHOUTS =
             listOf("Red armour best!", "Green armour stupid!", "Red not green!", "Red red red!", "Stupid greenie!")
