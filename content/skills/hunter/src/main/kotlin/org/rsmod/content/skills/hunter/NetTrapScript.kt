@@ -6,6 +6,10 @@ import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.invtx.add
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -87,8 +91,14 @@ constructor(
             mes("You need a Hunter level of $NET_TRAP_LEVEL to make a net trap.")
             return
         }
-        if (invDel(inv, ROPE, 1, SMALL_NET, 1).failure) return
-        invAdd(inv, NET_TRAP)
+        val made =
+            player.invTransaction(inv) {
+                val target = select(inv)
+                delete(target, ROPE.asRSCM(RSCMType.OBJ), 1)
+                delete(target, SMALL_NET.asRSCM(RSCMType.OBJ), 1)
+                add(target, NET_TRAP.asRSCM(RSCMType.OBJ), 1)
+            }
+        if (made.failure) return
         mes("You tie the rope to the small fishing net to make a net trap.", ChatType.Spam)
     }
 
@@ -137,11 +147,15 @@ constructor(
 
     private suspend fun ProtectedAccess.dismantle(trap: NetTrap) {
         if (trap.state != State.Set && trap.state != State.Reset) return
+        if (inv.freeSpace() < 1 && NET_TRAP !in inv) {
+            mes("You don't have enough inventory space.")
+            return
+        }
         anim(CHECK_SEQ)
         delay(CHECK_TICKS)
         if (traps[trap.tree.coords] !== trap || (trap.state != State.Set && trap.state != State.Reset)) return
+        if (invAdd(inv, NET_TRAP).failure) return
         clear(trap)
-        invAdd(inv, NET_TRAP)
         mes("You dismantle the trap.", ChatType.Spam)
     }
 
@@ -182,8 +196,8 @@ constructor(
         anim(CHECK_SEQ)
         delay(CHECK_TICKS)
         if (traps[trap.tree.coords] !== trap || trap.state != State.Full) return false
+        if (invAdd(inv, NET_TRAP).failure) return false
         clear(trap)
-        invAdd(inv, NET_TRAP)
         invAddOrDrop(objRepo, loot)
         statAdvance(HUNTER, trap.def.xp)
         rumours.onCatch(player, trap.def.npc)

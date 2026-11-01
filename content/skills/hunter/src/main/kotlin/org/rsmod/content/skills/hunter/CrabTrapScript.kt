@@ -1,9 +1,13 @@
 package org.rsmod.content.skills.hunter
 
 import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import org.rsmod.api.invtx.delete
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.stat
@@ -74,8 +78,14 @@ constructor(
         anim(BUILD_SEQ)
         delay(BUILD_TICKS)
         if (vars[varbit] != UNBUILT) return
-        if (invDel(inv, BUCKET, 1, PLANK, 1).failure) return
-        if (invDel(inv, nails, NAILS_NEEDED).failure) return
+        val used =
+            player.invTransaction(inv) {
+                val target = select(inv)
+                delete(target, BUCKET.asRSCM(RSCMType.OBJ), 1)
+                delete(target, PLANK.asRSCM(RSCMType.OBJ), 1)
+                delete(target, nails.asRSCM(RSCMType.OBJ), NAILS_NEEDED)
+            }
+        if (used.failure) return
         statAdvance(CONSTRUCTION, BUILD_XP)
         VarPlayerIntMapSetter.set(player, varbit, BUILT)
     }
@@ -119,12 +129,12 @@ constructor(
             VarPlayerIntMapSetter.set(player, varbit, BUILT)
             return
         }
+        if (state < FULL) return
         val catch = site.catches.getOrNull(state - FULL) ?: site.catches.first()
-        if (inv.freeSpace() == 0 && catch !in inv) {
+        if (invAdd(inv, catch).failure) {
             mes("You don't have enough inventory space.")
             return
         }
-        invAdd(inv, catch)
         statAdvance(HUNTER, site.xp.toDouble())
         VarPlayerIntMapSetter.set(player, varbit, BUILT)
         delay(REBAIT_TICKS)

@@ -142,9 +142,8 @@ constructor(
         replace(trap, if (trap.mirrored) CHECKING[1] else CHECKING[0])
         anim(CHECK_SEQ)
         delay(SET_TICKS)
-        if (traps[trap.boulder.coords] !== trap) return
+        if (traps[trap.boulder.coords] !== trap || invAdd(inv, tail).failure) return
         clear(trap)
-        invAdd(inv, tail)
         statAdvance(HUNTER, XP)
         rumours.onCatch(player, MONKEY)
         mes("You dismantle the trap.", ChatType.Spam)
