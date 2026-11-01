@@ -402,7 +402,7 @@ constructor(
         private const val BOUNCE_DAMAGE_MIN = 18
         private const val BOUNCE_DAMAGE_MAX = 22
         private const val BOUNCE_DAMAGE_TICKS = 2
-        private const val BOUNCE_SOUND = 12056
+        private const val BOUNCE_SOUND = "synth.mad_angel_blast_bounce"
         private const val BOMB_SOUND_RADIUS = 20
         private const val BOMB_SOUND_SIZE = 10
 
@@ -416,7 +416,7 @@ constructor(
         private const val EXPLOSION_MIN_HIT = 30
         private const val EXPLOSION_MAX_HIT = 32
         private const val EXPLOSION_PROTECTED_PERCENT = 50
-        private const val EXPLOSION_SOUND = 12054
+        private const val EXPLOSION_SOUND = "synth.mad_angel_blast_explosion"
 
         private const val SMITE_MAX_HIT = 31
         private const val SMITE_PROTECTED_PERCENT = 25

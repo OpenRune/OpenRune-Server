@@ -6,3 +6,10 @@ mad_angel_buff = 63601
 
 [gamevals.varbit]
 mad_angel_next_hit = 63601
+
+[gamevals.synth]
+mad_angel_blast_bounce = 12056
+mad_angel_blast_explosion = 12054
+
+[gamevals.midi]
+mad_angel_combat = 885
