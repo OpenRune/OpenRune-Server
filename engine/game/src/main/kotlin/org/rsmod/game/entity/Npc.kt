@@ -21,6 +21,7 @@ import org.rsmod.game.entity.util.EntityFaceTarget
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hero.HeroPoints
+import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.map.Direction
@@ -64,6 +65,24 @@ public class Npc(
     override val heroPoints: HeroPoints = HeroPoints(type.heroCount)
 
     override val damageContributions: DamageContributions = DamageContributions()
+
+    /** The hit that took this npc to zero hitpoints. Null if something other than a hit did. */
+    public var killingHit: Hit? = null
+
+    private var hurtPlayers: MutableSet<Long>? = null
+
+    /** Records that this npc has damaged [player] since it last spawned. */
+    public fun hurtPlayer(player: Player) {
+        val uuid = player.uuid ?: return
+        val hurt = hurtPlayers ?: HashSet<Long>(4).also { hurtPlayers = it }
+        hurt += uuid
+    }
+
+    /** Whether this npc has damaged [player] since it last spawned. */
+    public fun hasHurt(player: Player): Boolean {
+        val uuid = player.uuid ?: return false
+        return hurtPlayers?.contains(uuid) == true
+    }
 
     public val vars: VarNpcIntMap = VarNpcIntMap()
     public val strVars: VarNpcStrMap = VarNpcStrMap()
@@ -358,6 +377,8 @@ public class Npc(
         showAllOps()
         copyStats(type)
         clearHeroPoints()
+        killingHit = null
+        hurtPlayers = null
         queueList.clear()
         vars.backing.clear()
         strVars.backing.clear()
