@@ -443,25 +443,27 @@ constructor(
     private fun Player.shouldCancelInteraction(interaction: Interaction): Boolean =
         when (interaction) {
             is InteractionLoc -> !interaction.isValid()
-            is InteractionNpc -> !interaction.isValid()
+            is InteractionNpc -> !interaction.isValid(this)
             is InteractionObj -> !interaction.isValid(this)
-            is InteractionPlayer -> !interaction.isValid()
+            is InteractionPlayer -> !interaction.isValid(this)
         }
 
     private fun InteractionLoc.isValid(): Boolean {
         return locRegistry.isValid(target.coords, target.id)
     }
 
-    private fun InteractionNpc.isValid(): Boolean {
-        return target.isValidTarget() && uid == target.uid
+    // A level change (ladders, stairs, teleports) leaves the old target on another level, which the
+    // range checks cannot compare, so the interaction is dropped instead.
+    private fun InteractionNpc.isValid(observer: Player): Boolean {
+        return target.isValidTarget() && uid == target.uid && observer.level == target.coords.level
     }
 
     private fun InteractionObj.isValid(observer: Player): Boolean {
         return objRegistry.isValid(observer, target)
     }
 
-    private fun InteractionPlayer.isValid(): Boolean {
-        return target.isValidTarget() && uid == target.uid
+    private fun InteractionPlayer.isValid(observer: Player): Boolean {
+        return target.isValidTarget() && uid == target.uid && observer.level == target.coords.level
     }
 
     /* Interaction event launch functions */

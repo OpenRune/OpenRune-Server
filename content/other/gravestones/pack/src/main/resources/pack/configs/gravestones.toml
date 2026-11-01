@@ -1,0 +1,78 @@
+[[inventory]]
+isServerOnly = true
+id = "inv.gravestone"
+inherit = "inv.gravestone"
+
+scope = "Perm"
+stack = "Always"
+protect = false
+
+[[varp]]
+id = "varp.gravestone_last_input"
+scope = "Temp"
+transmit = "Never"
+
+[[varp]]
+id = "varp.gravestone_coord"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.gravestone_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+id = "varbit.gravestone_fee_paid"
+varp = "varp.gravestone_state"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+id = "varbit.gravestone_death_tutorial"
+varp = "varp.gravestone_state"
+startBit = 1
+endBit = 1
+
+[[varp]]
+id = "varp.death_coffer"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.gravestone_npc"
+scope = "Temp"
+transmit = "Never"
+
+[[inventory]]
+isServerOnly = true
+id = "inv.death_permanent"
+inherit = "inv.death_permanent"
+
+scope = "Perm"
+stack = "Always"
+protect = false
+
+[[enum]]
+isServerOnly = true
+id = "enum.gravestone_resources"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.stafforb" = 1
+"obj.blankrune_high" = 1
+"obj.woodplank" = 1
+"obj.plank_oak" = 1
+"obj.plank_teak" = 1
+"obj.plank_mahogany" = 1
+"obj.plank_camphor" = 1
+"obj.plank_ironwood" = 1
+"obj.plank_rosewood" = 1
+
+[[inventory]]
+id = "inv.gravestone_layout"
+size = 42
+scope = "Perm"
+stack = "Never"
+protect = false

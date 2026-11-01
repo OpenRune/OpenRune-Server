@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.api.attr)
     implementation(projects.api.bottomlessMilk)
     implementation(projects.content.generic.genericLocs)
+    implementation(projects.api.death)
     implementation(projects.api.serverConfig)
     implementation(libs.rsprot.api)
 }

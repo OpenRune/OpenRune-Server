@@ -10,7 +10,7 @@ size = 40
 protect = false
 runWeight = false
 restock = true
-allStock = false
+allStock = true
 placeholders = false
 
 [[inventory.stock]]

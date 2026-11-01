@@ -1,6 +1,7 @@
 package org.rsmod.content.areas.wilderness
 
 import jakarta.inject.Inject
+import org.rsmod.api.death.DeathGrave
 import org.rsmod.api.death.PlayerDeathContext
 import org.rsmod.api.death.PlayerDeathDrops.Companion.DROP_DURATION_PVP
 import org.rsmod.api.death.PlayerDeathDrops.Companion.DROP_DURATION_REVENANT
@@ -33,14 +34,20 @@ public class WildernessDeathHook @Inject constructor() : PlayerDeathHook {
         )
     }
 
+    // Food, potions and phoenix necklaces are deleted, and an existing grave moves to the new death
+    // tile.
+    // UNVERIFIED: whether that move needs level 20+ (a 26 June 2020 hotfix said so; the current
+    // Grave page says any Wilderness PvM death).
     private fun wildernessPvmDeath(context: PlayerDeathContext): PlayerDeathHandling =
         PlayerDeathHandling(
             keepCount = standardKeepCount(context.hasProtectItem),
             dropReceiver = context.player,
             dropDuration = DROP_DURATION_STANDARD,
             revealDelay = PVP_REVEAL_DELAY,
-            supplyPile = true,
+            supplyPile = false,
             untradeableHandling = UntradeableHandling.DROP,
+            grave = DeathGrave(relocate = true),
+            deleteSupplies = true,
         )
 
     private fun revenantCaves(context: PlayerDeathContext): PlayerDeathHandling =

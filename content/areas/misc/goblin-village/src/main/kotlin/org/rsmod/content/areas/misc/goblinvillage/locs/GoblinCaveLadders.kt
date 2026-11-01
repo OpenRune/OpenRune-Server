@@ -16,6 +16,8 @@ class GoblinCaveLadders : PluginScript() {
         for (ladder in UP_LADDERS) {
             onOpLoc1(ladder) { climb(SURFACE) }
         }
+        onOpLoc1("loc.goblin_ladder_bottom") { climb(LOOKOUT_TOP) }
+        onOpLoc1("loc.goblin_ladder_top") { climb(LOOKOUT_BOTTOM) }
     }
 
     private suspend fun ProtectedAccess.climb(dest: CoordGrid) {
@@ -28,6 +30,8 @@ class GoblinCaveLadders : PluginScript() {
     private companion object {
         private val SURFACE = CoordGrid(2960, 3506, 0)
         private val CAVE = CoordGrid(2981, 9875, 0)
+        private val LOOKOUT_BOTTOM = CoordGrid(2955, 3497, 0)
+        private val LOOKOUT_TOP = CoordGrid(2955, 3497, 2)
 
         private val UP_LADDERS =
             listOf("loc.100_goblin_ladder_up", "loc.100_goblin_ladder_up_charred")

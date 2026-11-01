@@ -18,6 +18,7 @@ dependencies {
     implementation(projects.api.playerOutput)
     implementation(projects.api.repo)
     implementation(projects.api.route)
+    implementation(projects.api.serverConfig)
     implementation(projects.api.stats.levelmod)
     implementation(projects.engine.events)
     implementation(projects.engine.game)

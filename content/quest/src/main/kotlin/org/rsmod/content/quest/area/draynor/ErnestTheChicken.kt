@@ -32,7 +32,9 @@ constructor(
     QuestScript(
         "quest_ernestthechicken",
         "varp.haunted",
-        rewards { item("obj.coins", ErnestProgress.CoinReward) },
+        rewards {
+            item("obj.coins", ErnestProgress.CoinReward, label = "${ErnestProgress.CoinReward} Coins")
+        },
         ItemRewardDisplay("obj.coins"),
     ) {
 

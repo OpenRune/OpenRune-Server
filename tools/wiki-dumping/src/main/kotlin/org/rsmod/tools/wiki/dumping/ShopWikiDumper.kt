@@ -1,5 +1,9 @@
 package org.rsmod.tools.wiki.dumping
 
+import dev.openrune.OsrsCacheProvider
+import dev.openrune.definition.type.InventoryType
+import dev.openrune.filesystem.Cache
+import dev.openrune.rscm.RSCM
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.createDirectories
@@ -9,6 +13,7 @@ import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.runBlocking
 import org.rsmod.tools.wiki.dumping.wiki.ParsedStoreLine
 import org.rsmod.tools.wiki.dumping.wiki.ParsedStoreTable
+import org.rsmod.tools.wiki.dumping.wiki.ParsedWikiShopInfobox
 import org.rsmod.tools.wiki.dumping.wiki.WikiClient
 import org.rsmod.tools.wiki.dumping.wiki.WikiShopInfoboxParser
 import org.rsmod.tools.wiki.dumping.wiki.WikiShopStoreParser
@@ -19,6 +24,7 @@ import org.rsmod.tools.wiki.dumping.wiki.bucket.ShopBuckets
 private const val DEFAULT_MAPPINGS_RELATIVE =
     "tools/wiki-dumping/src/main/resources/shopmappings.csv"
 private const val DEFAULT_OUTPUT_RELATIVE = ".data/raw-cache/server/shops"
+private const val LIVE_CACHE_DIR = ".data/cache/LIVE"
 
 /**
  * `inv`s that bucket mode must skip outright rather than write wrong or partial stock for — each
@@ -67,6 +73,7 @@ data class ShopDumpResult(
     val skippedReason: String? = null,
     val table: ParsedStoreTable? = null,
     val shopName: String? = null,
+    val generalStore: Boolean = false,
 )
 
 class ShopWikiDumper(
@@ -81,18 +88,19 @@ class ShopWikiDumper(
      * exclude skill-cape lines from a *base* (non-cape) row's table — see [dumpShop].
      */
     private val capeSiblingArticles: Set<String> = emptySet(),
+    private val cacheInvSize: (inv: String) -> Int,
 ) {
-    private var shopNamesByTitleCache: Map<String, String>? = null
+    private var shopInfoboxesByTitleCache: Map<String, ParsedWikiShopInfobox>? = null
 
-    private suspend fun shopNamesByTitle(): Map<String, String> {
-        shopNamesByTitleCache?.let {
+    private suspend fun shopInfoboxesByTitle(): Map<String, ParsedWikiShopInfobox> {
+        shopInfoboxesByTitleCache?.let {
             return it
         }
         val map =
             checkNotNull(buckets) { "bucket mode requires ShopBuckets" }
                 .listShops()
-                .associate { it.pageTitle to it.infoboxName }
-        shopNamesByTitleCache = map
+                .associateBy { it.pageTitle }
+        shopInfoboxesByTitleCache = map
         return map
     }
 
@@ -109,14 +117,14 @@ class ShopWikiDumper(
         }
 
         val shopName: String?
+        val generalStore: Boolean
         val table: ParsedStoreTable?
 
         if (buckets != null) {
+            val infobox = shopInfoboxesByTitle()[wikiTitle]
             shopName =
-                ShopSpecialHandlers.resolveShopDisplayName(
-                    resolvedRow.inv,
-                    shopNamesByTitle()[wikiTitle],
-                )
+                ShopSpecialHandlers.resolveShopDisplayName(resolvedRow.inv, infobox?.infoboxName)
+            generalStore = infobox?.generalStore == true
             val tables = buckets.storeTables(wikiTitle)
             table =
                 WikiShopStoreParser.skillcapeTrimmed(resolvedRow.inv)?.let { trimmed ->
@@ -132,11 +140,10 @@ class ShopWikiDumper(
                 return skipped(resolvedRow, "wiki page not found: $wikiTitle")
             }
 
+            val infobox = WikiShopInfoboxParser.parseShopInfobox(wikiTitle, source)
             shopName =
-                ShopSpecialHandlers.resolveShopDisplayName(
-                    resolvedRow.inv,
-                    WikiShopInfoboxParser.parseShopInfobox(wikiTitle, source)?.infoboxName,
-                )
+                ShopSpecialHandlers.resolveShopDisplayName(resolvedRow.inv, infobox?.infoboxName)
+            generalStore = infobox?.generalStore == true
 
             table =
                 WikiShopStoreParser.skillcapeTrimmed(resolvedRow.inv)?.let { trimmed ->
@@ -210,6 +217,7 @@ class ShopWikiDumper(
             skippedReason = null,
             table = table.copy(lines = stockLines),
             shopName = shopName,
+            generalStore = generalStore,
         )
     }
 
@@ -385,9 +393,7 @@ class ShopWikiDumper(
         val table = result.table ?: error("missing table for ${result.inv}")
         val output = outputDir.resolve("${result.inv}.toml")
         output.parent?.createDirectories()
-        output.writeText(
-            formatToml(result.inv, result.shopName, table, result.stock, result.unresolvedItems)
-        )
+        output.writeText(formatToml(result, table))
         return output
     }
 
@@ -401,17 +407,12 @@ class ShopWikiDumper(
             skippedReason = reason,
         )
 
-    private fun formatToml(
-        inv: String,
-        shopName: String?,
-        table: ParsedStoreTable,
-        stock: List<ResolvedShopStock>,
-        unresolved: List<String>,
-    ): String = buildString {
+    private fun formatToml(result: ShopDumpResult, table: ParsedStoreTable): String = buildString {
+        val inv = result.inv
         appendLine("[[inventory]]")
         appendLine("isServerOnly = true")
         appendLine("id = \"inv.$inv\"")
-        shopName?.let { appendLine("name = \"${tomlEscape(it)}\"") }
+        result.shopName?.let { appendLine("name = \"${tomlEscape(it)}\"") }
         appendLine()
         appendLine("scope = \"Shared\"")
         appendLine("stack = \"Always\"")
@@ -422,23 +423,26 @@ class ShopWikiDumper(
         if (table.sellMultiplier != null || table.buyMultiplier != null || table.delta != null) {
             appendLine()
         }
-        appendLine("size = ${stock.size.coerceAtLeast(1)}")
+        // A general store buys items it doesn't stock, so it needs the cache's free slots too.
+        val size =
+            if (result.generalStore) cacheInvSize(inv) else result.stock.size.coerceAtLeast(1)
+        appendLine("size = $size")
         appendLine()
         appendLine("protect = false")
         appendLine("runWeight = false")
         appendLine("restock = true")
-        appendLine("allStock = false")
+        appendLine("allStock = ${result.generalStore}")
         appendLine("placeholders = false")
         appendLine()
 
-        for (unresolvedName in unresolved) {
+        for (unresolvedName in result.unresolvedItems) {
             appendLine("# unresolved: $unresolvedName")
         }
-        if (unresolved.isNotEmpty()) {
+        if (result.unresolvedItems.isNotEmpty()) {
             appendLine()
         }
 
-        for (line in stock) {
+        for (line in result.stock) {
             appendLine("[[inventory.stock]]")
             appendLine("obj = \"${line.objKey}\"")
             appendLine("count = ${line.count}")
@@ -489,6 +493,19 @@ private fun dumpDirAvailable(wikiDumpDir: String?): Boolean {
 internal fun bucketCacheDir(rootDir: String?): Path {
     val root = rootDir?.let { Path(it) } ?: GameValLoader.resolveRootOrNull()
     return root?.resolve(BUCKET_CACHE_DIR) ?: Path(BUCKET_CACHE_DIR)
+}
+
+private fun cacheInvSizeLookup(rootDir: String?): (String) -> Int {
+    val sizes by lazy {
+        val cache = Cache.load(GameValLoader.resolveRoot(rootDir).resolve(LIVE_CACHE_DIR))
+        val types = mutableMapOf<Int, InventoryType>()
+        OsrsCacheProvider.InventoryDecoder().load(cache, types)
+        types.mapValues { it.value.size }
+    }
+    return { inv ->
+        val id = RSCM.getRSCM("inv.$inv")
+        checkNotNull(sizes[id]) { "inv.$inv ($id) is not in the live cache" }
+    }
 }
 
 private suspend fun runDump(
@@ -542,6 +559,7 @@ fun main(args: Array<String>) {
             ?: defaultOutputDir(rootDir)
     val log = DropDumpLog(quiet = quiet, verbose = verbose)
     val useBucket = resolveUseBucket(sourceFlag, wikiDumpDir)
+    val cacheInvSize = cacheInvSizeLookup(rootDir)
 
     runBlocking {
         val elapsed = measureTimeMillis {
@@ -586,13 +604,20 @@ fun main(args: Array<String>) {
                         log = log,
                         buckets = ShopBuckets(bucketSource),
                         capeSiblingArticles = capeSiblingArticles,
+                        cacheInvSize = cacheInvSize,
                     )
                 runDump(dumper, rows, outputDir, log)
             } else {
                 WikiClient.open(wikiDumpDir, onPageFetch = { title -> log.verbose("wiki: $title") })
                     .use { wiki ->
                         val dumper =
-                            ShopWikiDumper(wiki, ObjRscmLookup(), ItemWikiLookup(wiki, log), log)
+                            ShopWikiDumper(
+                                wiki,
+                                ObjRscmLookup(),
+                                ItemWikiLookup(wiki, log),
+                                log,
+                                cacheInvSize = cacheInvSize,
+                            )
                         runDump(dumper, rows, outputDir, log)
                     }
             }

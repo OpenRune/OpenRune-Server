@@ -12,6 +12,7 @@ class IdleHandler @Inject constructor(private val config: ServerConfig) : Messag
         }
         if (!player.pendingLogout && !player.loggingOut) {
             player.manualLogout = true
+            player.idleLogout = true
         }
     }
 }

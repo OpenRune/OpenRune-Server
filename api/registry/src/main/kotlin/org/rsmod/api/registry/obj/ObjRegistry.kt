@@ -65,14 +65,14 @@ public class ObjRegistry @Inject constructor(private val updates: ZoneUpdateMap)
         return ObjRegistryResult.Delete.Success
     }
 
-    public fun reveal(obj: Obj) {
+    public fun reveal(obj: Obj, cycle: Int = obj.revealCycle) {
         val zoneKey = ZoneKey.from(obj.coords)
         val entryList = objs.getOrPut(zoneKey)
         if (obj !in entryList) {
             return
         }
         obj.reveal()
-        updates.objReveal(obj)
+        updates.objReveal(obj, cycle)
     }
 
     public fun findAll(zone: ZoneKey): Sequence<Obj> {
@@ -111,7 +111,9 @@ public class ObjRegistry @Inject constructor(private val updates: ZoneUpdateMap)
     }
 
     private fun Obj.singleCopy(): Obj =
-        Obj(coords, entity.copy(count = 1), creationCycle, receiverId)
+        Obj(coords, entity.copy(count = 1), creationCycle, receiverId, ownerId).also {
+            it.copyTimers(this)
+        }
 
     public companion object {
         /**

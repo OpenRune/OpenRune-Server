@@ -20,10 +20,12 @@ import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest.C
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest.Companion.STAGE_MAP_CLUE
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest.Companion.STAGE_NOT_STARTED
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.XMarksTheSpotQuest.Companion.STAGE_ORB_CLUE
+import org.rsmod.content.quest.area.lumbridge.xmarksthespot.coinsGiven
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.lampUsed
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.metVeosInKourend
 import org.rsmod.content.quest.area.lumbridge.xmarksthespot.owns
-import org.rsmod.content.quest.area.lumbridge.xmarksthespot.scrollBoxOwed
+import org.rsmod.content.quest.area.lumbridge.xmarksthespot.scrollBoxGiven
+import org.rsmod.content.quest.manager.afterQuestScroll
 import org.rsmod.content.quest.manager.startQuestPrompt
 import org.rsmod.game.inv.InvObj
 import org.rsmod.plugin.scripts.PluginScript
@@ -57,10 +59,7 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
             STAGE_ACCEPTED -> readyToHelp()
             in STAGE_BOBS_CLUE..STAGE_CIPHER_CLUE -> treasureHuntCheckIn(atSarim = true)
             STAGE_CASKET -> deliverCasket()
-            STAGE_DELIVERED -> {
-                chatNpc(happy, "Hello again.")
-                rewardAndFarewell()
-            }
+            STAGE_DELIVERED -> rewardConversation()
             else -> return reclaimRewards()
         }
         return true
@@ -297,45 +296,56 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
             return
         }
         with(xMarks) { access.setStage(STAGE_DELIVERED) }
-        objbox(CASKET, "You give Veos the ancient casket.")
+        objbox(CASKET, "You give Veos the Ancient Casket.")
+        rewardConversation()
+    }
+
+    private suspend fun Dialogue.rewardConversation() {
+        if (!checkRewardSpace()) return
         chatNpc(
             happy,
-            "Brilliant. This is exactly what I was looking for. Thank you so much for your help.",
+            "Brilliant. This is just what I was looking for. Thank you so much for your help.",
         )
-        chatPlayer(quiz, "No problem. So what is this treasure, anyway?")
+        chatPlayer(quiz, "No problem. So what is this treasure anyway?")
         chatNpc(
             shifty,
-            "Oh, err... nothing important. Just something that might be of use to me back in " +
+            "Oh err... nothing important. Just something that might be of use to me back in " +
                 "Great Kourend.",
         )
         chatPlayer(confused, "If you say so...")
-        rewardAndFarewell()
-    }
-
-    private suspend fun Dialogue.rewardAndFarewell() {
-        if (!checkRewardSpace()) return
-        chatNpc(
-            neutral,
-            "Anyway, I'd best be getting back to Great Kourend soon. I'm sure I'll be back here " +
-                "before long though - there's always more treasure to be found.",
-        )
-        chatNpc(
-            happy,
-            "If you ever fancy visiting the kingdom, come and find me here. I'll happily take " +
-                "you there - consider it an extra thank you for your help.",
-        )
-        chatPlayer(happy, "Sounds great, thanks Veos.")
-        chatNpc(happy, "And as promised, here's your reward.")
-        val ownsScrollBox = player.owns(SCROLL_BOX)
-        val additionalRewards = if (ownsScrollBox) emptyList() else listOf(InvObj(SCROLL_BOX))
-        if (!quest.completeQuest(access, additionalRewards)) {
+        chatNpc(happy, "Anyway, as promised, a reward for you.")
+        val giveScrollBox = !player.owns(SCROLL_BOX)
+        val rewards = buildList {
+            add(InvObj(LAMP))
+            if (giveScrollBox) add(InvObj(SCROLL_BOX))
+            add(InvObj("obj.coins", COIN_REWARD))
+        }
+        val completed =
+            quest.completeQuest(access, rewards) {
+                player.scrollBoxGiven = giveScrollBox
+                player.coinsGiven = true
+            }
+        if (!completed) {
             rewardSpaceRefusal()
             return
         }
-        if (ownsScrollBox) {
-            player.scrollBoxOwed = true
-        }
         xMarks.syncVeos(player)
+        val veos = checkNotNull(npc)
+        access.afterQuestScroll { startDialogue(veos) { farewell() } }
+    }
+
+    private suspend fun Dialogue.farewell() {
+        chatNpc(
+            happy,
+            "Anyway, I'd best be getting back to Great Kourend. I'm sure I'll be back here " +
+                "before long though, there's always more treasure to be found.",
+        )
+        chatNpc(
+            happy,
+            "If you ever fancy visiting the kingdom, come find me here. I'm more than happy to " +
+                "take you there. Consider it an extra thank you for your help.",
+        )
+        chatPlayer(happy, "Sounds great, thanks Veos.")
     }
 
     private suspend fun Dialogue.checkRewardSpace(): Boolean {
@@ -354,7 +364,7 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
 
     private suspend fun Dialogue.reclaimRewards(): Boolean {
         val lamp = !player.lampUsed && !player.owns(LAMP)
-        val scrollBox = player.scrollBoxOwed && !player.owns(SCROLL_BOX)
+        val scrollBox = !player.scrollBoxGiven && !player.owns(SCROLL_BOX)
         if (!lamp && !scrollBox) {
             return false
         }
@@ -369,7 +379,7 @@ constructor(private val xMarks: XMarksTheSpotQuest, private val objRepo: ObjRepo
         chatNpc(happy, "Ah, ${player.displayName}! I've got something here for you.")
         val obj = if (lamp) LAMP else SCROLL_BOX
         if (!lamp) {
-            player.scrollBoxOwed = false
+            player.scrollBoxGiven = true
         }
         access.invAdd(access.inv, obj)
         objbox(obj, "Veos hands you ${if (lamp) "an antique lamp" else "a beginner scroll box"}.")

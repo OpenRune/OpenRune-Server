@@ -5,6 +5,7 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import java.util.Locale
+import net.rsprot.protocol.game.outgoing.interfaces.IfSetPosition
 import org.rsmod.api.attr.AttributeKey
 import org.rsmod.api.invtx.add
 import org.rsmod.api.invtx.invTransaction
@@ -36,7 +37,13 @@ private fun scheduleClose(
 
 val QUEST_STAGE_MAP_ATTR = AttributeKey<MutableMap<String, Int>>("quest_stages")
 
-data class ItemRewardDisplay(val item: String, val zoom: Int = 10)
+/** [x] and [y] move the model on the quest scroll when the cache's default spot doesn't suit it. */
+data class ItemRewardDisplay(
+    val item: String,
+    val zoom: Int = 10,
+    val x: Int? = null,
+    val y: Int? = null,
+)
 
 data class Quest(
     val id: Int,
@@ -156,13 +163,17 @@ data class Quest(
         return setQuestStage(access, attemptedStage.coerceIn(0, maxSteps))
     }
 
-    fun completeQuest(access: ProtectedAccess, additionalRewards: List<InvObj> = emptyList()): Boolean =
-        setQuestStage(access, maxSteps, additionalRewards)
+    fun completeQuest(
+        access: ProtectedAccess,
+        additionalRewards: List<InvObj> = emptyList(),
+        onCompleted: ProtectedAccess.() -> Unit = {},
+    ): Boolean = setQuestStage(access, maxSteps, additionalRewards, onCompleted)
 
     fun setQuestStage(
         access: ProtectedAccess,
         newStage: Int,
         additionalRewards: List<InvObj> = emptyList(),
+        onCompleted: ProtectedAccess.() -> Unit = {},
     ): Boolean {
         require(newStage in 0..maxSteps) { "Quest '$key' stage must be within 0..$maxSteps." }
         val oldStage = getQuestStage(access.player)
@@ -183,6 +194,7 @@ data class Quest(
         }
 
         if (!wasCompleted && newStage >= maxSteps) {
+            access.onCompleted()
             completedQuest(access)
         }
 
@@ -246,9 +258,14 @@ data class Quest(
             ifCloseSub("interface.questscroll")
         }
         access.ifSetText("component.questscroll:quest_title", "You have completed ${displayName}!")
-        access.ifSetText("component.questscroll:quest_reward1", "$questPoints Quest Point")
+        val questPointLabel = if (questPoints == 1) "Quest Point" else "Quest Points"
+        access.ifSetText("component.questscroll:quest_reward1", "$questPoints $questPointLabel")
 
         access.ifSetObj("component.questscroll:quest_model", obj = itemDisplay.item, zoom = itemDisplay.zoom)
+        if (itemDisplay.x != null && itemDisplay.y != null) {
+            val model = "component.questscroll:quest_model".asRSCM(RSCMType.COMPONENT)
+            access.player.client.write(IfSetPosition(model, itemDisplay.x, itemDisplay.y))
+        }
 
         val rewardLines = mutableListOf<String>()
 

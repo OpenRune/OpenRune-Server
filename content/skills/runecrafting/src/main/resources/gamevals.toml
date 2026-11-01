@@ -6,6 +6,9 @@ runecrafting_runes=65517
 runecrafting_altars=65516
 runecrafting_tiara=65515
 
+[gamevals.enum]
+essence_mine_teleporter_exits=63890
+
 [gamevals.dbrow]
 runecrafting_rune_sunfire=65173
 runecrafting_rune_blood_dark=65172
@@ -67,6 +70,7 @@ rcu_pouch_essence_type_med=65482
 rcu_pouch_essence_type_large=65483
 rcu_pouch_essence_type_giant=65484
 rcu_pouch_essence_type_colossal=65485
+essence_mine_teleporter=63889
 
 [gamevals.queue]
 runecraft_magic_imbue_expire=65526

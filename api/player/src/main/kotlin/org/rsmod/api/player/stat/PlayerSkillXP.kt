@@ -69,7 +69,7 @@ public object PlayerSkillXP {
 
             engineQueueChangeStat(stat)
             if (source == XpSource.Natural) {
-                engineQueueAdvanceStat(stat)
+                engineQueueAdvanceStat(stat, previousLevel = baseLevel)
             }
         }
 

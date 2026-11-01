@@ -16,7 +16,7 @@ object Smithing {
             production {
                 input("obj.bronze_bar")
                 statReq("stat.smithing", 5)
-                xp(9)
+                xp(88)
                 output("obj.bronze_cannonball")
             }
         }
@@ -24,7 +24,7 @@ object Smithing {
             production {
                 input("obj.iron_bar")
                 statReq("stat.smithing", 20)
-                xp(17)
+                xp(172)
                 output("obj.iron_cannonball")
             }
         }
@@ -32,7 +32,7 @@ object Smithing {
             production {
                 input("obj.steel_bar")
                 statReq("stat.smithing", 35)
-                xp(27)
+                xp(256)
                 output("obj.mcannonball")
             }
         }
@@ -40,7 +40,7 @@ object Smithing {
             production {
                 input("obj.mithril_bar")
                 statReq("stat.smithing", 55)
-                xp(34)
+                xp(340)
                 output("obj.mithril_cannonball")
             }
         }
@@ -48,7 +48,7 @@ object Smithing {
             production {
                 input("obj.adamantite_bar")
                 statReq("stat.smithing", 75)
-                xp(43)
+                xp(424)
                 output("obj.adamant_cannonball")
             }
         }
@@ -56,7 +56,7 @@ object Smithing {
             production {
                 input("obj.runite_bar")
                 statReq("stat.smithing", 90)
-                xp(51)
+                xp(508)
                 output("obj.rune_cannonball")
             }
         }
@@ -135,48 +135,48 @@ object Smithing {
                 input("obj.tin_ore", 1)
                 input("obj.copper_ore", 1)
                 statReq("stat.smithing", 1)
-                xp(6)
+                xp(62)
                 output("obj.bronze_bar")
             }
-            column(COL_SMITH_XP, 12)
+            column(COL_SMITH_XP, 125)
             column(COL_PREFIX, "bronze")
         }
         row("dbrow.blurite") {
             production {
                 input("obj.blurite_ore", 1)
                 statReq("stat.smithing", 13)
-                xp(8)
+                xp(80)
                 output("obj.blurite_bar")
             }
-            column(COL_SMITH_XP, 17)
-            column(COL_SMELT_XP_ALTERNATE, 8)
+            column(COL_SMITH_XP, 175)
+            column(COL_SMELT_XP_ALTERNATE, 80)
             column(COL_PREFIX, "blurite")
         }
         row("dbrow.iron") {
             production {
                 input("obj.iron_ore", 1)
                 statReq("stat.smithing", 15)
-                xp(12)
+                xp(125)
                 output("obj.iron_bar")
             }
-            column(COL_SMITH_XP, 25)
+            column(COL_SMITH_XP, 250)
             column(COL_PREFIX, "iron")
         }
         row("dbrow.silver") {
             production {
                 input("obj.silver_ore", 1)
                 statReq("stat.smithing", 20)
-                xp(14)
+                xp(137)
                 output("obj.silver_bar")
             }
-            column(COL_SMITH_XP, 50)
+            column(COL_SMITH_XP, 500)
             column(COL_PREFIX, "silver")
         }
         row("dbrow.lead") {
             production {
                 input("obj.lead_ore", 2)
                 statReq("stat.smithing", 25)
-                xp(15)
+                xp(155)
                 output("obj.lead_bar")
             }
             column(COL_SMITH_XP, 0)
@@ -187,21 +187,21 @@ object Smithing {
                 input("obj.iron_ore", 1)
                 input("obj.coal", 2)
                 statReq("stat.smithing", 30)
-                xp(17)
+                xp(175)
                 output("obj.steel_bar")
             }
-            column(COL_SMITH_XP, 37)
+            column(COL_SMITH_XP, 375)
             column(COL_PREFIX, "steel")
         }
         row("dbrow.gold") {
             production {
                 input("obj.gold_ore", 1)
                 statReq("stat.smithing", 40)
-                xp(22)
+                xp(225)
                 output("obj.gold_bar")
             }
-            column(COL_SMITH_XP, 90)
-            column(COL_SMELT_XP_ALTERNATE, 56)
+            column(COL_SMITH_XP, 900)
+            column(COL_SMELT_XP_ALTERNATE, 562)
             column(COL_PREFIX, "gold")
         }
         row("dbrow.lovakite") {
@@ -209,10 +209,10 @@ object Smithing {
                 input("obj.lovakite_ore", 1)
                 input("obj.coal", 2)
                 statReq("stat.smithing", 45)
-                xp(20)
+                xp(200)
                 output("obj.lovakite_bar")
             }
-            column(COL_SMITH_XP, 60)
+            column(COL_SMITH_XP, 600)
             column(COL_PREFIX, "shayzien")
         }
         row("dbrow.mithril") {
@@ -220,10 +220,10 @@ object Smithing {
                 input("obj.mithril_ore", 1)
                 input("obj.coal", 4)
                 statReq("stat.smithing", 50)
-                xp(30)
+                xp(300)
                 output("obj.mithril_bar")
             }
-            column(COL_SMITH_XP, 50)
+            column(COL_SMITH_XP, 500)
             column(COL_PREFIX, "mithril")
         }
         row("dbrow.adamantite") {
@@ -231,10 +231,10 @@ object Smithing {
                 input("obj.adamantite_ore", 1)
                 input("obj.coal", 6)
                 statReq("stat.smithing", 70)
-                xp(37)
+                xp(375)
                 output("obj.adamantite_bar")
             }
-            column(COL_SMITH_XP, 62)
+            column(COL_SMITH_XP, 625)
             column(COL_PREFIX, "adamant")
         }
         row("dbrow.cupronickel") {
@@ -242,7 +242,7 @@ object Smithing {
                 input("obj.nickel_ore", 1)
                 input("obj.copper_ore", 2)
                 statReq("stat.smithing", 74)
-                xp(42)
+                xp(420)
                 output("obj.cupronickel_bar")
             }
             column(COL_SMITH_XP, 0)
@@ -253,10 +253,10 @@ object Smithing {
                 input("obj.runite_ore", 1)
                 input("obj.coal", 8)
                 statReq("stat.smithing", 85)
-                xp(50)
+                xp(500)
                 output("obj.runite_bar")
             }
-            column(COL_SMITH_XP, 75)
+            column(COL_SMITH_XP, 750)
             column(COL_PREFIX, "rune")
         }
     }

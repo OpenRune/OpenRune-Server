@@ -41,3 +41,6 @@ account_default_osm_hotkey_loadout3_1 = 63735
 account_default_osm_hotkey_loadout3_2 = 63736
 account_default_osm_hotkey_loadout3_3 = 63737
 account_default_osm_hotkey_loadout3_4 = 63738
+
+[gamevals.varp]
+runenergy_autoenable_armed = 64420

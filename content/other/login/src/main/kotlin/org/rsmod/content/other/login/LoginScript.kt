@@ -12,7 +12,6 @@ import net.rsprot.protocol.game.outgoing.misc.client.HideObjOps
 import net.rsprot.protocol.game.outgoing.misc.client.MinimapToggle
 import net.rsprot.protocol.game.outgoing.misc.client.ResetAnims
 import net.rsprot.protocol.game.outgoing.misc.player.ChatFilterSettings
-import net.rsprot.protocol.game.outgoing.varp.VarpReset
 import org.rsmod.api.inv.weight.InvWeight
 import org.rsmod.api.net.central.OpenRuneCentralWorldLink
 import org.rsmod.api.net.central.writeCentralSocialSnapshot
@@ -28,7 +27,7 @@ import org.rsmod.api.player.startInvTransmit
 import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.boolVarBit
-import org.rsmod.api.player.vars.resyncVar
+import org.rsmod.api.player.vars.resyncAllVars
 import org.rsmod.api.realm.Realm
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.server.config.ServerConfig
@@ -118,15 +117,8 @@ constructor(
     }
 
     private fun Player.sendVars() {
-        client.write(VarpReset)
         chatboxUnlocked = displayName.isNotBlank()
-        for ((id, _) in vars) {
-            val varp = ServerCacheManager.getVarp(id) ?: continue
-            if (varp.transmit.never) {
-                continue
-            }
-            resyncVar(varp)
-        }
+        resyncAllVars()
     }
 
     private fun Player.sendLowPriority() {

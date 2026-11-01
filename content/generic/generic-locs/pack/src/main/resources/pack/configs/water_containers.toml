@@ -1,0 +1,25 @@
+[[enum]]
+isServerOnly = true
+id = "enum.water_container_fills"
+keyType = "OBJ"
+valueType = "OBJ"
+
+[enum.values]
+"obj.bucket_empty" = "obj.bucket_water"
+"obj.jug_empty" = "obj.jug_water"
+"obj.bowl_empty" = "obj.bowl_water"
+"obj.vial_empty" = "obj.vial_water"
+"obj.cup_empty" = "obj.cup_water"
+"obj.fishbowl_empty" = "obj.fishbowl_water"
+"obj.watering_can_0" = "obj.watering_can_8"
+"obj.watering_can_1" = "obj.watering_can_8"
+"obj.watering_can_2" = "obj.watering_can_8"
+"obj.watering_can_3" = "obj.watering_can_8"
+"obj.watering_can_4" = "obj.watering_can_8"
+"obj.watering_can_5" = "obj.watering_can_8"
+"obj.watering_can_6" = "obj.watering_can_8"
+"obj.watering_can_7" = "obj.watering_can_8"
+"obj.water_skin0" = "obj.water_skin4"
+"obj.water_skin1" = "obj.water_skin4"
+"obj.water_skin2" = "obj.water_skin4"
+"obj.water_skin3" = "obj.water_skin4"

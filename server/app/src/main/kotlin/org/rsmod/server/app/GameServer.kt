@@ -257,14 +257,6 @@ class GameServer(private val skipTypeVerificationOverride: Boolean? = null) :
         val breakdown = phases.entries.joinToString { (name, duration) -> "$name=$duration" }
         logger.info { "Server ready in $total ($breakdown)" }
 
-        // Releases plugin jars from disk locks (Windows in particular) now that boot has fully
-        // loaded everything, so they can be rebuilt/replaced on disk without ::plugindisable-ing
-        // each one first. See ExternalPluginLoader.releaseAllClassLoaders for the trade-off.
-        val released = ExternalPluginLoader.releaseAllClassLoaders()
-        if (released > 0) {
-            logger.info { "Released $released external plugin classloader(s) after boot." }
-        }
-
         if (PluginClasspathScan.release()) {
             logger.info { "Released boot classpath scan." }
         }

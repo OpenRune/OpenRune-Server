@@ -1,7 +1,5 @@
 package org.rsmod.content.interfaces.gameframe
 
-import dev.openrune.definition.type.widget.ComponentType
-
 internal object StandardOverlays {
     val open: List<GameframeOverlay> =
         listOf(
@@ -67,7 +65,8 @@ internal object StandardOverlays {
             "component.toplevel_osrs_stretch:stat_boosts_hud",
             "component.toplevel_osrs_stretch:helper_content",
             "component.toplevel_osrs_stretch:hpbar_hud",
+            "component.toplevel_osrs_stretch:popout",
             "component.toplevel_osrs_stretch:tli_listener",
-            "component.toplevel_osrs_stretch:popout"
+            "component.toplevel_osrs_stretch:ui_highlights",
         )
 }

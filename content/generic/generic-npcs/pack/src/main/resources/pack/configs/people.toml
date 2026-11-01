@@ -1,0 +1,76 @@
+# "Man" and "Woman" types with the standard random dialogue, beyond the ones in npcs.toml.
+
+[[npc]]
+id = "npc.man4"
+inherit = "npc.man4"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.man5"
+inherit = "npc.man5"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.zeah_man"
+inherit = "npc.zeah_man"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.zeah_man2"
+inherit = "npc.zeah_man2"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.zeah_man3"
+inherit = "npc.zeah_man3"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.karamja_man"
+inherit = "npc.karamja_man"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.shayzien_man_1"
+inherit = "npc.shayzien_man_1"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.shayzien_man_2"
+inherit = "npc.shayzien_man_2"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.woman4"
+inherit = "npc.woman4"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.zeah_woman"
+inherit = "npc.zeah_woman"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.zeah_woman2"
+inherit = "npc.zeah_woman2"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.zeah_woman3"
+inherit = "npc.zeah_woman3"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.zeah_woman_outside"
+inherit = "npc.zeah_woman_outside"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.shayzien_woman_1"
+inherit = "npc.shayzien_woman_1"
+contentGroup = "content.person"
+
+[[npc]]
+id = "npc.shayzien_woman_2"
+inherit = "npc.shayzien_woman_2"
+contentGroup = "content.person"
