@@ -12,6 +12,7 @@ import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.ui.IfModalButton
 import org.rsmod.api.player.ui.IfOverlayButton
 import org.rsmod.api.player.ui.ifCloseInputDialog
+import org.rsmod.api.player.ui.observeButton
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.ui.Component
@@ -51,6 +52,7 @@ constructor(private val eventBus: EventBus, private val protectedAccess: Protect
         if (player.ui.containsOverlay(interfaceType) || player.ui.containsTopLevel(interfaceType)) {
             val event = IfOverlayButton(componentType, comsub = -1, obj = null, op = IfButtonOp.Op1)
             logger.debug { "[Overlay] If1Button: $message (event=$event)" }
+            eventBus.observeButton(player, event)
             protectedAccess.launchBeside(player) { eventBus.publish(this, event) }
             return
         }
@@ -63,6 +65,7 @@ constructor(private val eventBus: EventBus, private val protectedAccess: Protect
                 return
             }
             logger.debug { "[Modal] If1Button: $message (event=$event)" }
+            eventBus.observeButton(player, event)
             protectedAccess.launchLenient(player) { eventBus.publish(this, event) }
         }
     }

@@ -20,6 +20,7 @@ import org.rsmod.api.player.events.interact.PlayerUContentEvents
 import org.rsmod.api.player.events.interact.PlayerUEvents
 import org.rsmod.api.player.input.DialogInput
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.ui.PlayerButtonEvent
 import org.rsmod.api.player.ui.WorldMapClick
 import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.game.entity.player.WorldTypeChangedEvent
@@ -116,6 +117,9 @@ public fun ScriptContext.onPlayerCoordsChanged(
 public fun ScriptContext.onPlayerHitpointsChanged(
     action: PlayerHitpointsChangedEvent.() -> Unit
 ): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerButton(action: PlayerButtonEvent.() -> Unit): Unit =
+    onEvent(action)
 
 public fun ScriptContext.onPlayerInteraction(action: PlayerInteractionEvent.() -> Unit): Unit =
     onEvent(action)
