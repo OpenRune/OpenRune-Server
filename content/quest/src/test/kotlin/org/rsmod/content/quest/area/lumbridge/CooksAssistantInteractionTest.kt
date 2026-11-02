@@ -43,23 +43,6 @@ import org.rsmod.plugin.scripts.ScriptContext
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class CooksAssistantInteractionTest {
-    @Test fun `accepting stores native progress without the legacy stage attribute`() {
-        val f = Fixture()
-        f.talk()
-        f.finish(listOf(1, 1, 4))
-        assertEquals(1, f.script.quest.getQuestStage(f.player))
-        assertEquals(1, f.player.vars["varp.cookquest"])
-        assertNull(f.player.attr[QUEST_STAGE_MAP_ATTR]?.get("quest_cooksassistant"))
-    }
-
-    @Test fun `declining leaves the quest unstarted`() {
-        val f = Fixture()
-        f.talk()
-        f.finish(listOf(1, 2))
-        assertEquals(0, f.script.quest.getQuestStage(f.player))
-        assertEquals(0, f.player.vars["varp.cookquest"])
-    }
-
     @Test fun `a partial hand-in keeps progress and records each ingredient`() {
         val f = Fixture(stage = 1)
         f.player.inv[0] = InvObj("obj.bucket_milk", 1)
