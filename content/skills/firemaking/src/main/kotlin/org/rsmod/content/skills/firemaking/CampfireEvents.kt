@@ -8,6 +8,8 @@ import jakarta.inject.Inject
 import kotlin.math.abs
 import org.rsmod.api.controller.vars.intVarCon
 import org.rsmod.api.player.events.interact.LocUEvents
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.firemakingLvl
@@ -133,6 +135,13 @@ class CampfireEvents @Inject constructor(
         val xpModifier = xpMods.get(player, "stat.firemaking")
         val xp = task.log.xp * xpModifier
         statAdvance("stat.firemaking", xp)
+        val context =
+            SkillingActionContext.Firemaking(
+                log = task.log.input.internalName,
+                experienceGranted = xp,
+                campfire = true,
+            )
+        publish(SkillingActionCompleteEvent(player, context))
         invDel(player.inv, task.log.input.internalName, 1)
 
         spotanimMap(worldRepo, "spotanim.forestry_campfire_burning_spotanim", camp.coords)

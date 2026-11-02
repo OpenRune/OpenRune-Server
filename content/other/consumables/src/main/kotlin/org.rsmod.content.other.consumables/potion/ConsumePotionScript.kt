@@ -4,6 +4,8 @@ import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.area.checker.isInWilderness
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
@@ -264,6 +266,13 @@ constructor(
             remainingDoseMessage(
                 potion = potion,
                 consumedIndex = doseIndex,
+            ),
+        )
+
+        publish(
+            SkillingActionCompleteEvent(
+                player,
+                SkillingActionContext.Consumed(type, potion = true),
             ),
         )
     }
