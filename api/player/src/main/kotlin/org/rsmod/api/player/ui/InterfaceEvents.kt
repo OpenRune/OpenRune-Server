@@ -43,6 +43,26 @@ public class IfMoveSub(override val player: Player, destComponent: Int) : KeyedE
     override val id: Long = destComponent.toLong()
 }
 
+/**
+ * Any modal or overlay opening or closing, for observers. [IfOpenSub] and [IfCloseSub] allow one
+ * subscriber per interface, so content that owns an interface keeps those. [Closed] also fires when
+ * another interface replaces this one.
+ */
+public class PlayerInterfaceEvents {
+    public data class Opened(
+        override val player: Player,
+        val interf: UserInterface,
+        val target: Component,
+        val subType: IfSubType,
+    ) : UnboundEvent, PlayerEvent
+
+    public data class Closed(
+        override val player: Player,
+        val interf: UserInterface,
+        val from: Component,
+    ) : UnboundEvent, PlayerEvent
+}
+
 public data class IfModalButton(
     val component: ComponentType,
     val comsub: Int,
