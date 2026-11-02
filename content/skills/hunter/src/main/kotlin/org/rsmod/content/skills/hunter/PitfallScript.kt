@@ -372,28 +372,28 @@ constructor(
         }
     }
 
-    enum class Dir(val angle: Int, val dx: Int, val dz: Int) {
+    internal enum class Dir(val angle: Int, val dx: Int, val dz: Int) {
         North(1024, 0, 1),
         East(1536, 1, 0),
         South(0, 0, -1),
         West(512, -1, 0),
     }
 
-    enum class PitState {
+    internal enum class PitState {
         Empty,
         Spiked,
         Falling,
         Full,
     }
 
-    enum class CrossStage {
+    internal enum class CrossStage {
         Approach,
         Decide,
         OnPit,
         Leaping,
     }
 
-    data class PitTimer(
+    internal data class PitTimer(
         val state: PitState,
         val cycle: Int,
         val coords: CoordGrid,
@@ -402,7 +402,7 @@ constructor(
         val npc: Npc? = null,
     )
 
-    class Crossing(val pit: Pit, val pitCoords: CoordGrid, val dir: Dir, size: Int, var started: Int) {
+    internal class Crossing(val pit: Pit, val pitCoords: CoordGrid, val dir: Dir, size: Int, var started: Int) {
         var stage: CrossStage = CrossStage.Approach
         val edge: CoordGrid =
             when (dir) {
@@ -420,19 +420,19 @@ constructor(
             }
     }
 
-    class Chase(val npc: Npc, val creature: Creature, var nextAttack: Int) {
+    internal class Chase(val npc: Npc, val creature: Creature, var nextAttack: Int) {
         var crossing: Crossing? = null
         var lastLeapt: Int = -1
     }
 
-    class Hunt {
+    internal class Hunt {
         val pits = HashMap<Int, PitTimer>()
         var chase: Chase? = null
     }
 
-    class Pit(val index: Int, val loc: String, val varbit: String, val kinds: List<Creature>)
+    internal class Pit(val index: Int, val loc: String, val varbit: String, val kinds: List<Creature>)
 
-    class Creature(row: HunterPitfallsRow) {
+    internal class Creature(row: HunterPitfallsRow) {
         val name: String = row.name
         val npc: String = RSCM.getReverseMapping(RSCMType.NPC, row.npc.id)
         val level: Int = row.level
@@ -454,7 +454,7 @@ constructor(
             row.gear.map { listOf(it.t0.internalName, it.t1.internalName, it.t2.internalName) to it.t3 }
     }
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val TIMER = "timer.hunter_pitfalls"
         const val TEASING_STICK = "obj.hunting_teasing_stick"

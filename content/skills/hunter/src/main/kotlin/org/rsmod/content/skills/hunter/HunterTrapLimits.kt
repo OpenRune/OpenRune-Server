@@ -11,18 +11,18 @@ import org.rsmod.game.entity.Player
 class HunterTrapLimits {
     private val counters = mutableListOf<(Player) -> Int>()
 
-    fun register(counter: (Player) -> Int) {
+    internal fun register(counter: (Player) -> Int) {
         counters += counter
     }
 
-    fun count(player: Player): Int = counters.sumOf { it(player) }
+    internal fun count(player: Player): Int = counters.sumOf { it(player) }
 
-    fun limit(player: Player, areas: AreaChecker): Int {
+    internal fun limit(player: Player, areas: AreaChecker): Int {
         val wilderness = if (player.coords.isInWilderness(areas)) 1 else 0
         return HunterTrapScript.maxTraps(player.stat(HunterTrapScript.HUNTER)) + wilderness
     }
 
-    fun canLay(player: Player, areas: AreaChecker): Boolean {
+    internal fun canLay(player: Player, areas: AreaChecker): Boolean {
         val limit = limit(player, areas)
         if (count(player) < limit) return true
         val amount = if (limit == 1) "one trap" else "$limit traps"

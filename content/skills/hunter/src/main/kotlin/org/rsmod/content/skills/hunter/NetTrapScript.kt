@@ -387,7 +387,7 @@ constructor(
             else -> tree.coords.translate(-1, 0)
         }
 
-    enum class State {
+    internal enum class State {
         Setting,
         Set,
         Catching,
@@ -397,7 +397,7 @@ constructor(
         Reset,
     }
 
-    class NetTrap(val owner: Player, val def: Tree, val tree: LocInfo, val net: CoordGrid) {
+    internal class NetTrap(val owner: Player, val def: Tree, val tree: LocInfo, val net: CoordGrid) {
         var state: State = State.Setting
         var stateCycle: Int = 0
         var treeLoc: LocInfo? = null
@@ -410,7 +410,7 @@ constructor(
         fun covers(coords: CoordGrid): Boolean = coords == tree.coords || coords == net
     }
 
-    class Tree(row: HunterNetTrapsRow) {
+    internal class Tree(row: HunterNetTrapsRow) {
         val name: String = row.name
         val npc: String = RSCM.getReverseMapping(RSCMType.NPC, row.npc.id)
         val level: Int = row.level
@@ -433,7 +433,7 @@ constructor(
         val smokable: Boolean = row.smokable
     }
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val TIMER = "timer.hunter_net_traps"
         const val ROPE = "obj.rope"

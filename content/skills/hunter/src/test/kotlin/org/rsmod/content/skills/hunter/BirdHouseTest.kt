@@ -141,6 +141,36 @@ class BirdHouseTest {
         assertEquals(0, state())
     }
 
+    @Test
+    fun `a bare house dismantled twice gives one clockwork`() {
+        VarPlayerIntMapSetter.set(f.player, space.transmitVarp, tier.tier * 3 + 1)
+        f.run(script, "op3", space)
+        f.run(script, "op3", space)
+        assertEquals(1L, f.total(BirdHouseScript.CLOCKWORK))
+        assertEquals(0, state())
+    }
+
+    @Test
+    fun `a house emptied early twice in a full inventory drops one clockwork`() {
+        seeded()
+        f.fill()
+        f.call(script, "emptyEarly", space)
+        f.call(script, "emptyEarly", space)
+        assertEquals(1L, ground(BirdHouseScript.CLOCKWORK))
+        assertEquals(0L, f.total(BirdHouseScript.CLOCKWORK))
+        assertEquals(0, state())
+    }
+
+    @Test
+    fun `a house cleared during the early empty prompt gives no clockwork`() {
+        seeded()
+        VarPlayerIntMapSetter.set(f.player, space.seededVarp, (System.currentTimeMillis() / 60_000L).toInt())
+        f.call(script, "op3", space)
+        VarPlayerIntMapSetter.set(f.player, space.transmitVarp, 0)
+        f.finish()
+        assertEquals(0L, f.total(BirdHouseScript.CLOCKWORK) + ground(BirdHouseScript.CLOCKWORK))
+    }
+
     companion object {
         @JvmStatic
         @BeforeAll

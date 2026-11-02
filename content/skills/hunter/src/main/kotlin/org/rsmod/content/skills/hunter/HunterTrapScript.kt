@@ -104,13 +104,13 @@ constructor(
         onPlayerLogout { player.returnTraps() }
     }
 
-    fun trapsOf(player: Player): List<Trap> = traps.values.filter { it.owner == player }
+    internal fun trapsOf(player: Player): List<Trap> = traps.values.filter { it.owner == player }
 
-    fun trapAt(coords: CoordGrid): Trap? = traps[coords]
+    internal fun trapAt(coords: CoordGrid): Trap? = traps[coords]
 
-    fun kinds(): List<TrapKind> = kinds
+    internal fun kinds(): List<TrapKind> = kinds
 
-    suspend fun ProtectedAccess.lay(kind: TrapKind, ground: Obj?) {
+    internal suspend fun ProtectedAccess.lay(kind: TrapKind, ground: Obj?) {
         val level = stat(HUNTER)
         if (level < kind.level) {
             mes("You need a Hunter level of ${kind.level} to set up a ${kind.name}.")
@@ -204,7 +204,7 @@ constructor(
         mes("You bait the trap.", ChatType.Spam)
     }
 
-    suspend fun ProtectedAccess.check(coords: CoordGrid): Boolean {
+    internal suspend fun ProtectedAccess.check(coords: CoordGrid): Boolean {
         val trap = ownTrap(coords) ?: return false
         val creature = trap.creature
         if (trap.state != TrapState.Full || creature == null) return false
@@ -353,7 +353,7 @@ constructor(
         worldRepo.soundArea(trap.coords, synth)
     }
 
-    fun catchWithoutLure(trap: Trap, creature: Creature, loc: String) {
+    internal fun catchWithoutLure(trap: Trap, creature: Creature, loc: String) {
         if (trap.state != TrapState.Set) return
         trap.approach = null
         trap.creature = creature
@@ -488,7 +488,7 @@ constructor(
 
     private fun locName(id: Int): String = RSCM.getReverseMapping(RSCMType.LOC, id)
 
-    enum class TrapState {
+    internal enum class TrapState {
         Set,
         Trapping,
         Full,
@@ -496,11 +496,11 @@ constructor(
         Broken,
     }
 
-    class Approach(val npc: Npc, val creature: Creature, val started: Int) {
+    internal class Approach(val npc: Npc, val creature: Creature, val started: Int) {
         var ready: Int = 0
     }
 
-    class Trap(
+    internal class Trap(
         val owner: Player,
         val kind: TrapKind,
         val coords: CoordGrid,
@@ -514,9 +514,9 @@ constructor(
         var trappingLoc: String? = null,
     )
 
-    class Drop(val obj: String, val min: Int, val max: Int = min)
+    internal class Drop(val obj: String, val min: Int, val max: Int = min)
 
-    class Creature(
+    internal class Creature(
         val name: String,
         val npcs: List<String>,
         val level: Int,
@@ -554,7 +554,7 @@ constructor(
         }
     }
 
-    class TrapKind(
+    internal class TrapKind(
         val name: String,
         val itemType: ItemServerType,
         val level: Int,
@@ -577,7 +577,7 @@ constructor(
         fun creatureFor(npc: Int): Creature? = creatures.firstOrNull { npc in it.npcIds }
     }
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val TIMER = "timer.hunter_traps"
         const val JERBOA = "npc.varlamore_hunterjerboa01"

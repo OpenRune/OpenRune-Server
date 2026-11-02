@@ -60,7 +60,7 @@ constructor(
         onOpNpc1(HERBIBOAR) { harvest(it.npc) }
     }
 
-    suspend fun ProtectedAccess.inspectStart(loc: Int) {
+    internal suspend fun ProtectedAccess.inspectStart(loc: Int) {
         if (stat(HUNTER) < LEVEL) {
             mes("You need a Hunter level of $LEVEL to track a herbiboar.")
             return
@@ -82,7 +82,7 @@ constructor(
         if (!continueFrom(player, first)) confuse()
     }
 
-    suspend fun ProtectedAccess.inspectSpot(loc: Int) {
+    internal suspend fun ProtectedAccess.inspectSpot(loc: Int) {
         anim(INSPECT_SEQ)
         delay(INSPECT_TICKS)
         val leg = legs.firstOrNull { it.from == loc && player.vars[it.trail] == it.dir }
@@ -102,7 +102,7 @@ constructor(
         if (!continueFrom(player, leg)) confuse()
     }
 
-    suspend fun ProtectedAccess.attackTunnel(coords: CoordGrid) {
+    internal suspend fun ProtectedAccess.attackTunnel(coords: CoordGrid) {
         val index = tunnels.backing.entries.firstOrNull { it.value == coords }?.key ?: return
         if (vars[ENDS] != index) {
             mes("Nothing seems to be hiding in this tunnel.")
@@ -127,7 +127,7 @@ constructor(
             .filter { it.type.internalName.startsWith(HERBIBOAR_PREFIX) }
             .minByOrNull { HunterTrapScript.distance(it.coords, coords) }
 
-    suspend fun ProtectedAccess.harvest(npc: Npc) {
+    internal suspend fun ProtectedAccess.harvest(npc: Npc) {
         val index = vars[VISIBLE]
         if (index == 0) return
         if (stat(HERBLORE) < HERBLORE_LEVEL) {
@@ -224,7 +224,7 @@ constructor(
 
     private fun <T> List<T>.randomOrNull(random: GameRandom): T? = if (isEmpty()) null else this[random.of(size)]
 
-    data class Leg(val from: Int, val trail: VarBitType, val dir: Int, val toGroup: Int?, val endTunnel: Int)
+    internal data class Leg(val from: Int, val trail: VarBitType, val dir: Int, val toGroup: Int?, val endTunnel: Int)
 
     private fun loadLegs(): List<Leg> =
         HerbiboarLegsRow.all().map {
@@ -237,7 +237,7 @@ constructor(
             )
         }
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val HERBLORE = "stat.herblore"
         const val LEVEL = 80

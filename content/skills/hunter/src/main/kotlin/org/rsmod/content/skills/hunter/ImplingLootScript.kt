@@ -20,27 +20,27 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 data class ImplingDrop(
-    val obj: String?,
-    val min: Int,
-    val max: Int,
-    val noted: Boolean,
-    val num: Int,
-    val den: Int,
-    val clueTier: String? = null,
+    internal val obj: String?,
+    internal val min: Int,
+    internal val max: Int,
+    internal val noted: Boolean,
+    internal val num: Int,
+    internal val den: Int,
+    internal val clueTier: String? = null,
 ) {
-    val isNothing: Boolean get() = obj == null
+    internal val isNothing: Boolean get() = obj == null
 
-    companion object {
+    internal companion object {
         fun nothing(num: Int, den: Int): ImplingDrop = ImplingDrop(null, 0, 0, false, num, den)
     }
 }
 
 data class ImplingLootTable(
-    val preRoll: List<ImplingDrop>,
-    val main: List<ImplingDrop>,
-    val tertiary: List<ImplingDrop>,
+    internal val preRoll: List<ImplingDrop>,
+    internal val main: List<ImplingDrop>,
+    internal val tertiary: List<ImplingDrop>,
 ) {
-    companion object {
+    internal companion object {
         const val PRE_ROLL = 0
         const val MAIN = 1
         const val TERTIARY = 2
@@ -65,7 +65,7 @@ class ImplingLootScript @Inject constructor(private val objRepo: ObjRepository) 
         }
     }
 
-    suspend fun ProtectedAccess.loot(slot: Int, jar: String) {
+    internal suspend fun ProtectedAccess.loot(slot: Int, jar: String) {
         if (inv.freeSpace() < 1) {
             mes("You'll need to clear some space in your pack before looting the jar.")
             return
@@ -78,7 +78,7 @@ class ImplingLootScript @Inject constructor(private val objRepo: ObjRepository) 
         give(drops)
     }
 
-    fun ProtectedAccess.rollJar(jar: String): List<ImplingDrop> {
+    internal fun ProtectedAccess.rollJar(jar: String): List<ImplingDrop> {
         val table = tables[jar] ?: return emptyList()
         val mm2 = QuestRequirements.hasCompleted(player, MONKEY_MADNESS_II)
         return roll(table, mm2Complete = mm2) { bound -> random.of(bound) }
@@ -86,7 +86,7 @@ class ImplingLootScript @Inject constructor(private val objRepo: ObjRepository) 
 
     private var lootTrackerEventId: Int = 0
 
-    fun ProtectedAccess.give(drops: List<ImplingDrop>, from: Npc? = null) {
+    internal fun ProtectedAccess.give(drops: List<ImplingDrop>, from: Npc? = null) {
         val eventId = from?.let { nextLootTrackerEventId() }
         for (drop in drops) {
             val obj = checkNotNull(drop.obj)
@@ -105,7 +105,7 @@ class ImplingLootScript @Inject constructor(private val objRepo: ObjRepository) 
         return lootTrackerEventId
     }
 
-    companion object {
+    internal companion object {
         const val LOOT = "Loot"
         const val JAR_BREAK_NUM = 1
         const val JAR_BREAK_DEN = 10

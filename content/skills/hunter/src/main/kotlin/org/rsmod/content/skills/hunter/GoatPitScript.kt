@@ -359,7 +359,7 @@ constructor(
 
     private fun distance(a: CoordGrid, b: CoordGrid): Int = maxOf(kotlin.math.abs(a.x - b.x), kotlin.math.abs(a.z - b.z))
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val LEVEL = 60
         const val SHEEP_HERDER = "quest_sheepherder"

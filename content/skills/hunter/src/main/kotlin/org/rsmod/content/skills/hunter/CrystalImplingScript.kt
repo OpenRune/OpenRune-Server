@@ -30,7 +30,7 @@ constructor(
 ) : PluginScript() {
     private var current: Npc? = null
     private var lastSlot: Int = -1
-    var clock: Clock = Clock.systemUTC()
+    internal var clock: Clock = Clock.systemUTC()
 
     override fun ScriptContext.startup() {
         for (name in NAMES) {
@@ -43,7 +43,7 @@ constructor(
         onEvent<GameLifecycle.LateCycle> { tick() }
     }
 
-    fun tick() {
+    internal fun tick() {
         val slot = halfHourSlot(LocalTime.now(clock))
         if (slot == lastSlot) return
         if (lastSlot != -1 && !isVisibleTime(LocalTime.now(clock))) return
@@ -51,7 +51,7 @@ constructor(
         spawn()
     }
 
-    fun spawn(): Npc? {
+    internal fun spawn(): Npc? {
         current?.let { remove(it) }
         val type =
             ServerCacheManager.getNpc(NAMES[random.of(NAMES.size)].asRSCM(RSCMType.NPC))
@@ -69,14 +69,14 @@ constructor(
         return statRandom(ImplingScript.HUNTER, low, high, invisibleBoost = 0)
     }
 
-    fun current(): Npc? = current?.takeIf { it.isSlotAssigned }
+    internal fun current(): Npc? = current?.takeIf { it.isSlotAssigned }
 
     private fun remove(npc: Npc) {
         if (npc.isSlotAssigned) npcRepo.del(npc, Int.MAX_VALUE)
         if (current === npc) current = null
     }
 
-    companion object {
+    internal companion object {
         const val LEVEL = 80
         const val XP = 280
         const val JAR = "obj.ii_captured_impling_12"

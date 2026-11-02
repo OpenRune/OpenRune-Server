@@ -40,7 +40,7 @@ constructor(
     private val playerRepo: PlayerRepository,
     private val spawns: ImplingSpawns,
     private val areas: AreaChecker,
-    val rumours: HunterRumours,
+    internal val rumours: HunterRumours,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         val rows = HunterButterfliesRow.all()
@@ -56,7 +56,7 @@ constructor(
         }
     }
 
-    fun ProtectedAccess.catch(npc: Npc, row: HunterButterfliesRow) {
+    internal fun ProtectedAccess.catch(npc: Npc, row: HunterButterfliesRow) {
         if (!npc.isCatchable()) return
         faceEntitySquare(npc)
         anim(CATCH_SEQ)
@@ -95,7 +95,7 @@ constructor(
         return random.of(256) < HunterOutfit.applyTo(catchChance256(low, high, stat(HUNTER)), player)
     }
 
-    suspend fun ProtectedAccess.release(row: HunterButterfliesRow) {
+    internal suspend fun ProtectedAccess.release(row: HunterButterfliesRow) {
         if (invReplace(inv, row.jar.internalName, 1, BUTTERFLY_JAR).failure) return
         anim(RELEASE_SEQ)
         player.applyEffect(row)
@@ -184,7 +184,7 @@ constructor(
         return listOf(NET, MAGIC_NET).firstOrNull { it.asRSCM(RSCMType.OBJ) == held.id }
     }
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val HITPOINTS = "stat.hitpoints"
         const val NET = "obj.hunting_butterfly_net"

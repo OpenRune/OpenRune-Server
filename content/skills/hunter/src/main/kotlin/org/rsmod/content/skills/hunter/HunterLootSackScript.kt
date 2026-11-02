@@ -95,7 +95,7 @@ constructor(private val objRepo: ObjRepository, private val pets: PetRewards) : 
     private fun ProtectedAccess.owns(obj: String): Boolean =
         obj in inv || obj in player.worn || obj in inv(HunterRumours.BANK)
 
-    companion object {
+    internal companion object {
         const val HERBS = "dbrow.hunter_loot_sack_herbs"
         const val LOGS = "dbrow.hunter_loot_sack_logs"
         const val HERBLORE = "stat.herblore"

@@ -189,7 +189,7 @@ constructor(
         }
     }
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val LEVEL = 82
         const val BLOOD_MOON_RISES = "quest_bloodmoonrises"

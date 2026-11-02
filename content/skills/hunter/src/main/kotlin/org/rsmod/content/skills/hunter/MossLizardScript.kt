@@ -162,15 +162,15 @@ constructor(
         mes("You cut the tail off the lizard.")
     }
 
-    class Site(val rocks: List<CoordGrid>, val traps: List<CoordGrid>, val bushes: List<CoordGrid>)
+    internal class Site(val rocks: List<CoordGrid>, val traps: List<CoordGrid>, val bushes: List<CoordGrid>)
 
-    class Run(val site: Site, val trap: Int, val bush: CoordGrid, val exit: CoordGrid, val spawnCycle: Int) {
+    internal class Run(val site: Site, val trap: Int, val bush: CoordGrid, val exit: CoordGrid, val spawnCycle: Int) {
         var lizard: Npc? = null
         var caughtCycle: Int = 0
         var passed: Boolean = false
     }
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val TIMER = "timer.hunter_moss_lizards"
         const val ROCK = "loc.pmoon_lizard_rock"

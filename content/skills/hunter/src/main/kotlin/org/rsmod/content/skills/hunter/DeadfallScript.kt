@@ -298,7 +298,7 @@ constructor(
         locRepo.add(trap.boulder, Int.MAX_VALUE)
     }
 
-    enum class State {
+    internal enum class State {
         Setting,
         Set,
         Trapping,
@@ -306,11 +306,11 @@ constructor(
         Failing,
     }
 
-    class Lure(val npc: Npc, val creature: Creature, val side: CoordGrid, val started: Int) {
+    internal class Lure(val npc: Npc, val creature: Creature, val side: CoordGrid, val started: Int) {
         var ready: Int = 0
     }
 
-    class Deadfall(val owner: Player, val boulder: LocInfo, val width: Int, val length: Int) {
+    internal class Deadfall(val owner: Player, val boulder: LocInfo, val width: Int, val length: Int) {
         var state: State = State.Setting
         var stateCycle: Int = 0
         var lured: Lure? = null
@@ -319,7 +319,7 @@ constructor(
         var smoked: Boolean = false
     }
 
-    class Creature(row: HunterDeadfallsRow) {
+    internal class Creature(row: HunterDeadfallsRow) {
         val name: String = row.name
         val npc: String = RSCM.getReverseMapping(RSCMType.NPC, row.npc.id)
         val npcId: Int = row.npc.id
@@ -337,7 +337,7 @@ constructor(
         val fullSynth: String = RSCM.getReverseMapping(RSCMType.SYNTH, row.fullSynth)
     }
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val TIMER = "timer.hunter_deadfalls"
         const val BOULDER = "loc.hunting_deadfall_boulder"

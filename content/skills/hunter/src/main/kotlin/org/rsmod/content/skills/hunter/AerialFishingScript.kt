@@ -433,9 +433,9 @@ constructor(
 
     private fun distance(a: CoordGrid, b: CoordGrid): Int = max(abs(a.x - b.x), abs(a.z - b.z))
 
-    class Flight(val spot: Npc, val coords: CoordGrid, val returnCycle: Int, val frenzied: Boolean)
+    internal class Flight(val spot: Npc, val coords: CoordGrid, val returnCycle: Int, val frenzied: Boolean)
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val FISHING = "stat.fishing"
         const val COOKING = "stat.cooking"

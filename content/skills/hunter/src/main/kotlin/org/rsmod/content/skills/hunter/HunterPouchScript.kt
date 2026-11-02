@@ -36,25 +36,25 @@ enum class HunterPouch(val noun: String, val plural: String, val inv: String) {
     Fur("fur", "furs", "inv.hunter_fur_pouch"),
     Meat("meat", "meats", "inv.hunter_meat_pouch");
 
-    data class Size(val closed: String, val open: String, val capacity: Int)
+    internal data class Size(val closed: String, val open: String, val capacity: Int)
 
-    val sizes: List<Size> by lazy {
+    internal val sizes: List<Size> by lazy {
         HunterPouchesRow.all().filter { it.kind == ordinal }.map { Size(it.closed.internalName, it.open.internalName, it.capacity) }
     }
 
-    val storable: List<String> by lazy {
+    internal val storable: List<String> by lazy {
         hunter_pouch_contents.filter { it.value == ordinal }.map { it.key.internalName }
     }
 
-    fun store(player: Player): Inventory = player.invMap.getOrPut(inv)
+    internal fun store(player: Player): Inventory = player.invMap.getOrPut(inv)
 
-    fun stored(player: Player): Int = store(player).let { s -> s.indices.sumOf { s[it]?.count ?: 0 } }
+    internal fun stored(player: Player): Int = store(player).let { s -> s.indices.sumOf { s[it]?.count ?: 0 } }
 
-    fun held(player: Player): Size? = sizes.lastOrNull { it.closed in player.inv || it.open in player.inv }
+    internal fun held(player: Player): Size? = sizes.lastOrNull { it.closed in player.inv || it.open in player.inv }
 
-    fun openHeld(player: Player): Size? = sizes.lastOrNull { it.open in player.inv }
+    internal fun openHeld(player: Player): Size? = sizes.lastOrNull { it.open in player.inv }
 
-    companion object {
+    internal companion object {
         fun of(obj: String): HunterPouch? = entries.firstOrNull { obj in it.storable }
 
         fun ofPouch(obj: String): HunterPouch? = entries.firstOrNull { p -> p.sizes.any { obj == it.closed || obj == it.open } }
@@ -62,7 +62,7 @@ enum class HunterPouch(val noun: String, val plural: String, val inv: String) {
         fun ProtectedAccess.pouchHunted(obj: String, count: Int = 1): Boolean {
             val pouch = of(obj) ?: return false
             val size = pouch.openHeld(player) ?: return false
-            if (pouch.stored(player) + count > size.capacity) return false
+            if (count > size.capacity - pouch.stored(player)) return false
             return invAdd(pouch.store(player), obj, count).success
         }
     }

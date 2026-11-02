@@ -93,7 +93,7 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
         }
     }
 
-    fun ProtectedAccess.build(space: Space, tier: BirdhouseTypesRow) {
+    internal fun ProtectedAccess.build(space: Space, tier: BirdhouseTypesRow) {
         if (stat(HUNTER) < tier.hunterLevel) {
             mes("You need a Hunter level of ${tier.hunterLevel} to place this bird house.")
             return
@@ -110,7 +110,7 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
         soundSynth(PLACE_SYNTH)
     }
 
-    suspend fun ProtectedAccess.addSeeds(space: Space, preferred: String?) {
+    internal suspend fun ProtectedAccess.addSeeds(space: Space, preferred: String?) {
         val state = state(player, space)
         if (state == 0) {
             mes("There is no bird house here.")
@@ -165,7 +165,7 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
         emptyEarly(space)
     }
 
-    fun ProtectedAccess.emptyEarly(space: Space) {
+    internal fun ProtectedAccess.emptyEarly(space: Space) {
         val state = state(player, space)
         if (state == 0 || state % 3 != 0) return
         clear(player, space)
@@ -179,7 +179,7 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
         mes("You dismantle the bird house.")
     }
 
-    fun ProtectedAccess.empty(space: Space): Boolean {
+    internal fun ProtectedAccess.empty(space: Space): Boolean {
         val state = state(player, space)
         if (state == 0 || state % 3 != 0) return false
         if (!isFull(player, space)) {
@@ -209,7 +209,7 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
         return true
     }
 
-    suspend fun ProtectedAccess.reset(space: Space) {
+    internal suspend fun ProtectedAccess.reset(space: Space) {
         if (!empty(space)) return
         delay(1)
         val carried = TIERS.lastOrNull { it.item.internalName in inv && stat(HUNTER) >= it.hunterLevel }
@@ -225,7 +225,7 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
         buildFromLogs(space)
     }
 
-    suspend fun ProtectedAccess.buildFromLogs(space: Space): Boolean {
+    internal suspend fun ProtectedAccess.buildFromLogs(space: Space): Boolean {
         val buildable =
             TIERS.filter {
                 it.logs.internalName in inv && stat(CRAFTING) >= it.craftingLevel && stat(HUNTER) >= it.hunterLevel
@@ -241,7 +241,7 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
         return true
     }
 
-    fun ProtectedAccess.craft(tier: BirdhouseTypesRow): Boolean {
+    internal fun ProtectedAccess.craft(tier: BirdhouseTypesRow): Boolean {
         val made =
             player
                 .invTransaction(inv) {
@@ -277,7 +277,7 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
         }
     }
 
-    fun state(player: Player, space: Space): Int = player.vars[space.transmitVarp]
+    internal fun state(player: Player, space: Space): Int = player.vars[space.transmitVarp]
 
     private fun setState(player: Player, space: Space, value: Int) {
         VarPlayerIntMapSetter.set(player, space.transmitVarp, value)
@@ -289,20 +289,20 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
         VarPlayerIntMapSetter.set(player, space.seededVarp, 0)
     }
 
-    fun isFull(player: Player, space: Space): Boolean =
+    internal fun isFull(player: Player, space: Space): Boolean =
         nowMinutes() - player.vars[space.seededVarp] >= FULL_MINUTES
 
     private fun nowMinutes(): Int = (clock.millis() / 60_000L).toInt()
 
-    data class Space(val loc: String, val suffix: Char) {
+    internal data class Space(val loc: String, val suffix: Char) {
         val transmitVarp: String get() = "varp.birdhouse_transmit_$suffix"
         val seededVarp: String get() = "varp.birdhouse_seeded_$suffix"
         val seedsVarp: String get() = "varp.birdhouse_seeds_$suffix"
     }
 
-    data class Loot(val feathers: Int, val nests: List<String>)
+    internal data class Loot(val feathers: Int, val nests: List<String>)
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val CRAFTING = "stat.crafting"
         const val HAMMER = "obj.hammer"

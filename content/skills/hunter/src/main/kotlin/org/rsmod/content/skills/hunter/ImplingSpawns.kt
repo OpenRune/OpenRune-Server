@@ -17,7 +17,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 @Singleton
 class ImplingSpawns @Inject constructor(private val npcRepo: NpcRepository, private val random: GameRandom) {
-    class Spawn(val table: String, val coords: CoordGrid, val maze: Boolean, val due: Int)
+    internal class Spawn(val table: String, val coords: CoordGrid, val maze: Boolean, val due: Int)
 
     private val pending = mutableListOf<Spawn>()
     private val live = mutableMapOf<Npc, Spawn>()
@@ -28,7 +28,7 @@ class ImplingSpawns @Inject constructor(private val npcRepo: NpcRepository, priv
         ImplingTypesRow.all().associate { it.npc.id to it.npcPuroPuro }
     }
 
-    fun tick() {
+    internal fun tick() {
         if (tick == 0) startPuroPuro()
         if (tick % CYCLE_TICKS == 0) startCycle()
         val due = pending.filter { it.due <= tick }
@@ -40,7 +40,7 @@ class ImplingSpawns @Inject constructor(private val npcRepo: NpcRepository, priv
         tick++
     }
 
-    fun after(ticks: Int, action: () -> Unit) {
+    internal fun after(ticks: Int, action: () -> Unit) {
         later += (tick + ticks) to action
     }
 
@@ -86,7 +86,7 @@ class ImplingSpawns @Inject constructor(private val npcRepo: NpcRepository, priv
         return implings.last().t0
     }
 
-    fun caught(npc: Npc): Boolean {
+    internal fun caught(npc: Npc): Boolean {
         val spawn = live.remove(npc) ?: return false
         npcRepo.del(npc, Int.MAX_VALUE)
         pending += Spawn(spawn.table, spawn.coords, spawn.maze, tick + INVISIBLE_TICKS)
@@ -95,7 +95,7 @@ class ImplingSpawns @Inject constructor(private val npcRepo: NpcRepository, priv
 
     private fun points(row: String): List<CoordGrid> = ImplingSpawnPointsRow.getRow(row).spots
 
-    companion object {
+    internal companion object {
         const val CYCLE_TICKS = 3000
         const val INVISIBLE_TICKS = 200
         const val HIGH_ROLLS = 4

@@ -227,16 +227,16 @@ constructor(
         VarPlayerIntMapSetter.set(player, area.endsVarbit, 0)
     }
 
-    data class Step(val segment: Int, val from: Int, val to: Int, val forward: Boolean)
+    internal data class Step(val segment: Int, val from: Int, val to: Int, val forward: Boolean)
 
-    class Track(val area: Area, val used: MutableSet<Int>, var visits: Int) {
+    internal class Track(val area: Area, val used: MutableSet<Int>, var visits: Int) {
         var pending: Step? = null
         var target: Int? = null
     }
 
-    class Segment(val varbit: String, val a: Int, val b: Int, val forwardFromA: Boolean, val clue: String)
+    internal class Segment(val varbit: String, val a: Int, val b: Int, val forwardFromA: Boolean, val clue: String)
 
-    class Area(row: HunterTrackingRow) {
+    internal class Area(row: HunterTrackingRow) {
         val name: String = row.name
         val level: Int = row.level
         val xp: Double = row.xpTenths / 10.0
@@ -259,7 +259,7 @@ constructor(
         val rumourKey: String = "tracking:$name"
     }
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val NOOSE_WAND = "obj.noose_wand"
         const val RING_OF_PURSUIT = "obj.ring_of_pursuit"

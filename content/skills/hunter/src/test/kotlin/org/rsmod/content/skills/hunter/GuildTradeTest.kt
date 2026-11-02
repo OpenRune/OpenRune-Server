@@ -83,6 +83,15 @@ class GuildTradeTest {
         assertEquals(1, registry.findAll(f.player.coords).sumOf { it.count })
     }
 
+    @Test
+    fun `a coin stack at the maximum pays each buy once`() {
+        val f = HunterFixture()
+        f.player.inv[0] = InvObj(COINS, Int.MAX_VALUE)
+        repeat(2) { f.call(script, "buy", TIPPLE, 3) }
+        assertEquals(2L, f.total(TIPPLE))
+        assertEquals(Int.MAX_VALUE.toLong() - 6, f.total(COINS))
+    }
+
     companion object {
         private const val COINS = "obj.coins"
         private const val TIPPLE = "obj.trappers_tipple"

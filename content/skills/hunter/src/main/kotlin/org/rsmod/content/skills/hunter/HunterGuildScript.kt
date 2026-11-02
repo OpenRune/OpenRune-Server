@@ -166,7 +166,7 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
         }
     }
 
-    fun ProtectedAccess.buy(obj: String, price: Int): Boolean {
+    internal fun ProtectedAccess.buy(obj: String, price: Int): Boolean {
         return player
             .invTransaction(inv) {
                 val target = select(inv)
@@ -412,9 +412,9 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
 
     private fun parts(rumour: HunterRumoursRow): String = rumour.partText
 
-    class Line(val player: Boolean, val text: String)
+    internal class Line(val player: Boolean, val text: String)
 
-    class HunterLines(
+    internal class HunterLines(
         val greeting: List<Line>,
         val chatOption: String,
         val chat: List<Line>,
@@ -429,7 +429,7 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
         val rumourAssign: Map<String, String> = emptyMap(),
     )
 
-    companion object {
+    internal companion object {
         const val VERITY = "npc.hg_verity"
         const val INV_ITEMS = "component.inventory:items"
         const val AT_FIRST_LIGHT = "quest_atfirstlight"

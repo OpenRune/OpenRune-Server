@@ -488,17 +488,17 @@ constructor(
 
     private fun cyclesToTicks(cycles: Int): Int = (cycles + 29) / 30
 
-    enum class FlightState {
+    internal enum class FlightState {
         Flying,
         OnPrey,
     }
 
-    class Flight(val kebbit: Kebbit, val target: Npc, val hit: Boolean, val sentCycle: Int, var landCycle: Int) {
+    internal class Flight(val kebbit: Kebbit, val target: Npc, val hit: Boolean, val sentCycle: Int, var landCycle: Int) {
         var state: FlightState = FlightState.Flying
         var falcon: Npc? = null
     }
 
-    class Kebbit(row: HunterFalconryRow) {
+    internal class Kebbit(row: HunterFalconryRow) {
         val npc: String = RSCM.getReverseMapping(RSCMType.NPC, row.npc.id)
         val falcon: String = RSCM.getReverseMapping(RSCMType.NPC, row.falcon.id)
         val level: Int = row.level
@@ -508,7 +508,7 @@ constructor(
         val high: Int = row.high
     }
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val COINS = "obj.coins"
         const val AREA = "area.piscatoris_falconry"

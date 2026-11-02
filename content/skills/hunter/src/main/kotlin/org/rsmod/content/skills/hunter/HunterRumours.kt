@@ -17,20 +17,20 @@ import org.rsmod.game.entity.Player
 
 @Singleton
 class HunterRumours @Inject constructor(private val objRepo: ObjRepository, private val random: GameRandom) {
-    val hunters: List<HunterRumourHuntersRow> by lazy { HunterRumourHuntersRow.all().sortedBy { it.index } }
-    val rumours: List<HunterRumoursRow> by lazy { HunterRumoursRow.all().sortedBy { it.index } }
+    internal val hunters: List<HunterRumourHuntersRow> by lazy { HunterRumourHuntersRow.all().sortedBy { it.index } }
+    internal val rumours: List<HunterRumoursRow> by lazy { HunterRumoursRow.all().sortedBy { it.index } }
 
-    fun hunterVarp(hunter: HunterRumourHuntersRow): String = "varp.hunter_rumour_${hunter.name.lowercase()}"
+    internal fun hunterVarp(hunter: HunterRumourHuntersRow): String = "varp.hunter_rumour_${hunter.name.lowercase()}"
 
-    fun rumourOf(player: Player, hunter: HunterRumourHuntersRow): HunterRumoursRow? =
+    internal fun rumourOf(player: Player, hunter: HunterRumourHuntersRow): HunterRumoursRow? =
         rumours.firstOrNull { it.index == player.vars[hunterVarp(hunter)] }
 
-    fun currentHunter(player: Player): HunterRumourHuntersRow? =
+    internal fun currentHunter(player: Player): HunterRumourHuntersRow? =
         hunters.firstOrNull { it.index + 1 == player.vars[CURRENT] }
 
-    fun currentRumour(player: Player): HunterRumoursRow? = currentHunter(player)?.let { rumourOf(player, it) }
+    internal fun currentRumour(player: Player): HunterRumoursRow? = currentHunter(player)?.let { rumourOf(player, it) }
 
-    fun assign(player: Player, hunter: HunterRumourHuntersRow, forced: HunterRumoursRow? = null): HunterRumoursRow? {
+    internal fun assign(player: Player, hunter: HunterRumourHuntersRow, forced: HunterRumoursRow? = null): HunterRumoursRow? {
         val level = player.statBase(HUNTER)
         if (level < hunter.level) return null
         val taken = hunters.filter { it != hunter }.mapNotNull { rumourOf(player, it)?.index }.toSet()
@@ -47,31 +47,31 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
         return rumour
     }
 
-    fun reshuffle(player: Player, gilman: HunterRumourHuntersRow) {
+    internal fun reshuffle(player: Player, gilman: HunterRumourHuntersRow) {
         for (hunter in hunters) VarPlayerIntMapSetter.set(player, hunterVarp(hunter), 0)
         VarPlayerIntMapSetter.set(player, RESHUFFLED, 1)
         VarPlayerIntMapSetter.set(player, CURRENT, gilman.index + 1)
     }
 
-    fun reshuffled(player: Player): Boolean = player.vars[RESHUFFLED] != 0
+    internal fun reshuffled(player: Player): Boolean = player.vars[RESHUFFLED] != 0
 
-    fun meetsRequirements(player: Player, rumour: HunterRumoursRow): Boolean =
+    internal fun meetsRequirements(player: Player, rumour: HunterRumoursRow): Boolean =
         (rumour.quest.isEmpty() || QuestRequirements.hasCompleted(player, rumour.quest)) &&
             player.statBase(HERBLORE) >= rumour.herbloreLevel &&
             player.statBase(SAILING) >= rumour.sailingLevel
 
-    fun resume(player: Player, hunter: HunterRumourHuntersRow) {
+    internal fun resume(player: Player, hunter: HunterRumourHuntersRow) {
         if (rumourOf(player, hunter) == null) return
         VarPlayerIntMapSetter.set(player, CURRENT, hunter.index + 1)
     }
 
-    fun hasPart(player: Player, hunter: HunterRumourHuntersRow): Boolean =
+    internal fun hasPart(player: Player, hunter: HunterRumourHuntersRow): Boolean =
         rumourOf(player, hunter)?.let { it.part.internalName in player.inv && partFrom(player, it) } ?: false
 
     private fun partFrom(player: Player, rumour: HunterRumoursRow): Boolean =
         rumours.count { it.part.id == rumour.part.id } == 1 || player.vars[PART_SOURCE] == rumour.index
 
-    fun onCatch(player: Player, creature: String) {
+    internal fun onCatch(player: Player, creature: String) {
         val rumour = currentRumour(player) ?: return
         if (rumour.creature != creature) return
         val pity = player.vars[PITY] + 1
@@ -95,7 +95,7 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
         VarPlayerIntMapSetter.set(player, PITY, 0)
     }
 
-    fun turnIn(player: Player, hunter: HunterRumourHuntersRow): Boolean {
+    internal fun turnIn(player: Player, hunter: HunterRumourHuntersRow): Boolean {
         val rumour = rumourOf(player, hunter) ?: return false
         if (!partFrom(player, rumour) || player.invDel(player.inv, rumour.part.id, 1).failure) return false
         VarPlayerIntMapSetter.set(player, hunterVarp(hunter), 0)
@@ -113,7 +113,7 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
         return true
     }
 
-    fun whistleMessage(player: Player): String {
+    internal fun whistleMessage(player: Player): String {
         val hunter = currentHunter(player)
         val rumour = hunter?.let { rumourOf(player, it) } ?: return NO_RUMOUR_MESSAGE
         return "Your current rumour target is a ${rumour.name}. You'll need to bring back ${rumour.partText}. " +
@@ -124,7 +124,7 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
 
     private fun <T> List<T>.randomOrNull(): T? = if (isEmpty()) null else this[random.of(size)]
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val HERBLORE = "stat.herblore"
         const val SAILING = "stat.sailing"
@@ -154,26 +154,26 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
 }
 
 object HunterOutfit {
-    const val HOOD = "obj.hg_hunter_hood"
-    const val TOP = "obj.hg_hunter_top"
-    const val LEGS = "obj.hg_hunter_legs"
-    const val BOOTS = "obj.hg_hunter_boots"
+    internal const val HOOD = "obj.hg_hunter_hood"
+    internal const val TOP = "obj.hg_hunter_top"
+    internal const val LEGS = "obj.hg_hunter_legs"
+    internal const val BOOTS = "obj.hg_hunter_boots"
     private val PIECES = listOf(HOOD to 2, TOP to 8, LEGS to 6, BOOTS to 4)
     private const val SET_BONUS = 5
 
     private fun owns(player: Player, obj: String): Boolean =
         obj in player.worn || obj in player.inv || (player.invMap[HunterRumours.BANK]?.let { obj in it } ?: false)
 
-    fun catchBonusTenths(player: Player): Int {
+    internal fun catchBonusTenths(player: Player): Int {
         val worn = PIECES.filter { (obj, _) -> obj in player.worn }
         if (worn.isEmpty()) return 0
         val set = if (PIECES.all { (obj, _) -> owns(player, obj) }) SET_BONUS else 0
         return worn.sumOf { it.second } + set
     }
 
-    fun partBonusPermille(player: Player): Int = catchBonusTenths(player) * 2
+    internal fun partBonusPermille(player: Player): Int = catchBonusTenths(player) * 2
 
-    fun wearsFullSet(player: Player): Boolean = PIECES.all { (obj, _) -> obj in player.worn }
+    internal fun wearsFullSet(player: Player): Boolean = PIECES.all { (obj, _) -> obj in player.worn }
 
-    fun applyTo(chance256: Int, player: Player): Int = chance256 * (1000 + catchBonusTenths(player)) / 1000
+    internal fun applyTo(chance256: Int, player: Player): Int = chance256 * (1000 + catchBonusTenths(player)) / 1000
 }

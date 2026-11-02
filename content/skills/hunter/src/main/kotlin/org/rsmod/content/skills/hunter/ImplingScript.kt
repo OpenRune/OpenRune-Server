@@ -31,7 +31,7 @@ constructor(
         }
     }
 
-    suspend fun ProtectedAccess.catch(
+    internal suspend fun ProtectedAccess.catch(
         npc: Npc,
         impling: ImplingTypesRow,
         puroPuro: Boolean,
@@ -41,7 +41,7 @@ constructor(
         catch(npc, impling.level, impling.jar.internalName, xp, jarRequired = inMaze) { removeCaught(npc, impling) }
     }
 
-    suspend fun ProtectedAccess.catch(
+    internal suspend fun ProtectedAccess.catch(
         npc: Npc,
         level: Int,
         jar: String,
@@ -128,7 +128,7 @@ constructor(
 
     private val jarId: Int by lazy { IMPLING_JAR.asRSCM(RSCMType.OBJ) }
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val NET = "obj.hunting_butterfly_net"
         const val MAGIC_NET = "obj.ii_magic_butterfly_net"

@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.hunter
 
+import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
+import org.rsmod.api.random.GameRandom
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.registry.zone.ZoneUpdateMap
 import org.rsmod.api.repo.obj.ObjRepository
@@ -48,6 +50,8 @@ class HerbiboarTest {
     private fun held() = f.player.inv.count { it != null && it.id in herbs }
 
     private fun ground() = registry.findAll(f.player.coords).filter { it.type in herbs }.sumOf { it.count }
+
+    private fun heldFossils() = f.player.inv.sumOf { if (it != null && it.id in fossils) it.count.toLong() else 0L }
 
     private fun groundFossils() = registry.findAll(f.player.coords).filter { it.type in fossils }.sumOf { it.count.toLong() }
 
@@ -124,11 +128,28 @@ class HerbiboarTest {
     }
 
     @Test
-    fun `a spot inspected twice rewards once`() {
+    fun `a spot inspected twice rolls its fossil once`() {
+        val lucky =
+            mockk<GameRandom> {
+                every { of(any<Int>()) } returns 0
+                every { of(any<Int>(), any<Int>()) } answers { firstArg() }
+            }
+        val script =
+            HerbiboarScript(
+                ObjRepository(MapClock(100), registry),
+                mockk(relaxed = true),
+                mockk(relaxed = true),
+                lucky,
+                mockk(relaxed = true),
+                mockk(relaxed = true),
+            )
         onTrail()
         val before = hunterXp()
         f.run(script, "inspectSpot", leg.from)
+        val found = heldFossils() + groundFossils()
         f.run(script, "inspectSpot", leg.from)
+        assertTrue(found > 0)
+        assertEquals(found, heldFossils() + groundFossils())
         assertEquals(HerbiboarScript.INSPECT_XP.toInt(), hunterXp() - before)
     }
 

@@ -176,11 +176,11 @@ constructor(
         }
     }
 
-    class Pending(val site: Site, val index: Int, val coords: CoordGrid, val loc: LocInfo, val arrive: Int) {
+    internal class Pending(val site: Site, val index: Int, val coords: CoordGrid, val loc: LocInfo, val arrive: Int) {
         var crab: Npc? = null
     }
 
-    class Site(row: HunterCrabTrapsRow) {
+    internal class Site(row: HunterCrabTrapsRow) {
         val key: String = row.site
         val locs: List<String> = row.locs.map { RSCM.getReverseMapping(RSCMType.LOC, it.id) }
         val varbits: List<String> = row.varbits
@@ -194,7 +194,7 @@ constructor(
         val quest: String = row.quest
     }
 
-    companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val SAILING = "stat.sailing"
         const val CONSTRUCTION = "stat.construction"
