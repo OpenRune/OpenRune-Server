@@ -7,6 +7,8 @@ import org.rsmod.api.player.hook.SpadeDigHook
 import org.rsmod.content.bosses.moons.neypotzli.NeypotzliHook
 import org.rsmod.content.generic.locs.bookcases.BookcaseSearchHook
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.TouristCentreBookcases
+import org.rsmod.content.quest.area.corsaircove.CorsairCurse
+import org.rsmod.content.quest.area.corsaircove.CorsairCurseIthoiKillHook
 import org.rsmod.content.quest.area.draynor.vampyreslayer.CountDraynorAttackHook
 import org.rsmod.content.quest.area.draynor.vampyreslayer.VampyreSlayerQuest
 import org.rsmod.content.quest.area.falador.doricsquest.DoricsQuest
@@ -40,6 +42,7 @@ public class QuestModule : PluginModule() {
         bindInstance<DoricsQuest>()
         bindInstance<IdesOfMilkQuest>()
         bindInstance<KnightsSwordQuest>()
+        bindInstance<CorsairCurse>()
         bindInstance<VampyreSlayerQuest>()
         bindInstance<DemonSlayerQuest>()
         bindBaseInstance<DemonSlayerScenes>(DemonSlayerCutscenes::class.java)
@@ -49,8 +52,10 @@ public class QuestModule : PluginModule() {
         addSetBinding<SpellQuestRequirement>(PolicySpellQuestRequirement::class.java)
         addSetBinding<BookcaseSearchHook>(TouristCentreBookcases::class.java)
         addSetBinding<SpadeDigHook>(XMarksTheSpotQuest::class.java)
+        addSetBinding<SpadeDigHook>(CorsairCurse::class.java)
         addSetBinding<SpadeDigHook>(PiratesTreasureDig::class.java)
         addSetBinding<NpcDeathKillHook>(WitchsPotionRatTail::class.java)
+        addSetBinding<NpcDeathKillHook>(CorsairCurseIthoiKillHook::class.java)
         addSetBinding<NpcAttackValidateHook>(CountDraynorAttackHook::class.java)
         addSetBinding<NpcAttackValidateHook>(DelrithAttackHook::class.java)
         addSetBinding<NpcDeathKillHook>(PiratesTreasureGardenerKillHook::class.java)

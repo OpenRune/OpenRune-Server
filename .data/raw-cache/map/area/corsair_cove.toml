@@ -1,0 +1,12 @@
+[[area]]
+name = "Corsair Cove"
+area_id = "area.corsair_cove"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [2555, 2818],
+    [2605, 2818],
+    [2605, 2868],
+    [2555, 2868],
+]
