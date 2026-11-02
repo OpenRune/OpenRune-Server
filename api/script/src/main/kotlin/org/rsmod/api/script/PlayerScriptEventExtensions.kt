@@ -7,7 +7,9 @@ import dev.openrune.types.ItemServerType
 import dev.or2.central.account.Rights
 import org.rsmod.api.player.events.NpcKilledEvent
 import org.rsmod.api.invtx.PlayerInvChangedEvent
+import org.rsmod.api.player.events.PlayerAreaEvents
 import org.rsmod.api.player.events.PlayerHitEvents
+import org.rsmod.api.player.events.PlayerLevelEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
@@ -149,6 +151,35 @@ public fun ScriptContext.onPlayerSkillRollModify(
 
 public fun ScriptContext.onPlayerSkillRoll(action: PlayerSkillRollEvents.Result.() -> Unit): Unit =
     onEvent(action)
+
+public fun ScriptContext.onPlayerLevelUp(action: PlayerLevelEvents.Advanced.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerCombatLevelUp(
+    action: PlayerLevelEvents.CombatAdvanced.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerStatChanged(
+    action: PlayerLevelEvents.StatChanged.() -> Unit
+): Unit = onEvent(action)
+
+/** Observes [area] being entered. Unlike `onArea`, any number of scripts can subscribe. */
+public fun ScriptContext.onPlayerAreaEntered(
+    area: String,
+    action: PlayerAreaEvents.Entered.() -> Unit,
+) {
+    val id = area.asRSCM(RSCMType.AREA)
+    onEvent<PlayerAreaEvents.Entered> { if (this.area == id) action() }
+}
+
+/** Observes [area] being left. Unlike `onAreaExit`, any number of scripts can subscribe. */
+public fun ScriptContext.onPlayerAreaExited(
+    area: String,
+    action: PlayerAreaEvents.Exited.() -> Unit,
+) {
+    val id = area.asRSCM(RSCMType.AREA)
+    onEvent<PlayerAreaEvents.Exited> { if (this.area == id) action() }
+}
 
 public fun ScriptContext.onPlayerEquip(action: PlayerWornEvents.Equip.() -> Unit): Unit =
     onEvent(action)
