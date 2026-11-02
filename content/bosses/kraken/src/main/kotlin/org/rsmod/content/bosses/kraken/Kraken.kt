@@ -6,11 +6,14 @@ import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.dsl.*
+import org.rsmod.api.bosses.dsl.soundTo as soundToEffect
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.BossPluginScript
 import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Condition
+import org.rsmod.api.death.NpcAttackValidateHook
+import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.death.NpcDeath
 import org.rsmod.api.npc.events.NpcHitEvents
 import org.rsmod.api.npc.interact.AiPlayerInteractions
@@ -39,6 +42,7 @@ class Kraken @Inject constructor(
     deps: BossDeps,
     aiPlayerInteractions: AiPlayerInteractions,
     private val npcDeath: NpcDeath,
+    private val attackValidateHooks: Set<NpcAttackValidateHook>,
 ) : BossPluginScript(deps) {
 
     private val whirlpools = Whirlpools(deps, aiPlayerInteractions)
@@ -122,7 +126,15 @@ class Kraken @Inject constructor(
     }
 
     private fun ProtectedAccess.throwExplosive(pool: Npc) {
-        if (!whirlpools.isSubmerged(pool) || invDel(inv, EXPLOSIVE, 1).failure) return
+        if (!whirlpools.isSubmerged(pool)) return
+        for (hook in attackValidateHooks) {
+            val result = hook.validate(player, pool)
+            if (result is NpcAttackValidateResult.Deny) {
+                mes(result.message)
+                return
+            }
+        }
+        if (invDel(inv, EXPLOSIVE, 1).failure) return
         mes("You throw the fishing explosive into the whirlpool...")
         anim("seq.human_throw")
         spotanim("spotanim.vial_launch", height = EXPLOSIVE_LAUNCH_HEIGHT)
@@ -263,7 +275,7 @@ class Kraken @Inject constructor(
                             penetration(TYPELESS_PENETRATION)
                             missSpotanim(SPLASH)
                             missSound(MISS_SYNTH)
-                            onHit(org.rsmod.api.bosses.dsl.soundTo(HIT_SYNTH))
+                            onHit(soundToEffect(HIT_SYNTH))
                             spotanim("spotanim.firewave_impact", IMPACT_HEIGHT)
                         }
                     }
@@ -299,7 +311,7 @@ class Kraken @Inject constructor(
                             penetration(TYPELESS_PENETRATION)
                             missSpotanim(SPLASH)
                             missSound(MISS_SYNTH)
-                            onHit(org.rsmod.api.bosses.dsl.soundTo(HIT_SYNTH))
+                            onHit(soundToEffect(HIT_SYNTH))
                             spotanim("spotanim.waterwave_impact", IMPACT_HEIGHT)
                         }
                     }
@@ -312,7 +324,7 @@ class Kraken @Inject constructor(
         private const val BOSS = "npc.slayer_kraken_boss"
         private const val WHIRLPOOL = "npc.slayer_kraken_boss_whirlpool"
         private const val TENTACLE = "npc.slayer_kraken_boss_tentacle"
-        private const val TENTACLE_WHIRLPOOL = "npc.slayer_kraken_tentacle_pool"
+        private const val TENTACLE_WHIRLPOOL = "npc.slayer_kraken_boss_tentacle_whirlpool"
         private const val TENTACLE_ARISE_ANIM = "seq.tentacle_monster_spawn"
 
         private const val EXPLOSIVE = "obj.fishing_explosive"

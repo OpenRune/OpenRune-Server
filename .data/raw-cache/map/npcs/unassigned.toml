@@ -12771,19 +12771,19 @@ npc = "npc.slayer_killerwatt_ball"
 coords = "2_41_81_51_31"
 
 [[spawn]]
-npc = "npc.slayer_kraken_tentacle_pool"
+npc = "npc.slayer_kraken_boss_tentacle_whirlpool"
 coords = "0_35_156_35_50"
 
 [[spawn]]
-npc = "npc.slayer_kraken_tentacle_pool"
+npc = "npc.slayer_kraken_boss_tentacle_whirlpool"
 coords = "0_35_156_35_54"
 
 [[spawn]]
-npc = "npc.slayer_kraken_tentacle_pool"
+npc = "npc.slayer_kraken_boss_tentacle_whirlpool"
 coords = "0_35_156_44_50"
 
 [[spawn]]
-npc = "npc.slayer_kraken_tentacle_pool"
+npc = "npc.slayer_kraken_boss_tentacle_whirlpool"
 coords = "0_35_156_44_54"
 
 [[spawn]]

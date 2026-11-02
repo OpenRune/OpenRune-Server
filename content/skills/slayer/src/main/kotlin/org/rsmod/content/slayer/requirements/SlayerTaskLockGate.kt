@@ -16,6 +16,10 @@ internal class SlayerTaskLockAttackHook @Inject constructor(private val areas: A
         if (SlayerTaskCredit.counts(npc.visType, SlayerTaskCredit.taskKey(player))) {
             return NpcAttackValidateResult.Pass
         }
+        // TODO(content): [verify:in_game] Lieve's block is a single game message. The wiki shows her
+        //  spoken line followed by "Lieve McCracken wants you to stick to your Slayer assignments.";
+        //  other guardians send that line as a game message plus a chat_left chathead on the same
+        //  tick. Deny only carries a string, so it needs a dialogue option once a capture confirms it.
         return NpcAttackValidateResult.Deny(messageFor(npc))
     }
 

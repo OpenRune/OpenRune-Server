@@ -3477,6 +3477,16 @@ respawnRate = 10
 "param.dropped_remains"=-1
 
 [[npc]]
+id = "npc.slayer_kraken_boss_tentacle_whirlpool"
+inherit = "npc.slayer_kraken_boss_tentacle_whirlpool"
+respawnRate = 2147483647
+defenceOverride = 1
+magicOverride = 1
+[npc.params]
+"param.death_anim"="seq.tentacle_monster_death"
+"param.dropped_remains"=-1
+
+[[npc]]
 id = "npc.slayer_kraken_sub"
 inherit = "npc.slayer_kraken_sub"
 [npc.params]

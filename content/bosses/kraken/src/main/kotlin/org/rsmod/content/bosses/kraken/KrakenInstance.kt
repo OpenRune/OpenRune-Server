@@ -120,10 +120,10 @@ class KrakenInstance @Inject constructor(
                 npcSpawns =
                     listOf(
                         spawn("npc.slayer_kraken_boss_whirlpool", 38, 50),
-                        spawn("npc.slayer_kraken_tentacle_pool", 35, 50),
-                        spawn("npc.slayer_kraken_tentacle_pool", 35, 54),
-                        spawn("npc.slayer_kraken_tentacle_pool", 44, 50),
-                        spawn("npc.slayer_kraken_tentacle_pool", 44, 54),
+                        spawn("npc.slayer_kraken_boss_tentacle_whirlpool", 35, 50),
+                        spawn("npc.slayer_kraken_boss_tentacle_whirlpool", 35, 54),
+                        spawn("npc.slayer_kraken_boss_tentacle_whirlpool", 44, 50),
+                        spawn("npc.slayer_kraken_boss_tentacle_whirlpool", 44, 54),
                     ),
             )
 
