@@ -2,7 +2,13 @@ package org.rsmod.content.skills.runecrafting.action
 
 import dev.openrune.types.ItemServerType
 import kotlin.math.floor
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.skilling.consumeSkillingInputs
 import org.rsmod.api.player.stat.baseRunecraftingLvl
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.ComboruneRecipeRow
@@ -76,10 +82,6 @@ object RunecraftAction {
         daeyaltEssCount: Int,
         ouraniaAltar: Boolean,
     ) {
-        if (invDel(inv, DAEYALT_ESSENCE, daeyaltEssCount).failure) {
-            return
-        }
-
         val level = player.baseRunecraftingLvl
         val baseMultiplier = getBonusMultiplier(rune.output.internalName, level).toInt()
         val baseProduced = daeyaltEssCount * baseMultiplier
@@ -94,7 +96,7 @@ object RunecraftAction {
 
         finishEssenceCraft(
             rune,
-            daeyaltEssCount,
+            listOf(SkillingInput(DAEYALT_ESSENCE, daeyaltEssCount)),
             baseProduced * rune.xp * xpMultiplier,
             xpMods,
             ouraniaAltar,
@@ -127,18 +129,13 @@ object RunecraftAction {
             return
         }
 
-        if (pureEssCount > 0 && invDel(inv, PURE_ESSENCE, pureEssCount).failure) {
-            return
-        }
-        if (guardianEssCount > 0 && invDel(inv, GUARDIAN_ESSENCE, guardianEssCount).failure) {
-            return
-        }
-        if (darkEssCount > 0 && invDel(inv, DARK_ESSENCE, darkEssCount).failure) {
-            return
-        }
-        if (runeEssCount > 0 && invDel(inv, RUNE_ESSENCE, runeEssCount).failure) {
-            return
-        }
+        val inputs =
+            listOf(
+                SkillingInput(PURE_ESSENCE, pureEssCount),
+                SkillingInput(GUARDIAN_ESSENCE, guardianEssCount),
+                SkillingInput(DARK_ESSENCE, darkEssCount),
+                SkillingInput(RUNE_ESSENCE, runeEssCount),
+            ).filter { it.count > 0 }
 
         val level = player.baseRunecraftingLvl
         val baseMultiplier = getBonusMultiplier(rune.output.internalName, level).toInt()
@@ -157,7 +154,7 @@ object RunecraftAction {
 
         finishEssenceCraft(
             rune,
-            totalEssence,
+            inputs,
             totalXp * xpMultiplier,
             xpMods,
             ouraniaAltar,
@@ -165,33 +162,65 @@ object RunecraftAction {
         )
     }
 
-    private suspend fun ProtectedAccess.finishEssenceCraft(
+    private fun ProtectedAccess.finishEssenceCraft(
         rune: RunecraftingRunesRow,
-        essenceConsumed: Int,
+        inputs: List<SkillingInput>,
         xp: Double,
         xpMods: XpModifiers,
         ouraniaAltar: Boolean,
-        producedRunes: Int? = null,
+        producedRunes: Int,
     ) {
-        val level = player.baseRunecraftingLvl
-        val baseMultiplier = getBonusMultiplier(rune.output.internalName, level).toInt()
-        var totalRunes = producedRunes ?: applyBonus(essenceConsumed * baseMultiplier)
+        var totalRunes = producedRunes
 
         if (inv.contains(rune.extract.internalName)) {
             totalRunes += runecraftingExtract[rune.extract.internalName] ?: 0
         }
 
-        if (
-            !ouraniaAltar &&
-            rune.output.internalName == BloodEssence.BLOOD_RUNE
-        ) {
-            applyBloodRuneBonus(essenceConsumed)?.let { bonus ->
-                totalRunes += bonus
-            }
+        val output = rune.output.internalName
+        val source = SkillingProductSource.Runecrafting(rune, ouraniaAltar)
+        if (!awardRunecraftProduct(output, totalRunes, xp, xpMods, source, inputs)) {
+            return
         }
 
-        invAdd(inv, rune.output.internalName, totalRunes)
-        advanceRunecraftingXp(xp, xpMods)
+        if (!ouraniaAltar && output == BloodEssence.BLOOD_RUNE) {
+            val bonus = applyBloodRuneBonus(inputs.sumOf { it.count }) ?: return
+            awardSkillingProduct(
+                SkillingProduct(
+                    player = player,
+                    skill = "stat.runecrafting",
+                    item = output,
+                    count = bonus,
+                    grantsExperience = false,
+                    source = source,
+                    isBonus = true,
+                ),
+            )
+        }
+    }
+
+    internal fun ProtectedAccess.awardRunecraftProduct(
+        output: String,
+        count: Int,
+        baseXp: Double,
+        xpMods: XpModifiers,
+        source: SkillingProductSource,
+        inputs: List<SkillingInput>,
+    ): Boolean {
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.runecrafting",
+                item = output,
+                count = count,
+                experience = baseXp * xpMods.get(player, "stat.runecrafting"),
+                source = source,
+                inputs = inputs,
+            )
+        val result = awardSkillingProduct(product)
+        if (result == SkillingAwardResult.InventoryFull) {
+            mes("You don't have enough inventory space.")
+        }
+        return result == SkillingAwardResult.Success
     }
 
     private suspend fun ProtectedAccess.canCraftRune(rune: RunecraftingRunesRow): Boolean {
@@ -243,12 +272,11 @@ object RunecraftAction {
 
         preCraft()
 
-        val essenceCount = countPureLikeEssence()
-        if (removePureLikeEssence(essenceCount).not()) {
-            return
-        }
-
-        craftOuraniaBatch(essenceCount, xpMultiplier = OURANIA_XP_MULTIPLIER, xpMods = xpMods)
+        craftOuraniaBatch(
+            countPureLikeEssence(),
+            xpMultiplier = OURANIA_XP_MULTIPLIER,
+            xpMods = xpMods,
+        ) { pureLikeInputs(it) }
     }
 
     private suspend fun ProtectedAccess.craftOuraniaDaeyalt(
@@ -256,30 +284,33 @@ object RunecraftAction {
         daeyaltCount: Int,
     ) {
         preCraft()
-        if (invDel(inv, DAEYALT_ESSENCE, daeyaltCount).failure) {
-            return
-        }
         val xpMultiplier = DAEYALT_XP_MULTIPLIER * OURANIA_XP_MULTIPLIER
-        craftOuraniaBatch(daeyaltCount, xpMultiplier = xpMultiplier, xpMods = xpMods)
+        craftOuraniaBatch(daeyaltCount, xpMultiplier = xpMultiplier, xpMods = xpMods) {
+            listOf(SkillingInput(DAEYALT_ESSENCE, it))
+        }
     }
 
-    private suspend fun ProtectedAccess.craftOuraniaBatch(
+    /** One award per rolled rune type: a type's essence is taken only if its runes fit. */
+    private fun ProtectedAccess.craftOuraniaBatch(
         essenceCount: Int,
         xpMultiplier: Double,
         xpMods: XpModifiers,
+        essenceInputs: (Int) -> List<SkillingInput>,
     ) {
         val level = player.baseRunecraftingLvl
-        var totalXp = 0.0
+        val rolls = List(essenceCount) { rollOuraniaRune(level) }
 
-        repeat(essenceCount) {
-            val rune = rollOuraniaRune(level)
-            val multiplier = getBonusMultiplier(rune.output.internalName, level).toInt()
-            val produced = applyBonus(multiplier)
-            totalXp += rune.xp * xpMultiplier * multiplier
-            invAdd(inv, rune.output.internalName, produced)
+        for ((output, rolled) in rolls.groupBy { it.output.internalName }) {
+            val rune = rolled.first()
+            val multiplier = getBonusMultiplier(output, level).toInt()
+            val produced = rolled.sumOf { applyBonus(multiplier) }
+            val xp = rolled.size * multiplier * rune.xp * xpMultiplier
+            val source = SkillingProductSource.Runecrafting(rune, ourania = true)
+            val inputs = essenceInputs(rolled.size)
+            if (!awardRunecraftProduct(output, produced, xp, xpMods, source, inputs)) {
+                return
+            }
         }
-
-        advanceRunecraftingXp(totalXp, xpMods)
     }
 
     suspend fun ProtectedAccess.craftCore(
@@ -301,14 +332,16 @@ object RunecraftAction {
 
         preCraft()
 
-        if (invDel(inv, coreItem, 1).failure) {
-            return
-        }
-
         val multiplier = getBonusMultiplier(rune.output.internalName, level).toInt()
         val produced = applyBonus(CORE_RUNE_MULTIPLIER * multiplier)
-        invAdd(inv, rune.output.internalName, produced)
-        advanceRunecraftingXp(rune.xp * CORE_XP_MULTIPLIER.toDouble(), xpMods)
+        awardRunecraftProduct(
+            rune.output.internalName,
+            produced,
+            rune.xp * CORE_XP_MULTIPLIER.toDouble(),
+            xpMods,
+            SkillingProductSource.Runecrafting(rune),
+            listOf(SkillingInput(coreItem)),
+        )
     }
 
     suspend fun ProtectedAccess.craftAether(xpMods: XpModifiers) {
@@ -338,23 +371,23 @@ object RunecraftAction {
 
         preCraft()
 
-        if (invDel(inv, "obj.cosmic_soul_catalyst", 1).failure) {
-            return
-        }
-        if (invDel(inv, GUARDIAN_ESSENCE, craftCount).failure) {
-            return
-        }
-        if (invDel(inv, "obj.soulrune", craftCount).failure) {
-            return
-        }
-
         var totalRunes = applyBonus(craftCount)
         if (inv.contains("obj.scar_extract_scarred")) {
             totalRunes += runecraftingExtract["obj.scar_extract_scarred"] ?: 0
         }
 
-        invAdd(inv, aetherRune.output.internalName, totalRunes)
-        advanceRunecraftingXp(craftCount * aetherRune.xp.toDouble(), xpMods)
+        awardRunecraftProduct(
+            aetherRune.output.internalName,
+            totalRunes,
+            craftCount * aetherRune.xp.toDouble(),
+            xpMods,
+            SkillingProductSource.Runecrafting(aetherRune),
+            listOf(
+                SkillingInput("obj.cosmic_soul_catalyst"),
+                SkillingInput(GUARDIAN_ESSENCE, craftCount),
+                SkillingInput("obj.soulrune", craftCount),
+            ),
+        )
     }
 
     private fun rollOuraniaRune(level: Int): RunecraftingRunesRow {
@@ -408,41 +441,43 @@ object RunecraftAction {
             return
         }
 
-        val usingMagicImbue = player.isActive()
-        if (!usingMagicImbue && invDel(inv, talisman.internalName, 1).failure) {
-            return
-        }
-        if (removePureLikeEssence(craftCount).not()) {
-            return
-        }
-        val removedRunes = invDel(inv, input.internalName, craftCount)
-        if (removedRunes.failure) {
-            return
+        val inputs = buildList {
+            if (!player.isActive()) {
+                add(SkillingInput(talisman.internalName))
+            }
+            addAll(pureLikeInputs(craftCount))
+            add(SkillingInput(input.internalName, craftCount))
         }
 
         val wearingBinding = player.isWearing()
-        val removedCount = removedRunes.completed()
         var finalCount =
             if (wearingBinding) {
-                removedCount
+                craftCount
             } else {
-                (1..removedCount).count { random.of(100) < 50 }
+                (1..craftCount).count { random.of(100) < 50 }
             }
 
         if (inv.contains("obj.scar_extract_twisted")) {
             finalCount += runecraftingExtract["obj.scar_extract_twisted"] ?: 0
         }
 
-        invAdd(inv, output.internalName, finalCount)
-        advanceRunecraftingXp(finalCount * (xp.toDouble() / 10.0), xpMods)
+        if (finalCount <= 0) {
+            consumeSkillingInputs(inputs)
+            return
+        }
 
-        if (wearingBinding) {
+        val crafted =
+            awardRunecraftProduct(
+                output.internalName,
+                finalCount,
+                finalCount * (xp.toDouble() / 10.0),
+                xpMods,
+                SkillingProductSource.CombinationRunecrafting(combo),
+                inputs,
+            )
+        if (crafted && wearingBinding) {
             consumeChargeAfterCombo()
         }
-    }
-
-    fun ProtectedAccess.advanceRunecraftingXp(baseXp: Double, xpMods: XpModifiers) {
-        statAdvance("stat.runecrafting", baseXp * xpMods.get(player, "stat.runecrafting"))
     }
 
     private fun ProtectedAccess.countPureLikeEssence(): Int =
@@ -450,26 +485,12 @@ object RunecraftAction {
 
     private fun ProtectedAccess.hasPureLikeEssence(): Boolean = countPureLikeEssence() > 0
 
-    private fun ProtectedAccess.removePureLikeEssence(amount: Int): Boolean {
-        var remaining = amount
-        if (remaining <= 0) {
-            return true
-        }
-
-        val pureAvailable = inv.count(PURE_ESSENCE)
-        if (pureAvailable > 0) {
-            val take = minOf(pureAvailable, remaining)
-            if (invDel(inv, PURE_ESSENCE, take).failure) {
-                return false
-            }
-            remaining -= take
-        }
-
-        if (remaining > 0 && invDel(inv, GUARDIAN_ESSENCE, remaining).failure) {
-            return false
-        }
-
-        return true
+    private fun ProtectedAccess.pureLikeInputs(amount: Int): List<SkillingInput> {
+        val pure = minOf(amount, inv.count(PURE_ESSENCE))
+        return listOf(
+            SkillingInput(PURE_ESSENCE, pure),
+            SkillingInput(GUARDIAN_ESSENCE, amount - pure),
+        ).filter { it.count > 0 }
     }
 
     private suspend fun ProtectedAccess.canCraftCombo(
