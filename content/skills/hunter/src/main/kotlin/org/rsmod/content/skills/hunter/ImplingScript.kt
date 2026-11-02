@@ -37,7 +37,7 @@ constructor(
         puroPuro: Boolean,
     ) {
         val inMaze = puroPuro || inPuroPuro(npc.coords)
-        val xp = if (inMaze) impling.xpPuroPuro else impling.xpGielinor
+        val xp = if (puroPuro) impling.xpPuroPuro else impling.xpGielinor
         catch(npc, impling.level, impling.jar.internalName, xp, jarRequired = inMaze) { removeCaught(npc, impling) }
     }
 
