@@ -113,7 +113,7 @@ class CooksAssistant : QuestScript(
     private suspend fun Dialogue.dialogDuringCook(npc: Npc) {
         chatNpc(worried, "How are you getting on with finding the ingredients?")
 
-        if (!holdsAnyNeeded(player)) {
+        if (!allItemsDelivered(player) && !holdsAnyNeeded(player)) {
             chatPlayer(sad, "I haven't got any of them yet, I'm still looking.")
             chatNpc(verymad, "Please get the ingredients quickly - I'm running out of time! The Duke will throw me into the streets!")
             val needed = buildList {

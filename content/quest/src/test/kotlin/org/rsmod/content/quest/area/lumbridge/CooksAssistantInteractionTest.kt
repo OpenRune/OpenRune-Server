@@ -139,6 +139,24 @@ class CooksAssistantInteractionTest {
         f.assertReward()
     }
 
+    @Test fun `an ending interrupted after the hand-in resumes and rewards once`() {
+        for ((stage, options) in listOf(0 to listOf(1, 1), 1 to emptyList())) {
+            val f = Fixture(stage)
+            f.ingredients()
+            f.talk()
+            f.interruptAt("Maybe, but I won't be holding my breath.", options)
+            assertEquals(1, f.script.quest.getQuestStage(f.player))
+            assertEquals(0, f.player.vars["varp.qp"])
+            f.ingredients()
+            f.talk()
+            f.finish()
+            f.assertReward(held = 1)
+            f.talk()
+            f.finish(listOf(1))
+            f.assertReward(held = 1)
+        }
+    }
+
     @Test fun `legacy attribute progress migrates into the quest varbits`() {
         val f = Fixture()
         f.player.attr[QUEST_STAGE_MAP_ATTR] = mutableMapOf("quest_cooksassistant" to 1)
@@ -218,6 +236,15 @@ class CooksAssistantInteractionTest {
             fail<Unit>("Interaction did not finish: ${output()}")
         }
 
+        fun interruptAt(line: String, options: List<Int>) {
+            val selections = options.iterator()
+            repeat(150) {
+                if (line in output()) return
+                advance(selections)
+            }
+            fail<Unit>("Line not shown: $line")
+        }
+
         private fun advance(options: Iterator<Int>) {
             if (coroutine.isAwaiting(ResumePauseButtonInput::class)) {
                 val parent = listOf("chat_left", "chat_right", "messagebox", "objectbox_double", "chatmenu")
@@ -238,12 +265,12 @@ class CooksAssistantInteractionTest {
             result?.getOrThrow()
         }
 
-        fun assertReward() {
+        fun assertReward(held: Int = 0) {
             assertEquals(2, script.quest.getQuestStage(player))
             assertEquals(2, player.vars["varp.cookquest"])
             assertEquals(1, player.vars["varp.qp"])
             assertEquals(300, player.statMap.getXP("stat.cooking"))
-            listOf("obj.bucket_milk", "obj.egg", "obj.pot_flour").forEach { assertEquals(0, player.inv.count(it)) }
+            listOf("obj.bucket_milk", "obj.egg", "obj.pot_flour").forEach { assertEquals(held, player.inv.count(it)) }
         }
 
         fun output() = client.messages.joinToString("\n")
