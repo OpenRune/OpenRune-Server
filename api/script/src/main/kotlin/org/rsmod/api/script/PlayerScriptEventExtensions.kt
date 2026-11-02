@@ -23,6 +23,8 @@ import org.rsmod.api.player.input.DialogInput
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.ui.PlayerButtonEvent
 import org.rsmod.api.player.ui.WorldMapClick
+import org.rsmod.api.player.vars.PlayerVarChangedEvent
+import org.rsmod.api.player.vars.PlayerVarWatch
 import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.game.entity.player.WorldTypeChangedEvent
 import org.rsmod.plugin.scripts.ScriptContext
@@ -133,6 +135,12 @@ public fun ScriptContext.onNpcKilled(action: NpcKilledEvent.() -> Unit): Unit = 
 
 public fun ScriptContext.onPlayerInvChanged(action: PlayerInvChangedEvent.() -> Unit): Unit =
     onEvent(action)
+
+/** [name] is a varp or varbit symbol, such as `"varbit.prayer_smite"`. */
+public fun ScriptContext.onVarChanged(name: String, action: PlayerVarChangedEvent.() -> Unit) {
+    val watch = PlayerVarWatch.watch(name)
+    onEvent<PlayerVarChangedEvent> { watch.matching(this)?.action() }
+}
 
 public fun ScriptContext.onPlayerEquip(action: PlayerWornEvents.Equip.() -> Unit): Unit =
     onEvent(action)
