@@ -145,7 +145,7 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
         const val FULL_MESSAGE =
             "<col=229628>You find a rare piece of the creature! Though without space in your inventory, it drops to " +
                 "the ground."
-        const val NO_RUMOUR_MESSAGE = "You don't have a rumour to investigate at the moment."
+        const val NO_RUMOUR_MESSAGE = "You do not have an active rumour right now."
 
         fun turnInXp(level: Int, modifier: Int): Int = (level + 5) * modifier
 

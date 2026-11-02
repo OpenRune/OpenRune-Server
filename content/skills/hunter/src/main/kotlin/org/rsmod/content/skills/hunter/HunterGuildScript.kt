@@ -200,7 +200,7 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
         val current = rumours.currentHunter(player)
         val currentRumour = current?.let { rumours.rumourOf(player, it) }
         when {
-            own != null && current == hunter -> {
+            own != null && (current == hunter || currentRumour == null) -> {
                 rumours.resume(player, hunter)
                 if (hunter.name == "Gilman") {
                     chatPlayer(quiz, "Can you remind me which rumour I'm chasing right now?")
@@ -449,7 +449,7 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
 
         val ASSIGN_LINES =
             listOf(
-                "Could you check out the validity of this report for me? Someone thinks they've seen a %1\$s. Once " +
+                "Could you check out the validity of this report for me? Someone thinks they've seen an odd %1\$s. Once " +
                     "you find it, bring back %2\$s.",
                 "There's been rumours of a rare %1\$s coming in. Once you find it, bring back %2\$s.",
                 "We've got reports of a slightly different %1\$s in the local population. Once you find it, bring " +

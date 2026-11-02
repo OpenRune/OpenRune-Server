@@ -110,7 +110,7 @@ constructor(
         mes("Your ring of pursuit crumbles to dust.")
     }
 
-    private fun ProtectedAccess.search(area: Area, coords: CoordGrid) {
+    private suspend fun ProtectedAccess.search(area: Area, coords: CoordGrid) {
         val track = tracks[player]
         val target = track?.target
         if (track == null || track.area !== area || target == null || area.spotCoords[target] != coords) {
@@ -118,6 +118,7 @@ constructor(
             return
         }
         anim(SEARCH_SEQ)
+        delay(1)
         mes("It looks like there might be something hiding ${area.spotWhere}.")
     }
 

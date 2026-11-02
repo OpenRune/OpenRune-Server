@@ -85,7 +85,7 @@ constructor(private val objRepo: ObjRepository, private val pets: PetRewards) : 
         if (random.of(UNIQUE_DEN) == 0 && !owns(HUNTSMANS_KIT)) unique(HUNTSMANS_KIT)
         if (random.of(UNIQUE_DEN) == 0) unique(OUTFIT.firstOrNull { !obtained(it) } ?: OUTFIT[random.of(OUTFIT.size)])
         if (!expert) return
-        if (random.of(UNIQUE_DEN) == 0 && obtained(ENHANCED)) unique(PERFECTED)
+        if (random.of(UNIQUE_DEN) == 0) unique(PERFECTED)
         val petDen = if (player.statMap.getXP(HUNTER_STAT) >= MAX_XP) PET_DEN_MAX_XP else PET_DEN
         if (random.of(petDen) == 0) pets.give(player, PET)
     }
@@ -118,7 +118,7 @@ constructor(private val objRepo: ObjRepository, private val pets: PetRewards) : 
         const val PET = "obj.quetzalpet"
         const val SUPPLIES = "obj.hg_lootsack_trade"
         val OUTFIT = listOf(HunterOutfit.HOOD, HunterOutfit.TOP, HunterOutfit.LEGS, HunterOutfit.BOOTS)
-        val TRADEABLE = OUTFIT.toSet() + ENHANCED + PERFECTED
+        val TRADEABLE = OUTFIT.toSet() + ENHANCED + PERFECTED + HUNTSMANS_KIT
 
         const val UNIQUE_DEN = 50
         const val PET_DEN = 1000

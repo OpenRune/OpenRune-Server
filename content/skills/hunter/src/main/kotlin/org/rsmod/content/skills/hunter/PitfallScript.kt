@@ -129,6 +129,7 @@ constructor(
         anim(JUMP_SEQ, delay = JUMP_SEQ_DELAY)
         worldRepo.soundArea(start, JUMP_SYNTH)
         val chase = hunt(player).chase ?: return
+        if (chase.lastLeapt == pit.index) return
         chase.crossing = Crossing(pit, bound.coords, dir, chase.npc.size, clock.cycle)
     }
 
@@ -289,9 +290,8 @@ constructor(
                 val level = statBase(HUNTER)
                 val spear = if (SPEAR in worn) SPEAR_BONUS else 0
                 val chance = HunterOutfit.applyTo(catchChance256(creature.low, creature.high, level), this) + spear
-                val repeat = chase.lastLeapt == crossing.pit.index
                 val caught =
-                    !repeat && level >= creature.level && creature in crossing.pit.kinds &&
+                    level >= creature.level && creature in crossing.pit.kinds &&
                         vars[crossing.pit.varbit] == STATE_SPIKED && random.of(256) < chance
                 if (!caught) return leap(chase, crossing)
                 npc.teleport(collision, pitCoords)
