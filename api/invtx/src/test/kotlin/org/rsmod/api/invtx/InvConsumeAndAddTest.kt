@@ -266,6 +266,53 @@ class InvConsumeAndAddTest {
     }
 
     @Test
+    fun `byproducts are added with the product`() {
+        val inv = inventory(size = 4, RAW to 1)
+
+        val result =
+            player.invConsumeAndAdd(
+                inv,
+                listOf(InvCost(RAW, 1)),
+                COOKED,
+                1,
+                listOf(InvGain(OTHER, 1), InvGain(STACK_OUT, 3)),
+            )
+
+        assertTrue(result.success)
+        assertEquals(0, count(inv, RAW))
+        assertEquals(1, count(inv, COOKED))
+        assertEquals(1, count(inv, OTHER))
+        assertEquals(3, count(inv, STACK_OUT))
+    }
+
+    @Test
+    fun `no room for a byproduct rolls back the product and inputs`() {
+        val storage = storage(stored = 10, VirtualItemConsumePolicy.StorageFirst)
+        val inv = inventory(size = 2, RAW to 1, OTHER to 1)
+        val before = snapshot(inv)
+
+        val costs = listOf(InvCost(RAW, 1), storedCost(4))
+        val result = player.invConsumeAndAdd(inv, costs, COOKED, 1, listOf(InvGain(OTHER2, 1)))
+
+        assertFalse(result.success)
+        assertEquals(TransactionResult.NotEnoughSpace, result.err)
+        assertEquals(10, storage.stored)
+        assertEquals(before, snapshot(inv))
+    }
+
+    @Test
+    fun `a byproduct stack at the int limit rolls back the product and inputs`() {
+        val inv = inventory(size = 4, RAW to 1, STACK_OUT to Int.MAX_VALUE)
+        val before = snapshot(inv)
+
+        val costs = listOf(InvCost(RAW, 1))
+        val result = player.invConsumeAndAdd(inv, costs, COOKED, 1, listOf(InvGain(STACK_OUT, 1)))
+
+        assertFalse(result.success)
+        assertEquals(before, snapshot(inv))
+    }
+
+    @Test
     fun `consuming without a product takes inventory and storage`() {
         val storage = storage(stored = 3, VirtualItemConsumePolicy.StorageFirst)
         val inv = inventory(size = 4, RAW to 1, STACK_IN to 5)

@@ -30,6 +30,10 @@ public class SkillingProduct(
 
     public var inputs: List<SkillingInput> = emptyList(),
 
+    public var byproducts: List<SkillingByproduct> = emptyList(),
+
 )
 
 public data class SkillingInput(public val item: String, public val count: Int = 1)
+
+public data class SkillingByproduct(public val item: String, public val count: Int = 1)
