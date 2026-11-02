@@ -11,6 +11,7 @@ import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.invtx.swap
 import org.rsmod.api.invtx.transfer
+import org.rsmod.api.player.events.PlayerWornEvents
 import org.rsmod.api.player.events.interact.HeldEquipEvents
 import org.rsmod.api.player.righthand
 import org.rsmod.api.player.stat.statBase
@@ -101,10 +102,12 @@ public class HeldEquipOp @Inject constructor(private val eventBus: EventBus) {
                 val unequipType = type ?: continue
                 val unequip = HeldEquipEvents.Unequip(player, wearpos, unequipType)
                 eventBus.publish(unequip)
+                eventBus.publish(PlayerWornEvents.Unequip(player, unequipType, wearpos))
             }
 
             val equip = HeldEquipEvents.Equip(player, invSlot, primaryWearpos, objType)
             eventBus.publish(equip)
+            eventBus.publish(PlayerWornEvents.Equip(player, objType, primaryWearpos))
 
             player.rebuildAppearance()
         }
