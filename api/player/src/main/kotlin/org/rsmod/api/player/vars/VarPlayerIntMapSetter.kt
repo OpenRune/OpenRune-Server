@@ -66,6 +66,10 @@ public object VarPlayerIntMapSetter {
         } else if (transmit.onDiff && previous != value) {
             VarpSync.writeVarp(player, varp, value)
         }
+
+        if (previous != value) {
+            PlayerVarWatch.changed(player, varp.id, previous, value)
+        }
     }
 
     public fun toggle(player: Player, varp: String) {
