@@ -11,6 +11,7 @@ import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
+import org.rsmod.api.player.events.PlayerWornEvents
 import org.rsmod.api.player.events.PlayerXpEvents
 import org.rsmod.api.player.events.interact.PlayerInteractionEvent
 import org.rsmod.api.player.events.interact.PlayerInteractionFinishedEvent
@@ -131,6 +132,12 @@ public fun ScriptContext.onPlayerInteractionFinished(
 public fun ScriptContext.onNpcKilled(action: NpcKilledEvent.() -> Unit): Unit = onEvent(action)
 
 public fun ScriptContext.onPlayerInvChanged(action: PlayerInvChangedEvent.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerEquip(action: PlayerWornEvents.Equip.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerUnequip(action: PlayerWornEvents.Unequip.() -> Unit): Unit =
     onEvent(action)
 
 public fun ScriptContext.onPlayerXpModify(action: PlayerXpEvents.Modify.() -> Unit): Unit =

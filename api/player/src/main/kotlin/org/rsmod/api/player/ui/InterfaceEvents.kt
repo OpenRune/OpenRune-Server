@@ -12,29 +12,34 @@ import org.rsmod.events.KeyedEvent
 import org.rsmod.events.SuspendEvent
 import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.player.PlayerEvent
 import org.rsmod.game.ui.Component
 import org.rsmod.game.ui.UserInterface
 import org.rsmod.map.CoordGrid
 
-public class IfMoveTop(public val player: Player, interf: InterfaceType) : KeyedEvent {
+public class IfMoveTop(override val player: Player, interf: InterfaceType) :
+    KeyedEvent, PlayerEvent {
     override val id: Long = interf.id.toLong()
 }
 
 public data class IfOpenSub(
-    val player: Player,
+    override val player: Player,
     val interf: UserInterface,
     val target: Component,
     val subType: IfSubType,
-) : KeyedEvent {
+) : KeyedEvent, PlayerEvent {
     override val id: Long = interf.id.toLong()
 }
 
-public data class IfCloseSub(val player: Player, val interf: UserInterface, val from: Component) :
-    KeyedEvent {
+public data class IfCloseSub(
+    override val player: Player,
+    val interf: UserInterface,
+    val from: Component,
+) : KeyedEvent, PlayerEvent {
     override val id: Long = interf.id.toLong()
 }
 
-public class IfMoveSub(public val player: Player, destComponent: Int) : KeyedEvent {
+public class IfMoveSub(override val player: Player, destComponent: Int) : KeyedEvent, PlayerEvent {
     override val id: Long = destComponent.toLong()
 }
 
@@ -109,14 +114,14 @@ public class IfModalButtonT(
 }
 
 public class IfOverlayButtonT(
-    public val player: Player,
+    override val player: Player,
     public val selectedSlot: Int,
     public val selectedObj: ItemServerType?,
     public val targetSlot: Int,
     public val targetObj: ItemServerType?,
     selectedComponent: Component,
     targetComponent: Component,
-) : KeyedEvent {
+) : KeyedEvent, PlayerEvent {
     override val id: Long =
         EventBus.composeLongKey(selectedComponent.packed, targetComponent.packed)
 
@@ -167,14 +172,14 @@ public class IfModalDrag(
 }
 
 public class IfOverlayDrag(
-    public val player: Player,
+    override val player: Player,
     public val selectedSlot: Int?,
     public val selectedObj: Int?,
     public val targetSlot: Int?,
     public val targetObj: Int?,
     selectedComponent: Component,
     targetComponent: Component,
-) : KeyedEvent {
+) : KeyedEvent, PlayerEvent {
     override val id: Long =
         EventBus.composeLongKey(selectedComponent.packed, targetComponent.packed)
 

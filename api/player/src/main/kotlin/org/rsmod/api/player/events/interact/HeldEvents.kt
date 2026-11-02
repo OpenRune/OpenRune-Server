@@ -14,83 +14,84 @@ import org.rsmod.events.KeyedEvent
 import org.rsmod.events.SuspendEvent
 import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Player
+import org.rsmod.game.entity.player.PlayerEvent
 import org.rsmod.game.interact.HeldOp
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
 
 public class HeldBanksideEvents {
     public class Type(
-        public val player: Player,
+        override val player: Player,
         public val slot: Int,
         public val type: ItemServerType,
         override val id: Long = type.id.toLong(),
-    ) : KeyedEvent
+    ) : KeyedEvent, PlayerEvent
 }
 
 public class HeldDropEvents {
     public class Trigger(
-        public val player: Player,
+        override val player: Player,
         public val dropSlot: Int,
         public val obj: InvObj,
         public val type: ItemServerType,
         triggerType: String,
         override val id: Long = triggerType.asRSCM().toLong(),
-    ) : KeyedEvent {
+    ) : KeyedEvent, PlayerEvent {
         init {
             RSCM.requireRSCM(RSCMType.DROP_TRIGGER, triggerType)
         }
     }
 
     public data class Drop(
-        public val player: Player,
+        override val player: Player,
         public val dropSlot: Int,
         public val obj: InvObj,
         public val type: ItemServerType,
-    ) : UnboundEvent
+    ) : UnboundEvent, PlayerEvent
 
     public data class Destroy(
-        public val player: Player,
+        override val player: Player,
         public val invSlot: Int,
         public val obj: InvObj,
         public val type: String,
-    ) : UnboundEvent
+    ) : UnboundEvent, PlayerEvent
 
     public data class Release(
-        public val player: Player,
+        override val player: Player,
         public val invSlot: Int,
         public val obj: InvObj,
         public val type: String,
-    ) : UnboundEvent
+    ) : UnboundEvent, PlayerEvent
 
     public data class Dispose(
-        public val player: Player,
+        override val player: Player,
         public val invType: String,
         public val invSlot: Int,
         public val obj: InvObj,
-    ) : UnboundEvent
+    ) : UnboundEvent, PlayerEvent
 }
 
 public class HeldEquipEvents {
     public data class Equip(
-        public val player: Player,
+        override val player: Player,
         public val invSlot: Int,
         public val wearpos: Wearpos,
         public val type: ItemServerType,
         override val id: Long = type.contentGroup.toLong(),
-    ) : KeyedEvent
+    ) : KeyedEvent, PlayerEvent
 
     public data class Unequip(
-        public val player: Player,
+        override val player: Player,
         public val wearpos: Wearpos,
         public val type: ItemServerType,
         override val id: Long = type.contentGroup.toLong(),
-    ) : KeyedEvent
+    ) : KeyedEvent, PlayerEvent
 
     public data class WearposChange(
-        public val player: Player,
+        override val player: Player,
         public val wearpos: Wearpos,
         public val objType: ItemServerType,
-    ) : UnboundEvent
+    ) : UnboundEvent, PlayerEvent
 }
 
 public sealed class HeldObjEvents(id: Number) : OpEvent(id.toLong()) {
