@@ -141,10 +141,10 @@ class HunterRumours @Inject constructor(private val objRepo: ObjRepository, priv
         const val PERMILLE = 1000
         const val GROUND_DURATION = 200
         const val FOUND_MESSAGE =
-            "<col=229628>You find a rare piece of the creature! You should take it back to the Hunter Guild.</col>"
+            "<col=229628>You find a rare piece of the creature! You should take it back to the Hunter Guild."
         const val FULL_MESSAGE =
             "<col=229628>You find a rare piece of the creature! Though without space in your inventory, it drops to " +
-                "the ground.</col>"
+                "the ground."
         const val NO_RUMOUR_MESSAGE = "You don't have a rumour to investigate at the moment."
 
         fun turnInXp(level: Int, modifier: Int): Int = (level + 5) * modifier

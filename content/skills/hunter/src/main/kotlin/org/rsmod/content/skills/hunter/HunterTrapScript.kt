@@ -334,7 +334,9 @@ constructor(
                 (if (trap.baited) BAIT_BONUS else 0) +
                 (if (trap.smoked) SMOKE_BONUS else 0)
         val success =
-            playerRepo.findAll(trap.coords).none() && level >= creature.level && random.of(256) < chance
+            playerRepo.findAll(trap.coords).none() && level >= creature.level &&
+                (creature.quest.isEmpty() || QuestRequirements.hasCompleted(this, creature.quest)) &&
+                random.of(256) < chance
         val synth = if (trap.kind.snare) SNARE_TRAPPING_SYNTH else BOX_TRAPPING_SYNTH
         if (success) {
             val from = npc.coords
@@ -404,18 +406,7 @@ constructor(
     }
 
     private fun overlay(trap: Trap, colour: Int) {
-        if (!trap.kind.overlay) return
-        val type = ServerCacheManager.getObject(trap.loc.id) ?: return
-        ClientScripts.addOverlayTimerLoc(
-            player = trap.owner,
-            coords = trap.coords,
-            loc = type,
-            shape = trap.loc.shape,
-            timer = OVERLAY_TIMER,
-            ticks = OVERLAY_TICKS,
-            colour = colour,
-            isDespawnTimer = true,
-        )
+        if (trap.kind.overlay) overlayTimer(trap.owner, trap.loc, colour)
     }
 
     private fun Player.collapse(trap: Trap) {
@@ -480,6 +471,7 @@ constructor(
                             baitLeftover = c.baitLeftover?.internalName,
                             pet = c.pet?.internalName,
                             petBase = c.petBase,
+                            quest = c.quest,
                         )
                     },
             )
@@ -532,6 +524,7 @@ constructor(
         val baitLeftover: String?,
         val pet: String?,
         val petBase: Int,
+        val quest: String,
     ) {
         val npcIds: Set<Int> by lazy { npcs.map { it.asRSCM(RSCMType.NPC) }.toSet() }
 
@@ -616,6 +609,20 @@ constructor(
         private const val EAST = 1
         private const val SOUTH = 2
         private const val WEST = 3
+
+        fun overlayTimer(player: Player, loc: LocInfo, colour: Int, ticks: Int = OVERLAY_TICKS) {
+            val type = ServerCacheManager.getObject(loc.id) ?: return
+            ClientScripts.addOverlayTimerLoc(
+                player = player,
+                coords = loc.coords,
+                loc = type,
+                shape = loc.shape,
+                timer = OVERLAY_TIMER,
+                ticks = ticks,
+                colour = colour,
+                isDespawnTimer = true,
+            )
+        }
 
         fun cardinal(c: CoordGrid): List<CoordGrid> =
             listOf(c.translate(0, 1), c.translate(1, 0), c.translate(0, -1), c.translate(-1, 0))

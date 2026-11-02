@@ -116,6 +116,7 @@ object HunterTrapCreaturesTable {
     const val PET_BASE = 14
     const val WILDERNESS_TRAP = 15
     const val BAIT_LEFTOVER = 16
+    const val QUEST = 17
 
     private const val SNARE = 0
     private const val BOX = 1
@@ -143,6 +144,7 @@ object HunterTrapCreaturesTable {
         val petBase: Int = 0,
         val wilderness: Boolean = false,
         val baitLeftover: String = "",
+        val quest: String = "",
     )
 
     private fun bird(
@@ -192,6 +194,7 @@ object HunterTrapCreaturesTable {
         pet: String = "",
         petBase: Int = 0,
         wilderness: Boolean = false,
+        quest: String = "",
     ) =
         Row(
             key = key,
@@ -212,6 +215,7 @@ object HunterTrapCreaturesTable {
             petBase = petBase,
             wilderness = wilderness,
             baitLeftover = if (bait.isEmpty()) "" else EMPTY_BOWL,
+            quest = quest,
         )
 
     private const val CHINCHOMPA_APPROACH = "seq.hunting_chinchompa_approaching"
@@ -231,7 +235,7 @@ object HunterTrapCreaturesTable {
             boxed("chinchompa", "chinchompa", "npc.hunting_chinchompa", 53, 1984, "obj.chinchompa_captured", 6, 268, NEXT_TICK, CHINCHOMPA_APPROACH, SPICY_TOMATO, "obj.skillpethunter_grey", 131_395),
             boxed("chinchompa_big", "carnivorous chinchompa", "npc.hunting_chinchompa_big", 63, 2650, "obj.chinchompa_big_captured", -78, 228, NEXT_TICK, CHINCHOMPA_APPROACH, SPICY_MEAT, "obj.skillpethunter_red", 98_373),
             boxed("chinchompa_black", "black chinchompa", "npc.hunting_chinchompa_black", 73, 3150, "obj.chinchompa_black", -78, 228, NEXT_TICK, CHINCHOMPA_APPROACH, SPICY_MEAT, "obj.skillpethunter_black", 82_758, wilderness = true),
-            boxed("letvek", "letvek", "npc.hunting_letvek", 76, 2085, "obj.letvek", -78, 228, NEXT_TICK, "seq.npc_letvek_approach"),
+            boxed("letvek", "letvek", "npc.hunting_letvek", 76, 2085, "obj.letvek", -78, 228, NEXT_TICK, "seq.npc_letvek_approach", quest = "quest_bloodmoonrises"),
             Row(
                 key = "imp",
                 trap = MAGIC_BOX,
@@ -284,6 +288,7 @@ object HunterTrapCreaturesTable {
             column("pet_base", PET_BASE, VarType.INT)
             column("wilderness_trap", WILDERNESS_TRAP, VarType.BOOLEAN)
             column("bait_leftover", BAIT_LEFTOVER, VarType.OBJ)
+            column("quest", QUEST, VarType.STRING)
 
             for (r in ROWS) {
                 row("dbrow.hunter_trap_creature_${r.key}") {
@@ -307,6 +312,7 @@ object HunterTrapCreaturesTable {
                     column(PET_BASE, r.petBase)
                     column(WILDERNESS_TRAP, r.wilderness)
                     if (r.baitLeftover.isNotEmpty()) columnRSCM(BAIT_LEFTOVER, r.baitLeftover)
+                    column(QUEST, r.quest)
                 }
             }
         }

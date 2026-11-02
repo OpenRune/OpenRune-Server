@@ -110,7 +110,7 @@ constructor(
             return
         }
         if (random.of(LOG_KEEP_DENOMINATOR) == 0) invDel(inv, log)
-        replace(trap, TRAP)
+        HunterTrapScript.overlayTimer(player, replace(trap, TRAP), HunterTrapScript.SET_COLOUR)
         soundSynth(SET_SYNTH)
         trap.state = State.Set
         trap.stateCycle = clock.cycle
@@ -198,7 +198,7 @@ constructor(
                 }
                 State.Trapping -> if (age >= SETTLE_TICKS) {
                     val creature = trap.caught!!
-                    replace(trap, creature.full)
+                    HunterTrapScript.overlayTimer(this, replace(trap, creature.full), HunterTrapScript.FULL_COLOUR)
                     worldRepo.soundArea(trap.boulder.coords, creature.fullSynth)
                     trap.state = State.Full
                     trap.stateCycle = now
@@ -287,9 +287,11 @@ constructor(
     private fun mirrored(trap: Deadfall, side: CoordGrid): Boolean =
         if (trap.width >= trap.length) side.z < trap.boulder.coords.z else side.x < trap.boulder.coords.x
 
-    private fun replace(trap: Deadfall, internal: String) {
+    private fun replace(trap: Deadfall, internal: String): LocInfo {
         val b = trap.boulder
-        locRepo.add(LocInfo(b.layer, b.coords, LocEntity(internal.asRSCM(RSCMType.LOC), b.shapeId, b.angleId)), Int.MAX_VALUE)
+        val loc = LocInfo(b.layer, b.coords, LocEntity(internal.asRSCM(RSCMType.LOC), b.shapeId, b.angleId))
+        locRepo.add(loc, Int.MAX_VALUE)
+        return loc
     }
 
     private fun clear(trap: Deadfall) {

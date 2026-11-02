@@ -19,6 +19,7 @@ import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onArea
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.table.QuestRow
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
@@ -54,6 +55,7 @@ constructor(
         onOpLoc1(SPEARS_PILE) { invAdd(inv, MAKESHIFT_SPEAR, PILE_TAKE) }
         onOpNpc1(STYMPHIKE) { spear(it.npc) }
         onArea(AREA) { showQuestOps() }
+        onPlayerLogout { birds.remove(player)?.npc?.takeIf { it.isSlotAssigned }?.let { npcRepo.del(it, 1) } }
     }
 
     private fun ProtectedAccess.showQuestOps() {
@@ -115,7 +117,12 @@ constructor(
             delay(1)
             hidden++
             val bird = birds[player]
-            if (bird == null && hidden >= SPAWN_TICKS) spawnBird()
+            if (bird != null && !bird.npc.isSlotAssigned) {
+                birds.remove(player)
+                VarPlayerIntMapSetter.set(player, "varbit.hunting_stymphike_trap_status_${bird.tree}", 0)
+                hidden = 0
+            }
+            if (birds[player] == null && hidden >= SPAWN_TICKS) spawnBird()
             if (hidden % PEEK_TICKS != 0) continue
             anim(RUSTLE_SEQ)
             worldRepo.locAnim(bush, BUSH_SHAKE_SEQ)

@@ -149,6 +149,7 @@ constructor(
             return
         }
         trap.treeLoc = replaceTree(trap, tree.set)
+        HunterTrapScript.overlayTimer(player, trap.treeLoc!!, HunterTrapScript.SET_COLOUR)
         trap.netLoc = locRepo.add(net, tree.netSet, Int.MAX_VALUE, original.angle, original.shape)
         enter(trap, State.Set)
         player.softTimer(TIMER, 1)
@@ -270,6 +271,7 @@ constructor(
                 }
                 State.Catching -> if (age >= SETTLE_TICKS) {
                     trap.treeLoc = replaceCaught(trap, trap.def.full)
+                    HunterTrapScript.overlayTimer(this, trap.treeLoc!!, HunterTrapScript.FULL_COLOUR, FULL_TIMER_TICKS)
                     enter(trap, State.Full)
                 }
                 State.Failing -> if (age >= SETTLE_TICKS) {
@@ -443,6 +445,7 @@ constructor(
     internal companion object {
         const val HUNTER = "stat.hunter"
         const val TIMER = "timer.hunter_net_traps"
+        const val FULL_TIMER_TICKS = 100
         const val STEP_OFF_TICKS = 1
         const val ROPE = "obj.rope"
         const val SMALL_NET = "obj.net"

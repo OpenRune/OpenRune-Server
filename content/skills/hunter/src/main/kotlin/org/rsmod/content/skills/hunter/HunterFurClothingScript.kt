@@ -25,6 +25,7 @@ class HunterFurClothingScript : PluginScript() {
                 IfButtonOp.Op2 -> make(obj, 1)
                 IfButtonOp.Op3 -> make(obj, 5)
                 IfButtonOp.Op4 -> make(obj, 10)
+                IfButtonOp.Op5 -> mes(obj.examine)
                 else -> Unit
             }
         }

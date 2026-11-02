@@ -373,7 +373,7 @@ constructor(
             val extra = rollExtra()
             if (inv.freeSpace() > 0) invAddPlayer(fish.fish.internalName, minOf(1 + extra, inv.freeSpace()))
         }
-        val pearlDenominator = (PEARL_BASE - (x - PEARL_X_OFFSET) * PEARL_SLOPE / PEARL_SLOPE_DIVISOR) / PEARL_BONUS
+        val pearlDenominator = PEARL_BASE - (x - PEARL_X_OFFSET) * PEARL_SLOPE / PEARL_SLOPE_DIVISOR
         if (random.of(max(1.0, pearlDenominator).toInt()) == 0) addOrGround(PEARL, 1)
         pets.rollSkillingPet(this, HERON, FISHING, HERON_BASE)
     }
@@ -488,10 +488,9 @@ constructor(
         const val GROUND_DURATION = 200
         const val OFFCUT_EVERY_MIN = 3
         const val OFFCUT_EVERY_MAX = 4
-        const val PEARL_BASE = 67.0
+        const val PEARL_BASE = 66.6
         const val PEARL_X_OFFSET = 40
         const val PEARL_SLOPE = 25.0
         const val PEARL_SLOPE_DIVISOR = 59.0
-        const val PEARL_BONUS = 1.5
     }
 }

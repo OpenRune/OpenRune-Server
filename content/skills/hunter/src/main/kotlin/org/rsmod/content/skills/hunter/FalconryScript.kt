@@ -326,9 +326,6 @@ constructor(
 
     private fun ProtectedAccess.takeFalcon(fee: Int): Boolean {
         if (wearsGlove(player)) return false
-        val slots = HAND_SLOTS.filter { player.worn[it] != null }
-        if (inv.freeSpace() < slots.size) return false
-        for (slot in slots) wornUnequip(slot)
         if (HAND_SLOTS.any { player.worn[it] != null }) return false
         if (fee > 0 && invDel(inv, COINS, fee).failure) return false
         invAdd(player.worn, FALCON_GLOVE, slot = Wearpos.RightHand.slot)
