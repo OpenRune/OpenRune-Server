@@ -17,7 +17,8 @@ class HunterShopsScript @Inject constructor(private val shops: Shops) : PluginSc
     override fun ScriptContext.startup() {
         onOpNpc5(ALECK) { shops.open(player, it.npc, "Aleck's Hunter Emporium.", "inv.hunting_shop_yanille") }
         onOpNpc5(ARTIMEUS) { shops.open(player, it.npc, "Nardah Hunter Shop.", "inv.hunting_shop_nardah") }
-        onOpNpc3(STROM) { shops.open(player, it.npc, "Elder Strom's Hunting Stall", "inv.great_conch_hunter_shop") }
+        onOpNpc1(STROM) { startDialogue(it.npc) { strom(it.npc) } }
+        onOpNpc3(STROM) { openStrom(player, it.npc) }
         onOpNpc1(IMIA) { startDialogue(it.npc) { imia(it.npc) } }
         onOpNpc3(IMIA) {
             if (qualified(player)) openImia(player, it.npc) else startDialogue(it.npc) { refuse() }
@@ -27,6 +28,21 @@ class HunterShopsScript @Inject constructor(private val shops: Shops) : PluginSc
     private fun qualified(player: Player): Boolean = player.statBase(HunterTrapScript.HUNTER) >= GUILD_LEVEL
 
     private fun openImia(player: Player, npc: Npc) = shops.open(player, npc, "Imia's Supplies", "inv.hunting_shop_guild")
+
+    private fun openStrom(player: Player, npc: Npc) =
+        shops.open(player, npc, "Elder Strom's Hunting Stall", "inv.great_conch_hunter_shop")
+
+    private suspend fun Dialogue.strom(npc: Npc) {
+        chatNpc(neutral, "Human. Do you wish to hunt? If so, I have supplies for you.")
+        if (!choice2("Let's see what you have.", true, "I'm good, thanks.", false)) {
+            chatPlayer(neutral, "I'm good, thanks.")
+            chatNpc(neutral, "As you wish.")
+            return
+        }
+        chatPlayer(neutral, "Let's see what you have.")
+        chatNpc(happy, "You won't be disappointed.")
+        openStrom(player, npc)
+    }
 
     private suspend fun Dialogue.refuse() {
         chatNpc(

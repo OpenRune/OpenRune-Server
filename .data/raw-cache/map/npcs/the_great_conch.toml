@@ -151,6 +151,10 @@ npc = "npc.tortugan_leff"
 coords = "0_49_37_39_20"
 
 [[spawn]]
+npc = "npc.tortugan_strom"
+coords = "0_49_37_23_40"
+
+[[spawn]]
 npc = "npc.tt_raley_conch"
 coords = "0_49_37_51_36"
 
