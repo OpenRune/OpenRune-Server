@@ -613,9 +613,9 @@ constructor(
         }
     }
 
-    private fun Dialogue.commitHandIn(stage: Int, wanted: String): Boolean {
+    private fun Dialogue.commitHandIn(stage: Int, wanted: String) {
         if (access.invDel(access.inv, wanted, 1).failure) {
-            return false
+            return
         }
         when (stage) {
             STARTED -> {
@@ -626,22 +626,24 @@ constructor(
                 player.grubfootLook = GRUBFOOT_BLUE
                 quest.setQuestStage(access, BROWN_WANTED)
             }
-            else -> player.grubfootLook = GRUBFOOT_BROWN
+            else -> {
+                if (!quest.completeQuest(access)) {
+                    access.invAdd(access.inv, wanted, 1)
+                    access.mes(NO_ROOM_FOR_REWARD)
+                    return
+                }
+                player.grubfootLook = GRUBFOOT_BROWN
+            }
         }
-        return true
     }
 
     private suspend fun Dialogue.handIn(stage: Int) {
         val wanted = wantedArmour(stage) ?: return
         chatPlayer(neutral, handInLine(stage))
-        if (tryOn(stage, wanted) && stage == BROWN_WANTED && !quest.completeQuest(access)) {
-            access.invAdd(access.inv, wanted, 1)
-            player.grubfootLook = GRUBFOOT_BLUE
-            access.mes(NO_ROOM_FOR_REWARD)
-        }
+        tryOn(stage, wanted)
     }
 
-    private suspend fun Dialogue.tryOn(stage: Int, wanted: String): Boolean {
+    private suspend fun Dialogue.tryOn(stage: Int, wanted: String) {
         val wearing = grubfootNoop(player.grubfootLook)
         val tryOn =
             grubfootNoop(
@@ -661,7 +663,6 @@ constructor(
         player.sceneReturnTile = returnTo.packed
         player.uuid?.let { uuid -> region?.let { sceneRegions[uuid] = it } }
         val actors = ArrayList<Npc>()
-        var committed = false
         var ended = false
         fun spawn(type: String, coords: CoordGrid, face: CoordGrid): Npc {
             val npc = Npc(type, r[coords])
@@ -745,7 +746,7 @@ constructor(
                     chatPlayer(confused, "Thanks... I think...")
                 }
             }
-            committed = commitHandIn(stage, wanted)
+            commitHandIn(stage, wanted)
             access.mesboxNp(" ")
             access.fadeOverlay(0, 255, 0, 0, SCENE_FADE)
             access.delay(1)
@@ -753,11 +754,10 @@ constructor(
             ended = true
             access.delay(1)
             access.fadeOverlay(0, 0, 0, 255, SCENE_FADE)
-            access.ifClose()
+            access.ifCloseChat()
         } finally {
             if (!ended) leaveScene(actors, region, returnTo)
         }
-        return committed
     }
 
     private fun Dialogue.enterScene(r: SceneRegion) {
