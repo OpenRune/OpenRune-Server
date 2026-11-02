@@ -191,7 +191,7 @@ class NulodionLostCannonTest {
             assertEquals(0, player.vars["varp.dropcannon"], case)
             assertEquals(0, player.vars["varbit.mcannon_decayed"], case)
             assertEquals(0, player.vars["varp.mcannon_ornament"], case)
-            assertEquals(0, player.vars["varp.rockthrower"], case)
+            assertEquals(AMMO, player.vars["varp.rockthrower"], case)
         }
 
         fun totals(): Map<String, Int> {
