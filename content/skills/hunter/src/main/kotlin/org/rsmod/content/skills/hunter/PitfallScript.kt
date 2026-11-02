@@ -64,6 +64,7 @@ constructor(
     private val creatures: List<Creature> by lazy { HunterPitfallsRow.all().map(::Creature) }
     private val pits: List<Pit> by lazy { (1..PIT_COUNT).map(::pit) }
     private val hunts = HashMap<Player, Hunt>()
+    private val lastLeapt = HashMap<Npc, Int>()
     private val logs: List<String> by lazy {
         FiremakingLogsRow.all()
             .sortedBy { row -> row.statReq.firstOrNull()?.t1 ?: 0 }
@@ -129,7 +130,7 @@ constructor(
         anim(JUMP_SEQ, delay = JUMP_SEQ_DELAY)
         worldRepo.soundArea(start, JUMP_SYNTH)
         val chase = hunt(player).chase ?: return
-        if (chase.lastLeapt == pit.index) return
+        if (lastLeapt[chase.npc] == pit.index) return
         chase.crossing = Crossing(pit, bound.coords, dir, chase.npc.size, clock.cycle)
     }
 
@@ -329,7 +330,7 @@ constructor(
             )
         }
         worldRepo.soundArea(npc.coords, LEAP_SYNTH)
-        chase.lastLeapt = crossing.pit.index
+        lastLeapt[npc] = crossing.pit.index
         crossing.stage = CrossStage.Leaping
         crossing.started = clock.cycle
     }
@@ -342,6 +343,7 @@ constructor(
     }
 
     private fun removeFallen(npc: Npc, creature: Creature) {
+        lastLeapt -= npc
         if (!npc.isSlotAssigned) return
         npc.defaultMode()
         npcRepo.despawn(npc, creature.respawnTicks)
@@ -422,7 +424,6 @@ constructor(
 
     internal class Chase(val npc: Npc, val creature: Creature, var nextAttack: Int) {
         var crossing: Crossing? = null
-        var lastLeapt: Int = -1
     }
 
     internal class Hunt {

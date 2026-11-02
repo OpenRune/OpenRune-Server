@@ -207,7 +207,7 @@ constructor(private val rumours: HunterRumours, private val random: GameRandom, 
                 }
                 chatNpc(
                     neutral,
-                    "You're hunting for me at the moment. This rumour was about ${a(own)}. You'll need to bring " +
+                    "You're hunting for me at the moment. This rumour was about a ${own.name}. You'll need to bring " +
                         "back ${parts(own)}.",
                 )
             }

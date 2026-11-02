@@ -59,6 +59,11 @@ constructor(
     internal fun ProtectedAccess.catch(npc: Npc, row: HunterButterfliesRow) {
         if (!npc.isCatchable()) return
         faceEntitySquare(npc)
+        if (wieldedNet() == null && stat(HUNTER) < row.level + BAREHANDED_EXTRA_LEVELS) {
+            val noun = if (row.kind == MOTH) "moth" else "butterfly"
+            mes("You need a Hunter level of at least ${row.level + BAREHANDED_EXTRA_LEVELS} to catch this $noun barehanded.")
+            return
+        }
         anim(CATCH_SEQ)
         if (!rollCatch(row)) return
         caught += npc

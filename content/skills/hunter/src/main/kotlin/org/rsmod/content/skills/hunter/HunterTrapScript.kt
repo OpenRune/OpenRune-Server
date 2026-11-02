@@ -116,7 +116,11 @@ constructor(
             mes("You need a Hunter level of ${kind.level} to set up a ${kind.name}.")
             return
         }
-        if (kind.quest.isNotEmpty() && !QuestRequirements.hasCompleted(player, kind.quest)) {
+        if (
+            kind.quest.isNotEmpty() &&
+                !QuestRequirements.hasCompleted(player, kind.quest) &&
+                !QuestRequirements.isOnQuest(player, kind.quest)
+        ) {
             mes("You need to have completed Eagles' Peak to use a ${kind.name}.")
             return
         }

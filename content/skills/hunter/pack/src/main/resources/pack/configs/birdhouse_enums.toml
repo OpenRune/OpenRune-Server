@@ -46,3 +46,16 @@ valueType = "INT"
 "obj.lantadyme_seed" = 2
 "obj.dwarf_weed_seed" = 2
 "obj.torstol_seed" = 2
+
+[[enum]]
+isServerOnly = true
+id = "enum.birdhouse_clue_nest_weights"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.wc_clue_nest_elite" = 1
+"obj.wc_clue_nest_hard" = 2
+"obj.wc_clue_nest_medium" = 3
+"obj.wc_clue_nest_easy" = 4
+"obj.wc_clue_nest_beginner" = 30

@@ -357,6 +357,7 @@ herbiboar_spot_messages = 65455
 crystal_impling_npcs = 65454
 crystal_impling_spots = 65453
 birdhouse_seed_weights = 65452
+birdhouse_clue_nest_weights = 65448
 hunter_trap_limits = 65451
 hunter_crab_trap_limits = 65450
 hunter_pearl_shop_prices = 65465

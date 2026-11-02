@@ -333,7 +333,7 @@ constructor(
     private fun Player.collapse(trap: NetTrap) {
         clear(trap)
         objRepo.add(NET_TRAP, trap.net, OBJ_DURATION, receiver = this, reveal = OBJ_DURATION)
-        mes("The net trap that you set has collapsed.")
+        mes("The net trap that you set has collapsed.", ChatType.Spam)
     }
 
     private fun Player.returnTraps() {

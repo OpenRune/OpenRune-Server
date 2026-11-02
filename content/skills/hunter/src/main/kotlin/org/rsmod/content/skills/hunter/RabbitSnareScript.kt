@@ -39,7 +39,10 @@ constructor(
             mes("You need a Hunter level of $LEVEL to flush rabbits out of their holes.")
             return
         }
-        if (!QuestRequirements.hasCompleted(player, EAGLES_PEAK)) {
+        if (
+            !QuestRequirements.hasCompleted(player, EAGLES_PEAK) &&
+                !QuestRequirements.isOnQuest(player, EAGLES_PEAK)
+        ) {
             mes("You need to have completed Eagles' Peak to hunt rabbits.")
             return
         }
@@ -70,7 +73,7 @@ constructor(
         val creature = kind.creatures.firstOrNull() ?: return
         val mirrored = end.x < hole.coords.x || end.z < hole.coords.z
         traps.catchWithoutLure(snare, creature, creature.trappingLocs[if (mirrored) 1 else 0])
-        worldRepo.locAnim(snare.loc, creature.approachSeq)
+        worldRepo.locAnim(snare.loc, CAPTURE_SEQS[random.of(CAPTURE_SEQS.size)])
     }
 
     private fun otherHoles(from: CoordGrid): List<CoordGrid> {
@@ -110,6 +113,12 @@ constructor(
         const val EAGLES_PEAK = "quest_eaglespeak"
         const val FLUSH_SEQ = "seq.human_pickupfloor"
         const val TRAVEL_SPOTANIM = "spotanim.hunting_rabbit_travel"
+        val CAPTURE_SEQS =
+            listOf(
+                "seq.hunting_snare_capture_rabbit0",
+                "seq.hunting_snare_capture_rabbit1",
+                "seq.hunting_snare_capture_rabbit2",
+            )
         const val LEVEL = 27
         const val FLUSH_TICKS = 1
         const val EMPTY_TICKS = 50

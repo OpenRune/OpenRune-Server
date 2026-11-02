@@ -345,6 +345,12 @@ constructor(private val objRepo: ObjRepository) : PluginScript() {
             }
         }
 
+        private val CLUE_NEST_WEIGHTS: Map<String, Int> by lazy {
+            enum<ItemServerType, Int>("birdhouse_clue_nest_weights").backing.entries.associate {
+                it.key.internalName to checkNotNull(it.value)
+            }
+        }
+
         val SEEDS: List<String> by lazy { SEED_WEIGHTS.keys.toList() }
 
         fun seedWeight(seed: String): Int = SEED_WEIGHTS.getValue(seed)
@@ -387,15 +393,14 @@ constructor(private val objRepo: ObjRepository) : PluginScript() {
             return Loot(feathers, nests)
         }
 
-        private fun clueNest(r: Int): String? =
-            when {
-                r < 1 -> "elite"
-                r < 3 -> "hard"
-                r < 6 -> "medium"
-                r < 10 -> "easy"
-                r < 40 -> "beginner"
-                else -> null
+        private fun clueNest(r: Int): String? {
+            var bound = 0
+            for ((nest, weight) in CLUE_NEST_WEIGHTS) {
+                bound += weight
+                if (r < bound) return CLUE_NESTS.entries.first { it.value == nest }.key
             }
+            return null
+        }
 
         fun collectMessage(nests: Int, feathers: Int, xp: Int): String {
             val nestText =
