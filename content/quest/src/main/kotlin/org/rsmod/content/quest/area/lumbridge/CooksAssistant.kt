@@ -78,96 +78,97 @@ class CooksAssistant : QuestScript(
 
         objective("I need to find a <red>pot of flour</red>. There's a mill found north-west of Lumbridge, I should take an empty pot with me.") {
             custom(player.player.givenFlour, "I have given the cook a <red>pot of flour</red>.", finalise = true).strike()
-            hasItem("pot_flour", "I have found a pot of flour to give to the cook.")
+            hasItem("pot_flour", "I have found a <red>pot of flour</red> to give to the cook.")
         }
 
-        objective("I need to find an <red>egg</red>. The cook normally gets from the Groats' farm, found just to the west of the cattle field.") {
-            custom(player.player.givenEgg, "I have given the cook an egg.", finalise = true).strike()
-            hasItem("egg", "I have found an egg to give to the cook.")
+        objective("I need to find an <red>egg</red>. The cook normally gets his eggs from the Groats' farm, found just to the west of the cattle field.") {
+            custom(player.player.givenEgg, "I have given the cook an <red>egg</red>.", finalise = true).strike()
+            hasItem("egg", "I have found an <red>egg</red> to give to the cook.")
         }
     }
 
     override fun completedLog(player: ProtectedAccess): String = completionJournal(player) {
         line("It was the Duke of Lumbridge's birthday, but his cook had forgotten to buy the ingredients he needed to make him a cake.")
-        line("I brought the cook an egg, some flour and some milk and the cook made a delicious-looking cake with them.")
-        line("As a reward he now lets me use his high-quality range whenever I wish to cook there.")
+        line("I brought the cook an egg, some flour and some milk and the cook made a delicious looking cake with them.")
+        line("As a reward he now lets me use his high quality range which lets me burn things less whenever I wish to cook there.")
     }
 
-    private fun hasMilk(player: Player): Boolean = holdsMilk(player) || player.givenMilk
-
-    // UNVERIFIED: a bucket of milk goes before bottomless milk.
     private fun holdsMilk(player: Player): Boolean = MilkSources.has(player.inv)
 
-    private fun Dialogue.takeMilk(): Boolean = MilkSources.take(access)
+    private fun holdsEgg(player: Player): Boolean = player.inv.count("obj.egg") > 0
 
-    private fun hasEgg(player: Player): Boolean =
-        player.inv.count("obj.egg") > 0 || player.givenEgg
+    private fun holdsFlour(player: Player): Boolean = player.inv.count(potFlour) > 0
 
-    private fun hasFlour(player: Player): Boolean =
-        player.inv.count(potFlour) > 0 || player.givenFlour
+    private fun holdsAll(player: Player): Boolean =
+        holdsMilk(player) && holdsEgg(player) && holdsFlour(player)
+
+    private fun holdsAnyNeeded(player: Player): Boolean =
+        (!player.givenMilk && holdsMilk(player)) ||
+            (!player.givenFlour && holdsFlour(player)) ||
+            (!player.givenEgg && holdsEgg(player))
 
     private fun allItemsDelivered(player: Player): Boolean =
         player.givenMilk && player.givenEgg && player.givenFlour
 
-    private suspend fun Dialogue.deliverItem(
-        item: String,
-        message: String,
-        flag: () -> Unit,
-    ) {
-        if (player.inv.count(item) > 0) {
-            access.invDel(access.inv, item)
-            flag()
-            chatPlayer(happy, message)
-        }
-    }
-
     private suspend fun Dialogue.dialogDuringCook(npc: Npc) {
         chatNpc(worried, "How are you getting on with finding the ingredients?")
 
-        if (!hasMilk(player) && !hasEgg(player) && !hasFlour(player)) {
+        if (!allItemsDelivered(player) && !holdsAnyNeeded(player)) {
             chatPlayer(sad, "I haven't got any of them yet, I'm still looking.")
-            chatNpc(verymad, "Please get the ingredients quickly. I'm running out of time! The Duke will throw me into the streets!")
-
-            when (
-                choice2(
-                    "I'll get right on it.",
-                    1,
-                    "Can you remind me how to find these things again?",
-                    2,
-                )
-            ) {
-                1 -> chatPlayer(happy, "I'll get right on it.")
-                2 -> showIngredientHelp(npc)
+            chatNpc(verymad, "Please get the ingredients quickly - I'm running out of time! The Duke will throw me into the streets!")
+            val needed = buildList {
+                if (!player.givenMilk) add("A bucket of milk")
+                if (!player.givenFlour) add("A pot of flour")
+                if (!player.givenEgg) add("An egg")
             }
+            mesbox((listOf("You still need to get:") + needed).joinToString("<br>"))
+            rightOnIt(npc)
             return
         }
 
-        if (!player.givenMilk && takeMilk()) {
+        if (!player.givenMilk && MilkSources.take(access)) {
             player.givenMilk = true
             chatPlayer(happy, "Here's a bucket of milk.")
         }
-        deliverItem("obj.egg", "Here's a fresh egg.") { player.givenEgg = true }
-        deliverItem(potFlour, "Here's a pot of flour.") { player.givenFlour = true }
+        if (!player.givenFlour && holdsFlour(player) && access.invDel(access.inv, potFlour).success) {
+            player.givenFlour = true
+            chatPlayer(happy, "Here's a pot of flour.")
+        }
+        if (!player.givenEgg && holdsEgg(player) && access.invDel(access.inv, "obj.egg").success) {
+            player.givenEgg = true
+            chatPlayer(happy, "Here's a fresh egg.")
+        }
 
         if (allItemsDelivered(player)) {
             questFinishing(npc)
         } else {
             chatNpc(happy, "Thanks for the ingredients you have got so far. Please get the rest quickly - I'm running out of time! The Duke will throw me into the streets!")
-            when (
-                choice2(
-                    "I'll get right on it.",
-                    1,
-                    "Can you remind me how to find these things again?",
-                    2,
-                )
-            ) {
-                1 -> chatPlayer(happy, "I'll get right on it.")
-                2 -> showIngredientHelp(npc)
-            }
+            rightOnIt(npc)
         }
     }
 
-    private suspend fun Dialogue.showIngredientHelp(npc: Npc) {
+    private suspend fun Dialogue.rightOnIt(npc: Npc) {
+        when (
+            choice2(
+                "I'll get right on it.",
+                1,
+                "Can you remind me how to find these things again?",
+                2,
+            )
+        ) {
+            1 -> chatPlayer(happy, "I'll get right on it.")
+            2 -> askWhereToFind(npc)
+        }
+    }
+
+    private suspend fun Dialogue.askWhereToFind(npc: Npc) {
+        chatPlayer(quiz, "So where do I find these ingredients then?")
+        showIngredientHelp(npc, first = true)
+    }
+
+    private suspend fun Dialogue.showIngredientHelp(npc: Npc, first: Boolean) {
+        val last =
+            if (first) "Actually, I know where to find this stuff." else "I've got all the information I need. Thanks."
         when (
             choice4(
                 "Where do I find some flour?",
@@ -176,11 +177,12 @@ class CooksAssistant : QuestScript(
                 2,
                 "And eggs? Where are they found?",
                 3,
-                "I've got all the information I need. Thanks.",
+                last,
                 4,
             )
         ) {
             1 -> {
+                chatNpc(happy, "There is a Mill fairly close, go North and then West. Mill Lane Mill is just off the road to Draynor. I usually get my flour from there.")
                 if (player.inv.count("obj.pot_empty") > 0) {
                     chatNpc(
                         happy,
@@ -192,9 +194,11 @@ class CooksAssistant : QuestScript(
                         "Talk to Millie, she'll help, she's a lovely girl and a fine Miller. Make sure you take a pot with you for the flour though, there should be one on the table in here.",
                     )
                 }
-                showIngredientHelp(npc)
+                showIngredientHelp(npc, first = false)
             }
             2 -> {
+                chatNpc(happy, "There is a cattle field on the other side of the river, just across the road from the Groats' Farm.")
+                chatNpc(happy, "Talk to Gillie Groats, she looks after the Dairy cows - she'll tell you everything you need to know about milking cows!")
                 if (player.inv.count("obj.bucket_empty") > 0) {
                     chatNpc(
                         happy,
@@ -206,23 +210,23 @@ class CooksAssistant : QuestScript(
                         "You'll need an empty bucket for the milk itself. The general store just north of the castle will sell you one for a couple of coins.",
                     )
                 }
-                showIngredientHelp(npc)
+                showIngredientHelp(npc, first = false)
             }
             3 -> {
                 chatNpc(happy, "I normally get my eggs from the Groats' farm, on the other side of the river.")
                 chatNpc(happy, "But any chicken should lay eggs.")
-                showIngredientHelp(npc)
+                showIngredientHelp(npc, first = false)
             }
-            4 -> chatPlayer(happy, "I've got all the information I need. Thanks.")
+            4 -> chatPlayer(happy, last)
         }
     }
 
     private suspend fun Dialogue.questFinishing(npc: Npc) {
         chatNpc(happy, "You've brought me everything I need! I am saved! Thank you!")
-        chatPlayer(quiz, "So do I get to go to the Duke's Party?")
+        chatPlayer(happy, "So do I get to go to the Duke's Party?")
         chatNpc(sad, "I'm afraid not, only the big cheeses get to dine with the Duke.")
-        chatPlayer(bored, "Well, maybe one day I'll be important enough to sit on the Duke's table.")
-        chatNpc(short, "Maybe, but I won't be holding my breath.")
+        chatPlayer(neutral, "Well, maybe one day I'll be important enough to sit on the Duke's table.")
+        chatNpc(neutral, "Maybe, but I won't be holding my breath.")
         quest.advanceQuestStage(access)
     }
 
@@ -253,7 +257,7 @@ class CooksAssistant : QuestScript(
             4 -> {
                 chatPlayer(quiz, "Can I use your range?")
                 chatNpc(happy, "Go ahead - it's a very good range. It's easier to use than most other ranges.")
-                chatNpc(happy, "It's called the Cook-o-matic 100. It uses a combination of state-of-the-art temperature regulation and magic.")
+                chatNpc(happy, "Its called the Cook-o-matic 100. It uses a combination of state of the art temperature regulation and magic.")
                 chatPlayer(quiz, "Will it mean my food will burn less often?")
                 chatNpc(shifty, "Well, that's what the salesman told us anyway...")
                 chatPlayer(confused, "Thanks?")
@@ -262,13 +266,13 @@ class CooksAssistant : QuestScript(
     }
 
     private suspend fun Dialogue.dialogQuestNotStarted(npc: Npc) {
-        chatNpc(worried, "What am I to do?")
+        chatNpc(sad, "What am I to do?")
 
         when (
             choice4(
                 "What's wrong?",
                 1,
-                "Can you make me a cake?",
+                "You're a cook, why don't you bake me a cake?",
                 2,
                 "You don't look very happy.",
                 3,
@@ -285,13 +289,26 @@ class CooksAssistant : QuestScript(
             3 -> {
                 chatPlayer(worried, "You don't look very happy.")
                 chatNpc(sad, "No, I'm not. The world is caving in around me - I am overcome by dark feelings of impending doom.")
-                cooksWhatsWrong(npc)
+                when (choice2("What's wrong?", 1, "I'd take the rest of the day off if I were you.", 2)) {
+                    1 -> cooksWhatsWrong(npc)
+                    2 -> {
+                        chatPlayer(neutral, "I'd take the rest of the day off if I were you.")
+                        chatNpc(worried, "No, that's the worst thing I could do. I'd get in terrible trouble.")
+                        chatPlayer(neutral, "Well maybe you need to take a holiday...")
+                        chatNpc(sad, "That would be nice, but the Duke doesn't allow holidays for core staff.")
+                        chatPlayer(happy, "Hmm, why not run away to the sea and start a new life as a Pirate?")
+                        chatNpc(sad, "My wife gets sea sick, and I have an irrational fear of eyepatches. I don't see it working myself.")
+                        chatPlayer(sad, "I'm afraid I've run out of ideas.")
+                        chatNpc(sad, "I know I'm doomed.")
+                        cooksWhatsWrong(npc)
+                    }
+                }
             }
             4 -> {
                 chatPlayer(happy, "Nice hat!")
-                chatNpc(confused, "Err thank you. It's a pretty ordinary cook's hat really.")
+                chatNpc(confused, "Err thank you. It's a pretty ordinary cooks hat really.")
                 chatPlayer(happy, "Still, suits you. The trousers are pretty special too.")
-                chatNpc(bored, "It's all standard cook's issue uniform...")
+                chatNpc(bored, "Its all standard cook's issue uniform...")
                 chatPlayer(laugh, "The whole hat, apron, stripey trousers ensemble - it works. It make you looks like a real cook.")
                 chatNpc(angry, "I am a real cook! I haven't got time to be chatting about Culinary Fashion. I am in desperate need of help!")
                 cooksWhatsWrong(npc)
@@ -300,8 +317,8 @@ class CooksAssistant : QuestScript(
     }
 
     private suspend fun Dialogue.cooksWhatsWrong(npc: Npc) {
-        chatPlayer(worried, "What's wrong?")
-        chatNpc(verymad, "Oh dear, oh dear, oh dear, I'm in a terrible terrible mess! It's the Duke's birthday and I should be making him a lovely big birthday cake.")
+        chatPlayer(neutral, "What's wrong?")
+        chatNpc(worried, "Oh dear, oh dear, oh dear, I'm in a terrible terrible mess! It's the Duke's birthday today, and I should be making him a lovely big birthday cake.")
         chatNpc(
             sad,
             "I've forgotten to buy the ingredients. I'll never get them in time now. He'll sack me! What will I do? I have four children and a goat to look after. Would you help me? Please?",
@@ -311,28 +328,24 @@ class CooksAssistant : QuestScript(
             1 -> {
                 chatPlayer(happy, "Yes, I'll help you.")
                 quest.advanceQuestStage(access)
-                if (
-                    holdsMilk(player) &&
-                    player.inv.count("obj.egg") > 0 &&
-                    player.inv.count(potFlour) > 0
-                ) {
-                    chatPlayer(happy, "I have all of those ingredients on me already!")
-                    chatNpc(quiz, "That's an odd coincidence... Were you planning on making a cake too?")
-                    chatPlayer(shifty, "Not exactly. I just had an odd feeling you might be needing these ingredients. If I see a cook, I presume there's food of some kind! Lucky guess I suppose.")
-                    chatNpc(happy, "Well thank you! Hand them over, please.")
-
-                    takeMilk()
-                    access.invDel(access.inv, "obj.egg")
-                    access.invDel(access.inv, potFlour)
-
-                    player.givenFlour = true
-                    player.givenEgg = true
-                    player.givenMilk = true
-
-                    questFinishing(npc)
+                chatNpc(happy, "Oh thank you, thank you. I need milk, an egg and flour. I'd be very grateful if you can get them for me.")
+                if (!holdsAll(player)) {
+                    askWhereToFind(npc)
                     return
                 }
-                chatNpc(happy, "Oh thank you, thank you. I need milk, an egg and flour. I'd be very grateful if you can get them for me.")
+                chatPlayer(happy, "I have all of those ingredients on me already!")
+                chatNpc(quiz, "That's an odd coincidence... Were you planning on making a cake too?")
+                chatPlayer(happy, "Not exactly. I just had an odd feeling you might be needing these ingredients. If I see a cook, I presume there's food of some kind! Lucky guess I suppose.")
+                chatNpc(happy, "Well thank you! Hand them over, please.")
+                doubleobjbox(potFlour, MilkSources.MILK, "You hand the cook all of the ingredients.")
+                if (!holdsAll(player)) return
+                MilkSources.take(access)
+                access.invDel(access.inv, "obj.egg")
+                access.invDel(access.inv, potFlour)
+                player.givenMilk = true
+                player.givenFlour = true
+                player.givenEgg = true
+                questFinishing(npc)
             }
             2 -> {
                 chatPlayer(sad, "No, I don't feel like it. Maybe later.")
