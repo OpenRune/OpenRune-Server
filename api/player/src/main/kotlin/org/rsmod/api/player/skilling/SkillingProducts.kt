@@ -84,7 +84,8 @@ public fun ProtectedAccess.consumeSkillingInputs(inputs: List<SkillingInput>): B
 
 /** Inputs, when there are any, are consumed in the same transaction that adds the product. */
 private fun Player.addProduct(product: SkillingProduct): TransactionResultList<InvObj> {
-    if (product.inputs.isEmpty() && product.byproducts.isEmpty()) {
+    val destination = product.destination
+    if (product.inputs.isEmpty() && product.byproducts.isEmpty() && destination == null) {
         return invAdd(inv, product.item, product.count)
     }
     return invConsumeAndAdd(
@@ -93,6 +94,7 @@ private fun Player.addProduct(product: SkillingProduct): TransactionResultList<I
         product.item.asRSCM(RSCMType.OBJ),
         product.count,
         product.byproducts.map { InvGain(it.item.asRSCM(RSCMType.OBJ), it.count) },
+        into = destination ?: inv,
     )
 }
 

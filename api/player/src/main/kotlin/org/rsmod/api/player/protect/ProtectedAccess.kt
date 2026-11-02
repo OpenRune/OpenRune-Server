@@ -1370,8 +1370,14 @@ public class ProtectedAccess(
     }
 
     /** @see [org.rsmod.api.player.stat.statRandom] */
-    public fun statRandom(stat: String, low: Int, high: Int, invisibleBoost: Int): Boolean {
-        return player.statRandom(random, stat, low, high, invisibleBoost)
+    public fun statRandom(
+        stat: String,
+        low: Int,
+        high: Int,
+        invisibleBoost: Int,
+        subject: String? = null,
+    ): Boolean {
+        return player.statRandom(random, stat, low, high, invisibleBoost, subject)
     }
 
     /** @see [org.rsmod.api.player.stat.statRandom] */
@@ -1380,8 +1386,9 @@ public class ProtectedAccess(
         low: Int,
         high: Int,
         invisibleLevels: InvisibleLevels,
+        subject: String? = null,
     ): Boolean {
-        return player.statRandom(random, stat, low, high, invisibleLevels)
+        return player.statRandom(random, stat, low, high, invisibleLevels, subject)
     }
 
     public fun isInCombat(): Boolean {

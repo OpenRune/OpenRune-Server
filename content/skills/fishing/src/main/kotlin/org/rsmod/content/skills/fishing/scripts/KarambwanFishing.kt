@@ -78,7 +78,7 @@ constructor(
         if (actionDelay < mapClock) {
             actionDelay = mapClock + 3
         } else if (actionDelay == mapClock) {
-            caught = statRandom("stat.fishing", 5, 160, invisibleLvls)
+            caught = statRandom("stat.fishing", 5, 160, invisibleLvls, spot.visType.internalName)
         }
 
         if (caught) {

@@ -11,6 +11,7 @@ import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
+import org.rsmod.api.player.events.PlayerSkillRollEvents
 import org.rsmod.api.player.events.PlayerWornEvents
 import org.rsmod.api.player.events.PlayerXpEvents
 import org.rsmod.api.player.events.interact.PlayerInteractionEvent
@@ -141,6 +142,13 @@ public fun ScriptContext.onVarChanged(name: String, action: PlayerVarChangedEven
     val watch = PlayerVarWatch.watch(name)
     onEvent<PlayerVarChangedEvent> { watch.matching(this)?.action() }
 }
+
+public fun ScriptContext.onPlayerSkillRollModify(
+    action: PlayerSkillRollEvents.Modify.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerSkillRoll(action: PlayerSkillRollEvents.Result.() -> Unit): Unit =
+    onEvent(action)
 
 public fun ScriptContext.onPlayerEquip(action: PlayerWornEvents.Equip.() -> Unit): Unit =
     onEvent(action)

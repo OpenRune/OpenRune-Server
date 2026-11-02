@@ -313,6 +313,70 @@ class InvConsumeAndAddTest {
     }
 
     @Test
+    fun `outputs go to another inventory while inputs come from the first`() {
+        val inv = inventory(size = 4, RAW to 1)
+        val bank = bank(size = 4)
+
+        val result =
+            player.invConsumeAndAdd(
+                inv,
+                listOf(InvCost(RAW, 1)),
+                COOKED,
+                1,
+                listOf(InvGain(OTHER, 1)),
+                into = bank,
+            )
+
+        assertTrue(result.success)
+        assertEquals(0, count(inv, RAW))
+        assertEquals(0, count(inv, COOKED))
+        assertEquals(1, count(bank, COOKED))
+        assertEquals(1, count(bank, OTHER))
+    }
+
+    @Test
+    fun `a full inventory does not block an output sent elsewhere`() {
+        val inv = inventory(size = 1, OTHER to 1)
+        val bank = bank(size = 4)
+        val before = snapshot(inv)
+
+        val result = player.invConsumeAndAdd(inv, emptyList(), COOKED, 1, into = bank)
+
+        assertTrue(result.success)
+        assertEquals(before, snapshot(inv))
+        assertEquals(1, count(bank, COOKED))
+    }
+
+    @Test
+    fun `no room in the other inventory rolls back inputs and storage`() {
+        val storage = storage(stored = 10, VirtualItemConsumePolicy.StorageFirst)
+        val inv = inventory(size = 4, RAW to 1)
+        val bank = bank(size = 1, OTHER to 1)
+        val beforeInv = snapshot(inv)
+        val beforeBank = snapshot(bank)
+
+        val costs = listOf(InvCost(RAW, 1), storedCost(4))
+        val result = player.invConsumeAndAdd(inv, costs, COOKED, 1, into = bank)
+
+        assertFalse(result.success)
+        assertEquals(TransactionResult.NotEnoughSpace, result.err)
+        assertEquals(10, storage.stored)
+        assertEquals(beforeInv, snapshot(inv))
+        assertEquals(beforeBank, snapshot(bank))
+    }
+
+    @Test
+    fun `a missing input leaves the other inventory untouched`() {
+        val inv = inventory(size = 4, OTHER to 1)
+        val bank = bank(size = 4)
+
+        val result = player.invConsumeAndAdd(inv, listOf(InvCost(RAW, 1)), COOKED, 1, into = bank)
+
+        assertFalse(result.success)
+        assertEquals(0, count(bank, COOKED))
+    }
+
+    @Test
     fun `consuming without a product takes inventory and storage`() {
         val storage = storage(stored = 3, VirtualItemConsumePolicy.StorageFirst)
         val inv = inventory(size = 4, RAW to 1, STACK_IN to 5)
@@ -389,6 +453,12 @@ class InvConsumeAndAddTest {
         objs.forEachIndexed { slot, (id, count) -> inv[slot] = InvObj(id, count) }
         player.inv = inv
         return inv
+    }
+
+    private fun bank(size: Int, vararg objs: Pair<Int, Int>): Inventory {
+        val bank = Inventory(InventoryServerType(size = size), arrayOfNulls(size))
+        objs.forEachIndexed { slot, (id, count) -> bank[slot] = InvObj(id, count) }
+        return bank
     }
 
     private fun count(inv: Inventory, id: Int): Long =

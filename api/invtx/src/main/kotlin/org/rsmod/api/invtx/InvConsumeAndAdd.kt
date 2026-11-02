@@ -19,13 +19,14 @@ public data class InvCost(val obj: Int, val count: Int, val internal: String? = 
 public data class InvGain(val obj: Int, val count: Int)
 
 /**
- * Takes every [consume] cost and adds [count] of [obj] and any [byproducts] to [inv] as one action.
- * If any part fails (a missing input, not enough of one, no room for an output) nothing at all
- * changes, so inputs are never lost without the outputs and outputs are never created without their
- * inputs.
+ * Takes every [consume] cost from [inv] and adds [count] of [obj] and any [byproducts] to [into] as
+ * one action. If any part fails (a missing input, not enough of one, no room for an output) nothing
+ * at all changes, so inputs are never lost without the outputs and outputs are never created without
+ * their inputs.
  *
  * Virtual storage cannot join an inventory transaction, so its share is taken only after the
- * transaction has succeeded and before it commits. Outputs always go to [inv].
+ * transaction has succeeded and before it commits. Outputs always go to [into], never to virtual
+ * storage.
  */
 public fun Player.invConsumeAndAdd(
     inv: Inventory,
@@ -33,11 +34,12 @@ public fun Player.invConsumeAndAdd(
     obj: Int,
     count: Int,
     byproducts: List<InvGain> = emptyList(),
+    into: Inventory = inv,
 ): TransactionResultList<InvObj> =
-    consumeWith(inv, consume) { target ->
-        add(target, obj, count)
+    consumeWith(inv, consume, into) { output ->
+        add(output, obj, count)
         for (byproduct in byproducts) {
-            add(target, byproduct.obj, byproduct.count)
+            add(output, byproduct.obj, byproduct.count)
         }
     }
 
@@ -45,17 +47,20 @@ public fun Player.invConsumeAndAdd(
 public fun Player.invConsume(
     inv: Inventory,
     consume: List<InvCost>,
-): TransactionResultList<InvObj> = consumeWith(inv, consume) {}
+): TransactionResultList<InvObj> = consumeWith(inv, consume, inv) {}
 
 private fun Player.consumeWith(
     inv: Inventory,
     consume: List<InvCost>,
+    into: Inventory,
     alongside: Transaction<InvObj>.(TransactionInventory<InvObj>) -> Unit,
 ): TransactionResultList<InvObj> {
     val stored = consume.map { storedShare(inv, it) }
+    val separateOutput = into !== inv
     val result =
-        invTransaction(inv, autoCommit = false) {
+        invTransaction(inv, if (separateOutput) into else null, autoCommit = false) {
             val target = select(inv)
+            val output = if (separateOutput) select(into) else target
             consume.forEachIndexed { index, cost ->
                 val fromStorage = stored[index]
                 val fromInv = cost.count - fromStorage
@@ -66,7 +71,7 @@ private fun Player.consumeWith(
                     execute { TransactionResult.Ok(fromStorage, fromStorage) }
                 }
             }
-            alongside(target)
+            alongside(output)
         }
     if (result.failure) {
         return result
