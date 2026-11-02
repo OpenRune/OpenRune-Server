@@ -6,11 +6,16 @@ import dev.openrune.types.InventoryServerType
 import dev.openrune.types.util.UncheckedType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
+import org.rsmod.api.inv.storage.PlayerItemStorage
+import org.rsmod.api.inv.storage.PlayerItemStorageContext
+import org.rsmod.api.inv.storage.PlayerItemStorageHook
+import org.rsmod.api.inv.storage.VirtualItemConsumePolicy
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
@@ -127,6 +132,170 @@ class InvConsumeAndAddTest {
         assertEquals(1, count(inv, COOKED))
     }
 
+    @Test
+    fun `a storage first cost is paid from storage and leaves the inventory alone`() {
+        val storage = storage(stored = 10, VirtualItemConsumePolicy.StorageFirst)
+        val inv = inventory(size = 4, RAW to 1, STACK_IN to 5)
+
+        val result = player.invConsumeAndAdd(inv, listOf(storedCost(4)), COOKED, 1)
+
+        assertTrue(result.success)
+        assertEquals(6, storage.stored)
+        assertEquals(5, count(inv, STACK_IN))
+        assertEquals(1, count(inv, COOKED))
+    }
+
+    @Test
+    fun `a storage first cost takes the shortfall from the inventory`() {
+        val storage = storage(stored = 3, VirtualItemConsumePolicy.StorageFirst)
+        val inv = inventory(size = 4, STACK_IN to 5)
+
+        val result = player.invConsumeAndAdd(inv, listOf(storedCost(4)), COOKED, 1)
+
+        assertTrue(result.success)
+        assertEquals(0, storage.stored)
+        assertEquals(4, count(inv, STACK_IN))
+        assertEquals(1, count(inv, COOKED))
+    }
+
+    @Test
+    fun `an inventory first cost uses storage only for the shortfall`() {
+        val storage = storage(stored = 10, VirtualItemConsumePolicy.InventoryFirst)
+        val inv = inventory(size = 4, STACK_IN to 3)
+
+        val result = player.invConsumeAndAdd(inv, listOf(storedCost(4)), COOKED, 1)
+
+        assertTrue(result.success)
+        assertEquals(9, storage.stored)
+        assertEquals(0, count(inv, STACK_IN))
+        assertEquals(1, count(inv, COOKED))
+    }
+
+    @Test
+    fun `an inventory first cost counts every slot before touching storage`() {
+        val storage = storage(stored = 10, VirtualItemConsumePolicy.InventoryFirst)
+        val inv = inventory(size = 4, RAW to 1, RAW to 1)
+
+        val costs = listOf(InvCost(RAW, 2, INTERNAL))
+        val result = player.invConsumeAndAdd(inv, costs, COOKED, 1)
+
+        assertTrue(result.success)
+        assertEquals(10, storage.stored)
+        assertEquals(0, count(inv, RAW))
+    }
+
+    @Test
+    fun `not enough between inventory and storage changes neither`() {
+        val storage = storage(stored = 2, VirtualItemConsumePolicy.StorageFirst)
+        val inv = inventory(size = 4, STACK_IN to 1)
+        val before = snapshot(inv)
+
+        val result = player.invConsumeAndAdd(inv, listOf(storedCost(4)), COOKED, 1)
+
+        assertFalse(result.success)
+        assertEquals(TransactionResult.NotEnoughObjCount, result.err)
+        assertEquals(2, storage.stored)
+        assertEquals(before, snapshot(inv))
+    }
+
+    @Test
+    fun `no room for the product leaves storage and inventory untouched`() {
+        val storage = storage(stored = 10, VirtualItemConsumePolicy.StorageFirst)
+        val inv = inventory(size = 2, OTHER to 1, OTHER2 to 1)
+        val before = snapshot(inv)
+
+        val result = player.invConsumeAndAdd(inv, listOf(storedCost(4)), COOKED, 1)
+
+        assertFalse(result.success)
+        assertEquals(TransactionResult.NotEnoughSpace, result.err)
+        assertEquals(10, storage.stored)
+        assertEquals(before, snapshot(inv))
+    }
+
+    @Test
+    fun `a missing physical input leaves storage untouched`() {
+        val storage = storage(stored = 10, VirtualItemConsumePolicy.StorageFirst)
+        val inv = inventory(size = 4, OTHER to 1)
+        val before = snapshot(inv)
+
+        val costs = listOf(storedCost(4), InvCost(RAW, 1))
+        val result = player.invConsumeAndAdd(inv, costs, COOKED, 1)
+
+        assertFalse(result.success)
+        assertEquals(10, storage.stored)
+        assertEquals(before, snapshot(inv))
+    }
+
+    @Test
+    fun `storage that does not process the item is ignored`() {
+        val storage = storage(stored = 10, VirtualItemConsumePolicy.StorageFirst, active = false)
+        val inv = inventory(size = 4, STACK_IN to 5)
+
+        val result = player.invConsumeAndAdd(inv, listOf(storedCost(4)), COOKED, 1)
+
+        assertTrue(result.success)
+        assertEquals(10, storage.stored)
+        assertEquals(1, count(inv, STACK_IN))
+    }
+
+    @Test
+    fun `a cost without an internal name never touches storage`() {
+        val storage = storage(stored = 10, VirtualItemConsumePolicy.StorageFirst)
+        val inv = inventory(size = 4, STACK_IN to 5)
+
+        val result = player.invConsumeAndAdd(inv, listOf(InvCost(STACK_IN, 4)), COOKED, 1)
+
+        assertTrue(result.success)
+        assertEquals(10, storage.stored)
+        assertEquals(1, count(inv, STACK_IN))
+    }
+
+    @Test
+    fun `storage paying less than it counted creates no product`() {
+        val storage = storage(stored = 3, VirtualItemConsumePolicy.StorageFirst)
+        val inv = inventory(size = 4, STACK_IN to 5)
+        val before = snapshot(inv)
+
+        val costs = listOf(storedCost(3), storedCost(3))
+
+        assertThrows(IllegalStateException::class.java) {
+            player.invConsumeAndAdd(inv, costs, COOKED, 1)
+        }
+        assertEquals(0, storage.stored)
+        assertEquals(before, snapshot(inv))
+    }
+
+    private fun storedCost(count: Int) = InvCost(STACK_IN, count, INTERNAL)
+
+    private fun storage(
+        stored: Int,
+        policy: VirtualItemConsumePolicy,
+        active: Boolean = true,
+    ): FakeStorage {
+        val hook = FakeStorage(stored, policy, active)
+        cachedPlayerItemStorage = PlayerItemStorage(setOf(hook))
+        return hook
+    }
+
+    private class FakeStorage(
+        var stored: Int,
+        override val consumePolicy: VirtualItemConsumePolicy,
+        private val active: Boolean,
+    ) : PlayerItemStorageHook {
+        override fun shouldProcess(ctx: PlayerItemStorageContext): Boolean =
+            active && ctx.itemInternal == INTERNAL
+
+        override fun contains(ctx: PlayerItemStorageContext): Int = stored
+
+        override fun remove(ctx: PlayerItemStorageContext, amount: Int): Int {
+            val removed = minOf(stored, amount)
+            stored -= removed
+            return removed
+        }
+
+        override fun add(ctx: PlayerItemStorageContext, amount: Int): Int = 0
+    }
+
     private fun inventory(size: Int, vararg objs: Pair<Int, Int>): Inventory {
         val inv = Inventory(InventoryServerType(size = size), arrayOfNulls(size))
         objs.forEachIndexed { slot, (id, count) -> inv[slot] = InvObj(id, count) }
@@ -147,5 +316,6 @@ class InvConsumeAndAddTest {
         const val OTHER2 = 4
         const val STACK_IN = 5
         const val STACK_OUT = 6
+        const val INTERNAL = "obj.stored"
     }
 }
