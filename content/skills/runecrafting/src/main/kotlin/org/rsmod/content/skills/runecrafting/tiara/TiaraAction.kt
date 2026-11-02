@@ -1,9 +1,11 @@
 package org.rsmod.content.skills.runecrafting.tiara
 
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.table.runecrafting.RunecraftingTiaraRow
-import org.rsmod.content.skills.runecrafting.action.RunecraftAction.advanceRunecraftingXp
+import org.rsmod.content.skills.runecrafting.action.RunecraftAction.awardRunecraftProduct
 
 object TiaraAction {
     fun ProtectedAccess.createTiara(
@@ -22,15 +24,7 @@ object TiaraAction {
             return
         }
 
-        val removedTiara = invDel(inv, tiaraItem, 1).success
-        val removedTalisman = invDel(inv, talismanId, 1).success
-
-        if (removedTiara && removedTalisman) {
-            if (invAdd(inv, def.item.internalName, 1).success) {
-                advanceRunecraftingXp(def.xp.toDouble(), xpMods)
-                mes("You bind the power of the talisman into your tiara.")
-            }
-        }
+        bindTiara(tiaraItem, talismanId, def.item.internalName, def.xp, xpMods)
     }
 
     fun ProtectedAccess.createSpecialTiara(
@@ -49,15 +43,26 @@ object TiaraAction {
             return
         }
 
-        if (invDel(inv, "obj.tiara_gold", 1).failure) {
-            return
-        }
-        if (invDel(inv, talismanId, 1).failure) {
-            return
-        }
+        bindTiara("obj.tiara_gold", talismanId, outputTiara, xp, xpMods)
+    }
 
-        if (invAdd(inv, outputTiara, 1).success) {
-            advanceRunecraftingXp(xp.toDouble(), xpMods)
+    private fun ProtectedAccess.bindTiara(
+        tiara: String,
+        talisman: String,
+        output: String,
+        xp: Int,
+        xpMods: XpModifiers,
+    ) {
+        val bound =
+            awardRunecraftProduct(
+                output,
+                1,
+                xp.toDouble(),
+                xpMods,
+                SkillingProductSource.TiaraBinding,
+                listOf(SkillingInput(tiara), SkillingInput(talisman)),
+            )
+        if (bound) {
             mes("You bind the power of the talisman into your tiara.")
         }
     }

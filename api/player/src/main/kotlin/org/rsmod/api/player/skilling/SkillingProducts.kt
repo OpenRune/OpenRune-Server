@@ -4,9 +4,11 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import org.rsmod.api.invtx.InvCost
 import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.invtx.invConsume
 import org.rsmod.api.invtx.invConsumeAndAdd
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
+import org.rsmod.api.player.events.skilling.SkillingInput
 import org.rsmod.api.player.events.skilling.SkillingProduct
 import org.rsmod.api.player.events.skilling.SkillingProductPrepareEvent
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -75,14 +77,21 @@ public fun Player.awardSkillingProduct(
     return SkillingAwardResult.Success
 }
 
+/** For an action that failed outright: takes [inputs], all or nothing, and publishes no event. */
+public fun ProtectedAccess.consumeSkillingInputs(inputs: List<SkillingInput>): Boolean =
+    player.invConsume(player.inv, inputs.toCosts()).success
+
 /** Inputs, when there are any, are consumed in the same transaction that adds the product. */
 private fun Player.addProduct(product: SkillingProduct): TransactionResultList<InvObj> {
     if (product.inputs.isEmpty()) {
         return invAdd(inv, product.item, product.count)
     }
-    val costs = product.inputs.map { InvCost(it.item.asRSCM(RSCMType.OBJ), it.count, it.item) }
+    val costs = product.inputs.toCosts()
     return invConsumeAndAdd(inv, costs, product.item.asRSCM(RSCMType.OBJ), product.count)
 }
+
+private fun List<SkillingInput>.toCosts(): List<InvCost> =
+    map { InvCost(it.item.asRSCM(RSCMType.OBJ), it.count, it.item) }
 
 private fun TransactionResultList<InvObj>.failureResult(product: SkillingProduct) =
     if (product.inputs.isNotEmpty() && err.isMissingInput()) {

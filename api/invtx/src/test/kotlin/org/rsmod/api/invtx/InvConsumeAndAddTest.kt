@@ -265,6 +265,47 @@ class InvConsumeAndAddTest {
         assertEquals(before, snapshot(inv))
     }
 
+    @Test
+    fun `consuming without a product takes inventory and storage`() {
+        val storage = storage(stored = 3, VirtualItemConsumePolicy.StorageFirst)
+        val inv = inventory(size = 4, RAW to 1, STACK_IN to 5)
+
+        val costs = listOf(InvCost(RAW, 1), storedCost(4))
+        val result = player.invConsume(inv, costs)
+
+        assertTrue(result.success)
+        assertEquals(0, storage.stored)
+        assertEquals(0, count(inv, RAW))
+        assertEquals(4, count(inv, STACK_IN))
+    }
+
+    @Test
+    fun `consuming only from storage counts as a success`() {
+        val storage = storage(stored = 10, VirtualItemConsumePolicy.StorageFirst)
+        val inv = inventory(size = 4, OTHER to 1)
+        val before = snapshot(inv)
+
+        val result = player.invConsume(inv, listOf(storedCost(4)))
+
+        assertTrue(result.success)
+        assertEquals(6, storage.stored)
+        assertEquals(before, snapshot(inv))
+    }
+
+    @Test
+    fun `consuming with a missing input takes nothing`() {
+        val storage = storage(stored = 10, VirtualItemConsumePolicy.StorageFirst)
+        val inv = inventory(size = 4, STACK_IN to 5)
+        val before = snapshot(inv)
+
+        val costs = listOf(storedCost(4), InvCost(STACK_IN, 1), InvCost(RAW, 1))
+        val result = player.invConsume(inv, costs)
+
+        assertFalse(result.success)
+        assertEquals(10, storage.stored)
+        assertEquals(before, snapshot(inv))
+    }
+
     private fun storedCost(count: Int) = InvCost(STACK_IN, count, INTERNAL)
 
     private fun storage(

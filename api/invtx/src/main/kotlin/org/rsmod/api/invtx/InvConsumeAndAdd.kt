@@ -4,6 +4,9 @@ import org.rsmod.api.inv.storage.VirtualItemConsumePolicy
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
+import org.rsmod.objtx.Transaction
+import org.rsmod.objtx.TransactionInventory
+import org.rsmod.objtx.TransactionResult
 import org.rsmod.objtx.TransactionResultList
 
 /**
@@ -25,18 +28,34 @@ public fun Player.invConsumeAndAdd(
     consume: List<InvCost>,
     obj: Int,
     count: Int,
+): TransactionResultList<InvObj> = consumeWith(inv, consume) { target -> add(target, obj, count) }
+
+/** Takes every [consume] cost with nothing made in return, all or nothing. */
+public fun Player.invConsume(
+    inv: Inventory,
+    consume: List<InvCost>,
+): TransactionResultList<InvObj> = consumeWith(inv, consume) {}
+
+private fun Player.consumeWith(
+    inv: Inventory,
+    consume: List<InvCost>,
+    alongside: Transaction<InvObj>.(TransactionInventory<InvObj>) -> Unit,
 ): TransactionResultList<InvObj> {
     val stored = consume.map { storedShare(inv, it) }
     val result =
         invTransaction(inv, autoCommit = false) {
             val target = select(inv)
             consume.forEachIndexed { index, cost ->
-                val fromInv = cost.count - stored[index]
+                val fromStorage = stored[index]
+                val fromInv = cost.count - fromStorage
                 if (fromInv > 0) {
                     delete(target, cost.obj, fromInv)
                 }
+                if (fromStorage > 0) {
+                    execute { TransactionResult.Ok(fromStorage, fromStorage) }
+                }
             }
-            add(target, obj, count)
+            alongside(target)
         }
     if (result.failure) {
         return result
