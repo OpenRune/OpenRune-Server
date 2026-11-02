@@ -1,15 +1,14 @@
 [gamevals.dbtable]
+hunter_goat_lures = 65488
 hunter_custom_furs = 65478
 impling_types = 56002
 impling_loot = 65498
-crystal_impling = 65500
 impling_spawn_tables = 65482
 impling_spawn_points = 65481
 hunter_loot_sacks = 65480
 hunter_loot_sack_cascades = 65479
 
 birdhouse_types = 56003
-birdhouse_seeds = 65501
 
 hunter_traps = 56004
 hunter_trap_creatures = 56005
@@ -35,6 +34,8 @@ hunter_leon_bolts = 65468
 hunter_bolt_fletching = 65467
 
 [gamevals.dbrow]
+hunter_goat_lure_telegrab = 63891
+hunter_goat_lure_dark_lure = 63890
 hunter_pouch_fur_small = 63655
 hunter_pouch_fur_medium = 63661
 hunter_pouch_fur_large = 63660
@@ -271,8 +272,6 @@ impling_loot_magpie = 63860
 impling_loot_ninja = 63858
 impling_loot_dragon = 63865
 impling_loot_crystal = 63866
-crystal_impling = 63873
-birdhouse_seeds = 63892
 herbiboar_fossil_numulite = 63870
 herbiboar_fossil_small_unid = 63868
 herbiboar_fossil_medium_unid = 63871
@@ -302,6 +301,7 @@ hunter_fur_pouch = 65534
 hunter_meat_pouch = 65533
 
 [gamevals.area]
+hunter_guild_top_floor = 32762
 piscatoris_falconry = 30010
 vampyrium_stymphikes = 32756
 
@@ -353,6 +353,12 @@ hunter_loot_sack_open = 59
 hunter_kit_open = 3616
 
 [gamevals.enum]
+herbiboar_spot_messages = 65455
+crystal_impling_npcs = 65454
+crystal_impling_spots = 65453
+birdhouse_seed_weights = 65452
+hunter_trap_limits = 65451
+hunter_crab_trap_limits = 65450
 hunter_pearl_shop_prices = 65465
 hunter_pouch_contents = 65467
 hunter_kit_contents = 65466

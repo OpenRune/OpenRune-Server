@@ -120,7 +120,7 @@ constructor(
         if (vars[pit.varbit] != STATE_SPIKED) return
         if (jumpPath(bound.coords, player.coords) == null) {
             val side = sideTiles(bound.coords).minByOrNull { distance(it, player.coords) } ?: return
-            playerWalk(side)
+            if (!walkOnto(side)) return
         }
         val (start, dest, dir) = jumpPath(bound.coords, player.coords) ?: return
         if (player.coords != start) return

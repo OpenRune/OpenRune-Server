@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.hunter
 
+import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
@@ -7,13 +8,15 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
+import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.game.inv.InvObj
 import org.rsmod.map.CoordGrid
 
 @Execution(ExecutionMode.SAME_THREAD)
 @ResourceLock("ServerCacheManager")
 class HunterPouchTest {
-    private val script = HunterPouchScript(mockk(relaxed = true), mockk(relaxed = true))
+    private val areas = mockk<AreaChecker> { every { inArea(any(), any()) } answers { secondArg<Int>() == GUILD_TOP_FLOOR.packed } }
+    private val script = HunterPouchScript(mockk(relaxed = true), mockk(relaxed = true), areas)
 
     @Test
     fun `filling and emptying again and again keeps every meat`() {

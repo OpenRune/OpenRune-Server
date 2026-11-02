@@ -5,6 +5,8 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
+import dev.openrune.types.enums.EnumTypeMap
+import dev.openrune.types.enums.enum
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlin.math.abs
@@ -52,6 +54,12 @@ import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import org.rsmod.routefinder.collision.CollisionFlagMap
+
+internal suspend fun ProtectedAccess.walkOnto(dest: CoordGrid): Boolean {
+    walk(dest)
+    while (coords != dest && player.routeDestination.isNotEmpty()) delay(1)
+    return coords == dest
+}
 
 @Singleton
 class HunterTrapScript
@@ -240,8 +248,7 @@ constructor(
             else -> return
         }
         if (traps.containsKey(coords) || trap.kind.item !in inv) return
-        playerWalk(coords)
-        if (player.coords != coords) return
+        if (!walkOnto(coords)) return
         lay(trap.kind, null)
     }
 
@@ -263,6 +270,9 @@ constructor(
         val now = clock.cycle
         for (trap in own) {
             val age = now - trap.stateCycle
+            if (trap.state == TrapState.Set && age == STEP_OFF_TICKS && coords == trap.coords && !isBusy && !isBusy2) {
+                stepOffTile(trap.coords)?.let { walk(it) }
+            }
             when (trap.state) {
                 TrapState.Set -> {
                     val approach = trap.approach
@@ -582,6 +592,7 @@ constructor(
         const val SNARE_FULL_SYNTH = "synth.hunting_snare_full"
         val TORCHES = listOf("obj.torch_lit", "obj.wint_torch")
         const val LAY_TICKS = 3
+        const val STEP_OFF_TICKS = 2
         const val CHECK_TICKS = 2
         const val ATTEMPT_TICKS = 3
         const val APPROACH_TIMEOUT = 6
@@ -611,7 +622,12 @@ constructor(
 
         fun distance(a: CoordGrid, b: CoordGrid): Int = max(abs(a.x - b.x), abs(a.z - b.z))
 
-        fun maxTraps(level: Int): Int = 1 + listOf(20, 40, 60, 80).count { level >= it }
+        private val TRAP_LIMITS by lazy { enum<Int, Int>("hunter_trap_limits") }
+
+        fun maxTraps(level: Int): Int = byLevel(TRAP_LIMITS, level)
+
+        fun byLevel(limits: EnumTypeMap<Int, Int>, level: Int): Int =
+            limits.getValue(limits.keys.filter { it <= level }.maxOrNull() ?: limits.keys.min())
 
         fun catchChance256(low: Int, high: Int, level: Int): Int =
             (SkillingSuccessRate.successRate(low, high, level.coerceIn(1, 99), 99) * 256).roundToInt()

@@ -3,6 +3,7 @@ package org.rsmod.content.skills.hunter
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.enums.enum
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.invtx.delete
@@ -224,6 +225,8 @@ constructor(
         const val CRAB_WALK_TICKS = 4
         const val CRAB_START = 3
 
-        fun maxTraps(level: Int): Int = 1 + listOf(21, 40, 60, 80).count { level >= it }
+        private val TRAP_LIMITS by lazy { enum<Int, Int>("hunter_crab_trap_limits") }
+
+        fun maxTraps(level: Int): Int = HunterTrapScript.byLevel(TRAP_LIMITS, level)
     }
 }

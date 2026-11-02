@@ -2469,6 +2469,16 @@ public class ProtectedAccess(
         player.ifDoubleobjbox(page.text, obj1.id, zoom1, obj2.id, zoom2, "", context.eventBus)
     }
 
+    public suspend fun choice1(choice1: String, title: String = constants.cm_options) {
+        player.ifChoice(title, choice1, choiceCountInclusive = 1, context.eventBus)
+        val modal = player.ui.getModalOrNull("component.chatbox:chatmodal")
+        val input = coroutine.pause(ResumePauseButtonInput::class)
+        resumePauseButtonWithProtectedAccess(input, modal, "component.chatmenu:options")
+        check(input.subcomponent == 1) {
+            "Invalid choice `${input.subcomponent}` for `$player`. (input=$input)"
+        }
+    }
+
     /**
      * @throws ProtectedAccessLostException if the player could not retain protected access after
      *   the coroutine suspension.

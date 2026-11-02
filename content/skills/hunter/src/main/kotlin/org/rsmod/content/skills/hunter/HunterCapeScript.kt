@@ -133,7 +133,7 @@ class HunterCapeScript : PluginScript() {
         }
     }
 
-    private companion object {
+    internal companion object {
         const val HUNTER = "stat.hunter"
         const val APATURA = "npc.hg_apatura"
         const val GUILD_LEVEL = 46

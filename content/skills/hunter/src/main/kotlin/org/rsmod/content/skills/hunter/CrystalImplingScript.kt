@@ -3,6 +3,8 @@ package org.rsmod.content.skills.hunter
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.NpcServerType
+import dev.openrune.types.enums.enum
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import java.time.Clock
@@ -13,7 +15,6 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpNpc1
-import org.rsmod.api.table.CrystalImplingRow
 import org.rsmod.game.entity.Npc
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
@@ -86,11 +87,11 @@ constructor(
         const val BONUS_LOW = 28
         const val BONUS_HIGH = 161
 
-        private val ROW by lazy { CrystalImplingRow.getRow("dbrow.crystal_impling") }
+        val NAMES: List<String> by lazy {
+            enum<Int, NpcServerType>("crystal_impling_npcs").backing.values.map { checkNotNull(it).internalName }
+        }
 
-        val NAMES: List<String> by lazy { ROW.npcs.map { it.internalName } }
-
-        val SPOTS: List<CoordGrid> by lazy { ROW.spots }
+        val SPOTS: List<CoordGrid> by lazy { enum<Int, CoordGrid>("crystal_impling_spots").backing.values.map { checkNotNull(it) } }
 
         fun halfHourSlot(time: LocalTime): Int =
             ((time.toSecondOfDay() / 60 - VISIBLE_AFTER_MINUTES + 1440) % 1440) / 30

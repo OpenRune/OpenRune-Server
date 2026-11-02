@@ -75,3 +75,30 @@ valueType = "INT"
 97 = 2423
 98 = 2442
 99 = 2461
+
+[[enum]]
+isServerOnly = true
+id = "enum.herbiboar_spot_messages"
+keyType = "LOC"
+valueType = "STRING"
+
+[enum.values]
+"loc.hunting_trail_clue9_0" = "You find a partial footprint in the disturbed earth. Something has passed this way."
+"loc.hunting_trail_clue9_1" = "This mushroom cap looks freshly eaten. Something has passed this way."
+"loc.hunting_trail_clue9_2" = "This mushroom is oozing where it has recently been bitten. Something has passed this way."
+"loc.hunting_trail_clue9_3" = "You find a partial footprint in the disturbed earth. Something has passed this way."
+"loc.hunting_trail_clue9_4" = "Something has disturbed this seaweed recently, it smells."
+"loc.hunting_trail_clue9_6" = "This mushroom cap looks freshly eaten. Something has passed this way."
+"loc.hunting_trail_clue9_7" = "This mushroom is oozing where it has recently been bitten. Something has passed this way."
+"loc.hunting_trail_clue9_8" = "This mushroom is oozing where it has recently been bitten. Something has passed this way."
+"loc.hunting_trail_clue9_9" = "Something has disturbed this seaweed recently, it smells."
+"loc.hunting_trail_clue10_0" = "You find a partial footprint in the disturbed earth. Something has passed this way."
+"loc.hunting_trail_clue10_1" = "You find a partial footprint in the disturbed earth. Something has passed this way."
+"loc.hunting_trail_clue10_2" = "You find a partial footprint in the disturbed earth. Something has passed this way."
+"loc.hunting_trail_clue10_3" = "You find a partial footprint in the disturbed earth. Something has passed this way."
+"loc.hunting_trail_clue10_4" = "This mushroom is oozing where it has recently been bitten. Something has passed this way."
+"loc.hunting_trail_clue10_5" = "You find a partial footprint in the disturbed earth. Something has passed this way."
+"loc.hunting_trail_clue10_6" = "You find a partial footprint in the disturbed earth. Something has passed this way."
+"loc.hunting_trail_clue10_8" = "You find a partial footprint in the disturbed earth. Something has passed this way."
+"loc.hunting_trail_clue10_9" = "Something has disturbed this seaweed recently, it smells."
+"loc.hunting_trail_clue11_0" = "Something has disturbed this seaweed recently, it smells."

@@ -51,7 +51,7 @@ class BirdHouseTest {
     fun `seeds added twice take ten seeds`() {
         levels()
         VarPlayerIntMapSetter.set(f.player, space.transmitVarp, tier.tier * 3 + 1)
-        val seed = BirdHouseScript.SEEDS.first { it !in BirdHouseScript.HIGH_LEVEL_SEEDS }
+        val seed = BirdHouseScript.SEEDS.first { BirdHouseScript.seedWeight(it) == 1 }
         f.player.inv[0] = InvObj(seed, 25)
         f.run(script, "addSeeds", space, seed)
         f.run(script, "addSeeds", space, seed)

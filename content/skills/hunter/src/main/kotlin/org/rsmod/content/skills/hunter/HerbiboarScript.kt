@@ -40,6 +40,10 @@ constructor(
     private val spots by lazy { enum<ObjectServerType, Int>("herbiboar_spots") }
     private val spotGroups: Map<Int, Int?> by lazy { spots.backing.mapKeys { it.key.id } }
     private val tunnels by lazy { enum<Int, CoordGrid>("herbiboar_tunnels") }
+
+    private val spotMessages: Map<Int, String?> by lazy {
+        enum<ObjectServerType, String>("herbiboar_spot_messages").backing.mapKeys { it.key.id }
+    }
     private val trailVarbits: List<VarBitType> by lazy { legs.map { it.trail }.distinctBy { it.id } }
 
     override fun ScriptContext.startup() {
@@ -88,7 +92,7 @@ constructor(
         }
         reveal(player, leg)
         VarPlayerIntMapSetter.set(player, STARTED, 1)
-        mes(SPOT_MESSAGES[locName(loc)] ?: "Something has passed this way.", ChatType.Spam)
+        mes(checkNotNull(spotMessages[loc]), ChatType.Spam)
         if (isLast(player, leg)) {
             VarPlayerIntMapSetter.set(player, ENDS, leg.endTunnel)
             return
@@ -220,8 +224,6 @@ constructor(
 
     private fun <T> List<T>.randomOrNull(random: GameRandom): T? = if (isEmpty()) null else this[random.of(size)]
 
-    private fun locName(id: Int): String = ServerCacheManager.getObject(id)?.name.orEmpty()
-
     data class Leg(val from: Int, val trail: VarBitType, val dir: Int, val toGroup: Int?, val endTunnel: Int)
 
     private fun loadLegs(): List<Leg> =
@@ -277,14 +279,6 @@ constructor(
         const val HERBIBOAR_PREFIX = "fossil_herbiboar"
 
         val START_LOCS = (1..5).map { "loc.hunting_trail_spawn_fossil$it" }
-
-        val SPOT_MESSAGES =
-            mapOf(
-                "Muddy patch" to "You find a partial footprint in the disturbed earth. Something has passed this way.",
-                "Smelly mushroom" to "This mushroom is oozing where it has recently been bitten. Something has passed this way.",
-                "Seaweed" to "Something has disturbed this seaweed recently, it smells.",
-                "Mushroom" to "This mushroom cap looks freshly eaten. Something has passed this way.",
-            )
 
         private const val FOSSIL_ROLL = 3500
 

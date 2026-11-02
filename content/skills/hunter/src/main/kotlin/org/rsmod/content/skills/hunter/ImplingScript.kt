@@ -60,7 +60,7 @@ constructor(
             return
         }
         repeat(MAX_ATTEMPTS) { attempt ->
-            if (attempt > 0) delay(ATTEMPT_TICKS)
+            delay(if (attempt == 0) 1 else ATTEMPT_TICKS)
             if (!npc.isCatchable() || !canCatch(jarRequired)) return
             faceEntitySquare(npc)
             anim(catchSeq(net))

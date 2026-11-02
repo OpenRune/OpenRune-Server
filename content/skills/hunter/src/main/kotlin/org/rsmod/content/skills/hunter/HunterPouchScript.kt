@@ -5,6 +5,7 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.enums.HunterEnums.hunter_pouch_contents
 import org.rsmod.api.invtx.invAdd
@@ -69,7 +70,11 @@ enum class HunterPouch(val noun: String, val plural: String, val inv: String) {
 
 class HunterPouchScript
 @Inject
-constructor(private val locRepo: LocRepository, private val npcRepo: NpcRepository) : PluginScript() {
+constructor(
+    private val locRepo: LocRepository,
+    private val npcRepo: NpcRepository,
+    private val areas: AreaChecker,
+) : PluginScript() {
     override fun ScriptContext.startup() {
         for (pouch in HunterPouch.entries) {
             for (size in pouch.sizes) {
@@ -116,7 +121,7 @@ constructor(private val locRepo: LocRepository, private val npcRepo: NpcReposito
             mes("Your ${pouch.noun} pouch is empty.")
             return
         }
-        if (pouch != HunterPouch.Meat || !(nearBank(player.coords) || inGuildTopFloor(player.coords))) {
+        if (pouch != HunterPouch.Meat || !(nearBank(player.coords) || areas.inArea(GUILD_TOP_FLOOR, player.coords))) {
             mes("You can't empty your ${pouch.noun} pouch here.")
             return
         }
@@ -170,15 +175,10 @@ constructor(private val locRepo: LocRepository, private val npcRepo: NpcReposito
         return false
     }
 
-    private fun inGuildTopFloor(coords: CoordGrid): Boolean =
-        coords.level == GUILD_TOP_LEVEL && coords.x in GUILD_X && coords.z in GUILD_Z
-
     private companion object {
         const val BANK_ZONE_RADIUS = 1
         const val BANKER = "content.banker"
         val BANK_LOCS = listOf("content.bank_booth", "content.bank_deposit_box")
-        const val GUILD_TOP_LEVEL = 1
-        val GUILD_X = 1546..1566
-        val GUILD_Z = 3026..3046
+        const val GUILD_TOP_FLOOR = "area.hunter_guild_top_floor"
     }
 }

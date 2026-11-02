@@ -2,6 +2,8 @@ package org.rsmod.content.skills.hunter
 
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.enums.enum
 import jakarta.inject.Inject
 import java.time.Clock
 import kotlin.math.roundToInt
@@ -20,7 +22,6 @@ import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onOpLoc4
 import org.rsmod.api.script.onOpLocU
-import org.rsmod.api.table.BirdhouseSeedsRow
 import org.rsmod.api.table.BirdhouseTypesRow
 import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.content.skills.hunter.HunterClues.canReceiveClue
@@ -338,13 +339,15 @@ constructor(val objRepo: ObjRepository) : PluginScript() {
 
         val TIERS: List<BirdhouseTypesRow> by lazy { BirdhouseTypesRow.all().sortedBy { it.tier } }
 
-        private val SEED_ROW by lazy { BirdhouseSeedsRow.getRow("dbrow.birdhouse_seeds") }
+        private val SEED_WEIGHTS: Map<String, Int> by lazy {
+            enum<ItemServerType, Int>("birdhouse_seed_weights").backing.entries.associate {
+                it.key.internalName to checkNotNull(it.value)
+            }
+        }
 
-        val SEEDS: List<String> by lazy { SEED_ROW.seeds.map { it.internalName } }
+        val SEEDS: List<String> by lazy { SEED_WEIGHTS.keys.toList() }
 
-        val HIGH_LEVEL_SEEDS: Set<String> by lazy { SEED_ROW.highLevelSeeds.map { it.internalName }.toSet() }
-
-        fun seedWeight(seed: String): Int = if (seed in HIGH_LEVEL_SEEDS) 2 else 1
+        fun seedWeight(seed: String): Int = SEED_WEIGHTS.getValue(seed)
 
         fun chance(level: Int, low: Int, high: Int): Int =
             (SkillingSuccessRate.successRate(low, high, level.coerceIn(1, 99), 99) * 256).roundToInt()

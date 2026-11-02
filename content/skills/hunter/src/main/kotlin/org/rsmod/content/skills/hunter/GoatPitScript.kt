@@ -29,6 +29,7 @@ import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onOpLoc4
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.spells.MagicSpellRegistry
+import org.rsmod.api.table.hunter.HunterGoatLuresRow
 import org.rsmod.content.other.pets.PetRewards
 import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.content.skills.hunter.HunterPouch.Companion.pouchHunted
@@ -64,9 +65,8 @@ constructor(
         onOpHeld2(PROD) { invEquip(it.slot).let { result -> if (result is HeldEquipResult.Fail) result.messages.forEach(::mes) } }
         onOpNpc1(GEOFF) { startDialogue(it.npc) { geoff() } }
         val goat = checkNotNull(ServerCacheManager.getNpc(GOAT.asRSCM(RSCMType.NPC)))
-        for (lure in Lure.entries) {
-            val component = lure.component.asRSCM(RSCMType.COMPONENT)
-            val spell = spells.allSpells().first { it.component.packed == component }
+        for (lure in HunterGoatLuresRow.all()) {
+            val spell = spells.allSpells().first { it.component.packed == lure.component.packed }
             onApNpcT(goat, spell.component) { lure(it.npc, spell, lure) }
         }
     }
@@ -281,13 +281,13 @@ constructor(
         drive(goat, dx, dz, PUSH_TILES, JUMP_SEQ, PROD_XP)
     }
 
-    private suspend fun ProtectedAccess.lure(goat: Npc, spell: MagicSpell, lure: Lure) {
+    private suspend fun ProtectedAccess.lure(goat: Npc, spell: MagicSpell, lure: HunterGoatLuresRow) {
         if (!questDone()) return
         if (stat(HUNTER) < LEVEL) {
             mes("You need a Hunter level of $LEVEL to herd the goats.")
             return
         }
-        if (lure == Lure.DarkLure && vars[DARK_LURE_COOLDOWN] != 0) {
+        if (lure.component.packed == DARK_LURE.asRSCM(RSCMType.COMPONENT) && vars[DARK_LURE_COOLDOWN] != 0) {
             mes("You can only cast Dark Lure every 10 seconds.")
             return
         }
@@ -298,7 +298,7 @@ constructor(
         lure.synth?.let { soundSynth(it) }
         val proj = worldRepo.projAnim(player, goat, SpotanimType(lure.travel.asRSCM(RSCMType.SPOTANIM)), PROJANIM)
         statAdvance(MAGIC, spell.castXp)
-        if (lure == Lure.DarkLure) {
+        if (lure.component.packed == DARK_LURE.asRSCM(RSCMType.COMPONENT)) {
             VarPlayerIntMapSetter.set(player, DARK_LURE_COOLDOWN, 1)
             clearQueue(DARK_LURE_COOLDOWN_QUEUE)
             queue(DARK_LURE_COOLDOWN_QUEUE, DARK_LURE_COOLDOWN_TICKS)
@@ -400,45 +400,16 @@ constructor(
         const val LURE_DEATH_SEQ = "seq.goat_hunting_telegrab_end"
         const val PROJANIM = "projanim.magic_spell"
         const val CAST_SPOTANIM_HEIGHT = 92
+        const val DARK_LURE = "component.magic_spellbook:dark_lure"
         const val DARK_LURE_COOLDOWN = "varbit.arceuus_dark_lure_cooldown"
         const val DARK_LURE_COOLDOWN_QUEUE = "queue.dark_lure_cooldown"
         const val DARK_LURE_COOLDOWN_TICKS = 17
 
-        fun capacity(level: Int): Int =
-            hunter_goat_pit_capacity.getValue(hunter_goat_pit_capacity.keys.filter { it <= level }.maxOrNull() ?: LEVEL)
+        fun capacity(level: Int): Int = HunterTrapScript.byLevel(hunter_goat_pit_capacity, level)
 
         fun harvestXp(level: Int): Int {
             val l = level.coerceIn(LEVEL, 99)
             return if (l <= 80) 100 + (l - 60) * 3 else 160 + (l - 80)
         }
-    }
-
-    enum class Lure(
-        val component: String,
-        val castSeq: String,
-        val castSpotanim: String,
-        val travel: String,
-        val impact: String,
-        val impactHeight: Int,
-        val synth: String?,
-    ) {
-        Telegrab(
-            "component.magic_spellbook:telegrab",
-            "seq.human_casttelegrab",
-            "spotanim.telegrab_casting",
-            "spotanim.telegrab_travel",
-            "spotanim.telegrab_impact",
-            0,
-            "synth.telegrab_all",
-        ),
-        DarkLure(
-            "component.magic_spellbook:dark_lure",
-            "seq.human_cast_vicious_strike",
-            "spotanim.dark_lure_cast_spotanim",
-            "spotanim.dark_lure_travel_projanim",
-            "spotanim.dark_lure_hit_spotanim",
-            124,
-            null,
-        ),
     }
 }

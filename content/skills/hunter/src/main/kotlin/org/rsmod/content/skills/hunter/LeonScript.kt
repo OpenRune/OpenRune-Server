@@ -156,8 +156,7 @@ class LeonScript @Inject constructor(private val shops: Shops) : PluginScript() 
                 "Well, they only ran into problems because people kept insisting on trying to use them indoors.",
             )
             chatNpc(neutral, "Anyway, I think my crossbow invention is showing a lot more promise.")
-            others(npc)
-            return
+            choice1("That sounds good. Let's trade.")
         }
         chatPlayer(happy, "That sounds good. Let's trade.")
         access.openShop(npc)
@@ -181,8 +180,7 @@ class LeonScript @Inject constructor(private val shops: Shops) : PluginScript() 
                     "spikes into straight shafts.",
             )
             chatNpc(neutral, "Meanwhile, since you're here, I can make some for you if you have the materials.")
-            others(npc)
-            return
+            choice1("Okay, can you make ammo for me?")
         }
         chatPlayer(quiz, "Okay, can you make ammo for me?")
         access.ammo()

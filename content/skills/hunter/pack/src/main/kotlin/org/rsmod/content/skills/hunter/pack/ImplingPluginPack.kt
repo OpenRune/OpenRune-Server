@@ -8,7 +8,6 @@ class ImplingPluginPack : PluginPack() {
         listOf(
             ImplingTypesTable.implingTypes(),
             ImplingLootTable.implingLoot(),
-            CrystalImplingTable.crystalImpling(),
             ImplingSpawnTable.spawnTables(),
             ImplingSpawnTable.spawnPoints(),
         )

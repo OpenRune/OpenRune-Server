@@ -7,6 +7,8 @@ import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.area.checker.AreaChecker
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.MiscOutput
@@ -294,7 +296,7 @@ constructor(
         chatNpc(neutral, "Do you want me to fetch him for you?")
         if (choice2("Yes, please.", true, "Actually, I think I'll leave it for now.", false)) {
             chatPlayer(happy, "Yes, please.")
-            access.swapGlove(FALCON_GLOVE)
+            player.swapGlove(FALCON_GLOVE)
             mesbox("The falconer brings a bird over to land on your glove.")
             chatNpc(
                 neutral,
@@ -334,9 +336,24 @@ constructor(
         return true
     }
 
-    private fun ProtectedAccess.swapGlove(into: String) {
-        val current = GLOVES.firstOrNull { it in player.worn } ?: return
-        invReplace(player.worn, current, 1, into)
+    private fun Player.swapGlove(glove: String) {
+        val slot = Wearpos.RightHand.slot
+        val current = worn[slot]?.takeIf { obj -> GLOVES.any { obj.id == it.asRSCM(RSCMType.OBJ) } } ?: return
+        invTransaction(worn) {
+            val target = select(worn)
+            delete {
+                from = target
+                obj = current.id
+                strictCount = 1
+                strictSlot = slot
+            }
+            insert {
+                into = target
+                obj = glove.asRSCM(RSCMType.OBJ)
+                strictCount = 1
+                strictSlot = slot
+            }
+        }
         rebuildAppearance()
     }
 
@@ -356,8 +373,7 @@ constructor(
         if (!npc.isSlotAssigned || !npc.isVisible) return
         faceEntitySquare(npc)
         anim(SEND_SEQ)
-        invReplace(player.worn, FALCON_GLOVE, 1, EMPTY_GLOVE)
-        rebuildAppearance()
+        player.swapGlove(EMPTY_GLOVE)
         val d = distance(player.coords, npc.coords).coerceAtLeast(1)
         val level = statBase(HUNTER)
         val hit =
@@ -394,7 +410,7 @@ constructor(
         despawnFalcon(player, falcon)
         for (obj in flight.kebbit.loot) if (!pouchHunted(obj)) invAdd(inv, obj)
         statAdvance(HUNTER, flight.kebbit.xp.toDouble())
-        swapGlove(FALCON_GLOVE)
+        player.swapGlove(FALCON_GLOVE)
         rumours.onCatch(player, flight.kebbit.npc)
     }
 
@@ -416,9 +432,7 @@ constructor(
                 val target = flight.target
                 if (!flight.hit || !target.isSlotAssigned || !target.isVisible) {
                     flights.remove(this)
-                    if (EMPTY_GLOVE in worn) {
-                        invReplaceWorn(EMPTY_GLOVE, FALCON_GLOVE)
-                    }
+                    if (EMPTY_GLOVE in worn) swapGlove(FALCON_GLOVE)
                     return
                 }
                 val coords = target.coords
@@ -437,13 +451,6 @@ constructor(
                     mes("Your falcon has left its prey. You see it heading back toward the falconer.")
                 }
         }
-    }
-
-    private fun Player.invReplaceWorn(from: String, into: String) {
-        val slot = Wearpos.RightHand.slot
-        if (worn[slot]?.id != from.asRSCM(RSCMType.OBJ)) return
-        worn[slot] = org.rsmod.game.inv.InvObj(into)
-        rebuildAppearance()
     }
 
     private suspend fun ProtectedAccess.climbOver(stile: BoundLocInfo) {
@@ -470,10 +477,7 @@ constructor(
         val (start, dest) = if (fromSouth) south to north else north to south
         val step = if (dest.z > start.z) 1 else -1
         val approach = start.translate(0, -step)
-        if (player.coords != approach) {
-            playerWalk(approach)
-            if (player.coords != approach) return
-        }
+        if (!walkOnto(approach)) return
         teleport(start, TeleportType.Exempt)
         delay(1)
         exactMove(start, dest, CLIMB_STEP_DELAY, CLIMB_CROSS_DELAY, if (step > 0) FACE_NORTH else FACE_SOUTH, TeleportType.Exempt)

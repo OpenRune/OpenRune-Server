@@ -1,0 +1,44 @@
+[[enum]]
+isServerOnly = true
+id = "enum.crystal_impling_npcs"
+keyType = "INT"
+valueType = "NPC"
+
+[enum.values]
+0 = "npc.ii_impling_type_12_johnny"
+1 = "npc.ii_impling_type_12_junior"
+2 = "npc.ii_impling_type_12_andy"
+3 = "npc.ii_impling_type_12_joey"
+4 = "npc.ii_impling_type_12_trouble"
+5 = "npc.ii_impling_type_12_hingy"
+6 = "npc.ii_impling_type_12_zolty"
+7 = "npc.ii_impling_type_12_neil"
+8 = "npc.ii_impling_type_12_yanny"
+9 = "npc.ii_impling_type_12_matty"
+10 = "npc.ii_impling_type_12_stace"
+11 = "npc.ii_impling_type_12_ian"
+12 = "npc.ii_impling_type_12_jamie"
+13 = "npc.ii_impling_type_12_damo"
+14 = "npc.ii_impling_type_12_xander"
+15 = "npc.ii_impling_type_12_steveo"
+16 = "npc.ii_impling_type_12_stewie"
+
+[[enum]]
+isServerOnly = true
+id = "enum.crystal_impling_spots"
+keyType = "INT"
+valueType = "COORDGRID"
+
+[enum.values]
+0 = 53909477
+1 = 54187929
+2 = 52598750
+3 = 52647841
+4 = 53041110
+5 = 54204389
+6 = 53090206
+7 = 52664289
+8 = 53909409
+9 = 52991928
+10 = 53090280
+11 = 52991985

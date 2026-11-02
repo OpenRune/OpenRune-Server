@@ -20,5 +20,6 @@ class HunterTrapPluginPack : PluginPack() {
             HunterPouchTable.pouches(),
             HunterLeonBoltTable.leonBolts(),
             HunterLeonBoltTable.boltFletching(),
+            HunterGoatLureTable.goatLures(),
         )
 }
