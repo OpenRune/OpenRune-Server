@@ -32,6 +32,8 @@ constructor(
     }
 
     private fun Player.publish(queue: EngineQueueList.Queue) {
+        eventBus.observeEngineQueue(this, queue)
+
         if (queueCache.hasLabelScript(queue)) {
             val packedLabel = EventBus.composeLongKey(queue.label, queue.type)
             val labelled = eventBus.suspend[EngineQueueEvents.Labelled::class.java, packedLabel]
