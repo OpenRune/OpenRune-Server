@@ -2449,3 +2449,263 @@ contentGroup = "content.ladder_down"
 id = "loc.duke_sucellus_salt"
 inherit = "loc.duke_sucellus_salt"
 contentGroup = "content.rock"
+
+[[object]]
+id = "loc.amenity_bankchest_buccaneers"
+inherit = "loc.amenity_bankchest_buccaneers"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.amenity_bankchest_built"
+inherit = "loc.amenity_bankchest_built"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.amenity_bankchest_charred_island"
+inherit = "loc.amenity_bankchest_charred_island"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.amenity_bankchest_deepfin_1"
+inherit = "loc.amenity_bankchest_deepfin_1"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.amenity_bankchest_deepfin_2"
+inherit = "loc.amenity_bankchest_deepfin_2"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.amenity_bankchest_onyx_crest"
+inherit = "loc.amenity_bankchest_onyx_crest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.amenity_bankchest_sangvesti"
+inherit = "loc.amenity_bankchest_sangvesti"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.amenity_bankchest_sangvesti_built"
+inherit = "loc.amenity_bankchest_sangvesti_built"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.amenity_bankchest_sunbleak"
+inherit = "loc.amenity_bankchest_sunbleak"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.amenity_bankchest_wyrmscraig"
+inherit = "loc.amenity_bankchest_wyrmscraig"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.bank_chest"
+inherit = "loc.bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.bank_chest_small"
+inherit = "loc.bank_chest_small"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.barbassault_bank_chest"
+inherit = "loc.barbassault_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.bh_bankchest"
+inherit = "loc.bh_bankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.bim_ruins_bankchest"
+inherit = "loc.bim_ruins_bankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.blast_bank_chest"
+inherit = "loc.blast_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.brimstone_bankchest"
+inherit = "loc.brimstone_bankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.castlewars_bankchest"
+inherit = "loc.castlewars_bankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.champions_bankchest"
+inherit = "loc.champions_bankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.darkm_bank_chest"
+inherit = "loc.darkm_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.deadman_arena_bank_chest"
+inherit = "loc.deadman_arena_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.diary_guild_bankchest"
+inherit = "loc.diary_guild_bankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.ds2_corsair_cove_bank_chest"
+inherit = "loc.ds2_corsair_cove_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.fai_falador_bank_chest"
+inherit = "loc.fai_falador_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.fai_varrock_bank_chest"
+inherit = "loc.fai_varrock_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.fai_varrock_bank_chest_open"
+inherit = "loc.fai_varrock_bank_chest_open"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.fever_bank_chest"
+inherit = "loc.fever_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.fortis_bank_chest"
+inherit = "loc.fortis_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.fortis_bank_chest_small"
+inherit = "loc.fortis_bank_chest_small"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.fossil_bank_chest"
+inherit = "loc.fossil_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.fossil_bank_chest_built"
+inherit = "loc.fossil_bank_chest_built"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.fossil_volcano_bank_chest"
+inherit = "loc.fossil_volcano_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.fris_bank_chest_open"
+inherit = "loc.fris_bank_chest_open"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.gim_bank_chest"
+inherit = "loc.gim_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.gotr_bankchest"
+inherit = "loc.gotr_bankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.lovakengj_bank_chest_grey"
+inherit = "loc.lovakengj_bank_chest_grey"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.lovakengj_bank_chest_orange"
+inherit = "loc.lovakengj_bank_chest_orange"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.lunar_moonclan_bank_chest"
+inherit = "loc.lunar_moonclan_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.magictraining_bankchest"
+inherit = "loc.magictraining_bankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.mm_desk_bankchest"
+inherit = "loc.mm_desk_bankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.pest_bank_chest"
+inherit = "loc.pest_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.raids_bank_chest_lobby"
+inherit = "loc.raids_bank_chest_lobby"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.raids_bank_chest_lobby_working"
+inherit = "loc.raids_bank_chest_lobby_working"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.snakeboss_bankchest"
+inherit = "loc.snakeboss_bankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.soul_wars_bankchest"
+inherit = "loc.soul_wars_bankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.tempoross_lobby_bank_chest"
+inherit = "loc.tempoross_lobby_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.thbankchest"
+inherit = "loc.thbankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.tox_bank_chest"
+inherit = "loc.tox_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.tzhaar_bank_chest"
+inherit = "loc.tzhaar_bank_chest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.wcguild_bankchest"
+inherit = "loc.wcguild_bankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.wint_bankchest"
+inherit = "loc.wint_bankchest"
+contentGroup = "content.bank_chest"
+
+[[object]]
+id = "loc.wyrmscraig_bank_chest_built"
+inherit = "loc.wyrmscraig_bank_chest_built"
+contentGroup = "content.bank_chest"

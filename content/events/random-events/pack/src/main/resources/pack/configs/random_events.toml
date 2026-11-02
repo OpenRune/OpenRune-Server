@@ -1,0 +1,4 @@
+[[varp]]
+id = "varp.random_event_due"
+scope = "Perm"
+transmit = "Never"
