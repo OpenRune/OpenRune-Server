@@ -34,8 +34,8 @@ hunter_leon_bolts = 65468
 hunter_bolt_fletching = 65467
 
 [gamevals.dbrow]
-hunter_goat_lure_telegrab = 63891
-hunter_goat_lure_dark_lure = 63890
+hunter_goat_lure_telegrab = 63824
+hunter_goat_lure_dark_lure = 63823
 hunter_pouch_fur_small = 63655
 hunter_pouch_fur_medium = 63661
 hunter_pouch_fur_large = 63660
@@ -301,7 +301,7 @@ hunter_fur_pouch = 65534
 hunter_meat_pouch = 65533
 
 [gamevals.area]
-hunter_guild_top_floor = 32762
+hunter_guild_top_floor = 32754
 piscatoris_falconry = 30010
 vampyrium_stymphikes = 32756
 
