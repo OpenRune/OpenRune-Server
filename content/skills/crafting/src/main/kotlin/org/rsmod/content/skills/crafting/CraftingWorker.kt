@@ -4,8 +4,15 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
+import org.rsmod.api.player.events.skilling.SkillingByproduct
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.skilling.consumeSkillingInputs
 import org.rsmod.api.player.stat.craftingLvl
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.repo.world.WorldRepository
@@ -209,39 +216,46 @@ suspend fun ProtectedAccess.canCraft(product: CraftingProduct, verbose: Boolean)
 }
 
 suspend fun ProtectedAccess.craftOnce(product: CraftingProduct): Boolean {
-    val removed = mutableListOf<Pair<String, Int>>()
-    for (material in product.inputs) {
-        if (invDel(inv, material.internal, material.count).success) {
-            removed += material.internal to material.count
-        } else {
-            removed.forEach { (obj, count) -> invAdd(inv, obj, count) }
-            return false
-        }
-    }
-
     val failure = product.failure
-
     if (failure != null && !skillSuccess(failure.low, failure.high, player.craftingLvl)) {
-        failure.sound?.let { soundSynth(it) }
-        failure.item?.let { invAdd(inv, it, failure.itemCount) }
-        advanceCraftingXp(CraftingConstants.STAT_CRAFTING, failure.xp)
-        failure.message?.let { mes(it, ChatType.Spam) }
-        return true
+        return failCraft(product, failure)
     }
 
-    if (invAdd(inv, product.output, product.outputCount).failure) {
-        removed.forEach { (obj, count) -> invAdd(inv, obj, count) }
-        mes("You don't have enough inventory space to do that.", ChatType.Spam)
+    val usesThread = product.consumesThread && !holdsCostumeNeedle()
+    val threadUses = player.craftingThreadUses.takeIf { it > 0 } ?: CraftingConstants.THREAD_USES_PER_SPOOL
+    val spendsSpool = usesThread && threadUses <= 1
+    if (spendsSpool && !inv.contains(CraftingConstants.THREAD)) {
+        mes("You need some thread to make that.", ChatType.Spam)
         return false
     }
 
-    product.byproducts.forEach { invAdd(inv, it.internal, it.count) }
-
-    if (product.consumesThread && !holdsCostumeNeedle()) {
-        consumeThreadCharge()
+    val award =
+        SkillingProduct(
+            player = player,
+            skill = CraftingConstants.STAT_CRAFTING,
+            item = product.output,
+            count = product.outputCount,
+            experience = product.xp / CraftingConstants.FINE_XP_DIVISOR,
+            source = SkillingProductSource.Crafting(product.section.id),
+            inputs =
+                if (spendsSpool) {
+                    product.skillingInputs() + SkillingInput(CraftingConstants.THREAD)
+                } else {
+                    product.skillingInputs()
+                },
+            byproducts = product.byproducts.map { SkillingByproduct(it.internal, it.count) },
+        )
+    if (!awardCraft(award)) {
+        return false
     }
 
-    advanceCraftingXp(CraftingConstants.STAT_CRAFTING, product.xp)
+    if (spendsSpool) {
+        mes("You use up one of your reels of thread.", ChatType.Spam)
+        player.craftingThreadUses = CraftingConstants.THREAD_USES_PER_SPOOL
+    } else if (usesThread) {
+        player.craftingThreadUses = threadUses - 1
+    }
+
     product.extraXp.forEach { advanceCraftingXp(it.stat, it.xp) }
     val resultDialogue = product.resultDialogue
     if (resultDialogue != null) {
@@ -252,22 +266,50 @@ suspend fun ProtectedAccess.craftOnce(product: CraftingProduct): Boolean {
     return true
 }
 
+private fun ProtectedAccess.failCraft(product: CraftingProduct, failure: CraftingFailure): Boolean {
+    val inputs = product.skillingInputs()
+    val taken =
+        if (failure.item != null) {
+            awardCraft(
+                SkillingProduct(
+                    player = player,
+                    skill = CraftingConstants.STAT_CRAFTING,
+                    item = failure.item,
+                    count = failure.itemCount,
+                    experience = failure.xp / CraftingConstants.FINE_XP_DIVISOR,
+                    source = SkillingProductSource.Crafting(product.section.id, failed = true),
+                    inputs = inputs,
+                ),
+            )
+        } else {
+            consumeSkillingInputs(inputs).also { consumed ->
+                if (consumed) {
+                    advanceCraftingXp(CraftingConstants.STAT_CRAFTING, failure.xp)
+                }
+            }
+        }
+    if (!taken) {
+        return false
+    }
+    failure.sound?.let { soundSynth(it) }
+    failure.message?.let { mes(it, ChatType.Spam) }
+    return true
+}
+
+private fun ProtectedAccess.awardCraft(award: SkillingProduct): Boolean {
+    val result = awardSkillingProduct(award)
+    if (result == SkillingAwardResult.InventoryFull) {
+        mes("You don't have enough inventory space to do that.", ChatType.Spam)
+    }
+    return result == SkillingAwardResult.Success
+}
+
+private fun CraftingProduct.skillingInputs(): List<SkillingInput> =
+    inputs.map { SkillingInput(it.internal, it.count) }
+
 private fun ProtectedAccess.advanceCraftingXp(stat: String, fineXp: Double) {
     if (fineXp <= 0.0) return
     statAdvance(stat, fineXp / CraftingConstants.FINE_XP_DIVISOR)
-}
-
-private fun ProtectedAccess.consumeThreadCharge() {
-    val uses =
-        player.craftingThreadUses.takeIf { it > 0 } ?: CraftingConstants.THREAD_USES_PER_SPOOL
-    if (uses <= 1) {
-        if (invDel(inv, CraftingConstants.THREAD, 1).success) {
-            mes("You use up one of your reels of thread.", ChatType.Spam)
-        }
-        player.craftingThreadUses = CraftingConstants.THREAD_USES_PER_SPOOL
-    } else {
-        player.craftingThreadUses = uses - 1
-    }
 }
 
 private fun itemName(internal: String): String =
