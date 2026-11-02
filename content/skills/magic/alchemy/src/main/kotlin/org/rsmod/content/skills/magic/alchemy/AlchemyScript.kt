@@ -13,6 +13,9 @@ import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
+import org.rsmod.api.player.events.skilling.AlchemyPrepareEvent
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.output.UpdateInventory.resendSlot
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -101,12 +104,25 @@ constructor(
             return
         }
 
+        val prepare =
+            AlchemyPrepareEvent(
+                player = player,
+                item = targetObj,
+                slot = targetSlot,
+                high = alchemy.high,
+                coins = alchemy.coinValue(targetObj),
+            )
+        publish(prepare)
+        if (prepare.cancelled) {
+            return
+        }
+
         if (!targetObj.isAlchable()) {
             mes("You can not cast alchemy on that.")
             return
         }
 
-        val coins = alchemy.coinValue(targetObj)
+        val coins = prepare.coins
         if (!replaceWithCoins(targetSlot, targetObj, coins, autoCommit = false)) {
             mes("You don't have enough inventory space to do that.")
             return
@@ -141,6 +157,8 @@ constructor(
         soundSynth(alchemy.sound, delay = AlchemySoundDelay)
         runClientScript(ToplevelSidebuttonSwitch, SpellbookSideTab)
         statAdvance("stat.magic", spell.castXp)
+        val context = SkillingActionContext.Alchemy(targetObj, alchemy.high, coins)
+        publish(SkillingActionCompleteEvent(player, context))
     }
 
     private fun ProtectedAccess.queueAlchemy(

@@ -4,6 +4,8 @@ import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.area.checker.isInWilderness
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseHitpointsLvl
 import org.rsmod.api.player.stat.hitpoints
@@ -287,6 +289,13 @@ constructor(
         applySecondaryEffect(
             food = food,
             outcome = outcome,
+        )
+
+        publish(
+            SkillingActionCompleteEvent(
+                player,
+                SkillingActionContext.Consumed(type, potion = false),
+            ),
         )
     }
 

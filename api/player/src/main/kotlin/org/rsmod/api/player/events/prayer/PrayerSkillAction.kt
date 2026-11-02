@@ -24,4 +24,11 @@ public sealed class PrayerSkillAction {
         public val experienceGranted: Double,
         public val catacombsBonePrayerRestore: Int,
     ) : PrayerSkillAction()
+
+    /** An item given at an altar, the Ectofuntus or a libation bowl, kept or not by zealot's robes. */
+    public data class Offered(
+        public val itemInternal: String,
+        public val count: Int,
+        public val experienceGranted: Double,
+    ) : PrayerSkillAction()
 }
