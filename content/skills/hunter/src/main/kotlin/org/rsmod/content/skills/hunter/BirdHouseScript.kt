@@ -33,7 +33,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class BirdHouseScript
 @Inject
-constructor(val objRepo: ObjRepository) : PluginScript() {
+constructor(private val objRepo: ObjRepository) : PluginScript() {
     private val clock: Clock = Clock.systemUTC()
 
     override fun ScriptContext.startup() {
