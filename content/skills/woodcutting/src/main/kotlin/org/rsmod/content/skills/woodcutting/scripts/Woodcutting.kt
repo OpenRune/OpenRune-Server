@@ -125,7 +125,7 @@ constructor(
             actionDelay = mapClock + 3
         } else if (actionDelay == mapClock) {
             val (low, high) = cutSuccessRates(type, axe)
-            cutLogs = statRandom("stat.woodcutting", low, high, invisibleLvls)
+            cutLogs = statRandom("stat.woodcutting", low, high, invisibleLvls, type.internalName)
         }
 
         if (type.hasDespawnTimer) {

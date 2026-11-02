@@ -150,7 +150,8 @@ constructor(
         faceEntitySquare(npc)
         mes("You attempt to pick $owner's pocket.", ChatType.Spam)
         delay(1)
-        if (!statRandom(THIEVING, target.lowChance, target.highChance, invisibleBoost = 0)) {
+        val subject = npc.visType.internalName
+        if (!statRandom(THIEVING, target.lowChance, target.highChance, invisibleBoost = 0, subject)) {
             failPickpocket(npc, target, owner)
             return
         }

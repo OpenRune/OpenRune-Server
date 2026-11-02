@@ -209,7 +209,8 @@ class WineEvents @Inject constructor() : PluginScript() {
         var successes = 0
         var failures = 0
 
-        fun rollSuccess(): Boolean = level >= noFailLevel || skillSuccess(50, 256, level)
+        fun rollSuccess(): Boolean =
+            level >= noFailLevel || skillSuccess("stat.cooking", 50, 256, level, unfermented)
 
         fun processContainer(container: Inventory) {
             val eligible = container.count(unfermented)

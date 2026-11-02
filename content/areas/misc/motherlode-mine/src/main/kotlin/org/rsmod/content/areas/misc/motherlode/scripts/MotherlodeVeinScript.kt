@@ -1,5 +1,6 @@
 package org.rsmod.content.areas.misc.motherlode.scripts
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
@@ -79,7 +80,8 @@ constructor(
             actionDelay = mapClock + delay
         } else if (actionDelay == mapClock) {
             actionDelay = mapClock + delay
-            if (statRandom("stat.mining", SUCCESS_LOW, SUCCESS_HIGH, invisibleLvls)) {
+            val subject = ServerCacheManager.getObject(vein.id)?.internalName
+            if (statRandom("stat.mining", SUCCESS_LOW, SUCCESS_HIGH, invisibleLvls, subject)) {
                 awardPayDirt(vein)
             }
         }

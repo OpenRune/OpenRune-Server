@@ -217,8 +217,17 @@ suspend fun ProtectedAccess.canCraft(product: CraftingProduct, verbose: Boolean)
 
 suspend fun ProtectedAccess.craftOnce(product: CraftingProduct): Boolean {
     val failure = product.failure
-    if (failure != null && !skillSuccess(failure.low, failure.high, player.craftingLvl)) {
-        return failCraft(product, failure)
+    val succeeded =
+        failure == null ||
+            player.skillSuccess(
+                CraftingConstants.STAT_CRAFTING,
+                failure.low,
+                failure.high,
+                player.craftingLvl,
+                product.output,
+            )
+    if (!succeeded) {
+        return failCraft(product, checkNotNull(failure))
     }
 
     val usesThread = product.consumesThread && !holdsCostumeNeedle()
