@@ -419,10 +419,6 @@ npc = "npc.corscurs_spa_owner"
 coords = "0_39_44_57_52"
 
 [[spawn]]
-npc = "npc.corscurs_thief"
-coords = "0_39_44_61_41"
-
-[[spawn]]
 npc = "npc.corscurs_thief_postquest"
 coords = "0_39_44_63_40"
 

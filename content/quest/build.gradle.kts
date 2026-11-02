@@ -14,8 +14,11 @@ dependencies {
     implementation(projects.api.pluginCommons)
     implementation(projects.api.attr)
     implementation(projects.api.bottomlessMilk)
+    implementation(projects.api.combat.combatFormulas)
     implementation(projects.content.generic.genericLocs)
+    implementation(projects.content.interfaces.bank)
     implementation(projects.api.death)
+    implementation(projects.api.instances)
     implementation(projects.api.serverConfig)
     implementation(libs.rsprot.api)
 }

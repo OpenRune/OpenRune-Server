@@ -17106,3 +17106,112 @@ wanderRange = 0
 id = "npc.poh_sawmill_opp"
 inherit = "npc.poh_sawmill_opp"
 wanderRange = 0
+
+[[npc]]
+id = "npc.corsair_captain_crossroads"
+inherit = "npc.corsair_captain_crossroads"
+defaultMode = "None"
+respawnDir = "South"
+
+[[npc]]
+id = "npc.corsair_ferry_rimmington"
+inherit = "npc.corsair_ferry_rimmington"
+defaultMode = "None"
+respawnDir = "South"
+
+[[npc]]
+id = "npc.corsair_ferry_covedocks"
+inherit = "npc.corsair_ferry_covedocks"
+defaultMode = "None"
+respawnDir = "East"
+
+[[npc]]
+id = "npc.corsair_captain_1op"
+inherit = "npc.corsair_captain_1op"
+defaultMode = "None"
+
+[[npc]]
+id = "npc.corsair_captain_2ops"
+inherit = "npc.corsair_captain_2ops"
+defaultMode = "None"
+
+[[npc]]
+id = "npc.corsair_captain_throne"
+inherit = "npc.corsair_captain_throne"
+defaultMode = "None"
+respawnDir = "North"
+
+[[npc]]
+id = "npc.corsair_captain_throne_child"
+inherit = "npc.corsair_captain_throne_child"
+defaultMode = "None"
+respawnDir = "North"
+
+[[npc]]
+id = "npc.corscurs_cabinboy"
+inherit = "npc.corscurs_cabinboy"
+defaultMode = "None"
+
+[[npc]]
+id = "npc.corscurs_cabinboy_sick"
+inherit = "npc.corscurs_cabinboy_sick"
+defaultMode = "None"
+respawnDir = "South"
+
+[[npc]]
+id = "npc.corscurs_cabinboy_2ops"
+inherit = "npc.corscurs_cabinboy_2ops"
+defaultMode = "None"
+respawnDir = "East"
+
+[[npc]]
+id = "npc.corscurs_cook"
+inherit = "npc.corscurs_cook"
+defaultMode = "None"
+
+[[npc]]
+id = "npc.corscurs_cook_sick"
+inherit = "npc.corscurs_cook_sick"
+defaultMode = "None"
+respawnDir = "South"
+
+[[npc]]
+id = "npc.corscurs_cook_postquest"
+inherit = "npc.corscurs_cook_postquest"
+defaultMode = "None"
+respawnDir = "South"
+
+[[npc]]
+id = "npc.corscurs_thief"
+inherit = "npc.corscurs_thief"
+defaultMode = "None"
+
+[[npc]]
+id = "npc.corscurs_thief_sick"
+inherit = "npc.corscurs_thief_sick"
+defaultMode = "None"
+respawnDir = "South"
+
+[[npc]]
+id = "npc.corscurs_thief_postquest"
+inherit = "npc.corscurs_thief_postquest"
+defaultMode = "None"
+respawnDir = "South"
+
+[[npc]]
+id = "npc.corscurs_banker_1op"
+inherit = "npc.corscurs_banker_1op"
+defaultMode = "None"
+respawnDir = "South"
+
+[[npc]]
+id = "npc.corscurs_banker_allops"
+inherit = "npc.corscurs_banker_allops"
+defaultMode = "None"
+respawnDir = "South"
+
+[[npc]]
+id = "npc.corscurs_banker_multi"
+inherit = "npc.corscurs_banker_multi"
+defaultMode = "None"
+respawnDir = "South"
