@@ -242,6 +242,10 @@ constructor(
         return tree.loot.first().first
     }
 
+    private fun stepOffNet(from: CoordGrid): CoordGrid? =
+        listOf(from.translate(-1, 0), from.translate(1, 0), from.translate(0, -1), from.translate(0, 1))
+            .firstOrNull { tile -> !collision.isWalkBlocked(tile) && traps.values.none { it.net == tile } }
+
     private fun Player.tick() {
         val own = traps.values.filter { it.owner == this }
         if (own.isEmpty()) {
@@ -254,6 +258,9 @@ constructor(
             when (trap.state) {
                 State.Setting -> {}
                 State.Set -> {
+                    if (age == STEP_OFF_TICKS && coords == trap.net && !isBusy && !isBusy2) {
+                        stepOffNet(trap.net)?.let { walk(it) }
+                    }
                     val lured = trap.lured
                     when {
                         lured != null -> if (now - trap.luredCycle >= ROLL_DELAY) resolve(trap, lured)
@@ -436,6 +443,7 @@ constructor(
     internal companion object {
         const val HUNTER = "stat.hunter"
         const val TIMER = "timer.hunter_net_traps"
+        const val STEP_OFF_TICKS = 1
         const val ROPE = "obj.rope"
         const val SMALL_NET = "obj.net"
         const val NET_TRAP = "obj.net_trap"
