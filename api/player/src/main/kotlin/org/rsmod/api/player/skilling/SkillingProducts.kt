@@ -3,6 +3,7 @@ package org.rsmod.api.player.skilling
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import org.rsmod.api.invtx.InvCost
+import org.rsmod.api.invtx.InvGain
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invConsume
 import org.rsmod.api.invtx.invConsumeAndAdd
@@ -83,11 +84,16 @@ public fun ProtectedAccess.consumeSkillingInputs(inputs: List<SkillingInput>): B
 
 /** Inputs, when there are any, are consumed in the same transaction that adds the product. */
 private fun Player.addProduct(product: SkillingProduct): TransactionResultList<InvObj> {
-    if (product.inputs.isEmpty()) {
+    if (product.inputs.isEmpty() && product.byproducts.isEmpty()) {
         return invAdd(inv, product.item, product.count)
     }
-    val costs = product.inputs.toCosts()
-    return invConsumeAndAdd(inv, costs, product.item.asRSCM(RSCMType.OBJ), product.count)
+    return invConsumeAndAdd(
+        inv,
+        product.inputs.toCosts(),
+        product.item.asRSCM(RSCMType.OBJ),
+        product.count,
+        product.byproducts.map { InvGain(it.item.asRSCM(RSCMType.OBJ), it.count) },
+    )
 }
 
 private fun List<SkillingInput>.toCosts(): List<InvCost> =
