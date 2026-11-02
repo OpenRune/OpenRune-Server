@@ -146,7 +146,7 @@ constructor(
                     return
                 }
                 GemPreRoll.KeepOre -> {
-                    minedOre = rollOreSuccess(data)
+                    minedOre = rollOreSuccess(data, type.internalName)
                 }
             }
         }
@@ -253,11 +253,11 @@ constructor(
         }
     }
 
-    private fun ProtectedAccess.rollOreSuccess(data: MiningRocksRow): Boolean {
+    private fun ProtectedAccess.rollOreSuccess(data: MiningRocksRow, subject: String): Boolean {
         val gloryBoost = data.isGemRock && player.wearingChargedGlory()
         val low = if (gloryBoost) data.successRateLow * 3 else data.successRateLow
         val high = if (gloryBoost) data.successRateHigh * 3 else data.successRateHigh
-        return statRandom("stat.mining", low, high, invisibleLvls)
+        return statRandom("stat.mining", low, high, invisibleLvls, subject)
     }
 
     private fun ProtectedAccess.depleteRock(rock: BoundLocInfo, data: MiningRocksRow) {

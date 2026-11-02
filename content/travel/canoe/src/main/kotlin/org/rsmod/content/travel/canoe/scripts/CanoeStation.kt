@@ -1,5 +1,6 @@
 package org.rsmod.content.travel.canoe.scripts
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
@@ -127,7 +128,8 @@ constructor(private val invisibleLvls: InvisibleLevels, private val worldRepo: W
             faceSquare(path.face)
         } else if (actionDelay == mapClock) {
             val (low, high) = axeSuccessRates(axe, canoe_station_axe_rates)
-            cutCanoe = statRandom("stat.woodcutting", low, high, invisibleLvls)
+            val subject = ServerCacheManager.getObject(loc.id)?.internalName
+            cutCanoe = statRandom("stat.woodcutting", low, high, invisibleLvls, subject)
         }
 
         if (!cutCanoe) {

@@ -142,7 +142,13 @@ public class BurnLogEvents @Inject constructor(
         }
 
         val success = coloredLogs.contains(task.log.input.internalName) ||
-            skillSuccess(64, 512, player.firemakingLvl)
+            player.skillSuccess(
+                "stat.firemaking",
+                64,
+                512,
+                player.firemakingLvl,
+                task.log.input.internalName,
+            )
 
         if (!success) {
             weakQueue("queue.firemaking_light", 4, task)

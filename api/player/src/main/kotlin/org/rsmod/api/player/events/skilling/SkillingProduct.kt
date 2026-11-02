@@ -3,6 +3,7 @@ package org.rsmod.api.player.events.skilling
 
 
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.Inventory
 
 
 
@@ -31,6 +32,9 @@ public class SkillingProduct(
     public var inputs: List<SkillingInput> = emptyList(),
 
     public var byproducts: List<SkillingByproduct> = emptyList(),
+
+    /** Where the item and byproducts go instead of the inventory, such as the bank. */
+    public var destination: Inventory? = null,
 
 )
 

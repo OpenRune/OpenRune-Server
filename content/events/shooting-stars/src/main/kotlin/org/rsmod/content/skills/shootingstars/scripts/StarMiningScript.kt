@@ -1,5 +1,6 @@
 package org.rsmod.content.skills.shootingstars.scripts
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
@@ -117,7 +118,8 @@ constructor(
             actionDelay = mapClock + delay
         } else if (actionDelay == mapClock) {
             actionDelay = mapClock + delay
-            success = statRandom("stat.mining", SUCCESS_LOW, SUCCESS_HIGH, invisibleLvls)
+            val subject = ServerCacheManager.getObject(rock.id)?.internalName
+            success = statRandom("stat.mining", SUCCESS_LOW, SUCCESS_HIGH, invisibleLvls, subject)
         }
 
         if (success) {

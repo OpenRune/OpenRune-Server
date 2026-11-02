@@ -8,6 +8,7 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.resolveSkillRoll
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocCategory2
 import org.rsmod.api.script.onOpLocCategoryU
@@ -226,7 +227,7 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
         val isIronBar = bar.output.internalName == "obj.iron_bar"
         val hasRingOfForging = "obj.ring_of_forging" in player.worn
         val success = if (isIronBar && !hasRingOfForging && !isSuperHeat) {
-            Random.nextBoolean()
+            player.resolveSkillRoll("stat.smithing", 0.5, Random.nextBoolean(), bar.output.internalName)
         } else {
             true
         }

@@ -107,7 +107,13 @@ class CookingEvents @Inject constructor(
 
         if (player.cookingLvl >= stopBurn) return false
         val (low, high) = food.low to food.high
-        return !skillSuccess(low, high, player.cookingLvl)
+        return !player.skillSuccess(
+            "stat.cooking",
+            low,
+            high,
+            player.cookingLvl,
+            food.input.internalName,
+        )
     }
 
     private fun ProtectedAccess.hasCookingCape(): Boolean {
