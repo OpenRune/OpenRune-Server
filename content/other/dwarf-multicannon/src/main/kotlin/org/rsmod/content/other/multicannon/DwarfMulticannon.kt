@@ -463,7 +463,7 @@ constructor(
             cannon.destroyer = by
         }
         removeLoc(cannon)
-        cannon.firing = false
+        stopFiring(this, cannon)
         cannon.destroyed = true
         cannon.destroyedAt = gameClock.cycle
         mes(DESTROYED_MESSAGE)
@@ -617,7 +617,6 @@ constructor(
         }
         if (cannon.destroyed) {
             decay(cannon)
-            cannonFiring = 0
             return
         }
         stopFiring(this, cannon)
