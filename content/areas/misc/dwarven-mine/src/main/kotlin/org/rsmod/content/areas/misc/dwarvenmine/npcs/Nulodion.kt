@@ -260,6 +260,7 @@ private fun ProtectedAccess.replaceLostCannon(parts: List<String>): Boolean {
             .success
     if (given) {
         player.cannonStage = 0
+        player.cannonAmmo = 0
         player.cannonDecayed = false
         player.cannonOrnament = false
     }
@@ -267,6 +268,7 @@ private fun ProtectedAccess.replaceLostCannon(parts: List<String>): Boolean {
 }
 
 private var Player.cannonStage: Int by intVarp("varp.dropcannon")
+private var Player.cannonAmmo: Int by intVarp("varp.rockthrower")
 private var Player.cannonDecayed: Boolean by boolVarBit("varbit.mcannon_decayed")
 private var Player.cannonOrnament: Boolean by boolVarp("varp.mcannon_ornament")
 

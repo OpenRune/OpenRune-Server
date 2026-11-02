@@ -76,6 +76,7 @@ class NulodionLostCannonTest {
             f.lostCannon()
             assertEquals(before, f.totals(), "stage $stage")
             assertEquals(stage, f.player.vars["varp.dropcannon"], "stage $stage")
+            assertEquals(AMMO, f.player.vars["varp.rockthrower"], "stage $stage")
             assertTrue(f.output().contains("if you free up some inventory space"), "stage $stage: ${f.output()}")
         }
     }
@@ -178,6 +179,7 @@ class NulodionLostCannonTest {
             VarPlayerIntMapSetter.set(player, "varp.dropcannon", stage)
             VarPlayerIntMapSetter.set(player, "varbit.mcannon_decayed", if (decayed) 1 else 0)
             VarPlayerIntMapSetter.set(player, "varp.mcannon_ornament", if (ornament) 1 else 0)
+            VarPlayerIntMapSetter.set(player, "varp.rockthrower", AMMO)
         }
 
         fun lostCannon() {
@@ -189,6 +191,7 @@ class NulodionLostCannonTest {
             assertEquals(0, player.vars["varp.dropcannon"], case)
             assertEquals(0, player.vars["varbit.mcannon_decayed"], case)
             assertEquals(0, player.vars["varp.mcannon_ornament"], case)
+            assertEquals(0, player.vars["varp.rockthrower"], case)
         }
 
         fun totals(): Map<String, Int> {
@@ -287,6 +290,7 @@ class NulodionLostCannonTest {
 
     companion object {
         private const val COINS = 100
+        private const val AMMO = 25
         private const val LOST_CANNON_OPTION = 2
         private const val STAGE_ZERO_LINE = "only allowed to replace cannons that were stolen in action"
         private val PLAIN = listOf("obj.twpart1", "obj.twpart2", "obj.twpart3", "obj.twpart4")
