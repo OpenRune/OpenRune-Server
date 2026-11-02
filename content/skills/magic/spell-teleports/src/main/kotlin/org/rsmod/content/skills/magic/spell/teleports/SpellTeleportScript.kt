@@ -14,6 +14,8 @@ import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.hook.PlayerTeleportValidator
 import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.output.ChatType
@@ -205,7 +207,16 @@ constructor(
             }
 
         if (castSpell.objReqs.isEmpty()) {
-            return runes.canCastSpell(player, castSpell)
+            val allowed = runes.canCastSpell(player, castSpell)
+            if (allowed) {
+                publish(
+                    SkillingActionCompleteEvent(
+                        player,
+                        SkillingActionContext.SpellCast(castSpell.obj),
+                    ),
+                )
+            }
+            return allowed
         }
         return !runes.attemptCast(player, castSpell).isFailure()
     }

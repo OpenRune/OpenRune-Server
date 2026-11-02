@@ -5,6 +5,8 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.firemakingLvl
@@ -172,6 +174,13 @@ public class BurnLogEvents @Inject constructor(
         val xpModifier = xpMods.get(player, "stat.firemaking")
         val xp = task.log.xp * task.method.xpMultiplier(task.log.input.internalName) * xpModifier
         statAdvance("stat.firemaking", xp)
+        val context =
+            SkillingActionContext.Firemaking(
+                log = task.log.input.internalName,
+                experienceGranted = xp,
+                usedBow = task.method == BurnMethod.Bow,
+            )
+        publish(SkillingActionCompleteEvent(player, context))
         mes("The fire catches and the logs begin to burn.")
 
         moveAwayFromFire(fireCoords)

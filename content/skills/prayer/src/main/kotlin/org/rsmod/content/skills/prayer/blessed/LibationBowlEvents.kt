@@ -1,5 +1,8 @@
 package org.rsmod.content.skills.prayer.blessed
 
+import org.rsmod.api.player.events.prayer.PrayerSkillAction
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.basePrayerLvl
 import org.rsmod.api.player.stat.prayerLvl
@@ -99,7 +102,10 @@ class LibationBowlEvents : PluginScript() {
         }
         libationWineCharges = (wineCharges - count).coerceAtLeast(0)
         statSub("stat.prayer", constant = 2, percent = 0)
-        statAdvance("stat.prayer", count * wineXpPerShard)
+        val xp = count * wineXpPerShard
+        statAdvance("stat.prayer", xp)
+        val offered = PrayerSkillAction.Offered("obj.blessed_bone_shard", count, xp)
+        publish(SkillingActionCompleteEvent(player, SkillingActionContext.Prayer(offered)))
 
         if (libationWineCharges <= 0) {
             if (!tryAutoRefillLibationBowl()) {

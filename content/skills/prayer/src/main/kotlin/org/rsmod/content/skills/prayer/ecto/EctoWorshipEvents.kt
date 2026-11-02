@@ -1,5 +1,8 @@
 package org.rsmod.content.skills.prayer.ecto
 
+import org.rsmod.api.player.events.prayer.PrayerSkillAction
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.content.skills.prayer.items.ZealotRobes.shouldConsume
@@ -42,6 +45,8 @@ class EctoWorshipEvents : PluginScript() {
         }
 
         statAdvance("stat.prayer", recipe.xp)
+        val offered = PrayerSkillAction.Offered(recipe.bonemeal, 1, recipe.xp)
+        publish(SkillingActionCompleteEvent(player, SkillingActionContext.Prayer(offered)))
         ectoTokens += 5
     }
 }
