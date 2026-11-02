@@ -20,7 +20,7 @@ import org.rsmod.objtx.TransactionResultList
  * - [Success]: the product was added and its inputs, if any, were consumed.
  * - [InventoryFull]: no room for the product. Nothing was consumed.
  * - [Cancelled]: a subscriber cancelled the product, or its inputs were no longer in the
- *   inventory. Nothing was consumed.
+ *   inventory or virtual storage. Nothing was consumed.
  */
 public enum class SkillingAwardResult {
     Success,
@@ -80,7 +80,7 @@ private fun Player.addProduct(product: SkillingProduct): TransactionResultList<I
     if (product.inputs.isEmpty()) {
         return invAdd(inv, product.item, product.count)
     }
-    val costs = product.inputs.map { InvCost(it.item.asRSCM(RSCMType.OBJ), it.count) }
+    val costs = product.inputs.map { InvCost(it.item.asRSCM(RSCMType.OBJ), it.count, it.item) }
     return invConsumeAndAdd(inv, costs, product.item.asRSCM(RSCMType.OBJ), product.count)
 }
 
