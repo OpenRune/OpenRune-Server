@@ -5,6 +5,10 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.MoveRestrict
 import jakarta.inject.Inject
+import org.rsmod.api.player.cinematic.SceneCamera
+import org.rsmod.api.player.cinematic.SceneFadeDuration
+import org.rsmod.api.player.cinematic.SceneFadeTicks
+import org.rsmod.api.player.cinematic.lockedScene
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.music.MusicPlayer
 import org.rsmod.api.player.output.locAddChangePrivate
@@ -13,10 +17,6 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.table.MusicRow
-import org.rsmod.content.quest.area.misthalin.SceneCamera
-import org.rsmod.content.quest.area.misthalin.SceneFadeDuration
-import org.rsmod.content.quest.area.misthalin.SceneFadeTicks
-import org.rsmod.content.quest.area.misthalin.lockedScene
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.map.CoordGrid

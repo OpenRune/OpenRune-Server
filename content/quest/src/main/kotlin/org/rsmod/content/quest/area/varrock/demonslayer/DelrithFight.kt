@@ -8,6 +8,7 @@ import org.rsmod.api.death.NpcAttackValidateHook
 import org.rsmod.api.death.NpcAttackValidateResult
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
+import org.rsmod.api.player.cinematic.SceneRegion
 import org.rsmod.api.player.output.CamShakeAxis
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
@@ -23,7 +24,6 @@ import org.rsmod.api.script.onNpcHit
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onPlayerCoordsChanged
 import org.rsmod.api.script.onPlayerLogin
-import org.rsmod.content.quest.area.misthalin.SceneRegion
 import org.rsmod.content.quest.area.varrock.demonslayer.DemonSlayerQuest.Companion.SILVERLIGHT
 import org.rsmod.content.quest.area.varrock.demonslayer.DemonSlayerQuest.Companion.WORDS
 import org.rsmod.content.quest.manager.menu
