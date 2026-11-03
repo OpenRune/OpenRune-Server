@@ -799,7 +799,7 @@ constructor(
         when (target) {
             is Npc -> queueMeleeHit(source, target, damage, delay)
             is Player -> queueMeleeHit(source, target, damage, delay)
-        }.also { source.attackRecord?.addHit(it) }
+        }.also { source.attackRecord?.addHit(target, it, delay) }
 
     private fun queueMeleeHit(source: Player, target: Npc, damage: Int, delay: Int): Hit {
         // Note: Retaliation must be queued _before_ the hit. If queued after, every hit would
@@ -1109,7 +1109,7 @@ constructor(
         when (target) {
             is Npc -> queueRangedHit(source, target, ammo, damage, clientDelay, hitDelay)
             is Player -> queueRangedHit(source, target, ammo, damage, clientDelay, hitDelay)
-        }.also { source.attackRecord?.addHit(it) }
+        }.also { source.attackRecord?.addHit(target, it, hitDelay) }
 
     private fun queueRangedHit(
         source: Player,
@@ -1195,7 +1195,7 @@ constructor(
         when (target) {
             is Npc -> queueRangedDamage(source, target, ammo, damage, hitDelay)
             is Player -> queueRangedDamage(source, target, ammo, damage, hitDelay)
-        }.also { source.attackRecord?.addHit(it) }
+        }.also { source.attackRecord?.addHit(target, it, hitDelay) }
 
     private fun queueRangedDamage(
         source: Player,
@@ -1628,7 +1628,7 @@ constructor(
                     hitDelay = hitDelay,
                     retaliationDelay = retaliationDelay,
                 )
-        }.also { source.attackRecord?.addHit(it) }
+        }.also { source.attackRecord?.addHit(target, it, hitDelay) }
 
     private fun queueMagicHit(
         source: Player,
@@ -2190,14 +2190,20 @@ constructor(
         target: Npc,
         spotanim: SpotanimType,
         projanim: String,
-    ): ProjAnim = worldRepo.projAnim(source, target, spotanim, projanim)
+    ): ProjAnim {
+        source.attackRecord?.addProjectile(spotanim.id, projanim)
+        return worldRepo.projAnim(source, target, spotanim, projanim)
+    }
 
     public fun spawnProjectile(
         source: Player,
         target: Player,
         spotanim: SpotanimType,
         projanim: String,
-    ): ProjAnim = worldRepo.projAnim(source, target, spotanim, projanim)
+    ): ProjAnim {
+        source.attackRecord?.addProjectile(spotanim.id, projanim)
+        return worldRepo.projAnim(source, target, spotanim, projanim)
+    }
 
     public fun soundArea(
         source: CoordGrid,
