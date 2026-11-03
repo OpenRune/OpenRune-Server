@@ -13414,6 +13414,7 @@ inherit = "obj.aide_shortbow"
 weaponCategory="Bow"
 tradeable = false
 [item.params]
+"param.required_ammo"="category.arrows_training"
 "param.proj_type"="projanim.arrow"
 "param.equipment_sound"=2244
 "param.attack_range"=7
@@ -28636,6 +28637,8 @@ id = "obj.aide_arrow"
 inherit = "obj.aide_arrow"
 tradeable = false
 [item.params]
+"param.proj_travel"="spotanim.aide_arrow_travel"
+"param.proj_launch"="spotanim.aide_arrow_launch"
 "param.equipment_sound"=2244
 "param.destroy_note_desc"="You can get more Training arrows by talking to the Ranged Combat skill tutor north of Lumbridge Castle."
 
