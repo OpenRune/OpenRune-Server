@@ -45,6 +45,13 @@ internal constructor(
         }
     }
 
+    public fun addMissDamage(target: PathingEntity, damage: Int) {
+        val miss = rolls.indexOfLast { it.target === target && !it.success }
+        if (damage > 0 && miss != -1) {
+            rolls[miss] = rolls[miss].copy(damage = damage)
+        }
+    }
+
     public fun addResource(kind: ResourceKind, item: ItemServerType?, count: Int, saved: Boolean) {
         resources += ResourceSpend(kind, item, count, saved)
     }

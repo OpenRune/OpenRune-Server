@@ -13,6 +13,26 @@ import org.rsmod.game.hit.HitType
 /** Events about a player's outgoing attacks. [PlayerEvent.player] is always the attacker. */
 public class PlayerAttackEvents {
     /**
+     * Published before each damage roll, and for each miss with [missed] true. The engine rolls
+     * [minHit]..[maxHit] unless [damage] is set, so a handler that needs the outcome can roll for
+     * itself. A miss stays 0 unless [damage] is set.
+     *
+     * This fires for any roll through `PlayerAttackManager`, including extra attacks a handler makes,
+     * so a handler that attacks from here must guard against triggering itself. A magic miss still
+     * plays splash visuals and grants no xp, whatever [damage] is set to. The dark bow special rolls
+     * for itself and does not publish this.
+     */
+    public class DamageRoll(
+        override val player: Player,
+        public val target: PathingEntity,
+        public val type: HitType,
+        public var minHit: Int,
+        public var maxHit: Int,
+        public val missed: Boolean,
+        public var damage: Int? = null,
+    ) : UnboundEvent, PlayerEvent
+
+    /**
      * One attack finished, after its handler returned. Hits have been queued but not landed, so
      * [hits] may still be capped by the target's hitpoints: use [HitImpact] for what was dealt.
      *
@@ -62,7 +82,10 @@ public enum class ResourceKind {
     SpecialEnergy,
 }
 
-/** [damage] is 0 when [success] is false. [maxHit] is 0 if accuracy passed but nothing rolled. */
+/**
+ * [damage] on a failed roll is 0 unless a [PlayerAttackEvents.DamageRoll] handler set it. [maxHit] is
+ * 0 if accuracy passed but nothing rolled.
+ */
 public data class AttackRoll(
     public val target: PathingEntity,
     public val type: HitType,
