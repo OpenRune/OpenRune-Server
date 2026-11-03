@@ -36,7 +36,11 @@ internal constructor(
 
     private var saveChance = 0
     private var specialSaveChance = 0
+    private var cyclesChange = 0
     private var prepared = false
+
+    public fun adjustedCycles(baseCycles: Int): Int =
+        if (cyclesChange == 0) baseCycles else (baseCycles + cyclesChange).coerceAtLeast(1)
 
     public fun rollSave(random: GameRandom): Boolean =
         saveChance > 0 && random.of(maxExclusive = PERCENT) < saveChance
@@ -52,7 +56,7 @@ internal constructor(
         get() = !special && rolls.isEmpty() && resources.isEmpty() && hits.isEmpty()
 
     /** Some weapons set the delay a second time, so this only publishes the first time. */
-    internal fun prepare(player: Player, events: EventBus) {
+    internal fun prepare(player: Player, events: EventBus, baseCycles: Int) {
         if (prepared) {
             return
         }
@@ -61,8 +65,17 @@ internal constructor(
             return
         }
         val event =
-            PlayerAttackEvents.AttackPrepare(player, target, kind, weapon, spell, specialRequested)
+            PlayerAttackEvents.AttackPrepare(
+                player = player,
+                target = target,
+                kind = kind,
+                weapon = weapon,
+                spell = spell,
+                special = specialRequested,
+                cycles = baseCycles,
+            )
         events.publish(event)
+        cyclesChange = event.cycles - baseCycles
         accuracyMultiplier = event.accuracyMultiplier
         accuracyRolls = event.accuracyRolls.coerceAtLeast(1)
         neverMiss = event.neverMiss
@@ -127,8 +140,13 @@ public fun EventBus.beginAttackRecord(
     }
 }
 
-public fun EventBus.prepareAttackRecord(player: Player) {
-    player.attackRecord?.prepare(player, this)
+/** @return the delay to use, which is [baseCycles] unless an attack is being recorded. */
+public fun EventBus.prepareAttackRecord(player: Player, baseCycles: Int): Int {
+    val record = player.attackRecord ?: return baseCycles
+    record.prepare(player, this, baseCycles)
+    val cycles = record.adjustedCycles(baseCycles)
+    record.cycles = cycles
+    return cycles
 }
 
 /** Clears the record first, so anything a handler does is not part of this attack. */
