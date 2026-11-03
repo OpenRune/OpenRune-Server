@@ -21,6 +21,11 @@ public class PlayerAttackEvents {
      * [AttackResult.special] is the confirmed value. [accuracyMultiplier] applies on top of any the
      * attack has, [accuracyRolls] succeeds if any roll does, and [neverMiss] skips the roll. Extra
      * attacks a handler makes later are not part of this attack and do not get these settings.
+     *
+     * [saveChance] is a percentage rolled separately for each ammo use, each charge use and each
+     * rune type in a spell, and [specialSaveChance] for special energy. A saved resource is not
+     * spent, and [AttackResult.resources] reports it, which is where follow-up effects belong.
+     * Instant specials do not publish this, so they never save energy.
      */
     public class AttackPrepare(
         override val player: Player,
@@ -32,6 +37,8 @@ public class PlayerAttackEvents {
         public var accuracyMultiplier: Double = 1.0,
         public var accuracyRolls: Int = 1,
         public var neverMiss: Boolean = false,
+        public var saveChance: Int = 0,
+        public var specialSaveChance: Int = 0,
     ) : UnboundEvent, PlayerEvent
 
     /**

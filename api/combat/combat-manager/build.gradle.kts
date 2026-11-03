@@ -33,4 +33,5 @@ dependencies {
 
     testImplementation(libs.mockk)
     testImplementation(projects.engine.annotations)
+    testImplementation(projects.api.invStorage)
 }
