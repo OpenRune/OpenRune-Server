@@ -1,7 +1,7 @@
 package org.rsmod.content.quest.area.corsaircove
 
+import org.rsmod.api.player.cinematic.SceneCamera
 import org.rsmod.api.repo.region.RegionTemplate
-import org.rsmod.content.quest.area.misthalin.SceneCamera
 import org.rsmod.map.CoordGrid
 
 internal object CorsairCurseRegions {

@@ -6,6 +6,12 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfSubType
 import org.rsmod.api.config.constants
 import org.rsmod.api.instances.InstanceAttributes
+import org.rsmod.api.player.cinematic.SceneCamera
+import org.rsmod.api.player.cinematic.SceneFadeDuration
+import org.rsmod.api.player.cinematic.SceneFadeTicks
+import org.rsmod.api.player.cinematic.SceneRegion
+import org.rsmod.api.player.cinematic.SceneSnapRate
+import org.rsmod.api.player.cinematic.lockedScene
 import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.ClientScripts
@@ -17,12 +23,6 @@ import org.rsmod.api.repo.region.RegionTemplate
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onAiTimer
 import org.rsmod.api.script.onPlayerLogin
-import org.rsmod.content.quest.area.misthalin.SceneCamera
-import org.rsmod.content.quest.area.misthalin.SceneFadeDuration
-import org.rsmod.content.quest.area.misthalin.SceneFadeTicks
-import org.rsmod.content.quest.area.misthalin.SceneRegion
-import org.rsmod.content.quest.area.misthalin.SceneSnapRate
-import org.rsmod.content.quest.area.misthalin.lockedScene
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.proj.ProjAnim
