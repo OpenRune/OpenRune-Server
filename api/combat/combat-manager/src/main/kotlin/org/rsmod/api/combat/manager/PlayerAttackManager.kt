@@ -35,6 +35,7 @@ import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.player.cheat.adminMaxHit
 import org.rsmod.api.player.events.AttackKind
+import org.rsmod.api.player.events.PlayerAttackEvents
 import org.rsmod.api.player.events.attackRecord
 import org.rsmod.api.player.events.beginAttackRecord
 import org.rsmod.api.player.events.finishAttackRecord
@@ -91,6 +92,57 @@ constructor(
 
     public fun finishAttack(source: Player) {
         eventBus.finishAttackRecord(source)
+    }
+
+    private fun rollDamage(
+        source: Player,
+        target: PathingEntity,
+        type: HitType,
+        range: IntRange,
+    ): Int {
+        if (source.adminMaxHit || forcesMaxHit(target, type)) {
+            source.attackRecord?.addDamage(target, type, range.last, range.last)
+            return range.last
+        }
+        if (eventBus.unbound[PlayerAttackEvents.DamageRoll::class.java] == null) {
+            val damage = random.of(range)
+            source.attackRecord?.addDamage(target, type, range.last, damage)
+            return damage
+        }
+        val event =
+            PlayerAttackEvents.DamageRoll(
+                player = source,
+                target = target,
+                type = type,
+                minHit = range.first,
+                maxHit = range.last,
+                missed = false,
+            )
+        eventBus.publish(event)
+        val maxHit = event.maxHit.coerceAtLeast(0)
+        val minHit = event.minHit.coerceIn(0, maxHit)
+        val damage = (event.damage ?: random.of(minHit..maxHit)).coerceAtLeast(0)
+        source.attackRecord?.addDamage(target, type, maxHit, damage)
+        return damage
+    }
+
+    private fun rollMissDamage(source: Player, target: PathingEntity, type: HitType): Int {
+        if (eventBus.unbound[PlayerAttackEvents.DamageRoll::class.java] == null) {
+            return 0
+        }
+        val event =
+            PlayerAttackEvents.DamageRoll(
+                player = source,
+                target = target,
+                type = type,
+                minHit = 0,
+                maxHit = 0,
+                missed = true,
+            )
+        eventBus.publish(event)
+        val damage = (event.damage ?: 0).coerceAtLeast(0)
+        source.attackRecord?.addMissDamage(target, damage)
+        return damage
     }
 
     /**
@@ -533,7 +585,7 @@ constructor(
                 blockType = blockType,
             )
         if (!successfulAccuracyRoll) {
-            return 0
+            return rollMissDamage(source, target, HitType.Melee)
         }
         return rollMeleeMaxHit(
             source,
@@ -571,7 +623,7 @@ constructor(
         blockType: MeleeAttackType?,
         multiplier: Double,
     ): Boolean {
-        if (source.adminMaxHit || forcesMaxHit(target, FORCED_MELEE)) {
+        if (source.adminMaxHit || forcesMaxHit(target, HitType.Melee)) {
             return true
         }
         return when (target) {
@@ -644,14 +696,7 @@ constructor(
     ): Int {
         val maxHit =
             calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier, roundUp)
-        val damage =
-            if (source.adminMaxHit || forcesMaxHit(target, FORCED_MELEE)) {
-                maxHit
-            } else {
-                random.of(1..maxHit)
-            }
-        source.attackRecord?.addDamage(target, HitType.Melee, maxHit, damage)
-        return damage
+        return rollDamage(source, target, HitType.Melee, 1..maxHit)
     }
 
     /**
@@ -804,7 +849,7 @@ constructor(
                 blockType = blockType,
             )
         if (!successfulAccuracyRoll) {
-            return 0
+            return rollMissDamage(source, target, HitType.Ranged)
         }
         return rollRangedMaxHit(
             source = source,
@@ -840,7 +885,7 @@ constructor(
         blockType: RangedAttackType?,
         multiplier: Double,
     ): Boolean {
-        if (source.adminMaxHit || forcesMaxHit(target, FORCED_RANGED)) {
+        if (source.adminMaxHit || forcesMaxHit(target, HitType.Ranged)) {
             return true
         }
         return when (target) {
@@ -918,14 +963,7 @@ constructor(
                 multiplier = multiplier,
                 boltSpecDamage = boltSpecDamage,
             )
-        val damage =
-            if (source.adminMaxHit || forcesMaxHit(target, FORCED_RANGED)) {
-                maxHit
-            } else {
-                random.of(1..maxHit)
-            }
-        source.attackRecord?.addDamage(target, HitType.Ranged, maxHit, damage)
-        return damage
+        return rollDamage(source, target, HitType.Ranged, 1..maxHit)
     }
 
     /**
@@ -1196,7 +1234,7 @@ constructor(
         spellbook: Spellbook?,
         sunfireRune: Boolean,
     ): Boolean {
-        if (source.adminMaxHit || forcesMaxHit(target, FORCED_MAGIC)) {
+        if (source.adminMaxHit || forcesMaxHit(target, HitType.Magic)) {
             return true
         }
         return when (target) {
@@ -1275,14 +1313,7 @@ constructor(
                 attackRate = attackRate,
                 sunfireRune = sunfireRune,
             )
-        val damage =
-            if (source.adminMaxHit || forcesMaxHit(target, FORCED_MAGIC)) {
-                hitRange.last
-            } else {
-                random.of(hitRange)
-            }
-        source.attackRecord?.addDamage(target, HitType.Magic, hitRange.last, damage)
-        return damage
+        return rollDamage(source, target, HitType.Magic, hitRange)
     }
 
     /**
@@ -1391,7 +1422,7 @@ constructor(
         attackStyle: MagicAttackStyle?,
         multiplier: Double,
     ): Boolean {
-        if (source.adminMaxHit || forcesMaxHit(target, FORCED_MAGIC)) {
+        if (source.adminMaxHit || forcesMaxHit(target, HitType.Magic)) {
             return true
         }
         return when (target) {
@@ -1448,14 +1479,7 @@ constructor(
         multiplier: Double,
     ): Int {
         val maxHit = calculateStaffMaxHit(source, target, baseMaxHit, multiplier)
-        val damage =
-            if (source.adminMaxHit || forcesMaxHit(target, FORCED_MAGIC)) {
-                maxHit
-            } else {
-                random.of(1..maxHit)
-            }
-        source.attackRecord?.addDamage(target, HitType.Magic, maxHit, damage)
-        return damage
+        return rollDamage(source, target, HitType.Magic, 1..maxHit)
     }
 
     /**
@@ -1652,7 +1676,7 @@ constructor(
             source = source,
             target = target,
             spell = spell,
-            damage = 0,
+            damage = rollMissDamage(source, target, HitType.Magic),
             clientDelay = clientDelay,
             hitDelay = hitDelay,
             retaliationDelay = 1,
@@ -2153,8 +2177,16 @@ constructor(
             size = size,
         )
 
-    private fun forcesMaxHit(target: PathingEntity, styleBit: Int): Boolean =
-        target is Npc && target.vars["varn.forced_max_hit_styles"] and styleBit != 0
+    private fun forcesMaxHit(target: PathingEntity, type: HitType): Boolean {
+        val styleBit =
+            when (type) {
+                HitType.Melee -> FORCED_MELEE
+                HitType.Ranged -> FORCED_RANGED
+                HitType.Magic -> FORCED_MAGIC
+                else -> return false
+            }
+        return target is Npc && target.vars["varn.forced_max_hit_styles"] and styleBit != 0
+    }
 
     private companion object {
         const val FORCED_MELEE = 1
