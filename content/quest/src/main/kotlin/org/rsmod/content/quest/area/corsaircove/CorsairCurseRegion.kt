@@ -1,6 +1,7 @@
 package org.rsmod.content.quest.area.corsaircove
 
 import org.rsmod.api.player.cinematic.SceneCamera
+import org.rsmod.api.player.cinematic.SceneSnapRate
 import org.rsmod.api.repo.region.RegionTemplate
 import org.rsmod.map.CoordGrid
 
@@ -27,15 +28,15 @@ internal object CorsairCurseRegions {
 
     const val HutZoneX: Int = 314
     const val HutZoneZ: Int = 351
-    const val HutZoneWidth: Int = 4
-    const val HutZoneLength: Int = 5
+    const val HutZoneWidth: Int = 14
+    const val HutZoneLength: Int = 16
 
-    const val ShoreZoneX: Int = 312
+    const val ShoreZoneX: Int = 311
     const val ShoreZoneZ: Int = 353
-    const val ShoreZoneWidth: Int = 3
-    const val ShoreZoneLength: Int = 3
+    const val ShoreZoneWidth: Int = 13
+    const val ShoreZoneLength: Int = 13
 
-    private const val BlockOffsetZones = 6
+    private const val BlockOffsetZones = 0
 }
 
 internal fun assertCorsairCurseSceneCoords() {
@@ -210,15 +211,15 @@ internal object DriftwoodScene {
 
 // Scene bounds must contain whole NPC footprints, including the five-tile ogre.
 internal object TelescopeScene {
-    val Vantage: CoordGrid = CoordGrid(2528, 2845, 0)
+    val Vantage: CoordGrid = CoordGrid(2528, 2816, 0)
 
-    val Ogre: CoordGrid = CoordGrid(2526, 2839, 0)
+    val Ogre: CoordGrid = CoordGrid(2550, 2849, 0)
 
     val Opening: SceneFrame =
-        SceneFrame(CoordGrid(2528, 2811, 0), 400, CoordGrid(2528, 2836, 0), 300)
+        SceneFrame(CoordGrid(2528, 2821, 0), 400, CoordGrid(2528, 2822, 0), 300)
 
     val PushIn: SceneFrame =
-        SceneFrame(CoordGrid(2528, 2816, 0), 400, CoordGrid(2528, 2836, 0), 300)
+        SceneFrame(CoordGrid(2528, 2818, 0), 400, CoordGrid(2528, 2822, 0), 300)
 
     fun coords(): List<Pair<String, CoordGrid>> =
         listOf("telescope.vantage" to Vantage, "telescope.ogre" to Ogre) +
@@ -247,5 +248,8 @@ internal data class SceneFrame(
     fun coords(name: String): List<Pair<String, CoordGrid>> =
         listOf("$name.eye" to eye, "$name.lookAt" to lookAt)
 
-    fun toCamera(): SceneCamera = SceneCamera(eye, eyeHeight, lookAt, lookAtHeight)
+    fun toCamera(
+        rate: Int = SceneSnapRate,
+        rate2: Int = SceneSnapRate,
+    ): SceneCamera = SceneCamera(eye, eyeHeight, lookAt, lookAtHeight, rate, rate2)
 }
