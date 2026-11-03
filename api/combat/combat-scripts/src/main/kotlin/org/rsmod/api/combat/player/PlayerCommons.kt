@@ -1,6 +1,5 @@
 package org.rsmod.api.combat.player
 
-import kotlin.math.min
 import org.rsmod.api.combat.MAGIC_ATTACK_RANGE
 import org.rsmod.api.combat.MAX_ATTACK_RANGE
 import org.rsmod.api.combat.commons.CombatAttack
@@ -14,6 +13,7 @@ import org.rsmod.api.combat.commons.types.MeleeAttackType
 import org.rsmod.api.combat.commons.types.RangedAttackType
 import org.rsmod.api.combat.manager.MagicRuneManager
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.player.events.PlayerAttackEvents
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
 import org.rsmod.api.specials.SpecialAttack
@@ -25,6 +25,7 @@ import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.type.getInvObj
+import org.rsmod.game.type.getOrNull
 
 internal fun ProtectedAccess.attackRange(style: AttackStyle?): Int =
     if (autocastEnabled && autocastSpell > 0) {
@@ -47,7 +48,9 @@ internal fun ProtectedAccess.weaponAttackRange(style: AttackStyle?): Int {
         "Attack range must be greater than 0: range=$attackRange, weapon=$weapon, style=$style"
     }
 
-    return min(MAX_ATTACK_RANGE, attackRange)
+    val event = PlayerAttackEvents.AttackRange(player, getOrNull(weapon), attackRange)
+    publish(event)
+    return event.range.coerceIn(1, MAX_ATTACK_RANGE)
 }
 
 internal fun ProtectedAccess.resolveCombatAttack(
