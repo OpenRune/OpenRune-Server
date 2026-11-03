@@ -4,6 +4,7 @@ import org.rsmod.api.config.constants
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.player.dialogue.mesanims
 import org.rsmod.api.player.hook.SpadeDigHook
+import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statBase
@@ -70,6 +71,7 @@ internal class CorsairCurseScenery(
         startDialogue { chatPlayer(confused, "Let's see if I can find that mermaid he saw...") }
 
         anim(CorsairCurseRefs.TelescopeAnim)
+        player.midiSong(CorsairCurseRefs.StopMusic, fadeOutSpeed = TelescopeMusicFade)
 
         cutscene.telescopeView(this)
 
@@ -85,6 +87,8 @@ internal class CorsairCurseScenery(
         startDialogue {
             chatPlayer(laugh, line)
         }
+
+        closeFadeOverlayNow()
 
         checkTheoriesRuledOut()
     }
@@ -254,6 +258,8 @@ internal class CorsairCurseScenery(
 
     private companion object {
         private const val NoReasonToLook = "I have no reason to do that."
+
+        private const val TelescopeMusicFade = 50
 
         private const val TakeAnim = "seq.human_pickupfloor"
 

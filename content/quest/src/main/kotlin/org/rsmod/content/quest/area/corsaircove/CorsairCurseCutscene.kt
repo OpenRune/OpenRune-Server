@@ -12,7 +12,9 @@ import org.rsmod.api.player.cinematic.SceneFadeTicks
 import org.rsmod.api.player.cinematic.SceneRegion
 import org.rsmod.api.player.cinematic.SceneSnapRate
 import org.rsmod.api.player.cinematic.lockedScene
+import org.rsmod.api.player.cinematic.revealScene
 import org.rsmod.api.player.midiJingle
+import org.rsmod.api.player.midiSong
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -306,23 +308,27 @@ internal class CorsairCurseCutscene(
 
     suspend fun telescopeView(access: ProtectedAccess) {
         val cast = mutableListOf<Npc>()
+        access.blankChatbox()
         access.scene(
             template = CorsairCurseRegions.CoveHut,
             vantage = TelescopeScene.Vantage,
             faceAt = TelescopeScene.Ogre,
-            camera = TelescopeScene.Opening.toCamera(),
+            camera = TelescopeScene.Opening.toCamera(rate2 = TelescopeOpeningRate2),
             teardown = { cast.forEach(::despawn) },
+            onEntered = {
+                player.midiSong(CorsairCurseRefs.StopMusic)
+                player.midiJingle(SceneOpenJingle)
+            },
             underFade = { r ->
                 spawn(CorsairCurseRefs.Ogre, r[TelescopeScene.Ogre]).also(cast::add)
             },
             reveal = { ifOpenSub(SpyglassInterface, FadeOverlaySlot, IfSubType.Overlay) },
-            exitCut = true,
         ) { r ->
-            player.midiJingle(SceneOpenJingle)
             dolly(r, TelescopeScene.PushIn)
 
             delay(TelescopeHoldTicks)
 
+            player.midiSong(CorsairCurseRefs.StopMusic)
             player.midiJingle(TelescopeRevealJingle)
 
             delay(TelescopeRevealLineTicks)
@@ -337,6 +343,15 @@ internal class CorsairCurseCutscene(
         }
     }
 
+    private fun ProtectedAccess.blankChatbox() {
+        ifOpenSub(MessageBoxInterface, ChatModalSlot, IfSubType.Modal)
+        ifSetText(MessageBoxText, "")
+        ClientScripts.ifSetTextAlign(player, MessageBoxText, alignH = 1, alignV = 1, 0)
+        ifSetEvents(MessageBoxContinue, -1..-1)
+        ifSetText(MessageBoxContinue, "")
+        runClientScript(ChatboxBackgroundScript, "")
+    }
+
     private fun ProtectedAccess.chatPlayerNoPause(
         text: String,
         wrapped: String,
@@ -347,6 +362,7 @@ internal class CorsairCurseCutscene(
         mes("$title|$text", ChatType.Dialogue)
         chatModalUnclamp = constants.modal_fixedwidthandheight
         ClientScripts.topLevelChatboxResetBackground(player)
+        runClientScript(ChatboxBackgroundScript, "0")
         ifOpenSub(ChatRightInterface, ChatModalSlot, IfSubType.Modal)
         ifSetPlayerHead(ChatRightHead)
         ifSetAnim(ChatRightHead, ServerCacheManager.getAnim(mesanim.asRSCM(RSCMType.SEQ)))
@@ -474,6 +490,7 @@ internal class CorsairCurseCutscene(
         camera: SceneCamera,
         teardown: () -> Unit = {},
         underFade: suspend ProtectedAccess.(SceneRegion) -> Unit = {},
+        onEntered: suspend ProtectedAccess.() -> Unit = {},
         reveal: (suspend ProtectedAccess.() -> Unit)? = null,
         exitCut: Boolean = false,
         fadeOutDuration: Int = SceneFadeDuration,
@@ -481,28 +498,46 @@ internal class CorsairCurseCutscene(
     ) {
         val access = this
         val returnTo = player.coords
+        val previousNpcViewDistance = player.npcViewDistance
         val region = regionRepo.add(template)
         region?.let(regionRepo::protect)
         val scene = SceneRegion(region)
 
+        player.npcViewDistance = SceneNpcViewDistance
         player.attr[InstanceAttributes.LOGIN_EXIT_COORD] = returnTo.packed
         player.uuid?.let { uuid -> region?.let { sceneRegions[uuid] = it } }
 
         try {
-            lockedScene(
-                vantage = scene[vantage],
-                faceAt = scene[faceAt],
-                camera = scene.map(camera),
-                returnTo = returnTo,
-                underFade = { access.underFade(scene) },
-                teardown = teardown,
-                reveal = reveal,
-                exitCut = exitCut,
-                fadeOutDuration = fadeOutDuration,
-            ) {
-                access.body(scene)
+            if (reveal != null) {
+                revealScene(
+                    vantage = scene[vantage],
+                    faceAt = scene[faceAt],
+                    camera = scene.map(camera),
+                    returnTo = returnTo,
+                    onEntered = onEntered,
+                    underFade = { access.underFade(scene) },
+                    teardown = teardown,
+                    reveal = reveal,
+                    fadeOutDuration = fadeOutDuration,
+                ) {
+                    access.body(scene)
+                }
+            } else {
+                lockedScene(
+                    vantage = scene[vantage],
+                    faceAt = scene[faceAt],
+                    camera = scene.map(camera),
+                    returnTo = returnTo,
+                    underFade = { access.underFade(scene) },
+                    teardown = teardown,
+                    exitCut = exitCut,
+                    fadeOutDuration = fadeOutDuration,
+                ) {
+                    access.body(scene)
+                }
             }
         } finally {
+            player.npcViewDistance = previousNpcViewDistance
             player.attr.remove(InstanceAttributes.LOGIN_EXIT_COORD)
             player.uuid?.let(sceneRegions::remove)
 
@@ -663,9 +698,17 @@ internal class CorsairCurseCutscene(
 
         private const val TelescopeRevealLineTicks = 2
 
+        private const val TelescopeOpeningRate2 = 100
+
         private const val SpyglassInterface = "interface.wom_telescope"
 
         private const val FadeOverlaySlot = "component.toplevel_osrs_stretch:overlay_atmosphere"
+
+        private const val MessageBoxInterface = "interface.messagebox"
+        private const val MessageBoxText = "component.messagebox:text"
+        private const val MessageBoxContinue = "component.messagebox:continue"
+
+        private const val ChatboxBackgroundScript = 1508
 
         private const val OgreRevealLine =
             "That doesn't look anything like a mermaid. That's an ogre!"
@@ -707,6 +750,8 @@ internal class CorsairCurseCutscene(
         private const val FlybyPanTicks = 9
 
         private const val SceneLifespanTicks = 500
+
+        private const val SceneNpcViewDistance = 48
 
         private const val GnocciBuriedIt =
             "I buried Her in the sand, by that tree, to the west. But I still feel Her eyes " +

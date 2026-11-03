@@ -195,4 +195,6 @@ internal object CorsairCurseRefs {
     const val SteamSound: String = "synth.steam_high"
 
     const val TelescopeAnim: String = "seq.human_use_wom_telecope"
+
+    const val StopMusic: String = "midi.stop_music"
 }
