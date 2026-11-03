@@ -46,7 +46,7 @@ constructor(
     private val attackValidateHooks: Set<NpcAttackValidateHook>,
 ) {
     suspend fun attack(access: ProtectedAccess, target: Npc, attack: CombatAttack.PlayerAttack) {
-        manager.recordingAttack(access.player, target, attack) {
+        manager.recordingAttack(access, target, attack) {
             when (attack) {
                 is CombatAttack.Melee -> access.attackMelee(target, attack)
                 is CombatAttack.Ranged -> access.attackRanged(target, attack)

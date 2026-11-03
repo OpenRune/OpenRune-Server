@@ -13,6 +13,28 @@ import org.rsmod.game.hit.HitType
 /** Events about a player's outgoing attacks. [PlayerEvent.player] is always the attacker. */
 public class PlayerAttackEvents {
     /**
+     * An attack passed its checks and is about to happen. Published once per attack, not while the
+     * player is waiting on the attack delay. The settings apply to every hit and victim of the
+     * attack, so a Barrage uses them for all its targets: put per-hit effects on [DamageRoll].
+     *
+     * [special] means the player asked for a special, which can still fail its energy check.
+     * [AttackResult.special] is the confirmed value. [accuracyMultiplier] applies on top of any the
+     * attack has, [accuracyRolls] succeeds if any roll does, and [neverMiss] skips the roll. Extra
+     * attacks a handler makes later are not part of this attack and do not get these settings.
+     */
+    public class AttackPrepare(
+        override val player: Player,
+        public val target: PathingEntity,
+        public val kind: AttackKind,
+        public val weapon: ItemServerType?,
+        public val spell: ItemServerType?,
+        public val special: Boolean,
+        public var accuracyMultiplier: Double = 1.0,
+        public var accuracyRolls: Int = 1,
+        public var neverMiss: Boolean = false,
+    ) : UnboundEvent, PlayerEvent
+
+    /**
      * Published before each damage roll, and for each miss with [missed] true. The engine rolls
      * [minHit]..[maxHit] unless [damage] is set, so a handler that needs the outcome can roll for
      * itself. A miss stays 0 unless [damage] is set.

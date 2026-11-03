@@ -2,11 +2,13 @@ package org.rsmod.api.combat
 
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.PlayerAttackManager
+import org.rsmod.api.combat.player.specialAttackType
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.events.AttackKind
 import org.rsmod.api.player.events.discardAttackRecord
+import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.specials.SpecialAttackType
 import org.rsmod.game.entity.PathingEntity
-import org.rsmod.game.entity.Player
 
 internal const val ACTIVE_COMBAT_DELAY = constants.combat_activecombat_delay
 
@@ -17,11 +19,12 @@ internal const val MAGIC_STAFF_ATTACK_RATE = constants.combat_pstaff_attackrate
 internal const val MAGIC_SPELL_ATTACK_RATE = constants.combat_spell_attackrate
 
 internal inline fun PlayerAttackManager.recordingAttack(
-    player: Player,
+    access: ProtectedAccess,
     target: PathingEntity,
     attack: CombatAttack.PlayerAttack,
     block: () -> Unit,
 ) {
+    val player = access.player
     val kind =
         when (attack) {
             is CombatAttack.Melee -> AttackKind.Melee
@@ -30,7 +33,8 @@ internal inline fun PlayerAttackManager.recordingAttack(
             is CombatAttack.Staff -> AttackKind.Staff
         }
     val spell = (attack as? CombatAttack.Spell)?.spell?.obj
-    beginAttack(player, target, kind, spell)
+    val specialRequested = access.specialAttackType == SpecialAttackType.Weapon
+    beginAttack(player, target, kind, spell, specialRequested)
     try {
         block()
     } catch (t: Throwable) {
