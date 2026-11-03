@@ -26,6 +26,9 @@ public class PlayerAttackEvents {
      * rune type in a spell, and [specialSaveChance] for special energy. A saved resource is not
      * spent, and [AttackResult.resources] reports it, which is where follow-up effects belong.
      * Instant specials do not publish this, so they never save energy.
+     *
+     * [cycles] starts as the attack's own delay. The change a handler makes also applies if the
+     * weapon sets its own delay later, as Tumeken's shadow does, and the result is never below 1.
      */
     public class AttackPrepare(
         override val player: Player,
@@ -34,6 +37,7 @@ public class PlayerAttackEvents {
         public val weapon: ItemServerType?,
         public val spell: ItemServerType?,
         public val special: Boolean,
+        public var cycles: Int,
         public var accuracyMultiplier: Double = 1.0,
         public var accuracyRolls: Int = 1,
         public var neverMiss: Boolean = false,

@@ -43,7 +43,7 @@ class SpecialEnergySaveTest {
 
     private fun spend(cost: Int) {
         events.beginAttackRecord(player, mockk<Npc>(), AttackKind.Melee, null, null)
-        events.prepareAttackRecord(player)
+        events.prepareAttackRecord(player, baseCycles = 4)
         energy.takeSpecialEnergy(player, cost)
         events.finishAttackRecord(player)
     }
