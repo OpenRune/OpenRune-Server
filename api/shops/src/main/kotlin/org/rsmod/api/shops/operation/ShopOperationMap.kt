@@ -5,17 +5,18 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import jakarta.inject.Inject
 import java.util.concurrent.ConcurrentHashMap
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.shops.currency.ShopCurrency
 import org.rsmod.api.shops.currency.ShopCurrencyRow
 import org.rsmod.api.shops.currency.ShopCurrencyRows
 import org.rsmod.api.shops.restock.ShopRestockProcess
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 
-public class ShopOperationMap(
+public class ShopOperationMap @Inject constructor(private val eventBus: EventBus) {
     private val map: MutableMap<Int, ShopOperations> = Int2ObjectOpenHashMap()
-) {
     private val logger = InlineLogger()
     private val costOfOverrides = ConcurrentHashMap<String, (ItemServerType) -> Int>()
     private val syncOverrides = ConcurrentHashMap<String, (Player) -> Unit>()
@@ -47,6 +48,7 @@ public class ShopOperationMap(
                 currency = currency,
                 restockProcess = restockProcess,
                 marketPrices = marketPrices,
+                eventBus = eventBus,
                 costOf = costOf,
             ),
         )
