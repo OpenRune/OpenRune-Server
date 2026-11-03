@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 kotlin {
@@ -24,4 +25,6 @@ dependencies {
     implementation(projects.engine.map)
     implementation(projects.engine.routefinder)
     implementation(projects.engine.utilsBits)
+
+    testImplementation(libs.mockk)
 }
