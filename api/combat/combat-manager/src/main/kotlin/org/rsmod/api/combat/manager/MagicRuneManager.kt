@@ -1,5 +1,8 @@
 package org.rsmod.api.combat.manager
 
+import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import kotlin.collections.any
@@ -9,6 +12,8 @@ import org.rsmod.api.combat.commons.magic.SpellQuestRequirement
 import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.invtx.invDelAll
+import org.rsmod.api.player.events.ResourceKind
+import org.rsmod.api.player.events.attackRecord
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.output.mes
@@ -187,6 +192,15 @@ constructor(
             VarPlayerIntMapSetter.set(player, source.varbit, result)
         }
 
+        player.attackRecord?.let { record ->
+            for (source in invSources) {
+                record.addResource(ResourceKind.Rune, runeType(source.obj), source.count, false)
+            }
+            for (source in varbitSources) {
+                record.addResource(ResourceKind.Rune, runeType(source.obj), source.count, false)
+            }
+        }
+
         val usedSunfire = consume.any { it.isType("obj.sunfirerune") }
         return CastResult.Success.Consumed(usedSunfire)
     }
@@ -255,6 +269,9 @@ constructor(
         }
         return null
     }
+
+    private fun runeType(obj: String): ItemServerType? =
+        ServerCacheManager.getItem(obj.asRSCM(RSCMType.OBJ))
 
     private fun Player.useFakeRunes(): Boolean {
         return vars["varbit.barbassault_areaexit_pending"] == 1 || vars["varbit.br_ingame"] == 1

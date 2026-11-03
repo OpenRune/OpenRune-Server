@@ -216,6 +216,10 @@ public fun ScriptContext.onPlayerAttackImpact(
     action: PlayerAttackEvents.HitImpact.() -> Unit
 ): Unit = onEvent(action)
 
+public fun ScriptContext.onPlayerAttackResult(
+    action: PlayerAttackEvents.AttackResult.() -> Unit
+): Unit = onEvent(action)
+
 public fun ScriptContext.onWorldMapClick(
     requiredRights: Rights,
     action: suspend ProtectedAccess.(WorldMapClick) -> Unit,

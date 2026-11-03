@@ -4,6 +4,8 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.ranged.RangedAmmunition
+import org.rsmod.api.player.events.ResourceKind
+import org.rsmod.api.player.events.attackRecord
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.events.EventBus
@@ -132,6 +134,7 @@ constructor(
         dropDuration: Int,
     ) {
         val conserve = RangedAmmunition.conserveAmmo(player, random)
+        player.attackRecord?.addResource(ResourceKind.Ammo, ammoType, ammoCount, conserve)
         if (!conserve) {
             RangedAmmunition.detractAmmo(player, ammoWearpos, ammoType, ammoCount, eventBus)
         }

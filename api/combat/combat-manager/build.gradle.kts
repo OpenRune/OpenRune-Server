@@ -30,6 +30,9 @@ dependencies {
     implementation(projects.engine.objtx)
     implementation(projects.engine.plugin)
     implementation(projects.engine.routefinder)
+
+    testImplementation(libs.mockk)
+    testImplementation(projects.engine.annotations)
 }
 
 dependencies {

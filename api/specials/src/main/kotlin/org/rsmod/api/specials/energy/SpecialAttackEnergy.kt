@@ -1,6 +1,8 @@
 package org.rsmod.api.specials.energy
 
 import jakarta.inject.Inject
+import org.rsmod.api.player.events.ResourceKind
+import org.rsmod.api.player.events.attackRecord
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.specials.events.SpecialAttackEvents
 import org.rsmod.events.EventBus
@@ -38,6 +40,11 @@ public class SpecialAttackEnergy @Inject constructor(private val eventBus: Event
         }
 
         player.specialEnergy -= cost
+
+        player.attackRecord?.let { record ->
+            record.special = true
+            record.addResource(ResourceKind.SpecialEnergy, null, cost, false)
+        }
     }
 
     private fun eventAdjusted(player: Player, baseCost: Int): Int {
