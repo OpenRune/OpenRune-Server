@@ -216,6 +216,10 @@ public fun ScriptContext.onPlayerAttackImpact(
     action: PlayerAttackEvents.HitImpact.() -> Unit
 ): Unit = onEvent(action)
 
+public fun ScriptContext.onPlayerAttackRange(
+    action: PlayerAttackEvents.AttackRange.() -> Unit
+): Unit = onEvent(action)
+
 public fun ScriptContext.onPlayerAttackPrepare(
     action: PlayerAttackEvents.AttackPrepare.() -> Unit
 ): Unit = onEvent(action)

@@ -13,6 +13,17 @@ import org.rsmod.game.hit.HitType
 /** Events about a player's outgoing attacks. [PlayerEvent.player] is always the attacker. */
 public class PlayerAttackEvents {
     /**
+     * Published when working out how close the player must be to attack with their weapon, which can
+     * happen many times per attack, so handlers must only set [range]. The result is at least 1 and
+     * at most 10. Autocasting and casting a spell directly use a fixed range and do not publish this.
+     */
+    public class AttackRange(
+        override val player: Player,
+        public val weapon: ItemServerType?,
+        public var range: Int,
+    ) : UnboundEvent, PlayerEvent
+
+    /**
      * An attack passed its checks and is about to happen. Published once per attack, not while the
      * player is waiting on the attack delay. The settings apply to every hit and victim of the
      * attack, so a Barrage uses them for all its targets: put per-hit effects on [DamageRoll].
