@@ -9,11 +9,14 @@ import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.market.MarketPrices
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.events.PlayerShopEvents
 import org.rsmod.api.player.output.objExamine
 import org.rsmod.api.shops.config.ShopParams
 import org.rsmod.api.shops.cost.StandardGpCostCalculations
+import org.rsmod.api.shops.cost.StandardGpCostCalculations.BulkPriceParameters
 import org.rsmod.api.shops.currency.ShopCurrency
 import org.rsmod.api.shops.restock.ShopRestockProcess
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.InvObj
 import org.rsmod.game.inv.Inventory
@@ -28,21 +31,33 @@ public open class StandardCurrencyShopOperations(
     protected val currency: ShopCurrency,
     private val restockProcess: ShopRestockProcess,
     private val marketPrices: MarketPrices,
+    private val eventBus: EventBus,
     private val costOf: (ItemServerType) -> Int = { it.cost },
 ) : StandardShopOperations {
     override fun examineShopValue(player: Player, shop: Shop, slot: Int) {
         val obj = shop.inv[slot] ?: return
         val objType = getInvObj(obj)
 
+        val prepare = prepareBuy(player, shop, objType)
+        val refusal = prepare.refusal
+        if (refusal != null) {
+            player.mes(refusal)
+            return
+        }
+
         val shopInitialObjCount = shop.inv.initialStockCount(obj)
         val value =
-            CostCalculation.calculateShopSellSingleValue(
-                initialStock = shopInitialObjCount,
-                currentStock = obj.count,
-                baseCost = costOf(objType),
-                sellPercentage = shop.sellPercentage,
-                changePercentage = shop.changePercentage,
-            )
+            if (prepare.free) {
+                0
+            } else {
+                CostCalculation.calculateShopSellSingleValue(
+                    initialStock = shopInitialObjCount,
+                    currentStock = obj.count,
+                    baseCost = prepare.baseCost,
+                    sellPercentage = shop.sellPercentage,
+                    changePercentage = shop.changePercentage,
+                )
+            }
         player.mes(currency.shopCostMessage(objType.name, value))
     }
 
@@ -51,34 +66,49 @@ public open class StandardCurrencyShopOperations(
         val obj = shopInv[slot] ?: return
         val objType = getInvObj(obj)
 
+        val prepare = prepareBuy(player, shop, objType)
+        val refusal = prepare.refusal
+        if (refusal != null) {
+            player.mes(refusal)
+            return
+        }
+        val delivered = prepare.item
+        val free = prepare.free
+        val depletesStock = prepare.depletesStock
+
         val initialPurchaseRequest = min(shopInv.count(obj, objType), request)
         if (initialPurchaseRequest == 0) {
             player.mes("That item is currently out of stock.")
             return
         }
 
-        val internalName = RSCM.getReverseMapping(RSCMType.OBJ, objType.id)
+        val internalName = RSCM.getReverseMapping(RSCMType.OBJ, delivered.id)
         val shopInitialObjCount = shopInv.initialStockCount(obj)
         val availableCurrencyCount = currency.balance(player, sideInv)
         val cappedRequest =
-            if (objType.isStackable) {
+            if (delivered.isStackable) {
                 min(Int.MAX_VALUE - sideInv.count(internalName), initialPurchaseRequest)
             } else {
                 min(sideInv.freeSpace(), initialPurchaseRequest)
             }
 
         val (finalPurchaseCount, totalCost, firstObjPrice) =
-            CostCalculation.calculateShopSellBulkParameters(
-                initialStock = shopInitialObjCount,
-                currentStock = obj.count,
-                baseCost = costOf(objType),
-                requestedCount = max(1, cappedRequest),
-                availableCurrency = availableCurrencyCount,
-                sellPercentage = shop.sellPercentage,
-                changePercentage = shop.changePercentage,
-            )
+            if (free) {
+                BulkPriceParameters(max(1, cappedRequest), totalValue = 0, firstObjPrice = 0)
+            } else {
+                CostCalculation.calculateShopSellBulkParameters(
+                    initialStock = shopInitialObjCount,
+                    currentStock = obj.count,
+                    baseCost = prepare.baseCost,
+                    requestedCount = max(1, cappedRequest),
+                    availableCurrency = availableCurrencyCount,
+                    sellPercentage = shop.sellPercentage,
+                    changePercentage = shop.changePercentage,
+                )
+            }
         val finalPurchaseCost = max(totalCost, firstObjPrice)
         val currencyObj = currency.invObj
+        val chargedObj = currencyObj?.takeUnless { free }
 
         if (currencyObj == null && finalPurchaseCount == 0) {
             player.mes(currency.notEnoughMessage())
@@ -89,28 +119,30 @@ public open class StandardCurrencyShopOperations(
             player.invTransaction(sideInv) {
                 val inv = select(sideInv)
                 val shopSelect = select(shopInv)
-                if (currencyObj != null) {
+                if (chargedObj != null) {
                     delete {
                         this.from = inv
-                        this.obj = currencyObj.id
+                        this.obj = chargedObj.id
                         this.strictCount = finalPurchaseCost
                     }
                 }
-                delete {
-                    this.from = shopSelect
-                    this.obj = obj.id
-                    this.strictCount = finalPurchaseCount
+                if (depletesStock) {
+                    delete {
+                        this.from = shopSelect
+                        this.obj = obj.id
+                        this.strictCount = finalPurchaseCount
+                    }
                 }
                 insert {
                     this.into = inv
-                    this.obj = obj.id
+                    this.obj = delivered.id
                     this.strictCount = finalPurchaseCount
                 }
             }
 
         val success = transaction.success
-        val currencyDelIndex = if (currencyObj != null) 0 else -1
-        val stockObjAddIndex = if (currencyObj != null) 2 else 1
+        val currencyDelIndex = if (chargedObj != null) 0 else -1
+        val stockObjAddIndex = (if (chargedObj != null) 1 else 0) + (if (depletesStock) 1 else 0)
         val currencyDel =
             if (currencyDelIndex >= 0) transaction.results.getOrNull(currencyDelIndex) else null
         val stockObjAdd = transaction.results.getOrNull(stockObjAddIndex)
@@ -121,7 +153,7 @@ public open class StandardCurrencyShopOperations(
                 currencyDel == TransactionResult.NotEnoughObjCount -> currency.notEnoughMessage()
                 stockObjAdd == TransactionResult.NotEnoughSpace -> NOT_ENOUGH_INV_SPACE
                 success && finalPurchaseCount < initialPurchaseRequest -> {
-                    if (availableCurrencyCount <= finalPurchaseCost) {
+                    if (!free && availableCurrencyCount <= finalPurchaseCost) {
                         currency.notEnoughMessage()
                     } else {
                         NOT_ENOUGH_INV_SPACE
@@ -136,6 +168,17 @@ public open class StandardCurrencyShopOperations(
                 currency.deduct(player, finalPurchaseCost)
             }
             restockProcess += shopInv
+            if (eventBus.unbound[PlayerShopEvents.Bought::class.java] != null) {
+                eventBus.publish(
+                    PlayerShopEvents.Bought(
+                        player,
+                        shop,
+                        objType,
+                        finalPurchaseCount,
+                        finalPurchaseCost,
+                    )
+                )
+            }
         }
 
         if (shopInv[slot] == null) {
@@ -184,6 +227,13 @@ public open class StandardCurrencyShopOperations(
             return
         }
 
+        val prepare = prepareSell(player, shop, objType)
+        val refusal = prepare.refusal
+        if (refusal != null) {
+            player.mes(refusal)
+            return
+        }
+
         val internalName = RSCM.getReverseMapping(RSCMType.OBJ, objType.id)
         val shopCurrentObjCount = shopInv.count(internalName)
         val shopInitialObjCount = shopInv.initialStockCount(objType)
@@ -191,7 +241,7 @@ public open class StandardCurrencyShopOperations(
             CostCalculation.calculateShopBuySingleValue(
                 initialStock = shopInitialObjCount,
                 currentStock = shopCurrentObjCount,
-                baseCost = costOf(objType),
+                baseCost = prepare.baseCost,
                 buyPercentage = shop.buyPercentage,
                 changePercentage = shop.changePercentage,
             )
@@ -227,6 +277,13 @@ public open class StandardCurrencyShopOperations(
             return
         }
 
+        val prepare = prepareSell(player, shop, uncertType)
+        val refusal = prepare.refusal
+        if (refusal != null) {
+            player.mes(refusal)
+            return
+        }
+
         val invCappedRequest = min(sideInv.count(obj, objType), request)
         if (invCappedRequest == 0) {
             return
@@ -241,7 +298,7 @@ public open class StandardCurrencyShopOperations(
             CostCalculation.calculateShopBuyBulkParameters(
                 initialStock = shopInitialObjCount,
                 currentStock = shopCurrentObjCount,
-                baseCost = costOf(uncertType),
+                baseCost = prepare.baseCost,
                 requestedCount = max(1, cappedRequest),
                 currencyCap = currency.receiveCap(player, sideInv),
                 buyPercentage = shop.buyPercentage,
@@ -277,6 +334,9 @@ public open class StandardCurrencyShopOperations(
                 currency.credit(player, payment)
             }
             restockProcess += shopInv
+            if (eventBus.unbound[PlayerShopEvents.Sold::class.java] != null) {
+                eventBus.publish(PlayerShopEvents.Sold(player, shop, uncertType, count, payment))
+            }
         }
     }
 
@@ -285,6 +345,26 @@ public open class StandardCurrencyShopOperations(
         val type = getInvObj(obj)
         val marketPrice = marketPrices[type] ?: 0
         player.objExamine(type, obj.count, marketPrice)
+    }
+
+    private fun prepareBuy(
+        player: Player,
+        shop: Shop,
+        stock: ItemServerType,
+    ): PlayerShopEvents.BuyPrepare {
+        val event = PlayerShopEvents.BuyPrepare(player, shop, stock, stock, costOf(stock))
+        eventBus.publish(event)
+        return event
+    }
+
+    private fun prepareSell(
+        player: Player,
+        shop: Shop,
+        item: ItemServerType,
+    ): PlayerShopEvents.SellPrepare {
+        val event = PlayerShopEvents.SellPrepare(player, shop, item, costOf(item))
+        eventBus.publish(event)
+        return event
     }
 
     private fun Inventory.initialStockCount(obj: InvObj): Int = initialStockCount(obj.id)

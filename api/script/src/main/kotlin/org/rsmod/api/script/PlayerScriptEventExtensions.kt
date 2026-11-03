@@ -13,6 +13,7 @@ import org.rsmod.api.player.events.PlayerLevelEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
+import org.rsmod.api.player.events.PlayerShopEvents
 import org.rsmod.api.player.events.PlayerSkillRollEvents
 import org.rsmod.api.player.events.PlayerWornEvents
 import org.rsmod.api.player.events.PlayerXpEvents
@@ -180,6 +181,20 @@ public fun ScriptContext.onPlayerAreaExited(
     val id = area.asRSCM(RSCMType.AREA)
     onEvent<PlayerAreaEvents.Exited> { if (this.area == id) action() }
 }
+
+public fun ScriptContext.onPlayerShopBuyPrepare(
+    action: PlayerShopEvents.BuyPrepare.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerShopSellPrepare(
+    action: PlayerShopEvents.SellPrepare.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerShopBought(action: PlayerShopEvents.Bought.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerShopSold(action: PlayerShopEvents.Sold.() -> Unit): Unit =
+    onEvent(action)
 
 public fun ScriptContext.onPlayerEquip(action: PlayerWornEvents.Equip.() -> Unit): Unit =
     onEvent(action)
