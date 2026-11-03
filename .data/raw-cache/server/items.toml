@@ -13414,6 +13414,7 @@ inherit = "obj.aide_shortbow"
 weaponCategory="Bow"
 tradeable = false
 [item.params]
+"param.required_ammo"="category.arrows_training"
 "param.proj_type"="projanim.arrow"
 "param.equipment_sound"=2244
 "param.attack_range"=7
