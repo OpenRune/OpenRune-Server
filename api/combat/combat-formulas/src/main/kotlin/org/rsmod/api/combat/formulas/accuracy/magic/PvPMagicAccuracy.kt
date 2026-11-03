@@ -28,6 +28,7 @@ constructor(
         spell: ItemServerType,
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
+        specialMultiplier: Double = 1.0,
     ): Int =
         computeSpellHitChance(
             source = player,
@@ -35,6 +36,7 @@ constructor(
             spell = spell,
             spellbook = spellbook,
             usedSunfireRune = usedSunfireRune,
+            specialMultiplier = specialMultiplier,
         )
 
     public fun computeSpellHitChance(
@@ -43,10 +45,12 @@ constructor(
         spell: ItemServerType,
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
+        specialMultiplier: Double = 1.0,
     ): Int {
         val spellAttributes =
             magicAttributes.spellCollect(source, spell, spellbook, usedSunfireRune, random)
-        val attackRoll = computeSpellAttackRoll(source, spellAttributes)
+        val baseAttackRoll = computeSpellAttackRoll(source, spellAttributes)
+        val attackRoll = (baseAttackRoll * specialMultiplier).toInt()
         val defenceRoll = computeDefenceRoll(target)
         return AccuracyOperations.calculateHitChance(attackRoll, defenceRoll)
     }

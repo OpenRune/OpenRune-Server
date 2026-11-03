@@ -39,6 +39,7 @@ import org.rsmod.api.player.events.PlayerAttackEvents
 import org.rsmod.api.player.events.attackRecord
 import org.rsmod.api.player.events.beginAttackRecord
 import org.rsmod.api.player.events.finishAttackRecord
+import org.rsmod.api.player.events.prepareAttackRecord
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.interact.NpcInteractions
@@ -86,12 +87,28 @@ constructor(
         target: PathingEntity,
         kind: AttackKind,
         spell: ItemServerType?,
+        specialRequested: Boolean = false,
     ) {
-        eventBus.beginAttackRecord(source, target, kind, getOrNull(source.righthand), spell)
+        val weapon = getOrNull(source.righthand)
+        eventBus.beginAttackRecord(source, target, kind, weapon, spell, specialRequested)
     }
 
     public fun finishAttack(source: Player) {
         eventBus.finishAttackRecord(source)
+    }
+
+    private inline fun rollAccuracy(
+        source: Player,
+        target: PathingEntity,
+        type: HitType,
+        multiplier: Double,
+        roll: (Double) -> Boolean,
+    ): Boolean {
+        val record = source.attackRecord ?: return roll(multiplier)
+        val boosted = multiplier * record.accuracyMultiplier
+        val success = record.neverMiss || (0 until record.accuracyRolls).any { roll(boosted) }
+        record.addAccuracy(target, type, success)
+        return success
     }
 
     private fun rollDamage(
@@ -167,6 +184,7 @@ constructor(
      * @param cycles The number of cycles to wait before the next attack can be performed.
      */
     public fun setNextAttackDelay(player: Player, cycles: Int) {
+        eventBus.prepareAttackRecord(player)
         player.attackRecord?.cycles = cycles
         player.actionDelay = player.currentMapClock + cycles
     }
@@ -626,14 +644,16 @@ constructor(
         if (source.adminMaxHit) {
             return true
         }
-        return when (target) {
-            is Npc -> {
-                rollMeleeAccuracy(source, target, attackType, attackStyle, blockType, multiplier)
+        return rollAccuracy(source, target, HitType.Melee, multiplier) { boosted ->
+            when (target) {
+                is Npc -> {
+                    rollMeleeAccuracy(source, target, attackType, attackStyle, blockType, boosted)
+                }
+                is Player -> {
+                    rollMeleeAccuracy(source, target, attackType, attackStyle, blockType, boosted)
+                }
             }
-            is Player -> {
-                rollMeleeAccuracy(source, target, attackType, attackStyle, blockType, multiplier)
-            }
-        }.also { source.attackRecord?.addAccuracy(target, HitType.Melee, it) }
+        }
     }
 
     private fun rollMeleeAccuracy(
@@ -888,12 +908,14 @@ constructor(
         if (source.adminMaxHit) {
             return true
         }
-        return when (target) {
-            is Npc -> {
-                rollRangedAccuracy(source, target, attackType, attackStyle, blockType, multiplier)
+        return rollAccuracy(source, target, HitType.Ranged, multiplier) { boosted ->
+            when (target) {
+                is Npc -> {
+                    rollRangedAccuracy(source, target, attackType, attackStyle, blockType, boosted)
+                }
+                is Player -> rollRangedAccuracy(source, target, attackType, attackStyle, boosted)
             }
-            is Player -> rollRangedAccuracy(source, target, attackType, attackStyle, multiplier)
-        }.also { source.attackRecord?.addAccuracy(target, HitType.Ranged, it) }
+        }
     }
 
     private fun rollRangedAccuracy(
@@ -1237,10 +1259,14 @@ constructor(
         if (source.adminMaxHit) {
             return true
         }
-        return when (target) {
-            is Npc -> rollSpellAccuracy(source, target, spell, spellbook, sunfireRune)
-            is Player -> rollSpellAccuracy(source, target, spell, spellbook, sunfireRune)
-        }.also { source.attackRecord?.addAccuracy(target, HitType.Magic, it) }
+        return rollAccuracy(source, target, HitType.Magic, 1.0) { boosted ->
+            when (target) {
+                is Npc -> rollSpellAccuracy(source, target, spell, spellbook, sunfireRune, boosted)
+                is Player -> {
+                    rollSpellAccuracy(source, target, spell, spellbook, sunfireRune, boosted)
+                }
+            }
+        }
     }
 
     private fun rollSpellAccuracy(
@@ -1249,6 +1275,7 @@ constructor(
         spell: ItemServerType,
         spellbook: Spellbook?,
         sunfireRune: Boolean,
+        multiplier: Double,
     ): Boolean =
         accuracy.rollSpellAccuracy(
             player = source,
@@ -1257,6 +1284,7 @@ constructor(
             spellbook = spellbook,
             usedSunfireRune = sunfireRune,
             random = random,
+            specMultiplier = multiplier,
         )
 
     private fun rollSpellAccuracy(
@@ -1265,6 +1293,7 @@ constructor(
         spell: ItemServerType,
         spellbook: Spellbook?,
         sunfireRune: Boolean,
+        multiplier: Double,
     ): Boolean =
         accuracy.rollSpellAccuracy(
             player = source,
@@ -1273,6 +1302,7 @@ constructor(
             spellbook = spellbook,
             usedSunfireRune = sunfireRune,
             random = random,
+            specMultiplier = multiplier,
         )
 
     /**
@@ -1422,10 +1452,12 @@ constructor(
         attackStyle: MagicAttackStyle?,
         multiplier: Double,
     ): Boolean {
-        return when (target) {
-            is Npc -> rollStaffAccuracy(source, target, attackStyle, multiplier)
-            is Player -> rollStaffAccuracy(source, target, attackStyle, multiplier)
-        }.also { source.attackRecord?.addAccuracy(target, HitType.Magic, it) }
+        return rollAccuracy(source, target, HitType.Magic, multiplier) { boosted ->
+            when (target) {
+                is Npc -> rollStaffAccuracy(source, target, attackStyle, boosted)
+                is Player -> rollStaffAccuracy(source, target, attackStyle, boosted)
+            }
+        }
     }
 
     private fun rollStaffAccuracy(
@@ -1894,14 +1926,16 @@ constructor(
         attackStyle: MeleeAttackStyle?,
         multiplier: Double,
     ): Boolean {
-        return when (target) {
-            is Npc -> {
-                rollMagicalMeleeAccuracy(source, target, attackType, attackStyle, multiplier)
+        return rollAccuracy(source, target, HitType.Melee, multiplier) { boosted ->
+            when (target) {
+                is Npc -> {
+                    rollMagicalMeleeAccuracy(source, target, attackType, attackStyle, boosted)
+                }
+                is Player -> {
+                    rollMagicalMeleeAccuracy(source, target, attackType, attackStyle, boosted)
+                }
             }
-            is Player -> {
-                rollMagicalMeleeAccuracy(source, target, attackType, attackStyle, multiplier)
-            }
-        }.also { source.attackRecord?.addAccuracy(target, HitType.Melee, it) }
+        }
     }
 
     private fun rollMagicalMeleeAccuracy(
@@ -1957,27 +1991,29 @@ constructor(
         blockType: RangedAttackType?,
         multiplier: Double,
     ): Boolean {
-        return when (target) {
-            is Npc -> {
-                rollRangedMeleeAccuracy(
-                    source = source,
-                    target = target,
-                    attackType = attackType,
-                    attackStyle = attackStyle,
-                    blockType = blockType,
-                    specMultiplier = multiplier,
-                )
+        return rollAccuracy(source, target, HitType.Melee, multiplier) { boosted ->
+            when (target) {
+                is Npc -> {
+                    rollRangedMeleeAccuracy(
+                        source = source,
+                        target = target,
+                        attackType = attackType,
+                        attackStyle = attackStyle,
+                        blockType = blockType,
+                        specMultiplier = boosted,
+                    )
+                }
+                is Player -> {
+                    rollRangedMeleeAccuracy(
+                        source = source,
+                        target = target,
+                        attackType = attackType,
+                        attackStyle = attackStyle,
+                        specMultiplier = boosted,
+                    )
+                }
             }
-            is Player -> {
-                rollRangedMeleeAccuracy(
-                    source = source,
-                    target = target,
-                    attackType = attackType,
-                    attackStyle = attackStyle,
-                    specMultiplier = multiplier,
-                )
-            }
-        }.also { source.attackRecord?.addAccuracy(target, HitType.Melee, it) }
+        }
     }
 
     private fun rollRangedMeleeAccuracy(
@@ -2033,10 +2069,12 @@ constructor(
         blockType: RangedAttackType?,
         multiplier: Double,
     ): Boolean {
-        return when (target) {
-            is Npc -> rollRangedMagicAccuracy(source, target, attackStyle, blockType, multiplier)
-            is Player -> rollRangedMagicAccuracy(source, target, attackStyle, multiplier)
-        }.also { source.attackRecord?.addAccuracy(target, HitType.Magic, it) }
+        return rollAccuracy(source, target, HitType.Magic, multiplier) { boosted ->
+            when (target) {
+                is Npc -> rollRangedMagicAccuracy(source, target, attackStyle, blockType, boosted)
+                is Player -> rollRangedMagicAccuracy(source, target, attackStyle, boosted)
+            }
+        }
     }
 
     private fun rollRangedMagicAccuracy(
@@ -2088,14 +2126,16 @@ constructor(
         attackStyle: RangedAttackStyle?,
         multiplier: Double,
     ): Boolean {
-        return when (target) {
-            is Npc -> {
-                rollMagicalRangedAccuracy(source, target, attackType, attackStyle, multiplier)
+        return rollAccuracy(source, target, HitType.Ranged, multiplier) { boosted ->
+            when (target) {
+                is Npc -> {
+                    rollMagicalRangedAccuracy(source, target, attackType, attackStyle, boosted)
+                }
+                is Player -> {
+                    rollMagicalRangedAccuracy(source, target, attackType, attackStyle, boosted)
+                }
             }
-            is Player -> {
-                rollMagicalRangedAccuracy(source, target, attackType, attackStyle, multiplier)
-            }
-        }.also { source.attackRecord?.addAccuracy(target, HitType.Ranged, it) }
+        }
     }
 
     private fun rollMagicalRangedAccuracy(

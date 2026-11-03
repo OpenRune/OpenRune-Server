@@ -47,7 +47,7 @@ constructor(
     private val specialAttackHooks: Set<PvPSpecialAttackHook>,
 ) {
     suspend fun attack(access: ProtectedAccess, target: Player, attack: CombatAttack.PlayerAttack) {
-        manager.recordingAttack(access.player, target, attack) {
+        manager.recordingAttack(access, target, attack) {
             when (attack) {
                 is CombatAttack.Melee -> access.attackMelee(target, attack)
                 is CombatAttack.Ranged -> access.attackRanged(target, attack)

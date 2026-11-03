@@ -19,9 +19,21 @@ internal constructor(
     internal val kind: AttackKind,
     internal val weapon: ItemServerType?,
     internal val spell: ItemServerType?,
+    internal val specialRequested: Boolean,
 ) {
     public var cycles: Int = 0
     public var special: Boolean = false
+
+    public var accuracyMultiplier: Double = 1.0
+        private set
+
+    public var accuracyRolls: Int = 1
+        private set
+
+    public var neverMiss: Boolean = false
+        private set
+
+    private var prepared = false
 
     internal val rolls = ArrayList<AttackRoll>(1)
     internal val resources = ArrayList<ResourceSpend>(1)
@@ -29,6 +41,23 @@ internal constructor(
 
     internal val isEmpty: Boolean
         get() = !special && rolls.isEmpty() && resources.isEmpty() && hits.isEmpty()
+
+    /** Some weapons set the delay a second time, so this only publishes the first time. */
+    internal fun prepare(player: Player, events: EventBus) {
+        if (prepared) {
+            return
+        }
+        prepared = true
+        if (target == null || events.unbound[PlayerAttackEvents.AttackPrepare::class.java] == null) {
+            return
+        }
+        val event =
+            PlayerAttackEvents.AttackPrepare(player, target, kind, weapon, spell, specialRequested)
+        events.publish(event)
+        accuracyMultiplier = event.accuracyMultiplier
+        accuracyRolls = event.accuracyRolls.coerceAtLeast(1)
+        neverMiss = event.neverMiss
+    }
 
     public fun addAccuracy(target: PathingEntity, type: HitType, success: Boolean) {
         rolls += AttackRoll(target, type, success, maxHit = 0, damage = 0)
@@ -72,10 +101,19 @@ public fun EventBus.beginAttackRecord(
     kind: AttackKind,
     weapon: ItemServerType?,
     spell: ItemServerType?,
+    specialRequested: Boolean = false,
 ) {
-    if (unbound[PlayerAttackEvents.AttackResult::class.java] != null) {
-        player.attr[ATTACK_RECORD] = PlayerAttackRecord(target, kind, weapon, spell)
+    val observed =
+        unbound[PlayerAttackEvents.AttackResult::class.java] != null ||
+            unbound[PlayerAttackEvents.AttackPrepare::class.java] != null
+    if (observed) {
+        player.attr[ATTACK_RECORD] =
+            PlayerAttackRecord(target, kind, weapon, spell, specialRequested)
     }
+}
+
+public fun EventBus.prepareAttackRecord(player: Player) {
+    player.attackRecord?.prepare(player, this)
 }
 
 /** Clears the record first, so anything a handler does is not part of this attack. */
