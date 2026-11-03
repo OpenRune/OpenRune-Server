@@ -50,7 +50,9 @@ internal constructor(
 
     internal val rolls = ArrayList<AttackRoll>(1)
     internal val resources = ArrayList<ResourceSpend>(1)
-    internal val hits = ArrayList<Hit>(1)
+    internal val hits = ArrayList<AttackHit>(1)
+    internal var projectile: AttackProjectile? = null
+        private set
 
     internal val isEmpty: Boolean
         get() = !special && rolls.isEmpty() && resources.isEmpty() && hits.isEmpty()
@@ -109,8 +111,14 @@ internal constructor(
         resources += ResourceSpend(kind, item, count, saved)
     }
 
-    public fun addHit(hit: Hit) {
-        hits += hit
+    public fun addHit(target: PathingEntity, hit: Hit, delay: Int) {
+        hits += AttackHit(target, hit, delay)
+    }
+
+    public fun addProjectile(spotanim: Int, projanim: String) {
+        if (projectile == null) {
+            projectile = AttackProjectile(spotanim, projanim)
+        }
     }
 
     private companion object {
@@ -168,6 +176,7 @@ public fun EventBus.finishAttackRecord(player: Player) {
             rolls = record.rolls,
             resources = record.resources,
             hits = record.hits,
+            projectile = record.projectile,
         )
     publish(event)
 }
