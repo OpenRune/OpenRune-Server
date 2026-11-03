@@ -83,6 +83,9 @@ public class PlayerAttackEvents {
      * [target] is null for an instant special. [rolls] has one entry per accuracy or damage roll, so
      * a Scythe or a Barrage has several. [cycles] is the final delay until the next attack.
      * Publishes nothing if the attack did nothing, such as while waiting on the attack delay.
+     *
+     * [projectile] is the first one the attack fired through `PlayerAttackManager.spawnProjectile`.
+     * It is null for melee, and for spells that send their own, such as the Ancient spellbook.
      */
     public class AttackResult(
         override val player: Player,
@@ -94,7 +97,8 @@ public class PlayerAttackEvents {
         public val cycles: Int,
         public val rolls: List<AttackRoll>,
         public val resources: List<ResourceSpend>,
-        public val hits: List<Hit>,
+        public val hits: List<AttackHit>,
+        public val projectile: AttackProjectile?,
     ) : UnboundEvent, PlayerEvent
 
     /**
@@ -137,6 +141,19 @@ public data class AttackRoll(
     public val maxHit: Int,
     public val damage: Int,
 )
+
+/**
+ * A hit the attack queued, landing on [target] in [delay] server cycles. Use it to time an effect
+ * for when the hit lands, such as a bounce: `WorldQueueList.add(delay)` fires on that cycle.
+ */
+public data class AttackHit(
+    public val target: PathingEntity,
+    public val hit: Hit,
+    public val delay: Int,
+)
+
+/** Build a matching projectile with `ProjAnim.fromBoundsToNpc(bounds, target, spotanim, projanim)`. */
+public data class AttackProjectile(public val spotanim: Int, public val projanim: String)
 
 /** [item] is the ammo, rune or charged weapon, and null for special energy. */
 public data class ResourceSpend(

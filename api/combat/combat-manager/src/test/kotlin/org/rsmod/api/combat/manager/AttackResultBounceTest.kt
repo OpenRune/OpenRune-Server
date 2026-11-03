@@ -4,12 +4,14 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.InventoryServerType
+import dev.openrune.types.aconverted.SpotanimType
 import io.mockk.every
 import io.mockk.mockk
 import java.nio.file.Files
 import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -21,6 +23,7 @@ import org.rsmod.api.combat.formulas.AccuracyFormulae
 import org.rsmod.api.combat.formulas.MaxHitFormulae
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.player.events.AttackKind
+import org.rsmod.api.player.events.AttackProjectile
 import org.rsmod.api.player.events.PlayerAttackEvents
 import org.rsmod.api.random.GameRandom
 import org.rsmod.events.EventBus
@@ -47,11 +50,57 @@ class AttackResultBounceTest {
         val result = f.results.single()
         assertEquals(AttackKind.Ranged, result.kind)
         assertEquals(4, result.cycles)
-        assertEquals(1, result.hits.size)
+        val hit = result.hits.single()
+        assertEquals(f.victims[0], hit.target)
+        assertEquals(ROLLED, hit.hit.damage)
+        assertEquals(2, hit.delay, "must match the delay the hit was queued with")
         val roll = result.rolls.single()
         assertTrue(roll.success)
         assertEquals(MAX_HIT, roll.maxHit)
         assertEquals(ROLLED, roll.damage)
+    }
+
+    @Test
+    fun `every kind of queued hit reports its own delay`() {
+        val f = Fixture()
+        val target = f.victims[0]
+
+        f.manager.beginAttack(f.player, target, AttackKind.Ranged, spell = null)
+        f.manager.queueMeleeHit(f.player, target, 1, delay = 1)
+        f.manager.queueRangedHit(f.player, target, null, 1, clientDelay = 30, hitDelay = 3)
+        f.manager.queueMagicHit(f.player, target, null, 1, clientDelay = 30, hitDelay = 4)
+        f.manager.queueSplashHit(f.player, target, null, clientDelay = 30, hitDelay = 5)
+        f.manager.finishAttack(f.player)
+
+        assertEquals(listOf(1, 3, 4, 5), f.results.single().hits.map { it.delay })
+    }
+
+    @Test
+    fun `the result reports the first projectile the attack fired`() {
+        val f = Fixture()
+        val target = f.victims[0]
+        val first = SpotanimType(101)
+        val second = SpotanimType(202)
+
+        f.manager.beginAttack(f.player, target, AttackKind.Staff, spell = null)
+        f.manager.spawnProjectile(f.player, target, first, "projanim.first")
+        f.manager.spawnProjectile(f.player, target, second, "projanim.second")
+        f.manager.queueRangedHit(f.player, target, null, 1, clientDelay = 30, hitDelay = 2)
+        f.manager.finishAttack(f.player)
+
+        assertEquals(AttackProjectile(101, "projanim.first"), f.results.single().projectile)
+    }
+
+    @Test
+    fun `an attack with no projectile reports none`() {
+        val f = Fixture()
+        val target = f.victims[0]
+
+        f.manager.beginAttack(f.player, target, AttackKind.Melee, spell = null)
+        f.manager.queueMeleeHit(f.player, target, 1)
+        f.manager.finishAttack(f.player)
+
+        assertNull(f.results.single().projectile)
     }
 
     @Test
