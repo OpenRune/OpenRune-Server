@@ -1,5 +1,7 @@
 package org.rsmod.api.specials.energy
 
+import org.rsmod.api.player.events.ResourceKind
+import org.rsmod.api.player.events.attackRecord
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.game.entity.Player
 
@@ -35,6 +37,11 @@ public class SpecialAttackEnergy {
         }
 
         player.specialEnergy -= cost
+
+        player.attackRecord?.let { record ->
+            record.special = true
+            record.addResource(ResourceKind.SpecialEnergy, null, cost, false)
+        }
     }
 
     public fun addSpecialEnergy(player: Player, energyInHundreds: Int) {

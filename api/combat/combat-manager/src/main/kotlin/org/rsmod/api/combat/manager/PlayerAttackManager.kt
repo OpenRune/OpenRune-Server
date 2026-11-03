@@ -34,6 +34,10 @@ import org.rsmod.api.npc.hit.isStyleImmuneTo
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.player.cheat.adminMaxHit
+import org.rsmod.api.player.events.AttackKind
+import org.rsmod.api.player.events.attackRecord
+import org.rsmod.api.player.events.beginAttackRecord
+import org.rsmod.api.player.events.finishAttackRecord
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.interact.NpcInteractions
@@ -43,6 +47,7 @@ import org.rsmod.api.player.interact.PlayerTInteractions
 import org.rsmod.api.player.ironman.shouldBlockNpcCombatXp
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.clearPendingAction
+import org.rsmod.api.player.righthand
 import org.rsmod.api.player.stat.hitpoints
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.random.GameRandom
@@ -75,6 +80,19 @@ constructor(
     private val playerTInteractions: PlayerTInteractions,
     private val pvpPlayerHitHooks: Set<PvPPlayerHitHook>,
 ) {
+    public fun beginAttack(
+        source: Player,
+        target: PathingEntity,
+        kind: AttackKind,
+        spell: ItemServerType?,
+    ) {
+        eventBus.beginAttackRecord(source, target, kind, getOrNull(source.righthand), spell)
+    }
+
+    public fun finishAttack(source: Player) {
+        eventBus.finishAttackRecord(source)
+    }
+
     /**
      * Determines if the player is still under an active attack delay.
      *
@@ -97,6 +115,7 @@ constructor(
      * @param cycles The number of cycles to wait before the next attack can be performed.
      */
     public fun setNextAttackDelay(player: Player, cycles: Int) {
+        player.attackRecord?.cycles = cycles
         player.actionDelay = player.currentMapClock + cycles
     }
 
@@ -562,7 +581,7 @@ constructor(
             is Player -> {
                 rollMeleeAccuracy(source, target, attackType, attackStyle, blockType, multiplier)
             }
-        }
+        }.also { source.attackRecord?.addAccuracy(target, HitType.Melee, it) }
     }
 
     private fun rollMeleeAccuracy(
@@ -625,10 +644,9 @@ constructor(
     ): Int {
         val maxHit =
             calculateMeleeMaxHit(source, target, attackType, attackStyle, multiplier, roundUp)
-        if (source.adminMaxHit) {
-            return maxHit
-        }
-        return random.of(1..maxHit)
+        val damage = if (source.adminMaxHit) maxHit else random.of(1..maxHit)
+        source.attackRecord?.addDamage(target, HitType.Melee, maxHit, damage)
+        return damage
     }
 
     /**
@@ -712,7 +730,7 @@ constructor(
         when (target) {
             is Npc -> queueMeleeHit(source, target, damage, delay)
             is Player -> queueMeleeHit(source, target, damage, delay)
-        }
+        }.also { source.attackRecord?.addHit(it) }
 
     private fun queueMeleeHit(source: Player, target: Npc, damage: Int, delay: Int): Hit {
         // Note: Retaliation must be queued _before_ the hit. If queued after, every hit would
@@ -825,7 +843,7 @@ constructor(
                 rollRangedAccuracy(source, target, attackType, attackStyle, blockType, multiplier)
             }
             is Player -> rollRangedAccuracy(source, target, attackType, attackStyle, multiplier)
-        }
+        }.also { source.attackRecord?.addAccuracy(target, HitType.Ranged, it) }
     }
 
     private fun rollRangedAccuracy(
@@ -895,10 +913,9 @@ constructor(
                 multiplier = multiplier,
                 boltSpecDamage = boltSpecDamage,
             )
-        if (source.adminMaxHit) {
-            return maxHit
-        }
-        return random.of(1..maxHit)
+        val damage = if (source.adminMaxHit) maxHit else random.of(1..maxHit)
+        source.attackRecord?.addDamage(target, HitType.Ranged, maxHit, damage)
+        return damage
     }
 
     /**
@@ -1023,7 +1040,7 @@ constructor(
         when (target) {
             is Npc -> queueRangedHit(source, target, ammo, damage, clientDelay, hitDelay)
             is Player -> queueRangedHit(source, target, ammo, damage, clientDelay, hitDelay)
-        }
+        }.also { source.attackRecord?.addHit(it) }
 
     private fun queueRangedHit(
         source: Player,
@@ -1109,7 +1126,7 @@ constructor(
         when (target) {
             is Npc -> queueRangedDamage(source, target, ammo, damage, hitDelay)
             is Player -> queueRangedDamage(source, target, ammo, damage, hitDelay)
-        }
+        }.also { source.attackRecord?.addHit(it) }
 
     private fun queueRangedDamage(
         source: Player,
@@ -1175,7 +1192,7 @@ constructor(
         return when (target) {
             is Npc -> rollSpellAccuracy(source, target, spell, spellbook, sunfireRune)
             is Player -> rollSpellAccuracy(source, target, spell, spellbook, sunfireRune)
-        }
+        }.also { source.attackRecord?.addAccuracy(target, HitType.Magic, it) }
     }
 
     private fun rollSpellAccuracy(
@@ -1248,10 +1265,9 @@ constructor(
                 attackRate = attackRate,
                 sunfireRune = sunfireRune,
             )
-        if (source.adminMaxHit) {
-            return hitRange.last
-        }
-        return random.of(hitRange)
+        val damage = if (source.adminMaxHit) hitRange.last else random.of(hitRange)
+        source.attackRecord?.addDamage(target, HitType.Magic, hitRange.last, damage)
+        return damage
     }
 
     /**
@@ -1363,7 +1379,7 @@ constructor(
         return when (target) {
             is Npc -> rollStaffAccuracy(source, target, attackStyle, multiplier)
             is Player -> rollStaffAccuracy(source, target, attackStyle, multiplier)
-        }
+        }.also { source.attackRecord?.addAccuracy(target, HitType.Magic, it) }
     }
 
     private fun rollStaffAccuracy(
@@ -1414,10 +1430,9 @@ constructor(
         multiplier: Double,
     ): Int {
         val maxHit = calculateStaffMaxHit(source, target, baseMaxHit, multiplier)
-        if (source.adminMaxHit) {
-            return maxHit
-        }
-        return random.of(1..maxHit)
+        val damage = if (source.adminMaxHit) maxHit else random.of(1..maxHit)
+        source.attackRecord?.addDamage(target, HitType.Magic, maxHit, damage)
+        return damage
     }
 
     /**
@@ -1535,7 +1550,7 @@ constructor(
                     hitDelay = hitDelay,
                     retaliationDelay = retaliationDelay,
                 )
-        }
+        }.also { source.attackRecord?.addHit(it) }
 
     private fun queueMagicHit(
         source: Player,
@@ -1842,7 +1857,7 @@ constructor(
             is Player -> {
                 rollMagicalMeleeAccuracy(source, target, attackType, attackStyle, multiplier)
             }
-        }
+        }.also { source.attackRecord?.addAccuracy(target, HitType.Melee, it) }
     }
 
     private fun rollMagicalMeleeAccuracy(
@@ -1918,7 +1933,7 @@ constructor(
                     specMultiplier = multiplier,
                 )
             }
-        }
+        }.also { source.attackRecord?.addAccuracy(target, HitType.Melee, it) }
     }
 
     private fun rollRangedMeleeAccuracy(
@@ -1977,7 +1992,7 @@ constructor(
         return when (target) {
             is Npc -> rollRangedMagicAccuracy(source, target, attackStyle, blockType, multiplier)
             is Player -> rollRangedMagicAccuracy(source, target, attackStyle, multiplier)
-        }
+        }.also { source.attackRecord?.addAccuracy(target, HitType.Magic, it) }
     }
 
     private fun rollRangedMagicAccuracy(
@@ -2036,7 +2051,7 @@ constructor(
             is Player -> {
                 rollMagicalRangedAccuracy(source, target, attackType, attackStyle, multiplier)
             }
-        }
+        }.also { source.attackRecord?.addAccuracy(target, HitType.Ranged, it) }
     }
 
     private fun rollMagicalRangedAccuracy(

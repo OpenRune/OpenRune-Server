@@ -320,7 +320,8 @@ public object MagicRunes {
             }
 
             if (pouchCountVarBit != null && pouchRuneCount >= remaining) {
-                sources += Source.VarBitSource(pouchCountVarBit, remaining)
+                val internalName = RSCM.getReverseMapping(RSCMType.OBJ, rune.id)
+                sources += Source.VarBitSource(pouchCountVarBit, remaining, internalName)
                 return Validation.Valid.HasEnough(sources)
             }
         }
@@ -402,7 +403,8 @@ public object MagicRunes {
         public data class InvSource(val obj: String, val slot: Int, val count: Int) :
             Source()
 
-        public data class VarBitSource(val varbit: String, val count: Int) : Source()
+        public data class VarBitSource(val varbit: String, val count: Int, val obj: String) :
+            Source()
     }
 
     public class RequirementList internal constructor(internal val reqs: List<Requirement>) {
