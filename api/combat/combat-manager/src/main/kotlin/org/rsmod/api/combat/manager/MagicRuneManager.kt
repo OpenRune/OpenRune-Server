@@ -12,6 +12,7 @@ import org.rsmod.api.combat.commons.magic.SpellQuestRequirement
 import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.invtx.invDelAll
+import org.rsmod.api.player.events.PlayerAttackRecord
 import org.rsmod.api.player.events.ResourceKind
 import org.rsmod.api.player.events.attackRecord
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
@@ -20,6 +21,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.magicLvl
 import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.player.vars.enumVarBit
+import org.rsmod.api.random.GameRandom
 import org.rsmod.api.spells.runes.MagicRunes
 import org.rsmod.api.spells.runes.combo.ComboRuneRepository
 import org.rsmod.api.spells.runes.compact.CompactRuneRepository
@@ -45,6 +47,7 @@ constructor(
     private val runeSubs: RuneSubstituteRepository,
     private val questRequirements: Set<SpellQuestRequirement>,
     private val eventBus: EventBus,
+    private val random: GameRandom,
 ) {
     private val Player.spellbook by enumVarBit<Spellbook>("varbit.spellbook")
 
@@ -165,7 +168,11 @@ constructor(
             return CastResult.Failure.NotEnoughVarBit
         }
 
-        val invSources = sources.filterIsInstance<MagicRunes.Source.InvSource>()
+        val record = player.attackRecord
+        val (saved, spent) = sourced.partition { record?.rollSave(random) == true }
+        val spentSources = spent.flatMap { it.sources }
+
+        val invSources = spentSources.filterIsInstance<MagicRunes.Source.InvSource>()
 
         val consume = ArrayList<InvObj>(invSources.size)
         for (source in invSources) {
@@ -177,13 +184,18 @@ constructor(
             consume += invObj.copy(count = required)
         }
 
-        // An empty transaction reports failure, and a cast paid entirely from a rune pouch or
-        // another varbit source has nothing to take from the inventory.
+        // A saved Sunfire rune still counts as used, so the spell keeps its bonus.
+        val usedSunfire =
+            sources.filterIsInstance<MagicRunes.Source.InvSource>().any {
+                it.obj == "obj.sunfirerune" && player.inv[it.slot].isType(it.obj)
+            }
+
+        // An empty transaction reports failure, and pouch-only or fully saved casts have none.
         if (consume.isNotEmpty() && !player.invDelAll(player.inv, consume, strict = true).success) {
             return CastResult.Failure.NotEnoughInvObj
         }
 
-        for (source in varbitSources) {
+        for (source in spentSources.filterIsInstance<MagicRunes.Source.VarBitSource>()) {
             val result = player.vars[source.varbit] - source.count
             check(result >= 0) {
                 "Expected result to be positive: " +
@@ -192,17 +204,26 @@ constructor(
             VarPlayerIntMapSetter.set(player, source.varbit, result)
         }
 
-        player.attackRecord?.let { record ->
-            for (source in invSources) {
-                record.addResource(ResourceKind.Rune, runeType(source.obj), source.count, false)
-            }
-            for (source in varbitSources) {
-                record.addResource(ResourceKind.Rune, runeType(source.obj), source.count, false)
-            }
+        if (record != null) {
+            spent.forEach { record.addRunes(it, saved = false) }
+            saved.forEach { record.addRunes(it, saved = true) }
         }
 
-        val usedSunfire = consume.any { it.isType("obj.sunfirerune") }
         return CastResult.Success.Consumed(usedSunfire)
+    }
+
+    private fun PlayerAttackRecord.addRunes(
+        runes: MagicRunes.Validation.Valid.HasEnough,
+        saved: Boolean,
+    ) {
+        for (source in runes.sources) {
+            when (source) {
+                is MagicRunes.Source.InvSource ->
+                    addResource(ResourceKind.Rune, runeType(source.obj), source.count, saved)
+                is MagicRunes.Source.VarBitSource ->
+                    addResource(ResourceKind.Rune, runeType(source.obj), source.count, saved)
+            }
+        }
     }
 
     public fun validateSpell(player: Player, spell: MagicSpell): List<MagicRunes.Validation> {

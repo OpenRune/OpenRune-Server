@@ -2,6 +2,7 @@ package org.rsmod.api.player.events
 
 import dev.openrune.types.ItemServerType
 import org.rsmod.api.attr.AttributeKey
+import org.rsmod.api.random.GameRandom
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
@@ -33,7 +34,15 @@ internal constructor(
     public var neverMiss: Boolean = false
         private set
 
+    private var saveChance = 0
+    private var specialSaveChance = 0
     private var prepared = false
+
+    public fun rollSave(random: GameRandom): Boolean =
+        saveChance > 0 && random.of(maxExclusive = PERCENT) < saveChance
+
+    public fun rollSpecialSave(random: GameRandom): Boolean =
+        specialSaveChance > 0 && random.of(maxExclusive = PERCENT) < specialSaveChance
 
     internal val rolls = ArrayList<AttackRoll>(1)
     internal val resources = ArrayList<ResourceSpend>(1)
@@ -57,6 +66,8 @@ internal constructor(
         accuracyMultiplier = event.accuracyMultiplier
         accuracyRolls = event.accuracyRolls.coerceAtLeast(1)
         neverMiss = event.neverMiss
+        saveChance = event.saveChance
+        specialSaveChance = event.specialSaveChance
     }
 
     public fun addAccuracy(target: PathingEntity, type: HitType, success: Boolean) {
@@ -87,6 +98,10 @@ internal constructor(
 
     public fun addHit(hit: Hit) {
         hits += hit
+    }
+
+    private companion object {
+        const val PERCENT = 100
     }
 }
 

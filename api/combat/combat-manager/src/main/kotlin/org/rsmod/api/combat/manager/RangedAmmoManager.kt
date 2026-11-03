@@ -133,8 +133,10 @@ constructor(
         dropChance: Int,
         dropDuration: Int,
     ) {
-        val conserve = RangedAmmunition.conserveAmmo(player, random)
-        player.attackRecord?.addResource(ResourceKind.Ammo, ammoType, ammoCount, conserve)
+        val record = player.attackRecord
+        val conserve =
+            RangedAmmunition.conserveAmmo(player, random) || record?.rollSave(random) == true
+        record?.addResource(ResourceKind.Ammo, ammoType, ammoCount, conserve)
         if (!conserve) {
             RangedAmmunition.detractAmmo(player, ammoWearpos, ammoType, ammoCount, eventBus)
         }
