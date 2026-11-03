@@ -8,6 +8,7 @@ import dev.or2.central.account.Rights
 import org.rsmod.api.player.events.NpcKilledEvent
 import org.rsmod.api.invtx.PlayerInvChangedEvent
 import org.rsmod.api.player.events.PlayerAreaEvents
+import org.rsmod.api.player.events.PlayerAttackEvents
 import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.PlayerLevelEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
@@ -210,6 +211,10 @@ public fun ScriptContext.onPlayerXpGain(action: PlayerXpEvents.Gain.() -> Unit):
 
 public fun ScriptContext.onPlayerHit(action: PlayerHitEvents.Impact.() -> Unit): Unit =
     onEvent(action)
+
+public fun ScriptContext.onPlayerAttackImpact(
+    action: PlayerAttackEvents.HitImpact.() -> Unit
+): Unit = onEvent(action)
 
 public fun ScriptContext.onWorldMapClick(
     requiredRights: Rights,
