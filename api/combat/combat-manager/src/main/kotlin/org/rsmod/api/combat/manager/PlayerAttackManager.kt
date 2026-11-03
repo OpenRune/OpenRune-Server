@@ -185,9 +185,7 @@ constructor(
      * @param cycles The number of cycles to wait before the next attack can be performed.
      */
     public fun setNextAttackDelay(player: Player, cycles: Int) {
-        eventBus.prepareAttackRecord(player)
-        player.attackRecord?.cycles = cycles
-        player.actionDelay = player.currentMapClock + cycles
+        player.actionDelay = player.currentMapClock + eventBus.prepareAttackRecord(player, cycles)
     }
 
     /**

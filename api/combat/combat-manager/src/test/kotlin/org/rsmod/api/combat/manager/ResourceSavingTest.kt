@@ -366,7 +366,7 @@ class ResourceSavingTest {
         fun attack(block: () -> Unit): List<ResourceSpend> {
             lastSpends = emptyList()
             events.beginAttackRecord(player, npc, AttackKind.Ranged, null, null)
-            events.prepareAttackRecord(player)
+            events.prepareAttackRecord(player, baseCycles = 4)
             block()
             events.finishAttackRecord(player)
             return lastSpends
