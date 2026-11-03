@@ -4,11 +4,14 @@ import jakarta.inject.Inject
 import org.rsmod.api.player.events.ResourceKind
 import org.rsmod.api.player.events.attackRecord
 import org.rsmod.api.player.vars.intVarp
+import org.rsmod.api.random.GameRandom
 import org.rsmod.api.specials.events.SpecialAttackEvents
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 
-public class SpecialAttackEnergy @Inject constructor(private val eventBus: EventBus) {
+public class SpecialAttackEnergy
+@Inject
+constructor(private val eventBus: EventBus, private val random: GameRandom) {
     private var Player.specialEnergy by intVarp("varp.sa_energy")
 
     public fun hasSpecialEnergy(
@@ -39,11 +42,15 @@ public class SpecialAttackEnergy @Inject constructor(private val eventBus: Event
                 "Use `hasSpecialEnergy` first for validation."
         }
 
-        player.specialEnergy -= cost
+        val record = player.attackRecord
+        val saved = record?.rollSpecialSave(random) == true
+        if (!saved) {
+            player.specialEnergy -= cost
+        }
 
-        player.attackRecord?.let { record ->
+        if (record != null) {
             record.special = true
-            record.addResource(ResourceKind.SpecialEnergy, null, cost, false)
+            record.addResource(ResourceKind.SpecialEnergy, null, cost, saved)
         }
     }
 
