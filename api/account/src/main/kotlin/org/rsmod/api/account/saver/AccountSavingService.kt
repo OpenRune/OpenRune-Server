@@ -8,10 +8,10 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.min
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withTimeoutOrNull
-import org.rsmod.api.account.character.CharacterDataStage
 import org.rsmod.api.account.character.main.CharacterAccountRepository
 import org.rsmod.api.account.saver.request.AccountSaveRequest
 import org.rsmod.api.account.saver.request.AccountSaveResponse
@@ -26,14 +26,13 @@ public class AccountSavingService
 constructor(
     private val database: GameDatabase,
     private val repository: CharacterAccountRepository,
-    private val pipelines: Set<CharacterDataStage.Pipeline>,
     private val serverConfig: ServerConfig,
 ) : ScheduledDrainService {
     private val logger = InlineLogger()
 
     private val pendingRequests = ConcurrentLinkedQueue<AccountSaveRequest>()
 
-    private val pendingBatch = ArrayList<AccountSaveRequest>(REQUESTS_PER_BATCH)
+    private val pendingBatch = ArrayDeque<AccountSaveRequest>(REQUESTS_PER_BATCH)
     private var consecutiveFailureCount = AtomicInteger(0)
 
     public fun queue(request: AccountSaveRequest) {
@@ -66,46 +65,47 @@ constructor(
     }
 
     private suspend fun handlePendingBatch() {
-        for (request in pendingBatch) {
-            handleRequestWithTimeout(request, REQUEST_TIMEOUT_MS)
+        while (pendingBatch.isNotEmpty()) {
+            handleRequestWithTimeout(pendingBatch.first(), REQUEST_TIMEOUT_MS)
+            pendingBatch.removeFirst()
         }
-        pendingBatch.clear()
     }
 
     private suspend fun handleRequestWithTimeout(request: AccountSaveRequest, timeoutMillis: Long) {
-        val result = withTimeoutOrNull(timeoutMillis) { handleRequest(request) }
-        if (result == null) {
-            logger.warn { "Account save timed out for: ${request.player}" }
-            incrementSaveAttempts(request)
+        while (true) {
+            try {
+                val result = withTimeoutOrNull(timeoutMillis) {
+                    saveSegments(request)
+                    true
+                }
+                if (result != null) {
+                    invokeSaveCallback(request)
+                    resetConsecutiveFailures()
+                    return
+                }
+                logger.warn { "Account save timed out for character: ${request.characterId}" }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                logger.warn(e) { "Could not save character: ${request.characterId}" }
+            }
             incrementConsecutiveFailures()
-        }
-    }
-
-    private suspend fun handleRequest(request: AccountSaveRequest) {
-        try {
-            saveSegments(request)
-            invokeSaveCallback(request)
-            resetConsecutiveFailures()
-        } catch (e: Exception) {
-            incrementSaveAttempts(request)
-            incrementConsecutiveFailures()
-            logger.warn(e) { "Could not save player account: ${request.player}" }
+            if (!incrementSaveAttempts(request)) {
+                return
+            }
         }
     }
 
     private suspend fun saveSegments(request: AccountSaveRequest) {
-        // Schema and data both come from the player, so a request queued cycles ago cannot write
-        // one world type's state into another's tables.
-        database.withSchemaTransaction(request.player.worldType.key) { connection ->
+        database.withSchemaTransaction(request.worldType.key) { connection ->
             repository.save(
                 connection,
-                request.player,
-                request.accountId,
+                request.account,
                 request.characterId,
                 serverConfig.world,
             )
-            for (pipeline in pipelines) {
-                pipeline.save(connection, request.player, request.characterId)
+            for (segment in request.segments) {
+                segment.save(connection, request.characterId)
             }
         }
     }
@@ -145,8 +145,9 @@ constructor(
         val result =
             withTimeoutOrNull(SHUTDOWN_TIMEOUT_MS) {
                 while (isActive) {
-                    val request = pendingRequests.poll() ?: break
+                    val request = nextPendingRequest() ?: break
                     handleRequestWithTimeout(request, SHUTDOWN_REQUEST_TIMEOUT_MS)
+                    removePendingRequest()
                     saveCount++
                 }
             }
@@ -164,7 +165,7 @@ constructor(
 
         logger.error { "Force-save failed due to timeout. Rejecting all pending requests..." }
 
-        val leftover = pendingRequests.size
+        val leftover = pendingBatch.size + pendingRequests.size
         val emergencyRejection =
             withTimeoutOrNull(SHUTDOWN_EMERGENCY_TIMEOUT_MS) { rejectPendingRequests() }
 
@@ -173,29 +174,43 @@ constructor(
             return
         }
 
-        val usernames = pendingRequests.take(100).joinToString(",") { it.player.displayName }
+        val usernames =
+            (pendingBatch.asSequence() + pendingRequests.asSequence())
+                .take(100).joinToString(",") { it.account.displayName }
         logger.error {
             "Emergency shutdown measure timed out! " +
-                "(${pendingRequests.size} pending requests, usernames=$usernames)"
+                "(${pendingBatch.size + pendingRequests.size} pending requests, usernames=$usernames)"
         }
     }
 
-    /** Rejects the remaining [pendingRequests], sending an internal server error response. */
+    private fun nextPendingRequest(): AccountSaveRequest? =
+        pendingBatch.firstOrNull() ?: pendingRequests.peek()
+
+    private fun removePendingRequest() {
+        if (pendingBatch.isNotEmpty()) {
+            pendingBatch.removeFirst()
+        } else {
+            pendingRequests.poll()
+        }
+    }
+
+    /** Rejects remaining saves, including any batch interrupted during shutdown. */
     private fun rejectPendingRequests() {
         while (true) {
-            val request = pendingRequests.poll() ?: break
+            val request = nextPendingRequest() ?: break
             val response = AccountSaveResponse.InternalShutdownError(request.player)
             safeInvokeCallback(request, response)
+            removePendingRequest()
         }
     }
 
-    private fun incrementSaveAttempts(request: AccountSaveRequest) {
+    private fun incrementSaveAttempts(request: AccountSaveRequest): Boolean {
         if (request.attempts++ < REQUEST_RETRIES_BEFORE_FAILURE) {
-            queue(request)
-            return
+            return true
         }
         safeInvokeCallback(request, AccountSaveResponse.ExcessiveRetries(request.player))
-        logger.error { "Reached max retry attempts for player: ${request.player}" }
+        logger.error { "Reached max retry attempts for character: ${request.characterId}" }
+        return false
     }
 
     // Ideally, any errors would be handled within the callback itself. However, since this is
@@ -205,7 +220,7 @@ constructor(
         try {
             request.callback(response)
         } catch (e: Exception) {
-            val message = "Error handling save request callback for: $request (response=$response)"
+            val message = "Error handling save callback for character: ${request.characterId}"
             logger.error(e) { message }
         }
     }

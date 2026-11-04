@@ -26,6 +26,7 @@ constructor(
 
     private val queuedSave: MutableSet<Player> =
         ConcurrentHashMap.newKeySet()
+    private val dirtyPlayers: MutableSet<Player> = HashSet()
 
     private var periodicCounter: Int = PERIODIC_INTERVAL_CYCLES
 
@@ -54,10 +55,20 @@ constructor(
             periodicCounter = PERIODIC_INTERVAL_CYCLES
             for (player in players) {
                 if (player.canProcess && player.persistenceSaveEligible()) {
-                    requestBackgroundSave(player)
+                    onPersistenceRelevantChange(player)
                 }
             }
         }
+        val iterator = dirtyPlayers.iterator()
+        while (iterator.hasNext()) {
+            val player = iterator.next()
+            if (!player.persistenceSaveEligible()) {
+                iterator.remove()
+            } else if (requestBackgroundSave(player)) {
+                iterator.remove()
+            }
+        }
+        accountManager.capturePendingSaves()
     }
 
     private fun onPersistentAttrMutated(@Suppress("UNUSED_PARAMETER") key: AttributeKey<*>) {
@@ -69,26 +80,25 @@ constructor(
         if (!player.persistenceSaveEligible()) {
             return
         }
-        requestBackgroundSave(player)
+        dirtyPlayers.add(player)
     }
 
-    private fun requestBackgroundSave(player: Player) {
-        if (!player.persistenceSaveEligible()) {
-            return
+    private fun requestBackgroundSave(player: Player): Boolean {
+        if (!player.persistenceSaveEligible() || !queuedSave.add(player)) {
+            return false
         }
-        if (!queuedSave.add(player)) {
-            return
-        }
+        val displayName = player.displayName
         accountManager.save(player) { response ->
             queuedSave.remove(player)
             when (response) {
                 is AccountSaveResponse.Success -> {}
                 is AccountSaveResponse.ExcessiveRetries ->
-                    logger.error { "Background autosave failed after retries for ${player.displayName}" }
+                    logger.error { "Background autosave failed after retries for $displayName" }
                 is AccountSaveResponse.InternalShutdownError ->
-                    logger.error { "Background autosave shutdown error for ${player.displayName}" }
+                    logger.error { "Background autosave shutdown error for $displayName" }
             }
         }
+        return true
     }
 
     private companion object {
@@ -97,4 +107,5 @@ constructor(
 }
 
 private fun Player.persistenceSaveEligible(): Boolean =
-    accountId > 0 && characterId > 0 && processedMapClock > 0 && !persistenceSuspended
+    accountId > 0 && characterId > 0 && processedMapClock > 0 &&
+        !persistenceSuspended && canProcess && !pendingLogout

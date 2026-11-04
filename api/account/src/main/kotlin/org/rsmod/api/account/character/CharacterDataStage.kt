@@ -37,16 +37,13 @@ public class CharacterDataStage {
          */
         public fun append(connection: DatabaseConnection, metadata: CharacterMetadataList)
 
-        /**
-         * Called when a character is being saved to the database.
-         *
-         * Implementations should persist the current state of the [player] to the database, using
-         * the associated [characterId] as the reference for storage.
-         *
-         * This is typically used during logout or periodic save events to write back any modified
-         * data (such as inventories, stats, etc.).
-         */
-        public fun save(connection: DatabaseConnection, player: Player, characterId: Int)
+        /** Captures detached save data on the game thread, at the end-of-tick boundary. */
+        public fun capture(player: Player): Save
+    }
+
+    /** A detached save operation. Implementations must not retain mutable player state. */
+    public fun interface Save {
+        public fun save(connection: DatabaseConnection, characterId: Int)
     }
 
     /**
