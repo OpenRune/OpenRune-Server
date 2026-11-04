@@ -678,29 +678,60 @@ Observed warning timing: warning locs/projanim at T, impact at **T+3**
 (`log 1`: 233→236, 433→436, 713→716, 793→796, 913→916, 1193→1196, 1213→1216,
 1333→1336, 1453→1456). Use exactly 3 ticks.
 
-Attack-frequency model (wiki; calibrate with logs):
+Attack tick (derived from the packet logs — see Appendix A.5):
 
-- Standard attempts are more common at high energy: roll a random number up to
-  3500; if it is **lower than current energy**, the standard attack proceeds.
-- Brazier/pyromancer attacks are more common at low energy: roll up to 3500; if
-  it is **higher than current energy**, a special attack proceeds.
-- The interval between attack attempts is random (Jagex: "the amount of time
-  between these attacks is random"). The exact base interval is the main
-  tuning unknown; start from the observed mass/solo event rates and make the
-  interval a constant with a test that checks event counts per energy band.
+- The boss acts on a **5-tick global lattice**. Every boss-caused brazier state
+  change, every standard cold message/hit, and every area warning projectile
+  falls on a 5-tick residue within a round:
+  - log 2: 74/74 non-round-end brazier boss events at `tick % 5 == 4`; 33/33
+    standard cold messages at `% 5 == 3`; 45/45 `hit id=75` at `% 5 == 4`;
+  - log 1 round 1: 19/19 brazier boss events at `% 5 == 3`; round 2/3: 23/23
+    at `% 5 == 2`; all 10 area `wint_area_attack_spot` projectiles at
+    `% 5 == 3`.
+- The phase is constant within a round but can change at a round boundary
+  (log 1: 3 -> 2). The standard and area timers have their own phase relative
+  to the brazier timer; implement them as separate 5-tick timers (or one
+  heartbeat with per-type offsets), not as one shared phase.
+- **A single target cannot be hit on consecutive 5-tick waves**: each brazier
+  has a 10-tick cooldown. In log 2 only brazier 4 was lit; its 75 boss events
+  have a minimum gap of 10 ticks (all gaps 10, 15, 20, ...), never 5. In log 1
+  different braziers are hit on consecutive waves (gap 5), but the same brazier
+  is never hit within 10 ticks. Assume the same 10-tick cooldown for
+  pyromancers.
+- **Brazier light:heavy weight ≈ 2:1.** In log 2 (single lit brazier) there
+  are 48 light and 26 heavy boss events excluding the round-end cleanup:
+  64.9% light (95% CI ~54–76%), consistent with 2:1 (66.7%).
+- The visible special rate falls as energy rises: per-wave visible special
+  rate by 350-energy bucket is 27.3% at 0–349, 25.4% at 350–699, 20% at
+  700–1049, 18.5% at 1050–1399, 20% at 1400–1749, 10.8% at 1750–2099, 14.3%
+  at 2100–2449, and 0% at 2450+. This is consistent with the wiki's
+  energy-gated roll, but the absolute weights cannot be read directly because
+  attacks on unlit braziers/downed pyromancers leave no state change.
 
-Suggested initial scheduler:
+What cannot be derived exactly:
+
+- Full special-type weights (area vs light vs heavy vs pyro). In log 2 only
+  brazier 4 was lit and only pyromancer 4 was healthy for most of the round, so
+  3/4 of brazier/pyromancer targets were invisible. Log 1 has all pyromancers
+  healthy but they are healed between the 2-tick HUD samples, so it records no
+  pyro-down states at all.
+- The standard-vs-special split: standard attacks on other players are not
+  logged, and the local player's 10-tick cooldown hides repeats.
+- Area weight: only 1 visible area warning in log 2 and 10 in log 1; warnings
+  are only rendered near the player.
+
+Working model for implementation:
 
 ```
-nextAttackCycle = cycle + random(ATTACK_MIN_TICKS..ATTACK_MAX_TICKS)
-if random(0..3500) < energy -> standard
-else if random(0..3500) > energy -> special (weighted pick)
+every 5 ticks, per subsystem timer:
+  standard: if roll(0..3500) < energy and player off 10-tick cooldown -> hit
+  special:  if roll(0..3500) > energy -> pick a target whose 10-tick cooldown
+            is ready; brazier type light:heavy = 2:1
 ```
 
-Then tune `ATTACK_MIN_TICKS`/`ATTACK_MAX_TICKS` and the special weights so a
-solo round produces roughly the observed mix: standard cold ~33 hits, brazier
-breaks ~26, area warnings ~20 over ~2580 ticks (log 2), with standards becoming
-rare and specials common as energy falls.
+Do not add a random `ATTACK_MIN_TICKS..ATTACK_MAX_TICKS` interval; the 5-tick
+heartbeat and per-target `lastHitCycle` reproduce the observed spacing. The
+remaining pyro/area weights need a cleaner log (see §19).
 
 Other attack rules:
 
@@ -1083,9 +1114,12 @@ raw logs to the repo; keep a fixture summary in the test.
 
 ## 19. Open questions (resolve before/while coding)
 
-1. Exact global attack interval and special weights. The wiki gives the roll
-   model but not the base interval; use log 1/2 event counts and live-client
-   tuning.
+1. Special weights beyond brazier light:heavy. The 5-tick global heartbeat and
+   the 10-tick per-target cooldown are now derived from the logs (Appendix
+   A.5); brazier light:heavy is ~2:1. Full special-type weights are still
+   censored because most targets were unlit/downed or off-screen. Collect a
+   solo log with all four braziers lit and all four pyromancers healthy for a
+   full round, or use server-side/deob data, to pin the pyro/area weights.
 2. Exact standard-damage rounding (wiki says floor; the log shows 6 at 99 FM
    with 4 warm/4 lit, where floor gives 5). Determine whether the live formula
    rounds or has an off-by-one.
@@ -1208,6 +1242,76 @@ The script sends `wint_update` every 2 ticks.
 - Brew'ma: `(1635, 3986, 0)`.
 - Camp: NPCs around `(1623–1634, 3935–3953)`; reward cart/bank east of the
   camp around `(1632, 3942)`.
+
+### A.5 Attack-grid derivation
+
+The `wint_update` stream gives the global state of all four braziers and all
+four pyromancers every 2 ticks. Cross-checking that against the 1-tick loc
+changes gives a complete boss-action timeline.
+
+**5-tick heartbeat.** Within each round every observed attack effect is
+congruent modulo 5:
+
+| Log / round | Event type | Count | `tick % 5` |
+|---|---|---:|---:|
+| log 2 (single round) | boss brazier events (excl. round-end) | 74 | 4 |
+| log 2 | standard cold messages | 33 | 3 |
+| log 2 | `hit id=75` (all) | 45 | 4 |
+| log 1 round 1 | boss brazier events | 19 | 3 |
+| log 1 round 2/3 | boss brazier events | 23 | 2 |
+| log 1 all rounds | area `wint_area_attack_spot` projectiles | 10 | 3 |
+
+The phase changes only at a round boundary (log 1: 3 -> 2), so this is a
+per-round 5-tick scheduler, not a random interval. The standard and area
+timers have their own phase relative to the brazier timer.
+
+**10-tick per-target cooldown.** In log 2 only brazier 4 was lit. Its 75 boss
+events have gaps `10, 15, 20, 25, ...`; the minimum is 10 ticks, never 5. In
+log 1 different braziers can be hit on consecutive 5-tick waves (gap 5), but
+the same brazier never takes two boss attacks within 10 ticks (excluding the
+round-end cleanup where all braziers are extinguished together). Treat each
+brazier (and, by extension, each pyromancer) as having a 10-tick
+`lastHitCycle` gate.
+
+**Brazier light:heavy.** Log 2, excluding the round-end cleanup: 48 light,
+26 heavy = 64.9% light (95% CI ~54–76%), i.e. consistent with a **2:1**
+light:heavy weight.
+
+**Energy dependence.** Visible specials per 5-tick wave by 350-energy bucket:
+
+| Energy | Waves | Visible special waves | Rate |
+|---|---:|---:|---:|
+| 0–349 | 99 | 27 | 27.3% |
+| 350–699 | 81 | 16 | 19.8% |
+| 700–1049 | 57 | 10 | 17.5% |
+| 1050–1399 | 69 | 12 | 17.4% |
+| 1400–1749 | 55 | 9 | 16.4% |
+| 1750–2099 | 41 | 5 | 12.2% |
+| 2100–2449 | 50 | 6 | 12.0% |
+| 2450–2799 | 39 | 1 | 2.6% |
+| 2800–3149 | 20 | 0 | 0% |
+
+This is a **censored lower bound**: log 2 had only brazier 4 lit and only
+pyromancer 4 healthy for most of the round, so attacks on the other six
+targets leave no state change. It is consistent with the wiki's energy-gated
+roll but does not pin the absolute weights.
+
+**Why full weights are not derivable from these logs.** The boss can target
+unlit braziers and downed pyromancers, and those attacks are invisible in the
+client state stream. Log 1 had all pyromancers healthy but they were healed
+between the 2-tick HUD samples, so it records **zero** pyro-down states; log 2
+had only one healthy pyromancer. Area warnings are only rendered near the
+player (1 visible in log 2, 10 in log 1). Standard attacks on other players are
+not logged. A clean measurement needs a solo round with all four braziers lit,
+all four pyromancers healthy, and the player outside the safe zone for the
+whole round.
+
+**Working model.** 5-tick heartbeat per subsystem, 10-tick per-target
+cooldown, brazier light:heavy = 2:1. A 2:1:1 light:heavy:pyro split is
+consistent with the low-energy data (22 brazier-4 attacks vs 7 pyro-4 attacks
+at 0–349 energy ≈ 3:1, which is what 2:1:1 predicts when brazier light+heavy
+are counted together), but that is an inference, not a proof. The area weight
+remains unmeasured.
 
 ---
 
