@@ -90,8 +90,25 @@ constructor(
     private var nextHud = 0
     private var worldReady = false
     private var warmthLock = false
-    private val actionTokens = mutableMapOf<Player, Long>()
-    private var actionSequence = 0L
+
+    private enum class ActionType {
+        CHOP,
+        FLETCH,
+        FEED,
+        PICK,
+    }
+
+    private class ActionState(
+        val type: ActionType,
+        val anchor: CoordGrid,
+        val target: CoordGrid?,
+        val brazierIndex: Int,
+        val anim: String?,
+        var nextCycle: Int,
+        var nextAnimCycle: Int,
+    )
+
+    private val actions = mutableMapOf<Player, ActionState>()
 
     private var storm: LocInfo? = null
 
@@ -172,6 +189,7 @@ constructor(
         if (!worldReady && sessions.isEmpty()) return
         ensureWorld()
 
+        tickActions()
         processPending()
 
         if (phase == Phase.ACTIVE) {
@@ -504,17 +522,151 @@ constructor(
         return player.statRandom(random, "stat.woodcutting", low, high, invisibleLevels)
     }
 
-    fun startAction(player: Player): Long {
-        actionSequence += 1
-        val token = actionSequence
-        actionTokens[player] = token
-        return token
+    fun beginChop(player: Player, loc: BoundLocInfo) {
+        if (!hasAxe(player)) {
+            player.mes("You need an axe to chop down this tree.")
+            return
+        }
+        if (player.inv.isFull()) {
+            player.mes("Your inventory is too full to hold any more roots.")
+            return
+        }
+        val anim = axeAnim(player) ?: Wintertodt.ANIM_CHOP
+        actions[player] =
+            ActionState(
+                type = ActionType.CHOP,
+                anchor = player.coords,
+                target = loc.coords,
+                brazierIndex = -1,
+                anim = anim,
+                nextCycle = mapClock.cycle + 1,
+                nextAnimCycle = mapClock.cycle + 6,
+            )
+        player.anim(anim)
+        player.mes("You swing your axe at the roots.")
     }
 
-    fun isActionActive(player: Player, token: Long): Boolean = actionTokens[player] == token
+    fun beginPick(player: Player, loc: BoundLocInfo) {
+        if (player.inv.isFull()) {
+            player.mes("The herb shatters as it hits the floor.")
+            return
+        }
+        actions[player] =
+            ActionState(
+                type = ActionType.PICK,
+                anchor = player.coords,
+                target = loc.coords,
+                brazierIndex = -1,
+                anim = Wintertodt.ANIM_HERB,
+                nextCycle = mapClock.cycle + 3,
+                nextAnimCycle = 0,
+            )
+        player.anim(Wintertodt.ANIM_HERB)
+    }
+
+    fun beginFletch(player: Player) {
+        if (player.inv.count(Wintertodt.ROOT) <= 0) return
+        actions[player] =
+            ActionState(
+                type = ActionType.FLETCH,
+                anchor = player.coords,
+                target = null,
+                brazierIndex = -1,
+                anim = Wintertodt.ANIM_FLETCH,
+                nextCycle = mapClock.cycle + 4,
+                nextAnimCycle = 0,
+            )
+        player.anim(Wintertodt.ANIM_FLETCH)
+    }
+
+    fun beginFeed(player: Player, index: Int) {
+        if (!isAtBrazier(player, index)) return
+        if (!hasFeed(player)) {
+            player.mes("You have run out of bruma roots.")
+            return
+        }
+        actions[player] =
+            ActionState(
+                type = ActionType.FEED,
+                anchor = player.coords,
+                target = braziers.getOrNull(index)?.coords,
+                brazierIndex = index,
+                anim = Wintertodt.ANIM_FEED,
+                nextCycle = mapClock.cycle + 3,
+                nextAnimCycle = 0,
+            )
+        player.anim(Wintertodt.ANIM_FEED)
+        player.soundSynth(2596)
+        player.soundSynth(2596, delay = 15)
+    }
 
     fun stopAction(player: Player) {
-        actionTokens.remove(player)
+        actions.remove(player)
+    }
+
+    private fun tickActions() {
+        if (actions.isEmpty()) return
+        val cycle = mapClock.cycle
+        for ((player, action) in actions.entries.toList()) {
+            if (!player.canProcess) {
+                actions.remove(player)
+                continue
+            }
+            if (action.type != ActionType.FLETCH && player.coords != action.anchor) {
+                actions.remove(player)
+                continue
+            }
+            if (action.type == ActionType.FEED && !isAtBrazier(player, action.brazierIndex)) {
+                actions.remove(player)
+                continue
+            }
+            if (action.nextAnimCycle > 0 && cycle >= action.nextAnimCycle) {
+                action.anim?.let { player.anim(it) }
+                action.nextAnimCycle = cycle + 6
+            }
+            if (cycle < action.nextCycle) continue
+            when (action.type) {
+                ActionType.CHOP -> {
+                    if (player.inv.isFull()) {
+                        player.mes("Your inventory is too full to hold any more roots.")
+                        actions.remove(player)
+                        continue
+                    }
+                    chopSound(player)
+                    if (chopSuccess(player)) chopRoot(player)
+                    action.nextCycle = cycle + 3
+                }
+                ActionType.PICK -> {
+                    if (player.inv.isFull()) {
+                        player.mes("The herb shatters as it hits the floor.")
+                        actions.remove(player)
+                        continue
+                    }
+                    pickHerb(player)
+                    player.anim(Wintertodt.ANIM_HERB)
+                    action.nextCycle = cycle + 3
+                }
+                ActionType.FLETCH -> {
+                    if (player.inv.count(Wintertodt.ROOT) <= 0) {
+                        actions.remove(player)
+                        continue
+                    }
+                    fletch(player)
+                    player.anim(Wintertodt.ANIM_FLETCH)
+                    action.nextCycle = cycle + 4
+                }
+                ActionType.FEED -> {
+                    if (!feed(player, action.brazierIndex)) {
+                        actions.remove(player)
+                        continue
+                    }
+                    player.anim(Wintertodt.ANIM_FEED)
+                    player.soundSynth(2596)
+                    player.soundSynth(2596, delay = 15)
+                    action.nextCycle = cycle + 3
+                }
+            }
+        }
     }
 
     fun chopSound(player: Player) {
