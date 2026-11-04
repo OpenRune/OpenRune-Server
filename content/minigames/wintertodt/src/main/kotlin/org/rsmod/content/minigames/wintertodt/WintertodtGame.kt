@@ -41,6 +41,7 @@ import org.rsmod.game.loc.LocShape
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.routefinder.collision.CollisionFlagMap
+import org.rsmod.routefinder.flag.CollisionFlag
 
 @Singleton
 class WintertodtGame
@@ -169,6 +170,7 @@ constructor(
 
     fun enter(player: Player) {
         ensureWorld()
+        for (brazier in braziers) openBrazierApproaches(brazier.coords)
         if (sessions.containsKey(player)) return
 
         val session = WintertodtSession(player)
@@ -597,6 +599,7 @@ constructor(
 
     fun startRound() {
         ensureWorld()
+        for (brazier in braziers) openBrazierApproaches(brazier.coords)
         if (phase == Phase.ACTIVE) return
         phase = Phase.ACTIVE
         energy = Wintertodt.ENERGY_MAX
@@ -928,6 +931,7 @@ constructor(
                     locId(Wintertodt.BRAZIER_BROKEN) -> BrazierState.BROKEN
                     else -> BrazierState.UNLIT
                 }
+            openBrazierApproaches(brazier.coords)
         }
 
         for (pyro in pyromancers) {
@@ -1022,6 +1026,32 @@ constructor(
         coords.level == base.level &&
             coords.x in (base.x - 1)..(base.x + 3) &&
             coords.z in (base.z - 1)..(base.z + 3)
+
+    /**
+     * The cache collision seals all but the arena-facing corner of each brazier. Open the ring
+     * tiles so players can reach the brazier from any side.
+     */
+    private fun openBrazierApproaches(base: CoordGrid) {
+        val level = base.level
+        val wallFlags =
+            CollisionFlag.WALL_NORTH or
+                CollisionFlag.WALL_NORTH_EAST or
+                CollisionFlag.WALL_NORTH_WEST or
+                CollisionFlag.WALL_SOUTH or
+                CollisionFlag.WALL_SOUTH_EAST or
+                CollisionFlag.WALL_SOUTH_WEST or
+                CollisionFlag.WALL_EAST or
+                CollisionFlag.WALL_WEST or
+                CollisionFlag.BLOCK_WALK
+        for (x in (base.x - 1)..(base.x + 3)) {
+            flags.remove(x, base.z - 1, level, wallFlags)
+            flags.remove(x, base.z + 3, level, wallFlags)
+        }
+        for (z in (base.z - 1)..(base.z + 3)) {
+            flags.remove(base.x - 1, z, level, wallFlags)
+            flags.remove(base.x + 3, z, level, wallFlags)
+        }
+    }
 
     private fun itemId(name: String): Int =
         ServerCacheManager.getItem(name.asRSCM(RSCMType.OBJ))?.id ?: -1
