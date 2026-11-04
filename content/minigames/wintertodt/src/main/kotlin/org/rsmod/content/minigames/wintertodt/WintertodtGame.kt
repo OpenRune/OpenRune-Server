@@ -50,6 +50,7 @@ import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
+import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.loc.BoundLocInfo
@@ -297,12 +298,18 @@ constructor(
     fun onLogin(player: Player) {
         ensureCart()
         player.wintWarmth = Wintertodt.WARMTH_MAX
-        if (Wintertodt.isInPrison(player.coords)) enter(player) else clearEncounterItems(player)
+        if (Wintertodt.isInPrison(player.coords)) {
+            PathingEntityCommon.teleport(player, flags, Wintertodt.EXIT)
+        }
+        clearEncounterItems(player)
     }
 
     fun onLogout(player: Player) {
         stopAction(player)
         sessions.remove(player)
+        if (Wintertodt.isInPrison(player.coords)) {
+            PathingEntityCommon.teleport(player, flags, Wintertodt.EXIT)
+        }
     }
 
     fun onCoordsChanged(player: Player) {
@@ -676,7 +683,7 @@ constructor(
 
     private fun showPyromancerHealth(pyro: Pyromancer) {
         val npc = pyro.npc ?: return
-        npc.hitpoints = pyro.hp
+        npc.hitpoints = pyro.hp.coerceAtLeast(1)
         npc.baseHitpointsLvl = 14
         val fill = (pyro.hp.coerceIn(0, 14) * Wintertodt.HEADBAR_SEGMENTS) / 14
         npc.showHeadbar(

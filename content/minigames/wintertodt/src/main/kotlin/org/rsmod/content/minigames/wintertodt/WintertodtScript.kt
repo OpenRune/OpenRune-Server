@@ -123,6 +123,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
                     "locs" -> game.debugLocations(player)
                     "lockwarmth" -> game.toggleWarmthLock(player)
                     "break" -> game.forceBrazierBreak()
+                    "logout" -> player.manualLogout = true
                     else -> player.mes(invalidArgs ?: "Usage: ::wt start|energy|points|warmth|attack")
                 }
             }
