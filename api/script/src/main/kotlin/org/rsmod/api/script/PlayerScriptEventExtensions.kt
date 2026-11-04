@@ -14,6 +14,7 @@ import org.rsmod.api.player.events.PlayerLevelEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
+import org.rsmod.api.player.events.PlayerNpcDropEvents
 import org.rsmod.api.player.events.PlayerShopEvents
 import org.rsmod.api.player.events.PlayerSkillAttemptEvent
 import org.rsmod.api.player.events.PlayerSkillRollEvents
@@ -139,6 +140,13 @@ public fun ScriptContext.onPlayerInteractionFinished(
 ): Unit = onEvent(action)
 
 public fun ScriptContext.onNpcKilled(action: NpcKilledEvent.() -> Unit): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerNpcDropPrepare(
+    action: PlayerNpcDropEvents.Prepare.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerNpcDropped(action: PlayerNpcDropEvents.Dropped.() -> Unit): Unit =
+    onEvent(action)
 
 public fun ScriptContext.onPlayerInvChanged(action: PlayerInvChangedEvent.() -> Unit): Unit =
     onEvent(action)

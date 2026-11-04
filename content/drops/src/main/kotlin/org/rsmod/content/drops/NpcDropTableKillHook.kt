@@ -20,12 +20,16 @@ import org.rsmod.api.droptable.DropRollItem
 import org.rsmod.api.droptable.DropTableRegistry
 import org.rsmod.api.droptable.KillRollContext
 import org.rsmod.api.droptable.rollCount
+import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.player.events.PlayerNpcDropEvents
 import org.rsmod.api.player.output.ClientScripts
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.content.interfaces.collectionlog.CollectionLog
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
+import org.rsmod.game.inv.Inventory
 import org.rsmod.map.CoordGrid
 
 @Singleton
@@ -38,6 +42,7 @@ constructor(
     private val random: GameRandom,
     private val deathDropHooks: Set<NpcDeathDropHook>,
     private val receiveHooks: Set<NpcDropReceiveHook>,
+    private val eventBus: EventBus,
 ) : NpcDeathKillHook {
 
     override fun onKill(context: NpcDeathKillContext) {
@@ -98,20 +103,50 @@ constructor(
                 return
             }
         }
-        val obj = drop.transformObj(receiver) ?: drop.obj
-        val count = drop.rollCount(random)
-        CollectionLog.grant(receiver, obj, count)
-        if (
-            !receiveHooks.any { it.tryReceive(receiver, obj, count) } &&
-                !consumedByHook(obj, count, coords, duration, receiver)
-        ) {
-            val spawned = objRepo.add(obj, coords, duration, receiver, count)
-            ClientScripts.lootTrackerAddLoot(receiver, npc.id, eventId, spawned.type, spawned.count)
+        val prepare =
+            PlayerNpcDropEvents.Prepare(
+                player = receiver,
+                npc = npc,
+                item = drop.transformObj(receiver) ?: drop.obj,
+                count = drop.rollCount(random),
+            )
+        eventBus.publish(prepare)
+        if (!prepare.cancelled && prepare.count > 0) {
+            deliver(prepare, coords, duration, eventId)
         }
         for (bonus in drop.bonusDrops) {
             spawnDrop(bonus, coords, duration, receiver, npc, eventId)
         }
     }
+
+    private fun deliver(
+        prepare: PlayerNpcDropEvents.Prepare,
+        coords: CoordGrid,
+        duration: Int,
+        eventId: Int,
+    ) {
+        val receiver = prepare.player
+        val npc = prepare.npc
+        val obj = prepare.item
+        val count = prepare.count
+        CollectionLog.grant(receiver, obj, count)
+        if (
+            !receiveHooks.any { it.tryReceive(receiver, obj, count) } &&
+                !consumedByHook(obj, count, coords, duration, receiver)
+        ) {
+            if (!receiver.addToDestination(prepare.destination, obj, count)) {
+                objRepo.add(obj, coords, duration, receiver, count)
+            }
+            val objId = obj.asRSCM(RSCMType.OBJ)
+            ClientScripts.lootTrackerAddLoot(receiver, npc.id, eventId, objId, count)
+        }
+        if (eventBus.unbound[PlayerNpcDropEvents.Dropped::class.java] != null) {
+            eventBus.publish(PlayerNpcDropEvents.Dropped(receiver, npc, obj, count))
+        }
+    }
+
+    private fun Player.addToDestination(destination: Inventory?, obj: String, count: Int): Boolean =
+        destination != null && invAdd(destination, obj, count, ignoreVirtualStorage = true).success
 
     private fun consumedByHook(
         obj: String,
