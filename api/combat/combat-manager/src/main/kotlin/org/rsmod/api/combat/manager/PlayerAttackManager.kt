@@ -117,6 +117,7 @@ constructor(
         type: HitType,
         range: IntRange,
         styleBit: Int,
+        spell: ItemServerType? = null,
     ): Int {
         if (source.adminMaxHit || forcesMaxHit(target, styleBit)) {
             source.attackRecord?.addDamage(target, type, range.last, range.last)
@@ -135,6 +136,7 @@ constructor(
                 minHit = range.first,
                 maxHit = range.last,
                 missed = false,
+                spell = spell,
             )
         eventBus.publish(event)
         val maxHit = event.maxHit.coerceAtLeast(0)
@@ -144,7 +146,12 @@ constructor(
         return damage
     }
 
-    private fun rollMissDamage(source: Player, target: PathingEntity, type: HitType): Int {
+    private fun rollMissDamage(
+        source: Player,
+        target: PathingEntity,
+        type: HitType,
+        spell: ItemServerType? = null,
+    ): Int {
         if (eventBus.unbound[PlayerAttackEvents.DamageRoll::class.java] == null) {
             return 0
         }
@@ -156,6 +163,7 @@ constructor(
                 minHit = 0,
                 maxHit = 0,
                 missed = true,
+                spell = spell,
             )
         eventBus.publish(event)
         val damage = (event.damage ?: 0).coerceAtLeast(0)
@@ -1342,7 +1350,7 @@ constructor(
                 attackRate = attackRate,
                 sunfireRune = sunfireRune,
             )
-        return rollDamage(source, target, HitType.Magic, hitRange, FORCED_MAGIC)
+        return rollDamage(source, target, HitType.Magic, hitRange, FORCED_MAGIC, spell)
     }
 
     /**
@@ -1707,7 +1715,7 @@ constructor(
             source = source,
             target = target,
             spell = spell,
-            damage = rollMissDamage(source, target, HitType.Magic),
+            damage = rollMissDamage(source, target, HitType.Magic, spell),
             clientDelay = clientDelay,
             hitDelay = hitDelay,
             retaliationDelay = 1,
