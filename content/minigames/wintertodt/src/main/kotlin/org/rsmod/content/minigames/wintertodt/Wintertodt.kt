@@ -28,6 +28,9 @@ internal object Wintertodt {
     const val WARM_ITEMS_MAX = 4
     const val REWARD_POOL_MAX = 8000
 
+    const val HEADBAR_WARMTH = 79
+    const val HEADBAR_SEGMENTS = 30
+
     val DOOR = CoordGrid(1627, 3964, 0)
     val ENTRY = CoordGrid(1628, 3979, 0)
     val EXIT = CoordGrid(1631, 3963, 0)

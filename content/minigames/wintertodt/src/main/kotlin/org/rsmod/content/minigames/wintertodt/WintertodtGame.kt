@@ -47,6 +47,7 @@ import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.PlayerList
+import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
@@ -1301,6 +1302,17 @@ constructor(
                 public = 75,
                 damage = (damage / 10).coerceAtLeast(0),
                 delay = 0,
+            ),
+        )
+        val fill = (next * Wintertodt.HEADBAR_SEGMENTS) / Wintertodt.WARMTH_MAX
+        player.showHeadbar(
+            Headbar.fromNoSource(
+                self = Wintertodt.HEADBAR_WARMTH,
+                public = Wintertodt.HEADBAR_WARMTH,
+                startFill = fill,
+                endFill = fill,
+                startTime = 0,
+                endTime = 0,
             ),
         )
         if (next <= 0) player.queueDeath()
