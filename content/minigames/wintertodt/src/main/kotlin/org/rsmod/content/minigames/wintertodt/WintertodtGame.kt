@@ -14,6 +14,7 @@ import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.enums.EnumTypeMap
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import java.util.Locale
 import kotlin.math.min
 import org.rsmod.api.config.objParam
 import org.rsmod.api.config.refs.params
@@ -24,6 +25,7 @@ import org.rsmod.api.invtx.select
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
+import org.rsmod.api.player.output.spam
 import org.rsmod.api.player.queueDeath
 import org.rsmod.api.player.stat.baseConstructionLvl
 import org.rsmod.api.player.stat.baseFiremakingLvl
@@ -59,7 +61,6 @@ import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.routefinder.collision.CollisionFlagMap
-import org.rsmod.routefinder.flag.CollisionFlag
 
 @Singleton
 class WintertodtGame
@@ -87,6 +88,7 @@ constructor(
     private val sessions = linkedMapOf<Player, WintertodtSession>()
     private val braziers = Wintertodt.BRAZIER_COORDS.mapIndexed { i, coords -> Brazier(i, coords) }
     private val areaOffsets = listOf(-1 to -1, -1 to 1, 1 to -1, 1 to 1)
+    private val brazierWarningOffsets = listOf(0 to 0, -1 to 0, 1 to 0, 0 to -1, 0 to 1)
     private val pyromancers =
         Wintertodt.PYROMANCER_COORDS.mapIndexed { i, coords -> Pyromancer(i, coords) }
     private val pending = mutableListOf<Pending>()
@@ -106,6 +108,13 @@ constructor(
         FLETCH,
         FEED,
         PICK,
+    }
+
+    enum class CartResult {
+        CONTINUE,
+        FINISHED,
+        FULL,
+        EMPTY,
     }
 
     private class ActionState(
@@ -148,6 +157,10 @@ constructor(
 
     private val fireType: NpcServerType? by lazy {
         ServerCacheManager.getNpc(Wintertodt.NPC_FIRE.asRSCM(RSCMType.NPC))
+    }
+
+    private val brewmaType: NpcServerType? by lazy {
+        ServerCacheManager.getNpc(Wintertodt.NPC_BREWMA.asRSCM(RSCMType.NPC))
     }
 
     private val warmItemIds: Set<Int> by lazy {
@@ -243,7 +256,6 @@ constructor(
 
     fun enter(player: Player) {
         ensureWorld()
-        for (brazier in braziers) openBrazierApproaches(brazier.coords)
         if (sessions.containsKey(player)) return
 
         val session = WintertodtSession(player)
@@ -265,11 +277,21 @@ constructor(
 
     fun leave(player: Player) {
         stopAction(player)
+        pillarLocks.keys.removeIf { it.first == player }
         val session = sessions.remove(player) ?: return
         session.points = 0
         player.wintWarmth = Wintertodt.WARMTH_MAX
         closeHud(player)
         player.wintAreaAttack = 0
+        clearPotions(player)
+    }
+
+    private fun clearPotions(player: Player) {
+        for (potion in listOf(Wintertodt.POTION4, Wintertodt.POTION3, Wintertodt.POTION2, Wintertodt.POTION1)) {
+            while (player.inv.count(potion) > 0) {
+                if (player.invDel(player.inv, potion, 1).failure) break
+            }
+        }
     }
 
     fun onLogin(player: Player) {
@@ -306,37 +328,58 @@ constructor(
 
     fun points(player: Player): Int = session(player)?.points ?: 0
 
+    private val pillarLocks = mutableMapOf<Pair<Player, CoordGrid>, Int>()
+
+    fun pillarJumpLocked(player: Player, coords: CoordGrid): Boolean {
+        val until = pillarLocks[player to coords] ?: return false
+        return mapClock.cycle < until
+    }
+
+    fun lockPillarJump(player: Player, coords: CoordGrid) {
+        pillarLocks[player to coords] = mapClock.cycle + Wintertodt.PILLAR_JUMP_LOCK
+    }
+
     fun checkCart(player: Player) {
         ensureCart()
         val pool = player.wintRewardPool
-        if (pool <= 0) {
-            player.mes("You have no rewards waiting to be collected.")
-        } else {
-            player.mes("You have $pool rewards waiting to be collected.")
+        when {
+            pool <= 0 -> player.mes("You aren't owed any rewards from the cart.")
+            pool == 1 -> player.mes("You are owed one more reward from the cart.")
+            else -> player.mes("You are owed $pool more rewards from the cart.")
         }
     }
 
-    fun searchCart(player: Player, count: Int): Int {
+    fun cartPool(player: Player): Int {
         ensureCart()
-        var claimed = 0
-        for (i in 0 until count) {
-            if (player.wintRewardPool <= 0) break
+        return player.wintRewardPool
+    }
+
+    fun searchCart(player: Player, batch: Int): CartResult {
+        ensureCart()
+        if (player.wintRewardPool <= 0) return CartResult.EMPTY
+        repeat(batch) {
+            if (player.wintRewardPool <= 0) return CartResult.FINISHED
             val reward = WintertodtRewards.roll(player, random)
-            if (!WintertodtRewards.add(player, reward)) {
-                player.mes("You don't have enough inventory space to collect your reward.")
-                break
-            }
+            if (!WintertodtRewards.add(player, reward)) return CartResult.FULL
             player.wintRewardPool = player.wintRewardPool - 1
+            player.spam("You found some loot: ${lootCount(reward.count)} x ${lootName(reward.item)}")
+            player.anim(Wintertodt.CART_PICK_ANIM)
+            player.soundSynth(Wintertodt.CART_PICK_SYNTH)
             if (reward.item in WintertodtRewards.UNIQUES) {
                 CollectionLog.grant(player, reward.item, 1)
             }
             if (reward.item == "obj.phoenixpet") {
                 player.mes("You have a funny feeling like you're being followed.")
             }
-            claimed++
+            if (player.wintRewardPool <= 0) return CartResult.FINISHED
         }
-        return claimed
+        return CartResult.CONTINUE
     }
+
+    private fun lootCount(count: Int): String = String.format(Locale.US, "%,d", count)
+
+    private fun lootName(item: String): String =
+        ServerCacheManager.getItem(item.asRSCM(RSCMType.OBJ))?.name ?: item.removePrefix("obj.")
 
     fun openExtraCrate(player: Player, slot: Int) {
         val inv = player.inv
@@ -974,6 +1017,18 @@ constructor(
             }
         }
         player.mes("player coords=${player.coords}")
+        for (dx in -1..1) {
+            for (dz in -1..1) {
+                val coords = player.coords.translate(dx, dz)
+                for (loc in locRepo.findAll(coords)) {
+                    val type = ServerCacheManager.getObject(loc.id)
+                    player.mes(
+                        "tile ${coords.x},${coords.z} loc=${type?.internalName} " +
+                            "layer=${loc.layer} block=${type?.blockWalk}",
+                    )
+                }
+            }
+        }
         val originLoc = braziers.firstOrNull()?.loc ?: return
         for (dx in -1..3) {
             for (dz in -1..3) {
@@ -1041,7 +1096,6 @@ constructor(
 
     fun startRound() {
         ensureWorld()
-        for (brazier in braziers) openBrazierApproaches(brazier.coords)
         if (phase == Phase.ACTIVE) return
         phase = Phase.ACTIVE
         energy = Wintertodt.ENERGY_MAX
@@ -1183,6 +1237,7 @@ constructor(
         for (session in sessions.values.toList()) {
             val player = session.player
             if (!player.canProcess) continue
+            if (player.wintWarmth <= 0) continue
             val warm = warmItems(player)
             session.regenTenths += 8 + warm
             if (session.regenTenths >= 10) {
@@ -1210,6 +1265,7 @@ constructor(
             sessions.values.filter {
                 val player = it.player
                 player.canProcess &&
+                    player.wintWarmth > 0 &&
                     !Wintertodt.isSafe(player.coords) &&
                     mapClock.cycle - it.lastCold >= Wintertodt.TARGET_COOLDOWN
             }
@@ -1241,50 +1297,61 @@ constructor(
         if (mapClock.cycle - brazier.lastHit < Wintertodt.TARGET_COOLDOWN) return
         brazier.lastHit = mapClock.cycle
         val heavy = random.of(0, 2) == 0
-        snowWarning(brazier.coords, heavy)
+        addSnowfall(brazier.coords, brazierWarningOffsets, duration = 3)
+        worldRepo.projAnim(travelBreath(brazier.coords, startHeight = 150, endTime = 120))
+        worldRepo.spotanimMap(
+            SpotanimType(Wintertodt.SPOTANIM_AREA_BREATH.asRSCM(RSCMType.SPOTANIM)),
+            brazier.coords,
+            height = 70,
+            delay = 4,
+        )
         pending +=
-            Pending(mapClock.cycle + 3) {
+            Pending(mapClock.cycle + 4) {
                 if (brazier.state == BrazierState.LIT) {
-                    if (heavy) damageBrazier(brazier) else setBrazierState(brazier, BrazierState.UNLIT)
+                    if (heavy) {
+                        damageBrazier(brazier)
+                        worldRepo.soundArea(brazier.coords, Wintertodt.SOUND_EXPLOSION, radius = 2)
+                    } else {
+                        setBrazierState(brazier, BrazierState.UNLIT)
+                        worldRepo.soundArea(brazier.coords, Wintertodt.SOUND_HIT, radius = 10)
+                    }
                 }
                 updateHud()
             }
     }
 
-    private fun snowWarning(center: CoordGrid, heavy: Boolean) {
-        val spot = Wintertodt.SPOTANIM_AREA_SPOT.asRSCM(RSCMType.SPOTANIM)
-        val impact = SpotanimType(Wintertodt.SPOTANIM_AREA_IMPACT.asRSCM(RSCMType.SPOTANIM))
-        val targets =
-            if (heavy) {
-                listOf(center, center.translate(-1, 0), center.translate(1, 0))
-            } else {
-                listOf(center)
-            }
-        for (target in targets) {
-            val source = target.translate(random.of(-1, 1), 3)
-            worldRepo.projAnim(
-                ProjAnim(
-                    spotanim = spot,
-                    startHeight = 400,
-                    endHeight = 0,
-                    startTime = 50,
-                    endTime = 90,
-                    angle = 0,
-                    progress = 0,
-                    sourceIndex = 0,
-                    targetIndex = 0,
-                    startCoord = source,
-                    endCoord = target,
-                )
+    private fun addSnowfall(center: CoordGrid, offsets: List<Pair<Int, Int>>, duration: Int) {
+        for ((dx, dz) in offsets) {
+            locRepo.add(
+                center.translate(dx, dz),
+                Wintertodt.SNOWFALL_WARNING,
+                duration,
+                LocAngle.entries[random.of(0, LocAngle.entries.lastIndex)],
+                LocShape.CentrepieceStraight,
             )
-            worldRepo.spotanimMap(impact, target, delay = 90)
         }
     }
+
+    private fun travelBreath(target: CoordGrid, startHeight: Int, endTime: Int): ProjAnim =
+        ProjAnim(
+            spotanim = Wintertodt.SPOTANIM_TRAVEL_BREATH.asRSCM(RSCMType.SPOTANIM),
+            startHeight = startHeight,
+            endHeight = 50,
+            startTime = 0,
+            endTime = endTime,
+            angle = 64,
+            progress = 0,
+            sourceIndex = 0,
+            targetIndex = 0,
+            startCoord = Wintertodt.STORM.translate(3, 3),
+            endCoord = target,
+        )
 
     private fun damageBrazier(brazier: Brazier) {
         setBrazierState(brazier, BrazierState.BROKEN)
         for (session in sessions.values.toList()) {
             val player = session.player
+            if (player.wintWarmth <= 0) continue
             if (nearBrazier(player.coords, brazier.coords)) {
                 applyWarmth(
                     player,
@@ -1360,23 +1427,32 @@ constructor(
         if (pyro.down) return
         if (mapClock.cycle - pyro.lastHit < Wintertodt.TARGET_COOLDOWN) return
         pyro.lastHit = mapClock.cycle
-        snowWarning(pyro.coords, heavy = false)
+        addSnowfall(pyro.coords, listOf(0 to 0), duration = 3)
+        worldRepo.projAnim(travelBreath(pyro.coords, startHeight = 0, endTime = 120))
+        worldRepo.spotanimMap(
+            SpotanimType(Wintertodt.SPOTANIM_AREA_BREATH.asRSCM(RSCMType.SPOTANIM)),
+            pyro.coords,
+            delay = 4,
+        )
         pending +=
-            Pending(mapClock.cycle + 3) {
+            Pending(mapClock.cycle + 6) {
                 if (!pyro.down) {
                     val hpBefore = pyro.hp
                     val damage = hpBefore.coerceAtMost(7)
                     pyro.hp = hpBefore - damage
                     showPyromancerDamage(pyro, damage)
+                    worldRepo.soundArea(pyro.coords, Wintertodt.SOUND_HIT, radius = 10)
                     if (pyro.hp <= 0) {
                         pyro.down = true
                         pyroDownThisRound = true
                         pyro.hp = 0
                         showPyromancerHealth(pyro)
                         pyro.npc?.say("Arg, it got me!")
+                        pyro.npc?.anim("seq.dream_spell_start")
                         pyro.npc?.let { npc ->
                             pyromancerDownType?.let { npc.transmog(it, Int.MAX_VALUE) }
                         }
+                        worldRepo.soundArea(pyro.coords, Wintertodt.SOUND_DEATH, radius = 3)
                         if (braziers[index].state == BrazierState.LIT) {
                             setBrazierState(braziers[index], BrazierState.UNLIT)
                         }
@@ -1389,49 +1465,73 @@ constructor(
     private fun areaAttack() {
         val candidates =
             sessions.values.filter {
-                it.player.canProcess && !Wintertodt.isSafe(it.player.coords)
+                val player = it.player
+                player.canProcess &&
+                    player.wintWarmth > 0 &&
+                    !Wintertodt.isSafe(player.coords) &&
+                    canAreaTarget(player.coords)
             }
         if (candidates.isEmpty()) return
         val session = candidates[random.of(candidates.size)]
         val center = session.player.coords
-        if (!canAreaTarget(center)) return
         val spot = Wintertodt.SPOTANIM_AREA_SPOT.asRSCM(RSCMType.SPOTANIM)
         val impact = SpotanimType(Wintertodt.SPOTANIM_AREA_IMPACT.asRSCM(RSCMType.SPOTANIM))
         val breath = SpotanimType(Wintertodt.SPOTANIM_AREA_BREATH.asRSCM(RSCMType.SPOTANIM))
-        for ((dx, dz) in areaOffsets) {
-            val corner = center.translate(dx, dz)
-            val source = corner.translate(random.of(-1, 1), 3)
-            worldRepo.projAnim(
-                ProjAnim(
-                    spotanim = spot,
-                    startHeight = 400,
-                    endHeight = 0,
-                    startTime = 50,
-                    endTime = 90,
-                    angle = 0,
-                    progress = 0,
-                    sourceIndex = 0,
-                    targetIndex = 0,
-                    startCoord = source,
-                    endCoord = corner,
-                )
-            )
-            worldRepo.spotanimMap(impact, corner, delay = 90)
-        }
-        worldRepo.spotanimMap(breath, center, delay = 90)
-        for (session in sessions.values) session.player.wintAreaAttack = 1
+        addSnowfall(center, areaOffsets + (0 to 0), duration = 13)
+        worldRepo.projAnim(travelBreath(center, startHeight = 0, endTime = 200))
         pending +=
             Pending(mapClock.cycle + 3) {
+                worldRepo.projAnim(travelBreath(center, startHeight = 0, endTime = 150))
+                for ((dx, dz) in areaOffsets) {
+                    val corner = center.translate(dx, dz)
+                    val source = corner.translate(random.of(-1, 1), 3)
+                    worldRepo.projAnim(
+                        ProjAnim(
+                            spotanim = spot,
+                            startHeight = 400,
+                            endHeight = 0,
+                            startTime = 50,
+                            endTime = 90,
+                            angle = 0,
+                            progress = 0,
+                            sourceIndex = 0,
+                            targetIndex = 0,
+                            startCoord = source,
+                            endCoord = corner,
+                        )
+                    )
+                    worldRepo.spotanimMap(impact, corner, delay = 3)
+                }
+                worldRepo.spotanimMap(breath, center, delay = 3)
+            }
+        pending +=
+            Pending(mapClock.cycle + 5) {
+                for (session in sessions.values) session.player.wintAreaAttack = 1
+            }
+        pending +=
+            Pending(mapClock.cycle + 6) {
                 showAreaImpact(center)
+                worldRepo.soundArea(center, Wintertodt.SOUND_EXPLOSION, radius = 2)
                 for (session in sessions.values.toList()) {
                     val player = session.player
+                    if (!player.canProcess) continue
+                    if (player.wintWarmth <= 0) continue
+                    if (Wintertodt.isSafe(player.coords)) continue
                     if (near(player.coords, center, 1)) {
+                        player.mes(
+                            "The freezing cold attack of the Wintertodt's magic hits you.",
+                        )
                         applyWarmth(
                             player,
                             Wintertodt.areaDamage(
                                 player.baseFiremakingLvl,
                                 warmItems(player),
                             ),
+                        )
+                        player.soundSynth(
+                            if (random.of(0, 1) == 0) Wintertodt.SOUND_HIT_2
+                            else Wintertodt.SOUND_HIT_4,
+                            delay = 20,
                         )
                     }
                 }
@@ -1442,26 +1542,34 @@ constructor(
     private fun canAreaTarget(center: CoordGrid): Boolean {
         for (dx in -1..1) {
             for (dz in -1..1) {
-                if (flags.isWalkBlocked(center.translate(dx, dz))) return false
+                val tile = center.translate(dx, dz)
+                if (flags.isWalkBlocked(tile)) return false
+                if (hasObstacleLoc(tile)) return false
             }
         }
         return true
     }
 
+    private fun hasObstacleLoc(coords: CoordGrid): Boolean =
+        locRepo.findAll(coords).any { loc ->
+            val type = ServerCacheManager.getObject(loc.id) ?: return@any false
+            type.blockWalk != 0 || (loc.id in brazierIds && (type.width > 1 || type.length > 1))
+        }
+
     private fun showAreaImpact(center: CoordGrid) {
         locRepo.add(
             center,
             Wintertodt.WARNING_ICICLE,
-            8,
-            LocAngle.West,
+            2,
+            LocAngle.entries[random.of(0, LocAngle.entries.lastIndex)],
             LocShape.CentrepieceStraight,
         )
         for ((dx, dz) in areaOffsets) {
             locRepo.add(
                 center.translate(dx, dz),
                 Wintertodt.WARNING_SNOW,
-                8,
-                LocAngle.West,
+                2,
+                LocAngle.entries[random.of(0, LocAngle.entries.lastIndex)],
                 LocShape.CentrepieceStraight,
             )
         }
@@ -1473,10 +1581,12 @@ constructor(
 
     private fun applyWarmth(player: Player, damage: Int) {
         if (damage <= 0) return
+        if (player.wintWarmth <= 0) return
         if (warmthLock) {
             player.wintWarmth = Wintertodt.WARMTH_MAX
             return
         }
+        val before = player.wintWarmth
         val next = (player.wintWarmth - damage).coerceAtLeast(0)
         player.wintWarmth = next
         player.showHitmark(
@@ -1499,7 +1609,10 @@ constructor(
                 endTime = 0,
             ),
         )
-        if (next <= 0) player.queueDeath()
+        if (next <= 0 && before > 0) {
+            player.mes("<col=ef1020>The cold of the Wintertodt has overcome you!")
+            player.queueDeath()
+        }
     }
 
     private fun processPending() {
@@ -1514,6 +1627,10 @@ constructor(
         if (worldReady) return
         val wizardType = pyromancerType ?: return
         val wizardDownType = pyromancerDownType ?: return
+
+        for (id in brazierIds) {
+            ServerCacheManager.getObject(id)?.forceApproachFlags = 0
+        }
 
         for (brazier in braziers) {
             val loc =
@@ -1532,7 +1649,6 @@ constructor(
                     locId(Wintertodt.BRAZIER_BROKEN) -> BrazierState.BROKEN
                     else -> BrazierState.UNLIT
                 }
-            openBrazierApproaches(brazier.coords)
         }
 
         for (pyro in pyromancers) {
@@ -1563,6 +1679,15 @@ constructor(
         for (extra in npcRepo.findAll(ZoneKey.from(Wintertodt.STORM), 2).toList()) {
             if (extra.type.id == wizardType.id && extra !in assigned) {
                 npcRepo.del(extra, Int.MAX_VALUE)
+            }
+        }
+
+        brewmaType?.let { type ->
+            for (npc in npcRepo.findAll(ZoneKey.from(BREWMA_COORDS), 2)) {
+                if (npc.type.id != type.id) continue
+                npc.mode = NpcMode.None
+                npc.moveRestrict = MoveRestrict.NoMove
+                if (npc.coords != BREWMA_COORDS) npc.teleport(flags, BREWMA_COORDS)
             }
         }
 
@@ -1687,32 +1812,6 @@ constructor(
             coords.x in (base.x - 1)..(base.x + 3) &&
             coords.z in (base.z - 1)..(base.z + 3)
 
-    /**
-     * The cache collision seals all but the arena-facing corner of each brazier. Open the ring
-     * tiles so players can reach the brazier from any side.
-     */
-    private fun openBrazierApproaches(base: CoordGrid) {
-        val level = base.level
-        val wallFlags =
-            CollisionFlag.WALL_NORTH or
-                CollisionFlag.WALL_NORTH_EAST or
-                CollisionFlag.WALL_NORTH_WEST or
-                CollisionFlag.WALL_SOUTH or
-                CollisionFlag.WALL_SOUTH_EAST or
-                CollisionFlag.WALL_SOUTH_WEST or
-                CollisionFlag.WALL_EAST or
-                CollisionFlag.WALL_WEST or
-                CollisionFlag.BLOCK_WALK
-        for (x in (base.x - 1)..(base.x + 3)) {
-            flags.remove(x, base.z - 1, level, wallFlags)
-            flags.remove(x, base.z + 3, level, wallFlags)
-        }
-        for (z in (base.z - 1)..(base.z + 3)) {
-            flags.remove(base.x - 1, z, level, wallFlags)
-            flags.remove(base.x + 3, z, level, wallFlags)
-        }
-    }
-
     private fun itemId(name: String): Int =
         ServerCacheManager.getItem(name.asRSCM(RSCMType.OBJ))?.id ?: -1
 
@@ -1721,5 +1820,6 @@ constructor(
 
     private companion object {
         val POH_ATTR = org.rsmod.api.attr.AttributeKey<Boolean>()
+        val BREWMA_COORDS = CoordGrid(1635, 3986, 0)
     }
 }

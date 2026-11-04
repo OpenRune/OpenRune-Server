@@ -5,6 +5,7 @@ import org.rsmod.api.game.process.GameLifecycle
 import org.rsmod.api.player.events.interact.NpcUDefaultEvents
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.agilityLvl
 import org.rsmod.api.player.stat.baseFiremakingLvl
 import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onEvent
@@ -21,6 +22,7 @@ import org.rsmod.api.script.onPlayerCoordsChanged
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.content.interfaces.bank.tryOpenBank
+import org.rsmod.content.minigames.wintertodt.WintertodtGame.CartResult
 import org.rsmod.content.other.consumables.food.FoodConsumedEvent
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.loc.BoundLocInfo
@@ -67,6 +69,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         onOpLoc1("loc.wint_reward_pile") { searchCart(it.loc, 1) }
         onOpLoc2("loc.wint_reward_pile") { game.checkCart(player) }
         onOpLoc3("loc.wint_reward_pile") { searchCart(it.loc, 5) }
+        onOpLoc1(Wintertodt.PILLAR_JUMP) { jumpPillar(it.loc) }
 
         onOpHeldU("obj.knife", Wintertodt.ROOT) { game.beginFletch(player) }
         onOpHeldU("obj.fletching_knife", Wintertodt.ROOT) { game.beginFletch(player) }
@@ -84,6 +87,10 @@ constructor(private val game: WintertodtGame) : PluginScript() {
 
         onOpNpc1(IGNISIA) { talkToIgnisia(it.npc) }
         onOpNpc3(IGNISIA) { exchangeWithIgnisia(it.npc) }
+        onOpNpc1(Wintertodt.NPC_ISH) { talkToIsh(it.npc) }
+        onOpNpc1(Wintertodt.NPC_KALT) { talkToKalt(it.npc) }
+        onOpNpc1(Wintertodt.NPC_BREWMA) { talkToBrewma(it.npc) }
+        onOpNpcU(Wintertodt.NPC_BREWMA) { useItemOnBrewma(it) }
         onOpHeld1(EXTRA_CRATE) { game.openExtraCrate(player, it.slot) }
 
         onCommand("wt") {
@@ -192,11 +199,59 @@ constructor(private val game: WintertodtGame) : PluginScript() {
 
     private suspend fun ProtectedAccess.searchCart(loc: BoundLocInfo, count: Int) {
         arriveDelay()
-        delay(3)
-        game.searchCart(player, count)
+        faceLoc(loc)
+        if (game.cartPool(player) <= 0) {
+            mesbox(Wintertodt.CART_EMPTY_MESSAGE)
+            return
+        }
+        while (true) {
+            delay(Wintertodt.CART_SEARCH_DELAY)
+            when (game.searchCart(player, count)) {
+                CartResult.CONTINUE -> {}
+                CartResult.FINISHED -> {
+                    mesbox(Wintertodt.CART_TAKEN_MESSAGE)
+                    return
+                }
+                CartResult.FULL -> {
+                    mesbox(Wintertodt.CART_FULL_MESSAGE)
+                    return
+                }
+                CartResult.EMPTY -> {
+                    mesbox(Wintertodt.CART_EMPTY_MESSAGE)
+                    return
+                }
+            }
+        }
+    }
+
+    private suspend fun ProtectedAccess.jumpPillar(loc: BoundLocInfo) {
+        arriveDelay()
+        if (player.agilityLvl < Wintertodt.PILLAR_JUMP_LEVEL) {
+            mes(
+                "You need an Agility level of ${Wintertodt.PILLAR_JUMP_LEVEL} to negotiate " +
+                    "this obstacle.",
+            )
+            return
+        }
+        if (game.pillarJumpLocked(player, loc.coords)) {
+            mes(Wintertodt.PILLAR_JUMP_LOCKED)
+            return
+        }
+        val west = player.coords.x > loc.coords.x
+        val dest = loc.coords.translate(if (west) -1 else 1, 0)
+        val facing = if (west) FACE_WEST else FACE_EAST
+        game.lockPillarJump(player, loc.coords)
+        faceLoc(loc)
+        anim(Wintertodt.PILLAR_JUMP_ANIM)
+        soundSynth(Wintertodt.PILLAR_JUMP_SYNTH)
+        exactMove(player.coords, dest, delay1 = 15, delay2 = 30, dir = facing)
+        statAdvance("stat.agility", Wintertodt.PILLAR_JUMP_XP)
     }
 
     private companion object {
+        const val FACE_WEST = 512
+        const val FACE_EAST = 1536
+
         val POTIONS =
             listOf(
                 Wintertodt.POTION4,

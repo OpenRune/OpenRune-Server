@@ -34,9 +34,38 @@ internal object Wintertodt {
     const val HITMARK_NPC_DAMAGE = 17
     const val HITMARK_NPC_HEAL = 6
     const val NPC_FIRE = "npc.wint_fire"
+    const val NPC_BREWMA = "npc.wint_brewma"
+    const val NPC_ISH = "npc.wint_pisc_navigator"
+    const val NPC_KALT = "npc.wint_shay_guard"
+    const val SNOWFALL_WARNING = "loc.clanwars_snowfalling"
     const val SPOTANIM_AREA_SPOT = "spotanim.wint_area_attack_spot"
     const val SPOTANIM_AREA_IMPACT = "spotanim.wint_area_attack_impact"
     const val SPOTANIM_AREA_BREATH = "spotanim.wyvern_skeleton_impact_breath"
+    const val SPOTANIM_TRAVEL_BREATH = "spotanim.wyvern_skeleton_travel_breath"
+
+    const val PILLAR_JUMP = "loc.wint_pillar_jump"
+    const val PILLAR_JUMP_ANIM = "seq.human_spot_jump"
+    const val PILLAR_JUMP_SYNTH = "synth.wilderness_ditch_jump"
+    const val PILLAR_JUMP_LEVEL = 60
+    const val PILLAR_JUMP_XP = 18.0
+    const val PILLAR_JUMP_LOCK = 6
+    const val PILLAR_JUMP_LOCKED = "You only just jumped over that."
+
+    const val CART_SEARCH_DELAY = 3
+    const val CART_PICK_ANIM = "seq.picking_mid_shorter"
+    const val CART_PICK_SYNTH = "synth.pick"
+    const val CART_FULL_MESSAGE =
+        "You need at least one free inventory space to take from the reward cart."
+    const val CART_EMPTY_MESSAGE =
+        "There are no rewards here for you. Maybe you could help subdue the Wintertodt...."
+    const val CART_TAKEN_MESSAGE =
+        "You think you've taken as much as you're owed from the reward cart."
+
+    const val SOUND_HIT = "synth.human_hit"
+    const val SOUND_HIT_2 = "synth.human_hit_2"
+    const val SOUND_HIT_4 = "synth.human_hit_4"
+    const val SOUND_DEATH = "synth.human_death"
+    const val SOUND_EXPLOSION = "synth.explosion"
 
     val DOOR = CoordGrid(1627, 3964, 0)
     val ENTRY = CoordGrid(1628, 3979, 0)

@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation(projects.api.attr)
     implementation(projects.api.config)
+    implementation(projects.api.death)
     implementation(projects.api.gameProcess)
     implementation(projects.api.invtx)
     implementation(projects.api.player)
