@@ -13,5 +13,6 @@ dependencies {
     implementation(projects.api.random)
     implementation(projects.api.registry)
     implementation(projects.api.repo)
+    implementation(projects.api.route)
     implementation(projects.content.interfaces.bank)
 }

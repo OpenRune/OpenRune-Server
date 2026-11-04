@@ -5,7 +5,6 @@ import org.rsmod.api.game.process.GameLifecycle
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseFiremakingLvl
-import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpHeld2
@@ -72,7 +71,17 @@ constructor(private val game: WintertodtGame) : PluginScript() {
                     "energy" -> game.setEnergy(args[1].toInt())
                     "points" -> game.setPoints(player, args[1].toInt())
                     "warmth" -> game.setWarmth(player, args[1].toInt())
-                    "attack" -> game.forceAttack()
+                    "attack" ->
+                        when (args.getOrNull(1)?.lowercase()) {
+                            "area" -> game.forceAreaAttack()
+                            "brazier" -> game.forceBrazierAttack()
+                            "pyro" -> game.forcePyromancerAttack()
+                            else -> game.forceAttack()
+                        }
+                    "status" -> game.debugStatus(player)
+                    "locs" -> game.debugLocations(player)
+                    "lockwarmth" -> game.toggleWarmthLock(player)
+                    "break" -> game.forceBrazierBreak()
                     else -> player.mes(invalidArgs ?: "Usage: ::wt start|energy|points|warmth|attack")
                 }
             }

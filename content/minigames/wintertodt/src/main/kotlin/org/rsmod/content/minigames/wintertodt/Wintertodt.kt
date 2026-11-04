@@ -1,13 +1,13 @@
 package org.rsmod.content.minigames.wintertodt
 
+import kotlin.math.min
+import kotlin.math.roundToInt
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.map.CoordGrid
-import kotlin.math.min
-import kotlin.math.roundToInt
 
 internal object Wintertodt {
     const val NAME = "Wintertodt"
@@ -41,10 +41,10 @@ internal object Wintertodt {
 
     val PYROMANCER_COORDS =
         listOf(
-            CoordGrid(1619, 3996, 0),
-            CoordGrid(1619, 4014, 0),
-            CoordGrid(1641, 4014, 0),
-            CoordGrid(1641, 3996, 0),
+            CoordGrid(1615, 3993, 0),
+            CoordGrid(1615, 4021, 0),
+            CoordGrid(1645, 4021, 0),
+            CoordGrid(1645, 3993, 0),
         )
 
     const val BRAZIER_UNLIT = "loc.wint_brazier"
@@ -71,11 +71,11 @@ internal object Wintertodt {
     const val EMPTY_VIAL = "obj.vial"
 
     const val HUD = "interface.wint_status"
-    const val HUD_TARGET = "component.toplevel_pre_eoc:overlay_hud"
+    const val HUD_TARGET = "component.toplevel_osrs_stretch:overlay_hud"
 
-    const val SCRIPT_UPDATE = "clientscript.wint_update"
-    const val SCRIPT_INSIDE = "clientscript.wint_inside_event"
-    const val SCRIPT_OUTSIDE = "clientscript.wint_outside_event"
+    const val SCRIPT_UPDATE = 1421
+    const val SCRIPT_INSIDE = 1433
+    const val SCRIPT_OUTSIDE = 1432
 
     const val ANIM_CHOP = "seq.human_axe_chop"
     const val ANIM_LIGHT = "seq.human_createfire"
