@@ -3,13 +3,15 @@ package org.rsmod.content.areas.misc.motherlode.scripts
 import jakarta.inject.Inject
 import org.rsmod.api.game.process.GameLifecycle
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.stat.miningLvl
+import org.rsmod.api.player.stat.baseMiningLvl
 import org.rsmod.api.player.ui.ifCloseOverlay
+import org.rsmod.api.player.ui.ifOpenMainModal
 import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.script.onArea
 import org.rsmod.api.script.onAreaExit
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpLoc1
+import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.content.areas.misc.motherlode.MotherlodeMine
@@ -65,6 +67,7 @@ constructor(
         onOpLoc1("loc.motherlode_ladder_top") { climbDown() }
 
         onOpLoc1("loc.blast_bank_chest") { tryOpenBank() }
+        onOpLoc3("loc.blast_bank_chest") { openCollectionBox() }
     }
 
     private suspend fun ProtectedAccess.crawl(dest: CoordGrid) {
@@ -78,7 +81,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.enterMiningGuild() {
-        if (player.miningLvl < MINING_GUILD_LEVEL) {
+        if (player.baseMiningLvl < MINING_GUILD_LEVEL) {
             startDialogue {
                 chatNpcSpecific(
                     "Dwarf",
@@ -91,6 +94,10 @@ constructor(
             return
         }
         crawl(MotherlodeMine.GUILD_EXIT_DEST)
+    }
+
+    private fun ProtectedAccess.openCollectionBox() {
+        ifOpenMainModal("interface.ge_collect")
     }
 
     private suspend fun ProtectedAccess.climbUp() {

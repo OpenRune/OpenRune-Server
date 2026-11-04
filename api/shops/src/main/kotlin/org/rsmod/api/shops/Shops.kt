@@ -99,8 +99,21 @@ public class Shops @Inject constructor(private val eventBus: EventBus) {
         buyPercentage: Double,
         sellPercentage: Double,
         changePercentage: Double,
+        refundable: Set<String> = emptySet(),
+        refusalMessages: Map<String, String> = emptyMap(),
     ) {
-        player.openedShop = Shop(shopInv, currency, buyPercentage, sellPercentage, changePercentage)
+        val refundableIds = refundable.mapTo(mutableSetOf()) { it.asRSCM(RSCMType.OBJ) }
+        val refusalIds = refusalMessages.entries.associate { it.key.asRSCM(RSCMType.OBJ) to it.value }
+        player.openedShop =
+            Shop(
+                shopInv,
+                currency,
+                buyPercentage,
+                sellPercentage,
+                changePercentage,
+                refundable = refundableIds,
+                refusalMessages = refusalIds,
+            )
         VarPlayerIntMapSetter.set(player, "varbit.shop_quantity", 0)
 
         player.startInvTransmit(shopInv)

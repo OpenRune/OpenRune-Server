@@ -30,8 +30,8 @@ object Motherlode {
                 columnRSCM(COL_ORE_ITEM, "obj.motherlode_nugget")
                 column(COL_LEVEL, 30)
                 column(COL_XP, 0)
-                column(COL_SUCCESS_RATE_LOW, 7)
-                column(COL_SUCCESS_RATE_HIGH, 7)
+                column(COL_SUCCESS_RATE_LOW, 8)
+                column(COL_SUCCESS_RATE_HIGH, 8)
             }
 
             row("dbrow.motherlode_paydirt_runite") {

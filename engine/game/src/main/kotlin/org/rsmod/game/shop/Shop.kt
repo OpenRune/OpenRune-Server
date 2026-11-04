@@ -8,4 +8,6 @@ public data class Shop(
     public val buyPercentage: Double,
     public val sellPercentage: Double,
     public val changePercentage: Double,
+    public val refundable: Set<Int> = emptySet(),
+    public val refusalMessages: Map<Int, String> = emptyMap(),
 )
