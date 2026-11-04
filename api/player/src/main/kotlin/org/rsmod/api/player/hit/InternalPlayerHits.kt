@@ -70,7 +70,7 @@ internal object InternalPlayerHits {
             sourcePlayerSlot = source.slotId,
             clientDelay = clientDelay,
             isPrivateHit = specific,
-        )
+        ).also { it.origin = source.hitOrigin }
     }
 
     fun createBuilder(
