@@ -13,6 +13,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -193,6 +194,42 @@ class DamageRollEventTest {
     }
 
     @Test
+    fun `a spell roll says which spell it is`() {
+        val f = Fixture()
+        val spell = mockk<ItemServerType>(relaxed = true)
+        val seen = mutableListOf<PlayerAttackEvents.DamageRoll>()
+        f.onRoll { seen += this }
+
+        f.spell(baseMaxHit = 30, spell = spell)
+
+        assertSame(spell, seen.single().spell)
+    }
+
+    @Test
+    fun `a spell splash says which spell it is`() {
+        val f = Fixture()
+        val spell = mockk<ItemServerType>(relaxed = true)
+        val seen = mutableListOf<PlayerAttackEvents.DamageRoll>()
+        f.onRoll { seen += this }
+
+        f.manager.queueSplashHit(f.player, f.npc, spell, 30, 2)
+
+        assertSame(spell, seen.single().spell)
+    }
+
+    @Test
+    fun `melee and staff rolls have no spell`() {
+        val f = Fixture()
+        val seen = mutableListOf<PlayerAttackEvents.DamageRoll>()
+        f.onRoll { seen += this }
+
+        f.melee()
+        f.manager.rollStaffMaxHit(f.player, f.npc, 25, 1.0)
+
+        assertEquals(listOf(null, null), seen.map { it.spell })
+    }
+
+    @Test
     fun `a staff rolls through the event`() {
         val f = Fixture()
         f.onRoll { damage = 11 }
@@ -319,11 +356,11 @@ class DamageRollEventTest {
                 CombatAttack.Melee(null, null, null, CombatStance.entries.first()),
             )
 
-        fun spell(baseMaxHit: Int): Int =
+        fun spell(baseMaxHit: Int, spell: ItemServerType = mockk(relaxed = true)): Int =
             manager.rollSpellMaxHit(
                 player,
                 npc,
-                mockk<ItemServerType>(relaxed = true),
+                spell,
                 null,
                 baseMaxHit,
                 attackRate = 5,

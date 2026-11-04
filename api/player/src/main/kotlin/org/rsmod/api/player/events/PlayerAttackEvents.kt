@@ -65,6 +65,8 @@ public class PlayerAttackEvents {
      * so a handler that attacks from here must guard against triggering itself. A magic miss still
      * plays splash visuals and grants no xp, whatever [damage] is set to. The dark bow special rolls
      * for itself and does not publish this.
+     *
+     * [spell] is the spell being cast, and null for anything else, including a powered staff's attack.
      */
     public class DamageRoll(
         override val player: Player,
@@ -74,6 +76,7 @@ public class PlayerAttackEvents {
         public var maxHit: Int,
         public val missed: Boolean,
         public var damage: Int? = null,
+        public val spell: ItemServerType? = null,
     ) : UnboundEvent, PlayerEvent
 
     /**
