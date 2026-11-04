@@ -22,6 +22,7 @@ import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.content.interfaces.bank.tryOpenBank
 import org.rsmod.content.other.consumables.food.FoodConsumedEvent
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -76,8 +77,8 @@ constructor(private val game: WintertodtGame) : PluginScript() {
             onOpHeld2(potion) { game.drinkPotion(player, it.slot) }
         }
 
-        onOpNpc1(Wintertodt.NPC_PYROMANCER) { game.healPyromancer(player, it.npc) }
-        onOpNpc1(Wintertodt.NPC_PYROMANCER_DOWN) { game.healPyromancer(player, it.npc) }
+        onOpNpc1(Wintertodt.NPC_PYROMANCER) { helpPyromancer(it.npc) }
+        onOpNpc1(Wintertodt.NPC_PYROMANCER_DOWN) { helpPyromancer(it.npc) }
         onOpNpcU(Wintertodt.NPC_PYROMANCER) { useItemOnPyromancer(it) }
         onOpNpcU(Wintertodt.NPC_PYROMANCER_DOWN) { useItemOnPyromancer(it) }
 
@@ -100,8 +101,10 @@ constructor(private val game: WintertodtGame) : PluginScript() {
                     "attack" ->
                         when (args.getOrNull(1)?.lowercase()) {
                             "area" -> game.forceAreaAttack()
-                            "brazier" -> game.forceBrazierAttack()
-                            "pyro" -> game.forcePyromancerAttack()
+                            "brazier" ->
+                                game.forceBrazierAttack(args.getOrNull(2)?.toIntOrNull() ?: 0)
+                            "pyro" ->
+                                game.forcePyromancerAttack(args.getOrNull(2)?.toIntOrNull() ?: 0)
                             else -> game.forceAttack()
                         }
                     "status" -> game.debugStatus(player)
@@ -115,8 +118,16 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         }
     }
 
-    private fun ProtectedAccess.useItemOnPyromancer(event: NpcUDefaultEvents.OpType) {
+    private suspend fun ProtectedAccess.helpPyromancer(npc: Npc) {
+        arriveDelay()
+        faceEntitySquare(npc)
+        game.healPyromancer(player, npc)
+    }
+
+    private suspend fun ProtectedAccess.useItemOnPyromancer(event: NpcUDefaultEvents.OpType) {
         if (event.objType.internalName in POTIONS) {
+            arriveDelay()
+            faceEntitySquare(event.npc)
             game.healPyromancer(player, event.npc, event.invSlot)
         } else {
             event.npc.say("That's no use!")

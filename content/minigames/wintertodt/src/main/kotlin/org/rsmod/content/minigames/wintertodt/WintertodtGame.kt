@@ -10,6 +10,7 @@ import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
 import dev.openrune.types.ObjectServerType
 import dev.openrune.types.SequenceServerType
+import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.types.enums.EnumTypeMap
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
@@ -53,6 +54,8 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
+import org.rsmod.game.map.collision.isWalkBlocked
+import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.routefinder.collision.CollisionFlagMap
@@ -83,6 +86,7 @@ constructor(
 
     private val sessions = linkedMapOf<Player, WintertodtSession>()
     private val braziers = Wintertodt.BRAZIER_COORDS.mapIndexed { i, coords -> Brazier(i, coords) }
+    private val areaOffsets = listOf(-1 to -1, -1 to 1, 1 to -1, 1 to 1)
     private val pyromancers =
         Wintertodt.PYROMANCER_COORDS.mapIndexed { i, coords -> Pyromancer(i, coords) }
     private val pending = mutableListOf<Pending>()
@@ -140,6 +144,10 @@ constructor(
 
     private val pyromancerDownType: NpcServerType? by lazy {
         ServerCacheManager.getNpc(Wintertodt.NPC_PYROMANCER_DOWN.asRSCM(RSCMType.NPC))
+    }
+
+    private val fireType: NpcServerType? by lazy {
+        ServerCacheManager.getNpc(Wintertodt.NPC_FIRE.asRSCM(RSCMType.NPC))
     }
 
     private val warmItemIds: Set<Int> by lazy {
@@ -215,6 +223,7 @@ constructor(
             runWarmth()
             runAttacks()
             runPyromancerSpeech()
+            tickFireStreams()
             if (energy <= 0) endRound()
         }
 
@@ -550,7 +559,8 @@ constructor(
     fun healPyromancer(player: Player, npc: Npc, useSlot: Int? = null) {
         val pyro = pyromancers.firstOrNull { it.npc == npc } ?: return
         if (!pyro.down) {
-            player.mes("Pyromancer|No need! I'm fine, thanks.")
+            npc.say("No need! I'm fine thanks.")
+            pyro.nextSpeak = mapClock.cycle + 10
             return
         }
         val potion = if (useSlot != null) doseAt(player, useSlot) else lowestDosePotion(player)
@@ -579,11 +589,55 @@ constructor(
         pyro.down = false
         pyro.resumeAt = mapClock.cycle + random.of(2, 8)
         pyro.npc?.let { npc2 -> pyromancerType?.let { npc2.transmog(it, Int.MAX_VALUE) } }
+        showPyromancerHeal(pyro)
         addPoints(player, 75)
-        player.anim(Wintertodt.ANIM_DRINK)
-        player.mes("You heal the Pyromancer.")
         completeTask(player, { caWintertodtMummy }, { caWintertodtMummy = it })
         updateHud()
+    }
+
+    private fun showPyromancerDamage(pyro: Pyromancer, damage: Int) {
+        val npc = pyro.npc ?: return
+        npc.showHitmark(
+            Hitmark.fromNoSource(
+                self = Wintertodt.HITMARK_NPC_DAMAGE,
+                source = Wintertodt.HITMARK_NPC_DAMAGE,
+                public = Wintertodt.HITMARK_NPC_DAMAGE,
+                damage = damage,
+                delay = 0,
+            ),
+        )
+        showPyromancerHealth(pyro)
+    }
+
+    private fun showPyromancerHeal(pyro: Pyromancer) {
+        val npc = pyro.npc ?: return
+        npc.showHitmark(
+            Hitmark.fromNoSource(
+                self = Wintertodt.HITMARK_NPC_HEAL,
+                source = Wintertodt.HITMARK_NPC_HEAL,
+                public = Wintertodt.HITMARK_NPC_HEAL,
+                damage = pyro.hp,
+                delay = 0,
+            ),
+        )
+        showPyromancerHealth(pyro)
+    }
+
+    private fun showPyromancerHealth(pyro: Pyromancer) {
+        val npc = pyro.npc ?: return
+        npc.hitpoints = pyro.hp
+        npc.baseHitpointsLvl = 14
+        val fill = (pyro.hp.coerceIn(0, 14) * Wintertodt.HEADBAR_SEGMENTS) / 14
+        npc.showHeadbar(
+            Headbar.fromNoSource(
+                self = Wintertodt.HEADBAR_HEALTH,
+                public = Wintertodt.HEADBAR_HEALTH,
+                startFill = fill,
+                endFill = fill,
+                startTime = 0,
+                endTime = 0,
+            ),
+        )
     }
 
     fun takeVials(player: Player, count: Int) {
@@ -1186,24 +1240,45 @@ constructor(
         if (brazier.state != BrazierState.LIT) return
         if (mapClock.cycle - brazier.lastHit < Wintertodt.TARGET_COOLDOWN) return
         brazier.lastHit = mapClock.cycle
-        warning(brazier.coords)
         val heavy = random.of(0, 2) == 0
+        snowWarning(brazier.coords, heavy)
         pending +=
             Pending(mapClock.cycle + 3) {
-                when {
-                    heavy && brazier.state == BrazierState.LIT -> damageBrazier(brazier)
-                    !heavy && brazier.state == BrazierState.LIT -> {
-                        setBrazierState(brazier, BrazierState.UNLIT)
-                        for (session in sessions.values.toList()) {
-                            if (near(session.player.coords, brazier.coords, 8)) {
-                                session.player.mes("The brazier has gone out.")
-                            }
-                        }
-                    }
+                if (brazier.state == BrazierState.LIT) {
+                    if (heavy) damageBrazier(brazier) else setBrazierState(brazier, BrazierState.UNLIT)
                 }
-                clearWarning()
                 updateHud()
             }
+    }
+
+    private fun snowWarning(center: CoordGrid, heavy: Boolean) {
+        val spot = Wintertodt.SPOTANIM_AREA_SPOT.asRSCM(RSCMType.SPOTANIM)
+        val impact = SpotanimType(Wintertodt.SPOTANIM_AREA_IMPACT.asRSCM(RSCMType.SPOTANIM))
+        val targets =
+            if (heavy) {
+                listOf(center, center.translate(-1, 0), center.translate(1, 0))
+            } else {
+                listOf(center)
+            }
+        for (target in targets) {
+            val source = target.translate(random.of(-1, 1), 3)
+            worldRepo.projAnim(
+                ProjAnim(
+                    spotanim = spot,
+                    startHeight = 400,
+                    endHeight = 0,
+                    startTime = 50,
+                    endTime = 90,
+                    angle = 0,
+                    progress = 0,
+                    sourceIndex = 0,
+                    targetIndex = 0,
+                    startCoord = source,
+                    endCoord = target,
+                )
+            )
+            worldRepo.spotanimMap(impact, target, delay = 90)
+        }
     }
 
     private fun damageBrazier(brazier: Brazier) {
@@ -1211,7 +1286,6 @@ constructor(
         for (session in sessions.values.toList()) {
             val player = session.player
             if (nearBrazier(player.coords, brazier.coords)) {
-                player.mes("The brazier is broken and shrapnel damages you.")
                 applyWarmth(
                     player,
                     Wintertodt.brazierDamage(player.baseFiremakingLvl, warmItems(player)),
@@ -1220,8 +1294,43 @@ constructor(
         }
     }
 
-    private fun runPyromancerSpeech() {
-        for (pyro in pyromancers) {
+    private fun tickFireStreams() {
+        if (mapClock.cycle % 2 != 0) return
+        val type = fireType ?: return
+        for (brazier in braziers) {
+            if (brazier.state != BrazierState.LIT) continue
+            if (pyromancers[brazier.index].down) continue
+            val spawn = brazier.coords.translate(1, 1)
+            val npc = Npc(type, spawn)
+            npc.mode = NpcMode.None
+            npcRepo.add(npc, 16)
+            npc.walk(firePath(spawn)) { npcRepo.del(npc, Int.MAX_VALUE) }
+        }
+    }
+
+    private fun firePath(start: CoordGrid): List<CoordGrid> {
+        val storm = Wintertodt.STORM
+        val center = storm.translate(3, 3)
+        val minX = storm.x
+        val maxX = storm.x + 6
+        val minZ = storm.z
+        val maxZ = storm.z + 6
+        val path = mutableListOf<CoordGrid>()
+        var x = start.x
+        var z = start.z
+        while (true) {
+            val dx = (center.x - x).coerceIn(-1, 1)
+            val dz = (center.z - z).coerceIn(-1, 1)
+            if (dx == 0 && dz == 0) break
+            x += dx
+            z += dz
+            path += CoordGrid(x, z, start.level)
+            if (x in minX..maxX && z in minZ..maxZ) break
+        }
+        return path
+    }
+
+    private fun runPyromancerSpeech() { for (pyro in pyromancers) {
             val npc = pyro.npc ?: continue
             if (mapClock.cycle < pyro.nextSpeak) continue
             if (pyro.down) {
@@ -1251,22 +1360,28 @@ constructor(
         if (pyro.down) return
         if (mapClock.cycle - pyro.lastHit < Wintertodt.TARGET_COOLDOWN) return
         pyro.lastHit = mapClock.cycle
-        warning(pyro.coords)
+        snowWarning(pyro.coords, heavy = false)
         pending +=
             Pending(mapClock.cycle + 3) {
                 if (!pyro.down) {
-                    pyro.hp -= 7
+                    val hpBefore = pyro.hp
+                    val damage = hpBefore.coerceAtMost(7)
+                    pyro.hp = hpBefore - damage
+                    showPyromancerDamage(pyro, damage)
                     if (pyro.hp <= 0) {
                         pyro.down = true
                         pyroDownThisRound = true
                         pyro.hp = 0
+                        showPyromancerHealth(pyro)
                         pyro.npc?.say("Arg, it got me!")
                         pyro.npc?.let { npc ->
                             pyromancerDownType?.let { npc.transmog(it, Int.MAX_VALUE) }
                         }
+                        if (braziers[index].state == BrazierState.LIT) {
+                            setBrazierState(braziers[index], BrazierState.UNLIT)
+                        }
                     }
                 }
-                clearWarning()
                 updateHud()
             }
     }
@@ -1277,10 +1392,37 @@ constructor(
                 it.player.canProcess && !Wintertodt.isSafe(it.player.coords)
             }
         if (candidates.isEmpty()) return
-        val center = candidates[random.of(candidates.size)].player.coords
-        warning(center)
+        val session = candidates[random.of(candidates.size)]
+        val center = session.player.coords
+        if (!canAreaTarget(center)) return
+        val spot = Wintertodt.SPOTANIM_AREA_SPOT.asRSCM(RSCMType.SPOTANIM)
+        val impact = SpotanimType(Wintertodt.SPOTANIM_AREA_IMPACT.asRSCM(RSCMType.SPOTANIM))
+        val breath = SpotanimType(Wintertodt.SPOTANIM_AREA_BREATH.asRSCM(RSCMType.SPOTANIM))
+        for ((dx, dz) in areaOffsets) {
+            val corner = center.translate(dx, dz)
+            val source = corner.translate(random.of(-1, 1), 3)
+            worldRepo.projAnim(
+                ProjAnim(
+                    spotanim = spot,
+                    startHeight = 400,
+                    endHeight = 0,
+                    startTime = 50,
+                    endTime = 90,
+                    angle = 0,
+                    progress = 0,
+                    sourceIndex = 0,
+                    targetIndex = 0,
+                    startCoord = source,
+                    endCoord = corner,
+                )
+            )
+            worldRepo.spotanimMap(impact, corner, delay = 90)
+        }
+        worldRepo.spotanimMap(breath, center, delay = 90)
+        for (session in sessions.values) session.player.wintAreaAttack = 1
         pending +=
             Pending(mapClock.cycle + 3) {
+                showAreaImpact(center)
                 for (session in sessions.values.toList()) {
                     val player = session.player
                     if (near(player.coords, center, 1)) {
@@ -1297,26 +1439,32 @@ constructor(
             }
     }
 
-    private fun warning(center: CoordGrid) {
+    private fun canAreaTarget(center: CoordGrid): Boolean {
+        for (dx in -1..1) {
+            for (dz in -1..1) {
+                if (flags.isWalkBlocked(center.translate(dx, dz))) return false
+            }
+        }
+        return true
+    }
+
+    private fun showAreaImpact(center: CoordGrid) {
         locRepo.add(
             center,
             Wintertodt.WARNING_ICICLE,
-            3,
+            8,
             LocAngle.West,
             LocShape.CentrepieceStraight,
         )
-        for (dx in listOf(-1, 1)) {
-            for (dz in listOf(-1, 1)) {
-                locRepo.add(
-                    center.translate(dx, dz),
-                    Wintertodt.WARNING_SNOW,
-                    3,
-                    LocAngle.West,
-                    LocShape.CentrepieceStraight,
-                )
-            }
+        for ((dx, dz) in areaOffsets) {
+            locRepo.add(
+                center.translate(dx, dz),
+                Wintertodt.WARNING_SNOW,
+                8,
+                LocAngle.West,
+                LocShape.CentrepieceStraight,
+            )
         }
-        for (session in sessions.values) session.player.wintAreaAttack = 1
     }
 
     private fun clearWarning() {
@@ -1388,16 +1536,34 @@ constructor(
         }
 
         for (pyro in pyromancers) {
-            val npc =
+            val existing =
                 npcRepo
-                    .findAll(ZoneKey.from(pyro.coords), 1)
-                    .firstOrNull { it.coords == pyro.coords && it.type.id == wizardType.id }
+                    .findAll(ZoneKey.from(Wintertodt.STORM), 2)
+                    .filter { it.type.id == wizardType.id }
+                    .toList()
+            val npc =
+                existing
+                    .filter { candidate -> pyromancers.none { it.npc === candidate } }
+                    .minByOrNull { it.coords.chebyshevDistance(pyro.coords) }
                     ?: Npc(wizardType, pyro.coords).also {
                         it.mode = NpcMode.None
                         it.moveRestrict = MoveRestrict.NoMove
                         npcRepo.add(it, Int.MAX_VALUE)
                     }
+            if (npc.coords != pyro.coords) {
+                npc.teleport(flags, pyro.coords)
+            }
+            npc.mode = NpcMode.None
+            npc.moveRestrict = MoveRestrict.NoMove
+            npc.hitpoints = 14
+            npc.baseHitpointsLvl = 14
             pyro.npc = npc
+        }
+        val assigned = pyromancers.mapNotNull { it.npc }.toSet()
+        for (extra in npcRepo.findAll(ZoneKey.from(Wintertodt.STORM), 2).toList()) {
+            if (extra.type.id == wizardType.id && extra !in assigned) {
+                npcRepo.del(extra, Int.MAX_VALUE)
+            }
         }
 
         val stormLoc =

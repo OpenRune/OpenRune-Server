@@ -30,6 +30,13 @@ internal object Wintertodt {
 
     const val HEADBAR_WARMTH = 79
     const val HEADBAR_SEGMENTS = 30
+    const val HEADBAR_HEALTH = 0
+    const val HITMARK_NPC_DAMAGE = 17
+    const val HITMARK_NPC_HEAL = 6
+    const val NPC_FIRE = "npc.wint_fire"
+    const val SPOTANIM_AREA_SPOT = "spotanim.wint_area_attack_spot"
+    const val SPOTANIM_AREA_IMPACT = "spotanim.wint_area_attack_impact"
+    const val SPOTANIM_AREA_BREATH = "spotanim.wyvern_skeleton_impact_breath"
 
     val DOOR = CoordGrid(1627, 3964, 0)
     val ENTRY = CoordGrid(1628, 3979, 0)
@@ -47,10 +54,10 @@ internal object Wintertodt {
 
     val PYROMANCER_COORDS =
         listOf(
-            CoordGrid(1615, 3993, 0),
-            CoordGrid(1615, 4021, 0),
-            CoordGrid(1645, 4021, 0),
-            CoordGrid(1645, 3993, 0),
+            CoordGrid(1619, 3996, 0),
+            CoordGrid(1619, 4018, 0),
+            CoordGrid(1641, 4018, 0),
+            CoordGrid(1641, 3996, 0),
         )
 
     val WARMTH_EXCLUDED_FOOD = setOf("obj.triangle_sandwich", "obj.rag_bottle_wine")
@@ -85,7 +92,7 @@ internal object Wintertodt {
     const val POTION3 = "obj.wint_potion3"
     const val POTION2 = "obj.wint_potion2"
     const val POTION1 = "obj.wint_potion1"
-    const val EMPTY_VIAL = "obj.vial"
+    const val EMPTY_VIAL = "obj.vial_empty"
 
     const val HUD = "interface.wint_status"
     const val HUD_TARGET = "component.toplevel_osrs_stretch:overlay_hud"
