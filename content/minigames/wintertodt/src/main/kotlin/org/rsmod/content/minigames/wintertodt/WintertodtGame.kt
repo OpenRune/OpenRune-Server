@@ -284,6 +284,31 @@ constructor(
         updateHud(session)
     }
 
+    fun canLight(player: Player, index: Int): Boolean {
+        val brazier = braziers.getOrNull(index) ?: return false
+        val pyro = pyromancers.getOrNull(index) ?: return false
+        if (brazier.state == BrazierState.LIT) return false
+        if (pyro.down) {
+            player.mes("Heal the Pyromancer before lighting the brazier.")
+            return false
+        }
+        if (!hasTinderbox(player)) {
+            player.mes("You need a tinderbox to light the brazier.")
+            return false
+        }
+        return true
+    }
+
+    fun canFix(player: Player, index: Int): Boolean {
+        val brazier = braziers.getOrNull(index) ?: return false
+        if (brazier.state != BrazierState.BROKEN) return false
+        if (!hasHammer(player)) {
+            player.mes("You need a hammer to fix the brazier.")
+            return false
+        }
+        return true
+    }
+
     fun lightBrazier(player: Player, index: Int) {
         val brazier = braziers.getOrNull(index) ?: return
         val pyro = pyromancers.getOrNull(index) ?: return
@@ -300,7 +325,6 @@ constructor(
             return
         }
         setBrazierState(brazier, BrazierState.LIT)
-        player.anim(Wintertodt.ANIM_LIGHT)
         player.soundSynth(2596)
         player.mes("You light the brazier.")
         addPoints(player, 25)
@@ -316,7 +340,6 @@ constructor(
             return
         }
         setBrazierState(brazier, BrazierState.UNLIT)
-        player.anim(Wintertodt.ANIM_FIX)
         player.soundSynth(2581)
         player.mes("You fix the brazier.")
         addPoints(player, 25)

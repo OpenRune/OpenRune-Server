@@ -123,6 +123,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
     private suspend fun ProtectedAccess.light(loc: BoundLocInfo) {
         val index = game.brazierIndex(loc.coords)
         if (index < 0) return
+        if (!game.canLight(player, index)) return
         arriveDelay()
         val lightAnim =
             if (game.hasBrumaTorch(player)) Wintertodt.ANIM_LIGHT_TORCH
@@ -136,6 +137,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
     private suspend fun ProtectedAccess.fix(loc: BoundLocInfo) {
         val index = game.brazierIndex(loc.coords)
         if (index < 0) return
+        if (!game.canFix(player, index)) return
         arriveDelay()
         anim(Wintertodt.ANIM_FIX)
         delay(2)
