@@ -6,6 +6,7 @@ import org.rsmod.api.player.events.prayer.PrayerSkillAction
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onPlayerQueueWithArgs
@@ -62,7 +63,7 @@ class GildedAltarEvents @Inject constructor(
 
         performSacrifice(task)
 
-        weakQueue("queue.prayer_altar_sacrifice", 4, task)
+        weakQueue("queue.prayer_altar_sacrifice", player.skillCycles("stat.prayer", 4), task)
     }
 
     private fun ProtectedAccess.performSacrifice(task: SacrificeTask) {

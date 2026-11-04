@@ -7,6 +7,7 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.stat.cookingLvl
 import org.rsmod.api.script.onOpContentLoc1
 import org.rsmod.api.script.onOpContentMixedLocU
@@ -200,7 +201,8 @@ class CookingEvents @Inject constructor(
             return
         }
         anim(cookAnim(surface))
-        weakQueue("queue.cooking_cook", food.cookTicks ?: DEFAULT_COOK_TICKS, CookTask(food, surface, amount, 0))
+        val cycle = player.skillCycles("stat.cooking", food.cookTicks ?: DEFAULT_COOK_TICKS)
+        weakQueue("queue.cooking_cook", cycle,CookTask(food, surface, amount, 0))
     }
 
     private fun ProtectedAccess.processCookTick(task: CookTask) {
@@ -218,7 +220,8 @@ class CookingEvents @Inject constructor(
         val cooked = task.cooked + 1
         if (cooked < task.amount && inv.contains(food.raw.internalName)) {
             anim(cookAnim(task.surface))
-            val delay = maxOf(food.cookTicks ?: DEFAULT_COOK_TICKS, MIN_REQUEUE_TICKS)
+            val cycle = maxOf(food.cookTicks ?: DEFAULT_COOK_TICKS, MIN_REQUEUE_TICKS)
+            val delay = player.skillCycles("stat.cooking", cycle)
             weakQueue("queue.cooking_cook", delay, CookTask(food, task.surface, task.amount, cooked))
         }
     }

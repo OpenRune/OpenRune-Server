@@ -9,6 +9,8 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
+import org.rsmod.api.player.stat.skillNeedsSpace
 import org.rsmod.api.player.stat.fishingLvl
 import org.rsmod.api.script.onOpContentNpc1
 import org.rsmod.api.script.onOpContentNpcU
@@ -63,7 +65,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (inv.isFull() && player.skillNeedsSpace("stat.fishing")) {
             mes("Your inventory is too full to hold any more fish.")
             soundSynth("synth.pillory_wrong")
             return
@@ -76,7 +78,7 @@ constructor(
 
         var caught = false
         if (actionDelay < mapClock) {
-            actionDelay = mapClock + 3
+            actionDelay = mapClock + (player.skillCycles("stat.fishing", 4) - 1).coerceAtLeast(1)
         } else if (actionDelay == mapClock) {
             caught = statRandom("stat.fishing", 5, 160, invisibleLvls, spot.visType.internalName)
         }

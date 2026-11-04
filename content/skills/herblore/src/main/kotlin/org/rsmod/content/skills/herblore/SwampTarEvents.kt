@@ -7,6 +7,7 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreSwampTarRow
@@ -96,7 +97,7 @@ class SwampTarEvents : PluginScript() {
             inv.contains(recipe.herb.internalName) &&
             inv.count(SWAMP_TAR) >= SWAMP_TAR_PER_BATCH
         ) {
-            weakQueue("queue.herblore_swamp_tar", 3, SwampTarTask(recipe))
+            weakQueue("queue.herblore_swamp_tar", player.skillCycles("stat.herblore", 3), SwampTarTask(recipe))
         } else {
             resetAnim()
         }

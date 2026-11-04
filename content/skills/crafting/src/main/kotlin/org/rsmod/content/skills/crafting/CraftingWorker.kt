@@ -11,6 +11,7 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.skilling.consumeSkillingInputs
 import org.rsmod.api.player.stat.craftingLvl
@@ -60,7 +61,7 @@ class CraftingWorkerScript @Inject constructor(
         val anim = beginCycle(product, task.facility, task.completed, task.anim)
         weakQueue(
             CraftingConstants.QUEUE_CRAFTING_MAKE,
-            (product.ticksAt(task.completed) - 1) + QUEUE_HANDLER_COMPENSATION,
+            (craftCycle(product.ticksAt(task.completed)) - 1) + QUEUE_HANDLER_COMPENSATION,
             task.copy(phase = CraftingPhase.END, anim = anim),
         )
     }
@@ -86,7 +87,7 @@ class CraftingWorkerScript @Inject constructor(
             val anim = beginCycle(product, task.facility, completed, task.anim)
             weakQueue(
                 CraftingConstants.QUEUE_CRAFTING_MAKE,
-                product.ticksAt(completed) + QUEUE_HANDLER_COMPENSATION,
+                craftCycle(product.ticksAt(completed)) + QUEUE_HANDLER_COMPENSATION,
                 task.copy(completed = completed, phase = CraftingPhase.END, anim = anim),
             )
         }
@@ -94,6 +95,8 @@ class CraftingWorkerScript @Inject constructor(
 }
 
 private const val QUEUE_HANDLER_COMPENSATION = 1
+
+private fun ProtectedAccess.craftCycle(ticks: Int): Int = player.skillCycles("stat.crafting", ticks)
 
 private const val CONFIRM_CRAFT_DELAY = 4
 
