@@ -7,6 +7,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseFiremakingLvl
 import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onEvent
+import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLoc1
@@ -56,6 +57,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         onOpHeldU(Wintertodt.HERB, Wintertodt.VIAL) { game.combinePotion(player) }
 
         for (potion in POTIONS) {
+            onOpHeld1(potion) { game.drinkPotion(player, it.slot) }
             onOpHeld2(potion) { game.drinkPotion(player, it.slot) }
         }
 
@@ -122,15 +124,19 @@ constructor(private val game: WintertodtGame) : PluginScript() {
             return
         }
         faceLoc(loc)
+        anim(Wintertodt.ANIM_CHOP)
+        mes("You swing your axe at the roots.")
+        delay(1)
         while (true) {
-            anim(Wintertodt.ANIM_CHOP)
-            mes("You swing your axe at the roots.")
-            delay(3)
+            val dx = kotlin.math.abs(player.coords.x - loc.coords.x)
+            val dz = kotlin.math.abs(player.coords.z - loc.coords.z)
+            if (dx > 2 || dz > 2) return
             if (player.inv.isFull()) {
                 mes("Your inventory is too full to hold any more roots.")
                 return
             }
             game.chopRoot(player)
+            delay(3)
         }
     }
 

@@ -306,6 +306,7 @@ constructor(
         if (player.invAdd(player.inv, Wintertodt.ROOT, 1).failure) return
         player.statAdvance("stat.woodcutting", 0.3 * player.baseWoodcuttingLvl)
         player.mes("You get a bruma root.")
+        player.soundSynth(2735)
     }
 
     fun fletch(player: Player) {
