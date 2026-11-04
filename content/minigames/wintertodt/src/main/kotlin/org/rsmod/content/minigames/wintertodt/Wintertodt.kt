@@ -50,6 +50,8 @@ internal object Wintertodt {
             CoordGrid(1645, 3993, 0),
         )
 
+    val WARMTH_EXCLUDED_FOOD = setOf("obj.triangle_sandwich", "obj.rag_bottle_wine")
+
     const val BRAZIER_UNLIT = "loc.wint_brazier"
     const val BRAZIER_BROKEN = "loc.wint_brazier_broken"
     const val BRAZIER_LIT = "loc.wint_brazier_lit"

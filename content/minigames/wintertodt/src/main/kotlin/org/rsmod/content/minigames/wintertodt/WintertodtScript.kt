@@ -18,6 +18,7 @@ import org.rsmod.api.script.onPlayerCoordsChanged
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.content.interfaces.bank.tryOpenBank
+import org.rsmod.content.other.consumables.food.FoodConsumedEvent
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -27,6 +28,7 @@ class WintertodtScript
 constructor(private val game: WintertodtGame) : PluginScript() {
     override fun ScriptContext.startup() {
         onEvent<GameLifecycle.LateCycle> { game.tick() }
+        onEvent<FoodConsumedEvent> { game.onFoodConsumed(player, item, healAmount) }
         onPlayerLogin { game.onLogin(player) }
         onPlayerLogout { game.onLogout(player) }
         onPlayerCoordsChanged { game.onCoordsChanged(player) }

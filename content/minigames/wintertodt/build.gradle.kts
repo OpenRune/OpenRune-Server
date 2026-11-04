@@ -18,4 +18,5 @@ dependencies {
     implementation(projects.api.utils.utilsSkills)
     implementation(projects.content.interfaces.collectionLog)
     implementation(projects.content.interfaces.bank)
+    implementation(projects.content.other.consumables)
 }

@@ -497,6 +497,14 @@ constructor(
         updateHud()
     }
 
+    fun onFoodConsumed(player: Player, item: String, healAmount: Int) {
+        if (!Wintertodt.isInPrison(player.coords)) return
+        if (healAmount < 4) return
+        if (item in Wintertodt.WARMTH_EXCLUDED_FOOD) return
+        player.wintWarmth = min(Wintertodt.WARMTH_MAX, player.wintWarmth + 350)
+        updateHud()
+    }
+
     fun healPyromancer(player: Player, npc: Npc) {
         val pyro = pyromancers.firstOrNull { it.npc == npc } ?: return
         if (!pyro.down) {
