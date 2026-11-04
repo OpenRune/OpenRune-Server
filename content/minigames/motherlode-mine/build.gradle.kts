@@ -8,6 +8,7 @@ dependencies {
     implementation(projects.api.delivery)
     implementation(projects.api.dropTable)
     implementation(projects.api.dropTablePlugin)
+    implementation(projects.content.interfaces.bank)
     implementation(projects.content.skills.mining)
     implementation(projects.content.skills.utils)
     testImplementation(libs.fastutil)

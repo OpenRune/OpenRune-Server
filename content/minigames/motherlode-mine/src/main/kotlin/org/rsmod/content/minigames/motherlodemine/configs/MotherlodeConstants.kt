@@ -163,9 +163,12 @@ object MotherlodeConstants {
     const val SCAN_Z1 = 5630
     const val SCAN_Z2 = 5700
 
+    const val BANK_CHEST_LOC = "loc.blast_bank_chest"
+
     const val CRATE_LOC = "loc.crate2_old"
     const val OBJ_HAMMER = "obj.hammer"
     const val OBJ_BRONZE_PICKAXE = "obj.bronze_pickaxe"
+    const val CONTENT_PICKAXE = "content.mining_pickaxe"
 
     val CRATE_CONTENTS: Map<CoordGrid, String> =
         mapOf(
