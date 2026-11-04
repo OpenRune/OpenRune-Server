@@ -45,6 +45,10 @@ internal class CorsairCurseDialogue(
         onOpNpc1(CorsairCurseRefs.CaptainThroneChild) { startDialogue(it.npc) { throneTock() } }
     }
 
+    internal suspend fun ProtectedAccess.talkToCrossroadsTock(npc: Npc) {
+        startDialogue(npc) { crossroadsTock() }
+    }
+
     private suspend fun ProtectedAccess.talkToArsen(npc: Npc) {
         startDialogue(npc) { arsen() }
     }

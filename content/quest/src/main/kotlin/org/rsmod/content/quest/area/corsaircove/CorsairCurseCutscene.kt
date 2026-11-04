@@ -386,7 +386,7 @@ internal class CorsairCurseCutscene(
                 access.showInShot()
             },
             underFade = { r ->
-                spawn(CorsairCurseRefs.Navigator, r[DriftwoodScene.BedMark]).also(cast::add)
+                spawn(CorsairCurseRefs.NavigatorSick, r[DriftwoodScene.BedMark]).also(cast::add)
                 hideFromShot()
             },
         ) { r ->
@@ -729,7 +729,7 @@ internal class CorsairCurseCutscene(
 
         private const val DriftwoodNoticeTicks = 1
 
-        private const val DriftwoodBurnTicks = 1
+        private const val DriftwoodBurnTicks = 2
 
         private const val DriftwoodArrivalPauseTicks = 2
 

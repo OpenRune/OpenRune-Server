@@ -384,7 +384,7 @@ coords = "0_40_44_26_51"
 
 [[spawn]]
 npc = "npc.corsair_ferry_covedocks"
-coords = "1_40_44_14_19"
+coords = "1_40_44_14_20"
 
 [[spawn]]
 npc = "npc.corscurs_cabinboy_sick"

@@ -1,5 +1,7 @@
 package org.rsmod.content.quest.area.corsaircove
 
+import dev.openrune.rscm.RSCM
+import dev.openrune.rscm.RSCMType
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.midiJingle
@@ -9,21 +11,44 @@ import org.rsmod.api.player.protect.forcedWalk
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.api.table.TeleportRouteRow
 import org.rsmod.content.quest.manager.Quest
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
-internal class CorsairCurseFerry(private val quest: Quest, private val fight: CorsairCurseFight) {
+internal class CorsairCurseFerry(
+    private val quest: Quest,
+    private val fight: CorsairCurseFight,
+    private val dialogue: CorsairCurseDialogue,
+) {
 
     fun ScriptContext.register() {
         onOpLoc1(CorsairCurseRefs.CoveGangplank) { crossPlank(it.loc) }
         onOpLoc1(CorsairCurseRefs.RimmingtonPlankOn) { crossPlank(it.loc) }
         onOpLoc1(CorsairCurseRefs.RimmingtonPlankOff) { crossPlank(it.loc) }
 
+        val routedNpcs =
+            TeleportRouteRow.all()
+                .mapNotNull { row ->
+                    row.npc?.let { RSCM.getReverseMapping(RSCMType.NPC, it.id) }
+                }
+                .toSet()
+
         for (npcType in Helmsmen) {
-            onOpNpc1(npcType) { startDialogue(it.npc) { helmsman() } }
-            onOpNpc3(npcType) { travelOp() }
+            onOpNpc1(npcType) {
+                val stage = quest.getQuestStage(player)
+                // Crossroads Tock's multinpc resolves to this leaf id before the player sails.
+                if (npcType == CorsairCurseRefs.Captain1Op && stage <= CorsairCurseStage.Started) {
+                    with(dialogue) { talkToCrossroadsTock(it.npc) }
+                } else {
+                    startDialogue(it.npc) { helmsman() }
+                }
+            }
+            // BoatRouteScript already owns the op for any npc in the route table.
+            if (npcType !in routedNpcs) {
+                onOpNpc3(npcType) { travelOp() }
+            }
         }
     }
 
