@@ -14,7 +14,11 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
-internal class CorsairCurseFerry(private val quest: Quest, private val fight: CorsairCurseFight) {
+internal class CorsairCurseFerry(
+    private val quest: Quest,
+    private val fight: CorsairCurseFight,
+    private val dialogue: CorsairCurseDialogue,
+) {
 
     fun ScriptContext.register() {
         onOpLoc1(CorsairCurseRefs.CoveGangplank) { crossPlank(it.loc) }
@@ -22,7 +26,15 @@ internal class CorsairCurseFerry(private val quest: Quest, private val fight: Co
         onOpLoc1(CorsairCurseRefs.RimmingtonPlankOff) { crossPlank(it.loc) }
 
         for (npcType in Helmsmen) {
-            onOpNpc1(npcType) { startDialogue(it.npc) { helmsman() } }
+            onOpNpc1(npcType) {
+                val stage = quest.getQuestStage(player)
+                // Crossroads Tock's multinpc resolves to this leaf id before the player sails.
+                if (npcType == CorsairCurseRefs.Captain1Op && stage <= CorsairCurseStage.Started) {
+                    with(dialogue) { talkToCrossroadsTock(it.npc) }
+                } else {
+                    startDialogue(it.npc) { helmsman() }
+                }
+            }
             onOpNpc3(npcType) { travelOp() }
         }
     }

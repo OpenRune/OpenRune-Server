@@ -46,7 +46,7 @@ constructor(
     private val cutscene = CorsairCurseCutscene(regionRepo, npcRepo, collision, worldRepo)
     private val dialogue = CorsairCurseDialogue(quest, cutscene)
     private val scenery = CorsairCurseScenery(quest, locRepo, npcRepo, collision, worldRepo, cutscene)
-    private val ferry = CorsairCurseFerry(quest, fight)
+    private val ferry = CorsairCurseFerry(quest, fight, dialogue)
     private val bank = CorsairCurseBank(quest)
 
     override fun claims(player: Player): Boolean = scenery.claims(player)
