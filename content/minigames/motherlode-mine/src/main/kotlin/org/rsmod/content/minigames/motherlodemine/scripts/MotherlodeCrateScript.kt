@@ -24,7 +24,7 @@ class MotherlodeCrateScript : PluginScript() {
         }
         arriveDelay()
         if (hasSupply(contents)) {
-            mes("You already have ${supplyName(contents)}.")
+            mes(type.paramOrNull(params.game_message) ?: "You search the crate but find nothing.")
             return
         }
         if (inv.isFull()) {
