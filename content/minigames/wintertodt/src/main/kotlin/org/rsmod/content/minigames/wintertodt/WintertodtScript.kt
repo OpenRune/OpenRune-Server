@@ -14,6 +14,7 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onPlayerCoordsChanged
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
@@ -75,6 +76,10 @@ constructor(private val game: WintertodtGame) : PluginScript() {
 
         onOpNpc1(Wintertodt.NPC_PYROMANCER) { game.healPyromancer(player, it.npc) }
         onOpNpc1(Wintertodt.NPC_PYROMANCER_DOWN) { game.healPyromancer(player, it.npc) }
+
+        onOpNpc1(IGNISIA) { talkToIgnisia(it.npc) }
+        onOpNpc3(IGNISIA) { exchangeWithIgnisia(it.npc) }
+        onOpHeld1(EXTRA_CRATE) { game.openExtraCrate(player, it.slot) }
 
         onCommand("wt") {
             desc = "Wintertodt debug"

@@ -162,6 +162,11 @@ internal object WintertodtRewards {
         return resource(player, random)
     }
 
+    fun rollExtra(player: Player, random: GameRandom): WintertodtReward {
+        if (random.of(1, 10_000) == 1) return WintertodtReward(DRAGON_AXE, 1)
+        return resource(player, random)
+    }
+
     fun add(player: Player, reward: WintertodtReward): Boolean =
         runCatching {
                 player.invAdd(player.inv, reward.item, reward.count, cert = reward.noted).success

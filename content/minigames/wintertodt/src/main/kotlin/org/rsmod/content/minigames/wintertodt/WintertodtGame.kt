@@ -18,6 +18,8 @@ import org.rsmod.api.config.objParam
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
+import org.rsmod.api.invtx.invTransaction
+import org.rsmod.api.invtx.select
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
@@ -316,6 +318,36 @@ constructor(
             claimed++
         }
         return claimed
+    }
+
+    fun openExtraCrate(player: Player, slot: Int) {
+        val inv = player.inv
+        val crate = inv[slot] ?: return
+        if (crate.id != EXTRA_CRATE.asRSCM(RSCMType.OBJ)) return
+        val rolls = crate.vars.coerceIn(1, 5)
+        val rewards = List(rolls) { WintertodtRewards.rollExtra(player, random) }
+        val opened =
+            player.invTransaction(inv) {
+                val from = select(inv)
+                delete {
+                    this.from = from
+                    this.obj = crate.id
+                    this.strictSlot = slot
+                }
+                for (reward in rewards) {
+                    insert {
+                        this.into = from
+                        this.obj = reward.item.asRSCM(RSCMType.OBJ)
+                        this.count = reward.count
+                        this.cert = reward.noted
+                    }
+                }
+            }
+        if (opened.failure) {
+            player.mes("You don't have enough inventory space to open that.")
+            return
+        }
+        player.mes("You open the extra supply crate.")
     }
 
     fun addPoints(player: Player, amount: Int) {
