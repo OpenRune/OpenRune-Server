@@ -189,4 +189,9 @@ public object ZoneUpdateTransformer {
 
     public class ObjReveal(public val obj: Obj, override val backing: ZoneProt) :
         PartialFollowsZoneProt
+
+    public class ProjAnimPrivate(
+        public val observer: Long,
+        override val backing: ZoneProt,
+    ) : PartialFollowsZoneProt
 }

@@ -126,3 +126,6 @@ barrows_state=64132
 aggression_tolerance_start=64140
 aggression_tolerance_anchor=64141
 aggression_tolerance_seen=64142
+huey_best_time=65662
+huey_perfect_streak=65663
+huey_personal_deaths=65664

@@ -296,6 +296,27 @@ object InstanceSettingsTable {
             )
         }
 
+        row("dbrow.instance_hueycoatl") {
+            column(KEY, "hueycoatl")
+            columnCoord(EXIT_COORD, CoordGrid(1524, 3290, 0))
+            columnCoord(ENTER_COORD, CoordGrid(1524, 3294, 0))
+            column(FEE, 50000)
+            column(MAX_PLAYERS, 20)
+            column(TIME_LIMIT_MINUTES, 0)
+            column(GRACE_MINUTES, 10)
+            column(BOSS_NAME, "The Hueycoatl")
+            column(RECOMMENDED_COMBAT, 85, 126)
+            column(TEAM_SIZE, 20)
+            column(LOOT_MULTIPLIER, "x1.0")
+            column(DESCRIPTION, "A colossal draconic boss coiled around the Darkfrost.")
+            columnRSCM(
+                ENTER_OBJECT,
+                "loc.huey_holding_instance_creator",
+                "loc.huey_holding_instance_creator_instanced",
+            )
+            columnRSCM(EXIT_OBJECT, "loc.huey_holding_entrance_instanced")
+        }
+
         row("dbrow.instance_amoxliatl") {
             column(KEY, "amoxliatl")
             columnCoord(EXIT_COORD, CoordGrid(1602, 9631, 0))

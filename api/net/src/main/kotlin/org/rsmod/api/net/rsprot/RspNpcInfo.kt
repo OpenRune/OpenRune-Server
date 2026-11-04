@@ -39,6 +39,10 @@ class RspNpcInfo(val rspAvatar: NpcAvatar) : NpcInfoProtocol {
         rspAvatar.extendedInfo.setTransmogrification(originalType)
     }
 
+    override fun setCombatLevel(level: Int) {
+        rspAvatar.extendedInfo.combatLevelChange(level)
+    }
+
     override fun setBodyModel(model: Int) {
         rspAvatar.extendedInfo.setBodyCustomisation(listOf(model), emptyList(), emptyList())
     }

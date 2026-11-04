@@ -2163,6 +2163,30 @@ npc = "npc.huey_lobby_leader"
 coords = "0_23_51_56_29"
 
 [[spawn]]
+npc = "npc.huey_lobby_seer"
+coords = "0_23_51_59_28"
+
+[[spawn]]
+npc = "npc.huey_lobby_worker_1"
+coords = "0_23_51_60_26"
+
+[[spawn]]
+npc = "npc.huey_lobby_chef_multibase"
+coords = "0_23_51_62_25"
+
+[[spawn]]
+npc = "npc.huey_lobby_worker_2"
+coords = "0_23_51_56_26"
+
+[[spawn]]
+npc = "npc.huey_lobby_guard_viero_multibase"
+coords = "0_23_51_51_29"
+
+[[spawn]]
+npc = "npc.huey_nelta"
+coords = "0_23_51_53_26"
+
+[[spawn]]
 npc = "npc.vm_prayer_uncerter"
 coords = "0_22_49_34_18"
 
