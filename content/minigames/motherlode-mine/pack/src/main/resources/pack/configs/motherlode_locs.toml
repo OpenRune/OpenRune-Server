@@ -1,0 +1,36 @@
+[[object]]
+id = "loc.motherlode_ore_single"
+isServerOnly = true
+inherit = "loc.motherlode_ore_single"
+contentGroup = "content.motherlode_vein"
+
+[[object]]
+id = "loc.motherlode_ore_left"
+isServerOnly = true
+inherit = "loc.motherlode_ore_left"
+contentGroup = "content.motherlode_vein"
+
+[[object]]
+id = "loc.motherlode_ore_middle"
+isServerOnly = true
+inherit = "loc.motherlode_ore_middle"
+contentGroup = "content.motherlode_vein"
+
+[[object]]
+id = "loc.motherlode_ore_right"
+isServerOnly = true
+inherit = "loc.motherlode_ore_right"
+contentGroup = "content.motherlode_vein"
+
+[[object]]
+id = "loc.motherlode_rockfall_1"
+isServerOnly = true
+inherit = "loc.motherlode_rockfall_1"
+contentGroup = "content.motherlode_rockfall"
+
+[[object]]
+id = "loc.motherlode_rockfall_2"
+isServerOnly = true
+inherit = "loc.motherlode_rockfall_2"
+contentGroup = "content.motherlode_rockfall"
+

@@ -1,0 +1,13 @@
+
+[gamevals.content]
+motherlode_vein = 100
+motherlode_rockfall = 101
+
+[gamevals.currency]
+golden_nugget = 65532
+
+[gamevals.inv]
+motherlode_shop = 65533
+
+[gamevals.dbrow]
+shop_currency_motherlode_nugget = 65540

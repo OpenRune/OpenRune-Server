@@ -32,7 +32,7 @@ object ShopCurrencyTable {
             columnRSCM(OBJ, "obj.star_dust")
         }
 
-        row("dbrow.shop_currency_golden_nugget") {
+        row("dbrow.shop_currency_motherlode_nugget") {
             column(KEY, "currency.golden_nugget")
             column(SINGULAR_NAME, "golden nugget")
             column(PLURAL_NAME, "golden nuggets")

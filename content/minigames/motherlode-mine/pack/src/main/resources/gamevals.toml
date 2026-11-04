@@ -1,0 +1,22 @@
+[gamevals.varp]
+motherlode_unlocks = 63050
+motherlode_last_sack_notify = 63051
+
+[gamevals.varbit]
+motherlode_upper_floor_unlocked = 63050
+motherlode_super_hopper_unlocked = 63051
+
+[gamevals.enum]
+motherlode_depleted_veins = 63050
+motherlode_upper_floor_tiles = 63051
+
+[gamevals.dbtable]
+motherlode_ores = 63050
+
+[gamevals.dbrow]
+motherlode_runite = 63050
+motherlode_adamantite = 63051
+motherlode_mithril = 63052
+motherlode_gold = 63053
+motherlode_coal = 63054
+motherlode_nugget = 63055

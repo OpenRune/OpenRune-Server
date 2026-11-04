@@ -1,0 +1,25 @@
+[[varp]]
+isServerOnly = true
+id = "varp.motherlode_unlocks"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.motherlode_last_sack_notify"
+scope = "Temp"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.motherlode_upper_floor_unlocked"
+varp = "varp.motherlode_unlocks"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.motherlode_super_hopper_unlocked"
+varp = "varp.motherlode_unlocks"
+startBit = 1
+endBit = 1

@@ -1,12 +1,12 @@
 [[area]]
 name = "Motherlode Mine"
 area_id = "area.motherlode_mine"
-levels = [0]
+levels = [0, 1, 2, 3]
 
 [[area.polygons]]
 vertices = [
-    [3712, 5632],
-    [3775, 5632],
-    [3775, 5695],
-    [3712, 5695],
+    [3710, 5630],
+    [3780, 5630],
+    [3780, 5700],
+    [3710, 5700],
 ]
