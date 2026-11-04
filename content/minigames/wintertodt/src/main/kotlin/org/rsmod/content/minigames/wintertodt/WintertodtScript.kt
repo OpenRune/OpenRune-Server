@@ -41,7 +41,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         onOpLoc1(Wintertodt.BRAZIER_LIT) { feed(it.loc) }
 
         onOpLoc1("loc.wint_roots") { chop(it.loc) }
-        onOpLoc1("loc.wint_herb_roots") { pick() }
+        onOpLoc1("loc.wint_herb_roots") { pick(it.loc) }
 
         onOpLoc1("loc.wint_chest_vial") { game.takeVials(player, 1) }
         onOpLoc2("loc.wint_chest_vial") { game.takeVials(player, 5) }
@@ -123,8 +123,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
             mes("Your inventory is too full to hold any more roots.")
             return
         }
-        val token = game.startChop(player)
-        val anchor = player.coords
+        val token = game.startAction(player)
         val animSeq = game.axeAnim(player) ?: Wintertodt.ANIM_CHOP
         faceLoc(loc)
         anim(animSeq)
@@ -132,39 +131,78 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         delay(1)
         var animTicks = 0
         while (true) {
-            if (!game.isChopping(player, token) || player.coords != anchor) {
-                game.stopChop(player)
+            if (!game.isActionActive(player, token) || !nearLoc(loc, 3)) {
+                game.stopAction(player)
                 return
             }
             if (player.inv.isFull()) {
                 mes("Your inventory is too full to hold any more roots.")
-                game.stopChop(player)
+                game.stopAction(player)
                 return
             }
+            game.chopSound(player)
             if (game.chopSuccess(player)) game.chopRoot(player)
             repeat(3) {
                 delay(1)
                 animTicks++
                 if (animTicks % 6 == 0) anim(animSeq)
-                if (!game.isChopping(player, token) || player.coords != anchor) {
-                    game.stopChop(player)
+                if (!game.isActionActive(player, token) || !nearLoc(loc, 3)) {
+                    game.stopAction(player)
                     return
                 }
             }
         }
     }
 
+    private fun ProtectedAccess.nearLoc(loc: BoundLocInfo, radius: Int): Boolean =
+        kotlin.math.abs(player.coords.x - loc.coords.x) <= radius &&
+            kotlin.math.abs(player.coords.z - loc.coords.z) <= radius
+
     private suspend fun ProtectedAccess.fletch() {
         if (player.inv.count(Wintertodt.ROOT) <= 0) return
-        anim(Wintertodt.ANIM_FLETCH)
-        delay(4)
-        game.fletch(player)
+        val token = game.startAction(player)
+        while (true) {
+            if (!game.isActionActive(player, token)) return
+            if (player.inv.count(Wintertodt.ROOT) <= 0) {
+                game.stopAction(player)
+                return
+            }
+            anim(Wintertodt.ANIM_FLETCH)
+            delay(4)
+            if (!game.isActionActive(player, token)) return
+            if (player.inv.count(Wintertodt.ROOT) <= 0) {
+                game.stopAction(player)
+                return
+            }
+            game.fletch(player)
+        }
     }
 
-    private suspend fun ProtectedAccess.pick() {
-        anim(Wintertodt.ANIM_HERB)
-        delay(1)
-        game.pickHerb(player)
+    private suspend fun ProtectedAccess.pick(loc: BoundLocInfo) {
+        val token = game.startAction(player)
+        while (true) {
+            if (!game.isActionActive(player, token) || !nearLoc(loc, 2)) {
+                game.stopAction(player)
+                return
+            }
+            if (player.inv.isFull()) {
+                mes("The herb shatters as it hits the floor.")
+                game.stopAction(player)
+                return
+            }
+            anim(Wintertodt.ANIM_HERB)
+            delay(3)
+            if (!game.isActionActive(player, token) || !nearLoc(loc, 2)) {
+                game.stopAction(player)
+                return
+            }
+            if (player.inv.isFull()) {
+                mes("The herb shatters as it hits the floor.")
+                game.stopAction(player)
+                return
+            }
+            game.pickHerb(player)
+        }
     }
 
     private suspend fun ProtectedAccess.light(loc: BoundLocInfo) {
@@ -175,8 +213,9 @@ constructor(private val game: WintertodtGame) : PluginScript() {
             if (game.hasBrumaTorch(player)) Wintertodt.ANIM_LIGHT_TORCH
             else Wintertodt.ANIM_LIGHT
         anim(lightAnim)
-        delay(4)
+        delay(2)
         game.lightBrazier(player, index)
+        resetAnim()
     }
 
     private suspend fun ProtectedAccess.fix(loc: BoundLocInfo) {
@@ -184,16 +223,39 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         if (index < 0) return
         arriveDelay()
         anim(Wintertodt.ANIM_FIX)
-        delay(4)
+        delay(2)
         game.fixBrazier(player, index)
+        resetAnim()
     }
 
     private suspend fun ProtectedAccess.feed(loc: BoundLocInfo) {
         val index = game.brazierIndex(loc.coords)
         if (index < 0) return
         arriveDelay()
-        delay(2)
-        game.feed(player, index)
+        val token = game.startAction(player)
+        while (true) {
+            if (!game.isActionActive(player, token) || !game.isAtBrazier(player, index)) {
+                game.stopAction(player)
+                return
+            }
+            if (!game.hasFeed(player)) {
+                mes("You have run out of bruma roots.")
+                game.stopAction(player)
+                return
+            }
+            anim(Wintertodt.ANIM_FEED)
+            soundSynth(2596)
+            soundSynth(2596, delay = 15)
+            delay(3)
+            if (!game.isActionActive(player, token) || !game.isAtBrazier(player, index)) {
+                game.stopAction(player)
+                return
+            }
+            if (!game.feed(player, index)) {
+                game.stopAction(player)
+                return
+            }
+        }
     }
 
     private companion object {

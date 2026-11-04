@@ -86,6 +86,7 @@ internal object Wintertodt {
     const val ANIM_FIX = "seq.human_poh_build"
     const val ANIM_FLETCH = "seq.human_fletching"
     const val ANIM_HERB = "seq.picking_low"
+    const val ANIM_FEED = "seq.human_pickuptable"
     const val ANIM_DRINK = "seq.human_eat"
 
     fun isInPrison(coords: CoordGrid): Boolean =

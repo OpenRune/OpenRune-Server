@@ -90,8 +90,8 @@ constructor(
     private var nextHud = 0
     private var worldReady = false
     private var warmthLock = false
-    private val chopping = mutableMapOf<Player, Long>()
-    private var chopSequence = 0L
+    private val actionTokens = mutableMapOf<Player, Long>()
+    private var actionSequence = 0L
 
     private var storm: LocInfo? = null
 
@@ -219,7 +219,7 @@ constructor(
     }
 
     fun leave(player: Player) {
-        stopChop(player)
+        stopAction(player)
         val session = sessions.remove(player) ?: return
         session.points = 0
         player.wintWarmth = Wintertodt.WARMTH_MAX
@@ -233,7 +233,7 @@ constructor(
     }
 
     fun onLogout(player: Player) {
-        stopChop(player)
+        stopAction(player)
         sessions.remove(player)
     }
 
@@ -308,16 +308,25 @@ constructor(
         updateHud()
     }
 
-    fun feed(player: Player, index: Int) {
-        val brazier = braziers.getOrNull(index) ?: return
-        if (brazier.state != BrazierState.LIT) return
+    fun isAtBrazier(player: Player, index: Int): Boolean {
+        val brazier = braziers.getOrNull(index) ?: return false
+        return nearBrazier(player.coords, brazier.coords)
+    }
+
+    fun hasFeed(player: Player): Boolean =
+        player.inv.count(Wintertodt.KINDLING) > 0 || player.inv.count(Wintertodt.ROOT) > 0
+
+    fun feed(player: Player, index: Int): Boolean {
+        if (!isAtBrazier(player, index)) return false
+        val brazier = braziers.getOrNull(index) ?: return false
+        if (brazier.state != BrazierState.LIT) return false
         val kindling = player.inv.count(Wintertodt.KINDLING) > 0
         val item = if (kindling) Wintertodt.KINDLING else Wintertodt.ROOT
         if (player.inv.count(item) <= 0) {
             player.mes("You have run out of bruma roots.")
-            return
+            return false
         }
-        if (player.invDel(player.inv, item, 1).failure) return
+        if (player.invDel(player.inv, item, 1).failure) return false
         if (kindling) {
             addPoints(player, 25)
             player.statAdvance("stat.firemaking", 3.8 * player.baseFiremakingLvl)
@@ -325,7 +334,7 @@ constructor(
             addPoints(player, 10)
             player.statAdvance("stat.firemaking", 3.0 * player.baseFiremakingLvl)
         }
-        player.anim(Wintertodt.ANIM_LIGHT)
+        return true
     }
 
     fun chopRoot(player: Player) {
@@ -336,7 +345,6 @@ constructor(
         if (player.invAdd(player.inv, Wintertodt.ROOT, 1).failure) return
         player.statAdvance("stat.woodcutting", 0.3 * player.baseWoodcuttingLvl)
         player.mes("You get a bruma root.")
-        player.soundSynth(2735)
     }
 
     fun fletch(player: Player) {
@@ -354,6 +362,7 @@ constructor(
         }
         if (player.invAdd(player.inv, Wintertodt.HERB, 1).failure) return
         player.mes("You pick a bruma herb.")
+        player.soundSynth(2581)
     }
 
     fun combinePotion(player: Player) {
@@ -495,17 +504,25 @@ constructor(
         return player.statRandom(random, "stat.woodcutting", low, high, invisibleLevels)
     }
 
-    fun startChop(player: Player): Long {
-        chopSequence += 1
-        val token = chopSequence
-        chopping[player] = token
+    fun startAction(player: Player): Long {
+        actionSequence += 1
+        val token = actionSequence
+        actionTokens[player] = token
         return token
     }
 
-    fun isChopping(player: Player, token: Long): Boolean = chopping[player] == token
+    fun isActionActive(player: Player, token: Long): Boolean = actionTokens[player] == token
 
-    fun stopChop(player: Player) {
-        chopping.remove(player)
+    fun stopAction(player: Player) {
+        actionTokens.remove(player)
+    }
+
+    fun chopSound(player: Player) {
+        runCatching {
+                val name = RSCM.getReverseMapping(RSCMType.SYNTH, 2735)
+                worldRepo.soundArea(player.coords, name, radius = 1)
+            }
+            .onFailure { player.soundSynth(2735) }
     }
 
     fun hasBrumaTorch(player: Player): Boolean =
