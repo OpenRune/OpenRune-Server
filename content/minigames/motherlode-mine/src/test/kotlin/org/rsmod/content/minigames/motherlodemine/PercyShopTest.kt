@@ -2,6 +2,7 @@ package org.rsmod.content.minigames.motherlodemine
 
 import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import kotlin.coroutines.Continuation
@@ -54,6 +55,10 @@ class PercyShopTest {
         val shop = f.trade(buyer)
         val otherShop = f.trade(observer)
         assertSame(shop.inv, otherShop.inv)
+        assertEquals(
+            MotherlodeConstants.SHOP_TEMPLATE.asRSCM(RSCMType.INV),
+            shop.inv.type.id,
+        )
         assertEquals(MotherlodeConstants.CURRENCY_NUGGET, shop.currency)
         assertEquals(100, shop.inv.count(MotherlodeConstants.OBJ_PROSPECTOR_HAT))
 
