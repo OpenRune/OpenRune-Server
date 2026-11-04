@@ -40,7 +40,7 @@ class MotherlodeShortcutScript : PluginScript() {
 
     private companion object {
         const val AGILITY_LEVEL = 54
-        const val CRAWL_SOUND = 2454
+        const val CRAWL_SOUND = "synth.raft_climb"
         const val CRAWL_CYCLES = 2
 
         val ROUTES =
