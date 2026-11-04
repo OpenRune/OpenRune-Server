@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 dependencies {
@@ -9,6 +10,7 @@ dependencies {
     implementation(projects.api.death)
     implementation(projects.api.dropTable)
     implementation(projects.api.dropTablePlugin)
+    implementation(projects.api.invtx)
     implementation(projects.api.player)
     implementation(projects.api.playerOutput)
     implementation(projects.api.random)
@@ -17,7 +19,13 @@ dependencies {
     implementation(projects.content.interfaces.collectionLog)
     implementation(projects.content.skills.slayer)
     implementation(projects.content.quest)
+    implementation(projects.engine.events)
     implementation(projects.engine.game)
     implementation(projects.engine.map)
+    implementation(projects.engine.objtx)
     implementation(projects.engine.plugin)
+
+    testImplementation(libs.mockk)
+    testImplementation(projects.api.invStorage)
+    testImplementation(projects.engine.annotations)
 }
