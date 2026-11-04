@@ -63,8 +63,9 @@ class ProduceContainersScript : PluginScript() {
     }
 
     private fun fruit(form: ContainerForm): String? {
-        val full = FarmingProduceContainers.fullContainer(form.produce.internalName) ?: return null
-        return full.removePrefix("obj.basket_").takeIf { it != full }?.substringBeforeLast('_')
+        val empty = FarmingProduceContainers.form(form.produce.id, 0) ?: return null
+        if (empty.obj.internalName != "obj.basket_empty") return null
+        return form.produce.name.removePrefix("Cooking ").lowercase()
     }
 
     private fun article(word: String): String = if (word.first() in "aeiou") "an" else "a"

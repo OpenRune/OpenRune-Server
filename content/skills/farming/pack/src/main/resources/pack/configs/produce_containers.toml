@@ -1,0 +1,158 @@
+[[enum]]
+isServerOnly = true
+id = "enum.farming_produce_containers"
+keyType = "OBJ"
+valueType = "ENUM"
+
+[enum.values]
+"obj.cabbage" = "enum.farming_produce_cabbage"
+"obj.onion" = "enum.farming_produce_onion"
+"obj.potato" = "enum.farming_produce_potato"
+"obj.strawberry" = "enum.farming_produce_strawberry"
+"obj.orange" = "enum.farming_produce_orange"
+"obj.banana" = "enum.farming_produce_banana"
+"obj.tomato" = "enum.farming_produce_tomato"
+"obj.cooking_apple" = "enum.farming_produce_apple"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_produce_fill_priority"
+keyType = "OBJ"
+valueType = "INT"
+
+[enum.values]
+"obj.cabbage" = 0
+"obj.onion" = 1
+"obj.potato" = 2
+"obj.strawberry" = 3
+"obj.orange" = 4
+"obj.banana" = 5
+"obj.tomato" = 6
+"obj.cooking_apple" = 7
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_produce_cabbage"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.sack_empty"
+1 = "obj.sack_cabbage_1"
+2 = "obj.sack_cabbage_2"
+3 = "obj.sack_cabbage_3"
+4 = "obj.sack_cabbage_4"
+5 = "obj.sack_cabbage_5"
+6 = "obj.sack_cabbage_6"
+7 = "obj.sack_cabbage_7"
+8 = "obj.sack_cabbage_8"
+9 = "obj.sack_cabbage_9"
+10 = "obj.sack_cabbage_10"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_produce_onion"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.sack_empty"
+1 = "obj.sack_onion_1"
+2 = "obj.sack_onion_2"
+3 = "obj.sack_onion_3"
+4 = "obj.sack_onion_4"
+5 = "obj.sack_onion_5"
+6 = "obj.sack_onion_6"
+7 = "obj.sack_onion_7"
+8 = "obj.sack_onion_8"
+9 = "obj.sack_onion_9"
+10 = "obj.sack_onion_10"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_produce_potato"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.sack_empty"
+1 = "obj.sack_potato_1"
+2 = "obj.sack_potato_2"
+3 = "obj.sack_potato_3"
+4 = "obj.sack_potato_4"
+5 = "obj.sack_potato_5"
+6 = "obj.sack_potato_6"
+7 = "obj.sack_potato_7"
+8 = "obj.sack_potato_8"
+9 = "obj.sack_potato_9"
+10 = "obj.sack_potato_10"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_produce_strawberry"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.basket_empty"
+1 = "obj.basket_strawberry_1"
+2 = "obj.basket_strawberry_2"
+3 = "obj.basket_strawberry_3"
+4 = "obj.basket_strawberry_4"
+5 = "obj.basket_strawberry_5"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_produce_orange"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.basket_empty"
+1 = "obj.basket_orange_1"
+2 = "obj.basket_orange_2"
+3 = "obj.basket_orange_3"
+4 = "obj.basket_orange_4"
+5 = "obj.basket_orange_5"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_produce_banana"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.basket_empty"
+1 = "obj.basket_banana_1"
+2 = "obj.basket_banana_2"
+3 = "obj.basket_banana_3"
+4 = "obj.basket_banana_4"
+5 = "obj.basket_banana_5"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_produce_tomato"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.basket_empty"
+1 = "obj.basket_tomato_1"
+2 = "obj.basket_tomato_2"
+3 = "obj.basket_tomato_3"
+4 = "obj.basket_tomato_4"
+5 = "obj.basket_tomato_5"
+
+[[enum]]
+isServerOnly = true
+id = "enum.farming_produce_apple"
+keyType = "INT"
+valueType = "OBJ"
+
+[enum.values]
+0 = "obj.basket_empty"
+1 = "obj.basket_apple_1"
+2 = "obj.basket_apple_2"
+3 = "obj.basket_apple_3"
+4 = "obj.basket_apple_4"
+5 = "obj.basket_apple_5"
