@@ -172,6 +172,16 @@ internal var Player.wintRespawnDelay by intVarBit("varbit.wint_transmit_respawnd
 internal var Player.wintAreaAttack by intVarBit("varbit.wint_area_attack")
 internal var Player.wintertodtKills by intVarp("varp.total_wintertodt_kills")
 
+internal var Player.caWintertodtKill5 by intVarBit("varbit.ca_task_wintertodt_killcount_1_completed")
+internal var Player.caWintertodtKill10 by intVarBit("varbit.ca_task_wintertodt_killcount_2_completed")
+internal var Player.caWintertodtHandyman by intVarBit("varbit.ca_task_wintertodt_mechanical_1_completed")
+internal var Player.caWintertodtMummy by intVarBit("varbit.ca_task_wintertodt_mechanical_2_completed")
+internal var Player.caWintertodtNoOneBehind by intVarBit("varbit.ca_task_wintertodt_perfection_1_completed")
+internal var Player.caWintertodtCanWeFixIt by intVarBit("varbit.ca_task_wintertodt_perfection_2_completed")
+internal var Player.caWintertodtCosy by intVarBit("varbit.ca_task_wintertodt_restriction_1_completed")
+internal var Player.caWintertodtWhyFletch by intVarBit("varbit.ca_task_wintertodt_stamina_1_completed")
+internal var Player.caWintertodtTotal by intVarBit("varbit.ca_total_tasks_completed_wintertodt")
+
 internal object WintertodtParams {
     val successRates = param<EnumTypeMap<ItemServerType, Int>>("woodcutting_axe_success_rates")
 }

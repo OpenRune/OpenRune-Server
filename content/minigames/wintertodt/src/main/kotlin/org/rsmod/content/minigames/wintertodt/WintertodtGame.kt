@@ -94,6 +94,8 @@ constructor(
     private var nextHud = 0
     private var worldReady = false
     private var warmthLock = false
+    private var pyroDownThisRound = false
+    private var allBraziersBrokenThisRound = false
 
     private enum class ActionType {
         CHOP,
@@ -149,29 +151,31 @@ constructor(
             "obj.pyromancer_boots",
             "obj.wint_torch",
             "obj.wint_torch_offhand",
-            "obj.firemaking_cape",
-            "obj.firemaking_cape_t",
-            "obj.firemaking_hood",
-            "obj.max_cape",
-            "obj.fire_cape",
+            "obj.skillcape_firemaking",
+            "obj.skillcape_firemaking_trimmed",
+            "obj.skillcape_firemaking_hood",
+            "obj.skillcape_max",
+            "obj.tzhaar_cape_fire",
             "obj.infernal_cape",
-            "obj.obsidian_cape",
-            "obj.hitpoints_cape",
-            "obj.rainbow_jumper",
-            "obj.rainbow_scarf",
+            "obj.tzhaar_cape_obsidian",
+            "obj.skillcape_hitpoints",
+            "obj.pride23_jumper",
+            "obj.pride17_scarf",
             "obj.clue_hunter_boots",
             "obj.clue_hunter_gloves",
             "obj.wolf_mask",
             "obj.earmuffs",
-            "obj.cap_and_goggles",
-            "obj.woolly_hat",
-            "obj.bobble_hat",
+            "obj.zep_bomber_cap_goggles",
+            "obj.win05_hat4",
+            "obj.win05_hat1",
             "obj.santa_hat",
             "obj.santa_jacket",
-            "obj.santa_pantaloons",
+            "obj.santa_pants",
             "obj.santa_boots",
         )
-            .mapNotNull { ServerCacheManager.getItem(it.asRSCM(RSCMType.OBJ))?.id }
+            .mapNotNull {
+                runCatching { ServerCacheManager.getItem(it.asRSCM(RSCMType.OBJ)) }.getOrNull()?.id
+            }
             .toSet()
     }
 
@@ -201,6 +205,9 @@ constructor(
 
         tickActions()
         processPending()
+        if (phase == Phase.ACTIVE && braziers.all { it.state == BrazierState.BROKEN }) {
+            allBraziersBrokenThisRound = true
+        }
 
         if (phase == Phase.ACTIVE) {
             drainEnergy()
@@ -420,6 +427,7 @@ constructor(
         if (hasPoh(player)) {
             player.statAdvance("stat.construction", 4.0 * player.baseConstructionLvl)
         }
+        completeTask(player, { caWintertodtHandyman }, { caWintertodtHandyman = it })
         updateHud()
     }
 
@@ -574,6 +582,7 @@ constructor(
         addPoints(player, 75)
         player.anim(Wintertodt.ANIM_DRINK)
         player.mes("You heal the Pyromancer.")
+        completeTask(player, { caWintertodtMummy }, { caWintertodtMummy = it })
         updateHud()
     }
 
@@ -983,6 +992,8 @@ constructor(
         phase = Phase.ACTIVE
         energy = Wintertodt.ENERGY_MAX
         respawnTimer = 0
+        pyroDownThisRound = false
+        allBraziersBrokenThisRound = false
         for (brazier in braziers) {
             setBrazierState(brazier, BrazierState.UNLIT)
             brazier.lastHit = Int.MIN_VALUE / 2
@@ -1055,7 +1066,31 @@ constructor(
             "You're owed an additional $earned rewards from the reward cart. " +
                 "You're now owed $pool rewards.",
         )
+        if (player.wintertodtKills >= 5) {
+            completeTask(player, { caWintertodtKill5 }, { caWintertodtKill5 = it })
+        }
+        if (player.wintertodtKills >= 10) {
+            completeTask(player, { caWintertodtKill10 }, { caWintertodtKill10 = it })
+        }
+        if (!pyroDownThisRound) {
+            completeTask(player, { caWintertodtNoOneBehind }, { caWintertodtNoOneBehind = it })
+        }
+        if (!allBraziersBrokenThisRound) {
+            completeTask(player, { caWintertodtCanWeFixIt }, { caWintertodtCanWeFixIt = it })
+        }
+        if (warmItems(player) >= Wintertodt.WARM_ITEMS_MAX) {
+            completeTask(player, { caWintertodtCosy }, { caWintertodtCosy = it })
+        }
+        if (points >= 3000) {
+            completeTask(player, { caWintertodtWhyFletch }, { caWintertodtWhyFletch = it })
+        }
         session.points = 0
+    }
+
+    private fun completeTask(player: Player, get: Player.() -> Int, set: Player.(Int) -> Unit) {
+        if (player.get() != 0) return
+        player.set(1)
+        player.caWintertodtTotal = player.caWintertodtTotal + 1
     }
 
     private fun tickRespawn() {
@@ -1223,6 +1258,7 @@ constructor(
                     pyro.hp -= 7
                     if (pyro.hp <= 0) {
                         pyro.down = true
+                        pyroDownThisRound = true
                         pyro.hp = 0
                         pyro.npc?.say("Arg, it got me!")
                         pyro.npc?.let { npc ->
