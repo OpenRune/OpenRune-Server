@@ -1,6 +1,10 @@
 package org.rsmod.content.quest.area.misthalin
 
 import dev.openrune.types.MesAnimType
+import org.rsmod.api.player.cinematic.SceneCamera
+import org.rsmod.api.player.cinematic.SceneDriftRate
+import org.rsmod.api.player.cinematic.SceneRegion
+import org.rsmod.api.player.cinematic.lockedScene
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository

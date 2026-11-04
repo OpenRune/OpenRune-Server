@@ -5,6 +5,8 @@ import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.player.hook.SpadeDigHook
 import org.rsmod.content.generic.locs.bookcases.BookcaseSearchHook
 import org.rsmod.content.quest.area.baxtorianfalls.waterfall.TouristCentreBookcases
+import org.rsmod.content.quest.area.corsaircove.CorsairCurse
+import org.rsmod.content.quest.area.corsaircove.CorsairCurseIthoiKillHook
 import org.rsmod.content.quest.area.falador.doricsquest.DoricsQuest
 import org.rsmod.content.quest.area.falador.knightssword.KnightsSwordQuest
 import org.rsmod.content.quest.area.lumbridge.RuneMysteriesQuest
@@ -25,9 +27,12 @@ public class QuestModule : PluginModule() {
         bindInstance<DoricsQuest>()
         bindInstance<IdesOfMilkQuest>()
         bindInstance<KnightsSwordQuest>()
+        bindInstance<CorsairCurse>()
         addSetBinding<SpellQuestRequirement>(PolicySpellQuestRequirement::class.java)
         addSetBinding<BookcaseSearchHook>(TouristCentreBookcases::class.java)
         addSetBinding<SpadeDigHook>(XMarksTheSpotQuest::class.java)
+        addSetBinding<SpadeDigHook>(CorsairCurse::class.java)
         addSetBinding<NpcDeathKillHook>(WitchsPotionRatTail::class.java)
+        addSetBinding<NpcDeathKillHook>(CorsairCurseIthoiKillHook::class.java)
     }
 }

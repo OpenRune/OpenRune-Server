@@ -33,6 +33,12 @@ unlock = 2419
 poh_build_furniture = 938
 poh_remove_furniture = 2097
 poh_remove_furniture_alt = 2098
+kiss = 1854
+poh_clockwork = 941
+royal_footsteps = 1753
+steam_high = 1148
+fire_lit = 2596
+fire_crackling_med = 2066
 
 locked = 2402
 pyramid_block = 1395
@@ -123,6 +129,9 @@ misthalin_gem_zenyte = 32349
 misthalin_gem_ruby = 2586
 misthalin_gem_sapphire = 32345
 misthalin_gem_emerald = 32334
+
+[gamevals.queue]
+corscurs_curse_drain = 110
 
 [gamevals.timer]
 restless_ghost_coffin_ghost = 123

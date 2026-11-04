@@ -384,7 +384,7 @@ coords = "0_40_44_26_51"
 
 [[spawn]]
 npc = "npc.corsair_ferry_covedocks"
-coords = "1_40_44_14_19"
+coords = "1_40_44_14_20"
 
 [[spawn]]
 npc = "npc.corscurs_cabinboy_sick"
@@ -417,10 +417,6 @@ coords = "0_38_44_60_32"
 [[spawn]]
 npc = "npc.corscurs_spa_owner"
 coords = "0_39_44_57_52"
-
-[[spawn]]
-npc = "npc.corscurs_thief"
-coords = "0_39_44_61_41"
 
 [[spawn]]
 npc = "npc.corscurs_thief_postquest"

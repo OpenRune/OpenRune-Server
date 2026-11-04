@@ -12,6 +12,10 @@ import org.rsmod.api.config.constants
 import org.rsmod.api.invtx.delete
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
+import org.rsmod.api.player.cinematic.SceneCamera
+import org.rsmod.api.player.cinematic.SceneCreepRate
+import org.rsmod.api.player.cinematic.SceneRegion
+import org.rsmod.api.player.cinematic.lockedScene
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.events.interact.HeldEquipEvents
 import org.rsmod.api.player.output.ChatType
