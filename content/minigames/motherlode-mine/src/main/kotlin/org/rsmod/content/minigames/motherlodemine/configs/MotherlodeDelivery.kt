@@ -6,6 +6,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.vars.boolVarBit
 import org.rsmod.api.player.vars.intVarBit
+import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.game.entity.Player
 
 object MotherlodeDelivery {
@@ -17,6 +18,8 @@ object MotherlodeDelivery {
     var waterStopped: (() -> Boolean)? = null
 
     var currentCycle: (() -> Int)? = null
+
+    var xpModifiers: XpModifiers? = null
 
     // motherlode_paydirt is a persistence key; do not rename it.
     val PAY_DIRT_LINE =
@@ -33,7 +36,9 @@ object MotherlodeDelivery {
                 }
             },
             onArrival = { player, arrival ->
-                val xp = MotherlodeConstants.arrivalXpFor(arrival.payload)
+                val xp =
+                    MotherlodeConstants.arrivalXpFor(arrival.payload) *
+                        (xpModifiers?.get(player, "stat.mining") ?: 1.0)
                 if (xp > 0.0) {
                     player.statAdvance("stat.mining", xp)
                 }

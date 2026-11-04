@@ -15,6 +15,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.stats.levelmod.InvisibleLevels
+import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.content.minigames.motherlodemine.MotherlodeMiningTest.Fixture
 import org.rsmod.content.minigames.motherlodemine.configs.MotherlodeConstants
 import org.rsmod.content.minigames.motherlodemine.configs.MotherlodeDelivery
@@ -62,7 +63,46 @@ class MotherlodeHopperTest {
         assertEquals(1, near.pending())
     }
 
-    private class HopperFixture(hopperCoords: CoordGrid, start: CoordGrid) {
+    @Test fun `deposited pay-dirt keeps the ore rolled when it was mined`() {
+        val runite = MotherlodeConstants.payloadIndexFor(MotherlodeConstants.OBJ_RUNITE_ORE)
+        val f =
+            HopperFixture(
+                CoordGrid(3748, 5672),
+                CoordGrid(3749, 5672),
+                paydirtVars = runite,
+            )
+        f.interact(approach = false)
+        assertEquals(0, f.player.inv.count(MotherlodeConstants.OBJ_PAYDIRT))
+        assertEquals(
+            listOf(MotherlodeConstants.payloadIdOf.getValue(MotherlodeConstants.OBJ_RUNITE_ORE)),
+            f.payloads(),
+        )
+    }
+
+    @Test fun `deposit caps golden nuggets at three per batch`() {
+        val nugget = MotherlodeConstants.payloadIndexFor(MotherlodeConstants.OBJ_NUGGET)
+        val f =
+            HopperFixture(
+                CoordGrid(3748, 5672),
+                CoordGrid(3749, 5672),
+                paydirtCount = 4,
+                paydirtVars = nugget,
+            )
+        f.interact(approach = false)
+        assertEquals(0, f.player.inv.count(MotherlodeConstants.OBJ_PAYDIRT))
+        assertEquals(3, f.pending())
+        assertEquals(
+            List(3) { MotherlodeConstants.payloadIdOf.getValue(MotherlodeConstants.OBJ_NUGGET) },
+            f.payloads(),
+        )
+    }
+
+    private class HopperFixture(
+        hopperCoords: CoordGrid,
+        start: CoordGrid,
+        paydirtCount: Int = 1,
+        paydirtVars: Int = 0,
+    ) {
         val f = Fixture()
         val player = Player().apply {
             coords = start
@@ -70,7 +110,9 @@ class MotherlodeHopperTest {
             currentMapClock = 100
             processedMapClock = 100
             inv = invMap.getOrPut("inv.inv")
-            inv[0] = InvObj(MotherlodeConstants.OBJ_PAYDIRT)
+            repeat(paydirtCount) { slot ->
+                inv[slot] = InvObj(MotherlodeConstants.OBJ_PAYDIRT, vars = paydirtVars)
+            }
             motherlodeSuperHopperUnlocked = true
         }
         private val random = object : GameRandom {
@@ -87,7 +129,16 @@ class MotherlodeHopperTest {
         init {
             player.interaction = interaction
             with(InvTransactionsScript(PlayerItemStorage(emptySet()))) { f.context.startup() }
-            with(MotherlodeHopperScript(deliveries, registry, machine, InvisibleLevels(emptySet()), f.clock)) {
+            with(
+                MotherlodeHopperScript(
+                    deliveries,
+                    registry,
+                    machine,
+                    InvisibleLevels(emptySet()),
+                    f.clock,
+                    XpModifiers(emptySet()),
+                )
+            ) {
                 f.context.startup()
             }
         }
@@ -111,6 +162,11 @@ class MotherlodeHopperTest {
         }
 
         fun pending() = deliveries.pendingCount(player, MotherlodeDelivery.PAY_DIRT_LINE)
+
+        fun payloads(): List<Int> =
+            deliveries
+                .pendingParcels(player, MotherlodeDelivery.PAY_DIRT_LINE)
+                .flatMap { parcel -> List(parcel.amount) { parcel.payload } }
     }
 
     companion object {

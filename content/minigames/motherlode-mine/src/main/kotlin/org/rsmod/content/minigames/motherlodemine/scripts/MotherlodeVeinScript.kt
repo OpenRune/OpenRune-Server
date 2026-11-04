@@ -13,6 +13,7 @@ import org.rsmod.api.player.clearInteractionRoute
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseMiningLvl
+import org.rsmod.api.player.stat.miningLvl
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onEvent
@@ -176,7 +177,9 @@ constructor(
         )
 
     private fun ProtectedAccess.awardPayDirt() {
-        if (invAdd(inv, MotherlodeConstants.OBJ_PAYDIRT, 1).failure) {
+        val obj = rollPayDirtKind()
+        val payloadIndex = MotherlodeConstants.payloadIndexFor(obj)
+        if (invAdd(inv, MotherlodeConstants.OBJ_PAYDIRT, 1, vars = payloadIndex).failure) {
             mes(MotherlodeConstants.INV_FULL_MESSAGE, ChatType.Mesbox)
             resetAnim()
             return
@@ -185,6 +188,28 @@ constructor(
         statAdvance("stat.mining", xp)
         spam(MotherlodeConstants.VEIN_PAYDIRT_MESSAGE)
         soundSynth(PAYDIRT_SOUND)
+    }
+
+    private fun ProtectedAccess.rollPayDirtKind(): String {
+        if (random.of(MotherlodeConstants.NUGGET_DENOMINATOR) <
+            MotherlodeConstants.NUGGET_NUMERATOR
+        ) {
+            return MotherlodeConstants.OBJ_NUGGET
+        }
+        return rollOreTier()
+    }
+
+    private fun ProtectedAccess.rollOreTier(): String {
+        for (tier in MotherlodeConstants.ORE_TIERS) {
+            if (player.miningLvl < tier.req) {
+                continue
+            }
+            if (statRandom("stat.mining", tier.low, tier.high, invisibleLvls)) {
+                return tier.obj
+            }
+        }
+        // Coal is an unconditional fallback; its published chart is a display artifact.
+        return MotherlodeConstants.OBJ_COAL
     }
 
     private fun deplete(vein: BoundLocInfo) {

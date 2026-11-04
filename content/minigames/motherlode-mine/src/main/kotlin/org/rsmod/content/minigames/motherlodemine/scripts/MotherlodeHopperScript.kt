@@ -8,17 +8,19 @@ import org.rsmod.api.player.stat.miningLvl
 import org.rsmod.api.script.onApLoc1
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.stats.levelmod.InvisibleLevels
+import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.content.minigames.motherlodemine.MotherlodeMachine
 import org.rsmod.content.minigames.motherlodemine.configs.MotherlodeConstants
 import org.rsmod.content.minigames.motherlodemine.configs.MotherlodeConstants.isMotherlodeUpperFloor
 import org.rsmod.content.minigames.motherlodemine.configs.MotherlodeDelivery
 import org.rsmod.content.minigames.motherlodemine.configs.motherlodeSuperHopperUnlocked
+import org.rsmod.content.minigames.motherlodemine.scripts.MercyScript.Companion.mercyWarnsAboutHopper
 import org.rsmod.game.MapClock
+import org.rsmod.game.inv.isType
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-// Ore is rolled at deposit time so the persistent delivery payload is stable across reconnects.
 class MotherlodeHopperScript
 @Inject
 constructor(
@@ -27,10 +29,12 @@ constructor(
     private val machine: MotherlodeMachine,
     private val invisibleLvls: InvisibleLevels,
     private val mapClock: MapClock,
+    private val xpMods: XpModifiers,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         MotherlodeDelivery.waterStopped = { !machine.flowedThisTick }
         MotherlodeDelivery.currentCycle = { mapClock.cycle }
+        MotherlodeDelivery.xpModifiers = xpMods
         registry.register(MotherlodeDelivery.PAY_DIRT_LINE)
         onOpLoc1(MotherlodeConstants.HOPPER_LOC) { deposit(it.loc) }
         // The upper hopper's blocked boundary requires an adjacent approach operation.
@@ -47,7 +51,7 @@ constructor(
         arriveDelay()
 
         if (hopper.coords.isMotherlodeUpperFloor() && !player.motherlodeSuperHopperUnlocked) {
-            mes("You need to buy access to the super hopper from Prospector Percy first.")
+            mercyWarnsAboutHopper()
             return
         }
 
@@ -69,8 +73,34 @@ constructor(
         }
 
         val count = minOf(available, deliveries.capacity(player, line) - deliveries.committedCount(player, line))
+        val nuggetId = MotherlodeConstants.payloadIdOf.getValue(MotherlodeConstants.OBJ_NUGGET)
+        val payloads = ArrayList<Int>(count)
+        var nuggets = 0
 
-        if (invDel(inv, MotherlodeConstants.OBJ_PAYDIRT, count).failure) {
+        for (slot in inv.indices) {
+            if (payloads.size >= count) {
+                break
+            }
+            val obj = inv[slot] ?: continue
+            if (!obj.isType(MotherlodeConstants.OBJ_PAYDIRT)) {
+                continue
+            }
+            if (invDel(inv, MotherlodeConstants.OBJ_PAYDIRT, 1, slot = slot).failure) {
+                continue
+            }
+            val payload =
+                MotherlodeConstants.payloadIdForIndex(obj.vars and MotherlodeConstants.PAYDIRT_ORE_MASK)
+                    ?: MotherlodeConstants.payloadIdOf.getValue(rollOreTier())
+            if (payload == nuggetId) {
+                if (nuggets >= MotherlodeConstants.MAX_GOLDEN_NUGGETS_PER_DEPOSIT) {
+                    continue
+                }
+                nuggets++
+            }
+            payloads += payload
+        }
+
+        if (payloads.isEmpty()) {
             return
         }
 
@@ -78,7 +108,6 @@ constructor(
         anim("seq.human_pickuptable")
         mes("You deposit the pay-dirt into the hopper.")
 
-        val payloads = rollPayloads(count)
         deliveries.enqueueAll(player, line, payloads)
 
         machine.spawnPayDirtFloater()
@@ -88,21 +117,6 @@ constructor(
         }
 
         soundSynth("synth.watersplash")
-    }
-
-    private fun ProtectedAccess.rollPayloads(count: Int): List<Int> {
-        val payloads = ArrayList<Int>(count)
-        var nuggetsRolled = 0
-        repeat(count) {
-            if (nuggetsRolled < MotherlodeConstants.MAX_GOLDEN_NUGGETS_PER_DEPOSIT &&
-                random.of(MotherlodeConstants.NUGGET_DENOMINATOR) < MotherlodeConstants.NUGGET_NUMERATOR) {
-                nuggetsRolled++
-                payloads += MotherlodeConstants.payloadIdOf.getValue(MotherlodeConstants.OBJ_NUGGET)
-                return@repeat
-            }
-            payloads += MotherlodeConstants.payloadIdOf.getValue(rollOreTier())
-        }
-        return payloads
     }
 
     private fun ProtectedAccess.rollOreTier(): String {

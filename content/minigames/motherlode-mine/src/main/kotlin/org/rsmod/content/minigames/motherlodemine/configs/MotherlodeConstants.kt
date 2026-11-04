@@ -27,7 +27,7 @@ object MotherlodeConstants {
     const val VEIN_SUCCESS_HIGH = 105
     const val MAX_SKILL_LEVEL = 99
 
-    val LOWER_VEIN_DEPLETE_TICKS = 40..45
+    val LOWER_VEIN_DEPLETE_TICKS = 38..45
     val UPPER_VEIN_DEPLETE_TICKS = 60..67
 
     // The raised ledge uses LINK_BELOW tiles, so players and veins remain on plane zero.
@@ -100,6 +100,22 @@ object MotherlodeConstants {
 
     val payloadObjOf: Map<Int, String> by lazy { MotherlodeData.ores.associate { it.item.id to it.obj } }
 
+    // Pay-dirt stores its mined ore tier in the low bits of the item's var state.
+    val payloadIndexByObj: Map<String, Int> by lazy {
+        MotherlodeData.ores.associate { it.obj to it.sackOrder + 1 }
+    }
+
+    private val payloadObjByIndex: Map<Int, String> by lazy {
+        MotherlodeData.ores.associate { (it.sackOrder + 1) to it.obj }
+    }
+
+    fun payloadIndexFor(obj: String): Int = payloadIndexByObj.getValue(obj)
+
+    fun payloadIdForIndex(index: Int): Int? =
+        payloadObjByIndex[index]?.let { payloadIdOf.getValue(it) }
+
+    const val PAYDIRT_ORE_MASK = 0xF
+
     private val arrivalXpByPayload by lazy { MotherlodeData.ores.associate { it.item.id to it.xp } }
 
     fun arrivalXpFor(payload: Int): Double = arrivalXpByPayload[payload] ?: 0.0
@@ -110,6 +126,7 @@ object MotherlodeConstants {
     const val OBJ_NUGGET = "obj.motherlode_nugget"
 
     const val NPC_PERCY = "npc.motherlode_percy"
+    const val NPC_MERCY = "npc.motherlode_mother"
 
     // Pay-dirt is a concrete NPC; forced routing must remain within the water lane.
     const val NPC_PAYDIRT_FLOATER = "npc.motherlode_paydirt"
@@ -169,8 +186,9 @@ object MotherlodeConstants {
     const val OBJ_PROSPECTOR_LEGS = "obj.motherlode_reward_legs"
     const val OBJ_PROSPECTOR_BOOTS = "obj.motherlode_reward_boots"
     const val OBJ_COAL_BAG = "obj.coal_bag"
+    const val OBJ_GEM_BAG = "obj.gem_bag"
     const val OBJ_SOFTCLAY_PACK = "obj.pack_softclay"
-    // TODO: implement gem-bag handling before adding it to the shop.
+    const val OBJ_BAG_FULL_OF_GEMS = "obj.reward_gem_bag"
 
     const val UPPER_FLOOR_COST = 100
     const val UPPER_FLOOR_MINING_REQ = 57
@@ -186,7 +204,8 @@ object MotherlodeConstants {
 
     var Player.motherlodeInRestrictedArea: Boolean by boolVarBit(VARBIT_IN_RESTRICTED_AREA)
 
-    // MusicAreaScript owns this area's enter/exit hooks; a second binding would fail startup.
+    const val HUD_MOTHERLODE = "interface.motherlode_hud"
+
     const val AREA_MOTHERLODE = "area.motherlode_mine"
 
     val ItemServerType.pickaxeSwingAnim: SequenceServerType by objParam(params.skill_anim)

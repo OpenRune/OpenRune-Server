@@ -217,7 +217,9 @@ class PercyScript @Inject constructor(
             MotherlodeConstants.OBJ_PROSPECTOR_LEGS to 50,
             MotherlodeConstants.OBJ_PROSPECTOR_BOOTS to 30,
             MotherlodeConstants.OBJ_COAL_BAG to 100,
+            MotherlodeConstants.OBJ_GEM_BAG to 100,
             MotherlodeConstants.OBJ_SOFTCLAY_PACK to 10,
+            MotherlodeConstants.OBJ_BAG_FULL_OF_GEMS to 40,
         )
     }
 }

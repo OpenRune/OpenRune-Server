@@ -2,6 +2,7 @@ package org.rsmod.content.minigames.motherlodemine.scripts
 
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.agilityLvl
+import org.rsmod.api.player.stat.baseMiningLvl
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.content.minigames.motherlodemine.configs.MotherlodeConstants.motherlodeInRestrictedArea
 import org.rsmod.game.loc.BoundLocInfo
@@ -15,7 +16,7 @@ class MotherlodeEntranceScript : PluginScript() {
         onOpLoc1(DwarvenCave) { cross(it.loc, DwarvenCaveTile, InsideDwarvenSide) }
         onOpLoc1(DwarvenTunnel) { cross(it.loc, DwarvenTunnelTile, DwarvenMineLanding) }
         onOpLoc1(GuildCave) { cross(it.loc, GuildCaveTile, InsideGuildSide) }
-        onOpLoc1(GuildTunnel) { cross(it.loc, GuildTunnelTile, MiningGuildLanding) }
+        onOpLoc1(GuildTunnel) { enterMiningGuild(it.loc) }
         onOpLoc1("loc.motherlode_shortcut") { useShortcut(it.loc) }
     }
 
@@ -37,6 +38,27 @@ class MotherlodeEntranceScript : PluginScript() {
         soundSynth("synth.squeeze_out")
         delay(2)
         resetAnim()
+    }
+
+    private suspend fun ProtectedAccess.enterMiningGuild(tunnel: BoundLocInfo) {
+        if (tunnel.coords != GuildTunnelTile) {
+            return
+        }
+        if (player.baseMiningLvl < MINING_GUILD_LEVEL) {
+            startDialogue {
+                chatNpcSpecific(
+                    "Dwarf",
+                    "npc.motherlode_mguild_guard",
+                    neutral,
+                    "Sorry, but you're not experienced enough to go in there.",
+                )
+                mesbox(
+                    "You need a Mining level of $MINING_GUILD_LEVEL to access the Mining Guild.",
+                )
+            }
+            return
+        }
+        cross(tunnel, GuildTunnelTile, MiningGuildLanding)
     }
 
     private suspend fun ProtectedAccess.cross(
@@ -84,5 +106,7 @@ class MotherlodeEntranceScript : PluginScript() {
         private val InsideGuildSide = CoordGrid(3718, 5678, 0)
 
         private val MiningGuildLanding = CoordGrid(3054, 9744, 0)
+
+        private const val MINING_GUILD_LEVEL = 60
     }
 }

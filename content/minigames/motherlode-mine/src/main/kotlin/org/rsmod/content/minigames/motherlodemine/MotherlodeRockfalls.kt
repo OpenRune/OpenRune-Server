@@ -54,30 +54,35 @@ class MotherlodeRockfalls @Inject constructor(
 
     fun tick() {
         if (respawns.isEmpty()) return
-        val reservedSteps = respawns.filter { it.cycle <= clock.cycle }.mapTo(mutableSetOf()) { it.loc.coords }
+        val reservedSteps = respawns.mapTo(mutableSetOf()) { it.loc.coords }
         val iterator = respawns.iterator()
         while (iterator.hasNext()) {
             val respawn = iterator.next()
             if (!respawn.falling && clock.cycle >= respawn.cycle - 1) {
                 respawn.falling = true
                 fall(respawn.loc.coords)
+                crushOccupants(respawn.loc.coords, reservedSteps)
             }
             if (clock.cycle < respawn.cycle) continue
             iterator.remove()
             val rockfall = respawn.loc
             val loc = LocInfo(rockfall.layer, rockfall.coords, rockfall.entity)
-            if (!locs.add(loc, Int.MAX_VALUE)) continue
-            for (player in players) {
-                if (!player.canProcess || player.coords != rockfall.coords) continue
-                val damage = player.hitpoints * MotherlodeConstants.ROCKFALL_DAMAGE_PERCENT / 100 +
+            locs.add(loc, Int.MAX_VALUE)
+        }
+    }
+
+    private fun crushOccupants(coords: CoordGrid, reservedSteps: MutableSet<CoordGrid>) {
+        for (player in players) {
+            if (!player.canProcess || player.coords != coords) continue
+            val damage =
+                player.hitpoints * MotherlodeConstants.ROCKFALL_DAMAGE_PERCENT / 100 +
                     MotherlodeConstants.ROCKFALL_DAMAGE_FLAT
-                player.queueHit(delay = 1, type = HitType.Typeless, damage = damage, modifier = hitModifier)
-                stepAside(player, reservedSteps)
-            }
-            for (npc in npcs) {
-                if (npc.isVisible && npc.coords == rockfall.coords && npc.id in minerIds) {
-                    stepAside(npc, reservedSteps)
-                }
+            player.queueHit(delay = 1, type = HitType.Typeless, damage = damage, modifier = hitModifier)
+            stepAside(player, reservedSteps)
+        }
+        for (npc in npcs) {
+            if (npc.isVisible && npc.coords == coords && npc.id in minerIds) {
+                stepAside(npc, reservedSteps)
             }
         }
     }

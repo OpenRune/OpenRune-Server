@@ -41,6 +41,12 @@ internal object MotherlodeData {
         }.also { rows ->
             require(rows.isNotEmpty()) { "Motherlode ore definitions are missing; rebuild the server cache." }
             require(rows.map { it.item.id }.distinct().size == rows.size) { "Duplicate Motherlode ore." }
+            require(rows.map { it.sackOrder }.distinct().size == rows.size) {
+                "Duplicate Motherlode sack order."
+            }
+            require(rows.all { it.sackOrder in 0 until MotherlodeConstants.PAYDIRT_ORE_MASK }) {
+                "Motherlode sack order exceeds item vars."
+            }
         }
     }
 
