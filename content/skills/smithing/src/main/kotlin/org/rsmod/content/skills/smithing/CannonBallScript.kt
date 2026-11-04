@@ -7,6 +7,7 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLocCategoryU
 import org.rsmod.api.script.onPlayerQueueWithArgs
@@ -87,7 +88,7 @@ class CannonBallScript : PluginScript() {
         if (completed < task.targetSmelts && canSmelt(task.ball)) {
             weakQueue(
                 "queue.smithing_cannonball_smelt",
-                smeltCycleDelay(task.locInternal),
+                player.skillCycles("stat.smithing", smeltCycleDelay(task.locInternal)),
                 task.copy(completedSmelts = completed),
             )
         }

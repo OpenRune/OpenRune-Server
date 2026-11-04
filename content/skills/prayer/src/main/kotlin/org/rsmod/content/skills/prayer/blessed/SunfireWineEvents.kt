@@ -1,6 +1,7 @@
 package org.rsmod.content.skills.prayer.blessed
 
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueue
 import org.rsmod.plugin.scripts.PluginScript
@@ -43,7 +44,7 @@ class SunfireWineEvents : PluginScript() {
         mes("You crush the sunfire splinters into the wine, making a jug of sunfire wine.")
 
         if (canMakeSunfireWine()) {
-            weakQueue("queue.prayer_make_sunfire_wine", 4)
+            weakQueue("queue.prayer_make_sunfire_wine", player.skillCycles("stat.prayer", 4))
         }
     }
 

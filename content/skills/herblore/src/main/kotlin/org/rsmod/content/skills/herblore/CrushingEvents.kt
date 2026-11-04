@@ -7,6 +7,7 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreCrushingRow
@@ -85,7 +86,7 @@ class CrushingEvents : PluginScript() {
         mes("You crush the $itemName.")
 
         if (inv.contains(recipe.item.internalName)) {
-            weakQueue("queue.herblore_crush", 3, CrushTask(recipe))
+            weakQueue("queue.herblore_crush", player.skillCycles("stat.herblore", 3), CrushTask(recipe))
         } else {
             resetAnim()
         }

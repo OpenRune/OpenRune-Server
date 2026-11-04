@@ -2,6 +2,7 @@ package org.rsmod.content.skills.herblore
 
 import org.rsmod.api.player.events.interact.HeldUEvents
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreUnfinishedRow
@@ -140,7 +141,7 @@ class UnfinishedPotionsEvents : PluginScript() {
 
         val created = task.created + 1
         if (created < task.amount) {
-            weakQueue("queue.herblore_unfinished", potion.brewTicks.getOrNull(1) ?: 4, UnfinishedPotionTask(potion, task.amount, created))
+            weakQueue("queue.herblore_unfinished", player.skillCycles("stat.herblore", potion.brewTicks.getOrNull(1) ?: 4), UnfinishedPotionTask(potion, task.amount, created))
         } else {
             resetAnim()
         }

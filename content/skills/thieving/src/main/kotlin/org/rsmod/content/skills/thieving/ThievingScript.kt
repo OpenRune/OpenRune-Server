@@ -13,6 +13,8 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.stat.skillCanBeCaught
+import org.rsmod.api.player.stat.skillNeedsSpace
 import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
@@ -60,12 +62,12 @@ constructor(
             return
         }
         if (restockingUntil.getOrDefault(loc.coords, 0) > mapClock) return
-        if (inv.isFull()) {
+        if (inv.isFull() && player.skillNeedsSpace(THIEVING)) {
             mes("You don't have enough inventory space.")
             return
         }
         mes(stall.attemptMessage, ChatType.Spam)
-        val spotter = findSpotter(stall)
+        val spotter = if (player.skillCanBeCaught(THIEVING)) findSpotter(stall) else null
         if (spotter != null) {
             caughtAtStall(spotter, stall)
             return
@@ -86,7 +88,9 @@ constructor(
             return
         }
         mes("You steal ${describe(product.item, product.count)}.")
-        restock(loc, stall)
+        if (product.depletes) {
+            restock(loc, stall)
+        }
     }
 
     private fun ProtectedAccess.awardThieved(product: SkillingProduct): Boolean {
@@ -143,7 +147,8 @@ constructor(
             mes("You need to empty your coin pouches before you can continue pickpocketing.")
             return
         }
-        if (inv.isFull() && (pouch == null || inv.count(pouch.obj) == 0)) {
+        val noRoom = inv.isFull() && (pouch == null || inv.count(pouch.obj) == 0)
+        if (noRoom && player.skillNeedsSpace(THIEVING)) {
             mes("You don't have enough inventory space.")
             return
         }

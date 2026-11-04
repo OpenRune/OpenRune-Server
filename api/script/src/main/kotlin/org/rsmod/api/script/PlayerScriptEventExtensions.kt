@@ -15,6 +15,7 @@ import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
 import org.rsmod.api.player.events.PlayerShopEvents
+import org.rsmod.api.player.events.PlayerSkillAttemptEvent
 import org.rsmod.api.player.events.PlayerSkillRollEvents
 import org.rsmod.api.player.events.PlayerWornEvents
 import org.rsmod.api.player.events.PlayerXpEvents
@@ -214,6 +215,10 @@ public fun ScriptContext.onPlayerHit(action: PlayerHitEvents.Impact.() -> Unit):
 
 public fun ScriptContext.onPlayerAttackImpact(
     action: PlayerAttackEvents.HitImpact.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerSkillAttempt(
+    action: PlayerSkillAttemptEvent.() -> Unit
 ): Unit = onEvent(action)
 
 public fun ScriptContext.onPlayerAttackRange(

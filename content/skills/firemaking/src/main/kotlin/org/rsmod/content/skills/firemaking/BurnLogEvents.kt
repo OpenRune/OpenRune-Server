@@ -10,6 +10,7 @@ import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.firemakingLvl
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpHeldU
@@ -96,7 +97,7 @@ public class BurnLogEvents @Inject constructor(
             },
         )
 
-        weakQueue("queue.firemaking_light", 4, BurnTask(log, obj, method))
+        weakQueue("queue.firemaking_light", player.skillCycles("stat.firemaking", 4), BurnTask(log, obj, method))
     }
 
     private fun ProtectedAccess.canBurn(
@@ -151,7 +152,7 @@ public class BurnLogEvents @Inject constructor(
             )
 
         if (!success) {
-            weakQueue("queue.firemaking_light", 4, task)
+            weakQueue("queue.firemaking_light", player.skillCycles("stat.firemaking", 4), task)
             return
         }
 

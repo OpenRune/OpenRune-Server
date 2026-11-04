@@ -6,6 +6,7 @@ import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.basePrayerLvl
 import org.rsmod.api.player.stat.prayerLvl
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.stat.statSub
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpLoc1
@@ -115,7 +116,7 @@ class LibationBowlEvents : PluginScript() {
         }
 
         if (canLibationSacrifice(task)) {
-            weakQueue("queue.prayer_libation_sacrifice", 4, task)
+            weakQueue("queue.prayer_libation_sacrifice", player.skillCycles("stat.prayer", 4), task)
         }
     }
 

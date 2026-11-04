@@ -17,6 +17,9 @@ import org.rsmod.api.player.events.skilling.SkillingProduct
 import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
+import org.rsmod.api.player.stat.skillCycles
+import org.rsmod.api.player.stat.skillNeedsSpace
+import org.rsmod.api.player.stat.skillTool
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.miningLvl
@@ -81,7 +84,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (inv.isFull() && player.skillNeedsSpace("stat.mining", type.internalName)) {
             mes(inventoryFullMessage(data))
             soundSynth("synth.pillory_wrong")
             return
@@ -116,7 +119,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (inv.isFull() && player.skillNeedsSpace("stat.mining", type.internalName)) {
             mes(inventoryFullMessage(data))
             soundSynth("synth.pillory_wrong")
             resetAnim()
@@ -128,7 +131,7 @@ constructor(
             anim(miningAnim(pickaxe, data))
         }
 
-        val delay = pickaxeActionDelay(pickaxe)
+        val delay = player.skillCycles("stat.mining", pickaxeActionDelay(pickaxe), type.internalName)
         var minedOre = false
 
         if (actionDelay < mapClock) {
@@ -430,7 +433,7 @@ constructor(
                     }
                     addAll(carried)
                 }
-            return candidates.maxWithOrNull(pickaxeComparator)
+            return player.skillTool("stat.mining", candidates.maxWithOrNull(pickaxeComparator))
         }
 
         /** Higher is better: lower action delay first, then higher mining level req. */
