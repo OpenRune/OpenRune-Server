@@ -1,11 +1,6 @@
 package org.rsmod.content.skills.magic.spell.attacks.standard
 
-import dev.openrune.rscm.RSCM
-import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.SequenceServerType
-import dev.openrune.types.aconverted.SpotanimType
-import dev.openrune.types.aconverted.SynthType
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.manager.MagicRuneManager.Companion.isFailure
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -14,9 +9,11 @@ import org.rsmod.api.spells.attack.SpellAttack
 import org.rsmod.api.spells.attack.SpellAttackManager
 import org.rsmod.api.spells.attack.SpellAttackMap
 import org.rsmod.api.spells.attack.SpellAttackRepository
+import org.rsmod.api.spells.attack.SpellCastFx
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.entity.Player
+import org.rsmod.game.proj.ProjAnim
 import org.rsmod.game.type.getOrNull
 
 class ElementalSpells : SpellAttackMap {
@@ -408,7 +405,7 @@ class ElementalSpells : SpellAttackMap {
         private val castSound: String,
         private val hitSound: String,
         private val getMaxHit: (Int) -> Int,
-    ) : SpellAttack {
+    ) : SpellAttack, SpellCastFx {
         override suspend fun ProtectedAccess.attack(target: Npc, attack: CombatAttack.Spell) {
             cast(target, attack)
         }
@@ -417,18 +414,34 @@ class ElementalSpells : SpellAttackMap {
             cast(target, attack)
         }
 
+        override fun ProtectedAccess.playCast(
+            target: PathingEntity,
+            weapon: ItemServerType?,
+        ): ProjAnim {
+            player.anim(weapon.castStrikeAnim(), priority = 6)
+            spotanim(launch, height = 92)
+            return manager.spawnProjectile(this, target, travel, "projanim.magic_spell")
+        }
+
+        override fun ProtectedAccess.playImpact(target: PathingEntity, clientDelay: Int) {
+            manager.playHitFx(
+                source = this,
+                target = target,
+                clientDelay = clientDelay,
+                castSound = castSound,
+                soundRadius = 8,
+                hitSpot = impact,
+                hitSpotHeight = 124,
+                hitSound = hitSound,
+            )
+        }
+
         private fun ProtectedAccess.cast(target: PathingEntity, attack: CombatAttack.Spell) {
             val castResult = manager.attemptCast(this, attack)
             if (castResult.isFailure()) {
                 return
             }
-            val weaponType = getOrNull(attack.weapon)
-            val castAnim = weaponType.castStrikeAnim()
-
-            player.anim(castAnim, priority = 6)
-            spotanim(launch, height = 92)
-
-            val proj = manager.spawnProjectile(this, target, travel, "projanim.magic_spell")
+            val proj = playCast(target, getOrNull(attack.weapon))
             val (serverDelay, clientDelay) = proj.durations
             val spell = attack.spell.obj
 
@@ -442,16 +455,7 @@ class ElementalSpells : SpellAttackMap {
 
             val baseMaxHit = getMaxHit(player.magicLvl)
             val damage = manager.rollMaxHit(this, target, attack, castResult, baseMaxHit)
-            manager.playHitFx(
-                source = this,
-                target = target,
-                clientDelay = clientDelay,
-                castSound = castSound,
-                soundRadius = 8,
-                hitSpot = impact,
-                hitSpotHeight = 124,
-                hitSound = hitSound,
-            )
+            playImpact(target, clientDelay)
             manager.giveCombatXp(this, target, attack, damage)
             manager.queueMagicHit(this, target, spell, damage, clientDelay, serverDelay)
             manager.continueCombatIfAutocast(this, target)

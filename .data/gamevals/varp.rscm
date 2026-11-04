@@ -126,3 +126,6 @@ barrows_state=64132
 aggression_tolerance_start=64140
 aggression_tolerance_anchor=64141
 aggression_tolerance_seen=64142
+royal_titans_deaths=64412
+royal_titans_best_time=64413
+royal_titans_dontaskagain=64414

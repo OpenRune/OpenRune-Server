@@ -923,3 +923,21 @@ isServerOnly = true
 id = "varp.brutus_best_time"
 scope = "Perm"
 transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.royal_titans_deaths"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.royal_titans_best_time"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.royal_titans_dontaskagain"
+scope = "Perm"
+transmit = "Never"

@@ -1,0 +1,19 @@
+[gamevals.dbrow]
+instance_royal_titans = 63890
+
+[gamevals.varp]
+royal_titans_deaths = 64412
+royal_titans_best_time = 64413
+royal_titans_dontaskagain = 64414
+
+[gamevals.headbar]
+royal_titans_area_attack_timer = 78
+
+[gamevals.synth]
+royal_titans_fire_cast_1 = 10147
+royal_titans_fire_cast_2 = 10148
+royal_titans_ice_cast_1 = 10116
+royal_titans_ice_cast_2 = 10118
+royal_titans_fire_loot = 10102
+royal_titans_ice_loot = 10108
+royal_titans_aoe_wave = 10155

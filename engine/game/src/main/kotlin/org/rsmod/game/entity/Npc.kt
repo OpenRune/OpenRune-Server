@@ -446,6 +446,9 @@ public class Npc(
     public var faceLockSquare: CoordGrid = CoordGrid.NULL
         private set
 
+    /** Content-controlled fixed face angle, applied to the client every tick. */
+    public var faceAngleOverride: Int? = null
+
     public var faceLockWidth: Int = 1
         private set
 

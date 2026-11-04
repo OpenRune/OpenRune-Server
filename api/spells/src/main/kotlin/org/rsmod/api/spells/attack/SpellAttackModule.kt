@@ -9,5 +9,6 @@ internal class SpellAttackModule : PluginModule() {
         bindInstance<SpellAttackRepository>()
 
         newSetBinding<SpellAttackMap>()
+        newSetBinding<NpcSpellHitHook>()
     }
 }

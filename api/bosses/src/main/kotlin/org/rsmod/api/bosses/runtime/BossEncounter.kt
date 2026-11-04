@@ -114,6 +114,15 @@ class BossEncounter(
     internal val firedTriggers = mutableSetOf<Int>()
     internal val firedPhaseEntries = mutableSetOf<String>()
     private val cooldowns = mutableMapOf<String, Int>()
+
+    /**
+     * Marks [phaseName] as already entered without running its entry ability. Used when a pair of
+     * encounters share a phase transition and the second encounter must not run the automatic
+     * entry again when its own HP threshold is reached later.
+     */
+    public fun markPhaseEntryFired(phaseName: String) {
+        firedPhaseEntries += phaseName
+    }
     private val persistentCooldowns = mutableSetOf<String>()
     private val forcedTickLastFired = mutableMapOf<String, Int>()
     private var rotationCursor = 0

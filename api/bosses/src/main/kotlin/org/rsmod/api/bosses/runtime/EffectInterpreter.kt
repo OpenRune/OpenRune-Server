@@ -557,7 +557,14 @@ class EffectInterpreter internal constructor(
             val targets = deps.playerList.filter { it.coords in tiles }
             for (t in targets) {
                 val damage = evaluateDamage(aoe.damage, aoe.type, t)
-                t.finishNpcHit(npc, 1, aoe.type.toEngine(), damage, deps.playerHitModifier)
+                t.finishNpcHit(
+                    npc,
+                    1,
+                    aoe.type.toEngine(),
+                    damage,
+                    deps.playerHitModifier,
+                    aoe.penetration,
+                )
             }
         }
         if (windup > 0) deps.worldQueues.add(windup) { strike() } else strike()

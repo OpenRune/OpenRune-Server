@@ -153,6 +153,11 @@ constructor(
     }
 
     private fun Npc.updateFaceAngle() {
+        val override = faceAngleOverride
+        if (override != null) {
+            infoProtocol.setFaceAngle(override, instant = true)
+            return
+        }
         facing.process(this)
         if (pendingFaceAngle != EntityFaceAngle.NULL) {
             infoProtocol.setFaceAngle(pendingFaceAngle.intValue, instant = false)

@@ -1,8 +1,6 @@
 package org.rsmod.api.spells.attack
 
 import dev.openrune.types.ItemServerType
-import dev.openrune.types.aconverted.SpotanimType
-import dev.openrune.types.aconverted.SynthType
 import jakarta.inject.Inject
 import org.rsmod.api.combat.commons.CombatAttack
 import org.rsmod.api.combat.commons.magic.MagicSpell
@@ -13,13 +11,18 @@ import org.rsmod.api.combat.manager.PlayerAttackManager
 import org.rsmod.api.config.constants
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.PathingEntity
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.proj.ProjAnim
 
 public class SpellAttackManager
 @Inject
-constructor(private val manager: PlayerAttackManager, private val runes: MagicRuneManager) {
+constructor(
+    private val manager: PlayerAttackManager,
+    private val runes: MagicRuneManager,
+    private val npcSpellHitHooks: Set<NpcSpellHitHook>,
+) {
     private val ProtectedAccess.autocastEnabled by boolVarBit("varbit.autocast_set")
 
     /**
@@ -128,14 +131,24 @@ constructor(private val manager: PlayerAttackManager, private val runes: MagicRu
         target: PathingEntity,
         attack: CombatAttack.Spell,
         castResult: MagicRuneManager.CastResult,
-    ): Boolean =
-        manager.rollSpellAccuracy(
+    ): Boolean {
+        val spell = attack.spell.obj
+        if (target is Npc) {
+            for (hook in npcSpellHitHooks) {
+                val result = hook.rollHit(source.player, target, spell)
+                if (result != null) {
+                    return result
+                }
+            }
+        }
+        return manager.rollSpellAccuracy(
             source = source.player,
             target = target,
-            spell = attack.spell.obj,
+            spell = spell,
             spellbook = attack.spell.spellbook,
             sunfireRune = castResult.consumedRune() && castResult.usedSunfire,
         )
+    }
 
     /** @see [PlayerAttackManager.rollSpellMaxHit] */
     public fun rollMaxHit(
@@ -145,16 +158,30 @@ constructor(private val manager: PlayerAttackManager, private val runes: MagicRu
         castResult: MagicRuneManager.CastResult,
         baseMaxHit: Int,
         attackRate: Int = constants.combat_spell_attackrate,
-    ): Int =
-        manager.rollSpellMaxHit(
+    ): Int {
+        val spell = attack.spell.obj
+        val sunfireRune = castResult.consumedRune() && castResult.usedSunfire
+        if (target is Npc && npcSpellHitHooks.any { it.alwaysMaxHit(source.player, target, spell) }) {
+            return manager.calculateSpellMaxHit(
+                source = source.player,
+                target = target,
+                spell = spell,
+                spellbook = attack.spell.spellbook,
+                baseMaxHit = baseMaxHit,
+                attackRate = attackRate,
+                sunfireRune = sunfireRune,
+            ).last
+        }
+        return manager.rollSpellMaxHit(
             source = source.player,
             target = target,
-            spell = attack.spell.obj,
+            spell = spell,
             spellbook = attack.spell.spellbook,
             baseMaxHit = baseMaxHit,
             attackRate = attackRate,
-            sunfireRune = castResult.consumedRune() && castResult.usedSunfire,
+            sunfireRune = sunfireRune,
         )
+    }
 
     /** @see [PlayerAttackManager.calculateSpellMaxHit] */
     public fun calculateMaxHit(
@@ -190,16 +217,24 @@ constructor(private val manager: PlayerAttackManager, private val runes: MagicRu
         damage: Int,
         clientDelay: Int,
         hitDelay: Int = 1 + (clientDelay / 30),
-    ): Hit =
-        manager.queueMagicHit(
-            source = source.player,
-            target = target,
-            spell = spell,
-            damage = damage,
-            clientDelay = clientDelay,
-            hitDelay = hitDelay,
-            retaliationDelay = hitDelay,
-        )
+    ): Hit {
+        val hit =
+            manager.queueMagicHit(
+                source = source.player,
+                target = target,
+                spell = spell,
+                damage = damage,
+                clientDelay = clientDelay,
+                hitDelay = hitDelay,
+                retaliationDelay = hitDelay,
+            )
+        if (target is Npc) {
+            for (hook in npcSpellHitHooks) {
+                hook.onHitQueued(source.player, target, spell, damage, hitDelay)
+            }
+        }
+        return hit
+    }
 
     /** @see [PlayerAttackManager.queueSplashHit] */
     public fun queueSplashHit(

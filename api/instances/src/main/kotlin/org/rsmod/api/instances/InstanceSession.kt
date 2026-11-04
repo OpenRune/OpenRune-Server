@@ -17,6 +17,9 @@ class InstanceSession(
 
     val occupants = mutableSetOf<Long>()
 
+    /** Players who died or left during this run; content may use this to block re-entry. */
+    val departed = mutableSetOf<Long>()
+
     val timeWarningsSent = mutableSetOf<Int>()
     val graceWarningsSent = mutableSetOf<Int>()
 
@@ -36,6 +39,7 @@ class InstanceSession(
 
     fun markStarted(currentTick: Int) {
         startedAtTick = currentTick
+        departed.clear()
         timeWarningsSent.clear()
         graceWarningsSent.clear()
         gracePending = false
@@ -52,13 +56,17 @@ class InstanceSession(
 
     fun addOccupant(player: Long) {
         occupants += player
+        departed -= player
         if (state is SessionState.Reclaim) {
             state = SessionState.Active
         }
     }
 
     fun removeOccupant(player: Long, currentTick: Int) {
-        occupants -= player
+        val wasOccupant = occupants.remove(player)
+        if (wasOccupant) {
+            departed += player
+        }
         if (
             !isServerOwned &&
                 occupants.isEmpty() &&
@@ -96,6 +104,7 @@ class InstanceSession(
         arenaExpired = false
         gracePending = false
         bossFightStartTick = null
+        departed.clear()
         timeWarningsSent.clear()
         graceWarningsSent.clear()
         damageContributions.clear()

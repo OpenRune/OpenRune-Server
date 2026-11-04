@@ -14912,9 +14912,12 @@ inherit = "npc.inferno_creature_melee_small"
 [[npc]]
 id = "npc.rt_fire_queen"
 inherit = "npc.rt_fire_queen"
+defaultMode = "None"
 [npc.params]
+"param.boss_hp_bar_mode"=1
 "param.elemental_weakness_type"=1
 "param.elemental_weakness_percent"=50
+"param.killcount_notify"=false
 
 [[npc]]
 id = "npc.lava_dragon2"
@@ -15374,23 +15377,32 @@ inherit = "npc.black_dragon_echokbd"
 [[npc]]
 id = "npc.rt_ice_king"
 inherit = "npc.rt_ice_king"
+defaultMode = "None"
 [npc.params]
+"param.boss_hp_bar_mode"=1
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
+"param.killcount_notify"=false
 
 [[npc]]
 id = "npc.rt_fire_queen_inactive"
 inherit = "npc.rt_fire_queen_inactive"
+defaultMode = "None"
 [npc.params]
+"param.boss_hp_bar_mode"=1
 "param.elemental_weakness_type"=1
 "param.elemental_weakness_percent"=50
+"param.killcount_notify"=false
 
 [[npc]]
 id = "npc.rt_ice_king_inactive"
 inherit = "npc.rt_ice_king_inactive"
+defaultMode = "None"
 [npc.params]
+"param.boss_hp_bar_mode"=1
 "param.elemental_weakness_type"=3
 "param.elemental_weakness_percent"=50
+"param.killcount_notify"=false
 
 [[npc]]
 id = "npc.rt_summon_elemental_fire"
@@ -15398,6 +15410,21 @@ inherit = "npc.rt_summon_elemental_fire"
 [npc.params]
 "param.elemental_weakness_type"=1
 "param.elemental_weakness_percent"=100
+"param.attack_anim"="seq.fire_minion_attack01"
+"param.death_anim"="seq.fire_minion_death01"
+"param.attackrate"=4
+"param.npc_attack_type"="category.attacktype_slash"
+
+[[npc]]
+id = "npc.rt_summon_elemental_ice"
+inherit = "npc.rt_summon_elemental_ice"
+[npc.params]
+"param.elemental_weakness_type"=3
+"param.elemental_weakness_percent"=100
+"param.attack_anim"="seq.ice_minion_attack01"
+"param.death_anim"="seq.ice_minion_death01"
+"param.attackrate"=4
+"param.npc_attack_type"="category.attacktype_stab"
 
 [[npc]]
 id = "npc.yama"
