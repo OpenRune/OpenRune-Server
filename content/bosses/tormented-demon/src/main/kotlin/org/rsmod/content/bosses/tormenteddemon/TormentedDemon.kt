@@ -15,6 +15,7 @@ import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.combat.commons.CombatEffects
 import org.rsmod.api.combat.commons.player.finishNpcHit
+import org.rsmod.api.npc.hit.FULL_STYLE_PROTECTION
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.vars.setActiveMoveSpeed
 import org.rsmod.api.player.vars.varMoveSpeed
@@ -280,9 +281,9 @@ constructor(deps: BossDeps, private val routeFactory: RouteFactory) : BossPlugin
     }
 
     private fun updateStyleImmunity(npc: Npc, activeStyle: HitType?) {
-        npc.vars["varn.immune_melee"] = if (activeStyle == HitType.Melee) 1 else 0
-        npc.vars["varn.immune_ranged"] = if (activeStyle == HitType.Ranged) 1 else 0
-        npc.vars["varn.immune_magic"] = if (activeStyle == HitType.Magic) 1 else 0
+        npc.vars["varn.protect_melee"] = if (activeStyle == HitType.Melee) FULL_STYLE_PROTECTION else 0
+        npc.vars["varn.protect_ranged"] = if (activeStyle == HitType.Ranged) FULL_STYLE_PROTECTION else 0
+        npc.vars["varn.protect_magic"] = if (activeStyle == HitType.Magic) FULL_STYLE_PROTECTION else 0
     }
 
     private fun armStyleImmunityNextTick(npc: Npc, activeStyle: HitType?) {

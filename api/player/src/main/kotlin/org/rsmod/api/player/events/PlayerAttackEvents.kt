@@ -40,6 +40,9 @@ public class PlayerAttackEvents {
      *
      * [cycles] starts as the attack's own delay. The change a handler makes also applies if the
      * weapon sets its own delay later, as Tumeken's shadow does, and the result is never below 1.
+     *
+     * [prayerPenetration] is a percentage taken off the target's protection prayer, for every hit of
+     * the attack. It does not get through `varn.immune_*`.
      */
     public class AttackPrepare(
         override val player: Player,
@@ -54,6 +57,7 @@ public class PlayerAttackEvents {
         public var neverMiss: Boolean = false,
         public var saveChance: Int = 0,
         public var specialSaveChance: Int = 0,
+        public var prayerPenetration: Int = 0,
     ) : UnboundEvent, PlayerEvent
 
     /**

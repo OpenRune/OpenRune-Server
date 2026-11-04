@@ -4,7 +4,8 @@ import jakarta.inject.Inject
 import kotlin.math.absoluteValue
 import kotlin.math.min
 import org.rsmod.api.npc.events.NpcHitEvents
-import org.rsmod.api.npc.hit.isStyleImmuneTo
+import org.rsmod.api.npc.hit.FULL_STYLE_PROTECTION
+import org.rsmod.api.npc.hit.styleReduction
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.hit.HitBuilder
@@ -13,7 +14,7 @@ public class StandardNpcHitModifier @Inject constructor(private val eventBus: Ev
     NpcHitModifier {
     override fun HitBuilder.modify(target: Npc) {
         target.publishEvent(this)
-        target.applyStyleImmunity(this)
+        target.applyStyleProtection(this)
         target.applyFlatArmour(this)
     }
 
@@ -22,9 +23,10 @@ public class StandardNpcHitModifier @Inject constructor(private val eventBus: Ev
         eventBus.publish(event)
     }
 
-    private fun Npc.applyStyleImmunity(hit: HitBuilder) {
-        if (isStyleImmuneTo(hit.type)) {
-            hit.damage = 0
+    private fun Npc.applyStyleProtection(hit: HitBuilder) {
+        val reduction = styleReduction(hit.type, hit.penetration)
+        if (reduction > 0) {
+            hit.damage = hit.damage * (FULL_STYLE_PROTECTION - reduction) / FULL_STYLE_PROTECTION
         }
     }
 
