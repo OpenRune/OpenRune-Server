@@ -28,3 +28,6 @@ leviathan_stunned=32
 leviathan_in_special=33
 leviathan_next_special=34
 leviathan_stun_bearing=35
+protect_melee=64
+protect_ranged=65
+protect_magic=66

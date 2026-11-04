@@ -7,6 +7,7 @@ import dev.openrune.types.ItemServerType
 import kotlin.math.max
 import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.done.hitmark_groups
+import org.rsmod.api.player.events.attackRecord
 import org.rsmod.api.player.righthand
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -70,7 +71,10 @@ internal object InternalPlayerHits {
             sourcePlayerSlot = source.slotId,
             clientDelay = clientDelay,
             isPrivateHit = specific,
-        ).also { it.origin = source.hitOrigin }
+        ).also {
+            it.origin = source.hitOrigin
+            it.penetration = source.attackRecord?.prayerPenetration ?: 0
+        }
     }
 
     fun createBuilder(

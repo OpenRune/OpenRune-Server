@@ -30,7 +30,8 @@ import org.rsmod.api.combat.formulas.AccuracyFormulae
 import org.rsmod.api.combat.formulas.MaxHitFormulae
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.death.PvPPlayerHitHook
-import org.rsmod.api.npc.hit.isStyleImmuneTo
+import org.rsmod.api.npc.hit.FULL_STYLE_PROTECTION
+import org.rsmod.api.npc.hit.styleReduction
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
 import org.rsmod.api.player.cheat.adminMaxHit
@@ -348,11 +349,22 @@ constructor(
             is Player -> giveCombatXp(player, target, attack, damage)
         }
 
-    private fun giveCombatXp(player: Player, target: Npc, attack: CombatAttack.Melee, damage: Int) {
-        if (player.shouldBlockNpcCombatXp(target) || target.isStyleImmuneTo(HitType.Melee)) {
-            return
+    /** @return the damage to give xp for, or null if this hit gives none. */
+    private fun xpDamage(player: Player, target: Npc, type: HitType, damage: Int): Int? {
+        if (player.shouldBlockNpcCombatXp(target)) {
+            return null
         }
-        val cappedDamage = min(damage, target.hitpoints)
+        val penetration = player.attackRecord?.prayerPenetration ?: 0
+        val reduction = target.styleReduction(type, penetration)
+        if (reduction >= FULL_STYLE_PROTECTION) {
+            return null
+        }
+        val dealt = damage * (FULL_STYLE_PROTECTION - reduction) / FULL_STYLE_PROTECTION
+        return min(dealt, target.hitpoints)
+    }
+
+    private fun giveCombatXp(player: Player, target: Npc, attack: CombatAttack.Melee, damage: Int) {
+        val cappedDamage = xpDamage(player, target, HitType.Melee, damage) ?: return
         val multiplier = target.resolveCombatXpMultiplier()
         giveCombatXp(player, attack, cappedDamage, multiplier)
     }
@@ -420,10 +432,7 @@ constructor(
         attack: CombatAttack.Ranged,
         damage: Int,
     ) {
-        if (player.shouldBlockNpcCombatXp(target) || target.isStyleImmuneTo(HitType.Ranged)) {
-            return
-        }
-        val cappedDamage = min(damage, target.hitpoints)
+        val cappedDamage = xpDamage(player, target, HitType.Ranged, damage) ?: return
         val multiplier = target.resolveCombatXpMultiplier()
         giveCombatXp(player, attack, cappedDamage, multiplier)
     }
@@ -482,10 +491,7 @@ constructor(
         }
 
     private fun giveCombatXp(player: Player, target: Npc, attack: CombatAttack.Spell, damage: Int) {
-        if (player.shouldBlockNpcCombatXp(target) || target.isStyleImmuneTo(HitType.Magic)) {
-            return
-        }
-        val cappedDamage = min(damage, target.hitpoints)
+        val cappedDamage = xpDamage(player, target, HitType.Magic, damage) ?: return
         val multiplier = target.resolveCombatXpMultiplier()
         giveCombatXp(player, attack, cappedDamage, multiplier)
     }
@@ -536,10 +542,7 @@ constructor(
 
     @Suppress("unused")
     private fun giveCombatXp(player: Player, target: Npc, attack: CombatAttack.Staff, damage: Int) {
-        if (player.shouldBlockNpcCombatXp(target) || target.isStyleImmuneTo(HitType.Magic)) {
-            return
-        }
-        val cappedDamage = min(damage, target.hitpoints)
+        val cappedDamage = xpDamage(player, target, HitType.Magic, damage) ?: return
         val multiplier = target.resolveCombatXpMultiplier()
         giveStaffCombatXp(player, cappedDamage, multiplier)
     }

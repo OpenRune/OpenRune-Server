@@ -34,6 +34,9 @@ internal constructor(
     public var neverMiss: Boolean = false
         private set
 
+    public var prayerPenetration: Int = 0
+        private set
+
     private var saveChance = 0
     private var specialSaveChance = 0
     private var cyclesChange = 0
@@ -83,6 +86,7 @@ internal constructor(
         neverMiss = event.neverMiss
         saveChance = event.saveChance
         specialSaveChance = event.specialSaveChance
+        prayerPenetration = event.prayerPenetration
     }
 
     public fun addAccuracy(target: PathingEntity, type: HitType, success: Boolean) {
