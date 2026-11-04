@@ -7,6 +7,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.agilityLvl
 import org.rsmod.api.player.stat.baseFiremakingLvl
+import org.rsmod.api.script.onApLoc1
 import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpHeld1
@@ -47,6 +48,9 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         onOpLoc1(Wintertodt.BRAZIER_UNLIT) { light(it.loc) }
         onOpLoc1(Wintertodt.BRAZIER_BROKEN) { fix(it.loc) }
         onOpLoc1(Wintertodt.BRAZIER_LIT) { feed(it.loc) }
+        onApLoc1(Wintertodt.BRAZIER_UNLIT) { apLight(it.loc) }
+        onApLoc1(Wintertodt.BRAZIER_BROKEN) { apFix(it.loc) }
+        onApLoc1(Wintertodt.BRAZIER_LIT) { apFeed(it.loc) }
 
         onOpLoc1("loc.wint_roots") {
             faceLoc(it.loc)
@@ -179,6 +183,11 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         resetAnim()
     }
 
+    private suspend fun ProtectedAccess.apLight(loc: BoundLocInfo) {
+        if (!isWithinApRange(loc, BRAZIER_AP_RANGE)) return
+        light(loc)
+    }
+
     private suspend fun ProtectedAccess.fix(loc: BoundLocInfo) {
         val index = game.brazierIndex(loc.coords)
         if (index < 0) return
@@ -190,11 +199,21 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         resetAnim()
     }
 
+    private suspend fun ProtectedAccess.apFix(loc: BoundLocInfo) {
+        if (!isWithinApRange(loc, BRAZIER_AP_RANGE)) return
+        fix(loc)
+    }
+
     private suspend fun ProtectedAccess.feed(loc: BoundLocInfo) {
         val index = game.brazierIndex(loc.coords)
         if (index < 0) return
         arriveDelay()
         game.beginFeed(player, index)
+    }
+
+    private suspend fun ProtectedAccess.apFeed(loc: BoundLocInfo) {
+        if (!isWithinApRange(loc, BRAZIER_AP_RANGE)) return
+        feed(loc)
     }
 
     private suspend fun ProtectedAccess.searchCart(loc: BoundLocInfo, count: Int) {
@@ -251,6 +270,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
     private companion object {
         const val FACE_WEST = 512
         const val FACE_EAST = 1536
+        const val BRAZIER_AP_RANGE = 1
 
         val POTIONS =
             listOf(
