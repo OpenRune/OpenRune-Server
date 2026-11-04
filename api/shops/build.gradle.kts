@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 
 }
 
@@ -27,4 +28,6 @@ dependencies {
     implementation(projects.engine.game)
     implementation(projects.engine.objtx)
     implementation(projects.engine.plugin)
+    testImplementation(projects.engine.annotations)
+    testImplementation(projects.api.invStorage)
 }

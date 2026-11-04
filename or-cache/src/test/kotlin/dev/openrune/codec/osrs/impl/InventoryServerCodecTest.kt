@@ -16,4 +16,13 @@ class InventoryServerCodecTest {
 
         assertEquals(listOf(InvStock(obj = 4160, count = 50000, restockCycles = 40000)), decoded.stock)
     }
+
+    @Test
+    fun `overstock decay metadata survives a server inventory round trip`() {
+        val codec = InventoryServerCodec()
+        val inv = InventoryServerType(overstockThreshold = 200, overstockPercent = 1)
+        val decoded = codec.loadData(0, codec.encodeToBuffer(inv))
+        assertEquals(inv.overstockThreshold, decoded.overstockThreshold)
+        assertEquals(inv.overstockPercent, decoded.overstockPercent)
+    }
 }

@@ -44,6 +44,14 @@ public fun interface PlayerObjTakeValidateHook {
     public fun validateTake(player: Player, obj: Obj, objType: ItemServerType): String?
 }
 
+/** Stores a taken ground obj somewhere other than the inventory, e.g. an open storage bag. */
+public interface PlayerObjTakeReceiveHook {
+    public fun canReceive(player: Player, objType: ItemServerType, count: Int): Boolean
+
+    /** Stores all [count] or nothing; only called after [canReceive] returned `true`. */
+    public fun receive(player: Player, objType: ItemServerType, count: Int): Boolean
+}
+
 public class GroundItemDropResolver
 @Inject
 constructor(private val hooks: Set<@JvmSuppressWildcards PlayerGroundItemDropHook>) {
@@ -74,4 +82,14 @@ constructor(private val hooks: Set<@JvmSuppressWildcards PlayerObjTakeValidateHo
         }
         return null
     }
+}
+
+public class PlayerObjTakeReceiver
+@Inject
+constructor(private val hooks: Set<@JvmSuppressWildcards PlayerObjTakeReceiveHook>) {
+    public fun canReceive(player: Player, objType: ItemServerType, count: Int): Boolean =
+        hooks.any { it.canReceive(player, objType, count) }
+
+    public fun receive(player: Player, objType: ItemServerType, count: Int): Boolean =
+        hooks.any { it.canReceive(player, objType, count) && it.receive(player, objType, count) }
 }

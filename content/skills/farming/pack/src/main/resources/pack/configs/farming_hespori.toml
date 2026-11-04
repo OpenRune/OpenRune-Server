@@ -1,0 +1,14 @@
+[[enum]]
+isServerOnly = true
+id = "enum.farming_hespori_signals"
+keyType = "INT"
+valueType = "COORDGRID"
+
+[enum.values]
+0 = 20221585
+
+[[varp]]
+id = "varp.farming_hespori_seed_opt_out"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"

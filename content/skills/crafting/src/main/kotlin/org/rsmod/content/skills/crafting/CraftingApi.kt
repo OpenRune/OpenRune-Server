@@ -64,7 +64,12 @@ fun ScriptContext.registerHeldCrafting(
         }
     }
     for (reg in registrations.values) {
-        onOpHeldU(reg.first, reg.second) { craftFromClick(reg.products, combine) }
+        onOpHeldU(reg.first, reg.second) {
+            if (inv[it.firstSlot]?.id != it.first.id || inv[it.secondSlot]?.id != it.second.id) {
+                return@onOpHeldU
+            }
+            craftFromClick(reg.products, combine)
+        }
     }
 }
 

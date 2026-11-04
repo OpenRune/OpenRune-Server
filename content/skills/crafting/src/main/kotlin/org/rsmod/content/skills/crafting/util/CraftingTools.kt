@@ -1,12 +1,18 @@
 package org.rsmod.content.skills.crafting.util
 
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.content.skills.crafting.CraftingProduct
+import org.rsmod.content.skills.crafting.CraftingSection
 
 private val TOOL_EQUIVALENTS: Map<String, List<String>> = mapOf(
     CraftingConstants.HAMMER to listOf(
         CraftingConstants.HAMMER,
         CraftingConstants.IMCANDO_HAMMER,
         CraftingConstants.IMCANDO_HAMMER_OFFHAND,
+    ),
+    CraftingConstants.KNIFE to listOf(
+        CraftingConstants.KNIFE,
+        CraftingConstants.FLETCHING_KNIFE,
     ),
     CraftingConstants.NEEDLE to listOf(
         CraftingConstants.NEEDLE,
@@ -17,11 +23,24 @@ private val TOOL_EQUIVALENTS: Map<String, List<String>> = mapOf(
 private val WORN_TOOLS: Set<String> = setOf(
     CraftingConstants.IMCANDO_HAMMER,
     CraftingConstants.IMCANDO_HAMMER_OFFHAND,
+    CraftingConstants.FLETCHING_KNIFE,
 )
 
 fun toolEquivalents(tool: String): List<String> = TOOL_EQUIVALENTS[tool] ?: listOf(tool)
 
 fun ProtectedAccess.hasCraftingTool(tool: String): Boolean = toolEquivalents(tool).any { holds(it) }
+
+/** Knife-section recipes that award Fletching XP; only these use the special fletching knife's faster ticks. */
+fun CraftingProduct.isKnifeFletching(): Boolean =
+    section == CraftingSection.KNIFE && extraXp.any { it.stat == CraftingConstants.STAT_FLETCHING }
+
+/** Ticks for [cycle]; knife-fletching uses the first tick entry unless the special knife is held. */
+fun ProtectedAccess.ticksFor(product: CraftingProduct, cycle: Int): Int =
+    if (product.isKnifeFletching() && !holds(CraftingConstants.FLETCHING_KNIFE)) {
+        product.ticks.first()
+    } else {
+        product.ticksAt(cycle)
+    }
 
 fun ProtectedAccess.holdsImcandoHammer(): Boolean = IMCANDO_HAMMERS.any { holds(it) }
 

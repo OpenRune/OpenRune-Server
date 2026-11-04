@@ -1,0 +1,12 @@
+[gamevals.enum]
+farming_diary_actions = 64442
+farming_diary_sites = 64443
+farming_diary_seeds = 64444
+farming_diary_variables = 64445
+farming_diary_masks = 64446
+
+[gamevals.currency]
+mermaid_tears = 64401
+
+[gamevals.dbrow]
+shop_currency_mermaid_tears = 63800

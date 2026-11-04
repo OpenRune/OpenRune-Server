@@ -10,11 +10,15 @@ import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreFinishedRow
 import org.rsmod.content.skills.SkillMultiConfig
 import org.rsmod.content.skills.SkillMultiEntry
+import org.rsmod.content.skills.farming.FarmingBagHerblore
 import org.rsmod.content.skills.openSkillMulti
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) : PluginScript() {
+class FinishedPotionsEvents @Inject constructor(
+    private val random: GameRandom,
+    private val bagHerblore: FarmingBagHerblore,
+) : PluginScript() {
 
     override fun ScriptContext.startup() {
         HerbloreDefinitions.itemToPotions.keys.filter { it !in heldUExclude }.forEach { item ->
@@ -55,7 +59,7 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
         }
 
         val candidatesWithMax = validCandidates
-            .map { potion -> potion to potion.maxProducible(inv) }
+            .map { potion -> potion to potion.maxProducible(inv, bagHerblore.reagents(player)) }
             .filter { (_, max) -> max > 0 }
 
         if (candidatesWithMax.isEmpty()) {
@@ -75,7 +79,7 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
                 maxCountProvider = { inventory, entry ->
                     validCandidates
                         .firstOrNull { it.outputPotion.internalName == entry.internal }
-                        ?.maxProducible(inventory) ?: 0
+                        ?.maxProducible(inventory, bagHerblore.reagents(player)) ?: 0
                 },
             ),
         ) { selection ->
@@ -92,7 +96,7 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
             return
         }
 
-        if (!potion.hasRequiredMaterials(inv)) {
+        if (!potion.hasRequiredMaterials(inv, bagHerblore.reagents(player))) {
             mes(Constants.dm_default)
             return
         }
@@ -102,19 +106,21 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
 
     private suspend fun ProtectedAccess.processFinishedTick(task: FinishedPotionTask) {
         val potion = task.potion
+
         if (!meetsStatReqs(potion.statReq)) {
             resetAnim()
             return
         }
 
-        if (!potion.hasRequiredMaterials(inv)) {
+        val reagents = bagHerblore.reagents(player)
+        if (!potion.hasRequiredMaterials(inv, reagents)) {
             resetAnim()
             return
         }
 
         val brewResult = AmuletOfChemistry.rollBrewOutput(player, random, potion)
         val savedSecondaries = HerbloreGoggles.rollSavedSecondaryCounts(player, random, potion)
-        if (!potion.brew(player, brewResult.output, savedSecondaries)) {
+        if (!potion.brew(player, brewResult.output, savedSecondaries, reagents)) {
             mes("You don't have enough inventory space to make this potion.")
             resetAnim()
             return

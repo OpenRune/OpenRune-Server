@@ -424,7 +424,7 @@ class MisthalinManorInteractionTest {
             getTeleportValidator = { PlayerTeleportValidator(emptySet()) },
             getAreaChecker = { AreaChecker(regions, AreaIndex()) },
         )
-        private val movement = PlayerMovementProcessor(collision, RouteFactory(collision), StepFactory(collision), events)
+        private val movement = PlayerMovementProcessor(collision, RouteFactory(collision), StepFactory(collision), events, emptySet())
         val coroutine = GameCoroutine("misthalin-manor-test")
         private var result: Result<Unit>? = null
         var wornChanges = 0

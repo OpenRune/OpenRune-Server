@@ -88,7 +88,6 @@ public open class StandardCurrencyShopOperations(
         val transaction =
             player.invTransaction(sideInv) {
                 val inv = select(sideInv)
-                val shopSelect = select(shopInv)
                 if (currencyObj != null) {
                     delete {
                         this.from = inv
@@ -96,10 +95,13 @@ public open class StandardCurrencyShopOperations(
                         this.strictCount = finalPurchaseCost
                     }
                 }
-                delete {
-                    this.from = shopSelect
-                    this.obj = obj.id
-                    this.strictCount = finalPurchaseCount
+                if (!shopInv.type.dummyInv) {
+                    val stock = select(shopInv)
+                    delete {
+                        this.from = stock
+                        this.obj = obj.id
+                        this.strictCount = finalPurchaseCount
+                    }
                 }
                 insert {
                     this.into = inv
@@ -110,10 +112,9 @@ public open class StandardCurrencyShopOperations(
 
         val success = transaction.success
         val currencyDelIndex = if (currencyObj != null) 0 else -1
-        val stockObjAddIndex = if (currencyObj != null) 2 else 1
         val currencyDel =
             if (currencyDelIndex >= 0) transaction.results.getOrNull(currencyDelIndex) else null
-        val stockObjAdd = transaction.results.getOrNull(stockObjAddIndex)
+        val stockObjAdd = transaction.results.lastOrNull()
 
         val message =
             when {
@@ -135,7 +136,7 @@ public open class StandardCurrencyShopOperations(
             if (currencyObj == null) {
                 currency.deduct(player, finalPurchaseCost)
             }
-            restockProcess += shopInv
+            if (!shopInv.type.dummyInv) restockProcess += shopInv
         }
 
         if (shopInv[slot] == null) {
@@ -156,6 +157,10 @@ public open class StandardCurrencyShopOperations(
     }
 
     override fun examineInvValue(player: Player, sideInv: Inventory, shop: Shop, slot: Int) {
+        if (shop.inv.type.dummyInv) {
+            player.mes("You can't sell this item to this shop.")
+            return
+        }
         val obj = sideInv[slot] ?: return
         val uncert = uncert(obj)
         val objType = getInvObj(uncert)
@@ -193,6 +198,10 @@ public open class StandardCurrencyShopOperations(
     }
 
     override fun invSell(player: Player, sideInv: Inventory, shop: Shop, slot: Int, request: Int) {
+        if (shop.inv.type.dummyInv) {
+            player.mes("You can't sell this item to this shop.")
+            return
+        }
         val obj = sideInv[slot] ?: return
         val objType = getInvObj(obj)
         val uncertType = uncert(objType)

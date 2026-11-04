@@ -49,7 +49,15 @@ public class ShopRestockProcess @Inject constructor(private val mapClock: MapClo
                 continue
             }
 
-            val newCount = if (obj.count > initialStock) obj.count - 1 else obj.count + 1
+            val excess = obj.count - initialStock
+            val decrement =
+                if (type.overstockPercent > 0 && excess > type.overstockThreshold) {
+                    (excess.toLong() * type.overstockPercent / 100)
+                        .coerceIn(1L, excess.toLong()).toInt()
+                } else {
+                    1
+                }
+            val newCount = if (excess > 0) obj.count - decrement else obj.count + 1
             val deleteObj = newCount == 0 && stockObj == null
             if (deleteObj) {
                 this[i] = null

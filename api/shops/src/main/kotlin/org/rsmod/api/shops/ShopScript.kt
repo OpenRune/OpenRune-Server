@@ -1,12 +1,16 @@
 package org.rsmod.api.shops
 
 import com.github.michaelbull.logging.InlineLogger
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import jakarta.inject.Inject
 import org.rsmod.api.market.MarketPrices
+import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stopInvTransmit
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.script.onIfClose
 import org.rsmod.api.script.onIfModalButton
 import org.rsmod.api.shops.operation.ShopOperationMap
@@ -38,11 +42,48 @@ constructor(
             logger.info { "Registered $registered shop currencies from dbtable.shop_currency" }
         }
 
+        onIfModalButton("component.shopmain:value") { selectQuantity(0, it.op, it.comsub) }
+        onIfModalButton("component.shopmain:quantity1") { selectQuantity(1, it.op, it.comsub) }
+        onIfModalButton("component.shopmain:quantity5") { selectQuantity(2, it.op, it.comsub) }
+        onIfModalButton("component.shopmain:quantity10") { selectQuantity(3, it.op, it.comsub) }
+        onIfModalButton("component.shopmain:quantity50") { selectQuantity(4, it.op, it.comsub) }
         onIfModalButton("component.shopmain:items") { shopInvButton(it.comsub, it.op, it.obj) }
         onIfModalButton("component.shopside:items") {
             shopSideInvButton(it.comsub, it.op, it.obj)
         }
         onIfClose("interface.shopmain") { player.closeShop() }
+    }
+
+    private fun ProtectedAccess.selectQuantity(mode: Int, op: IfButtonOp, sub: Int) {
+        val shop = player.openedShop ?: return
+        if (op != IfButtonOp.Op1 || sub != -1) {
+            return
+        }
+        VarPlayerIntMapSetter.set(player, "varbit.shop_quantity", mode)
+        player.runClientScript(
+            "clientscript.[clientscript,shop_main_update]".asRSCM(RSCMType.CLIENTSCRIPT),
+            "component.shopmain:items".asRSCM(RSCMType.COMPONENT),
+            shop.inv.size,
+            shop.inv.type.id,
+            -1,
+            0,
+            1,
+        )
+        player.initShopSideInv(player.inv)
+    }
+
+    private fun Player.selectedOperation(op: IfButtonOp): IfButtonOp? {
+        if (op != IfButtonOp.Op1) {
+            return op
+        }
+        return when (vars["varbit.shop_quantity"]) {
+            0 -> IfButtonOp.Op1
+            1 -> IfButtonOp.Op2
+            2 -> IfButtonOp.Op3
+            3 -> IfButtonOp.Op4
+            4 -> IfButtonOp.Op5
+            else -> null
+        }
     }
 
     private fun ProtectedAccess.shopInvButton(
@@ -57,7 +98,8 @@ constructor(
             return
         }
         val operations = shop.operations() ?: return
-        operations.shopInvOp(player, player.inv, shop, objSlot, op)
+        val selectedOp = player.selectedOperation(op) ?: return
+        operations.shopInvOp(player, player.inv, shop, objSlot, selectedOp)
     }
 
     private fun ProtectedAccess.shopSideInvButton(
@@ -71,7 +113,8 @@ constructor(
         }
         val shop = player.openedShop ?: return
         val operations = shop.operations() ?: return
-        operations.sideInvOp(player, player.inv, shop, sub, op)
+        val selectedOp = player.selectedOperation(op) ?: return
+        operations.sideInvOp(player, player.inv, shop, sub, selectedOp)
     }
 
     private fun Player.closeShop() {

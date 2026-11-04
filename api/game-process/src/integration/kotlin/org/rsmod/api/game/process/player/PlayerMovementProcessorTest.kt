@@ -21,7 +21,7 @@ class PlayerMovementProcessorTest {
     fun GameTestState.`reset temp speed only when destination queue is empty`() = runBasicGameTest {
         withCollisionState {
             val movement =
-                PlayerMovementProcessor(it.collision, it.routeFactory, it.stepFactory, eventBus)
+                PlayerMovementProcessor(it.collision, it.routeFactory, it.stepFactory, eventBus, emptySet())
             val sourceCoords = CoordGrid(0, 0, 0, 0, 0)
             val targetCoords = CoordGrid(0, 0, 0, 0, 7)
             val target = entityFactory.createAvatar(targetCoords)
@@ -67,7 +67,7 @@ class PlayerMovementProcessorTest {
 
     @Test
     fun GameTestState.`walk towards waypoints`() = runBasicGameTest {
-        val movement = PlayerMovementProcessor(collision, routeFactory, stepFactory, eventBus)
+        val movement = PlayerMovementProcessor(collision, routeFactory, stepFactory, eventBus, emptySet())
         val start = CoordGrid(3194, 3199)
         val waypoints =
             listOf(
@@ -104,7 +104,7 @@ class PlayerMovementProcessorTest {
      */
     @Test
     fun GameTestState.`consume waypoints only on arrival`() = runBasicGameTest {
-        val movement = PlayerMovementProcessor(collision, routeFactory, stepFactory, eventBus)
+        val movement = PlayerMovementProcessor(collision, routeFactory, stepFactory, eventBus, emptySet())
         // North of Lumbridge fountain.
         val start = CoordGrid(3221, 3228)
         val dest = CoordGrid(3220, 3226)
@@ -126,7 +126,7 @@ class PlayerMovementProcessorTest {
      */
     @Test
     fun GameTestState.`finish off walking when coords are odd-tiles away`() = runBasicGameTest {
-        val movement = PlayerMovementProcessor(collision, routeFactory, stepFactory, eventBus)
+        val movement = PlayerMovementProcessor(collision, routeFactory, stepFactory, eventBus, emptySet())
         val start = CoordGrid(3200, 3200)
         /* verify running > 1 tile does _not_ queue extended-info update */
         withPlayer {
@@ -161,7 +161,7 @@ class PlayerMovementProcessorTest {
                 it.collision.allocateIfAbsent(startCoords.x, startCoords.z, startCoords.level)
                 val eventBus = state.eventBus
                 val movement =
-                    PlayerMovementProcessor(it.collision, it.routeFactory, it.stepFactory, eventBus)
+                    PlayerMovementProcessor(it.collision, it.routeFactory, it.stepFactory, eventBus, emptySet())
                 // If we want to support more than 7 steps, allocate
                 // neighbouring zones.
                 check(speed.steps < 8)

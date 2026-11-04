@@ -146,7 +146,6 @@ class StandardGpShopOperationsBuyTest {
             buyPercentage = 40.0,
             sellPercentage = 130.0,
             changePercentage = 3.0,
-            subtext = "",
         )
 
         // Clear out the player's outgoing messages from opening shop.

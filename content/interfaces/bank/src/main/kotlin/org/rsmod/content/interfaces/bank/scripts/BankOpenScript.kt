@@ -55,7 +55,7 @@ constructor(
         if (!disableIfEvents) {
             val capacityIncrease = bank_constants.purchasable_capacity
             withdrawCert = false
-            setBanksideExtraOps()
+            setBanksideExtraOps(eventBus)
             setBankIfEvents()
             setBankWornBonuses(wornBonuses, weaponSpeeds)
             ifSetText("component.bankmain:capacity", bankCapacity.toString())

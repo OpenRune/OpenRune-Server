@@ -1,0 +1,17 @@
+[[varp]]
+id = "varp.farming_nature_patch"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_nature_status"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+id = "varp.farming_bounty_uses"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
