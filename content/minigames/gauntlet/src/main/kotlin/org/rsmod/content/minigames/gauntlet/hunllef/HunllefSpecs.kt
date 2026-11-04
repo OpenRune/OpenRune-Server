@@ -8,6 +8,7 @@ import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.DamageExpr
 import org.rsmod.api.bosses.spec.HitType
+import org.rsmod.api.npc.hit.FULL_STYLE_PROTECTION
 import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
@@ -202,18 +203,6 @@ class HunllefSpecs @Inject constructor() {
                     ),
                 )
 
-            incoming {
-                rule(varnIs(HunllefVarns.PROTECT, HunllefVarns.PROTECT_MELEE)) {
-                    scalePercent(0, HitType.Melee)
-                }
-                rule(varnIs(HunllefVarns.PROTECT, HunllefVarns.PROTECT_RANGED)) {
-                    scalePercent(0, HitType.Ranged)
-                }
-                rule(varnIs(HunllefVarns.PROTECT, HunllefVarns.PROTECT_MAGIC)) {
-                    scalePercent(0, HitType.Magic)
-                }
-            }
-
             val underBoss =
                 Condition.Custom { npc, target -> target != null && standsUnder(npc, target) }
 
@@ -245,9 +234,15 @@ class HunllefSpecs @Inject constructor() {
         sequence(
             transmog(type, Int.MAX_VALUE),
             setVarn(HunllefVarns.PROTECT, protectValue),
+            setVarn("varn.protect_melee", prayerValue(protectValue, HunllefVarns.PROTECT_MELEE)),
+            setVarn("varn.protect_ranged", prayerValue(protectValue, HunllefVarns.PROTECT_RANGED)),
+            setVarn("varn.protect_magic", prayerValue(protectValue, HunllefVarns.PROTECT_MAGIC)),
             setVarn(HunllefVarns.OFF_PRAYER, 0),
             headIcon(HEAD_ICON_SLOT, HEAD_ICON_GRAPHIC, protectValue),
         )
+
+    private fun prayerValue(active: Int, style: Int): Int =
+        if (active == style) FULL_STYLE_PROTECTION else 0
 
     private fun standsUnder(npc: Npc, target: Player): Boolean {
         val dx = target.coords.x - npc.coords.x

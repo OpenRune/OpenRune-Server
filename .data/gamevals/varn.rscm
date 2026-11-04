@@ -52,3 +52,6 @@ toa_zebak_cloud_switch=94
 toa_zebak_cloud_delay=91
 toa_zebak_cloud_last=92
 toa_zebak_cloud_target=93
+protect_melee=95
+protect_ranged=96
+protect_magic=97
