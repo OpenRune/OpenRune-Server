@@ -16,5 +16,6 @@ dependencies {
     implementation(projects.api.route)
     implementation(projects.api.stats.levelmod)
     implementation(projects.api.utils.utilsSkills)
+    implementation(projects.content.interfaces.collectionLog)
     implementation(projects.content.interfaces.bank)
 }

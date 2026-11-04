@@ -39,6 +39,7 @@ import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.route.BoundValidator
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.api.utils.skills.SkillingSuccessRate
+import org.rsmod.content.interfaces.collectionlog.CollectionLog
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
@@ -109,6 +110,12 @@ constructor(
     )
 
     private val actions = mutableMapOf<Player, ActionState>()
+
+    private var cart: LocInfo? = null
+
+    private val cartId: Int by lazy {
+        ServerCacheManager.getObject("loc.wint_reward_pile".asRSCM(RSCMType.LOC))?.id ?: -1
+    }
 
     private var storm: LocInfo? = null
 
@@ -246,6 +253,7 @@ constructor(
     }
 
     fun onLogin(player: Player) {
+        ensureCart()
         player.wintWarmth = Wintertodt.WARMTH_MAX
         if (Wintertodt.isInPrison(player.coords)) enter(player)
     }
@@ -277,6 +285,38 @@ constructor(
     }
 
     fun points(player: Player): Int = session(player)?.points ?: 0
+
+    fun checkCart(player: Player) {
+        ensureCart()
+        val pool = player.wintRewardPool
+        if (pool <= 0) {
+            player.mes("You have no rewards waiting to be collected.")
+        } else {
+            player.mes("You have $pool rewards waiting to be collected.")
+        }
+    }
+
+    fun searchCart(player: Player, count: Int): Int {
+        ensureCart()
+        var claimed = 0
+        for (i in 0 until count) {
+            if (player.wintRewardPool <= 0) break
+            val reward = WintertodtRewards.roll(player, random)
+            if (!WintertodtRewards.add(player, reward)) {
+                player.mes("You don't have enough inventory space to collect your reward.")
+                break
+            }
+            player.wintRewardPool = player.wintRewardPool - 1
+            if (reward.item in WintertodtRewards.UNIQUES) {
+                CollectionLog.grant(player, reward.item, 1)
+            }
+            if (reward.item == "obj.phoenixpet") {
+                player.mes("You have a funny feeling like you're being followed.")
+            }
+            claimed++
+        }
+        return claimed
+    }
 
     fun addPoints(player: Player, amount: Int) {
         val session = session(player) ?: return
@@ -773,11 +813,15 @@ constructor(
         player.wintWarmth = value.coerceIn(0, Wintertodt.WARMTH_MAX)
     }
 
+    fun setRewardPool(player: Player, value: Int) {
+        player.wintRewardPool = value.coerceIn(0, Wintertodt.REWARD_POOL_MAX)
+    }
+
     fun debugStatus(player: Player) {
         val session = session(player)
         player.mes(
             "phase=$phase energy=$energy points=${session?.points ?: -1} " +
-                "warmth=${player.wintWarmth}",
+                "warmth=${player.wintWarmth} cart=${cart?.coords}",
         )
         for (brazier in braziers) {
             player.mes(
@@ -1247,7 +1291,35 @@ constructor(
                 )
         storm = stormLoc
 
+        findCart()
         worldReady = true
+    }
+
+    private fun findCart() {
+        val origin = ZoneKey.from(CoordGrid(1636, 3942, 0))
+        for (dx in -1..1) {
+            for (dz in -1..1) {
+                val loc =
+                    locRepo.findAll(origin.translate(dx, dz)).firstOrNull { it.id == cartId }
+                        ?: continue
+                cart = loc
+                return
+            }
+        }
+    }
+
+    private fun ensureCart() {
+        if (cart != null) return
+        findCart()
+        if (cart != null) return
+        cart =
+            locRepo.add(
+                CoordGrid(1635, 3941, 0),
+                "loc.wint_reward_pile",
+                Int.MAX_VALUE,
+                LocAngle.South,
+                LocShape.CentrepieceStraight,
+            )
     }
 
     private fun setBrazierState(brazier: Brazier, state: BrazierState) {

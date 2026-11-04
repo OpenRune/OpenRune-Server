@@ -58,6 +58,10 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         onOpLoc1("loc.wint_chest_tinderbox") { game.takeTool(player, "obj.tinderbox") }
         onOpLoc1("loc.wint_bankchest") { tryOpenBank() }
 
+        onOpLoc1("loc.wint_reward_pile") { searchCart(it.loc, 1) }
+        onOpLoc2("loc.wint_reward_pile") { game.checkCart(player) }
+        onOpLoc3("loc.wint_reward_pile") { searchCart(it.loc, 5) }
+
         onOpHeldU("obj.knife", Wintertodt.ROOT) { game.beginFletch(player) }
         onOpHeldU("obj.fletching_knife", Wintertodt.ROOT) { game.beginFletch(player) }
         onOpHeldU(Wintertodt.HERB, Wintertodt.VIAL) { game.combinePotion(player) }
@@ -79,6 +83,9 @@ constructor(private val game: WintertodtGame) : PluginScript() {
                     "energy" -> game.setEnergy(args[1].toInt())
                     "points" -> game.setPoints(player, args[1].toInt())
                     "warmth" -> game.setWarmth(player, args[1].toInt())
+                    "pool" -> game.setRewardPool(player, args[1].toInt())
+                    "search" -> game.searchCart(player, args.getOrNull(1)?.toIntOrNull() ?: 1)
+                    "check" -> game.checkCart(player)
                     "attack" ->
                         when (args.getOrNull(1)?.lowercase()) {
                             "area" -> game.forceAreaAttack()
@@ -150,6 +157,12 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         if (index < 0) return
         arriveDelay()
         game.beginFeed(player, index)
+    }
+
+    private suspend fun ProtectedAccess.searchCart(loc: BoundLocInfo, count: Int) {
+        arriveDelay()
+        delay(3)
+        game.searchCart(player, count)
     }
 
     private companion object {
