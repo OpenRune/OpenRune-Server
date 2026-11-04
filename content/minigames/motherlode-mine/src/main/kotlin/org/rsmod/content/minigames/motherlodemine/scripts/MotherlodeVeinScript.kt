@@ -91,7 +91,6 @@ constructor(
                 mesPickaxeMissing()
                 return
             }
-            veinState.startIfAbsent(vein, vein.coords.isMotherlodeUpperFloor())
             anim(swingAnim(pickaxe))
             spam(MotherlodeConstants.VEIN_SWING_MESSAGE)
             mine(vein)
@@ -130,8 +129,6 @@ constructor(
             return
         }
 
-        veinState.startIfAbsent(vein, vein.coords.isMotherlodeUpperFloor())
-
         if (skillAnimDelay <= mapClock) {
             skillAnimDelay = mapClock + 4
             anim(swingAnim(pickaxe))
@@ -154,7 +151,7 @@ constructor(
                 }
                 GemPreRoll.KeepOre -> {
                     if (rollPayDirtSuccess()) {
-                        awardPayDirt()
+                        awardPayDirt(vein)
                     }
                 }
             }
@@ -176,7 +173,7 @@ constructor(
             invisibleLvls,
         )
 
-    private fun ProtectedAccess.awardPayDirt() {
+    private fun ProtectedAccess.awardPayDirt(vein: BoundLocInfo) {
         val obj = rollPayDirtKind()
         val payloadIndex = MotherlodeConstants.payloadIndexFor(obj)
         if (invAdd(inv, MotherlodeConstants.OBJ_PAYDIRT, 1, vars = payloadIndex).failure) {
@@ -184,6 +181,7 @@ constructor(
             resetAnim()
             return
         }
+        veinState.startIfAbsent(vein, vein.coords.isMotherlodeUpperFloor())
         val xp = MotherlodeConstants.VEIN_XP * xpMods.get(player, "stat.mining")
         statAdvance("stat.mining", xp)
         spam(MotherlodeConstants.VEIN_PAYDIRT_MESSAGE)
