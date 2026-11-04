@@ -283,13 +283,13 @@ constructor(
         player.wintWarmth = Wintertodt.WARMTH_MAX
         closeHud(player)
         player.wintAreaAttack = 0
-        clearPotions(player)
+        clearEncounterItems(player)
     }
 
-    private fun clearPotions(player: Player) {
-        for (potion in listOf(Wintertodt.POTION4, Wintertodt.POTION3, Wintertodt.POTION2, Wintertodt.POTION1)) {
-            while (player.inv.count(potion) > 0) {
-                if (player.invDel(player.inv, potion, 1).failure) break
+    private fun clearEncounterItems(player: Player) {
+        for (item in ENCOUNTER_ITEMS) {
+            while (player.inv.count(item) > 0) {
+                if (player.invDel(player.inv, item, 1).failure) break
             }
         }
     }
@@ -297,7 +297,7 @@ constructor(
     fun onLogin(player: Player) {
         ensureCart()
         player.wintWarmth = Wintertodt.WARMTH_MAX
-        if (Wintertodt.isInPrison(player.coords)) enter(player)
+        if (Wintertodt.isInPrison(player.coords)) enter(player) else clearEncounterItems(player)
     }
 
     fun onLogout(player: Player) {
@@ -420,6 +420,10 @@ constructor(
     fun canLight(player: Player, index: Int): Boolean {
         val brazier = braziers.getOrNull(index) ?: return false
         val pyro = pyromancers.getOrNull(index) ?: return false
+        if (phase != Phase.ACTIVE) {
+            player.mes("There's no need to do that at this time.")
+            return false
+        }
         if (brazier.state == BrazierState.LIT) return false
         if (pyro.down) {
             player.mes("Heal the Pyromancer before lighting the brazier.")
@@ -434,6 +438,10 @@ constructor(
 
     fun canFix(player: Player, index: Int): Boolean {
         val brazier = braziers.getOrNull(index) ?: return false
+        if (phase != Phase.ACTIVE) {
+            player.mes("There's no need to do that at this time.")
+            return false
+        }
         if (brazier.state != BrazierState.BROKEN) return false
         if (!hasHammer(player)) {
             player.mes("You need a hammer to fix the brazier.")
@@ -734,6 +742,10 @@ constructor(
     }
 
     fun beginChop(player: Player, loc: BoundLocInfo) {
+        if (phase != Phase.ACTIVE) {
+            player.mes("There's no use for bruma roots at this time.")
+            return
+        }
         if (!hasAxe(player)) {
             player.mes("You need an axe to chop down this tree.")
             return
@@ -758,6 +770,10 @@ constructor(
     }
 
     fun beginPick(player: Player, loc: BoundLocInfo) {
+        if (phase != Phase.ACTIVE) {
+            player.mes("There's no need to do that at this time.")
+            return
+        }
         if (player.inv.isFull()) {
             player.mes("The herb shatters as it hits the floor.")
             return
@@ -791,6 +807,10 @@ constructor(
     }
 
     fun beginFeed(player: Player, index: Int) {
+        if (phase != Phase.ACTIVE) {
+            player.mes("There's no need to do that at this time.")
+            return
+        }
         if (!isAtBrazier(player, index)) return
         if (!hasFeed(player)) {
             player.mes("You have run out of bruma roots.")
@@ -1140,7 +1160,9 @@ constructor(
         }
         setStorm(active = false)
         for (session in sessions.values) {
+            stopAction(session.player)
             awardRound(session)
+            clearEncounterItems(session.player)
             session.player.wintRespawnDelay = Wintertodt.RESPAWN_TIMER
         }
         updateHud()
@@ -1821,5 +1843,16 @@ constructor(
     private companion object {
         val POH_ATTR = org.rsmod.api.attr.AttributeKey<Boolean>()
         val BREWMA_COORDS = CoordGrid(1635, 3986, 0)
+        val ENCOUNTER_ITEMS =
+            listOf(
+                Wintertodt.ROOT,
+                Wintertodt.KINDLING,
+                Wintertodt.HERB,
+                Wintertodt.VIAL,
+                Wintertodt.POTION4,
+                Wintertodt.POTION3,
+                Wintertodt.POTION2,
+                Wintertodt.POTION1,
+            )
     }
 }
