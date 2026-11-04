@@ -77,12 +77,12 @@ internal object Wintertodt {
     const val SCRIPT_INSIDE = 1433
     const val SCRIPT_OUTSIDE = 1432
 
-    const val ANIM_CHOP = "seq.human_axe_chop"
-    const val ANIM_LIGHT = "seq.human_createfire"
-    const val ANIM_FIX = "seq.human_smithing"
-    const val ANIM_FLETCH = "seq.human_knife_chop"
-    const val ANIM_HERB = "seq.human_pickuptable"
-    const val ANIM_DRINK = "seq.human_herbing_vial"
+    const val ANIM_CHOP = "seq.human_woodcutting_bronze_axe"
+    const val ANIM_LIGHT = "seq.wint_light_brazier_bruma"
+    const val ANIM_FIX = "seq.human_poh_build"
+    const val ANIM_FLETCH = "seq.human_fletching"
+    const val ANIM_HERB = "seq.picking_low"
+    const val ANIM_DRINK = "seq.human_eat"
 
     fun isInPrison(coords: CoordGrid): Boolean =
         coords.level == 0 && coords.x in 1610..1652 && coords.z in 3968..4025

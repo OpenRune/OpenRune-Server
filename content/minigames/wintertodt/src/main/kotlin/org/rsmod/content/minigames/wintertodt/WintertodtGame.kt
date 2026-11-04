@@ -1,14 +1,19 @@
 ﻿package org.rsmod.content.minigames.wintertodt
 
 import dev.openrune.ServerCacheManager
+import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
+import dev.openrune.types.ItemServerType
 import dev.openrune.types.MoveRestrict
 import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
+import dev.openrune.types.SequenceServerType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlin.math.min
+import org.rsmod.api.config.objParam
+import org.rsmod.api.config.refs.params
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.output.mes
@@ -38,6 +43,7 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
+import org.rsmod.game.type.getInvObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.routefinder.collision.CollisionFlagMap
@@ -135,6 +141,10 @@ constructor(
     }
 
     private val updateScript: Int = Wintertodt.SCRIPT_UPDATE
+
+    private val ItemServerType.axeWoodcuttingAnim: SequenceServerType by objParam(
+        params.skill_anim
+    )
 
     private val insideScript: Int = Wintertodt.SCRIPT_INSIDE
 
@@ -455,6 +465,18 @@ constructor(
             val type = ServerCacheManager.getItem(obj.id) ?: return@any false
             type.internalName.endsWith("_axe")
         }
+
+    fun axeAnim(player: Player): String? {
+        val axe =
+            (player.inv.objs.asSequence() + player.worn.objs.asSequence())
+                .filterNotNull()
+                .firstOrNull { getInvObj(it).internalName.endsWith("_axe") }
+                ?: return null
+        return runCatching {
+                RSCM.getReverseMapping(RSCMType.SEQ, getInvObj(axe).axeWoodcuttingAnim.id)
+            }
+            .getOrNull()
+    }
 
     fun hasTinderbox(player: Player): Boolean =
         player.inv.count("obj.tinderbox") > 0 ||

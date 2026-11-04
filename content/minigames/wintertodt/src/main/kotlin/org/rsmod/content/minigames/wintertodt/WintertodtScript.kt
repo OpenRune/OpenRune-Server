@@ -124,7 +124,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
             return
         }
         faceLoc(loc)
-        anim(Wintertodt.ANIM_CHOP)
+        anim(game.axeAnim(player) ?: Wintertodt.ANIM_CHOP)
         mes("You swing your axe at the roots.")
         delay(1)
         while (true) {
