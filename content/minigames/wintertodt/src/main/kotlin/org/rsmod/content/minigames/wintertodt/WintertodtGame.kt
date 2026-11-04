@@ -206,6 +206,7 @@ constructor(
             regenerateEnergy()
             runWarmth()
             runAttacks()
+            runPyromancerSpeech()
             if (energy <= 0) endRound()
         }
 
@@ -537,13 +538,13 @@ constructor(
         updateHud()
     }
 
-    fun healPyromancer(player: Player, npc: Npc) {
+    fun healPyromancer(player: Player, npc: Npc, useSlot: Int? = null) {
         val pyro = pyromancers.firstOrNull { it.npc == npc } ?: return
         if (!pyro.down) {
             player.mes("Pyromancer|No need! I'm fine, thanks.")
             return
         }
-        val potion = lowestDosePotion(player)
+        val potion = if (useSlot != null) doseAt(player, useSlot) else lowestDosePotion(player)
         if (potion == null) {
             player.mes("You need a rejuvenation potion to heal the Pyromancer.")
             return
@@ -871,8 +872,15 @@ constructor(
         }
         for (pyro in pyromancers) {
             player.mes(
-                "pyro ${pyro.index}: down=${pyro.down} hp=${pyro.hp} npc=${pyro.npc?.coords}",
+                "pyro ${pyro.index}: down=${pyro.down} hp=${pyro.hp} npc=${pyro.npc?.coords} " +
+                    "nextSpeak=${pyro.nextSpeak}",
             )
+        }
+    }
+
+    fun debugPyroSay() {
+        for (pyro in pyromancers) {
+            pyro.npc?.say("Yemalo shi cardito!")
         }
     }
 
@@ -1008,6 +1016,7 @@ constructor(
             pyro.hp = 14
             pyro.down = false
             pyro.npc?.let { npc -> pyromancerType?.let { npc.transmog(it, Int.MAX_VALUE) } }
+            pyro.npc?.say("We can rest for a time.")
         }
         setStorm(active = false)
         for (session in sessions.values) {
@@ -1171,6 +1180,32 @@ constructor(
                     player,
                     Wintertodt.brazierDamage(player.baseFiremakingLvl, warmItems(player)),
                 )
+            }
+        }
+    }
+
+    private fun runPyromancerSpeech() {
+        for (pyro in pyromancers) {
+            val npc = pyro.npc ?: continue
+            if (mapClock.cycle < pyro.nextSpeak) continue
+            if (pyro.down) {
+                npc.say(Wintertodt.PYROMANCER_DOWN_LINES[random.of(0, Wintertodt.PYROMANCER_DOWN_LINES.lastIndex)])
+                pyro.nextSpeak = mapClock.cycle + random.of(10, 14)
+                continue
+            }
+            when (braziers[pyro.index].state) {
+                BrazierState.UNLIT -> {
+                    npc.say("Light this brazier!")
+                    pyro.nextSpeak = mapClock.cycle + random.of(10, 14)
+                }
+                BrazierState.BROKEN -> {
+                    npc.say("Fix this brazier!")
+                    pyro.nextSpeak = mapClock.cycle + random.of(10, 14)
+                }
+                BrazierState.LIT -> {
+                    npc.say("Yemalo shi cardito!")
+                    pyro.nextSpeak = mapClock.cycle + random.of(1, 30)
+                }
             }
         }
     }
@@ -1411,6 +1446,19 @@ constructor(
             if (slot != -1) return slot to dose
         }
         return null
+    }
+
+    private fun doseAt(player: Player, slot: Int): Pair<Int, Int>? {
+        val item = player.inv[slot] ?: return null
+        val dose =
+            when (item.id) {
+                itemId(Wintertodt.POTION4) -> 4
+                itemId(Wintertodt.POTION3) -> 3
+                itemId(Wintertodt.POTION2) -> 2
+                itemId(Wintertodt.POTION1) -> 1
+                else -> return null
+            }
+        return slot to dose
     }
 
     private fun hasPoh(player: Player): Boolean = player.attr[POH_ATTR] ?: true

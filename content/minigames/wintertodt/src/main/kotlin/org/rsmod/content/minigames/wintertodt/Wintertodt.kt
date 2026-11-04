@@ -52,6 +52,15 @@ internal object Wintertodt {
 
     val WARMTH_EXCLUDED_FOOD = setOf("obj.triangle_sandwich", "obj.rag_bottle_wine")
 
+    val PYROMANCER_DOWN_LINES =
+        listOf(
+            "Mummy!",
+            "My flame burns low.",
+            "We are doomed.",
+            "I think I'm dying.",
+            "Ugh, help me!",
+        )
+
     const val BRAZIER_UNLIT = "loc.wint_brazier"
     const val BRAZIER_BROKEN = "loc.wint_brazier_broken"
     const val BRAZIER_LIT = "loc.wint_brazier_lit"
@@ -143,6 +152,7 @@ internal class Pyromancer(val index: Int, val coords: CoordGrid) {
     var down: Boolean = false
     var lastHit: Int = Int.MIN_VALUE / 2
     var resumeAt: Int = 0
+    var nextSpeak: Int = 0
 }
 
 internal class WintertodtSession(val player: Player) {

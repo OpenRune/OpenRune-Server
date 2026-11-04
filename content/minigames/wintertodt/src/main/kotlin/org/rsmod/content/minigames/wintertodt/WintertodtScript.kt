@@ -2,6 +2,7 @@ package org.rsmod.content.minigames.wintertodt
 
 import jakarta.inject.Inject
 import org.rsmod.api.game.process.GameLifecycle
+import org.rsmod.api.player.events.interact.NpcUDefaultEvents
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseFiremakingLvl
@@ -15,6 +16,7 @@ import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
+import org.rsmod.api.script.onOpNpcU
 import org.rsmod.api.script.onPlayerCoordsChanged
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
@@ -76,6 +78,8 @@ constructor(private val game: WintertodtGame) : PluginScript() {
 
         onOpNpc1(Wintertodt.NPC_PYROMANCER) { game.healPyromancer(player, it.npc) }
         onOpNpc1(Wintertodt.NPC_PYROMANCER_DOWN) { game.healPyromancer(player, it.npc) }
+        onOpNpcU(Wintertodt.NPC_PYROMANCER) { useItemOnPyromancer(it) }
+        onOpNpcU(Wintertodt.NPC_PYROMANCER_DOWN) { useItemOnPyromancer(it) }
 
         onOpNpc1(IGNISIA) { talkToIgnisia(it.npc) }
         onOpNpc3(IGNISIA) { exchangeWithIgnisia(it.npc) }
@@ -101,12 +105,21 @@ constructor(private val game: WintertodtGame) : PluginScript() {
                             else -> game.forceAttack()
                         }
                     "status" -> game.debugStatus(player)
+                    "say" -> game.debugPyroSay()
                     "locs" -> game.debugLocations(player)
                     "lockwarmth" -> game.toggleWarmthLock(player)
                     "break" -> game.forceBrazierBreak()
                     else -> player.mes(invalidArgs ?: "Usage: ::wt start|energy|points|warmth|attack")
                 }
             }
+        }
+    }
+
+    private fun ProtectedAccess.useItemOnPyromancer(event: NpcUDefaultEvents.OpType) {
+        if (event.objType.internalName in POTIONS) {
+            game.healPyromancer(player, event.npc, event.invSlot)
+        } else {
+            event.npc.say("That's no use!")
         }
     }
 
