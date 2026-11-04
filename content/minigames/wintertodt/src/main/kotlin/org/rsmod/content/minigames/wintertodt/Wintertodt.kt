@@ -1,5 +1,8 @@
 package org.rsmod.content.minigames.wintertodt
 
+import dev.openrune.ParamReferences.param
+import dev.openrune.types.ItemServerType
+import dev.openrune.types.enums.EnumTypeMap
 import kotlin.math.min
 import kotlin.math.roundToInt
 import org.rsmod.api.player.vars.intVarBit
@@ -78,7 +81,8 @@ internal object Wintertodt {
     const val SCRIPT_OUTSIDE = 1432
 
     const val ANIM_CHOP = "seq.human_woodcutting_bronze_axe"
-    const val ANIM_LIGHT = "seq.wint_light_brazier_bruma"
+    const val ANIM_LIGHT = "seq.human_createfire"
+    const val ANIM_LIGHT_TORCH = "seq.wint_light_brazier_bruma"
     const val ANIM_FIX = "seq.human_poh_build"
     const val ANIM_FLETCH = "seq.human_fletching"
     const val ANIM_HERB = "seq.picking_low"
@@ -151,3 +155,7 @@ internal var Player.wintNeedsWarning by intVarBit("varbit.wint_needs_warning")
 internal var Player.wintRespawnDelay by intVarBit("varbit.wint_transmit_respawndelay")
 internal var Player.wintAreaAttack by intVarBit("varbit.wint_area_attack")
 internal var Player.wintertodtKills by intVarp("varp.total_wintertodt_kills")
+
+internal object WintertodtParams {
+    val successRates = param<EnumTypeMap<ItemServerType, Int>>("woodcutting_axe_success_rates")
+}

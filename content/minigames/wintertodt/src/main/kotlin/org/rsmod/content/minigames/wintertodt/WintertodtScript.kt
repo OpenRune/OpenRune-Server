@@ -123,20 +123,34 @@ constructor(private val game: WintertodtGame) : PluginScript() {
             mes("Your inventory is too full to hold any more roots.")
             return
         }
+        val token = game.startChop(player)
+        val anchor = player.coords
+        val animSeq = game.axeAnim(player) ?: Wintertodt.ANIM_CHOP
         faceLoc(loc)
-        anim(game.axeAnim(player) ?: Wintertodt.ANIM_CHOP)
+        anim(animSeq)
         mes("You swing your axe at the roots.")
         delay(1)
+        var animTicks = 0
         while (true) {
-            val dx = kotlin.math.abs(player.coords.x - loc.coords.x)
-            val dz = kotlin.math.abs(player.coords.z - loc.coords.z)
-            if (dx > 2 || dz > 2) return
-            if (player.inv.isFull()) {
-                mes("Your inventory is too full to hold any more roots.")
+            if (!game.isChopping(player, token) || player.coords != anchor) {
+                game.stopChop(player)
                 return
             }
-            game.chopRoot(player)
-            delay(3)
+            if (player.inv.isFull()) {
+                mes("Your inventory is too full to hold any more roots.")
+                game.stopChop(player)
+                return
+            }
+            if (game.chopSuccess(player)) game.chopRoot(player)
+            repeat(3) {
+                delay(1)
+                animTicks++
+                if (animTicks % 6 == 0) anim(animSeq)
+                if (!game.isChopping(player, token) || player.coords != anchor) {
+                    game.stopChop(player)
+                    return
+                }
+            }
         }
     }
 
@@ -157,7 +171,10 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         val index = game.brazierIndex(loc.coords)
         if (index < 0) return
         arriveDelay()
-        anim(Wintertodt.ANIM_LIGHT)
+        val lightAnim =
+            if (game.hasBrumaTorch(player)) Wintertodt.ANIM_LIGHT_TORCH
+            else Wintertodt.ANIM_LIGHT
+        anim(lightAnim)
         delay(4)
         game.lightBrazier(player, index)
     }

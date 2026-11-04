@@ -8,7 +8,9 @@ import dev.openrune.types.ItemServerType
 import dev.openrune.types.MoveRestrict
 import dev.openrune.types.NpcMode
 import dev.openrune.types.NpcServerType
+import dev.openrune.types.ObjectServerType
 import dev.openrune.types.SequenceServerType
+import dev.openrune.types.enums.EnumTypeMap
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlin.math.min
@@ -25,7 +27,9 @@ import org.rsmod.api.player.stat.baseFiremakingLvl
 import org.rsmod.api.player.stat.baseFletchingLvl
 import org.rsmod.api.player.stat.baseHerbloreLvl
 import org.rsmod.api.player.stat.baseWoodcuttingLvl
+import org.rsmod.api.player.stat.stat
 import org.rsmod.api.player.stat.statAdvance
+import org.rsmod.api.player.stat.statRandom
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.ui.ifOpenOverlay
 import org.rsmod.api.random.GameRandom
@@ -33,6 +37,8 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.route.BoundValidator
+import org.rsmod.api.stats.levelmod.InvisibleLevels
+import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
@@ -43,7 +49,6 @@ import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocAngle
 import org.rsmod.game.loc.LocInfo
 import org.rsmod.game.loc.LocShape
-import org.rsmod.game.type.getInvObj
 import org.rsmod.map.CoordGrid
 import org.rsmod.map.zone.ZoneKey
 import org.rsmod.routefinder.collision.CollisionFlagMap
@@ -62,6 +67,7 @@ constructor(
     private val eventBus: EventBus,
     private val boundValidator: BoundValidator,
     private val flags: CollisionFlagMap,
+    private val invisibleLevels: InvisibleLevels,
 ) {
     private enum class Phase {
         WAITING,
@@ -84,6 +90,8 @@ constructor(
     private var nextHud = 0
     private var worldReady = false
     private var warmthLock = false
+    private val chopping = mutableMapOf<Player, Long>()
+    private var chopSequence = 0L
 
     private var storm: LocInfo? = null
 
@@ -146,6 +154,16 @@ constructor(
         params.skill_anim
     )
 
+    private val ItemServerType.axeLevelReq: Int by objParam(params.levelrequire)
+
+    private val treeType: ObjectServerType? by lazy {
+        ServerCacheManager.getObject("loc.tree".asRSCM(RSCMType.LOC))
+    }
+
+    private val treeRates: EnumTypeMap<ItemServerType, Int>? by lazy {
+        treeType?.let { runCatching { it.param(WintertodtParams.successRates) }.getOrNull() }
+    }
+
     private val insideScript: Int = Wintertodt.SCRIPT_INSIDE
 
     private val outsideScript: Int = Wintertodt.SCRIPT_OUTSIDE
@@ -201,6 +219,7 @@ constructor(
     }
 
     fun leave(player: Player) {
+        stopChop(player)
         val session = sessions.remove(player) ?: return
         session.points = 0
         player.wintWarmth = Wintertodt.WARMTH_MAX
@@ -214,6 +233,7 @@ constructor(
     }
 
     fun onLogout(player: Player) {
+        stopChop(player)
         sessions.remove(player)
     }
 
@@ -459,23 +479,74 @@ constructor(
     fun brazierIndexByNpc(npc: Npc): Int =
         pyromancers.indexOfFirst { it.npc == npc }
 
-    fun hasAxe(player: Player): Boolean =
-        (player.inv.objs.asSequence() + player.worn.objs.asSequence()).any {
-            val obj = it ?: return@any false
-            val type = ServerCacheManager.getItem(obj.id) ?: return@any false
-            type.internalName.endsWith("_axe")
-        }
+    fun hasAxe(player: Player): Boolean = bestAxe(player) != null
 
     fun axeAnim(player: Player): String? {
-        val axe =
-            (player.inv.objs.asSequence() + player.worn.objs.asSequence())
-                .filterNotNull()
-                .firstOrNull { getInvObj(it).internalName.endsWith("_axe") }
-                ?: return null
+        val axe = bestAxe(player) ?: return null
         return runCatching {
-                RSCM.getReverseMapping(RSCMType.SEQ, getInvObj(axe).axeWoodcuttingAnim.id)
+                RSCM.getReverseMapping(RSCMType.SEQ, axe.axeWoodcuttingAnim.id)
             }
             .getOrNull()
+    }
+
+    fun chopSuccess(player: Player): Boolean {
+        val axe = bestAxe(player) ?: return false
+        val (low, high) = axeRates(axe) ?: return false
+        return player.statRandom(random, "stat.woodcutting", low, high, invisibleLevels)
+    }
+
+    fun startChop(player: Player): Long {
+        chopSequence += 1
+        val token = chopSequence
+        chopping[player] = token
+        return token
+    }
+
+    fun isChopping(player: Player, token: Long): Boolean = chopping[player] == token
+
+    fun stopChop(player: Player) {
+        chopping.remove(player)
+    }
+
+    fun hasBrumaTorch(player: Player): Boolean =
+        player.inv.count("obj.wint_torch") > 0 ||
+            player.inv.count("obj.wint_torch_offhand") > 0 ||
+            player.worn.count("obj.wint_torch") > 0 ||
+            player.worn.count("obj.wint_torch_offhand") > 0
+
+    private fun bestAxe(player: Player): ItemServerType? {
+        val candidates =
+            (player.worn.objs.asSequence() + player.inv.objs.asSequence())
+                .filterNotNull()
+                .mapNotNull { ServerCacheManager.getItem(it.id) }
+                .filter { isUsableAxe(player, it) }
+        return candidates.maxWithOrNull(
+            compareBy<ItemServerType> { chopRate(player, it) ?: -1.0 }
+                .thenBy { it.axeLevelReq }
+                .thenBy { it.id }
+        )
+    }
+
+    private fun isUsableAxe(player: Player, type: ItemServerType): Boolean {
+        if (!type.isContentType("content.woodcutting_axe")) return false
+        if (player.baseWoodcuttingLvl < type.axeLevelReq) return false
+        if (type.internalName == "obj.infernal_axe" && player.baseFiremakingLvl < 85) {
+            return false
+        }
+        return axeRates(type) != null
+    }
+
+    private fun chopRate(player: Player, it: ItemServerType): Double? {
+        val (low, high) = axeRates(it) ?: return null
+        val level =
+            (player.stat("stat.woodcutting") + invisibleLevels.get(player, "stat.woodcutting"))
+                .coerceIn(1, 99)
+        return SkillingSuccessRate.successRate(low, high, level, 99)
+    }
+
+    private fun axeRates(type: ItemServerType): Pair<Int, Int>? {
+        val packed = treeRates?.firstOrNull { it.key.id == type.id }?.value ?: return null
+        return (packed shr 16) to (packed and 0xFFFF)
     }
 
     fun hasTinderbox(player: Player): Boolean =

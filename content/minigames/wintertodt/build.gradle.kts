@@ -14,5 +14,7 @@ dependencies {
     implementation(projects.api.registry)
     implementation(projects.api.repo)
     implementation(projects.api.route)
+    implementation(projects.api.stats.levelmod)
+    implementation(projects.api.utils.utilsSkills)
     implementation(projects.content.interfaces.bank)
 }
