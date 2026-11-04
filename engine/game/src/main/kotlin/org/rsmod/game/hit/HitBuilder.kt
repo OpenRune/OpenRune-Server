@@ -28,6 +28,8 @@ public class HitBuilder(
      */
     public var penetration: Int = 0
 
+    public var origin: HitOrigin? = null
+
     public fun isRighthandObj(type: ItemServerType): Boolean = type.id == righthandType
 
     public fun isSecondaryObj(type: ItemServerType): Boolean = type.id == secondaryType
@@ -46,6 +48,7 @@ public class HitBuilder(
             sourceUid = sourceUid,
             righthandObj = righthandType,
             secondaryObj = secondaryType,
+            origin = origin,
         )
     }
 

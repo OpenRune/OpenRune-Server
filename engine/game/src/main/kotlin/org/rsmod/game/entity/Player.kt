@@ -34,6 +34,7 @@ import org.rsmod.game.entity.util.EntityTinting
 import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.headbar.Headbar
 import org.rsmod.game.hero.HeroPoints
+import org.rsmod.game.hit.HitOrigin
 import org.rsmod.game.hit.Hitmark
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.inv.InventoryMap
@@ -217,6 +218,7 @@ public class Player(
     public var modLevel: Rights = Rights.NONE
 
     public val attr: AttributeMap = AttributeMap()
+    public var hitOrigin: HitOrigin? = null
     public var xpRate: Double = 1.0
     public var globalXpRate: Double = 1.0
 

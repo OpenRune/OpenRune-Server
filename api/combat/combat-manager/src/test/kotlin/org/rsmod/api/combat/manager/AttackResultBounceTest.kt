@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.ResourceLock
@@ -30,6 +31,8 @@ import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitBuilder
+import org.rsmod.game.hit.HitOrigin
+import org.rsmod.game.hit.withHitOrigin
 import org.rsmod.game.inv.Inventory
 import org.rsmod.game.queue.WorldQueueList
 import org.rsmod.map.CoordGrid
@@ -73,6 +76,58 @@ class AttackResultBounceTest {
         f.manager.finishAttack(f.player)
 
         assertEquals(listOf(1, 3, 4, 5), f.results.single().hits.map { it.delay })
+    }
+
+    @Test
+    fun `every kind of queued hit carries the origin it was queued under`() {
+        val f = Fixture()
+        val target = f.victims[0]
+
+        val hits =
+            f.player.withHitOrigin(Origin.Bounce) {
+                listOf(
+                    f.manager.queueMeleeHit(f.player, target, 1),
+                    f.manager.queueRangedHit(f.player, target, null, 1, 30, 3),
+                    f.manager.queueRangedDamage(f.player, target, null, 1, 3),
+                    f.manager.queueMagicHit(f.player, target, null, 1, 30, 4),
+                    f.manager.queueSplashHit(f.player, target, null, 30, 5),
+                )
+            }
+
+        assertEquals(List(hits.size) { Origin.Bounce }, hits.map { it.origin })
+    }
+
+    @Test
+    fun `a hit outside an origin scope has none`() {
+        val f = Fixture()
+
+        assertNull(f.manager.queueMeleeHit(f.player, f.victims[0], 1).origin)
+    }
+
+    @Test
+    fun `an inner origin wins and the outer one comes back`() {
+        val f = Fixture()
+        val target = f.victims[0]
+
+        f.player.withHitOrigin(Origin.Bounce) {
+            f.player.withHitOrigin(Origin.Thorns) {
+                assertEquals(Origin.Thorns, f.manager.queueMeleeHit(f.player, target, 1).origin)
+            }
+            assertEquals(Origin.Bounce, f.manager.queueMeleeHit(f.player, target, 1).origin)
+        }
+
+        assertNull(f.player.hitOrigin)
+    }
+
+    @Test
+    fun `an exception does not leave the origin set`() {
+        val f = Fixture()
+
+        assertThrows<IllegalStateException> {
+            f.player.withHitOrigin(Origin.Bounce) { error("attack failed") }
+        }
+
+        assertNull(f.player.hitOrigin)
     }
 
     @Test
@@ -177,6 +232,11 @@ class AttackResultBounceTest {
 
         assertEquals(4, f.bounces)
         assertEquals(2, f.results.size)
+    }
+
+    private enum class Origin : HitOrigin {
+        Bounce,
+        Thorns,
     }
 
     @OptIn(InternalApi::class)
