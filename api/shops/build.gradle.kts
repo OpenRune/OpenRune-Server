@@ -1,6 +1,6 @@
 plugins {
     id("base-conventions")
-
+    id("game-cache-test-conventions")
 }
 
 kotlin {
@@ -21,10 +21,11 @@ dependencies {
     implementation(projects.api.playerOutput)
     implementation(projects.api.script)
 
-
     implementation(projects.api.utils.utilsFormat)
     implementation(projects.engine.events)
     implementation(projects.engine.game)
     implementation(projects.engine.objtx)
     implementation(projects.engine.plugin)
+    testImplementation(projects.engine.annotations)
+    testImplementation(projects.api.invStorage)
 }
