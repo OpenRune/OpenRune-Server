@@ -32,6 +32,7 @@ import org.rsmod.api.invtx.InvTransactionsScript
 import org.rsmod.api.obj.charges.ObjChargeManager
 import org.rsmod.api.player.events.AttackKind
 import org.rsmod.api.player.events.PlayerAttackEvents
+import org.rsmod.api.player.events.PlayerSpellRuneEvents
 import org.rsmod.api.player.events.ResourceKind
 import org.rsmod.api.player.events.ResourceSpend
 import org.rsmod.api.player.events.beginAttackRecord
@@ -295,6 +296,137 @@ class ResourceSavingTest {
     }
 
     @Test
+    fun `a non-combat spell saves each rune type from its own event`() {
+        val f = Fixture(saveRolls = listOf(0, 99))
+        f.inv(0, f.air, 5)
+        f.inv(1, f.mind, 5)
+        f.onSpellPrepare { saveChance = 50 }
+
+        val result = f.cast(f.invRunes(0, f.air, 2), f.invRunes(1, f.mind, 1))
+
+        assertEquals(MagicRuneManager.CastResult.Success.Consumed(false), result)
+        assertEquals(5, f.invCount(f.air))
+        assertEquals(4, f.invCount(f.mind))
+        val event = f.spellSpends.single()
+        assertEquals(f.lastSpell, event.spell)
+        val byRune = event.runes.associate { it.item!!.id to (it.count to it.saved) }
+        assertEquals(2 to true, byRune[f.air.id])
+        assertEquals(1 to false, byRune[f.mind.id])
+    }
+
+    @Test
+    fun `a non-combat spell with every rune saved still casts`() {
+        val f = Fixture(saveRolls = listOf(0))
+        f.inv(0, f.air, 2)
+        f.onSpellPrepare { saveChance = 100 }
+
+        val result = f.cast(f.invRunes(0, f.air, 2))
+
+        assertEquals(MagicRuneManager.CastResult.Success.Consumed(false), result)
+        assertEquals(2, f.invCount(f.air))
+        assertEquals(listOf(true), f.spellSpends.single().runes.map { it.saved })
+    }
+
+    @Test
+    fun `a non-combat spell saves a rune split with the pouch as one`() {
+        val f = Fixture(saveRolls = listOf(0))
+        f.inv(0, f.air, 3)
+        f.pouch(10)
+        f.onSpellPrepare { saveChance = 50 }
+
+        f.cast(f.splitRunes(0, 3, 2))
+
+        assertEquals(3, f.invCount(f.air))
+        assertEquals(10, f.pouchCount())
+    }
+
+    @Test
+    fun `a non-rune cost is never saved and takes no roll`() {
+        val f = Fixture(saveRolls = listOf(0))
+        val banana = item("obj.banana")
+        f.inv(0, f.air, 2)
+        f.inv(1, banana, 3)
+        f.onSpellPrepare { saveChance = 100 }
+
+        f.cast(f.invRunes(0, f.air, 2), f.invRunes(1, banana, 1))
+
+        assertEquals(2, f.invCount(f.air))
+        assertEquals(2, f.invCount(banana))
+        verify(exactly = 1) { f.random.of(maxExclusive = 100) }
+    }
+
+    @Test
+    fun `an attack never saves a non-rune cost either`() {
+        val f = Fixture(saveRolls = listOf(0))
+        val banana = item("obj.banana")
+        f.inv(0, banana, 3)
+        f.onPrepare { saveChance = 100 }
+
+        f.attackReturning { f.cast(f.invRunes(0, banana, 1)) }
+
+        assertEquals(2, f.invCount(banana))
+        assertEquals(listOf(false), f.lastSpends.map { it.saved })
+    }
+
+    @Test
+    fun `a non-combat cast that fails spends nothing and reports nothing`() {
+        val f = Fixture(saveRolls = listOf(99, 99))
+        f.inv(0, f.air, 5)
+        f.inv(1, f.mind, 1)
+        f.onSpellPrepare { saveChance = 50 }
+
+        val result = f.cast(f.invRunes(0, f.air, 2), f.invRunes(1, f.mind, 3))
+
+        assertEquals(MagicRuneManager.CastResult.Failure.NotEnoughInvObj, result)
+        assertEquals(5, f.invCount(f.air))
+        assertEquals(1, f.invCount(f.mind))
+        assertTrue(f.spellSpends.isEmpty())
+    }
+
+    @Test
+    fun `a spell with nothing to pay publishes nothing`() {
+        val f = Fixture()
+        var prepared = false
+        f.onSpellPrepare { prepared = true }
+
+        val result = f.cast(MagicRunes.Validation.Valid.Unlimited)
+
+        assertEquals(MagicRuneManager.CastResult.Success.AllUnlimited, result)
+        assertFalse(prepared)
+        assertTrue(f.spellSpends.isEmpty())
+    }
+
+    @Test
+    fun `a spell inside an attack ignores the non-combat events`() {
+        val f = Fixture(saveRolls = listOf(0))
+        var prepared = false
+        f.inv(0, f.air, 5)
+        f.onPrepare {}
+        f.onSpellPrepare {
+            prepared = true
+            saveChance = 100
+        }
+
+        f.attackReturning { f.cast(f.invRunes(0, f.air, 2)) }
+
+        assertFalse(prepared)
+        assertEquals(3, f.invCount(f.air))
+        assertTrue(f.spellSpends.isEmpty())
+    }
+
+    @Test
+    fun `a non-combat chance of zero never rolls`() {
+        val f = Fixture()
+        f.inv(0, f.air, 5)
+        f.onSpellPrepare {}
+
+        f.cast(f.invRunes(0, f.air, 2))
+
+        assertEquals(3, f.invCount(f.air))
+        verify(exactly = 0) { f.random.of(maxExclusive = 100) }
+    }
+
+    @Test
     fun `a chance of zero never rolls`() {
         val f = Fixture()
         f.quiver(5)
@@ -353,14 +485,24 @@ class ResourceSavingTest {
                 )
             )
 
+        val spellSpends = mutableListOf<PlayerSpellRuneEvents.Spent>()
+        var lastSpell: ItemServerType? = null
+
         init {
             events.subscribeUnbound(PlayerAttackEvents.AttackResult::class.java) {
                 lastSpends = resources
+            }
+            events.subscribeUnbound(PlayerSpellRuneEvents.Spent::class.java) {
+                spellSpends += this
             }
         }
 
         fun onPrepare(action: PlayerAttackEvents.AttackPrepare.() -> Unit) {
             events.subscribeUnbound(PlayerAttackEvents.AttackPrepare::class.java, action)
+        }
+
+        fun onSpellPrepare(action: PlayerSpellRuneEvents.Prepare.() -> Unit) {
+            events.subscribeUnbound(PlayerSpellRuneEvents.Prepare::class.java, action)
         }
 
         fun attack(block: () -> Unit): List<ResourceSpend> {
@@ -381,6 +523,7 @@ class ResourceSavingTest {
 
         fun cast(vararg runeSets: MagicRunes.Validation.Valid): MagicRuneManager.CastResult {
             val spell = mockk<MagicSpell>(relaxed = true)
+            lastSpell = spell.obj
             every { runes.validateSpell(player, spell) } returns runeSets.toList()
             return runes.delReqs(player, spell)
         }

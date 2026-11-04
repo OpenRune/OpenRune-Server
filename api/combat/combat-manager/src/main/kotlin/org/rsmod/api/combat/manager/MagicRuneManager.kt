@@ -13,7 +13,9 @@ import org.rsmod.api.combat.commons.magic.Spellbook
 import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.invtx.invDelAll
 import org.rsmod.api.player.events.PlayerAttackRecord
+import org.rsmod.api.player.events.PlayerSpellRuneEvents
 import org.rsmod.api.player.events.ResourceKind
+import org.rsmod.api.player.events.ResourceSpend
 import org.rsmod.api.player.events.attackRecord
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
@@ -143,10 +145,14 @@ constructor(
             return CastResult.Failure.MissingObjRequirements
         }
 
-        return delAll(player, valid)
+        return delAll(player, spell, valid)
     }
 
-    private fun delAll(player: Player, validations: List<MagicRunes.Validation.Valid>): CastResult {
+    private fun delAll(
+        player: Player,
+        spell: MagicSpell,
+        validations: List<MagicRunes.Validation.Valid>,
+    ): CastResult {
         require(validations.isNotEmpty()) { "`validations` should not be empty." }
 
         val sourced = validations.filterIsInstance<MagicRunes.Validation.Valid.HasEnough>()
@@ -169,7 +175,9 @@ constructor(
         }
 
         val record = player.attackRecord
-        val (saved, spent) = sourced.partition { record?.rollSave(random) == true }
+        val saveChance = if (record == null) prepareRunes(player, spell) else 0
+        val (saved, spent) =
+            sourced.partition { it.isRunes() && rollsSave(record, saveChance) }
         val spentSources = spent.flatMap { it.sources }
 
         val invSources = spentSources.filterIsInstance<MagicRunes.Source.InvSource>()
@@ -207,24 +215,55 @@ constructor(
         if (record != null) {
             spent.forEach { record.addRunes(it, saved = false) }
             saved.forEach { record.addRunes(it, saved = true) }
+        } else {
+            publishRunesSpent(player, spell, spent, saved)
         }
 
         return CastResult.Success.Consumed(usedSunfire)
+    }
+
+    private fun prepareRunes(player: Player, spell: MagicSpell): Int {
+        if (eventBus.unbound[PlayerSpellRuneEvents.Prepare::class.java] == null) {
+            return 0
+        }
+        val event = PlayerSpellRuneEvents.Prepare(player, spell.obj)
+        eventBus.publish(event)
+        return event.saveChance
+    }
+
+    private fun rollsSave(record: PlayerAttackRecord?, saveChance: Int): Boolean =
+        record?.rollSave(random)
+            ?: (saveChance > 0 && random.of(maxExclusive = PERCENT) < saveChance)
+
+    private fun MagicRunes.Validation.Valid.HasEnough.isRunes(): Boolean =
+        sources.all { runeType(it.obj)?.isCategoryType("category.rune") == true }
+
+    private fun publishRunesSpent(
+        player: Player,
+        spell: MagicSpell,
+        spent: List<MagicRunes.Validation.Valid.HasEnough>,
+        saved: List<MagicRunes.Validation.Valid.HasEnough>,
+    ) {
+        if (eventBus.unbound[PlayerSpellRuneEvents.Spent::class.java] == null) {
+            return
+        }
+        val runes =
+            spent.flatMap { it.resources(saved = false) } +
+                saved.flatMap { it.resources(saved = true) }
+        eventBus.publish(PlayerSpellRuneEvents.Spent(player, spell.obj, runes))
     }
 
     private fun PlayerAttackRecord.addRunes(
         runes: MagicRunes.Validation.Valid.HasEnough,
         saved: Boolean,
     ) {
-        for (source in runes.sources) {
-            when (source) {
-                is MagicRunes.Source.InvSource ->
-                    addResource(ResourceKind.Rune, runeType(source.obj), source.count, saved)
-                is MagicRunes.Source.VarBitSource ->
-                    addResource(ResourceKind.Rune, runeType(source.obj), source.count, saved)
-            }
+        for (rune in runes.resources(saved)) {
+            addResource(rune.kind, rune.item, rune.count, rune.saved)
         }
     }
+
+    private fun MagicRunes.Validation.Valid.HasEnough.resources(saved: Boolean): List<ResourceSpend> =
+        sources.map { ResourceSpend(ResourceKind.Rune, runeType(it.obj), it.count, saved) }
 
     public fun validateSpell(player: Player, spell: MagicSpell): List<MagicRunes.Validation> {
         val runePack = validateRunePack(player, spell.obj)
@@ -427,6 +466,8 @@ constructor(
     }
 
     public companion object {
+        private const val PERCENT = 100
+
         public fun CastResult.isFailure(): Boolean {
             contract { returns(true) implies (this@isFailure is CastResult.Failure) }
             return this is CastResult.Failure

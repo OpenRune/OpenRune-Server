@@ -17,6 +17,7 @@ import org.rsmod.api.player.events.PlayerQueueEvents
 import org.rsmod.api.player.events.PlayerShopEvents
 import org.rsmod.api.player.events.PlayerSkillAttemptEvent
 import org.rsmod.api.player.events.PlayerSkillRollEvents
+import org.rsmod.api.player.events.PlayerSpellRuneEvents
 import org.rsmod.api.player.events.PlayerWornEvents
 import org.rsmod.api.player.events.PlayerXpEvents
 import org.rsmod.api.player.events.interact.PlayerInteractionEvent
@@ -235,6 +236,14 @@ public fun ScriptContext.onPlayerDamageRoll(
 
 public fun ScriptContext.onPlayerAttackResult(
     action: PlayerAttackEvents.AttackResult.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerSpellRunesPrepare(
+    action: PlayerSpellRuneEvents.Prepare.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerSpellRunesSpent(
+    action: PlayerSpellRuneEvents.Spent.() -> Unit
 ): Unit = onEvent(action)
 
 public fun ScriptContext.onWorldMapClick(
