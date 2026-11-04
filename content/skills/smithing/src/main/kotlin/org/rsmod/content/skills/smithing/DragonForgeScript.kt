@@ -6,6 +6,7 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.stat.smithingLvl
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onPlayerQueueWithArgs
@@ -98,7 +99,7 @@ class DragonForgeScript : PluginScript() {
     ) {
         weakQueue(
             "queue.smithing_dragon_forge",
-            if (completed == 0) 1 else 5,
+            if (completed == 0) 1 else player.skillCycles("stat.smithing", 5),
             DragonForgeTask(recipe, amount, completed),
         )
     }

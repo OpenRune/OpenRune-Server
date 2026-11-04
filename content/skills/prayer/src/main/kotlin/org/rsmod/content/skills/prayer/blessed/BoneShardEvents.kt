@@ -3,6 +3,7 @@ package org.rsmod.content.skills.prayer.blessed
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLoc1
@@ -100,7 +101,7 @@ class BoneShardEvents : PluginScript() {
         }
 
         if (inv.contains(row.output.internalName)) {
-            weakQueue("queue.prayer_break_down_bone", 4, row.output)
+            weakQueue("queue.prayer_break_down_bone", player.skillCycles("stat.prayer", 4), row.output)
         }
 
     }

@@ -6,6 +6,7 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreCleaningRow
@@ -59,7 +60,7 @@ class CleaningHerbsEvents : PluginScript() {
         }
 
         if (inv.contains(row.input.internalName)) {
-            weakQueue("queue.herblore_clean", 2, task)
+            weakQueue("queue.herblore_clean", player.skillCycles("stat.herblore", 2), task)
         }
     }
 

@@ -13,6 +13,7 @@ import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.firemakingLvl
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.repo.controller.ControllerRepository
 import org.rsmod.api.repo.loc.LocRepository
@@ -146,7 +147,7 @@ class CampfireEvents @Inject constructor(
 
         spotanimMap(worldRepo, "spotanim.forestry_campfire_burning_spotanim", camp.coords)
 
-        weakQueue("queue.firemaking_campfire_tend", 9, task)
+        weakQueue("queue.firemaking_campfire_tend", player.skillCycles("stat.firemaking", 9), task)
     }
 
     private fun ProtectedAccess.showCampfireStatus(camp: BoundLocInfo) {

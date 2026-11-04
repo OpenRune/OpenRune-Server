@@ -8,6 +8,7 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.stat.resolveSkillRoll
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLocCategory2
@@ -207,10 +208,19 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
     ) {
         weakQueue(
             "queue.smithing_bar_smelt",
-            if (completed == 0) SMELT_INITIAL_DELAY else SMELT_CYCLE_DELAY,
+            if (completed == 0) SMELT_INITIAL_DELAY else smeltWait(),
             SmeltTask(bar, amount, completed, isSuperHeat, furnaceLocInternal, furnaceCoords, regularFurnace),
         )
     }
+
+    /** One bar takes the wait between smelts plus the furnace animation, split so both can shrink. */
+    private fun ProtectedAccess.smeltCycle(): Int =
+        player.skillCycles("stat.smithing", SMELT_CYCLE_DELAY + SMELT_ANIM_DELAY)
+
+    private fun ProtectedAccess.smeltAnimDelay(): Int =
+        minOf(SMELT_ANIM_DELAY, smeltCycle() - 1).coerceAtLeast(1)
+
+    private fun ProtectedAccess.smeltWait(): Int = (smeltCycle() - smeltAnimDelay()).coerceAtLeast(1)
 
     private suspend fun ProtectedAccess.performSmelt(
         bar: SmithingBarsRow,
@@ -222,7 +232,7 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
     ): Int {
         anim("seq.human_furnace")
         soundSynth("synth.furnace")
-        delay(2)
+        delay(smeltAnimDelay())
 
         val isIronBar = bar.output.internalName == "obj.iron_bar"
         val hasRingOfForging = "obj.ring_of_forging" in player.worn
@@ -386,5 +396,6 @@ class SmeltingScript @Inject constructor(private val xpMods: XpModifiers) : Plug
     private companion object {
         private const val SMELT_INITIAL_DELAY = 1
         private const val SMELT_CYCLE_DELAY = 5
+        private const val SMELT_ANIM_DELAY = 2
     }
 }

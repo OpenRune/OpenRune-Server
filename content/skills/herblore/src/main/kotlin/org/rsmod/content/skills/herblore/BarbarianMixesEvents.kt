@@ -8,6 +8,7 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreBarbarianMixesRow
@@ -162,7 +163,7 @@ class BarbarianMixesEvents : PluginScript() {
 
         val created = task.created + 1
         if (created < task.amount) {
-            weakQueue("queue.herblore_barbarian_mix", 4, BarbarianMixTask(mix, task.amount, created))
+            weakQueue("queue.herblore_barbarian_mix", player.skillCycles("stat.herblore", 4),BarbarianMixTask(mix, task.amount, created))
         } else {
             resetAnim()
         }

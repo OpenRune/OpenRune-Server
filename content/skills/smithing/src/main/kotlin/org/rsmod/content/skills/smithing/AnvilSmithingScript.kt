@@ -9,6 +9,7 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.stat.smithingLvl
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onIfModalButton
@@ -207,7 +208,7 @@ constructor(private val xpMods: XpModifiers, private val dorics: DoricsQuest) : 
         soundSynth("synth.anvil02")
         weakQueue(
             "queue.smithing_anvil",
-            SmithingUtils.anvilActionDelay(player),
+            player.skillCycles("stat.smithing", SmithingUtils.anvilActionDelay(player)),
             task.copy(completed = completed),
         )
     }
