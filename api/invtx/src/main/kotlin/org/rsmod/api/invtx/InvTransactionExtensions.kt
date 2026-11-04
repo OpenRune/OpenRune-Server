@@ -25,7 +25,7 @@ public fun Player.invAddOrDrop(
     coords: CoordGrid = this.coords,
     inv: Inventory = this.inv,
 ): Boolean {
-    val transaction = invAdd(inv, RSCM.getReverseMapping(RSCMType.OBJ,type.asRSCM(RSCMType.OBJ)), count = count)
+    val transaction = invAdd(inv, RSCM.getReverseMapping(RSCMType.OBJ, type.asRSCM(RSCMType.OBJ)), count = count)
     if (transaction.success) {
         return true
     }
@@ -38,6 +38,31 @@ public fun Player.invAddOrDrop(
 public fun Player.invTakeFee(fee: Int, inv: Inventory = this.inv): Boolean {
     val transaction = invDel(inv, "obj.coins", count = fee)
     return transaction.success
+}
+
+public fun Player.canAffordFee(fee: Int, fromBank: Boolean): Boolean {
+    val bankCoins = if (fromBank) invMap.getOrPut("inv.bank").count("obj.coins").toLong() else 0L
+    return inv.count("obj.coins") + bankCoins >= fee
+}
+
+public data class FeeSplit(val fromInventory: Int, val fromBank: Int)
+
+/** How a [fee] would currently be paid: inventory coins first, the remainder from the bank. */
+public fun Player.feeSplit(fee: Int): FeeSplit {
+    val fromInv = minOf(inv.count("obj.coins"), fee)
+    return FeeSplit(fromInventory = fromInv, fromBank = fee - fromInv)
+}
+
+/** Takes [fee] coins from the inventory first, then the bank when [fromBank] is set. */
+public fun Player.invTakeFee(fee: Int, fromBank: Boolean): Boolean {
+    if (!canAffordFee(fee, fromBank)) return false
+    val (fromInv, fromBankCoins) = feeSplit(fee)
+    if (fromInv > 0 && !invTakeFee(fromInv)) return false
+    if (fromBankCoins > 0 && !invTakeFee(fromBankCoins, invMap.getOrPut("inv.bank"))) {
+        invAdd(inv, "obj.coins", fromInv)
+        return false
+    }
+    return true
 }
 
 public fun Player.invClear(inv: Inventory) {

@@ -44,6 +44,7 @@ count = 1
 
 [[main.entries]]
 weight = 1
+boosted = true
 obj = "obj.tots_uncharged"
 count = 1
 

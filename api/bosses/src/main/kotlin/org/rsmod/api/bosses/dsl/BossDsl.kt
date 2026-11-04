@@ -140,6 +140,7 @@ class HitBuilder internal constructor() {
     private var penetrationWhen: Condition? = null
     private var hazardHit: Boolean = false
     private var missSpot: String? = null
+    private var missSoundSynth: String? = null
     private var onHitEffect: Effect? = null
     private var onHitEvenOnMiss: Boolean = false
     private var lifestealPercent: Int = 0
@@ -182,6 +183,11 @@ class HitBuilder internal constructor() {
         missSpot = spot
     }
 
+    /** Plays [synth] to the target when the hit rolls 0, in time with the miss graphic. */
+    fun missSound(synth: String) {
+        missSoundSynth = synth
+    }
+
     fun onHit(effect: Effect, evenOnMiss: Boolean = false) {
         onHitEffect = effect
         onHitEvenOnMiss = evenOnMiss
@@ -209,6 +215,7 @@ class HitBuilder internal constructor() {
             spotanimDelay = spotanimDelay,
             penetration = penetrationPercent,
             missSpotanim = missSpot,
+            missSound = missSoundSynth,
             onHit = onHitEffect,
             onHitEvenOnMiss = onHitEvenOnMiss,
             lifesteal = lifestealPercent,
@@ -646,6 +653,10 @@ class IncomingActionsBuilder internal constructor() {
 
     fun scalePercent(percent: Int, style: HitType? = null) {
         actions += IncomingAction.ScalePercent(percent, style)
+    }
+
+    fun divideMinOne(divisor: Int, style: HitType? = null) {
+        actions += IncomingAction.DivideMinOne(divisor, style)
     }
 
     fun floorPercentOfMaxHit(percent: Int, style: HitType) {

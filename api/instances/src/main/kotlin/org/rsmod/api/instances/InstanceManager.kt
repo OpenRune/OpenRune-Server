@@ -20,7 +20,7 @@ import org.rsmod.api.instances.region.enterCoord
 import org.rsmod.api.instances.region.localCoord
 import org.rsmod.api.instances.timer.InstanceKillTimer
 import org.rsmod.api.instances.timer.InstanceTiming
-import org.rsmod.api.invtx.invAdd
+import org.rsmod.api.invtx.canAffordFee
 import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.mes
@@ -83,7 +83,7 @@ constructor(
             return Result.Failed("You already have an active instance.")
         }
 
-        if (spec.fee > 0 && !owner.invTakeFee(spec.fee)) {
+        if (spec.fee > 0 && !owner.canAffordFee(spec.fee, spec.feeFromBank)) {
             return Result.Failed("You need ${spec.fee} coins to create this instance.")
         }
 
@@ -95,8 +95,13 @@ constructor(
         val region = regionRepo.add(placement.regionTemplate)
         if (region == null) {
             areaResolver.release(spec.area, placement)
-            if (spec.fee > 0) owner.invAdd(owner.inv, "obj.coins", spec.fee)
             return Result.Failed("No instance space available, try again shortly.")
+        }
+
+        if (spec.fee > 0) {
+            check(owner.invTakeFee(spec.fee, spec.feeFromBank)) {
+                "Instance fee affordable but not taken: fee=${spec.fee}, player=$ownerId"
+            }
         }
 
         val instanceId = allocateId()

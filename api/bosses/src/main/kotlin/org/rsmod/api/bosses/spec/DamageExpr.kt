@@ -14,6 +14,7 @@ sealed interface DamageExpr {
         val on: DamageExpr,
         val miss: DamageExpr = Fixed(0),
         val meleeAttackType: MeleeAttackType? = null,
+        val kind: AccuracyKind = AccuracyKind.ByHitType,
     ) : DamageExpr
     data class PercentOfTargetHp(val fraction: Double) : DamageExpr
     data class Min(val a: DamageExpr, val b: DamageExpr) : DamageExpr
@@ -24,4 +25,12 @@ sealed interface DamageExpr {
         val scale: Double = 1.0,
         val minHit: Int = 0,
     ) : DamageExpr
+}
+
+enum class AccuracyKind {
+    /** Rolls the accuracy that matches the hit's [HitType]; [HitType.Typeless] always lands. */
+    ByHitType,
+
+    /** The npc's ranged attack roll against the target's magic defence roll. */
+    MagicalRanged,
 }

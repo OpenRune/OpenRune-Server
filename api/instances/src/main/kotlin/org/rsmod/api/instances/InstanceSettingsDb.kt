@@ -6,6 +6,7 @@ import org.rsmod.map.CoordGrid
 internal fun InstanceSettingsRow.toInstanceSettings(): InstanceSettings =
     InstanceSettings(
         fee = fee,
+        feeFromBank = feeFromBank ?: false,
         maxPlayers = maxPlayers,
         reclaimTicks = (graceMinutes.takeIf { it > 0 } ?: 10) * INSTANCE_TICKS_PER_MINUTE,
         graceTicks = graceMinutes * INSTANCE_TICKS_PER_MINUTE,
