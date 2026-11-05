@@ -13,6 +13,12 @@ public open class EventBus(
         return true
     }
 
+    public inline fun <reified T : UnboundEvent> publishIfHeard(event: () -> T) {
+        if (unbound[T::class.java] != null) {
+            publish(event())
+        }
+    }
+
     public open fun <T : UnboundEvent> subscribeUnbound(type: Class<T>, action: T.() -> Unit) {
         unbound.add(type, action)
     }

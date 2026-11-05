@@ -582,8 +582,10 @@ private constructor(
 
     private fun ProtectedAccess.publishEmoteEvent(seq: String) {
         val emote = performing[player] ?: return
-        val type = ServerCacheManager.getAnim(seq.asRSCM(RSCMType.SEQ)) ?: error("Invalid sequence: $seq")
-        eventBus.publish(PlayerEmoteEvent(player, emote, type))
+        eventBus.publishIfHeard {
+            val type = ServerCacheManager.getAnim(seq.asRSCM(RSCMType.SEQ)) ?: error("Invalid sequence: $seq")
+            PlayerEmoteEvent(player, emote, type)
+        }
     }
 
     private fun Player.onTabOpen() {
