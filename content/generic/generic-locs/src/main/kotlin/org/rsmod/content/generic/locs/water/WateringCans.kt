@@ -15,7 +15,7 @@ object WateringCans {
     private const val PREFIX = "obj.watering_can_"
     private const val FULL_CAN = "${PREFIX}8"
 
-    private fun isCan(obj: String): Boolean = obj == GRICOLLER || doses(obj) != null
+    fun isCan(obj: String): Boolean = obj == GRICOLLER || doses(obj) != null
 
     private fun doses(can: String): Int? =
         if (can.length == PREFIX.length + 1 && can.startsWith(PREFIX)) {
@@ -27,6 +27,21 @@ object WateringCans {
             can == GRICOLLER -> player.vars[CHARGES] < TANK_CAPACITY
             else -> doses(can)?.let { it < 8 } == true
         }
+
+    fun consume(player: Player, can: String, canSlot: Int): Boolean {
+        if (!isCan(can) || canSlot !in player.inv.indices || player.inv[canSlot]?.id != can.asRSCM()) return false
+        if (can == GRICOLLER) {
+            if (player.vars[CHARGES] <= 0) return false
+            VarPlayerIntMapSetter.set(player, CHARGES, player.vars[CHARGES] - 1)
+            return true
+        }
+        val doses = doses(can)?.takeIf { it > 0 } ?: return false
+        return player.invTransaction(player.inv) {
+            val inv = select(player.inv)
+            delete(inv, can.asRSCM(), 1, canSlot)
+            add(inv, "$PREFIX${doses - 1}".asRSCM(), 1, slot = canSlot)
+        }.success
+    }
 
     fun refill(player: Player, can: String, slot: Int): Boolean {
         if (!isCan(can) || player.inv[slot]?.id != can.asRSCM()) return false

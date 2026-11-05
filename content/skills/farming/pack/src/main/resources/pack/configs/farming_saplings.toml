@@ -1,0 +1,5 @@
+[[varp]]
+id = "varp.farming_growth_offset"
+isServerOnly = true
+scope = "Perm"
+transmit = "Never"
