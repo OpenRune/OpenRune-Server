@@ -8,3 +8,25 @@ cots_tail = 430
 
 [gamevals.queue]
 quest_scroll_continue = 64440
+
+[gamevals.varbit]
+black_knights_progress = 59006
+
+[gamevals.dbtable]
+black_knights_routes = 60014
+
+[gamevals.dbrow]
+bkn_ladder_0 = 57106
+bkn_ladder_1 = 57107
+bkn_ladder_2 = 57108
+bkn_ladder_3 = 57109
+bkn_ladder_4 = 57110
+bkn_ladder_5 = 57111
+bkn_ladder_6 = 57112
+bkn_ladder_7 = 57113
+bkn_ladder_8 = 57114
+bkn_ladder_9 = 57115
+bkn_ladder_10 = 57116
+bkn_ladder_11 = 57117
+bkn_ladder_12 = 57118
+bkn_ladder_13 = 57119

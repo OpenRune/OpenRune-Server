@@ -144,3 +144,14 @@ Failed payment leaves the sword, commission and reward state unchanged. Coins go
 to the bank first, then inventory if necessary; Ultimate Ironmen use inventory only.
 
 [magic-numbers]: https://en.wikipedia.org/wiki/Magic_number_(programming)
+
+### Black Knights' Fortress
+
+The quest follows the main infiltration and sabotage route with shortened dialogue.
+The sabotage cutscene is represented by a brief fade and message, and fortress
+doors/walls disappear temporarily instead of playing their complete opening animations.
+Exact retail cutscene, animation and aggression timing has not been captured with RSProx.
+Only the bronze-helm/iron-chain and ordinary full-black disguises are supported;
+elite/trimmed variants and the meeting room's forced-aggression override are omitted.
+The reward bundle is the historically tested 3 QP and 2,500 coins; newer Quest Month
+combat lamps are not included in this port.
