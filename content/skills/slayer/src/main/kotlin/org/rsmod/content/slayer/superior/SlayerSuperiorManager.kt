@@ -112,7 +112,8 @@ constructor(
     }
 
     private fun rollSpawn(player: Player): Boolean {
-        val denominator = applyRateMultiplier(spawnDenominator(player), player.vars[RATE_MULTIPLIER_VARP])
+        val multiplier = player.vars["varp.slayer_superior_rate_multiplier"]
+        val denominator = applyRateMultiplier(spawnDenominator(player), multiplier)
         return Random.nextInt(denominator) == 0
     }
 
@@ -182,7 +183,6 @@ constructor(
 
     companion object {
         private const val VARBIT_SUPERIOR_ACTIVE = "varbit.slayer_superior_active"
-        private const val RATE_MULTIPLIER_VARP = "varp.slayer_superior_rate_multiplier"
 
         /** [percent] is 100 for the normal rate; 0 also means normal, as a var starts at 0. */
         internal fun applyRateMultiplier(denominator: Int, percent: Int): Int =
