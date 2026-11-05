@@ -42,7 +42,9 @@ dependencies {
     implementation(projects.engine.plugin)
     implementation(projects.engine.routefinder)
     implementation(projects.engine.utilsBits)
+    testImplementation(libs.jupiter.params)
     testImplementation(libs.mockk)
+    testImplementation(projects.api.invStorage)
     testImplementation(projects.api.testing.testCapture)
     testImplementation(projects.api.testing.testRandom)
 }
