@@ -4,6 +4,7 @@ import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.area.checker.isInWilderness
+import org.rsmod.api.player.events.PlayerConsumeEvents
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -224,16 +225,32 @@ constructor(
             potion.items.getOrNull(doseIndex + 1)
                 ?: potion.empty
 
-        val transaction =
-            invReplaceSlot(
-                inv = inventory,
-                slot = slot,
-                count = 1,
-                replacement = replacement,
+        val prepare =
+            PlayerConsumeEvents.Prepare(
+                player = player,
+                item = type,
+                potion = true,
+                heal = potion.heal,
             )
 
-        if (transaction.failure) {
+        publish(prepare)
+
+        if (inventory[slot]?.id != type.id) {
             return
+        }
+
+        if (prepare.consumed) {
+            val transaction =
+                invReplaceSlot(
+                    inv = inventory,
+                    slot = slot,
+                    count = 1,
+                    replacement = replacement,
+                )
+
+            if (transaction.failure) {
+                return
+            }
         }
 
         anim(DRINK_ANIMATION)
@@ -246,7 +263,7 @@ constructor(
 
         effects.healMix(
             access = this,
-            amount = potion.heal,
+            amount = prepare.heal,
         )
 
         ConsumableDelayState.recordConsumption(
@@ -265,7 +282,7 @@ constructor(
         mes(
             remainingDoseMessage(
                 potion = potion,
-                consumedIndex = doseIndex,
+                consumedIndex = if (prepare.consumed) doseIndex else doseIndex - 1,
             ),
         )
 
