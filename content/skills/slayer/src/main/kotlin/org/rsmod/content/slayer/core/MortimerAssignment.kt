@@ -175,7 +175,6 @@ object MortimerAssignment {
         return modifier.absoluteValue
     }
 
-    /** Returns the new streak. */
     fun advanceCounters(player: Player): Int {
         val tasksDone = tasksCompleted(player) + 1
         VarPlayerIntMapSetter.set(player, "varbit.slayer_mortimer_tasks_done", tasksDone)
