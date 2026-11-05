@@ -23,7 +23,6 @@ import org.rsmod.api.script.onPlayerCoordsChanged
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.content.interfaces.bank.tryOpenBank
-import org.rsmod.content.minigames.wintertodt.WintertodtGame.CartResult
 import org.rsmod.content.other.consumables.food.FoodConsumedEvent
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.loc.BoundLocInfo
@@ -43,7 +42,10 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         onOpLoc1("loc.wint_door") {
             if (Wintertodt.isInPrison(player.coords)) leavePrison() else enterPrison()
         }
-        onOpLoc2("loc.wint_door") { game.peek(player) }
+        onOpLoc2("loc.wint_door") {
+            game.stopAction(player)
+            mesbox(game.peekMessage())
+        }
 
         onOpLoc1(Wintertodt.BRAZIER_UNLIT) { light(it.loc) }
         onOpLoc1(Wintertodt.BRAZIER_BROKEN) { fix(it.loc) }
@@ -68,11 +70,17 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         onOpLoc1("loc.wint_chest_knife") { game.takeTool(player, "obj.knife") }
         onOpLoc1("loc.wint_chest_axe") { game.takeTool(player, "obj.bronze_axe") }
         onOpLoc1("loc.wint_chest_tinderbox") { game.takeTool(player, "obj.tinderbox") }
-        onOpLoc1("loc.wint_bankchest") { tryOpenBank() }
+        onOpLoc1("loc.wint_bankchest") {
+            game.stopAction(player)
+            tryOpenBank()
+        }
 
-        onOpLoc1("loc.wint_reward_pile") { searchCart(it.loc, 1) }
-        onOpLoc2("loc.wint_reward_pile") { game.checkCart(player) }
-        onOpLoc3("loc.wint_reward_pile") { searchCart(it.loc, 5) }
+        onOpLoc1("loc.wint_reward_pile") { startCartSearch(it.loc, 1) }
+        onOpLoc2("loc.wint_reward_pile") {
+            game.stopAction(player)
+            game.checkCart(player)
+        }
+        onOpLoc3("loc.wint_reward_pile") { startCartSearch(it.loc, 5) }
         onOpLoc1(Wintertodt.PILLAR_JUMP) { jumpPillar(it.loc) }
 
         onOpHeldU("obj.knife", Wintertodt.ROOT) { game.beginFletch(player) }
@@ -89,17 +97,40 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         onOpNpcU(Wintertodt.NPC_PYROMANCER) { useItemOnPyromancer(it) }
         onOpNpcU(Wintertodt.NPC_PYROMANCER_DOWN) { useItemOnPyromancer(it) }
 
-        onOpNpc1(IGNISIA) { talkToIgnisia(it.npc) }
-        onOpNpc3(IGNISIA) { exchangeWithIgnisia(it.npc) }
-        onOpNpc1(Wintertodt.NPC_ISH) { talkToIsh(it.npc) }
-        onOpNpc1(Wintertodt.NPC_KALT) { talkToKalt(it.npc) }
-        onOpNpc1(Wintertodt.NPC_BREWMA) { talkToBrewma(it.npc) }
-        onOpNpcU(Wintertodt.NPC_BREWMA) { useItemOnBrewma(it) }
-        onOpHeld1(EXTRA_CRATE) { game.openExtraCrate(player, it.slot) }
+        onOpNpc1(IGNISIA) {
+            game.stopAction(player)
+            talkToIgnisia(it.npc)
+        }
+        onOpNpc3(IGNISIA) {
+            game.stopAction(player)
+            exchangeWithIgnisia(it.npc)
+        }
+        onOpNpc1(Wintertodt.NPC_ISH) {
+            game.stopAction(player)
+            talkToIsh(it.npc)
+        }
+        onOpNpc1(Wintertodt.NPC_KALT) {
+            game.stopAction(player)
+            talkToKalt(it.npc)
+        }
+        onOpNpc1(Wintertodt.NPC_BREWMA) {
+            game.stopAction(player)
+            talkToBrewma(it.npc)
+        }
+        onOpNpcU(Wintertodt.NPC_BREWMA) {
+            game.stopAction(player)
+            useItemOnBrewma(it)
+        }
+        onOpHeld1(EXTRA_CRATE) {
+            game.stopAction(player)
+            game.openExtraCrate(player, it.slot)
+        }
 
         onCommand("wt") {
             desc = "Wintertodt debug"
-            invalidArgs = "Usage: ::wt start|energy <n>|points <n>|warmth <n>|attack"
+            invalidArgs =
+                "Usage: ::wt start|energy <n>|points <n>|warmth <n>|pool <n>|search|fletch|" +
+                    "check|attack"
             cheat {
                 when (args.getOrNull(0)?.lowercase()) {
                     "start" -> game.startRound()
@@ -107,7 +138,12 @@ constructor(private val game: WintertodtGame) : PluginScript() {
                     "points" -> game.setPoints(player, args[1].toInt())
                     "warmth" -> game.setWarmth(player, args[1].toInt())
                     "pool" -> game.setRewardPool(player, args[1].toInt())
-                    "search" -> game.searchCart(player, args.getOrNull(1)?.toIntOrNull() ?: 1)
+                    "search" -> {
+                        val message =
+                            game.beginSearch(player, args.getOrNull(1)?.toIntOrNull() ?: 1)
+                        if (message != null) player.mes(message)
+                    }
+                    "fletch" -> game.beginFletch(player)
                     "check" -> game.checkCart(player)
                     "attack" ->
                         when (args.getOrNull(1)?.lowercase()) {
@@ -131,15 +167,29 @@ constructor(private val game: WintertodtGame) : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.helpPyromancer(npc: Npc) {
+        game.stopAction(player)
         arriveDelay()
         faceEntitySquare(npc)
+        if (!game.isPyromancerDown(npc)) {
+            player.mes("You don't need to do that.")
+            startDialogue(npc) { chatNpc(neutral, "No need! I'm fine, thanks.") }
+            return
+        }
         game.healPyromancer(player, npc)
     }
 
     private suspend fun ProtectedAccess.useItemOnPyromancer(event: NpcUDefaultEvents.OpType) {
+        game.stopAction(player)
         if (event.objType.internalName in POTIONS) {
             arriveDelay()
             faceEntitySquare(event.npc)
+            if (!game.isPyromancerDown(event.npc)) {
+                player.mes("You don't need to do that.")
+                startDialogue(event.npc) {
+                    chatNpc(neutral, "No need! I'm fine, thanks.")
+                }
+                return
+            }
             game.healPyromancer(player, event.npc, event.invSlot)
         } else {
             event.npc.say("That's no use!")
@@ -147,6 +197,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.enterPrison() {
+        game.stopAction(player)
         if (player.baseFiremakingLvl < Wintertodt.FM_LEVEL) {
             mes("You need a Firemaking level of ${Wintertodt.FM_LEVEL} to enter.")
             return
@@ -166,11 +217,13 @@ constructor(private val game: WintertodtGame) : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.leavePrison() {
+        game.stopAction(player)
         telejump(Wintertodt.EXIT)
         game.leave(player)
     }
 
     private suspend fun ProtectedAccess.light(loc: BoundLocInfo) {
+        game.stopAction(player)
         val index = game.brazierIndex(loc.coords)
         if (index < 0) return
         if (!game.canLight(player, index)) return
@@ -190,6 +243,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.fix(loc: BoundLocInfo) {
+        game.stopAction(player)
         val index = game.brazierIndex(loc.coords)
         if (index < 0) return
         if (!game.canFix(player, index)) return
@@ -206,6 +260,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
     }
 
     private suspend fun ProtectedAccess.feed(loc: BoundLocInfo) {
+        game.stopAction(player)
         val index = game.brazierIndex(loc.coords)
         if (index < 0) return
         arriveDelay()
@@ -217,34 +272,17 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         feed(loc)
     }
 
-    private suspend fun ProtectedAccess.searchCart(loc: BoundLocInfo, count: Int) {
+    private suspend fun ProtectedAccess.startCartSearch(loc: BoundLocInfo, batch: Int) {
+        game.stopAction(player)
         arriveDelay()
         faceLoc(loc)
-        if (game.cartPool(player) <= 0) {
-            mesbox(Wintertodt.CART_EMPTY_MESSAGE)
-            return
-        }
-        while (true) {
-            delay(Wintertodt.CART_SEARCH_DELAY)
-            when (game.searchCart(player, count)) {
-                CartResult.CONTINUE -> {}
-                CartResult.FINISHED -> {
-                    mesbox(Wintertodt.CART_TAKEN_MESSAGE)
-                    return
-                }
-                CartResult.FULL -> {
-                    mesbox(Wintertodt.CART_FULL_MESSAGE)
-                    return
-                }
-                CartResult.EMPTY -> {
-                    mesbox(Wintertodt.CART_EMPTY_MESSAGE)
-                    return
-                }
-            }
-        }
+        delay(1)
+        val message = game.beginSearch(player, batch)
+        if (message != null) mesbox(message)
     }
 
     private suspend fun ProtectedAccess.jumpPillar(loc: BoundLocInfo) {
+        game.stopAction(player)
         arriveDelay()
         if (player.agilityLvl < Wintertodt.PILLAR_JUMP_LEVEL) {
             mes(

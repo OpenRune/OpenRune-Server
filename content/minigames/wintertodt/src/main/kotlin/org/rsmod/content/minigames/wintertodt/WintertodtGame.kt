@@ -26,6 +26,7 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
 import org.rsmod.api.player.output.spam
+import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.queueDeath
 import org.rsmod.api.player.stat.baseConstructionLvl
 import org.rsmod.api.player.stat.baseFiremakingLvl
@@ -77,6 +78,7 @@ constructor(
     private val boundValidator: BoundValidator,
     private val flags: CollisionFlagMap,
     private val invisibleLevels: InvisibleLevels,
+    private val protectedAccess: ProtectedAccessLauncher,
 ) {
     private enum class Phase {
         WAITING,
@@ -109,6 +111,7 @@ constructor(
         FLETCH,
         FEED,
         PICK,
+        SEARCH,
     }
 
     enum class CartResult {
@@ -126,6 +129,7 @@ constructor(
         val anim: String?,
         var nextCycle: Int,
         var nextAnimCycle: Int,
+        var searchBatch: Int = 0,
     )
 
     private val actions = mutableMapOf<Player, ActionState>()
@@ -321,8 +325,7 @@ constructor(
         }
     }
 
-    fun peek(player: Player) {
-        val percent = (energy * 100.0 / Wintertodt.ENERGY_MAX).toInt()
+    fun peekMessage(): String {
         val count = sessions.keys.count { Wintertodt.isInPrison(it.coords) }
         val players =
             when (count) {
@@ -330,7 +333,11 @@ constructor(
                 1 -> "There is 1 player within the prison."
                 else -> "There are $count players within the prison."
             }
-        player.mes("The Wintertodt has $percent% energy left. $players")
+        if (phase == Phase.SUBDUED) {
+            return "The Wintertodt is currently subdued. $players"
+        }
+        val percent = (energy * 100.0 / Wintertodt.ENERGY_MAX).toInt()
+        return "The Wintertodt has $percent% energy left. $players"
     }
 
     fun points(player: Player): Int = session(player)?.points ?: 0
@@ -359,6 +366,32 @@ constructor(
     fun cartPool(player: Player): Int {
         ensureCart()
         return player.wintRewardPool
+    }
+
+    fun beginSearch(player: Player, batch: Int): String? {
+        ensureCart()
+        if (actions[player]?.type == ActionType.SEARCH) return null
+        stopAction(player)
+        if (player.wintRewardPool <= 0) return Wintertodt.CART_EMPTY_MESSAGE
+        if (player.inv.isFull()) return Wintertodt.CART_FULL_MESSAGE
+        actions[player] =
+            ActionState(
+                type = ActionType.SEARCH,
+                anchor = player.coords,
+                target = cart?.coords,
+                brazierIndex = -1,
+                anim = null,
+                nextCycle = mapClock.cycle + Wintertodt.CART_SEARCH_DELAY,
+                nextAnimCycle = 0,
+                searchBatch = batch,
+            )
+        return null
+    }
+
+    private fun showCartMessage(player: Player, message: String) {
+        if (!protectedAccess.launch(player) { mesbox(message) }) {
+            player.mes(message)
+        }
     }
 
     fun searchCart(player: Player, batch: Int): CartResult {
@@ -420,7 +453,11 @@ constructor(
 
     fun addPoints(player: Player, amount: Int) {
         val session = session(player) ?: return
+        val before = session.points
         session.points += amount
+        if (before < Wintertodt.POINT_THRESHOLD && session.points >= Wintertodt.POINT_THRESHOLD) {
+            player.mes("You have helped enough to earn a supply crate.")
+        }
         updateHud(session)
     }
 
@@ -509,6 +546,10 @@ constructor(
     fun feed(player: Player, index: Int): Boolean {
         if (!isAtBrazier(player, index)) return false
         val brazier = braziers.getOrNull(index) ?: return false
+        if (brazier.state == BrazierState.UNLIT) {
+            player.mes("The brazier has gone out.")
+            return false
+        }
         if (brazier.state != BrazierState.LIT) return false
         val kindling = player.inv.count(Wintertodt.KINDLING) > 0
         val item = if (kindling) Wintertodt.KINDLING else Wintertodt.ROOT
@@ -556,6 +597,7 @@ constructor(
     }
 
     fun combinePotion(player: Player) {
+        stopAction(player)
         if (!Wintertodt.isInPrison(player.coords)) {
             player.mes("You can only do that within the influence of the Bruma tree.")
             return
@@ -602,7 +644,11 @@ constructor(
         player.wintWarmth = min(Wintertodt.WARMTH_MAX, player.wintWarmth + 300)
         player.anim(Wintertodt.ANIM_DRINK)
         player.mes("You drink some of your potion.")
-        if (dose > 1) player.mes("You have ${dose - 1} doses of potion left.")
+        if (dose > 1) {
+            val left = dose - 1
+            val label = if (left == 1) "dose" else "doses"
+            player.mes("You have $left $label of potion left.")
+        }
         updateHud()
     }
 
@@ -614,13 +660,13 @@ constructor(
         updateHud()
     }
 
+    fun isPyromancerDown(npc: Npc): Boolean =
+        pyromancers.any { it.npc == npc && it.down }
+
     fun healPyromancer(player: Player, npc: Npc, useSlot: Int? = null) {
+        stopAction(player)
         val pyro = pyromancers.firstOrNull { it.npc == npc } ?: return
-        if (!pyro.down) {
-            npc.say("No need! I'm fine thanks.")
-            pyro.nextSpeak = mapClock.cycle + 10
-            return
-        }
+        if (!pyro.down) return
         val potion = if (useSlot != null) doseAt(player, useSlot) else lowestDosePotion(player)
         if (potion == null) {
             player.mes("You need a rejuvenation potion to heal the Pyromancer.")
@@ -699,6 +745,7 @@ constructor(
     }
 
     fun takeVials(player: Player, count: Int) {
+        stopAction(player)
         val space = player.inv.freeSpace()
         if (space <= 0) {
             player.mes("Your inventory is too full to hold any more potions.")
@@ -715,6 +762,7 @@ constructor(
     }
 
     fun takeTool(player: Player, tool: String) {
+        stopAction(player)
         if (player.inv.count(tool) > 0 || player.worn.count(tool) > 0) {
             player.mes("You already have one.")
             return
@@ -749,6 +797,7 @@ constructor(
     }
 
     fun beginChop(player: Player, loc: BoundLocInfo) {
+        stopAction(player)
         if (phase != Phase.ACTIVE) {
             player.mes("There's no use for bruma roots at this time.")
             return
@@ -777,6 +826,7 @@ constructor(
     }
 
     fun beginPick(player: Player, loc: BoundLocInfo) {
+        stopAction(player)
         if (phase != Phase.ACTIVE) {
             player.mes("There's no need to do that at this time.")
             return
@@ -799,6 +849,7 @@ constructor(
     }
 
     fun beginFletch(player: Player) {
+        stopAction(player)
         if (player.inv.count(Wintertodt.ROOT) <= 0) return
         actions[player] =
             ActionState(
@@ -814,6 +865,7 @@ constructor(
     }
 
     fun beginFeed(player: Player, index: Int) {
+        stopAction(player)
         if (phase != Phase.ACTIVE) {
             player.mes("There's no need to do that at this time.")
             return
@@ -839,7 +891,7 @@ constructor(
     }
 
     fun stopAction(player: Player) {
-        actions.remove(player)
+        if (actions.remove(player) != null) player.resetAnim()
     }
 
     private fun tickActions() {
@@ -850,7 +902,7 @@ constructor(
                 actions.remove(player)
                 continue
             }
-            if (action.type != ActionType.FLETCH && player.coords != action.anchor) {
+            if (player.coords != action.anchor) {
                 actions.remove(player)
                 continue
             }
@@ -902,6 +954,30 @@ constructor(
                     player.soundSynth(2596)
                     player.soundSynth(2596, delay = 15)
                     action.nextCycle = cycle + 3
+                }
+                ActionType.SEARCH -> {
+                    when (searchCart(player, action.searchBatch)) {
+                        CartResult.CONTINUE -> {
+                            if (player.inv.isFull()) {
+                                actions.remove(player)
+                                showCartMessage(player, Wintertodt.CART_FULL_MESSAGE)
+                            } else {
+                                action.nextCycle = cycle + Wintertodt.CART_SEARCH_DELAY
+                            }
+                        }
+                        CartResult.FINISHED -> {
+                            actions.remove(player)
+                            showCartMessage(player, Wintertodt.CART_TAKEN_MESSAGE)
+                        }
+                        CartResult.FULL -> {
+                            actions.remove(player)
+                            showCartMessage(player, Wintertodt.CART_FULL_MESSAGE)
+                        }
+                        CartResult.EMPTY -> {
+                            actions.remove(player)
+                            showCartMessage(player, Wintertodt.CART_EMPTY_MESSAGE)
+                        }
+                    }
                 }
             }
         }
@@ -1382,6 +1458,7 @@ constructor(
             val player = session.player
             if (player.wintWarmth <= 0) continue
             if (nearBrazier(player.coords, brazier.coords)) {
+                player.mes("The brazier is broken and shrapnel damages you.")
                 applyWarmth(
                     player,
                     Wintertodt.brazierDamage(player.baseFiremakingLvl, warmItems(player)),

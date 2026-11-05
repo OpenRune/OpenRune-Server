@@ -458,13 +458,6 @@ internal suspend fun ProtectedAccess.useItemOnBrewma(event: NpcUDefaultEvents.Op
                         "You don't have any unfinished potions on you. I can't use the herbs " +
                             "without them.",
                     )
-                    doubleobjbox(
-                        Wintertodt.POTION4,
-                        400,
-                        Wintertodt.POTION4,
-                        400,
-                        "Brew'ma quickly mixes zero Rejuvenation potions.",
-                    )
                 }
             } else {
                 startDialogue(event.npc) { mixPotions() }
@@ -521,12 +514,13 @@ private suspend fun Dialogue.mixPotions() {
     if (amount == 1) {
         objbox(Wintertodt.POTION4, "Brew'ma quickly mixes a Rejuvenation potion.")
     } else {
+        val label = if (amount == 2) "two" else amount.toString()
         doubleobjbox(
             Wintertodt.POTION4,
             400,
             Wintertodt.POTION4,
             400,
-            "Brew'ma quickly mixes $amount Rejuvenation potions.",
+            "Brew'ma quickly mixes $label Rejuvenation potions.",
         )
     }
 }
