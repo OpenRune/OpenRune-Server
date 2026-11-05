@@ -1,0 +1,140 @@
+# Native quest opponents retain their cached combat levels/stats; supply normal combat behavior.
+[[npc]]
+isServerOnly = true
+id = "npc.priestperiltrappedmonk"
+inherit = "npc.priestperiltrappedmonk"
+wanderRange = 0
+
+[[npc]]
+isServerOnly = true
+id = "npc.priestperiltrappedmonk2"
+inherit = "npc.priestperiltrappedmonk2"
+wanderRange = 0
+
+[[npc]]
+isServerOnly = true
+id = "npc.priestperilguarddog"
+inherit = "npc.priestperilguarddog"
+attack = 20
+strength = 20
+defence = 20
+hitpoints = 45
+magic = 1
+ranged = 1
+wanderRange = 0
+huntRange = 0
+[npc.params]
+"param.attackrate" = 4
+"param.attack_anim" = "seq.dm_attack"
+"param.defend_anim" = "seq.dm_block"
+"param.death_anim" = "seq.dm_death"
+"param.npc_attack_type" = "category.attacktype_stab"
+
+[[npc]]
+isServerOnly = true
+id = "npc.priestperil_guardian_model"
+inherit = "npc.priestperil_guardian_model"
+attack = 20
+strength = 20
+defence = 20
+hitpoints = 45
+magic = 1
+ranged = 1
+wanderRange = 0
+huntRange = 0
+[npc.params]
+"param.attackrate" = 4
+"param.attack_anim" = "seq.dm_attack"
+"param.defend_anim" = "seq.dm_block"
+"param.death_anim" = "seq.dm_death"
+"param.npc_attack_type" = "category.attacktype_stab"
+
+[[npc]]
+isServerOnly = true
+id = "npc.priestperilevilmonk1"
+inherit = "npc.priestperilevilmonk1"
+huntRange = 0
+attackRange = 1
+respawnRate = 25
+[npc.params]
+"param.attackrate" = 4
+"param.attack_anim" = "seq.human_caststrike"
+"param.defend_anim" = "seq.human_unarmedblock"
+"param.death_anim" = "seq.human_death"
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.npc_com_xp_multiplier" = 250
+
+[[npc]]
+isServerOnly = true
+id = "npc.priestperilevilmonk2"
+inherit = "npc.priestperilevilmonk2"
+huntRange = 0
+attackRange = 1
+respawnRate = 25
+[npc.params]
+"param.attackrate" = 4
+"param.attack_anim" = "seq.human_caststrike"
+"param.defend_anim" = "seq.human_unarmedblock"
+"param.death_anim" = "seq.human_death"
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.npc_com_xp_multiplier" = 250
+
+[[npc]]
+isServerOnly = true
+id = "npc.priestperilevilmonk3"
+inherit = "npc.priestperilevilmonk3"
+huntRange = 0
+attackRange = 1
+respawnRate = 25
+[npc.params]
+"param.attackrate" = 4
+"param.attack_anim" = "seq.human_caststrike"
+"param.defend_anim" = "seq.human_unarmedblock"
+"param.death_anim" = "seq.human_death"
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.npc_com_xp_multiplier" = 250
+
+[[npc]]
+isServerOnly = true
+id = "npc.priestperilevilmonk1_vis"
+inherit = "npc.priestperilevilmonk1_vis"
+huntRange = 0
+attackRange = 1
+respawnRate = 25
+[npc.params]
+"param.attackrate" = 4
+"param.attack_anim" = "seq.human_caststrike"
+"param.defend_anim" = "seq.human_unarmedblock"
+"param.death_anim" = "seq.human_death"
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.npc_com_xp_multiplier" = 250
+
+[[npc]]
+isServerOnly = true
+id = "npc.priestperilevilmonk2_vis"
+inherit = "npc.priestperilevilmonk2_vis"
+huntRange = 0
+attackRange = 1
+respawnRate = 25
+[npc.params]
+"param.attackrate" = 4
+"param.attack_anim" = "seq.human_caststrike"
+"param.defend_anim" = "seq.human_unarmedblock"
+"param.death_anim" = "seq.human_death"
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.npc_com_xp_multiplier" = 250
+
+[[npc]]
+isServerOnly = true
+id = "npc.priestperilevilmonk3_vis"
+inherit = "npc.priestperilevilmonk3_vis"
+huntRange = 0
+attackRange = 1
+respawnRate = 25
+[npc.params]
+"param.attackrate" = 4
+"param.attack_anim" = "seq.human_caststrike"
+"param.defend_anim" = "seq.human_unarmedblock"
+"param.death_anim" = "seq.human_death"
+"param.npc_attack_type" = "category.attacktype_magic"
+"param.npc_com_xp_multiplier" = 250

@@ -4,6 +4,8 @@ plugins {
 }
 
 dependencies {
+    testImplementation(libs.mockk)
+    implementation(projects.api.instances)
     testImplementation(projects.api.invPlugin)
     testImplementation(projects.api.objCharges)
     testImplementation(projects.api.gameProcess)

@@ -144,3 +144,12 @@ Failed payment leaves the sword, commission and reward state unchanged. Coins go
 to the bank first, then inventory if necessary; Ultimate Ironmen use inventory only.
 
 [magic-numbers]: https://en.wikipedia.org/wiki/Magic_number_(programming)
+
+### Priest in Peril
+
+The main quest route and separate Salve blessing are implemented with shortened
+dialogue and simple door crossings. The guardian uses a private encounter.
+Exact monk regeneration, mixed melee/magic timing and every animation/sound have
+not been certified from RSProx captures.
+Optional souvenir monument exchanges and the later Varrock Museum Kudos claim
+are not included in this quest port.

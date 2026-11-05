@@ -9,12 +9,16 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
+import org.rsmod.content.quest.area.morytania.priestinperil.PriestInPerilTravel
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class EdgevilleLocs @Inject constructor(private val locRepo: LocRepository) : PluginScript() {
+class EdgevilleLocs
+@Inject
+constructor(private val locRepo: LocRepository, private val priestTravel: PriestInPerilTravel) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onOpLoc1("loc.trapdoor") { openTrapdoor(it.loc) }
         onOpLoc1("loc.trapdoor_open") { climbDownTrapdoor(it.loc) }
@@ -45,6 +49,7 @@ class EdgevilleLocs @Inject constructor(private val locRepo: LocRepository) : Pl
     }
 
     private suspend fun ProtectedAccess.climbDownTrapdoor(trapdoor: BoundLocInfo) {
+        if (priestTravel.enterTrapdoor(this, trapdoor)) return
         arriveDelay()
         if (trapdoor.coords != TRAPDOOR) {
             mes("Nothing interesting happens.")
@@ -65,6 +70,7 @@ class EdgevilleLocs @Inject constructor(private val locRepo: LocRepository) : Pl
         ladder: BoundLocInfo,
         type: ObjectServerType,
     ) {
+        if (priestTravel.leaveDungeon(this, ladder)) return
         arriveDelay()
         val dest =
             if (ladder.coords == DUNGEON_LADDER) {

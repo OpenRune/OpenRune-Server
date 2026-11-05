@@ -1,0 +1,19 @@
+[[varp]]
+isServerOnly = true
+id = "varp.priest_peril_state"
+scope = "Perm"
+transmit = "Never"
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.priest_peril_mausoleum_unlocked"
+varp = "varp.priest_peril_state"
+startBit = 0
+endBit = 0
+
+[[varbit]]
+isServerOnly = true
+id = "varbit.priest_peril_essence_count"
+varp = "varp.priest_peril_state"
+startBit = 1
+endBit = 6
