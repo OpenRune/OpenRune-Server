@@ -78,8 +78,9 @@ constructor(
         }
         val result = delReqs(player, spell)
         if (result is CastResult.Success) {
-            val cast = SkillingActionContext.SpellCast(spell.obj)
-            eventBus.publish(SkillingActionCompleteEvent(player, cast))
+            eventBus.publishIfHeard {
+                SkillingActionCompleteEvent(player, SkillingActionContext.SpellCast(spell.obj))
+            }
         }
         return result
     }

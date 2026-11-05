@@ -5,7 +5,6 @@ import org.rsmod.api.player.events.PlayerAreaEvents
 import org.rsmod.api.player.events.PlayerLevelEvents
 import org.rsmod.api.player.stat.statBase
 import org.rsmod.events.EventBus
-import org.rsmod.events.UnboundEvent
 import org.rsmod.game.entity.Player
 import org.rsmod.game.queue.EngineQueueList
 import org.rsmod.game.queue.EngineQueueType
@@ -30,11 +29,5 @@ internal fun EventBus.observeEngineQueue(player: Player, queue: EngineQueueList.
         EngineQueueType.AreaExit.id -> publishIfHeard<PlayerAreaEvents.Exited> {
             PlayerAreaEvents.Exited(player, queue.label)
         }
-    }
-}
-
-private inline fun <reified T : UnboundEvent> EventBus.publishIfHeard(event: () -> T) {
-    if (unbound[T::class.java] != null) {
-        publish(event())
     }
 }

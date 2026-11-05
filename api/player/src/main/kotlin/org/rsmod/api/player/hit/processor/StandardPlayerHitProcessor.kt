@@ -9,7 +9,6 @@ import org.rsmod.api.config.constants
 import org.rsmod.api.config.refs.BaseParams
 import org.rsmod.api.player.death.recordDeathCause
 import org.rsmod.api.player.death.resolveDeathCause
-import org.rsmod.api.player.events.PlayerAttackEvents
 import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
 import org.rsmod.api.player.headbar.InternalPlayerHeadbars
@@ -66,11 +65,7 @@ public object StandardPlayerHitProcessor : QueuedPlayerHitProcessor {
         player.showHeadbar(headbar)
 
         publish(PlayerHitEvents.Impact(player, hit))
-
-        val attacker = if (hit.isFromPlayer) findHitPlayerSource(hit) else null
-        if (attacker != null) {
-            publish(PlayerAttackEvents.HitImpact(attacker, player, hit))
-        }
+        publishAttackImpact(hit)
     }
 
     private fun ProtectedAccess.publishPlayerHitpointsChangedEvent(oldHitpoints: Int, hit: Hit) {

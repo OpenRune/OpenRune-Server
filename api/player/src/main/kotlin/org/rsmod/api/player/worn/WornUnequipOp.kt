@@ -58,7 +58,7 @@ public class WornUnequipOp @Inject constructor(private val eventBus: EventBus) {
 
             val unequip = HeldEquipEvents.Unequip(player, wearpos, objType)
             eventBus.publish(unequip)
-            eventBus.publish(PlayerWornEvents.Unequip(player, objType, wearpos))
+            eventBus.publishIfHeard { PlayerWornEvents.Unequip(player, objType, wearpos) }
 
             if (rebuildAppearance) {
                 player.rebuildAppearance()
