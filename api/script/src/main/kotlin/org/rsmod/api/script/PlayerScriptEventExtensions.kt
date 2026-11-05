@@ -17,6 +17,7 @@ import org.rsmod.api.player.events.PlayerQueueEvents
 import org.rsmod.api.player.events.PlayerNpcDropEvents
 import org.rsmod.api.player.events.PlayerShopEvents
 import org.rsmod.api.player.events.PlayerSkillAttemptEvent
+import org.rsmod.api.player.events.PlayerSlayerEvents
 import org.rsmod.api.player.events.PlayerSkillRollEvents
 import org.rsmod.api.player.events.PlayerSpellRuneEvents
 import org.rsmod.api.player.events.PlayerWornEvents
@@ -199,6 +200,14 @@ public fun ScriptContext.onPlayerShopBuyPrepare(
 
 public fun ScriptContext.onPlayerShopSellPrepare(
     action: PlayerShopEvents.SellPrepare.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerSlayerKillPrepare(
+    action: PlayerSlayerEvents.KillPrepare.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerSlayerTaskComplete(
+    action: PlayerSlayerEvents.TaskComplete.() -> Unit
 ): Unit = onEvent(action)
 
 public fun ScriptContext.onPlayerShopBought(action: PlayerShopEvents.Bought.() -> Unit): Unit =
