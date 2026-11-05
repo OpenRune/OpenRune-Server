@@ -74,7 +74,7 @@ constructor(
             return
         }
 
-        if (inv.isFull() && player.skillNeedsSpace(STAT, type.internalName)) {
+        if (inv.isFull() && player.skillNeedsSpace("stat.woodcutting", type.internalName)) {
             val product = type.treeLogs
             mes("Your inventory is too full to hold any more ${product.name.lowercase()}.")
             soundSynth("synth.pillory_wrong")
@@ -109,7 +109,7 @@ constructor(
             return
         }
 
-        if (inv.isFull() && player.skillNeedsSpace(STAT, type.internalName)) {
+        if (inv.isFull() && player.skillNeedsSpace("stat.woodcutting", type.internalName)) {
             val product = type.treeLogs
             mes("Your inventory is too full to hold any more ${product.name.lowercase()}.")
             soundSynth("synth.pillory_wrong")
@@ -175,7 +175,7 @@ constructor(
 
     /** The swing rolls on the tick after this delay ends, so one attempt takes one tick more. */
     private fun ProtectedAccess.chopDelay(type: ObjectServerType): Int =
-        (player.skillCycles(STAT, CHOP_CYCLE, type.internalName) - 1).coerceAtLeast(1)
+        (player.skillCycles("stat.woodcutting", CHOP_CYCLE, type.internalName) - 1).coerceAtLeast(1)
 
     private fun Controller.treeDespawnTick() {
         val type = ServerCacheManager.getObject(treeLocId)!!
@@ -293,7 +293,6 @@ constructor(
         val ObjectServerType.treeXp: Double by locXpParam(params.skill_xp)
         val ObjectServerType.treeStump: ObjectServerType by locParam(params.next_loc_stage)
         val ObjectServerType.treeDespawnTime: Int by locParam(params.despawn_time)
-        private const val STAT = "stat.woodcutting"
         private const val CHOP_CYCLE = 4
 
         val ObjectServerType.treeDepleteChance: Int by locParam(params.deplete_chance)
@@ -316,7 +315,7 @@ constructor(
                     addAll(carried)
                 }
             val best = candidates.maxWithOrNull(axeComparator(tree))
-            return player.skillTool(STAT, best, tree.internalName)
+            return player.skillTool("stat.woodcutting", best, tree.internalName)
         }
 
         private fun axeComparator(tree: ObjectServerType): Comparator<InvObj> =

@@ -186,7 +186,8 @@ constructor(
 
         val unlocked = FishingCatchLogic.unlocked(spot.spotId, active.methodId, player.fishingLvl, rows)
         val bait = resolveBait(active)
-        val hasBait = bait == null || invTotal(inv, bait) > 0 || !player.skillNeedsBait(STAT)
+        val hasBait =
+            bait == null || invTotal(inv, bait) > 0 || !player.skillNeedsBait("stat.fishing")
 
         when (FishingCatchLogic.attemptGate(active.bait, hasMethodTool(active), hasBait, unlocked)) {
             Gate.NoTool -> {
@@ -225,7 +226,7 @@ constructor(
             return null
         }
 
-        if (inv.isFull() && player.skillNeedsSpace(STAT)) {
+        if (inv.isFull() && player.skillNeedsSpace("stat.fishing")) {
             if (verbose) {
                 mes("Your inventory is too full to hold any more fish.")
                 soundSynth("synth.pillory_wrong")
@@ -311,7 +312,7 @@ constructor(
             statAdvance("stat.agility", caught.agiXpTenths / 10.0 * xpMods.get(player, "stat.agility"))
         }
         val consumedBait = caught.baitOverride ?: activeBait
-        if (consumedBait != null && player.skillNeedsBait(STAT)) {
+        if (consumedBait != null && player.skillNeedsBait("stat.fishing")) {
             invDel(inv, consumedBait, 1)
         }
         if (hasFlakes) {
@@ -326,7 +327,7 @@ constructor(
     // Diabolic worms give a 50% chance for the catch roll to come a tick sooner.
     private fun ProtectedAccess.rollDelay(bait: String?): Int {
         val cycle = if (bait == DIABOLIC_WORMS && random.of(2) == 0) CATCH_CYCLE - 1 else CATCH_CYCLE
-        return player.skillCycles(STAT, cycle)
+        return player.skillCycles("stat.fishing", cycle)
     }
 
     private class FishTask(
@@ -349,7 +350,7 @@ constructor(
         return invTotal(inv, tool) > 0 ||
             (altTool != null && carrying(altTool)) ||
             (tool == HARPOON && hasWieldableHarpoon()) ||
-            player.skillTool(STAT, null) != null
+            player.skillTool("stat.fishing", null) != null
     }
 
     // Wieldable harpoons count from the worn slot as well as the inventory.
@@ -476,7 +477,6 @@ constructor(
         private const val CATCH_QUEUE = "queue.fishing_catch"
 
         private const val CATCH_CYCLE = 5
-        private const val STAT = "stat.fishing"
         private const val ANIM_REFRESH = 4
         private const val SMALL_NET = "obj.net"
         private const val HARPOON = "obj.harpoon"
