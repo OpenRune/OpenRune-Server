@@ -169,6 +169,10 @@ constructor(
         }
         vars[Busy] = 0
         if (allowed) {
+            task.teleport.resolveSpell()?.let { spell ->
+                val cast = SkillingActionContext.SpellCast(spell.obj)
+                publish(SkillingActionCompleteEvent(player, cast))
+            }
             telejump(landingSquare(CoordGrid(task.destination), task.teleport.landingRadius))
         }
         resetAnim()
