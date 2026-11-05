@@ -10,7 +10,6 @@ import org.rsmod.game.inv.Inventory
 import org.rsmod.objtx.TransactionInventory
 import org.rsmod.objtx.TransactionObj
 
-/** [delta] more (or fewer, if negative) of [obj] in [inv]. */
 public data class InvDelta(val inv: Inventory, val obj: Int, val delta: Int)
 
 /**

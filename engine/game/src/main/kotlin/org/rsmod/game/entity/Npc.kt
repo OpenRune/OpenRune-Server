@@ -72,14 +72,12 @@ public class Npc(
 
     private var hurtPlayers: MutableSet<Long>? = null
 
-    /** Records that this npc has damaged [player] since it last spawned. */
     public fun hurtPlayer(player: Player) {
         val uuid = player.uuid ?: return
         val hurt = hurtPlayers ?: HashSet<Long>(4).also { hurtPlayers = it }
         hurt += uuid
     }
 
-    /** Whether this npc has damaged [player] since it last spawned. */
     public fun hasHurt(player: Player): Boolean {
         val uuid = player.uuid ?: return false
         return hurtPlayers?.contains(uuid) == true
