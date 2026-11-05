@@ -397,7 +397,7 @@ class ToaRetrievalTest {
         fun fee(): Int = ToaRetrieval.fee(player, marketPrices)
 
         fun store(protectItem: Boolean): Boolean {
-            val drops = PlayerDeathDrops(mockk<MapClock>(), mockk(), marketPrices, mockk())
+            val drops = PlayerDeathDrops(mockk<MapClock>(), mockk(), marketPrices, mockk(), emptySet(), mockk())
             return ToaRetrieval.store(player, drops, marketPrices, protectItem)
         }
 
