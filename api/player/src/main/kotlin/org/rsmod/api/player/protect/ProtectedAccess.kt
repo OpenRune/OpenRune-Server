@@ -50,6 +50,7 @@ import org.rsmod.api.player.cinematic.Cinematic
 import org.rsmod.api.player.cinematic.MinimapState
 import org.rsmod.api.player.combatClearQueue
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.events.publishAttackImpact
 import org.rsmod.api.player.hit.modifier.NoopPlayerHitModifier
 import org.rsmod.api.player.hit.modifier.PlayerHitModifier
 import org.rsmod.api.player.hit.modifier.StandardPlayerHitModifier
@@ -1781,6 +1782,10 @@ public class ProtectedAccess(
 
     internal fun findHitPlayerSource(hit: Hit): Player? {
         return hit.resolvePlayerSource(context.playerList)
+    }
+
+    internal fun publishAttackImpact(hit: Hit) {
+        context.eventBus.publishAttackImpact(player, hit, context.playerList)
     }
 
     internal fun recordHitDamage(target: PathingEntity, hit: Hit, damage: Int) {

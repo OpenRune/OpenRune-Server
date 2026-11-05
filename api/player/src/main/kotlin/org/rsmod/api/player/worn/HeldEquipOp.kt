@@ -102,12 +102,12 @@ public class HeldEquipOp @Inject constructor(private val eventBus: EventBus) {
                 val unequipType = type ?: continue
                 val unequip = HeldEquipEvents.Unequip(player, wearpos, unequipType)
                 eventBus.publish(unequip)
-                eventBus.publish(PlayerWornEvents.Unequip(player, unequipType, wearpos))
+                eventBus.publishIfHeard { PlayerWornEvents.Unequip(player, unequipType, wearpos) }
             }
 
             val equip = HeldEquipEvents.Equip(player, invSlot, primaryWearpos, objType)
             eventBus.publish(equip)
-            eventBus.publish(PlayerWornEvents.Equip(player, objType, primaryWearpos))
+            eventBus.publishIfHeard { PlayerWornEvents.Equip(player, objType, primaryWearpos) }
 
             player.rebuildAppearance()
         }
