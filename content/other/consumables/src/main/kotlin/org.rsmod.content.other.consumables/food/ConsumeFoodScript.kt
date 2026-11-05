@@ -4,6 +4,7 @@ import dev.openrune.types.ItemServerType
 import jakarta.inject.Inject
 import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.area.checker.isInWilderness
+import org.rsmod.api.player.events.PlayerConsumeEvents
 import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
 import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.protect.ProtectedAccess
@@ -240,7 +241,22 @@ constructor(
                         !isInPvpCombat(),
             )
 
+        val prepare =
+            PlayerConsumeEvents.Prepare(
+                player = player,
+                item = type,
+                potion = false,
+                heal = outcome.healAmount,
+            )
+
+        publish(prepare)
+
+        if (inventory[slot]?.id != type.id) {
+            return
+        }
+
         if (
+            prepare.consumed &&
             !replaceConsumedStage(
                 food = food,
                 stage = stage,
@@ -259,7 +275,7 @@ constructor(
         soundSynth(EAT_FOOD_SOUND)
 
         heal(
-            amount = outcome.healAmount,
+            amount = prepare.heal,
             maximumHitpoints =
                 outcome.maximumHitpoints,
         )
