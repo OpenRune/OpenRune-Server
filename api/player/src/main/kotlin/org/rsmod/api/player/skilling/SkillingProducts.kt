@@ -82,7 +82,6 @@ public fun Player.awardSkillingProduct(
 public fun ProtectedAccess.consumeSkillingInputs(inputs: List<SkillingInput>): Boolean =
     player.invConsume(player.inv, inputs.toCosts()).success
 
-/** Inputs, when there are any, are consumed in the same transaction that adds the product. */
 private fun Player.addProduct(product: SkillingProduct): TransactionResultList<InvObj> {
     val destination = product.destination
     if (product.inputs.isEmpty() && product.byproducts.isEmpty() && destination == null) {

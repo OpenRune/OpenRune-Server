@@ -350,7 +350,6 @@ constructor(
             is Player -> giveCombatXp(player, target, attack, damage)
         }
 
-    /** @return the damage to give xp for, or null if this hit gives none. */
     private fun xpDamage(player: Player, target: Npc, type: HitType, damage: Int): Int? {
         if (player.shouldBlockNpcCombatXp(target)) {
             return null

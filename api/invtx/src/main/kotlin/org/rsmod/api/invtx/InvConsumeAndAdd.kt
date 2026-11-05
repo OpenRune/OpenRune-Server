@@ -15,7 +15,6 @@ import org.rsmod.objtx.TransactionResultList
  */
 public data class InvCost(val obj: Int, val count: Int, val internal: String? = null)
 
-/** [count] of [obj] made alongside a crafted product. */
 public data class InvGain(val obj: Int, val count: Int)
 
 /**
@@ -43,7 +42,6 @@ public fun Player.invConsumeAndAdd(
         }
     }
 
-/** Takes every [consume] cost with nothing made in return, all or nothing. */
 public fun Player.invConsume(
     inv: Inventory,
     consume: List<InvCost>,
