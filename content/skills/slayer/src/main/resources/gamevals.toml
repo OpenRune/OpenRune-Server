@@ -63,6 +63,7 @@ slayer_last_mortimer_modifier_value=65456
 slayer_last_mortimer_modifier_negative=65455
 
 [gamevals.varp]
+slayer_superior_rate_multiplier=65673
 slayer_player_state=65496
 slayer_last_target=65495
 slayer_last_master=65494
