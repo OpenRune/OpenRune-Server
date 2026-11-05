@@ -79,8 +79,8 @@ endBit = 2
 isServerOnly = true
 id = "varbit.walk_only"
 varp = "varp.generic_temp_state_65516"
-startBit = 3
-endBit = 3
+startBit = 9
+endBit = 9
 
 [[varbit]]
 isServerOnly = true
