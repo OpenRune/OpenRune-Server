@@ -14,6 +14,7 @@ import org.rsmod.api.area.checker.AreaChecker
 import org.rsmod.api.area.checker.isInWilderness
 import org.rsmod.api.config.SlayerTaskCredit
 import org.rsmod.api.config.refs.BaseParams
+import org.rsmod.api.player.events.PlayerSlayerEvents
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.statAdvance
@@ -24,6 +25,7 @@ import org.rsmod.api.table.slayer.SlayerMasterTaskRow
 import org.rsmod.api.table.slayer.SlayerMastersRow
 import org.rsmod.api.table.slayer.SlayerTaskRow
 import org.rsmod.api.table.slayer.SlayerUnlockRow
+import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 
@@ -38,11 +40,14 @@ object SlayerTaskManager {
 
     val slayerMasterNpcs = tasks.keys.flatMap { it.npcIds }
 
-    fun getCurrentSlayerTask(access: ProtectedAccess): SlayerTaskRow? {
-        val targetId = access.vars["varp.slayer_target"]
+    fun getCurrentSlayerTask(access: ProtectedAccess): SlayerTaskRow? =
+        getCurrentSlayerTask(access.player)
+
+    fun getCurrentSlayerTask(player: Player): SlayerTaskRow? {
+        val targetId = player.vars["varp.slayer_target"]
         if (targetId == 0) return null
         if (SlayerBossTasks.isBossTask(targetId)) {
-            SlayerBossTasks.bossRow(access.vars[SlayerBossTasks.BOSS_ID_VARBIT])?.let {
+            SlayerBossTasks.bossRow(player.vars[SlayerBossTasks.BOSS_ID_VARBIT])?.let {
                 return it.task
             }
         }
@@ -80,9 +85,14 @@ object SlayerTaskManager {
         return tasks.keys.find { it.masterId == masterId }
     }
 
+    fun isTaskKill(player: Player, npc: Npc): Boolean =
+        player.vars["varp.slayer_count"] > 0 &&
+            countsAsTaskKill(npc, SlayerTaskCredit.taskKey(player))
+
     fun decreaseTask(
         player: Player,
         npc: Npc,
+        eventBus: EventBus,
         extraCountDecrement: Int = 0,
         skipCountDecrement: Boolean = false,
     ): Boolean {
@@ -119,30 +129,54 @@ object SlayerTaskManager {
         }
 
         if (newCount == 0) {
-            completeTask(player)
+            completeTask(player, eventBus)
         }
         return true
     }
 
-    private fun completeTask(player: Player) {
-        val taskId = player.vars["varp.slayer_target"]
-        val wasBossTask = SlayerBossTasks.isBossTask(taskId)
+    private fun completeTask(player: Player, eventBus: EventBus) {
+        val wasBossTask = SlayerBossTasks.isBossTask(player.vars["varp.slayer_target"])
 
         val master = getCurrentAssignedMaster(player) ?: return clearAssignedTask(player)
 
-        val message =
-            if (MortimerAssignment.isMortimer(master)) {
-                val points = MortimerAssignment.onTaskComplete(player)
-                val awarded = awardPoints(player, points)
-                SlayerTaskRewards.pointsMessage(
-                    streak = MortimerAssignment.streak(player),
-                    wilderness = false,
-                    awarded = awarded.points,
-                    total = awarded.total,
-                    maxed = awarded.maxed,
-                )
+        val mortimer = MortimerAssignment.isMortimer(master)
+        val wilderness = !mortimer && isWildernessMaster(master)
+        val streak = if (mortimer) MortimerAssignment.advanceCounters(player) else advanceStreak(player, wilderness)
+        val basePoints = if (mortimer) 0 else basePointsPerTask(player, master)
+        val naturalPoints =
+            if (mortimer) {
+                MortimerAssignment.modifierPoints(player)
             } else {
-                completeStandardTask(player, master)
+                SlayerTaskRewards.pointsForTask(basePoints, streak)
+            }
+
+        val event =
+            PlayerSlayerEvents.TaskComplete(
+                player = player,
+                master = master,
+                task = getCurrentSlayerTask(player),
+                bossId = player.vars[SlayerBossTasks.BOSS_ID_VARBIT],
+                amount = player.vars["varp.slayer_count_original"],
+                streak = streak,
+                basePoints = basePoints,
+                points = naturalPoints,
+            )
+        eventBus.publish(event)
+
+        val awarded = awardPoints(player, event.points)
+        val message =
+            when {
+                mortimer || event.points > 0 ->
+                    SlayerTaskRewards.pointsMessage(
+                        streak = streak,
+                        wilderness = wilderness,
+                        awarded = awarded.points,
+                        total = awarded.total,
+                        maxed = awarded.maxed,
+                    )
+                streak < SlayerTaskRewards.FIRST_REWARDED_STREAK ->
+                    SlayerTaskRewards.needMoreTasksMessage(streak, wilderness)
+                else -> SlayerTaskRewards.noPointsMessage(streak, wilderness)
             }
 
         if (wasBossTask) {
@@ -154,28 +188,11 @@ object SlayerTaskManager {
         clearAssignedTask(player)
     }
 
-    private fun completeStandardTask(player: Player, master: SlayerMastersRow): String {
-        val wilderness = isWildernessMaster(master)
+    private fun advanceStreak(player: Player, wilderness: Boolean): Int {
         val streakVarbit = if (wilderness) WILDY_STREAK_VARBIT else STREAK_VARBIT
         val streak = player.vars[streakVarbit] + 1
         VarPlayerIntMapSetter.set(player, streakVarbit, streak)
-
-        val basePoints = basePointsPerTask(player, master)
-        val points = SlayerTaskRewards.pointsForTask(basePoints, streak)
-        val awarded = awardPoints(player, points)
-        return when {
-            streak < SlayerTaskRewards.FIRST_REWARDED_STREAK ->
-                SlayerTaskRewards.needMoreTasksMessage(streak, wilderness)
-            basePoints <= 0 -> SlayerTaskRewards.noPointsMessage(streak, wilderness)
-            else ->
-                SlayerTaskRewards.pointsMessage(
-                    streak = streak,
-                    wilderness = wilderness,
-                    awarded = awarded.points,
-                    total = awarded.total,
-                    maxed = awarded.maxed,
-                )
-        }
+        return streak
     }
 
     private fun basePointsPerTask(player: Player, master: SlayerMastersRow): Int {
