@@ -15,6 +15,7 @@ import org.rsmod.api.table.FoodRow
 import org.rsmod.content.other.consumables.ConsumableDelayState
 import org.rsmod.content.other.consumables.ConsumableType
 import org.rsmod.content.other.consumables.restoreRunEnergy
+import org.rsmod.events.EventBus
 import org.rsmod.game.inv.Inventory
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -25,6 +26,7 @@ constructor(
     private val areaChecker: AreaChecker,
     private val effects: FoodEffectService,
     private val specialEffects: FoodSpecialEffectService,
+    private val eventBus: EventBus,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
         val registrations =
@@ -260,6 +262,15 @@ constructor(
             amount = outcome.healAmount,
             maximumHitpoints =
                 outcome.maximumHitpoints,
+        )
+
+        eventBus.publish(
+            FoodConsumedEvent(
+                player = player,
+                item = type.internalName,
+                healAmount = outcome.healAmount,
+                healed = player.hitpoints - oldHitpoints,
+            )
         )
 
         applyConsumptionDelays(
