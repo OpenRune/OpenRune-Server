@@ -38,6 +38,7 @@ import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.player.stat.statRandom
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.ui.ifOpenOverlay
+import org.rsmod.api.player.vars.VarPlayerIntMapSetter
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
@@ -413,7 +414,12 @@ constructor(
             val reward = WintertodtRewards.roll(player, random)
             if (!WintertodtRewards.add(player, reward)) return CartResult.FULL
             player.wintRewardPool = player.wintRewardPool - 1
-            player.wintertodtRewardsClaimed += 1
+            val claimedVarp =
+                RSCM.getRSCMOrNull("varp.wintertodt_rewards_claimed", RSCMType.VARP)
+                    ?.let(ServerCacheManager::getVarp)
+            if (claimedVarp != null) {
+                VarPlayerIntMapSetter.set(player, claimedVarp, player.vars[claimedVarp] + 1)
+            }
             player.spam("You found some loot: ${lootCount(reward.count)} x ${lootName(reward.item)}")
             player.anim(Wintertodt.CART_PICK_ANIM)
             player.soundSynth(Wintertodt.CART_PICK_SYNTH)
@@ -548,6 +554,16 @@ constructor(
     fun isAtBrazier(player: Player, index: Int): Boolean {
         val brazier = braziers.getOrNull(index) ?: return false
         return nearBrazier(player.coords, brazier.coords)
+    }
+
+    private fun isAtCart(player: Player): Boolean {
+        val loc = cart ?: return false
+        val type = ServerCacheManager.getObject(loc.id)
+        val width = type?.width ?: 1
+        val length = type?.length ?: 1
+        return player.coords.level == loc.coords.level &&
+            player.coords.x in (loc.coords.x - 1)..(loc.coords.x + width) &&
+            player.coords.z in (loc.coords.z - 1)..(loc.coords.z + length)
     }
 
     fun hasFeed(player: Player): Boolean =
@@ -924,7 +940,15 @@ constructor(
                 actions.remove(player)
                 continue
             }
-            if (action.type != ActionType.FLETCH && player.coords != action.anchor) {
+            if (
+                action.type != ActionType.FLETCH &&
+                    action.type != ActionType.SEARCH &&
+                    player.coords != action.anchor
+            ) {
+                actions.remove(player)
+                continue
+            }
+            if (action.type == ActionType.SEARCH && !isAtCart(player)) {
                 actions.remove(player)
                 continue
             }
