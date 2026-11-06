@@ -3,6 +3,9 @@ wintertodt_reward=65406
 
 [gamevals.varp]
 wintertodt_rewards_claimed=65464
+wintertodt_lifetime_score=65465
+wintertodt_highest_score=65466
+wintertodt_intro_seen=65467
 
 [gamevals.dbrow]
 wintertodt_reward_magic_logs=63050

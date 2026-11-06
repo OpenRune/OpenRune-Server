@@ -9,6 +9,7 @@ import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.agilityLvl
 import org.rsmod.api.player.stat.baseFiremakingLvl
 import org.rsmod.api.player.worn.WornUnequipResult
+import org.rsmod.api.random.GameRandom
 import org.rsmod.api.script.onApLoc1
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpHeld1
@@ -35,7 +36,7 @@ import org.rsmod.plugin.scripts.ScriptContext
 
 class WintertodtScript
 @Inject
-constructor(private val game: WintertodtGame) : PluginScript() {
+constructor(private val game: WintertodtGame, private val random: GameRandom) : PluginScript() {
     override fun ScriptContext.startup() {
         onEvent<GameLifecycle.LateCycle> { game.tick() }
         onEvent<FoodConsumedEvent> { game.onFoodConsumed(player, item, healAmount) }
@@ -129,6 +130,34 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         onOpNpc1(Wintertodt.NPC_KALT) {
             game.stopAction(player)
             talkToKalt(it.npc)
+        }
+        onOpNpc3(Wintertodt.NPC_KALT) {
+            game.stopAction(player)
+            checkKaltScores(it.npc)
+        }
+        onOpNpc1(Wintertodt.NPC_UNDOR) {
+            game.stopAction(player)
+            talkToUndor(it.npc)
+        }
+        onOpNpc1(Wintertodt.NPC_UNDOR_NORMAL) {
+            game.stopAction(player)
+            talkToUndor(it.npc)
+        }
+        onOpNpc1(Wintertodt.NPC_UNDOR_DINH) {
+            game.stopAction(player)
+            talkToUndor(it.npc)
+        }
+        onOpNpc1(Wintertodt.NPC_ESTHER) {
+            game.stopAction(player)
+            talkToEsther(it.npc)
+        }
+        onOpNpc1(Wintertodt.NPC_SOLDIER) {
+            game.stopAction(player)
+            talkToWinterSoldier(it.npc, random)
+        }
+        onOpNpc1(Wintertodt.NPC_CAT) {
+            game.stopAction(player)
+            talkToWintertodtCat(it.npc)
         }
         onOpNpc1(Wintertodt.NPC_BREWMA) {
             game.stopAction(player)

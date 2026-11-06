@@ -20,4 +20,5 @@ dependencies {
     implementation(projects.content.interfaces.collectionLog)
     implementation(projects.content.interfaces.bank)
     implementation(projects.content.other.consumables)
+    implementation(projects.content.quest)
 }

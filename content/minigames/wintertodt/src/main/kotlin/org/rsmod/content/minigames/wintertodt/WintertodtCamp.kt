@@ -4,6 +4,7 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import kotlin.math.min
 import org.rsmod.api.config.Constants
+import org.rsmod.api.invtx.invDel
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
@@ -11,7 +12,10 @@ import org.rsmod.api.player.events.interact.NpcUDefaultEvents
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.baseFiremakingLvl
+import org.rsmod.api.random.GameRandom
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.entity.Player
 
 internal const val IGNISIA = "npc.wint_master_pyromancer"
 internal const val EXTRA_CRATE = "obj.wint_reroll_box"
@@ -36,7 +40,72 @@ internal suspend fun ProtectedAccess.talkToIgnisia(npc: Npc) {
 private suspend fun Dialogue.ignisiaDialogue() {
     val title =
         if (player.appearance.bodyType == Constants.bodytype_a) "brother" else "sister"
-    chatNpc(happy, "Welcome back, $title. How may I be of assistance?")
+    if (player.wintertodtIntroSeen == 0) {
+        chatNpc(happy, "Welcome, $title.")
+        chatPlayer(quiz, "Er... Are we related?")
+        chatNpc(neutral, "We are all related, $title, for we are all children of the flame.")
+        chatPlayer(neutral, "Okayyy...")
+        chatPlayer(quiz, "So what is this place?")
+        chatNpc(
+            neutral,
+            "You stand before the Doors of Dinh. Behind them lies the prison of the Wintertodt.",
+        )
+        chatPlayer(quiz, "What's a Wintertodt?")
+        chatNpc(
+            neutral,
+            "We do not know what it is. All we know is that it threatens to snuff out every " +
+                "flame in this land and plunge the world into eternal darkness.",
+        )
+        chatPlayer(quiz, "Oh dear... We should probably do something about that.")
+        chatNpc(
+            neutral,
+            "That is why we are here, $title. Ever since the Wintertodt was imprisoned, " +
+                "members of the Order of the Sacred Flame, or Pyromancers as we're often known, " +
+                "have stood vigil over this place.",
+        )
+        chatNpc(neutral, "But alas, despite our best efforts, the Wintertodt is growing in power again.")
+        chatPlayer(quiz, "Well that's just no good. Is there anything I can do to help?")
+        chatNpc(
+            neutral,
+            "Our order searches tirelessly for a way to defeat the Wintertodt. Until we discover " +
+                "it, the Wintertodt must be held at bay.",
+        )
+        if (player.baseFiremakingLvl < Wintertodt.FM_LEVEL) {
+            chatNpc(
+                neutral,
+                "However, I fear your abilities are not great enough to withstand the cold of the " +
+                    "Wintertodt. Learn the ways of the sacred flame and then return to me.",
+            )
+            mesbox("You require at least ${Wintertodt.FM_LEVEL} Firemaking to take on the Wintertodt.")
+        } else {
+            chatNpc(
+                neutral,
+                "Pass through the Doors of Dinh to the prison within. You will find the finest of " +
+                    "our order channeling the power of the sacred flame into the Wintertodt.",
+            )
+            chatNpc(
+                neutral,
+                "Help them keep the holy fires lit so that they can keep the Wintertodt subdued.",
+            )
+            chatPlayer(quiz, "How can I do that?")
+            chatNpc(
+                neutral,
+                "You will find the roots of the great Bruma tree have crept into the prison. Chop " +
+                    "the roots and use them to keep the sacred flame alive.",
+            )
+            chatPlayer(quiz, "Anything else?")
+            chatNpc(
+                neutral,
+                "You can use the herbs of the Bruma tree to make Rejuvenation potions. Give these " +
+                    "to any of our order who fall to the cold of the Wintertodt before they " +
+                    "succumb to the darkness.",
+            )
+        }
+        chatNpc(neutral, "How else may I be of assistance?")
+        player.wintertodtIntroSeen = 1
+    } else {
+        chatNpc(happy, "Welcome back, $title. How may I be of assistance?")
+    }
     val seen = mutableSetOf<Int>()
     while (true) {
         val options =
@@ -54,7 +123,7 @@ private suspend fun Dialogue.ignisiaDialogue() {
                     neutral,
                     "Do you feel the winds of winter as they lick across the land? " +
                         "This is the power of the Wintertodt. We know not what it is nor from " +
-                        "where it came. Only that it wields the power of Winter itself",
+                        "where it came. Only that it wields the power of Winter itself.",
                 )
                 chatNpc(
                     neutral,
@@ -103,9 +172,9 @@ private suspend fun Dialogue.ignisiaDialogue() {
                 } else {
                     chatNpc(
                         neutral,
-                        "The Wintertodt is no longer growing in strength but it still needs to " +
-                            "be held back. Head into the prison and keep the holy fires lit so " +
-                            "that our order may keep the evil at bay.",
+                        "We must hold back the Wintertodt until we can find a way to defeat it. " +
+                            "Head into the prison and keep the holy fires lit so that our order " +
+                            "may keep the evil at bay.",
                     )
                     chatPlayer(quiz, "How can I do that?")
                     chatNpc(
@@ -289,6 +358,263 @@ private fun Dialogue.exchange(
     }
 }
 
+internal suspend fun ProtectedAccess.talkToUndor(npc: Npc) {
+    startDialogue(npc) { undorDialogue() }
+}
+
+private suspend fun Dialogue.undorDialogue() {
+    val title = if (player.appearance.bodyType == Constants.bodytype_a) "laddie" else "lass"
+    chatNpc(neutral, "Hello there $title.")
+    val seen = mutableSetOf<UndorTopic>()
+    while (true) {
+        val options =
+            buildList {
+                for (topic in UndorTopic.entries) {
+                    if (topic != UndorTopic.Leave && topic !in seen) add(topic.label to topic)
+                }
+                add("Goodbye." to UndorTopic.Leave)
+            }
+        when (menu(options)) {
+            UndorTopic.Wintertodt -> {
+                chatPlayer(quiz, "Tell me about the Wintertodt.")
+                chatNpc(neutral, "They say it's some kind of powerful fire spirit.")
+                chatPlayer(quiz, "Don't you mean ice?")
+                chatNpc(neutral, "Aye that as well.")
+                chatNpc(
+                    neutral,
+                    "What it is doesn't bother me, just as long as we keep it behind the Doors.",
+                )
+                seen += UndorTopic.Wintertodt
+            }
+            UndorTopic.Doors -> {
+                chatPlayer(quiz, "Tell me about the Doors of Dinh.")
+                chatNpc(
+                    neutral,
+                    "The Doors were built by Dinh to contain the Wintertodt. This was over a " +
+                        "thousand years ago and they still stand today.",
+                )
+                chatPlayer(quiz, "Who was Dinh?")
+                chatNpc(
+                    neutral,
+                    "Dinh was the greatest smith that the world has ever seen. I am the finest " +
+                        "smith around today and even I cannot match his abilities.",
+                )
+                seen += UndorTopic.Doors
+            }
+            UndorTopic.Yourself -> {
+                chatPlayer(quiz, "Tell me about yourself.")
+                chatNpc(
+                    neutral,
+                    "The name's Undor. You'll struggle to find a dwarf in this land who knows " +
+                        "more about metalwork than me.",
+                )
+                chatNpc(neutral, "One day I hope to be as good as the legendary Dinh himself.")
+                chatPlayer(quiz, "What are you doing here?")
+                chatNpc(
+                    neutral,
+                    "They say the doors are failing and the Wintertodt is trying to escape. I'm " +
+                        "here to prove to them that the Doors are fine.",
+                )
+                chatPlayer(quiz, "And are they?")
+                chatNpc(neutral, "Of course they are! They were made by Dinh himself.")
+                seen += UndorTopic.Yourself
+            }
+            UndorTopic.Leave -> {
+                chatPlayer(neutral, "Goodbye.")
+                chatNpc(neutral, "Until next time $title.")
+                return
+            }
+        }
+    }
+}
+
+private enum class UndorTopic(val label: String) {
+    Wintertodt("Tell me about the Wintertodt."),
+    Doors("Tell me about the Doors of Dinh."),
+    Yourself("Tell me about yourself."),
+    Leave("Goodbye."),
+}
+
+internal suspend fun ProtectedAccess.talkToEsther(npc: Npc) {
+    startDialogue(npc) { estherDialogue() }
+}
+
+private suspend fun Dialogue.estherDialogue() {
+    chatNpc(neutral, "Are you here to fight the cold?")
+    chatPlayer(quiz, "Umm... I guess?")
+    chatNpc(happy, "Great! Ask me anything you like about the Bruma tree, I'm an expert.")
+    val seen = mutableSetOf<EstherTopic>()
+    while (true) {
+        val options =
+            buildList {
+                for (topic in EstherTopic.entries) {
+                    if (topic != EstherTopic.Leave && topic !in seen) add(topic.label to topic)
+                }
+                add("See you later." to EstherTopic.Leave)
+            }
+        when (menu(options)) {
+            EstherTopic.Wintertodt -> {
+                chatPlayer(quiz, "Tell me about the Wintertodt.")
+                chatNpc(
+                    neutral,
+                    "Some would say that ice preserves while fire destroys, but no amount of " +
+                        "fire is destroying the Wintertodt. That's a cold that will freeze the " +
+                        "air in your lungs.",
+                )
+                chatNpc(
+                    neutral,
+                    "Even the heat generated from burning the Bruma roots only weakens it, and " +
+                        "that doesn't last very long nowadays.",
+                )
+                chatPlayer(neutral, "Looks like an angry snow storm to me...")
+                chatNpc(
+                    neutral,
+                    "What you see in that pit is not the Wintertodt at full strength. It never " +
+                        "will be while the Bruma tree still burns and the Doors of Dinh remain closed.",
+                )
+                seen += EstherTopic.Wintertodt
+            }
+            EstherTopic.Bruma -> {
+                chatPlayer(quiz, "Tell me about the Bruma tree.")
+                chatNpc(
+                    neutral,
+                    "The Bruma tree is what keeps the Wintertodt weak. The prison was built here " +
+                        "by Dinh because of its usefulness against the Wintertodt.",
+                )
+                chatNpc(
+                    neutral,
+                    "Some legends say that Xeric is the cause for the Doors weakening, or maybe " +
+                        "he made the Wintertodt stronger?",
+                )
+                chatPlayer(quiz, "Is Xeric really such a bad guy?")
+                chatNpc(
+                    neutral,
+                    "It's a known fact that he was interested in the Bruma tree. For what " +
+                        "purpose... there are only rumours.",
+                )
+                chatNpc(
+                    neutral,
+                    "Regardless, the Bruma tree definitely contains powerful magic. I've been " +
+                        "studying the sap for years and it has truly astounding properties.",
+                )
+                chatNpc(neutral, "There's not many fires that burn green now, are there?")
+                chatPlayer(quiz, "What about gnomish fire lighters?")
+                chatNpc(neutral, "...")
+                seen += EstherTopic.Bruma
+            }
+            EstherTopic.Yourself -> {
+                chatPlayer(quiz, "Tell me about yourself.")
+                chatNpc(
+                    neutral,
+                    "Me? I'm a member of the Woodcutting Guild. More of a researcher though... " +
+                        "I'm currently tasked with growing a new Bruma tree.",
+                )
+                chatPlayer(quiz, "How's that going?")
+                chatNpc(
+                    neutral,
+                    "Poorly. I believe the Bruma tree can only be grown in a freezing cold climate.",
+                )
+                chatPlayer(quiz, "Well, isn't that here?")
+                chatNpc(
+                    neutral,
+                    "It's just an idea really. For all I know, it could be magic way beyond me, " +
+                        "beyond even the Pyromancers.",
+                )
+                seen += EstherTopic.Yourself
+            }
+            EstherTopic.Leave -> {
+                chatPlayer(neutral, "See you later.")
+                chatNpc(happy, "Goodbye!")
+                return
+            }
+        }
+    }
+}
+
+private enum class EstherTopic(val label: String) {
+    Wintertodt("Tell me about the Wintertodt."),
+    Bruma("Tell me about the Bruma tree."),
+    Yourself("Tell me about yourself."),
+    Leave("See you later."),
+}
+
+internal suspend fun ProtectedAccess.talkToWinterSoldier(npc: Npc, random: GameRandom) {
+    val lines =
+        listOf(
+            "This could be worse I guess. Oh wait... No it can't.",
+            "I'm hungry...",
+            "Sometimes I wish this thing would just escape. At least we'd have something to do then.",
+            "It's so cold...",
+        )
+    startDialogue(npc) { chatNpc(neutral, lines[random.of(lines.size)]) }
+}
+
+private const val TUNA = "obj.tuna"
+private const val CATSPEAK_AMULET = "obj.ics_little_amulet_of_catspeak"
+private const val DRAGON_SLAYER_2 = "quest_dragonslayer2"
+
+internal suspend fun ProtectedAccess.talkToWintertodtCat(npc: Npc) {
+    if (!catspeak(player)) {
+        startDialogue(npc) { chatNpc(neutral, "Meow.") }
+        return
+    }
+    startDialogue(npc) { catDialogue() }
+}
+
+private fun catspeak(player: Player): Boolean =
+    CATSPEAK_AMULET in player.worn ||
+        QuestRequirements.isOnQuest(player, DRAGON_SLAYER_2) ||
+        QuestRequirements.hasCompleted(player, DRAGON_SLAYER_2)
+
+private suspend fun Dialogue.catDialogue() {
+    chatPlayer(quiz, "Hello puss.")
+    chatNpc(neutral, "Want a mouse?")
+    chatPlayer(neutral, "No thanks.")
+    chatNpc(neutral, "Want this half dead bird?")
+    chatPlayer(neutral, "Errrr... no.")
+    chatNpc(neutral, "Want this crunched up spider?")
+    chatPlayer(neutral, "Um... not really.")
+    chatNpc(neutral, "Oh well. Got any tuna?")
+    if (player.inv.count(TUNA) <= 0) {
+        chatPlayer(neutral, "No.")
+        chatNpc(neutral, "Hmmmph.")
+        return
+    }
+    chatPlayer(happy, "Why yes I do have some tuna.")
+    chatNpc(happy, "Give! *purr*")
+    val give = choice2("Give a tuna to the cat.", true, "Keep the tuna for yourself.", false)
+    if (!give) {
+        chatPlayer(neutral, "Nah... my tuna.")
+        chatNpc(neutral, "Hissss...")
+        return
+    }
+    player.invDel(player.inv, TUNA, 1)
+    objbox(TUNA, "You give some tuna to the cat. It devours it and purrs loudly.")
+    chatNpc(neutral, "Catch toad for me.")
+    chatPlayer(quiz, "What? I think not...")
+}
+
+internal suspend fun ProtectedAccess.checkKaltScores(npc: Npc) {
+    startDialogue(npc) { kaltScoreDialogue() }
+}
+
+private suspend fun Dialogue.kaltScoreDialogue() {
+    val kills = player.wintertodtKills
+    when {
+        kills <= 0 ->
+            chatNpc(neutral, "Go play in the snow and come back when you've done something.")
+        kills < 10 -> chatNpc(neutral, "You appear to have tried a little.")
+        else -> chatNpc(neutral, "Ignisia appears to be quite happy with you.")
+    }
+    if (kills > 0) {
+        mesbox(
+            "You have subdued the Wintertodt $kills times.<br>" +
+                "Your lifetime score: ${player.wintertodtLifetimeScore}<br>" +
+                "Your highest score: ${player.wintertodtHighestScore}",
+        )
+    }
+}
+
 internal suspend fun ProtectedAccess.talkToIsh(npc: Npc) {
     startDialogue(npc) { ishDialogue() }
 }
@@ -419,8 +745,8 @@ private suspend fun Dialogue.kaltDialogue() {
             }
             KaltTopic.Scores -> {
                 chatPlayer(quiz, "Tell me how I'm doing.")
-                chatNpc(neutral, "Ignisia appears to be quite happy with you.")
-                seen += KaltTopic.Scores
+                kaltScoreDialogue()
+                return
             }
             KaltTopic.Leave -> {
                 chatPlayer(neutral, "See you later.")

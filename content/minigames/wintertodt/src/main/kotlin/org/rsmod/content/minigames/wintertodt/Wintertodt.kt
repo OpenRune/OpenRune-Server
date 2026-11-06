@@ -37,6 +37,12 @@ internal object Wintertodt {
     const val NPC_BREWMA = "npc.wint_brewma"
     const val NPC_ISH = "npc.wint_pisc_navigator"
     const val NPC_KALT = "npc.wint_shay_guard"
+    const val NPC_UNDOR = "npc.wint_master_smith"
+    const val NPC_UNDOR_NORMAL = "npc.wint_master_smith_normal"
+    const val NPC_UNDOR_DINH = "npc.wint_master_smith_dinh"
+    const val NPC_ESTHER = "npc.wint_wcguild_rep"
+    const val NPC_SOLDIER = "npc.wint_soldier"
+    const val NPC_CAT = "npc.wint_troublecat"
     const val SNOWFALL_WARNING = "loc.clanwars_snowfalling"
     const val SPOTANIM_AREA_SPOT = "spotanim.wint_area_attack_spot"
     const val SPOTANIM_AREA_IMPACT = "spotanim.wint_area_attack_impact"
@@ -210,6 +216,9 @@ internal var Player.wintNeedsWarning by intVarBit("varbit.wint_needs_warning")
 internal var Player.wintRespawnDelay by intVarBit("varbit.wint_transmit_respawndelay")
 internal var Player.wintAreaAttack by intVarBit("varbit.wint_area_attack")
 internal var Player.wintertodtKills by intVarp("varp.total_wintertodt_kills")
+internal var Player.wintertodtLifetimeScore by intVarp("varp.wintertodt_lifetime_score")
+internal var Player.wintertodtHighestScore by intVarp("varp.wintertodt_highest_score")
+internal var Player.wintertodtIntroSeen by intVarp("varp.wintertodt_intro_seen")
 
 internal var Player.caWintertodtKill5 by intVarBit("varbit.ca_task_wintertodt_killcount_1_completed")
 internal var Player.caWintertodtKill10 by intVarBit("varbit.ca_task_wintertodt_killcount_2_completed")

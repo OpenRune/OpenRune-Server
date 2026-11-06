@@ -1173,6 +1173,10 @@ constructor(
     private fun awardRound(session: WintertodtSession) {
         val player = session.player
         val points = session.points
+        player.wintertodtLifetimeScore = player.wintertodtLifetimeScore + points
+        if (points > player.wintertodtHighestScore) {
+            player.wintertodtHighestScore = points
+        }
         if (points < Wintertodt.POINT_THRESHOLD) {
             player.mes(
                 "You did not earn enough points to be worthy of a gift from the citizens of " +
