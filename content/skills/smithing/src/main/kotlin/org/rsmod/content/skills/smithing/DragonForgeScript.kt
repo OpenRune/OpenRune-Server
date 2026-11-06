@@ -88,7 +88,6 @@ class DragonForgeScript : PluginScript() {
             return
         }
 
-
         queueNext(task.recipe, task.amount, completed)
     }
 
@@ -165,5 +164,4 @@ class DragonForgeScript : PluginScript() {
         val amount: Int,
         val completed: Int,
     )
-
 }

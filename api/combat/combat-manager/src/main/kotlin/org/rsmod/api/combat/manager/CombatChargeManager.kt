@@ -1,6 +1,5 @@
 package org.rsmod.api.combat.manager
 
-import dev.openrune.types.VarObjBitType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.obj.charges.ObjChargeManager

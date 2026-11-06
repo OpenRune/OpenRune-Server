@@ -31,9 +31,9 @@ import org.rsmod.api.combat.formulas.MaxHitFormulae
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.death.PvPPlayerHitHook
 import org.rsmod.api.npc.hit.FULL_STYLE_PROTECTION
-import org.rsmod.api.npc.hit.styleReduction
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
+import org.rsmod.api.npc.hit.styleReduction
 import org.rsmod.api.player.cheat.adminMaxHit
 import org.rsmod.api.player.events.AttackKind
 import org.rsmod.api.player.events.PlayerAttackEvents

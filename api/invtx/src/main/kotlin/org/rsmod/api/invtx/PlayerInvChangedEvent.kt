@@ -50,8 +50,7 @@ private var publishing = false
  * Null unless something listens, and while a listener is itself running: a handler that adds items
  * does not publish again, so it cannot trigger itself.
  */
-internal fun Player.invChangeInterceptor():
-    ((List<TransactionInventory<InvObj>>, () -> Unit) -> Unit)? {
+internal fun Player.invChangeInterceptor(): ((List<TransactionInventory<InvObj>>, () -> Unit) -> Unit)? {
     val bus = cachedEventBus ?: return null
     if (publishing || bus.unbound[PlayerInvChangedEvent::class.java] == null) {
         return null

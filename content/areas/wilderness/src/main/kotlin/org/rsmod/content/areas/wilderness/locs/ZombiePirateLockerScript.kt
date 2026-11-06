@@ -90,5 +90,4 @@ constructor(
         objbox(SCROLL, "You study the scroll and become immune to the Abyssal demon and Elder Chaos druid teleportation attacks.")
         VarPlayerIntMapSetter.set(player, VARBIT_SCROLL, 1)
     }
-
 }

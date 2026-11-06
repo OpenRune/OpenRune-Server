@@ -8,8 +8,8 @@ import org.rsmod.api.bosses.spec.BossSpec
 import org.rsmod.api.bosses.spec.Condition
 import org.rsmod.api.bosses.spec.DamageExpr
 import org.rsmod.api.bosses.spec.HitType
-import org.rsmod.api.npc.hit.FULL_STYLE_PROTECTION
 import org.rsmod.api.bosses.spec.ProjectileConfig
+import org.rsmod.api.npc.hit.FULL_STYLE_PROTECTION
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 

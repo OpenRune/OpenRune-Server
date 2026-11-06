@@ -103,7 +103,6 @@ class BoneShardEvents : PluginScript() {
         if (inv.contains(row.output.internalName)) {
             weakQueue("queue.prayer_break_down_bone", player.skillCycles("stat.prayer", 4), row.output)
         }
-
     }
 
     private fun ProtectedAccess.blessBones(row: PrayerBlessedBoneRow, amount: Int = inv.count(row.input.internalName)) {
@@ -122,7 +121,7 @@ class BoneShardEvents : PluginScript() {
         mes("You bless $toConvert bone${if (toConvert == 1) "" else "s"} on the altar.")
     }
 
-    private fun ProtectedAccess.blessWine(wine: String, blessedWine: String, amount: Int = inv.count(wine), ) {
+    private fun ProtectedAccess.blessWine(wine: String, blessedWine: String, amount: Int = inv.count(wine),) {
 
         player.anim("seq.human_openchest")
         player.soundSynth("synth.bones_down")
@@ -135,5 +134,4 @@ class BoneShardEvents : PluginScript() {
 
         mes("You bless $toConvert jug${if (toConvert == 1) "" else "s"} of wine on the altar.")
     }
-
 }

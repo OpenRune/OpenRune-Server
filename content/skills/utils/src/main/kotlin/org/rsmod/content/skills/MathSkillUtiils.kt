@@ -3,7 +3,7 @@ import kotlin.random.Random
 import org.rsmod.api.player.stat.resolveSkillRoll
 import org.rsmod.game.entity.Player
 
-private val STATIC_RANDOM = Random.Default  // shared instance
+private val STATIC_RANDOM = Random.Default // shared instance
 
 fun Player.skillSuccess(
     stat: String,
@@ -15,7 +15,6 @@ fun Player.skillSuccess(
     val rate = computeSkillingSuccess(low, high, level)
     return resolveSkillRoll(stat, rate, rate > STATIC_RANDOM.nextDouble(), subject)
 }
-
 
 /**
  * Computes the skilling success probability using the Old School RuneScape skilling success formula.

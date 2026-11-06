@@ -10,8 +10,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 class SunfireWineEvents : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpHeldU("obj.jug_wine","obj.sunfiresplinter") { startMakeSunfireWine() }
-        onOpHeldU("obj.jug_wine_blessed","obj.sunfiresplinter") { rejectBlessedWineMix() }
+        onOpHeldU("obj.jug_wine", "obj.sunfiresplinter") { startMakeSunfireWine() }
+        onOpHeldU("obj.jug_wine_blessed", "obj.sunfiresplinter") { rejectBlessedWineMix() }
         onPlayerQueue("queue.prayer_make_sunfire_wine") { processMakeSunfireWine() }
     }
 
@@ -68,5 +68,4 @@ class SunfireWineEvents : PluginScript() {
     private fun ProtectedAccess.rejectBlessedWineMix() {
         mes("You can only add sunfire splinters to an unblessed jug of wine.")
     }
-
 }

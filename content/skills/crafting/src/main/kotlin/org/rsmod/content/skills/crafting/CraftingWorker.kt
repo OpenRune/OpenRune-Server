@@ -11,10 +11,10 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
-import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.skilling.consumeSkillingInputs
 import org.rsmod.api.player.stat.craftingLvl
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onPlayerQueueWithArgs

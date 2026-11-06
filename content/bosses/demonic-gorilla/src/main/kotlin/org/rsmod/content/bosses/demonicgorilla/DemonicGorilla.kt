@@ -19,7 +19,6 @@ import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.script.onEvent
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
-import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.game.hit.Hit
 import org.rsmod.game.hit.HitType
