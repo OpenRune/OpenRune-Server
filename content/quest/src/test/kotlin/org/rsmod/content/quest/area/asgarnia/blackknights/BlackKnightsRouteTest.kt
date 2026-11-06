@@ -71,8 +71,16 @@ class BlackKnightsRouteTest {
     fun `complete native fortress route walks every ladder landing wall grill meeting and hole and returns without uniform`() {
         native { cache ->
             val f = BlackKnightsMapFixture(cache, CoordGrid(3020, 3514), 30)
-            script(f, FortressGuard(f.repository, AggressionTolerance(f.clock)))
-            script(f, BlackKnightsFortress())
+            script(
+                f,
+                FortressGuard(
+                    f.repository,
+                    AggressionTolerance(f.clock),
+                    mockk(relaxed = true),
+                    mockk(relaxed = true),
+                ),
+            )
+            script(f, BlackKnightsFortress(io.mockk.mockk(relaxed = true)))
             fun op(type: String, at: CoordGrid) {
                 val l = f.find(type, at)
                 f.player.coords = f.approach(f.player.coords, l)
@@ -96,7 +104,10 @@ class BlackKnightsRouteTest {
             f.player.worn[4] = InvObj("obj.iron_chainbody")
             f.operate(entry, 1)
             f.tick(3)
-            assertNull(f.repository.findExact(entry.coords, entry.shape))
+            assertFalse(
+                f.route(street, CoordGrid(3016, 3516)).success,
+                "Unvalidated followers remain blocked",
+            )
             f.connected(f.player.coords, CoordGrid(3016, 3516))
             f.player.coords = CoordGrid(3016, 3516)
             f.player.worn.fillNulls()
@@ -118,11 +129,14 @@ class BlackKnightsRouteTest {
             dialogue(f, 1)
             assertEquals(2, f.player.vars["varbit.black_knights_progress"])
             climb("loc.dk_ladder", 3021, 3510, 0)
+            op("loc.bkfortressdoor3", CoordGrid(3025, 3511, 1))
             climb("loc.dk_ladder", 3025, 3513, 1)
             climb("loc.dk_laddertop", 3023, 3513, 2)
+            op("loc.wild_door", CoordGrid(3019, 3515, 1))
             climb("loc.dk_ladder", 3017, 3516, 1)
             climb("loc.dk_laddertop", 3016, 3519, 2)
             climb("loc.dk_laddertop", 3015, 3519, 1)
+            op("loc.bksecretdoor", CoordGrid(3016, 3517))
             val meeting = f.find("loc.bkfortressdoor2", FortressGuard.MEETING)
             f.player.coords = f.approach(f.player.coords, meeting)
             f.operate(meeting, 1)
@@ -130,7 +144,7 @@ class BlackKnightsRouteTest {
             assertNotNull(f.repository.findExact(meeting.coords, meeting.shape))
             f.operate(meeting, 1)
             dialogue(f, 2)
-            assertNull(f.repository.findExact(meeting.coords, meeting.shape))
+            assertFalse(f.route(CoordGrid(3019, 3515), CoordGrid(3020, 3515)).success)
             climb("loc.dk_meeting_ladder", 3022, 3518, 0)
             op("loc.bksecretdoor", CoordGrid(3030, 3510, 1))
             val hole = f.find("loc.blackknighthole", CoordGrid(3031, 3507, 1))
@@ -153,23 +167,96 @@ class BlackKnightsRouteTest {
                 }
             )
             f.player.advanceActiveCoroutine()
+            f.tick(3)
             assertEquals(3, f.player.vars["varbit.black_knights_progress"])
             assertEquals(0, f.player.inv.count("obj.cabbage"))
+            op("loc.bksecretdoor", CoordGrid(3030, 3510, 1))
             climb("loc.dk_meeting_laddertop", 3022, 3518, 1)
-            f.connected(f.player.coords, CoordGrid(3016, 3515))
-            f.player.coords = CoordGrid(3016, 3515)
-            f.repository.add(
-                org.rsmod.game.loc.LocInfo(entry.layer, entry.coords, entry.entity),
-                500,
-            )
+            op("loc.bkfortressdoor2", FortressGuard.MEETING)
+            f.player.coords = f.approach(f.player.coords, entry)
             f.operate(entry, 1)
             f.tick(3)
-            assertNull(f.repository.findExact(entry.coords, entry.shape))
+            assertFalse(
+                f.route(street, CoordGrid(3016, 3516)).success,
+                "Unvalidated followers remain blocked",
+            )
             f.connected(f.player.coords, street)
             assertEquals(0, f.player.vars["varp.qp"])
             println(
                 "Native full outward/return route connected; supplied stage1 and material is isolated route-component QA, not earned full client play."
             )
+        }
+    }
+
+    @Test
+    fun `checked entrance crossings keep the wall for another actor from either direction`() {
+        native { cache ->
+            val f = BlackKnightsMapFixture(cache, CoordGrid(3020, 3514), 30)
+            script(
+                f,
+                FortressGuard(
+                    f.repository,
+                    AggressionTolerance(f.clock),
+                    mockk(relaxed = true),
+                    mockk(relaxed = true),
+                ),
+            )
+            val entry = f.find("loc.bkfortressdoor1", FortressGuard.ENTRANCE)
+            val outside = CoordGrid(3016, 3514)
+            val inside = CoordGrid(3016, 3515)
+            assertFalse(f.route(outside, inside).success)
+            f.player.coords = outside
+            f.operate(entry, 1)
+            f.tick(1)
+            assertEquals(outside, f.player.coords)
+            f.player.worn[0] = InvObj("obj.bronze_med_helm")
+            f.player.worn[4] = InvObj("obj.iron_chainbody")
+            f.operate(entry, 1)
+            f.tick(1)
+            assertEquals(inside, f.player.coords)
+            assertFalse(f.route(outside, inside).success)
+            assertEquals(
+                "loc.inviswall".asRSCM(),
+                f.repository.findExact(entry.coords, entry.shape)?.id,
+            )
+            f.player.worn.fillNulls()
+            f.repository.add(org.rsmod.game.loc.LocInfo(entry.layer, entry.coords, entry.entity), 2)
+            f.operate(entry, 1)
+            f.tick(1)
+            assertEquals(outside, f.player.coords)
+            assertFalse(f.route(outside, inside).success)
+        }
+    }
+
+    @Test
+    fun `meeting warning provokes a knight even at eighty five combat and keeps followers blocked`() {
+        native { cache ->
+            val f = BlackKnightsMapFixture(cache, FortressGuard.MEETING, 30)
+            val repo = mockk<org.rsmod.api.repo.npc.NpcRepository>()
+            val interactions =
+                mockk<org.rsmod.api.npc.interact.AiPlayerInteractions>(relaxed = true)
+            val knight =
+                org.rsmod.game.entity
+                    .Npc(FortressGuard.KNIGHTS.first(), CoordGrid(3022, 3515))
+                    .apply {
+                        slotId = 2
+                        assignUid()
+                    }
+            every { repo.findAll(any<org.rsmod.map.zone.ZoneKey>(), any()) } returns
+                sequenceOf(knight)
+            script(f, FortressGuard(f.repository, AggressionTolerance(f.clock), repo, interactions))
+            f.player.appearance.combatLevel = 85
+            f.player.coords = CoordGrid(3019, 3515)
+            val door = f.find("loc.bkfortressdoor2", FortressGuard.MEETING)
+            f.operate(door, 1)
+            dialogue(f, 2)
+            assertEquals(CoordGrid(3020, 3515), f.player.coords)
+            io.mockk.verify(exactly = 1) {
+                interactions.interactOp(knight, f.player, org.rsmod.game.interact.InteractionOp.Op2)
+            }
+            assertFalse(f.route(CoordGrid(3019, 3515), CoordGrid(3020, 3515)).success)
+            f.tick(2)
+            assertEquals(door.id, f.repository.findExact(door.coords, door.shape)?.id)
         }
     }
 

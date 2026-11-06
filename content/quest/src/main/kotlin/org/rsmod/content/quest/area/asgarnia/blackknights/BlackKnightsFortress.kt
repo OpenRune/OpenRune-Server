@@ -1,18 +1,23 @@
 package org.rsmod.content.quest.area.asgarnia.blackknights
 
+import dev.openrune.rscm.RSCM.asRSCM
+import dev.openrune.rscm.RSCMType
+import jakarta.inject.Inject
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.*
 import org.rsmod.api.table.BlackKnightsRoutesRow
 import org.rsmod.content.quest.manager.*
+import org.rsmod.game.proj.ProjAnim
 import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
-class BlackKnightsFortress :
+class BlackKnightsFortress @Inject constructor(private val worldRepo: WorldRepository) :
     QuestScript(
         BlackKnightsProgress.QUEST,
         "varp.spy",
         rewards { item("obj.coins", 2500) },
-        ItemRewardDisplay(BlackKnightsProgress.DOSSIER),
+        ItemRewardDisplay("obj.bkfortress_cauldron_broken", zoom = 400, x = 78, y = 128),
         questVarbit = BlackKnightsProgress.STAGE,
     ) {
     private val p
@@ -114,9 +119,11 @@ class BlackKnightsFortress :
             if (it.loc.coords != CoordGrid(3026, 3507)) return@onOpLoc1
             startDialogue {
                 if (p.stage(player) == 1) {
+                    access.anim("seq.bkf_bent_to_listen_at_door_idle")
                     mesbox(
                         "You overhear the witch discussing an invincibility potion. She needs a magical Draynor Manor cabbage; any ordinary cabbage would ruin it."
                     )
+                    access.resetAnim()
                     if (p.hear(access))
                         mesbox(
                             "I should find a way to drop an ordinary cabbage into the cauldron from above."
@@ -132,6 +139,31 @@ class BlackKnightsFortress :
         onOpLocU("loc.blackknighthole") {
             if (it.loc.coords != CoordGrid(3031, 3507, 1)) return@onOpLocU
             if (p.sabotage(this, it.objType.internalName)) {
+                anim("seq.bkf_throw_cabbage")
+                spotanim("spotanim.bkfortress_cabbage_thrown")
+                worldRepo.projAnim(
+                    ProjAnim(
+                        spotanim = "spotanim.bkfortress_cabbage_travel".asRSCM(RSCMType.SPOTANIM),
+                        startHeight = 40,
+                        endHeight = 0,
+                        startTime = 0,
+                        endTime = 30,
+                        angle = 0,
+                        progress = 0,
+                        sourceIndex = 0,
+                        targetIndex = 0,
+                        startCoord = coords,
+                        endCoord = it.loc.coords,
+                    )
+                )
+                delay(2)
+                midiJingle("jingle.bkf_cutscene")
+                spotanimMap(
+                    worldRepo,
+                    "spotanim.bkfortress_cauldron_cabbage_bubbles",
+                    CoordGrid(3031, 3507),
+                )
+                resetAnim()
                 fadeOverlay(0, 0, 0, 255, 30)
                 closeFadeOverlay()
                 mes(
@@ -152,22 +184,31 @@ class BlackKnightsFortress :
 
     override fun questLog(player: ProtectedAccess) =
         questJournal(player) {
+            val stage = p.stage(player.player)
             line(
-                when (p.stage(player.player)) {
-                    1 ->
-                        "Enter the Black Knights' Fortress in an iron chainbody and bronze med helm. Push the wall, follow the ladder route and listen at the witch's grill."
-                    2 ->
-                        "An ordinary cabbage will spoil the potion. Return to the entrance, accept the meeting-room guard's warning, climb the dining ladder, push the upper secret wall and use the cabbage on the hole. Draynor Manor cabbage will not work."
-                    3 ->
-                        "I have sabotaged the potion. Return to Sir Amik Varze in White Knights' Castle for the reward."
-                    else ->
-                        "Sir Amik Varze has a dangerous mission. I need 12 quest points and room for his dossier."
-                }
+                "Sir Amik Varze asked me to infiltrate the Black Knights' Fortress and destroy their secret weapon."
             )
+            if (stage >= 2) {
+                strike(
+                    "I entered the fortress disguised as a guard and overheard the witch's plan."
+                )
+                line(
+                    "The witch is making an invincibility potion. An ordinary cabbage will ruin it; a Draynor Manor cabbage would help her."
+                )
+            } else line("I need to discover what the Black Knights are planning.")
+            if (stage >= 3) {
+                strike("I dropped an ordinary cabbage into the cauldron and destroyed the potion.")
+                line("I should return to Sir Amik Varze in White Knights' Castle.")
+            }
         }
 
     override fun completedLog(player: ProtectedAccess) =
         completionJournal(player) {
-            line("I infiltrated the Black Knights' Fortress and ruined their invincibility potion.")
+            line("Sir Amik Varze asked me to destroy the Black Knights' secret weapon.")
+            line(
+                "I infiltrated their fortress disguised as a guard and overheard the witch's plan."
+            )
+            line("I dropped an ordinary cabbage into her invincibility potion and ruined it.")
+            line("I reported back to Sir Amik Varze and received 2,500 coins and 3 quest points.")
         }
 }

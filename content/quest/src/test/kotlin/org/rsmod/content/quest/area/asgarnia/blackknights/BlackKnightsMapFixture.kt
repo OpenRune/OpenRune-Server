@@ -204,6 +204,28 @@ internal class BlackKnightsMapFixture(
     fun approach(from: CoordGrid, loc: BoundLocInfo): CoordGrid {
         assertEquals(from.level, loc.level)
         assertTrue(walkable(from), "Blocked departure $from")
+        if (
+            loc.type.internalName in
+                setOf(
+                    "loc.bkfortressdoor1",
+                    "loc.bkfortressdoor2",
+                    "loc.bkfortressdoor3",
+                    "loc.bksecretdoor",
+                    "loc.wild_door",
+                )
+        ) {
+            val across =
+                when (loc.angle.id) {
+                    0 -> loc.coords.translateX(-1)
+                    1 -> loc.coords.translateZ(1)
+                    2 -> loc.coords.translateX(1)
+                    else -> loc.coords.translateZ(-1)
+                }
+            return listOf(loc.coords, across)
+                .filter { walkable(it) && route(from, it).success }
+                .minByOrNull { from.chebyshevDistance(it) }
+                ?: error("Cannot reach either face of $loc from $from")
+        }
         val route =
             RouteFinding(collision)
                 .findRoute(
@@ -257,6 +279,15 @@ internal class BlackKnightsMapFixture(
 
     fun tick(count: Int) =
         repeat(count) {
+            clock.cycle++
+            org.rsmod.api.repo
+                .EntityLifecycleProcess(
+                    mockk(relaxed = true),
+                    repository,
+                    mockk(relaxed = true),
+                    mockk(relaxed = true),
+                )
+                .process()
             player.currentMapClock++
             player.processedMapClock = player.currentMapClock
             if (player.isNotDelayed) player.advanceActiveCoroutine()

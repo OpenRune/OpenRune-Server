@@ -1,23 +1,33 @@
 package org.rsmod.content.areas.misc.blackknights
 
 import jakarta.inject.Inject
+import org.rsmod.api.config.constants
 import org.rsmod.api.npc.aggression.AggressionTolerance
+import org.rsmod.api.npc.interact.AiPlayerInteractions
+import org.rsmod.api.npc.opPlayer2
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.repo.loc.LocRepository
+import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.map.CoordGrid
+import org.rsmod.map.zone.ZoneKey
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /** The guard on the Black Knights' Fortress front gate, and the gate itself. */
 class FortressGuard
 @Inject
-constructor(private val locs: LocRepository, private val tolerance: AggressionTolerance) :
-    PluginScript() {
+constructor(
+    private val locs: LocRepository,
+    private val tolerance: AggressionTolerance,
+    private val npcs: NpcRepository,
+    private val interactions: AiPlayerInteractions,
+) : PluginScript() {
     override fun ScriptContext.startup() {
         for (knight in KNIGHTS) tolerance.enroll(knight)
         onOpLoc1("loc.bkfortressdoor1") {
@@ -40,8 +50,10 @@ constructor(private val locs: LocRepository, private val tolerance: AggressionTo
                     )
                     if (
                         choice2("Okay, I won't.", false, "I don't care. I'm going in anyway.", true)
-                    )
+                    ) {
                         access.open(it.loc)
+                        if (coords.x >= 3020) challenge(player)
+                    }
                 }
         }
         onOpLoc1("loc.bkfortressdoor3") {
@@ -62,9 +74,48 @@ constructor(private val locs: LocRepository, private val tolerance: AggressionTo
         onOpLoc1("loc.inaclefayeunopenabledoorr") { mes("You can't open this door.") }
     }
 
-    private fun ProtectedAccess.open(door: BoundLocInfo) {
-        if (coords.level == door.level && coords.chebyshevDistance(door.coords) <= 1)
-            locs.del(door, duration = 500)
+    private fun challenge(player: Player) {
+        val knight =
+            npcs
+                .findAll(ZoneKey.from(MEETING), 1)
+                .filter {
+                    it.coords.level == 0 &&
+                        it.coords.x in 3020..3027 &&
+                        it.coords.z in 3513..3518 &&
+                        KNIGHTS.any(it::isType)
+                }
+                .minByOrNull { it.coords.chebyshevDistance(player.coords) } ?: return
+        knight.say("Die, intruder!")
+        knight.opPlayer2(player, interactions)
+    }
+
+    private suspend fun ProtectedAccess.open(door: BoundLocInfo) {
+        if (coords.level != door.level || coords.chebyshevDistance(door.coords) > 1) return
+        val across =
+            when (door.angle.id) {
+                0 -> door.coords.translateX(-1)
+                1 -> door.coords.translateZ(1)
+                2 -> door.coords.translateX(1)
+                else -> door.coords.translateZ(-1)
+            }
+        val start =
+            if (coords.chebyshevDistance(across) < coords.chebyshevDistance(door.coords)) across
+            else door.coords
+        val destination = if (start == across) door.coords else across
+        if (coords != start) {
+            playerWalkWithMinDelay(start)
+            if (coords != start) return
+        }
+        locs.change(door, "loc.inviswall", 2)
+        val facing =
+            when {
+                destination.x > coords.x -> constants.em_face_east
+                destination.x < coords.x -> constants.em_face_west
+                destination.z > coords.z -> constants.em_face_north
+                else -> constants.em_face_south
+            }
+        exactMove(coords, destination, 0, 30, facing, TeleportType.Exempt)
+        delay(1)
     }
 
     private suspend fun Dialogue.turnedAway() {

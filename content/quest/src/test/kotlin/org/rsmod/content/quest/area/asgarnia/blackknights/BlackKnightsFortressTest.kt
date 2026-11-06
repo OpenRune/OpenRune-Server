@@ -170,8 +170,29 @@ class BlackKnightsFortressTest {
         assertEquals(completed, f.snapshot())
     }
 
+    @Test
+    fun `journal recounts infiltration sabotage and the return objective and uses broken cauldron model`() {
+        val f = Fixture(2)
+        val journal = f.script.questLog(f.access)
+        assertTrue(journal.contains("overheard"))
+        assertTrue(journal.contains("ordinary cabbage"))
+        assertFalse(journal.contains("ladder"))
+        f.script.quest.setQuestStage(f.access, 3)
+        val sabotaged = f.script.questLog(f.access)
+        assertTrue(sabotaged.contains("overheard"))
+        assertTrue(sabotaged.contains("destroyed the potion"))
+        assertTrue(sabotaged.contains("return to Sir Amik"))
+        val complete = f.script.completedLog(f.access)
+        assertTrue(complete.contains("2,500 coins and 3 quest points"))
+        val model = f.script.quest.itemDisplay
+        assertEquals("obj.bkfortress_cauldron_broken", model.item)
+        assertEquals(400, model.zoom)
+        assertEquals(78, model.x)
+        assertEquals(128, model.y)
+    }
+
     private class Fixture(stage: Int) {
-        val script = BlackKnightsFortress()
+        val script = BlackKnightsFortress(io.mockk.mockk(relaxed = true))
 
         @OptIn(InternalApi::class)
         val player =

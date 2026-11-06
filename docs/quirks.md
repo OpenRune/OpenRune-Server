@@ -147,11 +147,17 @@ to the bank first, then inventory if necessary; Ultimate Ironmen use inventory o
 
 ### Black Knights' Fortress
 
-The quest follows the main infiltration and sabotage route with shortened dialogue.
-The sabotage cutscene is represented by a brief fade and message, and fortress
-doors/walls disappear temporarily instead of playing their complete opening animations.
-Exact retail cutscene, animation and aggression timing has not been captured with RSProx.
+The quest follows the infiltration and sabotage route with shortened dialogue.
+Checked crossings retain a blocking invisible wall, move only the acting player,
+and restore the original location after two ticks. The meeting-room warning forces
+a nearby knight to attack even above the ordinary aggression combat-level cutoff.
+Listening and cabbage sequences, cabbage spot effects/projectile and the cutscene
+jingle use native cache symbols. The cauldron scene still uses a brief fade/message;
+camera choreography, opening visuals and exact timing have not been matched to the
+reviewer's newly available RSProx recordings. Those recordings were not available
+to this revision; this is an explicit presentation simplification, not captured parity.
+Journal wording is a history-based reconstruction rather than a verbatim transcript.
 Only the bronze-helm/iron-chain and ordinary full-black disguises are supported;
-elite/trimmed variants and the meeting room's forced-aggression override are omitted.
-The reward bundle is the historically tested 3 QP and 2,500 coins; newer Quest Month
-combat lamps are not included in this port.
+elite/trimmed variants remain omitted.
+The reward bundle is 3 QP and 2,500 coins, matching this contribution's 20 October
+2026 cutoff. The 3 November Quest Month combat lamps are not included in this port.
