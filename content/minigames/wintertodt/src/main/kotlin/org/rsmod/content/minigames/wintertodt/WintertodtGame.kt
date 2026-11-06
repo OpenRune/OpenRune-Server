@@ -236,7 +236,6 @@ constructor(
     private val outsideScript: Int = Wintertodt.SCRIPT_OUTSIDE
 
     fun tick() {
-        if (!worldReady && sessions.isEmpty()) return
         ensureWorld()
 
         tickActions()
