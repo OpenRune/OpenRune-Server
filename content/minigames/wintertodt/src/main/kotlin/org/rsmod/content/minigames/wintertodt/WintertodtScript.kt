@@ -173,6 +173,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
                             else -> game.forceAttack()
                         }
                     "status" -> game.debugStatus(player)
+                    "axe" -> game.debugAxe(player)
                     "say" -> game.debugPyroSay()
                     "locs" -> game.debugLocations(player)
                     "lockwarmth" -> game.toggleWarmthLock(player)

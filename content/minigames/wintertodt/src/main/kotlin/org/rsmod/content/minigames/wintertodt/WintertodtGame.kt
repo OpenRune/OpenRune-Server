@@ -1110,6 +1110,20 @@ constructor(
         }
     }
 
+    fun debugAxe(player: Player) {
+        val best = bestAxe(player)
+        if (best == null) {
+            player.mes("axe=none")
+            return
+        }
+        val rates = axeRates(best)
+        val rate = chopRate(player, best)
+        player.mes(
+            "axe=${best.internalName} rates=$rates rate=$rate level=${player.baseWoodcuttingLvl} " +
+                "invis=${invisibleLevels.get(player, "stat.woodcutting")}",
+        )
+    }
+
     fun debugPyroSay() {
         for (pyro in pyromancers) {
             pyro.npc?.say("Yemalo shi cardito!")
