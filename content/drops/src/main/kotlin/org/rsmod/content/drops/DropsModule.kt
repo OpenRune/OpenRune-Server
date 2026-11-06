@@ -3,6 +3,7 @@ package org.rsmod.content.drops
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.droptable.DropRateBoosts
 import org.rsmod.api.droptable.KillRollContext
+import org.rsmod.api.droptable.NpcKillExtraDrops
 import org.rsmod.api.droptable.toml.DropTableTomlResolver
 import org.rsmod.content.drops.toml.ContentDropTableTomlResolver
 import org.rsmod.content.slayer.core.MortimerAssignment
@@ -14,6 +15,7 @@ public class DropsModule : PluginModule() {
             MortimerAssignment.clueDropRateBoostPercent(player, args[KillRollContext.npc])
         }
         bind(DropTableTomlResolver::class.java).to(ContentDropTableTomlResolver::class.java)
+        newSetBinding<NpcKillExtraDrops>()
         addSetBinding<NpcDeathKillHook>(NpcDropTableKillHook::class.java)
     }
 }

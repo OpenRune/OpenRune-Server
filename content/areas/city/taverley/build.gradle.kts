@@ -7,4 +7,5 @@ dependencies {
     implementation(projects.content.quest)
     implementation(projects.api.dropTable)
     implementation(projects.api.dropTablePlugin)
+    implementation(projects.content.drops)
 }
