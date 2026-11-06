@@ -1,0 +1,19 @@
+[gamevals.varn]
+giant_mole_burrow_lock = 64430
+giant_mole_last_burrow_check = 64431
+
+[gamevals.timer]
+giant_mole_insect_warning = 64420
+giant_mole_insect_swarm = 64421
+giant_mole_insect_damage = 64422
+
+[gamevals.models]
+mole_go_splat_model = 12027
+
+[gamevals.synth]
+insect_bites = 1581
+mole_burrow_down = 1641
+mole_attack = 1642
+mole_death = 1645
+mole_hit = 1646
+mud_pie_impact = 1647

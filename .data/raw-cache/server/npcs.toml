@@ -10896,9 +10896,17 @@ inherit = "npc.castlewars_imp"
 [[npc]]
 id = "npc.mole_giant"
 inherit = "npc.mole_giant"
+respawnRate = 16
 [npc.params]
 "param.elemental_weakness_type"=2
 "param.elemental_weakness_percent"=50
+"param.killcount_varp"="varp.total_mole_kills"
+"param.boss_hp_bar_mode"=1
+"param.attack_anim"="seq.mole_attack"
+"param.defend_anim"="seq.mole_defend"
+"param.death_anim"="seq.mole_death"
+"param.death_sound"="synth.mole_death"
+"param.defend_sound"="synth.mole_hit"
 
 [[npc]]
 id = "npc.fris_troll_king_true"
