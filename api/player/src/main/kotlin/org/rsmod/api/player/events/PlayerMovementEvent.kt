@@ -16,7 +16,6 @@ public class PlayerMovementEvent {
 
     public data class CoordsMovedEvent(
         override val player: Player,
-        val lastKnownCoords : CoordGrid
+        val lastKnownCoords: CoordGrid
     ) : UnboundEvent, PlayerEvent
-
 }

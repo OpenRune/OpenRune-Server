@@ -18,7 +18,6 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import skillSuccess
 
-
 private enum class WineKind {
     Normal,
     Zamorak;

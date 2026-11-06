@@ -17,12 +17,12 @@ import org.rsmod.api.player.events.skilling.SkillingProduct
 import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.righthand
-import org.rsmod.api.player.stat.skillCycles
-import org.rsmod.api.player.stat.skillNeedsSpace
-import org.rsmod.api.player.stat.skillTool
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
 import org.rsmod.api.player.stat.miningLvl
+import org.rsmod.api.player.stat.skillCycles
+import org.rsmod.api.player.stat.skillNeedsSpace
+import org.rsmod.api.player.stat.skillTool
 import org.rsmod.api.player.stat.smithingLvl
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpContentLoc1

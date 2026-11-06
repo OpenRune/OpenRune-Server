@@ -155,5 +155,4 @@ class LibationBowlEvents : PluginScript() {
 
     private var ProtectedAccess.libationWineCharges by intVarBit("varbit.varlamore_prayer_winequant")
     private var ProtectedAccess.libationSunfire by intVarBit("varbit.varlamore_prayer_winetype")
-
 }

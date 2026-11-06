@@ -30,7 +30,6 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import skillSuccess
 
-
 public class BurnLogEvents @Inject constructor(
     private val objRepo: ObjRegistry,
     private val objRegistry: ObjRegistry,

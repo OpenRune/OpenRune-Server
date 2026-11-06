@@ -93,5 +93,4 @@ class CrushingEvents : PluginScript() {
     }
 
     private data class CrushTask(val recipe: HerbloreCrushingRow)
-
 }

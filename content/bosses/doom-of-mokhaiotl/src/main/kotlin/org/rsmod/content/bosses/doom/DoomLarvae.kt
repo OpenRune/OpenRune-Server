@@ -19,9 +19,9 @@ import org.rsmod.api.bosses.runtime.spawnOwnedNpc
 import org.rsmod.api.npc.access.StandardNpcAccess
 import org.rsmod.api.npc.heal
 import org.rsmod.api.npc.hit.FULL_STYLE_PROTECTION
-import org.rsmod.api.npc.hit.styleReduction
 import org.rsmod.api.npc.hit.modifier.StandardNpcHitModifier
 import org.rsmod.api.npc.hit.queueHit
+import org.rsmod.api.npc.hit.styleReduction
 import org.rsmod.api.player.hit.queueHit
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.mes
