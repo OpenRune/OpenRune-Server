@@ -5,6 +5,8 @@ plugins {
 
 dependencies {
     testImplementation(libs.mockk)
+    implementation(projects.api.bosses)
+    implementation(projects.api.combat.combatFormulas)
     implementation(projects.api.instances)
     testImplementation(projects.api.invPlugin)
     testImplementation(projects.api.objCharges)

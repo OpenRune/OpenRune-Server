@@ -5,7 +5,6 @@ import dev.openrune.rscm.RSCM.asRSCM
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.annotations.InternalApi
-import org.rsmod.api.config.constants
 import org.rsmod.api.death.NpcDeathKillContext
 import org.rsmod.api.death.NpcDeathKillHook
 import org.rsmod.api.instances.InstanceManager
@@ -35,6 +34,7 @@ class PriestInPerilModule : PluginModule() {
     override fun bind() {
         bindInstance<PriestInPeril>()
         bindInstance<PriestInPerilTravel>()
+        bindInstance<PriestMonkCombat>()
         addSetBinding<NpcDeathKillHook>(PriestInPerilKills::class.java)
         addSetBinding<PlayerPostTickHook>(PriestInPerilKills::class.java)
     }
@@ -118,8 +118,9 @@ constructor(
                 objs.add(
                     checkNotNull(ServerCacheManager.getItem(PriestInPeril.GOLD_KEY.asRSCM())),
                     context.dropCoords,
-                    hero.lootDropDuration ?: constants.lootdrop_duration,
+                    400,
                     hero,
+                    reveal = Int.MAX_VALUE,
                 )
             hero.observerUUID?.let { goldenDrops[it] = drop }
             VarPlayerIntMapSetter.set(hero, MONK_DEAD, 1)

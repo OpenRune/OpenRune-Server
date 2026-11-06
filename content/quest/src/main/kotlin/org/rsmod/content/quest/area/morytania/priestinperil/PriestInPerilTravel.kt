@@ -78,7 +78,7 @@ constructor(
         for (door in listOf("loc.priestperiltempledoorl", "loc.priestperiltempledoorr")) {
             onOpLoc1(door) {
                 arriveDelay()
-                if (coords.x <= 3408 && quest.stage(player) < RETURNED_TO_ROALD)
+                if (coords.x <= 3408 && quest.accessStage(player) < RETURNED_TO_ROALD)
                     startDialogue { templeDoor() }
                 else crossWall(it.loc)
             }
@@ -99,7 +99,7 @@ constructor(
         }
         onOpLoc1("loc.pip_underground_door2") {
             arriveDelay()
-            if (quest.stage(player) < PriestInPeril.MOVED_UNDERGROUND)
+            if (coords.x <= it.loc.x && quest.accessStage(player) < PriestInPeril.MOVED_UNDERGROUND)
                 mes("I should help Drezel leave the temple before going further.")
             else crossWall(it.loc)
         }
@@ -130,7 +130,7 @@ constructor(
         }
         onOpLocU("loc.priestperil_grave_base4", GOLD_KEY) {
             arriveDelay()
-            if (quest.stage(player) !in MET_DREZEL..COFFIN_SEALED) {
+            if (quest.stage(player) !in RETURNED_TO_ROALD..COFFIN_SEALED) {
                 mes("I have no reason to exchange this key yet.")
                 return@onOpLocU
             }
@@ -147,7 +147,7 @@ constructor(
         }
         onOpLocU("loc.priestperil_well", "obj.bucket_empty") {
             arriveDelay()
-            if (quest.stage(player) !in MET_DREZEL..COFFIN_SEALED) {
+            if (quest.stage(player) !in RETURNED_TO_ROALD..COFFIN_SEALED) {
                 mes("I don't need this water just now.")
                 return@onOpLocU
             }
@@ -240,13 +240,13 @@ constructor(
         if (loc.coords != TRAPDOOR) return false
         with(access) {
             arriveDelay()
-            if (quest.stage(player) < GUARDIAN_REQUESTED) {
+            if (quest.accessStage(player) < GUARDIAN_REQUESTED) {
                 mes("I should investigate the temple door before entering this mausoleum.")
                 return true
             }
             anim("seq.human_climbing_down")
             delay(1)
-            if (quest.stage(player) != GUARDIAN_REQUESTED) {
+            if (quest.policyAccess(player) || quest.stage(player) != GUARDIAN_REQUESTED) {
                 telejump(DUNGEON_ENTRY)
                 resetAnim()
                 return true
@@ -332,14 +332,16 @@ constructor(
     private suspend fun ProtectedAccess.cellDoor(loc: BoundLocInfo) {
         arriveDelay()
         if (
-            quest.stage(player) < MET_DREZEL ||
-                (quest.stage(player) == MET_DREZEL && IRON_KEY !in inv)
+            coords.x <= loc.x &&
+                !quest.policyAccess(player) &&
+                (quest.stage(player) < MET_DREZEL ||
+                    (quest.stage(player) == MET_DREZEL && IRON_KEY !in inv))
         ) {
             mes("The cell gate is locked.")
             return
         }
-        if (quest.stage(player) == MET_DREZEL) quest.quest.setQuestStage(this, CELL_UNLOCKED)
-        crossWall(loc)
+        if (crossWall(loc) && coords.x > loc.x && quest.stage(player) == MET_DREZEL)
+            quest.quest.setQuestStage(this, CELL_UNLOCKED)
     }
 
     private suspend fun ProtectedAccess.crossWall(loc: BoundLocInfo): Boolean {
@@ -359,7 +361,7 @@ constructor(
             if (coords != start) return false
         }
         soundSynth("synth.door_open")
-        locs.del(loc, 3)
+        locs.change(loc, "loc.inviswall", 2)
         val facing =
             when {
                 destination.x > start.x -> constants.em_face_east
