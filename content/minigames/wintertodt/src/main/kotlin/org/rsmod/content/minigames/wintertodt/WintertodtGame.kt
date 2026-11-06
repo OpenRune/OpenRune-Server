@@ -43,7 +43,6 @@ import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.world.WorldRepository
-import org.rsmod.api.route.BoundValidator
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.content.interfaces.collectionlog.CollectionLog
@@ -76,7 +75,6 @@ constructor(
     private val random: GameRandom,
     private val worldRepo: WorldRepository,
     private val eventBus: EventBus,
-    private val boundValidator: BoundValidator,
     private val flags: CollisionFlagMap,
     private val invisibleLevels: InvisibleLevels,
     private val protectedAccess: ProtectedAccessLauncher,
@@ -105,7 +103,6 @@ constructor(
     private var areaWarningUntil = 0
     private var nextHud = 0
     private var worldReady = false
-    private var warmthLock = false
     private var pyroDownThisRound = false
     private var allBraziersBrokenThisRound = false
 
@@ -1095,145 +1092,6 @@ constructor(
     fun warmItems(player: Player): Int =
         player.worn.objs.count { it != null && it.id in warmItemIds }
 
-    fun setEnergy(value: Int) {
-        energy = value.coerceIn(0, Wintertodt.ENERGY_MAX)
-        updateHud()
-    }
-
-    fun setPoints(player: Player, value: Int) {
-        val session = session(player) ?: return
-        session.points = value.coerceAtLeast(0)
-        updateHud(session)
-    }
-
-    fun setWarmth(player: Player, value: Int) {
-        player.wintWarmth = value.coerceIn(0, Wintertodt.WARMTH_MAX)
-    }
-
-    fun setRewardPool(player: Player, value: Int) {
-        player.wintRewardPool = value.coerceIn(0, Wintertodt.REWARD_POOL_MAX)
-    }
-
-    fun debugStatus(player: Player) {
-        val session = session(player)
-        player.mes(
-            "phase=$phase energy=$energy points=${session?.points ?: -1} " +
-                "warmth=${player.wintWarmth} cart=${cart?.coords}",
-        )
-        for (brazier in braziers) {
-            player.mes(
-                "brazier ${brazier.index}: state=${brazier.state} loc=${brazier.loc?.id} " +
-                    "coords=${brazier.loc?.coords}",
-            )
-        }
-        for (pyro in pyromancers) {
-            player.mes(
-                "pyro ${pyro.index}: down=${pyro.down} hp=${pyro.hp} npc=${pyro.npc?.coords} " +
-                    "nextSpeak=${pyro.nextSpeak}",
-            )
-        }
-    }
-
-    fun debugAxe(player: Player) {
-        val best = bestAxe(player)
-        if (best == null) {
-            player.mes("axe=none")
-            return
-        }
-        val rates = axeRates(best)
-        val rate = chopRate(player, best)
-        player.mes(
-            "axe=${best.internalName} rates=$rates rate=$rate level=${player.baseWoodcuttingLvl} " +
-                "invis=${invisibleLevels.get(player, "stat.woodcutting")}",
-        )
-    }
-
-    fun debugPyroSay() {
-        for (pyro in pyromancers) {
-            pyro.npc?.say("Yemalo shi cardito!")
-        }
-    }
-
-    fun debugLocations(player: Player) {
-        val ids =
-            brazierIds +
-                setOf(
-                    locId(Wintertodt.STORM_ACTIVE),
-                    locId(Wintertodt.STORM_IDLE),
-                )
-        val origin = ZoneKey.from(Wintertodt.STORM)
-        for (dx in -3..3) {
-            for (dz in -3..3) {
-                for (loc in locRepo.findAll(origin.translate(dx, dz))) {
-                    if (loc.id in ids) {
-                        val type = ServerCacheManager.getObject(loc.id)
-                        val bound = type?.let { BoundLocInfo(loc, it) }
-                        val touches =
-                            bound != null && boundValidator.touches(player.avatar, bound)
-                        player.mes(
-                            "loc id=${loc.id} coords=${loc.coords} shape=${loc.shape} " +
-                                "angle=${loc.angle} w=${type?.width} l=${type?.length} " +
-                                "faf=${type?.forceApproachFlags} touch=$touches",
-                        )
-                    }
-                }
-            }
-        }
-        player.mes("player coords=${player.coords}")
-        for (dx in -1..1) {
-            for (dz in -1..1) {
-                val coords = player.coords.translate(dx, dz)
-                for (loc in locRepo.findAll(coords)) {
-                    val type = ServerCacheManager.getObject(loc.id)
-                    player.mes(
-                        "tile ${coords.x},${coords.z} loc=${type?.internalName} " +
-                            "layer=${loc.layer} block=${type?.blockWalk}",
-                    )
-                }
-            }
-        }
-        val originLoc = braziers.firstOrNull()?.loc ?: return
-        for (dx in -1..3) {
-            for (dz in -1..3) {
-                val x = originLoc.coords.x + dx
-                val z = originLoc.coords.z + dz
-                player.mes("flag $x,$z=${flags[x, z, originLoc.coords.level]}")
-            }
-        }
-    }
-
-    fun toggleWarmthLock(player: Player) {
-        warmthLock = !warmthLock
-        player.mes("warmthLock=$warmthLock")
-        if (warmthLock) player.wintWarmth = Wintertodt.WARMTH_MAX
-    }
-
-    fun forceAttack() {
-        if (phase != Phase.ACTIVE) return
-        specialAttack()
-    }
-
-    fun forceAreaAttack() {
-        if (phase != Phase.ACTIVE) return
-        areaAttack()
-    }
-
-    fun forceBrazierAttack(index: Int = 0) {
-        if (phase != Phase.ACTIVE) return
-        brazierAttack(index.coerceIn(0, 3))
-    }
-
-    fun forcePyromancerAttack(index: Int = 0) {
-        if (phase != Phase.ACTIVE) return
-        pyromancerAttack(index.coerceIn(0, 3))
-    }
-
-    fun forceBrazierBreak(index: Int = 0) {
-        if (phase != Phase.ACTIVE) return
-        val brazier = braziers[index.coerceIn(0, 3)]
-        if (brazier.state == BrazierState.LIT) damageBrazier(brazier)
-    }
-
     fun updateHud() {
         for (session in sessions.values.toList()) updateHud(session)
     }
@@ -1781,10 +1639,6 @@ constructor(
     private fun applyWarmth(player: Player, damage: Int) {
         if (damage <= 0) return
         if (player.wintWarmth <= 0) return
-        if (warmthLock) {
-            player.wintWarmth = Wintertodt.WARMTH_MAX
-            return
-        }
         val before = player.wintWarmth
         val next = (player.wintWarmth - damage).coerceAtLeast(0)
         player.wintWarmth = next

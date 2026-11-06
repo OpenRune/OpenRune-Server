@@ -10,7 +10,6 @@ import org.rsmod.api.player.stat.agilityLvl
 import org.rsmod.api.player.stat.baseFiremakingLvl
 import org.rsmod.api.player.worn.WornUnequipResult
 import org.rsmod.api.script.onApLoc1
-import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
@@ -142,46 +141,6 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         onOpHeld1(EXTRA_CRATE) {
             game.stopAction(player)
             game.openExtraCrate(player, it.slot)
-        }
-
-        onCommand("wt") {
-            desc = "Wintertodt debug"
-            invalidArgs =
-                "Usage: ::wt start|energy <n>|points <n>|warmth <n>|pool <n>|search|fletch|" +
-                    "check|attack"
-            cheat {
-                when (args.getOrNull(0)?.lowercase()) {
-                    "start" -> game.startRound()
-                    "energy" -> game.setEnergy(args[1].toInt())
-                    "points" -> game.setPoints(player, args[1].toInt())
-                    "warmth" -> game.setWarmth(player, args[1].toInt())
-                    "pool" -> game.setRewardPool(player, args[1].toInt())
-                    "search" -> {
-                        val message =
-                            game.beginSearch(player, args.getOrNull(1)?.toIntOrNull() ?: 1)
-                        if (message != null) player.mes(message)
-                    }
-                    "fletch" -> game.beginFletch(player)
-                    "check" -> game.checkCart(player)
-                    "attack" ->
-                        when (args.getOrNull(1)?.lowercase()) {
-                            "area" -> game.forceAreaAttack()
-                            "brazier" ->
-                                game.forceBrazierAttack(args.getOrNull(2)?.toIntOrNull() ?: 0)
-                            "pyro" ->
-                                game.forcePyromancerAttack(args.getOrNull(2)?.toIntOrNull() ?: 0)
-                            else -> game.forceAttack()
-                        }
-                    "status" -> game.debugStatus(player)
-                    "axe" -> game.debugAxe(player)
-                    "say" -> game.debugPyroSay()
-                    "locs" -> game.debugLocations(player)
-                    "lockwarmth" -> game.toggleWarmthLock(player)
-                    "break" -> game.forceBrazierBreak()
-                    "logout" -> player.manualLogout = true
-                    else -> player.mes(invalidArgs ?: "Usage: ::wt start|energy|points|warmth|attack")
-                }
-            }
         }
     }
 
