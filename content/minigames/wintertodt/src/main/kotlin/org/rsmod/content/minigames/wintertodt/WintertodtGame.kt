@@ -416,6 +416,7 @@ constructor(
             val reward = WintertodtRewards.roll(player, random)
             if (!WintertodtRewards.add(player, reward)) return CartResult.FULL
             player.wintRewardPool = player.wintRewardPool - 1
+            player.wintertodtRewardsClaimed += 1
             player.spam("You found some loot: ${lootCount(reward.count)} x ${lootName(reward.item)}")
             player.anim(Wintertodt.CART_PICK_ANIM)
             player.soundSynth(Wintertodt.CART_PICK_SYNTH)

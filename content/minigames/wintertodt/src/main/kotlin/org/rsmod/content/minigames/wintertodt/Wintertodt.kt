@@ -208,6 +208,7 @@ internal var Player.wintNeedsWarning by intVarBit("varbit.wint_needs_warning")
 internal var Player.wintRespawnDelay by intVarBit("varbit.wint_transmit_respawndelay")
 internal var Player.wintAreaAttack by intVarBit("varbit.wint_area_attack")
 internal var Player.wintertodtKills by intVarp("varp.total_wintertodt_kills")
+internal var Player.wintertodtRewardsClaimed by intVarp("varp.wintertodt_rewards_claimed")
 
 internal var Player.caWintertodtKill5 by intVarBit("varbit.ca_task_wintertodt_killcount_1_completed")
 internal var Player.caWintertodtKill10 by intVarBit("varbit.ca_task_wintertodt_killcount_2_completed")

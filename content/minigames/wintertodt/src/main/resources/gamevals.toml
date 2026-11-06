@@ -1,6 +1,9 @@
 [gamevals.dbtable]
 wintertodt_reward=65406
 
+[gamevals.varp]
+wintertodt_rewards_claimed=65662
+
 [gamevals.dbrow]
 wintertodt_reward_magic_logs=63050
 wintertodt_reward_yew_logs=63051

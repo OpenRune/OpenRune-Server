@@ -351,6 +351,7 @@ object CollectionLogCategoriesTable {
             column(STRUCT_ID, 504)
             columnRSCM(COMPLETED_VARBIT, "varbit.collection_bosses_wintertodt_completed")
             columnRSCM(COUNT_VARP_1, "varp.total_wintertodt_kills")
+            columnRSCM(COUNT_VARP_2, "varp.wintertodt_rewards_claimed")
         }
 
         row("dbrow.collection_log_category_yama") {
