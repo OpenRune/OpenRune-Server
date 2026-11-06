@@ -7,16 +7,15 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.aconverted.interf.IfButtonOp
 import dtx.core.ArgMap
-import dtx.core.RollResult
-import dtx.core.flatten
 import jakarta.inject.Inject
 import kotlin.random.Random
 import org.rsmod.api.droptable.DropTableRegistry
-import org.rsmod.api.droptable.rollCount
+import org.rsmod.api.droptable.toDropList
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.invtx.invClear
 import org.rsmod.api.obj.charges.ObjChargeManager
+import org.rsmod.api.player.events.LootSource
 import org.rsmod.api.player.lefthand
 import org.rsmod.api.player.midiJingle
 import org.rsmod.api.player.output.CamShakeAxis
@@ -35,7 +34,7 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.api.script.onPlayerTimer
-import org.rsmod.content.interfaces.collectionlog.CollectionLog
+import org.rsmod.content.drops.LootDelivery
 import org.rsmod.events.EventBus
 import org.rsmod.game.entity.Player
 import org.rsmod.game.hit.HitType
@@ -54,6 +53,7 @@ constructor(
     private val spawner: BarrowsNpcSpawner,
     private val doors: BarrowsDoors,
     private val dropRegistry: DropTableRegistry,
+    private val loot: LootDelivery,
 ) : PluginScript() {
     private val puzzles = mutableMapOf<Int, BarrowsPuzzle>()
 
@@ -240,12 +240,7 @@ constructor(
             mes("The chest is empty!")
             return
         }
-        val drops =
-            when (val result = dropRegistry.forLoc(BARROWS_CHEST)?.roll(player, ArgMap())?.flatten()) {
-                is RollResult.Single -> listOf(result.result)
-                is RollResult.ListOf -> result.results
-                else -> emptyList()
-            }
+        val drops = dropRegistry.forLoc(BARROWS_CHEST)?.roll(player, ArgMap())?.toDropList()
         player.barrowsLooted = true
         player.chestCount += 1
         mes("Your Barrows chest count is: <col=ff0000>${player.chestCount}</col>.")
@@ -256,10 +251,7 @@ constructor(
             invAdd(rewardInv, "obj.barrows_icon", 1)
             player.hfsStage = HFS_ICON_LOOTED
         }
-        for (drop in drops) {
-            if (drop.isNothing || !drop.condition(player)) continue
-            invAdd(rewardInv, drop.transformObj(player) ?: drop.obj, drop.rollCount(random))
-        }
+        loot.give(player, LootSource.Loc(BARROWS_CHEST), drops.orEmpty(), destination = rewardInv)
         invTransmit(rewardInv)
         player.midiJingle(CHEST_JINGLE)
         ifOpenMain(REWARD_INTERFACE)
@@ -278,7 +270,6 @@ constructor(
                 continue
             }
             val name = RSCM.getReverseMapping(RSCMType.OBJ, obj.id)
-            CollectionLog.grant(player, name, obj.count)
             player.invAddOrDrop(objRepo, name, obj.count)
         }
         player.invClear(rewardInv)
