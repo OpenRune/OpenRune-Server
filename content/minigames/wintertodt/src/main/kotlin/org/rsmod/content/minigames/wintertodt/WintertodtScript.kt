@@ -299,9 +299,10 @@ constructor(private val game: WintertodtGame) : PluginScript() {
 
     private suspend fun ProtectedAccess.startCartSearch(loc: BoundLocInfo, batch: Int) {
         game.stopAction(player)
-        arriveDelay()
+        while (!player.routeDestination.isEmpty()) {
+            delay(1)
+        }
         faceLoc(loc)
-        delay(1)
         val message = game.beginSearch(player, batch)
         if (message != null) mesbox(message)
     }
