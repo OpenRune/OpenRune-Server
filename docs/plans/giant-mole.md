@@ -75,7 +75,7 @@ Current-OSRS extras (private instance, immaculate mole skin) are called out sepa
 | Attack style | Crush, melee only | Wiki infobox |
 | Attack speed | 4 ticks (2.4 s) | Wiki infobox; capture attacks every ~2.4 s |
 | Max hit | 21 | Wiki infobox |
-| Respawn | 16 s (map spawn at 1759, 5189) | Wiki infobox |
+| Respawn | 16 ticks / 9.6 s (map spawn at 1759, 5189) | Wiki infobox |
 | Aggressive | No; retaliates after being attacked | Wiki; capture |
 | Slayer XP | 215 | Wiki; capture `4875` |
 | Elemental weakness | 50% earth | Current wiki; already set in `npcs.toml` |
@@ -215,7 +215,7 @@ Edits:
 
 - Keep the existing earth weakness params.
 - Verify the cache NPC already has 200 HP, 230 combat, size 3, attack speed 4,
-  max hit 21, crush style, respawn 16 and Slayer XP 215. Add overrides only for
+  max hit 21, crush style, respawn 16 ticks and Slayer XP 215. Add overrides only for
   values the cache gets wrong.
 
 ### 2. Boss AI (`GiantMole.kt`)
