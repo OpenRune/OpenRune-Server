@@ -310,7 +310,6 @@ constructor(
     }
 
     fun onLogin(player: Player) {
-        ensureCart()
         player.wintWarmth = Wintertodt.WARMTH_MAX
         if (Wintertodt.isInPrison(player.coords)) {
             PathingEntityCommon.teleport(player, flags, Wintertodt.EXIT)
@@ -364,7 +363,6 @@ constructor(
     }
 
     fun checkCart(player: Player) {
-        ensureCart()
         val pool = player.wintRewardPool
         when {
             pool <= 0 -> player.mes("You aren't owed any rewards from the cart.")
@@ -374,7 +372,6 @@ constructor(
     }
 
     fun cartPool(player: Player): Int {
-        ensureCart()
         return player.wintRewardPool
     }
 
@@ -410,7 +407,6 @@ constructor(
     }
 
     fun searchCart(player: Player, batch: Int): CartResult {
-        ensureCart()
         if (player.wintRewardPool <= 0) return CartResult.EMPTY
         repeat(batch) {
             if (player.wintRewardPool <= 0) return CartResult.FINISHED
@@ -1893,20 +1889,6 @@ constructor(
                 return
             }
         }
-    }
-
-    private fun ensureCart() {
-        if (cart != null) return
-        findCart()
-        if (cart != null) return
-        cart =
-            locRepo.add(
-                CoordGrid(1635, 3941, 0),
-                "loc.wint_reward_pile",
-                Int.MAX_VALUE,
-                LocAngle.South,
-                LocShape.CentrepieceStraight,
-            )
     }
 
     private fun setBrazierState(brazier: Brazier, state: BrazierState) {
