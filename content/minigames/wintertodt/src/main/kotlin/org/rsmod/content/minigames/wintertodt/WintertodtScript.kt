@@ -228,11 +228,12 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         if (index < 0) return
         if (!game.canLight(player, index)) return
         arriveDelay()
+        faceLoc(loc)
         val lightAnim =
             if (game.hasBrumaTorch(player)) Wintertodt.ANIM_LIGHT_TORCH
             else Wintertodt.ANIM_LIGHT
         anim(lightAnim)
-        delay(2)
+        delay(3)
         game.lightBrazier(player, index)
         resetAnim()
     }
@@ -248,9 +249,13 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         if (index < 0) return
         if (!game.canFix(player, index)) return
         arriveDelay()
+        faceLoc(loc)
         anim(Wintertodt.ANIM_FIX)
+        soundSynth(930)
         delay(2)
         game.fixBrazier(player, index)
+        delay(1)
+        mes("You fix the brazier.")
         resetAnim()
     }
 
@@ -264,6 +269,7 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         val index = game.brazierIndex(loc.coords)
         if (index < 0) return
         arriveDelay()
+        faceLoc(loc)
         game.beginFeed(player, index)
     }
 

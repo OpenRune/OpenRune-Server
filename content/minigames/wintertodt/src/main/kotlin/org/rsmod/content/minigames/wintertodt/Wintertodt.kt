@@ -199,6 +199,7 @@ internal class WintertodtSession(val player: Player) {
     var lastCold: Int = Int.MIN_VALUE / 2
     var regenTenths: Int = 0
     var nextHud: Int = 0
+    var nextDrink: Int = 0
 }
 
 internal var Player.wintWarmth by intVarBit("varbit.wint_warmth")

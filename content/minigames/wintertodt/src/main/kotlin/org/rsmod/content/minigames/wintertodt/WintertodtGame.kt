@@ -216,11 +216,22 @@ constructor(
     private val ItemServerType.axeLevelReq: Int by objParam(params.levelrequire)
 
     private val treeType: ObjectServerType? by lazy {
+        ServerCacheManager.getObject("loc.wint_roots".asRSCM(RSCMType.LOC))
+    }
+
+    private val fallbackTreeType: ObjectServerType? by lazy {
         ServerCacheManager.getObject("loc.tree".asRSCM(RSCMType.LOC))
     }
 
     private val treeRates: EnumTypeMap<ItemServerType, Int>? by lazy {
-        treeType?.let { runCatching { it.param(WintertodtParams.successRates) }.getOrNull() }
+        ratesOf(treeType) ?: ratesOf(fallbackTreeType)
+    }
+
+    private fun ratesOf(type: ObjectServerType?): EnumTypeMap<ItemServerType, Int>? {
+        val rates =
+            type?.let { runCatching { it.param(WintertodtParams.successRates) }.getOrNull() }
+                ?: return null
+        return rates.takeIf { it.iterator().hasNext() }
     }
 
     private val insideScript: Int = Wintertodt.SCRIPT_INSIDE
@@ -528,8 +539,6 @@ constructor(
             return
         }
         setBrazierState(brazier, BrazierState.UNLIT)
-        player.soundSynth(2581)
-        player.mes("You fix the brazier.")
         addPoints(player, 25)
         if (hasPoh(player)) {
             player.statAdvance("stat.construction", 4.0 * player.baseConstructionLvl)
@@ -578,7 +587,7 @@ constructor(
         }
         if (player.invAdd(player.inv, Wintertodt.ROOT, 1).failure) return
         player.statAdvance("stat.woodcutting", 0.3 * player.baseWoodcuttingLvl)
-        player.mes("You get a bruma root.")
+        player.spam("You get a bruma root.")
     }
 
     fun fletch(player: Player) {
@@ -586,7 +595,7 @@ constructor(
         if (player.invDel(player.inv, Wintertodt.ROOT, 1).failure) return
         player.invAdd(player.inv, Wintertodt.KINDLING, 1)
         player.statAdvance("stat.fletching", 0.6 * player.baseFletchingLvl)
-        player.mes("You carefully fletch the root into a bundle of kindling.")
+        player.spam("You carefully fletch the root into a bundle of kindling.")
     }
 
     fun pickHerb(player: Player) {
@@ -595,7 +604,7 @@ constructor(
             return
         }
         if (player.invAdd(player.inv, Wintertodt.HERB, 1).failure) return
-        player.mes("You pick a bruma herb.")
+        player.spam("You pick a bruma herb.")
         player.soundSynth(2581)
     }
 
@@ -619,6 +628,8 @@ constructor(
     }
 
     fun drinkPotion(player: Player, slot: Int) {
+        val session = session(player)
+        if (session != null && mapClock.cycle < session.nextDrink) return
         val obj = player.inv[slot] ?: return
         val dose =
             when (obj.id) {
@@ -645,12 +656,14 @@ constructor(
         if (player.invDel(player.inv, current, 1, slot).failure) return
         player.invAdd(player.inv, next, 1, slot)
         player.wintWarmth = min(Wintertodt.WARMTH_MAX, player.wintWarmth + 300)
+        session?.nextDrink = mapClock.cycle + 3
         player.anim(Wintertodt.ANIM_DRINK)
-        player.mes("You drink some of your potion.")
+        player.soundSynth(2401)
+        player.spam("You drink some of your potion.")
         if (dose > 1) {
             val left = dose - 1
             val label = if (left == 1) "dose" else "doses"
-            player.mes("You have $left $label of potion left.")
+            player.spam("You have $left $label of potion left.")
         }
         updateHud()
     }
@@ -823,10 +836,10 @@ constructor(
                 brazierIndex = -1,
                 anim = anim,
                 nextCycle = mapClock.cycle + 1,
-                nextAnimCycle = mapClock.cycle + 6,
+                nextAnimCycle = 0,
             )
         player.anim(anim)
-        player.mes("You swing your axe at the roots.")
+        player.spam("You swing your axe at the roots.")
     }
 
     fun beginPick(player: Player, loc: BoundLocInfo) {
@@ -913,7 +926,7 @@ constructor(
                 actions.remove(player)
                 continue
             }
-            if (player.coords != action.anchor) {
+            if (action.type != ActionType.FLETCH && player.coords != action.anchor) {
                 actions.remove(player)
                 continue
             }
@@ -933,6 +946,7 @@ constructor(
                         actions.remove(player)
                         continue
                     }
+                    action.anim?.let { player.anim(it) }
                     chopSound(player)
                     if (chopSuccess(player)) chopRoot(player)
                     action.nextCycle = cycle + 3
@@ -1959,10 +1973,14 @@ constructor(
             kotlin.math.abs(a.x - b.x) <= radius &&
             kotlin.math.abs(a.z - b.z) <= radius
 
-    private fun nearBrazier(coords: CoordGrid, base: CoordGrid): Boolean =
-        coords.level == base.level &&
-            coords.x in (base.x - 1)..(base.x + 3) &&
-            coords.z in (base.z - 1)..(base.z + 3)
+    private fun nearBrazier(coords: CoordGrid, base: CoordGrid): Boolean {
+        val type = braziers.firstOrNull { it.coords == base }?.loc?.id?.let(ServerCacheManager::getObject)
+        val width = type?.width ?: 1
+        val length = type?.length ?: 1
+        return coords.level == base.level &&
+            coords.x in (base.x - 1)..(base.x + width) &&
+            coords.z in (base.z - 1)..(base.z + length)
+    }
 
     private fun itemId(name: String): Int =
         ServerCacheManager.getItem(name.asRSCM(RSCMType.OBJ))?.id ?: -1
