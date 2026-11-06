@@ -36,8 +36,8 @@ class WintertodtFormulaTest {
 
     @Test
     fun `brazier shrapnel and area attacks use their own multipliers`() {
-        assertEquals(100, Wintertodt.brazierDamage(firemaking = 99, warmItems = 4))
-        assertEquals(150, Wintertodt.areaDamage(firemaking = 99, warmItems = 4))
+        assertEquals(120, Wintertodt.brazierDamage(firemaking = 99, warmItems = 4))
+        assertEquals(180, Wintertodt.areaDamage(firemaking = 99, warmItems = 4))
     }
 
     @Test

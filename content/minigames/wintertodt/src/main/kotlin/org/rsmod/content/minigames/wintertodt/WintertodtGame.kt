@@ -100,6 +100,8 @@ constructor(
     private var energy = Wintertodt.ENERGY_MAX
     private var respawnTimer = 0
     private var nextAttack = 0
+    private var areaWarningCenter: CoordGrid? = null
+    private var areaWarningUntil = 0
     private var nextHud = 0
     private var worldReady = false
     private var warmthLock = false
@@ -240,6 +242,7 @@ constructor(
             regenerateEnergy()
             runWarmth()
             runAttacks()
+            updateAreaWarning()
             runPyromancerSpeech()
             tickFireStreams()
             if (energy <= 0) endRound()
@@ -731,7 +734,8 @@ constructor(
         val npc = pyro.npc ?: return
         npc.hitpoints = pyro.hp.coerceAtLeast(1)
         npc.baseHitpointsLvl = 14
-        val fill = (pyro.hp.coerceIn(0, 14) * Wintertodt.HEADBAR_SEGMENTS) / 14
+        val fill =
+            (pyro.hp.coerceIn(0, 14) * Wintertodt.HEADBAR_SEGMENTS + 7) / 14
         npc.showHeadbar(
             Headbar.fromNoSource(
                 self = Wintertodt.HEADBAR_HEALTH,
@@ -892,6 +896,13 @@ constructor(
 
     fun stopAction(player: Player) {
         if (actions.remove(player) != null) player.resetAnim()
+    }
+
+    private fun interruptFletchAndFeed(player: Player) {
+        val action = actions[player] ?: return
+        if (action.type == ActionType.FLETCH || action.type == ActionType.FEED) {
+            stopAction(player)
+        }
     }
 
     private fun tickActions() {
@@ -1234,6 +1245,7 @@ constructor(
         energy = 0
         respawnTimer = Wintertodt.RESPAWN_TIMER
         pending.clear()
+        clearWarning()
         for (brazier in braziers) setBrazierState(brazier, BrazierState.UNLIT)
         for (pyro in pyromancers) {
             pyro.hp = 14
@@ -1375,23 +1387,25 @@ constructor(
                     mapClock.cycle - it.lastCold >= Wintertodt.TARGET_COOLDOWN
             }
         if (candidates.isEmpty()) return
-        val session = candidates[random.of(candidates.size)]
-        val player = session.player
-        val damage =
-            Wintertodt.standardDamage(
-                player.baseFiremakingLvl,
-                warmItems(player),
-                braziers.count { it.state == BrazierState.LIT },
-            )
-        player.mes("The cold of the Wintertodt seeps into your bones.")
-        applyWarmth(player, damage)
-        session.lastCold = mapClock.cycle
+        for (session in candidates) {
+            val player = session.player
+            val damage =
+                Wintertodt.standardDamage(
+                    player.baseFiremakingLvl,
+                    warmItems(player),
+                    braziers.count { it.state == BrazierState.LIT },
+                )
+            player.spam("The cold of the Wintertodt seeps into your bones.")
+            interruptFletchAndFeed(player)
+            applyWarmth(player, damage)
+            session.lastCold = mapClock.cycle
+        }
     }
 
     private fun specialAttack() {
         when (random.of(0, 9)) {
             0 -> areaAttack()
-            in 1..4 -> brazierAttack(random.of(0, 3))
+            in 1..7 -> brazierAttack(random.of(0, 3))
             else -> pyromancerAttack(random.of(0, 3))
         }
     }
@@ -1402,27 +1416,48 @@ constructor(
         if (mapClock.cycle - brazier.lastHit < Wintertodt.TARGET_COOLDOWN) return
         brazier.lastHit = mapClock.cycle
         val heavy = random.of(0, 2) == 0
-        addSnowfall(brazier.coords, brazierWarningOffsets, duration = 3)
-        worldRepo.projAnim(travelBreath(brazier.coords, startHeight = 150, endTime = 120))
+        val center = brazierCenter(brazier)
+        if (heavy) {
+            addSnowfall(center, brazierWarningOffsets, duration = 3)
+        } else {
+            addSnowfall(center, listOf(0 to 0), duration = 3)
+        }
+        worldRepo.projAnim(
+            travelBreath(
+                brazier.coords,
+                startHeight = if (heavy) 150 else 0,
+                endTime = if (heavy) 120 else 90,
+            )
+        )
         worldRepo.spotanimMap(
             SpotanimType(Wintertodt.SPOTANIM_AREA_BREATH.asRSCM(RSCMType.SPOTANIM)),
             brazier.coords,
-            height = 70,
-            delay = 4,
+            height = if (heavy) 70 else 60,
+            delay = if (heavy) 4 else 3,
         )
         pending +=
             Pending(mapClock.cycle + 4) {
                 if (brazier.state == BrazierState.LIT) {
                     if (heavy) {
                         damageBrazier(brazier)
-                        worldRepo.soundArea(brazier.coords, Wintertodt.SOUND_EXPLOSION, radius = 2)
+                        soundAreaId(brazier.coords, if (heavy) 2299 else 2300, radius = 2)
                     } else {
                         setBrazierState(brazier, BrazierState.UNLIT)
-                        worldRepo.soundArea(brazier.coords, Wintertodt.SOUND_HIT, radius = 10)
+                        soundAreaId(brazier.coords, 2300, radius = 2)
                     }
                 }
                 updateHud()
             }
+    }
+
+    private fun brazierCenter(brazier: Brazier): CoordGrid {
+        val type = brazier.loc?.id?.let { ServerCacheManager.getObject(it) }
+        return brazier.coords.translate((type?.width ?: 1) / 2, (type?.length ?: 1) / 2)
+    }
+
+    private fun soundAreaId(coords: CoordGrid, id: Int, radius: Int, fallback: String = Wintertodt.SOUND_HIT) {
+        val name = runCatching { RSCM.getReverseMapping(RSCMType.SYNTH, id) }.getOrElse { fallback }
+        worldRepo.soundArea(coords, name, radius = radius)
     }
 
     private fun addSnowfall(center: CoordGrid, offsets: List<Pair<Int, Int>>, duration: Int) {
@@ -1459,6 +1494,7 @@ constructor(
             if (player.wintWarmth <= 0) continue
             if (nearBrazier(player.coords, brazier.coords)) {
                 player.mes("The brazier is broken and shrapnel damages you.")
+                interruptFletchAndFeed(player)
                 applyWarmth(
                     player,
                     Wintertodt.brazierDamage(player.baseFiremakingLvl, warmItems(player)),
@@ -1544,8 +1580,8 @@ constructor(
             Pending(mapClock.cycle + 6) {
                 if (!pyro.down) {
                     val hpBefore = pyro.hp
-                    val damage = hpBefore.coerceAtMost(7)
-                    pyro.hp = hpBefore - damage
+                    val damage = 8
+                    pyro.hp = (hpBefore - damage).coerceAtLeast(0)
                     showPyromancerDamage(pyro, damage)
                     worldRepo.soundArea(pyro.coords, Wintertodt.SOUND_HIT, radius = 10)
                     if (pyro.hp <= 0) {
@@ -1583,6 +1619,8 @@ constructor(
         val spot = Wintertodt.SPOTANIM_AREA_SPOT.asRSCM(RSCMType.SPOTANIM)
         val impact = SpotanimType(Wintertodt.SPOTANIM_AREA_IMPACT.asRSCM(RSCMType.SPOTANIM))
         val breath = SpotanimType(Wintertodt.SPOTANIM_AREA_BREATH.asRSCM(RSCMType.SPOTANIM))
+        areaWarningCenter = center
+        areaWarningUntil = mapClock.cycle + 3
         addSnowfall(center, areaOffsets + (0 to 0), duration = 13)
         worldRepo.projAnim(travelBreath(center, startHeight = 0, endTime = 200))
         pending +=
@@ -1611,10 +1649,6 @@ constructor(
                 worldRepo.spotanimMap(breath, center, delay = 3)
             }
         pending +=
-            Pending(mapClock.cycle + 5) {
-                for (session in sessions.values) session.player.wintAreaAttack = 1
-            }
-        pending +=
             Pending(mapClock.cycle + 6) {
                 showAreaImpact(center)
                 worldRepo.soundArea(center, Wintertodt.SOUND_EXPLOSION, radius = 2)
@@ -1627,17 +1661,13 @@ constructor(
                         player.mes(
                             "The freezing cold attack of the Wintertodt's magic hits you.",
                         )
+                        interruptFletchAndFeed(player)
                         applyWarmth(
                             player,
                             Wintertodt.areaDamage(
                                 player.baseFiremakingLvl,
                                 warmItems(player),
                             ),
-                        )
-                        player.soundSynth(
-                            if (random.of(0, 1) == 0) Wintertodt.SOUND_HIT_2
-                            else Wintertodt.SOUND_HIT_4,
-                            delay = 20,
                         )
                     }
                 }
@@ -1681,8 +1711,22 @@ constructor(
         }
     }
 
+    private fun updateAreaWarning() {
+        val center = areaWarningCenter ?: return
+        if (mapClock.cycle > areaWarningUntil) {
+            clearWarning()
+            return
+        }
+        for (session in sessions.values) {
+            val player = session.player
+            val value = if (near(player.coords, center, 1)) 1 else 0
+            if (player.wintAreaAttack != value) player.wintAreaAttack = value
+        }
+    }
+
     private fun clearWarning() {
         for (session in sessions.values) session.player.wintAreaAttack = 0
+        areaWarningCenter = null
     }
 
     private fun applyWarmth(player: Player, damage: Int) {
@@ -1704,7 +1748,8 @@ constructor(
                 delay = 0,
             ),
         )
-        val fill = (next * Wintertodt.HEADBAR_SEGMENTS) / Wintertodt.WARMTH_MAX
+        val fill =
+            (next * Wintertodt.HEADBAR_SEGMENTS + Wintertodt.WARMTH_MAX / 2) / Wintertodt.WARMTH_MAX
         player.showHeadbar(
             Headbar.fromNoSource(
                 self = Wintertodt.HEADBAR_WARMTH,
@@ -1719,6 +1764,7 @@ constructor(
             player.mes("<col=ef1020>The cold of the Wintertodt has overcome you!")
             player.queueDeath()
         }
+        player.soundSynth(Wintertodt.SOUND_HIT_4, delay = 20)
     }
 
     private fun processPending() {

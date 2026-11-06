@@ -155,12 +155,12 @@ internal object Wintertodt {
     }
 
     fun brazierDamage(firemaking: Int, warmItems: Int): Int {
-        val percent = ((10 - warmItems) * firemaking / 100.0).toInt().coerceAtLeast(0)
+        val percent = ((10 - warmItems) * firemaking / 100.0).roundToInt().coerceAtLeast(0)
         return 2 * percent * 10
     }
 
     fun areaDamage(firemaking: Int, warmItems: Int): Int {
-        val percent = ((10 - warmItems) * firemaking / 100.0).toInt().coerceAtLeast(0)
+        val percent = ((10 - warmItems) * firemaking / 100.0).roundToInt().coerceAtLeast(0)
         return 3 * percent * 10
     }
 
