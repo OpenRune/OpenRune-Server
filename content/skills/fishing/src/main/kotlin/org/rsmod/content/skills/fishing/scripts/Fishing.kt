@@ -10,13 +10,13 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.agilityLvl
+import org.rsmod.api.player.stat.fishingLvl
+import org.rsmod.api.player.stat.resolveSkillRoll
 import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.stat.skillNeedsBait
 import org.rsmod.api.player.stat.skillNeedsSpace
 import org.rsmod.api.player.stat.skillTool
-import org.rsmod.api.player.stat.agilityLvl
-import org.rsmod.api.player.stat.fishingLvl
-import org.rsmod.api.player.stat.resolveSkillRoll
 import org.rsmod.api.player.stat.statRate
 import org.rsmod.api.player.stat.strengthLvl
 import org.rsmod.api.player.vars.intVarBit

@@ -8,8 +8,8 @@ import kotlin.math.min
 import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.market.MarketPrices
-import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.events.PlayerShopEvents
+import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.objExamine
 import org.rsmod.api.shops.config.ShopParams
 import org.rsmod.api.shops.cost.StandardGpCostCalculations

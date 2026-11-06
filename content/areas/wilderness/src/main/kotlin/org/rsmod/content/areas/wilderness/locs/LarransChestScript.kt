@@ -34,7 +34,7 @@ class LarransChestScript @Inject constructor(
     override fun ScriptContext.startup() {
         onOpLoc1(SMALL_CHEST_CLOSED) { openChest(it.loc, SMALL_CHEST_CLOSED, VARP_KC_SMALL) }
         onOpLoc2(SMALL_CHEST_CLOSED) { checkCount(VARP_KC_SMALL, "Larran's small chest") }
-        onOpLoc1(BIG_CHEST_CLOSED) { openChest(it.loc, BIG_CHEST_CLOSED,  VARP_KC_BIG) }
+        onOpLoc1(BIG_CHEST_CLOSED) { openChest(it.loc, BIG_CHEST_CLOSED, VARP_KC_BIG) }
         onOpLoc2(BIG_CHEST_CLOSED) { checkCount(VARP_KC_BIG, "Larran's big chest") }
     }
 

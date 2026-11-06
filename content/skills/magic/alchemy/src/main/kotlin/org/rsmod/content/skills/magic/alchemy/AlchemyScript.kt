@@ -19,9 +19,9 @@ import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.output.UpdateInventory.resendSlot
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.protect.clearPendingAction
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.ui.IfOverlayButtonT
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onPlayerQueueWithArgs
@@ -153,8 +153,8 @@ constructor(
         }
 
         actionDelay = mapClock + player.skillCycles("stat.magic", alchemy.castDelay)
-        PathingEntityCommon.anim(player, RSCM.getReverseMapping(RSCMType.SEQ,alchemy.castingAnim), delay = 0, priority = 0)
-        player.spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM,alchemy.castingSpotanim), height = AlchemySpotanimHeight)
+        PathingEntityCommon.anim(player, RSCM.getReverseMapping(RSCMType.SEQ, alchemy.castingAnim), delay = 0, priority = 0)
+        player.spotanim(RSCM.getReverseMapping(RSCMType.SPOTANIM, alchemy.castingSpotanim), height = AlchemySpotanimHeight)
         soundSynth(alchemy.sound, delay = AlchemySoundDelay)
         runClientScript(ToplevelSidebuttonSwitch, SpellbookSideTab)
         statAdvance("stat.magic", spell.castXp)

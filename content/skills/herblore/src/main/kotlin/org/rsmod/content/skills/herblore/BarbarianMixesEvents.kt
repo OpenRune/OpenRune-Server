@@ -163,7 +163,7 @@ class BarbarianMixesEvents : PluginScript() {
 
         val created = task.created + 1
         if (created < task.amount) {
-            weakQueue("queue.herblore_barbarian_mix", player.skillCycles("stat.herblore", 4),BarbarianMixTask(mix, task.amount, created))
+            weakQueue("queue.herblore_barbarian_mix", player.skillCycles("stat.herblore", 4), BarbarianMixTask(mix, task.amount, created))
         } else {
             resetAnim()
         }

@@ -210,7 +210,6 @@ class CampfireEvents @Inject constructor(
             player.firemakingLvl >= it.statReq.first().t1 && inv.count(it.input.internalName) > 0
         }
 
-
     private fun spawnCampfire(template: BoundLocInfo, id: String, duration: Int) {
         val coords = template.coords
 

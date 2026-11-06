@@ -65,5 +65,4 @@ constructor(
         invAddOrDrop(objRepo, MOON_KEY)
         mes("You join the two halves of the key together.")
     }
-
 }

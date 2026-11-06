@@ -1,11 +1,7 @@
 package org.rsmod.api.player.events.skilling
 
-
-
 import org.rsmod.game.entity.Player
 import org.rsmod.game.inv.Inventory
-
-
 
 public class SkillingProduct(
 

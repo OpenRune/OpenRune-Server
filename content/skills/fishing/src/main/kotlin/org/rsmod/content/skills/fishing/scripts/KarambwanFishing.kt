@@ -9,9 +9,9 @@ import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.skilling.SkillingAwardResult
 import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.fishingLvl
 import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.stat.skillNeedsSpace
-import org.rsmod.api.player.stat.fishingLvl
 import org.rsmod.api.script.onOpContentNpc1
 import org.rsmod.api.script.onOpContentNpcU
 import org.rsmod.api.script.onOpHeldU
