@@ -97,8 +97,16 @@ internal object WintertodtRewards {
         return WintertodtReward(PYRO_PIECES[index], 1)
     }
 
-    private fun owned(player: Player, item: String): Int =
-        player.inv.count(item) + player.worn.count(item)
+    private fun owned(player: Player, item: String): Int {
+        val offhand =
+            if (item == TORCH) {
+                player.inv.count(Wintertodt.TORCH_OFFHAND) +
+                    player.worn.count(Wintertodt.TORCH_OFFHAND)
+            } else {
+                0
+            }
+        return player.inv.count(item) + player.worn.count(item) + offhand
+    }
 
     private fun resource(player: Player, random: GameRandom): WintertodtReward {
         val roll = random.of(0, 24)

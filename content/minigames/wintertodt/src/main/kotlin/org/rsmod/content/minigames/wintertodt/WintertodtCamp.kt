@@ -17,7 +17,8 @@ internal const val IGNISIA = "npc.wint_master_pyromancer"
 internal const val EXTRA_CRATE = "obj.wint_reroll_box"
 internal const val BURNT_PAGE = "obj.wint_burnt_page"
 internal const val EMPTY_TOME = "obj.tome_of_fire_uncharged"
-internal const val BRUMA_TORCH = "obj.wint_torch"
+internal const val BRUMA_TORCH = Wintertodt.TORCH
+internal const val BRUMA_TORCH_OFFHAND = Wintertodt.TORCH_OFFHAND
 internal const val WARM_GLOVES = "obj.pyromancer_gloves"
 
 internal val PYROMANCER_PIECES =
@@ -139,7 +140,10 @@ internal suspend fun ProtectedAccess.exchangeWithIgnisia(npc: Npc) {
 private suspend fun Dialogue.exchangeDialogue() {
     chatNpc(neutral, "Do you have something for me?")
     val pieces = PYROMANCER_PIECES.associateWith { player.inv.count(it) }.filterValues { it > 0 }
-    val others = listOf(EMPTY_TOME, BRUMA_TORCH, WARM_GLOVES).associateWith { player.inv.count(it) }.filterValues { it > 0 }
+    val others =
+        listOf(EMPTY_TOME, BRUMA_TORCH, BRUMA_TORCH_OFFHAND, WARM_GLOVES)
+            .associateWith { player.inv.count(it) }
+            .filterValues { it > 0 }
     if (pieces.isEmpty() && others.isEmpty()) {
         return
     }
@@ -248,6 +252,7 @@ private fun itemName(item: String): String =
     when (item) {
         EMPTY_TOME -> "Tome of fire (empty)"
         BRUMA_TORCH -> "Bruma torch"
+        BRUMA_TORCH_OFFHAND -> "Bruma torch (off-hand)"
         WARM_GLOVES -> "Warm gloves"
         "obj.pyromancer_top" -> "Pyromancer garb"
         "obj.pyromancer_hood" -> "Pyromancer hood"

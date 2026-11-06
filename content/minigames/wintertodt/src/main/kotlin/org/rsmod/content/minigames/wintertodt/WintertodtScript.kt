@@ -1,5 +1,6 @@
 package org.rsmod.content.minigames.wintertodt
 
+import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
 import org.rsmod.api.game.process.GameLifecycle
 import org.rsmod.api.player.events.interact.NpcUDefaultEvents
@@ -7,11 +8,13 @@ import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.agilityLvl
 import org.rsmod.api.player.stat.baseFiremakingLvl
+import org.rsmod.api.player.worn.WornUnequipResult
 import org.rsmod.api.script.onApLoc1
 import org.rsmod.api.script.onCommand
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onOpHeld1
 import org.rsmod.api.script.onOpHeld2
+import org.rsmod.api.script.onOpHeld3
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpLoc2
@@ -19,12 +22,14 @@ import org.rsmod.api.script.onOpLoc3
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.script.onOpNpcU
+import org.rsmod.api.script.onOpWorn4
 import org.rsmod.api.script.onPlayerCoordsChanged
 import org.rsmod.api.script.onPlayerLogin
 import org.rsmod.api.script.onPlayerLogout
 import org.rsmod.content.interfaces.bank.tryOpenBank
 import org.rsmod.content.other.consumables.food.FoodConsumedEvent
 import org.rsmod.game.entity.Npc
+import org.rsmod.game.inv.isType
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
@@ -90,6 +95,19 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         for (potion in POTIONS) {
             onOpHeld1(potion) { game.drinkPotion(player, it.slot) }
             onOpHeld2(potion) { game.drinkPotion(player, it.slot) }
+        }
+
+        onOpHeld3(Wintertodt.TORCH) {
+            invReplace(inv, Wintertodt.TORCH, 1, Wintertodt.TORCH_OFFHAND)
+        }
+        onOpHeld3(Wintertodt.TORCH_OFFHAND) {
+            invReplace(inv, Wintertodt.TORCH_OFFHAND, 1, Wintertodt.TORCH)
+        }
+        onOpWorn4(Wintertodt.TORCH) {
+            swapTorchWorn(it.slot, Wintertodt.TORCH, Wintertodt.TORCH_OFFHAND, Wearpos.LeftHand)
+        }
+        onOpWorn4(Wintertodt.TORCH_OFFHAND) {
+            swapTorchWorn(it.slot, Wintertodt.TORCH_OFFHAND, Wintertodt.TORCH, Wearpos.RightHand)
         }
 
         onOpNpc1(Wintertodt.NPC_PYROMANCER) { helpPyromancer(it.npc) }
@@ -310,6 +328,26 @@ constructor(private val game: WintertodtGame) : PluginScript() {
         soundSynth(Wintertodt.PILLAR_JUMP_SYNTH)
         exactMove(player.coords, dest, delay1 = 15, delay2 = 30, dir = facing)
         statAdvance("stat.agility", Wintertodt.PILLAR_JUMP_XP)
+    }
+
+    private fun ProtectedAccess.swapTorchWorn(
+        fromSlot: Int,
+        fromType: String,
+        toType: String,
+        targetWearpos: Wearpos,
+    ) {
+        if (worn[fromSlot]?.isType(fromType) != true) return
+        val targetFree = worn[targetWearpos.slot] == null
+        val unequip = wornUnequip(fromSlot)
+        if (unequip is WornUnequipResult.Fail) {
+            unequip.message?.let(::mes)
+            return
+        }
+        invReplace(inv, fromType, 1, toType)
+        if (targetFree) {
+            val swapped = inv.indexOfFirst { it?.isType(toType) == true }
+            if (swapped >= 0) invEquip(swapped)
+        }
     }
 
     private companion object {

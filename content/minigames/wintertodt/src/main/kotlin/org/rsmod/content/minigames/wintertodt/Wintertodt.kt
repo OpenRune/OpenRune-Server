@@ -122,6 +122,8 @@ internal object Wintertodt {
     const val POTION2 = "obj.wint_potion2"
     const val POTION1 = "obj.wint_potion1"
     const val EMPTY_VIAL = "obj.vial_empty"
+    const val TORCH = "obj.wint_torch"
+    const val TORCH_OFFHAND = "obj.wint_torch_offhand"
 
     const val HUD = "interface.wint_status"
     const val HUD_TARGET = "component.toplevel_osrs_stretch:overlay_hud"

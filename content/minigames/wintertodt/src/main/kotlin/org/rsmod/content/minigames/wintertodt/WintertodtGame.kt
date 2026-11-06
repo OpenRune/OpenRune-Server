@@ -177,8 +177,8 @@ constructor(
             "obj.pyromancer_bottom",
             "obj.pyromancer_gloves",
             "obj.pyromancer_boots",
-            "obj.wint_torch",
-            "obj.wint_torch_offhand",
+            Wintertodt.TORCH,
+            Wintertodt.TORCH_OFFHAND,
             "obj.skillcape_firemaking",
             "obj.skillcape_firemaking_trimmed",
             "obj.skillcape_firemaking_hood",
@@ -1018,10 +1018,10 @@ constructor(
     }
 
     fun hasBrumaTorch(player: Player): Boolean =
-        player.inv.count("obj.wint_torch") > 0 ||
-            player.inv.count("obj.wint_torch_offhand") > 0 ||
-            player.worn.count("obj.wint_torch") > 0 ||
-            player.worn.count("obj.wint_torch_offhand") > 0
+        player.inv.count(Wintertodt.TORCH) > 0 ||
+            player.inv.count(Wintertodt.TORCH_OFFHAND) > 0 ||
+            player.worn.count(Wintertodt.TORCH) > 0 ||
+            player.worn.count(Wintertodt.TORCH_OFFHAND) > 0
 
     private fun bestAxe(player: Player): ItemServerType? {
         val candidates =
@@ -1061,10 +1061,10 @@ constructor(
     fun hasTinderbox(player: Player): Boolean =
         player.inv.count("obj.tinderbox") > 0 ||
             player.worn.count("obj.tinderbox") > 0 ||
-            player.inv.count("obj.wint_torch") > 0 ||
-            player.inv.count("obj.wint_torch_offhand") > 0 ||
-            player.worn.count("obj.wint_torch") > 0 ||
-            player.worn.count("obj.wint_torch_offhand") > 0
+            player.inv.count(Wintertodt.TORCH) > 0 ||
+            player.inv.count(Wintertodt.TORCH_OFFHAND) > 0 ||
+            player.worn.count(Wintertodt.TORCH) > 0 ||
+            player.worn.count(Wintertodt.TORCH_OFFHAND) > 0
 
     fun hasHammer(player: Player): Boolean =
         player.inv.count("obj.hammer") > 0 ||
