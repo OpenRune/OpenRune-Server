@@ -244,14 +244,11 @@ constructor(deps: BossDeps, private val wornUnequipOp: WornUnequipOp) : BossPlug
 
         private val PROJECTILE =
             ProjectileConfig(
-                // Legacy projectile packets had the client apply a 4x height multiplier.
-                // MapProjAnimV2 sends these heights as-is.
                 startHeight = 320,
                 endHeight = 128,
                 startDelay = 40,
                 travelTime = 0,
                 angle = 16,
-                // Legacy `distOffset`; MapProjAnimV2 calls this `progress`.
                 progress = 64,
                 stepMultiplier = 10,
             )
