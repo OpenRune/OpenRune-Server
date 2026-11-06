@@ -1,0 +1,41 @@
+[[npc]]
+id = "npc.wint_master_pyromancer"
+inherit = "npc.wint_master_pyromancer"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.wint_master_smith"
+inherit = "npc.wint_master_smith"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.wint_pisc_navigator"
+inherit = "npc.wint_pisc_navigator"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.wint_shay_guard"
+inherit = "npc.wint_shay_guard"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.wint_soldier"
+inherit = "npc.wint_soldier"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.wint_wcguild_rep"
+inherit = "npc.wint_wcguild_rep"
+moveRestrict = "NoMove"
+wanderRange = 0
+
+[[npc]]
+id = "npc.wint_brewma"
+inherit = "npc.wint_brewma"
+moveRestrict = "NoMove"
+wanderRange = 0

@@ -166,10 +166,6 @@ constructor(
         ServerCacheManager.getNpc(Wintertodt.NPC_FIRE.asRSCM(RSCMType.NPC))
     }
 
-    private val brewmaType: NpcServerType? by lazy {
-        ServerCacheManager.getNpc(Wintertodt.NPC_BREWMA.asRSCM(RSCMType.NPC))
-    }
-
     private val warmItemIds: Set<Int> by lazy {
         listOf(
             "obj.pyromancer_hood",
@@ -1849,15 +1845,6 @@ constructor(
             }
         }
 
-        brewmaType?.let { type ->
-            for (npc in npcRepo.findAll(ZoneKey.from(BREWMA_COORDS), 2)) {
-                if (npc.type.id != type.id) continue
-                npc.mode = NpcMode.None
-                npc.moveRestrict = MoveRestrict.NoMove
-                if (npc.coords != BREWMA_COORDS) npc.teleport(flags, BREWMA_COORDS)
-            }
-        }
-
         val stormLoc =
             locRepo.findAll(Wintertodt.STORM).firstOrNull {
                 it.id == locId(Wintertodt.STORM_ACTIVE) ||
@@ -1991,7 +1978,6 @@ constructor(
 
     private companion object {
         val POH_ATTR = org.rsmod.api.attr.AttributeKey<Boolean>()
-        val BREWMA_COORDS = CoordGrid(1635, 3986, 0)
         val ENCOUNTER_ITEMS =
             listOf(
                 Wintertodt.ROOT,
