@@ -379,8 +379,13 @@ constructor(
     }
 
     fun beginSearch(player: Player, batch: Int): String? {
-        ensureCart()
-        if (actions[player]?.type == ActionType.SEARCH) return null
+        val current = actions[player]
+        if (
+            current?.type == ActionType.SEARCH &&
+                mapClock.cycle <= current.nextCycle + Wintertodt.CART_SEARCH_DELAY
+        ) {
+            return null
+        }
         stopAction(player)
         if (player.wintRewardPool <= 0) return Wintertodt.CART_EMPTY_MESSAGE
         if (player.inv.isFull()) return Wintertodt.CART_FULL_MESSAGE
