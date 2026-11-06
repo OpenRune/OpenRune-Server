@@ -219,3 +219,9 @@ id = "varn.slayer_engaged_clock"
 
 [[varn]]
 id = "varn.slayer_finishing_until"
+
+[[varn]]
+id = "varn.giant_mole_burrow_lock"
+
+[[varn]]
+id = "varn.giant_mole_last_burrow_check"

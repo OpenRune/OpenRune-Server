@@ -28,7 +28,6 @@ object PetDropsTable {
 
         drop("npc.mad_angel", "obj.madangelpet", 2000)
         drop("npc.mad_angel_quest", "obj.madangelpet", 2000)
-        drop("npc.mole_giant", "obj.molepet", 3000)
         drop("npc.cowboss", "obj.cowbosspet", 1000)
         drop("npc.callisto", "obj.callisto_pet", 1500)
         drop("npc.callisto_singles", "obj.callisto_pet", 2800)

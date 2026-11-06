@@ -37,14 +37,16 @@ public object CollectionLog {
         if (count <= 0) {
             return
         }
-        if (!CollectionLogItems.contains(objId)) {
+        // Noted drops (for example the Giant Mole's diary perk) must unlock their base item.
+        val baseId = ServerCacheManager.getItem(objId)?.certtemplate?.takeIf { it > 0 } ?: objId
+        if (!CollectionLogItems.contains(baseId)) {
             return
         }
-        val isNewItem = player.collectionTransmit.countOf(objId) == 0
-        player.invAdd(player.collectionTransmit, objId, count)
-        checkCategoryCompletion(player, objId)
+        val isNewItem = player.collectionTransmit.countOf(baseId) == 0
+        player.invAdd(player.collectionTransmit, baseId, count)
+        checkCategoryCompletion(player, baseId)
         if (isNewItem) {
-            onNewItemObtained(player, objId)
+            onNewItemObtained(player, baseId)
         }
     }
 

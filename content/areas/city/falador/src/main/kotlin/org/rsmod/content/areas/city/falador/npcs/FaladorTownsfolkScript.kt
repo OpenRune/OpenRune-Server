@@ -5,6 +5,7 @@ import org.rsmod.api.config.Constants
 import org.rsmod.api.invtx.invAddOrDrop
 import org.rsmod.api.invtx.invTakeFee
 import org.rsmod.api.player.dialogue.Dialogue
+import org.rsmod.api.random.GameRandom
 import org.rsmod.api.repo.obj.ObjRepository
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.game.entity.Npc
@@ -12,8 +13,9 @@ import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /** Talk-to dialogue for Falador's non-shop NPCs, taken from the wiki's standard transcripts. */
-class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjRepository) :
-    PluginScript() {
+class FaladorTownsfolkScript
+@Inject
+constructor(private val objRepo: ObjRepository, private val random: GameRandom) : PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.rd_teleporter_guy") { startDialogue(it.npc) { sirTiffy() } }
         onOpNpc1("npc.partyroom_pete") { startDialogue(it.npc) { partyPete(it.npc) } }
@@ -322,6 +324,10 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
     }
 
     private suspend fun Dialogue.wyson() {
+        if (WysonMoleParts.hasParts(player)) {
+            wysonMoleParts()
+            return
+        }
         chatNpc(
             neutral,
             "I'm the head gardener around here. If you're looking for woad leaves, or if you need " +
@@ -391,6 +397,41 @@ class FaladorTownsfolkScript @Inject constructor(private val objRepo: ObjReposit
         } else {
             chatPlayer(happy, "Thanks.")
             chatNpc(happy, "I'll be around if you have any more gardening needs.")
+        }
+    }
+
+    private suspend fun Dialogue.wysonMoleParts() {
+        chatNpc(
+            neutral,
+            "If I'm not mistaken, you've got some body parts from a big mole there! I'll trade it " +
+                "for bird nests if ye likes. Or was ye wantin' some woad leaves instead?",
+        )
+        when (
+            choice3(
+                "Okay, I will trade the mole parts.",
+                1,
+                "Yes please, I need woad leaves.",
+                2,
+                "Sorry, but I'm not interested.",
+                3,
+            )
+        ) {
+            1 -> {
+                chatPlayer(happy, "Okay, I will trade the mole parts.")
+                if (player.inv.count("obj.immaculate_mole_skin") > 0) {
+                    chatNpc(
+                        happy,
+                        "I see you also have an immaculate mole skin with you, I will give you " +
+                            "extra birds nests for those.",
+                    )
+                }
+                WysonMoleParts.exchange(player, random, objRepo)
+            }
+            2 -> buyWoadLeaves()
+            else -> {
+                chatPlayer(neutral, "Sorry, but I'm not interested.")
+                chatNpc(neutral, "Fair enough.")
+            }
         }
     }
 

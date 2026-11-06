@@ -28,6 +28,8 @@ class BirdNestSearchScript @Inject constructor(private val random: GameRandom) :
         mapOf(
             item("obj.bird_nest_seeds_jan2019") to
                 bird_nest_seed_rewards.filterValuesNotNull().backing,
+            item("obj.bird_nest_decentseeds_jan2019") to
+                bird_nest_seed_rewards.filterValuesNotNull().backing,
             item("obj.bird_nest_ring") to bird_nest_ring_rewards.filterValuesNotNull().backing,
         )
     }

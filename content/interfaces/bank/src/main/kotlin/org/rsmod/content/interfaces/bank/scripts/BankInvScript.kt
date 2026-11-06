@@ -1129,8 +1129,15 @@ constructor(
             return
         }
 
+        val deposit = HeldBanksideEvents.Deposit(player, slot, type)
+        if (publish(deposit)) {
+            setBanksideExtraOps()
+            return
+        }
+
         val event = HeldBanksideEvents.Type(player, slot, type)
         publish(event)
+        setBanksideExtraOps()
     }
 
     private fun ProtectedAccess.wornOp(wornSlot: Int, op: IfButtonOp) {

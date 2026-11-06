@@ -42,7 +42,7 @@ internal fun Player.highlightNoClickClear() {
     runClientScript(3407, "component.bankside:bankside_highlight".asRSCM(RSCMType.COMPONENT))
 }
 
-internal fun Player.setBanksideExtraOps() {
+fun Player.setBanksideExtraOps() {
     var specialBits = 0
     var wearBits = 0
     var consumableBits = 0
