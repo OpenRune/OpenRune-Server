@@ -10,7 +10,7 @@ internal inline fun Transaction<InvObj>.leftShift(
     execute(query)
 }
 
-internal inline fun Transaction<InvObj>.rightShift(
+inline fun Transaction<InvObj>.rightShift(
     init: Transaction<InvObj>.RightShiftQuery.() -> Unit
 ) {
     val query = RightShiftQuery().apply(init)
