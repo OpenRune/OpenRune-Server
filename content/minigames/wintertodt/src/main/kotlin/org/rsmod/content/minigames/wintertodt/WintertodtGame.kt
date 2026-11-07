@@ -558,9 +558,6 @@ constructor(
         player.spam("You carefully fletch the root into a bundle of kindling.")
     }
 
-    private fun fletchInterval(player: Player): Int =
-        if (player.worn.count("obj.fletching_knife") > 0) 3 else 4
-
     fun pickHerb(player: Player) {
         if (player.inv.isFull()) {
             player.mes("The herb shatters as it hits the floor.")
@@ -957,7 +954,7 @@ constructor(
                     }
                     fletch(player)
                     player.anim(Wintertodt.ANIM_FLETCH)
-                    action.nextCycle = cycle + fletchInterval(player)
+                    action.nextCycle = cycle + fletchingKnifeInterval(player)
                 }
                 ActionType.FEED -> {
                     if (!feed(player, action.brazierIndex)) {
@@ -1847,3 +1844,13 @@ constructor(
             )
     }
 }
+
+internal fun fletchingKnifeInterval(player: Player): Int =
+    if (
+        player.inv.count("obj.fletching_knife") > 0 ||
+            player.worn.count("obj.fletching_knife") > 0
+    ) {
+        3
+    } else {
+        4
+    }
