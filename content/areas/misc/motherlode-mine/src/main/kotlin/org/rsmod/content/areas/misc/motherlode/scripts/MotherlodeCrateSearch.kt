@@ -3,19 +3,17 @@ package org.rsmod.content.areas.misc.motherlode.scripts
 import dev.openrune.types.ObjectServerType
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.script.onOpLoc1
+import org.rsmod.content.generic.locs.search.CrateSearchHook
+import org.rsmod.game.entity.Player
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.type.getInvObj
 import org.rsmod.map.CoordGrid
-import org.rsmod.plugin.scripts.PluginScript
-import org.rsmod.plugin.scripts.ScriptContext
 
-class MotherlodeCrateScript : PluginScript() {
-    override fun ScriptContext.startup() {
-        onOpLoc1(CRATE_LOC) { search(it.loc, it.type) }
-    }
+class MotherlodeCrateSearch : CrateSearchHook {
+    override fun claims(player: Player, crate: BoundLocInfo): Boolean =
+        crate.coords in CRATE_CONTENTS
 
-    private suspend fun ProtectedAccess.search(crate: BoundLocInfo, type: ObjectServerType) {
+    override suspend fun ProtectedAccess.search(crate: BoundLocInfo, type: ObjectServerType) {
         val contents = CRATE_CONTENTS[crate.coords] ?: return
         arriveDelay()
         if (hasSupply(contents)) {
@@ -43,7 +41,6 @@ class MotherlodeCrateScript : PluginScript() {
         if (contents == HAMMER) "a hammer" else "a bronze pickaxe"
 
     private companion object {
-        const val CRATE_LOC = "loc.crate2_old"
         const val HAMMER = "obj.hammer"
         const val BRONZE_PICKAXE = "obj.bronze_pickaxe"
         const val PICKAXE_CONTENT = "content.mining_pickaxe"

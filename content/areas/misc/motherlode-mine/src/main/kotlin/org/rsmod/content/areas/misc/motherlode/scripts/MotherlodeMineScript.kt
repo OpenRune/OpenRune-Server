@@ -3,7 +3,7 @@ package org.rsmod.content.areas.misc.motherlode.scripts
 import jakarta.inject.Inject
 import org.rsmod.api.game.process.GameLifecycle
 import org.rsmod.api.player.protect.ProtectedAccess
-import org.rsmod.api.player.stat.baseMiningLvl
+import org.rsmod.api.player.stat.miningLvl
 import org.rsmod.api.player.ui.ifCloseOverlay
 import org.rsmod.api.player.ui.ifOpenMainModal
 import org.rsmod.api.player.ui.ifOpenOverlay
@@ -81,7 +81,7 @@ constructor(
     }
 
     private suspend fun ProtectedAccess.enterMiningGuild() {
-        if (player.baseMiningLvl < MINING_GUILD_LEVEL) {
+        if (player.miningLvl < MINING_GUILD_LEVEL) {
             startDialogue {
                 chatNpcSpecific(
                     "Dwarf",

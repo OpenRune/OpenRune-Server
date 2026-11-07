@@ -30,8 +30,10 @@ import org.rsmod.plugin.scripts.ScriptContext
 class ProspectorPercyScript
 @Inject
 constructor(private val shops: Shops, private val shopOps: ShopOperationMap) : PluginScript() {
+    private val rewards = createRewardsInventory()
+
     @OptIn(UncheckedType::class)
-    private val rewards by lazy {
+    private fun createRewardsInventory(): Inventory {
         val stock =
             checkNotNull(
                 ServerCacheManager.getInventory(SHOP_STOCK.asRSCM(RSCMType.INV))
@@ -64,7 +66,7 @@ constructor(private val shops: Shops, private val shopOps: ShopOperationMap) : P
             )
         val objs = arrayOfNulls<InvObj>(type.size)
         stock.stock.forEachIndexed { slot, item -> objs[slot] = InvObj(item.obj, item.count) }
-        Inventory(type, objs)
+        return Inventory(type, objs)
     }
 
     override fun ScriptContext.startup() {
