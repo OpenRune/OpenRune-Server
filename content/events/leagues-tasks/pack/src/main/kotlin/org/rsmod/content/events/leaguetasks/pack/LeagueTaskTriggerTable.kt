@@ -16,6 +16,11 @@ object LeagueTaskTriggerTable {
     const val STAT = 2
     const val VALUE = 3
     const val COUNT = 4
+    const val OBJ = 5
+    const val NPC = 6
+    const val CATEGORY = 7
+    const val SLAYER_TASK = 8
+    const val COUNTER = 9
 
     fun triggers() =
         dbTable("dbtable.league_task_trigger", serverOnly = true) {
@@ -24,9 +29,16 @@ object LeagueTaskTriggerTable {
             column("stat", STAT, VarType.STAT)
             column("value", VALUE, VarType.INT)
             column("count", COUNT, VarType.INT)
+            column("obj", OBJ, VarType.OBJ)
+            column("npc", NPC, VarType.NPC)
+            column("category", CATEGORY, VarType.CATEGORY)
+            column("slayer_task", SLAYER_TASK, VarType.INT)
+            column("counter", COUNTER, VarType.INT)
 
             val rows = TriggerRows(this)
             rows.levelTasks()
+            rows.equipTasks()
+            rows.killTasks()
         }
 }
 

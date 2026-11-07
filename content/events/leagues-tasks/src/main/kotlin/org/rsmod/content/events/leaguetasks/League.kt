@@ -22,6 +22,9 @@ public class League(
     public val size: Int
         get() = rows.size
 
+    public val tasks: Set<Int>
+        get() = indexByRow.keys
+
     public fun rowAt(index: Int): Int? = rows.getOrNull(index)?.takeIf { it != NO_ROW }
 
     public fun indexOf(row: Int): Int? = indexByRow[row]

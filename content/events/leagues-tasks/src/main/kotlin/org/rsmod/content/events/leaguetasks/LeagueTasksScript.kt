@@ -12,11 +12,22 @@ import org.rsmod.game.world.WorldType
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
-class LeagueTasksScript @Inject constructor(private val tasks: LeagueTasks) : PluginScript() {
+class LeagueTasksScript
+@Inject
+constructor(private val tasks: LeagueTasks, private val progress: LeagueTaskProgress) :
+    PluginScript() {
     override val worldTypes = WorldType.entries.filter { it.isLeague }
 
     override fun ScriptContext.startup() {
-        onPlayerLogin { tasks.claimPoints(player) }
+        onPlayerLogin {
+            tasks.claimPoints(player)
+            player.softTimer("timer.league_task_sync", cycles = 1)
+        }
+
+        onPlayerSoftTimer("timer.league_task_sync") {
+            player.clearSoftTimer("timer.league_task_sync")
+            progress.checkState(player)
+        }
 
         onPlayerSoftTimer("timer.league_points_claim") {
             player.clearSoftTimer("timer.league_points_claim")

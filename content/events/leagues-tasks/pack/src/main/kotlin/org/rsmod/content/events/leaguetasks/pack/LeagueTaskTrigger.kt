@@ -1,15 +1,24 @@
 package org.rsmod.content.events.leaguetasks.pack
 
-/** How a `dbtable.league_task_trigger` row is met; [id] is what the row's `trigger` column holds. */
-enum class LeagueTaskTrigger(val id: Int) {
+/**
+ * How a `dbtable.league_task_trigger` row is met; [id] is what the row's `trigger` column holds.
+ * A [isState] trigger describes something the player has rather than did, so it is also checked a
+ * tick after login. Any other trigger is an event: with a `count` above 1, or on a task with more
+ * than one row, its row needs a `counter` varbit to remember progress.
+ */
+enum class LeagueTaskTrigger(val id: Int, val isState: Boolean) {
     /** At least `count` of the `stat` skills (every skill when empty) have a base level of `value`. */
-    Level(1),
+    Level(1, isState = true),
     /** Every skill has a base level of `value`. */
-    BaseLevel(2),
-    TotalLevel(3),
-    CombatLevel(4),
+    BaseLevel(2, isState = true),
+    TotalLevel(3, isState = true),
+    CombatLevel(4, isState = true),
     /** At least `count` of the `stat` skills (every skill when empty) have `value` xp. */
-    Xp(5);
+    Xp(5, isState = true),
+    /** At least `count` of the `obj` items are worn at once. */
+    Equip(6, isState = true),
+    /** The player gets the kill of an `npc`, an npc of a `category`, or a `slayer_task` npc. */
+    Kill(7, isState = false);
 
     companion object {
         private val BY_ID = entries.associateBy(LeagueTaskTrigger::id)
