@@ -1,9 +1,9 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
 }
 
 dependencies {
-    implementation(projects.api.attr)
     implementation(projects.api.config)
     implementation(projects.api.death)
     implementation(projects.api.gameProcess)
@@ -16,9 +16,12 @@ dependencies {
     implementation(projects.api.repo)
     implementation(projects.api.route)
     implementation(projects.api.stats.levelmod)
+    implementation(projects.api.stats.xpmod)
     implementation(projects.api.utils.utilsSkills)
     implementation(projects.content.interfaces.collectionLog)
     implementation(projects.content.interfaces.bank)
     implementation(projects.content.other.consumables)
+    implementation(projects.content.other.pets)
     implementation(projects.content.quest)
+    testImplementation(projects.api.invStorage)
 }

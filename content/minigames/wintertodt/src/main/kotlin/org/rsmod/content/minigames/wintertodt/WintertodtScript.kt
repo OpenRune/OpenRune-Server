@@ -177,7 +177,7 @@ constructor(private val game: WintertodtGame, private val random: GameRandom) : 
         game.stopAction(player)
         arriveDelay()
         faceEntitySquare(npc)
-        if (!game.isPyromancerDown(npc)) {
+        if (!game.pyromancerNeedsHelp(npc)) {
             player.mes("You don't need to do that.")
             startDialogue(npc) { chatNpc(neutral, "No need! I'm fine, thanks.") }
             return
@@ -190,7 +190,7 @@ constructor(private val game: WintertodtGame, private val random: GameRandom) : 
         if (event.objType.internalName in POTIONS) {
             arriveDelay()
             faceEntitySquare(event.npc)
-            if (!game.isPyromancerDown(event.npc)) {
+            if (!game.pyromancerNeedsHelp(event.npc)) {
                 player.mes("You don't need to do that.")
                 startDialogue(event.npc) {
                     chatNpc(neutral, "No need! I'm fine, thanks.")

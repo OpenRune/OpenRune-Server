@@ -18,10 +18,9 @@ import java.util.Locale
 import kotlin.math.min
 import org.rsmod.api.config.objParam
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.enums.ItemsEnums.wintertodt_warm_items
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
-import org.rsmod.api.invtx.invTransaction
-import org.rsmod.api.invtx.select
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
@@ -44,8 +43,11 @@ import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.stats.levelmod.InvisibleLevels
+import org.rsmod.api.stats.xpmod.XpModifiers
 import org.rsmod.api.utils.skills.SkillingSuccessRate
 import org.rsmod.content.interfaces.collectionlog.CollectionLog
+import org.rsmod.content.other.pets.PetRewards
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.events.EventBus
 import org.rsmod.game.MapClock
 import org.rsmod.game.entity.Npc
@@ -78,6 +80,8 @@ constructor(
     private val flags: CollisionFlagMap,
     private val invisibleLevels: InvisibleLevels,
     private val protectedAccess: ProtectedAccessLauncher,
+    private val pets: PetRewards,
+    private val xpMods: XpModifiers,
 ) {
     private enum class Phase {
         WAITING,
@@ -165,40 +169,7 @@ constructor(
     }
 
     private val warmItemIds: Set<Int> by lazy {
-        listOf(
-            "obj.pyromancer_hood",
-            "obj.pyromancer_top",
-            "obj.pyromancer_bottom",
-            "obj.pyromancer_gloves",
-            "obj.pyromancer_boots",
-            Wintertodt.TORCH,
-            Wintertodt.TORCH_OFFHAND,
-            "obj.skillcape_firemaking",
-            "obj.skillcape_firemaking_trimmed",
-            "obj.skillcape_firemaking_hood",
-            "obj.skillcape_max",
-            "obj.tzhaar_cape_fire",
-            "obj.infernal_cape",
-            "obj.tzhaar_cape_obsidian",
-            "obj.skillcape_hitpoints",
-            "obj.pride23_jumper",
-            "obj.pride17_scarf",
-            "obj.clue_hunter_boots",
-            "obj.clue_hunter_gloves",
-            "obj.wolf_mask",
-            "obj.earmuffs",
-            "obj.zep_bomber_cap_goggles",
-            "obj.win05_hat4",
-            "obj.win05_hat1",
-            "obj.santa_hat",
-            "obj.santa_jacket",
-            "obj.santa_pants",
-            "obj.santa_boots",
-        )
-            .mapNotNull {
-                runCatching { ServerCacheManager.getItem(it.asRSCM(RSCMType.OBJ)) }.getOrNull()?.id
-            }
-            .toSet()
+        wintertodt_warm_items.values.mapNotNull { it?.id }.toSet()
     }
 
     private val updateScript: Int = Wintertodt.SCRIPT_UPDATE
@@ -408,7 +379,7 @@ constructor(
         repeat(batch) {
             if (player.wintRewardPool <= 0) return CartResult.FINISHED
             val reward = WintertodtRewards.roll(player, random)
-            if (!WintertodtRewards.add(player, reward)) return CartResult.FULL
+            if (!grantCartReward(player, reward, pets::give)) return CartResult.FULL
             player.wintRewardPool = player.wintRewardPool - 1
             val claimedVarp =
                 RSCM.getRSCMOrNull("varp.wintertodt_rewards_claimed", RSCMType.VARP)
@@ -420,10 +391,7 @@ constructor(
             player.anim(Wintertodt.CART_PICK_ANIM)
             player.soundSynth(Wintertodt.CART_PICK_SYNTH)
             if (reward.item in WintertodtRewards.UNIQUES) {
-                CollectionLog.grant(player, reward.item, 1)
-            }
-            if (reward.item == "obj.phoenixpet") {
-                player.mes("You have a funny feeling like you're being followed.")
+                CollectionLog.grant(player, reward.item, reward.count)
             }
             if (player.wintRewardPool <= 0) return CartResult.FINISHED
         }
@@ -436,29 +404,11 @@ constructor(
         ServerCacheManager.getItem(item.asRSCM(RSCMType.OBJ))?.name ?: item.removePrefix("obj.")
 
     fun openExtraCrate(player: Player, slot: Int) {
-        val inv = player.inv
-        val crate = inv[slot] ?: return
+        val crate = player.inv[slot] ?: return
         if (crate.id != EXTRA_CRATE.asRSCM(RSCMType.OBJ)) return
         val rolls = crate.vars.coerceIn(1, 5)
         val rewards = List(rolls) { WintertodtRewards.rollExtra(player, random) }
-        val opened =
-            player.invTransaction(inv) {
-                val from = select(inv)
-                delete {
-                    this.from = from
-                    this.obj = crate.id
-                    this.strictSlot = slot
-                }
-                for (reward in rewards) {
-                    insert {
-                        this.into = from
-                        this.obj = reward.item.asRSCM(RSCMType.OBJ)
-                        this.count = reward.count
-                        this.cert = reward.noted
-                    }
-                }
-            }
-        if (opened.failure) {
+        if (!openExtraCrateTransaction(player, slot, rewards)) {
             player.mes("You don't have enough inventory space to open that.")
             return
         }
@@ -527,7 +477,7 @@ constructor(
         player.soundSynth(2596)
         player.mes("You light the brazier.")
         addPoints(player, 25)
-        player.statAdvance("stat.firemaking", 6.0 * player.baseFiremakingLvl)
+        player.advanceXp("stat.firemaking", 6.0 * player.baseFiremakingLvl)
         updateHud()
     }
 
@@ -540,8 +490,8 @@ constructor(
         }
         setBrazierState(brazier, BrazierState.UNLIT)
         addPoints(player, 25)
-        if (hasPoh(player)) {
-            player.statAdvance("stat.construction", 4.0 * player.baseConstructionLvl)
+        if (player.wintertodtHouseLocation != 0) {
+            player.advanceXp("stat.construction", 4.0 * player.baseConstructionLvl)
         }
         completeTask(player, { caWintertodtHandyman }, { caWintertodtHandyman = it })
         updateHud()
@@ -582,10 +532,10 @@ constructor(
         if (player.invDel(player.inv, item, 1).failure) return false
         if (kindling) {
             addPoints(player, 25)
-            player.statAdvance("stat.firemaking", 3.8 * player.baseFiremakingLvl)
+            player.advanceXp("stat.firemaking", 3.8 * player.baseFiremakingLvl)
         } else {
             addPoints(player, 10)
-            player.statAdvance("stat.firemaking", 3.0 * player.baseFiremakingLvl)
+            player.advanceXp("stat.firemaking", 3.0 * player.baseFiremakingLvl)
         }
         return true
     }
@@ -596,7 +546,7 @@ constructor(
             return
         }
         if (player.invAdd(player.inv, Wintertodt.ROOT, 1).failure) return
-        player.statAdvance("stat.woodcutting", 0.3 * player.baseWoodcuttingLvl)
+        player.advanceXp("stat.woodcutting", 0.3 * player.baseWoodcuttingLvl)
         player.spam("You get a bruma root.")
     }
 
@@ -604,9 +554,12 @@ constructor(
         if (player.inv.count(Wintertodt.ROOT) <= 0) return
         if (player.invDel(player.inv, Wintertodt.ROOT, 1).failure) return
         player.invAdd(player.inv, Wintertodt.KINDLING, 1)
-        player.statAdvance("stat.fletching", 0.6 * player.baseFletchingLvl)
+        player.advanceXp("stat.fletching", 0.6 * player.baseFletchingLvl)
         player.spam("You carefully fletch the root into a bundle of kindling.")
     }
+
+    private fun fletchInterval(player: Player): Int =
+        if (player.worn.count("obj.fletching_knife") > 0) 3 else 4
 
     fun pickHerb(player: Player) {
         if (player.inv.isFull()) {
@@ -624,6 +577,10 @@ constructor(
             player.mes("You can only do that within the influence of the Bruma tree.")
             return
         }
+        if (!QuestRequirements.hasCompleted(player, Wintertodt.DRUIDIC_RITUAL)) {
+            player.mes("You need to complete Druidic Ritual before you can make potions.")
+            return
+        }
         if (
             player.inv.count(Wintertodt.HERB) <= 0 ||
                 player.inv.count(Wintertodt.VIAL) <= 0
@@ -633,7 +590,7 @@ constructor(
         if (player.invDel(player.inv, Wintertodt.HERB, 1).failure) return
         if (player.invDel(player.inv, Wintertodt.VIAL, 1).failure) return
         player.invAdd(player.inv, Wintertodt.POTION4, 1)
-        player.statAdvance("stat.herblore", 0.1 * player.baseHerbloreLvl)
+        player.advanceXp("stat.herblore", 0.1 * player.baseHerbloreLvl)
         player.mes("You combine the bruma herb into the unfinished potion.")
     }
 
@@ -686,13 +643,14 @@ constructor(
         updateHud()
     }
 
-    fun isPyromancerDown(npc: Npc): Boolean =
-        pyromancers.any { it.npc == npc && it.down }
+    fun pyromancerNeedsHelp(npc: Npc): Boolean =
+        pyromancers.any { it.npc == npc && (it.down || it.hp < 14) }
 
     fun healPyromancer(player: Player, npc: Npc, useSlot: Int? = null) {
         stopAction(player)
         val pyro = pyromancers.firstOrNull { it.npc == npc } ?: return
-        if (!pyro.down) return
+        val wasDown = pyro.down
+        if (!wasDown && pyro.hp >= 14) return
         val potion = if (useSlot != null) doseAt(player, useSlot) else lowestDosePotion(player)
         if (potion == null) {
             player.mes("You need a rejuvenation potion to heal the Pyromancer.")
@@ -716,12 +674,16 @@ constructor(
         if (player.invDel(player.inv, current, 1, slot).failure) return
         player.invAdd(player.inv, next, 1, slot)
         pyro.hp = 14
-        pyro.down = false
-        pyro.resumeAt = mapClock.cycle + random.of(2, 8)
-        pyro.npc?.let { npc2 -> pyromancerType?.let { npc2.transmog(it, Int.MAX_VALUE) } }
+        if (wasDown) {
+            pyro.down = false
+            pyro.resumeAt = mapClock.cycle + random.of(2, 8)
+            pyro.npc?.let { npc2 -> pyromancerType?.let { npc2.transmog(it, Int.MAX_VALUE) } }
+        }
         showPyromancerHeal(pyro)
         addPoints(player, 75)
-        completeTask(player, { caWintertodtMummy }, { caWintertodtMummy = it })
+        if (wasDown) {
+            completeTask(player, { caWintertodtMummy }, { caWintertodtMummy = it })
+        }
         updateHud()
     }
 
@@ -878,6 +840,10 @@ constructor(
     fun beginFletch(player: Player) {
         stopAction(player)
         if (player.inv.count(Wintertodt.ROOT) <= 0) return
+        if (Wintertodt.isSafe(player.coords)) {
+            player.mes(Wintertodt.FLETCH_SAFE_MESSAGE)
+            return
+        }
         actions[player] =
             ActionState(
                 type = ActionType.FLETCH,
@@ -980,13 +946,18 @@ constructor(
                     action.nextCycle = cycle + 3
                 }
                 ActionType.FLETCH -> {
+                    if (Wintertodt.isSafe(player.coords)) {
+                        player.mes(Wintertodt.FLETCH_SAFE_MESSAGE)
+                        actions.remove(player)
+                        continue
+                    }
                     if (player.inv.count(Wintertodt.ROOT) <= 0) {
                         actions.remove(player)
                         continue
                     }
                     fletch(player)
                     player.anim(Wintertodt.ANIM_FLETCH)
-                    action.nextCycle = cycle + 4
+                    action.nextCycle = cycle + fletchInterval(player)
                 }
                 ActionType.FEED -> {
                     if (!feed(player, action.brazierIndex)) {
@@ -1090,7 +1061,13 @@ constructor(
             player.worn.count("obj.imcando_hammer") > 0
 
     fun warmItems(player: Player): Int =
-        player.worn.objs.count { it != null && it.id in warmItemIds }
+        player.worn.objs
+            .count { it != null && it.id in warmItemIds }
+            .coerceAtMost(Wintertodt.WARM_ITEMS_MAX)
+
+    private fun Player.advanceXp(stat: String, baseXp: Double) {
+        statAdvance(stat, baseXp * xpMods.get(this, stat))
+    }
 
     fun updateHud() {
         for (session in sessions.values.toList()) updateHud(session)
@@ -1194,7 +1171,7 @@ constructor(
         player.wintRewardPool = pool
 
         val xp = 100 * player.baseFiremakingLvl
-        player.statAdvance("stat.firemaking", xp.toDouble())
+        player.advanceXp("stat.firemaking", xp.toDouble())
         player.mes("You have gained $xp Firemaking XP.")
         player.wintertodtKills += 1
         player.mes("Your subdued Wintertodt count is: <col=ff0000>${player.wintertodtKills}</col>.")
@@ -1836,8 +1813,6 @@ constructor(
         return slot to dose
     }
 
-    private fun hasPoh(player: Player): Boolean = player.attr[POH_ATTR] ?: true
-
     private fun near(a: CoordGrid, b: CoordGrid, radius: Int): Boolean =
         a.level == b.level &&
             kotlin.math.abs(a.x - b.x) <= radius &&
@@ -1859,7 +1834,6 @@ constructor(
         ServerCacheManager.getObject(name.asRSCM(RSCMType.LOC))?.id ?: -1
 
     private companion object {
-        val POH_ATTR = org.rsmod.api.attr.AttributeKey<Boolean>()
         val ENCOUNTER_ITEMS =
             listOf(
                 Wintertodt.ROOT,
