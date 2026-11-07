@@ -1,10 +1,8 @@
 package org.rsmod.content.bosses.chaoselemental
 
-import dev.openrune.rscm.RSCM.asRSCM
-import dev.openrune.rscm.RSCMType
-import dev.openrune.types.aconverted.SpotanimType
 import dev.openrune.util.Wearpos
 import jakarta.inject.Inject
+import org.rsmod.annotations.InternalApi
 import org.rsmod.api.bosses.dsl.*
 import org.rsmod.api.bosses.runtime.BossCombat
 import org.rsmod.api.bosses.runtime.BossDeps
@@ -15,27 +13,24 @@ import org.rsmod.api.bosses.spec.Effect
 import org.rsmod.api.bosses.spec.HitType
 import org.rsmod.api.bosses.spec.ProjectileConfig
 import org.rsmod.api.combat.commons.player.combatPlayDefendAnim
+import org.rsmod.api.player.hook.TeleportType
 import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.soundSynth
+import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.worn.WornUnequipOp
 import org.rsmod.api.player.worn.WornUnequipResult
 import org.rsmod.api.random.GameRandom
-import org.rsmod.api.route.RayCastValidator
-import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
-import org.rsmod.game.entity.util.PathingEntityCommon
 import org.rsmod.game.inv.Inventory
-import org.rsmod.game.map.collision.get
-import org.rsmod.game.map.collision.isZoneValid
-import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
-import org.rsmod.routefinder.flag.CollisionFlag
 
 class ChaosElemental
 @Inject
-constructor(deps: BossDeps, private val wornUnequipOp: WornUnequipOp) : BossPluginScript(deps) {
-
-    private val lineValidator by lazy { RayCastValidator(deps.collision) }
+constructor(
+    deps: BossDeps,
+    private val wornUnequipOp: WornUnequipOp,
+    private val protectedAccess: ProtectedAccessLauncher,
+) : BossPluginScript(deps) {
 
     private val hasFreeInventorySpace = Condition.Custom { _, target ->
         target != null && target.inv.hasFreeSpace()
@@ -127,23 +122,25 @@ constructor(deps: BossDeps, private val wornUnequipOp: WornUnequipOp) : BossPlug
         deps.worldRepo.soundArea(player, DISCORD_IMPACT_SOUND, radius = IMPACT_SOUND_RADIUS)
     }
 
+    @OptIn(InternalApi::class)
     private fun onConfusionImpact(context: BossExtensionContext) {
         val player = context.target
         if (!player.isValidTarget()) return
-        val impactTile = player.coords
         player.combatPlayDefendAnim()
         player.spotanim(CONFUSION_IMPACT_GFX, height = IMPACT_HEIGHT)
-        deps.worldRepo.spotanimMap(
-            SpotanimType(CONFUSION_IMPACT_GFX.asRSCM(RSCMType.SPOTANIM)),
-            impactTile,
-            height = IMPACT_HEIGHT,
-        )
         deps.worldRepo.soundArea(player, CONFUSE_HIT_SOUND, radius = IMPACT_SOUND_RADIUS)
         deps.worldQueues.add(CONFUSION_TELEPORT_DELAY) {
             if (!player.isValidTarget()) return@add
-            val destination = randomTeleportTile(context.npc, player) ?: return@add
-            player.soundSynth(CONFUSION_IMPACT_SOUND)
-            PathingEntityCommon.teleport(player, deps.collision, destination)
+            protectedAccess.launchLenient(player) {
+                val destination =
+                    mapFindSquareLineOfWalk(
+                        player.coords,
+                        minRadius = 1,
+                        maxRadius = TELEPORT_RADIUS,
+                    ) ?: return@launchLenient
+                player.soundSynth(CONFUSION_IMPACT_SOUND)
+                teleport(destination, TeleportType.Exempt)
+            }
         }
     }
 
@@ -162,33 +159,6 @@ constructor(deps: BossDeps, private val wornUnequipOp: WornUnequipOp) : BossPlug
             if (result is WornUnequipResult.Fail) return
             if (slot == Wearpos.RightHand.slot) player.clearInteraction()
         }
-    }
-
-    private fun randomTeleportTile(npc: Npc, player: Player): CoordGrid? {
-        val centre = player.coords
-        repeat(TELEPORT_ATTEMPTS) {
-            val dx = deps.random.of(-TELEPORT_RADIUS, TELEPORT_RADIUS)
-            val dz = deps.random.of(-TELEPORT_RADIUS, TELEPORT_RADIUS)
-            if (dx == 0 && dz == 0) return@repeat
-            val tile = centre.translate(dx, dz)
-            if (!deps.collision.isZoneValid(tile)) return@repeat
-            if (npc.isWithinDistance(tile, 0)) return@repeat
-            if (isTeleportTileBlocked(tile)) return@repeat
-            if (!lineValidator.hasLineOfWalk(centre, tile, extraFlag = CollisionFlag.BLOCK_PLAYERS)) {
-                return@repeat
-            }
-            return tile
-        }
-        return null
-    }
-
-    private fun isTeleportTileBlocked(tile: CoordGrid): Boolean {
-        val blocked =
-            CollisionFlag.BLOCK_WALK or
-                CollisionFlag.LOC or
-                CollisionFlag.GROUND_DECOR or
-                CollisionFlag.BLOCK_PLAYERS
-        return deps.collision[tile] and blocked != 0
     }
 
     private companion object {
@@ -238,7 +208,6 @@ constructor(deps: BossDeps, private val wornUnequipOp: WornUnequipOp) : BossPlug
 
         private const val CONFUSION_TELEPORT_DELAY = 1
         private const val TELEPORT_RADIUS = 10
-        private const val TELEPORT_ATTEMPTS = 50
 
         private const val MAX_DISARMED_ITEMS = 4
 
