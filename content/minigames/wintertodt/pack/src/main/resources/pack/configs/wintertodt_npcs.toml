@@ -8,6 +8,7 @@ respawnDir = "West"
 [[npc]]
 id = "npc.wint_master_smith"
 inherit = "npc.wint_master_smith"
+wanderRange = 3
 respawnDir = "West"
 
 [[npc]]
