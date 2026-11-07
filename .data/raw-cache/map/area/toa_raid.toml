@@ -1,0 +1,12 @@
+[[area]]
+name = "Tombs of Amascut Raid"
+area_id = "area.toa_raid"
+levels = [0, 1, 2, 3]
+
+[[area.polygons]]
+vertices = [
+    [3520, 5120],
+    [3966, 5120],
+    [3966, 5438],
+    [3520, 5438],
+]

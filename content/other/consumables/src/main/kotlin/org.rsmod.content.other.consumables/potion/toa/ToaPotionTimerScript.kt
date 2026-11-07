@@ -16,10 +16,6 @@ constructor(
     private val overTimeEffects: ToaOverTimeEffect,
 ) : PluginScript() {
     override fun ScriptContext.startup() {
-        /*
-         * Temporary behavior until a Tombs session owns pause/resume.
-         * This prevents raid-only effects from leaking into the normal world.
-         */
         onPlayerLogin {
             effects.clearSessionEffects(player)
         }
