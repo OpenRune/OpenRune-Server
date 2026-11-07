@@ -4,7 +4,6 @@ import dev.openrune.ParamReferences.param
 import dev.openrune.types.ItemServerType
 import dev.openrune.types.enums.EnumTypeMap
 import kotlin.math.min
-import kotlin.math.roundToInt
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.player.vars.intVarp
 import org.rsmod.game.entity.Npc
@@ -26,7 +25,11 @@ internal object Wintertodt {
     const val FM_LEVEL = 50
     const val POINT_THRESHOLD = 500
     const val WARM_ITEMS_MAX = 4
+    const val LIT_BRAZIERS_MAX = 3
     const val REWARD_POOL_MAX = 8000
+    const val DRUIDIC_RITUAL = "quest_druidicritual"
+
+    const val FLETCH_SAFE_MESSAGE = "You can't fletch here."
 
     const val HEADBAR_WARMTH = 79
     const val HEADBAR_SEGMENTS = 30
@@ -154,22 +157,26 @@ internal object Wintertodt {
     fun isSafe(coords: CoordGrid): Boolean = isInPrison(coords) && coords.z <= 3981
 
     fun standardDamage(firemaking: Int, warmItems: Int, litBraziers: Int): Int {
-        val b = min(litBraziers, 3)
+        val firemakingLevel = firemaking.coerceAtLeast(1)
+        val warm = warmItems.coerceIn(0, WARM_ITEMS_MAX)
+        val braziers = litBraziers.coerceIn(0, LIT_BRAZIERS_MAX)
         val percent =
-            ((16 - warmItems - min(2 * b, 6)) * firemaking / 100.0)
-                .roundToInt()
-                .coerceAtLeast(0)
+            ((16 - warm - min(2 * braziers, 6)) * 100 / firemakingLevel).coerceAtLeast(1)
         return percent * 10
     }
 
     fun brazierDamage(firemaking: Int, warmItems: Int): Int {
-        val percent = ((10 - warmItems) * firemaking / 100.0).roundToInt().coerceAtLeast(0)
-        return 2 * percent * 10
+        val firemakingLevel = firemaking.coerceAtLeast(1)
+        val warm = warmItems.coerceIn(0, WARM_ITEMS_MAX)
+        val percent = ((10 - warm) * 100 / firemakingLevel).coerceAtLeast(0)
+        return (2 * percent).coerceAtLeast(2) * 10
     }
 
     fun areaDamage(firemaking: Int, warmItems: Int): Int {
-        val percent = ((10 - warmItems) * firemaking / 100.0).roundToInt().coerceAtLeast(0)
-        return 3 * percent * 10
+        val firemakingLevel = firemaking.coerceAtLeast(1)
+        val warm = warmItems.coerceIn(0, WARM_ITEMS_MAX)
+        val percent = ((10 - warm) * 100 / firemakingLevel).coerceAtLeast(0)
+        return (3 * percent).coerceAtLeast(1) * 10
     }
 
     fun pointsToRewards(points: Int): Int {
