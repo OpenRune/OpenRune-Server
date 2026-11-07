@@ -39,12 +39,12 @@ constructor(
 ) {
     private class Part(val patch: PatchDef, val varbit: String, val coord: CoordGrid)
 
-    private val parts: List<Part> by lazy {
+    private val parts: Map<String, List<Part>> by lazy {
         FarmingPatches.all.flatMap { patch ->
             patch.locs.indices.mapNotNull { i ->
                 transmitVarbit(patch.locs[i])?.let { Part(patch, it, patch.coords[i]) }
             }
-        }
+        }.groupBy(Part::varbit)
     }
 
     fun refresh(player: Player, millis: Long = System.currentTimeMillis()) {
@@ -154,7 +154,7 @@ constructor(
         val crop = FarmingCrops.bySeed(seed)?.takeIf(Crop::shipped) ?: return mes(NOTHING)
         val state = state(player, patch)
         when {
-            crop.kind != patch.kind -> mes("You can only plant ${crop.name} seeds in ${article(patch.kind.label)}.")
+            crop.kind != patch.kind -> mes("You can only plant ${crop.name} seeds in ${article(crop.kind.label)}.")
             !state.cleared -> mes("This patch needs weeding first.")
             state.crop != null -> mes("There is already something growing in this patch.")
             player.farmingLvl < crop.level -> mes("You need a Farming level of ${crop.level} to plant ${crop.name}.")
@@ -324,12 +324,29 @@ constructor(
         val state = state(player, patch)
         val crop = state.crop ?: return false
         val dead = state.health == Health.DEAD
-        val digUp = state.health == Health.HEALTHY && !state.grown(crop) && multiCrop(patch.kind)
+        val digUp = !state.grown(crop) && multiCrop(patch.kind)
         if (!dead && !digUp) return false
         if (!inv.contains(SPADE)) {
             mes("You need a spade to do that.")
             return true
         }
+        if (!dead && player.vars[DIG_WARNING_DISABLED] == 0) {
+            when (
+                choice3(
+                    "Yes, I want to clear it for new crops.",
+                    1,
+                    "Yes, clear the patch and don't ask me again.",
+                    2,
+                    "No, I want to leave it as it is.",
+                    3,
+                    title = "Are you sure you want to dig up this patch?",
+                )
+            ) {
+                2 -> VarPlayerIntMapSetter.set(player, DIG_WARNING_DISABLED, 1)
+                3 -> return true
+            }
+        }
+        if (state(player, patch) != state || !inv.contains(SPADE)) return true
         spam("You start digging the farming patch...")
         // UNVERIFIED: live often digs more 4-tick cycles before clearing, more at low Farming; odds unknown (recording tallies)
         anim(ANIM_DIG)
@@ -384,16 +401,23 @@ constructor(
         if (!before.contentEquals(after)) eventBus.publish(FarmingRefreshEvent(player, before, after))
     }
 
-    /** Patches sharing a transmit varbit are sent farthest first so the nearest one wins. */
+    /** Other patch kinds reuse these selectors, so leaving supported patches must reset them. */
     fun transmitNearby(player: Player) {
         val here = player.coords
-        parts
-            .filter { it.coord.level == here.level && it.coord.chebyshevDistance(here) <= TRANSMIT_RADIUS }
-            .sortedByDescending { it.coord.chebyshevDistance(here) }
-            .forEach { part ->
-                val state = stored(player, part.patch)
-                VarPlayerIntMapSetter.set(player, part.varbit, state.transmit(state.crop))
+        for ((varbit, candidates) in parts) {
+            var nearest: Part? = null
+            var nearestDistance = TRANSMIT_RADIUS
+            for (part in candidates) {
+                if (part.coord.level != here.level) continue
+                val distance = part.coord.chebyshevDistance(here)
+                if (distance <= nearestDistance) {
+                    nearest = part
+                    nearestDistance = distance
+                }
             }
+            val state = nearest?.let { stored(player, it.patch) }
+            VarPlayerIntMapSetter.set(player, varbit, state?.transmit(state.crop) ?: 0)
+        }
     }
 
     private fun transmitVarbit(loc: String): String? {
@@ -404,6 +428,7 @@ constructor(
 
     private companion object {
         const val VARP_CLOCK = "varp.farming_clock"
+        const val DIG_WARNING_DISABLED = "varbit.settings_farming_dig_disable_warning"
         const val VIAL = "obj.vial_empty"
         const val ANIM_DIG = "seq.human_dig"
         const val TRANSMIT_RADIUS = 52

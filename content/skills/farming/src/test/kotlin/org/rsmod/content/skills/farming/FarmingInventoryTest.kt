@@ -21,6 +21,7 @@ import org.junit.jupiter.api.parallel.ResourceLock
 import org.rsmod.annotations.InternalApi
 import org.rsmod.api.player.dialogue.align.TextAlignment
 import org.rsmod.api.player.events.interact.LocEvents
+import org.rsmod.api.player.input.ResumePauseButtonInput
 import org.rsmod.api.player.interact.LocInteractions
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessContextFactory
@@ -39,6 +40,7 @@ import org.rsmod.game.inv.Inventory
 import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.loc.LocEntity
 import org.rsmod.game.queue.EngineQueueCache
+import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
 @Execution(ExecutionMode.SAME_THREAD)
@@ -556,15 +558,93 @@ class FarmingInventoryTest {
     }
 
     @Test
-    fun `a spade digs up a healthy growing crop without XP`() {
+    fun `confirmed healthy and diseased crops are removed without planting XP`() {
+        for (health in listOf(Health.HEALTHY, Health.DISEASED)) {
+            val f = Fixture("potato")
+            val growing = f.planted().copy(stage = 2, health = health, compost = Compost.SUPER)
+            f.state(growing)
+            f.give(SPADE)
+            f.startUse(SPADE)
+            f.awaitChoice()
+            assertEquals(growing, f.state())
+            assertEquals(0, f.xp())
+            f.finish(listOf(1))
+            assertEquals(growing.empty(), f.state())
+            assertEquals(0, f.xp())
+            assertEquals(false, f.clears.single().dead)
+        }
+    }
+
+    @Test
+    fun `declining removal preserves healthy and diseased crops and compost`() {
+        for (health in listOf(Health.HEALTHY, Health.DISEASED)) {
+            val f = Fixture("potato")
+            val growing = f.planted().copy(stage = 2, health = health, compost = Compost.ULTRA)
+            f.state(growing)
+            f.give(SPADE)
+            f.startUse(SPADE)
+            f.awaitChoice()
+            f.finish(listOf(3))
+            assertEquals(growing, f.state())
+            assertEquals(1, f.count(SPADE))
+            assertEquals(0, f.xp())
+            assertTrue(f.clears.isEmpty())
+            assertEquals(0, f.player.vars["varbit.settings_farming_dig_disable_warning"])
+        }
+    }
+
+    @Test
+    fun `disabling the removal warning allows later crops to be cleared without a prompt`() {
         val f = Fixture("potato")
-        val growing = f.planted().copy(stage = 2)
-        f.state(growing)
+        f.planted()
         f.give(SPADE)
+        f.use(SPADE, choices = listOf(2))
+        assertEquals(1, f.player.vars["varbit.settings_farming_dig_disable_warning"])
+        val next = f.planted().copy(stage = 2, health = Health.DISEASED)
+        f.state(next)
         f.use(SPADE)
-        assertEquals(growing.empty(), f.state())
+        assertEquals(next.empty(), f.state())
         assertEquals(0, f.xp())
-        assertEquals(false, f.clears.single().dead)
+        assertEquals(2, f.clears.size)
+    }
+
+    @Test
+    fun `removal rechecks the crop and spade after confirmation`() {
+        for (loseSpade in listOf(false, true)) {
+            val f = Fixture("potato")
+            val growing = f.planted().copy(stage = 2)
+            f.state(growing)
+            f.give(SPADE)
+            f.startUse(SPADE)
+            f.awaitChoice()
+            if (loseSpade) f.player.inv[0] = null else f.state(growing.copy(stage = 3))
+            val current = f.state()
+            f.finish(listOf(1))
+            assertEquals(current, f.state())
+            assertEquals(0, f.xp())
+            assertTrue(f.clears.isEmpty())
+        }
+    }
+
+    @Test
+    fun `shared appearance resets after leaving supported patches or changing plane`() {
+        val f = Fixture("potato")
+        val grown = f.grown()
+        val loc = checkNotNull(ServerCacheManager.getObject(f.patch.locs.first().asRSCM(RSCMType.LOC)))
+        val varbit = checkNotNull(ServerCacheManager.getVarbit(loc.multiVarBit))
+        f.service.transmitNearby(f.player)
+        assertEquals(grown.transmit(f.crop), f.player.vars[varbit])
+        f.player.coords = CoordGrid(0, 0, 0)
+        f.service.transmitNearby(f.player)
+        assertEquals(0, f.player.vars[varbit])
+        f.player.coords = f.patch.coords.first()
+        f.service.transmitNearby(f.player)
+        assertEquals(grown.transmit(f.crop), f.player.vars[varbit])
+        val here = f.player.coords
+        f.player.coords = CoordGrid(here.x, here.z, here.level + 1)
+        f.service.transmitNearby(f.player)
+        assertEquals(0, f.player.vars[varbit])
+        assertEquals(grown, f.state())
     }
 
     @Test
@@ -694,13 +774,17 @@ class FarmingInventoryTest {
             val (loc, type) = bound()
             assertTrue(events.publish(this, LocEvents.Op1(loc, loc, type)))
         }
-        fun use(obj: String) { startUse(obj); finish() }
+        fun use(obj: String, choices: List<Int> = emptyList()) { startUse(obj); finish(choices) }
         fun startUse(obj: String, selectedSlot: Int? = null) = start {
             val id = obj.asRSCM(RSCMType.OBJ)
             val slot = selectedSlot ?: player.inv.indices.firstOrNull { player.inv[it]?.id == id } ?: 0
             with(script) { useItem(patch, obj, slot, bound().first) }
         }
         fun inspect() { start { with(service) { inspect(patch) } }; finish() }
+        fun awaitChoice() {
+            assertTrue(coroutine.isAwaiting(ResumePauseButtonInput::class))
+            assertTrue(player.ui.containsModal("interface.chatmenu"))
+        }
 
         private fun start(action: suspend ProtectedAccess.() -> Unit) {
             lastStep = action
@@ -723,7 +807,8 @@ class FarmingInventoryTest {
         }
 
         /** Drains the coroutine, then replays the step one tick later for each re-trigger, like the engine. */
-        fun finish() {
+        fun finish(choices: List<Int> = emptyList()) {
+            val options = choices.iterator()
             repeat(200) {
                 if (coroutine.isIdle) {
                     result?.getOrThrow()
@@ -731,9 +816,13 @@ class FarmingInventoryTest {
                     start(lastStep)
                     return@repeat
                 }
-                player.currentMapClock++
-                player.processedMapClock = player.currentMapClock
-                coroutine.advance()
+                if (coroutine.isAwaiting(ResumePauseButtonInput::class)) {
+                    coroutine.resumeWith(ResumePauseButtonInput("component.chatmenu:options", options.next()))
+                } else {
+                    player.currentMapClock++
+                    player.processedMapClock = player.currentMapClock
+                    coroutine.advance()
+                }
                 result?.getOrThrow()
             }
             fail<Unit>("Farming action did not finish")
