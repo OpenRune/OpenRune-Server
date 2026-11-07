@@ -9,3 +9,16 @@ farming_produce_orange = 64416
 farming_produce_banana = 64417
 farming_produce_tomato = 64418
 farming_produce_apple = 64419
+
+[gamevals.varp]
+farming_growth_offset = 64498
+farming_sapling_clock = 64499
+
+[gamevals.timer]
+farming_saplings = 4446
+
+[gamevals.dbtable]
+farming_saplings = 64410
+
+[gamevals.dbrow]
+farming_saplings = 63790
