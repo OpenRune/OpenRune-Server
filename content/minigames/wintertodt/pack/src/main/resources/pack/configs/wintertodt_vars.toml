@@ -1,0 +1,23 @@
+[[varp]]
+isServerOnly = true
+id = "varp.wintertodt_rewards_claimed"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.wintertodt_lifetime_score"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.wintertodt_highest_score"
+scope = "Perm"
+transmit = "Never"
+
+[[varp]]
+isServerOnly = true
+id = "varp.wintertodt_intro_seen"
+scope = "Perm"
+transmit = "Never"
