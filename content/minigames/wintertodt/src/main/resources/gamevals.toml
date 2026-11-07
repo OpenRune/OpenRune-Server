@@ -1,3 +1,6 @@
+[gamevals.enum]
+wintertodt_warm_items=65469
+
 [gamevals.dbtable]
 wintertodt_reward=65406
 
