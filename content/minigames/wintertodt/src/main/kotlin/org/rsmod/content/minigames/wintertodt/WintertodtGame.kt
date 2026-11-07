@@ -674,13 +674,18 @@ constructor(
             }
         if (player.invDel(player.inv, current, 1, slot).failure) return
         player.invAdd(player.inv, next, 1, slot)
+        val healed = 14 - pyro.hp
         pyro.hp = 14
         if (wasDown) {
             pyro.down = false
             pyro.resumeAt = mapClock.cycle + random.of(2, 8)
-            pyro.npc?.let { npc2 -> pyromancerType?.let { npc2.transmog(it, Int.MAX_VALUE) } }
+            pyro.nextAnim = 0
+            pyro.npc?.let { npc2 ->
+                pyromancerType?.let { npc2.transmog(it, Int.MAX_VALUE) }
+                npc2.anim(Wintertodt.ANIM_CHANNEL)
+            }
         }
-        showPyromancerHeal(pyro)
+        showPyromancerHeal(pyro, healed)
         addPoints(player, 75)
         if (wasDown) {
             completeTask(player, { caWintertodtMummy }, { caWintertodtMummy = it })
@@ -702,14 +707,14 @@ constructor(
         showPyromancerHealth(pyro)
     }
 
-    private fun showPyromancerHeal(pyro: Pyromancer) {
+    private fun showPyromancerHeal(pyro: Pyromancer, healed: Int) {
         val npc = pyro.npc ?: return
         npc.showHitmark(
             Hitmark.fromNoSource(
                 self = Wintertodt.HITMARK_NPC_HEAL,
                 source = Wintertodt.HITMARK_NPC_HEAL,
                 public = Wintertodt.HITMARK_NPC_HEAL,
-                damage = pyro.hp,
+                damage = healed,
                 delay = 0,
             ),
         )
@@ -721,7 +726,7 @@ constructor(
         npc.hitpoints = pyro.hp.coerceAtLeast(1)
         npc.baseHitpointsLvl = 14
         val fill =
-            (pyro.hp.coerceIn(0, 14) * Wintertodt.HEADBAR_SEGMENTS + 7) / 14
+            (pyro.hp.coerceIn(0, 14) * Wintertodt.HEADBAR_SEGMENTS + 13) / 14
         npc.showHeadbar(
             Headbar.fromNoSource(
                 self = Wintertodt.HEADBAR_HEALTH,
