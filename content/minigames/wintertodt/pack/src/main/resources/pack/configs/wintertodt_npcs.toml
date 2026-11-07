@@ -8,8 +8,6 @@ respawnDir = "West"
 [[npc]]
 id = "npc.wint_master_smith"
 inherit = "npc.wint_master_smith"
-moveRestrict = "NoMove"
-wanderRange = 0
 respawnDir = "West"
 
 [[npc]]
@@ -29,8 +27,6 @@ respawnDir = "South"
 [[npc]]
 id = "npc.wint_soldier"
 inherit = "npc.wint_soldier"
-moveRestrict = "NoMove"
-wanderRange = 0
 respawnDir = "North"
 
 [[npc]]
