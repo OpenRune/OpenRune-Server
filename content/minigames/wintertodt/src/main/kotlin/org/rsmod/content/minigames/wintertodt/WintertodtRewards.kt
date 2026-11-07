@@ -97,15 +97,24 @@ internal object WintertodtRewards {
         return WintertodtReward(PYRO_PIECES[index], 1)
     }
 
-    private fun owned(player: Player, item: String): Int {
+    internal fun owned(player: Player, item: String): Int {
         val offhand =
             if (item == TORCH) {
                 player.inv.count(Wintertodt.TORCH_OFFHAND) +
-                    player.worn.count(Wintertodt.TORCH_OFFHAND)
+                    player.worn.count(Wintertodt.TORCH_OFFHAND) +
+                    bankCount(player, Wintertodt.TORCH_OFFHAND)
             } else {
                 0
             }
-        return player.inv.count(item) + player.worn.count(item) + offhand
+        return player.inv.count(item) +
+            player.worn.count(item) +
+            bankCount(player, item) +
+            offhand
+    }
+
+    private fun bankCount(player: Player, item: String): Int {
+        val bank = player.invMap["inv.bank"] ?: return 0
+        return bank.count(item)
     }
 
     private fun resource(player: Player, random: GameRandom): WintertodtReward {
@@ -137,27 +146,32 @@ internal object WintertodtRewards {
         category: String,
         random: GameRandom,
     ): WintertodtReward {
-        val entries = RESOURCES[category].orEmpty()
-        if (entries.isEmpty()) return WintertodtReward("obj.coins", 1)
-        var remaining = 1.0
-        val roll = random.randomDouble()
-        for (entry in entries) {
-            val chance = remaining * interpolate(level, entry.low, entry.high) / 256.0
-            if (roll < chance) {
-                return WintertodtReward(
-                    entry.obj.internalName,
-                    random.of(entry.min, entry.max),
-                    noted = true,
-                )
-            }
-            remaining -= chance
-        }
-        val last = entries.last()
+        val entry =
+            chooseResourceRow(level, category, random.randomDouble())
+                ?: return WintertodtReward("obj.coins", 1)
         return WintertodtReward(
-            last.obj.internalName,
-            random.of(last.min, last.max),
+            entry.obj.internalName,
+            random.of(entry.min, entry.max),
             noted = true,
         )
+    }
+
+    internal fun chooseResourceRow(
+        level: Int,
+        category: String,
+        roll: Double,
+    ): WintertodtRewardRow? {
+        val entries = RESOURCES[category].orEmpty()
+        if (entries.isEmpty()) return null
+        var remaining = 1.0
+        var cumulative = 0.0
+        for (entry in entries) {
+            val chance = remaining * interpolate(level, entry.low, entry.high) / 256.0
+            cumulative += chance
+            if (roll < cumulative) return entry
+            remaining -= chance
+        }
+        return entries.last()
     }
 
     private fun interpolate(level: Int, low: Int, high: Int): Int {
