@@ -9,15 +9,22 @@ import org.rsmod.api.invtx.invTransaction
 import org.rsmod.api.invtx.select
 import org.rsmod.api.player.dialogue.Dialogue
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.vars.boolVarBit
+import org.rsmod.api.player.vars.boolVarp
+import org.rsmod.api.player.vars.intVarp
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpc3
 import org.rsmod.api.shops.Shops
+import org.rsmod.api.table.McannonKitsRow
+import org.rsmod.content.other.multicannon.DwarfMulticannon
 import org.rsmod.content.quest.manager.QuestRequirements
+import org.rsmod.game.entity.Player
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 
 /** Nulodion, the cannon engineer at the north end of the Dwarven Mine. */
-class Nulodion @Inject constructor(private val shops: Shops) : PluginScript() {
+class Nulodion @Inject constructor(private val shops: Shops, private val multicannon: DwarfMulticannon) :
+    PluginScript() {
     override fun ScriptContext.startup() {
         onOpNpc1("npc.nulodion") { startDialogue(it.npc) { greeting() } }
         onOpNpc3("npc.nulodion") { openShop() }
@@ -138,11 +145,41 @@ class Nulodion @Inject constructor(private val shops: Shops) : PluginScript() {
 
     private suspend fun Dialogue.lostCannon() {
         chatPlayer(sad, "I've lost my cannon.")
-        chatNpc(
-            neutral,
-            "Actually, I'm only allowed to replace cannons that were stolen in action. I'm sorry, " +
-                "but you'll have to buy a new set.",
-        )
+        val stage = player.cannonStage
+        when {
+            stage == 0 ->
+                chatNpc(
+                    neutral,
+                    "Actually, I'm only allowed to replace cannons that were stolen in action. I'm " +
+                        "sorry, but you'll have to buy a new set.",
+                )
+            multicannon.isSetUp(player) -> {
+                chatNpc(neutral, "Hmmm. I think you'll find ${STILL_PARKED[stage - 1]}")
+                chatPlayer(confused, "Oh, is it still there? I thought I'd lost it.")
+                chatNpc(laugh, "Ha ha ha, what a muddle-headed numpty you are!")
+                chatPlayer(neutral, "...")
+            }
+            access.inv.freeSpace() < stage ->
+                chatNpc(
+                    neutral,
+                    "That's unfortunate! But don't worry, I can sort you out if you free up " +
+                        "some inventory space...",
+                )
+            else -> {
+                chatNpc(neutral, "That's unfortunate! But don't worry, I can sort you out...")
+                val parts = lostCannonParts(player).take(stage)
+                if (!access.replaceLostCannon(parts)) {
+                    return
+                }
+                when (stage) {
+                    1 -> objbox(parts[0], "The dwarf gives you a new cannon part.")
+                    4 -> doubleobjbox(parts[2], parts[3], "The dwarf gives you a new cannon.")
+                    else -> doubleobjbox(parts[stage - 2], parts[stage - 1], "The dwarf gives you new cannon parts.")
+                }
+                chatNpc(neutral, "Keep that quiet or I'll be in real trouble!")
+                chatPlayer(happy, "Thanks a lot.")
+            }
+        }
     }
 
     private suspend fun Dialogue.aboutCannon() {
@@ -182,6 +219,14 @@ class Nulodion @Inject constructor(private val shops: Shops) : PluginScript() {
         private const val SHOP_SELL = 107.0
         private const val SHOP_BUY = 40.0
         private const val SHOP_CHANGE = 1.0
+
+        private val STILL_PARKED =
+            listOf(
+                "the base still happily parked on the spot where you put it.",
+                "the base and stand still happily parked on the spot where you put them.",
+                "most of the cannon still happily parked on the spot where you put it.",
+                "it's still happily parked on the spot where you put it.",
+            )
     }
 }
 
@@ -197,6 +242,33 @@ public val CANNON_SET =
         "obj.ammo_mould",
         "obj.mcannonbook",
     )
+
+private fun lostCannonParts(player: Player): List<String> {
+    val kit = if (player.cannonOrnament) "dbrow.mcannon_kit_league03" else "dbrow.mcannon_kit"
+    return McannonKitsRow.getRow(kit).parts.map { it.internalName }
+}
+
+private fun ProtectedAccess.replaceLostCannon(parts: List<String>): Boolean {
+    val given =
+        player
+            .invTransaction(inv) {
+                val target = select(inv)
+                for (part in parts) {
+                    add(target, part.asRSCM(RSCMType.OBJ), count = 1)
+                }
+            }
+            .success
+    if (given) {
+        player.cannonStage = 0
+        player.cannonDecayed = false
+        player.cannonOrnament = false
+    }
+    return given
+}
+
+private var Player.cannonStage: Int by intVarp("varp.dropcannon")
+private var Player.cannonDecayed: Boolean by boolVarBit("varbit.mcannon_decayed")
+private var Player.cannonOrnament: Boolean by boolVarp("varp.mcannon_ornament")
 
 public fun ProtectedAccess.buyCannonSet(): Boolean =
     player

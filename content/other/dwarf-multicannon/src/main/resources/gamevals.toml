@@ -1,0 +1,66 @@
+[gamevals.synth]
+mcannon_fire = 1667
+mcannon_setup = 2876
+mcannon_turn = 2877
+mcannon_destroyed_kalphite_queen_1 = 573
+mcannon_destroyed_kalphite_queen_2 = 557
+
+[gamevals.timer]
+mcannon_fire = 65535
+
+[gamevals.queue]
+mcannon_push = 65513
+
+[gamevals.varp]
+mcannon_ornament = 65470
+
+[gamevals.dbtable]
+mcannon_kits = 65485
+mcannon_npcs = 65484
+
+[gamevals.dbrow]
+mcannon_kit = 63789
+mcannon_kit_league03 = 63788
+mcannon_destroyers = 63787
+mcannon_untargeted = 63786
+mcannon_damage_immune = 63785
+
+[gamevals.enum]
+mcannon_prohibited_areas = 65470
+
+[gamevals.area]
+mcannon_black_guard = 32700
+mcannon_generic = 32701
+mcannon_damp = 32702
+mcannon_strange_force = 32703
+mcannon_ancient_power = 32704
+mcannon_muddy_instance = 32705
+mcannon_unsafe = 32706
+mcannon_melt = 32707
+mcannon_dwarves = 32708
+mcannon_mysterious_presence = 32709
+mcannon_dank = 32710
+mcannon_colourful_force = 32711
+mcannon_grand_exchange = 32712
+mcannon_roavar = 32713
+mcannon_damp_down_here = 32714
+mcannon_ogres = 32715
+mcannon_soft_ground = 32716
+mcannon_cavern_electricity = 32717
+mcannon_electricity = 32718
+mcannon_ancient_temple = 32719
+mcannon_marshy = 32720
+mcannon_unstable_structure = 32721
+mcannon_little_damp = 32722
+mcannon_dominic = 32723
+mcannon_eniola = 32724
+mcannon_ancient_magic = 32725
+mcannon_unstable_ground = 32726
+mcannon_dusty_aliv = 32727
+mcannon_vampyres = 32728
+mcannon_tzhaar = 32729
+mcannon_intense_cold = 32730
+mcannon_too_damp_function = 32731
+mcannon_cold = 32732
+mcannon_fungi = 32733
+mcannon_party_pete = 32734

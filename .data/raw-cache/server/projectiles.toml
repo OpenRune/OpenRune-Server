@@ -228,3 +228,14 @@ angle = 8
 lengthAdjustment = 20
 progress = 128
 stepMultiplier = 3
+
+[[projectile]]
+isServerOnly = true
+id = "projanim.mcannon"
+startHeight = 145
+endHeight = 140
+delay = 0
+angle = 2
+lengthAdjustment = 25
+progress = 11
+stepMultiplier = 5
