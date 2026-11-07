@@ -312,7 +312,7 @@ private fun Player.openModal(interf: String, internal: String, eventBus: EventBu
     val translated = ui.translate(idComponent)
     client.write(IfOpenSub(translated.parent, translated.child, interfaceID, IfSubType.Modal.id))
 
-    eventBus.publish(OpenSub(this, idInterface, idComponent, IfSubType.Modal))
+    publishOpened(idInterface, idComponent, IfSubType.Modal, eventBus)
 }
 
 public fun Player.setColour(component: String, colour: Color) {
@@ -335,7 +335,7 @@ private fun Player.openOverlay(interf: String, internal: String, eventBus: Event
     val translated = ui.translate(idComponent)
     client.write(IfOpenSub(translated.parent, translated.child, interfaceID, IfSubType.Overlay.id))
 
-    eventBus.publish(OpenSub(this, idInterface, idComponent, IfSubType.Overlay))
+    publishOpened(idInterface, idComponent, IfSubType.Overlay, eventBus)
 }
 
 private fun Player.closeModal(interf: String, eventBus: EventBus) {
@@ -357,7 +357,7 @@ private fun Player.closeModal(interf: UserInterface, target: Component, eventBus
     val translated = ui.translate(target)
     client.write(IfCloseSub(translated.parent, translated.child))
 
-    eventBus.publish(CloseSub(this, interf, target))
+    publishClosed(interf, target, eventBus)
 
     closeOverlayChildren(interf, eventBus)
 }
@@ -381,7 +381,7 @@ private fun Player.closeOverlay(interf: UserInterface, target: Component, eventB
     val translated = ui.translate(target)
     client.write(IfCloseSub(translated.parent, translated.child))
 
-    eventBus.publish(CloseSub(this, interf, target))
+    publishClosed(interf, target, eventBus)
 
     closeOverlayChildren(interf, eventBus)
 }
@@ -410,7 +410,7 @@ public fun Player.closeSubs(from: Component, eventBus: EventBus) {
         val translated = ui.translate(from)
         client.write(IfCloseSub(translated.parent, translated.child))
 
-        eventBus.publish(CloseSub(this, remove, from))
+        publishClosed(remove, from, eventBus)
 
         closeOverlayChildren(remove, eventBus)
     }
@@ -424,7 +424,7 @@ private fun Player.triggerCloseSubs(from: Component, eventBus: EventBus) {
     val remove = ui.modals.remove(from) ?: ui.overlays.remove(from)
     if (remove != null) {
         ui.events.clear(remove)
-        eventBus.publish(CloseSub(this, remove, from))
+        publishClosed(remove, from, eventBus)
         triggerCloseOverlayChildren(remove, eventBus)
     }
 }
@@ -457,7 +457,7 @@ private fun Player.triggerCloseOverlay(
 ) {
     ui.overlays.remove(target)
     ui.events.clear(interf)
-    eventBus.publish(CloseSub(this, interf, target))
+    publishClosed(interf, target, eventBus)
     triggerCloseOverlayChildren(interf, eventBus)
 }
 
@@ -469,6 +469,25 @@ public fun Player.ifMoveSub(
 ) {
     client.write(IfMoveSub(source.packed, dest.packed))
     eventBus.publish(MoveSub(this, base.packed))
+}
+
+private fun Player.publishOpened(
+    interf: UserInterface,
+    target: Component,
+    subType: IfSubType,
+    eventBus: EventBus,
+) {
+    eventBus.publish(OpenSub(this, interf, target, subType))
+    if (eventBus.unbound[PlayerInterfaceEvents.Opened::class.java] != null) {
+        eventBus.publish(PlayerInterfaceEvents.Opened(this, interf, target, subType))
+    }
+}
+
+private fun Player.publishClosed(interf: UserInterface, from: Component, eventBus: EventBus) {
+    eventBus.publish(CloseSub(this, interf, from))
+    if (eventBus.unbound[PlayerInterfaceEvents.Closed::class.java] != null) {
+        eventBus.publish(PlayerInterfaceEvents.Closed(this, interf, from))
+    }
 }
 
 private fun InterfaceType.toIdInterface() = UserInterface(id)

@@ -1,10 +1,14 @@
 package org.rsmod.content.skills.herblore
 
 import org.rsmod.api.config.Constants
-import org.rsmod.api.invtx.invAdd
-import org.rsmod.api.invtx.invDel
 import org.rsmod.api.player.events.interact.HeldUEvents
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreBarbarianMixesRow
@@ -126,27 +130,31 @@ class BarbarianMixesEvents : PluginScript() {
             return
         }
 
-        val potionRemoved = invDel(inv, mix.twoDosePotion.internalName, 1).success
-        val ingredientRemoved = invDel(inv, mix.mixIngredient.internalName, 1).success
-
-        if (!potionRemoved || !ingredientRemoved) {
-            if (potionRemoved) invAdd(inv, mix.twoDosePotion.internalName, 1)
-            if (ingredientRemoved) invAdd(inv, mix.mixIngredient.internalName, 1)
-            mes(Constants.dm_default)
-            resetAnim()
-            return
-        }
-
-        if (invAdd(inv, mix.barbarianMix.internalName, 1).failure) {
-            invAdd(inv, mix.twoDosePotion.internalName, 1)
-            invAdd(inv, mix.mixIngredient.internalName, 1)
-            mes("You don't have enough inventory space to make this mix.")
-            resetAnim()
-            return
-        }
-
-        if (mix.xp > 0) {
-            statAdvance("stat.herblore", mix.xp.toDouble())
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.herblore",
+                item = mix.barbarianMix.internalName,
+                experience = mix.xp.toDouble(),
+                source = SkillingProductSource.BarbarianMix(mix),
+                inputs =
+                    listOf(
+                        SkillingInput(mix.twoDosePotion.internalName),
+                        SkillingInput(mix.mixIngredient.internalName),
+                    ),
+            )
+        when (awardSkillingProduct(product)) {
+            SkillingAwardResult.Success -> Unit
+            SkillingAwardResult.InventoryFull -> {
+                mes("You don't have enough inventory space to make this mix.")
+                resetAnim()
+                return
+            }
+            SkillingAwardResult.Cancelled -> {
+                if (!product.cancelled) mes(Constants.dm_default)
+                resetAnim()
+                return
+            }
         }
 
         val mixName = mix.barbarianMix.name
@@ -155,7 +163,7 @@ class BarbarianMixesEvents : PluginScript() {
 
         val created = task.created + 1
         if (created < task.amount) {
-            weakQueue("queue.herblore_barbarian_mix", 4, BarbarianMixTask(mix, task.amount, created))
+            weakQueue("queue.herblore_barbarian_mix", player.skillCycles("stat.herblore", 4), BarbarianMixTask(mix, task.amount, created))
         } else {
             resetAnim()
         }

@@ -219,3 +219,12 @@ id = "varn.slayer_engaged_clock"
 
 [[varn]]
 id = "varn.slayer_finishing_until"
+
+[[varn]]
+id = "varn.protect_melee"
+
+[[varn]]
+id = "varn.protect_ranged"
+
+[[varn]]
+id = "varn.protect_magic"

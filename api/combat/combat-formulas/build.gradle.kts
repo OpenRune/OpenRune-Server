@@ -1,5 +1,6 @@
 plugins {
     id("base-conventions")
+    id("game-cache-test-conventions")
     id("integration-test-suite")
 }
 
@@ -24,4 +25,6 @@ dependencies {
     implementation(projects.engine.plugin)
     integrationImplementation(projects.api.combat.combatCommons)
     integrationImplementation(projects.api.combat.combatWeapon)
+    testImplementation(libs.mockk)
+    testImplementation(projects.engine.annotations)
 }

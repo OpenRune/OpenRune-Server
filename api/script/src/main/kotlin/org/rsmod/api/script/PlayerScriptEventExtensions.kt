@@ -5,17 +5,36 @@ import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import dev.openrune.types.ItemServerType
 import dev.or2.central.account.Rights
+import org.rsmod.api.invtx.PlayerInvChangedEvent
+import org.rsmod.api.player.events.NpcKilledEvent
+import org.rsmod.api.player.events.PlayerAreaEvents
+import org.rsmod.api.player.events.PlayerAttackEvents
+import org.rsmod.api.player.events.PlayerConsumeEvents
 import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
+import org.rsmod.api.player.events.PlayerLevelEvents
+import org.rsmod.api.player.events.PlayerLootEvents
 import org.rsmod.api.player.events.PlayerMovementEvent
 import org.rsmod.api.player.events.PlayerQueueEvents
+import org.rsmod.api.player.events.PlayerShopEvents
+import org.rsmod.api.player.events.PlayerSkillAttemptEvent
+import org.rsmod.api.player.events.PlayerSkillRollEvents
+import org.rsmod.api.player.events.PlayerSlayerEvents
+import org.rsmod.api.player.events.PlayerSpellRuneEvents
 import org.rsmod.api.player.events.PlayerTimerEvent
+import org.rsmod.api.player.events.PlayerWornEvents
+import org.rsmod.api.player.events.PlayerXpEvents
+import org.rsmod.api.player.events.interact.PlayerInteractionEvent
+import org.rsmod.api.player.events.interact.PlayerInteractionFinishedEvent
 import org.rsmod.api.player.events.interact.PlayerTEvents
 import org.rsmod.api.player.events.interact.PlayerUContentEvents
 import org.rsmod.api.player.events.interact.PlayerUEvents
 import org.rsmod.api.player.input.DialogInput
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.ui.PlayerButtonEvent
 import org.rsmod.api.player.ui.WorldMapClick
+import org.rsmod.api.player.vars.PlayerVarChangedEvent
+import org.rsmod.api.player.vars.PlayerVarWatch
 import org.rsmod.game.entity.player.SessionStateEvent
 import org.rsmod.game.entity.player.WorldTypeChangedEvent
 import org.rsmod.plugin.scripts.ScriptContext
@@ -112,8 +131,141 @@ public fun ScriptContext.onPlayerHitpointsChanged(
     action: PlayerHitpointsChangedEvent.() -> Unit
 ): Unit = onEvent(action)
 
+public fun ScriptContext.onPlayerButton(action: PlayerButtonEvent.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerInteraction(action: PlayerInteractionEvent.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerInteractionFinished(
+    action: PlayerInteractionFinishedEvent.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onNpcKilled(action: NpcKilledEvent.() -> Unit): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerLootPrepare(action: PlayerLootEvents.Prepare.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerLootReceived(action: PlayerLootEvents.Received.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerInvChanged(action: PlayerInvChangedEvent.() -> Unit): Unit =
+    onEvent(action)
+
+/** [name] is a varp or varbit symbol, such as `"varbit.prayer_smite"`. */
+public fun ScriptContext.onVarChanged(name: String, action: PlayerVarChangedEvent.() -> Unit) {
+    val watch = PlayerVarWatch.watch(name)
+    onEvent<PlayerVarChangedEvent> { watch.matching(this)?.action() }
+}
+
+public fun ScriptContext.onPlayerSkillRollModify(
+    action: PlayerSkillRollEvents.Modify.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerSkillRoll(action: PlayerSkillRollEvents.Result.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerLevelUp(action: PlayerLevelEvents.Advanced.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerCombatLevelUp(
+    action: PlayerLevelEvents.CombatAdvanced.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerStatChanged(
+    action: PlayerLevelEvents.StatChanged.() -> Unit
+): Unit = onEvent(action)
+
+/** Observes [area] being entered. Unlike `onArea`, any number of scripts can subscribe. */
+public fun ScriptContext.onPlayerAreaEntered(
+    area: String,
+    action: PlayerAreaEvents.Entered.() -> Unit,
+) {
+    val id = area.asRSCM(RSCMType.AREA)
+    onEvent<PlayerAreaEvents.Entered> { if (this.area == id) action() }
+}
+
+/** Observes [area] being left. Unlike `onAreaExit`, any number of scripts can subscribe. */
+public fun ScriptContext.onPlayerAreaExited(
+    area: String,
+    action: PlayerAreaEvents.Exited.() -> Unit,
+) {
+    val id = area.asRSCM(RSCMType.AREA)
+    onEvent<PlayerAreaEvents.Exited> { if (this.area == id) action() }
+}
+
+public fun ScriptContext.onPlayerShopBuyPrepare(
+    action: PlayerShopEvents.BuyPrepare.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerShopSellPrepare(
+    action: PlayerShopEvents.SellPrepare.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerConsumePrepare(
+    action: PlayerConsumeEvents.Prepare.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerSlayerKillPrepare(
+    action: PlayerSlayerEvents.KillPrepare.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerSlayerTaskComplete(
+    action: PlayerSlayerEvents.TaskComplete.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerShopBought(action: PlayerShopEvents.Bought.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerShopSold(action: PlayerShopEvents.Sold.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerEquip(action: PlayerWornEvents.Equip.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerUnequip(action: PlayerWornEvents.Unequip.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerXpModify(action: PlayerXpEvents.Modify.() -> Unit): Unit =
+    onEvent(action)
+
+public fun ScriptContext.onPlayerXpGain(action: PlayerXpEvents.Gain.() -> Unit): Unit =
+    onEvent(action)
+
 public fun ScriptContext.onPlayerHit(action: PlayerHitEvents.Impact.() -> Unit): Unit =
     onEvent(action)
+
+public fun ScriptContext.onPlayerAttackImpact(
+    action: PlayerAttackEvents.HitImpact.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerSkillAttempt(
+    action: PlayerSkillAttemptEvent.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerAttackRange(
+    action: PlayerAttackEvents.AttackRange.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerAttackPrepare(
+    action: PlayerAttackEvents.AttackPrepare.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerDamageRoll(
+    action: PlayerAttackEvents.DamageRoll.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerAttackResult(
+    action: PlayerAttackEvents.AttackResult.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerSpellRunesPrepare(
+    action: PlayerSpellRuneEvents.Prepare.() -> Unit
+): Unit = onEvent(action)
+
+public fun ScriptContext.onPlayerSpellRunesSpent(
+    action: PlayerSpellRuneEvents.Spent.() -> Unit
+): Unit = onEvent(action)
 
 public fun ScriptContext.onWorldMapClick(
     requiredRights: Rights,

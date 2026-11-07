@@ -175,16 +175,17 @@ object MortimerAssignment {
         return modifier.absoluteValue
     }
 
-    fun onTaskComplete(player: Player): Int {
+    fun advanceCounters(player: Player): Int {
         val tasksDone = tasksCompleted(player) + 1
         VarPlayerIntMapSetter.set(player, "varbit.slayer_mortimer_tasks_done", tasksDone)
-        VarPlayerIntMapSetter.set(player, "varbit.slayer_mortimer_streak", streak(player) + 1)
+        val newStreak = streak(player) + 1
+        VarPlayerIntMapSetter.set(player, "varbit.slayer_mortimer_streak", newStreak)
+        return newStreak
+    }
 
+    fun modifierPoints(player: Player): Int {
         val modifier = activeModifier(player)
-        val points =
-            if (modifier?.id == MortimerModifiers.MODIFIER_POINTS) modifier.absoluteValue else 0
-        clearActiveModifierVars(player)
-        return points
+        return if (modifier?.id == MortimerModifiers.MODIFIER_POINTS) modifier.absoluteValue else 0
     }
 
     fun resetTaskExtras(player: Player) {

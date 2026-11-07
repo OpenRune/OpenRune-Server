@@ -4,6 +4,9 @@ import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
 import org.rsmod.api.player.events.interact.HeldUDefaultEvents
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.random.GameRandom
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
@@ -114,17 +117,23 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
 
         val brewResult = AmuletOfChemistry.rollBrewOutput(player, random, potion)
         val savedSecondaries = HerbloreGoggles.rollSavedSecondaryCounts(player, random, potion)
-        if (!potion.brew(player, brewResult.output, savedSecondaries)) {
-            mes("You don't have enough inventory space to make this potion.")
-            resetAnim()
-            return
+        val product =
+            potion.brewProduct(player, brewResult.output, savedSecondaries, brewResult.extraDoseApplied)
+        when (awardSkillingProduct(product)) {
+            SkillingAwardResult.Success -> Unit
+            SkillingAwardResult.InventoryFull -> {
+                mes("You don't have enough inventory space to make this potion.")
+                resetAnim()
+                return
+            }
+            SkillingAwardResult.Cancelled -> {
+                if (!product.cancelled) mes(Constants.dm_default)
+                resetAnim()
+                return
+            }
         }
         AmuletOfChemistry.applyBrewOutput(player, brewResult)
         anim("seq.human_herbing_vial")
-
-        if (potion.xp > 0) {
-            statAdvance("stat.herblore", potion.xp / 10.0)
-        }
 
         val itemForMessage = if (potion.secondaries.size > 1) {
             potion.unfPot
@@ -147,7 +156,7 @@ class FinishedPotionsEvents @Inject constructor(private val random: GameRandom) 
 
         val created = task.created + 1
         if (created < task.amount) {
-            weakQueue("queue.herblore_finished", potion.brewTicks.getOrNull(1) ?: 4, FinishedPotionTask(potion, task.amount, created))
+            weakQueue("queue.herblore_finished", player.skillCycles("stat.herblore", potion.brewTicks.getOrNull(1) ?: 4), FinishedPotionTask(potion, task.amount, created))
         } else {
             resetAnim()
         }

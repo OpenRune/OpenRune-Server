@@ -30,6 +30,7 @@ public class DeathDropHooksModule : PluginModule() {
         newSetBinding<PvPSkullHook>()
         newSetBinding<PvPPlayerHitHook>()
         newSetBinding<PvPSpecialAttackHook>()
+        addSetBinding<NpcDeathKillHook>(NpcKilledEventHook::class.java)
         addSetBinding<PlayerDeathHook>(UimPlayerDeathHook::class.java)
         addSetBinding<PlayerDeathHook>(StandardPvmDeathHook::class.java)
     }

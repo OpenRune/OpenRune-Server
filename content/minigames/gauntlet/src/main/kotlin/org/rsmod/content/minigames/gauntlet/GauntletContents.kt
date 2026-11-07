@@ -11,6 +11,7 @@ import kotlin.random.Random
 import org.rsmod.api.bosses.runtime.BossDeps
 import org.rsmod.api.bosses.runtime.startEncounter
 import org.rsmod.api.instances.InstanceManager
+import org.rsmod.api.npc.hit.FULL_STYLE_PROTECTION
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.table.GauntletRoomSlotsRow
@@ -74,6 +75,7 @@ constructor(
         npc.apRangeOverride = HUNLLEF_AP_RANGE
         bossDeps.startEncounter(npc, hunllefSpecs.of(run.mode.corrupted))
         npc.setHeadIcon(HunllefSpecs.HEAD_ICON_SLOT, HunllefSpecs.HEAD_ICON_GRAPHIC, 0)
+        npc.vars["varn.protect_melee"] = FULL_STYLE_PROTECTION
         npc.anim("seq.hunllef_spawn", delay = HUNLLEF_SPAWN_DELAY)
         run.hunllef = npc
     }

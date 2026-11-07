@@ -1,7 +1,5 @@
 package org.rsmod.api.spells.runes
 
-import dev.openrune.ServerCacheManager
-import dev.openrune.definition.type.VarBitType
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
@@ -320,7 +318,8 @@ public object MagicRunes {
             }
 
             if (pouchCountVarBit != null && pouchRuneCount >= remaining) {
-                sources += Source.VarBitSource(pouchCountVarBit, remaining)
+                val internalName = RSCM.getReverseMapping(RSCMType.OBJ, rune.id)
+                sources += Source.VarBitSource(pouchCountVarBit, remaining, internalName)
                 return Validation.Valid.HasEnough(sources)
             }
         }
@@ -399,10 +398,20 @@ public object MagicRunes {
     }
 
     public sealed class Source {
-        public data class InvSource(val obj: String, val slot: Int, val count: Int) :
-            Source()
+        public abstract val obj: String
+        public abstract val count: Int
 
-        public data class VarBitSource(val varbit: String, val count: Int) : Source()
+        public data class InvSource(
+            override val obj: String,
+            val slot: Int,
+            override val count: Int,
+        ) : Source()
+
+        public data class VarBitSource(
+            val varbit: String,
+            override val count: Int,
+            override val obj: String,
+        ) : Source()
     }
 
     public class RequirementList internal constructor(internal val reqs: List<Requirement>) {

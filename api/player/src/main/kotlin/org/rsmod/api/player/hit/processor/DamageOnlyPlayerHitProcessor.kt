@@ -7,6 +7,7 @@ import org.rsmod.api.player.death.recordDeathCause
 import org.rsmod.api.player.death.resolveDeathCause
 import org.rsmod.api.player.events.PlayerHitEvents
 import org.rsmod.api.player.events.PlayerHitpointsChangedEvent
+import org.rsmod.api.player.events.publishAttackImpact
 import org.rsmod.api.player.headbar.InternalPlayerHeadbars
 import org.rsmod.api.player.queueDeath
 import org.rsmod.api.player.stat.baseHitpointsLvl
@@ -62,6 +63,7 @@ constructor(
         showHeadbar(headbar)
 
         eventBus.publish(PlayerHitEvents.Impact(this, hit))
+        eventBus.publishAttackImpact(this, hit, playerList)
     }
 
     private fun Hit.createHeadbar(currHp: Int, maxHp: Int): Headbar =

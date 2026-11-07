@@ -276,9 +276,10 @@ public fun Player.statRandom(
     low: Int,
     high: Int,
     invisibleLevels: InvisibleLevels,
+    subject: String? = null,
 ): Boolean {
     val invisibleBoost = invisibleLevels.get(this, stat)
-    return statRandom(random, stat, low, high, invisibleBoost)
+    return statRandom(random, stat, low, high, invisibleBoost, subject)
 }
 
 public fun Player.statRandom(
@@ -287,23 +288,18 @@ public fun Player.statRandom(
     low: Int,
     high: Int,
     invisibleBoost: Int,
+    subject: String? = null,
 ): Boolean {
+    val rate = statRate(internal, low, high, invisibleBoost)
+    return resolveSkillRoll(internal, rate, rate > random.randomDouble(), subject)
+}
 
+/** The odds [statRandom] rolls against. For an action that settles one outcome from several rolls. */
+public fun Player.statRate(internal: String, low: Int, high: Int, invisibleBoost: Int): Double {
     val stat = ServerCacheManager.getStats(internal.asRSCM(RSCMType.STAT))
         ?: error("No stat found for $internal")
 
     val visibleLevel = stat(internal)
     val effectiveLevel = visibleLevel.coerceIn(1, stat.maxLevel) + invisibleBoost
-    return statRandomRoll(random, low, high, effectiveLevel, stat.maxLevel)
-}
-
-private fun statRandomRoll(
-    random: GameRandom,
-    low: Int,
-    high: Int,
-    effectiveLevel: Int,
-    maxLevel: Int,
-): Boolean {
-    val rate = SkillingSuccessRate.successRate(low, high, effectiveLevel, maxLevel)
-    return rate > random.randomDouble()
+    return SkillingSuccessRate.successRate(low, high, effectiveLevel, stat.maxLevel)
 }

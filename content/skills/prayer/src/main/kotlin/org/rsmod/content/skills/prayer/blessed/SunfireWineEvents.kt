@@ -1,6 +1,7 @@
 package org.rsmod.content.skills.prayer.blessed
 
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueue
 import org.rsmod.plugin.scripts.PluginScript
@@ -9,8 +10,8 @@ import org.rsmod.plugin.scripts.ScriptContext
 class SunfireWineEvents : PluginScript() {
 
     override fun ScriptContext.startup() {
-        onOpHeldU("obj.jug_wine","obj.sunfiresplinter") { startMakeSunfireWine() }
-        onOpHeldU("obj.jug_wine_blessed","obj.sunfiresplinter") { rejectBlessedWineMix() }
+        onOpHeldU("obj.jug_wine", "obj.sunfiresplinter") { startMakeSunfireWine() }
+        onOpHeldU("obj.jug_wine_blessed", "obj.sunfiresplinter") { rejectBlessedWineMix() }
         onPlayerQueue("queue.prayer_make_sunfire_wine") { processMakeSunfireWine() }
     }
 
@@ -43,7 +44,7 @@ class SunfireWineEvents : PluginScript() {
         mes("You crush the sunfire splinters into the wine, making a jug of sunfire wine.")
 
         if (canMakeSunfireWine()) {
-            weakQueue("queue.prayer_make_sunfire_wine", 4)
+            weakQueue("queue.prayer_make_sunfire_wine", player.skillCycles("stat.prayer", 4))
         }
     }
 
@@ -67,5 +68,4 @@ class SunfireWineEvents : PluginScript() {
     private fun ProtectedAccess.rejectBlessedWineMix() {
         mes("You can only add sunfire splinters to an unblessed jug of wine.")
     }
-
 }

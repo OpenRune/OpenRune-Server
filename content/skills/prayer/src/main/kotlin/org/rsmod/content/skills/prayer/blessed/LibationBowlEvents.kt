@@ -1,8 +1,12 @@
 package org.rsmod.content.skills.prayer.blessed
 
+import org.rsmod.api.player.events.prayer.PrayerSkillAction
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.basePrayerLvl
 import org.rsmod.api.player.stat.prayerLvl
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.player.stat.statSub
 import org.rsmod.api.player.vars.intVarBit
 import org.rsmod.api.script.onOpLoc1
@@ -99,7 +103,10 @@ class LibationBowlEvents : PluginScript() {
         }
         libationWineCharges = (wineCharges - count).coerceAtLeast(0)
         statSub("stat.prayer", constant = 2, percent = 0)
-        statAdvance("stat.prayer", count * wineXpPerShard)
+        val xp = count * wineXpPerShard
+        statAdvance("stat.prayer", xp)
+        val offered = PrayerSkillAction.Offered("obj.blessed_bone_shard", count, xp)
+        publish(SkillingActionCompleteEvent(player, SkillingActionContext.Prayer(offered)))
 
         if (libationWineCharges <= 0) {
             if (!tryAutoRefillLibationBowl()) {
@@ -109,7 +116,7 @@ class LibationBowlEvents : PluginScript() {
         }
 
         if (canLibationSacrifice(task)) {
-            weakQueue("queue.prayer_libation_sacrifice", 4, task)
+            weakQueue("queue.prayer_libation_sacrifice", player.skillCycles("stat.prayer", 4), task)
         }
     }
 
@@ -148,5 +155,4 @@ class LibationBowlEvents : PluginScript() {
 
     private var ProtectedAccess.libationWineCharges by intVarBit("varbit.varlamore_prayer_winequant")
     private var ProtectedAccess.libationSunfire by intVarBit("varbit.varlamore_prayer_winetype")
-
 }

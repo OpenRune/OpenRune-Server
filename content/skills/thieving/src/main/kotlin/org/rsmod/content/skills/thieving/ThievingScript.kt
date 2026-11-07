@@ -4,14 +4,18 @@ import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM.asRSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
-import org.rsmod.api.invtx.add
-import org.rsmod.api.invtx.delete
-import org.rsmod.api.invtx.invTransaction
-import org.rsmod.api.invtx.select
 import org.rsmod.api.npc.interact.AiPlayerInteractions
 import org.rsmod.api.npc.opPlayer2
+import org.rsmod.api.player.events.skilling.SkillingByproduct
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCanBeCaught
+import org.rsmod.api.player.stat.skillNeedsSpace
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.repo.npc.NpcRepository
 import org.rsmod.api.script.onOpHeld1
@@ -58,12 +62,12 @@ constructor(
             return
         }
         if (restockingUntil.getOrDefault(loc.coords, 0) > mapClock) return
-        if (inv.isFull()) {
+        if (inv.isFull() && player.skillNeedsSpace(THIEVING)) {
             mes("You don't have enough inventory space.")
             return
         }
         mes(stall.attemptMessage, ChatType.Spam)
-        val spotter = findSpotter(stall)
+        val spotter = if (player.skillCanBeCaught(THIEVING)) findSpotter(stall) else null
         if (spotter != null) {
             caughtAtStall(spotter, stall)
             return
@@ -71,15 +75,31 @@ constructor(
         anim(STALL_SEQ)
         delay(2)
         val loot = stall.loot.roll(random)
-        val count = random.of(loot.min, loot.max)
-        if (invAdd(inv, loot.obj, count).failure) {
-            // UNVERIFIED: message when the inv fills during the steal delay (guess)
-            mes(NO_SPACE)
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = THIEVING,
+                item = loot.obj,
+                count = random.of(loot.min, loot.max),
+                experience = stall.xp,
+                source = SkillingProductSource.StallThieving(loc),
+            )
+        if (!awardThieved(product)) {
             return
         }
-        mes("You steal ${describe(loot.obj, count)}.")
-        statAdvance(THIEVING, stall.xp)
-        restock(loc, stall)
+        mes("You steal ${describe(product.item, product.count)}.")
+        if (product.depletes) {
+            restock(loc, stall)
+        }
+    }
+
+    private fun ProtectedAccess.awardThieved(product: SkillingProduct): Boolean {
+        val result = awardSkillingProduct(product)
+        if (result == SkillingAwardResult.InventoryFull) {
+            // UNVERIFIED: message when the inv fills during the action's delay (guess)
+            mes(NO_SPACE)
+        }
+        return result == SkillingAwardResult.Success
     }
 
     private fun ProtectedAccess.findSpotter(stall: Stall): Npc? {
@@ -127,53 +147,56 @@ constructor(
             mes("You need to empty your coin pouches before you can continue pickpocketing.")
             return
         }
-        if (inv.isFull() && (pouch == null || inv.count(pouch.obj) == 0)) {
+        val noRoom = inv.isFull() && (pouch == null || inv.count(pouch.obj) == 0)
+        if (noRoom && player.skillNeedsSpace(THIEVING)) {
             mes("You don't have enough inventory space.")
             return
         }
         faceEntitySquare(npc)
         mes("You attempt to pick $owner's pocket.", ChatType.Spam)
         delay(1)
-        if (!statRandom(THIEVING, target.lowChance, target.highChance, invisibleBoost = 0)) {
+        val subject = npc.visType.internalName
+        if (!statRandom(THIEVING, target.lowChance, target.highChance, invisibleBoost = 0, subject)) {
             failPickpocket(npc, target, owner)
             return
         }
-        val loot = target.loot?.roll(random)
-        val count = loot?.let { random.of(it.min, it.max) } ?: 0
-        val received =
-            player.invTransaction(inv) {
-                val inventory = select(inv)
-                if (pouch != null) add(inventory, pouch.obj.asRSCM(RSCMType.OBJ), 1)
-                if (loot != null) add(inventory, loot.obj.asRSCM(RSCMType.OBJ), count)
-            }
-        if (received.failure) {
-            // UNVERIFIED: message when the inv fills during the pickpocket delay (guess)
-            mes(NO_SPACE)
-            return
-        }
+        val stolen =
+            target.loot?.roll(random)?.let { SkillingByproduct(it.obj, random.of(it.min, it.max)) }
+        val outputs = listOfNotNull(pouch?.let { SkillingByproduct(it.obj) }, stolen)
+        val main = outputs.firstOrNull() ?: return
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = THIEVING,
+                item = main.item,
+                count = main.count,
+                experience = target.xp,
+                source = SkillingProductSource.Pickpocketing(npc),
+                byproducts = outputs.drop(1),
+            )
+        if (!awardThieved(product)) return
         mes("You pick $owner's pocket.", ChatType.Spam)
         anim(PICKPOCKET_SEQ)
         soundSynth(PICK_SYNTH)
-        if (loot != null) {
-            mes("You steal ${describe(loot.obj, count)}.", ChatType.Spam)
+        if (stolen != null) {
+            mes("You steal ${describe(stolen.item, stolen.count)}.", ChatType.Spam)
         }
-        statAdvance(THIEVING, target.xp)
     }
 
     private fun ProtectedAccess.openPouches(pouch: CoinPouch, all: Boolean) {
         val count = if (all) inv.count(pouch.obj) else 1
         if (count == 0) return
-        val opened =
-            player.invTransaction(inv) {
-                val inventory = select(inv)
-                delete(inventory, pouch.obj.asRSCM(RSCMType.OBJ), count)
-                add(inventory, COINS.asRSCM(RSCMType.OBJ), count * pouch.coins)
-            }
-        if (opened.failure) {
-            // UNVERIFIED: message when opened pouches' coins don't fit (guess)
-            mes(NO_SPACE)
-            return
-        }
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = THIEVING,
+                item = COINS,
+                count = count * pouch.coins,
+                grantsExperience = false,
+                source = SkillingProductSource.CoinPouchOpening(pouch.obj),
+                inputs = listOf(SkillingInput(pouch.obj, count)),
+            )
+        if (!awardThieved(product)) return
         val message = if (count > 1) "You open all of the pouches." else "You open the coin pouch."
         mes(message, ChatType.Spam)
     }

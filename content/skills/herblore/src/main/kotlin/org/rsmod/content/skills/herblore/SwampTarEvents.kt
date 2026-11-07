@@ -1,9 +1,13 @@
 package org.rsmod.content.skills.herblore
 
 import org.rsmod.api.config.Constants
-import org.rsmod.api.invtx.invAdd
-import org.rsmod.api.invtx.invDel
+import org.rsmod.api.player.events.skilling.SkillingInput
+import org.rsmod.api.player.events.skilling.SkillingProduct
+import org.rsmod.api.player.events.skilling.SkillingProductSource
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.skilling.SkillingAwardResult
+import org.rsmod.api.player.skilling.awardSkillingProduct
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.script.onOpHeldU
 import org.rsmod.api.script.onPlayerQueueWithArgs
 import org.rsmod.api.table.herblore.HerbloreSwampTarRow
@@ -60,25 +64,32 @@ class SwampTarEvents : PluginScript() {
 
         anim("seq.human_herbing_vial")
 
-        val herbRemoved = invDel(inv, recipe.herb.internalName, 1).success
-        val swampTarRemoved = invDel(inv, SWAMP_TAR, SWAMP_TAR_PER_BATCH).success
-
-        if (!herbRemoved || !swampTarRemoved) {
-            if (herbRemoved) invAdd(inv, recipe.herb.internalName, 1)
-            if (swampTarRemoved) invAdd(inv, SWAMP_TAR, SWAMP_TAR_PER_BATCH)
-            resetAnim()
-            return
+        val product =
+            SkillingProduct(
+                player = player,
+                skill = "stat.herblore",
+                item = recipe.finishedTar.internalName,
+                count = SWAMP_TAR_PER_BATCH,
+                experience = recipe.xp.toDouble(),
+                source = SkillingProductSource.SwampTar(recipe),
+                inputs =
+                    listOf(
+                        SkillingInput(recipe.herb.internalName),
+                        SkillingInput(SWAMP_TAR, SWAMP_TAR_PER_BATCH),
+                    ),
+            )
+        when (awardSkillingProduct(product)) {
+            SkillingAwardResult.Success -> Unit
+            SkillingAwardResult.InventoryFull -> {
+                mes("You don't have enough inventory space to make this tar.")
+                resetAnim()
+                return
+            }
+            SkillingAwardResult.Cancelled -> {
+                resetAnim()
+                return
+            }
         }
-
-        if (invAdd(inv, recipe.finishedTar.internalName, SWAMP_TAR_PER_BATCH).failure) {
-            invAdd(inv, recipe.herb.internalName, 1)
-            invAdd(inv, SWAMP_TAR, SWAMP_TAR_PER_BATCH)
-            mes("You don't have enough inventory space to make this tar.")
-            resetAnim()
-            return
-        }
-
-        statAdvance("stat.herblore", recipe.xp.toDouble())
         val herbName = recipe.herb.name.lowercase()
         mes("You add the $herbName to the swamp tar.")
 
@@ -86,7 +97,7 @@ class SwampTarEvents : PluginScript() {
             inv.contains(recipe.herb.internalName) &&
             inv.count(SWAMP_TAR) >= SWAMP_TAR_PER_BATCH
         ) {
-            weakQueue("queue.herblore_swamp_tar", 3, SwampTarTask(recipe))
+            weakQueue("queue.herblore_swamp_tar", player.skillCycles("stat.herblore", 3), SwampTarTask(recipe))
         } else {
             resetAnim()
         }

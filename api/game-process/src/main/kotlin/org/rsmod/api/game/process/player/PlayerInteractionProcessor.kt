@@ -1,9 +1,14 @@
 package org.rsmod.api.game.process.player
 
+import dev.openrune.ServerCacheManager
 import jakarta.inject.Inject
 import org.rsmod.api.config.Constants
 import org.rsmod.api.npc.isValidTarget
 import org.rsmod.api.player.clearInteractionRoute
+import org.rsmod.api.player.events.interact.ObservedAction
+import org.rsmod.api.player.events.interact.ObservedTarget
+import org.rsmod.api.player.events.interact.PlayerInteractionEvent
+import org.rsmod.api.player.events.interact.observeInteraction
 import org.rsmod.api.player.interact.LocInteractions
 import org.rsmod.api.player.interact.LocTInteractions
 import org.rsmod.api.player.interact.NpcInteractions
@@ -16,6 +21,7 @@ import org.rsmod.api.player.isValidTarget
 import org.rsmod.api.player.output.ChatType
 import org.rsmod.api.player.output.clearMapFlag
 import org.rsmod.api.player.output.mes
+import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.protect.ProtectedAccessLauncher
 import org.rsmod.api.player.vars.varMoveSpeed
 import org.rsmod.api.registry.loc.LocRegistry
@@ -23,6 +29,8 @@ import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.route.BoundValidator
 import org.rsmod.api.route.RayCastValidator
 import org.rsmod.events.EventBus
+import org.rsmod.events.SuspendEvent
+import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.interact.Interaction
 import org.rsmod.game.interact.InteractionLoc
@@ -37,6 +45,7 @@ import org.rsmod.game.interact.InteractionObjT
 import org.rsmod.game.interact.InteractionPlayer
 import org.rsmod.game.interact.InteractionPlayerOp
 import org.rsmod.game.interact.InteractionPlayerT
+import org.rsmod.game.loc.BoundLocInfo
 import org.rsmod.game.movement.RouteRequestPathingEntity
 import org.rsmod.interact.InteractionStep
 import org.rsmod.interact.InteractionTarget
@@ -466,18 +475,93 @@ constructor(
         return target.isValidTarget() && uid == target.uid && observer.level == target.coords.level
     }
 
+    private fun launchOp(
+        player: Player,
+        interaction: Interaction,
+        op: SuspendEvent<ProtectedAccess>,
+    ) {
+        protectedAccess.launch(player) {
+            eventBus.observeInteraction({ observe(player, interaction) }) {
+                eventBus.publish(this, op)
+            }
+        }
+    }
+
+    // An approach handler only counts when no op handler follows it for the same interaction.
+    private fun launchAp(
+        player: Player,
+        interaction: Interaction,
+        ap: SuspendEvent<ProtectedAccess>,
+    ) {
+        if (interaction.hasOpTrigger) {
+            protectedAccess.launch(player) { eventBus.publish(this, ap) }
+        } else {
+            launchOp(player, interaction, ap)
+        }
+    }
+
+    private fun observe(player: Player, interaction: Interaction): PlayerInteractionEvent {
+        val (target, action) =
+            when (interaction) {
+                is InteractionLocOp ->
+                    visibleLoc(player, interaction.target) to ObservedAction.Option(interaction.op.slot)
+                is InteractionLocT ->
+                    visibleLoc(player, interaction.target) to
+                        ObservedAction.Use(interaction.objType, interaction.component, interaction.comsub)
+                is InteractionNpcOp ->
+                    visibleNpc(player, interaction.target) to ObservedAction.Option(interaction.op.slot)
+                is InteractionNpcT ->
+                    visibleNpc(player, interaction.target) to
+                        ObservedAction.Use(interaction.objType, interaction.component, interaction.comsub)
+                is InteractionObjOp ->
+                    ObservedTarget.Ground(interaction.target) to
+                        ObservedAction.Option(interaction.op.slot)
+                is InteractionObjT ->
+                    ObservedTarget.Ground(interaction.target) to
+                        ObservedAction.Use(interaction.objType, interaction.component, interaction.comsub)
+                is InteractionPlayerOp ->
+                    ObservedTarget.Other(interaction.target) to
+                        ObservedAction.Option(interaction.op.slot)
+                is InteractionPlayerT ->
+                    ObservedTarget.Other(interaction.target) to
+                        ObservedAction.Use(interaction.objType, interaction.component, interaction.comsub)
+            }
+        return PlayerInteractionEvent(player, target, action)
+    }
+
+    private fun visibleLoc(player: Player, loc: BoundLocInfo): ObservedTarget.Loc {
+        var visible = loc
+        var type = ServerCacheManager.getObject(loc.id)!!
+        var depth = 0
+        while (depth++ < MAX_MULTI_DEPTH) {
+            val next = locInteractions.multiLoc(visible, type, player.vars) ?: break
+            visible = next
+            type = ServerCacheManager.getObject(next.id)!!
+        }
+        return ObservedTarget.Loc(visible, type)
+    }
+
+    private fun visibleNpc(player: Player, npc: Npc): ObservedTarget.Npc {
+        val type = npc.visType
+        return ObservedTarget.Npc(npc, npcInteractions.multiNpc(type, player.vars) ?: type)
+    }
+
+    private companion object {
+        const val MAX_MULTI_DEPTH = 8
+    }
+
     /* Interaction event launch functions */
     public fun triggerOp(player: Player, interaction: InteractionLocOp) {
         val op = locInteractions.opTrigger(player, interaction.target, interaction.op)
         if (op != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, op) }
+            launchOp(player, interaction, op)
         }
     }
 
     public fun triggerAp(player: Player, interaction: InteractionLocOp) {
         val ap = locInteractions.apTrigger(player, interaction.target, interaction.op)
         if (ap != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, ap) }
+            launchAp(player, interaction, ap)
         }
     }
 
@@ -488,7 +572,7 @@ constructor(
         val objType = interaction.objType
         val op = locTInteractions.opTrigger(player, loc, objType, component, comsub)
         if (op != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, op) }
+            launchOp(player, interaction, op)
         }
     }
 
@@ -499,21 +583,21 @@ constructor(
         val objType = interaction.objType
         val ap = locTInteractions.apTrigger(player, loc, objType, component, comsub)
         if (ap != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, ap) }
+            launchAp(player, interaction, ap)
         }
     }
 
     public fun triggerOp(player: Player, interaction: InteractionNpcOp) {
         val op = npcInteractions.opTrigger(player, interaction.target, interaction.op)
         if (op != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, op) }
+            launchOp(player, interaction, op)
         }
     }
 
     public fun triggerAp(player: Player, interaction: InteractionNpcOp) {
         val ap = npcInteractions.apTrigger(player, interaction.target, interaction.op)
         if (ap != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, ap) }
+            launchAp(player, interaction, ap)
         }
     }
 
@@ -524,7 +608,7 @@ constructor(
         val objType = interaction.objType
         val op = npcTInteractions.opTrigger(player, npc, component, comsub, objType)
         if (op != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, op) }
+            launchOp(player, interaction, op)
         }
     }
 
@@ -535,21 +619,21 @@ constructor(
         val objType = interaction.objType
         val ap = npcTInteractions.apTrigger(player, npc, component, comsub, objType)
         if (ap != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, ap) }
+            launchAp(player, interaction, ap)
         }
     }
 
     private fun triggerOp(player: Player, interaction: InteractionObjOp) {
         val op = objInteractions.opTrigger(interaction.target, interaction.op)
         if (op != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, op) }
+            launchOp(player, interaction, op)
         }
     }
 
     public fun triggerAp(player: Player, interaction: InteractionObjOp) {
         val ap = objInteractions.apTrigger(interaction.target, interaction.op)
         if (ap != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, ap) }
+            launchAp(player, interaction, ap)
         }
     }
 
@@ -563,7 +647,7 @@ constructor(
                 interaction.objType,
             )
         if (op != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, op) }
+            launchOp(player, interaction, op)
         }
     }
 
@@ -577,21 +661,21 @@ constructor(
                 interaction.objType,
             )
         if (ap != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, ap) }
+            launchAp(player, interaction, ap)
         }
     }
 
     public fun triggerOp(player: Player, interaction: InteractionPlayerOp) {
         val op = playerInteractions.opTrigger(interaction.target, interaction.op)
         if (op != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, op) }
+            launchOp(player, interaction, op)
         }
     }
 
     public fun triggerAp(player: Player, interaction: InteractionPlayerOp) {
         val ap = playerInteractions.apTrigger(interaction.target, interaction.op)
         if (ap != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, ap) }
+            launchAp(player, interaction, ap)
         }
     }
 
@@ -602,7 +686,7 @@ constructor(
         val objType = interaction.objType
         val op = playerTInteractions.opTrigger(target, component, comsub, objType)
         if (op != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, op) }
+            launchOp(player, interaction, op)
         }
     }
 
@@ -613,7 +697,7 @@ constructor(
         val objType = interaction.objType
         val ap = playerTInteractions.apTrigger(target, component, comsub, objType)
         if (ap != null) {
-            protectedAccess.launch(player) { eventBus.publish(this, ap) }
+            launchAp(player, interaction, ap)
         }
     }
 }

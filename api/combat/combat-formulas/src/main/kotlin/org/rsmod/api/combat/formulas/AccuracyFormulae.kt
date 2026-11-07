@@ -458,8 +458,10 @@ constructor(
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
         random: GameRandom,
+        specMultiplier: Double = 1.0,
     ): Boolean {
-        val hitChance = getSpellHitChance(player, target, spell, spellbook, usedSunfireRune)
+        val hitChance =
+            getSpellHitChance(player, target, spell, spellbook, usedSunfireRune, specMultiplier)
         return isSuccessfulHit(hitChance, random)
     }
 
@@ -481,6 +483,7 @@ constructor(
         spell: ItemServerType,
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
+        specMultiplier: Double = 1.0,
     ): Int =
         pvnMagicAccuracy.getSpellHitChance(
             player = player,
@@ -488,6 +491,7 @@ constructor(
             spell = spell,
             spellbook = spellbook,
             usedSunfireRune = usedSunfireRune,
+            specialMultiplier = specMultiplier,
         )
 
     /**
@@ -514,8 +518,10 @@ constructor(
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
         random: GameRandom,
+        specMultiplier: Double = 1.0,
     ): Boolean {
-        val hitChance = getSpellHitChance(player, target, spell, spellbook, usedSunfireRune)
+        val hitChance =
+            getSpellHitChance(player, target, spell, spellbook, usedSunfireRune, specMultiplier)
         return isSuccessfulHit(hitChance, random)
     }
 
@@ -537,6 +543,7 @@ constructor(
         spell: ItemServerType,
         spellbook: Spellbook?,
         usedSunfireRune: Boolean,
+        specMultiplier: Double = 1.0,
     ): Int =
         pvpMagicAccuracy.getSpellHitChance(
             player = player,
@@ -544,6 +551,7 @@ constructor(
             spell = spell,
             spellbook = spellbook,
             usedSunfireRune = usedSunfireRune,
+            specialMultiplier = specMultiplier,
         )
 
     /**

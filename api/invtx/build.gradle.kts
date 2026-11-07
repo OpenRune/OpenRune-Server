@@ -15,8 +15,11 @@ dependencies {
     implementation(projects.api.invStorage)
     implementation(projects.api.playerOutput)
     implementation(projects.api.repo)
+    implementation(projects.engine.events)
     implementation(projects.engine.game)
     implementation(projects.engine.map)
     implementation(projects.engine.objtx)
     implementation(projects.engine.plugin)
+
+    testImplementation(libs.mockk)
 }

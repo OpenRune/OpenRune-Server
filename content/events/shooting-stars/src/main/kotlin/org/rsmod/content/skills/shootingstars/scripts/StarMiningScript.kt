@@ -1,11 +1,14 @@
 package org.rsmod.content.skills.shootingstars.scripts
 
+import dev.openrune.ServerCacheManager
 import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.miningLvl
+import org.rsmod.api.player.stat.skillCycles
+import org.rsmod.api.player.stat.skillNeedsSpace
 import org.rsmod.api.player.stat.statAdvance
 import org.rsmod.api.stats.levelmod.InvisibleLevels
 import org.rsmod.api.stats.xpmod.XpModifiers
@@ -47,7 +50,7 @@ constructor(
             )
             return
         }
-        if (inv.isFull()) {
+        if (inv.isFull() && player.skillNeedsSpace("stat.mining")) {
             mes("Your inventory is too full to hold any more stardust.")
             soundSynth("synth.pillory_wrong")
             return
@@ -97,7 +100,7 @@ constructor(
             return
         }
 
-        if (inv.isFull()) {
+        if (inv.isFull() && player.skillNeedsSpace("stat.mining")) {
             soundSynth("synth.pillory_wrong")
             stopMining("Your inventory is too full to hold any more stardust.")
             return
@@ -111,13 +114,14 @@ constructor(
             anim(pickaxeAnim(pickaxe))
         }
 
-        val delay = Mining.pickaxeActionDelay(pickaxe, random)
+        val delay = player.skillCycles("stat.mining", Mining.pickaxeActionDelay(pickaxe, random))
         var success = false
         if (actionDelay < mapClock) {
             actionDelay = mapClock + delay
         } else if (actionDelay == mapClock) {
             actionDelay = mapClock + delay
-            success = statRandom("stat.mining", SUCCESS_LOW, SUCCESS_HIGH, invisibleLvls)
+            val subject = ServerCacheManager.getObject(rock.id)?.internalName
+            success = statRandom("stat.mining", SUCCESS_LOW, SUCCESS_HIGH, invisibleLvls, subject)
         }
 
         if (success) {

@@ -5,9 +5,12 @@ import dev.openrune.rscm.RSCM
 import dev.openrune.rscm.RSCMType
 import jakarta.inject.Inject
 import org.rsmod.api.config.refs.params
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.protect.ProtectedAccess
 import org.rsmod.api.player.stat.firemakingLvl
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.registry.obj.ObjRegistry
 import org.rsmod.api.repo.loc.LocRepository
 import org.rsmod.api.script.onOpHeldU
@@ -26,7 +29,6 @@ import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
 import skillSuccess
-
 
 public class BurnLogEvents @Inject constructor(
     private val objRepo: ObjRegistry,
@@ -94,7 +96,7 @@ public class BurnLogEvents @Inject constructor(
             },
         )
 
-        weakQueue("queue.firemaking_light", 4, BurnTask(log, obj, method))
+        weakQueue("queue.firemaking_light", player.skillCycles("stat.firemaking", 4), BurnTask(log, obj, method))
     }
 
     private fun ProtectedAccess.canBurn(
@@ -140,10 +142,16 @@ public class BurnLogEvents @Inject constructor(
         }
 
         val success = coloredLogs.contains(task.log.input.internalName) ||
-            skillSuccess(64, 512, player.firemakingLvl)
+            player.skillSuccess(
+                "stat.firemaking",
+                64,
+                512,
+                player.firemakingLvl,
+                task.log.input.internalName,
+            )
 
         if (!success) {
-            weakQueue("queue.firemaking_light", 4, task)
+            weakQueue("queue.firemaking_light", player.skillCycles("stat.firemaking", 4), task)
             return
         }
 
@@ -172,6 +180,13 @@ public class BurnLogEvents @Inject constructor(
         val xpModifier = xpMods.get(player, "stat.firemaking")
         val xp = task.log.xp * task.method.xpMultiplier(task.log.input.internalName) * xpModifier
         statAdvance("stat.firemaking", xp)
+        val context =
+            SkillingActionContext.Firemaking(
+                log = task.log.input.internalName,
+                experienceGranted = xp,
+                usedBow = task.method == BurnMethod.Bow,
+            )
+        publish(SkillingActionCompleteEvent(player, context))
         mes("The fire catches and the logs begin to burn.")
 
         moveAwayFromFire(fireCoords)

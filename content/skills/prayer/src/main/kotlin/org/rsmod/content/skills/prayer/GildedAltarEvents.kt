@@ -2,7 +2,11 @@ package org.rsmod.content.skills.prayer
 
 import jakarta.inject.Inject
 import org.rsmod.api.player.events.interact.LocUEvents
+import org.rsmod.api.player.events.prayer.PrayerSkillAction
+import org.rsmod.api.player.events.skilling.SkillingActionCompleteEvent
+import org.rsmod.api.player.events.skilling.SkillingActionContext
 import org.rsmod.api.player.protect.ProtectedAccess
+import org.rsmod.api.player.stat.skillCycles
 import org.rsmod.api.repo.world.WorldRepository
 import org.rsmod.api.script.onOpLocU
 import org.rsmod.api.script.onPlayerQueueWithArgs
@@ -59,7 +63,7 @@ class GildedAltarEvents @Inject constructor(
 
         performSacrifice(task)
 
-        weakQueue("queue.prayer_altar_sacrifice", 4, task)
+        weakQueue("queue.prayer_altar_sacrifice", player.skillCycles("stat.prayer", 4), task)
     }
 
     private fun ProtectedAccess.performSacrifice(task: SacrificeTask) {
@@ -71,7 +75,10 @@ class GildedAltarEvents @Inject constructor(
             task.altar.coords,
         )
 
-        statAdvance("stat.prayer", task.row.exp * 3.5)
+        val xp = task.row.exp * 3.5
+        statAdvance("stat.prayer", xp)
+        val offered = PrayerSkillAction.Offered(task.row.item.internalName, 1, xp)
+        publish(SkillingActionCompleteEvent(player, SkillingActionContext.Prayer(offered)))
 
         if (shouldConsumeBone(task).not()) {
             mes("The Dark Lord spares your sacrifice, but rewards you for your efforts.")
