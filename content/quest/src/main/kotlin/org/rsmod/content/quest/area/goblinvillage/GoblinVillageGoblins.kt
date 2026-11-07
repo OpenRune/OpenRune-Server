@@ -6,6 +6,7 @@ import dev.openrune.rscm.RSCMType
 import dev.openrune.types.NpcMode
 import dev.openrune.types.hunt.HuntVis
 import jakarta.inject.Inject
+import kotlin.math.abs
 import org.rsmod.api.config.refs.params
 import org.rsmod.api.hunt.NpcSearch
 import org.rsmod.api.npc.hit.modifier.NpcHitModifier
@@ -22,8 +23,12 @@ import org.rsmod.api.script.onOpNpc1
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.NpcList
 import org.rsmod.game.hit.HitType
+import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.PluginScript
 import org.rsmod.plugin.scripts.ScriptContext
+import org.rsmod.routefinder.StepValidator
+import org.rsmod.routefinder.collision.CollisionFlagMap
+import org.rsmod.routefinder.flag.CollisionFlag
 
 class GoblinVillageGoblins
 @Inject
@@ -34,7 +39,9 @@ constructor(
     private val random: GameRandom,
     private val worldRepo: WorldRepository,
     private val hitModifier: NpcHitModifier,
+    collision: CollisionFlagMap,
 ) : PluginScript() {
+    private val steps = StepValidator(collision)
 
     override fun ScriptContext.startup() {
         for (id in SOLDIERS) {
@@ -49,7 +56,11 @@ constructor(
     private fun fight(npc: Npc, red: Boolean) {
         val enemy = enemy(npc, red)
         if (enemy != null) {
-            if (enemy(enemy, !red) != npc || random.of(maxExclusive = END_CHANCE) == 0) {
+            if (
+                enemy(enemy, !red) != npc ||
+                    !npc.coords.isCardinal(enemy.coords) ||
+                    random.of(maxExclusive = END_CHANCE) == 0
+            ) {
                 npc.defaultMode()
                 npc.aiTimer(npc.type.timer)
                 return
@@ -58,19 +69,35 @@ constructor(
             return
         }
         if (!npc.isIdle() || random.of(maxExclusive = START_CHANCE) != 0) return
-        val target =
+        val (target, tile) =
             search
                 .findAllAny(npc.coords, FIGHT_RANGE, HuntVis.LineOfSight)
                 .filter { isSoldier(it, !red) && it.isIdle() && it.isValidTarget() }
+                .mapNotNull { enemy -> approach(npc, enemy)?.let { enemy to it } }
                 .toList()
                 .let { random.pickOrNull(it) } ?: return
         for ((from, to) in listOf(npc to target, target to npc)) {
             from.noneMode()
             from.faceNpc(to)
         }
-        target.aiTimer(ATTACK_RATE / 2)
+        if (tile != npc.coords) npc.walk(tile)
+        target.aiTimer(ATTACK_RATE / 2 + target.laterThan(npc))
         swing(npc, target, red)
     }
+
+    private fun approach(npc: Npc, enemy: Npc): CoordGrid? {
+        val from = npc.coords
+        if (from.isCardinal(enemy.coords)) return from
+        return STEPS.filter { (dx, dz) ->
+                from.translate(dx, dz).isCardinal(enemy.coords) &&
+                    steps.canTravel(from.level, from.x, from.z, dx, dz, extraFlag = CollisionFlag.BLOCK_NPCS)
+            }
+            .let { random.pickOrNull(it) }
+            ?.let { (dx, dz) -> from.translate(dx, dz) }
+    }
+
+    private fun CoordGrid.isCardinal(other: CoordGrid): Boolean =
+        level == other.level && abs(x - other.x) + abs(z - other.z) == 1
 
     private fun swing(npc: Npc, enemy: Npc, red: Boolean) {
         npc.aiTimer(ATTACK_RATE)
@@ -88,11 +115,19 @@ constructor(
             )
         }
         val damage = if (enemy.hitpoints > 1) random.of(maxExclusive = 2) else 0
-        enemy.queueHit(npc, delay = 1, type = HitType.Melee, damage = damage, modifier = hitModifier)
+        enemy.queueHit(
+            npc,
+            delay = 1 + enemy.laterThan(npc),
+            type = HitType.Melee,
+            damage = damage,
+            modifier = hitModifier,
+        )
         if (random.of(maxExclusive = SHOUT_CHANCE) < SHOUTS_PER_CHANCE) {
             npc.say(random.pick(if (red) RED_SHOUTS else GREEN_SHOUTS))
         }
     }
+
+    private fun Npc.laterThan(other: Npc): Int = if (slotId > other.slotId) 1 else 0
 
     private fun Npc.isIdle(): Boolean =
         interaction == null && !isFacingNpc && (mode ?: defaultMode) == defaultMode
@@ -270,7 +305,8 @@ constructor(
         private const val SHOUTS_PER_CHANCE = 6
         private const val SOUND_RANGE = 10
         private const val HIT_SOUND_DELAY = 30
-        private const val FIGHT_RANGE = 8
+        private const val FIGHT_RANGE = 2
+        private val STEPS = (-1..1).flatMap { dx -> (-1..1).map { dz -> dx to dz } } - (0 to 0)
         private val SOLDIERS = 2..8
         private val RED_SHOUTS =
             listOf("Red armour best!", "Green armour stupid!", "Red not green!", "Red red red!", "Stupid greenie!")
