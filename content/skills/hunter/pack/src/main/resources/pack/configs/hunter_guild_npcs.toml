@@ -1,0 +1,9 @@
+[[npc]]
+id = "npc.hg_gilman"
+inherit = "npc.hg_gilman"
+wanderRange = 0
+
+[[npc]]
+id = "npc.hg_verity"
+inherit = "npc.hg_verity"
+wanderRange = 0
