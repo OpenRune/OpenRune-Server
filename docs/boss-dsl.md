@@ -1934,7 +1934,7 @@ looked at. Actions of that rule apply in order:
 |---|---|---|
 | `cap(max, style = null)` | `IncomingAction.Cap` | `min(damage, max)` |
 | `scalePercent(percent, style = null)` | `IncomingAction.ScalePercent` | `damage * percent / 100` (integer division, truncates) |
-| `floorPercentOfMaxHit(percent, style)` | `IncomingAction.FloorPercentOfMaxHit` | If damage is below `ceil(maxHit * percent / 100)`, re-rolls it uniformly between that floor and the attacker's max hit. `style` is required and must be `Ranged` or `Melee` |
+| `floorPercentOfMaxHit(percent, style)` | `IncomingAction.FloorPercentOfMaxHit` | If damage is below `ceil(maxHit * percent / 100)`, raises it to that floor. `style` is required and must be `Ranged` or `Melee` |
 | `run(ability)` | `IncomingAction.Run` | None; runs the ability with the attacker as target, before the damage is settled |
 
 `style` filters a single action: an action with a style is skipped when the hit's engine style

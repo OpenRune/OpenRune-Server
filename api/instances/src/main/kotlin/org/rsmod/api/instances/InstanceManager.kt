@@ -248,6 +248,12 @@ constructor(
         return true
     }
 
+    /** Restarts the kill timer for a boss already attached to its instance, e.g. on waking it. */
+    public fun startBossFight(npc: Npc) {
+        val session = instanceForNpc(npc)?.let(::sessionForId) ?: return
+        startBossKillTimer(session, npc, worldClock.cycle)
+    }
+
     public fun canSpawnBosses(player: Player): Boolean {
         val session = sessionForPlayer(player) ?: return true
         return !session.arenaExpired

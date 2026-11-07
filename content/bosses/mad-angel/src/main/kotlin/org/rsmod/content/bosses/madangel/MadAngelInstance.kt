@@ -77,13 +77,13 @@ constructor(
         onInstancePlayerLeave {
             player.nextHitBuff = MadAngelFight.NEXT_HIT_NONE
             for (angel in manager.npcsForInstance(instanceId)) {
-                angel.vars[MadAngelFight.GUARANTEED_HIT] = 0
+                angel.vars["varn.guaranteed_hit"] = 0
             }
         }
     }
 
     private fun ProtectedAccess.climbAnimation() {
-        anim(CLIMB_ANIM, delay = CLIMB_ANIM_DELAY)
+        anim("seq.human_pickuptable", delay = CLIMB_ANIM_DELAY)
     }
 
     /**
@@ -93,24 +93,24 @@ constructor(
      * policy does. With real quest progress the varbit is left to the quest.
      */
     private fun ProtectedAccess.assumeFallenFromGraceComplete() {
-        if (!QuestRequirements.hasCompleted(player, QUEST)) return
-        if (vars[VARBIT_FFG] < FFG_QUEST_COMPLETE) vars[VARBIT_FFG] = FFG_QUEST_COMPLETE
+        if (!QuestRequirements.hasCompleted(player, "quest_fallenfromgrace")) return
+        val complete = QuestRow.getRow("dbrow.quest_fallenfromgrace").endstate
+        if (vars["varbit.ffg"] < complete) vars["varbit.ffg"] = complete
     }
 
     private fun placeExitPew(session: InstanceSession) {
         val coords = manager.resolveCoord(session, PEW_TEMPLATE_COORD) ?: return
-        locRepo.add(coords, EXIT_PEW, Int.MAX_VALUE, LocAngle[PEW_ROTATION], PEW_SHAPE)
+        locRepo.add(
+            coords,
+            "loc.wyrmscraig_cathedral_pew_broken_exit",
+            Int.MAX_VALUE,
+            LocAngle[PEW_ROTATION],
+            PEW_SHAPE,
+        )
     }
 
     private companion object {
-        private val NPC = "npc.mad_angel"
-        private const val QUEST = "quest_fallenfromgrace"
-
-        private const val VARBIT_FFG = "varbit.ffg"
-        private val FFG_QUEST_COMPLETE: Int by lazy { QuestRow.getRow("dbrow.$QUEST").endstate }
-
         private const val CLIMB_MESSAGE = "You climb over the broken pew..."
-        private const val CLIMB_ANIM = "seq.human_pickuptable"
         private const val CLIMB_ANIM_DELAY = 30
         private const val FADE_CLIENT_DURATION = 50
         private const val ENTRY_FADE_CYCLES = 2
@@ -118,7 +118,6 @@ constructor(
         private const val HIDE_DELAY_CYCLES = 1
         private const val REVEAL_DELAY_CYCLES = 2
 
-        private const val EXIT_PEW = "loc.wyrmscraig_cathedral_pew_broken_exit"
         private const val PEW_ROTATION = 1
         private val PEW_SHAPE = LocShape.CentrepieceStraight
 
@@ -128,7 +127,7 @@ constructor(
         private val INSTANCE =
             InstanceArea.copyRegions(
                 centerRegionId = 10018,
-                npcSpawns = listOf(InstanceNpc(NPC, SPAWN_TEMPLATE_COORD)),
+                npcSpawns = listOf(InstanceNpc("npc.mad_angel", SPAWN_TEMPLATE_COORD)),
             )
     }
 }

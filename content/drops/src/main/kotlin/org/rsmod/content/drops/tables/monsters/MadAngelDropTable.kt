@@ -17,7 +17,7 @@ import org.rsmod.game.entity.Player
 public val madAngelDropTable: RSDropTable<Player, DropRollItem> =
     RSDropTable(
         tableIdentifier = "Mad Angel Drops",
-        npcs = npcs("npc.mad_angel", "npc.mad_angel_initial"),
+        npcs = npcs("npc.mad_angel"),
         guaranteed =
             rsPlayerGuaranteedTable {
                 "obj.granite_dust" count 25..35
