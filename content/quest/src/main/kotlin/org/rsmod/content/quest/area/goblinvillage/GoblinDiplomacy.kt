@@ -30,6 +30,7 @@ import org.rsmod.api.script.onOpLoc1
 import org.rsmod.api.script.onOpNpc1
 import org.rsmod.api.script.onOpNpcU
 import org.rsmod.api.script.onPlayerLogin
+import org.rsmod.content.quest.area.misthalin.SceneFadeTicks
 import org.rsmod.content.quest.area.misthalin.SceneRegion
 import org.rsmod.content.quest.area.misthalin.SceneSnapRate
 import org.rsmod.content.quest.manager.ItemRewardDisplay
@@ -654,14 +655,16 @@ constructor(
                 }
             )
         val returnTo = player.coords
-        access.mesboxNp(" ")
-        access.fadeOverlay(0, 255, 0, 0, SCENE_FADE)
-        access.delay(1)
-        val region = regionRepo.add(HUT)
-        region?.let(regionRepo::protect)
+        val region =
+            regionRepo.add(HUT)
+                ?: run {
+                    access.mes("The area is unavailable at the moment. Please try again shortly.")
+                    return
+                }
+        regionRepo.protect(region)
         val r = SceneRegion(region)
         player.sceneReturnTile = returnTo.packed
-        player.uuid?.let { uuid -> region?.let { sceneRegions[uuid] = it } }
+        player.uuid?.let { uuid -> sceneRegions[uuid] = region }
         val actors = ArrayList<Npc>()
         var ended = false
         fun spawn(type: String, coords: CoordGrid, face: CoordGrid): Npc {
@@ -676,14 +679,15 @@ constructor(
             locRepo.findExact(r[CURTAIN_TILE], LocShape.WallStraight)?.let { worldRepo.locAnim(it, seq) }
         }
         try {
+            access.mesboxNp(" ")
+            access.fadeOverlay(0, 255, 0, 0, SCENE_FADE)
+            access.delay(1)
             enterScene(r)
             val bentnoze = spawn(BENTNOZE_NOOP, BENTNOZE_SCENE_TILE, CURTAIN_TILE)
             val wartface = spawn(WARTFACE_NOOP, WARTFACE_SCENE_TILE, CURTAIN_TILE)
             val grubfoot = spawn(wearing, CURTAIN_FRONT_TILE, GRUBFOOT_TILE)
-            if (r.instanced) {
-                for ((tile, loc, angle, shape) in SCENE_LOCS) {
-                    locRepo.add(r[tile], loc, SCENE_LIFESPAN, angle, shape)
-                }
+            for ((tile, loc, angle, shape) in SCENE_LOCS) {
+                locRepo.add(r[tile], loc, SCENE_LIFESPAN, angle, shape)
             }
             access.delay(1)
             access.camMoveToV3(r[CAMERA_EYE], height = CAMERA_EYE_HEIGHT, rate = SceneSnapRate, rate2 = SceneSnapRate)
@@ -755,8 +759,10 @@ constructor(
             access.delay(1)
             access.fadeOverlay(0, 0, 0, 255, SCENE_FADE)
             access.ifCloseChat()
+            access.delay(SceneFadeTicks)
         } finally {
             if (!ended) leaveScene(actors, region, returnTo)
+            access.closeFadeOverlayNow()
         }
     }
 
@@ -781,7 +787,7 @@ constructor(
         }
     }
 
-    private fun Dialogue.leaveScene(actors: List<Npc>, region: Region?, returnTo: CoordGrid) {
+    private fun Dialogue.leaveScene(actors: List<Npc>, region: Region, returnTo: CoordGrid) {
         for (npc in actors) if (npc.isSlotAssigned) npcRepo.del(npc, Int.MAX_VALUE)
         player.sceneReturnTile = 0
         with(access) {
@@ -802,7 +808,7 @@ constructor(
             syncDrawDistance()
         }
         player.uuid?.let(sceneRegions::remove)
-        region?.let(regionRepo::unprotect)
+        regionRepo.unprotect(region)
     }
 
     private suspend fun Dialogue.grubfootDialogue() {
