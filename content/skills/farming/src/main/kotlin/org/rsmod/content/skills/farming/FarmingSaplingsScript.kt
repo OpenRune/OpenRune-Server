@@ -13,7 +13,9 @@ class FarmingSaplingsScript : PluginScript() {
         for (chain in FarmingSaplings.chains) {
             onOpHeldU(chain.seed.internalName, "obj.plantpot_compost") {
                 when {
+                    // UNVERIFIED: Missing gardening trowel refusal wording (guess).
                     !inv.contains("obj.gardening_trowel") -> mes("You need a gardening trowel to plant a seed in a pot.")
+                    // UNVERIFIED: Insufficient Farming level refusal wording (guess).
                     player.farmingLvl < chain.level -> mes("You need a Farming level of ${chain.level} to plant this seed.")
                     else -> FarmingSaplings.sow(player, chain, it.firstSlot, it.secondSlot)
                 }
