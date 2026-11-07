@@ -3691,10 +3691,6 @@ public class ProtectedAccess(
         player.soundSynth(synth, loops, delay)
     }
 
-    public fun soundSynth(synth: Int, loops: Int = 1, delay: Int = 0) {
-        player.soundSynth(synth, loops, delay)
-    }
-
     public fun soundArea(
         repo: WorldRepository,
         source: CoordGrid,

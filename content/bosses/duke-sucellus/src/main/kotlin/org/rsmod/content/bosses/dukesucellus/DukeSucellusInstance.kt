@@ -757,7 +757,7 @@ constructor(
         private const val EXTREMITY_FREEZE_SPOTANIM = "spotanim.ice_barrage_impact"
         private const val EXTREMITY_FREEZE_SPOTANIM_SLOT = 2
         private const val EXTREMITY_FREEZE_SYNTH = "synth.ice_cast"
-        private const val ICE_HIT_SYNTH = "synth.thieving_stunned"
+        private const val ICE_HIT_SYNTH = "synth.stunned"
         private const val EXTREMITY_FREEZE_TICKS = 9
         private val EXTREMITY_DAMAGE = 30..70
         private const val EXTREMITY_HIT_DELAY = 1

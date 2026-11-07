@@ -141,7 +141,7 @@ constructor(
         const val SUCCESS_LOW = 60
         const val SUCCESS_HIGH = 105
         const val PAYDIRT_XP = 60.0
-        const val PAYDIRT_SOUND = 3600
+        const val PAYDIRT_SOUND = "synth.mine_ore"
 
         val VEIN_LOCS =
             listOf(

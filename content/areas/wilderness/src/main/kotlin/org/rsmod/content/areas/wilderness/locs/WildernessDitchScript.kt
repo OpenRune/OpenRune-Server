@@ -24,7 +24,7 @@ class WildernessDitchScript : PluginScript() {
 
         exactMove(coords, dest, LEAP_DELAY, LAND_DELAY, facing)
         anim("seq.wild_ditch_jump")
-        soundSynth("synth.wilderness_ditch_jump", delay = SOUND_DELAY)
+        soundSynth("synth.jump2", delay = SOUND_DELAY)
         delay(CROSS_CYCLES)
     }
 
