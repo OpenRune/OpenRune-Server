@@ -478,7 +478,7 @@ constructor(
             return
         }
         setBrazierState(brazier, BrazierState.LIT)
-        player.soundSynth(2596)
+        player.soundSynth(Wintertodt.SOUND_FIRE_LIT)
         player.mes("You light the brazier.")
         addPoints(player, 25)
         player.advanceXp("stat.firemaking", 6.0 * player.baseFiremakingLvl)
@@ -569,7 +569,7 @@ constructor(
         }
         if (player.invAdd(player.inv, Wintertodt.HERB, 1).failure) return
         player.spam("You pick a bruma herb.")
-        player.soundSynth(2581)
+        player.soundSynth(Wintertodt.SOUND_PICK)
     }
 
     fun combinePotion(player: Player) {
@@ -626,7 +626,7 @@ constructor(
         player.wintWarmth = min(Wintertodt.WARMTH_MAX, player.wintWarmth + 300)
         session?.nextDrink = mapClock.cycle + 3
         player.anim(Wintertodt.ANIM_DRINK)
-        player.soundSynth(2401)
+        player.soundSynth(Wintertodt.SOUND_DRINK)
         player.spam("You drink some of your potion.")
         if (dose > 1) {
             val left = dose - 1
@@ -885,8 +885,8 @@ constructor(
                 nextAnimCycle = 0,
             )
         player.anim(Wintertodt.ANIM_FEED)
-        player.soundSynth(2596)
-        player.soundSynth(2596, delay = 15)
+        player.soundSynth(Wintertodt.SOUND_FIRE_LIT)
+        player.soundSynth(Wintertodt.SOUND_FIRE_LIT, delay = 15)
     }
 
     fun stopAction(player: Player) {
@@ -971,8 +971,8 @@ constructor(
                         continue
                     }
                     player.anim(Wintertodt.ANIM_FEED)
-                    player.soundSynth(2596)
-                    player.soundSynth(2596, delay = 15)
+                    player.soundSynth(Wintertodt.SOUND_FIRE_LIT)
+                    player.soundSynth(Wintertodt.SOUND_FIRE_LIT, delay = 15)
                     action.nextCycle = cycle + 3
                 }
                 ActionType.SEARCH -> {
@@ -1004,11 +1004,7 @@ constructor(
     }
 
     fun chopSound(player: Player) {
-        runCatching {
-                val name = RSCM.getReverseMapping(RSCMType.SYNTH, 2735)
-                worldRepo.soundArea(player.coords, name, radius = 1)
-            }
-            .onFailure { player.soundSynth(2735) }
+        worldRepo.soundArea(player.coords, Wintertodt.SOUND_CHOP, radius = 1)
     }
 
     fun hasBrumaTorch(player: Player): Boolean =
@@ -1391,10 +1387,18 @@ constructor(
                 if (brazier.state == BrazierState.LIT) {
                     if (heavy) {
                         damageBrazier(brazier)
-                        soundAreaAt(brazier.coords, 2299, radius = 2)
+                        worldRepo.soundArea(
+                            brazier.coords,
+                            Wintertodt.SOUND_BRAZIER_BREAK,
+                            radius = 2,
+                        )
                     } else {
                         setBrazierState(brazier, BrazierState.UNLIT)
-                        soundAreaAt(brazier.coords, 2300, radius = 2)
+                        worldRepo.soundArea(
+                            brazier.coords,
+                            Wintertodt.SOUND_BRAZIER_OUT,
+                            radius = 2,
+                        )
                     }
                 }
                 updateHud()
@@ -1404,10 +1408,6 @@ constructor(
     private fun brazierCenter(brazier: Brazier): CoordGrid {
         val type = brazier.loc?.id?.let { ServerCacheManager.getObject(it) }
         return brazier.coords.translate((type?.width ?: 1) / 2, (type?.length ?: 1) / 2)
-    }
-
-    private fun soundAreaAt(coords: CoordGrid, id: Int, radius: Int) {
-        worldRepo.soundArea(coords, id, radius = radius)
     }
 
     private fun addSnowfall(center: CoordGrid, offsets: List<Pair<Int, Int>>, duration: Int) {
@@ -1561,7 +1561,7 @@ constructor(
         val hpBefore = pyro.hp
         pyro.hp = (hpBefore - damage).coerceAtLeast(0)
         showPyromancerDamage(pyro, damage)
-        soundAreaAt(pyro.coords, Wintertodt.SOUND_PYRO_HIT, radius = 10)
+        worldRepo.soundArea(pyro.coords, Wintertodt.SOUND_HIT, radius = 10)
         if (pyro.hp <= 0) {
             pyro.down = true
             pyroDownThisRound = true
@@ -1571,7 +1571,7 @@ constructor(
             npc.say("Arg, it got me!")
             npc.anim(Wintertodt.ANIM_DOWN)
             pyromancerDownType?.let { npc.transmog(it, Int.MAX_VALUE) }
-            soundAreaAt(pyro.coords, Wintertodt.SOUND_PYRO_DOWN, radius = 3)
+            worldRepo.soundArea(pyro.coords, Wintertodt.SOUND_DEATH, radius = 3)
             val brazier = braziers[pyro.index]
             if (brazier.state == BrazierState.LIT) {
                 setBrazierState(brazier, BrazierState.UNLIT)
@@ -1625,7 +1625,7 @@ constructor(
         pending +=
             Pending(mapClock.cycle + 6) {
                 showAreaImpact(center)
-                soundAreaAt(center, Wintertodt.SOUND_AREA_IMPACT, radius = 2)
+                worldRepo.soundArea(center, Wintertodt.SOUND_EXPLOSION, radius = 2)
                 for (session in sessions.values.toList()) {
                     val player = session.player
                     if (!player.canProcess) continue

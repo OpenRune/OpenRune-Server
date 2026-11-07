@@ -77,10 +77,23 @@ internal object Wintertodt {
     const val CART_TAKEN_MESSAGE =
         "You think you've taken as much as you're owed from the reward cart."
 
-    const val SOUND_PYRO_HIT = 513
-    const val SOUND_PYRO_DOWN = 512
-    const val SOUND_AREA_IMPACT = 1487
-    val HIT_SOUNDS = listOf(518, 519, 520, 521)
+    const val SOUND_HIT = "synth.human_hit"
+    const val SOUND_DEATH = "synth.human_death"
+    const val SOUND_EXPLOSION = "synth.explosion"
+    const val SOUND_BRAZIER_BREAK = "synth.gas_explosion"
+    const val SOUND_BRAZIER_OUT = "synth.gas_hiss"
+    const val SOUND_FIRE_LIT = "synth.fire_lit"
+    const val SOUND_CHOP = "synth.woodchop"
+    const val SOUND_PICK = "synth.pick"
+    const val SOUND_DRINK = "synth.bucket_pour"
+    const val SOUND_FIX = "synth.poh_build_metal"
+    val HIT_SOUNDS =
+        listOf(
+            "synth.human_hit_1",
+            "synth.human_hit_2",
+            "synth.human_hit_3",
+            "synth.human_hit_4",
+        )
 
     val DOOR = CoordGrid(1627, 3964, 0)
     val ENTRY = CoordGrid(1628, 3979, 0)

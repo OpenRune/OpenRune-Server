@@ -72,3 +72,17 @@ wintertodt_reward_raw_salmon=63107
 wintertodt_reward_raw_anchovies=63108
 wintertodt_reward_raw_trout=63109
 
+[gamevals.synth]
+human_hit = 513
+human_death = 512
+human_hit_1 = 518
+human_hit_2 = 519
+human_hit_3 = 520
+human_hit_4 = 521
+explosion = 1487
+gas_explosion = 2299
+gas_hiss = 2300
+fire_lit = 2596
+woodchop = 2735
+pick = 2581
+poh_build_metal = 930

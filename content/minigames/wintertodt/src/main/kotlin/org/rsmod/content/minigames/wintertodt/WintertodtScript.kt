@@ -258,7 +258,7 @@ constructor(private val game: WintertodtGame, private val random: GameRandom) : 
         arriveDelay()
         faceLoc(loc)
         anim(Wintertodt.ANIM_FIX)
-        soundSynth(930)
+        soundSynth(Wintertodt.SOUND_FIX)
         delay(2)
         game.fixBrazier(player, index)
         delay(1)
