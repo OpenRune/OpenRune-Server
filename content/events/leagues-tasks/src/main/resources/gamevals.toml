@@ -1,0 +1,17 @@
+[gamevals.enum]
+league_types = 2670
+league_task_tier_points = 2671
+league_task_tier_names = 2673
+league_task_types = 3411
+league_task_areas = 3412
+league_6_tasks = 5950
+league_6_pact_tasks = 5952
+league_6_pact_reset_tasks = 5953
+
+[gamevals.param]
+league_message_colour = 2050
+league_colour = 1027
+league_task_list = 2573
+
+[gamevals.timer]
+league_points_claim = 63440

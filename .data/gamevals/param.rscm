@@ -332,3 +332,6 @@ hitpoints_locked=65557
 attackable_on_cooldown=65559
 headbar_hidden=65561
 headbar_inverted=65562
+league_message_colour=2050
+league_colour=1027
+league_task_list=2573
