@@ -20,6 +20,7 @@ internal data class PendingFoodHeal(
     val dueAt: Int,
     val amount: Int,
     val effect: DelayedFoodEffect,
+    val item: String,
 )
 
 internal enum class DelayedFoodEffect {

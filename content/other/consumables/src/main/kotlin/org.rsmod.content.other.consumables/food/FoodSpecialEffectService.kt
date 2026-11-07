@@ -12,6 +12,7 @@ import org.rsmod.content.other.consumables.food.kebab.KebabOutcome
 import org.rsmod.content.other.consumables.food.stew.SpicyStewEffect
 import org.rsmod.content.other.consumables.food.stew.SpicyStewState
 import org.rsmod.content.other.consumables.restoreRunEnergy
+import org.rsmod.events.EventBus
 
 @Singleton
 class FoodSpecialEffectService
@@ -19,6 +20,7 @@ class FoodSpecialEffectService
 constructor(
     private val spicyStew: SpicyStewEffect,
     private val kebab: KebabEffect,
+    private val eventBus: EventBus,
 ) {
     internal fun handles(
         effect: String,
@@ -223,6 +225,7 @@ constructor(
     internal fun applyAfterConsume(
         access: ProtectedAccess,
         effect: String,
+        item: String,
         outcome: FoodSpecialOutcome,
     ) {
         with(access) {
@@ -231,6 +234,7 @@ constructor(
                     amount = outcome.delayedHealAmount,
                     delay = outcome.delayedHealDelay,
                     delayedEffect = outcome.delayedEffect,
+                    item = item,
                 )
             }
 
@@ -308,8 +312,19 @@ constructor(
                 FoodSpecialState.pendingHunterHeal,
             )
 
+            val oldHitpoints = player.hitpoints
+
             healToBase(
                 amount = pending.amount,
+            )
+
+            eventBus.publish(
+                FoodConsumedEvent(
+                    player = player,
+                    item = pending.item,
+                    healAmount = pending.amount,
+                    healed = player.hitpoints - oldHitpoints,
+                )
             )
 
             when (pending.effect) {
@@ -370,6 +385,7 @@ constructor(
         amount: Int,
         delay: Int,
         delayedEffect: DelayedFoodEffect,
+        item: String,
     ) {
         if (amount <= 0 || delay <= 0) {
             return
@@ -380,6 +396,7 @@ constructor(
                 dueAt = mapClock + delay,
                 amount = amount,
                 effect = delayedEffect,
+                item = item,
             )
 
          // A newly consumed hunter meat replaces the previous pending heal.

@@ -297,6 +297,7 @@ constructor(
 
         applySecondaryEffect(
             food = food,
+            type = type,
             outcome = outcome,
         )
     }
@@ -398,6 +399,7 @@ constructor(
 
     private fun ProtectedAccess.applySecondaryEffect(
         food: FoodRow,
+        type: ItemServerType,
         outcome: FoodSpecialOutcome,
     ) {
         val effect =
@@ -411,6 +413,7 @@ constructor(
             specialEffects.applyAfterConsume(
                 access = this,
                 effect = effect,
+                item = type.internalName,
                 outcome = outcome,
             )
         } else {
