@@ -154,7 +154,8 @@ constructor(
     }
 
     private fun disarm(player: Player) {
-        for (slot in madnessUnequipSlots(player.worn, deps.random, MAX_DISARMED_ITEMS)) {
+        val maxItems = minOf(MAX_DISARMED_ITEMS, player.inv.freeSpace())
+        for (slot in madnessUnequipSlots(player.worn, deps.random, maxItems)) {
             val result = wornUnequipOp.unequip(player, slot, player.worn, player.inv)
             if (result is WornUnequipResult.Fail) return
             if (slot == Wearpos.RightHand.slot) player.clearInteraction()
@@ -229,16 +230,18 @@ internal fun madnessUnequipSlots(
     random: GameRandom,
     maxItems: Int = 4,
 ): List<Int> {
-    val slots = mutableListOf<Int>()
-    if (worn[Wearpos.RightHand.slot] != null) slots += Wearpos.RightHand.slot
-
-    val remaining =
+    val equipped =
         Wearpos.entries
-            .filter { !it.isClientOnly && it != Wearpos.RightHand && worn[it.slot] != null }
+            .filter { !it.isClientOnly && worn[it.slot] != null }
             .mapTo(mutableListOf()) { it.slot }
+    if (equipped.isEmpty() || maxItems <= 0) return emptyList()
 
-    while (slots.size < maxItems && remaining.isNotEmpty()) {
-        slots += remaining.removeAt(random.of(remaining.size))
+    val count = random.of(1, minOf(maxItems, equipped.size))
+    val slots = mutableListOf<Int>()
+    if (equipped.remove(Wearpos.RightHand.slot)) slots += Wearpos.RightHand.slot
+
+    while (slots.size < count && equipped.isNotEmpty()) {
+        slots += equipped.removeAt(random.of(equipped.size))
     }
     return slots
 }
