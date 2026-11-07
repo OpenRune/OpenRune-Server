@@ -15,3 +15,7 @@ league_task_list = 2573
 
 [gamevals.timer]
 league_points_claim = 63440
+league_task_sync = 63441
+
+[gamevals.dbtable]
+league_task_trigger = 40000

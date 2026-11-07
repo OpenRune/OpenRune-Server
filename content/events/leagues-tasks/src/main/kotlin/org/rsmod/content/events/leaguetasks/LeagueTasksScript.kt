@@ -16,8 +16,6 @@ class LeagueTasksScript @Inject constructor(private val tasks: LeagueTasks) : Pl
     override val worldTypes = WorldType.entries.filter { it.isLeague }
 
     override fun ScriptContext.startup() {
-        tasks.load()
-
         onPlayerLogin { tasks.claimPoints(player) }
 
         onPlayerSoftTimer("timer.league_points_claim") {

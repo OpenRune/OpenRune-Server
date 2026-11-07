@@ -1,0 +1,53 @@
+package org.rsmod.content.events.leaguetasks.pack
+
+import dev.openrune.definition.dbtables.DBRowBuilder
+import dev.openrune.definition.dbtables.DBTableBuilder
+import dev.openrune.definition.dbtables.dbTable
+import dev.openrune.definition.util.VarType
+
+/**
+ * How each league task completes. One row per requirement: a task completes once every row for its
+ * `action` dbrow is met. Rows describe the task, not a league, so every league listing the task
+ * shares them.
+ */
+object LeagueTaskTriggerTable {
+    const val TASK = 0
+    const val TRIGGER = 1
+    const val STAT = 2
+    const val VALUE = 3
+    const val COUNT = 4
+
+    fun triggers() =
+        dbTable("dbtable.league_task_trigger", serverOnly = true) {
+            column("task", TASK, VarType.DBROW)
+            column("trigger", TRIGGER, VarType.INT)
+            column("stat", STAT, VarType.STAT)
+            column("value", VALUE, VarType.INT)
+            column("count", COUNT, VarType.INT)
+
+            val rows = TriggerRows(this)
+            rows.levelTasks()
+        }
+}
+
+/**
+ * Hands out row ids from the block reserved for this table. Nothing refers to a trigger row by id,
+ * so the rows need no gameval symbols.
+ */
+class TriggerRows(private val table: DBTableBuilder) {
+    private var next = FIRST_ROW
+
+    fun trigger(task: String, trigger: LeagueTaskTrigger, block: DBRowBuilder.() -> Unit = {}) {
+        check(next <= LAST_ROW) { "dbtable.league_task_trigger ran out of row ids at $LAST_ROW." }
+        table.row(next++) {
+            columnRSCM(LeagueTaskTriggerTable.TASK, task)
+            column(LeagueTaskTriggerTable.TRIGGER, trigger.id)
+            block()
+        }
+    }
+
+    private companion object {
+        const val FIRST_ROW = 40000
+        const val LAST_ROW = 42999
+    }
+}

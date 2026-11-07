@@ -16,15 +16,11 @@ import org.rsmod.game.entity.Player
 
 @Singleton
 public class LeagueTasks @Inject constructor(private val eventBus: EventBus) {
-    private var leagues: Map<Int, League> = emptyMap()
-    private var tierPoints: Map<Int, Int> = emptyMap()
-    private var tierNames: Map<Int, String> = emptyMap()
-
-    internal fun load() {
-        leagues = League.loadAll()
-        tierPoints = enum<Int, Int>("league_task_tier_points").filterValuesNotNull().backing
-        tierNames = enum<Int, String>("league_task_tier_names").filterValuesNotNull().backing
-    }
+    private val leagues: Map<Int, League> = League.loadAll()
+    private val tierPoints: Map<Int, Int> =
+        enum<Int, Int>("league_task_tier_points").filterValuesNotNull().backing
+    private val tierNames: Map<Int, String> =
+        enum<Int, String>("league_task_tier_names").filterValuesNotNull().backing
 
     public fun leagueOf(player: Player): League? = leagues[player.vars["varbit.league_type"]]
 
