@@ -464,9 +464,16 @@ public class Npc(
         faceSquare(target, targetWidth, targetLength)
     }
 
-    /** Pins this npc's facing toward the tile one step in [direction]. @see [lockFacing] */
+    /**
+     * Pins this npc's facing toward the tile one step in [direction]. The target square is the
+     * npc's own size, so a multi-tile npc faces the exact cardinal or ordinal angle instead of
+     * skewing towards the corner of a one-tile target.
+     *
+     * @see [lockFacing]
+     */
     public fun lockFacingDirection(direction: Direction) {
-        lockFacing(coords.translate(direction.xOff, direction.zOff))
+        val target = coords.translate(direction.xOff, direction.zOff)
+        lockFacing(target, targetWidth = size, targetLength = size)
     }
 
     public fun clearFacingLock() {

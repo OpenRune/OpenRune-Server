@@ -384,6 +384,8 @@ fun rotation(block: RotationBuilder.() -> Unit): Selector.Rotation = RotationBui
 class RotationBuilder internal constructor() {
     private val sequence = mutableListOf<String>()
 
+    var randomStart: Boolean = false
+
     @BossDsl
     inner class ThenPending(private val abilityName: String) {
         operator fun unaryPlus() {
@@ -395,7 +397,7 @@ class RotationBuilder internal constructor() {
 
     fun then(ability: String): ThenPending = ThenPending(ability)
 
-    internal fun build(): Selector.Rotation = Selector.Rotation(sequence)
+    internal fun build(): Selector.Rotation = Selector.Rotation(sequence, randomStart)
 }
 
 // Re-exports for clean spec authoring
