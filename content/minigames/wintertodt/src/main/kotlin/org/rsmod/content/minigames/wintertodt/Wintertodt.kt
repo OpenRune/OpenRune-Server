@@ -18,7 +18,14 @@ internal object Wintertodt {
     const val ENERGY_MAX = 3500
     const val ENERGY_PER_PERCENT = 35
     const val DRAIN_INTERVAL = 14
-    const val ATTACK_INTERVAL = 5
+    const val STANDARD_ATTACK_MIN = 10
+    const val STANDARD_ATTACK_MAX = 40
+    const val SPECIAL_ATTACK_MIN = 5
+    const val SPECIAL_ATTACK_MAX = 20
+    const val AREA_ATTACK_MIN = 120
+    const val AREA_ATTACK_MAX = 240
+    const val AREA_ATTACK_FIRST_MAX = 120
+    const val PYRO_DAMAGE_MAX = 14
     const val TARGET_COOLDOWN = 10
     const val RESPAWN_TIMER = 100
     const val RESPAWN_STEP = 2
@@ -70,11 +77,10 @@ internal object Wintertodt {
     const val CART_TAKEN_MESSAGE =
         "You think you've taken as much as you're owed from the reward cart."
 
-    const val SOUND_HIT = "synth.human_hit"
-    const val SOUND_HIT_2 = "synth.human_hit_2"
-    const val SOUND_HIT_4 = "synth.human_hit_4"
-    const val SOUND_DEATH = "synth.human_death"
-    const val SOUND_EXPLOSION = "synth.explosion"
+    const val SOUND_PYRO_HIT = 513
+    const val SOUND_PYRO_DOWN = 512
+    const val SOUND_AREA_IMPACT = 1487
+    val HIT_SOUNDS = listOf(518, 519, 520, 521)
 
     val DOOR = CoordGrid(1627, 3964, 0)
     val ENTRY = CoordGrid(1628, 3979, 0)
@@ -149,6 +155,8 @@ internal object Wintertodt {
     const val ANIM_HERB = "seq.picking_low"
     const val ANIM_FEED = "seq.human_pickuptable"
     const val ANIM_DRINK = "seq.human_eat"
+    const val ANIM_CHANNEL = "seq.quest_lunar_cure_plant"
+    const val ANIM_DOWN = "seq.dream_spell_start"
 
     fun isInPrison(coords: CoordGrid): Boolean =
         coords.level == 0 && coords.x in 1610..1652 && coords.z in 3968..4025
@@ -207,6 +215,7 @@ internal class Pyromancer(val index: Int, val coords: CoordGrid) {
     var lastHit: Int = Int.MIN_VALUE / 2
     var resumeAt: Int = 0
     var nextSpeak: Int = 0
+    var nextAnim: Int = 0
 }
 
 internal class WintertodtSession(val player: Player) {
@@ -222,6 +231,7 @@ internal var Player.wintRewardPool by intVarBit("varbit.wint_reward_pool")
 internal var Player.wintNeedsWarning by intVarBit("varbit.wint_needs_warning")
 internal var Player.wintRespawnDelay by intVarBit("varbit.wint_transmit_respawndelay")
 internal var Player.wintAreaAttack by intVarBit("varbit.wint_area_attack")
+internal var Player.wintRapidHeal by intVarBit("varbit.prayer_rapidheal")
 internal var Player.wintertodtHouseLocation by intVarBit("varbit.poh_house_location")
 internal var Player.wintertodtKills by intVarp("varp.total_wintertodt_kills")
 internal var Player.wintertodtLifetimeScore by intVarp("varp.wintertodt_lifetime_score")

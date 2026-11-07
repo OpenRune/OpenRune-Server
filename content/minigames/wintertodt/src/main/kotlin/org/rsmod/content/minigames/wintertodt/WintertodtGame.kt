@@ -21,6 +21,8 @@ import org.rsmod.api.config.refs.params
 import org.rsmod.api.enums.ItemsEnums.wintertodt_warm_items
 import org.rsmod.api.invtx.invAdd
 import org.rsmod.api.invtx.invDel
+import org.rsmod.api.player.back
+import org.rsmod.api.player.hands
 import org.rsmod.api.player.output.mes
 import org.rsmod.api.player.output.runClientScript
 import org.rsmod.api.player.output.soundSynth
@@ -102,9 +104,9 @@ constructor(
     private var phase = Phase.WAITING
     private var energy = Wintertodt.ENERGY_MAX
     private var respawnTimer = 0
-    private var nextAttack = 0
-    private var areaWarningCenter: CoordGrid? = null
-    private var areaWarningUntil = 0
+    private var nextStandardAttack = 0
+    private var nextSpecialAttack = 0
+    private var nextAreaAttack = 0
     private var nextHud = 0
     private var worldReady = false
     private var pyroDownThisRound = false
@@ -217,7 +219,7 @@ constructor(
             regenerateEnergy()
             runWarmth()
             runAttacks()
-            updateAreaWarning()
+            updateAreaDanger()
             runPyromancerSpeech()
             tickFireStreams()
             if (energy <= 0) endRound()
@@ -279,6 +281,7 @@ constructor(
 
     fun onLogin(player: Player) {
         player.wintWarmth = Wintertodt.WARMTH_MAX
+        player.wintAreaAttack = 0
         if (Wintertodt.isInPrison(player.coords)) {
             PathingEntityCommon.teleport(player, flags, Wintertodt.EXIT)
         }
@@ -288,6 +291,7 @@ constructor(
     fun onLogout(player: Player) {
         stopAction(player)
         sessions.remove(player)
+        player.wintAreaAttack = 0
         if (Wintertodt.isInPrison(player.coords)) {
             PathingEntityCommon.teleport(player, flags, Wintertodt.EXIT)
         }
@@ -1106,10 +1110,23 @@ constructor(
             pyro.down = false
             pyro.lastHit = Int.MIN_VALUE / 2
             pyro.resumeAt = mapClock.cycle
-            pyro.npc?.let { npc -> pyromancerType?.let { npc.transmog(it, Int.MAX_VALUE) } }
+            pyro.nextAnim = 0
+            pyro.npc?.let { npc ->
+                pyromancerType?.let { npc.transmog(it, Int.MAX_VALUE) }
+                npc.anim(Wintertodt.ANIM_CHANNEL)
+            }
         }
         setStorm(active = true)
-        nextAttack = mapClock.cycle + Wintertodt.ATTACK_INTERVAL
+        nextStandardAttack =
+            mapClock.cycle +
+                random.of(0, 4) +
+                randomAttackDelay(Wintertodt.STANDARD_ATTACK_MIN, Wintertodt.STANDARD_ATTACK_MAX)
+        nextSpecialAttack =
+            mapClock.cycle +
+                random.of(0, 4) +
+                randomAttackDelay(Wintertodt.SPECIAL_ATTACK_MIN, Wintertodt.SPECIAL_ATTACK_MAX)
+        nextAreaAttack =
+            mapClock.cycle + random.of(0, 4) + randomAttackDelay(5, Wintertodt.AREA_ATTACK_FIRST_MAX)
         nextHud = mapClock.cycle
         for (session in sessions.values) {
             session.points = 0
@@ -1126,11 +1143,12 @@ constructor(
         energy = 0
         respawnTimer = Wintertodt.RESPAWN_TIMER
         pending.clear()
-        clearWarning()
+        clearAreaDanger()
         for (brazier in braziers) setBrazierState(brazier, BrazierState.UNLIT)
         for (pyro in pyromancers) {
             pyro.hp = 14
             pyro.down = false
+            pyro.nextAnim = 0
             pyro.npc?.let { npc -> pyromancerType?.let { npc.transmog(it, Int.MAX_VALUE) } }
             pyro.npc?.say("We can rest for a time.")
         }
@@ -1241,7 +1259,7 @@ constructor(
             if (!player.canProcess) continue
             if (player.wintWarmth <= 0) continue
             val warm = warmItems(player)
-            session.regenTenths += 8 + warm
+            session.regenTenths += (8 + warm) * warmthRegenMultiplier(player)
             if (session.regenTenths >= 10) {
                 val add = session.regenTenths / 10
                 session.regenTenths %= 10
@@ -1251,16 +1269,54 @@ constructor(
         }
     }
 
-    private fun runAttacks() {
-        if (mapClock.cycle < nextAttack) return
-        nextAttack = mapClock.cycle + Wintertodt.ATTACK_INTERVAL
-        if (sessions.isEmpty()) return
-        if (random.of(Wintertodt.ENERGY_MAX) < energy) {
-            standardAttack()
-        } else {
-            specialAttack()
-        }
+    private fun warmthRegenMultiplier(player: Player): Int {
+        var multiplier = 1
+        val back = player.back?.let { ServerCacheManager.getItem(it.id) }
+        val isMaxCape =
+            back != null &&
+                (back.isContentType("content.max_cape") ||
+                    back.internalName.startsWith("obj.skillcape_max"))
+        if (isMaxCape) multiplier *= 2
+        if (player.wintRapidHeal != 0) multiplier *= 2
+        val hands = player.hands?.let { ServerCacheManager.getItem(it.id) }
+        if (hands?.internalName == "obj.jewl_bracelet_regen") multiplier *= 2
+        return multiplier
     }
+
+    private fun runAttacks() {
+        runStandardAttack()
+        runSpecialAttack()
+        runAreaAttack()
+    }
+
+    private fun runStandardAttack() {
+        if (mapClock.cycle < nextStandardAttack) return
+        nextStandardAttack =
+            mapClock.cycle +
+                randomAttackDelay(Wintertodt.STANDARD_ATTACK_MIN, Wintertodt.STANDARD_ATTACK_MAX)
+        if (random.of(Wintertodt.ENERGY_MAX) >= energy) return
+        standardAttack()
+    }
+
+    private fun runSpecialAttack() {
+        if (mapClock.cycle < nextSpecialAttack) return
+        nextSpecialAttack =
+            mapClock.cycle +
+                randomAttackDelay(Wintertodt.SPECIAL_ATTACK_MIN, Wintertodt.SPECIAL_ATTACK_MAX)
+        if (random.of(Wintertodt.ENERGY_MAX) < energy) return
+        specialAttack()
+    }
+
+    private fun runAreaAttack() {
+        if (mapClock.cycle < nextAreaAttack) return
+        nextAreaAttack =
+            mapClock.cycle +
+                randomAttackDelay(Wintertodt.AREA_ATTACK_MIN, Wintertodt.AREA_ATTACK_MAX)
+        areaAttack()
+    }
+
+    private fun randomAttackDelay(min: Int, max: Int): Int =
+        random.of(min / 5, max / 5) * 5
 
     private fun standardAttack() {
         val candidates =
@@ -1274,38 +1330,43 @@ constructor(
         if (candidates.isEmpty()) return
         for (session in candidates) {
             val player = session.player
-            val damage =
-                Wintertodt.standardDamage(
-                    player.baseFiremakingLvl,
-                    warmItems(player),
-                    braziers.count { it.state == BrazierState.LIT },
-                )
             player.spam("The cold of the Wintertodt seeps into your bones.")
-            interruptFletchAndFeed(player)
-            applyWarmth(player, damage)
             session.lastCold = mapClock.cycle
+            pending +=
+                Pending(mapClock.cycle + 1) {
+                    if (!player.canProcess || player.wintWarmth <= 0) return@Pending
+                    if (!Wintertodt.isInPrison(player.coords)) return@Pending
+                    val damage =
+                        Wintertodt.standardDamage(
+                            player.baseFiremakingLvl,
+                            warmItems(player),
+                            braziers.count { it.state == BrazierState.LIT },
+                        )
+                    interruptFletchAndFeed(player)
+                    applyWarmth(player, damage)
+                }
         }
     }
 
     private fun specialAttack() {
-        when (random.of(0, 9)) {
-            0 -> areaAttack()
-            in 1..7 -> brazierAttack(random.of(0, 3))
-            else -> pyromancerAttack(random.of(0, 3))
-        }
+        if (random.of(0, 9) < 8) brazierAttack() else pyromancerAttack()
     }
 
-    private fun brazierAttack(index: Int) {
-        val brazier = braziers[index]
-        if (brazier.state != BrazierState.LIT) return
-        if (mapClock.cycle - brazier.lastHit < Wintertodt.TARGET_COOLDOWN) return
+    private fun brazierAttack() {
+        val candidates =
+            braziers.filter {
+                it.state == BrazierState.LIT &&
+                    mapClock.cycle - it.lastHit >= Wintertodt.TARGET_COOLDOWN
+            }
+        if (candidates.isEmpty()) return
+        val brazier = candidates[random.of(candidates.size)]
         brazier.lastHit = mapClock.cycle
         val heavy = random.of(0, 2) == 0
         val center = brazierCenter(brazier)
         if (heavy) {
             addSnowfall(center, brazierWarningOffsets, duration = 3)
         } else {
-            addSnowfall(center, listOf(0 to 0), duration = 3)
+            addSnowfall(center, listOf(0 to 0), duration = 2)
         }
         worldRepo.projAnim(
             travelBreath(
@@ -1325,10 +1386,10 @@ constructor(
                 if (brazier.state == BrazierState.LIT) {
                     if (heavy) {
                         damageBrazier(brazier)
-                        soundAreaId(brazier.coords, if (heavy) 2299 else 2300, radius = 2)
+                        soundAreaAt(brazier.coords, 2299, radius = 2)
                     } else {
                         setBrazierState(brazier, BrazierState.UNLIT)
-                        soundAreaId(brazier.coords, 2300, radius = 2)
+                        soundAreaAt(brazier.coords, 2300, radius = 2)
                     }
                 }
                 updateHud()
@@ -1340,9 +1401,8 @@ constructor(
         return brazier.coords.translate((type?.width ?: 1) / 2, (type?.length ?: 1) / 2)
     }
 
-    private fun soundAreaId(coords: CoordGrid, id: Int, radius: Int, fallback: String = Wintertodt.SOUND_HIT) {
-        val name = runCatching { RSCM.getReverseMapping(RSCMType.SYNTH, id) }.getOrElse { fallback }
-        worldRepo.soundArea(coords, name, radius = radius)
+    private fun soundAreaAt(coords: CoordGrid, id: Int, radius: Int) {
+        worldRepo.soundArea(coords, id, radius = radius)
     }
 
     private fun addSnowfall(center: CoordGrid, offsets: List<Pair<Int, Int>>, duration: Int) {
@@ -1386,6 +1446,15 @@ constructor(
                 )
             }
         }
+        val pyro = pyromancers[brazier.index]
+        if (!pyro.down) {
+            pending +=
+                Pending(mapClock.cycle + 1) {
+                    if (!pyro.down) {
+                        damagePyromancer(pyro, random.of(1, Wintertodt.PYRO_DAMAGE_MAX))
+                    }
+                }
+        }
     }
 
     private fun tickFireStreams() {
@@ -1424,11 +1493,20 @@ constructor(
         return path
     }
 
-    private fun runPyromancerSpeech() { for (pyro in pyromancers) {
+    private fun runPyromancerSpeech() {
+        for (pyro in pyromancers) {
             val npc = pyro.npc ?: continue
+            if (!pyro.down && mapClock.cycle >= pyro.nextAnim) {
+                npc.anim(Wintertodt.ANIM_CHANNEL)
+                pyro.nextAnim = mapClock.cycle + 8
+            }
             if (mapClock.cycle < pyro.nextSpeak) continue
             if (pyro.down) {
-                npc.say(Wintertodt.PYROMANCER_DOWN_LINES[random.of(0, Wintertodt.PYROMANCER_DOWN_LINES.lastIndex)])
+                npc.say(
+                    Wintertodt.PYROMANCER_DOWN_LINES[
+                        random.of(0, Wintertodt.PYROMANCER_DOWN_LINES.lastIndex)
+                    ],
+                )
                 pyro.nextSpeak = mapClock.cycle + random.of(10, 14)
                 continue
             }
@@ -1449,10 +1527,13 @@ constructor(
         }
     }
 
-    private fun pyromancerAttack(index: Int) {
-        val pyro = pyromancers[index]
-        if (pyro.down) return
-        if (mapClock.cycle - pyro.lastHit < Wintertodt.TARGET_COOLDOWN) return
+    private fun pyromancerAttack() {
+        val candidates =
+            pyromancers.filter {
+                !it.down && mapClock.cycle - it.lastHit >= Wintertodt.TARGET_COOLDOWN
+            }
+        if (candidates.isEmpty()) return
+        val pyro = candidates[random.of(candidates.size)]
         pyro.lastHit = mapClock.cycle
         addSnowfall(pyro.coords, listOf(0 to 0), duration = 3)
         worldRepo.projAnim(travelBreath(pyro.coords, startHeight = 0, endTime = 120))
@@ -1464,29 +1545,34 @@ constructor(
         pending +=
             Pending(mapClock.cycle + 6) {
                 if (!pyro.down) {
-                    val hpBefore = pyro.hp
-                    val damage = 8
-                    pyro.hp = (hpBefore - damage).coerceAtLeast(0)
-                    showPyromancerDamage(pyro, damage)
-                    worldRepo.soundArea(pyro.coords, Wintertodt.SOUND_HIT, radius = 10)
-                    if (pyro.hp <= 0) {
-                        pyro.down = true
-                        pyroDownThisRound = true
-                        pyro.hp = 0
-                        showPyromancerHealth(pyro)
-                        pyro.npc?.say("Arg, it got me!")
-                        pyro.npc?.anim("seq.dream_spell_start")
-                        pyro.npc?.let { npc ->
-                            pyromancerDownType?.let { npc.transmog(it, Int.MAX_VALUE) }
-                        }
-                        worldRepo.soundArea(pyro.coords, Wintertodt.SOUND_DEATH, radius = 3)
-                        if (braziers[index].state == BrazierState.LIT) {
-                            setBrazierState(braziers[index], BrazierState.UNLIT)
-                        }
-                    }
+                    damagePyromancer(pyro, random.of(1, Wintertodt.PYRO_DAMAGE_MAX))
                 }
                 updateHud()
             }
+    }
+
+    private fun damagePyromancer(pyro: Pyromancer, damage: Int) {
+        val npc = pyro.npc ?: return
+        val hpBefore = pyro.hp
+        pyro.hp = (hpBefore - damage).coerceAtLeast(0)
+        showPyromancerDamage(pyro, damage)
+        soundAreaAt(pyro.coords, Wintertodt.SOUND_PYRO_HIT, radius = 10)
+        if (pyro.hp <= 0) {
+            pyro.down = true
+            pyroDownThisRound = true
+            pyro.hp = 0
+            pyro.nextAnim = 0
+            showPyromancerHealth(pyro)
+            npc.say("Arg, it got me!")
+            npc.anim(Wintertodt.ANIM_DOWN)
+            pyromancerDownType?.let { npc.transmog(it, Int.MAX_VALUE) }
+            soundAreaAt(pyro.coords, Wintertodt.SOUND_PYRO_DOWN, radius = 3)
+            val brazier = braziers[pyro.index]
+            if (brazier.state == BrazierState.LIT) {
+                setBrazierState(brazier, BrazierState.UNLIT)
+            }
+        }
+        updateHud()
     }
 
     private fun areaAttack() {
@@ -1504,8 +1590,6 @@ constructor(
         val spot = Wintertodt.SPOTANIM_AREA_SPOT.asRSCM(RSCMType.SPOTANIM)
         val impact = SpotanimType(Wintertodt.SPOTANIM_AREA_IMPACT.asRSCM(RSCMType.SPOTANIM))
         val breath = SpotanimType(Wintertodt.SPOTANIM_AREA_BREATH.asRSCM(RSCMType.SPOTANIM))
-        areaWarningCenter = center
-        areaWarningUntil = mapClock.cycle + 3
         addSnowfall(center, areaOffsets + (0 to 0), duration = 13)
         worldRepo.projAnim(travelBreath(center, startHeight = 0, endTime = 200))
         pending +=
@@ -1536,7 +1620,7 @@ constructor(
         pending +=
             Pending(mapClock.cycle + 6) {
                 showAreaImpact(center)
-                worldRepo.soundArea(center, Wintertodt.SOUND_EXPLOSION, radius = 2)
+                soundAreaAt(center, Wintertodt.SOUND_AREA_IMPACT, radius = 2)
                 for (session in sessions.values.toList()) {
                     val player = session.player
                     if (!player.canProcess) continue
@@ -1556,7 +1640,6 @@ constructor(
                         )
                     }
                 }
-                clearWarning()
             }
     }
 
@@ -1581,7 +1664,7 @@ constructor(
         locRepo.add(
             center,
             Wintertodt.WARNING_ICICLE,
-            2,
+            7,
             LocAngle.entries[random.of(0, LocAngle.entries.lastIndex)],
             LocShape.CentrepieceStraight,
         )
@@ -1589,29 +1672,24 @@ constructor(
             locRepo.add(
                 center.translate(dx, dz),
                 Wintertodt.WARNING_SNOW,
-                2,
+                7,
                 LocAngle.entries[random.of(0, LocAngle.entries.lastIndex)],
                 LocShape.CentrepieceStraight,
             )
         }
     }
 
-    private fun updateAreaWarning() {
-        val center = areaWarningCenter ?: return
-        if (mapClock.cycle > areaWarningUntil) {
-            clearWarning()
-            return
-        }
+    private fun updateAreaDanger() {
         for (session in sessions.values) {
             val player = session.player
-            val value = if (near(player.coords, center, 1)) 1 else 0
+            val value =
+                if (!Wintertodt.isSafe(player.coords) && canAreaTarget(player.coords)) 1 else 0
             if (player.wintAreaAttack != value) player.wintAreaAttack = value
         }
     }
 
-    private fun clearWarning() {
+    private fun clearAreaDanger() {
         for (session in sessions.values) session.player.wintAreaAttack = 0
-        areaWarningCenter = null
     }
 
     private fun applyWarmth(player: Player, damage: Int) {
@@ -1645,7 +1723,10 @@ constructor(
             player.mes("<col=ef1020>The cold of the Wintertodt has overcome you!")
             player.queueDeath()
         }
-        player.soundSynth(Wintertodt.SOUND_HIT_4, delay = 20)
+        player.soundSynth(
+            Wintertodt.HIT_SOUNDS[random.of(Wintertodt.HIT_SOUNDS.size)],
+            delay = 20,
+        )
     }
 
     private fun processPending() {
@@ -1706,6 +1787,7 @@ constructor(
             npc.moveRestrict = MoveRestrict.NoMove
             npc.hitpoints = 14
             npc.baseHitpointsLvl = 14
+            if (!pyro.down) npc.anim(Wintertodt.ANIM_CHANNEL)
             pyro.npc = npc
         }
         val assigned = pyromancers.mapNotNull { it.npc }.toSet()
