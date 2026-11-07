@@ -65,7 +65,10 @@ data class Quest(
 
     private var Player.questState: Int
         get() = vars[questVarbit ?: questVarp]
-        set(value) { VarPlayerIntMapSetter.set(this, questVarbit ?: questVarp, value) }
+        set(value) {
+            VarPlayerIntMapSetter.set(this, questVarbit ?: questVarp, value)
+        }
+
     private var Player.questPoints by intVarp("varp.qp")
     private var Player.questsCompleted by intVarBit("varbit.quests_completed_count")
 
@@ -95,23 +98,24 @@ data class Quest(
 
             val rowKeyID = "dbrow.${rowKey}".asRSCM()
             val questRow = QuestRow.getRow(rowKeyID)
-            val quest = Quest(
-                id = questRow.id,
-                rowID = rowKeyID,
-                key = rowKey,
-                displayName = questRow.displayname,
-                mapElement = questRow.mapelement,
-                startCoord = questRow.startcoord,
-                maxSteps = questRow.endstate,
-                questPoints = questRow.questpoints,
-                questVarp = varp,
-                questVarbit = varbit,
-                itemDisplay = itemDisplay,
-                rewards = rewards,
-                closeDialogue = closeDialogue,
-                closeScroll = closeScroll,
-                completeJingle = completeJingle,
-            )
+            val quest =
+                Quest(
+                    id = questRow.id,
+                    rowID = rowKeyID,
+                    key = rowKey,
+                    displayName = questRow.displayname,
+                    mapElement = questRow.mapelement,
+                    startCoord = questRow.startcoord,
+                    maxSteps = questRow.endstate,
+                    questPoints = questRow.questpoints,
+                    questVarp = varp,
+                    questVarbit = varbit,
+                    itemDisplay = itemDisplay,
+                    rewards = rewards,
+                    closeDialogue = closeDialogue,
+                    closeScroll = closeScroll,
+                    completeJingle = completeJingle,
+                )
             questsByKey[rowKey.normalizedQuestKey()] = quest
             return quest
         }
@@ -201,17 +205,21 @@ data class Quest(
         return true
     }
 
-    private fun grantItemRewards(access: ProtectedAccess, additionalRewards: List<InvObj>): Boolean {
+    private fun grantItemRewards(
+        access: ProtectedAccess,
+        additionalRewards: List<InvObj>,
+    ): Boolean {
         if (itemRewards.isEmpty() && additionalRewards.isEmpty()) return true
-        val transaction = access.player.invTransaction(access.inv, autoCommit = false) {
-            val inventory = select(access.inv)
-            for (reward in additionalRewards) {
-                add(inventory, reward.id, reward.count, vars = reward.vars)
+        val transaction =
+            access.player.invTransaction(access.inv, autoCommit = false) {
+                val inventory = select(access.inv)
+                for (reward in additionalRewards) {
+                    add(inventory, reward.id, reward.count, vars = reward.vars)
+                }
+                for (reward in itemRewards) {
+                    add(inventory, reward.id, reward.count, vars = reward.vars)
+                }
             }
-            for (reward in itemRewards) {
-                add(inventory, reward.id, reward.count, vars = reward.vars)
-            }
-        }
         if (transaction.failure) return false
         transaction.commitAll()
         return true
@@ -221,25 +229,26 @@ data class Quest(
         name: String,
         default: T,
         resetOnDeath: Boolean = false,
-        temp: Boolean = false
+        temp: Boolean = false,
     ): QuestAttribute<T> = attribute(name, { default }, resetOnDeath, temp)
 
     fun <T> attribute(
         name: String,
         default: () -> T,
         resetOnDeath: Boolean = false,
-        temp: Boolean = false
+        temp: Boolean = false,
     ): QuestAttribute<T> {
         @Suppress("UNCHECKED_CAST")
         return attributeRegistry.getOrPut(name) {
             QuestAttribute(
                 name = name,
-                attributeKey = AttributeKey(
-                    persistenceKey = "quest.$key.$name",
-                    resetOnDeath = resetOnDeath,
-                    temp = temp
-                ),
-                defaultProvider = default
+                attributeKey =
+                    AttributeKey(
+                        persistenceKey = "quest.$key.$name",
+                        resetOnDeath = resetOnDeath,
+                        temp = temp,
+                    ),
+                defaultProvider = default,
             )
         } as QuestAttribute<T>
     }
@@ -261,17 +270,22 @@ data class Quest(
         val questPointLabel = if (questPoints == 1) "Quest Point" else "Quest Points"
         access.ifSetText("component.questscroll:quest_reward1", "$questPoints $questPointLabel")
 
-        access.ifSetObj("component.questscroll:quest_model", obj = itemDisplay.item, zoom = itemDisplay.zoom)
+        access.ifSetObj(
+            "component.questscroll:quest_model",
+            obj = itemDisplay.item,
+            zoom = itemDisplay.zoom,
+        )
         if (itemDisplay.x != null && itemDisplay.y != null) {
             val model = "component.questscroll:quest_model".asRSCM(RSCMType.COMPONENT)
             access.player.client.write(IfSetPosition(model, itemDisplay.x, itemDisplay.y))
         }
 
-        val rewardLines = mutableListOf<String>()
+        val rewardLines = rewards.leadingLines.toMutableList()
 
         rewards.xp.forEach { (skill, amount) ->
-            val stat = ServerCacheManager.getStats(skill.asRSCM(RSCMType.STAT))
-                ?: error("No stat found for $skill")
+            val stat =
+                ServerCacheManager.getStats(skill.asRSCM(RSCMType.STAT))
+                    ?: error("No stat found for $skill")
 
             access.statAdvance(skill, amount)
             val skillName = stat.displayName.replaceFirstChar { it.uppercase() }
@@ -279,7 +293,9 @@ data class Quest(
         }
 
         rewards.items.forEach { (item, amount) ->
-            val type = ServerCacheManager.getItem(item.asRSCM(RSCMType.OBJ)) ?: error("No item found for $item")
+            val type =
+                ServerCacheManager.getItem(item.asRSCM(RSCMType.OBJ))
+                    ?: error("No item found for $item")
             rewardLines.add(rewards.itemLabels[item] ?: "$amount x ${type.name}")
         }
 

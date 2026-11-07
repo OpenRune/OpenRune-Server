@@ -144,3 +144,20 @@ Failed payment leaves the sword, commission and reward state unchanged. Coins go
 to the bank first, then inventory if necessary; Ultimate Ironmen use inventory only.
 
 [magic-numbers]: https://en.wikipedia.org/wiki/Magic_number_(programming)
+
+### Priest in Peril
+
+The quest uses shortened dialogue and a private guardian encounter. Checked doors
+retain invisible blocking walls and move only the acting player; native opening
+leaves are not yet drawn. Ordinary monks punch and cast Weaken; the hooded monk
+also uses Fire Bolt. Both styles use the standard accuracy/protection paths, but
+exact native attack-selection odds and regeneration timing remain unverified.
+The water-blessing flag is distinct from the player's persistent stage-61 blessing.
+Existing completed characters that earned the old player-blessing flag migrate on
+login; new water blessings never grant passage by themselves under respect-progress.
+The journal preserves history and the remaining passage instruction using authored
+wording. Exact text, camera/animation/effect/sound timing still need comparison with
+the reviewer's newly available RSProx recordings, which this revision did not use.
+Reward labels/order/model zoom follow the concrete values supplied in the review.
+Optional souvenir monument exchanges and the later Varrock Museum Kudos claim
+are not included in this quest port.

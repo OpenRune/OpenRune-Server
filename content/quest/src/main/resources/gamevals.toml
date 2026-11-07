@@ -8,3 +8,10 @@ cots_tail = 430
 
 [gamevals.queue]
 quest_scroll_continue = 64440
+
+[gamevals.varp]
+priest_peril_state = 62539
+
+[gamevals.varbit]
+priest_peril_mausoleum_unlocked = 63681
+priest_peril_essence_count = 63682

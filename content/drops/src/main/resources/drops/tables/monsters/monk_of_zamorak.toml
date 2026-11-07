@@ -21,14 +21,6 @@ nothing = true
 
 [[tertiary]]
 numerator = 1
-denominator = 1
-obj = "obj.pipkey_gold"
-count = 1
-quest = "quest_priestinperil"
-quest_mode = "during"
-
-[[tertiary]]
-numerator = 1
 denominator = 6
 obj = "obj.looting_bag"
 count = 1
