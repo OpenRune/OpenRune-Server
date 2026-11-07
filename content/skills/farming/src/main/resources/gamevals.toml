@@ -1,0 +1,11 @@
+[gamevals.enum]
+farming_produce_containers = 64410
+farming_produce_fill_priority = 64411
+farming_produce_cabbage = 64412
+farming_produce_onion = 64413
+farming_produce_potato = 64414
+farming_produce_strawberry = 64415
+farming_produce_orange = 64416
+farming_produce_banana = 64417
+farming_produce_tomato = 64418
+farming_produce_apple = 64419
