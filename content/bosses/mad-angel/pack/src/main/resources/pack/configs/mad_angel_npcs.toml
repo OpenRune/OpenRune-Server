@@ -7,3 +7,5 @@ defaultMode = "None"
 
 [npc.params]
 "param.killcount_varp" = "varp.total_mad_angel_kills"
+"param.elemental_weakness_type" = 2
+"param.elemental_weakness_percent" = 15

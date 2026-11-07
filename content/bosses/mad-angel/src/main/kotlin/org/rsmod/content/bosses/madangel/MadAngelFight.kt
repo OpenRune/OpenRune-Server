@@ -27,7 +27,6 @@ import org.rsmod.map.CoordGrid
 
 internal var Player.nextHitBuff: Int by intVarBit("varbit.mad_angel_next_hit")
 
-/** The sword hand the angel is swinging from. */
 enum class SweepSide {
     Left,
     Right,
@@ -35,24 +34,6 @@ enum class SweepSide {
 
 data class SweepParams(val side: SweepSide, val enraged: Boolean)
 
-/**
- * The Mad Angel's three specials, driven by hand rather than declaratively.
- *
- * The sweep cleaves a quarter of the cathedral floor between the axis the angel faces and its sword
- * hand, dusting each tile as it goes and rewarding a player standing beside the angel with the
- * next-hit buff. The blast throws up to three orbs; a player standing under one bounces it back into
- * the angel for a chunk of its health, a miss detonates the whole floor. The smite strikes on fixed
- * ticks and watches Protect from Magic across the charge: holding it gives the reduced hit, while
- * switching it on in the last tick of the charge (including a 1-tick flick) takes no damage and
- * earns the maximum next-hit buff instead.
- *
- * All three scale their damage by hand where a prayer applies, so their hits carry
- * [MadAngelFight]'s own penetration rather than leaning on the engine's prayer block.
- *
- * Rules from the OSRS Wiki: https://oldschool.runescape.wiki/w/Mad_Angel/Strategies
- *
- * @see [Mad_Angel/Strategies]
- */
 @Singleton
 class MadAngelFight
 @Inject
@@ -105,7 +86,7 @@ constructor(
             val centre = centre(npc)
             val cleaved =
                 sweepTiles(centre, front, side) { at, step -> deps.collision.canStep(at, step) }
-            val dust = SpotanimType(DUST.asRSCM(RSCMType.SPOTANIM))
+            val dust = SpotanimType("spotanim.zebak_roar_wave_dust".asRSCM(RSCMType.SPOTANIM))
             for (tile in cleaved) {
                 deps.worldRepo.spotanimMap(dust, tile, delay = 2 * centre.chebyshevDistance(tile))
             }
@@ -124,7 +105,7 @@ constructor(
                 )
             } else if (besideNotBehind(centre, front, side, target.coords)) {
                 target.nextHitBuff = NEXT_HIT_ACCURATE
-                npc.vars[GUARANTEED_HIT] = 1
+                npc.vars["varn.guaranteed_hit"] = 1
             }
 
             front = faceTarget(npc, target)
@@ -149,7 +130,8 @@ constructor(
         npc.movementLocked = true
         val strikes = if (enraged) ENRAGED_STRIKE_TICKS else STRIKE_TICKS
         val last = strikes.max()
-        val impact = SpotanimType(SPOT_SMITE_IMPACT.asRSCM(RSCMType.SPOTANIM))
+        val impact =
+            SpotanimType("spotanim.vfx_mad_angel_attack_smite_impact".asRSCM(RSCMType.SPOTANIM))
         for (tick in strikes) {
             deps.worldQueues.add(tick) {
                 if (npc.isValidTarget() && target.isValidTarget()) {
@@ -190,7 +172,8 @@ constructor(
         val flight = if (enraged) ENRAGED_FLIGHT_CYCLES else FLIGHT_CYCLES
         val tile = blastTarget(npc, target)
         deps.bossProjectile(
-            spotanim = SPOT_BOMB_PROJECTILE.asRSCM(RSCMType.SPOTANIM),
+            spotanim =
+                "spotanim.vfx_mad_angel_attack_bomb_throw_projectile".asRSCM(RSCMType.SPOTANIM),
             src = centre(npc),
             target = tile,
             startHeight = PROJECTILE_START_HEIGHT,
@@ -200,7 +183,7 @@ constructor(
             curve = PROJECTILE_CURVE,
         )
         deps.worldRepo.spotanimMap(
-            SpotanimType(SHADOW.asRSCM(RSCMType.SPOTANIM)),
+            SpotanimType("spotanim.gargboss_debris_shadow_150".asRSCM(RSCMType.SPOTANIM)),
             tile,
             delay = SHADOW_DELAY,
         )
@@ -216,19 +199,20 @@ constructor(
             return
         }
         npc.spotanim(
-            BOUNCE,
+            "spotanim.vfx_mad_angel_attack_bomb_throw_impact_02",
             delay = BOUNCE_DELAY,
             height = BOUNCE_HEIGHT,
             slot = BOUNCE_SLOT + thrown - 1,
         )
         deps.worldRepo.soundArea(
             tile,
-            BOUNCE_SOUND,
+            "synth.mad_angel_blast_bounce",
             radius = BOMB_SOUND_RADIUS,
             size = BOMB_SOUND_SIZE,
         )
         deps.bossProjectile(
-            spotanim = SPOT_BOMB_PROJECTILE.asRSCM(RSCMType.SPOTANIM),
+            spotanim =
+                "spotanim.vfx_mad_angel_attack_bomb_throw_projectile".asRSCM(RSCMType.SPOTANIM),
             src = tile,
             target = centre(npc),
             startHeight = PROJECTILE_END_HEIGHT,
@@ -257,14 +241,17 @@ constructor(
 
     private fun explode(npc: Npc, target: Player, tile: CoordGrid) {
         val arena = arenaTiles(npc.spawnCoords)
-        val explosion = SpotanimType(EXPLOSION.asRSCM(RSCMType.SPOTANIM))
+        val explosion =
+            SpotanimType(
+                "spotanim.vfx_mad_angel_attack_bomb_throw_impact_01".asRSCM(RSCMType.SPOTANIM)
+            )
         for (at in arena) {
             val delay = 2 * (abs(at.x - tile.x) + abs(at.z - tile.z))
             deps.worldRepo.spotanimMap(explosion, at, delay = delay)
         }
         deps.worldRepo.soundArea(
             tile,
-            EXPLOSION_SOUND,
+            "synth.mad_angel_blast_explosion",
             radius = BOMB_SOUND_RADIUS,
             size = BOMB_SOUND_SIZE,
         )
@@ -301,7 +288,7 @@ constructor(
                 penetration = PRAYER_PENETRATION,
             )
             target.nextHitBuff = NEXT_HIT_MAX
-            npc.vars[GUARANTEED_HIT] = 1
+            npc.vars["varn.guaranteed_hit"] = 1
             return
         }
         val roll = deps.random.of(SMITE_MAX_HIT + 1)
@@ -338,9 +325,9 @@ constructor(
         return if (options.isEmpty()) target.coords else options[deps.random.of(options.size)]
     }
 
-    private fun Player.prayingMelee(): Boolean = vars[PRAYER_MELEE] == 1
+    private fun Player.prayingMelee(): Boolean = vars["varbit.prayer_protectfrommelee"] == 1
 
-    private fun Player.prayingMagic(): Boolean = vars[PRAYER_MAGIC] == 1
+    private fun Player.prayingMagic(): Boolean = vars["varbit.prayer_protectfrommagic"] == 1
 
     companion object {
         /**
@@ -366,11 +353,6 @@ constructor(
         const val NEXT_HIT_ACCURATE = 1
         const val NEXT_HIT_MAX = 2
 
-        internal const val GUARANTEED_HIT = "varn.guaranteed_hit"
-
-        private const val PRAYER_MELEE = "varbit.prayer_protectfrommelee"
-        private const val PRAYER_MAGIC = "varbit.prayer_protectfrommagic"
-
         private const val PRAYER_PENETRATION = 100
         private const val HIT_DELAY = 1
         private const val CLIENT_CYCLES_PER_TICK = 30
@@ -381,7 +363,6 @@ constructor(
         private const val ENRAGED_CLEAVE_TICKS = 4
         private const val SWEEP_MAX_HIT = 31
         private const val SWEEP_PROTECTED_PERCENT = 50
-        private const val DUST = "spotanim.zebak_roar_wave_dust"
 
         private const val BLAST_THROWS = 3
         private const val BLAST_TARGET_RANGE = 2
@@ -393,8 +374,6 @@ constructor(
         private const val PROJECTILE_START_HEIGHT = 220
         private const val PROJECTILE_END_HEIGHT = 30
         private const val SHADOW_DELAY = 30
-        private const val SHADOW = "spotanim.gargboss_debris_shadow_150"
-        private const val BOUNCE = "spotanim.vfx_mad_angel_attack_bomb_throw_impact_02"
         private const val BOUNCE_HEIGHT = 30
         private const val BOUNCE_DELAY = 30
         private const val BOUNCE_SLOT = 11
@@ -402,7 +381,6 @@ constructor(
         private const val BOUNCE_DAMAGE_MIN = 18
         private const val BOUNCE_DAMAGE_MAX = 22
         private const val BOUNCE_DAMAGE_TICKS = 2
-        private const val BOUNCE_SOUND = "synth.mad_angel_blast_bounce"
         private const val BOMB_SOUND_RADIUS = 20
         private const val BOMB_SOUND_SIZE = 10
 
@@ -412,19 +390,13 @@ constructor(
                 lit = hitmark_groups.regular_damage.lit,
                 tint = hitmark_groups.regular_damage.tint,
             )
-        private const val EXPLOSION = "spotanim.vfx_mad_angel_attack_bomb_throw_impact_01"
         private const val EXPLOSION_MIN_HIT = 30
         private const val EXPLOSION_MAX_HIT = 32
         private const val EXPLOSION_PROTECTED_PERCENT = 50
-        private const val EXPLOSION_SOUND = "synth.mad_angel_blast_explosion"
 
         private const val SMITE_MAX_HIT = 31
         private const val SMITE_PROTECTED_PERCENT = 25
         private const val PERFECT_PRAYER_WINDOW = 0
-
-        private const val SPOT_BOMB_PROJECTILE =
-            "spotanim.vfx_mad_angel_attack_bomb_throw_projectile"
-        private const val SPOT_SMITE_IMPACT = "spotanim.vfx_mad_angel_attack_smite_impact"
 
         private val STRIKE_TICKS = listOf(5)
         private val ENRAGED_STRIKE_TICKS = listOf(5, 9, 11)
@@ -544,7 +516,10 @@ constructor(
             return dx * -bZ + dz * bX >= 0
         }
 
-        /** Out of the cleave on the far side from the sword, level with the angel or ahead. */
+        /**
+         * Out of the cleave on the far side from the sword, level with the angel or ahead, or on the
+         * angel's own middle edge tile on that side (the dodge left when the angel is against a wall).
+         */
         fun besideNotBehind(
             centre: CoordGrid,
             front: Direction,
@@ -557,7 +532,7 @@ constructor(
             val dz = tile.z - centre.z
             val forward = dx * frontX + dz * frontZ
             val lateral = dx * handX + dz * handZ
-            return lateral < -1 && forward >= -1
+            return (lateral < -1 && forward >= -1) || (lateral == -1 && forward == 0)
         }
 
         private fun handOf(front: Direction, side: SweepSide): Direction =

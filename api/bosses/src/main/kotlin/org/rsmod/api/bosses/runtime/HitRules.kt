@@ -48,8 +48,7 @@ internal class HitRules(private val spec: BossSpec, private val deps: BossDeps) 
                     if (hit.damage > 0) hit.damage = max(1, hit.damage / action.divisor)
                 is IncomingAction.FloorPercentOfMaxHit -> {
                     val maxHit = playerMaxHit(attacker, event.npc, action.style)
-                    val floor = (maxHit * action.percent + 99) / 100
-                    if (hit.damage < floor) hit.damage = deps.random.of(floor, max(floor, maxHit))
+                    hit.damage = floorDamage(hit.damage, maxHit, action.percent)
                 }
                 is IncomingAction.Run -> run(event.npc, attacker, encounter, action)
             }
@@ -78,6 +77,9 @@ internal class HitRules(private val spec: BossSpec, private val deps: BossDeps) 
             else -> error("No player max hit for $style")
         }
 }
+
+internal fun floorDamage(damage: Int, maxHit: Int, percent: Int): Int =
+    max(damage, (maxHit * percent + 99) / 100)
 
 /**
  * A player hit on the boss, for hit conditions: before the incoming rules settle it (`Modify`) or

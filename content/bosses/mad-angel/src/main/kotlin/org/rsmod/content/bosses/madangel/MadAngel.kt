@@ -39,29 +39,20 @@ import org.rsmod.api.player.vars.typeNpcUidVarp
 import org.rsmod.api.script.onEvent
 import org.rsmod.api.script.onNpcQueue
 import org.rsmod.api.script.onOpNpc1
+import org.rsmod.content.quest.manager.QuestRequirements
 import org.rsmod.game.entity.Npc
 import org.rsmod.game.entity.Player
 import org.rsmod.game.entity.npc.NpcStateEvents
 import org.rsmod.game.entity.npc.NpcUid
 import org.rsmod.game.entity.player.PlayerUid
+import org.rsmod.game.hit.HitType
 import org.rsmod.game.map.Direction
-import org.rsmod.map.CoordGrid
 import org.rsmod.plugin.scripts.ScriptContext
 
 private var Player.madAngelAggressiveNpc: NpcUid? by typeNpcUidVarp("varp.aggressive_npc")
 private var Player.madAngelLastCombat: Int by intVarp("varp.lastcombat")
 private var Npc.madAngelAggressivePlayer: PlayerUid? by typePlayerUidVarn("varn.aggressive_player")
 
-/**
- * The Mad Angel inside the Wyrmscraig cathedral, dormant until a player wakes it off its pew.
- *
- * The angel is spawned as [NPC_MAD_ANGEL] (so its kill count and hp bar params apply)
- * and kept dormant through a [NPC_INITIAL] transmog, whose stand animation is the kneel pose and
- * whose `Wake` option is gated on Fallen From Grace being complete. Waking plays the spawn animation
- * on the anim form, then switches to the fight type and gives it the cathedral to hunt in. A kill
- * leaves the dead form behind for the respawn wait, then revives the angel in place with `Wake`
- * available again.
- */
 class MadAngel
 @Inject
 constructor(
@@ -73,12 +64,12 @@ constructor(
 ) : BossPluginScript(deps) {
 
     override val spec =
-        boss(NPC_MAD_ANGEL, NPC_INITIAL) {
+        boss("npc.mad_angel", "npc.mad_angel_initial") {
             stats(attackRate = MadAngelFight.MELEE_SPEED)
 
             val melee =
                 ability("melee") {
-                    anim(ANIM_MELEE)
+                    anim("seq.npc_mad_angel_attack_melee")
                     hit {
                         damage(DamageExpr.Custom { _, target -> rollMelee(target) })
                         type(Melee)
@@ -114,29 +105,41 @@ constructor(
                 ability("sweep_enraged") { include(oneOf(sweepRightEnraged, sweepLeftEnraged)) }
             val blastEffect =
                 sequence(
-                    anim(ANIM_BOMB_THROW),
-                    spotanim(SPOT_BOMB_THROW, slot = MadAngelFight.SPECIAL_SLOT),
+                    anim("seq.npc_mad_angel_attack_bomb_throw"),
+                    spotanim(
+                        "spotanim.vfx_mad_angel_attack_bomb_throw",
+                        slot = MadAngelFight.SPECIAL_SLOT,
+                    ),
                     external(HANDLER_BLAST, params = false),
                 )
             val blast = ability("blast") { include(blastEffect) }
             val blastEnragedEffect =
                 sequence(
-                    anim(ANIM_BOMB_THROW),
-                    spotanim(SPOT_BOMB_THROW, slot = MadAngelFight.SPECIAL_SLOT),
+                    anim("seq.npc_mad_angel_attack_bomb_throw"),
+                    spotanim(
+                        "spotanim.vfx_mad_angel_attack_bomb_throw",
+                        slot = MadAngelFight.SPECIAL_SLOT,
+                    ),
                     external(HANDLER_BLAST, params = true),
                 )
             val blastEnraged = ability("blast_enraged") { include(blastEnragedEffect) }
             val smiteEffect =
                 sequence(
-                    anim(ANIM_SMITE),
-                    spotanim(SPOT_SMITE, slot = MadAngelFight.SPECIAL_SLOT),
+                    anim("seq.npc_mad_angel_attack_smite"),
+                    spotanim(
+                        "spotanim.vfx_mad_angel_attack_smite",
+                        slot = MadAngelFight.SPECIAL_SLOT,
+                    ),
                     external(HANDLER_SMITE, params = false),
                 )
             val smite = ability("smite") { include(smiteEffect) }
             val smiteEnragedEffect =
                 sequence(
-                    anim(ANIM_SMITE_ENRAGED),
-                    spotanim(SPOT_SMITE_ENRAGED, slot = MadAngelFight.SPECIAL_SLOT),
+                    anim("seq.npc_mad_angel_attack_smite_enraged"),
+                    spotanim(
+                        "spotanim.vfx_mad_angel_attack_smite_enraged",
+                        slot = MadAngelFight.SPECIAL_SLOT,
+                    ),
                     external(HANDLER_SMITE, params = true),
                 )
             val smiteEnraged = ability("smite_enraged") { include(smiteEnragedEffect) }
@@ -243,17 +246,17 @@ constructor(
             spec,
             deps,
             onModifyHit = {
-                if (hit.isFromPlayer) {
+                if (hit.isFromPlayer && hit.type != HitType.Typeless) {
                     val source = hit.sourceUid?.let { PlayerUid(it).resolve(deps.playerList) }
                     if (source != null && source.nextHitBuff != MadAngelFight.NEXT_HIT_NONE) {
                         source.nextHitBuff = MadAngelFight.NEXT_HIT_NONE
-                        npc.vars[MadAngelFight.GUARANTEED_HIT] = 0
+                        npc.vars["varn.guaranteed_hit"] = 0
                     }
                 }
             },
         )
 
-        onOpNpc1(NPC_INITIAL) { wake(it.npc, player) }
+        onOpNpc1("npc.mad_angel_initial") { wake(it.npc, player) }
 
         onEvent<NpcStateEvents.Create> { if (npc.type.id == MAD_ANGEL_ID) dormant(npc) }
 
@@ -273,22 +276,25 @@ constructor(
             fight.smite(npc, target, params as Boolean)
         }
         deps.extensionRegistry.register(HANDLER_SPEND_BUFF) { _, npc, target, _ ->
-            npc.vars[MadAngelFight.GUARANTEED_HIT] = 0
+            npc.vars["varn.guaranteed_hit"] = 0
             target.nextHitBuff = MadAngelFight.NEXT_HIT_NONE
         }
     }
 
+    // UNVERFIED: Exact wake flow
     @OptIn(InternalApi::class)
     private fun wake(npc: Npc, player: Player) {
         if (npc.visType.id != INITIAL_ID) return
+        if (!QuestRequirements.hasCompleted(player, "quest_fallenfromgrace")) return
         val type = ServerCacheManager.getNpc(MAD_ANGEL_ID) ?: return
         val animType = ServerCacheManager.getNpc(ANIM_ID) ?: type
         npc.transmog(animType, Int.MAX_VALUE)
         npc.assignUid()
         npc.hitpoints = npc.baseHitpointsLvl
-        npc.anim(ANIM_SPAWN)
-        npc.spotanim(SPOT_SPAWN)
-        player.midiSong(FIGHT_MUSIC)
+        npc.anim("seq.npc_mad_angel_spawn")
+        npc.spotanim("spotanim.vfx_mad_angel_spawn")
+        player.midiSong("midi.mad_angel_combat")
+        instances.startBossFight(npc)
         npc.setHunt(type.huntRange)
         type.huntMode?.let { mode -> ServerCacheManager.getHunt(mode)?.let(npc::setHuntMode) }
         deps.worldQueues.add(WAKE_TICKS) {
@@ -303,7 +309,6 @@ constructor(
 
     private suspend fun StandardNpcAccess.madAngelDeath() {
         val respawnRate = ServerCacheManager.getNpc(MAD_ANGEL_ID)?.respawnRate ?: npc.type.respawnRate
-        val deathCoords = npc.coords
         val deathAngle = npc.deathFacingAngle()
         walk(coords)
         noneMode()
@@ -311,7 +316,7 @@ constructor(
         arriveDelay()
 
         val deathAnim = ServerCacheManager.getAnim(DEATH_SEQ_ID) ?: return
-        anim(DEATH_ANIM)
+        anim("seq.npc_mad_angel_attack_death")
         delay(deathAnim)
 
         npcDeath.spawnDrops(this)
@@ -325,7 +330,7 @@ constructor(
         val deadType = ServerCacheManager.getNpc(DEAD_ID) ?: return
         changeType(deadType, Int.MAX_VALUE)
         delay(respawnRate.coerceAtLeast(1))
-        deps.worldQueues.add(1) { respawnDormant(npc, deathCoords, deathAngle) }
+        deps.worldQueues.add(1) { respawnDormant(npc, deathAngle) }
     }
 
     private fun Npc.deathFacingAngle(): Int {
@@ -339,12 +344,13 @@ constructor(
         return respawnDir.angle
     }
 
-    private fun respawnDormant(npc: Npc, coords: CoordGrid, angle: Int) {
+    private fun respawnDormant(npc: Npc, angle: Int) {
         if (!npc.isSlotAssigned || npc.visType.id != DEAD_ID) return
         val instanceId = instances.instanceForNpc(npc) ?: return
         if (instances.sessionForId(instanceId) == null) return
         val type = ServerCacheManager.getNpc(MAD_ANGEL_ID) ?: return
-        val revived = Npc(type, coords)
+        val revived = Npc(type, npc.coords)
+        revived.spawnCoords = npc.spawnCoords
         revived.respawnDir = directionOf(angle)
         deps.npcRepo.del(npc, Int.MAX_VALUE)
         deps.npcRepo.add(revived, Int.MAX_VALUE)
@@ -374,7 +380,7 @@ constructor(
         npc.clearHeroPoints()
         npc.queueList.clear()
         npc.vars["varn.aggressive_player"] = null
-        npc.vars[MadAngelFight.GUARANTEED_HIT] = 0
+        npc.vars["varn.guaranteed_hit"] = 0
         npc.copyStats(fightType)
         npc.transmog(type, Int.MAX_VALUE)
         npc.assignUid()
@@ -388,7 +394,7 @@ constructor(
 
     private fun rollMelee(target: Player): Int {
         val roll = deps.random.of(MELEE_MAX_HIT + 1)
-        if (target.vars[PRAYER_MELEE] != 1) return roll
+        if (target.vars["varbit.prayer_protectfrommelee"] != 1) return roll
         return roll * MELEE_PROTECTED_MAX_HIT / MELEE_MAX_HIT
     }
 
@@ -399,38 +405,22 @@ constructor(
         )
 
     private companion object {
-        private val NPC_MAD_ANGEL = "npc.mad_angel"
-        private val NPC_INITIAL = "npc.mad_angel_initial"
-        private val NPC_ANIM = "npc.mad_angel_anim"
-        private val NPC_DEAD = "npc.mad_angel_dead"
-
-        private const val DEATH_ANIM = "seq.npc_mad_angel_attack_death"
-
-        private val MAD_ANGEL_ID = NPC_MAD_ANGEL.asRSCM(RSCMType.NPC)
-        private val INITIAL_ID = NPC_INITIAL.asRSCM(RSCMType.NPC)
-        private val ANIM_ID = NPC_ANIM.asRSCM(RSCMType.NPC)
-        private val DEAD_ID = NPC_DEAD.asRSCM(RSCMType.NPC)
-        private val DEATH_SEQ_ID = DEATH_ANIM.asRSCM(RSCMType.SEQ)
+        private val MAD_ANGEL_ID = "npc.mad_angel".asRSCM(RSCMType.NPC)
+        private val INITIAL_ID = "npc.mad_angel_initial".asRSCM(RSCMType.NPC)
+        private val ANIM_ID = "npc.mad_angel_anim".asRSCM(RSCMType.NPC)
+        private val DEAD_ID = "npc.mad_angel_dead".asRSCM(RSCMType.NPC)
+        private val DEATH_SEQ_ID = "seq.npc_mad_angel_attack_death".asRSCM(RSCMType.SEQ)
 
         private const val HANDLER_SWEEP = "madangel.sweep"
         private const val HANDLER_BLAST = "madangel.blast"
         private const val HANDLER_SMITE = "madangel.smite"
         private const val HANDLER_SPEND_BUFF = "madangel.spend_buff"
 
-        private const val ANIM_MELEE = "seq.npc_mad_angel_attack_melee"
-        private const val ANIM_BOMB_THROW = "seq.npc_mad_angel_attack_bomb_throw"
-        private const val SPOT_BOMB_THROW = "spotanim.vfx_mad_angel_attack_bomb_throw"
-        private const val ANIM_SMITE = "seq.npc_mad_angel_attack_smite"
-        private const val ANIM_SMITE_ENRAGED = "seq.npc_mad_angel_attack_smite_enraged"
-        private const val SPOT_SMITE = "spotanim.vfx_mad_angel_attack_smite"
-        private const val SPOT_SMITE_ENRAGED = "spotanim.vfx_mad_angel_attack_smite_enraged"
-        private const val ANIM_SPAWN = "seq.npc_mad_angel_spawn"
-        private const val SPOT_SPAWN = "spotanim.vfx_mad_angel_spawn"
-        private const val FIGHT_MUSIC = "midi.mad_angel_combat"
-
         private const val ENRAGE_HP = 350.0
         private val MAD_ANGEL_HP: Double =
-            ServerCacheManager.getNpc(MAD_ANGEL_ID)?.hitpoints?.toDouble() ?: ENRAGE_HP
+            checkNotNull(ServerCacheManager.getNpc(MAD_ANGEL_ID)) { "Missing npc.mad_angel type." }
+                .hitpoints
+                .toDouble()
         private const val ENRAGE_TEXT = "...!"
         private const val ENRAGE_SAY_TICKS = 4
         private const val SPECIAL_AFTER_ATTACKS = 3
@@ -445,7 +435,6 @@ constructor(
         // lands `delay - 1` ticks after the animation: 3 gives the two ticks the capture shows.
         private const val MELEE_HIT_DELAY = 3
         private const val PRAYER_PENETRATION = 100
-        private const val PRAYER_MELEE = "varbit.prayer_protectfrommelee"
 
         private const val WAKE_TICKS = 3
     }
